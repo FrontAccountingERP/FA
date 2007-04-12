@@ -28,7 +28,6 @@
     Debugging info level also determined by settings in PHP.ini
     if $debug=1 show debugging info, dont show if $debug=0 */
     
-    //
     $debug 			= 1;
 	$show_sql 		= 0;
 	$go_debug 		= 0;
