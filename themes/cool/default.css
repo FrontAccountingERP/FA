@@ -1,0 +1,337 @@
+/*--------------------------------------------------\
+| cool        |                 | default.css       |
+|---------------------------------------------------|
+| For use with:                                     |
+| FrontAccounting 									|
+| http://FrontAccounting.com/  	            		|
+| by Joe Hunt Consulting                            |
+|---------------------------------------------------|
+| Developer:                                        |
+| Joe Hunt                                          |
+|                                                   |
+|---------------------------------------------------|
+| Note:                                             |
+| Changes can be made to this CSS that will be      |
+| reflected throughout FrontAccounting.             |
+|                                                   |
+\--------------------------------------------------*/
+
+body {
+	font-family: Verdana, Arial, Helvetica;
+	background: #528cab;
+	font-size: 10px;	
+	margin: 5px 0 0 5px;
+	padding: 0;
+}
+
+tr, td, th {
+	font-size: 11px;
+	line-height: 19px;
+}
+
+textarea {
+	font-size: 12px;
+}
+
+input, select {
+	font-size: 11px;
+	padding: 1px; 
+}
+
+input.big {
+	width: 100px;
+}
+
+input.small {
+	width: 50px;
+}
+
+a {
+	color: #0000bb;
+	font-size: 11px;	
+	text-decoration: none;
+}
+
+a:link {
+	color: #00000bb;
+	text-decoration: none;
+}
+
+a:active {
+	color: #000000;
+	text-decoration: none;
+}
+
+a:hover {
+	color: #2d8628;
+	text-decoration: underline;
+}
+
+
+.login {
+	background-color: #ffffff;
+	border: none;
+}
+
+.callout_main {
+	font-family: Verdana, Arial, Helvetica;
+	border: none;
+	width: 99%;
+	margin: 0;
+	padding: 0;
+}
+
+.main_page {
+	background-color: #f9f9f9;
+	border: none;
+	width: 100%;
+	margin: 0;
+	padding: 0;
+}
+
+.quick_menu {
+	background-color: #528cab;
+	border: 0;
+	margin: 0;
+	padding: 0;
+	text-align: right;
+}
+
+.quick_menu_selected {
+	font-family: Verdana, Arial, Helvetica;
+	font-size: 13px;
+	border: none;
+	white-space: nowrap;
+	margin: 2px;
+	padding: 2px;
+	color: #00cc00;
+	font-weight: bolder;
+}
+
+.logoutBar {
+	padding-right: 1em; 
+	background: #d5b7a7; 
+	color: black; 
+	border-bottom: 1px solid #c0b67c; 
+	width: 100%;
+}
+
+.bottomBar {
+	padding-right: 1em; 
+	background: #d5b7a7; 
+	color: black; 
+	border-bottom: 1px solid #c0b67c; 
+	width: 100%;
+}
+
+.bottomBarCell {
+	font-size: 10px;
+	line-height: 12px;
+}
+
+.bottomBar2 {
+	padding-right: 1em; 
+	background: #d5b7a7; 
+	color: black; 
+	border-top: 1px solid #c0b67c; 
+	border-bottom: 1px solid #c0b67c; 
+	width: 100%;
+}
+
+.logoutBarRight {
+	text-align: right;
+}
+
+div.logoutBar {
+	padding-right: 1em; 
+	background: #d5b7a7; 
+	color: black; 
+	border-bottom: 1px solid #c0b67c; 
+	text-align: right;
+}
+div.logoutBar a {
+	font-weight: normal; 
+	margin-left: 1em; 
+	color: #436976; 
+	background-color: transparent;
+}
+div.logoutBar img {
+	vertical-align: top;
+}
+
+div.tabs {
+	padding: 0.5em 0 0 0; 
+	background: none transparent scroll repeat 0% 0%; 
+	white-space: nowrap; 
+	border-collapse: collapse; 	
+	border-bottom: 1px solid #c0b67c; 		
+
+}
+div.tabs a {
+	border: 1px solid #c0b67c; 
+	padding: 0 1em 3px 1em; 
+	font-weight: normal; 
+	background: white scroll repeat 0% 0%; 
+	color: #436976; 
+	margin-right: 0.0em; 
+	height: 1.0em;
+}
+div.tabs a.selected {
+	border-top: 1px solid #c0b67c; 
+	border-right: 1px solid #c0b67c; 
+	border-bottom: 1px solid #d5b7a7;
+	border-left: 1px solid #c0b67c; 
+	font-weight: normal; 
+	background: #d5b7a7; 
+	color: #436976; 
+}
+div.tabs a:hover {
+	border-top-color: #c0b67c; 
+	border-right-color: #c0b67c
+	border-bottom-color: #d5b7a7; 
+	border-left-color: #c0b67c; 
+	background: #d5b7a7; 
+	color: #436976; 
+}
+
+.menu_group {
+	font-size: 13px;
+	padding: 0px;
+	color: #000000;
+	background-color: #d5b7a7;
+	PADDING-LEFT: 3px; 
+	font-weight: bold;
+}
+
+.menu_group_items {
+	background-color: #f9f9f9;
+	font-weight: normal;
+	padding: 9px;
+	border: 1px solid #c0b67c;
+}
+
+#footer {
+	position: relative;
+	bottom: -3px;
+}
+
+.footer {
+	font-family: Verdana, Arial, Helvetica;
+	color: #cccccc;
+	font-weight: normal;
+	font-size: 9px;
+}
+
+.tableheader {
+	font-weight: bold;
+	background-color: #c5d5a7;
+	color: black;
+	text-align: center;
+}
+
+.tableheader2 {
+	font-weight: bold;
+	background-color: #c5d5a7;
+	color: black;
+	text-align: left;
+}
+
+.tableseparator {
+	border-left: 1px #444466 solid;
+}
+
+.titletext {
+	font-weight: bold;
+	font-size: 13px;	
+	border-bottom: 1px solid #c0b67c;
+	padding: 5px;
+}
+
+.headingtext {
+	font-weight: bold;
+	font-size: 13px;	
+	color: black;
+}
+
+.headingtext2 {
+	font-size: 13px;	
+	color: black;
+}
+
+.headingtext3 {
+	font-weight: bold;
+	font-size: 10px;	
+	color: black;
+}
+
+.errortext {
+	font-size: 13px;	
+	color: #ff0000;
+	font-weight: bold;
+}
+
+.inputsubmit {
+	font-size: 11px;
+	border: 1px solid #0066cc;
+	padding: 1px 4px; 
+}
+
+.oddrow {
+	background-color: #eeeeee;
+}
+
+.evenrow {
+	background-color: #dddddd;
+}	
+
+.overduebg {
+	background-color: #dd7777;
+}	
+
+.overduefg {
+	color: #dd7777;
+}	
+
+.currentfg {
+	color: #ff6666;
+}	
+
+.redfg {
+	color: red;
+	font-weight: bold;
+}	
+
+.settledbg {
+	background-color: #00bb00;
+}	
+
+.settledfg {
+	color: #00bb00;
+}	
+
+.inquirybg {
+	background-color: #fdfeef;
+}
+
+.currencybg {
+	background-color: #ee8888;
+}
+
+.stockmankobg {
+	background-color: pink;
+}
+
+.tablestyle {
+	padding: 3px;
+	border: 1 solid #c0b67c;
+	border-collapse: collapse;
+}	
+
+.tablestyle2 {
+	padding: 0 3px;
+	border: 1px solid #ccc;
+	border-collapse: collapse;
+}	
+.tablestyle_noborder {
+	padding: 3px;
+}

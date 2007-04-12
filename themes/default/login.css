@@ -1,0 +1,45 @@
+/*--------------------------------------------------\
+|               |               | login.css         |
+|---------------------------------------------------|
+| For use with:                                     |
+| OpenAccounting 									|
+| http://open-accounting.sourceforge.net/  			|
+| by KylieTech Consulting                           |
+|---------------------------------------------------|
+| Developer:                                        |
+| Shane Barnaby                                     |
+|                                                   |
+|---------------------------------------------------|
+| Note:                                             |
+| Changes can be made to this CSS that will be      |
+| reflected on the login screen.                    |
+|                                                   |
+|                                                   |
+\--------------------------------------------------*/
+
+body {
+	background: #518fad;
+	font-family: arial, verdana;
+	font-size: 10px;
+}
+
+.loginText {
+	font-family: arial, verdana;
+	font-size: 10px;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+input.big {
+	width: 100px;
+}
+
+input.small {
+	width: 50px;
+}
+
+td.login {
+	background: #dddddd;
+}	
