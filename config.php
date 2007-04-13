@@ -47,7 +47,7 @@
     $version 		= "1.0a";
 
     // Build for development purposes
-    $build_version 	= "177";
+    $build_version 	= "12";
 
 	// Powered by
 	$power_by 		= "FrontAccounting";
