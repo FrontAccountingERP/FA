@@ -44,7 +44,7 @@
 	// Main Title
 	$app_title = "FrontAccounting";
     // application version
-    $version 		= "1.0";
+    $version 		= "1.0a";
 
     // Build for development purposes
     $build_version 	= "177";
