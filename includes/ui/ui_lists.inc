@@ -1377,7 +1377,7 @@ function gl_all_accounts_list($name, $selected_id, $skip_bank_accounts=false,
 
 	if ($skip_bank_accounts)
 		$sql = "SELECT ".TB_PREF."chart_master.account_code, ".TB_PREF."chart_master.account_name, ".TB_PREF."chart_types.name
-			FROM ".TB_PREF."chart_master,".TB_PREF."chart_types  LEFT JOIN ".TB_PREF."bank_accounts ON ".TB_PREF."chart_master.account_code=".TB_PREF."bank_accounts.account_code
+			FROM (".TB_PREF."chart_master,".TB_PREF."chart_types) LEFT JOIN ".TB_PREF."bank_accounts ON ".TB_PREF."chart_master.account_code=".TB_PREF."bank_accounts.account_code
             WHERE ".TB_PREF."bank_accounts.account_code IS NULL
 			AND ".TB_PREF."chart_master.account_type=".TB_PREF."chart_types.id
 			ORDER BY account_code;";
