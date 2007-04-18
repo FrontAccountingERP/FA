@@ -9,13 +9,21 @@
 	|                                                   |
 	\--------------------------------------------------*/
 
+/*
+	// Make sure this directory exists and is writable!
     $session_save_path = dirname(__FILE__).'/tmp/';
+
+*/
+	$session_save_path = session_save_path();
+	if (strpos($session_save_path, ";") !== false)
+  		$session_save_path = substr($session_save_path, strpos($session_save_path, ";") + 1);
 
 	if (isset($session_save_path))
 	{
 		session_save_path($session_save_path);
 		unset($session_save_path);
     }
+
     include_once($path_to_root . "/config_db.php");
     include_once($path_to_root . "/includes/lang/language.php");
 
