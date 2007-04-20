@@ -3,6 +3,7 @@
 
 function add_gl_account($account_code, $account_name, $account_type, $account_code2, $tax_code)
 {
+	$account_name = db_escape($account_name);
 	$sql = "INSERT INTO ".TB_PREF."chart_master (account_code, account_code2, account_name, account_type,
 		tax_code) 
 		VALUES ('$account_code', '$account_code2', '$account_name', $account_type, $tax_code)";
@@ -12,6 +13,7 @@ function add_gl_account($account_code, $account_name, $account_type, $account_co
 
 function update_gl_account($account_code, $account_name, $account_type, $account_code2, $tax_code)
 {
+	$account_name = db_escape($account_name);
     $sql = "UPDATE ".TB_PREF."chart_master SET account_name='$account_name',
 		account_type=$account_type, account_code2='$account_code2',
 		tax_code=$tax_code WHERE account_code = $account_code";
