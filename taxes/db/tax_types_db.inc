@@ -2,8 +2,8 @@
 
 function add_tax_type($name, $sales_gl_code, $purchasing_gl_code, $rate, $out)
 {
-	$sql = "INSERT INTO ".TB_PREF."tax_types (name, sales_gl_code, purchasing_gl_code, rate, out) 
-		VALUES ('$name', $sales_gl_code, $purchasing_gl_code, $rate, $out)";
+	$sql = "INSERT INTO ".TB_PREF."tax_types (name, sales_gl_code, purchasing_gl_code, rate, `out`) 
+		VALUES ('$name', '$sales_gl_code', '$purchasing_gl_code', $rate, $out)";
 		
 	db_query($sql, "could not add tax type");		
 }
@@ -11,10 +11,10 @@ function add_tax_type($name, $sales_gl_code, $purchasing_gl_code, $rate, $out)
 function update_tax_type($type_id, $name, $sales_gl_code, $purchasing_gl_code, $rate, $out)
 {
 	$sql = "UPDATE ".TB_PREF."tax_types SET name='$name',
-		sales_gl_code=$sales_gl_code,
-		purchasing_gl_code=$purchasing_gl_code,
+		sales_gl_code='$sales_gl_code',
+		purchasing_gl_code='$purchasing_gl_code',
 		rate=$rate,
-		out=$out
+		`out`=$out
 		WHERE id=$type_id";
 	
 	db_query($sql, "could not update tax type");			
