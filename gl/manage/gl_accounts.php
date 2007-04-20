@@ -144,7 +144,7 @@ function can_delete($selected_account)
 		OR sales_discount_account=$selected_account
 		OR receivables_account=$selected_account
 		OR payment_discount_account=$selected_account";
-	$result = db_query($sql,"Couldn't test for existing tax GL codes");
+	$result = db_query($sql,"Couldn't test for existing cust branch GL codes");
 
 	$myrow = db_fetch_row($result);
 	if ($myrow[0] > 0) 
@@ -155,9 +155,9 @@ function can_delete($selected_account)
 	
 	$sql= "SELECT COUNT(*) FROM ".TB_PREF."suppliers WHERE 
 		purchase_account=$selected_account 
-		payment_discount_account=$selected_account 
+		OR payment_discount_account=$selected_account 
 		OR payable_account=$selected_account";
-	$result = db_query($sql,"Couldn't test for existing tax GL codes");
+	$result = db_query($sql,"Couldn't test for existing suppliers GL codes");
 
 	$myrow = db_fetch_row($result);
 	if ($myrow[0] > 0) 
