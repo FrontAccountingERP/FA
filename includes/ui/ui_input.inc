@@ -4,14 +4,14 @@
 
 function hidden($name, $value)
 {
-	echo "<input type='hidden' name='$name' value='$value'>\n";
+	echo "<input type=\"hidden\" name=\"$name\" value=\"$value\">\n";
 }
 
 //---------------------------------------------------------------------------------
 
 function submit($name, $value, $echo=true)
 {
-	$submit_str = "<input type='submit' class='inputsubmit' name='$name' value='$value'>\n";
+	$submit_str = "<input type=\"submit\" class=\"inputsubmit\" name=\"$name\" value=\"$value\">\n";
 	if ($echo)
 		echo $submit_str;
 	else
@@ -180,7 +180,7 @@ function text_cells($label, $name, $value, $size="", $max="", $params="", $post_
 
 	if ($value == null)
 		$value = (!isset($_POST[$name]) ? "" : $_POST[$name]);
-	echo "<input $disabled type='text' name='$name' size='$size' maxlength='$max' value='$value'>";
+	echo "<input $disabled type=\"text\" name=\"$name\" size=\"$size\" maxlength=\"$max\" value=\"$value\">";
 
 	if ($post_label != "")
 		echo " " . $post_label;
@@ -197,7 +197,6 @@ function text_cells_ex($label, $name, $size, $max=null, $init=null, $params=null
 		else
 			$_POST[$name] = "";
 	}
-
 	if ($label != null)
 		label_cell($label, $params);
 
@@ -206,7 +205,7 @@ function text_cells_ex($label, $name, $size, $max=null, $init=null, $params=null
 
 	echo "<td>";
 
-	echo "<input type='text' name='$name' size='$size' maxlength='$max' value='" . $_POST[$name]. "'>";
+	echo "<input type=\"text\" name=\"$name\" size=\"$size\" maxlength=\"$max\" value=\"" . $_POST[$name]. "\">";
 
 	if ($post_label)
 		echo " " . $post_label;
@@ -335,7 +334,7 @@ function text_row_with_submit($label, $name, $value, $size, $max, $input_name, $
 
 	if ($value == null)
 		$value = (!isset($_POST[$name]) ? "" : $_POST[$name]);
-	echo "<input type='text' name='$name' size='$size' maxlength='$max' value='$value'>   ";
+	echo "<input type=\"text\" name=\"$name\" size=\"$size\" maxlength=\"$max\" value=\"$value\">   ";
 
 	submit($input_name, $input_value);
 
