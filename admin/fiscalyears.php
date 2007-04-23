@@ -4,11 +4,13 @@ $page_security = 9;
 $path_to_root="..";
 include_once($path_to_root . "/includes/session.inc");
 
-page(_("Fiscal Years"));
-
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/admin/db/company_db.inc");
 include_once($path_to_root . "/includes/ui.inc");
+$js = "";
+if ($use_date_picker)
+	$js .= get_js_date_picker();
+page(_("Fiscal Years"), false, false, "", $js);
 
 //---------------------------------------------------------------------------------------------
 
@@ -178,8 +180,8 @@ function display_fiscalyear_edit($selected_id)
 	} 
 	else 
 	{
-		text_row(_("Fiscal Year Begin:"), 'from_date', null, 15, 10);
-		text_row(_("Fiscal Year End:"), 'to_date', null, 15, 10);
+		date_row(_("Fiscal Year Begin:"), 'from_date', null, 0, 0, 1001);
+		date_row(_("Fiscal Year End:"), 'to_date', null, 0, 0, 1001);
 	}
 
 	yesno_list_row(_("Is Closed:"), 'closed', null, "", "", false);

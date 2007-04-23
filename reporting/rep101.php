@@ -47,14 +47,13 @@ function print_customer_balances()
 
     $to = $_POST['PARAM_0'];
     $fromcust = $_POST['PARAM_1'];
-    $tocust = $_POST['PARAM_2'];
-    $currency = $_POST['PARAM_3'];
-    $comments = $_POST['PARAM_4'];
+    $currency = $_POST['PARAM_2'];
+    $comments = $_POST['PARAM_3'];
 
-	if ($fromcust == null)
-		$fromcust = 0;
-	if ($tocust == null)
-		$tocust = 0;
+	if ($fromcust == reserved_words::get_all_numeric())
+		$from = _('All');
+	else
+		$from = get_customer_name($fromcust);
     $dec = user_price_dec();
 
 	if ($currency == reserved_words::get_all())
@@ -74,8 +73,7 @@ function print_customer_balances()
     
     $params =   array( 	0 => $comments,
     				    1 => array('text' => _('End Date'), 'from' => $to, 		'to' => ''),
-    				    2 => array('text' => _('Customer'), 'from' => get_customer_name($fromcust),
-                            	'to' => get_customer_name($tocust)),
+    				    2 => array('text' => _('Customer'), 'from' => $from,   	'to' => ''),
     				    3 => array('text' => _('Currency'), 'from' => $currency, 'to' => ''));
 
     $rep = new FrontReport(_('Customer Balances'), "CustomerBalances.pdf", user_pagesize());
@@ -87,8 +85,10 @@ function print_customer_balances()
 	$total = array();
 	$grandtotal = array();
 
-	$sql = "SELECT debtor_no, name, curr_code FROM ".TB_PREF."debtors_master
-		WHERE debtor_no>=$fromcust AND debtor_no<=$tocust ORDER BY name";
+	$sql = "SELECT debtor_no, name, curr_code FROM ".TB_PREF."debtors_master ";
+	if ($fromcust != reserved_words::get_all_numeric())
+		$sql .= "WHERE debtor_no=$fromcust ";
+	$sql .= "ORDER BY name";
 	$result = db_query($sql, "The customers could not be retrieved");
 
 	while ($myrow = db_fetch($result)) 

@@ -4,12 +4,14 @@ $path_to_root="..";
 $page_security = 5;
 include_once($path_to_root . "/includes/session.inc");
 
-page(_("Reports and Analysis"));
-
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
 include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/reporting/includes/reports_classes.inc");
+$js = "";
+if ($use_date_picker)
+	$js .= get_js_date_picker();
+page(_("Reports and Analysis"), false, false, "", $js);
 
 $reports = new BoxReports;
 
@@ -18,14 +20,12 @@ $dim = get_company_pref('use_dimension');
 $reports->addReportClass(_('Customer'));
 $reports->addReport(_('Customer'),101,_('Customer Balances'),
 	array(	new ReportParam(_('End Date'),'DATE'), 
-			new ReportParam(_('From Customer'),'CUSTOMERS'), 
-			new ReportParam(_('To Customer'),'CUSTOMERS'), 
+			new ReportParam(_('Customer'),'CUSTOMERS_NO_FILTER'), 
 			new ReportParam(_('Currency Filter'),'CURRENCY'), 
 			new ReportParam(_('Comments'),'TEXTBOX')));
 $reports->addReport(_('Customer'),102,_('Aged Customer Analysis'),
 	array(	new ReportParam(_('End Date'),'DATE'), 
-			new ReportParam(_('From Customer'),'CUSTOMERS'), 
-			new ReportParam(_('To Customer'),'CUSTOMERS'), 
+			new ReportParam(_('Customer'),'CUSTOMERS_NO_FILTER'), 
 			new ReportParam(_('Currency Filter'),'CURRENCY'), 
 			new ReportParam(_('Summary Only'),'YES_NO'), 
 			new ReportParam(_('Graphics'),'GRAPHIC'), 
@@ -55,7 +55,7 @@ $reports->addReport(_('Customer'),107,_('Print Invoices/Credit Notes'),
 			new ReportParam(_('email Customers'),'YES_NO'), 
 			new ReportParam(_('Comments'),'TEXTBOX')));
 $reports->addReport(_('Customer'),108,_('Print Statements'),
-	array(	new ReportParam(_('Customers'),'CUSTOMERS_NO_FILTER'), 
+	array(	new ReportParam(_('Customer'),'CUSTOMERS_NO_FILTER'), 
 			new ReportParam(_('Currency Filter'),'CURRENCY'), 
 			new ReportParam(_('Bank Account'),'BANK_ACCOUNTS'), 
 			new ReportParam(_('Email Customers'),'YES_NO'), 
@@ -71,27 +71,23 @@ $reports->addReport(_('Customer'),109,_('Print Sales Orders'),
 $reports->addReportClass(_('Supplier'));
 $reports->addReport(_('Supplier'),201,_('Supplier Balances'),
 	array(	new ReportParam(_('End Date'),'DATE'), 
-			new ReportParam(_('From Supplier'),'SUPPLIERS'), 
-			new ReportParam(_('To Supplier'),'SUPPLIERS'), 
+			new ReportParam(_('Supplier'),'SUPPLIERS_NO_FILTER'), 
 			new ReportParam(_('Currency Filter'),'CURRENCY'), 
 			new ReportParam(_('Comments'),'TEXTBOX')));
 $reports->addReport(_('Supplier'),202,_('Aged Supplier Analyses'),
 	array(	new ReportParam(_('End Date'),'DATE'), 
-			new ReportParam(_('From Supplier'),'SUPPLIERS'), 
-			new ReportParam(_('To Supplier'),'SUPPLIERS'), 
+			new ReportParam(_('Supplier'),'SUPPLIERS_NO_FILTER'), 
 			new ReportParam(_('Currency Filter'),'CURRENCY'), 
 			new ReportParam(_('Summary Only'),'YES_NO'), 
 			new ReportParam(_('Graphics'),'GRAPHIC'), 
 			new ReportParam(_('Comments'),'TEXTBOX')));
 $reports->addReport(_('Supplier'),203,_('Payment Report'),
 	array(	new ReportParam(_('End Date'),'DATE'), 
-			new ReportParam(_('From Supplier'),'SUPPLIERS'), 
-			new ReportParam(_('To Supplier'),'SUPPLIERS'), 
+			new ReportParam(_('Supplier'),'SUPPLIERS_NO_FILTER'), 
 			new ReportParam(_('Currency Filter'),'CURRENCY'), 
 			new ReportParam(_('Comments'),'TEXTBOX')));
 $reports->addReport(_('Supplier'),204,_('Outstanding GRNs Report'),
-	array(	new ReportParam(_('From Supplier'),'SUPPLIERS'), 
-			new ReportParam(_('To Supplier'),'SUPPLIERS'), 
+	array(	new ReportParam(_('Supplier'),'SUPPLIERS_NO_FILTER'), 
 			new ReportParam(_('Comments'),'TEXTBOX')));
 $reports->addReport(_('Supplier'),209,_('Print Purchase Orders'),
 	array(	new ReportParam(_('From'),'PO'), 

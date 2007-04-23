@@ -16,7 +16,7 @@ function supplier_list($name, $selected_id, $all_option=false, $submit_on_change
 
 	$company_currency = get_company_currency();
 
-	$supplier_sql = "SELECT supplier_id, supp_name, curr_code FROM ".TB_PREF."suppliers ORDER BY supplier_id";
+	$supplier_sql = "SELECT supplier_id, supp_name, curr_code FROM ".TB_PREF."suppliers ORDER BY supp_name";
 	$supplier_result = db_query($supplier_sql);
 
 	if ($selected_id == null)
@@ -89,7 +89,7 @@ function customer_list($name, $selected_id, $all_option=false, $submit_on_change
 	else
 		echo "<select name='$name'>";
 
-	$customer_sql = "SELECT debtor_no, name, curr_code FROM ".TB_PREF."debtors_master ORDER BY debtor_no";
+	$customer_sql = "SELECT debtor_no, name, curr_code FROM ".TB_PREF."debtors_master ORDER BY name";
 	$customer_result = db_query($customer_sql);
 
 	$company_currency = get_company_currency();

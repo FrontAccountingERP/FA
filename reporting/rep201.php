@@ -48,14 +48,13 @@ function print_supplier_balances()
 
     $to = $_POST['PARAM_0'];
     $fromsupp = $_POST['PARAM_1'];
-    $tosupp = $_POST['PARAM_2'];
-    $currency = $_POST['PARAM_3'];
-    $comments = $_POST['PARAM_4'];
+    $currency = $_POST['PARAM_2'];
+    $comments = $_POST['PARAM_3'];
     
-    if ($fromsupp == null)
-    	$fromsupp = 0;
-    if ($tosupp == null)
-    	$tosupp = 0;
+	if ($fromsupp == reserved_words::get_all_numeric())
+		$from = _('All');
+	else
+		$from = get_supplier_name($fromsupp);
     $dec = user_price_dec();
 
 	if ($currency == reserved_words::get_all())
@@ -75,8 +74,7 @@ function print_supplier_balances()
 
     $params =   array( 	0 => $comments,
     				    1 => array('text' => _('End Date'), 'from' => $to, 'to' => ''),
-    				    2 => array('text' => _('Supplier'), 'from' => get_supplier_name($fromsupp),
-                            'to' => get_supplier_name($tosupp)),
+    				    2 => array('text' => _('Supplier'), 'from' => $from, 'to' => ''),
     				    3 => array(  'text' => _('Currency'),'from' => $currency, 'to' => ''));
 
     $rep = new FrontReport(_('Supplier Balances'), "SupplierBalances.pdf", user_pagesize());
@@ -88,8 +86,10 @@ function print_supplier_balances()
 	$total = array();
 	$grandtotal = array();
 
-	$sql = "SELECT supplier_id, supp_name AS name, curr_code FROM ".TB_PREF."suppliers
-		WHERE supplier_id>=$fromsupp AND supplier_id<=$tosupp ORDER BY supp_name";
+	$sql = "SELECT supplier_id, supp_name AS name, curr_code FROM ".TB_PREF."suppliers ";
+	if ($fromsupp != reserved_words::get_all_numeric())
+		$sql .= "WHERE supplier_id=$fromsupp ";
+	$sql .= "ORDER BY supp_name";
 	$result = db_query($sql, "The customers could not be retrieved");
 	
 	while ($myrow=db_fetch($result)) 

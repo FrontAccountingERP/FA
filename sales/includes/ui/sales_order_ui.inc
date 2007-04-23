@@ -356,7 +356,7 @@ function display_delivery_details(&$order)
     echo "<table>";
     locations_list_row(_("Deliver from Location:"), 'Location', $order->Location);
 
-   	text_row(_("Required Delivery Date:"), 'delivery_date', $order->delivery_date, 14, 14);
+   	date_row(_("Required Delivery Date:"), 'delivery_date', $order->delivery_date, 0, 0, 0);
 
     text_row(_("Deliver To:"), 'deliver_to', $order->deliver_to, 40, 40);
 

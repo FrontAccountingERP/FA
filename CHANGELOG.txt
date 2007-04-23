@@ -1,0 +1,129 @@
+/**
+* @version $Id$
+* @package FrontAccounting
+* @copyright (C) 2005 - 2007 FrontAccounting
+* @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
+* FrontAccounting is Free Software
+*/
+
+1. Changelog
+------------
+This is a changelog for FrontAccounting All releases.
+
+Legend:
+
+# -> Bug Fix
++ -> Addition
+! -> Change
+- -> Removed
+! -> Note
+$ -> Affected files
+
+
+-------------------- 1.0.1 Stable Released ----------------------
+23-Apr-2007 Joe Hunt
+ ! Release 1.0.1 established on SourceForge, fixing the bugs and including a Date Picker,
+   the changes for selection lists customers/suppliers and the Audit Trail.
+
+22-Apr-2007 Joe Hunt
+ ! Changed the two selection lists for customers/suppliers in reports to a single one with
+   No Filter
+ ! Changed the sort order in these selection lists from id to name.
+ + Added Audit Trail in GL trans. A switch in config.php, $use_audit_trail, must be set to 1.
+ $ /reporting/reports_main.php
+   /reporting/rep101.php
+   /reporting/rep102.php
+   /reporting/rep201.php
+   /reporting/rep202.php
+   /reporting/rep203.php
+   /reporting/rep204.php
+   /reporting/includes/reports_classes.inc
+   /includes/ui/ui_lists.inc
+   /gl/includes/db/gl_db_trans.inc
+   config.php
+   
+22-Apr-2007 Joe Hunt
+ + Date Picker for all date fields.
+ $ config.php
+   /admin/fiscalyears.php
+   /admin/void_transaction.php
+   /includes/ui/ui_view.inc
+   /includes/ui/ui_input.inc
+   /dimensions/dimension_entry.php
+   /dimensions/search_dimensions.php
+   /gl/gl_journal.php
+   /gl/gl_deposit.php
+   /gl/gl_payment.php
+   /gl/bank_transfer.php
+   /gl/inquiry/bank_inquiry.php
+   /gl/inquiry/gl_account_inquiry.php
+   /gl/inquiry/gl_trial_balance.php
+   /gl/manage/exchange_rates.php
+   /inventory/adjustments.php
+   /inventory/transfers.php
+   /inventory/inquiry/stock_movements.php
+   /inventory/manage/items.php
+   /manufacturing/work_order_add_finished.php
+   /manufacturing/work_order_entry.php
+   /manufacturing/work_order_issue.php
+   /manufacturing/work_order_release.php
+   /purchasing/supplier_payment.php
+   /purchasing/po_entry_items.php
+   /purchasing/po_receive_items.php
+   /purchasing/supplier_credit.php
+   /purchasing/supplier_credit_grns.php
+   /purchasing/supplier_invoice.php
+   /purchasing/supplier_invoice_grns.php
+   /purchasing/supplier_trans_gl.php
+   /purchasing/includes/ui/po_ui.inc
+   /purchasing/inquity/po_search.php
+   /purchasing/inquiry/po_search_completed.php
+   /purchasing/inquiry/supplier_allocation_inquiry.php
+   /purchasing/inquiry/supplier_inquiry.php
+   /reporting/reports_main.php
+   /reporting/includes/reports_classes.inc
+   /sales/credit_note_entry.php
+   /sales/customer_credit_invoice.php
+   /sales/customer_payments.php
+   /sales/sales_order_entry.php
+   /sales/includes/ui/sales_order_ui.inc
+   /sales/inquiry/customer_allocation_inquiry.php
+   /sales/inquiry/customer_inquiry.php
+   /sales/inquiry/sales_orders_view.php
+   New image files:
+   /themes/default/images/cal.gif
+   /themes/default/images/next.gif
+   /themes/default/images/prev.gif
+
+19-Apr-2007 Joe Hunt
+ # Bug no 1703895, Account numbers are varchars, need quotes, fixed
+ # Bug no 1703891, Reserved MySQL words used as column names, fixed
+ $ /taxes/db/tax_types_db.inc
+
+ # Bug no 1703888, Apostrophes and other unescaped characters, fixed
+ $ /gl/manage/gl_accounts.php
+   /gl/includes/db/gl_db_accounts.inc
+   /includes/ui/ui_input.inc
+
+18-Apr-2007 Joe Hunt
+ # Bug no 1702594, Logon Loop, fixed
+ $ config.php
+
+-------------------- 1.0a Stable Released ----------------------
+10-Apr-2007 Joe Hunt
+ ! Release 1.0a established on SourceForge, fixing the bugs.
+
+11-Apr-2007 Joe Hunt
+ # Bug No 1698214, Creating Items, fixed
+ $ /includes/ui/ui_lists.inc
+ # Bug no 1698216, Item Movements, fixed
+ $ /inventory/manage/items.php
+
+-------------------- 1.0 Stable Released ----------------------
+10-Apr-2007 Joe Hunt
+ ! Release 1.0 established on SourceForge.
+
+2. Copyright and disclaimer
+---------------------------
+This application is opensource software released under the GPL.  Please
+see source code and the LICENSE file

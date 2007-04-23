@@ -6,10 +6,12 @@ $path_to_root="..";
 include_once($path_to_root . "/purchasing/includes/supp_trans_class.inc");
 include_once($path_to_root . "/includes/session.inc");
 
-page(_("Select Received Items to Add"));
-
 include_once($path_to_root . "/purchasing/includes/purchasing_ui.inc");
 include_once($path_to_root . "/purchasing/includes/purchasing_db.inc");
+$js = "";
+if ($use_date_picker)
+	$js .= get_js_date_picker();
+page(_("Select Received Items to Add"), false, false, "", $js);
 
 if (!isset($_SESSION['supp_trans']))
 {

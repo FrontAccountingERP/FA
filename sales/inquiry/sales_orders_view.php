@@ -9,6 +9,8 @@ include($path_to_root . "/sales/includes/sales_ui.inc");
 $js = "";
 if ($use_popup_windows)
 	$js .= get_js_open_window(900, 600);
+if ($use_date_picker)
+	$js .= get_js_date_picker();
 
 if (isset($_GET['OutstandingOnly']) && ($_GET['OutstandingOnly'] == true)) 
 {

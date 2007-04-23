@@ -130,12 +130,12 @@ function check_row($label, $name, $value, $submit_on_change=false)
 
 //-----------------------------------------------------------------------------------
 
-function labelheader_cell($label, $params="") // ändra till label_td
+function labelheader_cell($label, $params="") 
 {
 	echo "<td class='tableheader' $params>$label</td>\n";
 }
 
-function label_cell($label, $params="") // ändra till label_td
+function label_cell($label, $params="") 
 {
 	echo "<td $params>$label</td>\n";
 }
@@ -237,16 +237,25 @@ function text_row_ex($label, $name, $size, $max=null, $value=null, $params=null,
 
 function date_cells($label, $name, $init=null, $inc_days=0, $inc_months=0, $inc_years=0, $params=null)
 {
+	global $use_date_picker, $path_to_root;
 	if (!isset($_POST[$name]) || $_POST[$name] == "") 
 	{
 		if (!$init)
 		{
-			$_POST[$name] = date(user_date_display(), Mktime(0,0,0,date("m") + $inc_months,date("d") + $inc_days,date("Y") + $inc_years));
+			if ($inc_days == 1001)
+				$_POST[$name] = null;
+			else	
+				$_POST[$name] = date(user_date_display(), Mktime(0,0,0,date("m") + $inc_months,date("d") + $inc_days,date("Y") + $inc_years));
 		}		
 		else
 			$_POST[$name] = $init;
 	}
-	text_cells_ex($label, $name, 9, 12, $_POST[$name], $params);
+	if ($use_date_picker)
+		$post_label = "<a href=\"javascript:date_picker('document.forms[0].$name', document.forms[0].$name.value);\">"
+		. "	<img src='$path_to_root/themes/default/images/cal.gif' width='16' height='16' border='0' alt='"._('Click Here to Pick up the date')."'></a>\n";
+	else
+		$post_label = "";
+	text_cells_ex($label, $name, 9, 12, $_POST[$name], $params, $post_label);
 }
 
 function date_row($label, $name, $init=null, $inc_days=0, $inc_months=0, $inc_years=0, $params=null)

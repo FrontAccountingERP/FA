@@ -6,14 +6,16 @@ include_once($path_to_root . "/includes/ui/items_cart.inc");
 
 include_once($path_to_root . "/includes/session.inc");
 
-page(_("Issue Items to Work Order"));
-
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
 
 include_once($path_to_root . "/manufacturing/includes/manufacturing_db.inc");
 include_once($path_to_root . "/manufacturing/includes/manufacturing_ui.inc");
 include_once($path_to_root . "/manufacturing/includes/work_order_issue_ui.inc");
+$js = "";
+if ($use_date_picker)
+	$js .= get_js_date_picker();
+page(_("Issue Items to Work Order"), false, false, "", $js);
 
 //-----------------------------------------------------------------------------------------------
 

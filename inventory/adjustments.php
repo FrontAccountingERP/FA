@@ -14,6 +14,8 @@ include_once($path_to_root . "/inventory/includes/inventory_db.inc");
 $js = "";
 if ($use_popup_windows)
 	$js .= get_js_open_window(800, 500);
+if ($use_date_picker)
+	$js .= get_js_date_picker();
 page(_("Item Adjustments Note"), false, false, "", $js);
 
 //-----------------------------------------------------------------------------------------------

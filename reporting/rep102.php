@@ -104,21 +104,20 @@ function print_aged_customer_analysis()
 
     $to = $_POST['PARAM_0'];
     $fromcust = $_POST['PARAM_1'];
-    $tocust = $_POST['PARAM_2'];
-    $currency = $_POST['PARAM_3'];
-	$summaryOnly = $_POST['PARAM_4'];
-    $graphics = $_POST['PARAM_5'];
-    $comments = $_POST['PARAM_6'];
+    $currency = $_POST['PARAM_2'];
+	$summaryOnly = $_POST['PARAM_3'];
+    $graphics = $_POST['PARAM_4'];
+    $comments = $_POST['PARAM_5'];
 	if ($graphics)
 	{
 		include_once($path_to_root . "reporting/includes/class.graphic.inc");
 		$pg = new graph();
 	}	
     
-	if ($fromcust == null)
-		$fromcust = 0;
-	if ($tocust == null)
-		$tocust = 0;
+	if ($fromcust == reserved_words::get_all_numeric())
+		$from = _('All');
+	else
+		$from = get_customer_name($fromcust);
     $dec = user_price_dec();
 
 	if ($summaryOnly == 1)
@@ -147,8 +146,7 @@ function print_aged_customer_analysis()
     
     $params =   array( 	0 => $comments,   
     					1 => array('text' => _('End Date'), 'from' => $to, 'to' => ''),
-    				    2 => array('text' => _('Customer'),	'from' => get_customer_name($fromcust),
-                            'to' => get_customer_name($tocust)),
+    				    2 => array('text' => _('Customer'),	'from' => $from, 'to' => ''),
     				    3 => array('text' => _('Currency'), 'from' => $currency, 'to' => ''),
                     	4 => array('text' => _('Type'),		'from' => $summary,'to' => ''));
 
@@ -163,8 +161,10 @@ function print_aged_customer_analysis()
 	$total = array();
 	$total[0] = $total[1] = $total[2] = $total[3] = $total[4] = 0.0;
 	
-	$sql = "SELECT debtor_no, name, curr_code FROM ".TB_PREF."debtors_master
-		WHERE debtor_no>=$fromcust AND debtor_no<=$tocust ORDER BY name";
+	$sql = "SELECT debtor_no, name, curr_code FROM ".TB_PREF."debtors_master ";
+	if ($fromcust != reserved_words::get_all_numeric())
+		$sql .= "WHERE debtor_no=$fromcust ";
+	$sql .= "ORDER BY name";
 	$result = db_query($sql, "The customers could not be retrieved");
 	
 	while ($myrow=db_fetch($result)) 

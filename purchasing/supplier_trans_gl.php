@@ -6,9 +6,12 @@ $path_to_root="..";
 include($path_to_root . "/purchasing/includes/supp_trans_class.inc");
 include($path_to_root . "/includes/session.inc");
 
-page(_("Add GL Items"));
-
 include($path_to_root . "/purchasing/includes/purchasing_ui.inc");
+$js = "";
+if ($use_date_picker)
+	$js .= get_js_date_picker();
+page(_("Add GL Items"), false, false, "", $js);
+
 
 if (!isset($_SESSION['supp_trans']))
 {

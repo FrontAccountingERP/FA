@@ -9,7 +9,10 @@ include_once($path_to_root . "/includes/session.inc");
 include_once($path_to_root . "/purchasing/includes/purchasing_ui.inc");
 include_once($path_to_root . "/purchasing/includes/purchasing_db.inc");
 
-page(_("Select Received Items to Add"));
+$js = "";
+if ($use_date_picker)
+	$js .= get_js_date_picker();
+page(_("Select Received Items to Add"), false, false, "", $js);
 
 
 if (!isset($_SESSION['supp_trans']))

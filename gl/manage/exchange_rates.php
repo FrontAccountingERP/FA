@@ -4,11 +4,14 @@ $page_security = 9;
 $path_to_root="../..";
 include_once($path_to_root . "/includes/session.inc");
 
-page(_("Exchange Rates"));
-
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/includes/banking.inc");
+
+$js = "";
+if ($use_date_picker)
+	$js .= get_js_date_picker();
+page(_("Exchange Rates"), false, false, "", $js);
 
 //---------------------------------------------------------------------------------------------
 

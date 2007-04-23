@@ -292,7 +292,7 @@ else
 
 text_row(_("Name:"), 'description', null, 52, 50);
 
-textarea_row(_('Description:'), 'long_description', null, 50, 3);
+textarea_row(_('Description:'), 'long_description', null, 45, 3);
 
 end_table();
 start_table("$table_style2 width=40%");

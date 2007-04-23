@@ -97,7 +97,7 @@ function display_po_header(&$order)
 	echo "</td><td valign=center>"; // outer table
 
 	echo "<table height='5'>";
-	// kolla det här?????????
+	// check this out?????????
 	//if (!isset($_POST['OrderDate']) || $_POST['OrderDate'] == "")
 	//	$_POST['OrderDate'] = $order->orig_order_date;
 	//if (!isset($_POST['OrderDate']) || $_POST['OrderDate'] == "")
@@ -106,7 +106,7 @@ function display_po_header(&$order)
 	//	if (!is_date_in_fiscalyear($_POST['OrderDate']))
 	//		$_POST['OrderDate'] = end_fiscalyear();
 	//}
-	text_row(_("Order Date:"), 'OrderDate', $_POST['OrderDate'], 12, 12);
+	date_row(_("Order Date:"), 'OrderDate', $_POST['OrderDate'], 0, 0, 0);
 
   	text_row(_("Supplier's Reference:"), 'Requisition', null, 16, 15);
 
@@ -307,7 +307,7 @@ function po_item_controls(&$order, $stock_id=null)
 	text_cells(null, 'qty', null, 13, 15);
 
 	label_cell($_POST['units']);
-	text_cells(null, 'req_del_date', null, 12, 12);
+	date_cells(null, 'req_del_date', null, 0, 0, 0);
 	text_cells(null, 'price', null, 15, 14);
 
 	//$line_total = $_POST['qty'] * $_POST['price'] * (1 - $_POST['Disc'] / 100);

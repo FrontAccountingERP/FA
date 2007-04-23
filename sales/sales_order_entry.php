@@ -15,6 +15,8 @@ include_once($path_to_root . "/sales/includes/sales_db.inc");
 $js = get_js_form_entry("StockID2", "stock_id", "qty");
 if ($use_popup_windows)
 	$js .= get_js_open_window(900, 500);
+if ($use_date_picker)
+	$js .= get_js_date_picker();
 
 if (isset($_GET['ModifyOrderNumber'])) 
 {

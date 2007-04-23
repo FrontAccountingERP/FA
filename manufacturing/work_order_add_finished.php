@@ -4,14 +4,17 @@ $page_security = 10;
 $path_to_root="..";
 include_once($path_to_root . "/includes/session.inc");
 
-page(_("Produce or Unassemble Finished Items From Work Order"));
-
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/db/inventory_db.inc");
 include_once($path_to_root . "/includes/manufacturing.inc");
 
 include_once($path_to_root . "/manufacturing/includes/manufacturing_db.inc");
 include_once($path_to_root . "/manufacturing/includes/manufacturing_ui.inc");
+
+$js = "";
+if ($use_date_picker)
+	$js .= get_js_date_picker();
+page(_("Produce or Unassemble Finished Items From Work Order"), false, false, "", $js);
 
 if (isset($_GET['trans_no']) && $_GET['trans_no'] != "")
 {

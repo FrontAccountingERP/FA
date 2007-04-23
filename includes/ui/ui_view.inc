@@ -620,6 +620,179 @@ function get_js_png_fix()
 		. "</script>\n";
 	return $js;
 }	
+
+function get_js_date_picker()
+{
+	global $dateseps, $path_to_root;
+	
+	$encoding = $_SESSION['language']->encoding;	// character encoding
+	$dir = $_SESSION['language']->dir;				// left to right, right to left
+	$how = user_date_format();						// 0 = us/ca, 1 = eu, au, nz, 2 = jp, sw
+	$sep = $dateseps[user_date_sep()];				// date separator
+	$wstart = ($how != 0);							// weekstart (sun = 0, mon = 1)
+	$width = 250;									// datepicker width
+	$height = 180;									// datepicker height
+	$path = "$path_to_root/themes/default/images/";	// path to images
+	$tbgcolor = "#4682b4"; 							// title backgrond
+	$tcolor = "white";								// title color
+	$wbgcolor = "#87cefa";							// weekdays background
+	$wcolor = "white";								// weekdays color
+	$cbgcolor = "#ffb6c1";							// current day background
+	$ebgcolor = "#dbeaf5";							// week-end background
+	$bgcolor = "white";								// normal background
+	$color = "darkblue";							// month day color
+	$gcolor = "#aaaaaa";							// prev/next month day color
+	$family = "tahoma,verdana";						// font-family
+	
+	$js = "\n<script type=\"text/javascript\">\n"
+		. "<!--\n"
+		. "function date_picker(nm, val) {\n"
+		. " var mons = ['"._('January')."', '"._('February')."', '"._('March')."', '"._('April')."', '"._('May')."', '"._('June')."',\n"
+		. "  '"._('July')."', '"._('August')."', '"._('Sebtember')."', '"._('October')."', '"._('November')."', '"._('December')."'];\n"
+		. " var wdays = ['"._('Su')."', '"._('Mo')."', '"._('Tu')."', '"._('We')."', '"._('Th')."', '"._('Fr')."', '"._('Sa')."'];\n"
+		. " var wstart = $wstart; // day of week starts from (normally 0 or 1)\n"
+		. " var _date = (val == null || val =='' ?  new Date() : str2dt(val));\n"
+		. " var _prev = new Date(_date);\n"
+		. " _prev.setMonth(_date.getMonth()-1);\n"
+		. " var _next = new Date(_date);\n"
+		. " _next.setMonth(_date.getMonth()+1);\n"
+		. " var _prevy = new Date(_date);\n"
+		. " _prevy.setFullYear(_date.getFullYear()-1);\n"
+		. " var _nexty = new Date(_date);\n"
+		. " _nexty.setFullYear(_date.getFullYear()+1);\n"
+		. " var _first = new Date(_date);\n"
+		. " _first.setDate(1);\n"
+		. " _first.setDate(1-(7+_first.getDay()-wstart)%7);\n"
+		. " var _last = new Date(_next);\n"
+		. " _last.setDate(0);\n"
+		. " var left = (screen.width - $width) / 2;\n"
+		. " var top = (screen.height - $height) / 2;\n"
+		. "	var buff = new String (\n"
+		. "\"<html dir='$dir'>\\n\"+\n"
+		. "\"<head>\\n\"+\n"
+		. "\"	<title>DatePicker</title>\\n\"+\n"
+		. "\"   <meta http-equiv='Content-type' content='text/html'; charset='$encoding'>\\n\"+\n"
+		. "\"	<style>\\n\"+\n"
+		. "\"	    body { background-color:$tbgcolor; margin:0; padding:0; font-family: $family; font-size: 13px; }\\n\"+\n"
+		. "\"	    select { font-size: 12px; }\\n\"+\n"
+		. "\"	    a { text-decoration: none; }\\n\"+\n"
+		. "\"	    a:hover { text-decoration: underline; }\\n\"+\n"
+		. "\"	    .tbg { background-color: $tbgcolor; color: $tcolor; font-size: 12px; font-weight: bold; text-align: center;}\\n\"+\n"
+		. "\"	    .wbg { background-color: $wbgcolor; color: $wcolor; font-size: 12px; text-align: right; }\\n\"+\n"
+		. "\"	    .cbg { background-color: $cbgcolor; font-size: 12px; text-align: right; }\\n\"+\n"
+		. "\"	    .ebg { background-color: $ebgcolor; font-size: 12px; text-align: right; }\\n\"+\n"
+		. "\"	    .bg { background-color: $bgcolor; font-size: 12px; text-align: right; }\\n\"+\n"
+		. "\"	    .c { color: $color; }\\n\"+\n"
+		. "\"	    .gc { color: $gcolor; }\\n\"+\n"
+		. "\"	</style>\\n\"+\n"
+		. "\"</head>\\n\"+\n"
+		. "\"<body>\\n\"+\n"
+		. "\"<table cellspacing=\\\"0\\\" border=\\\"0\\\" style=\\\"width:100%;\\\">\\n\"+\n"
+		. "\"<tr><td class=\\\"tbg\\\">\\n\"+\n"
+		. "\"<table cellspacing=\\\"1\\\" cellpadding=\\\"2\\\" border=\\\"0\\\" style=\\\"width:100%;\\\">\\n\"+\n"
+		. "\"<tr>\\n	<td class=\\\"tbg\\\"><a href=\\\"javascript:window.opener.date_picker('\"+\n"
+		. " nm+\"', '\"+ dt2dtstr(_prev)+\"');\\\">\"+\n"
+		. "\"<img src=\\\"".$path."prev.gif\\\" width=\\\"16\\\" height=\\\"16\\\" border=\\\"0\\\"\"+\n"
+		. "\" alt=\\\""._('previous month')."\\\"></a></td>\\n\"+\n"
+		. "\"	<td class=\\\"tbg\\\" colspan=\\\"5\\\">\"+\n"
+		. " mons[_date.getMonth()]+\"</td>\\n\"+\n"
+		. "\"	<td class=\\\"tbg\\\"><a href=\\\"javascript:window.opener.date_picker('\"\n"
+		. " +nm+\"', '\"+dt2dtstr(_next)+\"');\\\">\"+\n"
+		. "\"<img src=\\\"".$path."next.gif\\\" width=\\\"16\\\" height=\\\"16\\\" border=\\\"0\\\"\"+\n"
+		. "\" alt=\\\""._('next month')."\\\"></a></td>\\n</tr>\\n\"+\n"
+		. "\"<tr>\\n	<td class=\\\"tbg\\\"><a href=\\\"javascript:window.opener.date_picker('\"+\n"
+		. " nm+\"', '\"+ dt2dtstr(_prevy)+\"');\\\">\"+\n"
+		. "\"<img src=\\\"".$path."prev.gif\\\" width=\\\"16\\\" height=\\\"16\\\" border=\\\"0\\\"\"+\n"
+		. "\" alt=\\\""._('previous year')."\\\"></a></td>\\n\"+\n"
+		. "\"	<td class=\\\"tbg\\\" colspan=\\\"5\\\">\"+\n"
+		. " _date.getFullYear()+\"</td>\\n\"+\n"
+		. "\"	<td class=\\\"tbg\\\"><a href=\\\"javascript:window.opener.date_picker('\"\n"
+		. " +nm+\"', '\"+dt2dtstr(_nexty)+\"');\\\">\"+\n"
+		. "\"<img src=\\\"".$path."next.gif\\\" width=\\\"16\\\" height=\\\"16\\\" border=\\\"0\\\"\"+\n"
+		. "\" alt=\\\""._('next year')."\\\"></a></td>\\n</tr>\\n\"\n"
+		. ");\n"
+		. " var _current = new Date(_first);\n"
+		. " // weekdays titles\n"
+		. " buff += \"<tr>\\n\";\n"
+		. " for (var n=0; n<7; n++)\n"
+		. "  buff += \"	<td class=\\\"wbg\\\">\"+\n"
+		. " wdays[(wstart+n)%7]+\"</td>\\n\";\n"
+		. " // calendar table\n"
+		. " buff += \"</tr>\\n\";\n"
+		. " for (var i=0; i<6; i++) {\n"
+		. "  // row heder\n"
+		. "  buff += \"<tr>\\n\";\n"
+		. "  for (var n=0; n<7; n++) {\n"
+		. "   if (_current.getDate() == _date.getDate() &&\n"
+		. "    _current.getMonth() == _date.getMonth())\n"
+		. "    // current date\n"
+		. "	   buff += \"	<td class=\\\"cbg\\\">\";\n"
+		. "	  else if (_current.getDay() == 0 || _current.getDay() == 6)\n"
+		. "	   // weekend days\n"
+		. "    buff += \"	<td class=\\\"ebg\\\">\";\n"
+		. "   else\n"
+		. "    // working days of current month\n"
+		. "	   buff += \"	<td class=\\\"bg\\\">\";\n"
+		. "	  if (_current.getMonth() == _date.getMonth())\n"
+		. "    // days of current month\n"
+		. "    buff += \"<a href=\\\"javascript:window.opener.\"+nm+\n"
+		. "		\".value='\"+dt2dtstr(_current)+\"'; window.close();\\\">\"+\n"
+		. "		\"<span class=\\\"c\\\">\";\n"
+		. "   else\n" 
+		. "    // days of other months\n"
+		. "    buff += \"<a href=\\\"javascript:window.opener.\"+nm+\n"
+		. "		\".value='\"+dt2dtstr(_current)+\"'; window.close();\\\">\"+\n"
+		. "		\"<span class=\\\"gc\\\">\";\n"
+		. "   buff += _current.getDate()+\"</span></a></td>\\n\";\n"
+		. "   _current.setDate(_current.getDate()+1);\n"
+		. "  }\n"
+		. "  // row footer\n"
+		. "  buff += \"</tr>\\n\";\n"
+		. " }\n"
+		. " // picker footer\n"
+		. " buff +=\n"
+		. " \"</table>\\n\" +\n"
+		. " \"</tr>\\n</td>\\n</table>\\n\" +\n"
+		. " \"</body>\\n\" +\n"
+		. " \"</html>\\n\";\n"
+		. "	var picker = window.open('', 'DatePicker',\n" 
+		. "  'width=$width,height=$height,status=no,resizable=yes,top='+top+',left='+left+'');\n"
+		. " picker.opener = self;\n"
+		. " var _doc = picker.document;\n"
+		. " _doc.write (buff);\n"
+		. " _doc.close();\n"
+		. "}\n"
+		. "// datetime parsing and formatting routimes. modify them if you wish other datetime format\n"
+		. "function str2dt (val) {\n"
+		. " var re_date = /^(\\d+)\\".$sep."(\\d+)\\".$sep."(\\d+)+$/;\n"
+		. " if (!re_date.exec(val))\n"
+		. "  return alert('"._('Invalid Datetime format').": '+ val);\n";
+	if ($how == 0)	
+		$js .= " return (new Date (RegExp.$3, RegExp.$1-1, RegExp.$2));\n";
+	elseif ($how == 1)		
+		$js .= " return (new Date (RegExp.$3, RegExp.$2-1, RegExp.$1));\n";
+	else	
+		$js .= " return (new Date (RegExp.$1, RegExp.$2-1, RegExp.$3));\n";
+	$js .= "}\n"
+		. "function dt2dtstr (_date) {\n"
+		. " var da = new String(_date.getDate());\n"
+		. " var mo = new String(_date.getMonth()+1);\n"
+		. " var yr = _date.getFullYear();\n"
+		. " if (da.length < 2)\n"
+		. "  da = '0'+da;\n"
+		. " if (mo.length < 2)\n"
+		. "  mo = '0'+mo;\n";
+	if ($how == 0)	
+		$js .= " return (new String (mo+'$sep'+da+'$sep'+yr));\n";
+	elseif ($how == 1)	
+		$js .= " return (new String (da+'$sep'+mo+'$sep'+yr));\n";
+	else	
+		$js .= " return (new String (yr+'$sep'+mo+'$sep'+da));\n";
+	$js .= "}\n"
+		. "-->\n"
+		. "</script>\n";
+	return $js;	
+}
 	
 function alert($msg)
 {

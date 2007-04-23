@@ -52,14 +52,13 @@ function print_payment_report()
 
     $to = $_POST['PARAM_0'];
     $fromsupp = $_POST['PARAM_1'];
-    $tosupp = $_POST['PARAM_2'];
-    $currency = $_POST['PARAM_3'];
-    $comments = $_POST['PARAM_4'];
+    $currency = $_POST['PARAM_2'];
+    $comments = $_POST['PARAM_3'];
 
-	if ($fromsupp == null)
-		$fromsupp = 0;
-	if ($tosupp == null)
-		$tosupp = 0;
+	if ($fromsupp == reserved_words::get_all_numeric())
+		$from = _('All');
+	else
+		$from = get_supplier_name($fromsupp);
 	    
     $dec = user_price_dec();
 
@@ -80,8 +79,7 @@ function print_payment_report()
 
     $params =   array( 	0 => $comments,
     				    1 => array('text' => _('End Date'), 'from' => $to, 'to' => ''),
-    				    2 => array('text' => _('Supplier'), 'from' => get_supplier_name($fromsupp),
-                            'to' => get_supplier_name($tosupp)),
+    				    2 => array('text' => _('Supplier'), 'from' => $from, 'to' => ''),
     				    3 => array(  'text' => _('Currency'),'from' => $currency, 'to' => ''));
 
     $rep = new FrontReport(_('Payment Report'), "PaymentReport.pdf", user_pagesize());
@@ -94,7 +92,10 @@ function print_payment_report()
 	$grandtotal = array();
 
 	$sql = "SELECT supplier_id, supp_name AS name, curr_code, ".TB_PREF."payment_terms.terms FROM ".TB_PREF."suppliers, ".TB_PREF."payment_terms
-		WHERE supplier_id>=$fromsupp AND supplier_id<=$tosupp AND ".TB_PREF."suppliers.payment_terms = ".TB_PREF."payment_terms.terms_indicator 
+		WHERE ";
+	if ($fromsupp != reserved_words::get_all_numeric())
+		$sql .= "supplier_id=$fromsupp AND ";
+	$sql .= "".TB_PREF."suppliers.payment_terms = ".TB_PREF."payment_terms.terms_indicator 
 		ORDER BY supp_name";
 	$result = db_query($sql, "The customers could not be retrieved");
 	

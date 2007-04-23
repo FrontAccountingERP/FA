@@ -52,10 +52,10 @@
 	// Main Title
 	$app_title = "FrontAccounting";
     // application version
-    $version 		= "1.0a";
+    $version 		= "1.0.1";
 
     // Build for development purposes
-    $build_version 	= "12";
+    $build_version 	= "15";
 
 	// Powered by
 	$power_by 		= "FrontAccounting";
@@ -63,8 +63,15 @@
 
 	/* use popup windows for views */
 	$use_popup_windows = 1;
+
     /*Stock units array*/
 	$stock_units 	= array(_("ea."), _("m"), _("kgg"), _("tons"), _("l"), _("lbs"), _("dozen"), _("pack"), _("hrs"));
+
+	/* use date picker for all date fields */
+	$use_date_picker = 1;
+
+	/* use Audit Trails in GL */
+	$use_audit_trail = 0;
 
 	$dateformats 	= array("MMDDYYYY", "DDMMYYYY", "YYYYMMDD");
 	$dateseps 		= array("/", ".", "-", " ");

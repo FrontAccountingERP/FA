@@ -19,7 +19,7 @@ include_once($path_to_root . "gl/includes/gl_db.inc");
 // trial_inquiry_controls();
 print_outstanding_GRN();
 
-function getTransactions($fromsupp, $tosupp)
+function getTransactions($fromsupp)
 {
 	$sql = "SELECT ".TB_PREF."grn_batch.id,
 			order_no,
@@ -39,10 +39,10 @@ function getTransactions($fromsupp, $tosupp)
 		WHERE ".TB_PREF."grn_batch.supplier_id=".TB_PREF."suppliers.supplier_id
 		AND ".TB_PREF."grn_batch.id = ".TB_PREF."grn_items.grn_batch_id
 		AND ".TB_PREF."grn_items.po_detail_item = ".TB_PREF."purch_order_details.po_detail_item
-		AND qty_recd-quantity_inv <>0
-		AND ".TB_PREF."grn_batch.supplier_id >='" . $fromsupp . "'
-		AND ".TB_PREF."grn_batch.supplier_id <='" . $tosupp . "'
-		ORDER BY ".TB_PREF."grn_batch.supplier_id, 
+		AND qty_recd-quantity_inv <>0 ";
+	if ($fromsupp != reserved_words::get_all_numeric())
+		$sql .= "AND ".TB_PREF."grn_batch.supplier_id ='" . $fromsupp . "' ";
+	$sql .= "ORDER BY ".TB_PREF."grn_batch.supplier_id, 
 			".TB_PREF."grn_batch.id";
 
     return db_query($sql, "No transactions were returned");
@@ -57,13 +57,12 @@ function print_outstanding_GRN()
     include_once($path_to_root . "reporting/includes/pdf_report.inc");
 
     $fromsupp = $_POST['PARAM_0'];
-    $tosupp = $_POST['PARAM_1'];
-    $comments = $_POST['PARAM_2'];
+    $comments = $_POST['PARAM_1'];
     
-	if ($fromsupp == null)
-		$fromsupp = 0;
-	if ($tosupp == null)
-		$tosupp = 0;
+	if ($fromsupp == reserved_words::get_all_numeric())
+		$from = _('All');
+	else
+		$from = get_supplier_name($fromsupp);
     $dec = user_price_dec();
 
 	$cols = array(0, 40, 80, 190,	250, 320, 385, 450,	515);
@@ -74,8 +73,7 @@ function print_outstanding_GRN()
 	$aligns = array('left',	'left',	'left',	'right', 'right', 'right', 'right', 'right');
 
     $params =   array( 	0 => $comments,
-    				    1 => array('text' => _('Supplier'), 'from' => get_supplier_name($fromsupp),
-                            'to' => get_supplier_name($tosupp)));
+    				    1 => array('text' => _('Supplier'), 'from' => $from, 'to' => ''));
 
     $rep = new FrontReport(_('Outstanding GRNs Report'), "OutstandingGRN.pdf", user_pagesize());
 
@@ -86,7 +84,7 @@ function print_outstanding_GRN()
 	$Tot_Val=0;
 	$Supplier = '';
 	$SuppTot_Val=0;
-	$res = getTransactions($fromsupp, $tosupp);
+	$res = getTransactions($fromsupp);
 	
 	While ($GRNs = db_fetch($res))
 	{	

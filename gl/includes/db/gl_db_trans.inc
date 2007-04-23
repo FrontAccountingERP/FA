@@ -10,6 +10,8 @@
 function add_gl_trans($type, $trans_id, $date_, $account, $dimension, $dimension2, $memo_,
 	$amount, $currency=null, $person_type_id=null, $person_id=null,	$err_msg="")
 {
+	global $use_audit_trail;
+	
 	$date = date2sql($date_);
 	if ($currency != null)
 		$amount_in_home_currency = to_home_currency($amount, $currency, $date_);
@@ -19,6 +21,13 @@ function add_gl_trans($type, $trans_id, $date_, $account, $dimension, $dimension
 		$dimension = 0;
 	if ($dimension2 == null || $dimension2 < 0)
 		$dimension2 = 0;
+	if (isset($use_audit_trail) && $use_audit_trail)
+	{
+		if ($memo_ == "" || $memo_ == null)
+			$memo_ = $_SESSION["wa_current_user"]->username;
+		else
+			$memo_ = $_SESSION["wa_current_user"]->username . " - " . $memo_;
+	}		
 	$sql = "INSERT INTO ".TB_PREF."gl_trans ( type, type_no, tran_date,
 		account, dimension_id, dimension2_id, memo_, amount";
 

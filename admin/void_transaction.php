@@ -4,13 +4,15 @@ $path_to_root="..";
 $page_security = 14;
 include_once($path_to_root . "/includes/session.inc");
 
-page(_("Void a Transaction"));
-
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
 
 include_once($path_to_root . "/admin/db/voiding_db.inc");
+$js = "";
+if ($use_date_picker)
+	$js .= get_js_date_picker();
+page(_("Void a Transaction"), false, false, "", $js);
 
 //----------------------------------------------------------------------------------------
 

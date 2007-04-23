@@ -5,14 +5,17 @@ $page_security = 10;
 $path_to_root="..";
 include_once($path_to_root . "/includes/session.inc");
 
-page(_("Dimension Entry"));
-
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/manufacturing.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
 
 include_once($path_to_root . "/dimensions/includes/dimensions_db.inc");
 include_once($path_to_root . "/dimensions/includes/dimensions_ui.inc");
+
+$js = "";
+if ($use_date_picker)
+	$js .= get_js_date_picker();
+page(_("Dimension Entry"), false, false, "", $js);
 
 //---------------------------------------------------------------------------------------
 

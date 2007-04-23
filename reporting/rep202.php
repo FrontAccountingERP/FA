@@ -113,21 +113,20 @@ function print_aged_supplier_analysis()
 
     $to = $_POST['PARAM_0'];
     $fromsupp = $_POST['PARAM_1'];
-    $tosupp = $_POST['PARAM_2'];
-    $currency = $_POST['PARAM_3'];
-	$summaryOnly = $_POST['PARAM_4'];
-    $graphics = $_POST['PARAM_5'];
-    $comments = $_POST['PARAM_6'];
+    $currency = $_POST['PARAM_2'];
+	$summaryOnly = $_POST['PARAM_3'];
+    $graphics = $_POST['PARAM_4'];
+    $comments = $_POST['PARAM_5'];
 	if ($graphics)
 	{
 		include_once($path_to_root . "reporting/includes/class.graphic.inc");
 		$pg = new graph();
 	}	
     
-	if ($fromsupp == null)
-		$fromsupp = 0;
-	if ($tosupp == null)
-		$tosupp = 0;
+	if ($fromsupp == reserved_words::get_all_numeric())
+		$from = _('All');
+	else
+		$from = get_supplier_name($fromsupp);
     $dec = user_price_dec();
 
 	if ($summaryOnly == 1)
@@ -156,8 +155,7 @@ function print_aged_supplier_analysis()
 
     $params =   array( 	0 => $comments,
     				    1 => array('text' => _('End Date'), 'from' => $to, 'to' => ''),
-    				    2 => array('text' => _('Supplier'), 'from' => get_supplier_name($fromsupp),
-                            'to' => get_supplier_name($tosupp)),
+    				    2 => array('text' => _('Supplier'), 'from' => $from, 'to' => ''),
     				    3 => array('text' => _('Currency'),'from' => $currency,'to' => ''),
                     	4 => array('text' => _('Type'), 'from' => $summary,'to' => ''));
 
@@ -178,8 +176,10 @@ function print_aged_supplier_analysis()
 	$pastdue1 = $PastDueDays1 + 1 . "-" . $PastDueDays2 . " " . _('Days');
 	$pastdue2 = _('Over') . " " . $PastDueDays2 . " " . _('Days');
 	
-	$sql = "SELECT supplier_id, supp_name AS name, curr_code FROM ".TB_PREF."suppliers
-		WHERE supplier_id>=$fromsupp AND supplier_id<=$tosupp ORDER BY name";
+	$sql = "SELECT supplier_id, supp_name AS name, curr_code FROM ".TB_PREF."suppliers ";
+	if ($fromsupp != reserved_words::get_all_numeric())
+		$sql .= "WHERE supplier_id=$fromsupp ";
+	$sql .= "ORDER BY supp_name";
 	$result = db_query($sql, "The suppliers could not be retrieved");
 	
 	while ($myrow=db_fetch($result)) 

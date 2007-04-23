@@ -5,13 +5,17 @@ $path_to_root="../..";
 
 include_once($path_to_root . "/includes/session.inc");
 
-page(_("Trial Balance"));
-
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
 
 include_once($path_to_root . "/gl/includes/gl_db.inc");
+
+$js = "";
+if ($use_date_picker)
+	$js = get_js_date_picker();
+
+page(_("Trial Balance"), false, false, "", $js);
 
 //----------------------------------------------------------------------------------------------------
 

@@ -85,7 +85,7 @@ class Report
 	}
 	function getDisplay() 
 	{
-		global $path_to_root;
+		global $path_to_root, $use_date_picker;
 		$st = "
 <script language='javascript'>
 	function displayReport_" . $this->id . "() {
@@ -152,8 +152,13 @@ class Report
 							$date = begin_month($bdate);
 						}
 					}	
-					//$st .= "<input type='text' name='RP_" . $this->id . "_$index' value='$date' onblur='javascript:checkDate(this)'>";
-					$st .= "<input type='text' name='RP_" . $this->id . "_$index' value='$date'>";
+					$name = "RP_" . $this->id . "_$index";			
+					//$st .= "<input type='text' name='$name' value='$date' onblur='javascript:checkDate(this)'>";
+					$st .= "<input type='text' name='$name' value='$date'>";
+					if ($use_date_picker)
+						$st .= "<a href=\"javascript:date_picker('document.forms[0].$name', document.forms[0].$name.value);\">"
+						. "	<img src='$path_to_root/themes/default/images/cal.gif' width='16' height='16' border='0' alt='"._('Click Here to Pick up the date')."'></a>\n";
+					
 					break;
 				case 'YES_NO':	
 					$sel = array(_('No'), _("Yes"));
@@ -215,15 +220,19 @@ class Report
 					break;
 				case 'CUSTOMERS_NO_FILTER':
 				case 'CUSTOMERS':
-					$sql = "SELECT debtor_no, name FROM ".TB_PREF."debtors_master ORDER BY debtor_no";
+					$sql = "SELECT debtor_no, name FROM ".TB_PREF."debtors_master ORDER BY name";
 					if ($param->param_type == 'CUSTOMERS_NO_FILTER')
 						$st .= dup_simple_codeandname_list($sql, "RP_" . $this->id . "_$index", $dummy, true, _("No Customer Filter"), true);
 					else	
 						$st .= dup_simple_codeandname_list($sql, "RP_" . $this->id . "_$index", $dummy);
 					break;
+				case 'SUPPLIERS_NO_FILTER':
 				case 'SUPPLIERS':
-					$sql = "SELECT supplier_id, supp_name FROM ".TB_PREF."suppliers ORDER BY supplier_id";
-					$st .= dup_simple_codeandname_list($sql, "RP_" . $this->id . "_$index", $dummy);
+					$sql = "SELECT supplier_id, supp_name FROM ".TB_PREF."suppliers ORDER BY supp_name";
+					if ($param->param_type == 'SUPPLIERS_NO_FILTER')
+						$st .= dup_simple_codeandname_list($sql, "RP_" . $this->id . "_$index", $dummy, true, _("No Supplier Filter"), true);
+					else	
+						$st .= dup_simple_codeandname_list($sql, "RP_" . $this->id . "_$index", $dummy);
 					break;
 				case 'INVOICE':
 					$IV = _("IV");
