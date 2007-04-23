@@ -197,6 +197,7 @@ INSERT INTO `0_cust_branch` VALUES (1, 1, 'Main', '', 1, 1, '', '', 'Lucky Luke 
 INSERT INTO `0_cust_branch` VALUES (2, 1, 'Branch 2', '', 1, 1, '', '', '', '', 'DEF', 3, '3000', '3000', '1500', '3200', 1, 0, 'Another Road');
 INSERT INTO `0_cust_branch` VALUES (3, 2, 'Main', '', 1, 1, '', '', 'Money Makers Ltd.', '', 'DEF', 3, '3000', '3000', '1500', '3200', 1, 0, '');
 INSERT INTO `0_cust_branch` VALUES (4, 2, 'Main', '', 1, 1, '', '', 'Money Makers Ltd.', '', 'DEF', 3, '3000', '3000', '1500', '3200', 1, 0, 'UK,UK');
+INSERT INTO `0_cust_branch` VALUES (5, 3, 'Main', '', 1, 1, '', '', 'Junk Beer ApS', '', 'DEF', 3, '3000', '3000', '1500', '3200', 1, 0, '');
 
 -- 
 -- Data in table `debtor_trans`

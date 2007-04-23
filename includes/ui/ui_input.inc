@@ -242,7 +242,7 @@ function date_cells($label, $name, $init=null, $inc_days=0, $inc_months=0, $inc_
 	{
 		if (!$init)
 		{
-			if ($inc_days == 1001)
+			if ($inc_years == 1001)
 				$_POST[$name] = null;
 			else	
 				$_POST[$name] = date(user_date_display(), Mktime(0,0,0,date("m") + $inc_months,date("d") + $inc_days,date("Y") + $inc_years));
