@@ -18,7 +18,7 @@
 
 body {
 	font-family: Verdana, Arial, Helvetica;
-	background: #528cab;
+	background: #60687b;
 	font-size: 10px;	
 	margin: 5px 0 0 5px;
 	padding: 0;
@@ -82,7 +82,7 @@ a:hover {
 }
 
 .main_page {
-	background-color: #f9f9f9;
+	background-color: #eff9f9;
 	border: none;
 	width: 100%;
 	margin: 0;
@@ -90,7 +90,7 @@ a:hover {
 }
 
 .quick_menu {
-	background-color: #528cab;
+	background-color: #60687b;
 	border: 0;
 	margin: 0;
 	padding: 0;
@@ -110,17 +110,17 @@ a:hover {
 
 .logoutBar {
 	padding-right: 1em; 
-	background: #d5b7a7; 
+	background: #e4ecec; 
 	color: black; 
-	border-bottom: 1px solid #c0b67c; 
+	border-bottom: 1px solid #cccccc; 
 	width: 100%;
 }
 
 .bottomBar {
 	padding-right: 1em; 
-	background: #d5b7a7; 
+	background: #e4ecec; 
 	color: black; 
-	border-bottom: 1px solid #c0b67c; 
+	border-bottom: 1px solid #cccccc; 
 	width: 100%;
 }
 
@@ -131,10 +131,10 @@ a:hover {
 
 .bottomBar2 {
 	padding-right: 1em; 
-	background: #d5b7a7; 
+	background: #e4ecec; 
 	color: black; 
-	border-top: 1px solid #c0b67c; 
-	border-bottom: 1px solid #c0b67c; 
+	border-top: 1px solid #cccccc; 
+	border-bottom: 1px solid #cccccc; 
 	width: 100%;
 }
 
@@ -144,9 +144,9 @@ a:hover {
 
 div.logoutBar {
 	padding-right: 1em; 
-	background: #d5b7a7; 
+	background: #e4ecec; 
 	color: black; 
-	border-bottom: 1px solid #c0b67c; 
+	border-bottom: 1px solid #cccccc; 
 	text-align: right;
 }
 div.logoutBar a {
@@ -164,11 +164,11 @@ div.tabs {
 	background: none transparent scroll repeat 0% 0%; 
 	white-space: nowrap; 
 	border-collapse: collapse; 	
-	border-bottom: 1px solid #c0b67c; 		
+	border-bottom: 1px solid #cccccc; 		
 
 }
 div.tabs a {
-	border: 1px solid #c0b67c; 
+	border: 1px solid #cccccc; 
 	padding: 0 1em 3px 1em; 
 	font-weight: normal; 
 	background: white scroll repeat 0% 0%; 
@@ -177,37 +177,37 @@ div.tabs a {
 	height: 1.0em;
 }
 div.tabs a.selected {
-	border-top: 1px solid #c0b67c; 
-	border-right: 1px solid #c0b67c; 
-	border-bottom: 1px solid #d5b7a7;
-	border-left: 1px solid #c0b67c; 
+	border-top: 1px solid #cccccc; 
+	border-right: 1px solid #cccccc; 
+	border-bottom: 1px solid #e4ecec;
+	border-left: 1px solid #cccccc; 
 	font-weight: normal; 
-	background: #d5b7a7; 
+	background: #e4ecec; 
 	color: #436976; 
 }
 div.tabs a:hover {
-	border-top-color: #c0b67c; 
-	border-right-color: #c0b67c
-	border-bottom-color: #d5b7a7; 
-	border-left-color: #c0b67c; 
-	background: #d5b7a7; 
+	border-top-color: #cccccc; 
+	border-right-color: #cccccc
+	border-bottom-color: #e4ecec; 
+	border-left-color: #cccccc; 
+	background: #e4ecec; 
 	color: #436976; 
 }
 
 .menu_group {
 	font-size: 13px;
 	padding: 0px;
-	color: #000000;
-	background-color: #d5b7a7;
+	color: #455372;
+	background-color: #e4ecec;
 	PADDING-LEFT: 3px; 
 	font-weight: bold;
 }
 
 .menu_group_items {
-	background-color: #f9f9f9;
+	background-color: #eff9f9;
 	font-weight: normal;
 	padding: 9px;
-	border: 1px solid #c0b67c;
+	border: 1px solid #cccccc;
 }
 
 #footer {
@@ -224,15 +224,15 @@ div.tabs a:hover {
 
 .tableheader {
 	font-weight: bold;
-	background-color: #c5d5a7;
-	color: black;
+	background-color: #788da1;
+	color: white;
 	text-align: center;
 }
 
 .tableheader2 {
 	font-weight: bold;
-	background-color: #c5d5a7;
-	color: black;
+	background-color: #788da1;
+	color: white;
 	text-align: left;
 }
 
@@ -243,25 +243,26 @@ div.tabs a:hover {
 .titletext {
 	font-weight: bold;
 	font-size: 13px;	
-	border-bottom: 1px solid #c0b67c;
+	color: #455372;
+	border-bottom: 1px solid #cccccc;
 	padding: 5px;
 }
 
 .headingtext {
 	font-weight: bold;
 	font-size: 13px;	
-	color: black;
+	color: #455372;
 }
 
 .headingtext2 {
 	font-size: 13px;	
-	color: black;
+	color: #455372;
 }
 
 .headingtext3 {
 	font-weight: bold;
 	font-size: 10px;	
-	color: black;
+	color: #455372;
 }
 
 .errortext {
@@ -277,15 +278,15 @@ div.tabs a:hover {
 }
 
 .oddrow {
-	background-color: #eeeeee;
+	background-color: #ffffff;
 }
 
 .evenrow {
-	background-color: #dddddd;
+	background-color: #eaedf1;
 }	
 
 .overduebg {
-	background-color: #dd7777;
+	background-color: pink;
 }	
 
 .overduefg {
@@ -323,7 +324,7 @@ div.tabs a:hover {
 
 .tablestyle {
 	padding: 3px;
-	border: 1 solid #c0b67c;
+	border: 1 solid #cccccc;
 	border-collapse: collapse;
 }	
 
