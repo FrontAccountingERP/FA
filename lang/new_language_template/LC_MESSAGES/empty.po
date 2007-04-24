@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FrontAccounting\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-04-04 10:12+0100\n"
-"Last-Translator: Joe Hunt Consulting <joe$frontaccounting.com>\n"
+"PO-Revision-Date: 2007-04-24 11:53+0100\n"
+"Last-Translator: Joe Hunt Consulting <joe@frontaccounting.com>\n"
 "Language-Team: Translators\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=iso-8859-1\n"
@@ -6231,17 +6231,6 @@ msgstr ""
 msgid "Reports and Analysis"
 msgstr ""
 
-# c:\Apache2\htdocs\account/reporting/reports_main.php:21
-# c:\Apache2\htdocs\account/reporting/reports_main.php:27
-# c:\Apache2\htdocs\account/sales/view/view_receipt.php:25
-msgid "From Customer"
-msgstr ""
-
-# c:\Apache2\htdocs\account/reporting/reports_main.php:22
-# c:\Apache2\htdocs\account/reporting/reports_main.php:28
-msgid "To Customer"
-msgstr ""
-
 # c:\Apache2\htdocs\account/reporting/reports_main.php:23
 # c:\Apache2\htdocs\account/reporting/reports_main.php:29
 # c:\Apache2\htdocs\account/reporting/reports_main.php:52
@@ -6320,11 +6309,6 @@ msgstr ""
 msgid "Print Statements"
 msgstr ""
 
-# c:\Apache2\htdocs\account/reporting/reports_main.php:57
-# c:\Apache2\htdocs\account/sales/manage/customers.php:7
-msgid "Customers"
-msgstr ""
-
 # c:\Apache2\htdocs\account/reporting/reports_main.php:60
 # c:\Apache2\htdocs\account/reporting/reports_main.php:67
 # c:\Apache2\htdocs\account/reporting/reports_main.php:99
@@ -6333,13 +6317,6 @@ msgstr ""
 
 # c:\Apache2\htdocs\account/reporting/reports_main.php:62
 msgid "Print Sales Orders"
-msgstr ""
-
-# c:\Apache2\htdocs\account/reporting/reports_main.php:73
-# c:\Apache2\htdocs\account/reporting/reports_main.php:79
-# c:\Apache2\htdocs\account/reporting/reports_main.php:86
-# c:\Apache2\htdocs\account/reporting/reports_main.php:91
-msgid "From Supplier"
 msgstr ""
 
 # c:\Apache2\htdocs\account/reporting/reports_main.php:77
@@ -7035,6 +7012,11 @@ msgstr ""
 msgid "Dissallow invoicing ?"
 msgstr ""
 
+# c:\Apache2\htdocs\account/reporting/reports_main.php:57
+# c:\Apache2\htdocs\account/sales/manage/customers.php:7
+msgid "Customers"
+msgstr ""
+
 # c:\Apache2\htdocs\account/sales/manage/customers.php:30
 msgid "The customer name cannot be empty."
 msgstr ""
@@ -7390,6 +7372,12 @@ msgstr ""
 # c:\Apache2\htdocs\account/sales/view/view_receipt.php:20
 # c:\Apache2\htdocs\account/includes/types.inc:12
 msgid "Customer Payment"
+msgstr ""
+
+# c:\Apache2\htdocs\account/reporting/reports_main.php:21
+# c:\Apache2\htdocs\account/reporting/reports_main.php:27
+# c:\Apache2\htdocs\account/sales/view/view_receipt.php:25
+msgid "From Customer"
 msgstr ""
 
 # c:\Apache2\htdocs\account/sales/view/view_receipt.php:26
@@ -7890,6 +7878,98 @@ msgstr ""
 msgid "Left to Allocate:"
 msgstr ""
 
+# c:\Apache2\htdocs\account/includes/ui/ui_view.inc:650
+msgid "January"
+msgstr ""
+
+# c:\Apache2\htdocs\account/includes/ui/ui_view.inc:650
+msgid "February"
+msgstr ""
+
+# c:\Apache2\htdocs\account/includes/ui/ui_view.inc:650
+msgid "March"
+msgstr ""
+
+# c:\Apache2\htdocs\account/includes/ui/ui_view.inc:650
+msgid "April"
+msgstr ""
+
+# c:\Apache2\htdocs\account/includes/ui/ui_view.inc:650
+msgid "May"
+msgstr ""
+
+# c:\Apache2\htdocs\account/includes/ui/ui_view.inc:650
+msgid "June"
+msgstr ""
+
+# c:\Apache2\htdocs\account/includes/ui/ui_view.inc:651
+msgid "July"
+msgstr ""
+
+# c:\Apache2\htdocs\account/includes/ui/ui_view.inc:651
+msgid "August"
+msgstr ""
+
+# c:\Apache2\htdocs\account/includes/ui/ui_view.inc:651
+msgid "September"
+msgstr ""
+
+# c:\Apache2\htdocs\account/includes/ui/ui_view.inc:651
+msgid "October"
+msgstr ""
+
+# c:\Apache2\htdocs\account/includes/ui/ui_view.inc:651
+msgid "November"
+msgstr ""
+
+# c:\Apache2\htdocs\account/includes/ui/ui_view.inc:651
+msgid "December"
+msgstr ""
+
+# c:\Apache2\htdocs\account/includes/ui/ui_view.inc:652
+msgid "Su"
+msgstr ""
+
+# c:\Apache2\htdocs\account/includes/ui/ui_view.inc:652
+msgid "Mo"
+msgstr ""
+
+# c:\Apache2\htdocs\account/includes/ui/ui_view.inc:652
+msgid "Tu"
+msgstr ""
+
+# c:\Apache2\htdocs\account/includes/ui/ui_view.inc:652
+msgid "We"
+msgstr ""
+
+# c:\Apache2\htdocs\account/includes/ui/ui_view.inc:652
+msgid "Th"
+msgstr ""
+
+# c:\Apache2\htdocs\account/includes/ui/ui_view.inc:652
+msgid "Fr"
+msgstr ""
+
+# c:\Apache2\htdocs\account/includes/ui/ui_view.inc:652
+msgid "Sa"
+msgstr ""
+
+# c:\Apache2\htdocs\account/includes/ui/ui_view.inc:696
+msgid "previous month"
+msgstr ""
+
+# c:\Apache2\htdocs\account/includes/ui/ui_view.inc:702
+msgid "next month"
+msgstr ""
+
+# c:\Apache2\htdocs\account/includes/ui/ui_view.inc:706
+msgid "previous year"
+msgstr ""
+
+# c:\Apache2\htdocs\account/includes/ui/ui_view.inc:712
+msgid "next year"
+msgstr ""
+
 # c:\Apache2\htdocs\account/inventory/includes/item_adjustments_ui.inc:17
 # c:\Apache2\htdocs\account/inventory/includes/stock_transfers_ui.inc:17
 # c:\Apache2\htdocs\account/manufacturing/includes/work_order_issue_ui.inc:17
@@ -8276,6 +8356,10 @@ msgstr ""
 
 # c:\Apache2\htdocs\account/reporting/includes/reports_classes.inc:216
 msgid "No Customer Filter"
+msgstr ""
+
+# c:\Apache2\htdocs\account/reporting/includes/reports_classes.inc:233
+msgid "No Supplier Filter"
 msgstr ""
 
 # c:\Apache2\htdocs\account/reporting/includes/reports_classes.inc:225

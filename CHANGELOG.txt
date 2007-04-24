@@ -50,7 +50,7 @@ $ -> Affected files
    /includes/ui/ui_view.inc
    /includes/ui/ui_input.inc
    /dimensions/dimension_entry.php
-   /dimensions/search_dimensions.php
+   /dimensions/inquiry/search_dimensions.php
    /gl/gl_journal.php
    /gl/gl_deposit.php
    /gl/gl_payment.php
