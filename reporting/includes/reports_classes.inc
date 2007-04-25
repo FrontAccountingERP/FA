@@ -156,7 +156,7 @@ class Report
 					//$st .= "<input type='text' name='$name' value='$date' onblur='javascript:checkDate(this)'>";
 					$st .= "<input type='text' name='$name' value='$date'>";
 					if ($use_date_picker)
-						$st .= "<a href=\"javascript:date_picker('document.forms[0].$name', document.forms[0].$name.value);\">"
+						$st .= "<a href=\"javascript:date_picker(document.forms[0].$name);\">"
 						. "	<img src='$path_to_root/themes/default/images/cal.gif' width='16' height='16' border='0' alt='"._('Click Here to Pick up the date')."'></a>\n";
 					
 					break;

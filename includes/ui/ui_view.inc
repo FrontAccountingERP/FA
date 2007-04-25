@@ -623,177 +623,365 @@ function get_js_png_fix()
 
 function get_js_date_picker()
 {
-	global $dateseps, $path_to_root;
+	global $dateseps;
+	//global $dateseps $path_to_root;
 	
-	$encoding = $_SESSION['language']->encoding;	// character encoding
-	$dir = $_SESSION['language']->dir;				// left to right, right to left
-	$how = user_date_format();						// 0 = us/ca, 1 = eu, au, nz, 2 = jp, sw
-	$sep = $dateseps[user_date_sep()];				// date separator
-	$wstart = ($how != 0);							// weekstart (sun = 0, mon = 1)
-	$width = 250;									// datepicker width
-	$height = 180;									// datepicker height
-	$path = "$path_to_root/themes/default/images/";	// path to images
-	$tbgcolor = "#4682b4"; 							// title backgrond
-	$tcolor = "white";								// title color
-	$wbgcolor = "#87cefa";							// weekdays background
-	$wcolor = "white";								// weekdays color
-	$cbgcolor = "#ffb6c1";							// current day background
-	$ebgcolor = "#dbeaf5";							// week-end background
-	$bgcolor = "white";								// normal background
-	$color = "darkblue";							// month day color
-	$gcolor = "#aaaaaa";							// prev/next month day color
-	$family = "tahoma,verdana";						// font-family
-	
-	$js = "\n<script type=\"text/javascript\">\n"
-		. "<!--\n"
-		. "function date_picker(nm, val) {\n"
-		. " var mons = ['"._("January")."', '"._("February")."', '"._("March")."', '"._("April")."', '"._("May")."', '"._("June")."',\n"
-		. "  '"._("July")."', '"._("August")."', '"._("September")."', '"._("October")."', '"._("November")."', '"._("December")."'];\n"
-		. " var wdays = ['"._("Su")."', '"._("Mo")."', '"._("Tu")."', '"._("We")."', '"._("Th")."', '"._("Fr")."', '"._("Sa")."'];\n"
-		. " var wstart = $wstart; // day of week starts from (normally 0 or 1)\n"
-		. " var _date = (val == null || val =='' ?  new Date() : str2dt(val));\n"
-		. " var _prev = new Date(_date);\n"
-		. " _prev.setMonth(_date.getMonth()-1);\n"
-		. " var _next = new Date(_date);\n"
-		. " _next.setMonth(_date.getMonth()+1);\n"
-		. " var _prevy = new Date(_date);\n"
-		. " _prevy.setFullYear(_date.getFullYear()-1);\n"
-		. " var _nexty = new Date(_date);\n"
-		. " _nexty.setFullYear(_date.getFullYear()+1);\n"
-		. " var _first = new Date(_date);\n"
-		. " _first.setDate(1);\n"
-		. " _first.setDate(1-(7+_first.getDay()-wstart)%7);\n"
-		. " var _last = new Date(_next);\n"
-		. " _last.setDate(0);\n"
-		. " var left = (screen.width - $width) / 2;\n"
-		. " var top = (screen.height - $height) / 2;\n"
-		. "	var buff = new String (\n"
-		. "\"<html dir='$dir'>\\n\"+\n"
-		. "\"<head>\\n\"+\n"
-		. "\"	<title>DatePicker</title>\\n\"+\n"
-		. "\"   <meta http-equiv='Content-type' content='text/html'; charset='$encoding'>\\n\"+\n"
-		. "\"	<style>\\n\"+\n"
-		. "\"	    body { background-color:$tbgcolor; margin:0; padding:0; font-family: $family; font-size: 13px; }\\n\"+\n"
-		. "\"	    select { font-size: 12px; }\\n\"+\n"
-		. "\"	    a { text-decoration: none; }\\n\"+\n"
-		. "\"	    a:hover { text-decoration: underline; }\\n\"+\n"
-		. "\"	    .tbg { background-color: $tbgcolor; color: $tcolor; font-size: 12px; font-weight: bold; text-align: center;}\\n\"+\n"
-		. "\"	    .wbg { background-color: $wbgcolor; color: $wcolor; font-size: 12px; text-align: right; }\\n\"+\n"
-		. "\"	    .cbg { background-color: $cbgcolor; font-size: 12px; text-align: right; }\\n\"+\n"
-		. "\"	    .ebg { background-color: $ebgcolor; font-size: 12px; text-align: right; }\\n\"+\n"
-		. "\"	    .bg { background-color: $bgcolor; font-size: 12px; text-align: right; }\\n\"+\n"
-		. "\"	    .c { color: $color; }\\n\"+\n"
-		. "\"	    .gc { color: $gcolor; }\\n\"+\n"
-		. "\"	</style>\\n\"+\n"
-		. "\"</head>\\n\"+\n"
-		. "\"<body>\\n\"+\n"
-		. "\"<table cellspacing=\\\"0\\\" border=\\\"0\\\" style=\\\"width:100%;\\\">\\n\"+\n"
-		. "\"<tr><td class=\\\"tbg\\\">\\n\"+\n"
-		. "\"<table cellspacing=\\\"1\\\" cellpadding=\\\"2\\\" border=\\\"0\\\" style=\\\"width:100%;\\\">\\n\"+\n"
-		. "\"<tr>\\n	<td class=\\\"tbg\\\"><a href=\\\"javascript:window.opener.date_picker('\"+\n"
-		. " nm+\"', '\"+ dt2dtstr(_prev)+\"');\\\">\"+\n"
-		. "\"<img src=\\\"".$path."prev.gif\\\" width=\\\"16\\\" height=\\\"16\\\" border=\\\"0\\\"\"+\n"
-		. "\" alt=\\\""._("previous month")."\\\"></a></td>\\n\"+\n"
-		. "\"	<td class=\\\"tbg\\\" colspan=\\\"5\\\">\"+\n"
-		. " mons[_date.getMonth()]+\"</td>\\n\"+\n"
-		. "\"	<td class=\\\"tbg\\\"><a href=\\\"javascript:window.opener.date_picker('\"\n"
-		. " +nm+\"', '\"+dt2dtstr(_next)+\"');\\\">\"+\n"
-		. "\"<img src=\\\"".$path."next.gif\\\" width=\\\"16\\\" height=\\\"16\\\" border=\\\"0\\\"\"+\n"
-		. "\" alt=\\\""._("next month")."\\\"></a></td>\\n</tr>\\n\"+\n"
-		. "\"<tr>\\n	<td class=\\\"tbg\\\"><a href=\\\"javascript:window.opener.date_picker('\"+\n"
-		. " nm+\"', '\"+ dt2dtstr(_prevy)+\"');\\\">\"+\n"
-		. "\"<img src=\\\"".$path."prev.gif\\\" width=\\\"16\\\" height=\\\"16\\\" border=\\\"0\\\"\"+\n"
-		. "\" alt=\\\""._("previous year")."\\\"></a></td>\\n\"+\n"
-		. "\"	<td class=\\\"tbg\\\" colspan=\\\"5\\\">\"+\n"
-		. " _date.getFullYear()+\"</td>\\n\"+\n"
-		. "\"	<td class=\\\"tbg\\\"><a href=\\\"javascript:window.opener.date_picker('\"\n"
-		. " +nm+\"', '\"+dt2dtstr(_nexty)+\"');\\\">\"+\n"
-		. "\"<img src=\\\"".$path."next.gif\\\" width=\\\"16\\\" height=\\\"16\\\" border=\\\"0\\\"\"+\n"
-		. "\" alt=\\\""._("next year")."\\\"></a></td>\\n</tr>\\n\"\n"
-		. ");\n"
-		. " var _current = new Date(_first);\n"
-		. " // weekdays titles\n"
-		. " buff += \"<tr>\\n\";\n"
-		. " for (var n=0; n<7; n++)\n"
-		. "  buff += \"	<td class=\\\"wbg\\\">\"+\n"
-		. " wdays[(wstart+n)%7]+\"</td>\\n\";\n"
-		. " // calendar table\n"
-		. " buff += \"</tr>\\n\";\n"
-		. " for (var i=0; i<6; i++) {\n"
-		. "  // row heder\n"
-		. "  buff += \"<tr>\\n\";\n"
-		. "  for (var n=0; n<7; n++) {\n"
-		. "   if (_current.getDate() == _date.getDate() &&\n"
-		. "    _current.getMonth() == _date.getMonth())\n"
-		. "    // current date\n"
-		. "	   buff += \"	<td class=\\\"cbg\\\">\";\n"
-		. "	  else if (_current.getDay() == 0 || _current.getDay() == 6)\n"
-		. "	   // weekend days\n"
-		. "    buff += \"	<td class=\\\"ebg\\\">\";\n"
-		. "   else\n"
-		. "    // working days of current month\n"
-		. "	   buff += \"	<td class=\\\"bg\\\">\";\n"
-		. "	  if (_current.getMonth() == _date.getMonth())\n"
-		. "    // days of current month\n"
-		. "    buff += \"<a href=\\\"javascript:window.opener.\"+nm+\n"
-		. "		\".value='\"+dt2dtstr(_current)+\"'; window.close();\\\">\"+\n"
-		. "		\"<span class=\\\"c\\\">\";\n"
-		. "   else\n" 
-		. "    // days of other months\n"
-		. "    buff += \"<a href=\\\"javascript:window.opener.\"+nm+\n"
-		. "		\".value='\"+dt2dtstr(_current)+\"'; window.close();\\\">\"+\n"
-		. "		\"<span class=\\\"gc\\\">\";\n"
-		. "   buff += _current.getDate()+\"</span></a></td>\\n\";\n"
-		. "   _current.setDate(_current.getDate()+1);\n"
-		. "  }\n"
-		. "  // row footer\n"
-		. "  buff += \"</tr>\\n\";\n"
-		. " }\n"
-		. " // picker footer\n"
-		. " buff +=\n"
-		. " \"</table>\\n\" +\n"
-		. " \"</tr>\\n</td>\\n</table>\\n\" +\n"
-		. " \"</body>\\n\" +\n"
-		. " \"</html>\\n\";\n"
-		. "	var picker = window.open('', 'DatePicker',\n" 
-		. "  'width=$width,height=$height,status=no,resizable=yes,top='+top+',left='+left+'');\n"
-		. " picker.opener = self;\n"
-		. " var _doc = picker.document;\n"
-		. " _doc.write (buff);\n"
-		. " _doc.close();\n"
-		. "}\n"
-		. "// datetime parsing and formatting routimes. modify them if you wish other datetime format\n"
-		. "function str2dt (val) {\n"
-		. " var re_date = /^(\\d+)\\".$sep."(\\d+)\\".$sep."(\\d+)+$/;\n"
-		. " if (!re_date.exec(val))\n"
-		. "  return alert('"._('Invalid Datetime format').": '+ val);\n";
-	if ($how == 0)	
-		$js .= " return (new Date (RegExp.$3, RegExp.$1-1, RegExp.$2));\n";
-	elseif ($how == 1)		
-		$js .= " return (new Date (RegExp.$3, RegExp.$2-1, RegExp.$1));\n";
-	else	
-		$js .= " return (new Date (RegExp.$1, RegExp.$2-1, RegExp.$3));\n";
-	$js .= "}\n"
-		. "function dt2dtstr (_date) {\n"
-		. " var da = new String(_date.getDate());\n"
-		. " var mo = new String(_date.getMonth()+1);\n"
-		. " var yr = _date.getFullYear();\n"
-		. " if (da.length < 2)\n"
-		. "  da = '0'+da;\n"
-		. " if (mo.length < 2)\n"
-		. "  mo = '0'+mo;\n";
-	if ($how == 0)	
-		$js .= " return (new String (mo+'$sep'+da+'$sep'+yr));\n";
-	elseif ($how == 1)	
-		$js .= " return (new String (da+'$sep'+mo+'$sep'+yr));\n";
-	else	
-		$js .= " return (new String (yr+'$sep'+mo+'$sep'+da));\n";
-	$js .= "}\n"
-		. "-->\n"
-		. "</script>\n";
+	//$encoding = "iso-8859-1";	// character encoding
+	//$encoding = $_SESSION['language']->encoding;	// character encoding
+	//$dir = "ltr";				// left to right, right to left
+	//$dir = $_SESSION['language']->dir;	// left to right, right to left
+	$how = user_date_format();				// 0 = us/ca, 1 = eu, au, nz, 2 = jp, sw
+	$sep = $dateseps[user_date_sep()];		// date separator
+	$wstart = ($how == 0 ? 0 : 1);			// weekstart (sun = 0, mon = 1)
+
+	$js = "<style>
+#CCIFrame { display: none; left: 0px; position: absolute; top: 0px; height: 250px; width: 250px; z-index: 99;}
+#CC { position:absolute; background-color:#FFF; margin:0; padding:0; display:none; z-index: 100;}
+#CC table { font-family: arial, verdana, helvetica, sans-serif;font-size: 8pt; border-left: 1px solid #336; border-right: 1px solid #336;}
+#CC th { font-weight: normal;}
+#CC th a { font-weight: normal; text-decoration: none; color: #FFF; padding: 1px;}
+#CC td { text-align: center;}
+#CC .header { background-color: #336;}
+#CC .weekday { background-color: #DDD; color: #000;}
+#CC .weekend { background-color: #FFC; color: #000;}
+#CC .current { border: 1px solid #339; background-color: #336; color: #FFF;}
+#CC .weekday,#CC .weekend,#CC .current { display: block; text-decoration: none; border: 1px solid #FFF; width: 2em;}
+#CC .weekday:hover,#CC .weekend:hover,#CC .current:hover { color: #FFF; background-color: #336; border: 1px solid #999;}
+#CC .previous { text-align: left;}
+#CC .next { text-align: right;}
+#CC .previous,#CC .next { padding: 1px 3px 1px 3px; font-size: 1.4em;}
+#CC .previous a,#CC .next a { color: #FFF; text-decoration: none; font-weight: bold;}
+#CC .title { text-align: center; font-weight: bold; color: #FFF;}
+#CC .empty { background-color: #CCC; border: 1px solid #FFF;}
+</style>
+";
+	$js .= "<script type=\"text/javascript\">
+<!--\n
+function positionInfo(object) {
+  var p_elm = object;
+  this.getElementLeft = getElementLeft;
+  function getElementLeft() {
+    var x = 0;
+    var elm;
+    if(typeof(p_elm) == 'object'){
+      elm = p_elm;
+    } else {
+      elm = document.getElementById(p_elm);
+    }
+    while (elm != null) {
+      x+= elm.offsetLeft;
+      elm = elm.offsetParent;
+    }
+    return parseInt(x);
+  }
+  this.getElementWidth = getElementWidth;
+  function getElementWidth(){
+    var elm;
+    if(typeof(p_elm) == 'object'){
+      elm = p_elm;
+    } else {
+      elm = document.getElementById(p_elm);
+    }
+    return parseInt(elm.offsetWidth);
+  }
+  this.getElementRight = getElementRight;
+  function getElementRight(){
+    return getElementLeft(p_elm) + getElementWidth(p_elm);
+  }
+  this.getElementTop = getElementTop;
+  function getElementTop() {
+    var y = 0;
+    var elm;
+    if(typeof(p_elm) == 'object'){
+      elm = p_elm;
+    } else {
+      elm = document.getElementById(p_elm);
+    }
+    while (elm != null) {
+      y+= elm.offsetTop;
+      elm = elm.offsetParent;
+    }
+    return parseInt(y);
+  }
+  this.getElementHeight = getElementHeight;
+  function getElementHeight(){
+    var elm;
+    if(typeof(p_elm) == 'object'){
+      elm = p_elm;
+    } else {
+      elm = document.getElementById(p_elm);
+    }
+    return parseInt(elm.offsetHeight);
+  }
+  this.getElementBottom = getElementBottom;
+  function getElementBottom(){
+    return getElementTop(p_elm) + getElementHeight(p_elm);
+  }
+}
+function CC() {
+  var calendarId = 'CC';
+  var currentYear = 0;
+  var currentMonth = 0;
+  var currentDay = 0;
+  var selectedYear = 0;
+  var selectedMonth = 0;
+  var selectedDay = 0;
+  var months = ['"._("January")."','"._("February")."','"._("March")."','"._("April")."','"._("May")."','"._("June")."','"._("July")."','"._("August")."','"._("September")."','"._("October")."','"._("November")."','"._("December")."'];
+  var wdays = ['"._("Su")."', '"._("Mo")."', '"._("Tu")."', '"._("We")."', '"._("Th")."', '"._("Fr")."', '"._("Sa")."'];
+  var dateField = null;
+  function getProperty(p_property){
+    var p_elm = calendarId;
+    var elm = null;
+    if(typeof(p_elm) == 'object'){
+      elm = p_elm;
+    } else {
+      elm = document.getElementById(p_elm);
+    }
+    if (elm != null){
+      if(elm.style){
+        elm = elm.style;
+        if(elm[p_property]){
+          return elm[p_property];
+        } else {
+          return null;
+        }
+      } else {
+        return null;
+      }
+    }
+  }
+  function setElementProperty(p_property, p_value, p_elmId){
+    var p_elm = p_elmId;
+    var elm = null;
+    if(typeof(p_elm) == 'object'){
+      elm = p_elm;
+    } else {
+      elm = document.getElementById(p_elm);
+    }
+    if((elm != null) && (elm.style != null)){
+      elm = elm.style;
+      elm[ p_property ] = p_value;
+    }
+  }
+  function setProperty(p_property, p_value) {
+    setElementProperty(p_property, p_value, calendarId);
+  }
+  function getDaysInMonth(year, month) {
+    return [31,((!(year % 4 ) && ( (year % 100 ) || !( year % 400 ) ))?29:28),31,30,31,30,31,31,30,31,30,31][month-1];
+  }
+  function getDayOfWeek(year, month, day) {
+    var date = new Date(year,month-1,day)
+    return date.getDay();
+  }
+  this.clearDate = clearDate;
+  function clearDate() {
+    dateField.value = '';
+    hide();
+  }
+  this.setDate = setDate;
+  function setDate(year, month, day) {
+    if (dateField) {
+      if (month < 10) {month = '0' + month;}
+      if (day < 10) {day = '0' + day;}
+";
+	if ($how == 0)
+		$js .= "
+      var dateString = month+'$sep'+day+'$sep'+year;
+";
+	else if ($how == 1)	
+		$js .= "
+      var dateString = day+'$sep'+month+'$sep'+year;
+";
+	else
+		$js .= "
+      var dateString = year+'$sep'+month+'$sep'+day;
+";
+	$js .= "
+      dateField.value = dateString;
+      hide();
+    }
+    return;
+  }
+  this.changeMonth = changeMonth;
+  function changeMonth(change) {
+    currentMonth += change;
+    currentDay = 0;
+    if(currentMonth > 12) {
+      currentMonth = 1;
+      currentYear++;
+    } else if(currentMonth < 1) {
+      currentMonth = 12;
+      currentYear--;
+    }
+    calendar = document.getElementById(calendarId);
+    calendar.innerHTML = calendarDrawTable();
+  }
+  this.changeYear = changeYear;
+  function changeYear(change) {
+    currentYear += change;
+    currentDay = 0;
+    calendar = document.getElementById(calendarId);
+    calendar.innerHTML = calendarDrawTable();
+  }
+  function getCurrentYear() {
+    var year = new Date().getYear();
+    if(year < 1900) year += 1900;
+    return year;
+  }
+  function getCurrentMonth() {
+    return new Date().getMonth() + 1;
+  } 
+  function getCurrentDay() {
+    return new Date().getDate();
+  }
+  function calendarDrawTable() {
+    var dayOfMonth = 1;
+    var wstart = $wstart;
+    var validDay = 0;
+    var startDayOfWeek = getDayOfWeek(currentYear, currentMonth, dayOfMonth);
+    var daysInMonth = getDaysInMonth(currentYear, currentMonth);
+    var css_class = null; //CSS class for each day
+    var table = \"<table cellspacing='0' cellpadding='0' border='0'>\";
+    table += \"<tr class='header'>\";
+    table += \"  <td colspan='2' class='previous'><a href='javascript:changeCCMonth(-1);'>&lt;</a><br><a href='javascript:changeCCYear(-1);'>&laquo;</a></td>\";
+    table += \"  <td colspan='3' class='title'>\" + months[currentMonth-1] + \"<br>\" + currentYear + \"</td>\";
+    table += \"  <td colspan='2' class='next'><a href='javascript:changeCCMonth(1);'>&gt;</a><br><a href='javascript:changeCCYear(1);'>&raquo;</a></td>\";
+    table += \"</tr>\";
+    table += \"<tr>\";
+    for (var n=0; n<7; n++)
+    	table += \"<th>\" + wdays[(wstart+n)%7]+\"</th>\";
+    table += \"</tr>\";
+    for(var week=0; week < 6; week++) {
+      table += \"<tr>\";
+      for(var n=0; n < 7; n++) {
+        dayOfWeek = (wstart+n)%7;
+        if(week == 0 && startDayOfWeek == dayOfWeek) {
+          validDay = 1;
+        } else if (validDay == 1 && dayOfMonth > daysInMonth) {
+          validDay = 0;
+        }
+        if(validDay) {
+          if (dayOfMonth == selectedDay && currentYear == selectedYear && currentMonth == selectedMonth) {
+            css_class = 'current';
+          } else if (dayOfWeek == 0 || dayOfWeek == 6) {
+            css_class = 'weekend';
+          } else {
+            css_class = 'weekday';
+          }
+          table += \"<td><a class='\"+css_class+\"' href=\\\"javascript:setCCDate(\"+currentYear+\",\"+currentMonth+\",\"+dayOfMonth+\")\\\">\"+dayOfMonth+\"</a></td>\";
+          dayOfMonth++;
+        } else {
+          table += \"<td class='empty'>&nbsp;</td>\";
+        }
+      }
+      table += \"</tr>\";
+    }
+    table += \"<tr class='header'><th colspan='7' style='padding: 3px;'><a href='javascript:hideCC();'>Back</a></td></tr>\";
+    table += \"</table>\";
+    return table;
+  }
+  this.show = show;
+  function show(field) {
+    can_hide = 0;
+    if (dateField == field) {
+      return;
+    } else {
+      dateField = field;
+    }
+    if(dateField) {
+      try {
+        var dateString = new String(dateField.value);
+        var dateParts = dateString.split('$sep');
+";
+	if ($how == 0)
+		$js .= "
+        selectedMonth = parseInt(dateParts[0],10);
+        selectedDay = parseInt(dateParts[1],10);
+        selectedYear = parseInt(dateParts[2],10);
+";
+	else if ($how == 1)
+		$js .= "
+        selectedDay = parseInt(dateParts[0],10);
+        selectedMonth = parseInt(dateParts[1],10);
+        selectedYear = parseInt(dateParts[2],10);
+";
+	else
+		$js .= "
+        selectedYear = parseInt(dateParts[0],10);
+        selectedMonth = parseInt(dateParts[1],10);
+        selectedDay = parseInt(dateParts[2],10);
+";
+	$js .= "
+      } catch(e) {}
+    }
+    if (!(selectedYear && selectedMonth && selectedDay)) {
+      selectedMonth = getCurrentMonth();
+      selectedDay = getCurrentDay();
+      selectedYear = getCurrentYear();
+    }
+    currentMonth = selectedMonth;
+    currentDay = selectedDay;
+    currentYear = selectedYear;
+    if(document.getElementById){
+      calendar = document.getElementById(calendarId);
+      calendar.innerHTML = calendarDrawTable(currentYear, currentMonth);
+      setProperty('display', 'block');
+      var fieldPos = new positionInfo(dateField);
+      var calendarPos = new positionInfo(calendarId);
+      var x = fieldPos.getElementLeft();
+      var y = fieldPos.getElementBottom();
+      setProperty('left', x + 'px');
+      setProperty('top', y + 'px');
+      if (document.all) {
+        setElementProperty('display', 'block', 'CCIframe');
+        setElementProperty('left', x + 'px', 'CCIframe');
+        setElementProperty('top', y + 'px', 'CCIframe');
+        setElementProperty('width', calendarPos.getElementWidth() + 'px', 'CCIframe');
+        setElementProperty('height', calendarPos.getElementHeight() + 'px', 'CCIframe');
+      }
+    }
+  }
+  this.hide = hide;
+  function hide() {
+    if(dateField) {
+      setProperty('display', 'none');
+      setElementProperty('display', 'none', 'CCIframe');
+      dateField = null;
+    }
+  }
+  this.visible = visible;
+  function visible() {
+    return dateField
+  }
+  this.can_hide = can_hide;
+  var can_hide = 0;
+}
+var cC = new CC();
+function date_picker(textField) {
+  cC.show(textField);
+}
+function hideCC() {
+  if (cC.visible()) {
+    cC.hide();
+  }
+}
+function setCCDate(year, month, day) {
+  cC.setDate(year, month, day);
+}
+function changeCCYear(change) {
+  cC.changeYear(change);
+}
+function changeCCMonth(change) {
+  cC.changeMonth(change);
+}
+document.write(\"<iframe id='CCIframe' src='javascript:false;' frameBorder='0' scrolling='no'></iframe>\");
+document.write(\"<div id='CC'></div>\");
+-->
+</script>
+";
 	return $js;	
 }
-	
+		
 function alert($msg)
 {
 	echo "\n<script type=\"text/javascript\">\n"

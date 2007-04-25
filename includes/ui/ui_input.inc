@@ -251,7 +251,7 @@ function date_cells($label, $name, $init=null, $inc_days=0, $inc_months=0, $inc_
 			$_POST[$name] = $init;
 	}
 	if ($use_date_picker)
-		$post_label = "<a href=\"javascript:date_picker('document.forms[0].$name', document.forms[0].$name.value);\">"
+		$post_label = "<a href=\"javascript:date_picker(document.forms[0].$name);\">"
 		. "	<img src='$path_to_root/themes/default/images/cal.gif' width='16' height='16' border='0' alt='"._('Click Here to Pick up the date')."'></a>\n";
 	else
 		$post_label = "";

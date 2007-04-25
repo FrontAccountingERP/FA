@@ -53,7 +53,7 @@ a {
 }
 
 a:link {
-	color: #00000bb;
+	color: #0000bb;
 	text-decoration: none;
 }
 
@@ -187,7 +187,7 @@ div.tabs a.selected {
 }
 div.tabs a:hover {
 	border-top-color: #cccccc; 
-	border-right-color: #cccccc
+	border-right-color: #cccccc;
 	border-bottom-color: #e4ecec; 
 	border-left-color: #cccccc; 
 	background: #e4ecec; 
@@ -324,7 +324,7 @@ div.tabs a:hover {
 
 .tablestyle {
 	padding: 3px;
-	border: 1 solid #cccccc;
+	border: 1px solid #cccccc;
 	border-collapse: collapse;
 }	
 
