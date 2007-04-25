@@ -19,6 +19,12 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+25-Apr-2007 Joe Hunt
+ # Missing Date Picker
+ $ /sales/customer_invoice.php
+ # No JS popup window
+ $ /sales/view/view_invoice.php
+ 
 24-Apr-2007 Joe Hunt
  ! New and better Date Picker, better cool theme.
  $ /includes/ui/ui_input.inc
