@@ -16,6 +16,8 @@ include_once($path_to_root . "/taxes/tax_calc.inc");
 $js = "";
 if ($use_popup_windows)
 	$js .= get_js_open_window(900, 500);
+if ($use_date_picker)
+	$js .= get_js_date_picker();
 page(_("Issue an Invoice and Deliver Items for a Sales Order"), false, false, "", $js);
 
 //---------------------------------------------------------------------------------------------------------------
@@ -360,13 +362,13 @@ if (!isset($_POST['DispatchDate']) || !is_date($_POST['DispatchDate']))
 	if (!is_date_in_fiscalyear($_POST['DispatchDate']))
 		$_POST['DispatchDate'] = end_fiscalyear();
 }
-text_row(_("Date"), 'DispatchDate', $_POST['DispatchDate'], 10, 10, "class='tableheader'");
+date_row(_("Date"), 'DispatchDate', $_POST['DispatchDate'], 0, 0, 0, "class='tableheader'");
 
 if (!isset($_POST['due_date']) || !is_date($_POST['due_date']))
 	//$_POST['due_date'] = $_POST['DispatchDate'];
 	$_POST['due_date'] = get_invoice_duedate($_SESSION['Items']->customer_id, $_POST['DispatchDate']);
 
-text_row(_("Due Date"), 'due_date', $_POST['due_date'], 10, 10, "class='tableheader'");
+date_row(_("Due Date"), 'due_date', $_POST['due_date'], 0, 0, 0, "class='tableheader'");
 end_table();
 
 echo "</td></tr>";
