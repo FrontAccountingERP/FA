@@ -57,7 +57,7 @@ function display_adjustment_items($Title, &$order)
     	 	label_cell("<a target='_blank' href='$path_to_root/inventory/inquiry/stock_status.php?" . SID . "stock_id=" . $stock_item->stock_id . "'>$stock_item->stock_id</a>");
     		label_cell($stock_item->item_description);
     		qty_cell($stock_item_quantity);
-    		if (strlen($stock_item->units)
+    		if (strlen($stock_item->units))
     			label_cell($stock_item->units);
     		else
     			label_cell("");

@@ -19,6 +19,13 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+28-Apr-2007 Joe Hunt
+ # When saving work order entries a lot of debug boxes appeared. Fixed
+ # When clicking on the link Issue on work order inquires an empty screen appeared. Fixed
+ $ /manufacturing/work_order_entry.php
+   /manufacturing/includes/work_order_issue_ui.inc
+   /manufacturing/includes/db/work_orders_quick_db.inc
+   
 25-Apr-2007 Joe Hunt
  # Missing Date Picker
  $ /sales/customer_invoice.php

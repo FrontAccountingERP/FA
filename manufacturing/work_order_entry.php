@@ -146,6 +146,8 @@ function can_process()
         	return false;
         }
 
+		if ($_POST['Costs'] == "")
+			$_POST['Costs'] = 0;
     	if (!is_numeric($_POST['Costs']))
     	{
     		display_error( _("The cost entered must be numeric."));

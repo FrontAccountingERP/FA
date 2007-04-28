@@ -86,7 +86,6 @@ function work_order_quick_costs($woid, $stock_id, $units_reqd, $date_, $addition
 		
 		add_gl_trans_std_cost(systypes::work_order(), $woid, $date_, $bom_accounts["inventory_account"], 0, 0,
 			null, -$bom_cost);
-		alert("bokade bom- cost ".-$bom_cost);
 		
 		$total_cost += $bom_cost;
 	}	
@@ -94,13 +93,11 @@ function work_order_quick_costs($woid, $stock_id, $units_reqd, $date_, $addition
 	$item_accounts = get_stock_gl_code($stock_id);
 	add_gl_trans_std_cost(systypes::work_order(), $woid, $date_, $item_accounts["assembly_account"], 
 		$item_accounts["dimension_id"], $item_accounts["dimension2_id"], null, -$additional_costs);
-	alert("bokade additional cost ".-$additional_costs.", acc = ".$item_accounts["assembly_account"]);
 	
 	// debit total components + additional
 	$total_cost += $additional_costs;	
 	add_gl_trans_std_cost(systypes::work_order(), $woid, $date_, $item_accounts["inventory_account"], 
 		0, 0, null, $total_cost);
-	alert("bokade total- cost ".$total_cost);
 } 
 
 //--------------------------------------------------------------------------------------
