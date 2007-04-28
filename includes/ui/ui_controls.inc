@@ -30,7 +30,7 @@ function end_form($breaks=0)
 	echo "</form>\n";
 }
 
-function start_table($extra="", $padding='0', $spacing='0')
+function start_table($extra="", $padding='2', $spacing='0')
 {
 	echo "<center><table";
 	if ($extra != "")
