@@ -36,7 +36,7 @@ function add_work_order_quick($wo_ref, $loc_code, $units_reqd, $stock_id, $type,
 		
 		$sql = "INSERT INTO ".TB_PREF."wo_requirements (workorder_id, stock_id, workcentre, units_req, units_issued, loc_code)
 			VALUES ($woid, " . "'" . $bom_item["component"] . "'" . ", 
-			". $bom_item["workcentre_added"] . ", 
+			'". $bom_item["workcentre_added"] . "', 
 			$unit_quantity,	$item_quantity, '" . $bom_item["loc_code"] . "')";
 			
         db_query($sql, "The work order requirements could not be added");

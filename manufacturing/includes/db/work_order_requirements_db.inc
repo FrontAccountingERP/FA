@@ -10,7 +10,7 @@ function get_wo_requirements($woid)
 		".TB_PREF."wo_requirements.stock_id = ".TB_PREF."stock_master.stock_id 
 		WHERE workorder_id=$woid
 		AND ".TB_PREF."locations.loc_code = ".TB_PREF."wo_requirements.loc_code
-		AND ".TB_PREF."workcentres.id=workcentre";	
+		AND ".TB_PREF."workcentres.id=CAST(workcentre AS UNSIGNED)";	
 
 	return db_query($sql, "The work order requirements could not be retrieved");    
 }

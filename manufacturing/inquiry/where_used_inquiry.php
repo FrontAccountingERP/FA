@@ -27,7 +27,7 @@ if (isset($_POST['stock_id']))
 {
     $sql = "SELECT ".TB_PREF."bom.*,".TB_PREF."stock_master.description,".TB_PREF."workcentres.name As WorkCentreName, ".TB_PREF."locations.location_name
 		FROM ".TB_PREF."bom, ".TB_PREF."stock_master, ".TB_PREF."workcentres, ".TB_PREF."locations
-		WHERE ".TB_PREF."bom.parent = ".TB_PREF."stock_master.stock_id AND ".TB_PREF."bom.workcentre_added = ".TB_PREF."workcentres.id
+		WHERE ".TB_PREF."bom.parent = ".TB_PREF."stock_master.stock_id AND CAST(".TB_PREF."bom.workcentre_added AS UNSIGNED) = ".TB_PREF."workcentres.id
 		AND ".TB_PREF."bom.loc_code = ".TB_PREF."locations.loc_code
 		AND ".TB_PREF."bom.component='" . $_POST['stock_id'] . "'";
 
