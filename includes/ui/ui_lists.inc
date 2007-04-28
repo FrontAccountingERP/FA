@@ -1620,6 +1620,7 @@ function wo_types_list($name, &$selected_id)
   	    	echo "selected ";
   	    echo "value='" . $type['id'] . "'>" . $type['name'] . "</option>\n";
   	}
+	echo "</select>";
 }
 
 function wo_types_list_row($label, $name, &$selected_id)
@@ -1834,7 +1835,7 @@ function systypes_list_cells($label, $name, $value, $submit_on_change=false)
 			echo "<option value='$key'>".$type['name']."</option>\n";
 		}
     }
-    echo "<select></td>\n";
+    echo "</select></td>\n";
 }
 
 function systypes_list_row($label, $name, $value, $submit_on_change=false)
@@ -1856,7 +1857,7 @@ function cust_allocations_list_cells($label, $name, $selected)
 	echo "<option " . ($selected == '2'?" selected ":"") . " value='2'>" . _("Overdue Invoices"). "</option>\n";
 	echo "<option " . ($selected == '3'?" selected ":"") . " value='3'>" . _("Payments"). "</option>\n";
 	echo "<option " . ($selected == '4'?" selected ":"") . " value='4'>" . _("Credit Notes"). "</option>\n";
-	echo "<select></td>\n";
+	echo "</select></td>\n";
 }
 
 function supp_allocations_list_cells($name, $selected)
@@ -1870,7 +1871,7 @@ function supp_allocations_list_cells($name, $selected)
 	echo "<option " . ($selected == '3'?" selected ":"") . " value='3'>" . _("Payments"). "</option>\n";
 	echo "<option " . ($selected == '4'?" selected ":"") . " value='4'>" . _("Credit Notes"). "</option>\n";
 	echo "<option " . ($selected == '5'?" selected ":"") . " value='5'>" . _("Overdue Credit Notes"). "</option>\n";
-	echo "<select></td>\n";
+	echo "</select></td>\n";
 }
 
 function policy_list_cells($label, $name, $selected)
@@ -1886,7 +1887,7 @@ function policy_list_cells($label, $name, $selected)
 	echo "<td><select name='$name'>";
 	echo "<option " . ($selected == ''?" selected ":"") . " value=''>" . _("Automatically put balance on back order"). "</option>\n";
 	echo "<option " . ($selected == 'CAN'?" selected ":"") . " value='CAN'>" . _("Cancel any quantites not delivered"). "</option>\n";
-	echo "<select></td>\n";
+	echo "</select></td>\n";
 }
 
 function policy_list_row($label, $name, $selected)
@@ -1913,7 +1914,7 @@ function credit_type_list_cells($label, $name, $selected, $submit_on_change=fals
     	echo ">";
 	echo "<option " . ($selected == 'Return'?" selected ":"") . " value='Return'>" . _("Items Returned to Inventory Location"). "</option>\n";
 	echo "<option " . ($selected == 'WriteOff'?" selected ":"") . " value='WriteOff'>" . _("Items Written Off"). "</option>\n";
-	echo "<select></td>\n";
+	echo "</select></td>\n";
 }
 
 function credit_type_list_row($label, $name, $selected, $submit_on_change=false)
@@ -1947,7 +1948,7 @@ function number_list($name, $selected, $from, $to, $firstlabel="")
 			echo "<option value='$i'>$label</option>\n";
 		}
     }
-	echo "<select>\n";
+	echo "</select>\n";
 }
 
 function number_list_cells($label, $name, $selected, $from, $to)
