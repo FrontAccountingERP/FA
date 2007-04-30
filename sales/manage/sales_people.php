@@ -39,7 +39,7 @@ if (isset($_POST['ADD_ITEM']) || isset($_POST['UPDATE_ITEM']))
     
     		$sql = "UPDATE ".TB_PREF."salesman SET salesman_name='" . $_POST['salesman_name'] . "', 
     			salesman_phone='" . $_POST['salesman_phone'] . "', 
-    			salesman_fax='" . $_POST['salesman_fax'] . "'
+    			salesman_fax='" . $_POST['salesman_fax'] . "',
     			salesman_email='" . $_POST['salesman_email'] . "'
     			WHERE salesman_code = '$selected_id'";
     	} 
