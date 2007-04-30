@@ -3,7 +3,7 @@
 function page_header($title, $no_menu=false, $is_index=false, $onload="", $js="")
 {
 	// titles and screen header
-	global $db_connections, $path_to_root;
+	global $db_connections, $path_to_root, $def_app;
 	$theme = user_theme();
 	$local_path_to_root = $path_to_root;
 
@@ -11,6 +11,16 @@ function page_header($title, $no_menu=false, $is_index=false, $onload="", $js=""
 	{
 		$no_menu = false;
 	}
+	if (!isset($_SESSION["sel_app"]))
+		session_register("sel_app");	
+	if (isset($_SESSION["App"]) && is_object($_SESSION["App"]) && isset($_SESSION["App"]->selected_application) && 
+		$_SESSION["App"]->selected_application != "")
+	 	$sel_app = $_SESSION["App"]->selected_application;
+	elseif (isset($_SESSION["sel_app"]) && $_SESSION["sel_app"] != "")
+		$sel_app = $_SESSION["sel_app"];
+	else
+		$sel_app = $def_app;
+	$_SESSION["sel_app"] = $sel_app;
 
     echo "<html dir='" . $_SESSION['language']->dir . "' >";
     echo "<head><title>$title</title>";
@@ -39,13 +49,13 @@ function page_header($title, $no_menu=false, $is_index=false, $onload="", $js=""
 	{
 		echo "<table cellpadding=0 cellspacing=0 width='100%'><tr><td>";
 		echo "<div class=tabs>";
-		echo "<a href='$local_path_to_root/index.php?application=orders". SID ."'>" . _("Sales") . "</a>";
-		echo "<a href='$local_path_to_root/index.php?application=AP". SID ."'>" . _("Purchases") . "</a>";
-		echo "<a href='$local_path_to_root/index.php?application=stock". SID ."'>" . _("Items and Inventory") . "</a>";
-		echo "<a href='$local_path_to_root/index.php?application=manuf". SID ."'>" . _("Manufacturing") . "</a>";
-		echo "<a href='$local_path_to_root/index.php?application=proj". SID ."'>" . _("Dimensions") . "</a>";
-		echo "<a href='$local_path_to_root/index.php?application=GL". SID ."'>" . _("Banking and General Ledger") . "</a>";
-		echo "<a href='$local_path_to_root/index.php?application=system". SID ."'>" . _("Setup") . "</a>";
+		echo "<a ".($sel_app == "orders" ? "class='selected' " : "")."href='$local_path_to_root/index.php?application=orders". SID ."'>" . _("Sales") . "</a>";
+		echo "<a ".($sel_app == "AP" ? "class='selected' " : "")."href='$local_path_to_root/index.php?application=AP". SID ."'>" . _("Purchases") . "</a>";
+		echo "<a ".($sel_app == "stock" ? "class='selected' " : "")."href='$local_path_to_root/index.php?application=stock". SID ."'>" . _("Items and Inventory") . "</a>";
+		echo "<a ".($sel_app == "manuf" ? "class='selected' " : "")."href='$local_path_to_root/index.php?application=manuf". SID ."'>" . _("Manufacturing") . "</a>";
+		echo "<a ".($sel_app == "proj" ? "class='selected' " : "")."href='$local_path_to_root/index.php?application=proj". SID ."'>" . _("Dimensions") . "</a>";
+		echo "<a ".($sel_app == "GL" ? "class='selected' " : "")."href='$local_path_to_root/index.php?application=GL". SID ."'>" . _("Banking and General Ledger") . "</a>";
+		echo "<a ".($sel_app == "system" ? "class='selected' " : "")."href='$local_path_to_root/index.php?application=system". SID ."'>" . _("Setup") . "</a>";
 		echo "</div>";
 
 		echo "</td></tr></table>";

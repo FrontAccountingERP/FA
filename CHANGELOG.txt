@@ -19,6 +19,11 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+30-Apr-2007 Joe Hunt
+ + The selected menu tab is now shown with same background as hover color.
+ $ config.php (default tab line 77. Change if you want)
+   /includes/page/header.inc
+   
 28-Apr-2007 Joe Hunt
  # When saving work order entries a lot of debug boxes appeared. Fixed
  # When clicking on the link, Issue, on work order inquires an empty screen appeared. Fixed

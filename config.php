@@ -73,6 +73,9 @@
 	/* use Audit Trails in GL */
 	$use_audit_trail = 0;
 
+	/* default start-up tab (orders/AP/stock/manuf/proj/GL/system) */
+	$def_app = "orders";
+
 	$dateformats 	= array("MMDDYYYY", "DDMMYYYY", "YYYYMMDD");
 	$dateseps 		= array("/", ".", "-", " ");
 	$thoseps 		= array(",", ".", " ");
