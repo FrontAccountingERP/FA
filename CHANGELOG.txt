@@ -20,8 +20,10 @@ Legend:
 $ -> Affected files
 
 01-May-2007 Joe Hunt
+ # Missing measure of units when printing sales orders
  # Update of Sales People caused a database error
  $ /sales/manage/sales_people.php
+   /reporting/rep109.php
  
 30-Apr-2007 Joe Hunt
  + The selected menu tab is now shown with same background as hover color.

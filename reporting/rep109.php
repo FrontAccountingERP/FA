@@ -25,7 +25,7 @@ function get_sales_order_details($order_no)
 {
 	$sql = "SELECT stk_code, unit_price, ".TB_PREF."sales_order_details.description,
 		".TB_PREF."sales_order_details.quantity, discount_percent, 
-		qty_invoiced, 
+		qty_invoiced, units,
 		".TB_PREF."stock_master.material_cost + ".TB_PREF."stock_master.labour_cost + ".TB_PREF."stock_master.overhead_cost AS standard_cost
 		FROM ".TB_PREF."sales_order_details, ".TB_PREF."stock_master 
 			WHERE ".TB_PREF."sales_order_details.stk_code = ".TB_PREF."stock_master.stock_id 
