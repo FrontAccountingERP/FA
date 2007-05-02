@@ -185,8 +185,8 @@ elseif (isset($_POST['world_writeable']) && $_POST['world_writeable'] == 'true')
 } 
 else 
 {
-	$file_mode = default_file_mode('../temp');
-	$dir_mode = default_dir_mode('../temp');
+	$file_mode = default_file_mode('../includes');
+	$dir_mode = default_dir_mode('../includes');
 }
 // End operating system specific code
 
@@ -340,9 +340,6 @@ if($install_tables == true)
 		mysql_query('CREATE DATABASE '.$database_name);
 		mysql_select_db($database_name, $db);
 	}	
-	$import_filename = $path_to_root."/sql/basic.sql";
-	if (!db_import($import_filename, $db_connections[$id]))
-		set_error("Import error, try to import $import_filename and $path_to_root/en_US-demo.sql manually via phpMyAdmin");
 	$import_filename = $path_to_root."/sql/en_US-demo.sql";
 	if (!db_import($import_filename, $db_connections[$id]))
 		set_error("Import error, try to import $import_filename manually via phpMyAdmin");

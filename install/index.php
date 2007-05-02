@@ -138,6 +138,8 @@ function change_os(type) {
 			<td><?php if(is_writable($path_to_root.'/reporting/pdf_files/')) { echo '<font class="good">Writeable</font>'; } elseif(!file_exists($path_to_root.'/reporting/pdf_files/')) { echo '<font class="bad">Directory Not Found</font>'; } else { echo '<font class="bad">Unwriteable</font>'; } ?></td>
 		</tr>
 		<tr>
+			<td style="color: #666666;">modules/</td>
+			<td><?php if(is_writable($path_to_root.'/modules/')) { echo '<font class="good">Writeable</font>'; } elseif(!file_exists($path_to_root.'/lang/')) { echo '<font class="bad">Directory Not Found</font>'; } else { echo '<font class="bad">Unwriteable</font>'; } ?></td>
 			<td style="color: #666666;">admin/backup/</td>
 			<td><?php if(is_writable($path_to_root.'/admin/backup/')) { echo '<font class="good">Writeable</font>'; } elseif(!file_exists($path_to_root.'/admin/backup/')) { echo '<font class="bad">Directory Not Found</font>'; } else { echo '<font class="bad">Unwriteable</font>'; } ?></td>
 		</tr>

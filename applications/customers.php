@@ -1,9 +1,11 @@
 <?php
 	
+	include_once("./modules/installed_modules.php");
 	class customers_app extends application 
 	{
 		function customers_app() 
 		{
+			global $installed_modules;
 			$this->application("orders",_("Sales"));
 		
 			$this->add_module(_("Transactions"));
@@ -30,6 +32,14 @@
 			$this->add_rapp_function(2, _("Sales Persons"),"sales/manage/sales_people.php?");
 			$this->add_rapp_function(2, _("Sales Areas"),"sales/manage/sales_areas.php?");
 			$this->add_rapp_function(2, _("Credit Status Setup"),"sales/manage/credit_status.php?");
+			if (count($installed_modules) > 0)
+			{
+				foreach ($installed_modules as $mod)
+				{
+					if ($mod["tab"] == "orders")
+						$this->add_rapp_function(2, $mod["name"], "modules/".$mod["path"]."/".$mod["filename"]."?");
+				}
+			}	
 		}
 	}
 	

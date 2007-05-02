@@ -1,9 +1,11 @@
 <?php
 	
+	include_once("./modules/installed_modules.php");
 	class suppliers_app extends application 
 	{
 		function suppliers_app() 
 		{
+			global $installed_modules;
 			$this->application("AP",_("Purchases"));
 			
 			$this->add_module(_("Transactions"));
@@ -25,6 +27,14 @@
 			
 			$this->add_module(_("Maintenance"));
 			$this->add_lapp_function(2, _("Suppliers"),"purchasing/manage/suppliers.php?");
+			if (count($installed_modules) > 0)
+			{
+				foreach ($installed_modules as $mod)
+				{
+					if ($mod["tab"] == "AP")
+						$this->add_rapp_function(2, $mod["name"], "modules/".$mod["path"]."/".$mod["filename"]."?");
+				}
+			}	
 		}
 	}
 	

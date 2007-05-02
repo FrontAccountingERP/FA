@@ -1,9 +1,11 @@
 <?php
 
+	include_once("./modules/installed_modules.php");
 	class setup_app extends application 
 	{
 		function setup_app() 
 		{
+			global $installed_modules;
 			$this->application("system",_("Setup"));
 
 			$this->add_module(_("Company Setup"));
@@ -28,6 +30,15 @@
 			$this->add_rapp_function(2, _("Backup and Restore"),"admin/backups.php?", 15);
 			$this->add_rapp_function(2, _("Create/Update Companies"),"admin/create_coy.php?", 14);
 			$this->add_rapp_function(2, _("Install/Update Languages"),"admin/inst_lang.php?", 14);
+			$this->add_rapp_function(2, _("Install/Update Modules"),"admin/inst_module.php?", 15);
+			if (count($installed_modules) > 0)
+			{
+				foreach ($installed_modules as $mod)
+				{
+					if ($mod["tab"] == "system")
+						$this->add_rapp_function(2, $mod["name"], "modules/".$mod["path"]."/".$mod["filename"]."?");
+				}
+			}	
 		}
 	}
 

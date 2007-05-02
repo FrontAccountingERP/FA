@@ -19,6 +19,31 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+-------------------- 1.1 Stable Released ----------------------
+02-May-2007 Joe Hunt
+ + Enabled module addons and all the below bugfixes. No changes in database structure.
+ - Removed /sql/basic.sql (included in the other sql files)
+ - Removed /themes/default/images/left.gif and /themes/default/images/right.gif 
+   (not needed anymore).
+ + Addition of update.html  
+ $ /admin/inst_module.php (New file!)
+   /applications/customers.php
+   /applications/dimensions.php
+   /applications/generalledger.php
+   /applications/inventory.php
+   /applications/manufacturing.php
+   /applications/setup.php
+   /applications/suppliers.php
+   /install/index.php
+   /install/save.php
+   /modules/inst_modules.php (New folder and new file!)
+   /modules/index.php (New file!)
+   /sql/en_US-demo.sql
+   /sql/en_US-new.sql
+   install.html
+   update.html (New file!)
+   
+
 01-May-2007 Joe Hunt
  # Missing measure of units when printing sales orders
  # Update of Sales People caused a database error

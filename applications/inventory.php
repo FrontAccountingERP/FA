@@ -1,9 +1,11 @@
 <?php
 
+	include_once("./modules/installed_modules.php");
 	class inventory_app extends application 
 	{
 		function inventory_app() 
 		{
+			global $installed_modules;
 			$this->application("stock",_("Items and Inventory"));
 
 			$this->add_module(_("Transactions"));
@@ -28,6 +30,14 @@
 			$this->add_lapp_function(3, _("Sales Pricing"),"inventory/prices.php?");
 			$this->add_lapp_function(3, _("Purchasing Pricing"),"inventory/purchasing_data.php?");
 			$this->add_rapp_function(3, _("Standard Costs"),"inventory/cost_update.php?");
+			if (count($installed_modules) > 0)
+			{
+				foreach ($installed_modules as $mod)
+				{
+					if ($mod["tab"] == "stock")
+						$this->add_rapp_function(2, $mod["name"], "modules/".$mod["path"]."/".$mod["filename"]."?");
+				}
+			}	
 		}
 	}
 
