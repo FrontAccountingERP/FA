@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+02-May-2007 Joe Hunt
+ # Missing details on Purchase Order when emailing and printing
+ $ /reporting/rep209.php
+ 
 -------------------- 1.1 Stable Released ----------------------
 02-May-2007 Joe Hunt
  + Enabled module addons and all the below bugfixes. No changes in database structure.
