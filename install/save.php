@@ -253,7 +253,7 @@ else
 // End website company name
 
 // Check if the user has entered a correct path
-if (!file_exists($path_to_root.'/sql/basic.sql')) 
+if (!file_exists($path_to_root.'/sql/en_US-demo.sql')) 
 {
 	set_error('It appears the Absolute path that you entered is incorrect');
 }
