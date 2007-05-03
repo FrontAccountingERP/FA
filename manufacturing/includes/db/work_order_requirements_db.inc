@@ -6,7 +6,7 @@ function get_wo_requirements($woid)
 		".TB_PREF."stock_master.mb_flag, 
 		".TB_PREF."locations.location_name, 
 		".TB_PREF."workcentres.name AS WorkCentreDescription FROM 
-		".TB_PREF."wo_requirements, ".TB_PREF."locations, ".TB_PREF."workcentres INNER JOIN ".TB_PREF."stock_master ON 
+		(".TB_PREF."wo_requirements, ".TB_PREF."locations, ".TB_PREF."workcentres) INNER JOIN ".TB_PREF."stock_master ON 
 		".TB_PREF."wo_requirements.stock_id = ".TB_PREF."stock_master.stock_id 
 		WHERE workorder_id=$woid
 		AND ".TB_PREF."locations.loc_code = ".TB_PREF."wo_requirements.loc_code

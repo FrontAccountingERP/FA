@@ -19,6 +19,12 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+03-May-2007 Joe Hunt
+ # Multiple tables and JOIN's have syntax changes in MySQL 5.0.12. Need parentheses.
+ $ /includes/db/manufacturing_db.inc
+   /manufacturing/includes/db/work_order_requirements_db.inc
+
+
 02-May-2007 Joe Hunt
  # Missing details on Purchase Order when emailing and printing
  $ /reporting/rep209.php
