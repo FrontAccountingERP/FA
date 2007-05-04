@@ -86,11 +86,11 @@ function update_sales_order($order_no, $order)
 
 	db_query($sql, "Old order Cannot be Deleted");
 
-	$sql = "INSERT INTO ".TB_PREF."sales_order_details (order_no, stk_code,  description, unit_price, quantity, discount_percent, qty_invoiced) VALUES (";
-
 	foreach ($order->line_items as $stock_item) 
 	{
 
+		$sql = "INSERT INTO ".TB_PREF."sales_order_details (order_no, stk_code,  description, unit_price, quantity, discount_percent, qty_invoiced) VALUES (";
+		
 		$sql .= $order_no . ",'" . $stock_item->stock_id . "','" . $stock_item->item_description . "', " . $stock_item->price . ", " . $stock_item->quantity . ", " . $stock_item->discount_percent . ", " . $stock_item->qty_inv . " )";
 
 		db_query($sql, "Old order Cannot be Inserted");

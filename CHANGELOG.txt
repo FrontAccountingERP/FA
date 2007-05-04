@@ -20,7 +20,9 @@ Legend:
 $ -> Affected files
 
 04-May-2007 Joe Hunt
- # Database error hen inserting work order issues. Fixed.
+ # Database error when updating more than one item row in Sales Orders.
+ $ /sales/includes/db/sales_order_db.inc
+ # Database error when inserting work order issues. Fixed.
  $ /manufacturing/includes/db/work_order_issues_db.inc
  
 03-May-2007 Joe Hunt
