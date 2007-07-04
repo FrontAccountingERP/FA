@@ -633,6 +633,9 @@ function get_js_date_picker()
 	$how = user_date_format();				// 0 = us/ca, 1 = eu, au, nz, 2 = jp, sw
 	$sep = $dateseps[user_date_sep()];		// date separator
 	$wstart = ($how == 0 ? 0 : 1);			// weekstart (sun = 0, mon = 1)
+	$months = array(_("January"),_("February"),_("March"),_("April"),_("May"),_("June"),_("July"),_("August"),_("September"),_("October"),_("November"),_("December"));
+	$wdays = array(_("Su"),_("Mo"),_("Tu"),_("We"),_("Th"),_("Fr"),_("Sa"));
+	$back = _("Back");
 
 	$js = "<style>
 #CCIFrame { display: none; left: 0px; position: absolute; top: 0px; height: 250px; width: 250px; z-index: 99;}
@@ -726,8 +729,8 @@ function CC() {
   var selectedYear = 0;
   var selectedMonth = 0;
   var selectedDay = 0;
-  var months = ['"._("January")."','"._("February")."','"._("March")."','"._("April")."','"._("May")."','"._("June")."','"._("July")."','"._("August")."','"._("September")."','"._("October")."','"._("November")."','"._("December")."'];
-  var wdays = ['"._("Su")."', '"._("Mo")."', '"._("Tu")."', '"._("We")."', '"._("Th")."', '"._("Fr")."', '"._("Sa")."'];
+  var months = ['$months[0]','$months[1]','$months[2]','$months[3]','$months[4]','$months[5]','$months[6]','$months[7]','$months[8]','$months[9]','$months[10]','$months[11]'];
+  var wdays = ['$wdays[0]', '$wdays[1]', '$wdays[2]', '$wdays[3]', '$wdays[4]', '$wdays[5]', '$wdays[6]'];
   var dateField = null;
   function getProperty(p_property){
     var p_elm = calendarId;
@@ -876,7 +879,7 @@ function CC() {
       }
       table += \"</tr>\";
     }
-    table += \"<tr class='header'><th colspan='7' style='padding: 3px;'><a href='javascript:hideCC();'>Back</a></td></tr>\";
+    table += \"<tr class='header'><th colspan='7' style='padding: 3px;'><a href='javascript:hideCC();'>$back</a></td></tr>\";
     table += \"</table>\";
     return table;
   }

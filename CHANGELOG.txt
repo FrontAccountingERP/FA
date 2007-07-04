@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+04-Jul-2007 Joe Hunt
+ # Problems retrieving language texts for poEdit in long javascripts
+ $ /includes/ui/ui_view.inc
+ 
 04-May-2007 Joe Hunt
  # Database error when updating more than one item row in Sales Orders.
  $ /sales/includes/db/sales_order_db.inc
