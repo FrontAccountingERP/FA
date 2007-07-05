@@ -52,10 +52,10 @@
 	// Main Title
 	$app_title = "FrontAccounting";
     // application version
-    $version 		= "1.1";
+    $version 		= "1.11";
 
     // Build for development purposes
-    $build_version 	= "21";
+    $build_version 	= "23";
 
 	// Powered by
 	$power_by 		= "FrontAccounting";
@@ -72,6 +72,9 @@
 
 	/* use Audit Trails in GL */
 	$use_audit_trail = 0;
+	
+	/* allow alpha characters in accounts. 0 = numeric, 1 = alpha numeric, 2 = uppercase alpha numeric */
+	$accounts_alpha = 0;
 
 	/* default start-up tab (orders/AP/stock/manuf/proj/GL/system) */
 	$def_app = "orders";

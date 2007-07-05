@@ -7,11 +7,11 @@ function update_item($stock_id, $description, $long_description, $category_id, $
 	$sql = "UPDATE ".TB_PREF."stock_master SET long_description='$long_description',
 		description='$description',
 		category_id='$category_id',
-		sales_account=$sales_account,
-		inventory_account=$inventory_account,
-		cogs_account=$cogs_account,
-		adjustment_account=$adjustment_account,
-		assembly_account=$assembly_account,
+		sales_account='$sales_account',
+		inventory_account='$inventory_account',
+		cogs_account='$cogs_account',
+		adjustment_account='$adjustment_account',
+		assembly_account='$assembly_account',
 		dimension_id=$dimension_id,
 		dimension2_id=$dimension2_id,
 		tax_type_id=$tax_type_id
@@ -29,8 +29,8 @@ function add_item($stock_id, $description, $long_description, $category_id, $tax
 		adjustment_account, assembly_account, dimension_id, dimension2_id)
 		VALUES ('$stock_id', '$description', '$long_description',
 		'$category_id', $tax_type_id, '$units', '$mb_flag',
-		$sales_account, $inventory_account, $cogs_account,
-		$adjustment_account, $assembly_account, $dimension_id, $dimension2_id)";
+		'$sales_account', '$inventory_account', '$cogs_account',
+		'$adjustment_account', '$assembly_account', $dimension_id, $dimension2_id)";
 
 	db_query($sql, "The item could not be added");
 

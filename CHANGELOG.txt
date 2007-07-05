@@ -19,6 +19,19 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+-------------------- 1.11 Stable Released ----------------------
+04-jul-2007 Joe Hunt
+ ! Option for using alpha numeric chart of accounts.
+ $ config.php
+   /gl/manage/gl_accounts.php
+   /gl/includes/db/gl_db_accounts.inc
+   /gl/includes/db/gl_db_bank_trans.inc
+   /gl/includes/db/gl_db_trans.inc
+   /gl/inquiry/gl_trial_balance.inc
+   /admin/db/company_db.inc
+   /inventory/includes/db/items_db.inc
+   /sales/manage/customer_branches.inc
+
 04-Jul-2007 Joe Hunt
  # Problems retrieving language texts for poEdit in long javascripts
  $ /includes/ui/ui_view.inc

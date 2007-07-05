@@ -16,14 +16,14 @@ function update_gl_account($account_code, $account_name, $account_type, $account
 	$account_name = db_escape($account_name);
     $sql = "UPDATE ".TB_PREF."chart_master SET account_name='$account_name',
 		account_type=$account_type, account_code2='$account_code2',
-		tax_code=$tax_code WHERE account_code = $account_code";
+		tax_code=$tax_code WHERE account_code = '$account_code'";
 
 	db_query($sql, "could not update gl account");
 }
 
 function delete_gl_account($code)
 {
-	$sql = "DELETE FROM ".TB_PREF."chart_master WHERE account_code=$code";
+	$sql = "DELETE FROM ".TB_PREF."chart_master WHERE account_code='$code'";
 
 	db_query($sql, "could not delete gl account");
 }
@@ -57,7 +57,7 @@ function get_gl_accounts_all($balance=-1)
 
 function get_gl_account($code)
 {
-	$sql = "SELECT * FROM ".TB_PREF."chart_master WHERE account_code=$code";
+	$sql = "SELECT * FROM ".TB_PREF."chart_master WHERE account_code='$code'";
 
 	$result = db_query($sql, "could not get gl account");
 	return db_fetch($result);

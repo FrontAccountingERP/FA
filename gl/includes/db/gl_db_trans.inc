@@ -37,7 +37,7 @@ function add_gl_trans($type, $trans_id, $date_, $account, $dimension, $dimension
 	$sql .= ") ";
 
 	$sql .= "VALUES ($type, $trans_id, '$date',
-		$account, $dimension, $dimension2, '$memo_', $amount_in_home_currency";
+		'$account', $dimension, $dimension2, '$memo_', $amount_in_home_currency";
 
 	if ($person_type_id != null)
 		$sql .= ", $person_type_id, '$person_id'";
@@ -82,7 +82,7 @@ function get_gl_transactions($from_date, $to_date, $trans_no=0,
 		$sql .= " AND ".TB_PREF."gl_trans.type_no LIKE '%$trans_no'";
 
 	if ($account != null)
-		$sql .= " AND ".TB_PREF."gl_trans.account = $account";
+		$sql .= " AND ".TB_PREF."gl_trans.account = '$account'";
 
 	if ($dimension > 0)
 		$sql .= " AND ".TB_PREF."gl_trans.dimension_id = $dimension";
@@ -118,7 +118,7 @@ function get_gl_balance_from_to($from_date, $to_date, $account, $dimension=0, $d
 	$to = date2sql($to_date);
 
     $sql = "SELECT SUM(amount) FROM ".TB_PREF."gl_trans
-		WHERE account='" . $account . "'";
+		WHERE account='$account'";
 	if ($from_date != "")
 		$sql .= "  AND tran_date > '$from'";
 	if ($to_date != "")
@@ -142,7 +142,7 @@ function get_gl_trans_from_to($from_date, $to_date, $account, $dimension=0, $dim
 	$to = date2sql($to_date);
 
     $sql = "SELECT SUM(amount) FROM ".TB_PREF."gl_trans
-		WHERE account='" . $account . "'";
+		WHERE account='$account'";
 	if ($from_date != "")
 		$sql .= " AND tran_date >= '$from'";
 	if ($to_date != "")

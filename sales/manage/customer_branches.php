@@ -73,10 +73,10 @@ if (isset($_POST['ADD_ITEM']) || isset($_POST['UPDATE_ITEM']))
     	        area='" . $_POST['area'] . "',
     	        email='" . $_POST['email'] . "',
     	        tax_group_id=" . $_POST['tax_group_id'] . ",
-				sales_account=" . $_POST['sales_account'] . ",
-				sales_discount_account=" . $_POST['sales_discount_account'] . ",
-				receivables_account=" . $_POST['receivables_account'] . ",
-				payment_discount_account=" . $_POST['payment_discount_account'] . ",
+				sales_account='" . $_POST['sales_account'] . "',
+				sales_discount_account='" . $_POST['sales_discount_account'] . "',
+				receivables_account='" . $_POST['receivables_account'] . "',
+				payment_discount_account='" . $_POST['payment_discount_account'] . "',
     	        default_location='" . $_POST['default_location'] . "',
     	        br_post_address = '" . $_POST['br_post_address'] . "',
     	        disable_trans=" . $_POST['disable_trans'] . ",
@@ -96,11 +96,11 @@ if (isset($_POST['ADD_ITEM']) || isset($_POST['UPDATE_ITEM']))
 					$_POST['br_address'] . "', '" . $_POST['salesman'] . "', '" .
 					$_POST['phone'] . "', '" . $_POST['fax'] . "','" .
 					$_POST['contact_name'] . "', '" . $_POST['area'] . "','" .
-					$_POST['email'] . "', " . $_POST['tax_group_id'] . ", " .
-					$_POST['sales_account'] . ", " .
-					$_POST['receivables_account'] . ", " .
-					$_POST['payment_discount_account'] . ", " .
-					$_POST['sales_discount_account'] . ", '" .
+					$_POST['email'] . "', " . $_POST['tax_group_id'] . ", '" .
+					$_POST['sales_account'] . "', '" .
+					$_POST['receivables_account'] . "', '" .
+					$_POST['payment_discount_account'] . "', '" .
+					$_POST['sales_discount_account'] . "', '" .
 					$_POST['default_location'] . "', '" . $_POST['br_post_address'] . "'," . $_POST['disable_trans'] . ", " . $_POST['default_ship_via'] . ")";
 		}
 

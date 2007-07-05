@@ -40,7 +40,7 @@ function gl_inquiry_controls()
 function get_balance($account, $from, $to, $from_incl=true, $to_incl=true) {
 
 	$sql = "SELECT SUM(amount) As TransactionSum FROM ".TB_PREF."gl_trans
-		WHERE account=$account";
+		WHERE account='$account'";
 
 	if ($from) 
 	{

@@ -28,7 +28,7 @@ function add_bank_trans($type, $trans_no, $bank_act, $ref, $date_, $bank_trans_t
 	$sql = "INSERT INTO ".TB_PREF."bank_trans (type, trans_no, bank_act, ref,  
 		trans_date, bank_trans_type_id, amount, person_type_id, person_id) ";
 	
-	$sql .= "VALUES ($type, $trans_no, $bank_act, '$ref', '$sqlDate', '$bank_trans_type_id', 
+	$sql .= "VALUES ($type, $trans_no, '$bank_act', '$ref', '$sqlDate', '$bank_trans_type_id', 
 		$amount_bank, $person_type_id, '$person_id')";
 						
 	if ($err_msg == "")
@@ -73,7 +73,7 @@ function get_bank_trans($type, $trans_no=null, $person_type_id=null, $person_id=
 
 function get_gl_trans_value($account, $type, $trans_no)
 {
-	$sql = "SELECT SUM(amount) FROM ".TB_PREF."gl_trans WHERE account=$account AND type=$type AND type_no=$trans_no";
+	$sql = "SELECT SUM(amount) FROM ".TB_PREF."gl_trans WHERE account='$account' AND type=$type AND type_no=$trans_no";
 	
 	$result = db_query($sql, "query for gl trans value");
 	
