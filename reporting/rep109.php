@@ -33,9 +33,11 @@ function get_sales_order_details($order_no)
 	return db_query($sql, "Retreive order Line Items");
 }
 
+$print_as_quote = 0;
+
 function print_sales_orders()
 {
-	global $path_to_root;
+	global $path_to_root, $print_as_quote;
 	
 	include_once($path_to_root . "reporting/includes/pdf_report.inc");
 	
@@ -44,7 +46,8 @@ function print_sales_orders()
 	$currency = $_POST['PARAM_2'];
 	$bankaccount = $_POST['PARAM_3'];
 	$email = $_POST['PARAM_4'];	
-	$comments = $_POST['PARAM_5'];
+	$print_as_quote = $_POST['PARAM_5'];	
+	$comments = $_POST['PARAM_6'];
 
 	if ($from == null)
 		$from = 0;
@@ -65,7 +68,10 @@ function print_sales_orders()
 	
 	if ($email == 0)
 	{
-		$rep = new FrontReport(_('SALES ORDER'), "SalesOrderBulk.pdf", user_pagesize());
+		if ($print_as_quote == 1)
+			$rep = new FrontReport(_("QUOTE"), "QuoteBulk.pdf", user_pagesize());
+		else	
+			$rep = new FrontReport(_("SALES ORDER"), "SalesOrderBulk.pdf", user_pagesize());
 		$rep->currency = $cur;
 		$rep->Font();
 		$rep->Info($params, $cols, null, $aligns);
@@ -80,12 +86,20 @@ function print_sales_orders()
 			$rep = new FrontReport("", "", user_pagesize());
 			$rep->currency = $cur;
 			$rep->Font();
-			$rep->title = _('SALES_ORDER');
-			$rep->filename = "SalesOrder" . $i . ".pdf";
+			if ($print_as_quote == 1)
+			{
+				$rep->title = _('QUOTE');
+				$rep->filename = "Quote" . $i . ".pdf";
+			}
+			else
+			{
+				$rep->title = _("SALES ORDER");
+				$rep->filename = "SalesOrder" . $i . ".pdf";
+			}	
 			$rep->Info($params, $cols, null, $aligns);
 		}
 		else
-			$rep->title = _('SALES ORDER');
+			$rep->title = ($print_as_quote==1 ? _("QUOTE") : _("SALES ORDER"));
 		$rep->Header2($myrow, $branch, $myrow, $baccount, 9);
 
 		$result = get_sales_order_details($i);

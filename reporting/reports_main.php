@@ -66,6 +66,7 @@ $reports->addReport(_('Customer'),109,_('Print Sales Orders'),
 			new ReportParam(_('Currency Filter'),'CURRENCY'), 
 			new ReportParam(_('Bank Account'),'BANK_ACCOUNTS'), 
 			new ReportParam(_('Email Customers'),'YES_NO'), 
+			new ReportParam(_('Print as Quote'),'YES_NO'), 
 			new ReportParam(_('Comments'),'TEXTBOX')));
 
 $reports->addReportClass(_('Supplier'));

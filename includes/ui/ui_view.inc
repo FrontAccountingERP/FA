@@ -623,19 +623,18 @@ function get_js_png_fix()
 
 function get_js_date_picker()
 {
-	global $dateseps;
-	//global $dateseps $path_to_root;
-	
-	//$encoding = "iso-8859-1";	// character encoding
-	//$encoding = $_SESSION['language']->encoding;	// character encoding
-	//$dir = "ltr";				// left to right, right to left
-	//$dir = $_SESSION['language']->dir;	// left to right, right to left
+	global $dateseps, $date_system;
+
 	$how = user_date_format();				// 0 = us/ca, 1 = eu, au, nz, 2 = jp, sw
 	$sep = $dateseps[user_date_sep()];		// date separator
-	$wstart = ($how == 0 ? 0 : 1);			// weekstart (sun = 0, mon = 1)
+	$wstart = (($date_system == 1 || $date_system == 2) ? 6 : ($how == 0 ? 0 : 1));			// weekstart (sun = 0, mon = 1)
 	$months = array(_("January"),_("February"),_("March"),_("April"),_("May"),_("June"),_("July"),_("August"),_("September"),_("October"),_("November"),_("December"));
 	$wdays = array(_("Su"),_("Mo"),_("Tu"),_("We"),_("Th"),_("Fr"),_("Sa"));
 	$back = _("Back");
+	if ($date_system == 1)
+		list($cyear, $cmon, $cday) = gregorian_to_jalali(date("Y"), date("n"), date("j"));
+	else if ($date_system == 2)
+		list($cyear, $cmon, $cday) = gregorian_to_islamic(date("Y"), date("n"), date("j"));
 
 	$js = "<style>
 #CCIFrame { display: none; left: 0px; position: absolute; top: 0px; height: 250px; width: 250px; z-index: 99;}
@@ -770,11 +769,60 @@ function CC() {
     setElementProperty(p_property, p_value, calendarId);
   }
   function getDaysInMonth(year, month) {
+";
+	if ($date_system == 1)
+		$js .= "
+    return [31,31,31,31,31,31,30,30,30,30,30,(((((((year - ((year > 0) ? 474 : 473)) % 2820) + 474) + 38) * 682) % 2816) < 682 ? 30 : 29)][month-1];
+";
+	else if ($date_system == 2)
+		$js .= "
+    return [30,29,30,29,30,29,30,29,30,29,30,(((((11 * year) + 14) % 30) < 11) ? 30 : 29)][month-1];
+";
+	else
+		$js .= "
     return [31,((!(year % 4 ) && ( (year % 100 ) || !( year % 400 ) ))?29:28),31,30,31,30,31,31,30,31,30,31][month-1];
+";
+	$js .= "
   }
   function getDayOfWeek(year, month, day) {
+";
+	if ($date_system == 1 || $date_system == 2)
+	{
+		$js .= "
+	function mod(a, b)
+	{
+	    return a - (b * Math.floor(a / b));
+	}
+	function jwday(j)
+	{
+	    return mod(Math.floor((j + 1.5)), 7);
+	}
+";
+	if ($date_system == 1)
+		$js .= "
+    var epbase, epyear, t;
+    epbase = year - ((year >= 0) ? 474 : 473);
+    epyear = 474 + mod(epbase, 2820);
+    t = day + ((month <= 7) ? ((month - 1) * 31) : (((month - 1) * 30) + 6)) +
+      Math.floor(((epyear * 682) - 110) / 2816) + (epyear - 1) * 365 + 
+      Math.floor(epbase / 2820) * 1029983 + (1948320.5 - 1);
+";
+	else if ($date_system == 2)
+		$js .= "
+	var t;	
+	t = Math.floor((11 * year + 3) / 30) + 354 * year + 30 * month - 
+	  Math.floor((month - 1) / 2) + day + 1948440 - 385;
+";
+	$js .= "
+    return jwday(t);        
+";
+	}
+	else
+		$js .= "
     var date = new Date(year,month-1,day)
     return date.getDay();
+";
+	$js .= "
   }
   this.clearDate = clearDate;
   function clearDate() {
@@ -866,7 +914,16 @@ function CC() {
         if(validDay) {
           if (dayOfMonth == selectedDay && currentYear == selectedYear && currentMonth == selectedMonth) {
             css_class = 'current';
+";
+	if ($date_system == 1 || $date_system == 2)
+		$js .= "
+          } else if (dayOfWeek == 5) {
+";
+	else
+		$js .= "
           } else if (dayOfWeek == 0 || dayOfWeek == 6) {
+";
+		$js .= "
             css_class = 'weekend';
           } else {
             css_class = 'weekday';
@@ -918,9 +975,24 @@ function CC() {
       } catch(e) {}
     }
     if (!(selectedYear && selectedMonth && selectedDay)) {
+";
+	if ($date_system == 1 || $date_system == 2)
+	{
+		$js .= "
+      selectedMonth = $cmon;
+      selectedDay = $cday;
+      selectedYear = $cyear;
+";
+	}
+	else
+	{
+		$js .= "
       selectedMonth = getCurrentMonth();
       selectedDay = getCurrentDay();
       selectedYear = getCurrentYear();
+";
+	}
+	$js .= "
     }
     currentMonth = selectedMonth;
     currentDay = selectedDay;

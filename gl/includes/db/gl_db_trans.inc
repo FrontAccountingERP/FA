@@ -167,7 +167,7 @@ function get_budget_trans_from_to($from_date, $to_date, $account, $dimension=0, 
 	$to = date2sql($to_date);
 	
 	$sql = "SELECT SUM(amount) FROM ".TB_PREF."budget_trans
-		WHERE account=$account ";
+		WHERE account='$account' ";
 	if ($from_date != "")	
 		$sql .= " AND tran_date >= '$from' ";
 	if ($to_date != "")	
@@ -214,8 +214,9 @@ function add_journal_entries($items, $date_, $ref, $reverse, $memo_=null)
 	if ($reverse) 
 	{
 
-    	$reversingDate = date(user_date_display(),
-    		Mktime(0,0,0,get_month($date_)+1,1,get_year($date_)));
+    	//$reversingDate = date(user_date_display(),
+    	//	Mktime(0,0,0,get_month($date_)+1,1,get_year($date_)));
+    	$reversingDate = begin_month(add_months($date_, 1));
 
     	$trans_id_reverse = get_next_trans_no($trans_type);
 

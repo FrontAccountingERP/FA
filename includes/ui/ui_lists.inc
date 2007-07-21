@@ -393,6 +393,8 @@ function fiscalyears_list($name, &$selected_id, $submit_on_change=false)
 			$how = _('Active');
 		else
 			$how = _('Closed');
+		$row[1] = sql2date($row[1]);	
+		$row[2] = sql2date($row[2]);	
 		echo $row[1] . "&nbsp;-&nbsp;" . $row[2] . "&nbsp;&nbsp;" . $how . "</option>\n";
 	}
 

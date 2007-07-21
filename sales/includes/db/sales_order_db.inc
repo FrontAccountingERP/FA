@@ -236,7 +236,6 @@ function get_invoice_duedate($debtorno, $invdate)
 	{
 		return Today();
 	}
-	$disp = user_date_display();
     $sql = "SELECT ".TB_PREF."debtors_master.debtor_no, ".TB_PREF."debtors_master.payment_terms, ".TB_PREF."payment_terms.* FROM ".TB_PREF."debtors_master,
 	   	".TB_PREF."payment_terms WHERE ".TB_PREF."debtors_master.payment_terms = ".TB_PREF."payment_terms.terms_indicator AND
 	   	".TB_PREF."debtors_master.debtor_no = '$debtorno'";
@@ -246,11 +245,10 @@ function get_invoice_duedate($debtorno, $invdate)
 
     if (db_num_rows($result) == 0)
     	return $invdate;
-    $date_array = explode_date_to_dmy($invdate);
     if ($myrow['day_in_following_month'] > 0)
-    	$duedate = date($disp, Mktime(0,0,0,$date_array[1]+1, $myrow['day_in_following_month'],$date_array[2]));
+    	$duedate = add_days(end_month($invdate), $myrow['day_in_following_month']);
 	else
-		$duedate = date($disp, Mktime(0,0,0,$date_array[1],$date_array[0] + (int) $myrow['days_before_due'],$date_array[2]));
+    	$duedate = add_days($invdate, $myrow['days_before_due']);
     return $duedate;
 }
 

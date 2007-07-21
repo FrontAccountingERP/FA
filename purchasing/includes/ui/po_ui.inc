@@ -160,7 +160,7 @@ function display_po_items(&$order, $editable=true)
 {
 	global $table_style;
 
-    display_heading2(_("Order Items"));
+    display_heading(_("Order Items"));
 
     start_table("$table_style width=80%");
 
@@ -301,7 +301,7 @@ function po_item_controls(&$order, $stock_id=null)
 
    		$_POST['qty'] = 1;
 		$_POST['price'] = get_purchase_price ($order->supplier_id, $_POST['stock_id']);
-		$_POST['req_del_date'] = date(user_date_display(),Mktime(0,0,0,date("m"),date("d")+10,date("y")));
+		$_POST['req_del_date'] = add_days(Today(), 10);
 	}
 
 	text_cells(null, 'qty', null, 13, 15);

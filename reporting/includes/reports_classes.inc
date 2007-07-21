@@ -138,12 +138,12 @@ class Report
 					if ($param->param_type == 'DATEBEGINM')
 						$date = begin_month($date);
 					elseif ($param->param_type == 'DATEENDM')
-						$date = enc_month($date);
+						$date = end_month($date);
 					elseif ($param->param_type == 'DATEBEGINTAX' || $param->param_type == 'DATEENDTAX')
 					{
 						$row = get_company_prefs();
 						$edate = add_months($date, -$row['tax_last']);
-						$edate = enc_month($edate);
+						$edate = end_month($edate);
 						if ($param->param_type == 'DATEENDTAX')
 							$date = $edate;
 						else

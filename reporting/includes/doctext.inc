@@ -27,7 +27,7 @@ if (isset($header2type))
 		if ($doctype == 8)
 			$this->title = _("PURCHASE ORDER");
 		else if ($doctype == 9)
-			$this->title = _("SALES ORDER");
+			$this->title = ($print_as_quote==1 ? _("QUOTE") : _("SALES ORDER"));
 		else if ($doctype == 10)
 			$this->title = _("INVOICE");
 		else

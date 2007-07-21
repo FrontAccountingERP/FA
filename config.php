@@ -52,20 +52,20 @@
 	// Main Title
 	$app_title = "FrontAccounting";
     // application version
-    $version 		= "1.11";
+    $version 		= "1.12";
 
     // Build for development purposes
-    $build_version 	= "23";
+    $build_version 	= "31";
 
 	// Powered by
 	$power_by 		= "FrontAccounting";
-	$power_url 		= "http://frontaccounting.com";
-
-	/* use popup windows for views */
-	$use_popup_windows = 1;
+	$power_url 		= "http://frontaccounting.net/ftac";
 
     /*Stock units array*/
 	$stock_units 	= array(_("ea."), _("m"), _("kgg"), _("tons"), _("l"), _("lbs"), _("dozen"), _("pack"), _("hrs"));
+
+	/* use popup windows for views */
+	$use_popup_windows = 1;
 
 	/* use date picker for all date fields */
 	$use_date_picker = 1;
@@ -78,6 +78,10 @@
 
 	/* default start-up tab (orders/AP/stock/manuf/proj/GL/system) */
 	$def_app = "orders";
+	
+	/* Date systems. 0 = traditional, 1 = Jalali used by Iran, nabour countries, Afghanistan and some other Central Asian nations, 
+	   2 = Islamic used by other arabic nations */
+	$date_system = 0;
 
 	$dateformats 	= array("MMDDYYYY", "DDMMYYYY", "YYYYMMDD");
 	$dateseps 		= array("/", ".", "-", " ");

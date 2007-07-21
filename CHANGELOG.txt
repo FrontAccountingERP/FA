@@ -19,8 +19,42 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+-------------------- 1.12 Stable Released ----------------------
+21-Jul-2007 Joe Hunt
+ + Added option to handle Jalali and Islamic Calendars
+ ! Minor adjustments
+ $ config.php
+   /gl/includes/db/gl_db_trans.inc
+   /includes/date_functions.inc
+   /includes/ui/ui_input.inc
+   /includes/ui/ui_lists.inc
+   /includes/ui/ui_view.inc
+   /purchasing/po_receive_items.php
+   /purchasing/includes/ui/invoice_ui.inc
+   /purchasing/includes/ui/po_ui.inc
+   /reporting/rep705.php
+   /sales/includes/db/sales_order_db.inc
+   /sales/includes/ui/sales_order_ui.inc
+   
+20-Jul-2007 Joe Hunt
+ ! Changed parameters on report Sales Order. Option to print as Quote.
+ $ /reporting/reports_main.php
+   /reporting/rep109.php
+   /reporting/includes/pdf_report.inc
+   /reporting/includes/doctext.inc
+   /reporting/includes/doctext2.inc
+ 
+19-Jul-2007 Joe Hunt
+ + Added Budget Entry in General Ledger. Includes Dimensions.
+ $ config.php
+   /applications/generalledger.php
+   /gl/gl_budget.php (New File!)
+   /gl/includes/db/gl_db_trans.inc
+   /includes/date_functions.inc
+   /reporting/report_classes.inc
+   
 -------------------- 1.11 Stable Released ----------------------
-04-jul-2007 Joe Hunt
+04-Jul-2007 Joe Hunt
  ! Option for using alpha numeric chart of accounts.
  $ config.php
    /gl/manage/gl_accounts.php
@@ -46,7 +80,6 @@ $ -> Affected files
  # Multiple tables and JOIN's have syntax changes in MySQL 5.0.12. Need parentheses.
  $ /includes/db/manufacturing_db.inc
    /manufacturing/includes/db/work_order_requirements_db.inc
-
 
 02-May-2007 Joe Hunt
  # Missing details on Purchase Order when emailing and printing
@@ -76,7 +109,6 @@ $ -> Affected files
    install.html
    update.html (New file!)
    
-
 01-May-2007 Joe Hunt
  # Missing measure of units when printing sales orders
  # Update of Sales People caused a database error

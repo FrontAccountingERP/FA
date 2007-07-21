@@ -343,10 +343,12 @@ function display_delivery_details(&$order)
 	if ($order->direct_invoice) 
 	{
 		$title = _("Invoice Delivery Details");
+		$delname = _("Due Date");
 	} 
 	else 
 	{
 		$title = _("Order Delivery Details");
+		$delname = _("Required Delivery Date:");
 	}
 	display_heading($title);
     echo "<br>";
@@ -356,7 +358,7 @@ function display_delivery_details(&$order)
     echo "<table>";
     locations_list_row(_("Deliver from Location:"), 'Location', $order->Location);
 
-   	date_row(_("Required Delivery Date:"), 'delivery_date', $order->delivery_date, 0, 0, 0);
+   	date_row($delname, 'delivery_date', $order->delivery_date, 0, 0, 0);
 
     text_row(_("Deliver To:"), 'deliver_to', $order->deliver_to, 40, 40);
 

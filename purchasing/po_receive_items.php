@@ -286,7 +286,7 @@ if (isset($_POST['ProcessGoodsReceived']))
 start_form(false, true);
 
 display_grn_summary($_SESSION['PO'], true);
-display_heading2(_("Items to Receive"));
+display_heading(_("Items to Receive"));
 display_po_receive_items();
 
 echo "<br><center>";

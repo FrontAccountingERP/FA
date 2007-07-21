@@ -70,7 +70,7 @@ function getPeriods($year, $account, $dimension, $dimension2)
 
 function print_annual_expense_breakdown()
 {
-	global $path_to_root;
+	global $path_to_root, $date_system;
 
 	include_once($path_to_root . "reporting/includes/pdf_report.inc");
 	$dim = get_company_pref('use_dimension');
@@ -106,6 +106,10 @@ function print_annual_expense_breakdown()
 	$yr = $year;
 	$mo = 12;
 	$da = 1;
+	if ($date_system == 1)
+		list($yr, $mo, $da) = jalali_to_gregorian($yr, $mo, $da);
+	else if ($date_system == 2)
+		list($yr, $mo, $da) = islamic_to_gregorian($yr, $mo, $da);
 	$per12 = strftime('%b',mktime(0,0,0,$mo,$da,$yr));
 	$per11 = strftime('%b',mktime(0,0,0,$mo-1,$da,$yr));
 	$per10 = strftime('%b',mktime(0,0,0,$mo-2,$da,$yr));

@@ -181,7 +181,7 @@ function display_gl_items(&$supp_trans, $mode=0)
 		$heading = _("GL Items for this Credit Note");
 
 	echo "<table width=100%>";
-	echo "<tr><td align=center><span class='headingtext2'>$heading</span></td>";
+	echo "<tr><td align=center><span class='headingtext'>$heading</span></td>";
 	if ($mode == 0) 
 	{
     	submit_cells('InvGL', _("Edit"), "align=right");
@@ -289,7 +289,7 @@ function display_grn_items(&$supp_trans, $mode=0)
 		$heading = _("Received Items Credited on this Note");
 
 	echo "<table width=100% >";
-	echo "<tr><td align=center><span class='headingtext2'>$heading</span></td>";
+	echo "<tr><td align=center><span class='headingtext'>$heading</span></td>";
 	if ($mode == 0) 
 	{
 		submit_cells('InvGRN', _("Edit"), "align=right");
@@ -351,21 +351,17 @@ function display_grn_items(&$supp_trans, $mode=0)
 //--------------------------------------------------------------------------------------------------
 function get_duedate_from_terms(&$supp_trans)
 {
-	$disp = user_date_display();
-
 	if (!is_date($supp_trans->tran_date)) 
 	{
 		$supp_trans->tran_date = Today();
 	}
-    $date_array = explode_date_to_dmy($supp_trans->tran_date);
-
 	if (substr( $supp_trans->terms, 0, 1) == "1") 
 	{ /*Its a day in the following month when due */
-		$supp_trans->due_date = date($disp, Mktime(0,0,0,$date_array[1]+1, substr( $supp_trans->terms,1),$date_array[2]));
+		$supp_trans->due_date = add_days(end_month($supp_trans->tran_date), (int) substr( $supp_trans->terms,1));
 	} 
 	else 
 	{ /*Use the Days Before Due to add to the invoice date */
-		$supp_trans->due_date = date($disp, Mktime(0,0,0,$date_array[1],$date_array[0] + (int) substr( $supp_trans->terms,1),$date_array[2]));
+		$supp_trans->due_date = add_days($supp_trans->tran_date, (int) substr( $supp_trans->terms,1));
 	}
 }
 
