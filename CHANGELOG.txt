@@ -19,6 +19,11 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+23-Jul-2007
+ # Changed <? in front of 2 files to <?php.
+ $ /purchasing/includes/purchasing_ui.inc
+   /reporting/includes/class.mail.inc
+   
 -------------------- 1.12 Stable Released ----------------------
 21-Jul-2007 Joe Hunt
  + Added option to handle Jalali and Islamic Calendars

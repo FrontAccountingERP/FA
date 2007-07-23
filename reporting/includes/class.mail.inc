@@ -1,4 +1,4 @@
-<?
+<?php
 /*
     Name:           eMail
     Description:    Simple sending eMail in text and HTML with CC, BCC and attachment
