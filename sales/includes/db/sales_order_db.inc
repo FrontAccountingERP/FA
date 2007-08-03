@@ -6,7 +6,10 @@ function add_sales_order($order)
 {
 	begin_transaction();
 
-	$del_date = date2sql($order->delivery_date);
+	if ($order->direct_invoice)
+		$del_date = date2sql($order->orig_order_date);
+	else	
+		$del_date = date2sql($order->delivery_date);
 
 	$sql = "INSERT INTO ".TB_PREF."sales_orders (debtor_no, branch_code, customer_ref, Comments, ord_date, 
 		order_type, ship_via, deliver_to, delivery_address, contact_phone, 
