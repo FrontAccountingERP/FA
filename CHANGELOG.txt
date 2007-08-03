@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+03-Aug-2007
+ # A bug in Direct Invoicing (wrong Invoice Date) has been fixed.
+ $ /sales/includes/db/sales_order_db.inc
+ 
 23-Jul-2007
  # Changed <? in front of 2 files to <?php.
  $ /purchasing/includes/purchasing_ui.inc
