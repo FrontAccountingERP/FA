@@ -19,6 +19,12 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+04-Aug-2007
+ + Added a default fiscal year in the en_US-new.sql and start references.
+ $ /sql/en_US-new.sql
+ ! Changed some specific text strings in en_US.po (E.g. TAX instead of VAT)
+ $ /lang/en_US/LC_MESSAGES/en_US.mo
+ 
 03-Aug-2007
  # A bug in Direct Invoicing (wrong Invoice Date) has been fixed.
  $ /sales/includes/db/sales_order_db.inc

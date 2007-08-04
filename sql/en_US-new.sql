@@ -1222,6 +1222,12 @@ CREATE TABLE IF NOT EXISTS `0_workorders` (
 -- --------------------------------------------------------
 
 -- 
+-- Data in table `areas`
+-- 
+
+INSERT INTO `0_areas` VALUES (1, 'USA');
+
+-- 
 -- Data in table `bank_accounts`
 -- 
 
@@ -1314,7 +1320,7 @@ INSERT INTO `0_chart_types` VALUES (52, 'Financials', 4, -1);
 -- Data in table `company`
 -- 
 
-INSERT INTO `0_company` VALUES (1, 'Company name', '', '', 1, 1, 'N/A', '', '', '', '', '', 'USD', '1500', '4250', '2630', '1430', '4260', '4220', '2050', '3800', '3000', '3000', '3200', '1420', '4010', '4210', '3000', '1410', '5000', '', '', '', '', '', '', 0, 10, 10, 1000, 20, 20, 30, 1, 0);
+INSERT INTO `0_company` VALUES (1, 'Company name', '', '', 1, 1, 'N/A', '', '', '', '', '', 'USD', '1500', '4250', '2630', '1430', '4260', '4220', '2050', '3800', '3000', '3000', '3200', '1420', '4010', '4210', '3000', '1410', '5000', '', '', '', '', '', '', 0, 10, 10, 1000, 20, 20, 30, 1, 1);
 
 -- 
 -- Data in table `credit_status`
@@ -1328,11 +1334,15 @@ INSERT INTO `0_credit_status` VALUES (4, 'In liquidation', 1);
 -- Data in table `currencies`
 -- 
 
-INSERT INTO `0_currencies` VALUES ('Kronor', 'SEK', 'kr', 'Sweden', '?ren');
-INSERT INTO `0_currencies` VALUES ('Kroner', 'DKK', 'kr.', 'Denmark', '?re');
 INSERT INTO `0_currencies` VALUES ('Euro', 'EUR', '?', 'Europe', 'Cents');
 INSERT INTO `0_currencies` VALUES ('Pounds', 'GBP', '?', 'England', 'Pence');
 INSERT INTO `0_currencies` VALUES ('US Dollars', 'USD', '$', 'United States', 'Cents');
+
+-- 
+-- Data in table `fiscal_year`
+-- 
+
+INSERT INTO `0_fiscal_year` VALUES (1, '2007-01-01', '2007-12-31', 0);
 
 -- 
 -- Data in table `locations`
@@ -1387,31 +1397,30 @@ INSERT INTO `0_stock_category` VALUES (4, 'Services', NULL, NULL, NULL, NULL);
 -- Data in table `sys_types`
 -- 
 
-INSERT INTO `0_sys_types` VALUES (0, 'Journal - GL', 17, '0');
-INSERT INTO `0_sys_types` VALUES (1, 'Payment - GL', 7, '0');
-INSERT INTO `0_sys_types` VALUES (2, 'Receipt - GL', 4, '0');
-INSERT INTO `0_sys_types` VALUES (4, 'Funds Transfer', 3, '0');
-INSERT INTO `0_sys_types` VALUES (10, 'Sales Invoice', 16, '0');
-INSERT INTO `0_sys_types` VALUES (11, 'Credit Note', 2, '0');
-INSERT INTO `0_sys_types` VALUES (12, 'Receipt', 6, '0');
-INSERT INTO `0_sys_types` VALUES (16, 'Location Transfer', 2, '0');
-INSERT INTO `0_sys_types` VALUES (17, 'Inventory Adjustment', 2, '0');
-INSERT INTO `0_sys_types` VALUES (18, 'Purchase Order', 1, '0');
-INSERT INTO `0_sys_types` VALUES (20, 'Supplier Invoice', 6, '0');
-INSERT INTO `0_sys_types` VALUES (21, 'Supplier Credit Note', 1, '0');
-INSERT INTO `0_sys_types` VALUES (22, 'Supplier Payment', 3, '0');
-INSERT INTO `0_sys_types` VALUES (25, 'Purchase Order Delivery', 1, '0');
-INSERT INTO `0_sys_types` VALUES (26, 'Work Order', 1, '0');
-INSERT INTO `0_sys_types` VALUES (28, 'Work Order Issue', 1, '0');
-INSERT INTO `0_sys_types` VALUES (29, 'Work Order Production', 1, '0');
-INSERT INTO `0_sys_types` VALUES (30, 'Sales Order', 1, '');
-INSERT INTO `0_sys_types` VALUES (35, 'Cost Update', 1, '');
-INSERT INTO `0_sys_types` VALUES (40, 'Dimension', 1, '3');
+INSERT INTO `0_sys_types` VALUES (0, 'Journal - GL', 17, '1');
+INSERT INTO `0_sys_types` VALUES (1, 'Payment - GL', 7, '1');
+INSERT INTO `0_sys_types` VALUES (2, 'Receipt - GL', 4, '1');
+INSERT INTO `0_sys_types` VALUES (4, 'Funds Transfer', 3, '1');
+INSERT INTO `0_sys_types` VALUES (10, 'Sales Invoice', 16, '1');
+INSERT INTO `0_sys_types` VALUES (11, 'Credit Note', 2, '1');
+INSERT INTO `0_sys_types` VALUES (12, 'Receipt', 6, '1');
+INSERT INTO `0_sys_types` VALUES (16, 'Location Transfer', 2, '1');
+INSERT INTO `0_sys_types` VALUES (17, 'Inventory Adjustment', 2, '1');
+INSERT INTO `0_sys_types` VALUES (18, 'Purchase Order', 1, '1');
+INSERT INTO `0_sys_types` VALUES (20, 'Supplier Invoice', 6, '1');
+INSERT INTO `0_sys_types` VALUES (21, 'Supplier Credit Note', 1, '1');
+INSERT INTO `0_sys_types` VALUES (22, 'Supplier Payment', 3, '1');
+INSERT INTO `0_sys_types` VALUES (25, 'Purchase Order Delivery', 1, '1');
+INSERT INTO `0_sys_types` VALUES (26, 'Work Order', 1, '1');
+INSERT INTO `0_sys_types` VALUES (28, 'Work Order Issue', 1, '1');
+INSERT INTO `0_sys_types` VALUES (29, 'Work Order Production', 1, '1');
+INSERT INTO `0_sys_types` VALUES (30, 'Sales Order', 1, '1');
+INSERT INTO `0_sys_types` VALUES (35, 'Cost Update', 1, '1');
+INSERT INTO `0_sys_types` VALUES (40, 'Dimension', 1, '1');
 
 -- 
 -- Data in table `users`
 -- 
 
-INSERT INTO `0_users` VALUES ('demouser', '5f4dcc3b5aa765d61d8327deb882cf99', 'Demo User', 1, '999-999-999', 'demo@demo.nu', 'en_US', 0, 0, 0, 0, 'default', 'Letter', 2, 2, 3, 1, 1, 0, '2007-02-06 19:02:35');
 INSERT INTO `0_users` VALUES ('admin', '5f4dcc3b5aa765d61d8327deb882cf99', 'Administrator', 2, '', 'info@frontaccounting.com', 'en_US', 0, 0, 0, 0, 'default', 'Letter', 2, 2, 4, 1, 1, 0, '2007-03-20 10:52:46');
 
