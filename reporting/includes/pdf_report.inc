@@ -456,7 +456,7 @@ class FrontReport extends Cpdf
 		$this->fontSize -= 4;
 		
 		$this->Text($ccol, $doc_Address, $ccol2 + 40);
-		$this->Text($ccol2 + 40, $doc_Phone_Fax_Email, $mcol);
+		$this->Text($ccol2 + 30, $doc_Phone_Fax_Email, $mcol);
 		$this->Text($mcol , $doc_Bank, $mcol2);
 		$this->Text($mcol2, $doc_Bank_Account);
 		$this->fontSize += 4;
@@ -470,11 +470,11 @@ class FrontReport extends Cpdf
 			$this->Text($ccol, $adr[$i], $ccol2 + 40);
 		}
 		$this->row = $adrline; 
-		$this->Text($ccol2 + 40, $this->company['phone'], $mcol);
+		$this->Text($ccol2 + 30, $this->company['phone'], $mcol);
 		$this->NewLine();
-		$this->Text($ccol2 + 40, $this->company['fax'], $mcol);
+		$this->Text($ccol2 + 30, $this->company['fax'], $mcol);
 		$this->NewLine();
-		$this->Text($ccol2 + 40, $this->company['email'], $mcol);
+		$this->Text($ccol2 + 30, $this->company['email'], $mcol);
 		// fetch this later
 		$this->row = $adrline; 
 		$this->Text($mcol, $bankaccount['bank_name'], $mcol2);
