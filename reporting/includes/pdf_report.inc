@@ -466,8 +466,8 @@ class FrontReport extends Cpdf
 		$adr = explode("\n", $this->company['postal_address']);
 		for ($i = 0; $i < count($adr); $i++)
 		{	
-			$this->NewLine();
 			$this->Text($ccol, $adr[$i], $ccol2 + 40);
+			$this->NewLine();
 		}
 		$this->row = $adrline; 
 		$this->Text($ccol2 + 30, $this->company['phone'], $mcol);

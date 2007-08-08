@@ -19,6 +19,13 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+08-Aug-2007
+ # Minor adjustments
+ $ config.php
+   /access/login.php
+   /admin/create_coy.php
+   /reporting/includes/pdf_report.inc
+   
 04-Aug-2007
  + Added a default fiscal year in the en_US-new.sql and start references.
  $ /sql/en_US-new.sql

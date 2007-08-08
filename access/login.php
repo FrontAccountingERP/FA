@@ -30,7 +30,7 @@ function defaultCompany()
 <body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onload="defaultCompany()">
     <table width="100%" height="100%" border="0" cellpadding="0" cellspacing="0">
         <tr>
-            <td align="center" valign="bottom"><a target="_blank" href="http://frontaccounting.com/"><img src="themes/default/images/logo_frontaccounting.png" alt="FrontAccounting" width="250" height="50" onload="fixPNG(this)" border="0" /></a></td>
+            <td align="center" valign="bottom"><a target="_blank" href="<?php $power_url; ?>"><img src="themes/default/images/logo_frontaccounting.png" alt="FrontAccounting" width="250" height="50" onload="fixPNG(this)" border="0" /></a></td>
 		</tr>
 
         <tr>

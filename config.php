@@ -59,7 +59,7 @@
 
 	// Powered by
 	$power_by 		= "FrontAccounting";
-	$power_url 		= "http://frontaccounting.net/ftac";
+	$power_url 		= "http://frontaccounting.net";
 
     /*Stock units array*/
 	$stock_units 	= array(_("ea."), _("m"), _("kgg"), _("tons"), _("l"), _("lbs"), _("dozen"), _("pack"), _("hrs"));

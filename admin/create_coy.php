@@ -234,12 +234,12 @@ function display_company_edit($selected_id)
 	}
 	else
 		$_POST['tbpref'] = $tb_pref_counter."_";
-	text_row_ex(_("Company"), 'name', 20);
-	text_row_ex(_("Host"), 'host', 20);
-	text_row_ex(_("Database User"), 'dbuser', 20);
+	text_row_ex(_("Company"), 'name', 30);
+	text_row_ex(_("Host"), 'host', 30);
+	text_row_ex(_("Database User"), 'dbuser', 30);
 	if ($selected_id == -1) 
-		text_row_ex(_("Database Password"), 'dbpassword', 20);
-	text_row_ex(_("Database Name"), 'dbname', 20);
+		text_row_ex(_("Database Password"), 'dbpassword', 30);
+	text_row_ex(_("Database Name"), 'dbname', 30);
 	if ($selected_id == -1)
 		yesno_list_row(_("Table Pref"), 'tbpref', 1, $_POST['tbpref'], _("None"), false);
 	else
