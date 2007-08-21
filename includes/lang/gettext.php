@@ -246,7 +246,7 @@ class gettext_native_support
         
         //$set = setlocale(LC_ALL, "$lang_code");
         //$set = setlocale(LC_ALL, "$encoding");
-        $set = setlocale(LC_ALL, "$lang_code.".".$encoding");
+        $set = setlocale(LC_ALL, $lang_code.".".$encoding);
         setlocale(LC_NUMERIC, 'C'); // important for numeric presentation etc.
         if ($set === false) 
         {
