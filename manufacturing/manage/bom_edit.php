@@ -50,7 +50,7 @@ elseif (isset($_POST["selected_component"]))
 
 //--------------------------------------------------------------------------------------------------
 
-function check_for_recursive_bom($ultimate_parent, $component_to_check, $db) 
+function check_for_recursive_bom($ultimate_parent, $component_to_check) 
 {
 
 	/* returns true ie 1 if the bom contains the parent part as a component
@@ -68,7 +68,7 @@ function check_for_recursive_bom($ultimate_parent, $component_to_check, $db)
 				return 1;
 			}
 
-			if (check_for_recursive_bom($ultimate_parent, $myrow[0], &$db))
+			if (check_for_recursive_bom($ultimate_parent, $myrow[0]))
 			{
 				return 1;
 			}
@@ -116,8 +116,6 @@ function display_bom_items($selected_parent)
 
 function on_submit($selected_parent, $selected_component)
 {
-	global $db;
-
 	if (!is_numeric($_POST['quantity'])) 
 	{
 		display_error(_("The quantity entered must be numeric."));
@@ -150,7 +148,7 @@ function on_submit($selected_parent, $selected_component)
 		/*Selected component is null cos no item selected on first time round so must be				adding a record must be Submitting new entries in the new component form */
 
 		//need to check not recursive bom component of itself!
-		If (!check_for_recursive_bom($selected_parent, $_POST['component'], &$db)) 
+		If (!check_for_recursive_bom($selected_parent, $_POST['component'])) 
 		{
 
 			/*Now check to see that the component is not already on the bom */
