@@ -32,7 +32,8 @@ function print_invoices()
 	$currency = $_POST['PARAM_2'];
 	$bankaccount = $_POST['PARAM_3'];
 	$email = $_POST['PARAM_4'];	
-	$comments = $_POST['PARAM_5'];
+	$paylink = $_POST['PARAM_5'];	
+	$comments = $_POST['PARAM_6'];
 
 	if ($from == null)
 		$from = 0;
@@ -70,6 +71,7 @@ function print_invoices()
 				continue;
 			$myrow = get_customer_trans($i, $j);
 			$branch = get_branch($myrow["branch_code"]);
+			$branch['disable_branch'] = $paylink; // helper
 			if ($j == 10)
 				$sales_order = get_sales_order($myrow["order_"]);
 			else
@@ -175,6 +177,7 @@ function print_invoices()
 			$rep->Font();	
 			if ($email == 1)
 			{
+				$myrow['dimension_id'] = $paylink; // helper for pmt link
 				if ($myrow['email'] == '')
 				{
 					$myrow['email'] = $branch['email'];

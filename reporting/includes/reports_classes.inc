@@ -164,6 +164,10 @@ class Report
 					$sel = array(_('No'), _("Yes"));
 					$st .= dup_simple_name_list("RP_" . $this->id . "_$index", $sel);
 					break;
+				case 'PAYMENT_LINK':	
+					$sel = array(_("No Payment Link"), "PayPal");
+					$st .= dup_simple_name_list("RP_" . $this->id . "_$index", $sel);
+					break;
 				case 'COMPARE':
 					$sel = array(_("Accumulated"), _("Period Y-1"), _("Budget"));
 					$st .= dup_simple_name_list("RP_" . $this->id . "_$index", $sel);

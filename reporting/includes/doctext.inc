@@ -22,6 +22,7 @@ if (isset($header2type))
 	$doc_Phone_Fax_Email = _("Phone/Fax/Email");
 	$doc_Bank = _("Bank");
 	$doc_Bank_Account = _("Bank Account");
+	$doc_Payment_Link = _("You can pay through");
 	if ($doctype == 8 || $doctype == 9 || $doctype == 10 || $doctype == 11)
 	{
 		if ($doctype == 8)
@@ -51,6 +52,7 @@ if (isset($emailtype))
 	$doc_Dear_Sirs = _("Dear Sirs");
 	$doc_AttachedFile = _("Attached you will find ");
 	$doc_Kindest_regards = _("Kindest regards");
+	$doc_Payment_Link = _("You can pay through");
 }
 if (isset($header2type) || isset($linetype))
 {

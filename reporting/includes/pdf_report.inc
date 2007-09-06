@@ -326,7 +326,7 @@ class FrontReport extends Cpdf
 		if ($this->company['coy_logo'] != '')
 		{
 			$logo = $path_to_root . "themes/default/images/" . $this->company['coy_logo'];
-			$this->AddImage($logo, $ccol, $iline1 + 5, 220, 40);
+			$this->AddImage($logo, $ccol, $iline1 + 5, 250, 40);
 		}
 		else
 		{
@@ -444,6 +444,21 @@ class FrontReport extends Cpdf
 		$temp = $this->row - 2 * $this->lineHeight;
 		$this->row = $iline5 - $this->lineHeight - 6;
 		$this->Text($ccol, $doc_Please_Quote . " - " . $myrow['curr_code']);
+		if ($branch['disable_branch'] > 0) // payment links
+		{
+			if ($branch['disable_branch'] == 1)
+			{
+				$this->NewLine();
+				$amt = number_format($myrow["ov_freight"] + $myrow["ov_gst"] +	$myrow["ov_amount"], user_price_dec());
+				$txt = $doc_Payment_Link . " PayPal: "; 
+				$url = "https://www.paypal.com/xclick/business=" . $this->company['email'] . "&item_name=" .
+					$this->title . "+" . $myrow['reference'] . "&amount=" . $amt . "&currency_code=" . $myrow['curr_code'];
+				$this->fontSize -= 2;
+				$this->Text($ccol, $txt.$url);
+				$this->addLink($url, $ccol, $this->row, $this->pageWidth - $this->rightMargin, $this->row - $this->lineHeight);
+				$this->fontSize += 2;
+			}	
+		}
 		if ($this->params['comments'] != '')
 		{
 			$this->NewLine(2);
@@ -632,7 +647,19 @@ class FrontReport extends Cpdf
     			$from = $this->company['coy_name'] . " <" . $this->company['email'] . ">";
     			$to = $myrow['DebtorName'] . " <" . $myrow['email'] . ">";
     			$msg = $doc_Dear_Sirs . ",\n\n" . $doc_AttachedFile . " " . $subject . 
-    				"\n\n" . $doc_Kindest_regards . "\n\n";
+    				"\n\n";
+				if ($myrow['dimension_id'] > 0) // helper for payment links
+				{
+					if ($myrow['dimension_id'] == 1)
+					{
+						$amt = number_format($myrow["ov_freight"] + $myrow["ov_gst"] +	$myrow["ov_amount"], user_price_dec());
+						$txt = $doc_Payment_Link . " PayPal: "; 
+						$url = "https://www.paypal.com/xclick/business=" . $this->company['email'] . "&item_name=" .
+							$this->title . "+" . $myrow['reference'] . "&amount=" . $amt . "&currency_code=" . $myrow['curr_code'];
+						$msg .= $txt . $url . "\n\n";	
+					}	
+				}
+    			$msg .= $doc_Kindest_regards . "\n\n";
     			$sender = $this->user . "\n" . $this->company['coy_name'];
     			$mail->to($to);
     			$mail->subject($subject);

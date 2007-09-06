@@ -19,6 +19,15 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+06-Sep-2007 Joe Hunt
+ + Added optional link for electronic payment on invoices (PayPal)
+ $ /reporting/reports_main.php
+   /reporting/rep107.php
+   /reporting/includes/report_classes.inc
+   /reporting/includes/pdf_report.inc
+   /reporting/includes/doc_text.inc
+   /reporting/includes/doc_text2.inc
+   
 23-Aug-2007 Joe Hunt
  # Unnecessary parameter ($db) in check_for_recursive_bom
  $ /manufacturing/manage/bom_edit.php

@@ -53,6 +53,7 @@ $reports->addReport(_('Customer'),107,_('Print Invoices/Credit Notes'),
 			new ReportParam(_('Currency Filter'),'CURRENCY'), 
 			new ReportParam(_('Bank Account'),'BANK_ACCOUNTS'), 
 			new ReportParam(_('email Customers'),'YES_NO'), 
+			new ReportParam(_('Payment Link'),'PAYMENT_LINK'), 
 			new ReportParam(_('Comments'),'TEXTBOX')));
 $reports->addReport(_('Customer'),108,_('Print Statements'),
 	array(	new ReportParam(_('Customer'),'CUSTOMERS_NO_FILTER'), 
