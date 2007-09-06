@@ -444,15 +444,16 @@ class FrontReport extends Cpdf
 		$temp = $this->row - 2 * $this->lineHeight;
 		$this->row = $iline5 - $this->lineHeight - 6;
 		$this->Text($ccol, $doc_Please_Quote . " - " . $myrow['curr_code']);
-		if ($branch['disable_branch'] > 0) // payment links
+		if ($branch['disable_branch'] > 0 && $doctype == 10) // payment links
 		{
 			if ($branch['disable_branch'] == 1)
 			{
 				$this->NewLine();
 				$amt = number_format($myrow["ov_freight"] + $myrow["ov_gst"] +	$myrow["ov_amount"], user_price_dec());
 				$txt = $doc_Payment_Link . " PayPal: "; 
+				$name = urlencode($this->title . " " . $myrow['reference']);
 				$url = "https://www.paypal.com/xclick/business=" . $this->company['email'] . "&item_name=" .
-					$this->title . "+" . $myrow['reference'] . "&amount=" . $amt . "&currency_code=" . $myrow['curr_code'];
+					$name . "&amount=" . $amt . "&currency_code=" . $myrow['curr_code'];
 				$this->fontSize -= 2;
 				$this->Text($ccol, $txt.$url);
 				$this->addLink($url, $ccol, $this->row, $this->pageWidth - $this->rightMargin, $this->row - $this->lineHeight);
@@ -648,14 +649,15 @@ class FrontReport extends Cpdf
     			$to = $myrow['DebtorName'] . " <" . $myrow['email'] . ">";
     			$msg = $doc_Dear_Sirs . ",\n\n" . $doc_AttachedFile . " " . $subject . 
     				"\n\n";
-				if ($myrow['dimension_id'] > 0) // helper for payment links
+				if ($myrow['dimension_id'] > 0 && $doctype == 10) // helper for payment links
 				{
 					if ($myrow['dimension_id'] == 1)
 					{
 						$amt = number_format($myrow["ov_freight"] + $myrow["ov_gst"] +	$myrow["ov_amount"], user_price_dec());
 						$txt = $doc_Payment_Link . " PayPal: "; 
+						$nn = urlencode($this->title . " " . $myrow['reference']);
 						$url = "https://www.paypal.com/xclick/business=" . $this->company['email'] . "&item_name=" .
-							$this->title . "+" . $myrow['reference'] . "&amount=" . $amt . "&currency_code=" . $myrow['curr_code'];
+							$nn . "&amount=" . $amt . "&currency_code=" . $myrow['curr_code'];
 						$msg .= $txt . $url . "\n\n";	
 					}	
 				}
