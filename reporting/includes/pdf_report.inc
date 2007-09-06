@@ -444,25 +444,29 @@ class FrontReport extends Cpdf
 		$temp = $this->row - 2 * $this->lineHeight;
 		$this->row = $iline5 - $this->lineHeight - 6;
 		$this->Text($ccol, $doc_Please_Quote . " - " . $myrow['curr_code']);
+		$this->NewLine();
 		if ($branch['disable_branch'] > 0 && $doctype == 10) // payment links
 		{
 			if ($branch['disable_branch'] == 1)
 			{
-				$this->NewLine();
 				$amt = number_format($myrow["ov_freight"] + $myrow["ov_gst"] +	$myrow["ov_amount"], user_price_dec());
 				$txt = $doc_Payment_Link . " PayPal: "; 
 				$name = urlencode($this->title . " " . $myrow['reference']);
 				$url = "https://www.paypal.com/xclick/business=" . $this->company['email'] . "&item_name=" .
 					$name . "&amount=" . $amt . "&currency_code=" . $myrow['curr_code'];
 				$this->fontSize -= 2;
-				$this->Text($ccol, $txt.$url);
-				$this->addLink($url, $ccol, $this->row, $this->pageWidth - $this->rightMargin, $this->row - $this->lineHeight);
+				$this->Text($ccol, $txt);
+				$this->NewLine();
+				$this->SetTextColor(0, 0, 255);
+				$this->Text($ccol, $url);
+				$this->SetTextColor(0, 0, 0);
+				$this->addLink($url, $ccol, $this->row, $this->pageWidth - $this->rightMargin, $this->row + $this->lineHeight);
 				$this->fontSize += 2;
 			}	
 		}
 		if ($this->params['comments'] != '')
 		{
-			$this->NewLine(2);
+			$this->NewLine();
 			$this->Font('bold');
 			$this->Text($ccol, $this->params['comments']);
 			$this->Font();
