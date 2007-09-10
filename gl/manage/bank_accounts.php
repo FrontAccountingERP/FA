@@ -95,12 +95,12 @@ while ($myrow = db_fetch($result))
 	
 	alt_table_row_color($k);
 
-    label_cell($myrow["account_code"] . " " . $myrow["account_name"]);
-    label_cell($myrow["bank_name"]);
-    label_cell($myrow["bank_account_name"]);
-	label_cell(bank_account_types::name($myrow["account_type"]));
-    label_cell($myrow["bank_account_number"]);
-    label_cell($myrow["bank_curr_code"]);
+    label_cell($myrow["account_code"] . " " . $myrow["account_name"], "nowrap");
+    label_cell($myrow["bank_name"], "nowrap");
+    label_cell($myrow["bank_account_name"], "nowrap");
+	label_cell(bank_account_types::name($myrow["account_type"]), "nowrap");
+    label_cell($myrow["bank_account_number"], "nowrap");
+    label_cell($myrow["bank_curr_code"], "nowrap");
     label_cell($myrow["bank_address"]);
     edit_link_cell("selected_id=" . $myrow["account_code"]);
     delete_link_cell("selected_id=" . $myrow["account_code"]. "&delete=1");
@@ -157,7 +157,8 @@ else
 	currencies_list_row(_("Bank Account Currency:"), 'BankAccountCurrency', null);
 }	
 
-text_row(_("Bank Address:"), 'bank_address', null, 70, 70);
+textarea_row(_("Bank Address:"), 'bank_address', null, 40, 5);
+//text_row(_("Bank Address:"), 'bank_address', null, 70, 70);
 
 end_table(1);
 

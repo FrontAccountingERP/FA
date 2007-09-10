@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+10-Sep-2007 Joe Hunt
+ ! Changed Bank Address field from text to textarea (multirows)
+ $ /gl/manage/bank_accounts.php
+ 
 06-Sep-2007 Joe Hunt
  + Added optional link for electronic payment on invoices (PayPal)
  $ /reporting/reports_main.php
