@@ -23,7 +23,7 @@
 		session_save_path($session_save_path);
 		unset($session_save_path);
     }
-	if (!isset($path_to_root))
+	if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_to_root']))
 		exit;
     include_once($path_to_root . "/config_db.php");
     include_once($path_to_root . "/includes/lang/language.php");
