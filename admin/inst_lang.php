@@ -165,6 +165,14 @@ function handle_submit()
 	if (is_uploaded_file($_FILES['uploadfile']['tmp_name']))
 	{
 		$file1 = $_FILES['uploadfile']['tmp_name'];
+		$file2 = $directory . "/LC_MESSAGES/".$_POST['code'].".po";
+		if (file_exists($file2))
+			unlink($file2);
+		move_uploaded_file($file1, $file2);
+	}
+	if (is_uploaded_file($_FILES['uploadfile2']['tmp_name']))
+	{
+		$file1 = $_FILES['uploadfile2']['tmp_name'];
 		$file2 = $directory . "/LC_MESSAGES/".$_POST['code'].".mo";
 		if (file_exists($file2))
 			unlink($file2);
@@ -305,10 +313,11 @@ function display_language_edit($selected_id)
 
 	yesno_list_row(_("Right To Left"), 'rtl', null, "", "", false);
 
-	label_row(_("Language File"), "<input name='uploadfile' type='file'>");
+	label_row(_("Language File") . " (PO)", "<input name='uploadfile' type='file'>");
+	label_row(_("Language File") . " (MO)", "<input name='uploadfile2' type='file'>");
 
 	end_table(0);
-	display_note(_("Select your language MO file from your local harddisk."), 0, 1);
+	display_note(_("Select your language files from your local harddisk."), 0, 1);
 	echo "<center><input onclick='javascript:updateLanguage()' type='button' style='width:150' value='". _("Save"). "'>";
 
 
