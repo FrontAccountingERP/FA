@@ -21,7 +21,9 @@ $ -> Affected files
 
 14-Sep-2007 Joe Hunt
  # We forgot to upload the PO file when installing new language. Used when GETTEXT is not installed on Server.
+ # config.php has been vulnerable. Fixed.
  $ /admin/inst_lang.php
+ $ config.php
  
 10-Sep-2007 Joe Hunt
  ! Changed Bank Address field from text to textarea (multirows)
