@@ -24,7 +24,7 @@
 		unset($session_save_path);
     }
 	if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_to_root']))
-		exit;
+		die("Restricted access");
     include_once($path_to_root . "/config_db.php");
     include_once($path_to_root . "/includes/lang/language.php");
 
@@ -53,10 +53,10 @@
 	// Main Title
 	$app_title = "FrontAccounting";
     // application version
-    $version 		= "1.12";
+    $version 		= "1.13";
 
     // Build for development purposes
-    $build_version 	= "31";
+    $build_version 	= "53";
 
 	// Powered by
 	$power_by 		= "FrontAccounting";

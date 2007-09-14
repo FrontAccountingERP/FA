@@ -19,6 +19,14 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+-------------------- 1.13 Stable Released ----------------------
+14-Sep-2007 Joe Hunt
+ + Added optional link for electronic payment on invoices (PayPal). 
+ ! Better support for install/update languages.  
+ ! Minor adjustments
+ # Fixed a vulnerable item in config.php
+ $ config.php
+
 14-Sep-2007 Joe Hunt
  # We forgot to upload the PO file when installing new language. Used when GETTEXT is not installed on Server.
  # config.php has been vulnerable. Fixed.
