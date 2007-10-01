@@ -53,10 +53,10 @@
 	// Main Title
 	$app_title = "FrontAccounting";
     // application version
-    $version 		= "1.13";
+    $version 		= "1.14";
 
     // Build for development purposes
-    $build_version 	= "53";
+    $build_version 	= "79";
 
 	// Powered by
 	$power_by 		= "FrontAccounting";

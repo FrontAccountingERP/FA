@@ -126,6 +126,7 @@ function db_import($filename, $connection)
 		$line = trim($line);
 
 		$line = str_replace("0_", $connection["tbpref"], $line);
+		$line = str_replace("Y_", "0_", $line);
 		// the last line did not belong to a 'create' sql query
 		if (!$table) 
 		{

@@ -8,6 +8,7 @@ page(_("Install/Update Modules"));
 
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/admin/db/company_db.inc");
+include_once($path_to_root . "/admin/db/maintenance_db.inc");
 include_once($path_to_root . "/modules/installed_modules.php");
 include_once($path_to_root . "/includes/ui.inc");
 
@@ -175,7 +176,7 @@ function write_modules()
 
 function handle_submit()
 {
-	global $path_to_root, $installed_modules;
+	global $path_to_root, $installed_modules, $db_connections;
 
 	if (!check_data())
 		return false;
@@ -201,6 +202,16 @@ function handle_submit()
 	}
 	else
 		$installed_modules[$id]['filename'] = $_POST['filename'];
+	if (is_uploaded_file($_FILES['uploadfile2']['tmp_name']))
+	{
+		$file1 = $_FILES['uploadfile2']['tmp_name'];
+		$file2 = $directory . "/".$_FILES['uploadfile2']['name'];
+		if (file_exists($file2))
+			unlink($file2);
+		move_uploaded_file($file1, $file2);
+		$db_name = $_SESSION["wa_current_user"]->company;
+		db_import($file2, $db_connections[$db_name]);
+	}
 	if (!write_modules())
 		return false;
 	return true;
@@ -311,6 +322,7 @@ function display_module_edit($selected_id)
 	text_row_ex(_("Folder"), 'path', 20);
 
 	label_row(_("Module File"), "<input name='uploadfile' type='file'>");
+	label_row(_("SQL File"), "<input name='uploadfile2' type='file'>");
 
 	end_table(0);
 	display_note(_("Select your module PHP file from your local harddisk."), 0, 1);

@@ -19,6 +19,18 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+-------------------- 1.14 Stable Released ----------------------
+01-Oct-2007 Joe Hunt
+ ! Major change in the installation of modules to also accept an SQL-file for upload.
+ $ config.php
+   /admin/inst_module.php
+   /admin/db/maintenance_db.inc
+   
+30-Sep-2007 Joe Hunt
+ # The following files were still vulnerable. Fixed
+ $ /access/login.php
+   /includes/lang/language.php
+
 -------------------- 1.13 Stable Released ----------------------
 14-Sep-2007 Joe Hunt
  + Added optional link for electronic payment on invoices (PayPal). 
