@@ -1,4 +1,6 @@
 <?php
+	if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_to_root']))
+		die("Restricted access");
 	include_once($path_to_root . "/includes/ui/ui_view.inc");
 	// Display demo user name and password within login form if "$allow_demo_mode" is true
 	$demo_text = "";
