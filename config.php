@@ -36,7 +36,7 @@
     /*Show debug messages returned from an error on the page.
     Debugging info level also determined by settings in PHP.ini
     if $debug=1 show debugging info, dont show if $debug=0 */
-    
+
     $debug 			= 1;
 	$show_sql 		= 0;
 	$go_debug 		= 0;
@@ -44,12 +44,12 @@
 	{
 		error_reporting(E_ALL);
 		ini_set("display_errors", "On");
-	}	
+	}
 	else
 	{
-		// ini_alter("error_reporting","E_COMPILE_ERROR|E_ERROR|E_CORE_ERROR|E_PARSE"); 		
+		// ini_alter("error_reporting","E_COMPILE_ERROR|E_ERROR|E_CORE_ERROR|E_PARSE");
 		ini_set("display_errors", "Off");
-	}	
+	}
 	// Main Title
 	$app_title = "FrontAccounting";
     // application version
@@ -73,14 +73,14 @@
 
 	/* use Audit Trails in GL */
 	$use_audit_trail = 0;
-	
+
 	/* allow alpha characters in accounts. 0 = numeric, 1 = alpha numeric, 2 = uppercase alpha numeric */
 	$accounts_alpha = 0;
 
 	/* default start-up tab (orders/AP/stock/manuf/proj/GL/system) */
 	$def_app = "orders";
-	
-	/* Date systems. 0 = traditional, 1 = Jalali used by Iran, nabour countries, Afghanistan and some other Central Asian nations, 
+
+	/* Date systems. 0 = traditional, 1 = Jalali used by Iran, nabour countries, Afghanistan and some other Central Asian nations,
 	   2 = Islamic used by other arabic nations */
 	$date_system = 0;
 
@@ -94,7 +94,7 @@
 
 	/* Default border and spacing for tables */
     /* Should be moved to CSS */
-    
+
     $table_style 	= "cellpadding=3 border=1 bordercolor='#8cacbb' style='border-collapse: collapse'";
     $table_style2 	= "cellpadding=3 border=1 bordercolor='#cccccc' style='border-collapse: collapse'";
 
@@ -108,7 +108,7 @@
     /* System check to see if price charged on purchase invoices exceeds the purchase order price.
     If this parameter is checked the proportion by which the purchase invoice is an overcharge
     referred to before reporting an error */
-    
+
     $check_price_charged_vs_order_price = True;
 
 	$config_allocation_settled_allowance = 0.005;
@@ -117,9 +117,9 @@
     //-----------------------------------------------------------------------------------
 
     /* Whether to display the demo login and password or not */
-    
+
     $allow_demo_mode = false;
-    
+
     /* for uploaded item pictures */
     $pic_width 		= 80;
     $pic_height 	= 50;
@@ -127,7 +127,7 @@
 
     /* skin for Business Graphics, 1, 2 or 3 */
 	$graph_skin 	= 1;
-	
+
     /*Security Group definitions - Depending on the AccessLevel of the user defined in the user set up
     the areas of functionality accessible can be modified.
     Each AccessLevel is associated with an array containing the security categories that the user is entitled to access
@@ -155,9 +155,9 @@
     		array(1,2,3,4,5,6,7,8,9,10,11,12,13,14),
     		array(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15)
     );
-	
+
 	//MySQL Backup and Restore Settings
-    
+
     define("BACKUP_PATH", "/admin/backup/");
 
 ?>
