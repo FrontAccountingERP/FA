@@ -37,20 +37,20 @@ if (isset($_GET["Dimension2"]))
 function gl_inquiry_controls()
 {
 	global $table_style2;
-	
+
 	$dim = get_company_pref('use_dimension');
     start_form();
 
     //start_table($table_style2);
     start_table("class='tablestyle_noborder'");
 	start_row();
-	
+
     gl_all_accounts_list_cells(_("Account:"), 'account', null);
 
 	date_cells(_("from:"), 'TransFromDate', null, -30);
 	date_cells(_("to:"), 'TransToDate');
     submit_cells('Show',_("Show"));
-    
+
     end_row();
 
 	if ($dim >= 1)
@@ -58,7 +58,7 @@ function gl_inquiry_controls()
 	if ($dim > 1)
 		dimensions_list_row(_("Dimension")." 2", 'Dimension2', null, true, " ", false, 2);
 	end_table();
-    
+
     end_form();
 }
 
@@ -97,11 +97,21 @@ function show_results()
 	else if ($dim == 1)
 		$th = array(_("Type"), _("#"), _("Date"), _("Dimension"),
 			_("Person/Item"), _("Debit"), _("Credit"), _("Balance"), _("Memo"));
-	else		
-		$th = array(_("Type"), _("#"), _("Date"), 
+	else
+		$th = array(_("Type"), _("#"), _("Date"),
 			_("Person/Item"), _("Debit"), _("Credit"), _("Balance"), _("Memo"));
 	table_header($th);
-    $bfw = get_gl_balance_from_to("", $_POST['TransFromDate'], $_POST["account"], $_POST['Dimension'], $_POST['Dimension2']);
+	if (is_account_balancesheet($account["account_code"]))
+		$begin = "";
+	else
+	{
+		if ($from < $begin)
+			$begin = add_days($_POST['TransFromDate'], -1);
+		else
+			$begin = add_days(begin_fiscalyear(), -1);
+	}
+
+    $bfw = get_gl_balance_from_to($begin, $_POST['TransFromDate'], $_POST["account"], $_POST['Dimension'], $_POST['Dimension2']);
 
 	start_row("class='inquirybg'");
 	label_cell("<b>"._("Opening Balance")." - ".$_POST['TransFromDate']."</b>", "colspan=$colspan");
@@ -113,7 +123,7 @@ function show_results()
 	$j = 1;
 	$k = 0; //row colour counter
 
-	while ($myrow = db_fetch($result)) 
+	while ($myrow = db_fetch($result))
 	{
 
     	alt_table_row_color($k);
@@ -137,8 +147,8 @@ function show_results()
 
     	$j++;
     	if ($j == 12)
-    	{ 
-    		$j = 1; 
+    	{
+    		$j = 1;
     		table_header($th);
     	}
 	}

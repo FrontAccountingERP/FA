@@ -51,19 +51,19 @@ function print_trial_balance()
 
 	$cols2 = array(0, 50, 230, 330, 430, 530);
 	//-------------0--1---2----3----4----5--
-	
+
 	$headers2 = array('', '', _('Brought Forward'),	_('This Period'), _('Balance'));
-	
+
 	$aligns2 = array('left', 'left', 'left', 'left', 'left');
-	
+
 	$cols = array(0, 50, 200, 250, 300,	350, 400, 450, 500,	550);
 	//------------0--1---2----3----4----5----6----7----8----9--
-	
+
 	$headers = array(_('Account'), _('Account Name'), _('Debit'), _('Credit'), _('Debit'),
 		_('Credit'), _('Debit'), _('Credit'));
-	
+
 	$aligns = array('left',	'left',	'right', 'right', 'right', 'right',	'right', 'right');
-    
+
     if ($dim == 2)
     {
     	$params =   array( 	0 => $comments,
@@ -94,14 +94,19 @@ function print_trial_balance()
 
 	$accounts = get_gl_accounts();
 
-	while ($account=db_fetch($accounts)) 
+	while ($account=db_fetch($accounts))
 	{
 
-		$begin = begin_fiscalyear();
 		if (is_account_balancesheet($account["account_code"]))
 			$begin = "";
-		elseif ($from < $begin)
-			$begin = $from;
+		else
+		{
+			if ($from < $begin)
+				$begin = add_days($from, -1);
+			else
+				$begin = add_days(begin_fiscalyear(), -1);
+		}
+
 		$prev_balance = get_gl_balance_from_to($begin, $from, $account["account_code"], $dimension, $dimension2);
 
 		$curr_balance = get_gl_trans_from_to($from, $to, $account["account_code"], $dimension, $dimension2);
@@ -127,7 +132,7 @@ function print_trial_balance()
 
 		$rep->NewLine();
 
-		if ($rep->row < $rep->bottomMargin + $rep->lineHeight) 
+		if ($rep->row < $rep->bottomMargin + $rep->lineHeight)
 		{
 			$rep->Line($rep->row - 2);
 			$rep->Header();

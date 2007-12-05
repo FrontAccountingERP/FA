@@ -19,6 +19,18 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+-------------------- 1.15 Stable Released ----------------------
+05-Dec-2007 Joe Hunt
+ + Added email notification to stock location when available stock is below reorder level
+ $ config.php
+   /sales/includes/db/sales_order_db.inc
+   
+ # Fixed bugs in Open balances when account is not a balance account
+ $ /gl/inquiry/gl_trial_balance.php
+   /gl/inquiry/gl_account_inquiry.php
+   /reporting/rep704.php
+   /reporting/rep708.php
+   
 -------------------- 1.14 Stable Released ----------------------
 01-Oct-2007 Joe Hunt
  ! Major change in the installation of modules to also accept an SQL-file for upload.

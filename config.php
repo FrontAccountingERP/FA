@@ -53,10 +53,10 @@
 	// Main Title
 	$app_title = "FrontAccounting";
     // application version
-    $version 		= "1.14";
+    $version 		= "1.15";
 
     // Build for development purposes
-    $build_version 	= "79";
+    $build_version 	= "32";
 
 	// Powered by
 	$power_by 		= "FrontAccounting";
@@ -83,6 +83,9 @@
 	/* Date systems. 0 = traditional, 1 = Jalali used by Iran, nabour countries, Afghanistan and some other Central Asian nations,
 	   2 = Islamic used by other arabic nations */
 	$date_system = 0;
+
+	/* email stock location if order below reorder-level */
+	$loc_notification = 1;
 
 	$dateformats 	= array("MMDDYYYY", "DDMMYYYY", "YYYYMMDD");
 	$dateseps 		= array("/", ".", "-", " ");

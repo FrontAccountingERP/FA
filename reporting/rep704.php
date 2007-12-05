@@ -60,12 +60,12 @@ function print_GL_transactions()
 	$aligns = array('left',	'left',	'left',	'left',	'left',	'left',	'right', 'right', 'right');
 
 	if ($dim == 2)
-		$headers = array(_('Type'),	_('#'),	_('Date'), _('Dimension')." 1", _('Dimension')." 2", 
+		$headers = array(_('Type'),	_('#'),	_('Date'), _('Dimension')." 1", _('Dimension')." 2",
 			_('Person/Item'), _('Debit'),	_('Credit'), _('Balance'));
-	else if ($dim == 1)		
+	else if ($dim == 1)
 		$headers = array(_('Type'),	_('#'),	_('Date'), _('Dimension'), "", _('Person/Item'),
 			_('Debit'),	_('Credit'), _('Balance'));
-	else	
+	else
 		$headers = array(_('Type'),	_('#'),	_('Date'), "", "", _('Person/Item'),
 			_('Debit'),	_('Credit'), _('Balance'));
 
@@ -93,37 +93,41 @@ function print_GL_transactions()
     				    1 => array('text' => _('Period'), 'from' => $from, 'to' => $to),
     				    2 => array('text' => _('Accounts'),'from' => $fromacc,'to' => $toacc));
     }
-	
+
 	$rep->Font();
 	$rep->Info($params, $cols, $headers, $aligns);
 	$rep->Header();
 
 	$accounts = get_gl_accounts($fromacc, $toacc);
 
-	while ($account=db_fetch($accounts)) 
+	while ($account=db_fetch($accounts))
 	{
-		$begin = begin_fiscalyear();
 		if (is_account_balancesheet($account["account_code"]))
 			$begin = "";
-		elseif ($from < $begin)
-			$begin = $from;
+		else
+		{
+			if ($from < $begin)
+				$begin = add_days($from, -1);
+			else
+				$begin = add_days(begin_fiscalyear(), -1);
+		}
 		$prev_balance = get_gl_balance_from_to($begin, $from, $account["account_code"], $dimension, $dimension2);
 
 		$trans = get_gl_transactions($from, $to, -1, $account['account_code'], $dimension, $dimension2);
 		$rows = db_num_rows($trans);
 		if ($prev_balance == 0.0 && $rows == 0)
 			continue;
-		$rep->Font('bold');	
+		$rep->Font('bold');
 		$rep->TextCol(0, 3,	$account['account_code'] . " " . $account['account_name']);
 		$rep->TextCol(3, 5, _('Opening Balance'));
 		if ($prev_balance > 0.0)
 			$rep->TextCol(6, 7,	number_format2(abs($prev_balance), $dec));
 		else
 			$rep->TextCol(7, 8,	number_format2(abs($prev_balance), $dec));
-		$rep->Font();	
+		$rep->Font();
 		$total = $prev_balance;
 		$rep->NewLine(2);
-		if ($rows > 0) 
+		if ($rows > 0)
 		{
 			while ($myrow=db_fetch($trans))
 			{
@@ -139,11 +143,11 @@ function print_GL_transactions()
 				$rep->TextCol(5, 6,	payment_person_types::person_name($myrow["person_type_id"],$myrow["person_id"], false));
 				if ($myrow['amount'] > 0.0)
 					$rep->TextCol(6, 7,	number_format2(abs($myrow['amount']), $dec));
-				else	
+				else
 					$rep->TextCol(7, 8,	number_format2(abs($myrow['amount']), $dec));
 				$rep->TextCol(8, 9,	number_format2($total, $dec));
 				$rep->NewLine();
-				if ($rep->row < $rep->bottomMargin + $rep->lineHeight) 
+				if ($rep->row < $rep->bottomMargin + $rep->lineHeight)
 				{
 					$rep->Line($rep->row - 2);
 					$rep->Header();
@@ -151,13 +155,13 @@ function print_GL_transactions()
 			}
 			$rep->NewLine();
 		}
-		$rep->Font('bold');	
+		$rep->Font('bold');
 		$rep->TextCol(3, 5,	_("Ending Balance"));
 		if ($total > 0.0)
 			$rep->TextCol(6, 7,	number_format2(abs($total), $dec));
 		else
 			$rep->TextCol(7, 8,	number_format2(abs($total), $dec));
-		$rep->Font();	
+		$rep->Font();
 		$rep->Line($rep->row - $rep->lineHeight + 4);
 		$rep->NewLine(2, 1);
 	}

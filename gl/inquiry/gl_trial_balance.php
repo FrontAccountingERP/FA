@@ -42,7 +42,7 @@ function get_balance($account, $from, $to, $from_incl=true, $to_incl=true) {
 	$sql = "SELECT SUM(amount) As TransactionSum FROM ".TB_PREF."gl_trans
 		WHERE account='$account'";
 
-	if ($from) 
+	if ($from)
 	{
 		$from_date = date2sql($from);
 		if ($from_incl)
@@ -51,7 +51,7 @@ function get_balance($account, $from, $to, $from_incl=true, $to_incl=true) {
 			$sql .= " AND tran_date > '$from_date'";
 	}
 
-	if ($to) 
+	if ($to)
 	{
 		$to_date = date2sql($to);
 		if ($to_incl)
@@ -94,10 +94,18 @@ function display_trial_balance()
 
 	$accounts = get_gl_accounts();
 
-	while ($account = db_fetch($accounts)) 
+	while ($account = db_fetch($accounts))
 	{
-
-		$prev_balance = get_balance($account["account_code"], null, $_POST['TransFromDate'], false, false);
+		if (is_account_balancesheet($account["account_code"]))
+			$begin = null;
+		else
+		{
+			if ($from < $begin)
+				$begin = add_days($_POST['TransFromDate'], -1);
+			else
+				$begin = add_days(begin_fiscalyear(), -1);
+		}
+		$prev_balance = get_balance($account["account_code"], $begin, $_POST['TransFromDate'], false, false);
 
 		$curr_balance = get_balance($account["account_code"], $_POST['TransFromDate'], $_POST['TransToDate']);
 		if (check_value("NoZero") && !$prev_balance && !$curr_balance)
