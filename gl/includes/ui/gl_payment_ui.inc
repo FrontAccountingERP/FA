@@ -9,7 +9,7 @@ function display_order_header(&$order)
 {
 	global $table_style2;
 	start_table("width=90% $table_style2"); // outer table
-	echo "<tr><td valign=top width=33%>"; 
+	echo "<tr><td valign=top width=33%>";
 
 	echo "<table>"; // inner table
 
@@ -19,7 +19,7 @@ function display_order_header(&$order)
 
 	echo "</table>"; // inner table
 
-	echo "</td><td width=33%>"; 
+	echo "</td><td width=33%>";
 
 	echo "<table>"; // inner table
 
@@ -27,9 +27,9 @@ function display_order_header(&$order)
 	{
 		if (isset($_GET['PayType']))
 			$_POST['PayType'] = $_GET['PayType'];
-		else	
+		else
 			$_POST['PayType'] = "";
-	}		
+	}
 	if (!isset($_POST['person_id']))
 	{
 		if (isset($_GET['PayPerson']))
@@ -53,11 +53,11 @@ function display_order_header(&$order)
 		case payment_person_types::customer() :
     		customer_list_row(_("Customer:"), 'person_id', null, false, true);
 
-        	if (db_customer_has_branches($_POST['person_id'])) 
+        	if (db_customer_has_branches($_POST['person_id']))
         	{
         		customer_branches_list_row(_("Branch:"), $_POST['person_id'], 'PersonDetailID', null, false, true, true);
-        	} 
-        	else 
+        	}
+        	else
         	{
         		hidden('BranchID', reserved_words::get_any_numeric());
         	}
@@ -71,14 +71,14 @@ function display_order_header(&$order)
 	$person_currency = payment_person_types::person_currency($_POST['PayType'], $_POST['person_id']);
 	$bank_currency = get_bank_account_currency($_POST['bank_account']);
 
-	if ($bank_currency != "" && $bank_currency != $person_currency) 
+	if ($bank_currency != "" && $bank_currency != $person_currency)
 	{
 		exchange_rate_display($bank_currency, $person_currency, $_POST['date_']);
 	}
 
 	echo "</table>"; // inner table
 
-	echo "</td><td>"; 
+	echo "</td><td>";
 
 	echo "<table>"; // inner table
 
@@ -88,7 +88,7 @@ function display_order_header(&$order)
 
 	echo "</table>"; // inner table
 
-	echo "</td></tr>"; 
+	echo "</td></tr>";
 
 	end_table(1); // outer table
 }
@@ -100,24 +100,24 @@ function display_gl_items($title, &$order)
 	global $table_style, $path_to_root;
 
 	$dim = get_company_pref('use_dimension');
-	$colspan = ($dim == 2 ? 4 : ($dim == 1 ? 3 : 2));	
+	$colspan = ($dim == 2 ? 4 : ($dim == 1 ? 3 : 2));
 	display_heading($title);
 
 	start_table("$table_style colspan=7 width=95%");
 
 	if ($dim == 2)
-		$th = array(_("Account Code"), _("Account Description"), _("Dimension")." 1", 
+		$th = array(_("Account Code"), _("Account Description"), _("Dimension")." 1",
 			_("Dimension")." 2", _("Amount"), _("Memo"));
 	else if ($dim == 1)
-		$th = array(_("Account Code"), _("Account Description"), _("Dimension"), 
+		$th = array(_("Account Code"), _("Account Description"), _("Dimension"),
 			_("Amount"), _("Memo"));
-	else	
-		$th = array(_("Account Code"), _("Account Description"),  
+	else
+		$th = array(_("Account Code"), _("Account Description"),
 			_("Amount"), _("Memo"));
 	table_header($th);
 	$k = 0;  //row colour counter
 
-	foreach ($order->gl_items as $item) 
+	foreach ($order->gl_items as $item)
 	{
 		if (!isset($_GET['Edit']) || $_GET['Edit'] != $item->index)
 		{
@@ -131,12 +131,12 @@ function display_gl_items($title, &$order)
 				label_cell(get_dimension_string($item->dimension2_id, true));
 			amount_cell($item->amount);
 			label_cell($item->reference);
-			
+
 			edit_link_cell("Edit=$item->index");
 			delete_link_cell("Delete=$item->index");
     		end_row();
-		} 
-		else 
+		}
+		else
 		{
 			gl_edit_item_controls($order, $dim, $item->index);
 		}
@@ -157,7 +157,7 @@ function gl_edit_item_controls(&$order, $dim, $Index=null)
 {
 	start_row();
 
-	if (isset($_GET['Edit']) and $Index!=null)
+	if (isset($_GET['Edit']) && $Index != null)
 	{
 		if (!isset($_POST['code_id']))
 			$_POST['code_id'] = $order->gl_items[$Index]->code_id;
@@ -165,11 +165,11 @@ function gl_edit_item_controls(&$order, $dim, $Index=null)
 			$_POST['dimension_id'] = $order->gl_items[$Index]->dimension_id;
 		if (!isset($_POST['dimension2_id']))
 			$_POST['dimension2_id'] = $order->gl_items[$Index]->dimension2_id;
-		if (!isset($_POST['amount']) OR ($_POST['amount']==""))
+		if (!isset($_POST['amount']) || ($_POST['amount'] == ""))
 			$_POST['amount'] = $order->gl_items[$Index]->amount;
-		if (!isset($_POST['description']) OR ($_POST['description']==""))
+		if (!isset($_POST['description']) || ($_POST['description'] == ""))
 			$_POST['description'] = $order->gl_items[$Index]->description;
-		if (!isset($_POST['LineMemo']) OR ($_POST['LineMemo']==""))
+		if (!isset($_POST['LineMemo']) || ($_POST['LineMemo'] == ""))
 			$_POST['LineMemo'] = $order->gl_items[$Index]->reference;
 
 		hidden('Index', $order->gl_items[$Index]->index);
@@ -187,7 +187,7 @@ function gl_edit_item_controls(&$order, $dim, $Index=null)
 		$_POST['dimension_id'] = 0;
 		$_POST['dimension2_id'] = 0;
 		$_POST['LineMemo'] = "";
-		
+
 		if ($_POST['PayType'] == payment_person_types::customer())
 		{
 			$acc = get_branch_accounts($_POST['PersonDetailID']);
@@ -200,7 +200,7 @@ function gl_edit_item_controls(&$order, $dim, $Index=null)
 		}
 		elseif ($_POST['PayType'] == payment_person_types::WorkOrder())
 			$_POST['code_id'] = get_company_pref('default_assembly_act');
-		else	
+		else
 			$_POST['code_id'] = get_company_pref('default_cogs_act');
 		text_cells(null, "CodeID2", $_POST['code_id'], 12, 10, "", "", "onkeyup='recalcAccounts()' onblur='return setAccount(0, false)'");
 		gl_all_accounts_list_cells(null, 'code_id', $_POST['code_id'], true, false, "return setAccount(1, false)");
@@ -217,12 +217,12 @@ function gl_edit_item_controls(&$order, $dim, $Index=null)
 	amount_cells(null, 'amount');
 	text_cells_ex(null, 'LineMemo', 35, 50);
 
-	if (isset($_GET['Edit'])) 
+	if (isset($_GET['Edit']))
 	{
     	submit_cells('UpdateItem', _("Update"));
     	submit_cells('CancelItemChanges', _("Cancel"));
-	} 
-	else 
+	}
+	else
 		submit_cells('AddItem', _("Add Item"), "colspan=2");
 
 	end_row();

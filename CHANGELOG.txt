@@ -19,6 +19,14 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+06-Dec-2007 Joe Hunt
+ # Fixed a bug when adding lines during Payments to suppliers, the supplier was set back to the first.
+ $ /gl/gl_payment.php
+   /gl/includes/ui/gl_payment_ui.inc
+   
+ ! Changed $loc_notification to be set to 0 instead of 1.
+ $ config.php
+ 
 -------------------- 1.15 Stable Released ----------------------
 05-Dec-2007 Joe Hunt
  + Added email notification to stock location when available stock is below reorder level

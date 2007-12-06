@@ -3,7 +3,6 @@
 $page_security = 3;
 $path_to_root="..";
 include_once($path_to_root . "/includes/ui/items_cart.inc");
-
 include_once($path_to_root . "/includes/session.inc");
 
 include_once($path_to_root . "/includes/date_functions.inc");
@@ -19,7 +18,6 @@ if ($use_popup_windows)
 if ($use_date_picker)
 	$js .= get_js_date_picker();
 $js .= get_js_set_focus('CodeID2');
-
 page(_("Bank Account Payment Entry"), false, false, "setFocus()", $js);
 
 //-----------------------------------------------------------------------------------------------
@@ -30,7 +28,7 @@ check_db_has_bank_trans_types(_("There are no bank payment types defined in the 
 
 //-----------------------------------------------------------------------------------------------
 
-if (isset($_GET['AddedID'])) 
+if (isset($_GET['AddedID']))
 {
 	$trans_no = $_GET['AddedID'];
 	$trans_type = systypes::bank_payment();
@@ -52,11 +50,11 @@ function copy_to_py()
 	$_SESSION['pay_items']->tran_date = $_POST['date_'];
 	$_SESSION['pay_items']->transfer_type = $_POST['type'];
 	$_SESSION['pay_items']->increase = $_POST['PayType'];
-	if (isset($_POST['person_id']))
-		$_POST['person_id'] = 0;	
+	if (!isset($_POST['person_id']))
+		$_POST['person_id'] = "";
 	$_SESSION['pay_items']->person_id = $_POST['person_id'];
 	if (!isset($_POST['PersonDetailID']))
-		$_POST['PersonDetailID'] = 0;
+		$_POST['PersonDetailID'] = "";
 	$_SESSION['pay_items']->branch_id = $_POST['PersonDetailID'];
 	$_SESSION['pay_items']->memo_ = $_POST['memo_'];
 }
@@ -91,7 +89,7 @@ function handle_new_order()
 	$_POST['date_'] = Today();
 	if (!is_date_in_fiscalyear($_POST['date_']))
 		$_POST['date_'] = end_fiscalyear();
-	$_SESSION['pay_items']->tran_date = $_POST['date_'];	
+	$_SESSION['pay_items']->tran_date = $_POST['date_'];
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -101,22 +99,22 @@ if (isset($_POST['Process']))
 
 	$input_error = 0;
 
-	if (!references::is_valid($_POST['ref'])) 
+	if (!references::is_valid($_POST['ref']))
 	{
 		display_error( _("You must enter a reference."));
 		$input_error = 1;
-	} 
-	elseif (!is_new_reference($_POST['ref'], systypes::bank_payment())) 
+	}
+	elseif (!is_new_reference($_POST['ref'], systypes::bank_payment()))
 	{
 		display_error( _("The entered reference is already in use."));
 		$input_error = 1;
-	} 
-	elseif (!is_date($_POST['date_'])) 
+	}
+	elseif (!is_date($_POST['date_']))
 	{
 		display_error(_("The entered date for the payment is invalid."));
 		$input_error = 1;
-	} 
-	elseif (!is_date_in_fiscalyear($_POST['date_'])) 
+	}
+	elseif (!is_date_in_fiscalyear($_POST['date_']))
 	{
 		display_error(_("The entered date is not in fiscal year."));
 		$input_error = 1;
@@ -160,13 +158,13 @@ function check_item_data()
 		return false;
 	}
 
-	if ($_POST['code_id'] == $_POST['bank_account']) 
+	if ($_POST['code_id'] == $_POST['bank_account'])
 	{
 		display_error( _("The source and destination accouts cannot be the same."));
 		return false;
 	}
 
-	if (is_bank_account($_POST['code_id'])) 
+	if (is_bank_account($_POST['code_id']))
 	{
 		display_error( _("You cannot make a payment to a bank account. Please use the transfer funds facility for this."));
 		return false;
@@ -181,7 +179,7 @@ function handle_update_item()
 {
     if($_POST['UpdateItem'] != "" && check_item_data())
     {
-    	$_SESSION['pay_items']->update_gl_item($_POST['Index'], $_POST['dimension_id'], 
+    	$_SESSION['pay_items']->update_gl_item($_POST['Index'], $_POST['dimension_id'],
     		$_POST['dimension2_id'], $_POST['amount'], $_POST['LineMemo']);
     }
 }
@@ -200,7 +198,7 @@ function handle_new_item()
 	if (!check_item_data())
 		return;
 
-	$_SESSION['pay_items']->add_gl_item($_POST['code_id'], $_POST['dimension_id'], 
+	$_SESSION['pay_items']->add_gl_item($_POST['code_id'], $_POST['dimension_id'],
 		$_POST['dimension2_id'], $_POST['amount'], $_POST['LineMemo']);
 }
 
@@ -214,7 +212,7 @@ if (isset($_GET['Delete']))
 
 if (isset($_POST['AddItem']) || isset($_POST['UpdateItem']))
 	copy_to_py();
-	
+
 if (isset($_POST['AddItem']))
 	handle_new_item();
 

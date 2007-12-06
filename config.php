@@ -85,7 +85,7 @@
 	$date_system = 0;
 
 	/* email stock location if order below reorder-level */
-	$loc_notification = 1;
+	$loc_notification = 0;
 
 	$dateformats 	= array("MMDDYYYY", "DDMMYYYY", "YYYYMMDD");
 	$dateseps 		= array("/", ".", "-", " ");
