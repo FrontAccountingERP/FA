@@ -100,10 +100,10 @@ function display_trial_balance()
 			$begin = null;
 		else
 		{
-			if ($from < $begin)
-				$begin = add_days($_POST['TransFromDate'], -1);
-			else
-				$begin = add_days(begin_fiscalyear(), -1);
+			$begin = begin_fiscalyear();
+			if ($_POST['TransFromDate'] < $begin)
+				$begin = $_POST['TransFromDate'];
+			$begin = add_days($begin, -1);
 		}
 		$prev_balance = get_balance($account["account_code"], $begin, $_POST['TransFromDate'], false, false);
 

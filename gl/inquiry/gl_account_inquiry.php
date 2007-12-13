@@ -81,11 +81,6 @@ function show_results()
 	$result = get_gl_transactions($_POST['TransFromDate'], $_POST['TransToDate'], -1,
     	$_POST["account"], $_POST['Dimension'], $_POST['Dimension2']);
 
-	if (db_num_rows($result) == 0)
-	{
-		display_note(_("No general ledger transactions have been created for this account on the selected dates."), 0, 1);
-		return;
-	}
 	$colspan = ($dim == 2 ? "6" : ($dim == 1 ? "5" : "4"));
 	//echo "\nDimension =". $_POST['Dimension'];
 	display_heading($_POST["account"]. "&nbsp;&nbsp;&nbsp;".$act_name);
@@ -101,14 +96,14 @@ function show_results()
 		$th = array(_("Type"), _("#"), _("Date"),
 			_("Person/Item"), _("Debit"), _("Credit"), _("Balance"), _("Memo"));
 	table_header($th);
-	if (is_account_balancesheet($account["account_code"]))
+	if (is_account_balancesheet($_POST["account"]))
 		$begin = "";
 	else
 	{
-		if ($from < $begin)
-			$begin = add_days($_POST['TransFromDate'], -1);
-		else
-			$begin = add_days(begin_fiscalyear(), -1);
+		$begin = begin_fiscalyear();
+		if ($_POST['TransFromDate'] < $begin)
+			$begin = $_POST['TransFromDate'];
+		$begin = add_days($begin, -1);
 	}
 
     $bfw = get_gl_balance_from_to($begin, $_POST['TransFromDate'], $_POST["account"], $_POST['Dimension'], $_POST['Dimension2']);
@@ -161,6 +156,8 @@ function show_results()
 	end_row();
 
 	end_table(2);
+	if (db_num_rows($result) == 0)
+		display_note(_("No general ledger transactions have been created for this account on the selected dates."), 0, 1);
 }
 
 //----------------------------------------------------------------------------------------------------
