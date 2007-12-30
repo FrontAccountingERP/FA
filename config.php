@@ -56,7 +56,7 @@
     $version 		= "1.15";
 
     // Build for development purposes
-    $build_version 	= "32";
+    $build_version 	= "55";
 
 	// Powered by
 	$power_by 		= "FrontAccounting";
@@ -86,6 +86,9 @@
 
 	/* email stock location if order below reorder-level */
 	$loc_notification = 0;
+
+	/* print_invoice_no. 0 = print reference number, 1 = print invoice number */
+	$print_invoice_no = 0;
 
 	$dateformats 	= array("MMDDYYYY", "DDMMYYYY", "YYYYMMDD");
 	$dateseps 		= array("/", ".", "-", " ");

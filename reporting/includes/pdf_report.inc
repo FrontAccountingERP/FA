@@ -38,7 +38,7 @@ class FrontReport extends Cpdf
 
 	function FrontReport($title, $filename, $size = 'A4', $fontsize = 9)
 	{
-		switch ($size) 
+		switch ($size)
 		{
 
 		  case 'A4':
@@ -133,7 +133,7 @@ class FrontReport extends Cpdf
 		{
 			$fontinclude = true;
 			include($locale);
-		}	
+		}
 		//if ($this->rtl) // this is good for presentation only
 		if (!$own)
 		{
@@ -141,14 +141,14 @@ class FrontReport extends Cpdf
 			{
 				$this->rtl = true;
 				$path = $path_to_root . 'reporting/fonts/farsi_1.afm';
-			}		
+			}
 			elseif ($style == 'italic')
 				$path = $path_to_root . 'reporting/fonts/Helvetica-Oblique.afm';
 			elseif ($style == 'bold')
 				$path = $path_to_root . 'reporting/fonts/Helvetica-Bold.afm';
 			else // even take misspelled styles
 				$path = $path_to_root . 'reporting/fonts/Helvetica.afm';
-		}		
+		}
 		$this->selectFont($path, 'WinAnsiEncoding');
 	}
 
@@ -231,7 +231,7 @@ class FrontReport extends Cpdf
 					$str .= " - " . $this->params[$i]['to'];
 				$this->Text($this->titleCol, $str, $this->companyCol);
 			}
-		}	
+		}
 		if ($this->params[0] != '') // Comments
 		{
 			$this->NewLine();
@@ -265,22 +265,22 @@ class FrontReport extends Cpdf
 
 	function Header2($myrow, $branch, $sales_order, $bankaccount, $doctype)
 	{
-		global $path_to_root, $print_as_quote;
-		
+		global $path_to_root, $print_as_quote, $print_invoice_no;
+
 		$this->pageNumber++;
 		if ($this->pageNumber > 1)
 			$this->newPage();
 		$header2type = true;
 		if ($this->currency != $myrow['curr_code'])
 		{
-			include($path_to_root . "reporting/includes/doctext2.inc");			
-		}	
+			include($path_to_root . "reporting/includes/doctext2.inc");
+		}
 		else
 		{
-			include($path_to_root . "reporting/includes/doctext.inc");			
-		}	
+			include($path_to_root . "reporting/includes/doctext.inc");
+		}
 		$this->row = $this->pageHeight - $this->topMargin;
-		
+
 		$upper = $this->row - 2 * $this->lineHeight;
 		$lower = $this->bottomMargin + 6 * $this->lineHeight;
 		$iline1 = $upper - 4 * $this->lineHeight;
@@ -316,7 +316,7 @@ class FrontReport extends Cpdf
 			$this->Text($this->endLine - 35, _("Page") . ' ' . $this->pageNumber);
 		$this->fontSize -= 4;
 		$this->row = $upper - 5;
-		
+
 		$this->Text($mcol, $doc_Invoice_no, $mcol + 90);
 		$this->Text($mcol + 90, $doc_Cust_no, $mcol + 180);
 		$this->Text($mcol + 180, $doc_Date);
@@ -340,12 +340,17 @@ class FrontReport extends Cpdf
 			$this->Text($mcol, $myrow['order_no'], $mcol + 90);
 		else if ($doctype == 9) // SO
 			$this->Text($mcol, $myrow['order_no'] ." ".$myrow['customer_ref'], $mcol + 90);
-		else // INV/CRE/STA	
-			$this->Text($mcol, $myrow['reference'], $mcol + 90);
+		else // INV/CRE/STA
+		{
+			if ($print_invoice_no == 1)
+				$this->Text($mcol, $myrow['trans_no'], $mcol + 90);
+			else
+				$this->Text($mcol, $myrow['reference'], $mcol + 90);
+		}
 		$this->Text($mcol + 90, $myrow['debtor_no'], $mcol + 180);
 		if ($doctype == 8 || $doctype == 9)
 			$this->Text($mcol + 180, sql2date($myrow['ord_date']));
-		else	
+		else
 			$this->Text($mcol + 180, sql2date($myrow['tran_date']));
 
 		$this->fontSize -= 4;
@@ -353,24 +358,24 @@ class FrontReport extends Cpdf
 		$this->Text($ccol, $doc_Charge_To, $icol);
 		$this->Text($mcol, $doc_Delivered_To);
 		$this->fontSize += 4;
-		
+
 		$this->NewLine(2);
 		$temp = $this->row;
 		if ($doctype == 9)
 		{
 			$this->Text($ccol, $myrow['name'], $icol);
 			//$adr = ?;
-		}	
+		}
 		else
 		{
 			if ($doctype == 8)
 				$this->Text($ccol, $myrow['supp_name'], $icol);
-			else	
+			else
 				$this->Text($ccol, $myrow['DebtorName'], $icol);
 			$adr = explode("\n", $myrow['address']);
-		}	
+		}
 		for ($i = 0; $i < count($adr); $i++)
-		{	
+		{
 			$this->NewLine();
 			$this->Text($ccol, $adr[$i], $icol);
 		}
@@ -379,11 +384,11 @@ class FrontReport extends Cpdf
 			$this->row = $temp;
 			if ($doctype == 8)
 				$this->Text($mcol, $this->company['coy_name']);
-			else	
+			else
 				$this->Text($mcol, $sales_order['deliver_to']);
 			$adr = explode("\n", $sales_order['delivery_address']);
 			for ($i = 0; $i < count($adr); $i++)
-			{	
+			{
 				$this->NewLine();
 				$this->Text($mcol, $adr[$i]);
 			}
@@ -395,7 +400,7 @@ class FrontReport extends Cpdf
 		$this->Text($mcol, $doc_Due_Date . ":", $mcol2);
 		if ($doctype == 9)
 			$this->Text($mcol2, sql2date($myrow['delivery_date']));
-		else if ($doctype != 8)	
+		else if ($doctype != 8)
 			$this->Text($mcol2, sql2date($myrow['due_date']));
 		if ($branch != null)
 		{
@@ -410,7 +415,7 @@ class FrontReport extends Cpdf
 			$row = db_fetch($result);
 
 			$this->Text($mcol2, $row['salesman_name']);
-		}	
+		}
 		$this->NewLine();
 		$this->Text($ccol, $doc_Your_VAT_no . ":", $ccol2);
 		if ($doctype != 8)
@@ -428,13 +433,13 @@ class FrontReport extends Cpdf
 		$this->Text($ccol2, $row["terms"], $mcol);
 		$this->Text($mcol, $doc_Our_Order_No . ":", $mcol2);
 		$this->Text($mcol2, $myrow['order_']);
-		
+
 		$locale = $path_to_root . "lang/" . $_SESSION['language']->code . "/locale.inc";
 		if (file_exists($locale))
 		{
 			$header2include = true;
 			include($locale);
-		}	
+		}
 		$this->row = $iline3 - $this->lineHeight - 2;
 		$this->Font('bold');
 		$count = count($this->headers);
@@ -450,7 +455,7 @@ class FrontReport extends Cpdf
 			if ($branch['disable_branch'] == 1)
 			{
 				$amt = number_format($myrow["ov_freight"] + $myrow["ov_gst"] +	$myrow["ov_amount"], user_price_dec());
-				$txt = $doc_Payment_Link . " PayPal: "; 
+				$txt = $doc_Payment_Link . " PayPal: ";
 				$name = urlencode($this->title . " " . $myrow['reference']);
 				$url = "https://www.paypal.com/xclick/business=" . $this->company['email'] . "&item_name=" .
 					$name . "&amount=" . $amt . "&currency_code=" . $myrow['curr_code'];
@@ -462,7 +467,7 @@ class FrontReport extends Cpdf
 				$this->SetTextColor(0, 0, 0);
 				$this->addLink($url, $ccol, $this->row, $this->pageWidth - $this->rightMargin, $this->row + $this->lineHeight);
 				$this->fontSize += 2;
-			}	
+			}
 		}
 		if ($this->params['comments'] != '')
 		{
@@ -471,41 +476,41 @@ class FrontReport extends Cpdf
 			$this->Text($ccol, $this->params['comments']);
 			$this->Font();
 		}
-		
+
 		$this->row = $lower - 5;
 		$this->fontSize -= 4;
-		
+
 		$this->Text($ccol, $doc_Address, $ccol2 + 40);
 		$this->Text($ccol2 + 30, $doc_Phone_Fax_Email, $mcol);
 		$this->Text($mcol , $doc_Bank, $mcol2);
 		$this->Text($mcol2, $doc_Bank_Account);
 		$this->fontSize += 4;
 		$this->NewLine();
-		$adrline = $this->row; 
-		
+		$adrline = $this->row;
+
 		$adr = explode("\n", $this->company['postal_address']);
 		for ($i = 0; $i < count($adr); $i++)
-		{	
+		{
 			$this->Text($ccol, $adr[$i], $ccol2 + 40);
 			$this->NewLine();
 		}
-		$this->row = $adrline; 
+		$this->row = $adrline;
 		$this->Text($ccol2 + 30, $this->company['phone'], $mcol);
 		$this->NewLine();
 		$this->Text($ccol2 + 30, $this->company['fax'], $mcol);
 		$this->NewLine();
 		$this->Text($ccol2 + 30, $this->company['email'], $mcol);
 		// fetch this later
-		$this->row = $adrline; 
+		$this->row = $adrline;
 		$this->Text($mcol, $bankaccount['bank_name'], $mcol2);
 		$adr = explode("\n", $bankaccount['bank_address']);
 		for ($i = 0; $i < count($adr); $i++)
-		{	
+		{
 			$this->NewLine();
 			$this->Text($mcol, $adr[$i], $mcol2);
 		}
-		
-		$this->row = $adrline; 
+
+		$this->row = $adrline;
 		$this->Text($mcol2, $bankaccount['bank_account_name']);
 		$this->NewLine();
 		$this->Text($mcol2, $bankaccount['bank_account_number']);
@@ -520,13 +525,13 @@ class FrontReport extends Cpdf
 			$this->addPngFromFile($logo, $x, $y, $w, $h);
 		else
 			$this->addJpegFromFile($logo, $x, $y, $w, $h);
-	}	
+	}
 
 	function SetDrawColor($r, $g, $b)
 	{
 		$this->setStrokeColor($r / 255, $g / 255, $b / 255);
 	}
-	
+
 	function SetTextColor($r, $g, $b)
 	{
 		$this->setColor($r / 255, $g / 255, $b / 255);
@@ -537,10 +542,10 @@ class FrontReport extends Cpdf
 		if ($n == 0)
 			$n = $this->pageWidth - $this->rightMargin;
 
-		return $this->TextWrap($c, $this->row - $r, $n - $c + $corr, $txt, 'left'); 
+		return $this->TextWrap($c, $this->row - $r, $n - $c + $corr, $txt, 'left');
 	}
-	
-	function TextWrap($xpos, $ypos, $len, $str, $align = 'left') 
+
+	function TextWrap($xpos, $ypos, $len, $str, $align = 'left')
 	{
 		if ($this->rtl)
 		{
@@ -550,7 +555,7 @@ class FrontReport extends Cpdf
 				$align = 'right';
 			elseif ($align == 'right')
 				$align = 'left';
-		}	
+		}
 		return $this->addTextWrap($xpos, $ypos, $len, $this->fontSize, $str, $align);
 	}
 
@@ -558,33 +563,33 @@ class FrontReport extends Cpdf
 	{
 		return $this->TextWrap($this->cols[$c], $this->row - $r, $this->cols[$n] - $this->cols[$c] + $corr, $txt, $this->aligns[$c]);
 	}
-	
+
 	function TextCol2($c, $n, $txt, $corr=0, $r=0)
 	{
 		return $this->TextWrap($this->cols2[$c], $this->row - $r, $this->cols2[$n] - $this->cols2[$c] + $corr, $txt, $this->aligns2[$c]);
 	}
-	
+
 	function TextColLines($c, $n, $txt, $corr=0)
 	{
 		$str = Explode("\n", $txt);
 		for ($i = 0; $i < count($str); $i++)
 		{
 			$l = $str[$i];
-			do 
+			do
 			{
-				$l = $this->TextCol($c, $n, $l, $corr); 
+				$l = $this->TextCol($c, $n, $l, $corr);
 				$this->NewLine();
 			}
 			while ($l != '');
-		}	
+		}
 	}
 
-	function LineTo($from, $row, $to, $row2) 
+	function LineTo($from, $row, $to, $row2)
 	{
 		Cpdf::line($from, $row, $to, $row2);
 	}
 
-	function Line($row, $height = 0) 
+	function Line($row, $height = 0)
 	{
 		$this->setLineStyle($height + 1);
 		Cpdf::line($this->pageWidth - $this->rightMargin, $row ,$this->leftMargin, $row);
@@ -595,7 +600,7 @@ class FrontReport extends Cpdf
 		$this->row -= ($l * $this->lineHeight);
 		if ($np > 0 && 	$this->row < $this->bottomMargin + ($np * $this->lineHeight))
 			$this->Header();
-	}		
+	}
 
 	function End($email=0, $subject=null, $myrow=null, $doctype = 0)
 	{
@@ -604,8 +609,8 @@ class FrontReport extends Cpdf
 		// this is no good in IE so has been replaced, see down under
 		// but good for debugging purposes in IE
 		//session_write_close();
-		
-		if ($go_debug == 1) 
+
+		if ($go_debug == 1)
 		{
 			$buf = $this->output(1);
 			$len = strlen($buf);
@@ -621,8 +626,8 @@ class FrontReport extends Cpdf
 			//header('Pragma: public');
 
 			//$this->pdf->stream();
-		} 
-		else 
+		}
+		else
 		{
 			$buf = $this->output();
 			$len = strlen($buf);
@@ -641,29 +646,29 @@ class FrontReport extends Cpdf
 				$emailtype = true;
 				if ($this->currency != $myrow['curr_code'])
 				{
-					include("doctext2.inc");			
-				}	
+					include("doctext2.inc");
+				}
 				else
 				{
-					include("doctext.inc");			
-				}	
+					include("doctext.inc");
+				}
 				require_once($path_to_root . "reporting/includes/class.mail.inc");
     			$mail = new email($this->company['coy_name'], $this->company['email']);
     			$from = $this->company['coy_name'] . " <" . $this->company['email'] . ">";
     			$to = $myrow['DebtorName'] . " <" . $myrow['email'] . ">";
-    			$msg = $doc_Dear_Sirs . ",\n\n" . $doc_AttachedFile . " " . $subject . 
+    			$msg = $doc_Dear_Sirs . ",\n\n" . $doc_AttachedFile . " " . $subject .
     				"\n\n";
 				if ($myrow['dimension_id'] > 0 && $doctype == 10) // helper for payment links
 				{
 					if ($myrow['dimension_id'] == 1)
 					{
 						$amt = number_format($myrow["ov_freight"] + $myrow["ov_gst"] +	$myrow["ov_amount"], user_price_dec());
-						$txt = $doc_Payment_Link . " PayPal: "; 
+						$txt = $doc_Payment_Link . " PayPal: ";
 						$nn = urlencode($this->title . " " . $myrow['reference']);
 						$url = "https://www.paypal.com/xclick/business=" . $this->company['email'] . "&item_name=" .
 							$nn . "&amount=" . $amt . "&currency_code=" . $myrow['curr_code'];
-						$msg .= $txt . $url . "\n\n";	
-					}	
+						$msg .= $txt . $url . "\n\n";
+					}
 				}
     			$msg .= $doc_Kindest_regards . "\n\n";
     			$sender = $this->user . "\n" . $this->company['coy_name'];
@@ -696,17 +701,24 @@ class FrontReport extends Cpdf
 			}
 			else
 			{
-				echo '<html>
-						<head>
-					  	  <SCRIPT LANGUAGE="JavaScript"><!--
-					      function go_now () { window.location.href = "'.$fname.'"; }
-					      //--></SCRIPT>
-					  </head>
-					  <body onLoad="go_now()"; >
-					    <a href="'.$fname.'">click here</a> if you are not re-directed.
-					  </body>
-				    </html>';
-			}	    
+				//echo '<html>
+				//		<head>
+				//	  	  <SCRIPT LANGUAGE="JavaScript"><!--
+				//	      function go_now () { window.location.href = "'.$fname.'"; }
+				//	      //--></SCRIPT>
+				//	  </head>
+				//	  <body onLoad="go_now()"; >
+				//	    <a href="'.$fname.'">click here</a> if you are not re-directed.
+				//	  </body>
+				//    </html>';
+                header('Content-type: application/pdf');
+                header("Content-Disposition: inline; filename=$this->filename");
+                header('Expires: 0');
+                header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+                header('Pragma: public');
+                $this->stream();
+
+			}
 			// also have a look through the directory, and remove the files that are older than a week
 			// rather want to save 'em
 			/*if ($d = @opendir($dir)) {

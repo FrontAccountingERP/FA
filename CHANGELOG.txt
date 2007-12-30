@@ -19,6 +19,16 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+29-Dec-2007 Joe Hunt
+ ! Added a variable, $print_invoice_no, in config.sys for printing the invoice number instead of invoice reference.
+ $ config.php
+ 
+ # Fixed a bug when exporting database. Exported NULL field values from NO to empty field (from mysql version 5.0.32).
+   Also fixed a unneccessary str_replace when importing sql scripts.
+ ! Changed the PDF presentation to deleting the Javascript cache before presentation.
+ $ /admin/db/maintenance_db.inc
+   /reporting/includes/pdf_report.inc
+   
 13-Dec-2007 Joe Hunt
  # Still bugs in trial balances and account inquiry on screen when selecting non balance accounts. Fixed.
  $ /gl/inquiry/gl_trial_balance.php
