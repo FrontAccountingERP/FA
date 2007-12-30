@@ -19,8 +19,12 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+30-Dec-2007 Joe Hunt
+ # Minor adjustments in function db_export on line 325
+ $ /admin/db/maintenance_db.inc
+ 
 29-Dec-2007 Joe Hunt
- ! Added a variable, $print_invoice_no, in config.sys for printing the invoice number instead of invoice reference.
+ ! Added a variable, $print_invoice_no, in config.php for printing the invoice number instead of invoice reference.
  $ config.php
  
  # Fixed a bug when exporting database. Exported NULL field values from NO to empty field (from mysql version 5.0.32).

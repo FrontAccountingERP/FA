@@ -321,7 +321,9 @@ function db_export($conn, $filename, $zip='no', $comment='')
     $all_tables = array();
     while($row = db_fetch($res))
     {
-		if ($conn["tbpref"] == "" || strpos($row['Name'], $conn["tbpref"]) !== false)
+		//if ($conn["tbpref"] == "" || strpos($row['Name'], $conn["tbpref"]) !== false) replaced
+		if (($conn["tbpref"] == "" && !preg_match('/[0-9]+_/', $row['Name'])) ||
+			($conn["tbpref"] != "" && strpos($row['Name'], $conn["tbpref"]) !== false))
     		$all_tables[] = $row;
     }
         // get table structures
