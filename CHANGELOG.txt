@@ -19,6 +19,11 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+16-Jan-2008 Joe Hunt
+ # When login screen is displayed after session timeout page content is broken. It
+   is because of NOT using absolute paths in href attribute theme elements.
+ $ /access/login.php
+ 
 30-Dec-2007 Joe Hunt
  # Minor adjustments in function db_export on line 325
  $ /admin/db/maintenance_db.inc
