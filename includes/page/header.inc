@@ -7,13 +7,13 @@ function page_header($title, $no_menu=false, $is_index=false, $onload="", $js=""
 	$theme = user_theme();
 	$local_path_to_root = $path_to_root;
 
-	if (!isset($no_menu)) 
+	if (!isset($no_menu))
 	{
 		$no_menu = false;
 	}
 	if (!isset($_SESSION["sel_app"]))
-		session_register("sel_app");	
-	if (isset($_SESSION["App"]) && is_object($_SESSION["App"]) && isset($_SESSION["App"]->selected_application) && 
+		session_register("sel_app");
+	if (isset($_SESSION["App"]) && is_object($_SESSION["App"]) && isset($_SESSION["App"]->selected_application) &&
 		$_SESSION["App"]->selected_application != "")
 	 	$sel_app = $_SESSION["App"]->selected_application;
 	elseif (isset($_SESSION["sel_app"]) && $_SESSION["sel_app"] != "")
@@ -25,9 +25,11 @@ function page_header($title, $no_menu=false, $is_index=false, $onload="", $js=""
     echo "<html dir='" . $_SESSION['language']->dir . "' >";
     echo "<head><title>$title</title>";
     $encoding = $_SESSION['language']->encoding;
+    $local_stylesheet = $_SESSION['language']->get_stylesheet();
 	echo "<meta http-equiv='Content-type' content='text/html'; charset='$encoding'>";
 	echo "<link href='$local_path_to_root/themes/$theme/default.css' rel='stylesheet' type='text/css' /> \n";
-	echo "<link href='$local_path_to_root/" . $_SESSION['language']->get_stylesheet() . "' rel='stylesheet' type='text/css' /> \n";
+	if (file_exists($local_path_to_root. "/".$local_stylesheet))
+		echo "<link href='$local_path_to_root/$local_stylesheet' rel='stylesheet' type='text/css' /> \n";
 	if ($js != "")
 		echo $js;
 	echo "</head> \n";
@@ -45,7 +47,7 @@ function page_header($title, $no_menu=false, $is_index=false, $onload="", $js=""
     echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
     echo "<td class='quick_menu'>\n";
-	if (!$no_menu) 
+	if (!$no_menu)
 	{
 		echo "<table cellpadding=0 cellspacing=0 width='100%'><tr><td>";
 		echo "<div class=tabs>";
@@ -68,7 +70,7 @@ function page_header($title, $no_menu=false, $is_index=false, $onload="", $js=""
 
 	echo "</td></tr></table>";
 
-	if ($title && !$no_menu && !$is_index) 
+	if ($title && !$no_menu && !$is_index)
 	{
 		echo "<center><table width='100%'><tr><td width='100%' class='titletext'>$title</td></tr></table></center>";
 	}

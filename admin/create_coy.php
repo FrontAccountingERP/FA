@@ -17,7 +17,7 @@ page(_("Create/Update Company"));
 if (isset($_GET['selected_id']))
 {
 	$selected_id = $_GET['selected_id'];
-} 
+}
 elseif (isset($_POST['selected_id']))
 {
 	$selected_id = $_POST['selected_id'];
@@ -39,7 +39,7 @@ function handle_submit()
 	global $db_connections, $def_coy, $tb_pref_counter, $db;
 
 	$new = false;
-	
+
 	if (!check_data())
 		return false;
 
@@ -61,13 +61,13 @@ function handle_submit()
 			$db_connections[$id]['tbpref'] = $_POST['tbpref'];
 		else
 			$db_connections[$id]['tbpref'] = "";
-	}		
+	}
 	if ((bool)$_POST['def'] == true)
 		$def_coy = $id;
 	$error = write_config_db($new);
 	if ($error == -1)
 		display_error(_("Cannot open the configuration file - ") . $path_to_root . "/config_db.php");
-	else if ($error == -2)	
+	else if ($error == -2)
 		display_error(_("Cannot write to the configuration file - ") . $path_to_root . "/config_db.php");
 	else if ($error == -3)
 		display_error(_("The configuration file ") . $path_to_root . "/config_db.php" . _(" is not writable. Change its permissions so it is, then re-run the operation."));
@@ -82,15 +82,15 @@ function handle_submit()
 			set_global_connection();
 			return false;
 		}
-	
+
 		$filename = $_FILES['uploadfile']['tmp_name'];
-		if (is_uploaded_file ($filename)) 
+		if (is_uploaded_file ($filename))
 		{
 			db_import($filename, $conn, $id);
 			if (isset($_POST['admpassword']) && $_POST['admpassword'] != "")
 				db_query("UPDATE ".$conn['tbpref']."users set password = '".md5($_POST['admpassword']). "' WHERE user_id = 'admin'");
-		} 
-		else 
+		}
+		else
 		{
 			display_error(_("Error uploading Database Script, please upload it manually"));
 			set_global_connection();
@@ -107,7 +107,7 @@ function handle_delete()
 {
 	global $def_coy, $db_connections;
 
-	$id = $_GET['id'];	
+	$id = $_GET['id'];
 
 	$dbase = $db_connections[$id]['dbname'];
 	$err = db_drop_db($db_connections[$id]);
@@ -122,7 +122,7 @@ function handle_delete()
 	$error = write_config_db();
 	if ($error == -1)
 		display_error(_("Cannot open the configuration file - ") . $path_to_root . "/config_db.php");
-	else if ($error == -2)	
+	else if ($error == -2)
 		display_error(_("Cannot write to the configuration file - ") . $path_to_root . "/config_db.php");
 	else if ($error == -3)
 		display_error(_("The configuration file ") . $path_to_root . "/config_db.php" . _(" is not writable. Change its permissions so it is, then re-run the operation."));
@@ -130,7 +130,7 @@ function handle_delete()
 		return;
 	if ($err == 0)
 		display_error(_("Error removing Database: ") . $dbase . _(", please remove it manuallly"));
-	else		
+	else
 		meta_forward($_SERVER['PHP_SELF']);
 }
 
@@ -141,7 +141,7 @@ function display_companies()
 	global $table_style, $def_coy, $db_connections;
 
 	$coyno = $_SESSION["wa_current_user"]->company;
-	
+
 	echo "
 		<script language='javascript'>
 		function deleteCompany(id) {
@@ -151,10 +151,10 @@ function display_companies()
 		}
 		</script>";
 	start_table($table_style);
-	
-	$th = array(_("Company"), _("Database Host"), _("Database User"), 
+
+	$th = array(_("Company"), _("Database Host"), _("Database User"),
 		_("Database Name"), _("Table Pref"), _("Default"), "", "");
-	table_header($th);	
+	table_header($th);
 
 	$k=0;
 	$conn = $db_connections;
@@ -196,25 +196,25 @@ function display_company_edit($selected_id)
 		$n = $selected_id;
 	else
 		$n = count($db_connections);
-	
+
 	start_form(true, true);
 
 	echo "
 		<script language='javascript'>
 		function updateCompany() {
-			if (document.forms[0].uploadfile.value!='' && document.forms[0].dbname.value!='') {			
+			if (document.forms[0].uploadfile.value!='' && document.forms[0].dbname.value!='') {
 				document.forms[0].action='create_coy.php?c=u&ul=1&id=" . $n . "&fn=' + document.forms[0].uploadfile.value
 			}
 			else {
 				document.forms[0].action='create_coy.php?c=u&id=" . $n . "&fn=' + document.forms[0].uploadfile.value
-			}	
+			}
 			document.forms[0].submit()
 		}
 		</script>";
-	
+
 	start_table($table_style2);
 
-	if ($selected_id != -1) 
+	if ($selected_id != -1)
 	{
 		$conn = $db_connections[$selected_id];
 		$_POST['name'] = $conn['name'];
@@ -224,9 +224,9 @@ function display_company_edit($selected_id)
 		$_POST['dbname']  = $conn['dbname'];
 		$_POST['tbpref']  = $conn['tbpref'];
 		if ($selected_id == $def_coy)
-			$_POST['def'] = true; 
-		else	
-			$_POST['def'] = false; 
+			$_POST['def'] = true;
+		else
+			$_POST['def'] = false;
 		$_POST['dbcreate']  = false;
 		hidden('selected_id', $selected_id);
 		hidden('tbpref', $_POST['tbpref']);
@@ -237,7 +237,7 @@ function display_company_edit($selected_id)
 	text_row_ex(_("Company"), 'name', 30);
 	text_row_ex(_("Host"), 'host', 30);
 	text_row_ex(_("Database User"), 'dbuser', 30);
-	if ($selected_id == -1) 
+	if ($selected_id == -1)
 		text_row_ex(_("Database Password"), 'dbpassword', 30);
 	text_row_ex(_("Database Name"), 'dbname', 30);
 	if ($selected_id == -1)
@@ -245,7 +245,7 @@ function display_company_edit($selected_id)
 	else
 		label_row(_("Table Pref"), $_POST['tbpref']);
 	yesno_list_row(_("Default"), 'def', null, "", "", false);
-	
+
 	start_row();
 	label_cell(_("Database Script"));
 	label_cell("<input name='uploadfile' type='file'>");
@@ -264,19 +264,19 @@ function display_company_edit($selected_id)
 
 //---------------------------------------------------------------------------------------------
 
-if (isset($_GET['c']) && $_GET['c'] == 'df') 
+if (isset($_GET['c']) && $_GET['c'] == 'df')
 {
 
 	handle_delete();
 }
 
-if (isset($_GET['c']) && $_GET['c'] == 'u') 
+if (isset($_GET['c']) && $_GET['c'] == 'u')
 {
-	if (handle_submit()) 
+	if (handle_submit())
 	{
 		meta_forward($_SERVER['PHP_SELF']);
 	}
-}	
+}
 
 
 //---------------------------------------------------------------------------------------------

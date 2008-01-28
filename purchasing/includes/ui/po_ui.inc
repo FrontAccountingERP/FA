@@ -34,7 +34,7 @@ function create_new_po()
 	$_POST['OrderDate'] = Today();
 	if (!is_date_in_fiscalyear($_POST['OrderDate']))
 		$_POST['OrderDate'] = end_fiscalyear();
-	$_SESSION['PO']->orig_order_date = $_POST['OrderDate'];	
+	$_SESSION['PO']->orig_order_date = $_POST['OrderDate'];
 }
 
 //---------------------------------------------------------------------------------------------------
@@ -49,22 +49,22 @@ function display_po_header(&$order)
 	echo "<tr><td valign=center>"; // outer table
 	echo "<table>";
 
-    if ($editable) 
+    if ($editable)
     {
         if (!isset($_POST['supplier_id']) && (get_global_supplier() != reserved_words::get_all()))
         	$_POST['supplier_id'] = get_global_supplier();
 
     	supplier_list_row(_("Supplier:"), 'supplier_id', $_POST['supplier_id'], false, true);
 
-    	if ($order->supplier_id != $_POST['supplier_id']) 
+    	if ($order->supplier_id != $_POST['supplier_id'])
     	{
     		// supplier has changed
     		// delete all the order items - drastic but necessary because of
     		// change of currency, etc
     		$order->clear_items();
     	}
-	} 
-	else 
+	}
+	else
 	{
 		hidden('supplier_id', $order->supplier_id);
 		label_row(_("Supplier:"), $order->supplier_name);
@@ -82,11 +82,11 @@ function display_po_header(&$order)
 			$_POST['OrderDate']);
 	}
 
-    if ($editable) 
+    if ($editable)
     {
     	ref_row(_("Reference:"), 'ref', references::get_next(systypes::po()));
-    } 
-    else 
+    }
+    else
     {
     	hidden('ref', $order->reference);
     	label_row(_("Reference:"), $order->reference);
@@ -124,7 +124,7 @@ function display_po_header(&$order)
 	echo "</td></tr>";
 
     if (!isset($_POST['StkLocation']) || $_POST['StkLocation'] == "" ||
-    	isset($_POST['GetAddress']) || !isset($_POST['delivery_address']) || 
+    	isset($_POST['GetAddress']) || !isset($_POST['delivery_address']) ||
     	$_POST['delivery_address'] == "")
     {
     	/*If this is the first time the form loaded set up defaults */
@@ -140,12 +140,12 @@ function display_po_header(&$order)
     	  	$_SESSION['PO']->Location = $_POST['StkLocation'];
     	  	$_SESSION['PO']->delivery_address = $_POST['delivery_address'];
 
-        } 
-        else 
+        }
+        else
         { /*The default location of the user is crook */
     	  	echo "<br>" . _("The default stock location set up for this user is not a currently defined stock location. Your system administrator needs to amend your user record.");
         }
-    } 
+    }
 
 	textarea_row(_("Deliver to:"), 'delivery_address', $_POST['delivery_address'], 35, 4);
   	echo "</table>";
@@ -166,11 +166,11 @@ function display_po_items(&$order, $editable=true)
 
    	$th = array(_("Item Code"), _("Item Description"), _("Quantity"), _("Unit"),
    		_("Required Delivery Date"), _("Price"), _("Line Total"));
-   	table_header($th);	
+   	table_header($th);
 
 	$total = 0;
 	$k = 0;
-   	foreach ($order->line_items as $po_line) 
+   	foreach ($order->line_items as $po_line)
    	{
 
 		if ($po_line->Deleted == false)
@@ -187,14 +187,14 @@ function display_po_items(&$order, $editable=true)
     			amount_cell($po_line->price);
                 amount_cell($line_total);
 
-                if ($editable) 
+                if ($editable)
                 {
                     edit_link_cell(SID."Edit=" . $po_line->line_no);
                     delete_link_cell(SID."Delete=" . $po_line->line_no);
                 }
         		end_row();
-			} 
-			else 
+			}
+			else
 			{
 				po_item_controls($order, $po_line->stock_id);
 			}
@@ -206,7 +206,7 @@ function display_po_items(&$order, $editable=true)
 		po_item_controls($order);
 
     $display_total = number_format2($total,user_price_dec());
-    label_row(_("Total Excluding Shipping/Tax"), $display_total, "colspan=6 align=right", 
+    label_row(_("Total Excluding Shipping/Tax"), $display_total, "colspan=6 align=right",
     	"nowrap align=right");
 
 	end_table(1);
@@ -236,14 +236,14 @@ function display_po_summary(&$po, $is_self=false, $editable=false)
 	start_row();
     label_cells(_("Date"), $po->orig_order_date, "class='tableheader2'");
 
-    if ($editable) 
+    if ($editable)
     {
         if (!isset($_POST['Location']))
         	$_POST['Location'] = $po->Location;
-        label_cell(_("Deliver Into Location"), "class='tableheader2'");	
+        label_cell(_("Deliver Into Location"), "class='tableheader2'");
         locations_list_cells(null, 'Location', $_POST['Location']);
-    } 
-    else 
+    }
+    else
     {
     	label_cells(_("Deliver Into Location"), get_location_name($po->Location),
     		"class='tableheader2'");
@@ -287,15 +287,24 @@ function po_item_controls(&$order, $stock_id=null)
 		hidden('stock_id', $_POST['stock_id']);
 		label_cell($_POST['stock_id']);
 		label_cell($order->line_items[$_GET['Edit']]->item_description);
-	} 
-	else 
+	}
+	else
 	{
+		global $no_item_list;
 
 		hidden('line_no', ($_SESSION['PO']->lines_on_order + 1));
 
-		text_cells(null, "StockID2", "", 12, 10, "", "", "onkeyup='recalcAccounts();' onKeyDown='if(event.keyCode==13) event.keyCode=9;' onblur='return setAccount(0, true);'");
-		stock_purchasable_items_list_cells(null, 'stock_id', $_POST['stock_id'], false, false, "onchange='return setAccount(1, true)'");
-
+		if ($no_item_list)
+		{
+			echo "<td colspan=2>\n";
+			stock_purchasable_items_list('stock_id', $_POST['stock_id'], false, true);
+			echo "</td>\n";
+		}
+		else
+		{
+			text_cells(null, "StockID2", "", 12, 10, "", "", "onkeyup='recalcAccounts();' onKeyDown='if(event.keyCode==13) event.keyCode=9;' onblur='return setAccount(0, true);'");
+			stock_purchasable_items_list_cells(null, 'stock_id', $_POST['stock_id'], false, false, "onchange='return setAccount(1, true)'");
+		}
     	$item_info = get_item_edit_info($_POST['stock_id']);
 		$_POST['units'] = $item_info["units"];
 
@@ -314,12 +323,12 @@ function po_item_controls(&$order, $stock_id=null)
 	$line_total = $_POST['qty'] * $_POST['price'];
 	amount_cell($line_total);
 
-	if (isset($_GET['Edit'])) 
+	if (isset($_GET['Edit']))
 	{
     	submit_cells('UpdateLine', _("Update"));
     	submit_cells('CancelUpdate', _("Cancel"));
-	} 
-	else 
+	}
+	else
 	{
 		submit_cells('EnterLine', _("Add Item"), "colspan=2");
 	}

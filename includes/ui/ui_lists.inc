@@ -2,6 +2,10 @@
 
 include_once($path_to_root . "/includes/banking.inc");
 
+define("DEFVAL", "--");
+$search_button = "<input type='submit' class='inputsubmit' style='border:0;background:url($path_to_root/themes/default/images/locate.png) no-repeat;' name='%s' value='?' title='"._("Search")."'> ";
+//$search_button = "<input type='submit' class='inputsubmit' name='%s' value='?'> ";
+
 $all_items = reserved_words::get_all();
 
 // TDB for all list functions : if there is no data, display a link to the releveant
@@ -9,6 +13,50 @@ $all_items = reserved_words::get_all();
 
 function supplier_list($name, $selected_id, $all_option=false, $submit_on_change=false)
 {
+	global $no_supplier_list, $all_items;
+
+	if ($selected_id == null)
+		$selected_id = ((!isset($_POST[$name]) || $_POST[$name] == "") ? "" : $_POST[$name]);
+
+	if ($no_supplier_list)
+	{
+		global $search_button;
+		$edit_name = $name."_edit";
+		$edit_button = $name."_button";
+
+		$val = (isset($_POST[$edit_name]) && $_POST[$edit_name] != "" ? $_POST[$edit_name] : "");
+		if (isset($_POST[$edit_button]))
+		{
+			$selected_id = $_POST[$name] = "";
+		}
+
+		if ($selected_id != "")
+		{
+			$val = DEFVAL;
+			$supplier_sql = "SELECT supplier_id, supp_name, curr_code FROM ".TB_PREF."suppliers WHERE supplier_id=$selected_id";
+			$supplier_result = db_query($supplier_sql);
+		}
+		else
+		{
+			if ($val != "" && $val != DEFVAL)
+			{
+				$supplier_sql = "SELECT supplier_id, supp_name, curr_code FROM ".TB_PREF."suppliers WHERE supp_name LIKE '%{$val}%' ORDER BY supp_name";
+				$supplier_result = db_query($supplier_sql);
+			}
+			else
+				$supplier_result = false;
+		}
+
+		echo "<input type='text' name='$edit_name' size='8' maxlength='50' value='$val' onblur='this.form.$edit_button.click();'> ";
+
+		echo sprintf($search_button, $edit_button);
+	}
+	else
+	{
+		$supplier_sql = "SELECT supplier_id, supp_name, curr_code FROM ".TB_PREF."suppliers ORDER BY supp_name";
+		$supplier_result = db_query($supplier_sql);
+	}
+
 	if ($submit_on_change==true)
 		echo "<select name='$name' onchange='this.form.submit();'>";
 	else
@@ -16,34 +64,29 @@ function supplier_list($name, $selected_id, $all_option=false, $submit_on_change
 
 	$company_currency = get_company_currency();
 
-	$supplier_sql = "SELECT supplier_id, supp_name, curr_code FROM ".TB_PREF."suppliers ORDER BY supp_name";
-	$supplier_result = db_query($supplier_sql);
-
-	if ($selected_id == null)
-		$selected_id = (!isset($_POST[$name]) ? "" : $_POST[$name]);
 	if ($all_option == true)
 	{
-    	if (reserved_words::get_all() == $selected_id)
+    	if ($selected_id == $all_items)
     	{
-    	     echo "<option selected value='" . reserved_words::get_all(). "'>" . _("All Suppliers") . "</option>\n";
-    	} 
-    	else 
-    	{
-    	     echo "<option value='" . reserved_words::get_all(). "'>" . _("All Suppliers") . "</option>\n";
+    	     echo "<option selected value='$all_items'>" . _("All Suppliers") . "</option>\n";
     	}
-		if ($selected_id == "") 
+    	else
+    	{
+    	     echo "<option value='$all_items'>" . _("All Suppliers") . "</option>\n";
+    	}
+		if ($selected_id == "")
 		{
-			$selected_id = reserved_words::get_all();
+			$selected_id = $all_items;
 		}
 	}
 
-	while ($supplier_row = db_fetch_row($supplier_result)) 
+	while ($supplier_row = db_fetch_row($supplier_result))
 	{
-		if ($selected_id==$supplier_row[0]) 
+		if ($selected_id==$supplier_row[0])
 		{
 			echo "<option selected value='" . $supplier_row[0] . "'>";
-		} 
-		else 
+		}
+		else
 		{
 			echo "<option value='" . $supplier_row[0] . "'>";
 		}
@@ -52,7 +95,7 @@ function supplier_list($name, $selected_id, $all_option=false, $submit_on_change
 		if ($supplier_row[2] != $company_currency)
 			echo "&nbsp;-&nbsp;" . $supplier_row[2];
 		echo  "</option>\n";
-		if ($selected_id == "") 
+		if ($selected_id == "")
 		{
 			$selected_id = $supplier_row[0];
 			$_POST[$name] = $selected_id;
@@ -68,7 +111,7 @@ function supplier_list_cells($label, $name, $selected_id, $all_option=false, $su
 {
 	if ($label != null)
 		echo "<td>$label</td>\n";
-	echo "<td>";
+	echo "<td nowrap>";
 	supplier_list($name, $selected_id, $all_option, $submit_on_change);
 	echo "</td>\n";
 }
@@ -84,41 +127,79 @@ function supplier_list_row($label, $name, $selected_id, $all_option=false, $subm
 
 function customer_list($name, $selected_id, $all_option=false, $submit_on_change=false)
 {
+	global $no_customer_list, $all_items;
+
+	if ($selected_id == null)
+		$selected_id = ((!isset($_POST[$name]) || $_POST[$name] == "") ? "" : $_POST[$name]);
+
+	if ($no_customer_list)
+	{
+		global $search_button;
+		$edit_name = $name."_edit";
+		$edit_button = $name."_button";
+
+		$val = (isset($_POST[$edit_name]) && $_POST[$edit_name] != "" ? $_POST[$edit_name] : "");
+		if (isset($_POST[$edit_button]))
+		{
+			$selected_id = $_POST[$name] = "";
+			$_POST['branch_id'] = "";
+		}
+
+		if ($selected_id != "")
+		{
+			$val = DEFVAL;
+			$customer_sql = "SELECT debtor_no, name, curr_code FROM ".TB_PREF."debtors_master WHERE debtor_no=$selected_id";
+			$customer_result = db_query($customer_sql);
+		}
+		else
+		{
+			if ($val != "" && $val != DEFVAL)
+			{
+				$customer_sql = "SELECT debtor_no, name, curr_code FROM ".TB_PREF."debtors_master WHERE name LIKE '%{$val}%' ORDER BY name";
+				$customer_result = db_query($customer_sql);
+			}
+			else
+				$customer_result = false;
+		}
+
+		echo "<input type='text' name='$edit_name' size='8' maxlength='50' value='$val' onblur='this.form.$edit_button.click();'> ";
+
+		echo sprintf($search_button, $edit_button);
+	}
+	else
+	{
+		$customer_sql = "SELECT debtor_no, name, curr_code FROM ".TB_PREF."debtors_master ORDER BY name";
+		$customer_result = db_query($customer_sql);
+	}
 	if ($submit_on_change==true)
 		echo "<select name='$name' onchange='this.form.submit();'>";
 	else
 		echo "<select name='$name'>";
 
-	$customer_sql = "SELECT debtor_no, name, curr_code FROM ".TB_PREF."debtors_master ORDER BY name";
-	$customer_result = db_query($customer_sql);
-
 	$company_currency = get_company_currency();
 
-	if ($selected_id == null)
-		$selected_id = (!isset($_POST[$name]) ? "" : $_POST[$name]);
 	if (($all_option == true))
 	{
-    	if (reserved_words::get_all() == $selected_id)
+    	if ($selected_id == $all_items)
     	{
-    	     echo "<option selected value='" . reserved_words::get_all(). "'>" . _("All Customers") . "</option>\n";
-    	} 
-    	else 
-    	{
-    	     echo "<option value='" . reserved_words::get_all(). "'>" . _("All Customers") . "</option>\n";
+    	     echo "<option selected value='$all_items'>" . _("All Customers") . "</option>\n";
     	}
-		if ($selected_id == "") 
+    	else
+    	{
+    	     echo "<option value='$all_items'>" . _("All Customers") . "</option>\n";
+    	}
+		if ($selected_id == "")
 		{
-			$selected_id =  reserved_words::get_all();
+			$selected_id =  $all_items;
 		}
 	}
-
-	while ($customer_row = db_fetch_row($customer_result)) 
+	while ($customer_row = db_fetch_row($customer_result))
 	{
-		if ($selected_id == $customer_row[0]) 
+		if ($selected_id == $customer_row[0])
 		{
 			echo "<option selected value='" . $customer_row[0] . "'>";
-		} 
-		else 
+		}
+		else
 		{
 			echo "<option value='" . $customer_row[0] . "'>";
 		}
@@ -130,7 +211,7 @@ function customer_list($name, $selected_id, $all_option=false, $submit_on_change
 		echo  "</option>\n";
 		// if no initial selection - set the first item
 		// do we want to do this for all lists ???? probably
-		if ($selected_id == "") 
+		if ($selected_id == "")
 		{
 			$selected_id = $customer_row[0];
 			$_POST[$name] = $selected_id;
@@ -138,7 +219,6 @@ function customer_list($name, $selected_id, $all_option=false, $submit_on_change
 	}
 
 	echo "</select>";
-
 	db_free_result($customer_result);
 }
 
@@ -146,7 +226,7 @@ function customer_list_cells($label, $name, $selected_id, $all_option = false, $
 {
 	if ($label != null)
 		echo "<td>$label</td>\n";
-	echo "<td>";
+	echo "<td nowrap>";
 	customer_list($name, $selected_id, $all_option, $submit_on_change);
 	echo "</td>\n";
 }
@@ -181,29 +261,29 @@ function customer_branches_list($customer_id, $name, $selected_id,
 	if ($all_option == true)
 	{
 		echo "<option ";
-		if (reserved_words::get_all() == $selected_id)
+		if ($selected_id == $all_items)
 			echo " selected ";
-		echo "value='" . reserved_words::get_all(). "'>" . _("All Branches") . "</option>\n";
+		echo "value='$all_items'>" . _("All Branches") . "</option>\n";
 
-		if ($selected_id == "") 
+		if ($selected_id == "")
 		{
-			$selected_id =  reserved_words::get_all();
+			$selected_id =  $all_items;
 		}
 	}
 
-	while ($row = db_fetch_row($result)) 
+	while ($row = db_fetch_row($result))
 	{
-		if ($selected_id == $row[0]) 
+		if ($selected_id == $row[0])
 		{
 			echo "<option selected value='" . $row[0] . "'>";
-		} 
-		else 
+		}
+		else
 		{
 			echo "<option value='" . $row[0] . "'>";
 		}
 		echo $row[1] . "</option>\n";
 
-		if ($selected_id == "") 
+		if ($selected_id == "")
 		{
 			$selected_id = $row[0];
 			$_POST[$name] = $selected_id;
@@ -232,8 +312,10 @@ function customer_branches_list_row($label,$customer_id, $name, $selected_id, $a
 
 //------------------------------------------------------------------------------------------------
 
-function locations_list($name, $selected_id, $all_option=false, $submit_on_change=false, $all_option_name="")
+function locations_list($name, $selected_id, $all_option=false, $submit_on_change=false)
 {
+	global $all_items;
+
 	if ($submit_on_change == true)
 		echo "<select name='$name' onchange='this.form.submit();'>";
 	else
@@ -251,28 +333,29 @@ function locations_list($name, $selected_id, $all_option=false, $submit_on_chang
 	if ($all_option == true)
 	{
 		echo "<option ";
-    	if ($selected_id == reserved_words::get_all())
+    	if ($selected_id == $all_items)
     	     echo " selected ";
-		echo " value='" . reserved_words::get_all(). "'>" . _("All Locations") . "</option>\n";
+		echo " value='$all_items'>" . _("All Locations") . "</option>\n";
 
-		if ($selected_id == "") {
-			$selected_id = reserved_words::get_all();
+		if ($selected_id == "")
+		{
+			$selected_id = $all_items;
 		}
 	}
 
-	while ($row = db_fetch_row($result)) 
+	while ($row = db_fetch_row($result))
 	{
-		if ($selected_id == $row[0]) 
+		if ($selected_id == $row[0])
 		{
 			echo "<option selected value='" . $row[0] . "'>";
-		} 
-		else 
+		}
+		else
 		{
 			echo "<option value='" . $row[0] . "'>";
 		}
 		echo $row[1] . "</option>\n";
 
-		if ($selected_id == "") 
+		if ($selected_id == "")
 		{
 			$selected_id = $row[0];
 			$_POST[$name] = $selected_id;
@@ -316,20 +399,20 @@ function currencies_list($name, &$selected_id, $submit_on_change=false)
 
 	if ($selected_id == null)
 		$selected_id = (!isset($_POST[$name]) ? "" : $_POST[$name]);
-	while ($row = db_fetch_row($result)) 
+	while ($row = db_fetch_row($result))
 	{
 		// default to the company currency
-		if ($selected_id == "" && ($row[0] == $company_currency)) 
+		if ($selected_id == "" && ($row[0] == $company_currency))
 		{
 			$selected_id = $row[0];
 			$_POST[$name] = $selected_id;
 		}
 
-		if ($selected_id == $row[0]) 
+		if ($selected_id == $row[0])
 		{
 			echo "<option selected value='" . $row[0] . "'>";
-		} 
-		else 
+		}
+		else
 		{
 			echo "<option value='" . $row[0] . "'>";
 		}
@@ -372,20 +455,20 @@ function fiscalyears_list($name, &$selected_id, $submit_on_change=false)
 
 	if ($selected_id == null)
 		$selected_id = (!isset($_POST[$name]) ? "" : $_POST[$name]);
-	while ($row = db_fetch_row($result)) 
+	while ($row = db_fetch_row($result))
 	{
 		// default to the company current fiscal year
-		if ($selected_id == "" && ($row[0] == $company_year)) 
+		if ($selected_id == "" && ($row[0] == $company_year))
 		{
 			$selected_id = $row[0];
 			$_POST[$name] = $selected_id;
 		}
 
-		if ($selected_id == $row[0]) 
+		if ($selected_id == $row[0])
 		{
 			echo "<option selected value='" . $row[0] . "'>";
-		} 
-		else 
+		}
+		else
 		{
 			echo "<option value='" . $row[0] . "'>";
 		}
@@ -393,8 +476,8 @@ function fiscalyears_list($name, &$selected_id, $submit_on_change=false)
 			$how = _('Active');
 		else
 			$how = _('Closed');
-		$row[1] = sql2date($row[1]);	
-		$row[2] = sql2date($row[2]);	
+		$row[1] = sql2date($row[1]);
+		$row[2] = sql2date($row[2]);
 		echo $row[1] . "&nbsp;-&nbsp;" . $row[2] . "&nbsp;&nbsp;" . $how . "</option>\n";
 	}
 
@@ -421,9 +504,11 @@ function fiscalyears_list_row($label, $name, $selected_id)
 //---------------------------------------------------------------------------------------------------
 
 function simple_codeandname_list($sql, $name, &$selected_id,
-	$all_option=false, $all_option_name=null, $all_option_numeric=false, 
+	$all_option=false, $all_option_name=null, $all_option_numeric=false,
 	$submit_on_change=false, $returnzero=false)
 {
+	global $all_items;
+
 	if ($submit_on_change == true)
 		echo "<select name='$name' onchange='this.form.submit();'>";
 	else
@@ -438,17 +523,17 @@ function simple_codeandname_list($sql, $name, &$selected_id,
 		elseif ($all_option_numeric)
 			$reserved_word = reserved_words::get_all_numeric();
 		else
-			$reserved_word = reserved_words::get_all();
+			$reserved_word = $all_items;
 
-    	if ($reserved_word == $selected_id)
+    	if ($selected_id == $reserved_word)
     	{
-    	     echo "<option selected value='" . $reserved_word . "'>" . $all_option_name . "</option>\n";
-    	} 
-    	else 
-    	{
-    	     echo "<option value='" . $reserved_word . "'>" . $all_option_name . "</option>\n";
+    	     echo "<option selected value='$reserved_word'>$all_option_name</option>\n";
     	}
-		if ($selected_id == "") 
+    	else
+    	{
+    	     echo "<option value='$reserved_word'>$all_option_name</option>\n";
+    	}
+		if ($selected_id == "")
 		{
 			$selected_id =  $reserved_word;
 		}
@@ -456,9 +541,9 @@ function simple_codeandname_list($sql, $name, &$selected_id,
 
 	$result = db_query($sql);
 
-	while ($row = db_fetch_row($result)) 
+	while ($row = db_fetch_row($result))
 	{
-		if ($selected_id == $row[0]) 
+		if ($selected_id == $row[0])
 		{
 			echo "<option selected value='" . $row[0] . "'>";
 		} else {
@@ -466,7 +551,7 @@ function simple_codeandname_list($sql, $name, &$selected_id,
 		}
 		echo $row[1] . "</option>\n";
 
-		if (!$returnzero && $selected_id == "") 
+		if (!$returnzero && $selected_id == "")
 		{
 			$selected_id = $row[0];
 			$_POST[$name] = $selected_id;
@@ -492,13 +577,13 @@ function dimensions_list($name, &$selected_id, $no_option=false, $showname=null,
 			$sql .= " AND type_=$showtype";
 		else if ($showtype)
 			$sql .= " type_=$showtype";
-	}		
-	$sql .= " ORDER BY reference";	
-	simple_codeandname_list($sql, $name, &$selected_id, $no_option, $showname,	
+	}
+	$sql .= " ORDER BY reference";
+	simple_codeandname_list($sql, $name, $selected_id, $no_option, $showname,
 		true, $submit_on_change, true);
 }
 
-function dimensions_list_cells($label, $name, $selected_id, $no_option=false, $showname=null, 
+function dimensions_list_cells($label, $name, $selected_id, $no_option=false, $showname=null,
 	$showclosed=false, $showtype=0)
 {
 	if ($label != null)
@@ -508,11 +593,11 @@ function dimensions_list_cells($label, $name, $selected_id, $no_option=false, $s
 	echo "</td>\n";
 }
 
-function dimensions_list_row($label, $name, $selected_id, $no_option=false, $showname=null, 
+function dimensions_list_row($label, $name, $selected_id, $no_option=false, $showname=null,
 	$showclosed=false, $showtype=0)
 {
 	echo "<tr>\n";
-	dimensions_list_cells($label, $name, $selected_id, $no_option, $showname, 
+	dimensions_list_cells($label, $name, $selected_id, $no_option, $showname,
 		$showclosed, $showtype);
 	echo "</tr>\n";
 }
@@ -521,43 +606,88 @@ function dimensions_list_row($label, $name, $selected_id, $no_option=false, $sho
 
 function stock_items_list($name, $selected_id, $all_option=false, $submit_on_change=false, $extra="")
 {
-	global $all_items;
+	global $all_items, $no_item_list;
+
+	if ($selected_id == null)
+		$selected_id = (!isset($_POST[$name]) ? "" : $_POST[$name]);
+
+	if ($no_item_list)
+	{
+		global $search_button;
+		$edit_name = $name."_edit";
+		$edit_button = $name."_button";
+
+		$val = (isset($_POST[$edit_name]) && $_POST[$edit_name] != "" ? $_POST[$edit_name] : "");
+
+		if (isset($_POST[$edit_button]))
+		{
+			$selected_id = $_POST[$name] = "";
+		}
+
+		if ($selected_id != "")
+		{
+			$val = DEFVAL;
+			$sql = "SELECT stock_id, ".TB_PREF."stock_master.description, ".TB_PREF."stock_category.description
+				FROM ".TB_PREF."stock_master,".TB_PREF."stock_category WHERE ".TB_PREF."stock_master.category_id=".TB_PREF."stock_category.category_id
+				AND stock_id='$selected_id'";
+			$result = db_query($sql);
+		}
+		else
+		{
+			if ($val != "" && $val != DEFVAL)
+			{
+				$sql = "SELECT stock_id, ".TB_PREF."stock_master.description, ".TB_PREF."stock_category.description
+					FROM ".TB_PREF."stock_master,".TB_PREF."stock_category WHERE "
+					.TB_PREF."stock_master.category_id=".TB_PREF."stock_category.category_id AND
+					(stock_id LIKE '%{$val}%' OR ".TB_PREF."stock_category.description LIKE '%{$val}%' OR "
+					.TB_PREF."stock_master.description LIKE '%{$val}%')";
+				$result = db_query($sql);
+			}
+			else
+				$result = false;
+		}
+
+		echo "<input type='text' name='$edit_name' size='8' maxlength='50' value='$val' onblur='this.form.$edit_button.click();'> ";
+
+		echo sprintf($search_button, $edit_button);
+	}
+	else
+	{
+		$sql = "SELECT stock_id, ".TB_PREF."stock_master.description, ".TB_PREF."stock_category.description
+			FROM ".TB_PREF."stock_master,".TB_PREF."stock_category WHERE ".TB_PREF."stock_master.category_id=".TB_PREF."stock_category.category_id";
+		$result = db_query($sql);
+	}
+
 	if ($submit_on_change==true)
 		echo "<select name='$name' onchange='this.form.submit();'>";
-	else if ($extra != "")	
+	else if ($extra != "")
 		echo "<select name='$name' $extra>";
 	else
 		echo "<select name='$name'>";
 
-	$sql = "SELECT stock_id, ".TB_PREF."stock_master.description, ".TB_PREF."stock_category.description
-		FROM ".TB_PREF."stock_master,".TB_PREF."stock_category WHERE ".TB_PREF."stock_master.category_id=".TB_PREF."stock_category.category_id";
-	$result = db_query($sql);
-
-	if ($selected_id == null)
-		$selected_id = (!isset($_POST[$name]) ? "" : $_POST[$name]);
 	if (($all_option == true))
 	{
-    	if ($all_items == $selected_id)
+    	if ($selected_id == $all_items)
     	{
     	     echo "<option selected value='$all_items'>" . _("All Items") . "</option>\n";
-    	} 
-    	else 
+    	}
+    	else
     	{
     	     echo "<option value='$all_items'>" . _("All Items") . "</option>\n";
     	}
-		if ($selected_id == "") 
+		if ($selected_id == "")
 		{
 			$selected_id = $all_items;
 		}
 	}
 
-	while ($row = db_fetch_row($result)) 
+	while ($row = db_fetch_row($result))
 	{
-		if ($selected_id == $row[0]) 
+		if ($selected_id == $row[0])
 		{
 			echo "<option selected value='" . $row[0] . "'>";
-		} 
-		else 
+		}
+		else
 		{
 			echo "<option value='" . $row[0] . "'>";
 		}
@@ -565,22 +695,21 @@ function stock_items_list($name, $selected_id, $all_option=false, $submit_on_cha
 
 		// if no initial selection - set the first item
 		// do we want to do this for all lists ???? probably
-		if ($selected_id == "") 
+		if ($selected_id == "")
 		{
 			$selected_id = $row[0];
 			$_POST[$name] = $selected_id;
 		}
 	}
-
 	echo "</select>";
 	db_free_result($result);
 }
 
 function stock_items_list_cells($label, $name, $selected_id, $all_option=false, $submit_on_change=false, $extra="")
 {
-	if ($label != null) 
+	if ($label != null)
 		echo "<td>$label</td>\n";
-	echo "<td>";
+	echo "<td nowrap>";
 	stock_items_list($name, $selected_id, $all_option, $submit_on_change, $extra);
 	echo "</td>\n";
 }
@@ -612,33 +741,33 @@ function stock_bom_items_list($name, $selected_id, $all_option=false, $submit_on
 		$selected_id = (!isset($_POST[$name]) ? "" : $_POST[$name]);
 	if (($all_option == true))
 	{
-    	if ($all_items == $selected_id)
+    	if ($selected_id == $all_items)
     	{
     	     echo "<option selected value='$all_items'>" . _("All Items") . "</option>\n";
-    	} 
-    	else 
+    	}
+    	else
     	{
     	     echo "<option value='$all_items'>" . _("All Items") . "</option>\n";
     	}
-		if ($selected_id == "") 
+		if ($selected_id == "")
 		{
 			$selected_id = $all_items;
 		}
 	}
 
-	while ($row = db_fetch_row($result)) 
+	while ($row = db_fetch_row($result))
 	{
-		if ($selected_id==$row[0]) 
+		if ($selected_id==$row[0])
 		{
 			echo "<option selected value='" . $row[0] . "'>";
-		} 
-		else 
+		}
+		else
 		{
 			echo "<option value='" . $row[0] . "'>";
 		}
 		echo (user_show_codes()?$row[0] . "&nbsp;-&nbsp;":"") . $row[2] . "&nbsp;-&nbsp;" . $row[1] . "</option>\n";
 
-		if ($selected_id == "") 
+		if ($selected_id == "")
 		{
 			$selected_id = $row[0];
 			$_POST[$name] = $selected_id;
@@ -670,9 +799,11 @@ function stock_bom_items_list_row($label, $name, $selected_id, $all_option=false
 function base_stock_items_list($sql, $name, &$selected_id,
 	$all_option=false, $all_option_name="", $submit_on_change=false, $extra="")
 {
+	global $all_items;
+
 	if ($submit_on_change==true)
 		echo "<select name='$name' onchange='this.form.submit();'>";
-	else if ($extra != "")	
+	else if ($extra != "")
 		echo "<select name='$name' $extra>";
 	else
 		echo "<select name='$name'>";
@@ -683,33 +814,33 @@ function base_stock_items_list($sql, $name, &$selected_id,
 		$selected_id = (!isset($_POST[$name]) ? "" : $_POST[$name]);
 	if ($all_option == true)
 	{
-    	if (reserved_words::get_all() == $selected_id)
+    	if ($selected_id == $all_items)
     	{
-    	     echo "<option selected value='" . reserved_words::get_all(). "'>" . $all_option_name . "</option>\n";
-    	} 
-    	else 
-    	{
-    	     echo "<option value='" . reserved_words::get_all(). "'>" . $all_option_name . "</option>\n";
+    	     echo "<option selected value='$all_items'>$all_option_name</option>\n";
     	}
-		if ($selected_id == "") 
+    	else
+    	{
+    	     echo "<option value='$all_items'>$all_option_name</option>\n";
+    	}
+		if ($selected_id == "")
 		{
-			$selected_id =  reserved_words::get_all();
+			$selected_id = $all_items;
 		}
 	}
 
-	while ($row = db_fetch_row($result)) 
+	while ($row = db_fetch_row($result))
 	{
-		if ($selected_id == $row[0]) 
+		if ($selected_id == $row[0])
 		{
 			echo "<option selected value='" . $row[0] . "'>";
-		} 
-		else 
+		}
+		else
 		{
 			echo "<option value='" . $row[0] . "'>";
 		}
 		echo (user_show_codes()?$row[0] . "&nbsp;-&nbsp;":"") . $row[2] . "&nbsp;-&nbsp;" . $row[1] . "</option>\n";
 
-		if ($selected_id == "") 
+		if ($selected_id == "")
 		{
 			$selected_id = $row[0];
 			$_POST[$name] = $selected_id;
@@ -722,14 +853,14 @@ function base_stock_items_list($sql, $name, &$selected_id,
 
 //------------------------------------------------------------------------------------
 
-function stock_manufactured_items_list($name, $selected_id,
+function stock_manufactured_items_list($name, &$selected_id,
 	$all_option=false, $submit_on_change=false)
 {
 	$sql = "SELECT stock_id, ".TB_PREF."stock_master.description, ".TB_PREF."stock_category.description
 		FROM ".TB_PREF."stock_master,".TB_PREF."stock_category WHERE ".TB_PREF."stock_master.category_id=".TB_PREF."stock_category.category_id
 		AND (".TB_PREF."stock_master.mb_flag='M')";
 
-	base_stock_items_list($sql, $name, &$selected_id,	$all_option, _("All Items"),
+	base_stock_items_list($sql, $name, $selected_id,	$all_option, _("All Items"),
 		$submit_on_change);
 }
 
@@ -759,21 +890,109 @@ function stock_component_items_list($name, $parent_stock_id, &$selected_id,
 		".TB_PREF."stock_master.category_id=".TB_PREF."stock_category.category_id
 		AND stock_id != '$parent_stock_id'";
 
-	base_stock_items_list($sql, $name, &$selected_id,
+	base_stock_items_list($sql, $name, $selected_id,
 		$all_option, _("All Items"), $submit_on_change);
 }
 
 //------------------------------------------------------------------------------------
 
-function stock_purchasable_items_list($name, &$selected_id,
-	$all_option=false, $submit_on_change=false, $extra="")
+function stock_purchasable_items_list($name, &$selected_id,	$all_option=false, $submit_on_change=false, $extra="")
 {
-	$sql = "SELECT stock_id, ".TB_PREF."stock_master.description, ".TB_PREF."stock_category.description
-		FROM ".TB_PREF."stock_master,".TB_PREF."stock_category WHERE ".TB_PREF."stock_master.category_id=".TB_PREF."stock_category.category_id
-		AND mb_flag !='M'";
+	global $no_item_list, $all_items;
 
-	base_stock_items_list($sql, $name, &$selected_id,
-		$all_option, _("All Items"), $submit_on_change, $extra);
+	if ($selected_id == null)
+		$selected_id = (!isset($_POST[$name]) ? "" : $_POST[$name]);
+
+	if ($no_item_list)
+	{
+		$edit_name = $name."_edit";
+		$edit_button = $name."_button";
+
+		$val = (isset($_POST[$edit_name]) && $_POST[$edit_name] != "" ? $_POST[$edit_name] : "");
+		if (isset($_POST[$edit_button]))
+		{
+			$selected_id = $_POST[$name] = "";
+		}
+
+		if ($selected_id != "")
+		{
+			$val = DEFVAL;
+			$sql = "SELECT stock_id, ".TB_PREF."stock_master.description, ".TB_PREF."stock_category.description
+				FROM ".TB_PREF."stock_master,".TB_PREF."stock_category WHERE ".TB_PREF."stock_master.category_id=".TB_PREF."stock_category.category_id
+				AND mb_flag !='M' AND stock_id='$selected_id'";
+			$result = db_query($sql);
+		}
+		else
+		{
+			if ($val != "" && $val != DEFVAL)
+			{
+				$sql = "SELECT stock_id, ".TB_PREF."stock_master.description, ".TB_PREF."stock_category.description
+					FROM ".TB_PREF."stock_master,".TB_PREF."stock_category WHERE "
+					.TB_PREF."stock_master.category_id=".TB_PREF."stock_category.category_id AND mb_flag !='M' AND
+					(stock_id LIKE '%{$val}%' OR ".TB_PREF."stock_category.description LIKE '%{$val}%' OR "
+					.TB_PREF."stock_master.description LIKE '%{$val}%')";
+				$result = db_query($sql);
+			}
+			else
+				$result = false;
+		}
+
+		echo "<input type='text' name='$edit_name' size='8' maxlength='50' value='$val' > ";
+
+		echo "<input type='submit' class='inputsubmit' name='$edit_button' value='?'> ";
+	}
+	else
+	{
+		$sql = "SELECT stock_id, ".TB_PREF."stock_master.description, ".TB_PREF."stock_category.description
+			FROM ".TB_PREF."stock_master,".TB_PREF."stock_category WHERE ".TB_PREF."stock_master.category_id="
+			.TB_PREF."stock_category.category_id AND mb_flag !='M'";
+		$result = db_query($sql);
+	}
+
+	if ($submit_on_change==true)
+		echo "<select name='$name' onchange='this.form.submit();'>";
+	else if ($extra != "")
+		echo "<select name='$name' $extra>";
+	else
+		echo "<select name='$name'>";
+
+	if ($all_option == true)
+	{
+    	if ($selected_id == $all_items)
+    	{
+    	     echo "<option selected value='$all_items'>"._("All Items")."</option>\n";
+    	}
+    	else
+    	{
+    	     echo "<option value='$all_items'>"._("All Items")."</option>\n";
+    	}
+		if ($selected_id == "")
+		{
+			$selected_id = $all_items;
+		}
+	}
+
+	while ($row = db_fetch_row($result))
+	{
+		if ($selected_id == $row[0])
+		{
+			echo "<option selected value='" . $row[0] . "'>";
+		}
+		else
+		{
+			echo "<option value='" . $row[0] . "'>";
+		}
+		echo (user_show_codes()?$row[0] . "&nbsp;-&nbsp;":"") . $row[2] . "&nbsp;-&nbsp;" . $row[1] . "</option>\n";
+
+		if ($selected_id == "")
+		{
+			$selected_id = $row[0];
+			$_POST[$name] = $selected_id;
+		}
+	}
+
+	echo "</select>";
+	db_free_result($result);
 }
 
 function stock_purchasable_items_list_cells($label, $name, &$selected_id, $all_option=false, $submit_on_change=false, $extra = "")
@@ -801,7 +1020,7 @@ function stock_costable_items_list($name, &$selected_id,
 		FROM ".TB_PREF."stock_master,".TB_PREF."stock_category WHERE ".TB_PREF."stock_master.category_id=".TB_PREF."stock_category.category_id
 		AND mb_flag !='D'";
 
-	base_stock_items_list($sql, $name, &$selected_id,
+	base_stock_items_list($sql, $name, $selected_id,
 		$all_option, _("All Items"), $submit_on_change);
 }
 
@@ -812,7 +1031,7 @@ function stock_item_types_list_row($label, $name, $selected_id, $enabled=true)
 	echo "<tr>";
 	if ($label != NULL)
 		echo "<td>$label</td>\n";
-	echo "<td>";		
+	echo "<td>";
 	if ($enabled)
 		echo "<select name='$name' onchange='this.form.submit();'>\n";
 	else
@@ -836,18 +1055,18 @@ function stock_units_list_row($label, $name, $value, $enabled=true)
 		echo "<td><select name='$name'>";
 	else
 		echo "<td><select disabled name='$name'>";
-	
+
 	if ($value == null)
 		$value = (!isset($_POST[$name]) ? "" : $_POST[$name]);
-	foreach ($stock_units as $unit) 
+	foreach ($stock_units as $unit)
 	{
 		if ($value == "")
 			$_POST[$name] = $value = $unit;
 		if ($value==$unit)
 		{
 			echo "<option selected value='$unit'>$unit</option>\n";
-		} 
-		else 
+		}
+		else
 		{
 			echo "<option value='$unit'>$unit</option>\n";
 		}
@@ -864,7 +1083,7 @@ function tax_types_list($name, $selected_id,
 		$name, $selected_id, $none_option, $none_option_name, true, $submit_on_change);
 }
 
-function tax_types_list_cells($label, $name, $selected_id, $none_option=false, 
+function tax_types_list_cells($label, $name, $selected_id, $none_option=false,
 	$none_option_name=null, $submit_on_change=false)
 {
 	if ($label != null)
@@ -874,7 +1093,7 @@ function tax_types_list_cells($label, $name, $selected_id, $none_option=false,
 	echo "</td>\n";
 }
 
-function tax_types_list_row($label, $name, $selected_id, $none_option=false, 
+function tax_types_list_row($label, $name, $selected_id, $none_option=false,
 	$none_option_name=null, $submit_on_change=false)
 {
 	echo "<tr>\n";
@@ -1161,23 +1380,23 @@ function workcenter_list($name, $selected_id, $all_option=false)
 		$selected_id = (!isset($_POST[$name]) ? "" : $_POST[$name]);
 	if ($all_option == true)
 	{
-    	if ($all_items == $selected_id)
+    	if ($selected_id == $all_items)
     	{
     	     echo "<option selected value='$all_items'>" . _("All Work Centres") . "</option>\n";
-    	} 
-    	else 
+    	}
+    	else
     	{
     	     echo "<option value='$all_items'>" . _("All Work Centres") . "</option>\n";
     	}
 	}
 
-	while ($row = db_fetch_row($result)) 
+	while ($row = db_fetch_row($result))
 	{
-		if ($selected_id == $row[0]) 
+		if ($selected_id == $row[0])
 		{
 			echo "<option selected value='" . $row[0] . "'>";
-		} 
-		else 
+		}
+		else
 		{
 			echo "<option value='" . $row[0] . "'>";
 		}
@@ -1222,13 +1441,13 @@ function bank_accounts_list($name, $selected_id, $submit_on_change=false)
 
 	if ($selected_id == null)
 		$selected_id = (!isset($_POST[$name]) ? "" : $_POST[$name]);
-	while ($row = db_fetch_row($result)) 
+	while ($row = db_fetch_row($result))
 	{
-		if ($selected_id == $row[0]) 
+		if ($selected_id == $row[0])
 		{
 			echo "<option selected value='" . $row[0] . "'>";
-		} 
-		else 
+		}
+		else
 		{
 			echo "<option value='" . $row[0] . "'>";
 		}
@@ -1240,7 +1459,7 @@ function bank_accounts_list($name, $selected_id, $submit_on_change=false)
 		{
 			$selected_id = $row[0];
 			$_POST[$name] = $selected_id;
-		}	
+		}
 	}
 
 	echo "</select>";
@@ -1277,13 +1496,13 @@ function class_list($name, $selected_id, $submit_on_change=false)
 
 	if ($selected_id == null)
 		$selected_id = (!isset($_POST[$name]) ? "" : $_POST[$name]);
-	while ($row = db_fetch_row($result)) 
+	while ($row = db_fetch_row($result))
 	{
-		if ($selected_id == $row[0]) 
+		if ($selected_id == $row[0])
 		{
 			echo "<option selected value='" . $row[0] . "'>";
-		} 
-		else 
+		}
+		else
 		{
 			echo "<option value='" . $row[0] . "'>";
 		}
@@ -1292,7 +1511,7 @@ function class_list($name, $selected_id, $submit_on_change=false)
 		{
 			$selected_id = $row[0];
 			$_POST[$name] = $selected_id;
-		}	
+		}
 	}
 
 	echo "</select>";
@@ -1362,14 +1581,14 @@ function gl_account_types_list_row($label, $name, $selected_id, $all_option=fals
 	$all_option_numeric=false)
 {
 	echo "<tr>\n";
-	gl_account_types_list_cells($label, $name, $selected_id, $all_option, 
+	gl_account_types_list_cells($label, $name, $selected_id, $all_option,
 		$all_option_name, $all_option_numeric);
 	echo "</tr>\n";
 }
 
 //-----------------------------------------------------------------------------------------------
 
-function gl_all_accounts_list($name, $selected_id, $skip_bank_accounts=false, 
+function gl_all_accounts_list($name, $selected_id, $skip_bank_accounts=false,
 	$show_group=false, $onchange="")
 {
 	echo "<select name='$name'";
@@ -1393,27 +1612,27 @@ function gl_all_accounts_list($name, $selected_id, $skip_bank_accounts=false,
 		$selected_id = (!isset($_POST[$name]) ? "" : $_POST[$name]);
 	$result = db_query($sql, "query chart master");
 
-	while ($row = db_fetch_row($result)) 
+	while ($row = db_fetch_row($result))
 	{
-		if ($selected_id == $row[0]) 
+		if ($selected_id == $row[0])
 		{
 			echo "<option selected value='" . $row[0] . "'>";
-		} 
-		else 
+		}
+		else
 		{
 			echo "<option value='" . $row[0] . "'>";
 		}
 		//echo str_pad($row[0],6,'0', STR_PAD_LEFT) .  "&nbsp;&nbsp;&nbsp;&nbsp;" . $row[2] . "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" . $row[1];
 		if ($show_group)
 			echo $row[0] .  "&nbsp;&nbsp;&nbsp;&nbsp;" . $row[2] . "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" . $row[1] . "</option>\n";
-		else	
+		else
 			echo $row[0] .  "&nbsp;&nbsp;&nbsp;&nbsp;" . $row[1] . "</option>\n";
 
 		if ($selected_id == "")
 		{
 			$selected_id = $row[0];
 			$_POST[$name] = $selected_id;
-		}	
+		}
 	}
 
 	echo "</select>";
@@ -1434,7 +1653,7 @@ function gl_all_accounts_list_row($label, $name, $selected_id, $skip_bank_accoun
 	$show_group=false, $onchange="")
 {
 	echo "<tr>\n";
-	gl_all_accounts_list_cells($label, $name, $selected_id, $skip_bank_accounts, 
+	gl_all_accounts_list_cells($label, $name, $selected_id, $skip_bank_accounts,
 		$show_group, $onchange);
 	echo "</tr>\n";
 }
@@ -1446,11 +1665,11 @@ function yesno_list($name, $selected_id, $name_yes="", $name_no="", $submit_on_c
 	else
 		echo "<select name='$name'>";
 
-	if (strlen($name_yes) == 0)	
+	if (strlen($name_yes) == 0)
 	{
 		unset($name_yes);
 	}
-	if (strlen($name_no) == 0)	
+	if (strlen($name_no) == 0)
 	{
 		unset($name_no);
 	}
@@ -1461,18 +1680,18 @@ function yesno_list($name, $selected_id, $name_yes="", $name_no="", $submit_on_c
     	echo "<option value=1>";
     else
     	echo "<option selected value=1>";
-	if (!isset($name_yes)) 
-		echo _("Yes") . "</option>\n"; 
-	else 
-		echo $name_yes . "</option>\n"; 
+	if (!isset($name_yes))
+		echo _("Yes") . "</option>\n";
+	else
+		echo $name_yes . "</option>\n";
 	if ($selected_id == 0)
 		echo "<option selected value=0>";
-	else	
+	else
     	echo "<option value=0>";
-	if (!isset($name_no)) 
-		echo _("No") . "</option>\n"; 
-	else 
-		echo $name_no . "</option>\n"; 
+	if (!isset($name_no))
+		echo _("No") . "</option>\n";
+	else
+		echo $name_no . "</option>\n";
 	echo "</select>";
 }
 
@@ -1502,10 +1721,10 @@ function languages_list($name, &$selected_id)
 
 	if ($selected_id == null)
 		$selected_id = (!isset($_POST[$name]) ? "" : $_POST[$name]);
-	foreach ($installed_languages as $lang) 
+	foreach ($installed_languages as $lang)
 	{
 	  	echo "<option ";
-		if ($selected_id == $lang['code']) 
+		if ($selected_id == $lang['code'])
 			echo "selected ";
 		echo "value='" . $lang['code'] . "'>" . $lang['name'] . "</option>\n";
 	}
@@ -1537,10 +1756,10 @@ function bank_account_types_list($name, &$selected_id)
 
 	if ($selected_id == null)
 		$selected_id = (!isset($_POST[$name]) ? "" : $_POST[$name]);
-  	foreach ($bank_account_types as $type) 
+  	foreach ($bank_account_types as $type)
   	{
       	echo "<option ";
-      	if ($selected_id == "" || $selected_id == $type['id']) 
+      	if ($selected_id == "" || $selected_id == $type['id'])
       		echo "selected ";
       	echo "value='" . $type['id'] . "'>" . $type['name'] . "</option>\n";
   	}
@@ -1575,14 +1794,14 @@ function payment_person_types_list($name, $selected_id, $related=null)
 
 	if ($selected_id == null)
 		$selected_id = (!isset($_POST[$name]) ? "" : $_POST[$name]);
-  	foreach ($types as $type) 
+  	foreach ($types as $type)
   	{
-		if (payment_person_types::has_items($type['id'])) 
+		if (payment_person_types::has_items($type['id']))
 		{
 			if ($selected_id == "")
 				$_POST[$name] = $selected_id = $type['id'];
   		    echo "<option ";
-  	    	if ($selected_id == $type['id']) 
+  	    	if ($selected_id == $type['id'])
   	    		echo "selected ";
   		    echo "value='" . $type['id'] . "'>" . $type['name'] . "</option>\n";
 		}
@@ -1615,10 +1834,10 @@ function wo_types_list($name, &$selected_id)
 
 	if ($selected_id == null)
 		$selected_id = (!isset($_POST[$name]) ? "" : $_POST[$name]);
-  	foreach ($types as $type) 
+  	foreach ($types as $type)
   	{
   	    echo "<option ";
-  	    if ($selected_id == $type['id']) 
+  	    if ($selected_id == $type['id'])
   	    	echo "selected ";
   	    echo "value='" . $type['id'] . "'>" . $type['name'] . "</option>\n";
   	}
@@ -1644,14 +1863,14 @@ function dateformats_list_row($label, $name, $value)
 	if ($value == null)
 		$value = (!isset($_POST[$name]) ? 0 : $_POST[$name]);
 	$counter = 0;
-	foreach ($dateformats as $df) 
+	foreach ($dateformats as $df)
 	{
 
 		if ($value==$counter)
 		{
 			echo "<option selected value='$counter'>$df</option>\n";
-		} 
-		else 
+		}
+		else
 		{
 			echo "<option value='$counter'>$df</option>\n";
 		}
@@ -1670,14 +1889,14 @@ function dateseps_list_row($label, $name, $value)
 	if ($value == null)
 		$value = (!isset($_POST[$name]) ? 0 : $_POST[$name]);
 	$counter = 0;
-	foreach ($dateseps as $ds) 
+	foreach ($dateseps as $ds)
 	{
 
 		if ($value==$counter)
 		{
 			echo "<option selected value='$counter'>$ds</option>\n";
-		} 
-		else 
+		}
+		else
 		{
 			echo "<option value='$counter'>$ds</option>\n";
 		}
@@ -1696,14 +1915,14 @@ function thoseps_list_row($label, $name, $value)
 	if ($value == null)
 		$value = (!isset($_POST[$name]) ? 0 : $_POST[$name]);
 	$counter = 0;
-	foreach ($thoseps as $ts) 
+	foreach ($thoseps as $ts)
 	{
 
 		if ($value==$counter)
 		{
 			echo "<option selected value='$counter'>$ts</option>\n";
-		} 
-		else 
+		}
+		else
 		{
 			echo "<option value='$counter'>$ts</option>\n";
 		}
@@ -1722,14 +1941,14 @@ function decseps_list_row($label, $name, $value)
 	if ($value == null)
 		$value = (!isset($_POST[$name]) ? 0 : $_POST[$name]);
 	$counter = 0;
-	foreach ($decseps as $ds) 
+	foreach ($decseps as $ds)
 	{
 
 		if ($value==$counter)
 		{
 			echo "<option selected value='$counter'>$ds</option>\n";
-		} 
-		else 
+		}
+		else
 		{
 			echo "<option value='$counter'>$ds</option>\n";
 		}
@@ -1747,14 +1966,14 @@ function themes_list_row($label, $name, $value)
 
 	if ($value == null)
 		$value = (!isset($_POST[$name]) ? "" : $_POST[$name]);
-	foreach ($themes as $th) 
+	foreach ($themes as $th)
 	{
 
 		if ($value==$th)
 		{
 			echo "<option selected value='$th'>$th</option>\n";
-		} 
-		else 
+		}
+		else
 		{
 			echo "<option value='$th'>$th</option>\n";
 		}
@@ -1771,14 +1990,14 @@ function pagesizes_list_row($label, $name, $value)
 
 	if ($value == null)
 		$value = (!isset($_POST[$name]) ? "" : $_POST[$name]);
-	foreach ($pagesizes as $pz) 
+	foreach ($pagesizes as $pz)
 	{
 
 		if ($value==$pz)
 		{
 			echo "<option selected value='$pz'>$pz</option>\n";
-		} 
-		else 
+		}
+		else
 		{
 			echo "<option value='$pz'>$pz</option>\n";
 		}
@@ -1796,14 +2015,14 @@ function security_headings_list_row($label, $name, $value)
 	if ($value == null)
 		$value = (!isset($_POST[$name]) ? 0 : (int)$_POST[$name]);
 	$counter=0;
-	foreach ($security_headings as $sh) 
+	foreach ($security_headings as $sh)
 	{
 
 		if ($value==$counter)
 		{
 			echo "<option selected value='$counter'>$sh</option>\n";
-		} 
-		else 
+		}
+		else
 		{
 			echo "<option value='$counter'>$sh</option>\n";
 		}
@@ -1819,7 +2038,7 @@ function systypes_list_cells($label, $name, $value, $submit_on_change=false)
 	if ($label != null)
 		echo "<td>$label</td>\n";
     echo "<td><select name='$name'";
-    if (submit_on_change)
+    if ($submit_on_change)
     	echo " onchange='this.form.submit();'>";
     else
     	echo ">";
@@ -1831,8 +2050,8 @@ function systypes_list_cells($label, $name, $value, $submit_on_change=false)
 		if ($value==$key)
 		{
 			echo "<option selected value='$key'>".$type['name']."</option>\n";
-		} 
-		else 
+		}
+		else
 		{
 			echo "<option value='$key'>".$type['name']."</option>\n";
 		}
@@ -1849,12 +2068,13 @@ function systypes_list_row($label, $name, $value, $submit_on_change=false)
 
 function cust_allocations_list_cells($label, $name, $selected)
 {
+	global $all_items;
 	if ($label != null)
 		label_cell($label);
 	if ($selected == null)
 		$selected = (!isset($_POST[$name]) ? "" : $_POST[$name]);
 	echo "<td><select name='$name'>";
-	echo "<option " . ($selected == reserved_words::get_all()?" selected ":"") . " value='" . reserved_words::get_all(). "'>" . _("All Types"). "</option>\n";
+	echo "<option " . ($selected == $all_items ? " selected " : "") . " value='$all_items'>" . _("All Types"). "</option>\n";
 	echo "<option " . ($selected == '1'?" selected ":"") . " value='1'>" . _("Sales Invoices"). "</option>\n";
 	echo "<option " . ($selected == '2'?" selected ":"") . " value='2'>" . _("Overdue Invoices"). "</option>\n";
 	echo "<option " . ($selected == '3'?" selected ":"") . " value='3'>" . _("Payments"). "</option>\n";
@@ -1864,10 +2084,11 @@ function cust_allocations_list_cells($label, $name, $selected)
 
 function supp_allocations_list_cells($name, $selected)
 {
+	global $all_items;
 	if ($selected == null)
 		$selected = (!isset($_POST[$name]) ? "" : $_POST[$name]);
 	echo "<td><select name='$name'>";
-	echo "<option " . ($selected == reserved_words::get_all()?" selected ":"") . " value='" . reserved_words::get_all(). "'>" . _("All Types"). "</option>\n";
+	echo "<option " . ($selected == $all_items ? " selected " : "") . " value='$all_items'>" . _("All Types"). "</option>\n";
 	echo "<option " . ($selected == '1'?" selected ":"") . " value='1'>" . _("Invoices"). "</option>\n";
 	echo "<option " . ($selected == '2'?" selected ":"") . " value='2'>" . _("Overdue Invoices"). "</option>\n";
 	echo "<option " . ($selected == '3'?" selected ":"") . " value='3'>" . _("Payments"). "</option>\n";
@@ -1881,9 +2102,9 @@ function policy_list_cells($label, $name, $selected)
 	if ($selected == null)
 	{
 		$selected = (!isset($_POST[$name]) ? "" : $_POST[$name]);
-		if ($selected == "")	
+		if ($selected == "")
 			$_POST[$name] = $selected;
-	}		
+	}
 	if ($label != null)
 		label_cell($label);
 	echo "<td><select name='$name'>";
@@ -1904,9 +2125,9 @@ function credit_type_list_cells($label, $name, $selected, $submit_on_change=fals
 	if ($selected == null)
 	{
 		$selected = (!isset($_POST[$name]) ? "Return" : $_POST[$name]);
-		if ($selected == "Return")	
+		if ($selected == "Return")
 			$_POST[$name] = $selected;
-	}		
+	}
 	if ($label != null)
 		label_cell($label);
     echo "<td><select name='$name'";
@@ -1931,9 +2152,9 @@ function number_list($name, $selected, $from, $to, $firstlabel="")
 	if ($selected == null)
 	{
 		$selected = (!isset($_POST[$name]) ? $from : $_POST[$name]);
-		if ($selected == $from)	
+		if ($selected == $from)
 			$_POST[$name] = $selected;
-	}		
+	}
 	echo "<select name='$name'>";
 	for ($i = $from; $i <= $to; $i++)
     {
@@ -1944,8 +2165,8 @@ function number_list($name, $selected, $from, $to, $firstlabel="")
 		if ($selected == $i)
 		{
 			echo "<option selected value='$i'>$label</option>\n";
-		} 
-		else 
+		}
+		else
 		{
 			echo "<option value='$i'>$label</option>\n";
 		}
@@ -1960,7 +2181,7 @@ function number_list_cells($label, $name, $selected, $from, $to)
 	echo "<td>\n";
 	number_list($name, $selected, $from, $to);
 	echo "</td>\n";
-}	
+}
 
 function number_list_row($label, $name, $selected, $from, $to)
 {

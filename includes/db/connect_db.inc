@@ -2,7 +2,7 @@
 
 set_global_connection();
 
-function set_global_connection() 
+function set_global_connection()
 {
 	global $db;
 
@@ -27,8 +27,8 @@ function db_query($sql, $err_msg=null)
 		echo "<pre>";
 		echo $sql;
 		echo "</pre>\n";
-	}	
-	
+	}
+
 
 	$result = mysql_query($sql, $db);
 
@@ -38,19 +38,19 @@ function db_query($sql, $err_msg=null)
 	return $result;
 }
 
-function db_fetch_row (&$result) 
+function db_fetch_row ($result)
 {
 
 	return mysql_fetch_row($result);
 }
 
-function db_fetch (&$result) 
+function db_fetch ($result)
 {
 
-	return mysql_fetch_array(&$result);
+	return mysql_fetch_array($result);
 }
 
-function db_seek (&$result,$record) 
+function db_seek (&$result,$record)
 {
 	mysql_data_seek($result, $record);
 }
@@ -66,12 +66,12 @@ function db_num_rows (&$result)
 	return mysql_num_rows($result);
 }
 
-function db_num_fields (&$result)
+function db_num_fields ($result)
 {
 	return mysql_num_fields($result);
 }
 
-function db_escape (&$result)
+function db_escape ($result)
 {
 	return mysql_escape_string($result);
 }
@@ -82,7 +82,7 @@ function db_error_no ()
 	return mysql_errno($db);
 }
 
-function db_error_msg(&$conn)
+function db_error_msg($conn)
 {
 	return mysql_error($conn);
 }

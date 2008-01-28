@@ -9,16 +9,16 @@ function add_to_order(&$order, $new_item, $new_item_qty, $price, $discount)
 {
     $already_on_order = 0;
 
-	foreach ($order->line_items AS $order_item) 
+	foreach ($order->line_items AS $order_item)
 	{
-        if (strcasecmp($order_item->stock_id, $new_item) == 0) 
+        if (strcasecmp($order_item->stock_id, $new_item) == 0)
         {
             $already_on_order = 1;
             display_error(_("For Part :") . $new_item . " " . "This item is already on this order.  You can change the quantity ordered of the existing line if necessary.");
         }
 	}
 
-	
+
     if ($already_on_order != 1)
     {
          $order->add_to_cart ($new_item, $new_item_qty, $price, $discount);
@@ -50,7 +50,7 @@ function get_customer_details_to_order(&$order, $customer_id, $branch_id)
 	if ($myrow['dissallow_invoices'] == 1)
 		$ret_error = _("The selected customer account is currently on hold. Please contact the credit control personnel to discuss.");
 
-	if (!isset($_POST['branch_id']) || $_POST['branch_id'] == "") 
+	if (!isset($_POST['branch_id']) || $_POST['branch_id'] == "")
 	{
 		$ret_error = _("The selected customer does not have any branches. Please create at least one branch.");
 		unset($_POST['branch_id']);
@@ -108,12 +108,12 @@ function display_order_summary($title, &$order, $editable_items=false)
 	start_table("$table_style colspan=7 width=90%");
 	$th = array(_("Item Code"), _("Item Description"), _("Quantity"),
 		_("Unit"), _("Price"), _("Discount %"), _("Total"), "", "");
-	table_header($th);	
+	table_header($th);
 
 	$total = 0;
 	$k = 0;  //row colour counter
 
-	foreach ($order->line_items as $stock_item) 
+	foreach ($order->line_items as $stock_item)
 	{
 
 		$line_total = $stock_item->quantity * $stock_item->price * (1 - $stock_item->discount_percent);
@@ -127,7 +127,7 @@ function display_order_summary($title, &$order, $editable_items=false)
     		alt_table_row_color($k);
 
 			view_stock_status_cell($stock_item->stock_id);
-    	 	
+
     		label_cell($stock_item->item_description);
     		qty_cell($stock_item->quantity);
     		label_cell($stock_item->units);
@@ -136,14 +136,14 @@ function display_order_summary($title, &$order, $editable_items=false)
     		amount_cell($stock_item->discount_percent * 100);
     		amount_cell($line_total);
 
-    		if ($editable_items) 
+    		if ($editable_items)
     		{
         		edit_link_cell(SID . "Edit=$stock_item->stock_id");
         		delete_link_cell(SID . "Delete=$stock_item->stock_id");
     		}
         	end_row();
-		} 
-		else 
+		}
+		else
 		{
 			sales_order_item_controls($order, $stock_item->stock_id);
 		}
@@ -176,8 +176,8 @@ function display_order_header(&$order, $editable, $date_text, $display_tax_group
 	{
 		// can't change the customer/branch if items already received on this order
 		echo $order->customer_name . " - " . $order->deliver_to;
-	} 
-	else 
+	}
+	else
 	{
 
         if (!isset($_POST['customer_id']) && (get_global_customer() != reserved_words::get_all()))
@@ -188,13 +188,13 @@ function display_order_header(&$order, $editable, $date_text, $display_tax_group
 		if (!isset($_POST['delivery_date']))
 		{
 			if ($order->direct_invoice)
-				$_POST['delivery_date'] = $_SESSION['Items']->delivery_date = 
+				$_POST['delivery_date'] = $_SESSION['Items']->delivery_date =
 					get_invoice_duedate($_POST['customer_id'], $_POST['OrderDate']);
-			else	
-				$_POST['delivery_date'] = $_SESSION['Items']->delivery_date = 
+			else
+				$_POST['delivery_date'] = $_SESSION['Items']->delivery_date =
 					add_days($_POST['OrderDate'], 10);
-		}		
-		if ($order->customer_id != $_POST['customer_id']) 
+		}
+		if ($order->customer_id != $_POST['customer_id'])
 		{
 			// customer has changed
 
@@ -211,7 +211,7 @@ function display_order_header(&$order, $editable, $date_text, $display_tax_group
 		if (!isset($_POST['branch_id']))
 			$_POST['branch_id'] = "";
 		//set_global_customer($_POST['customer_id']);
-		if (($order->customer_id != $_POST['customer_id']) || 
+		if (($order->customer_id != $_POST['customer_id']) ||
 			($order->Branch != $_POST['branch_id']))
 			$customer_error = get_customer_details_to_order($order, $_POST['customer_id'], $_POST['branch_id']);
 
@@ -225,7 +225,7 @@ function display_order_header(&$order, $editable, $date_text, $display_tax_group
 	{
 		echo "<table height='5'>";
 		label_row(_("Customer Currency:"), $order->customer_currency);
-		exchange_rate_display($order->customer_currency, get_company_currency(),	
+		exchange_rate_display($order->customer_currency, get_company_currency(),
 			($editable?$_POST['OrderDate']:$order->orig_order_date), $editable);
 		echo "</table>";
 		echo "</td><td>"; // outer table
@@ -240,28 +240,28 @@ function display_order_header(&$order, $editable, $date_text, $display_tax_group
 
 	echo "<table height='5'>";
 
-	if ($editable) 
+	if ($editable)
 	{
     	if (!isset($_POST['OrderDate']) || $_POST['OrderDate'] == "")
     		$_POST['OrderDate'] = $order->orig_order_date;
 
 		date_row($date_text, 'OrderDate');
 	}
-	else 
+	else
 	{
 		label_row($date_text, $order->orig_order_date);
 		hidden('OrderDate', $order->orig_order_date);
 	}
 
-	if ($display_tax_group) 
+	if ($display_tax_group)
 	{
-		if ($editable) 
+		if ($editable)
 		{
             if (!isset($_POST['tax_group_id']))
             	$_POST['tax_group_id'] = $_SESSION['Items']->tax_group_id;
             tax_groups_list_row(_("Tax Group:"), 'tax_group_id', $_POST['tax_group_id'], true);
-		} 
-		else 
+		}
+		else
 		{
 			label_row(_("Tax Group:"), $order->tax_group_name);
 			hidden('tax_group_id', $_SESSION['Items']->tax_group_id);
@@ -270,7 +270,7 @@ function display_order_header(&$order, $editable, $date_text, $display_tax_group
 	echo "</table>";
 
 	echo "</td></tr>";
-	
+
 	end_table(1); // outer table
 
 	return $customer_error;
@@ -298,11 +298,21 @@ function sales_order_item_controls(&$order, $stock_id=null)
 		hidden('stock_id', $_POST['stock_id']);
 		label_cell($_POST['stock_id']);
 		label_cell($order->line_items[$stock_id]->item_description);
-	} 
-	else 
+	}
+	else
 	{
-		text_cells(null, "StockID2", "", 12, 10, "", "", "onkeyup='recalcAccounts();' onKeyDown='if(event.keyCode==13) event.keyCode=9;' onblur='return setAccount(0, true);'");
-		stock_items_list_cells(null, 'stock_id', null, false, false, "onchange='return setAccount(1, true)'");
+		global $no_item_list;
+		if ($no_item_list)
+		{
+			echo "<td colspan=2>\n";
+			stock_items_list('stock_id', null, false, true);
+			echo "</td>\n";
+		}
+		else
+		{
+			text_cells(null, "StockID2", "", 12, 10, "", "", "onkeyup='recalcAccounts();' onKeyDown='if(event.keyCode==13) event.keyCode=9;' onblur='return setAccount(0, true);'");
+			stock_items_list_cells(null, 'stock_id', null, false, false, "onchange='return setAccount(1, true)'");
+		}
 		$item_info = get_item_edit_info($_POST['stock_id']);
 		$_POST['units'] = $item_info["units"];
 
@@ -321,12 +331,12 @@ function sales_order_item_controls(&$order, $stock_id=null)
 	$line_total = $_POST['qty'] * $_POST['price'] * (1 - $_POST['Disc'] / 100);
 	amount_cell($line_total);
 
-	if (isset($_GET['Edit'])) 
+	if (isset($_GET['Edit']))
 	{
     	submit_cells('UpdateItem', _("Update"));
     	submit_cells('CancelItemChanges', _("Cancel"));
-	} 
-	else 
+	}
+	else
 	{
 		submit_cells('AddItem', _("Add Item"), "colspan=2");
 	}
@@ -340,12 +350,12 @@ function display_delivery_details(&$order)
 {
 	global $table_style2;
 
-	if ($order->direct_invoice) 
+	if ($order->direct_invoice)
 	{
 		$title = _("Invoice Delivery Details");
 		$delname = _("Due Date");
-	} 
-	else 
+	}
+	else
 	{
 		$title = _("Order Delivery Details");
 		$delname = _("Required Delivery Date:");
@@ -377,7 +387,7 @@ function display_delivery_details(&$order)
     text_row(_("Shipping Charge:"), 'freight_cost', $order->freight_cost, 10, 10);
 
     shippers_list_row(_("Shipping Company:"), 'ship_via', $order->ship_via);
-	if ($_SESSION['Items']->direct_invoice) 
+	if ($_SESSION['Items']->direct_invoice)
 		textarea_row(_("Memo"), 'InvoiceText', null, 31, 3);
     echo "</table>";
 

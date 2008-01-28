@@ -149,6 +149,10 @@ function db_import($filename, $connection)
 				$table = true;
 				$table_queries[] = $line . "\n";
 			}
+			elseif (strtolower(substr($line, 0, 11)) == "alter table")
+			{
+				$data_queries[] = substr($line, 0, strlen($line) - 1);
+			}
 
 		// the current line belongs to a create sql query
 		}
@@ -202,6 +206,7 @@ function db_import($filename, $connection)
 			{
 				//if ($CONF['import_error']) echo $data_query."\n<div class=\"bold_left\">".mysql_error()."</div><br>\n";
 				$sql_error = true;
+				return false;
 			}
 		}
 	}

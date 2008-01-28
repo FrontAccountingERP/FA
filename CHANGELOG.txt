@@ -19,6 +19,27 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+-------------------- 1.16 Stable Released ----------------------
+28-Jan-2008 Joe Hunt
+ + Added a possibility to replace the normal listboxes for items, customer and/or suppliers with a search box.
+   The listboxes can only hold about 1000 items. New variables in config.php, $no_item_list, $no_customer_list 
+   and $no_supplier_list. Default is the normal behavior for all listboxes.
+ $ /includes/ui/ui_lists.inc
+   /sales/includes/ui/sales_orders_ui.inc
+   /purchases/includes/ui/po_ui.inc
+   /themes/default/images/locate.png (New file)
+   config.php
+
+ + Added ALTER TABLE possibility in db_import. For future releases.
+ $ /admin/db/maintenence_db.inc  
+
+ # Removed warnings 'Call-time pass-by-reference' in /includes/db/connect_db.inc and /includes/ui/ui_lists.inc
+ # Fixed File not found when loading local stylesheet.css (for other languages) in /includes/page/header.inc
+ $ /includes/db/connect_db.inc
+   /includes/ui/ui_lists.inc
+   /includes/page/header.inc
+   /access/login.php
+   
 16-Jan-2008 Joe Hunt
  # When login screen is displayed after session timeout page content is broken. It
    is because of NOT using absolute paths in href attribute theme elements.
@@ -29,7 +50,7 @@ $ -> Affected files
  $ /admin/db/maintenance_db.inc
  
 29-Dec-2007 Joe Hunt
- ! Added a variable, $print_invoice_no, in config.php for printing the invoice number instead of invoice reference.
+ + Added a variable, $print_invoice_no, in config.php for printing the invoice number instead of invoice reference.
  $ config.php
  
  # Fixed a bug when exporting database. Exported NULL field values from NO to empty field (from mysql version 5.0.32).

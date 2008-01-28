@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FrontAccounting\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-07-19 16:29+0100\n"
-"Last-Translator: Joe Hunt Consulting <joe@frontaccounting.com>\n"
+"PO-Revision-Date: 2008-01-25 23:42+0100\n"
+"Last-Translator: Joe Hunt <joe.hunt.consulting@gmail.com>\n"
 "Language-Team: Translators\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=iso-8859-1\n"
@@ -15,62 +15,62 @@ msgstr ""
 "X-Poedit-SearchPath-0: c:\\Apache2\\htdocs\\account\n"
 
 # c:\Apache2\htdocs\account/config.php:59
-#: c:\Apache2\htdocs\account/config.php:65
+#: c:\Apache2\htdocs\account/config.php:66
 msgid "ea."
 msgstr ""
 
 # c:\Apache2\htdocs\account/config.php:59
-#: c:\Apache2\htdocs\account/config.php:65
+#: c:\Apache2\htdocs\account/config.php:66
 msgid "m"
 msgstr ""
 
 # c:\Apache2\htdocs\account/config.php:59
-#: c:\Apache2\htdocs\account/config.php:65
+#: c:\Apache2\htdocs\account/config.php:66
 msgid "kgg"
 msgstr ""
 
 # c:\Apache2\htdocs\account/config.php:59
-#: c:\Apache2\htdocs\account/config.php:65
+#: c:\Apache2\htdocs\account/config.php:66
 msgid "tons"
 msgstr ""
 
 # c:\Apache2\htdocs\account/config.php:59
-#: c:\Apache2\htdocs\account/config.php:65
+#: c:\Apache2\htdocs\account/config.php:66
 msgid "l"
 msgstr ""
 
 # c:\Apache2\htdocs\account/config.php:59
-#: c:\Apache2\htdocs\account/config.php:65
+#: c:\Apache2\htdocs\account/config.php:66
 msgid "lbs"
 msgstr ""
 
 # c:\Apache2\htdocs\account/config.php:59
-#: c:\Apache2\htdocs\account/config.php:65
+#: c:\Apache2\htdocs\account/config.php:66
 msgid "dozen"
 msgstr ""
 
 # c:\Apache2\htdocs\account/config.php:59
-#: c:\Apache2\htdocs\account/config.php:65
+#: c:\Apache2\htdocs\account/config.php:66
 msgid "pack"
 msgstr ""
 
 # c:\Apache2\htdocs\account/config.php:59
-#: c:\Apache2\htdocs\account/config.php:65
+#: c:\Apache2\htdocs\account/config.php:66
 msgid "hrs"
 msgstr ""
 
 # c:\Apache2\htdocs\account/config.php:118
-#: c:\Apache2\htdocs\account/config.php:147
+#: c:\Apache2\htdocs\account/config.php:159
 msgid "Inquiries"
 msgstr ""
 
 # c:\Apache2\htdocs\account/config.php:119
-#: c:\Apache2\htdocs\account/config.php:148
+#: c:\Apache2\htdocs\account/config.php:160
 msgid "Accountant"
 msgstr ""
 
 # c:\Apache2\htdocs\account/config.php:120
-#: c:\Apache2\htdocs\account/config.php:149
+#: c:\Apache2\htdocs\account/config.php:161
 msgid "System Administrator"
 msgstr ""
 
@@ -91,7 +91,7 @@ msgid "Logout"
 msgstr ""
 
 # c:\Apache2\htdocs\account/access/login.php:38
-#: c:\Apache2\htdocs\account/access/login.php:40
+#: c:\Apache2\htdocs\account/access/login.php:43
 msgid "Version"
 msgstr ""
 
@@ -228,38 +228,38 @@ msgstr ""
 #: c:\Apache2\htdocs\account/reporting/reports_main.php:36
 #: c:\Apache2\htdocs\account/reporting/reports_main.php:42
 #: c:\Apache2\htdocs\account/reporting/reports_main.php:49
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:56
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:62
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:70
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:77
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:84
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:89
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:92
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:99
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:106
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:110
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:115
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:121
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:129
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:132
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:144
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:149
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:161
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:166
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:173
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:181
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:188
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:198
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:202
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:208
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:215
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:221
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:230
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:233
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:238
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:244
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:249
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:255
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:57
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:63
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:71
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:78
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:85
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:90
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:93
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:100
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:107
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:111
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:116
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:122
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:130
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:133
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:145
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:150
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:162
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:167
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:174
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:182
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:189
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:199
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:203
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:209
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:216
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:222
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:231
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:234
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:239
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:245
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:250
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:256
 #: c:\Apache2\htdocs\account/sales/view/view_sales_order.php:63
 #: c:\Apache2\htdocs\account/reporting/includes/pdf_report.inc:238
 msgid "Comments"
@@ -274,7 +274,7 @@ msgstr ""
 # c:\Apache2\htdocs\account/admin/backups.php:162
 #: c:\Apache2\htdocs\account/admin/backups.php:145
 #: c:\Apache2\htdocs\account/admin/backups.php:162
-#: c:\Apache2\htdocs\account/admin/inst_module.php:254
+#: c:\Apache2\htdocs\account/admin/inst_module.php:265
 msgid "Filename"
 msgstr ""
 
@@ -319,7 +319,7 @@ msgstr ""
 #: c:\Apache2\htdocs\account/admin/backups.php:238
 #: c:\Apache2\htdocs\account/admin/create_coy.php:167
 #: c:\Apache2\htdocs\account/admin/fiscalyears.php:140
-#: c:\Apache2\htdocs\account/admin/inst_lang.php:255
+#: c:\Apache2\htdocs\account/admin/inst_lang.php:263
 #: c:\Apache2\htdocs\account/dimensions/inquiry/search_dimensions.php:146
 #: c:\Apache2\htdocs\account/gl/manage/gl_account_classes.php:108
 #: c:\Apache2\htdocs\account/manufacturing/search_work_orders.php:133
@@ -328,7 +328,7 @@ msgstr ""
 #: c:\Apache2\htdocs\account/taxes/item_tax_types.php:114
 #: c:\Apache2\htdocs\account/taxes/tax_groups.php:156
 #: c:\Apache2\htdocs\account/taxes/tax_types.php:109
-#: c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:1473
+#: c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:1686
 msgid "No"
 msgstr ""
 
@@ -413,7 +413,7 @@ msgstr ""
 #: c:\Apache2\htdocs\account/inventory/manage/locations.php:170
 #: c:\Apache2\htdocs\account/purchasing/manage/suppliers.php:185
 #: c:\Apache2\htdocs\account/sales/manage/customers.php:274
-#: c:\Apache2\htdocs\account/sales/includes/ui/sales_order_ui.inc:365
+#: c:\Apache2\htdocs\account/sales/includes/ui/sales_order_ui.inc:375
 msgid "Address:"
 msgstr ""
 
@@ -492,7 +492,7 @@ msgstr ""
 #: c:\Apache2\htdocs\account/admin/forms_setup.php:45
 #: c:\Apache2\htdocs\account/admin/gl_setup.php:191
 #: c:\Apache2\htdocs\account/gl/gl_deposit.php:247
-#: c:\Apache2\htdocs\account/gl/gl_payment.php:248
+#: c:\Apache2\htdocs\account/gl/gl_payment.php:246
 #: c:\Apache2\htdocs\account/inventory/adjustments.php:228
 #: c:\Apache2\htdocs\account/inventory/cost_update.php:112
 #: c:\Apache2\htdocs\account/inventory/reorder_level.php:78
@@ -512,9 +512,9 @@ msgstr ""
 #: c:\Apache2\htdocs\account/inventory/includes/item_adjustments_ui.inc:158
 #: c:\Apache2\htdocs\account/inventory/includes/stock_transfers_ui.inc:142
 #: c:\Apache2\htdocs\account/manufacturing/includes/work_order_issue_ui.inc:125
-#: c:\Apache2\htdocs\account/purchasing/includes/ui/po_ui.inc:319
+#: c:\Apache2\htdocs\account/purchasing/includes/ui/po_ui.inc:328
 #: c:\Apache2\htdocs\account/sales/includes/ui/sales_credit_ui.inc:212
-#: c:\Apache2\htdocs\account/sales/includes/ui/sales_order_ui.inc:326
+#: c:\Apache2\htdocs\account/sales/includes/ui/sales_order_ui.inc:336
 msgid "Update"
 msgstr ""
 
@@ -550,7 +550,7 @@ msgstr ""
 #: c:\Apache2\htdocs\account/admin/create_coy.php:73
 #: c:\Apache2\htdocs\account/admin/create_coy.php:128
 #: c:\Apache2\htdocs\account/admin/inst_lang.php:136
-#: c:\Apache2\htdocs\account/admin/inst_module.php:168
+#: c:\Apache2\htdocs\account/admin/inst_module.php:169
 msgid " is not writable. Change its permissions so it is, then re-run the operation."
 msgstr ""
 
@@ -641,7 +641,7 @@ msgstr ""
 # c:\Apache2\htdocs\account/reporting/includes/reports_classes.inc:159
 #: c:\Apache2\htdocs\account/admin/create_coy.php:165
 #: c:\Apache2\htdocs\account/admin/fiscalyears.php:144
-#: c:\Apache2\htdocs\account/admin/inst_lang.php:253
+#: c:\Apache2\htdocs\account/admin/inst_lang.php:261
 #: c:\Apache2\htdocs\account/dimensions/inquiry/search_dimensions.php:146
 #: c:\Apache2\htdocs\account/gl/manage/gl_account_classes.php:112
 #: c:\Apache2\htdocs\account/manufacturing/search_work_orders.php:133
@@ -650,7 +650,7 @@ msgstr ""
 #: c:\Apache2\htdocs\account/taxes/item_tax_types.php:118
 #: c:\Apache2\htdocs\account/taxes/tax_groups.php:154
 #: c:\Apache2\htdocs\account/taxes/tax_types.php:107
-#: c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:1465
+#: c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:1678
 #: c:\Apache2\htdocs\account/reporting/includes/reports_classes.inc:164
 msgid "Yes"
 msgstr ""
@@ -678,8 +678,8 @@ msgstr ""
 # c:\Apache2\htdocs\account/admin/inst_lang.php:259
 # c:\Apache2\htdocs\account/includes/ui/ui_controls.inc:154
 #: c:\Apache2\htdocs\account/admin/create_coy.php:181
-#: c:\Apache2\htdocs\account/admin/inst_lang.php:259
-#: c:\Apache2\htdocs\account/admin/inst_module.php:269
+#: c:\Apache2\htdocs\account/admin/inst_lang.php:267
+#: c:\Apache2\htdocs\account/admin/inst_module.php:280
 #: c:\Apache2\htdocs\account/gl/gl_budget.php:170
 #: c:\Apache2\htdocs\account/includes/ui/ui_controls.inc:154
 msgid "Delete"
@@ -733,8 +733,8 @@ msgstr ""
 # c:\Apache2\htdocs\account/admin/inst_lang.php:312
 # c:\Apache2\htdocs\account/includes/ui/ui_input.inc:45
 #: c:\Apache2\htdocs\account/admin/create_coy.php:258
-#: c:\Apache2\htdocs\account/admin/inst_lang.php:312
-#: c:\Apache2\htdocs\account/admin/inst_module.php:317
+#: c:\Apache2\htdocs\account/admin/inst_lang.php:321
+#: c:\Apache2\htdocs\account/admin/inst_module.php:329
 #: c:\Apache2\htdocs\account/gl/gl_budget.php:169
 #: c:\Apache2\htdocs\account/includes/ui/ui_input.inc:45
 msgid "Save"
@@ -842,8 +842,8 @@ msgstr ""
 # c:\Apache2\htdocs\account/admin/inst_lang.php:236
 # c:\Apache2\htdocs\account/admin/inst_lang.php:302
 #: c:\Apache2\htdocs\account/admin/display_prefs.php:80
-#: c:\Apache2\htdocs\account/admin/inst_lang.php:236
-#: c:\Apache2\htdocs\account/admin/inst_lang.php:302
+#: c:\Apache2\htdocs\account/admin/inst_lang.php:244
+#: c:\Apache2\htdocs\account/admin/inst_lang.php:310
 msgid "Language"
 msgstr ""
 
@@ -1195,7 +1195,7 @@ msgid "The language file "
 msgstr ""
 
 # c:\Apache2\htdocs\account/admin/inst_lang.php:230
-#: c:\Apache2\htdocs\account/admin/inst_lang.php:230
+#: c:\Apache2\htdocs\account/admin/inst_lang.php:238
 msgid "Are you sure you want to delete language no. "
 msgstr ""
 
@@ -1217,10 +1217,10 @@ msgstr ""
 # c:\Apache2\htdocs\account/purchasing/includes/ui/invoice_ui.inc:197
 # c:\Apache2\htdocs\account/purchasing/includes/ui/invoice_ui.inc:199
 # c:\Apache2\htdocs\account/purchasing/includes/ui/invoice_ui.inc:201
-#: c:\Apache2\htdocs\account/admin/inst_lang.php:236
-#: c:\Apache2\htdocs\account/admin/inst_lang.php:303
-#: c:\Apache2\htdocs\account/admin/inst_module.php:254
-#: c:\Apache2\htdocs\account/admin/inst_module.php:310
+#: c:\Apache2\htdocs\account/admin/inst_lang.php:244
+#: c:\Apache2\htdocs\account/admin/inst_lang.php:311
+#: c:\Apache2\htdocs\account/admin/inst_module.php:265
+#: c:\Apache2\htdocs\account/admin/inst_module.php:321
 #: c:\Apache2\htdocs\account/admin/shipping_companies.php:104
 #: c:\Apache2\htdocs\account/dimensions/dimension_entry.php:232
 #: c:\Apache2\htdocs\account/dimensions/inquiry/search_dimensions.php:100
@@ -1242,35 +1242,35 @@ msgstr ""
 
 # c:\Apache2\htdocs\account/admin/inst_lang.php:236
 # c:\Apache2\htdocs\account/admin/inst_lang.php:304
-#: c:\Apache2\htdocs\account/admin/inst_lang.php:236
-#: c:\Apache2\htdocs\account/admin/inst_lang.php:304
+#: c:\Apache2\htdocs\account/admin/inst_lang.php:244
+#: c:\Apache2\htdocs\account/admin/inst_lang.php:312
 msgid "Encoding"
 msgstr ""
 
 # c:\Apache2\htdocs\account/admin/inst_lang.php:236
 # c:\Apache2\htdocs\account/admin/inst_lang.php:306
-#: c:\Apache2\htdocs\account/admin/inst_lang.php:236
-#: c:\Apache2\htdocs\account/admin/inst_lang.php:306
+#: c:\Apache2\htdocs\account/admin/inst_lang.php:244
+#: c:\Apache2\htdocs\account/admin/inst_lang.php:314
 msgid "Right To Left"
 msgstr ""
 
 # c:\Apache2\htdocs\account/admin/inst_lang.php:264
-#: c:\Apache2\htdocs\account/admin/inst_lang.php:264
+#: c:\Apache2\htdocs\account/admin/inst_lang.php:272
 msgid "The marked language is the current language which cannot be deleted."
 msgstr ""
 
 # c:\Apache2\htdocs\account/admin/inst_lang.php:308
-#: c:\Apache2\htdocs\account/admin/inst_lang.php:308
+#: c:\Apache2\htdocs\account/admin/inst_lang.php:316
+#: c:\Apache2\htdocs\account/admin/inst_lang.php:317
 msgid "Language File"
 msgstr ""
 
-# c:\Apache2\htdocs\account/admin/inst_lang.php:311
-#: c:\Apache2\htdocs\account/admin/inst_lang.php:311
-msgid "Select your language MO file from your local harddisk."
+#: c:\Apache2\htdocs\account/admin/inst_lang.php:320
+msgid "Select your language files from your local harddisk."
 msgstr ""
 
 # c:\Apache2\htdocs\account/admin/inst_lang.php:341
-#: c:\Apache2\htdocs\account/admin/inst_lang.php:341
+#: c:\Apache2\htdocs\account/admin/inst_lang.php:350
 msgid "Create a new language"
 msgstr ""
 
@@ -1282,7 +1282,7 @@ msgstr ""
 # c:\Apache2\htdocs\account/applications/customers.php:7
 # c:\Apache2\htdocs\account/sales/manage/customer_branches.php:277
 # c:\Apache2\htdocs\account/includes/page/header.inc:42
-#: c:\Apache2\htdocs\account/admin/inst_module.php:15
+#: c:\Apache2\htdocs\account/admin/inst_module.php:16
 #: c:\Apache2\htdocs\account/applications/customers.php:9
 #: c:\Apache2\htdocs\account/sales/manage/customer_branches.php:277
 #: c:\Apache2\htdocs\account/includes/page/header.inc:52
@@ -1291,7 +1291,7 @@ msgstr ""
 
 # c:\Apache2\htdocs\account/applications/suppliers.php:7
 # c:\Apache2\htdocs\account/includes/page/header.inc:43
-#: c:\Apache2\htdocs\account/admin/inst_module.php:15
+#: c:\Apache2\htdocs\account/admin/inst_module.php:16
 #: c:\Apache2\htdocs\account/applications/suppliers.php:9
 #: c:\Apache2\htdocs\account/includes/page/header.inc:53
 msgid "Purchases"
@@ -1299,7 +1299,7 @@ msgstr ""
 
 # c:\Apache2\htdocs\account/applications/inventory.php:7
 # c:\Apache2\htdocs\account/includes/page/header.inc:44
-#: c:\Apache2\htdocs\account/admin/inst_module.php:15
+#: c:\Apache2\htdocs\account/admin/inst_module.php:16
 #: c:\Apache2\htdocs\account/applications/inventory.php:9
 #: c:\Apache2\htdocs\account/includes/page/header.inc:54
 msgid "Items and Inventory"
@@ -1307,7 +1307,7 @@ msgstr ""
 
 # c:\Apache2\htdocs\account/applications/manufacturing.php:7
 # c:\Apache2\htdocs\account/includes/page/header.inc:45
-#: c:\Apache2\htdocs\account/admin/inst_module.php:15
+#: c:\Apache2\htdocs\account/admin/inst_module.php:16
 #: c:\Apache2\htdocs\account/applications/manufacturing.php:9
 #: c:\Apache2\htdocs\account/includes/page/header.inc:55
 msgid "Manufacturing"
@@ -1319,19 +1319,19 @@ msgstr ""
 # c:\Apache2\htdocs\account/reporting/reports_main.php:126
 # c:\Apache2\htdocs\account/reporting/reports_main.php:131
 # c:\Apache2\htdocs\account/includes/page/header.inc:46
-#: c:\Apache2\htdocs\account/admin/inst_module.php:16
+#: c:\Apache2\htdocs\account/admin/inst_module.php:17
 #: c:\Apache2\htdocs\account/applications/dimensions.php:10
 #: c:\Apache2\htdocs\account/inventory/manage/items.php:355
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:122
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:125
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:130
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:123
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:126
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:131
 #: c:\Apache2\htdocs\account/includes/page/header.inc:56
 msgid "Dimensions"
 msgstr ""
 
 # c:\Apache2\htdocs\account/applications/generalledger.php:7
 # c:\Apache2\htdocs\account/includes/page/header.inc:47
-#: c:\Apache2\htdocs\account/admin/inst_module.php:16
+#: c:\Apache2\htdocs\account/admin/inst_module.php:17
 #: c:\Apache2\htdocs\account/applications/generalledger.php:9
 #: c:\Apache2\htdocs\account/includes/page/header.inc:57
 msgid "Banking and General Ledger"
@@ -1339,50 +1339,54 @@ msgstr ""
 
 # c:\Apache2\htdocs\account/applications/setup.php:7
 # c:\Apache2\htdocs\account/includes/page/header.inc:48
-#: c:\Apache2\htdocs\account/admin/inst_module.php:16
+#: c:\Apache2\htdocs\account/admin/inst_module.php:17
 #: c:\Apache2\htdocs\account/applications/setup.php:9
 #: c:\Apache2\htdocs\account/includes/page/header.inc:58
 msgid "Setup"
 msgstr ""
 
-#: c:\Apache2\htdocs\account/admin/inst_module.php:151
+#: c:\Apache2\htdocs\account/admin/inst_module.php:152
 msgid "Cannot open the modules file - "
 msgstr ""
 
-#: c:\Apache2\htdocs\account/admin/inst_module.php:158
+#: c:\Apache2\htdocs\account/admin/inst_module.php:159
 msgid "Cannot write to the modules file - "
 msgstr ""
 
-#: c:\Apache2\htdocs\account/admin/inst_module.php:168
+#: c:\Apache2\htdocs\account/admin/inst_module.php:169
 msgid "The modules file "
 msgstr ""
 
-#: c:\Apache2\htdocs\account/admin/inst_module.php:248
+#: c:\Apache2\htdocs\account/admin/inst_module.php:259
 msgid "Are you sure you want to delete module: "
 msgstr ""
 
-#: c:\Apache2\htdocs\account/admin/inst_module.php:254
+#: c:\Apache2\htdocs\account/admin/inst_module.php:265
 msgid "Tab"
 msgstr ""
 
-#: c:\Apache2\htdocs\account/admin/inst_module.php:254
-#: c:\Apache2\htdocs\account/admin/inst_module.php:311
+#: c:\Apache2\htdocs\account/admin/inst_module.php:265
+#: c:\Apache2\htdocs\account/admin/inst_module.php:322
 msgid "Folder"
 msgstr ""
 
-#: c:\Apache2\htdocs\account/admin/inst_module.php:309
+#: c:\Apache2\htdocs\account/admin/inst_module.php:320
 msgid "Menu Tab"
 msgstr ""
 
-#: c:\Apache2\htdocs\account/admin/inst_module.php:313
+#: c:\Apache2\htdocs\account/admin/inst_module.php:324
 msgid "Module File"
 msgstr ""
 
-#: c:\Apache2\htdocs\account/admin/inst_module.php:316
+#: c:\Apache2\htdocs\account/admin/inst_module.php:325
+msgid "SQL File"
+msgstr ""
+
+#: c:\Apache2\htdocs\account/admin/inst_module.php:328
 msgid "Select your module PHP file from your local harddisk."
 msgstr ""
 
-#: c:\Apache2\htdocs\account/admin/inst_module.php:346
+#: c:\Apache2\htdocs\account/admin/inst_module.php:358
 msgid "Create a new module"
 msgstr ""
 
@@ -1762,6 +1766,7 @@ msgstr ""
 #: c:\Apache2\htdocs\account/sales/inquiry/customer_allocation_inquiry.php:41
 #: c:\Apache2\htdocs\account/sales/inquiry/customer_inquiry.php:42
 #: c:\Apache2\htdocs\account/sales/inquiry/sales_orders_view.php:51
+#: c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:6
 msgid "Search"
 msgstr ""
 
@@ -1830,9 +1835,9 @@ msgstr ""
 #: c:\Apache2\htdocs\account/dimensions/inquiry/search_dimensions.php:103
 #: c:\Apache2\htdocs\account/dimensions/view/view_dimension.php:35
 #: c:\Apache2\htdocs\account/gl/inquiry/bank_inquiry.php:60
-#: c:\Apache2\htdocs\account/gl/inquiry/gl_account_inquiry.php:95
-#: c:\Apache2\htdocs\account/gl/inquiry/gl_account_inquiry.php:98
-#: c:\Apache2\htdocs\account/gl/inquiry/gl_account_inquiry.php:101
+#: c:\Apache2\htdocs\account/gl/inquiry/gl_account_inquiry.php:90
+#: c:\Apache2\htdocs\account/gl/inquiry/gl_account_inquiry.php:93
+#: c:\Apache2\htdocs\account/gl/inquiry/gl_account_inquiry.php:96
 #: c:\Apache2\htdocs\account/inventory/inquiry/stock_movements.php:60
 #: c:\Apache2\htdocs\account/manufacturing/search_work_orders.php:88
 #: c:\Apache2\htdocs\account/purchasing/allocations/supplier_allocate.php:195
@@ -1867,7 +1872,7 @@ msgstr ""
 #: c:\Apache2\htdocs\account/manufacturing/includes/manufacturing_ui.inc:268
 #: c:\Apache2\htdocs\account/manufacturing/includes/manufacturing_ui.inc:272
 #: c:\Apache2\htdocs\account/manufacturing/includes/manufacturing_ui.inc:323
-#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:45
+#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:46
 msgid "#"
 msgstr ""
 
@@ -2076,9 +2081,9 @@ msgstr ""
 #: c:\Apache2\htdocs\account/inventory/includes/item_adjustments_ui.inc:159
 #: c:\Apache2\htdocs\account/inventory/includes/stock_transfers_ui.inc:143
 #: c:\Apache2\htdocs\account/manufacturing/includes/work_order_issue_ui.inc:126
-#: c:\Apache2\htdocs\account/purchasing/includes/ui/po_ui.inc:320
+#: c:\Apache2\htdocs\account/purchasing/includes/ui/po_ui.inc:329
 #: c:\Apache2\htdocs\account/sales/includes/ui/sales_credit_ui.inc:213
-#: c:\Apache2\htdocs\account/sales/includes/ui/sales_order_ui.inc:327
+#: c:\Apache2\htdocs\account/sales/includes/ui/sales_order_ui.inc:337
 msgid "Cancel"
 msgstr ""
 
@@ -2121,7 +2126,7 @@ msgstr ""
 #: c:\Apache2\htdocs\account/gl/bank_transfer.php:103
 #: c:\Apache2\htdocs\account/gl/gl_deposit.php:120
 #: c:\Apache2\htdocs\account/gl/gl_journal.php:93
-#: c:\Apache2\htdocs\account/gl/gl_payment.php:121
+#: c:\Apache2\htdocs\account/gl/gl_payment.php:119
 #: c:\Apache2\htdocs\account/inventory/adjustments.php:108
 #: c:\Apache2\htdocs\account/inventory/transfers.php:108
 #: c:\Apache2\htdocs\account/manufacturing/work_order_add_finished.php:84
@@ -2195,7 +2200,7 @@ msgstr ""
 #: c:\Apache2\htdocs\account/applications/customers.php:16
 #: c:\Apache2\htdocs\account/sales/sales_order_entry.php:27
 #: c:\Apache2\htdocs\account/sales/view/view_sales_order.php:35
-#: c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:1858
+#: c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:2071
 msgid "Sales Invoices"
 msgstr ""
 
@@ -2332,8 +2337,8 @@ msgstr ""
 # c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:1866
 #: c:\Apache2\htdocs\account/applications/generalledger.php:12
 #: c:\Apache2\htdocs\account/manufacturing/view/work_order_view.php:57
-#: c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:1860
-#: c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:1873
+#: c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:2073
+#: c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:2086
 msgid "Payments"
 msgstr ""
 
@@ -2380,9 +2385,9 @@ msgstr ""
 #: c:\Apache2\htdocs\account/applications/generalledger.php:22
 #: c:\Apache2\htdocs\account/gl/inquiry/gl_trial_balance.php:18
 #: c:\Apache2\htdocs\account/reporting/rep708.php:89
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:182
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:216
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:245
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:183
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:217
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:246
 msgid "Trial Balance"
 msgstr ""
 
@@ -2732,7 +2737,7 @@ msgstr ""
 #: c:\Apache2\htdocs\account/gl/bank_transfer.php:126
 #: c:\Apache2\htdocs\account/gl/gl_deposit.php:108
 #: c:\Apache2\htdocs\account/gl/gl_journal.php:103
-#: c:\Apache2\htdocs\account/gl/gl_payment.php:111
+#: c:\Apache2\htdocs\account/gl/gl_payment.php:109
 #: c:\Apache2\htdocs\account/inventory/adjustments.php:97
 #: c:\Apache2\htdocs\account/inventory/transfers.php:98
 #: c:\Apache2\htdocs\account/manufacturing/work_order_add_finished.php:61
@@ -2833,9 +2838,9 @@ msgstr ""
 #: c:\Apache2\htdocs\account/dimensions/inquiry/search_dimensions.php:103
 #: c:\Apache2\htdocs\account/dimensions/view/view_dimension.php:35
 #: c:\Apache2\htdocs\account/gl/inquiry/bank_inquiry.php:60
-#: c:\Apache2\htdocs\account/gl/inquiry/gl_account_inquiry.php:95
-#: c:\Apache2\htdocs\account/gl/inquiry/gl_account_inquiry.php:98
-#: c:\Apache2\htdocs\account/gl/inquiry/gl_account_inquiry.php:101
+#: c:\Apache2\htdocs\account/gl/inquiry/gl_account_inquiry.php:90
+#: c:\Apache2\htdocs\account/gl/inquiry/gl_account_inquiry.php:93
+#: c:\Apache2\htdocs\account/gl/inquiry/gl_account_inquiry.php:96
 #: c:\Apache2\htdocs\account/gl/manage/bank_accounts.php:89
 #: c:\Apache2\htdocs\account/inventory/inquiry/stock_movements.php:60
 #: c:\Apache2\htdocs\account/manufacturing/search_work_orders.php:88
@@ -2851,7 +2856,7 @@ msgstr ""
 #: c:\Apache2\htdocs\account/reporting/rep704.php:66
 #: c:\Apache2\htdocs\account/reporting/rep704.php:69
 #: c:\Apache2\htdocs\account/reporting/rep709.php:178
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:148
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:149
 #: c:\Apache2\htdocs\account/sales/inquiry/customer_allocation_inquiry.php:121
 #: c:\Apache2\htdocs\account/sales/inquiry/customer_allocation_inquiry.php:124
 #: c:\Apache2\htdocs\account/sales/inquiry/customer_inquiry.php:163
@@ -2882,20 +2887,20 @@ msgstr ""
 # c:\Apache2\htdocs\account/reporting/reports_main.php:247
 #: c:\Apache2\htdocs\account/dimensions/dimension_entry.php:238
 #: c:\Apache2\htdocs\account/reporting/reports_main.php:44
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:146
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:155
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:168
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:175
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:183
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:193
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:204
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:210
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:217
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:226
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:235
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:240
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:246
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:252
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:147
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:156
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:169
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:176
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:184
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:194
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:205
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:211
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:218
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:227
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:236
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:241
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:247
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:253
 msgid "Start Date"
 msgstr ""
 
@@ -3081,9 +3086,9 @@ msgstr ""
 #: c:\Apache2\htdocs\account/dimensions/inquiry/search_dimensions.php:103
 #: c:\Apache2\htdocs\account/dimensions/view/view_dimension.php:35
 #: c:\Apache2\htdocs\account/gl/inquiry/bank_inquiry.php:60
-#: c:\Apache2\htdocs\account/gl/inquiry/gl_account_inquiry.php:95
-#: c:\Apache2\htdocs\account/gl/inquiry/gl_account_inquiry.php:98
-#: c:\Apache2\htdocs\account/gl/inquiry/gl_account_inquiry.php:101
+#: c:\Apache2\htdocs\account/gl/inquiry/gl_account_inquiry.php:90
+#: c:\Apache2\htdocs\account/gl/inquiry/gl_account_inquiry.php:93
+#: c:\Apache2\htdocs\account/gl/inquiry/gl_account_inquiry.php:96
 #: c:\Apache2\htdocs\account/gl/view/bank_transfer_view.php:74
 #: c:\Apache2\htdocs\account/gl/view/gl_deposit_view.php:59
 #: c:\Apache2\htdocs\account/gl/view/gl_payment_view.php:57
@@ -3132,7 +3137,7 @@ msgstr ""
 #: c:\Apache2\htdocs\account/purchasing/includes/ui/invoice_ui.inc:87
 #: c:\Apache2\htdocs\account/purchasing/includes/ui/po_ui.inc:237
 #: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:5
-#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:45
+#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:46
 msgid "Date"
 msgstr ""
 
@@ -3182,7 +3187,7 @@ msgstr ""
 #: c:\Apache2\htdocs\account/sales/view/view_invoice.php:88
 #: c:\Apache2\htdocs\account/purchasing/includes/ui/invoice_ui.inc:89
 #: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:12
-#: c:\Apache2\htdocs\account/sales/includes/ui/sales_order_ui.inc:346
+#: c:\Apache2\htdocs\account/sales/includes/ui/sales_order_ui.inc:356
 msgid "Due Date"
 msgstr ""
 
@@ -3207,9 +3212,9 @@ msgstr ""
 #: c:\Apache2\htdocs\account/dimensions/inquiry/search_dimensions.php:101
 #: c:\Apache2\htdocs\account/dimensions/inquiry/search_dimensions.php:104
 #: c:\Apache2\htdocs\account/gl/inquiry/bank_inquiry.php:61
-#: c:\Apache2\htdocs\account/gl/inquiry/gl_account_inquiry.php:96
-#: c:\Apache2\htdocs\account/gl/inquiry/gl_account_inquiry.php:99
-#: c:\Apache2\htdocs\account/gl/inquiry/gl_account_inquiry.php:102
+#: c:\Apache2\htdocs\account/gl/inquiry/gl_account_inquiry.php:91
+#: c:\Apache2\htdocs\account/gl/inquiry/gl_account_inquiry.php:94
+#: c:\Apache2\htdocs\account/gl/inquiry/gl_account_inquiry.php:97
 #: c:\Apache2\htdocs\account/gl/inquiry/gl_trial_balance.php:81
 #: c:\Apache2\htdocs\account/purchasing/inquiry/supplier_allocation_inquiry.php:128
 #: c:\Apache2\htdocs\account/purchasing/inquiry/supplier_allocation_inquiry.php:131
@@ -3257,7 +3262,7 @@ msgstr ""
 # c:\Apache2\htdocs\account/sales/customer_payments.php:24
 #: c:\Apache2\htdocs\account/gl/bank_transfer.php:21
 #: c:\Apache2\htdocs\account/gl/gl_deposit.php:25
-#: c:\Apache2\htdocs\account/gl/gl_payment.php:27
+#: c:\Apache2\htdocs\account/gl/gl_payment.php:25
 #: c:\Apache2\htdocs\account/gl/inquiry/bank_inquiry.php:21
 #: c:\Apache2\htdocs\account/purchasing/supplier_payment.php:30
 #: c:\Apache2\htdocs\account/sales/customer_payments.php:26
@@ -3354,7 +3359,7 @@ msgstr ""
 #: c:\Apache2\htdocs\account/gl/bank_transfer.php:120
 #: c:\Apache2\htdocs\account/gl/gl_deposit.php:103
 #: c:\Apache2\htdocs\account/gl/gl_journal.php:98
-#: c:\Apache2\htdocs\account/gl/gl_payment.php:106
+#: c:\Apache2\htdocs\account/gl/gl_payment.php:104
 #: c:\Apache2\htdocs\account/inventory/adjustments.php:91
 #: c:\Apache2\htdocs\account/inventory/transfers.php:93
 #: c:\Apache2\htdocs\account/manufacturing/work_order_add_finished.php:55
@@ -3462,8 +3467,8 @@ msgstr ""
 #: c:\Apache2\htdocs\account/gl/gl_budget.php:110
 #: c:\Apache2\htdocs\account/gl/inquiry/gl_account_inquiry.php:57
 #: c:\Apache2\htdocs\account/gl/inquiry/gl_account_inquiry.php:59
-#: c:\Apache2\htdocs\account/gl/inquiry/gl_account_inquiry.php:95
-#: c:\Apache2\htdocs\account/gl/inquiry/gl_account_inquiry.php:98
+#: c:\Apache2\htdocs\account/gl/inquiry/gl_account_inquiry.php:90
+#: c:\Apache2\htdocs\account/gl/inquiry/gl_account_inquiry.php:93
 #: c:\Apache2\htdocs\account/gl/view/gl_trans_view.php:56
 #: c:\Apache2\htdocs\account/gl/view/gl_trans_view.php:59
 #: c:\Apache2\htdocs\account/inventory/manage/items.php:357
@@ -3491,22 +3496,22 @@ msgstr ""
 #: c:\Apache2\htdocs\account/reporting/rep708.php:71
 #: c:\Apache2\htdocs\account/reporting/rep708.php:73
 #: c:\Apache2\htdocs\account/reporting/rep708.php:80
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:131
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:159
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:132
 #: c:\Apache2\htdocs\account/reporting/reports_main.php:160
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:164
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:161
 #: c:\Apache2\htdocs\account/reporting/reports_main.php:165
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:170
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:166
 #: c:\Apache2\htdocs\account/reporting/reports_main.php:171
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:178
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:172
 #: c:\Apache2\htdocs\account/reporting/reports_main.php:179
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:186
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:180
 #: c:\Apache2\htdocs\account/reporting/reports_main.php:187
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:197
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:201
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:206
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:213
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:220
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:188
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:198
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:202
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:207
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:214
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:221
 #: c:\Apache2\htdocs\account/sales/manage/customers.php:299
 #: c:\Apache2\htdocs\account/sales/manage/customers.php:301
 #: c:\Apache2\htdocs\account/gl/includes/ui/gl_deposit_ui.inc:110
@@ -3622,7 +3627,7 @@ msgstr ""
 #: c:\Apache2\htdocs\account/purchasing/includes/ui/invoice_ui.inc:197
 #: c:\Apache2\htdocs\account/purchasing/includes/ui/invoice_ui.inc:199
 #: c:\Apache2\htdocs\account/purchasing/includes/ui/invoice_ui.inc:201
-#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:67
+#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:69
 msgid "Amount"
 msgstr ""
 
@@ -3730,8 +3735,8 @@ msgstr ""
 #: c:\Apache2\htdocs\account/manufacturing/includes/manufacturing_ui.inc:170
 #: c:\Apache2\htdocs\account/purchasing/includes/ui/invoice_ui.inc:246
 #: c:\Apache2\htdocs\account/purchasing/includes/ui/invoice_ui.inc:340
-#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:37
-#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:40
+#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:38
+#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:41
 #: c:\Apache2\htdocs\account/sales/includes/ui/sales_credit_ui.inc:104
 #: c:\Apache2\htdocs\account/sales/includes/ui/sales_order_ui.inc:110
 msgid "Total"
@@ -3747,7 +3752,7 @@ msgstr ""
 # c:\Apache2\htdocs\account/purchasing/supplier_payment.php:30
 # c:\Apache2\htdocs\account/sales/customer_payments.php:26
 #: c:\Apache2\htdocs\account/gl/gl_deposit.php:27
-#: c:\Apache2\htdocs\account/gl/gl_payment.php:29
+#: c:\Apache2\htdocs\account/gl/gl_payment.php:27
 #: c:\Apache2\htdocs\account/purchasing/supplier_payment.php:32
 #: c:\Apache2\htdocs\account/sales/customer_payments.php:28
 msgid "There are no bank payment types defined in the system."
@@ -3776,21 +3781,21 @@ msgstr ""
 # c:\Apache2\htdocs\account/gl/gl_deposit.php:152
 # c:\Apache2\htdocs\account/gl/gl_payment.php:151
 #: c:\Apache2\htdocs\account/gl/gl_deposit.php:154
-#: c:\Apache2\htdocs\account/gl/gl_payment.php:153
+#: c:\Apache2\htdocs\account/gl/gl_payment.php:151
 msgid "The amount entered is not a valid number."
 msgstr ""
 
 # c:\Apache2\htdocs\account/gl/gl_deposit.php:158
 # c:\Apache2\htdocs\account/gl/gl_payment.php:157
 #: c:\Apache2\htdocs\account/gl/gl_deposit.php:160
-#: c:\Apache2\htdocs\account/gl/gl_payment.php:159
+#: c:\Apache2\htdocs\account/gl/gl_payment.php:157
 msgid "The amount entered must be a postitive number."
 msgstr ""
 
 # c:\Apache2\htdocs\account/gl/gl_deposit.php:164
 # c:\Apache2\htdocs\account/gl/gl_payment.php:163
 #: c:\Apache2\htdocs\account/gl/gl_deposit.php:166
-#: c:\Apache2\htdocs\account/gl/gl_payment.php:165
+#: c:\Apache2\htdocs\account/gl/gl_payment.php:163
 msgid "The source and destination accouts cannot be the same."
 msgstr ""
 
@@ -3882,42 +3887,42 @@ msgid "The journal must balance (debits equal to credits) before it can be proce
 msgstr ""
 
 # c:\Apache2\htdocs\account/gl/gl_payment.php:21
-#: c:\Apache2\htdocs\account/gl/gl_payment.php:23
+#: c:\Apache2\htdocs\account/gl/gl_payment.php:21
 msgid "Bank Account Payment Entry"
 msgstr ""
 
 # c:\Apache2\htdocs\account/gl/gl_payment.php:36
-#: c:\Apache2\htdocs\account/gl/gl_payment.php:38
+#: c:\Apache2\htdocs\account/gl/gl_payment.php:36
 msgid "Payment has been entered"
 msgstr ""
 
 # c:\Apache2\htdocs\account/gl/gl_payment.php:38
-#: c:\Apache2\htdocs\account/gl/gl_payment.php:40
+#: c:\Apache2\htdocs\account/gl/gl_payment.php:38
 msgid "View the GL Postings for this Payment"
 msgstr ""
 
 # c:\Apache2\htdocs\account/gl/gl_payment.php:40
-#: c:\Apache2\htdocs\account/gl/gl_payment.php:42
+#: c:\Apache2\htdocs\account/gl/gl_payment.php:40
 msgid "Enter Another Payment"
 msgstr ""
 
 # c:\Apache2\htdocs\account/gl/gl_payment.php:114
-#: c:\Apache2\htdocs\account/gl/gl_payment.php:116
+#: c:\Apache2\htdocs\account/gl/gl_payment.php:114
 msgid "The entered date for the payment is invalid."
 msgstr ""
 
 # c:\Apache2\htdocs\account/gl/gl_payment.php:169
-#: c:\Apache2\htdocs\account/gl/gl_payment.php:171
+#: c:\Apache2\htdocs\account/gl/gl_payment.php:169
 msgid "You cannot make a payment to a bank account. Please use the transfer funds facility for this."
 msgstr ""
 
 # c:\Apache2\htdocs\account/gl/gl_payment.php:238
-#: c:\Apache2\htdocs\account/gl/gl_payment.php:240
+#: c:\Apache2\htdocs\account/gl/gl_payment.php:238
 msgid "Payment Items"
 msgstr ""
 
 # c:\Apache2\htdocs\account/gl/gl_payment.php:248
-#: c:\Apache2\htdocs\account/gl/gl_payment.php:250
+#: c:\Apache2\htdocs\account/gl/gl_payment.php:248
 msgid "Process Payment"
 msgstr ""
 
@@ -3971,9 +3976,9 @@ msgstr ""
 # c:\Apache2\htdocs\account/gl/includes/ui/gl_journal_ui.inc:51
 # c:\Apache2\htdocs\account/gl/includes/ui/gl_journal_ui.inc:54
 #: c:\Apache2\htdocs\account/gl/inquiry/bank_inquiry.php:61
-#: c:\Apache2\htdocs\account/gl/inquiry/gl_account_inquiry.php:96
-#: c:\Apache2\htdocs\account/gl/inquiry/gl_account_inquiry.php:99
-#: c:\Apache2\htdocs\account/gl/inquiry/gl_account_inquiry.php:102
+#: c:\Apache2\htdocs\account/gl/inquiry/gl_account_inquiry.php:91
+#: c:\Apache2\htdocs\account/gl/inquiry/gl_account_inquiry.php:94
+#: c:\Apache2\htdocs\account/gl/inquiry/gl_account_inquiry.php:97
 #: c:\Apache2\htdocs\account/gl/inquiry/gl_trial_balance.php:83
 #: c:\Apache2\htdocs\account/gl/inquiry/gl_trial_balance.php:85
 #: c:\Apache2\htdocs\account/gl/inquiry/gl_trial_balance.php:87
@@ -4030,9 +4035,9 @@ msgstr ""
 # c:\Apache2\htdocs\account/gl/includes/ui/gl_journal_ui.inc:51
 # c:\Apache2\htdocs\account/gl/includes/ui/gl_journal_ui.inc:54
 #: c:\Apache2\htdocs\account/gl/inquiry/bank_inquiry.php:61
-#: c:\Apache2\htdocs\account/gl/inquiry/gl_account_inquiry.php:96
-#: c:\Apache2\htdocs\account/gl/inquiry/gl_account_inquiry.php:99
-#: c:\Apache2\htdocs\account/gl/inquiry/gl_account_inquiry.php:102
+#: c:\Apache2\htdocs\account/gl/inquiry/gl_account_inquiry.php:91
+#: c:\Apache2\htdocs\account/gl/inquiry/gl_account_inquiry.php:94
+#: c:\Apache2\htdocs\account/gl/inquiry/gl_account_inquiry.php:97
 #: c:\Apache2\htdocs\account/gl/inquiry/gl_trial_balance.php:84
 #: c:\Apache2\htdocs\account/gl/inquiry/gl_trial_balance.php:86
 #: c:\Apache2\htdocs\account/gl/inquiry/gl_trial_balance.php:88
@@ -4069,9 +4074,9 @@ msgstr ""
 # c:\Apache2\htdocs\account/reporting/rep704.php:66
 # c:\Apache2\htdocs\account/reporting/rep704.php:69
 #: c:\Apache2\htdocs\account/gl/inquiry/bank_inquiry.php:61
-#: c:\Apache2\htdocs\account/gl/inquiry/gl_account_inquiry.php:96
-#: c:\Apache2\htdocs\account/gl/inquiry/gl_account_inquiry.php:99
-#: c:\Apache2\htdocs\account/gl/inquiry/gl_account_inquiry.php:102
+#: c:\Apache2\htdocs\account/gl/inquiry/gl_account_inquiry.php:91
+#: c:\Apache2\htdocs\account/gl/inquiry/gl_account_inquiry.php:94
+#: c:\Apache2\htdocs\account/gl/inquiry/gl_account_inquiry.php:97
 #: c:\Apache2\htdocs\account/gl/view/gl_trans_view.php:27
 #: c:\Apache2\htdocs\account/reporting/rep704.php:64
 #: c:\Apache2\htdocs\account/reporting/rep704.php:66
@@ -4083,8 +4088,8 @@ msgstr ""
 # c:\Apache2\htdocs\account/gl/inquiry/gl_account_inquiry.php:105
 # c:\Apache2\htdocs\account/reporting/rep704.php:118
 #: c:\Apache2\htdocs\account/gl/inquiry/bank_inquiry.php:69
-#: c:\Apache2\htdocs\account/gl/inquiry/gl_account_inquiry.php:107
-#: c:\Apache2\htdocs\account/reporting/rep704.php:118
+#: c:\Apache2\htdocs\account/gl/inquiry/gl_account_inquiry.php:112
+#: c:\Apache2\htdocs\account/reporting/rep704.php:122
 msgid "Opening Balance"
 msgstr ""
 
@@ -4092,8 +4097,8 @@ msgstr ""
 # c:\Apache2\htdocs\account/gl/inquiry/gl_account_inquiry.php:146
 # c:\Apache2\htdocs\account/reporting/rep704.php:155
 #: c:\Apache2\htdocs\account/gl/inquiry/bank_inquiry.php:108
-#: c:\Apache2\htdocs\account/gl/inquiry/gl_account_inquiry.php:148
-#: c:\Apache2\htdocs\account/reporting/rep704.php:155
+#: c:\Apache2\htdocs\account/gl/inquiry/gl_account_inquiry.php:153
+#: c:\Apache2\htdocs\account/reporting/rep704.php:159
 msgid "Ending Balance"
 msgstr ""
 
@@ -4128,11 +4133,6 @@ msgstr ""
 msgid "to:"
 msgstr ""
 
-# c:\Apache2\htdocs\account/gl/inquiry/gl_account_inquiry.php:84
-#: c:\Apache2\htdocs\account/gl/inquiry/gl_account_inquiry.php:86
-msgid "No general ledger transactions have been created for this account on the selected dates."
-msgstr ""
-
 # c:\Apache2\htdocs\account/gl/inquiry/gl_account_inquiry.php:94
 # c:\Apache2\htdocs\account/gl/inquiry/gl_account_inquiry.php:97
 # c:\Apache2\htdocs\account/gl/inquiry/gl_account_inquiry.php:100
@@ -4162,9 +4162,9 @@ msgstr ""
 # c:\Apache2\htdocs\account/purchasing/includes/ui/invoice_ui.inc:201
 # c:\Apache2\htdocs\account/sales/includes/ui/sales_credit_ui.inc:249
 # c:\Apache2\htdocs\account/sales/includes/ui/sales_order_ui.inc:380
-#: c:\Apache2\htdocs\account/gl/inquiry/gl_account_inquiry.php:96
-#: c:\Apache2\htdocs\account/gl/inquiry/gl_account_inquiry.php:99
-#: c:\Apache2\htdocs\account/gl/inquiry/gl_account_inquiry.php:102
+#: c:\Apache2\htdocs\account/gl/inquiry/gl_account_inquiry.php:91
+#: c:\Apache2\htdocs\account/gl/inquiry/gl_account_inquiry.php:94
+#: c:\Apache2\htdocs\account/gl/inquiry/gl_account_inquiry.php:97
 #: c:\Apache2\htdocs\account/gl/view/gl_deposit_view.php:89
 #: c:\Apache2\htdocs\account/gl/view/gl_payment_view.php:88
 #: c:\Apache2\htdocs\account/gl/view/gl_trans_view.php:57
@@ -4190,8 +4190,13 @@ msgstr ""
 #: c:\Apache2\htdocs\account/purchasing/includes/ui/invoice_ui.inc:199
 #: c:\Apache2\htdocs\account/purchasing/includes/ui/invoice_ui.inc:201
 #: c:\Apache2\htdocs\account/sales/includes/ui/sales_credit_ui.inc:249
-#: c:\Apache2\htdocs\account/sales/includes/ui/sales_order_ui.inc:381
+#: c:\Apache2\htdocs\account/sales/includes/ui/sales_order_ui.inc:391
 msgid "Memo"
+msgstr ""
+
+# c:\Apache2\htdocs\account/gl/inquiry/gl_account_inquiry.php:84
+#: c:\Apache2\htdocs\account/gl/inquiry/gl_account_inquiry.php:160
+msgid "No general ledger transactions have been created for this account on the selected dates."
 msgstr ""
 
 # c:\Apache2\htdocs\account/gl/inquiry/gl_trial_balance.php:27
@@ -4617,7 +4622,7 @@ msgstr ""
 # c:\Apache2\htdocs\account/reporting/reports_main.php:143
 #: c:\Apache2\htdocs\account/gl/manage/gl_accounts.php:7
 #: c:\Apache2\htdocs\account/reporting/rep701.php:42
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:142
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:143
 msgid "Chart of Accounts"
 msgstr ""
 
@@ -4753,9 +4758,9 @@ msgstr ""
 # c:\Apache2\htdocs\account/reporting/reports_main.php:231
 #: c:\Apache2\htdocs\account/gl/manage/gl_account_classes.php:97
 #: c:\Apache2\htdocs\account/reporting/rep706.php:90
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:167
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:203
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:234
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:168
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:204
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:235
 msgid "Balance Sheet"
 msgstr ""
 
@@ -4875,8 +4880,8 @@ msgstr ""
 # c:\Apache2\htdocs\account/reporting/reports_main.php:95
 #: c:\Apache2\htdocs\account/gl/view/gl_deposit_view.php:62
 #: c:\Apache2\htdocs\account/reporting/reports_main.php:51
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:64
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:94
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:65
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:95
 msgid "From"
 msgstr ""
 
@@ -5100,7 +5105,7 @@ msgstr ""
 #: c:\Apache2\htdocs\account/inventory/adjustments.php:147
 #: c:\Apache2\htdocs\account/manufacturing/work_order_add_finished.php:73
 #: c:\Apache2\htdocs\account/manufacturing/work_order_issue.php:118
-#: c:\Apache2\htdocs\account/manufacturing/manage/bom_edit.php:129
+#: c:\Apache2\htdocs\account/manufacturing/manage/bom_edit.php:127
 msgid "The quantity entered must be greater than zero."
 msgstr ""
 
@@ -5284,8 +5289,8 @@ msgstr ""
 #: c:\Apache2\htdocs\account/sales/view/view_sales_order.php:141
 #: c:\Apache2\htdocs\account/purchasing/includes/ui/invoice_ui.inc:303
 #: c:\Apache2\htdocs\account/purchasing/includes/ui/po_ui.inc:168
-#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:37
-#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:40
+#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:38
+#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:41
 #: c:\Apache2\htdocs\account/sales/includes/ui/sales_credit_ui.inc:104
 #: c:\Apache2\htdocs\account/sales/includes/ui/sales_order_ui.inc:110
 msgid "Price"
@@ -5426,16 +5431,16 @@ msgstr ""
 #: c:\Apache2\htdocs\account/reporting/rep202.php:158
 #: c:\Apache2\htdocs\account/reporting/rep203.php:82
 #: c:\Apache2\htdocs\account/reporting/rep204.php:76
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:72
 #: c:\Apache2\htdocs\account/reporting/reports_main.php:73
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:75
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:78
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:80
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:85
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:87
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:90
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:74
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:76
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:79
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:81
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:86
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:88
 #: c:\Apache2\htdocs\account/reporting/reports_main.php:91
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:93
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:92
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:94
 #: c:\Apache2\htdocs\account/includes/types.inc:140
 #: c:\Apache2\htdocs\account/purchasing/includes/ui/grn_ui.inc:11
 #: c:\Apache2\htdocs\account/purchasing/includes/ui/po_ui.inc:225
@@ -5528,9 +5533,9 @@ msgstr ""
 #: c:\Apache2\htdocs\account/reporting/rep301.php:91
 #: c:\Apache2\htdocs\account/reporting/rep302.php:177
 #: c:\Apache2\htdocs\account/reporting/rep303.php:130
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:104
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:109
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:113
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:105
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:110
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:114
 msgid "Location"
 msgstr ""
 
@@ -5547,6 +5552,8 @@ msgstr ""
 # c:\Apache2\htdocs\account/inventory/inquiry/stock_status.php:57
 #: c:\Apache2\htdocs\account/inventory/reorder_level.php:42
 #: c:\Apache2\htdocs\account/inventory/inquiry/stock_status.php:57
+#: c:\Apache2\htdocs\account/sales/includes/db/sales_order_db.inc:130
+#: c:\Apache2\htdocs\account/sales/includes/db/sales_order_db.inc:240
 msgid "Re-Order Level"
 msgstr ""
 
@@ -5991,8 +5998,8 @@ msgstr ""
 #: c:\Apache2\htdocs\account/manufacturing/includes/work_order_issue_ui.inc:43
 #: c:\Apache2\htdocs\account/purchasing/includes/ui/invoice_ui.inc:303
 #: c:\Apache2\htdocs\account/purchasing/includes/ui/po_ui.inc:167
-#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:37
-#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:39
+#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:38
+#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:40
 #: c:\Apache2\htdocs\account/sales/includes/ui/sales_credit_ui.inc:103
 #: c:\Apache2\htdocs\account/sales/includes/ui/sales_order_ui.inc:109
 msgid "Quantity"
@@ -6085,7 +6092,7 @@ msgstr ""
 # c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:818
 # c:\Apache2\htdocs\account/manufacturing/includes/manufacturing_ui.inc:270
 #: c:\Apache2\htdocs\account/manufacturing/search_work_orders.php:89
-#: c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:824
+#: c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:1037
 #: c:\Apache2\htdocs\account/manufacturing/includes/manufacturing_ui.inc:270
 msgid "Manufactured"
 msgstr ""
@@ -6179,7 +6186,7 @@ msgstr ""
 # c:\Apache2\htdocs\account/manufacturing/manage/bom_edit.php:274
 #: c:\Apache2\htdocs\account/manufacturing/work_order_add_finished.php:154
 #: c:\Apache2\htdocs\account/manufacturing/work_order_entry.php:374
-#: c:\Apache2\htdocs\account/manufacturing/manage/bom_edit.php:274
+#: c:\Apache2\htdocs\account/manufacturing/manage/bom_edit.php:272
 msgid "Quantity:"
 msgstr ""
 
@@ -6256,7 +6263,7 @@ msgstr ""
 # c:\Apache2\htdocs\account/manufacturing/work_order_entry.php:116
 # c:\Apache2\htdocs\account/manufacturing/manage/bom_edit.php:123
 #: c:\Apache2\htdocs\account/manufacturing/work_order_entry.php:120
-#: c:\Apache2\htdocs\account/manufacturing/manage/bom_edit.php:123
+#: c:\Apache2\htdocs\account/manufacturing/manage/bom_edit.php:121
 msgid "The quantity entered must be numeric."
 msgstr ""
 
@@ -6520,49 +6527,49 @@ msgid "Code"
 msgstr ""
 
 # c:\Apache2\htdocs\account/manufacturing/manage/bom_edit.php:177
-#: c:\Apache2\htdocs\account/manufacturing/manage/bom_edit.php:177
+#: c:\Apache2\htdocs\account/manufacturing/manage/bom_edit.php:175
 msgid "The selected component is already on this bom. You can modify it's quantity but it cannot appear more than once on the same bom."
 msgstr ""
 
 # c:\Apache2\htdocs\account/manufacturing/manage/bom_edit.php:183
-#: c:\Apache2\htdocs\account/manufacturing/manage/bom_edit.php:183
+#: c:\Apache2\htdocs\account/manufacturing/manage/bom_edit.php:181
 msgid "The selected component is a parent of the current item. Recursive BOMs are not allowed."
 msgstr ""
 
 # c:\Apache2\htdocs\account/manufacturing/manage/bom_edit.php:196
-#: c:\Apache2\htdocs\account/manufacturing/manage/bom_edit.php:196
+#: c:\Apache2\htdocs\account/manufacturing/manage/bom_edit.php:194
 msgid "The component item has been deleted from this bom."
 msgstr ""
 
 # c:\Apache2\htdocs\account/manufacturing/manage/bom_edit.php:205
-#: c:\Apache2\htdocs\account/manufacturing/manage/bom_edit.php:205
+#: c:\Apache2\htdocs\account/manufacturing/manage/bom_edit.php:203
 msgid "Select a manufacturable item:"
 msgstr ""
 
 # c:\Apache2\htdocs\account/manufacturing/manage/bom_edit.php:225
-#: c:\Apache2\htdocs\account/manufacturing/manage/bom_edit.php:225
+#: c:\Apache2\htdocs\account/manufacturing/manage/bom_edit.php:223
 msgid "Add a new Component"
 msgstr ""
 
 # c:\Apache2\htdocs\account/manufacturing/manage/bom_edit.php:250
 # c:\Apache2\htdocs\account/manufacturing/manage/bom_edit.php:259
-#: c:\Apache2\htdocs\account/manufacturing/manage/bom_edit.php:250
-#: c:\Apache2\htdocs\account/manufacturing/manage/bom_edit.php:259
+#: c:\Apache2\htdocs\account/manufacturing/manage/bom_edit.php:248
+#: c:\Apache2\htdocs\account/manufacturing/manage/bom_edit.php:257
 msgid "Component:"
 msgstr ""
 
 # c:\Apache2\htdocs\account/manufacturing/manage/bom_edit.php:267
-#: c:\Apache2\htdocs\account/manufacturing/manage/bom_edit.php:267
+#: c:\Apache2\htdocs\account/manufacturing/manage/bom_edit.php:265
 msgid "Location to Draw From:"
 msgstr ""
 
 # c:\Apache2\htdocs\account/manufacturing/manage/bom_edit.php:268
-#: c:\Apache2\htdocs\account/manufacturing/manage/bom_edit.php:268
+#: c:\Apache2\htdocs\account/manufacturing/manage/bom_edit.php:266
 msgid "Work Centre Added:"
 msgstr ""
 
 # c:\Apache2\htdocs\account/manufacturing/manage/bom_edit.php:277
-#: c:\Apache2\htdocs\account/manufacturing/manage/bom_edit.php:277
+#: c:\Apache2\htdocs\account/manufacturing/manage/bom_edit.php:275
 msgid "Add/Update"
 msgstr ""
 
@@ -6893,8 +6900,8 @@ msgstr ""
 #: c:\Apache2\htdocs\account/inventory/includes/stock_transfers_ui.inc:70
 #: c:\Apache2\htdocs\account/manufacturing/includes/work_order_issue_ui.inc:43
 #: c:\Apache2\htdocs\account/purchasing/includes/ui/po_ui.inc:167
-#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:36
-#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:39
+#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:37
+#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:40
 #: c:\Apache2\htdocs\account/sales/includes/ui/sales_credit_ui.inc:103
 #: c:\Apache2\htdocs\account/sales/includes/ui/sales_order_ui.inc:109
 msgid "Item Code"
@@ -6927,7 +6934,7 @@ msgstr ""
 #: c:\Apache2\htdocs\account/reporting/rep105.php:155
 #: c:\Apache2\htdocs\account/reporting/rep201.php:71
 #: c:\Apache2\htdocs\account/taxes/tax_types.php:99
-#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:46
+#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:47
 msgid "Outstanding"
 msgstr ""
 
@@ -7796,7 +7803,7 @@ msgstr ""
 #: c:\Apache2\htdocs\account/reporting/rep201.php:71
 #: c:\Apache2\htdocs\account/sales/inquiry/customer_allocation_inquiry.php:122
 #: c:\Apache2\htdocs\account/sales/inquiry/customer_allocation_inquiry.php:125
-#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:46
+#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:47
 msgid "Allocated"
 msgstr ""
 
@@ -7865,7 +7872,7 @@ msgstr ""
 #: c:\Apache2\htdocs\account/sales/inquiry/customer_inquiry.php:63
 #: c:\Apache2\htdocs\account/sales/inquiry/customer_inquiry.php:64
 #: c:\Apache2\htdocs\account/sales/inquiry/customer_inquiry.php:65
-#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:79
+#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:81
 msgid "Days"
 msgstr ""
 
@@ -7880,7 +7887,7 @@ msgstr ""
 #: c:\Apache2\htdocs\account/reporting/rep202.php:147
 #: c:\Apache2\htdocs\account/reporting/rep202.php:177
 #: c:\Apache2\htdocs\account/sales/inquiry/customer_inquiry.php:65
-#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:80
+#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:82
 msgid "Over"
 msgstr ""
 
@@ -7902,7 +7909,7 @@ msgstr ""
 #: c:\Apache2\htdocs\account/reporting/rep202.php:151
 #: c:\Apache2\htdocs\account/reporting/rep202.php:261
 #: c:\Apache2\htdocs\account/sales/inquiry/customer_inquiry.php:68
-#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:75
+#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:77
 msgid "Current"
 msgstr ""
 
@@ -7915,7 +7922,7 @@ msgstr ""
 #: c:\Apache2\htdocs\account/reporting/rep102.php:143
 #: c:\Apache2\htdocs\account/reporting/rep202.php:152
 #: c:\Apache2\htdocs\account/sales/inquiry/customer_inquiry.php:69
-#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:76
+#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:78
 msgid "Total Balance"
 msgstr ""
 
@@ -8075,8 +8082,8 @@ msgstr ""
 #: c:\Apache2\htdocs\account/inventory/includes/stock_transfers_ui.inc:70
 #: c:\Apache2\htdocs\account/manufacturing/includes/work_order_issue_ui.inc:43
 #: c:\Apache2\htdocs\account/purchasing/includes/ui/po_ui.inc:167
-#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:36
-#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:39
+#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:37
+#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:40
 #: c:\Apache2\htdocs\account/sales/includes/ui/sales_credit_ui.inc:103
 #: c:\Apache2\htdocs\account/sales/includes/ui/sales_order_ui.inc:109
 msgid "Item Description"
@@ -8087,7 +8094,7 @@ msgstr ""
 # c:\Apache2\htdocs\account/reporting/includes/doctext.inc:37
 #: c:\Apache2\htdocs\account/purchasing/view/view_grn.php:27
 #: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:10
-#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:37
+#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:38
 msgid "Delivery Date"
 msgstr ""
 
@@ -8113,8 +8120,8 @@ msgstr ""
 #: c:\Apache2\htdocs\account/inventory/includes/stock_transfers_ui.inc:70
 #: c:\Apache2\htdocs\account/manufacturing/includes/work_order_issue_ui.inc:44
 #: c:\Apache2\htdocs\account/purchasing/includes/ui/po_ui.inc:167
-#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:37
-#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:40
+#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:38
+#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:41
 #: c:\Apache2\htdocs\account/sales/includes/ui/sales_credit_ui.inc:103
 #: c:\Apache2\htdocs\account/sales/includes/ui/sales_order_ui.inc:110
 msgid "Unit"
@@ -8241,7 +8248,7 @@ msgstr ""
 # c:\Apache2\htdocs\account/reporting/includes/doctext.inc:68
 #: c:\Apache2\htdocs\account/purchasing/view/view_supp_invoice.php:64
 #: c:\Apache2\htdocs\account/sales/view/view_invoice.php:153
-#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:68
+#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:70
 msgid "TOTAL INVOICE"
 msgstr ""
 
@@ -8303,7 +8310,7 @@ msgstr ""
 #: c:\Apache2\htdocs\account/reporting/rep201.php:70
 #: c:\Apache2\htdocs\account/reporting/rep203.php:75
 #: c:\Apache2\htdocs\account/reporting/rep709.php:171
-#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:45
+#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:46
 msgid "Trans Type"
 msgstr ""
 
@@ -8312,7 +8319,7 @@ msgstr ""
 # c:\Apache2\htdocs\account/reporting/includes/doctext.inc:45
 #: c:\Apache2\htdocs\account/reporting/rep101.php:69
 #: c:\Apache2\htdocs\account/reporting/rep201.php:70
-#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:45
+#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:46
 msgid "Charges"
 msgstr ""
 
@@ -8321,7 +8328,7 @@ msgstr ""
 # c:\Apache2\htdocs\account/reporting/includes/doctext.inc:46
 #: c:\Apache2\htdocs\account/reporting/rep101.php:69
 #: c:\Apache2\htdocs\account/reporting/rep201.php:71
-#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:46
+#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:47
 msgid "Credits"
 msgstr ""
 
@@ -8358,23 +8365,23 @@ msgstr ""
 #: c:\Apache2\htdocs\account/reporting/reports_main.php:22
 #: c:\Apache2\htdocs\account/reporting/reports_main.php:27
 #: c:\Apache2\htdocs\account/reporting/reports_main.php:45
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:74
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:79
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:86
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:147
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:156
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:169
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:176
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:184
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:194
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:205
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:211
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:218
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:227
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:236
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:241
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:247
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:253
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:75
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:80
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:87
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:148
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:157
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:170
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:177
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:185
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:195
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:206
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:212
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:219
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:228
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:237
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:242
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:248
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:254
 msgid "End Date"
 msgstr ""
 
@@ -8412,9 +8419,9 @@ msgstr ""
 #: c:\Apache2\htdocs\account/reporting/reports_main.php:37
 #: c:\Apache2\htdocs\account/reporting/reports_main.php:43
 #: c:\Apache2\htdocs\account/reporting/reports_main.php:50
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:57
 #: c:\Apache2\htdocs\account/reporting/reports_main.php:58
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:63
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:59
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:64
 #: c:\Apache2\htdocs\account/sales/customer_credit_invoice.php:250
 #: c:\Apache2\htdocs\account/sales/customer_invoice.php:315
 #: c:\Apache2\htdocs\account/sales/allocations/customer_allocation_main.php:62
@@ -8460,8 +8467,8 @@ msgstr ""
 #: c:\Apache2\htdocs\account/reporting/rep202.php:133
 #: c:\Apache2\htdocs\account/reporting/rep709.php:149
 #: c:\Apache2\htdocs\account/reporting/reports_main.php:30
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:82
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:254
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:83
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:255
 msgid "Summary Only"
 msgstr ""
 
@@ -8472,7 +8479,7 @@ msgstr ""
 #: c:\Apache2\htdocs\account/reporting/rep102.php:126
 #: c:\Apache2\htdocs\account/reporting/rep202.php:135
 #: c:\Apache2\htdocs\account/reporting/rep709.php:151
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:105
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:106
 msgid "Detailed Report"
 msgstr ""
 
@@ -8699,10 +8706,10 @@ msgstr ""
 # c:\Apache2\htdocs\account/reporting/rep107.php:84
 # c:\Apache2\htdocs\account/reporting/rep107.php:95
 # c:\Apache2\htdocs\account/reporting/includes/doctext.inc:32
-#: c:\Apache2\htdocs\account/reporting/rep107.php:59
-#: c:\Apache2\htdocs\account/reporting/rep107.php:84
-#: c:\Apache2\htdocs\account/reporting/rep107.php:95
-#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:32
+#: c:\Apache2\htdocs\account/reporting/rep107.php:60
+#: c:\Apache2\htdocs\account/reporting/rep107.php:86
+#: c:\Apache2\htdocs\account/reporting/rep107.php:97
+#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:33
 msgid "INVOICE"
 msgstr ""
 
@@ -8710,10 +8717,10 @@ msgstr ""
 # c:\Apache2\htdocs\account/reporting/rep107.php:95
 # c:\Apache2\htdocs\account/sales/view/view_credit.php:30
 # c:\Apache2\htdocs\account/reporting/includes/doctext.inc:34
-#: c:\Apache2\htdocs\account/reporting/rep107.php:89
-#: c:\Apache2\htdocs\account/reporting/rep107.php:95
+#: c:\Apache2\htdocs\account/reporting/rep107.php:91
+#: c:\Apache2\htdocs\account/reporting/rep107.php:97
 #: c:\Apache2\htdocs\account/sales/view/view_credit.php:30
-#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:34
+#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:35
 msgid "CREDIT NOTE"
 msgstr ""
 
@@ -8722,15 +8729,15 @@ msgstr ""
 # c:\Apache2\htdocs\account/reporting/includes/doctext.inc:44
 #: c:\Apache2\htdocs\account/reporting/rep108.php:72
 #: c:\Apache2\htdocs\account/reporting/rep108.php:99
-#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:44
+#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:45
 msgid "STATEMENT"
 msgstr ""
 
 #: c:\Apache2\htdocs\account/reporting/rep109.php:72
 #: c:\Apache2\htdocs\account/reporting/rep109.php:91
 #: c:\Apache2\htdocs\account/reporting/rep109.php:102
-#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:30
-#: c:\Apache2\htdocs\account/reporting/includes/doctext2.inc:30
+#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:31
+#: c:\Apache2\htdocs\account/reporting/includes/doctext2.inc:31
 msgid "QUOTE"
 msgstr ""
 
@@ -8740,8 +8747,8 @@ msgstr ""
 #: c:\Apache2\htdocs\account/reporting/rep109.php:74
 #: c:\Apache2\htdocs\account/reporting/rep109.php:96
 #: c:\Apache2\htdocs\account/reporting/rep109.php:102
-#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:30
-#: c:\Apache2\htdocs\account/reporting/includes/doctext2.inc:30
+#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:31
+#: c:\Apache2\htdocs\account/reporting/includes/doctext2.inc:31
 msgid "SALES ORDER"
 msgstr ""
 
@@ -8753,7 +8760,7 @@ msgstr ""
 # c:\Apache2\htdocs\account/reporting/rep201.php:82
 # c:\Apache2\htdocs\account/reporting/reports_main.php:71
 #: c:\Apache2\htdocs\account/reporting/rep201.php:80
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:73
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:74
 msgid "Supplier Balances"
 msgstr ""
 
@@ -8770,7 +8777,7 @@ msgstr ""
 # c:\Apache2\htdocs\account/reporting/rep203.php:87
 # c:\Apache2\htdocs\account/reporting/reports_main.php:84
 #: c:\Apache2\htdocs\account/reporting/rep203.php:85
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:85
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:86
 msgid "Payment Report"
 msgstr ""
 
@@ -8804,7 +8811,7 @@ msgstr ""
 # c:\Apache2\htdocs\account/reporting/rep204.php:80
 # c:\Apache2\htdocs\account/reporting/reports_main.php:90
 #: c:\Apache2\htdocs\account/reporting/rep204.php:78
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:90
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:91
 msgid "Outstanding GRNs Report"
 msgstr ""
 
@@ -8814,14 +8821,14 @@ msgstr ""
 #: c:\Apache2\htdocs\account/reporting/rep209.php:79
 #: c:\Apache2\htdocs\account/reporting/rep209.php:94
 #: c:\Apache2\htdocs\account/reporting/rep209.php:99
-#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:28
+#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:29
 msgid "PURCHASE ORDER"
 msgstr ""
 
 # c:\Apache2\htdocs\account/reporting/rep301.php:93
 # c:\Apache2\htdocs\account/reporting/reports_main.php:103
 #: c:\Apache2\htdocs\account/reporting/rep301.php:93
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:102
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:103
 msgid "Inventory Valuation Report"
 msgstr ""
 
@@ -8848,7 +8855,7 @@ msgstr ""
 # c:\Apache2\htdocs\account/reporting/rep302.php:179
 # c:\Apache2\htdocs\account/reporting/reports_main.php:108
 #: c:\Apache2\htdocs\account/reporting/rep302.php:179
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:107
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:108
 msgid "Inventory Planning Report"
 msgstr ""
 
@@ -8860,7 +8867,7 @@ msgstr ""
 # c:\Apache2\htdocs\account/reporting/rep303.php:137
 # c:\Apache2\htdocs\account/reporting/reports_main.php:112
 #: c:\Apache2\htdocs\account/reporting/rep303.php:137
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:111
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:112
 msgid "Stock Check Sheets"
 msgstr ""
 
@@ -8872,7 +8879,7 @@ msgstr ""
 # c:\Apache2\htdocs\account/reporting/rep401.php:67
 # c:\Apache2\htdocs\account/reporting/reports_main.php:119
 #: c:\Apache2\htdocs\account/reporting/rep401.php:67
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:118
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:119
 msgid "Bill of Material Listing"
 msgstr ""
 
@@ -8884,7 +8891,7 @@ msgstr ""
 # c:\Apache2\htdocs\account/reporting/rep501.php:82
 # c:\Apache2\htdocs\account/reporting/reports_main.php:126
 #: c:\Apache2\htdocs\account/reporting/rep501.php:82
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:125
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:126
 msgid "Dimension Summary"
 msgstr ""
 
@@ -8906,7 +8913,7 @@ msgstr ""
 # c:\Apache2\htdocs\account/reporting/rep702.php:49
 # c:\Apache2\htdocs\account/reporting/reports_main.php:146
 #: c:\Apache2\htdocs\account/reporting/rep702.php:49
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:145
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:146
 msgid "List of Journal Entries"
 msgstr ""
 
@@ -8915,9 +8922,9 @@ msgstr ""
 # c:\Apache2\htdocs\account/reporting/reports_main.php:191
 # c:\Apache2\htdocs\account/reporting/reports_main.php:222
 #: c:\Apache2\htdocs\account/reporting/rep704.php:30
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:154
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:192
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:225
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:155
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:193
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:226
 msgid "GL Account Transactions"
 msgstr ""
 
@@ -8930,9 +8937,9 @@ msgstr ""
 #: c:\Apache2\htdocs\account/reporting/rep705.php:135
 #: c:\Apache2\htdocs\account/reporting/rep705.php:147
 #: c:\Apache2\htdocs\account/reporting/rep705.php:157
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:163
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:200
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:232
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:164
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:201
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:233
 msgid "Year"
 msgstr ""
 
@@ -8959,9 +8966,9 @@ msgstr ""
 # c:\Apache2\htdocs\account/reporting/reports_main.php:198
 # c:\Apache2\htdocs\account/reporting/reports_main.php:228
 #: c:\Apache2\htdocs\account/reporting/rep705.php:163
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:162
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:199
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:231
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:163
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:200
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:232
 msgid "Annual Expense Breakdown"
 msgstr ""
 
@@ -8996,7 +9003,7 @@ msgstr ""
 # c:\Apache2\htdocs\account/reporting/rep707.php:70
 # c:\Apache2\htdocs\account/reporting/includes/reports_classes.inc:163
 #: c:\Apache2\htdocs\account/reporting/rep707.php:78
-#: c:\Apache2\htdocs\account/reporting/includes/reports_classes.inc:168
+#: c:\Apache2\htdocs\account/reporting/includes/reports_classes.inc:172
 msgid "Accumulated"
 msgstr ""
 
@@ -9008,14 +9015,14 @@ msgstr ""
 # c:\Apache2\htdocs\account/reporting/rep707.php:103
 # c:\Apache2\htdocs\account/reporting/includes/reports_classes.inc:163
 #: c:\Apache2\htdocs\account/reporting/rep707.php:111
-#: c:\Apache2\htdocs\account/reporting/includes/reports_classes.inc:168
+#: c:\Apache2\htdocs\account/reporting/includes/reports_classes.inc:172
 msgid "Budget"
 msgstr ""
 
 # c:\Apache2\htdocs\account/reporting/rep707.php:112
 # c:\Apache2\htdocs\account/reporting/includes/reports_classes.inc:163
 #: c:\Apache2\htdocs\account/reporting/rep707.php:120
-#: c:\Apache2\htdocs\account/reporting/includes/reports_classes.inc:168
+#: c:\Apache2\htdocs\account/reporting/includes/reports_classes.inc:172
 msgid "Period Y-1"
 msgstr ""
 
@@ -9024,16 +9031,16 @@ msgstr ""
 # c:\Apache2\htdocs\account/reporting/reports_main.php:207
 # c:\Apache2\htdocs\account/reporting/reports_main.php:235
 #: c:\Apache2\htdocs\account/reporting/rep707.php:123
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:174
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:209
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:239
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:175
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:210
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:240
 msgid "Profit and Loss Statement"
 msgstr ""
 
 # c:\Apache2\htdocs\account/reporting/rep709.php:140
 # c:\Apache2\htdocs\account/reporting/reports_main.php:246
 #: c:\Apache2\htdocs\account/reporting/rep709.php:140
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:251
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:252
 msgid "Tax Report"
 msgstr ""
 
@@ -9111,12 +9118,12 @@ msgstr ""
 #: c:\Apache2\htdocs\account/reporting/reports_main.php:24
 #: c:\Apache2\htdocs\account/reporting/reports_main.php:29
 #: c:\Apache2\htdocs\account/reporting/reports_main.php:53
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:59
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:66
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:76
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:81
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:88
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:96
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:60
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:67
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:77
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:82
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:89
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:97
 msgid "Currency Filter"
 msgstr ""
 
@@ -9129,13 +9136,13 @@ msgstr ""
 # c:\Apache2\htdocs\account/reporting/reports_main.php:240
 # c:\Apache2\htdocs\account/reporting/reports_main.php:246
 #: c:\Apache2\htdocs\account/reporting/reports_main.php:31
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:83
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:172
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:180
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:207
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:214
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:237
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:243
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:84
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:173
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:181
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:208
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:215
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:238
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:244
 msgid "Graphics"
 msgstr ""
 
@@ -9161,16 +9168,16 @@ msgstr ""
 # c:\Apache2\htdocs\account/reporting/reports_main.php:113
 #: c:\Apache2\htdocs\account/reporting/reports_main.php:38
 #: c:\Apache2\htdocs\account/reporting/reports_main.php:46
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:103
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:108
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:112
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:104
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:109
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:113
 msgid "Inventory Category"
 msgstr ""
 
 # c:\Apache2\htdocs\account/reporting/reports_main.php:39
 # c:\Apache2\htdocs\account/reporting/reports_main.php:115
 #: c:\Apache2\htdocs\account/reporting/reports_main.php:40
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:114
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:115
 msgid "Show Pictures"
 msgstr ""
 
@@ -9188,8 +9195,8 @@ msgstr ""
 # c:\Apache2\htdocs\account/reporting/reports_main.php:64
 # c:\Apache2\htdocs\account/reporting/reports_main.php:96
 #: c:\Apache2\htdocs\account/reporting/reports_main.php:52
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:65
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:95
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:66
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:96
 msgid "To"
 msgstr ""
 
@@ -9199,9 +9206,9 @@ msgstr ""
 # c:\Apache2\htdocs\account/reporting/reports_main.php:98
 # c:\Apache2\htdocs\account/reporting/includes/doctext.inc:24
 #: c:\Apache2\htdocs\account/reporting/reports_main.php:54
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:60
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:67
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:97
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:61
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:68
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:98
 #: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:24
 msgid "Bank Account"
 msgstr ""
@@ -9211,36 +9218,40 @@ msgstr ""
 msgid "email Customers"
 msgstr ""
 
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:56
+msgid "Payment Link"
+msgstr ""
+
 # c:\Apache2\htdocs\account/reporting/reports_main.php:56
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:57
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:58
 msgid "Print Statements"
 msgstr ""
 
 # c:\Apache2\htdocs\account/reporting/reports_main.php:60
 # c:\Apache2\htdocs\account/reporting/reports_main.php:67
 # c:\Apache2\htdocs\account/reporting/reports_main.php:99
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:61
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:68
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:98
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:62
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:69
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:99
 msgid "Email Customers"
 msgstr ""
 
 # c:\Apache2\htdocs\account/reporting/reports_main.php:62
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:63
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:64
 msgid "Print Sales Orders"
 msgstr ""
 
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:69
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:70
 msgid "Print as Quote"
 msgstr ""
 
 # c:\Apache2\htdocs\account/reporting/reports_main.php:77
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:78
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:79
 msgid "Aged Supplier Analyses"
 msgstr ""
 
 # c:\Apache2\htdocs\account/reporting/reports_main.php:94
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:93
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:94
 msgid "Print Purchase Orders"
 msgstr ""
 
@@ -9248,52 +9259,52 @@ msgstr ""
 # c:\Apache2\htdocs\account/reporting/reports_main.php:103
 # c:\Apache2\htdocs\account/reporting/reports_main.php:108
 # c:\Apache2\htdocs\account/reporting/reports_main.php:112
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:101
 #: c:\Apache2\htdocs\account/reporting/reports_main.php:102
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:107
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:111
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:103
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:108
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:112
 msgid "Inventory"
 msgstr ""
 
 # c:\Apache2\htdocs\account/reporting/reports_main.php:118
 # c:\Apache2\htdocs\account/reporting/reports_main.php:119
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:117
 #: c:\Apache2\htdocs\account/reporting/reports_main.php:118
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:119
 msgid "Manufactoring"
 msgstr ""
 
 # c:\Apache2\htdocs\account/reporting/reports_main.php:120
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:119
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:120
 msgid "From component"
 msgstr ""
 
 # c:\Apache2\htdocs\account/reporting/reports_main.php:121
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:120
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:121
 msgid "To component"
 msgstr ""
 
 # c:\Apache2\htdocs\account/reporting/reports_main.php:127
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:126
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:127
 msgid "From Dimension"
 msgstr ""
 
 # c:\Apache2\htdocs\account/reporting/reports_main.php:128
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:127
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:128
 msgid "To Dimension"
 msgstr ""
 
 # c:\Apache2\htdocs\account/reporting/reports_main.php:129
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:128
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:129
 msgid "Show Balance"
 msgstr ""
 
 # c:\Apache2\htdocs\account/reporting/reports_main.php:131
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:130
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:131
 msgid "Dimension Details"
 msgstr ""
 
 # c:\Apache2\htdocs\account/reporting/reports_main.php:135
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:134
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:135
 msgid "Banking"
 msgstr ""
 
@@ -9316,66 +9327,66 @@ msgstr ""
 # c:\Apache2\htdocs\account/reporting/reports_main.php:235
 # c:\Apache2\htdocs\account/reporting/reports_main.php:240
 # c:\Apache2\htdocs\account/reporting/reports_main.php:246
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:141
 #: c:\Apache2\htdocs\account/reporting/reports_main.php:142
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:145
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:154
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:162
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:167
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:174
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:182
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:192
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:199
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:203
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:209
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:216
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:225
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:231
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:234
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:239
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:245
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:251
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:143
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:146
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:155
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:163
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:168
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:175
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:183
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:193
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:200
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:204
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:210
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:217
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:226
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:232
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:235
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:240
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:246
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:252
 msgid "General Ledger"
 msgstr ""
 
 # c:\Apache2\htdocs\account/reporting/reports_main.php:144
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:143
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:144
 msgid "Show Balances"
 msgstr ""
 
 # c:\Apache2\htdocs\account/reporting/reports_main.php:158
 # c:\Apache2\htdocs\account/reporting/reports_main.php:194
 # c:\Apache2\htdocs\account/reporting/reports_main.php:225
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:157
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:195
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:228
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:158
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:196
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:229
 msgid "From Account"
 msgstr ""
 
 # c:\Apache2\htdocs\account/reporting/reports_main.php:159
 # c:\Apache2\htdocs\account/reporting/reports_main.php:195
 # c:\Apache2\htdocs\account/reporting/reports_main.php:226
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:158
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:196
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:229
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:159
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:197
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:230
 msgid "To Account"
 msgstr ""
 
 # c:\Apache2\htdocs\account/reporting/reports_main.php:177
 # c:\Apache2\htdocs\account/reporting/reports_main.php:210
 # c:\Apache2\htdocs\account/reporting/reports_main.php:238
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:177
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:212
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:242
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:178
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:213
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:243
 msgid "Compare to"
 msgstr ""
 
 # c:\Apache2\htdocs\account/reporting/reports_main.php:184
 # c:\Apache2\htdocs\account/reporting/reports_main.php:216
 # c:\Apache2\htdocs\account/reporting/reports_main.php:243
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:185
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:219
-#: c:\Apache2\htdocs\account/reporting/reports_main.php:248
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:186
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:220
+#: c:\Apache2\htdocs\account/reporting/reports_main.php:249
 msgid "Zero values"
 msgstr ""
 
@@ -9507,7 +9518,7 @@ msgstr ""
 #: c:\Apache2\htdocs\account/sales/customer_credit_invoice.php:286
 #: c:\Apache2\htdocs\account/sales/view/view_credit.php:82
 #: c:\Apache2\htdocs\account/sales/view/view_invoice.php:104
-#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:40
+#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:41
 #: c:\Apache2\htdocs\account/sales/includes/ui/sales_credit_ui.inc:104
 #: c:\Apache2\htdocs\account/sales/includes/ui/sales_order_ui.inc:110
 msgid "Discount %"
@@ -9526,7 +9537,7 @@ msgstr ""
 #: c:\Apache2\htdocs\account/sales/customer_credit_invoice.php:323
 #: c:\Apache2\htdocs\account/sales/customer_invoice.php:459
 #: c:\Apache2\htdocs\account/sales/view/view_invoice.php:144
-#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:64
+#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:66
 #: c:\Apache2\htdocs\account/sales/includes/ui/sales_credit_ui.inc:147
 msgid "Sub-total"
 msgstr ""
@@ -9550,7 +9561,7 @@ msgstr ""
 # c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:1911
 #: c:\Apache2\htdocs\account/sales/customer_credit_invoice.php:349
 #: c:\Apache2\htdocs\account/sales/customer_credit_invoice.php:354
-#: c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:1918
+#: c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:2131
 msgid "Items Written Off"
 msgstr ""
 
@@ -9561,7 +9572,7 @@ msgstr ""
 #: c:\Apache2\htdocs\account/sales/customer_credit_invoice.php:350
 #: c:\Apache2\htdocs\account/sales/customer_credit_invoice.php:355
 #: c:\Apache2\htdocs\account/sales/customer_credit_invoice.php:369
-#: c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:1917
+#: c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:2130
 msgid "Items Returned to Inventory Location"
 msgstr ""
 
@@ -10544,7 +10555,7 @@ msgstr ""
 #: c:\Apache2\htdocs\account/sales/view/view_credit.php:129
 #: c:\Apache2\htdocs\account/sales/view/view_invoice.php:146
 #: c:\Apache2\htdocs\account/sales/view/view_sales_order.php:168
-#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:65
+#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:67
 #: c:\Apache2\htdocs\account/sales/includes/ui/sales_credit_ui.inc:152
 msgid "Shipping"
 msgstr ""
@@ -10659,8 +10670,8 @@ msgstr ""
 # c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:1854
 # c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:1867
 #: c:\Apache2\htdocs\account/sales/view/view_sales_order.php:37
-#: c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:1861
-#: c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:1874
+#: c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:2074
+#: c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:2087
 msgid "Credit Notes"
 msgstr ""
 
@@ -10956,9 +10967,9 @@ msgstr ""
 #: c:\Apache2\htdocs\account/inventory/includes/item_adjustments_ui.inc:163
 #: c:\Apache2\htdocs\account/inventory/includes/stock_transfers_ui.inc:147
 #: c:\Apache2\htdocs\account/manufacturing/includes/work_order_issue_ui.inc:130
-#: c:\Apache2\htdocs\account/purchasing/includes/ui/po_ui.inc:324
+#: c:\Apache2\htdocs\account/purchasing/includes/ui/po_ui.inc:333
 #: c:\Apache2\htdocs\account/sales/includes/ui/sales_credit_ui.inc:217
-#: c:\Apache2\htdocs\account/sales/includes/ui/sales_order_ui.inc:331
+#: c:\Apache2\htdocs\account/sales/includes/ui/sales_order_ui.inc:341
 msgid "Add Item"
 msgstr ""
 
@@ -11146,25 +11157,25 @@ msgstr ""
 
 # c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:28
 # c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:32
-#: c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:28
-#: c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:32
+#: c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:71
+#: c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:75
 msgid "All Suppliers"
 msgstr ""
 
 # c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:103
 # c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:107
-#: c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:103
-#: c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:107
+#: c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:185
+#: c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:189
 msgid "All Customers"
 msgstr ""
 
 # c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:186
-#: c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:186
+#: c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:267
 msgid "All Branches"
 msgstr ""
 
 # c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:256
-#: c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:256
+#: c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:337
 msgid "All Locations"
 msgstr ""
 
@@ -11176,65 +11187,64 @@ msgstr ""
 # c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:757
 # c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:770
 # c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:799
-#: c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:542
-#: c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:546
-#: c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:617
-#: c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:621
-#: c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:732
-#: c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:763
-#: c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:776
-#: c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:805
+#: c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:668
+#: c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:672
+#: c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:742
+#: c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:746
+#: c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:857
+#: c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:888
+#: c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:1018
 msgid "All Items"
 msgstr ""
 
 # c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:819
-#: c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:825
+#: c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:1038
 msgid "Purchased"
 msgstr ""
 
 # c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:820
-#: c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:826
+#: c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:1039
 msgid "Service"
 msgstr ""
 
 # c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:1160
 # c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:1164
-#: c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:1166
-#: c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:1170
+#: c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:1379
+#: c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:1383
 msgid "All Work Centres"
 msgstr ""
 
 # c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:1850
 # c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:1863
-#: c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:1857
-#: c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:1870
+#: c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:2070
+#: c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:2083
 msgid "All Types"
 msgstr ""
 
 # c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:1852
 # c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:1865
-#: c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:1859
-#: c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:1872
+#: c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:2072
+#: c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:2085
 msgid "Overdue Invoices"
 msgstr ""
 
 # c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:1864
-#: c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:1871
+#: c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:2084
 msgid "Invoices"
 msgstr ""
 
 # c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:1868
-#: c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:1875
+#: c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:2088
 msgid "Overdue Credit Notes"
 msgstr ""
 
 # c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:1883
-#: c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:1890
+#: c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:2103
 msgid "Automatically put balance on back order"
 msgstr ""
 
 # c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:1884
-#: c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:1891
+#: c:\Apache2\htdocs\account/includes/ui/ui_lists.inc:2104
 msgid "Cancel any quantites not delivered"
 msgstr ""
 
@@ -11260,7 +11270,7 @@ msgstr ""
 #: c:\Apache2\htdocs\account/includes/ui/ui_view.inc:394
 #: c:\Apache2\htdocs\account/includes/ui/ui_view.inc:410
 #: c:\Apache2\htdocs\account/includes/ui/ui_view.inc:428
-#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:66
+#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:68
 msgid "Included"
 msgstr ""
 
@@ -11665,58 +11675,63 @@ msgstr ""
 msgid "Phone/Fax/Email"
 msgstr ""
 
+#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:25
+#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:55
+msgid "You can pay through"
+msgstr ""
+
 # c:\Apache2\htdocs\account/reporting/includes/doctext.inc:45
-#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:45
+#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:46
 msgid "DueDate"
 msgstr ""
 
 # c:\Apache2\htdocs\account/reporting/includes/doctext.inc:51
-#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:51
+#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:52
 msgid "Dear Sirs"
 msgstr ""
 
 # c:\Apache2\htdocs\account/reporting/includes/doctext.inc:52
-#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:52
+#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:53
 msgid "Attached you will find "
 msgstr ""
 
 # c:\Apache2\htdocs\account/reporting/includes/doctext.inc:53
-#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:53
+#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:54
 msgid "Kindest regards"
 msgstr ""
 
 # c:\Apache2\htdocs\account/reporting/includes/doctext.inc:57
-#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:57
+#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:59
 msgid "Invoice no."
 msgstr ""
 
 # c:\Apache2\htdocs\account/reporting/includes/doctext.inc:58
-#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:58
+#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:60
 msgid "Order no."
 msgstr ""
 
 # c:\Apache2\htdocs\account/reporting/includes/doctext.inc:69
-#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:69
+#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:71
 msgid "TOTAL ORDER EX VAT"
 msgstr ""
 
 # c:\Apache2\htdocs\account/reporting/includes/doctext.inc:70
-#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:70
+#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:72
 msgid "TOTAL PO EX VAT"
 msgstr ""
 
 # c:\Apache2\htdocs\account/reporting/includes/doctext.inc:74
-#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:74
+#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:76
 msgid "Outstanding Transactions"
 msgstr ""
 
 # c:\Apache2\htdocs\account/reporting/includes/doctext.inc:77
-#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:77
+#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:79
 msgid "Statement"
 msgstr ""
 
 # c:\Apache2\htdocs\account/reporting/includes/doctext.inc:78
-#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:78
+#: c:\Apache2\htdocs\account/reporting/includes/doctext.inc:80
 msgid "as of"
 msgstr ""
 
@@ -11783,12 +11798,12 @@ msgid "Page"
 msgstr ""
 
 # c:\Apache2\htdocs\account/reporting/includes/pdf_report.inc:656
-#: c:\Apache2\htdocs\account/reporting/includes/pdf_report.inc:656
+#: c:\Apache2\htdocs\account/reporting/includes/pdf_report.inc:694
 msgid "sent to"
 msgstr ""
 
 # c:\Apache2\htdocs\account/reporting/includes/pdf_report.inc:658
-#: c:\Apache2\htdocs\account/reporting/includes/pdf_report.inc:658
+#: c:\Apache2\htdocs\account/reporting/includes/pdf_report.inc:696
 msgid "NOT sent to"
 msgstr ""
 
@@ -11812,103 +11827,122 @@ msgstr ""
 msgid "No Currency Filter"
 msgstr ""
 
-# c:\Apache2\htdocs\account/reporting/includes/reports_classes.inc:167
-#: c:\Apache2\htdocs\account/reporting/includes/reports_classes.inc:172
-msgid "No Graphics"
-msgstr ""
-
-# c:\Apache2\htdocs\account/reporting/includes/reports_classes.inc:167
-#: c:\Apache2\htdocs\account/reporting/includes/reports_classes.inc:172
-msgid "Vertical bars"
-msgstr ""
-
-# c:\Apache2\htdocs\account/reporting/includes/reports_classes.inc:167
-#: c:\Apache2\htdocs\account/reporting/includes/reports_classes.inc:172
-msgid "Horizontal bars"
-msgstr ""
-
-# c:\Apache2\htdocs\account/reporting/includes/reports_classes.inc:167
-#: c:\Apache2\htdocs\account/reporting/includes/reports_classes.inc:172
-msgid "Dots"
-msgstr ""
-
-# c:\Apache2\htdocs\account/reporting/includes/reports_classes.inc:167
-#: c:\Apache2\htdocs\account/reporting/includes/reports_classes.inc:172
-msgid "Lines"
-msgstr ""
-
-# c:\Apache2\htdocs\account/reporting/includes/reports_classes.inc:167
-#: c:\Apache2\htdocs\account/reporting/includes/reports_classes.inc:172
-msgid "Pie"
-msgstr ""
-
-# c:\Apache2\htdocs\account/reporting/includes/reports_classes.inc:167
-#: c:\Apache2\htdocs\account/reporting/includes/reports_classes.inc:172
-msgid "Donut"
+#: c:\Apache2\htdocs\account/reporting/includes/reports_classes.inc:168
+msgid "No Payment Link"
 msgstr ""
 
 # c:\Apache2\htdocs\account/reporting/includes/reports_classes.inc:167
 #: c:\Apache2\htdocs\account/reporting/includes/reports_classes.inc:176
+msgid "No Graphics"
+msgstr ""
+
+# c:\Apache2\htdocs\account/reporting/includes/reports_classes.inc:167
+#: c:\Apache2\htdocs\account/reporting/includes/reports_classes.inc:176
+msgid "Vertical bars"
+msgstr ""
+
+# c:\Apache2\htdocs\account/reporting/includes/reports_classes.inc:167
+#: c:\Apache2\htdocs\account/reporting/includes/reports_classes.inc:176
+msgid "Horizontal bars"
+msgstr ""
+
+# c:\Apache2\htdocs\account/reporting/includes/reports_classes.inc:167
+#: c:\Apache2\htdocs\account/reporting/includes/reports_classes.inc:176
+msgid "Dots"
+msgstr ""
+
+# c:\Apache2\htdocs\account/reporting/includes/reports_classes.inc:167
+#: c:\Apache2\htdocs\account/reporting/includes/reports_classes.inc:176
+msgid "Lines"
+msgstr ""
+
+# c:\Apache2\htdocs\account/reporting/includes/reports_classes.inc:167
+#: c:\Apache2\htdocs\account/reporting/includes/reports_classes.inc:176
+msgid "Pie"
+msgstr ""
+
+# c:\Apache2\htdocs\account/reporting/includes/reports_classes.inc:167
+#: c:\Apache2\htdocs\account/reporting/includes/reports_classes.inc:176
+msgid "Donut"
+msgstr ""
+
+# c:\Apache2\htdocs\account/reporting/includes/reports_classes.inc:167
+#: c:\Apache2\htdocs\account/reporting/includes/reports_classes.inc:180
 msgid "No Type Filter"
 msgstr ""
 
 # c:\Apache2\htdocs\account/reporting/includes/reports_classes.inc:177
-#: c:\Apache2\htdocs\account/reporting/includes/reports_classes.inc:186
+#: c:\Apache2\htdocs\account/reporting/includes/reports_classes.inc:190
 msgid "No Account Group Filter"
 msgstr ""
 
 # c:\Apache2\htdocs\account/reporting/includes/reports_classes.inc:194
 # c:\Apache2\htdocs\account/reporting/includes/reports_classes.inc:202
 # c:\Apache2\htdocs\account/reporting/includes/reports_classes.inc:210
-#: c:\Apache2\htdocs\account/reporting/includes/reports_classes.inc:203
-#: c:\Apache2\htdocs\account/reporting/includes/reports_classes.inc:211
-#: c:\Apache2\htdocs\account/reporting/includes/reports_classes.inc:219
+#: c:\Apache2\htdocs\account/reporting/includes/reports_classes.inc:207
+#: c:\Apache2\htdocs\account/reporting/includes/reports_classes.inc:215
+#: c:\Apache2\htdocs\account/reporting/includes/reports_classes.inc:223
 msgid "No Dimension Filter"
 msgstr ""
 
 # c:\Apache2\htdocs\account/reporting/includes/reports_classes.inc:216
-#: c:\Apache2\htdocs\account/reporting/includes/reports_classes.inc:225
+#: c:\Apache2\htdocs\account/reporting/includes/reports_classes.inc:229
 msgid "No Customer Filter"
 msgstr ""
 
 # c:\Apache2\htdocs\account/reporting/includes/reports_classes.inc:233
-#: c:\Apache2\htdocs\account/reporting/includes/reports_classes.inc:233
+#: c:\Apache2\htdocs\account/reporting/includes/reports_classes.inc:237
 msgid "No Supplier Filter"
 msgstr ""
 
 # c:\Apache2\htdocs\account/reporting/includes/reports_classes.inc:225
-#: c:\Apache2\htdocs\account/reporting/includes/reports_classes.inc:238
+#: c:\Apache2\htdocs\account/reporting/includes/reports_classes.inc:242
 msgid "IV"
 msgstr ""
 
 # c:\Apache2\htdocs\account/reporting/includes/reports_classes.inc:226
-#: c:\Apache2\htdocs\account/reporting/includes/reports_classes.inc:239
+#: c:\Apache2\htdocs\account/reporting/includes/reports_classes.inc:243
 msgid "CN"
 msgstr ""
 
 # c:\Apache2\htdocs\account/reporting/includes/reports_classes.inc:250
-#: c:\Apache2\htdocs\account/reporting/includes/reports_classes.inc:263
+#: c:\Apache2\htdocs\account/reporting/includes/reports_classes.inc:267
 msgid "No Location Filter"
 msgstr ""
 
 # c:\Apache2\htdocs\account/reporting/includes/reports_classes.inc:254
-#: c:\Apache2\htdocs\account/reporting/includes/reports_classes.inc:267
+#: c:\Apache2\htdocs\account/reporting/includes/reports_classes.inc:271
 msgid "No Category Filter"
 msgstr ""
 
 # c:\Apache2\htdocs\account/reporting/includes/reports_classes.inc:262
-#: c:\Apache2\htdocs\account/reporting/includes/reports_classes.inc:275
+#: c:\Apache2\htdocs\account/reporting/includes/reports_classes.inc:279
 msgid "No Area Filter"
 msgstr ""
 
 # c:\Apache2\htdocs\account/reporting/includes/reports_classes.inc:266
-#: c:\Apache2\htdocs\account/reporting/includes/reports_classes.inc:279
+#: c:\Apache2\htdocs\account/reporting/includes/reports_classes.inc:283
 msgid "No Sales Folk Filter"
 msgstr ""
 
 # c:\Apache2\htdocs\account/sales/includes/db/cust_trans_details_db.inc:69
 #: c:\Apache2\htdocs\account/sales/includes/db/cust_trans_details_db.inc:69
 msgid "Write off"
+msgstr ""
+
+#: c:\Apache2\htdocs\account/sales/includes/db/sales_order_db.inc:127
+#: c:\Apache2\htdocs\account/sales/includes/db/sales_order_db.inc:237
+msgid "Stocks below Re-Order Level at "
+msgstr ""
+
+#: c:\Apache2\htdocs\account/sales/includes/db/sales_order_db.inc:130
+#: c:\Apache2\htdocs\account/sales/includes/db/sales_order_db.inc:240
+msgid "Below"
+msgstr ""
+
+#: c:\Apache2\htdocs\account/sales/includes/db/sales_order_db.inc:131
+#: c:\Apache2\htdocs\account/sales/includes/db/sales_order_db.inc:241
+msgid "Please reorder"
 msgstr ""
 
 # c:\Apache2\htdocs\account/sales/includes/ui/sales_credit_ui.inc:57
@@ -11946,52 +11980,52 @@ msgid "The selected customer and branch are not valid, or the customer does not 
 msgstr ""
 
 # c:\Apache2\htdocs\account/sales/includes/ui/sales_order_ui.inc:346
-#: c:\Apache2\htdocs\account/sales/includes/ui/sales_order_ui.inc:345
+#: c:\Apache2\htdocs\account/sales/includes/ui/sales_order_ui.inc:355
 msgid "Invoice Delivery Details"
 msgstr ""
 
 # c:\Apache2\htdocs\account/sales/includes/ui/sales_order_ui.inc:350
-#: c:\Apache2\htdocs\account/sales/includes/ui/sales_order_ui.inc:350
+#: c:\Apache2\htdocs\account/sales/includes/ui/sales_order_ui.inc:360
 msgid "Order Delivery Details"
 msgstr ""
 
 # c:\Apache2\htdocs\account/sales/includes/ui/sales_order_ui.inc:360
-#: c:\Apache2\htdocs\account/sales/includes/ui/sales_order_ui.inc:351
+#: c:\Apache2\htdocs\account/sales/includes/ui/sales_order_ui.inc:361
 msgid "Required Delivery Date:"
 msgstr ""
 
 # c:\Apache2\htdocs\account/sales/includes/ui/sales_order_ui.inc:358
-#: c:\Apache2\htdocs\account/sales/includes/ui/sales_order_ui.inc:359
+#: c:\Apache2\htdocs\account/sales/includes/ui/sales_order_ui.inc:369
 msgid "Deliver from Location:"
 msgstr ""
 
 # c:\Apache2\htdocs\account/sales/includes/ui/sales_order_ui.inc:362
-#: c:\Apache2\htdocs\account/sales/includes/ui/sales_order_ui.inc:363
+#: c:\Apache2\htdocs\account/sales/includes/ui/sales_order_ui.inc:373
 msgid "Deliver To:"
 msgstr ""
 
 # c:\Apache2\htdocs\account/sales/includes/ui/sales_order_ui.inc:365
-#: c:\Apache2\htdocs\account/sales/includes/ui/sales_order_ui.inc:366
+#: c:\Apache2\htdocs\account/sales/includes/ui/sales_order_ui.inc:376
 msgid "Contact Phone Number:"
 msgstr ""
 
 # c:\Apache2\htdocs\account/sales/includes/ui/sales_order_ui.inc:373
-#: c:\Apache2\htdocs\account/sales/includes/ui/sales_order_ui.inc:374
+#: c:\Apache2\htdocs\account/sales/includes/ui/sales_order_ui.inc:384
 msgid "Customer Reference:"
 msgstr ""
 
 # c:\Apache2\htdocs\account/sales/includes/ui/sales_order_ui.inc:374
-#: c:\Apache2\htdocs\account/sales/includes/ui/sales_order_ui.inc:375
+#: c:\Apache2\htdocs\account/sales/includes/ui/sales_order_ui.inc:385
 msgid "Comments:"
 msgstr ""
 
 # c:\Apache2\htdocs\account/sales/includes/ui/sales_order_ui.inc:376
-#: c:\Apache2\htdocs\account/sales/includes/ui/sales_order_ui.inc:377
+#: c:\Apache2\htdocs\account/sales/includes/ui/sales_order_ui.inc:387
 msgid "Shipping Charge:"
 msgstr ""
 
 # c:\Apache2\htdocs\account/sales/includes/ui/sales_order_ui.inc:378
-#: c:\Apache2\htdocs\account/sales/includes/ui/sales_order_ui.inc:379
+#: c:\Apache2\htdocs\account/sales/includes/ui/sales_order_ui.inc:389
 msgid "Shipping Company:"
 msgstr ""
 

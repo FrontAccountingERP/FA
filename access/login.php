@@ -46,7 +46,7 @@ function defaultCompany()
                     <table width="346" border="0" cellpadding="0" cellspacing="0">
 					<form action="<?php echo $_SERVER['PHP_SELF'];?>" name="loginform" method="post">
                         <tr>
-                            <td colspan="5" bgcolor="#FFFFFF"><img src="<?php echo $def_theme;?>/images/spacer.png" width="346" height="1" alt="" /></td>
+                            <td colspan="5" bgcolor="#FFFFFF"><img src="<?php echo $def_theme; ?>/images/spacer.png" width="346" height="1" alt="" /></td>
 
 						</tr>
 
@@ -54,9 +54,9 @@ function defaultCompany()
 
 
 
-                            <td bgcolor="#367CB5"><img src="<?php $def_theme; ?>/images/spacer.png" width="12" height="200" alt="" /></td>
+                            <td bgcolor="#367CB5"><img src="<?php echo $def_theme; ?>/images/spacer.png" width="12" height="200" alt="" /></td>
 
-                            <!--<td background="<?php $def_theme; ?>/images/outline/bg.png" width="233" height="200" colspan="3" valign="top">-->
+                            <!--<td background="<?php echo $def_theme; ?>/images/outline/bg.png" width="233" height="200" colspan="3" valign="top">-->
                             <td class="login" colspan="3" valign="top">
                                 <table border="0" cellpadding="3" cellspacing="0" width="100%">
                                     <tr>
@@ -91,33 +91,33 @@ for ($i = 0; $i < count($db_connections); $i++)
 	                        </td>
                         </tr>
                         <tr>
-                            <td colspan="5" bgcolor="#FFFFFF"><img src="<?php $def_theme; ?>/images/spacer.png" width="346" height="1" alt="" /></td>
+                            <td colspan="5" bgcolor="#FFFFFF"><img src="<?php echo $def_theme; ?>/images/spacer.png" width="346" height="1" alt="" /></td>
                         </tr>
 						</form>
                     </table>
 		            </td>
-		            <!--<td background="<?php $def_theme; ?>/images/outline/r.png" colspan="3" align="right" valign="top"><img src="<?php $def_theme; ?>/images/outline/tr.png" width="10" height="10" alt="" /></td>-->
+		            <!--<td background="<?php echo $def_theme; ?>/images/outline/r.png" colspan="3" align="right" valign="top"><img src="<?php echo $def_theme; ?>/images/outline/tr.png" width="10" height="10" alt="" /></td>-->
 		        </tr>
 		        <tr>
-		            <!--<td background="<?php $def_theme; ?>/images/outline/r.png"><img src="<?php $def_theme; ?>/images/outline/r.png" width="10" height="10" alt=""></td>-->
+		            <!--<td background="<?php echo $def_theme; ?>/images/outline/r.png"><img src="<?php echo $def_theme; ?>/images/outline/r.png" width="10" height="10" alt=""></td>-->
 		        </tr>
 		        <tr>
-					<!--<td background="<?php $def_theme; ?>/images/outline/bm.png"><img src="<?php $def_theme; ?>/images/outline/bl.png" width="10" height="10" alt=""></td>
-		            <!--<td background="<?php $def_theme; ?>/images/outline/bm.png"><img src="<?php $def_theme; ?>/images/outline/bm.png" width="10" height="10" alt=""></td>-->
-		            <!--<td><img src="<?php $def_theme; ?>/images/outline/br.png" width="10" height="10" alt="" /></td>-->
+					<!--<td background="<?php echo $def_theme; ?>/images/outline/bm.png"><img src="<?php echo $def_theme; ?>/images/outline/bl.png" width="10" height="10" alt=""></td>
+		            <!--<td background="<?php echo $def_theme; ?>/images/outline/bm.png"><img src="<?php echo $def_theme; ?>/images/outline/bm.png" width="10" height="10" alt=""></td>-->
+		            <!--<td><img src="<?php echo $def_theme; ?>/images/outline/br.png" width="10" height="10" alt="" /></td>-->
 		        </tr>
 <tr><td>&nbsp;</td></tr><tr>
 		<td align="center" class="footer"><font size=1><a target='_blank' style="text-decoration: none" HREF='<?php echo $power_url; ?>'><font color="#FFFF00" valign="top">&nbsp;&nbsp;<?php echo $power_by; ?></font></a></font></td>
 	</tr>
 <!--<tr><td>&nbsp;</td></tr><tr>
-	<td align="center" class="footer"><a target="_blank" HREF="http://frontaccounting.com/"><img src="<?php $def_theme; ?>/images/logo_frontaccounting.png"  height="60" width="60" border="0"/></a></td>
+	<td align="center" class="footer"><a target="_blank" HREF="http://frontaccounting.com/"><img src="<?php echo $def_theme; ?>/images/logo_frontaccounting.png"  height="60" width="60" border="0"/></a></td>
 </tr>-->
 <?php
 if ($allow_demo_mode == true)
 {
     ?>
       <tr>
-        <!--<td><br><div align="center"><a href="http://frontaccounting.com"><img src="<?php $def_theme; ?>/images/logo_frontaccounting.png"  border="0" align="middle" /></a></div></td>-->
+        <!--<td><br><div align="center"><a href="http://frontaccounting.com"><img src="<?php echo $def_theme; ?>/images/logo_frontaccounting.png"  border="0" align="middle" /></a></div></td>-->
       </tr>
     <?php
 }

@@ -53,10 +53,10 @@
 	// Main Title
 	$app_title = "FrontAccounting";
     // application version
-    $version 		= "1.15";
+    $version 		= "1.16";
 
     // Build for development purposes
-    $build_version 	= "55";
+    $build_version 	= "15";
 
 	// Powered by
 	$power_by 		= "FrontAccounting";
@@ -89,6 +89,11 @@
 
 	/* print_invoice_no. 0 = print reference number, 1 = print invoice number */
 	$print_invoice_no = 0;
+
+	/* Flags for no item, customer and supplier lists. The list can only hold about 1000 items in the lists */
+	$no_item_list = 	0; // change value to 1 if you do not want all items in list
+	$no_customer_list = 0; // change value to 1 if you do not want all customers in list
+	$no_supplier_list = 0; // change value to 1 if you do not want all suppliers in list
 
 	$dateformats 	= array("MMDDYYYY", "DDMMYYYY", "YYYYMMDD");
 	$dateseps 		= array("/", ".", "-", " ");
