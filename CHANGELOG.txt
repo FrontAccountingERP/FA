@@ -19,6 +19,16 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+30-Jan-2008 Janusz Dobrowolski
+ # Minor display fix in tax_types.php
+ $ /taxes/tax_types.php
+ ! Format cleanup on some files.
+ $ /gl/includes/gl_db.inc
+   /gl/includes/gl_ui.inc
+   /applications/application.php
+   frontaccounting.php
+   index.php
+   
 -------------------- 1.16 Stable Released ----------------------
 28-Jan-2008 Joe Hunt
  + Added a possibility to replace the normal listboxes for items, customer and/or suppliers with a search box.

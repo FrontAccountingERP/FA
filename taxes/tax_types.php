@@ -111,8 +111,8 @@ while ($myrow = db_fetch($result))
 
 	label_cell($myrow["name"]);
 	label_cell(number_format2($myrow["rate"],user_percent_dec()), "align=right");
-	label_cell($myrow["sales_gl_code"] . "&nbsp" . $myrow["SalesAccountName"]);
-	label_cell($myrow["purchasing_gl_code"] . "&nbsp" . $myrow["PurchasingAccountName"]);
+	label_cell($myrow["sales_gl_code"] . "&nbsp;" . $myrow["SalesAccountName"]);
+	label_cell($myrow["purchasing_gl_code"] . "&nbsp;" . $myrow["PurchasingAccountName"]);
 	label_cell($out);
 
 	edit_link_cell("selected_id=".$myrow["id"]);

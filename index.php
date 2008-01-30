@@ -1,5 +1,7 @@
 <?php
-	$path_to_root=".";	$page_security = 1;
+	$path_to_root=".";
+	
+	$page_security = 1;
 	include_once("frontaccounting.php");
 	include_once("includes/session.inc");
 	if (!isset($_SESSION["App"]))
