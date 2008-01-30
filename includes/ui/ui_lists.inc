@@ -905,6 +905,7 @@ function stock_purchasable_items_list($name, &$selected_id,	$all_option=false, $
 
 	if ($no_item_list)
 	{
+		global $search_button;
 		$edit_name = $name."_edit";
 		$edit_button = $name."_button";
 
@@ -937,9 +938,9 @@ function stock_purchasable_items_list($name, &$selected_id,	$all_option=false, $
 				$result = false;
 		}
 
-		echo "<input type='text' name='$edit_name' size='8' maxlength='50' value='$val' > ";
+		echo "<input type='text' name='$edit_name' size='8' maxlength='50' value='$val' onblur='this.form.$edit_button.click();'> ";
 
-		echo "<input type='submit' class='inputsubmit' name='$edit_button' value='?'> ";
+		echo sprintf($search_button, $edit_button);
 	}
 	else
 	{
