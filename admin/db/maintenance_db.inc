@@ -160,8 +160,10 @@ function db_import($filename, $connection)
 		{
 
 			// create sql query ending in this line
-			if (strtolower(substr($line, 0, 1)) == ")")
+			if (strtolower(substr($line, 0, 1)) == ")") {
 				$table = false;
+				$line = substr($line,0,strlen($line)-1);
+		  }
 			$table_queries[count($table_queries) - 1] .= $line . "\n";
 		}
 	}
