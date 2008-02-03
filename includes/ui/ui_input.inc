@@ -86,14 +86,14 @@ function submit_row($name, $value, $right=true, $extra="")
 		echo "<td>&nbsp;</td>\n";
 	submit_cells($name, $value, $extra);
 	echo "</tr>\n";
-}	
+}
 //-----------------------------------------------------------------------------------
 
-function check_value($name) 
+function check_value($name)
 {
 	if (!isset($_POST[$name]))
 		return 0;
-	return 1;	
+	return 1;
 }
 
 function check($label, $name, $value, $submit_on_change=false)
@@ -130,12 +130,12 @@ function check_row($label, $name, $value, $submit_on_change=false)
 
 //-----------------------------------------------------------------------------------
 
-function labelheader_cell($label, $params="") 
+function labelheader_cell($label, $params="")
 {
 	echo "<td class='tableheader' $params>$label</td>\n";
 }
 
-function label_cell($label, $params="") 
+function label_cell($label, $params="")
 {
 	echo "<td $params>$label</td>\n";
 }
@@ -144,15 +144,23 @@ function amount_cell($label, $bold=false)
 {
 	if ($bold)
 		label_cell("<b>".number_format2($label,user_price_dec())."</b>", "nowrap align=right");
-	else	
+	else
 		label_cell(number_format2($label,user_price_dec()), "nowrap align=right");
+}
+
+function percent_cell($label, $bold=false)
+{
+	if ($bold)
+		label_cell("<b>".number_format2($label,user_percent_dec())." %</b>", "nowrap align=right");
+	else
+		label_cell(number_format2($label,user_percent_dec())." %", "nowrap align=right");
 }
 
 function qty_cell($label, $bold=false)
 {
 	if ($bold)
 		label_cell("<b>".number_format2($label,user_qty_dec())."</b>", "nowrap align=right");
-	else	
+	else
 		label_cell(number_format2($label,user_qty_dec()), "nowrap align=right");
 }
 
@@ -190,7 +198,7 @@ function text_cells($label, $name, $value, $size="", $max="", $params="", $post_
 
 function text_cells_ex($label, $name, $size, $max=null, $init=null, $params=null, $post_label=null)
 {
-	if (!isset($_POST[$name]) || $_POST[$name] == "") 
+	if (!isset($_POST[$name]) || $_POST[$name] == "")
 	{
 		if ($init)
 			$_POST[$name] = $init;
@@ -238,7 +246,7 @@ function text_row_ex($label, $name, $size, $max=null, $value=null, $params=null,
 function date_cells($label, $name, $init=null, $inc_days=0, $inc_months=0, $inc_years=0, $params=null)
 {
 	global $use_date_picker, $path_to_root;
-	if (!isset($_POST[$name]) || $_POST[$name] == "") 
+	if (!isset($_POST[$name]) || $_POST[$name] == "")
 	{
 		if (!$init)
 		{
@@ -254,8 +262,8 @@ function date_cells($label, $name, $init=null, $inc_days=0, $inc_months=0, $inc_
 				if ($inc_years != 0)
 					$dd = add_years($dd, $inc_years);
 				$_POST[$name] = $dd;
-			}	
-		}		
+			}
+		}
 		else
 			$_POST[$name] = $init;
 	}
@@ -295,7 +303,7 @@ function ref_row($label, $name, $init=null)
 function percent_row($label, $name, $init=null)
 {
 
-	if (!isset($_POST[$name]) || $_POST[$name]=="") 
+	if (!isset($_POST[$name]) || $_POST[$name]=="")
 	{
 		if ($init)
 			$_POST[$name] = $init;

@@ -13,11 +13,11 @@ $all_items = reserved_words::get_all();
 
 function supplier_list($name, $selected_id, $all_option=false, $submit_on_change=false)
 {
-	global $no_supplier_list, $all_items;
+	global $all_items;
 
 	if ($selected_id == null)
 		$selected_id = ((!isset($_POST[$name]) || $_POST[$name] == "") ? "" : $_POST[$name]);
-
+	$no_supplier_list = get_company_pref('no_supplier_list');
 	if ($no_supplier_list)
 	{
 		global $search_button;
@@ -127,11 +127,11 @@ function supplier_list_row($label, $name, $selected_id, $all_option=false, $subm
 
 function customer_list($name, $selected_id, $all_option=false, $submit_on_change=false)
 {
-	global $no_customer_list, $all_items;
+	global $all_items;
 
 	if ($selected_id == null)
 		$selected_id = ((!isset($_POST[$name]) || $_POST[$name] == "") ? "" : $_POST[$name]);
-
+	$no_customer_list = get_company_pref('no_customer_list');
 	if ($no_customer_list)
 	{
 		global $search_button;
@@ -606,11 +606,11 @@ function dimensions_list_row($label, $name, $selected_id, $no_option=false, $sho
 
 function stock_items_list($name, $selected_id, $all_option=false, $submit_on_change=false, $extra="")
 {
-	global $all_items, $no_item_list;
+	global $all_items;
 
 	if ($selected_id == null)
 		$selected_id = (!isset($_POST[$name]) ? "" : $_POST[$name]);
-
+	$no_item_list = get_company_pref('no_item_list');
 	if ($no_item_list)
 	{
 		global $search_button;
@@ -898,14 +898,13 @@ function stock_component_items_list($name, $parent_stock_id, &$selected_id,
 
 function stock_purchasable_items_list($name, &$selected_id,	$all_option=false, $submit_on_change=false, $extra="")
 {
-	global $no_item_list, $all_items;
+	global $all_items;
 
 	if ($selected_id == null)
 		$selected_id = (!isset($_POST[$name]) ? "" : $_POST[$name]);
-
+	$no_item_list = get_company_pref('no_item_list');
 	if ($no_item_list)
 	{
-		global $search_button;
 		$edit_name = $name."_edit";
 		$edit_button = $name."_button";
 
@@ -938,9 +937,9 @@ function stock_purchasable_items_list($name, &$selected_id,	$all_option=false, $
 				$result = false;
 		}
 
-		echo "<input type='text' name='$edit_name' size='8' maxlength='50' value='$val' onblur='this.form.$edit_button.click();'> ";
+		echo "<input type='text' name='$edit_name' size='8' maxlength='50' value='$val' > ";
 
-		echo sprintf($search_button, $edit_button);
+		echo "<input type='submit' class='inputsubmit' name='$edit_button' value='?'> ";
 	}
 	else
 	{

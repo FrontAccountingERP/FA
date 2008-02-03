@@ -51,7 +51,8 @@ function update_company_gl_setup($debtors_act, $pyt_discount_act, $creditors_act
 
 function update_company_setup($coy_name, $coy_no, $gst_no, $tax_prd, $tax_last, $postal_address, $phone, $fax, $email,
 		$coy_logo, $domicile, $Dimension, $custom1_name, $custom2_name, $custom3_name,
-		$custom1_value, $custom2_value, $custom3_value, $curr_default, $f_year)
+		$custom1_value, $custom2_value, $custom3_value, $curr_default, $f_year, $no_item_list, $no_customer_list,
+		$no_supplier_list)
 {
 	if ($f_year == null)
 		$f_year = 0;
@@ -66,6 +67,9 @@ function update_company_setup($coy_name, $coy_no, $gst_no, $tax_prd, $tax_last, 
 		coy_logo='$coy_logo',
 		domicile='$domicile',
 		use_dimension=$Dimension,
+		no_item_list=$no_item_list,
+		no_customer_list=$no_customer_list,
+		no_supplier_list=$no_supplier_list,
         custom1_name='$custom1_name',
         custom2_name='$custom2_name',
         custom3_name='$custom3_name',

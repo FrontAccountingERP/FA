@@ -78,41 +78,43 @@ function add_sales_order($order)
 		$st_num = array();
 		$st_reorder = array();
 	}
-	foreach ($order->line_items as $stock_item)
+	foreach ($order->line_items as $line)
 	{
-		if ($loc_notification == 1 && is_inventory_item($stock_item->stock_id))
+		if ($line->Deleted == false)
 		{
-			$sql = "SELECT ".TB_PREF."loc_stock.*, ".TB_PREF."locations.location_name, ".TB_PREF."locations.email
-				FROM ".TB_PREF."loc_stock, ".TB_PREF."locations
-				WHERE ".TB_PREF."loc_stock.loc_code=".TB_PREF."locations.loc_code
-				AND ".TB_PREF."loc_stock.stock_id = '" . $stock_item->stock_id . "'
-				AND ".TB_PREF."loc_stock.loc_code = '" . $order->Location . "'";
-	 		$res = db_query($sql,"a location could not be retreived");
-	 		$loc = db_fetch($res);
-			if ($loc['email'] != "")
+			if ($loc_notification == 1 && is_inventory_item($line->stock_id))
 			{
-				$qoh = get_qoh_on_date($stock_item->stock_id, $order->Location);
-				$qoh -= get_demand_qty($stock_item->stock_id, $order->Location);
-				$qoh -= get_demand_asm_qty($stock_item->stock_id, $order->Location);
-				$qoh -= $stock_item->quantity;
-				if ($qoh < $loc['reorder_level'])
+				$sql = "SELECT ".TB_PREF."loc_stock.*, ".TB_PREF."locations.location_name, ".TB_PREF."locations.email
+					FROM ".TB_PREF."loc_stock, ".TB_PREF."locations
+					WHERE ".TB_PREF."loc_stock.loc_code=".TB_PREF."locations.loc_code
+					AND ".TB_PREF."loc_stock.stock_id = '" . $line->stock_id . "'
+					AND ".TB_PREF."loc_stock.loc_code = '" . $order->Location . "'";
+	 			$res = db_query($sql,"a location could not be retreived");
+	 			$loc = db_fetch($res);
+				if ($loc['email'] != "")
 				{
-					$st_ids[] = $stock_item->stock_id;
-					$st_names[] = $stock_item->item_description;
-					$st_num[] = $qoh - $loc['reorder_level'];
-					$st_reorder[] = $loc['reorder_level'];
+					$qoh = get_qoh_on_date($line->stock_id, $order->Location);
+					$qoh -= get_demand_qty($line->stock_id, $order->Location);
+					$qoh -= get_demand_asm_qty($line->stock_id, $order->Location);
+					$qoh -= $line->quantity;
+					if ($qoh < $loc['reorder_level'])
+					{
+						$st_ids[] = $line->stock_id;
+						$st_names[] = $line->item_description;
+						$st_num[] = $qoh - $loc['reorder_level'];
+						$st_reorder[] = $loc['reorder_level'];
+					}
 				}
 			}
-		}
-		$sql = "INSERT INTO ".TB_PREF."sales_order_details (order_no, stk_code, description, unit_price, quantity, discount_percent) VALUES (";
-		$sql .= $order_no .
-				",'$stock_item->stock_id', '$stock_item->item_description', $stock_item->price,
-				$stock_item->quantity,
-				$stock_item->discount_percent)";
-		db_query($sql, "order Details Cannot be Added");
+			$sql = "INSERT INTO ".TB_PREF."sales_order_details (order_no, stk_code, description, unit_price, quantity, discount_percent) VALUES (";
+			$sql .= $order_no .
+					",'$line->stock_id', '$line->item_description', $line->price,
+					$line->quantity,
+					$line->discount_percent)";
+			db_query($sql, "order Details Cannot be Added");
 
-	} /* inserted line items into sales order details */
-
+		} /* inserted line items into sales order details */
+	}
 	add_forms_for_sys_type(systypes::sales_order(), $order_no);
 
 	commit_transaction();
@@ -191,41 +193,43 @@ function update_sales_order($order_no, $order)
 		$st_num = array();
 		$st_reorder = array();
 	}
-	foreach ($order->line_items as $stock_item)
+	foreach ($order->line_items as $line)
 	{
-		if ($loc_notification == 1 && is_inventory_item($stock_item->stock_id))
+		if ($line->Deleted == false)
 		{
-			$sql = "SELECT ".TB_PREF."loc_stock.*, ".TB_PREF."locations.location_name, ".TB_PREF."locations.email
-				FROM ".TB_PREF."loc_stock, ".TB_PREF."locations
-				WHERE ".TB_PREF."loc_stock.loc_code=".TB_PREF."locations.loc_code
-				AND ".TB_PREF."loc_stock.stock_id = '" . $stock_item->stock_id . "'
-				AND ".TB_PREF."loc_stock.loc_code = '" . $order->Location . "'";
-	 		$res = db_query($sql,"a location could not be retreived");
-	 		$loc = db_fetch($res);
-			if ($loc['email'] != "")
+			if ($loc_notification == 1 && is_inventory_item($line->stock_id))
 			{
-				$qoh = get_qoh_on_date($stock_item->stock_id, $order->Location);
-				$qoh -= get_demand_qty($stock_item->stock_id, $order->Location);
-				$qoh -= get_demand_asm_qty($stock_item->stock_id, $order->Location);
-				$qoh -= $stock_item->quantity;
-				if ($qoh < $loc['reorder_level'])
+				$sql = "SELECT ".TB_PREF."loc_stock.*, ".TB_PREF."locations.location_name, ".TB_PREF."locations.email
+					FROM ".TB_PREF."loc_stock, ".TB_PREF."locations
+					WHERE ".TB_PREF."loc_stock.loc_code=".TB_PREF."locations.loc_code
+					AND ".TB_PREF."loc_stock.stock_id = '" . $line->stock_id . "'
+					AND ".TB_PREF."loc_stock.loc_code = '" . $order->Location . "'";
+	 			$res = db_query($sql,"a location could not be retreived");
+	 			$loc = db_fetch($res);
+				if ($loc['email'] != "")
 				{
-					$st_ids[] = $stock_item->stock_id;
-					$st_names[] = $stock_item->item_description;
-					$st_num[] = $qoh - $loc['reorder_level'];
-					$st_reorder[] = $loc['reorder_level'];
+					$qoh = get_qoh_on_date($line->stock_id, $order->Location);
+					$qoh -= get_demand_qty($line->stock_id, $order->Location);
+					$qoh -= get_demand_asm_qty($line->stock_id, $order->Location);
+					$qoh -= $line->quantity;
+					if ($qoh < $loc['reorder_level'])
+					{
+						$st_ids[] = $line->stock_id;
+						$st_names[] = $line->item_description;
+						$st_num[] = $qoh - $loc['reorder_level'];
+						$st_reorder[] = $loc['reorder_level'];
+					}
 				}
 			}
-		}
 
-		$sql = "INSERT INTO ".TB_PREF."sales_order_details (order_no, stk_code,  description, unit_price, quantity, discount_percent, qty_invoiced) VALUES (";
+			$sql = "INSERT INTO ".TB_PREF."sales_order_details (order_no, stk_code,  description, unit_price, quantity, discount_percent, qty_invoiced) VALUES (";
 
-		$sql .= $order_no . ",'" . $stock_item->stock_id . "','" . $stock_item->item_description . "', " . $stock_item->price . ", " . $stock_item->quantity . ", " . $stock_item->discount_percent . ", " . $stock_item->qty_inv . " )";
+			$sql .= $order_no . ",'" . $line->stock_id . "','" . $line->item_description . "', " . $line->price . ", " . $line->quantity . ", " . $line->discount_percent . ", " . $line->qty_inv . " )";
 
-		db_query($sql, "Old order Cannot be Inserted");
+			db_query($sql, "Old order Cannot be Inserted");
 
-	} /* inserted line items into sales order details */
-
+		} /* inserted line items into sales order details */
+	}
 	commit_transaction();
 	if ($loc_notification == 1 && count($st_ids) > 0)
 	{
@@ -311,7 +315,7 @@ function read_sales_order($order_no, &$order, $skip_completed_items=false)
 	$order->tax_group_id = $myrow["tax_group_id"];
 
 	$sql = "SELECT stk_code, unit_price, ".TB_PREF."sales_order_details.description,
-		".TB_PREF."sales_order_details.quantity, discount_percent,
+		".TB_PREF."sales_order_details.quantity, ".TB_PREF."sales_order_details.id, discount_percent,
 		qty_invoiced, ".TB_PREF."stock_master.units,
 		".TB_PREF."stock_master.material_cost + ".TB_PREF."stock_master.labour_cost + ".TB_PREF."stock_master.overhead_cost AS standard_cost
 		FROM ".TB_PREF."sales_order_details, ".TB_PREF."stock_master
@@ -321,6 +325,7 @@ function read_sales_order($order_no, &$order, $skip_completed_items=false)
 	if ($skip_completed_items)
 		$sql .= "
 			AND ".TB_PREF."sales_order_details.quantity - ".TB_PREF."sales_order_details.qty_invoiced > 0 ";
+	$sql .= " ORDER BY ".TB_PREF."sales_order_details.id";
 
 	$result = db_query($sql, "Retreive order Line Items");
 
@@ -329,7 +334,7 @@ function read_sales_order($order_no, &$order, $skip_completed_items=false)
 
 		while ($myrow = db_fetch($result))
 		{
-			$order->add_to_cart($myrow["stk_code"],$myrow["quantity"],
+			$order->add_to_cart($order->lines_on_order+1, $myrow["id"], $myrow["stk_code"],$myrow["quantity"],
 				$myrow["unit_price"], $myrow["discount_percent"],
 				$myrow["qty_invoiced"], $myrow["standard_cost"], $myrow["description"]);
 		}
@@ -365,12 +370,12 @@ function close_sales_order($order_no)
 
 //----------------------------------------------------------------------------------------
 
-function dispatch_sales_order_item($order_no, $stock_id, $qty_dispatched)
+function dispatch_sales_order_item($order_no, $id, $qty_dispatched)
 {
 	$sql = "UPDATE ".TB_PREF."sales_order_details
 		SET qty_invoiced = qty_invoiced + $qty_dispatched ";
 	$sql .= " WHERE order_no = $order_no
-		AND stk_code = '$stock_id'";
+		AND id = $id";
 
 	db_query($sql, "The sales order detail record could not be updated");
 }

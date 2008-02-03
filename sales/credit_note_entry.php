@@ -33,14 +33,14 @@ check_db_has_customer_branches(_("There are no customers, or there are no custom
 
 //---------------------------------------------------------------------------------------------------------------
 
-if (isset($_GET['AddedID'])) 
+if (isset($_GET['AddedID']))
 {
 	$credit_no = $_GET['AddedID'];
 	$trans_type = 11;
 
 	display_notification_centered(_("Credit Note has been processed"));
 	display_note(get_customer_trans_view_str($trans_type, $credit_no, _("View this credit note")), 0, 1);
-	
+
  	display_note(get_gl_view_str($trans_type, $credit_no, _("View the GL Journal Entries for this Credit Note")));
 
 	hyperlink_params($_SERVER['PHP_SELF'], _("Enter Another Credit Note"), "NewCredit=yes");
@@ -94,8 +94,8 @@ function handle_new_order()
 	$_POST['OrderDate'] = Today();
 	if (!is_date_in_fiscalyear($_POST['OrderDate']))
 		$_POST['OrderDate'] = end_fiscalyear();
-	$_SESSION['credit_items']->orig_order_date = $_POST['OrderDate'];	
-    
+	$_SESSION['credit_items']->orig_order_date = $_POST['OrderDate'];
+
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -105,22 +105,22 @@ if (isset($_POST['ProcessCredit']))
 
 	$input_error = 0;
 
-	if (!references::is_valid($_POST['ref'])) 
+	if (!references::is_valid($_POST['ref']))
 	{
 		display_error( _("You must enter a reference."));
 		$input_error = 1;
-	} 
-	elseif (!is_new_reference($_POST['ref'], 11)) 
+	}
+	elseif (!is_new_reference($_POST['ref'], 11))
 	{
 		display_error( _("The entered reference is already in use."));
 		$input_error = 1;
-	} 
-	elseif (!is_date($_POST['OrderDate'])) 
+	}
+	elseif (!is_date($_POST['OrderDate']))
 	{
 		display_error(_("The entered date for the credit note is invalid."));
 		$input_error = 1;
-	} 
-	elseif (!is_date_in_fiscalyear($_POST['OrderDate'])) 
+	}
+	elseif (!is_date_in_fiscalyear($_POST['OrderDate']))
 	{
 		display_error(_("The entered date is not in fiscal year."));
 		$input_error = 1;
@@ -134,7 +134,7 @@ if (isset($_POST['ProcessCredit']))
 if (isset($_POST['ProcessCredit']))
 {
 	//alert("WriteOffGLCode = ".$_POST['WriteOffGLCode'].", CreditType = ".$_POST['CreditType']);
-	if ($_POST['CreditType'] == "WriteOff" && (!isset($_POST['WriteOffGLCode']) || 
+	if ($_POST['CreditType'] == "WriteOff" && (!isset($_POST['WriteOffGLCode']) ||
 	 	$_POST['WriteOffGLCode'] == ''))
 	{
 		display_note(_("For credit notes created to write off the stock, a general ledger account is required to be selected."), 1, 0);
@@ -192,7 +192,7 @@ function handle_update_item()
 {
     if($_POST['UpdateItem'] != "" && check_item_data())
     {
-    	$_SESSION['credit_items']->update_cart_item($_POST['stock_id'], $_POST['qty'], 
+    	$_SESSION['credit_items']->update_cart_item($_POST['line_no'], $_POST['qty'],
     		$_POST['price'], ($_POST['Disc'] / 100));
     }
 }
@@ -211,7 +211,7 @@ function handle_new_item()
 	if (!check_item_data())
 		return;
 
-	add_to_order($_SESSION['credit_items'], $_POST['stock_id'], $_POST['qty'],
+	add_to_order($_SESSION['credit_items'], $_POST['line_no'], $_POST['stock_id'], $_POST['qty'],
 		$_POST['price'], $_POST['Disc'] / 100);
 }
 
@@ -236,8 +236,8 @@ if (isset($_POST['UpdateItem']))
 if (isset($_GET['NewCredit']) || !isset($_SESSION['credit_items']))
 {
 	handle_new_order();
-} 
-else 
+}
+else
 {
 	if (!isset($_POST['customer_id']))
 		$_POST['customer_id'] = $_SESSION['credit_items']->customer_id;
@@ -259,7 +259,7 @@ if ($customer_error == "")
     credit_options_controls();
     echo "</td></tr>";
     end_table();
-} 
+}
 else
 {
 	display_error($customer_error);

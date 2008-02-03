@@ -22,7 +22,7 @@ if (!isset($_SESSION['supp_trans']))
 
 //------------------------------------------------------------------------------------------------
 
-function clear_fields() 
+function clear_fields()
 {
 	unset($_POST['gl_code']);
 	unset($_POST['dimension_id']);
@@ -30,7 +30,7 @@ function clear_fields()
 	unset($_POST['amount']);
 	unset($_POST['memo_']);
 	unset($_POST['AcctSelection']);
-	unset($_POST['AddGLCodeToTrans']);	
+	unset($_POST['AddGLCodeToTrans']);
 }
 
 //------------------------------------------------------------------------------------------------
@@ -43,14 +43,14 @@ if (isset($_POST['AddGLCodeToTrans'])){
 		$_POST['gl_code'] = $_POST['AcctSelection'];
 	}
 
-	$sql = "SELECT account_code, account_name FROM ".TB_PREF."chart_master WHERE account_code=" . $_POST['gl_code'];
+	$sql = "SELECT account_code, account_name FROM ".TB_PREF."chart_master WHERE account_code='" . $_POST['gl_code'] . "'";
 	$result = db_query($sql,"get account information");
 	if (db_num_rows($result) == 0)
 	{
 		display_error(_("The account code entered is not a valid code, this line cannot be added to the transaction."));
 		$input_error = true;
-	} 
-	else 
+	}
+	else
 	{
 		$myrow = db_fetch_row($result);
 		$gl_act_name = $myrow[1];
@@ -63,7 +63,7 @@ if (isset($_POST['AddGLCodeToTrans'])){
 
 	if ($input_error == false)
 	{
-		$_SESSION['supp_trans']->add_gl_codes_to_trans($_POST['gl_code'], $gl_act_name, 
+		$_SESSION['supp_trans']->add_gl_codes_to_trans($_POST['gl_code'], $gl_act_name,
 			$_POST['dimension_id'], $_POST['dimension2_id'], $_POST['amount'], $_POST['memo_']);
 		clear_fields();
 	}
@@ -74,24 +74,24 @@ if (isset($_POST['AddGLCodeToTrans'])){
 if (isset($_GET['Delete']))
 {
 	$_SESSION['supp_trans']->remove_gl_codes_from_trans($_GET['Delete']);
-	clear_fields();	
+	clear_fields();
 }
 
 //------------------------------------------------------------------------------------------------
 
-display_heading($_SESSION['supp_trans']->supplier_name);	
+display_heading($_SESSION['supp_trans']->supplier_name);
 
 display_gl_items($_SESSION['supp_trans'], 1);
-						
+
 echo "<br>";
 
 if ($_SESSION['supp_trans']->is_invoice == true)
 {
 	hyperlink_no_params("$path_to_root/purchasing/supplier_invoice.php", _("Back to Invoice Entry"));
-} 
-else 
+}
+else
 {
-	hyperlink_no_params("$path_to_root/purchasing/supplier_credit.php", _("Back to Credit Note Entry"));	
+	hyperlink_no_params("$path_to_root/purchasing/supplier_credit.php", _("Back to Credit Note Entry"));
 }
 
 echo "<hr>";

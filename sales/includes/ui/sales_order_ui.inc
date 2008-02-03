@@ -5,8 +5,9 @@ include_once($path_to_root . "/includes/manufacturing.inc");
 
 //--------------------------------------------------------------------------------
 
-function add_to_order(&$order, $new_item, $new_item_qty, $price, $discount)
+function add_to_order(&$order, $line_no, $new_item, $new_item_qty, $price, $discount)
 {
+/*
     $already_on_order = 0;
 
 	foreach ($order->line_items AS $order_item)
@@ -21,8 +22,8 @@ function add_to_order(&$order, $new_item, $new_item_qty, $price, $discount)
 
     if ($already_on_order != 1)
     {
-         $order->add_to_cart ($new_item, $new_item_qty, $price, $discount);
-    } /* end of if not already on the order */
+*/
+    $order->add_to_cart ($line_no, 0, $new_item, $new_item_qty, $price, $discount);
 }
 
 //---------------------------------------------------------------------------------
@@ -113,42 +114,44 @@ function display_order_summary($title, &$order, $editable_items=false)
 	$total = 0;
 	$k = 0;  //row colour counter
 
-	foreach ($order->line_items as $stock_item)
+	foreach ($order->line_items as $line)
 	{
-
-		$line_total = $stock_item->quantity * $stock_item->price * (1 - $stock_item->discount_percent);
-
-		if (!isset($_GET['Edit']))
-			$id = "";
-		else
-			$id = $_GET['Edit'];
-		if (!$editable_items || $id != $stock_item->stock_id)
+		if ($line->Deleted == false)
 		{
-    		alt_table_row_color($k);
+			$line_total = $line->quantity * $line->price * (1 - $line->discount_percent);
 
-			view_stock_status_cell($stock_item->stock_id);
+			if (!isset($_GET['Edit']))
+				$id = "";
+			else
+				$id = $_GET['Edit'];
+			if (!$editable_items || $id != $line->line_no)
+			{
+				alt_table_row_color($k);
 
-    		label_cell($stock_item->item_description);
-    		qty_cell($stock_item->quantity);
-    		label_cell($stock_item->units);
-    		amount_cell($stock_item->price);
+				view_stock_status_cell($line->stock_id);
 
-    		amount_cell($stock_item->discount_percent * 100);
-    		amount_cell($line_total);
+				label_cell($line->item_description);
+				qty_cell($line->quantity);
+				label_cell($line->units);
+				amount_cell($line->price);
 
-    		if ($editable_items)
-    		{
-        		edit_link_cell(SID . "Edit=$stock_item->stock_id");
-        		delete_link_cell(SID . "Delete=$stock_item->stock_id");
-    		}
-        	end_row();
+				amount_cell($line->discount_percent * 100);
+				amount_cell($line_total);
+
+				if ($editable_items)
+				{
+					edit_link_cell(SID . "Edit=$line->line_no");
+					delete_link_cell(SID . "Delete=$line->line_no");
+				}
+				end_row();
+			}
+			else
+			{
+				sales_order_item_controls($order, $line->stock_id);
+			}
+
+			$total += $line_total;
 		}
-		else
-		{
-			sales_order_item_controls($order, $stock_item->stock_id);
-		}
-
-		$total += $line_total;
 	}
 
 	if (!isset($_GET['Edit']) && $editable_items)
@@ -284,24 +287,28 @@ function sales_order_item_controls(&$order, $stock_id=null)
 
 	if (isset($_GET['Edit']) && $stock_id != null)
 	{
-		if (!isset($_POST['stock_id']))
-			$_POST['stock_id'] = $order->line_items[$_GET['Edit']]->stock_id;
-		if (!isset($_POST['qty']) || ($_POST['qty'] == ""))
-			$_POST['qty'] = $order->line_items[$_GET['Edit']]->quantity;
-		if (!isset($_POST['price']) || ($_POST['price'] == ""))
-			$_POST['price'] = $order->line_items[$_GET['Edit']]->price;
-		if (!isset($_POST['Disc']) || ($_POST['Disc'] == ""))
-			$_POST['Disc'] = ($order->line_items[$_GET['Edit']]->discount_percent)*100;
+		$line_no = $_GET['Edit'];
+		hidden('line_no', $line_no);
 
-		$_POST['units'] = $order->line_items[$_GET['Edit']]->units;
+		if (!isset($_POST['stock_id']))
+			$_POST['stock_id'] = $order->line_items[$line_no]->stock_id;
+		if (!isset($_POST['qty']) || ($_POST['qty'] == ""))
+			$_POST['qty'] = $order->line_items[$line_no]->quantity;
+		if (!isset($_POST['price']) || ($_POST['price'] == ""))
+			$_POST['price'] = $order->line_items[$line_no]->price;
+		if (!isset($_POST['Disc']) || ($_POST['Disc'] == ""))
+			$_POST['Disc'] = ($order->line_items[$line_no]->discount_percent)*100;
+
+		$_POST['units'] = $order->line_items[$line_no]->units;
 
 		hidden('stock_id', $_POST['stock_id']);
 		label_cell($_POST['stock_id']);
-		label_cell($order->line_items[$stock_id]->item_description);
+		label_cell($order->line_items[$line_no]->item_description);
 	}
 	else
 	{
-		global $no_item_list;
+		hidden('line_no', ($_SESSION['Items']->lines_on_order + 1));
+		$no_item_list = get_company_pref('no_item_list');
 		if ($no_item_list)
 		{
 			echo "<td colspan=2>\n";

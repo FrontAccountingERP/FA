@@ -290,10 +290,9 @@ function po_item_controls(&$order, $stock_id=null)
 	}
 	else
 	{
-		global $no_item_list;
-
 		hidden('line_no', ($_SESSION['PO']->lines_on_order + 1));
 
+		$no_item_list = get_company_pref('no_item_list');
 		if ($no_item_list)
 		{
 			echo "<td colspan=2>\n";

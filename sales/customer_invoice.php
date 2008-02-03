@@ -18,11 +18,14 @@ if ($use_popup_windows)
 	$js .= get_js_open_window(900, 500);
 if ($use_date_picker)
 	$js .= get_js_date_picker();
-page(_("Issue an Invoice and Deliver Items for a Sales Order"), false, false, "", $js);
+if ($_SESSION['Items']->direct_invoice)
+	page(_("Issue an Invoice"), false, false, "", $js);
+else
+	page(_("Issue an Invoice and Deliver Items for a Sales Order"), false, false, "", $js);
 
 //---------------------------------------------------------------------------------------------------------------
 
-if (isset($_GET['AddedID'])) 
+if (isset($_GET['AddedID']))
 {
 	$invoice_no = $_GET['AddedID'];
 	$trans_type = 10;
@@ -44,8 +47,8 @@ if (isset($_GET['AddedID']))
 
 //---------------------------------------------------------------------------------------------------------------
 
-if (!isset($_GET['OrderNumber']) && !isset($_SESSION['ProcessingOrder']) && 
-	!isset($_GET['process_invoice'])) 
+if (!isset($_GET['OrderNumber']) && !isset($_SESSION['ProcessingOrder']) &&
+	!isset($_GET['process_invoice']))
 {
 	/* This page can only be called with an order number for invoicing*/
 	display_error(_("This page can only be opened if an order has been selected. Please select an order first."));
@@ -55,8 +58,8 @@ if (!isset($_GET['OrderNumber']) && !isset($_SESSION['ProcessingOrder']) &&
 	end_page();
 	exit;
 
-} 
-elseif (isset($_GET['OrderNumber']) && $_GET['OrderNumber'] > 0) 
+}
+elseif (isset($_GET['OrderNumber']) && $_GET['OrderNumber'] > 0)
 {
 
 	if (isset($_SESSION['Items']))
@@ -73,39 +76,38 @@ elseif (isset($_GET['OrderNumber']) && $_GET['OrderNumber'] > 0)
 
 	/*read in all the selected order into the Items cart  */
 
-	if (read_sales_order($_SESSION['ProcessingOrder'], $_SESSION['Items'], true)) 
+	if (read_sales_order($_SESSION['ProcessingOrder'], $_SESSION['Items'], true))
 	{
 
-    	if ($_SESSION['Items']->count_items() == 0) 
+    	if ($_SESSION['Items']->count_items() == 0)
     	{
     		hyperlink_params($path_to_root . "/sales/inquiry/sales_orders_view.php", _("Select a different sales order to invoice"), "OutstandingOnly=1");
     		die ("<br><b>" . _("There are no ordered items with a quantity left to deliver. There is nothing left to invoice.") . "</b>");
     	}
-	} 
-	else 
+	}
+	else
 	{
 		hyperlink_no_params("/sales_orders_view.php", _("Select a sales order to invoice"));
 		die ("<br><b>" . _("This order item could not be retrieved. Please select another order.") . "</b>");
 	}
 
-} 
-else 
+}
+else
 {
 	/* if processing, a dispatch page has been called and ${$StkItm->stock_id} would have been set from the post */
-	foreach ($_SESSION['Items']->line_items as $itm) 
+	foreach ($_SESSION['Items']->line_items as $itm)
 	{
 
-		if (isset($_SESSION['Items']->line_items[$itm->stock_id]) && 
-			isset($_POST[$itm->stock_id]) && is_numeric($_POST[$itm->stock_id]) && 
-			$_POST[$itm->stock_id] <= ($_SESSION['Items']->line_items[$itm->stock_id]->quantity - 
-			$_SESSION['Items']->line_items[$itm->stock_id]->qty_inv))
+		if (isset($_POST[$itm->stock_id]) && is_numeric($_POST[$itm->stock_id]) &&
+			$_POST[$itm->stock_id] <= ($_SESSION['Items']->line_items[$itm->line_no]->quantity -
+			$_SESSION['Items']->line_items[$itm->line_no]->qty_inv))
 		{
-			$_SESSION['Items']->line_items[$itm->stock_id]->qty_dispatched = $_POST[$itm->stock_id];
+			$_SESSION['Items']->line_items[$itm->line_no]->qty_dispatched = $_POST[$itm->stock_id];
 		}
 
-		if (isset($_POST[$itm->stock_id . "Desc"]) && strlen($_POST[$itm->stock_id . "Desc"]) > 0) 
+		if (isset($_POST[$itm->stock_id . "Desc"]) && strlen($_POST[$itm->stock_id . "Desc"]) > 0)
 		{
-			$_SESSION['Items']->line_items[$itm->stock_id]->item_description = $_POST[$itm->stock_id . "Desc"];
+			$_SESSION['Items']->line_items[$itm->line_no]->item_description = $_POST[$itm->stock_id . "Desc"];
 		}
 	}
 }
@@ -158,21 +160,26 @@ function check_order_changed()
 		return false;
 	}
 
-	while ($myrow = db_fetch($result)) 
+	while ($myrow = db_fetch($result))
 	{
-		$stk_itm = $myrow["stk_code"];
-		if ($_SESSION['Items']->line_items[$stk_itm]->quantity != $myrow["quantity"] ||
-			$_SESSION['Items']->line_items[$stk_itm]->qty_inv != $myrow["qty_invoiced"])
+		foreach($_SESSION['Items']->line_items as $line)
 		{
-			display_note(_("Original order for") . " " . $myrow["stk_code"] . " " .
-				_("has a quantity of") . " " . $myrow["quantity"] . " " . 
-				_("and an invoiced quantity of") . " " . $myrow["qty_invoiced"] . " " .
-				_("the session shows quantity of") . " " . 
-				$_SESSION['Items']->line_items[$stk_itm]->quantity . " " . 
-				_("and quantity invoice of") . " " . 
-				$_SESSION['Items']->line_items[$stk_itm]->qty_inv, 1, 0);
+			if ($line->stock_id == $myrow["stk_code"])
+			{
+				if ($line->quantity != $myrow["quantity"] ||
+					$line->qty_inv != $myrow["qty_invoiced"])
+				{
+					display_note(_("Original order for") . " " . $myrow["stk_code"] . " " .
+						_("has a quantity of") . " " . $myrow["quantity"] . " " .
+						_("and an invoiced quantity of") . " " . $myrow["qty_invoiced"] . " " .
+						_("the session shows quantity of") . " " .
+						$line->quantity . " " .
+						_("and quantity invoice of") . " " .
+						$line->qty_inv, 1, 0);
 
-			return false;
+					return false;
+				}
+			}
 		}
 	} /*loop through all line items of the order to ensure none have been invoiced */
 
@@ -184,42 +191,42 @@ function check_order_changed()
 
 function check_data()
 {
-	if (!isset($_POST['DispatchDate']) || !is_date($_POST['DispatchDate']))	
+	if (!isset($_POST['DispatchDate']) || !is_date($_POST['DispatchDate']))
 	{
 		display_error(_("The entered invoice date is invalid."));
 		return false;
 	}
-	if (!is_date_in_fiscalyear($_POST['DispatchDate'])) 
+	if (!is_date_in_fiscalyear($_POST['DispatchDate']))
 	{
 		display_error(_("The entered invoice date is not in fiscal year."));
 		return false;
 	}
-	if (!isset($_POST['due_date']) || !is_date($_POST['due_date']))	
+	if (!isset($_POST['due_date']) || !is_date($_POST['due_date']))
 	{
 		display_error(_("The entered invoice due date is invalid."));
 		return false;
 	}
 
-	if (!references::is_valid($_POST['ref'])) 
+	if (!references::is_valid($_POST['ref']))
 	{
 		display_error(_("You must enter a reference."));
 		return false;
 	}
 
-	if (!is_new_reference($_POST['ref'], 10)) 
+	if (!is_new_reference($_POST['ref'], 10))
 	{
 		display_error(_("The entered reference is already in use."));
 		return false;
 	}
 	if ($_POST['ChargeFreightCost'] == "")
 		$_POST['ChargeFreightCost'] = 0;
-	if (!is_numeric($_POST['ChargeFreightCost']) || $_POST['ChargeFreightCost'] < 0)	
+	if (!is_numeric($_POST['ChargeFreightCost']) || $_POST['ChargeFreightCost'] < 0)
 	{
 		display_error(_("The entered shipping value is not numeric."));
 		return false;
 	}
 
-	if ($_SESSION['Items']->has_items_dispatch() == 0 && $_POST['ChargeFreightCost'] == 0)	
+	if ($_SESSION['Items']->has_items_dispatch() == 0 && $_POST['ChargeFreightCost'] == 0)
 	{
 		display_error(_("There are no item quantities on this invoice."));
 		return false;
@@ -234,14 +241,14 @@ function check_qoh()
 {
 	if (!sys_prefs::allow_negative_stock())
 	{
-    	foreach ($_SESSION['Items']->line_items as $itm) 
+    	foreach ($_SESSION['Items']->line_items as $itm)
     	{
 
 			if ($itm->qty_dispatched && has_stock_holding($itm->mb_flag))
 			{
 				$qoh = get_qoh_on_date($itm->stock_id, $_POST['Location'], $_POST['DispatchDate']);
 
-        		if ($itm->qty_dispatched > $qoh) 
+        		if ($itm->qty_dispatched > $qoh)
         		{
         			display_error(_("The invoice cannot be processed because there is an insufficient quantity for component:") .
         				" " . $itm->stock_id . " - " .  $itm->item_description);
@@ -258,8 +265,9 @@ function check_qoh()
 
 function process_invoice($invoicing=false)
 {
-	if ($invoicing) 
+	if ($invoicing)
 	{
+
 		read_sales_order($_SESSION['Items']->order_no, $_SESSION['Items'], true);
 		$duedate = get_invoice_duedate($_SESSION['Items']->customer_id, $_SESSION['Items']->delivery_date);
 		$invoice_no = add_sales_invoice($_SESSION['Items'],
@@ -268,10 +276,10 @@ function process_invoice($invoicing=false)
 			$_SESSION['Items']->Location, $_SESSION['Items']->ship_via,
 			$_SESSION['Items']->default_sales_type,	references::get_next(10),
  			$_SESSION['Items']->memo_, 0);
-	} 
-	else 
+	}
+	else
 	{
-	
+
 		if (!check_data())
 			return;
 
@@ -325,7 +333,7 @@ ref_cells(_("Reference"), 'ref', null, "class='tableheader2'");
 
 if (!isset($_POST['tax_group_id']))
 	$_POST['tax_group_id'] = $_SESSION['Items']->tax_group_id;
-label_cell(_("Tax Group"), "class='tableheader2'");	
+label_cell(_("Tax Group"), "class='tableheader2'");
 tax_groups_list_cells(null, 'tax_group_id', $_POST['tax_group_id'], false, null, true);
 
 label_cells(_("For Sales Order"), get_customer_trans_view_str(systypes::sales_order(), $_SESSION['ProcessingOrder']), "class='tableheader2'");
@@ -335,17 +343,17 @@ start_row();
 
 if (!isset($_POST['sales_type_id']))
 	$_POST['sales_type_id'] = $_SESSION['Items']->default_sales_type;
-label_cell(_("Sales Type"), "class='tableheader2'");	
+label_cell(_("Sales Type"), "class='tableheader2'");
 sales_types_list_cells(null, 'sales_type_id', $_POST['sales_type_id']);
 
 if (!isset($_POST['Location']))
 	$_POST['Location'] = $_SESSION['Items']->Location;
-label_cell(_("Delivery From"), "class='tableheader2'");	
+label_cell(_("Delivery From"), "class='tableheader2'");
 locations_list_cells(null, 'Location', $_POST['Location'], false, true);
 
 if (!isset($_POST['ship_via']))
 	$_POST['ship_via'] = $_SESSION['Items']->ship_via;
-label_cell(_("Shipping Company"), "class='tableheader2'");	
+label_cell(_("Shipping Company"), "class='tableheader2'");
 shippers_list_cells(null, 'ship_via', $_POST['ship_via']);
 end_row();
 
@@ -384,7 +392,7 @@ $k = 0;
 $has_marked = false;
 $show_qoh = true;
 
-foreach ($_SESSION['Items']->line_items as $ln_itm) 
+foreach ($_SESSION['Items']->line_items as $ln_itm)
 {
 
     // if it's a non-stock item (eg. service) don't show qoh
@@ -395,12 +403,12 @@ foreach ($_SESSION['Items']->line_items as $ln_itm)
 	if ($show_qoh)
 		$qoh = get_qoh_on_date($ln_itm->stock_id, $_POST['Location'], $_POST['DispatchDate']);
 
-	if ($show_qoh && ($ln_itm->qty_dispatched > $qoh)) 
+	if ($show_qoh && ($ln_itm->qty_dispatched > $qoh))
 	{
 		// oops, we don't have enough of one of the component items
 		start_row("class='stockmankobg'");
 		$has_marked = true;
-	} 
+	}
 	else
 		alt_table_row_color($k);
 
@@ -432,13 +440,13 @@ depending on the business logic required this condition may not be required.
 It seems unfair to charge the customer twice for freight if the order
 was not fully delivered the first time ?? */
 
-if (!isset($_POST['ChargeFreightCost']) || $_POST['ChargeFreightCost'] == "") 
+if (!isset($_POST['ChargeFreightCost']) || $_POST['ChargeFreightCost'] == "")
 {
-    if ($_SESSION['Items']->any_already_delivered() == 1) 
+    if ($_SESSION['Items']->any_already_delivered() == 1)
     {
     	$_POST['ChargeFreightCost'] = 0;
-    } 
-    else 
+    }
+    else
     {
     	$_POST['ChargeFreightCost'] = $_SESSION['Items']->freight_cost;
     }

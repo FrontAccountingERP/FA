@@ -13,12 +13,12 @@ include_once($path_to_root . "/admin/db/company_db.inc");
 
 //-------------------------------------------------------------------------------------------------
 
-if (isset($_POST['submit']) && $_POST['submit'] != "") 
+if (isset($_POST['submit']) && $_POST['submit'] != "")
 {
 
 	$input_error = 0;
 
-	if (strlen($_POST['coy_name'])==0) 
+	if (strlen($_POST['coy_name'])==0)
 	{
 		$input_error = 1;
 		display_error(_("The company name must be entered."));
@@ -29,7 +29,8 @@ if (isset($_POST['submit']) && $_POST['submit'] != "")
 			$_POST['postal_address'], $_POST['phone'], $_POST['fax'], $_POST['email'], $_POST['coy_logo'], $_POST['domicile'],
 			$_POST['use_dimension'], $_POST['custom1_name'], $_POST['custom2_name'], $_POST['custom3_name'],
 			$_POST['custom1_value'], $_POST['custom2_value'], $_POST['custom3_value'],
-			$_POST['curr_default'], $_POST['f_year']);
+			$_POST['curr_default'], $_POST['f_year'], check_value('no_item_list'), check_value('no_customer_list'),
+			check_value('no_supplier_list'));
 
 		display_notification_centered(_("Company setup has been updated."));
 	}
@@ -55,6 +56,9 @@ $_POST['email']  = $myrow["email"];
 $_POST['coy_logo']  = $myrow["coy_logo"];
 $_POST['domicile']  = $myrow["domicile"];
 $_POST['use_dimension']  = $myrow["use_dimension"];
+$_POST['no_item_list']  = $myrow["no_item_list"];
+$_POST['no_customer_list']  = $myrow["no_customer_list"];
+$_POST['no_supplier_list']  = $myrow["no_supplier_list"];
 $_POST['custom1_name']  = $myrow["custom1_name"];
 $_POST['custom2_name']  = $myrow["custom2_name"];
 $_POST['custom3_name']  = $myrow["custom3_name"];
@@ -85,6 +89,10 @@ text_row_ex(_("Company Logo:"), 'coy_logo', 25, 55);
 text_row_ex(_("Domicile:"), 'domicile', 25, 55);
 
 number_list_row(_("Use Dimensions:"), 'use_dimension', null, 0, 2);
+
+check_row(_("No Item List"), 'no_item_list', $_POST['no_item_list']);
+check_row(_("No Customer List"), 'no_customer_list', $_POST['no_customer_list']);
+check_row(_("No Supplier List"), 'no_supplier_list', $_POST['no_supplier_list']);
 
 start_row();
 end_row();

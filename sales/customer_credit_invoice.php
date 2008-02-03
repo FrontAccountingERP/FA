@@ -20,7 +20,7 @@ page(_("Credit all or part of an Invoice"), false, false, "", $js);
 
 //---------------------------------------------------------------------------------------------------------------
 
-if (isset($_GET['AddedID'])) 
+if (isset($_GET['AddedID']))
 {
 	$credit_no = $_GET['AddedID'];
 	$trans_type = 11;
@@ -28,7 +28,7 @@ if (isset($_GET['AddedID']))
 	echo "<center>";
 	display_notification_centered(_("Credit Note has been processed"));
 	display_note(get_customer_trans_view_str($trans_type, $credit_no, _("View this credit note")), 0, 0);
-	
+
  	display_note(get_gl_view_str($trans_type, $credit_no, _("View the GL Journal Entries for this Credit Note")));
 
 	display_footer_exit();
@@ -36,7 +36,7 @@ if (isset($_GET['AddedID']))
 
 //--------------------------------------------------------------------------------------
 
-if (!isset($_GET['InvoiceNumber']) && !$_SESSION['InvoiceToCredit']) 
+if (!isset($_GET['InvoiceNumber']) && !$_SESSION['InvoiceToCredit'])
 {
 	/* This page can only be called with an invoice number for crediting*/
 	die (_("This page can only be opened if an invoice has been selected for crediting."));
@@ -46,30 +46,30 @@ if (!isset($_GET['InvoiceNumber']) && !$_SESSION['InvoiceToCredit'])
 
 function can_process()
 {
-	if (!is_date($_POST['CreditDate'])) 
+	if (!is_date($_POST['CreditDate']))
 	{
 		display_error(_("The entered date is invalid."));;
 		return false;
-	} 
-	elseif (!is_date_in_fiscalyear($_POST['CreditDate'])) 
+	}
+	elseif (!is_date_in_fiscalyear($_POST['CreditDate']))
 	{
 		display_error(_("The entered date is not in fiscal year."));
 		return false;
 	}
 
-	if (!references::is_valid($_POST['ref'])) 
+	if (!references::is_valid($_POST['ref']))
 	{
 		display_error(_("You must enter a reference."));;
 		return false;
 	}
 
-	if (!is_new_reference($_POST['ref'], 11)) 
+	if (!is_new_reference($_POST['ref'], 11))
 	{
 		display_error(_("The entered reference is already in use."));;
 		return false;
 	}
 
-	if (!is_numeric($_POST['ChargeFreightCost']) || $_POST['ChargeFreightCost'] < 0) 
+	if (!is_numeric($_POST['ChargeFreightCost']) || $_POST['ChargeFreightCost'] < 0)
 	{
 		display_error(_("The entered shipping cost is invalid or less than zero."));;
 		return false;
@@ -82,7 +82,7 @@ function can_process()
 
 function clear_globals()
 {
-	if (isset($_SESSION['Items'])) 
+	if (isset($_SESSION['Items']))
 	{
 		unset($_SESSION['Items']->line_items);
 		unset($_SESSION['Items']);
@@ -98,8 +98,8 @@ function process_credit()
 	if (can_process())
 	{
 		$credit_no = credit_invoice($_SESSION['Items'], $_SESSION['InvoiceToCredit'],
-			$_SESSION['Order'],	$_POST['CreditDate'], $_POST['CreditType'], 
-			$_POST['tax_group_id'],	$_POST['ChargeFreightCost'], $_POST['ref'], 
+			$_SESSION['Order'],	$_POST['CreditDate'], $_POST['CreditType'],
+			$_POST['tax_group_id'],	$_POST['ChargeFreightCost'], $_POST['ref'],
 			$_POST['CreditText'], $_POST['WriteOffGLCode']);
 
    		clear_globals();
@@ -110,7 +110,7 @@ function process_credit()
 
 //--------------------------------------------------------------------------------------
 
-if (isset($_GET['InvoiceNumber']) && $_GET['InvoiceNumber'] > 0) 
+if (isset($_GET['InvoiceNumber']) && $_GET['InvoiceNumber'] > 0)
 {
 
 	clear_globals();
@@ -142,7 +142,7 @@ if (isset($_GET['InvoiceNumber']) && $_GET['InvoiceNumber'] > 0)
 
 	$result = db_query($sql,"The invoice details cannot be retrieved");
 
-	if (db_num_rows($result) == 1) 
+	if (db_num_rows($result) == 1)
 	{
 
 		$myrow = db_fetch($result);
@@ -173,16 +173,16 @@ if (isset($_GET['InvoiceNumber']) && $_GET['InvoiceNumber'] > 0)
 
 		$result = get_customer_trans_details(10, $_GET['InvoiceNumber']);
 
-		if (db_num_rows($result) > 0) 
+		if (db_num_rows($result) > 0)
 		{
 
-			while ($myrow = db_fetch($result)) 
+			while ($myrow = db_fetch($result))
 			{
 
-				$_SESSION['Items']->add_to_cart($myrow["stock_id"],-$myrow["quantity"],
+				$_SESSION['Items']->add_to_cart($_SESSION['Items']->lines_on_order+1, $myrow["id"], $myrow["stock_id"],-$myrow["quantity"],
 					$myrow["FullUnitPrice"],$myrow["discount_percent"]);
 
-				$_SESSION['Items']->line_items[$myrow["stock_id"]]->standard_cost = $myrow["standard_cost"];
+				$_SESSION['Items']->line_items[$_SESSION['Items']->lines_on_order]->standard_cost = $myrow["standard_cost"];
 
 			}
 
@@ -195,8 +195,8 @@ if (isset($_GET['InvoiceNumber']) && $_GET['InvoiceNumber'] > 0)
 
 		}*/ //end of checks on returned data set
 		db_free_result($result);
-	} 
-	else 
+	}
+	else
 	{
 		display_error(_("This invoice can not be credited using the automatic facility."));
 		display_error("Please report that a duplicate debtor_trans header record was found for invoice " . $SESSION['InvoiceToCredit']);
@@ -204,18 +204,18 @@ if (isset($_GET['InvoiceNumber']) && $_GET['InvoiceNumber'] > 0)
 		exit;
 	} //valid invoice record returned from the entered invoice number
 
-} 
-else 
+}
+else
 {
 
 /* if processing, the page has been called and ${$StkItm->stock_id} would have been set from the post */
-	foreach ($_SESSION['Items']->line_items as $itm) 
+	foreach ($_SESSION['Items']->line_items as $itm)
 	{
-		$_SESSION['Items']->line_items[$itm->stock_id]->qty_dispatched = $_POST[$itm->stock_id];
+		$_SESSION['Items']->line_items[$itm->line_no]->qty_dispatched = $_POST[$itm->stock_id];
 
-		if (isset($_POST[$itm->stock_id . "Desc"]) && strlen($_POST[$itm->stock_id . "Desc"]) > 0) 
+		if (isset($_POST[$itm->stock_id . "Desc"]) && strlen($_POST[$itm->stock_id . "Desc"]) > 0)
 		{
-			$_SESSION['Items']->line_items[$itm->stock_id]->item_description = $_POST[$itm->stock_id . "Desc"];
+			$_SESSION['Items']->line_items[$itm->line_no]->item_description = $_POST[$itm->stock_id . "Desc"];
 		}
 	}
 }
@@ -252,7 +252,7 @@ function display_credit_items()
     label_cells(_("Currency"), $_SESSION['Items']->customer_currency, "class='tableheader2'");
     end_row();
     start_row();
-    
+
 	if (!isset($_POST['ref']))
 		$_POST['ref'] = references::get_next(11);
 
@@ -262,7 +262,7 @@ function display_credit_items()
 
     if (!isset($_POST['tax_group_id']))
     	$_POST['tax_group_id'] = $_SESSION['Items']->tax_group_id;
-    label_cell(_("Tax Group"), "class='tableheader2'");	
+    label_cell(_("Tax Group"), "class='tableheader2'");
     tax_groups_list_cells(null, 'tax_group_id', $_POST['tax_group_id'], false, null, true);
 	end_row();
 	end_table();
@@ -278,17 +278,17 @@ function display_credit_items()
     end_table();
 
 	echo "</td></tr>";
-	
+
 	end_table(1); // outer table
 
     start_table("$table_style width=80%");
     $th = array(_("Item Code"), _("Item Description"), _("Invoiced Quantity"), _("Units"),
     	_("Credit Quantity"), _("Price"), _("Discount %"), _("Total"));
-    table_header($th);	
+    table_header($th);
 
     $k = 0; //row colour counter
 
-    foreach ($_SESSION['Items']->line_items as $ln_itm) 
+    foreach ($_SESSION['Items']->line_items as $ln_itm)
     {
 
     	alt_table_row_color($k);
@@ -338,7 +338,7 @@ function display_credit_items()
 function display_credit_options()
 {
 	global $table_style2;
-	
+
     echo "<br>";
     start_table($table_style2);
 
@@ -348,8 +348,8 @@ function display_credit_options()
     {
     	echo "<option value='WriteOff'>" . _("Items Written Off") . "</option>";
     	echo "<option selected value='Return'>" . _("Items Returned to Inventory Location") . "</option>";
-    } 
-    else 
+    }
+    else
     {
     	echo "<option selected value='WriteOff'>" . _("Items Written Off") . "</option>";
     	echo "<option value='Return'>" . _("Items Returned to Inventory Location") . "</option>";
@@ -368,8 +368,8 @@ function display_credit_options()
 
     	locations_list_row(_("Items Returned to Inventory Location"), 'Location', $_POST['Location']);
 
-    } 
-    else 
+    }
+    else
     { 	/* the goods are to be written off to somewhere */
 
     	gl_all_accounts_list_row(_("Write Off the Cost of the Items to"), 'WriteOffGLCode', $_POST['WriteOffGLCode']);

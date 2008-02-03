@@ -52,7 +52,7 @@ function handle_submit()
 	$db_connections[$id]['dbname'] = $_POST['dbname'];
 	if (isset($_GET['ul']) && $_GET['ul'] == 1)
 	{
-		if ($_POST['tbpref'] == 1)
+		if (is_numeric($_POST['tbpref']) && $_POST['tbpref'] == 1)
 		{
 			$db_connections[$id]['tbpref'] = $tb_pref_counter."_";
 			$new = true;

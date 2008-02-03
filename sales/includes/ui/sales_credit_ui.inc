@@ -18,7 +18,7 @@ function display_credit_header(&$order)
 
 	customer_list_row(_("Customer:"), 'customer_id', null, false, true);
 
-	if ($order->customer_id != $_POST['customer_id']) 
+	if ($order->customer_id != $_POST['customer_id'])
 	{
 		// customer has changed
 
@@ -32,11 +32,11 @@ function display_credit_header(&$order)
 
 	customer_branches_list_row(_("Branch:"), $_POST['customer_id'], 'branch_id', null, false, true, true);
 
-	//if (($_SESSION['Items']->order_no == 0) ||
-	//	($order->customer_id != $_POST['customer_id']) || 
+	//if (($_SESSION['credit_items']->order_no == 0) ||
+	//	($order->customer_id != $_POST['customer_id']) ||
 	//	($order->Branch != $_POST['branch_id']))
 	//	$customer_error = get_customer_details_to_order($order, $_POST['customer_id'], $_POST['branch_id']);
-	if (($order->customer_id != $_POST['customer_id']) || 
+	if (($order->customer_id != $_POST['customer_id']) ||
 		($order->Branch != $_POST['branch_id']))
 		$customer_error = get_customer_details_to_order($order, $_POST['customer_id'], $_POST['branch_id']);
 
@@ -102,39 +102,39 @@ function display_credit_items($title, &$order)
 	start_table("$table_style width=90%");
 	$th = array(_("Item Code"), _("Item Description"), _("Quantity"), _("Unit"),
 		_("Price"), _("Discount %"), _("Total"));
-	table_header($th);	
+	table_header($th);
 
 	$subtotal = 0;
 	$k = 0;  //row colour counter
 
-	foreach ($order->line_items as $stock_item) 
+	foreach ($order->line_items as $line)
 	{
 
-		$line_total =	$stock_item->quantity * $stock_item->price * (1 - $stock_item->discount_percent);
+		$line_total =	$line->quantity * $line->price * (1 - $line->discount_percent);
 
-		if (!isset($_GET['Edit']) || $_GET['Edit'] != $stock_item->stock_id)
+		if (!isset($_GET['Edit']) || $_GET['Edit'] != $line->line_no)
 		{
     		alt_table_row_color($k);
 
-    	 	label_cell("<a target='_blank' href='$path_to_root/inventory/inquiry/stock_status.php?" . SID . "stock_id=" . $stock_item->stock_id . "'>$stock_item->stock_id</a>");
-    		label_cell($stock_item->item_description);
-    		qty_cell($stock_item->quantity);
-    		label_cell($stock_item->units);
-    		amount_cell($stock_item->price);
+    	 	label_cell("<a target='_blank' href='$path_to_root/inventory/inquiry/stock_status.php?" . SID . "stock_id=" . $line->stock_id . "'>$line->stock_id</a>");
+    		label_cell($line->item_description);
+    		qty_cell($line->quantity);
+    		label_cell($line->units);
+    		amount_cell($line->price);
 
-   			amount_cell($stock_item->discount_percent * 100);
+   			amount_cell($line->discount_percent * 100);
     		amount_cell($line_total);
 
-    		edit_link_cell(SID . "Edit=$stock_item->stock_id");
-    		delete_link_cell(SID . "Delete=$stock_item->stock_id");
+    		edit_link_cell(SID . "Edit=$line->line_no");
+    		delete_link_cell(SID . "Delete=$line->line_no");
 
-			//labelt_cell(get_tax_free_price_for_item($stock_item->stock_id, $line_total, $_POST['tax_group_id']));
+			//labelt_cell(get_tax_free_price_for_item($line->stock_id, $line_total, $_POST['tax_group_id']));
 
     		end_row();
-		} 
-		else 
+		}
+		else
 		{
-			credit_edit_item_controls($order, $stock_item->stock_id);
+			credit_edit_item_controls($order, $line->stock_id);
 		}
 
 		$subtotal += $line_total;
@@ -169,23 +169,27 @@ function credit_edit_item_controls(&$order, $stock_id=null)
 
 	if (isset($_GET['Edit']) and $stock_id!=null)
 	{
-		if (!isset($_POST['stock_id']))
-			$_POST['stock_id'] = $order->line_items[$stock_id]->stock_id;
-		if (!isset($_POST['qty']) OR ($_POST['qty']==""))
-			$_POST['qty'] = $order->line_items[$stock_id]->quantity;
-		if (!isset($_POST['price']) OR ($_POST['price']==""))
-			$_POST['price'] = $order->line_items[$stock_id]->price;
-		if (!isset($_POST['Disc']) OR ($_POST['Disc']==""))
-			$_POST['Disc'] = ($order->line_items[$stock_id]->discount_percent)*100;
+		$line_no = $_GET['Edit'];
+		hidden('line_no', $line_no);
 
-		$_POST['units'] = $order->line_items[$stock_id]->units;
+		if (!isset($_POST['stock_id']))
+			$_POST['stock_id'] = $order->line_items[$line_no]->stock_id;
+		if (!isset($_POST['qty']) OR ($_POST['qty']==""))
+			$_POST['qty'] = $order->line_items[$line_no]->quantity;
+		if (!isset($_POST['price']) OR ($_POST['price']==""))
+			$_POST['price'] = $order->line_items[$line_no]->price;
+		if (!isset($_POST['Disc']) OR ($_POST['Disc']==""))
+			$_POST['Disc'] = ($order->line_items[$line_no]->discount_percent)*100;
+
+		$_POST['units'] = $order->line_items[$line_no]->units;
 
 		hidden('stock_id', $_POST['stock_id']);
 		label_cell($_POST['stock_id']);
-		label_cell($order->line_items[$stock_id]->item_description);
+		label_cell($order->line_items[$line_no]->item_description);
 	}
 	else
 	{
+		hidden('line_no', ($_SESSION['credit_items']->lines_on_order + 1));
     	echo "<td colspan=2>";
     	stock_items_list('stock_id', null, false, true);
     	echo "</td>";
@@ -207,12 +211,12 @@ function credit_edit_item_controls(&$order, $stock_id=null)
 	text_cells(null, 'Disc', $_POST['Disc'], 7, 5);
 	amount_cell($_POST['qty'] * $_POST['price'] * (1 - $_POST['Disc']/100));
 
-	if (isset($_GET['Edit'])) 
+	if (isset($_GET['Edit']))
 	{
     	submit_cells('UpdateItem', _("Update"));
     	submit_cells('CancelItemChanges', _("Cancel"));
-	} 
-	else 
+	}
+	else
 	{
 		submit_cells('AddItem', _("Add Item"), "colspan=2");
 	}
@@ -239,8 +243,8 @@ function credit_options_controls()
 			$_POST['Location'] = $_SESSION['credit_items']->Location;
 	   	locations_list_row(_("Items Returned to Location"), 'Location', $_POST['Location']);
 
-	} 
-	else 
+	}
+	else
 	{
 		/* the goods are to be written off to somewhere */
 		gl_all_accounts_list_row(_("Write off the cost of the items to"), 'WriteOffGLCode', null);
