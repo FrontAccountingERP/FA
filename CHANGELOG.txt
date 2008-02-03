@@ -19,6 +19,46 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+01-Feb-2008 Joe Hunt
+ ! Changed so sales orders can have more than one row with the same stock_id. In alter.sql.
+ $ /sales/includes/cart_class.inc
+   /sales/includes/db/sales_credit_db.inc
+   /sales/includes/db/sales_invoice_db.inc
+   /sales/includes/db/sales_order_db.inc
+   /sales/includes/db/cust_trans_details_db.inc
+   /sales/includes/ui/sales_order_ui.inc
+   /sales/includes/ui/sales_credit_ui.inc
+   /sales/credit_note_entry.php
+   /sales/customer_credit_invoice.php
+   /sales/sales_order_entry.php
+   /sales/customer_invoice.php
+
+31-Jan-2008 Joe Hunt
+ ! New Release 2.0 Pre Alpha
+ $ config.php
+ # Fixed a release 2 related bug in create_coy.php
+ $ /admin/create_coy.php
+ + An alter.sql file to use for updating databases. Until the update_db.php is ready, you can use the install/update companies
+   and select the companies one by one and upload the alter.sql file to all companies. You can still run the release 2
+   with these databases changes without any new files. They are coming as soon as possible.
+ $ /sql/alter.sql (New file)  
+ # Fixed a release 2 related bug. A field in supp_trans_items were declared as integer(11). Changed to VARCHAR(11) in alter.sql
+   and 2 related files
+ $ /purchasing/supplier_trans_gl.php
+   /purchasing/includes/db/invoice_items_db.inc
+ ! Moved variables $no_item_list, $no_customer_list and $no_supplier_list in config.php to company table
+ $ /includes/ui/ui_lists.inc
+   /purchasing/includes/ui/po_ui.inc
+   /sales/includes/ui/sales_order_ui.inc
+   /admin/company_preferences.php
+   /admin/db/company_db.inc
+   config.php
+ + Created 3 new fields in salesman table for provision, break point and provision2. Included in alter.sql. 
+   Update sales_people.php.Preparing for a new Salesman report with provision etc. Selected with time range. Should be very good.
+ $ /sales/manage/sales_people.php
+   /includes/ui/ui_input.inc
+ 
+-------------------- 2,0 Pre Alpha - above ----------------------------
 31-Jan-2008 Janusz Dobrowolski
  # Minor bugfix in db_import()
  $ /admin/db/maintenance_db.inc
