@@ -39,8 +39,8 @@
 
     $debug 			= 1;
 	$show_sql 		= 0;
-	$go_debug 		= 1;
-	if ($go_debug == 0)
+	$go_debug 		= 0;
+	if ($go_debug == 1)
 	{
 		error_reporting(E_ALL);
 		ini_set("display_errors", "On");
