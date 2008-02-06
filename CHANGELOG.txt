@@ -19,6 +19,56 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+06-Feb-2008 Janusz Dobrowolski
++ Separation of customer invoice issue and goods delivery.
++ Batch invoicing for more than one delivery
+# Corrected inadequate shipping tax calculations.
+! Default debugging status changed to off.
+$ /taxes/tax_calc.inc
+  /taxes/db/tax_groups_db.inc
+  /admin/db/voiding_db.inc
+  /applications/customers.php
+  /includes/systypes.inc
+  /includes/types.inc
+  /includes/ui/ui_controls.inc
+  /includes/ui/ui_lists.inc
+  /includes/ui/ui_view.inc
+  /inventory/inquiry/stock_status.php
+  /reporting/rep105.php
+  /reporting/rep107.php
+  /reporting/rep109.php
+  /reporting/rep110.php 
+  /reporting/rep209.php
+  /reporting/reports_main.php
+  /reporting/includes/doctext.inc
+  /reporting/includes/doctext2.inc
+  /reporting/includes/form_types.inc
+  /reporting/includes/pdf_report.inc
+  /reporting/includes/reports_classes.inc
+  /sales/customer_credit_invoice.php
+  /sales/customer_invoice.php
+  /sales/sales_order_entry.php
+  /sales/customer_delivery.php 
+  /sales/includes/db/sales_delivery_db.inc 
+  /sales/includes/ui/print_invoice.inc 
+  /sales/includes/cart_class.inc
+  /sales/includes/sales_db.inc
+  /sales/includes/db/cust_trans_db.inc
+  /sales/includes/db/cust_trans_details_db.inc
+  /sales/includes/db/sales_credit_db.inc
+  /sales/includes/db/sales_invoice_db.inc
+  /sales/includes/db/sales_order_db.inc
+  /sales/includes/ui/sales_order_ui.inc
+  /sales/inquiry/customer_allocation_inquiry.php
+  /sales/inquiry/customer_inquiry.php
+  /sales/inquiry/sales_orders_view.php
+  /sales/inquiry/sales_deliveries_view.php 
+  /sales/view/view_dispatch.php
+  /sales/view/view_invoice.php
+  /sales/view/view_sales_order.php
+  /sql/alter.sql
+  config.php
+  
 01-Feb-2008 Joe Hunt
  ! Changed so sales orders can have more than one row with the same stock_id. In alter.sql.
  $ /sales/includes/cart_class.inc
