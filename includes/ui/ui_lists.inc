@@ -2079,6 +2079,7 @@ function cust_allocations_list_cells($label, $name, $selected)
 	echo "<option " . ($selected == '2'?" selected ":"") . " value='2'>" . _("Overdue Invoices"). "</option>\n";
 	echo "<option " . ($selected == '3'?" selected ":"") . " value='3'>" . _("Payments"). "</option>\n";
 	echo "<option " . ($selected == '4'?" selected ":"") . " value='4'>" . _("Credit Notes"). "</option>\n";
+	echo "<option " . ($selected == '5'?" selected ":"") . " value='5'>" . _("Delivery Notes"). "</option>\n";
 	echo "</select></td>\n";
 }
 

@@ -35,6 +35,7 @@ function get_systype_db_info($type)
         case     10 : return array("".TB_PREF."debtor_trans", "type", "trans_no", "reference", "tran_date");
         case     11 : return array("".TB_PREF."debtor_trans", "type", "trans_no", "reference", "tran_date");
         case     12 : return array("".TB_PREF."debtor_trans", "type", "trans_no", "reference", "tran_date");
+        case     13 : return array("".TB_PREF."debtor_trans", "type", "trans_no", "reference", "tran_date");
         case     16 : return array("".TB_PREF."stock_moves", "type", "trans_no", "reference", "tran_date");
         case     17 : return array("".TB_PREF."stock_moves", "type", "trans_no", "reference", "tran_date");
         case     18 : return array("".TB_PREF."purch_orders", null, "order_no", "reference", "tran_date");

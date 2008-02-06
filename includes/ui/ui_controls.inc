@@ -103,9 +103,13 @@ function hyperlink_params_td($target, $label, $params)
 
 //-----------------------------------------------------------------------------------
 
-function hyperlink_params_separate($target, $label, $params)
+function hyperlink_params_separate($target, $label, $params, $center=false)
 {
+	if ($center)
+		echo "<br><center>";
 	echo "<a target='_blank' href='$target?$params" . SID . "'>$label</a>\n";
+	if ($center)
+		echo "</center>";
 }
 
 function hyperlink_params_separate_td($target, $label, $params)

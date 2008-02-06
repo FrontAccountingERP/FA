@@ -10,6 +10,7 @@ $systypes_array = array (
                     10=> array ('name' => _("Sales Invoice")),
                     11=> array ('name' => _("Customer Credit Note")),
                     12=> array ('name' => _("Customer Payment")),
+                    13=> array ('name' => _("Delivery Note")),
                     16=> array ('name' => _("Location Transfer")),
                     17=> array ('name' => _("Inventory Adjustment")),
                     18=> array ('name' => _("Purchase Order")),
@@ -50,6 +51,11 @@ class systypes
 	function cust_payment() 
 	{
 		return 12;
+	}
+
+	function cust_dispatch() 
+	{
+		return 13;
 	}
 
 	function location_transfer() 

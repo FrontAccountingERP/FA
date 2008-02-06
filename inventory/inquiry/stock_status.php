@@ -66,11 +66,11 @@ while ($myrow = db_fetch($loc_details))
 
 	alt_table_row_color($k);
 
-	$sql = "SELECT Sum(".TB_PREF."sales_order_details.quantity-".TB_PREF."sales_order_details.qty_invoiced) AS DEM
+	$sql = "SELECT Sum(".TB_PREF."sales_order_details.quantity-".TB_PREF."sales_order_details.qty_sent) AS DEM
 		FROM ".TB_PREF."sales_order_details, ".TB_PREF."sales_orders
 		WHERE ".TB_PREF."sales_orders.order_no = ".TB_PREF."sales_order_details.order_no
 		AND ".TB_PREF."sales_orders.from_stk_loc='" . $myrow["loc_code"] . "'
-		AND ".TB_PREF."sales_order_details.qty_invoiced < ".TB_PREF."sales_order_details.quantity
+		AND ".TB_PREF."sales_order_details.qty_sent < ".TB_PREF."sales_order_details.quantity
 		AND ".TB_PREF."sales_order_details.stk_code='" . $_POST['stock_id'] . "'";
 
 	$demand_result = db_query($sql,"Could not retreive demand for item");

@@ -79,24 +79,34 @@ function get_customer_trans_view_str($type, $trans_no, $label="")
 		$viewer = "view_credit.php";
 	elseif ($type == 12)
 		$viewer = "view_receipt.php";
+	elseif ($type == 13)
+		$viewer = "view_dispatch.php";
 	elseif ($type == 30)
 		$viewer = "view_sales_order.php";
 	else
 		return null;
+   
+  if(!is_array($trans_no)) $trans_no = array($trans_no);
 
+  $lbl = $label;
+  $preview_str = '';
+  foreach($trans_no as $trans) {
 	if ($label == "")
-		$label = $trans_no;
+		$lbl = $trans;
+
+	if($preview_str!='') $preview_str .= ',';
 
 	if ($viewer != "")
 	{
 		if ($use_popup_windows)
-			$preview_str = "<a target='_blank' href='$path_to_root/sales/view/$viewer?trans_no=$trans_no' onclick=\"javascript:openWindow(this.href,this.target); return false;\" >$label</a>";
+			$preview_str .= "<a target='_blank' href='$path_to_root/sales/view/$viewer?trans_no=$trans' onclick=\"javascript:openWindow(this.href,this.target); return false;\" >$lbl</a>";
 		else
-			$preview_str = "<a target='_blank' href='$path_to_root/sales/view/$viewer?trans_no=$trans_no'>$label</a>";
+			$preview_str .= "<a target='_blank' href='$path_to_root/sales/view/$viewer?trans_no=$trans'>$lbl</a>";
 	}		
 	else
-		$preview_str = $label;
-
+		$preview_str .= $lbl;
+  }
+  
 	return $preview_str;
 }
 
