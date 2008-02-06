@@ -135,7 +135,7 @@ function get_transactions()
    	}
 
     $sql .= " ORDER BY ".TB_PREF."debtor_trans.tran_date DESC, 
-	  debtor_trans.type,debtor_trans.trans_no ";
+	  ".TB_PREF."debtor_trans.type,".TB_PREF."debtor_trans.trans_no ";
 
     return db_query($sql,"No transactions were returned");
 }
