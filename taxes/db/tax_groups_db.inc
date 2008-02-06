@@ -106,4 +106,37 @@ function get_tax_group_items_as_array($id)
 	return $ret_tax_array;
 }
 
+function get_shipping_tax_group_items()
+{
+
+	$sql = "SELECT ".TB_PREF."tax_group_items.*, ".TB_PREF."tax_types.name AS tax_type_name, 
+		".TB_PREF."tax_types.sales_gl_code, ".TB_PREF."tax_types.purchasing_gl_code  
+		FROM " .TB_PREF."tax_group_items, ".TB_PREF."tax_types, ".TB_PREF."tax_groups
+		WHERE tax_groups.tax_shipping=1
+		AND tax_groups.id=tax_group_id
+			AND ".TB_PREF."tax_types.id=tax_type_id";
+	return db_query($sql, "could not get shipping tax group items");
+}
+
+function get_shipping_tax_as_array()
+{
+	$ret_tax_array = array();
+
+	
+	$tax_group_items = get_shipping_tax_group_items();
+
+	while ($tax_group_item = db_fetch($tax_group_items)) 
+	{
+		$index = $tax_group_item['tax_type_id'];
+		$ret_tax_array[$index]['tax_type_id'] = $tax_group_item['tax_type_id'];
+		$ret_tax_array[$index]['tax_type_name'] = $tax_group_item['tax_type_name'];
+		$ret_tax_array[$index]['sales_gl_code'] = $tax_group_item['sales_gl_code'];
+		$ret_tax_array[$index]['purchasing_gl_code'] = $tax_group_item['purchasing_gl_code'];
+		$ret_tax_array[$index]['rate'] = $tax_group_item['rate'];
+		$ret_tax_array[$index]['included_in_price'] = $tax_group_item['included_in_price'];
+		$ret_tax_array[$index]['Value'] = 0;
+	}
+	
+	return $ret_tax_array;
+}
 ?>

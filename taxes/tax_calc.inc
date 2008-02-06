@@ -130,6 +130,7 @@ function get_tax_for_items($items, $prices, $shipping_cost, $tax_group)
 	for ($i = 0; $i < count($items); $i++)
 	{
 		$item_taxes = get_taxes_for_item($items[$i], $ret_tax_array);
+
 		if ($item_taxes != null) 
 		{
 			foreach ($item_taxes as $item_tax) 
@@ -143,12 +144,14 @@ function get_tax_for_items($items, $prices, $shipping_cost, $tax_group)
 	// add the shipping taxes, only if non-zero, and only if tax group taxes shipping
 	if ($shipping_cost != 0) 
 	{
-		$tax_group = get_tax_group($tax_group);
-		if ($tax_group['tax_shipping']) 
+		$item_taxes = get_shipping_tax_as_array();
+		if ($item_taxes != null) 
 		{
-			foreach ($ret_tax_array as $item_tax) 
+			foreach ($item_taxes as $item_tax) 
 			{
 				$index = $item_tax['tax_type_id'];
+				if(!isset($ret_tax_array[$index]))
+				    $ret_tax_array[$index] = $item_tax;
 				$ret_tax_array[$index]['Value'] += $shipping_cost * $item_tax['rate'] / 100;
 			}
 		}
