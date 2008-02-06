@@ -179,7 +179,6 @@ if (isset($_GET['InvoiceNumber']) && $_GET['InvoiceNumber'] > 0)
 					$myrow["FullUnitPrice"],$myrow["discount_percent"],$myrow["qty_done"],
 					$myrow["standard_cost"],$myrow["description"],$myrow["id"]);
 
-				$_SESSION['Items']->line_items[$_SESSION['Items']->lines_on_order]->standard_cost = $myrow["standard_cost"];
 
 			}
 

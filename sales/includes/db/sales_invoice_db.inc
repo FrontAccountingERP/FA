@@ -4,7 +4,7 @@ function set_invoice_links(&$cart, $invoice) {
 	  
 	  $del = $cart->trans_no;
 	  if(is_array($del)) $del = $del[0]; 
-	  $sql = 'UPDATE debtor_trans SET trans_link = ' . $del .
+	  $sql = 'UPDATE '.TB_PREF.'debtor_trans SET trans_link = ' . $del .
 		  ' WHERE type=10 AND trans_no='.$invoice;
   	  db_query($sql, 'Invoice link cannot be updated');    
 
@@ -17,7 +17,7 @@ function set_invoice_links(&$cart, $invoice) {
 	
 	}
 
-    $sql = 'UPDATE debtor_trans SET trans_link = ' . $invoice .
+    $sql = 'UPDATE '.TB_PREF.'debtor_trans SET trans_link = ' . $invoice .
 	' WHERE type=13 AND (';
 
     $deliveries = $cart->trans_no;

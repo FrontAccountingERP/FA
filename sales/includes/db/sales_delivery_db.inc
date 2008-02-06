@@ -123,7 +123,8 @@ function void_sales_delivery($type, $type_no)
 
 function get_sales_delivery($trans_no)
 {
-	$sql = "SELECT ".TB_PREF."debtor_trans.*, cust_branch.*,
+	$sql = "SELECT ".TB_PREF."debtor_trans.*,
+	".TB_PREF."cust_branch.*,
 	".TB_PREF."debtors_master.name, 
 	".TB_PREF."debtors_master.curr_code, 
 	".TB_PREF."debtors_master.payment_terms, 
