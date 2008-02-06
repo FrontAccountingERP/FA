@@ -55,13 +55,13 @@ function print_salesman_list()
 
 	$from = $_POST['PARAM_0'];
 	$to = $_POST['PARAM_1'];
-	$detailed = $_POST['PARAM_2'];
+	$summary = $_POST['PARAM_2'];
 	$comments = $_POST['PARAM_3'];
 
-	if ($detailed == 0)
-		$det = _("No");
+	if ($summary == 0)
+		$sum = _("No");
 	else
-		$det = _("Yes");
+		$sum = _("Yes");
 
 	$dec = user_qty_dec();
 
@@ -77,7 +77,7 @@ function print_salesman_list()
 
     $params =   array( 	0 => $comments,
 	    				1 => array(  'text' => _('Period'), 'from' => $from, 'to' => $to),
-	    				2 => array(  'text' => _('Detailed'),'from' => $det,'to' => ''));
+	    				2 => array(  'text' => _('Summary Only'),'from' => $sum,'to' => ''));
 
 	$cols2 = $cols;
 	$aligns2 = $aligns;
@@ -133,7 +133,7 @@ function print_salesman_list()
 			$prov = $myrow['provision2'] * $amt / 100;
 		else
 			$prov = $myrow['provision'] * $amt / 100;
-		if ($detailed)
+		if (!$summary)
 		{
 			$rep->TextCol(0, 1,	$myrow['trans_no']);
 			$rep->TextCol(1, 2,	$myrow['DebtorName']);
