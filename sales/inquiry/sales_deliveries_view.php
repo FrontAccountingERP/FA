@@ -73,7 +73,7 @@ ref_cells(_("#:"), 'DeliveryNumber');
 date_cells(_("from:"), 'DeliveryAfterDate', null, -30);
 date_cells(_("to:"), 'DeliveryToDate', null, 1);
 
-//locations_list_cells(_("Location:"), 'StockLocation', null, true);
+locations_list_cells(_("Location:"), 'StockLocation', null, true);
 
 stock_items_list_cells(_("Item:"), 'SelectStockFromList', null, true);
 
@@ -104,28 +104,28 @@ $sql = "SELECT ".TB_PREF."debtor_trans.trans_no, "
 	.TB_PREF."cust_branch.br_name, "
 	.TB_PREF."debtor_trans.reference, "
 	.TB_PREF."debtor_trans.tran_date, "
-	.TB_PREF."debtor_trans.due_date, ";
-//	.TB_PREF."sales_orders.customer_ref, "
-//	.TB_PREF."sales_orders.deliver_to, "
+	.TB_PREF."debtor_trans.due_date, "
+	.TB_PREF."sales_orders.customer_ref, "
+	.TB_PREF."sales_orders.deliver_to, ";
 $sql .= " Sum(".TB_PREF."debtor_trans_details.qty_done-"
 		 .TB_PREF."debtor_trans_details.quantity) AS Outstanding, ";
 $sql .= " Sum(".TB_PREF."debtor_trans_details.qty_done) AS Partial, ";
 
-$sql .= " Sum(".TB_PREF."-debtor_trans_details.unit_price*"
+$sql .= " Sum(-".TB_PREF."debtor_trans_details.unit_price*"
  .TB_PREF."debtor_trans_details.quantity*(1-"
  .TB_PREF."debtor_trans_details.discount_percent)) AS DeliveryValue
 	FROM "
-//	 .TB_PREF."sales_orders, "
+	 .TB_PREF."sales_orders, "
 	 .TB_PREF."debtor_trans, "
 	 .TB_PREF."debtor_trans_details, "
 	 .TB_PREF."debtors_master, "
 	 .TB_PREF."cust_branch
 		WHERE "
-//		.TB_PREF."sales_orders.order_no = ".TB_PREF."debtor_trans.order_ AND "
+		.TB_PREF."sales_orders.order_no = ".TB_PREF."debtor_trans.order_ AND "
 		.TB_PREF."debtor_trans.debtor_no = ".TB_PREF."debtors_master.debtor_no
 			AND ".TB_PREF."debtor_trans.type = 13
-			AND ".TB_PREF."debtor_trans_details.debtor_trans_no = debtor_trans.trans_no 
-			AND ".TB_PREF."debtor_trans_details.debtor_trans_type = debtor_trans.type 
+			AND ".TB_PREF."debtor_trans_details.debtor_trans_no = ".TB_PREF."debtor_trans.trans_no 
+			AND ".TB_PREF."debtor_trans_details.debtor_trans_type = ".TB_PREF."debtor_trans.type 
 			AND ".TB_PREF."debtor_trans.branch_code = ".TB_PREF."cust_branch.branch_code
 			AND ".TB_PREF."debtor_trans.debtor_no = ".TB_PREF."cust_branch.debtor_no ";
 
@@ -149,11 +149,11 @@ else
 	if (isset($selected_stock_item))
 		$sql .= " AND ".TB_PREF."debtor_trans_details.stock_id='". $selected_stock_item ."' ";
 
-//	if (isset($_POST['StockLocation']) && $_POST['StockLocation'] != reserved_words::get_all())
-//		$sql .= " AND ".TB_PREF."sales_orders.from_stk_loc = '". $_POST['StockLocation'] . "' ";
+	if (isset($_POST['StockLocation']) && $_POST['StockLocation'] != reserved_words::get_all())
+		$sql .= " AND ".TB_PREF."sales_orders.from_stk_loc = '". $_POST['StockLocation'] . "' ";
 
 	if ($_POST['OutstandingOnly'] == true) {
-	 $sql .= " AND ".TB_PREF."-debtor_trans_details.qty_done < ".TB_PREF."-debtor_trans_details.quantity ";
+	 $sql .= " AND -".TB_PREF."debtor_trans_details.qty_done < -".TB_PREF."debtor_trans_details.quantity ";
 	}
 	
 	$sql .= " GROUP BY ".TB_PREF."debtor_trans.trans_no ";
