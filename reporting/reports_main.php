@@ -47,6 +47,11 @@ $reports->addReport(_('Customer'),105,_('Order Status Listing'),
 			new ReportParam(_('Stock Location'),'LOCATIONS'), 
 			new ReportParam(_('Back Orders Only'),'YES_NO'), 
 			new ReportParam(_('Comments'),'TEXTBOX')));
+$reports->addReport(_('Customer'),106,_('Salesman Listing'),
+	array(	new ReportParam(_('Start Date'),'DATEBEGINM'),
+			new ReportParam(_('End Date'),'DATEENDM'),
+			new ReportParam(_('Detailed'),'YES_NO'),
+			new ReportParam(_('Comments'),'TEXTBOX')));
 $reports->addReport(_('Customer'),107,_('Print Invoices/Credit Notes'),
 	array(	new ReportParam(_('From'),'INVOICE'), 
 			new ReportParam(_('To'),'INVOICE'), 

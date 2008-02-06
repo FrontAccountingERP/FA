@@ -19,6 +19,11 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+06-Fef-2008 Joe Hunt
++ Added Report, Salesman Listing, rep106.php. 
+$ /reporting/reports_main.php
+  /reporting/rep106.php
+  
 06-Feb-2008 Janusz Dobrowolski
 + Separation of customer invoice issue and goods delivery.
 + Batch invoicing for more than one delivery
