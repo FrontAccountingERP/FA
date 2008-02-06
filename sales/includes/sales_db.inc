@@ -7,6 +7,7 @@ include_once($path_to_root . "/includes/db/inventory_db.inc");
 include_once($path_to_root . "/sales/includes/db/sales_order_db.inc");
 include_once($path_to_root . "/sales/includes/db/sales_credit_db.inc");
 include_once($path_to_root . "/sales/includes/db/sales_invoice_db.inc");
+include_once($path_to_root . "/sales/includes/db/sales_delivery_db.inc");
 include_once($path_to_root . "/sales/includes/db/custalloc_db.inc");
 include_once($path_to_root . "/sales/includes/db/cust_trans_db.inc");
 include_once($path_to_root . "/sales/includes/db/cust_trans_details_db.inc");

@@ -73,7 +73,7 @@ else
 
 $sql = "SELECT ".TB_PREF."sales_orders.order_no, ".TB_PREF."debtors_master.curr_code, ".TB_PREF."debtors_master.name, ".TB_PREF."cust_branch.br_name,
 	".TB_PREF."sales_orders.customer_ref, ".TB_PREF."sales_orders.ord_date, ".TB_PREF."sales_orders.deliver_to, ".TB_PREF."sales_orders.delivery_date, ";
-$sql .= " Sum(".TB_PREF."sales_order_details.qty_invoiced) AS TotInvoiced, ";
+$sql .= " Sum(".TB_PREF."sales_order_details.qty_sent) AS TotDelivered, ";
 $sql .= " Sum(".TB_PREF."sales_order_details.quantity) AS TotQuantity, ";
 
 $sql .= " Sum(".TB_PREF."sales_order_details.unit_price*".TB_PREF."sales_order_details.quantity*(1-".TB_PREF."sales_order_details.discount_percent)) AS OrderValue
@@ -107,7 +107,7 @@ else
 		$sql .= " AND ".TB_PREF."sales_orders.from_stk_loc = '". $_POST['StockLocation'] . "' ";
 
 	if ($_POST['OutstandingOnly'] == true)
-		$sql .= " AND ".TB_PREF."sales_order_details.qty_invoiced < ".TB_PREF."sales_order_details.quantity";
+		$sql .= " AND ".TB_PREF."sales_order_details.qty_sent < ".TB_PREF."sales_order_details.quantity";
 
 	$sql .= " GROUP BY ".TB_PREF."sales_orders.order_no, ".TB_PREF."sales_orders.debtor_no, ".TB_PREF."sales_orders.branch_code,
 		".TB_PREF."sales_orders.customer_ref, ".TB_PREF."sales_orders.ord_date, ".TB_PREF."sales_orders.deliver_to";
@@ -137,9 +137,10 @@ if ($result)
 		$view_page = get_customer_trans_view_str(systypes::sales_order(), $myrow["order_no"]);
 		$formated_del_date = sql2date($myrow["delivery_date"]);
 		$formated_order_date = sql2date($myrow["ord_date"]);
+	        $not_closed =  $myrow["TotDelivered"] < $myrow["TotQuantity"];
 
     	// if overdue orders, then highlight as so
-    	if (date1_greater_date2(Today(), $formated_del_date))
+    	if (date1_greater_date2(Today(), $formated_del_date) & $not_closed)
     	{
         	 start_row("class='overduebg'");
         	 $overdue_items = true;
@@ -159,13 +160,13 @@ if ($result)
 		amount_cell($myrow["OrderValue"]);
 		label_cell($myrow["curr_code"]);
 
-		if ($_POST['OutstandingOnly'] == true || $myrow["TotInvoiced"] < $myrow["TotQuantity"]) 
+		if ($_POST['OutstandingOnly'] == true || $not_closed) 
 		{
     		$modify_page = $path_to_root . "/sales/sales_order_entry.php?" . SID . "ModifyOrderNumber=" . $myrow["order_no"];
-    		$issue_invoice = $path_to_root . "/sales/customer_invoice.php?" . SID . "OrderNumber=" .$myrow["order_no"];
+    		$delivery_note = $path_to_root . "/sales/customer_delivery.php?" . SID . "OrderNumber=" .$myrow["order_no"];
 
     		label_cell("<a href='$modify_page'>" . _("Edit") . "</a>");
-    		label_cell("<a href='$issue_invoice'>" . _("Invoice") . "</a>");
+    		label_cell("<a href='$delivery_note'>" . _("Dispatch") . "</a>");
 		}
 		else
 		{

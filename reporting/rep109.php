@@ -5,7 +5,7 @@ $page_security = 2;
 // $ Revision:	2.0 $
 // Creator:	Joe Hunt
 // date_:	2005-05-19
-// Title:	Print Invoices
+// Title:	Print Sales Orders
 // ----------------------------------------------------------------
 $path_to_root="../";
 
@@ -25,7 +25,7 @@ function get_sales_order_details($order_no)
 {
 	$sql = "SELECT stk_code, unit_price, ".TB_PREF."sales_order_details.description,
 		".TB_PREF."sales_order_details.quantity, discount_percent, 
-		qty_invoiced, units,
+		qty_sent, units,
 		".TB_PREF."stock_master.material_cost + ".TB_PREF."stock_master.labour_cost + ".TB_PREF."stock_master.overhead_cost AS standard_cost
 		FROM ".TB_PREF."sales_order_details, ".TB_PREF."stock_master 
 			WHERE ".TB_PREF."sales_order_details.stk_code = ".TB_PREF."stock_master.stock_id 

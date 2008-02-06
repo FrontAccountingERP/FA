@@ -55,6 +55,11 @@ $reports->addReport(_('Customer'),107,_('Print Invoices/Credit Notes'),
 			new ReportParam(_('email Customers'),'YES_NO'), 
 			new ReportParam(_('Payment Link'),'PAYMENT_LINK'), 
 			new ReportParam(_('Comments'),'TEXTBOX')));
+$reports->addReport(_('Customer'),110,_('Print Deliveries'),
+	array(	new ReportParam(_('From'),'DELIVERY'), 
+			new ReportParam(_('To'),'DELIVERY'), 
+			new ReportParam(_('email Customers'),'YES_NO'), 
+			new ReportParam(_('Comments'),'TEXTBOX')));
 $reports->addReport(_('Customer'),108,_('Print Statements'),
 	array(	new ReportParam(_('Customer'),'CUSTOMERS_NO_FILTER'), 
 			new ReportParam(_('Currency Filter'),'CURRENCY'), 

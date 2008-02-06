@@ -115,16 +115,12 @@ if (isset($_GET['InvoiceNumber']) && $_GET['InvoiceNumber'] > 0)
 
 	clear_globals();
 
-	session_register("Items");
-	session_register("InvoiceToCredit");
-	session_Register("Order");
-
 	$_SESSION['InvoiceToCredit'] = $_GET['InvoiceNumber'];
 	$_SESSION['Items'] = new cart;
 
 	/*read in all the guff from the selected invoice into the Items cart	*/
 
-	// we need a distinct here so that it only returns 1 line - becuase there can be mutliple moves
+	// we need a distinct here so that it only returns 1 line - because there can be multiple moves
 	// per item (for assemblies, etc)
 	$sql = "SELECT DISTINCT ".TB_PREF."debtor_trans.*,
 		".TB_PREF."cust_branch.default_location, ".TB_PREF."cust_branch.default_ship_via,
@@ -179,8 +175,9 @@ if (isset($_GET['InvoiceNumber']) && $_GET['InvoiceNumber'] > 0)
 			while ($myrow = db_fetch($result))
 			{
 
-				$_SESSION['Items']->add_to_cart($_SESSION['Items']->lines_on_order+1, $myrow["id"], $myrow["stock_id"],-$myrow["quantity"],
-					$myrow["FullUnitPrice"],$myrow["discount_percent"]);
+				$_SESSION['Items']->add_to_cart($myrow["stock_id"],-$myrow["quantity"],
+					$myrow["FullUnitPrice"],$myrow["discount_percent"],$myrow["qty_done"],
+					$myrow["standard_cost"],$myrow["description"],$myrow["id"]);
 
 				$_SESSION['Items']->line_items[$_SESSION['Items']->lines_on_order]->standard_cost = $myrow["standard_cost"];
 

@@ -450,7 +450,7 @@ class FrontReport extends Cpdf
 		$this->row = $iline5 - $this->lineHeight - 6;
 		$this->Text($ccol, $doc_Please_Quote . " - " . $myrow['curr_code']);
 		$this->NewLine();
-		if ($branch['disable_branch'] > 0 && $doctype == 10) // payment links
+		if ($doctype == 10 && $branch['disable_branch'] > 0) // payment links
 		{
 			if ($branch['disable_branch'] == 1)
 			{

@@ -6,7 +6,7 @@ this class can hold all the information for:
 i)   a sales order
 ii)  an invoice
 iii) a credit note
-
+iv)  a delivery note
 */
 
 include_once($path_to_root . "/inventory/includes/inventory_db.inc");
@@ -22,7 +22,7 @@ class cart
 	var $sales_type_name; // set to customer's sales type name
 	var $customer_currency; // set to the customer's currency
 	var $default_discount; // set to the customer's discount %
-	var $direct_invoice;  // direct invoicing
+	var $trans_type; // invoice, order, delivery note ...
 	var $memo_; // memo_ on direct invoicing
 
 	var $deliver_to;
@@ -34,8 +34,8 @@ class cart
 	var $Comments;
 	var $Location;
 	var $location_name;
-
-	var $order_no; // the order number
+	var $order_no; // the original order number 	
+	var $trans_no;// transaction number
 
 	var $customer_name;
 	var $customer_id;
@@ -49,26 +49,20 @@ class cart
 	var $tax_group_id;
 	var $tax_group_name;
 
-	var $lines_on_order;
-
-	function Cart()
+	function Cart($type = 'order')
 	{
 		/*Constructor function initialises a new shopping cart */
 		$this->line_items = array();
 		$this->default_sales_type = "";
-		$this->direct_invoice=false;
-		$this->lines_on_order = 0;
+		$this->trans_type = $type;
 	}
 
-	function add_to_cart($line_no, $id, $stock_id, $qty, $price, $disc, $qty_invoiced=0, $standard_cost=0, $description=null)
+	function add_to_cart($stock_id, $qty, $price, $disc, $qty_done=0, $standard_cost=0, $description=null, $id=0)
 	{
-
-		if (isset($stock_id) && $stock_id != "" && isset($qty) && $qty > 0)
+		if (isset($stock_id) && $stock_id != "" && isset($qty)/* && $qty > 0*/)
 		{
-
-			$this->line_items[$line_no] = new line_details($line_no, $id, $stock_id, $qty, $price, $disc,
-				$qty_invoiced, $standard_cost, $description);
-			$this->lines_on_order++;
+			$this->line_items[] = new line_details($stock_id, $qty, $price, $disc, 
+				$qty_done,  $standard_cost, $description, $id);
 			return 1;
 		}
 		else
@@ -89,7 +83,6 @@ class cart
 		$this->line_items[$line_no]->price = $price;
 		$this->line_items[$line_no]->discount_percent = $disc;
 	}
-
 	function update_add_cart_item_qty($line_no, $qty)
 	{
 		$this->line_items[$line_no]->quantity += $qty;
@@ -97,7 +90,7 @@ class cart
 
 	function remove_from_cart($line_no)
 	{
-		$this->line_items[$line_no]->Deleted = true;
+			unset($this->line_items[$line_no]);
 	}
 
 	function clear_items()
@@ -105,13 +98,17 @@ class cart
     	unset($this->line_items);
 		$this->line_items = array();
 		$this->default_sales_type = "";
+		$this->trans_no = 0;
 		$this->customer_id = $this->order_no = 0;
-		$this->lines_on_order = 0;
 	}
 
 	function count_items()
 	{
-		return count($this->line_items);
+	  $counter=0;
+	  foreach($this->line_items as $line) {
+		if($line->quantity>$line->qty_done) $counter++;
+	  }
+		return $counter;
 	}
 
 	function get_items_total_dispatch($tax_group_id=null)
@@ -163,7 +160,7 @@ class cart
 
 		foreach ($this->line_items as $stock_item)
 		{
-			if ($stock_item->qty_inv !=0)
+			if ($stock_item->qty_done !=0)
 			{
 				return 1;
 			}
@@ -176,8 +173,8 @@ class cart
 	function some_already_delivered($line_no)
 	{
 		/* Checks if there have been deliveries of a specific line item */
-		if (isset($this->line_items[$line_no]) &&
-			$this->line_items[$line_no]->qty_inv != 0)
+		if (isset($this->line_items[$line_no]) && 
+			$this->line_items[$line_no]->qty_done != 0)
 		{
 			return 1;
 		}
@@ -197,11 +194,8 @@ class cart
 
         foreach ($this->line_items as $ln_itm)
         {
-        	if (!$ln_itm->Deleted)
-        	{
         		$items[] = $ln_itm->stock_id;
         		$prices[] = ($ln_itm->qty_dispatched * $ln_itm->taxfree_price($tax_group_id, $tax_group_array) * (1 - $ln_itm->discount_percent));
-        	}
         }
 
 
@@ -226,17 +220,15 @@ class line_details
 	var $quantity;
 	var $price;
 	var $discount_percent;
-	var $qty_inv;
-	var $qty_dispatched;
+	var $qty_done;	// quantity processed so far
+	var $qty_dispatched; // quantity selected to process 
 	var $standard_cost;
-	var $Deleted;
 
-	function line_details ($line_no, $id, $stock_id, $qty, $prc, $disc_percent,
-		$qty_invoiced, $standard_cost, $description)
+	function line_details ($stock_id, $qty, $prc, $disc_percent,  
+		$qty_done, $standard_cost, $description, $id=0)
 	{
 	/* Constructor function to add a new LineDetail object with passed params */
 
-		$this->line_no = $line_no;
 		$this->id = $id;
 		$item_row = get_item($stock_id);
 
@@ -257,10 +249,8 @@ class line_details
 		$this->quantity = $qty;
 		$this->price = $prc;
 		$this->discount_percent = $disc_percent;
-		$this->qty_inv = $qty_invoiced;
-		$this->qty_dispatched = $qty - $qty_invoiced;
+		$this->qty_done = $qty_done;
 		$this->standard_cost = $standard_cost;
-		$this->Deleted = false;
 	}
 
 	function full_price()

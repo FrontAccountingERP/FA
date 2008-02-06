@@ -7,7 +7,7 @@
 
 function add_customer_trans($trans_type, $debtor_no, $BranchNo, 
 	$date_, $reference, $Total, $discount=0, $Tax=0, $Freight=0, 
-	$sales_type=0, $order_no=0, $ship_via="", $due_date=null,  
+	$sales_type=0, $order_no=0, $trans_link=0, $ship_via="", $due_date=null,  
 	$AllocAmt=0)
 {
 	$trans_no = get_next_trans_no($trans_type);
@@ -25,11 +25,11 @@ function add_customer_trans($trans_type, $debtor_no, $BranchNo,
 		reference, tpe, 
 		order_, ov_amount, ov_discount,
 		ov_gst, ov_freight, rate,
-		ship_via, alloc)
-		VALUES ($trans_no, $trans_type, '$debtor_no', '$BranchNo',
+		ship_via, alloc, trans_link
+		) VALUES ($trans_no, $trans_type, '$debtor_no', '$BranchNo',
 		'$SQLDate', '$SQLDueDate', '$reference',
 		'$sales_type', $order_no, $Total, $discount, $Tax, $Freight, $rate, 
-		'$ship_via', $AllocAmt)";
+		'$ship_via', $AllocAmt, $trans_link)";
 
 	db_query($sql, "The debtor transaction record could not be inserted");
 	
@@ -52,7 +52,7 @@ function get_customer_trans($trans_id, $trans_type)
 			".TB_PREF."bank_trans_types.name AS BankTransType ";  
 	}  
 	
-	if ($trans_type == 10 OR $trans_type == 11) 
+	if ($trans_type == 10 OR $trans_type == 11 OR $trans_type == 13) 
 	{
 		// it's an invoice so also get the shipper and salestype
 		$sql .= ", ".TB_PREF."shippers.shipper_name, ".TB_PREF."sales_types.sales_type ";  
@@ -67,7 +67,7 @@ function get_customer_trans($trans_id, $trans_type)
 		$sql .= ", ".TB_PREF."bank_trans, ".TB_PREF."bank_accounts, ".TB_PREF."bank_trans_types ";  
 	}	
 	
-	if ($trans_type == 10 OR $trans_type == 11) 
+	if ($trans_type == 10 OR $trans_type == 11 OR $trans_type == 13) 
 	{
 		// it's an invoice so also get the shipper, salestypes
 		$sql .= ", ".TB_PREF."shippers, ".TB_PREF."sales_types ";  
@@ -85,7 +85,7 @@ function get_customer_trans($trans_id, $trans_type)
 			AND ".TB_PREF."bank_trans_types.id = ".TB_PREF."bank_trans.bank_trans_type_id
 			AND ".TB_PREF."bank_accounts.account_code=".TB_PREF."bank_trans.bank_act ";  
 	}			
-	if ($trans_type == 10 OR $trans_type == 11) 
+	if ($trans_type == 10 OR $trans_type == 11 OR $trans_type == 13) 
 	{
 		// it's an invoice so also get the shipper
 		$sql .= " AND ".TB_PREF."shippers.shipper_id=".TB_PREF."debtor_trans.ship_via 
@@ -198,6 +198,9 @@ function post_void_customer_trans($type, $type_no)
 		case 11 :
 			void_sales_invoice($type, $type_no);
 			break;
+		case 13 :
+			void_sales_delivery($type, $type_no);
+			break;
 		case systypes::cust_payment() :
 			void_customer_payment($type, $type_no);
 			break;
@@ -206,5 +209,12 @@ function post_void_customer_trans($type, $type_no)
 
 //----------------------------------------------------------------------------------------
 
+function get_customer_trans_link($type, $type_no)
+{
+  $row = db_query("SELECT trans_link from debtor_trans 
+	WHERE type=$type AND trans_no=$type_no", "could not get transaction link for type=$type and trans_no=$type_no");
+ return $row[0];
+}
+//----------------------------------------------------------------------------------------
 
 ?>

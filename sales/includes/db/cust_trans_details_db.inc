@@ -20,7 +20,7 @@ function get_customer_trans_details($debtor_trans_type, $debtor_trans_no)
 		".TB_PREF."stock_master.units
 		FROM ".TB_PREF."debtor_trans_details,".TB_PREF."stock_master
 		WHERE debtor_trans_no=$debtor_trans_no
-		AND debtor_trans_type=$debtor_trans_type
+		AND debtor_trans_type=$debtor_trans_type 
 		AND ".TB_PREF."stock_master.stock_id=".TB_PREF."debtor_trans_details.stock_id
 		ORDER BY id";
 
@@ -46,11 +46,12 @@ function void_customer_trans_details($type, $type_no)
 
 function add_customer_trans_detail_item($debtor_trans_type, $debtor_trans_no, $stock_id, $description,
 	$Location, $date_, $quantity, $unit_price, $unit_tax, $discount_percent,
-	$reference,	$std_cost)
+	$reference, $std_cost)
 {
 	add_customer_trans_detail_item_base($debtor_trans_type, $debtor_trans_no, $stock_id, $description,
 		$quantity, $unit_price, $unit_tax, $discount_percent, $std_cost);
 
+    if($debtor_trans_type==13)
 	add_stock_move_customer($debtor_trans_type, $stock_id, $debtor_trans_no, $Location,
 		$date_, $reference, $quantity, $std_cost, 1, $unit_price+$unit_tax, $discount_percent);
 

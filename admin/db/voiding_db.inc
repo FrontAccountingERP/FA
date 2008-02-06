@@ -32,6 +32,7 @@ function void_transaction($type, $type_no, $date_, $memo_)
 		case 10 : // it's a customer invoice
 		case 11 : // it's a customer credit note
 		case 12 : // it's a customer payment
+		case 13 : // it's a customer dispatch
 			if (!exists_customer_trans($type, $type_no))
 				return false;
 			post_void_customer_trans($type, $type_no);

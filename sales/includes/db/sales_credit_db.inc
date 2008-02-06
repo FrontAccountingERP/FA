@@ -114,14 +114,14 @@ function credit_invoice($credit_items, $invoice_no, $order_no,
 		{
 
 			// always deduct the credited/returned quantities from the sales order
-			dispatch_sales_order_item($order_no, $order_line->id, -$order_line->qty_dispatched);
-
+			dispatch_sales_order_item($order_no, $order_line->stock_id, -$order_line->qty_dispatched, $order_line->id);
+			
 			//if (($_POST['credit_type']=="Return") OR ($_POST['ItemsAction']==1))
 			/*{
-				$sql = "UPDATE ".TB_PREF."sales_order_details
-							SET qty_invoiced = qty_invoiced - " . $order_line->qty_dispatched . "
-						WHERE order_no = " . $order_no . "
-						AND id = '" . $order_line->id . "'";
+				$sql = "UPDATE ".TB_PREF."sales_order_details 
+							SET qty_sent = qty_sent - " . $order_line->qty_dispatched . "
+						WHERE order_no = " . $order_no . " 
+						AND stk_code = '" . $order_line->stock_id . "'";
 				$result = db_query($sql,"The sales order detail record could not be updated for the reduced quantity invoiced");
 			}*/
 

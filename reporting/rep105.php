@@ -99,7 +99,7 @@ function print_order_status_list()
 	$aligns = array('left',	'left',	'right', 'right', 'right', 'right',	'right');
 
 	$headers = array(_('Code'),	_('Description'), _('Ordered'),	_('Invoiced'),
-		_('Outstanding'), _(' '));
+		_('Outstanding'), '');
     
     $params =   array( 	0 => $comments,
 	    				1 => array(  'text' => _('Period'), 'from' => $from, 'to' => $to),

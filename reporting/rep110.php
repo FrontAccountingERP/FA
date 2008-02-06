@@ -3,9 +3,10 @@
 $page_security = 2;
 // ----------------------------------------------------------------
 // $ Revision:	2.0 $
-// Creator:	Joe Hunt
-// date_:	2005-05-19
-// Title:	Print Invoices
+// Creator:	Janusz Dobrwolski
+// date_:	2008-01-14
+// Title:	Print Delivery Notes
+// draft version!
 // ----------------------------------------------------------------
 $path_to_root="../";
 
@@ -17,11 +18,11 @@ include_once($path_to_root . "sales/includes/sales_db.inc");
 //----------------------------------------------------------------------------------------------------
 
 // trial_inquiry_controls();
-print_invoices();
+print_deliveries();
 
 //----------------------------------------------------------------------------------------------------
 
-function print_invoices()
+function print_deliveries()
 {
 	global $path_to_root;
 	
@@ -29,11 +30,8 @@ function print_invoices()
 	
 	$from = $_POST['PARAM_0'];
 	$to = $_POST['PARAM_1'];
-	$currency = $_POST['PARAM_2'];
-	$bankaccount = $_POST['PARAM_3'];
-	$email = $_POST['PARAM_4'];	
-	$paylink = $_POST['PARAM_5'];	
-	$comments = $_POST['PARAM_6'];
+	$email = $_POST['PARAM_2'];	
+	$comments = $_POST['PARAM_3'];
 
 	if ($from == null)
 		$from = 0;
@@ -49,15 +47,13 @@ function print_invoices()
 	// $headers in doctext.inc	
 	$aligns = array('left',	'left',	'right', 'left', 'right', 'right', 'right');
 	
-	$params = array('comments' => $comments,
-					'bankaccount' => $bankaccount);
+	$params = array('comments' => $comments);
 	
-	$baccount = get_bank_account($params['bankaccount']);
 	$cur = get_company_Pref('curr_default');
 	
 	if ($email == 0)
 	{
-		$rep = new FrontReport(_('INVOICE'), "InvoiceBulk.pdf", user_pagesize());
+		$rep = new FrontReport(_('DELIVERY'), "DeliveryNoteBulk.pdf", user_pagesize());
 		$rep->currency = $cur;
 		$rep->Font();
 		$rep->Info($params, $cols, null, $aligns);
@@ -65,39 +61,25 @@ function print_invoices()
 
 	for ($i = $fno[0]; $i <= $tno[0]; $i++)
 	{
-		for ($j = 10; $j <= 11; $j++)
-		{
-			if (!exists_customer_trans($j, $i))
+			if (!exists_customer_trans(13, $i))
 				continue;
-			$myrow = get_customer_trans($i, $j);
+			$myrow = get_customer_trans($i, 13);
 			$branch = get_branch($myrow["branch_code"]);
-			$branch['disable_branch'] = $paylink; // helper
-			if ($j == 10)
-				$sales_order = get_sales_order($myrow["order_"]);
-			else
-				$sales_order = null;
+			$sales_order = get_sales_order($myrow["order_"]); // ?
 			if ($email == 1)
 			{
 				$rep = new FrontReport("", "", user_pagesize());
 				$rep->currency = $cur;
 				$rep->Font();
-				if ($j == 10)
-				{
-					$rep->title = _('INVOICE');
-					$rep->filename = "Invoice" . $myrow['reference'] . ".pdf";
-				}
-				else	
-				{
-					$rep->title = _('CREDIT NOTE');
-					$rep->filename = "CreditNote" . $myrow['reference'] . ".pdf";
-				}	
+					$rep->title = _('DELIVERY NOTE');
+					$rep->filename = "Delivery" . $myrow['reference'] . ".pdf";
 				$rep->Info($params, $cols, null, $aligns);
 			}
 			else
-				$rep->title = ($j == 10) ? _('INVOICE') : _('CREDIT NOTE');
-			$rep->Header2($myrow, $branch, $sales_order, $baccount, $j);
+				$rep->title = _('DELIVERY NOTE');
+			$rep->Header2($myrow, $branch, $sales_order, '', 13);
 			
-   			$result = get_customer_trans_details($j, $i);
+   		$result = get_customer_trans_details(13, $i);
 			$SubTotal = 0;
 			while ($myrow2=db_fetch($result))
 			{
@@ -119,10 +101,10 @@ function print_invoices()
 				$rep->TextCol(6, 7,	$DisplayNet, -2);
 				$rep->NewLine(1);
 				if ($rep->row < $rep->bottomMargin + (15 * $rep->lineHeight)) 
-					$rep->Header2($myrow, $branch, $sales_order, $baccount,$j);
+					$rep->Header2($myrow, $branch, $sales_order,'',13);
 			}
 			
-			$comments = get_comments($j, $i);
+			$comments = get_comments(13, $i);
 			if ($comments && db_num_rows($comments))
 			{ 	
 				$rep->NewLine();
@@ -135,7 +117,7 @@ function print_invoices()
 
     		$rep->row = $rep->bottomMargin + (15 * $rep->lineHeight);
 			$linetype = true;
-			$doctype = $j;
+			$doctype=13;
 			if ($rep->currency != $myrow['curr_code'])
 			{
 				include($path_to_root . "reporting/includes/doctext2.inc");			
@@ -151,7 +133,7 @@ function print_invoices()
 			$rep->TextCol(3, 6, $doc_Shipping, -2);
 			$rep->TextCol(6, 7,	$DisplayFreight, -2);
 			$rep->NewLine();
-			$tax_items = get_customer_trans_tax_details($j, $i);
+			$tax_items = get_customer_trans_tax_details(13, $i);
     		while ($tax_item = db_fetch($tax_items)) 
     		{
     			$DisplayTax = number_format2($tax_item['amount'], $dec);
@@ -172,7 +154,7 @@ function print_invoices()
 			$DisplayTotal = number_format2($myrow["ov_freight"] + $myrow["ov_gst"] +
 				$myrow["ov_amount"],$dec);
 			$rep->Font('bold');	
-			$rep->TextCol(3, 6, $doc_TOTAL_INVOICE, - 2);
+			$rep->TextCol(3, 6, $doc_TOTAL_DELIVERY, - 2); 
 			$rep->TextCol(6, 7,	$DisplayTotal, -2);
 			$rep->Font();	
 			if ($email == 1)
@@ -183,9 +165,8 @@ function print_invoices()
 					$myrow['email'] = $branch['email'];
 					$myrow['DebtorName'] = $branch['br_name'];
 				}
-				$rep->End($email, $doc_Invoice_no . " " . $myrow['reference'], $myrow, $j);
+				$rep->End($email, $doc_Delivery_no . " " . $myrow['reference'], $myrow, 13);
 			}	
-		}
 	}
 	if ($email == 0)
 		$rep->End();

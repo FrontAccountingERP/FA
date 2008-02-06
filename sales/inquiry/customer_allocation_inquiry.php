@@ -90,7 +90,11 @@ function get_transactions()
     		$sql .= " AND ".TB_PREF."debtor_trans.due_date < '$today'
 				AND (round(abs(".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + ".TB_PREF."debtor_trans.ov_freight + ".TB_PREF."debtor_trans.ov_discount) - ".TB_PREF."debtor_trans.alloc,6) > 0) ";
     	}
+   	}else
+   	{
+	    $sql .= " AND ".TB_PREF."debtor_trans.type != 13 ";
    	}
+
 
    	if (!check_value('showSettled')) 
    	{

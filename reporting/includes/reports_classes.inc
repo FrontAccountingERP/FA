@@ -246,6 +246,16 @@ class Report
 						FROM ".TB_PREF."debtors_master, ".TB_PREF."debtor_trans WHERE (type=10 OR type=11) AND ".TB_PREF."debtors_master.debtor_no=".TB_PREF."debtor_trans.debtor_no ORDER BY ".TB_PREF."debtor_trans.trans_no DESC";
 					$st .= dup_simple_codeandname_list($sql, "RP_" . $this->id . "_$index", $dummy);
 					break;
+				case 'DELIVERY':
+					$DN = _("DN");
+					$sql = "SELECT 
+					concat(".TB_PREF."debtor_trans.trans_no, '-', ".TB_PREF."debtor_trans.type) AS TNO, concat(".TB_PREF."debtor_trans.trans_no, ' $DN ', 
+					 ".TB_PREF."debtors_master.name) as IName 
+						FROM ".TB_PREF."debtors_master, ".TB_PREF."debtor_trans 
+						WHERE type=13 AND ".TB_PREF."debtors_master.debtor_no=".
+						TB_PREF."debtor_trans.debtor_no ORDER BY ".TB_PREF."debtor_trans.trans_no DESC";
+					$st .= dup_simple_codeandname_list($sql, "RP_" . $this->id . "_$index", $dummy);
+					break;
 				case 'ORDERS':
 					$sql = "SELECT ".TB_PREF."sales_orders.order_no, concat(".TB_PREF."sales_orders.order_no, '-', 
 						".TB_PREF."debtors_master.name) as IName 

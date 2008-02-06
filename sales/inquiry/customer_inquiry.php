@@ -12,7 +12,7 @@ if ($use_popup_windows)
 	$js .= get_js_open_window(900, 500);
 if ($use_date_picker)
 	$js .= get_js_date_picker();
-page(_("Customer Inquiry"), false, false, "", $js);
+page(_("Customer Transactions"), false, false, "", $js);
 
 
 if (isset($_GET['customer_id']))
@@ -37,7 +37,7 @@ date_cells(_("To:"), 'TransToDate', null, 1);
 if (!isset($_POST['filterType']))
 	$_POST['filterType'] = 0;
 
-cust_allocations_list_cells(null, 'filterType', $_POST['filterType']);
+cust_allocations_list_cells(null, 'filterType', $_POST['filterType'], true);
 
 submit_cells('Refresh Inquiry', _("Search"));
 
@@ -121,6 +121,10 @@ function get_transactions()
    		{
 			$sql .= " AND ".TB_PREF."debtor_trans.type = 11 ";
    		}
+   		elseif ($_POST['filterType'] == '5') 
+   		{
+			$sql .= " AND ".TB_PREF."debtor_trans.type = 13 ";
+   		}
 
     	if ($_POST['filterType'] == '2') 
     	{
@@ -130,7 +134,8 @@ function get_transactions()
     	}
    	}
 
-    $sql .= " ORDER BY ".TB_PREF."debtor_trans.tran_date";
+    $sql .= " ORDER BY ".TB_PREF."debtor_trans.tran_date DESC, 
+	  debtor_trans.type,debtor_trans.trans_no ";
 
     return db_query($sql,"No transactions were returned");
 }
@@ -161,10 +166,10 @@ start_table("$table_style width='80%'");
 
 if ($_POST['customer_id'] == reserved_words::get_all())
 	$th = array(_("Type"), _("#"), _("Order"), _("Reference"), _("Date"), _("Due Date"),
-		_("Customer"), _("Branch"), _("Currency"), _("Debit"), _("Credit"), "", "");
+		_("Customer"), _("Branch"), _("Currency"), _("Debit"), _("Credit"), "", "","");
 else		
 	$th = array(_("Type"), _("#"), _("Order"), _("Reference"), _("Date"), _("Due Date"),
-		_("Branch"), _("Debit"), _("Credit"), "", "");
+		_("Branch"), _("Debit"), _("Credit"), "", "","");
 table_header($th);
 
 
@@ -182,6 +187,25 @@ while ($myrow = db_fetch($result))
 	else
 		alt_table_row_color($k);
 
+	$edit_page='';
+	$due_date_str = '';
+	$credit_me_str = '';
+
+	switch($myrow['type']) {
+	 case 10:
+			$due_date_str = sql2date($myrow["due_date"]);
+			/*Show a link to allow an invoice to be credited */
+			// only allow crediting if it's not been totally allocated
+			if ($myrow["TotalAmount"] - $myrow["Allocated"] > 0)
+				$credit_me_str = "<a href='$path_to_root/sales/customer_credit_invoice.php?InvoiceNumber=" . $myrow["trans_no"] . "'>" . _("Credit This") . "</a>";
+   		  $edit_page= $path_to_root.'/sales/customer_invoice.php?ModifyInvoice='
+					. $myrow['trans_no']; 
+			break;
+	 case 13:
+   		$edit_page= $path_to_root.'/sales/customer_delivery.php?ModifyDelivery='
+					. $myrow['trans_no']; break;
+	}
+
 	$date = sql2date($myrow["tran_date"]);
 
 	if ($myrow["order_"] > 0)
@@ -191,22 +215,8 @@ while ($myrow = db_fetch($result))
 
 	$gl_trans_str = get_gl_view_str_cell($myrow["type"], $myrow["trans_no"]);
 
-	$credit_me_str = "";
+//	$print_str = "<a href='$path_to_root/reporting/print_invoice.php?InvoiceNumber=" . $myrow["trans_no"] . "'>" . _("Print") . "</a>";
 
-	$credit_invoice_str = "<a href='$path_to_root/sales/customer_credit_invoice.php?InvoiceNumber=" . $myrow["trans_no"] . "'>" . _("Credit This") . "</a>";
-
-	$due_date_str = "";
-
-	if ($myrow["type"] == 10)
-		$due_date_str = sql2date($myrow["due_date"]);
-
-	if ($myrow["type"] == 10)
-	{
-		/*Show a link to allow an invoice to be credited */
-		// only allow crediting if it's not been totally allocated
-		if ($myrow["TotalAmount"] - $myrow["Allocated"] > 0)
-			$credit_me_str = $credit_invoice_str;
-	}
 
 	$branch_name = "";
 	if ($myrow["branch_code"] > 0) 
@@ -230,21 +240,28 @@ while ($myrow = db_fetch($result))
 		label_cell($myrow["CustCurrCode"]);
 	display_debit_or_credit_cells($myrow["TotalAmount"]);
 	echo $gl_trans_str;
+
+  label_cell($edit_page=='' ? '' :	"<a href='$edit_page'>" . _('Edit') . '</a>');
+	
 	if ($credit_me_str != "")
 		label_cell($credit_me_str, "nowrap");
-
-
+	else
+		label_cell('');
+	
+//	if ($myrow["type"] == 10)
+//		label_cell($print_str, 'nowrap');
+//	else
+//		label_cell('');
+	
 	end_row();
 
 	$j++;
-	If ($j == 12)
+	if ($j == 12)
 	{
 		$j = 1;
 		table_header($th);
-	}
-//end of page full new headings if
-}
-//end of while loop
+	} //end of page full new headings if
+} //end of transaction while loop
 
 end_table(1);
 

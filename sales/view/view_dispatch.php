@@ -11,7 +11,7 @@ include_once($path_to_root . "/sales/includes/sales_db.inc");
 $js = "";
 if ($use_popup_windows)
 	$js .= get_js_open_window(900, 600);
-page(_("View Sales Invoice"), true, false, "", $js);
+page(_("View Sales Dispatch"), true, false, "", $js);
 
 
 if (isset($_GET["trans_no"]))
@@ -25,13 +25,13 @@ elseif (isset($_POST["trans_no"]))
 
 // 3 different queries to get the information - what a JOKE !!!!
 
-$myrow = get_customer_trans($trans_id, 10);
+$myrow = get_customer_trans($trans_id, 13);
 
 $branch = get_branch($myrow["branch_code"]);
 
 $sales_order = get_sales_order($myrow["order_"]);
 
-display_heading(_("SALES INVOICE") . " #$trans_id");
+display_heading(_("DISPATCH NOTE") .' '. _('#').$trans_id);
 
 echo "<br>";
 start_table("$table_style2 width=95%");
@@ -65,8 +65,8 @@ start_table("$table_style width=100%");
 $th = array(_("Delivered To"));
 table_header($th);
 
-//label_row(null, $sales_order["deliver_to"] . "<br>" . nl2br($sales_order["delivery_address"]),
-//	"nowrap");
+label_row(null, $sales_order["deliver_to"] . "<br>" . nl2br($sales_order["delivery_address"]),
+	"nowrap");
 end_table();
 
 echo "</td><td>"; // outer table
@@ -84,17 +84,17 @@ label_cells(_("Shipping Company"), $myrow["shipper_name"], "class='tableheader2'
 label_cells(_("Sales Type"), $myrow["sales_type"], "class='tableheader2'");
 end_row();
 start_row();
-label_cells(_("Invoice Date"), sql2date($myrow["tran_date"]), "class='tableheader2'", "nowrap");
+label_cells(_("Dispatch Date"), sql2date($myrow["tran_date"]), "class='tableheader2'", "nowrap");
 label_cells(_("Due Date"), sql2date($myrow["due_date"]), "class='tableheader2'", "nowrap");
 end_row();
-comments_display_row(10, $trans_id);
+comments_display_row(13, $trans_id);
 end_table();
 
 echo "</td></tr>";
 end_table(1); // outer table
 
 
-$result = get_customer_trans_details(10, $trans_id);
+$result = get_customer_trans_details(13, $trans_id);
 
 start_table("$table_style width=95%");
 
@@ -108,7 +108,7 @@ if (db_num_rows($result) > 0)
 	$sub_total = 0;
 	while ($myrow2 = db_fetch($result))
 	{
-
+		if($myrow2['quantity']==0) continue;
 		alt_table_row_color($k);
 
 		$net = ((1 - $myrow2["discount_percent"]) * $myrow2["FullUnitPrice"] * -$myrow2["quantity"]);
@@ -123,38 +123,38 @@ if (db_num_rows($result) > 0)
 		  	$display_discount = number_format2($myrow2["discount_percent"]*100,user_percent_dec()) . "%";
 	    }
 
-	    label_cell($myrow2["stock_id"]);
-		label_cell($myrow2["StockDescription"]);
+	label_cell($myrow2["stock_id"]);
+	label_cell($myrow2["StockDescription"]);
         qty_cell(-$myrow2["quantity"]);
         label_cell($myrow2["units"], "align=right");
         amount_cell($myrow2["FullUnitPrice"]);
         label_cell($display_discount, "nowrap align=right");
         amount_cell($net);
-		end_row();
+	end_row();
 	} //end while there are line items to print out
 
 } 
 else
-	display_note(_("There are no line items on this invoice."), 1, 2);
+	display_note(_("There are no line items on this dispatch."), 1, 2);
 
 $display_sub_tot = number_format2($sub_total,user_price_dec());
 $display_freight = number_format2($myrow["ov_freight"],user_price_dec());
 
-/*Print out the invoice text entered */
+/*Print out the delivery note text entered */
 label_row(_("Sub-total"), $display_sub_tot, "colspan=6 align=right", 
 	"nowrap align=right width=15%");
 label_row(_("Shipping"), $display_freight, "colspan=6 align=right", "nowrap align=right");
 
-$tax_items = get_customer_trans_tax_details(10, $trans_id);
+$tax_items = get_customer_trans_tax_details(13, $trans_id);
 display_customer_trans_tax_details($tax_items, 6);
 
-$display_total = number_format2($myrow["ov_freight"]+$myrow["ov_gst"]+$myrow["ov_amount"],user_price_dec());
+$display_total = number_format2($myrow["ov_freight"]+$myrow["ov_amount"],user_price_dec());
 
-label_row(_("TOTAL INVOICE"), $display_total, "colspan=6 align=right",
+label_row(_("TOTAL VALUE"), $display_total, "colspan=6 align=right",
 	"nowrap align=right");
 end_table(1);
 
-is_voided_display(10, $trans_id, _("This invoice has been voided."));
+is_voided_display(13, $trans_id, _("This dispatch has been voided."));
 
 end_page(true);
 

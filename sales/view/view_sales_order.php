@@ -32,9 +32,9 @@ start_table("$table_style2 width=95%", 5);
 echo "<tr valign=top><td>";
 display_heading2(_("Order Information"));
 echo "</td><td>";
-display_heading2(_("Sales Invoices"));
+display_heading2(_("Deliveries"));
 echo "</td><td>";
-display_heading2(_("Credit Notes"));
+display_heading2(_("Invoices/Credits"));
 echo "</td></tr>";
 
 echo "<tr valign=top><td>";
@@ -66,6 +66,40 @@ end_table();
 echo "</td><td valign='top'>";
 
 start_table($table_style);
+display_heading2(_("Delivery Notes"));
+
+$th = array(_("#"), _("Ref"), _("Date"), _("Total"));
+table_header($th);
+
+$sql = "SELECT * FROM ".TB_PREF."debtor_trans WHERE type=13 AND order_=" . $_GET['trans_no'];
+$result = db_query($sql,"The related delivery notes could not be retreived");
+
+$delivery_total = 0;
+$k = 0;
+
+while ($del_row = db_fetch($result)) 
+{
+
+	alt_table_row_color($k);
+
+	$this_total = $del_row["ov_freight"] + $del_row["ov_gst"] + $del_row["ov_amount"];
+	$delivery_total += $this_total;
+
+	label_cell(get_customer_trans_view_str($del_row["type"], $del_row["trans_no"]));
+	label_cell($del_row["reference"]);
+	label_cell(sql2date($del_row["tran_date"]));
+	amount_cell($this_total);
+	end_row();
+
+}
+
+label_row(null, number_format2($delivery_total,user_price_dec()), "", "colspan=4 align=right");
+
+end_table();
+echo "</td><td valign='top'>";
+
+start_table($table_style);
+display_heading2(_("Sales Invoices"));
 
 $th = array(_("#"), _("Ref"), _("Date"), _("Total"));
 table_header($th);
@@ -96,7 +130,8 @@ label_row(null, number_format2($invoices_total,user_price_dec()), "", "colspan=4
 
 end_table();
 
-echo "</td><td valign='top'>";
+display_heading2(_("Credit Notes"));
+
 start_table($table_style);
 $th = array(_("#"), _("Ref"), _("Date"), _("Total"));
 table_header($th);
@@ -157,7 +192,7 @@ foreach ($_SESSION['Items']->line_items as $stock_item) {
 	amount_cell($stock_item->discount_percent * 100);
 	amount_cell($line_total);
 	
-	qty_cell($stock_item->qty_inv);
+	qty_cell($stock_item->qty_done);
 	end_row();
 }
 

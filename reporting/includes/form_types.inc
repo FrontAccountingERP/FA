@@ -42,14 +42,17 @@ function add_forms_for_sys_type($trans_type, $trans_id, $ParamFrom=null, $ParamT
 			add_form_entry(51, $trans_type, $trans_id, $ParamFrom, $ParamTo);
 			break;
         
-        case 4 : // bank transfer - withdraw and deposit
+    case 4 : // bank transfer - withdraw and deposit
 			add_form_entry(50, $trans_type, $trans_id, $ParamFrom, $ParamTo);
 			add_form_entry(51, $trans_type, $trans_id, $ParamTo, $ParamFrom);
 			break;		
 		
-		case 10 : // sales invoice - inventory release and invoice forms
-			add_form_entry(60, $trans_type, $trans_id, $ParamFrom); 
+		case 10 : // sales invoice - invoice form
 			add_form_entry(10, $trans_type, $trans_id);
+			break;
+
+		case 13 : // sales dispatch - inventory release
+			add_form_entry(60, $trans_type, $trans_id, $ParamFrom); 
 			break;
 		
 		case 11 : // sales credit - inventory return and credit note forms
