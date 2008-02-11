@@ -4,7 +4,7 @@
 <head>
   <meta content="text/html; charset=ISO-8859-1" http-equiv="content-type" />
 
-  
+
   <title>FrontAccounting Update</title>
 
 </head>
@@ -17,40 +17,42 @@
 <h2>Important Notes</h2>
 
 <ul>
-  <li>You can easily upload all the files to your installation folder on the 
-server overwriting the existing files, <strong><em>if you take these important 
-steps</em></strong>: 
+  <li>You can easily upload all the files to your installation folder on the
+server overwriting the existing files, <strong><em>if you take these important
+steps</em></strong>:
     <ol>
-      <li>Backup&nbsp; (download) the following files to another folder: 
+      <li>Backup&nbsp; (download) the following files to another folder:
         <ol>
-          <li><strong>config_db.php</strong> (contains information about the&nbsp;companies and 
-connection info). 
+          <li><strong>config_db.php</strong> (contains information about the&nbsp;companies and
+connection info).
           </li>
-          <li><strong>config.php</strong> (contains various settings. You only need to 
-backup this file if you have done manually changes to it. 
+          <li><strong>config.php</strong> (contains various settings. You only need to
+backup this file if you have done manually changes to it.
           </li>
-          <li><strong>/lang/installed_languages.inc</strong> (contains information about the 
-installed languages) 
+          <li><strong>/lang/installed_languages.inc</strong> (contains information about the
+installed languages)
           </li>
-          <li><strong>/modules/installed_modules.php</strong> (contains information about 
-installed modules, <strong>only vers. 1.1</strong>) 
+          <li><strong>/modules/installed_modules.php</strong> (contains information about
+installed modules, <strong>only vers. 1.1</strong>)
           </li>
-          <li>if you have made <em>changes to other files</em>, like themes or so, backup 
+          <li>if you have made <em>changes to other files</em>, like themes or so, backup
 these files too. </li>
         </ol>
 
       </li>
-      <li>Upload all the new files. 
+      <li>Upload all the new files.
       </li>
-      <li>Restore the files mentioned in #1. Be <strong>careful</strong> with 
-        <strong>config.db</strong>. Look into variances. There might be new variables in 
-the new version. It might be easier to <em>manually change your former values in 
-the new file</em>. 
+      <li>Restore the files mentioned in #1. Be <strong>careful</strong> with
+        <strong>config.db</strong>. Look into variances. There might be new variables in
+the new version. It might be easier to <em>manually change your former values in
+the new file</em>.
       </li>
-      <li>Rename or remove the /install folder (you have already performed the install 
+      <li>Rename or remove the /install folder (you have already performed the install
 process earlier). </li>
     </ol>
   </li>
+  <li>If there are changes to the database structure, please run the script <strong><em>update_db.php</em></strong>
+from FrontAccounting root installation, Enter the database user and the password and choose the update script from the local harddisk.</li>
 </ul>
 
 <p>&nbsp;</p>

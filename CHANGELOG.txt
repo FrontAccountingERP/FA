@@ -19,6 +19,11 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+11-Feb-2008 Joe Hunt
++ Added file, update_db.php, for updating company databases from an SQL script.
+$ update_db.php (New file)
+  update.html
+  
 06-Fef-2008 Joe Hunt
 + Added Report, Salesman Listing, rep106.php. 
 $ /reporting/reports_main.php
