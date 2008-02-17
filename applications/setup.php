@@ -1,9 +1,9 @@
 <?php
 
 	include_once("./modules/installed_modules.php");
-	class setup_app extends application 
+	class setup_app extends application
 	{
-		function setup_app() 
+		function setup_app()
 		{
 			global $installed_modules;
 			$this->application("system",_("Setup"));
@@ -26,7 +26,7 @@
 
 			$this->add_module(_("Maintanance"));
 			$this->add_lapp_function(2, _("Void a Transaction"),"admin/void_transaction.php?");
-			$this->add_lapp_function(2, _("View or Print Transactions"),"admin/view_print_transaction.php?");
+			$this->add_lapp_function(2, _("View Transactions"),"admin/view_print_transaction.php?");
 			$this->add_rapp_function(2, _("Backup and Restore"),"admin/backups.php?", 15);
 			$this->add_rapp_function(2, _("Create/Update Companies"),"admin/create_coy.php?", 14);
 			$this->add_rapp_function(2, _("Install/Update Languages"),"admin/inst_lang.php?", 14);
@@ -38,7 +38,7 @@
 					if ($mod["tab"] == "system")
 						$this->add_rapp_function(2, $mod["name"], "modules/".$mod["path"]."/".$mod["filename"]."?");
 				}
-			}	
+			}
 		}
 	}
 

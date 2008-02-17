@@ -19,6 +19,17 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+17-Feb-2008 Joe Hunt
+! Minor change in menu and function in view_print_transaction.php
+$ /admin/view_print_transaction.php
+  /application/setup.php
++ Preparing for print of single documents
+$ /reporting/includes/reporting.inc
+! Removing 'out' field in table tax_types
+$ /sql/alter.sql
+  /taxes/tax_types.php
+  /taxes/db/tax_types_db.inc
+
 11-Feb-2008 Joe Hunt
 + Added file, update_db.php, for updating company databases from an SQL script.
 $ update_db.php (New file)
