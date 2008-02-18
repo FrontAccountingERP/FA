@@ -29,6 +29,8 @@ $ /reporting/includes/reporting.inc
 $ /sql/alter.sql
   /taxes/tax_types.php
   /taxes/db/tax_types_db.inc
++ Added 2 functions in ui_input.inc, button and button_cell
+  /includes/ui/ui_input.inc
 
 11-Feb-2008 Joe Hunt
 + Added file, update_db.php, for updating company databases from an SQL script.

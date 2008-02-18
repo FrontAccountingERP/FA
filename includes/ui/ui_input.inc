@@ -87,6 +87,20 @@ function submit_row($name, $value, $right=true, $extra="")
 	submit_cells($name, $value, $extra);
 	echo "</tr>\n";
 }
+//---------------------------------------------------------------------------------
+
+function button($name, $value, $onclick)
+{
+	echo "<input type=\"button\" class=\"inputsubmit\" name=\"$name\" value=\"$value\" onclick=\"$onclick\" />\n";
+}
+
+function button_cell($name, $value, $onclick)
+{
+	echo "<td>";
+	button($name, $value, $onclick);
+	echo "</td>\n";
+}
+
 //-----------------------------------------------------------------------------------
 
 function check_value($name)

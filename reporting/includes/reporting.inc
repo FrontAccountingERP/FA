@@ -75,8 +75,9 @@ function printDocument(docno) {
 // Ex. label_cell(print_document_link($myrow['order_no'], _("Print")));
 // or display_note(print_document_link($order_no, _("Print this order")));
 // or if a button
-// echo "<input type='button' name='button' value='"._("Print this order")."' onclick=\"".
-// 		print_document_link($order_no, "", false)."\" class='inputsubmit' />\n";
+// button("button", _("Print this order"), print_document_link($order_no, "", false))";
+// or if a button inside a TD
+// button_cell("button", _("Print this order"), print_document_link($order_no, "", false))";
 
 function print_document_link($doc_no, $link_text, $link=true)
 {
