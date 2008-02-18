@@ -7,50 +7,68 @@ function print_hidden_script($type_no)
 	global $path_to_root;
 	include_once($path_to_root . "/includes/types.inc");
 	$action = "";
-	$_POST['PARAM_0'] = $_POST['PARAM_1'] = 0; // the document no. is updated in print_document_link().
 
 	switch ($type_no)
 	{
 		case systypes::sales_order() :
 			$action = "$path_to_root/reporting/rep109.php";
-			$_POST['PARAM_2'] = ""; // currency
-			$_POST['PARAM_3'] = ""; // bank account
-			$_POST['PARAM_4'] = 0; // email
-			$_POST['PARAM_5'] = 0; // quote
-			$_POST['PARAM_6'] = ""; // comments
-			$params = 7;
+			$ar = array(
+				'PARAM_0' => 0,		// from - these values are updated in print_document_link()
+				'PARAM_1' => 0, 	// to
+				'PARAM_2' => "", 	// currency
+				'PARAM_3' => "", 	// bank account
+				'PARAM_4' => 0, 	// email
+				'PARAM_5' => 0, 	// quote
+				'PARAM_6' => ""); 	// comments
 			break;
 		case systypes::cust_dispatch() :
 			$action = "$path_to_root/reporting/rep110.php";
-			$_POST['PARAM_2'] = 0; // email
-			$_POST['PARAM_3'] = ""; // comments
-			$params = 4;
+			$ar = array(
+				'PARAM_0' => 0,		// from - these values are updated in print_document_link()
+				'PARAM_1' => 0, 	// to
+				'PARAM_2' => 0, 	// email
+				'PARAM_3' => ""); 	// comments
 			break;
 		case 10 : // Sales Invoice
 		case 11 : // Customer Credit Note
 			$action = "$path_to_root/reporting/rep107.php";
-			$_POST['PARAM_2'] = ""; // currency
-			$_POST['PARAM_3'] = ""; // bank account
-			$_POST['PARAM_4'] = 0; // email
-			$_POST['PARAM_5'] = ""; // paylink
-			$_POST['PARAM_6'] = ""; // comments
-			$params = 7;
+			$ar = array(
+				'PARAM_0' => 0,		// from - these values are updated in print_document_link()
+				'PARAM_1' => 0, 	// to
+				'PARAM_2' => "", 	// currency
+				'PARAM_3' => "", 	// bank account
+				'PARAM_4' => 0, 	// email
+				'PARAM_5' => "", 	// paylink
+				'PARAM_6' => ""); 	// comments
 			break;
 		case systypes::po() :
 			$action = "$path_to_root/reporting/rep209.php";
-			$_POST['PARAM_2'] = ""; // currency
-			$_POST['PARAM_3'] = ""; // bank account
-			$_POST['PARAM_4'] = 0; // email
-			$_POST['PARAM_5'] = ""; // comments
-			$params = 6;
+			$ar = array(
+				'PARAM_0' => 0,		// from - these values are updated in print_document_link()
+				'PARAM_1' => 0, 	// to
+				'PARAM_2' => "", 	// currency
+				'PARAM_3' => "", 	// bank account
+				'PARAM_4' => 0, 	// email
+				'PARAM_5' => ""); 	// comments
 			break;
 	}
-	$st = "";
-	for ($i = 0; $i < $params; $i++)
+	$st = "<form method='post' name='pdf_form' action='$action'>";
+	foreach ($ar as $key => $value)
 	{
-		$st .= "<input type='hidden' name='PARAM_".$i."' value='".$_POST['PARAM_'.$i]."' />";
+		$st .= "<input type='hidden' name='$key' value='$value' />";
 	}
-	$st = "<form method='post' name='pdf_form' action='$action'>" . $st . "</form>\n";
+	$st .= "</form>\n";
+	$st .= "<script type='text/javascript'>
+<!--
+function printDocument(docno) {
+  document.pdf_form.PARAM_0.value = document.pdf_form.PARAM_1.value = docno;
+  window.open('','REP_WINDOW','toolbar=no,scrollbar=no,resizable=yes,menubar=no');
+  document.pdf_form.target='REP_WINDOW';
+  document.pdf_form.submit();
+}
+-->
+</script>\n";
+
 	echo $st;
 }
 
@@ -62,14 +80,9 @@ function print_hidden_script($type_no)
 
 function print_document_link($doc_no, $link_text, $link=true)
 {
-	$st = "document.pdf_form.PARAM_0.value = '$doc_no';";
-	$st .= "document.pdf_form.PARAM_1.value = '$doc_no';";
-	$st .= "window.open('','REP_WINDOW','toolbar=no,scrollbar=no,resizable=yes,menubar=no');
-	  	document.pdf_form.target='REP_WINDOW';
-		document.pdf_form.submit();\n";
 	if ($link)
-		return "<a href=\"javascript:$st\">" . $link_text . "</a>";
+		return "<a href=\"javascript:printDocument('$doc_no');\">$link_text</a>";
 	else
-		return "javascript:$st";
+		return "javascript:printDocument('$doc_no');";
 }
 ?>
