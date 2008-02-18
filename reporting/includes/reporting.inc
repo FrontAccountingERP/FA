@@ -1,6 +1,6 @@
 <?php
 
-// Put this on the page only once, e.g. print_hidden_script(systypes::sales_order());
+// Put this on the page only once an outside a form, e.g. print_hidden_script(systypes::sales_order());
 
 function print_hidden_script($type_no)
 {
@@ -16,7 +16,7 @@ function print_hidden_script($type_no)
 				'PARAM_0' => 0,		// from - these values are updated in print_document_link()
 				'PARAM_1' => 0, 	// to
 				'PARAM_2' => "", 	// currency
-				'PARAM_3' => "", 	// bank account
+				'PARAM_3' => get_first_bank_account(), 	// bank account
 				'PARAM_4' => 0, 	// email
 				'PARAM_5' => 0, 	// quote
 				'PARAM_6' => ""); 	// comments
@@ -36,7 +36,7 @@ function print_hidden_script($type_no)
 				'PARAM_0' => 0,		// from - these values are updated in print_document_link()
 				'PARAM_1' => 0, 	// to
 				'PARAM_2' => "", 	// currency
-				'PARAM_3' => "", 	// bank account
+				'PARAM_3' => get_first_bank_account(), 	// bank account
 				'PARAM_4' => 0, 	// email
 				'PARAM_5' => "", 	// paylink
 				'PARAM_6' => ""); 	// comments
@@ -47,7 +47,7 @@ function print_hidden_script($type_no)
 				'PARAM_0' => 0,		// from - these values are updated in print_document_link()
 				'PARAM_1' => 0, 	// to
 				'PARAM_2' => "", 	// currency
-				'PARAM_3' => "", 	// bank account
+				'PARAM_3' => get_first_bank_account(), 	// bank account
 				'PARAM_4' => 0, 	// email
 				'PARAM_5' => ""); 	// comments
 			break;
@@ -85,5 +85,14 @@ function print_document_link($doc_no, $link_text, $link=true)
 		return "<a href=\"javascript:printDocument('$doc_no');\">$link_text</a>";
 	else
 		return "javascript:printDocument('$doc_no');";
+}
+
+function get_first_bank_account()
+{
+	$sql = "SELECT ".TB_PREF."bank_accounts.account_code FROM ".TB_PREF."bank_accounts, ".TB_PREF."company
+		WHERE bank_curr_code=curr_default LIMIT 0, 1";
+	$result = db_query($sql);
+	$row = db_fetch_row($result);
+	return $row[0];
 }
 ?>
