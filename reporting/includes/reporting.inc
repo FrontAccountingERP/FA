@@ -1,6 +1,7 @@
 <?php
 
 // Put this on the page only once an outside a form, e.g. print_hidden_script(systypes::sales_order());
+// If you have both invoices and credit notes on the same page use 10 or 11. Is doesn't matter which.
 
 function print_hidden_script($type_no)
 {
@@ -39,7 +40,8 @@ function print_hidden_script($type_no)
 				'PARAM_3' => get_first_bank_account(), 	// bank account
 				'PARAM_4' => 0, 	// email
 				'PARAM_5' => "", 	// paylink
-				'PARAM_6' => ""); 	// comments
+				'PARAM_6' => "", 	// comments
+				'PARAM_7' => 0); 	// IV or CN
 			break;
 		case systypes::po() :
 			$action = "$path_to_root/reporting/rep209.php";
@@ -60,8 +62,10 @@ function print_hidden_script($type_no)
 	$st .= "</form>\n";
 	$st .= "<script type='text/javascript'>
 <!--
-function printDocument(docno) {
+function printDocument(docno, typeno) {
   document.pdf_form.PARAM_0.value = document.pdf_form.PARAM_1.value = docno;
+  if (typeno == 10 || typeno == 11)
+  	document.pdf_form.PARAM_7.value = typeno;
   window.open('','REP_WINDOW','toolbar=no,scrollbar=no,resizable=yes,menubar=no');
   document.pdf_form.target='REP_WINDOW';
   document.pdf_form.submit();
@@ -78,13 +82,15 @@ function printDocument(docno) {
 // button("button", _("Print this order"), print_document_link($order_no, "", false))";
 // or if a button inside a TD
 // button_cell("button", _("Print this order"), print_document_link($order_no, "", false))";
+//
+// You only need full parameter list for invoices/credit notes
 
-function print_document_link($doc_no, $link_text, $link=true)
+function print_document_link($doc_no, $link_text, $link=true, $type_no=0)
 {
 	if ($link)
-		return "<a href=\"javascript:printDocument('$doc_no');\">$link_text</a>";
+		return "<a href=\"javascript:printDocument('$doc_no', '$type_no');\">$link_text</a>";
 	else
-		return "javascript:printDocument('$doc_no');";
+		return "javascript:printDocument('$doc_no', '$type_no');";
 }
 
 function get_first_bank_account()

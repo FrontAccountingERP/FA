@@ -24,15 +24,15 @@ print_invoices();
 function print_invoices()
 {
 	global $path_to_root;
-	
+
 	include_once($path_to_root . "reporting/includes/pdf_report.inc");
-	
+
 	$from = $_POST['PARAM_0'];
 	$to = $_POST['PARAM_1'];
 	$currency = $_POST['PARAM_2'];
 	$bankaccount = $_POST['PARAM_3'];
-	$email = $_POST['PARAM_4'];	
-	$paylink = $_POST['PARAM_5'];	
+	$email = $_POST['PARAM_4'];
+	$paylink = $_POST['PARAM_5'];
 	$comments = $_POST['PARAM_6'];
 
 	if ($from == null)
@@ -40,21 +40,21 @@ function print_invoices()
 	if ($to == null)
 		$to = 0;
 	$dec =user_price_dec();
-	
+
 	$fno = explode("-", $from);
 	$tno = explode("-", $to);
 
 	$cols = array(4, 60, 225, 300, 325, 385, 450, 515);
 
-	// $headers in doctext.inc	
+	// $headers in doctext.inc
 	$aligns = array('left',	'left',	'right', 'left', 'right', 'right', 'right');
-	
+
 	$params = array('comments' => $comments,
 					'bankaccount' => $bankaccount);
-	
+
 	$baccount = get_bank_account($params['bankaccount']);
 	$cur = get_company_Pref('curr_default');
-	
+
 	if ($email == 0)
 	{
 		$rep = new FrontReport(_('INVOICE'), "InvoiceBulk.pdf", user_pagesize());
@@ -67,6 +67,8 @@ function print_invoices()
 	{
 		for ($j = 10; $j <= 11; $j++)
 		{
+			if (isset($_POST['PARAM_7']) && $_POST['PARAM_7'] != $j)
+				continue;
 			if (!exists_customer_trans($j, $i))
 				continue;
 			$myrow = get_customer_trans($i, $j);
@@ -86,17 +88,17 @@ function print_invoices()
 					$rep->title = _('INVOICE');
 					$rep->filename = "Invoice" . $myrow['reference'] . ".pdf";
 				}
-				else	
+				else
 				{
 					$rep->title = _('CREDIT NOTE');
 					$rep->filename = "CreditNote" . $myrow['reference'] . ".pdf";
-				}	
+				}
 				$rep->Info($params, $cols, null, $aligns);
 			}
 			else
 				$rep->title = ($j == 10) ? _('INVOICE') : _('CREDIT NOTE');
 			$rep->Header2($myrow, $branch, $sales_order, $baccount, $j);
-			
+
    			$result = get_customer_trans_details($j, $i);
 			$SubTotal = 0;
 			while ($myrow2=db_fetch($result))
@@ -108,7 +110,7 @@ function print_invoices()
 	    		$DisplayNet = number_format2($Net,$dec);
 	    		if ($myrow2["discount_percent"]==0)
 		  			$DisplayDiscount ="";
-	    		else 
+	    		else
 		  			$DisplayDiscount = number_format2($myrow2["discount_percent"]*100,user_percent_dec()) . "%";
 				$rep->TextCol(0, 1,	$myrow2['stock_id'], -2);
 				$rep->TextCol(1, 2,	$myrow2['StockDescription'], -2);
@@ -118,18 +120,18 @@ function print_invoices()
 				$rep->TextCol(5, 6,	$DisplayDiscount, -2);
 				$rep->TextCol(6, 7,	$DisplayNet, -2);
 				$rep->NewLine(1);
-				if ($rep->row < $rep->bottomMargin + (15 * $rep->lineHeight)) 
+				if ($rep->row < $rep->bottomMargin + (15 * $rep->lineHeight))
 					$rep->Header2($myrow, $branch, $sales_order, $baccount,$j);
 			}
-			
+
 			$comments = get_comments($j, $i);
 			if ($comments && db_num_rows($comments))
-			{ 	
+			{
 				$rep->NewLine();
-    			while ($comment=db_fetch($comments)) 
+    			while ($comment=db_fetch($comments))
     				$rep->TextColLines(0, 6, $comment['memo_'], -2);
-			}	
-				
+			}
+
    			$DisplaySubTot = number_format2($SubTotal,$dec);
    			$DisplayFreight = number_format2($myrow["ov_freight"],$dec);
 
@@ -138,13 +140,13 @@ function print_invoices()
 			$doctype = $j;
 			if ($rep->currency != $myrow['curr_code'])
 			{
-				include($path_to_root . "reporting/includes/doctext2.inc");			
-			}	
+				include($path_to_root . "reporting/includes/doctext2.inc");
+			}
 			else
 			{
-				include($path_to_root . "reporting/includes/doctext.inc");			
-			}	
-    		
+				include($path_to_root . "reporting/includes/doctext.inc");
+			}
+
 			$rep->TextCol(3, 6, $doc_Sub_total, -2);
 			$rep->TextCol(6, 7,	$DisplaySubTot, -2);
 			$rep->NewLine();
@@ -152,29 +154,29 @@ function print_invoices()
 			$rep->TextCol(6, 7,	$DisplayFreight, -2);
 			$rep->NewLine();
 			$tax_items = get_customer_trans_tax_details($j, $i);
-    		while ($tax_item = db_fetch($tax_items)) 
+    		while ($tax_item = db_fetch($tax_items))
     		{
     			$DisplayTax = number_format2($tax_item['amount'], $dec);
     			if ($tax_item['included_in_price'])
     			{
-					$rep->TextCol(3, 7, $doc_Included . " " . $tax_item['tax_type_name'] . 
+					$rep->TextCol(3, 7, $doc_Included . " " . $tax_item['tax_type_name'] .
 						" (" . $tax_item['rate'] . "%) " . $doc_Amount . ":" . $DisplayTax, -2);
-				}		
+				}
     			else
     			{
-					$rep->TextCol(3, 6, $tax_item['tax_type_name'] . " (" . 
+					$rep->TextCol(3, 6, $tax_item['tax_type_name'] . " (" .
 						$tax_item['rate'] . "%)", -2);
 					$rep->TextCol(6, 7,	$DisplayTax, -2);
-				}    			
+				}
 				$rep->NewLine();
     		}
     		$rep->NewLine();
 			$DisplayTotal = number_format2($myrow["ov_freight"] + $myrow["ov_gst"] +
 				$myrow["ov_amount"],$dec);
-			$rep->Font('bold');	
+			$rep->Font('bold');
 			$rep->TextCol(3, 6, $doc_TOTAL_INVOICE, - 2);
 			$rep->TextCol(6, 7,	$DisplayTotal, -2);
-			$rep->Font();	
+			$rep->Font();
 			if ($email == 1)
 			{
 				$myrow['dimension_id'] = $paylink; // helper for pmt link
@@ -184,7 +186,7 @@ function print_invoices()
 					$myrow['DebtorName'] = $branch['br_name'];
 				}
 				$rep->End($email, $doc_Invoice_no . " " . $myrow['reference'], $myrow, $j);
-			}	
+			}
 		}
 	}
 	if ($email == 0)
