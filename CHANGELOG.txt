@@ -19,6 +19,11 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+21-Feb-2008 Joe Hunt
++ Added Print for documents in /admin/view_print_transaction.php (according to our new routines).
+$ /admin/view_print_transaction.php
+  /applications/setup.php
+  
 17-Feb-2008 Joe Hunt
 ! Minor change in menu and function in view_print_transaction.php
 $ /admin/view_print_transaction.php

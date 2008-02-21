@@ -13,12 +13,13 @@ include_once($path_to_root . "/reporting/includes/reporting.inc");
 $js = "";
 if ($use_popup_windows)
 	$js .= get_js_open_window(800, 500);
-page(_("View Transactions"), false, false, "", $js);
+page(_("View or Print Transactions"), false, false, "", $js);
 
 //----------------------------------------------------------------------------------------
 
 function viewing_controls()
 {
+	display_note(_("Only documents can be printed."));
     start_form(false, true);
 
     start_table("class='tablestyle_noborder'");
@@ -102,12 +103,25 @@ function handle_search()
 			echo _("There are no transactions for the given parameters.");
 			return;
 		}
-
-		start_table($table_style);
-		if ($trans_ref)
-			$th = array(_("#"), _("Reference"), _("View"), _("GL"));
+		$print_type = $_POST['filterType'];
+		$print_out = ($print_type == 10 || $print_type == 11 || $print_type == systypes::cust_dispatch() ||
+			$print_type == systypes::po() || $print_type == systypes::sales_order());
+		if ($print_out)
+		{
+			print_hidden_script($print_type);
+			if ($trans_ref)
+				$th = array(_("#"), _("Reference"), _("View"), _("Print"), _("GL"));
+			else
+				$th = array(_("#"), _("View"), _("Print"), _("GL"));
+		}
 		else
-			$th = array(_("#"), _("View"), _("GL"));
+		{
+			if ($trans_ref)
+				$th = array(_("#"), _("Reference"), _("View"), _("GL"));
+			else
+				$th = array(_("#"), _("View"), _("GL"));
+		}
+		start_table($table_style);
 		table_header($th);
 		$k = 0;
 		while ($line = db_fetch($result))
@@ -119,6 +133,8 @@ function handle_search()
 			if ($trans_ref)
 				label_cell($line[$trans_ref]);
 			label_cell(get_trans_view_str($_POST['filterType'],$line[$trans_no_name], _("View")));
+			if ($print_out)
+				label_cell(print_document_link($line[$trans_no_name], _("Print"), true,	$print_type));
         	label_cell(get_gl_view_str($_POST['filterType'], $line[$trans_no_name], _("View GL")));
 
 	    	end_row();
