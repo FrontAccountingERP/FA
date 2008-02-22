@@ -59,7 +59,7 @@ function check_valid_entries()
 		echo _("The ending transaction number is expected to be numeric and greater than zero.");
 		return false;
 	}
-	if ($_POST['filterType'] == "")
+	if (!isset($_POST['filterType']) || $_POST['filterType'] == "")
 		return false;
 
 	return true;
