@@ -111,7 +111,7 @@ function print_salesman_list()
 				$rep->TextCol(6, 7, number_format2($subprov, $dec));
     			$rep->Line($rep->row  - 4);
     			$rep->NewLine(2);
-				$rep->Line($rep->row);
+				//$rep->Line($rep->row);
 			}
 			$rep->TextCol(0, 2,	$myrow['salesman_code']." ".$myrow['salesman_name']);
 			$rep->TextCol(2, 3,	$myrow['salesman_phone']);
