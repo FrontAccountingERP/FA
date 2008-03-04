@@ -34,8 +34,11 @@ function add_grn(&$po, $date_, $reference, $location)
 			$myrow = db_fetch($result);
 			$material_cost = $myrow['material_cost'];
 			$qoh = get_qoh_on_date($order_line->stock_id, null, $date_);
-			$material_cost = ($qoh * $material_cost + $order_line->receive_qty * $price_in_home_currency) /
-				($qoh + $order_line->receive_qty);
+			if ($qoh + $order_line->receive_qty <= 0)
+				$material_cost = 0;
+			else
+				$material_cost = ($qoh * $material_cost + $order_line->receive_qty * $price_in_home_currency) /
+					($qoh + $order_line->receive_qty);
 			$sql = "UPDATE ".TB_PREF."stock_master SET material_cost=$material_cost
 				WHERE stock_id='$order_line->stock_id'";
 			db_query($sql,"The cost details for the inventory item could not be updated");

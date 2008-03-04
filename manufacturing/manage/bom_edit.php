@@ -21,9 +21,6 @@ check_db_has_workcentres(_("There are no work centres defined in the system. BOM
 if (isset($_GET["NewItem"]))
 {
 	$_POST['stock_id'] = $_GET["NewItem"];
-	if (isset($_GET['item']) && isset($_GET['qty']))
-		add_material_cost($_GET["NewItem"], $_GET['item'], $_GET['qty'], false);
-
 }
 if (isset($_GET['stock_id']))
 {
@@ -50,24 +47,6 @@ elseif (isset($_POST["selected_component"]))
 	$selected_component = $_POST["selected_component"];
 }
 
-function add_material_cost($parent, $item, $n, $add=true)
-{
-	$sql = "SELECT material_cost FROM ".TB_PREF."stock_master WHERE stock_id='$parent'";
-	$result = db_query($sql);
-	$myrow = db_fetch($result);
-	$material_cost = $myrow['material_cost'];
-	$sql = "SELECT material_cost FROM ".TB_PREF."stock_master WHERE stock_id='$item'";
-	$result = db_query($sql);
-	$myrow = db_fetch($result);
-	$material_cost2 = $myrow['material_cost'];
-	if ($add)
-		$material_cost += ($material_cost2 * $n);
-	else
-		$material_cost -= ($material_cost2 * $n);
-	$sql = "UPDATE ".TB_PREF."stock_master SET material_cost=$material_cost
-		WHERE stock_id='$parent'";
-	db_query($sql,"The cost details for the inventory item could not be updated");
-}
 
 //--------------------------------------------------------------------------------------------------
 
@@ -125,8 +104,8 @@ function display_bom_items($selected_parent)
         label_cell($myrow["WorkCentreDescription"]);
         label_cell($myrow["quantity"]);
         label_cell($myrow["units"]);
-        edit_link_cell(SID . "NewItem=$selected_parent&selected_component=" . $myrow["id"]."&item=".$myrow['component']."&qty=".$myrow['quantity']);
-        delete_link_cell(SID . "delete=" . $myrow["id"]. "&stock_id=" . $_POST['stock_id']."&item=".$myrow['component']."&qty=".$myrow['quantity']);
+        edit_link_cell(SID . "NewItem=$selected_parent&selected_component=" . $myrow["id"]);
+        delete_link_cell(SID . "delete=" . $myrow["id"]. "&stock_id=" . $_POST['stock_id']);
         end_row();
 
 	} //END WHILE LIST LOOP
@@ -160,8 +139,6 @@ function on_submit($selected_parent, $selected_component)
 			AND id='" . $selected_component . "'";
 		check_db_error("Could not update this bom component", $sql);
 
-		add_material_cost($selected_parent, $_POST['item'], $_POST['quantity'], true);
-
 		db_query($sql,"could not update bom");
 
 	}
@@ -189,7 +166,6 @@ function on_submit($selected_parent, $selected_component)
 
 				db_query($sql,"check failed");
 
-				add_material_cost($selected_parent, $_POST['component'], $_POST['quantity'], true);
 				//$msg = _("A new component part has been added to the bill of material for this item.");
 
 			}
@@ -211,10 +187,9 @@ function on_submit($selected_parent, $selected_component)
 
 if (isset($_GET['delete']))
 {
-	$sql = "DELETE FROM ".TB_PREF."bom WHERE id='".$_GET['delete']."'";
-	db_query($sql,"Could not delete this bom components");
 
-	add_material_cost($_GET['stock_id'], $_GET['item'], $_GET['qty'], false);
+	$sql = "DELETE FROM ".TB_PREF."bom WHERE id='" . $_GET['delete']. "'";
+	db_query($sql,"Could not delete this bom components");
 
 	display_note(_("The component item has been deleted from this bom."));
 
@@ -268,7 +243,6 @@ if (isset($_POST['stock_id']))
 		$_POST['workcentre_added']  = $myrow["workcentre_added"];
 		$_POST['quantity'] = $myrow["quantity"];
 
-		hidden('item', $myrow["component"]);
 		hidden('selected_parent', $selected_parent);
 		hidden('selected_component', $selected_component);
 		label_row(_("Component:"), $myrow["component"] . " - " . $myrow["description"]);

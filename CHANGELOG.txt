@@ -25,6 +25,9 @@ $ -> Affected files
 $ /inventory/cost_update.php
   /purchasing/includes/db/grn_db.inc and
   /manufacturing/manage/bom_edit.php. 
+  /manufacturing/includes/db/work_orders_db.inc
+  /manufacturing/includes/db/work_orders_quick_db.inc
+  /manufacturing/work_order_entry.php
   
 21-Feb-2008 Joe Hunt
 + Added Print for documents in /admin/view_print_transaction.php (according to our new routines).
