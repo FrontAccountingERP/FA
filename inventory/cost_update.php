@@ -30,18 +30,18 @@ if (isset($_GET['stock_id']))
 if (isset($_POST['UpdateData']))
 {
 
-   	$old_cost = $_POST['OldMaterialCost'] + $_POST['OldLabourCost'] + $_POST['OldLabourCost'];
+   	$old_cost = $_POST['OldMaterialCost'] + $_POST['OldLabourCost'] + $_POST['OldOverheadCost'];
    	$new_cost = $_POST['material_cost'] + $_POST['labour_cost'] + $_POST['overhead_cost'];
 
    	$should_update = true;
 
-	if (!is_numeric($_POST['material_cost']) || !is_numeric($_POST['labour_cost']) || 
-		!is_numeric($_POST['overhead_cost'])) 
+	if (!is_numeric($_POST['material_cost']) || !is_numeric($_POST['labour_cost']) ||
+		!is_numeric($_POST['overhead_cost']))
 	{
 		display_error( _("The entered cost is not numeric."));
    	 	$should_update = false;
-	} 
-	elseif ($old_cost == $new_cost) 
+	}
+	elseif ($old_cost == $new_cost)
 	{
    	 	display_error( _("The new cost is the same as the old cost. Cost was not updated."));
    	 	$should_update = false;
@@ -89,20 +89,20 @@ hidden("OldLabourCost", $myrow["labour_cost"]);
 hidden("OldOverheadCost", $myrow["overhead_cost"]);
 
 start_table($table_style2);
-label_row(_("Last Cost"), number_format2($myrow["last_cost"],user_price_dec()), 
+label_row(_("Last Cost"), number_format2($myrow["last_cost"],user_price_dec()),
 	"class='tableheader2'", "nowrap align=right");
 
-text_row(_("Standard Material Cost Per Unit"), "material_cost", 
+text_row(_("Standard Material Cost Per Unit"), "material_cost",
 	number_format($myrow["material_cost"],user_price_dec()), "", "", "class='tableheader2'");
 
 if ($myrow["mb_flag"]=='M')
 {
-	text_row(_("Standard Labour Cost Per Unit"), "labour_cost", 
+	text_row(_("Standard Labour Cost Per Unit"), "labour_cost",
 		number_format($myrow["labour_cost"],user_price_dec()), "", "", "class='tableheader2'");
-	text_row(_("Standard Overhead Cost Per Unit"), "overhead_cost", 
+	text_row(_("Standard Overhead Cost Per Unit"), "overhead_cost",
 		number_format($myrow["overhead_cost"],user_price_dec()), "", "", "class='tableheader2'");
-} 
-else 
+}
+else
 {
 	hidden("labour_cost", 0);
 	hidden("overhead_cost", 0);

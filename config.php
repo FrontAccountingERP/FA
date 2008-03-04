@@ -74,6 +74,9 @@
 	/* use Audit Trails in GL */
 	$use_audit_trail = 0;
 
+ 	/* Integrated base Wiki Help URL or null if not used */
+	$help_base_url = $path_to_root.'/modules/wiki/index.php?n='._('Help').'.';
+
 	/* allow alpha characters in accounts. 0 = numeric, 1 = alpha numeric, 2 = uppercase alpha numeric */
 	$accounts_alpha = 0;
 
@@ -161,6 +164,19 @@
     		array(1,2,3,4,5,6,7,8,9,10,11,12,13,14),
     		array(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15)
     );
+
+	/*
+ 	System tabs. This variable should be in future included from separate file for extended module manager
+	*/
+ 	$applications = array (
+ 		'orders' => _("Sales"),
+ 		'AP'=>_("Purchases"),
+ 		'stock'=> _("Items and Inventory"),
+ 		'manuf'=> _("Manufacturing"),
+ 		'proj'=>_("Dimensions"),
+ 		'GL'=>_("Banking and General Ledger"),
+ 		'system'=>_("Setup")
+ 	);
 
 	//MySQL Backup and Restore Settings
 

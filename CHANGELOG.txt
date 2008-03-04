@@ -19,6 +19,13 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+04-Mar-2008 Joe Hunt
+! Changed so that average item material price is automatic updated whenever a PO Delivery is received.
+  Changed so that a Bill of Materiel, Parent's material price, is automatic updated from underlying items.
+$ /inventory/cost_update.php
+  /purchasing/includes/db/grn_db.inc and
+  /manufacturing/manage/bom_edit.php. 
+  
 21-Feb-2008 Joe Hunt
 + Added Print for documents in /admin/view_print_transaction.php (according to our new routines).
 $ /admin/view_print_transaction.php

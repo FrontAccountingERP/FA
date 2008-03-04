@@ -4,7 +4,7 @@ $page_security = 9;
 $path_to_root="../..";
 include_once($path_to_root . "/includes/session.inc");
 
-page(_("Bill Of Materials"));	
+page(_("Bill Of Materials"));
 
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");
@@ -20,7 +20,10 @@ check_db_has_workcentres(_("There are no work centres defined in the system. BOM
 
 if (isset($_GET["NewItem"]))
 {
-	$_POST['stock_id'] = $_GET["NewItem"]; 
+	$_POST['stock_id'] = $_GET["NewItem"];
+	if (isset($_GET['item']) && isset($_GET['qty']))
+		add_material_cost($_GET["NewItem"], $_GET['item'], $_GET['qty'], false);
+
 }
 if (isset($_GET['stock_id']))
 {
@@ -41,16 +44,34 @@ else if (isset($_POST["selected_parent"]))
 if (isset($_GET["selected_component"]))
 {
 	$selected_component = $_GET["selected_component"];
-} 
+}
 elseif (isset($_POST["selected_component"]))
 {
 	$selected_component = $_POST["selected_component"];
 }
 
+function add_material_cost($parent, $item, $n, $add=true)
+{
+	$sql = "SELECT material_cost FROM ".TB_PREF."stock_master WHERE stock_id='$parent'";
+	$result = db_query($sql);
+	$myrow = db_fetch($result);
+	$material_cost = $myrow['material_cost'];
+	$sql = "SELECT material_cost FROM ".TB_PREF."stock_master WHERE stock_id='$item'";
+	$result = db_query($sql);
+	$myrow = db_fetch($result);
+	$material_cost2 = $myrow['material_cost'];
+	if ($add)
+		$material_cost += ($material_cost2 * $n);
+	else
+		$material_cost -= ($material_cost2 * $n);
+	$sql = "UPDATE ".TB_PREF."stock_master SET material_cost=$material_cost
+		WHERE stock_id='$parent'";
+	db_query($sql,"The cost details for the inventory item could not be updated");
+}
 
 //--------------------------------------------------------------------------------------------------
 
-function check_for_recursive_bom($ultimate_parent, $component_to_check) 
+function check_for_recursive_bom($ultimate_parent, $component_to_check)
 {
 
 	/* returns true ie 1 if the bom contains the parent part as a component
@@ -59,7 +80,7 @@ function check_for_recursive_bom($ultimate_parent, $component_to_check)
 	$sql = "SELECT component FROM ".TB_PREF."bom WHERE parent='$component_to_check'";
 	$result = db_query($sql,"could not check recursive bom");
 
-	if ($result != 0) 
+	if ($result != 0)
 	{
 		while ($myrow = db_fetch_row($result))
 		{
@@ -81,21 +102,21 @@ function check_for_recursive_bom($ultimate_parent, $component_to_check)
 
 //--------------------------------------------------------------------------------------------------
 
-function display_bom_items($selected_parent) 
+function display_bom_items($selected_parent)
 {
 	global $table_style;
-	
+
 	$result = get_bom($selected_parent);
-	   
+
 	start_table("$table_style width=60%");
 	$th = array(_("Code"), _("Description"), _("Location"),
 		_("Work Centre"), _("Quantity"), _("Units"));
 	table_header($th);
-	
+
 	$k = 0;
-	while ($myrow = db_fetch($result)) 
+	while ($myrow = db_fetch($result))
 	{
-		
+
 		alt_table_row_color($k);
 
 		label_cell($myrow["component"]);
@@ -104,11 +125,11 @@ function display_bom_items($selected_parent)
         label_cell($myrow["WorkCentreDescription"]);
         label_cell($myrow["quantity"]);
         label_cell($myrow["units"]);
-        edit_link_cell(SID . "NewItem=$selected_parent&selected_component=" . $myrow["id"]);
-        delete_link_cell(SID . "delete=" . $myrow["id"]. "&stock_id=" . $_POST['stock_id']);
+        edit_link_cell(SID . "NewItem=$selected_parent&selected_component=" . $myrow["id"]."&item=".$myrow['component']."&qty=".$myrow['quantity']);
+        delete_link_cell(SID . "delete=" . $myrow["id"]. "&stock_id=" . $_POST['stock_id']."&item=".$myrow['component']."&qty=".$myrow['quantity']);
         end_row();
 
-	} //END WHILE LIST LOOP	
+	} //END WHILE LIST LOOP
 	end_table();
 }
 
@@ -116,83 +137,87 @@ function display_bom_items($selected_parent)
 
 function on_submit($selected_parent, $selected_component)
 {
-	if (!is_numeric($_POST['quantity'])) 
+	if (!is_numeric($_POST['quantity']))
 	{
 		display_error(_("The quantity entered must be numeric."));
 		return;
 	}
 
-	if ($_POST['quantity'] <= 0) 
+	if ($_POST['quantity'] <= 0)
 	{
 		display_error(_("The quantity entered must be greater than zero."));
 		return;
 	}
-	
-	
-	if (isset($selected_parent) && isset($selected_component)) 
+
+
+	if (isset($selected_parent) && isset($selected_component))
 	{
 
-		$sql = "UPDATE ".TB_PREF."bom SET workcentre_added='" . $_POST['workcentre_added'] . "', 
-			loc_code='" . $_POST['loc_code'] . "', 
-			quantity= " . $_POST['quantity'] . " 
-			WHERE parent='" . $selected_parent . "' 
+		$sql = "UPDATE ".TB_PREF."bom SET workcentre_added='" . $_POST['workcentre_added'] . "',
+			loc_code='" . $_POST['loc_code'] . "',
+			quantity= " . $_POST['quantity'] . "
+			WHERE parent='" . $selected_parent . "'
 			AND id='" . $selected_component . "'";
-		check_db_error("Could not update this bom component", $sql);				
+		check_db_error("Could not update this bom component", $sql);
+
+		add_material_cost($selected_parent, $_POST['item'], $_POST['quantity'], true);
 
 		db_query($sql,"could not update bom");
 
-	} 
-	elseif (!isset($selected_component) && isset($selected_parent)) 
+	}
+	elseif (!isset($selected_component) && isset($selected_parent))
 	{
 
 		/*Selected component is null cos no item selected on first time round so must be				adding a record must be Submitting new entries in the new component form */
 
 		//need to check not recursive bom component of itself!
-		If (!check_for_recursive_bom($selected_parent, $_POST['component'])) 
+		If (!check_for_recursive_bom($selected_parent, $_POST['component']))
 		{
 
 			/*Now check to see that the component is not already on the bom */
-			$sql = "SELECT component FROM ".TB_PREF."bom 
-				WHERE parent='$selected_parent' 
-				AND component='" . $_POST['component'] . "' 
-				AND workcentre_added='" . $_POST['workcentre_added'] . "' 
+			$sql = "SELECT component FROM ".TB_PREF."bom
+				WHERE parent='$selected_parent'
+				AND component='" . $_POST['component'] . "'
+				AND workcentre_added='" . $_POST['workcentre_added'] . "'
 				AND loc_code='" . $_POST['loc_code'] . "'" ;
 			$result = db_query($sql,"check failed");
-			
-			if (db_num_rows($result) == 0) 
+
+			if (db_num_rows($result) == 0)
 			{
-				$sql = "INSERT INTO ".TB_PREF."bom (parent, component, workcentre_added, loc_code, quantity) 
+				$sql = "INSERT INTO ".TB_PREF."bom (parent, component, workcentre_added, loc_code, quantity)
 					VALUES ('$selected_parent', '" . $_POST['component'] . "', '" . $_POST['workcentre_added'] . "', '" . $_POST['loc_code'] . "', " . $_POST['quantity'] . ")";
 
-				db_query($sql,"check failed");						
+				db_query($sql,"check failed");
 
+				add_material_cost($selected_parent, $_POST['component'], $_POST['quantity'], true);
 				//$msg = _("A new component part has been added to the bill of material for this item.");
 
-			} 
-			else 
+			}
+			else
 			{
 				/*The component must already be on the bom */
-				display_error(_("The selected component is already on this bom. You can modify it's quantity but it cannot appear more than once on the same bom.")); 
+				display_error(_("The selected component is already on this bom. You can modify it's quantity but it cannot appear more than once on the same bom."));
 			}
 
 		} //end of if its not a recursive bom
-		else 
+		else
 		{
 			display_error(_("The selected component is a parent of the current item. Recursive BOMs are not allowed."));
 		}
-	} 
+	}
 }
 
 //--------------------------------------------------------------------------------------------------
 
-if (isset($_GET['delete'])) 
+if (isset($_GET['delete']))
 {
-	
-	$sql = "DELETE FROM ".TB_PREF."bom WHERE id='" . $_GET['delete']. "'";
+	$sql = "DELETE FROM ".TB_PREF."bom WHERE id='".$_GET['delete']."'";
 	db_query($sql,"Could not delete this bom components");
 
+	add_material_cost($_GET['stock_id'], $_GET['item'], $_GET['qty'], false);
+
 	display_note(_("The component item has been deleted from this bom."));
-	
+
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -207,18 +232,18 @@ end_form();
 
 //--------------------------------------------------------------------------------------------------
 
-if (isset($_POST['stock_id'])) 
+if (isset($_POST['stock_id']))
 { //Parent Item selected so display bom or edit component
 	$selected_parent = $_POST['stock_id'];
 
 	if (isset($selected_parent) && isset($_POST['Submit']))
-		on_submit($selected_parent, $selected_component); 
+		on_submit($selected_parent, $selected_component);
 
 	//--------------------------------------------------------------------------------------
 
-	display_bom_items($selected_parent);	
+	display_bom_items($selected_parent);
 
-	if (isset($selected_parent) && isset($selected_component)) 
+	if (isset($selected_parent) && isset($selected_component))
 	{
 		hyperlink_params($_SERVER['PHP_SELF'], _("Add a new Component"), "NewItem=$selected_parent");
 	}
@@ -229,10 +254,10 @@ if (isset($_POST['stock_id']))
 
 	start_table($table_style2);
 
-	if (isset($selected_component)) 
+	if (isset($selected_component))
 	{
 		//editing a selected component from the link to the line item
-		$sql = "SELECT ".TB_PREF."bom.*,".TB_PREF."stock_master.description FROM ".TB_PREF."bom,".TB_PREF."stock_master 
+		$sql = "SELECT ".TB_PREF."bom.*,".TB_PREF."stock_master.description FROM ".TB_PREF."bom,".TB_PREF."stock_master
 			WHERE id='$selected_component'
 			AND ".TB_PREF."stock_master.stock_id=".TB_PREF."bom.component";
 
@@ -243,21 +268,22 @@ if (isset($_POST['stock_id']))
 		$_POST['workcentre_added']  = $myrow["workcentre_added"];
 		$_POST['quantity'] = $myrow["quantity"];
 
+		hidden('item', $myrow["component"]);
 		hidden('selected_parent', $selected_parent);
 		hidden('selected_component', $selected_component);
 		label_row(_("Component:"), $myrow["component"] . " - " . $myrow["description"]);
 
-	} 
-	else 
+	}
+	else
 	{ //end of if $selected_component
 
 		hidden('selected_parent', $selected_parent);
 
 		start_row();
 		label_cell(_("Component:"));
-		
+
 		echo "<td>";
-		stock_component_items_list('component', $selected_parent, $_POST['component'], false, true);	
+		stock_component_items_list('component', $selected_parent, $_POST['component'], false, true);
 		echo "</td>";
 		end_row();
 	}
@@ -269,7 +295,7 @@ if (isset($_POST['stock_id']))
 	{
 		$_POST['quantity'] = 1;
 	}
-	text_row(_("Quantity:"), 'quantity', $_POST['quantity'], 10, 18);		
+	text_row(_("Quantity:"), 'quantity', $_POST['quantity'], 10, 18);
 
 	end_table(1);
 	submit_center('Submit', _("Add/Update"));
@@ -277,7 +303,7 @@ if (isset($_POST['stock_id']))
 	end_form();
 }
 
-// ---------------------------------------------------------------------------------- 
+// ----------------------------------------------------------------------------------
 
 end_page();
 
