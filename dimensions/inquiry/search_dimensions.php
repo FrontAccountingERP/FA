@@ -13,7 +13,7 @@ if ($use_popup_windows)
 if ($use_date_picker)	
 	$js .= get_js_date_picker();
 
-if ($_GET['outstanding_only']) 
+if (isset($_GET['outstanding_only']) && $_GET['outstanding_only']) 
 {
 	$outstanding_only = 1;
 	page(_("Search Outstanding Dimensionss"), false, false, "", $js);
