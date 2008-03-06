@@ -14,7 +14,8 @@ Function get_next_trans_no ($trans_type){
 
     $next_number = $myrow[0] + 1;
 
-    $sql = "UPDATE ".TB_PREF."sys_types SET type_no = $next_number WHERE type_id = $trans_type";
+    $sql = "UPDATE ".TB_PREF."sys_types SET type_no = $next_number WHERE type_id = $trans_type
+	AND type_no = ". $myrow[0]; //concurrency paranoic protection
 
     db_query($sql,"The next transaction number for $trans_type could not be updated");
 
