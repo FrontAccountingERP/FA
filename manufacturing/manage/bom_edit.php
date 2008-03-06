@@ -89,7 +89,7 @@ function display_bom_items($selected_parent)
 
 	start_table("$table_style width=60%");
 	$th = array(_("Code"), _("Description"), _("Location"),
-		_("Work Centre"), _("Quantity"), _("Units"));
+		_("Work Centre"), _("Quantity"), _("Units"),'','');
 	table_header($th);
 
 	$k = 0;
