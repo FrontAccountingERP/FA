@@ -19,6 +19,29 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+06-Mar-2008 Janusz Dobrowolski
++ Wiki help links integration
+$ /config.php
+  /includes/page/header.inc
+  /includes/lang/language.php
++ Optional debuging with xdebug enabled
+$ /index.php
+  /includes/db/connect_db.inc
+! Concurrent edition fix
+$  /includes/systypes.inc
+# Table header fix
+$  /manufacturing/manage/bom_edit.php
+# Menu layout fixes
+$ /themes/aqua/renderer.php
+  /themes/cool/renderer.php
+  /themes/default/renderer.php
+# Removed warning about nonexistent $_GET variable
+$ /dimensions/inquiry/search_dimensions.php
+# MySQL 3.xx CAST bug fix
+$ /includes/db/manufacturing_db.inc
+  /manufacturing/includes/db/work_order_requirements_db.inc
+  /manufacturing/inquiry/where_used_inquiry.php
+
 04-Mar-2008 Joe Hunt
 ! Changed so that average item material price is automatic updated whenever a PO Delivery is received.
   Changed so that a Bill of Materiel, Parent's material price, is automatic updated from underlying items.
