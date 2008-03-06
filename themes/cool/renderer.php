@@ -51,8 +51,6 @@
 					{
 						if ($_SESSION["wa_current_user"]->can_access_page($appfunction->access))
 							echo "<a href='$appfunction->link'> " . $appfunction->label . "</a><br>";
-						else
-							echo "&nbsp";
 					}
 					echo "</td>";
 				}
