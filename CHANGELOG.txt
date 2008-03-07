@@ -19,116 +19,176 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+07-Mar-2008 Janusz Dobrowolski
+ ! Changed name tax type uniqueness constraint to (name, rate)
+ $ /includes/ui/ui_lists.inc
+   /taxes/items_tax_types.php
+ ! Tax included option moved from tax_group to sales_types table
+ $ includes/ui/ui_view.inc
+   /purchasing/includes/ui/invoice_ui.inc
+   /taxes/tax_calc.inc
+   /taxes/tax_groups.php
+   /taxes/db/tax_groups_db.inc
+   /sql/alter.sql
+ # Final rewriting of sales module, a lot of bugfixes.
+ + Template delivery/invoicing
+ + Concurrent document editing control on sql level
+ + Most of sales documents are now editable
+ + Some links to print documents after entry
+ ! Changed javascript helper function for customer allocations
+ $ /applications/customers.php
+   /includes/ui/ui_input.inc
+   /reporting/rep107.php
+   /reporting/rep109.php
+   /reporting/rep110.php
+   /sales/credit_note_entry.php
+   /sales/customer_credit_invoice.php
+   /sales/customer_delivery.php
+   /sales/customer_invoice.php
+   /sales/customer_payments.php
+   /sales/sales_order_entry.php
+   /sales/allocations/customer_allocate.php
+   /sales/allocations/customer_allocation_main.php
+   /sales/includes/cart_class.inc
+   /sales/includes/sales_db.inc
+   /sales/includes/sales_ui.inc
+   /sales/includes/db/cust_trans_db.inc
+   /sales/includes/db/cust_trans_details_db.inc
+   /sales/includes/db/custalloc_db.inc
+   /sales/includes/db/customers_db.inc
+   /sales/includes/db/payment_db.inc
+   /sales/includes/db/sales_credit_db.inc
+   /sales/includes/db/sales_delivery_db.inc
+   /sales/includes/db/sales_invoice_db.inc
+   /sales/includes/db/sales_order_db.inc
+   /sales/includes/db/sales_types_db.inc
+   /sales/includes/ui/print_invoice.inc
+   /sales/includes/ui/sales_credit_ui.inc
+   /sales/includes/ui/sales_order_ui.inc
+   /sales/inquiry/customer_allocation_inquiry.php
+   /sales/inquiry/customer_inquiry.php
+   /sales/inquiry/sales_deliveries_view.php
+   /sales/inquiry/sales_orders_view.php
+   /sales/manage/credit_status.php
+   /sales/manage/sales_types.php
+   /sales/view/view_credit.php
+   /sales/view/view_dispatch.php
+   /sales/view/view_invoice.php
+   /sales/view/view_receipt.php
+   /sales/view/view_sales_order.php
+# Removed function name conflict with wiki help system
+   /includes/lang/language.php
+   
 06-Mar-2008 Janusz Dobrowolski
-+ Wiki help links integration
-$ /config.php
-  /includes/page/header.inc
-  /includes/lang/language.php
-+ Optional debuging with xdebug enabled
-$ /index.php
-  /includes/db/connect_db.inc
-! Concurrent edition fix
-$  /includes/systypes.inc
-# Table header fix
-$  /manufacturing/manage/bom_edit.php
-# Menu layout fixes
-$ /themes/aqua/renderer.php
-  /themes/cool/renderer.php
-  /themes/default/renderer.php
-# Removed warning about nonexistent $_GET variable
-$ /dimensions/inquiry/search_dimensions.php
-# MySQL 3.xx CAST bug fix
-$ /includes/db/manufacturing_db.inc
-  /manufacturing/includes/db/work_order_requirements_db.inc
-  /manufacturing/inquiry/where_used_inquiry.php
+ + Wiki help links integration
+ $ /config.php
+   /includes/page/header.inc
+   /includes/lang/language.php
+ + Optional debuging with xdebug module
+ $ /index.php
+   /includes/db/connect_db.inc
+ ! Concurrent edition fix
+ $  /includes/systypes.inc
+ # Table header fix
+ $  /manufacturing/manage/bom_edit.php
+ # Menu layout fixes
+ $ /themes/aqua/renderer.php
+   /themes/cool/renderer.php
+   /themes/default/renderer.php
+ # Removed warning about nonexistent $_GET variable
+ $ /dimensions/inquiry/search_dimensions.php
+ # MySQL 3.xx CAST bug fix
+ $ /includes/db/manufacturing_db.inc
+   /manufacturing/includes/db/work_order_requirements_db.inc
+   /manufacturing/inquiry/where_used_inquiry.php
 
 04-Mar-2008 Joe Hunt
-! Changed so that average item material price is automatic updated whenever a PO Delivery is received.
-  Changed so that a Bill of Materiel, Parent's material price, is automatic updated from underlying items.
-$ /inventory/cost_update.php
-  /purchasing/includes/db/grn_db.inc and
-  /manufacturing/manage/bom_edit.php. 
-  /manufacturing/includes/db/work_orders_db.inc
-  /manufacturing/includes/db/work_orders_quick_db.inc
-  /manufacturing/work_order_entry.php
+ ! Changed so that average item material price is automatic updated whenever a PO Delivery is received.
+   Changed so that a Bill of Materiel, Parent's material price, is automatic updated from underlying items.
+ $ /inventory/cost_update.php
+   /purchasing/includes/db/grn_db.inc and
+   /manufacturing/manage/bom_edit.php. 
+   /manufacturing/includes/db/work_orders_db.inc
+   /manufacturing/includes/db/work_orders_quick_db.inc
+   /manufacturing/work_order_entry.php
   
 21-Feb-2008 Joe Hunt
-+ Added Print for documents in /admin/view_print_transaction.php (according to our new routines).
-$ /admin/view_print_transaction.php
-  /applications/setup.php
+ + Added Print for documents in /admin/view_print_transaction.php (according to our new routines).
+ $ /admin/view_print_transaction.php
+   /applications/setup.php
   
 17-Feb-2008 Joe Hunt
-! Minor change in menu and function in view_print_transaction.php
-$ /admin/view_print_transaction.php
-  /application/setup.php
-+ Preparing for print of single documents
-$ /reporting/includes/reporting.inc
-! Removing 'out' field in table tax_types
-$ /sql/alter.sql
-  /taxes/tax_types.php
-  /taxes/db/tax_types_db.inc
-+ Added 2 functions in ui_input.inc, button and button_cell
-  /includes/ui/ui_input.inc
+ ! Minor change in menu and function in view_print_transaction.php
+ $ /admin/view_print_transaction.php
+   /application/setup.php
+ + Preparing for print of single documents
+ $ /reporting/includes/reporting.inc
+ ! Removing 'out' field in table tax_types
+ $ /sql/alter.sql
+   /taxes/tax_types.php
+   /taxes/db/tax_types_db.inc
+ + Added 2 functions in ui_input.inc, button and button_cell
+   /includes/ui/ui_input.inc
 
 11-Feb-2008 Joe Hunt
-+ Added file, update_db.php, for updating company databases from an SQL script.
-$ update_db.php (New file)
-  update.html
+ + Added file, update_db.php, for updating company databases from an SQL script.
+ $ update_db.php (New file)
+   update.html
   
 06-Fef-2008 Joe Hunt
-+ Added Report, Salesman Listing, rep106.php. 
-$ /reporting/reports_main.php
-  /reporting/rep106.php
+ + Added Report, Salesman Listing, rep106.php. 
+ $ /reporting/reports_main.php
+   /reporting/rep106.php
   
 06-Feb-2008 Janusz Dobrowolski
-+ Separation of customer invoice issue and goods delivery.
-+ Batch invoicing for more than one delivery
-# Corrected inadequate shipping tax calculations.
-! Default debugging status changed to off.
-$ /taxes/tax_calc.inc
-  /taxes/db/tax_groups_db.inc
-  /admin/db/voiding_db.inc
-  /applications/customers.php
-  /includes/systypes.inc
-  /includes/types.inc
-  /includes/ui/ui_controls.inc
-  /includes/ui/ui_lists.inc
-  /includes/ui/ui_view.inc
-  /inventory/inquiry/stock_status.php
-  /reporting/rep105.php
-  /reporting/rep107.php
-  /reporting/rep109.php
-  /reporting/rep110.php 
-  /reporting/rep209.php
-  /reporting/reports_main.php
-  /reporting/includes/doctext.inc
-  /reporting/includes/doctext2.inc
-  /reporting/includes/form_types.inc
-  /reporting/includes/pdf_report.inc
-  /reporting/includes/reports_classes.inc
-  /sales/customer_credit_invoice.php
-  /sales/customer_invoice.php
-  /sales/sales_order_entry.php
-  /sales/customer_delivery.php 
-  /sales/includes/db/sales_delivery_db.inc 
-  /sales/includes/ui/print_invoice.inc 
-  /sales/includes/cart_class.inc
-  /sales/includes/sales_db.inc
-  /sales/includes/db/cust_trans_db.inc
-  /sales/includes/db/cust_trans_details_db.inc
-  /sales/includes/db/sales_credit_db.inc
-  /sales/includes/db/sales_invoice_db.inc
-  /sales/includes/db/sales_order_db.inc
-  /sales/includes/ui/sales_order_ui.inc
-  /sales/inquiry/customer_allocation_inquiry.php
-  /sales/inquiry/customer_inquiry.php
-  /sales/inquiry/sales_orders_view.php
-  /sales/inquiry/sales_deliveries_view.php 
-  /sales/view/view_dispatch.php
-  /sales/view/view_invoice.php
-  /sales/view/view_sales_order.php
-  /sql/alter.sql
-  config.php
+ + Separation of customer invoice issue and goods delivery.
+ + Batch invoicing for more than one delivery
+ # Corrected inadequate shipping tax calculations.
+ ! Default debugging status changed to off.
+ $ /taxes/tax_calc.inc
+   /taxes/db/tax_groups_db.inc
+   /admin/db/voiding_db.inc
+   /applications/customers.php
+   /includes/systypes.inc
+   /includes/types.inc
+   /includes/ui/ui_controls.inc
+   /includes/ui/ui_lists.inc
+   /includes/ui/ui_view.inc
+   /inventory/inquiry/stock_status.php
+   /reporting/rep105.php
+   /reporting/rep107.php
+   /reporting/rep109.php
+   /reporting/rep110.php 
+   /reporting/rep209.php
+   /reporting/reports_main.php
+   /reporting/includes/doctext.inc
+   /reporting/includes/doctext2.inc
+   /reporting/includes/form_types.inc
+   /reporting/includes/pdf_report.inc
+   /reporting/includes/reports_classes.inc
+   /sales/customer_credit_invoice.php
+   /sales/customer_invoice.php
+   /sales/sales_order_entry.php
+   /sales/customer_delivery.php 
+   /sales/includes/db/sales_delivery_db.inc 
+   /sales/includes/ui/print_invoice.inc 
+   /sales/includes/cart_class.inc
+   /sales/includes/sales_db.inc
+   /sales/includes/db/cust_trans_db.inc
+   /sales/includes/db/cust_trans_details_db.inc
+   /sales/includes/db/sales_credit_db.inc
+   /sales/includes/db/sales_invoice_db.inc
+   /sales/includes/db/sales_order_db.inc
+   /sales/includes/ui/sales_order_ui.inc
+   /sales/inquiry/customer_allocation_inquiry.php
+   /sales/inquiry/customer_inquiry.php
+   /sales/inquiry/sales_orders_view.php
+   /sales/inquiry/sales_deliveries_view.php 
+   /sales/view/view_dispatch.php
+   /sales/view/view_invoice.php
+   /sales/view/view_sales_order.php
+   /sql/alter.sql
+   config.php
   
 01-Feb-2008 Joe Hunt
  ! Changed so sales orders can have more than one row with the same stock_id. In alter.sql.
