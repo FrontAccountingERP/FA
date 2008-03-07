@@ -16,13 +16,25 @@
 -- ALTER TABLE
 -- 
 
+
+ALTER TABLE `0_tax_types` DROP INDEX `name`, ADD UNIQUE `name` ( `name` , `rate` );
+
+ALTER TABLE `0_tax_group_items` DROP `included_in_price`;
+ALTER TABLE `0_debtor_trans` ADD `ov_freight_tax` DOUBLE DEFAULT '0' NOT NULL AFTER `ov_freight` ;
+ALTER TABLE `0_sales_types` ADD `tax_included` INT( 1 ) DEFAULT '0' NOT NULL AFTER `sales_type` ;
+
+ALTER TABLE `0_bom` CHANGE `workcentre_added` `workcentre_added` INT( 11 ) NOT NULL DEFAULT '0';
+ALTER TABLE `0_wo_requirements` CHANGE `workcentre` `workcentre` INT( 11 ) NOT NULL DEFAULT '0';
+
+ALTER TABLE `0_debtor_trans` ADD `version` TINYINT(1) UNSIGNED DEFAULT '0' NOT NULL AFTER `type`;
+ALTER TABLE `0_sales_orders` ADD `version` TINYINT(1) UNSIGNED DEFAULT '0' NOT NULL AFTER `order_no`;
+
 ALTER TABLE `0_tax_types` DROP `out`;
 ALTER TABLE `0_debtor_trans_details` ADD COLUMN `qty_done` double NOT NULL default '0';
 
 ALTER TABLE `0_debtor_trans` ADD COLUMN `trans_link` int(11) NOT NULL default '0';
 INSERT INTO `0_sys_types` VALUES ('13', 'Delivery', '1', '1');
 ALTER TABLE `0_sales_order_details` CHANGE `qty_invoiced` `qty_sent` DOUBLE NOT NULL default '0';
-
 
 ALTER TABLE `0_supp_invoice_items` CHANGE `gl_code` `gl_code` VARCHAR(11) NOT NULL DEFAULT '0';
 ALTER TABLE `0_sales_order_details` DROP PRIMARY KEY;
