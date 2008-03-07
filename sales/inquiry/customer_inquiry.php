@@ -94,7 +94,11 @@ function get_transactions()
 		(".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + ".TB_PREF."debtor_trans.ov_freight + ".TB_PREF."debtor_trans.ov_discount)
 		AS TotalAmount, ".TB_PREF."debtor_trans.alloc AS Allocated,
 		((".TB_PREF."debtor_trans.type = 10)
-			AND ".TB_PREF."debtor_trans.due_date < '" . date2sql(Today()) . "') AS OverDue
+			AND (".TB_PREF."debtor_trans.due_date < '" . date2sql(Today()) . "')
+			AND ((".TB_PREF."debtor_trans.ov_amount + "
+			  .TB_PREF."debtor_trans.ov_gst + "
+			  .TB_PREF."debtor_trans.ov_freight )>".TB_PREF."debtor_trans.alloc
+		)) AS OverDue
 		FROM ".TB_PREF."debtor_trans, ".TB_PREF."debtors_master
 		WHERE ".TB_PREF."debtors_master.debtor_no = ".TB_PREF."debtor_trans.debtor_no
 			AND ".TB_PREF."debtor_trans.tran_date >= '$date_after'
