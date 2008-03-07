@@ -29,9 +29,9 @@ function get_supplier_trans_view_str($type, $trans_no, $label="")
 	{
 		if ($use_popup_windows)
 			$preview_str = "<a target='_blank' href='$path_to_root/purchasing/view/$viewer?trans_no=$trans_no' onclick=\"javascript:openWindow(this.href,this.target); return false;\" >$label</a>";
-		else	
+		else
 			$preview_str = "<a target='_blank' href='$path_to_root/purchasing/view/$viewer?trans_no=$trans_no'>$label</a>";
-	}	
+	}
 	else
 		$preview_str = $label;
 
@@ -85,7 +85,7 @@ function get_customer_trans_view_str($type, $trans_no, $label="")
 		$viewer = "view_sales_order.php";
 	else
 		return null;
-   
+
   if(!is_array($trans_no)) $trans_no = array($trans_no);
 
   $lbl = $label;
@@ -102,11 +102,11 @@ function get_customer_trans_view_str($type, $trans_no, $label="")
 			$preview_str .= "<a target='_blank' href='$path_to_root/sales/view/$viewer?trans_no=$trans' onclick=\"javascript:openWindow(this.href,this.target); return false;\" >$lbl</a>";
 		else
 			$preview_str .= "<a target='_blank' href='$path_to_root/sales/view/$viewer?trans_no=$trans'>$lbl</a>";
-	}		
+	}
 	else
 		$preview_str .= $lbl;
   }
-  
+
 	return $preview_str;
 }
 
@@ -136,9 +136,9 @@ function get_banking_trans_view_str($type, $trans_no, $label="")
 	{
 		if ($use_popup_windows)
 			$preview_str = "<a target='_blank' href='$path_to_root/gl/view/$viewer?trans_no=$trans_no' onclick=\"javascript:openWindow(this.href,this.target); return false;\" >$label</a>";
-		else	
+		else
 			$preview_str = "<a target='_blank' href='$path_to_root/gl/view/$viewer?trans_no=$trans_no'>$label</a>";
-	}		
+	}
 	else
 		$preview_str = $label;
 
@@ -167,9 +167,9 @@ function get_inventory_trans_view_str($type, $trans_no, $label="")
 	{
 		if ($use_popup_windows)
 			$preview_str = "<a target='_blank' href='$path_to_root/inventory/view/$viewer?trans_no=$trans_no' onclick=\"javascript:openWindow(this.href,this.target); return false;\" >$label</a>";
-		else	
+		else
 			$preview_str = "<a target='_blank' href='$path_to_root/inventory/view/$viewer?trans_no=$trans_no'>$label</a>";
-	}		
+	}
 	else
 		$preview_str = $label;
 
@@ -200,7 +200,7 @@ function get_manufacturing_trans_view_str($type, $trans_no, $label="")
 	{
 		if ($use_popup_windows)
 			$preview_str = "<a target='_blank' href='$path_to_root/manufacturing/view/$viewer?trans_no=$trans_no' onclick=\"javascript:openWindow(this.href,this.target); return false;\" >$label</a>";
-		else	
+		else
 			$preview_str = "<a target='_blank' href='$path_to_root/manufacturing/view/$viewer?trans_no=$trans_no'>$label</a>";
 	}
 	else
@@ -229,9 +229,9 @@ function get_dimensions_trans_view_str($type, $trans_no, $label="")
 	{
 		if ($use_popup_windows)
 			$preview_str = "<a target='_blank' href='$path_to_root/dimensions/view/$viewer?trans_no=$trans_no' onclick=\"javascript:openWindow(this.href,this.target); return false;\" >$label</a>";
-		else	
+		else
 			$preview_str = "<a target='_blank' href='$path_to_root/dimensions/view/$viewer?trans_no=$trans_no'>$label</a>";
-	}		
+	}
 	else
 		$preview_str = $label;
 
@@ -275,7 +275,7 @@ function exchange_rate_display($from_currency, $to_currency, $date_, $buttons=tr
 {
 	if ($from_currency != $to_currency)
 	{
-		if ($buttons && isset($_POST['get_rate']))	
+		if ($buttons && isset($_POST['get_rate']))
 		{
 			$comp_currency = get_company_currency();
 			if ($from_currency == $comp_currency)
@@ -285,11 +285,11 @@ function exchange_rate_display($from_currency, $to_currency, $date_, $buttons=tr
 			$rate = get_ecb_rate($currency);
 			if (get_date_exchange_rate($currency, $date_))
 				update_exchange_rate($currency, $date_, $rate, $rate);
-			else	
+			else
 				add_exchange_rate($currency, $date_, $rate, $rate);
 			if ($from_currency == $comp_currency)
 				$rate = 1 / $rate;
-		}	
+		}
 		else
 			$rate = get_exchange_rate_from_to($to_currency, $from_currency, $date_);
 		$rate = number_format2($rate, user_exrate_dec());
@@ -324,10 +324,10 @@ function is_voided_display($type, $id, $label)
 function comments_display_row($type, $id)
 {
 	$comments = get_comments($type, $id);
-	if ($comments and db_num_rows($comments)) 
+	if ($comments and db_num_rows($comments))
 	{
 		echo "<tr><td colspan=15>";
-    	while ($comment = db_fetch($comments)) 
+    	while ($comment = db_fetch($comments))
     	{
     		echo $comment["memo_"] . "<br>";
     	}
@@ -341,7 +341,7 @@ function get_comments_string($type, $type_no)
 {
 	$str_return = "";
 	$result = get_comments($type, $type_no);
-	while ($comment = db_fetch($result)) 
+	while ($comment = db_fetch($result))
 	{
 		if (strlen($str_return))
 			$str_return = $str_return . " \n";
@@ -361,7 +361,7 @@ function view_stock_status($stock_id, $description=null)
 	else
 		//hyperlink_params_separate($path_to_root . "/inventory/inquiry/stock_status.php", $stock_id, "stock_id=$stock_id");
 		$preview_str = "<a target='_blank' href='$path_to_root/inventory/inquiry/stock_status.php?stock_id=$stock_id' onclick=\"javascript:openWindow(this.href,this.target); return false;\" >$stock_id</a>";
-	echo $preview_str;	
+	echo $preview_str;
 }
 
 function view_stock_status_cell($stock_id, $description=null)
@@ -379,12 +379,12 @@ function display_debit_or_credit_cells($value)
 	{
 		amount_cell($value);
 		label_cell("");
-	}	
+	}
 	elseif ($value < 0)
 	{
 		label_cell("");
 		amount_cell(abs($value));
-	}	
+	}
 	else
 	{
 		//label_cell("");
@@ -397,7 +397,7 @@ function display_debit_or_credit_cells($value)
 
 function display_customer_trans_tax_details($tax_items, $columns)
 {
-    while ($tax_item = db_fetch($tax_items)) 
+    while ($tax_item = db_fetch($tax_items))
     {
     	$tax = number_format2($tax_item['amount'],user_price_dec());
     	if ($tax_item['included_in_price'])
@@ -413,7 +413,7 @@ function display_customer_trans_tax_details($tax_items, $columns)
 
 function display_supp_trans_tax_details($tax_items, $columns)
 {
-    while ($tax_item = db_fetch($tax_items)) 
+    while ($tax_item = db_fetch($tax_items))
     {
     	$tax = number_format2(abs($tax_item['amount']),user_price_dec());
     	if ($tax_item['included_in_price'])
@@ -427,21 +427,21 @@ function display_supp_trans_tax_details($tax_items, $columns)
 
 //--------------------------------------------------------------------------------------
 
-function display_edit_tax_items($taxes, $columns)
+function display_edit_tax_items($taxes, $columns, $tax_included, $leftspan=0)
 {
 	$total = 0;
 
-    foreach ($taxes as $taxitem) 
+    foreach ($taxes as $taxitem)
     {
-    	if ($taxitem['included_in_price']) 
+    	if ($tax_included)
     	{
         	label_row(_("Included") . " " . $taxitem['tax_type_name'] . " (" . $taxitem['rate'] . "%) " .
-        		_("Amount:") . " " . number_format2($taxitem['Value'],user_price_dec()), "", "colspan=$columns align=right", "align=right");
-    	} 
-    	else 
+        		_("Amount:") . " " . number_format2($taxitem['Value'],user_price_dec()), "", "colspan=$columns align=right", "align=right",$leftspan);
+    	}
+    	else
     	{
         	label_row($taxitem['tax_type_name'] . " (" . $taxitem['rate'] . "%)",
-        		number_format2($taxitem['Value'],user_price_dec()), "colspan=$columns align=right", "align=right");
+        		number_format2($taxitem['Value'],user_price_dec()), "colspan=$columns align=right", "align=right",$leftspan);
         	$total +=  $taxitem['Value'];
     	}
     }
@@ -471,7 +471,7 @@ function display_allocations($alloc_result, $total)
     display_heading2(_("Allocations"));
 
     start_table("$table_style width=80%");
-    
+
     $th = array( _("Type"), _("Number"), _("Date"), _("Total Amount"),
     	_("Left to Allocate"), _("This Allocation"));
 	table_header($th);
@@ -509,7 +509,7 @@ function display_allocations($alloc_result, $total)
 
 function display_allocations_from($person_type, $person_id, $type, $type_no, $total)
 {
-	switch ($person_type) 
+	switch ($person_type)
 	{
 		case payment_person_types::customer() :
 			$alloc_result = get_allocatable_to_cust_transactions($person_id, $type_no, $type);
@@ -530,13 +530,13 @@ function get_js_go_back()
 		. "{\n"
 		. "	if (window.history.length <= 1)\n"
 		. "	 window.close();\n"
-		. "	else\n"	
-		. "	 window.history.go(-1);\n"			
+		. "	else\n"
+		. "	 window.history.go(-1);\n"
 		. "}\n"
 		. "-->\n"
 		. "</script>\n";
 	return $js;
-}	
+}
 
 function get_js_open_window($width, $height)
 {
@@ -588,7 +588,7 @@ function get_js_form_entry($edit_name, $sel_name, $next_name)
 		. "}\n"
 		. "-->\n"
 		. "</script>\n";
-	return $js;	
+	return $js;
 }
 
 function get_js_set_focus($name)
@@ -601,35 +601,35 @@ function get_js_set_focus($name)
 		. "}\n"
 		. "-->\n"
 		. "</script>\n";
-	return $js;	
+	return $js;
 }
 
 function get_js_png_fix()
 {
 	$js = "<script type=\"text/javascript\">\n"
-		. "function fixPNG(myImage)\n" 
+		. "function fixPNG(myImage)\n"
 		. "{\n"
 		. " var arVersion = navigator.appVersion.split(\"MSIE\")\n"
 		. " var version = parseFloat(arVersion[1])\n"
-    	. " if ((version >= 5.5) && (version < 7) && (document.body.filters))\n" 
+    	. " if ((version >= 5.5) && (version < 7) && (document.body.filters))\n"
     	. " {\n"
        	. "  var imgID = (myImage.id) ? \"id='\" + myImage.id + \"' \" : \"\"\n"
 	   	. "  var imgClass = (myImage.className) ? \"class='\" + myImage.className + \"' \" : \"\"\n"
-	   	. "  var imgTitle = (myImage.title) ?\n" 
+	   	. "  var imgTitle = (myImage.title) ?\n"
 		. "    \"title='\" + myImage.title  + \"' \" : \"title='\" + myImage.alt + \"' \"\n"
 	   	. "  var imgStyle = \"display:inline-block;\" + myImage.style.cssText\n"
 	   	. "  var strNewHTML = \"<span \" + imgID + imgClass + imgTitle\n"
-        . "    + \" style=\\\"\" + \"width:\" + myImage.width\n" 
-        . "    + \"px; height:\" + myImage.height\n" 
+        . "    + \" style=\\\"\" + \"width:\" + myImage.width\n"
+        . "    + \"px; height:\" + myImage.height\n"
         . "    + \"px;\" + imgStyle + \";\"\n"
         . "    + \"filter:progid:DXImageTransform.Microsoft.AlphaImageLoader\"\n"
         . "    + \"(src=\'\" + myImage.src + \"\', sizingMethod='scale');\\\"></span>\"\n"
-	   	. "  myImage.outerHTML = strNewHTML\n"	  
+	   	. "  myImage.outerHTML = strNewHTML\n"
     	. " }\n"
 		. "}\n"
 		. "</script>\n";
 	return $js;
-}	
+}
 
 function get_js_date_picker()
 {
@@ -814,17 +814,17 @@ function CC() {
     epbase = year - ((year >= 0) ? 474 : 473);
     epyear = 474 + mod(epbase, 2820);
     t = day + ((month <= 7) ? ((month - 1) * 31) : (((month - 1) * 30) + 6)) +
-      Math.floor(((epyear * 682) - 110) / 2816) + (epyear - 1) * 365 + 
+      Math.floor(((epyear * 682) - 110) / 2816) + (epyear - 1) * 365 +
       Math.floor(epbase / 2820) * 1029983 + (1948320.5 - 1);
 ";
 	else if ($date_system == 2)
 		$js .= "
-	var t;	
-	t = Math.floor((11 * year + 3) / 30) + 354 * year + 30 * month - 
+	var t;
+	t = Math.floor((11 * year + 3) / 30) + 354 * year + 30 * month -
 	  Math.floor((month - 1) / 2) + day + 1948440 - 385;
 ";
 	$js .= "
-    return jwday(t);        
+    return jwday(t);
 ";
 	}
 	else
@@ -849,7 +849,7 @@ function CC() {
 		$js .= "
       var dateString = month+'$sep'+day+'$sep'+year;
 ";
-	else if ($how == 1)	
+	else if ($how == 1)
 		$js .= "
       var dateString = day+'$sep'+month+'$sep'+year;
 ";
@@ -891,7 +891,7 @@ function CC() {
   }
   function getCurrentMonth() {
     return new Date().getMonth() + 1;
-  } 
+  }
   function getCurrentDay() {
     return new Date().getDate();
   }
@@ -1064,9 +1064,33 @@ document.write(\"<div id='CC'></div>\");
 -->
 </script>
 ";
-	return $js;	
+	return $js;
 }
-		
+
+function get_js_allocate() {
+	return "<script>function allocate_all(doc) {
+	var alloc = 1*document.getElementsByName('left_to_allocate')[0].value;
+	var amount = 1*document.getElementsByName('amount'+doc)[0].value;
+	var unallocated = 1*document.getElementsByName('un_allocated'+doc)[0].value;
+	if(unallocated<amount) amount = unallocated;
+	if( (unallocated-amount)<=alloc){
+		alloc-=unallocated-amount;
+	amount=unallocated;
+	}else{
+	amount=amount+alloc;
+	alloc=0;
+	}
+	document.getElementsByName('amount'+doc)[0].value = amount;
+	document.getElementsByName('left_to_allocate')[0].value = alloc;
+	}
+	function allocate_none(doc) {
+		amount = document.getElementsByName('amount'+doc)[0];
+	document.getElementsByName('left_to_allocate')[0].value +=
+			amount.value;
+	amount.value=0;  }
+	</script>";
+}
+
 function alert($msg)
 {
 	echo "\n<script type=\"text/javascript\">\n"
@@ -1074,17 +1098,17 @@ function alert($msg)
 		. "alert('$msg');\n"
 		. "-->\n"
 		. "</script>\n";
-}		
+}
 
-if (!function_exists('_vd')) 
+if (!function_exists('_vd'))
 {
-  	function _vd($mixed, $title = '', $exit = false) 
+  	function _vd($mixed, $title = '', $exit = false)
   	{
     	// Only the site admin is able to proceed here.
     	echo (!empty($title) ? ($title .':') : '') .'<pre>';
     	var_dump($mixed);
     	echo "</pre>\n";
-    	if ($exit) 
+    	if ($exit)
     		exit;
   	}
 }

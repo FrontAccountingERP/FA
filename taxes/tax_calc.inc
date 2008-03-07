@@ -7,8 +7,8 @@ include_once($path_to_root . "/taxes/db/item_tax_types_db.inc");
 //---------------------------------------------------------------------------------
 
 // returns the tax cost for a given item
-
-/*function get_tax_value_for_item($stock_id, $price, $tax_group)
+/*
+function get_tax_value_for_item($stock_id, $price, $tax_group)
 {
 	// if price is zero, then can't be taxed
 	if ($price == 0)
@@ -28,17 +28,58 @@ include_once($path_to_root . "/taxes/db/item_tax_types_db.inc");
 	}
 	
 	return $price * ($tax_multiplier / 100);	
-}*/
-
+}
+*/
 //---------------------------------------------------------------------------------
 
 // returns the price of a given item minus any included taxes
+// for item $stock_id with line price $price,
+// with applicable tax rates $tax_group_array or group id $tax_group
+//
 
-function get_tax_free_price_for_item($stock_id, $price, $tax_group, $tax_group_array=null)
+function get_tax_free_price_for_item($stock_id, $price, $tax_group, $tax_included, $tax_group_array=null)
 {
 	// if price is zero, then can't be taxed !
 	if ($price == 0)
 		return 0;
+
+	if ($tax_included==0) return $price;
+	
+	// if array already read, then make a copy and use that
+	if ($tax_group_array)
+		$ret_tax_array = $tax_group_array;
+	else
+		$ret_tax_array = get_tax_group_items_as_array($tax_group);
+	
+	//print_r($ret_tax_array);
+
+	$tax_array = get_taxes_for_item($stock_id, $ret_tax_array);
+	// if no exemptions or taxgroup is empty, then no included/excluded taxes
+	if ($tax_array == null)
+		return $price;
+	
+	$tax_multiplier = 0;	
+
+	// loop for all items
+
+	foreach ($tax_array as $taxitem) 
+	{
+			$tax_multiplier += $taxitem["rate"];
+	}
+	
+	return $price / (1 + ($tax_multiplier / 100));	
+}
+//
+//	Full price (incl. VAT) for item $stock_id with line price $price,
+//	with tax rates $tax_group_array or applicable group $tax_group
+//
+function get_full_price_for_item($stock_id, $price, $tax_group, $tax_included, $tax_group_array=null)
+{
+	// if price is zero, then can't be taxed !
+	if ($price == 0)
+		return 0;
+
+	if ($tax_included==1) return $price;
 
 	// if array already read, then make a copy and use that
 	if ($tax_group_array)
@@ -59,16 +100,13 @@ function get_tax_free_price_for_item($stock_id, $price, $tax_group, $tax_group_a
 
 	foreach ($tax_array as $taxitem) 
 	{
-		if ($taxitem["included_in_price"])
 			$tax_multiplier += $taxitem["rate"];
 	}
 	
-	return $price / (1 + ($tax_multiplier / 100));	
+	return $price * (1 + ($tax_multiplier / 100));	
 }
 
 //---------------------------------------------------------------------------------
-
-
 // return an array of (tax_type_id, tax_type_name, sales_gl_code, purchasing_gl_code, rate)
 
 function get_taxes_for_item($stock_id, $tax_group_items_array)
@@ -116,15 +154,16 @@ function get_taxes_for_item($stock_id, $tax_group_items_array)
 	
 	return $ret_tax_array;
 }
-
 //-----------------------------------------------------------------------------------
-
 // return an array of (tax_type_id, tax_type_name, sales_gl_code, purchasing_gl_code, rate, included_in_price, Value) 
 
-function get_tax_for_items($items, $prices, $shipping_cost, $tax_group)
+function get_tax_for_items($items, $prices, $shipping_cost, $tax_group, $tax_included=null, $tax_items_array=null)
 {
 	// first create and set an array with all the tax types of the tax group
-	$ret_tax_array = get_tax_group_items_as_array($tax_group);
+	if($tax_items_array!=null)
+	  $ret_tax_array = $tax_items_array;
+	else
+	  $ret_tax_array = get_tax_group_items_as_array($tax_group);
 	
 	// loop for all items
 	for ($i = 0; $i < count($items); $i++)
@@ -136,7 +175,11 @@ function get_tax_for_items($items, $prices, $shipping_cost, $tax_group)
 			foreach ($item_taxes as $item_tax) 
 			{
 				$index = $item_tax['tax_type_id'];
-				$ret_tax_array[$index]['Value'] += $prices[$i] * $item_tax['rate'] / 100;
+				if($tax_included==1)
+				  $ret_tax_array[$index]['Value'] += $prices[$i] * $item_tax['rate'] 
+					/ ($item_tax['rate'] + 100);
+				else
+				  $ret_tax_array[$index]['Value'] += $prices[$i] * $item_tax['rate'] / 100;
 			}
 		}
 	}
@@ -150,9 +193,13 @@ function get_tax_for_items($items, $prices, $shipping_cost, $tax_group)
 			foreach ($item_taxes as $item_tax) 
 			{
 				$index = $item_tax['tax_type_id'];
-				if(!isset($ret_tax_array[$index]))
-				    $ret_tax_array[$index] = $item_tax;
-				$ret_tax_array[$index]['Value'] += $shipping_cost * $item_tax['rate'] / 100;
+				if(isset($ret_tax_array[$index])) {
+				  if($tax_included==1)
+					$ret_tax_array[$index]['Value'] += $shipping_cost * $item_tax['rate'] 
+					  / ($item_tax['rate'] + 100);
+				  else
+					$ret_tax_array[$index]['Value'] += $shipping_cost * $item_tax['rate'] / 100;
+				}
 			}
 		}
 	}

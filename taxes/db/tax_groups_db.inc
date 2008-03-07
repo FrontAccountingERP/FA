@@ -1,29 +1,39 @@
 <?php
 
-function add_tax_group($name, $tax_shipping, $taxes, $rates, $included)
+function clear_shipping_tax_group() {
+	  $sql = "UPDATE ".TB_PREF."tax_groups SET tax_shipping=0 WHERE 1";
+	  db_query($sql, "could not update tax_shipping fields");	  
+}
+
+function add_tax_group($name, $tax_shipping, $taxes, $rates)
 {
 	begin_transaction();
+
+	if($tax_shipping) 	// only one tax group for shipping
+	  clear_shipping_tax_group();
 		
-	$sql = "INSERT INTO ".TB_PREF."tax_groups (name, tax_shipping) VALUES ('$name', $tax_shipping)";		
+	$sql = "INSERT INTO ".TB_PREF."tax_groups (name, tax_shipping) VALUES ('$name', $tax_shipping)";
 	db_query($sql, "could not add tax group");
 	
 	$id = db_insert_id();
 	
-	add_tax_group_items($id, $taxes, $rates, $included);	
+	add_tax_group_items($id, $taxes, $rates);	
 	
 	commit_transaction();	
 }
 
-function update_tax_group($id, $name, $tax_shipping, $taxes, $rates, $included)
+function update_tax_group($id, $name, $tax_shipping, $taxes, $rates)
 {
 	begin_transaction();	
-		
-	$sql = "UPDATE ".TB_PREF."tax_groups SET name='$name',tax_shipping=$tax_shipping WHERE id=$id";
+
+	if($tax_shipping) 	// only one tax group for shipping
+	  clear_shipping_tax_group();
 	
+    $sql = "UPDATE ".TB_PREF."tax_groups SET name='$name',tax_shipping=$tax_shipping WHERE id=$id";
 	db_query($sql, "could not update tax group");
 	
 	delete_tax_group_items($id);
-	add_tax_group_items($id, $taxes, $rates, $included);	
+	add_tax_group_items($id, $taxes, $rates);	
 	
 	commit_transaction();			
 }
@@ -57,12 +67,12 @@ function delete_tax_group($id)
 	commit_transaction();
 }
 
-function add_tax_group_items($id, $items, $rates, $included)
+function add_tax_group_items($id, $items, $rates)
 {
 	for ($i=0; $i < count($items); $i++) 
 	{
-		$sql = "INSERT INTO ".TB_PREF."tax_group_items (tax_group_id, tax_type_id, rate, included_in_price)
-			VALUES ($id,  " . $items[$i] . ", " . $rates[$i] . ", " . $included[$i] .")";
+		$sql = "INSERT INTO ".TB_PREF."tax_group_items (tax_group_id, tax_type_id, rate)
+			VALUES ($id,  " . $items[$i] . ", " . $rates[$i] .")";
 		db_query($sql, "could not add item tax group item");					
 	}		
 }
@@ -99,7 +109,6 @@ function get_tax_group_items_as_array($id)
 		$ret_tax_array[$index]['sales_gl_code'] = $tax_group_item['sales_gl_code'];
 		$ret_tax_array[$index]['purchasing_gl_code'] = $tax_group_item['purchasing_gl_code'];
 		$ret_tax_array[$index]['rate'] = $tax_group_item['rate'];
-		$ret_tax_array[$index]['included_in_price'] = $tax_group_item['included_in_price'];
 		$ret_tax_array[$index]['Value'] = 0;
 	}
 	
@@ -112,9 +121,9 @@ function get_shipping_tax_group_items()
 	$sql = "SELECT ".TB_PREF."tax_group_items.*, ".TB_PREF."tax_types.name AS tax_type_name, 
 		".TB_PREF."tax_types.sales_gl_code, ".TB_PREF."tax_types.purchasing_gl_code  
 		FROM " .TB_PREF."tax_group_items, ".TB_PREF."tax_types, ".TB_PREF."tax_groups
-		WHERE tax_groups.tax_shipping=1
-		AND tax_groups.id=tax_group_id
-			AND ".TB_PREF."tax_types.id=tax_type_id";
+		WHERE " .TB_PREF."tax_groups.tax_shipping=1
+		AND " .TB_PREF."tax_groups.id=tax_group_id
+		AND ".TB_PREF."tax_types.id=tax_type_id";
 	return db_query($sql, "could not get shipping tax group items");
 }
 
@@ -133,7 +142,6 @@ function get_shipping_tax_as_array()
 		$ret_tax_array[$index]['sales_gl_code'] = $tax_group_item['sales_gl_code'];
 		$ret_tax_array[$index]['purchasing_gl_code'] = $tax_group_item['purchasing_gl_code'];
 		$ret_tax_array[$index]['rate'] = $tax_group_item['rate'];
-		$ret_tax_array[$index]['included_in_price'] = $tax_group_item['included_in_price'];
 		$ret_tax_array[$index]['Value'] = 0;
 	}
 	

@@ -61,7 +61,6 @@ if (isset($_POST['ADD_ITEM']) || isset($_POST['UPDATE_ITEM']))
 		// create an array of the taxes and array of rates
     	$taxes = array();
     	$rates = array();
-    	$included = array();
 
     	for ($i = 0; $i < 5; $i++) 
     	{
@@ -70,10 +69,6 @@ if (isset($_POST['ADD_ITEM']) || isset($_POST['UPDATE_ITEM']))
    			{
         		$taxes[] = $_POST['tax_type_id' . $i];
         		$rates[] = $_POST['rate' . $i];
-        		if (isset($_POST['included' . $i]))
-        			$included[] = 1;
-        		else	
-        			$included[] = 0;
     		}
     	}
 
@@ -81,13 +76,13 @@ if (isset($_POST['ADD_ITEM']) || isset($_POST['UPDATE_ITEM']))
     	{
 
     		update_tax_group($selected_id, $_POST['name'], $_POST['tax_shipping'], $taxes, 
-    			$rates, $included);
+    			$rates);
 
     	} 
     	else 
     	{
 
-    		add_tax_group($_POST['name'], $_POST['tax_shipping'], $taxes, $rates, $included);
+    		add_tax_group($_POST['name'], $_POST['tax_shipping'], $taxes, $rates);
     	}
 
 		meta_forward($_SERVER['PHP_SELF']);
@@ -192,7 +187,6 @@ if ($selected_id != -1)
     	{
     		$_POST['tax_type_id' . $i]  = $tax_item["tax_type_id"];
     		$_POST['rate' . $i]  = $tax_item["rate"];
-    		$_POST['included' . $i]  = $tax_item["included_in_price"];
     		$i ++;
     	}
 	}
@@ -207,15 +201,13 @@ end_table();
 display_note(_("Select the taxes that are included in this group."), 1);
 
 start_table($table_style2);
-$th = array(_("Tax"), _("Default Rate (%)"), _("Rate (%)"), _("Include in Price"));
+$th = array(_("Tax"), _("Default Rate (%)"), _("Rate (%)"));
 table_header($th);
 for ($i = 0; $i < 5; $i++) 
 {
 	start_row();
 	if (!isset($_POST['tax_type_id' . $i]))
 		$_POST['tax_type_id' . $i] = 0;
-	if (!isset($_POST['included' . $i]))
-		$_POST['included' . $i] = 0;
 	tax_types_list_cells(null, 'tax_type_id' . $i, $_POST['tax_type_id' . $i], true, _("None"), true);
 
 	if ($_POST['tax_type_id' . $i] != 0 && $_POST['tax_type_id' . $i] != reserved_words::get_all_numeric()) 
@@ -227,7 +219,6 @@ for ($i = 0; $i < 5; $i++)
 		if (!isset($_POST['rate' . $i]) || $_POST['rate' . $i] == "")
 			$_POST['rate' . $i] = $default_rate;
 		text_cells(null, 'rate' . $i, $_POST['rate' . $i], 10, 10);
-		check_cells(null, 'included' . $i, $_POST['included' . $i]);
 	}
 	end_row();
 }
