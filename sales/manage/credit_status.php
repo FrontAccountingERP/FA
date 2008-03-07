@@ -86,7 +86,7 @@ if (isset($_GET['delete']))
 $result = get_all_credit_status();
 
 start_table("$table_style width=40%");
-$th = array(_("Description"), _("Dissallow Invoices"));
+$th = array(_("Description"), _("Dissallow Invoices"),'','');
 table_header($th);
 
 $k = 0;

@@ -185,10 +185,12 @@ function label_cells($label, $value, $params="", $params2="")
 	echo "<td $params2>$value</td>\n";
 }
 
-function label_row($label, $value, $params="", $params2="")
+function label_row($label, $value, $params="", $params2="", $leftfill=0)
 {
 	echo "<tr>";
 	label_cells($label, $value, $params, $params2);
+	if($leftfill!=0)
+	  echo "<td colspan=$leftfill></td>";
 	echo "</tr>\n";
 }
 
@@ -319,8 +321,7 @@ function percent_row($label, $name, $init=null)
 
 	if (!isset($_POST[$name]) || $_POST[$name]=="")
 	{
-		if ($init)
-			$_POST[$name] = $init;
+			$_POST[$name] = $init== null ? '' : $init;
 	}
 
 	text_row($label, $name, $_POST[$name], 6, 6, "", "%");

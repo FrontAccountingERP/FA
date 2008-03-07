@@ -71,11 +71,12 @@ function print_invoices()
 				continue;
 			if (!exists_customer_trans($j, $i))
 				continue;
+			$sign = $j==10 ? 1 : -1;
 			$myrow = get_customer_trans($i, $j);
 			$branch = get_branch($myrow["branch_code"]);
 			$branch['disable_branch'] = $paylink; // helper
 			if ($j == 10)
-				$sales_order = get_sales_order($myrow["order_"]);
+				$sales_order = get_sales_order_header($myrow["order_"]);
 			else
 				$sales_order = null;
 			if ($email == 1)
@@ -103,10 +104,10 @@ function print_invoices()
 			$SubTotal = 0;
 			while ($myrow2=db_fetch($result))
 			{
-				$Net = ((1 - $myrow2["discount_percent"]) * $myrow2["FullUnitPrice"] * -$myrow2["quantity"]);
-				$SubTotal += $Net;
-	    		$DisplayPrice = number_format2($myrow2["FullUnitPrice"],$dec);
-	    		$DisplayQty = number_format2(-$myrow2["quantity"],user_qty_dec());
+			$Net = $sign * ((1 - $myrow2["discount_percent"]) * $myrow2["unit_price"] * $myrow2["quantity"]);
+			$SubTotal += $Net;
+	    		$DisplayPrice = number_format2($myrow2["unit_price"],$dec);
+	    		$DisplayQty = number_format2($sign*$myrow2["quantity"],user_qty_dec());
 	    		$DisplayNet = number_format2($Net,$dec);
 	    		if ($myrow2["discount_percent"]==0)
 		  			$DisplayDiscount ="";
@@ -133,9 +134,9 @@ function print_invoices()
 			}
 
    			$DisplaySubTot = number_format2($SubTotal,$dec);
-   			$DisplayFreight = number_format2($myrow["ov_freight"],$dec);
+   			$DisplayFreight = number_format2($sign*$myrow["ov_freight"],$dec);
 
-    		$rep->row = $rep->bottomMargin + (15 * $rep->lineHeight);
+    			$rep->row = $rep->bottomMargin + (15 * $rep->lineHeight);
 			$linetype = true;
 			$doctype = $j;
 			if ($rep->currency != $myrow['curr_code'])
@@ -156,7 +157,8 @@ function print_invoices()
 			$tax_items = get_customer_trans_tax_details($j, $i);
     		while ($tax_item = db_fetch($tax_items))
     		{
-    			$DisplayTax = number_format2($tax_item['amount'], $dec);
+    			$DisplayTax = number_format2($sign*$tax_item['amount'], $dec);
+			
     			if ($tax_item['included_in_price'])
     			{
 					$rep->TextCol(3, 7, $doc_Included . " " . $tax_item['tax_type_name'] .
@@ -171,11 +173,11 @@ function print_invoices()
 				$rep->NewLine();
     		}
     		$rep->NewLine();
-			$DisplayTotal = number_format2($myrow["ov_freight"] + $myrow["ov_gst"] +
-				$myrow["ov_amount"],$dec);
+			$DisplayTotal = number_format2($sign*($myrow["ov_freight"] + $myrow["ov_gst"] +
+				$myrow["ov_amount"]+$myrow["ov_freight_tax"]),$dec);
 			$rep->Font('bold');
 			$rep->TextCol(3, 6, $doc_TOTAL_INVOICE, - 2);
-			$rep->TextCol(6, 7,	$DisplayTotal, -2);
+			$rep->TextCol(6, 7, $DisplayTotal, -2);
 			$rep->Font();
 			if ($email == 1)
 			{

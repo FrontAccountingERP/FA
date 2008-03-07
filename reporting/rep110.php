@@ -65,7 +65,7 @@ function print_deliveries()
 				continue;
 			$myrow = get_customer_trans($i, 13);
 			$branch = get_branch($myrow["branch_code"]);
-			$sales_order = get_sales_order($myrow["order_"]); // ?
+			$sales_order = get_sales_order_header($myrow["order_"]); // ?
 			if ($email == 1)
 			{
 				$rep = new FrontReport("", "", user_pagesize());
@@ -83,10 +83,10 @@ function print_deliveries()
 			$SubTotal = 0;
 			while ($myrow2=db_fetch($result))
 			{
-				$Net = ((1 - $myrow2["discount_percent"]) * $myrow2["FullUnitPrice"] * -$myrow2["quantity"]);
+				$Net = ((1 - $myrow2["discount_percent"]) * $myrow2["unit_price"] * $myrow2["quantity"]);
 				$SubTotal += $Net;
-	    		$DisplayPrice = number_format2($myrow2["FullUnitPrice"],$dec);
-	    		$DisplayQty = number_format2(-$myrow2["quantity"],user_qty_dec());
+	    		$DisplayPrice = number_format2($myrow2["unit_price"],$dec);
+	    		$DisplayQty = number_format2($myrow2["quantity"],user_qty_dec());
 	    		$DisplayNet = number_format2($Net,$dec);
 	    		if ($myrow2["discount_percent"]==0)
 		  			$DisplayDiscount ="";
@@ -151,7 +151,7 @@ function print_deliveries()
 				$rep->NewLine();
     		}
     		$rep->NewLine();
-			$DisplayTotal = number_format2($myrow["ov_freight"] + $myrow["ov_gst"] +
+			$DisplayTotal = number_format2($myrow["ov_freight"] +$myrow["ov_freight_tax"] + $myrow["ov_gst"] +
 				$myrow["ov_amount"],$dec);
 			$rep->Font('bold');	
 			$rep->TextCol(3, 6, $doc_TOTAL_DELIVERY, - 2); 

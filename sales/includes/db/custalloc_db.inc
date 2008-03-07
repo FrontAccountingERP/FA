@@ -26,7 +26,8 @@ function delete_cust_allocation($trans_id)
 
 function get_DebtorTrans_allocation_balance($trans_type, $trans_no)
 {
-	$sql = "SELECT (ov_amount+ov_gst+ov_freight-ov_discount-alloc) AS BalToAllocate 
+	
+	$sql = "SELECT (ov_amount+ov_gst+ov_freight+ov_freight_tax-ov_discount-alloc) AS BalToAllocate 
 		FROM ".TB_PREF."debtor_trans WHERE trans_no=$trans_no AND type=$trans_type";
 	$result = db_query($sql,"calculate the allocation");
 	$myrow = db_fetch_row($result);	
@@ -84,15 +85,14 @@ function get_allocatable_from_cust_transactions($customer_id, $settled)
 	$settled_sql = "";
 	if (!$settled) 
 	{
-		$settled_sql = " AND round(ABS(ov_amount+ov_gst+ov_freight+ov_discount)-alloc,6) > 0";
+		$settled_sql = " AND (round(ov_amount+ov_gst+ov_freight+ov_freight_tax-ov_discount-alloc,6) > 0)";
 	}
-	
 	$cust_sql = "";
 	if ($customer_id != null)
-		$cust_sql = " AND ".TB_PREF."debtor_trans.debtor_no = $customer_id";		
+		$cust_sql = " AND ".TB_PREF."debtor_trans.debtor_no = $customer_id";
 	
-	return get_customer_transactions("round(ABS(ov_amount+ov_gst+ov_freight+ov_discount)-alloc,6) <= 0 AS settled", 
-		"(type=" . systypes::cust_payment(). " OR type=11 OR type=2) AND (".TB_PREF."debtor_trans.ov_amount < 0) " . $settled_sql . $cust_sql);	
+	return get_customer_transactions("round(ov_amount+ov_gst+ov_freight+ov_freight_tax+ov_discount-alloc,6) <= 0 AS settled", 
+		"(type=12 OR type=11) AND (".TB_PREF."debtor_trans.ov_amount > 0) " . $settled_sql . $cust_sql);	
 }
 
 //-------------------------------------------------------------------------------------------------------------
@@ -110,8 +110,9 @@ function get_allocatable_to_cust_transactions($customer_id, $trans_no=null, $typ
 	} 
 	else 
 	{
-		return get_customer_transactions(null, "round(ABS(ov_amount+ov_gst+ov_freight+ov_discount)-alloc,6) > 0
+		return get_customer_transactions(null, "round(ov_amount+ov_gst+ov_freight+ov_freight_tax+ov_discount-alloc,6) > 0
 			AND ".TB_PREF."debtor_trans.type != " . systypes::cust_payment() . "
+			AND ".TB_PREF."debtor_trans.type != 13
 			AND ".TB_PREF."debtor_trans.debtor_no=$customer_id");
 	}															
 }

@@ -17,7 +17,7 @@ if (isset($_GET["trans_no"]))
 
 $receipt = get_customer_trans($trans_id, systypes::cust_payment());
 
-display_heading(_("Customer Payment") . " #$trans_id");
+display_heading(sprintf(_("Customer Payment #%d"),$trans_id));
 
 echo "<br>";
 start_table("$table_style width=80%");

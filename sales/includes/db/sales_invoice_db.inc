@@ -1,146 +1,145 @@
 <?php
-function set_invoice_links(&$cart, $invoice) {
-    if(count($cart->trans_no)==1) {
-	  
-	  $del = $cart->trans_no;
-	  if(is_array($del)) $del = $del[0]; 
-	  $sql = 'UPDATE '.TB_PREF.'debtor_trans SET trans_link = ' . $del .
-		  ' WHERE type=10 AND trans_no='.$invoice;
-  	  db_query($sql, 'Invoice link cannot be updated');    
 
-	  foreach($cart->line_items as $line) {
-	    if($line->quantity!=$line->qty_dispatched) {
-		// this is partial invoice
-		return 1;
-	    }
-	  }
-	
+//-----------------------------------------------------------------------------
+//	Add or update Sales Invoice
+//
+function write_sales_invoice(&$invoice)
+{
+
+	$trans_no = $invoice->trans_no;
+	if (is_array($trans_no))
+		$trans_no = key($trans_no);
+
+	$date_ = $invoice->document_date;
+	$charge_shipping =$invoice->freight_cost;
+
+	begin_transaction();
+
+	$company_data = get_company_prefs();
+
+	$branch_data = get_branch_accounts($invoice->Branch);
+
+	// offer price values without freight costs
+	$items_total = $invoice->get_items_total_dispatch();
+	$freight_tax = $invoice->get_shipping_tax();
+
+	$delivery_no = $invoice->src_docs;
+	if (is_array($delivery_no))
+		$delivery_no = 0;
+
+	update_customer_trans_version(get_parent_type(10), $invoice->src_docs);
+
+	$ov_gst = 0;
+	$taxes = $invoice->get_taxes(); // all taxes with freight_tax
+
+	foreach ($taxes as $taxitem) {
+		$ov_gst +=  $taxitem['Value'];
 	}
 
-    $sql = 'UPDATE '.TB_PREF.'debtor_trans SET trans_link = ' . $invoice .
-	' WHERE type=13 AND (';
+	if($invoice->tax_included==0) {
+	    $items_added_tax = $ov_gst-$freight_tax;
+	    $freight_added_tax = $freight_tax;
+	} else {
+	    $items_added_tax = 0;
+	    $freight_added_tax = 0;
+	}
 
-    $deliveries = $cart->trans_no;
-	
-    foreach($deliveries as $key=>$del) 
-	    $deliveries[$key] = 'trans_no='.$del;
-    $sql .= implode(' OR ', $deliveries) . ')';
-    
-    db_query($sql, 'Delivery links cannot be updated');
- return 0; // batch or complete invoice
-}
+	/* Insert/update the debtor_trans */
+	$sales_order = $invoice->order_no;
+	if (is_array($sales_order))
+			$sales_order = $sales_order[0]; // assume all crucial SO data are same for every delivery
 
-function add_sales_invoice(&$cart, $date_, $due_date, $tax_group_id, 
-	$charge_shipping, $location, $ship_via, $sales_type, $reference, $memo_)
-{
-	begin_transaction();
-	
-	$company_data = get_company_prefs();
-	
-	$branch_data = get_branch_accounts($cart->Branch);	
-	
-	$cart_items_total = $cart->get_items_total_dispatch($tax_group_id);
+	$invoice_no = write_customer_trans(10, $trans_no, $invoice->customer_id,
+		$invoice->Branch, $date_, $invoice->reference, $items_total, 0,
+		$items_added_tax, $invoice->freight_cost, $freight_added_tax,
+		$invoice->default_sales_type, $sales_order, $delivery_no,
+		$invoice->ship_via, $invoice->due_date);
 
-	$delivery_no = $cart->trans_no;
-	if(is_array($delivery_no)) $delivery_no = 0;
-    
-    $tax_total = 0;
-    $taxes = $cart->get_taxes($tax_group_id, $charge_shipping);
-    foreach ($taxes as $taxitem)
-    	$tax_total +=  $taxitem['Value'];
+	if ($trans_no == 0) {
+		$invoice->trans_no = array($invoice_no=>0);
+		set_document_parent($invoice);
+	} else {
+		delete_comments(10, $invoice_no);
+		void_gl_trans(10, $invoice_no, true);
+		void_cust_allocations(10, $invoice_no); // ?
+		void_customer_trans_tax_details(10, $invoice_no);
+	}
 
-	/*Now insert the debtor_trans */
-	$sales_order=$cart->order_no;
-	if(is_array($sales_order)) $sales_order = $sales_order[0]; // assume all crucial SO data are same for every delivery
+	foreach ($invoice->line_items as $invoice_line) {
 
-	$invoice_no = add_customer_trans(10, $cart->customer_id, $cart->Branch, $date_, 
-		$reference, $cart_items_total, 0, $tax_total, $charge_shipping, 
-    	$sales_type, $sales_order, $delivery_no, $ship_via, $due_date);
+		$line_taxfree_price = get_tax_free_price_for_item($invoice_line->stock_id,
+			$invoice_line->price, 0, $invoice->tax_included,
+			$invoice->tax_group_array);
 
-	set_invoice_links($cart,$invoice_no);
-    	
-	// If balance of the order cancelled update sales order details quantity. 
-	foreach ($cart->line_items as $delivery_line) 
-	{
+		$line_tax = get_full_price_for_item($invoice_line->stock_id,
+			$invoice_line->price, 0, $invoice->tax_included,
+			$invoice->tax_group_array) - $line_taxfree_price;
 
-		if ($delivery_line->qty_dispatched != 0) 
-		{
-			
-			$line_taxfree_price = $delivery_line->taxfree_price($tax_group_id);
-			$line_tax = $delivery_line->full_price() - $line_taxfree_price;
-		
-			// Now update delivery items for the quantity invoiced 
-			invoice_delivery_item($delivery_line->id,$delivery_line->qty_dispatched);
-			
-			/* add invoice details and stock movements */
+		write_customer_trans_detail_item(10, $invoice_no, $invoice_line->stock_id,
+			$invoice_line->item_description, $invoice_line->qty_dispatched,
+			$invoice_line->line_price(), $line_tax,	$invoice_line->discount_percent,
+			$invoice_line->standard_cost,
+			$trans_no ? $invoice_line->id : 0);
 
-			add_customer_trans_detail_item(10, $invoice_no, $delivery_line->stock_id,
-				$delivery_line->item_description, $location, $date_, 
-				-$delivery_line->qty_dispatched, $line_taxfree_price, $line_tax,
-				$delivery_line->discount_percent, $reference, $delivery_line->standard_cost);
-												
-			$stock_gl_code = get_stock_gl_code($delivery_line->stock_id);												
+		// Update delivery items for the quantity invoiced
+		if ($invoice_line->qty_old != $invoice_line->qty_dispatched)
+			update_parent_line(10, $invoice_line->id, ($invoice_line->qty_dispatched-$invoice_line->qty_old));
 
-			if ($delivery_line->price != 0)
-			{
+		if ($invoice_line->qty_dispatched != 0) {
+			$stock_gl_code = get_stock_gl_code($invoice_line->stock_id);
 
+			if ($invoice_line->line_price() != 0) {
 				//Post sales transaction to GL credit sales
-				
-         add_gl_trans_customer(10, $invoice_no, $date_, $stock_gl_code["sales_account"], 
-           	$stock_gl_code["dimension_id"], $stock_gl_code["dimension2_id"], 
-    				(-$line_taxfree_price * $delivery_line->qty_dispatched), 
-    				$cart->customer_id, "The sales price GL posting could not be inserted");
-				
-				if ($delivery_line->discount_percent != 0)
-				{
-					
-         	add_gl_trans_customer(10, $invoice_no, $date_, 
-    					$branch_data["sales_discount_account"], $stock_gl_code["dimension_id"], 
-    					$stock_gl_code["dimension2_id"],
-    					($line_taxfree_price * $delivery_line->qty_dispatched * $delivery_line->discount_percent), 
-    					$cart->customer_id, "The sales discount GL posting could not be inserted");							
-				} /*end of if discount !=0 */
-			} /*end of if sales integrated with debtors */
 
+					add_gl_trans_customer(10, $invoice_no, $date_, $stock_gl_code["sales_account"],
+						$stock_gl_code["dimension_id"], $stock_gl_code["dimension2_id"],
+						(-$line_taxfree_price * $invoice_line->qty_dispatched),
+						$invoice->customer_id, "The sales price GL posting could not be inserted");
+
+				if ($invoice_line->discount_percent != 0) {
+
+					add_gl_trans_customer(10, $invoice_no, $date_,
+						$branch_data["sales_discount_account"], $stock_gl_code["dimension_id"],
+						$stock_gl_code["dimension2_id"],
+						($line_taxfree_price * $invoice_line->qty_dispatched * $invoice_line->discount_percent),
+						$invoice->customer_id, "The sales discount GL posting could not be inserted");
+				} /*end of if discount !=0 */
+			}
 		} /*quantity dispatched is more than 0 */
 	} /*end of delivery_line loop */
 
 	/*Post debtors transaction to GL debit debtors, credit freight re-charged and credit sales */
-	if (($cart_items_total + $charge_shipping + $tax_total) != 0) 
-	{
-    	add_gl_trans_customer(10, $invoice_no, $date_, $branch_data["receivables_account"], 0, 0,
-			($cart_items_total + $charge_shipping + $tax_total), 
-			$cart->customer_id, "The total debtor GL posting could not be inserted");				
+	if (($items_total + $charge_shipping) != 0) {
+		add_gl_trans_customer(10, $invoice_no, $date_, $branch_data["receivables_account"], 0, 0,
+			($items_total + $charge_shipping + $items_added_tax + $freight_added_tax),
+			$invoice->customer_id, "The total debtor GL posting could not be inserted");
+	}
+	if ($charge_shipping != 0) {
+		add_gl_trans_customer(10, $invoice_no, $date_, $company_data["freight_act"], 0, 0,
+			-$invoice->get_tax_free_shipping(), $invoice->customer_id,
+			"The freight GL posting could not be inserted");
+	}
+	// post all taxes
+	foreach ($taxes as $taxitem) {
+		if ($taxitem['Value'] != 0) {
+			add_customer_trans_tax_detail_item(10, $invoice_no, $taxitem['tax_type_id'],
+				$taxitem['rate'], $invoice->tax_included, $taxitem['Value']);
+
+			add_gl_trans_customer(10, $invoice_no, $date_, $taxitem['sales_gl_code'], 0, 0,
+				(-$taxitem['Value']), $invoice->customer_id,
+				"A tax GL posting could not be inserted");
+		}
 	}
 
-	if ($charge_shipping != 0) 
-	{
-    	add_gl_trans_customer(10, $invoice_no, $date_, $company_data["freight_act"], 0, 0,
-			(-$charge_shipping), $cart->customer_id, 
-			"The freight GL posting could not be inserted");				
+	add_comments(10, $invoice_no, $date_, $invoice->Comments);
+
+	if ($trans_no == 0) {
+		//add_forms_for_sys_type(10, $invoice_no, $invoice->Location);
+		references::save_last($invoice->reference, 10);
 	}
-	
-    foreach ($taxes as $taxitem) 
-    {
-    	if ($taxitem['Value'] != 0) 
-    	{
-			add_customer_trans_tax_detail_item(10, $invoice_no, $taxitem['tax_type_id'],
-				$taxitem['rate'], $taxitem['included_in_price'], $taxitem['Value']);    		
-    		
-        	add_gl_trans_customer(10, $invoice_no, $date_, $taxitem['sales_gl_code'], 0, 0,
-    			(-$taxitem['Value']), $cart->customer_id, 
-    			"A tax GL posting could not be inserted");
-    	}    	
-    }	
-    
-	add_comments(10, $invoice_no, $date_, $memo_);    
-	
-	add_forms_for_sys_type(10, $invoice_no, $location);
-	
-	references::save_last($reference, 10);	
-	
-	commit_transaction();	
-	
+
+	commit_transaction();
+
 	return $invoice_no;
 }
 
@@ -149,51 +148,34 @@ function add_sales_invoice(&$cart, $date_, $due_date, $tax_group_id,
 function void_sales_invoice($type, $type_no)
 {
 	begin_transaction();
-	
+
 	void_bank_trans($type, $type_no, true);
 	void_gl_trans($type, $type_no, true);
-	
-	// for invoices and credits related to invoices, 
+
+	// for invoices and credits related to invoices,
 	// reverse all the changes in the sales order
 	$items_result = get_customer_trans_details($type, $type_no);
-	
+
 	$delivery = get_customer_trans_link($type, $type_no);
-	
-	if ($delivery) 
-	{
-		while ($row = db_fetch($items_result))
-		{
-			invoice_delivery_item($row['id'], $row['quantity']);
+
+	if ($delivery) {
+		while ($row = db_fetch($items_result)) {
+			update_parent_line(10, $row['id'], -$row['quantity']);
 		}
 	}
-	
+
 	// clear details after they've been reversed in the sales order
 	void_customer_trans_details($type, $type_no);
-	
-	void_customer_trans_tax_details($type, $type_no);	
-	
+
+	void_customer_trans_tax_details($type, $type_no);
+
 	void_cust_allocations($type, $type_no);
-	
+
 	// do this last because other voidings can depend on it - especially voiding
 	// DO NOT MOVE THIS ABOVE VOIDING or we can end up with trans with alloc < 0
-	void_customer_trans($type, $type_no);	
-	
-	commit_transaction();			
-}
+	void_customer_trans($type, $type_no);
 
-//--------------------------------------------------------------------------------------------------
-function invoice_delivery_item($id, $qty_dispatched) 
-{
-	$sql = "UPDATE ".TB_PREF."debtor_trans_details ";
-
-	$sql .= "SET qty_done = qty_done - $qty_dispatched ";
-
-	$sql .= " WHERE id=$id";
-//		AND debtor_trans_type = 13
-//		AND debtor_trans_no = $delivery_no
-//		AND stock_id = '$stock_id'";
-
-	db_query($sql, "The sales delivery detail record could not be updated");
+	commit_transaction();
 }
 
 ?>

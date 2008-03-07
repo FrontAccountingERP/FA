@@ -17,7 +17,7 @@ function add_to_order(&$order, $new_item, $new_item_qty, $price, $discount)
 		}
 	}
     
-	$order->add_to_cart ($new_item, $new_item_qty, $price, $discount);
+	$order->add_to_cart (count($order->line_items),$new_item, $new_item_qty, $price, $discount);
 }
 
 //---------------------------------------------------------------------------------
@@ -25,69 +25,50 @@ function add_to_order(&$order, $new_item, $new_item_qty, $price, $discount)
 function get_customer_details_to_order(&$order, $customer_id, $branch_id)
 {
 	$ret_error = "";
-	// Now check to ensure this account is not on hold */
-	$sql = "SELECT ".TB_PREF."debtors_master.name, ".TB_PREF."debtors_master.address, ".TB_PREF."credit_status.dissallow_invoices,
-		".TB_PREF."debtors_master.sales_type AS salestype, ".TB_PREF."sales_types.sales_type, ".TB_PREF."debtors_master.curr_code,
-		".TB_PREF."debtors_master.discount
-		FROM ".TB_PREF."debtors_master, ".TB_PREF."credit_status, ".TB_PREF."sales_types
-		WHERE ".TB_PREF."debtors_master.sales_type=".TB_PREF."sales_types.id
-			AND ".TB_PREF."debtors_master.credit_status=".TB_PREF."credit_status.id
-			AND ".TB_PREF."debtors_master.debtor_no = '" . $customer_id . "'";
 
-	$result =db_query($sql,"Customer Record Retreive");
-
-	$myrow = db_fetch($result);
-
-	$order->customer_id = $customer_id;
-	$order->Branch = $branch_id;
-	$order->customer_name = $myrow['name'];
+	$myrow = get_customer_to_order($customer_id);
+	
+	$name = $myrow['name'];
 
 	if ($myrow['dissallow_invoices'] == 1)
 		$ret_error = _("The selected customer account is currently on hold. Please contact the credit control personnel to discuss.");
 
-	if (!isset($_POST['branch_id']) || $_POST['branch_id'] == "") 
+/*	if (!isset($_POST['branch_id']) || $_POST['branch_id'] == "") 
 	{
 		$ret_error = _("The selected customer does not have any branches. Please create at least one branch.");
 		unset($_POST['branch_id']);
-		$order->Branch = "";
+		$order->Branch = 0;
 	}
+*/
+	$deliver = $myrow['address']; // in case no delivery address.
 
-	# the sales type determines the price list to be used by default
-	$order->default_sales_type = $myrow['salestype'];
-	$order->sales_type_name = $myrow['sales_type'];
-	$order->customer_currency = $myrow['curr_code'];
-	$order->default_discount = $myrow['discount'];
-	$deliver = $myrow['address']; // in case no deliveraddress.
+	$order->set_customer($customer_id, $name, $myrow['curr_code'], $myrow['discount']);
 
-	if ($order->Branch != "")
+	// the sales type determines the price list to be used by default
+    $order->set_sales_type($myrow['salestype'], $myrow['sales_type'], $myrow['tax_included']);
+
+//	if ($order->Branch != 0)
 	{
-    	# the branch was also selected from the customer selection so default the delivery details from the customer branches table cust_branch. The order process will ask for branch details later anyway
-	 	$sql = "SELECT ".TB_PREF."cust_branch.br_name, ".TB_PREF."cust_branch.br_post_address, phone, email,
-			default_location, default_ship_via,
-			".TB_PREF."tax_groups.name AS tax_group_name, ".TB_PREF."tax_groups.id AS tax_group_id
-			FROM ".TB_PREF."cust_branch, ".TB_PREF."tax_groups
-				WHERE ".TB_PREF."cust_branch.tax_group_id = ".TB_PREF."tax_groups.id
-					AND ".TB_PREF."cust_branch.branch_code='" . $order->Branch . "'
-					AND ".TB_PREF."cust_branch.debtor_no = '" . $order->customer_id . "'";
+		$result = get_branch_to_order($customer_id, $branch_id);
 
-    	$result = db_query($sql,"Customer Branch Record Retreive");
-
-    	if (db_num_rows($result) == 0)
-    	{
-			return _("The selected customer and branch are not valid, or the customer does not have any branches.");
+  	    if (db_num_rows($result) == 0)
+  	    {
+		  return _("The selected customer and branch are not valid, or the customer does not have any branches.");
     	}
 
     	$myrow = db_fetch($result);
-    	$order->deliver_to = $myrow["br_name"];
-    	$order->delivery_address = $myrow["br_post_address"];
-    	if (strlen($order->delivery_address) <= 1)
-    		$order->delivery_address = $deliver;
-    	$order->phone = $myrow["phone"];
-    	$order->email = $myrow["email"];
-    	$order->Location = $myrow["default_location"];
-    	$order->ship_via = $myrow["default_ship_via"];
-		$order->tax_group_name = $myrow["tax_group_name"];
-		$order->tax_group_id = $myrow["tax_group_id"];
+
+		$order->set_branch($branch_id, $myrow["tax_group_id"],
+		  $myrow["tax_group_name"], $myrow["phone"], $myrow["email"]);
+
+    	$address = $myrow["br_post_address"];
+
+    	if (strlen($address) <= 1)	// if branch has no address 
+    		  $address = $deliver;	// set sales order address
+
+		$order->set_location($myrow["default_location"], $myrow["location_name"]);
+		$order->set_delivery($myrow["default_ship_via"], $myrow["br_name"], 
+		  $address);
 	}
 
 	return $ret_error;
@@ -102,9 +83,14 @@ function display_order_summary($title, &$order, $editable_items=false)
 	display_heading($title);
 	start_table("$table_style colspan=7 width=90%");
 	$th = array(_("Item Code"), _("Item Description"), _("Quantity"),
+		 _("Delivered"),
 		_("Unit"), _("Price"), _("Discount %"), _("Total"), "");
 
-	if(count($order->line_items)) $th[]= '';
+	if ($order->trans_no==0) {
+	  unset( $th[3] );
+	}
+
+	if (count($order->line_items)) $th[]= '';
 
 	table_header($th);	
 
@@ -114,12 +100,13 @@ function display_order_summary($title, &$order, $editable_items=false)
 	foreach ($order->line_items as $line_no=>$stock_item) 
 	{
 
-		$line_total = $stock_item->quantity * $stock_item->price * (1 - $stock_item->discount_percent);
+		$line_total = $stock_item->qty_dispatched * $stock_item->price * (1 - $stock_item->discount_percent);
  
 		if (!isset($_GET['Edit']))
 			$id = -1;
 		else
 			$id = $_GET['Edit'];
+
 		if (!$editable_items || $id != $line_no)
 		{
     		alt_table_row_color($k);
@@ -127,7 +114,11 @@ function display_order_summary($title, &$order, $editable_items=false)
 			view_stock_status_cell($stock_item->stock_id);
     	 	
     		label_cell($stock_item->item_description);
-    		qty_cell($stock_item->quantity);
+    		qty_cell($stock_item->qty_dispatched);
+
+			if ($order->trans_no!=0) 
+    		  amount_cell($stock_item->qty_done);
+
     		label_cell($stock_item->units);
     		amount_cell($stock_item->price);
 
@@ -153,7 +144,7 @@ function display_order_summary($title, &$order, $editable_items=false)
 		sales_order_item_controls($order);
 
 	$display_total = number_format2($total,user_price_dec());
-	label_row(_("Total Excluding Tax/Shipping"), $display_total, "colspan=6 align=right",
+	label_row(_("Total Excluding Shipping"), $display_total, "colspan=6 align=right",
 		"nowrap align=right");
 
 	end_table();
@@ -174,47 +165,83 @@ function display_order_header(&$order, $editable, $date_text, $display_tax_group
 	{
 		// can't change the customer/branch if items already received on this order
 		echo $order->customer_name . " - " . $order->deliver_to;
+	    hidden('customer_id', $order->customer_id);
+	    hidden('branch_id', $order->Branch);
 	} 
 	else 
 	{
 
-        if (!isset($_POST['customer_id']) && (get_global_customer() != reserved_words::get_all()))
-        	$_POST['customer_id'] = get_global_customer();
+	    if (!isset($_POST['customer_id']) && (get_global_customer() != reserved_words::get_all()))
+        	    $_POST['customer_id'] = get_global_customer();
 
-		customer_list_row(_("Customer:"), 'customer_id', null, false, true);
+	    customer_list_row(_("Customer:"), 'customer_id', null, false, true);
 
-		if (!isset($_POST['delivery_date']))
-		{
-			if ($order->trans_type=='invoice')
-				$_POST['delivery_date'] = $_SESSION['Items']->delivery_date = 
+	    if (!isset($_POST['delivery_date']))
+	    {
+			if ($order->trans_type==10)
+				$_POST['delivery_date'] = $_SESSION['Items']->due_date = 
 					get_invoice_duedate($_POST['customer_id'], $_POST['OrderDate']);
 			else	
-				$_POST['delivery_date'] = $_SESSION['Items']->delivery_date = 
-					add_days($_POST['OrderDate'], 10);
-		}		
+				$_POST['delivery_date'] = $_SESSION['Items']->due_date = 
+					add_days($_POST['OrderDate'], 10); // FIX this should be in company prefs
+	    }		
 		if ($order->customer_id != $_POST['customer_id']) 
-		{
+	    {
 			// customer has changed
 
 			// delete all the order items - drastic but necessary because of
 			// change of currency, sales type, etc
-    		$order->clear_items();
-
+    	//	$order->clear_items();
 			// clear the branch selection
 			unset($_POST['branch_id']);
-		}
+	    }
+	    if (!isset($_POST['branch_id']))
+			$_POST['branch_id'] = "";
 
 		customer_branches_list_row(_("Branch:"), $_POST['customer_id'], 'branch_id', null, false, true, true);
 
-		if (!isset($_POST['branch_id']))
-			$_POST['branch_id'] = "";
-		//set_global_customer($_POST['customer_id']);
-		if (($order->customer_id != $_POST['customer_id']) || 
-			($order->Branch != $_POST['branch_id']))
-			$customer_error = get_customer_details_to_order($order, $_POST['customer_id'], $_POST['branch_id']);
+	if (!isset($_POST['branch_id']) || $_POST['branch_id'] == "") 
+	{
+		$customer_error = _("The selected customer does not have any branches. Please create at least one branch.");
+		unset($_POST['branch_id']);
+		$order->Branch = 0;
+	} else 
+	
+	{
 
-		set_global_customer($_POST['customer_id']);
+		//set_global_customer($_POST['customer_id']);
+	    if (($order->customer_id != $_POST['customer_id']) || 
+	    	($order->Branch != $_POST['branch_id'])) {
+		  $old_order = $order;
+		  $customer_error = get_customer_details_to_order($order, $_POST['customer_id'], $_POST['branch_id']);
+		  $_POST['Location'] = $order->Location;
+		  $_POST['deliver_to'] = $order->deliver_to;
+		  $_POST['delivery_address'] = $order->delivery_address;
+		  $_POST['phone'] = $order->phone;
+
+		// change prices if necessary
+		// what about discount in template case?
+		  if ( $old_order->customer_currency!=$order->customer_currency
+		    || $old_order->default_sales_type!=$order->default_sales_type
+		//  || $old_order->default_discount!=$order->default_discount
+		    ) {
+			
+		    foreach ($order->line_items as $line_no=>$item) {
+				$line = &$order->line_items[$line_no];
+				$line->price = get_price($line->stock_id, $order->customer_id);
+		//		$line->discount_percent = $order->default_discount;
+		    }
+		}
+		  
+	    }
+	 }
+	    set_global_customer($_POST['customer_id']);
 	}
+
+	if ($_SESSION['Items']->trans_type!=30) {
+		ref_cells(_("Reference").':', 'ref', null, "");
+	}
+
 	echo "</table>";
 
 	echo "</td><td>"; // outer table
@@ -224,7 +251,7 @@ function display_order_header(&$order, $editable, $date_text, $display_tax_group
 		echo "<table height='5'>";
 		label_row(_("Customer Currency:"), $order->customer_currency);
 		exchange_rate_display($order->customer_currency, get_company_currency(),	
-			($editable?$_POST['OrderDate']:$order->orig_order_date), $editable);
+			($editable?$_POST['OrderDate']:$order->document_date), $editable);
 		echo "</table>";
 		echo "</td><td>"; // outer table
 	}
@@ -241,26 +268,26 @@ function display_order_header(&$order, $editable, $date_text, $display_tax_group
 	if ($editable) 
 	{
     	if (!isset($_POST['OrderDate']) || $_POST['OrderDate'] == "")
-    		$_POST['OrderDate'] = $order->orig_order_date;
+    		$_POST['OrderDate'] = $order->document_date;
 
 		date_row($date_text, 'OrderDate');
 	}
 	else 
 	{
-		label_row($date_text, $order->orig_order_date);
-		hidden('OrderDate', $order->orig_order_date);
+		label_row($date_text, $order->document_date);
+		hidden('OrderDate', $order->document_date);
 	}
 
 	if ($display_tax_group) 
 	{
-		if ($editable) 
+/*		if ($editable) 
 		{
             if (!isset($_POST['tax_group_id']))
             	$_POST['tax_group_id'] = $_SESSION['Items']->tax_group_id;
             tax_groups_list_row(_("Tax Group:"), 'tax_group_id', $_POST['tax_group_id'], true);
 		} 
 		else 
-		{
+*/		{
 			label_row(_("Tax Group:"), $order->tax_group_name);
 			hidden('tax_group_id', $_SESSION['Items']->tax_group_id);
 		}
@@ -284,7 +311,7 @@ function sales_order_item_controls(&$order, $line_no=-1)
 		if (!isset($_POST['stock_id']))
 			$_POST['stock_id'] = $order->line_items[$_GET['Edit']]->stock_id;
 		if (!isset($_POST['qty']) || ($_POST['qty'] == ""))
-			$_POST['qty'] = $order->line_items[$_GET['Edit']]->quantity;
+			$_POST['qty'] = $order->line_items[$_GET['Edit']]->qty_dispatched;
 		if (!isset($_POST['price']) || ($_POST['price'] == ""))
 			$_POST['price'] = $order->line_items[$_GET['Edit']]->price;
 		if (!isset($_POST['Disc']) || ($_POST['Disc'] == ""))
@@ -306,7 +333,7 @@ function sales_order_item_controls(&$order, $line_no=-1)
 		}
 		else
 		{
-		  text_cells(null, "StockID2", "", 12, 10, "", "", "onkeyup='recalcAccounts();' onKeyDown='if(event.keyCode==13) event.keyCode=9;' onblur='return setAccount(0, true);'");
+		  text_cells(null, "StockID2", "", 12, 10, "", "", "onkeyup='recalcAccounts();' onKeyDown='if (event.keyCode==13) event.keyCode=9;' onblur='return setAccount(0, true);'");
 			stock_items_list_cells(null, 'stock_id', null, false, false, "onchange='return setAccount(1, true)'");
 		}
 		$item_info = get_item_edit_info($_POST['stock_id']);
@@ -319,6 +346,10 @@ function sales_order_item_controls(&$order, $line_no=-1)
 	}
 
 	text_cells(null, 'qty', $_POST['qty'], 12, 15);
+
+	if ($order->trans_no!=0) {
+  		amount_cell($line_no==-1 ? 0 :$order->line_items[$line_no]->qty_done);
+	}
 
 	label_cell($_POST['units']);
 	amount_cells(null, 'price');
@@ -346,16 +377,20 @@ function sales_order_item_controls(&$order, $line_no=-1)
 function display_delivery_details(&$order)
 {
 	global $table_style2;
-
-	if ($order->trans_type=='invoice') 
+	if ($order->trans_type==10) 
+	{
+		$title = _("Delivery Details");
+		$delname = _("Due Date").':';
+	} 
+	elseif ($order->trans_type==13) 
 	{
 		$title = _("Invoice Delivery Details");
-		$delname = _("Due Date");
+		$delname = _("Invoice before").':';
 	} 
 	else 
 	{
 		$title = _("Order Delivery Details");
-		$delname = _("Required Delivery Date:");
+		$delname = _("Required Delivery Date").':';
 	}
 	display_heading($title);
     echo "<br>";
@@ -363,9 +398,12 @@ function display_delivery_details(&$order)
     echo "<tr valign=top><td>"; // outer table
 
     echo "<table>";
-    locations_list_row(_("Deliver from Location:"), 'Location', $order->Location);
 
-   	date_row($delname, 'delivery_date', $order->delivery_date, 0, 0, 0);
+//	echo $order->Location, $_POST['Location'];
+
+    locations_list_row(_("Deliver from Location:"), 'Location', $_POST['Location']);
+
+   	date_row($delname, 'delivery_date', $order->due_date, 0, 0, 0);
 
     text_row(_("Deliver To:"), 'deliver_to', $order->deliver_to, 40, 40);
 
@@ -384,8 +422,7 @@ function display_delivery_details(&$order)
     text_row(_("Shipping Charge:"), 'freight_cost', $order->freight_cost, 10, 10);
 
     shippers_list_row(_("Shipping Company:"), 'ship_via', $order->ship_via);
-	if ($_SESSION['Items']->trans_type=='delivery') 
-		textarea_row(_("Memo"), 'InvoiceText', null, 31, 3);
+
     echo "</table>";
 
     echo "</td></tr>";

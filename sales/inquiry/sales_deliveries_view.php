@@ -34,18 +34,18 @@ elseif (isset($_POST['selected_customer']))
 else
 	$selected_customer = -1;
 	
-if(isset($_POST['BatchInvoice'])) {
+if (isset($_POST['BatchInvoice'])) {
 
 // checking batch integrity
     $del_count = 0;
     foreach($_SESSION['Batch'] as $delivery) {
 	  $checkbox = 'Sel_'.$delivery['trans'];
-	  if(check_value($checkbox)) {
-	    if(!$del_count) {
+	  if (check_value($checkbox)) {
+	    if (!$del_count) {
 		$del_customer = $delivery['cust'];
 		$del_branch = $delivery['branch'];
 	    } else {
-		if($del_customer!=$delivery['cust'] || $del_branch != $delivery['branch']) {
+		if ($del_customer!=$delivery['cust'] || $del_branch != $delivery['branch']) {
 		    $del_count=0; break;
 		}
 	    }
@@ -54,7 +54,7 @@ if(isset($_POST['BatchInvoice'])) {
 	  }
     }
 
-    if(!$del_count) {
+    if (!$del_count) {
 		display_error(_('For batch invoicing you should 
 		    select at least one delivery. All items must be dispatched to
 		    the same customer branch.'));
@@ -107,14 +107,17 @@ $sql = "SELECT ".TB_PREF."debtor_trans.trans_no, "
 	.TB_PREF."debtor_trans.due_date, "
 	.TB_PREF."sales_orders.customer_ref, "
 	.TB_PREF."sales_orders.deliver_to, ";
-$sql .= " Sum(".TB_PREF."debtor_trans_details.qty_done-"
-		 .TB_PREF."debtor_trans_details.quantity) AS Outstanding, ";
-$sql .= " Sum(".TB_PREF."debtor_trans_details.qty_done) AS Partial, ";
 
-$sql .= " Sum(-".TB_PREF."debtor_trans_details.unit_price*"
- .TB_PREF."debtor_trans_details.quantity*(1-"
- .TB_PREF."debtor_trans_details.discount_percent)) AS DeliveryValue
-	FROM "
+$sql .= " Sum(".TB_PREF."debtor_trans_details.quantity-"
+		 .TB_PREF."debtor_trans_details.qty_done) AS Outstanding, ";
+
+$sql .= " Sum(".TB_PREF."debtor_trans_details.qty_done) AS Done, ";
+
+//$sql .= " Sum(".TB_PREF."debtor_trans_details.unit_price*"
+// .TB_PREF."debtor_trans_details.quantity*(1-"
+// .TB_PREF."debtor_trans_details.discount_percent)) AS DeliveryValue";
+$sql .= "(ov_amount+ov_gst+ov_freight+ov_freight_tax) AS DeliveryValue";
+$sql .=" FROM "
 	 .TB_PREF."sales_orders, "
 	 .TB_PREF."debtor_trans, "
 	 .TB_PREF."debtor_trans_details, "
@@ -153,7 +156,7 @@ else
 		$sql .= " AND ".TB_PREF."sales_orders.from_stk_loc = '". $_POST['StockLocation'] . "' ";
 
 	if ($_POST['OutstandingOnly'] == true) {
-	 $sql .= " AND -".TB_PREF."debtor_trans_details.qty_done < -".TB_PREF."debtor_trans_details.quantity ";
+	 $sql .= " AND ".TB_PREF."debtor_trans_details.qty_done < ".TB_PREF."debtor_trans_details.quantity ";
 	}
 	
 	$sql .= " GROUP BY ".TB_PREF."debtor_trans.trans_no ";
@@ -167,7 +170,7 @@ else
 $result = db_query($sql,"No deliveries were returned");
 
 //-----------------------------------------------------------------------------------
-if(isset($_SESSION['Batch'])) {
+if (isset($_SESSION['Batch'])) {
     foreach($_SESSION['Batch'] as $trans=>$del) unset($_SESSION['Batch'][$trans]);
     unset($_SESSION['Batch']);
 }
@@ -187,7 +190,7 @@ if ($result)
 	$k = 0; //row colour counter
 	$overdue_items = false;
 	while ($myrow = db_fetch($result)) 
-	{
+	{ 
 	    $_SESSION['Batch'][] = array('trans'=>$myrow["trans_no"],
 	    'cust'=>$myrow["name"],'branch'=>$myrow["br_name"] );
 	    
@@ -216,7 +219,7 @@ if ($result)
 		label_cell($formated_due_date);
 		amount_cell($myrow["DeliveryValue"]);
 		label_cell($myrow["curr_code"]);
-		if(!$myrow['Partial'])
+		if (!$myrow['Done'])
 		    check_cells(null,'Sel_'. $myrow['trans_no'],0,false);
 		else
     		    label_cell("");

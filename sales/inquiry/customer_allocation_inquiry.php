@@ -55,14 +55,16 @@ function get_transactions()
 
     $sql = "SELECT ".TB_PREF."debtor_trans.*,
 		".TB_PREF."debtors_master.name AS CustName, ".TB_PREF."debtors_master.curr_code AS CustCurrCode,
-    	(".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + ".TB_PREF."debtor_trans.ov_freight + ".TB_PREF."debtor_trans.ov_discount)
+    	(".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + "
+	.TB_PREF."debtor_trans.ov_freight + ".TB_PREF."debtor_trans.ov_freight_tax + ".TB_PREF."debtor_trans.ov_discount)
 		AS TotalAmount,
 		".TB_PREF."debtor_trans.alloc AS Allocated,
 		((".TB_PREF."debtor_trans.type = 10)
 		AND ".TB_PREF."debtor_trans.due_date < '" . date2sql(Today()) . "') AS OverDue
     	FROM ".TB_PREF."debtor_trans, ".TB_PREF."debtors_master
     	WHERE ".TB_PREF."debtors_master.debtor_no = ".TB_PREF."debtor_trans.debtor_no
-			AND (".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + ".TB_PREF."debtor_trans.ov_freight + ".TB_PREF."debtor_trans.ov_discount != 0)
+			AND (".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + "
+			.TB_PREF."debtor_trans.ov_freight + ".TB_PREF."debtor_trans.ov_freight_tax + ".TB_PREF."debtor_trans.ov_discount != 0)
     		AND ".TB_PREF."debtor_trans.tran_date >= '$data_after'
     		AND ".TB_PREF."debtor_trans.tran_date <= '$date_to'";
 
@@ -88,7 +90,9 @@ function get_transactions()
     	{
     		$today =  date2sql(Today());
     		$sql .= " AND ".TB_PREF."debtor_trans.due_date < '$today'
-				AND (round(abs(".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + ".TB_PREF."debtor_trans.ov_freight + ".TB_PREF."debtor_trans.ov_discount) - ".TB_PREF."debtor_trans.alloc,6) > 0) ";
+				AND (round(abs(".TB_PREF."debtor_trans.ov_amount + "
+				.TB_PREF."debtor_trans.ov_gst + ".TB_PREF."debtor_trans.ov_freight + "
+				.TB_PREF."debtor_trans.ov_freight_tax + ".TB_PREF."debtor_trans.ov_discount) - ".TB_PREF."debtor_trans.alloc,6) > 0) ";
     	}
    	}else
    	{
@@ -98,7 +102,9 @@ function get_transactions()
 
    	if (!check_value('showSettled')) 
    	{
-   		$sql .= " AND (round(abs(".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + ".TB_PREF."debtor_trans.ov_freight + ".TB_PREF."debtor_trans.ov_discount) - ".TB_PREF."debtor_trans.alloc,6) != 0) ";
+   		$sql .= " AND (round(abs(".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + "
+		.TB_PREF."debtor_trans.ov_freight + ".TB_PREF."debtor_trans.ov_freight_tax + "
+		.TB_PREF."debtor_trans.ov_discount) - ".TB_PREF."debtor_trans.alloc,6) != 0) ";
    	}
 
     $sql .= " ORDER BY ".TB_PREF."debtor_trans.tran_date";

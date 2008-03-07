@@ -29,9 +29,9 @@ $myrow = get_customer_trans($trans_id, 10);
 
 $branch = get_branch($myrow["branch_code"]);
 
-$sales_order = get_sales_order($myrow["order_"]);
+$sales_order = get_sales_order_header($myrow["order_"]);
 
-display_heading(_("SALES INVOICE") . " #$trans_id");
+display_heading(sprintf(_("SALES INVOICE #%d"),$trans_id));
 
 echo "<br>";
 start_table("$table_style2 width=95%");
@@ -65,8 +65,8 @@ start_table("$table_style width=100%");
 $th = array(_("Delivered To"));
 table_header($th);
 
-//label_row(null, $sales_order["deliver_to"] . "<br>" . nl2br($sales_order["delivery_address"]),
-//	"nowrap");
+label_row(null, $sales_order["deliver_to"] . "<br>" . nl2br($sales_order["delivery_address"]),
+	"nowrap");
 end_table();
 
 echo "</td><td>"; // outer table
@@ -108,11 +108,11 @@ if (db_num_rows($result) > 0)
 	$sub_total = 0;
 	while ($myrow2 = db_fetch($result))
 	{
-
+	    if($myrow2["quantity"]==0) continue;
 		alt_table_row_color($k);
 
-		$net = ((1 - $myrow2["discount_percent"]) * $myrow2["FullUnitPrice"] * -$myrow2["quantity"]);
-		$sub_total += $net;
+		$value = ((1 - $myrow2["discount_percent"]) * $myrow2["unit_price"] * $myrow2["quantity"]);
+		$sub_total += $value;
 
 	    if ($myrow2["discount_percent"] == 0)
 	    {
@@ -125,11 +125,11 @@ if (db_num_rows($result) > 0)
 
 	    label_cell($myrow2["stock_id"]);
 		label_cell($myrow2["StockDescription"]);
-        qty_cell(-$myrow2["quantity"]);
+        qty_cell($myrow2["quantity"]);
         label_cell($myrow2["units"], "align=right");
-        amount_cell($myrow2["FullUnitPrice"]);
+        amount_cell($myrow2["unit_price"]);
         label_cell($display_discount, "nowrap align=right");
-        amount_cell($net);
+        amount_cell($value);
 		end_row();
 	} //end while there are line items to print out
 
@@ -148,7 +148,7 @@ label_row(_("Shipping"), $display_freight, "colspan=6 align=right", "nowrap alig
 $tax_items = get_customer_trans_tax_details(10, $trans_id);
 display_customer_trans_tax_details($tax_items, 6);
 
-$display_total = number_format2($myrow["ov_freight"]+$myrow["ov_gst"]+$myrow["ov_amount"],user_price_dec());
+$display_total = number_format2($myrow["ov_freight"]+$myrow["ov_gst"]+$myrow["ov_amount"]+$myrow["ov_freight_tax"],user_price_dec());
 
 label_row(_("TOTAL INVOICE"), $display_total, "colspan=6 align=right",
 	"nowrap align=right");

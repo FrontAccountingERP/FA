@@ -19,20 +19,6 @@ include_once($path_to_root . "sales/includes/sales_db.inc");
 // trial_inquiry_controls();
 print_sales_orders();
 
-//----------------------------------------------------------------------------------------------------
-
-function get_sales_order_details($order_no)
-{
-	$sql = "SELECT stk_code, unit_price, ".TB_PREF."sales_order_details.description,
-		".TB_PREF."sales_order_details.quantity, discount_percent, 
-		qty_sent, units,
-		".TB_PREF."stock_master.material_cost + ".TB_PREF."stock_master.labour_cost + ".TB_PREF."stock_master.overhead_cost AS standard_cost
-		FROM ".TB_PREF."sales_order_details, ".TB_PREF."stock_master 
-			WHERE ".TB_PREF."sales_order_details.stk_code = ".TB_PREF."stock_master.stock_id 
-				AND order_no =" . $order_no;
-	return db_query($sql, "Retreive order Line Items");
-}
-
 $print_as_quote = 0;
 
 function print_sales_orders()
@@ -79,7 +65,7 @@ function print_sales_orders()
 
 	for ($i = $from; $i <= $to; $i++)
 	{
-		$myrow = get_sales_order($i);
+		$myrow = get_sales_order_header($i);
 		$branch = get_branch($myrow["branch_code"]);
 		if ($email == 1)
 		{

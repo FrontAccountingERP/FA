@@ -6,6 +6,7 @@ include_once($path_to_root . "/includes/session.inc");
 
 include_once($path_to_root . "/sales/includes/sales_ui.inc");
 include_once($path_to_root . "/sales/includes/sales_db.inc");
+include_once($path_to_root . "/reporting/includes/reporting.inc");
 
 $js = "";
 if ($use_popup_windows)
@@ -91,7 +92,8 @@ function get_transactions()
 
     $sql = "SELECT ".TB_PREF."debtor_trans.*,
 		".TB_PREF."debtors_master.name AS CustName, ".TB_PREF."debtors_master.curr_code AS CustCurrCode,
-		(".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + ".TB_PREF."debtor_trans.ov_freight + ".TB_PREF."debtor_trans.ov_discount)
+		(".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + "
+		.TB_PREF."debtor_trans.ov_freight + ".TB_PREF."debtor_trans.ov_freight_tax + ".TB_PREF."debtor_trans.ov_discount)
 		AS TotalAmount, ".TB_PREF."debtor_trans.alloc AS Allocated,
 		((".TB_PREF."debtor_trans.type = 10)
 			AND ".TB_PREF."debtor_trans.due_date < '" . date2sql(Today()) . "') AS OverDue
@@ -130,7 +132,9 @@ function get_transactions()
     	{
     		$today =  date2sql(Today());
     		$sql .= " AND ".TB_PREF."debtor_trans.due_date < '$today'
-				AND (".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + ".TB_PREF."debtor_trans.ov_freight + ".TB_PREF."debtor_trans.ov_discount - ".TB_PREF."debtor_trans.alloc > 0) ";
+				AND (".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + "
+				.TB_PREF."debtor_trans.ov_freight_tax + ".TB_PREF."debtor_trans.ov_freight + "
+				.TB_PREF."debtor_trans.ov_discount - ".TB_PREF."debtor_trans.alloc > 0) ";
     	}
    	}
 
@@ -164,12 +168,14 @@ if (db_num_rows($result) == 0)
 
 start_table("$table_style width='80%'");
 
-if ($_POST['customer_id'] == reserved_words::get_all())
 	$th = array(_("Type"), _("#"), _("Order"), _("Reference"), _("Date"), _("Due Date"),
-		_("Customer"), _("Branch"), _("Currency"), _("Debit"), _("Credit"), "", "","");
-else		
-	$th = array(_("Type"), _("#"), _("Order"), _("Reference"), _("Date"), _("Due Date"),
-		_("Branch"), _("Debit"), _("Credit"), "", "","");
+		_("Customer"), _("Branch"), _("Currency"), _("Debit"), _("Credit"), "", "",""
+		/*,"" print */);
+
+if ($_POST['customer_id'] != reserved_words::get_all()) {
+  unset($th[6], $th[8]);
+}
+
 table_header($th);
 
 
@@ -193,14 +199,24 @@ while ($myrow = db_fetch($result))
 
 	switch($myrow['type']) {
 	 case 10:
-			$due_date_str = sql2date($myrow["due_date"]);
+		$due_date_str = sql2date($myrow["due_date"]);
 			/*Show a link to allow an invoice to be credited */
-			// only allow crediting if it's not been totally allocated
-			if ($myrow["TotalAmount"] - $myrow["Allocated"] > 0)
-				$credit_me_str = "<a href='$path_to_root/sales/customer_credit_invoice.php?InvoiceNumber=" . $myrow["trans_no"] . "'>" . _("Credit This") . "</a>";
-   		  $edit_page= $path_to_root.'/sales/customer_invoice.php?ModifyInvoice='
+		    // only allow crediting if it's not been totally allocated
+		if ($myrow["TotalAmount"] - $myrow["Allocated"] > 0)
+			$credit_me_str = "<a href='$path_to_root/sales/customer_credit_invoice.php?InvoiceNumber=" . $myrow["trans_no"] . "'>" . _("Credit This") . "</a>";
+		$edit_page= $path_to_root.'/sales/customer_invoice.php?ModifyInvoice='
 					. $myrow['trans_no']; 
-			break;
+		break;
+
+	 case 11:
+		if ($myrow['order_']==0) // free-hand credit note
+		    $edit_page= $path_to_root.'/sales/credit_note_entry.php?ModifyCredit='
+					. $myrow['trans_no']; 
+		else	// credit invoice
+		    $edit_page= $path_to_root.'/sales/customer_credit_invoice.php?ModifyCredit='
+					. $myrow['trans_no']; 	    
+		break;
+	 
 	 case 13:
    		$edit_page= $path_to_root.'/sales/customer_delivery.php?ModifyDelivery='
 					. $myrow['trans_no']; break;
@@ -238,16 +254,20 @@ while ($myrow = db_fetch($result))
 	label_cell($branch_name);
 	if ($_POST['customer_id'] == reserved_words::get_all())
 		label_cell($myrow["CustCurrCode"]);
-	display_debit_or_credit_cells($myrow["TotalAmount"]);
+	display_debit_or_credit_cells(
+	    $myrow['type']==11 || $myrow['type']==12 ? 
+		-$myrow["TotalAmount"] : $myrow["TotalAmount"]);
+
 	echo $gl_trans_str;
 
   label_cell($edit_page=='' ? '' :	"<a href='$edit_page'>" . _('Edit') . '</a>');
+//  label_cell(print_document_link($myrow['trans_no'], _("Print")));	
 	
 	if ($credit_me_str != "")
 		label_cell($credit_me_str, "nowrap");
 	else
 		label_cell('');
-	
+
 //	if ($myrow["type"] == 10)
 //		label_cell($print_str, 'nowrap');
 //	else

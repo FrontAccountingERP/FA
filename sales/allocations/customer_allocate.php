@@ -2,16 +2,19 @@
 
 $path_to_root="../..";
 $page_security = 3;
+
 include($path_to_root . "/includes/ui/allocation_cart.inc");
 include_once($path_to_root . "/includes/session.inc");
-
 include_once($path_to_root . "/sales/includes/sales_ui.inc");
 include_once($path_to_root . "/sales/includes/sales_db.inc");
+
 $js = "";
 if ($use_popup_windows)
 	$js .= get_js_open_window(900, 500);
-page(_("Allocate Customer Payment or Credit Note"), false, false, "", $js);
 
+$js .= get_js_allocate();
+
+page(_("Allocate Customer Payment or Credit Note"), false, false, "", $js);
 
 //--------------------------------------------------------------------------------
 
@@ -22,7 +25,7 @@ function clear_allocations()
 		unset($_SESSION['alloc']->allocs);
 		unset($_SESSION['alloc']);
 	}
-	session_register("alloc");
+	session_register('alloc');
 }
 
 //--------------------------------------------------------------------------------
@@ -58,7 +61,7 @@ function check_data()
 		$total_allocated += $_POST['amount' . $counter];
 	}
 
-	if ($total_allocated + $_SESSION['alloc']->amount > sys_prefs::allocation_settled_allowance())
+	if ($total_allocated - $_SESSION['alloc']->amount > sys_prefs::allocation_settled_allowance())
 	{
 		display_error(_("These allocations cannot be processed because the amount allocated is more than the total amount left to allocate."));
 	   	//echo  _("Total allocated:") . " " . $total_allocated ;
@@ -107,7 +110,7 @@ function handle_process()
 
 if (isset($_POST['Process']))
 {
-	if (check_data()) 
+	if (check_data())
 	{
 		handle_process();
 		$_POST['Cancel'] = 1;
@@ -131,7 +134,7 @@ function get_allocations_for_transaction($type, $trans_no)
 
 	$debtor = get_customer_trans($trans_no, $type);
 
-	$_SESSION['alloc'] = new allocation($trans_no, $type, $debtor["debtor_no"], 
+	$_SESSION['alloc'] = new allocation($trans_no, $type, $debtor["debtor_no"],
 		$debtor["DebtorName"], $debtor["Total"], sql2date($debtor["tran_date"]));
 
 	/* Now populate the array of possible (and previous actual) allocations for this customer */
@@ -171,22 +174,22 @@ function edit_allocations_for_transaction($type, $trans_no)
 
 	start_form(false, true);
 
-    display_heading(_("Allocation of") . " " . systypes::name($_SESSION['alloc']->type) . " # " . $_SESSION['alloc']->trans_no);
+    display_heading(sprintf(_("Allocation of %s # %d"), systypes::name($_SESSION['alloc']->type),$_SESSION['alloc']->trans_no));
 
-	display_heading($_SESSION['alloc']->person_name);
+    display_heading($_SESSION['alloc']->person_name);
 
     display_heading2(_("Date:") . " <b>" . $_SESSION['alloc']->date_ . "</b>");
-    display_heading2(_("Total:") . " <b>" . number_format2(-$_SESSION['alloc']->amount,user_price_dec()) . "</b>");
+    display_heading2(_("Total:") . " <b>" . number_format2($_SESSION['alloc']->amount,user_price_dec()) . "</b>");
 
     echo "<br>";
 
     if (count($_SESSION['alloc']->allocs) > 0)
     {
 		start_table($table_style);
-		
+
    		$th = array(_("Transaction Type"), _("#"), _("Date"), _("Due Date"), _("Amount"),
    			_("Other Allocations"), _("This Allocation"), _("Left to Allocate"), "", "");
-   			
+
 		table_header($th);
 
         $k = $counter = $total_allocated = 0;
@@ -210,33 +213,37 @@ function edit_allocations_for_transaction($type, $trans_no)
     		hidden("un_allocated" . $counter, $un_allocated);
     		amount_cell($un_allocated);
 
-			label_cell("<a href='#' onclick='forms[0].amount$counter.value=forms[0].un_allocated$counter.value; return true;'>" . _("All") . "</a>");
-			label_cell("<a href='#' onclick='forms[0].amount$counter.value=0; return true;'>" . _("None") . "</a>");
+			label_cell("<a href='#' name=Alloc$counter onclick='allocate_all(this.name.substr(5));return true;'>"
+					 . _("All") . "</a>");
+			label_cell("<a href='#' name=DeAll$counter onclick='allocate_none(this.name.substr(5));return true;'>"
+					 . _("None") . "</a>");
 			end_row();
 
     	    $total_allocated += $_POST['amount' . $counter];
     	    $counter++;
        	}
 
-       	label_row(_("Total Allocated"), number_format2($total_allocated,user_price_dec()), 
+       	label_row(_("Total Allocated"), number_format2($total_allocated,user_price_dec()),
        		"colspan=6 align=right", "nowrap align=right");
-        if (-$_SESSION['alloc']->amount - $total_allocated < 0)
+        if ($_SESSION['alloc']->amount - $total_allocated < 0)
         {
         	$font1 = "<font color=red>";
         	$font2 = "</font>";
         }
         else
         	$font1 = $font2 = "";
-        label_row(_("Left to Allocate"), $font1 . number_format2(-$_SESSION['alloc']->amount - 
-        	$total_allocated,user_price_dec()) . $font2, "colspan=6 align=right", 
-        	"nowrap align=right");
+		$left_to_allocate = $_SESSION['alloc']->amount - $total_allocated;
+		$left_to_allocate = number_format2($left_to_allocate, user_price_dec());
+        label_row(_("Left to Allocate"), $font1 . $left_to_allocate . $font2,
+	    	"colspan=6 align=right", "nowrap align=right");
         end_table(1);
 
        	hidden('TotalNumberOfAllocs', $counter);
+		hidden('left_to_allocate', $left_to_allocate);
        	submit_center_first('UpdateDisplay', _("Update"));
        	submit('Process', _("Process"));
-	} 
-	else 
+	}
+	else
 	{
     	display_note(_("There are no unsettled transactions to allocate."), 0, 1);
     }

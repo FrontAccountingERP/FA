@@ -10,25 +10,31 @@ function get_customer_details($customer_id, $to=null)
 	$past1 = get_company_pref('past_due_days');
 	$past2 = 2 * $past1;
 	// removed - debtor_trans.alloc from all summations
+
+    $value = "IF(".TB_PREF."debtor_trans.type=11 OR ".TB_PREF."debtor_trans.type=12,
+	-1, 1) *". 
+      "(".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + "
+		.TB_PREF."debtor_trans.ov_freight + ".TB_PREF."debtor_trans.ov_freight_tax + "
+		.TB_PREF."debtor_trans.ov_discount)";
 	
     $sql = "SELECT ".TB_PREF."debtors_master.name, ".TB_PREF."debtors_master.curr_code, ".TB_PREF."payment_terms.terms,
 		".TB_PREF."debtors_master.credit_limit, ".TB_PREF."credit_status.dissallow_invoices, ".TB_PREF."credit_status.reason_description,
 
-		Sum(".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + ".TB_PREF."debtor_trans.ov_freight + ".TB_PREF."debtor_trans.ov_discount) AS Balance,
+		Sum(".$value.") AS Balance,
 
 		Sum(IF (".TB_PREF."payment_terms.days_before_due > 0,
 			CASE WHEN (TO_DAYS('$todate') - TO_DAYS(".TB_PREF."debtor_trans.tran_date)) >= ".TB_PREF."payment_terms.days_before_due 
 			THEN 
-				".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + ".TB_PREF."debtor_trans.ov_freight + ".TB_PREF."debtor_trans.ov_discount
-			ELSE 0 END,
+			    $value
+			ELSE 0 
+			END,
 
 			CASE WHEN TO_DAYS('$todate') - TO_DAYS(DATE_ADD(DATE_ADD(".TB_PREF."debtor_trans.tran_date,
 				INTERVAL 1 MONTH), INTERVAL (".TB_PREF."payment_terms.day_in_following_month -
 				DAYOFMONTH(".TB_PREF."debtor_trans.tran_date)) DAY)) >= 0 
 			THEN 
-				".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + ".TB_PREF."debtor_trans.ov_freight + ".TB_PREF."debtor_trans.ov_discount 
-			ELSE 
-				0 
+			    $value
+			ELSE 0 
 			END
 
 		)) AS Due,
@@ -37,7 +43,7 @@ function get_customer_details($customer_id, $to=null)
 			CASE WHEN TO_DAYS('$todate') - TO_DAYS(".TB_PREF."debtor_trans.tran_date) > ".TB_PREF."payment_terms.days_before_due
 				AND TO_DAYS('$todate') - TO_DAYS(".TB_PREF."debtor_trans.tran_date) >= (".TB_PREF."payment_terms.days_before_due + $past1) 
 			THEN 
-				".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + ".TB_PREF."debtor_trans.ov_freight + ".TB_PREF."debtor_trans.ov_discount 
+				$value
 			ELSE 
 				0 
 			END,
@@ -46,7 +52,7 @@ function get_customer_details($customer_id, $to=null)
 				INTERVAL 1  MONTH), INTERVAL (".TB_PREF."payment_terms.day_in_following_month -
 				DAYOFMONTH(".TB_PREF."debtor_trans.tran_date)) DAY)) >= $past1) 
 			THEN 
-				".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + ".TB_PREF."debtor_trans.ov_freight + ".TB_PREF."debtor_trans.ov_discount
+				$value
 			ELSE 
 				0 
 			END
@@ -57,7 +63,7 @@ function get_customer_details($customer_id, $to=null)
 			CASE WHEN TO_DAYS('$todate') - TO_DAYS(".TB_PREF."debtor_trans.tran_date) > ".TB_PREF."payment_terms.days_before_due
 				AND TO_DAYS('$todate') - TO_DAYS(".TB_PREF."debtor_trans.tran_date) >= (".TB_PREF."payment_terms.days_before_due + $past2) 
 			THEN 
-				".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + ".TB_PREF."debtor_trans.ov_freight + ".TB_PREF."debtor_trans.ov_discount 
+			    $value
 			ELSE 
 				0 
 			END,
@@ -66,7 +72,7 @@ function get_customer_details($customer_id, $to=null)
 				INTERVAL 1  MONTH), INTERVAL (".TB_PREF."payment_terms.day_in_following_month - 
 				DAYOFMONTH(".TB_PREF."debtor_trans.tran_date)) DAY)) >= $past2) 
 			THEN 
-				".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + ".TB_PREF."debtor_trans.ov_freight + ".TB_PREF."debtor_trans.ov_discount
+				$value
 			ELSE 
 				0 
 			END
@@ -83,6 +89,7 @@ function get_customer_details($customer_id, $to=null)
 			 AND ".TB_PREF."debtors_master.credit_status = ".TB_PREF."credit_status.id
 			 AND ".TB_PREF."debtors_master.debtor_no = $customer_id
 			 AND ".TB_PREF."debtor_trans.tran_date <= '$todate'
+			 AND ".TB_PREF."debtor_trans.type <> 13
 			 AND ".TB_PREF."debtors_master.debtor_no = ".TB_PREF."debtor_trans.debtor_no
 
 		GROUP BY
@@ -95,7 +102,7 @@ function get_customer_details($customer_id, $to=null)
 			  ".TB_PREF."credit_status.reason_description";
     
     $result = db_query($sql,"The customer details could not be retrieved");
-    
+
     if (db_num_rows($result) == 0)
     {
     

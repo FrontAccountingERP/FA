@@ -16,17 +16,14 @@ if ($use_popup_windows)
 
 page(_("View Sales Order"), true, false, "", $js);
 
-display_heading(_("Sales Order") . " #" . $_GET['trans_no']);
+display_heading(sprintf(_("Sales Order #%d"),$_GET['trans_no']));
 
 if (isset($_SESSION['Items']))
 {
 	unset ($_SESSION['Items']);
 }
 
-$_SESSION['Items'] = new cart;
-
-/*read in all the selected order into the Items cart  */
-read_sales_order($_GET['trans_no'], $_SESSION['Items']);
+$_SESSION['Items'] = new Cart(30, $_GET['trans_no'], true);
 
 start_table("$table_style2 width=95%", 5);
 echo "<tr valign=top><td>";
@@ -47,8 +44,8 @@ label_cells(_("Customer Order Ref."), $_SESSION['Items']->cust_ref, "class='tabl
 label_cells(_("Deliver To Branch"), $_SESSION['Items']->deliver_to, "class='tableheader2'");
 end_row();
 start_row();
-label_cells(_("Ordered On"), $_SESSION['Items']->orig_order_date, "class='tableheader2'");
-label_cells(_("Requested Delivery"), $_SESSION['Items']->delivery_date, "class='tableheader2'");
+label_cells(_("Ordered On"), $_SESSION['Items']->document_date, "class='tableheader2'");
+label_cells(_("Requested Delivery"), $_SESSION['Items']->due_date, "class='tableheader2'");
 end_row();
 start_row();
 label_cells(_("Order Currency"), $_SESSION['Items']->customer_currency, "class='tableheader2'");
@@ -82,7 +79,7 @@ while ($del_row = db_fetch($result))
 
 	alt_table_row_color($k);
 
-	$this_total = $del_row["ov_freight"] + $del_row["ov_gst"] + $del_row["ov_amount"];
+	$this_total = $del_row["ov_freight"]+ $del_row["ov_amount"] + $del_row["ov_freight_tax"]  + $del_row["ov_gst"] ;
 	$delivery_total += $this_total;
 
 	label_cell(get_customer_trans_view_str($del_row["type"], $del_row["trans_no"]));
@@ -115,7 +112,7 @@ while ($inv_row = db_fetch($result))
 
 	alt_table_row_color($k);
 
-	$this_total = $inv_row["ov_freight"] + $inv_row["ov_gst"] + $inv_row["ov_amount"];
+	$this_total = $inv_row["ov_freight"] + $inv_row["ov_freight_tax"]  + $inv_row["ov_gst"] + $inv_row["ov_amount"];
 	$invoices_total += $this_total;
 
 	label_cell(get_customer_trans_view_str($inv_row["type"], $inv_row["trans_no"]));
@@ -147,7 +144,7 @@ while ($credits_row = db_fetch($result))
 
 	alt_table_row_color($k);
 
-	$this_total = $credits_row["ov_freight"] + $credits_row["ov_gst"] + $credits_row["ov_amount"];
+	$this_total = $credits_row["ov_freight"] + $credits_row["ov_freight_tax"]  + $credits_row["ov_gst"] + $credits_row["ov_amount"];
 	$credits_total += $this_total;
 
 	label_cell(get_customer_trans_view_str($credits_row["type"], $credits_row["trans_no"]));
@@ -202,7 +199,7 @@ $display_total = number_format2($items_total + $_SESSION['Items']->freight_cost,
 
 label_row(_("Shipping"), number_format2($_SESSION['Items']->freight_cost,user_price_dec()),
 	"align=right colspan=6", "nowrap align=right");
-label_row(_("Total Excluding Tax"), $display_total, "align=right colspan=6",
+label_row(_("Total Order Value"), $display_total, "align=right colspan=6",
 	"nowrap align=right");
 
 end_table(2);
