@@ -39,7 +39,7 @@ class language
 			$_SESSION['language'] != $_SESSION['languages'][$code]) 
 		{
 			$_SESSION['language'] = $_SESSION['languages'][$code];
-			redirect("");
+			reload_page("");
 		}
 	}
 
@@ -106,7 +106,7 @@ function _set($key,$value)
 	get_text::set_var($key,$value);
 }
 
-function redirect($msg) 
+function reload_page($msg) 
 {
 //	header("Location: $_SERVER['PHP_SELF']."");
 //	exit;
