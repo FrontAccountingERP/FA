@@ -130,7 +130,7 @@ function invoice_totals(&$supp_trans)
    	label_row(_("Sub-total:"), number_format2( $supp_trans->ov_amount,user_price_dec()), "align=right", "align=right");
 
     $taxes = $supp_trans->get_taxes($_POST['tax_group_id']);
-    $tax_total = display_edit_tax_items($taxes, 1);
+    $tax_total = display_edit_tax_items($taxes, 1, 0); // tax_included==0 (we are the company)
 
     $display_total = number_format2(( $supp_trans->ov_amount + $tax_total), user_price_dec());
 
