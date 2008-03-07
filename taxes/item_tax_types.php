@@ -97,14 +97,15 @@ if (isset($_GET['delete']))
 
 //-----------------------------------------------------------------------------------
 
-$result = get_all_item_tax_types();
 
+$result2 = $result = get_all_item_tax_types();
 start_table("$table_style width=30%");
-$th = array(_("Name"), _("Tax exempt"), "", "");
+$th = array(_("Name"), _("Tax exempt"),'','');
+
 table_header($th);
 
 $k = 0;
-while ($myrow = db_fetch($result)) 
+while ($myrow = db_fetch($result2)) 
 {
 	
 	alt_table_row_color($k);	
@@ -172,7 +173,7 @@ if (!isset($_POST['exempt']) || $_POST['exempt'] == 0)
     display_note(_("Select which taxes this item tax type is exempt from."), 0, 1);
     
     start_table($table_style2);
-    $th = array(_("Tax Name"), _("Is exempt"));
+    $th = array(_("Tax Name"), _("Rate"), _("Is exempt"));
     table_header($th);
     	
     $tax_types = get_all_tax_types_simple();    	
@@ -183,6 +184,7 @@ if (!isset($_POST['exempt']) || $_POST['exempt'] == 0)
     	alt_table_row_color($k);	
     
     	label_cell($myrow["name"]);
+	percent_cell($myrow["rate"]);
     	check_cells("", 'ExemptTax' . $myrow["id"], null);
     	end_row();
     }

@@ -1079,7 +1079,7 @@ function stock_units_list_row($label, $name, $value, $enabled=true)
 function tax_types_list($name, $selected_id,
 	$none_option=false, $none_option_name=null, $submit_on_change=false)
 {
-	simple_codeandname_list("SELECT id, name FROM ".TB_PREF."tax_types",
+	simple_codeandname_list("SELECT id, CONCAT(name, ' (',rate,'%)') as name FROM ".TB_PREF."tax_types",
 		$name, $selected_id, $none_option, $none_option_name, true, $submit_on_change);
 }
 
