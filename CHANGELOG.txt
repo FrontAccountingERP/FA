@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+07-Mar-2008 Janusz Dobrowolski
+ # Fixed bug selecting allocated transactions as overdue
+ $ /sales/inquiry/customer_inquiry.php
+
 31-Jan-2008 Janusz Dobrowolski
  # Minor bugfix in db_import()
  $ /admin/db/maintenance_db.inc
