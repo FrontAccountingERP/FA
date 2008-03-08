@@ -28,6 +28,7 @@ ALTER TABLE `0_wo_requirements` CHANGE `workcentre` `workcentre` INT( 11 ) NOT N
 
 ALTER TABLE `0_debtor_trans` ADD `version` TINYINT(1) UNSIGNED DEFAULT '0' NOT NULL AFTER `type`;
 ALTER TABLE `0_sales_orders` ADD `version` TINYINT(1) UNSIGNED DEFAULT '0' NOT NULL AFTER `order_no`;
+ALTER TABLE `0_sales_orders` ADD `type` TINYINT(1) NOT NULL DEFAULT '0' AFTER `version`;
 
 ALTER TABLE `0_tax_types` DROP `out`;
 ALTER TABLE `0_debtor_trans_details` ADD COLUMN `qty_done` double NOT NULL default '0';
