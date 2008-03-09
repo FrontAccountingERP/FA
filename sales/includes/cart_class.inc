@@ -142,7 +142,7 @@ class cart
 	function write($policy=0) {
 		if (count($this->src_docs) == 0 && ($this->trans_type == 10 || $this->trans_type == 13)) {
 			// direct document -> first add parent
-			$src = $this; // make local copy of this cart
+			$src = do_clone($this);
 			$src->trans_type = get_parent_type($src->trans_type);
 			$src->reference = 'auto';
 

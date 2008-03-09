@@ -19,6 +19,31 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+09-Mar-2008 Joe Hunt
+ - Removed redundant form_types functions and the file /reporting/includes/form_types.inc. Removed table form_items
+ $ /dimensions/includes/dimensions_db.inc
+   /gl/includes/db/gl_db_banking.inc
+   /includes/main.inc
+   /inventory/includes/db/items_adjust_db.inc
+   /manufacturing/includes/db/work_order_issues_db.inc
+   /manufacturing/includes/db/work_order_produce_items_db.inc
+   /manufacturing/includes/db/work_orders_db.inc
+   /manufacturing/includes/db/work_orders_quick_db.inc
+   /purchasing/includes/db/grn_db.inc
+   /purchasing/includes/db/po_db.inc
+   /purchasing/includes/db/supp_payment_db.inc
+   /reporting/includes/form_types.inc (File removed)
+   /sales/includes/db/sales_delivery_db.inc
+   /sales/includes/db/sales_invoice_db.inc
+   /sales/includes/db/sales_order_db.inc
+   /sql/alter.sql
+ # Bug in calculating exchange rates in Reports Supplier Balances and Customer Balances
+ $ /reporting/rep101.php
+   /reporting/rep201.php
+ # clone replacement do_clone() for both PHP 4 and PHP 5.
+ $ /includes/ui/ui_view.inc (at the very bottom)
+   /sales/includes/cart_class.inc
+   
 07-Mar-2008 Janusz Dobrowolski
  ! Changed name tax type uniqueness constraint to (name, rate)
  $ /includes/ui/ui_lists.inc

@@ -1113,4 +1113,17 @@ if (!function_exists('_vd'))
   	}
 }
 
+/* ************************************** Backward compatible */
+function do_clone($object)
+{
+	if (version_compare(phpversion(), '5.0') < 0)
+	{
+		return $object;
+	}
+	else
+	{
+		return @clone($object);
+	}
+}
+
 ?>

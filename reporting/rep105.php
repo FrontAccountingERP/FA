@@ -26,7 +26,7 @@ function GetSalesOrders($from, $to, $category=0, $location=null, $backorder=0)
 {
 	$fromdate = date2sql($from);
 	$todate = date2sql($to);
-	
+
 	$sql= "SELECT ".TB_PREF."sales_orders.order_no,
 				".TB_PREF."sales_orders.debtor_no,
                 ".TB_PREF."sales_orders.branch_code,
@@ -38,7 +38,7 @@ function GetSalesOrders($from, $to, $category=0, $location=null, $backorder=0)
                 ".TB_PREF."stock_master.description,
                 ".TB_PREF."stock_master.units,
                 ".TB_PREF."sales_order_details.quantity,
-                ".TB_PREF."sales_order_details.qty_invoiced
+                ".TB_PREF."sales_order_details.qty_sent
             FROM ".TB_PREF."sales_orders
             	INNER JOIN ".TB_PREF."sales_order_details
             	    ON ".TB_PREF."sales_orders.order_no = ".TB_PREF."sales_order_details.order_no
@@ -51,20 +51,20 @@ function GetSalesOrders($from, $to, $category=0, $location=null, $backorder=0)
 	if ($location != null)
 		$sql .= " AND ".TB_PREF."sales_orders.from_stk_loc='$location'";
 	if ($backorder)
-		$sql .= "AND ".TB_PREF."sales_order_details.quantity - ".TB_PREF."sales_order_details.qty_invoiced > 0";
-	$sql .= " ORDER BY ".TB_PREF."sales_orders.order_no";	
-	
+		$sql .= "AND ".TB_PREF."sales_order_details.quantity - ".TB_PREF."sales_order_details.qty_sent > 0";
+	$sql .= " ORDER BY ".TB_PREF."sales_orders.order_no";
+
 	return db_query($sql, "Error getting order details");
 }
-	
+
 //----------------------------------------------------------------------------------------------------
 
 function print_order_status_list()
 {
 	global $path_to_root;
-	
+
 	include_once($path_to_root . "reporting/includes/pdf_report.inc");
-	
+
 	$from = $_POST['PARAM_0'];
 	$to = $_POST['PARAM_1'];
 	$category = $_POST['PARAM_2'];
@@ -73,7 +73,7 @@ function print_order_status_list()
 	$comments = $_POST['PARAM_5'];
 
 	$dec = user_qty_dec();
-	
+
 	if ($category == reserved_words::get_all_numeric())
 		$category = 0;
 	if ($location == reserved_words::get_all())
@@ -90,17 +90,17 @@ function print_order_status_list()
 		$back = _('All Orders');
 	else
 		$back = _('Back Orders Only');
-		
+
 	$cols = array(0, 60, 150, 260, 325,	385, 450, 515);
-	
+
 	$headers2 = array(_('Order'), _('Customer'), _('Branch'), _('Customer Ref'),
 		_('Ord Date'),	_('Del Date'),	_('Loc'));
-	
+
 	$aligns = array('left',	'left',	'right', 'right', 'right', 'right',	'right');
 
 	$headers = array(_('Code'),	_('Description'), _('Ordered'),	_('Invoiced'),
 		_('Outstanding'), '');
-    
+
     $params =   array( 	0 => $comments,
 	    				1 => array(  'text' => _('Period'), 'from' => $from, 'to' => $to),
 	    				2 => array(  'text' => _('Category'), 'from' => $cat,'to' => ''),
@@ -109,7 +109,7 @@ function print_order_status_list()
 
 	$cols2 = $cols;
 	$aligns2 = $aligns;
-	
+
 	$rep = new FrontReport(_('Order Status Listing'), "OrderStatusListing.pdf", user_pagesize());
 	$rep->Font();
 	$rep->Info($params, $cols, $headers, $aligns, $cols2, $headers2, $aligns2);
@@ -118,14 +118,14 @@ function print_order_status_list()
 	$orderno = 0;
 
 	$result = GetSalesOrders($from, $to, $category, $location, $backorder);
-	
+
 	while ($myrow=db_fetch($result))
 	{
 		if ($rep->row < $rep->bottomMargin + (2 * $rep->lineHeight))
 		{
 			$orderno = 0;
 			$rep->Header();
-		}	
+		}
 		$rep->NewLine(0, 2, false, $orderno);
 		if ($orderno != $myrow['order_no'])
 		{
@@ -142,26 +142,26 @@ function print_order_status_list()
 			$rep->TextCol(5, 6,	sql2date($myrow['delivery_date']));
 			$rep->TextCol(6, 7,	$myrow['from_stk_loc']);
 			$rep->NewLine(2);
-			$orderno = $myrow['order_no'];			
+			$orderno = $myrow['order_no'];
 		}
 		$rep->TextCol(0, 1,	$myrow['stk_code']);
 		$rep->TextCol(1, 2,	$myrow['description']);
 		$rep->TextCol(2, 3,	number_format2($myrow['quantity'], $dec));
 		$rep->TextCol(3, 4,	number_format2($myrow['qty_invoiced'], $dec));
-		$rep->TextCol(4, 5,	number_format2($myrow['quantity'] - $myrow['qty_invoiced'], $dec));
-		if ($myrow['quantity'] - $myrow['qty_invoiced'] > 0)
+		$rep->TextCol(4, 5,	number_format2($myrow['quantity'] - $myrow['qty_sent'], $dec));
+		if ($myrow['quantity'] - $myrow['qty_sent'] > 0)
 		{
 			$rep->Font('italic');
 			$rep->TextCol(5, 6,	_('Outstanding'));
 			$rep->Font();
-		}	
+		}
 		$rep->NewLine();
 		if ($rep->row < $rep->bottomMargin + (2 * $rep->lineHeight))
 		{
 			$orderno = 0;
 			$rep->Header();
-		}	
-	}		
+		}
+	}
 	$rep->Line($rep->row);
 	$rep->End();
 }

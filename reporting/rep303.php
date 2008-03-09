@@ -50,7 +50,7 @@ function getTransactions($category, $location)
 
 function getDemandQty($stockid, $location)
 {
-	$sql = "SELECT SUM(".TB_PREF."sales_order_details.quantity - ".TB_PREF."sales_order_details.qty_invoiced) AS QtyDemand
+	$sql = "SELECT SUM(".TB_PREF."sales_order_details.quantity - ".TB_PREF."sales_order_details.qty_sent) AS QtyDemand
 				FROM ".TB_PREF."sales_order_details,
 					".TB_PREF."sales_orders
 				WHERE ".TB_PREF."sales_order_details.order_no=".TB_PREF."sales_orders.order_no AND
@@ -64,7 +64,7 @@ function getDemandQty($stockid, $location)
 
 function getDemandAsmQty($stockid, $location)
 {
-	$sql = "SELECT SUM((".TB_PREF."sales_order_details.quantity-".TB_PREF."sales_order_details.qty_invoiced)*".TB_PREF."bom.quantity)
+	$sql = "SELECT SUM((".TB_PREF."sales_order_details.quantity-".TB_PREF."sales_order_details.qty_sent)*".TB_PREF."bom.quantity)
 				   AS Dem
 				   FROM ".TB_PREF."sales_order_details,
 						".TB_PREF."sales_orders,
@@ -73,7 +73,7 @@ function getDemandAsmQty($stockid, $location)
 				   WHERE ".TB_PREF."sales_order_details.stk_code=".TB_PREF."bom.parent AND
 				   ".TB_PREF."sales_orders.order_no = ".TB_PREF."sales_order_details.order_no AND
 				   ".TB_PREF."sales_orders.from_stk_loc='$location' AND
-				   ".TB_PREF."sales_order_details.quantity-".TB_PREF."sales_order_details.qty_invoiced > 0 AND
+				   ".TB_PREF."sales_order_details.quantity-".TB_PREF."sales_order_details.qty_sent > 0 AND
 				   ".TB_PREF."bom.component='$stockid' AND
 				   ".TB_PREF."stock_master.stock_id=".TB_PREF."bom.parent AND
 				   ".TB_PREF."stock_master.mb_flag='A'";
@@ -102,7 +102,7 @@ function print_stock_check()
     $location = $_POST['PARAM_1'];
     $pictures = $_POST['PARAM_2'];
     $comments = $_POST['PARAM_3'];
-    
+
     $dec = user_qty_dec();
 
 	if ($category == reserved_words::get_all_numeric())
@@ -133,7 +133,7 @@ function print_stock_check()
 		$user_comp = user_company();
 	else
 		$user_comp = "";
-		
+
     $rep = new FrontReport(_('Stock Check Sheets'), "StockCheckSheet.pdf", user_pagesize());
 
     $rep->Font();
@@ -176,7 +176,7 @@ function print_stock_check()
 				$rep->row -= $pic_height;
 				$rep->NewLine();
 			}
-		}	
+		}
 	}
 	$rep->Line($rep->row - 4);
     $rep->End();

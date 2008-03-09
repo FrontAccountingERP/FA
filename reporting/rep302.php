@@ -52,7 +52,7 @@ function getTransactions($category, $location)
 
 function getCustQty($stockid, $location)
 {
-	$sql = "SELECT SUM(".TB_PREF."sales_order_details.quantity - ".TB_PREF."sales_order_details.qty_invoiced) AS qty_demand
+	$sql = "SELECT SUM(".TB_PREF."sales_order_details.quantity - ".TB_PREF."sales_order_details.qty_sent) AS qty_demand
 				FROM ".TB_PREF."sales_order_details,
 					".TB_PREF."sales_orders
 				WHERE ".TB_PREF."sales_order_details.order_no=".TB_PREF."sales_orders.order_no AND
@@ -66,7 +66,7 @@ function getCustQty($stockid, $location)
 
 function getCustAsmQty($stockid, $location)
 {
-	$sql = "SELECT SUM((".TB_PREF."sales_order_details.quantity-".TB_PREF."sales_order_details.qty_invoiced)*".TB_PREF."bom.quantity)
+	$sql = "SELECT SUM((".TB_PREF."sales_order_details.quantity-".TB_PREF."sales_order_details.qty_sent)*".TB_PREF."bom.quantity)
 				   AS Dem
 				   FROM ".TB_PREF."sales_order_details,
 						".TB_PREF."sales_orders,
@@ -75,7 +75,7 @@ function getCustAsmQty($stockid, $location)
 				   WHERE ".TB_PREF."sales_order_details.stk_code=".TB_PREF."bom.parent AND
 				   ".TB_PREF."sales_orders.order_no = ".TB_PREF."sales_order_details.order_no AND
 				   ".TB_PREF."sales_orders.from_stk_loc='$location' AND
-				   ".TB_PREF."sales_order_details.quantity-".TB_PREF."sales_order_details.qty_invoiced > 0 AND
+				   ".TB_PREF."sales_order_details.quantity-".TB_PREF."sales_order_details.qty_sent > 0 AND
 				   ".TB_PREF."bom.component='$stockid' AND
 				   ".TB_PREF."stock_master.stock_id=".TB_PREF."bom.parent AND
 				   ".TB_PREF."stock_master.mb_flag='A'";
@@ -141,7 +141,7 @@ function print_inventory_planning()
     $category = $_POST['PARAM_0'];
     $location = $_POST['PARAM_1'];
     $comments = $_POST['PARAM_2'];
-    
+
     $dec = user_qty_dec();
 
 	if ($category == reserved_words::get_all_numeric())
@@ -166,7 +166,7 @@ function print_inventory_planning()
 	$per3 = strftime('%b',mktime(0,0,0,date('m')-3,date('d'),date('Y')));
 	$per4 = strftime('%b',mktime(0,0,0,date('m')-4,date('d'),date('Y')));
 
-	$headers = array(_('Category'), '', $per4, $per3, $per2, $per1, $per0, '3*M', 
+	$headers = array(_('Category'), '', $per4, $per3, $per2, $per1, $per0, '3*M',
 		_('QOH'), _('Cust Ord'), _('Supp Ord'), _('Sugg Ord'));
 
 	$aligns = array('left',	'left',	'right', 'right', 'right', 'right', 'right', 'right',
@@ -198,7 +198,7 @@ function print_inventory_planning()
 			$catt = $trans['cat_description'];
 			$rep->NewLine();
 		}
-		
+
 		$custqty = getCustQty($trans['stock_id'], $trans['loc_code']);
 		$custqty += getCustAsmQty($trans['stock_id'], $trans['loc_code']);
 		$suppqty = getSuppQty($trans['stock_id'], $trans['loc_code']);
@@ -211,18 +211,18 @@ function print_inventory_planning()
 		$rep->TextCol(4, 5, number_format2($period['prd2'], $dec));
 		$rep->TextCol(5, 6, number_format2($period['prd3'], $dec));
 		$rep->TextCol(6, 7, number_format2($period['prd4'], $dec));
-		
+
 		$MaxMthSales = Max($period['prd0'], $period['prd1'], $period['prd2'], $period['prd3']);
 		$IdealStockHolding = $MaxMthSales * 3;
 		$rep->TextCol(7, 8, number_format2($IdealStockHolding, $dec));
-		
+
 		$rep->TextCol(8, 9, number_format2($trans['qty_on_hand'], $dec));
 		$rep->TextCol(9, 10, number_format2($custqty, $dec));
 		$rep->TextCol(10, 11, number_format2($suppqty, $dec));
-		
+
 		$SuggestedTopUpOrder = $IdealStockHolding - $trans['qty_on_hand'] + $custqty - $suppqty;
 		if ($SuggestedTopUpOrder < 0.0)
-			$SuggestedTopUpOrder = 0.0;	
+			$SuggestedTopUpOrder = 0.0;
 		$rep->TextCol(11, 12, number_format2($SuggestedTopUpOrder, $dec));
 	}
 	$rep->Line($rep->row - 4);

@@ -111,7 +111,6 @@ function write_sales_delivery(&$delivery,$bo_policy)
 	add_comments(13, $delivery_no, $delivery->document_date, $delivery->Comments);
 
 	if ($trans_no == 0) {
-		// add_forms_for_sys_type(13, $delivery_no, $delivery->Location);
 		if ($delivery->reference!='auto')
 			references::save_last($delivery->reference, 13);
 	}

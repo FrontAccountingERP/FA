@@ -15,8 +15,6 @@ function add_dimension($reference, $name, $type_, $date_, $due_date, $memo_)
 
 	add_comments(systypes::dimension(), $id, $date_, $memo_);
 
-	add_forms_for_sys_type(systypes::dimension(), $id);
-
 	references::save_last($reference, systypes::dimension());
 
 	commit_transaction();
@@ -56,8 +54,6 @@ function delete_dimension($id)
 
 	delete_comments(systypes::dimension(), $id);
 
-	delete_forms_for_systype(systypes::dimension(), $id);
-
 	commit_transaction();
 }
 
@@ -83,15 +79,15 @@ function get_dimension_string($id, $html=false, $space=' ')
 	{
 		if ($html)
 			$dim = "&nbsp;";
-		else	
+		else
 			$dim = "";
-	}		
+	}
 	else
 	{
 		$row = get_dimension($id, true);
 		$dim = $row['reference'] . $space . $row['name'];
 	}
-	
+
 	return $dim;
 }
 

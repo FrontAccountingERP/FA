@@ -134,7 +134,6 @@ function write_sales_invoice(&$invoice)
 	add_comments(10, $invoice_no, $date_, $invoice->Comments);
 
 	if ($trans_no == 0) {
-		//add_forms_for_sys_type(10, $invoice_no, $invoice->Location);
 		references::save_last($invoice->reference, 10);
 	}
 

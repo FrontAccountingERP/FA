@@ -63,8 +63,6 @@ function add_work_order_quick($wo_ref, $loc_code, $units_reqd, $stock_id, $type,
 
 	add_comments(systypes::work_order(), $woid, $date_, $memo_);
 
-	add_forms_for_sys_type(systypes::work_order(), $woid, $type);
-
 	references::save_last($wo_ref, systypes::work_order());
 
 	commit_transaction();

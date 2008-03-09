@@ -16,6 +16,7 @@
 -- ALTER TABLE
 -- 
 
+DROP TABLE IF EXISTS `0_form_items`; 
 
 ALTER TABLE `0_tax_types` DROP INDEX `name`, ADD UNIQUE `name` ( `name` , `rate` );
 

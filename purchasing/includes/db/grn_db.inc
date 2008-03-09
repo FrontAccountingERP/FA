@@ -59,8 +59,6 @@ function add_grn(&$po, $date_, $reference, $location)
 		} /*quantity received is != 0 */
 	} /*end of order_line loop */
 
-	add_forms_for_sys_type(25, $grn, $location);
-
 	references::save_last($reference, 25);
 
 	commit_transaction();

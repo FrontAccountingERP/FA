@@ -50,8 +50,6 @@ function add_work_order($wo_ref, $loc_code, $units_reqd, $stock_id,
 
 	add_comments(systypes::work_order(), $woid, $required_by, $memo_);
 
-	add_forms_for_sys_type(systypes::work_order(), $woid);
-
 	references::save_last($wo_ref, systypes::work_order());
 
 	commit_transaction();
@@ -99,8 +97,6 @@ function delete_work_order($woid)
 	db_query($sql,"The work order could not be deleted");
 
 	delete_comments(systypes::work_order(), $woid);
-
-	delete_forms_for_systype(systypes::work_order(), $woid);
 
 	commit_transaction();
 }

@@ -113,8 +113,6 @@ function add_sales_order(&$order)
 
 	} /* inserted line items into sales order details */
 
-	add_forms_for_sys_type(systypes::sales_order(), $order_no);
-
 	commit_transaction();
 
 	if ($loc_notification == 1 && count($st_ids) > 0)
@@ -150,15 +148,13 @@ function delete_sales_order($order_no)
 	$sql = "DELETE FROM ".TB_PREF."sales_order_details WHERE order_no =" . $order_no;
 	db_query($sql, "order Detail Delete");
 
-	delete_forms_for_systype(systypes::sales_order(), $order_no);
-
 	commit_transaction();
 }
 
 //----------------------------------------------------------------------------------------
 // Mark changes in sales_order_details
 //
-function update_sales_order_version($order) 
+function update_sales_order_version($order)
 {
   foreach ($order as $so_num => $so_ver) {
   $sql= 'UPDATE '.TB_PREF.'sales_orders SET version=version+1 WHERE order_no='. $so_num.
@@ -242,9 +238,9 @@ function update_sales_order($order)
 				}
 			}
 		}
-		$sql = "INSERT INTO ".TB_PREF."sales_order_details 
-		 (order_no, stk_code,  description, unit_price, quantity, 
-		  discount_percent, qty_sent) 
+		$sql = "INSERT INTO ".TB_PREF."sales_order_details
+		 (order_no, stk_code,  description, unit_price, quantity,
+		  discount_percent, qty_sent)
 		 VALUES (";
 		$sql .= $order_no . ",'"
 		  .$line->stock_id . "','"
@@ -269,8 +265,8 @@ function update_sales_order($order)
 		$subject = _("Stocks below Re-Order Level at " . $loc['location_name']);
 		$msg = "\n";
 		for ($i = 0; $i < count($st_ids); $i++)
-			$msg .= $st_ids[$i] . " " . $st_names[$i] . ", " 
-			  . _("Re-Order Level") . ": " . $st_reorder[$i] . ", " 
+			$msg .= $st_ids[$i] . " " . $st_names[$i] . ", "
+			  . _("Re-Order Level") . ": " . $st_reorder[$i] . ", "
 			  . _("Below") . ": " . $st_num[$i] . "\n";
 		$msg .= "\n" . _("Please reorder") . "\n\n";
 		$msg .= $company['coy_name'];
@@ -332,7 +328,7 @@ function get_sales_order_header($order_no)
 function get_sales_order_details($order_no) {
 	$sql = "SELECT id, stk_code, unit_price, "
 		.TB_PREF."sales_order_details.description,"
-		.TB_PREF."sales_order_details.quantity, 
+		.TB_PREF."sales_order_details.quantity,
 		  discount_percent,
 		  qty_sent as qty_done, "
 		.TB_PREF."stock_master.units,
@@ -355,7 +351,7 @@ function read_sales_order($order_no, &$order)
 	$order->so_type =  $myrow["type"];
 	$order->trans_no = array($order_no=> $myrow["version"]);
 
-	$order->set_customer($myrow["debtor_no"], $myrow["name"], 
+	$order->set_customer($myrow["debtor_no"], $myrow["name"],
 	  $myrow["curr_code"], $myrow["discount"]);
 
 	$order->set_branch($myrow["branch_code"], $myrow["tax_group_id"],
@@ -365,9 +361,9 @@ function read_sales_order($order_no, &$order)
 
 	$order->set_location($myrow["from_stk_loc"], $myrow["location_name"]);
 
-	$order->set_delivery($myrow["ship_via"], $myrow["deliver_to"], 
+	$order->set_delivery($myrow["ship_via"], $myrow["deliver_to"],
 	  $myrow["delivery_address"], $myrow["freight_cost"]);
-	  
+
 	$order->cust_ref = $myrow["customer_ref"];
 	$order->default_sales_type =$myrow["order_type"];
 	$order->Comments = $myrow["comments"];
@@ -465,7 +461,7 @@ function get_customer_to_order($customer_id) {
 }
 
 function get_branch_to_order($customer_id, $branch_id) {
-		
+
     	// the branch was also selected from the customer selection so default the delivery details from the customer branches table cust_branch. The order process will ask for branch details later anyway
 	 	$sql = "SELECT ".TB_PREF."cust_branch.br_name, "
 			.TB_PREF."cust_branch.br_address, "
