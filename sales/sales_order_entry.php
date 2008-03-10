@@ -360,8 +360,10 @@ function create_cart($type, $trans_no)
 		$doc = new Cart(30, array($trans_no));
 		$doc->trans_type = $type;
 		$doc->trans_no = 0;
-
-		$doc->due_date = $doc->document_date = Today();
+		if ($type == 10)
+			$doc->due_date = get_invoice_duedate($doc->customer_id, $doc->document_date);
+		else
+			$doc->due_date = $doc->document_date = Today();
 		$doc->reference = references::get_next($doc->trans_type);
 		$doc->Comments='';
 		foreach($doc->line_items as $line_no => $line) {

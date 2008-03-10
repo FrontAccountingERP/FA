@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+10-Mar-2008 Joe Hunt
+ # Small fix for Template Invoice in sales_order_entry.php on line 363 (duedate for Invoice).
+ $ /sales/sales_order_entry.php
+ 
 10-Mar-2008 Janusz Dobrowolski
  + Added price list selector to sales entry (debtor_master gives only default one)
  + Added optional submit_on_change parameter to sales ui lists
