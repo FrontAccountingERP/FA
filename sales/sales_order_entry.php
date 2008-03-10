@@ -355,21 +355,21 @@ function create_cart($type, $trans_no)
 	$doc_type = $type;
 
 	if($type != 30 && $trans_no != 0) { // this is template
-	$doc_type = 30;
+		$doc_type = 30;
 
-	$doc = new Cart(30, array($trans_no));
-	$doc->trans_type = $type;
-	$doc->trans_no = 0;
+		$doc = new Cart(30, array($trans_no));
+		$doc->trans_type = $type;
+		$doc->trans_no = 0;
 
-	$doc->due_date = $doc->document_date = Today();
-	$doc->reference = references::get_next($doc->trans_type);
-	$doc->Comments='';
-	foreach($doc->line_items as $line_no => $line) {
-		$doc->line_items[$line_no]->qty_done = 0;
-	}
-	$_SESSION['Items'] = $doc;
+		$doc->due_date = $doc->document_date = Today();
+		$doc->reference = references::get_next($doc->trans_type);
+		$doc->Comments='';
+		foreach($doc->line_items as $line_no => $line) {
+			$doc->line_items[$line_no]->qty_done = 0;
+		}
+		$_SESSION['Items'] = $doc;
 	} else
-	$_SESSION['Items'] = new Cart($type,array($trans_no));
+		$_SESSION['Items'] = new Cart($type,array($trans_no));
 
 	copy_from_cart();
 }

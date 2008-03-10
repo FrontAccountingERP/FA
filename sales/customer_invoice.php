@@ -107,6 +107,7 @@ if ( (isset($_GET['DeliveryNumber']) && ($_GET['DeliveryNumber'] > 0) )
 	$dn->src_docs = $dn->trans_no;
 	$dn->trans_no = 0;
 	$dn->reference = references::get_next(10);
+	$dn->due_date = get_invoice_duedate($dn->customer_id, $dn->document_date);
 
 	$_SESSION['Items'] = $dn;
 	copy_from_cart();
