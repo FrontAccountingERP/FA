@@ -181,7 +181,9 @@ function copy_to_cart()
 	$cart->due_date =  $_POST['due_date'];
 	$cart->Location = $_POST['Location'];
 	$cart->Comments = $_POST['Comments'];
-	$cart->sales_type = $_POST['sales_type_id'];
+	if ($cart->trans_no == 0)
+		$dn->ref = $_POST['ref'];
+
 }
 //------------------------------------------------------------------------------
 
@@ -194,7 +196,6 @@ function copy_from_cart()
 	$_POST['due_date'] = $cart->due_date;
 	$_POST['Location']= $cart->Location;
 	$_POST['Comments']= $cart->Comments;
-	$_POST['sales_type_id'] = $cart->sales_type;
 }
 //------------------------------------------------------------------------------
 
@@ -257,15 +258,12 @@ if (isset($_POST['process_delivery']) && check_data() && check_qoh()) {
 	} else {
 		$bo_policy = 1;
 	}
-	$newdelivery = $dn->trans_no==0;
-
-	if ($newdelivery)
-		 $dn->ref = $_POST['ref'];
+	$newdelivery = ($dn->trans_no == 0);
 
 	copy_to_cart();
 	$delivery_no = $dn->write($bo_policy);
-	processing_end();
 
+	processing_end();
 	if ($newdelivery) {
 		meta_forward($_SERVER['PHP_SELF'], "AddedID=$delivery_no");
 	} else {
