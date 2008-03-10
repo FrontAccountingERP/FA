@@ -51,7 +51,7 @@ function write_credit_note($credit_note, $write_off_acc)
 		$credit_note->Branch, $credit_date, $credit_note->reference,
 		$credit_note_total, 0, $items_added_tax,
 		$credit_note->freight_cost, $freight_added_tax,
-		$credit_note->default_sales_type,
+		$credit_note->sales_type,
 		$credit_note->order_no, $credit_invoice, $credit_note->ship_via
 		//, $credit_note->due_date
 		);
@@ -102,7 +102,7 @@ function write_credit_note($credit_note, $write_off_acc)
 			$credit_line->line_price(), $line_tax, $credit_line->discount_percent,
 			$credit_line->standard_cost, $trans_no==0 ? 0:  $credit_line->id);
 
-		add_credit_movements_item(&$credit_note, &$credit_line, $credit_date,
+		add_credit_movements_item(&$credit_note, &$credit_line,
 			$credit_type, $line_taxfree_price+$line_tax, $credit_invoice);
 
 		add_gl_trans_credit_costs($credit_note, $credit_line, $credit_no,
@@ -132,7 +132,7 @@ function write_credit_note($credit_note, $write_off_acc)
 			add_customer_trans_tax_detail_item(11, $credit_no, $taxitem['tax_type_id'],
 				$taxitem['rate'], $credit_note->tax_included, $taxitem['Value']);
 
-			add_gl_trans_customer(11, $credit_no, $date_, $taxitem['sales_gl_code'], 0, 0,
+			add_gl_trans_customer(11, $credit_no, $credit_date, $taxitem['sales_gl_code'], 0, 0,
 				$taxitem['Value'], $credit_note->customer_id,
 				"A tax GL posting for this credit note could not be inserted");
 		}
@@ -153,7 +153,7 @@ function write_credit_note($credit_note, $write_off_acc)
 // Insert a stock movement coming back in to show the credit note and
 // 	a reversing stock movement to show the write off
 //
-function add_credit_movements_item(&$credit_note, &$credit_line, $date_,
+function add_credit_movements_item(&$credit_note, &$credit_line,
 	$credit_type, $price, $credited_invoice=0)
 {
 

@@ -52,7 +52,7 @@ function write_sales_invoice(&$invoice)
 	$invoice_no = write_customer_trans(10, $trans_no, $invoice->customer_id,
 		$invoice->Branch, $date_, $invoice->reference, $items_total, 0,
 		$items_added_tax, $invoice->freight_cost, $freight_added_tax,
-		$invoice->default_sales_type, $sales_order, $delivery_no,
+		$invoice->sales_type, $sales_order, $delivery_no,
 		$invoice->ship_via, $invoice->due_date);
 
 	if ($trans_no == 0) {

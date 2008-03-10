@@ -18,7 +18,7 @@ function display_credit_header(&$order)
 
 	customer_list_row(_("Customer:"), 'customer_id', null, false, true);
 
-	if ($order->customer_id != $_POST['customer_id'])
+	if ($order->customer_id != $_POST['customer_id'] || $order->sales_type != $_POST['sales_type_id'])
 	{
 		// customer has changed
 
@@ -68,8 +68,8 @@ function display_credit_header(&$order)
 	echo "<table height='5'>";
 
     if (!isset($_POST['sales_type_id']))
-    	$_POST['sales_type_id'] = $order->default_sales_type;
-    sales_types_list_row(_("Sales Type"), 'sales_type_id', $_POST['sales_type_id']);
+    	$_POST['sales_type_id'] = $order->sales_type;
+    sales_types_list_row(_("Sales Type"), 'sales_type_id', $_POST['sales_type_id'], true);
 
 	label_row(_("Customer Discount:"), ($order->default_discount * 100) . "%");
 	echo "</table>";
@@ -215,7 +215,8 @@ function credit_edit_item_controls(&$order, $line_no=-1)
 		$_POST['units'] = $item_info["units"];
 
    		$_POST['qty'] = 0;
-		$_POST['price'] = get_price($_POST['stock_id'], $order->customer_id);
+		$_POST['price'] = get_price($_POST['stock_id'],
+		     $order->customer_currency, $order->sales_type);
 		// default to the customer's discount %
 		$_POST['Disc'] = $order->default_discount * 100;
 	}

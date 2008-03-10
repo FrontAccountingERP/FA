@@ -57,7 +57,7 @@ function add_sales_order(&$order)
 		VALUES ('" . $order_type . "', '" . $order->customer_id . "', '" . $order->Branch . "', '".
 			$order->cust_ref ."','". db_escape($order->Comments) ."','" .
 			date2sql($order->document_date) . "', '" .
-			$order->default_sales_type . "', " .
+			$order->sales_type . "', " .
 			$_POST['ship_via'] .",'" . $order->deliver_to . "', '" .
 			$order->delivery_address . "', '" .
 			$order->phone . "', '" . $order->email . "', " .
@@ -182,7 +182,7 @@ function update_sales_order($order)
 		customer_ref = '". $order->cust_ref ."',
 		comments = '". db_escape($order->Comments) ."',
 		ord_date = '" . $ord_date . "',
-		order_type = '" . $order->default_sales_type . "',
+		order_type = '" . $order->sales_type . "',
 		ship_via = " . $order->ship_via .",
 		deliver_to = '" . $order->deliver_to . "',
 		delivery_address = '" . $order->delivery_address . "',
@@ -365,7 +365,7 @@ function read_sales_order($order_no, &$order)
 	  $myrow["delivery_address"], $myrow["freight_cost"]);
 
 	$order->cust_ref = $myrow["customer_ref"];
-	$order->default_sales_type =$myrow["order_type"];
+	$order->sales_type =$myrow["order_type"];
 	$order->Comments = $myrow["comments"];
 	$order->due_date = sql2date($myrow["delivery_date"]);
 	$order->document_date = sql2date($myrow["ord_date"]);

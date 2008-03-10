@@ -63,7 +63,7 @@ function copy_to_cn()
 	$_SESSION['Items']->document_date = $_POST['OrderDate'];
 	$_SESSION['Items']->freight_cost = $_POST['ChargeFreightCost'];
 	$_SESSION['Items']->Location = $_POST["Location"];
-	$_SESSION['Items']->default_sales_type = $_POST['sales_type_id'];
+	$_SESSION['Items']->sales_type = $_POST['sales_type_id'];
 	$_SESSION['Items']->reference = $_POST['ref'];
 	$_SESSION['Items']->ship_via = $_POST['ShipperID'];
 }
@@ -76,7 +76,7 @@ function copy_from_cn()
 	$_POST['OrderDate'] = $_SESSION['Items']->document_date;
 	$_POST['ChargeFreightCost'] = $_SESSION['Items']->freight_cost;
 	$_POST['Location'] = $_SESSION['Items']->Location;
-	$_POST['sales_type_id'] = $_SESSION['Items']->default_sales_type;
+	$_POST['sales_type_id'] = $_SESSION['Items']->sales_type;
 	$_POST['ref'] = $_SESSION['Items']->reference;
 	$_POST['ShipperID'] = $_SESSION['Items']->ship_via;
 }

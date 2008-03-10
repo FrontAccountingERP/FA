@@ -25,7 +25,7 @@ class cart
 
 	var $document_date;
 	var $due_date;
-	var $default_sales_type; // set to the customer's sales type
+	var $sales_type; // set to the customer's sales type
 	var $sales_type_name; // set to customer's sales type name
 	var $tax_included;
 
@@ -64,94 +64,93 @@ class cart
 	function Cart($type, $trans_no=0, $view=false ) {
 		/*Constructor function initialises a new shopping cart */
 		$this->line_items = array();
-		$this->default_sales_type = "";
+		$this->sales_type = "";
 		$this->trans_type = 30;
 		$this->read($type, $trans_no, $view );
 
 	}
 
+	//-------------------------------------------------------------------------
+	// Reading document into cart
+	//
+	function read($type, $trans_no = 0, $view=false ) {
 
-	function read($type, $trans_no=0, $view=false ) {
+		if (!is_array($trans_no)) $trans_no = array($trans_no);
 
-	if (!is_array($trans_no)) $trans_no = array($trans_no);
-
-	if ($trans_no[0]) {
-		if ($type==30) { // sales order
-			read_sales_order($trans_no[0], $this);
-			if ($view) {	// prepare for DN/IV entry
-				for($line_no=0; $line_no<count($this->line_items); $line_no++) {
-					$line= &$this->line_items[$line_no];
-					$line->qty_dispatched = $line->quantity-$line->qty_done;
-				}
-			}
-			} else {	// derivative transaction
-				read_sales_trans($type, $trans_no, $this);
-				if ($this->order_no) { // free hand credit notes have no order_no
-					$sodata = get_sales_order_header($this->order_no);
-					$this->cust_ref = $sodata["customer_ref"];
-//set_customer($customer_name, $customer_id, $currency, $discount)
-//*					$this->customer_name = $sodata["name"];
-//*					$this->customer_currency = $sodata["curr_code"];
-//*					$this->Comments = $sodata["comments"];
-					$this->delivery_address = $sodata["delivery_address"];
-//					$this->location_name = $sodata["location_name"];
-//					$this->document_date = sql2date($myrow["ord_date"]);
-				}
-				if (!$view && ($type!=11 || $this->trans_link!=0)) {
-					$src_type = get_parent_type($type);
-					$src_details = 0;
-					if ($src_type==30) { // get src data from sales_orders
-						$this->src_docs = array( $sodata['order_no']=>$sodata['version']);
-						$srcdetails = get_sales_order_details($this->order_no);
-					} else {	// get src_data from debtor_trans
-						$this->src_docs = get_customer_trans_version($src_type, get_parent_trans($type,$trans_no[0]));
-						$srcdetails = get_customer_trans_details($src_type,array_keys($this->src_docs));
-					}
-					// calculate & save: qtys on other docs and free qtys on src doc
-					$line_no = 0;
-					for($line_no=0; $srcline = db_fetch($srcdetails); $line_no++) {
-						$sign = 1; // $type==13 ?  1 : -1; // this is strange debtor_trans atavism
+		if ($trans_no[0]) {
+			if ($type == 30) { // sales order
+				read_sales_order($trans_no[0], $this);
+				if ($view) {	// prepare for DN/IV entry
+					for($line_no = 0; $line_no < count($this->line_items); $line_no++) {
 						$line = &$this->line_items[$line_no];
-
-						$line->qty_old = $line->qty_dispatched = $line->quantity;
-						$line->quantity += $sign*($srcline['quantity']-$srcline['qty_done']); // add free qty on src doc
-					}
-				} else {
-					for($line_no=0; $line_no<count($this->line_items); $line_no++) {
-						$line= &$this->line_items[$line_no];
-						$line->qty_dispatched = $line->quantity;
+						$line->qty_dispatched = $line->quantity - $line->qty_done;
 					}
 				}
+				} else {	// derivative transaction
+					read_sales_trans($type, $trans_no, $this);
+					if ($this->order_no) { // free hand credit notes have no order_no
+						$sodata = get_sales_order_header($this->order_no);
+						$this->cust_ref = $sodata["customer_ref"];
+					// currently currency is hard linked to debtor account
+					//	$this->customer_currency = $sodata["curr_code"];
+						$this->delivery_to = $sodata["deliver_to"];
+						$this->delivery_address = $sodata["delivery_address"];
+					}
+					if (!$view && ($type!=11 || $this->trans_link!=0)) {
+						$src_type = get_parent_type($type);
+						$src_details = 0;
+						if ($src_type == 30) { // get src data from sales_orders
+							$this->src_docs = array( $sodata['order_no']=>$sodata['version']);
+							$srcdetails = get_sales_order_details($this->order_no);
+						} else {	// get src_data from debtor_trans
+							$this->src_docs = get_customer_trans_version($src_type, get_parent_trans($type,$trans_no[0]));
+							$srcdetails = get_customer_trans_details($src_type,array_keys($this->src_docs));
+						}
+						// calculate & save: qtys on other docs and free qtys on src doc
+						$line_no = 0;
+						for($line_no = 0; $srcline = db_fetch($srcdetails); $line_no++) {
+							$sign = 1; // $type==13 ?  1 : -1; // this is strange debtor_trans atavism
+							$line = &$this->line_items[$line_no];
+
+							$line->qty_old = $line->qty_dispatched = $line->quantity;
+							$line->quantity += $sign * ($srcline['quantity'] - $srcline['qty_done']); // add free qty on src doc
+						}
+					} else {
+						for($line_no = 0; $line_no < count($this->line_items); $line_no++) {
+							$line = &$this->line_items[$line_no];
+							$line->qty_dispatched = $line->quantity;
+						}
+					}
+				}
+			} else {
+				$this->trans_type = $type;
+				$this->trans_no = 0;
+				// set new sales document defaults here
+				$this->customer_id = '';
+				$this->document_date = Today();
+				if (!is_date_in_fiscalyear($this->document_date))
+					$this->document_date = end_fiscalyear();
+				$this->reference = references::get_next($this->trans_type);
 			}
-		} else {
-			$this->trans_type = $type;
-			$this->trans_no = 0;
-			// set new sales document defaults here
-			$this->customer_id='';
-			$this->document_date = Today();
-			if (!is_date_in_fiscalyear($this->document_date))
-			$this->document_date = end_fiscalyear();
-			$this->reference = references::get_next($this->trans_type);
-		}
 	}
 
 	//-------------------------------------------------------------------------
 	// Writing new/modified sales document to database.
 	// Makes parent documents for direct delivery/invoice by recurent call.
-
+	// $policy - 0 or 1:  writeoff/return for IV, back order/cancel for DN
 	function write($policy=0) {
 		if (count($this->src_docs) == 0 && ($this->trans_type == 10 || $this->trans_type == 13)) {
-			// direct document -> first add parent
-			$src = do_clone($this);
+			// this is direct document - first add parent
+			$src = (PHP_VERSION<5) ? $this : clone( $this ); // make local copy of this cart
 			$src->trans_type = get_parent_type($src->trans_type);
 			$src->reference = 'auto';
 
 			$src->write(1);
+
 			$type = $this->trans_type;
 			$ref = $this->reference;
 			// re-read document
 			$this->read($src->trans_type, key($src->trans_no), true);
-
 			$this->reference = $ref;
 			$this->trans_type = $type;
 			$this->src_docs= $this->trans_no;
@@ -192,9 +191,10 @@ class cart
 
 	function set_sales_type($sales_type, $sales_name, $tax_included=0)
 	{
-		$this->default_sales_type = $sales_type;
-		$this->sales_type_name = $sales_name;
-		$this->tax_included = $tax_included;
+	    $old_tax_inc = $this->tax_included;
+	    $this->sales_type = $sales_type;
+	    $this->sales_type_name = $sales_name;
+	    $this->tax_included = $tax_included;
 	}
 
 	function set_location($id, $name)
@@ -248,7 +248,7 @@ class cart
 	{
 		unset($this->line_items);
 		$this->line_items = array();
-		$this->default_sales_type = "";
+		$this->sales_type = "";
 		$this->trans_no = 0;
 		$this->customer_id = $this->order_no = 0;
 	}
@@ -337,7 +337,8 @@ class cart
 	}
 
 
-	function get_tax_free_shipping() {
+	function get_tax_free_shipping()
+	{
 
 		if ($this->tax_included==0)
 			return $this->freight_cost;
@@ -345,7 +346,8 @@ class cart
 			return ($this->freight_cost - $this->get_shipping_tax());
 	}
 
-	function get_shipping_tax() {
+	function get_shipping_tax()
+	{
 
 		$tax_items = get_shipping_tax_as_array();
 		$tax_rate = 0;

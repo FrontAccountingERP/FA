@@ -46,14 +46,13 @@ function add_gl_trans_customer($type, $type_no, $date_, $account, $dimension, $d
 
 //----------------------------------------------------------------------------------------
 
-function get_price ($stock_id, $debtor_no)
+function get_price ($stock_id, $currency, $sales_type_id)
 {
 	$sql = "SELECT ".TB_PREF."prices.price
-		FROM ".TB_PREF."prices, ".TB_PREF."debtors_master
-		WHERE ".TB_PREF."debtors_master.sales_type=".TB_PREF."prices.sales_type_id
-			AND ".TB_PREF."debtors_master.debtor_no='" . $debtor_no . "'
-			AND ".TB_PREF."prices.stock_id = '" . $stock_id . "'
-			AND ".TB_PREF."prices.curr_abrev = ".TB_PREF."debtors_master.curr_code";
+		FROM ".TB_PREF."prices
+		WHERE ".TB_PREF."prices.stock_id = '" . $stock_id . "'
+		  AND ".TB_PREF."prices.sales_type_id = " . $sales_type_id . "
+		  AND ".TB_PREF."prices.curr_abrev = '$currency'";
 
 	$result = db_query($sql, "There was a problem retrieving the pricing information for the part $stock_id for customer");
 

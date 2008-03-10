@@ -236,7 +236,7 @@ function display_credit_items()
 	label_cell(_("Shipping Company"), "class='tableheader2'");
 	shippers_list_cells(null, 'ShipperID', $_POST['ShipperID']);
 //	if (!isset($_POST['sales_type_id']))
-//	  $_POST['sales_type_id'] = $_SESSION['Items']->default_sales_type;
+//	  $_POST['sales_type_id'] = $_SESSION['Items']->sales_type;
 //	label_cell(_("Sales Type"), "class='tableheader2'");
 //	sales_types_list_cells(null, 'sales_type_id', $_POST['sales_type_id']);
 

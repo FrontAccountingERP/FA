@@ -160,6 +160,7 @@ function display_order_header(&$order, $editable, $date_text, $display_tax_group
 	echo "<table>";
 
 	$customer_error = "";
+        $change_prices = 0;
 
 	if (isset($order) && !$editable)
 	{
@@ -205,36 +206,31 @@ function display_order_header(&$order, $editable, $date_text, $display_tax_group
 		$customer_error = _("The selected customer does not have any branches. Please create at least one branch.");
 		unset($_POST['branch_id']);
 		$order->Branch = 0;
-	} else 
-	
+	} else 	
 	{
-
 		//set_global_customer($_POST['customer_id']);
 	    if (($order->customer_id != $_POST['customer_id']) || 
 	    	($order->Branch != $_POST['branch_id'])) {
-		  $old_order = $order;
+
+		  $old_order = (PHP_VERSION<5) ? $order : clone( $order );
 		  $customer_error = get_customer_details_to_order($order, $_POST['customer_id'], $_POST['branch_id']);
 		  $_POST['Location'] = $order->Location;
 		  $_POST['deliver_to'] = $order->deliver_to;
 		  $_POST['delivery_address'] = $order->delivery_address;
 		  $_POST['phone'] = $order->phone;
+		  $_POST['sales_type'] = $order->sales_type;
 
 		// change prices if necessary
 		// what about discount in template case?
 		  if ( $old_order->customer_currency!=$order->customer_currency
-		    || $old_order->default_sales_type!=$order->default_sales_type
+		    || $old_order->sales_type!=$order->sales_type
 		//  || $old_order->default_discount!=$order->default_discount
 		    ) {
-			
-		    foreach ($order->line_items as $line_no=>$item) {
-				$line = &$order->line_items[$line_no];
-				$line->price = get_price($line->stock_id, $order->customer_id);
-		//		$line->discount_percent = $order->default_discount;
+			$change_prices = 1;
 		    }
-		}
 		  
 	    }
-	 }
+	 } // changed branch
 	    set_global_customer($_POST['customer_id']);
 	}
 
@@ -256,8 +252,28 @@ function display_order_header(&$order, $editable, $date_text, $display_tax_group
 		echo "</td><td>"; // outer table
 	}
 
+        if( $order->sales_type != $_POST['sales_type']) {
+	    $myrow = get_sales_type($_POST['sales_type']);
+	    $order->set_sales_type($myrow['id'], $myrow['sales_type'], 
+		$myrow['tax_included']);
+	    $change_prices = 1;
+	}
+
+        if($change_prices!=0)
+        {
+	    foreach ($order->line_items as $line_no=>$item) {
+			$line = &$order->line_items[$line_no];
+			$line->price = get_price($line->stock_id, $order->customer_currency,
+			    $order->sales_type);
+		//		$line->discount_percent = $order->default_discount;
+	    }
+	}
+
 	echo "<table height='5'>";
-	label_row(_("Sales Type:"), $order->sales_type_name);
+	if($editable)
+	    sales_types_list_row(_("Price List"), 'sales_type', $_POST['sales_type'], true);
+	else
+	    label_row(_("Price List:"), $order->sales_type_name);
 	label_row(_("Customer Discount:"), ($order->default_discount * 100) . "%");
 	echo "</table>";
 
@@ -340,7 +356,8 @@ function sales_order_item_controls(&$order, $line_no=-1)
 		$_POST['units'] = $item_info["units"];
 
    		$_POST['qty'] = 1;
-		$_POST['price'] = get_price ($_POST['stock_id'], $order->customer_id);
+		$_POST['price'] = get_price ($_POST['stock_id'], 
+		    $order->customer_currency, $order->sales_type);
 		// default to the customer's discount %
 		$_POST['Disc'] = $order->default_discount * 100;
 	}

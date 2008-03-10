@@ -181,7 +181,7 @@ function copy_to_cart()
 	$cart->due_date =  $_POST['due_date'];
 	$cart->Location = $_POST['Location'];
 	$cart->Comments = $_POST['Comments'];
-	$cart->default_sales_type = $_POST['sales_type_id'];
+	$cart->sales_type = $_POST['sales_type_id'];
 }
 //------------------------------------------------------------------------------
 
@@ -194,7 +194,7 @@ function copy_from_cart()
 	$_POST['due_date'] = $cart->due_date;
 	$_POST['Location']= $cart->Location;
 	$_POST['Comments']= $cart->Comments;
-	$_POST['sales_type_id'] = $cart->default_sales_type;
+	$_POST['sales_type_id'] = $cart->sales_type;
 }
 //------------------------------------------------------------------------------
 
@@ -298,12 +298,7 @@ if ($_SESSION['Items']->trans_no==0) {
 
 label_cells(_("For Sales Order"), get_customer_trans_view_str(systypes::sales_order(), $_SESSION['Items']->order_no), "class='tableheader2'");
 
-if (!isset($_POST['sales_type_id'])) {
-	$_POST['sales_type_id'] = $_SESSION['Items']->default_sales_type;
-}
-label_cell(_("Sales Type"), "class='tableheader2'");
-sales_types_list_cells(null, 'sales_type_id', $_POST['sales_type_id']);
-
+label_cells(_("Sales Type"), $_SESSION['Items']->sales_type_name, "class='tableheader2'");
 end_row();
 start_row();
 

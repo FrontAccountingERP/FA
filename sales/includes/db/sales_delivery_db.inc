@@ -29,7 +29,7 @@ function write_sales_delivery(&$delivery,$bo_policy)
 		$delivery->tax_included ? 0 : $tax_total-$freight_tax,
 		$delivery->freight_cost,
 		$delivery->tax_included ? 0 : $freight_tax,
-		$delivery->default_sales_type, $delivery->order_no, 0,
+		$delivery->sales_type, $delivery->order_no, 0,
 		$delivery->ship_via, $delivery->due_date);
 
 	if ($trans_no == 0) {
