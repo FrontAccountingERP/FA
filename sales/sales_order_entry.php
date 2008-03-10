@@ -15,6 +15,7 @@ include_once($path_to_root . "/includes/data_checks.inc");
 include_once($path_to_root . "/sales/includes/sales_ui.inc");
 include_once($path_to_root . "/sales/includes/ui/sales_order_ui.inc");
 include_once($path_to_root . "/sales/includes/sales_db.inc");
+include_once($path_to_root . "/sales/includes/db/sales_types_db.inc");
 include_once($path_to_root . "/reporting/includes/reporting.inc");
 
 $js = get_js_form_entry("StockID2", "stock_id", "qty");
@@ -153,6 +154,7 @@ function copy_to_cart()
 		$cart->email = '';
 	$cart->customer_id	= $_POST['customer_id'];
 	$cart->Branch = $_POST['branch_id'];
+	$cart->sales_type = $_POST['sales_type'];
 }
 
 //-----------------------------------------------------------------------------
@@ -178,6 +180,7 @@ function copy_from_cart()
 
 	$_POST['customer_id'] = $cart->customer_id;
 	$_POST['branch_id'] = $cart->Branch;
+	$_POST['sales_type'] = $cart->sales_type;
 }
 
 //--------------------------------------------------------------------------------
