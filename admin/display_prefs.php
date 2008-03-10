@@ -27,7 +27,7 @@ if (isset($_POST['setprefs']))
 	language::set_language($_POST['language']);
 	
 	if (user_theme() != $theme)
-		Redirect("");
+		reload_page("");
 
 	display_notification_centered(_("Display settings have been updated."));
 }
