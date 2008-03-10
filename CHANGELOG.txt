@@ -43,6 +43,8 @@ $ -> Affected files
    /sales/includes/db/sales_invoice_db.inc
    /sales/includes/db/sales_order_db.inc
    /sales/includes/ui/sales_credit_ui.inc
+ # One another pmWiki name conflict removed
+ $ /admin/display_prefs.php
  
 09-Mar-2008 Joe Hunt
  - Removed redundant form_types functions and the file /reporting/includes/form_types.inc. Removed table form_items
