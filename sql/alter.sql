@@ -16,15 +16,22 @@
 -- ALTER TABLE
 -- 
 
-CREATE TABLE `0_item_units` (
-  `abbr` VARCHAR(20) NOT NULL, 
-  `name` VARCHAR(40) NOT NULL, 
-  `decimals` TINYINT(2) NOT NULL,
+CREATE TABLE IF NOT EXISTS `0_item_units` (
+  `abbr` varchar(20) NOT NULL, 
+  `name` varchar(40) NOT NULL, 
+  `decimals` tinyint(2) NOT NULL,
   PRIMARY KEY (`abbr`),
-  UNIQUE (`name`)
-)
-TYPE = myisam
-COMMENT = 'units of measure';
+  UNIQUE KEY `name` (`name`)
+) TYPE = MyISAM;
+INSERT INTO `0_item_units` VALUES ('each', 'Each', '0');
+INSERT INTO `0_item_units` VALUES ('m', 'Meter', '0');
+INSERT INTO `0_item_units` VALUES ('kg', 'Kilogram', '0');
+INSERT INTO `0_item_units` VALUES ('tons', 'Tons', '0');
+INSERT INTO `0_item_units` VALUES ('l', 'Liter', '0');
+INSERT INTO `0_item_units` VALUES ('lbs', 'Pounds', '0');
+INSERT INTO `0_item_units` VALUES ('dozen', 'Dozen', '0');
+INSERT INTO `0_item_units` VALUES ('pack', 'Pack', '0');
+INSERT INTO `0_item_units` VALUES ('hrs', 'Hours', '0');
 
 DROP TABLE IF EXISTS `0_form_items`; 
 
