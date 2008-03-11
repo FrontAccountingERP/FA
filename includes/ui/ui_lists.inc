@@ -1050,6 +1050,7 @@ function stock_units_list_row($label, $name, $value, $enabled=true)
 {
   	global $stock_units;
 
+	$result = get_all_item_units();
 	echo "<tr><td>$label</td>\n";
 	if ($enabled)
 		echo "<td><select name='$name'>";
@@ -1058,17 +1059,20 @@ function stock_units_list_row($label, $name, $value, $enabled=true)
 
 	if ($value == null)
 		$value = (!isset($_POST[$name]) ? "" : $_POST[$name]);
-	foreach ($stock_units as $unit)
+
+	while($unit = db_fetch($result))
 	{
-		if ($value == "")
-			$_POST[$name] = $value = $unit;
-		if ($value==$unit)
+		if ($value == "") {
+			$_POST[$name] = $unit['abbr'];
+		}
+		$descr = $unit['name'];
+		if ($value==$unit['abbr'])
 		{
-			echo "<option selected value='$unit'>$unit</option>\n";
+			echo "<option selected value='".$unit['abbr']."'>$descr</option>\n";
 		}
 		else
 		{
-			echo "<option value='$unit'>$unit</option>\n";
+			echo "<option value='".$unit['abbr']."'>$descr</option>\n";
 		}
 	}
 	echo "</select></td></tr>\n";
@@ -1959,8 +1963,17 @@ function decseps_list_row($label, $name, $value)
 
 function themes_list_row($label, $name, $value)
 {
-  	global $themes;
-
+	global $path_to_root;
+	
+	$path = $path_to_root.'/themes/';
+	$themes = array();
+	$themedir = opendir($path);
+	while(false !== ($fname = readdir($themedir))) {
+	    if($fname!='.' && $fname!='..' && $fname!='CVS' && is_dir($path.$fname)) {
+			$themes[] =  $fname;
+	    } 
+	}
+	sort($themes);
 	echo "<tr><td>$label</td>\n";
 	echo "<td><select name='$name'>";
 
