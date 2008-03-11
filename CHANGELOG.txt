@@ -19,6 +19,18 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+11-Mar-2008 Janusz Dobrowolski
+ + Table of measure moved into new table item_units
+ ! Removed $themes[] from config.php, theme list based on directory structure
+ $ /config.php
+   /includes/ui/ui_lists.inc
+   /applications/inventory.php
+   /inventory/includes/inventory_db.inc
+   /inventory/includes/db/items_units_db.inc
+   /inventory/manage/item_units.php
+   /inventory/manage/items.php
+   /sql/alter.sql
+
 11-Mar-2008 Joe Hunt
  # Small fix for alignment of date and due date label fields in customer_invoice.php and customer_delivery.php
  $ /sales/customer_invoice.php
