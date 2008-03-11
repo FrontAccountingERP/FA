@@ -319,9 +319,6 @@ item_tax_types_list_row(_("Item Tax Type:"), 'tax_type_id', null);
 stock_item_types_list_row(_("Item Type:"), 'mb_flag', null,
 	(!isset($_POST['NewStockID']) || isset($_POST['New'])));
 
-/* The array stock_units is set up in config.php for user modification
-possible units of measure can added or modifying the array definition by editing that file */
-
 stock_units_list_row(_('Units of Measure:'), 'units', null,
 	(!isset($_POST['NewStockID']) || isset($_POST['New'])));
 end_table();

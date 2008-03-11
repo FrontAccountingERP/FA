@@ -16,6 +16,16 @@
 -- ALTER TABLE
 -- 
 
+CREATE TABLE `0_item_units` (
+  `abbr` VARCHAR(20) NOT NULL, 
+  `name` VARCHAR(40) NOT NULL, 
+  `decimals` TINYINT(2) NOT NULL,
+  PRIMARY KEY (`abbr`),
+  UNIQUE (`name`)
+)
+TYPE = myisam
+COMMENT = 'units of measure';
+
 DROP TABLE IF EXISTS `0_form_items`; 
 
 ALTER TABLE `0_tax_types` DROP INDEX `name`, ADD UNIQUE `name` ( `name` , `rate` );
