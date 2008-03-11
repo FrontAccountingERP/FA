@@ -20,8 +20,9 @@ Legend:
 $ -> Affected files
 
 11-Mar-2008 Joe Hunt
- # Small fix for alignment of date and due date label fields in customer_invoice.php
+ # Small fix for alignment of date and due date label fields in customer_invoice.php and customer_delivery.php
  $ /sales/customer_invoice.php
+   /sales/customer_delivery.php
  
 10-Mar-2008 Joe Hunt
  # Small fix for Template Invoice in sales_order_entry.php on line 363 (duedate for Invoice).
