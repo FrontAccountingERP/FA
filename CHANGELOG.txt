@@ -19,6 +19,12 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+12-Mar-2008 Joe Hung
+ + Added update of Units of Measure and converting of deptor_trans records from release 1.XX
+ - Removed default insertion of Units of Measure. Not neccessary.
+ $ /sql/alter.sql
+   /admin/db/maintenance_db.inc (added support for update)
+
 11-Mar-2008 Janusz Dobrowolski
  + Table of measure moved into new table item_units
  ! Removed $themes[] from config.php, theme list based on directory structure

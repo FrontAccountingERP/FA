@@ -138,6 +138,12 @@ function db_import($filename, $connection)
 
 			// this line does not, too
 			}
+			elseif (strtolower(substr($line,0,6)) == "update")
+			{
+				$data_queries[] = substr($line, 0, strlen($line) - 1);
+
+			// this line does not, too
+			}
 			elseif (strtolower(substr($line, 0, 20)) == "drop table if exists")
 			{
 				$drop_queries[] = substr($line, 0, strlen($line) - 1);

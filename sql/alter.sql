@@ -16,6 +16,7 @@
 -- ALTER TABLE
 -- 
 
+DROP TABLE IF EXISTS `0_item_units`; 
 CREATE TABLE IF NOT EXISTS `0_item_units` (
   `abbr` varchar(20) NOT NULL, 
   `name` varchar(40) NOT NULL, 
@@ -23,15 +24,9 @@ CREATE TABLE IF NOT EXISTS `0_item_units` (
   PRIMARY KEY (`abbr`),
   UNIQUE KEY `name` (`name`)
 ) TYPE = MyISAM;
-INSERT INTO `0_item_units` VALUES ('each', 'Each', '0');
-INSERT INTO `0_item_units` VALUES ('m', 'Meter', '0');
-INSERT INTO `0_item_units` VALUES ('kg', 'Kilogram', '0');
-INSERT INTO `0_item_units` VALUES ('tons', 'Tons', '0');
-INSERT INTO `0_item_units` VALUES ('l', 'Liter', '0');
-INSERT INTO `0_item_units` VALUES ('lbs', 'Pounds', '0');
-INSERT INTO `0_item_units` VALUES ('dozen', 'Dozen', '0');
-INSERT INTO `0_item_units` VALUES ('pack', 'Pack', '0');
-INSERT INTO `0_item_units` VALUES ('hrs', 'Hours', '0');
+
+INSERT INTO `0_item_units` (`abbr`, `name`, `decimals`) SELECT DISTINCT `units`, CONCAT(UPPER(SUBSTRING(`units`, 1, 1)), LOWER(SUBSTRING(`units`, 2))), 0 FROM `0_stock_master` ;
+UPDATE `0_debtor_trans` SET `ov_amount`=-`ov_amount`, `ov_gst`=-`ov_gst`, `ov_freight`=-`ov_freight`, `ov_discount`=-`ov_discount` WHERE `ov_amount` < 0 AND `type` <> 10 AND `type` <> 13 ;
 
 DROP TABLE IF EXISTS `0_form_items`; 
 
