@@ -1,5 +1,12 @@
 <?php
 
+function input_num($postname=null) {
+	if (!isset($_POST[$postname])) 
+	  return null;
+
+    return user_numeric($_POST[$postname]);
+}
+
 //---------------------------------------------------------------------------------
 
 function hidden($name, $value)
@@ -165,9 +172,9 @@ function amount_cell($label, $bold=false)
 function percent_cell($label, $bold=false)
 {
 	if ($bold)
-		label_cell("<b>".number_format2($label,user_percent_dec())." %</b>", "nowrap align=right");
+		label_cell("<b>".number_format2($label,user_percent_dec())."</b>", "nowrap align=right");
 	else
-		label_cell(number_format2($label,user_percent_dec())." %", "nowrap align=right");
+		label_cell(number_format2($label,user_percent_dec()), "nowrap align=right");
 }
 
 function qty_cell($label, $bold=false)
@@ -324,14 +331,40 @@ function percent_row($label, $name, $init=null)
 			$_POST[$name] = $init== null ? '' : $init;
 	}
 
-	text_row($label, $name, $_POST[$name], 6, 6, "", "%");
+	small_amount_row($label, $name, $_POST[$name], null, "%");
 }
+
+function amount_cells_ex($label, $name, $size, $max=null, $init=null, $params=null, $post_label=null)
+{
+	if (!isset($_POST[$name]) || $_POST[$name] == "")
+	{
+		if ($init)
+			$_POST[$name] = $init;
+		else
+			$_POST[$name] = '';
+	}
+	if ($label != null)
+		label_cell($label, $params);
+
+	if (!isset($max))
+		$max = $size;
+
+	echo "<td>";
+
+	echo "<input class='amount' type=\"text\" name=\"$name\" size=\"$size\" maxlength=\"$max\" value=\"" . $_POST[$name]. "\">";
+
+	if ($post_label)
+		echo " " . $post_label;
+
+	echo "</td>\n";
+}
+
 
 //-----------------------------------------------------------------------------------
 
 function amount_cells($label, $name, $init=null, $params=null, $post_label=null)
 {
-	text_cells_ex($label, $name, 15, 15, $init, $params, $post_label);
+	amount_cells_ex($label, $name, 15, 15, $init, $params, $post_label);
 }
 
 function amount_row($label, $name, $init=null, $params=null, $post_label=null)
@@ -341,11 +374,18 @@ function amount_row($label, $name, $init=null, $params=null, $post_label=null)
 	echo "</tr>\n";
 }
 
+function small_amount_row($label, $name, $init=null, $params=null, $post_label=null)
+{
+	echo "<tr>";
+	small_amount_cells($label, $name, $init, $params, $post_label);
+	echo "</tr>\n";
+}
+
 //-----------------------------------------------------------------------------------
 
 function small_amount_cells($label, $name, $init=null, $params=null, $post_label=null)
 {
-	text_cells_ex($label, $name, 7, 12, $init, $params, $post_label);
+	amount_cells_ex($label, $name, 7, 12, $init, $params, $post_label);
 }
 
 //-----------------------------------------------------------------------------------
