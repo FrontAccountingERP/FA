@@ -330,3 +330,14 @@ div.tabs a:hover {
 .tablestyle_noborder {
 	padding: 3px;
 }
+
+.amount {
+	font-family: Verdana, Arial, Helvetica;
+	font-size: 11px;
+	text-align: right;
+}
+
+input.amount {
+	padding-right: 0px;
+	border-right: none;
+}
