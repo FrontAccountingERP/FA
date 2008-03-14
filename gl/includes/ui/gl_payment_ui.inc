@@ -114,6 +114,9 @@ function display_gl_items($title, &$order)
 	else
 		$th = array(_("Account Code"), _("Account Description"),
 			_("Amount"), _("Memo"));
+
+	if (count($order->gl_items)) $th[] = '';
+
 	table_header($th);
 	$k = 0;  //row colour counter
 
@@ -166,7 +169,7 @@ function gl_edit_item_controls(&$order, $dim, $Index=null)
 		if (!isset($_POST['dimension2_id']))
 			$_POST['dimension2_id'] = $order->gl_items[$Index]->dimension2_id;
 		if (!isset($_POST['amount']) || ($_POST['amount'] == ""))
-			$_POST['amount'] = $order->gl_items[$Index]->amount;
+			$_POST['amount'] = price_format($order->gl_items[$Index]->amount);
 		if (!isset($_POST['description']) || ($_POST['description'] == ""))
 			$_POST['description'] = $order->gl_items[$Index]->description;
 		if (!isset($_POST['LineMemo']) || ($_POST['LineMemo'] == ""))
@@ -183,7 +186,7 @@ function gl_edit_item_controls(&$order, $dim, $Index=null)
 	}
 	else
 	{
-		$_POST['amount'] = 0;
+		$_POST['amount'] = price_format(0);
 		$_POST['dimension_id'] = 0;
 		$_POST['dimension2_id'] = 0;
 		$_POST['LineMemo'] = "";

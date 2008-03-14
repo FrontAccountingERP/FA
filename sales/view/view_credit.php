@@ -99,7 +99,7 @@ if (db_num_rows($result) > 0)
 		} 
 		else 
 		{
-		   $display_discount = number_format2($myrow2["discount_percent"]*100,user_percent_dec()) . "%";
+		   $display_discount = percent_format($myrow2["discount_percent"]*100) . "%";
 		}
 
 		label_cell($myrow2["stock_id"]);
@@ -115,11 +115,11 @@ if (db_num_rows($result) > 0)
 else
 	display_note(_("There are no line items on this credit note."), 1, 2);
 
-$display_sub_tot = number_format2($sub_total,user_price_dec());
-$display_freight = number_format2($myrow["ov_freight"],user_price_dec());
+$display_sub_tot = price_format($sub_total);
+$display_freight = price_format($myrow["ov_freight"]);
 
 $credit_total = $myrow["ov_freight"]+$myrow["ov_gst"]+$myrow["ov_amount"]+$myrow["ov_freight_tax"];
-$display_total = number_format2($credit_total,user_price_dec());
+$display_total = price_format($credit_total);
 
 /*Print out the invoice text entered */
 if ($sub_total != 0)

@@ -105,10 +105,10 @@ start_table("$table_style colspan=7 width=80%");
 
 if (isset($_POST['StockLocation']) && $_POST['StockLocation'] == $all_items)
 	$th = array(_("#"), _("Reference"), _("Supplier"), _("Location"),
-		_("Supplier's Reference"), _("Order Date"), _("Currency"), _("Order Total"));
+		_("Supplier's Reference"), _("Order Date"), _("Currency"), _("Order Total"),'');
 else		
 	$th = array(_("#"), _("Reference"), _("Supplier"),
-		_("Supplier's Reference"), _("Order Date"), _("Currency"), _("Order Total"));
+		_("Supplier's Reference"), _("Order Date"), _("Currency"), _("Order Total"),'');
 
 table_header($th);
 

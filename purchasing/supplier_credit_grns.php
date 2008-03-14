@@ -29,19 +29,13 @@ echo "<br>";
 
 function check_data()
 {
-	if (!is_numeric($_POST['This_QuantityCredited'])) 
+	if (!check_num('This_QuantityCredited', 0)) 
 	{
-		display_error(_("The quantity to credit must be numeric."));
+		display_error(_("The quantity to credit must be numeric and greater than zero."));
 		return false;
 	}
 
-	if ($_POST['This_QuantityCredited'] <= 0) 
-	{
-		display_error(_("The quantity to credit must be greater than zero."));
-		return false;
-	}
-
-	if (!is_numeric($_POST['ChgPrice']) || $_POST['ChgPrice'] < 0)
+	if (!check_num('ChgPrice', 0))
 	{
 		display_error(_("The price is either not numeric or negative."));
 		return false;
@@ -68,8 +62,8 @@ if (isset($_POST['AddGRNToTrans']))
 		$_SESSION['supp_trans']->add_grn_to_trans($_POST['GRNNumber'],
     		$_POST['po_detail_item'], $_POST['item_code'],
     		$_POST['item_description'], $_POST['qty_recd'],
-    		$_POST['prev_quantity_inv'], $_POST['This_QuantityCredited'],
-    		$_POST['order_price'], $_POST['ChgPrice'], $complete,
+    		$_POST['prev_quantity_inv'], input_num('This_QuantityCredited'),
+    		$_POST['order_price'], input_num('ChgPrice'), $complete,
     		$_POST['std_cost_unit'], "");
 	}
 }
@@ -172,9 +166,9 @@ if (isset($_POST['grn_item_id']) && $_POST['grn_item_id'] != "")
 	label_cell($_POST['grn_item_id']);
     label_cell($myrow['item_code'] . " " . $myrow['description']);
     qty_cell($myrow["quantity_inv"]);
-    text_cells(null, 'This_QuantityCredited', max($myrow['quantity_inv'], 0), 13, 15);
+    amount_cells(null, 'This_QuantityCredited', qty_format(max($myrow['quantity_inv'],0)));
     amount_cell($myrow['unit_price']);
-    text_cells(null, 'ChgPrice', $myrow['unit_price'], 13, 15);
+    amount_cells(null, 'ChgPrice', price_format($myrow['unit_price']));
     end_row();
 	end_table(1);
 

@@ -104,14 +104,9 @@ function check_valid_entries()
 		return false;
 	}
 
-	if (!is_numeric($_POST['amount'])) 
+	if (!check_num('amount', 0)) 
 	{
-		display_error(_("The entered amount is invalid."));
-		return false;
-	}
-	if ($_POST['amount'] <= 0) 
-	{
-		display_error(_("The entered amount must be a positive number."));
+		display_error(_("The entered amount is invalid or less than zero."));
 		return false;
 	}
 
@@ -143,7 +138,7 @@ function handle_add_deposit()
 	global $path_to_root;
 
 	$trans_no = add_bank_transfer($_POST['FromBankAccount'], $_POST['ToBankAccount'],
-		$_POST['DatePaid'], $_POST['amount'],
+		$_POST['DatePaid'], input_num('amount'),
 		$_POST['TransferType'], $_POST['ref'], $_POST['memo_']);
 
 	meta_forward($_SERVER['PHP_SELF'], "AddedID=$trans_no");

@@ -26,7 +26,6 @@ elseif (isset($_POST['selected_id']))
 else
 	$selected_id = "";
 //---------------------------------------------------------------------------------------------
-
 function check_data()
 {
 	if (!is_date($_POST['date_'])) 
@@ -34,9 +33,9 @@ function check_data()
 		display_error( _("The entered date is invalid."));
 		return false;
 	}
-	if (!is_numeric($_POST['BuyRate']))
+	if (!check_num('BuyRate', 0))
 	{
-		display_error( _("The exchange rate must be numeric."));
+		display_error( _("The exchange rate must be numeric and greater than zero."));
 		return false;
 	}
 	if ($_POST['BuyRate'] <= 0)
@@ -60,14 +59,14 @@ function handle_submit()
 	if ($selected_id != "") 
 	{
 
-		update_exchange_rate($_POST['curr_abrev'], $_POST['date_'], $_POST['BuyRate'],
-			$_POST['BuyRate']);
+		update_exchange_rate($_POST['curr_abrev'], $_POST['date_'],
+		 input_num('BuyRate'), input_num('BuyRate'));
 	} 
 	else 
 	{
 
-		add_exchange_rate($_POST['curr_abrev'], $_POST['date_'], $_POST['BuyRate'],
-			$_POST['BuyRate']);
+		add_exchange_rate($_POST['curr_abrev'], $_POST['date_'],
+		    input_num('BuyRate'), input_num('BuyRate'));
 	}
 
 	return true;
@@ -128,17 +127,16 @@ function display_rate_edit()
 
 	if (isset($_POST['get_rate']))
 	{
-		$_POST['BuyRate'] = get_ecb_rate($_POST['curr_abrev']);
-		$_POST['BuyRate'] = number_format($_POST['BuyRate'], user_exrate_dec());
+		$_POST['BuyRate'] = exrate_format(get_ecb_rate($_POST['curr_abrev']));
 	}	
 	if ($selected_id != "") 
 	{
-		//editing an existing payment terms
+		//editing an existing exchange rate
 
 		$myrow = get_exchange_rate($selected_id);
 
 		$_POST['date_'] = sql2date($myrow["date_"]);
-		$_POST['BuyRate'] = $myrow["rate_buy"];
+		$_POST['BuyRate'] = exrate_format($myrow["rate_buy"]);
 
 		hidden('selected_id', $selected_id);
 		hidden('date_', $_POST['date_']);
@@ -150,7 +148,7 @@ function display_rate_edit()
 	{
 		date_row(_("Date to Use From:"), 'date_');
 	}
-	text_row(_("Exchange Rate:"), 'BuyRate', null, 15, 12, "", submit('get_rate',_("Get"), false));
+	small_amount_row(_("Exchange Rate:"), 'BuyRate', null, '', submit('get_rate',_("Get"), false));
 
 	end_table(1);
 

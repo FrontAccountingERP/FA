@@ -153,19 +153,15 @@ if (isset($_GET['Delete']))
 
 function check_data()
 {
-    if (!is_numeric($_POST['qty']))
+    if (!check_num('qty',0))
     {
-	   	display_error(_("The quantity of the order item must be numeric."));
+	   	display_error(_("The quantity of the order item must be numeric and not less than zero."));
 	   	return false;
     }
-    if ($_POST['qty'] <= 0)
+
+    if (!check_num('price', 0))
     {
-	   	display_error(_("The quantity of the ordered item entered must be a positive amount."));
-	   	return false;	   
-    }
-    if (!is_numeric($_POST['price']))
-    {
-	   	display_error(_("The price entered must be numeric."));
+	   	display_error(_("The price entered must be numeric and not less than zero."));
 	   	return false;	   
     }
     if (!is_date($_POST['req_del_date'])){
@@ -183,15 +179,15 @@ function handle_update_item()
 	$allow_update = check_data(); 
 
 	if ($allow_update && 
-		($_SESSION['PO']->line_items[$_POST['line_no']]->qty_inv > $_POST['qty'] ||
-		$_SESSION['PO']->line_items[$_POST['line_no']]->qty_received > $_POST['qty']))
+		($_SESSION['PO']->line_items[$_POST['line_no']]->qty_inv > input_num('qty') ||
+		$_SESSION['PO']->line_items[$_POST['line_no']]->qty_received > input_num('qty')))
 	{
 		display_error(_("You are attempting to make the quantity ordered a quantity less than has already been invoiced or received.  This is prohibited.") .
 			"<br>" . _("The quantity received can only be modified by entering a negative receipt and the quantity invoiced can only be reduced by entering a credit note against this item."));
 		return;
 	}
 	
-	$_SESSION['PO']->update_order_item($_POST['line_no'], $_POST['qty'], $_POST['price'],
+	$_SESSION['PO']->update_order_item($_POST['line_no'], input_num('qty'), input_num('price'),
   		$_POST['req_del_date']);
 	unset_form_variables();
 }
@@ -235,8 +231,8 @@ function handle_add_new_item()
 			if ($allow_update)
 		   	{
 				$myrow = db_fetch($result);
-				$_SESSION['PO']->add_to_order ($_POST['line_no'], $_POST['stock_id'], $_POST['qty'], 
-					$myrow["description"], $_POST['price'], $myrow["units"],
+				$_SESSION['PO']->add_to_order ($_POST['line_no'], $_POST['stock_id'], input_num('qty'), 
+					$myrow["description"], input_num('price'), $myrow["units"],
 					$_POST['req_del_date'], 0, 0);
 
 				unset_form_variables();

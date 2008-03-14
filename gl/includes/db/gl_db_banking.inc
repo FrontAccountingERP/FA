@@ -68,7 +68,7 @@ function add_bank_transaction($trans_type, $from_account, $items, $date_,
 		// convert to customer currency
 		$cust_amount = exchange_from_to($total_amount, $currency, get_customer_currency($person_id), $date_);
 
-		$trans_no = add_customer_trans($trans_type, $person_id, $person_detail_id, $date_,
+		$trans_no = write_customer_trans($trans_type, 0, $person_id, $person_detail_id, $date_,
         	$ref, $cust_amount);
 
     }

@@ -31,42 +31,24 @@ function can_process()
 		return false;
 	} 
 	
-	if (!is_numeric( $_POST['credit_limit'])) 
+	if (!check_num('credit_limit', 0))
 	{
-		display_error(_("The credit limit must be numeric."));
+		display_error(_("The credit limit must be numeric and not less than zero."));
 		return false;		
 	} 
 	
-	if (!is_numeric( $_POST['pymt_discount'])) 
+	if (!check_num('pymt_discount', 0, 100)) 
 	{
-		display_error(_("The payment discount must be numeric."));
+		display_error(_("The payment discount must be numeric and is expected to be less than 100% and greater than or equal to 0."));
 		return false;		
 	} 
 	
-	if (!is_numeric( $_POST['discount'])) 
+	if (!check_num('discount', 0, 100)) 
 	{
-		display_error(_("The discount percentage must be numeric."));
+		display_error(_("The discount percentage must be numeric and is expected to be less than 100% and greater than or equal to 0."));
 		return false;		
 	} 
-	
-	if ($_POST['credit_limit'] < 0) 
-	{
-		display_error(_("The credit limit must be a positive number."));
-		return false;		
-	} 
-	
-	if (($_POST['pymt_discount'] >= 100) || ($_POST['pymt_discount'] < 0)) 
-	{
-		display_error(_("The payment discount is expected to be less than 100% and greater than or equal to 0."));
-		return false;		
-	} 
-	
-	if (($_POST['discount'] >= 100) || ($_POST['discount'] < 0)) 
-	{
-		display_error(_("The discount percent is expected to be less than 100 and greater than or equal to 0."));
-		return false;		
-	}  	
-	
+
 	return true;
 }
 
@@ -81,7 +63,6 @@ function handle_submit()
 	if (!isset($_POST['New'])) 
 	{
 
-		// Sherifoz 22.06.03 convert percent to fraction
 		$sql = "UPDATE ".TB_PREF."debtors_master SET name='" . $_POST['CustName'] . "', 
 			address='" . $_POST['address'] . "', 
 			tax_id='" . $_POST['tax_id'] . "', 
@@ -91,9 +72,9 @@ function handle_submit()
 			dimension2_id=" . $_POST['dimension2_id'] . ", 
             credit_status='" . $_POST['credit_status'] . "', 
             payment_terms='" . $_POST['payment_terms'] . "', 
-            discount=" . ($_POST['discount']) / 100 . ", 
-            pymt_discount=" . ($_POST['pymt_discount']) / 100 . ", 
-            credit_limit=" . $_POST['credit_limit'] . ", 
+            discount=" . input_num('discount') / 100 . ", 
+            pymt_discount=" . input_num('pymt_discount') / 100 . ", 
+            credit_limit=" . input_num('credit_limit') . ", 
             sales_type = '" . $_POST['sales_type'] . "' 
             WHERE debtor_no = '" . $_POST['customer_id'] . "'";
 
@@ -111,8 +92,8 @@ function handle_submit()
 			curr_code, credit_status, payment_terms, discount, pymt_discount,credit_limit, 
 			sales_type) VALUES ('" . $_POST['CustName'] ."', '" . $_POST['address'] . "', '" . $_POST['tax_id'] . "',
 			'" . $_POST['email'] . "', " . $_POST['dimension_id'] . ", " . $_POST['dimension2_id'] . ", '" . $_POST['curr_code'] . "', 
-			" . $_POST['credit_status'] . ", '" . $_POST['payment_terms'] . "', " . ($_POST['discount'])/100 . ", 
-			" . ($_POST['pymt_discount'])/100 . ", " . $_POST['credit_limit'] . ", '" . $_POST['sales_type'] . "')";
+			" . $_POST['credit_status'] . ", '" . $_POST['payment_terms'] . "', " . input_num('discount')/100 . ", 
+			" . input_num('pymt_discount')/100 . ", " . $_POST['credit_limit'] . ", '" . $_POST['sales_type'] . "')";
 
 		db_query($sql,"The customer could not be added");
 
@@ -244,8 +225,8 @@ if (isset($_POST['New']))
 	$_POST['curr_code']  = get_company_currency();
 	$_POST['credit_status']  = -1;
 	$_POST['payment_terms']  = '';
-	$_POST['discount']  = $_POST['pymt_discount'] = 0;
-	$_POST['credit_limit']	= sys_prefs::default_credit_limit();
+	$_POST['discount']  = $_POST['pymt_discount'] = percent_format(0);
+	$_POST['credit_limit']	= price_format(sys_prefs::default_credit_limit());
 } 
 else 
 {
@@ -265,9 +246,9 @@ else
 	$_POST['curr_code']  = $myrow["curr_code"];
 	$_POST['credit_status']  = $myrow["credit_status"];
 	$_POST['payment_terms']  = $myrow["payment_terms"];
-	$_POST['discount']  = $myrow["discount"] * 100; // Sherifoz 21.6.03 convert to displayable percentage
-	$_POST['pymt_discount']  = $myrow["pymt_discount"] * 100; // Sherifoz 21.6.03 convert to displayable percentage
-	$_POST['credit_limit']	= $myrow["credit_limit"];
+	$_POST['discount']  = percent_format($myrow["discount"] * 100);
+	$_POST['pymt_discount']  = percent_format($myrow["pymt_discount"] * 100);
+	$_POST['credit_limit']	= price_format($myrow["credit_limit"]);
 }
 
 text_row(_("Customer Name:"), 'CustName', $_POST['CustName'], 40, 40);
@@ -304,9 +285,9 @@ if ($dim < 1)
 if ($dim < 2)
 	hidden('dimension2_id', 0);
 
-text_row(_("Discount Percent:"), 'discount', $_POST['discount'], 5, 4);
-text_row(_("Prompt Payment Discount Percent:"), 'pymt_discount', $_POST['pymt_discount'], 5, 4);
-text_row(_("Credit Limit:"), 'credit_limit', $_POST['credit_limit'], 16, 14);
+percent_row(_("Discount Percent:"), 'discount', $_POST['discount']);
+percent_row(_("Prompt Payment Discount Percent:"), 'pymt_discount', $_POST['pymt_discount']);
+amount_row(_("Credit Limit:"), 'credit_limit', $_POST['credit_limit']);
 
 payment_terms_list_row(_("Payment Terms:"), 'payment_terms', $_POST['payment_terms']);
 credit_status_list_row(_("Credit Status:"), 'credit_status', $_POST['credit_status']); 

@@ -102,7 +102,7 @@ function display_bom_items($selected_parent)
 		label_cell($myrow["description"]);
         label_cell($myrow["location_name"]);
         label_cell($myrow["WorkCentreDescription"]);
-        label_cell($myrow["quantity"]);
+        label_cell(qty_format($myrow["quantity"]));
         label_cell($myrow["units"]);
         edit_link_cell(SID . "NewItem=$selected_parent&selected_component=" . $myrow["id"]);
         delete_link_cell(SID . "delete=" . $myrow["id"]. "&stock_id=" . $_POST['stock_id']);
@@ -114,27 +114,20 @@ function display_bom_items($selected_parent)
 
 //--------------------------------------------------------------------------------------------------
 
-function on_submit($selected_parent, $selected_component)
+function on_submit($selected_parent, $selected_component=null)
 {
-	if (!is_numeric($_POST['quantity']))
+	if (!check_num('quantity', 0))
 	{
-		display_error(_("The quantity entered must be numeric."));
+		display_error(_("The quantity entered must be numeric and greater than zero."));
 		return;
 	}
-
-	if ($_POST['quantity'] <= 0)
-	{
-		display_error(_("The quantity entered must be greater than zero."));
-		return;
-	}
-
 
 	if (isset($selected_parent) && isset($selected_component))
 	{
 
 		$sql = "UPDATE ".TB_PREF."bom SET workcentre_added='" . $_POST['workcentre_added'] . "',
 			loc_code='" . $_POST['loc_code'] . "',
-			quantity= " . $_POST['quantity'] . "
+			quantity= " . input_num('quantity') . "
 			WHERE parent='" . $selected_parent . "'
 			AND id='" . $selected_component . "'";
 		check_db_error("Could not update this bom component", $sql);
@@ -145,7 +138,9 @@ function on_submit($selected_parent, $selected_component)
 	elseif (!isset($selected_component) && isset($selected_parent))
 	{
 
-		/*Selected component is null cos no item selected on first time round so must be				adding a record must be Submitting new entries in the new component form */
+		/*Selected component is null cos no item selected on first time round 
+		so must be adding a record must be Submitting new entries in the new 
+		component form */
 
 		//need to check not recursive bom component of itself!
 		If (!check_for_recursive_bom($selected_parent, $_POST['component']))
@@ -162,7 +157,9 @@ function on_submit($selected_parent, $selected_component)
 			if (db_num_rows($result) == 0)
 			{
 				$sql = "INSERT INTO ".TB_PREF."bom (parent, component, workcentre_added, loc_code, quantity)
-					VALUES ('$selected_parent', '" . $_POST['component'] . "', '" . $_POST['workcentre_added'] . "', '" . $_POST['loc_code'] . "', " . $_POST['quantity'] . ")";
+					VALUES ('$selected_parent', '" . $_POST['component'] . "', '" 
+					. $_POST['workcentre_added'] . "', '" . $_POST['loc_code'] . "', " 
+					. input_num('quantity') . ")";
 
 				db_query($sql,"check failed");
 
@@ -210,10 +207,12 @@ end_form();
 if (isset($_POST['stock_id']))
 { //Parent Item selected so display bom or edit component
 	$selected_parent = $_POST['stock_id'];
-
-	if (isset($selected_parent) && isset($_POST['Submit']))
+	if (isset($selected_parent) && isset($_POST['Submit'])) {
+	  if(isset($selected_component))
 		on_submit($selected_parent, $selected_component);
-
+	  else
+		on_submit($selected_parent);
+	}
 	//--------------------------------------------------------------------------------------
 
 	display_bom_items($selected_parent);
@@ -241,7 +240,7 @@ if (isset($_POST['stock_id']))
 
 		$_POST['loc_code'] = $myrow["loc_code"];
 		$_POST['workcentre_added']  = $myrow["workcentre_added"];
-		$_POST['quantity'] = $myrow["quantity"];
+		$_POST['quantity'] = qty_format($myrow["quantity"]);
 
 		hidden('selected_parent', $selected_parent);
 		hidden('selected_component', $selected_component);
@@ -267,9 +266,9 @@ if (isset($_POST['stock_id']))
 
 	if (!isset($_POST['quantity']))
 	{
-		$_POST['quantity'] = 1;
+		$_POST['quantity'] = qty_format(1);
 	}
-	text_row(_("Quantity:"), 'quantity', $_POST['quantity'], 10, 18);
+	amount_row(_("Quantity:"), 'quantity', $_POST['quantity']);
 
 	end_table(1);
 	submit_center('Submit', _("Add/Update"));

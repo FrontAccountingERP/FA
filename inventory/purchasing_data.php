@@ -40,12 +40,12 @@ if ((isset($_POST['AddRecord']) || isset($_POST['UpdateRecord'])) && isset($supp
       	$input_error = 1;
       	display_error( _("There is no item selected."));
    	}
-   	elseif (!is_numeric($_POST['price']) || $_POST['price']==0)
+   	elseif (!check_num('price', 0))
    	{
       	$input_error = 1;
       	display_error( _("The price entered was not numeric."));
    	}
-   	elseif (!is_numeric($_POST['conversion_factor']))
+   	elseif (!check_num('conversion_factor'))
    	{
       	$input_error = 1;
       	display_error( _("The conversion factor entered was not numeric. The conversion factor is the number by which the price must be divided by to get the unit price in our unit of measure."));
@@ -58,8 +58,9 @@ if ((isset($_POST['AddRecord']) || isset($_POST['UpdateRecord'])) && isset($supp
 
     		$sql = "INSERT INTO ".TB_PREF."purch_data (supplier_id, stock_id, price, suppliers_uom,
     			conversion_factor, supplier_description) VALUES (";
-    		$sql .= "'$supplier_id', '" . $_POST['stock_id'] . "', " . $_POST['price'] . ", '" . $_POST['suppliers_uom'] . "', " .
-    			$_POST['conversion_factor'] . ", '" . $_POST['supplier_description'] . "')";
+    		$sql .= "'$supplier_id', '" . $_POST['stock_id'] . "', " . 
+		    input_num('price') . ", '" . $_POST['suppliers_uom'] . "', " .
+    			input_num('conversion_factor') . ", '" . $_POST['supplier_description'] . "')";
 
     		db_query($sql,"The supplier purchasing details could not be added");
     		display_notification(_("This supplier purchasing data has been added."));
@@ -67,9 +68,9 @@ if ((isset($_POST['AddRecord']) || isset($_POST['UpdateRecord'])) && isset($supp
 
        	if (isset($_POST['UpdateRecord']))
        	{
-          	$sql = "UPDATE ".TB_PREF."purch_data SET price=" . $_POST['price'] . ",
+          	$sql = "UPDATE ".TB_PREF."purch_data SET price=" . input_num('price') . ",
 				suppliers_uom='" . $_POST['suppliers_uom'] . "',
-				conversion_factor=" . $_POST['conversion_factor'] . ",
+				conversion_factor=" . input_num('conversion_factor') . ",
 				supplier_description='" . $_POST['supplier_description'] . "'
 				WHERE stock_id='" . $_POST['stock_id'] . "' AND
 				supplier_id='$supplier_id'";
@@ -188,10 +189,10 @@ if (isset($_GET['Edit']))
 	$myrow = db_fetch($result);
 
     $supp_name = $myrow["supp_name"];
-    $_POST['price'] = $myrow["price"];
+    $_POST['price'] = price_format($myrow["price"]);
     $_POST['suppliers_uom'] = $myrow["suppliers_uom"];
     $_POST['supplier_description'] = $myrow["supplier_description"];
-    $_POST['conversion_factor'] = $myrow["conversion_factor"];
+    $_POST['conversion_factor'] = exrate_format($myrow["conversion_factor"]);
 }
 
 echo "<br>";
@@ -207,14 +208,14 @@ else
 	supplier_list_row(_("Supplier:"), 'supplier_id', null, false, true);
 	$supplier_id = $_POST['supplier_id'];
 }	
-text_row(_("Price:"), 'price', null, 12, 12, "", get_supplier_currency($supplier_id));
+amount_row(_("Price:"), 'price', null,'', get_supplier_currency($supplier_id));
 text_row(_("Suppliers Unit of Measure:"), 'suppliers_uom', null, 50, 51);
 
 if (!isset($_POST['conversion_factor']) || $_POST['conversion_factor'] == "")
 {
-   	$_POST['conversion_factor'] = 1;
+   	$_POST['conversion_factor'] = exrate_format(1);
 }
-text_row(_("Conversion Factor (to our UOM):"), 'conversion_factor', $_POST['conversion_factor'], 12, 12);
+amount_row(_("Conversion Factor (to our UOM):"), 'conversion_factor', exrate_format($_POST['conversion_factor']));
 text_row(_("Supplier's Code or Description:"), 'supplier_description', null, 50, 51);
 
 end_table(1);

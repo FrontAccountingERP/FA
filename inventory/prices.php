@@ -67,7 +67,7 @@ function clear_data()
 if (isset($_POST['updatePrice'])) 
 {
 
-	if (!is_numeric($_POST['price']) || $_POST['price'] == "") 
+	if (!check_num('price', 0)) 
 	{
 		$input_error = 1;
 		display_error( _("The price entered must be numeric."));
@@ -79,14 +79,16 @@ if (isset($_POST['updatePrice']))
 		if (isset($_POST['PriceID'])) 
 		{
 			//editing an existing price
-			update_item_price($_POST['PriceID'], $_POST['sales_type_id'], $_POST['curr_abrev'], $_POST['price']);
+			update_item_price($_POST['PriceID'], $_POST['sales_type_id'], 
+			$_POST['curr_abrev'], input_num('price'));
 
 			$msg = _("This price has been updated.");
 		} 
 		elseif ($input_error !=1) 
 		{
 
-			add_item_price($_POST['stock_id'], $_POST['sales_type_id'], $_POST['curr_abrev'], $_POST['price']);
+			add_item_price($_POST['stock_id'], $_POST['sales_type_id'], 
+			    $_POST['curr_abrev'], input_num('price'));
 
 			display_note(_("The new price has been added."));
 		}
@@ -148,7 +150,7 @@ if (isset($_GET['Edit']))
 	hidden('PriceID', $_GET['PriceID']);
 	$_POST['curr_abrev'] = $myrow["curr_abrev"];
 	$_POST['sales_type_id'] = $myrow["sales_type_id"];
-	$_POST['price'] = $myrow["price"];
+	$_POST['price'] = price_format($myrow["price"]);
 }
 
 start_table($table_style2);
@@ -157,7 +159,7 @@ currencies_list_row(_("Currency:"), 'curr_abrev', null);
 
 sales_types_list_row(_("Sales Type:"), 'sales_type_id', null);
 
-text_row(_("Price:"), 'price', null, 10, 10);
+small_amount_row(_("Price:"), 'price', null);
 
 end_table(1);
 

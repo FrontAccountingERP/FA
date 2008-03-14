@@ -67,7 +67,7 @@ function display_transfer_items($title, &$order)
 
 	display_heading($title);
 	start_table("$table_style width=80%");
-	$th = array(_("Item Code"), _("Item Description"), _("Quantity"), _("Unit"));
+	$th = array(_("Item Code"), _("Item Description"), _("Quantity"), _("Unit"),'');
 	table_header($th);
 	$subtotal = 0;
 	$k = 0;  //row colour counter
@@ -112,8 +112,8 @@ function transfer_edit_item_controls(&$order, $stock_id=null)
 	{
 		if (!isset($_POST['stock_id']))
 			$_POST['stock_id'] = $order->line_items[$stock_id]->stock_id;
-		if (!isset($_POST['qty']) || ($_POST['qty']==""))
-			$_POST['qty'] = $order->line_items[$stock_id]->quantity;
+		if (!isset($_POST['qty']) || $_POST['qty'] == '')
+			$_POST['qty'] = qty_format($order->line_items[$stock_id]->quantity);
 
 		$_POST['units'] = $order->line_items[$stock_id]->units;
 
@@ -129,12 +129,12 @@ function transfer_edit_item_controls(&$order, $stock_id=null)
 
     	$item_info = get_item_edit_info($_POST['stock_id']);
 
-   		$_POST['qty'] = 0;
+   		$_POST['qty'] = qty_format(0);
 		$_POST['units'] = $item_info["units"];
 	}
 
 
-	text_cells(null, 'qty', $_POST['qty'], 13, 15);
+	small_amount_cells(null, 'qty', $_POST['qty']);
 	label_cell($_POST['units']);
 
 	if (isset($_GET['Edit'])) 

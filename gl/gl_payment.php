@@ -146,15 +146,9 @@ if (isset($_POST['Process']))
 
 function check_item_data()
 {
-	if (!is_numeric($_POST['amount']))
+	if (!check_num('amount', 0))
 	{
-		display_error( _("The amount entered is not a valid number."));
-		return false;
-	}
-
-	if ($_POST['amount'] <= 0)
-	{
-		display_error( _("The amount entered must be a postitive number."));
+		display_error( _("The amount entered is not a valid number or is less than zero."));
 		return false;
 	}
 
@@ -180,7 +174,7 @@ function handle_update_item()
     if($_POST['UpdateItem'] != "" && check_item_data())
     {
     	$_SESSION['pay_items']->update_gl_item($_POST['Index'], $_POST['dimension_id'],
-    		$_POST['dimension2_id'], $_POST['amount'], $_POST['LineMemo']);
+    		$_POST['dimension2_id'], input_num('amount'), $_POST['LineMemo']);
     }
 }
 
@@ -199,7 +193,7 @@ function handle_new_item()
 		return;
 
 	$_SESSION['pay_items']->add_gl_item($_POST['code_id'], $_POST['dimension_id'],
-		$_POST['dimension2_id'], $_POST['amount'], $_POST['LineMemo']);
+		$_POST['dimension2_id'], input_num('amount'), $_POST['LineMemo']);
 }
 
 //-----------------------------------------------------------------------------------------------

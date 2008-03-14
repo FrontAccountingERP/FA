@@ -121,7 +121,7 @@ if (isset($selected_id) && item_unit_used($selected_id)) {
 } else
     text_row(_("Unit Abbreviation:"), 'abbr', null, 20, 20);
 text_row(_("Descriptive Name:"), 'description', null, 40, 40);  
-text_row(_("Decimal Places:"), 'decimals', null, 40, 40);  
+text_row(_("Decimal Places:"), 'decimals', null, 3, 3);  
 
 end_table(1);
 

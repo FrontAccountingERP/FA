@@ -37,13 +37,13 @@ function check_data()
 	for ($counter = 0; $counter < $_POST["TotalNumberOfAllocs"]; $counter++)
 	{
 
-		if (!is_numeric($_POST['amount' . $counter]))
+		if (!check_num('amount' . $counter))
 		{
 			display_error(_("The entry for one or more amounts is invalid."));
 			return false;
 		}
 
-		if ($_POST['amount' . $counter] < 0)
+		if (!check_num('amount' . $counter,0))
 		{
 			display_error(_("The entry for an amount to allocate was negative. A positive allocation amount is expected."));
 			return false;
@@ -51,14 +51,14 @@ function check_data()
 
 		  /*Now check to see that the AllocAmt is no greater than the
 		amount left to be allocated against the transaction under review */
-		if ($_POST['amount' . $counter] > $_POST['un_allocated' . $counter])
+		if (input_num('amount' . $counter) > $_POST['un_allocated' . $counter])
 		{
 		    //$_POST['amount' . $counter] = $_POST['un_allocated' . $counter];
 		}
 
-		$_SESSION['alloc']->allocs[$counter]->current_allocated = $_POST['amount' . $counter];
+		$_SESSION['alloc']->allocs[$counter]->current_allocated = input_num('amount' . $counter);
 
-		$total_allocated += $_POST['amount' . $counter];
+		$total_allocated += input_num('amount' . $counter);
 	}
 
 	if ($total_allocated - $_SESSION['alloc']->amount > sys_prefs::allocation_settled_allowance())
@@ -94,6 +94,7 @@ function handle_process()
 			update_debtor_trans_allocation($allocn_item->type, $allocn_item->type_no,
 				$allocn_item->current_allocated);
 			$total_allocated += $allocn_item->current_allocated;
+
 		}
 
 	}  /*end of the loop through the array of allocations made */
@@ -179,7 +180,7 @@ function edit_allocations_for_transaction($type, $trans_no)
     display_heading($_SESSION['alloc']->person_name);
 
     display_heading2(_("Date:") . " <b>" . $_SESSION['alloc']->date_ . "</b>");
-    display_heading2(_("Total:") . " <b>" . number_format2($_SESSION['alloc']->amount,user_price_dec()) . "</b>");
+    display_heading2(_("Total:") . " <b>" . price_format($_SESSION['alloc']->amount) . "</b>");
 
     echo "<br>";
 
@@ -205,9 +206,9 @@ function edit_allocations_for_transaction($type, $trans_no)
     		amount_cell($allocn_item->amount);
 			amount_cell($allocn_item->amount_allocated);
 
-    	    if (!isset($_POST['amount' . $counter]) || $_POST['amount' . $counter] == "")
-    	    	$_POST['amount' . $counter] = $allocn_item->current_allocated;
-    	    text_cells(null, "amount" . $counter, $_POST['amount' . $counter], 13, 12);
+    	    if (!check_num('amount' . $counter))
+    	    	$_POST['amount' . $counter] = price_format($allocn_item->current_allocated);
+    	    amount_cells(null, 'amount' . $counter, $_POST['amount' . $counter]);
 
     		$un_allocated = round($allocn_item->amount - $allocn_item->amount_allocated, 6);
     		hidden("un_allocated" . $counter, $un_allocated);
@@ -219,11 +220,11 @@ function edit_allocations_for_transaction($type, $trans_no)
 					 . _("None") . "</a>");
 			end_row();
 
-    	    $total_allocated += $_POST['amount' . $counter];
+    	    $total_allocated += input_num('amount' . $counter);
     	    $counter++;
        	}
 
-       	label_row(_("Total Allocated"), number_format2($total_allocated,user_price_dec()),
+       	label_row(_("Total Allocated"), price_format($total_allocated),
        		"colspan=6 align=right", "nowrap align=right");
         if ($_SESSION['alloc']->amount - $total_allocated < 0)
         {
@@ -233,9 +234,9 @@ function edit_allocations_for_transaction($type, $trans_no)
         else
         	$font1 = $font2 = "";
 		$left_to_allocate = $_SESSION['alloc']->amount - $total_allocated;
-		$left_to_allocate = number_format2($left_to_allocate, user_price_dec());
+		$left_to_allocate = price_format($left_to_allocate);
         label_row(_("Left to Allocate"), $font1 . $left_to_allocate . $font2,
-	    	"colspan=6 align=right", "nowrap align=right");
+	    	"colspan=6 align=right ", "nowrap align=right");
         end_table(1);
 
        	hidden('TotalNumberOfAllocs', $counter);

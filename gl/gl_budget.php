@@ -71,7 +71,7 @@ if (isset($_POST['add']) || isset($_POST['delete']))
 	for ($i = 0, $da = $_POST['begin']; date1_greater_date2($_POST['end'], $da); $i++)
 	{
 		if (isset($_POST['add']))
-			add_update_gl_budget_trans($da, $_POST['account'], $_POST['dim1'], $_POST['dim2'], $_POST['amount'.$i]);
+			add_update_gl_budget_trans($da, $_POST['account'], $_POST['dim1'], $_POST['dim2'], input_num('amount'.$i));
 		else	
 			delete_gl_budget_trans($da, $_POST['account'], $_POST['dim1'], $_POST['dim2']);
 		$da = add_months($da, 1);
@@ -139,12 +139,12 @@ if (db_has_gl_accounts())
 	for ($i = 0, $date_ = $begin; date1_greater_date2($end, $date_); $i++)
 	{
 		start_row();
-		$_POST['amount'.$i] = get_only_budget_trans_from_to($date_, $date_, $_POST['account'], $_POST['dim1'], $_POST['dim2']); 
+		$_POST['amount'.$i] = number_format2(get_only_budget_trans_from_to($date_, $date_, $_POST['account'], $_POST['dim1'], $_POST['dim2']), 0); 
 		
 		label_cell($date_);	
 		if (!isset($_POST['amount'.$i]))
-			$_POST['amount'.$i] = "0";
-		text_cells(null, 'amount'.$i, null, 15);
+			$_POST['amount'.$i] = '0';
+		amount_cells(null, 'amount'.$i, null, 15);
 		if ($showdims)
 		{
 			$d = get_budget_trans_from_to($date_, $date_, $_POST['account'], $_POST['dim1'], $_POST['dim2']);
@@ -152,7 +152,7 @@ if (db_has_gl_accounts())
 			$btotal += $d;
 		}	
 		$lamount = get_gl_trans_from_to(add_years($date_, -1), add_years(end_month($date_), -1), $_POST['account'], $_POST['dim1'], $_POST['dim2']);
-		$total += $_POST['amount'.$i];
+		$total += input_num('amount'.$i);
 		$ltotal += $lamount;
 		label_cell(number_format2($lamount, 0), "nowrap align=right");
 		$date_ = add_months($date_, 1);
@@ -160,7 +160,7 @@ if (db_has_gl_accounts())
 	}
 	start_row();
 	label_cell("<b>"._("Total")."</b>");
-	label_cell("<b>".number_format2($total, 0)."</b>");
+	label_cell("<b>".number_format2($total, 0)."</b>", 'align=right');
 	if ($showdims)
 		label_cell("<b>".number_format2($btotal, 0)."</b>", "nowrap align=right");
 	label_cell("<b>".number_format2($ltotal, 0)."</b>", "nowrap align=right");

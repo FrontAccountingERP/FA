@@ -90,7 +90,7 @@ function can_process()
 			return false;
 		}
     }
-	if (!is_numeric($_POST['ChargeFreightCost']) || $_POST['ChargeFreightCost'] < 0) {
+	if (!check_num('ChargeFreightCost', 0)) {
 		display_error(_("The entered shipping cost is invalid or less than zero."));;
 		return false;
 	}
@@ -138,9 +138,9 @@ if (isset($_GET['InvoiceNumber']) && $_GET['InvoiceNumber'] > 0) {
 } else {
 	foreach ($_SESSION['Items']->line_items as $line_no=>$itm) {
 		if (isset($_POST['Line'.$line_no])) {
-			$line_qty = $_POST['Line'.$line_no];
-			if (is_numeric($line_qty) && $_POST['Line'.$line_no] <= ($itm->quantity - $itm->qty_done)) {
-				$_SESSION['Items']->line_items[$line_no]->qty_dispatched = $line_qty;
+			if (check_num('Line'.$line_no, ($itm->quantity - $itm->qty_done))) {
+				$_SESSION['Items']->line_items[$line_no]->qty_dispatched = 
+				  input_num('Line'.$line_no);
 			}
 	  	}
 
@@ -158,7 +158,7 @@ function copy_to_cart()
 {
   $cart = &$_SESSION['Items'];
   $cart->ship_via = $_POST['ShipperID'];
-  $cart->freight_cost = $_POST['ChargeFreightCost'];
+  $cart->freight_cost = input_num('ChargeFreightCost');
   $cart->document_date =  $_POST['CreditDate'];
   $cart->Location = $_POST['Location'];
   $cart->Comments = $_POST['CreditText'];
@@ -169,7 +169,7 @@ function copy_from_cart()
 {
   $cart = &$_SESSION['Items'];
   $_POST['ShipperID'] = $cart->ship_via;
-  $_POST['ChargeFreightCost'] = $cart->freight_cost;
+  $_POST['ChargeFreightCost'] = price_format($cart->freight_cost);
   $_POST['CreditDate']= $cart->document_date;
   $_POST['Location']= $cart->Location;
   $_POST['CreditText']= $cart->Comments;
@@ -274,43 +274,40 @@ function display_credit_items()
 		//	view_stock_status_cell($ln_itm->stock_id); alternative view
     	label_cell($ln_itm->stock_id);
 
-		text_cells(null, 'Line'.$line_no.'Desc', $ln_itm->item_description, 30, 50);
+	text_cells(null, 'Line'.$line_no.'Desc', $ln_itm->item_description, 30, 50);
 
     	qty_cell($ln_itm->quantity);
     	label_cell($ln_itm->units);
-	    text_cells(null, 'Line'.$line_no, $ln_itm->qty_dispatched, 13, 15);
+
+	amount_cells(null, 'Line'.$line_no, qty_format($ln_itm->qty_dispatched));
 
     	$line_total =($ln_itm->qty_dispatched * $ln_itm->price * (1 - $ln_itm->discount_percent));
 
     	amount_cell($ln_itm->price);
-    	amount_cell($ln_itm->discount_percent*100);
+    	percent_cell($ln_itm->discount_percent*100);
     	amount_cell($line_total);
     	end_row();
     }
 
-    if (!isset($_POST['ChargeFreightCost']) || ($_POST['ChargeFreightCost'] == "")) {
-    	$_POST['ChargeFreightCost'] = $_SESSION['Items']->freight_cost;
+    if (!check_num('ChargeFreightCost')) {
+    	$_POST['ChargeFreightCost'] = price_format($_SESSION['Items']->freight_cost);
     }
 
-    if (!is_numeric($_POST['ChargeFreightCost']))
-    {
-    	$_POST['ChargeFreightCost'] = 0;
-    }
 	start_row();
 	label_cell(_("Credit Shipping Cost"), "colspan=7 align=right");
-    text_cells(null, "ChargeFreightCost", $_POST['ChargeFreightCost'], 6, 6);
+    amount_cells(null, "ChargeFreightCost", $_POST['ChargeFreightCost'], 6, 6);
 	end_row();
 
     $inv_items_total = $_SESSION['Items']->get_items_total_dispatch();
 
-    $display_sub_total = number_format2($inv_items_total + $_POST['ChargeFreightCost'],user_price_dec());
+    $display_sub_total = price_format($inv_items_total + input_num($_POST['ChargeFreightCost']));
     label_row(_("Sub-total"), $display_sub_total, "colspan=7 align=right", "align=right");
 
-    $taxes = $_SESSION['Items']->get_taxes($_POST['ChargeFreightCost']);
+    $taxes = $_SESSION['Items']->get_taxes(input_num($_POST['ChargeFreightCost']));
 
     $tax_total = display_edit_tax_items($taxes, 7, $_SESSION['Items']->tax_included);
 
-    $display_total = number_format2(($inv_items_total + $_POST['ChargeFreightCost'] + $tax_total), user_price_dec());
+    $display_total = price_format(($inv_items_total + input_num('ChargeFreightCost') + $tax_total));
 
     label_row(_("Credit Note Total"), $display_total, "colspan=7 align=right", "align=right");
 

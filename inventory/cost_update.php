@@ -30,13 +30,15 @@ if (isset($_GET['stock_id']))
 if (isset($_POST['UpdateData']))
 {
 
-   	$old_cost = $_POST['OldMaterialCost'] + $_POST['OldLabourCost'] + $_POST['OldOverheadCost'];
-   	$new_cost = $_POST['material_cost'] + $_POST['labour_cost'] + $_POST['overhead_cost'];
+   	$old_cost = input_num('OldMaterialCost') + input_num('OldLabourCost')
+	    + input_num('OldOverheadCost');
+   	$new_cost = input_num('material_cost') + input_num('labour_cost')
+	     + input_num('overhead_cost');
 
    	$should_update = true;
 
-	if (!is_numeric($_POST['material_cost']) || !is_numeric($_POST['labour_cost']) ||
-		!is_numeric($_POST['overhead_cost']))
+	if (!check_num('material_cost') || !check_num('labour_cost') ||
+		!check_num('overhead_cost'))
 	{
 		display_error( _("The entered cost is not numeric."));
    	 	$should_update = false;
@@ -49,8 +51,9 @@ if (isset($_POST['UpdateData']))
 
    	if ($should_update)
    	{
-		$update_no = stock_cost_update($_POST['stock_id'], $_POST['material_cost'],
-			$_POST['labour_cost'], $_POST['overhead_cost'],	$old_cost);
+		$update_no = stock_cost_update($_POST['stock_id'], 
+		    input_num('material_cost'), input_num('labour_cost'), 
+		    input_num('overhead_cost'),	$old_cost);
 
         display_note(_("Cost has been updated."));
 
@@ -89,18 +92,18 @@ hidden("OldLabourCost", $myrow["labour_cost"]);
 hidden("OldOverheadCost", $myrow["overhead_cost"]);
 
 start_table($table_style2);
-label_row(_("Last Cost"), number_format2($myrow["last_cost"],user_price_dec()),
+label_row(_("Last Cost"), price_format($myrow["last_cost"]),
 	"class='tableheader2'", "nowrap align=right");
 
-text_row(_("Standard Material Cost Per Unit"), "material_cost",
-	number_format($myrow["material_cost"],user_price_dec()), "", "", "class='tableheader2'");
+amount_row(_("Standard Material Cost Per Unit"), "material_cost",
+	price_format($myrow["material_cost"]), "", "", "class='tableheader2'");
 
 if ($myrow["mb_flag"]=='M')
 {
-	text_row(_("Standard Labour Cost Per Unit"), "labour_cost",
-		number_format($myrow["labour_cost"],user_price_dec()), "", "", "class='tableheader2'");
-	text_row(_("Standard Overhead Cost Per Unit"), "overhead_cost",
-		number_format($myrow["overhead_cost"],user_price_dec()), "", "", "class='tableheader2'");
+	amount_row(_("Standard Labour Cost Per Unit"), "labour_cost",
+		price_format($myrow["labour_cost"]), '', "", "class='tableheader2'");
+	amount_row(_("Standard Overhead Cost Per Unit"), "overhead_cost",
+		price_format($myrow["overhead_cost"]), "", "", "class='tableheader2'");
 }
 else
 {

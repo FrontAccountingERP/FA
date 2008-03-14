@@ -133,9 +133,9 @@ if ( (isset($_GET['DeliveryNumber']) && ($_GET['DeliveryNumber'] > 0) )
 } else {
 	foreach ($_SESSION['Items']->line_items as $line_no=>$itm) {
 		if (isset($_POST['Line'.$line_no])) {
-			$line_qty = $_POST['Line'.$line_no];
-			if (is_numeric($line_qty) && $_POST['Line'.$line_no] <= ($itm->quantity - $itm->qty_done)) {
-				$_SESSION['Items']->line_items[$line_no]->qty_dispatched = $line_qty;
+			if (!check_num('Line'.$line_no, 0, ($itm->quantity - $itm->qty_done))) {
+				$_SESSION['Items']->line_items[$line_no]->qty_dispatched =
+				    input_num('Line'.$line_no);
 			}
 		}
 
@@ -153,7 +153,7 @@ function copy_to_cart()
 {
 	$cart = &$_SESSION['Items'];
 	$cart->ship_via = $_POST['ship_via'];
-	$cart->freight_cost = $_POST['ChargeFreightCost'];
+	$cart->freight_cost = input_num('ChargeFreightCost');
 	$cart->document_date =  $_POST['InvoiceDate'];
 	$cart->due_date =  $_POST['due_date'];
 	$cart->Comments = $_POST['Comments'];
@@ -164,7 +164,7 @@ function copy_from_cart()
 {
 	$cart = &$_SESSION['Items'];
 	$_POST['ship_via'] = $cart->ship_via;
-	$_POST['ChargeFreightCost'] = $cart->freight_cost;
+	$_POST['ChargeFreightCost'] = price_format($cart->freight_cost);
 	$_POST['InvoiceDate']= $cart->document_date;
 	$_POST['due_date'] = $cart->due_date;
 	$_POST['Comments']= $cart->Comments;
@@ -202,15 +202,15 @@ function check_data()
 	}
 
 	if ($_POST['ChargeFreightCost'] == "") {
-		$_POST['ChargeFreightCost'] = 0;
+		$_POST['ChargeFreightCost'] = price_format(0);
 	}
 
-	if (!is_numeric($_POST['ChargeFreightCost']) || $_POST['ChargeFreightCost'] < 0) {
+	if (!check_num('ChargeFreightCost', 0)) {
 		display_error(_("The entered shipping value is not numeric."));
 		return false;
 	}
 
-	if ($_SESSION['Items']->has_items_dispatch() == 0 && $_POST['ChargeFreightCost'] == 0) {
+	if ($_SESSION['Items']->has_items_dispatch() == 0 && input_num('ChargeFreightCost') == 0) {
 		display_error(_("There are no item quantities on this invoice."));
 		return false;
 	}
@@ -314,12 +314,12 @@ $th = array(_("Item Code"), _("Item Description"), _("Delivered"), _("Units"), _
 	_("This Invoice"), _("Price"), _("Tax Type"), _("Discount"), _("Total"));
 
 if ($is_batch_invoice) {
-$th[] = _("DN");
-$th[] = "";
+    $th[] = _("DN");
+    $th[] = "";
 }
 
 if ($is_edition) {
-$th[4] = _("Credited");
+    $th[4] = _("Credited");
 }
 
 table_header($th);
@@ -345,11 +345,11 @@ foreach ($_SESSION['Items']->line_items as $line=>$ln_itm) {
 		// for batch invoices we can only remove whole deliveries
 		echo '<td nowrap align=right>';
 		hidden('Line' . $line, $ln_itm->qty_dispatched );
-		echo number_format2($ln_itm->qty_dispatched, user_qty_dec()).'</td>';
+		echo qty_format($ln_itm->qty_dispatched).'</td>';
 	} else {
-		text_cells(null, 'Line'.$line, $ln_itm->qty_dispatched, 10, 10);
+		small_amount_cells(null, 'Line'.$line, qty_format($ln_itm->qty_dispatched));
 	}
-	$display_discount_percent = number_format2($ln_itm->discount_percent*100, user_percent_dec()) . "%";
+	$display_discount_percent = percent_format($ln_itm->discount_percent*100) . " %";
 
 	$line_total = ($ln_itm->qty_dispatched * $ln_itm->price * (1 - $ln_itm->discount_percent));
 
@@ -378,13 +378,13 @@ was not fully delivered the first time ?? */
 
 if (!isset($_POST['ChargeFreightCost']) || $_POST['ChargeFreightCost'] == "") {
 	if ($_SESSION['Items']->any_already_delivered() == 1) {
-		$_POST['ChargeFreightCost'] = 0;
+		$_POST['ChargeFreightCost'] = price_format(0);
 	} else {
-		$_POST['ChargeFreightCost'] = $_SESSION['Items']->freight_cost;
+		$_POST['ChargeFreightCost'] = price_format($_SESSION['Items']->freight_cost);
 	}
 
-	if (!is_numeric($_POST['ChargeFreightCost'])) {
-		$_POST['ChargeFreightCost'] = 0;
+	if (!check_num('ChargeFreightCost')) {
+		$_POST['ChargeFreightCost'] = price_format(0);
 	}
 }
 
@@ -398,14 +398,14 @@ label_cell('', 'colspan=2');
 end_row();
 $inv_items_total = $_SESSION['Items']->get_items_total_dispatch();
 
-$display_sub_total = number_format2($inv_items_total + $_POST['ChargeFreightCost'],user_price_dec());
+$display_sub_total = price_format($inv_items_total + input_num('ChargeFreightCost'));
 
 label_row(_("Sub-total"), $display_sub_total, "colspan=9 align=right","align=right", $is_batch_invoice ? 2 : 0);
 
-$taxes = $_SESSION['Items']->get_taxes($_POST['ChargeFreightCost']);
+$taxes = $_SESSION['Items']->get_taxes(input_num('ChargeFreightCost'));
 $tax_total = display_edit_tax_items($taxes, 9, $_SESSION['Items']->tax_included, $is_batch_invoice ? 2:0);
 
-$display_total = number_format2(($inv_items_total + $_POST['ChargeFreightCost'] + $tax_total), user_price_dec());
+$display_total = price_format(($inv_items_total + input_num('ChargeFreightCost') + $tax_total));
 
 label_row(_("Invoice Total"), $display_total, "colspan=9 align=right","align=right", $is_batch_invoice ? 2 : 0);
 

@@ -46,7 +46,7 @@ if (isset($_POST['ADD_ITEM']) || isset($_POST['UPDATE_ITEM']))
     	{
     		if (isset($_POST['tax_type_id' . $i]) && 
     			$_POST['tax_type_id' . $i] != reserved_words::get_all_numeric()	&& 
-    			(!is_numeric($_POST['rate' . $i]) || $_POST['rate' . $i] < 0))
+    			!check_num('rate' . $i, 0))
     		{
 				display_error( _("An entered tax rate is invalid or less than zero."));
     			$input_error = 1;
@@ -68,7 +68,7 @@ if (isset($_POST['ADD_ITEM']) || isset($_POST['UPDATE_ITEM']))
    				$_POST['tax_type_id' . $i] != reserved_words::get_any_numeric()) 
    			{
         		$taxes[] = $_POST['tax_type_id' . $i];
-        		$rates[] = $_POST['rate' . $i];
+        		$rates[] = input_num('rate' . $i);
     		}
     	}
 
@@ -186,7 +186,7 @@ if ($selected_id != -1)
     	while ($tax_item = db_fetch($items)) 
     	{
     		$_POST['tax_type_id' . $i]  = $tax_item["tax_type_id"];
-    		$_POST['rate' . $i]  = $tax_item["rate"];
+    		$_POST['rate' . $i]  = percent_format($tax_item["rate"]);
     		$i ++;
     	}
 	}
@@ -214,11 +214,11 @@ for ($i = 0; $i < 5; $i++)
 	{
 
 		$default_rate = get_tax_type_default_rate($_POST['tax_type_id' . $i]);
-		label_cell(number_format2($default_rate, user_percent_dec()), "nowrap align=right");
+		label_cell(percent_format($default_rate), "nowrap align=right");
 
 		if (!isset($_POST['rate' . $i]) || $_POST['rate' . $i] == "")
-			$_POST['rate' . $i] = $default_rate;
-		text_cells(null, 'rate' . $i, $_POST['rate' . $i], 10, 10);
+			$_POST['rate' . $i] = percent_format($default_rate);
+		small_amount_cells(null, 'rate' . $i, $_POST['rate' . $i]);
 	}
 	end_row();
 }

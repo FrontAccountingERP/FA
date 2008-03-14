@@ -15,6 +15,9 @@ include_once($path_to_root . "/sales/includes/sales_db.inc");
 $js = "";
 if ($use_popup_windows)
 	$js .= get_js_open_window(900, 500);
+
+$js .= get_js_allocate();
+
 page(_("Allocate Supplier Payment or Credit Note"), false, false, "", $js);
 
 
@@ -40,28 +43,22 @@ function check_data()
 	for ($counter=0; $counter < $_POST["TotalNumberOfAllocs"]; $counter++)
 	{
 
-		if (!is_numeric($_POST['amount' . $counter]))
+		if (!check_num('amount' . $counter, 0))
 		{
-			display_error(_("The entry for one or more amounts is invalid."));
-			return false;
-		 }
-
-		 if ($_POST['amount' . $counter] < 0)
-		 {
-			display_error(_("The entry for an amount to allocate was negative. A positive allocation amount is expected."));
+			display_error(_("The entry for one or more amounts is invalid or negative."));
 			return false;
 		 }
 
 		  /*Now check to see that the AllocAmt is no greater than the
 		 amount left to be allocated against the transaction under review */
-		 if ($_POST['amount' . $counter] > $_POST['un_allocated' . $counter])
+		 if (input_num('amount' . $counter) > $_POST['un_allocated' . $counter])
 		 {
 		     //$_POST['amount' . $counter] = $_POST['un_allocated' . $counter];
 		 }
 
-		 $_SESSION['alloc']->allocs[$counter]->current_allocated = $_POST['amount' . $counter];
+		 $_SESSION['alloc']->allocs[$counter]->current_allocated = input_num('amount' . $counter);
 
-		 $total_allocated += $_POST['amount' . $counter];
+		 $total_allocated += input_num('amount' . $counter);
 	}
 
 	if ($total_allocated + $_SESSION['alloc']->amount > sys_prefs::allocation_settled_allowance())
@@ -185,7 +182,7 @@ function edit_allocations_for_transaction($type, $trans_no)
 	display_heading($_SESSION['alloc']->person_name);
 
     display_heading2(_("Date:") . " <b>" . $_SESSION['alloc']->date_ . "</b>");
-    display_heading2(_("Total:") . " <b>" . number_format2(-$_SESSION['alloc']->amount,user_price_dec()) . "</b>");
+    display_heading2(_("Total:") . " <b>" . price_format(-$_SESSION['alloc']->amount) . "</b>");
 
     echo "<br>";
 
@@ -193,7 +190,7 @@ function edit_allocations_for_transaction($type, $trans_no)
     {
 		start_table($table_style);
    		$th = array(_("Transaction Type"), _("#"), _("Date"), _("Due Date"), _("Amount"), 
-   			_("Other Allocations"), _("This Allocation"), _("Left to Allocate"));
+   			_("Other Allocations"), _("This Allocation"), _("Left to Allocate"),'');
    		table_header($th);	
 
         $k = $counter = $total_allocated = 0;
@@ -207,21 +204,25 @@ function edit_allocations_for_transaction($type, $trans_no)
     		label_cell($alloc_item->date_, "align=right");
     		label_cell($alloc_item->due_date, "align=right");
     		amount_cell($alloc_item->amount);
-			amount_cell($alloc_item->amount_allocated);
+		amount_cell($alloc_item->amount_allocated);
 
     	    if (!isset($_POST['amount' . $counter]) || $_POST['amount' . $counter] == "")
-    	    	$_POST['amount' . $counter] = $alloc_item->current_allocated;
-    	    text_cells(null, "amount" . $counter, $_POST['amount' . $counter], 13, 12);
+    	    	$_POST['amount' . $counter] = price_format($alloc_item->current_allocated);
+    	    amount_cells(null, "amount" . $counter, price_format('amount' . $counter));
 
     		$un_allocated = round($alloc_item->amount - $alloc_item->amount_allocated, 6);
     		hidden("un_allocated" . $counter, $un_allocated);
     		amount_cell($un_allocated);
+			label_cell("<a href='#' name=Alloc$counter onclick='allocate_all(this.name.substr(5));return true;'>"
+					 . _("All") . "</a>");
+			label_cell("<a href='#' name=DeAll$counter onclick='allocate_none(this.name.substr(5));return true;'>"
+					 . _("None") . "</a>");
 
-			label_cell("<a href='#' onclick='forms[0].amount$counter.value=forms[0].un_allocated$counter.value; return true;'>" . _("All") . "</a>");
-			label_cell("<a href='#' onclick='forms[0].amount$counter.value=0; return true;'>" . _("None") . "</a>");
+//			label_cell("<a href='#' onclick='forms[0].amount$counter.value=forms[0].un_allocated$counter.value; return true;'>" . _("All") . "</a>");
+//			label_cell("<a href='#' onclick='forms[0].amount$counter.value=0; return true;'>" . _("None") . "</a>");
 			end_row();
 
-    	    $total_allocated += $_POST['amount' . $counter];
+    	    $total_allocated += input_num('amount' . $counter);
     	    $counter++;
        	}
 		
@@ -234,12 +235,13 @@ function edit_allocations_for_transaction($type, $trans_no)
         }	
         else
         	$font1 = $font2 = "";
-        label_row(_("Left to Allocate"), $font1 . number_format2(-$_SESSION['alloc']->amount - 
-        	$total_allocated,user_price_dec()) . $font2, "colspan=6 align=right", 
+		$left_to_allocate = price_format(-$_SESSION['alloc']->amount - $total_allocated); 
+        label_row(_("Left to Allocate"), $font1 . $left_to_allocate . $font2, "colspan=6 align=right", 
         	"nowrap align=right");
 		end_table();		
 
 		hidden('TotalNumberOfAllocs', $counter);
+		hidden('left_to_allocate', $left_to_allocate);
     	echo "<br><center>";
        	submit('UpdateDisplay', _("Update"));
        	echo "&nbsp;";

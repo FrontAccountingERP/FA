@@ -41,9 +41,9 @@ if (isset($_POST['ADD_ITEM']) || isset($_POST['UPDATE_ITEM']))
     			salesman_phone='" . $_POST['salesman_phone'] . "',
     			salesman_fax='" . $_POST['salesman_fax'] . "',
     			salesman_email='" . $_POST['salesman_email'] . "',
-    			provision=".$_POST['provision'].",
-    			break_pt=".$_POST['break_pt'].",
-    			provision2=".$_POST['provision2']."
+    			provision=".input_num('provision').",
+    			break_pt=".input_num('break_pt').",
+    			provision2=".input_num('provision2')."
     			WHERE salesman_code = '$selected_id'";
     	}
     	else
@@ -51,8 +51,8 @@ if (isset($_POST['ADD_ITEM']) || isset($_POST['UPDATE_ITEM']))
     		/*Selected group is null cos no item selected on first time round so must be adding a record must be submitting new entries in the new Sales-person form */
     		$sql = "INSERT INTO ".TB_PREF."salesman (salesman_name, salesman_phone, salesman_fax, salesman_email,
     			provision, break_pt, provision2)
-    			VALUES ('" . $_POST['salesman_name'] . "', '" . $_POST['salesman_phone'] . "', '" . $_POST['salesman_fax'] . "', '" . $_POST['salesman_email'] . "', ".
-    			$_POST['provision'].", ".$_POST['break_pt'].", ".$_POST['provision2'].")";
+    			VALUES ('" . $_POST['salesman_name'] . "', '" .$_POST['salesman_phone'] . "', '" . $_POST['salesman_fax'] . "', '" . $_POST['salesman_email'] . "', ".
+    			input_num('provision').", ".input_num('break_pt').", ".input_num('provision2').")";
     	}
 
     	//run the sql from either of the above possibilites
@@ -103,9 +103,9 @@ while ($myrow = db_fetch($result))
    	label_cell($myrow["salesman_phone"]);
    	label_cell($myrow["salesman_fax"]);
    	label_cell($myrow["salesman_email"]);
-   	percent_cell($myrow["provision"]);
+	label_cell(percent_format($myrow["provision"])." %", "nowrap align=right");
    	amount_cell($myrow["break_pt"]);
-   	percent_cell($myrow["provision2"]);
+	label_cell(percent_format($myrow["provision2"])." %", "nowrap align=right");
 	edit_link_cell(SID . "selected_id=" . $myrow["salesman_code"]);
    	delete_link_cell(SID . "selected_id=" . $myrow["salesman_code"]. "&delete=1");
   	end_row();
@@ -134,9 +134,9 @@ if (isset($selected_id))
 	$_POST['salesman_phone'] = $myrow["salesman_phone"];
 	$_POST['salesman_fax'] = $myrow["salesman_fax"];
 	$_POST['salesman_email'] = $myrow["salesman_email"];
-	$_POST['provision'] = $myrow["provision"];
-	$_POST['break_pt'] = $myrow["break_pt"];
-	$_POST['provision2'] = $myrow["provision2"];
+	$_POST['provision'] = percent_format($myrow["provision"]);
+	$_POST['break_pt'] = price_format($myrow["break_pt"]);
+	$_POST['provision2'] = percent_format($myrow["provision2"]);
 
 	hidden('selected_id', $selected_id);
 }

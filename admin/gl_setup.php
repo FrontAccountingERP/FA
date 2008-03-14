@@ -15,22 +15,19 @@ include_once($path_to_root . "/admin/db/company_db.inc");
 
 function can_process() 
 {
-	if (!is_numeric($_POST['po_over_receive']) || ($_POST['po_over_receive'] < 0)
-			|| ($_POST['po_over_receive'] > 100)) 
+	if (!check_num('po_over_receive', 0, 100)) 
 	{
 		display_error(_("The delivery over-receive allowance must be between 0 and 100."));
 		return false;
 	}
 
-	if (!is_numeric($_POST['po_over_charge']) || ($_POST['po_over_charge'] < 0)
-			|| ($_POST['po_over_charge'] > 100)) 
+	if (!check_num('po_over_charge', 0, 100)) 
 	{
 		display_error(_("The invoice over-charge allowance must be between 0 and 100."));
 		return false;
 	}
 
-	if (!is_numeric($_POST['past_due_days']) || ($_POST['past_due_days'] < 0)
-			|| ($_POST['past_due_days'] > 100)) 
+	if (!check_num('past_due_days', 0, 100)) 
 	{
 		display_error(_("The past due days interval allowance must be between 0 and 100."));
 		return false;
@@ -55,8 +52,8 @@ if (isset($_POST['submit']) && can_process())
 		$_POST['default_inv_sales_act'],
 		$_POST['default_assembly_act'], $_POST['payroll_act'],
 		check_value('allow_negative_stock'),
-		$_POST['po_over_receive'],
-		$_POST['po_over_charge'],
+		input_num('po_over_receive'),
+		input_num('po_over_charge'),
 		$_POST['past_due_days'],
 		$_POST['default_credit_limit'],
 		$_POST['default_workorder_required'],
@@ -96,8 +93,8 @@ $_POST['payroll_act'] = $myrow['payroll_act'];
 
 $_POST['allow_negative_stock'] = $myrow['allow_negative_stock'];
 
-$_POST['po_over_receive'] = $myrow['po_over_receive'];
-$_POST['po_over_charge'] = $myrow['po_over_charge'];
+$_POST['po_over_receive'] = percent_format($myrow['po_over_receive']);
+$_POST['po_over_charge'] = percent_format($myrow['po_over_charge']);
 $_POST['past_due_days'] = $myrow['past_due_days'];
 
 $_POST['default_credit_limit'] = $myrow['default_credit_limit'];

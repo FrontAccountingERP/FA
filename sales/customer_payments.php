@@ -65,21 +65,17 @@ function can_process()
 		return false;
 	}
 
-	if ((!is_numeric($_POST['amount']) || $_POST['amount'] < 0)) {
+	if (!check_num('amount', 0)) {
 		display_error(_("The entered amount is invalid or negative and cannot be processed."));
 		return false;
 	}
 
-	if (!isset($_POST['discount']) || ($_POST['discount'] == "")) {
-		$_POST['discount'] = 0;
-	}
-
-	if (!is_numeric($_POST['discount'])) {
+	if (!check_num('discount')) {
 		display_error(_("The entered discount is not a valid number."));
 		return false;
 	}
 
-	if (($_POST['amount'] - $_POST['discount'] <= 0)) {
+	if ((input_num('amount') - input_num('discount') <= 0)) {
 		display_error(_("The balance of the amount and discout is zero or negative. Please enter valid amounts."));
 		return false;
 	}
@@ -102,7 +98,7 @@ if (isset($_POST['AddPaymentItem'])) {
 if (isset($_POST['AddPaymentItem'])) {
 	$payment_no = write_customer_payment(0, $_POST['customer_id'], $_POST['BranchID'],
 		$_POST['bank_account'], $_POST['DateBanked'], $_POST['ReceiptType'], $_POST['ref'],
-		$_POST['amount'], $_POST['discount'], $_POST['memo_']);
+		input_num('amount'), input_num('discount'), $_POST['memo_']);
 
 	meta_forward($_SERVER['PHP_SELF'], "AddedID=$payment_no");
 }
@@ -160,7 +156,7 @@ function display_item_form()
 		echo "</table></table>";
 		display_note(_("This customer account is on hold."), 0, 0, "class='redfb'");
 	} else {
-		$display_discount_percent = number_format2($_POST['pymt_discount']*100,user_price_dec()) . "%";
+		$display_discount_percent = percent_format($_POST['pymt_discount']*100) . "%";
 
 		amount_row(_("Amount:"), 'amount');
 

@@ -148,13 +148,13 @@ if (isset($_POST['Process']))
 
 function check_item_data()
 {
-	if (!is_numeric($_POST['qty']) || ($_POST['qty'] == 0))
+	if (!check_num('qty'))
 	{
 		display_error( _("The quantity entered is not a valid number."));
 		return false;
 	}
 
-	if ($_POST['qty'] <= 0)
+	if (!check_num('qty', 0))
 	{
 		display_error(_("The quantity entered must be a positive number."));
 		return false;
@@ -171,7 +171,7 @@ function handle_update_item()
     {
     	if (!isset($_POST['std_cost']))
     		$_POST['std_cost'] = $_SESSION['transfer_items']->line_items[$_POST['stock_id']]->standard_cost;
-    	$_SESSION['transfer_items']->update_cart_item($_POST['stock_id'], $_POST['qty'], $_POST['std_cost']);
+    	$_SESSION['transfer_items']->update_cart_item($_POST['stock_id'], input_num('qty'), $_POST['std_cost']);
     }
 }
 
@@ -190,7 +190,7 @@ function handle_new_item()
 		return;
 	if (!isset($_POST['std_cost']))
    		$_POST['std_cost'] = 0;
-	add_to_order($_SESSION['transfer_items'], $_POST['stock_id'], $_POST['qty'], $_POST['std_cost']);
+	add_to_order($_SESSION['transfer_items'], $_POST['stock_id'], input_num('qty'), $_POST['std_cost']);
 }
 
 //-----------------------------------------------------------------------------------------------

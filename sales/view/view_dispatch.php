@@ -120,7 +120,7 @@ if (db_num_rows($result) > 0)
 	    } 
 	    else 
 	    {
-		  	$display_discount = number_format2($myrow2["discount_percent"]*100,user_percent_dec()) . "%";
+		  	$display_discount = percent_format($myrow2["discount_percent"]*100) . "%";
 	    }
 
 	label_cell($myrow2["stock_id"]);
@@ -137,8 +137,8 @@ if (db_num_rows($result) > 0)
 else
 	display_note(_("There are no line items on this dispatch."), 1, 2);
 
-$display_sub_tot = number_format2($sub_total,user_price_dec());
-$display_freight = number_format2($myrow["ov_freight"],user_price_dec());
+$display_sub_tot = price_format($sub_total);
+$display_freight = price_format($myrow["ov_freight"]);
 
 /*Print out the delivery note text entered */
 label_row(_("Sub-total"), $display_sub_tot, "colspan=6 align=right", 
@@ -148,7 +148,7 @@ label_row(_("Shipping"), $display_freight, "colspan=6 align=right", "nowrap alig
 $tax_items = get_customer_trans_tax_details(13, $trans_id);
 display_customer_trans_tax_details($tax_items, 6);
 
-$display_total = number_format2($myrow["ov_freight"]+$myrow["ov_amount"]+$myrow["ov_freight_tax"]+$myrow["ov_gst"],user_price_dec());
+$display_total = price_format($myrow["ov_freight"]+$myrow["ov_amount"]+$myrow["ov_freight_tax"]+$myrow["ov_gst"]);
 
 label_row(_("TOTAL VALUE"), $display_total, "colspan=6 align=right",
 	"nowrap align=right");

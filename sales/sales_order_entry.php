@@ -141,7 +141,7 @@ function copy_to_cart()
 	$cart->document_date = $_POST['OrderDate'];
 	$cart->due_date = $_POST['delivery_date'];
 	$cart->cust_ref = $_POST['cust_ref'];
-	$cart->freight_cost = $_POST['freight_cost'];
+	$cart->freight_cost = input_num('freight_cost');
 	$cart->deliver_to = $_POST['deliver_to'];
 	$cart->delivery_address = $_POST['delivery_address'];
 	$cart->phone = $_POST['phone'];
@@ -170,7 +170,7 @@ function copy_from_cart()
 	$_POST['OrderDate'] = $cart->document_date;
 	$_POST['delivery_date'] = $cart->due_date;
 	$_POST['cust_ref'] = $cart->cust_ref;
-	$_POST['freight_cost'] = $cart->freight_cost;
+	$_POST['freight_cost'] = price_format($cart->freight_cost);
 
 	$_POST['deliver_to'] = $cart->deliver_to;
 	$_POST['delivery_address'] = $cart->delivery_address;
@@ -208,9 +208,9 @@ function can_process() {
 	}
 
 	if ($_POST['freight_cost'] == "")
-		$_POST['freight_cost'] = 0;
+		$_POST['freight_cost'] = price_format(0);
 
-	if (!is_numeric($_POST['freight_cost'])) {
+	if (!check_num('freight_cost',0)) {
 		display_error(_("The shipping cost entered is expected to be numeric."));
 		return false;
 	}
@@ -259,15 +259,15 @@ if (isset($_POST['ProcessOrder']) && can_process()) {
 
 function check_item_data()
 {
-	if (!is_numeric($_POST['qty']) || $_POST['qty'] < 0 || $_POST['Disc'] > 100 || $_POST['Disc'] < 0) {
+
+	if (!check_num('qty', 0) || !check_num('Disc', 0, 100)) {
 		display_error( _("The item could not be updated because you are attempting to set the quantity ordered to less than 0, or the discount percent to more than 100."));
 		return false;
-	} elseif (!is_numeric($_POST['price']) || $_POST['price'] < 0) {
-
-		display_error( _("Price for item must be entered and can not be less then 0"));
+	} elseif (!check_num('price', 0)) {
+		display_error( _("Price for item must be entered and can not be less than 0"));
 		return false;
 	} elseif (isset($_POST['LineNo']) && isset($_SESSION['Items']->line_items[$_POST['LineNo']])
-		&& $_SESSION['Items']->line_items[$_POST['LineNo']]->qty_done > $_POST['qty']) {
+	    && !check_num('qty', $_SESSION['Items']->line_items[$_POST['LineNo']]->qty_done)) {
 
 		display_error(_("You attempting to make the quantity ordered a quantity less than has already been delivered. The quantity delivered cannot be modified retrospectively."));
 		return false;
@@ -280,9 +280,11 @@ function check_item_data()
 function handle_update_item()
 {
 	if ($_POST['UpdateItem'] != '' && check_item_data()) {
-		$_SESSION['Items']->update_cart_item($_POST['LineNo'], $_POST['qty'],
-			$_POST['price'], ($_POST['Disc'] / 100));
+		$_SESSION['Items']->update_cart_item($_POST['LineNo'],
+		 input_num('qty'), input_num('price'), 
+		 input_num('Disc') / 100 );
 	}
+  copy_from_cart();
 }
 
 //--------------------------------------------------------------------------------
@@ -306,8 +308,8 @@ function handle_new_item()
 	if (!check_item_data()) {
 			return;
 	}
-	add_to_order($_SESSION['Items'], $_POST['stock_id'], $_POST['qty'],
-		$_POST['price'], $_POST['Disc'] / 100);
+	add_to_order($_SESSION['Items'], $_POST['stock_id'], input_num('qty'),
+		input_num('price'), input_num('Disc') / 100);
 
 	$_POST['StockID2'] = $_POST['stock_id']	= "";
 }
@@ -377,6 +379,10 @@ function create_cart($type, $trans_no)
 }
 
 //--------------------------------------------------------------------------------
+
+
+if (isset($_GET['Delete']) || isset($_GET['Edit']))
+	copy_from_cart(); // GET method need form restore
 
 if (isset($_POST['CancelOrder']))
 	handle_cancel_order();

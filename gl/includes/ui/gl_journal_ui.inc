@@ -52,6 +52,9 @@ function display_gl_items($title, &$order)
 	else
 		$th = array(_("Account Code"), _("Account Description"),
 			_("Debit"), _("Credit"), _("Memo"));
+
+	if (count($order->gl_items)) $th[] = '';
+
 	table_header($th);	
 
 	$k = 0;
@@ -121,10 +124,10 @@ function gl_edit_item_controls(&$order, $dim, $Index=null)
 			$_POST['dimension2_id'] = $item->dimension2_id;
 
 		if ((!isset($_POST['AmountDebit']) || ($_POST['AmountDebit']=="")) && $item->amount > 0)
-			$_POST['AmountDebit'] = $item->amount;
+			$_POST['AmountDebit'] = price_format($item->amount);
 
 		if ((!isset($_POST['AmountCredit']) || ($_POST['AmountCredit']=="")) && $item->amount <= 0)
-			$_POST['AmountCredit'] = abs($item->amount);
+			$_POST['AmountCredit'] = price_format(abs($item->amount));
 
 		if (!isset($_POST['description']) || ($_POST['description'] == ""))
 			$_POST['description'] = $item->description;
@@ -142,8 +145,8 @@ function gl_edit_item_controls(&$order, $dim, $Index=null)
 	}
 	else
 	{
-		$_POST['AmountDebit'] = 0;
-		$_POST['AmountCredit'] = 0;
+		$_POST['AmountDebit'] = '';  //price_format(0);
+		$_POST['AmountCredit'] = ''; //price_format(0);
 		$_POST['dimension_id'] = 0;
 		$_POST['dimension2_id'] = 0;
 		$_POST['LineMemo'] = "";
@@ -163,8 +166,8 @@ function gl_edit_item_controls(&$order, $dim, $Index=null)
 	if ($dim < 2)
 		hidden('dimension2_id', 0);
 
-	amount_cells(null, 'AmountDebit');
-	amount_cells(null, 'AmountCredit');
+	small_amount_cells(null, 'AmountDebit');
+	small_amount_cells(null, 'AmountCredit');
 	text_cells_ex(null, 'LineMemo', 35, 50);
 
 	if (isset($_GET['Edit'])) 

@@ -90,7 +90,7 @@ while ($del_row = db_fetch($result))
 
 }
 
-label_row(null, number_format2($delivery_total,user_price_dec()), "", "colspan=4 align=right");
+label_row(null, price_format($delivery_total), "", "colspan=4 align=right");
 
 end_table();
 echo "</td><td valign='top'>";
@@ -123,7 +123,7 @@ while ($inv_row = db_fetch($result))
 
 }
 
-label_row(null, number_format2($invoices_total,user_price_dec()), "", "colspan=4 align=right");
+label_row(null, price_format($invoices_total), "", "colspan=4 align=right");
 
 end_table();
 
@@ -155,7 +155,7 @@ while ($credits_row = db_fetch($result))
 
 }
 
-label_row(null, "<font color=red>" . number_format2(-$credits_total,user_price_dec()) . "</font>",
+label_row(null, "<font color=red>" . price_format(-$credits_total) . "</font>",
 	"", "colspan=4 align=right");
 
 
@@ -195,9 +195,9 @@ foreach ($_SESSION['Items']->line_items as $stock_item) {
 
 $items_total = $_SESSION['Items']->get_items_total();
 
-$display_total = number_format2($items_total + $_SESSION['Items']->freight_cost,user_price_dec());
+$display_total = price_format($items_total + $_SESSION['Items']->freight_cost);
 
-label_row(_("Shipping"), number_format2($_SESSION['Items']->freight_cost,user_price_dec()),
+label_row(_("Shipping"), price_format($_SESSION['Items']->freight_cost),
 	"align=right colspan=6", "nowrap align=right");
 label_row(_("Total Order Value"), $display_total, "align=right colspan=6",
 	"nowrap align=right");

@@ -73,6 +73,8 @@ function display_adjustment_items($title, &$order)
 	start_table("$table_style width=80%");
 	$th = array(_("Item Code"), _("Item Description"), _("Quantity"), 
 		_("Unit"), _("Unit Cost"), _("Total"));
+	if ( count($order->line_items)) $th[] = '';
+
 	table_header($th);
 	$total = 0;
 	$k = 0;  //row colour counter
@@ -124,9 +126,9 @@ function adjustment_edit_item_controls(&$order, $stock_id=null)
 		if (!isset($_POST['stock_id']))
 			$_POST['stock_id'] = $order->line_items[$stock_id]->stock_id;
 		if (!isset($_POST['qty']) OR ($_POST['qty']==""))
-			$_POST['qty'] = $order->line_items[$stock_id]->quantity;
+			$_POST['qty'] = qty_format($order->line_items[$stock_id]->quantity);
 		if (!isset($_POST['std_cost']) OR ($_POST['std_cost']==""))
-			$_POST['std_cost'] = $order->line_items[$stock_id]->standard_cost;
+			$_POST['std_cost'] = price_format($order->line_items[$stock_id]->standard_cost);
 
 		$_POST['units'] = $order->line_items[$stock_id]->units;
 
@@ -142,15 +144,15 @@ function adjustment_edit_item_controls(&$order, $stock_id=null)
 
     	$item_info = get_item_edit_info($_POST['stock_id']);
 
-   		$_POST['qty'] = 0;
-		$_POST['std_cost'] = $item_info["standard_cost"];
+   		$_POST['qty'] = qty_format(0);
+		$_POST['std_cost'] = price_format($item_info["standard_cost"]);
 		$_POST['units'] = $item_info["units"];
 	}
 
-	text_cells(null, 'qty', $_POST['qty'], 13, 15);
+	amount_cells(null, 'qty', $_POST['qty']);
 
 	label_cell($_POST['units']);
-	text_cells(null, 'std_cost', $_POST['std_cost'], 15, 14);
+	amount_cells(null, 'std_cost', $_POST['std_cost']);
 	label_cell("&nbsp;");
 
 	if (isset($_GET['Edit'])) 

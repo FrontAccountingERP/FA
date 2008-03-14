@@ -115,15 +115,9 @@ function can_process()
     	}
 	}
 
-	if (!is_numeric($_POST['quantity']))
+	if (!check_num('quantity', 0))
 	{
-		display_error( _("The quantity entered must be numeric."));
-		return false;
-	}
-
-	if ($_POST['quantity'] <= 0)
-	{
-		display_error( _("The quantity entered must be a positive number greater than zero."));
+		display_error( _("The quantity entered is invalid or less than zero."));
 		return false;
 	}
 
@@ -147,16 +141,10 @@ function can_process()
         }
 
 		if ($_POST['Costs'] == "")
-			$_POST['Costs'] = 0;
-    	if (!is_numeric($_POST['Costs']))
+			$_POST['Costs'] = price_format(0);
+    	if (!check_num('Costs', 0))
     	{
-    		display_error( _("The cost entered must be numeric."));
-    		return false;
-    	}
-
-    	if ($_POST['Costs'] < 0)
-    	{
-    		display_error( _("The cost entered cannot be negative."));
+    		display_error( _("The cost entered is invalid or less than zero."));
     		return false;
     	}
 
@@ -173,7 +161,7 @@ function can_process()
             		if (has_stock_holding($bom_item["ResourceType"]))
             		{
 
-                		$quantity = $bom_item["quantity"] * $_POST['quantity'];
+                		$quantity = $bom_item["quantity"] * input_num('quantity');
 
                         $qoh = get_qoh_on_date($bom_item["component"], $bom_item["loc_code"], $_POST['date_']);
                 		if (-$quantity + $qoh < 0)
@@ -189,7 +177,7 @@ function can_process()
         	{
         		// if unassembling, check item to unassemble
 				$qoh = get_qoh_on_date($_POST['stock_id'], $_POST['StockLocation'], $_POST['date_']);
-        		if (-$_POST['quantity'] + $qoh < 0)
+        		if (-input_num('quantity') + $qoh < 0)
         		{
         			display_error(_("The selected item cannot be unassembled because there is insufficient stock."));
 					return false;
@@ -213,7 +201,7 @@ function can_process()
     	{
     		$myrow = get_work_order($selected_id, true);
 
-    		if ($_POST['units_issued'] > $_POST['quantity'])
+    		if ($_POST['units_issued'] > input_num('quantity'))
     		{
     			display_error(_("The quantity cannot be changed to be less than the quantity already manufactured for this order."));
         		return false;
@@ -229,9 +217,9 @@ function can_process()
 if (isset($_POST['ADD_ITEM']) && can_process())
 {
 
-	$id = add_work_order($_POST['wo_ref'], $_POST['StockLocation'], $_POST['quantity'],
+	$id = add_work_order($_POST['wo_ref'], $_POST['StockLocation'], input_num('quantity'),
 		$_POST['stock_id'],  $_POST['type'], $_POST['date_'],
-		$_POST['RequDate'], $_POST['Costs'], $_POST['memo_']);
+		$_POST['RequDate'], input_num('Costs'), $_POST['memo_']);
 
 	meta_forward($_SERVER['PHP_SELF'], "AddedID=$id");
 }
@@ -241,7 +229,7 @@ if (isset($_POST['ADD_ITEM']) && can_process())
 if (isset($_POST['UPDATE_ITEM']) && can_process())
 {
 
-	update_work_order($selected_id, $_POST['StockLocation'], $_POST['quantity'],
+	update_work_order($selected_id, $_POST['StockLocation'], input_num('quantity'),
 		$_POST['stock_id'],  $_POST['date_'], $_POST['RequDate'], $_POST['memo_']);
 
 	meta_forward($_SERVER['PHP_SELF'], "UpdatedID=$selected_id");
@@ -310,7 +298,7 @@ if (isset($selected_id))
 	}
 
 	$_POST['wo_ref'] = $myrow["wo_ref"];
-	$_POST['quantity'] = $myrow["units_reqd"];
+	$_POST['quantity'] = qty_format($myrow["units_reqd"]);
 	$_POST['StockLocation'] = $myrow["loc_code"];
 	$_POST['released'] = $myrow["released"];
 	$_POST['closed'] = $myrow["closed"];
@@ -321,7 +309,7 @@ if (isset($selected_id))
 	$_POST['released_date'] = sql2date($myrow["released_date"]);
 	$_POST['memo_'] = "";
 	$_POST['units_issued'] = $myrow["units_issued"];
-	$_POST['Costs'] = $myrow["Costs"];
+	$_POST['Costs'] = price_format($myrow["Costs"]);
 
 	$_POST['memo_'] = get_comments_string(systypes::work_order(), $selected_id);
 
@@ -361,24 +349,24 @@ else
 }
 
 if (!isset($_POST['quantity']))
-	$_POST['quantity'] = 1;
+	$_POST['quantity'] = qty_format(1);
 
 if ($_POST['type'] == wo_types::advanced())
 {
-    text_row_ex(_("Quantity Required:"), 'quantity', 12);
+    amount_row(_("Quantity Required:"), 'quantity', 12);
     if ($_POST['released'])
-    	label_row(_("Quantity Manufactured:"), $_POST['units_issued']);
+    	label_row(_("Quantity Manufactured:"), qty_format($_POST['units_issued']));
     date_row(_("Date") . ":", 'date_');
 	date_row(_("Date Required By") . ":", 'RequDate', null, sys_prefs::default_wo_required_by());
 }
 else
 {
-    text_row_ex(_("Quantity:"), 'quantity', 12);
+    amount_row(_("Quantity:"), 'quantity', 12);
     date_row(_("Date") . ":", 'date_');
 	hidden('RequDate', '');
 
 	if (!isset($_POST['Costs']))
-		$_POST['Costs'] = 0;
+		$_POST['Costs'] = price_format(0);
 
 	amount_row(_("Total Additional Costs:"), 'Costs');
 }

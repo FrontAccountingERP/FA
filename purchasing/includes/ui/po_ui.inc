@@ -166,6 +166,8 @@ function display_po_items(&$order, $editable=true)
 
    	$th = array(_("Item Code"), _("Item Description"), _("Quantity"), _("Unit"),
    		_("Required Delivery Date"), _("Price"), _("Line Total"));
+	
+	if (count($order->line_items)) $th[] = '';
    	table_header($th);
 
 	$total = 0;
@@ -205,7 +207,7 @@ function display_po_items(&$order, $editable=true)
 	if (!isset($_GET['Edit']) && $editable)
 		po_item_controls($order);
 
-    $display_total = number_format2($total,user_price_dec());
+    $display_total = price_format($total);
     label_row(_("Total Excluding Shipping/Tax"), $display_total, "colspan=6 align=right",
     	"nowrap align=right");
 
@@ -276,9 +278,9 @@ function po_item_controls(&$order, $stock_id=null)
 		if (!isset($_POST['stock_id']))
 			$_POST['stock_id'] = $order->line_items[$_GET['Edit']]->stock_id;
 		if (!isset($_POST['qty']) || ($_POST['qty'] == ""))
-			$_POST['qty'] = $order->line_items[$_GET['Edit']]->quantity;
+			$_POST['qty'] = qty_format($order->line_items[$_GET['Edit']]->quantity);
 		if (!isset($_POST['price']) || ($_POST['price'] == ""))
-			$_POST['price'] = $order->line_items[$_GET['Edit']]->price;
+			$_POST['price'] = price_format($order->line_items[$_GET['Edit']]->price);
 		if (!isset($_POST['req_del_date']) || ($_POST['req_del_date'] == ""))
 			$_POST['req_del_date'] = $order->line_items[$_GET['Edit']]->req_del_date;
 
@@ -307,19 +309,19 @@ function po_item_controls(&$order, $stock_id=null)
     	$item_info = get_item_edit_info($_POST['stock_id']);
 		$_POST['units'] = $item_info["units"];
 
-   		$_POST['qty'] = 1;
-		$_POST['price'] = get_purchase_price ($order->supplier_id, $_POST['stock_id']);
+   		$_POST['qty'] = qty_format(1);
+		$_POST['price'] = price_format(get_purchase_price ($order->supplier_id, $_POST['stock_id']));
 		$_POST['req_del_date'] = add_days(Today(), 10);
 	}
 
-	text_cells(null, 'qty', null, 13, 15);
+	amount_cells(null, 'qty', null);
 
 	label_cell($_POST['units']);
 	date_cells(null, 'req_del_date', null, 0, 0, 0);
-	text_cells(null, 'price', null, 15, 14);
+	amount_cells(null, 'price', null);
 
 	//$line_total = $_POST['qty'] * $_POST['price'] * (1 - $_POST['Disc'] / 100);
-	$line_total = $_POST['qty'] * $_POST['price'];
+	$line_total = input_num('qty') * input_num('price');
 	amount_cell($line_total);
 
 	if (isset($_GET['Edit']))

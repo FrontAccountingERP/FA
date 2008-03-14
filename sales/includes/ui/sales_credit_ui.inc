@@ -45,9 +45,9 @@ function display_credit_header(&$order)
 	if (!isset($_POST['ref']))
 		$_POST['ref'] = references::get_next(11);
 	if ($_SESSION['Items']->trans_no==0)
-	    ref_row(_("Reference:"), 'ref');
+	    ref_row(_("Reference").':', 'ref');
 	else
-	    label_row(_("Reference"), $_POST['ref'], "class='tableheader2'");
+	    label_row(_("Reference").':', $_POST['ref'] );
 	
 
 
@@ -155,20 +155,21 @@ function display_credit_items($title, &$order)
 	if (!isset($_GET['Edit']))
 		credit_edit_item_controls($order);
 
-	$display_sub_total = number_format2($subtotal,user_price_dec());
+	$display_sub_total = price_format($subtotal);
 	label_row(_("Sub-total"), $display_sub_total, "colspan=6 align=right", "align=right");
 
 	if (!isset($_POST['ChargeFreightCost']) OR ($_POST['ChargeFreightCost'] == ""))
-		$_POST['ChargeFreightCost'] = 0;
+		$_POST['ChargeFreightCost'] = price_format(0);
 
-	text_row(_("Shipping"), 'ChargeFreightCost', $_POST['ChargeFreightCost'], 8, 8, "colspan=6 align=right");
+	amount_cells_ex(_("Shipping"), 'ChargeFreightCost', 8, 8, $_POST['ChargeFreightCost'], "colspan=6 align=right");
 
     $taxes = $order->get_taxes($_POST['ChargeFreightCost']);
 
 	$tax_total = display_edit_tax_items($taxes, 6, $_SESSION['Items']->tax_included);
 
-    $display_total = number_format2(($subtotal + $_POST['ChargeFreightCost'] + $tax_total), user_price_dec());
-    label_row(_("Credit Note Total"), $display_total, "colspan=6 align=right","align=right");
+    $display_total = price_format(($subtotal + $_POST['ChargeFreightCost'] + $tax_total));
+
+    label_row(_("Credit Note Total"), $display_total, "colspan=6 align=right","class='amount'");
 
     end_table();
 }
@@ -184,11 +185,11 @@ function credit_edit_item_controls(&$order, $line_no=-1)
 		if (!isset($_POST['stock_id']))
 			$_POST['stock_id'] = $order->line_items[$_GET['Edit']]->stock_id;
 		if (!isset($_POST['qty']) || ($_POST['qty']==""))
-			$_POST['qty'] = $order->line_items[$_GET['Edit']]->qty_dispatched;
+			$_POST['qty'] = qty_format($order->line_items[$_GET['Edit']]->qty_dispatched);
 		if (!isset($_POST['price']) || ($_POST['price']==""))
-			$_POST['price'] = $order->line_items[$_GET['Edit']]->price;
+			$_POST['price'] = price_format($order->line_items[$_GET['Edit']]->price);
 		if (!isset($_POST['Disc']) || ($_POST['Disc']==""))
-			$_POST['Disc'] = ($order->line_items[$_GET['Edit']]->discount_percent)*100;
+			$_POST['Disc'] = percent_format(($order->line_items[$_GET['Edit']]->discount_percent)*100);
 
 		$_POST['units'] = $order->line_items[$_GET['Edit']]->units;
 
@@ -210,25 +211,25 @@ function credit_edit_item_controls(&$order, $line_no=-1)
 		  text_cells(null, "StockID2", "", 12, 10, "", "", "onkeyup='recalcAccounts();' onKeyDown='if (event.keyCode==13) event.keyCode=9;' onblur='return setAccount(0, true);'");
 			stock_items_list_cells(null, 'stock_id', null, false, false, "onchange='return setAccount(1, true)'");
 		}
-    	$item_info = get_item_edit_info($_POST['stock_id']);
+    		$item_info = get_item_edit_info($_POST['stock_id']);
 
 		$_POST['units'] = $item_info["units"];
 
-   		$_POST['qty'] = 0;
+   		$_POST['qty'] = qty_format(0);
 		$_POST['price'] = get_price($_POST['stock_id'],
 		     $order->customer_currency, $order->sales_type);
 		// default to the customer's discount %
-		$_POST['Disc'] = $order->default_discount * 100;
+		$_POST['Disc'] = percent_format($order->default_discount * 100);
 	}
 
 
-	text_cells(null, 'qty', $_POST['qty'], 13, 15);
+	amount_cells(null, 'qty', $_POST['qty']);
 //	if ($order->trans_no!=0) {
 //		amount_cell($line_no==-1 ? 0 :$order->line_items[$line_no]->qty_done);
 //	}
 	label_cell($_POST['units']);
-	text_cells(null, 'price',  null, 13, 15);
-	text_cells(null, 'Disc', $_POST['Disc'], 7, 5);
+	amount_cells(null, 'price',  null);
+	small_amount_cells(null, 'Disc', percent_format(0));
 
 	amount_cell($_POST['qty'] * $_POST['price'] * (1 - $_POST['Disc']/100));
 

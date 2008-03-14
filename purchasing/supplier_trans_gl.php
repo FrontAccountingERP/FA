@@ -54,7 +54,7 @@ if (isset($_POST['AddGLCodeToTrans'])){
 	{
 		$myrow = db_fetch_row($result);
 		$gl_act_name = $myrow[1];
-		if (!is_numeric($_POST['amount']))
+		if (!check_num('amount'))
 		{
 			display_error(_("The amount entered is not numeric. This line cannot be added to the transaction."));
 			$input_error = true;
@@ -64,7 +64,8 @@ if (isset($_POST['AddGLCodeToTrans'])){
 	if ($input_error == false)
 	{
 		$_SESSION['supp_trans']->add_gl_codes_to_trans($_POST['gl_code'], $gl_act_name,
-			$_POST['dimension_id'], $_POST['dimension2_id'], $_POST['amount'], $_POST['memo_']);
+			$_POST['dimension_id'], $_POST['dimension2_id'], 
+			input_num('amount'), $_POST['memo_']);
 		clear_fields();
 	}
 }

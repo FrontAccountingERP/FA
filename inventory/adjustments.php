@@ -136,19 +136,13 @@ if (isset($_POST['Process']) && can_process()){
 
 function check_item_data()
 {
-	if (!is_numeric($_POST['qty']))
+	if (!check_num('qty',0))
 	{
-		display_error(_("The quantity entered is not a valid number."));
+		display_error(_("The quantity entered is negative or invalid."));
 		return false;
 	}
 
-	if ($_POST['qty'] <= 0)
-	{
-		display_error(_("The quantity entered must be greater than zero."));
-		return false;
-	}
-
-	if (!is_numeric($_POST['std_cost']) || $_POST['std_cost'] < 0)
+	if (!check_num('std_cost', 0))
 	{
 		display_error(_("The entered standard cost is negative or invalid."));
 		return false;
@@ -163,7 +157,8 @@ function handle_update_item()
 {
     if($_POST['UpdateItem'] != "" && check_item_data())
     {
-    	$_SESSION['adj_items']->update_cart_item($_POST['stock_id'], $_POST['qty'], $_POST['std_cost']);
+    	$_SESSION['adj_items']->update_cart_item($_POST['stock_id'], 
+		  input_num('qty'), input_num('std_cost'));
     }
 }
 
@@ -181,7 +176,8 @@ function handle_new_item()
 	if (!check_item_data())
 		return;
 
-	add_to_order($_SESSION['adj_items'], $_POST['stock_id'], $_POST['qty'], $_POST['std_cost']);
+	add_to_order($_SESSION['adj_items'], $_POST['stock_id'], 
+	  input_num('qty'), input_num('std_cost'));
 }
 
 //-----------------------------------------------------------------------------------------------

@@ -52,18 +52,21 @@ while ($myrow = db_fetch($result))
 
 	alt_table_row_color($k);
 
-	if (isset($_POST['UpdateData']) && is_numeric($_POST[$myrow["loc_code"]]))
+	if (isset($_POST['UpdateData']) && check_num($myrow["loc_code"]))
 	{
 
-		$myrow["reorder_level"] = $_POST[$myrow["loc_code"]];
-		set_reorder_level($_POST['stock_id'], $myrow["loc_code"], $_POST[$myrow["loc_code"]]);
+		$myrow["reorder_level"] = input_num($myrow["loc_code"]);
+		set_reorder_level($_POST['stock_id'], $myrow["loc_code"], input_num($myrow["loc_code"]));
 	}
 
 	$qoh = get_qoh_on_date($_POST['stock_id'], $myrow["loc_code"]);
-
+	
 	label_cell($myrow["location_name"]);
+
+	$_POST[$myrow["loc_code"]] = qty_format($myrow["reorder_level"]);
+
 	label_cell(number_format2($qoh,user_qty_dec()), "nowrap align='right'");
-	text_cells(null, $myrow["loc_code"], $myrow["reorder_level"], 10, 10);
+	amount_cells(null, $myrow["loc_code"]);
 	end_row();
 	$j++;
 	If ($j == 12)

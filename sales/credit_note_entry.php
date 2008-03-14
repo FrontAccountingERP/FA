@@ -61,7 +61,7 @@ function copy_to_cn()
 {
 	$_SESSION['Items']->Comments = $_POST['CreditText'];
 	$_SESSION['Items']->document_date = $_POST['OrderDate'];
-	$_SESSION['Items']->freight_cost = $_POST['ChargeFreightCost'];
+	$_SESSION['Items']->freight_cost = input_num('ChargeFreightCost');
 	$_SESSION['Items']->Location = $_POST["Location"];
 	$_SESSION['Items']->sales_type = $_POST['sales_type_id'];
 	$_SESSION['Items']->reference = $_POST['ref'];
@@ -74,7 +74,7 @@ function copy_from_cn()
 {
 	$_POST['CreditText'] = $_SESSION['Items']->Comments;
 	$_POST['OrderDate'] = $_SESSION['Items']->document_date;
-	$_POST['ChargeFreightCost'] = $_SESSION['Items']->freight_cost;
+	$_POST['ChargeFreightCost'] = price_format($_SESSION['Items']->freight_cost);
 	$_POST['Location'] = $_SESSION['Items']->Location;
 	$_POST['sales_type_id'] = $_SESSION['Items']->sales_type;
 	$_POST['ref'] = $_SESSION['Items']->reference;
@@ -97,17 +97,18 @@ function can_process()
 
 	$input_error = 0;
 
-	if ($_SESSION['Items']->count_items() == 0
-		&& (!isset($_POST['ChargeFreightCost']) || $_POST['ChargeFreightCost'] <= 0))
+	if ($_SESSION['Items']->count_items() == 0 && (!check_num('ChargeFreightCost',0)))
 		return false;
-
-	if (!references::is_valid($_POST['ref'])) {
+	if($_SESSION['Items']->trans_no == 0) {
+	    if (!references::is_valid($_POST['ref'])) {
 		display_error( _("You must enter a reference."));
 		$input_error = 1;
-	} elseif (!is_new_reference($_POST['ref'], 11))	{
+	    } elseif (!is_new_reference($_POST['ref'], 11))	{
 		display_error( _("The entered reference is already in use."));
 		$input_error = 1;
-	} elseif (!is_date($_POST['OrderDate'])) {
+	    } 
+	}
+	if (!is_date($_POST['OrderDate'])) {
 		display_error(_("The entered date for the credit note is invalid."));
 		$input_error = 1;
 	} elseif (!is_date_in_fiscalyear($_POST['OrderDate'])) {
@@ -139,15 +140,15 @@ if (isset($_POST['ProcessCredit']) && can_process()) {
 
 function check_item_data()
 {
-	if ($_POST['qty'] <= 0) {
+	if (!check_num('qty',0)) {
 		display_error(_("The quantity must be greater than zero."));
 		return false;
 	}
-	if (!is_numeric($_POST['price']) || $_POST['price'] < 0) {
+	if (!check_num('price',0)) {
 		display_error(_("The entered price is negative or invalid."));
 		return false;
 	}
-	if (!is_numeric($_POST['Disc']) || $_POST['Disc'] > 100 || $_POST['Disc'] < 0) {
+	if (!check_num('Disc', 0, 100)) {
 		display_error(_("The entered discount percent is negative, greater than 100 or invalid."));
 		return false;
 	}
@@ -159,8 +160,8 @@ function check_item_data()
 function handle_update_item()
 {
 	if ($_POST['UpdateItem'] != "" && check_item_data()) {
-		$_SESSION['Items']->update_cart_item($_POST['line_no'], $_POST['qty'],
-			$_POST['price'], ($_POST['Disc'] / 100));
+		$_SESSION['Items']->update_cart_item($_POST['line_no'], input_num('qty'),
+			input_num('price'), input_num('Disc') / 100);
 	}
 }
 
@@ -179,8 +180,8 @@ function handle_new_item()
 	if (!check_item_data())
 		return;
 
-	add_to_order($_SESSION['Items'], $_POST['stock_id'], $_POST['qty'],
-		$_POST['price'], $_POST['Disc'] / 100);
+	add_to_order($_SESSION['Items'], $_POST['stock_id'], input_num('qty'),
+		input_num('price'), input_num('Disc') / 100);
 }
 //-----------------------------------------------------------------------------
 if (isset($_GET['Delete']) || isset($_GET['Edit']))

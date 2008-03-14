@@ -33,19 +33,13 @@ function check_data()
 {
 	global $check_price_charged_vs_order_price,
 		$check_qty_charged_vs_del_qty;
-	if (!is_numeric($_POST['this_quantity_inv'])) 
+	if (!check_num('this_quantity_inv', 0) || input_num('this_quantity_inv')==0) 
 	{
-		display_error( _("The quantity to invoice must be numeric."));
+		display_error( _("The quantity to invoice must be numeric and greater than zero."));
 		return false;
 	}
 
-	if ($_POST['this_quantity_inv'] <= 0) 
-	{
-		display_error( _("The quantity to invoice must be greater than zero."));
-		return false;
-	}
-
-	if (!is_numeric($_POST['ChgPrice']))
+	if (!check_num('ChgPrice'))
 	{
 		display_error( _("The price is not numeric."));
 		return false;
@@ -53,7 +47,7 @@ function check_data()
 
 	if ($check_price_charged_vs_order_price == True) 
 	{
-		if ($_POST['ChgPrice']/$_POST['order_price'] > 
+		if (input_num('ChgPrice')/$_POST['order_price'] > 
 			(1 + (sys_prefs::over_charge_allowance() / 100)))
 		{
 			display_error(_("The price being invoiced is more than the purchase order price by more than the allowed over-charge percentage. The system is set up to prohibit this. See the system administrator to modify the set up parameters if necessary.") .
@@ -64,7 +58,7 @@ function check_data()
 
 	if ($check_qty_charged_vs_del_qty == True) 
 	{
-		if ($_POST['this_quantity_inv'] / ($_POST['qty_recd'] - $_POST['prev_quantity_inv']) > 
+		if (input_num('this_quantity_inv') / ($_POST['qty_recd'] - $_POST['prev_quantity_inv']) > 
 			(1+ (sys_prefs::over_charge_allowance() / 100)))
 		{
 			display_error( _("The quantity being invoiced is more than the outstanding quantity by more than the allowed over-charge percentage. The system is set up to prohibit this. See the system administrator to modify the set up parameters if necessary.")
@@ -83,7 +77,7 @@ if (isset($_POST['AddGRNToTrans']))
 
 	if (check_data())
 	{
-    	if ($_POST['this_quantity_inv'] >= ($_POST['qty_recd'] - $_POST['prev_quantity_inv']))
+    	if (input_num('this_quantity_inv') >= ($_POST['qty_recd'] - $_POST['prev_quantity_inv']))
     	{
     		$complete = True;
     	} 
@@ -92,15 +86,10 @@ if (isset($_POST['AddGRNToTrans']))
     		$complete = False;
     	}
 
-		//$_SESSION['supp_trans']->add_grn_to_trans($_POST['GRNNumber'], $_POST['po_detail_item'],
-		//	$_POST['item_code'], $_POST['item_description'], $_POST['qty_recd'],
-		//	$_POST['prev_quantity_inv'], $_POST['this_quantity_inv'],
-		//	$_POST['order_price'], $_POST['ChgPrice'], $complete,
-		//	$_POST['std_cost_unit'], $_POST['gl_code']);
 		$_SESSION['supp_trans']->add_grn_to_trans($_POST['GRNNumber'], $_POST['po_detail_item'],
 			$_POST['item_code'], $_POST['item_description'], $_POST['qty_recd'],
-			$_POST['prev_quantity_inv'], $_POST['this_quantity_inv'],
-			$_POST['order_price'], $_POST['ChgPrice'], $complete,
+			$_POST['prev_quantity_inv'], input_num('this_quantity_inv'),
+			$_POST['order_price'], input_num('ChgPrice'), $complete,
 			$_POST['std_cost_unit'], "");
 	}
 }
@@ -213,9 +202,9 @@ if (isset($_POST['grn_item_id']) && $_POST['grn_item_id'] != "")
 	label_cell($myrow['item_code']);
 	label_cell($myrow['description']);
 	qty_cell($myrow['QtyOstdg']);
-	text_cells(null, 'this_quantity_inv', $myrow['QtyOstdg'], 13, 15);
+	amount_cells(null, 'this_quantity_inv', qty_format($myrow['QtyOstdg']));
 	amount_cell($myrow['unit_price']);
-	text_cells(null, 'ChgPrice', $myrow['unit_price'], 13, 15);
+	small_amount_cells(null, 'ChgPrice', price_format($myrow['unit_price']));
 	end_row();
 	end_table(1);;
 

@@ -25,14 +25,9 @@ function can_process()
 		display_error(_("The tax type name cannot be empty."));
 		return false;
 	}
-	elseif (!is_numeric($_POST['rate']))
+	elseif (!check_num('rate', 0))
 	{
-		display_error( _("The default tax rate must be numeric."));
-		return false;
-	}
-	elseif ($_POST['rate'] < 0)
-	{
-		display_error( _("The default tax rate cannot be less than zero."));
+		display_error( _("The default tax rate must be numeric and not less than zero."));
 		return false;
 	}
 
@@ -45,7 +40,7 @@ if (isset($_POST['ADD_ITEM']) && can_process())
 {
 
 	add_tax_type($_POST['name'], $_POST['sales_gl_code'],
-		$_POST['purchasing_gl_code'], $_POST['rate']);
+		$_POST['purchasing_gl_code'], imput_num('rate'));
 	meta_forward($_SERVER['PHP_SELF']);
 }
 
@@ -55,7 +50,7 @@ if (isset($_POST['UPDATE_ITEM']) && can_process())
 {
 
 	update_tax_type($selected_id, $_POST['name'],
-    	$_POST['sales_gl_code'], $_POST['purchasing_gl_code'], $_POST['rate']);
+    	$_POST['sales_gl_code'], $_POST['purchasing_gl_code'], input_num('rate'));
 	meta_forward($_SERVER['PHP_SELF']);
 }
 
@@ -105,7 +100,7 @@ while ($myrow = db_fetch($result))
 	alt_table_row_color($k);
 
 	label_cell($myrow["name"]);
-	label_cell(number_format2($myrow["rate"],user_percent_dec()), "align=right");
+	label_cell(percent_format($myrow["rate"]), "align=right");
 	label_cell($myrow["sales_gl_code"] . "&nbsp;" . $myrow["SalesAccountName"]);
 	label_cell($myrow["purchasing_gl_code"] . "&nbsp;" . $myrow["PurchasingAccountName"]);
 
@@ -134,14 +129,14 @@ if (isset($selected_id))
 	$myrow = get_tax_type($selected_id);
 
 	$_POST['name']  = $myrow["name"];
-	$_POST['rate']  = $myrow["rate"];
+	$_POST['rate']  = percent_format($myrow["rate"]);
 	$_POST['sales_gl_code']  = $myrow["sales_gl_code"];
 	$_POST['purchasing_gl_code']  = $myrow["purchasing_gl_code"];
 
 	hidden('selected_id', $selected_id);
 }
 text_row_ex(_("Description:"), 'name', 50);
-text_row_ex(_("Default Rate:"), 'rate', 10, 10, "", "%");
+small_amount_row(_("Default Rate:"), 'rate', '', "", "%");
 
 gl_all_accounts_list_row(_("Sales GL Account:"), 'sales_gl_code', null);
 gl_all_accounts_list_row(_("Purchasing GL Account:"), 'purchasing_gl_code', null);

@@ -56,7 +56,7 @@ if (isset($_POST['stock_id']))
         	label_cell("<a href='$select_item'>" . $myrow["parent"]. " - " . $myrow["description"]. "</a>");
         	label_cell($myrow["WorkCentreName"]);
         	label_cell($myrow["location_name"]);
-        	label_cell($myrow["quantity"]);
+        	label_cell(qty_format($myrow["quantity"]));
 			end_row();
 			
         	$j++;

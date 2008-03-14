@@ -136,50 +136,22 @@ function check_item_data()
 			return false;
 	}
 
-	if (strlen($_POST['AmountDebit']) && strlen($_POST['AmountCredit'])) 
-	{
-		display_error(_("You cannot enter both a debit amount and a credit amount."));
-		return false;
-	}
-
-	if ((!isset($_POST['AmountDebit']) && !isset($_POST['AmountCredit']))
-			|| ($_POST['AmountDebit'] == "" && $_POST['AmountCredit'] == "")) 
+	if (!(!strlen($_POST['AmountDebit']) ^ !strlen($_POST['AmountCredit'])))
 	{
 		display_error(_("You must enter either a debit amount or a credit amount."));
-		return false;
-	}
+    		return false;
+  	}
 
-	if (isset($_POST['AmountDebit']) && $_POST['AmountDebit'] != "") 
+	if (strlen($_POST['AmountDebit']) && !check_num('AmountDebit', 0)) 
 	{
-
-    	if (!is_numeric($_POST['AmountDebit']))
-    	{
-    		display_error(_("The debit amount entered is not a valid number."));
+    		display_error(_("The debit amount entered is not a valid number or is less than zero."));
     		return false;
-    	}
-
-    	if ($_POST['AmountDebit'] <= 0)
-    	{
-    		display_error(_("The debit amount entered cannot be zero or negative."));
-    		return false;
-    	}
-	}
-
-	if (isset($_POST['AmountCredit']) && $_POST['AmountCredit'] != "") 
+  	} elseif (strlen($_POST['AmountCredit']) && !check_num('AmountCredit', 0))
 	{
-
-    	if (!is_numeric($_POST['AmountCredit']))
-    	{
-    		display_error(_("The credit amount entered is not a valid number."));
+    		display_error(_("The credit amount entered is not a valid number or is less than zero."));
     		return false;
-    	}
+  	}
 
-    	if ($_POST['AmountCredit'] <= 0)
-    	{
-    		display_error(_("The credit amount entered cannot be zero or negative."));
-    		return false;
-    	}
-	}
 
 	if ($_SESSION["wa_current_user"]->access != 2 && is_bank_account($_POST['code_id'])) 
 	{
@@ -196,10 +168,10 @@ function handle_update_item()
 {
     if($_POST['UpdateItem'] != "" && check_item_data())
     {
-    	if ($_POST['AmountDebit'] > 0)
-    		$amount = $_POST['AmountDebit'];
+    	if (input_num('AmountDebit') > 0)
+    		$amount = input_num('AmountDebit');
     	else
-    		$amount = -$_POST['AmountCredit'];
+    		$amount = -input_num('AmountCredit');
 
     	$_SESSION['journal_items']->update_gl_item($_POST['Index'], $_POST['dimension_id'],
     		$_POST['dimension2_id'], $amount, $_POST['LineMemo']);
@@ -220,10 +192,10 @@ function handle_new_item()
 	if (!check_item_data())
 		return;
 
-	if ($_POST['AmountDebit'] > 0)
-		$amount = $_POST['AmountDebit'];
+	if (input_num('AmountDebit') > 0)
+		$amount = input_num('AmountDebit');
 	else
-		$amount = -$_POST['AmountCredit'];
+		$amount = -input_num('AmountCredit');
 	
 	$_SESSION['journal_items']->add_gl_item($_POST['code_id'], $_POST['dimension_id'],
 		$_POST['dimension2_id'], $amount, $_POST['LineMemo']);
@@ -268,17 +240,14 @@ echo "</td>";
 end_row();
 end_table(1);
 
-if (!isset($_POST['Process']))
+if ($_SESSION['journal_items']->count_gl_items() >= 1 &&
+	abs($_SESSION['journal_items']->gl_items_total()) < 0.0001)
 {
-	if ($_SESSION['journal_items']->count_gl_items() >= 1 &&
-		abs($_SESSION['journal_items']->gl_items_total()) < 0.0001)
-	{
-	    submit_center('Process', _("Process Journal Entry"));
-	} 
-	else 
-	{
-		display_note(_("The journal must balance (debits equal to credits) before it can be processed."), 0, 1);
-	}
+    submit_center('Process', _("Process Journal Entry"));
+} 
+else 
+{
+	display_note(_("The journal must balance (debits equal to credits) before it can be processed."), 0, 1);
 }
 
 end_form();

@@ -116,9 +116,13 @@ if (isset($_GET['OrderNumber']) && $_GET['OrderNumber'] > 0) {
 	exit;
 
 } elseif (!check_quantities()) {
-	display_error(_("Selected quantity cannot be less then quantity invoiced nor more then quantity
+	display_error(_("Selected quantity cannot be less than quantity invoiced nor more than quantity
 		not dispatched on sales order."));
-}
+
+} elseif(!check_num('ChargeFreightCost', 0))
+	display_error(_("Freight cost cannot be less than zero"));
+
+
 //-----------------------------------------------------------------------------
 
 function check_data()
@@ -150,21 +154,21 @@ function check_data()
 		}
 	}
 	if ($_POST['ChargeFreightCost'] == "") {
-		$_POST['ChargeFreightCost'] = 0;
+		$_POST['ChargeFreightCost'] = price_format(0);
 	}
 
-	if (!is_numeric($_POST['ChargeFreightCost']) || $_POST['ChargeFreightCost'] < 0) {
+	if (!check_num('ChargeFreightCost',0)) {
 		display_error(_("The entered shipping value is not numeric."));
 		return false;
 	}
 
-	if ($_SESSION['Items']->has_items_dispatch() == 0 && $_POST['ChargeFreightCost'] == 0) {
+	if ($_SESSION['Items']->has_items_dispatch() == 0 && input_num('ChargeFreightCost') == 0) {
 		display_error(_("There are no item quantities on this delivery note."));
 		return false;
 	}
 
 	if (!check_quantities()) {
-		display_error(_("Selected quantity cannot be less then quantity invoiced nor more then quantity
+		display_error(_("Selected quantity cannot be less than quantity invoiced nor more than quantity
 		not dispatched on sales order."));
 		return false;
 	}
@@ -176,7 +180,7 @@ function copy_to_cart()
 {
 	$cart = &$_SESSION['Items'];
 	$cart->ship_via = $_POST['ship_via'];
-	$cart->freight_cost = $_POST['ChargeFreightCost'];
+	$cart->freight_cost = input_num('ChargeFreightCost');
 	$cart->document_date =  $_POST['DispatchDate'];
 	$cart->due_date =  $_POST['due_date'];
 	$cart->Location = $_POST['Location'];
@@ -191,7 +195,7 @@ function copy_from_cart()
 {
 	$cart = &$_SESSION['Items'];
 	$_POST['ship_via'] = $cart->ship_via;
-	$_POST['ChargeFreightCost'] = $cart->freight_cost;
+	$_POST['ChargeFreightCost'] = price_format($cart->freight_cost);
 	$_POST['DispatchDate']= $cart->document_date;
 	$_POST['due_date'] = $cart->due_date;
 	$_POST['Location']= $cart->Location;
@@ -205,11 +209,9 @@ function check_quantities()
 	// Update cart delivery quantities/descriptions
 	foreach ($_SESSION['Items']->line_items as $line=>$itm) {
 		if (isset($_POST['Line'.$line])) {
-		$line_qty = $_POST['Line'.$line];
-			if (is_numeric($line_qty) && ($_POST['Line'.$line] <= $itm->quantity) &&
-				($_POST['Line'.$line] >= $itm->qty_done)) {
-
-				$_SESSION['Items']->line_items[$line]->qty_dispatched = $line_qty;
+			if (!check_num('Line'.$line, $itm->qty_done, $itm->quantity) == 0) {
+				$_SESSION['Items']->line_items[$line]->qty_dispatched = 
+				  input_num('Line'.$line);
 			} else {
 				$ok = 0;
 			}
@@ -223,8 +225,9 @@ function check_quantities()
 			}
 		}
 	}
-	$_SESSION['Items']->freight_cost = $_POST['ChargeFreightCost'];
-
+// ...
+//	else
+//	  $_SESSION['Items']->freight_cost = input_num('ChargeFreightCost');
 	return $ok;
 }
 //------------------------------------------------------------------------------
@@ -375,9 +378,9 @@ foreach ($_SESSION['Items']->line_items as $line=>$ln_itm) {
 	label_cell($ln_itm->units);
 	qty_cell($ln_itm->qty_done);
 
-	text_cells(null, 'Line'.$line, $ln_itm->qty_dispatched, 10, 10);
+	small_amount_cells(null, 'Line'.$line, qty_format($ln_itm->qty_dispatched));
 
-	$display_discount_percent = number_format2($ln_itm->discount_percent*100,user_percent_dec()) . "%";
+	$display_discount_percent = percent_format($ln_itm->discount_percent*100) . "%";
 
 	$line_total = ($ln_itm->qty_dispatched * $ln_itm->price * (1 - $ln_itm->discount_percent));
 
@@ -389,10 +392,10 @@ foreach ($_SESSION['Items']->line_items as $line=>$ln_itm) {
 	end_row();
 }
 
-$_POST['ChargeFreightCost'] = $_SESSION['Items']->freight_cost;
+$_POST['ChargeFreightCost'] = price_format($_SESSION['Items']->freight_cost);
 
-if (!is_numeric($_POST['ChargeFreightCost'])) {
-		$_POST['ChargeFreightCost'] = 0;
+if (!check_num('ChargeFreightCost')) {
+		$_POST['ChargeFreightCost'] = price_format(0);
 }
 
 start_row();
@@ -401,14 +404,14 @@ small_amount_cells(_("Shipping Cost"), 'ChargeFreightCost', $_SESSION['Items']->
 
 $inv_items_total = $_SESSION['Items']->get_items_total_dispatch();
 
-$display_sub_total = number_format2($inv_items_total + $_POST['ChargeFreightCost'],user_price_dec());
+$display_sub_total = price_format($inv_items_total + input_num('ChargeFreightCost'));
 
 label_row(_("Sub-total"), $display_sub_total, "colspan=9 align=right","align=right");
 
-$taxes = $_SESSION['Items']->get_taxes($_POST['ChargeFreightCost']);
+$taxes = $_SESSION['Items']->get_taxes(input_num('ChargeFreightCost'));
 $tax_total = display_edit_tax_items($taxes, 9, $_SESSION['Items']->tax_included);
 
-$display_total = number_format2(($inv_items_total + $_POST['ChargeFreightCost'] + $tax_total), user_price_dec());
+$display_total = price_format(($inv_items_total + input_num('ChargeFreightCost') + $tax_total));
 
 label_row(_("Amount Total"), $display_total, "colspan=9 align=right","align=right");
 

@@ -28,7 +28,7 @@ if (isset($_GET['AddedID']))
 	//echo "<BR>";
 	//echo get_gl_view_str(25, $grn, _("View the GL Journal Entries for this Delivery"));
 
-	echo "<br>";
+//	echo "<br>";
 	hyperlink_no_params("$path_to_root/purchasing/inquiry/po_search.php", _("Select a different purchase order for receiving items against"));
 
 	display_footer_exit();
@@ -85,10 +85,10 @@ function display_po_receive_items()
 			qty_cell($qty_outstanding);
 
 			if ($qty_outstanding > 0)
-				text_cells(null, $ln_itm->line_no, $ln_itm->receive_qty, 10, 10, "align=right");
+				amount_cells(null, $ln_itm->line_no, qty_format($ln_itm->receive_qty), "align=right");
 			else
-				text_cells(null, $ln_itm->line_no, $ln_itm->receive_qty, 10, 10, "align=right", 
-					"", "disabled");
+				amount_cells(null, $ln_itm->line_no, qty_format($ln_itm->receive_qty), "align=right", 
+					"disabled");
 
 			amount_cell($ln_itm->price);
 			amount_cell($line_total);
@@ -259,13 +259,13 @@ if (isset($_POST['Update']) || isset($_POST['ProcessGoodsReceived']))
 	{
 
 		$_POST[$line->line_no] = max($_POST[$line->line_no], 0);
-		if (!is_numeric($_POST[$line->line_no]))
-			$_POST[$line->line_no] = 0;
+		if (!check_num($line->line_no))
+			$_POST[$line->line_no] = qty_format(0);
 
 		if (!isset($_POST['DefaultReceivedDate']) || $_POST['DefaultReceivedDate'] == "")
 			$_POST['DefaultReceivedDate'] = Today();
 
-		$_SESSION['PO']->line_items[$line->line_no]->receive_qty = $_POST[$line->line_no];
+		$_SESSION['PO']->line_items[$line->line_no]->receive_qty = input_num($line->line_no);
 
 		if (isset($_POST[$line->stock_id . "Desc"]) && strlen($_POST[$line->stock_id . "Desc"]) > 0) 
 		{

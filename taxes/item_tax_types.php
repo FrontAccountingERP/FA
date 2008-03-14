@@ -184,7 +184,7 @@ if (!isset($_POST['exempt']) || $_POST['exempt'] == 0)
     	alt_table_row_color($k);	
     
     	label_cell($myrow["name"]);
-	percent_cell($myrow["rate"]);
+	label_cell(percent_format($myrow["rate"])." %", "nowrap align=right");
     	check_cells("", 'ExemptTax' . $myrow["id"], null);
     	end_row();
     }

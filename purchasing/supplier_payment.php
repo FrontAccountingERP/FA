@@ -41,16 +41,11 @@ if (isset($_GET['AddedID']))
 
     display_note(get_gl_view_str(22, $payment_id, _("View the GL Journal Entries for this Payment")));
 
-	echo "<center><br>";
     hyperlink_params($path_to_root . "/purchasing/allocations/supplier_allocate.php", _("Allocate this Payment"), "trans_no=$payment_id&trans_type=22");
 
-   	echo "<br><br>";
 	hyperlink_params($_SERVER['PHP_SELF'], _("Enter another supplier payment"), "supplier_id=" . $_POST['supplier_id']);
 
-   	echo "</center><br><br>";
-
-	end_page();
- 	exit;
+	display_footer_exit();
 }
 
 //----------------------------------------------------------------------------------------
@@ -122,10 +117,10 @@ function check_inputs()
 {
 	if ($_POST['amount'] == "") 
 	{
-		$_POST['amount'] = 0;
+		$_POST['amount'] = price_format(0);
 	}
 
-	if (!is_numeric($_POST['amount']) || $_POST['amount'] < 0) 
+	if (!check_num('amount', 0))
 	{
 		display_error(_("The entered amount is invalid or less than zero."));
 		return false;
@@ -136,13 +131,13 @@ function check_inputs()
 		$_POST['discount'] = 0;
 	}
 
-	if (!is_numeric($_POST['discount']) OR $_POST['discount'] < 0) 
+	if (!check_num('discount', 0))
 	{
 		display_error(_("The entered discount is invalid or less than zero."));
 		return false;
 	}
 
-	if ($_POST['amount'] - $_POST['discount'] <= 0) 
+	if (input_num('amount') - input_num('discount') <= 0) 
 	{
 		display_error(_("The total of the amount and the discount negative. Please enter positive values."));
 		return false;
@@ -179,7 +174,7 @@ function handle_add_payment()
 {
 	$payment_id = add_supp_payment($_POST['supplier_id'], $_POST['DatePaid'],
 		$_POST['PaymentType'], $_POST['bank_account'],
-		$_POST['amount'], $_POST['discount'], $_POST['ref'], $_POST['memo_']);
+		input_num('amount'), input_num('discount'), $_POST['ref'], $_POST['memo_']);
 
 	//unset($_POST['supplier_id']);
    	unset($_POST['bank_account']);
