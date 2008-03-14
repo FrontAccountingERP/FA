@@ -1,5 +1,4 @@
 <?php
-
 function db_has_customers()
 {
 	return check_empty_result("SELECT COUNT(*) FROM ".TB_PREF."debtors_master");
@@ -428,5 +427,38 @@ function check_empty_result($sql)
 	$myrow = db_fetch_row($result);
 	return $myrow[0] > 0;	 	
 }
+//
+//	Integer input check 
+//	Return 1 if number has proper form and is within <min, max> range
+//
+function check_int($postname, $min=null, $max=null) {
+	if(!isset($_POST[$postname]))
+	  return 0;
+    $num = input_num($postname);
+    if(!is_int($num)) 
+	  return 0;
+    if (isset($min) && ($num<$min)) 
+	  return 0;
+    if (isset($max) && ($num>$max)) 
+	  return 0;
+    return 1;
+}
+//
+//	Numeric input check.
+//	Return 1 if number has proper form and is within <min, max> range
+//
+function check_num($postname, $min=null, $max=null) {
+	if(!isset($_POST[$postname]))
+	  return 0;
+    $num = input_num($postname);
+    if ($num === false) 
+	  return 0;
+    if (isset($min) && ($num<$min)) 
+	  return 0;
+    if (isset($max) && ($num>$max)) 
+	  return 0;
+    return 1;
+}
+
 
 ?>
