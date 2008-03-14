@@ -113,6 +113,45 @@ function number_format2($number, $decimals=0)
 	return number_format($number, $decimals, $dsep,	$tsep);
 }
 
+function price_format($number) {
+    return number_format2($number, 
+	$_SESSION["wa_current_user"]->prefs->price_dec());
+}
+
+function qty_format($number) {
+    return number_format2($number, 
+	$_SESSION["wa_current_user"]->prefs->qty_dec());
+}
+
+function exrate_format($number) {
+    return number_format2($number, 
+	$_SESSION["wa_current_user"]->prefs->exrate_dec());
+}
+
+function percent_format($number) {
+    return number_format2($number, 
+	$_SESSION["wa_current_user"]->prefs->percent_dec());
+}
+
+function user_numeric($input) {
+    global $decseps, $thoseps;
+
+    $num = trim($input);
+    $sep = $thoseps[user_tho_sep()];
+    if($sep!='') $num = str_replace( $sep, '', $num);
+	str_replace($sep, '', $num);
+    $sep = $decseps[user_dec_sep()];
+    if($sep!='.') $num = str_replace( $sep, '.', $num);
+    
+    if (!is_numeric($num))
+	  return false;
+    $num = (float)$num;
+    if ($num == (int)$num)
+	  return (int)$num;
+    else
+	  return $num;
+}
+
 function user_company() 
 {
 	return $_SESSION["wa_current_user"]->company;
