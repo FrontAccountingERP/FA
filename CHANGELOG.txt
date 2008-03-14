@@ -1,7 +1,7 @@
 /**
 * @version $Id$
 * @package FrontAccounting
-* @copyright (C) 2005 - 2007 FrontAccounting
+* @copyright (C) 2005 - 2008 FrontAccounting
 * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
 * FrontAccounting is Free Software
 */
@@ -18,6 +18,78 @@ Legend:
 - -> Removed
 ! -> Note
 $ -> Affected files
+
+14-Mar-2008 Janusz Dobrowolski
+ + All forms fixed to accept user native numeric format.
+ $ /admin/gl_setup.php
+   /gl/bank_transfer.php
+   /gl/gl_budget.php
+   /gl/gl_deposit.php
+   /gl/gl_journal.php
+   /gl/gl_payment.php
+   /gl/includes/db/gl_db_banking.inc
+   /gl/includes/ui/gl_deposit_ui.inc
+   /gl/includes/ui/gl_journal_ui.inc
+   /gl/includes/ui/gl_payment_ui.inc
+   /gl/manage/exchange_rates.php
+   /inventory/adjustments.php
+   /inventory/cost_update.php
+   /inventory/prices.php
+   /inventory/purchasing_data.php
+   /inventory/reorder_level.php
+   /inventory/transfers.php
+   /inventory/includes/item_adjustments_ui.inc
+   /inventory/includes/stock_transfers_ui.inc
+   /inventory/manage/item_units.php
+   /manufacturing/work_order_entry.php
+   /manufacturing/inquiry/where_used_inquiry.php
+   /manufacturing/manage/bom_edit.php
+   /purchasing/po_entry_items.php
+   /purchasing/po_receive_items.php
+   /purchasing/supplier_credit_grns.php
+   /purchasing/supplier_invoice_grns.php
+   /purchasing/supplier_payment.php
+   /purchasing/supplier_trans_gl.php
+   /purchasing/allocations/supplier_allocate.php
+   /purchasing/includes/ui/po_ui.inc
+   /purchasing/inquiry/po_search.php
+   /sales/credit_note_entry.php
+   /sales/customer_credit_invoice.php
+   /sales/customer_delivery.php
+   /sales/customer_invoice.php
+   /sales/customer_payments.php
+   /sales/sales_order_entry.php
+   /sales/allocations/customer_allocate.php
+   /sales/includes/ui/sales_credit_ui.inc
+   /sales/includes/ui/sales_order_ui.inc
+   /sales/manage/customers.php
+   /sales/manage/sales_people.php
+   /sales/view/view_credit.php
+   /sales/view/view_dispatch.php
+   /sales/view/view_invoice.php
+   /sales/view/view_receipt.php
+   /sales/view/view_sales_order.php
+   /taxes/item_tax_types.php
+   /taxes/tax_groups.php
+   /taxes/tax_types.php
+ + User format functions for percent/price/exrate amounts display.
+ $ /includes/current_user.inc
+ + Input checking functions for numeric input fields in user native format
+ $ /includes/data_checks.inc
+ + Numeric input fields in user native format
+ $ /includes/ui/ui_input.inc
+ + Javascript function for conversion to/from user native numeric format.
+ $ /includes/ui/ui_view.inc
+ + New class amount for numeric input
+ $ /themes/aqua/default.css
+   /themes/cool/default.css
+   /themes/default/default.css
+ # Removed warning on adding component
+   /manufacturing/manage/bom_edit.php
+ # Quantity display correction
+   /manufacturing/inquiry/where_used_inquiry.php
+ # Fixed add_customer_trans() call
+   /gl/includes/db/gl_db_banking.inc
 
 12-Mar-2008 Joe Hung
  + Added update of Units of Measure and converting of deptor_trans records from release 1.XX
