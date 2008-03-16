@@ -19,6 +19,49 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+16-Mar-2008 Janusz Dobrowolski
++ Added javascript add-on for unobtrusive apply javascript handlers to html elements.
+$  /js/behaviour.js
+   /js/inserts.js
++ Added javascript source collecting functions
+$  /includes/main.inc
+! Moved check_page_security(); for safe start in case of broken wa_current_user var.
++ Added global js code collecting arrays  $js_lib, $js_static
+$  /includes/session.inc
+! Changed get_js_user num to add_js_user_num; extended for percent/qty/price formatting
+$  /includes/ui/ui_view.inc
++ Added including javascript source colections from $js_lib, $js_static; conditional display for ajax calls
+$  /includes/page/footer.inc
+   /includes/page/header.inc
+! Added including of data_checks.inc
+$  /includes/ui.inc
++ User side percent/exrate/qty/price input formatting via onblur handler.
+$  /admin/gl_setup.php
+   /gl/gl_budget.php
+   /gl/manage/exchange_rates.php
+   /includes/ui/ui_input.inc
+   /inventory/purchasing_data.php
+   /inventory/reorder_level.php
+   /inventory/includes/item_adjustments_ui.inc
+   /inventory/includes/stock_transfers_ui.inc
+   /manufacturing/work_order_entry.php
+   /manufacturing/manage/bom_edit.php
+   /purchasing/po_entry_items.php
+   /purchasing/po_receive_items.php
+   /purchasing/supplier_credit.php
+   /purchasing/supplier_credit_grns.php
+   /purchasing/supplier_invoice_grns.php
+   /purchasing/supplier_trans_gl.php
+   /purchasing/allocations/supplier_allocate.php
+   /purchasing/includes/ui/po_ui.inc
+   /sales/customer_delivery.php
+   /sales/customer_invoice.php
+   /sales/allocations/customer_allocate.php
+   /sales/includes/ui/sales_credit_ui.inc
+   /sales/includes/ui/sales_order_ui.inc
+   /taxes/tax_groups.php
+   /taxes/tax_types.php
+
 14-Mar-2008 Janusz Dobrowolski
  + All forms fixed to accept user native numeric format.
  $ /admin/gl_setup.php
