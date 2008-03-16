@@ -1069,28 +1069,33 @@ document.write(\"<div id='CC'></div>\");
 //
 //	Javascript conversions to/from user numeric format.
 //
-function get_js_user_num() {
+function add_js_user_num() {
 	global $thoseps, $decseps;
 	$ts = $thoseps[user_tho_sep()];
 	$ds = $decseps[user_dec_sep()];
 
 	$js =
 	"<script language=\"javascript\">
-function price_format(post, num) {
+function price_format(post, num, dec) {
 	//num = num.toString().replace(/\\$|\\,/g,'');
 	if(isNaN(num))
 		num = \"0\";
 	sign = (num == (num = Math.abs(num)));
-	num = Math.floor(num*100+0.50000000001);
-	cents = num%100;
-	num = Math.floor(num/100).toString();
-	if(cents<10)
+	if(dec<0) dec = 2;
+	decsize = Math.pow(10, dec);
+	num = Math.floor(num*decsize+0.50000000001);
+	cents = num%decsize;
+	num = Math.floor(num/decsize).toString();
+	for( i=cents.toString().length; i<dec; i++){
 		cents = \"0\" + cents;
+	}
 	for (var i = 0; i < Math.floor((num.length-(1+i))/3); i++)
 		num = num.substring(0,num.length-(4*i+3))+'".$ts."'+
-				num.substring(num.length-(4*i+3));
-	document.getElementsByName(post)[0].value = (((sign)?'':'-') + num + '".$ds."' + cents);
-		}
+			num.substring(num.length-(4*i+3));
+	 num = ((sign)?'':'-') + num;
+	 if(dec!=0) num = num + '".$ds."' + cents;
+	document.getElementsByName(post)[0].value = num;
+	}
 	function get_amount(doc) {
 		var val = document.getElementsByName(doc)[0].value;
 		val = val.replace(/\\".$ts."/g,'');
@@ -1098,13 +1103,12 @@ function price_format(post, num) {
 		return 1*val;
 	}
 	</script>";
-
-	return $js;
+  add_js_source($js);
 }
 
-function get_js_allocate() {
-	return get_js_user_num() .
-			"<script>
+function add_js_allocate() {
+	$source =
+	"<script>
 	function allocate_all(doc) {
 	var alloc = get_amount('left_to_allocate');
 	var amount = get_amount('amount'+doc);
@@ -1117,16 +1121,18 @@ function get_js_allocate() {
 	amount=amount+alloc;
 	alloc=0;
 	}
-	price_format('amount'+doc, amount);
-	price_format('left_to_allocate', alloc);
+	price_format('amount'+doc, amount, ".user_price_dec().");
+	price_format('left_to_allocate', alloc, ".user_price_dec().");
 	}
 	function allocate_none(doc) {
 	amount = get_amount('amount'+doc);
 	left = get_amount('left_to_allocate');
-	price_format('left_to_allocate',amount+left);
-	price_format('amount'+doc, 0);
+	price_format('left_to_allocate',amount+left, ".user_price_dec().");
+	price_format('amount'+doc, 0, ".user_price_dec().");
 	}
 	</script>";
+	add_js_user_num();
+	add_js_source($source);
 }
 
 function alert($msg)
