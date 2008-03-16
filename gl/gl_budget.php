@@ -144,7 +144,7 @@ if (db_has_gl_accounts())
 		label_cell($date_);	
 		if (!isset($_POST['amount'.$i]))
 			$_POST['amount'.$i] = '0';
-		amount_cells(null, 'amount'.$i, null, 15);
+		amount_cells(null, 'amount'.$i, null, 15, null, 0);
 		if ($showdims)
 		{
 			$d = get_budget_trans_from_to($date_, $date_, $_POST['account'], $_POST['dim1'], $_POST['dim2']);

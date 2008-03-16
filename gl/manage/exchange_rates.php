@@ -148,7 +148,8 @@ function display_rate_edit()
 	{
 		date_row(_("Date to Use From:"), 'date_');
 	}
-	small_amount_row(_("Exchange Rate:"), 'BuyRate', null, '', submit('get_rate',_("Get"), false));
+	small_amount_row(_("Exchange Rate:"), 'BuyRate', null, '', 
+	  submit('get_rate',_("Get")), user_exrate_dec());
 
 	end_table(1);
 
