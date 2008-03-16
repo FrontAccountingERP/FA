@@ -215,7 +215,8 @@ if (!isset($_POST['conversion_factor']) || $_POST['conversion_factor'] == "")
 {
    	$_POST['conversion_factor'] = exrate_format(1);
 }
-amount_row(_("Conversion Factor (to our UOM):"), 'conversion_factor', exrate_format($_POST['conversion_factor']));
+amount_row(_("Conversion Factor (to our UOM):"), 'conversion_factor', 
+  exrate_format($_POST['conversion_factor']), null, null, user_exrate_dec() );
 text_row(_("Supplier's Code or Description:"), 'supplier_description', null, 50, 51);
 
 end_table(1);

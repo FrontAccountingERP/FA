@@ -202,7 +202,7 @@ if (isset($_POST['grn_item_id']) && $_POST['grn_item_id'] != "")
 	label_cell($myrow['item_code']);
 	label_cell($myrow['description']);
 	qty_cell($myrow['QtyOstdg']);
-	amount_cells(null, 'this_quantity_inv', qty_format($myrow['QtyOstdg']));
+	qty_cells(null, 'this_quantity_inv', qty_format($myrow['QtyOstdg']));
 	amount_cell($myrow['unit_price']);
 	small_amount_cells(null, 'ChgPrice', price_format($myrow['unit_price']));
 	end_row();

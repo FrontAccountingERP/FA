@@ -223,13 +223,13 @@ function credit_edit_item_controls(&$order, $line_no=-1)
 	}
 
 
-	amount_cells(null, 'qty', $_POST['qty']);
+	qty_cells(null, 'qty', $_POST['qty']);
 //	if ($order->trans_no!=0) {
 //		amount_cell($line_no==-1 ? 0 :$order->line_items[$line_no]->qty_done);
 //	}
 	label_cell($_POST['units']);
 	amount_cells(null, 'price',  null);
-	small_amount_cells(null, 'Disc', percent_format(0));
+	small_amount_cells(null, 'Disc', percent_format(0), null, null, user_percent_dec());
 
 	amount_cell($_POST['qty'] * $_POST['price'] * (1 - $_POST['Disc']/100));
 

@@ -166,7 +166,7 @@ if (isset($_POST['grn_item_id']) && $_POST['grn_item_id'] != "")
 	label_cell($_POST['grn_item_id']);
     label_cell($myrow['item_code'] . " " . $myrow['description']);
     qty_cell($myrow["quantity_inv"]);
-    amount_cells(null, 'This_QuantityCredited', qty_format(max($myrow['quantity_inv'],0)));
+    qty_cells(null, 'This_QuantityCredited', qty_format(max($myrow['quantity_inv'],0)));
     amount_cell($myrow['unit_price']);
     amount_cells(null, 'ChgPrice', price_format($myrow['unit_price']));
     end_row();

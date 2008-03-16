@@ -85,9 +85,9 @@ function display_po_receive_items()
 			qty_cell($qty_outstanding);
 
 			if ($qty_outstanding > 0)
-				amount_cells(null, $ln_itm->line_no, qty_format($ln_itm->receive_qty), "align=right");
+				qty_cells(null, $ln_itm->line_no, qty_format($ln_itm->receive_qty), "align=right");
 			else
-				amount_cells(null, $ln_itm->line_no, qty_format($ln_itm->receive_qty), "align=right", 
+				qty_cells(null, $ln_itm->line_no, qty_format($ln_itm->receive_qty), "align=right", 
 					"disabled");
 
 			amount_cell($ln_itm->price);

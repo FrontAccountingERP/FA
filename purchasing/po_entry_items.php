@@ -3,12 +3,12 @@
 $page_security = 4;
 
 $path_to_root="..";
-include($path_to_root . "/purchasing/includes/po_class.inc");
+include_once($path_to_root . "/purchasing/includes/po_class.inc");
 
-include($path_to_root . "/includes/session.inc");
+include_once($path_to_root . "/includes/session.inc");
 
-include($path_to_root . "/includes/data_checks.inc");
-include($path_to_root . "/includes/manufacturing.inc");
+//include($path_to_root . "/includes/data_checks.inc");
+//include($path_to_root . "/includes/manufacturing.inc");
 
 include_once($path_to_root . "/purchasing/includes/purchasing_ui.inc");
 

@@ -66,7 +66,7 @@ while ($myrow = db_fetch($result))
 	$_POST[$myrow["loc_code"]] = qty_format($myrow["reorder_level"]);
 
 	label_cell(number_format2($qoh,user_qty_dec()), "nowrap align='right'");
-	amount_cells(null, $myrow["loc_code"]);
+	qty_cells(null, $myrow["loc_code"]);
 	end_row();
 	$j++;
 	If ($j == 12)

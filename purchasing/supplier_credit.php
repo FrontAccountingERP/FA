@@ -2,11 +2,11 @@
 
 $path_to_root="..";
 
-include($path_to_root . "/purchasing/includes/supp_trans_class.inc");
+include_once($path_to_root . "/purchasing/includes/supp_trans_class.inc");
 
 $page_security=5;
 
-include($path_to_root . "/includes/session.inc");
+include_once($path_to_root . "/includes/session.inc");
 
 include_once($path_to_root . "/includes/data_checks.inc");
 

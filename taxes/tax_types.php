@@ -136,7 +136,7 @@ if (isset($selected_id))
 	hidden('selected_id', $selected_id);
 }
 text_row_ex(_("Description:"), 'name', 50);
-small_amount_row(_("Default Rate:"), 'rate', '', "", "%");
+small_amount_row(_("Default Rate:"), 'rate', '', "", "%", user_percent_dec());
 
 gl_all_accounts_list_row(_("Sales GL Account:"), 'sales_gl_code', null);
 gl_all_accounts_list_row(_("Purchasing GL Account:"), 'purchasing_gl_code', null);

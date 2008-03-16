@@ -314,7 +314,7 @@ function po_item_controls(&$order, $stock_id=null)
 		$_POST['req_del_date'] = add_days(Today(), 10);
 	}
 
-	amount_cells(null, 'qty', null);
+	qty_cells(null, 'qty', null);
 
 	label_cell($_POST['units']);
 	date_cells(null, 'req_del_date', null, 0, 0, 0);

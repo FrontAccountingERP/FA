@@ -218,7 +218,8 @@ for ($i = 0; $i < 5; $i++)
 
 		if (!isset($_POST['rate' . $i]) || $_POST['rate' . $i] == "")
 			$_POST['rate' . $i] = percent_format($default_rate);
-		small_amount_cells(null, 'rate' . $i, $_POST['rate' . $i]);
+		small_amount_cells(null, 'rate' . $i, $_POST['rate' . $i], null, null, 
+		  user_percent_dec());
 	}
 	end_row();
 }

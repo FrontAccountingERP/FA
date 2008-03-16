@@ -5,6 +5,7 @@ $page_security = 3;
 
 include($path_to_root . "/includes/ui/allocation_cart.inc");
 include_once($path_to_root . "/includes/session.inc");
+include_once($path_to_root . "/includes/data_checks.inc");
 include_once($path_to_root . "/sales/includes/sales_ui.inc");
 include_once($path_to_root . "/sales/includes/sales_db.inc");
 
@@ -12,7 +13,7 @@ $js = "";
 if ($use_popup_windows)
 	$js .= get_js_open_window(900, 500);
 
-$js .= get_js_allocate();
+add_js_allocate();
 
 page(_("Allocate Customer Payment or Credit Note"), false, false, "", $js);
 

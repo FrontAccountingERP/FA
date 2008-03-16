@@ -268,7 +268,7 @@ if (isset($_POST['stock_id']))
 	{
 		$_POST['quantity'] = qty_format(1);
 	}
-	amount_row(_("Quantity:"), 'quantity', $_POST['quantity']);
+	qty_row(_("Quantity:"), 'quantity', $_POST['quantity']);
 
 	end_table(1);
 	submit_center('Submit', _("Add/Update"));

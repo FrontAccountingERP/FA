@@ -3,10 +3,10 @@
 $page_security=5;
 $path_to_root="..";
 
-include($path_to_root . "/purchasing/includes/supp_trans_class.inc");
-include($path_to_root . "/includes/session.inc");
+include_once($path_to_root . "/purchasing/includes/supp_trans_class.inc");
+include_once($path_to_root . "/includes/session.inc");
 
-include($path_to_root . "/purchasing/includes/purchasing_ui.inc");
+include_once($path_to_root . "/purchasing/includes/purchasing_ui.inc");
 $js = "";
 if ($use_date_picker)
 	$js .= get_js_date_picker();

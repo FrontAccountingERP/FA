@@ -364,7 +364,7 @@ function sales_order_item_controls(&$order, $line_no=-1)
 		$_POST['Disc'] = percent_format($order->default_discount * 100);
 	}
 
-	amount_cells(null, 'qty', qty_format($_POST['qty']));
+	qty_cells(null, 'qty', qty_format($_POST['qty']));
 
 	if ($order->trans_no!=0) {
 		amount_cell($line_no==-1 ? 0 :$order->line_items[$line_no]->qty_done);
@@ -372,7 +372,7 @@ function sales_order_item_controls(&$order, $line_no=-1)
 
 	label_cell($_POST['units']);
 	amount_cells(null, 'price');
-	small_amount_cells(null, 'Disc', percent_format($_POST['Disc']));
+	small_amount_cells(null, 'Disc', percent_format($_POST['Disc']), null, null, user_percent_dec());
 
 	$line_total = $_POST['qty'] * $_POST['price'] * (1 - $_POST['Disc'] / 100);
 	amount_cell($line_total);

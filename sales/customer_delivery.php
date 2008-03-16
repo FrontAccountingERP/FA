@@ -378,7 +378,7 @@ foreach ($_SESSION['Items']->line_items as $line=>$ln_itm) {
 	label_cell($ln_itm->units);
 	qty_cell($ln_itm->qty_done);
 
-	small_amount_cells(null, 'Line'.$line, qty_format($ln_itm->qty_dispatched));
+	small_qty_cells(null, 'Line'.$line, qty_format($ln_itm->qty_dispatched));
 
 	$display_discount_percent = percent_format($ln_itm->discount_percent*100) . "%";
 

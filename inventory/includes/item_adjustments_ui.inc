@@ -149,7 +149,7 @@ function adjustment_edit_item_controls(&$order, $stock_id=null)
 		$_POST['units'] = $item_info["units"];
 	}
 
-	amount_cells(null, 'qty', $_POST['qty']);
+	qty_cells(null, 'qty', $_POST['qty']);
 
 	label_cell($_POST['units']);
 	amount_cells(null, 'std_cost', $_POST['std_cost']);

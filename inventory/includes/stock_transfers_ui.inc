@@ -134,7 +134,7 @@ function transfer_edit_item_controls(&$order, $stock_id=null)
 	}
 
 
-	small_amount_cells(null, 'qty', $_POST['qty']);
+	small_qty_cells(null, 'qty', $_POST['qty']);
 	label_cell($_POST['units']);
 
 	if (isset($_GET['Edit'])) 

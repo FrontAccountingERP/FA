@@ -164,25 +164,25 @@ function label_cell($label, $params="")
 function amount_cell($label, $bold=false)
 {
 	if ($bold)
-		label_cell("<b>".number_format2($label,user_price_dec())."</b>", "nowrap align=right");
+		label_cell("<b>".price_format($label)."</b>", "nowrap align=right");
 	else
-		label_cell(number_format2($label,user_price_dec()), "nowrap align=right");
+		label_cell(price_format($label), "nowrap align=right");
 }
 
 function percent_cell($label, $bold=false)
 {
 	if ($bold)
-		label_cell("<b>".number_format2($label,user_percent_dec())."</b>", "nowrap align=right");
+		label_cell("<b>".percent_format($label)."</b>", "nowrap align=right");
 	else
-		label_cell(number_format2($label,user_percent_dec()), "nowrap align=right");
+		label_cell(percent_format($label), "nowrap align=right");
 }
 
-function qty_cell($label, $bold=false)
+function qty_cell($label, $bold=false, $dec=null)
 {
 	if ($bold)
-		label_cell("<b>".number_format2($label,user_qty_dec())."</b>", "nowrap align=right");
+		label_cell("<b>".qty_format($label, $dec)."</b>", "nowrap align=right");
 	else
-		label_cell(number_format2($label,user_qty_dec()), "nowrap align=right");
+		label_cell(qty_format($label, $dec), "nowrap align=right");
 }
 
 function label_cells($label, $value, $params="", $params2="")
@@ -331,11 +331,13 @@ function percent_row($label, $name, $init=null)
 			$_POST[$name] = $init== null ? '' : $init;
 	}
 
-	small_amount_row($label, $name, $_POST[$name], null, "%");
+	small_amount_row($label, $name, $_POST[$name], null, "%", user_percent_dec());
 }
 
-function amount_cells_ex($label, $name, $size, $max=null, $init=null, $params=null, $post_label=null)
+function amount_cells_ex($label, $name, $size, $max=null, $init=null, $params=null, $post_label=null, $dec=null)
 {
+	if (!isset($dec))
+	  $dec = user_price_dec();
 	if (!isset($_POST[$name]) || $_POST[$name] == "")
 	{
 		if ($init)
@@ -351,7 +353,7 @@ function amount_cells_ex($label, $name, $size, $max=null, $init=null, $params=nu
 
 	echo "<td>";
 
-	echo "<input class='amount' type=\"text\" name=\"$name\" size=\"$size\" maxlength=\"$max\" value=\"" . $_POST[$name]. "\">";
+	echo "<input class='amount' type=\"text\" name=\"$name\" size=\"$size\" maxlength=\"$max\" dec=\"$dec\" value=\"" . $_POST[$name]. "\">";
 
 	if ($post_label)
 		echo " " . $post_label;
@@ -362,30 +364,69 @@ function amount_cells_ex($label, $name, $size, $max=null, $init=null, $params=nu
 
 //-----------------------------------------------------------------------------------
 
-function amount_cells($label, $name, $init=null, $params=null, $post_label=null)
+function amount_cells($label, $name, $init=null, $params=null, $post_label=null, $dec=null)
 {
-	amount_cells_ex($label, $name, 15, 15, $init, $params, $post_label);
+	amount_cells_ex($label, $name, 15, 15, $init, $params, $post_label, $dec);
 }
 
-function amount_row($label, $name, $init=null, $params=null, $post_label=null)
+function amount_row($label, $name, $init=null, $params=null, $post_label=null, $dec=null)
 {
 	echo "<tr>";
-	amount_cells($label, $name, $init, $params, $post_label);
+	amount_cells($label, $name, $init, $params, $post_label, $dec);
 	echo "</tr>\n";
 }
 
-function small_amount_row($label, $name, $init=null, $params=null, $post_label=null)
+function small_amount_row($label, $name, $init=null, $params=null, $post_label=null, $dec=null)
 {
 	echo "<tr>";
-	small_amount_cells($label, $name, $init, $params, $post_label);
+	small_amount_cells($label, $name, $init, $params, $post_label, $dec);
 	echo "</tr>\n";
 }
 
 //-----------------------------------------------------------------------------------
 
-function small_amount_cells($label, $name, $init=null, $params=null, $post_label=null)
+function qty_cells($label, $name, $init=null, $params=null, $post_label=null, $dec=null)
 {
-	amount_cells_ex($label, $name, 7, 12, $init, $params, $post_label);
+	if(!isset($dec))
+	  $dec = user_qty_dec();
+
+	amount_cells_ex($label, $name, 15, 15, $init, $params, $post_label, $dec);
+}
+
+function qty_row($label, $name, $init=null, $params=null, $post_label=null, $dec=null)
+{
+	if(!isset($dec))
+	  $dec = user_qty_dec();
+
+	echo "<tr>";
+	amount_cells($label, $name, $init, $params, $post_label, $dec);
+	echo "</tr>\n";
+}
+
+function small_qty_row($label, $name, $init=null, $params=null, $post_label=null, $dec=null)
+{
+	if(!isset($dec))
+	  $dec = user_qty_dec();
+
+	echo "<tr>";
+	small_amount_cells($label, $name, $init, $params, $post_label, $dec);
+	echo "</tr>\n";
+}
+
+//-----------------------------------------------------------------------------------
+
+function small_amount_cells($label, $name, $init=null, $params=null, $post_label=null, $dec=null)
+{
+	amount_cells_ex($label, $name, 7, 12, $init, $params, $post_label, $dec);
+}
+
+//-----------------------------------------------------------------------------------
+
+function small_qty_cells($label, $name, $init=null, $params=null, $post_label=null, $dec=null)
+{
+  if (!isset($dec))
+	  $dec = user_qty_dec();
+	amount_cells_ex($label, $name, 7, 12, $init, $params, $post_label, $dec);
 }
 
 //-----------------------------------------------------------------------------------

@@ -16,7 +16,7 @@ $js = "";
 if ($use_popup_windows)
 	$js .= get_js_open_window(900, 500);
 
-$js .= get_js_allocate();
+add_js_allocate();
 
 page(_("Allocate Supplier Payment or Credit Note"), false, false, "", $js);
 

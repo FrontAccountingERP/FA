@@ -353,7 +353,7 @@ if (!isset($_POST['quantity']))
 
 if ($_POST['type'] == wo_types::advanced())
 {
-    amount_row(_("Quantity Required:"), 'quantity', 12);
+    qty_row(_("Quantity Required:"), 'quantity', 12);
     if ($_POST['released'])
     	label_row(_("Quantity Manufactured:"), qty_format($_POST['units_issued']));
     date_row(_("Date") . ":", 'date_');
@@ -361,7 +361,7 @@ if ($_POST['type'] == wo_types::advanced())
 }
 else
 {
-    amount_row(_("Quantity:"), 'quantity', 12);
+    qty_row(_("Quantity:"), 'quantity', 12);
     date_row(_("Date") . ":", 'date_');
 	hidden('RequDate', '');
 
