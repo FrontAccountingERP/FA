@@ -76,7 +76,6 @@
 	}
 
 	//----------------------------------------------------------------------------------------
-
 	if (!isset($_SESSION["wa_current_user"]) ||
 		(isset($_SESSION["wa_current_user"]) && !$_SESSION["wa_current_user"]->logged_in())) 
 	{
@@ -104,7 +103,14 @@
 		}
    	}
 
-   	check_page_security($page_security);
+	global $js_lib, $js_static, $js_path;
+	$js_path = $path_to_root.'/js/';
+	// standard external js scripts included in all files
+	$js_static = array('behaviour.js');
+	// additional js source included in header
+	$js_lib = array();
+	
+	add_js_user_num(); // add user native numeric input functions
 
     // Run with debugging messages for the system administrator(s) but not anyone else
     /*if (in_array(15, $security_groups[$_SESSION["AccessLevel"]])) {
@@ -114,4 +120,5 @@
     }*/
 
 	//----------------------------------------------------------------------------------------
+   	check_page_security($page_security);
 ?>
