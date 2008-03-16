@@ -4,8 +4,10 @@ include_once($path_to_root . "/includes/date_functions.inc");
 
 function page_footer($no_menu=false, $is_index=false)
 {
-	global $local_path_to_root, $version, $allow_demo_mode;
+	global $version, $allow_demo_mode;
 	global $app_title, $power_url, $power_by;
+
+	if (isset($_GET['ajax'])) return;
 
 	if (function_exists('hyperlink_back'))
 		hyperlink_back();

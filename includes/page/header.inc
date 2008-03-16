@@ -31,7 +31,11 @@ function page_header($title, $no_menu=false, $is_index=false, $onload="", $js=""
 {
 	// titles and screen header
 	global $db_connections, $path_to_root, $def_app, $applications,
-		$help_base_url, $help_page_url, $use_popup_windows;
+		$help_base_url, $help_page_url, $use_popup_windows,
+		$js_lib, $js_static, $js_path;
+
+	if (isset($_GET['ajax'])) return;
+
 	$theme = user_theme();
 	$local_path_to_root = $path_to_root;
 
@@ -44,6 +48,16 @@ function page_header($title, $no_menu=false, $is_index=false, $onload="", $js=""
 		$js = get_js_open_window(900, 500);
 	}
 
+	// javascript includes collect
+	add_js_source($js);
+	$js ='';
+	foreach($js_static as $jsfile) {
+	  $js .= '<script language="javascript" type="text/javascript" src="'.
+		$js_path . $jsfile . '"></script>';
+	}
+	foreach($js_lib as $text) {
+	  $js .= $text;
+	}
 	if (!isset($no_menu))
 	{
 		$no_menu = false;
@@ -74,6 +88,8 @@ function page_header($title, $no_menu=false, $is_index=false, $onload="", $js=""
 		echo "<body>";
 	else
 		echo "<body onload=\"$onload\">";
+	echo "<script language='javascript' src='".
+	  $path_to_root. "/js/inserts.js' type='text/javascript'></script>\n";
 	echo "<table class='callout_main' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
 	echo "<td colspan='2' rowspan='2'>\n";
