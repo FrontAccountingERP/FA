@@ -39,7 +39,7 @@ function print_sales_orders()
 		$from = 0;
 	if ($to == null)
 		$to = 0;
-	$dec =user_price_dec();
+	$dec = user_price_dec();
 	
 	$cols = array(4, 60, 225, 300, 325, 385, 450, 515);
 
@@ -92,7 +92,8 @@ function print_sales_orders()
 		$SubTotal = 0;
 		while ($myrow2=db_fetch($result))
 		{
-			$Net = ((1 - $myrow2["discount_percent"]) * $myrow2["unit_price"] * $myrow2["quantity"]);
+			$Net = round(((1 - $myrow2["discount_percent"]) * $myrow2["unit_price"] * $myrow2["quantity"]), 
+			   user_price_dec());
 			$SubTotal += $Net;
 			$DisplayPrice = number_format2($myrow2["unit_price"],$dec);
 			$DisplayQty = number_format2($myrow2["quantity"],user_qty_dec());

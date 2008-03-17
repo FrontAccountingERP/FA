@@ -7,9 +7,6 @@ include_once($path_to_root . "/purchasing/includes/po_class.inc");
 
 include_once($path_to_root . "/includes/session.inc");
 
-//include($path_to_root . "/includes/data_checks.inc");
-//include($path_to_root . "/includes/manufacturing.inc");
-
 include_once($path_to_root . "/purchasing/includes/purchasing_ui.inc");
 
 $js = get_js_form_entry("StockID2", "stock_id", "qty");

@@ -67,7 +67,7 @@ function get_tax_free_price_for_item($stock_id, $price, $tax_group, $tax_include
 			$tax_multiplier += $taxitem["rate"];
 	}
 	
-	return $price / (1 + ($tax_multiplier / 100));	
+	return round($price / (1 + ($tax_multiplier / 100)),  user_price_dec());
 }
 //
 //	Full price (incl. VAT) for item $stock_id with line price $price,
@@ -103,7 +103,7 @@ function get_full_price_for_item($stock_id, $price, $tax_group, $tax_included, $
 			$tax_multiplier += $taxitem["rate"];
 	}
 	
-	return $price * (1 + ($tax_multiplier / 100));	
+	return round($price * (1 + ($tax_multiplier / 100)),  user_price_dec());
 }
 
 //---------------------------------------------------------------------------------
@@ -176,10 +176,11 @@ function get_tax_for_items($items, $prices, $shipping_cost, $tax_group, $tax_inc
 			{
 				$index = $item_tax['tax_type_id'];
 				if($tax_included==1)
-				  $ret_tax_array[$index]['Value'] += $prices[$i] * $item_tax['rate'] 
-					/ ($item_tax['rate'] + 100);
+				  $ret_tax_array[$index]['Value'] += round($prices[$i] * $item_tax['rate'] 
+					/ ($item_tax['rate'] + 100),  user_price_dec());
 				else
-				  $ret_tax_array[$index]['Value'] += $prices[$i] * $item_tax['rate'] / 100;
+				  $ret_tax_array[$index]['Value'] += 
+					round($prices[$i] * $item_tax['rate'] / 100,  user_price_dec());
 			}
 		}
 	}
@@ -195,10 +196,11 @@ function get_tax_for_items($items, $prices, $shipping_cost, $tax_group, $tax_inc
 				$index = $item_tax['tax_type_id'];
 				if(isset($ret_tax_array[$index])) {
 				  if($tax_included==1)
-					$ret_tax_array[$index]['Value'] += $shipping_cost * $item_tax['rate'] 
-					  / ($item_tax['rate'] + 100);
+					$ret_tax_array[$index]['Value'] += round($shipping_cost * $item_tax['rate'] 
+					  / ($item_tax['rate'] + 100),  user_price_dec());
 				  else
-					$ret_tax_array[$index]['Value'] += $shipping_cost * $item_tax['rate'] / 100;
+					$ret_tax_array[$index]['Value'] += 
+					  round($shipping_cost * $item_tax['rate'] / 100,  user_price_dec());
 				}
 			}
 		}

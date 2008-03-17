@@ -111,7 +111,8 @@ if (db_num_rows($result) > 0)
 		if($myrow2['quantity']==0) continue;
 		alt_table_row_color($k);
 
-		$value = ((1 - $myrow2["discount_percent"]) * $myrow2["unit_price"] * $myrow2["quantity"]);
+		$value = round(((1 - $myrow2["discount_percent"]) * $myrow2["unit_price"] * $myrow2["quantity"]), 
+		   user_price_dec());
 		$sub_total += $value;
 
 	    if ($myrow2["discount_percent"] == 0)

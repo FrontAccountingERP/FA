@@ -95,7 +95,8 @@ class supp_trans
         foreach ($this->grn_items as $ln_itm) 
         {
         	$items[] = $ln_itm->item_code;
-        	$prices[] = ($ln_itm->this_quantity_inv * $ln_itm->taxfree_charge_price($tax_group_id, $tax_group));
+        	$prices[] =round( ($ln_itm->this_quantity_inv * $ln_itm->taxfree_charge_price($tax_group_id, $tax_group)),
+			 user_price_dec());
         }
         
         if ($tax_group_id == null)
@@ -117,7 +118,8 @@ class supp_trans
 			$tax_group = null;    	
     	
 		foreach ($this->grn_items as $ln_itm)
-    		$total += ($ln_itm->this_quantity_inv * $ln_itm->taxfree_charge_price($tax_group_id, $tax_group));
+    		$total += round(($ln_itm->this_quantity_inv * $ln_itm->taxfree_charge_price($tax_group_id, $tax_group)),
+			 user_price_dec());
 
    		foreach ($this->gl_codes as $gl_line)
    			$total += $gl_line->amount;

@@ -61,7 +61,7 @@ function print_po()
 		$from = 0;
 	if ($to == null)
 		$to = 0;
-	$dec =user_price_dec();
+	$dec = user_price_dec();
 	
 	$cols = array(4, 60, 225, 300, 325, 385, 450, 515);
 
@@ -103,7 +103,8 @@ function print_po()
 		$SubTotal = 0;
 		while ($myrow2=db_fetch($result))
 		{
-			$Net = ($myrow2["unit_price"] * $myrow2["quantity_ordered"]);
+			$Net = round(($myrow2["unit_price"] * $myrow2["quantity_ordered"]),
+			  user_price_dec());
 			$SubTotal += $Net;
 			$DisplayPrice = number_format2($myrow2["unit_price"],$dec);
 			$DisplayQty = number_format2($myrow2["quantity_ordered"],user_qty_dec());

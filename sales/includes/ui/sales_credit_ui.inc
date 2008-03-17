@@ -117,7 +117,8 @@ function display_credit_items($title, &$order)
 
 	foreach ($order->line_items as $line_no=>$line)
 	{
-		$line_total =	$line->qty_dispatched * $line->price * (1 - $line->discount_percent);
+		$line_total =	round($line->qty_dispatched * $line->price * (1 - $line->discount_percent),
+		   user_price_dec());
 		if (!isset($_GET['Edit']))
 			$id = -1;
 		else

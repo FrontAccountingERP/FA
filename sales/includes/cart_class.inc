@@ -268,7 +268,8 @@ class cart
 
 		foreach ($this->line_items as $ln_itm) {
 			$price = $ln_itm->line_price();
-			$total += ($ln_itm->quantity * $price * (1 - $ln_itm->discount_percent));
+			$total += round($ln_itm->quantity * $price * (1 - $ln_itm->discount_percent), 
+			   user_price_dec());
 		}
 		return $total;
 	}
@@ -279,7 +280,8 @@ class cart
 
 		foreach ($this->line_items as $ln_itm) {
 			$price = $ln_itm->line_price();
-			$total += ($ln_itm->qty_dispatched * $price * (1 - $ln_itm->discount_percent));
+			$total += round(($ln_itm->qty_dispatched * $price * (1 - $ln_itm->discount_percent)), 
+			   user_price_dec());
 		}
 		return $total;
 	}
@@ -326,12 +328,12 @@ class cart
 
 		foreach ($this->line_items as $ln_itm) {
 			$items[] = $ln_itm->stock_id;
-			$prices[] = ($ln_itm->qty_dispatched *
-				$ln_itm->line_price()* (1 - $ln_itm->discount_percent));
+			$prices[] = round(($ln_itm->qty_dispatched *
+				$ln_itm->line_price()* (1 - $ln_itm->discount_percent)),  user_price_dec());
 		}
 
 		$taxes = get_tax_for_items($items, $prices, $shipping_cost,
-		$this->tax_group_id, $this->tax_included,  $this->tax_group_array);
+		  $this->tax_group_id, $this->tax_included,  $this->tax_group_array);
 
 		return $taxes;
 	}
@@ -360,9 +362,9 @@ class cart
 			}
 		}
 		if($this->tax_included)
-			return $this->freight_cost*$tax_rate/($tax_rate+100);
+			return round($this->freight_cost*$tax_rate/($tax_rate+100),  user_price_dec());
 		else
-			return $this->freight_cost*$tax_rate/100;
+			return round($this->freight_cost*$tax_rate/100,  user_price_dec());
 	}
 
 } /* end of class defintion */

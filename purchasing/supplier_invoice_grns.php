@@ -164,7 +164,8 @@ function display_grn_items_for_selection()
             qty_cell($myrow["quantity_inv"]);
             qty_cell($myrow["qty_recd"] - $myrow["quantity_inv"]);
             amount_cell($myrow["unit_price"]);
-            amount_cell($myrow["unit_price"] * ($myrow["qty_recd"] - $myrow["quantity_inv"]));
+            amount_cell(round($myrow["unit_price"] * ($myrow["qty_recd"] - $myrow["quantity_inv"]),
+			   user_price_dec()));
 			end_row();
 			
     		$i++;

@@ -177,7 +177,7 @@ function display_po_items(&$order, $editable=true)
 
 		if ($po_line->Deleted == false)
 		{
-    		$line_total =	$po_line->quantity * $po_line->price;
+    		$line_total =	round($po_line->quantity * $po_line->price,  user_price_dec());
     		if (!$editable || !isset($_GET['Edit']) || $_GET['Edit'] != $po_line->line_no)
 			{
     			alt_table_row_color($k);
@@ -321,7 +321,7 @@ function po_item_controls(&$order, $stock_id=null)
 	amount_cells(null, 'price', null);
 
 	//$line_total = $_POST['qty'] * $_POST['price'] * (1 - $_POST['Disc'] / 100);
-	$line_total = input_num('qty') * input_num('price');
+	$line_total = round(input_num('qty') * input_num('price'),  user_price_dec());
 	amount_cell($line_total);
 
 	if (isset($_GET['Edit']))

@@ -100,7 +100,8 @@ function display_order_summary($title, &$order, $editable_items=false)
 	foreach ($order->line_items as $line_no=>$stock_item)
 	{
 
-		$line_total = $stock_item->qty_dispatched * $stock_item->price * (1 - $stock_item->discount_percent);
+		$line_total = round($stock_item->qty_dispatched * $stock_item->price * (1 - $stock_item->discount_percent),
+		   user_price_dec());
 
 		if (!isset($_GET['Edit']))
 			$id = -1;
