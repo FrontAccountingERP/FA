@@ -19,6 +19,34 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+17-Mar-2008 Janusz Dobrowolski
+# Added rounding when needed to avoid document non cosistent documents.
+$  /includes/banking.inc
+   /purchasing/supplier_credit_grns.php
+   /purchasing/supplier_invoice_grns.php
+   /purchasing/includes/supp_trans_class.inc
+   /purchasing/includes/ui/invoice_ui.inc
+   /purchasing/includes/ui/po_ui.inc
+   /reporting/rep107.php
+   /reporting/rep109.php
+   /reporting/rep110.php
+   /reporting/rep209.php
+   /sales/includes/cart_class.inc
+   /sales/includes/ui/sales_credit_ui.inc
+   /sales/includes/ui/sales_order_ui.inc
+   /sales/view/view_credit.php
+   /sales/view/view_dispatch.php
+   /sales/view/view_invoice.php
+   /sales/view/view_sales_order.php
+   /taxes/tax_calc.inc
+# Sign bug for customer transactions
+$  /reporting/rep709.php
+# Include file conflict fix
+$ /purchasing/includes/ui/invoice_ui.inc
+  /gl/manage/bank_accounts.php
+  /manufacturing/inquiry/where_used_inquiry.php
+  /purchasing/manage/suppliers.php
+  
 16-Mar-2008 Janusz Dobrowolski
 + Added javascript add-on for unobtrusive apply javascript handlers to html elements.
 $  /js/behaviour.js
