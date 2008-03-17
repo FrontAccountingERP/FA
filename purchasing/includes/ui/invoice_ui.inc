@@ -30,7 +30,8 @@ function copy_to_trans(&$supp_trans)
 	{
 		foreach ( $supp_trans->grn_items as $grn)
 		{
-			$supp_trans->ov_amount += ($grn->this_quantity_inv * $grn->chg_price);
+			$supp_trans->ov_amount += round(($grn->this_quantity_inv * $grn->chg_price),
+			  user_price_dec());
 		}
 	}
 	if (count($supp_trans->gl_codes) > 0)
@@ -127,12 +128,12 @@ function invoice_totals(&$supp_trans)
 	copy_to_trans($supp_trans);
 
     start_table("$table_style width=95%");
-   	label_row(_("Sub-total:"), number_format2( $supp_trans->ov_amount,user_price_dec()), "align=right", "align=right");
+   	label_row(_("Sub-total:"), price_format( $supp_trans->ov_amount), "align=right", "align=right");
 
     $taxes = $supp_trans->get_taxes($_POST['tax_group_id']);
     $tax_total = display_edit_tax_items($taxes, 1, 0); // tax_included==0 (we are the company)
 
-    $display_total = number_format2(( $supp_trans->ov_amount + $tax_total), user_price_dec());
+    $display_total = price_format($supp_trans->ov_amount + $tax_total);
 
 	if ($supp_trans->is_invoice)
     	label_row(_("Invoice Total:"), $display_total, "align=right", "align=right");
@@ -243,7 +244,7 @@ function display_gl_items(&$supp_trans, $mode=0)
 
 	}
 	$colspan = ($dim == 2 ? 4 : ($dim == 1 ? 3 : 2));
-	label_row(_("Total"), number_format2($total_gl_value,user_price_dec()), 
+	label_row(_("Total"), price_format($total_gl_value), 
 		"colspan=".$colspan." align=right", "nowrap align=right");
 
 	echo "</table>";
@@ -319,14 +320,15 @@ function display_grn_items(&$supp_trans, $mode=0)
 			label_cell($entered_grn->item_description);
 			qty_cell(abs($entered_grn->this_quantity_inv));
 			amount_cell($entered_grn->chg_price);
-			amount_cell($entered_grn->chg_price * abs($entered_grn->this_quantity_inv));
+			amount_cell( round($entered_grn->chg_price * abs($entered_grn->this_quantity_inv)), user_price_dec());
 
 			if ($mode == 1)
 				delete_link_cell(SID . "Delete=" . $entered_grn->id);
 
 			end_row();
 
-    		$total_grn_value += ($entered_grn->chg_price * abs($entered_grn->this_quantity_inv));
+    		$total_grn_value += round($entered_grn->chg_price * abs($entered_grn->this_quantity_inv),
+			   user_price_dec());
 
     		$i++;
     		if ($i > 15)
@@ -337,7 +339,7 @@ function display_grn_items(&$supp_trans, $mode=0)
     	}
     }
 
-	label_row(_("Total"), number_format2($total_grn_value,user_price_dec()),
+	label_row(_("Total"), price_format($total_grn_value),
 		"colspan=5 align=right", "nowrap align=right");
     echo "</table>";
 
