@@ -9,7 +9,6 @@ page(_("Customers"));
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/banking.inc");
 include_once($path_to_root . "/includes/ui.inc");
-include_once($path_to_root . "/includes/data_checks.inc");
 
 if (isset($_GET['New']) || !isset($_POST['customer_id']) || $_POST['customer_id'] == "") 
 {

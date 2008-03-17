@@ -7,7 +7,6 @@ include($path_to_root . "/includes/session.inc");
 page(_("Customer Branches"));
 
 include($path_to_root . "/includes/ui.inc");
-include($path_to_root . "/includes/data_checks.inc");
 
 //-----------------------------------------------------------------------------------------------
 
