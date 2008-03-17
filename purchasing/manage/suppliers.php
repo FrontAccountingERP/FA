@@ -9,7 +9,6 @@ page(_("Suppliers"));
 //include($path_to_root . "/includes/date_functions.inc");
 
 include($path_to_root . "/includes/ui.inc");
-include($path_to_root . "/includes/data_checks.inc");
 
 check_db_has_tax_groups(_("There are no tax groups defined in the system. At least one tax group is required before proceeding."));
 

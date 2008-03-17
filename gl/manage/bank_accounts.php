@@ -7,7 +7,6 @@ include($path_to_root . "/includes/session.inc");
 page(_("Bank Accounts"));
 
 include($path_to_root . "/includes/ui.inc");
-include($path_to_root . "/includes/data_checks.inc");
 
 if (isset($_GET['selected_id'])) 
 {
