@@ -92,7 +92,7 @@ function getCustInvTax($taxtype, $from, $to)
 	$fromdate = date2sql($from);
 	$todate = date2sql($to);
 	
-	$sql = "SELECT SUM(unit_price * -quantity*".TB_PREF."debtor_trans.rate), SUM(amount*".TB_PREF."debtor_trans.rate)
+	$sql = "SELECT SUM(unit_price * quantity*".TB_PREF."debtor_trans.rate), SUM(amount*".TB_PREF."debtor_trans.rate)
 		FROM ".TB_PREF."debtor_trans_details, ".TB_PREF."debtor_trans_tax_details, ".TB_PREF."debtor_trans
 				WHERE ".TB_PREF."debtor_trans_details.debtor_trans_type>=10
 					AND ".TB_PREF."debtor_trans_details.debtor_trans_type<=11
