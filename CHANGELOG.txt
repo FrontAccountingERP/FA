@@ -19,6 +19,21 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+18-Mar-2008 Janusz Dobrowolski
+# Line items editor uses POST method - no disappearing shippment info.
+$  /sales/credit_note_entry.php
+   /sales/sales_order_entry.php
+   /sales/includes/ui/sales_credit_ui.inc
+   /sales/includes/ui/sales_order_ui.inc
++ Added edit_button_cell() function
+$  /includes/ui/ui_controls.inc
++ Helper function for finding indexed submit $_POST vars.
+$  /includes/ui/ui_input.inc
++ New class .editbutton for buttons. Default view is link alike.
+$  /themes/aqua/default.css
+   /themes/cool/default.css
+   /themes/default/default.css
+
 17-Mar-2008 Janusz Dobrowolski
 # Added rounding when needed to avoid document non cosistent documents.
 $  /includes/banking.inc
