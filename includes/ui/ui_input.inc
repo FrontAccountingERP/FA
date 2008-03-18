@@ -1,5 +1,25 @@
 <?php
 
+//------------------------------------------------------------------------------
+//    Seek for _POST variable with $prefix.
+//    If var is found returns variable name with prefix stripped,
+//    and null or -1 otherwise.
+//
+function find_submit($prefix, $numeric=true) {
+
+    foreach($_POST as $postkey=>$postval ) {
+	if (strpos($postkey, $prefix) === 0) {
+		$id = substr($postkey, strlen($prefix));
+		return $numeric ? (int)$id : $id;
+	}
+    }
+    return $numeric ? -1 : null;
+}
+
+//------------------------------------------------------------------------------
+//
+//	Read numeric value from user formatted input
+//
 function input_num($postname=null) {
 	if (!isset($_POST[$postname])) 
 	  return null;
