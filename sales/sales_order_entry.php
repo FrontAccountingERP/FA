@@ -11,7 +11,6 @@ $path_to_root="..";
 
 include_once($path_to_root . "/sales/includes/cart_class.inc");
 include_once($path_to_root . "/includes/session.inc");
-include_once($path_to_root . "/includes/data_checks.inc");
 include_once($path_to_root . "/sales/includes/sales_ui.inc");
 include_once($path_to_root . "/sales/includes/ui/sales_order_ui.inc");
 include_once($path_to_root . "/sales/includes/sales_db.inc");
@@ -289,16 +288,13 @@ function handle_update_item()
 
 //--------------------------------------------------------------------------------
 
-function handle_delete_item()
+function handle_delete_item($line_no)
 {
-	if ($_GET['Delete'] != ""){
-		$line_no = $_GET['Delete'];
-		if ($_SESSION['Items']->some_already_delivered($line_no) == 0) {
-			$_SESSION['Items']->remove_from_cart($line_no);
-		} else {
-			display_error(_("This item cannot be deleted because some of it has already been delivered."));
-		}
-	}
+    if ($_SESSION['Items']->some_already_delivered($line_no) == 0) {
+	$_SESSION['Items']->remove_from_cart($line_no);
+    } else {
+	display_error(_("This item cannot be deleted because some of it has already been delivered."));
+    }
 }
 
 //--------------------------------------------------------------------------------
@@ -381,14 +377,15 @@ function create_cart($type, $trans_no)
 //--------------------------------------------------------------------------------
 
 
-if (isset($_GET['Delete']) || isset($_GET['Edit']))
-	copy_from_cart(); // GET method need form restore
+//if (isset($_GET['Delete']) || isset($_GET['Edit']))
+//	copy_from_cart(); // GET method need form restore
 
 if (isset($_POST['CancelOrder']))
 	handle_cancel_order();
 
-if (isset($_GET['Delete']))
-	handle_delete_item();
+$id = find_submit('Delete');
+if ($id!=-1)
+	handle_delete_item($id);
 
 if (isset($_POST['UpdateItem']))
 	handle_update_item();

@@ -101,102 +101,94 @@ function display_credit_header(&$order)
 
 function display_credit_items($title, &$order)
 {
-	global $table_style, $path_to_root;
+    global $table_style, $path_to_root;
 
-	display_heading($title);
-	start_table("$table_style width=90%");
-	$th = array(_("Item Code"), _("Item Description"), _("Quantity"), _("Unit"),
-		_("Price"), _("Discount %"), _("Total"),'');
+    display_heading($title);
+    start_table("$table_style width=90%");
+    $th = array(_("Item Code"), _("Item Description"), _("Quantity"), _("Unit"),
+	_("Price"), _("Discount %"), _("Total"),'');
 
-	if (count($order->line_items)) $th[]= '';
+    if (count($order->line_items)) $th[]= '';
 
-	table_header($th);
+    table_header($th);
 
-	$subtotal = 0;
-	$k = 0;  //row colour counter
+    $subtotal = 0;
+    $k = 0;  //row colour counter
 
-	foreach ($order->line_items as $line_no=>$line)
+    $id = find_submit('Edit');
+
+    foreach ($order->line_items as $line_no=>$line)
+    {
+	$line_total =	round($line->qty_dispatched * $line->price * (1 - $line->discount_percent),
+	   user_price_dec());
+
+	if ( $id != $line_no)
 	{
-		$line_total =	round($line->qty_dispatched * $line->price * (1 - $line->discount_percent),
-		   user_price_dec());
-		if (!isset($_GET['Edit']))
-			$id = -1;
-		else
-			$id = $_GET['Edit'];
+	    alt_table_row_color($k);
 
-		 if ( $id != $line_no)
+    	    label_cell("<a target='_blank' href='$path_to_root/inventory/inquiry/stock_status.php?" . SID . "stock_id=" . $line->stock_id . "'>$line->stock_id</a>");
+    	    label_cell($line->item_description, "nowrap");
+    	    qty_cell($line->qty_dispatched);
+    	    label_cell($line->units);
+    	    amount_cell($line->price);
 
-		{
-    		alt_table_row_color($k);
+	    amount_cell($line->discount_percent * 100);
+    	    amount_cell($line_total);
 
-    	 	label_cell("<a target='_blank' href='$path_to_root/inventory/inquiry/stock_status.php?" . SID . "stock_id=" . $line->stock_id . "'>$line->stock_id</a>");
-    		label_cell($line->item_description);
-    		qty_cell($line->qty_dispatched);
-    		label_cell($line->units);
-    		amount_cell($line->price);
+    	    edit_button_cell("Edit$line_no", _('Edit'));
+    	    edit_button_cell("Delete$line_no", _('Delete'));
 
-		amount_cell($line->discount_percent * 100);
-    		amount_cell($line_total);
-
-    		edit_link_cell(SID . "Edit=$line_no");
-    		delete_link_cell(SID . "Delete=$line_no");
-
-			//labelt_cell(get_tax_free_price_for_item($line->stock_id, $line_total, $_POST['tax_group_id']));
-
-    		end_row();
-		}
-		else
-		{
-			credit_edit_item_controls($order, $line_no);
-		}
-
-		$subtotal += $line_total;
+    	    end_row();
+        }
+        else
+        {
+	    credit_edit_item_controls($order, $k, $line_no);
 	}
 
-	if (!isset($_GET['Edit']))
-		credit_edit_item_controls($order);
+	$subtotal += $line_total;
+    }
 
-	$display_sub_total = price_format($subtotal);
-	label_row(_("Sub-total"), $display_sub_total, "colspan=6 align=right", "align=right");
+    if ($id==-1)
+        credit_edit_item_controls($order, $k);
 
-	if (!isset($_POST['ChargeFreightCost']) OR ($_POST['ChargeFreightCost'] == ""))
-		$_POST['ChargeFreightCost'] = price_format(0);
+    $display_sub_total = price_format($subtotal);
+    label_row(_("Sub-total"), $display_sub_total, "colspan=6 align=right", "align=right", 2);
 
-	amount_cells_ex(_("Shipping"), 'ChargeFreightCost', 8, 8, $_POST['ChargeFreightCost'], "colspan=6 align=right");
+    if (!isset($_POST['ChargeFreightCost']) OR ($_POST['ChargeFreightCost'] == ""))
+	$_POST['ChargeFreightCost'] = price_format(0);
+
+    amount_cells_ex(_("Shipping"), 'ChargeFreightCost', 8, 8, $_POST['ChargeFreightCost'], "colspan=6 align=right");
+    label_cell('', 'colspan=2');
 
     $taxes = $order->get_taxes($_POST['ChargeFreightCost']);
 
-	$tax_total = display_edit_tax_items($taxes, 6, $_SESSION['Items']->tax_included);
+    $tax_total = display_edit_tax_items($taxes, 6, $_SESSION['Items']->tax_included);
 
     $display_total = price_format(($subtotal + $_POST['ChargeFreightCost'] + $tax_total));
 
-    label_row(_("Credit Note Total"), $display_total, "colspan=6 align=right","class='amount'");
+    label_row(_("Credit Note Total"), $display_total, "colspan=6 align=right","class='amount'", 2);
 
     end_table();
 }
 
 //---------------------------------------------------------------------------------
 
-function credit_edit_item_controls(&$order, $line_no=-1)
+function credit_edit_item_controls(&$order, $rowcounter, $line_no=-1)
 {
-	start_row();
-	if (isset($_GET['Edit']) && $line_no != -1)
+	alt_table_row_color($rowcounter);
+	$id = find_submit('Edit');
+
+	if ($line_no!=-1 && $line_no == $id)
 	{
 
-		if (!isset($_POST['stock_id']))
-			$_POST['stock_id'] = $order->line_items[$_GET['Edit']]->stock_id;
-		if (!isset($_POST['qty']) || ($_POST['qty']==""))
-			$_POST['qty'] = qty_format($order->line_items[$_GET['Edit']]->qty_dispatched);
-		if (!isset($_POST['price']) || ($_POST['price']==""))
-			$_POST['price'] = price_format($order->line_items[$_GET['Edit']]->price);
-		if (!isset($_POST['Disc']) || ($_POST['Disc']==""))
-			$_POST['Disc'] = percent_format(($order->line_items[$_GET['Edit']]->discount_percent)*100);
-
-		$_POST['units'] = $order->line_items[$_GET['Edit']]->units;
-
+		$_POST['stock_id'] = $order->line_items[$id]->stock_id;
+		$_POST['qty'] = qty_format($order->line_items[$id]->qty_dispatched);
+		$_POST['price'] = price_format($order->line_items[$id]->price);
+		$_POST['Disc'] = percent_format(($order->line_items[$id]->discount_percent)*100);
+		$_POST['units'] = $order->line_items[$id]->units;
 		hidden('stock_id', $_POST['stock_id']);
 		label_cell($_POST['stock_id']);
-		label_cell($order->line_items[$_GET['Edit']]->item_description);
+		label_cell($order->line_items[$id]->item_description, "nowrap");
 	}
 	else
 	{
@@ -234,11 +226,11 @@ function credit_edit_item_controls(&$order, $line_no=-1)
 
 	amount_cell($_POST['qty'] * $_POST['price'] * (1 - $_POST['Disc']/100));
 
-	if (isset($_GET['Edit']))
+	if ($id!=-1)
 	{
-    	submit_cells('UpdateItem', _("Update"));
-    	submit_cells('CancelItemChanges', _("Cancel"));
-		hidden('LineNo', $line_no);
+		edit_button_cell('UpdateItem', _("Update"));
+		edit_button_cell('CancelItemChanges', _("Cancel"));
+		hidden('line_no', $line_no);
 	}
 	else
 	{

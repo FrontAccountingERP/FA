@@ -97,16 +97,14 @@ function display_order_summary($title, &$order, $editable_items=false)
 	$total = 0;
 	$k = 0;  //row colour counter
 
+	$id = find_submit('Edit');
+	
 	foreach ($order->line_items as $line_no=>$stock_item)
 	{
 
 		$line_total = round($stock_item->qty_dispatched * $stock_item->price * (1 - $stock_item->discount_percent),
 		   user_price_dec());
 
-		if (!isset($_GET['Edit']))
-			$id = -1;
-		else
-			$id = $_GET['Edit'];
 
 		if (!$editable_items || $id != $line_no)
 		{
@@ -114,7 +112,7 @@ function display_order_summary($title, &$order, $editable_items=false)
 
 			view_stock_status_cell($stock_item->stock_id);
 
-			label_cell($stock_item->item_description);
+			label_cell($stock_item->item_description, "nowrap" );
 			qty_cell($stock_item->qty_dispatched);
 
 			if ($order->trans_no!=0)
@@ -128,25 +126,25 @@ function display_order_summary($title, &$order, $editable_items=false)
 
 			if ($editable_items)
 			{
-				edit_link_cell(SID . "Edit=$line_no");
-				delete_link_cell(SID . "Delete=$line_no");
+				edit_button_cell("Edit$line_no", _("Edit"));
+				edit_button_cell("Delete$line_no", _("Delete"));
 			}
 			end_row();
 		}
 		else
 		{
-			sales_order_item_controls($order, $line_no);
+			sales_order_item_controls($order, $k,  $line_no);
 		}
 
 		$total += $line_total;
 	}
 
-	if (!isset($_GET['Edit']) && $editable_items)
-		sales_order_item_controls($order);
+	if ($id==-1 && $editable_items)
+		sales_order_item_controls($order, $k);
 
 	$display_total = price_format($total);
 	label_row(_("Total Excluding Shipping"), $display_total, "colspan=6 align=right",
-		"nowrap align=right");
+		"nowrap align=right", 2);
 
 	end_table();
 }
@@ -191,10 +189,6 @@ function display_order_header(&$order, $editable, $date_text, $display_tax_group
 		if ($order->customer_id != $_POST['customer_id'])
 		{
 			// customer has changed
-
-			// delete all the order items - drastic but necessary because of
-			// change of currency, sales type, etc
-		//	$order->clear_items();
 			// clear the branch selection
 			unset($_POST['branch_id']);
 		}
@@ -299,17 +293,8 @@ function display_order_header(&$order, $editable, $date_text, $display_tax_group
 
 	if ($display_tax_group)
 	{
-/*		if ($editable)
-		{
-			if (!isset($_POST['tax_group_id']))
-				$_POST['tax_group_id'] = $_SESSION['Items']->tax_group_id;
-			tax_groups_list_row(_("Tax Group:"), 'tax_group_id', $_POST['tax_group_id'], true);
-		}
-		else
-*/		{
-			label_row(_("Tax Group:"), $order->tax_group_name);
-			hidden('tax_group_id', $_SESSION['Items']->tax_group_id);
-		}
+	    label_row(_("Tax Group:"), $order->tax_group_name);
+	    hidden('tax_group_id', $_SESSION['Items']->tax_group_id);
 	}
 	echo "</table>";
 
@@ -322,24 +307,21 @@ function display_order_header(&$order, $editable, $date_text, $display_tax_group
 
 //--------------------------------------------------------------------------------
 
-function sales_order_item_controls(&$order, $line_no=-1)
+function sales_order_item_controls(&$order, &$rowcounter, $line_no=-1)
 {
-	start_row();
-	if (isset($_GET['Edit']) && $line_no != -1)
-	{
-		if (!isset($_POST['stock_id']))
-			$_POST['stock_id'] = $order->line_items[$_GET['Edit']]->stock_id;
-		if (!isset($_POST['qty']) || ($_POST['qty'] == ""))
-			$_POST['qty'] = qty_format($order->line_items[$_GET['Edit']]->qty_dispatched);
-		if (!isset($_POST['price']) || ($_POST['price'] == ""))
-			$_POST['price'] = price_format($order->line_items[$_GET['Edit']]->price);
-		if (!isset($_POST['Disc']) || ($_POST['Disc'] == ""))
-			$_POST['Disc'] = percent_format($order->line_items[$_GET['Edit']]->discount_percent*100);
+	alt_table_row_color($rowcounter);
 
-		$_POST['units'] = $order->line_items[$_GET['Edit']]->units;
+	$id = find_submit('Edit');
+	if ($line_no!=-1 && $line_no == $id)
+	{
+		$_POST['stock_id'] = $order->line_items[$id]->stock_id;
+		$_POST['qty'] = qty_format($order->line_items[$id]->qty_dispatched);
+		$_POST['price'] = price_format($order->line_items[$id]->price);
+		$_POST['Disc'] = percent_format($order->line_items[$id]->discount_percent*100);
+		$_POST['units'] = $order->line_items[$id]->units;
 		hidden('stock_id', $_POST['stock_id']);
 		label_cell($_POST['stock_id']);
-		label_cell($order->line_items[$line_no]->item_description);
+		label_cell($order->line_items[$line_no]->item_description, "nowrap");
 	}
 	else
 	{
@@ -378,10 +360,10 @@ function sales_order_item_controls(&$order, $line_no=-1)
 	$line_total = $_POST['qty'] * $_POST['price'] * (1 - $_POST['Disc'] / 100);
 	amount_cell($line_total);
 
-	if (isset($_GET['Edit']))
+	if ($id!=-1)
 	{
-		submit_cells('UpdateItem', _("Update"));
-		submit_cells('CancelItemChanges', _("Cancel"));
+		edit_button_cell('UpdateItem', _("Update"));
+		edit_button_cell('CancelItemChanges', _("Cancel"));
 		hidden('LineNo', $line_no);
 	}
 	else

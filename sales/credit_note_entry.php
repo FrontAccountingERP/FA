@@ -167,9 +167,9 @@ function handle_update_item()
 
 //-----------------------------------------------------------------------------
 
-function handle_delete_item()
+function handle_delete_item($line_no)
 {
-	$_SESSION['Items']->remove_from_cart($_GET['Delete']);
+	$_SESSION['Items']->remove_from_cart($line_no);
 }
 
 //-----------------------------------------------------------------------------
@@ -184,11 +184,9 @@ function handle_new_item()
 		input_num('price'), input_num('Disc') / 100);
 }
 //-----------------------------------------------------------------------------
-if (isset($_GET['Delete']) || isset($_GET['Edit']))
-	copy_from_cn();
-
-if (isset($_GET['Delete']))
-	handle_delete_item();
+$id = find_submit('Delete');
+if ($id!=-1)
+	handle_delete_item($id);
 
 if (isset($_POST['AddItem']) || isset($_POST['UpdateItem']))
 	copy_to_cn();
