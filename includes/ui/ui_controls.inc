@@ -158,6 +158,11 @@ function delete_link_cell($param)
 	label_cell("<a href='" . $_SERVER['PHP_SELF']. "?" . "$param'>" . _("Delete") . "</a>", "nowrap");
 }
 
+function edit_button_cell($name, $value)
+{
+    label_cell("<input type=\"submit\" class=\"editbutton\" name=\"$name\" value=\"$value\" />\n");
+}
+
 //-----------------------------------------------------------------------------------
 
 function start_row($param="") 
