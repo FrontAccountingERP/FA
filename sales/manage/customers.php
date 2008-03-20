@@ -92,7 +92,7 @@ function handle_submit()
 			sales_type) VALUES ('" . $_POST['CustName'] ."', '" . $_POST['address'] . "', '" . $_POST['tax_id'] . "',
 			'" . $_POST['email'] . "', " . $_POST['dimension_id'] . ", " . $_POST['dimension2_id'] . ", '" . $_POST['curr_code'] . "', 
 			" . $_POST['credit_status'] . ", '" . $_POST['payment_terms'] . "', " . input_num('discount')/100 . ", 
-			" . input_num('pymt_discount')/100 . ", " . $_POST['credit_limit'] . ", '" . $_POST['sales_type'] . "')";
+			" . input_num('pymt_discount')/100 . ", " . input_num('credit_limit') . ", '" . $_POST['sales_type'] . "')";
 
 		db_query($sql,"The customer could not be added");
 
