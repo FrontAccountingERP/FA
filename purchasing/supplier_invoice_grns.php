@@ -47,12 +47,15 @@ function check_data()
 
 	if ($check_price_charged_vs_order_price == True) 
 	{
-		if (input_num('ChgPrice')/$_POST['order_price'] > 
-			(1 + (sys_prefs::over_charge_allowance() / 100)))
-		{
+		if ($_POST['order_price']!=input_num('ChgPrice')) {
+		     if ($_POST['order_price']==0 ||
+			input_num('ChgPrice')/$_POST['order_price'] > 
+			    (1 + (sys_prefs::over_charge_allowance() / 100)))
+		    {
 			display_error(_("The price being invoiced is more than the purchase order price by more than the allowed over-charge percentage. The system is set up to prohibit this. See the system administrator to modify the set up parameters if necessary.") .
 			_("The over-charge percentage allowance is :") . sys_prefs::over_charge_allowance() . "%");
 			return false;
+		    }
 		}
 	}
 
