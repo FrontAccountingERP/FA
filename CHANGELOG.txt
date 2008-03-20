@@ -19,6 +19,16 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+20-Mar-2008 Janusz Dobrowolski
+# Excluding delivery notes from Customer Balances, removed warnings. 
+$  /reporting/rep101.php 
+# Divide by zero fix on order_price==0 in new supplier invoice
+$  /purchasing/supplier_invoice_grns.php
+# Database bug fix in new customer entry
+$  /sales/manage/customers.php
+# Small bug fix (warnings) in is_date() function.
+$  /includes/date_functions.inc
+
 18-Mar-2008 Janusz Dobrowolski
 # Line items editor uses POST method - no disappearing shippment info.
 $  /sales/credit_note_entry.php
