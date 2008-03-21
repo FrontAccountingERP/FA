@@ -19,6 +19,17 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+
+21-Mar-2008 Janusz Dobrowolski
+! Total Allocation/Left to Allocate update without page submit.
+$  /includes/ui/ui_view.inc
+   /purchasing/allocations/supplier_allocate.php
+   /sales/allocations/customer_allocate.php
+# Fixed unvisable under IE editbutton
+$  /themes/aqua/default.css
+   /themes/cool/default.css
+   /themes/default/default.css
+
 20-Mar-2008 Janusz Dobrowolski
 # Excluding delivery notes from Customer Balances, removed warnings. 
 $  /reporting/rep101.php 
