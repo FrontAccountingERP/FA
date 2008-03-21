@@ -19,6 +19,9 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+21-Mar-2008 Janusz Dobrowolski
+ # Added missing no_*_list fields in initial sql files
+
 07-Mar-2008 Janusz Dobrowolski
  # Fixed bug selecting allocated transactions as overdue
  $ /sales/inquiry/customer_inquiry.php

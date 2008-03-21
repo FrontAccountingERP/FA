@@ -244,6 +244,9 @@ CREATE TABLE IF NOT EXISTS `0_company` (
   `past_due_days` int(11) NOT NULL default '30',
   `use_dimension` tinyint(1) default '0',
   `f_year` int(11) NOT NULL default '1',
+  `no_item_list` TINYINT(1) NOT NULL DEFAULT '0',
+  `no_customer_list` TINYINT(1) NOT NULL DEFAULT '0',
+  `no_supplier_list` TINYINT(1) NOT NULL DEFAULT '0',
   PRIMARY KEY  (`coy_code`)
 ) TYPE=MyISAM;
 
@@ -1320,7 +1323,7 @@ INSERT INTO `0_chart_types` VALUES (52, 'Financials', 4, -1);
 -- Data in table `company`
 -- 
 
-INSERT INTO `0_company` VALUES (1, 'Company name', '', '', 1, 1, 'N/A', '', '', '', '', '', 'USD', '1500', '4250', '2630', '1430', '4260', '4220', '2050', '3800', '3000', '3000', '3200', '1420', '4010', '4210', '3000', '1410', '5000', '', '', '', '', '', '', 0, 10, 10, 1000, 20, 20, 30, 1, 1);
+INSERT INTO `0_company` VALUES (1, 'Company name', '', '', 1, 1, 'N/A', '', '', '', '', '', 'USD', '1500', '4250', '2630', '1430', '4260', '4220', '2050', '3800', '3000', '3000', '3200', '1420', '4010', '4210', '3000', '1410', '5000', '', '', '', '', '', '', 0, 10, 10, 1000, 20, 20, 30, 1, 1, 0, 0, 0);
 
 -- 
 -- Data in table `credit_status`
