@@ -345,11 +345,6 @@ input.amount {
 .editbutton {
    color:#0000FF;
    background-color:transparent;
-   float:left;
-   filter:alpha(opacity=0);
-   opacity:0;
-   -moz-opacity:0;
-   -khtml-opacity:0;
    border-style:none;
    text-decoration:underline;
    cursor: pointer;
