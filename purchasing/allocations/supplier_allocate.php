@@ -227,7 +227,7 @@ function edit_allocations_for_transaction($type, $trans_no)
        	}
 		
         label_row(_("Total Allocated"), number_format2($total_allocated,user_price_dec()),
-        	"colspan=6 align=right", "align=right");
+        	"colspan=6 align=right", "align=right id='total_allocated'");
         if (-$_SESSION['alloc']->amount - $total_allocated < 0)
         {
         	$font1 = "<font color=red>";
@@ -237,11 +237,11 @@ function edit_allocations_for_transaction($type, $trans_no)
         	$font1 = $font2 = "";
 		$left_to_allocate = price_format(-$_SESSION['alloc']->amount - $total_allocated); 
         label_row(_("Left to Allocate"), $font1 . $left_to_allocate . $font2, "colspan=6 align=right", 
-        	"nowrap align=right");
+        	"nowrap align=right id='left_to_allocate'");
 		end_table();		
 
 		hidden('TotalNumberOfAllocs', $counter);
-		hidden('left_to_allocate', $left_to_allocate);
+//		hidden('left_to_allocate', $left_to_allocate);
     	echo "<br><center>";
        	submit('UpdateDisplay', _("Update"));
        	echo "&nbsp;";

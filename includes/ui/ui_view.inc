@@ -1076,7 +1076,7 @@ function add_js_user_num() {
 
 	$js =
 	"<script language=\"javascript\">
-function price_format(post, num, dec) {
+function price_format(post, num, dec, label) {
 	//num = num.toString().replace(/\\$|\\,/g,'');
 	if(isNaN(num))
 		num = \"0\";
@@ -1094,9 +1094,15 @@ function price_format(post, num, dec) {
 			num.substring(num.length-(4*i+3));
 	 num = ((sign)?'':'-') + num;
 	 if(dec!=0) num = num + '".$ds."' + cents;
-	document.getElementsByName(post)[0].value = num;
+	if(label)
+	    document.getElementById(post).innerHTML = num;
+	else
+	    document.getElementsByName(post)[0].value = num;
 	}
-	function get_amount(doc) {
+	function get_amount(doc, label) {
+	    if(label)
+		var val = document.getElementById(doc).innerHTML;
+	    else
 		var val = document.getElementsByName(doc)[0].value;
 		val = val.replace(/\\".$ts."/g,'');
 		val = val.replace(/\\".$ds."/g,'.');
@@ -1110,25 +1116,32 @@ function add_js_allocate() {
 	$source =
 	"<script>
 	function allocate_all(doc) {
-	var alloc = get_amount('left_to_allocate');
 	var amount = get_amount('amount'+doc);
 	var unallocated = get_amount('un_allocated'+doc);
+	var total = get_amount('total_allocated', 1);
+	var left = get_amount('left_to_allocate', 1);
+
 	if(unallocated<amount) amount = unallocated;
-	if((unallocated-amount)<=alloc){
-		alloc-=unallocated-amount;
-	amount=unallocated;
+	if((unallocated-amount)<=left){
+	    left-=unallocated-amount;
+	    total+=unallocated-amount;
+	    amount=unallocated;
 	}else{
-	amount=amount+alloc;
-	alloc=0;
+	total+=left;
+	amount+=left;
+	left=0;
 	}
 	price_format('amount'+doc, amount, ".user_price_dec().");
-	price_format('left_to_allocate', alloc, ".user_price_dec().");
+	price_format('left_to_allocate', left, ".user_price_dec().", 1);
+	price_format('total_allocated', total, ".user_price_dec().", 1);
 	}
 	function allocate_none(doc) {
 	amount = get_amount('amount'+doc);
-	left = get_amount('left_to_allocate');
-	price_format('left_to_allocate',amount+left, ".user_price_dec().");
+	left = get_amount('left_to_allocate', 1);
+	total = get_amount('total_allocated', 1);
+	price_format('left_to_allocate',amount+left, ".user_price_dec().", 1);
 	price_format('amount'+doc, 0, ".user_price_dec().");
+	price_format('total_allocated', total-amount, ".user_price_dec().", 1);
 	}
 	</script>";
 	add_js_user_num();
