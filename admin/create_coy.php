@@ -11,6 +11,7 @@ include_once($path_to_root . "/includes/ui.inc");
 
 page(_("Create/Update Company"));
 
+$comp_subdirs = array('images', 'pdf_files', 'backup','js_cache');
 
 //---------------------------------------------------------------------------------------------
 
@@ -34,9 +35,24 @@ function check_data()
 
 //---------------------------------------------------------------------------------------------
 
+function remove_connection($id) {
+	global $db_connections;
+
+	$dbase = $db_connections[$id]['dbname'];
+	$err = db_drop_db($db_connections[$id]);
+
+	unset($db_connections[$id]);
+	$conn = array_values($db_connections);
+	$db_connections = $conn;
+	//$$db_connections = array_values($db_connections);
+    return $err;
+}
+//---------------------------------------------------------------------------------------------
+
 function handle_submit()
 {
-	global $db_connections, $def_coy, $tb_pref_counter, $db;
+	global $db_connections, $def_coy, $tb_pref_counter, $db,
+	    $comp_path, $comp_subdirs;
 
 	$new = false;
 
@@ -64,21 +80,13 @@ function handle_submit()
 	}
 	if ((bool)$_POST['def'] == true)
 		$def_coy = $id;
-	$error = write_config_db($new);
-	if ($error == -1)
-		display_error(_("Cannot open the configuration file - ") . $path_to_root . "/config_db.php");
-	else if ($error == -2)
-		display_error(_("Cannot write to the configuration file - ") . $path_to_root . "/config_db.php");
-	else if ($error == -3)
-		display_error(_("The configuration file ") . $path_to_root . "/config_db.php" . _(" is not writable. Change its permissions so it is, then re-run the operation."));
-	if ($error != 0)
-		return false;
 	if (isset($_GET['ul']) && $_GET['ul'] == 1)
 	{
 		$conn = $db_connections[$id];
 		if (($db = db_create_db($conn)) == 0)
 		{
 			display_error(_("Error creating Database: ") . $conn['dbname'] . _(", Please create it manually"));
+			remove_connection($id);
 			set_global_connection();
 			return false;
 		}
@@ -98,6 +106,28 @@ function handle_submit()
 		}
 		set_global_connection();
 	}
+	$error = write_config_db($new);
+	if ($error == -1)
+		display_error(_("Cannot open the configuration file - ") . $path_to_root . "/config_db.php");
+	else if ($error == -2)
+		display_error(_("Cannot write to the configuration file - ") . $path_to_root . "/config_db.php");
+	else if ($error == -3)
+		display_error(_("The configuration file ") . $path_to_root . "/config_db.php" . _(" is not writable. Change its permissions so it is, then re-run the operation."));
+	if ($error != 0) {
+		return false;
+	}
+	$index = "<?php\nheader(\"Location: ../../index.php\");\n?>";
+	
+	if ($new) {
+	    $cdir = $comp_path.'/'.($tb_pref_counter-1);
+	    @mkdir($cdir); 
+	    save_to_file($cdir.'/'.'index.php', 0, $index);
+	    
+	    foreach($comp_subdirs as $dir) {
+		@mkdir($cdir.'/'.$dir);
+		save_to_file($cdir.'/'.$dir.'/'.'index.php', 0, $index);
+	    }
+	}
 	return true;
 }
 
@@ -105,18 +135,18 @@ function handle_submit()
 
 function handle_delete()
 {
-	global $def_coy, $db_connections;
+	global $comp_path, $def_coy, $db_connections, $comp_subdirs;
 
 	$id = $_GET['id'];
 
-	$dbase = $db_connections[$id]['dbname'];
-	$err = db_drop_db($db_connections[$id]);
+	$pref = $db_connections[$id]['tbpref'];
+	if($pref!='')
+	    $pref = substr($pref, 0, strlen($pref)-1); 
 
-	unset($db_connections[$id]);
-	$conn = array_values($db_connections);
-	$db_connections = $conn;
+	$err = remove_connection($id);
+	if ($err == 0)
+		display_error(_("Error removing Database: ") . $dbase . _(", please remove it manuallly"));
 
-	//$$db_connections = array_values($db_connections);
 	if ($def_coy == $id)
 		$def_coy = 0;
 	$error = write_config_db();
@@ -128,10 +158,15 @@ function handle_delete()
 		display_error(_("The configuration file ") . $path_to_root . "/config_db.php" . _(" is not writable. Change its permissions so it is, then re-run the operation."));
 	if ($error != 0)
 		return;
-	if ($err == 0)
-		display_error(_("Error removing Database: ") . $dbase . _(", please remove it manuallly"));
-	else
-		meta_forward($_SERVER['PHP_SELF']);
+
+	$cdir = $comp_path.'/'.$pref;
+	flush_dir($cdir);
+	if (!rmdir($cdir)) {
+		display_error(_("Cannot remove company data directory ") . $cdir);
+		return;
+	}
+	
+	meta_forward($_SERVER['PHP_SELF']);
 }
 
 //---------------------------------------------------------------------------------------------

@@ -96,7 +96,7 @@ function db_drop_db($connection)
         // get table structures
 		foreach ($all_tables as $table)
 		{
-			if (strpos($table['Name'], $connection["tbpref"]) !== false)
+			if (strpos($table['Name'], $connection["tbpref"]) === 0)
 				db_query("DROP TABLE `".$table['Name'] . "`");
 		}
 		//deleting the tables, how??
@@ -435,7 +435,7 @@ function db_export($conn, $filename, $zip='no', $comment='')
 			}
 			elseif ($error)
 			{
-				@unlink($path_to_root . BACKUP_PATH . $backupfile);
+				@unlink(BACKUP_PATH . $backupfile);
 				return false;
 			}
 
@@ -453,7 +453,7 @@ function db_export($conn, $filename, $zip='no', $comment='')
 	}
 	else
 	{
-		@unlink($path_to_root . BACKUP_PATH . $backupfile);
+		@unlink(BACKUP_PATH . $backupfile);
 		return false;
 	}
 
@@ -468,7 +468,7 @@ function db_export($conn, $filename, $zip='no', $comment='')
 	}
 	else
 	{
-		@unlink($path_to_root . BACKUP_PATH . $backupfile);
+		@unlink(BACKUP_PATH . $backupfile);
 		return false;
 	}
     return $backupfile;
@@ -531,7 +531,7 @@ function save_to_file($backupfile, $zip, $fileData)
 
     if ($zip == "gzip")
     {
-        if ($zp = @gzopen($path_to_root . BACKUP_PATH . $backupfile, "a9"))
+        if ($zp = @gzopen(BACKUP_PATH . $backupfile, "a9"))
         {
 			@gzwrite($zp, $fileData);
 			@gzclose($zp);
@@ -607,7 +607,7 @@ function save_to_file($backupfile, $zip, $fileData)
         // total # of entries "on this disk", total # of entries overall, size of central dir, offset to start of central dir, .zip file comment length
         $fileData .= pack('v', 1) . pack('v', 1) . pack('V', strlen($cdrec)) . pack('V', strlen($fr)) . "\x00\x00";
 
-        if ($zp = @fopen($path_to_root . BACKUP_PATH . $backupfile, "a"))
+        if ($zp = @fopen(BACKUP_PATH . $backupfile, "a"))
         {
 			@fwrite($zp, $fileData);
 			@fclose($zp);
@@ -622,7 +622,7 @@ function save_to_file($backupfile, $zip, $fileData)
     }
     else
     {
-        if ($zp = @fopen($path_to_root . BACKUP_PATH . $backupfile, "a"))
+        if ($zp = @fopen(BACKUP_PATH . $backupfile, "a"))
         {
 			@fwrite($zp, $fileData);
 			@fclose($zp);

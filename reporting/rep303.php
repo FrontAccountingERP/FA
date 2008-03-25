@@ -94,7 +94,7 @@ function getDemandAsmQty($stockid, $location)
 
 function print_stock_check()
 {
-    global $path_to_root, $pic_height, $pic_width;
+    global $comp_path, $path_to_root, $pic_height, $pic_width;
 
     include_once($path_to_root . "reporting/includes/pdf_report.inc");
 
@@ -166,7 +166,7 @@ function print_stock_check()
 		$rep->TextCol(4, 5, number_format2($trans['QtyOnHand'] - $demandqty, $dec));
 		if ($pictures)
 		{
-			$image = $path_to_root . "inventory/manage/image/" . $user_comp . "/" . $trans['stock_id'] . ".jpg";
+			$image = $comp_path .'/'. $user_comp . '/images/' . $trans['stock_id'] . '.jpg';
 			if (file_exists($image))
 			{
 				$rep->NewLine();

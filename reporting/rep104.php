@@ -54,7 +54,7 @@ function get_prices($category=0, $salestype=0)
 
 function print_price_listing()
 {
-    global $path_to_root, $pic_height, $pic_width;
+    global $comp_path, $path_to_root, $pic_height, $pic_width;
 
     include_once($path_to_root . "reporting/includes/pdf_report.inc");
 
@@ -145,7 +145,7 @@ function print_price_listing()
 		}	
 		if ($pictures)
 		{
-			$image = $path_to_root . "inventory/manage/image/" . $user_comp . "/" . $myrow['stock_id'] . ".jpg";
+			$image = $comp_path . '/'. $user_comp . "/images/" . $myrow['stock_id'] . ".jpg";
 			if (file_exists($image))
 			{
 				$rep->NewLine();

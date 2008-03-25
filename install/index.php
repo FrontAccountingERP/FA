@@ -1,5 +1,4 @@
 <?php
-
 error_reporting(E_ALL);
 ini_set("display_errors", "On");
 // Start a session
@@ -32,6 +31,7 @@ else
 	}
 }
 $path_to_root = "..";
+include_once($path_to_root.'/config.php');
 
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -128,20 +128,16 @@ function change_os(type) {
 		<tr>
 			<td style="color: #666666;">config_db.php</td>
 			<td><?php if(is_writable($path_to_root.'/config_db.php')) { echo '<font class="good">Writeable</font>'; } elseif(!file_exists($path_to_root.'/config_db.php')) { echo '<font class="bad">File Not Found</font>'; } else { echo '<font class="bad">Unwriteable</font>'; } ?></td>
-			<td style="color: #666666;">inventory/manage/image/</td>
-			<td><?php if(is_writable($path_to_root.'/inventory/manage/image/')) { echo '<font class="good">Writeable</font>'; } elseif(!file_exists($path_to_root.'/inventory/manage/image/')) { echo '<font class="bad">Directory Not Found</font>'; } else { echo '<font class="bad">Unwriteable</font>'; } ?></td>
+			<td style="color: #666666;">modules/</td>
+			<td><?php if(is_writable($path_to_root.'/modules/')) { echo '<font class="good">Writeable</font>'; } elseif(!file_exists($path_to_root.'/lang/')) { echo '<font class="bad">Directory Not Found</font>'; } else { echo '<font class="bad">Unwriteable</font>'; } ?></td>
 		</tr>
 		<tr>
 			<td style="color: #666666;">lang/</td>
 			<td><?php if(is_writable($path_to_root.'/lang/')) { echo '<font class="good">Writeable</font>'; } elseif(!file_exists($path_to_root.'/lang/')) { echo '<font class="bad">Directory Not Found</font>'; } else { echo '<font class="bad">Unwriteable</font>'; } ?></td>
-			<td style="color: #666666;">reporting/pdf_files/</td>
-			<td><?php if(is_writable($path_to_root.'/reporting/pdf_files/')) { echo '<font class="good">Writeable</font>'; } elseif(!file_exists($path_to_root.'/reporting/pdf_files/')) { echo '<font class="bad">Directory Not Found</font>'; } else { echo '<font class="bad">Unwriteable</font>'; } ?></td>
-		</tr>
-		<tr>
-			<td style="color: #666666;">modules/</td>
-			<td><?php if(is_writable($path_to_root.'/modules/')) { echo '<font class="good">Writeable</font>'; } elseif(!file_exists($path_to_root.'/lang/')) { echo '<font class="bad">Directory Not Found</font>'; } else { echo '<font class="bad">Unwriteable</font>'; } ?></td>
-			<td style="color: #666666;">admin/backup/</td>
-			<td><?php if(is_writable($path_to_root.'/admin/backup/')) { echo '<font class="good">Writeable</font>'; } elseif(!file_exists($path_to_root.'/admin/backup/')) { echo '<font class="bad">Directory Not Found</font>'; } else { echo '<font class="bad">Unwriteable</font>'; } ?></td>
+			<td style="color: #666666;"><?php echo 'Company data dirs ('.  $comp_path. '/*)'; ?></td>
+			<td><?php if(is_writable($comp_path) && is_writable($comp_path.'/0') && is_writable($comp_path.'/0/images')) 
+			{ echo '<font class="good">Writeable</font>'; } elseif(!file_exists($comp_path)) {
+			 echo '<font class="bad">Directory Not Found</font>'; } else { echo '<font class="bad">Unwriteable</font>'; } ?></td>
 		</tr>
 		</table>
 		<table cellpadding="3" cellspacing="0" width="100%" align="center">

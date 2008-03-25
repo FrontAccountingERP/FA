@@ -39,7 +39,7 @@ if (isset($_FILES['pic']) && $_FILES['pic']['name'] != '')
 {
 	$result = $_FILES['pic']['error'];
  	$upload_file = 'Yes'; //Assume all is well to start off with
-	$filename = $path_to_root . "/inventory/manage/image/$user_comp/";
+	$filename = $comp_path . "/$user_comp/images";
 	if (!file_exists($filename))
 	{
 		mkdir($filename);
@@ -206,7 +206,7 @@ if (isset($_POST['delete']) && strlen($_POST['delete']) > 1)
 
 		$stock_id = $_POST['NewStockID'];
 		delete_item($stock_id);
-		$filename = $path_to_root . "/inventory/manage/image/$user_comp/$stock_id.jpg";
+		$filename = $comp_path . "/$user_comp/images/$stock_id.jpg";
 		if (file_exists($filename))
 			unlink($filename);
 		meta_forward($_SERVER['PHP_SELF']);
@@ -300,9 +300,9 @@ start_table("$table_style2 width=40%");
 start_row();
 label_cells(_("Image File (.jpg)") . ":", "<input type='file' id='pic' name='pic'>");
 // Add Image upload for New Item  - by Joe
-if (isset($_POST['NewStockID']) && file_exists("$path_to_root/inventory/manage/image/$user_comp/".$_POST['NewStockID'].".jpg")) 
+if (isset($_POST['NewStockID']) && file_exists("$comp_path/$user_comp/images/".$_POST['NewStockID'].".jpg")) 
 {
-	$stock_img_link = "<img src='$path_to_root/inventory/manage/image/$user_comp/".$_POST['NewStockID'].".jpg' width='$pic_width' height='$pic_height' border='0'>";
+	$stock_img_link = "<img src='$comp_path/$user_comp/images/".$_POST['NewStockID'].".jpg' width='$pic_width' height='$pic_height' border='0'>";
 } 
 else 
 {

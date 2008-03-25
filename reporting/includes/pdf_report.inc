@@ -3,7 +3,7 @@
 $page_security = 8;
 include_once($path_to_root . "reporting/includes/class.pdf.inc");
 include_once($path_to_root . "admin/db/company_db.inc");
-
+include_once($path_to_root . "config.php");
 class FrontReport extends Cpdf
 {
 	var $size;
@@ -265,7 +265,7 @@ class FrontReport extends Cpdf
 
 	function Header2($myrow, $branch, $sales_order, $bankaccount, $doctype)
 	{
-		global $path_to_root, $print_as_quote, $print_invoice_no;
+		global $comp_path, $path_to_root, $print_as_quote, $print_invoice_no;
 
 		$this->pageNumber++;
 		if ($this->pageNumber > 1)
@@ -325,7 +325,7 @@ class FrontReport extends Cpdf
 		$this->row = $upper - 2 * $this->lineHeight - 2;
 		if ($this->company['coy_logo'] != '')
 		{
-			$logo = $path_to_root . "themes/default/images/" . $this->company['coy_logo'];
+			$logo = $comp_path .'/'. user_company() . "/images/" . $this->company['coy_logo'];
 			$this->AddImage($logo, $ccol, $iline1 + 5, 250, 40);
 		}
 		else
@@ -604,7 +604,7 @@ class FrontReport extends Cpdf
 
 	function End($email=0, $subject=null, $myrow=null, $doctype = 0)
 	{
-		global $go_debug, $path_to_root;
+		global $go_debug, $path_to_root, $comp_path;
 
 		// this is no good in IE so has been replaced, see down under
 		// but good for debugging purposes in IE
@@ -631,7 +631,7 @@ class FrontReport extends Cpdf
 		{
 			$buf = $this->output();
 			$len = strlen($buf);
-			$dir = './pdf_files';
+			$dir =  $comp_path.'/'.user_company(). '/pdf_files';
 			//save the file
 			if (!file_exists($dir))
 			{

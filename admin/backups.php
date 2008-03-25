@@ -46,7 +46,7 @@ echo "
 			alert('" . _('This extension can not be be viewed: ') . "' + ext)
 			return
 		}	
-		window.open('" . $path_to_root . BACKUP_PATH . "'+pFilename, '', 'toolbar=no,scrollbars=yes')
+		window.open('" . BACKUP_PATH . "'+pFilename, '', 'toolbar=no,scrollbars=yes')
 	}
 	function deleteBackup() {
 		pFilename = document.forms[0].cmb_backups.options[document.forms[0].cmb_backups.selectedIndex].value
@@ -128,14 +128,14 @@ function handle_form($conn)
 		//Download the file
 		if ($_GET['c']=='d') 
 		{
-			download_file($path_to_root . BACKUP_PATH . $_GET['fn']);
+			download_file(BACKUP_PATH . $_GET['fn']);
 			exit;
 		}
 		//Delete the file
 		if ($_GET['c']=='df') 
 		{
 			$filename = $_GET['fn'];
-			@unlink($path_to_root . BACKUP_PATH . $filename);
+			@unlink(BACKUP_PATH . $filename);
 			header("Location: backups.php?c=dff&fn=" . urlencode($filename));
 			return "";
 		}
@@ -166,7 +166,7 @@ function handle_form($conn)
 		if ($_GET['c']=='r') 
 		{
 			$filename=$_GET['fn'];
-			restore_backup($path_to_root . BACKUP_PATH . $filename, $conn);
+			restore_backup(BACKUP_PATH . $filename, $conn);
 			header("Location: backups.php?c=rs&fn=" . urlencode($filename));
 			return "";
 		}
@@ -217,7 +217,7 @@ function get_backup_file_combo()
 	global $path_to_root;
 	$ar_files = array();
 
-    $dh = opendir($path_to_root . BACKUP_PATH);
+    $dh = opendir(BACKUP_PATH);
 	while (($file = readdir($dh)) !== false)
 		$ar_files[] = $file;
 	closedir($dh);
@@ -266,8 +266,8 @@ function valid_paths()
 	global $path_to_root;
 	
 	$st = "";
-	if (!file_exists($path_to_root . BACKUP_PATH)) 	
-		$st .= "&nbsp;&nbsp;&nbsp;-&nbsp;" . _("cannot find backup directory") . " - " . $path_to_root . BACKUP_PATH . "<br>";
+	if (!file_exists(BACKUP_PATH)) 	
+		$st .= "&nbsp;&nbsp;&nbsp;-&nbsp;" . _("cannot find backup directory") . " - " . BACKUP_PATH . "<br>";
 	return $st;
 }
 
