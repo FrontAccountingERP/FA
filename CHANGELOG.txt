@@ -19,6 +19,39 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+25-Mar-2008 Janusz Dobrowolski
+! Per company pdf, backup and graphics directories in 'company' dir.
+$  /company (new dir)
+   /company/0 (new dir)
+   /company/0/images/ (new dir)
+   /company/0/images/102.jpg	(moved from inventory/manage/image)
+   /company/0/images/103.jpg	(moved from inventory/manage/image)
+   /company/0/images/104.jpg	(moved from inventory/manage/image)
+   /company/0/images/logo_frontaccounting.jpg	(moved from themes/default/images)
+   /company/0/images/logo_frontaccounting.png	(moved from themes/default/images)
+   /admin/backups.php
+   /admin/create_coy.php
+   /admin/db/maintenance_db.inc
+   /install/index.php
+   /reporting/rep102.php
+   /reporting/rep104.php
+   /reporting/rep202.php
+   /reporting/rep303.php
+   /reporting/rep706.php
+   /reporting/rep707.php
+   /reporting/includes/pdf_report.inc
+   /inventory/manage/items.php
+
++ jscript component caching (enables browser caching, prepare for compression)
+$  /includes/session.inc
+   /includes/main.inc
+   /includes/page/header.inc
+   /includes/ui/ui_view.inc
+   /admin/display_prefs.php
+   /config.php
+
+- Removed obsolete file
+$  /sales/includes/ui/print_invoice.inc
 
 21-Mar-2008 Janusz Dobrowolski
 ! Total Allocation/Left to Allocate update without page submit.
