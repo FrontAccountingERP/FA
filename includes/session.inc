@@ -16,6 +16,25 @@
 
     include_once($path_to_root . "/includes/current_user.inc");
 
+/*
+	// Make sure this directory exists and is writable!
+	$session_save_path = dirname(__FILE__).'/tmp/';
+*/
+
+	$session_save_path = session_save_path();
+	if (strpos($session_save_path, ";") !== false)
+		$session_save_path = substr($session_save_path, strpos($session_save_path, ";") + 1);
+
+	if (isset($session_save_path))
+	{
+		session_save_path($session_save_path);
+		unset($session_save_path);
+	}
+	if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_to_root']))
+		die("Restricted access");
+	include_once($path_to_root . "/config_db.php");
+	include_once($path_to_root . "/includes/lang/language.php");
+
     include_once($path_to_root . "/config.php");
 
     include_once($path_to_root . "/includes/main.inc");
@@ -103,15 +122,6 @@
 		}
    	}
 
-	global $js_lib, $js_static, $js_path;
-	$js_path = $path_to_root.'/js/';
-	// standard external js scripts included in all files
-	$js_static = array('behaviour.js');
-	// additional js source included in header
-	$js_lib = array();
-	
-	add_js_user_num(); // add user native numeric input functions
-
     // Run with debugging messages for the system administrator(s) but not anyone else
     /*if (in_array(15, $security_groups[$_SESSION["AccessLevel"]])) {
         $debug = 1;
@@ -121,4 +131,7 @@
 
 	//----------------------------------------------------------------------------------------
    	check_page_security($page_security);
+
+
+
 ?>

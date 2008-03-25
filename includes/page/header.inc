@@ -32,7 +32,7 @@ function page_header($title, $no_menu=false, $is_index=false, $onload="", $js=""
 	// titles and screen header
 	global $db_connections, $path_to_root, $def_app, $applications,
 		$help_base_url, $help_page_url, $use_popup_windows,
-		$js_lib, $js_static, $js_path;
+		$js_lib, $js_static, $js_path, $js_userlib, $comp_path;
 
 	if (isset($_GET['ajax'])) return;
 
@@ -48,12 +48,17 @@ function page_header($title, $no_menu=false, $is_index=false, $onload="", $js=""
 		$js = get_js_open_window(900, 500);
 	}
 
+	add_js_user_num(); // add user native numeric input functions
 	// javascript includes collect
 	add_js_source($js);
 	$js ='';
 	foreach($js_static as $jsfile) {
 	  $js .= '<script language="javascript" type="text/javascript" src="'.
 		$js_path . $jsfile . '"></script>';
+	}
+	foreach($js_userlib as $jsfile) {
+	  $js .= '<script language="javascript" type="text/javascript" src="'.
+	    $jsfile . '"></script>';
 	}
 	foreach($js_lib as $text) {
 	  $js .= $text;

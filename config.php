@@ -9,25 +9,6 @@
 	|                                                   |
 	\--------------------------------------------------*/
 
-/*
-	// Make sure this directory exists and is writable!
-	$session_save_path = dirname(__FILE__).'/tmp/';
-
-*/
-	$session_save_path = session_save_path();
-	if (strpos($session_save_path, ";") !== false)
-		$session_save_path = substr($session_save_path, strpos($session_save_path, ";") + 1);
-
-	if (isset($session_save_path))
-	{
-		session_save_path($session_save_path);
-		unset($session_save_path);
-	}
-	if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_to_root']))
-		die("Restricted access");
-	include_once($path_to_root . "/config_db.php");
-	include_once($path_to_root . "/includes/lang/language.php");
-
 	//--------------------------------------------------
 
 	// User configurable variables
@@ -37,9 +18,13 @@
 	Debugging info level also determined by settings in PHP.ini
 	if $debug=1 show debugging info, dont show if $debug=0 */
 
+if (!isset($path_to_root))
+//if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_to_root']))
+	die("Restricted access");
+
 	$debug 			= 1;
 	$show_sql 		= 0;
-	$go_debug 		= 0;
+	$go_debug 		= 1;
 	if ($go_debug == 1)
 	{
 		error_reporting(E_ALL);
@@ -74,6 +59,9 @@
  	/* Integrated base Wiki Help URL or null if not used */
 	$help_base_url = $path_to_root.'/modules/wiki/index.php?n='._('Help').'.';
 
+	/* per user data/cache directory */
+	$comp_path = $path_to_root.'/company';
+	
 	/* allow alpha characters in accounts. 0 = numeric, 1 = alpha numeric, 2 = uppercase alpha numeric */
 	$accounts_alpha = 0;
 
@@ -176,6 +164,14 @@
 
 	//MySQL Backup and Restore Settings
 
-	define("BACKUP_PATH", "/admin/backup/");
-
+if(isset($_SESSION["wa_current_user"])) {
+	define("BACKUP_PATH", $comp_path.'/'.user_company()."/backup/");
+}
+	// static js files path
+	$js_path = $path_to_root.'/js/';
+	// standard external js scripts included in all files
+	$js_static = array('behaviour.js');
+	// additional js source included in header
+	$js_lib = $js_userlib = array();
+	
 ?>

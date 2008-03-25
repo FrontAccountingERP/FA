@@ -555,6 +555,12 @@ function get_js_open_window($width, $height)
 
 function get_js_form_entry($edit_name, $sel_name, $next_name)
 {
+    global $comp_path;
+    $fpath = $comp_path.'/'.user_company().'/js_cache/form_entry.js';
+
+    if (!file_exists($fpath)) {
+    
+
 	$js = "\n<script type=\"text/javascript\">\n"
 		. "<!--\n"
 		. "function recalcAccounts()\n"
@@ -588,7 +594,11 @@ function get_js_form_entry($edit_name, $sel_name, $next_name)
 		. "}\n"
 		. "-->\n"
 		. "</script>\n";
-	return $js;
+     cache_js_file($fpath, $js);
+    } 
+    add_js_ufile($fpath);
+
+	return '';
 }
 
 function get_js_set_focus($name)
@@ -633,18 +643,8 @@ function get_js_png_fix()
 
 function get_js_date_picker()
 {
-	global $dateseps, $date_system;
-
-	$how = user_date_format();				// 0 = us/ca, 1 = eu, au, nz, 2 = jp, sw
-	$sep = $dateseps[user_date_sep()];		// date separator
-	$wstart = (($date_system == 1 || $date_system == 2) ? 6 : ($how == 0 ? 0 : 1));			// weekstart (sun = 0, mon = 1)
-	$months = array(_("January"),_("February"),_("March"),_("April"),_("May"),_("June"),_("July"),_("August"),_("September"),_("October"),_("November"),_("December"));
-	$wdays = array(_("Su"),_("Mo"),_("Tu"),_("We"),_("Th"),_("Fr"),_("Sa"));
-	$back = _("Back");
-	if ($date_system == 1)
-		list($cyear, $cmon, $cday) = gregorian_to_jalali(date("Y"), date("n"), date("j"));
-	else if ($date_system == 2)
-		list($cyear, $cmon, $cday) = gregorian_to_islamic(date("Y"), date("n"), date("j"));
+    global $comp_path;
+    $fpath = $comp_path.'/'.user_company().'/js_cache/'.'date_picker.js';
 
 	$js = "<style>
 #CCIFrame { display: none; left: 0px; position: absolute; top: 0px; height: 250px; width: 250px; z-index: 99;}
@@ -667,8 +667,25 @@ function get_js_date_picker()
 #CC .empty { background-color: #CCC; border: 1px solid #FFF;}
 </style>
 ";
-	$js .= "<script type=\"text/javascript\">
-<!--\n
+    add_js_source($js);
+    
+    if (!file_exists($fpath)) {
+    
+	global $dateseps, $date_system;
+
+	$how = user_date_format();				// 0 = us/ca, 1 = eu, au, nz, 2 = jp, sw
+	$sep = $dateseps[user_date_sep()];		// date separator
+	$wstart = (($date_system == 1 || $date_system == 2) ? 6 : ($how == 0 ? 0 : 1));			// weekstart (sun = 0, mon = 1)
+	$months = array(_("January"),_("February"),_("March"),_("April"),_("May"),_("June"),_("July"),_("August"),_("September"),_("October"),_("November"),_("December"));
+	$wdays = array(_("Su"),_("Mo"),_("Tu"),_("We"),_("Th"),_("Fr"),_("Sa"));
+	$back = _("Back");
+	if ($date_system == 1)
+		list($cyear, $cmon, $cday) = gregorian_to_jalali(date("Y"), date("n"), date("j"));
+	else if ($date_system == 2)
+		list($cyear, $cmon, $cday) = gregorian_to_islamic(date("Y"), date("n"), date("j"));
+
+
+	$js = "
 function positionInfo(object) {
   var p_elm = object;
   this.getElementLeft = getElementLeft;
@@ -1060,23 +1077,30 @@ function changeCCMonth(change) {
   cC.changeMonth(change);
 }
 document.write(\"<iframe id='CCIframe' src='javascript:false;' frameBorder='0' scrolling='no'></iframe>\");
-document.write(\"<div id='CC'></div>\");
--->
-</script>
-";
-	return $js;
+document.write(\"<div id='CC'></div>\");";
+
+     cache_js_file($fpath, $js);
+    } 
+    add_js_ufile($fpath);
+
+ return '';
 }
+
 //
 //	Javascript conversions to/from user numeric format.
 //
 function add_js_user_num() {
+
+    global $comp_path;
+    $fpath = $comp_path.'/'.user_company().'/js_cache/'.'user_num.js';
+
+    if (!file_exists($fpath)) {
+    
 	global $thoseps, $decseps;
 	$ts = $thoseps[user_tho_sep()];
 	$ds = $decseps[user_dec_sep()];
 
-	$js =
-	"<script language=\"javascript\">
-function price_format(post, num, dec, label) {
+	$js = "function price_format(post, num, dec, label) {
 	//num = num.toString().replace(/\\$|\\,/g,'');
 	if(isNaN(num))
 		num = \"0\";
@@ -1108,14 +1132,21 @@ function price_format(post, num, dec, label) {
 		val = val.replace(/\\".$ds."/g,'.');
 		return 1*val;
 	}
-	</script>";
-  add_js_source($js);
+	";
+
+     cache_js_file($fpath, $js);
+    } 
+    add_js_ufile($fpath);
 }
 
 function add_js_allocate() {
-	$source =
-	"<script>
-	function allocate_all(doc) {
+    global $comp_path;
+    $fpath = $comp_path.'/'.user_company().'/js_cache/'.'allocate.js';
+
+    if (!file_exists($fpath)) {
+    
+	$js =
+	"function allocate_all(doc) {
 	var amount = get_amount('amount'+doc);
 	var unallocated = get_amount('un_allocated'+doc);
 	var total = get_amount('total_allocated', 1);
@@ -1142,10 +1173,12 @@ function add_js_allocate() {
 	price_format('left_to_allocate',amount+left, ".user_price_dec().", 1);
 	price_format('amount'+doc, 0, ".user_price_dec().");
 	price_format('total_allocated', total-amount, ".user_price_dec().", 1);
-	}
-	</script>";
-	add_js_user_num();
-	add_js_source($source);
+	}";
+
+     cache_js_file($fpath, $js);
+    } 
+    add_js_ufile($fpath);
+    add_js_user_num();
 }
 
 function alert($msg)
