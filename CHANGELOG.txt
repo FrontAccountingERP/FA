@@ -19,6 +19,14 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+26-Mar-2008 Janusz Dobrowolski
+# Bug fixes in purchase module related to tax structure changes.
+$  /purchasing/includes/supp_trans_class.inc
+   /purchasing/includes/db/invoice_db.inc
+   /purchasing/includes/db/invoice_items_db.inc
+   /purchasing/includes/ui/invoice_ui.inc
+   /reporting/rep105.php
+
 25-Mar-2008 Janusz Dobrowolski
 ! Per company pdf, backup and graphics directories in 'company' dir.
 $  /company (new dir)
@@ -42,7 +50,7 @@ $  /company (new dir)
    /reporting/includes/pdf_report.inc
    /inventory/manage/items.php
 
-+ jscript component caching (enables browser caching, prepare for compression)
++ jscript component caching (enables browser caching and future compression)
 $  /includes/session.inc
    /includes/main.inc
    /includes/page/header.inc
