@@ -147,7 +147,7 @@ function print_order_status_list()
 		$rep->TextCol(0, 1,	$myrow['stk_code']);
 		$rep->TextCol(1, 2,	$myrow['description']);
 		$rep->TextCol(2, 3,	number_format2($myrow['quantity'], $dec));
-		$rep->TextCol(3, 4,	number_format2($myrow['qty_invoiced'], $dec));
+		$rep->TextCol(3, 4,	number_format2($myrow['qty_sent'], $dec));
 		$rep->TextCol(4, 5,	number_format2($myrow['quantity'] - $myrow['qty_sent'], $dec));
 		if ($myrow['quantity'] - $myrow['qty_sent'] > 0)
 		{

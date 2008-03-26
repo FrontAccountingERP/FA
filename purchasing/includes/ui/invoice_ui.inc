@@ -10,7 +10,6 @@ function copy_from_trans(&$supp_trans)
 	$_POST['supp_reference'] = $supp_trans->supp_reference;
 	$_POST['reference'] = $supp_trans->reference;
 	$_POST['supplier_id'] = $supp_trans->supplier_id;
-	$_POST['tax_group_id'] = $supp_trans->tax_group_id;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -22,8 +21,6 @@ function copy_to_trans(&$supp_trans)
 	$supp_trans->due_date = $_POST['due_date'];
 	$supp_trans->supp_reference = $_POST['supp_reference'];
 	$supp_trans->reference = $_POST['reference'];
-	$supp_trans->tax_group_id = $_POST['tax_group_id'];
-
 
 	$supp_trans->ov_amount = 0; /* for starters */
 	if (count($supp_trans->grn_items) > 0)
@@ -107,11 +104,7 @@ function invoice_header(&$supp_trans)
 		exchange_rate_display($supplier_currency, $company_currency, $_POST['tran_date']);
 	}
 
-
-	if (!isset($_POST['tax_group_id']))
-       	$_POST['tax_group_id'] = $supp_trans->tax_group_id;
-    tax_groups_list_row(_("Tax Group:"), 'tax_group_id', $_POST['tax_group_id'], true);
-
+  label_row(_("Tax Group:"), $supp_trans->tax_description);
 	echo "</table>";
 
 	echo "</td>";
@@ -130,7 +123,7 @@ function invoice_totals(&$supp_trans)
     start_table("$table_style width=95%");
    	label_row(_("Sub-total:"), price_format( $supp_trans->ov_amount), "align=right", "align=right");
 
-    $taxes = $supp_trans->get_taxes($_POST['tax_group_id']);
+    $taxes = $supp_trans->get_taxes($supp_trans->tax_group_id);
     $tax_total = display_edit_tax_items($taxes, 1, 0); // tax_included==0 (we are the company)
 
     $display_total = price_format($supp_trans->ov_amount + $tax_total);

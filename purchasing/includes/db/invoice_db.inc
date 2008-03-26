@@ -75,6 +75,7 @@ function add_supp_invoice($supp_trans) // do not receive as ref because we chang
 	
 	$tax_total = 0;
     $taxes = $supp_trans->get_taxes($supp_trans->tax_group_id);
+
     foreach ($taxes as $taxitem) 
     {
     	$tax_total += $taxitem['Value'];
@@ -145,7 +146,7 @@ function add_supp_invoice($supp_trans) // do not receive as ref because we chang
     	}
     	
 		$line_taxfree = $entered_grn->taxfree_charge_price($supp_trans->tax_group_id);
-		$line_tax = $entered_grn->full_charge_price() - $line_taxfree;    	
+		$line_tax = $entered_grn->full_charge_price($supp_trans->tax_group_id) - $line_taxfree;    	
     	
     	update_supp_received_items_for_invoice($entered_grn->id, $entered_grn->po_detail_item, 
     		$entered_grn->this_quantity_inv, $entered_grn->chg_price);
@@ -190,9 +191,9 @@ function add_supp_invoice($supp_trans) // do not receive as ref because we chang
     		
     		if (!$supp_trans->is_invoice)
     			$taxitem['Value'] = -$taxitem['Value'];
-    		
+    		// here we suppose that tax is never included in price (we are company customer).
 			add_supp_invoice_tax_item($trans_type, $invoice_id, $taxitem['tax_type_id'],
-				$taxitem['rate'], $taxitem['included_in_price'], $taxitem['Value']);       		
+				$taxitem['rate'], 0, $taxitem['Value']);       		
     		
     		add_gl_trans_supplier($trans_type, $invoice_id, $date_, 
     			$taxitem['purchasing_gl_code'], 0, 0, $taxitem['Value'], 
