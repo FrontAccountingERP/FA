@@ -18,8 +18,7 @@
 	Debugging info level also determined by settings in PHP.ini
 	if $debug=1 show debugging info, dont show if $debug=0 */
 
-if (!isset($path_to_root))
-//if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_to_root']))
+if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_to_root']))
 	die("Restricted access");
 
 	$debug 			= 1;
