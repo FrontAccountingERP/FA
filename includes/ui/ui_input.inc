@@ -38,7 +38,7 @@ function hidden($name, $value)
 
 function submit($name, $value, $echo=true)
 {
-
+	default_focus($name);
 	$submit_str = "<input type=\"submit\" class=\"inputsubmit\" name=\"$name\" value=\"$value\">\n";
 	if ($echo)
 		echo $submit_str;
@@ -119,6 +119,7 @@ function submit_row($name, $value, $right=true, $extra="")
 
 function button($name, $value, $onclick)
 {
+  default_focus($name);
   echo "<input type=\"button\" class=\"inputsubmit\" name=\"$name\" value=\"$value\" onclick=\"$onclick\" />\n";
 }
 
@@ -140,6 +141,7 @@ function check_value($name)
 
 function check($label, $name, $value, $submit_on_change=false)
 {
+	default_focus($name);
 	if ($label)
 		echo $label . "  ";
 
@@ -226,6 +228,7 @@ function label_row($label, $value, $params="", $params2="", $leftfill=0)
 
 function text_cells($label, $name, $value, $size="", $max="", $params="", $post_label="", $disabled="")
 {
+	default_focus($name);
 	if ($label != null)
 		label_cell($label, $params);
 	echo "<td>";
@@ -242,6 +245,7 @@ function text_cells($label, $name, $value, $size="", $max="", $params="", $post_
 
 function text_cells_ex($label, $name, $size, $max=null, $init=null, $params=null, $post_label=null)
 {
+	default_focus($name);
 	if (!isset($_POST[$name]) || $_POST[$name] == "")
 	{
 		if ($init)
@@ -454,6 +458,7 @@ function small_qty_cells($label, $name, $init=null, $params=null, $post_label=nu
 
 function textarea_cells($label, $name, $value, $cols, $rows, $params="")
 {
+	default_focus($name);
 	if ($label != null)
 		echo "<td $params>$label</td>\n";
 	if ($value == null)
@@ -472,6 +477,7 @@ function textarea_row($label, $name, $value, $cols, $rows, $params="")
 
 function text_row_with_submit($label, $name, $value, $size, $max, $input_name, $input_value)
 {
+	default_focus($name);
 	echo "<tr><td>$label</td>\n";
 	echo "<td>";
 

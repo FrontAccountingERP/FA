@@ -20,7 +20,6 @@ function start_form($multi=false, $sid=false, $action="", $name="")
 	else
 		echo "<form method='post' action='$action' $name>\n";	
 
-	echo "<input type=\"hidden\" id=\"_focus\" name=\"_focus\" value=\"\">";
 }
 
 //---------------------------------------------------------------------------------
@@ -29,6 +28,7 @@ function end_form($breaks=0)
 {
 	if ($breaks)
 		br($breaks);
+	echo "<input type=\"hidden\" name=\"_focus\" value=\"".$_POST['_focus']."\">\n";
 	echo "</form>\n";
 }
 

@@ -9,7 +9,6 @@ function page_footer($no_menu=false, $is_index=false)
 
 	if (isset($_GET['ajax'])) return;
 
-	echo set_js_focus();	// set focus on input (if $focus_on exists)
 	if (function_exists('hyperlink_back'))
 		hyperlink_back();
 	if ($no_menu == false) 

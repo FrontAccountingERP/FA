@@ -334,7 +334,7 @@ function sales_order_item_controls(&$order, &$rowcounter, $line_no=-1)
 		}
 		else
 		{
-		text_cells(null, "StockID2", '', 12, 10, "", "", "class='combo' rel='stock_id' onblur='submit();'");
+		text_cells(null, "StockID2", '', 12, 10, "", "", "class='combo' rel='stock_id'"/* onblur='this.form.submit();'"*/);
 		stock_items_list_cells(null, 'stock_id', null, false, false, "class='combo' rel='StockID2'");
 		}
 		$item_info = get_item_edit_info($_POST['stock_id']);
@@ -365,6 +365,7 @@ function sales_order_item_controls(&$order, &$rowcounter, $line_no=-1)
 		edit_button_cell('UpdateItem', _("Update"));
 		edit_button_cell('CancelItemChanges', _("Cancel"));
 		hidden('LineNo', $line_no);
+		set_focus('qty');
 	}
 	else
 	{

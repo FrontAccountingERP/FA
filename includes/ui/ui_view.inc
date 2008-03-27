@@ -553,29 +553,46 @@ function get_js_open_window($width, $height)
 	return $js;
 }
 
-$focus_on = array();
+//$focus_on = array();
 /*
   Setting focus on element $name in $form.
   If $form<0 $name is element id.
 */
 function set_focus($name, $form_no=0) {
-  global $focus_on;
-  $focus_on['name'] = $name;
-  $focus_on['form'] = $form_no;
+//  global $focus_on;
+//  $focus_on['name'] = $name;
+//  $focus_on['form'] = $form_no;
+    $_POST['_focus'] = $name;
 }
-
+//
+//	Set default focus on first field $name if not set yet
+//
+function default_focus($name, $form_no=0) {
+//  global $focus_on;
+//    if (!isset($focus_on['name']) && (!isset($_POST['_focus']) || $_POST['_focus']=='') ) {
+//echo "<h2>$name</h2>";
+//	$focus_on['name'] = $name;
+//	$focus_on['form'] = $form_no;
+//    }
+    if (!isset($_POST['_focus'])) {
+	$_POST['_focus'] = $name;
+    }
+}
+/*
 function set_js_focus() {
   global $focus_on;
   $js = '';
-  if (isset($focus_on['name'])) {
+
+//  if (isset($focus_on['name'])) {
+
     $js =  "<script type=\"text/javascript\">\n"
 	."Behaviour.addLoadEvent(function(){ setFocus('".$focus_on['name']."'".( $focus_on['form']>=0 ?  (",".$focus_on['form']): '').
 	");});"
 	."</script>";
-  }
+//  }
   return $js;
 }
-
+*/
 function get_js_png_fix()
 {
 	$js = "<script type=\"text/javascript\">\n"

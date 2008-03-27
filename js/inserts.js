@@ -2,7 +2,7 @@
  Behaviour definitions
 */
 var inserts = {
-  '.amount': function(element) {
+    '.amount': function(element) {
 		if(element.onblur==undefined) {
 		  var dec = element.getAttribute("dec");
   		  element.onblur = function() {
@@ -13,17 +13,20 @@ var inserts = {
 	'select': function(element) {
 		if(element.onfocus==undefined) {
 			element.onfocus = function() {
-				document.getElementById('_focus').value = element.name;
+				document.getElementsByName('_focus')[0].value = element.name;
 			};
 		}
 	},
 	'input': function(element) {
 		if(element.onfocus==undefined) {
 			element.onfocus = function() {
-				document.getElementById('_focus').value = element.name;
+				document.getElementsByName('_focus')[0].value = element.name;
 			};
 		}
 	
+	},
+	'input.submit': function(element) {
+		element.onfocus = function() {}	// we do not want to change focus on submit
 	},
 	// combo: text input and related selector in next <TD> cell
 	'input.combo': function(element) {
@@ -36,7 +39,6 @@ var inserts = {
 			var len = select.length;
 			var ac = this.value;
 			var txt;
-			var i = 'dupa';
 			select.options[select.selectedIndex].selected = false;
 			for (i = 0; i < len; i++) {
 //			  txt = select.options[i].text;
@@ -73,17 +75,19 @@ var inserts = {
 
 Behaviour.register(inserts);
 
-function setFocus(name, form) {
-  if(form==null)
+function setFocus(name, byId) {
+  if(byId)
 	input = document.getElementById(name).focus();
   else
-  	input = document.forms[form].getElementsByName(name)[0].focus();
+  	input = document.getElementsByName(name)[0].focus();
 }
 
-//Behaviour.addLoadEvent(function() {
-//if(window.StartFocus) {
-//  setFocus(StartFocus.name, StartFocus.form);
-//}
-//}
-//);
+Behaviour.addLoadEvent(function() {
+    var inp = document.getElementsByName('_focus')[0];
+if(inp!=null) {
+  setFocus(inp.value, 0);
+} else {
+}
+}
+);
 

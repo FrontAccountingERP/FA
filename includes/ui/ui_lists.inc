@@ -15,6 +15,7 @@ function supplier_list($name, $selected_id, $all_option=false, $submit_on_change
 {
 	global $all_items;
 
+	default_focus($name);
 	if ($selected_id == null)
 		$selected_id = ((!isset($_POST[$name]) || $_POST[$name] == "") ? "" : $_POST[$name]);
 	$no_supplier_list = get_company_pref('no_supplier_list');
@@ -129,6 +130,7 @@ function customer_list($name, $selected_id, $all_option=false, $submit_on_change
 {
 	global $all_items;
 
+	default_focus($name);
 	if ($selected_id == null)
 		$selected_id = ((!isset($_POST[$name]) || $_POST[$name] == "") ? "" : $_POST[$name]);
 	$no_customer_list = get_company_pref('no_customer_list');
@@ -245,6 +247,7 @@ function customer_branches_list($customer_id, $name, $selected_id,
 {
 	global $all_items;
 
+	default_focus($name);
 	if ($submit_on_change==true)
 		echo "<select name='$name' onchange='this.form.submit();'>";
 	else
@@ -316,6 +319,7 @@ function locations_list($name, $selected_id, $all_option=false, $submit_on_chang
 {
 	global $all_items;
 
+	default_focus($name);
 	if ($submit_on_change == true)
 		echo "<select name='$name' onchange='this.form.submit();'>";
 	else
@@ -387,6 +391,7 @@ function locations_list_row($label, $name, $selected_id, $all_option=false, $sub
 
 function currencies_list($name, &$selected_id, $submit_on_change=false)
 {
+	default_focus($name);
 	if ($submit_on_change==true)
 		echo "<select name='$name' onchange='this.form.submit();'>";
 	else
@@ -443,6 +448,7 @@ function currencies_list_row($label, $name, $selected_id)
 
 function fiscalyears_list($name, &$selected_id, $submit_on_change=false)
 {
+	default_focus($name);
 	if ($submit_on_change == true)
 		echo "<select name='$name' onchange='this.form.submit();'>";
 	else
@@ -509,6 +515,7 @@ function simple_codeandname_list($sql, $name, &$selected_id,
 {
 	global $all_items;
 
+	default_focus($name);
 	if ($submit_on_change == true)
 		echo "<select name='$name' onchange='this.form.submit();'>";
 	else
@@ -567,6 +574,7 @@ function simple_codeandname_list($sql, $name, &$selected_id,
 function dimensions_list($name, &$selected_id, $no_option=false, $showname=null,
 	$submit_on_change=false, $showclosed=false, $showtype=1)
 {
+	default_focus($name);
 	$sql = "SELECT id, CONCAT(reference,'  ',name) FROM ".TB_PREF."dimensions";
 	if ($showclosed || $showtype)
 	{
@@ -608,6 +616,7 @@ function stock_items_list($name, $selected_id, $all_option=false, $submit_on_cha
 {
 	global $all_items;
 
+	default_focus($name);
 	if ($selected_id == null)
 		$selected_id = (!isset($_POST[$name]) ? "" : $_POST[$name]);
 	$no_item_list = get_company_pref('no_item_list');
@@ -727,6 +736,7 @@ function stock_bom_items_list($name, $selected_id, $all_option=false, $submit_on
 {
 	global $all_items;
 
+	default_focus($name);
 	if ($submit_on_change==true)
 		echo "<select name='$name' onchange='this.form.submit();'>";
 	else
@@ -801,6 +811,7 @@ function base_stock_items_list($sql, $name, &$selected_id,
 {
 	global $all_items;
 
+	default_focus($name);
 	if ($submit_on_change==true)
 		echo "<select name='$name' onchange='this.form.submit();'>";
 	else if ($extra != "")
@@ -900,6 +911,7 @@ function stock_purchasable_items_list($name, &$selected_id,	$all_option=false, $
 {
 	global $all_items;
 
+	default_focus($name);
 	if ($selected_id == null)
 		$selected_id = (!isset($_POST[$name]) ? "" : $_POST[$name]);
 	$no_item_list = get_company_pref('no_item_list');
@@ -1028,6 +1040,7 @@ function stock_costable_items_list($name, &$selected_id,
 
 function stock_item_types_list_row($label, $name, $selected_id, $enabled=true)
 {
+	default_focus($name);
 	echo "<tr>";
 	if ($label != NULL)
 		echo "<td>$label</td>\n";
@@ -1050,6 +1063,7 @@ function stock_units_list_row($label, $name, $value, $enabled=true)
 {
   	global $stock_units;
 
+	default_focus($name);
 	$result = get_all_item_units();
 	echo "<tr><td>$label</td>\n";
 	if ($enabled)
@@ -1375,6 +1389,8 @@ function bank_trans_types_list_row($label, $name, $selected_id)
 function workcenter_list($name, $selected_id, $all_option=false)
 {
 	global $all_items;
+
+	default_focus($name);
 	echo "<select name='$name'>";
 
 	$sql = "SELECT id, name FROM ".TB_PREF."workcentres";
@@ -1413,6 +1429,7 @@ function workcenter_list($name, $selected_id, $all_option=false)
 
 function workcenter_list_cells($label, $name, $selected_id, $all_option=false)
 {
+	default_focus($name);
 	if ($label != null)
 		echo "<td>$label</td>\n";
 	echo "<td>";
@@ -1431,6 +1448,7 @@ function workcenter_list_row($label, $name, $selected_id, $all_option=false)
 
 function bank_accounts_list($name, $selected_id, $submit_on_change=false)
 {
+	default_focus($name);
 	if ($submit_on_change==true)
 		echo "<select name='$name' onchange='this.form.submit();'>";
 	else
@@ -1490,6 +1508,7 @@ function bank_accounts_list_row($label, $name, $selected_id, $submit_on_change=f
 
 function class_list($name, $selected_id, $submit_on_change=false)
 {
+	default_focus($name);
 	if ($submit_on_change==true)
 		echo "<select name='$name' onchange='this.form.submit();'>";
 	else
@@ -1595,6 +1614,7 @@ function gl_account_types_list_row($label, $name, $selected_id, $all_option=fals
 function gl_all_accounts_list($name, $selected_id, $skip_bank_accounts=false,
 	$show_group=false, $onchange="")
 {
+	default_focus($name);
 	echo "<select name='$name'";
 	if ($onchange != "")
 		echo " onchange='$onchange'";
@@ -1664,6 +1684,7 @@ function gl_all_accounts_list_row($label, $name, $selected_id, $skip_bank_accoun
 
 function yesno_list($name, $selected_id, $name_yes="", $name_no="", $submit_on_change=false)
 {
+	default_focus($name);
 	if ($submit_on_change == true)
 		echo "<select name='$name' onchange='this.form.submit();'>";
 	else
@@ -1721,6 +1742,7 @@ function languages_list($name, &$selected_id)
 {
   	global $installed_languages;
 
+	default_focus($name);
 	echo "<select name='$name'>";
 
 	if ($selected_id == null)
@@ -1756,6 +1778,7 @@ function bank_account_types_list($name, &$selected_id)
 {
   	$bank_account_types = bank_account_types::get_all();
 
+	default_focus($name);
   	echo "<select name='$name'>";
 
 	if ($selected_id == null)
@@ -1791,6 +1814,7 @@ function payment_person_types_list($name, $selected_id, $related=null)
 {
   	$types = payment_person_types::get_all();
 
+	default_focus($name);
   	echo "<select name='$name'";
   	if ($related)
   		echo " onchange='this.form.$related.value=\"\"; this.form.submit();' ";
@@ -1834,6 +1858,7 @@ function wo_types_list($name, &$selected_id)
 {
   	$types = wo_types::get_all();
 
+	default_focus($name);
   	echo "<select name='$name' onchange='this.form.submit();'>";
 
 	if ($selected_id == null)
@@ -1861,6 +1886,7 @@ function dateformats_list_row($label, $name, $value)
 {
   	global $dateformats;
 
+	default_focus($name);
 	echo "<tr><td>$label</td>\n";
 	echo "<td><select name='$name'>";
 
@@ -1887,6 +1913,7 @@ function dateseps_list_row($label, $name, $value)
 {
   	global $dateseps;
 
+	default_focus($name);
 	echo "<tr><td>$label</td>\n";
 	echo "<td><select name='$name'>";
 
@@ -1913,6 +1940,7 @@ function thoseps_list_row($label, $name, $value)
 {
   	global $thoseps;
 
+	default_focus($name);
 	echo "<tr><td>$label</td>\n";
 	echo "<td><select name='$name'>";
 
@@ -1939,6 +1967,7 @@ function decseps_list_row($label, $name, $value)
 {
   	global $decseps;
 
+	default_focus($name);
 	echo "<tr><td>$label</td>\n";
 	echo "<td><select name='$name'>";
 
@@ -1965,6 +1994,7 @@ function themes_list_row($label, $name, $value)
 {
 	global $path_to_root;
 	
+	default_focus($name);
 	$path = $path_to_root.'/themes/';
 	$themes = array();
 	$themedir = opendir($path);
@@ -1998,6 +2028,7 @@ function pagesizes_list_row($label, $name, $value)
 {
   	global $pagesizes;
 
+	default_focus($name);
 	echo "<tr><td>$label</td>\n";
 	echo "<td><select name='$name'>";
 
@@ -2022,6 +2053,7 @@ function security_headings_list_row($label, $name, $value)
 {
   	global $security_headings;
 
+	default_focus($name);
 	echo "<tr><td>$label</td>\n";
 	echo "<td><select name='$name'>";
 
@@ -2048,6 +2080,7 @@ function systypes_list_cells($label, $name, $value, $submit_on_change=false)
 {
   	global $systypes_array;
 
+	default_focus($name);
 	if ($label != null)
 		echo "<td>$label</td>\n";
     echo "<td><select name='$name'";
@@ -2082,6 +2115,7 @@ function systypes_list_row($label, $name, $value, $submit_on_change=false)
 function cust_allocations_list_cells($label, $name, $selected)
 {
 	global $all_items;
+	default_focus($name);
 	if ($label != null)
 		label_cell($label);
 	if ($selected == null)
@@ -2099,6 +2133,8 @@ function cust_allocations_list_cells($label, $name, $selected)
 function supp_allocations_list_cells($name, $selected)
 {
 	global $all_items;
+
+	default_focus($name);
 	if ($selected == null)
 		$selected = (!isset($_POST[$name]) ? "" : $_POST[$name]);
 	echo "<td><select name='$name'>";
@@ -2113,6 +2149,7 @@ function supp_allocations_list_cells($name, $selected)
 
 function policy_list_cells($label, $name, $selected)
 {
+	default_focus($name);
 	if ($selected == null)
 	{
 		$selected = (!isset($_POST[$name]) ? "" : $_POST[$name]);
@@ -2136,6 +2173,7 @@ function policy_list_row($label, $name, $selected)
 
 function credit_type_list_cells($label, $name, $selected, $submit_on_change=false)
 {
+	default_focus($name);
 	if ($selected == null)
 	{
 		$selected = (!isset($_POST[$name]) ? "Return" : $_POST[$name]);
@@ -2163,6 +2201,7 @@ function credit_type_list_row($label, $name, $selected, $submit_on_change=false)
 
 function number_list($name, $selected, $from, $to, $firstlabel="")
 {
+	default_focus($name);
 	if ($selected == null)
 	{
 		$selected = (!isset($_POST[$name]) ? $from : $_POST[$name]);

@@ -163,6 +163,7 @@ function handle_update_item()
 		$_SESSION['Items']->update_cart_item($_POST['line_no'], input_num('qty'),
 			input_num('price'), input_num('Disc') / 100);
 	}
+    set_focus('StockID2');
 }
 
 //-----------------------------------------------------------------------------
@@ -170,6 +171,7 @@ function handle_update_item()
 function handle_delete_item($line_no)
 {
 	$_SESSION['Items']->remove_from_cart($line_no);
+    set_focus('StockID2');
 }
 
 //-----------------------------------------------------------------------------
@@ -182,6 +184,7 @@ function handle_new_item()
 
 	add_to_order($_SESSION['Items'], $_POST['stock_id'], input_num('qty'),
 		input_num('price'), input_num('Disc') / 100);
+    set_focus('StockID2');
 }
 //-----------------------------------------------------------------------------
 $id = find_submit('Delete');
@@ -196,6 +199,9 @@ if (isset($_POST['AddItem']))
 
 if (isset($_POST['UpdateItem']))
 	handle_update_item();
+
+if (isset($_POST['CancelItemChanges']) || isset($_POST['UpdateItem']))
+	set_focus('StockID2');
 
 //-----------------------------------------------------------------------------
 
