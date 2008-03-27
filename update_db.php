@@ -11,6 +11,19 @@ $js .= get_js_set_focus("user");
 $image = $path_to_root."/themes/default/images/logo_frontaccounting.png";
 $title = "Update All Company Databases";
 
+function get_js_set_focus($name)
+{
+	$js = "\n<script type=\"text/javascript\">\n"
+		. "<!--\n"
+		. "function setFocus()\n"
+		. "{\n"
+		. "	document.forms[0].$name.focus();\n"
+		. "}\n"
+		. "-->\n"
+		. "</script>\n";
+	return $js;
+}
+
 function display_error($msg, $center=true)
 {
     echo "<center><table border='1' cellpadding='3' cellspacing='0' style='border-collapse: collapse' bordercolor='#CC3300' width='50%'>
