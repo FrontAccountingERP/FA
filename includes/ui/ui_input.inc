@@ -38,6 +38,7 @@ function hidden($name, $value)
 
 function submit($name, $value, $echo=true)
 {
+
 	$submit_str = "<input type=\"submit\" class=\"inputsubmit\" name=\"$name\" value=\"$value\">\n";
 	if ($echo)
 		echo $submit_str;
@@ -118,7 +119,7 @@ function submit_row($name, $value, $right=true, $extra="")
 
 function button($name, $value, $onclick)
 {
-	echo "<input type=\"button\" class=\"inputsubmit\" name=\"$name\" value=\"$value\" onclick=\"$onclick\" />\n";
+  echo "<input type=\"button\" class=\"inputsubmit\" name=\"$name\" value=\"$value\" onclick=\"$onclick\" />\n";
 }
 
 function button_cell($name, $value, $onclick)
@@ -311,7 +312,7 @@ function date_cells($label, $name, $init=null, $inc_days=0, $inc_months=0, $inc_
 			$_POST[$name] = $init;
 	}
 	if ($use_date_picker)
-		$post_label = "<a href=\"javascript:date_picker(document.forms[0].$name);\">"
+		$post_label = "<a tabindex='-1' href=\"javascript:date_picker(document.forms[0].$name);\">"
 		. "	<img src='$path_to_root/themes/default/images/cal.gif' width='16' height='16' border='0' alt='"._('Click Here to Pick up the date')."'></a>\n";
 	else
 		$post_label = "";
