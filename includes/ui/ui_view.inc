@@ -553,65 +553,27 @@ function get_js_open_window($width, $height)
 	return $js;
 }
 
-function get_js_form_entry($edit_name, $sel_name, $next_name)
-{
-    global $comp_path;
-    $fpath = $comp_path.'/'.user_company().'/js_cache/form_entry.js';
-
-    if (!file_exists($fpath)) {
-    
-
-	$js = "\n<script type=\"text/javascript\">\n"
-		. "<!--\n"
-		. "function recalcAccounts()\n"
-		. "{\n"
-		. "	var myForm = document.forms[0];\n"
-		. "	var len = myForm.$sel_name.length;\n"
-		. "	var txt;\n"
-		. "	var ac = myForm.$edit_name.value;\n"
-		. "	var i;\n"
-		. "	myForm.$sel_name.options[myForm.$sel_name.selectedIndex].selected = false;\n"
-		. "	for (i = 0; i < len; i++)\n"
-		. "	{\n"
-		. "		txt = myForm.$sel_name.options[i].text;\n"
-		. "		if (txt.indexOf(ac) == 0)\n"
-		. "		{\n"
-		. "			myForm.$sel_name.options[i].selected = true;\n"
-		. "			break;\n"
-		. "		}\n"
-		. "	}\n"
-		. "}\n"
-		. "function setAccount(p, s)\n"
-		. "{\n"
-		. "	var myForm = document.forms[0];\n"
-		. " if (p == 0 && myForm.$edit_name.value == \"\")\n"
-		. "		return true;\n"
-		. "	myForm.$edit_name.value = myForm.$sel_name.options[myForm.$sel_name.selectedIndex].value;\n"
-		. " if (s)\n"
-		. "  myForm.submit();\n"
-		. "	myForm.$next_name.focus();\n"
-		. "	return true;\n"
-		. "}\n"
-		. "-->\n"
-		. "</script>\n";
-     cache_js_file($fpath, $js);
-    } 
-    add_js_ufile($fpath);
-
-	return '';
+$focus_on = array();
+/*
+  Setting focus on element $name in $form.
+  If $form<0 $name is element id.
+*/
+function set_focus($name, $form_no=0) {
+  global $focus_on;
+  $focus_on['name'] = $name;
+  $focus_on['form'] = $form_no;
 }
 
-function get_js_set_focus($name)
-{
-	$js = "\n<script type=\"text/javascript\">\n"
-		. "<!--\n"
-		. "function setFocus()\n"
-		. "{\n"
-		. "	document.forms[0].$name.focus();\n"
-		. "}\n"
-		. "-->\n"
-		. "</script>\n";
-	return $js;
+function set_js_focus() {
+  global $focus_on;
+  $js = '';
+  if (isset($focus_on['name'])) {
+    $js =  "<script type=\"text/javascript\">\n"
+	."Behaviour.addLoadEvent(function(){ setFocus('".$focus_on['name']."'".( $focus_on['form']>=0 ?  (",".$focus_on['form']): '').
+	");});"
+	."</script>";
+  }
+  return $js;
 }
 
 function get_js_png_fix()
