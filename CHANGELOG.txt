@@ -19,6 +19,42 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+27-Mar-2008 Janusz Dobrowolski
++ Automatic first field focus on page start, focus order preserved between form updates
+$  /gl/inquiry/gl_account_inquiry.php
+   /includes/page/footer.inc
+   /includes/ui/ui_controls.inc
+   /includes/ui/ui_input.inc
+   /includes/ui/ui_lists.inc
+   /includes/ui/ui_view.inc
+   /js/inserts.js
+   /sales/sales_order_entry.php
+   /ales/credit_note_entry.php
+   /ales/includes/ui/sales_credit_ui.inc
+   /sales/includes/ui/sales_order_ui.inc
++ Data picker omitted in keyboard tabbing sequence (FF,IE, not old mozilla)
+$  /includes/ui/ui_input.inc
+! Javascript recalcAccount() superseded by class='combo' behaviour binding
+$  /gl/gl_deposit.php
+   /gl/gl_journal.php
+   /gl/gl_payment.php
+   /gl/includes/ui/gl_deposit_ui.inc
+   /gl/includes/ui/gl_journal_ui.inc
+   /gl/includes/ui/gl_payment_ui.inc
+   /includes/ui/ui_view.inc
+   /purchasing/po_entry_items.php
+   /purchasing/includes/ui/po_ui.inc
+   /sales/sales_order_entry.php
+   /sales/includes/ui/sales_credit_ui.inc
+   /sales/includes/ui/sales_order_ui.inc
+   /js/inserts.js
+! get_js_set_focus moved from ui_view (this is only standalone form).
+   /update_db.php
+# Fixed debit/credit entry check 
+$  /gl/gl_journal.php
+# Restored GET/POST security check on path_to_root
+$  /config.php
+
 26-Mar-2008 Janusz Dobrowolski
 # Bug fixes in purchase module related to tax structure changes.
 $  /purchasing/includes/supp_trans_class.inc
