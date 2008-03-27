@@ -11,13 +11,14 @@ include_once($path_to_root . "/includes/data_checks.inc");
 
 include_once($path_to_root . "/gl/includes/gl_db.inc");
 
-$js = get_js_set_focus('account');
+$js = '';
+set_focus('account');
 if ($use_popup_windows)
 	$js .= get_js_open_window(800, 500);
 if ($use_date_picker)
 	$js .= get_js_date_picker();
 
-page(_("General Ledger Account Inquiry"), false, false, "setFocus()", $js);
+page(_("General Ledger Account Inquiry"), false, false, '', $js);
 
 //----------------------------------------------------------------------------------------------------
 

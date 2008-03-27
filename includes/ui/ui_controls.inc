@@ -19,6 +19,8 @@ function start_form($multi=false, $sid=false, $action="", $name="")
 		echo "<form enctype='multipart/form-data' method='post' action='$action' $name>\n";	
 	else
 		echo "<form method='post' action='$action' $name>\n";	
+
+	echo "<input type=\"hidden\" id=\"_focus\" name=\"_focus\" value=\"\">";
 }
 
 //---------------------------------------------------------------------------------
