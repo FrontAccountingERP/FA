@@ -153,9 +153,9 @@ function gl_edit_item_controls(&$order, $dim, $Index=null)
 		$_POST['CodeID2'] = "";
 		$_POST['code_id'] = "";
 		
-		text_cells(null, "CodeID2", "", 12, 10, "", "", "onkeyup='recalcAccounts();' onKeyDown='if(event.keyCode==13) event.keyCode=9;' onblur='return setAccount(0, false)'");
+		text_cells(null, "CodeID2", "", 12, 10, "", "", "class='combo' rel='code_id'");
 		$skip_bank = ($_SESSION["wa_current_user"]->access != 2);
-		gl_all_accounts_list_cells(null, 'code_id', null, $skip_bank, false, "return setAccount(1, false)");
+		gl_all_accounts_list_cells(null, 'code_id', null, $skip_bank, false, "class='combo' rel='CodeID2'");
 		if ($dim >= 1)
 			dimensions_list_cells(null, 'dimension_id', null, true, " ", false, 1);
 		if ($dim > 1)

@@ -17,7 +17,7 @@ include_once($path_to_root . "/sales/includes/sales_db.inc");
 include_once($path_to_root . "/sales/includes/db/sales_types_db.inc");
 include_once($path_to_root . "/reporting/includes/reporting.inc");
 
-$js = get_js_form_entry("StockID2", "stock_id", "qty");
+$js = '';
 if ($use_popup_windows) {
 	$js .= get_js_open_window(900, 500);
 }

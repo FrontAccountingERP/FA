@@ -12,13 +12,13 @@ include_once($path_to_root . "/gl/includes/ui/gl_deposit_ui.inc");
 include_once($path_to_root . "/gl/includes/gl_db.inc");
 include_once($path_to_root . "/gl/includes/gl_ui.inc");
 
-$js = get_js_form_entry("CodeID2", "code_id", "amount");
+$js = '';
 if ($use_popup_windows)
 	$js .= get_js_open_window(800, 500);
 if ($use_date_picker)
 	$js .= get_js_date_picker();
-$js .= get_js_set_focus('CodeID2');
-page(_("Bank Account Deposit Entry"), false, false, "setFocus()", $js);
+set_focus('CodeID2');
+page(_("Bank Account Deposit Entry"), false, false, '', $js);
 
 //-----------------------------------------------------------------------------------------------
 

@@ -334,8 +334,8 @@ function sales_order_item_controls(&$order, &$rowcounter, $line_no=-1)
 		}
 		else
 		{
-		text_cells(null, "StockID2", "", 12, 10, "", "", "onkeyup='recalcAccounts();' onKeyDown='if (event.keyCode==13) event.keyCode=9;' onblur='return setAccount(0, true);'");
-			stock_items_list_cells(null, 'stock_id', null, false, false, "onchange='return setAccount(1, true)'");
+		text_cells(null, "StockID2", '', 12, 10, "", "", "class='combo' rel='stock_id' onblur='submit();'");
+		stock_items_list_cells(null, 'stock_id', null, false, false, "class='combo' rel='StockID2'");
 		}
 		$item_info = get_item_edit_info($_POST['stock_id']);
 		$_POST['units'] = $item_info["units"];
