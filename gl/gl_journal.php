@@ -137,8 +137,7 @@ function check_item_data()
 			return false;
 	}
 
-//	if (!(!strlen($_POST['AmountDebit']) ^ !strlen($_POST['AmountCredit'])))
-	if (input_num('AmountDebit')!=0 && input_num('AmountCredit')!=0)
+	if (!(input_num('AmountDebit')!=0 ^ input_num('AmountCredit')!=0) )
 	{
 		display_error(_("You must enter either a debit amount or a credit amount."));
     		return false;
