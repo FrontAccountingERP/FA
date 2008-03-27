@@ -13,14 +13,15 @@ include_once($path_to_root . "/gl/includes/ui/gl_journal_ui.inc");
 include_once($path_to_root . "/gl/includes/gl_db.inc");
 include_once($path_to_root . "/gl/includes/gl_ui.inc");
 
-$js = get_js_form_entry("CodeID2", "code_id", "AmountDebit");
+$js = '';
 if ($use_popup_windows)
 	$js .= get_js_open_window(800, 500);
 if ($use_date_picker)
 	$js .= get_js_date_picker();
-$js .= get_js_set_focus('CodeID2');
 
-page(_("Journal Entry"), false, false, "setFocus()", $js);
+set_focus('CodeID2');
+
+page(_("Journal Entry"), false, false,'', $js);
 
 //-----------------------------------------------------------------------------------------------
 
@@ -136,7 +137,8 @@ function check_item_data()
 			return false;
 	}
 
-	if (!(!strlen($_POST['AmountDebit']) ^ !strlen($_POST['AmountCredit'])))
+//	if (!(!strlen($_POST['AmountDebit']) ^ !strlen($_POST['AmountCredit'])))
+	if (input_num('AmountDebit')!=0 && input_num('AmountCredit')!=0)
 	{
 		display_error(_("You must enter either a debit amount or a credit amount."));
     		return false;
