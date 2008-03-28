@@ -20,6 +20,14 @@ Legend:
 $ -> Affected files
 
 28-Mar-2008 Joe Hunt
++ Added print document options in inquiries.
+$ /sales/inquiry/customer_inquiry.php
+  /sales/inquiry/sales_orders_view.php
+  /sales/inquiry/sales_deliveries_view.php
+  /purchasing/inquiry/po_search.php
+  /purchasing/inquiry/po_search_completed.php
+  
+28-Mar-2008 Joe Hunt
 # Fixed a minor bug in customers_db.inc (should include type == 2 - Bank Deposits)
 $ /sales/includes/db/customers_db.inc
 # Fixed a PHP vers. 5.xx bug. No need for & operator in function calls, only in declaration. Gives a warning.

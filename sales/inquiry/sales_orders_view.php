@@ -5,6 +5,7 @@ $path_to_root="../..";
 include($path_to_root . "/includes/session.inc");
 
 include($path_to_root . "/sales/includes/sales_ui.inc");
+include_once($path_to_root . "/reporting/includes/reporting.inc");
 
 $js = "";
 if ($use_popup_windows)
@@ -12,17 +13,17 @@ if ($use_popup_windows)
 if ($use_date_picker)
 	$js .= get_js_date_picker();
 
-if (isset($_GET['OutstandingOnly']) && ($_GET['OutstandingOnly'] == true)) 
+if (isset($_GET['OutstandingOnly']) && ($_GET['OutstandingOnly'] == true))
 {
 	$_POST['order_view_mode'] = 'OutstandingOnly';
 	$_SESSION['page_title'] = _("Search Outstanding Sales Orders");
-} 
-elseif (isset($_GET['InvoiceTemplates']) && ($_GET['InvoiceTemplates'] == true)) 
+}
+elseif (isset($_GET['InvoiceTemplates']) && ($_GET['InvoiceTemplates'] == true))
 {
 	$_POST['order_view_mode'] = 'InvoiceTemplates';
 	$_SESSION['page_title'] = _("Search Template for Invoicing");
-} 
-elseif (isset($_GET['DeliveryTemplates']) && ($_GET['DeliveryTemplates'] == true)) 
+}
+elseif (isset($_GET['DeliveryTemplates']) && ($_GET['DeliveryTemplates'] == true))
 {
 	$_POST['order_view_mode'] = 'DeliveryTemplates';
 	$_SESSION['page_title'] = _("Select Template for Delivery");
@@ -38,29 +39,29 @@ page($_SESSION['page_title'], false, false, "", $js);
 if (isset($_GET['selected_customer']))
 {
 	$selected_customer = $_GET['selected_customer'];
-} 
+}
 elseif (isset($_POST['selected_customer']))
 {
 	$selected_customer = $_POST['selected_customer'];
 }
 else
 	$selected_customer = -1;
-	
+
 //-----------------------------------------------------------------------------------
 /*
 $action = $_SERVER['PHP_SELF'];
 
 if ($_POST['order_view_mode']=='OutstandingOnly')
 {
-  $action .= "?OutstandingOnly=" . $_POST['order_view_mode']$_PO;
+  	$action .= "?OutstandingOnly=" . $_POST['order_view_mode']$_PO;
 }
 elseif ($_POST['order_view_mode']=='InvoiceTemplates')
 {
-  $action .= "?InvoiceTemplates=" . $_POST['InvoiceTemplates'];
+  	$action .= "?InvoiceTemplates=" . $_POST['InvoiceTemplates'];
 }
 elseif ($_POST['order_view_mode']=='DeliveryTemplates')
 {
-  $action .= "?DeliveryTemplates=" . $_POST['InvoiceTemplates'];
+  	$action .= "?DeliveryTemplates=" . $_POST['InvoiceTemplates'];
 }
 */
 start_form(false, false, $_SERVER['PHP_SELF'] .SID);
@@ -68,10 +69,10 @@ start_form(false, false, $_SERVER['PHP_SELF'] .SID);
 start_table("class='tablestyle_noborder'");
 start_row();
 ref_cells(_("#:"), 'OrderNumber');
-if ($_POST['order_view_mode']!='DeliveryTemplates' && $_POST['order_view_mode']!='InvoiceTemplates')
+if ($_POST['order_view_mode'] != 'DeliveryTemplates' && $_POST['order_view_mode'] != 'InvoiceTemplates')
 {
-  date_cells(_("from:"), 'OrdersAfterDate', null, -30);
-  date_cells(_("to:"), 'OrdersToDate', null, 1);
+  	date_cells(_("from:"), 'OrdersAfterDate', null, -30);
+  	date_cells(_("to:"), 'OrdersToDate', null, 1);
 }
 locations_list_cells(_("Location:"), 'StockLocation', null, true);
 
@@ -92,17 +93,18 @@ if (isset($_POST['SelectStockFromList']) && ($_POST['SelectStockFromList'] != ""
 	($_POST['SelectStockFromList'] != reserved_words::get_all()))
 {
  	$selected_stock_item = $_POST['SelectStockFromList'];
-} 
-else 
+}
+else
 {
 	unset($selected_stock_item);
 }
 
 //---------------------------------------------------------------------------------------------
-if (isset($_POST['ChangeTmpl']) && $_POST['ChangeTmpl']!=0) {
-  $sql = "UPDATE ".TB_PREF."sales_orders SET type = !type WHERE order_no=".$_POST['ChangeTmpl'];
+if (isset($_POST['ChangeTmpl']) && $_POST['ChangeTmpl'] != 0)
+{
+  	$sql = "UPDATE ".TB_PREF."sales_orders SET type = !type WHERE order_no=".$_POST['ChangeTmpl'];
 
-  db_query($sql, "Can't change sales order type");
+  	db_query($sql, "Can't change sales order type");
 }
 //---------------------------------------------------------------------------------------------
 
@@ -117,7 +119,7 @@ $sql .= " Sum(".TB_PREF."sales_order_details.unit_price*".TB_PREF."sales_order_d
   $sql .= TB_PREF."sales_orders.comments, ";
 //else
   $sql .= TB_PREF."sales_orders.customer_ref";
-  
+
 $sql .=	" FROM ".TB_PREF."sales_orders, ".TB_PREF."sales_order_details, ".TB_PREF."debtors_master, ".TB_PREF."cust_branch
 		WHERE ".TB_PREF."sales_orders.order_no = ".TB_PREF."sales_order_details.order_no
 			AND ".TB_PREF."sales_orders.debtor_no = ".TB_PREF."debtors_master.debtor_no
@@ -125,20 +127,20 @@ $sql .=	" FROM ".TB_PREF."sales_orders, ".TB_PREF."sales_order_details, ".TB_PRE
 			AND ".TB_PREF."debtors_master.debtor_no = ".TB_PREF."cust_branch.debtor_no ";
 
 //figure out the sql required from the inputs available
-if (isset($_POST['OrderNumber']) && $_POST['OrderNumber'] != "") 
+if (isset($_POST['OrderNumber']) && $_POST['OrderNumber'] != "")
 {
 	$sql .= " AND ".TB_PREF."sales_orders.order_no LIKE '%". $_POST['OrderNumber'] ."' GROUP BY ".TB_PREF."sales_orders.order_no";
-} 
-else 
+}
+else
 {
-  if ($_POST['order_view_mode']!='DeliveryTemplates' && $_POST['order_view_mode']!='InvoiceTemplates')
-  {
-	$date_after = date2sql($_POST['OrdersAfterDate']);
-	$date_before = date2sql($_POST['OrdersToDate']);
+  	if ($_POST['order_view_mode']!='DeliveryTemplates' && $_POST['order_view_mode']!='InvoiceTemplates')
+  	{
+		$date_after = date2sql($_POST['OrdersAfterDate']);
+		$date_before = date2sql($_POST['OrdersToDate']);
 
-	$sql .= " AND ".TB_PREF."sales_orders.ord_date >= '$date_after'";
-	$sql .= " AND ".TB_PREF."sales_orders.ord_date <= '$date_before'";
-  }
+		$sql .= " AND ".TB_PREF."sales_orders.ord_date >= '$date_after'";
+		$sql .= " AND ".TB_PREF."sales_orders.ord_date <= '$date_before'";
+  	}
 	if ($selected_customer != -1)
 		$sql .= " AND ".TB_PREF."sales_orders.debtor_no='" . $selected_customer . "'";
 
@@ -162,14 +164,15 @@ $result = db_query($sql,"No orders were returned");
 
 //-----------------------------------------------------------------------------------
 
-if ($result) 
+if ($result)
 {
+	print_hidden_script(30);
 
 	/*show a table of the orders returned by the sql */
 
 	start_table("$table_style colspan=6 width=95%");
 	$th = array(_("Order #"), _("Customer"), _("Branch"), _("Cust Order #"), _("Order Date"),
-		_("Required By"), _("Delivery To"), _("Order Total"), _("Currency"), _("Tmpl"),"");
+		_("Required By"), _("Delivery To"), _("Order Total"), _("Currency"), _("Tmpl"),"", "");
 
   	if($_POST['order_view_mode']=='InvoiceTemplates' || $_POST['order_view_mode']=='DeliveryTemplates')
 	{
@@ -177,12 +180,12 @@ if ($result)
 	}
 
 	table_header($th);
-start_form();
+	start_form();
 
 	$j = 1;
 	$k = 0; //row colour counter
 	$overdue_items = false;
-	while ($myrow = db_fetch($result)) 
+	while ($myrow = db_fetch($result))
 	{
 
 		$view_page = get_customer_trans_view_str(systypes::sales_order(), $myrow["order_no"]);
@@ -195,8 +198,8 @@ start_form();
     	{
         	 start_row("class='overduebg'");
         	 $overdue_items = true;
-    	} 
-    	else 
+    	}
+    	else
     	{
 			alt_table_row_color($k);
     	}
@@ -204,16 +207,16 @@ start_form();
 		label_cell($view_page);
 		label_cell($myrow["name"]);
 		label_cell($myrow["br_name"]);
-	  if($_POST['order_view_mode']=='InvoiceTemplates' || $_POST['order_view_mode']=='DeliveryTemplates')
-		  label_cell($myrow["comments"]);
-	  else
-		  label_cell($myrow["customer_ref"]);
+	  	if($_POST['order_view_mode']=='InvoiceTemplates' || $_POST['order_view_mode']=='DeliveryTemplates')
+		  	label_cell($myrow["comments"]);
+	  	else
+		  	label_cell($myrow["customer_ref"]);
 		label_cell($formated_order_date);
 		label_cell($formated_del_date);
 		label_cell($myrow["deliver_to"]);
 		amount_cell($myrow["OrderValue"]);
 		label_cell($myrow["curr_code"]);
-		if ($_POST['order_view_mode']=='OutstandingOnly'/* || $not_closed*/) 
+		if ($_POST['order_view_mode']=='OutstandingOnly'/* || $not_closed*/)
 		{
     		$delivery_note = $path_to_root . "/sales/customer_delivery.php?" . SID . "OrderNumber=" .$myrow["order_no"];
     		label_cell("<a href='$delivery_note'>" . _("Dispatch") . "</a>");
@@ -230,12 +233,13 @@ start_form();
 		}
 		else
 		{
-		  echo "<td><input ".($myrow["type"]==1 ? 'checked' : '')." type='checkbox' name='chgtpl" .$myrow["order_no"]. "' value='1'
-		   onclick='forms[1].ChangeTmpl.value= this.name.substr(6);
-		   this.form.submit();' ></td>";
+		  	echo "<td><input ".($myrow["type"]==1 ? 'checked' : '')." type='checkbox' name='chgtpl" .$myrow["order_no"]. "' value='1'
+		   		onclick='forms[1].ChangeTmpl.value= this.name.substr(6);
+		   		this.form.submit();' ></td>";
 
-  		  $modify_page = $path_to_root . "/sales/sales_order_entry.php?" . SID . "ModifyOrderNumber=" . $myrow["order_no"];
-  		  label_cell("<a href='$modify_page'>" . _("Edit") . "</a>");
+  		  	$modify_page = $path_to_root . "/sales/sales_order_entry.php?" . SID . "ModifyOrderNumber=" . $myrow["order_no"];
+  		  	label_cell("<a href='$modify_page'>" . _("Edit") . "</a>");
+  		  	label_cell(print_document_link($myrow['order_no'], _("Print")));
 		}
 		end_row();;
 
@@ -248,8 +252,8 @@ start_form();
 		//end of page full new headings if
 	}
 	//end of while loop
-  hidden('ChangeTmpl', 0);
-end_form();
+  	hidden('ChangeTmpl', 0);
+	end_form();
 	end_table();
 
    if ($overdue_items)

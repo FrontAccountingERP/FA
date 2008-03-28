@@ -5,6 +5,7 @@ $path_to_root="../..";
 include($path_to_root . "/includes/session.inc");
 
 include($path_to_root . "/purchasing/includes/purchasing_ui.inc");
+include_once($path_to_root . "/reporting/includes/reporting.inc");
 
 $js = "";
 if ($use_popup_windows)
@@ -50,8 +51,8 @@ if (isset($_POST['SelectStockFromList']) && ($_POST['SelectStockFromList'] != ""
 	($_POST['SelectStockFromList'] != $all_items))
 {
  	$selected_stock_item = $_POST['SelectStockFromList'];
-} 
-else 
+}
+else
 {
 	unset($selected_stock_item);
 }
@@ -71,11 +72,11 @@ $sql = "SELECT ".TB_PREF."purch_orders.order_no, ".TB_PREF."suppliers.supp_name,
 	AND ".TB_PREF."locations.loc_code = ".TB_PREF."purch_orders.into_stock_location
 	AND (".TB_PREF."purch_order_details.quantity_ordered > ".TB_PREF."purch_order_details.quantity_received) ";
 
-if (isset($order_number) && $order_number != "") 
+if (isset($order_number) && $order_number != "")
 {
 	$sql .= "AND ".TB_PREF."purch_orders.reference LIKE '%". $order_number . "%'";
-} 
-else 
+}
+else
 {
 
 	$data_after = date2sql($_POST['OrdersAfterDate']);
@@ -84,12 +85,12 @@ else
 	$sql .= "  AND ".TB_PREF."purch_orders.ord_date >= '$data_after'";
 	$sql .= "  AND ".TB_PREF."purch_orders.ord_date <= '$data_before'";
 
-	if (isset($_POST['StockLocation']) && $_POST['StockLocation'] != $all_items) 
+	if (isset($_POST['StockLocation']) && $_POST['StockLocation'] != $all_items)
 	{
 		$sql .= " AND ".TB_PREF."purch_orders.into_stock_location = '". $_POST['StockLocation'] . "' ";
 	}
 
-	if (isset($selected_stock_item)) 
+	if (isset($selected_stock_item))
 	{
 		$sql .= " AND ".TB_PREF."purch_order_details.item_code='". $selected_stock_item ."' ";
 	}
@@ -99,31 +100,33 @@ $sql .= " GROUP BY ".TB_PREF."purch_orders.order_no";
 
 $result = db_query($sql,"No orders were returned");
 
+print_hidden_script(18);
+
 /*show a table of the orders returned by the sql */
 
 start_table("$table_style colspan=7 width=80%");
 
 if (isset($_POST['StockLocation']) && $_POST['StockLocation'] == $all_items)
 	$th = array(_("#"), _("Reference"), _("Supplier"), _("Location"),
-		_("Supplier's Reference"), _("Order Date"), _("Currency"), _("Order Total"),'');
-else		
+		_("Supplier's Reference"), _("Order Date"), _("Currency"), _("Order Total"),"","","");
+else
 	$th = array(_("#"), _("Reference"), _("Supplier"),
-		_("Supplier's Reference"), _("Order Date"), _("Currency"), _("Order Total"),'');
+		_("Supplier's Reference"), _("Order Date"), _("Currency"), _("Order Total"),"","","");
 
 table_header($th);
 
 $j = 1;
 $k = 0; //row colour counter
 $overdue_items = false;
-while ($myrow = db_fetch($result)) 
+while ($myrow = db_fetch($result))
 {
 
 	if ($myrow["OverDue"] == 1)
 	{
 		 start_row("class='overduebg'");
 		 $overdue_items = true;
-	} 
-	else 
+	}
+	else
 	{
 		alt_table_row_color($k);
 	}
@@ -143,6 +146,7 @@ while ($myrow = db_fetch($result))
 	label_cell($myrow["curr_code"]);
 	amount_cell($myrow["OrderValue"]);
 	label_cell("<a href=$modify>" . _("Edit") . "</a>");
+  	label_cell(print_document_link($myrow['order_no'], _("Print")));
 	label_cell("<a href=$receive>" . _("Receive") . "</a>");
 	end_row();
 
