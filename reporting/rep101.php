@@ -30,7 +30,7 @@ function get_transactions($debtorno, $date)
 		((".TB_PREF."debtor_trans.type = 10)
 		AND ".TB_PREF."debtor_trans.due_date < '$date') AS OverDue
     	FROM ".TB_PREF."debtor_trans, ".TB_PREF."sys_types
-    	WHERE ".TB_PREF."debtor_trans.tran_date <= '$date' 
+    	WHERE ".TB_PREF."debtor_trans.tran_date <= '$date'
 	AND ".TB_PREF."debtor_trans.debtor_no = '$debtorno'
 	AND ".TB_PREF."debtor_trans.type != 13
     	AND ".TB_PREF."debtor_trans.type = ".TB_PREF."sys_types.type_id
@@ -84,7 +84,6 @@ function print_customer_balances()
     $rep->Info($params, $cols, $headers, $aligns);
     $rep->Header();
 
-	$total = array(0,0,0,0);
 	$grandtotal = array(0,0,0,0);
 
 	$sql = "SELECT debtor_no, name, curr_code FROM ".TB_PREF."debtors_master ";
@@ -107,6 +106,7 @@ function print_customer_balances()
 		if (db_num_rows($res)==0)
 			continue;
 		$rep->Line($rep->row + 4);
+		$total = array(0,0,0,0);
 		while ($trans = db_fetch($res))
 		{
 			$rep->NewLine(1, 2);
@@ -121,6 +121,8 @@ function print_customer_balances()
 				$rate = get_exchange_rate_from_home_currency($myrow['curr_code'], $date);
 			else
 				$rate = 1.0;
+			if ($trans['type'] == 11 || $trans['type'] == 12 || $trans['type'] == 2)
+				$trans['TotalAmount'] *= -1;
 			if ($trans['TotalAmount'] > 0.0)
 			{
 				$item[0] = abs($trans['TotalAmount']) * $rate;

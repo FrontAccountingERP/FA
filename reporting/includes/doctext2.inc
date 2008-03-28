@@ -8,7 +8,7 @@ if (isset($header2type))
 	$doc_Shipping_Company = "Shipping Company";
 	if ($doctype == 9)
 		$doc_Due_Date = "Delivery Date";
-	else	
+	else
 		$doc_Due_Date = "Due Date";
 	$doc_Your_Ref = "Your Ref";
 	$doc_Our_Ref = "Our Ref.";
@@ -41,19 +41,19 @@ if (isset($header2type))
 			$this->title = _("DELIVERY NOTE");
 		else
 			$this->title = "CREDIT NOTE";
-		if ($doctype == 8)	
-			$this->headers = array('Item Code', 'Item Description',	'Delivery Date', 
-				'Quantity', 'Unit',	'Price', 'Total');	
-		else		
+		if ($doctype == 8)
+			$this->headers = array('Item Code', 'Item Description',	'Delivery Date',
+				'Quantity', 'Unit',	'Price', 'Total');
+		else
 			$this->headers = array('Item Code', 'Item Description',	'Quantity', 'Unit',
-				'Price', 'Discount %', 'Total');	
-	}		
+				'Price', 'Discount %', 'Total');
+	}
 	else if ($doctype == 12)
 	{
 		$this->title = "STATEMENT";
 		$this->headers = array('Trans Type', '#', 'Date', 'Due Date', 'Charges',
 			'Credits', 'Allocated', 'Outstanding');
-	}		
+	}
 }
 if (isset($emailtype))
 {
@@ -64,9 +64,9 @@ if (isset($emailtype))
 }
 if (isset($header2type) || isset($linetype))
 {
-	$doc_Document_no = $doctype==13 ? "Delivery Note No." : "Invoice No.";
+	$doc_Invoice_no = $doctype==13 ? "Delivery Note No." : "Invoice No.";
 	$doc_Order_no = "Order no.";
-}	
+}
 if (isset($linetype))
 {
 	if ($doctype == 8 || $doctype == 9 || $doctype == 10 || $doctype == 11 || $doctype == 13)
@@ -89,6 +89,6 @@ if (isset($linetype))
 		$doc_as_of = "as of";
 		$doc_Days = "Days";
 		$doc_Over = "Over";
-	}	
+	}
 }
 ?>

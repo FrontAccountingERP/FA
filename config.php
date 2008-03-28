@@ -23,7 +23,7 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 
 	$debug 			= 1;
 	$show_sql 		= 0;
-	$go_debug 		= 1;
+	$go_debug 		= 0;
 	if ($go_debug == 1)
 	{
 		error_reporting(E_ALL);
@@ -60,7 +60,7 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 
 	/* per user data/cache directory */
 	$comp_path = $path_to_root.'/company';
-	
+
 	/* allow alpha characters in accounts. 0 = numeric, 1 = alpha numeric, 2 = uppercase alpha numeric */
 	$accounts_alpha = 0;
 
@@ -172,5 +172,5 @@ if(isset($_SESSION["wa_current_user"])) {
 	$js_static = array('behaviour.js');
 	// additional js source included in header
 	$js_lib = $js_userlib = array();
-	
+
 ?>

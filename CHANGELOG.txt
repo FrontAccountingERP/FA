@@ -19,6 +19,18 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+28-Mar-2008 Joe Hunt
+# Fixed a minor bug in customers_db.inc (should include type == 2 - Bank Deposits)
+$ /sales/includes/db/customers_db.inc
+# Fixed a PHP vers. 5.xx bug. No need for & operator in function calls, only in declaration. Gives a warning.
+$ /sales/includes/db/sales_credit_db.inc
+# Fixed a wrong variabel declaration doc_Document_no to doc_Invoice_no
+$ /reporting/includes/doctext.inc
+  /reporting/includes/doctext2.inc
+# Fixed so Customer Balances and Aged Customer Analysis reports presents correct sign.  
+$ /reporting/rep101.php
+  /reporting/rep102.php
+
 28-Mar-2008 Janusz Dobrowolski
 # Layout/focus fixes for no_[customer/supplier/item]_list option on
    /includes/ui/ui_lists.inc
