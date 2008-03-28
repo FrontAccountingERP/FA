@@ -297,7 +297,7 @@ function po_item_controls(&$order, $stock_id=null)
 		$no_item_list = get_company_pref('no_item_list');
 		if ($no_item_list)
 		{
-			echo "<td colspan=2>\n";
+			echo "<td colspan=2 nowrap>\n";
 			stock_purchasable_items_list('stock_id', $_POST['stock_id'], false, true);
 			echo "</td>\n";
 		}

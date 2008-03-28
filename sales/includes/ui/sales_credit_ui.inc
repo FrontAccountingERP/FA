@@ -192,10 +192,9 @@ function credit_edit_item_controls(&$order, $rowcounter, $line_no=-1)
 	}
 	else
 	{
-		global $no_item_list; 
-		if ($no_item_list)
+ 		if (get_company_pref('no_item_list'))
 		{
-			echo "<td colspan=2>\n";
+			echo "<td colspan=2 nowrap>\n";
 			stock_items_list('stock_id', null, false, true);
 			echo "</td>\n";
 		}

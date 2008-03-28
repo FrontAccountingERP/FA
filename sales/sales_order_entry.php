@@ -181,7 +181,11 @@ function copy_from_cart()
 	$_POST['branch_id'] = $cart->Branch;
 	$_POST['sales_type'] = $cart->sales_type;
 }
+//--------------------------------------------------------------------------------
 
+function line_start_focus() {
+  set_focus(get_company_pref('no_supplier_list') ? 'stock_id_edit' : 'StockID2');
+}
 //--------------------------------------------------------------------------------
 
 function can_process() {
@@ -284,7 +288,7 @@ function handle_update_item()
 		 input_num('Disc') / 100 );
 	}
   copy_from_cart();
-  set_focus('StockID2');
+  line_start_focus();
 }
 
 //--------------------------------------------------------------------------------
@@ -296,7 +300,7 @@ function handle_delete_item($line_no)
     } else {
 	display_error(_("This item cannot be deleted because some of it has already been delivered."));
     }
-    set_focus('StockID2');
+    line_start_focus();
 }
 
 //--------------------------------------------------------------------------------
@@ -310,7 +314,7 @@ function handle_new_item()
 		input_num('price'), input_num('Disc') / 100);
 
 	$_POST['StockID2'] = $_POST['stock_id']	= "";
-	set_focus('StockID2');
+	line_start_focus();
 }
 
 //--------------------------------------------------------------------------------
@@ -397,7 +401,7 @@ if (isset($_POST['AddItem']))
 	handle_new_item();
 
 if (isset($_POST['CancelItemChanges']) || isset($_POST['UpdateItem']))
-	set_focus('StockID2');
+	line_start_focus();
 
 //--------------------------------------------------------------------------------
 

@@ -19,6 +19,15 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+28-Mar-2008 Janusz Dobrowolski
+# Layout/focus fixes for no_[customer/supplier/item]_list option on
+   /includes/ui/ui_lists.inc
+   /purchasing/includes/ui/po_ui.inc
+   /sales/credit_note_entry.php
+   /sales/sales_order_entry.php
+   /sales/includes/ui/sales_credit_ui.inc
+   /sales/includes/ui/sales_order_ui.inc
+
 27-Mar-2008 Janusz Dobrowolski
 + Automatic first field focus on page start, focus order preserved between form updates
 $  /gl/inquiry/gl_account_inquiry.php
@@ -29,8 +38,8 @@ $  /gl/inquiry/gl_account_inquiry.php
    /includes/ui/ui_view.inc
    /js/inserts.js
    /sales/sales_order_entry.php
-   /ales/credit_note_entry.php
-   /ales/includes/ui/sales_credit_ui.inc
+   /sales/credit_note_entry.php
+   /sales/includes/ui/sales_credit_ui.inc
    /sales/includes/ui/sales_order_ui.inc
 + Data picker omitted in keyboard tabbing sequence (FF,IE, not old mozilla)
 $  /includes/ui/ui_input.inc

@@ -18,8 +18,10 @@ function supplier_list($name, $selected_id, $all_option=false, $submit_on_change
 	default_focus($name);
 	if ($selected_id == null)
 		$selected_id = ((!isset($_POST[$name]) || $_POST[$name] == "") ? "" : $_POST[$name]);
-	$no_supplier_list = get_company_pref('no_supplier_list');
-	if ($no_supplier_list)
+	
+
+	$supplier_sql = "SELECT supplier_id, supp_name, curr_code FROM ".TB_PREF."suppliers ";
+	if (get_company_pref('no_supplier_list'))
 	{
 		global $search_button;
 		$edit_name = $name."_edit";
@@ -29,34 +31,25 @@ function supplier_list($name, $selected_id, $all_option=false, $submit_on_change
 		if (isset($_POST[$edit_button]))
 		{
 			$selected_id = $_POST[$name] = "";
+			set_focus($name);
 		}
 
 		if ($selected_id != "")
 		{
 			$val = DEFVAL;
-			$supplier_sql = "SELECT supplier_id, supp_name, curr_code FROM ".TB_PREF."suppliers WHERE supplier_id=$selected_id";
-			$supplier_result = db_query($supplier_sql);
+			$supplier_sql .= "WHERE supplier_id=$selected_id";
 		}
-		else
+		elseif ($val != "" && $val != DEFVAL)
 		{
-			if ($val != "" && $val != DEFVAL)
-			{
-				$supplier_sql = "SELECT supplier_id, supp_name, curr_code FROM ".TB_PREF."suppliers WHERE supp_name LIKE '%{$val}%' ORDER BY supp_name";
-				$supplier_result = db_query($supplier_sql);
-			}
-			else
-				$supplier_result = false;
+			$supplier_sql .= "WHERE supp_name LIKE '%{$val}%'";
 		}
 
 		echo "<input type='text' name='$edit_name' size='8' maxlength='50' value='$val' onblur='this.form.$edit_button.click();'> ";
 
 		echo sprintf($search_button, $edit_button);
 	}
-	else
-	{
-		$supplier_sql = "SELECT supplier_id, supp_name, curr_code FROM ".TB_PREF."suppliers ORDER BY supp_name";
-		$supplier_result = db_query($supplier_sql);
-	}
+
+	$supplier_result = db_query($supplier_sql." ORDER BY supp_name");
 
 	if ($submit_on_change==true)
 		echo "<select name='$name' onchange='this.form.submit();'>";
@@ -133,8 +126,9 @@ function customer_list($name, $selected_id, $all_option=false, $submit_on_change
 	default_focus($name);
 	if ($selected_id == null)
 		$selected_id = ((!isset($_POST[$name]) || $_POST[$name] == "") ? "" : $_POST[$name]);
-	$no_customer_list = get_company_pref('no_customer_list');
-	if ($no_customer_list)
+
+	$customer_sql = "SELECT debtor_no, name, curr_code FROM ".TB_PREF."debtors_master ";
+	if (get_company_pref('no_customer_list'))
 	{
 		global $search_button;
 		$edit_name = $name."_edit";
@@ -145,34 +139,25 @@ function customer_list($name, $selected_id, $all_option=false, $submit_on_change
 		{
 			$selected_id = $_POST[$name] = "";
 			$_POST['branch_id'] = "";
+			set_focus($name);
 		}
-
 		if ($selected_id != "")
 		{
 			$val = DEFVAL;
-			$customer_sql = "SELECT debtor_no, name, curr_code FROM ".TB_PREF."debtors_master WHERE debtor_no=$selected_id";
-			$customer_result = db_query($customer_sql);
+			$customer_sql .= "WHERE debtor_no=$selected_id";
 		}
-		else
-		{
-			if ($val != "" && $val != DEFVAL)
+		elseif ($val != "" && $val != DEFVAL)
 			{
-				$customer_sql = "SELECT debtor_no, name, curr_code FROM ".TB_PREF."debtors_master WHERE name LIKE '%{$val}%' ORDER BY name";
-				$customer_result = db_query($customer_sql);
+				$customer_sql .= "WHERE name LIKE '%{$val}%'";
 			}
-			else
-				$customer_result = false;
-		}
-
 		echo "<input type='text' name='$edit_name' size='8' maxlength='50' value='$val' onblur='this.form.$edit_button.click();'> ";
 
 		echo sprintf($search_button, $edit_button);
 	}
-	else
-	{
-		$customer_sql = "SELECT debtor_no, name, curr_code FROM ".TB_PREF."debtors_master ORDER BY name";
-		$customer_result = db_query($customer_sql);
-	}
+
+
+	$customer_result = db_query($customer_sql." ORDER BY name");
+
 	if ($submit_on_change==true)
 		echo "<select name='$name' onchange='this.form.submit();'>";
 	else
@@ -619,8 +604,12 @@ function stock_items_list($name, $selected_id, $all_option=false, $submit_on_cha
 	default_focus($name);
 	if ($selected_id == null)
 		$selected_id = (!isset($_POST[$name]) ? "" : $_POST[$name]);
-	$no_item_list = get_company_pref('no_item_list');
-	if ($no_item_list)
+	
+
+	$sql = "SELECT stock_id, ".TB_PREF."stock_master.description, ".TB_PREF."stock_category.description
+			FROM ".TB_PREF."stock_master,".TB_PREF."stock_category WHERE ".TB_PREF."stock_master.category_id=".TB_PREF."stock_category.category_id";
+
+	if (get_company_pref('no_item_list'))
 	{
 		global $search_button;
 		$edit_name = $name."_edit";
@@ -631,41 +620,26 @@ function stock_items_list($name, $selected_id, $all_option=false, $submit_on_cha
 		if (isset($_POST[$edit_button]))
 		{
 			$selected_id = $_POST[$name] = "";
+			set_focus($name);
 		}
-
 		if ($selected_id != "")
 		{
 			$val = DEFVAL;
-			$sql = "SELECT stock_id, ".TB_PREF."stock_master.description, ".TB_PREF."stock_category.description
-				FROM ".TB_PREF."stock_master,".TB_PREF."stock_category WHERE ".TB_PREF."stock_master.category_id=".TB_PREF."stock_category.category_id
-				AND stock_id='$selected_id'";
-			$result = db_query($sql);
+			$sql .= " AND stock_id='$selected_id'";
 		}
-		else
+		elseif ($val != "" && $val != DEFVAL)
 		{
-			if ($val != "" && $val != DEFVAL)
-			{
-				$sql = "SELECT stock_id, ".TB_PREF."stock_master.description, ".TB_PREF."stock_category.description
-					FROM ".TB_PREF."stock_master,".TB_PREF."stock_category WHERE "
-					.TB_PREF."stock_master.category_id=".TB_PREF."stock_category.category_id AND
+				$sql .= " AND
 					(stock_id LIKE '%{$val}%' OR ".TB_PREF."stock_category.description LIKE '%{$val}%' OR "
 					.TB_PREF."stock_master.description LIKE '%{$val}%')";
-				$result = db_query($sql);
-			}
-			else
-				$result = false;
 		}
 
 		echo "<input type='text' name='$edit_name' size='8' maxlength='50' value='$val' onblur='this.form.$edit_button.click();'> ";
 
 		echo sprintf($search_button, $edit_button);
 	}
-	else
-	{
-		$sql = "SELECT stock_id, ".TB_PREF."stock_master.description, ".TB_PREF."stock_category.description
-			FROM ".TB_PREF."stock_master,".TB_PREF."stock_category WHERE ".TB_PREF."stock_master.category_id=".TB_PREF."stock_category.category_id";
-		$result = db_query($sql);
-	}
+	$result = db_query($sql);
+
 
 	if ($submit_on_change==true)
 		echo "<select name='$name' onchange='this.form.submit();'>";
@@ -914,8 +888,11 @@ function stock_purchasable_items_list($name, &$selected_id,	$all_option=false, $
 	default_focus($name);
 	if ($selected_id == null)
 		$selected_id = (!isset($_POST[$name]) ? "" : $_POST[$name]);
-	$no_item_list = get_company_pref('no_item_list');
-	if ($no_item_list)
+	
+	$sql = "SELECT stock_id, ".TB_PREF."stock_master.description, ".TB_PREF."stock_category.description
+				FROM ".TB_PREF."stock_master,".TB_PREF."stock_category WHERE ".TB_PREF."stock_master.category_id=".TB_PREF."stock_category.category_id
+				AND mb_flag !='M' ";
+	if (get_company_pref('no_item_list'))
 	{
 		$edit_name = $name."_edit";
 		$edit_button = $name."_button";
@@ -924,42 +901,27 @@ function stock_purchasable_items_list($name, &$selected_id,	$all_option=false, $
 		if (isset($_POST[$edit_button]))
 		{
 			$selected_id = $_POST[$name] = "";
+			set_focus($name);
 		}
 
 		if ($selected_id != "")
 		{
 			$val = DEFVAL;
-			$sql = "SELECT stock_id, ".TB_PREF."stock_master.description, ".TB_PREF."stock_category.description
-				FROM ".TB_PREF."stock_master,".TB_PREF."stock_category WHERE ".TB_PREF."stock_master.category_id=".TB_PREF."stock_category.category_id
-				AND mb_flag !='M' AND stock_id='$selected_id'";
-			$result = db_query($sql);
+			$sql .= "AND stock_id='$selected_id'";
 		}
-		else
+		elseif ($val != "" && $val != DEFVAL)
 		{
-			if ($val != "" && $val != DEFVAL)
-			{
-				$sql = "SELECT stock_id, ".TB_PREF."stock_master.description, ".TB_PREF."stock_category.description
-					FROM ".TB_PREF."stock_master,".TB_PREF."stock_category WHERE "
-					.TB_PREF."stock_master.category_id=".TB_PREF."stock_category.category_id AND mb_flag !='M' AND
-					(stock_id LIKE '%{$val}%' OR ".TB_PREF."stock_category.description LIKE '%{$val}%' OR "
-					.TB_PREF."stock_master.description LIKE '%{$val}%')";
-				$result = db_query($sql);
-			}
-			else
-				$result = false;
+			$sql = "AND
+				(stock_id LIKE '%{$val}%' OR ".TB_PREF."stock_category.description LIKE '%{$val}%' OR "
+				.TB_PREF."stock_master.description LIKE '%{$val}%')";
 		}
 
 		echo "<input type='text' name='$edit_name' size='8' maxlength='50' value='$val' > ";
 
 		echo "<input type='submit' class='inputsubmit' name='$edit_button' value='?'> ";
 	}
-	else
-	{
-		$sql = "SELECT stock_id, ".TB_PREF."stock_master.description, ".TB_PREF."stock_category.description
-			FROM ".TB_PREF."stock_master,".TB_PREF."stock_category WHERE ".TB_PREF."stock_master.category_id="
-			.TB_PREF."stock_category.category_id AND mb_flag !='M'";
-		$result = db_query($sql);
-	}
+
+	$result = db_query($sql);
 
 	if ($submit_on_change==true)
 		echo "<select name='$name' onchange='this.form.submit();'>";
@@ -1993,7 +1955,7 @@ function decseps_list_row($label, $name, $value)
 function themes_list_row($label, $name, $value)
 {
 	global $path_to_root;
-	
+
 	default_focus($name);
 	$path = $path_to_root.'/themes/';
 	$themes = array();
@@ -2001,7 +1963,7 @@ function themes_list_row($label, $name, $value)
 	while(false !== ($fname = readdir($themedir))) {
 	    if($fname!='.' && $fname!='..' && $fname!='CVS' && is_dir($path.$fname)) {
 			$themes[] =  $fname;
-	    } 
+	    }
 	}
 	sort($themes);
 	echo "<tr><td>$label</td>\n";

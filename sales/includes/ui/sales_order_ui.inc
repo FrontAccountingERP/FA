@@ -98,7 +98,7 @@ function display_order_summary($title, &$order, $editable_items=false)
 	$k = 0;  //row colour counter
 
 	$id = find_submit('Edit');
-	
+
 	foreach ($order->line_items as $line_no=>$stock_item)
 	{
 
@@ -325,10 +325,10 @@ function sales_order_item_controls(&$order, &$rowcounter, $line_no=-1)
 	}
 	else
 	{
-		global $no_item_list;
-		if ($no_item_list)
+
+		if (get_company_pref('no_item_list'))
 		{
-			echo "<td colspan=2>\n";
+			echo "<td colspan=2 nowrap>\n";
 			stock_items_list('stock_id', null, false, true);
 			echo "</td>\n";
 		}
@@ -422,7 +422,7 @@ function display_delivery_details(&$order)
 	text_row(_("Customer Reference:"), 'cust_ref', $order->cust_ref, 25, 25);
 	textarea_row(_("Comments:"), "Comments", $order->Comments, 31, 5);
 
-	small_amount_row(_("Shipping Charge:"), 'freight_cost', 
+	small_amount_row(_("Shipping Charge:"), 'freight_cost',
 	    price_format($_POST['freight_cost']));
 
 	shippers_list_row(_("Shipping Company:"), 'ship_via', $order->ship_via);
