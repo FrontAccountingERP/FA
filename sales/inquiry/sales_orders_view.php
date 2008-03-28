@@ -172,12 +172,15 @@ if ($result)
 
 	start_table("$table_style colspan=6 width=95%");
 	$th = array(_("Order #"), _("Customer"), _("Branch"), _("Cust Order #"), _("Order Date"),
-		_("Required By"), _("Delivery To"), _("Order Total"), _("Currency"), _("Tmpl"),"", "");
+		_("Required By"), _("Delivery To"), _("Order Total"), _("Currency"), "");
 
   	if($_POST['order_view_mode']=='InvoiceTemplates' || $_POST['order_view_mode']=='DeliveryTemplates')
 	{
 		$th[3] = _('Description');
-	}
+	} elseif ($_POST['order_view_mode'] != 'OutstandingOnly') {
+		$th[9] = _('Tmpl');
+	 $th[] =''; $th[] ='';
+	} 
 
 	table_header($th);
 	start_form();
