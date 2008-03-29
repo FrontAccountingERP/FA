@@ -19,9 +19,15 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+29-Mar-2008 Janusz Dobrowolski
+# Changed gl_all_accounts_list() API
+$ /includes/ui/ui_lists.inc
++ Enhanced list accessability in kbd usage via space key
+$ js/inserts.js
+
 28-Mar-2008 Janusz Dobrowolski
 # Fixed headers for various display mode
-$  /sales/inquiry/sales_orders_view.php
+$ /sales/inquiry/sales_orders_view.php
 
 28-Mar-2008 Joe Hunt
 + Added print document options in inquiries.
