@@ -15,6 +15,21 @@ var inserts = {
 			element.onfocus = function() {
 				document.getElementsByName('_focus')[0].value = element.name;
 			};
+			element.onkeydown = function(event) { 
+			  if (event.keyCode==32) {
+			   if(this.size==10) {
+				this.size = 1;
+			   } else {
+				var sel = this.selectedIndex;
+				this.size = this.options.length;
+				if(this.size>10) this.size = 10;
+				this.selectedIndex = sel;
+			   }
+			  }
+			};
+			element.onblur = function(event) { 
+				this.size = 1;
+			}
 		}
 	},
 	'input': function(element) {
@@ -49,27 +64,25 @@ var inserts = {
 			  }
 			}
 		  };
-		  if(element.onblur==undefined) {  // onblur can be set to submit(); here
-			element.onblur = function() {
+		  element.onblur = function() {
 			  var select = document.getElementsByName(this.getAttribute('rel'))[0];
-			  if (this.value != "")
-				this.value = select.options[select.selectedIndex].value;
-//					myForm.$next_name.focus();
-			  return true;
-			};
-		  }
+				if (this.value != "")
+				  this.value = select.options[select.selectedIndex].value;
+				return true;
+		  };
 		}
 	},
 	'select.combo': function(element) {
 		if(element.onchange==undefined) { 
-			  element.onchange = function() {
-			  var input = document.getElementsByName(this.getAttribute('rel'))[0];
-				input.value = this.options[this.selectedIndex].value;
-//				myForm.$next_name.focus();
+			  element.onblur = function() {
+				var box = document.getElementsByName(this.getAttribute('rel'))[0];
+				val = this.options[this.selectedIndex].value;
+				box.value = val; 
+				this.size = 1;
 				return true;
-			  };
+			 }
 		}
-	}
+	}	
 
 };
 

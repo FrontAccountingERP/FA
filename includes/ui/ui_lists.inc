@@ -1574,12 +1574,12 @@ function gl_account_types_list_row($label, $name, $selected_id, $all_option=fals
 //-----------------------------------------------------------------------------------------------
 
 function gl_all_accounts_list($name, $selected_id, $skip_bank_accounts=false,
-	$show_group=false, $onchange="")
+	$show_group=false, $params="")
 {
 	default_focus($name);
 	echo "<select name='$name'";
-	if ($onchange != "")
-		echo " onchange='$onchange'";
+	if ($params != "")
+		echo " $params";
 	echo ">";
 
 	if ($skip_bank_accounts)
@@ -1626,21 +1626,21 @@ function gl_all_accounts_list($name, $selected_id, $skip_bank_accounts=false,
 }
 
 function gl_all_accounts_list_cells($label, $name, $selected_id, $skip_bank_accounts=false,
-	$show_group=false, $onchange="")
+	$show_group=false, $params="")
 {
 	if ($label != null)
 		echo "<td>$label</td>\n";
 	echo "<td>";
-	gl_all_accounts_list($name, $selected_id, $skip_bank_accounts, $show_group, $onchange);
+	gl_all_accounts_list($name, $selected_id, $skip_bank_accounts, $show_group, $params);
 	echo "</td>\n";
 }
 
 function gl_all_accounts_list_row($label, $name, $selected_id, $skip_bank_accounts=false,
-	$show_group=false, $onchange="")
+	$show_group=false, $params="")
 {
 	echo "<tr>\n";
 	gl_all_accounts_list_cells($label, $name, $selected_id, $skip_bank_accounts,
-		$show_group, $onchange);
+		$show_group, $params);
 	echo "</tr>\n";
 }
 
