@@ -17,7 +17,7 @@ var inserts = {
 			};
 			element.onkeydown = function(event) { 
 			  if (event.keyCode==32) {
-			   if(this.size==10) {
+			   if(this.size>1) {
 				this.size = 1;
 			   } else {
 				var sel = this.selectedIndex;
