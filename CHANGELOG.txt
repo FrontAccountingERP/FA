@@ -19,6 +19,71 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+02-Apr-2008 Janusz Dobrowolski
+# Removed selector expansion on space key for multi-line selectors
+$ /js/inserts.js
+! Hiding search button in combo selectors for javascript enabled browsers
+$ /includes/ui/ui_lists.inc
+  /js/inserts.js
++ Focus set to invalid form field after submit check fail
+$ /admin/company_preferences.php
+  /admin/fiscalyears.php
+  /admin/gl_setup.php
+  /admin/payment_terms.php
+  /admin/shipping_companies.php
+  /admin/users.php
+  /admin/void_transaction.php
+  /dimensions/dimension_entry.php
+  /gl/bank_transfer.php
+  /gl/gl_deposit.php
+  /gl/gl_journal.php
+  /gl/gl_payment.php
+  /gl/manage/bank_accounts.php
+  /gl/manage/bank_trans_types.php
+  /gl/manage/currencies.php
+  /gl/manage/exchange_rates.php
+  /gl/manage/gl_account_classes.php
+  /gl/manage/gl_account_types.php
+  /gl/manage/gl_accounts.php
+  /inventory/adjustments.php
+  /inventory/cost_update.php
+  /inventory/prices.php
+  /inventory/purchasing_data.php
+  /inventory/transfers.php
+  /inventory/manage/item_categories.php
+  /inventory/manage/item_units.php
+  /inventory/manage/items.php
+  /inventory/manage/locations.php
+  /inventory/manage/movement_types.php
+  /manufacturing/work_order_add_finished.php
+  /manufacturing/work_order_entry.php
+  /manufacturing/work_order_issue.php
+  /manufacturing/work_order_release.php
+  /manufacturing/manage/bom_edit.php
+  /manufacturing/manage/work_centres.php
+  /purchasing/po_entry_items.php
+  /purchasing/po_receive_items.php
+  /purchasing/supplier_credit.php
+  /purchasing/supplier_credit_grns.php
+  /purchasing/supplier_invoice.php
+  /purchasing/supplier_invoice_grns.php
+  /purchasing/supplier_payment.php
+  /purchasing/supplier_trans_gl.php
+  /purchasing/allocations/supplier_allocate.php
+  /purchasing/manage/suppliers.php
+  /sales/credit_note_entry.php
+  /sales/customer_credit_invoice.php
+  /sales/customer_delivery.php
+  /sales/customer_invoice.php
+  /sales/customer_payments.php
+  /sales/sales_order_entry.php
+  /sales/allocations/customer_allocate.php
+  /taxes/item_tax_types.php
+  /taxes/tax_groups.php
+  /taxes/tax_types.php
+# Set default focus in update_db.php
+$ /admin/backups.php
+
 29-Mar-2008 Janusz Dobrowolski
 # Changed gl_all_accounts_list() API
 $ /includes/ui/ui_lists.inc
