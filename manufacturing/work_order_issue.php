@@ -52,22 +52,26 @@ function can_process()
 	if (!is_date($_POST['date_'])) 
 	{
 		display_error(_("The entered date for the issue is invalid."));
+		set_focus('date_');
 		return false;
 	} 
 	elseif (!is_date_in_fiscalyear($_POST['date_'])) 
 	{
 		display_error(_("The entered date is not in fiscal year."));
+		set_focus('date_');
 		return false;
 	}
 	if (!references::is_valid($_POST['ref'])) 
 	{
 		display_error(_("You must enter a reference."));
+		set_focus('ref');
 		return false;
 	}
 
 	if (!is_new_reference($_POST['ref'], 28)) 
 	{
 		display_error(_("The entered reference is already in use."));
+		set_focus('ref');
 		return false;
 	}
 
@@ -110,18 +114,21 @@ function check_item_data()
 	if (!is_numeric($_POST['qty']))
 	{
 		display_error(_("The quantity entered is not a valid number."));
+		set_focus('qty');
 		return false;
 	}
 
 	if ($_POST['qty'] <= 0)
 	{
 		display_error(_("The quantity entered must be greater than zero."));
+		set_focus('qty');
 		return false;
 	}
 
 	if (!is_numeric($_POST['std_cost']) || $_POST['std_cost'] < 0)
 	{
 		display_error(_("The entered standard cost is negative or invalid."));
+		set_focus('std_cost');
 		return false;
 	}
 

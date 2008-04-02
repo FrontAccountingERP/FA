@@ -22,6 +22,7 @@ if (isset($_POST['submit']) && $_POST['submit'] != "")
 	{
 		$input_error = 1;
 		display_error(_("The company name must be entered."));
+		set_focus('coy_name');
 	}
 	if ($input_error != 1)
 	{

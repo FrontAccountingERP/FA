@@ -107,17 +107,21 @@ function can_process()
 	if($_SESSION['Items']->trans_no == 0) {
 	    if (!references::is_valid($_POST['ref'])) {
 		display_error( _("You must enter a reference."));
+		set_focus('ref');
 		$input_error = 1;
 	    } elseif (!is_new_reference($_POST['ref'], 11))	{
 		display_error( _("The entered reference is already in use."));
+		set_focus('ref');
 		$input_error = 1;
 	    } 
 	}
 	if (!is_date($_POST['OrderDate'])) {
 		display_error(_("The entered date for the credit note is invalid."));
+		set_focus('OrderDate');
 		$input_error = 1;
 	} elseif (!is_date_in_fiscalyear($_POST['OrderDate'])) {
 		display_error(_("The entered date is not in fiscal year."));
+		set_focus('OrderDate');
 		$input_error = 1;
 	}
 	return ($input_error == 0);
@@ -147,14 +151,17 @@ function check_item_data()
 {
 	if (!check_num('qty',0)) {
 		display_error(_("The quantity must be greater than zero."));
+		set_focus('qty');
 		return false;
 	}
 	if (!check_num('price',0)) {
 		display_error(_("The entered price is negative or invalid."));
+		set_focus('price');
 		return false;
 	}
 	if (!check_num('Disc', 0, 100)) {
 		display_error(_("The entered discount percent is negative, greater than 100 or invalid."));
+		set_focus('Disc');
 		return false;
 	}
 	return true;

@@ -28,21 +28,25 @@ function check_data()
 	if (strlen($_POST['Abbreviation']) == 0) 
 	{
 		display_error( _("The currency abbreviation must be entered."));
+		set_focus('Abbreviation');
 		return false;
 	} 
 	elseif (strlen($_POST['CurrencyName']) == 0) 
 	{
 		display_error( _("The currency name must be entered."));
+		set_focus('CurrencyName');
 		return false;		
 	} 
 	elseif (strlen($_POST['Symbol']) == 0) 
 	{
 		display_error( _("The currency symbol must be entered."));
+		set_focus('Symbol');
 		return false;		
 	} 
 	elseif (strlen($_POST['hundreds_name']) == 0) 
 	{
 		display_error( _("The hundredths name must be entered."));
+		set_focus('hundreds_name');
 		return false;		
 	}  	
 	

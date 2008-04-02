@@ -36,12 +36,14 @@ function check_data()
 	if (!check_num('this_quantity_inv', 0) || input_num('this_quantity_inv')==0) 
 	{
 		display_error( _("The quantity to invoice must be numeric and greater than zero."));
+		set_focus('this_quantity_inv');
 		return false;
 	}
 
 	if (!check_num('ChgPrice'))
 	{
 		display_error( _("The price is not numeric."));
+		set_focus('ChgPrice');
 		return false;
 	}
 
@@ -54,6 +56,7 @@ function check_data()
 		    {
 			display_error(_("The price being invoiced is more than the purchase order price by more than the allowed over-charge percentage. The system is set up to prohibit this. See the system administrator to modify the set up parameters if necessary.") .
 			_("The over-charge percentage allowance is :") . sys_prefs::over_charge_allowance() . "%");
+			set_focus('ChgPrice');
 			return false;
 		    }
 		}
@@ -66,6 +69,7 @@ function check_data()
 		{
 			display_error( _("The quantity being invoiced is more than the outstanding quantity by more than the allowed over-charge percentage. The system is set up to prohibit this. See the system administrator to modify the set up parameters if necessary.")
 			. _("The over-charge percentage allowance is :") . sys_prefs::over_charge_allowance() . "%");
+			set_focus('this_quantity_inv');
 			return false;
 		}
 	}

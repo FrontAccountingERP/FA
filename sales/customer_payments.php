@@ -49,34 +49,41 @@ function can_process()
 {
 	if (!isset($_POST['DateBanked']) || !is_date($_POST['DateBanked'])) {
 		display_error(_("The entered date is invalid. Please enter a valid date for the payment."));
+		set_focus('DateBanked');
 		return false;
 	} elseif (!is_date_in_fiscalyear($_POST['DateBanked'])) {
 		display_error(_("The entered date is not in fiscal year."));
+		set_focus('DateBanked');
 		return false;
 	}
 
 	if (!references::is_valid($_POST['ref'])) {
 		display_error(_("You must enter a reference."));
+		set_focus('ref');
 		return false;
 	}
 
 	if (!is_new_reference($_POST['ref'], 12)) {
 		display_error(_("The entered reference is already in use."));
+		set_focus('ref');
 		return false;
 	}
 
 	if (!check_num('amount', 0)) {
 		display_error(_("The entered amount is invalid or negative and cannot be processed."));
+		set_focus('amount');
 		return false;
 	}
 
 	if (!check_num('discount')) {
 		display_error(_("The entered discount is not a valid number."));
+		set_focus('discount');
 		return false;
 	}
 
 	if ((input_num('amount') - input_num('discount') <= 0)) {
 		display_error(_("The balance of the amount and discout is zero or negative. Please enter valid amounts."));
+		set_focus('discount');
 		return false;
 	}
 

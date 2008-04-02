@@ -66,40 +66,47 @@ function check_data()
 	if (!$_SESSION['supp_trans']->is_valid_trans_to_post())
 	{
 		display_error(_("The credit note cannot be processed because the there are no items or values on the invoice.  Credit notes are expected to have a charge."));
+		set_focus('');
 		return false;
 	}
 
 	if (!references::is_valid($_SESSION['supp_trans']->reference)) 
 	{
 		display_error(_("You must enter an credit note reference."));
+		set_focus('reference');
 		return false;
 	}
 
 	if (!is_new_reference($_SESSION['supp_trans']->reference, 21)) 
 	{
 		display_error(_("The entered reference is already in use."));
+		set_focus('reference');
 		return false;
 	}
 
 	if (!references::is_valid($_SESSION['supp_trans']->supp_reference)) 
 	{
 		display_error(_("You must enter a supplier's credit note reference."));
+		set_focus('supp_reference');
 		return false;
 	}
 
 	if (!is_date($_SESSION['supp_trans']->tran_date))
 	{
 		display_error(_("The credit note as entered cannot be processed because the date entered is not valid."));
+		set_focus('tran_date');
 		return false;
 	} 
 	elseif (!is_date_in_fiscalyear($_SESSION['supp_trans']->tran_date)) 
 	{
 		display_error(_("The entered date is not in fiscal year."));
+		set_focus('tran_date');
 		return false;
 	}
 	if (!is_date( $_SESSION['supp_trans']->due_date))
 	{
 		display_error(_("The invoice as entered cannot be processed because the due date is in an incorrect format."));
+		set_focus('due_date');
 		return false;
 	}
 

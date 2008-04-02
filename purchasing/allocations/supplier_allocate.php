@@ -46,6 +46,7 @@ function check_data()
 		if (!check_num('amount' . $counter, 0))
 		{
 			display_error(_("The entry for one or more amounts is invalid or negative."));
+			set_focus('amount');
 			return false;
 		 }
 

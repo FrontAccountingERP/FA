@@ -112,11 +112,13 @@ if (isset($_POST['addupdate']))
 	{
 		$input_error = 1;
 		display_error( _('The item name must be entered.'));
+		set_focus('description');
 	} 
 	elseif (strlen($_POST['NewStockID']) == 0) 
 	{
 		$input_error = 1;
 		display_error( _('The item code cannot be empty'));
+		set_focus('NewStockID');
 	}
 	elseif (strstr($_POST['NewStockID'], " ") || strstr($_POST['NewStockID'],"'") || 
 		strstr($_POST['NewStockID'], "+") || strstr($_POST['NewStockID'], "\"") || 
@@ -124,6 +126,7 @@ if (isset($_POST['addupdate']))
 	{
 		$input_error = 1;
 		display_error( _('The item code cannot contain any of the following characters -  & + OR a space OR quotes'));
+		set_focus('NewStockID');
 
 	}
 

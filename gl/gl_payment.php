@@ -102,21 +102,25 @@ if (isset($_POST['Process']))
 	if (!references::is_valid($_POST['ref']))
 	{
 		display_error( _("You must enter a reference."));
+		set_focus('ref');
 		$input_error = 1;
 	}
 	elseif (!is_new_reference($_POST['ref'], systypes::bank_payment()))
 	{
 		display_error( _("The entered reference is already in use."));
+		set_focus('ref');
 		$input_error = 1;
 	}
 	elseif (!is_date($_POST['date_']))
 	{
 		display_error(_("The entered date for the payment is invalid."));
+		set_focus('date_');
 		$input_error = 1;
 	}
 	elseif (!is_date_in_fiscalyear($_POST['date_']))
 	{
 		display_error(_("The entered date is not in fiscal year."));
+		set_focus('date_');
 		$input_error = 1;
 	}
 
@@ -149,18 +153,21 @@ function check_item_data()
 	if (!check_num('amount', 0))
 	{
 		display_error( _("The amount entered is not a valid number or is less than zero."));
+		set_focus('amount');
 		return false;
 	}
 
 	if ($_POST['code_id'] == $_POST['bank_account'])
 	{
 		display_error( _("The source and destination accouts cannot be the same."));
+		set_focus('code_id');
 		return false;
 	}
 
 	if (is_bank_account($_POST['code_id']))
 	{
 		display_error( _("You cannot make a payment to a bank account. Please use the transfer funds facility for this."));
+		set_focus('code_id');
 		return false;
 	}
 

@@ -176,27 +176,32 @@ function check_data()
 {
 	if (!isset($_POST['InvoiceDate']) || !is_date($_POST['InvoiceDate'])) {
 		display_error(_("The entered invoice date is invalid."));
+		set_focus('InvoiceDate');
 		return false;
 	}
 
 	if (!is_date_in_fiscalyear($_POST['InvoiceDate'])) {
 		display_error(_("The entered invoice date is not in fiscal year."));
+		set_focus('InvoiceDate');
 		return false;
 	}
 
 	if (!isset($_POST['due_date']) || !is_date($_POST['due_date']))	{
 		display_error(_("The entered invoice due date is invalid."));
+		set_focus('due_date');
 		return false;
 	}
 
 	if ($_SESSION['Items']->trans_no == 0) {
 		if (!references::is_valid($_POST['ref'])) {
 			display_error(_("You must enter a reference."));
+			set_focus('ref');
 			return false;
 		}
 
 		if (!is_new_reference($_POST['ref'], 10)) {
 			display_error(_("The entered reference is already in use."));
+			set_focus('ref');
 			return false;
 		}
 	}
@@ -207,6 +212,7 @@ function check_data()
 
 	if (!check_num('ChargeFreightCost', 0)) {
 		display_error(_("The entered shipping value is not numeric."));
+		set_focus('ChargeFreightCost');
 		return false;
 	}
 

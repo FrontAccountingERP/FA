@@ -32,12 +32,14 @@ function check_data()
 	if (!check_num('This_QuantityCredited', 0)) 
 	{
 		display_error(_("The quantity to credit must be numeric and greater than zero."));
+		set_focus('This_QuantityCredited');
 		return false;
 	}
 
 	if (!check_num('ChgPrice', 0))
 	{
 		display_error(_("The price is either not numeric or negative."));
+		set_focus('ChgPrice');
 		return false;
 	}
 

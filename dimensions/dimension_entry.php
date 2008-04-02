@@ -98,12 +98,14 @@ function can_process()
     	if (!references::is_valid($_POST['ref'])) 
     	{
     		display_error( _("The dimension reference must be entered."));
+		set_focus('ref');
     		return false;
     	}
 
     	if (!is_new_reference($_POST['ref'], systypes::dimension())) 
     	{
     		display_error(_("The entered reference is already in use."));
+		set_focus('ref');
     		return false;
     	}
 	}
@@ -111,18 +113,21 @@ function can_process()
 	if (strlen($_POST['name']) == 0) 
 	{
 		display_error( _("The dimension name must be entered."));
+		set_focus('name');
 		return false;
 	}
 
 	if (!is_date($_POST['date_']))
 	{
 		display_error( _("The date entered is in an invalid format."));
+		set_focus('date_');
 		return false;
 	}
 
 	if (!is_date($_POST['due_date']))
 	{
 		display_error( _("The required by date entered is in an invalid format."));
+		set_focus('due_date');
 		return false;
 	}
 
@@ -165,6 +170,7 @@ if (isset($_POST['delete']))
 	if (dimension_has_payments($selected_id) || dimension_has_deposits($selected_id))
 	{
 		display_error(_("This dimension cannot be deleted because it has already been processed."));
+		set_focus('ref');
 		$cancel_delete = true;
 	}
 

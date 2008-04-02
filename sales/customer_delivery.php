@@ -121,6 +121,7 @@ if (isset($_GET['OrderNumber']) && $_GET['OrderNumber'] > 0) {
 
 } elseif(!check_num('ChargeFreightCost', 0))
 	display_error(_("Freight cost cannot be less than zero"));
+	set_focus('ChargeFreightCost');
 
 
 //-----------------------------------------------------------------------------
@@ -129,27 +130,32 @@ function check_data()
 {
 	if (!isset($_POST['DispatchDate']) || !is_date($_POST['DispatchDate']))	{
 		display_error(_("The entered date of delivery is invalid."));
+		set_focus('DispatchDate');
 		return false;
 	}
 
 	if (!is_date_in_fiscalyear($_POST['DispatchDate'])) {
 		display_error(_("The entered date of delivery is not in fiscal year."));
+		set_focus('DispatchDate');
 		return false;
 	}
 
 	if (!isset($_POST['due_date']) || !is_date($_POST['due_date']))	{
 		display_error(_("The entered dead-line for invoice is invalid."));
+		set_focus('due_date');
 		return false;
 	}
 
 	if ($_SESSION['Items']->trans_no==0) {
 		if (!references::is_valid($_POST['ref'])) {
 			display_error(_("You must enter a reference."));
+			set_focus('ref');
 			return false;
 		}
 
 		if ($_SESSION['Items']->trans_no==0 && !is_new_reference($_POST['ref'], 13)) {
 			display_error(_("The entered reference is already in use."));
+			set_focus('ref');
 			return false;
 		}
 	}
@@ -159,6 +165,7 @@ function check_data()
 
 	if (!check_num('ChargeFreightCost',0)) {
 		display_error(_("The entered shipping value is not numeric."));
+		set_focus('ChargeFreightCost');
 		return false;
 	}
 

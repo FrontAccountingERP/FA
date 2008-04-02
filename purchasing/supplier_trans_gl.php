@@ -48,6 +48,7 @@ if (isset($_POST['AddGLCodeToTrans'])){
 	if (db_num_rows($result) == 0)
 	{
 		display_error(_("The account code entered is not a valid code, this line cannot be added to the transaction."));
+		set_focus('gl_code');
 		$input_error = true;
 	}
 	else
@@ -57,6 +58,7 @@ if (isset($_POST['AddGLCodeToTrans'])){
 		if (!check_num('amount'))
 		{
 			display_error(_("The amount entered is not numeric. This line cannot be added to the transaction."));
+			set_focus('amount');
 			$input_error = true;
 		}
 	}

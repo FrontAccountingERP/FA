@@ -39,16 +39,19 @@ if ((isset($_POST['AddRecord']) || isset($_POST['UpdateRecord'])) && isset($supp
    	{
       	$input_error = 1;
       	display_error( _("There is no item selected."));
+	set_focus('stock_id');
    	}
    	elseif (!check_num('price', 0))
    	{
       	$input_error = 1;
       	display_error( _("The price entered was not numeric."));
+	set_focus('price');
    	}
    	elseif (!check_num('conversion_factor'))
    	{
       	$input_error = 1;
       	display_error( _("The conversion factor entered was not numeric. The conversion factor is the number by which the price must be divided by to get the unit price in our unit of measure."));
+	set_focus('conversion_factor');
    	}
 
 	if ($input_error == 0)
@@ -123,6 +126,7 @@ $mb_flag = get_mb_flag($_POST['stock_id']);
 if ($mb_flag == -1) 
 {
 	display_error(_("Entered item is not defined. Please re-enter."));
+	set_focus('stock_id');
 } 
 else 
 {

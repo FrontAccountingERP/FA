@@ -36,16 +36,19 @@ function check_data()
 	if (!is_date($from)) 
 	{
 		display_error( _("Invalid BEGIN date in fiscal year."));
+		set_focus('from_date');
 		return false;
 	}
 	if (!is_date($_POST['to_date'])) 
 	{
 		display_error( _("Invalid END date in fiscal year."));
+		set_focus('to_date');
 		return false;
 	}
 	if (date1_greater_date2($from, $_POST['to_date'])) 
 	{
 		display_error( _("BEGIN date bigger than END date."));
+		set_focus('from_date');
 		return false;
 	}
 	return true;

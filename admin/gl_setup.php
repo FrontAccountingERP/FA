@@ -19,18 +19,21 @@ function can_process()
 	if (!check_num('po_over_receive', 0, 100)) 
 	{
 		display_error(_("The delivery over-receive allowance must be between 0 and 100."));
+		set_focus('po_over_receive');
 		return false;
 	}
 
 	if (!check_num('po_over_charge', 0, 100)) 
 	{
 		display_error(_("The invoice over-charge allowance must be between 0 and 100."));
+		set_focus('po_over_charge');
 		return false;
 	}
 
 	if (!check_num('past_due_days', 0, 100)) 
 	{
 		display_error(_("The past due days interval allowance must be between 0 and 100."));
+		set_focus('past_due_days');
 		return false;
 	}
 	return true;

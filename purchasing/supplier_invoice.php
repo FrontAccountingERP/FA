@@ -72,34 +72,40 @@ function check_data()
 	if (!references::is_valid($_SESSION['supp_trans']->reference)) 
 	{
 		display_error(_("You must enter an invoice reference."));
+		set_focus('reference');
 		return false;
 	}
 
 	if (!is_new_reference($_SESSION['supp_trans']->reference, 20)) 
 	{
 		display_error(_("The entered reference is already in use."));
+		set_focus('reference');
 		return false;
 	}
 
 	if (!references::is_valid($_SESSION['supp_trans']->supp_reference)) 
 	{
 		display_error(_("You must enter a supplier's invoice reference."));
+		set_focus('supp_reference');
 		return false;
 	}
 
 	if (!is_date( $_SESSION['supp_trans']->tran_date))
 	{
 		display_error(_("The invoice as entered cannot be processed because the invoice date is in an incorrect format."));
+		set_focus('trans_date');
 		return false;
 	} 
 	elseif (!is_date_in_fiscalyear($_SESSION['supp_trans']->tran_date)) 
 	{
 		display_error(_("The entered date is not in fiscal year."));
+		set_focus('trans_date');
 		return false;
 	}
 	if (!is_date( $_SESSION['supp_trans']->due_date))
 	{
 		display_error(_("The invoice as entered cannot be processed because the due date is in an incorrect format."));
+		set_focus('due_date');
 		return false;
 	}
 

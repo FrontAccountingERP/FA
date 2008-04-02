@@ -41,12 +41,14 @@ function check_data()
 		if (!check_num('amount' . $counter))
 		{
 			display_error(_("The entry for one or more amounts is invalid."));
+			set_focus('amount'.$counter);
 			return false;
 		}
 
 		if (!check_num('amount' . $counter,0))
 		{
 			display_error(_("The entry for an amount to allocate was negative. A positive allocation amount is expected."));
+		set_focus('amount'.$counter);
 			return false;
 		}
 

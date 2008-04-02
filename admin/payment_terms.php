@@ -31,21 +31,25 @@ if (isset($_POST['ADD_ITEM']) OR isset($_POST['UPDATE_ITEM']))
 	{
 		$inpug_error = 1;
 		display_error( _("The number of days or the day in the following month must be numeric."));
+		set_focus('DayNumber');
 	} 
 	elseif (strlen($_POST['terms']) == 0) 
 	{
 		$inpug_error = 1;
 		display_error( _("The Terms description must be entered."));
+		set_focus('terms');
 	} 
 	elseif ($_POST['DayNumber'] > 30 && !check_value('DaysOrFoll')) 
 	{
 		$inpug_error = 1;
 		display_error( _("When the check box to indicate a day in the following month is the due date, the due date cannot be a day after the 30th. A number between 1 and 30 is expected."));
+		set_focus('DayNumber');
 	} 
 	elseif ($_POST['DayNumber'] > 500 && check_value('DaysOrFoll')) 
 	{
 		$inpug_error = 1;
 		display_error( _("When the check box is not checked to indicate that the term expects a number of days after which accounts are due, the number entered should be less than 500 days."));
+		set_focus('DayNumber');
 	}
 
 	if ($_POST['DayNumber'] == '')

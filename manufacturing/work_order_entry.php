@@ -105,12 +105,14 @@ function can_process()
     	if (!references::is_valid($_POST['wo_ref']))
     	{
     		display_error(_("You must enter a reference."));
+		set_focus('wo_ref');
     		return false;
     	}
 
     	if (!is_new_reference($_POST['wo_ref'], systypes::work_order()))
     	{
     		display_error(_("The entered reference is already in use."));
+		set_focus('wo_ref');
     		return false;
     	}
 	}
@@ -118,17 +120,20 @@ function can_process()
 	if (!check_num('quantity', 0))
 	{
 		display_error( _("The quantity entered is invalid or less than zero."));
+		set_focus('quantity');
 		return false;
 	}
 
 	if (!is_date($_POST['date_']))
 	{
 		display_error( _("The date entered is in an invalid format."));
+		set_focus('date_');
 		return false;
 	}
 	elseif (!is_date_in_fiscalyear($_POST['date_']))
 	{
 		display_error(_("The entered date is not in fiscal year."));
+		set_focus('date_');
 		return false;
 	}
 	// only check bom and quantites if quick assembly
@@ -137,6 +142,7 @@ function can_process()
         if (!has_bom($_POST['stock_id']))
         {
         	display_error(_("The selected item to manufacture does not have a bom."));
+		set_focus('stock_id');
         	return false;
         }
 
@@ -145,6 +151,7 @@ function can_process()
     	if (!check_num('Costs', 0))
     	{
     		display_error( _("The cost entered is invalid or less than zero."));
+		set_focus('Costs');
     		return false;
     	}
 
@@ -168,6 +175,7 @@ function can_process()
                 		{
                 			display_error(_("The work order cannot be processed because there is an insufficient quantity for component:") .
                 				" " . $bom_item["component"] . " - " .  $bom_item["description"] . ".  " . _("Location:") . " " . $bom_item["location_name"]);
+						set_focus('quantity');
         					return false;
                 		}
             		}
@@ -189,6 +197,7 @@ function can_process()
      {
     	if (!is_date($_POST['RequDate']))
     	{
+		set_focus('RequDate');
     		display_error( _("The date entered is in an invalid format."));
     		return false;
 		}
@@ -203,6 +212,7 @@ function can_process()
 
     		if ($_POST['units_issued'] > input_num('quantity'))
     		{
+			set_focus('quantity');
     			display_error(_("The quantity cannot be changed to be less than the quantity already manufactured for this order."));
         		return false;
     		}

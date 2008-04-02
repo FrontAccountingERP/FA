@@ -96,35 +96,41 @@ function check_valid_entries()
 	if (!is_date($_POST['DatePaid'])) 
 	{
 		display_error(_("The entered date is invalid."));
+		set_focus('DatePaid');
 		return false;
 	}
 	if (!is_date_in_fiscalyear($_POST['DatePaid']))
 	{
 		display_error(_("The entered date is not in fiscal year."));
+		set_focus('DatePaid');
 		return false;
 	}
 
 	if (!check_num('amount', 0)) 
 	{
 		display_error(_("The entered amount is invalid or less than zero."));
+		set_focus('amount');
 		return false;
 	}
 
 	if (!references::is_valid($_POST['ref'])) 
 	{
 		display_error(_("You must enter a reference."));
+		set_focus('ref');
 		return false;
 	}
 
 	if (!is_new_reference($_POST['ref'], systypes::bank_transfer())) 
 	{
 		display_error(_("The entered reference is already in use."));
+		set_focus('ref');
 		return false;
 	}
 
 	if ($_POST['FromBankAccount'] == $_POST['ToBankAccount']) 
 	{
 		display_error(_("The source and destination bank accouts cannot be the same."));
+		set_focus('ToBankAccount');
 		return false;
 	}
 

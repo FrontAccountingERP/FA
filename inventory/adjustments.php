@@ -89,23 +89,27 @@ function can_process()
 	if (!references::is_valid($_POST['ref'])) 
 	{
 		display_error( _("You must enter a reference."));
+		set_focus('ref');
 		return false;
 	}
 
 	if (!is_new_reference($_POST['ref'], systypes::inventory_adjustment())) 
 	{
 		display_error( _("The entered reference is already in use."));
+		set_focus('ref');
 		return false;
 	}
 
 	if (!is_date($_POST['AdjDate'])) 
 	{
 		display_error(_("The entered date for the adjustment is invalid."));
+		set_focus('AdjDate');
 		return false;
 	} 
 	elseif (!is_date_in_fiscalyear($_POST['AdjDate'])) 
 	{
 		display_error(_("The entered date is not in fiscal year."));
+		set_focus('AdjDate');
 		return false;
 	}
 	$failed_item = $_SESSION['adj_items']->check_qoh($_POST['StockLocation'], $_POST['AdjDate'], !$_POST['Increase']);
@@ -139,12 +143,14 @@ function check_item_data()
 	if (!check_num('qty',0))
 	{
 		display_error(_("The quantity entered is negative or invalid."));
+		set_focus('qty');
 		return false;
 	}
 
 	if (!check_num('std_cost', 0))
 	{
 		display_error(_("The entered standard cost is negative or invalid."));
+		set_focus('std_cost');
 		return false;
 	}
 

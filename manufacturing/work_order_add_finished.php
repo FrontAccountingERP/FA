@@ -53,40 +53,40 @@ function can_process()
 	if (!references::is_valid($_POST['ref'])) 
 	{
 		display_error(_("You must enter a reference."));
+		set_focus('ref');
 		return false;
 	}
 
 	if (!is_new_reference($_POST['ref'], 29)) 
 	{
 		display_error(_("The entered reference is already in use."));
+		set_focus('ref');
 		return false;
 	}
 
-	if (!is_numeric($_POST['quantity']))
+	if (!check_num('quantity', 0))
 	{
-		display_error(_("The quantity entered is not a valid number."));
-		return false;
-	}
-
-	if ($_POST['quantity'] <= 0)
-	{
-		display_error(_("The quantity entered must be greater than zero."));
+		display_error(_("The quantity entered is not a valid number or less then zero."));
+		set_focus('quantity');
 		return false;
 	}
 
 	if (!is_date($_POST['date_']))
 	{
 		display_error(_("The entered date is invalid."));
+		set_focus('date_');
 		return false;
 	} 
 	elseif (!is_date_in_fiscalyear($_POST['date_'])) 
 	{
 		display_error(_("The entered date is not in fiscal year."));
+		set_focus('date_');
 		return false;
 	}
 	if (date_diff(sql2date($wo_details["released_date"]), $_POST['date_'], "d") > 0) 
 	{
 		display_error(_("The production date cannot be before the release date of the work order."));
+		set_focus('date_');
 		return false;
 	}
 
@@ -99,6 +99,7 @@ function can_process()
 		if (-$_POST['quantity'] + $qoh < 0) 
 		{
 			display_error(_("The unassembling cannot be processed because there is insufficient stock."));
+			set_focus('quantity');
 			return false;
 		}
 	}

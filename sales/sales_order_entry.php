@@ -191,22 +191,27 @@ function line_start_focus() {
 function can_process() {
 	if (!is_date($_POST['OrderDate'])) {
 		display_error(_("The entered date is invalid."));
+		set_focus('OrderDate');
 		return false;
 	}
 	if ($_SESSION['Items']->trans_type!=30 && !is_date_in_fiscalyear($_POST['OrderDate'])) {
 		display_error(_("The entered date is not in fiscal year"));
+		set_focus('OrderDate');
 		return false;
 	}
 	if (count($_SESSION['Items']->line_items) == 0)	{
 		display_error(_("You must enter at least one non empty item line."));
+		set_focus('AddItem');
 		return false;
 	}
 	if (strlen($_POST['deliver_to']) <= 1) {
 		display_error(_("You must enter the person or company to whom delivery should be made to."));
+		set_focus('deliver_to');
 		return false;
 	}
 	if (strlen($_POST['delivery_address']) <= 1) {
 		display_error( _("You should enter the street address in the box provided. Orders cannot be accepted without a valid street address."));
+		set_focus('delivery_address');
 		return false;
 	}
 
@@ -215,18 +220,22 @@ function can_process() {
 
 	if (!check_num('freight_cost',0)) {
 		display_error(_("The shipping cost entered is expected to be numeric."));
+		set_focus('freight_cost');
 		return false;
 	}
 	if (!is_date($_POST['delivery_date'])) {
 		display_error(_("The delivery date is invalid."));
+		set_focus('delivery_date');
 		return false;
 	}
 	if (date1_greater_date2($_SESSION['Items']->document_date, $_POST['delivery_date'])) {
 		display_error(_("The requested delivery date is before the date of the order."));
+		set_focus('delivery_date');
 		return false;
 	}
 	if ($_SESSION['Items']->trans_type != 30 && !references::is_valid($_POST['ref'])) {
 		display_error(_("You must enter a reference."));
+		set_focus('ref');
 		return false;
 	}
 
@@ -265,13 +274,16 @@ function check_item_data()
 
 	if (!check_num('qty', 0) || !check_num('Disc', 0, 100)) {
 		display_error( _("The item could not be updated because you are attempting to set the quantity ordered to less than 0, or the discount percent to more than 100."));
+		set_focus('qty');
 		return false;
 	} elseif (!check_num('price', 0)) {
 		display_error( _("Price for item must be entered and can not be less than 0"));
+		set_focus('price');
 		return false;
 	} elseif (isset($_POST['LineNo']) && isset($_SESSION['Items']->line_items[$_POST['LineNo']])
 	    && !check_num('qty', $_SESSION['Items']->line_items[$_POST['LineNo']]->qty_done)) {
 
+		set_focus('qty');
 		display_error(_("You attempting to make the quantity ordered a quantity less than has already been delivered. The quantity delivered cannot be modified retrospectively."));
 		return false;
 	}

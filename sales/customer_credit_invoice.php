@@ -73,25 +73,30 @@ function can_process()
 {
 	if (!is_date($_POST['CreditDate'])) {
 		display_error(_("The entered date is invalid."));;
+		set_focus('CreditDate');
 		return false;
 	} elseif (!is_date_in_fiscalyear($_POST['CreditDate']))	{
 		display_error(_("The entered date is not in fiscal year."));
+		set_focus('CreditDate');
 		return false;
 	}
 
     if ($_SESSION['Items']->trans_no==0) {
 		if (!references::is_valid($_POST['ref'])) {
 			display_error(_("You must enter a reference."));;
+			set_focus('ref');
 			return false;
 		}
 
 		if (!is_new_reference($_POST['ref'], 11)) {
 			display_error(_("The entered reference is already in use."));;
+			set_focus('ref');
 			return false;
 		}
     }
 	if (!check_num('ChargeFreightCost', 0)) {
 		display_error(_("The entered shipping cost is invalid or less than zero."));;
+		set_focus('ChargeFreightCost');
 		return false;
 	}
 

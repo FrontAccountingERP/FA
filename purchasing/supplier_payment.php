@@ -123,6 +123,7 @@ function check_inputs()
 	if (!check_num('amount', 0))
 	{
 		display_error(_("The entered amount is invalid or less than zero."));
+		set_focus('amount');
 		return false;
 	}
 
@@ -134,34 +135,40 @@ function check_inputs()
 	if (!check_num('discount', 0))
 	{
 		display_error(_("The entered discount is invalid or less than zero."));
+		set_focus('amount');
 		return false;
 	}
 
 	if (input_num('amount') - input_num('discount') <= 0) 
 	{
 		display_error(_("The total of the amount and the discount negative. Please enter positive values."));
+		set_focus('amount');
 		return false;
 	}
 
    	if (!is_date($_POST['DatePaid']))
    	{
 		display_error(_("The entered date is invalid."));
+		set_focus('DatePaid');
 		return false;
 	} 
 	elseif (!is_date_in_fiscalyear($_POST['DatePaid'])) 
 	{
 		display_error(_("The entered date is not in fiscal year."));
+		set_focus('DatePaid');
 		return false;
 	}
     if (!references::is_valid($_POST['ref'])) 
     {
 		display_error(_("You must enter a reference."));
+		set_focus('ref');
 		return false;
 	}
 
 	if (!is_new_reference($_POST['ref'], 22)) 
 	{
 		display_error(_("The entered reference is already in use."));
+		set_focus('ref');
 		return false;
 	}
 

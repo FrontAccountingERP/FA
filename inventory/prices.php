@@ -71,6 +71,7 @@ if (isset($_POST['updatePrice']))
 	{
 		$input_error = 1;
 		display_error( _("The price entered must be numeric."));
+		set_focus('price');
 	}
 
 	if ($input_error != 1)

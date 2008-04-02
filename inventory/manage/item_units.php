@@ -31,16 +31,19 @@ if (isset($_POST['ADD_ITEM']) || isset($_POST['UPDATE_ITEM']))
 	{
 		$input_error = 1;
 		display_error(_("The unit of measure code cannot be empty."));
+		set_focus('abbr');
 	}
 	if (strlen($_POST['description']) == 0) 
 	{
 		$input_error = 1;
 		display_error(_("The unit of measure description cannot be empty."));
+		set_focus('description');
 	}
 	if (!is_numeric($_POST['decimals'])) 
 	{
 		$input_error = 1;
 		display_error(_("The number of decimal places must be integer."));
+		set_focus('decimals');
 	}
 
 

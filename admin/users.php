@@ -45,6 +45,7 @@ function can_process()
 	if (strlen($_POST['user_id']) < 4)
 	{
 		display_error( _("The user login entered must be at least 4 characters long."));
+		set_focus('user_id');
 		return false;
 	}
 
@@ -53,12 +54,14 @@ function can_process()
     	if (strlen($_POST['password']) < 4)
     	{
     		display_error( _("The password entered must be at least 4 characters long."));
+		set_focus('password');
     		return false;
     	}
 
     	if (strstr($_POST['password'], $_POST['user_id']) != false)
     	{
     		display_error( _("The password cannot contain the user login."));
+		set_focus('password');
     		return false;
     	}
 	}

@@ -41,16 +41,19 @@ if (isset($_POST['add']) || isset($_POST['update']))
 	{
 		$input_error = 1;
 		display_error( _("The account code must be entered."));
+		set_focus('account_code');
 	} 
 	elseif (strlen($_POST['account_name']) == 0) 
 	{
 		$input_error = 1;
 		display_error( _("The account name cannot be empty."));
+		set_focus('account_name');
 	} 
 	elseif (!$accounts_alpha && !is_numeric($_POST['account_code'])) 
 	{
 	    $input_error = 1;
 	    display_error( _("The account code must be numeric."));
+		set_focus('account_code');
 	}
 
 	if ($input_error != 1)

@@ -41,6 +41,7 @@ if (isset($_POST['UpdateData']))
 		!check_num('overhead_cost'))
 	{
 		display_error( _("The entered cost is not numeric."));
+		set_focus('material_cost');
    	 	$should_update = false;
 	}
 	elseif ($old_cost == $new_cost)

@@ -87,21 +87,25 @@ if (isset($_POST['Process']))
 	if (!is_date($_POST['date_'])) 
 	{
 		display_error(_("The entered date is invalid."));
+		set_focus('date_');
 		$input_error = 1;
 	} 
 	elseif (!is_date_in_fiscalyear($_POST['date_'])) 
 	{
 		display_error(_("The entered date is not in fiscal year."));
+		set_focus('date_');
 		$input_error = 1;
 	} 
 	elseif (!references::is_valid($_POST['ref'])) 
 	{
 		display_error( _("You must enter a reference."));
+		set_focus('ref');
 		$input_error = 1;
 	} 
 	elseif (references::exists(systypes::journal_entry(), $_POST['ref'])) 
 	{
 		display_error( _("The entered reference is already in use."));
+		set_focus('ref');
 		$input_error = 1;
 	}
 
@@ -128,28 +132,33 @@ function check_item_data()
 	if (isset($_POST['dimension_id']) && $_POST['dimension_id'] != 0 && dimension_is_closed($_POST['dimension_id'])) 
 	{
 		display_error(_("Dimension is closed."));
-			return false;
+		set_focus('dimension_id');
+		return false;
 	}
 
 	if (isset($_POST['dimension2_id']) && $_POST['dimension2_id'] != 0 && dimension_is_closed($_POST['dimension2_id'])) 
 	{
 		display_error(_("Dimension is closed."));
-			return false;
+		set_focus('dimension2_id');
+		return false;
 	}
 
 	if (!(input_num('AmountDebit')!=0 ^ input_num('AmountCredit')!=0) )
 	{
 		display_error(_("You must enter either a debit amount or a credit amount."));
+		set_focus('Amount_Debit');
     		return false;
   	}
 
 	if (strlen($_POST['AmountDebit']) && !check_num('AmountDebit', 0)) 
 	{
     		display_error(_("The debit amount entered is not a valid number or is less than zero."));
+		set_focus('AmountDebit');
     		return false;
   	} elseif (strlen($_POST['AmountCredit']) && !check_num('AmountCredit', 0))
 	{
     		display_error(_("The credit amount entered is not a valid number or is less than zero."));
+		set_focus('AmountCredit');
     		return false;
   	}
 
@@ -157,6 +166,7 @@ function check_item_data()
 	if ($_SESSION["wa_current_user"]->access != 2 && is_bank_account($_POST['code_id'])) 
 	{
 		display_error(_("You cannot make a journal entry for a bank account. Please use one of the banking functions for bank transactions."));
+		set_focus('code_id');
 		return false;
 	}
 

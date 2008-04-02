@@ -54,17 +54,20 @@ function check_valid_entries()
 	if (!is_date($_POST['date_']))
 	{
 		display_error(_("The entered date is invalid."));
+		set_focus('date_');
 		return false;
 	}
 	if (!is_date_in_fiscalyear($_POST['date_']))
 	{
 		display_error(_("The entered date is not in fiscal year."));
+		set_focus('date_');
 		return false;
 	}
 
 	if (!is_numeric($_POST['trans_no']) OR $_POST['trans_no'] <= 0)
 	{
 		display_error(_("The transaction number is expected to be numeric and greater than zero."));
+		set_focus('trans_no');
 		return false;
 	}
 
@@ -85,6 +88,7 @@ function handle_void_transaction()
 			unset($_POST['trans_no']);
 			unset($_POST['memo_']);
 			unset($_POST['date_']);
+			set_focus('trans_no');
 			return;
 		}
 
@@ -98,8 +102,11 @@ function handle_void_transaction()
 			unset($_POST['memo_']);
 			unset($_POST['date_']);
 		}
-		else
+		else {
 			display_error(_("The entered transaction does not exist or cannot be voided."));
+			set_focus('trans_no');
+
+		}
 	}
 }
 

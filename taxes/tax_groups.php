@@ -38,6 +38,7 @@ if (isset($_POST['ADD_ITEM']) || isset($_POST['UPDATE_ITEM']))
 	{
 		$input_error = 1;
 		display_error(_("The tax group name cannot be empty."));
+		set_focus('name');
 	} 
 	else 
 	{
@@ -48,9 +49,10 @@ if (isset($_POST['ADD_ITEM']) || isset($_POST['UPDATE_ITEM']))
     			$_POST['tax_type_id' . $i] != reserved_words::get_all_numeric()	&& 
     			!check_num('rate' . $i, 0))
     		{
-				display_error( _("An entered tax rate is invalid or less than zero."));
+			display_error( _("An entered tax rate is invalid or less than zero."));
     			$input_error = 1;
-				break;
+			set_focus('rate');
+			break;
     		}
     	}
 	}

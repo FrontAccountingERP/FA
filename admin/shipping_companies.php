@@ -24,6 +24,7 @@ function can_process()
 	if (strlen($_POST['shipper_name']) == 0) 
 	{
 		display_error(_("The shipping company name cannot be empty."));
+		set_focus('shipper_name');
 		return false;
 	}
 	return true;

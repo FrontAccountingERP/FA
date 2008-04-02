@@ -37,6 +37,7 @@ if (isset($_POST['submit']))
 	{
 		$input_error = 1;
 		display_error(_("The supplier name must be entered."));
+		set_focus('supp_name');
 	}
 
 	if ($input_error !=1 )

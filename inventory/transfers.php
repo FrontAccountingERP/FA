@@ -91,26 +91,31 @@ if (isset($_POST['Process']))
 	if (!references::is_valid($_POST['ref'])) 
 	{
 		display_error(_("You must enter a reference."));
+		set_focus('ref');
 		$input_error = 1;
 	} 
 	elseif (!is_new_reference($_POST['ref'], systypes::location_transfer())) 
 	{
 		display_error(_("The entered reference is already in use."));
+		set_focus('ref');
 		$input_error = 1;
 	} 
 	elseif (!is_date($_POST['AdjDate'])) 
 	{
 		display_error(_("The entered date for the adjustment is invalid."));
+		set_focus('AdjDate');
 		$input_error = 1;
 	} 
 	elseif (!is_date_in_fiscalyear($_POST['AdjDate'])) 
 	{
 		display_error(_("The entered date is not in fiscal year."));
+		set_focus('AdjDate');
 		$input_error = 1;
 	} 
 	elseif ($_POST['FromStockLocation'] == $_POST['ToStockLocation'])
 	{
 		display_error(_("The locations to transfer from and to must be different."));
+		set_focus('FromStockLocation');
 		$input_error = 1;
 	} 
 	else 
@@ -151,12 +156,14 @@ function check_item_data()
 	if (!check_num('qty'))
 	{
 		display_error( _("The quantity entered is not a valid number."));
+		set_focus('qty');
 		return false;
 	}
 
 	if (!check_num('qty', 0))
 	{
 		display_error(_("The quantity entered must be a positive number."));
+		set_focus('qty');
 		return false;
 	}
 

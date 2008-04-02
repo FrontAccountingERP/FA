@@ -31,6 +31,7 @@ if (isset($_POST['ADD_ITEM']) || isset($_POST['UPDATE_ITEM']))
 	{
 		$input_error = 1;
 		display_error(_("The inventory movement type name cannot be empty."));
+		set_focus('name');
 	}
 
 	if ($input_error != 1) 

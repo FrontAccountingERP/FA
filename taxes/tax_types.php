@@ -23,11 +23,13 @@ function can_process()
 	if (strlen($_POST['name']) == 0)
 	{
 		display_error(_("The tax type name cannot be empty."));
+		set_focus('name');
 		return false;
 	}
 	elseif (!check_num('rate', 0))
 	{
 		display_error( _("The default tax rate must be numeric and not less than zero."));
+		set_focus('rate');
 		return false;
 	}
 
@@ -64,6 +66,7 @@ function can_delete($selected_id)
 	if ($myrow[0] > 0)
 	{
 		display_error(_("Cannot delete this tax type because tax groups been created referring to it."));
+
 		return false;
 	}
 

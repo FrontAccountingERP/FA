@@ -153,17 +153,20 @@ function check_data()
     if (!check_num('qty',0))
     {
 	   	display_error(_("The quantity of the order item must be numeric and not less than zero."));
+		set_focus('qty');
 	   	return false;
     }
 
     if (!check_num('price', 0))
     {
 	   	display_error(_("The price entered must be numeric and not less than zero."));
+		set_focus('price');
 	   	return false;	   
     }
     if (!is_date($_POST['req_del_date'])){
-    	display_error(_("The date entered is in an invalid format."));
-	   	return false;    	 
+    		display_error(_("The date entered is in an invalid format."));
+		set_focus('req_del_date');
+   		return false;    	 
     }
      
     return true;	
@@ -181,6 +184,7 @@ function handle_update_item()
 	{
 		display_error(_("You are attempting to make the quantity ordered a quantity less than has already been invoiced or received.  This is prohibited.") .
 			"<br>" . _("The quantity received can only be modified by entering a negative receipt and the quantity invoiced can only be reduced by entering a credit note against this item."));
+		set_focus('qty');
 		return;
 	}
 	
@@ -251,6 +255,7 @@ function can_commit()
 	if (!is_date($_POST['OrderDate'])) 
 	{
 		display_error(_("The entered order date is invalid."));
+		set_focus('OrderDate');
 		return false;
 	} 
 	
@@ -259,12 +264,14 @@ function can_commit()
     	if (!references::is_valid($_SESSION['PO']->reference)) 
     	{
     		display_error(_("There is no reference entered for this purchase order."));
+		set_focus('ref');
     		return false;
     	} 
     	
     	if (!is_new_reference($_SESSION['PO']->reference, systypes::po())) 
     	{
     		display_error(_("The entered reference is already in use."));
+		set_focus('ref');
     		return false;
     	}
 	}
@@ -272,12 +279,14 @@ function can_commit()
 	if ($_SESSION['PO']->delivery_address == "")
 	{
 		display_error(_("There is no delivery address specified."));
+		set_focus('delivery_address');
 		return false;
 	} 
 	
 	if (!isset($_SESSION['PO']->Location) || $_SESSION['PO']->Location == "")
 	{
 		display_error(_("There is no location specified to move any items into."));
+		set_focus('StkLocation');
 		return false;
 	} 
 	

@@ -216,7 +216,7 @@ function get_backup_file_combo()
 {
 	global $path_to_root;
 	$ar_files = array();
-
+    default_focus('cmb_backups');
     $dh = opendir(BACKUP_PATH);
 	while (($file = readdir($dh)) !== false)
 		$ar_files[] = $file;

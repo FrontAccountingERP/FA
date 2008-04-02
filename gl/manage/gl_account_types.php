@@ -29,6 +29,7 @@ function can_process()
 	if (strlen($_POST['name']) == 0) 
 	{
 		display_error( _("The account group name cannot be empty."));
+		set_focus('name');
 		return false;
 	}
 

@@ -154,18 +154,21 @@ function can_process()
 	if (!is_date($_POST['DefaultReceivedDate'])) 
 	{
 		display_error(_("The entered date is invalid."));
+		set_focus('DefaultReceivedDate');
 		return false;
 	}
 
     if (!references::is_valid($_POST['ref'])) 
     {
 		display_error(_("You must enter a reference."));
+		set_focus('ref');
 		return false;
 	}
 
 	if (!is_new_reference($_POST['ref'], 25)) 
 	{
 		display_error(_("The entered reference is already in use."));
+		set_focus('ref');
 		return false;
 	}
 

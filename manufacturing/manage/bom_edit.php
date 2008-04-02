@@ -119,6 +119,7 @@ function on_submit($selected_parent, $selected_component=null)
 	if (!check_num('quantity', 0))
 	{
 		display_error(_("The quantity entered must be numeric and greater than zero."));
+		set_focus('quantity');
 		return;
 	}
 

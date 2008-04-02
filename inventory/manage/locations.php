@@ -35,11 +35,13 @@ if (isset($_POST['ADD_ITEM']) || isset($_POST['UPDATE_ITEM']))
 	{
 		$input_error = 1;
 		display_error( _("The location code must be five characters or less long."));
+		set_focus('loc_code');
 	} 
 	elseif (strlen($_POST['location_name']) == 0) 
 	{
 		$input_error = 1;
 		display_error( _("The location name must be entered."));		
+		set_focus('location_name');
 	}
 
 	if ($input_error != 1) 
