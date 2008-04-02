@@ -3,7 +3,7 @@
 include_once($path_to_root . "/includes/banking.inc");
 
 define("DEFVAL", "--");
-$search_button = "<input type='submit' class='inputsubmit' style='border:0;background:url($path_to_root/themes/default/images/locate.png) no-repeat;' name='%s' value='?' title='"._("Search")."'> ";
+$search_button = "<input type='submit' class='combo_submit' style='border:0;background:url($path_to_root/themes/default/images/locate.png) no-repeat;' name='%s' value='?' title='"._("Search")."'> ";
 //$search_button = "<input type='submit' class='inputsubmit' name='%s' value='?'> ";
 
 $all_items = reserved_words::get_all();
