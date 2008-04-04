@@ -138,9 +138,9 @@ if ($dim > 0)
 			new ReportParam(_('To Dimension'),'DIMENSION'),
 			new ReportParam(_('Show Balance'),'YES_NO'),
 			new ReportParam(_('Comments'),'TEXTBOX')));
-	$reports->addReport(_('Dimensions'),502,_('Dimension Details'),
-	array(	new ReportParam(_('Dimension'),'DIMENSIONS'),
-			new ReportParam(_('Comments'),'TEXTBOX')));
+	//$reports->addReport(_('Dimensions'),502,_('Dimension Details'),
+	//array(	new ReportParam(_('Dimension'),'DIMENSIONS'),
+	//		new ReportParam(_('Comments'),'TEXTBOX')));
 }
 $reports->addReportClass(_('Banking'));
 //$reports->addReport(_('Banking'),601,_('Bank Account Transactions'),

@@ -159,7 +159,7 @@ function print_aged_customer_analysis()
     $rep->Info($params, $cols, $headers, $aligns);
     $rep->Header();
 
-	$total = array(0,0,0,0);
+	$total = array(0,0,0,0, 0);
 
 	$sql = "SELECT debtor_no, name, curr_code FROM ".TB_PREF."debtors_master ";
 	if ($fromcust != reserved_words::get_all_numeric())

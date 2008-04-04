@@ -21,7 +21,7 @@ include_once($path_to_root . "inventory/includes/db/items_category_db.inc");
 // trial_inquiry_controls();
 print_price_listing();
 
-function get_prices($category=0, $salestype=0)
+function fetch_prices($category=0, $salestype=0)
 {
 		$sql = "SELECT ".TB_PREF."prices.sales_type_id,
 				".TB_PREF."prices.stock_id,
@@ -32,16 +32,16 @@ function get_prices($category=0, $salestype=0)
 				".TB_PREF."stock_master.material_cost+".TB_PREF."stock_master.labour_cost+".TB_PREF."stock_master.overhead_cost AS Standardcost,
 				".TB_PREF."stock_master.category_id,
 				".TB_PREF."stock_category.description
-			FROM ".TB_PREF."stock_master, 
+			FROM ".TB_PREF."stock_master,
 				".TB_PREF."stock_category,
 				".TB_PREF."sales_types,
 				".TB_PREF."prices
 			WHERE ".TB_PREF."stock_master.stock_id=".TB_PREF."prices.stock_id
 				AND ".TB_PREF."prices.sales_type_id=".TB_PREF."sales_types.id
 				AND ".TB_PREF."stock_master.category_id=".TB_PREF."stock_category.category_id";
-		if ($salestype != null)
+		if ($salestype != 0)
 			$sql .= " AND ".TB_PREF."sales_types.id = '$salestype'";
-		if ($category != null)
+		if ($category != 0)
 			$sql .= " AND ".TB_PREF."stock_category.category_id = '$category'";
 		$sql .= " ORDER BY ".TB_PREF."prices.curr_abrev,
 				".TB_PREF."stock_master.category_id,
@@ -63,7 +63,7 @@ function print_price_listing()
     $pictures = $_POST['PARAM_2'];
     $showGP = $_POST['PARAM_3'];
     $comments = $_POST['PARAM_4'];
-    
+
     $dec = user_price_dec();
 
 	if ($category == reserved_words::get_all_numeric())
@@ -84,11 +84,11 @@ function print_price_listing()
 		$GP = _('Yes');
 
 	$cols = array(0, 100, 385, 450, 515);
-	
+
 	$headers = array(_('Category/Items'), _('Description'),	_('Price'),	_('GP %'));
-	
+
 	$aligns = array('left',	'left',	'right', 'right');
-    
+
     $params =   array( 	0 => $comments,
     				    1 => array('text' => _('Category'), 'from' => $cat, 'to' => ''),
     				    2 => array('text' => _('Sales Type'), 'from' => $stype, 'to' => ''),
@@ -98,19 +98,19 @@ function print_price_listing()
 		$user_comp = user_company();
 	else
 		$user_comp = "";
-		
+
     $rep = new FrontReport(_('Price Listing'), "PriceListing.pdf", user_pagesize());
 
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);
     $rep->Header();
 
-	$result = get_prices($category, $salestype);
-	
+	$result = fetch_prices($category, $salestype);
+
 	$currcode = '';
 	$catgor = '';
 
-	while ($myrow=db_fetch($result)) 
+	while ($myrow=db_fetch($result))
 	{
 		if ($currcode != $myrow['curr_abrev'])
 		{
@@ -142,7 +142,7 @@ function print_price_listing()
 			else
 				$disp = 0.0;
 			$rep->TextCol(3, 4,	number_format2($disp, user_percent_dec()) . " %");
-		}	
+		}
 		if ($pictures)
 		{
 			$image = $comp_path . '/'. $user_comp . "/images/" . $myrow['stock_id'] . ".jpg";
@@ -155,7 +155,7 @@ function print_price_listing()
 				$rep->row -= $pic_height;
 				$rep->NewLine();
 			}
-		}	
+		}
 		else
 			$rep->NewLine(0, 1);
 	}

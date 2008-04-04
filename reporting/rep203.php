@@ -22,7 +22,7 @@ print_payment_report();
 function getTransactions($supplier, $date)
 {
 	$date = date2sql($date);
-	
+
 	$sql = "SELECT ".TB_PREF."sys_types.type_name,
 			".TB_PREF."supp_trans.supp_reference,
 			".TB_PREF."supp_trans.due_date,
@@ -59,7 +59,7 @@ function print_payment_report()
 		$from = _('All');
 	else
 		$from = get_supplier_name($fromsupp);
-	    
+
     $dec = user_price_dec();
 
 	if ($currency == reserved_words::get_all())
@@ -89,17 +89,17 @@ function print_payment_report()
     $rep->Header();
 
 	$total = array();
-	$grandtotal = array();
+	$grandtotal = array(0,0);
 
 	$sql = "SELECT supplier_id, supp_name AS name, curr_code, ".TB_PREF."payment_terms.terms FROM ".TB_PREF."suppliers, ".TB_PREF."payment_terms
 		WHERE ";
 	if ($fromsupp != reserved_words::get_all_numeric())
 		$sql .= "supplier_id=$fromsupp AND ";
-	$sql .= "".TB_PREF."suppliers.payment_terms = ".TB_PREF."payment_terms.terms_indicator 
+	$sql .= "".TB_PREF."suppliers.payment_terms = ".TB_PREF."payment_terms.terms_indicator
 		ORDER BY supp_name";
 	$result = db_query($sql, "The customers could not be retrieved");
-	
-	while ($myrow=db_fetch($result)) 
+
+	while ($myrow=db_fetch($result))
 	{
 		if (!$convert && $currency != $myrow['curr_code'])
 			continue;
@@ -118,14 +118,14 @@ function print_payment_report()
 		if (db_num_rows($res)==0)
 			continue;
 		$rep->Line($rep->row + 4);
-		$total[0] = $total[1] = $total[2] = $total[3] = 0.0; 
+		$total[0] = $total[1] = 0.0;
 		while ($trans=db_fetch($res))
 		{
 			$rep->NewLine(1, 2);
 			$rep->TextCol(0, 1,	$trans['type_name']);
 			$rep->TextCol(1, 2,	$trans['supp_reference']);
 			$rep->TextCol(2, 3,	sql2date($trans['due_date']));
-			$item[0] = Abs($trans['TranTotal']) * $rate; 		
+			$item[0] = Abs($trans['TranTotal']) * $rate;
 			$rep->TextCol(6, 7,	number_format2($item[0], $dec));
 			$item[1] = $trans['Balance'] * $rate;
 			$rep->TextCol(7, 8,	number_format2($item[1], $dec));
@@ -133,7 +133,7 @@ function print_payment_report()
 			{
 				$total[$i] += $item[$i];
 				$grandtotal[$i] += $item[$i];
-			}	
+			}
 		}
 		$rep->Line($rep->row - 8);
 		$rep->NewLine(2);
@@ -142,7 +142,7 @@ function print_payment_report()
 		{
 			$rep->TextCol($i + 6, $i + 7, number_format2($total[$i], $dec));
 			$total[$i] = 0.0;
-		}	
+		}
     	$rep->Line($rep->row  - 4);
     	$rep->NewLine(2);
 	}

@@ -340,14 +340,15 @@ class FrontReport extends Cpdf
 			$this->Text($mcol, $myrow['order_no'], $mcol + 90);
 		else if ($doctype == 9) // SO
 			$this->Text($mcol, $myrow['order_no'] ." ".$myrow['customer_ref'], $mcol + 90);
-		else // INV/CRE/STA
+		else if (isset($myrow['trans_no']) && isset($myrow['reference'])) // INV/CRE/STA
 		{
 			if ($print_invoice_no == 1)
 				$this->Text($mcol, $myrow['trans_no'], $mcol + 90);
 			else
 				$this->Text($mcol, $myrow['reference'], $mcol + 90);
 		}
-		$this->Text($mcol + 90, $myrow['debtor_no'], $mcol + 180);
+		if (isset($myrow['debtor_no']))
+			$this->Text($mcol + 90, $myrow['debtor_no'], $mcol + 180);
 		if ($doctype == 8 || $doctype == 9)
 			$this->Text($mcol + 180, sql2date($myrow['ord_date']));
 		else
@@ -364,7 +365,7 @@ class FrontReport extends Cpdf
 		if ($doctype == 9)
 		{
 			$this->Text($ccol, $myrow['name'], $icol);
-			//$adr = ?;
+			$adr = array();
 		}
 		else
 		{
@@ -395,12 +396,12 @@ class FrontReport extends Cpdf
 		}
 		$this->row = $iline2 - 2 * $this->lineHeight;
 		$this->Text($ccol, $doc_Shipping_Company . ":", $ccol2);
-		if ($doctype != 8)
+		if ($doctype != 8 && isset($myrow['shipper_name']))
 			$this->Text($ccol2, $myrow['shipper_name'], $mcol);
 		$this->Text($mcol, $doc_Due_Date . ":", $mcol2);
 		if ($doctype == 9)
 			$this->Text($mcol2, sql2date($myrow['delivery_date']));
-		else if ($doctype != 8)
+		else if ($doctype != 8 && isset($myrow['due_date']))
 			$this->Text($mcol2, sql2date($myrow['due_date']));
 		if ($branch != null)
 		{
@@ -418,7 +419,7 @@ class FrontReport extends Cpdf
 		}
 		$this->NewLine();
 		$this->Text($ccol, $doc_Your_VAT_no . ":", $ccol2);
-		if ($doctype != 8)
+		if ($doctype != 8 && isset($myrow['tax_id']))
 			$this->Text($ccol2, $myrow['tax_id'], $mcol);
 		$this->Text($mcol, $doc_Our_VAT_no . ":", $mcol2);
 		$this->Text($mcol2, $this->company['gst_no']);
@@ -432,7 +433,8 @@ class FrontReport extends Cpdf
 
 		$this->Text($ccol2, $row["terms"], $mcol);
 		$this->Text($mcol, $doc_Our_Order_No . ":", $mcol2);
-		$this->Text($mcol2, $myrow['order_']);
+		if (isset($myrow['order_']))
+			$this->Text($mcol2, $myrow['order_']);
 
 		$locale = $path_to_root . "lang/" . $_SESSION['language']->code . "/locale.inc";
 		if (file_exists($locale))
@@ -502,8 +504,12 @@ class FrontReport extends Cpdf
 		$this->Text($ccol2 + 30, $this->company['email'], $mcol);
 		// fetch this later
 		$this->row = $adrline;
-		$this->Text($mcol, $bankaccount['bank_name'], $mcol2);
-		$adr = explode("\n", $bankaccount['bank_address']);
+		if (isset($bankaccount['bank_name']))
+			$this->Text($mcol, $bankaccount['bank_name'], $mcol2);
+		if (isset($bankaccount['bank_address']))
+			$adr = explode("\n", $bankaccount['bank_address']);
+		else
+			$adr = array();
 		for ($i = 0; $i < count($adr); $i++)
 		{
 			$this->NewLine();
@@ -511,9 +517,11 @@ class FrontReport extends Cpdf
 		}
 
 		$this->row = $adrline;
-		$this->Text($mcol2, $bankaccount['bank_account_name']);
+		if (isset($bankaccount['bank_account_name']))
+			$this->Text($mcol2, $bankaccount['bank_account_name']);
 		$this->NewLine();
-		$this->Text($mcol2, $bankaccount['bank_account_number']);
+		if (isset($bankaccount['bank_account_number']))
+			$this->Text($mcol2, $bankaccount['bank_account_number']);
 		$this->row = $temp;
 	}
 

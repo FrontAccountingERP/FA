@@ -84,7 +84,7 @@ function print_supplier_balances()
     $rep->Header();
 
 	$total = array();
-	$grandtotal = array();
+	$grandtotal = array(0,0,0,0);
 
 	$sql = "SELECT supplier_id, supp_name AS name, curr_code FROM ".TB_PREF."suppliers ";
 	if ($fromsupp != reserved_words::get_all_numeric())

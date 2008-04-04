@@ -23,7 +23,7 @@ function getCustTransactions($from, $to)
 {
 	$fromdate = date2sql($from);
 	$todate = date2sql($to);
-	
+
 	$sql = "SELECT ".TB_PREF."debtor_trans.reference,
 			".TB_PREF."debtor_trans.type,
 			".TB_PREF."sys_types.type_name,
@@ -51,7 +51,7 @@ function getSuppTransactions($from, $to)
 {
 	$fromdate = date2sql($from);
 	$todate = date2sql($to);
-	
+
 	$sql = "SELECT ".TB_PREF."supp_trans.supp_reference,
 			".TB_PREF."supp_trans.type,
 			".TB_PREF."sys_types.type_name,
@@ -91,7 +91,7 @@ function getCustInvTax($taxtype, $from, $to)
 {
 	$fromdate = date2sql($from);
 	$todate = date2sql($to);
-	
+
 	$sql = "SELECT SUM(unit_price * quantity*".TB_PREF."debtor_trans.rate), SUM(amount*".TB_PREF."debtor_trans.rate)
 		FROM ".TB_PREF."debtor_trans_details, ".TB_PREF."debtor_trans_tax_details, ".TB_PREF."debtor_trans
 				WHERE ".TB_PREF."debtor_trans_details.debtor_trans_type>=10
@@ -112,8 +112,8 @@ function getSuppInvTax($taxtype, $from, $to)
 {
 	$fromdate = date2sql($from);
 	$todate = date2sql($to);
-	
-	$sql = "SELECT SUM(unit_price * quantity * ".TB_PREF."supp_trans.rate), SUM(amount*".TB_PREF."supp_trans.rate)  
+
+	$sql = "SELECT SUM(unit_price * quantity * ".TB_PREF."supp_trans.rate), SUM(amount*".TB_PREF."supp_trans.rate)
 		FROM ".TB_PREF."supp_invoice_items, ".TB_PREF."supp_invoice_tax_items, ".TB_PREF."supp_trans
 				WHERE ".TB_PREF."supp_invoice_items.supp_trans_type>=20
 					AND ".TB_PREF."supp_invoice_items.supp_trans_type<=21
@@ -138,19 +138,19 @@ function print_tax_report()
 	include_once($path_to_root . "reporting/includes/pdf_report.inc");
 
 	$rep = new FrontReport(_('Tax Report'), "TaxReport.pdf", user_pagesize());
-	
+
 	$from = $_POST['PARAM_0'];
 	$to = $_POST['PARAM_1'];
 	$summaryOnly = $_POST['PARAM_2'];
 	$comments = $_POST['PARAM_3'];
 	$dec = user_price_dec();
-	
+
 	if ($summaryOnly == 1)
 		$summary = _('Summary Only');
 	else
 		$summary = _('Detailed Report');
-	
-	
+
+
 	$res = getTaxTypes();
 
 	$taxes = array();
@@ -158,21 +158,21 @@ function print_tax_report()
 	while ($tax=db_fetch($res))
 		$taxes[$i++] = $tax['id'];
 	$idcounter = count($taxes);
-	
-	$totalinvout = array();
-	$totaltaxout = array();
-	$totalinvin = array();
-	$totaltaxin = array();
-	
+
+	$totalinvout = array(0,0,0,0,0,0,0,0,0,0);
+	$totaltaxout = array(0,0,0,0,0,0,0,0,0,0);
+	$totalinvin = array(0,0,0,0,0,0,0,0,0,0);
+	$totaltaxin = array(0,0,0,0,0,0,0,0,0,0);
+
 	if (!$summaryOnly)
 	{
 		$cols = array(0, 80, 130, 190, 290, 370, 435, 500, 565);
-		
+
 		$headers = array(_('Trans Type'), _('#'), _('Date'), _('Name'),	_('Branch Name'),
 			_('Net'), _('Tax'));
-		
+
 		$aligns = array('left', 'left', 'left', 'left', 'left', 'right', 'right');
-		
+
 		$params =   array( 	0 => $comments,
 							1 => array('text' => _('Period'), 'from' => $from, 'to' => $to),
 							2 => array('text' => _('Type'), 'from' => $summary, 'to' => ''));
@@ -201,7 +201,7 @@ function print_tax_report()
 			$rep->TextCol(6, 7,	number_format2($trans['Tax'], $dec));
 
 			$rep->NewLine();
-						
+
 			if ($rep->row < $rep->bottomMargin + $rep->lineHeight)
 			{
 				$rep->Line($rep->row - 2);
@@ -230,7 +230,7 @@ function print_tax_report()
 	}
 	$totalinnet = 0.0;
 	$totalintax = 0.0;
-	
+
 	$transactions = getSuppTransactions($from, $to);
 
 	while ($trans=db_fetch($transactions))
@@ -271,12 +271,12 @@ function print_tax_report()
 		$rep->Line($rep->row - 5);
 	}
 	$cols2 = array(0, 100, 200,	300, 400, 500, 600);
-	
+
 	$headers2 = array(_('Tax Rate'), _('Outputs'), _('Output Tax'),	_('Inputs'), _('Input Tax'));
-	
+
 	$aligns2 = array('left', 'right', 'right', 'right',	'right');
-	
-	$invamount = 0.0;							
+
+	$invamount = 0.0;
 	for ($i = 0; $i < $idcounter; $i++)
 	{
 		$amt = getCustInvTax($taxes[$i], $from, $to);
@@ -296,7 +296,7 @@ function print_tax_report()
 	if ($totalinnet != $invamount)
 		$totalinvin[$idcounter] = ($totalinnet - $invamount);
 
-	for ($i = 0; $i < count($cols2); $i++)
+	for ($i = 0; $i < count($cols2) - 2; $i++)
 	{
 		$rep->cols[$i] = $rep->leftMargin + $cols2[$i];
 		$rep->headers[$i] = $headers2[$i];
@@ -348,7 +348,7 @@ function print_tax_report()
 		$rep->NewLine();
 	}
 	$rep->Line($rep->row - 4);
-	
+
 	$locale = $path_to_root . "lang/" . $_SESSION['language']->code . "/locale.inc";
 	if (file_exists($locale))
 	{
@@ -357,7 +357,7 @@ function print_tax_report()
 		/*
 		if (function_exists("TaxFunction"))
 			TaxFunction();
-		*/	
+		*/
 	}
 	$rep->End();
 }

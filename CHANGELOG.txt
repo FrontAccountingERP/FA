@@ -19,6 +19,20 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+05-Apr-2008 Joe Hunt
+# Removed annoying warnings in several reports. 
+$ config.php 
+  /reporting/rep102.php
+  /reporting/rep104.php
+  /reporting/rep201.php
+  /reporting/rep203.php
+  /reporting/rep705.php
+  /reporting/rep706.php
+  /reporting/rep707.php
+  /reporting/rep709.php
+  /reporting/reports_main.php
+  /reporting/includes/pdf_report.inc
+  
 04-Apr-2008 Janusz Dobrowolski
 # Javascript bugfix in selecting orders for template.
 $ /sales/inquiry/sales_orders_view.php
