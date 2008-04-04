@@ -237,7 +237,7 @@ if ($result)
 		else
 		{
 		  	echo "<td><input ".($myrow["type"]==1 ? 'checked' : '')." type='checkbox' name='chgtpl" .$myrow["order_no"]. "' value='1'
-		   		onclick='forms[1].ChangeTmpl.value= this.name.substr(6);
+		   		onclick='this.form.ChangeTmpl.value= this.name.substr(6);
 		   		this.form.submit();' ></td>";
 
   		  	$modify_page = $path_to_root . "/sales/sales_order_entry.php?" . SID . "ModifyOrderNumber=" . $myrow["order_no"];
