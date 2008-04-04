@@ -2,7 +2,7 @@
 error_reporting(E_ALL);
 ini_set("display_errors", "On");
 // Start a session
-if(!defined('SESSION_STARTED')) 
+if(!defined('SESSION_STARTED'))
 {
 	session_name('ba_session_id');
 	session_start();
@@ -10,28 +10,29 @@ if(!defined('SESSION_STARTED'))
 }
 
 // Check if the page has been reloaded
-if(!isset($_GET['sessions_checked']) || $_GET['sessions_checked'] != 'true') 
+if(!isset($_GET['sessions_checked']) || $_GET['sessions_checked'] != 'true')
 {
 	// Set session variable
 	$_SESSION['session_support'] = '<font class="good">Enabled</font>';
 	// Reload page
 	header('Location: index.php?sessions_checked=true');
 	exit(0);
-} 
-else 
+}
+else
 {
 	// Check if session variable has been saved after reload
-	if(isset($_SESSION['session_support'])) 
+	if(isset($_SESSION['session_support']))
 	{
 		$session_support = $_SESSION['session_support'];
-	} 
-	else 
-	{   
+	}
+	else
+	{
 		$session_support = '<font class="bad">Disabled</font>';
 	}
 }
 $path_to_root = "..";
-include_once($path_to_root.'/config.php');
+//include_once($path_to_root.'/config.php');
+$comp_path = $path_to_root."/company";
 
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -60,7 +61,7 @@ function change_os(type) {
 <table cellpadding="0" cellspacing="0" border="0" width="750" align="center">
 <tr>
 	<td width="100%" align="center" style="font-size: 20px;">
-		<font style="color: #FFFFFF;">FrontAccounting</font> 
+		<font style="color: #FFFFFF;">FrontAccounting</font>
 		<font style="color: #DDDDDD;">Installation Wizard</font>
 	</td>
 </tr>
@@ -79,8 +80,8 @@ function change_os(type) {
 		<center>
 			<img src="<?php echo $path_to_root; ?>/themes/default/images/logo_frontaccounting.png" width="250" height="50" alt="Logo" />
 		</center>
-	
-		
+
+
 		<?php
 		if(isset($_SESSION['message']) AND $_SESSION['message'] != '') {
 			?><div style="width: 700px; padding: 10px; margin-bottom: 5px; border: 1px solid #FF0000; background-color: #FFDBDB;"><b>Error:</b> <?php echo $_SESSION['message']; ?></div><?php
@@ -116,7 +117,7 @@ function change_os(type) {
 					?><font class="bad">Enabled</font><?php
 				} else {
 					?><font class="good">Disabled</font><?php
-				}	
+				}
 				?>
 			</td>
 		</tr>
@@ -135,7 +136,7 @@ function change_os(type) {
 			<td style="color: #666666;">lang/</td>
 			<td><?php if(is_writable($path_to_root.'/lang/')) { echo '<font class="good">Writeable</font>'; } elseif(!file_exists($path_to_root.'/lang/')) { echo '<font class="bad">Directory Not Found</font>'; } else { echo '<font class="bad">Unwriteable</font>'; } ?></td>
 			<td style="color: #666666;"><?php echo 'Company data dirs ('.  $comp_path. '/*)'; ?></td>
-			<td><?php if(is_writable($comp_path) && is_writable($comp_path.'/0') && is_writable($comp_path.'/0/images')) 
+			<td><?php if(is_writable($comp_path) && is_writable($comp_path.'/0') && is_writable($comp_path.'/0/images'))
 			{ echo '<font class="good">Writeable</font>'; } elseif(!file_exists($comp_path)) {
 			 echo '<font class="bad">Directory Not Found</font>'; } else { echo '<font class="bad">Unwriteable</font>'; } ?></td>
 		</tr>
@@ -221,7 +222,7 @@ function change_os(type) {
 				<input type="checkbox" tabindex="12" name="install_tables" id="install_tables" value="true"<?php if(!isset($_SESSION['install_tables'])) { echo ' checked'; } elseif($_SESSION['install_tables'] == 'true') { echo ' checked'; } ?> />
 				<label for="install_tables" style="color: #666666;">Install Tables</label>
 				<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				<span style="font-size: 10px; color: #666666;">(Please note: May remove existing tables and data)</span></td>		
+				<span style="font-size: 10px; color: #666666;">(Please note: May remove existing tables and data)</span></td>
 			</td>
 		</tr>
 		<tr>
@@ -259,7 +260,7 @@ function change_os(type) {
 				<input type="password" tabindex="17" name="admin_repassword" style="width: 98%;"<?php if(isset($_SESSION['admin_password'])) { echo ' value = "'.$_SESSION['admin_password'].'"'; } ?> />
 			</td>
 		</tr>
-		
+
 		<tr>
 			<td colspan="5" style="padding: 10px; padding-bottom: 0;"><h1 style="font-size: 0px;">&nbsp;</h1></td>
 		</tr>
@@ -269,7 +270,7 @@ function change_os(type) {
 				<tr valign="top">
 					<td>Please note: &nbsp;</td>
 					<td>
-						FrontAccounting is released under the 
+						FrontAccounting is released under the
 						<a href="http://www.gnu.org/licenses/gpl.html" target="_blank" tabindex="19">GNU General Public License</a>
 						<br />
 						By clicking install, you are accepting the license.
@@ -282,7 +283,7 @@ function change_os(type) {
 			</td>
 		</tr>
 		</table>
-	
+
 	</td>
 </tr>
 </table>
