@@ -113,19 +113,22 @@ function handle_submit()
 		display_error(_("Cannot write to the configuration file - ") . $path_to_root . "/config_db.php");
 	else if ($error == -3)
 		display_error(_("The configuration file ") . $path_to_root . "/config_db.php" . _(" is not writable. Change its permissions so it is, then re-run the operation."));
-	if ($error != 0) {
+	if ($error != 0)
+	{
 		return false;
 	}
 	$index = "<?php\nheader(\"Location: ../../index.php\");\n?>";
-	
-	if ($new) {
-	    $cdir = $comp_path.'/'.($tb_pref_counter-1);
-	    @mkdir($cdir); 
+
+	if ($new)
+	{
+	    $cdir = $comp_path.'/'.$id;
+	    @mkdir($cdir);
 	    save_to_file($cdir.'/'.'index.php', 0, $index);
-	    
-	    foreach($comp_subdirs as $dir) {
-		@mkdir($cdir.'/'.$dir);
-		save_to_file($cdir.'/'.$dir.'/'.'index.php', 0, $index);
+
+	    foreach($comp_subdirs as $dir)
+	    {
+			@mkdir($cdir.'/'.$dir);
+			save_to_file($cdir.'/'.$dir.'/'.'index.php', 0, $index);
 	    }
 	}
 	return true;
@@ -138,10 +141,6 @@ function handle_delete()
 	global $comp_path, $def_coy, $db_connections, $comp_subdirs;
 
 	$id = $_GET['id'];
-
-	$pref = $db_connections[$id]['tbpref'];
-	if($pref!='')
-	    $pref = substr($pref, 0, strlen($pref)-1); 
 
 	$err = remove_connection($id);
 	if ($err == 0)
@@ -159,13 +158,14 @@ function handle_delete()
 	if ($error != 0)
 		return;
 
-	$cdir = $comp_path.'/'.$pref;
+	$cdir = $comp_path.'/'.$id;
 	flush_dir($cdir);
-	if (!rmdir($cdir)) {
+	if (!rmdir($cdir))
+	{
 		display_error(_("Cannot remove company data directory ") . $cdir);
 		return;
 	}
-	
+
 	meta_forward($_SERVER['PHP_SELF']);
 }
 
