@@ -56,7 +56,8 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 	$use_audit_trail = 0;
 
  	/* Integrated base Wiki Help URL or null if not used */
-	$help_base_url = $path_to_root.'/modules/wiki/index.php?n='._('Help').'.';
+	//$help_base_url = $path_to_root.'/modules/wiki/index.php?n='._('Help').'.';
+	$help_base_url = null;
 
 	/* per user data/cache directory */
 	$comp_path = $path_to_root.'/company';

@@ -126,8 +126,9 @@ the system before starting your own company.&nbsp;</li>
       <li>NOTE : As FrontAccounting is still heavily under development,
 the database structure will ALWAYS change between releases, so if you
 have a database that you created for a previous release of
-FrontAccounting, it WILL NOT WORK after installing a new release.
-Please delete any old databases before proceeding. </li>
+FrontAccounting, it WILL NOT WORK after installing a new release. You may run the script, update_db.php and
+select the appropriate script, f.i. alter.sql (from release 1.XX to release 2.0).
+</li>
 
 
       <li>We strongly suggest using a GUI to manage your database(s) and database users. If you don&rsquo;t have any, download <a href="http://www.phpmyadmin.net/"><strong>phpMyAdmin</strong></a>. </li>
@@ -237,6 +238,9 @@ counter inside config_db.php, fi. 0_ for the first company.</li>
 <ol>
 
 
+  <li>Pleae ensure that the folder <strong>/company/0</strong> on the server is <strong>writable</strong>. </li>
+
+
   <li>Open a browser and enter the URL for the web server directory where FrontAccounting is installed. </li>
 
 
@@ -290,7 +294,7 @@ implemented and we strongly recommend you to use this approach, see <strong><em>
 
   <li>If you are installing FrontAccounting onto a shared server, you
 may have to set the session save path within FrontAccounting. At the
-top of config.php you will find this line : </li>
+top of config.php (in release 2.0 this has moved to /includes/session.inc) you will find this line : </li>
 
 
   <li>Uncomment this line and set the path to a directory that exists

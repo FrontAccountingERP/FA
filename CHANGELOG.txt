@@ -19,7 +19,14 @@ Legend:
 ! -> Note
 $ -> Affected files
 
-06-Apr-200 Janusz Dobrowolski
+06-Apr-2008 Joe Hunt
+! Changed install.html and update.html to fit the new unstable release 2.0
+! Changed demo sql script to fit the 2.0 unstable.
+$ install.html
+  update.html
+  /sql/en_US-demo.sql
+  
+06-Apr-2008 Janusz Dobrowolski
 # Sales invoice edition denied for documents created in FA 1.xx because of nonportable differences in gl posting/db schema.
   /sales/customer_invoice.php
   
