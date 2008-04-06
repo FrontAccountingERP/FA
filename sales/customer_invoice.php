@@ -114,6 +114,12 @@ if ( (isset($_GET['DeliveryNumber']) && ($_GET['DeliveryNumber'] > 0) )
 
 } elseif (isset($_GET['ModifyInvoice']) && $_GET['ModifyInvoice'] > 0) {
 
+	if ( get_parent_trans(10, $_GET['ModifyInvoice']) == 0) { // 1.xx compatibility hack
+		echo"<center><br><b>" . _("There in no delivery notes for this invoice.<br>
+		Most likely this invoice was created in Front Accounting version prior to 2.0
+		and therefore can not be modified.") . "</b></center>";
+		display_footer_exit();
+	}
 	processing_start();
 	$_SESSION['Items'] = new Cart(10, $_GET['ModifyInvoice']);
 
