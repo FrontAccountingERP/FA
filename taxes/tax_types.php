@@ -42,7 +42,7 @@ if (isset($_POST['ADD_ITEM']) && can_process())
 {
 
 	add_tax_type($_POST['name'], $_POST['sales_gl_code'],
-		$_POST['purchasing_gl_code'], imput_num('rate'));
+		$_POST['purchasing_gl_code'], input_num('rate'));
 	meta_forward($_SERVER['PHP_SELF']);
 }
 

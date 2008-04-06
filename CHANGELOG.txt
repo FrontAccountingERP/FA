@@ -29,6 +29,8 @@ $ install.html
 06-Apr-2008 Janusz Dobrowolski
 # Sales invoice edition denied for documents created in FA 1.xx because of nonportable differences in gl posting/db schema.
   /sales/customer_invoice.php
+# Fixed typo causing error while adding new tax type.
+  /taxes/tax_types.php
   
 05-Apr-2008 Joe Hunt
 # Fixed a bug when creating subfolder for new companies. Should be company id and not the table pref counter.
