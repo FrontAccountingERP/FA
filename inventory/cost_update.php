@@ -30,8 +30,8 @@ if (isset($_GET['stock_id']))
 if (isset($_POST['UpdateData']))
 {
 
-   	$old_cost = input_num('OldMaterialCost') + input_num('OldLabourCost')
-	    + input_num('OldOverheadCost');
+   	$old_cost = $_POST['OldMaterialCost'] + $_POST['OldLabourCost']
+	    + $_POST['OldOverheadCost'];
    	$new_cost = input_num('material_cost') + input_num('labour_cost')
 	     + input_num('overhead_cost');
 
@@ -97,14 +97,14 @@ label_row(_("Last Cost"), price_format($myrow["last_cost"]),
 	"class='tableheader2'", "nowrap align=right");
 
 amount_row(_("Standard Material Cost Per Unit"), "material_cost",
-	price_format($myrow["material_cost"]), "", "", "class='tableheader2'");
+	price_format($myrow["material_cost"]), "class='tableheader2'");
 
 if ($myrow["mb_flag"]=='M')
 {
 	amount_row(_("Standard Labour Cost Per Unit"), "labour_cost",
-		price_format($myrow["labour_cost"]), '', "", "class='tableheader2'");
+		price_format($myrow["labour_cost"]), "class='tableheader2'");
 	amount_row(_("Standard Overhead Cost Per Unit"), "overhead_cost",
-		price_format($myrow["overhead_cost"]), "", "", "class='tableheader2'");
+		price_format($myrow["overhead_cost"]), "class='tableheader2'");
 }
 else
 {

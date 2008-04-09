@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+09-Apr-2008 Janusz Dobrowolski
+# Fixed number formatting bug in standard cost update.
+$ /inventory/cost_update.php
+
 06-Apr-2008 Joe Hunt
 ! Changed install.html and update.html to fit the new unstable release 2.0
 ! Changed demo sql script to fit the 2.0 unstable.
