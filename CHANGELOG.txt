@@ -19,9 +19,15 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+16-Apr-2008 Joe Hunt
+# Bug in /includes/ui/ui_lists.inc:914. Sql clause was cut.
+$ /includes/ui/ui_lists.inc
+
 09-Apr-2008 Janusz Dobrowolski
 # Fixed number formatting bug in standard cost update.
 $ /inventory/cost_update.php
+
+-------------------- 2,0 Beta - released ----------------------------
 
 06-Apr-2008 Joe Hunt
 ! Changed install.html and update.html to fit the new unstable release 2.0

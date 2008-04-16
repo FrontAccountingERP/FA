@@ -18,7 +18,7 @@ function supplier_list($name, $selected_id, $all_option=false, $submit_on_change
 	default_focus($name);
 	if ($selected_id == null)
 		$selected_id = ((!isset($_POST[$name]) || $_POST[$name] == "") ? "" : $_POST[$name]);
-	
+
 
 	$supplier_sql = "SELECT supplier_id, supp_name, curr_code FROM ".TB_PREF."suppliers ";
 	if (get_company_pref('no_supplier_list'))
@@ -604,7 +604,7 @@ function stock_items_list($name, $selected_id, $all_option=false, $submit_on_cha
 	default_focus($name);
 	if ($selected_id == null)
 		$selected_id = (!isset($_POST[$name]) ? "" : $_POST[$name]);
-	
+
 
 	$sql = "SELECT stock_id, ".TB_PREF."stock_master.description, ".TB_PREF."stock_category.description
 			FROM ".TB_PREF."stock_master,".TB_PREF."stock_category WHERE ".TB_PREF."stock_master.category_id=".TB_PREF."stock_category.category_id";
@@ -888,7 +888,7 @@ function stock_purchasable_items_list($name, &$selected_id,	$all_option=false, $
 	default_focus($name);
 	if ($selected_id == null)
 		$selected_id = (!isset($_POST[$name]) ? "" : $_POST[$name]);
-	
+
 	$sql = "SELECT stock_id, ".TB_PREF."stock_master.description, ".TB_PREF."stock_category.description
 				FROM ".TB_PREF."stock_master,".TB_PREF."stock_category WHERE ".TB_PREF."stock_master.category_id=".TB_PREF."stock_category.category_id
 				AND mb_flag !='M' ";
@@ -911,7 +911,7 @@ function stock_purchasable_items_list($name, &$selected_id,	$all_option=false, $
 		}
 		elseif ($val != "" && $val != DEFVAL)
 		{
-			$sql = "AND
+			$sql .= "AND
 				(stock_id LIKE '%{$val}%' OR ".TB_PREF."stock_category.description LIKE '%{$val}%' OR "
 				.TB_PREF."stock_master.description LIKE '%{$val}%')";
 		}
