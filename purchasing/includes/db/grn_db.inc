@@ -39,7 +39,7 @@ function add_grn(&$po, $date_, $reference, $location)
 			else
 				$material_cost = ($qoh * $material_cost + $order_line->receive_qty * $price_in_home_currency) /
 					($qoh + $order_line->receive_qty);
-			$sql = "UPDATE ".TB_PREF."stock_master SET material_cost=$material_cost
+			$sql = "UPDATE ".TB_PREF."stock_master SET material_cost=".db_escape($material_cost)."
 				WHERE stock_id='$order_line->stock_id'";
 			db_query($sql,"The cost details for the inventory item could not be updated");
 			//----------------------------------------------------------------------------------------------------------------
@@ -73,7 +73,8 @@ function add_grn_batch($po_number, $supplier_id, $reference, $location, $date_)
 	$date = date2sql($date_);
 
 	$sql = "INSERT INTO ".TB_PREF."grn_batch (purch_order_no, delivery_date, supplier_id, reference, loc_code)
-			VALUES ($po_number, '$date', '$supplier_id', '$reference', '$location')";
+			VALUES (".db_escape($po_number).", ".db_escape($date).", "
+			.db_escape($supplier_id).", ".db_escape($reference).", ".db_escape($location).")";
 
 	db_query($sql, "A grn batch record could not be inserted.");
 
@@ -93,7 +94,7 @@ function add_grn_detail_item($grn_batch_id, $po_detail_item, $item_code, $descri
 	db_query($sql, "a purchase order details record could not be updated. This receipt of goods has not been processed ");
 
 	$sql = "INSERT INTO ".TB_PREF."grn_items (grn_batch_id, po_detail_item, item_code, description, qty_recd)
-		VALUES ($grn_batch_id, $po_detail_item, '$item_code', '$description', $quantity_received)";
+		VALUES ($grn_batch_id, $po_detail_item, ".db_escape($item_code).", ".db_escape($description).", $quantity_received)";
 
 	db_query($sql, "A GRN detail item could not be inserted.");
 

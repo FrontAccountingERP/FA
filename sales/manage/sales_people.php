@@ -30,17 +30,27 @@ if (isset($_POST['ADD_ITEM']) || isset($_POST['UPDATE_ITEM']))
 		$input_error = 1;
 		display_error(_("The sales person name cannot be empty."));
 	}
-
+	$pr1 = check_num('provision', 0,100);
+	if (!$pr1 || !check_num('provision2', 0, 100)) {
+		$input_error = 1;
+		display_error( _("Salesman provision cannot be less than 0 or more than 100%."));
+		set_focus(!$pr1 ? 'provision' : 'provision2');
+	}
+	if (!check_num('break_pt', 0)) {
+		$input_error = 1;
+		display_error( _("Salesman provision breakpoint must be numeric and not less than 0."));
+		set_focus('break_pt');
+	}
 	if ($input_error != 1)
 	{
     	if (isset($selected_id))
     	{
     		/*selected_id could also exist if submit had not been clicked this code would not run in this case cos submit is false of course  see the delete code below*/
 
-    		$sql = "UPDATE ".TB_PREF."salesman SET salesman_name='" . $_POST['salesman_name'] . "',
-    			salesman_phone='" . $_POST['salesman_phone'] . "',
-    			salesman_fax='" . $_POST['salesman_fax'] . "',
-    			salesman_email='" . $_POST['salesman_email'] . "',
+    		$sql = "UPDATE ".TB_PREF."salesman SET salesman_name=".db_escape($_POST['salesman_name']) . ",
+    			salesman_phone=".db_escape($_POST['salesman_phone']) . ",
+    			salesman_fax=".db_escape($_POST['salesman_fax']) . ",
+    			salesman_email=".db_escape($_POST['salesman_email']) . ",
     			provision=".input_num('provision').",
     			break_pt=".input_num('break_pt').",
     			provision2=".input_num('provision2')."
@@ -51,8 +61,12 @@ if (isset($_POST['ADD_ITEM']) || isset($_POST['UPDATE_ITEM']))
     		/*Selected group is null cos no item selected on first time round so must be adding a record must be submitting new entries in the new Sales-person form */
     		$sql = "INSERT INTO ".TB_PREF."salesman (salesman_name, salesman_phone, salesman_fax, salesman_email,
     			provision, break_pt, provision2)
-    			VALUES ('" . $_POST['salesman_name'] . "', '" .$_POST['salesman_phone'] . "', '" . $_POST['salesman_fax'] . "', '" . $_POST['salesman_email'] . "', ".
-    			input_num('provision').", ".input_num('break_pt').", ".input_num('provision2').")";
+    			VALUES (".db_escape($_POST['salesman_name']) . ", "
+				  .db_escape($_POST['salesman_phone']) . ", "
+				  .db_escape($_POST['salesman_fax']) . ", "
+				  .db_escape($_POST['salesman_email']) . ", ".
+    			input_num('provision').", ".input_num('break_pt').", "
+				.input_num('provision2').")";
     	}
 
     	//run the sql from either of the above possibilites

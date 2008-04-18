@@ -19,7 +19,7 @@ function add_po(&$po_obj)
 
      /*Insert to purchase order header record */
      $sql = "INSERT INTO ".TB_PREF."purch_orders (supplier_id, Comments, ord_date, reference, requisition_no, into_stock_location, delivery_address) VALUES(";
-     $sql .= "' ". $po_obj->supplier_id . "'," .
+     $sql .= db_escape($po_obj->supplier_id) . "," .
          db_escape($po_obj->Comments) . ",'" .
          date2sql($po_obj->orig_order_date) . "', '" .
 		 $po_obj->reference . "', " .

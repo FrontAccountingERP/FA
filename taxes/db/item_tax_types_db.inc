@@ -5,7 +5,7 @@ function add_item_tax_type($name, $exempt, $exempt_from)
 	begin_transaction();
 	
 	$sql = "INSERT INTO ".TB_PREF."item_tax_types (name, exempt) 
-		VALUES ('$name',$exempt)";
+		VALUES (".db_escape($name).",$exempt)";
 		
 	db_query($sql, "could not add item tax type");	
 	
@@ -21,7 +21,8 @@ function update_item_tax_type($id, $name, $exempt, $exempt_from)
 {
 	begin_transaction();
 	
-	$sql = "UPDATE ".TB_PREF."item_tax_types SET name='$name',	exempt=$exempt WHERE id=$id";
+	$sql = "UPDATE ".TB_PREF."item_tax_types SET name=".db_escape($name).
+	",	exempt=$exempt WHERE id=$id";
 	
 	db_query($sql, "could not update item tax type");	
 	

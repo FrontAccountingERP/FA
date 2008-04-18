@@ -2,14 +2,14 @@
 
 function add_sales_type($name, $tax_included)
 {
-	$sql = "INSERT INTO ".TB_PREF."sales_types (sales_type,tax_included) VALUES ('$name','$tax_included')";
+	$sql = "INSERT INTO ".TB_PREF."sales_types (sales_type,tax_included) VALUES (".db_escape($name).",'$tax_included')";
 		
 	db_query($sql, "could not add sales type");		
 }
 
 function update_sales_type($id, $name, $tax_included)
 {
-	$sql = "UPDATE ".TB_PREF."sales_types SET sales_type = '$name',
+	$sql = "UPDATE ".TB_PREF."sales_types SET sales_type = ".db_escape($name).",
 	tax_included =$tax_included WHERE id = $id";
 	
 	db_query($sql, "could not update sales type");			

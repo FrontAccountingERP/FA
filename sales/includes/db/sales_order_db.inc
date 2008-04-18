@@ -54,20 +54,20 @@ function add_sales_order(&$order)
 	$sql = "INSERT INTO ".TB_PREF."sales_orders (type, debtor_no, branch_code, customer_ref, comments, ord_date,
 		order_type, ship_via, deliver_to, delivery_address, contact_phone,
 		contact_email, freight_cost, from_stk_loc, delivery_date)
-		VALUES (" .db_quote($order_type) . "," . db_quote($order->customer_id) .
-		 ", " . db_quote($order->Branch) . ", ".
-			db_quote($order->cust_ref) .",". 
-			db_quote($order->Comments) .",'" . 
+		VALUES (" .db_escape($order_type) . "," . db_escape($order->customer_id) .
+		 ", " . db_escape($order->Branch) . ", ".
+			db_escape($order->cust_ref) .",". 
+			db_escape($order->Comments) .",'" . 
 			date2sql($order->document_date) . "', " .
-			db_quote($order->sales_type) . ", " .
+			db_escape($order->sales_type) . ", " .
 			$_POST['ship_via'] ."," . 
-			db_quote($order->deliver_to) . "," .
-			db_quote($order->delivery_address) . ", " .
-			db_quote($order->phone) . ", " . 
-			db_quote($order->email) . ", " .
-			db_quote($order->freight_cost) .", " . 
-			db_quote($order->Location) .", " .
-			db_quote($del_date) . ")";
+			db_escape($order->deliver_to) . "," .
+			db_escape($order->delivery_address) . ", " .
+			db_escape($order->phone) . ", " . 
+			db_escape($order->email) . ", " .
+			db_escape($order->freight_cost) .", " . 
+			db_escape($order->Location) .", " .
+			db_escape($del_date) . ")";
 
 	db_query($sql, "order Cannot be Added");
 
@@ -111,7 +111,8 @@ function add_sales_order(&$order)
 
 		$sql = "INSERT INTO ".TB_PREF."sales_order_details (order_no, stk_code, description, unit_price, quantity, discount_percent) VALUES (";
 		$sql .= $order_no .
-				",'$line->stock_id', '$line->item_description', $line->price,
+				",".db_escape($line->stock_id).", "
+				.db_escape($line->item_description).", $line->price,
 				$line->quantity,
 				$line->discount_percent)";
 		db_query($sql, "order Details Cannot be Added");
@@ -182,24 +183,23 @@ function update_sales_order($order)
 	begin_transaction();
 
 	$sql = "UPDATE ".TB_PREF."sales_orders SET type =".$order->so_type." ,
-		debtor_no = " . db_quote($order->customer_id) . ",
-		branch_code = " . db_quote($order->Branch) . ",
-		customer_ref = ". db_quote($order->cust_ref) .",
-		comments = ". db_quote($order->Comments) .",
-		ord_date = " . db_quote($ord_date) . ",
-		order_type = " .db_quote($order->sales_type) . ",
-		ship_via = " . db_quote($order->ship_via) .",
-		deliver_to = " . db_quote($order->deliver_to) . ",
-		delivery_address = " . db_quote($order->delivery_address) . ",
-		contact_phone = " .db_quote($order->phone) . ",
-		contact_email = " .db_quote($order->email) . ",
-		freight_cost = " .db_quote($order->freight_cost) .",
-		from_stk_loc = " .db_quote($order->Location) .",
-		delivery_date = " .db_quote($del_date). ",
+		debtor_no = " . db_escape($order->customer_id) . ",
+		branch_code = " . db_escape($order->Branch) . ",
+		customer_ref = ". db_escape($order->cust_ref) .",
+		comments = ". db_escape($order->Comments) .",
+		ord_date = " . db_escape($ord_date) . ",
+		order_type = " .db_escape($order->sales_type) . ",
+		ship_via = " . db_escape($order->ship_via) .",
+		deliver_to = " . db_escape($order->deliver_to) . ",
+		delivery_address = " . db_escape($order->delivery_address) . ",
+		contact_phone = " .db_escape($order->phone) . ",
+		contact_email = " .db_escape($order->email) . ",
+		freight_cost = " .db_escape($order->freight_cost) .",
+		from_stk_loc = " .db_escape($order->Location) .",
+		delivery_date = " .db_escape($del_date). ",
 		version = ".($version+1)."
 	 WHERE order_no=" . $order_no ."
 	 AND version=".$version;
-
 	db_query($sql, "order Cannot be Updated, this can be concurrent edition conflict");
 
 	$sql = "DELETE FROM ".TB_PREF."sales_order_details WHERE order_no =" . $order_no;
@@ -247,13 +247,13 @@ function update_sales_order($order)
 		 (order_no, stk_code,  description, unit_price, quantity,
 		  discount_percent, qty_sent)
 		 VALUES (";
-		$sql .= $order_no . ",'"
-		  .$line->stock_id . "','"
-		  .$line->item_description . "', "
-		  .$line->price . ", "
-		  .$line->quantity . ", "
-		  .$line->discount_percent . ", "
-		  .$line->qty_done ." )";
+		$sql .= $order_no . ","
+		  .db_escape($line->stock_id) . ","
+		  .db_escape($line->item_description) . ", "
+		  .db_escape($line->price) . ", "
+		  .db_escape($line->quantity) . ", "
+		  .db_escape($line->discount_percent) . ", "
+		  .db_escape($line->qty_done) ." )";
 
 		db_query($sql, "Old order Cannot be Inserted");
 

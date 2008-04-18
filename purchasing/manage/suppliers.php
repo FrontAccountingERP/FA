@@ -46,18 +46,18 @@ if (isset($_POST['submit']))
 		if (!isset($_POST['New'])) 
 		{
 
-			$sql = "UPDATE ".TB_PREF."suppliers SET supp_name='" . $_POST['supp_name'] . "',
-                address='" . $_POST['address'] . "',
-                email='" . $_POST['email'] . "',
-                bank_account='" . $_POST['bank_account'] . "',
-                dimension_id=" . $_POST['dimension_id'] . ",
-                dimension2_id=" . $_POST['dimension2_id'] . ",
-                curr_code='" . $_POST['curr_code'] . "',
-                payment_terms='" . $_POST['payment_terms'] . "',
-				payable_account='" . $_POST['payable_account'] . "',
-				purchase_account='" . $_POST['purchase_account'] . "',
-				payment_discount_account='" . $_POST['payment_discount_account'] . "',
-				tax_group_id=" . $_POST['tax_group_id'] . " WHERE supplier_id = '" . $_POST['supplier_id'] . "'";
+			$sql = "UPDATE ".TB_PREF."suppliers SET supp_name=".db_escape($_POST['supp_name']) . ",
+                address=".db_escape($_POST['address']) . ",
+                email=".db_escape($_POST['email']) . ",
+                bank_account=".db_escape($_POST['bank_account']) . ",
+                dimension_id=".db_escape($_POST['dimension_id']) . ",
+                dimension2_id=".db_escape($_POST['dimension2_id']) . ",
+                curr_code=".db_escape($_POST['curr_code']).",
+                payment_terms=".db_escape($_POST['payment_terms']) . ",
+				payable_account=".db_escape($_POST['payable_account']) . ",
+				purchase_account=".db_escape($_POST['purchase_account']) . ",
+				payment_discount_account=".db_escape($_POST['payment_discount_account']) . ",
+				tax_group_id=".db_escape($_POST['tax_group_id']) . " WHERE supplier_id = '" . $_POST['supplier_id'] . "'";
 
 			db_query($sql,"The supplier could not be updated");
 
@@ -67,18 +67,18 @@ if (isset($_POST['submit']))
 
 			$sql = "INSERT INTO ".TB_PREF."suppliers (supp_name, address, email, bank_account, dimension_id, dimension2_id, curr_code,
 				payment_terms, payable_account, purchase_account, payment_discount_account, tax_group_id)
-				VALUES ('" . $_POST['supp_name'] . "', '" .
-				$_POST['address'] . "', '" .
-				$_POST['email'] . "', '" .
-				$_POST['bank_account'] . "', " .
-				$_POST['dimension_id'] . ", " .
-				$_POST['dimension2_id'] . ", '" .
-				$_POST['curr_code'] . "', '" .
-				$_POST['payment_terms'] . "', '" .
-				$_POST['payable_account'] . "', '" .
-				$_POST['purchase_account'] . "', '" .
-				$_POST['payment_discount_account'] . "', " .
-				$_POST['tax_group_id'] . ")";
+				VALUES (".db_escape($_POST['supp_name']). ", "
+				.db_escape($_POST['address']) . ", "
+				.db_escape($_POST['email']). ", "
+				.db_escape($_POST['bank_account']). ", "
+				.db_escape($_POST['dimension_id']). ", "
+				.db_escape($_POST['dimension2_id']). ", "
+				.db_escape($_POST['curr_code']). ", "
+				.db_escape($_POST['payment_terms']). ", "
+				.db_escape($_POST['payable_account']). ", "
+				.db_escape($_POST['purchase_account']). ", "
+				.db_escape($_POST['payment_discount_account']). ", "
+				.db_escape($_POST['tax_group_id']). ")";
 
 			db_query($sql,"The supplier could not be added");
 		}

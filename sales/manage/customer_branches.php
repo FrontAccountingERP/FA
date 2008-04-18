@@ -63,25 +63,25 @@ if (isset($_POST['ADD_ITEM']) || isset($_POST['UPDATE_ITEM']))
 		{
 			/*SelectedBranch could also exist if submit had not been clicked this code would not run in this case cos submit is false of course see the 	delete code below*/
 
-			$sql = "UPDATE ".TB_PREF."cust_branch SET br_name = '" . $_POST['br_name'] . "',
-				br_address = '" . $_POST['br_address'] . "',
-    	        phone='" . $_POST['phone'] . "',
-    	        fax='" . $_POST['fax'] . "',
-    	        contact_name='" . $_POST['contact_name'] . "',
-    	        salesman= '" . $_POST['salesman'] . "',
-    	        area='" . $_POST['area'] . "',
-    	        email='" . $_POST['email'] . "',
-    	        tax_group_id=" . $_POST['tax_group_id'] . ",
-				sales_account='" . $_POST['sales_account'] . "',
-				sales_discount_account='" . $_POST['sales_discount_account'] . "',
-				receivables_account='" . $_POST['receivables_account'] . "',
-				payment_discount_account='" . $_POST['payment_discount_account'] . "',
-    	        default_location='" . $_POST['default_location'] . "',
-    	        br_post_address = '" . $_POST['br_post_address'] . "',
-    	        disable_trans=" . $_POST['disable_trans'] . ",
-    	        default_ship_via=" . $_POST['default_ship_via'] . "
-    	        WHERE branch_code = '" . $_POST['branch_code'] . "'
-    	        AND debtor_no='" . $_POST['customer_id']. "'";
+			$sql = "UPDATE ".TB_PREF."cust_branch SET br_name = " . db_escape($_POST['br_name']) . ",
+				br_address = ".db_escape($_POST['br_address']). ",
+    	        phone=".db_escape($_POST['phone']). ",
+    	        fax=".db_escape($_POST['fax']).",
+    	        contact_name=".db_escape($_POST['contact_name']) . ",
+    	        salesman= ".db_escape($_POST['salesman']) . ",
+    	        area=".db_escape($_POST['area']) . ",
+    	        email=".db_escape($_POST['email']) . ",
+    	        tax_group_id=".db_escape($_POST['tax_group_id']). ",
+				sales_account=".db_escape($_POST['sales_account']) . ",
+				sales_discount_account=".db_escape($_POST['sales_discount_account']) . ",
+				receivables_account=".db_escape($_POST['receivables_account']) . ",
+				payment_discount_account=".db_escape($_POST['payment_discount_account']) . ",
+    	        default_location=".db_escape($_POST['default_location']) . ",
+    	        br_post_address =".db_escape($_POST['br_post_address']) . ",
+    	        disable_trans=".db_escape($_POST['disable_trans']) . ",
+    	        default_ship_via=".db_escape($_POST['default_ship_via']) . "
+    	        WHERE branch_code =".db_escape($_POST['branch_code']) . "
+    	        AND debtor_no=".db_escape($_POST['customer_id']);
 
 		} 
 		else
@@ -91,16 +91,19 @@ if (isset($_POST['ADD_ITEM']) || isset($_POST['UPDATE_ITEM']))
 				salesman, phone, fax,
 				contact_name, area, email, tax_group_id, sales_account, receivables_account, payment_discount_account, sales_discount_account, default_location,
 				br_post_address, disable_trans, default_ship_via)
-				VALUES ('" . $_POST['customer_id']. "', '" . $_POST['br_name'] . "', '" .
-					$_POST['br_address'] . "', '" . $_POST['salesman'] . "', '" .
-					$_POST['phone'] . "', '" . $_POST['fax'] . "','" .
-					$_POST['contact_name'] . "', '" . $_POST['area'] . "','" .
-					$_POST['email'] . "', " . $_POST['tax_group_id'] . ", '" .
-					$_POST['sales_account'] . "', '" .
-					$_POST['receivables_account'] . "', '" .
-					$_POST['payment_discount_account'] . "', '" .
-					$_POST['sales_discount_account'] . "', '" .
-					$_POST['default_location'] . "', '" . $_POST['br_post_address'] . "'," . $_POST['disable_trans'] . ", " . $_POST['default_ship_via'] . ")";
+				VALUES (".db_escape($_POST['customer_id']). ",".db_escape($_POST['br_name']) . ", " 
+					.db_escape($_POST['br_address']) . ", ".db_escape($_POST['salesman']) . ", " 
+					.db_escape($_POST['phone']) . ", ".db_escape($_POST['fax']) . ","
+					.db_escape($_POST['contact_name']) . ", ".db_escape($_POST['area']) . "," 
+					.db_escape($_POST['email']) . ", ".db_escape($_POST['tax_group_id']) . ", " 
+					.db_escape($_POST['sales_account']) . ", " 
+					.db_escape($_POST['receivables_account']) . ", " 
+					.db_escape($_POST['payment_discount_account']) . ", " 
+					.db_escape($_POST['sales_discount_account']) . ", " 
+					.db_escape($_POST['default_location']) . ", " 
+					.db_escape($_POST['br_post_address']) . "," 
+					.db_escape($_POST['disable_trans']) . ", " 
+					.db_escape($_POST['default_ship_via']) . ")";
 		}
 
 		//run the sql from either of the above possibilites

@@ -8,8 +8,9 @@ function add_supp_invoice_item($supp_trans_type, $supp_trans_no, $stock_id, $des
 {
 	$sql = "INSERT INTO ".TB_PREF."supp_invoice_items (supp_trans_type, supp_trans_no, stock_id, description, gl_code, unit_price, unit_tax, quantity,
 	  	grn_item_id, po_detail_item_id, memo_) ";
-	$sql .= "VALUES ($supp_trans_type, $supp_trans_no, '$stock_id', '$description', '$gl_code', $unit_price, $unit_tax, $quantity,
-		$grn_item_id, $po_detail_item_id, '$memo_')";
+	$sql .= "VALUES ($supp_trans_type, $supp_trans_no, ".db_escape($stock_id).
+	", ".db_escape($description).", ".db_escape($gl_code).", $unit_price, $unit_tax, $quantity,
+		$grn_item_id, $po_detail_item_id, ".db_escape($memo_).")";
 
 	if ($err_msg == "")
 		$err_msg = "Cannot insert a supplier transaction detail record";

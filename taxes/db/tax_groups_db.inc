@@ -12,7 +12,7 @@ function add_tax_group($name, $tax_shipping, $taxes, $rates)
 	if($tax_shipping) 	// only one tax group for shipping
 	  clear_shipping_tax_group();
 		
-	$sql = "INSERT INTO ".TB_PREF."tax_groups (name, tax_shipping) VALUES ('$name', $tax_shipping)";
+	$sql = "INSERT INTO ".TB_PREF."tax_groups (name, tax_shipping) VALUES (".db_escape($name).", $tax_shipping)";
 	db_query($sql, "could not add tax group");
 	
 	$id = db_insert_id();
@@ -29,7 +29,7 @@ function update_tax_group($id, $name, $tax_shipping, $taxes, $rates)
 	if($tax_shipping) 	// only one tax group for shipping
 	  clear_shipping_tax_group();
 	
-    $sql = "UPDATE ".TB_PREF."tax_groups SET name='$name',tax_shipping=$tax_shipping WHERE id=$id";
+    $sql = "UPDATE ".TB_PREF."tax_groups SET name=".db_escape($name).",tax_shipping=$tax_shipping WHERE id=$id";
 	db_query($sql, "could not update tax group");
 	
 	delete_tax_group_items($id);

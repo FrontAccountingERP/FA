@@ -62,20 +62,20 @@ function handle_submit()
 	if (!isset($_POST['New'])) 
 	{
 
-		$sql = "UPDATE ".TB_PREF."debtors_master SET name='" . $_POST['CustName'] . "', 
-			address='" . $_POST['address'] . "', 
-			tax_id='" . $_POST['tax_id'] . "', 
-			curr_code='" . $_POST['curr_code'] . "', 
-			email='" . $_POST['email'] . "', 
-			dimension_id=" . $_POST['dimension_id'] . ", 
-			dimension2_id=" . $_POST['dimension2_id'] . ", 
-            credit_status='" . $_POST['credit_status'] . "', 
-            payment_terms='" . $_POST['payment_terms'] . "', 
+		$sql = "UPDATE ".TB_PREF."debtors_master SET name=" . db_escape($_POST['CustName']) . ", 
+			address=".db_escape($_POST['address']) . ", 
+			tax_id=".db_escape($_POST['tax_id']) . ", 
+			curr_code=".db_escape($_POST['curr_code']) . ", 
+			email=".db_escape($_POST['email']) . ", 
+			dimension_id=".db_escape($_POST['dimension_id']) . ", 
+			dimension2_id=".db_escape($_POST['dimension2_id']) . ", 
+            credit_status=".db_escape($_POST['credit_status']) . ", 
+            payment_terms=".db_escape($_POST['payment_terms']) . ", 
             discount=" . input_num('discount') / 100 . ", 
             pymt_discount=" . input_num('pymt_discount') / 100 . ", 
             credit_limit=" . input_num('credit_limit') . ", 
-            sales_type = '" . $_POST['sales_type'] . "' 
-            WHERE debtor_no = '" . $_POST['customer_id'] . "'";
+            sales_type = ".db_escape($_POST['sales_type']) . " 
+            WHERE debtor_no = '". $_POST['customer_id'] . "'";
 
 		db_query($sql,"The customer could not be updated");
 		display_notification(_("Customer has been updated."));
@@ -89,10 +89,12 @@ function handle_submit()
 
 		$sql = "INSERT INTO ".TB_PREF."debtors_master (name, address, tax_id, email, dimension_id, dimension2_id,  
 			curr_code, credit_status, payment_terms, discount, pymt_discount,credit_limit, 
-			sales_type) VALUES ('" . $_POST['CustName'] ."', '" . $_POST['address'] . "', '" . $_POST['tax_id'] . "',
-			'" . $_POST['email'] . "', " . $_POST['dimension_id'] . ", " . $_POST['dimension2_id'] . ", '" . $_POST['curr_code'] . "', 
-			" . $_POST['credit_status'] . ", '" . $_POST['payment_terms'] . "', " . input_num('discount')/100 . ", 
-			" . input_num('pymt_discount')/100 . ", " . input_num('credit_limit') . ", '" . $_POST['sales_type'] . "')";
+			sales_type) VALUES (".db_escape($_POST['CustName']) .", " 
+			.db_escape($_POST['address']) . ", " . db_escape($_POST['tax_id']) . ","
+			.db_escape($_POST['email']) . ", ".db_escape($_POST['dimension_id']) . ", " 
+			.db_escape($_POST['dimension2_id']) . ", ".db_escape($_POST['curr_code']) . ", 
+			" . db_escape($_POST['credit_status']) . ", ".db_escape($_POST['payment_terms']) . ", " . input_num('discount')/100 . ", 
+			" . input_num('pymt_discount')/100 . ", " . input_num('credit_limit') . ", ".db_escape($_POST['sales_type']) . ")";
 
 		db_query($sql,"The customer could not be added");
 

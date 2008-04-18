@@ -411,7 +411,7 @@ function db_export($conn, $filename, $zip='no', $comment='')
 					// run through each field
 					for ($k = 0; $k < $nf = db_num_fields($res2); $k++)
 					{
-						$out .= db_escape($row2[$k], true);
+						$out .= db_escape($row2[$k]);
 						if ($k < ($nf - 1))
 							$out .= ", ";
 					}

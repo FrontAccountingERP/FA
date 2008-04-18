@@ -348,9 +348,9 @@ else
 {
 	mysql_select_db($database_name, $db);
 }
-$sql = "UPDATE ".$table_prefix."users SET password = '" . md5($admin_password) . "', email = '$admin_email' WHERE user_id = 'admin'";
+$sql = "UPDATE ".$table_prefix."users SET password = '" . md5($admin_password) . "', email = ".db_escape($admin_email)." WHERE user_id = 'admin'";
 db_query($sql, "could not update admin account");
-$sql = "UPDATE ".$table_prefix."company SET coy_name = '$company_name' WHERE coy_code = 1";
+$sql = "UPDATE ".$table_prefix."company SET coy_name = ".db_escape($company_name)." WHERE coy_code = 1";
 db_query($sql, "could not update company name. Do it manually later in Setup");
 
 session_unset();

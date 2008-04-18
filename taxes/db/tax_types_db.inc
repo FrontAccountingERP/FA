@@ -3,16 +3,17 @@
 function add_tax_type($name, $sales_gl_code, $purchasing_gl_code, $rate)
 {
 	$sql = "INSERT INTO ".TB_PREF."tax_types (name, sales_gl_code, purchasing_gl_code, rate)
-		VALUES ('$name', '$sales_gl_code', '$purchasing_gl_code', $rate)";
+		VALUES (".db_escape($name).", ".db_escape($sales_gl_code)
+		.", ".db_escape($purchasing_gl_code).", $rate)";
 
 	db_query($sql, "could not add tax type");
 }
 
 function update_tax_type($type_id, $name, $sales_gl_code, $purchasing_gl_code, $rate)
 {
-	$sql = "UPDATE ".TB_PREF."tax_types SET name='$name',
-		sales_gl_code='$sales_gl_code',
-		purchasing_gl_code='$purchasing_gl_code',
+	$sql = "UPDATE ".TB_PREF."tax_types SET name=".db_escape($name).",
+		sales_gl_code=".db_escape($sales_gl_code).",
+		purchasing_gl_code=".db_escape($purchasing_gl_code).",
 		rate=$rate
 		WHERE id=$type_id";
 

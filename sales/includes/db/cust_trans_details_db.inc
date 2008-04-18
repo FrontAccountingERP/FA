@@ -84,8 +84,8 @@ function write_customer_trans_detail_item($debtor_trans_type, $debtor_trans_no, 
 {
 	if ($line_id!=0)
 		$sql = "UPDATE ".TB_PREF."debtor_trans_details SET
-			stock_id='$stock_id',
-			description='$description',
+			stock_id=".db_escape($stock_id).",
+			description=".db_escape($description).",
 			quantity=$quantity,
 			unit_price=$unit_price,
 			unit_tax=$unit_tax,
@@ -96,7 +96,8 @@ function write_customer_trans_detail_item($debtor_trans_type, $debtor_trans_no, 
 			$sql = "INSERT INTO ".TB_PREF."debtor_trans_details (debtor_trans_no,
 				debtor_trans_type, stock_id, description, quantity, unit_price,
 				unit_tax, discount_percent, standard_cost)
-			VALUES ($debtor_trans_no, $debtor_trans_type, '$stock_id', '$description',
+			VALUES ($debtor_trans_no, $debtor_trans_type, ".db_escape($stock_id).
+			", ".db_escape($description).",
 				$quantity, $unit_price, $unit_tax, $discount_percent, $std_cost)";
 
 	db_query($sql, "The debtor transaction detail could not be written");

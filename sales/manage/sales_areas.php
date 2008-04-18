@@ -33,12 +33,12 @@ if (isset($_POST['ADD_ITEM']) || isset($_POST['UPDATE_ITEM']))
 	{
     	if (isset($selected_id)) 
     	{
-    		$sql = "UPDATE ".TB_PREF."areas SET description='" . $_POST['description'] . "' WHERE area_code = '$selected_id'";
+    		$sql = "UPDATE ".TB_PREF."areas SET description=".db_escape($_POST['description'])." WHERE area_code = '$selected_id'";
     	} 
     	else 
     	{
     
-    		$sql = "INSERT INTO ".TB_PREF."areas (description) VALUES ('" . $_POST['description'] . "')";
+    		$sql = "INSERT INTO ".TB_PREF."areas (description) VALUES (".db_escape($_POST['description']) . ")";
     	}
     
     	db_query($sql,"The sales area could not be updated or added");

@@ -99,18 +99,20 @@ function write_customer_trans($trans_type, $trans_no, $debtor_no, $BranchNo,
 		order_, ov_amount, ov_discount,
 		ov_gst, ov_freight, ov_freight_tax,
 		rate, ship_via, alloc, trans_link
-		) VALUES ($trans_no, $trans_type, '$debtor_no', '$BranchNo',
-		'$SQLDate', '$SQLDueDate', '$reference',
-		'$sales_type', $order_no, $Total, $discount, $Tax, $Freight,
-		$FreightTax, $rate, '$ship_via', $AllocAmt, $trans_link)";
+		) VALUES ($trans_no, $trans_type, 
+		".db_escape($debtor_no).", ".db_escape($BranchNo).",
+		'$SQLDate', '$SQLDueDate', ".db_escape($reference).",
+		".db_escape($sales_type).", $order_no, $Total, ".db_escape($discount).", $Tax, 
+		".db_escape($Freight).",
+		$FreightTax, $rate, ".db_escape($ship_via).", $AllocAmt, ".db_escape($trans_link);
 	} else {	// may be optional argument should stay unchanged ?
 	$sql = "UPDATE ".TB_PREF."debtor_trans SET
-		debtor_no='$debtor_no' , branch_code='$BranchNo',
+		debtor_no=".db_escape($debtor_no)." , branch_code=".db_escape($BranchNo).",
 		tran_date='$SQLDate', due_date='$SQLDueDate',
-		reference='$reference', tpe='$sales_type', order_=$order_no,
-		ov_amount=$Total, ov_discount=$discount, ov_gst=$Tax,
-		ov_freight=$Freight, ov_freight_tax=$FreightTax, rate=$rate,
-		ship_via='$ship_via', alloc=$AllocAmt, trans_link=$trans_link
+		reference=".db_escape($reference).", tpe=".db_escape($sales_type).", order_=$order_no,
+		ov_amount=$Total, ov_discount=".db_escape($discount).", ov_gst=$Tax,
+		ov_freight=".db_escape($Freight).", ov_freight_tax=$FreightTax, rate=$rate,
+		ship_via=".db_escape($ship_via).", alloc=$AllocAmt, trans_link=$trans_link
 		WHERE trans_no=$trans_no AND type=$trans_type";
 	}
 	db_query($sql, "The debtor transaction record could not be inserted");
