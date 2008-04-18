@@ -73,12 +73,7 @@ function db_num_fields ($result)
 	return mysql_num_fields($result);
 }
 
-function db_escape ($result)
-{
-	return mysql_escape_string($result);
-}
-
-function db_quote($value = "", $nullify = false)
+function db_escape($value = "", $nullify = false)
 {
 	$value = htmlspecialchars($value, ENT_COMPAT, $_SESSION['language']->encoding);
 
