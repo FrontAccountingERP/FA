@@ -19,6 +19,30 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+18-Apr-2008 Janusz Dobrowolski
+# Additional checks on provisions and break point entry.
+$ /sales/manage/sales_people.php
+! Modules purchasing, sales and taxes sealed against XSS attacks
+$ /install/save.php
+  /admin/db/maintenance_db.inc
+  /purchasing/includes/db/grn_db.inc
+  /purchasing/includes/db/invoice_items_db.inc
+  /purchasing/includes/db/po_db.inc
+  /purchasing/includes/db/supp_trans_db.inc
+  /purchasing/manage/suppliers.php
+  /sales/includes/db/credit_status_db.inc
+  /sales/includes/db/cust_trans_db.inc
+  /sales/includes/db/cust_trans_details_db.inc
+  /sales/includes/db/sales_order_db.inc
+  /sales/includes/db/sales_types_db.inc
+  /sales/manage/customer_branches.php
+  /sales/manage/customers.php
+  /sales/manage/sales_areas.php
+  /sales/manage/sales_people.php
+  /taxes/db/item_tax_types_db.inc
+  /taxes/db/tax_groups_db.inc
+  /taxes/db/tax_types_db.inc
+
 18-Apr-2008 Joe Hunt
 ! Module gl sealed against XSS Attacks
 $ /gl/includes/db/gl_db_accounts.inc
