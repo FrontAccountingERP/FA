@@ -19,6 +19,16 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+18-Apr-08 Janusz Dobrwolski
+! Changed db_escape function to avoid XSS atacks via js db injection
+$ /includes/db/connect_db.inc
+# Database inserts/updates secured against js injection
+$ /admin/db/maintenance_db.inc
+  /gl/includes/db/gl_db_accounts.inc
+  /purchasing/includes/db/po_db.inc
+  /sales/sales_order_entry.php
+  /sales/includes/db/sales_order_db.inc
+
 16-Apr-2008 Joe Hunt
 # Bug in /includes/ui/ui_lists.inc:914. Sql clause was cut.
 $ /includes/ui/ui_lists.inc
