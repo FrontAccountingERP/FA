@@ -3,14 +3,14 @@
 function add_account_type($name, $class_id, $parent)
 {
 	$sql = "INSERT INTO ".TB_PREF."chart_types (name, class_id, parent)
-		VALUES ('$name', $class_id, $parent)";
+		VALUES (".db_escape($name).", $class_id, $parent)";
 
 	db_query($sql, "could not add account type");
 }
 
 function update_account_type($id, $name, $class_id, $parent)
 {
-    $sql = "UPDATE ".TB_PREF."chart_types SET name='$name',
+    $sql = "UPDATE ".TB_PREF."chart_types SET name=".db_escape($name).",
 		class_id=$class_id,	parent=$parent WHERE id = $id";
 
 	db_query($sql, "could not update account type");
@@ -53,14 +53,14 @@ function delete_account_type($id)
 function add_account_class($id, $name, $balance)
 {
 	$sql = "INSERT INTO ".TB_PREF."chart_class (cid, class_name, balance_sheet)
-		VALUES ($id, '$name', $balance)";
+		VALUES ($id, ".db_escape($name).", $balance)";
 
 	db_query($sql, "could not add account type");
 }
 
 function update_account_class($id, $name, $balance)
 {
-    $sql = "UPDATE ".TB_PREF."chart_class SET class_name='$name',
+    $sql = "UPDATE ".TB_PREF."chart_class SET class_name=".db_escape($name).",
 		balance_sheet=$balance WHERE cid = $id";
 
 	db_query($sql, "could not update account type");

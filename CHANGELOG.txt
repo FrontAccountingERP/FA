@@ -19,8 +19,18 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+18-Apr-2008 Joe Hunt
+! Module gl sealed against XSS Attacks
+$ /gl/includes/db/gl_db_accounts.inc
+  /gl/includes/db/gl_db_account_types.inc
+  /gl/includes/db/gl_db_bank_accounts.inc
+  /gl/includes/db/gl_db_bank_trans.inc
+  /gl/includes/db/gl_db_bank_trans_types.inc
+  /gl/includes/db/gl_db_currencies.inc
+  /gl/includes/db/gl_db_trans.inc
+  
 18-Apr-2008 Janusz Dobrowolski
-! Modules admin and dimensions sealed against XSS atacks
+! Modules admin and dimensions sealed against XSS attacks
 $ /admin/payment_terms.php
   /admin/shipping_companies.php
   /admin/db/company_db.inc
@@ -30,7 +40,7 @@ $ /admin/payment_terms.php
   /dimensions/includes/dimensions_db.inc
 
 18-Apr-2008 Joe Hunt
-! Changed db_escape function to avoid XSS attacks via js db injection
+! Modules includes, inventory and manufacturing sealed against XSS attacks
 $ /includes/db/comments_db.inc
   /includes/db/inventory_db.inc
   /includes/db/references_db.inc
