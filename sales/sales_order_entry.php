@@ -135,7 +135,7 @@ function copy_to_cart()
 	if ($cart->trans_type!=30) {
 		$cart->reference = $_POST['ref'];
 	}
-	$cart->Comments =  str_replace("'", "\\'", $_POST['Comments']);
+	$cart->Comments =  $_POST['Comments'];
 
 	$cart->document_date = $_POST['OrderDate'];
 	$cart->due_date = $_POST['delivery_date'];

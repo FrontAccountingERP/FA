@@ -54,15 +54,20 @@ function add_sales_order(&$order)
 	$sql = "INSERT INTO ".TB_PREF."sales_orders (type, debtor_no, branch_code, customer_ref, comments, ord_date,
 		order_type, ship_via, deliver_to, delivery_address, contact_phone,
 		contact_email, freight_cost, from_stk_loc, delivery_date)
-		VALUES ('" . $order_type . "', '" . $order->customer_id . "', '" . $order->Branch . "', '".
-			$order->cust_ref ."','". db_escape($order->Comments) ."','" .
-			date2sql($order->document_date) . "', '" .
-			$order->sales_type . "', " .
-			$_POST['ship_via'] .",'" . $order->deliver_to . "', '" .
-			$order->delivery_address . "', '" .
-			$order->phone . "', '" . $order->email . "', " .
-			$order->freight_cost .", '" . $order->Location ."', '" .
-			$del_date . "')";
+		VALUES (" .db_quote($order_type) . "," . db_quote($order->customer_id) .
+		 ", " . db_quote($order->Branch) . ", ".
+			db_quote($order->cust_ref) .",". 
+			db_quote($order->Comments) .",'" . 
+			date2sql($order->document_date) . "', " .
+			db_quote($order->sales_type) . ", " .
+			$_POST['ship_via'] ."," . 
+			db_quote($order->deliver_to) . "," .
+			db_quote($order->delivery_address) . ", " .
+			db_quote($order->phone) . ", " . 
+			db_quote($order->email) . ", " .
+			db_quote($order->freight_cost) .", " . 
+			db_quote($order->Location) .", " .
+			db_quote($del_date) . ")";
 
 	db_query($sql, "order Cannot be Added");
 
@@ -177,20 +182,20 @@ function update_sales_order($order)
 	begin_transaction();
 
 	$sql = "UPDATE ".TB_PREF."sales_orders SET type =".$order->so_type." ,
-		debtor_no = '" . $order->customer_id . "',
-		branch_code = '" . $order->Branch . "',
-		customer_ref = '". $order->cust_ref ."',
-		comments = '". db_escape($order->Comments) ."',
-		ord_date = '" . $ord_date . "',
-		order_type = '" . $order->sales_type . "',
-		ship_via = " . $order->ship_via .",
-		deliver_to = '" . $order->deliver_to . "',
-		delivery_address = '" . $order->delivery_address . "',
-		contact_phone = '" . $order->phone . "',
-		contact_email = '" . $order->email . "',
-		freight_cost = " . $order->freight_cost .",
-		from_stk_loc = '" . $order->Location ."',
-		delivery_date = '" . $del_date . "',
+		debtor_no = " . db_quote($order->customer_id) . ",
+		branch_code = " . db_quote($order->Branch) . ",
+		customer_ref = ". db_quote($order->cust_ref) .",
+		comments = ". db_quote($order->Comments) .",
+		ord_date = " . db_quote($ord_date) . ",
+		order_type = " .db_quote($order->sales_type) . ",
+		ship_via = " . db_quote($order->ship_via) .",
+		deliver_to = " . db_quote($order->deliver_to) . ",
+		delivery_address = " . db_quote($order->delivery_address) . ",
+		contact_phone = " .db_quote($order->phone) . ",
+		contact_email = " .db_quote($order->email) . ",
+		freight_cost = " .db_quote($order->freight_cost) .",
+		from_stk_loc = " .db_quote($order->Location) .",
+		delivery_date = " .db_quote($del_date). ",
 		version = ".($version+1)."
 	 WHERE order_no=" . $order_no ."
 	 AND version=".$version;

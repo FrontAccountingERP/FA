@@ -19,13 +19,13 @@ function add_po(&$po_obj)
 
      /*Insert to purchase order header record */
      $sql = "INSERT INTO ".TB_PREF."purch_orders (supplier_id, Comments, ord_date, reference, requisition_no, into_stock_location, delivery_address) VALUES(";
-     $sql .= "'" . $po_obj->supplier_id . "', '" .
-         db_escape($po_obj->Comments) . "','" .
+     $sql .= "' ". $po_obj->supplier_id . "'," .
+         db_escape($po_obj->Comments) . ",'" .
          date2sql($po_obj->orig_order_date) . "', '" .
-		 $po_obj->reference . "', '" .
-         $po_obj->requisition_no . "', '" .
-         $po_obj->Location . "', '" .
-         $po_obj->delivery_address . "')";
+		 $po_obj->reference . "', " .
+         db_escape($po_obj->requisition_no) . ", " .
+         db_escape($po_obj->Location) . ", " .
+         db_escape($po_obj->delivery_address) . ")";
 
 	db_query($sql, "The purchase order header record could not be inserted");
 
@@ -38,8 +38,8 @@ function add_po(&$po_obj)
      	if ($po_line->Deleted == false)
      	{
     		$sql = "INSERT INTO ".TB_PREF."purch_order_details (order_no, item_code, description, delivery_date,	unit_price,	quantity_ordered) VALUES (";
-    		$sql .= $po_obj->order_no . ", '" . $po_line->stock_id . "','" .
-    			$po_line->item_description . "','" .
+    		$sql .= $po_obj->order_no . ", " . db_escape($po_line->stock_id). "," .
+    			db_escape($po_line->item_description). ",'" .
     			date2sql($po_line->req_del_date) . "'," .
     			$po_line->price . ", " .
     			$po_line->quantity . ")";
@@ -63,11 +63,11 @@ function update_po(&$po_obj)
 	begin_transaction();
 
     /*Update the purchase order header with any changes */
-    $sql = "UPDATE ".TB_PREF."purch_orders SET Comments='" . db_escape($po_obj->Comments) . "',
-		requisition_no= '" . $po_obj->requisition_no . "',
-		into_stock_location='" . $po_obj->Location . "',
+    $sql = "UPDATE ".TB_PREF."purch_orders SET Comments=" . db_escape($po_obj->Comments) . ",
+		requisition_no= " db_escape(. $po_obj->requisition_no). ",
+		into_stock_location=" . db_escape($po_obj->Location). ",
 		ord_date='" . date2sql($po_obj->orig_order_date) . "',
-		delivery_address='" . $po_obj->delivery_address . "'";
+		delivery_address=" . db_escape($po_obj->delivery_address);
     $sql .= " WHERE order_no = " . $po_obj->order_no;
 	db_query($sql, "The purchase order could not be updated");
 
@@ -88,16 +88,16 @@ function update_po(&$po_obj)
 		{
 			// Sherifoz 21.06.03 Handle adding new lines vs. updating. if no key(po_detail_rec) then it's a new line
 			$sql = "INSERT INTO ".TB_PREF."purch_order_details (order_no, item_code, description, delivery_date, unit_price,	quantity_ordered) VALUES (";
-			$sql .= $po_obj->order_no . ", '" .
-				$po_line->stock_id . "','" .
-				$po_line->item_description . "','" .
+			$sql .= $po_obj->order_no . "," .
+				db_escape($po_line->stock_id). "," .
+				db_escape($po_line->item_description). ",'" .
 				date2sql($po_line->req_del_date) . "'," .
 				$po_line->price . ", " . $po_line->quantity . ")";
 		}
 		else
 		{
 			$sql = "UPDATE ".TB_PREF."purch_order_details SET item_code='" . $po_line->stock_id . "',
-				description ='" . $po_line->item_description . "',
+				description =" . db_escape($po_line->item_description). ",
 				delivery_date ='" . date2sql($po_line->req_del_date) . "',
 				unit_price=" . $po_line->price . ",
 				quantity_ordered=" . $po_line->quantity . "

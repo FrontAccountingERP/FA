@@ -415,7 +415,7 @@ function db_export($conn, $filename, $zip='no', $comment='')
 						if ($field_type[$k] != "" && $field_type[$k] != "NO" && $row2[$k] == "")
 							$out .= "NULL";
 						else
-							$out .= "'" . db_escape($row2[$k]) . "'";
+							$out .= db_escape($row2[$k]);
 						if ($k < ($nf - 1))
 							$out .= ", ";
 					}
