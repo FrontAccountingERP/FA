@@ -19,8 +19,24 @@ Legend:
 ! -> Note
 $ -> Affected files
 
-18-Apr-08 Janusz Dobrwolski
-! Changed db_escape function to avoid XSS atacks via js db injection
+18-Apr-2008 Joe Hunt
+! Changed db_escape function to avoid XSS attacks via js db injection
+$ /includes/db/comments_db.inc
+  /includes/db/inventory_db.inc
+  /includes/db/references_db.inc
+  /inventory/includes/db/items_category_db.inc
+  /inventory/includes/db/items_db.inc
+  /inventory/includes/db/items_locations_db.inc
+  /inventory/includes/db/items_units_db.inc
+  /inventory/includes/db/movement_types_db.inc
+  /manufacturing/includes/db/work_centres_db.inc
+  /manufacturing/includes/db/work_orders_db.inc
+  /manufacturing/includes/db/work_orders_quick_db.inc
+  /manufacturing/includes/db/work_order_issues_db.inc
+  /manufacturing/includes/db/work_order_produce_items_db.inc
+  
+18-Apr-2008 Janusz Dobrwolski
+! Changed db_escape function to avoid XSS attacks via js db injection
 $ /includes/db/connect_db.inc
 # Database inserts/updates secured against js injection
 $ /admin/db/maintenance_db.inc

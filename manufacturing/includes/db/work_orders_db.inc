@@ -42,7 +42,7 @@ function add_work_order($wo_ref, $loc_code, $units_reqd, $stock_id,
 
 	$sql = "INSERT INTO ".TB_PREF."workorders (wo_ref, loc_code, units_reqd, stock_id,
 		type, date_, required_by)
-    	VALUES ('$wo_ref', '$loc_code', $units_reqd, '$stock_id',
+    	VALUES (".db_quote($wo_ref).", ".db_quote($loc_code).", $units_reqd, '$stock_id',
 		$type, '$date', '$required')";
 	db_query($sql, "could not add work order");
 
@@ -70,7 +70,7 @@ function update_work_order($woid, $loc_code, $units_reqd, $stock_id,
 	$date = date2sql($date_);
 	$required = date2sql($required_by);
 
-	$sql = "UPDATE ".TB_PREF."workorders SET loc_code='$loc_code',
+	$sql = "UPDATE ".TB_PREF."workorders SET loc_code=".db_quote($loc_code).",
 		units_reqd=$units_reqd, stock_id='$stock_id',
 		required_by='$required',
 		date_='$date'
@@ -116,7 +116,7 @@ function get_work_order($woid, $allow_null=false)
 	$result = db_query($sql, "The work order issues could not be retrieved");
 
 	if (!$allow_null && db_num_rows($result) == 0)
-		display_db_error("Could not find work order $workOrder", $sql);
+		display_db_error("Could not find work order $woid", $sql);
 
 	return db_fetch($result);
 }

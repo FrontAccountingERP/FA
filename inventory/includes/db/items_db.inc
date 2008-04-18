@@ -4,8 +4,8 @@ function update_item($stock_id, $description, $long_description, $category_id, $
 	$sales_account, $inventory_account, $cogs_account, $adjustment_account,
 	$assembly_account, $dimension_id, $dimension2_id)
 {
-	$sql = "UPDATE ".TB_PREF."stock_master SET long_description='$long_description',
-		description='$description',
+	$sql = "UPDATE ".TB_PREF."stock_master SET long_description=".db_quote($long_description).",
+		description=".db_quote($description).",
 		category_id='$category_id',
 		sales_account='$sales_account',
 		inventory_account='$inventory_account',
@@ -27,7 +27,7 @@ function add_item($stock_id, $description, $long_description, $category_id, $tax
 	$sql = "INSERT INTO ".TB_PREF."stock_master (stock_id, description, long_description, category_id,
 		tax_type_id, units, mb_flag, sales_account, inventory_account, cogs_account,
 		adjustment_account, assembly_account, dimension_id, dimension2_id)
-		VALUES ('$stock_id', '$description', '$long_description',
+		VALUES (".db_quote($stock_id).", ".db_quote($description).", ".db_quote($long_description).",
 		'$category_id', $tax_type_id, '$units', '$mb_flag',
 		'$sales_account', '$inventory_account', '$cogs_account',
 		'$adjustment_account', '$assembly_account', $dimension_id, $dimension2_id)";

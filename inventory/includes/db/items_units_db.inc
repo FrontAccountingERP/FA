@@ -4,40 +4,40 @@ function write_item_unit($selected, $abbr, $description, $decimals)
 {
     if($selected!='')
 		$sql = "UPDATE ".TB_PREF."item_units SET
-	 	abbr = '$abbr',
-	 	name = '$description',
+	 	abbr = ".db_quote($abbr).",
+	 	name = ".db_quote($description).",
 	 	decimals = $decimals
         	WHERE 	 abbr = '$selected'";
     else
 		$sql = "INSERT INTO ".TB_PREF."item_units
-			(abbr, name, decimals) VALUES( '$abbr',
-	  		'$description', $decimals)";
-	  
-	db_query($sql,"an item unit could not be updated");	
+			(abbr, name, decimals) VALUES( ".db_quote($abbr).",
+	  		".db_quote($description).", $decimals)";
+
+	db_query($sql,"an item unit could not be updated");
 }
 
 function delete_item_unit($unit)
 {
-	$sql="DELETE FROM ".TB_PREF."item_units WHERE abbr='$unit'";	
-	
-	db_query($sql,"an unit of measure could not be deleted");	
+	$sql="DELETE FROM ".TB_PREF."item_units WHERE abbr='$unit'";
+
+	db_query($sql,"an unit of measure could not be deleted");
 }
 
 function get_item_unit($unit)
 {
-	$sql="SELECT * FROM ".TB_PREF."item_units WHERE abbr='$unit'";	
-	
+	$sql="SELECT * FROM ".TB_PREF."item_units WHERE abbr='$unit'";
+
 	$result = db_query($sql,"an unit of measure could not be retrieved");
-	
-	return db_fetch($result);	
+
+	return db_fetch($result);
 }
 
 function get_unit_descr($unit)
 {
-	$sql = "SELECT description FROM ".TB_PREF."item_units WHERE abbr='$id'";
-	
+	$sql = "SELECT description FROM ".TB_PREF."item_units WHERE abbr='$unit'";
+
 	$result = db_query($sql, "could not unit description");
-	
+
 	$row = db_fetch_row($result);
 	return $row[0];
 }

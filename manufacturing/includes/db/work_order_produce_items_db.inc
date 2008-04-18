@@ -22,7 +22,7 @@ function work_order_produce($woid, $ref, $quantity, $date_, $memo_, $close_wo)
     $date = date2sql($date_);
 
     $sql = "INSERT INTO ".TB_PREF."wo_manufacture (workorder_id, reference, quantity, date_)
-		VALUES ($woid, '$ref', $quantity, '$date')";
+		VALUES ($woid, ".db_quote($ref).", $quantity, '$date')";
 
 	db_query($sql,"A work order manufacture could not be added");
 
