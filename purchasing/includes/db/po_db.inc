@@ -64,7 +64,7 @@ function update_po(&$po_obj)
 
     /*Update the purchase order header with any changes */
     $sql = "UPDATE ".TB_PREF."purch_orders SET Comments=" . db_escape($po_obj->Comments) . ",
-		requisition_no= " db_escape(. $po_obj->requisition_no). ",
+		requisition_no= ". db_escape( $po_obj->requisition_no). ",
 		into_stock_location=" . db_escape($po_obj->Location). ",
 		ord_date='" . date2sql($po_obj->orig_order_date) . "',
 		delivery_address=" . db_escape($po_obj->delivery_address);
