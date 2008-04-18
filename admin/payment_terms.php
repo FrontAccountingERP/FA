@@ -61,17 +61,17 @@ if (isset($_POST['ADD_ITEM']) OR isset($_POST['UPDATE_ITEM']))
     	{
     		if (check_value('DaysOrFoll')) 
     		{
-    			$sql = "UPDATE ".TB_PREF."payment_terms SET terms='" . $_POST['terms'] . "',
+    			$sql = "UPDATE ".TB_PREF."payment_terms SET terms=" . db_escape($_POST['terms']) . ",
 					day_in_following_month=0,
-					days_before_due=" . $_POST['DayNumber'] . "
-					WHERE terms_indicator = '" . $selected_id . "'";
+					days_before_due=" . db_escape($_POST['DayNumber']) . "
+					WHERE terms_indicator = " .db_escape($selected_id);
     		} 
     		else 
     		{
-    			$sql = "UPDATE ".TB_PREF."payment_terms SET terms='" . $_POST['terms'] . "',
-					day_in_following_month=" . $_POST['DayNumber'] . ",
+    			$sql = "UPDATE ".TB_PREF."payment_terms SET terms=" . db_escape($_POST['terms']) . ",
+					day_in_following_month=" . db_escape($_POST['DayNumber']) . ",
 					days_before_due=0
-					WHERE terms_indicator = '" . $selected_id . "'";
+					WHERE terms_indicator = " .db_escape( $selected_id );
     		}
 
     	} 
@@ -82,15 +82,15 @@ if (isset($_POST['ADD_ITEM']) OR isset($_POST['UPDATE_ITEM']))
     		{
     			$sql = "INSERT INTO ".TB_PREF."payment_terms (terms,
 					days_before_due, day_in_following_month)
-					VALUES ('" .
-					$_POST['terms'] . "', " . $_POST['DayNumber'] . ", 0)";
+					VALUES (" .
+					db_escape($_POST['terms']) . ", " . db_escape($_POST['DayNumber']) . ", 0)";
     		} 
     		else 
     		{
     			$sql = "INSERT INTO ".TB_PREF."payment_terms (terms,
 					days_before_due, day_in_following_month)
-					VALUES ('" . $_POST['terms'] . "',
-					0, " . $_POST['DayNumber'] . ")";
+					VALUES (" . db_escape($_POST['terms']) . ",
+					0, " . db_escape($_POST['DayNumber']) . ")";
     		}
 
     	}

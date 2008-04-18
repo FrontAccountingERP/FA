@@ -36,10 +36,10 @@ if (isset($_POST['ADD_ITEM']) && can_process())
 {
 
 	$sql = "INSERT INTO ".TB_PREF."shippers (shipper_name, contact, phone, address)
-		VALUES ('" . $_POST['shipper_name'] . "', '" .
-		$_POST['contact'] . "', '" .
-		$_POST['phone'] . "', '" .
-		$_POST['address'] . "')";
+		VALUES (" . db_escape($_POST['shipper_name']) . ", " .
+		db_escape($_POST['contact']). ", " .
+		db_escape($_POST['phone']). ", " .
+		db_escape($_POST['address']) . ")";
 
 	db_query($sql,"The Shipping Company could not be added");
 	meta_forward($_SERVER['PHP_SELF']);
@@ -50,10 +50,10 @@ if (isset($_POST['ADD_ITEM']) && can_process())
 if (isset($_POST['UPDATE_ITEM']) && can_process()) 
 {
 
-	$sql = "UPDATE ".TB_PREF."shippers SET shipper_name='" . $_POST['shipper_name'] . "' ,
-		contact ='" . $_POST['contact'] . "' ,
-		phone ='" . $_POST['phone'] . "' ,
-		address ='" . $_POST['address'] . "'
+	$sql = "UPDATE ".TB_PREF."shippers SET shipper_name=" . db_escape($_POST['shipper_name']). " ,
+		contact =" . db_escape($_POST['contact']). " ,
+		phone =" . db_escape($_POST['phone']). " ,
+		address =" . db_escape($_POST['address']). "
 		WHERE shipper_id = $selected_id";
 
 	db_query($sql,"The shipping company could not be updated");

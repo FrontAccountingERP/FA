@@ -22,21 +22,21 @@ function update_company_gl_setup($debtors_act, $pyt_discount_act, $creditors_act
 		$default_dim_required)
 {
 	$sql = "UPDATE ".TB_PREF."company SET
-		debtors_act='$debtors_act', pyt_discount_act='$pyt_discount_act',
-		creditors_act='$creditors_act', grn_act='$grn_act',
-		exchange_diff_act='$exchange_diff_act',
-		purch_exchange_diff_act='$purch_exchange_diff_act',
-		retained_earnings_act='$retained_earnings_act',
-		freight_act='$freight_act',
-		default_sales_act='$default_sales_act',
-		default_sales_discount_act='$default_sales_discount_act',
-		default_prompt_payment_act='$default_prompt_payment_act',
-		default_inventory_act='$default_inventory_act',
-		default_cogs_act='$default_cogs_act',
-		default_adj_act='$default_adj_act',
-		default_inv_sales_act='$default_inv_sales_act',
-		default_assembly_act='$default_assembly_act',
-		payroll_act='$payroll_act',
+		debtors_act=".db_escape($debtors_act).", pyt_discount_act=".db_escape($pyt_discount_act).",
+		creditors_act=".db_escape($creditors_act).", grn_act=".db_escape($grn_act).",
+		exchange_diff_act=".db_escape($exchange_diff_act).",
+		purch_exchange_diff_act=".db_escape($purch_exchange_diff_act).",
+		retained_earnings_act=".db_escape($retained_earnings_act).",
+		freight_act=".db_escape($freight_act).",
+		default_sales_act=".db_escape($default_sales_act).",
+		default_sales_discount_act=".db_escape($default_sales_discount_act).",
+		default_prompt_payment_act=".db_escape($default_prompt_payment_act).",
+		default_inventory_act=".db_escape($default_inventory_act).",
+		default_cogs_act=".db_escape($default_cogs_act).",
+		default_adj_act=".db_escape($default_adj_act).",
+		default_inv_sales_act=".db_escape($default_inv_sales_act).",
+		default_assembly_act=".db_escape($default_assembly_act).",
+		payroll_act=".db_escape($payroll_act).",
 		allow_negative_stock=$allow_negative_stock,
 		po_over_receive=$po_over_receive,
 		po_over_charge=$po_over_charge,
@@ -56,27 +56,27 @@ function update_company_setup($coy_name, $coy_no, $gst_no, $tax_prd, $tax_last, 
 {
 	if ($f_year == null)
 		$f_year = 0;
-	$sql = "UPDATE ".TB_PREF."company SET coy_name='$coy_name',
-		coy_no = '$coy_no',
-		gst_no='$gst_no',
+	$sql = "UPDATE ".TB_PREF."company SET coy_name=".db_escape($coy_name).",
+		coy_no = ".db_escape($coy_no).",
+		gst_no=".db_escape($gst_no).",
 		tax_prd=$tax_prd,
 		tax_last=$tax_last,
-		postal_address ='$postal_address',
-		phone='$phone', fax='$fax',
-		email='$email',
-		coy_logo='$coy_logo',
-		domicile='$domicile',
+		postal_address =".db_escape($postal_address).",
+		phone=".db_escape($phone).", fax=".db_escape($fax).",
+		email=".db_escape($email).",
+		coy_logo=".db_escape($coy_logo).",
+		domicile=".db_escape($domicile).",
 		use_dimension=$Dimension,
 		no_item_list=$no_item_list,
 		no_customer_list=$no_customer_list,
 		no_supplier_list=$no_supplier_list,
-        custom1_name='$custom1_name',
-        custom2_name='$custom2_name',
-        custom3_name='$custom3_name',
-        custom1_value='$custom1_value',
-        custom2_value='$custom2_value',
-        custom3_value='$custom3_value',
-		curr_default='$curr_default',
+        custom1_name=".db_escape($custom1_name).",
+        custom2_name=".db_escape($custom2_name).",
+        custom3_name=".db_escape($custom3_name).",
+        custom1_value=".db_escape($custom1_value).",
+        custom2_value=".db_escape($custom2_value).",
+        custom3_value=".db_escape($custom3_value).",
+		curr_default=".db_escape($curr_default).",
 		f_year=$f_year
 		WHERE coy_code=1";
 
@@ -107,7 +107,7 @@ function add_fiscalyear($from_date, $to_date, $closed)
 	$to = date2sql($to_date);
 
 	$sql = "INSERT INTO ".TB_PREF."fiscal_year (begin, end, closed)
-		VALUES ('$from', '$to', $closed)";
+		VALUES (".db_escape($from).",".db_escape($to).", $closed)";
 
 	db_query($sql, "could not add fiscal year");
 }
@@ -117,7 +117,7 @@ function update_fiscalyear($from_date, $closed)
 	$from = date2sql($from_date);
 
 	$sql = "UPDATE ".TB_PREF."fiscal_year SET closed=$closed
-		WHERE begin='$from'";
+		WHERE begin=".db_escape($from);
 
 	db_query($sql, "could not update fiscal year");
 }
@@ -133,7 +133,7 @@ function get_fiscalyear($from_date)
 {
 	$from = date2sql($from_date);
 
-	$sql = "SELECT * FROM ".TB_PREF."fiscal_year WHERE begin='$from'";
+	$sql = "SELECT * FROM ".TB_PREF."fiscal_year WHERE begin=".db_escape($from);
 
 	$result = db_query($sql, "could not get fiscal year");
 
@@ -156,7 +156,7 @@ function delete_fiscalyear($from_date)
 	$from = date2sql($from_date);
 	begin_transaction();
 
-	$sql="DELETE FROM ".TB_PREF."fiscal_year WHERE begin='$from'";
+	$sql="DELETE FROM ".TB_PREF."fiscal_year WHERE begin=".db_escape($from);
 
 	db_query($sql, "could not delete fiscal year");
 

@@ -19,6 +19,16 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+18-Apr-2008 Janusz Dobrowolski
+! Modules admin and dimensions sealed against XSS atacks
+$ /admin/payment_terms.php
+  /admin/shipping_companies.php
+  /admin/db/company_db.inc
+  /admin/db/maintenance_db.inc
+  /admin/db/users_db.inc
+  /admin/db/voiding_db.inc
+  /dimensions/includes/dimensions_db.inc
+
 18-Apr-2008 Joe Hunt
 ! Changed db_escape function to avoid XSS attacks via js db injection
 $ /includes/db/comments_db.inc
@@ -35,7 +45,7 @@ $ /includes/db/comments_db.inc
   /manufacturing/includes/db/work_order_issues_db.inc
   /manufacturing/includes/db/work_order_produce_items_db.inc
   
-18-Apr-2008 Janusz Dobrwolski
+18-Apr-2008 Janusz Dobrowolski
 ! Changed db_escape function to avoid XSS attacks via js db injection
 $ /includes/db/connect_db.inc
 # Database inserts/updates secured against js injection
