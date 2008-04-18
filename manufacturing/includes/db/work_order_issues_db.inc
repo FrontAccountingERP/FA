@@ -25,8 +25,8 @@ function add_work_order_issue($woid, $ref, $to_work_order, $items, $location, $w
 
 	// insert the actual issue
 	$sql = "INSERT INTO ".TB_PREF."wo_issues (workorder_id, reference, issue_date, loc_code, workcentre_id)
-		VALUES ($woid, ".db_quote($ref).", '" .
-		date2sql($date_) . "', ".db_quote($location).", $workcentre)";
+		VALUES ($woid, ".db_escape($ref).", '" .
+		date2sql($date_) . "', ".db_escape($location).", $workcentre)";
 	db_query($sql,"The work order issue could not be added");
 
 	$number = db_insert_id();

@@ -4,14 +4,14 @@ function write_item_unit($selected, $abbr, $description, $decimals)
 {
     if($selected!='')
 		$sql = "UPDATE ".TB_PREF."item_units SET
-	 	abbr = ".db_quote($abbr).",
-	 	name = ".db_quote($description).",
+	 	abbr = ".db_escape($abbr).",
+	 	name = ".db_escape($description).",
 	 	decimals = $decimals
         	WHERE 	 abbr = '$selected'";
     else
 		$sql = "INSERT INTO ".TB_PREF."item_units
-			(abbr, name, decimals) VALUES( ".db_quote($abbr).",
-	  		".db_quote($description).", $decimals)";
+			(abbr, name, decimals) VALUES( ".db_escape($abbr).",
+	  		".db_escape($description).", $decimals)";
 
 	db_query($sql,"an item unit could not be updated");
 }

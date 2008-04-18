@@ -90,7 +90,7 @@ function add_stock_move($type, $stock_id, $trans_no, $location,
 	$sql = "INSERT INTO ".TB_PREF."stock_moves (stock_id, trans_no, type, loc_code,
 		tran_date, person_id, reference, qty, standard_cost, visible, price,
 		discount_percent) VALUES ('$stock_id', $trans_no, $type,
-		".db_quote($location).", '$date', '$person_id', ".db_quote($reference).", $quantity, $std_cost,
+		".db_escape($location).", '$date', '$person_id', ".db_escape($reference).", $quantity, $std_cost,
 		$show_or_hide, $price, $discount_percent)";
 
 	if ($error_msg == "")

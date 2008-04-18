@@ -3,7 +3,7 @@
 function add_item_location($loc_code, $location_name, $delivery_address, $phone, $fax, $email, $contact)
 {
 	$sql = "INSERT INTO ".TB_PREF."locations (loc_code, location_name, delivery_address, phone, fax, email, contact)
-		VALUES (".db_quote($loc_code).", ".db_quote($location_name).", ".db_quote($delivery_address).", ".db_quote($phone).", ".db_quote($fax).", ".db_quote($email).", ".db_quote($contact).")";
+		VALUES (".db_escape($loc_code).", ".db_escape($location_name).", ".db_escape($delivery_address).", ".db_escape($phone).", ".db_escape($fax).", ".db_escape($email).", ".db_escape($contact).")";
 
 	db_query($sql,"a location could not be added");
 
@@ -19,10 +19,10 @@ function add_item_location($loc_code, $location_name, $delivery_address, $phone,
 function update_item_location($loc_code, $location_name, $delivery_address, $phone, $fax, $email, $contact)
 
 {
-    $sql = "UPDATE ".TB_PREF."locations SET location_name=".db_quote($location_name).",
-    	delivery_address=".db_quote($delivery_address).",
-    	phone=".db_quote($phone).", fax=".db_quote($fax).",
-    	email=".db_quote($email).", contact=".db_quote($contact)."
+    $sql = "UPDATE ".TB_PREF."locations SET location_name=".db_escape($location_name).",
+    	delivery_address=".db_escape($delivery_address).",
+    	phone=".db_escape($phone).", fax=".db_escape($fax).",
+    	email=".db_escape($email).", contact=".db_escape($contact)."
     	WHERE loc_code = '$loc_code'";
 
 	db_query($sql,"a location could not be updated");

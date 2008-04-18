@@ -14,7 +14,7 @@ function get_reference($type, $id)
 function add_reference($type, $id, $reference)
 {
 	$sql = "INSERT INTO ".TB_PREF."refs (type, id, reference)
-		VALUES ($type, $id, " . db_quote(trim($reference)) . ")";
+		VALUES ($type, $id, " . db_escape(trim($reference)) . ")";
 
 	db_query($sql, "could not add reference entry");
 }
@@ -43,7 +43,7 @@ function find_reference($type, $reference)
 
 function save_next_reference($type, $reference)
 {
-    $sql = "UPDATE ".TB_PREF."sys_types SET next_reference=" . db_quote(trim($reference)) . " WHERE type_id = $type";
+    $sql = "UPDATE ".TB_PREF."sys_types SET next_reference=" . db_escape(trim($reference)) . " WHERE type_id = $type";
 
 	db_query($sql, "The next transaction ref for $type could not be updated");
 }

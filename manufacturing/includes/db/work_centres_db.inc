@@ -3,14 +3,14 @@
 function add_work_centre($name, $description)
 {
 	$sql = "INSERT INTO ".TB_PREF."workcentres (name, description)
-		VALUES (".db_quote($name).",".db_quote($description).")";
+		VALUES (".db_escape($name).",".db_escape($description).")";
 
 	db_query($sql, "could not add work centre");
 }
 
 function update_work_centre($type_id, $name, $description)
 {
-	$sql = "UPDATE ".TB_PREF."workcentres SET name=".db_quote($name).", description=".db_quote($description)."
+	$sql = "UPDATE ".TB_PREF."workcentres SET name=".db_escape($name).", description=".db_escape($description)."
 		WHERE id=$type_id";
 
 	db_query($sql, "could not update work centre");

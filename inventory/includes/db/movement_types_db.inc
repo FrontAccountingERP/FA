@@ -3,14 +3,14 @@
 function add_movement_type($name)
 {
 	$sql = "INSERT INTO ".TB_PREF."movement_types (name)
-		VALUES (".db_quote($name).")";
+		VALUES (".db_escape($name).")";
 
 	db_query($sql, "could not add item movement type");
 }
 
 function update_movement_type($type_id, $name)
 {
-	$sql = "UPDATE ".TB_PREF."movement_types SET name=".db_quote($name)."
+	$sql = "UPDATE ".TB_PREF."movement_types SET name=".db_escape($name)."
 			WHERE id=$type_id";
 
 	db_query($sql, "could not update item movement type");

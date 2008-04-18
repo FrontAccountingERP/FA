@@ -4,7 +4,7 @@ function add_item_category($description)
 
 {
 	$sql = "INSERT INTO ".TB_PREF."stock_category (description)
-		VALUES (".db_quote($description).")";
+		VALUES (".db_escape($description).")";
 
 	db_query($sql,"an item category could not be added");
 }
@@ -12,7 +12,7 @@ function add_item_category($description)
 function update_item_category($ItemCategory, $description)
 
 {
-	$sql = "UPDATE ".TB_PREF."stock_category SET description = ".db_quote($description)."
+	$sql = "UPDATE ".TB_PREF."stock_category SET description = ".db_escape($description)."
         WHERE category_id = '$ItemCategory'";
 
 	db_query($sql,"an item category could not be updated");
