@@ -134,15 +134,9 @@ class FrontReport extends Cpdf
 			$fontinclude = true;
 			include($locale);
 		}
-		//if ($this->rtl) // this is good for presentation only
 		if (!$own)
 		{
-			if (user_price_dec() == 3) // only for presentation of farsi
-			{
-				$this->rtl = true;
-				$path = $path_to_root . 'reporting/fonts/farsi_1.afm';
-			}
-			elseif ($style == 'italic')
+			if ($style == 'italic')
 				$path = $path_to_root . 'reporting/fonts/Helvetica-Oblique.afm';
 			elseif ($style == 'bold')
 				$path = $path_to_root . 'reporting/fonts/Helvetica-Bold.afm';

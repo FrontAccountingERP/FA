@@ -19,6 +19,11 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+19-Apr.2008 Joe Hunt
+# Bug (right to left text was done if price decimals were 3). A test sentense from a while
+  ago wasn't removed.
+$ /reporting/includes/pdf_report.inc
+
 18-Apr-2008 Janusz Dobrowolski
 # Additional checks on provisions and break point entry.
 $ /sales/manage/sales_people.php
