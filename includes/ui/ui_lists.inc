@@ -1,6 +1,8 @@
 <?php
 
 include_once($path_to_root . "/includes/banking.inc");
+include_once($path_to_root . "/includes/reserved.inc");
+include_once($path_to_root . "/includes/types.inc");
 
 define("DEFVAL", "--");
 $search_button = "<input type='submit' class='combo_submit' style='border:0;background:url($path_to_root/themes/default/images/locate.png) no-repeat;' name='%s' value='?' title='"._("Search")."'> ";

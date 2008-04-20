@@ -19,6 +19,16 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+20-Apr-2008 Janusz Dobrowolski
+# Checking uniqueness of company settings, fixed creating database with prefix 0 when none was selected.
+$ /admin/create_coy.php
+! Added missing include_once directives.
+$ /includes/ui/items_cart.inc
+  /includes/ui/ui_lists.inc
+  /includes/ui/ui_view.inc
++ Added ini default_charset unnecessary for planned ajax calls.
+$ /includes/lang/language.inc
+
 19-Apr.2008 Joe Hunt
 # Bug (right to left text was done if price decimals were 3). A test sentense from a while
   ago wasn't removed.

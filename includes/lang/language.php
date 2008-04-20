@@ -89,6 +89,9 @@ get_text::init();
 get_text::set_language($lang->code, $lang->encoding);
 //get_text::add_domain("wa", $path_to_root . "/lang");
 get_text::add_domain($lang->code, $path_to_root . "/lang");
+// Unnecessary for ajax calls. 
+// Due to bug in php 4.3.10 for this version set globally in php4.ini
+ini_set('default_charset', $_SESSION['language']->encoding);
 
 if (!function_exists("_")) 
 {

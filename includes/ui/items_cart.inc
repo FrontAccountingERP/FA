@@ -1,5 +1,6 @@
 <?php
 
+include_once($path_to_root . "/inventory/includes/prefs/sysprefs.inc");
 include_once($path_to_root . "/inventory/includes/inventory_db.inc");
 
 class items_cart 

@@ -1,6 +1,7 @@
 <?php
 
 include_once($path_to_root . "/admin/db/voiding_db.inc");
+include_once($path_to_root . "/includes/types.inc");
 
 //--------------------------------------------------------------------------------------
 
