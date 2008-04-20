@@ -30,7 +30,21 @@ else
 
 function check_data()
 {
-	return true;
+	global $db_connections, $tb_pref_counter;
+
+	foreach($db_connections as $id=>$con) {
+	  if ($_POST['host'] == $con['host'] && $_POST['dbname'] == $con['dbname']) {
+		if ($_POST['tbpref'] == $con['tbpref']) {
+			display_error(_("This database settings are already used by another company."));
+			return false;
+		}
+		if ($_POST['tbpref'] == 0 || $con['tbpref'] == '') {
+			display_error(_("You cannot have table set without prefix together with prefixed sets in the same database."));
+			return false;
+		}
+	  }
+	}
+	  return true;
 }
 
 //---------------------------------------------------------------------------------------------
@@ -68,9 +82,10 @@ function handle_submit()
 	$db_connections[$id]['dbname'] = $_POST['dbname'];
 	if (isset($_GET['ul']) && $_GET['ul'] == 1)
 	{
-		if (is_numeric($_POST['tbpref']) && $_POST['tbpref'] == 1)
+		if (is_numeric($_POST['tbpref']))
 		{
-			$db_connections[$id]['tbpref'] = $tb_pref_counter."_";
+			$db_connections[$id]['tbpref'] = $_POST['tbpref'] == 1 ?
+			  $tb_pref_counter."_" : '';
 			$new = true;
 		}
 		else if ($_POST['tbpref'] != "")
