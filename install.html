@@ -10,21 +10,22 @@
 
 <body>
 
-<div><strong><span style="font-size: 20pt;"><span style="color: rgb(204, 102, 0); font-style: italic;">Front</span>Accounting Installation</span></strong></div>
+<div><strong><span style="FONT-SIZE: 20pt"><span style="COLOR: rgb(204,102,0); FONT-STYLE: italic"  >Front</span>Accounting Installation</span></strong></div>
 
 <h2>Pre-requisites</h2>
 
 
-<ul style="margin-top: 0pt;" type="disc">
+<ul style="MARGIN-TOP: 0pt" type="disc">
 
 
-  <li>A working HTTP web server eg. <em><strong>Apache, IIS</strong></em>. </li>
+  <li>A working HTTP web server eg. <em><strong>Apache, IIS</strong></em>. 
 
 
-  <li><strong><em>PHP</em></strong> installed on the web server. </li>
+  <li><strong><em>PHP</em></strong> installed on the web server. 
 
 
-  <li>A working <strong><em>MySQL</em></strong> server - with <strong><em>innodb</em></strong> tables enabled (see notes below) </li>
+  <li>A working <strong><em>MySQL</em></strong> server - with <strong><em>innodb</em></strong> tables 
+  enabled (see notes below) 
 
 
   <li><strong><em>Adobe Acrobat Reader</em></strong> - for viewing the PDF reports before printing them out. </li>
@@ -39,19 +40,19 @@
 <ul>
 
 
-  <li>One critical aspect of the PHP installation is the setting of <strong><em>session.auto_start</em></strong> in the php.ini file. Some rpm distributions of PHP have the default setting of <strong><em>session.auto_start = 1</em></strong>.
+  <li>One critical aspect of the PHP installation is the setting of <strong><em>session.auto_start</em></strong> in the php.ini file. Some rpm distributions of PHP have the default setting of <strong><em>session.auto_start =   1</em></strong>.
 This starts a new session at the beginning of each script. However,
 this makes it impossible to instantiate any class objects that the
 system relies on. Classes are used extensively by this system. When
 sessions are required they are started by the system and this setting
-of <strong><em>session.auto_start</em></strong> can and should be set to 0. </li>
+of <strong><em>session.auto_start</em></strong> 
+  can and should be set to 0. 
 
 
-  <li><strong><em>Innodb</em></strong> tables must be enabled in the
-MySQL server. These tables allow database transactions which are a
-critical component of the software. This is enabled by default in the
-newer versions of MySQL. If you need to enable it yourself, consult the
-MySQL manual. </li>
+  <li><strong><em>Innodb</em></strong> tables must be enabled in the MySQL 
+  server. These tables allow database transactions which are a critical 
+  component of the software. This is enabled by default in the newer versions of 
+  MySQL. If you need to enable it yourself, consult the MySQL manual. 
 
 
   <li>FrontAccounting is implemented and tested with MySQL. Generally
@@ -68,10 +69,12 @@ way at the moment. </li>
 <ul>
 
 
-  <li>You must obviously have downloaded the project archive to be reading this file. </li>
+  <li>You must obviously have downloaded the project 
+  archive to be reading this file. 
 
 
-  <li>All the files inside this archive should be copied to a directory under the web server root directory. </li>
+  <li>All the files inside this archive should be copied to 
+  a directory under the web server root directory. 
 
 
   <li>For example, create a folder called <strong>/account</strong>, and extract the archive into this folder. </li>
@@ -86,17 +89,17 @@ way at the moment. </li>
 <ol>
 
 
-  <li>If you have the option to create multiple databases on your host, create one, fi. <strong>frontacc</strong>,
-otherwise write down the database name for your account. At the same
-time look up the username and password for the database. You will need
-these informations during the wizard install. </li>
+  <li>If you have the option to create multiple databases on your host, create one, fi. <strong>frontacc</strong>, 
+  otherwise write down the database name for your account. At the same time look 
+  up the username and password for the database. You will need these 
+  informations during the wizard install. 
 
 
-  <li>Enter <strong><em>your_url/account/install</em></strong> (or
-whatever directory you entered). This will run the install wizard,
-setup a drill company and populating with initial data. You can later
-on create your own real company. It is a good idea to get familiar with
-the system before starting your own company.&nbsp;</li>
+  <li>Enter <strong><em>your_url/account/install</em></strong> (or whatever 
+  directory you entered). This will run the install wizard, setup a drill 
+  company and populating with initial data. You can later on create your own 
+  real company. It is a good idea to get familiar with the system before 
+  starting your own company.&nbsp; 
   <li>After successfully install, remove or rename your install directory for safety reasons. You don't need it any more.</li>
 
 
@@ -106,7 +109,7 @@ the system before starting your own company.&nbsp;</li>
 <h2>Installation Steps (manuel, for advanced users, not recommended)</h2>
 
 
-<p><br />
+<p><br >
 
 </p>
 
@@ -116,25 +119,27 @@ the system before starting your own company.&nbsp;</li>
 
   <li>
 
-    <h3>Creating the Database</h3>
+    <h3>Creating the Database<img height="16" alt="gylle" 
+  hspace=0 src="themes/default/images/cal.gif" width=16 border=0>  </h3>
 
 
 
     <ol>
 
 
-      <li>NOTE : As FrontAccounting is still heavily under development,
-the database structure will ALWAYS change between releases, so if you
-have a database that you created for a previous release of
-FrontAccounting, it WILL NOT WORK after installing a new release. You may run the script, update_db.php and
-select the appropriate script, f.i. alter.sql (from release 1.XX to release 2.0).
-</li>
+      <li>NOTE : As FrontAccounting is still heavily under 
+    development, the database structure will ALWAYS change between releases, so 
+    if you have a database that you created for a previous release of 
+    FrontAccounting, it WILL NOT WORK after installing a new release. You may 
+    run the script, update_db.php and select the appropriate script, f.i. 
+    alter.sql (from release 1.XX to release 2.0). 
 
 
-      <li>We strongly suggest using a GUI to manage your database(s) and database users. If you don&rsquo;t have any, download <a href="http://www.phpmyadmin.net/"><strong>phpMyAdmin</strong></a>. </li>
+      <li>We strongly suggest using a GUI to manage your database(s) and database users. If you don’t have any, download <a href="http://www.phpmyadmin.net/"><strong>phpMyAdmin</strong></a>. 
 
 
-      <li>Create a database with a name of your choice. The default in config_db.php is &lsquo;<strong><em>frontacc</em></strong>&rsquo;, but of course you can select whatever name you desire. </li>
+      <li>Create a database with a name of your choice. The default in config_db.php is ‘<strong><em>frontacc</em></strong>’, but of course you can select 
+    whatever name you desire. 
 
 
       <li>Populate the database you have created. There are two scripts
@@ -144,7 +149,9 @@ are provided to populate the database (both inside the folder /sql) :
         <ol>
 
 
-          <li><strong><em>en_US-demo.sql</em></strong>. This has a minimal amount of demonstration data set up so that transactions can be tried to see how the system works. </li>
+          <li><strong><em>en_US-demo.sql</em></strong>. This has a minimal 
+      amount of demonstration data set up so that transactions can be tried to 
+      see how the system works. 
 
 
           <li><strong><em>en_US-new.sql</em></strong>. This script has
@@ -157,22 +164,16 @@ to use. </li>
         </ol>
 
 
-      </li>
-
-
-      <li>Now that the database is created you will need to set up a
-database user to access this database. DO NOT USE THE USER
-&lsquo;ROOT&rsquo;. Set up a new user and give that user full
-privileges over the database &lsquo;frontacc&rsquo;.</li>
+      <li>Now that the database is created you will need to 
+    set up a database user to access this database. DO NOT USE THE USER ‘ROOT’. 
+    Set up a new user and give that user full privileges over the database 
+    ‘frontacc’. 
       <li>After successfully install, remove or rename your install directory <strong><em>your_url/account/install</em></strong> (or
 whatever directory you entered) for safety reasons. You don't need it any more.</li>
 
 
 
     </ol>
-
-
-  </li>
 
 
   <li>
@@ -184,39 +185,44 @@ whatever directory you entered) for safety reasons. You don't need it any more.<
     <ol>
 
 
-      <li><strong><em>config_db.php</em></strong> contains connection
-information for the database. These must be set to your local settings
-or you will not be able to access FrontAccounting. </li>
+      <li><strong><em>config_db.php</em></strong> contains connection 
+    information for the database. These must be set to your local settings or 
+    you will not be able to access FrontAccounting. 
 
 
-      <li>FrontAccounting allows multiple connections, you can enter as
-many connections as you have separate entities (most people will use
-only one). </li>
+      <li>FrontAccounting allows multiple connections, you 
+    can enter as many connections as you have separate entities (most people 
+    will use only one). 
 
 
-      <li><strong>$db_connections</strong> is an array of connections &ndash; for each connection : </li>
+      <li><strong>$db_connections</strong> is an array of connections – 
+    for each connection : 
 
 
-      <li>&ldquo;<strong>name</strong>&rdquo; is the name of the connection, this is the name that will be displayed to the user </li>
+      <li>“<strong>name</strong>” is the 
+    name of the connection, this is the name that will be displayed to the user 
 
 
-      <li>&ldquo;<strong>host</strong>&rdquo; is the computer IP
-address or name where the database is. The default is localhost
-assuming that the web server is also the sql server. </li>
+      <li>“<strong>host</strong>” is the 
+    computer IP address or name where the database is. The default is localhost 
+    assuming that the web server is also the sql server. 
 
 
-      <li>&ldquo;<strong>dbuse</strong>r&rdquo; is the user name under
-which the database should be accessed. NB, again, do not use the user
-ROOT. A user with appropriate privileges must be set up. </li>
+      <li>“<strong>dbuse</strong>r” is 
+    the user name under which the database should be accessed. NB, again, do not 
+    use the user ROOT. A user with appropriate privileges must be set up. 
 
 
-      <li>&ldquo;<strong>dbpassword</strong>&rdquo; is the password for &ldquo;dbuser&rdquo;. You would have entered this when you created &ldquo;dbuser&rdquo;. </li>
+      <li>“<strong>dbpassword</strong>” 
+    is the password for “dbuser”. You would have entered this when you created 
+    “dbuser”. 
 
 
-      <li>&ldquo;<strong>dbname</strong>&rdquo; is the name of the database. The provided scripts use the name OpenAccounting. </li>
+      <li>“<strong>dbname</strong>” is 
+    the name of the database. The provided scripts use the name OpenAccounting. 
 
 
-      <li>&ldquo;<strong>tbpref</strong>&rdquo; is the table prefix for
+      <li>“<strong>tbpref</strong>” is the table prefix for
 the tables. If you only have access to one database, you must use table
 prefix to separate the companies. Table prefix is set by a table prefix
 counter inside config_db.php, fi. 0_ for the first company.</li>
@@ -238,19 +244,20 @@ counter inside config_db.php, fi. 0_ for the first company.</li>
 <ol>
 
 
-  <li>Pleae ensure that the folder <strong>/company/0</strong> on the server is <strong>writable</strong>. </li>
+  <li>Pleae ensure that the folder <strong>/company/0</strong> on the server is <strong>writable</strong>. 
 
 
-  <li>Open a browser and enter the URL for the web server directory where FrontAccounting is installed. </li>
+  <li>Open a browser and enter the URL for the web server 
+  directory where FrontAccounting is installed. 
 
 
-  <li>Enter the user name:&nbsp; '<strong>admin</strong>' </li>
+  <li>Enter the user name:&nbsp; '<strong>admin</strong>' 
 
 
-  <li>Enter the password: '<strong>password</strong>' </li>
+  <li>Enter the password: '<strong>password</strong>' 
 
 
-  <li>(NB : enter without quotation marks). </li>
+  <li>(NB : enter without quotation marks). 
 
 
   <li>
@@ -289,12 +296,15 @@ implemented and we strongly recommend you to use this approach, see <strong><em>
 <ol>
 
 
-  <li>If FrontAccounting is installed locally, you may have the <strong><em>session save path</em></strong> not set correctly. Normally this is set in your php.ini (for Windows). The entry is called <strong><em>session.save_path</em></strong>. Make sure this is set to a directory that actually exists. The default is set to /tmp, which may not be valid. </li>
+  <li>If FrontAccounting is installed locally, you may have the <strong><em>session save path</em></strong> not set correctly. Normally this is set in your php.ini (for Windows). The entry is called <strong><em>session.save_path</em></strong>. Make sure this is set to 
+  a directory that actually exists. The default is set to /tmp, which may not be 
+  valid. 
 
 
-  <li>If you are installing FrontAccounting onto a shared server, you
-may have to set the session save path within FrontAccounting. At the
-top of config.php (in release 2.0 this has moved to /includes/session.inc) you will find this line : </li>
+  <li>If you are installing FrontAccounting onto a shared 
+  server, you may have to set the session save path within FrontAccounting. At 
+  the top of config.php (in release 2.0 this has moved to /includes/session.inc) 
+  you will find this line : 
 
 
   <li>Uncomment this line and set the path to a directory that exists
