@@ -274,7 +274,7 @@ class FrontReport extends Cpdf
 			include($path_to_root . "reporting/includes/doctext.inc");
 		}
 
-		include($path_to_root . "reporting/includes/header2a.inc");
+		include($path_to_root . "reporting/includes/header2.inc");
 
 		$this->row = $temp;
 	}

@@ -1,9 +1,9 @@
 <?php
 
-include_once($path_to_root . "/inventory/includes/prefs/sysprefs.inc");
+include_once($path_to_root . "/includes/prefs/sysprefs.inc");
 include_once($path_to_root . "/inventory/includes/inventory_db.inc");
 
-class items_cart 
+class items_cart
 {
 
 	var $line_items;
@@ -14,7 +14,7 @@ class items_cart
 	var	$order_id;
 
 	var $editing_item, $deleting_item;
-	
+
 	var $from_loc;
 	var $to_loc;
 	var $tran_date;
@@ -40,8 +40,8 @@ class items_cart
 				$standard_cost, $description);
 			$this->clear_editing_flags();
 			return true;
-		} 
-		else 
+		}
+		else
 		{
 			// shouldn't come here under normal circumstances
 			display_db_error("unexpected - adding an invalid item or null quantity", "", true);
@@ -73,14 +73,14 @@ class items_cart
 		}
 	}
 
-	function count_items() 
+	function count_items()
 	{
 		return count($this->line_items);
 	}
 
 	function check_qoh($location, $date_, $reverse=false)
 	{
-		foreach ($this->line_items as $line_item) 
+		foreach ($this->line_items as $line_item)
 		{
 			$item_ret = $line_item->check_qoh($location, $date_, $reverse);
 			if ($item_ret != null)
@@ -92,16 +92,16 @@ class items_cart
 
 	function add_gl_item($code_id, $dimension_id, $dimension2_id, $amount, $reference, $description=null)
 	{
-		if (isset($code_id) && $code_id != "" && isset($amount) && isset($dimension_id)  && 
+		if (isset($code_id) && $code_id != "" && isset($amount) && isset($dimension_id)  &&
 			isset($dimension2_id))
 		{
-			$this->gl_items[$this->gl_item_count] = new gl_item($this->gl_item_count, 
+			$this->gl_items[$this->gl_item_count] = new gl_item($this->gl_item_count,
 				$code_id, $dimension_id, $dimension2_id, $amount, $reference, $description);
 			$this->gl_item_count++;
 			$this->clear_editing_flags();
 			return true;
-		} 
-		else 
+		}
+		else
 		{
 			// shouldn't come here under normal circumstances
 			display_db_error("unexpected - adding an invalid item or null quantity", "", true);
@@ -132,12 +132,12 @@ class items_cart
 		}
 	}
 
-	function count_gl_items() 
+	function count_gl_items()
 	{
 		return count($this->gl_items);
 	}
 
-	function gl_items_total() 
+	function gl_items_total()
 	{
 		$total = 0;
 		foreach ($this->gl_items as $gl_item)
@@ -145,10 +145,10 @@ class items_cart
 		return $total;
 	}
 
-	function gl_items_total_debit() 
+	function gl_items_total_debit()
 	{
 		$total = 0;
-		foreach ($this->gl_items as $gl_item) 
+		foreach ($this->gl_items as $gl_item)
 		{
 			if ($gl_item->amount > 0)
 				$total += $gl_item->amount;
@@ -156,10 +156,10 @@ class items_cart
 		return $total;
 	}
 
-	function gl_items_total_credit() 
+	function gl_items_total_credit()
 	{
 		$total = 0;
-		foreach ($this->gl_items as $gl_item) 
+		foreach ($this->gl_items as $gl_item)
 		{
 			if ($gl_item->amount < 0)
 				$total += $gl_item->amount;
@@ -169,7 +169,7 @@ class items_cart
 
 	// ------------ common functions
 
-	function clear_items() 
+	function clear_items()
 	{
     	unset($this->line_items);
 		$this->line_items = array();
@@ -181,27 +181,27 @@ class items_cart
 		$this->clear_editing_flags();
 	}
 
-	function clear_editing_flags() 
+	function clear_editing_flags()
 	{
 		$this->editing_item = $this->deleting_item = 0;
 	}
 
-	function get_editing_item() 
+	function get_editing_item()
 	{
 		return $this->editing_item;
 	}
 
-	function get_deleting_item() 
+	function get_deleting_item()
 	{
 		return $this->deleting_item;
 	}
 
-	function is_editing_item($index) 
+	function is_editing_item($index)
 	{
 		return ($this->editing_item > 0) && ($this->editing_item == $index);
 	}
 
-	function is_deleting_item($index) 
+	function is_deleting_item($index)
 	{
 		return ($this->deleting_item > 0) && ($this->deleting_item == $index);
 	}
@@ -210,7 +210,7 @@ class items_cart
 
 //--------------------------------------------------------------------------------------------
 
-class line_item 
+class line_item
 {
 	var $stock_id;
 	var $item_description;
@@ -261,7 +261,7 @@ class line_item
 					return null;
 
 				$qoh = get_qoh_on_date($this->stock_id, $location, $date_);
-        		if ($quantity + $qoh < 0) 
+        		if ($quantity + $qoh < 0)
         		{
         			return $this;
         		}
@@ -274,7 +274,7 @@ class line_item
 
 //---------------------------------------------------------------------------------------
 
-class gl_item 
+class gl_item
 {
 
 	var $index;
@@ -285,7 +285,7 @@ class gl_item
 	var $reference;
 	var $description;
 
-	function gl_item($index, $code_id, $dimension_id, $dimension2_id, $amount, $reference, 
+	function gl_item($index, $code_id, $dimension_id, $dimension2_id, $amount, $reference,
 		$description=null)
 	{
 		//echo "adding $index, $code_id, $dimension_id, $amount, $reference<br>";

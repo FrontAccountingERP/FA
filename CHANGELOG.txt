@@ -19,7 +19,14 @@ Legend:
 ! -> Note
 $ -> Affected files
 
-23-Apr-2008
+24-Apr-2008 Joe Hunt
+# Wrong include file path in /includes/ui/items_cart.inc changed /inventory/includes/prefs/sysprefs.inc to
+  /includes/prefs/sysprefs.inc
+$ /includes/ui/items_cart.inc  
+# Wrong include file in /reporting/includes/pdf_report.inc. Changed header2a.inc to header2.inc
+$ /reporting/includes/pdf_report.inc
+
+23-Apr-2008 Joe Hunt
 ! Removed the content of function header2 in pdf_report.inc to a separate file, header2.inc.
   It will make it easier to design your own document layouts.
 $ /reporting/includes/pdf_report.inc
