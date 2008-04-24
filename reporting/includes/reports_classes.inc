@@ -85,7 +85,13 @@ class Report
 	}
 	function getDisplay() 
 	{
-		global $path_to_root, $use_date_picker;
+		global $comp_path, $path_to_root, $use_date_picker;
+
+	        $rep_file = $comp_path.'/'.user_company().
+		     "/reporting/rep".$this->id.".php";	 
+		if (!file_exists($rep_file))
+		    $rep_file = $path_to_root ."/reporting/rep".$this->id.".php";
+		    
 		$st = "
 <script language='javascript'>
 	function displayReport_" . $this->id . "() {
@@ -98,7 +104,7 @@ class Report
 
 		window.open('','REP_WINDOW','toolbar=no,scrollbar=no,resizable=yes,menubar=no');
 		document.forms[0].target='REP_WINDOW';
-		document.forms[0].action= '" . $path_to_root . "/reporting/rep" . $this->id . ".php';
+		document.forms[0].action= '$rep_file';
 		document.forms[0].submit();
 	}
 	function checkDate(pObj) {

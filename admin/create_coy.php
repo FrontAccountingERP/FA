@@ -11,7 +11,7 @@ include_once($path_to_root . "/includes/ui.inc");
 
 page(_("Create/Update Company"));
 
-$comp_subdirs = array('images', 'pdf_files', 'backup','js_cache');
+$comp_subdirs = array('images', 'pdf_files', 'backup','js_cache', 'reporting');
 
 //---------------------------------------------------------------------------------------------
 
