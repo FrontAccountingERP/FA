@@ -20,6 +20,11 @@ Legend:
 $ -> Affected files
 
 24-Apr-2008 Janusz Dobrowolski
++ Added new per company directory for customized versions of report definition files repXXX.php, checked before using system default file.
+$ /company/0/reporting (added new directory)
+  /company/0/reporting/index.php
+  /admin/create_coy.php
+  /reporting/includes/reports_classes.inc
 # Warnings turned off in case of charset not supported by htmlspecialchars().
 $ /includes/db/connect_db.inc
 # Added content type encoding header
