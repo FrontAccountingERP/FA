@@ -19,6 +19,12 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+24-Apr-2008 Janusz Dobrowolski
+# Warnings turned off in case of charset not supported by htmlspecialchars().
+$ /includes/db/connect_db.inc
+# Added content type encoding header
+$ /includes/page/header.inc
+
 24-Apr-2008 Joe Hunt
 # Wrong include file path in /includes/ui/items_cart.inc changed /inventory/includes/prefs/sysprefs.inc to
   /includes/prefs/sysprefs.inc
