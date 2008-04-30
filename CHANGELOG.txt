@@ -19,6 +19,12 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+30-Apr-2008 Janusz Dobrowolski
+# Fixed price update when changing item in sales order.
+$ /includes/ui/ui_lists.inc
+  /js/inserts.js
+  /sales/includes/ui/sales_order_ui.inc
+
 24-Apr-2008 Janusz Dobrowolski
 + Added new per company directory for customized versions of report definition files repXXX.php, checked before using system default file.
 $ /company/0/reporting (added new directory)

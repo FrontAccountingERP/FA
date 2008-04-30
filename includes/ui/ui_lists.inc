@@ -643,12 +643,10 @@ function stock_items_list($name, $selected_id, $all_option=false, $submit_on_cha
 	$result = db_query($sql);
 
 
-	if ($submit_on_change==true)
-		echo "<select name='$name' onchange='this.form.submit();'>";
-	else if ($extra != "")
-		echo "<select name='$name' $extra>";
-	else
-		echo "<select name='$name'>";
+    echo "<select name='$name'".
+	    ($submit_on_change ? " onchange='this.form.submit();'" : '').
+	    ($extra=='' ? '' : " $extra").
+	">";
 
 	if (($all_option == true))
 	{

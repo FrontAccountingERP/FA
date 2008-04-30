@@ -159,7 +159,7 @@ function display_order_header(&$order, $editable, $date_text, $display_tax_group
 	echo "<table>";
 
 	$customer_error = "";
-		$change_prices = 0;
+	$change_prices = 0;
 
 	if (isset($order) && !$editable)
 	{
@@ -248,22 +248,21 @@ function display_order_header(&$order, $editable, $date_text, $display_tax_group
 		echo "</td><td>"; // outer table
 	}
 
-	if( $order->sales_type != $_POST['sales_type']) {
+	if ($order->sales_type != $_POST['sales_type']) {
 		$myrow = get_sales_type($_POST['sales_type']);
 		$order->set_sales_type($myrow['id'], $myrow['sales_type'],
 		$myrow['tax_included']);
 		$change_prices = 1;
 	}
 
-		if($change_prices!=0)
-		{
+//	if ($change_prices != 0) {
 		foreach ($order->line_items as $line_no=>$item) {
 			$line = &$order->line_items[$line_no];
 			$line->price = get_price($line->stock_id, $order->customer_currency,
 				$order->sales_type);
 		//		$line->discount_percent = $order->default_discount;
 		}
-	}
+//	}
 
 	echo "<table height='5'>";
 	if($editable)
@@ -335,7 +334,7 @@ function sales_order_item_controls(&$order, &$rowcounter, $line_no=-1)
 		else
 		{
 		text_cells(null, "StockID2", '', 12, 10, "", "", "class='combo' rel='stock_id'"/* onblur='this.form.submit();'"*/);
-		stock_items_list_cells(null, 'stock_id', null, false, false, "class='combo' rel='StockID2'");
+		stock_items_list_cells(null, 'stock_id', null, false, true, "class='combo' rel='StockID2'");
 		}
 		$item_info = get_item_edit_info($_POST['stock_id']);
 		$_POST['units'] = $item_info["units"];

@@ -55,12 +55,14 @@ var inserts = {
 			var len = select.length;
 			var ac = this.value;
 			var txt;
+			var was = select.selectedIndex;
 			select.options[select.selectedIndex].selected = false;
 			for (i = 0; i < len; i++) {
 //			  txt = select.options[i].text;
 			  txt = select.options[i].value;
 			  if (txt.indexOf(ac) >= 0) {
 				select.options[i].selected = true;
+				select._changed = was!=i;
 				break;
 			  }
 			}
@@ -68,8 +70,8 @@ var inserts = {
 		  element.onblur = function() {
 			  var button = document.getElementsByName(this.name+'_button')[0];
 			  var select = document.getElementsByName(this.getAttribute('rel'))[0];
-//			  var val = select.options[select.selectedIndex].text;
-			  var val = select.options[select.selectedIndex].value; TODO
+//			  var val = select.options[select.selectedIndex].text;  TODO
+			  var val = select.options[select.selectedIndex].value;
 			  if (this.value != "")
 				  this.value = val;
 			  return true;
@@ -82,6 +84,7 @@ var inserts = {
 				val = this.options[this.selectedIndex].value;
 				box.value = val; 
 				this.size = 1;
+				if (this._changed) this.form.submit();
 				return true;
 			 }
 	},
