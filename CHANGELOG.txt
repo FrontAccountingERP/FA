@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+30-Apr-2008 Joe Hunt
+# Fixed price update also in purchase order
+$ /purchasing/includes/ui/po_ui.inc
+
 30-Apr-2008 Janusz Dobrowolski
 # Fixed price update when changing item in sales order.
 $ /includes/ui/ui_lists.inc

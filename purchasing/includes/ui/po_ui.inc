@@ -166,7 +166,7 @@ function display_po_items(&$order, $editable=true)
 
    	$th = array(_("Item Code"), _("Item Description"), _("Quantity"), _("Unit"),
    		_("Required Delivery Date"), _("Price"), _("Line Total"));
-	
+
 	if (count($order->line_items)) $th[] = '';
    	table_header($th);
 
@@ -304,7 +304,7 @@ function po_item_controls(&$order, $stock_id=null)
 		else
 		{
 			text_cells(null, "StockID2", "", 12, 10, "", "", "class='combo' rel='stock_id' onblur='submit()'");
-			stock_purchasable_items_list_cells(null, 'stock_id', $_POST['stock_id'], false, false, "class='combo' rel='StockID2'");
+			stock_purchasable_items_list_cells(null, 'stock_id', $_POST['stock_id'], false, true, "class='combo' rel='StockID2'");
 		}
     	$item_info = get_item_edit_info($_POST['stock_id']);
 		$_POST['units'] = $item_info["units"];
