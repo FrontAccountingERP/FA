@@ -19,6 +19,13 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+09-May-2008 Joe Hunt
+! Due to differences in Javascript the script update_db.php had to be changed.
+! New fields, base_sales in 0_company and factor in 0_sales_types affects the default chart of accounts.
+$ /update_db.php
+  /sql/en_US-new.sql
+  /sql/en_US-demo.sql
+  
 09-May-2008 Janusz Dobrowolski
 # Automatic calculation of not set item prices from home currency and base sales type settings.
 $ /admin/company_preferences.php

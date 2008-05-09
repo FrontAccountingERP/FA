@@ -1,15 +1,40 @@
 <?php
-//ini_set("display_errors", "on");
+ini_set("display_errors", "on");
 $path_to_root = ".";
 include_once($path_to_root. "/admin/db/maintenance_db.inc");
 include_once($path_to_root. "/includes/db/connect_db.inc");
-include_once($path_to_root. "/includes/ui/ui_view.inc");
-include_once($path_to_root. "/includes/ui/ui_input.inc");
 
 $js = get_js_png_fix();
 $js .= get_js_set_focus("user");
 $image = $path_to_root."/themes/default/images/logo_frontaccounting.png";
 $title = "Update All Company Databases";
+
+function get_js_png_fix()
+{
+	$js = "<script type=\"text/javascript\">\n"
+		. "function fixPNG(myImage)\n"
+		. "{\n"
+		. " var arVersion = navigator.appVersion.split(\"MSIE\")\n"
+		. " var version = parseFloat(arVersion[1])\n"
+    	. " if ((version >= 5.5) && (version < 7) && (document.body.filters))\n"
+    	. " {\n"
+       	. "  var imgID = (myImage.id) ? \"id='\" + myImage.id + \"' \" : \"\"\n"
+	   	. "  var imgClass = (myImage.className) ? \"class='\" + myImage.className + \"' \" : \"\"\n"
+	   	. "  var imgTitle = (myImage.title) ?\n"
+		. "    \"title='\" + myImage.title  + \"' \" : \"title='\" + myImage.alt + \"' \"\n"
+	   	. "  var imgStyle = \"display:inline-block;\" + myImage.style.cssText\n"
+	   	. "  var strNewHTML = \"<span \" + imgID + imgClass + imgTitle\n"
+        . "    + \" style=\\\"\" + \"width:\" + myImage.width\n"
+        . "    + \"px; height:\" + myImage.height\n"
+        . "    + \"px;\" + imgStyle + \";\"\n"
+        . "    + \"filter:progid:DXImageTransform.Microsoft.AlphaImageLoader\"\n"
+        . "    + \"(src=\'\" + myImage.src + \"\', sizingMethod='scale');\\\"></span>\"\n"
+	   	. "  myImage.outerHTML = strNewHTML\n"
+    	. " }\n"
+		. "}\n"
+		. "</script>\n";
+	return $js;
+}
 
 function get_js_set_focus($name)
 {
@@ -108,15 +133,17 @@ if (isset($_POST["submit"]))
 }
 if (!isset($_POST['passwd']))
 	$_POST['passwd'] = "";
+if (!isset($_POST['user']))
+	$_POST['user'] = "";
 
 echo "<form enctype='multipart/form-data' method='post' action='".$_SERVER['PHP_SELF']."'>\n";
 
 echo "<table align='center' width='50%' cellpadding=3 border=1 bordercolor='#cccccc' style='border-collapse: collapse'>\n";
 
-text_row_ex("Database User", "user", 20);
-label_row("Password", "<input name='passwd' type='password' value='".$_POST['passwd']."' />");
-label_row("Upload Script", "<input name='uploadfile' type='file'>");
-submit_row("submit", "Update");
+echo "<tr><td>Database User</td><td><input type='text' name='user' value='".$_POST['user']."' size='20' /></td></tr>";
+echo "<tr><td>Password</td><td><input name='passwd' type='password' value='".$_POST['passwd']."' /></td></tr>";
+echo "<tr><td>Upload Script</td><td><input name='uploadfile' type='file' /></td></tr>";
+echo "<tr><td>&nbsp;</td><td><input type='submit' class='inputsubmit' name='submit' value='Update' /></td></tr>";
 
 echo "</table>\n";;
 

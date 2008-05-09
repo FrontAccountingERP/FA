@@ -210,6 +210,7 @@ CREATE TABLE `0_company` (
   `no_item_list` tinyint(1) NOT NULL default '0',
   `no_customer_list` tinyint(1) NOT NULL default '0',
   `no_supplier_list` tinyint(1) NOT NULL default '0',
+  `base_sales` int(11) NOT NULL default '-1',
   PRIMARY KEY  (`coy_code`)
 ) TYPE=MyISAM ;
 
@@ -668,6 +669,7 @@ CREATE TABLE `0_sales_types` (
   `id` int(11) NOT NULL auto_increment,
   `sales_type` char(50) NOT NULL default '',
   `tax_included` int(1) NOT NULL default '0',
+  `factor` double NOT NULL default '1',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `sales_type` (`sales_type`)
 ) TYPE=MyISAM AUTO_INCREMENT=3 ;
@@ -1178,7 +1180,7 @@ INSERT INTO `0_comments` VALUES ('40', '2', '0000-00-00', 'Another project');
 
 ### Data of table `0_company` ###
 
-INSERT INTO `0_company` VALUES ('1', 'Drill Company Inc.', '987654321', '123123123', '1', '1', 'N/A', '202-122320', '202-18889123', 'delta@delta.com', 'logo_frontaccounting.jpg', 'DownTown', 'USD', '1500', '4250', '2630', '1430', '4260', '4220', '2050', '3800', '3000', '3000', '3200', '1420', '4010', '4210', '3000', '1410', '5000', '', '', '', '', '', '', '0', '10', '10', '1000', '20', '20', '30', '1', '6', '0', '0', '0');
+INSERT INTO `0_company` VALUES ('1', 'Drill Company Inc.', '987654321', '123123123', '1', '1', 'N/A', '202-122320', '202-18889123', 'delta@delta.com', 'logo_frontaccounting.jpg', 'DownTown', 'USD', '1500', '4250', '2630', '1430', '4260', '4220', '2050', '3800', '3000', '3000', '3200', '1420', '4010', '4210', '3000', '1410', '5000', '', '', '', '', '', '', '0', '10', '10', '1000', '20', '20', '30', '1', '6', '0', '0', '0', -1);
 
 ### Data of table `0_credit_status` ###
 
@@ -1751,8 +1753,8 @@ INSERT INTO `0_sales_orders` VALUES ('21', '1', '0', '4', '6', '', NULL, '2008-0
 
 ### Data of table `0_sales_types` ###
 
-INSERT INTO `0_sales_types` VALUES ('1', 'Retail', '1');
-INSERT INTO `0_sales_types` VALUES ('2', 'Wholesale', '0');
+INSERT INTO `0_sales_types` VALUES ('1', 'Retail', '1', 1);
+INSERT INTO `0_sales_types` VALUES ('2', 'Wholesale', '0', 1);
 
 ### Data of table `0_salesman` ###
 

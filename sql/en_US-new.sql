@@ -248,6 +248,7 @@ CREATE TABLE IF NOT EXISTS `0_company` (
   `no_item_list` tinyint(1) NOT NULL default '0',
   `no_customer_list` tinyint(1) NOT NULL default '0',
   `no_supplier_list` tinyint(1) NOT NULL default '0',
+  `base_sales` int(11) NOT NULL default '-1',
   PRIMARY KEY  (`coy_code`)
 ) TYPE=MyISAM;
 
@@ -812,6 +813,7 @@ CREATE TABLE IF NOT EXISTS `0_sales_types` (
   `id` int(11) NOT NULL auto_increment,
   `sales_type` char(50) NOT NULL default '',
   `tax_included` int(1) NOT NULL default '0',
+  `factor` double NOT NULL default '1',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `sales_type` (`sales_type`)
 ) TYPE=MyISAM  AUTO_INCREMENT=3 ;
@@ -1329,7 +1331,7 @@ INSERT INTO `0_chart_types` VALUES(52, 'Financials', 4, -1);
 -- Dumping data for table `0_company`
 --
 
-INSERT INTO `0_company` VALUES(1, 'Company name', '', '', 1, 1, 'N/A', '', '', '', '', '', 'USD', '1500', '4250', '2630', '1430', '4260', '4220', '2050', '3800', '3000', '3000', '3200', '1420', '4010', '4210', '3000', '1410', '5000', '', '', '', '', '', '', 0, 10, 10, 1000, 20, 20, 30, 1, 1, 0, 0, 0);
+INSERT INTO `0_company` VALUES(1, 'Company name', '', '', 1, 1, 'N/A', '', '', '', '', '', 'USD', '1500', '4250', '2630', '1430', '4260', '4220', '2050', '3800', '3000', '3000', '3200', '1420', '4010', '4210', '3000', '1410', '5000', '', '', '', '', '', '', 0, 10, 10, 1000, 20, 20, 30, 1, 1, 0, 0, 0, -1);
 
 --
 -- Dumping data for table `0_credit_status`
@@ -1390,8 +1392,8 @@ INSERT INTO `0_salesman` VALUES(1, 'Sales Person', '', '', '', 5, 1000, 4);
 -- Dumping data for table `0_sales_types`
 --
 
-INSERT INTO `0_sales_types` VALUES(1, 'Retail', 0);
-INSERT INTO `0_sales_types` VALUES(2, 'Wholesale', 0);
+INSERT INTO `0_sales_types` VALUES(1, 'Retail', 0, 1);
+INSERT INTO `0_sales_types` VALUES(2, 'Wholesale', 0, 1);
 
 --
 -- Dumping data for table `0_shippers`
