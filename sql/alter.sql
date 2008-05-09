@@ -16,8 +16,8 @@
 -- ALTER TABLE
 -- 
 
+ALTER TABLE `0_company` ADD `base_sales` INT( 11 ) DEFAULT '-1' NOT NULL AFTER `no_supplier_list` ;
 ALTER TABLE `0_sales_types` ADD `factor` DOUBLE DEFAULT '1' NOT NULL AFTER `tax_included` ;
-ALTER TABLE `0_sales_types` ADD `base` TINYINT(1) DEFAULT '0' NOT NULL AFTER `factor` ;
 
 DROP TABLE IF EXISTS `0_item_units`; 
 CREATE TABLE IF NOT EXISTS `0_item_units` (
