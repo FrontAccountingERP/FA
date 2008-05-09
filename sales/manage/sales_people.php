@@ -161,9 +161,9 @@ text_row_ex(_("Sales person name:"), 'salesman_name', 30);
 text_row_ex(_("Telephone number:"), 'salesman_phone', 20);
 text_row_ex(_("Fax number:"), 'salesman_fax', 20);
 text_row_ex(_("Email:"), 'salesman_email', 40);
-percent_row(_("Provision"), 'provision');
+percent_row(_("Provision").':', 'provision');
 amount_row(_("Break Pt.:"), 'break_pt');
-percent_row(_("Provision")." 2", 'provision2');
+percent_row(_("Provision")." 2:", 'provision2');
 end_table(1);
 
 submit_add_or_update_center(!isset($selected_id));
