@@ -52,7 +52,7 @@ function update_company_gl_setup($debtors_act, $pyt_discount_act, $creditors_act
 function update_company_setup($coy_name, $coy_no, $gst_no, $tax_prd, $tax_last, $postal_address, $phone, $fax, $email,
 		$coy_logo, $domicile, $Dimension, $custom1_name, $custom2_name, $custom3_name,
 		$custom1_value, $custom2_value, $custom3_value, $curr_default, $f_year, $no_item_list, $no_customer_list,
-		$no_supplier_list)
+		$no_supplier_list, $base_sales)
 {
 	if ($f_year == null)
 		$f_year = 0;
@@ -77,7 +77,8 @@ function update_company_setup($coy_name, $coy_no, $gst_no, $tax_prd, $tax_last, 
         custom2_value=".db_escape($custom2_value).",
         custom3_value=".db_escape($custom3_value).",
 		curr_default=".db_escape($curr_default).",
-		f_year=$f_year
+		f_year=$f_year,
+		base_sales=$base_sales
 		WHERE coy_code=1";
 
 	db_query($sql, "The company setup could not be updated ");
@@ -161,6 +162,15 @@ function delete_fiscalyear($from_date)
 	db_query($sql, "could not delete fiscal year");
 
 	commit_transaction();
+}
+
+function get_base_sales_type()
+{
+	$sql = "SELECT base_sales FROM ".TB_PREF."company WHERE coy_code=1";
+	
+	$result = db_query($sql, "could not get base sales type");
+	$myrow = db_fetch($result);
+	return $myrow[0];
 }
 
 

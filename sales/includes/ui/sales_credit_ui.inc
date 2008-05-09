@@ -208,8 +208,9 @@ function credit_edit_item_controls(&$order, $rowcounter, $line_no=-1)
 		$_POST['units'] = $item_info["units"];
 
    		$_POST['qty'] = qty_format(0);
-		$_POST['price'] = get_price($_POST['stock_id'],
-		     $order->customer_currency, $order->sales_type);
+		$_POST['price'] = price_format(get_price($_POST['stock_id'], $order->customer_currency,
+		    $order->sales_type, $order->price_factor, $order->document_date));
+
 		// default to the customer's discount %
 		$_POST['Disc'] = percent_format($order->default_discount * 100);
 	}

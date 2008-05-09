@@ -1276,25 +1276,26 @@ function credit_status_list_row($label, $name, $selected_id)
 
 //-----------------------------------------------------------------------------------------------
 
-function sales_types_list($name, $selected_id, $submit_on_change=false)
+function sales_types_list($name, $selected_id, $submit_on_change=false, $special_option=null)
 {
 	simple_codeandname_list("SELECT id, sales_type FROM ".TB_PREF."sales_types",
-		$name, $selected_id, false, null, false, $submit_on_change);
+		$name, $selected_id, 
+		isset($special_option), $special_option, true, $submit_on_change);
 }
 
-function sales_types_list_cells($label, $name, $selected_id, $submit_on_change=false)
+function sales_types_list_cells($label, $name, $selected_id, $submit_on_change=false, $special_option=null)
 {
 	if ($label != null)
 		echo "<td>$label</td>\n";
 	echo "<td>";
-	sales_types_list($name, $selected_id, $submit_on_change);
+	sales_types_list($name, $selected_id, $submit_on_change, $special_option);
 	echo "</td>\n";
 }
 
-function sales_types_list_row($label, $name, $selected_id, $submit_on_change=false)
+function sales_types_list_row($label, $name, $selected_id, $submit_on_change=false, $special_option=null)
 {
 	echo "<tr>\n";
-	sales_types_list_cells($label, $name, $selected_id, $submit_on_change);
+	sales_types_list_cells($label, $name, $selected_id, $submit_on_change, $special_option);
 	echo "</tr>\n";
 }
 

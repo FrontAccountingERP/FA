@@ -362,7 +362,8 @@ function read_sales_order($order_no, &$order)
 	$order->set_branch($myrow["branch_code"], $myrow["tax_group_id"],
 	  $myrow["tax_group_name"], $myrow["contact_phone"], $myrow["contact_email"]);
 
-	$order->set_sales_type($myrow["sales_type_id"], $myrow["sales_type"], $myrow["tax_included"]);
+	$order->set_sales_type($myrow["sales_type_id"], $myrow["sales_type"], 
+	    $myrow["tax_included"], 0); // no default price calculations on edit
 
 	$order->set_location($myrow["from_stk_loc"], $myrow["location_name"]);
 
@@ -451,6 +452,7 @@ function get_customer_to_order($customer_id) {
 		  .TB_PREF."debtors_master.sales_type AS salestype, "
 		  .TB_PREF."sales_types.sales_type, "
 		  .TB_PREF."sales_types.tax_included, "
+		  .TB_PREF."sales_types.factor, "
 		  .TB_PREF."debtors_master.curr_code, "
 		  .TB_PREF."debtors_master.discount
 		FROM ".TB_PREF."debtors_master, "

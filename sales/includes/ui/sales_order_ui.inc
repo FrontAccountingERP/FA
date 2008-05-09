@@ -45,7 +45,8 @@ function get_customer_details_to_order(&$order, $customer_id, $branch_id)
 	$order->set_customer($customer_id, $name, $myrow['curr_code'], $myrow['discount']);
 
 	// the sales type determines the price list to be used by default
-	$order->set_sales_type($myrow['salestype'], $myrow['sales_type'], $myrow['tax_included']);
+	$order->set_sales_type($myrow['salestype'], $myrow['sales_type'], $myrow['tax_included'],
+	    $myrow['factor']);
 
 //	if ($order->Branch != 0)
 	{
@@ -215,6 +216,7 @@ function display_order_header(&$order, $editable, $date_text, $display_tax_group
 				$_POST['delivery_address'] = $order->delivery_address;
 				$_POST['phone'] = $order->phone;
 				$_POST['sales_type'] = $order->sales_type;
+				$_POST['factor'] = $order->price_factor;
 
 				// change prices if necessary
 				// what about discount in template case?
@@ -251,18 +253,18 @@ function display_order_header(&$order, $editable, $date_text, $display_tax_group
 	if ($order->sales_type != $_POST['sales_type']) {
 		$myrow = get_sales_type($_POST['sales_type']);
 		$order->set_sales_type($myrow['id'], $myrow['sales_type'],
-		$myrow['tax_included']);
+		$myrow['tax_included'], $myrow['factor']);
 		$change_prices = 1;
 	}
 
-//	if ($change_prices != 0) {
+	if ($change_prices != 0) {
 		foreach ($order->line_items as $line_no=>$item) {
 			$line = &$order->line_items[$line_no];
 			$line->price = get_price($line->stock_id, $order->customer_currency,
-				$order->sales_type);
+				$order->sales_type, $order->price_factor, $order->document_date);
 		//		$line->discount_percent = $order->default_discount;
 		}
-//	}
+	}
 
 	echo "<table height='5'>";
 	if($editable)
@@ -341,7 +343,8 @@ function sales_order_item_controls(&$order, &$rowcounter, $line_no=-1)
 
 		$_POST['qty'] = qty_format(1);
 		$_POST['price'] = price_format(get_price ($_POST['stock_id'],
-			$order->customer_currency, $order->sales_type));
+			$order->customer_currency, $order->sales_type, 
+			$order->price_factor, $order->document_date));
 		// default to the customer's discount %
 		$_POST['Disc'] = percent_format($order->default_discount * 100);
 	}

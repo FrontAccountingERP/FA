@@ -1,16 +1,20 @@
 <?php
 
-function add_sales_type($name, $tax_included)
+function add_sales_type($name, $tax_included, $factor)
 {
-	$sql = "INSERT INTO ".TB_PREF."sales_types (sales_type,tax_included) VALUES (".db_escape($name).",'$tax_included')";
+	// maximum one base price list
+	  clear_base_sales_type();
+
+	$sql = "INSERT INTO ".TB_PREF."sales_types (sales_type,tax_included,factor) VALUES (".db_escape($name).",'$tax_included',$factor)";
 		
 	db_query($sql, "could not add sales type");		
 }
 
-function update_sales_type($id, $name, $tax_included)
+function update_sales_type($id, $name, $tax_included, $factor)
 {
+
 	$sql = "UPDATE ".TB_PREF."sales_types SET sales_type = ".db_escape($name).",
-	tax_included =$tax_included WHERE id = $id";
+	tax_included =$tax_included, factor=$factor WHERE id = $id";
 	
 	db_query($sql, "could not update sales type");			
 }

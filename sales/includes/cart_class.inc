@@ -54,7 +54,7 @@ class cart
 	var $tax_group_id;
 	var $tax_group_name;
 	var $tax_group_array = null; // saves db queries
-
+	var $price_factor;	 // ditto for price calculations
 	//-------------------------------------------------------------------------
 	//
 	//  $trans_no==0 => open new/direct document
@@ -189,12 +189,12 @@ class cart
 		$this->tax_group_array = get_tax_group_items_as_array($tax_group_id);
 	}
 
-	function set_sales_type($sales_type, $sales_name, $tax_included=0)
+	function set_sales_type($sales_type, $sales_name, $tax_included=0, $factor)
 	{
-	    $old_tax_inc = $this->tax_included;
 	    $this->sales_type = $sales_type;
 	    $this->sales_type_name = $sales_name;
 	    $this->tax_included = $tax_included;
+	    $this->price_factor = $factor;
 	}
 
 	function set_location($id, $name)
@@ -335,6 +335,12 @@ class cart
 		$taxes = get_tax_for_items($items, $prices, $shipping_cost,
 		  $this->tax_group_id, $this->tax_included,  $this->tax_group_array);
 
+    // Adjustment for swiss franken, we always have 5 rappen = 1/20 franken
+    if ($this->customer_currency == 'CHF') {
+			$val = $taxes['1']['Value'];
+      $val1 = (floatval((intval(round(($val*20),0)))/20));
+			$taxes['1']['Value'] = $val1;
+		} 
 		return $taxes;
 	}
 

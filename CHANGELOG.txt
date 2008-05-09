@@ -19,6 +19,24 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+09-May-2008 Janusz Dobrowolski
+# Automatic calculation of not set item prices from home currency and base sales type settings.
+$ /admin/company_preferences.php
+  /admin/db/company_db.inc
+  /includes/ui/ui_lists.inc
+  /sales/includes/cart_class.inc
+  /sales/includes/sales_db.inc
+  /sales/includes/db/sales_order_db.inc
+  /sales/includes/db/sales_types_db.inc
+  /sales/includes/ui/sales_credit_ui.inc
+  /sales/includes/ui/sales_order_ui.inc
+  /sales/manage/sales_types.php
+  /sql/alter.sql
+# Fixed dev bug blocking change of price on order entry.
+$ /sales/includes/ui/sales_order_ui.inc
+# Small display fix
+$ /sales/manage/sales_people.php
+
 30-Apr-2008 Joe Hunt
 # Fixed price update also in purchase order
 $ /purchasing/includes/ui/po_ui.inc

@@ -31,7 +31,7 @@ if (isset($_POST['submit']) && $_POST['submit'] != "")
 			$_POST['use_dimension'], $_POST['custom1_name'], $_POST['custom2_name'], $_POST['custom3_name'],
 			$_POST['custom1_value'], $_POST['custom2_value'], $_POST['custom3_value'],
 			$_POST['curr_default'], $_POST['f_year'], check_value('no_item_list'), check_value('no_customer_list'),
-			check_value('no_supplier_list'));
+			check_value('no_supplier_list'), $_POST['base_sales']);
 
 		display_notification_centered(_("Company setup has been updated."));
 	}
@@ -57,6 +57,7 @@ $_POST['email']  = $myrow["email"];
 $_POST['coy_logo']  = $myrow["coy_logo"];
 $_POST['domicile']  = $myrow["domicile"];
 $_POST['use_dimension']  = $myrow["use_dimension"];
+$_POST['base_sales']  = $myrow["base_sales"];
 $_POST['no_item_list']  = $myrow["no_item_list"];
 $_POST['no_customer_list']  = $myrow["no_customer_list"];
 $_POST['no_supplier_list']  = $myrow["no_supplier_list"];
@@ -90,6 +91,8 @@ text_row_ex(_("Company Logo:"), 'coy_logo', 25, 55);
 text_row_ex(_("Domicile:"), 'domicile', 25, 55);
 
 number_list_row(_("Use Dimensions:"), 'use_dimension', null, 0, 2);
+sales_types_list_row(_("Base for auto price calculations:"), 'base_sales', $_POST['base_sales'], false,
+    _('No base price list') );
 
 check_row(_("No Item List"), 'no_item_list', $_POST['no_item_list']);
 check_row(_("No Customer List"), 'no_customer_list', $_POST['no_customer_list']);

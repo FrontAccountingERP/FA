@@ -46,27 +46,67 @@ function add_gl_trans_customer($type, $type_no, $date_, $account, $dimension, $d
 
 //----------------------------------------------------------------------------------------
 
-function get_price ($stock_id, $currency, $sales_type_id)
+function get_price ($stock_id, $currency, $sales_type_id, $factor, $date=null)
 {
+	if ($date == null)
+	    $date = Today();
+	    
 	$sql = "SELECT ".TB_PREF."prices.price
 		FROM ".TB_PREF."prices
-		WHERE ".TB_PREF."prices.stock_id = '" . $stock_id . "'
-		  AND ".TB_PREF."prices.sales_type_id = " . $sales_type_id . "
-		  AND ".TB_PREF."prices.curr_abrev = '$currency'";
+		WHERE ".TB_PREF."prices.stock_id = '" . $stock_id . "' "
+		." AND ".TB_PREF."prices.sales_type_id = " . $sales_type_id
+		." AND ".TB_PREF."prices.curr_abrev = '$currency'";
 
-	$result = db_query($sql, "There was a problem retrieving the pricing information for the part $stock_id for customer");
+	$msg = "There was a problem retrieving the pricing information for the part $stock_id for customer";
+	$result = db_query($sql, $msg);
 
-	if (db_num_rows($result) != 0)
+	if (db_num_rows($result) != 0) 
 	{
-		/*There is a price from one of the above so return that */
 		$myrow = db_fetch_row($result);
 		return $myrow[0];
 	}
-	else
-	{
-		return 0;
-	}
+	if ($factor == 0) return 0; // auto price calculations off
 
+	$base_id = get_base_sales_type();
+        $home_curr = get_company_currency();
+
+    // get all prices which we can use to guess the price.
+    // alternative is make up to 2 additional sql queries
+	$sql = "SELECT ".TB_PREF."prices.price,".TB_PREF."prices.curr_abrev,
+		".TB_PREF."prices.sales_type_id
+		FROM ".TB_PREF."prices
+		WHERE ".TB_PREF."prices.stock_id = '" . $stock_id . "' "
+		." AND (".TB_PREF."prices.sales_type_id = " . $sales_type_id
+		." OR ".TB_PREF."prices.sales_type_id = " . $base_id.")"
+		." AND (".TB_PREF."prices.curr_abrev = '$currency'"
+		." OR ".TB_PREF."prices.curr_abrev = '$home_curr')";
+
+	$result = db_query($sql, $msg);
+
+	$prices = array();
+	while($myrow = db_fetch($result)) 
+	{
+	    $prices[$myrow['sales_type_id']][$myrow['curr_abrev']] = $myrow['price'];
+	}
+	
+	$rate = round(get_exchange_rate_from_home_currency($currency, $date),
+	    user_exrate_dec());
+	$price = 0.00;
+	
+	if (isset($prices[$sales_type_id][$home_curr])) 
+	{
+	    $price = $prices[$sales_type_id][$home_curr] / $rate;
+	}
+	if (isset($prices[$base_id][$currency])) 
+	{
+	    $price =$prices[$base_id][$currency] * $factor;
+	}
+	if (isset($prices[$base_id][$home_curr])) 
+	{
+	    $price =$prices[$base_id][$home_curr] * $factor / $rate;
+	}
+	
+	return round($price, user_price_dec());
 }
 
 //-----------------------------------------------------------------------------
@@ -179,7 +219,7 @@ function read_sales_trans($doc_type, $trans_no, &$cart)
 		else
 			$cart->trans_no = array($trans_no[0]=>$myrow["version"]);
 
-		$cart->set_sales_type($myrow["tpe"], $myrow["sales_type"], $myrow["tax_included"]);
+		$cart->set_sales_type($myrow["tpe"], $myrow["sales_type"], $myrow["tax_included"],0);
 
 		$cart->set_customer($myrow["debtor_no"], $myrow["DebtorName"],
 			$myrow["curr_code"], $myrow["discount"]);
