@@ -19,6 +19,11 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+14-May-2008 Joe Hunt
+# When no_item_list or no_customer_list or no_supplier_list was checked in company setup the listboxes were filled with all
+  the records when there were no search values.
+$ /includes/ui/ui_lists.inc
+
 09-May-2008 Joe Hunt
 ! Due to differences in Javascript the script update_db.php had to be changed.
 ! New fields, base_sales in 0_company and factor in 0_sales_types affects the default chart of accounts.

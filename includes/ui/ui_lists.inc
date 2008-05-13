@@ -43,15 +43,17 @@ function supplier_list($name, $selected_id, $all_option=false, $submit_on_change
 		}
 		elseif ($val != "" && $val != DEFVAL)
 		{
-			$supplier_sql .= "WHERE supp_name LIKE '%{$val}%'";
+			$supplier_sql .= "WHERE supp_name LIKE '%{$val}%' ORDER BY supp_name";
 		}
+		else
+			$supplier_sql .= "ORDER BT supp_name LIMIT 1";
 
 		echo "<input type='text' name='$edit_name' size='8' maxlength='50' value='$val' onblur='this.form.$edit_button.click();'> ";
 
 		echo sprintf($search_button, $edit_button);
 	}
 
-	$supplier_result = db_query($supplier_sql." ORDER BY supp_name");
+	$supplier_result = db_query($supplier_sql);
 
 	if ($submit_on_change==true)
 		echo "<select name='$name' onchange='this.form.submit();'>";
@@ -149,16 +151,17 @@ function customer_list($name, $selected_id, $all_option=false, $submit_on_change
 			$customer_sql .= "WHERE debtor_no=$selected_id";
 		}
 		elseif ($val != "" && $val != DEFVAL)
-			{
-				$customer_sql .= "WHERE name LIKE '%{$val}%'";
-			}
+		{
+			$customer_sql .= "WHERE name LIKE '%{$val}%' ORDER BY name";
+		}
+		else
+			$customer_sql .= "ORDER BY name LIMIT 1";
 		echo "<input type='text' name='$edit_name' size='8' maxlength='50' value='$val' onblur='this.form.$edit_button.click();'> ";
 
 		echo sprintf($search_button, $edit_button);
 	}
 
-
-	$customer_result = db_query($customer_sql." ORDER BY name");
+	$customer_result = db_query($customer_sql);
 
 	if ($submit_on_change==true)
 		echo "<select name='$name' onchange='this.form.submit();'>";
@@ -631,11 +634,12 @@ function stock_items_list($name, $selected_id, $all_option=false, $submit_on_cha
 		}
 		elseif ($val != "" && $val != DEFVAL)
 		{
-				$sql .= " AND
-					(stock_id LIKE '%{$val}%' OR ".TB_PREF."stock_category.description LIKE '%{$val}%' OR "
-					.TB_PREF."stock_master.description LIKE '%{$val}%')";
+			$sql .= " AND
+				(stock_id LIKE '%{$val}%' OR ".TB_PREF."stock_category.description LIKE '%{$val}%' OR "
+				.TB_PREF."stock_master.description LIKE '%{$val}%')";
 		}
-
+		else
+			$sql .= " LIMIT 1";
 		echo "<input type='text' name='$edit_name' size='8' maxlength='50' value='$val' onblur='this.form.$edit_button.click();'> ";
 
 		echo sprintf($search_button, $edit_button);
@@ -894,6 +898,7 @@ function stock_purchasable_items_list($name, &$selected_id,	$all_option=false, $
 				AND mb_flag !='M' ";
 	if (get_company_pref('no_item_list'))
 	{
+		global $search_button;
 		$edit_name = $name."_edit";
 		$edit_button = $name."_button";
 
@@ -915,10 +920,11 @@ function stock_purchasable_items_list($name, &$selected_id,	$all_option=false, $
 				(stock_id LIKE '%{$val}%' OR ".TB_PREF."stock_category.description LIKE '%{$val}%' OR "
 				.TB_PREF."stock_master.description LIKE '%{$val}%')";
 		}
+		else
+			$sql .= "LIMIT 1";
+		echo "<input type='text' name='$edit_name' size='8' maxlength='50' value='$val' onblur='this.form.$edit_button.click();'> ";
 
-		echo "<input type='text' name='$edit_name' size='8' maxlength='50' value='$val' > ";
-
-		echo "<input type='submit' class='inputsubmit' name='$edit_button' value='?'> ";
+		echo sprintf($search_button, $edit_button);
 	}
 
 	$result = db_query($sql);
@@ -1279,7 +1285,7 @@ function credit_status_list_row($label, $name, $selected_id)
 function sales_types_list($name, $selected_id, $submit_on_change=false, $special_option=null)
 {
 	simple_codeandname_list("SELECT id, sales_type FROM ".TB_PREF."sales_types",
-		$name, $selected_id, 
+		$name, $selected_id,
 		isset($special_option), $special_option, true, $submit_on_change);
 }
 
