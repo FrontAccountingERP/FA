@@ -46,7 +46,7 @@ function supplier_list($name, $selected_id, $all_option=false, $submit_on_change
 			$supplier_sql .= "WHERE supp_name LIKE '%{$val}%' ORDER BY supp_name";
 		}
 		else
-			$supplier_sql .= "ORDER BT supp_name LIMIT 1";
+			$supplier_sql .= "ORDER BY supp_name LIMIT 1";
 
 		echo "<input type='text' name='$edit_name' size='8' maxlength='50' value='$val' onblur='this.form.$edit_button.click();'> ";
 
