@@ -52,6 +52,8 @@ function supplier_list($name, $selected_id, $all_option=false, $submit_on_change
 
 		echo sprintf($search_button, $edit_button);
 	}
+	else
+		$supplier_sql .= "ORDER BY supp_name";
 
 	$supplier_result = db_query($supplier_sql);
 
@@ -160,6 +162,8 @@ function customer_list($name, $selected_id, $all_option=false, $submit_on_change
 
 		echo sprintf($search_button, $edit_button);
 	}
+	else
+		$customer_sql .= "ORDER BY name";
 
 	$customer_result = db_query($customer_sql);
 
