@@ -31,8 +31,9 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 	}
 	else
 	{
+		error_reporting(E_USER_WARNING|E_USER_ERROR|E_USER_NOTICE);
 		// ini_alter("error_reporting","E_COMPILE_ERROR|E_ERROR|E_CORE_ERROR|E_PARSE");
-		ini_set("display_errors", "Off");
+		ini_set("display_errors", "On");
 	}
 	// Main Title
 	$app_title = "FrontAccounting";
@@ -40,7 +41,7 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 	$version 		= "2.0 Beta";
 
 	// Build for development purposes
-	$build_version 	= "22";
+	$build_version 	= "23";
 
 	// Powered by
 	$power_by 		= "FrontAccounting";
@@ -170,7 +171,7 @@ if(isset($_SESSION["wa_current_user"])) {
 	// static js files path
 	$js_path = $path_to_root.'/js/';
 	// standard external js scripts included in all files
-	$js_static = array('behaviour.js');
+	$js_static = array('JsHttpRequest.js', 'behaviour.js', 'utils.js', 'inserts.js');
 	// additional js source included in header
 	$js_lib = $js_userlib = array();
 
