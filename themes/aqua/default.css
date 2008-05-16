@@ -271,6 +271,12 @@ div.tabs a:hover {
 	padding: 1px 4px; 
 }
 
+.ajaxsubmit {
+	font-size: 11px;
+	border: 1px #0066cc solid;
+	padding: 1px 4px;
+}
+
 .oddrow {
 	background-color: #eeeeee;
 }

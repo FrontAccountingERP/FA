@@ -277,6 +277,12 @@ div.tabs a:hover {
 	padding: 1px 4px; 
 }
 
+.ajaxsubmit {
+	font-size: 11px;
+	border: 1px solid #0066cc;
+	padding: 1px 4px; 
+}
+
 .oddrow {
 	background-color: #ffffff;
 }
@@ -354,4 +360,79 @@ input.amount {
    border-style:none;
    text-decoration:underline;
    cursor: pointer;
+}
+
+.navibutton[disabled] {
+  color:#808080;
+  cursor: auto;
+}
+.navibutton {
+   color:#0000FF;
+   padding: 3px;
+   background-color:transparent;
+   border-style:none;
+   text-decoration:underline;
+   cursor: pointer;
+}
+
+.navibar {
+    padding: 3px;
+    border: 1px solid #cccccc;
+    border-collapse: collapse;
+    background-color: #788da1;
+}
+
+
+.listsubmit {
+    display: none;
+}
+
+ul.ajaxtabs{
+	padding: 3px 0 0 0; 
+	margin: 3px 3px 0 3px;
+	font: 12px Tahoma,Verdana;
+	font-weight: bold;
+}
+ 
+ul.ajaxtabs li{
+	list-style: none;
+	margin: 0;
+	display: inline;
+}
+
+ul.ajaxtabs li input{
+    background-color: #dee7ec;
+/*	background-repeat: repeat-x;
+	background-position: top; */
+	padding: 3px 8px;
+	margin: 0px;
+	border-top: 1px solid #8cacbb;
+	border-right: 1px solid #8cacbb;
+	border-bottom: none;
+	border-left: none;
+	font-weight: bold;
+}
+
+ul.ajaxtabs li input:hover{
+	border-top: 1px solid #8cacbb;
+	color:#FFFFFF;
+}
+div.spaceBox{
+	background-color: #8cacbb;
+	height:8px;
+	border-bottom: 1px solid #8cacbb;
+	border-left: 1px solid #8cacbb;
+	border-right:1px solid #8cacbb;
+	margin: 0 3px 0px 3px
+}
+
+div.contentBox{
+	border: 1px solid #8cacbb;
+	margin: 0 3px 3px 3px
+}
+
+ul.ajaxtabs li input.current, ul.ajaxtabs li input.current:hover{
+	border-left: 1px solid #8cacbb;
+	background-color: #8cacbb;
+	color:#FFFFFF;
 }
