@@ -19,6 +19,49 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+16-May-2008 Janusz Dobrowolski
++ Rewritten errors/messages handling, unified for ajax/user/php errors
+$ /includes/errors.inc
+  /includes/main.inc
+  /includes/ui/ui_msgs.inc
++ Framework extended for ajax functionality, javascript code organization improvements.
+$ /config.php
+  /includes/JsHttpRequest.php (new file)
+  /includes/ajax.inc (new file)
+  /includes/current_user.inc
+  /includes/session.inc
+  /includes/lang/language.php
+  /includes/page/footer.inc
+  /includes/page/header.inc
+  /includes/ui/ui_controls.inc
+  /includes/ui/ui_input.inc
+  /includes/ui/ui_view.inc
+  /js/JsHttpRequest.js (new file)
+  /js/allocate.js (new file)
+  /js/utils.js (new file)
+  /js/behaviour.js
+  /js/inserts.js
+  /themes/aqua/images (new dir)
+  /themes/aqua/images/button_ok.png (new file)
+  /themes/aqua/images/locate.png (new file)
+  /themes/cool/images (new dir)
+  /themes/coll/images/button_ok.png (new file)
+  /themes/coll/images/locate.png (new file)
+  /themes/default/images/button_ok.png (new file)
+  /themes/default/images/progressbar.gif (new file)
+  /themes/default/images/progressbar1.gif (new file)
+  /themes/default/images/progressbar2.gif (new file)
+  /themes/default/default.css
+  /themes/aqua/default.css
+  /themes/cool/default.css
+! Payment allocation js functions moved to allocate.js
+$ /purchasing/allocations/supplier_allocate.php 
+  /sales/allocations/customer_allocate.php
+! Some initializations moved from sales_order_ui.inc
+$ /sales/includes/cart_class.inc
++ Added javascript compression routine
+$ /includes/main.inc
+
 14-May-2008 Joe Hunt
 # Minor bugs in the former fixing.
 $ /includes/ui/ui_lists.inc
