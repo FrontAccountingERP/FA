@@ -13,7 +13,7 @@ $js = "";
 if ($use_popup_windows)
 	$js .= get_js_open_window(900, 500);
 
-add_js_allocate();
+add_js_file('allocate.js');
 
 page(_("Allocate Customer Payment or Credit Note"), false, false, "", $js);
 
