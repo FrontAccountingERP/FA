@@ -165,7 +165,9 @@ document.getElementsBySelector = function(selector) {
       continue; // Skip to next token
     }
     // Code to deal with attribute selectors
-    if (token.match(/^(\w*)\[(\w+)([=~\|\^\$\*]?)=?"?([^\]"]*)"?\]$/)) {
+/* Original reg expression  /^(\w*)\[(\w+)([=~\|\^\$\*]?)=?"?([^\]"]*)"?\]$/ 
+    was replaced by new RegExp() cuz compressor fault */
+    if (token.match(new RegExp('^(\\w*)\\[(\\w+)([=~\\|\\^\\$\\*]?)=?"?([^\\]"]*)"?\\]$'))) {
       var tagName = RegExp.$1;
       var attrName = RegExp.$2;
       var attrOperator = RegExp.$3;
