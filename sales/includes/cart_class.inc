@@ -67,7 +67,6 @@ class cart
 		$this->sales_type = "";
 		$this->trans_type = 30;
 		$this->read($type, $trans_no, $view );
-
 	}
 
 	//-------------------------------------------------------------------------
@@ -126,11 +125,20 @@ class cart
 				$this->trans_type = $type;
 				$this->trans_no = 0;
 				// set new sales document defaults here
-				$this->customer_id = '';
+				if (get_global_customer() != reserved_words::get_all())
+				  $this->customer_id = get_global_customer();
+				else
+				  $this->customer_id = '';
 				$this->document_date = Today();
 				if (!is_date_in_fiscalyear($this->document_date))
 					$this->document_date = end_fiscalyear();
 				$this->reference = references::get_next($this->trans_type);
+				if ($type == 10)
+				  $this->due_date =
+					get_invoice_duedate($this->customer_id, $this->document_date);
+				else
+				  $this->due_date =
+					add_days($this->document_date, 10); // FIX this should be in company prefs
 			}
 	}
 
@@ -189,7 +197,7 @@ class cart
 		$this->tax_group_array = get_tax_group_items_as_array($tax_group_id);
 	}
 
-	function set_sales_type($sales_type, $sales_name, $tax_included=0, $factor)
+	function set_sales_type($sales_type, $sales_name, $tax_included=0, $factor=0)
 	{
 	    $this->sales_type = $sales_type;
 	    $this->sales_type_name = $sales_name;
@@ -227,7 +235,6 @@ class cart
 
 	function update_cart_item($line_no, $qty, $price, $disc)
 	{
-
 		$this->line_items[$line_no]->quantity = $qty;
 		$this->line_items[$line_no]->qty_dispatched = $qty;
 		$this->line_items[$line_no]->price = $price;
