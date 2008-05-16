@@ -7,9 +7,9 @@ function page_footer($no_menu=false, $is_index=false)
 	global $version, $allow_demo_mode;
 	global $app_title, $power_url, $power_by;
 
-	if (isset($_GET['ajax'])) return;
+  if(in_ajax()) return;// just for speed up
 
-	if (function_exists('hyperlink_back'))
+  if (function_exists('hyperlink_back'))
 		hyperlink_back();
 	if ($no_menu == false) 
 	{

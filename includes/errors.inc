@@ -1,25 +1,96 @@
 <?php
 
+$messages = array(); // container for system messages
+$before_box = ''; // temporary container for output html data before error box
+
+$msg_colors = array( 
+	E_USER_ERROR => array('bg'=>'#ffcccc', 'txt'=>'#dd2200', 'bd'=>'#cc3300'),
+    E_USER_WARNING => array('bg'=>'#ffcccc', 'txt'=>'#dd2200', 'bd'=>'#cc3300'),
+    E_USER_NOTICE => array('bg'=>'#ccffcc', 'txt'=>'#007700', 'bd'=>'#33cc00'));
+
+//-----------------------------------------------------------------------------
+//    Error handler - collects all php/user messages for
+//    display in message box.
+// FIX: fatal errors ?
+
+function error_handler($errno, $errstr, $file, $line) {
+    global $messages;
+
+	// error_reporting==0 when messages are set off with @ 
+	if ($errno & error_reporting())
+		$messages[] = array($errno, $errstr, $file, $line);
+
+    return true;
+}
+//------------------------------------------------------------------------------
+//	Formats system messages before insert them into message <div>
+// FIX center is unused now
+function fmt_errors($center=true) {
+    global $messages, $msg_colors;
+  
+  $type = E_USER_NOTICE;
+  
+  if (count($messages)) {
+	$content = '';
+	foreach($messages as $msg) {
+		if ($msg[0]>$type) continue;
+		if ($msg[0]<$type && $type>E_USER_ERROR) {
+			$content = ''; // clean notices when we have errors
+			$type = E_USER_ERROR; // php or user errors 
+		}
+	    $str = $msg[1];
+		$c = $msg_colors[$type];
+		if ($msg[0]<E_USER_ERROR && $msg[2]!=null)
+		  $str .= ' '._('in file').': '.$msg[2].' '._('at line ').$msg[3];
+		$content .= "<tr><td  " . ($center?"align='center' ":"").
+		  " width='100%' bgcolor='{$c['bg']}'><font color='{$c['txt']}'>"
+		  .$str."</font></td></tr>";
+	}
+
+  	$str = "<center><table border='1' cellpadding='3' cellspacing='0' style='border-collapse: collapse' bordercolor='{$c['bd']}' width='98%'>"
+	  . $content . "</table></center><br>\n";	
+		
+  }
+     else
+        $str = '';
+	
+    return $str;
+}
+//-----------------------------------------------------------------------------
+// Error box <div> element.
+//
+function error_box() {
+    global $before_box;
+    
+    echo "<div id='msgbox'>";
+    $before_box = ob_get_clean(); // save html content before error box 
+// Necessary restart instead of get_contents/clean calls due to a bug in php 4.3.2
+    ob_start('output_html');
+    echo "</div>";
+}
+
 function display_db_error($msg, $sql_statement=null, $exit=true)
 {
 	global $db, $debug;
 	$db_error = db_error_no();
 	
-	echo "<span class='errortext'><b>" . _("DATABASE ERROR :") . "</b> $msg</span><br>";
+	$str = "<span class='errortext'><b>" . _("DATABASE ERROR :") . "</b> $msg</span><br>";
 	
 	if ($db_error != 0) 
 	{
-		echo "error code : " . $db_error . "<br>";
-		echo "error message : " . db_error_msg($db) . "<br>";
+		$str .= "error code : " . $db_error . "<br>";
+		$str .= "error message : " . db_error_msg($db) . "<br>";
 	}
 	
 	if ($debug == 1) 
 	{
-		echo "sql that failed was : " . $sql_statement . "<br>";
+		$str .= "sql that failed was : " . $sql_statement . "<br>";
 	}
 	
-	echo "<br><br>";
-	
+	$str .= "<br><br>";
+
+	trigger_error($str, E_USER_ERROR);
+
 	if ($exit)
 		exit;
 }

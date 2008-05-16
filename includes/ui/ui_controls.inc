@@ -49,9 +49,11 @@ function end_table($breaks=0)
 
 function meta_forward($forward_to, $params="")
 {
+    global $Ajax;
 	echo "<meta http-equiv='Refresh' content='0; url=$forward_to?$params'>\n";
 	echo "<center><br>" . _("You should automatically be forwarded.");
 	echo " " . _("If this does not happen") . " " . "<a href='$forward_to'>" . _("click here") . "</a> " . _("to continue") . ".<br><br>\n";
+	$Ajax->redirect($forward_to.'?'.$params);
 	exit;
 }
 
@@ -59,8 +61,6 @@ function meta_forward($forward_to, $params="")
 
 function hyperlink_back($center=true)
 {
-	echo  get_js_go_back();
-
 	if ($center)
 		echo "<center>";
 	echo "<a href='javascript:goBack();'>"._("Back")."</a>\n";
@@ -184,5 +184,27 @@ function br($num=1)
 {
 	for ($i = 0; $i < $num; $i++)
 		echo "<br>";
-}		
+}
+
+$ajax_divs = array();
+
+function div_start($id='')
+{
+    global $ajax_divs;
+
+    array_push($ajax_divs, $id);
+    echo "<div ". ($id !='' ? "id='$id'" : '').">";
+    ob_start();
+}
+
+function div_end()
+{
+    global $ajax_divs, $Ajax;
+
+    if (count($ajax_divs)) {
+	$id = array_pop($ajax_divs);
+	$Ajax->addUpdate($id, $id, ob_get_flush());
+	echo "</div>"; 
+    }
+}
 ?>

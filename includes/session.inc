@@ -32,10 +32,10 @@
 	}
 	if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_to_root']))
 		die("Restricted access");
-	include_once($path_to_root . "/config_db.php");
 	include_once($path_to_root . "/includes/lang/language.php");
+	include_once($path_to_root . "/config_db.php");
+	include_once($path_to_root . "/config.php");
 
-    include_once($path_to_root . "/config.php");
 
     include_once($path_to_root . "/includes/main.inc");
 
@@ -130,6 +130,10 @@
     }*/
 
 	//----------------------------------------------------------------------------------------
+	include_once("ajax.inc");
+
+	$Ajax =& new Ajax();
+    
    	check_page_security($page_security);
 
 

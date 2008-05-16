@@ -45,14 +45,15 @@ class current_user
 		{
             $myrow = db_fetch($Auth_Result);
 
-            $this->access = $myrow["full_access"];
-            $this->name = $myrow["real_name"];
-            $this->loginname = $loginname;
-            $this->username = $this->loginname;
-            $this->prefs = new user_prefs($myrow);
+        	    $this->access = $myrow["full_access"];
+        	    $this->name = $myrow["real_name"];
+        	    $this->loginname = $loginname;
+        	    $this->username = $this->loginname;
+        	    $this->prefs = new user_prefs($myrow);
 
-			update_user_visitdate($loginname);
-			$this->logged = true;
+		    update_user_visitdate($loginname);
+		    $this->logged = true;
+
 		} 
 		else 
 		{
@@ -233,6 +234,24 @@ function set_user_prefs($price_dec, $qty_dec, $exrate_dec, $percent_dec, $showgl
 
 	$_SESSION["wa_current_user"]->update_prefs($price_dec, $qty_dec, $exrate_dec, $percent_dec, $showgl, $showcodes,
 		$date_format, $date_sep, $tho_sep, $dec_sep, $theme, $pagesize);
+}
+
+function add_user_js_data() {
+	global $path_to_root, $thoseps, $decseps;
+
+	$ts = $thoseps[user_tho_sep()];
+	$ds = $decseps[user_dec_sep()];
+  
+    $js = "\n<script type=\"text/javascript\">\n"
+	  . "<!--\n"
+	  . "var user = {\n"
+	  . "theme: '". $path_to_root . '/themes/'. 'default' /*user_theme()*/.'/'."',\n"
+	  . "loadtxt: '"._('Requesting data...')."',\n"
+	  . "ts: '$ts',\n"
+	  . "ds: '$ds',\n"
+	  . "pdec : " . user_price_dec() . "}\n--></script>";
+
+  add_js_source($js);
 }
 
 //--------------------------------------------------------------------------

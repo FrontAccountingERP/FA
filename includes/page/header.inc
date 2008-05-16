@@ -27,14 +27,41 @@ function help_url($title, $app)
 	return $help_base_url.urlencode(str_replace(' ', '', ucwords($help_page_url)));
 }
 
+function send_scripts() 
+{
+    global $js_lib, $js_static, $js_path, $js_userlib, $comp_path,
+	$path_to_root, $go_debug;
+    
+    	add_user_js_data();
+
+	$js ='';
+	foreach($js_static as $jsfile) {
+	    $fpath = $comp_path.'/'.user_company().'/js_cache/'.$jsfile;
+	    // compress also static files
+	  if (!file_exists($fpath) || $go_debug)
+		cache_js_file($fpath, file_get_contents($js_path.$jsfile));
+	
+	  $js .= '<script language="javascript" type="text/javascript" src="'.
+		$fpath . '"></script>';
+	}
+	foreach($js_userlib as $jsfile) {
+	  $js .= '<script language="javascript" type="text/javascript" src="'.
+	    $jsfile . '"></script>';
+	}
+
+	foreach($js_lib as $text) {
+	  $js .= $text;
+	}
+        echo $js;
+}
+
 function page_header($title, $no_menu=false, $is_index=false, $onload="", $js="")
 {
 	// titles and screen header
 	global $db_connections, $path_to_root, $def_app, $applications,
-		$help_base_url, $help_page_url, $use_popup_windows,
-		$js_lib, $js_static, $js_path, $js_userlib, $comp_path;
+		$help_base_url, $help_page_url, $use_popup_windows;
 
-	if (isset($_GET['ajax'])) return;
+	if (in_ajax()) return; // just for speed up
 
 	$theme = user_theme();
 	$local_path_to_root = $path_to_root;
@@ -45,24 +72,11 @@ function page_header($title, $no_menu=false, $is_index=false, $onload="", $js=""
 		{
 			include_once($path_to_root.'/includes/ui/ui_view.inc');
 		}
-		$js = get_js_open_window(900, 500);
+		add_js_source(get_js_open_window(900, 500));
 	}
+	if ($js!='')
+	  add_js_source($js);
 
-	add_js_user_num(); // add user native numeric input functions
-	// javascript includes collect
-	add_js_source($js);
-	$js ='';
-	foreach($js_static as $jsfile) {
-	  $js .= '<script language="javascript" type="text/javascript" src="'.
-		$js_path . $jsfile . '"></script>';
-	}
-	foreach($js_userlib as $jsfile) {
-	  $js .= '<script language="javascript" type="text/javascript" src="'.
-	    $jsfile . '"></script>';
-	}
-	foreach($js_lib as $text) {
-	  $js .= $text;
-	}
 	if (!isset($no_menu))
 	{
 		$no_menu = false;
@@ -89,15 +103,14 @@ function page_header($title, $no_menu=false, $is_index=false, $onload="", $js=""
 	echo "<link href='$local_path_to_root/themes/$theme/default.css' rel='stylesheet' type='text/css' /> \n";
 	if (file_exists($local_path_to_root. "/".$local_stylesheet))
 		echo "<link href='$local_path_to_root/$local_stylesheet' rel='stylesheet' type='text/css' /> \n";
-	if ($js != "")
-		echo $js;
+	send_scripts($js);
+
 	echo "</head> \n";
 	if ($onload == "")
 		echo "<body>";
 	else
 		echo "<body onload=\"$onload\">";
-	echo "<script language='javascript' src='".
-	  $path_to_root. "/js/inserts.js' type='text/javascript'></script>\n";
+
 	echo "<table class='callout_main' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
 	echo "<td colspan='2' rowspan='2'>\n";

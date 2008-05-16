@@ -2,22 +2,17 @@
 
 function display_error($msg, $center=true)
 {
-    echo "<center><table border='1' cellpadding='3' cellspacing='0' style='border-collapse: collapse' bordercolor='#CC3300' width='98%'>
-      <tr>
-        <td  " . ($center?"align='center' ":"") . " width='100%' bgcolor='#ffcccc'><font color='#dd2200'>$msg</font></td>
-      </tr>
-    </table></center><br>\n";	
-    	
-	//echo "<span class='errortext'><B>" . _("ERROR :") . "</B> $msg</span><BR>";
+	trigger_error($msg, E_USER_ERROR);
 }
 
 function display_notification($msg, $center=true)
 {
-    echo "<center><table border='1' cellpadding='3' cellspacing='0' style='border-collapse: collapse' bordercolor='#33cc00' width='98%'>
-      <tr>
-        <td " . ($center?"align='center' ":"") . " width='100%' bgcolor='#ccffcc'><font color='#007700'>$msg</font></td>
-      </tr>
-    </table></center><br>\n";	
+	trigger_error($msg, E_USER_NOTICE);
+}
+
+function display_warning($msg, $center=true)
+{
+	trigger_error($msg, E_USER_WARNING);
 }
 
 function display_notification_centered($msg)

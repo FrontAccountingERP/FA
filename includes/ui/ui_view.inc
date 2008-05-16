@@ -274,6 +274,8 @@ function get_trans_view_str($type, $trans_no, $label="")
 
 function exchange_rate_display($from_currency, $to_currency, $date_, $buttons=true)
 {
+    global $Ajax;
+    
 	if ($from_currency != $to_currency)
 	{
 		if ($buttons && isset($_POST['get_rate']))
@@ -290,12 +292,16 @@ function exchange_rate_display($from_currency, $to_currency, $date_, $buttons=tr
 				add_exchange_rate($currency, $date_, $rate, $rate);
 			if ($from_currency == $comp_currency)
 				$rate = 1 / $rate;
+			$Ajax->activate('get_rate');
 		}
 		else
 			$rate = get_exchange_rate_from_to($to_currency, $from_currency, $date_);
 		$rate = number_format2($rate, user_exrate_dec());
-    	label_row(_("Exchange Rate:"),"1 " . $from_currency . " = " .  $rate . " " . $to_currency .
-			($buttons?"  " . submit('get_rate',_("Get"), false):""));
+    	label_row(_("Exchange Rate:"),"1 " . $from_currency . " = <span id='_ex_rate'>" . $rate . "</span> " . $to_currency .
+			($buttons?"  " . submit('get_rate',_("Get"), false, true):""));
+	    if($buttons) {
+		  $Ajax->addUpdate('get_rate','_ex_rate', $rate);
+		}
 	}
 }
 
@@ -523,22 +529,6 @@ function display_allocations_from($person_type, $person_id, $type, $type_no, $to
 	}
 }
 
-function get_js_go_back()
-{
-	$js = "\n<script type=\"text/javascript\">\n"
-	 	. "<!--\n"
-		. "function goBack()\n"
-		. "{\n"
-		. "	if (window.history.length <= 1)\n"
-		. "	 window.close();\n"
-		. "	else\n"
-		. "	 window.history.go(-1);\n"
-		. "}\n"
-		. "-->\n"
-		. "</script>\n";
-	return $js;
-}
-
 function get_js_open_window($width, $height)
 {
 	$js = "\n<script type=\"text/javascript\">\n"
@@ -554,46 +544,22 @@ function get_js_open_window($width, $height)
 	return $js;
 }
 
-//$focus_on = array();
 /*
   Setting focus on element $name in $form.
   If $form<0 $name is element id.
 */
 function set_focus($name, $form_no=0) {
-//  global $focus_on;
-//  $focus_on['name'] = $name;
-//  $focus_on['form'] = $form_no;
     $_POST['_focus'] = $name;
 }
 //
 //	Set default focus on first field $name if not set yet
 //
 function default_focus($name, $form_no=0) {
-//  global $focus_on;
-//    if (!isset($focus_on['name']) && (!isset($_POST['_focus']) || $_POST['_focus']=='') ) {
-//echo "<h2>$name</h2>";
-//	$focus_on['name'] = $name;
-//	$focus_on['form'] = $form_no;
-//    }
     if (!isset($_POST['_focus'])) {
 	$_POST['_focus'] = $name;
     }
 }
-/*
-function set_js_focus() {
-  global $focus_on;
-  $js = '';
 
-//  if (isset($focus_on['name'])) {
-
-    $js =  "<script type=\"text/javascript\">\n"
-	."Behaviour.addLoadEvent(function(){ setFocus('".$focus_on['name']."'".( $focus_on['form']>=0 ?  (",".$focus_on['form']): '').
-	");});"
-	."</script>";
-//  }
-  return $js;
-}
-*/
 function get_js_png_fix()
 {
 	$js = "<script type=\"text/javascript\">\n"
@@ -1064,101 +1030,6 @@ document.write(\"<div id='CC'></div>\");";
     add_js_ufile($fpath);
 
  return '';
-}
-
-//
-//	Javascript conversions to/from user numeric format.
-//
-function add_js_user_num() {
-
-    global $comp_path;
-    $fpath = $comp_path.'/'.user_company().'/js_cache/'.'user_num.js';
-
-    if (!file_exists($fpath)) {
-    
-	global $thoseps, $decseps;
-	$ts = $thoseps[user_tho_sep()];
-	$ds = $decseps[user_dec_sep()];
-
-	$js = "function price_format(post, num, dec, label) {
-	//num = num.toString().replace(/\\$|\\,/g,'');
-	if(isNaN(num))
-		num = \"0\";
-	sign = (num == (num = Math.abs(num)));
-	if(dec<0) dec = 2;
-	decsize = Math.pow(10, dec);
-	num = Math.floor(num*decsize+0.50000000001);
-	cents = num%decsize;
-	num = Math.floor(num/decsize).toString();
-	for( i=cents.toString().length; i<dec; i++){
-		cents = \"0\" + cents;
-	}
-	for (var i = 0; i < Math.floor((num.length-(1+i))/3); i++)
-		num = num.substring(0,num.length-(4*i+3))+'".$ts."'+
-			num.substring(num.length-(4*i+3));
-	 num = ((sign)?'':'-') + num;
-	 if(dec!=0) num = num + '".$ds."' + cents;
-	if(label)
-	    document.getElementById(post).innerHTML = num;
-	else
-	    document.getElementsByName(post)[0].value = num;
-	}
-	function get_amount(doc, label) {
-	    if(label)
-		var val = document.getElementById(doc).innerHTML;
-	    else
-		var val = document.getElementsByName(doc)[0].value;
-		val = val.replace(/\\".$ts."/g,'');
-		val = val.replace(/\\".$ds."/g,'.');
-		return 1*val;
-	}
-	";
-
-     cache_js_file($fpath, $js);
-    } 
-    add_js_ufile($fpath);
-}
-
-function add_js_allocate() {
-    global $comp_path;
-    $fpath = $comp_path.'/'.user_company().'/js_cache/'.'allocate.js';
-
-    if (!file_exists($fpath)) {
-    
-	$js =
-	"function allocate_all(doc) {
-	var amount = get_amount('amount'+doc);
-	var unallocated = get_amount('un_allocated'+doc);
-	var total = get_amount('total_allocated', 1);
-	var left = get_amount('left_to_allocate', 1);
-
-	if(unallocated<amount) amount = unallocated;
-	if((unallocated-amount)<=left){
-	    left-=unallocated-amount;
-	    total+=unallocated-amount;
-	    amount=unallocated;
-	}else{
-	total+=left;
-	amount+=left;
-	left=0;
-	}
-	price_format('amount'+doc, amount, ".user_price_dec().");
-	price_format('left_to_allocate', left, ".user_price_dec().", 1);
-	price_format('total_allocated', total, ".user_price_dec().", 1);
-	}
-	function allocate_none(doc) {
-	amount = get_amount('amount'+doc);
-	left = get_amount('left_to_allocate', 1);
-	total = get_amount('total_allocated', 1);
-	price_format('left_to_allocate',amount+left, ".user_price_dec().", 1);
-	price_format('amount'+doc, 0, ".user_price_dec().");
-	price_format('total_allocated', total-amount, ".user_price_dec().", 1);
-	}";
-
-     cache_js_file($fpath, $js);
-    } 
-    add_js_ufile($fpath);
-    add_js_user_num();
 }
 
 function alert($msg)

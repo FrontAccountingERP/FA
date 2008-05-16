@@ -35,11 +35,16 @@ class language
 
 	function set_language($code) 
 	{
+	    global $comp_path;
+	    
 		if (isset($_SESSION['languages'][$code]) &&
 			$_SESSION['language'] != $_SESSION['languages'][$code]) 
 		{
-			$_SESSION['language'] = $_SESSION['languages'][$code];
-			reload_page("");
+	    
+		// flush cache as we can use several languages in one account
+		    flush_dir($comp_path.'/'.user_company().'/js_cache');
+		    $_SESSION['language'] = $_SESSION['languages'][$code];
+		    reload_page("");
 		}
 	}
 
@@ -90,7 +95,7 @@ get_text::set_language($lang->code, $lang->encoding);
 //get_text::add_domain("wa", $path_to_root . "/lang");
 get_text::add_domain($lang->code, $path_to_root . "/lang");
 // Unnecessary for ajax calls. 
-// Due to bug in php 4.3.10 for this version set globally in php4.ini
+// Due to bug in php 4.3.10 for this version set globally in php.ini
 ini_set('default_charset', $_SESSION['language']->encoding);
 
 if (!function_exists("_")) 
