@@ -457,7 +457,7 @@ JsHttpRequest.LOADERS.xml = { loader: function(req) {
         if (this.queryElem.length) return ['xml_no_form_upl'];
         
         // XMLHttpRequest (and MS ActiveX'es) cannot work with different domains.
-        if (this.url.match(new RegExp('^([a-z]+://[^\\/]+)(.*)', 'i'))) {
+        if (this.url.match(new RegExp('^([a-z]+://[^\\/]+)(.*)((:[0-9]*)+)', 'i'))) {
         	// We MUST also check if protocols matched: cannot send from HTTP 
         	// to HTTPS and vice versa.
             if (RegExp.$1.toLowerCase() != document.location.protocol + '//' + document.location.hostname.toLowerCase()) {
