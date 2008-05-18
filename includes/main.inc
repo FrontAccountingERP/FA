@@ -26,9 +26,9 @@
     	global $path_to_root;
 
     	$hide_menu = $no_menu;
-
 		// intercept all output to destroy it in case of ajax call
-		ob_start('output_html');
+		register_shutdown_function('ob_end_flush');
+		ob_start('output_html',0);
 		// colect all error msgs
 		set_error_handler('error_handler' /*, errtypes */);
 
