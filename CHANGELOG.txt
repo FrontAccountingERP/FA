@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+18-May-2008 Joe Hunt
+# Bug when inserting new records in debtor_trans.
+$ /sales/includes/db/cust_trans_db.inc
+
 16-May-2008 Janusz Dobrowolski
 + Rewritten errors/messages handling, unified for ajax/user/php errors
 $ /includes/errors.inc
