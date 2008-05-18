@@ -19,6 +19,12 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+18-May-2008 Janusz Dobrowolski
+# Added explicit ob_end_flush() on shutdown needed for php5
+$ /includes/main.inc
+# Fixed for www servers on nonstandard listening ports.
+$ /js/JsHttpRequest.js
+
 18-May-2008 Joe Hunt
 # Bug when inserting new records in debtor_trans.
 $ /sales/includes/db/cust_trans_db.inc
