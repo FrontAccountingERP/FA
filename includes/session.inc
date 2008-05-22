@@ -9,6 +9,12 @@
     | by Joe Hunt Consulting         |
 	\--------------------------------------------------*/
 
+	function output_html($text) 
+	{
+  	  global $before_box;
+  	  return  in_ajax() ? fmt_errors() : ($before_box.fmt_errors().$text);
+	}
+
 	if (!isset($path_to_root)) 
 	{
 		$path_to_root = ".";
@@ -108,6 +114,13 @@
             exit;
         }
    	}
+	include_once("ajax.inc");
+	$Ajax =& new Ajax();
+	// intercept all output to destroy it in case of ajax call
+	register_shutdown_function('ob_end_flush');
+	ob_start('output_html',0);
+	// colect all error msgs
+	set_error_handler('error_handler' /*, errtypes */);
 
    	if (isset($_POST["user_name_entry_field"])) 
    	{
@@ -130,9 +143,6 @@
     }*/
 
 	//----------------------------------------------------------------------------------------
-	include_once("ajax.inc");
-
-	$Ajax =& new Ajax();
     
    	check_page_security($page_security);
 

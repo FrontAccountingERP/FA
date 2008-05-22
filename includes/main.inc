@@ -14,23 +14,12 @@
     include_once($path_to_root . "/admin/db/users_db.inc");
     include_once($path_to_root . "/includes/ui/ui_view.inc");
 	
-	function output_html($text) 
-	{
-  	  global $before_box;
-  	  return  in_ajax() ? fmt_errors() : ($before_box.fmt_errors().$text);
-	}
-
     function page($title, $no_menu=false, $is_index=false, $onload="", $js="")
     {
 
     	global $path_to_root;
 
     	$hide_menu = $no_menu;
-		// intercept all output to destroy it in case of ajax call
-		register_shutdown_function('ob_end_flush');
-		ob_start('output_html',0);
-		// colect all error msgs
-		set_error_handler('error_handler' /*, errtypes */);
 
     	include($path_to_root . "/includes/page/header.inc");
 

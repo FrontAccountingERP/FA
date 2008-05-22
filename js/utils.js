@@ -52,24 +52,7 @@
             false  // do not disable caching
         );
     }
-/*	//	calls form validation function
-	//
-    JsHttpRequest.validate= function(submit) {
-        JsHttpRequest.query(
-          'POST '+window.location.toString(), // backend
-	    this.formValues('_validate_form'),
-            // Function is called when an answer arrives. 
-	    function(result, errors) {
-		  if (result) {	  
-		    window.location = result;
-		  } else
-			return false;
-		return true;
-	    },
-	    false
-	);
-    }
-*/	// returns input field values submitted when form button 'name' is pressed
+	// returns input field values submitted when form button 'name' is pressed
 	//
 	JsHttpRequest.formValues = function(inp)
 	{
@@ -162,4 +145,3 @@ function goBack() {
 	else
 	 window.history.go(-1);
 }
-	

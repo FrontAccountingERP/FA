@@ -19,6 +19,13 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+22-May-2008 Janusz Dobrowolski
+! Error handler switching moved to session.inc for early error catching
+$ /includes/main.inc
+  /includes/session.inc
+! Cosmetic cleanup
+  /js/utils.js
+  
 18-May-2008 Janusz Dobrowolski
 # Added explicit ob_end_flush() on shutdown needed for php5
 $ /includes/main.inc
