@@ -10,15 +10,15 @@ include_once($path_to_root . "/includes/ui.inc");
 $js = "";
 if ($use_popup_windows)
 	$js .= get_js_open_window(800, 500);
-if ($use_date_picker)	
+if ($use_date_picker)
 	$js .= get_js_date_picker();
 
-if (isset($_GET['outstanding_only']) && $_GET['outstanding_only']) 
+if (isset($_GET['outstanding_only']) && $_GET['outstanding_only'])
 {
 	$outstanding_only = 1;
-	page(_("Search Outstanding Dimensionss"), false, false, "", $js);
-} 
-else 
+	page(_("Search Outstanding Dimensions"), false, false, "", $js);
+}
+else
 {
 	$outstanding_only = 0;
 	page(_("Search Dimensions"), false, false, "", $js);
@@ -44,10 +44,10 @@ date_cells(_("To:"), 'ToDate');
 
 check_cells( _("Only Overdue:"), 'OverdueOnly', null);
 
-if (!$outstanding_only) 
+if (!$outstanding_only)
 {
    	check_cells( _("Only Open:"), 'OpenOnly', null);
-} 
+}
 else
 	$_POST['OpenOnly'] = 1;
 
@@ -64,23 +64,23 @@ $sql = "SELECT * FROM ".TB_PREF."dimensions WHERE id > 0";
 
 if ($dim == 1)
 	$sql .= " AND type_=1";
-	
-if (isset($_POST['OpenOnly'])) 
+
+if (isset($_POST['OpenOnly']))
 {
    	$sql .= " AND closed=0";
 }
 
-if (isset($_POST['type_']) && ($_POST['type_'] > 0)) 
+if (isset($_POST['type_']) && ($_POST['type_'] > 0))
 {
    	$sql .= " AND type_=" . $_POST['type_'];
 }
 
-if (isset($_POST['OrderNumber']) && $_POST['OrderNumber'] != "") 
+if (isset($_POST['OrderNumber']) && $_POST['OrderNumber'] != "")
 {
 	$sql .= " AND reference LIKE '%". $_POST['OrderNumber'] . "%'";
 }
 
-if (isset($_POST['OverdueOnly'])) 
+if (isset($_POST['OverdueOnly']))
 {
 	$today = date2sql(Today());
 
@@ -94,7 +94,7 @@ $sql .= " ORDER BY due_date";
 
 $result = db_query($sql,"could not query dimensions");
 
-start_table("$table_style width=80%"); 
+start_table("$table_style width=80%");
 
 if (!$outstanding_only)
 	$th = array(_("#"), _("Reference"), _("Name"), _("Type"), _("Date"),
@@ -106,28 +106,28 @@ table_header($th);
 $j = 1;
 $k = 0;
 
-while ($myrow = db_fetch($result)) 
+while ($myrow = db_fetch($result))
 {
-	$sql = "SELECT SUM(amount) FROM ".TB_PREF."gl_trans WHERE tran_date >= '" . 
-		date2sql($_POST['FromDate']) . "' AND 
-		tran_date <= '" . date2sql($_POST['ToDate']) . "' AND dimension_id = " . 
+	$sql = "SELECT SUM(amount) FROM ".TB_PREF."gl_trans WHERE tran_date >= '" .
+		date2sql($_POST['FromDate']) . "' AND
+		tran_date <= '" . date2sql($_POST['ToDate']) . "' AND dimension_id = " .
 		$myrow['id'];
 	$res = db_query($sql, "Transactions could not be calculated");
 	$row = db_fetch_row($res);
-		
+
 	if ($k == 1)
 	{
 		$row_text = "class='oddrow'";
 		$k = 0;
-	} 
-	else 
+	}
+	else
 	{
 		$row_text = "class='evenrow'";
 		$k++;
 	}
 
 	// check if it's an overdue work order
-	if (date_diff(Today(), sql2date($myrow["due_date"]), "d") > 0) 
+	if (date_diff(Today(), sql2date($myrow["due_date"]), "d") > 0)
 	{
 		$row_text = "class='overduebg'";
 	}
@@ -145,7 +145,7 @@ while ($myrow = db_fetch($result))
 	if (!$outstanding_only)
 		label_cell(($myrow["closed"] ? _("Yes") : _("No")));
 	amount_cell($row[0]);
-	if ($myrow["closed"] == 0) 
+	if ($myrow["closed"] == 0)
 		label_cell("<a href='$mpage'>" . _("Edit") . "</a>");
 	end_row();
 

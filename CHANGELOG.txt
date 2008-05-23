@@ -19,6 +19,11 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+23-May-2008 Joe Hunt
+# Minor bug in dimensions.php (Outstanding Dimensions)
+$ /applications/dimensions.php
+  /dimensions/inquiry/search_dimensions.php
+  
 23-May-2008 Janusz Dobrowolski
 ! Include file order / error handling order fixed once again.
 $ /includes/main.inc
