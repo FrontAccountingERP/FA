@@ -41,9 +41,10 @@
 	include_once($path_to_root . "/includes/lang/language.php");
 	include_once($path_to_root . "/config_db.php");
 	include_once($path_to_root . "/config.php");
+	include_once($path_to_root . "/includes/ajax.inc");
+	$Ajax =& new Ajax();
 
-
-    include_once($path_to_root . "/includes/main.inc");
+	include_once($path_to_root . "/includes/main.inc");
 
     //----------------------------------------------------------------------------------------
 
@@ -111,11 +112,11 @@
         if (!isset($_POST["user_name_entry_field"]) or $_POST["user_name_entry_field"] == "") 
         {
 	        include($path_to_root . "/access/login.php");
+		$Ajax->redirect($path_to_root . "/access/login.php");
             exit;
         }
    	}
-	include_once("ajax.inc");
-	$Ajax =& new Ajax();
+	include_once($path_to_root . "/includes/ui/ui_msgs.inc");
 	// intercept all output to destroy it in case of ajax call
 	register_shutdown_function('ob_end_flush');
 	ob_start('output_html',0);
