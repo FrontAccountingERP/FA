@@ -27,41 +27,44 @@ function help_url($title, $app)
 	return $help_base_url.urlencode(str_replace(' ', '', ucwords($help_page_url)));
 }
 
-function send_scripts() 
+function send_scripts()
 {
     global $js_lib, $js_static, $js_path, $js_userlib, $comp_path,
 	$path_to_root, $go_debug;
-    
-    	add_user_js_data();
+
+   	add_user_js_data();
 
 	$js ='';
-	foreach($js_static as $jsfile) {
+	foreach($js_static as $jsfile)
+	{
 	    $fpath = $comp_path.'/'.user_company().'/js_cache/'.$jsfile;
 	    // compress also static files
-	  if (!file_exists($fpath) || $go_debug)
-		cache_js_file($fpath, file_get_contents($js_path.$jsfile));
-	
-	  $js .= '<script language="javascript" type="text/javascript" src="'.
-		$fpath . '"></script>';
+	  	if (!file_exists($fpath) || $go_debug)
+			cache_js_file($fpath, file_get_contents($js_path.$jsfile));
+
+	  	$js .= '<script language="javascript" type="text/javascript" src="'.
+			$fpath . '"></script>';
 	}
-	foreach($js_userlib as $jsfile) {
-	  $js .= '<script language="javascript" type="text/javascript" src="'.
-	    $jsfile . '"></script>';
+	foreach($js_userlib as $jsfile)
+	{
+	  	$js .= '<script language="javascript" type="text/javascript" src="'.
+	    	$jsfile . '"></script>';
 	}
 
-	foreach($js_lib as $text) {
-	  $js .= $text;
+	foreach($js_lib as $text)
+	{
+	  	$js .= $text;
 	}
-        echo $js;
+    echo $js;
 }
 
 function page_header($title, $no_menu=false, $is_index=false, $onload="", $js="")
 {
 	// titles and screen header
-	global $db_connections, $path_to_root, $def_app, $applications,
-		$help_base_url, $help_page_url, $use_popup_windows;
+	global $path_to_root, $def_app, $use_popup_windows, $help_base_url;
 
-	if (in_ajax()) return; // just for speed up
+	if (in_ajax())
+		return; // just for speed up
 
 	$theme = user_theme();
 	$local_path_to_root = $path_to_root;
@@ -110,51 +113,9 @@ function page_header($title, $no_menu=false, $is_index=false, $onload="", $js=""
 		echo "<body>";
 	else
 		echo "<body onload=\"$onload\">";
-
-	echo "<table class='callout_main' border='0' cellpadding='0' cellspacing='0'>\n";
-	echo "<tr>\n";
-	echo "<td colspan='2' rowspan='2'>\n";
-
-	echo "<table class='main_page' border='0' cellpadding='0' cellspacing='0'>\n";
-	echo "<tr>\n";
-	echo "<td>\n";
-	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
-	echo "<tr>\n";
-	echo "<td class='quick_menu'>\n";
-	if (!$no_menu)
-	{
-		echo "<table cellpadding=0 cellspacing=0 width='100%'><tr><td>";
-		echo "<div class=tabs>";
-		foreach($applications as $app => $name)
-		{
-			echo "<a ".($sel_app == $app ? "class='selected' " : "").
-			"href='$local_path_to_root/index.php?application=".$app.
-				SID ."'>" .$name . "</a>";
-		}
-		echo "</div>";
-
-		echo "</td></tr></table>";
-
-		echo "<table class=logoutBar>";
-		echo "<tr><td class=headingtext3>" . $db_connections[$_SESSION["wa_current_user"]->company]["name"] . " | " . $_SERVER['SERVER_NAME'] . " | " . $_SESSION["wa_current_user"]->name . "</td>";
-		if ($help_base_url != null)
-		{
-
-			echo "<td align=right ><a target = '_blank' onclick=" .'"'."javascript:openWindow(this.href,this.target); return false;".'" '. "href='". help_url($title, $sel_app)."'>" . _("Help") . "</a></td>";
-		}
-		echo "<td class=logoutBarRight><a href='$local_path_to_root/access/logout.php?'>" . _("Logout") . "</a>";
-		echo "</td></tr></table>";
-	}
-
-	echo "</td></tr></table>";
-
-	if ($title && !$no_menu && !$is_index)
-	{
-		echo "<center><table width='100%'><tr><td width='100%' class='titletext'>$title</td></tr></table></center>";
-	}
-
-	if (!$is_index)
-		echo "<br>";
+	include_once($local_path_to_root."/themes/".user_theme()."/renderer.php");
+	$rend = new renderer();
+	$rend->menu_header($title, $no_menu, $is_index);
 }
 
 ?>

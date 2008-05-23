@@ -19,12 +19,15 @@ Legend:
 ! -> Note
 $ -> Affected files
 
-22-May-2008 Janusz Dobrowolski
-! Error handler switching moved to session.inc for early error catching
-$ /includes/main.inc
-  /includes/session.inc
-! Cosmetic cleanup
-  /js/utils.js
+23-May-2008 Joe Hunt
+! Moved menu-system from header.inc/footer.inc to renderer.php for relevant theme. Fixed frontaccounting.php to get the
+  correct renderer.php.
+$ frontaccounting.php
+  /includes/page/header.inc
+  /includes/page/footer.inc
+  /themes/default/renderer.php
+  /themes/cool/renderer.php
+  /themes/aqua/renderer.php
   
 18-May-2008 Janusz Dobrowolski
 # Added explicit ob_end_flush() on shutdown needed for php5
