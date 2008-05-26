@@ -18,7 +18,7 @@ page(_("Exchange Rates"), false, false, "", $js);
 if (isset($_GET['selected_id']))
 {
 	$selected_id = $_GET['selected_id'];
-} 
+}
 elseif (isset($_POST['selected_id']))
 {
 	$selected_id = $_POST['selected_id'];
@@ -28,7 +28,7 @@ else
 //---------------------------------------------------------------------------------------------
 function check_data()
 {
-	if (!is_date($_POST['date_'])) 
+	if (!is_date($_POST['date_']))
 	{
 		display_error( _("The entered date is invalid."));
 		set_focus('date_');
@@ -59,13 +59,13 @@ function handle_submit()
 	if (!check_data())
 		return false;
 
-	if ($selected_id != "") 
+	if ($selected_id != "")
 	{
 
 		update_exchange_rate($_POST['curr_abrev'], $_POST['date_'],
 		 input_num('BuyRate'), input_num('BuyRate'));
-	} 
-	else 
+	}
+	else
 	{
 
 		add_exchange_rate($_POST['curr_abrev'], $_POST['date_'],
@@ -103,7 +103,7 @@ function display_rates($curr_code)
 
     $k = 0; //row colour counter
 
-    while ($myrow = db_fetch($result)) 
+    while ($myrow = db_fetch($result))
     {
 
    		alt_table_row_color($k);
@@ -131,8 +131,8 @@ function display_rate_edit()
 	if (isset($_POST['get_rate']))
 	{
 		$_POST['BuyRate'] = exrate_format(get_ecb_rate($_POST['curr_abrev']));
-	}	
-	if ($selected_id != "") 
+	}
+	if ($selected_id != "")
 	{
 		//editing an existing exchange rate
 
@@ -146,13 +146,13 @@ function display_rate_edit()
 		hidden('curr_abrev', $_POST['curr_abrev']);
 
 		label_row(_("Date to Use From:"), $_POST['date_']);
-	} 
-	else 
+	}
+	else
 	{
 		date_row(_("Date to Use From:"), 'date_');
 	}
-	small_amount_row(_("Exchange Rate:"), 'BuyRate', null, '', 
-	  submit('get_rate',_("Get")), user_exrate_dec());
+	small_amount_row(_("Exchange Rate:"), 'BuyRate', null, '',
+	  	submit('get_rate',_("Get"), false), user_exrate_dec());
 
 	end_table(1);
 
@@ -172,10 +172,10 @@ function clear_data()
 
 //---------------------------------------------------------------------------------------------
 
-if (isset($_POST['ADD_ITEM']) || isset($_POST['UPDATE_ITEM'])) 
+if (isset($_POST['ADD_ITEM']) || isset($_POST['UPDATE_ITEM']))
 {
 
-	if (handle_submit()) 
+	if (handle_submit())
 	{
 		meta_forward($_SERVER['PHP_SELF']);
 	}
@@ -183,7 +183,7 @@ if (isset($_POST['ADD_ITEM']) || isset($_POST['UPDATE_ITEM']))
 
 //---------------------------------------------------------------------------------------------
 
-if (isset($_GET['delete'])) 
+if (isset($_GET['delete']))
 {
 
 	handle_delete();
@@ -201,7 +201,7 @@ echo _("Select a currency :") . "  ";
 currencies_list('curr_abrev', $_POST['curr_abrev'], true);
 
 // if currency sel has changed, clear the form
-if ($_POST['curr_abrev'] != get_global_curr_code()) 
+if ($_POST['curr_abrev'] != get_global_curr_code())
 {
 	clear_data();
 	$selected_id = "";
@@ -209,13 +209,13 @@ if ($_POST['curr_abrev'] != get_global_curr_code())
 
 set_global_curr_code($_POST['curr_abrev']);
 
-if (is_company_currency($_POST['curr_abrev'])) 
+if (is_company_currency($_POST['curr_abrev']))
 {
 
 	display_note(_("The selected currency is the company currency."), 2);
 	display_note(_("The company currency is the base currency so exchange rates cannot be set for it."), 1);
-} 
-else 
+}
+else
 {
 
     display_rates($_POST['curr_abrev']);

@@ -73,20 +73,20 @@ function get_transactions()
 
    	if (isset($_POST['filterType']) && $_POST['filterType'] != reserved_words::get_all())
    	{
-   		if ($_POST['filterType'] == '1' || $_POST['filterType'] == '2') 
+   		if ($_POST['filterType'] == '1' || $_POST['filterType'] == '2')
    		{
    			$sql .= " AND ".TB_PREF."debtor_trans.type = 10 ";
-   		} 
-   		elseif ($_POST['filterType'] == '3') 
+   		}
+   		elseif ($_POST['filterType'] == '3')
    		{
 			$sql .= " AND ".TB_PREF."debtor_trans.type = " . systypes::cust_payment();
-   		} 
-   		elseif ($_POST['filterType'] == '4') 
+   		}
+   		elseif ($_POST['filterType'] == '4')
    		{
 			$sql .= " AND ".TB_PREF."debtor_trans.type = 11 ";
    		}
 
-    	if ($_POST['filterType'] == '2') 
+    	if ($_POST['filterType'] == '2')
     	{
     		$today =  date2sql(Today());
     		$sql .= " AND ".TB_PREF."debtor_trans.due_date < '$today'
@@ -100,7 +100,7 @@ function get_transactions()
    	}
 
 
-   	if (!check_value('showSettled')) 
+   	if (!check_value('showSettled'))
    	{
    		$sql .= " AND (round(abs(".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + "
 		.TB_PREF."debtor_trans.ov_freight + ".TB_PREF."debtor_trans.ov_freight_tax + "
@@ -140,14 +140,14 @@ table_header($th);
 $j = 1;
 $k = 0; //row colour counter
 $over_due = false;
-while ($myrow = db_fetch($result)) 
+while ($myrow = db_fetch($result))
 {
 
 	if ($myrow['OverDue'] == 1 && (abs($myrow["TotalAmount"]) - $myrow["Allocated"] != 0))
 	{
 		start_row("class='overduebg'");
 		$over_due = true;
-	} 
+	}
 	else
 		alt_table_row_color($k);
 
@@ -166,20 +166,20 @@ while ($myrow = db_fetch($result))
 
 	if ($myrow["type"] == 10)
 		$due_date_str = sql2date($myrow["due_date"]);
-	elseif ($myrow["type"] == 11 && $myrow['TotalAmount'] < 0) 
+	elseif ($myrow["type"] == 11 && $myrow['TotalAmount'] > 0)
 	{
 		/*its a credit note which could have an allocation */
 		$allocations_str = $allocations;
 
-	} 
-	elseif ($myrow["type"] == systypes::cust_payment() && 
-		($myrow['TotalAmount'] + $myrow['Allocated']) < 0) 
+	}
+	elseif ($myrow["type"] == systypes::cust_payment() &&
+		($myrow['TotalAmount'] + $myrow['Allocated']) > 0)
 	{
 		/*its a receipt  which could have an allocation*/
 		$allocations_str = $allocations;
 
-	} 
-	elseif ($myrow["type"] == systypes::cust_payment() && $myrow['TotalAmount'] > 0) 
+	}
+	elseif ($myrow["type"] == systypes::cust_payment() && $myrow['TotalAmount'] < 0)
 	{
 		/*its a negative receipt */
 	}
@@ -195,7 +195,7 @@ while ($myrow = db_fetch($result))
 	{
 		label_cell($myrow["CustName"]);
 		label_cell($myrow["CustCurrCode"]);
-	}	
+	}
 	display_debit_or_credit_cells($myrow["TotalAmount"]);
 	amount_cell(abs($myrow["Allocated"]));
 	amount_cell(abs($myrow["TotalAmount"]) - $myrow["Allocated"]);
@@ -217,7 +217,7 @@ while ($myrow = db_fetch($result))
 end_table(1);
 if ($over_due)
 	display_note(_("Marked items are overdue."), 0, 1, "class='overduefg'");
-	
+
 end_page();
 
 ?>

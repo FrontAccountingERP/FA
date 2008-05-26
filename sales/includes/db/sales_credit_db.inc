@@ -44,6 +44,8 @@ function write_credit_note($credit_note, $write_off_acc)
 
 //	$sales_order=$invoice->order_no;	//?
 //    if (is_array($sales_order)) $sales_order = $sales_order[0]; //?
+	if (!isset($credit_note->order_no))
+		$credit_note->order_no = 0;
 
 	/*Now insert the Credit Note into the debtor_trans table with the allocations as calculated above*/
 	// all amounts in debtor's currency

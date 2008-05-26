@@ -176,8 +176,6 @@ function edit_allocations_for_transaction($type, $trans_no)
 {
 	global $table_style;
 
-	start_form(false, true);
-
     display_heading(sprintf(_("Allocation of %s # %d"), systypes::name($_SESSION['alloc']->type),$_SESSION['alloc']->trans_no));
 
     display_heading($_SESSION['alloc']->person_name);
@@ -186,6 +184,8 @@ function edit_allocations_for_transaction($type, $trans_no)
     display_heading2(_("Total:") . " <b>" . price_format($_SESSION['alloc']->amount) . "</b>");
 
     echo "<br>";
+
+	start_form(false, true);
 
     if (count($_SESSION['alloc']->allocs) > 0)
     {
@@ -214,13 +214,15 @@ function edit_allocations_for_transaction($type, $trans_no)
     	    amount_cells(null, 'amount' . $counter, $_POST['amount' . $counter]);
 
     		$un_allocated = round($allocn_item->amount - $allocn_item->amount_allocated, 6);
-    		hidden("un_allocated" . $counter, $un_allocated);
+    		//hidden("un_allocated" . $counter, $un_allocated);
     		amount_cell($un_allocated);
 
-			label_cell("<a href='#' name=Alloc$counter onclick='allocate_all(this.name.substr(5));return true;'>"
+			label_cell("<a href='#' name='Alloc$counter' onclick='allocate_all(this.name.substr(5));return true;'>"
 					 . _("All") . "</a>");
-			label_cell("<a href='#' name=DeAll$counter onclick='allocate_none(this.name.substr(5));return true;'>"
-					 . _("None") . "</a>");
+			//label_cell("<a href='#' name='DeAll$counter' onclick='allocate_none(this.name.substr(5));return true;'>"
+			//		 . _("None") . "</a>");
+			label_cell("<a href='#' name='DeAll$counter' onclick='allocate_none(this.name.substr(5));return true;'>"
+					 . _("None") . "</a>".hidden("un_allocated" . $counter, $un_allocated, false));
 			end_row();
 
     	    $total_allocated += input_num('amount' . $counter);
@@ -246,13 +248,13 @@ function edit_allocations_for_transaction($type, $trans_no)
 //		hidden('left_to_allocate', $left_to_allocate);
        	submit_center_first('UpdateDisplay', _("Update"));
        	submit('Process', _("Process"));
+   		submit_center_last('Cancel', _("Back to Allocations"));
 	}
 	else
 	{
     	display_note(_("There are no unsettled transactions to allocate."), 0, 1);
+   		submit_center('Cancel', _("Back to Allocations"));
     }
-
-   	submit_center_last('Cancel', _("Back to Allocations"));
 
   	end_form();
 }

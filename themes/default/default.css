@@ -29,6 +29,10 @@ tr, td, th {
 	line-height: 19px;
 }
 
+tr {
+	text-align: left;
+}
+
 textarea {
 	font-size: 12px;
 }
@@ -93,7 +97,7 @@ a:hover {
 	border: 0;
 	margin: 0;
 	padding: 0;
-	text-align: right;
+	/*text-align: right;*/
 }
 
 .quick_menu_selected {
@@ -159,7 +163,7 @@ div.logoutBar img {
 }
 
 div.tabs {
-	padding: 0.5em 0 0 0;
+	padding: 3px 0 0 0;
 	background: none transparent scroll repeat 0% 0%;
 	white-space: nowrap;
 	border-collapse: collapse;
@@ -168,12 +172,12 @@ div.tabs {
 }
 div.tabs a {
 	border: 1px solid #8cacbb;
-	padding: 0 1em 3px 1em;
+	padding: 3px 10px;
 	font-weight: normal;
 	background: white scroll repeat 0% 0%;
 	color: #436976;
-	margin-right: 0.0em;
-	height: 1.0em;
+	margin-right: 0;
+	height: 10px;
 }
 div.tabs a.selected {
 	border-top: 1px solid #8cacbb;

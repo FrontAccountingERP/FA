@@ -275,7 +275,7 @@ function get_trans_view_str($type, $trans_no, $label="")
 function exchange_rate_display($from_currency, $to_currency, $date_, $buttons=true)
 {
     global $Ajax;
-    
+
 	if ($from_currency != $to_currency)
 	{
 		if ($buttons && isset($_POST['get_rate']))
@@ -319,7 +319,7 @@ function is_voided_display($type, $id, $label)
 	echo "<tr><td align=center><font color=red>$label</font><br>";
 	echo "<font color=red>" . _("Date Voided:") . " " . sql2date($void_entry["date_"]) . "</font><br>";
 	if (strlen($void_entry["memo_"]) > 0)
-		echo "<center><font color=red>" . _("Memo:") . " " . $void_entry["memo_"] . "</font><br>";
+		echo "<center><font color=red>" . _("Memo:") . " " . $void_entry["memo_"] . "</font></center><br>";
 	echo "</td></tr>";
 	end_table(1);
 
@@ -460,7 +460,6 @@ function display_edit_tax_items($taxes, $columns, $tax_included, $leftspan=0)
 
 function display_footer_exit()
 {
-	global $path_to_root;
 	br(2);
 	end_page();
 	exit;
@@ -593,7 +592,7 @@ function get_js_date_picker()
     $fpath = $comp_path.'/'.user_company().'/js_cache/'.'date_picker.js';
 
 	$js = "<style>
-#CCIFrame { display: none; left: 0px; position: absolute; top: 0px; height: 250px; width: 250px; z-index: 99;}
+#CCIframe { display: none; left: 0px; position: absolute; top: 0px; height: 250px; width: 250px; z-index: 99;}
 #CC { position:absolute; background-color:#FFF; margin:0; padding:0; display:none; z-index: 100;}
 #CC table { font-family: arial, verdana, helvetica, sans-serif;font-size: 8pt; border-left: 1px solid #336; border-right: 1px solid #336;}
 #CC th { font-weight: normal;}
@@ -614,9 +613,9 @@ function get_js_date_picker()
 </style>
 ";
     add_js_source($js);
-    
+
     if (!file_exists($fpath)) {
-    
+
 	global $dateseps, $date_system;
 
 	$how = user_date_format();				// 0 = us/ca, 1 = eu, au, nz, 2 = jp, sw
@@ -909,7 +908,7 @@ function CC() {
       }
       table += \"</tr>\";
     }
-    table += \"<tr class='header'><th colspan='7' style='padding: 3px;'><a href='javascript:hideCC();'>$back</a></td></tr>\";
+    table += \"<tr class='header'><th colspan='7' style='padding: 3px;text-align:center;'><a href='javascript:hideCC();'>$back</a></td></tr>\";
     table += \"</table>\";
     return table;
   }
@@ -1026,7 +1025,7 @@ document.write(\"<iframe id='CCIframe' src='javascript:false;' frameBorder='0' s
 document.write(\"<div id='CC'></div>\");";
 
      cache_js_file($fpath, $js);
-    } 
+    }
     add_js_ufile($fpath);
 
  return '';

@@ -32,19 +32,25 @@ function check_data()
 {
 	global $db_connections, $tb_pref_counter;
 
-	foreach($db_connections as $id=>$con) {
-	  if ($_POST['host'] == $con['host'] && $_POST['dbname'] == $con['dbname']) {
-		if ($_POST['tbpref'] == $con['tbpref']) {
-			display_error(_("This database settings are already used by another company."));
-			return false;
-		}
-		if ($_POST['tbpref'] == 0 || $con['tbpref'] == '') {
-			display_error(_("You cannot have table set without prefix together with prefixed sets in the same database."));
-			return false;
-		}
-	  }
+	if ($_POST['name'] == "" || $_POST['host'] == "" || $_POST['dbuser'] == "" || $_POST['dbname'] == "")
+		return false;
+	foreach($db_connections as $id=>$con)
+	{
+	  	if ($_POST['host'] == $con['host'] && $_POST['dbname'] == $con['dbname'])
+	  	{
+			if ($_POST['tbpref'] == $con['tbpref'])
+			{
+				display_error(_("This database settings are already used by another company."));
+				return false;
+			}
+			if ($_POST['tbpref'] == 0 || $con['tbpref'] == '')
+			{
+				display_error(_("You cannot have table set without prefix together with prefixed sets in the same database."));
+				return false;
+			}
+	  	}
 	}
-	  return true;
+	return true;
 }
 
 //---------------------------------------------------------------------------------------------
@@ -305,7 +311,7 @@ function display_company_edit($selected_id)
 
 	end_table();
 	display_note(_("Choose from Database scripts in SQL folder. No Datase is created without a script."), 0, 1);
-	echo "<center><input onclick='javascript:updateCompany()' type='button' style='width:150' value='". _("Save"). "'>";
+	echo "<center><input onclick='javascript:updateCompany()' type='button' style='width:150px' value='". _("Save"). "'>";
 
 
 	end_form();

@@ -1,10 +1,11 @@
 <?php
 
-function get_post($name, $dflt='') {
+function get_post($name, $dflt='')
+{
 	return ((!isset($_POST[$name]) || $_POST[$name] === '') ? $dflt : $_POST[$name]);
 }
 //
-// Sets local POST value and adds Value to ajax posting if needed 
+// Sets local POST value and adds Value to ajax posting if needed
 //
 /*function set_post($name, $value, $ajax_trigger=true) {
     global $Ajax;
@@ -18,13 +19,16 @@ function get_post($name, $dflt='') {
 //    If var is found returns variable name with prefix stripped,
 //    and null or -1 otherwise.
 //
-function find_submit($prefix, $numeric=true) {
+function find_submit($prefix, $numeric=true)
+{
 
-    foreach($_POST as $postkey=>$postval ) {
-	if (strpos($postkey, $prefix) === 0) {
-		$id = substr($postkey, strlen($prefix));
-		return $numeric ? (int)$id : $id;
-	}
+    foreach($_POST as $postkey=>$postval )
+    {
+		if (strpos($postkey, $prefix) === 0)
+		{
+			$id = substr($postkey, strlen($prefix));
+			return $numeric ? (int)$id : $id;
+		}
     }
     return $numeric ? -1 : null;
 }
@@ -33,20 +37,25 @@ function find_submit($prefix, $numeric=true) {
 //
 //	Read numeric value from user formatted input
 //
-function input_num($postname=null) {
-	if (!isset($_POST[$postname])) 
-	  return null;
+function input_num($postname=null)
+{
+	if (!isset($_POST[$postname]))
+	  	return null;
 
     return user_numeric($_POST[$postname]);
 }
 
 //---------------------------------------------------------------------------------
 
-function hidden($name, $value)
+function hidden($name, $value, $echo=true)
 {
-  global $Ajax;
-	echo "<input type=\"hidden\" name=\"$name\" value=\"$value\">\n";
+  	global $Ajax;
+  	$ret = "<input type=\"hidden\" name=\"$name\" value=\"$value\">";
 	$Ajax->addUpdate($name, $name, $value);
+	if ($echo)
+		echo $ret."\n";
+	else
+		return $ret;
 }
 
 //---------------------------------------------------------------------------------
@@ -55,7 +64,7 @@ function submit($name, $value, $echo=true, $async=false)
 {
 	default_focus($name);
 	$submit_str = "<input type=\"submit\" class=\""
-	    .($async ? 'ajaxsubmit' : 'inputsubmit') 
+	    .($async ? 'ajaxsubmit' : 'inputsubmit')
 	    ."\" name=\"$name\"  id=\"$name\" value=\"$value\" >\n";
 	if ($echo)
 		echo $submit_str;
@@ -136,8 +145,8 @@ function submit_row($name, $value, $right=true, $extra="", $async=false)
 
 function button($name, $value, $onclick)
 {
-  default_focus($name);
-  echo "<input type=\"button\" class=\"inputsubmit\" name=\"$name\" value=\"$value\" onclick=\"$onclick\" />\n";
+  	default_focus($name);
+  	echo "<input type=\"button\" class=\"inputsubmit\" name=\"$name\" value=\"$value\" onclick=\"$onclick\" />\n";
 }
 
 function button_cell($name, $value, $onclick)
@@ -158,7 +167,7 @@ function check_value($name)
 
 function check($label, $name, $value, $submit_on_change=false)
 {
-  global $Ajax;
+  	global $Ajax;
 
 	default_focus($name);
 	if ($label)
@@ -202,8 +211,9 @@ function labelheader_cell($label, $params="")
 function label_cell($label, $params="", $id=null)
 {
     global $Ajax;
-    
-	if(isset($id)) {
+
+	if(isset($id))
+	{
 	    $params .= " id='$id'";
 	    $Ajax->addUpdate($id, $id, $label);
 	}
@@ -247,8 +257,8 @@ function label_row($label, $value, $params="", $params2="", $leftfill=0)
 {
 	echo "<tr>";
 	label_cells($label, $value, $params, $params2);
-	if($leftfill!=0)
-	  echo "<td colspan=$leftfill></td>";
+	if ($leftfill!=0)
+	  	echo "<td colspan=$leftfill></td>";
 	echo "</tr>\n";
 }
 
@@ -256,7 +266,7 @@ function label_row($label, $value, $params="", $params2="", $leftfill=0)
 
 function text_cells($label, $name, $value, $size="", $max="", $params="", $post_label="", $disabled="")
 {
-  global $Ajax;
+  	global $Ajax;
 
 	default_focus($name);
 	if ($label != null)
@@ -276,7 +286,7 @@ function text_cells($label, $name, $value, $size="", $max="", $params="", $post_
 
 function text_cells_ex($label, $name, $size, $max=null, $init=null, $params=null, $post_label=null)
 {
-  global $Ajax;
+  	global $Ajax;
 
 	default_focus($name);
 	if (!isset($_POST[$name]) || $_POST[$name] == "")
@@ -387,7 +397,7 @@ function percent_row($label, $name, $init=null)
 
 	if (!isset($_POST[$name]) || $_POST[$name]=="")
 	{
-			$_POST[$name] = $init== null ? '' : $init;
+		$_POST[$name] = $init== null ? '' : $init;
 	}
 
 	small_amount_row($label, $name, $_POST[$name], null, "%", user_percent_dec());
@@ -395,10 +405,10 @@ function percent_row($label, $name, $init=null)
 
 function amount_cells_ex($label, $name, $size, $max=null, $init=null, $params=null, $post_label=null, $dec=null)
 {
-global $Ajax;
+	global $Ajax;
 
 	if (!isset($dec))
-	  $dec = user_price_dec();
+	  	$dec = user_price_dec();
 	if (!isset($_POST[$name]) || $_POST[$name] == "")
 	{
 		if ($init)
@@ -449,16 +459,16 @@ function small_amount_row($label, $name, $init=null, $params=null, $post_label=n
 
 function qty_cells($label, $name, $init=null, $params=null, $post_label=null, $dec=null)
 {
-	if(!isset($dec))
-	  $dec = user_qty_dec();
+	if (!isset($dec))
+	  	$dec = user_qty_dec();
 
 	amount_cells_ex($label, $name, 15, 15, $init, $params, $post_label, $dec);
 }
 
 function qty_row($label, $name, $init=null, $params=null, $post_label=null, $dec=null)
 {
-	if(!isset($dec))
-	  $dec = user_qty_dec();
+	if (!isset($dec))
+	  	$dec = user_qty_dec();
 
 	echo "<tr>";
 	amount_cells($label, $name, $init, $params, $post_label, $dec);
@@ -467,8 +477,8 @@ function qty_row($label, $name, $init=null, $params=null, $post_label=null, $dec
 
 function small_qty_row($label, $name, $init=null, $params=null, $post_label=null, $dec=null)
 {
-	if(!isset($dec))
-	  $dec = user_qty_dec();
+	if (!isset($dec))
+	  	$dec = user_qty_dec();
 
 	echo "<tr>";
 	small_amount_cells($label, $name, $init, $params, $post_label, $dec);
@@ -486,8 +496,8 @@ function small_amount_cells($label, $name, $init=null, $params=null, $post_label
 
 function small_qty_cells($label, $name, $init=null, $params=null, $post_label=null, $dec=null)
 {
-  if (!isset($dec))
-	  $dec = user_qty_dec();
+  	if (!isset($dec))
+	  	$dec = user_qty_dec();
 	amount_cells_ex($label, $name, 7, 12, $init, $params, $post_label, $dec);
 }
 
@@ -495,8 +505,8 @@ function small_qty_cells($label, $name, $init=null, $params=null, $post_label=nu
 
 function textarea_cells($label, $name, $value, $cols, $rows, $params="")
 {
-  global $Ajax;
-  
+  	global $Ajax;
+
 	default_focus($name);
 	if ($label != null)
 		echo "<td $params>$label</td>\n";
@@ -517,8 +527,8 @@ function textarea_row($label, $name, $value, $cols, $rows, $params="")
 
 function text_row_with_submit($label, $name, $value, $size, $max, $input_name, $input_value)
 {
-  global $Ajax;
-  
+  	global $Ajax;
+
 	default_focus($name);
 	echo "<tr><td>$label</td>\n";
 	echo "<td>";

@@ -1048,7 +1048,8 @@ function stock_units_list_row($label, $name, $value, $enabled=true)
 
 	while($unit = db_fetch($result))
 	{
-		if ($value == "") {
+		if ($value == "")
+		{
 			$_POST[$name] = $unit['abbr'];
 		}
 		$descr = $unit['name'];
@@ -1971,8 +1972,10 @@ function themes_list_row($label, $name, $value)
 	$path = $path_to_root.'/themes/';
 	$themes = array();
 	$themedir = opendir($path);
-	while(false !== ($fname = readdir($themedir))) {
-	    if($fname!='.' && $fname!='..' && $fname!='CVS' && is_dir($path.$fname)) {
+	while(false !== ($fname = readdir($themedir)))
+	{
+	    if($fname!='.' && $fname!='..' && $fname!='CVS' && is_dir($path.$fname))
+	    {
 			$themes[] =  $fname;
 	    }
 	}
