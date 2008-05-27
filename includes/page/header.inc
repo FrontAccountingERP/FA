@@ -104,9 +104,9 @@ function page_header($title, $no_menu=false, $is_index=false, $onload="", $js=""
 	echo "<head><title>$title</title>";
 	$local_stylesheet = $_SESSION['language']->get_stylesheet();
 	echo "<meta http-equiv='Content-type' content='text/html' charset='$encoding'>";
-	echo "<link href='$local_path_to_root/themes/$theme/default.css' rel='stylesheet' type='text/css' /> \n";
+	echo "<link href='$local_path_to_root/themes/$theme/default.css' rel='stylesheet' type='text/css'> \n";
 	if (file_exists($local_path_to_root. "/".$local_stylesheet))
-		echo "<link href='$local_path_to_root/$local_stylesheet' rel='stylesheet' type='text/css' /> \n";
+		echo "<link href='$local_path_to_root/$local_stylesheet' rel='stylesheet' type='text/css'> \n";
 	send_scripts($js);
 
 	echo "</head> \n";

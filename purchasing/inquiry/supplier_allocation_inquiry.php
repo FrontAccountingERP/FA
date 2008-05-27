@@ -76,27 +76,27 @@ function get_transactions()
    		$sql .= " AND ".TB_PREF."supp_trans.supplier_id = '" . $_POST['supplier_id'] . "'";
    	if (isset($_POST['filterType']) && $_POST['filterType'] != reserved_words::get_all())
    	{
-   		if (($_POST['filterType'] == '1') || ($_POST['filterType'] == '2')) 
+   		if (($_POST['filterType'] == '1') || ($_POST['filterType'] == '2'))
    		{
    			$sql .= " AND ".TB_PREF."supp_trans.type = 20 ";
-   		} 
-   		elseif ($_POST['filterType'] == '3') 
+   		}
+   		elseif ($_POST['filterType'] == '3')
    		{
 			$sql .= " AND ".TB_PREF."supp_trans.type = 22 ";
-   		} 
-   		elseif (($_POST['filterType'] == '4') || ($_POST['filterType'] == '5')) 
+   		}
+   		elseif (($_POST['filterType'] == '4') || ($_POST['filterType'] == '5'))
    		{
 			$sql .= " AND ".TB_PREF."supp_trans.type = 21 ";
    		}
 
-   		if (($_POST['filterType'] == '2') || ($_POST['filterType'] == '5')) 
+   		if (($_POST['filterType'] == '2') || ($_POST['filterType'] == '5'))
    		{
    			$today =  date2sql(Today());
 			$sql .= " AND ".TB_PREF."supp_trans.due_date < '$today' ";
    		}
    	}
 
-   	if (!check_value('showSettled')) 
+   	if (!check_value('showSettled'))
    	{
    		$sql .= " AND (round(abs(ov_amount + ov_gst + ov_discount) - alloc,6) != 0) ";
    	}
@@ -121,28 +121,28 @@ if (db_num_rows($result) == 0)
 
 /*show a table of the transactions returned by the sql */
 
-start_table("$table_style width=80%");
+start_table("$table_style width=90%");
 if ($_POST['supplier_id'] == reserved_words::get_all())
 	$th = array(_("Type"), _("Number"), _("Reference"), _("Supplier"),
 		_("Supp Reference"), _("Date"), _("Due Date"), _("Currency"),
-		_("Debit"), _("Credit"), _("Allocated"), _("Balance"));
-else		
+		_("Debit"), _("Credit"), _("Allocated"), _("Balance"), "");
+else
 	$th = array(_("Type"), _("Number"), _("Reference"),	_("Supp Reference"), _("Date"), _("Due Date"),
-		_("Debit"), _("Credit"), _("Allocated"), _("Balance"));
+		_("Debit"), _("Credit"), _("Allocated"), _("Balance"), "");
 table_header($th);
 
 $j = 1;
 $k = 0; //row colour counter
 $over_due = false;
-while ($myrow = db_fetch($result)) 
+while ($myrow = db_fetch($result))
 {
 
 	if ($myrow['OverDue'] == 1)
 	{
 		start_row("class='overduebg'");
 		$over_due = true;
-	} 
-	else 
+	}
+	else
 	{
 		alt_table_row_color($k);
 	}
@@ -170,7 +170,7 @@ while ($myrow = db_fetch($result))
 	amount_cell($myrow["Allocated"]);
 	if ($myrow["type"] == 1 || $myrow["type"] == 21 || $myrow["type"] == 22)
 		$balance = -$myrow["TotalAmount"] - $myrow["Allocated"];
-	else	
+	else
 		$balance = $myrow["TotalAmount"] - $myrow["Allocated"];
 	amount_cell($balance);
 
@@ -179,9 +179,11 @@ while ($myrow = db_fetch($result))
 	if (($myrow["type"] == 1 || $myrow["type"] == 21 || $myrow["type"] == 22) &&
 		$balance > 0)
 	{
-		label_cell("<a href='$path_to_root/purchasing/allocations/supplier_allocate.php?trans_no=" . 	
+		label_cell("<a href='$path_to_root/purchasing/allocations/supplier_allocate.php?trans_no=" .
 			$myrow["trans_no"]. "&trans_type=" . $myrow["type"] . "'>" . _("Allocations") . "</a>");
 	}
+	else
+		label_cell("");
 
 	end_row();
 

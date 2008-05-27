@@ -19,6 +19,12 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+27-May-2008 Joe Hunt
+# Changed more files with new html/css.
+$ /includes/page/header.inc
+  /purchasing/inquiry/supplier_allocation_inquiry.php
+  /sales/credit_note_entry.php
+  
 26-May-2008 Joe Hunt
 # Fixed many minor bugs, new ones as well as debtor_trans related.
 ! Changed to use DOCTYPE html 4.01 transitionel. Some files/css needed change.

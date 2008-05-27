@@ -113,7 +113,7 @@ function can_process()
 		display_error( _("The entered reference is already in use."));
 		set_focus('ref');
 		$input_error = 1;
-	    } 
+	    }
 	}
 	if (!is_date($_POST['OrderDate'])) {
 		display_error(_("The entered date for the credit note is invalid."));
@@ -246,7 +246,7 @@ if ($customer_error == "") {
 echo "<br><center><table><tr>";
 submit_cells('Update', _("Update"));
 submit_cells('ProcessCredit', _("Process Credit Note"));
-echo "</tr></table>";
+echo "</tr></table></center>";
 
 end_form();
 end_page();
