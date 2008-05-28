@@ -168,6 +168,7 @@ function get_allocations_for_transaction($type, $trans_no)
 			sql2date($myrow["tran_date"]), sql2date($myrow["due_date"]),
 			$myrow["Total"], $myrow["alloc"] - $myrow["amt"], $myrow["amt"]);
 	}
+
 }
 
 //--------------------------------------------------------------------------------
@@ -200,7 +201,7 @@ function edit_allocations_for_transaction($type, $trans_no)
 
         foreach ($_SESSION['alloc']->allocs as $allocn_item)
         {
-    		alt_table_row_color($k);
+			alt_table_row_color($k);
 
     	    label_cell(systypes::name($allocn_item->type));
     		label_cell(get_trans_view_str($allocn_item->type, $allocn_item->type_no));

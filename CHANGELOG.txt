@@ -19,6 +19,13 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+28-May-2008 Joe Hunt
+# More bugs related to debtor_trans changes (positive amounts)
+$ /gl/includes/db/gl_db_banking.inc
+  /sales/allocations/customer_allocate.php
+  /sales/includes/db/custalloc_db.inc
+  /sales/inquiry/customer_allocation_inquiry.php
+
 27-May-2008 Joe Hunt
 # Changed more files with new html/css.
 $ /includes/page/header.inc

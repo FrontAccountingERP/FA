@@ -172,8 +172,8 @@ while ($myrow = db_fetch($result))
 		$allocations_str = $allocations;
 
 	}
-	elseif ($myrow["type"] == systypes::cust_payment() &&
-		($myrow['TotalAmount'] + $myrow['Allocated']) > 0)
+	elseif (($myrow["type"] == systypes::cust_payment() || $myrow["type"] == systypes::bank_deposit()) &&
+		($myrow['TotalAmount'] - $myrow['Allocated']) > 0)
 	{
 		/*its a receipt  which could have an allocation*/
 		$allocations_str = $allocations;
@@ -196,7 +196,9 @@ while ($myrow = db_fetch($result))
 		label_cell($myrow["CustName"]);
 		label_cell($myrow["CustCurrCode"]);
 	}
-	display_debit_or_credit_cells($myrow["TotalAmount"]);
+	display_debit_or_credit_cells(
+	    $myrow['type']==11 || $myrow['type']==12 || $myrow['type']==2 ?
+		-$myrow["TotalAmount"] : $myrow["TotalAmount"]);
 	amount_cell(abs($myrow["Allocated"]));
 	amount_cell(abs($myrow["TotalAmount"]) - $myrow["Allocated"]);
 	label_cell($allocations_str);
