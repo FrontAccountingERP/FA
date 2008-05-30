@@ -19,6 +19,11 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+30-May-2008 Joe Hunt
+# Fixed bug in 2 files regarding stock movements. Moved from Invoice to Delivery.
+$ /inventory/inquiry/stock_movements.php
+  /reporting/rep302.php
+
 28-May-2008 Joe Hunt
 # More bugs related to debtor_trans changes (positive amounts)
 $ /gl/includes/db/gl_db_banking.inc

@@ -123,7 +123,7 @@ function getPeriods($stockid, $location)
 			FROM ".TB_PREF."stock_moves
 			WHERE stock_id='$stockid'
 			AND loc_code ='$location'
-			AND (type=10 OR type=11)
+			AND (type=13 OR type=11)
 			AND visible=1";
 
     $TransResult = db_query($sql,"No transactions were returned");
@@ -160,11 +160,11 @@ function print_inventory_planning()
 
 	$cols = array(0, 50, 150, 180, 210, 240, 270, 300, 330, 390, 435, 480, 525);
 
-	$per0 = strftime('%b',mktime(0,0,0,date('m'),date('d'),date('Y')));
-	$per1 = strftime('%b',mktime(0,0,0,date('m')-1,date('d'),date('Y')));
-	$per2 = strftime('%b',mktime(0,0,0,date('m')-2,date('d'),date('Y')));
-	$per3 = strftime('%b',mktime(0,0,0,date('m')-3,date('d'),date('Y')));
-	$per4 = strftime('%b',mktime(0,0,0,date('m')-4,date('d'),date('Y')));
+	$per0 = strftime('%b',mktime(0,0,0,date('m'),1,date('Y')));
+	$per1 = strftime('%b',mktime(0,0,0,date('m')-1,1,date('Y')));
+	$per2 = strftime('%b',mktime(0,0,0,date('m')-2,1,date('Y')));
+	$per3 = strftime('%b',mktime(0,0,0,date('m')-3,1,date('Y')));
+	$per4 = strftime('%b',mktime(0,0,0,date('m')-4,1,date('Y')));
 
 	$headers = array(_('Category'), '', $per4, $per3, $per2, $per1, $per0, '3*M',
 		_('QOH'), _('Cust Ord'), _('Supp Ord'), _('Sugg Ord'));

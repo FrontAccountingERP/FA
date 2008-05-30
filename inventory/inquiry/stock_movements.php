@@ -70,7 +70,7 @@ $before_qty = db_query($sql, "The starting quantity on hand could not be calcula
 $before_qty_row = db_fetch_row($before_qty);
 $after_qty = $before_qty = $before_qty_row[0];
 
-if (!isset($before_qty_row[0])) 
+if (!isset($before_qty_row[0]))
 {
 	$after_qty = $before_qty = 0;
 }
@@ -86,7 +86,7 @@ $k = 0; //row colour counter
 $total_in = 0;
 $total_out = 0;
 
-while ($myrow = db_fetch($result)) 
+while ($myrow = db_fetch($result))
 {
 
 	alt_table_row_color($k);
@@ -95,12 +95,12 @@ while ($myrow = db_fetch($result))
 
 	$type_name = systypes::name($myrow["type"]);
 
-	if ($myrow["qty"] > 0) 
+	if ($myrow["qty"] > 0)
 	{
 		$quantity_formatted = number_format2($myrow["qty"],user_qty_dec());
 		$total_in += $myrow["qty"];
 	}
-	else 
+	else
 	{
 		$quantity_formatted = number_format2(-$myrow["qty"],user_qty_dec());
 		$total_out += -$myrow["qty"];
@@ -118,15 +118,15 @@ while ($myrow = db_fetch($result))
 	$person = $myrow["person_id"];
 	$gl_posting = "";
 
-	if (($myrow["type"] == 10) || ($myrow["type"] == 11)) 
+	if (($myrow["type"] == 13) || ($myrow["type"] == 11))
 	{
 		$cust_row = get_customer_details_from_trans($myrow["type"], $myrow["trans_no"]);
 
 		if (strlen($cust_row['name']) > 0)
 			$person = $cust_row['name'] . " (" . $cust_row['br_name'] . ")";
 
-	} 
-	elseif ($myrow["type"] == 25) 
+	}
+	elseif ($myrow["type"] == 25)
 	{
 		// get the supplier name
 		$sql = "SELECT supp_name FROM ".TB_PREF."suppliers WHERE supplier_id = '" . $myrow["person_id"] . "'";
@@ -136,15 +136,15 @@ while ($myrow = db_fetch($result))
 
 		if (strlen($supp_row['supp_name']) > 0)
 			$person = $supp_row['supp_name'];
-	} 
-	elseif ($myrow["type"] == systypes::location_transfer() || $myrow["type"] == systypes::inventory_adjustment()) 
+	}
+	elseif ($myrow["type"] == systypes::location_transfer() || $myrow["type"] == systypes::inventory_adjustment())
 	{
 		// get the adjustment type
 		$movement_type = get_movement_type($myrow["person_id"]);
 		$person = $movement_type["name"];
-	} 
-	elseif ($myrow["type"]==systypes::work_order() || $myrow["type"] == 28  || 
-		$myrow["type"] == 29) 
+	}
+	elseif ($myrow["type"]==systypes::work_order() || $myrow["type"] == 28  ||
+		$myrow["type"] == 29)
 	{
 		$person = "";
 	}
@@ -165,7 +165,7 @@ while ($myrow = db_fetch($result))
 }
 //end of while loop
 
-if ($total_in != 0 || $total_out != 0) 
+if ($total_in != 0 || $total_out != 0)
 {
 	start_row("class='inquirybg'");
     label_cell("<b>"._("Quantity on hand after") . " " . $_POST['BeforeDate']."</b>", "align=center colspan=7");
