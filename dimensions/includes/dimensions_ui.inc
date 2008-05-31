@@ -14,19 +14,19 @@ function display_dimension_payments($id)
 
     if (db_num_rows($result) == 0)
     {
-    	echo _("There are no transactions for this dimension.") . "<br>";
-    } 
-    else 
+    	display_note(_("There are no transactions for this dimension."));
+    }
+    else
     {
 		display_heading2(_("Transactions for this Dimension"));
 		start_table($table_style);
 		$th = array(_("Type"), _("#"), _("Reference"),
 			_("Date"), _("Debit"), _("Credit"));
-		table_header($th);	
+		table_header($th);
 
         $total = $k = 0;
 
-        while ($myrow = db_fetch($result)) 
+        while ($myrow = db_fetch($result))
         {
 
 			alt_table_row_color($k);
