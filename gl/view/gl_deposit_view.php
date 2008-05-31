@@ -75,7 +75,7 @@ $items = get_gl_trans(systypes::bank_deposit(), $trans_no);
 
 if (db_num_rows($items) == 0)
 {
-	display_note(_("There are no items for this deposit."))";
+	display_note(_("There are no items for this deposit."));
 }
 else
 {
