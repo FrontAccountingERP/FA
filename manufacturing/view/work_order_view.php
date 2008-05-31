@@ -18,8 +18,8 @@ page(_("View Work Order"), true, false, "", $js);
 
 //-------------------------------------------------------------------------------------------------
 $woid = 0;
-if ($_GET['trans_no'] != "") 
-{	
+if ($_GET['trans_no'] != "")
+{
 	$woid = $_GET['trans_no'];
 }
 
@@ -34,33 +34,33 @@ else
 
 echo "<center>";
 
-// display the WO requirements 
+// display the WO requirements
 echo "<br>";
-if ($myrow["released"] == false) 
-{	
+if ($myrow["released"] == false)
+{
     display_heading2(_("BOM for item:") . " " . $myrow["StockItemName"]);
     display_bom($myrow["stock_id"]);
-} 
-else 
+}
+else
 {
-	display_heading2(_("Work Order Requirements"));		
+	display_heading2(_("Work Order Requirements"));
 	display_wo_requirements($woid, $myrow["units_reqd"]);
-	if ($myrow["type"] == wo_types::advanced()) 
-	{	
+	if ($myrow["type"] == wo_types::advanced())
+	{
     	echo "<br><table cellspacing=7><tr valign=top><td>";
-    	display_heading2(_("Issues"));		
+    	display_heading2(_("Issues"));
     	display_wo_issues($woid);
     	echo "</td><td>";
     	display_heading2(_("Productions"));
     	display_wo_productions($woid);
     	echo "</td><td>";
     	display_heading2(_("Payments"));
-    	display_wo_payments($woid);	
+    	display_wo_payments($woid);
     	echo "</td></tr></table>";
-	}		
+	}
 }
 
-echo "<br>";
+echo "<br></center>";
 
 is_voided_display(systypes::work_order(), $woid, _("This work order has been voided."));
 

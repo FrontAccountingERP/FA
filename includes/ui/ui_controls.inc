@@ -63,7 +63,8 @@ function hyperlink_back($center=true)
 {
 	if ($center)
 		echo "<center>";
-	echo "<a href='javascript:goBack();'>"._("Back")."</a>\n";
+	//echo "<a href='javascript:goBack();'>"._("Back")."</a>\n";
+	echo "<p><a href='javascript:goBack();'>"._("Back")."</a></p>\n";
 	if ($center)
 		echo "</center>";
 	echo "<br>";

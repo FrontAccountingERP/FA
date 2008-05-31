@@ -13,8 +13,8 @@ function display_bom($item_check)
     if (db_num_rows($result) == 0)
     {
     	display_note(_("The bill of material for this item is empty."), 0, 1);
-    } 
-    else 
+    }
+    else
     {
 
         start_table($table_style);
@@ -28,7 +28,7 @@ function display_bom($item_check)
 
         $total_cost = 0;
 
-        while ($myrow = db_fetch($result)) 
+        while ($myrow = db_fetch($result))
         {
 
 			alt_table_row_color($k);
@@ -68,8 +68,8 @@ function display_wo_requirements($woid, $quantity, $show_qoh=false, $date=null)
     if (db_num_rows($result) == 0)
     {
     	display_note(_("There are no Requirements for this Order."), 1, 0);
-    } 
-    else 
+    }
+    else
     {
 
         start_table("$table_style width=80%");
@@ -84,7 +84,7 @@ function display_wo_requirements($woid, $quantity, $show_qoh=false, $date=null)
 		if ($date == null)
 			$date = Today();
 
-        while ($myrow = db_fetch($result)) 
+        while ($myrow = db_fetch($result))
         {
 
 			$qoh = 0;
@@ -96,13 +96,13 @@ function display_wo_requirements($woid, $quantity, $show_qoh=false, $date=null)
 			if ($show_qoh)
 				$qoh = get_qoh_on_date($myrow["stock_id"], $myrow["loc_code"], $date);
 
-			if ($show_qoh && ($myrow["units_req"] * $quantity > $qoh) && 
-				!sys_prefs::allow_negative_stock()) 
+			if ($show_qoh && ($myrow["units_req"] * $quantity > $qoh) &&
+				!sys_prefs::allow_negative_stock())
 			{
 				// oops, we don't have enough of one of the component items
 				start_row("class='stockmankobg'");
 				$has_marked = true;
-			} 
+			}
 			else
 				alt_table_row_color($k);
 
@@ -142,8 +142,8 @@ function display_wo_productions($woid)
     if (db_num_rows($result) == 0)
     {
     	display_note(_("There are no Productions for this Order."), 1, 1);
-    } 
-    else 
+    }
+    else
     {
         start_table($table_style);
         $th = array(_("#"), _("Reference"), _("Date"), _("Quantity"));
@@ -153,7 +153,7 @@ function display_wo_productions($woid)
         $k = 0; //row colour counter
 		$total_qty = 0;
 
-        while ($myrow = db_fetch($result)) 
+        while ($myrow = db_fetch($result))
         {
 
 			alt_table_row_color($k);
@@ -167,7 +167,7 @@ function display_wo_productions($woid)
 			end_row();
 		}//end of while
 
-		label_row(_("Total"), number_format2($total_qty,user_qty_dec()), 
+		label_row(_("Total"), number_format2($total_qty,user_qty_dec()),
 			"colspan=3", "nowrap align=right");
 
 		end_table();
@@ -185,8 +185,8 @@ function display_wo_issues($woid)
     if (db_num_rows($result) == 0)
     {
     	display_note(_("There are no Issues for this Order."), 0, 1);
-    } 
-    else 
+    }
+    else
     {
         start_table($table_style);
         $th = array(_("#"), _("Reference"), _("Date"));
@@ -195,7 +195,7 @@ function display_wo_issues($woid)
 
         $k = 0; //row colour counter
 
-        while ($myrow = db_fetch($result)) 
+        while ($myrow = db_fetch($result))
         {
 
 			alt_table_row_color($k);
@@ -220,9 +220,9 @@ function display_wo_payments($woid)
 
     if (db_num_rows($result) == 0)
     {
-    	echo _("There are no Payments for this Order.") . "<br>";
-    } 
-    else 
+    	display_note(_("There are no Payments for this Order."), 0, 1);
+    }
+    else
     {
         start_table($table_style);
         $th = array(_("#"), _("Reference"), _("Date"), _("Amount"));
@@ -231,7 +231,7 @@ function display_wo_payments($woid)
 
         $k = 0; //row colour counter
 
-        while ($myrow = db_fetch($result)) 
+        while ($myrow = db_fetch($result))
         {
 
 			alt_table_row_color($k);
@@ -256,7 +256,7 @@ function display_wo_details($woid, $suppress_view_link=false)
 
 	$myrow = get_work_order($woid);
 
-    if (strlen($myrow[0]) == 0) 
+    if (strlen($myrow[0]) == 0)
     {
     	display_note(_("The work order number sent is not valid."));
     	exit;
@@ -264,11 +264,11 @@ function display_wo_details($woid, $suppress_view_link=false)
 
    	start_table("$table_style width=80%");
 
-	if ($myrow["released"] == true) 
+	if ($myrow["released"] == true)
 		$th = array(_("#"), _("Reference"), _("Type"), _("Manufactured Item"),
 			_("Into Location"), _("Date"), _("Required By"), _("Quantity Required"),
 			_("Released Date"), _("Manufactured"));
-	else		
+	else
 		$th = array(_("#"), _("Reference"), _("Type"), _("Manufactured Item"),
 			_("Into Location"), _("Date"), _("Required By"), _("Quantity Required"));
 
@@ -287,7 +287,7 @@ function display_wo_details($woid, $suppress_view_link=false)
 
 	qty_cell($myrow["units_reqd"]);
 
-	if ($myrow["released"] == true) 
+	if ($myrow["released"] == true)
 	{
 		label_cell(sql2date($myrow["released_date"]));
 		qty_cell($myrow["units_issued"]);
@@ -298,7 +298,7 @@ function display_wo_details($woid, $suppress_view_link=false)
 
 	end_table();
 
-    if ($myrow["closed"] == true) 
+    if ($myrow["closed"] == true)
     {
     	display_note(_("This work order is closed."));
     }
@@ -312,7 +312,7 @@ function display_wo_details_quick($woid, $suppress_view_link=false)
 
 	$myrow = get_work_order($woid);
 
-    if (strlen($myrow[0]) == 0) 
+    if (strlen($myrow[0]) == 0)
     {
     	display_note(_("The work order number sent is not valid."));
     	exit;
@@ -322,7 +322,7 @@ function display_wo_details_quick($woid, $suppress_view_link=false)
 
 	$th = array(_("#"), _("Reference"), _("Type"), _("Manufactured Item"),
 		_("Into Location"), _("Date"), _("Quantity"));
-	table_header($th);	
+	table_header($th);
 
 	start_row();
 	if ($suppress_view_link)
@@ -343,7 +343,7 @@ function display_wo_details_quick($woid, $suppress_view_link=false)
 
 	end_table();
 
-    if ($myrow["closed"] == true) 
+    if ($myrow["closed"] == true)
     {
     	display_note(_("This work order is closed."));
     }

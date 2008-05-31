@@ -595,7 +595,7 @@ function get_js_date_picker()
 #CCIframe { display: none; left: 0px; position: absolute; top: 0px; height: 250px; width: 250px; z-index: 99;}
 #CC { position:absolute; background-color:#FFF; margin:0; padding:0; display:none; z-index: 100;}
 #CC table { font-family: arial, verdana, helvetica, sans-serif;font-size: 8pt; border-left: 1px solid #336; border-right: 1px solid #336;}
-#CC th { font-weight: normal;}
+#CC th { font-weight: normal; text-align: center;}
 #CC th a { font-weight: normal; text-decoration: none; color: #FFF; padding: 1px;}
 #CC td { text-align: center;}
 #CC .header { background-color: #336;}

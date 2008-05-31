@@ -29,8 +29,9 @@ if (!isset($_POST['customer_id']))
 	$_POST['customer_id'] = get_global_customer();
 
 start_table("class='tablestyle_noborder'");
+start_row();
 
-customer_list_cells(_("Select a customer: "), 'customer_id', $_POST['customer_id'], true);
+customer_list_cells(_("Select a customer: "), 'customer_id', null, true);
 
 date_cells(_("From:"), 'TransAfterDate', null, -30);
 date_cells(_("To:"), 'TransToDate', null, 1);
@@ -41,7 +42,7 @@ if (!isset($_POST['filterType']))
 cust_allocations_list_cells(null, 'filterType', $_POST['filterType'], true);
 
 submit_cells('Refresh Inquiry', _("Search"));
-
+end_row();
 end_table();
 
 end_form();
@@ -145,8 +146,7 @@ function get_transactions()
 }
 
 //------------------------------------------------------------------------------------------------
-
-if (($_POST['customer_id'] != "") && ($_POST['customer_id'] != reserved_words::get_all()))
+if ($_POST['customer_id'] != "" && $_POST['customer_id'] != reserved_words::get_all())
 {
 	$customer_record = get_customer_details($_POST['customer_id']);
     display_customer_summary($customer_record);

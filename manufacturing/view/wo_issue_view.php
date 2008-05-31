@@ -4,7 +4,10 @@ $page_security = 10;
 $path_to_root="../..";
 include_once($path_to_root . "/includes/session.inc");
 
-page(_("View Work Order Issue"), true);
+$js = "";
+if ($use_popup_windows)
+	$js .= get_js_open_window(900, 500);
+page(_("View Work Order Issue"), true, false, "", $js);
 
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/manufacturing.inc");
@@ -15,7 +18,7 @@ include_once($path_to_root . "/manufacturing/includes/manufacturing_ui.inc");
 
 //-------------------------------------------------------------------------------------------------
 
-if ($_GET['trans_no'] != "") 
+if ($_GET['trans_no'] != "")
 {
 	$wo_issue_no = $_GET['trans_no'];
 }
@@ -31,7 +34,7 @@ function display_wo_issue($issue_no)
     start_table($table_style);
     $th = array(_("Issue #"), _("Reference"), _("For Work Order #"),
     	_("Item"), _("From Location"), _("To Work Centre"), _("Date of Issue"));
-    table_header($th);	
+    table_header($th);
 
 	start_row();
 	label_cell($myrow["issue_no"]);
@@ -60,9 +63,9 @@ function display_wo_issue_details($issue_no)
 
     if (db_num_rows($result) == 0)
     {
-    	echo "<br>" . _("There are no items for this issue.");
-    } 
-    else 
+    	display_note(_("There are no items for this issue."));
+    }
+    else
     {
         start_table($table_style);
         $th = array(_("Component"), _("Quantity"), _("Units"));
@@ -74,7 +77,7 @@ function display_wo_issue_details($issue_no)
 
         $total_cost = 0;
 
-        while ($myrow = db_fetch($result)) 
+        while ($myrow = db_fetch($result))
         {
 
 			alt_table_row_color($k);

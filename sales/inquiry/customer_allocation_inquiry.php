@@ -185,8 +185,7 @@ while ($myrow = db_fetch($result))
 	}
 
 	label_cell(systypes::name($myrow["type"]));
-
-	label_cell(get_customer_trans_view_str($myrow["type"], $myrow["trans_no"]));
+	label_cell(get_trans_view_str($myrow["type"], $myrow["trans_no"]));
 	label_cell($myrow["reference"]);
 	label_cell($preview_order_str);
 	label_cell(sql2date($myrow["tran_date"]), "nowrap");

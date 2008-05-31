@@ -19,6 +19,20 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+31-May-2008 Joe Hunt
+# A lot of annoying layout bugs taken. Mostly from views and inquiries. A couple of files are critical, ui_view and ui_lists!
+$ /gl/view/gl_deposit_view.php
+  /gl/view/gl_payment_view.php
+  /includes/ui/ui_controls.inc
+  /includes/ui/ui_lists.inc
+  /includes/ui/ui_view.inc
+  /manufacturing/work_order_add_finished.php
+  /manufacturing/includes/manufacturing_ui.inc
+  /manufacturing/view/work_order_view.php
+  /manufacturing/view/wo_issue_view.php
+  /sales/inquiry/customer_allocation_inquiry.php
+  /sales/inquiry/customer_inquiry.php
+
 30-May-2008 Joe Hunt
 # Fixed bug in 2 files regarding stock movements. Moved from Invoice to Delivery.
 $ /inventory/inquiry/stock_movements.php

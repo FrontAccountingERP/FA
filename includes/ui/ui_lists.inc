@@ -77,6 +77,7 @@ function supplier_list($name, $selected_id, $all_option=false, $submit_on_change
 		if ($selected_id == "")
 		{
 			$selected_id = $all_items;
+			$_POST[$name] = $selected_id;
 		}
 	}
 
@@ -187,6 +188,7 @@ function customer_list($name, $selected_id, $all_option=false, $submit_on_change
 		if ($selected_id == "")
 		{
 			$selected_id =  $all_items;
+			$_POST[$name] = $selected_id;
 		}
 	}
 	while ($customer_row = db_fetch_row($customer_result))
@@ -669,6 +671,7 @@ function stock_items_list($name, $selected_id, $all_option=false, $submit_on_cha
 		if ($selected_id == "")
 		{
 			$selected_id = $all_items;
+			$_POST[$name] = $selected_id;
 		}
 	}
 
@@ -953,6 +956,7 @@ function stock_purchasable_items_list($name, &$selected_id,	$all_option=false, $
 		if ($selected_id == "")
 		{
 			$selected_id = $all_items;
+			$_POST[$name] = $selected_id;
 		}
 	}
 

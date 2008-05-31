@@ -29,7 +29,7 @@ $company_currency = get_company_currency();
 
 $show_currencies = false;
 
-if ($from_trans['bank_curr_code'] != $company_currency) 
+if ($from_trans['bank_curr_code'] != $company_currency)
 {
 	$show_currencies = true;
 }
@@ -73,9 +73,9 @@ $items = get_gl_trans(systypes::bank_payment(), $trans_no);
 
 if (db_num_rows($items)==0)
 {
-	echo "<br>" . _("There are no items for this payment.");
-} 
-else 
+	display_note(_("There are no items for this payment."));
+}
+else
 {
 
 	display_heading2(_("Items for this Payment"));
@@ -91,10 +91,10 @@ else
     $k = 0; //row colour counter
 	$totalAmount = 0;
 
-    while ($item = db_fetch($items)) 
+    while ($item = db_fetch($items))
     {
 
-		if ($item["account"] != $from_trans["account_code"]) 
+		if ($item["account"] != $from_trans["account_code"])
 		{
     		alt_table_row_color($k);
 
