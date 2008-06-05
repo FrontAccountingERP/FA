@@ -19,6 +19,12 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+05-Jun-2008 Joe Hunt
+! Made an improment to the date picker. Shows the week number as well. Many delivery systems are week number based.
+$ /includes/ui/ui_view.inc
+# Fixed a html layout bug
+$ /includes/page/header.inc
+
 31-May-2008 Joe Hunt
 # A lot of annoying layout bugs taken. Mostly from views and inquiries. A couple of files are critical, ui_view and ui_lists!
 $ /gl/view/gl_deposit_view.php

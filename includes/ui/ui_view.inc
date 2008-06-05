@@ -592,7 +592,7 @@ function get_js_date_picker()
     $fpath = $comp_path.'/'.user_company().'/js_cache/'.'date_picker.js';
 
 	$js = "<style>
-#CCIframe { display: none; left: 0px; position: absolute; top: 0px; height: 250px; width: 250px; z-index: 99;}
+#CCIframe { display: none; left: 0px; position: absolute; top: 0px; height: 250px; width: 270px; z-index: 99;}
 #CC { position:absolute; background-color:#FFF; margin:0; padding:0; display:none; z-index: 100;}
 #CC table { font-family: arial, verdana, helvetica, sans-serif;font-size: 8pt; border-left: 1px solid #336; border-right: 1px solid #336;}
 #CC th { font-weight: normal; text-align: center;}
@@ -601,6 +601,7 @@ function get_js_date_picker()
 #CC .header { background-color: #336;}
 #CC .weekday { background-color: #DDD; color: #000;}
 #CC .weekend { background-color: #FFC; color: #000;}
+#CC .weekno { background-color: #c0daf8; color: #555;}
 #CC .current { border: 1px solid #339; background-color: #336; color: #FFF;}
 #CC .weekday,#CC .weekend,#CC .current { display: block; text-decoration: none; border: 1px solid #FFF; width: 2em;}
 #CC .weekday:hover,#CC .weekend:hover,#CC .current:hover { color: #FFF; background-color: #336; border: 1px solid #999;}
@@ -623,6 +624,7 @@ function get_js_date_picker()
 	$wstart = (($date_system == 1 || $date_system == 2) ? 6 : ($how == 0 ? 0 : 1));			// weekstart (sun = 0, mon = 1)
 	$months = array(_("January"),_("February"),_("March"),_("April"),_("May"),_("June"),_("July"),_("August"),_("September"),_("October"),_("November"),_("December"));
 	$wdays = array(_("Su"),_("Mo"),_("Tu"),_("We"),_("Th"),_("Fr"),_("Sa"));
+	$wno = _("W"); // week no
 	$back = _("Back");
 	if ($date_system == 1)
 		list($cyear, $cmon, $cday) = gregorian_to_jalali(date("Y"), date("n"), date("j"));
@@ -801,6 +803,21 @@ function CC() {
     dateField.value = '';
     hide();
   }
+  this.getWeek = getWeek;
+  function getWeek(year, month, day) {
+";
+	if ($how == 0)
+		$js .= "  day++;";
+	$js .= "
+    var date = new Date(year,month-1,day);
+    var D = date.getDay();
+    if(D == 0) D = 7;
+    date.setDate(date.getDate() + (4 - D));
+    var YN = date.getFullYear();
+    var ZBDoCY = Math.floor((date.getTime() - new Date(YN, 0, 1, -6)) / 86400000);
+    var WN = 1 + Math.floor(ZBDoCY / 7);
+    return WN;
+  }
   this.setDate = setDate;
   function setDate(year, month, day) {
     if (dateField) {
@@ -860,6 +877,7 @@ function CC() {
   function calendarDrawTable() {
     var dayOfMonth = 1;
     var wstart = $wstart;
+    var wno = '&nbsp;$wno&nbsp;';
     var validDay = 0;
     var startDayOfWeek = getDayOfWeek(currentYear, currentMonth, dayOfMonth);
     var daysInMonth = getDaysInMonth(currentYear, currentMonth);
@@ -867,10 +885,11 @@ function CC() {
     var table = \"<table cellspacing='0' cellpadding='0' border='0'>\";
     table += \"<tr class='header'>\";
     table += \"  <td colspan='2' class='previous'><a href='javascript:changeCCMonth(-1);'>&lt;</a><br><a href='javascript:changeCCYear(-1);'>&laquo;</a></td>\";
-    table += \"  <td colspan='3' class='title'>\" + months[currentMonth-1] + \"<br>\" + currentYear + \"</td>\";
+    table += \"  <td colspan='4' class='title'>\" + months[currentMonth-1] + \"<br>\" + currentYear + \"</td>\";
     table += \"  <td colspan='2' class='next'><a href='javascript:changeCCMonth(1);'>&gt;</a><br><a href='javascript:changeCCYear(1);'>&raquo;</a></td>\";
     table += \"</tr>\";
     table += \"<tr>\";
+    table += \"<th class='weekno'>\"+wno+\"</th>\";
     for (var n=0; n<7; n++)
     	table += \"<th>\" + wdays[(wstart+n)%7]+\"</th>\";
     table += \"</tr>\";
@@ -882,6 +901,13 @@ function CC() {
           validDay = 1;
         } else if (validDay == 1 && dayOfMonth > daysInMonth) {
           validDay = 0;
+        }
+        if (n==0)
+        {
+        	if (dayOfMonth > daysInMonth)
+          		table += \"<td class='empty'>&nbsp;</td>\";
+       		else
+       			table += \"<td class='weekno'>\"+getWeek(currentYear, currentMonth, dayOfMonth)+\"</td>\";
         }
         if(validDay) {
           if (dayOfMonth == selectedDay && currentYear == selectedYear && currentMonth == selectedMonth) {
@@ -908,7 +934,7 @@ function CC() {
       }
       table += \"</tr>\";
     }
-    table += \"<tr class='header'><th colspan='7' style='padding: 3px;text-align:center;'><a href='javascript:hideCC();'>$back</a></td></tr>\";
+    table += \"<tr class='header'><th colspan='8' style='padding: 3px;text-align:center;'><a href='javascript:hideCC();'>$back</a></td></tr>\";
     table += \"</table>\";
     return table;
   }
