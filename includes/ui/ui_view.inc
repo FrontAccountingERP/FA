@@ -275,7 +275,7 @@ function get_trans_view_str($type, $trans_no, $label="")
 function exchange_rate_display($from_currency, $to_currency, $date_, $buttons=true)
 {
     global $Ajax;
-
+    $hint = _('Get daily ECB exchange rate and save for later use in invoicing process');
 	if ($from_currency != $to_currency)
 	{
 		if ($buttons && isset($_POST['get_rate']))
@@ -298,7 +298,7 @@ function exchange_rate_display($from_currency, $to_currency, $date_, $buttons=tr
 			$rate = get_exchange_rate_from_to($to_currency, $from_currency, $date_);
 		$rate = number_format2($rate, user_exrate_dec());
     	label_row(_("Exchange Rate:"),"1 " . $from_currency . " = <span id='_ex_rate'>" . $rate . "</span> " . $to_currency .
-			($buttons?"  " . submit('get_rate',_("Get"), false, true):""));
+		($buttons?"  " . submit('get_rate',_("Get"), false, $hint, true):""));
 	    if($buttons) {
 		  $Ajax->addUpdate('get_rate','_ex_rate', $rate);
 		}
@@ -536,7 +536,7 @@ function get_js_open_window($width, $height)
 		. "{\n"
 		. " var left = (screen.width - $width) / 2;\n"
 		. " var top = (screen.height - $height) / 2;\n"
-		. " window.open(url, title, 'width=$width,height=$height,left='+left+',top='+top+',screenX='+left+',screenY='+top+',status=no,scrollbars=yes');\n"
+		. " return window.open(url, title, 'width=$width,height=$height,left='+left+',top='+top+',screenX='+left+',screenY='+top+',status=no,scrollbars=yes');\n"
 		. "}\n"
 		. "-->\n"
 		. "</script>\n";
@@ -555,7 +555,7 @@ function set_focus($name, $form_no=0) {
 //
 function default_focus($name, $form_no=0) {
     if (!isset($_POST['_focus'])) {
-	$_POST['_focus'] = $name;
+	  set_focus($name);
     }
 }
 
