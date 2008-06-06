@@ -26,7 +26,7 @@ function gl_inquiry_controls()
 
     start_table("class='tablestyle_noborder'");
 
-    date_cells(_("From:"), 'TransFromDate', null, -30);
+    date_cells(_("From:"), 'TransFromDate', '', null, -30);
 	date_cells(_("To:"), 'TransToDate');
 	check_cells(_("No zero values"), 'NoZero', null);
 

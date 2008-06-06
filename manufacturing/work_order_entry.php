@@ -337,9 +337,9 @@ if (isset($selected_id))
 else
 {
 	$_POST['units_issued'] = $_POST['released'] = 0;
-	ref_row(_("Reference:"), 'wo_ref', references::get_next(systypes::work_order()));
+	ref_row(_("Reference:"), 'wo_ref', '', references::get_next(systypes::work_order()));
 
-	wo_types_list_row(_("Type:"), 'type', $_POST['type']);
+	wo_types_list_row(_("Type:"), 'type', null);
 }
 
 if ($_POST['released'] == true)
@@ -361,13 +361,13 @@ else
 if (!isset($_POST['quantity']))
 	$_POST['quantity'] = qty_format(1);
 
-if ($_POST['type'] == wo_types::advanced())
+if (get_post('type') == wo_types::advanced())
 {
     qty_row(_("Quantity Required:"), 'quantity', 12);
     if ($_POST['released'])
     	label_row(_("Quantity Manufactured:"), qty_format($_POST['units_issued']));
     date_row(_("Date") . ":", 'date_');
-	date_row(_("Date Required By") . ":", 'RequDate', null, sys_prefs::default_wo_required_by());
+	date_row(_("Date Required By") . ":", 'RequDate', '', null, sys_prefs::default_wo_required_by());
 }
 else
 {

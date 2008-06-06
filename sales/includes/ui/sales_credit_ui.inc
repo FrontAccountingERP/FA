@@ -192,18 +192,8 @@ function credit_edit_item_controls(&$order, $rowcounter, $line_no=-1)
 	}
 	else
 	{
- 		if (get_company_pref('no_item_list'))
-		{
-			echo "<td colspan=2 nowrap>\n";
-			stock_items_list('stock_id', null, false, true);
-			echo "</td>\n";
-		}
-		else
-		{
-		text_cells(null, "StockID2", '', 12, 10, "", "", "class='combo' rel='stock_id'"/* " onblur='submit();'"*/);
-		stock_items_list_cells(null, 'stock_id', null, false, false, "class='combo' rel='StockID2'");
-		}
-    		$item_info = get_item_edit_info($_POST['stock_id']);
+		stock_items_list_cells(null,'stock_id', null, false, true);
+  		$item_info = get_item_edit_info($_POST['stock_id']);
 
 		$_POST['units'] = $item_info["units"];
 

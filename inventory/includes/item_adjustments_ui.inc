@@ -35,7 +35,7 @@ function display_order_header(&$order)
 	echo "<table>"; // inner table
 
 	locations_list_row(_("Location:"), 'StockLocation', null);
-	ref_row(_("Reference:"), 'ref', references::get_next(systypes::inventory_adjustment()));
+	ref_row(_("Reference:"), 'ref', '', references::get_next(systypes::inventory_adjustment()));
 
 	echo "</table>"; // inner table
 

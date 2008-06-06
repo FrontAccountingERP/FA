@@ -36,10 +36,10 @@ start_form(false, true, $_SERVER['PHP_SELF'] ."?outstanding_only=" . $outstandin
 start_table("class='tablestyle_noborder'");
 start_row();
 
-ref_cells(_("Reference:"), 'OrderNumber', null);
+ref_cells(_("Reference:"), 'OrderNumber');
 
 number_list_cells(_("Type"), 'type_', null, 0, 2);
-date_cells(_("From:"), 'FromDate', null, 0, 0, -5);
+date_cells(_("From:"), 'FromDate', '', null, 0, 0, -5);
 date_cells(_("To:"), 'ToDate');
 
 check_cells( _("Only Overdue:"), 'OverdueOnly', null);

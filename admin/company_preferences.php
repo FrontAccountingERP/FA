@@ -76,8 +76,8 @@ text_row_ex(_("Name (to appear on reports):"), 'coy_name', 42, 50);
 text_row_ex(_("Official Company Number:"), 'coy_no', 25);
 text_row_ex(_("Tax Authority Reference:"), 'gst_no', 25);
 
-text_row_ex(_("Tax Periods:"), 'tax_prd', 10, 10, null, null, _('Months.'));
-text_row_ex(_("Tax Last Period:"), 'tax_last', 10, 10, null, null, _('Months back.'));
+text_row_ex(_("Tax Periods:"), 'tax_prd', 10, 10, '', null, null, _('Months.'));
+text_row_ex(_("Tax Last Period:"), 'tax_last', 10, 10, '', null, null, _('Months back.'));
 
 currencies_list_row(_("Home Currency:"), 'curr_default', $_POST['curr_default']);
 fiscalyears_list_row(_("Fiscal Year:"), 'f_year', $_POST['f_year']);

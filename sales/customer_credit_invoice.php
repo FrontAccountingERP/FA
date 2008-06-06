@@ -228,7 +228,7 @@ function display_credit_items()
 //		$_POST['ref'] = references::get_next(11);
 
     if ($_SESSION['Items']->trans_no==0) {
-		ref_cells(_("Reference"), 'ref', $_SESSION['Items']->reference, "class='tableheader2'");
+		ref_cells(_("Reference"), 'ref', '', $_SESSION['Items']->reference, "class='tableheader2'");
 	} else {
 		label_cells(_("Reference"), $_SESSION['Items']->reference, "class='tableheader2'");
 	}
@@ -254,7 +254,7 @@ function display_credit_items()
 
     label_row(_("Invoice Date"), $_SESSION['Items']->src_date, "class='tableheader2'");
 
-    date_row(_("Credit Note Date"), 'CreditDate', null, 0, 0, 0, "class='tableheader2'");
+    date_row(_("Credit Note Date"), 'CreditDate', '', null, 0, 0, 0, "class='tableheader2'");
 
     end_table();
 

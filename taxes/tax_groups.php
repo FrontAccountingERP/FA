@@ -210,7 +210,7 @@ for ($i = 0; $i < 5; $i++)
 	start_row();
 	if (!isset($_POST['tax_type_id' . $i]))
 		$_POST['tax_type_id' . $i] = 0;
-	tax_types_list_cells(null, 'tax_type_id' . $i, $_POST['tax_type_id' . $i], true, _("None"), true);
+	tax_types_list_cells(null, 'tax_type_id' . $i, $_POST['tax_type_id' . $i], _("None"), true);
 
 	if ($_POST['tax_type_id' . $i] != 0 && $_POST['tax_type_id' . $i] != reserved_words::get_all_numeric()) 
 	{

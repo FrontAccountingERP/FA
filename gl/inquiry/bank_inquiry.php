@@ -28,7 +28,7 @@ start_table("class='tablestyle_noborder'");
 start_row();
 bank_accounts_list_cells(_("Account:"), 'bank_account', null);
 
-date_cells(_("From:"), 'TransAfterDate', null, -30);
+date_cells(_("From:"), 'TransAfterDate', '', null, -30);
 date_cells(_("To:"), 'TransToDate');
 
 submit_cells('Show',_("Show"));

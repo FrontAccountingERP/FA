@@ -165,7 +165,7 @@ if ($selected_id != "")
 
 text_row_ex(_("Name:"), 'name', 50);
 
-gl_account_types_list_row(_("Subgroup Of:"), 'parent', null, true, _("None"), true);
+gl_account_types_list_row(_("Subgroup Of:"), 'parent', null, _("None"), true);
 
 class_list_row(_("Class Type:"), 'class_id', null);
 

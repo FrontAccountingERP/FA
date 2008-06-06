@@ -232,7 +232,7 @@ if ($selected_id != -1)
 } 
 else 
 {
-	ref_row(_("Dimension Reference:"), 'ref', references::get_next(systypes::dimension()));
+	ref_row(_("Dimension Reference:"), 'ref', '', references::get_next(systypes::dimension()));
 }
 
 text_row_ex(_("Name") . ":", 'name', 50, 75);
@@ -243,7 +243,7 @@ number_list_row(_("Type"), 'type_', null, 1, $dim);
 
 date_row(_("Start Date") . ":", 'date_');
 
-date_row(_("Date Required By") . ":", 'due_date', null, sys_prefs::default_dimension_required_by());
+date_row(_("Date Required By") . ":", 'due_date', '', null, sys_prefs::default_dimension_required_by());
 
 textarea_row(_("Memo:"), 'memo_', null, 40, 5);
 

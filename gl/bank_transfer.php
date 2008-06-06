@@ -75,7 +75,7 @@ function gl_payment_controls()
 
 	bank_trans_types_list_row(_("Transfer Type:"), 'TransferType', null);
 
-    ref_row(_("Reference:"), 'ref', references::get_next(systypes::bank_transfer()));
+    ref_row(_("Reference:"), 'ref', '', references::get_next(systypes::bank_transfer()));
 
     textarea_row(_("Memo:"), 'memo_', null, 40,4);
 

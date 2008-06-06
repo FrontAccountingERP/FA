@@ -84,7 +84,7 @@ function display_order_header(&$order)
 
 	bank_trans_types_list_row(_("Type:"), 'type', null);
 
-    ref_row(_("Reference:"), 'ref', references::get_next(systypes::bank_deposit()));
+    ref_row(_("Reference:"), 'ref', '', references::get_next(systypes::bank_deposit()));
 
 	echo "</table>";
 
@@ -203,9 +203,10 @@ function gl_edit_item_controls(&$order, $dim, $Index=null)
 			$_POST['code_id'] = get_company_pref('default_assembly_act');
 		else	
 			$_POST['code_id'] = get_company_pref('default_inv_sales_act');
-		text_cells(null, "CodeID2", $_POST['code_id'], 12, 10, "", "", "class='combo' rel='code_id'");	
-		gl_all_accounts_list_cells(null, 'code_id', $_POST['code_id'], true, false, "class='combo' rel='CodeID2'");
-    	if ($dim >= 1)
+//		text_cells(null, "CodeID2", $_POST['code_id'], 12, 10, "", "", "class='combo' rel='code_id'");	
+//		gl_all_accounts_list_cells(null, 'code_id', $_POST['code_id'], true, false, "class='combo' rel='CodeID2'");
+		gl_all_accounts_list('code_id', $_POST['code_id'], true, false, true);
+      	if ($dim >= 1)
 			dimensions_list_cells(null, 'dimension_id', null, true, " ", false, 1);
     	if ($dim > 1)
 			dimensions_list_cells(null, 'dimension2_id', null, true, " ", false, 2);

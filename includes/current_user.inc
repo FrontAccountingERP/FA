@@ -94,9 +94,9 @@ class current_user
 	}
 
 	function update_prefs($price_dec, $qty_dec, $exrate_dec, $percent_dec, $showgl, $showcodes,
-		$date_format, $date_sep, $tho_sep, $dec_sep, $theme, $pagesize) {
+		$date_format, $date_sep, $tho_sep, $dec_sep, $theme, $pagesize, $show_hints) {
 		update_user_display_prefs($this->username, $price_dec, $qty_dec, $exrate_dec, $percent_dec, $showgl,
-			$showcodes, $date_format, $date_sep, $tho_sep, $dec_sep, $theme, $pagesize);
+			$showcodes, $date_format, $date_sep, $tho_sep, $dec_sep, $theme, $pagesize, $show_hints);
 
 		// re-read the prefs
 		$user = get_user($this->username);
@@ -228,12 +228,17 @@ function user_pagesize()
 	return $_SESSION["wa_current_user"]->prefs->get_pagesize();
 }
 
+function user_hints() 
+{
+	return $_SESSION["wa_current_user"]->prefs->show_hints();
+}
+
 function set_user_prefs($price_dec, $qty_dec, $exrate_dec, $percent_dec, $showgl, $showcodes,
-	$date_format, $date_sep, $tho_sep, $dec_sep, $theme, $pagesize) 
+	$date_format, $date_sep, $tho_sep, $dec_sep, $theme, $pagesize, $show_hints) 
 {
 
 	$_SESSION["wa_current_user"]->update_prefs($price_dec, $qty_dec, $exrate_dec, $percent_dec, $showgl, $showcodes,
-		$date_format, $date_sep, $tho_sep, $dec_sep, $theme, $pagesize);
+		$date_format, $date_sep, $tho_sep, $dec_sep, $theme, $pagesize, $show_hints);
 }
 
 function add_user_js_data() {

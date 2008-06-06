@@ -34,7 +34,7 @@ stock_items_list_cells(_("Item:"), 'stock_id', $_POST['stock_id']);
 
 locations_list_cells(_("From Location:"), 'StockLocation', null);
 
-date_cells(_("From:"), 'AfterDate', null, -30);
+date_cells(_("From:"), 'AfterDate', '', null, -30);
 date_cells(_("To:"), 'BeforeDate');
 
 submit_cells('ShowMoves',_("Show Movements"));

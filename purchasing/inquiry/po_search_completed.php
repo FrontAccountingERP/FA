@@ -26,7 +26,7 @@ start_table("class='tablestyle_noborder'");
 start_row();
 ref_cells(_("#:"), 'order_number');
 
-date_cells(_("from:"), 'OrdersAfterDate', null, -30);
+date_cells(_("from:"), 'OrdersAfterDate', '', null, -30);
 date_cells(_("to:"), 'OrdersToDate');
 
 locations_list_cells(_("into location:"), 'StockLocation', null, true);

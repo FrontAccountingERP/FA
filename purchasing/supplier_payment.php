@@ -92,7 +92,7 @@ function display_controls()
 
 	bank_trans_types_list_row(_("Payment Type:"), 'PaymentType', null);
 
-    ref_row(_("Reference:"), 'ref', references::get_next(22));
+    ref_row(_("Reference:"), 'ref', '', references::get_next(22));
 
     text_row(_("Memo:"), 'memo_', null, 52,50);
 

@@ -282,7 +282,7 @@ end_row();
 start_row();
 
 if ($_SESSION['Items']->trans_no == 0) {
-	ref_cells(_("Reference"), 'ref', $_SESSION['Items']->reference, "class='tableheader2'");
+	ref_cells(_("Reference"), 'ref', '', $_SESSION['Items']->reference, "class='tableheader2'");
 } else {
 	label_cells(_("Reference"), $_SESSION['Items']->reference, "class='tableheader2'");
 }
@@ -308,13 +308,13 @@ if (!isset($_POST['InvoiceDate']) || !is_date($_POST['InvoiceDate'])) {
 	}
 }
 
-date_cells(_("Date"), 'InvoiceDate', $_POST['InvoiceDate'], 0, 0, 0, "class='tableheader2'");
+date_cells(_("Date"), 'InvoiceDate', '', $_POST['InvoiceDate'], 0, 0, 0, "class='tableheader2'");
 
 if (!isset($_POST['due_date']) || !is_date($_POST['due_date'])) {
 	$_POST['due_date'] = get_invoice_duedate($_SESSION['Items']->customer_id, $_POST['InvoiceDate']);
 }
 
-date_cells(_("Due Date"), 'due_date', $_POST['due_date'], 0, 0, 0, "class='tableheader2'");
+date_cells(_("Due Date"), 'due_date', '', $_POST['due_date'], 0, 0, 0, "class='tableheader2'");
 
 end_row();
 end_table();

@@ -84,7 +84,7 @@ function display_po_header(&$order)
 
     if ($editable)
     {
-    	ref_row(_("Reference:"), 'ref', references::get_next(systypes::po()));
+    	ref_row(_("Reference:"), 'ref', '', references::get_next(systypes::po()));
     }
     else
     {
@@ -106,7 +106,7 @@ function display_po_header(&$order)
 	//	if (!is_date_in_fiscalyear($_POST['OrderDate']))
 	//		$_POST['OrderDate'] = end_fiscalyear();
 	//}
-	date_row(_("Order Date:"), 'OrderDate', $_POST['OrderDate'], 0, 0, 0);
+	date_row(_("Order Date:"), 'OrderDate', '', $_POST['OrderDate'], 0, 0, 0);
 
   	text_row(_("Supplier's Reference:"), 'Requisition', null, 16, 15);
 
@@ -294,18 +294,7 @@ function po_item_controls(&$order, $stock_id=null)
 	{
 		hidden('line_no', ($_SESSION['PO']->lines_on_order + 1));
 
-		$no_item_list = get_company_pref('no_item_list');
-		if ($no_item_list)
-		{
-			echo "<td colspan=2 nowrap>\n";
-			stock_purchasable_items_list('stock_id', $_POST['stock_id'], false, true);
-			echo "</td>\n";
-		}
-		else
-		{
-			text_cells(null, "StockID2", "", 12, 10, "", "", "class='combo' rel='stock_id' onblur='submit()'");
-			stock_purchasable_items_list_cells(null, 'stock_id', $_POST['stock_id'], false, true, "class='combo' rel='StockID2'");
-		}
+		stock_purchasable_items_list_cells(null, 'stock_id', null, false, true);
     	$item_info = get_item_edit_info($_POST['stock_id']);
 		$_POST['units'] = $item_info["units"];
 
@@ -317,7 +306,7 @@ function po_item_controls(&$order, $stock_id=null)
 	qty_cells(null, 'qty', null);
 
 	label_cell($_POST['units']);
-	date_cells(null, 'req_del_date', null, 0, 0, 0);
+	date_cells(null, 'req_del_date', '', null, 0, 0, 0);
 	amount_cells(null, 'price', null);
 
 	//$line_total = $_POST['qty'] * $_POST['price'] * (1 - $_POST['Disc'] / 100);

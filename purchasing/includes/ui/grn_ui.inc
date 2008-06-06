@@ -25,7 +25,7 @@ function display_grn_summary(&$po, $editable=false)
     {
     	if (!isset($_POST['ref']))
     	    $_POST['ref'] = references::get_next(25);
-    	ref_cells(_("Reference"), 'ref', null, "class='tableheader2'");
+    	ref_cells(_("Reference"), 'ref', '', null, "class='tableheader2'");
     	    	
         if (!isset($_POST['Location']))
         	$_POST['Location'] = $po->Location;
@@ -35,7 +35,7 @@ function display_grn_summary(&$po, $editable=false)
     	if (!isset($_POST['DefaultReceivedDate']))
      	  	$_POST['DefaultReceivedDate'] = Today();
     	
-    	date_cells(_("Date Items Received"), 'DefaultReceivedDate', null, 0, 0, 0, "class='tableheader2'");    
+    	date_cells(_("Date Items Received"), 'DefaultReceivedDate', '', null, 0, 0, 0, "class='tableheader2'");    
         
     } 
     else 

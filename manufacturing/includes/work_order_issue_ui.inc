@@ -141,7 +141,7 @@ function adjustment_options_controls()
 	echo "<br>";
 	start_table();
 
-    ref_row(_("Reference:"), 'ref', references::get_next(28));
+    ref_row(_("Reference:"), 'ref', '', references::get_next(28));
 
 	if (!isset($_POST['IssueType']))
 		$_POST['IssueType'] = 0;

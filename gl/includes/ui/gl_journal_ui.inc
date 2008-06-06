@@ -15,7 +15,7 @@ function display_order_header(&$Order)
 	echo "<table>";
 	start_row();
     date_cells(_("Date:"), 'date_');
-	ref_cells(_("Reference:"), 'ref', references::get_next(0));
+	ref_cells(_("Reference:"), 'ref', '', references::get_next(0));
 	end_row();
 
 	echo "</table>";
@@ -150,12 +150,11 @@ function gl_edit_item_controls(&$order, $dim, $Index=null)
 		$_POST['dimension_id'] = 0;
 		$_POST['dimension2_id'] = 0;
 		$_POST['LineMemo'] = "";
-		$_POST['CodeID2'] = "";
+		$_POST['_code_id_edit'] = "";
 		$_POST['code_id'] = "";
 		
-		text_cells(null, "CodeID2", "", 12, 10, "", "", "class='combo' rel='code_id'");
 		$skip_bank = ($_SESSION["wa_current_user"]->access != 2);
-		gl_all_accounts_list_cells(null, 'code_id', null, $skip_bank, false, "class='combo' rel='CodeID2'");
+		gl_all_accounts_list('code_id', null, $skip_bank, false, true);
 		if ($dim >= 1)
 			dimensions_list_cells(null, 'dimension_id', null, true, " ", false, 1);
 		if ($dim > 1)

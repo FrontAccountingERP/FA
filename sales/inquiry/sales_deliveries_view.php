@@ -83,8 +83,8 @@ start_form(false, false, $_SERVER['PHP_SELF'] ."?OutstandingOnly=" . $_POST['Out
 start_table("class='tablestyle_noborder'");
 start_row();
 ref_cells(_("#:"), 'DeliveryNumber');
-date_cells(_("from:"), 'DeliveryAfterDate', null, -30);
-date_cells(_("to:"), 'DeliveryToDate', null, 1);
+date_cells(_("from:"), 'DeliveryAfterDate', '', null, -30);
+date_cells(_("to:"), 'DeliveryToDate', '', null, 1);
 
 locations_list_cells(_("Location:"), 'StockLocation', null, true);
 

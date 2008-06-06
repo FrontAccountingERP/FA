@@ -48,7 +48,7 @@ function gl_inquiry_controls()
 
     gl_all_accounts_list_cells(_("Account:"), 'account', null);
 
-	date_cells(_("from:"), 'TransFromDate', null, -30);
+	date_cells(_("from:"), 'TransFromDate', '', null, -30);
 	date_cells(_("to:"), 'TransToDate');
     submit_cells('Show',_("Show"));
 

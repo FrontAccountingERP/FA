@@ -232,7 +232,7 @@ text_row_ex(_("Account Name:"), 'account_name', 60);
 
 gl_account_types_list_row(_("Account Group:"), 'account_type', null);
 
-tax_types_list_row(_("Tax Type:"), 'tax_code', null, true, _('No Tax'));
+tax_types_list_row(_("Tax Type:"), 'tax_code', null, _('No Tax'));
 
 end_table(1);
 

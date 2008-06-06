@@ -60,51 +60,53 @@ function hidden($name, $value, $echo=true)
 
 //---------------------------------------------------------------------------------
 
-function submit($name, $value, $echo=true, $async=false)
+function submit($name, $value, $echo=true, $title=false, $async=false)
 {
 	default_focus($name);
 	$submit_str = "<input type=\"submit\" class=\""
 	    .($async ? 'ajaxsubmit' : 'inputsubmit')
-	    ."\" name=\"$name\"  id=\"$name\" value=\"$value\" >\n";
+	    ."\" name=\"$name\"  id=\"$name\" value=\"$value\""
+	    .($title ? " title='$title'" : '')
+	    .">\n";
 	if ($echo)
 		echo $submit_str;
 	else
 		return $submit_str;
 }
 
-function submit_center($name, $value, $echo=true, $async=false)
+function submit_center($name, $value, $echo=true, $title=false, $async=false)
 {
 	echo "<center>";
-	submit($name, $value, $echo, $async);
+	submit($name, $value, $echo, $title, $async);
 	echo "</center>";
 }
 
-function submit_center_first($name, $value, $async=false)
+function submit_center_first($name, $value, $title=false, $async=false)
 {
 	echo "<center>";
-	submit($name, $value, true, $async);
+	submit($name, $value, true, $title, $async);
 	echo "&nbsp;";
 }
 
-function submit_center_last($name, $value, $async=false)
+function submit_center_last($name, $value, $title=false, $async=false)
 {
 	echo "&nbsp;";
-	submit($name, $value, true, $async);
+	submit($name, $value, true, $title, $async);
 	echo "</center>";
 }
 
-function submit_add_or_update($add=true, $async=false)
+function submit_add_or_update($add=true, $title=false, $async=false)
 {
 	if ($add)
-		submit('ADD_ITEM', _("Save"), true, $async);
+		submit('ADD_ITEM', _("Save"), true, $title, $async);
 	else
-		submit('UPDATE_ITEM', _("Update"), true, $async);
+		submit('UPDATE_ITEM', _("Update"), true, $title, $async);
 }
 
-function submit_add_or_update_center($add=true, $async=false)
+function submit_add_or_update_center($add=true, $title=false, $async=false)
 {
 	echo "<center>";
-	submit_add_or_update($add, $async);
+	submit_add_or_update($add, $title, $async);
 	echo "</center>";
 }
 
@@ -116,43 +118,45 @@ function submit_add_or_update_row($add=true)
 	echo "</td></tr>\n";
 }
 */
-function submit_add_or_update_row($add=true, $right=true, $extra="", $async=false)
+function submit_add_or_update_row($add=true, $right=true, $extra="", $title=false, $async=false)
 {
 	echo "<tr>";
 	if ($right)
 		echo "<td>&nbsp;</td>\n";
 	echo "<td $extra>";
-	submit_add_or_update($add, $async);
+	submit_add_or_update($add, $title, $async);
 	echo "</td></tr>\n";
 }
 
-function submit_cells($name, $value, $extra="", $async=false)
+function submit_cells($name, $value, $extra="", $title=false, $async=false)
 {
 	echo "<td $extra>";
-	submit($name, $value, true, $async);
+	submit($name, $value, true, $title, $async);
 	echo "</td>\n";
 }
 
-function submit_row($name, $value, $right=true, $extra="", $async=false)
+function submit_row($name, $value, $right=true, $extra="", $title=false, $async=false)
 {
 	echo "<tr>";
 	if ($right)
 		echo "<td>&nbsp;</td>\n";
-	submit_cells($name, $value, $extra);
+	submit_cells($name, $value, $extra, $title);
 	echo "</tr>\n";
 }
 //---------------------------------------------------------------------------------
 
-function button($name, $value, $onclick)
+function button($name, $value, $onclick, $title=false)
 {
   	default_focus($name);
-  	echo "<input type=\"button\" class=\"inputsubmit\" name=\"$name\" value=\"$value\" onclick=\"$onclick\" />\n";
+  	echo "<input type=\"button\" class=\"inputsubmit\" name=\"$name\" value=\"$value\" onclick=\"$onclick\""
+	    .($title ? " title='$title'" : '')
+	    ." />\n";
 }
 
-function button_cell($name, $value, $onclick)
+function button_cell($name, $value, $onclick, $title=false)
 {
 	echo "<td>";
-	button($name, $value, $onclick);
+	button($name, $value, $onclick, $title);
 	echo "</td>\n";
 }
 
@@ -165,7 +169,7 @@ function check_value($name)
 	return 1;
 }
 
-function check($label, $name, $value, $submit_on_change=false)
+function check($label, $name, $value, $submit_on_change=false, $title=false)
 {
   	global $Ajax;
 
@@ -175,29 +179,29 @@ function check($label, $name, $value, $submit_on_change=false)
 
 	if ($value == null)
 		$value = (!isset($_POST[$name]) ? 0 : $_POST[$name]);
-	if ($value == 1)
-		echo "<input checked type='checkbox' name='$name' value='1' ";
-	else
-		echo "<input type='checkbox' name='$name' value='1'";
-	if ($submit_on_change)
-		echo " onclick='this.form.submit();' ";
-	echo " >\n";
+	
+		echo "<input"
+		    .($value == 1 ? ' checked':'')
+		    ." type='checkbox' name='$name' value='1'"
+		    .($submit_on_change ? " onclick='this.form.submit();'" : '')
+		    .($title ? " title='$title'" : '')
+		    ." >\n";
 	$Ajax->addUpdate($name, $name, $value);
 }
 
-function check_cells($label, $name, $value, $submit_on_change=false)
+function check_cells($label, $name, $value, $submit_on_change=false, $title=false)
 {
 	if ($label != null)
 		echo "<td>$label</td>\n";
 	echo "<td>";
-	check(null, $name, $value, $submit_on_change);
+	check(null, $name, $value, $submit_on_change, $title);
 	echo "</td>";
 }
 
-function check_row($label, $name, $value, $submit_on_change=false)
+function check_row($label, $name, $value, $submit_on_change=false, $title=false)
 {
 	echo "<tr>";
-	check_cells($label, $name, $value, $submit_on_change);
+	check_cells($label, $name, $value, $submit_on_change, $title);
 	echo "</tr>\n";
 }
 
@@ -264,7 +268,7 @@ function label_row($label, $value, $params="", $params2="", $leftfill=0)
 
 //-----------------------------------------------------------------------------------
 
-function text_cells($label, $name, $value, $size="", $max="", $params="", $post_label="", $disabled="")
+function text_cells($label, $name, $value, $size="", $max="", $title=false, $params="", $post_label="", $disabled="")
 {
   	global $Ajax;
 
@@ -275,7 +279,9 @@ function text_cells($label, $name, $value, $size="", $max="", $params="", $post_
 
 	if ($value == null)
 		$value = (!isset($_POST[$name]) ? "" : $_POST[$name]);
-	echo "<input $disabled type=\"text\" name=\"$name\" size=\"$size\" maxlength=\"$max\" value=\"$value\">";
+	echo "<input $disabled type=\"text\" name=\"$name\" size=\"$size\" maxlength=\"$max\" value=\"$value\""
+	    .($title ? " title='$title'" : '')
+	    .">";
 
 	if ($post_label != "")
 		echo " " . $post_label;
@@ -284,7 +290,7 @@ function text_cells($label, $name, $value, $size="", $max="", $params="", $post_
 	$Ajax->addUpdate($name, $name, $value);
 }
 
-function text_cells_ex($label, $name, $size, $max=null, $init=null, $params=null, $post_label=null)
+function text_cells_ex($label, $name, $size, $max=null, $init=null, $title=null, $params=null, $post_label=null)
 {
   	global $Ajax;
 
@@ -304,7 +310,8 @@ function text_cells_ex($label, $name, $size, $max=null, $init=null, $params=null
 
 	echo "<td>";
 
-	echo "<input type=\"text\" name=\"$name\" size=\"$size\" maxlength=\"$max\" value=\"" . $_POST[$name]. "\">";
+	echo "<input type=\"text\" name=\"$name\" size=\"$size\" maxlength=\"$max\" value=\"" . $_POST[$name]. "\""
+	 .($title ? " title='$title'": '')." >";
 
 	if ($post_label)
 		echo " " . $post_label;
@@ -313,29 +320,29 @@ function text_cells_ex($label, $name, $size, $max=null, $init=null, $params=null
 	$Ajax->addUpdate($name, $name, $_POST[$name]);
 }
 
-function text_row($label, $name, $value, $size, $max, $params="", $post_label="")
+function text_row($label, $name, $value, $size, $max, $title=null, $params="", $post_label="")
 {
 	echo "<tr>";
 
-	text_cells($label, $name, $value, $size, $max, $params, $post_label);
+	text_cells($label, $name, $value, $size, $max, $title, $params, $post_label);
 
 	echo "</tr>\n";
 }
 
 //-----------------------------------------------------------------------------------
 
-function text_row_ex($label, $name, $size, $max=null, $value=null, $params=null, $post_label=null)
+function text_row_ex($label, $name, $size, $max=null, $title=null, $value=null, $params=null, $post_label=null)
 {
 	echo "<tr>";
 
-	text_cells_ex($label, $name, $size, $max, $value, $params, $post_label);
+	text_cells_ex($label, $name, $size, $max, $value, $title, $params, $post_label);
 
 	echo "</tr>\n";
 }
 
 //-----------------------------------------------------------------------------------
 
-function date_cells($label, $name, $init=null, $inc_days=0, $inc_months=0, $inc_years=0, $params=null)
+function date_cells($label, $name, $title = null, $init=null, $inc_days=0, $inc_months=0, $inc_years=0, $params=null)
 {
 	global $use_date_picker, $path_to_root;
 	if (!isset($_POST[$name]) || $_POST[$name] == "")
@@ -364,29 +371,29 @@ function date_cells($label, $name, $init=null, $inc_days=0, $inc_months=0, $inc_
 		. "	<img src='$path_to_root/themes/default/images/cal.gif' width='16' height='16' border='0' alt='"._('Click Here to Pick up the date')."'></a>\n";
 	else
 		$post_label = "";
-	text_cells_ex($label, $name, 9, 12, $_POST[$name], $params, $post_label);
+	text_cells_ex($label, $name, 9, 12, $_POST[$name], $title, $params, $post_label);
 }
 
-function date_row($label, $name, $init=null, $inc_days=0, $inc_months=0, $inc_years=0, $params=null)
+function date_row($label, $name, $title=null, $init=null, $inc_days=0, $inc_months=0, $inc_years=0, $params=null)
 {
 	echo "<tr>";
-	date_cells($label, $name, $init, $inc_days, $inc_months, $inc_years, $params);
+	date_cells($label, $name, $title, $init, $inc_days, $inc_months, $inc_years, $params);
 	echo "</tr>\n";
 }
 
 //-----------------------------------------------------------------------------------
 
-function ref_cells($label, $name, $init=null, $params=null)
+function ref_cells($label, $name, $title=null, $init=null, $params=null)
 {
-	text_cells_ex($label, $name, 16, 18, $init, $params);
+	text_cells_ex($label, $name, 16, 18, $init, $title, $params);
 }
 
 //-----------------------------------------------------------------------------------
 
-function ref_row($label, $name, $init=null)
+function ref_row($label, $name, $title=null, $init=null)
 {
 	echo "<tr>";
-	ref_cells($label, $name, $init);
+	ref_cells($label, $name, $title, $init);
 	echo "</tr>\n";
 }
 
@@ -503,7 +510,7 @@ function small_qty_cells($label, $name, $init=null, $params=null, $post_label=nu
 
 //-----------------------------------------------------------------------------------
 
-function textarea_cells($label, $name, $value, $cols, $rows, $params="")
+function textarea_cells($label, $name, $value, $cols, $rows, $title = null, $params="")
 {
   	global $Ajax;
 
@@ -512,19 +519,21 @@ function textarea_cells($label, $name, $value, $cols, $rows, $params="")
 		echo "<td $params>$label</td>\n";
 	if ($value == null)
 		$value = (!isset($_POST[$name]) ? "" : $_POST[$name]);
-	echo "<td><textarea name='$name' cols='$cols' rows='$rows'>$value</textarea></td>\n";
+	echo "<td><textarea name='$name' cols='$cols' rows='$rows'"
+	.($title ? " title='$title'" : '')
+	.">$value</textarea></td>\n";
 	$Ajax->addUpdate($name, $name, $value);
 }
 
-function textarea_row($label, $name, $value, $cols, $rows, $params="")
+function textarea_row($label, $name, $value, $cols, $rows, $title=null, $params="")
 {
 	echo "<tr>";
-	textarea_cells($label, $name, $value, $cols, $rows, $params);
+	textarea_cells($label, $name, $value, $cols, $rows, $title, $params);
 	echo "</tr>\n";
 }
 
 //-----------------------------------------------------------------------------------
-
+/*
 function text_row_with_submit($label, $name, $value, $size, $max, $input_name, $input_value)
 {
   	global $Ajax;
@@ -542,7 +551,7 @@ function text_row_with_submit($label, $name, $value, $size, $max, $input_name, $
 	echo "</td></tr>\n";
 	$Ajax->addUpdate($name, $name, $value);
 }
-
+*/
 //-----------------------------------------------------------------------------------
 
 

@@ -32,7 +32,7 @@ start_form(false, false, $_SERVER['PHP_SELF'] ."?outstanding_only=" . $outstandi
 
 start_table("class='tablestyle_noborder'");
 start_row();
-ref_cells(_("Reference:"), 'OrderNumber', null);
+ref_cells(_("Reference:"), 'OrderNumber');
 
 locations_list_cells(_("at Location:"), 'StockLocation', null, true);
 

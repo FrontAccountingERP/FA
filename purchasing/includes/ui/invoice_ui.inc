@@ -70,9 +70,9 @@ function invoice_header(&$supp_trans)
 	}
 
 	if ($supp_trans->is_invoice)
-    	ref_row(_("Reference:"), 'reference', references::get_next(20));
+    	ref_row(_("Reference:"), 'reference', '', references::get_next(20));
     else
-    	ref_row(_("Reference:"), 'reference', references::get_next(21));
+    	ref_row(_("Reference:"), 'reference', '', references::get_next(21));
 
    	text_row(_("Supplier's Ref.:"), 'supp_reference', $_POST['supp_reference'], 20, 20);
 
@@ -82,9 +82,9 @@ function invoice_header(&$supp_trans)
 
 	echo "<table width=100%>";
 
-   	date_row(_("Date") . ":", 'tran_date', null, 0, 0, 0, "", true);
+   	date_row(_("Date") . ":", 'tran_date', '', null, 0, 0, 0, "", true);
 
-    date_row(_("Due Date") . ":", 'due_date', null);
+    date_row(_("Due Date") . ":", 'due_date');
 
     label_row(_("Terms:"), $supp_trans->terms_description);
 

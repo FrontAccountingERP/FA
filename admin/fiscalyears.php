@@ -183,8 +183,8 @@ function display_fiscalyear_edit($selected_id)
 	} 
 	else 
 	{
-		date_row(_("Fiscal Year Begin:"), 'from_date', null, 0, 0, 1001);
-		date_row(_("Fiscal Year End:"), 'to_date', null, 0, 0, 1001);
+		date_row(_("Fiscal Year Begin:"), 'from_date', '', null, 0, 0, 1001);
+		date_row(_("Fiscal Year End:"), 'to_date', '', null, 0, 0, 1001);
 	}
 
 	yesno_list_row(_("Is Closed:"), 'closed', null, "", "", false);

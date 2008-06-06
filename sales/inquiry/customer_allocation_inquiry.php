@@ -31,8 +31,8 @@ start_row();
 
 customer_list_cells(_("Select a customer: "), 'customer_id', $_POST['customer_id'], true);
 
-date_cells(_("from:"), 'TransAfterDate', null, -30);
-date_cells(_("to:"), 'TransToDate', null, 1);
+date_cells(_("from:"), 'TransAfterDate', '', null, -30);
+date_cells(_("to:"), 'TransToDate', '', null, 1);
 
 cust_allocations_list_cells(_("Type:"), 'filterType', null);
 

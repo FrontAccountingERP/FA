@@ -299,7 +299,7 @@ start_row();
 //	$_POST['ref'] = references::get_next(13);
 
 if ($_SESSION['Items']->trans_no==0) {
-	ref_cells(_("Reference"), 'ref', $_SESSION['Items']->reference, "class='tableheader2'");
+	ref_cells(_("Reference"), 'ref', '', $_SESSION['Items']->reference, "class='tableheader2'");
 } else {
 	label_cells(_("Reference"), $_SESSION['Items']->reference, "class='tableheader2'");
 }
@@ -329,7 +329,7 @@ if (!isset($_POST['DispatchDate']) || !is_date($_POST['DispatchDate'])) {
 		$_POST['DispatchDate'] = end_fiscalyear();
 	}
 }
-date_cells(_("Date"), 'DispatchDate', $_POST['DispatchDate'], 0, 0, 0, "class='tableheader2'");
+date_cells(_("Date"), 'DispatchDate', '', $_POST['DispatchDate'], 0, 0, 0, "class='tableheader2'");
 end_row();
 
 end_table();
@@ -341,7 +341,7 @@ start_table("$table_style width=90%");
 if (!isset($_POST['due_date']) || !is_date($_POST['due_date'])) {
 	$_POST['due_date'] = get_invoice_duedate($_SESSION['Items']->customer_id, $_POST['DispatchDate']);
 }
-date_row(_("Invoice Dead-line"), 'due_date', $_POST['due_date'], 0, 0, 0, "class='tableheader2'");
+date_row(_("Invoice Dead-line"), 'due_date', '', $_POST['due_date'], 0, 0, 0, "class='tableheader2'");
 end_table();
 
 echo "</td></tr>";

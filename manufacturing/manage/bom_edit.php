@@ -258,7 +258,7 @@ if (isset($_POST['stock_id']))
 		label_cell(_("Component:"));
 
 		echo "<td>";
-		stock_component_items_list('component', $selected_parent, $_POST['component'], false, true);
+		stock_component_items_list('component', $selected_parent, null, false, true);
 		echo "</td>";
 		end_row();
 	}

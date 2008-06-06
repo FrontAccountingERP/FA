@@ -151,19 +151,22 @@ function table_header($labels)
 	end_row();
 }
 
-function edit_link_cell($param)
+function edit_link_cell($param, $title=false)
 {
-	label_cell("<a href='" . $_SERVER['PHP_SELF']. "?" . "$param'>" . _("Edit") . "</a>", "nowrap");
+    label_cell("<a href='" . $_SERVER['PHP_SELF']. "?" . "$param'"
+        .($title ? " title='$title'":'').">" . _("Edit") . "</a>", "nowrap");
 }
 
-function delete_link_cell($param)
+function delete_link_cell($param, $title=false)
 {
-	label_cell("<a href='" . $_SERVER['PHP_SELF']. "?" . "$param'>" . _("Delete") . "</a>", "nowrap");
+    label_cell("<a href='" . $_SERVER['PHP_SELF']. "?" . "$param'"
+	.($title ? " title='$title'":'') .">" . _("Delete") . "</a>", "nowrap");
 }
 
-function edit_button_cell($name, $value)
+function edit_button_cell($name, $value, $title=false)
 {
-    label_cell("<input type=\"submit\" class=\"editbutton\" name=\"$name\" value=\"$value\" />\n");
+    label_cell("<input type=\"submit\" class=\"editbutton\" name=\"$name\" value=\"$value\""
+	.($title ? " title='$title'":'')." />\n");
 }
 
 //-----------------------------------------------------------------------------------

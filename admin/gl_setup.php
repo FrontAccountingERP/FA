@@ -115,7 +115,7 @@ table_section_title(_("General GL"));
 
 gl_all_accounts_list_row(_("Retained Earning Clearing Account:"), 'retained_earnings_act', $_POST['retained_earnings_act']);
 gl_all_accounts_list_row(_("Payroll Account:"), 'payroll_act', $_POST['payroll_act']);
-text_row(_("Past Due Days Interval:"), 'past_due_days', $_POST['past_due_days'], 6, 6, "", _("days"));
+text_row(_("Past Due Days Interval:"), 'past_due_days', $_POST['past_due_days'], 6, 6, '', "", _("days"));
 
 //---------------
 
@@ -177,13 +177,13 @@ gl_all_accounts_list_row(_("Item Assembly Costs Account:"), 'default_assembly_ac
 
 table_section_title(_("Manufacturing Defaults"));
 
-text_row(_("Default Work Order Required By After:"), 'default_workorder_required', $_POST['default_workorder_required'], 6, 6, "", _("days"));
+text_row(_("Default Work Order Required By After:"), 'default_workorder_required', $_POST['default_workorder_required'], 6, 6, '', "", _("days"));
 
 //----------------
 
 table_section_title(_("Dimension Defaults"));
 
-text_row(_("Default Dimension Required By After:"), 'default_dim_required', $_POST['default_dim_required'], 6, 6, "", _("days"));
+text_row(_("Default Dimension Required By After:"), 'default_dim_required', $_POST['default_dim_required'], 6, 6, '', "", _("days"));
 
 //----------------
 

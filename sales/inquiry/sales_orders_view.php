@@ -71,8 +71,8 @@ start_row();
 ref_cells(_("#:"), 'OrderNumber');
 if ($_POST['order_view_mode'] != 'DeliveryTemplates' && $_POST['order_view_mode'] != 'InvoiceTemplates')
 {
-  	date_cells(_("from:"), 'OrdersAfterDate', null, -30);
-  	date_cells(_("to:"), 'OrdersToDate', null, 1);
+  	date_cells(_("from:"), 'OrdersAfterDate', '', null, -30);
+  	date_cells(_("to:"), 'OrdersToDate', '', null, 1);
 }
 locations_list_cells(_("Location:"), 'StockLocation', null, true);
 

@@ -146,7 +146,7 @@ if (!isset($_POST['quantity']) || $_POST['quantity'] == '')
 
 start_table();
 
-ref_row(_("Reference:"), 'ref', references::get_next(29));
+ref_row(_("Reference:"), 'ref', '', references::get_next(29));
 
 if (!isset($_POST['ProductionType']))
 	$_POST['ProductionType'] = 1;

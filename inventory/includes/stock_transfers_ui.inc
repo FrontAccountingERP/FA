@@ -43,7 +43,7 @@ function display_order_header(&$order)
 
 	echo "<table>";
 
-	ref_row(_("Reference:"), 'ref', references::get_next(systypes::location_transfer()));
+	ref_row(_("Reference:"), 'ref', '', references::get_next(systypes::location_transfer()));
 
     date_row(_("Date:"), 'AdjDate');
 
@@ -124,7 +124,7 @@ function transfer_edit_item_controls(&$order, $stock_id=null)
 	else
 	{
     	echo "<TD colspan=2>";
-    	stock_costable_items_list('stock_id', $_POST['stock_id'], false, true);
+    	stock_costable_items_list('stock_id', null, false, true);
     	echo "</TD>";
 
     	$item_info = get_item_edit_info($_POST['stock_id']);
