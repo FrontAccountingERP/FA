@@ -2,51 +2,58 @@
 //	JsHttpRequest class extensions.
 //
     JsHttpRequest.request= function(submit) {
-        JsHttpRequest.query(
-            'POST '+window.location.toString(), // backend
+		var url = window.location.toString();
+		url = url.substring(0, url.indexOf('?'));
 
+        JsHttpRequest.query(
+            'POST '+url, // backend
 	    this.formValues(submit),
 			
             // Function is called when an answer arrives. 
 	    function(result, errors) {
 		        // Write errors to the debug div.
             document.getElementById('msgbox').innerHTML = errors; 
+
                 // Write the answer.
 	        if (result) {
-		    for(var i in result ) { 
-			atom = result[i];
+		  	  for(var i in result ) { 
+			  atom = result[i];
 			
-			cmd = atom['n'];
-			property = atom['p'];
-			type = atom['c'];
-			id = atom['t'];
-			data = atom['data'];
-//			alert(cmd+':'+property+':'+type+':'+id+':'+data);
+			  cmd = atom['n'];
+			  property = atom['p'];
+			  type = atom['c'];
+			  id = atom['t'];
+			  data = atom['data'];
+//				debug(cmd+':'+property+':'+type+':'+id);
 			// seek element by id if there is no elemnt with given name
-			objElement = document.getElementsByName(id)[0] || document.getElementById(id);
-    		if(cmd=='as') {
+			  objElement = document.getElementsByName(id)[0] || document.getElementById(id);
+    		  if(cmd=='as') {
 				  eval("objElement."+property+"=data;");
-			} else if(cmd=='up') {
-			  if(!objElement) debug('No element "'+id+'"');
+			  } else if(cmd=='up') {
+//				if(!objElement) debug('No element "'+id+'"');
 			    if (objElement.tagName == 'INPUT' || objElement.tagName == 'TEXTAREA')
 				  objElement.value = data;
 			    else
 				  objElement.innerHTML = data; // selector, div, span etc
-			} else if(cmd=='di') { // disable element
+			  } else if(cmd=='di') { // disable/enable element
 				  objElement.disabled = data;
-			} else if(cmd=='js') {	// evaluate js code
+			  } else if(cmd=='fc') { // set focus
+				  _focus = data;
+			  } else if(cmd=='js') {	// evaluate js code
 				  eval(data);
-			} else if(cmd=='rd') {	// client-side redirection
-			    debug('redirecting '+data);
+			  } else if(cmd=='rd') {	// client-side redirection
+				  _page_reload = true;
 				  window.location = data;
-			} else {
+			  } else {
 				  errors = errors+'<br>Unknown ajax function: '+cmd;
 			}
-		    }
-			Behaviour.apply();
-			if (errors.length>0)
-			// window.scrollTo(0,0);
-			document.getElementById('msgbox').scrollIntoView(true);
+		}
+		Behaviour.apply();
+		  if (errors.length>0)
+			window.scrollTo(0,0);
+			//document.getElementById('msgbox').scrollIntoView(true);
+	  // Restore focus if we've just lost focus because of DOM element refresh
+		setFocus();
 		}
             },
             false  // do not disable caching
@@ -128,8 +135,9 @@ function price_format(post, num, dec, label) {
 	    document.getElementById(post).innerHTML = num;
 	else
 	    document.getElementsByName(post)[0].value = num;
-	}
-	function get_amount(doc, label) {
+}
+
+function get_amount(doc, label) {
 	    if(label)
 		var val = document.getElementById(doc).innerHTML;
 	    else
@@ -137,11 +145,33 @@ function price_format(post, num, dec, label) {
 		val = val.replace(new RegExp('\\'+user.ts, 'g'),'');
 		val = val.replace(new RegExp('\\'+user.ds, 'g'),'.');
 		return 1*val;
-	}
+}
 
 function goBack() {
 	if (window.history.length <= 1)
 	 window.close();
 	else
 	 window.history.go(-1);
+}
+
+function setFocus(name, byId) {
+
+  if(!name) {
+	if (_focus)	
+		name = _focus;	// last focus set in onfocus handlers
+	else {	// no current focus -  set it from from hidden var (first page display)
+	  var cur = document.getElementsByName('_focus')[0];
+	  if(cur) name = cur.value;
+	}
+  }
+  if(byId)
+	el = document.getElementById(name);
+  else
+  	el = document.getElementsByName(name)[0];
+  if(el && el.focus) {
+    // The timeout is needed to prevent unpredictable behaviour on IE & Gecko.
+    // Using tmp var prevents crash on IE5
+    var tmp = function() {el.focus()};
+	setTimeout(tmp, 0);
+  }
 }

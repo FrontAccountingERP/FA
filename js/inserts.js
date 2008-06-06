@@ -1,3 +1,6 @@
+
+var _focus;
+
 function debug(msg) {
     document.getElementById('msgbox').innerHTML=
 	document.getElementById('msgbox').innerHTML+'<br>'+msg
@@ -7,6 +10,16 @@ function progbar(container) {
     container.innerHTML= "<center><img src='"+
 	user.theme+"images/progressbar1.gif' /> "+
 	user.loadtxt+"</center>";
+}
+
+function save_focus(e) {
+//  document.getElementsByName('_focus')[0].value = e.name;
+  _focus = e.name||e.id;
+  var h = document.getElementById('hints');
+  if (h) {
+	h.style.display = e.title && e.title.length ? 'inline' : 'none';
+	h.innerHTML = e.title ? e.title : '';
+  }
 }
 
 function _expand(tabobj) {
@@ -31,21 +44,20 @@ function expandtab(tabcontentid, tabnumber) {
 }
 
 function _set_combo_input(e) {
-//		  e.onkeydown=function(event) { 
-		  e.onblur=function(event) { 
-			event = event||window.event;
-			if(!this.back) {
+		  e.onblur=function() { 
+//			if(!this.back) {
 			  var but_name = this.name.substring(0, this.name.length-4)+'button';
 			  var button = document.getElementsByName(but_name)[0];
 			  var select = document.getElementsByName(this.getAttribute('rel'))[0];
-			  var byid = this.className=='combo';
+			  save_focus(select);
+//		this.style.display='none';
 			  if(button) { // if *_button set submit search request
 			    JsHttpRequest.request(but_name);
 			  }
 			  return false;
-			}
-		  };
-		  e.onkeyup = function() {
+//			}
+		};
+		e.onkeyup = function(ev) {
 			var select = document.getElementsByName(this.getAttribute('rel'))[0];
 			if(select && select.selectedIndex>=0) {
 			  var len = select.length;
@@ -61,140 +73,125 @@ function _set_combo_input(e) {
 			  }
 			}
 		  };
-    	  e.onkeydown = function(ev) { 
-//	  this.lastkey = event.keyCode;
-			  this.back = (ev||window.event).shiftKey; // save shift state for onblur handler
+    		e.onkeydown = function(ev) { 
+	  		ev = ev||window.event;
+	  		key = ev.keyCode||ev.which;
+	  		if(key == 13) {
+			  this.blur();
+	  		  return false;
+	  		}
+//	    this.back = ev.shiftKey; // save shift state for onblur handler
 		  }
 }
 
-function _set_combo_select(e) {
+function _update_box(s) {
+	var byid = s.className=='combo';
+	var rel = s.getAttribute('rel');
+	var box = document.getElementsByName(rel)[0];
+		if(box && s.selectedIndex>=0) {
+			  var opt = s.options[s.selectedIndex];
+			  if (opt.value != 0) {
+				if(box) box.value = byid ? opt.value : opt.text;
+			  }
+		}
+}
 
-		e.onblur = function(event) {
-			event = event||window.event;
-			if(!this.back && this.selectedIndex>=0) {
-				var sname = '_'+this.name+'_update';
-				var box = document.getElementsByName(this.getAttribute('rel'))[0];
-				var opt = this.options[this.selectedIndex];
-				var byid = this.className=='combo';
-				var update = document.getElementsByName(sname)[0];
-				if (opt.value != 0) {
-				  if(box) box.value = byid ? opt.value : opt.text;
-				  if(update) {
-					if(update.className == 'combo_select') {
-					  document.getElementsByName('_focus')[0].value=this.name;
-					    JsHttpRequest.request(sname);
-					} else {
-					  update.click();
-					  this.focus();
-					}
-				  } 
-				}
-				this.size = 1;
-			}
-				return true;
-		}
+function _set_combo_select(e) {
 		e.onchange = function() {
-			if (this.options[this.selectedIndex].value==0)
-				document.getElementsByName(this.getAttribute('rel'))[0].value='';
+			var s = this;
+			
+			if(s.className=='combo')
+			    _update_box(s);
+			if(s.selectedIndex>=0) {
+				 var sname = '_'+s.name+'_update';
+				 var update = document.getElementsByName(sname)[0];
+				 if(update) {
+					    JsHttpRequest.request(sname);
+				} 
+			}
+			return true;
 		}
-/*		e.onkeydown = function(event) {
-			event = event||window.event;
-		    if(event.keyCode==13) {
-			var box = document.getElementsByName(this.getAttribute('rel'))[0];			
-			this.style.display='none';
-			box.style.display='';
-			this.back=true;
-			box.focus();
-		    }
+//		e.onblur = function() {
+//			if (this.className == 'combo')
+//			  _update_box(this);
+//		},
+		e.onkeydown = function(event) {
+		    event = event||window.event;
+//		    this.back = event.shiftKey; // save shift state for onblur handler
+		    key = event.keyCode||event.which;
+		    var box = document.getElementsByName(this.getAttribute('rel'))[0];
+		    if (box && key == 32 && this.className == 'combo2') {
+			    this.style.display = 'none';
+			    box.style.display = 'inline';
+				box.value='';
+  // Konq does not like short syntax for nonstd attr
+//				this.setAttribute('back', 'true');
+//			    this.back=true;
+				setFocus(box.name);
+			    return false;
+			 }
 		}
-*/}
+}		
 
 /*
  Behaviour definitions
 */
 var inserts = {
-    '.amount': function(element) {
-		if(element.onblur==undefined) {
-		  var dec = element.getAttribute("dec");
-  		  element.onblur = function() {
+	'input': function(e) {
+		if(e.onfocus==undefined) {
+			e.onfocus = function() {
+			    save_focus(this);
+			};
+		}
+		if (e.className == 'combo' || e.className == 'combo2') {
+				_set_combo_input(e);
+		}
+	},
+	'input.combo_submit,input.combo_select,input.combo2': 
+	function(e) {
+  	    // this hides search button for js enabled browsers
+	    e.style.display = 'none';
+	},
+	'input.ajaxsubmit,input.editbutton,input.navibutton': 
+	function(e) {
+	    e.onclick = function() {
+		JsHttpRequest.request(this.name);
+		return false;
+	    }
+	},
+    '.amount': function(e) {
+		if(e.onblur==undefined) {
+		  var dec = e.getAttribute("dec");
+  		  e.onblur = function() {
 			price_format(this.name, get_amount(this.name), dec);
 		  };
 		}
 	},
-	'select': function(element) {
-		if(element.onfocus==undefined) {
-			element.onfocus = function() {
-				document.getElementsByName('_focus')[0].value = element.name;
+	'select': function(e) {
+		if(e.onfocus==undefined) {
+			e.onfocus = function() {
+			    save_focus(this);
 			};
-			element.onkeydown = function(event) { 
+			e.onkeydown = function(event) { 
 			  event = event||window.event;
 			  this.back = event.shiftKey; // save shift state for onblur handler
 			  this.lastkey = event.keyCode; 
-  			  if (event.keyCode==32) {
-			   if(this.init_size==undefined)
-				this.init_size = this.size;
-			  if(this.init_size<=1) {
-			   if(this.size>1) {
-				this.size = 1;
-			   } else{
-				var sel = this.selectedIndex;
-				this.size = this.options.length;
-				if(this.size>10) this.size = 10;
-				this.selectedIndex = sel;
-			   }
-			  }
-			 }
 			};
-			element.onblur = function() { 
-			    if(this.init_size<=1)
-				this.size = 1;
-			};
-		var c = element.className;
-		if (c == 'combo' || c == 'combo2')
-//		if (element.onblur==undefined) {
-			_set_combo_select(element);
-//		}
+  		  var c = e.className;
+		  if (c == 'combo' || c == 'combo2')
+			_set_combo_select(e);
 		}
 	},
-	'input': function(element) { // we do not want to change focus on submit
-		if(element.type!='submit' && element.onfocus==undefined) {
-			element.onfocus = function() {
-				document.getElementsByName('_focus')[0].value = element.name;
+	'textarea,a': function(e) {
+		if(e.onfocus==undefined) {
+			e.onfocus = function() {
+			    save_focus(this);
 			};
-		  var c = element.className;
-		  if (c == 'combo' || c == 'combo2') {
-	  		  if(element.onkeydown==undefined) {
-				_set_combo_input(element);
-			  }
-		  }
 		}
-	},
-	'input.combo_submit': function(element) {
-  	    // this hides search button for js enabled browsers
-	    element.style.display = 'none';
-	},
-	'input.combo_select': function(element) {
-	    // this hides select button for js enabled browsers
-	    element.style.display = 'none';
-	},
-	'input.combo_reload': function(element) {
-	    element.style.display = 'none';
-	},
-	'input.ajaxsubmit': function(e) {
-	    e.onclick = function() {
-		JsHttpRequest.request(this.name);
-		return false;
-	    }
-	},
-	'input.editbutton': function(e) {
-	    e.onclick = function() {
-		JsHttpRequest.request(this.name);
-		return false;
-	    }
 	},
 	'ul.ajaxtabs':	function(ul) {
 	    var ulist=ul.getElementsByTagName("li");
-	    for (var x=0; x<ulist.length; x++){ //loop through each LI element
+	    for (var x=0; x<ulist.length; x++){ //loop through each LI e
 		var ulistlink=ulist[x].getElementsByTagName("input")[0];
 		if(ulistlink.onclick==undefined) {
 // ?  var modifiedurl=ulistlink.getAttribute("href").replace(/^http:\/\/[^\/]+\//i, "http://"+window.location.hostname+"/")
@@ -205,42 +202,17 @@ var inserts = {
 		    }
 		}
 	    }
-	},
-	'input.navibutton': function(e) {
-	    if(e.onclick==undefined) {
-	     e.onclick = function() {
-		JsHttpRequest.request(this.name);
-		return false;
-	     }
-	    }
 	}
-//
 /* TODO
-	'a.date_picker':  function(element) {
+	'a.date_picker':  function(e) {
 	    // this un-hides data picker for js enabled browsers
-	    element.href = date_picker(this.getAttribute('rel'));
-	    element.style.display = '';
-	    element.tabindex = -1; // skip in tabbing order
+	    e.href = date_picker(this.getAttribute('rel'));
+	    e.style.display = '';
+	    e.tabindex = -1; // skip in tabbing order
 	}
 */
 };
 
 Behaviour.register(inserts);
 
-function setFocus(name, byId) {
-  if(byId)
-	input = document.getElementById(name);
-  else
-  	input = document.getElementsByName(name)[0];
-
-  if(input && input.focus)
-	input.focus();
-}
-
-Behaviour.addLoadEvent(function() {
-    var inp = document.getElementsByName('_focus')[0];
-	  if(inp!=null) {
-		setFocus(inp.value, 0);
-	  }
-	}
-);
+Behaviour.addLoadEvent(setFocus);
