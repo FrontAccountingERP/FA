@@ -19,6 +19,75 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+07-Jun-2008 Janusz Dobrowolski
++ Added ajax functionality and ui hints to sales form entry pages.
+$ /sales/sales_order_entry.php
+  /sales/includes/ui/sales_order_ui.inc
++ Added option for hints display, changed input/lists functions API
+$ /admin/display_prefs.php
+  /admin/db/users_db.inc
+  /includes/current_user.inc
+  /includes/prefs/userprefs.inc
+  /includes/ui/ui_input.inc
+  /themes/default/renderer.php
+  /sql/alter.sql
++ List functions rewrite. Added ajax functionality, universal combo_input().
+$ /includes/ui/ui_lists.inc
++ Ajaxified exchange_rate_display()
+$ /includes/ui/ui_view.inc
++ Added methods for setting focus and page reload to $Ajax class
+$ /includes/ajax.inc
+  /includes/main.inc
++ Added comma separated css element selectors
+$ /js/behaviour.js
+! Searchable select js changes related to new ui_lists.inc changes
+$ /js/inserts.js
+  /js/utils.js
++ Additional style definitions for various ajax controls
+$ /themes/default/default.css
+! Fixes related to changed input/lists API and ajax extensions
+$ /admin/company_preferences.php
+  /admin/fiscalyears.php
+  /admin/forms_setup.php
+  /admin/gl_setup.php
+  /dimensions/dimension_entry.php
+  /dimensions/inquiry/search_dimensions.php
+  /gl/bank_transfer.php
+  /gl/includes/ui/gl_deposit_ui.inc
+  /gl/includes/ui/gl_journal_ui.inc
+  /gl/includes/ui/gl_payment_ui.inc
+  /gl/inquiry/bank_inquiry.php
+  /gl/inquiry/gl_account_inquiry.php
+  /gl/inquiry/gl_trial_balance.php
+  /gl/manage/gl_account_types.php
+  /gl/manage/gl_accounts.php
+  /includes/ui/ui_controls.inc
+  /inventory/includes/item_adjustments_ui.inc
+  /inventory/includes/stock_transfers_ui.inc
+  /inventory/inquiry/stock_movements.php
+  /manufacturing/search_work_orders.php
+  /manufacturing/work_order_add_finished.php
+  /manufacturing/work_order_entry.php
+  /manufacturing/includes/work_order_issue_ui.inc
+  /manufacturing/manage/bom_edit.php
+  /purchasing/supplier_payment.php
+  /purchasing/includes/ui/grn_ui.inc
+  /purchasing/includes/ui/invoice_ui.inc
+  /purchasing/includes/ui/po_ui.inc
+  /purchasing/inquiry/po_search.php
+  /purchasing/inquiry/po_search_completed.php
+  /purchasing/inquiry/supplier_allocation_inquiry.php
+  /purchasing/inquiry/supplier_inquiry.php
+  /sales/customer_credit_invoice.php
+  /sales/customer_delivery.php
+  /sales/customer_invoice.php
+  /sales/includes/ui/sales_credit_ui.inc
+  /sales/inquiry/customer_allocation_inquiry.php
+  /sales/inquiry/customer_inquiry.php
+  /sales/inquiry/sales_deliveries_view.php
+  /sales/inquiry/sales_orders_view.php
+  /taxes/tax_groups.php
+
 06-Jun-2008 Joe Hunt
 # Final fixes in html layout
 $ /admin/create_coy.php
@@ -92,8 +161,6 @@ $ /admin/backups.php
   /themes/cool/default.css
   /themes/default/default.css
   
-  
-
 23-May-2008 Joe Hunt
 # Minor bug in dimensions.php (Outstanding Dimensions)
 $ /applications/dimensions.php
