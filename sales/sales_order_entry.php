@@ -18,9 +18,11 @@ include_once($path_to_root . "/sales/includes/db/sales_types_db.inc");
 include_once($path_to_root . "/reporting/includes/reporting.inc");
 
 $js = '';
+
 if ($use_popup_windows) {
 	$js .= get_js_open_window(900, 500);
 }
+
 if ($use_date_picker) {
 	$js .= get_js_date_picker();
 }
@@ -48,7 +50,6 @@ if (isset($_GET['NewDelivery']) && is_numeric($_GET['NewDelivery'])) {
 }
 
 page($_SESSION['page_title'], false, false, "", $js);
-
 //-----------------------------------------------------------------------------
 
 if (isset($_GET['AddedID'])) {
@@ -178,13 +179,18 @@ function copy_from_cart()
 	$_POST['ship_via'] = $cart->ship_via;
 
 	$_POST['customer_id'] = $cart->customer_id;
+
 	$_POST['branch_id'] = $cart->Branch;
 	$_POST['sales_type'] = $cart->sales_type;
 }
 //--------------------------------------------------------------------------------
 
 function line_start_focus() {
-  set_focus(get_company_pref('no_supplier_list') ? 'stock_id_edit' : 'StockID2');
+  global 	$Ajax;
+  
+  $Ajax->activate('items_table');
+  $Ajax->addFocus(true, '_stock_id_edit');
+  set_focus('_stock_id_edit');
 }
 //--------------------------------------------------------------------------------
 
@@ -238,7 +244,6 @@ function can_process() {
 		set_focus('ref');
 		return false;
 	}
-
 	return true;
 }
 
@@ -308,7 +313,7 @@ function handle_update_item()
 function handle_delete_item($line_no)
 {
     if ($_SESSION['Items']->some_already_delivered($line_no) == 0) {
-	$_SESSION['Items']->remove_from_cart($line_no);
+	    $_SESSION['Items']->remove_from_cart($line_no);
     } else {
 	display_error(_("This item cannot be deleted because some of it has already been delivered."));
     }
@@ -319,13 +324,13 @@ function handle_delete_item($line_no)
 
 function handle_new_item()
 {
+  
 	if (!check_item_data()) {
 			return;
 	}
 	add_to_order($_SESSION['Items'], $_POST['stock_id'], input_num('qty'),
 		input_num('price'), input_num('Disc') / 100);
-
-	$_POST['StockID2'] = $_POST['stock_id']	= "";
+	$_POST['_stock_id_edit'] = $_POST['stock_id']	= "";
 	line_start_focus();
 }
 
@@ -387,17 +392,12 @@ function create_cart($type, $trans_no)
 			$doc->line_items[$line_no]->qty_done = 0;
 		}
 		$_SESSION['Items'] = $doc;
-	} else
+	} else 
 		$_SESSION['Items'] = new Cart($type,array($trans_no));
-
 	copy_from_cart();
 }
 
 //--------------------------------------------------------------------------------
-
-
-//if (isset($_GET['Delete']) || isset($_GET['Edit']))
-//	copy_from_cart(); // GET method need form restore
 
 if (isset($_POST['CancelOrder']))
 	handle_cancel_order();
@@ -412,11 +412,13 @@ if (isset($_POST['UpdateItem']))
 if (isset($_POST['AddItem']))
 	handle_new_item();
 
-if (isset($_POST['CancelItemChanges']) || isset($_POST['UpdateItem']))
+if (isset($_POST['CancelItemChanges']) || isset($_POST['UpdateItem'])) {
 	line_start_focus();
+}
 
+if (isset($_POST['_customer_id_update']))
+    set_focus('branch_id');
 //--------------------------------------------------------------------------------
-
 check_db_has_stock_items(_("There are no inventory items defined in the system."));
 
 check_db_has_customer_branches(_("There are no customers, or there are no customers with branches. Please define customers and customer branches."));
@@ -457,16 +459,20 @@ if ($customer_error == "") {
 	end_table(1);
 
 	if ($_SESSION['Items']->trans_no == 0) {
-		submit_center_first('ProcessOrder', $porder);
+
+		submit_center_first('ProcessOrder', $porder,
+		    _('Check entered data and save document'), true);
 	} else {
-		submit_center_first('ProcessOrder', $corder);
+		submit_center_first('ProcessOrder', $corder,
+		    _('Validate changes and update document'), true);
 	}
 
-	submit_center_last('CancelOrder', $cancelorder);
+	submit_center_last('CancelOrder', $cancelorder, 
+	   _('Cancels document entry or removes sales order when editing an old document'));
 } else {
 	display_error($customer_error);
 }
 end_form();
-//--------------------------------------------------------------------------------
 end_page();
+
 ?>
