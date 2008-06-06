@@ -13,6 +13,7 @@
 
     include_once($path_to_root . "/admin/db/users_db.inc");
     include_once($path_to_root . "/includes/ui/ui_view.inc");
+    include_once($path_to_root . "/includes/ui/ui_controls.inc");
 	
     function page($title, $no_menu=false, $is_index=false, $onload="", $js="")
     {
@@ -25,6 +26,7 @@
 
     	page_header($title, $no_menu, $is_index, $onload, $js);
 		error_box();
+		div_start('_page_body'); // whole page content for ajax reloading
     }
 
     function end_page($no_menu=false, $is_index=false)
@@ -33,6 +35,7 @@
 
     	$hide_menu = $no_menu;
 
+		div_end();	// _page_body section
     	include($path_to_root . "/includes/page/footer.inc");
 
 	$Ajax->run();

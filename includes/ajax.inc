@@ -15,9 +15,9 @@ class Ajax extends JsHttpRequest {
 	//	update of ajaxified html element selected by given name/id.
 	//
 	function activate($trigname) {
-//	if (in_ajax())
-//	    display_error('Activate '. $trigger);
+	  if (in_ajax()) {
 		$this->triggers[$trigname] = true;
+	  }
 	}
 	//
 	//	Javascript clientside redirection.
@@ -25,8 +25,8 @@ class Ajax extends JsHttpRequest {
 	//
 	function redirect($url) {
 	    if(in_ajax()) {
-		$this->_addCommand(true, array('n'=>'rd'),$url);
-		$this->run();
+		  $this->_addCommand(true, array('n'=>'rd'),$url);
+		  $this->run();
 	    }
 	}
 	//
@@ -70,6 +70,14 @@ class Ajax extends JsHttpRequest {
 		return $this;
 	}
 	//
+	// Set current focus.
+	//
+	function addFocus($trigger, $sTarget)
+	{
+		$this->_addCommand($trigger, array('n'=>'fc'),$sTarget);
+		return $this;
+	}
+	//
 	// Internal procedure adding command to response.
 	//
 	function _addCommand($trigger, $aAttributes, $mData)
@@ -95,15 +103,20 @@ class Ajax extends JsHttpRequest {
 	function run() {
 	    
 	    if (!$this->isActive()) return;
-//		$this->addScript(true, "setFocus('".$_POST['_focus']."');");
-		
+
 		// remove not active commands
 		foreach ($this->aCommands as $idx => $com) {
+		// display_error( $idx.':'.var_dump($com));
+// If we should reload whole page content ignore all commands but the update.
+// This is page repost equivalent, although header and footer are not reloaded.
+		  if($com['n'] == 'up' && $com['t'] == '_page_body') {
+			  $this->aCommands = array($com);
+			  break;
+		  }
+		  else
 		  if ($com['why'] !== true && !isset($this->triggers[$com['why']]))
 			unset($this->aCommands[$idx]);
-
 		}
-
 	    $GLOBALS['_RESULT'] = $this->aCommands;
 //	    exit();
 	}
