@@ -19,6 +19,19 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+06-Jun-2008 Joe Hunt
+# Final fixes in html layout
+$ /admin/create_coy.php
+  /gl/gl_deposit.php
+  /gl/gl_payment.php
+  /gl/manage/exchange_rates.php
+  /inventory/prices.php
+  /inventory/purchasing_date.php
+  /inventory/reorder_level.php
+  /inventory/inquiry/stock_status.php
+  /manufacturing/inquiry/where_used_inquiry.php
+  /manufacturing/manage/bom_edit.php
+  
 05-Jun-2008 Joe Hunt
 ! Made an improment to the date picker. Shows the week number as well. Many delivery systems are week number based.
 $ /includes/ui/ui_view.inc

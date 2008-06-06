@@ -44,10 +44,10 @@ if (!isset($_POST['stock_id']))
 
 echo "<center>" . _("Item:"). "&nbsp;";
 stock_items_list('stock_id', $_POST['stock_id'], false, true);
-echo "<hr>";
+echo "<hr></center>";
 
 // if stock sel has changed, clear the form
-if ($_POST['stock_id'] != get_global_stock_item()) 
+if ($_POST['stock_id'] != get_global_stock_item())
 {
 	clear_data();
 }
@@ -64,10 +64,10 @@ function clear_data()
 
 //----------------------------------------------------------------------------------------------------
 
-if (isset($_POST['updatePrice'])) 
+if (isset($_POST['updatePrice']))
 {
 
-	if (!check_num('price', 0)) 
+	if (!check_num('price', 0))
 	{
 		$input_error = 1;
 		display_error( _("The price entered must be numeric."));
@@ -77,18 +77,18 @@ if (isset($_POST['updatePrice']))
 	if ($input_error != 1)
 	{
 
-		if (isset($_POST['PriceID'])) 
+		if (isset($_POST['PriceID']))
 		{
 			//editing an existing price
-			update_item_price($_POST['PriceID'], $_POST['sales_type_id'], 
+			update_item_price($_POST['PriceID'], $_POST['sales_type_id'],
 			$_POST['curr_abrev'], input_num('price'));
 
 			$msg = _("This price has been updated.");
-		} 
-		elseif ($input_error !=1) 
+		}
+		elseif ($input_error !=1)
 		{
 
-			add_item_price($_POST['stock_id'], $_POST['sales_type_id'], 
+			add_item_price($_POST['stock_id'], $_POST['sales_type_id'],
 			    $_POST['curr_abrev'], input_num('price'));
 
 			display_note(_("The new price has been added."));
@@ -100,7 +100,7 @@ if (isset($_POST['updatePrice']))
 
 //------------------------------------------------------------------------------------------------------
 
-if (isset($_GET['delete'])) 
+if (isset($_GET['delete']))
 {
 
 	//the link to delete a selected record was clicked
@@ -121,7 +121,7 @@ $th = array(_("Currency"), _("Sales Type"), _("Price"), "", "");
 table_header($th);
 $k = 0; //row colour counter
 
-while ($myrow = db_fetch($prices_list)) 
+while ($myrow = db_fetch($prices_list))
 {
 
 	alt_table_row_color($k);
@@ -138,7 +138,7 @@ end_table();
 
 //------------------------------------------------------------------------------------------------
 
-if (db_num_rows($prices_list) == 0) 
+if (db_num_rows($prices_list) == 0)
 {
 	display_note(_("There are no prices set up for this part."));
 }

@@ -31,7 +31,7 @@ if (!isset($_POST['stock_id']))
 echo "<center>" . _("Item:"). "&nbsp;";
 stock_costable_items_list('stock_id', $_POST['stock_id'], false, true);
 
-echo "<hr>";
+echo "<hr></center>";
 
 stock_item_heading($_POST['stock_id']);
 
@@ -47,7 +47,7 @@ $k=0; //row colour counter
 
 $result = get_loc_details($_POST['stock_id']);
 
-while ($myrow = db_fetch($result)) 
+while ($myrow = db_fetch($result))
 {
 
 	alt_table_row_color($k);
@@ -60,7 +60,7 @@ while ($myrow = db_fetch($result))
 	}
 
 	$qoh = get_qoh_on_date($_POST['stock_id'], $myrow["loc_code"]);
-	
+
 	label_cell($myrow["location_name"]);
 
 	$_POST[$myrow["loc_code"]] = qty_format($myrow["reorder_level"]);
@@ -78,7 +78,7 @@ while ($myrow = db_fetch($result))
 
 end_table(1);
 
-submit('UpdateData', _("Update"));
+submit_center('UpdateData', _("Update"));
 
 end_form();
 end_page();

@@ -139,8 +139,8 @@ function on_submit($selected_parent, $selected_component=null)
 	elseif (!isset($selected_component) && isset($selected_parent))
 	{
 
-		/*Selected component is null cos no item selected on first time round 
-		so must be adding a record must be Submitting new entries in the new 
+		/*Selected component is null cos no item selected on first time round
+		so must be adding a record must be Submitting new entries in the new
 		component form */
 
 		//need to check not recursive bom component of itself!
@@ -158,8 +158,8 @@ function on_submit($selected_parent, $selected_component=null)
 			if (db_num_rows($result) == 0)
 			{
 				$sql = "INSERT INTO ".TB_PREF."bom (parent, component, workcentre_added, loc_code, quantity)
-					VALUES ('$selected_parent', '" . $_POST['component'] . "', '" 
-					. $_POST['workcentre_added'] . "', '" . $_POST['loc_code'] . "', " 
+					VALUES ('$selected_parent', '" . $_POST['component'] . "', '"
+					. $_POST['workcentre_added'] . "', '" . $_POST['loc_code'] . "', "
 					. input_num('quantity') . ")";
 
 				db_query($sql,"check failed");
@@ -200,6 +200,7 @@ start_form(false, true);
 
 echo "<center>" . _("Select a manufacturable item:") . "&nbsp;";
 stock_bom_items_list('stock_id', null, false, true);
+echo "</center>";
 
 end_form();
 

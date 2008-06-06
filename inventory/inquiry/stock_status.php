@@ -31,7 +31,7 @@ echo "<center> " . _("Item:"). " ";
 stock_items_list('stock_id', $_POST['stock_id'], false, true);
 echo "<br>";
 
-echo "<hr>";
+echo "<hr></center>";
 
 set_global_stock_item($_POST['stock_id']);
 
@@ -51,8 +51,8 @@ start_table($table_style);
 if ($kitset_or_service == true)
 {
 	$th = array(_("Location"), _("Demand"));
-} 
-else 
+}
+else
 {
 	$th = array(_("Location"), _("Quantity On Hand"), _("Re-Order Level"),
 		_("Demand"), _("Available"), _("On Order"));
@@ -61,7 +61,7 @@ table_header($th);
 $j = 1;
 $k = 0; //row colour counter
 
-while ($myrow = db_fetch($loc_details)) 
+while ($myrow = db_fetch($loc_details))
 {
 
 	alt_table_row_color($k);
@@ -79,8 +79,8 @@ while ($myrow = db_fetch($loc_details))
 	{
 	  $demand_row = db_fetch_row($demand_result);
 	  $demand_qty =  $demand_row[0];
-	} 
-	else 
+	}
+	else
 	{
 	  $demand_qty =0;
 	}
@@ -100,8 +100,8 @@ while ($myrow = db_fetch($loc_details))
 		{
     		$qoo_row = db_fetch_row($qoo_result);
     		$qoo =  $qoo_row[0];
-		} 
-		else 
+		}
+		else
 		{
 			$qoo = 0;
 		}
@@ -114,8 +114,8 @@ while ($myrow = db_fetch($loc_details))
         qty_cell($qoo);
         end_row();
 
-	} 
-	else 
+	}
+	else
 	{
 	/* It must be a service or kitset part */
 		label_cell($myrow["location_name"]);
@@ -126,7 +126,7 @@ while ($myrow = db_fetch($loc_details))
 	$j++;
 	If ($j == 12)
 	{
-		$j = 1;	
+		$j = 1;
 		table_header($th);
 	}
 }

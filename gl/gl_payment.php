@@ -244,9 +244,13 @@ end_table(1);
 
 if (!isset($_POST['Process']))
 {
-    submit_center_first('Update', _("Update"));
 	if ($_SESSION['pay_items']->count_gl_items() >= 1)
+	{
+    	submit_center_first('Update', _("Update"));
 	    submit_center_last('Process', _("Process Payment"));
+	}
+	else
+    	submit_center('Update', _("Update"));
 }
 
 end_form();

@@ -18,11 +18,11 @@ if (!isset($_POST['stock_id']))
 
 echo "<center>" . _("Select an item to display its parent item(s).") . "&nbsp;";
 stock_items_list('stock_id', $_POST['stock_id'], false, true);
-echo "<hr><center>";
+echo "<hr></center>";
 
 set_global_stock_item($_POST['stock_id']);
 
-if (isset($_POST['stock_id'])) 
+if (isset($_POST['stock_id']))
 {
     $sql = "SELECT ".TB_PREF."bom.*,".TB_PREF."stock_master.description,".TB_PREF."workcentres.name As WorkCentreName, ".TB_PREF."locations.location_name
 		FROM ".TB_PREF."bom, ".TB_PREF."stock_master, ".TB_PREF."workcentres, ".TB_PREF."locations
@@ -32,11 +32,11 @@ if (isset($_POST['stock_id']))
 
     $result = db_query($sql,"No parent items were returned");
 
-   	if (db_num_rows($result) == 0) 
+   	if (db_num_rows($result) == 0)
    	{
    		display_note(_("The selected item is not used in any BOMs."));
-   	} 
-   	else 
+   	}
+   	else
    	{
 
         start_table("$table_style width=80%");
@@ -45,7 +45,7 @@ if (isset($_POST['stock_id']))
         table_header($th);
 
 		$k = $j = 0;
-        while ($myrow = db_fetch($result)) 
+        while ($myrow = db_fetch($result))
         {
 
 			alt_table_row_color($k);
@@ -57,7 +57,7 @@ if (isset($_POST['stock_id']))
         	label_cell($myrow["location_name"]);
         	label_cell(qty_format($myrow["quantity"]));
 			end_row();
-			
+
         	$j++;
         	If ($j == 12)
         	{

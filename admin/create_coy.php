@@ -311,7 +311,7 @@ function display_company_edit($selected_id)
 
 	end_table();
 	display_note(_("Choose from Database scripts in SQL folder. No Datase is created without a script."), 0, 1);
-	echo "<center><input onclick='javascript:updateCompany()' type='button' style='width:150px' value='". _("Save"). "'>";
+	echo "<center><input onclick='javascript:updateCompany()' type='button' style='width:150px' value='". _("Save"). "'></center>";
 
 
 	end_form();

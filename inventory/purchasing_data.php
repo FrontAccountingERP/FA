@@ -18,7 +18,7 @@ check_db_has_suppliers(_("There are no suppliers defined in the system."));
 if (isset($_GET['supplier_id']))
 {
 	$supplier_id = strtoupper($_GET['supplier_id']);
-} 
+}
 elseif (isset($_POST['supplier_id']))
 {
 	$supplier_id = strtoupper($_POST['supplier_id']);
@@ -61,7 +61,7 @@ if ((isset($_POST['AddRecord']) || isset($_POST['UpdateRecord'])) && isset($supp
 
     		$sql = "INSERT INTO ".TB_PREF."purch_data (supplier_id, stock_id, price, suppliers_uom,
     			conversion_factor, supplier_description) VALUES (";
-    		$sql .= "'$supplier_id', '" . $_POST['stock_id'] . "', " . 
+    		$sql .= "'$supplier_id', '" . $_POST['stock_id'] . "', " .
 		    input_num('price') . ", '" . $_POST['suppliers_uom'] . "', " .
     			input_num('conversion_factor') . ", '" . $_POST['supplier_description'] . "')";
 
@@ -117,18 +117,18 @@ if (!isset($_POST['stock_id']))
 echo "<center>" . _("Item:"). "&nbsp;";
 stock_purchasable_items_list('stock_id', $_POST['stock_id'], false, true);
 
-echo "<hr><center>";
+echo "<hr></center>";
 
 set_global_stock_item($_POST['stock_id']);
 
 $mb_flag = get_mb_flag($_POST['stock_id']);
 
-if ($mb_flag == -1) 
+if ($mb_flag == -1)
 {
 	display_error(_("Entered item is not defined. Please re-enter."));
 	set_focus('stock_id');
-} 
-else 
+}
+else
 {
 
     $sql = "SELECT ".TB_PREF."purch_data.*,".TB_PREF."suppliers.supp_name,".TB_PREF."suppliers.curr_code
@@ -141,8 +141,8 @@ else
     if (db_num_rows($result) == 0)
     {
     	display_note(_("There is no purchasing data set up for the part selected"));
-    } 
-    else 
+    }
+    else
     {
         start_table("$table_style width=60%");
 
@@ -202,16 +202,16 @@ if (isset($_GET['Edit']))
 echo "<br>";
 start_table($table_style2);
 
-if (isset($_GET['Edit'])) 
+if (isset($_GET['Edit']))
 {
 	hidden('supplier_id', $supplier_id);
 	label_row(_("Supplier:"), $supp_name);
-} 
+}
 else
 {
 	supplier_list_row(_("Supplier:"), 'supplier_id', null, false, true);
 	$supplier_id = $_POST['supplier_id'];
-}	
+}
 amount_row(_("Price:"), 'price', null,'', get_supplier_currency($supplier_id));
 text_row(_("Suppliers Unit of Measure:"), 'suppliers_uom', null, 50, 51);
 
@@ -219,7 +219,7 @@ if (!isset($_POST['conversion_factor']) || $_POST['conversion_factor'] == "")
 {
    	$_POST['conversion_factor'] = exrate_format(1);
 }
-amount_row(_("Conversion Factor (to our UOM):"), 'conversion_factor', 
+amount_row(_("Conversion Factor (to our UOM):"), 'conversion_factor',
   exrate_format($_POST['conversion_factor']), null, null, user_exrate_dec() );
 text_row(_("Supplier's Code or Description:"), 'supplier_description', null, 50, 51);
 
@@ -228,8 +228,8 @@ end_table(1);
 if (isset($_GET['Edit']))
 {
 	submit_center('UpdateRecord', _("Update Purchasing Data"));
-} 
-else 
+}
+else
 {
 	submit_center('AddRecord', _("Add Purchasing Data"));
 }

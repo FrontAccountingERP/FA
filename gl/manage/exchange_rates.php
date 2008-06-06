@@ -191,14 +191,15 @@ if (isset($_GET['delete']))
 
 //---------------------------------------------------------------------------------------------
 
-echo "<center>";
 start_form(false, true);
 
 if (!isset($_POST['curr_abrev']))
 	$_POST['curr_abrev'] = get_global_curr_code();
 
+echo "<center>";
 echo _("Select a currency :") . "  ";
 currencies_list('curr_abrev', $_POST['curr_abrev'], true);
+echo "</center>";
 
 // if currency sel has changed, clear the form
 if ($_POST['curr_abrev'] != get_global_curr_code())

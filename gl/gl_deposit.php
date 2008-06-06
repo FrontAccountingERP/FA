@@ -28,7 +28,7 @@ check_db_has_bank_trans_types(_("There are no bank payment types defined in the 
 
 //-----------------------------------------------------------------------------------------------
 
-if (isset($_GET['AddedID'])) 
+if (isset($_GET['AddedID']))
 {
 	$trans_no = $_GET['AddedID'];
 	$trans_type = systypes::bank_deposit();
@@ -51,7 +51,7 @@ function copy_to_py()
 	$_SESSION['deposit_items']->transfer_type = $_POST['type'];
 	$_SESSION['deposit_items']->increase = $_POST['PayType'];
 	if (!isset($_POST['person_id']))
-		$_POST['person_id'] = "";	
+		$_POST['person_id'] = "";
 	$_SESSION['deposit_items']->person_id = $_POST['person_id'];
 	if (!isset($_POST['PersonDetailID']))
 		$_POST['PersonDetailID'] = "";
@@ -88,7 +88,7 @@ function handle_new_order()
 	$_POST['date_'] = Today();
 	if (!is_date_in_fiscalyear($_POST['date_']))
 		$_POST['date_'] = end_fiscalyear();
-	$_SESSION['deposit_items']->tran_date = $_POST['date_'];	
+	$_SESSION['deposit_items']->tran_date = $_POST['date_'];
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -98,20 +98,20 @@ if (isset($_POST['Process']))
 
 	$input_error = 0;
 
-	if (!references::is_valid($_POST['ref'])) 
+	if (!references::is_valid($_POST['ref']))
 	{
 		display_error( _("You must enter a reference."));
 		set_focus('ref');
 		$input_error = 1;
-	} 
-	elseif (!is_new_reference($_POST['ref'], systypes::bank_deposit())) 
+	}
+	elseif (!is_new_reference($_POST['ref'], systypes::bank_deposit()))
 	{
 		display_error( _("The entered reference is already in use."));
 		set_focus('ref');
 		$input_error = 1;
 	}
 
-	if (!is_date($_POST['date_'])) 
+	if (!is_date($_POST['date_']))
 	{
 		display_error(_("The entered date for the deposit is invalid."));
 		set_focus('date_');
@@ -160,14 +160,14 @@ function check_item_data()
 		return false;
 	}
 
-	if ($_POST['code_id'] == $_POST['bank_account']) 
+	if ($_POST['code_id'] == $_POST['bank_account'])
 	{
 		display_error( _("The source and destination accouts cannot be the same."));
 		set_focus('code_id');
 		return false;
 	}
 
-	if (is_bank_account($_POST['code_id'])) 
+	if (is_bank_account($_POST['code_id']))
 	{
 		display_error( _("You cannot make a deposit from a bank account. Please use the transfer funds facility for this."));
 		set_focus('code_id');
@@ -183,7 +183,7 @@ function handle_update_item()
 {
     if($_POST['UpdateItem'] != "" && check_item_data())
     {
-    	$_SESSION['deposit_items']->update_gl_item($_POST['Index'], $_POST['dimension_id'], 
+    	$_SESSION['deposit_items']->update_gl_item($_POST['Index'], $_POST['dimension_id'],
 		  $_POST['dimension2_id'], -input_num('amount'), $_POST['LineMemo']);
     }
 }
@@ -202,7 +202,7 @@ function handle_new_item()
 	if (!check_item_data())
 		return;
 
-	$_SESSION['deposit_items']->add_gl_item($_POST['code_id'], $_POST['dimension_id'], 
+	$_SESSION['deposit_items']->add_gl_item($_POST['code_id'], $_POST['dimension_id'],
 	  $_POST['dimension2_id'], -input_num('amount'), $_POST['LineMemo']);
 }
 
@@ -216,7 +216,7 @@ if (isset($_GET['Delete']))
 
 if (isset($_POST['AddItem']) || isset($_POST['UpdateItem']))
 	copy_to_py();
-	
+
 if (isset($_POST['AddItem']))
 	handle_new_item();
 
@@ -247,9 +247,13 @@ end_table(1);
 
 if (!isset($_POST['Process']))
 {
-    submit_center_first('Update', _("Update"));
 	if ($_SESSION['deposit_items']->count_gl_items() >= 1)
+	{
+    	submit_center_first('Update', _("Update"));
 	    submit_center_last('Process', _("Process Deposit"));
+	}
+	else
+    	submit_center('Update', _("Update"));
 }
 
 end_form();
