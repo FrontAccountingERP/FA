@@ -47,18 +47,25 @@
 
 				echo "<table class=logoutBar>";
 				echo "<tr><td class=headingtext3>" . $db_connections[$_SESSION["wa_current_user"]->company]["name"] . " | " . $_SERVER['SERVER_NAME'] . " | " . $_SESSION["wa_current_user"]->name . "</td>";
+				echo "  <td class='logoutBarRight'><a href='$path_to_root/admin/display_prefs.php?'>" . _("Preferences") . "</a>&nbsp;&nbsp;&nbsp;\n";
+				echo "  <a href='$path_to_root/admin/change_current_user_password.php?selected_id=" . $_SESSION["wa_current_user"]->username . "'>" . _("Change password") . "</a>&nbsp;&nbsp;&nbsp;\n";
+
 				if ($help_base_url != null)
 				{
-					echo "<td align=right ><a target = '_blank' onclick=" .'"'."javascript:openWindow(this.href,this.target); return false;".'" '. "href='". help_url($title, $sel_app)."'>" . _("Help") . "</a></td>";
+					echo "<a target = '_blank' onclick=" .'"'."javascript:openWindow(this.href,this.target); return false;".'" '. "href='". help_url($title, $sel_app)."'>" . _("Help") . "</a>&nbsp;&nbsp;&nbsp;";
 				}
-				echo "<td class=logoutBarRight><a href='$local_path_to_root/access/logout.php?'>" . _("Logout") . "</a>";
+				echo "<a href='$local_path_to_root/access/logout.php?'>" . _("Logout") . "</a>&nbsp;&nbsp;&nbsp;";
 				echo "</td></tr></table>";
 			}
 			echo "</td></tr></table>";
 
 			if ($title && !$no_menu && !$is_index)
 			{
-				echo "<center><table width='100%'><tr><td width='100%' class='titletext'>$title</td></tr></table></center>";
+				echo "<center><table width='100%'><tr><td width='100%' class='titletext'>$title</td>"
+				."<td align=right>"
+				.(user_hints() ? "<span id='hints'></span>" : '')
+				."</td>"
+				."</tr></table></center>";
 			}
 
 			if (!$is_index)

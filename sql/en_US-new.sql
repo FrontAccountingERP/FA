@@ -1106,6 +1106,7 @@ CREATE TABLE IF NOT EXISTS `0_users` (
   `percent_dec` smallint(6) NOT NULL default '1',
   `show_gl` tinyint(1) NOT NULL default '1',
   `show_codes` tinyint(1) NOT NULL default '0',
+  `show_hints` tinyint(1) NOT NULL default '0',
   `last_visit_date` datetime default NULL,
   PRIMARY KEY  (`user_id`)
 ) TYPE=MyISAM;
@@ -1440,5 +1441,5 @@ INSERT INTO `0_sys_types` VALUES(40, 'Dimension', 1, '1');
 -- Dumping data for table `0_users`
 --
 
-INSERT INTO `0_users` VALUES('admin', '5f4dcc3b5aa765d61d8327deb882cf99', 'Administrator', 2, '', 'adm@adm.com', 'en_US', 0, 0, 0, 0, 'default', 'Letter', 2, 2, 4, 1, 1, 0, '2008-04-04 12:34:29');
+INSERT INTO `0_users` VALUES('admin', '5f4dcc3b5aa765d61d8327deb882cf99', 'Administrator', 2, '', 'adm@adm.com', 'en_US', 0, 0, 0, 0, 'default', 'Letter', 2, 2, 4, 1, 1, 0, 0, '2008-04-04 12:34:29');
 

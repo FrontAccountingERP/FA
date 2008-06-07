@@ -19,6 +19,25 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+07-Jun-2008 Joe Hunt
+! Changed install.html and update.html
+$ install.html
+  update.html
++ New files, change_current_user_password.php and alter2.sql
+$ /admin/change_current_user_password.php
+  /sql/alter2.sql
+! Changed some files for layout
+$ /lang/en_US/stylesheet.css
+  /themes/aqua/default.css
+  /themes/aqua/renderer.php
+  /themes/cool/default.css
+  /themes/cool/renderer.php
+  /themes/default/default.css
+  /themes/default/renderer.php
+! Changed install sql scripts
+$ /sql/en_US-demo.sql
+  /sql/en_US-new.sql
+  
 07-Jun-2008 Janusz Dobrowolski
 + Added ajax functionality and ui hints to sales form entry pages.
 $ /sales/sales_order_entry.php

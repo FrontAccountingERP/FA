@@ -938,6 +938,7 @@ CREATE TABLE `0_users` (
   `percent_dec` smallint(6) NOT NULL default '1',
   `show_gl` tinyint(1) NOT NULL default '1',
   `show_codes` tinyint(1) NOT NULL default '0',
+  `show_hints` tinyint(1) NOT NULL default '0',
   `last_visit_date` datetime default NULL,
   PRIMARY KEY  (`user_id`)
 ) TYPE=MyISAM ;
@@ -1922,8 +1923,8 @@ INSERT INTO `0_tax_types` VALUES ('3', '25', '2664', '2682', 'VAT', '1');
 
 ### Data of table `0_users` ###
 
-INSERT INTO `0_users` VALUES('demouser', '5f4dcc3b5aa765d61d8327deb882cf99', 'Demo User', 1, '999-999-999', 'demo@demo.nu', 'en_US', 0, 0, 0, 0, 'default', 'Letter', 2, 2, 3, 1, 1, 0, '2008-02-06 19:02:35');
-INSERT INTO `0_users` VALUES('admin', '5f4dcc3b5aa765d61d8327deb882cf99', 'Administrator', 2, '', 'adm@adm.com', 'en_US', 0, 0, 0, 0, 'default', 'Letter', 2, 2, 4, 1, 1, 0, '2008-03-20 10:52:46');
+INSERT INTO `0_users` VALUES('demouser', '5f4dcc3b5aa765d61d8327deb882cf99', 'Demo User', 1, '999-999-999', 'demo@demo.nu', 'en_US', 0, 0, 0, 0, 'default', 'Letter', 2, 2, 3, 1, 1, 0, 0, '2008-02-06 19:02:35');
+INSERT INTO `0_users` VALUES('admin', '5f4dcc3b5aa765d61d8327deb882cf99', 'Administrator', 2, '', 'adm@adm.com', 'en_US', 0, 0, 0, 0, 'default', 'Letter', 2, 2, 4, 1, 1, 0, 0, '2008-03-20 10:52:46');
 
 ### Data of table `0_wo_issue_items` ###
 

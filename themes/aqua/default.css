@@ -29,7 +29,7 @@ tr, td, th {
 	line-height: 19px;
 }
 
-tr {
+table {
 	text-align: left;
 }
 
@@ -182,7 +182,7 @@ div.tabs a {
 div.tabs a.selected {
 	border-top: 1px solid #8cacbb;
 	border-right: 1px solid #8cacbb;
-	border-bottom:  1px solid #dee7ec;
+	border-bottom:  1px solid #a7d6ce;
 	border-left: 1px solid #8cacbb;
 	font-weight: normal;
 	background: #a7d6ce;
@@ -358,4 +358,102 @@ input.amount {
    border-style:none;
    text-decoration:underline;
    cursor: pointer;
+}
+
+.navibutton[disabled] {
+  color:#808080;
+  cursor: auto;
+}
+.navibutton {
+   color:#0000FF;
+   padding: 3px;
+   background-color:transparent;
+   border-style:none;
+   text-decoration:underline;
+   cursor: pointer;
+}
+
+.navibar {
+    padding: 3px;
+    border: 1px solid #cccccc;
+    border-collapse: collapse;
+    background-color: #dee7ec;
+}
+
+
+.listsubmit {
+    display: none;
+}
+
+ul.ajaxtabs{
+	padding: 3px 0 0 0;
+	margin: 3px 3px 0 3px;
+	font: 12px Tahoma,Verdana;
+	font-weight: bold;
+}
+
+ul.ajaxtabs li{
+	list-style: none;
+	margin: 0;
+	display: inline;
+}
+
+ul.ajaxtabs li input{
+    background-color: #dee7ec;
+/*	background-repeat: repeat-x;
+	background-position: top; */
+	padding: 3px 8px;
+	margin: 0px;
+	border-top: 1px solid #8cacbb;
+	border-right: 1px solid #8cacbb;
+	border-bottom: none;
+	border-left: none;
+	font-weight: bold;
+}
+
+ul.ajaxtabs li input:hover{
+	border-top: 1px solid #8cacbb;
+	color:#FFFFFF;
+}
+div.spaceBox{
+	background-color: #8cacbb;
+	height:8px;
+	border-bottom: 1px solid #8cacbb;
+	border-left: 1px solid #8cacbb;
+	border-right:1px solid #8cacbb;
+	margin: 0 3px 0px 3px
+}
+
+div.contentBox{
+	border: 1px solid #8cacbb;
+	margin: 0 3px 3px 3px
+}
+
+ul.ajaxtabs li input.current, ul.ajaxtabs li input.current:hover{
+	border-left: 1px solid #8cacbb;
+	background-color: #8cacbb;
+	color:#FFFFFF;
+}
+#hints {
+  font-size: 13px;
+  padding: 5px;
+  border-bottom: 1px solid #8cacbb;
+  margin: -4px -2px -2px;
+  border: 1px solid #8cacbb;
+/*  display: none;*/
+  background-color: #FFFFE0;
+  white-space: nowrap;
+/*
+  position: absolute;
+  left: 0;
+  left: -900px;
+  filter:alpha(opacity=0);
+  -moz-opacity:0;
+  border: 1px solid black;
+  height: 200px;
+  text-align: center;
+  width:200px;
+  z-index: 100;
+  padding: 5px;
+*/
 }

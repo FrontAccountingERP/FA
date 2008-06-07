@@ -29,7 +29,7 @@ tr, td, th {
 	line-height: 19px;
 }
 
-tr {
+table {
 	text-align: left;
 }
 
@@ -383,7 +383,7 @@ input.amount {
     padding: 3px;
     border: 1px solid #cccccc;
     border-collapse: collapse;
-    background-color: #788da1;
+    background-color: #dee7ec;
 }
 
 
@@ -439,4 +439,27 @@ ul.ajaxtabs li input.current, ul.ajaxtabs li input.current:hover{
 	border-left: 1px solid #8cacbb;
 	background-color: #8cacbb;
 	color:#FFFFFF;
+}
+#hints {
+  font-size: 13px;
+  padding: 5px;
+  border-bottom: 1px solid #8cacbb;
+  margin: -4px -2px -2px;
+  border: 1px solid #8cacbb;
+/*  display: none;*/
+  background-color: #FFFFE0;
+  white-space: nowrap;
+/*
+  position: absolute;
+  left: 0;
+  left: -900px;
+  filter:alpha(opacity=0);
+  -moz-opacity:0;
+  border: 1px solid black;
+  height: 200px;
+  text-align: center;
+  width:200px;
+  z-index: 100;
+  padding: 5px;
+*/
 }
