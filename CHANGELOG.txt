@@ -20,6 +20,10 @@ Legend:
 $ -> Affected files
 
 07-Jun-2008 Joe Hunt
+# Fixed a layout bug in footer.inc
+$ /includes/page/footer.inc
+
+07-Jun-2008 Joe Hunt
 ! Changed install.html and update.html
 $ install.html
   update.html
