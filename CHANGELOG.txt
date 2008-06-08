@@ -19,6 +19,11 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+---------------------------------------Release Candidate 1-------------------------------
+08-Jun-2008 Joe Hunt
+! Preparing for release candidate 1
+$ config.php
+
 08-Jun-2008 Joe Hunt
 ! Set 'max_execution_time' to 60 seconds by ini_set.
 $ /install/save.php
