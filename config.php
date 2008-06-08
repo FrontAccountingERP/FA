@@ -38,10 +38,10 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 	// Main Title
 	$app_title = "FrontAccounting";
 	// application version
-	$version 		= "2.0 Beta";
+	$version 		= "2.0 Release Candidate 1";
 
 	// Build for development purposes
-	$build_version 	= "23";
+	$build_version 	= "145";
 
 	// Powered by
 	$power_by 		= "FrontAccounting";
