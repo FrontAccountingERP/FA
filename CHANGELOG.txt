@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+08-Jun-2008 Joe Hunt
+! Set 'max_execution_time' to 60 seconds by ini_set.
+$ /install/save.php
+
 07-Jun-2008 Joe Hunt
 # Fixed a layout bug in footer.inc
 $ /includes/page/footer.inc
