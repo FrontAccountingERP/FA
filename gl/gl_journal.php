@@ -19,7 +19,7 @@ if ($use_popup_windows)
 if ($use_date_picker)
 	$js .= get_js_date_picker();
 
-set_focus('CodeID2');
+set_focus('_code_id_edit');
 
 page(_("Journal Entry"), false, false,'', $js);
 

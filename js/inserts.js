@@ -1,9 +1,8 @@
-
 var _focus;
 
 function debug(msg) {
-    document.getElementById('msgbox').innerHTML=
-	document.getElementById('msgbox').innerHTML+'<br>'+msg
+    box = document.getElementById('msgbox')
+	box.innerHTML= box.innerHTML+'<br>'+msg
 }
 
 function progbar(container) {
@@ -13,7 +12,6 @@ function progbar(container) {
 }
 
 function save_focus(e) {
-//  document.getElementsByName('_focus')[0].value = e.name;
   _focus = e.name||e.id;
   var h = document.getElementById('hints');
   if (h) {
@@ -44,18 +42,16 @@ function expandtab(tabcontentid, tabnumber) {
 }
 
 function _set_combo_input(e) {
-		  e.onblur=function() { 
-//			if(!this.back) {
-			  var but_name = this.name.substring(0, this.name.length-4)+'button';
-			  var button = document.getElementsByName(but_name)[0];
-			  var select = document.getElementsByName(this.getAttribute('rel'))[0];
-			  save_focus(select);
+		e.onblur=function() { 
+		  var but_name = this.name.substring(0, this.name.length-4)+'button';
+		  var button = document.getElementsByName(but_name)[0];
+		  var select = document.getElementsByName(this.getAttribute('rel'))[0];
+		  save_focus(select);
 //		this.style.display='none';
-			  if(button) { // if *_button set submit search request
-			    JsHttpRequest.request(but_name);
-			  }
-			  return false;
-//			}
+		  if(button) { // if *_button set submit search request
+	  		JsHttpRequest.request(but_name);
+		  }
+		  return false;
 		};
 		e.onkeyup = function(ev) {
 			var select = document.getElementsByName(this.getAttribute('rel'))[0];
@@ -73,14 +69,13 @@ function _set_combo_input(e) {
 			  }
 			}
 		  };
-    		e.onkeydown = function(ev) { 
+    	  e.onkeydown = function(ev) { 
 	  		ev = ev||window.event;
 	  		key = ev.keyCode||ev.which;
 	  		if(key == 13) {
 			  this.blur();
 	  		  return false;
 	  		}
-//	    this.back = ev.shiftKey; // save shift state for onblur handler
 		  }
 }
 
@@ -97,6 +92,10 @@ function _update_box(s) {
 }
 
 function _set_combo_select(e) {
+		e.onblur = function() {
+			if(this.className=='combo')
+			    _update_box(this);
+		}
 		e.onchange = function() {
 			var s = this;
 			
@@ -111,22 +110,14 @@ function _set_combo_select(e) {
 			}
 			return true;
 		}
-//		e.onblur = function() {
-//			if (this.className == 'combo')
-//			  _update_box(this);
-//		},
 		e.onkeydown = function(event) {
 		    event = event||window.event;
-//		    this.back = event.shiftKey; // save shift state for onblur handler
 		    key = event.keyCode||event.which;
 		    var box = document.getElementsByName(this.getAttribute('rel'))[0];
 		    if (box && key == 32 && this.className == 'combo2') {
 			    this.style.display = 'none';
 			    box.style.display = 'inline';
 				box.value='';
-  // Konq does not like short syntax for nonstd attr
-//				this.setAttribute('back', 'true');
-//			    this.back=true;
 				setFocus(box.name);
 			    return false;
 			 }
@@ -152,7 +143,16 @@ var inserts = {
   	    // this hides search button for js enabled browsers
 	    e.style.display = 'none';
 	},
-	'input.ajaxsubmit,input.editbutton,input.navibutton': 
+/*	'select.combo,select.combo2':
+	function(e) {
+		var box = document.getElementsByName(e.getAttribute('rel'))[0];
+		if(box) {
+	  	  box.style.width = 200+'px';
+	  	  e.style.width = 200+'px';
+		  debug(e.name+':'+e.style.width)
+		}
+	},
+*/	'input.ajaxsubmit,input.editbutton,input.navibutton': 
 	function(e) {
 	    e.onclick = function() {
 		JsHttpRequest.request(this.name);
@@ -171,11 +171,6 @@ var inserts = {
 		if(e.onfocus==undefined) {
 			e.onfocus = function() {
 			    save_focus(this);
-			};
-			e.onkeydown = function(event) { 
-			  event = event||window.event;
-			  this.back = event.shiftKey; // save shift state for onblur handler
-			  this.lastkey = event.keyCode; 
 			};
   		  var c = e.className;
 		  if (c == 'combo' || c == 'combo2')
@@ -202,6 +197,10 @@ var inserts = {
 		    }
 		}
 	    }
+	},
+	'#msgbox': function(e) {
+	// this is to avoid changing div height after ajax update in IE7
+	  e.style.display = e.innerHTML.length ? 'block' : 'none';
 	}
 /* TODO
 	'a.date_picker':  function(e) {

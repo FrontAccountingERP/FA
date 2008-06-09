@@ -159,8 +159,6 @@ function display_order_header(&$order, $editable, $date_text, $display_tax_group
 
 	$customer_error = "";
 	$change_prices = 0;
-	$newcust = ($order->customer_id != get_post('customer_id', -1));
-	$newbranch = ($order->Branch != get_post('branch_id', -1)) || $newcust;
 
 	if (isset($order) && !$editable)
 	{
@@ -174,7 +172,7 @@ function display_order_header(&$order, $editable, $date_text, $display_tax_group
 	{
 		customer_list_row(_("Customer:"), 'customer_id', null, false, true);
 
-		if ($newcust)
+		if ($order->customer_id != get_post('customer_id', -1))
 		{
 			// customer has changed
 			// clear the branch selection
@@ -195,7 +193,9 @@ function display_order_header(&$order, $editable, $date_text, $display_tax_group
 		    $order->Branch = 0;
 		} else
 		{
-			if($newcust || $newbranch) {
+		if( ($order->customer_id != get_post('customer_id', -1)) ||
+			($order->Branch != get_post('branch_id', -1))) {
+
 				$old_order = (PHP_VERSION<5) ? $order : clone( $order );
 				$customer_error = get_customer_details_to_order($order, $_POST['customer_id'], $_POST['branch_id']);
 

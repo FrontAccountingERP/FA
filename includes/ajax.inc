@@ -106,17 +106,19 @@ class Ajax extends JsHttpRequest {
 
 		// remove not active commands
 		foreach ($this->aCommands as $idx => $com) {
-		// display_error( $idx.':'.var_dump($com));
 // If we should reload whole page content ignore all commands but the update.
 // This is page repost equivalent, although header and footer are not reloaded.
+		  if ($com['why'] !== true && !isset($this->triggers[$com['why']])) {
+			unset($this->aCommands[$idx]);
+//			display_error('unset '.$com['t']);
+		  }
+		  else
 		  if($com['n'] == 'up' && $com['t'] == '_page_body') {
 			  $this->aCommands = array($com);
 			  break;
 		  }
-		  else
-		  if ($com['why'] !== true && !isset($this->triggers[$com['why']]))
-			unset($this->aCommands[$idx]);
 		}
+//		display_error(htmlentities(print_r($this->aCommands, true)));
 	    $GLOBALS['_RESULT'] = $this->aCommands;
 //	    exit();
 	}

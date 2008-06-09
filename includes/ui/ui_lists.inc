@@ -45,10 +45,6 @@ $opts = array(		// default options
 	'max' => 50,
 	'cells' => false,	// combo displayed as 2 <td></td> cells
 	'search' => array(), // sql field names to search
-		// if _focus is not set on next field before combo_input call
-		// set this to false to avoid deadlock via onblur handler
-	'next_focus' => (!isset($_POST['_focus']) ||
-	(isset($_POST["_{$name}_button"]) && $_POST['_focus']==$name)) ? false : $_POST['_focus'],
 	'format' => null, 	 // format functions for regular options
 	'disabled' => false, // FIX todo
 	'box_hint' => null // box/selectors hints; null = std see below
@@ -89,17 +85,15 @@ $opts = array(		// default options
 			$Ajax->activate('_page_body');
 		else
 			$Ajax->activate($name);
-		set_focus($opts['next_focus']);
 	}
-	if ($search_box && $opts['search_submit']) {
+	if ($search_box) {
 		// search related sql modifications
 
 	$rel = "rel='$search_box'"; // set relation to list
-
+   if ($opts['search_submit']) {
 	// if selected from list - set focus on next field
 	if (isset($_POST[$search_submit])) {
 		$Ajax->activate($name);
-		set_focus($name);
 	}
 	if ($txt == '') {
 		if ($spec_option === false)
@@ -115,6 +109,7 @@ $opts = array(		// default options
 		$opts['where'][] = '('. implode($opts['search'], ' OR ') . ')';
 		}
 	}
+   }
 	// sql completion
 	if (count($opts['where'])) {
 		$sql .= strpos($sql, 'WHERE')==false ? ' WHERE ':' AND ';
@@ -210,11 +205,10 @@ $edit_entry = '';
 	if ($search_box != false) {
 		$edit_entry = "<input type='text' name='$search_box' id='$search_box' size='".
 			$opts['size']."' maxlength='".$opts['max'].
-			"' value='$txt' class='$class' rel='$name' title='"
+			"' value='$txt' class='$class' rel='$name' autocomplete='off' title='"
 			.$opts['box_hint']."'"
 			.(in_ajax() && !$by_id ? " style=display:none;":'')
 			.">\n";
-//	default_focus($search_box);
 		if ($search_submit != false) {
 			global $_search_button;
 			$edit_entry .= sprintf($_search_button, user_theme(),
@@ -1277,7 +1271,7 @@ function gl_all_accounts_list($name, $selected_id, $skip_bank_accounts=false,
 		'format' => '_format_account' .  ($show_group ? '2' : ''),
 		'order' => 'account_code',
 		'search_box' => $cells,
-			'search_submit' => true,
+			'search_submit' => false,
 			'size' => 12,
 			'max' => 10,
 			'cells' => true

@@ -548,6 +548,8 @@ function get_js_open_window($width, $height)
   If $form<0 $name is element id.
 */
 function set_focus($name, $form_no=0) {
+  global $Ajax;
+	$Ajax->addFocus(true, $name);
     $_POST['_focus'] = $name;
 }
 //

@@ -11,14 +11,10 @@
 			
             // Function is called when an answer arrives. 
 	    function(result, errors) {
-		        // Write errors to the debug div.
-            document.getElementById('msgbox').innerHTML = errors; 
-
                 // Write the answer.
 	        if (result) {
 		  	  for(var i in result ) { 
 			  atom = result[i];
-			
 			  cmd = atom['n'];
 			  property = atom['p'];
 			  type = atom['c'];
@@ -47,13 +43,16 @@
 			  } else {
 				  errors = errors+'<br>Unknown ajax function: '+cmd;
 			}
-		}
-		Behaviour.apply();
+		  }
+        // Write errors to the debug div.
+		  document.getElementById('msgbox').innerHTML = errors;
+
+		  Behaviour.apply();
 		  if (errors.length>0)
 			window.scrollTo(0,0);
 			//document.getElementById('msgbox').scrollIntoView(true);
 	  // Restore focus if we've just lost focus because of DOM element refresh
-		setFocus();
+		  setFocus();
 		}
             },
             false  // do not disable caching
@@ -168,6 +167,7 @@ function setFocus(name, byId) {
 	el = document.getElementById(name);
   else
   	el = document.getElementsByName(name)[0];
+
   if(el && el.focus) {
     // The timeout is needed to prevent unpredictable behaviour on IE & Gecko.
     // Using tmp var prevents crash on IE5
