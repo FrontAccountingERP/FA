@@ -26,6 +26,7 @@ $ /gl/gl_journal.php
   /gl/gl_deposit.php
   /gl/gl_payment.php
   /includes/ajax.inc
+  /includes/reserved.inc
   /includes/ui/ui_lists.inc
   /includes/ui/ui_view.inc
   /js/inserts.js

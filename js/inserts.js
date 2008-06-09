@@ -85,9 +85,7 @@ function _update_box(s) {
 	var box = document.getElementsByName(rel)[0];
 		if(box && s.selectedIndex>=0) {
 			  var opt = s.options[s.selectedIndex];
-			  if (opt.value != 0) {
 				if(box) box.value = byid ? opt.value : opt.text;
-			  }
 		}
 }
 
@@ -143,16 +141,7 @@ var inserts = {
   	    // this hides search button for js enabled browsers
 	    e.style.display = 'none';
 	},
-/*	'select.combo,select.combo2':
-	function(e) {
-		var box = document.getElementsByName(e.getAttribute('rel'))[0];
-		if(box) {
-	  	  box.style.width = 200+'px';
-	  	  e.style.width = 200+'px';
-		  debug(e.name+':'+e.style.width)
-		}
-	},
-*/	'input.ajaxsubmit,input.editbutton,input.navibutton': 
+	'input.ajaxsubmit,input.editbutton,input.navibutton': 
 	function(e) {
 	    e.onclick = function() {
 		JsHttpRequest.request(this.name);

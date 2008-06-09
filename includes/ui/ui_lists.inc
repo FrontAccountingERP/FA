@@ -121,8 +121,8 @@ $opts = array(		// default options
 
 	$sql .= $limit;
 	// ------ make selector ----------
-	$selector = '';
-	$first_id = $first_opt = '';
+	$selector = $first_opt = '';
+	$first_id = false;
 	$found = false;
 //if($name=='code_id')    display_error($sql);
 	if($result = db_query($sql)) {
@@ -153,12 +153,13 @@ $opts = array(		// default options
 		}
 		db_free_result($result);
 	}
-	// add first option - selected also if no match for selected_id was found
-	// and no special option defined
-	$sel = $spec_option===false || $found === $first_id ? 'selected' : '';
-	$selector = "<option $sel value='$first_id'>$first_opt</option>\n"
+	if ($first_id !== false) {
+		// add first option - selected also if no match for selected_id was found
+		// and no special option defined
+		$sel = $spec_option===false || $found === $first_id ? 'selected' : '';
+		$selector = "<option $sel value='$first_id'>$first_opt</option>\n"
 			. $selector;
-
+	}
 	// Prepend special option.
 	if ($spec_option !== false) { // if special option used - add it
 		$first_id = $spec_id;
@@ -170,21 +171,22 @@ $opts = array(		// default options
 		$sel = $found===false ? 'selected' : '';
 		$selector = "<option $sel value='$spec_id'>$spec_option</option>\n"
 			. $selector;
+		$first_id = $spec_id;
 	}
 
 	if ($found === false) {
-	$_POST[$name] = $first_id;
+		$_POST[$name] = $first_id;
 	}
 
 
 	if ($by_id) {
-	$txt = $_POST[$name];
-	if ($search_box)
-		$Ajax->addUpdate($name, $search_box, $txt);
+		$txt = $_POST[$name];
+		if ($search_box)
+			$Ajax->addUpdate($name, $search_box, $txt);
 	}
 
 	$selector = "<select name='$name' class='$class' title='"
-	. $opts['sel_hint']."' $rel>".$selector."</select>\n";
+		. $opts['sel_hint']."' $rel>".$selector."</select>\n";
 
 	$Ajax->addUpdate($name, "_{$name}_sel", $selector);
 
