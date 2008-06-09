@@ -86,7 +86,7 @@ function display_bom_items($selected_parent)
 	global $table_style;
 
 	$result = get_bom($selected_parent);
-
+div_start('bom');
 	start_table("$table_style width=60%");
 	$th = array(_("Code"), _("Description"), _("Location"),
 		_("Work Centre"), _("Quantity"), _("Units"),'','');
@@ -110,6 +110,7 @@ function display_bom_items($selected_parent)
 
 	} //END WHILE LIST LOOP
 	end_table();
+div_end();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -204,6 +205,8 @@ echo "</center>";
 
 end_form();
 
+if (isset($_POST['_stock_id_update']))
+	$Ajax->activate('bom');
 //--------------------------------------------------------------------------------------------------
 
 if (isset($_POST['stock_id']))

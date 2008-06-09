@@ -22,6 +22,9 @@ echo "<hr></center>";
 
 set_global_stock_item($_POST['stock_id']);
 
+if (isset($_POST['_stock_id_update']))
+	$Ajax->activate('usage_table');
+
 if (isset($_POST['stock_id']))
 {
     $sql = "SELECT ".TB_PREF."bom.*,".TB_PREF."stock_master.description,".TB_PREF."workcentres.name As WorkCentreName, ".TB_PREF."locations.location_name
@@ -32,6 +35,7 @@ if (isset($_POST['stock_id']))
 
     $result = db_query($sql,"No parent items were returned");
 
+	div_start('usage_table');
    	if (db_num_rows($result) == 0)
    	{
    		display_note(_("The selected item is not used in any BOMs."));
@@ -69,6 +73,7 @@ if (isset($_POST['stock_id']))
 
         end_table();
    	}
+	div_end();
 }
 
 end_form();

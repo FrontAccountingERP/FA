@@ -106,7 +106,8 @@ if (isset($_GET['Delete']))
 	display_note(_("The purchasing data item has been sucessfully deleted."));
 	unset ($supplier_id);
 }
-
+if (isset($_POST['_stock_id_update']))
+	$Ajax->activate('price_table');
 //--------------------------------------------------------------------------------------------------
 
 start_form(false, true);
@@ -137,7 +138,7 @@ else
 		WHERE stock_id = '" . $_POST['stock_id'] . "'";
 
     $result = db_query($sql, "The supplier purchasing details for the selected part could not be retrieved");
-
+  div_start('price_table');
     if (db_num_rows($result) == 0)
     {
     	display_note(_("There is no purchasing data set up for the part selected"));
@@ -176,6 +177,7 @@ else
 
         end_table();
     }
+ div_end();
 }
 
 //------------------------------------------------------------------------------------------------

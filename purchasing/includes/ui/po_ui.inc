@@ -54,7 +54,7 @@ function display_po_header(&$order)
         if (!isset($_POST['supplier_id']) && (get_global_supplier() != reserved_words::get_all()))
         	$_POST['supplier_id'] = get_global_supplier();
 
-    	supplier_list_row(_("Supplier:"), 'supplier_id', $_POST['supplier_id'], false, true);
+    	supplier_list_row(_("Supplier:"), 'supplier_id', null, false, true);
 
     	if ($order->supplier_id != $_POST['supplier_id'])
     	{

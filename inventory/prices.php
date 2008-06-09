@@ -108,13 +108,15 @@ if (isset($_GET['delete']))
 	echo _("The selected price has been deleted.");
 
 }
-
+if (isset($_POST['_stock_id_update']))
+	$Ajax->activate('price_table');
 //---------------------------------------------------------------------------------------------------
 
 $mb_flag = get_mb_flag($_POST['stock_id']);
 
 $prices_list = get_prices($_POST['stock_id']);
 
+div_start('price_table');
 start_table("$table_style width=30%");
 
 $th = array(_("Currency"), _("Sales Type"), _("Price"), "", "");
@@ -135,7 +137,7 @@ while ($myrow = db_fetch($prices_list))
 
 }
 end_table();
-
+div_end();
 //------------------------------------------------------------------------------------------------
 
 if (db_num_rows($prices_list) == 0)

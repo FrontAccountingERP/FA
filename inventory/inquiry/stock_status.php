@@ -18,6 +18,8 @@ include_once($path_to_root . "/includes/data_checks.inc");
 
 include_once($path_to_root . "/inventory/includes/inventory_db.inc");
 
+if (isset($_POST['_stock_id_update']))
+	$Ajax->activate('status_tbl');
 //----------------------------------------------------------------------------------------------------
 
 check_db_has_stock_items(_("There are no items defined in the system."));
@@ -46,6 +48,7 @@ if (is_service($mb_flag))
 
 $loc_details = get_loc_details($_POST['stock_id']);
 
+div_start('status_tbl');
 start_table($table_style);
 
 if ($kitset_or_service == true)
@@ -132,7 +135,7 @@ while ($myrow = db_fetch($loc_details))
 }
 
 end_table();
-
+div_end();
 end_form();
 end_page();
 

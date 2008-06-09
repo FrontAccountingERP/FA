@@ -139,7 +139,7 @@ function adjustment_edit_item_controls(&$order, $stock_id=null)
 	else
 	{
     	echo "<td colspan=2>";
-    	stock_costable_items_list('stock_id', $_POST['stock_id'], false, true);
+    	stock_costable_items_list('stock_id', null, false, true);
     	echo "</td>";
 
     	$item_info = get_item_edit_info($_POST['stock_id']);

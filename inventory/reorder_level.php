@@ -21,6 +21,8 @@ if (isset($_GET['stock_id']))
 	$_POST['stock_id'] = $_GET['stock_id'];
 }
 
+if (isset($_POST['_stock_id_update']))
+	$Ajax->activate('reorders');
 //------------------------------------------------------------------------------------
 
 start_form(false, true);
@@ -37,6 +39,7 @@ stock_item_heading($_POST['stock_id']);
 
 set_global_stock_item($_POST['stock_id']);
 
+div_start('reorders');
 start_table("$table_style width=30%");
 
 $th = array(_("Location"), _("Quantity On Hand"), _("Re-Order Level"));
@@ -77,7 +80,7 @@ while ($myrow = db_fetch($result))
 }
 
 end_table(1);
-
+div_end();
 submit_center('UpdateData', _("Update"));
 
 end_form();

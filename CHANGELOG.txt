@@ -20,6 +20,19 @@ Legend:
 $ -> Affected files
 
 ---------------------------------------Release Candidate 1-------------------------------
+10-Jun-2008 Janusz Dobrowolski
+# Some more fixes related to ajax combos usage
+$ /includes/ui/ui_lists.inc
+  /inventory/cost_update.php
+  /inventory/prices.php
+  /inventory/purchasing_data.php
+  /inventory/reorder_level.php
+  /inventory/includes/item_adjustments_ui.inc
+  /inventory/inquiry/stock_status.php
+  /manufacturing/inquiry/where_used_inquiry.php
+  /manufacturing/manage/bom_edit.php
+  /purchasing/includes/ui/po_ui.inc
+
 09-Jun-2008 Janusz Dobrowolski
 # Some additional fixes related to last big committment
 $ /gl/gl_journal.php

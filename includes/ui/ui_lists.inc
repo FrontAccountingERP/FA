@@ -74,7 +74,7 @@ $opts = array(		// default options
 			: _('Enter description fragment to search or * for all')) :'';
 
 	if ($selected_id == null) {
-		$selected_id = get_post($name);
+		$selected_id = get_post($name, null);
 	}
 	$txt = get_post($search_box);
 	$rel = '';
@@ -131,53 +131,30 @@ $opts = array(		// default options
 			$descr = $opts['format']==null ?  $contact_row[1] :
 			call_user_func($opts['format'], $contact_row);
 			$sel = '';
-			if (isset($_POST[$search_submit])) {
-				if (($by_id ? $value : $contact_row[1]) === $txt)
-				$selected_id = $value;
-			}
-			// if no initial selection - set the first item
-			if ($selected_id === "")	{
-				$selected_id = $value;
-			}
-			if ($selected_id == $value) {
+			if ($selected_id === $value) {
 				$sel = 'selected';
 				$found = $value;
-				$_POST[$name] = $selected_id;
 			}
-			if ($first_opt == false) {
+			if ($first_id === false) {
 				$first_id = $value;
 				$first_opt = $descr;
-				continue;
 			}
 			$selector .= "<option $sel value='$value'>$descr</option>\n";
 		}
 		db_free_result($result);
 	}
-	if ($first_id !== false) {
-		// add first option - selected also if no match for selected_id was found
-		// and no special option defined
-		$sel = $spec_option===false || $found === $first_id ? 'selected' : '';
-		$selector = "<option $sel value='$first_id'>$first_opt</option>\n"
-			. $selector;
-	}
 	// Prepend special option.
 	if ($spec_option !== false) { // if special option used - add it
 		$first_id = $spec_id;
 		$first_opt = $spec_option;
-		if (isset($_POST[$search_submit])) {
-			if ($txt == '')
-				$selected_id = $spec_id;
-		}
 		$sel = $found===false ? 'selected' : '';
 		$selector = "<option $sel value='$spec_id'>$spec_option</option>\n"
 			. $selector;
-		$first_id = $spec_id;
 	}
 
 	if ($found === false) {
 		$_POST[$name] = $first_id;
 	}
-
 
 	if ($by_id) {
 		$txt = $_POST[$name];
@@ -203,7 +180,7 @@ $opts = array(		// default options
 	}
 // ------ make combo ----------
 
-$edit_entry = '';
+	$edit_entry = '';
 	if ($search_box != false) {
 		$edit_entry = "<input type='text' name='$search_box' id='$search_box' size='".
 			$opts['size']."' maxlength='".$opts['max'].
@@ -670,7 +647,7 @@ function stock_costable_items_list($name, $selected_id,
 function stock_purchasable_items_list($name, $selected_id,	$all_option=false,
 		$submit_on_change=false, $opts=array())
 {
-
+ global $all_items;
 	$sql = "SELECT stock_id, s.description, c.description
 			FROM ".TB_PREF."stock_master s,".TB_PREF."stock_category c
 			WHERE s.category_id=c.category_id

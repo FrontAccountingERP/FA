@@ -65,6 +65,8 @@ if (isset($_POST['UpdateData']))
    	}
 }
 
+if (isset($_POST['_stock_id_update']))
+	$Ajax->activate('cost_table');
 //-----------------------------------------------------------------------------------------
 
 start_form(false, true);
@@ -87,7 +89,7 @@ $result = db_query($sql);
 check_db_error("The cost details for the item could not be retrieved", $sql);
 
 $myrow = db_fetch($result);
-
+div_start('cost_table');
 hidden("OldMaterialCost", $myrow["material_cost"]);
 hidden("OldLabourCost", $myrow["labour_cost"]);
 hidden("OldOverheadCost", $myrow["overhead_cost"]);
@@ -113,6 +115,7 @@ else
 }
 
 end_table(1);
+div_end();
 submit_center('UpdateData', _("Update"));
 
 end_form();
