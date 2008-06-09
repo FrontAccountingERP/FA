@@ -23,6 +23,8 @@ $ -> Affected files
 09-Jun-2008 Janusz Dobrowolski
 # Some additional fixes related to last big committment
 $ /gl/gl_journal.php
+  /gl/gl_deposit.php
+  /gl/gl_payment.php
   /includes/ajax.inc
   /includes/ui/ui_lists.inc
   /includes/ui/ui_view.inc
