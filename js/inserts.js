@@ -130,6 +130,8 @@ var inserts = {
 		if(e.onfocus==undefined) {
 			e.onfocus = function() {
 			    save_focus(this);
+				if (this.className == 'combo') 
+					this.select();
 			};
 		}
 		if (e.className == 'combo' || e.className == 'combo2') {
