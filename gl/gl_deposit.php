@@ -17,7 +17,7 @@ if ($use_popup_windows)
 	$js .= get_js_open_window(800, 500);
 if ($use_date_picker)
 	$js .= get_js_date_picker();
-set_focus('_code_id_edit');
+
 page(_("Bank Account Deposit Entry"), false, false, '', $js);
 
 //-----------------------------------------------------------------------------------------------
@@ -207,21 +207,30 @@ function handle_new_item()
 }
 
 //-----------------------------------------------------------------------------------------------
-
-if (isset($_GET['Delete']) || isset($_GET['Edit']))
+if (isset($_GET['Edit'])) {
 	copy_from_py();
-
-if (isset($_GET['Delete']))
+	set_focus('dimension_id');
+}
+if (isset($_GET['Delete'])) {
+	copy_from_py();
 	handle_delete_item();
-
-if (isset($_POST['AddItem']) || isset($_POST['UpdateItem']))
+	set_focus('_code_id_edit');
+}
+if (isset($_POST['AddItem'])) {
 	copy_to_py();
-
-if (isset($_POST['AddItem']))
 	handle_new_item();
-
-if (isset($_POST['UpdateItem']))
+	set_focus('_code_id_edit');
+}
+if (isset($_POST['UpdateItem'])) {
+	copy_to_py();
 	handle_update_item();
+	set_focus('_code_id_edit');
+}
+if (isset($_POST['CancelItemChanges']))
+	set_focus('_code_id_edit');
+
+if (isset($_POST['EditItem']))
+	set_focus('dimension_id');
 
 //-----------------------------------------------------------------------------------------------
 

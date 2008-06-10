@@ -19,8 +19,6 @@ if ($use_popup_windows)
 if ($use_date_picker)
 	$js .= get_js_date_picker();
 
-set_focus('_code_id_edit');
-
 page(_("Journal Entry"), false, false,'', $js);
 
 //-----------------------------------------------------------------------------------------------
@@ -146,7 +144,7 @@ function check_item_data()
 	if (!(input_num('AmountDebit')!=0 ^ input_num('AmountCredit')!=0) )
 	{
 		display_error(_("You must enter either a debit amount or a credit amount."));
-		set_focus('Amount_Debit');
+		set_focus('AmountDebit');
     		return false;
   	}
 
@@ -213,21 +211,30 @@ function handle_new_item()
 }
 
 //-----------------------------------------------------------------------------------------------
-
-if (isset($_GET['Delete']) || isset($_GET['Edit']))
+if (isset($_GET['Edit'])) {
 	copy_from_je();
-
-if (isset($_GET['Delete']))
+	set_focus('dimension_id');
+}
+if (isset($_GET['Delete'])) {
+	copy_from_je();
 	handle_delete_item();
-
-if (isset($_POST['AddItem']) || isset($_POST['UpdateItem']))
+	set_focus('_code_id_edit');
+}
+if (isset($_POST['AddItem'])) {
 	copy_to_je();
-
-if (isset($_POST['AddItem']))
 	handle_new_item();
-
-if (isset($_POST['UpdateItem']))
+	set_focus('_code_id_edit');
+}
+if (isset($_POST['UpdateItem'])) {
+	copy_to_je();
 	handle_update_item();
+	set_focus('_code_id_edit');
+}
+if (isset($_POST['CancelItemChanges']))
+	set_focus('_code_id_edit');
+
+if (isset($_POST['EditItem']))
+	set_focus('dimension_id');
 
 //-----------------------------------------------------------------------------------------------
 

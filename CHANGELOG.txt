@@ -32,6 +32,10 @@ $ /includes/ui/ui_lists.inc
   /manufacturing/inquiry/where_used_inquiry.php
   /manufacturing/manage/bom_edit.php
   /purchasing/includes/ui/po_ui.inc
+# Fixed focus issues
+$ /gl/gl_journal.php
+  /gl/gl_deposit.php
+  /gl/gl_payment.php
   /js/inserts.js
   
 09-Jun-2008 Janusz Dobrowolski
