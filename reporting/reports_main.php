@@ -124,6 +124,13 @@ $reports->addReport(_('Inventory'),303,_('Stock Check Sheets'),
 			new ReportParam(_('Location'),'LOCATIONS'),
 			new ReportParam(_('Show Pictures'),'YES_NO'),
 			new ReportParam(_('Comments'),'TEXTBOX')));
+$reports->addReport(_('Inventory'),304,_('Inventory Sales Report'),
+	array(	new ReportParam(_('Start Date'),'DATEBEGINM'),
+			new ReportParam(_('End Date'),'DATEENDM'),
+			new ReportParam(_('Inventory Category'),'CATEGORIES'),
+			new ReportParam(_('Location'),'LOCATIONS'),
+			new ReportParam(_('Detailed Report'),'YES_NO'),
+			new ReportParam(_('Comments'),'TEXTBOX')));
 
 $reports->addReportClass(_('Manufactoring'));
 $reports->addReport(_('Manufactoring'),401,_('Bill of Material Listing'),
