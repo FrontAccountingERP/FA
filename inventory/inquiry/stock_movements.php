@@ -76,7 +76,8 @@ if (!isset($before_qty_row[0]))
 }
 
 start_row("class='inquirybg'");
-label_cell("<b>"._("Quantity on hand before") . " " . $_POST['AfterDate']."</b>", "align=center colspan=7");
+label_cell("<b>"._("Quantity on hand before") . " " . $_POST['AfterDate']."</b>", "align=center colspan=5");
+label_cell("&nbsp;", "colspan=2");
 qty_cell($before_qty);
 end_row();
 
@@ -165,13 +166,16 @@ while ($myrow = db_fetch($result))
 }
 //end of while loop
 
-if ($total_in != 0 || $total_out != 0)
-{
+// 2008-06-14. Always write this.
+//if ($total_in != 0 || $total_out != 0)
+//{
 	start_row("class='inquirybg'");
-    label_cell("<b>"._("Quantity on hand after") . " " . $_POST['BeforeDate']."</b>", "align=center colspan=7");
+    label_cell("<b>"._("Quantity on hand after") . " " . $_POST['BeforeDate']."</b>", "align=center colspan=5");
+    qty_cell($total_in);
+    qty_cell($total_out);
     qty_cell($after_qty);
     end_row();
-}
+//}
 
 end_table(1);
 

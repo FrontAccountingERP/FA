@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+14-Jun-2008 Joe
+# Minor annoying layout bug in stock movements.
+$ /inventory/inquiry/stock_movements.php
+
 14-Jun-2008 Joe Hunt
 ! The Customer Branch Sales Account now overrides the Item Sales Accounts if a Sales Account is here.
   Can now be set to 'Use Item Sales Accounts', which is the first choice in list and default.
