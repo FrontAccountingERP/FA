@@ -1231,7 +1231,7 @@ function gl_account_types_list_row($label, $name, $selected_id, $all_option=fals
 
 //-----------------------------------------------------------------------------------------------
 function gl_all_accounts_list($name, $selected_id, $skip_bank_accounts=false,
-	$show_group=false, $cells=false)
+	$show_group=false, $cells=false, $all_option=false)
 {
 	if ($skip_bank_accounts)
 		$sql = "SELECT chart.account_code, chart.account_name, type.name
@@ -1248,6 +1248,8 @@ function gl_all_accounts_list($name, $selected_id, $skip_bank_accounts=false,
 	combo_input($name, $selected_id, $sql, 'chart.account_code', 'chart.account_name',
 	array(
 		'format' => '_format_account' .  ($show_group ? '2' : ''),
+		'spec_option' => $all_option===true ?  _("Use Item Sales Accounts") : $all_option,
+		'spec_id' => '',
 		'order' => 'account_code',
 		'search_box' => $cells,
 			'search_submit' => false,
@@ -1269,21 +1271,21 @@ function _format_account2($row)
 }
 
 function gl_all_accounts_list_cells($label, $name, $selected_id, $skip_bank_accounts=false,
-	$show_group=false, $cells=false)
+	$show_group=false, $cells=false, $all_option=false)
 {
 	if ($label != null)
 		echo "<td>$label</td>\n";
 	echo "<td>";
-	gl_all_accounts_list($name, $selected_id, $skip_bank_accounts, $show_group, $cells);
+	gl_all_accounts_list($name, $selected_id, $skip_bank_accounts, $show_group, $cells, $all_option);
 	echo "</td>\n";
 }
 
 function gl_all_accounts_list_row($label, $name, $selected_id, $skip_bank_accounts=false,
-	$show_group=false, $cells=false)
+	$show_group=false, $cells=false, $all_option=false)
 {
 	echo "<tr>\n";
 	gl_all_accounts_list_cells($label, $name, $selected_id, $skip_bank_accounts,
-		$show_group, $cells);
+		$show_group, $cells, $all_option);
 	echo "</tr>\n";
 }
 

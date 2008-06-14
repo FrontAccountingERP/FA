@@ -19,6 +19,16 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+14-Jun-2008 Joe Hunt
+! The Customer Branch Sales Account now overrides the Item Sales Accounts if a Sales Account is here.
+  Can now be set to 'Use Item Sales Accounts', which is the first choice in list and default.
+! If setting the Customer Branch AR Account to a Bank Account (and hereby also Cash Account) the 
+  transactions from Direct Invoice and Credit Note will be allocated immediately when placing.
+$ /includes/ui/ui_lists.inc
+  /sales/includes/db/sales_invoice_db.inc
+  /sales/includes/db/sales_credit_db.inc
+  /sales/manage/customer_branches.php
+  .
 12-Jun-2008 Joe Hunt
 + New inventory sales report. Shows total sales - costs - contribution per category, location, detailed/summary and period.
 $ /reporting/reports_main.php

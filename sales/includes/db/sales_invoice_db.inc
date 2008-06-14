@@ -43,6 +43,12 @@ function write_sales_invoice(&$invoice)
 	    $items_added_tax = 0;
 	    $freight_added_tax = 0;
 	}
+	// 2006-06-14. If the Customer Branch AR Account is set to a Bank Account,
+	// the transaction will be settled at once.
+	if (is_bank_account($branch_data['receivables_account']))
+		$alloc = $items_total + $items_added_tax + $invoice->freight_cost + $freight_added_tax;
+	else
+		$alloc = 0;
 
 	/* Insert/update the debtor_trans */
 	$sales_order = $invoice->order_no;
@@ -53,7 +59,7 @@ function write_sales_invoice(&$invoice)
 		$invoice->Branch, $date_, $invoice->reference, $items_total, 0,
 		$items_added_tax, $invoice->freight_cost, $freight_added_tax,
 		$invoice->sales_type, $sales_order, $delivery_no,
-		$invoice->ship_via, $invoice->due_date);
+		$invoice->ship_via, $invoice->due_date, $alloc); // 2008-06-14 extra $alloc
 
 	if ($trans_no == 0) {
 		$invoice->trans_no = array($invoice_no=>0);
@@ -87,11 +93,17 @@ function write_sales_invoice(&$invoice)
 
 		if ($invoice_line->qty_dispatched != 0) {
 			$stock_gl_code = get_stock_gl_code($invoice_line->stock_id);
+			// 2008-06-14. If there is a Branch Sales Account, then override with this,
+			// else take the Item Sales Account
+			if ($branch_data['sales_account'] != "")
+				$sales_account = $branch_data['sales_account'];
+			else
+				$sales_account = $stock_gl_code['sales_account'];
 
 			if ($invoice_line->line_price() != 0) {
 				//Post sales transaction to GL credit sales
 
-					add_gl_trans_customer(10, $invoice_no, $date_, $stock_gl_code["sales_account"],
+					add_gl_trans_customer(10, $invoice_no, $date_, $sales_account,
 						$stock_gl_code["dimension_id"], $stock_gl_code["dimension2_id"],
 						(-$line_taxfree_price * $invoice_line->qty_dispatched),
 						$invoice->customer_id, "The sales price GL posting could not be inserted");

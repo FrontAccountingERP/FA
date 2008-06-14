@@ -22,7 +22,7 @@ check_db_has_tax_groups(_("There are no tax groups defined in the system. At lea
 
 //-----------------------------------------------------------------------------------------------
 
-if (isset($_GET['debtor_no'])) 
+if (isset($_GET['debtor_no']))
 {
 	$_POST['customer_id'] = strtoupper($_GET['debtor_no']);
 	$_POST['New'] = "1";
@@ -34,14 +34,14 @@ if (isset($_GET['SelectedBranch']))
 	unset($_POST['New']);
 }
 
-if (!isset($_GET['SelectedBranch']) && !isset($_POST['AddUpdate'])) 
+if (!isset($_GET['SelectedBranch']) && !isset($_POST['AddUpdate']))
 {
 	$_POST['New'] = "1";
 }
 
 //-----------------------------------------------------------------------------------------------
 
-if (isset($_POST['ADD_ITEM']) || isset($_POST['UPDATE_ITEM'])) 
+if (isset($_POST['ADD_ITEM']) || isset($_POST['UPDATE_ITEM']))
 {
 
 	//initialise no input errors assumed initially before we test
@@ -49,13 +49,13 @@ if (isset($_POST['ADD_ITEM']) || isset($_POST['UPDATE_ITEM']))
 
 	//first off validate inputs sensible
 
-	if (strlen($_POST['br_name']) == 0) 
+	if (strlen($_POST['br_name']) == 0)
 	{
 		$input_error = 1;
 		display_error(_("The Branch name cannot be empty."));
 	}
 
-	if ($input_error != 1) 
+	if ($input_error != 1)
 	{
 
 		//if (!isset($_POST['New']))
@@ -83,7 +83,7 @@ if (isset($_POST['ADD_ITEM']) || isset($_POST['UPDATE_ITEM']))
     	        WHERE branch_code =".db_escape($_POST['branch_code']) . "
     	        AND debtor_no=".db_escape($_POST['customer_id']);
 
-		} 
+		}
 		else
 		{
 			/*Selected branch is null cos no item selected on first time round so must be adding a	record must be submitting new entries in the new Customer Branches form */
@@ -91,18 +91,18 @@ if (isset($_POST['ADD_ITEM']) || isset($_POST['UPDATE_ITEM']))
 				salesman, phone, fax,
 				contact_name, area, email, tax_group_id, sales_account, receivables_account, payment_discount_account, sales_discount_account, default_location,
 				br_post_address, disable_trans, default_ship_via)
-				VALUES (".db_escape($_POST['customer_id']). ",".db_escape($_POST['br_name']) . ", " 
-					.db_escape($_POST['br_address']) . ", ".db_escape($_POST['salesman']) . ", " 
+				VALUES (".db_escape($_POST['customer_id']). ",".db_escape($_POST['br_name']) . ", "
+					.db_escape($_POST['br_address']) . ", ".db_escape($_POST['salesman']) . ", "
 					.db_escape($_POST['phone']) . ", ".db_escape($_POST['fax']) . ","
-					.db_escape($_POST['contact_name']) . ", ".db_escape($_POST['area']) . "," 
-					.db_escape($_POST['email']) . ", ".db_escape($_POST['tax_group_id']) . ", " 
-					.db_escape($_POST['sales_account']) . ", " 
-					.db_escape($_POST['receivables_account']) . ", " 
-					.db_escape($_POST['payment_discount_account']) . ", " 
-					.db_escape($_POST['sales_discount_account']) . ", " 
-					.db_escape($_POST['default_location']) . ", " 
-					.db_escape($_POST['br_post_address']) . "," 
-					.db_escape($_POST['disable_trans']) . ", " 
+					.db_escape($_POST['contact_name']) . ", ".db_escape($_POST['area']) . ","
+					.db_escape($_POST['email']) . ", ".db_escape($_POST['tax_group_id']) . ", "
+					.db_escape($_POST['sales_account']) . ", "
+					.db_escape($_POST['receivables_account']) . ", "
+					.db_escape($_POST['payment_discount_account']) . ", "
+					.db_escape($_POST['sales_discount_account']) . ", "
+					.db_escape($_POST['default_location']) . ", "
+					.db_escape($_POST['br_post_address']) . ","
+					.db_escape($_POST['disable_trans']) . ", "
 					.db_escape($_POST['default_ship_via']) . ")";
 		}
 
@@ -112,8 +112,8 @@ if (isset($_POST['ADD_ITEM']) || isset($_POST['UPDATE_ITEM']))
 		meta_forward($_SERVER['PHP_SELF'], "debtor_no=" . $_POST['customer_id']);
 	}
 
-} 
-elseif (isset($_GET['delete'])) 
+}
+elseif (isset($_GET['delete']))
 {
 	//the link to delete a selected record was clicked instead of the submit button
 
@@ -122,22 +122,22 @@ elseif (isset($_GET['delete']))
 	$sql= "SELECT COUNT(*) FROM ".TB_PREF."debtor_trans WHERE branch_code='" . $_POST['branch_code']. "' AND debtor_no = '" . $_POST['customer_id']. "'";
 	$result = db_query($sql,"could not query debtortrans");
 	$myrow = db_fetch_row($result);
-	if ($myrow[0] > 0) 
+	if ($myrow[0] > 0)
 	{
 		display_error(_("Cannot delete this branch because customer transactions have been created to this branch."));
 
-	} 
-	else 
+	}
+	else
 	{
 		$sql= "SELECT COUNT(*) FROM ".TB_PREF."sales_orders WHERE branch_code='" . $_POST['branch_code']. "' AND debtor_no = '" . $_POST['customer_id']. "'";
 		$result = db_query($sql,"could not query sales orders");
 
 		$myrow = db_fetch_row($result);
-		if ($myrow[0] > 0) 
+		if ($myrow[0] > 0)
 		{
 			display_error(_("Cannot delete this branch because sales orders exist for it. Purge old sales orders first."));
-		} 
-		else 
+		}
+		else
 		{
 			$sql="DELETE FROM ".TB_PREF."cust_branch WHERE branch_code='" . $_POST['branch_code']. "' AND debtor_no='" . $_POST['customer_id']. "'";
 			db_query($sql,"could not delete branch");
@@ -170,7 +170,7 @@ if ($num_branches)
 
 	$th = array(_("Name"), _("Contact"), _("Sales Person"), _("Area"),
 		_("Phone No"), _("Fax No"), _("E-mail"), _("Tax Group"), "", "");
-	table_header($th);	
+	table_header($th);
 
 	while ($myrow = db_fetch($result))
 	{
@@ -186,7 +186,7 @@ if ($num_branches)
 		edit_link_cell("debtor_no=" . $_POST['customer_id']. "&SelectedBranch=" . $myrow["branch_code"]);
 		delete_link_cell("debtor_no=" . $_POST['customer_id']. "&SelectedBranch=" . $myrow["branch_code"]. "&delete=yes");
 		end_row();
-	} 
+	}
 	end_table();
 	//END WHILE LIST LOOP
 }
@@ -194,10 +194,10 @@ else
 	display_note(_("The selected customer does not have any branches. Please create at least one branch."));
 //else
 //{
-//}	
+//}
 
 
-if (!isset($_POST['New'])) 
+if (!isset($_POST['New']))
 {
 	hyperlink_params($_SERVER['PHP_SELF'], _("New Customer Branch"), "debtor_no=" . $_POST['customer_id']);
 }
@@ -208,7 +208,7 @@ echo "<tr valign=top><td>"; // outer table
 echo "<table>";
 
 
-if (!isset($_POST['New']) && $num_branches) 
+if (!isset($_POST['New']) && $num_branches)
 {
 
 	//editing an existing branch
@@ -238,8 +238,8 @@ if (!isset($_POST['New']) && $num_branches)
     $_POST['receivables_account'] = $myrow['receivables_account'];
     $_POST['payment_discount_account'] = $myrow['payment_discount_account'];
 
-} 
-else 
+}
+else
 { //end of if $SelectedBranch only do the else when a new record is being entered
 
 	$sql = "SELECT name, address, email
@@ -251,11 +251,14 @@ else
 	$_POST['br_address'] = $_POST['br_post_address'] = $myrow["address"];
 	$_POST['branch_code'] = "";
 	$_POST['email'] = $myrow['email'];
-	if (!isset($_POST['sales_account']) || !isset($_POST['sales_discount_account'])) 
+	if (!isset($_POST['sales_account']) || !isset($_POST['sales_discount_account']))
 	{
 		$company_record = get_company_prefs();
 
-	    $_POST['sales_account'] = $company_record["default_sales_act"];
+	    // $_POST['sales_account'] = $company_record["default_sales_act"];
+	    // 2008-06-14. Changed so if no account here the Item Sales Account is taken
+	    // Will be set if it should override the item sales account
+	    $_POST['sales_account'] = '';
 	    $_POST['sales_discount_account'] = $company_record['default_sales_discount_act'];
 	    $_POST['receivables_account'] = $company_record['debtors_act'];
 	    $_POST['payment_discount_account'] = $company_record['default_prompt_payment_act'];
@@ -298,7 +301,9 @@ echo"<table>";
 
 table_section_title(_("GL Accounts"));
 
-gl_all_accounts_list_row(_("Sales Account:"), 'sales_account', $_POST['sales_account']);
+// 2006-06-14. Changed gl_al_accounts_list to have an optional all_option 'Use Item Sales Accounts'
+gl_all_accounts_list_row(_("Sales Account:"), 'sales_account', $_POST['sales_account'], false,
+	false, false, true);
 
 gl_all_accounts_list_row(_("Sales Discount Account:"), 'sales_discount_account', $_POST['sales_discount_account']);
 
