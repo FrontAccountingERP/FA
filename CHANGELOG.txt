@@ -19,7 +19,11 @@ Legend:
 ! -> Note
 $ -> Affected files
 
-14-Jun-2008 Joe
+15-Jun-2008 Joe Hunt
+# Bug in tax_types_list (spec_id)
+$ /includes/ui/ui_lists.inc
+
+14-Jun-2008 Joe Hunt
 # Minor annoying layout bug in stock movements.
 $ /inventory/inquiry/stock_movements.php
 
