@@ -66,7 +66,7 @@ $opts = array(		// default options
 	}
 	if ($opts['sel_hint'] === null)
 		$opts['sel_hint'] = $by_id || $search_box==false ?
-		'' : _('Press Space tab for search pattern entry');
+			'' : _('Press Space tab for search pattern entry');
 
 	if ($opts['box_hint'] === null)
 		$opts['box_hint'] = $search_box ?
@@ -81,6 +81,9 @@ $opts = array(		// default options
 	$limit = '';
 
 	if (isset($_POST[$select_submit])) {
+
+		if ($by_id) $txt = $_POST[$name];
+
 		if (!$opts['async'])
 			$Ajax->activate('_page_body');
 		else
@@ -91,22 +94,22 @@ $opts = array(		// default options
 
 	$rel = "rel='$search_box'"; // set relation to list
    if ($opts['search_submit']) {
-	// if selected from list - set focus on next field
+
 	if (isset($_POST[$search_submit])) {
 		$Ajax->activate($name);
 	}
 	if ($txt == '') {
 		if ($spec_option === false)
-		$limit = ' LIMIT 1';
+			$limit = ' LIMIT 1';
 		else
-		$opts['where'][] = $valfield . "='". get_post($name, $spec_id)."'";
+			$opts['where'][] = $valfield . "='". get_post($name, $spec_id)."'";
 	}
 	else
 		if ($txt != '*') {
 
 		foreach($opts['search'] as $i=> $s)
 			$opts['search'][$i] = $s . " LIKE '%{$txt}%'";
-		$opts['where'][] = '('. implode($opts['search'], ' OR ') . ')';
+			$opts['where'][] = '('. implode($opts['search'], ' OR ') . ')';
 		}
 	}
    }
@@ -124,7 +127,7 @@ $opts = array(		// default options
 	$selector = $first_opt = '';
 	$first_id = false;
 	$found = false;
-//if($name=='code_id')    display_error($sql);
+//if($name=='SelectStockFromList') display_error($sql);
 	if($result = db_query($sql)) {
 		while ($contact_row = db_fetch($result)) {
 			$value = $contact_row[0];
@@ -536,7 +539,7 @@ function stock_items_list_cells($label, $name, $selected_id, $all_option=false, 
 	if ($label != null)
 		echo "<td>$label</td>\n";
 	$str = stock_items_list($name, $selected_id, $all_option, $submit_on_change,
-	array('cells'=>true));
+		array('cells'=>true));
 	return $str;
 }
 /*
