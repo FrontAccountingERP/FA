@@ -187,7 +187,7 @@ function copy_from_cart()
 
 function line_start_focus() {
   global 	$Ajax;
-  
+
   $Ajax->activate('items_table');
   $Ajax->addFocus(true, '_stock_id_edit');
   set_focus('_stock_id_edit');
@@ -301,7 +301,7 @@ function handle_update_item()
 {
 	if ($_POST['UpdateItem'] != '' && check_item_data()) {
 		$_SESSION['Items']->update_cart_item($_POST['LineNo'],
-		 input_num('qty'), input_num('price'), 
+		 input_num('qty'), input_num('price'),
 		 input_num('Disc') / 100 );
 	}
   copy_from_cart();
@@ -324,7 +324,7 @@ function handle_delete_item($line_no)
 
 function handle_new_item()
 {
-  
+
 	if (!check_item_data()) {
 			return;
 	}
@@ -382,17 +382,18 @@ function create_cart($type, $trans_no)
 		$doc = new Cart(30, array($trans_no));
 		$doc->trans_type = $type;
 		$doc->trans_no = 0;
+		$doc->document_date = Today(); // 2006-06-15. Added so Invoices and Deliveries get current day
 		if ($type == 10)
 			$doc->due_date = get_invoice_duedate($doc->customer_id, $doc->document_date);
 		else
-			$doc->due_date = $doc->document_date = Today();
+			$doc->due_date = $doc->document_date;
 		$doc->reference = references::get_next($doc->trans_type);
 		$doc->Comments='';
 		foreach($doc->line_items as $line_no => $line) {
 			$doc->line_items[$line_no]->qty_done = 0;
 		}
 		$_SESSION['Items'] = $doc;
-	} else 
+	} else
 		$_SESSION['Items'] = new Cart($type,array($trans_no));
 	copy_from_cart();
 }
@@ -467,7 +468,7 @@ if ($customer_error == "") {
 		    _('Validate changes and update document'), true);
 	}
 
-	submit_center_last('CancelOrder', $cancelorder, 
+	submit_center_last('CancelOrder', $cancelorder,
 	   _('Cancels document entry or removes sales order when editing an old document'));
 } else {
 	display_error($customer_error);

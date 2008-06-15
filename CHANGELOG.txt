@@ -20,6 +20,10 @@ Legend:
 $ -> Affected files
 
 15-Jun-2008 Joe Hunt
+# Changed so Invoice Template gets the current day instead of original day.
+$ /sales/sales_order_entry.php
+
+15-Jun-2008 Joe Hunt
 # Bug in tax_types_list (spec_id)
 $ /includes/ui/ui_lists.inc
 
