@@ -75,6 +75,28 @@ if (isset($_POST['BatchInvoice']))
 		meta_forward($path_to_root . '/sales/customer_invoice.php','BatchInvoice=Yes');
     }
 }
+
+//-----------------------------------------------------------------------------------
+if (get_post('SearchOrders')) 
+{
+	$Ajax->activate('deliveries_tbl');
+} elseif (get_post('_DeliveryNumber_changed')) 
+{
+	$disable = get_post('DeliveryNumber') !== '';
+
+	$Ajax->addDisable(true, 'DeliveryAfterDate', $disable);
+	$Ajax->addDisable(true, 'DeliveryToDate', $disable);
+	$Ajax->addDisable(true, 'StockLocation', $disable);
+	$Ajax->addDisable(true, '_SelectStockFromList_edit', $disable);
+	$Ajax->addDisable(true, 'SelectStockFromList', $disable);
+	// if search is not empty rewrite table
+	if ($disable) {
+		$Ajax->addFocus(true, 'DeliveryNumber');
+	} else
+		$Ajax->addFocus(true, 'DeliveryAfterDate');
+	$Ajax->activate('deliveries_tbl');
+}
+
 //-----------------------------------------------------------------------------------
 print_hidden_script(13);
 
@@ -82,7 +104,7 @@ start_form(false, false, $_SERVER['PHP_SELF'] ."?OutstandingOnly=" . $_POST['Out
 
 start_table("class='tablestyle_noborder'");
 start_row();
-ref_cells(_("#:"), 'DeliveryNumber');
+ref_cells(_("#:"), 'DeliveryNumber', '',null, '', true);
 date_cells(_("from:"), 'DeliveryAfterDate', '', null, -30);
 date_cells(_("to:"), 'DeliveryToDate', '', null, 1);
 
@@ -90,7 +112,7 @@ locations_list_cells(_("Location:"), 'StockLocation', null, true);
 
 stock_items_list_cells(_("Item:"), 'SelectStockFromList', null, true);
 
-submit_cells('SearchOrders', _("Search"));
+submit_cells('SearchOrders', _("Search"),'',_('Select documents'), true);
 
 hidden('OutstandingOnly', $_POST['OutstandingOnly']);
 
@@ -126,9 +148,6 @@ $sql .= " Sum(".TB_PREF."debtor_trans_details.quantity-"
 
 $sql .= " Sum(".TB_PREF."debtor_trans_details.qty_done) AS Done, ";
 
-//$sql .= " Sum(".TB_PREF."debtor_trans_details.unit_price*"
-// .TB_PREF."debtor_trans_details.quantity*(1-"
-// .TB_PREF."debtor_trans_details.discount_percent)) AS DeliveryValue";
 $sql .= "(ov_amount+ov_gst+ov_freight+ov_freight_tax) AS DeliveryValue";
 $sql .=" FROM "
 	 .TB_PREF."sales_orders, "
@@ -145,10 +164,16 @@ $sql .=" FROM "
 			AND ".TB_PREF."debtor_trans.branch_code = ".TB_PREF."cust_branch.branch_code
 			AND ".TB_PREF."debtor_trans.debtor_no = ".TB_PREF."cust_branch.debtor_no ";
 
+	if ($_POST['OutstandingOnly'] == true) {
+	 $sql .= " AND ".TB_PREF."debtor_trans_details.qty_done < ".TB_PREF."debtor_trans_details.quantity ";
+	}
+
 //figure out the sql required from the inputs available
 if (isset($_POST['DeliveryNumber']) && $_POST['DeliveryNumber'] != "")
 {
-	$sql .= " AND ".TB_PREF."debtor_trans.trans_no LIKE '%". $_POST['DeliveryNumber'] ."' GROUP BY ".TB_PREF."debtor_trans.trans_no";
+// if ($_POST['DeliveryNumber'] != '*') // TODO paged table
+	$sql .= " AND ".TB_PREF."debtor_trans.trans_no LIKE '%". $_POST['DeliveryNumber'] ."'";
+ $sql .= " GROUP BY ".TB_PREF."debtor_trans.trans_no";
 }
 else
 {
@@ -168,15 +193,7 @@ else
 	if (isset($_POST['StockLocation']) && $_POST['StockLocation'] != reserved_words::get_all())
 		$sql .= " AND ".TB_PREF."sales_orders.from_stk_loc = '". $_POST['StockLocation'] . "' ";
 
-	if ($_POST['OutstandingOnly'] == true) {
-	 $sql .= " AND ".TB_PREF."debtor_trans_details.qty_done < ".TB_PREF."debtor_trans_details.quantity ";
-	}
-
 	$sql .= " GROUP BY ".TB_PREF."debtor_trans.trans_no ";
-//	.TB_PREF."debtor_trans.debtor_no, "
-//	.TB_PREF."debtor_trans.branch_code, "
-//		".TB_PREF."sales_orders.customer_ref, "
-//		.TB_PREF."debtor_trans.tran_date";
 
 } //end no delivery number selected
 
@@ -192,6 +209,8 @@ if (isset($_SESSION['Batch']))
 if ($result)
 {
 	/*show a table of the deliveries returned by the sql */
+
+	div_start('deliveries_tbl');
 
 	start_table("$table_style colspan=7 width=95%");
 	$th = array(_("Delivery #"), _("Customer"), _("Branch"), _("Reference"), _("Delivery Date"),
@@ -268,6 +287,7 @@ if ($result)
 
    if ($overdue_items)
    		display_note(_("Marked items are overdue."), 0, 1, "class='overduefg'");
+div_end();
 }
 
 echo "<br>";

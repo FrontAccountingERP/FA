@@ -48,27 +48,37 @@ else
 	$selected_customer = -1;
 
 //-----------------------------------------------------------------------------------
-/*
-$action = $_SERVER['PHP_SELF'];
+// Ajax updates
+//
+if (get_post('SearchOrders')) 
+{
+	$Ajax->activate('orders_tbl');
+} elseif (get_post('_OrderNumber_changed')) 
+{
+	$disable = get_post('OrderNumber') !== '';
 
-if ($_POST['order_view_mode']=='OutstandingOnly')
-{
-  	$action .= "?OutstandingOnly=" . $_POST['order_view_mode']$_PO;
+  	if ($_POST['order_view_mode']!='DeliveryTemplates' 
+		&& $_POST['order_view_mode']!='InvoiceTemplates') {
+			$Ajax->addDisable(true, 'OrdersAfterDate', $disable);
+			$Ajax->addDisable(true, 'OrdersToDate', $disable);
+	}
+	$Ajax->addDisable(true, 'StockLocation', $disable);
+	$Ajax->addDisable(true, '_SelectStockFromList_edit', $disable);
+	$Ajax->addDisable(true, 'SelectStockFromList', $disable);
+
+	if ($disable) {
+		$Ajax->addFocus(true, 'OrderNumber');
+	} else
+		$Ajax->addFocus(true, 'OrdersAfterDate');
+
+	$Ajax->activate('orders_tbl');
 }
-elseif ($_POST['order_view_mode']=='InvoiceTemplates')
-{
-  	$action .= "?InvoiceTemplates=" . $_POST['InvoiceTemplates'];
-}
-elseif ($_POST['order_view_mode']=='DeliveryTemplates')
-{
-  	$action .= "?DeliveryTemplates=" . $_POST['InvoiceTemplates'];
-}
-*/
+
 start_form(false, false, $_SERVER['PHP_SELF'] .SID);
 
 start_table("class='tablestyle_noborder'");
 start_row();
-ref_cells(_("#:"), 'OrderNumber');
+ref_cells(_("#:"), 'OrderNumber', '',null, '', true);
 if ($_POST['order_view_mode'] != 'DeliveryTemplates' && $_POST['order_view_mode'] != 'InvoiceTemplates')
 {
   	date_cells(_("from:"), 'OrdersAfterDate', '', null, -30);
@@ -78,7 +88,7 @@ locations_list_cells(_("Location:"), 'StockLocation', null, true);
 
 stock_items_list_cells(_("Item:"), 'SelectStockFromList', null, true);
 
-submit_cells('SearchOrders', _("Search"));
+submit_cells('SearchOrders', _("Search"),'',_('Select documents'), true);
 
 hidden('order_view_mode', $_POST['order_view_mode']);
 
@@ -129,7 +139,9 @@ $sql .=	" FROM ".TB_PREF."sales_orders, ".TB_PREF."sales_order_details, ".TB_PRE
 //figure out the sql required from the inputs available
 if (isset($_POST['OrderNumber']) && $_POST['OrderNumber'] != "")
 {
-	$sql .= " AND ".TB_PREF."sales_orders.order_no LIKE '%". $_POST['OrderNumber'] ."' GROUP BY ".TB_PREF."sales_orders.order_no";
+// if ($_POST['OrderNumber'] != '*')  // TODO paged table
+	$sql .= " AND ".TB_PREF."sales_orders.order_no LIKE '%". $_POST['OrderNumber'] ."'";
+ $sql .= " GROUP BY ".TB_PREF."sales_orders.order_no";
 }
 else
 {
@@ -159,16 +171,15 @@ else
 		".TB_PREF."sales_orders.customer_ref, ".TB_PREF."sales_orders.ord_date, ".TB_PREF."sales_orders.deliver_to";
 
 } //end not order number selected
-
 $result = db_query($sql,"No orders were returned");
-
 //-----------------------------------------------------------------------------------
-
 if ($result)
 {
 	print_hidden_script(30);
 
+	start_form();
 	/*show a table of the orders returned by the sql */
+	div_start('orders_tbl');
 
 	start_table("$table_style colspan=6 width=95%");
 	$th = array(_("Order #"), _("Customer"), _("Branch"), _("Cust Order #"), _("Order Date"),
@@ -183,14 +194,12 @@ if ($result)
 	} 
 
 	table_header($th);
-	start_form();
 
 	$j = 1;
 	$k = 0; //row colour counter
 	$overdue_items = false;
 	while ($myrow = db_fetch($result))
 	{
-
 		$view_page = get_customer_trans_view_str(systypes::sales_order(), $myrow["order_no"]);
 		$formated_del_date = sql2date($myrow["delivery_date"]);
 		$formated_order_date = sql2date($myrow["ord_date"]);
@@ -238,7 +247,7 @@ if ($result)
 		{
 		  	echo "<td><input ".($myrow["type"]==1 ? 'checked' : '')." type='checkbox' name='chgtpl" .$myrow["order_no"]. "' value='1'
 		   		onclick='this.form.ChangeTmpl.value= this.name.substr(6);
-		   		this.form.submit();' ></td>";
+		   		JsHttpRequest.request(this);' ></td>";
 
   		  	$modify_page = $path_to_root . "/sales/sales_order_entry.php?" . SID . "ModifyOrderNumber=" . $myrow["order_no"];
   		  	label_cell("<a href='$modify_page'>" . _("Edit") . "</a>");
@@ -247,7 +256,7 @@ if ($result)
 		end_row();;
 
 		$j++;
-		If ($j == 12)
+		if ($j == 12)
 		{
 			$j = 1;
 			table_header($th);
@@ -256,14 +265,14 @@ if ($result)
 	}
 	//end of while loop
   	hidden('ChangeTmpl', 0);
-	end_form();
 	end_table();
 
    if ($overdue_items)
    		display_note(_("Marked items are overdue."), 0, 1, "class='overduefg'");
+	div_end();
+	end_form();
 }
 
 echo "<br>";
-
 end_page();
 ?>
