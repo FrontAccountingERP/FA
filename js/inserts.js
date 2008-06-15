@@ -31,7 +31,7 @@ function _expand(tabobj) {
 	  alltabs[i].className = "ajaxbutton"  //deselect all tabs
 	}
 	tabobj.className = "current";
-	JsHttpRequest.request(tabobj.name)
+	JsHttpRequest.request(tabobj)
   }
 }
 
@@ -42,14 +42,20 @@ function expandtab(tabcontentid, tabnumber) {
 }
 
 function _set_combo_input(e) {
+		e.setAttribute('_last', e.value);
 		e.onblur=function() { 
 		  var but_name = this.name.substring(0, this.name.length-4)+'button';
 		  var button = document.getElementsByName(but_name)[0];
 		  var select = document.getElementsByName(this.getAttribute('rel'))[0];
 		  save_focus(select);
-//		this.style.display='none';
-		  if(button) { // if *_button set submit search request
-	  		JsHttpRequest.request(but_name);
+// submit request if there is submit_on_change option set and 
+// search field has changed.
+		  if (button && (this.value != this.getAttribute('_last'))) {
+	  		JsHttpRequest.request(button);
+		  } else if(this.className=='combo2') {
+				this.style.display = 'none';
+				select.style.display = 'inline';
+				setFocus(select.name);
 		  }
 		  return false;
 		};
@@ -85,7 +91,10 @@ function _update_box(s) {
 	var box = document.getElementsByName(rel)[0];
 		if(box && s.selectedIndex>=0) {
 			  var opt = s.options[s.selectedIndex];
-				if(box) box.value = byid ? opt.value : opt.text;
+				if(box) {
+				  box.value = byid ? opt.value : opt.text;
+				  box.setAttribute('_last', box.value);
+				}
 		}
 }
 
@@ -103,7 +112,7 @@ function _set_combo_select(e) {
 				 var sname = '_'+s.name+'_update';
 				 var update = document.getElementsByName(sname)[0];
 				 if(update) {
-					    JsHttpRequest.request(sname);
+					    JsHttpRequest.request(update);
 				} 
 			}
 			return true;
@@ -146,7 +155,7 @@ var inserts = {
 	'input.ajaxsubmit,input.editbutton,input.navibutton': 
 	function(e) {
 	    e.onclick = function() {
-		JsHttpRequest.request(this.name);
+		JsHttpRequest.request(this);
 		return false;
 	    }
 	},
@@ -158,6 +167,26 @@ var inserts = {
 		  };
 		}
 	},
+	'.searchbox': // emulated onchange event handling for text inputs
+		function(e) {
+			e.setAttribute('_last_val', e.value);
+			e.setAttribute('autocomplete', 'off'); //must be off when calling onblur
+  		  	e.onblur = function() {
+				var val = this.getAttribute('_last_val');
+				if (val != this.value) {
+					this.setAttribute('_last_val', this.value);
+					JsHttpRequest.request('_'+this.name+'_changed', this.form);
+				}
+			}
+    	  	e.onkeydown = function(ev) { 
+	  			ev = ev||window.event;
+	  			key = ev.keyCode||ev.which;
+	  			if (key == 13 && (this.value != this.getAttribute('_last_val'))) {
+			  		this.blur();
+  		 	  		return false;
+	  			}
+		  	}
+		},
 	'select': function(e) {
 		if(e.onfocus==undefined) {
 			e.onfocus = function() {

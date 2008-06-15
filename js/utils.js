@@ -1,14 +1,35 @@
 //
 //	JsHttpRequest class extensions.
 //
-    JsHttpRequest.request= function(submit) {
-		var url = window.location.toString();
-		url = url.substring(0, url.indexOf('?'));
+// Main functions for asynchronus form submitions
+// 	Trigger is the source of request and can have following forms:
+// 	- input object - all form values are also submited
+//  - arbitrary string - POST var trigger with value 1 is added to request;
+//		if form parameter exists also form values are submited, otherwise
+//		request is directed to current location 
+// 
+    JsHttpRequest.request= function(trigger, form) {
+
+		
+		var submitObj = typeof(trigger) == "string" ? 
+			document.getElementsByName(trigger)[0] : trigger;
+		
+		form = form || (submitObj && submitObj.form);
+
+		var url = form ? form.action : 
+		  window.location.toString();
+
+		if (!form) url = url.substring(0, url.indexOf('?'));
+
+		var values = this.formValues(trigger, form);
+		if (!submitObj) 
+			values[trigger] = 1;
+		// this is to avoid caching problems
+		values['_random'] = Math.random()*1234567;
 
         JsHttpRequest.query(
             'POST '+url, // backend
-	    this.formValues(submit),
-			
+	    	values,
             // Function is called when an answer arrives. 
 	    function(result, errors) {
                 // Write the answer.
@@ -31,19 +52,19 @@
 				  objElement.value = data;
 			    else
 				  objElement.innerHTML = data; // selector, div, span etc
-			  } else if(cmd=='di') { // disable/enable element
+		  	  } else if(cmd=='di') { // disable/enable element
 				  objElement.disabled = data;
 			  } else if(cmd=='fc') { // set focus
 				  _focus = data;
 			  } else if(cmd=='js') {	// evaluate js code
 				  eval(data);
 			  } else if(cmd=='rd') {	// client-side redirection
-				  _page_reload = true;
 				  window.location = data;
 			  } else {
 				  errors = errors+'<br>Unknown ajax function: '+cmd;
 			}
 		  }
+
         // Write errors to the debug div.
 		  document.getElementById('msgbox').innerHTML = errors;
 
@@ -60,19 +81,19 @@
     }
 	// returns input field values submitted when form button 'name' is pressed
 	//
-	JsHttpRequest.formValues = function(inp)
+	JsHttpRequest.formValues = function(inp, objForm)
 	{
-		var objForm;
-		var submitObj;
+		var submitObj = inp;
 		var q = {};
 		
+
 		if (typeof(inp) == "string")
 			submitObj = document.getElementsByName(inp)[0];
 		else
 			submitObj = inp;
-		if(submitObj) {
-		  objForm = submitObj.form;
-		}
+		
+		objForm = objForm || (submitObj && submitObj.form);
+
 		if (objForm)
 		{
 			var formElements = objForm.elements;
@@ -83,7 +104,7 @@
 				if (el.type )
 				  if( 
 				  ((el.type == 'radio' || el.type == 'checkbox') && el.checked == false)
-				  || (el.type == 'submit' && el.name!=submitObj.name))
+				  || (el.type == 'submit' && (!submitObj || el.name!=submitObj.name)))
 					continue;
 				if (el.disabled && el.disabled == true)
 					continue;
@@ -105,8 +126,6 @@
 				} 
 			}
 		}
-		// this is to avoid caching problems
-		q['_random'] = Math.random()*1234567;
 		return q;
 	}
 //
@@ -171,7 +190,8 @@ function setFocus(name, byId) {
   if(el && el.focus) {
     // The timeout is needed to prevent unpredictable behaviour on IE & Gecko.
     // Using tmp var prevents crash on IE5
-    var tmp = function() {el.focus()};
+	
+    var tmp = function() {el.focus(); if (el.select) el.select();};
 	setTimeout(tmp, 0);
   }
 }
