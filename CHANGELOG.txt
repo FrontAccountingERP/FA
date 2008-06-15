@@ -19,6 +19,19 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+15-Jun-2008 Janusz Dobrowolski
++ Ajax driven delivery and order queries.
+$ /sales/inquiry/sales_deliveries_view.php
+  /sales/inquiry/sales_orders_view.php
++ Added searchbox class selector for text inputs with onchange event handlers.
+! Added text selection after focus.
+$ /js/inserts.js
+  /js/utils.js
++ Added submit_on_change option to ref input functions
+$ /includes/ui/ui_input.inc
+# Fixed bug in non-js mode for combos type 0 (stock_items_lists).
+$ /includes/ui/ui_lists.inc
+
 15-Jun-2008 Joe Hunt
 # Changed so Invoice Template gets the current day instead of original day.
 $ /sales/sales_order_entry.php
