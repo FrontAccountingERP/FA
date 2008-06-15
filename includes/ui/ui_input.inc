@@ -290,7 +290,7 @@ function text_cells($label, $name, $value, $size="", $max="", $title=false, $par
 	$Ajax->addUpdate($name, $name, $value);
 }
 
-function text_cells_ex($label, $name, $size, $max=null, $init=null, $title=null, $params=null, $post_label=null)
+function text_cells_ex($label, $name, $size, $max=null, $init=null, $title=null, $params=null, $post_label=null, $submit_on_change=false)
 {
   	global $Ajax;
 
@@ -309,8 +309,8 @@ function text_cells_ex($label, $name, $size, $max=null, $init=null, $title=null,
 		$max = $size;
 
 	echo "<td>";
-
-	echo "<input type=\"text\" name=\"$name\" size=\"$size\" maxlength=\"$max\" value=\"" . $_POST[$name]. "\""
+	$class = $submit_on_change ? 'class="searchbox"' : '';
+	echo "<input $class type=\"text\" name=\"$name\" size=\"$size\" maxlength=\"$max\" value=\"" . $_POST[$name]. "\""
 	 .($title ? " title='$title'": '')." >";
 
 	if ($post_label)
@@ -367,7 +367,7 @@ function date_cells($label, $name, $title = null, $init=null, $inc_days=0, $inc_
 			$_POST[$name] = $init;
 	}
 	if ($use_date_picker)
-		$post_label = "<a tabindex='-1' href=\"javascript:date_picker(document.forms[0].$name);\">"
+		$post_label = "<a tabindex='-1' href=\"javascript:date_picker(document.getElementsByName('$name')[0]);\">"
 		. "	<img src='$path_to_root/themes/default/images/cal.gif' width='16' height='16' border='0' alt='"._('Click Here to Pick up the date')."'></a>\n";
 	else
 		$post_label = "";
@@ -383,17 +383,17 @@ function date_row($label, $name, $title=null, $init=null, $inc_days=0, $inc_mont
 
 //-----------------------------------------------------------------------------------
 
-function ref_cells($label, $name, $title=null, $init=null, $params=null)
+function ref_cells($label, $name, $title=null, $init=null, $params=null, $submit_on_change=false)
 {
-	text_cells_ex($label, $name, 16, 18, $init, $title, $params);
+	text_cells_ex($label, $name, 16, 18, $init, $title, $params, null, $submit_on_change);
 }
 
 //-----------------------------------------------------------------------------------
 
-function ref_row($label, $name, $title=null, $init=null)
+function ref_row($label, $name, $title=null, $init=null, $submit_on_change=false)
 {
 	echo "<tr>";
-	ref_cells($label, $name, $title, $init);
+	ref_cells($label, $name, $title, $init, null, $submit_on_change);
 	echo "</tr>\n";
 }
 
