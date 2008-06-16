@@ -179,7 +179,7 @@ function check($label, $name, $value, $submit_on_change=false, $title=false)
 
 	if ($value == null)
 		$value = (!isset($_POST[$name]) ? 0 : $_POST[$name]);
-	
+
 		echo "<input"
 		    .($value == 1 ? ' checked':'')
 		    ." type='checkbox' name='$name' value='1'"
@@ -241,13 +241,15 @@ function percent_cell($label, $bold=false, $id=null)
 	else
 		label_cell(percent_format($label), "nowrap align=right", $id);
 }
-
+// 2008-06-15. Changed
 function qty_cell($label, $bold=false, $dec=null, $id=null)
 {
+	if ($dec == null)
+		$dec = get_qty_dec();
 	if ($bold)
-		label_cell("<b>".qty_format($label, $dec)."</b>", "nowrap align=right", $id);
+		label_cell("<b>".number_format2($label, $dec)."</b>", "nowrap align=right", $id);
 	else
-		label_cell(qty_format($label, $dec), "nowrap align=right", $id);
+		label_cell(number_format2($label, $dec), "nowrap align=right", $id);
 }
 
 function label_cells($label, $value, $params="", $params2="")

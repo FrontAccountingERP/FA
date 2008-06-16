@@ -66,10 +66,10 @@ while ($myrow = db_fetch($result))
 
 	label_cell($myrow["location_name"]);
 
-	$_POST[$myrow["loc_code"]] = qty_format($myrow["reorder_level"]);
+	$_POST[$myrow["loc_code"]] = qty_format($myrow["reorder_level"], $_POST['stock_id'], $dec);
 
-	label_cell(number_format2($qoh,user_qty_dec()), "nowrap align='right'");
-	qty_cells(null, $myrow["loc_code"]);
+	qty_cell($qoh, false, $dec);
+	qty_cells(null, $myrow["loc_code"], null, null, null, $dec);
 	end_row();
 	$j++;
 	If ($j == 12)

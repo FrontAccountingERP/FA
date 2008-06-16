@@ -47,7 +47,7 @@ function get_customer_details_to_order(&$order, $customer_id, $branch_id)
 		if (db_num_rows($result) == 0)
 		{
 		return _("The selected customer and branch are not valid, or the customer does not have any branches.");
-		} 
+		}
 
 		$myrow = db_fetch($result);
 
@@ -108,7 +108,7 @@ function display_order_summary($title, &$order, $editable_items=false)
 			view_stock_status_cell($stock_item->stock_id);
 
 			label_cell($stock_item->item_description, "nowrap" );
-			qty_cell($stock_item->qty_dispatched);
+			qty_cell($stock_item->qty_dispatched, false, get_qty_dec($stock_item->stock_id));
 
 			if ($order->trans_no!=0)
 				amount_cell($stock_item->qty_done);
@@ -132,7 +132,7 @@ function display_order_summary($title, &$order, $editable_items=false)
 		{
 			sales_order_item_controls($order, $k,  $line_no);
 		}
-		
+
 		$total += $line_total;
 	}
 
@@ -179,7 +179,7 @@ function display_order_header(&$order, $editable, $date_text, $display_tax_group
 			$_POST['branch_id'] = '';
 			$Ajax->activate('branch_id');
   		}
-		customer_branches_list_row(_("Branch:"), 
+		customer_branches_list_row(_("Branch:"),
 	  	  $_POST['customer_id'], 'branch_id', null, false, true, true);
 
 		if (!isset($_POST['branch_id']) || $_POST['branch_id'] == "")
@@ -315,7 +315,7 @@ function sales_order_item_controls(&$order, &$rowcounter, $line_no=-1)
 	if ($line_no!=-1 && $line_no == $id)
 	{
 		$_POST['stock_id'] = $order->line_items[$id]->stock_id;
-		$_POST['qty'] = qty_format($order->line_items[$id]->qty_dispatched);
+		$_POST['qty'] = qty_format($order->line_items[$id]->qty_dispatched, $_POST['stock_id']);
 		$_POST['price'] = price_format($order->line_items[$id]->price);
 		$_POST['Disc'] = percent_format($order->line_items[$id]->discount_percent*100);
 		$units = $order->line_items[$id]->units;
@@ -336,17 +336,17 @@ function sales_order_item_controls(&$order, &$rowcounter, $line_no=-1)
 		$item_info = get_item_edit_info($_POST['stock_id']);
 		$units = $item_info["units"];
 
-		$_POST['qty'] = qty_format(1);
+		$_POST['qty'] = qty_format(1, $_POST['stock_id']);
 
 		$_POST['price'] = price_format(get_price ($_POST['stock_id'],
-			$order->customer_currency, $order->sales_type, 
+			$order->customer_currency, $order->sales_type,
 			$order->price_factor, $order->document_date));
 		// default to the customer's discount %
 		$_POST['Disc'] = percent_format($order->default_discount * 100);
 
 	}
 
-	qty_cells(null, 'qty', qty_format($_POST['qty']));
+	qty_cells(null, 'qty', qty_format($_POST['qty'], $_POST['stock_id'], $dec), null, null, $dec);
 
 	if ($order->trans_no!=0) {
 		amount_cell($line_no==-1 ? 0 :$order->line_items[$line_no]->qty_done);
@@ -355,7 +355,7 @@ function sales_order_item_controls(&$order, &$rowcounter, $line_no=-1)
 	label_cell($units, '', 'units');
 
 	$str = amount_cells(null, 'price');
-	
+
 	small_amount_cells(null, 'Disc', percent_format($_POST['Disc']), null, null, user_percent_dec());
 
 	$line_total = $_POST['qty'] * $_POST['price'] * (1 - $_POST['Disc'] / 100);
@@ -374,7 +374,7 @@ function sales_order_item_controls(&$order, &$rowcounter, $line_no=-1)
 	}
 	else
 	{
-		submit_cells('AddItem', _("Add Item"), "colspan=2", 
+		submit_cells('AddItem', _("Add Item"), "colspan=2",
 		    _('Add new item to document'), true);
 	}
 
@@ -410,7 +410,7 @@ function display_delivery_details(&$order)
 
 	locations_list_row(_("Deliver from Location:"), 'Location', $order->Location);
 
-	date_row($delname, 'delivery_date', 
+	date_row($delname, 'delivery_date',
 	    _('Enter requested day of delivery'), $order->due_date, 0, 0, 0);
 
 	text_row(_("Deliver To:"), 'deliver_to', $order->deliver_to, 40, 40,

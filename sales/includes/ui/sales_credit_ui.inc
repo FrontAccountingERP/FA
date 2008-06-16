@@ -48,7 +48,7 @@ function display_credit_header(&$order)
 	    ref_row(_("Reference").':', 'ref');
 	else
 	    label_row(_("Reference").':', $_POST['ref'] );
-	
+
 
 
 	echo "</table>";
@@ -128,7 +128,7 @@ function display_credit_items($title, &$order)
 
     	    label_cell("<a target='_blank' href='$path_to_root/inventory/inquiry/stock_status.php?" . SID . "stock_id=" . $line->stock_id . "'>$line->stock_id</a>");
     	    label_cell($line->item_description, "nowrap");
-    	    qty_cell($line->qty_dispatched);
+    	    qty_cell($line->qty_dispatched, false, get_qty_dec($line->stock_id));
     	    label_cell($line->units);
     	    amount_cell($line->price);
 
@@ -182,7 +182,7 @@ function credit_edit_item_controls(&$order, $rowcounter, $line_no=-1)
 	{
 
 		$_POST['stock_id'] = $order->line_items[$id]->stock_id;
-		$_POST['qty'] = qty_format($order->line_items[$id]->qty_dispatched);
+		$_POST['qty'] = qty_format($order->line_items[$id]->qty_dispatched, $_POST['stock_id'], $dec);
 		$_POST['price'] = price_format($order->line_items[$id]->price);
 		$_POST['Disc'] = percent_format(($order->line_items[$id]->discount_percent)*100);
 		$_POST['units'] = $order->line_items[$id]->units;
@@ -197,7 +197,7 @@ function credit_edit_item_controls(&$order, $rowcounter, $line_no=-1)
 
 		$_POST['units'] = $item_info["units"];
 
-   		$_POST['qty'] = qty_format(0);
+   		$_POST['qty'] = qty_format(0, $_POST['stock_id'], $dec);
 		$_POST['price'] = price_format(get_price($_POST['stock_id'], $order->customer_currency,
 		    $order->sales_type, $order->price_factor, $order->document_date));
 
@@ -206,7 +206,7 @@ function credit_edit_item_controls(&$order, $rowcounter, $line_no=-1)
 	}
 
 
-	qty_cells(null, 'qty', $_POST['qty']);
+	qty_cells(null, 'qty', $_POST['qty'], null, null, $dec);
 //	if ($order->trans_no!=0) {
 //		amount_cell($line_no==-1 ? 0 :$order->line_items[$line_no]->qty_done);
 //	}

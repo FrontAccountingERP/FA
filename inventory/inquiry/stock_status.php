@@ -61,6 +61,7 @@ else
 		_("Demand"), _("Available"), _("On Order"));
 }
 table_header($th);
+$dec = get_qty_dec($_POST['stock_id']);
 $j = 1;
 $k = 0; //row colour counter
 
@@ -110,11 +111,11 @@ while ($myrow = db_fetch($loc_details))
 		}
 
 		label_cell($myrow["location_name"]);
-		qty_cell($qoh);
-        qty_cell($myrow["reorder_level"]);
-        qty_cell($demand_qty);
-        qty_cell($qoh - $demand_qty);
-        qty_cell($qoo);
+		qty_cell($qoh, false, $dec);
+        qty_cell($myrow["reorder_level"], false, $dec);
+        qty_cell($demand_qty, false, $dec);
+        qty_cell($qoh - $demand_qty, false, $dec);
+        qty_cell($qoo, false, $dec);
         end_row();
 
 	}
@@ -122,7 +123,7 @@ while ($myrow = db_fetch($loc_details))
 	{
 	/* It must be a service or kitset part */
 		label_cell($myrow["location_name"]);
-		qty_cell($demand_qty);
+		qty_cell($demand_qty, false, $dec);
 		end_row();
 
 	}

@@ -103,8 +103,6 @@ function print_stock_check()
     $pictures = $_POST['PARAM_2'];
     $comments = $_POST['PARAM_3'];
 
-    $dec = user_qty_dec();
-
 	if ($category == reserved_words::get_all_numeric())
 		$category = 0;
 	if ($category == 0)
@@ -159,6 +157,7 @@ function print_stock_check()
 		$demandqty = getDemandQty($trans['stock_id'], $trans['loc_code']);
 		$demandqty += getDemandAsmQty($trans['stock_id'], $trans['loc_code']);
 		$rep->NewLine();
+		$dec = get_qty_dec($trans['stock_id']);
 		$rep->TextCol(0, 1, $trans['stock_id']);
 		$rep->TextCol(1, 2, $trans['description']);
 		$rep->TextCol(2, 3, number_format2($trans['QtyOnHand'], $dec));

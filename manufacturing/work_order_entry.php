@@ -308,11 +308,11 @@ if (isset($selected_id))
 	}
 
 	$_POST['wo_ref'] = $myrow["wo_ref"];
-	$_POST['quantity'] = qty_format($myrow["units_reqd"]);
+	$_POST['stock_id'] = $myrow["stock_id"];
+	$_POST['quantity'] = qty_format($myrow["units_reqd"], $_POST['stock_id'], $dec);
 	$_POST['StockLocation'] = $myrow["loc_code"];
 	$_POST['released'] = $myrow["released"];
 	$_POST['closed'] = $myrow["closed"];
-	$_POST['stock_id'] = $myrow["stock_id"];
 	$_POST['type'] = $myrow["type"];
 	$_POST['date_'] = sql2date($myrow["date_"]);
 	$_POST['RequDate'] = sql2date($myrow["required_by"]);
@@ -359,19 +359,19 @@ else
 }
 
 if (!isset($_POST['quantity']))
-	$_POST['quantity'] = qty_format(1);
+	$_POST['quantity'] = qty_format(1, $_POST['stock_id'], $dec);
 
 if (get_post('type') == wo_types::advanced())
 {
-    qty_row(_("Quantity Required:"), 'quantity', 12);
+    qty_row(_("Quantity Required:"), 'quantity', null, null, null, $dec);
     if ($_POST['released'])
-    	label_row(_("Quantity Manufactured:"), qty_format($_POST['units_issued']));
+    	label_row(_("Quantity Manufactured:"), qty_format($_POST['units_issued'], $_POST['stock_id']));
     date_row(_("Date") . ":", 'date_');
 	date_row(_("Date Required By") . ":", 'RequDate', '', null, sys_prefs::default_wo_required_by());
 }
 else
 {
-    qty_row(_("Quantity:"), 'quantity', 12);
+    qty_row(_("Quantity:"), 'quantity', null, null, null, $dec);
     date_row(_("Date") . ":", 'date_');
 	hidden('RequDate', '');
 

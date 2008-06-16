@@ -144,7 +144,7 @@ if (isset($_GET['InvoiceNumber']) && $_GET['InvoiceNumber'] > 0) {
 	foreach ($_SESSION['Items']->line_items as $line_no=>$itm) {
 		if (isset($_POST['Line'.$line_no])) {
 			if (check_num('Line'.$line_no, ($itm->quantity - $itm->qty_done))) {
-				$_SESSION['Items']->line_items[$line_no]->qty_dispatched = 
+				$_SESSION['Items']->line_items[$line_no]->qty_dispatched =
 				  input_num('Line'.$line_no);
 			}
 	  	}
@@ -281,10 +281,10 @@ function display_credit_items()
 
 	text_cells(null, 'Line'.$line_no.'Desc', $ln_itm->item_description, 30, 50);
 
-    	qty_cell($ln_itm->quantity);
+    	qty_cell($ln_itm->quantity, false, get_qty_dec($ln_itm->stock_id));
     	label_cell($ln_itm->units);
 
-	amount_cells(null, 'Line'.$line_no, qty_format($ln_itm->qty_dispatched));
+	amount_cells(null, 'Line'.$line_no, qty_format($ln_itm->qty_dispatched, $ln_itm->stock_id));
 
     	$line_total =($ln_itm->qty_dispatched * $ln_itm->price * (1 - $ln_itm->discount_percent));
 

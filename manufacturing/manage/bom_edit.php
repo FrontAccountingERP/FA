@@ -102,7 +102,7 @@ div_start('bom');
 		label_cell($myrow["description"]);
         label_cell($myrow["location_name"]);
         label_cell($myrow["WorkCentreDescription"]);
-        label_cell(qty_format($myrow["quantity"]));
+        label_cell(qty_format($myrow["quantity"], $myrow["component"]));
         label_cell($myrow["units"]);
         edit_link_cell(SID . "NewItem=$selected_parent&selected_component=" . $myrow["id"]);
         delete_link_cell(SID . "delete=" . $myrow["id"]. "&stock_id=" . $_POST['stock_id']);
@@ -245,7 +245,7 @@ if (isset($_POST['stock_id']))
 
 		$_POST['loc_code'] = $myrow["loc_code"];
 		$_POST['workcentre_added']  = $myrow["workcentre_added"];
-		$_POST['quantity'] = qty_format($myrow["quantity"]);
+		$_POST['quantity'] = qty_format($myrow["quantity"], $myrow["component"], $dec);
 
 		hidden('selected_parent', $selected_parent);
 		hidden('selected_component', $selected_component);
@@ -271,9 +271,9 @@ if (isset($_POST['stock_id']))
 
 	if (!isset($_POST['quantity']))
 	{
-		$_POST['quantity'] = qty_format(1);
+		$_POST['quantity'] = qty_format(1, $_POST['stock_id'], $dec);
 	}
-	qty_row(_("Quantity:"), 'quantity', $_POST['quantity']);
+	qty_row(_("Quantity:"), 'quantity', $_POST['quantity'], null, null, $dec);
 
 	end_table(1);
 	submit_center('Submit', _("Add/Update"));

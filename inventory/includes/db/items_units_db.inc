@@ -53,4 +53,15 @@ function get_all_item_units() {
     $sql = "SELECT * FROM ".TB_PREF."item_units ORDER BY name";
     return  db_query($sql, "could not get stock categories");
 }
+// 2008-06-15. Added Joe Hunt to get a measure of unit by given stock_id
+function get_unit_dec($stock_id)
+{
+	$sql = "SELECT decimals FROM ".TB_PREF."item_units,	".TB_PREF."stock_master
+		WHERE abbr=units AND stock_id='$stock_id' LIMIT 1";
+	$result = db_query($sql, "could not get unit decimals");
+
+	$row = db_fetch_row($result);
+	return $row[0];
+}
+
 ?>

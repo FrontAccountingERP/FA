@@ -16,7 +16,7 @@ page(_("Receive Purchase Order Items"), false, false, "", $js);
 
 //---------------------------------------------------------------------------------------------------------------
 
-if (isset($_GET['AddedID'])) 
+if (isset($_GET['AddedID']))
 {
 	$grn = $_GET['AddedID'];
 	$trans_type = 25;
@@ -36,8 +36,8 @@ if (isset($_GET['AddedID']))
 
 //--------------------------------------------------------------------------------------------------
 
-if ((!isset($_GET['PONumber']) || $_GET['PONumber'] == 0) && !isset($_SESSION['PO'])) 
-//if (isset($_GET['PONumber']) && !$_GET['PONumber'] > 0 && !isset($_SESSION['PO'])) 
+if ((!isset($_GET['PONumber']) || $_GET['PONumber'] == 0) && !isset($_SESSION['PO']))
+//if (isset($_GET['PONumber']) && !$_GET['PONumber'] > 0 && !isset($_SESSION['PO']))
 {
 	die (_("This page can only be opened if a purchase order has been selected. Please select a purchase order first."));
 }
@@ -50,7 +50,7 @@ function display_po_receive_items()
     start_table("colspan=7 $table_style width=90%");
     $th = array(_("Item Code"), _("Description"), _("Ordered"), _("Units"), _("Received"),
     	_("Outstanding"), _("This Delivery"), _("Price"), _("Total"));
-    table_header($th);	
+    table_header($th);
 
     /*show the line items on the order with the quantity being received for modification */
 
@@ -59,7 +59,7 @@ function display_po_receive_items()
 
     if (count($_SESSION['PO']->line_items)> 0 )
     {
-       	foreach ($_SESSION['PO']->line_items as $ln_itm) 
+       	foreach ($_SESSION['PO']->line_items as $ln_itm)
        	{
 
 			alt_table_row_color($k);
@@ -79,16 +79,17 @@ function display_po_receive_items()
 				text_cells(null, $ln_itm->stock_id . "Desc", $ln_itm->item_description, 30, 50);
 			else
 				label_cell($ln_itm->item_description);
-			qty_cell($ln_itm->quantity);
+			$dec = get_qty_dec($ln_itm->stock_id);
+			qty_cell($ln_itm->quantity, false, $dec);
 			label_cell($ln_itm->units);
-			qty_cell($ln_itm->qty_received);
-			qty_cell($qty_outstanding);
+			qty_cell($ln_itm->qty_received, false, $dec);
+			qty_cell($qty_outstanding, false, $dec);
 
 			if ($qty_outstanding > 0)
-				qty_cells(null, $ln_itm->line_no, qty_format($ln_itm->receive_qty), "align=right");
+				qty_cells(null, $ln_itm->line_no, qty_format($ln_itm->receive_qty, $ln_itm->stock_id, $dec), "align=right", null, $dec);
 			else
-				qty_cells(null, $ln_itm->line_no, qty_format($ln_itm->receive_qty), "align=right", 
-					"disabled");
+				qty_cells(null, $ln_itm->line_no, qty_format($ln_itm->receive_qty, $ln_itm->stock_id, $dec), "align=right",
+					"disabled", $dec);
 
 			amount_cell($ln_itm->price);
 			amount_cell($line_total);
@@ -119,18 +120,18 @@ function check_po_changed()
     check_db_error("Could not check that the details of the purchase order had not been changed by another user ", $sql);
 
 	$line_no = 1;
-	while ($myrow = db_fetch($result)) 
+	while ($myrow = db_fetch($result))
 	{
 		$ln_item = $_SESSION['PO']->line_items[$line_no];
 
 		// only compare against items that are outstanding
 		$qty_outstanding = $ln_item->quantity - $ln_item->qty_received;
-		if ($qty_outstanding > 0) 
+		if ($qty_outstanding > 0)
 		{
-    		if ($ln_item->qty_inv != $myrow["qty_invoiced"]	|| 
-    			$ln_item->stock_id != $myrow["item_code"] || 
-    			$ln_item->quantity != $myrow["quantity_ordered"] || 
-    			$ln_item->qty_received != $myrow["quantity_received"]) 
+    		if ($ln_item->qty_inv != $myrow["qty_invoiced"]	||
+    			$ln_item->stock_id != $myrow["item_code"] ||
+    			$ln_item->quantity != $myrow["quantity_ordered"] ||
+    			$ln_item->qty_received != $myrow["quantity_received"])
     		{
     			return true;
     		}
@@ -151,21 +152,21 @@ function can_process()
     	return false;
 	}
 
-	if (!is_date($_POST['DefaultReceivedDate'])) 
+	if (!is_date($_POST['DefaultReceivedDate']))
 	{
 		display_error(_("The entered date is invalid."));
 		set_focus('DefaultReceivedDate');
 		return false;
 	}
 
-    if (!references::is_valid($_POST['ref'])) 
+    if (!references::is_valid($_POST['ref']))
     {
 		display_error(_("You must enter a reference."));
 		set_focus('ref');
 		return false;
 	}
 
-	if (!is_new_reference($_POST['ref'], 25)) 
+	if (!is_new_reference($_POST['ref'], 25))
 	{
 		display_error(_("The entered reference is already in use."));
 		set_focus('ref');
@@ -173,9 +174,9 @@ function can_process()
 	}
 
 	$something_received = 0;
-	foreach ($_SESSION['PO']->line_items as $order_line) 
+	foreach ($_SESSION['PO']->line_items as $order_line)
 	{
-	  	if ($order_line->receive_qty > 0) 
+	  	if ($order_line->receive_qty > 0)
 	  	{
 			$something_received = 1;
 			break;
@@ -184,10 +185,10 @@ function can_process()
 
     // Check whether trying to deliver more items than are recorded on the actual purchase order (+ overreceive allowance)
     $delivery_qty_too_large = 0;
-	foreach ($_SESSION['PO']->line_items as $order_line) 
+	foreach ($_SESSION['PO']->line_items as $order_line)
 	{
-	  	if ($order_line->receive_qty+$order_line->qty_received > 
-	  		$order_line->quantity * (1+ (sys_prefs::over_receive_allowance() / 100))) 
+	  	if ($order_line->receive_qty+$order_line->qty_received >
+	  		$order_line->quantity * (1+ (sys_prefs::over_receive_allowance() / 100)))
 	  	{
 			$delivery_qty_too_large = 1;
 			break;
@@ -198,7 +199,7 @@ function can_process()
     { 	/*Then dont bother proceeding cos nothing to do ! */
         display_error(_("There is nothing to process. Please enter valid quantities greater than zero."));
     	return false;
-    } 
+    }
     elseif ($delivery_qty_too_large == 1)
     {
     	display_error(_("Entered quantities cannot be greater than the quantity entered on the purchase order including the allowed over-receive percentage") . " (" . sys_prefs::over_receive_allowance() ."%)."
@@ -219,7 +220,7 @@ function process_receive_po()
 	if (!can_process())
 		return;
 
-	if (check_po_changed()) 
+	if (check_po_changed())
 	{
 		echo "<br> " . _("This order has been changed or invoiced since this delivery was started to be actioned. Processing halted. To enter a delivery against this purchase order, it must be re-selected and re-read again to update the changes made by the other user.") . "<BR>";
 
@@ -242,7 +243,7 @@ function process_receive_po()
 
 //--------------------------------------------------------------------------------------------------
 
-if (isset($_GET['PONumber']) && $_GET['PONumber'] > 0 && !isset($_POST['Update'])) 
+if (isset($_GET['PONumber']) && $_GET['PONumber'] > 0 && !isset($_POST['Update']))
 {
 
 	create_new_po();
@@ -253,24 +254,24 @@ if (isset($_GET['PONumber']) && $_GET['PONumber'] > 0 && !isset($_POST['Update']
 
 //--------------------------------------------------------------------------------------------------
 
-if (isset($_POST['Update']) || isset($_POST['ProcessGoodsReceived'])) 
+if (isset($_POST['Update']) || isset($_POST['ProcessGoodsReceived']))
 {
 
 	/* if update quantities button is hit page has been called and ${$line->line_no} would have be
  	set from the post to the quantity to be received in this receival*/
-	foreach ($_SESSION['PO']->line_items as $line) 
+	foreach ($_SESSION['PO']->line_items as $line)
 	{
 
 		$_POST[$line->line_no] = max($_POST[$line->line_no], 0);
 		if (!check_num($line->line_no))
-			$_POST[$line->line_no] = qty_format(0);
+			$_POST[$line->line_no] = qty_format(0, $line->stock_id);
 
 		if (!isset($_POST['DefaultReceivedDate']) || $_POST['DefaultReceivedDate'] == "")
 			$_POST['DefaultReceivedDate'] = Today();
 
 		$_SESSION['PO']->line_items[$line->line_no]->receive_qty = input_num($line->line_no);
 
-		if (isset($_POST[$line->stock_id . "Desc"]) && strlen($_POST[$line->stock_id . "Desc"]) > 0) 
+		if (isset($_POST[$line->stock_id . "Desc"]) && strlen($_POST[$line->stock_id . "Desc"]) > 0)
 		{
 			$_SESSION['PO']->line_items[$line->line_no]->item_description = $_POST[$line->stock_id . "Desc"];
 		}

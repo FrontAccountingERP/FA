@@ -72,8 +72,6 @@ function print_order_status_list()
 	$backorder = $_POST['PARAM_4'];
 	$comments = $_POST['PARAM_5'];
 
-	$dec = user_qty_dec();
-
 	if ($category == reserved_words::get_all_numeric())
 		$category = 0;
 	if ($location == reserved_words::get_all())
@@ -146,6 +144,7 @@ function print_order_status_list()
 		}
 		$rep->TextCol(0, 1,	$myrow['stk_code']);
 		$rep->TextCol(1, 2,	$myrow['description']);
+		$dec = get_qty_dec($myrow['stk_code']);
 		$rep->TextCol(2, 3,	number_format2($myrow['quantity'], $dec));
 		$rep->TextCol(3, 4,	number_format2($myrow['qty_sent'], $dec));
 		$rep->TextCol(4, 5,	number_format2($myrow['quantity'] - $myrow['qty_sent'], $dec));

@@ -217,7 +217,7 @@ function check_quantities()
 	foreach ($_SESSION['Items']->line_items as $line=>$itm) {
 		if (isset($_POST['Line'.$line])) {
 			if (!check_num('Line'.$line, $itm->qty_done, $itm->quantity) == 0) {
-				$_SESSION['Items']->line_items[$line]->qty_dispatched = 
+				$_SESSION['Items']->line_items[$line]->qty_dispatched =
 				  input_num('Line'.$line);
 			} else {
 				$ok = 0;
@@ -381,11 +381,12 @@ foreach ($_SESSION['Items']->line_items as $line=>$ln_itm) {
 	view_stock_status_cell($ln_itm->stock_id);
 
 	text_cells(null, 'Line'.$line.'Desc', $ln_itm->item_description, 30, 50);
-	qty_cell($ln_itm->quantity);
+	$dec = get_qty_dec($ln_itm->stock_id);
+	qty_cell($ln_itm->quantity, false, $dec);
 	label_cell($ln_itm->units);
-	qty_cell($ln_itm->qty_done);
+	qty_cell($ln_itm->qty_done, false, $dec);
 
-	small_qty_cells(null, 'Line'.$line, qty_format($ln_itm->qty_dispatched));
+	small_qty_cells(null, 'Line'.$line, qty_format($ln_itm->qty_dispatched, $ln_itm->stock_id, $dec), null, null, $dec);
 
 	$display_discount_percent = percent_format($ln_itm->discount_percent*100) . "%";
 

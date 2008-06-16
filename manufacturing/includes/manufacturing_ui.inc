@@ -37,7 +37,7 @@ function display_bom($item_check)
 			label_cell($myrow["description"]);
 			label_cell($myrow["WorkCentreDescription"]);
 			label_cell($myrow["location_name"]);
-			qty_cell($myrow["quantity"]);
+			qty_cell($myrow["quantity"], false, get_qty_dec($myrow["component"]));
 			amount_cell($myrow["standard_cost"]);
 			amount_cell($myrow["ComponentCost"]);
 			end_row();
@@ -113,11 +113,12 @@ function display_wo_requirements($woid, $quantity, $show_qoh=false, $date=null)
 
 			label_cell($myrow["location_name"]);
 			label_cell($myrow["WorkCentreDescription"]);
-            qty_cell($myrow["units_req"]);
-			qty_cell($myrow["units_req"] * $quantity);
-            qty_cell($myrow["units_issued"]);
+			$dec = get_qty_dec($myrow["stock_id"]);
+            qty_cell($myrow["units_req"], false, $dec);
+			qty_cell($myrow["units_req"] * $quantity, false, $dec);
+            qty_cell($myrow["units_issued"], false, $dec);
 			if ($show_qoh)
-				qty_cell($qoh);
+				qty_cell($qoh, false, $dec);
 			else
 				label_cell("");
 			end_row();
@@ -284,13 +285,13 @@ function display_wo_details($woid, $suppress_view_link=false)
 	label_cell($myrow["location_name"]);
 	label_cell(sql2date($myrow["date_"]));
 	label_cell(sql2date($myrow["required_by"]));
-
-	qty_cell($myrow["units_reqd"]);
+	$dec = get_qty_dec($myrow["stock_id"]);
+	qty_cell($myrow["units_reqd"], false, $dec);
 
 	if ($myrow["released"] == true)
 	{
 		label_cell(sql2date($myrow["released_date"]));
-		qty_cell($myrow["units_issued"]);
+		qty_cell($myrow["units_issued"], false, $dec);
 	}
 	end_row();
 
@@ -335,7 +336,7 @@ function display_wo_details_quick($woid, $suppress_view_link=false)
 	label_cell($myrow["location_name"]);
 	label_cell(sql2date($myrow["date_"]));
 
-	qty_cell($myrow["units_issued"]);
+	qty_cell($myrow["units_issued"], false, get_qty_dec($myrow["stock_id"]));
 
 	end_row();
 

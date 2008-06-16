@@ -104,11 +104,11 @@ function print_invoices()
 			$SubTotal = 0;
 			while ($myrow2=db_fetch($result))
 			{
-			$Net = round($sign * ((1 - $myrow2["discount_percent"]) * $myrow2["unit_price"] * $myrow2["quantity"]), 
-			   user_price_dec());
-			$SubTotal += $Net;
+				$Net = round($sign * ((1 - $myrow2["discount_percent"]) * $myrow2["unit_price"] * $myrow2["quantity"]),
+				   user_price_dec());
+				$SubTotal += $Net;
 	    		$DisplayPrice = number_format2($myrow2["unit_price"],$dec);
-	    		$DisplayQty = number_format2($sign*$myrow2["quantity"],user_qty_dec());
+	    		$DisplayQty = number_format2($sign*$myrow2["quantity"],get_qty_dec($myrow2['stock_id']));
 	    		$DisplayNet = number_format2($Net,$dec);
 	    		if ($myrow2["discount_percent"]==0)
 		  			$DisplayDiscount ="";
@@ -159,7 +159,7 @@ function print_invoices()
     		while ($tax_item = db_fetch($tax_items))
     		{
     			$DisplayTax = number_format2($sign*$tax_item['amount'], $dec);
-			
+
     			if ($tax_item['included_in_price'])
     			{
 					$rep->TextCol(3, 7, $doc_Included . " " . $tax_item['tax_type_name'] .

@@ -4,7 +4,7 @@ include_once($path_to_root . "/includes/prefs/userprefs.inc");
 
 //--------------------------------------------------------------------------
 
-class current_user 
+class current_user
 {
 
 	var $loginname;
@@ -54,8 +54,8 @@ class current_user
 		    update_user_visitdate($loginname);
 		    $this->logged = true;
 
-		} 
-		else 
+		}
+		else
 		{
 			$this->logged = false;
 		}
@@ -86,10 +86,10 @@ class current_user
     	$db = mysql_connect($connection["host"] ,
     		$connection["dbuser"], $connection["dbpassword"]);
     	mysql_select_db($connection["dbname"],$db);
-		
+
 		if (!defined('TB_PREF'))
 			define('TB_PREF', $connection["tbpref"]);
-		
+
     	return $db;
 	}
 
@@ -106,7 +106,7 @@ class current_user
 
 //--------------------------------------------------------------------------
 
-function number_format2($number, $decimals=0) 
+function number_format2($number, $decimals=0)
 {
 	global $thoseps, $decseps;
 	$tsep = $thoseps[$_SESSION["wa_current_user"]->prefs->tho_sep()];
@@ -115,22 +115,34 @@ function number_format2($number, $decimals=0)
 }
 
 function price_format($number) {
-    return number_format2($number, 
+    return number_format2($number,
 	$_SESSION["wa_current_user"]->prefs->price_dec());
 }
-
-function qty_format($number) {
-    return number_format2($number, 
-	$_SESSION["wa_current_user"]->prefs->qty_dec());
+// 2008-06-15. Added extra parameter $stock_id and reference for $dec
+//--------------------------------------------------------------------
+function qty_format($number, $stock_id=null, &$dec=0) {
+	$dec = get_qty_dec($stock_id);
+    return number_format2($number, $dec);
 }
-
+// and get_qty_dec
+function get_qty_dec($stock_id=null)
+{
+	global $path_to_root;
+	include_once($path_to_root."/inventory/includes/db/items_units_db.inc");
+	if ($stock_id != null)
+		$dec = get_unit_dec($stock_id);
+	if ($stock_id == null || $dec == -1 || $dec == null)
+		$dec = $_SESSION["wa_current_user"]->prefs->qty_dec();
+	return $dec;
+}
+//-------------------------------------------------------------------
 function exrate_format($number) {
-    return number_format2($number, 
+    return number_format2($number,
 	$_SESSION["wa_current_user"]->prefs->exrate_dec());
 }
 
 function percent_format($number) {
-    return number_format2($number, 
+    return number_format2($number,
 	$_SESSION["wa_current_user"]->prefs->percent_dec());
 }
 
@@ -143,7 +155,7 @@ function user_numeric($input) {
 	str_replace($sep, '', $num);
     $sep = $decseps[user_dec_sep()];
     if($sep!='.') $num = str_replace( $sep, '.', $num);
-    
+
     if (!is_numeric($num))
 	  return false;
     $num = (float)$num;
@@ -153,88 +165,88 @@ function user_numeric($input) {
 	  return $num;
 }
 
-function user_company() 
+function user_company()
 {
 	return $_SESSION["wa_current_user"]->company;
 }
 
-function user_language() 
+function user_language()
 {
 	return $_SESSION["wa_current_user"]->prefs->language();
 }
 
-function user_qty_dec() 
+function user_qty_dec()
 {
 	return $_SESSION["wa_current_user"]->prefs->qty_dec();
 }
 
-function user_price_dec() 
+function user_price_dec()
 {
 	return $_SESSION["wa_current_user"]->prefs->price_dec();
 }
 
-function user_exrate_dec() 
+function user_exrate_dec()
 {
 	return $_SESSION["wa_current_user"]->prefs->exrate_dec();
 }
 
-function user_percent_dec() 
+function user_percent_dec()
 {
 	return $_SESSION["wa_current_user"]->prefs->percent_dec();
 }
 
-function user_show_gl_info() 
+function user_show_gl_info()
 {
 	return $_SESSION["wa_current_user"]->prefs->show_gl_info();
 }
 
-function user_show_codes() 
+function user_show_codes()
 {
 	return $_SESSION["wa_current_user"]->prefs->show_codes();
 }
 
-function user_date_format() 
+function user_date_format()
 {
 	return $_SESSION["wa_current_user"]->prefs->date_format();
 }
 
-function user_date_display() 
+function user_date_display()
 {
 	return $_SESSION["wa_current_user"]->prefs->date_display();
 }
 
-function user_date_sep() 
+function user_date_sep()
 {
 	return $_SESSION["wa_current_user"]->prefs->date_sep();
 }
 
-function user_tho_sep() 
+function user_tho_sep()
 {
 	return $_SESSION["wa_current_user"]->prefs->tho_sep();
 }
 
-function user_dec_sep() 
+function user_dec_sep()
 {
 	return $_SESSION["wa_current_user"]->prefs->dec_sep();
 }
 
-function user_theme() 
+function user_theme()
 {
 	return $_SESSION["wa_current_user"]->prefs->get_theme();
 }
 
-function user_pagesize() 
+function user_pagesize()
 {
 	return $_SESSION["wa_current_user"]->prefs->get_pagesize();
 }
 
-function user_hints() 
+function user_hints()
 {
 	return $_SESSION["wa_current_user"]->prefs->show_hints();
 }
 
 function set_user_prefs($price_dec, $qty_dec, $exrate_dec, $percent_dec, $showgl, $showcodes,
-	$date_format, $date_sep, $tho_sep, $dec_sep, $theme, $pagesize, $show_hints) 
+	$date_format, $date_sep, $tho_sep, $dec_sep, $theme, $pagesize, $show_hints)
 {
 
 	$_SESSION["wa_current_user"]->update_prefs($price_dec, $qty_dec, $exrate_dec, $percent_dec, $showgl, $showcodes,
@@ -246,7 +258,7 @@ function add_user_js_data() {
 
 	$ts = $thoseps[user_tho_sep()];
 	$ds = $decseps[user_dec_sep()];
-  
+
     $js = "\n<script type=\"text/javascript\">\n"
 	  . "<!--\n"
 	  . "var user = {\n"

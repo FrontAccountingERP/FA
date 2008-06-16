@@ -59,7 +59,7 @@ function invoice_header(&$supp_trans)
 
 	supplier_list_row(_("Supplier:"), 'supplier_id', $_POST['supplier_id'], false, true);
 
-	if ($supp_trans->supplier_id != $_POST['supplier_id']) 
+	if ($supp_trans->supplier_id != $_POST['supplier_id'])
 	{
 		// supplier has changed
 		// delete all the order items - drastic but necessary because of
@@ -131,7 +131,7 @@ function invoice_totals(&$supp_trans)
 	if ($supp_trans->is_invoice)
     	label_row(_("Invoice Total:"), $display_total, "align=right", "align=right");
     else
-		label_row("<font color=red>" . _("Credit Note Total:") . "</font>", 
+		label_row("<font color=red>" . _("Credit Note Total:") . "</font>",
 			"<font color=red><b>$display_total</b></font>", "align=right", "nowrap align=right");
 
     end_table();
@@ -176,7 +176,7 @@ function display_gl_items(&$supp_trans, $mode=0)
 
 	echo "<table width=100%>";
 	echo "<tr><td align=center><span class='headingtext'>$heading</span></td>";
-	if ($mode == 0) 
+	if ($mode == 0)
 	{
     	submit_cells('InvGL', _("Edit"), "align=right");
 	}
@@ -185,7 +185,7 @@ function display_gl_items(&$supp_trans, $mode=0)
 	echo "</td></tr><tr><td>"; // ouer table
 
 	echo "<table width=100% $table_style>";
-	
+
 	$dim = get_company_pref('use_dimension');
 	if ($dim == 2)
     	$th = array(_("Account"), _("Name"), _("Dimension")." 1", _("Dimension")." 2", _("Amount"), _("Memo"));
@@ -211,7 +211,7 @@ function display_gl_items(&$supp_trans, $mode=0)
 
 			label_cell($entered_gl_code->gl_code);
 			label_cell($entered_gl_code->gl_act_name);
-		
+
 			if ($dim >= 1)
    				label_cell(get_dimension_string($entered_gl_code->gl_dim, true));
 			if ($dim > 1)
@@ -230,20 +230,20 @@ function display_gl_items(&$supp_trans, $mode=0)
 			$i++;
 			if ($i > 15)
 			{
-				$i = 0; 
-				table_header($th); 
+				$i = 0;
+				table_header($th);
 			}
 		}
 
 	}
 	$colspan = ($dim == 2 ? 4 : ($dim == 1 ? 3 : 2));
-	label_row(_("Total"), price_format($total_gl_value), 
+	label_row(_("Total"), price_format($total_gl_value),
 		"colspan=".$colspan." align=right", "nowrap align=right");
 
 	echo "</table>";
 
     echo "</td></tr>";
-    
+
     end_table(); // outertable
 
 	return $total_gl_value;
@@ -284,7 +284,7 @@ function display_grn_items(&$supp_trans, $mode=0)
 
 	echo "<table width=100% >";
 	echo "<tr><td align=center><span class='headingtext'>$heading</span></td>";
-	if ($mode == 0) 
+	if ($mode == 0)
 	{
 		submit_cells('InvGRN', _("Edit"), "align=right");
 	}
@@ -311,7 +311,7 @@ function display_grn_items(&$supp_trans, $mode=0)
     		label_cell(get_trans_view_str(25,$entered_grn->id));
 			label_cell($entered_grn->item_code);
 			label_cell($entered_grn->item_description);
-			qty_cell(abs($entered_grn->this_quantity_inv));
+			qty_cell(abs($entered_grn->this_quantity_inv), false, get_qty_dec($entered_grn->item_code));
 			amount_cell($entered_grn->chg_price);
 			amount_cell( round($entered_grn->chg_price * abs($entered_grn->this_quantity_inv)), user_price_dec());
 
@@ -337,7 +337,7 @@ function display_grn_items(&$supp_trans, $mode=0)
     echo "</table>";
 
     echo "</td></tr>";
-    
+
     end_table(); // outertable
 
 	return $total_grn_value;
@@ -346,15 +346,15 @@ function display_grn_items(&$supp_trans, $mode=0)
 //--------------------------------------------------------------------------------------------------
 function get_duedate_from_terms(&$supp_trans)
 {
-	if (!is_date($supp_trans->tran_date)) 
+	if (!is_date($supp_trans->tran_date))
 	{
 		$supp_trans->tran_date = Today();
 	}
-	if (substr( $supp_trans->terms, 0, 1) == "1") 
+	if (substr( $supp_trans->terms, 0, 1) == "1")
 	{ /*Its a day in the following month when due */
 		$supp_trans->due_date = add_days(end_month($supp_trans->tran_date), (int) substr( $supp_trans->terms,1));
-	} 
-	else 
+	}
+	else
 	{ /*Use the Days Before Due to add to the invoice date */
 		$supp_trans->due_date = add_days($supp_trans->tran_date, (int) substr( $supp_trans->terms,1));
 	}

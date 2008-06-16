@@ -9,9 +9,9 @@ function add_to_order(&$order, $new_item, $new_item_qty, $standard_cost)
 {
     $already_on_order = 0;
 
-	foreach ($order->line_items as $order_item) 
+	foreach ($order->line_items as $order_item)
 	{
-        if (strcasecmp($order_item->stock_id, $new_item) == 0) 
+        if (strcasecmp($order_item->stock_id, $new_item) == 0)
         {
             $already_on_order = 1;
             display_error(_("For Part :") . $new_item . " " . "This item is already on this order.  You can change the quantity ordered of the existing line if necessary.");
@@ -72,7 +72,7 @@ function display_transfer_items($title, &$order)
 	$subtotal = 0;
 	$k = 0;  //row colour counter
 
-	foreach ($order->line_items as $stock_item) 
+	foreach ($order->line_items as $stock_item)
 	{
 
 		$quantity = number_format2($stock_item->quantity,user_qty_dec());
@@ -83,14 +83,14 @@ function display_transfer_items($title, &$order)
 
     	 	label_cell("<a target='_blank' href='$path_to_root/inventory/inquiry/stock_status.php?" . SID . "stock_id=" . $stock_item->stock_id . "'>$stock_item->stock_id</a>");
     		label_cell($stock_item->item_description);
-    		label_cell($quantity, "nowrap align=right");
+    		qty_cell($stock_item->quantity, false, get_qty_dec($stock_item->stock_id));
     		label_cell($stock_item->units);
 
 			edit_link_cell(SID . "Edit=$stock_item->stock_id");
 			delete_link_cell(SID . "Delete=$stock_item->stock_id");
     		end_row();
-		} 
-		else 
+		}
+		else
 		{
 			transfer_edit_item_controls($order, $stock_item->stock_id);
 		}
@@ -113,7 +113,7 @@ function transfer_edit_item_controls(&$order, $stock_id=null)
 		if (!isset($_POST['stock_id']))
 			$_POST['stock_id'] = $order->line_items[$stock_id]->stock_id;
 		if (!isset($_POST['qty']) || $_POST['qty'] == '')
-			$_POST['qty'] = qty_format($order->line_items[$stock_id]->quantity);
+			$_POST['qty'] = qty_format($order->line_items[$stock_id]->quantity, $order->line_items[$stock_id]->stock_id, $dec);
 
 		$_POST['units'] = $order->line_items[$stock_id]->units;
 
@@ -129,20 +129,20 @@ function transfer_edit_item_controls(&$order, $stock_id=null)
 
     	$item_info = get_item_edit_info($_POST['stock_id']);
 
-   		$_POST['qty'] = qty_format(0);
+   		$_POST['qty'] = qty_format(0, $_POST['stock_id'], $dec);
 		$_POST['units'] = $item_info["units"];
 	}
 
 
-	small_qty_cells(null, 'qty', $_POST['qty']);
+	small_qty_cells(null, 'qty', $_POST['qty'], null, null, $dec);
 	label_cell($_POST['units']);
 
-	if (isset($_GET['Edit'])) 
+	if (isset($_GET['Edit']))
 	{
     	submit_cells('UpdateItem', _("Update"));
     	submit_cells('CancelItemChanges', _("Cancel"));
-	} 
-	else 
+	}
+	else
 	{
 		submit_cells('AddItem', _("Add Item"), "colspan=2");
 	}

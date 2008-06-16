@@ -78,7 +78,8 @@ if (!isset($before_qty_row[0]))
 start_row("class='inquirybg'");
 label_cell("<b>"._("Quantity on hand before") . " " . $_POST['AfterDate']."</b>", "align=center colspan=5");
 label_cell("&nbsp;", "colspan=2");
-qty_cell($before_qty);
+$dec = get_qty_dec($_POST['stock_id']);
+qty_cell($before_qty, false, $dec);
 end_row();
 
 $j = 1;
@@ -98,12 +99,12 @@ while ($myrow = db_fetch($result))
 
 	if ($myrow["qty"] > 0)
 	{
-		$quantity_formatted = number_format2($myrow["qty"],user_qty_dec());
+		$quantity_formatted = number_format2($myrow["qty"], $dec);
 		$total_in += $myrow["qty"];
 	}
 	else
 	{
-		$quantity_formatted = number_format2(-$myrow["qty"],user_qty_dec());
+		$quantity_formatted = number_format2(-$myrow["qty"], $dec);
 		$total_out += -$myrow["qty"];
 	}
 	$after_qty += $myrow["qty"];
@@ -154,7 +155,7 @@ while ($myrow = db_fetch($result))
 
 	label_cell((($myrow["qty"] >= 0) ? $quantity_formatted : ""), "nowrap align=right");
 	label_cell((($myrow["qty"] < 0) ? $quantity_formatted : ""), "nowrap align=right");
-	label_cell(number_format2($after_qty,user_qty_dec()), "nowrap align=right");
+	qty_cell($after_qty, false, $dec);
 	end_row();
 	$j++;
 	If ($j == 12)
@@ -171,9 +172,9 @@ while ($myrow = db_fetch($result))
 //{
 	start_row("class='inquirybg'");
     label_cell("<b>"._("Quantity on hand after") . " " . $_POST['BeforeDate']."</b>", "align=center colspan=5");
-    qty_cell($total_in);
-    qty_cell($total_out);
-    qty_cell($after_qty);
+    qty_cell($total_in, false, $dec);
+    qty_cell($total_out, false, $dec);
+    qty_cell($after_qty, false, $dec);
     end_row();
 //}
 

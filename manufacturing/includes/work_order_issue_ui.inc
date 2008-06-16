@@ -9,9 +9,9 @@ function add_to_order(&$order, $new_item, $new_item_qty, $standard_cost)
 {
     $already_on_order = 0;
 
-	foreach ($order->line_items as $order_item) 
+	foreach ($order->line_items as $order_item)
 	{
-        if (strcasecmp($order_item->stock_id, $new_item) == 0) 
+        if (strcasecmp($order_item->stock_id, $new_item) == 0)
         {
             $already_on_order = 1;
             display_error(_("For Part :") . $new_item . " " . "This item is already on this order.  You can change the quantity ordered of the existing line if necessary.");
@@ -42,12 +42,11 @@ function display_adjustment_items($Title, &$order)
 	start_table("$table_style colspan=7");
 	$th = array(_("Item Code"), _("Item Description"), _("Quantity"),
 		_("Unit"), _("Unit Cost"));
-	table_header($th);	
+	table_header($th);
 
-	$subtotal = 0;
 	$k = 0;  //row colour counter
 
-	foreach ($order->line_items as $stock_item) 
+	foreach ($order->line_items as $stock_item)
 	{
 
 		if ($_GET['Edit'] != $stock_item->stock_id)
@@ -56,7 +55,7 @@ function display_adjustment_items($Title, &$order)
 
     	 	label_cell("<a target='_blank' href='$path_to_root/inventory/inquiry/stock_status.php?" . SID . "stock_id=" . $stock_item->stock_id . "'>$stock_item->stock_id</a>");
     		label_cell($stock_item->item_description);
-    		qty_cell($stock_item_quantity);
+    		qty_cell($stock_item->quantity, false, get_qty_dec($stock_item->stock_id));
     		if (strlen($stock_item->units))
     			label_cell($stock_item->units);
     		else
@@ -66,8 +65,8 @@ function display_adjustment_items($Title, &$order)
     		edit_link_cell(SID . "Edit=$stock_item->stock_id");
     		delete_link_cell(SID . "Delete=$stock_item->stock_id");
     		end_row();
-		} 
-		else 
+		}
+		else
 		{
 			adjustment_edit_item_controls($order, $stock_item->stock_id);
 		}
@@ -120,12 +119,12 @@ function adjustment_edit_item_controls(&$order, $stock_id=null)
 	label_cell($_POST['units']);
 	text_cells(null, 'std_cost', $_POST['std_cost'], 15, 14);
 
-	if (isset($_GET['Edit'])) 
+	if (isset($_GET['Edit']))
 	{
     	submit_cells('UpdateItem', _("Update"));
     	submit_cells('CancelItemChanges', _("Cancel"));
-	} 
-	else 
+	}
+	else
 	{
 		submit_cells('AddItem', _("Add Item"), "colspan=2");
 	}

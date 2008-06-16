@@ -9,9 +9,9 @@ function add_to_order(&$order, $new_item, $new_item_qty, $standard_cost)
 {
     $allready_on_order = 0;
 
-	foreach ($order->line_items as $order_item) 
+	foreach ($order->line_items as $order_item)
 	{
-        if (strcasecmp($order_item->stock_id, $new_item) == 0) 
+        if (strcasecmp($order_item->stock_id, $new_item) == 0)
         {
             $allready_on_order = 1;
             display_error(_("For Part :") . $new_item . " " . "This item is already on this order.  You can change the quantity ordered of the existing line if necessary.");
@@ -29,9 +29,9 @@ function add_to_order(&$order, $new_item, $new_item_qty, $standard_cost)
 function display_order_header(&$order)
 {
 	global $table_style2;
-	
+
 	start_table("width=70% $table_style2"); // outer table
-	echo "<tr><td valign=top width=33%>"; 
+	echo "<tr><td valign=top width=33%>";
 	echo "<table>"; // inner table
 
 	locations_list_row(_("Location:"), 'StockLocation', null);
@@ -39,7 +39,7 @@ function display_order_header(&$order)
 
 	echo "</table>"; // inner table
 
-	echo "</td><td width=33%>"; 
+	echo "</td><td width=33%>";
 
 	echo "<table>"; // inner table
 
@@ -47,7 +47,7 @@ function display_order_header(&$order)
 
 	echo "</table>"; // inner table
 
-	echo "</td><td width=33%>"; 
+	echo "</td><td width=33%>";
 
 	echo "<table>"; // inner table
     movement_types_list_row(_("Detail:"), 'type', null);
@@ -59,7 +59,7 @@ function display_order_header(&$order)
 
 	echo "</table>"; // inner table
 
-	echo "</td></tr>"; 
+	echo "</td></tr>";
 	end_table(1); // outer table
 }
 
@@ -71,7 +71,7 @@ function display_adjustment_items($title, &$order)
 
 	display_heading($title);
 	start_table("$table_style width=80%");
-	$th = array(_("Item Code"), _("Item Description"), _("Quantity"), 
+	$th = array(_("Item Code"), _("Item Description"), _("Quantity"),
 		_("Unit"), _("Unit Cost"), _("Total"));
 	if ( count($order->line_items)) $th[] = '';
 
@@ -79,7 +79,7 @@ function display_adjustment_items($title, &$order)
 	$total = 0;
 	$k = 0;  //row colour counter
 
-	foreach ($order->line_items as $stock_item) 
+	foreach ($order->line_items as $stock_item)
 	{
 
 		$quantity = number_format2($stock_item->quantity,user_qty_dec());
@@ -100,8 +100,8 @@ function display_adjustment_items($title, &$order)
 			edit_link_cell(SID . "Edit=$stock_item->stock_id");
 			delete_link_cell(SID . "Delete=$stock_item->stock_id");
 			end_row();
-		} 
-		else 
+		}
+		else
 		{
 			adjustment_edit_item_controls($order, $stock_item->stock_id);
 		}
@@ -126,7 +126,7 @@ function adjustment_edit_item_controls(&$order, $stock_id=null)
 		if (!isset($_POST['stock_id']))
 			$_POST['stock_id'] = $order->line_items[$stock_id]->stock_id;
 		if (!isset($_POST['qty']) OR ($_POST['qty']==""))
-			$_POST['qty'] = qty_format($order->line_items[$stock_id]->quantity);
+			$_POST['qty'] = qty_format($order->line_items[$stock_id]->quantity, $order->line_items[$stock_id]->stock_id, $dec);
 		if (!isset($_POST['std_cost']) OR ($_POST['std_cost']==""))
 			$_POST['std_cost'] = price_format($order->line_items[$stock_id]->standard_cost);
 
@@ -144,23 +144,23 @@ function adjustment_edit_item_controls(&$order, $stock_id=null)
 
     	$item_info = get_item_edit_info($_POST['stock_id']);
 
-   		$_POST['qty'] = qty_format(0);
+   		$_POST['qty'] = qty_format(0, $_POST['stock_id'], $dec);
 		$_POST['std_cost'] = price_format($item_info["standard_cost"]);
 		$_POST['units'] = $item_info["units"];
 	}
 
-	qty_cells(null, 'qty', $_POST['qty']);
+	qty_cells(null, 'qty', $_POST['qty'], null, null, $dec);
 
 	label_cell($_POST['units']);
 	amount_cells(null, 'std_cost', $_POST['std_cost']);
 	label_cell("&nbsp;");
 
-	if (isset($_GET['Edit'])) 
+	if (isset($_GET['Edit']))
 	{
     	submit_cells('UpdateItem', _("Update"));
     	submit_cells('CancelItemChanges', _("Cancel"));
-	} 
-	else 
+	}
+	else
 	{
 		submit_cells('AddItem', _("Add Item"), "colspan=2");
 	}

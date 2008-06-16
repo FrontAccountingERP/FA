@@ -39,7 +39,7 @@ echo "<tr valign=top><td>";
 start_table("$table_style width=95%");
 label_row(_("Customer Name"), $_SESSION['Items']->customer_name, "class='tableheader2'",
 	"colspan=3");
-start_row();	
+start_row();
 label_cells(_("Customer Order Ref."), $_SESSION['Items']->cust_ref, "class='tableheader2'");
 label_cells(_("Deliver To Branch"), $_SESSION['Items']->deliver_to, "class='tableheader2'");
 end_row();
@@ -52,7 +52,7 @@ label_cells(_("Order Currency"), $_SESSION['Items']->customer_currency, "class='
 label_cells(_("Deliver From Location"), $_SESSION['Items']->location_name, "class='tableheader2'");
 end_row();
 
-label_row(_("Delivery Address"), nl2br($_SESSION['Items']->delivery_address), 
+label_row(_("Delivery Address"), nl2br($_SESSION['Items']->delivery_address),
 	"class='tableheader2'", "colspan=3");
 label_row(_("Telephone"), $_SESSION['Items']->phone, "class='tableheader2'", "colspan=3");
 label_row(_("E-mail"), "<a href='mailto:" . $_SESSION['Items']->email . "'>" . $_SESSION['Items']->email . "</a>",
@@ -74,7 +74,7 @@ $result = db_query($sql,"The related delivery notes could not be retreived");
 $delivery_total = 0;
 $k = 0;
 
-while ($del_row = db_fetch($result)) 
+while ($del_row = db_fetch($result))
 {
 
 	alt_table_row_color($k);
@@ -107,7 +107,7 @@ $result = db_query($sql,"The related invoices could not be retreived");
 $invoices_total = 0;
 $k = 0;
 
-while ($inv_row = db_fetch($result)) 
+while ($inv_row = db_fetch($result))
 {
 
 	alt_table_row_color($k);
@@ -139,7 +139,7 @@ $result = db_query($sql,"The related credit notes could not be retreived");
 $credits_total = 0;
 $k = 0;
 
-while ($credits_row = db_fetch($result)) 
+while ($credits_row = db_fetch($result))
 {
 
 	alt_table_row_color($k);
@@ -177,20 +177,21 @@ $k = 0;  //row colour counter
 
 foreach ($_SESSION['Items']->line_items as $stock_item) {
 
-	$line_total = round($stock_item->quantity * $stock_item->price * (1 - $stock_item->discount_percent), 
+	$line_total = round($stock_item->quantity * $stock_item->price * (1 - $stock_item->discount_percent),
 	   user_price_dec());
 
 	alt_table_row_color($k);
 
 	label_cell($stock_item->stock_id);
 	label_cell($stock_item->item_description);
-	qty_cell($stock_item->quantity);
+	$dec = get_qty_dec($stock_item->stock_id);
+	qty_cell($stock_item->quantity, false, $dec);
 	label_cell($stock_item->units);
 	amount_cell($stock_item->price);
 	amount_cell($stock_item->discount_percent * 100);
 	amount_cell($line_total);
-	
-	qty_cell($stock_item->qty_done);
+
+	qty_cell($stock_item->qty_done, false, $dec);
 	end_row();
 }
 

@@ -17,7 +17,7 @@ page(_("View Sales Invoice"), true, false, "", $js);
 if (isset($_GET["trans_no"]))
 {
 	$trans_id = $_GET["trans_no"];
-} 
+}
 elseif (isset($_POST["trans_no"]))
 {
 	$trans_id = $_POST["trans_no"];
@@ -75,7 +75,7 @@ start_table("$table_style width=100%");
 start_row();
 label_cells(_("Reference"), $myrow["reference"], "class='tableheader2'");
 label_cells(_("Currency"), $sales_order["curr_code"], "class='tableheader2'");
-label_cells(_("Our Order No"), 
+label_cells(_("Our Order No"),
 	get_customer_trans_view_str(systypes::sales_order(),$sales_order["order_no"]), "class='tableheader2'");
 end_row();
 start_row();
@@ -102,7 +102,7 @@ if (db_num_rows($result) > 0)
 {
 	$th = array(_("Item Code"), _("Item Description"), _("Quantity"),
 		_("Unit"), _("Price"), _("Discount %"), _("Total"));
-	table_header($th);	
+	table_header($th);
 
 	$k = 0;	//row colour counter
 	$sub_total = 0;
@@ -111,22 +111,22 @@ if (db_num_rows($result) > 0)
 	    if($myrow2["quantity"]==0) continue;
 		alt_table_row_color($k);
 
-		$value = round(((1 - $myrow2["discount_percent"]) * $myrow2["unit_price"] * $myrow2["quantity"]), 
+		$value = round(((1 - $myrow2["discount_percent"]) * $myrow2["unit_price"] * $myrow2["quantity"]),
 		   user_price_dec());
 		$sub_total += $value;
 
 	    if ($myrow2["discount_percent"] == 0)
 	    {
 		  	$display_discount = "";
-	    } 
-	    else 
+	    }
+	    else
 	    {
 		  	$display_discount = percent_format($myrow2["discount_percent"]*100) . "%";
 	    }
 
 	    label_cell($myrow2["stock_id"]);
 		label_cell($myrow2["StockDescription"]);
-        qty_cell($myrow2["quantity"]);
+        qty_cell($myrow2["quantity"], false, get_qty_dec($myrow2["stock_id"]));
         label_cell($myrow2["units"], "align=right");
         amount_cell($myrow2["unit_price"]);
         label_cell($display_discount, "nowrap align=right");
@@ -134,7 +134,7 @@ if (db_num_rows($result) > 0)
 		end_row();
 	} //end while there are line items to print out
 
-} 
+}
 else
 	display_note(_("There are no line items on this invoice."), 1, 2);
 
@@ -142,7 +142,7 @@ $display_sub_tot = price_format($sub_total);
 $display_freight = price_format($myrow["ov_freight"]);
 
 /*Print out the invoice text entered */
-label_row(_("Sub-total"), $display_sub_tot, "colspan=6 align=right", 
+label_row(_("Sub-total"), $display_sub_tot, "colspan=6 align=right",
 	"nowrap align=right width=15%");
 label_row(_("Shipping"), $display_freight, "colspan=6 align=right", "nowrap align=right");
 

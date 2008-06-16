@@ -83,7 +83,7 @@ function display_wo_issue_details($issue_no)
 			alt_table_row_color($k);
 
         	label_cell($myrow["stock_id"]  . " - " . $myrow["description"]);
-            qty_cell($myrow["qty_issued"]);
+            qty_cell($myrow["qty_issued"], false, get_qty_dec($myrow["stock_id"]));
 			label_cell($myrow["units"]);
 			end_row();;
 

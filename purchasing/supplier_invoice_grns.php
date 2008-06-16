@@ -33,7 +33,7 @@ function check_data()
 {
 	global $check_price_charged_vs_order_price,
 		$check_qty_charged_vs_del_qty;
-	if (!check_num('this_quantity_inv', 0) || input_num('this_quantity_inv')==0) 
+	if (!check_num('this_quantity_inv', 0) || input_num('this_quantity_inv')==0)
 	{
 		display_error( _("The quantity to invoice must be numeric and greater than zero."));
 		set_focus('this_quantity_inv');
@@ -47,11 +47,11 @@ function check_data()
 		return false;
 	}
 
-	if ($check_price_charged_vs_order_price == True) 
+	if ($check_price_charged_vs_order_price == True)
 	{
 		if ($_POST['order_price']!=input_num('ChgPrice')) {
 		     if ($_POST['order_price']==0 ||
-			input_num('ChgPrice')/$_POST['order_price'] > 
+			input_num('ChgPrice')/$_POST['order_price'] >
 			    (1 + (sys_prefs::over_charge_allowance() / 100)))
 		    {
 			display_error(_("The price being invoiced is more than the purchase order price by more than the allowed over-charge percentage. The system is set up to prohibit this. See the system administrator to modify the set up parameters if necessary.") .
@@ -62,9 +62,9 @@ function check_data()
 		}
 	}
 
-	if ($check_qty_charged_vs_del_qty == True) 
+	if ($check_qty_charged_vs_del_qty == True)
 	{
-		if (input_num('this_quantity_inv') / ($_POST['qty_recd'] - $_POST['prev_quantity_inv']) > 
+		if (input_num('this_quantity_inv') / ($_POST['qty_recd'] - $_POST['prev_quantity_inv']) >
 			(1+ (sys_prefs::over_charge_allowance() / 100)))
 		{
 			display_error( _("The quantity being invoiced is more than the outstanding quantity by more than the allowed over-charge percentage. The system is set up to prohibit this. See the system administrator to modify the set up parameters if necessary.")
@@ -87,8 +87,8 @@ if (isset($_POST['AddGRNToTrans']))
     	if (input_num('this_quantity_inv') >= ($_POST['qty_recd'] - $_POST['prev_quantity_inv']))
     	{
     		$complete = True;
-    	} 
-    	else 
+    	}
+    	else
     	{
     		$complete = False;
     	}
@@ -150,7 +150,7 @@ function display_grn_items_for_selection()
 
     	foreach ($_SESSION['supp_trans']->grn_items as $entered_grn)
     	{
-    		if ($entered_grn->id == $myrow["id"]) 
+    		if ($entered_grn->id == $myrow["id"])
     		{
     			$grn_already_on_invoice = True;
     		}
@@ -167,14 +167,15 @@ function display_grn_items_for_selection()
             label_cell($myrow["item_code"]);
             label_cell($myrow["description"]);
             label_cell(sql2date($myrow["delivery_date"]));
-            qty_cell($myrow["qty_recd"]);
-            qty_cell($myrow["quantity_inv"]);
-            qty_cell($myrow["qty_recd"] - $myrow["quantity_inv"]);
+            $dec = get_qty_dec($myrow["item_code"]);
+            qty_cell($myrow["qty_recd"], false, $dec);
+            qty_cell($myrow["quantity_inv"], false, $dec);
+            qty_cell($myrow["qty_recd"] - $myrow["quantity_inv"], false, $dec);
             amount_cell($myrow["unit_price"]);
             amount_cell(round($myrow["unit_price"] * ($myrow["qty_recd"] - $myrow["quantity_inv"]),
 			   user_price_dec()));
 			end_row();
-			
+
     		$i++;
     		if ($i > 15)
     		{
@@ -203,14 +204,15 @@ if (isset($_POST['grn_item_id']) && $_POST['grn_item_id'] != "")
 	start_table("$table_style width=80%");
 	$th = array(_("Sequence #"), _("Item"), _("Description"), _("Quantity Outstanding"),
 		_("Quantity to Invoice"), _("Order Price"), _("Actual Price"));
-	table_header($th);	
+	table_header($th);
 
 	start_row();
 	label_cell($_POST['grn_item_id']);
 	label_cell($myrow['item_code']);
 	label_cell($myrow['description']);
-	qty_cell($myrow['QtyOstdg']);
-	qty_cells(null, 'this_quantity_inv', qty_format($myrow['QtyOstdg']));
+	$dec = get_qty_dec($myrow['item_code']);
+	qty_cell($myrow['QtyOstdg'], false, $dec);
+	qty_cells(null, 'this_quantity_inv', qty_format($myrow['QtyOstdg'], $myrow['item_code'], $dec), null, null, $dec);
 	amount_cell($myrow['unit_price']);
 	small_amount_cells(null, 'ChgPrice', price_format($myrow['unit_price']));
 	end_row();

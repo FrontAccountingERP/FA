@@ -10,7 +10,7 @@ page(_("View Purchase Order"), true);
 
 include($path_to_root . "/purchasing/includes/purchasing_ui.inc");
 
-if (!isset($_GET['trans_no'])) 
+if (!isset($_GET['trans_no']))
 {
 	die ("<br>" . _("This page must be called with a purchase order number to review."));
 }
@@ -41,7 +41,7 @@ table_header($th);
 $total = $k = 0;
 $overdue_items = false;
 
-foreach ($purchase_order->line_items as $stock_item) 
+foreach ($purchase_order->line_items as $stock_item)
 {
 
 	$line_total = $stock_item->quantity * $stock_item->price;
@@ -52,21 +52,22 @@ foreach ($purchase_order->line_items as $stock_item)
 	{
     	start_row("class='overduebg'");
     	$overdue_items = true;
-	} 
-	else 
+	}
+	else
 	{
 		alt_table_row_color($k);
 	}
 
 	label_cell($stock_item->stock_id);
 	label_cell($stock_item->item_description);
-	qty_cell($stock_item->quantity);
+	$dec = get_qty_dec($stock_item->stock_id);
+	qty_cell($stock_item->quantity, false, $dec);
 	label_cell($stock_item->units);
 	amount_cell($stock_item->price);
 	amount_cell($line_total);
 	label_cell($stock_item->req_del_date);
-	qty_cell($stock_item->qty_received);
-	qty_cell($stock_item->qty_inv);
+	qty_cell($stock_item->qty_received, false, $dec);
+	qty_cell($stock_item->qty_inv, false, $dec);
 	end_row();
 
 	$total += $line_total;

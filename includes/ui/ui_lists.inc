@@ -66,7 +66,7 @@ $opts = array(		// default options
 	}
 	if ($opts['sel_hint'] === null)
 		$opts['sel_hint'] = $by_id || $search_box==false ?
-			'' : _('Press Space tab for search pattern entry');
+		'' : _('Press Space tab for search pattern entry');
 
 	if ($opts['box_hint'] === null)
 		$opts['box_hint'] = $search_box ?
@@ -100,16 +100,16 @@ $opts = array(		// default options
 	}
 	if ($txt == '') {
 		if ($spec_option === false)
-			$limit = ' LIMIT 1';
+		$limit = ' LIMIT 1';
 		else
-			$opts['where'][] = $valfield . "='". get_post($name, $spec_id)."'";
+		$opts['where'][] = $valfield . "='". get_post($name, $spec_id)."'";
 	}
 	else
 		if ($txt != '*') {
 
 		foreach($opts['search'] as $i=> $s)
 			$opts['search'][$i] = $s . " LIKE '%{$txt}%'";
-			$opts['where'][] = '('. implode($opts['search'], ' OR ') . ')';
+		$opts['where'][] = '('. implode($opts['search'], ' OR ') . ')';
 		}
 	}
    }
@@ -539,7 +539,7 @@ function stock_items_list_cells($label, $name, $selected_id, $all_option=false, 
 	if ($label != null)
 		echo "<td>$label</td>\n";
 	$str = stock_items_list($name, $selected_id, $all_option, $submit_on_change,
-		array('cells'=>true));
+	array('cells'=>true));
 	return $str;
 }
 /*
@@ -717,8 +717,6 @@ function stock_item_types_list_row($label, $name, $selected_id, $enabled=true)
 
 function stock_units_list_row($label, $name, $value, $enabled=true)
 {
-	global $stock_units;
-
 	default_focus($name);
 	$result = get_all_item_units();
 	echo "<tr><td>$label</td>\n";
@@ -753,8 +751,6 @@ function stock_units_list_row($label, $name, $value, $enabled=true)
 
 function tax_types_list($name, $selected_id, $none_option=false, $submit_on_change=false)
 {
-	global $all_items;
-
 	$sql = "SELECT id, CONCAT(name, ' (',rate,'%)') as name FROM ".TB_PREF."tax_types";
 
 	return combo_input($name, $selected_id, $sql, 'id', 'name',
@@ -791,8 +787,6 @@ function tax_types_list_row($label, $name, $selected_id, $none_option=false,
 function tax_groups_list($name, $selected_id,
 	$none_option=false, $submit_on_change=false)
 {
-	global $all_items;
-
 	$sql = "SELECT id, name FROM ".TB_PREF."tax_groups";
 
 	return combo_input($name, $selected_id, $sql, 'id', 'name',
@@ -995,8 +989,6 @@ function credit_status_list_row($label, $name, $selected_id)
 
 function sales_types_list($name, $selected_id, $submit_on_change=false, $special_option=false)
 {
-	global $all_items;
-
 	$sql = "SELECT id, sales_type FROM ".TB_PREF."sales_types";
 
 	return combo_input($name, $selected_id, $sql, 'id', 'sales_type',
@@ -1818,47 +1810,55 @@ function credit_type_list_row($label, $name, $selected, $submit_on_change=false)
 	return $str;
 }
 
-function number_list($name, $selected, $from, $to, $firstlabel="")
+function number_list($name, $selected, $from, $to, $no_option=false)
 {
 	default_focus($name);
 	if ($selected == null)
 	{
-		$selected = (!isset($_POST[$name]) ? $from : $_POST[$name]);
-		if ($selected == $from)
-			$_POST[$name] = $selected;
+		$selected = (!isset($_POST[$name]) ? reserved_words::get_all_numeric() : $_POST[$name]);
 	}
 	echo "<select name='$name'>";
+	if ($no_option !== false)
+	{
+		$reserved_word = reserved_words::get_all_numeric();
+
+    	if ($selected == $reserved_word)
+    	{
+    	     echo "<option selected value='$reserved_word'>$no_option</option>\n";
+    	}
+    	else
+    	{
+    	     echo "<option value='$reserved_word'>$no_option</option>\n";
+    	}
+	}
+
 	for ($i = $from; $i <= $to; $i++)
 	{
-		if ($i == 0 && $firstlabel != "")
-			$label = $firstlabel;
-		else
-			$label = $i;
 		if ($selected == $i)
 		{
-			echo "<option selected value='$i'>$label</option>\n";
+			echo "<option selected value='$i'>$i</option>\n";
 		}
 		else
 		{
-			echo "<option value='$i'>$label</option>\n";
+			echo "<option value='$i'>$i</option>\n";
 		}
 	}
 	echo "</select>\n";
 }
 
-function number_list_cells($label, $name, $selected, $from, $to)
+function number_list_cells($label, $name, $selected, $from, $to, $no_option=false)
 {
 	if ($label != null)
 		label_cell($label);
 	echo "<td>\n";
-	number_list($name, $selected, $from, $to);
+	number_list($name, $selected, $from, $to, $no_option);
 	echo "</td>\n";
 }
 
-function number_list_row($label, $name, $selected, $from, $to)
+function number_list_row($label, $name, $selected, $from, $to, $no_option=false)
 {
 	echo "<tr>\n";
-	number_list_cells($label, $name, $selected, $from, $to);
+	number_list_cells($label, $name, $selected, $from, $to, $no_option);
 	echo "</tr>\n";
 }
 ?>

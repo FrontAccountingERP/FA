@@ -29,7 +29,7 @@ echo "<br>";
 
 function check_data()
 {
-	if (!check_num('This_QuantityCredited', 0)) 
+	if (!check_num('This_QuantityCredited', 0))
 	{
 		display_error(_("The quantity to credit must be numeric and greater than zero."));
 		set_focus('This_QuantityCredited');
@@ -117,7 +117,7 @@ while ($myrow = db_fetch($result))
 
 	foreach ($_SESSION['supp_trans']->grn_items as $entered_grn)
 	{
-		if ($entered_grn->id == $myrow["id"]) 
+		if ($entered_grn->id == $myrow["id"])
 		{
 			$grn_already_on_credit = True;
 		}
@@ -133,9 +133,10 @@ while ($myrow = db_fetch($result))
         label_cell($myrow["item_code"]);
         label_cell($myrow["description"]);
         label_cell(sql2date($myrow["delivery_date"]));
-        qty_cell($myrow["qty_recd"]);
-        qty_cell($myrow["quantity_inv"]);
-        qty_cell($myrow["qty_recd"] - $myrow["quantity_inv"]);
+        $dec = get_qty_dec($myrow["item_code"]);
+        qty_cell($myrow["qty_recd"], false, $dec);
+        qty_cell($myrow["quantity_inv"], false, $dec);
+        qty_cell($myrow["qty_recd"] - $myrow["quantity_inv"], false, $dec);
 		amount_cell($myrow["unit_price"]);
 		amount_cell(round($myrow["unit_price"] * $myrow["quantity_inv"],  user_price_dec()));
 		end_row();
@@ -162,13 +163,14 @@ if (isset($_POST['grn_item_id']) && $_POST['grn_item_id'] != "")
 	start_table("$table_style width=80%");
 	$th = array(_("Sequence #"), _("Item"), _("Qty Already Invoiced"),
 		_("Quantity to Credit"), _("Order Price"), _("Credit Price"));
-	table_header($th);	
+	table_header($th);
 
 	start_row();
 	label_cell($_POST['grn_item_id']);
     label_cell($myrow['item_code'] . " " . $myrow['description']);
-    qty_cell($myrow["quantity_inv"]);
-    qty_cells(null, 'This_QuantityCredited', qty_format(max($myrow['quantity_inv'],0)));
+    $dec = get_qty_dec($myrow['item_code']);
+    qty_cell($myrow["quantity_inv"], false, $dec);
+    qty_cells(null, 'This_QuantityCredited', qty_format(max($myrow['quantity_inv'],0),$myrow['item_code'], $dec), null, null, $dec);
     amount_cell($myrow['unit_price']);
     amount_cells(null, 'ChgPrice', price_format($myrow['unit_price']));
     end_row();

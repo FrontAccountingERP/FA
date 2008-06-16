@@ -183,7 +183,7 @@ function display_po_items(&$order, $editable=true)
     			alt_table_row_color($k);
         		label_cell($po_line->stock_id);
     			label_cell($po_line->item_description);
-                qty_cell($po_line->quantity);
+                qty_cell($po_line->quantity, false, get_qty_dec($po_line->stock_id));
     			label_cell($po_line->units);
                 label_cell($po_line->req_del_date);
     			amount_cell($po_line->price);
@@ -278,7 +278,7 @@ function po_item_controls(&$order, $stock_id=null)
 		if (!isset($_POST['stock_id']))
 			$_POST['stock_id'] = $order->line_items[$_GET['Edit']]->stock_id;
 		if (!isset($_POST['qty']) || ($_POST['qty'] == ""))
-			$_POST['qty'] = qty_format($order->line_items[$_GET['Edit']]->quantity);
+			$_POST['qty'] = qty_format($order->line_items[$_GET['Edit']]->quantity, $_POST['stock_id'], $dec);
 		if (!isset($_POST['price']) || ($_POST['price'] == ""))
 			$_POST['price'] = price_format($order->line_items[$_GET['Edit']]->price);
 		if (!isset($_POST['req_del_date']) || ($_POST['req_del_date'] == ""))
@@ -298,12 +298,12 @@ function po_item_controls(&$order, $stock_id=null)
     	$item_info = get_item_edit_info($_POST['stock_id']);
 		$_POST['units'] = $item_info["units"];
 
-   		$_POST['qty'] = qty_format(1);
+   		$_POST['qty'] = qty_format(1, $_POST['stock_id'], $dec);
 		$_POST['price'] = price_format(get_purchase_price ($order->supplier_id, $_POST['stock_id']));
 		$_POST['req_del_date'] = add_days(Today(), 10);
 	}
 
-	qty_cells(null, 'qty', null);
+	qty_cells(null, 'qty', null, null, null, $dec);
 
 	label_cell($_POST['units']);
 	date_cells(null, 'req_del_date', '', null, 0, 0, 0);

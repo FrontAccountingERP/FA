@@ -63,7 +63,7 @@ function print_inventory_valuation_report()
     $location = $_POST['PARAM_1'];
     $detail = $_POST['PARAM_2'];
     $comments = $_POST['PARAM_3'];
-    
+
     $dec = user_price_dec();
 
 	if ($category == reserved_words::get_all_numeric())
@@ -97,7 +97,7 @@ function print_inventory_valuation_report()
     $rep->Header();
 
 	$res = getTransactions($category, $location);
-	$total = $grandtotal = 0.0; 
+	$total = $grandtotal = 0.0;
 	$catt = '';
 	while ($trans=db_fetch($res))
 	{
@@ -109,13 +109,13 @@ function print_inventory_valuation_report()
 				{
 					$rep->NewLine(2, 3);
 					$rep->TextCol(0, 4, _('Total'));
-				}	
+				}
 				$rep->Textcol(4, 5, number_format2($total, $dec));
 				if ($detail)
 				{
 					$rep->Line($rep->row - 2);
 					$rep->NewLine();
-				}	
+				}
 				$rep->NewLine();
 				$total = 0.0;
 			}
@@ -131,7 +131,7 @@ function print_inventory_valuation_report()
 			$rep->fontsize -= 2;
 			$rep->TextCol(0, 1, $trans['stock_id']);
 			$rep->TextCol(1, 2, $trans['description']);
-			$rep->TextCol(2, 3, number_format2($trans['QtyOnHand'], user_qty_dec()));
+			$rep->TextCol(2, 3, number_format2($trans['QtyOnHand'], get_qty_dec($trans['stock_id'])));
 			$rep->TextCol(3, 4, number_format2($trans['UnitCost'], $dec));
 			$rep->TextCol(4, 5, number_format2($trans['ItemTotal'], $dec));
 			$rep->fontsize += 2;
@@ -143,7 +143,7 @@ function print_inventory_valuation_report()
 	{
 		$rep->NewLine(2, 3);
 		$rep->TextCol(0, 4, _('Total'));
-	}	
+	}
 	$rep->Textcol(4, 5, number_format2($total, $dec));
 	if ($detail)
 	{
