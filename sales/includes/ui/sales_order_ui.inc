@@ -315,7 +315,8 @@ function sales_order_item_controls(&$order, &$rowcounter, $line_no=-1)
 	if ($line_no!=-1 && $line_no == $id)
 	{
 		$_POST['stock_id'] = $order->line_items[$id]->stock_id;
-		$_POST['qty'] = qty_format($order->line_items[$id]->qty_dispatched, $_POST['stock_id']);
+		$dec = get_qty_dec($_POST['stock_id']);
+		$_POST['qty'] = number_format2($order->line_items[$id]->qty_dispatched, $dec);
 		$_POST['price'] = price_format($order->line_items[$id]->price);
 		$_POST['Disc'] = percent_format($order->line_items[$id]->discount_percent*100);
 		$units = $order->line_items[$id]->units;
@@ -335,8 +336,8 @@ function sales_order_item_controls(&$order, &$rowcounter, $line_no=-1)
 
 		$item_info = get_item_edit_info($_POST['stock_id']);
 		$units = $item_info["units"];
-
-		$_POST['qty'] = qty_format(1, $_POST['stock_id']);
+		$dec = get_qty_dec($_POST['stock_id']);
+		$_POST['qty'] = number_format2(1, $dec);
 
 		$_POST['price'] = price_format(get_price ($_POST['stock_id'],
 			$order->customer_currency, $order->sales_type,
@@ -346,10 +347,10 @@ function sales_order_item_controls(&$order, &$rowcounter, $line_no=-1)
 
 	}
 
-	qty_cells(null, 'qty', qty_format($_POST['qty'], $_POST['stock_id'], $dec), null, null, $dec);
+	qty_cells(null, 'qty', $_POST['qty'], null, null, $dec);
 
 	if ($order->trans_no!=0) {
-		amount_cell($line_no==-1 ? 0 :$order->line_items[$line_no]->qty_done);
+		qty_cell($line_no==-1 ? 0 :$order->line_items[$line_no]->qty_done, false, $dec);
 	}
 
 	label_cell($units, '', 'units');

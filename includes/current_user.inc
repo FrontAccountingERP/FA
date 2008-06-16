@@ -120,7 +120,7 @@ function price_format($number) {
 }
 // 2008-06-15. Added extra parameter $stock_id and reference for $dec
 //--------------------------------------------------------------------
-function qty_format($number, $stock_id=null, &$dec=0) {
+function qty_format($number, $stock_id=null, &$dec) {
 	$dec = get_qty_dec($stock_id);
     return number_format2($number, $dec);
 }

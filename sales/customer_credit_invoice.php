@@ -279,12 +279,12 @@ function display_credit_items()
 		//	view_stock_status_cell($ln_itm->stock_id); alternative view
     	label_cell($ln_itm->stock_id);
 
-	text_cells(null, 'Line'.$line_no.'Desc', $ln_itm->item_description, 30, 50);
-
-    	qty_cell($ln_itm->quantity, false, get_qty_dec($ln_itm->stock_id));
+		text_cells(null, 'Line'.$line_no.'Desc', $ln_itm->item_description, 30, 50);
+		$dec = get_qty_dec($ln_itm->stock_id);
+    	qty_cell($ln_itm->quantity, false, $dec);
     	label_cell($ln_itm->units);
 
-	amount_cells(null, 'Line'.$line_no, qty_format($ln_itm->qty_dispatched, $ln_itm->stock_id));
+		amount_cells(null, 'Line'.$line_no, number_format2($ln_itm->qty_dispatched, $dec));
 
     	$line_total =($ln_itm->qty_dispatched * $ln_itm->price * (1 - $ln_itm->discount_percent));
 

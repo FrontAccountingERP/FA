@@ -102,7 +102,7 @@ div_start('bom');
 		label_cell($myrow["description"]);
         label_cell($myrow["location_name"]);
         label_cell($myrow["WorkCentreDescription"]);
-        label_cell(qty_format($myrow["quantity"], $myrow["component"]));
+        qty_cell($myrow["quantity"], false, get_qty_dec($myrow["component"]));
         label_cell($myrow["units"]);
         edit_link_cell(SID . "NewItem=$selected_parent&selected_component=" . $myrow["id"]);
         delete_link_cell(SID . "delete=" . $myrow["id"]. "&stock_id=" . $_POST['stock_id']);
@@ -245,7 +245,7 @@ if (isset($_POST['stock_id']))
 
 		$_POST['loc_code'] = $myrow["loc_code"];
 		$_POST['workcentre_added']  = $myrow["workcentre_added"];
-		$_POST['quantity'] = qty_format($myrow["quantity"], $myrow["component"], $dec);
+		$_POST['quantity'] = number_format2($myrow["quantity"], get_qty_dec($myrow["component"]));
 
 		hidden('selected_parent', $selected_parent);
 		hidden('selected_component', $selected_component);
@@ -268,10 +268,10 @@ if (isset($_POST['stock_id']))
 
 	locations_list_row(_("Location to Draw From:"), 'loc_code', null);
 	workcenter_list_row(_("Work Centre Added:"), 'workcentre_added', null);
-
+	$dec = get_qty_dec($_POST['component']);
 	if (!isset($_POST['quantity']))
 	{
-		$_POST['quantity'] = qty_format(1, $_POST['stock_id'], $dec);
+		$_POST['quantity'] = number_format2(1, $dec);
 	}
 	qty_row(_("Quantity:"), 'quantity', $_POST['quantity'], null, null, $dec);
 

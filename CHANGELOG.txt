@@ -19,6 +19,18 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+17-Jun-2008 Joe Hunt
+! More files with Quantity routines needed fix due to php4 related issue.
+$ /includes/current_user.inc
+  /manufacturing/work_order_entry.php
+  /manufacturing/inquiry/where_used_inquiry.php
+  /manufacturing/manage/bom_edit.php
+  /purchasing/po_receive_items.php
+  /purchasing/supplier_credit_grns.php
+  /purchasing/supplier_invoice_grns.php
+  /sales/customer_credit_invoice.php
+  /sales/includes/ui/sales_order_ui.inc
+
 16-Jun-2008 Joe Hunt
 ! Changed so Customer's Reference is printed on all sales documents (you can f.i. enter PO number here).
 $ /reporting/includes/header2.inc

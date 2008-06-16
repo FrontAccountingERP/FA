@@ -86,9 +86,9 @@ function display_po_receive_items()
 			qty_cell($qty_outstanding, false, $dec);
 
 			if ($qty_outstanding > 0)
-				qty_cells(null, $ln_itm->line_no, qty_format($ln_itm->receive_qty, $ln_itm->stock_id, $dec), "align=right", null, $dec);
+				qty_cells(null, $ln_itm->line_no, number_format2($ln_itm->receive_qty, $dec), "align=right", null, $dec);
 			else
-				qty_cells(null, $ln_itm->line_no, qty_format($ln_itm->receive_qty, $ln_itm->stock_id, $dec), "align=right",
+				qty_cells(null, $ln_itm->line_no, number_format2($ln_itm->receive_qty, $dec), "align=right",
 					"disabled", $dec);
 
 			amount_cell($ln_itm->price);
@@ -264,7 +264,7 @@ if (isset($_POST['Update']) || isset($_POST['ProcessGoodsReceived']))
 
 		$_POST[$line->line_no] = max($_POST[$line->line_no], 0);
 		if (!check_num($line->line_no))
-			$_POST[$line->line_no] = qty_format(0, $line->stock_id);
+			$_POST[$line->line_no] = number_format2(0, get_qty_dec($line->stock_id));
 
 		if (!isset($_POST['DefaultReceivedDate']) || $_POST['DefaultReceivedDate'] == "")
 			$_POST['DefaultReceivedDate'] = Today();

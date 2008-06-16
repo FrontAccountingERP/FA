@@ -289,6 +289,7 @@ start_table($table_style2);
 
 $existing_comments = "";
 
+$dec = 0;
 if (isset($selected_id))
 {
 	$myrow = get_work_order($selected_id);
@@ -365,7 +366,7 @@ if (get_post('type') == wo_types::advanced())
 {
     qty_row(_("Quantity Required:"), 'quantity', null, null, null, $dec);
     if ($_POST['released'])
-    	label_row(_("Quantity Manufactured:"), qty_format($_POST['units_issued'], $_POST['stock_id']));
+    	label_row(_("Quantity Manufactured:"), number_format($_POST['units_issued'], get_qty_dec($_POST['stock_id'])));
     date_row(_("Date") . ":", 'date_');
 	date_row(_("Date Required By") . ":", 'RequDate', '', null, sys_prefs::default_wo_required_by());
 }
