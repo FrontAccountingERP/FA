@@ -88,7 +88,7 @@ function display_wo_requirements($woid, $quantity, $show_qoh=false, $date=null)
         {
 
 			$qoh = 0;
-
+			$show_qoh = true;
 			// if it's a non-stock item (eg. service) don't show qoh
 			if (!has_stock_holding($myrow["mb_flag"]))
 				$show_qoh = false;
@@ -164,7 +164,7 @@ function display_wo_productions($woid)
         	label_cell(get_trans_view_str(29, $myrow["id"]));
 			label_cell($myrow['reference']);
 			label_cell(sql2date($myrow["date_"]));
-			qty_cell($myrow['quantity']);
+			qty_cell($myrow['quantity'], false, get_qty_dec($myrow['reference']));
 			end_row();
 		}//end of while
 
