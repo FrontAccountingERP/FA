@@ -57,10 +57,8 @@
 			$this->Font();
 			$this->fontSize -= 4;
 		}
-		if ($doctype == 8) // PO
+		if ($doctype == 8 || $doctype == 9) // PO or SO
 			$this->Text($mcol, $myrow['order_no'], $mcol + 90);
-		else if ($doctype == 9) // SO
-			$this->Text($mcol, $myrow['order_no'] ." ".$myrow['customer_ref'], $mcol + 90);
 		else if (isset($myrow['trans_no']) && isset($myrow['reference'])) // INV/CRE/STA
 		{
 			if ($print_invoice_no == 1)
@@ -156,7 +154,11 @@
 		$this->Text($mcol, $doc_Our_Order_No . ":", $mcol2);
 		if (isset($myrow['order_']))
 			$this->Text($mcol2, $myrow['order_']);
-
+		// 2008-06-16. Added customer's reference
+		$this->NewLine();
+		$this->Text($ccol, $doc_Customers_Ref, $ccol2);
+		if ($sales_order != NULL)
+			$this->Text($ccol2, $sales_order["customer_ref"], $mcol);
 		$locale = $path_to_root . "lang/" . $_SESSION['language']->code . "/locale.inc";
 		if (file_exists($locale))
 		{

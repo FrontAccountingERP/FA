@@ -15,6 +15,7 @@ if (isset($header2type))
 	$doc_Your_VAT_no = "Your VAT No.";
 	$doc_Our_VAT_no = "Our VAT No.";
 	$doc_Payment_Terms = "Payment Terms";
+	$doc_Customers_Ref = "Customers Reference:";
 	$doc_Our_Order_No = "Our Order No";
 	$doc_Domicile = "Domicile";
 	if($doctype == 13) {

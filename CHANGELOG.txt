@@ -20,6 +20,12 @@ Legend:
 $ -> Affected files
 
 16-Jun-2008 Joe Hunt
+! Changed so Customer's Reference is printed on all sales documents (you can f.i. enter PO number here).
+$ /reporting/includes/header2.inc
+  /reporting/doctext.inc
+  /reporting/doctext2.inc
+  
+16-Jun-2008 Joe Hunt
 ! Changed the Quantity routines to use the Item Units decimals if any. A lot of files.
 $ /includes/current_user.inc
   /includes/ui/ui_input.inc
