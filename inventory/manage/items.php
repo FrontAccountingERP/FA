@@ -44,7 +44,7 @@ if (isset($_FILES['pic']) && $_FILES['pic']['name'] != '')
 	{
 		mkdir($filename);
 	}	
-	$filename .= "$stock_id.jpg";
+	$filename .= "/$stock_id.jpg";
 	
 	 //But check for the worst 
 	if (strtoupper(substr(trim($_FILES['pic']['name']), strlen($_FILES['pic']['name']) - 3)) != 'JPG')

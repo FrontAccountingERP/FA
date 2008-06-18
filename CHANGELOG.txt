@@ -38,6 +38,8 @@ $ /includes/ui/ui_lists.inc
 $ /js/inserts.js
 # Fixed addAssign() js handler for nonstandard attributes
 $ /js/utils.js
+# Fixed bug in stock item image upload
+$ /inventory/manage/items.php
 
 17-Jun-2008 Joe Hunt
 ! More files with Quantity routines needed fix due to php4 related issue.
