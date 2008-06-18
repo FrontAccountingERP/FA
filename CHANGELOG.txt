@@ -19,6 +19,26 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+18-Jun-2008 Janusz Dobrowolski
++ Added ajax improvements
+$ /sales/credit_note_entry.php
+  /sales/customer_payments.php
+  /sales/sales_order_entry.php
+  /sales/includes/ui/sales_credit_ui.inc
+  /sales/includes/ui/sales_order_ui.inc
+  /sales/inquiry/customer_allocation_inquiry.php
+  /sales/inquiry/customer_inquiry.php
++ Added optional trigger parameter to div_start()
+$ /includes/ui/ui_controls.inc
++ Added dec attribute ajax update for amount fields 
+$ /includes/ui/ui_input.inc
++ Ajaxified stock item types and credit types lists
+$ /includes/ui/ui_lists.inc
+# Fixed onblur for amount fields, extended onchange event handling for selects
+$ /js/inserts.js
+# Fixed addAssign() js handler for nonstandard attributes
+$ /js/utils.js
+
 17-Jun-2008 Joe Hunt
 ! More files with Quantity routines needed fix due to php4 related issue.
 $ /includes/current_user.inc
@@ -95,7 +115,7 @@ $ /sales/inquiry/sales_deliveries_view.php
 ! Added text selection after focus.
 $ /js/inserts.js
   /js/utils.js
-+ Added submit_on_change option to ref input functions
++ Added submit_on_change option to ref input functions, fixed data picker
 $ /includes/ui/ui_input.inc
 # Fixed bug in non-js mode for combos type 0 (stock_items_lists).
 $ /includes/ui/ui_lists.inc

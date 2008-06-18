@@ -192,11 +192,11 @@ function br($num=1)
 
 $ajax_divs = array();
 
-function div_start($id='')
+function div_start($id='', $trigger=null)
 {
     global $ajax_divs;
 
-    array_push($ajax_divs, $id);
+    array_push($ajax_divs, array($id, $trigger===null ? $id : $trigger));
     echo "<div ". ($id !='' ? "id='$id'" : '').">";
     ob_start();
 }
@@ -207,8 +207,8 @@ function div_end()
 
     if (count($ajax_divs))
     {
-		$id = array_pop($ajax_divs);
-		$Ajax->addUpdate($id, $id, ob_get_flush());
+		$div = array_pop($ajax_divs);
+		$Ajax->addUpdate($div[1], $div[0], ob_get_flush());
 		echo "</div>";
     }
 }

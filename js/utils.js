@@ -26,7 +26,6 @@
 			values[trigger] = 1;
 		// this is to avoid caching problems
 		values['_random'] = Math.random()*1234567;
-
         JsHttpRequest.query(
             'POST '+url, // backend
 	    	values,
@@ -45,7 +44,7 @@
 			// seek element by id if there is no elemnt with given name
 			  objElement = document.getElementsByName(id)[0] || document.getElementById(id);
     		  if(cmd=='as') {
-				  eval("objElement."+property+"=data;");
+				  eval("objElement.setAttribute('"+property+"',"+data+");");
 			  } else if(cmd=='up') {
 //				if(!objElement) debug('No element "'+id+'"');
 			    if (objElement.tagName == 'INPUT' || objElement.tagName == 'TEXTAREA')

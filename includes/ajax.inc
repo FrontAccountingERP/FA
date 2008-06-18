@@ -118,7 +118,8 @@ class Ajax extends JsHttpRequest {
 			  break;
 		  }
 		}
-//		display_error(htmlentities(print_r($this->aCommands, true)));
+//		display_error('Activate:'.htmlentities(print_r($this->triggers, true)));
+//		display_error('Commands :'.htmlentities(print_r($this->aCommands, true)));
 	    $GLOBALS['_RESULT'] = $this->aCommands;
 //	    exit();
 	}

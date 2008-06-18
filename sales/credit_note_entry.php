@@ -57,7 +57,9 @@ if (isset($_GET['AddedID'])) {
 //--------------------------------------------------------------------------------
 
 function line_start_focus() {
-  set_focus(get_company_pref('no_supplier_list') ? 'stock_id_edit' : 'StockID2');
+  global $Ajax;
+  $Ajax->activate('items_table');
+  set_focus('_stock_id_edit');
 }
 
 //-----------------------------------------------------------------------------
@@ -93,6 +95,7 @@ function handle_new_credit($trans_no)
 	processing_start();
 	$_SESSION['Items'] = new Cart(11,$trans_no);
 	copy_from_cn();
+    line_start_focus();
 }
 
 //-----------------------------------------------------------------------------
@@ -135,6 +138,7 @@ if (isset($_POST['ProcessCredit']) && can_process()) {
 		display_note(_("For credit notes created to write off the stock, a general ledger account is required to be selected."), 1, 0);
 		display_note(_("Please select an account to write the cost of the stock off to, then click on Process again."), 1, 0);
 		exit;
+		
 	}
 	if (!isset($_POST['WriteOffGLCode'])) {
 		$_POST['WriteOffGLCode'] = 0;

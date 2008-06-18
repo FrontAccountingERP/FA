@@ -99,7 +99,10 @@ if (isset($_POST['AddPaymentItem'])) {
 		unset($_POST['AddPaymentItem']);
 	}
 }
-
+if (isset($_POST['_customer_id_button'])) {
+//	unset($_POST['branch_id']);
+	$Ajax->activate('branch_id');
+}
 //----------------------------------------------------------------------------------------------
 
 if (isset($_POST['AddPaymentItem'])) {
@@ -148,7 +151,6 @@ function display_item_form()
 		}
 	}
 	customer_list_row(_("From Customer:"), 'customer_id', null, false, true);
-
 	if (db_customer_has_branches($_POST['customer_id'])) {
 		customer_branches_list_row(_("Branch:"), $_POST['customer_id'], 'BranchID', null, false, true, true);
 	} else {
@@ -202,7 +204,7 @@ function display_item_form()
 
 		echo"<br>";
 
-		submit_center('AddPaymentItem', _("Add Payment"));
+		submit_center('AddPaymentItem', _("Add Payment"), true, '', true);
 	}
 
 	echo "<br>";

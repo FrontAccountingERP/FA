@@ -74,15 +74,15 @@ function _set_combo_input(e) {
 				}
 			  }
 			}
-		  };
-    	  e.onkeydown = function(ev) { 
+		};
+    	e.onkeydown = function(ev) { 
 	  		ev = ev||window.event;
 	  		key = ev.keyCode||ev.which;
 	  		if(key == 13) {
 			  this.blur();
 	  		  return false;
 	  		}
-		  }
+		}
 }
 
 function _update_box(s) {
@@ -99,9 +99,15 @@ function _update_box(s) {
 }
 
 function _set_combo_select(e) {
+		// When combo position is changed via js (eg from searchbox)
+		// no onchange event is generated. To ensure proper change 
+		// signaling we must track selectedIndex in onblur handler.
+		e.setAttribute('_last', e.selectedIndex);
 		e.onblur = function() {
 			if(this.className=='combo')
 			    _update_box(this);
+			if (this.selectedIndex != this.getAttribute('_last'))
+				this.onchange();
 		}
 		e.onchange = function() {
 			var s = this;
@@ -155,14 +161,14 @@ var inserts = {
 	'input.ajaxsubmit,input.editbutton,input.navibutton': 
 	function(e) {
 	    e.onclick = function() {
-		JsHttpRequest.request(this);
-		return false;
+			JsHttpRequest.request(this);
+			return false;
 	    }
 	},
     '.amount': function(e) {
 		if(e.onblur==undefined) {
-		  var dec = e.getAttribute("dec");
   		  e.onblur = function() {
+			var dec = this.getAttribute("dec");
 			price_format(this.name, get_amount(this.name), dec);
 		  };
 		}

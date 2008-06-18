@@ -38,7 +38,7 @@ cust_allocations_list_cells(_("Type:"), 'filterType', null);
 
 check_cells(" " . _("show settled:"), 'showSettled', null);
 
-submit_cells('Refresh Inquiry', _("Search"));
+submit_cells('RefreshInquiry', _("Search"),'',_('Refresh Inquiry'), true);
 
 set_global_customer($_POST['customer_id']);
 
@@ -116,16 +116,19 @@ function get_transactions()
 
 $result = get_transactions();
 
+//------------------------------------------------------------------------------------------------
+if(get_post('RefreshInquiry')) 
+{
+	$Ajax->activate('doc_tbl');
+}
+//------------------------------------------------------------------------------------------------
+div_start('doc_tbl');
 if (db_num_rows($result) == 0)
 {
 	display_note(_("The selected customer has no transactions for the given dates."), 1, 1);
-	end_page();
-	exit;
-}
+} else {
 
-//------------------------------------------------------------------------------------------------
-
-start_table("$table_style width='80%'");
+	start_table("$table_style width='80%'");
 
 if ($_POST['customer_id'] == reserved_words::get_all())
 	$th = array(_("Type"), _("Number"), _("Reference"), _("Order"), _("Date"), _("Due Date"),
@@ -214,11 +217,11 @@ while ($myrow = db_fetch($result))
 //end of page full new headings if
 }
 //end of while loop
-
 end_table(1);
 if ($over_due)
 	display_note(_("Marked items are overdue."), 0, 1, "class='overduefg'");
-
+}
+div_end();
 end_page();
 
 ?>

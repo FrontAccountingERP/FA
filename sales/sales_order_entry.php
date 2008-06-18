@@ -16,7 +16,6 @@ include_once($path_to_root . "/sales/includes/ui/sales_order_ui.inc");
 include_once($path_to_root . "/sales/includes/sales_db.inc");
 include_once($path_to_root . "/sales/includes/db/sales_types_db.inc");
 include_once($path_to_root . "/reporting/includes/reporting.inc");
-
 $js = '';
 
 if ($use_popup_windows) {
@@ -189,7 +188,6 @@ function line_start_focus() {
   global 	$Ajax;
 
   $Ajax->activate('items_table');
-  $Ajax->addFocus(true, '_stock_id_edit');
   set_focus('_stock_id_edit');
 }
 //--------------------------------------------------------------------------------
@@ -417,8 +415,6 @@ if (isset($_POST['CancelItemChanges']) || isset($_POST['UpdateItem'])) {
 	line_start_focus();
 }
 
-if (isset($_POST['_customer_id_update']))
-    set_focus('branch_id');
 //--------------------------------------------------------------------------------
 check_db_has_stock_items(_("There are no inventory items defined in the system."));
 

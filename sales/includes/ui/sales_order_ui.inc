@@ -331,6 +331,7 @@ function sales_order_item_controls(&$order, &$rowcounter, $line_no=-1)
 		if(isset($_POST['_stock_id_update'])) {
 			    $Ajax->activate('price');
 			    $Ajax->activate('units');
+			    $Ajax->activate('qty');
 			    $Ajax->activate('line_total');
 		}
 
@@ -371,7 +372,6 @@ function sales_order_item_controls(&$order, &$rowcounter, $line_no=-1)
 				_('Cancel changes'));
 		hidden('LineNo', $line_no);
 		set_focus('qty');
-		$Ajax->addFocus(true, 'qty');
 	}
 	else
 	{

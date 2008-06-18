@@ -41,7 +41,7 @@ if (!isset($_POST['filterType']))
 
 cust_allocations_list_cells(null, 'filterType', $_POST['filterType'], true);
 
-submit_cells('Refresh Inquiry', _("Search"));
+submit_cells('RefreshInquiry', _("Search"),'',_('Refresh Inquiry'), true);
 end_row();
 end_table();
 
@@ -146,44 +146,51 @@ function get_transactions()
 }
 
 //------------------------------------------------------------------------------------------------
+
+div_start('totals_tbl');
 if ($_POST['customer_id'] != "" && $_POST['customer_id'] != reserved_words::get_all())
 {
 	$customer_record = get_customer_details($_POST['customer_id']);
     display_customer_summary($customer_record);
     echo "<br>";
 }
-
+div_end();
 //------------------------------------------------------------------------------------------------
 
 $result = get_transactions();
 
+//------------------------------------------------------------------------------------------------
+if(get_post('RefreshInquiry')) 
+{
+	$Ajax->activate('trans_tbl');
+	$Ajax->activate('totals_tbl');
+}
+//------------------------------------------------------------------------------------------------
+print_hidden_script(10);
+
+div_start('trans_tbl');
 if (db_num_rows($result) == 0)
 {
 	display_note(_("The selected customer has no transactions for the given dates."), 0, 2);
-	end_page();
-	exit;
-}
+} else {
 
-//------------------------------------------------------------------------------------------------
-
-print_hidden_script(10);
-start_table("$table_style width='80%'");
+	start_table("$table_style width='80%'");
 
 	$th = array(_("Type"), _("#"), _("Order"), _("Reference"), _("Date"), _("Due Date"),
 		_("Customer"), _("Branch"), _("Currency"), _("Debit"), _("Credit"), "", "","","");
 
-if ($_POST['customer_id'] != reserved_words::get_all()) {
-  unset($th[6], $th[8]);
-}
+	if ($_POST['customer_id'] != reserved_words::get_all()) {
+	  unset($th[6], $th[8]);
+	}
 
-table_header($th);
+	table_header($th);
 
 
-$j = 1;
-$k = 0; //row colour counter
-$over_due = false;
-while ($myrow = db_fetch($result))
-{
+	$j = 1;
+	$k = 0; //row colour counter
+	$over_due = false;
+	while ($myrow = db_fetch($result))
+	{
 
 	if ($myrow['OverDue'] == 1)
 	{
@@ -269,19 +276,20 @@ while ($myrow = db_fetch($result))
 		label_cell('');
 	end_row();
 
-	$j++;
-	if ($j == 12)
-	{
-		$j = 1;
-		table_header($th);
-	} //end of page full new headings if
-} //end of transaction while loop
+		$j++;
+		if ($j == 12)
+		{
+			$j = 1;
+			table_header($th);
+		} //end of page full new headings if
+	} //end of transaction while loop
 
-end_table(1);
+	end_table(1);
 
-if ($over_due)
-	display_note(_("Marked items are overdue."), 0, 1, "class='overduefg'");
-
+	if ($over_due)
+		display_note(_("Marked items are overdue."), 0, 1, "class='overduefg'");
+}
+div_end();
 end_page();
 
 ?>

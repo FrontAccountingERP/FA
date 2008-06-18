@@ -440,6 +440,7 @@ function amount_cells_ex($label, $name, $size, $max=null, $init=null, $params=nu
 
 	echo "</td>\n";
 	$Ajax->addUpdate($name, $name, $_POST[$name]);
+	$Ajax->addAssign($name, $name, 'dec', $dec);
 }
 
 

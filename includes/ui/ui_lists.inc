@@ -94,9 +94,11 @@ $opts = array(		// default options
 
 	$rel = "rel='$search_box'"; // set relation to list
    if ($opts['search_submit']) {
-
 	if (isset($_POST[$search_submit])) {
-		$Ajax->activate($name);
+		if (!$opts['async'])
+			$Ajax->activate('_page_body');
+		else
+			$Ajax->activate($name);
 	}
 	if ($txt == '') {
 		if ($spec_option === false)
@@ -699,7 +701,8 @@ function stock_item_types_list_row($label, $name, $selected_id, $enabled=true)
 		echo "<td>$label</td>\n";
 	echo "<td>";
 	if ($enabled)
-		$sel = "<select name='$name' onchange='this.form.submit();'>\n";
+		$sel = "<select name='$name' onchange='JsHttpRequest.request(\"_{$name}_update\", this.form);'>\n";
+		
 	else
 		$sel =  "<select disabled name='$name'>\n";
 	if ($selected_id == null)
@@ -1794,7 +1797,7 @@ function credit_type_list_cells($label, $name, $selected, $submit_on_change=fals
 		label_cell($label);
 	echo "<td><select name='$name'";
 	if ($submit_on_change)
-		echo " onchange='this.form.submit();'>";	// FIX ajax
+		echo " onchange='JsHttpRequest.request(\"_{$name}_update\", this.form);'>";
 	else
 		echo ">";
 	echo "<option " . ($selected == 'Return'?" selected ":"") . " value='Return'>" . _("Items Returned to Inventory Location"). "</option>\n";
