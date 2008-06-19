@@ -300,7 +300,7 @@ function display_credit_items()
 
 	start_row();
 	label_cell(_("Credit Shipping Cost"), "colspan=7 align=right");
-    amount_cells(null, "ChargeFreightCost", $_POST['ChargeFreightCost'], 6, 6);
+	amount_cells_ex(null, "ChargeFreightCost", 6, 8, $_POST['ChargeFreightCost']);
 	end_row();
 
     $inv_items_total = $_SESSION['Items']->get_items_total_dispatch();
