@@ -430,8 +430,10 @@ textarea_row(_("Memo"), 'Comments', null, 50, 4);
 
 end_table(1);
 
-submit_center_first('Update', _("Update"));
-submit_center_last('process_invoice', _("Process Invoice"));
+submit_center_first('Update', _("Update"),
+  _('Refresh document page'), true);
+submit_center_last('process_invoice', _("Process Invoice"),
+  _('Check entered data and save document'), true);
 
 end_form();
 

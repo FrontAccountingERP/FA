@@ -10,16 +10,7 @@ include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/banking.inc");
 include_once($path_to_root . "/includes/ui.inc");
 
-if (isset($_GET['New']) || !isset($_POST['customer_id']) || $_POST['customer_id'] == "") 
-{
-	$_POST['New'] = "1";
-}
-
-if (isset($_POST['SelectCustomer'])) 
-{
-	unset($_POST['New']);
-}
-
+$new_customer = (!isset($_POST['customer_id']) || $_POST['customer_id'] == ""); 
 //--------------------------------------------------------------------------------------------
 
 function can_process()
@@ -55,11 +46,12 @@ function can_process()
 
 function handle_submit()
 {
-	global $path_to_root;
+	global $path_to_root, $new_customer, $Ajax;
+
 	if (!can_process())
 		return;
 		
-	if (!isset($_POST['New'])) 
+	if ($new_customer == false) 
 	{
 
 		$sql = "UPDATE ".TB_PREF."debtors_master SET name=" . db_escape($_POST['CustName']) . ", 
@@ -79,7 +71,6 @@ function handle_submit()
 
 		db_query($sql,"The customer could not be updated");
 		display_notification(_("Customer has been updated."));
-		clear_fields();			
 
 	} 
 	else 
@@ -98,15 +89,13 @@ function handle_submit()
 
 		db_query($sql,"The customer could not be added");
 
-		$new_customer_id = db_insert_id();
-		
+		$_POST['customer_id'] = db_insert_id();
+		$new_customer = false;
 		commit_transaction();			
 
 		display_notification(_("A new customer has been added."));
 
-		hyperlink_params($path_to_root . "/sales/manage/customer_branches.php", _("Add branches for this customer"), "debtor_no=$new_customer_id");
-
-		clear_fields();
+		$Ajax->activate('_page_body');
 	}
 }
 
@@ -165,28 +154,15 @@ if (isset($_POST['delete']))
 	{ 	//ie not cancelled the delete as a result of above tests
 		$sql = "DELETE FROM ".TB_PREF."debtors_master WHERE debtor_no='" . $_POST['customer_id'] . "'";
 		db_query($sql,"cannot delete customer");
-		
-		meta_forward($_SERVER['PHP_SELF']); 
+
+		display_notification(_("Selected customer has been deleted."));
+		unset($_POST['customer_id']);
+		$new_customer = true;
+		$Ajax->activate('_page_body');
+//		meta_forward($_SERVER['PHP_SELF']); 
 	} //end if Delete Customer
 }
 
-function clear_fields() 
-{
-	unset($_POST['CustName']);
-	unset($_POST['address']);
-	unset($_POST['tax_id']);
-	unset($_POST['email']);
-	unset($_POST['dimension_id']);
-	unset($_POST['dimension2_id']);
-	unset($_POST['credit_status']);
-	unset($_POST['payment_terms']);
-	unset($_POST['discount']);
-	unset($_POST['pymt_discount']);
-	unset($_POST['credit_limit']);
-	unset($_POST['sales_type']);
-	unset($_POST['customer_id']);
-	$_POST['New'] = 1;
-}
 
 check_db_has_sales_types(_("There are no sales types defined. Please define at least one sales type before adding a customer."));
  
@@ -195,10 +171,8 @@ start_form();
 if (db_has_customers()) 
 {
 	start_table("class = 'tablestyle_noborder'");
-	start_row();
-	customer_list_cells(_("Select a customer: "), 'customer_id', null);
-	submit_cells('SelectCustomer', _("Edit Customer"));
-	end_row();
+	customer_list_row(_("Select a customer: "), 'customer_id', null,
+	  _('New customer'), true);
 	end_table();
 } 
 else 
@@ -206,23 +180,19 @@ else
 	hidden('customer_id', $_POST['customer_id']);
 }
 
-hyperlink_params($_SERVER['PHP_SELF'], _("Enter a new customer"), "New=1");
-echo "<br>";     
-
 start_table($table_style2, 7, 6);
 echo "<tr valign=top><td>"; // outer table	
 
+
 start_table("class='tablestyle_noborder'");	
 
-if (isset($_POST['New'])) 
+if ($new_customer) 
 {
-
-	hidden('New', 'Yes');
-
 	$_POST['CustName'] = $_POST['address'] = $_POST['tax_id']  = '';
 	$_POST['dimension_id'] = 0;
 	$_POST['dimension2_id'] = 0;
 	$_POST['sales_type'] = -1;
+	$_POST['email'] = '';
 	$_POST['curr_code']  = get_company_currency();
 	$_POST['credit_status']  = -1;
 	$_POST['payment_terms']  = '';
@@ -260,7 +230,7 @@ text_row(_("GSTNo:"), 'tax_id', null, 40, 40);
 
 
 // Sherifoz 23.09.03 currency can't be changed if editing
-if (isset($_POST['New'])) 
+if ($new_customer) 
 {
 	currencies_list_row(_("Customer's Currency:"), 'curr_code', $_POST['curr_code']);
 } 
@@ -292,19 +262,25 @@ amount_row(_("Credit Limit:"), 'credit_limit', $_POST['credit_limit']);
 
 payment_terms_list_row(_("Payment Terms:"), 'payment_terms', $_POST['payment_terms']);
 credit_status_list_row(_("Credit Status:"), 'credit_status', $_POST['credit_status']); 
-
+if (!$new_customer)  {
+start_row();
+  hyperlink_params_td($path_to_root . "/sales/manage/customer_branches.php", _("Edit customer branches"), "debtor_no=".$_POST['customer_id']);
+end_row();
+}
 end_table();
 
 end_table(1); // outer table	
 
-if (isset($_POST['New'])) 
+if ($new_customer)
 {
-	submit_center('submit', _("Add New Customer"));
+	submit_center('submit', _("Add New Customer"), true, '', true);
 } 
 else 
 {
-	submit_center_first('submit', _("Update Customer"));
-	submit_center_last('delete', _("Delete Customer"));
+	submit_center_first('submit', _("Update Customer"), 
+	  _('Update customer data'), true);
+	submit_center_last('delete', _("Delete Customer"), 
+	  _('Delete user data if have been never used'), true);
 }
 
 end_form();
