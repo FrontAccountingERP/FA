@@ -183,7 +183,7 @@ function check($label, $name, $value, $submit_on_change=false, $title=false)
 		echo "<input"
 		    .($value == 1 ? ' checked':'')
 		    ." type='checkbox' name='$name' value='1'"
-		    .($submit_on_change ? " onclick='this.form.submit();'" : '')
+		    .($submit_on_change ? " onclick='JsHttpRequest.request(\"_{$name}_update\", this.form);'" : '')
 		    .($title ? " title='$title'" : '')
 		    ." >\n";
 	$Ajax->addUpdate($name, $name, $value);
