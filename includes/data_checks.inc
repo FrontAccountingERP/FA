@@ -129,7 +129,7 @@ function check_db_has_bank_trans_types($msg)
 
 function db_customer_has_branches($customer_id)
 {
-	return check_empty_result("SELECT COUNT(*) FROM ".TB_PREF."cust_branch WHERE debtor_no=$customer_id");
+	return check_empty_result("SELECT COUNT(*) FROM ".TB_PREF."cust_branch WHERE debtor_no='$customer_id'");
 }
 
 function db_has_customer_branches()
