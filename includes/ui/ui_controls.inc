@@ -100,7 +100,7 @@ function hyperlink_params($target, $label, $params, $center=true)
 function hyperlink_params_td($target, $label, $params)
 {
 	echo "<td>";
-	hyperlink_params($target, $label, $params);
+	hyperlink_params($target, $label, $params, false);
 	echo "</td>\n";
 }
 
