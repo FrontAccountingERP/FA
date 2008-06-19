@@ -20,6 +20,10 @@ Legend:
 $ -> Affected files
 
 19-Jun-2008 Joe Hunt
+! changed so the due date is updated when changing customer in direct invoice.
+$ /sales/includes/ui/sales_order_ui.inc
+
+19-Jun-2008 Joe Hunt
 # Minor layout bug at Credit Shipping Costs in customer_credit_invoice.php
 $ /sales/customer_credit_invoice.php
 

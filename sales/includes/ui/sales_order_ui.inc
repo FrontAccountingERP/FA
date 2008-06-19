@@ -62,6 +62,8 @@ function get_customer_details_to_order(&$order, $customer_id, $branch_id)
 		$order->set_location($myrow["default_location"], $myrow["location_name"]);
 		$order->set_delivery($myrow["default_ship_via"], $myrow["br_name"],
 		$address);
+		if ($order->trans_type == 10)
+			$order->due_date = get_invoice_duedate($customer_id, $order->document_date);
 	}
 
 	return $ret_error;
@@ -203,6 +205,11 @@ function display_order_header(&$order, $editable, $date_text, $display_tax_group
 				$_POST['deliver_to'] = $order->deliver_to;
 				$_POST['delivery_address'] = $order->delivery_address;
 				$_POST['phone'] = $order->phone;
+				if ($order->trans_type == 10)
+				{
+					$_POST['delivery_date'] = $order->due_date;
+					$Ajax->activate('delivery_date');
+				}
 				$Ajax->activate('Location');
 				$Ajax->activate('deliver_to');
 				$Ajax->activate('phone');
