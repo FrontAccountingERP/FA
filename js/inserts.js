@@ -111,7 +111,7 @@ function _set_combo_select(e) {
 		}
 		e.onchange = function() {
 			var s = this;
-			
+			this.setAttribute('_last', this.selectedIndex);			
 			if(s.className=='combo')
 			    _update_box(s);
 			if(s.selectedIndex>=0) {
