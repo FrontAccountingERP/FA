@@ -101,10 +101,10 @@ $opts = array(		// default options
 			$Ajax->activate($name);
 	}
 	if ($txt == '') {
-		if ($spec_option === false)
-		$limit = ' LIMIT 1';
+		if ($spec_option === false && $selected_id==null)
+		  $limit = ' LIMIT 1';
 		else
-		$opts['where'][] = $valfield . "='". get_post($name, $spec_id)."'";
+		  $opts['where'][] = $valfield . "='". get_post($name, $spec_id)."'";
 	}
 	else
 		if ($txt != '*') {
