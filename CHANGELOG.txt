@@ -19,6 +19,26 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+19-Jun-2008 Janusz Dobrowolski
+# Fixing database error in branch exist check on empty customer_id
+$ /includes/data_checks.inc
+# Layout fix for hyperlink_params_td()
+$ /includes/ui/ui_controls.inc
+  /includes/ui/ui_input.inc
+  /includes/ui/ui_lists.inc
+  /js/inserts.js
+  /lang/installed_languages.inc
+  /lang/new_language_template/LC_MESSAGES/empty.po
+  /modules/installed_modules.php
+  /purchasing/allocations/supplier_allocation_main.php
+  /reporting/fonts/iqraa.afm
+  /reporting/includes/class.pdf.inc
+  /sales/customer_delivery.php
+  /sales/customer_invoice.php
+  /sales/allocations/customer_allocation_main.php
+  /sales/manage/customer_branches.php
+  /sales/manage/customers.php
+
 19-Jun-2008 Joe Hunt
 ! changed so the due date is updated when changing customer in direct invoice.
 $ /sales/includes/ui/sales_order_ui.inc
