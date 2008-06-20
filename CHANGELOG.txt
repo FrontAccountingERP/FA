@@ -19,6 +19,11 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+21-Jun-2008 Joe Hunt
++ Added upload functionality to company logo. Better names on lists search.
+$ /admin/company_preferences.php
+! Better layout on company logo print-out
+$ /reporting/includes/header2.inc
 
 ---------------------------------------Release Candidate 2-------------------------------
 20-Jun-2008 Joe Hunt

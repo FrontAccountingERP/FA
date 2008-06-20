@@ -47,7 +47,7 @@
 		if ($this->company['coy_logo'] != '')
 		{
 			$logo = $comp_path .'/'. user_company() . "/images/" . $this->company['coy_logo'];
-			$this->AddImage($logo, $ccol, $iline1 + 5, 250, 40);
+			$this->AddImage($logo, $ccol, $iline1 + 5, 0, 40);
 		}
 		else
 		{

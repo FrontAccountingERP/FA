@@ -24,6 +24,53 @@ if (isset($_POST['submit']) && $_POST['submit'] != "")
 		display_error(_("The company name must be entered."));
 		set_focus('coy_name');
 	}
+	$user_comp = user_company();
+	if (isset($_FILES['pic']) && $_FILES['pic']['name'] != '')
+	{
+		$result = $_FILES['pic']['error'];
+		$filename = $comp_path . "/$user_comp/images";
+		if (!file_exists($filename))
+		{
+			mkdir($filename);
+		}
+		$filename .= "/".$_FILES['pic']['name'];
+
+		 //But check for the worst
+		if (strtoupper(substr(trim($_FILES['pic']['name']), strlen($_FILES['pic']['name']) - 3)) != 'JPG')
+		{
+			display_notification(_('Only jpg files are supported - a file extension of .jpg is expected'));
+			$input_error = 1;
+		}
+		elseif ( $_FILES['pic']['size'] > ($max_image_size * 1024))
+		{ //File Size Check
+			display_notification(_('The file size is over the maximum allowed. The maximum size allowed in KB is') . ' ' . $max_image_size);
+			$input_error = 1;
+		}
+		elseif ( $_FILES['pic']['type'] == "text/plain" )
+		{  //File type Check
+			display_notification( _('Only graphics files can be uploaded'));
+			$input_error = 1;
+		}
+		elseif (file_exists($filename))
+		{
+			display_notification(_('Attempting to overwrite an existing item image'));
+			$result = unlink($filename);
+			if (!$result)
+			{
+				display_error(_('The existing image could not be removed'));
+				$input_error = 1;
+			}
+		}
+
+		if ($input_error != 1)
+		{
+			$result  =  move_uploaded_file($_FILES['pic']['tmp_name'], $filename);
+			$_POST['coy_logo'] = $_FILES['pic']['name'];
+			$message = ($result)?_('File url') ."<a href='$filename'>$filename</a>" : "Somthing is wrong with uploading a file.";
+		}
+	 /* EOF Add Image upload for New Item  - by Ori */
+	}
+
 	if ($input_error != 1)
 	{
 		update_company_setup($_POST['coy_name'], $_POST['coy_no'], $_POST['gst_no'], $_POST['tax_prd'], $_POST['tax_last'],
@@ -41,7 +88,7 @@ if (isset($_POST['submit']) && $_POST['submit'] != "")
 //---------------------------------------------------------------------------------------------
 
 
-start_form();
+start_form(true);
 
 $myrow = get_company_prefs();
 
@@ -87,16 +134,18 @@ textarea_row(_("Address:"), 'postal_address', $_POST['postal_address'], 35, 5);
 text_row_ex(_("Telephone Number:"), 'phone', 25, 55);
 text_row_ex(_("Facsimile Number:"), 'fax', 25);
 text_row_ex(_("Email Address:"), 'email', 25, 55);
-text_row_ex(_("Company Logo:"), 'coy_logo', 25, 55);
+label_row(_("Company Logo:"), $_POST['coy_logo']);
+label_row(_("New")." "._("Company Logo (.jpg)") . ":", "<input type='file' id='pic' name='pic'>");
+
 text_row_ex(_("Domicile:"), 'domicile', 25, 55);
 
 number_list_row(_("Use Dimensions:"), 'use_dimension', null, 0, 2);
 sales_types_list_row(_("Base for auto price calculations:"), 'base_sales', $_POST['base_sales'], false,
     _('No base price list') );
 
-check_row(_("No Item List"), 'no_item_list', $_POST['no_item_list']);
-check_row(_("No Customer List"), 'no_customer_list', $_POST['no_customer_list']);
-check_row(_("No Supplier List"), 'no_supplier_list', $_POST['no_supplier_list']);
+check_row(_("Search Item List"), 'no_item_list', $_POST['no_item_list']);
+check_row(_("Search Customer List"), 'no_customer_list', $_POST['no_customer_list']);
+check_row(_("Search Supplier List"), 'no_supplier_list', $_POST['no_supplier_list']);
 
 start_row();
 end_row();
@@ -118,7 +167,7 @@ text_cells(null, 'custom3_value', $_POST['custom3_value'], 30, 30);
 end_row();
 
 end_table(1);
-
+hidden('coy_logo', $_POST['coy_logo']);
 submit_center('submit', _("Update"));
 
 end_form(2);
