@@ -11,7 +11,8 @@
 
 	function output_html($text)
 	{
-  	  global $before_box;
+  	  global $before_box, $Ajax;
+	  $Ajax->run();
   	  return  in_ajax() ? fmt_errors() : ($before_box.fmt_errors().$text);
 	}
 

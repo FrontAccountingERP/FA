@@ -101,8 +101,7 @@ function frindly_db_error($db_error)
 	
 	if ($db_error == $db_duplicate_error_code) 
 	{
-		display_error(_("The entered information is a duplicate. Please go back and enter different values.")
-		. "<br><a href='javascript:history.go(-1)'>" . _("Back") . "</a>", true);
+		display_error(_("The entered information is a duplicate. Please go back and enter different values."));
 		return true;
 	}
 	

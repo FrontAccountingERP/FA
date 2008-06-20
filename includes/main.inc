@@ -38,7 +38,6 @@
 		div_end();	// _page_body section
     	include($path_to_root . "/includes/page/footer.inc");
 
-	$Ajax->run();
     	page_footer($no_menu, $is_index);
     }
 
