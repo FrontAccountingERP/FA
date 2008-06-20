@@ -136,7 +136,7 @@ $opts = array(		// default options
 			$descr = $opts['format']==null ?  $contact_row[1] :
 			call_user_func($opts['format'], $contact_row);
 			$sel = '';
-			if ($selected_id === $value) {
+			if ((string)($selected_id) === $value) {
 				$sel = 'selected';
 				$found = $value;
 			}
