@@ -19,6 +19,16 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+20-Jun-2008 Janusz Dobrowolski
+# Proper error handling even after exit() call.
+$ /includes/errors.inc
+  /includes/main.inc
+  /includes/session.inc
+# Fixed initial combo selection.
+  /includes/ui/ui_lists.inc
+# Layout fixes to customer edition.
+  /sales/manage/customers.php
+
 19-Jun-2008 Janusz Dobrowolski
 + Added ajax improvements
 $ /purchasing/allocations/supplier_allocation_main.php
