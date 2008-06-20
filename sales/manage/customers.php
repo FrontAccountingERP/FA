@@ -159,7 +159,6 @@ if (isset($_POST['delete']))
 		unset($_POST['customer_id']);
 		$new_customer = true;
 		$Ajax->activate('_page_body');
-//		meta_forward($_SERVER['PHP_SELF']); 
 	} //end if Delete Customer
 }
 
@@ -264,7 +263,8 @@ payment_terms_list_row(_("Payment Terms:"), 'payment_terms', $_POST['payment_ter
 credit_status_list_row(_("Credit Status:"), 'credit_status', $_POST['credit_status']); 
 if (!$new_customer)  {
 start_row();
-  hyperlink_params_td($path_to_root . "/sales/manage/customer_branches.php", _("Edit customer branches"), "debtor_no=".$_POST['customer_id']);
+ echo '<td>'._('Customer branches').':</td>';
+  hyperlink_params_td($path_to_root . "/sales/manage/customer_branches.php",'<b>'. _("Add or Edit").'</b>', "debtor_no=".$_POST['customer_id']);
 end_row();
 }
 end_table();
