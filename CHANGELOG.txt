@@ -19,6 +19,13 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+
+---------------------------------------Release Candidate 2-------------------------------
+20-Jun-2008 Joe Hunt
+! 2.0 Release Candidate 2
+$ config.php
+  update.html
+  
 20-Jun-2008 Joe Hunt
 ! In reorder_level.php the heading gets updated as well
 $ /inventory/reorder_level.php
