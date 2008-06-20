@@ -115,6 +115,7 @@ if (isset($_POST['ChangeTmpl']) && $_POST['ChangeTmpl'] != 0)
   	$sql = "UPDATE ".TB_PREF."sales_orders SET type = !type WHERE order_no=".$_POST['ChangeTmpl'];
 
   	db_query($sql, "Can't change sales order type");
+	$Ajax->activate('orders_tbl');
 }
 //---------------------------------------------------------------------------------------------
 

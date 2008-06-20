@@ -28,6 +28,8 @@ $ /includes/errors.inc
   /includes/ui/ui_lists.inc
 # Layout fixes to customer edition.
   /sales/manage/customers.php
+# Added order table reload after template option change
+  /sales/inquiry/sales_orders_view.php
 
 19-Jun-2008 Janusz Dobrowolski
 + Added ajax improvements
