@@ -17,12 +17,13 @@ check_db_has_costable_items(_("There are no inventory items defined in the syste
 //------------------------------------------------------------------------------------
 
 if (isset($_GET['stock_id']))
-{
 	$_POST['stock_id'] = $_GET['stock_id'];
-}
 
 if (isset($_POST['_stock_id_update']))
+{
+	$Ajax->activate('show_heading');
 	$Ajax->activate('reorders');
+}
 //------------------------------------------------------------------------------------
 
 start_form(false, true);
@@ -35,8 +36,9 @@ stock_costable_items_list('stock_id', $_POST['stock_id'], false, true);
 
 echo "<hr></center>";
 
+div_start('show_heading');
 stock_item_heading($_POST['stock_id']);
-
+div_end();
 set_global_stock_item($_POST['stock_id']);
 
 div_start('reorders');

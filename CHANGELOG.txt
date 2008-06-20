@@ -19,6 +19,12 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+20-Jun-2008 Joe Hunt
+! In reorder_level.php the heading gets updated as well
+$ /inventory/reorder_level.php
+! Changes the -1 to 'User Quantiry Decimals' in the table for units.
+$ /inventory/manage/item_units.php
+
 20-Jun-2008 Janusz Dobrowolski
 # Proper error handling even after exit() call.
 $ /includes/errors.inc

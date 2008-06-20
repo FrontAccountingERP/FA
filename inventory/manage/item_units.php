@@ -39,13 +39,6 @@ if (isset($_POST['ADD_ITEM']) || isset($_POST['UPDATE_ITEM']))
 		display_error(_("The unit of measure description cannot be empty."));
 		set_focus('description');
 	}
-	if (!is_numeric($_POST['decimals']))
-	{
-		$input_error = 1;
-		display_error(_("The number of decimal places must be integer."));
-		set_focus('decimals');
-	}
-
 
 	if ($input_error !=1) {
     	write_item_unit(isset($selected_id) ? $selected_id : '', $_POST['abbr'], $_POST['description'], $_POST['decimals'] );
@@ -62,7 +55,7 @@ if (isset($_GET['delete']))
 
 	if (item_unit_used($selected_id))
 	{
-		display_error(_("Cannot delete this unit of measure because items have been created using this units."));
+		display_error(_("Cannot delete this unit of measure because items have been created using this unit."));
 
 	}
 	else
@@ -88,7 +81,7 @@ while ($myrow = db_fetch($result))
 
 	label_cell($myrow["abbr"]);
 	label_cell($myrow["name"]);
-	label_cell($myrow["decimals"]);
+	label_cell(($myrow["decimals"]==-1?_("User Quantity Decimals"):$myrow["decimals"]));
 
 	edit_link_cell(SID."selected_id=$myrow[0]");
 	delete_link_cell(SID."selected_id=$myrow[0]&delete=yes");
@@ -125,7 +118,6 @@ if (isset($selected_id) && item_unit_used($selected_id)) {
     text_row(_("Unit Abbreviation:"), 'abbr', null, 20, 20);
 text_row(_("Descriptive Name:"), 'description', null, 40, 40);
 
-//text_row(_("Decimal Places:"), 'decimals', null, 3, 3);
 number_list_row(_("Decimal Places:"), 'decimals', null, 0, 6, _("User Quantity Decimals"));
 
 end_table(1);
