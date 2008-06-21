@@ -24,9 +24,9 @@ if (isset($_POST['submit']) && $_POST['submit'] != "")
 		display_error(_("The company name must be entered."));
 		set_focus('coy_name');
 	}
-	$user_comp = user_company();
 	if (isset($_FILES['pic']) && $_FILES['pic']['name'] != '')
 	{
+		$user_comp = user_company();
 		$result = $_FILES['pic']['error'];
 		$filename = $comp_path . "/$user_comp/images";
 		if (!file_exists($filename))
@@ -135,7 +135,7 @@ text_row_ex(_("Telephone Number:"), 'phone', 25, 55);
 text_row_ex(_("Facsimile Number:"), 'fax', 25);
 text_row_ex(_("Email Address:"), 'email', 25, 55);
 label_row(_("Company Logo:"), $_POST['coy_logo']);
-label_row(_("New")." "._("Company Logo (.jpg)") . ":", "<input type='file' id='pic' name='pic'>");
+label_row(_("New Company Logo (.jpg)") . ":", "<input type='file' id='pic' name='pic'>");
 
 text_row_ex(_("Domicile:"), 'domicile', 25, 55);
 
