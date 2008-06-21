@@ -44,7 +44,7 @@ supp_allocations_list_cells("filterType", null);
 
 check_cells(_("show settled:"), 'showSettled', null);
 
-submit_cells('Refresh Inquiry', _("Search"));
+submit_cells('RefreshInquiry', _("Search"),'',_('Refresh Inquiry'), true);
 
 set_global_supplier($_POST['supplier_id']);
 
@@ -109,33 +109,37 @@ function get_transactions()
 //------------------------------------------------------------------------------------------------
 
 $result = get_transactions();
-
-if (db_num_rows($result) == 0)
+//------------------------------------------------------------------------------------------------
+if(get_post('RefreshInquiry')) 
 {
-	display_note(_("There are no transactions to display for the given dates."), 1, 1);
-	end_page();
-	exit;
+	$Ajax->activate('doc_tbl');
 }
 
 //------------------------------------------------------------------------------------------------
 
 /*show a table of the transactions returned by the sql */
 
-start_table("$table_style width=90%");
-if ($_POST['supplier_id'] == reserved_words::get_all())
+div_start('doc_tbl');
+if (db_num_rows($result) == 0)
+{
+	display_note(_("There are no transactions to display for the given dates."), 1, 1);
+} else
+{
+  start_table("$table_style width=90%");
+  if ($_POST['supplier_id'] == reserved_words::get_all())
 	$th = array(_("Type"), _("Number"), _("Reference"), _("Supplier"),
 		_("Supp Reference"), _("Date"), _("Due Date"), _("Currency"),
 		_("Debit"), _("Credit"), _("Allocated"), _("Balance"), "");
-else
+  else
 	$th = array(_("Type"), _("Number"), _("Reference"),	_("Supp Reference"), _("Date"), _("Due Date"),
 		_("Debit"), _("Credit"), _("Allocated"), _("Balance"), "");
-table_header($th);
+  table_header($th);
 
-$j = 1;
-$k = 0; //row colour counter
-$over_due = false;
-while ($myrow = db_fetch($result))
-{
+  $j = 1;
+  $k = 0; //row colour counter
+  $over_due = false;
+  while ($myrow = db_fetch($result))
+  {
 
 	if ($myrow['OverDue'] == 1)
 	{
@@ -193,13 +197,14 @@ while ($myrow = db_fetch($result))
 		$j = 1;
 		table_header($th);
 	}
-//end of page full new headings if
-}
-//end of while loop
+  //end of page full new headings if
+  }
+  //end of while loop
 
-end_table(1);
-if ($over_due)
+  end_table(1);
+  if ($over_due)
 	display_note(_("Marked items are overdue."), 0, 1, "class='overduefg'");
-
+}
+div_end();
 end_page();
 ?>

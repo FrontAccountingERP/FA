@@ -19,6 +19,19 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+21-Jun-2008 Janusz Dobrowolski
++ Ajax additions to sales and purchasing modules
+$ /purchasing/po_entry_items.php
+  /purchasing/supplier_payment.php
+  /purchasing/allocations/supplier_allocate.php
+  /purchasing/includes/ui/po_ui.inc
+  /purchasing/inquiry/po_search.php
+  /purchasing/inquiry/po_search_completed.php
+  /purchasing/inquiry/supplier_allocation_inquiry.php
+  /purchasing/inquiry/supplier_inquiry.php
+  /purchasing/manage/suppliers.php
+  /sales/manage/customers.php
+
 21-Jun-2008 Joe Hunt
 + Added upload functionality to company logo. Better names on lists search.
 $ /admin/company_preferences.php

@@ -71,7 +71,6 @@ function handle_submit()
 
 		db_query($sql,"The customer could not be updated");
 		display_notification(_("Customer has been updated."));
-
 	} 
 	else 
 	{ 	//it is a new customer
@@ -95,7 +94,8 @@ function handle_submit()
 
 		display_notification(_("A new customer has been added."));
 
-		$Ajax->activate('_page_body');
+		$Ajax->activate('customer_id');
+		$Ajax->activate('controls');
 	}
 }
 
@@ -270,7 +270,7 @@ end_row();
 end_table();
 
 end_table(1); // outer table	
-
+div_start('controls');
 if ($new_customer)
 {
 	submit_center('submit', _("Add New Customer"), true, '', true);
@@ -280,9 +280,9 @@ else
 	submit_center_first('submit', _("Update Customer"), 
 	  _('Update customer data'), true);
 	submit_center_last('delete', _("Delete Customer"), 
-	  _('Delete user data if have been never used'), true);
+	  _('Delete customer data if have been never used'), true);
 }
-
+div_end();
 end_form();
 end_page();
 

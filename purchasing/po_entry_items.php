@@ -53,6 +53,13 @@ if (isset($_GET['AddedID']))
 }
 
 //--------------------------------------------------------------------------------------------------
+function line_start_focus() {
+  global 	$Ajax;
+
+  $Ajax->activate('items_table');
+  set_focus('_stock_id_edit');
+}
+//--------------------------------------------------------------------------------------------------
 
 function copy_to_po()
 {
@@ -89,9 +96,8 @@ function unset_form_variables() {
 
 //---------------------------------------------------------------------------------------------------
 
-function handle_delete_item()
+function handle_delete_item($line_no)
 {
-	$line_no = $_GET['Delete'];
 	if($_SESSION['PO']->some_already_received($line_no) == 0)
 	{
 		$_SESSION['PO']->remove_from_order($line_no);
@@ -101,6 +107,7 @@ function handle_delete_item()
 	{
 		display_error(_("This item cannot be deleted because some of it has already been received."));
 	}	
+    line_start_focus();
 }
 
 //---------------------------------------------------------------------------------------------------
@@ -133,17 +140,6 @@ function handle_cancel_po()
 
 	end_page();
 	exit;
-}
-
-//---------------------------------------------------------------------------------------------------
-if (isset($_GET['Delete']) || isset($_GET['Edit']))
-{
-	copy_from_po();
-}
-	
-if (isset($_GET['Delete']))
-{
-	handle_delete_item();
 }
 
 //---------------------------------------------------------------------------------------------------
@@ -191,6 +187,7 @@ function handle_update_item()
 	$_SESSION['PO']->update_order_item($_POST['line_no'], input_num('qty'), input_num('price'),
   		$_POST['req_del_date']);
 	unset_form_variables();
+    line_start_focus();
 }
 
 //---------------------------------------------------------------------------------------------------
@@ -203,15 +200,15 @@ function handle_add_new_item()
 	{ 
 		if (count($_SESSION['PO']->line_items) > 0)
 		{
-		    foreach ($_SESSION['PO']->line_items AS $order_item) 
+		    foreach ($_SESSION['PO']->line_items as $order_item) 
 		    {
 
     			/* do a loop round the items on the order to see that the item
     			is not already on this order */
    			    if (($order_item->stock_id == $_POST['stock_id']) && 
-   			    	($order_item->Deleted==False)) 
+   			    	($order_item->Deleted == false)) 
    			    {
-				  	$allow_update = False;
+				  	$allow_update = false;
 				  	display_error(_("The selected item is already on this order."));
 			    }
 		    } /* end of the foreach loop to look for pre-existing items of the same code */
@@ -226,7 +223,7 @@ function handle_add_new_item()
 
 		    if (db_num_rows($result) == 0)
 		    {
-				$allow_update = False;
+				$allow_update = false;
 		    }		    
 
 			if ($allow_update)
@@ -237,7 +234,7 @@ function handle_add_new_item()
 					$_POST['req_del_date'], 0, 0);
 
 				unset_form_variables();
-				$_POST['StockID2'] = $_POST['stock_id']	= "";
+				$_POST['stock_id']	= "";
 	   		} 
 	   		else 
 	   		{
@@ -246,6 +243,7 @@ function handle_add_new_item()
 
 		} /* end of if not already on the order and allow input was true*/
     }
+	line_start_focus();
 }
 
 //---------------------------------------------------------------------------------------------------
@@ -264,14 +262,14 @@ function can_commit()
     	if (!references::is_valid($_SESSION['PO']->reference)) 
     	{
     		display_error(_("There is no reference entered for this purchase order."));
-		set_focus('ref');
+			set_focus('ref');
     		return false;
     	} 
     	
     	if (!is_new_reference($_SESSION['PO']->reference, systypes::po())) 
     	{
     		display_error(_("The entered reference is already in use."));
-		set_focus('ref');
+			set_focus('ref');
     		return false;
     	}
 	}
@@ -331,47 +329,39 @@ function handle_commit_order()
 		}
 	}	
 }
-
 //---------------------------------------------------------------------------------------------------
+$id = find_submit('Delete');
+if ($id != -1)
+	handle_delete_item($id);
 
+if (isset($_POST['Delete']) || isset($_POST['Edit']))
+{
+	copy_from_po();
+}
+	
 if (isset($_POST['Commit']))
 {
 	handle_commit_order();
 }
-
-//--------------------------------------------------------------------------------------------------- 
-
 if (isset($_POST['UpdateLine']))
 {
 	copy_to_po();
 	handle_update_item();
 }
-
-//---------------------------------------------------------------------------------------------------
-
-If (isset($_POST['EnterLine']))
+if (isset($_POST['EnterLine']))
 {
 	copy_to_po();
 	handle_add_new_item();
 } 
-
-//---------------------------------------------------------------------------------------------------
-
 if (isset($_POST['CancelOrder'])) 
 {
 	handle_cancel_po();
 }
-
-//---------------------------------------------------------------------------------------------------
-
 if (isset($_POST['CancelUpdate']))
 {
 	copy_to_po();
 	unset_form_variables();
 }
-
-//---------------------------------------------------------------------------------------------------
-
 if (isset($_GET['ModifyOrderNumber']) && $_GET['ModifyOrderNumber'] != "")
 {
 	create_new_po();
@@ -381,6 +371,9 @@ if (isset($_GET['ModifyOrderNumber']) && $_GET['ModifyOrderNumber'] != "")
 	/*read in all the selected order into the Items cart  */
 	read_po($_SESSION['PO']->order_no, $_SESSION['PO']);
 	copy_from_po();
+}
+if (isset($_POST['CancelUpdate']) || isset($_POST['UpdateLine'])) {
+	line_start_focus();
 }
 
 //--------------------------------------------------------------------------------
@@ -414,6 +407,8 @@ start_table($table_style2);
 textarea_row(_("Memo:"), 'Comments', null, 70, 4);
 
 end_table(1);
+
+div_start('controls', 'items_table');
 if ($_SESSION['PO']->order_has_items()) 
 {
 	if ($_SESSION['PO']->order_no)
@@ -424,7 +419,7 @@ if ($_SESSION['PO']->order_has_items())
 }
 else
 	submit_center('CancelOrder', _("Cancel Order")); 	
-
+div_end();
 //---------------------------------------------------------------------------------------------------
 
 end_form();

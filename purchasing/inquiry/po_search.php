@@ -18,6 +18,30 @@ if (isset($_GET['order_number']))
 {
 	$_POST['order_number'] = $_GET['order_number'];
 }
+//-----------------------------------------------------------------------------------
+// Ajax updates
+//
+if (get_post('SearchOrders')) 
+{
+	$Ajax->activate('orders_tbl');
+} elseif (get_post('_order_number_changed')) 
+{
+	$disable = get_post('order_number') !== '';
+
+	$Ajax->addDisable(true, 'OrdersAfterDate', $disable);
+	$Ajax->addDisable(true, 'OrdersToDate', $disable);
+	$Ajax->addDisable(true, 'StockLocation', $disable);
+	$Ajax->addDisable(true, '_SelectStockFromList_edit', $disable);
+	$Ajax->addDisable(true, 'SelectStockFromList', $disable);
+
+	if ($disable) {
+		$Ajax->addFocus(true, 'order_number');
+	} else
+		$Ajax->addFocus(true, 'OrdersAfterDate');
+
+	$Ajax->activate('orders_tbl');
+}
+
 
 //---------------------------------------------------------------------------------------------
 
@@ -25,7 +49,7 @@ start_form(false, true);
 
 start_table("class='tablestyle_noborder'");
 start_row();
-ref_cells(_("#:"), 'order_number');
+ref_cells(_("#:"), 'order_number', '',null, '', true);
 
 date_cells(_("from:"), 'OrdersAfterDate', '', null, -30);
 date_cells(_("to:"), 'OrdersToDate');
@@ -34,7 +58,7 @@ locations_list_cells(_("Location:"), 'StockLocation', null, true);
 
 stock_items_list_cells(_("Item:"), 'SelectStockFromList', null, true);
 
-submit_cells('SearchOrders', _("Search"));
+submit_cells('SearchOrders', _("Search"),'',_('Select documents'), true);
 end_row();
 end_table();
 
@@ -104,6 +128,7 @@ print_hidden_script(18);
 
 /*show a table of the orders returned by the sql */
 
+div_start('orders_tbl');
 start_table("$table_style colspan=7 width=80%");
 
 if (isset($_POST['StockLocation']) && $_POST['StockLocation'] == $all_items)
@@ -164,6 +189,6 @@ end_table();
 
 if ($overdue_items)
 	display_note(_("Marked orders have overdue items."), 0, 1, "class='overduefg'");
-
+div_end();
 end_page();
 ?>

@@ -12,15 +12,7 @@ include($path_to_root . "/includes/ui.inc");
 
 check_db_has_tax_groups(_("There are no tax groups defined in the system. At least one tax group is required before proceeding."));
 
-if (isset($_GET['New']) || !isset($_POST['supplier_id'])) 
-{
-	$_POST['New'] = "1";
-}
-
-if (isset($_POST['SelectSupplier'])) 
-{
-	unset($_POST['New']);
-}
+$new_supplier = get_post('supplier_id') == ''; 
 
 if (isset($_POST['submit'])) 
 {
@@ -43,7 +35,7 @@ if (isset($_POST['submit']))
 	if ($input_error !=1 )
 	{
 
-		if (!isset($_POST['New'])) 
+		if (!$new_supplier) 
 		{
 
 			$sql = "UPDATE ".TB_PREF."suppliers SET supp_name=".db_escape($_POST['supp_name']) . ",
@@ -60,10 +52,10 @@ if (isset($_POST['submit']))
 				tax_group_id=".db_escape($_POST['tax_group_id']) . " WHERE supplier_id = '" . $_POST['supplier_id'] . "'";
 
 			db_query($sql,"The supplier could not be updated");
-
+			display_notification(_("Supplier has been updated."));
 		} 
 		else 
-		{ //not a new supplier
+		{
 
 			$sql = "INSERT INTO ".TB_PREF."suppliers (supp_name, address, email, bank_account, dimension_id, dimension2_id, curr_code,
 				payment_terms, payable_account, purchase_account, payment_discount_account, tax_group_id)
@@ -81,9 +73,12 @@ if (isset($_POST['submit']))
 				.db_escape($_POST['tax_group_id']). ")";
 
 			db_query($sql,"The supplier could not be added");
+			$_POST['supplier_id'] = db_insert_id();
+			$new_supplier = false;
+			display_notification(_("A new supplier has been added."));
+			$Ajax->activate('supplier_id');
+			$Ajax->activate('controls');
 		}
-
-		meta_forward($_SERVER['PHP_SELF']);
 	}
 
 } 
@@ -122,7 +117,8 @@ elseif (isset($_POST['delete']) && $_POST['delete'] != "")
 		db_query($sql,"check failed");
 
 		unset($_SESSION['supplier_id']);
-		meta_forward($_SERVER['PHP_SELF']);
+		$new_supplier = true;
+		$Ajax->activate('_page_body');
 	} //end if Delete supplier
 }
 
@@ -131,10 +127,9 @@ start_form();
 if (db_has_suppliers()) 
 {
 	start_table("", 3);
-	start_row();
-	supplier_list_cells(_("Select a supplier: "), 'supplier_id', null);
-	submit_cells('SelectSupplier', _("Edit Supplier"));
-	end_row();
+//	start_table("class = 'tablestyle_noborder'");
+	supplier_list_row(_("Select a supplier: "), 'supplier_id', null,
+		  _('New supplier'), true);
 	end_table();
 } 
 else 
@@ -142,15 +137,12 @@ else
 	hidden('supplier_id', $_POST['supplier_id']);
 }
 
-hyperlink_params($_SERVER['PHP_SELF'], _("Enter a new supplier"), "New=1");
-echo "<br>";
-
 //start_table("class='tablestyle2'", 0, 3);
 start_table("class='tablestyle'", 3);
 
 table_section_title(_("Supplier"));
 
-if (isset($_POST['supplier_id']) && !isset($_POST['New'])) 
+if (!$new_supplier) 
 {
 	//SupplierID exists - either passed when calling the form or from the form itself
 	$myrow = get_supplier($_POST['supplier_id']);
@@ -171,11 +163,16 @@ if (isset($_POST['supplier_id']) && !isset($_POST['New']))
 } 
 else 
 {
-	// its a new supplier being added
-	hidden('New', 'Yes');
+	$_POST['supp_name'] = $_POST['address'] = $_POST['tax_group_id']  = '';
+	$_POST['dimension_id'] = 0;
+	$_POST['dimension2_id'] = 0;
+	$_POST['sales_type'] = -1;
+	$_POST['email'] = $_POST['bank_account'] = '';
+	$_POST['payment_terms']  = '';
+	$_POST['credit_limit']	= price_format(sys_prefs::default_credit_limit());
 
 	$company_record = get_company_prefs();
-
+	$_POST['curr_code']  = $company_record["curr_default"];
 	$_POST['payable_account'] = $company_record["creditors_act"];
 	$_POST['purchase_account'] = $company_record["default_cogs_act"];
 	$_POST['payment_discount_account'] = $company_record['pyt_discount_act'];
@@ -187,7 +184,7 @@ text_row(_("Email:"), 'email', null, 42, 40);
 text_row(_("Bank Account:"), 'bank_account', null, 42, 40);
 
 // Sherifoz 23.09.03 currency can't be changed if editing
-if (isset($_POST['supplier_id']) && !isset($_POST['New'])) 
+if (!$new_supplier) 
 {
 	label_row(_("Supplier's Currency:"), $_POST['curr_code']);
 	hidden('curr_code', $_POST['curr_code']);
@@ -224,17 +221,19 @@ if ($dim < 2)
 	hidden('dimension2_id', 0);
 
 end_table(1);
-
-if (!isset($_POST['New'])) 
+div_start('controls');
+if (!$new_supplier) 
 {
-	submit_center_first('submit', _("Update Supplier"));
-	submit_center_last('delete', _("Delete Supplier"));
+	submit_center_first('submit', _("Update Supplier"), 
+	  _('Update supplier data'), true);
+	submit_center_last('delete', _("Delete Supplier"), 
+	  _('Delete supplier data if have been never used'), true);
 }
 else 
 {
-	submit_center('submit', _("Add New Supplier Details"));
+	submit_center('submit', _("Add New Supplier Details"), true, '', true);
 }
-
+div_end();
 end_form();
 
 end_page();

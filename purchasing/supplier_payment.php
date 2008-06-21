@@ -101,7 +101,7 @@ function display_controls()
 	echo "</td></tr>";
 	end_table(1); // outer table
 
-	submit_center('ProcessSuppPayment',_("Enter Payment"));
+	submit_center('ProcessSuppPayment',_("Enter Payment"), true, '', true);
 
 	if ($bank_currency != $supplier_currency) 
 	{

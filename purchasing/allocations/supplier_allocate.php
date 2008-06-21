@@ -115,6 +115,7 @@ if (isset($_POST['Process']))
 		handle_process();
 		$_POST['Cancel'] = 1;
 	}
+	$Ajax->update('_page_body');
 }
 
 //--------------------------------------------------------------------------------
@@ -123,9 +124,11 @@ if (isset($_POST['Cancel']))
 {
 	clear_allocations();
 	meta_forward($path_to_root . "/purchasing/allocations/supplier_allocation_main.php");
-	exit;
 }
-
+if (isset($_POST['UpdateDisplay']))
+{
+	$Ajax->update('_page_body');
+}
 //--------------------------------------------------------------------------------
 
 function get_allocations_for_transaction($type, $trans_no)
@@ -244,9 +247,9 @@ function edit_allocations_for_transaction($type, $trans_no)
 		hidden('TotalNumberOfAllocs', $counter);
 //		hidden('left_to_allocate', $left_to_allocate);
     	echo "<br><center>";
-       	submit('UpdateDisplay', _("Update"));
+       	submit('UpdateDisplay', _("Update"), true, '', true);
        	echo "&nbsp;";
-       	submit('Process', _("Process"));
+       	submit('Process', _("Process"), true, '', true);
        	echo "&nbsp;";
 	}
 	else
@@ -255,7 +258,7 @@ function edit_allocations_for_transaction($type, $trans_no)
     	echo "<center>";
     }
 
-   	submit('Cancel', _("Back to Allocations"));
+   	submit('Cancel', _("Back to Allocations"), true, '', true);
    	echo "</center><br><br>";
 
 	end_form();
