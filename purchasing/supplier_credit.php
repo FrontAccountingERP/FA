@@ -168,7 +168,7 @@ echo "</td></tr>";
 
 end_table(1); // outer table
 
-submit_center('PostCreditNote', _("Enter Credit Note"));
+submit_center('PostCreditNote', _("Enter Credit Note"), true, '', true);
 echo "<br><br>";
 
 end_form();

@@ -174,7 +174,7 @@ echo "</td></tr>";
 end_table(); // outer table
 
 echo "<br>";
-submit_center('PostInvoice', _("Enter Invoice"));
+submit_center('PostInvoice', _("Enter Invoice"), true, '', true);
 echo "<br>";
 
 end_form();

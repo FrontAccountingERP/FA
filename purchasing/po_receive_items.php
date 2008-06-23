@@ -47,6 +47,8 @@ if ((!isset($_GET['PONumber']) || $_GET['PONumber'] == 0) && !isset($_SESSION['P
 function display_po_receive_items()
 {
 	global $table_style;
+
+	div_start('grn_items');
     start_table("colspan=7 $table_style width=90%");
     $th = array(_("Item Code"), _("Description"), _("Ordered"), _("Units"), _("Received"),
     	_("Outstanding"), _("This Delivery"), _("Price"), _("Total"));
@@ -101,6 +103,7 @@ function display_po_receive_items()
     label_row(_("Total value of items received"), $display_total, "colspan=8 align=right",
     	"nowrap align=right");
     end_table();
+	div_end();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -215,7 +218,7 @@ function can_process()
 
 function process_receive_po()
 {
-	global $path_to_root;
+	global $path_to_root, $Ajax;
 
 	if (!can_process())
 		return;
@@ -229,6 +232,7 @@ function process_receive_po()
 		unset($_SESSION['PO']->line_items);
 		unset($_SESSION['PO']);
 		unset($_POST['ProcessGoodsReceived']);
+		$Ajax->activate('_page_body');
 		exit;
 	}
 
@@ -276,6 +280,7 @@ if (isset($_POST['Update']) || isset($_POST['ProcessGoodsReceived']))
 			$_SESSION['PO']->line_items[$line->line_no]->item_description = $_POST[$line->stock_id . "Desc"];
 		}
 	}
+	$Ajax->activate('grn_items');
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -293,11 +298,9 @@ display_grn_summary($_SESSION['PO'], true);
 display_heading(_("Items to Receive"));
 display_po_receive_items();
 
-echo "<br><center>";
-submit('Update', _("Update"));
-echo "&nbsp";
-submit('ProcessGoodsReceived', _("Process Receive Items"));
-echo "</center>";
+echo '<br>';
+submit_center_first('Update', _("Update"), '', true);
+submit_center_last('ProcessGoodsReceived', _("Process Receive Items"), _("Clear all GL entry fields"), true);
 
 end_form();
 

@@ -2,10 +2,9 @@
 
 $page_security = 5;
 $path_to_root="..";
+
 include_once($path_to_root . "/purchasing/includes/supp_trans_class.inc");
-
 include_once($path_to_root . "/includes/session.inc");
-
 include_once($path_to_root . "/purchasing/includes/purchasing_ui.inc");
 include_once($path_to_root . "/purchasing/includes/purchasing_db.inc");
 
@@ -13,7 +12,6 @@ $js = "";
 if ($use_date_picker)
 	$js .= get_js_date_picker();
 page(_("Select Received Items to Add"), false, false, "", $js);
-
 
 if (!isset($_SESSION['supp_trans']))
 {
@@ -86,11 +84,11 @@ if (isset($_POST['AddGRNToTrans']))
 	{
     	if (input_num('this_quantity_inv') >= ($_POST['qty_recd'] - $_POST['prev_quantity_inv']))
     	{
-    		$complete = True;
+    		$complete = true;
     	}
     	else
     	{
-    		$complete = False;
+    		$complete = false;
     	}
 
 		$_SESSION['supp_trans']->add_grn_to_trans($_POST['GRNNumber'], $_POST['po_detail_item'],
@@ -102,17 +100,18 @@ if (isset($_POST['AddGRNToTrans']))
 }
 
 //-----------------------------------------------------------------------------------------
-
-if (isset($_GET['Delete']))
+$id = find_submit('Delete');
+if ($id != -1)
 {
-	$_SESSION['supp_trans']->remove_grn_from_trans($_GET['Delete']);
+	$_SESSION['supp_trans']->remove_grn_from_trans($id);
+	$Ajax->activate('grn_items');
+	$Ajax->activate('grn_table');
 }
 
 //-----------------------------------------------------------------------------------------
-
 display_grn_items($_SESSION['supp_trans'], 1);
-
 echo "<br>";
+
 hyperlink_no_params("$path_to_root/purchasing/supplier_invoice.php", _("Back to Supplier Invoice Entry"));
 echo "<hr>";
 
@@ -135,7 +134,7 @@ function display_grn_items_for_selection()
     start_form(false, true);
 
     display_heading2(_("Items Received Yet to be Invoiced"));
-
+	div_start('grn_table');
     start_table("$table_style colspan=7 width=95%");
     $th = array(_("Delivery"), _("Sequence #"), _("P.O."), _("Item"), _("Description"),
     	_("Received On"), _("Quantity Received"), _("Quantity Invoiced"),
@@ -145,24 +144,23 @@ function display_grn_items_for_selection()
 
     while ($myrow = db_fetch($result))
     {
-
-    	$grn_already_on_invoice = False;
+		$grn_already_on_invoice = false;
 
     	foreach ($_SESSION['supp_trans']->grn_items as $entered_grn)
     	{
     		if ($entered_grn->id == $myrow["id"])
     		{
-    			$grn_already_on_invoice = True;
+    			$grn_already_on_invoice = true;
     		}
     	}
-    	if ($grn_already_on_invoice == False)
+    	if ($grn_already_on_invoice == false)
     	{
 
 			alt_table_row_color($k);
 
     		label_cell(get_trans_view_str(25, $myrow["grn_batch_id"]));
         	//text_cells(null, 'grn_item_id', $myrow["id"]);
-        	submit_cells('grn_item_id', $myrow["id"]);
+        	submit_cells('grn_item_id'.$myrow["id"], $myrow["id"], '', '', true);
         	label_cell(get_trans_view_str(systypes::po(), $myrow["purch_order_no"]));
             label_cell($myrow["item_code"]);
             label_cell($myrow["description"]);
@@ -186,18 +184,31 @@ function display_grn_items_for_selection()
     }
 
     end_table();
+	div_end();
 }
 
 //-----------------------------------------------------------------------------------------
+if (find_submit('grn_item_id') || get_post('AddGRNToTrans'))
+{
+	$Ajax->activate('grn_selector');
+}
+if (get_post('AddGRNToTrans')) 
+{
+	$Ajax->activate('grn_table');
+	$Ajax->activate('grn_items');
+}
 
 display_grn_items_for_selection();
 
 //-----------------------------------------------------------------------------------------
 
-if (isset($_POST['grn_item_id']) && $_POST['grn_item_id'] != "")
+div_start('grn_selector');
+
+$id = find_submit('grn_item_id');
+if ($id != -1)
 {
 
-	$myrow = get_grn_item_detail($_POST['grn_item_id']);
+	$myrow = get_grn_item_detail($id);
 
 	echo "<br>";
 	display_heading2(_("Delivery Item Selected For Adding To A Supplier Invoice"));
@@ -207,7 +218,7 @@ if (isset($_POST['grn_item_id']) && $_POST['grn_item_id'] != "")
 	table_header($th);
 
 	start_row();
-	label_cell($_POST['grn_item_id']);
+	label_cell($id);
 	label_cell($myrow['item_code']);
 	label_cell($myrow['description']);
 	$dec = get_qty_dec($myrow['item_code']);
@@ -218,9 +229,9 @@ if (isset($_POST['grn_item_id']) && $_POST['grn_item_id'] != "")
 	end_row();
 	end_table(1);;
 
-	submit_center('AddGRNToTrans', _("Add to Invoice"));
+	submit_center('AddGRNToTrans', _("Add to Invoice"), true, '', true);
 
-	hidden('GRNNumber', $_POST['grn_item_id']);
+	hidden('GRNNumber', $id);
 	hidden('item_code', $myrow['item_code']);
 	hidden('item_description', $myrow['description']);;
 	hidden('qty_recd', $myrow['qty_recd']);
@@ -230,9 +241,12 @@ if (isset($_POST['grn_item_id']) && $_POST['grn_item_id'] != "")
 
 	hidden('po_detail_item', $myrow['po_detail_item']);
 }
+div_end();
 
 //----------------------------------------------------------------------------------------
 
 end_form();
-end_page();
+echo '<br>';
+end_page(false, true);
+
 ?>

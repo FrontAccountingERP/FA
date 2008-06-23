@@ -262,6 +262,7 @@ function display_credit_items()
 
 	end_table(1); // outer table
 
+	div_start('credit_items');
     start_table("$table_style width=80%");
     $th = array(_("Item Code"), _("Item Description"), _("Invoiced Quantity"), _("Units"),
     	_("Credit Quantity"), _("Price"), _("Discount %"), _("Total"));
@@ -283,9 +284,8 @@ function display_credit_items()
 		$dec = get_qty_dec($ln_itm->stock_id);
     	qty_cell($ln_itm->quantity, false, $dec);
     	label_cell($ln_itm->units);
-
-		amount_cells(null, 'Line'.$line_no, number_format2($ln_itm->qty_dispatched, $dec));
-
+		amount_cells(null, 'Line'.$line_no, number_format2($ln_itm->qty_dispatched, $dec),
+			null, null, $dec);
     	$line_total =($ln_itm->qty_dispatched * $ln_itm->price * (1 - $ln_itm->discount_percent));
 
     	amount_cell($ln_itm->price);
@@ -317,53 +317,56 @@ function display_credit_items()
     label_row(_("Credit Note Total"), $display_total, "colspan=7 align=right", "align=right");
 
     end_table();
+	div_end();
 }
 
 //-----------------------------------------------------------------------------
-
 function display_credit_options()
 {
-	global $table_style2;
+	global $table_style2, $Ajax;
+	echo "<br>";
 
-    echo "<br>";
-    start_table($table_style2);
+if (isset($_POST['_CreditType_update']))
+	$Ajax->activate('options');
 
-    echo "<tr><td>" . _("Credit Note Type") . "</td>";
-    echo "<td><select name='CreditType' onchange='this.form.submit();'>";
-    if (!isset($_POST['CreditType']) || $_POST['CreditType'] == "Return") {
-    	echo "<option value='WriteOff'>" . _("Items Written Off") . "</option>";
-    	echo "<option selected value='Return'>" . _("Items Returned to Inventory Location") . "</option>";
-    } else {
-    	echo "<option selected value='WriteOff'>" . _("Items Written Off") . "</option>";
-    	echo "<option value='Return'>" . _("Items Returned to Inventory Location") . "</option>";
-    }
-    echo "</select>";
-    echo"</td></tr>";
+ div_start('options');
+	start_table("$table_style2");
 
-    if (!isset($_POST['CreditType']) || $_POST['CreditType'] == "Return") {
+	credit_type_list_row(_("Credit Note Type"), 'CreditType', null, true);
 
-    	/*if the credit note is a return of goods then need to know which location to receive them into */
-    	if (!isset($_POST['Location'])) {
-    		$_POST['Location'] = $_SESSION['Items']->Location;
-    	}
+	if ($_POST['CreditType'] == "Return")
+	{
 
-    	locations_list_row(_("Items Returned to Inventory Location"), 'Location', $_POST['Location']);
-    } else { 	/* the goods are to be written off to somewhere */
-    	gl_all_accounts_list_row(_("Write Off the Cost of the Items to"), 'WriteOffGLCode', $_POST['WriteOffGLCode']);
-    }
-    textarea_row(_("Memo"), "CreditText", null, 45, 3);
-    end_table();
+		/*if the credit note is a return of goods then need to know which location to receive them into */
+		if (!isset($_POST['Location']))
+			$_POST['Location'] = $_SESSION['Items']->Location;
+	   	locations_list_row(_("Items Returned to Location"), 'Location', $_POST['Location']);
+	}
+	else
+	{
+		/* the goods are to be written off to somewhere */
+		gl_all_accounts_list_row(_("Write off the cost of the items to"), 'WriteOffGLCode', null);
+	}
+
+	textarea_row(_("Memo"), "CreditText", null, 51, 3);
+	echo "</table>";
+ div_end();
 }
 
+//-----------------------------------------------------------------------------
+if (get_post('Update')) 
+{
+	$Ajax->activate('credit_items');
+}
 //-----------------------------------------------------------------------------
 
 display_credit_items();
 display_credit_options();
 
 echo "<br><center>";
-submit('Update', _("Update"));
+submit('Update', _("Update"), true, _('Update credit value for quantities entered'), true);
 echo "&nbsp";
-submit('ProcessCredit', _("Process Credit Note"));
+submit('ProcessCredit', _("Process Credit Note"), true, '', true);
 echo "</center>";
 
 end_form();

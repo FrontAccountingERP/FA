@@ -178,12 +178,15 @@ function display_gl_items(&$supp_trans, $mode=0)
 	echo "<tr><td align=center><span class='headingtext'>$heading</span></td>";
 	if ($mode == 0)
 	{
-    	submit_cells('InvGL', _("Edit"), "align=right");
+    	submit_cells('InvGL', _("Edit"), "align=right",
+			_('Moves to additional costs posting page'), true);
 	}
 	echo "</tr></table>";
 
 	echo "</td></tr><tr><td>"; // ouer table
 
+	start_form();
+	div_start('gl_items');
 	echo "<table width=100% $table_style>";
 
 	$dim = get_company_pref('use_dimension');
@@ -221,7 +224,8 @@ function display_gl_items(&$supp_trans, $mode=0)
 			label_cell($entered_gl_code->memo_);
 
 			if ($mode == 1)
-				delete_link_cell(SID . "Delete=" . $entered_gl_code->Counter);
+				edit_button_cell("Delete" . $entered_gl_code->Counter, _("Delete"),
+					  _('Remove line from document'));
 
 			end_row();
 
@@ -245,7 +249,8 @@ function display_gl_items(&$supp_trans, $mode=0)
     echo "</td></tr>";
 
     end_table(); // outertable
-
+	end_form();
+	div_end();
 	return $total_gl_value;
 }
 
@@ -281,17 +286,19 @@ function display_grn_items(&$supp_trans, $mode=0)
 		$heading = _("Received Items Charged on this Invoice");
 	else
 		$heading = _("Received Items Credited on this Note");
-
 	echo "<table width=100% >";
 	echo "<tr><td align=center><span class='headingtext'>$heading</span></td>";
 	if ($mode == 0)
 	{
-		submit_cells('InvGRN', _("Edit"), "align=right");
+		submit_cells('InvGRN', _("Edit"), "align=right",
+			_('Moves to GRN selection page'), true);
 	}
 	echo "</tr></table>";
 
 	echo "</td></tr><tr><td>"; // outer table
 
+  div_start('grn_items');
+  start_form();
 	echo "<table width=100% $table_style>";
 	$th = array(_("Delivery Sequence #"), _("Item"), _("Description"),
 		_("Quantity"), _("Price"), _("Line Value"));
@@ -316,7 +323,8 @@ function display_grn_items(&$supp_trans, $mode=0)
 			amount_cell( round($entered_grn->chg_price * abs($entered_grn->this_quantity_inv)), user_price_dec());
 
 			if ($mode == 1)
-				delete_link_cell(SID . "Delete=" . $entered_grn->id);
+				edit_button_cell("Delete" . $entered_grn->id, _("Delete"),
+					  _('Remove item from document'));
 
 			end_row();
 
@@ -335,11 +343,11 @@ function display_grn_items(&$supp_trans, $mode=0)
 	label_row(_("Total"), price_format($total_grn_value),
 		"colspan=5 align=right", "nowrap align=right");
     echo "</table>";
-
+  end_form();
+  div_end();
     echo "</td></tr>";
 
     end_table(); // outertable
-
 	return $total_grn_value;
 }
 

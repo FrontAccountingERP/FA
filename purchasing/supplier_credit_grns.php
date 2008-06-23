@@ -1,13 +1,13 @@
 <?php
 
 $page_security = 5;
-
 $path_to_root="..";
+
 include_once($path_to_root . "/purchasing/includes/supp_trans_class.inc");
 include_once($path_to_root . "/includes/session.inc");
-
 include_once($path_to_root . "/purchasing/includes/purchasing_ui.inc");
 include_once($path_to_root . "/purchasing/includes/purchasing_db.inc");
+
 $js = "";
 if ($use_date_picker)
 	$js .= get_js_date_picker();
@@ -71,16 +71,17 @@ if (isset($_POST['AddGRNToTrans']))
 }
 
 //-----------------------------------------------------------------------------------------
-
-if (isset($_GET['Delete']))
+$id = find_submit('Delete');
+if ($id != -1)
 {
-	$_SESSION['supp_trans']->remove_grn_from_trans($_GET['Delete']);
+	$_SESSION['supp_trans']->remove_grn_from_trans($id);
+	$Ajax->activate('grn_items');
+	$Ajax->activate('grn_table');
 }
 
 //-----------------------------------------------------------------------------------------
 
 display_grn_items($_SESSION['supp_trans'], 1);
-
 echo "<br>";
 
 hyperlink_no_params("$path_to_root/purchasing/supplier_credit.php", _("Return to Credit Note Entry"));
@@ -104,6 +105,7 @@ if (db_num_rows($result) == 0)
 /*Set up a table to show the GRN items outstanding for selection */
 start_form(false, true);
 
+div_start('grn_table');
 start_table("$table_style width=95%");
 $th = array(_("Delivery"), _("Sequence #"), _("Order"), _("Item Code"), _("Description"),
 	_("Delivered"), _("Total Qty Received"), _("Qty Already Invoiced"),
@@ -128,7 +130,7 @@ while ($myrow = db_fetch($result))
 		alt_table_row_color($k);
 
 		label_cell(get_trans_view_str(25, $myrow["grn_batch_id"]));
-		submit_cells('grn_item_id', $myrow["id"]);
+       	submit_cells('grn_item_id'.$myrow["id"], $myrow["id"], '', '', true);
 		label_cell(get_trans_view_str(systypes::po(), $myrow["purch_order_no"]));
         label_cell($myrow["item_code"]);
         label_cell($myrow["description"]);
@@ -150,13 +152,27 @@ while ($myrow = db_fetch($result))
 }
 
 end_table();
+div_end();
 
 //-----------------------------------------------------------------------------------------
+$id = find_submit('grn_item_id');
+if ($id || get_post('AddGRNToTrans'))
+{
+	$Ajax->activate('grn_selector');
+}
+if (get_post('AddGRNToTrans')) 
+{
+	$Ajax->activate('grn_table');
+	$Ajax->activate('grn_items');
+}
 
-if (isset($_POST['grn_item_id']) && $_POST['grn_item_id'] != "")
+
+div_start('grn_selector');
+$id = find_submit('grn_item_id');
+if ($id != -1)
 {
 
-	$myrow = get_grn_item_detail($_POST['grn_item_id']);
+	$myrow = get_grn_item_detail($id);
 
 	echo "<br>";
 	display_heading2(_("Delivery Item Selected For Adding To A Supplier Credit Note"));
@@ -166,7 +182,7 @@ if (isset($_POST['grn_item_id']) && $_POST['grn_item_id'] != "")
 	table_header($th);
 
 	start_row();
-	label_cell($_POST['grn_item_id']);
+	label_cell($id);
     label_cell($myrow['item_code'] . " " . $myrow['description']);
     $dec = get_qty_dec($myrow['item_code']);
     qty_cell($myrow["quantity_inv"], false, $dec);
@@ -176,9 +192,9 @@ if (isset($_POST['grn_item_id']) && $_POST['grn_item_id'] != "")
     end_row();
 	end_table(1);
 
-	submit_center('AddGRNToTrans', _("Add to Credit Note"));
+	submit_center('AddGRNToTrans', _("Add to Credit Note"), true, '', true);
 
-	hidden('GRNNumber', $_POST['grn_item_id']);
+	hidden('GRNNumber', $id);
 	hidden('item_code', $myrow['item_code']);;
 	hidden('item_description', $myrow['description']);
 	hidden('qty_recd', $myrow['qty_recd']);
@@ -188,7 +204,9 @@ if (isset($_POST['grn_item_id']) && $_POST['grn_item_id'] != "")
 
 	hidden('po_detail_item', $myrow['po_detail_item']);
 }
+div_end();
 
 end_form();
-end_page();
+echo '<br>';
+end_page(false, true);
 ?>

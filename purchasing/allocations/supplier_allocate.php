@@ -1,17 +1,15 @@
 <?php
 
 $path_to_root="../..";
-include($path_to_root . "/includes/ui/allocation_cart.inc");
 $page_security = 3;
 
+include($path_to_root . "/includes/ui/allocation_cart.inc");
 include_once($path_to_root . "/includes/session.inc");
-
 include_once($path_to_root . "/includes/date_functions.inc");
-
 include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/includes/banking.inc");
-
 include_once($path_to_root . "/sales/includes/sales_db.inc");
+
 $js = "";
 if ($use_popup_windows)
 	$js .= get_js_open_window(900, 500);
@@ -19,7 +17,6 @@ if ($use_popup_windows)
 add_js_file('allocate.js');
 
 page(_("Allocate Supplier Payment or Credit Note"), false, false, "", $js);
-
 
 //--------------------------------------------------------------------------------
 
@@ -30,23 +27,20 @@ function clear_allocations()
 		unset($_SESSION['alloc']->allocs);
 		unset($_SESSION['alloc']);
 	}
-
 	session_register("alloc");
 }
-
 //--------------------------------------------------------------------------------
 
 function check_data()
 {
 	$total_allocated = 0;
 
-	for ($counter=0; $counter < $_POST["TotalNumberOfAllocs"]; $counter++)
+	for ($counter = 0; $counter < $_POST["TotalNumberOfAllocs"]; $counter++)
 	{
-
 		if (!check_num('amount' . $counter, 0))
 		{
 			display_error(_("The entry for one or more amounts is invalid or negative."));
-			set_focus('amount');
+			set_focus('amount'.$counter);
 			return false;
 		 }
 
@@ -115,7 +109,6 @@ if (isset($_POST['Process']))
 		handle_process();
 		$_POST['Cancel'] = 1;
 	}
-	$Ajax->update('_page_body');
 }
 
 //--------------------------------------------------------------------------------
@@ -124,10 +117,6 @@ if (isset($_POST['Cancel']))
 {
 	clear_allocations();
 	meta_forward($path_to_root . "/purchasing/allocations/supplier_allocation_main.php");
-}
-if (isset($_POST['UpdateDisplay']))
-{
-	$Ajax->update('_page_body');
 }
 //--------------------------------------------------------------------------------
 
@@ -190,6 +179,7 @@ function edit_allocations_for_transaction($type, $trans_no)
 
     echo "<br>";
 
+  	div_start('alloc_tbl');
     if (count($_SESSION['alloc']->allocs) > 0)
     {
 		start_table($table_style);
@@ -210,20 +200,15 @@ function edit_allocations_for_transaction($type, $trans_no)
     		amount_cell($alloc_item->amount);
 		amount_cell($alloc_item->amount_allocated);
 
-    	    if (!isset($_POST['amount' . $counter]) || $_POST['amount' . $counter] == "")
-    	    	$_POST['amount' . $counter] = price_format($alloc_item->current_allocated);
+    	   	$_POST['amount' . $counter] = price_format($alloc_item->current_allocated);
     	    amount_cells(null, "amount" . $counter, price_format('amount' . $counter));
 
     		$un_allocated = round($alloc_item->amount - $alloc_item->amount_allocated, 6);
-    		//hidden("un_allocated" . $counter, $un_allocated);
     		amount_cell($un_allocated);
 			label_cell("<a href='#' name=Alloc$counter onclick='allocate_all(this.name.substr(5));return true;'>"
 					 . _("All") . "</a>");
 			label_cell("<a href='#' name=DeAll$counter onclick='allocate_none(this.name.substr(5));return true;'>"
 					 . _("None") . "</a>".hidden("un_allocated" . $counter, $un_allocated, false));
-
-//			label_cell("<a href='#' onclick='forms[0].amount$counter.value=forms[0].un_allocated$counter.value; return true;'>" . _("All") . "</a>");
-//			label_cell("<a href='#' onclick='forms[0].amount$counter.value=0; return true;'>" . _("None") . "</a>");
 			end_row();
 
     	    $total_allocated += input_num('amount' . $counter);
@@ -245,22 +230,20 @@ function edit_allocations_for_transaction($type, $trans_no)
 		end_table();
 
 		hidden('TotalNumberOfAllocs', $counter);
-//		hidden('left_to_allocate', $left_to_allocate);
-    	echo "<br><center>";
-       	submit('UpdateDisplay', _("Update"), true, '', true);
-       	echo "&nbsp;";
-       	submit('Process', _("Process"), true, '', true);
-       	echo "&nbsp;";
+
+     	submit_center_first('UpdateDisplay', _("Refresh"), _('Start again allocation of selected amount'), true);
+       	submit('Process', _("Process"), true, _('Process allocations'), true);
+   		submit_center_last('Cancel', _("Back to Allocations"),
+			_('Abandon allocations and return to selection of allocatable amounts'), true);
 	}
 	else
 	{
     	display_note(_("There are no unsettled transactions to allocate."), 0, 1);
-    	echo "<center>";
+   		submit_center('Cancel', _("Back to Allocations"), true,
+			_('Abandon allocations and return to selection of allocatable amounts'), true);
     }
 
-   	submit('Cancel', _("Back to Allocations"), true, '', true);
-   	echo "</center><br><br>";
-
+	div_end();
 	end_form();
 }
 
@@ -269,6 +252,14 @@ function edit_allocations_for_transaction($type, $trans_no)
 if (isset($_GET['trans_no']) && isset($_GET['trans_type']))
 {
 	get_allocations_for_transaction($_GET['trans_type'], $_GET['trans_no']);
+}
+if(get_post('UpdateDisplay'))
+{
+	$trans_no = $_SESSION['alloc']->trans_no;
+	$type = $_SESSION['alloc']->type;
+	clear_allocations();
+	get_allocations_for_transaction($type, $trans_no);
+	$Ajax->activate('alloc_tbl');
 }
 
 if (isset($_SESSION['alloc']))
