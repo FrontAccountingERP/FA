@@ -28,7 +28,7 @@ function end_form($breaks=0)
 {
 	if ($breaks)
 		br($breaks);
-	echo "<input type=\"hidden\" name=\"_focus\" value=\"".$_POST['_focus']."\">\n";
+	echo "<input type=\"hidden\" name=\"_focus\" value=\"".get_post('_focus')."\">\n";
 	echo "</form>\n";
 }
 
