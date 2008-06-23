@@ -130,7 +130,8 @@
 //
 //	User price formatting
 //
-function price_format(post, num, dec, label) {
+function price_format(post, num, dec, label, color) {
+	var el = label ? document.getElementById(post) : document.getElementsByName(post)[0];
 	//num = num.toString().replace(/\$|\,/g,'');
 	if(isNaN(num))
 		num = "0";
@@ -149,9 +150,12 @@ function price_format(post, num, dec, label) {
 	 num = ((sign)?'':'-') + num;
 	 if(dec!=0) num = num + user.ds + cents;
 	if(label)
-	    document.getElementById(post).innerHTML = num;
+	    el.innerHTML = num;
 	else
-	    document.getElementsByName(post)[0].value = num;
+	    el.value = num;
+	if(color) {
+			el.style.color = (sign) ? '' : '#FF0000';
+	}
 }
 
 function get_amount(doc, label) {

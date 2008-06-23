@@ -184,7 +184,7 @@ var inserts = {
 					JsHttpRequest.request('_'+this.name+'_changed', this.form);
 				}
 			}
-    	  	e.onkeydown = function(ev) { 
+/*    	  	e.onkeydown = function(ev) { 
 	  			ev = ev||window.event;
 	  			key = ev.keyCode||ev.which;
 	  			if (key == 13 && (this.value != this.getAttribute('_last_val'))) {
@@ -192,7 +192,7 @@ var inserts = {
   		 	  		return false;
 	  			}
 		  	}
-		},
+*/		},
 	'select': function(e) {
 		if(e.onfocus==undefined) {
 			e.onfocus = function() {
