@@ -55,15 +55,6 @@ function display_po_header(&$order)
         	$_POST['supplier_id'] = get_global_supplier();
 
     	supplier_list_row(_("Supplier:"), 'supplier_id', null, false, true);
-
-    	if ($order->supplier_id != $_POST['supplier_id'])
-    	{
-    		// supplier has changed
-    		// delete all the order items - drastic but necessary because of
-    		// change of currency, etc
-    		$order->clear_items();
-		// FIX
-    	}
 	}
 	else
 	{
@@ -84,11 +75,9 @@ function display_po_header(&$order)
 
 	if (!is_company_currency($order->curr_code))
 	{
-//FIX div currency ?
 		label_row(_("Supplier Currency:"), $order->curr_code);
 		exchange_rate_display($order->curr_code, get_company_currency(),
 			$_POST['OrderDate']);
-
 	}
 
     if ($editable)
@@ -188,7 +177,6 @@ function display_po_items(&$order, $editable=true)
 		if ($po_line->Deleted == false)
 		{
     		$line_total =	round($po_line->quantity * $po_line->price,  user_price_dec());
-//    		if (!$editable || ($id != $po_line->line_no))
     		if (!$editable || ($id != $line_no))
 			{
     			alt_table_row_color($k);
@@ -206,8 +194,6 @@ function display_po_items(&$order, $editable=true)
 					  _('Edit document line'));
 					edit_button_cell("Delete$line_no", _("Delete"),
 					  _('Remove line from document'));
-//                    edit_link_cell(SID."Edit=" . $po_line->line_no);
-//                    delete_link_cell(SID."Delete=" . $po_line->line_no);
                 }
         		end_row();
 			}
@@ -289,19 +275,15 @@ function po_item_controls(&$order, $stock_id=null)
 	start_row();
 
 	$id = find_submit('Edit');
-	if ($id && $stock_id != null)
+	if (($id != -1) && $stock_id != null)
 	{
 		hidden('line_no', $id);
 
-		if (!isset($_POST['stock_id']))
-			$_POST['stock_id'] = $order->line_items[$id]->stock_id;
-		$dec = get_qty_dec($_POST['stock_id']);
-		if (!isset($_POST['qty']) || ($_POST['qty'] == ""))
-			$_POST['qty'] = qty_format($order->line_items[$id]->quantity, $_POST['stock_id'], $dec);
-		if (!isset($_POST['price']) || ($_POST['price'] == ""))
-			$_POST['price'] = price_format($order->line_items[$id]->price);
-		if (!isset($_POST['req_del_date']) || ($_POST['req_del_date'] == ""))
-			$_POST['req_del_date'] = $order->line_items[$id]->req_del_date;
+		$_POST['stock_id'] = $order->line_items[$id]->stock_id;
+			$dec = get_qty_dec($_POST['stock_id']);
+		$_POST['qty'] = qty_format($order->line_items[$id]->quantity, $_POST['stock_id'], $dec);
+		$_POST['price'] = price_format($order->line_items[$id]->price);
+		$_POST['req_del_date'] = $order->line_items[$id]->req_del_date;
 
 		$_POST['units'] = $order->line_items[$id]->units;
 
