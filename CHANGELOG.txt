@@ -19,6 +19,32 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+23-Jun-2008 Janusz Dobrowolski
++ Ajax additions to sales and purchasing modules
+  /purchasing/po_receive_items.php
+  /purchasing/supplier_credit.php
+  /purchasing/supplier_credit_grns.php
+  /purchasing/supplier_invoice.php
+  /purchasing/supplier_invoice_grns.php
+  /purchasing/supplier_trans_gl.php
+  /purchasing/allocations/supplier_allocate.php
+  /purchasing/includes/ui/invoice_ui.inc
+  /sales/customer_credit_invoice.php
+  /sales/allocations/customer_allocate.php
+# Fixed edition of purchase order (bug #0000001)
+  /purchasing/includes/ui/po_ui.inc
+! Improved client side allocation functions
+$ /js/allocate.js
+  /js/inserts.js
++ Optional coloured price_format()
+  /js/utils.js
+! Async update of locations selector
+$ /includes/ui/ui_lists.inc
+# Fixed warning on pages without default focus.
+$ /includes/ui/ui_controls.inc
+# Fixed initial display for numeric inputs with dec=0. 
+$ /includes/ui/ui_input.inc
+
 21-Jun-2008 Janusz Dobrowolski
 + Ajax additions to sales and purchasing modules
 $ /purchasing/po_entry_items.php
