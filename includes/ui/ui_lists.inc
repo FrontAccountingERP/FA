@@ -356,8 +356,7 @@ return combo_input($name, $selected_id, $sql, 'loc_code', 'location_name',
 	array(
 		'spec_option' => $all_option === true ? _("All Locations") : $all_option,
 		'spec_id' => $all_items,
-		'select_submit'=> $submit_on_change,
-		'async' => false
+		'select_submit'=> $submit_on_change
 	) );
 }
 
