@@ -420,7 +420,7 @@ function amount_cells_ex($label, $name, $size, $max=null, $init=null, $params=nu
 	  	$dec = user_price_dec();
 	if (!isset($_POST[$name]) || $_POST[$name] == "")
 	{
-		if ($init)
+		if ($init !== null)
 			$_POST[$name] = $init;
 		else
 			$_POST[$name] = '';
