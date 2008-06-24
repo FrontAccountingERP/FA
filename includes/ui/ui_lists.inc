@@ -701,7 +701,7 @@ function stock_item_types_list_row($label, $name, $selected_id, $enabled=true)
 	echo "<td>";
 	if ($enabled)
 		$sel = "<select name='$name' onchange='JsHttpRequest.request(\"_{$name}_update\", this.form);'>\n";
-		
+
 	else
 		$sel =  "<select disabled name='$name'>\n";
 	if ($selected_id == null)
@@ -758,7 +758,7 @@ function tax_types_list($name, $selected_id, $none_option=false, $submit_on_chan
 	return combo_input($name, $selected_id, $sql, 'id', 'name',
 	array(
 		'spec_option' => $none_option,
-		'spec_id' => 0,
+		'spec_id' => reserved_words::get_all_numeric(),
 		'select_submit'=> $submit_on_change,
 		'async' => false,
 	) );
