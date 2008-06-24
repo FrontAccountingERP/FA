@@ -185,8 +185,8 @@ function display_gl_items(&$supp_trans, $mode=0)
 
 	echo "</td></tr><tr><td>"; // ouer table
 
-	start_form();
 	div_start('gl_items');
+	start_form();
 	echo "<table width=100% $table_style>";
 
 	$dim = get_company_pref('use_dimension');

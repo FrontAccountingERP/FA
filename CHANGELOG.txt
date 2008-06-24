@@ -19,6 +19,17 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+24-Jun-2008 Joe Hunt
+# Fixed inconsistencies in customer and supplier aging 
+$ /sales/includes/db/customers_db.inc
+  /sales/inquiry/customer_inquiry.php
+  /purchasing/includes/db/suppliers_db.inc
+  /reporting/rep102.php
+  /reporting/rep202.php
+# Fixed a bug when trying to back the inv.date and due date in Direct Invoicing.
+$ /sales/sales_order_entry.php
+
+
 23-Jun-2008 Janusz Dobrowolski
 + Ajax additions to sales and purchasing modules
   /purchasing/po_receive_items.php

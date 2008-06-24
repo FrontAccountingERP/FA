@@ -16,68 +16,15 @@ function get_customer_details($customer_id, $to=null)
       "(".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + "
 		.TB_PREF."debtor_trans.ov_freight + ".TB_PREF."debtor_trans.ov_freight_tax + "
 		.TB_PREF."debtor_trans.ov_discount)";
-
+	$due = "IF (".TB_PREF."debtor_trans.type=10,".TB_PREF."debtor_trans.due_date,".TB_PREF."debtor_trans.tran_date)";
     $sql = "SELECT ".TB_PREF."debtors_master.name, ".TB_PREF."debtors_master.curr_code, ".TB_PREF."payment_terms.terms,
 		".TB_PREF."debtors_master.credit_limit, ".TB_PREF."credit_status.dissallow_invoices, ".TB_PREF."credit_status.reason_description,
 
 		Sum(".$value.") AS Balance,
 
-		Sum(IF (".TB_PREF."payment_terms.days_before_due > 0,
-			CASE WHEN (TO_DAYS('$todate') - TO_DAYS(".TB_PREF."debtor_trans.tran_date)) >= ".TB_PREF."payment_terms.days_before_due
-			THEN
-			    $value
-			ELSE 0
-			END,
-
-			CASE WHEN TO_DAYS('$todate') - TO_DAYS(DATE_ADD(DATE_ADD(".TB_PREF."debtor_trans.tran_date,
-				INTERVAL 1 MONTH), INTERVAL (".TB_PREF."payment_terms.day_in_following_month -
-				DAYOFMONTH(".TB_PREF."debtor_trans.tran_date)) DAY)) >= 0
-			THEN
-			    $value
-			ELSE 0
-			END
-
-		)) AS Due,
-
-		Sum(IF (".TB_PREF."payment_terms.days_before_due > 0,
-			CASE WHEN TO_DAYS('$todate') - TO_DAYS(".TB_PREF."debtor_trans.tran_date) > ".TB_PREF."payment_terms.days_before_due
-				AND TO_DAYS('$todate') - TO_DAYS(".TB_PREF."debtor_trans.tran_date) >= (".TB_PREF."payment_terms.days_before_due + $past1)
-			THEN
-				$value
-			ELSE
-				0
-			END,
-
-			CASE WHEN (TO_DAYS('$todate') - TO_DAYS(DATE_ADD(DATE_ADD(".TB_PREF."debtor_trans.tran_date,
-				INTERVAL 1  MONTH), INTERVAL (".TB_PREF."payment_terms.day_in_following_month -
-				DAYOFMONTH(".TB_PREF."debtor_trans.tran_date)) DAY)) >= $past1)
-			THEN
-				$value
-			ELSE
-				0
-			END
-
-		)) AS Overdue1,
-
-		Sum(IF (".TB_PREF."payment_terms.days_before_due > 0,
-			CASE WHEN TO_DAYS('$todate') - TO_DAYS(".TB_PREF."debtor_trans.tran_date) > ".TB_PREF."payment_terms.days_before_due
-				AND TO_DAYS('$todate') - TO_DAYS(".TB_PREF."debtor_trans.tran_date) >= (".TB_PREF."payment_terms.days_before_due + $past2)
-			THEN
-			    $value
-			ELSE
-				0
-			END,
-
-			CASE WHEN (TO_DAYS('$todate') - TO_DAYS(DATE_ADD(DATE_ADD(".TB_PREF."debtor_trans.tran_date,
-				INTERVAL 1  MONTH), INTERVAL (".TB_PREF."payment_terms.day_in_following_month -
-				DAYOFMONTH(".TB_PREF."debtor_trans.tran_date)) DAY)) >= $past2)
-			THEN
-				$value
-			ELSE
-				0
-			END
-
-		)) AS Overdue2
+		Sum(IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= 0,$value,0)) AS Due,
+		Sum(IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= $past1,$value,0)) AS Overdue1,
+		Sum(IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= $past2,$value,0)) AS Overdue2
 
 		FROM ".TB_PREF."debtors_master,
 			 ".TB_PREF."payment_terms,
@@ -100,7 +47,6 @@ function get_customer_details($customer_id, $to=null)
 			  ".TB_PREF."debtors_master.credit_limit,
 			  ".TB_PREF."credit_status.dissallow_invoices,
 			  ".TB_PREF."credit_status.reason_description";
-
     $result = db_query($sql,"The customer details could not be retrieved");
 
     if (db_num_rows($result) == 0)

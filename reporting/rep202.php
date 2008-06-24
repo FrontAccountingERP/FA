@@ -28,76 +28,28 @@ function get_invoices($supplier_id, $to)
 	$PastDueDays2 = 2 * $PastDueDays1;
 
 	// Revomed allocated from sql
-	$sql = "SELECT ".TB_PREF."sys_types.type_name, 
-			".TB_PREF."supp_trans.reference, 
-			".TB_PREF."supp_trans.tran_date, 
-			(".TB_PREF."supp_trans.ov_amount + ".TB_PREF."supp_trans.ov_gst + ".TB_PREF."supp_trans.ov_discount) as Balance,
-			IF (".TB_PREF."payment_terms.days_before_due > 0,
-				CASE WHEN TO_DAYS('$todate') - TO_DAYS(".TB_PREF."supp_trans.tran_date) >= ".TB_PREF."payment_terms.days_before_due 
-				THEN 
-					".TB_PREF."supp_trans.ov_amount + ".TB_PREF."supp_trans.ov_gst + ".TB_PREF."supp_trans.ov_discount 
-				ELSE
-					0 
-				END,
-				
-				CASE WHEN TO_DAYS('$todate') - TO_DAYS(DATE_ADD(DATE_ADD(".TB_PREF."supp_trans.tran_date, 
-					INTERVAL 1 MONTH), INTERVAL (".TB_PREF."payment_terms.day_in_following_month - 
-					DAYOFMONTH(".TB_PREF."supp_trans.tran_date)) DAY)) >= 0 
-				THEN 
-					".TB_PREF."supp_trans.ov_amount + ".TB_PREF."supp_trans.ov_gst + ".TB_PREF."supp_trans.ov_discount 
-				ELSE 
-					0 
-				END
-			) AS Due,
-			IF (".TB_PREF."payment_terms.days_before_due > 0,
-				CASE WHEN TO_DAYS('$todate') - TO_DAYS(".TB_PREF."supp_trans.tran_date) > ".TB_PREF."payment_terms.days_before_due 
-					AND TO_DAYS('$todate') - TO_DAYS(".TB_PREF."supp_trans.tran_date) >= (".TB_PREF."payment_terms.days_before_due + $PastDueDays1) 
-				THEN 
-					".TB_PREF."supp_trans.ov_amount + ".TB_PREF."supp_trans.ov_gst + ".TB_PREF."supp_trans.ov_discount 
-				ELSE 
-					0 
-				END,
+    $value = "(".TB_PREF."supp_trans.ov_amount + ".TB_PREF."supp_trans.ov_gst + ".TB_PREF."supp_trans.ov_discount)";
+	$due = "IF (".TB_PREF."supp_trans.type=20 OR ".TB_PREF."supp_trans.type=21,".TB_PREF."supp_trans.due_date,".TB_PREF."supp_trans.tran_date)";
+	$sql = "SELECT ".TB_PREF."sys_types.type_name,
+		".TB_PREF."supp_trans.reference,
+		".TB_PREF."supp_trans.tran_date,
+		$value as Balance,
+		IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= 0,$value,0) AS Due,
+		IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= $PastDueDays1,$value,0) AS Overdue1,
+		IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= $PastDueDays2,$value,0) AS Overdue2
 
-				CASE WHEN TO_DAYS('$todate') - TO_DAYS(DATE_ADD(DATE_ADD(".TB_PREF."supp_trans.tran_date, 
-					INTERVAL 1 MONTH), INTERVAL (".TB_PREF."payment_terms.day_in_following_month - 
-					DAYOFMONTH(".TB_PREF."supp_trans.tran_date)) DAY)) >= $PastDueDays1 
-				THEN 
-					".TB_PREF."supp_trans.ov_amount + ".TB_PREF."supp_trans.ov_gst + ".TB_PREF."supp_trans.ov_discount 
-				ELSE 
-					0 
-				END
-			) AS Overdue1,
-			IF (".TB_PREF."payment_terms.days_before_due > 0,
-				CASE WHEN TO_DAYS('$todate') - TO_DAYS(".TB_PREF."supp_trans.tran_date) > ".TB_PREF."payment_terms.days_before_due 
-					AND TO_DAYS('$todate') - TO_DAYS(".TB_PREF."supp_trans.tran_date) >= (".TB_PREF."payment_terms.days_before_due + $PastDueDays2) 
-				THEN 
-					".TB_PREF."supp_trans.ov_amount + ".TB_PREF."supp_trans.ov_gst + ".TB_PREF."supp_trans.ov_discount 
-				ELSE 
-					0 
-				END,
+		FROM ".TB_PREF."suppliers,
+			".TB_PREF."payment_terms,
+			".TB_PREF."supp_trans,
+			".TB_PREF."sys_types
 
-				CASE WHEN TO_DAYS('$todate') - TO_DAYS(DATE_ADD(DATE_ADD(".TB_PREF."supp_trans.tran_date,
-					INTERVAL 1 MONTH), INTERVAL (".TB_PREF."payment_terms.day_in_following_month - 
-					DAYOFMONTH(".TB_PREF."supp_trans.tran_date)) DAY)) >= $PastDueDays2 
-				THEN 
-					".TB_PREF."supp_trans.ov_amount + ".TB_PREF."supp_trans.ov_gst + ".TB_PREF."supp_trans.ov_discount 
-				ELSE 
-					0 
-				END
-			) AS Overdue2
-	   
-	   		FROM ".TB_PREF."suppliers, 
-				".TB_PREF."payment_terms, 
-				".TB_PREF."supp_trans, 
-				".TB_PREF."sys_types
-	   
-	   		WHERE ".TB_PREF."sys_types.type_id = ".TB_PREF."supp_trans.type 
-				AND ".TB_PREF."suppliers.payment_terms = ".TB_PREF."payment_terms.terms_indicator 
-				AND ".TB_PREF."suppliers.supplier_id = ".TB_PREF."supp_trans.supplier_id
-				AND ".TB_PREF."supp_trans.supplier_id = $supplier_id 
-				AND ".TB_PREF."supp_trans.tran_date <= '$todate' 
-				AND ABS(".TB_PREF."supp_trans.ov_amount + ".TB_PREF."supp_trans.ov_gst + ".TB_PREF."supp_trans.ov_discount) > 0.004
-				ORDER BY ".TB_PREF."supp_trans.tran_date";
+	   	WHERE ".TB_PREF."sys_types.type_id = ".TB_PREF."supp_trans.type
+			AND ".TB_PREF."suppliers.payment_terms = ".TB_PREF."payment_terms.terms_indicator
+			AND ".TB_PREF."suppliers.supplier_id = ".TB_PREF."supp_trans.supplier_id
+			AND ".TB_PREF."supp_trans.supplier_id = $supplier_id
+			AND ".TB_PREF."supp_trans.tran_date <= '$todate'
+			AND ABS(".TB_PREF."supp_trans.ov_amount + ".TB_PREF."supp_trans.ov_gst + ".TB_PREF."supp_trans.ov_discount) > 0.004
+			ORDER BY ".TB_PREF."supp_trans.tran_date";
 
 
 	return db_query($sql, "The supplier details could not be retrieved");
@@ -121,8 +73,8 @@ function print_aged_supplier_analysis()
 	{
 		include_once($path_to_root . "reporting/includes/class.graphic.inc");
 		$pg = new graph();
-	}	
-    
+	}
+
 	if ($fromsupp == reserved_words::get_all_numeric())
 		$from = _('All');
 	else
@@ -150,7 +102,7 @@ function print_aged_supplier_analysis()
 
 	$headers = array(_('Supplier'),	'',	'',	_('Current'), $nowdue, $pastdue1,$pastdue2,
 		_('Total Balance'));
-	
+
 	$aligns = array('left',	'left',	'left',	'right', 'right', 'right', 'right',	'right');
 
     $params =   array( 	0 => $comments,
@@ -175,14 +127,14 @@ function print_aged_supplier_analysis()
 	$nowdue = "1-" . $PastDueDays1 . " " . _('Days');
 	$pastdue1 = $PastDueDays1 + 1 . "-" . $PastDueDays2 . " " . _('Days');
 	$pastdue2 = _('Over') . " " . $PastDueDays2 . " " . _('Days');
-	
+
 	$sql = "SELECT supplier_id, supp_name AS name, curr_code FROM ".TB_PREF."suppliers ";
 	if ($fromsupp != reserved_words::get_all_numeric())
 		$sql .= "WHERE supplier_id=$fromsupp ";
 	$sql .= "ORDER BY supp_name";
 	$result = db_query($sql, "The suppliers could not be retrieved");
-	
-	while ($myrow=db_fetch($result)) 
+
+	while ($myrow=db_fetch($result))
 	{
 		if (!$convert && $currency != $myrow['curr_code'])
 			continue;
@@ -197,7 +149,7 @@ function print_aged_supplier_analysis()
 			$rate = 1.0;
 		$rep->fontSize -= 2;
 		$supprec = get_supplier_details($myrow['supplier_id'], $to);
-		foreach ($supprec as $i => $value) 
+		foreach ($supprec as $i => $value)
 			$supprec[$i] *= $rate;
 		$total[0] += ($supprec["Balance"] - $supprec["Due"]);
 		$total[1] += ($supprec["Due"]-$supprec["Overdue1"]);
@@ -211,7 +163,7 @@ function print_aged_supplier_analysis()
 			number_format2($supprec["Balance"],$dec));
 		for ($i = 0; $i < count($str); $i++)
 			$rep->TextCol($i + 3, $i + 4, $str[$i]);
-		$rep->NewLine(1, 2);	
+		$rep->NewLine(1, 2);
 		if (!$summaryOnly)
 		{
 			$res = get_invoices($myrow['supplier_id'], $to);
@@ -224,7 +176,7 @@ function print_aged_supplier_analysis()
         		$rep->TextCol(0, 1,	$trans['type_name'], -2);
 				$rep->TextCol(1, 2,	$trans['reference'], -2);
 				$rep->TextCol(2, 3,	sql2date($trans['tran_date']), -2);
-				foreach ($trans as $i => $value) 
+				foreach ($trans as $i => $value)
 					$trans[$i] *= $rate;
 				$str = array(number_format2(($trans["Balance"] - $trans["Due"]),$dec),
 					number_format2(($trans["Due"]-$trans["Overdue1"]),$dec),
@@ -233,10 +185,10 @@ function print_aged_supplier_analysis()
 					number_format2($trans["Balance"],$dec));
 				for ($i = 0; $i < count($str); $i++)
 					$rep->TextCol($i + 3, $i + 4, $str[$i]);
-			}					
+			}
 			$rep->Line($rep->row - 8);
 			$rep->NewLine(2);
-		}	
+		}
 	}
 	if ($summaryOnly)
 	{
@@ -252,8 +204,8 @@ function print_aged_supplier_analysis()
 		if ($graphics && $i < count($total) - 1)
 		{
 			$pg->y[$i] = abs($total[$i]);
-		}	
-	}	
+		}
+	}
    	$rep->Line($rep->row  - 8);
    	if ($graphics)
    	{

@@ -150,7 +150,7 @@ function get_transactions()
 div_start('totals_tbl');
 if ($_POST['customer_id'] != "" && $_POST['customer_id'] != reserved_words::get_all())
 {
-	$customer_record = get_customer_details($_POST['customer_id']);
+	$customer_record = get_customer_details($_POST['customer_id'], $_POST['TransToDate']);
     display_customer_summary($customer_record);
     echo "<br>";
 }
@@ -160,7 +160,7 @@ div_end();
 $result = get_transactions();
 
 //------------------------------------------------------------------------------------------------
-if(get_post('RefreshInquiry')) 
+if(get_post('RefreshInquiry'))
 {
 	$Ajax->activate('trans_tbl');
 	$Ajax->activate('totals_tbl');
