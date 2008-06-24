@@ -232,7 +232,8 @@ function can_process() {
 		set_focus('delivery_date');
 		return false;
 	}
-	if (date1_greater_date2($_SESSION['Items']->document_date, $_POST['delivery_date'])) {
+	//if (date1_greater_date2($_SESSION['Items']->document_date, $_POST['delivery_date'])) {
+	if (date1_greater_date2($_POST['OrderDate'], $_POST['delivery_date'])) {
 		display_error(_("The requested delivery date is before the date of the order."));
 		set_focus('delivery_date');
 		return false;
