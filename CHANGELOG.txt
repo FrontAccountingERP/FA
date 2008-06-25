@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+25-Jun-2008 Joe Hunt
+# Fixed 'div end out of order' in invoice_ui.inc causing the newwave bug with missing menu
+$ /purchasing/includes/ui/invoice_ui.inc
+
 25-Jun-2008 Janusz Dobrowolski
 # Fixed bug 0000004, removed nested forms in supplier invoice/credit
 $ /purchasing/includes/ui/invoice_ui.inc

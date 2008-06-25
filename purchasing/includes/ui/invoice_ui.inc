@@ -244,11 +244,11 @@ function display_gl_items(&$supp_trans, $mode=0)
 		"colspan=".$colspan." align=right", "nowrap align=right");
 
 	echo "</table>";
+	div_end();
 
     echo "</td></tr>";
 
     end_table(); // outertable
-	div_end();
 	return $total_gl_value;
 }
 
