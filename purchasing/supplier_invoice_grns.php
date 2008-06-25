@@ -109,7 +109,9 @@ if ($id != -1)
 }
 
 //-----------------------------------------------------------------------------------------
+start_form(false,true);
 display_grn_items($_SESSION['supp_trans'], 1);
+end_form();
 echo "<br>";
 
 hyperlink_no_params("$path_to_root/purchasing/supplier_invoice.php", _("Back to Supplier Invoice Entry"));

@@ -91,8 +91,9 @@ if ($id != -1)
 
 display_heading($_SESSION['supp_trans']->supplier_name);
 
+start_form(false,true);
 display_gl_items($_SESSION['supp_trans'], 1);
-
+end_form();
 echo "<br>";
 
 if ($_SESSION['supp_trans']->is_invoice == true)
