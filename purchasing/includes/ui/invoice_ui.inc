@@ -186,7 +186,6 @@ function display_gl_items(&$supp_trans, $mode=0)
 	echo "</td></tr><tr><td>"; // ouer table
 
 	div_start('gl_items');
-	start_form();
 	echo "<table width=100% $table_style>";
 
 	$dim = get_company_pref('use_dimension');
@@ -249,7 +248,6 @@ function display_gl_items(&$supp_trans, $mode=0)
     echo "</td></tr>";
 
     end_table(); // outertable
-	end_form();
 	div_end();
 	return $total_gl_value;
 }
@@ -298,7 +296,6 @@ function display_grn_items(&$supp_trans, $mode=0)
 	echo "</td></tr><tr><td>"; // outer table
 
   div_start('grn_items');
-  start_form();
 	echo "<table width=100% $table_style>";
 	$th = array(_("Delivery Sequence #"), _("Item"), _("Description"),
 		_("Quantity"), _("Price"), _("Line Value"));
@@ -343,8 +340,7 @@ function display_grn_items(&$supp_trans, $mode=0)
 	label_row(_("Total"), price_format($total_grn_value),
 		"colspan=5 align=right", "nowrap align=right");
     echo "</table>";
-  end_form();
-  div_end();
+    div_end();
     echo "</td></tr>";
 
     end_table(); // outertable
