@@ -1,16 +1,16 @@
 <?php
 
 	include_once("./modules/installed_modules.php");
-	class manufacturing_app extends application 
+	class manufacturing_app extends application
 	{
-		function manufacturing_app() 
+		function manufacturing_app()
 		{
 			global $installed_modules;
 			$this->application("manuf",_("Manufacturing"));
 
 			$this->add_module(_("Transactions"));
 			$this->add_lapp_function(0, _("Work Order Entry"),"manufacturing/work_order_entry.php?");
-			$this->add_lapp_function(0, _("Outstanding Work Orders"),"manufacturing/search_work_orders.php?OutstandingOnly=1");
+			$this->add_lapp_function(0, _("Outstanding Work Orders"),"manufacturing/search_work_orders.php?outstanding_only=1");
 
 			$this->add_module(_("Inquiries and Reports"));
 			//$this->add_lapp_function(1, _("Costed Bill Of Material Inquiry"),"manufacturing/inquiry/bom_cost_inquiry.php?");
@@ -28,7 +28,7 @@
 					if ($mod["tab"] == "manuf")
 						$this->add_rapp_function(2, $mod["name"], "modules/".$mod["path"]."/".$mod["filename"]."?");
 				}
-			}	
+			}
 		}
 	}
 
