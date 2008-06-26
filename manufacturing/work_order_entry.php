@@ -282,6 +282,11 @@ if (isset($_POST['close']))
 }
 
 //-------------------------------------------------------------------------------------
+if (get_post('_type_update')) 
+{
+  $Ajax->activate('_page_body');
+}
+//-------------------------------------------------------------------------------------
 
 start_form();
 
@@ -320,7 +325,7 @@ if (isset($selected_id))
 	$_POST['released_date'] = sql2date($myrow["released_date"]);
 	$_POST['memo_'] = "";
 	$_POST['units_issued'] = $myrow["units_issued"];
-	$_POST['Costs'] = price_format($myrow["Costs"]);
+	$_POST['Costs'] = price_format($myrow["additional_costs"]);
 
 	$_POST['memo_'] = get_comments_string(systypes::work_order(), $selected_id);
 
@@ -334,6 +339,7 @@ if (isset($selected_id))
 
 	label_row(_("Reference:"), $_POST['wo_ref']);
 	label_row(_("Type:"), wo_types::name($_POST['type']));
+	hidden('type', $myrow["type"]);
 }
 else
 {
@@ -389,7 +395,7 @@ textarea_row(_("Memo:"), 'memo_', null, 40, 5);
 
 end_table(1);
 
-submit_add_or_update_center(!isset($selected_id));
+submit_add_or_update_center(!isset($selected_id), '', true);
 
 if (isset($selected_id))
 {
@@ -397,9 +403,9 @@ if (isset($selected_id))
 
 	if (isset($_POST['released']))
 	{
-		submit_cells('close', _("Close This Work Order"));
+		submit_cells('close', _("Close This Work Order"),'','',true);
 	}
-	submit_cells('delete', _("Delete This Work Order"));
+	submit_cells('delete', _("Delete This Work Order"),'','',true);
 
 	echo "</tr></table>";
 }
