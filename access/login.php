@@ -40,7 +40,7 @@ function defaultCompany()
             <td align="center" valign="top">
 
 		    <table border="0" cellpadding="0" cellspacing="0">
-			<tr><td colspan=2 align="center"><font size=4><b><?php echo _("Version") . " " . $version . "   Build " . $build_version ?><b><br><br></td></tr>
+			<tr><td colspan=2 align="center"><font size=4><b><?php echo _("Version") . " " . $version . "   Build " . $build_version ?></b></font><br><br></td></tr>
 		        <tr>
 		            <td colspan="2" rowspan="2">
                     <table width="346" border="0" cellpadding="0" cellspacing="0">
@@ -60,7 +60,9 @@ function defaultCompany()
                             <td class="login" colspan="3" valign="top">
                                 <table border="0" cellpadding="3" cellspacing="0" width="100%">
                                     <tr>
-                                        <td align="right"><!--<span class="loginText">Client login<input name="external_login" type="checkbox" value="1" class="loginText"></span>--><br /></td>
+                                        <td align="right">
+                                        <!--<span class="loginText">Client login<input name="external_login" type="checkbox" value="1" class="loginText"></span>-->
+                                        <br /></td>
                                     </tr>
 
                                     <tr>
@@ -69,7 +71,7 @@ function defaultCompany()
                                          <span>Password:</span><br />
                                          <input type="password" name="password">
                                          <br />
-											<span>Company:</span></br>
+											<span>Company:</span><br />
 											<!--<select name="company_login_name" onchange="setCookie()">-->
 											<select name="company_login_name">
 <?php
@@ -102,7 +104,7 @@ for ($i = 0; $i < count($db_connections); $i++)
 		            <!--<td background="<?php echo $def_theme; ?>/images/outline/r.png"><img src="<?php echo $def_theme; ?>/images/outline/r.png" width="10" height="10" alt=""></td>-->
 		        </tr>
 		        <tr>
-					<!--<td background="<?php echo $def_theme; ?>/images/outline/bm.png"><img src="<?php echo $def_theme; ?>/images/outline/bl.png" width="10" height="10" alt=""></td>
+					<!--<td background="<?php echo $def_theme; ?>/images/outline/bm.png"><img src="<?php echo $def_theme; ?>/images/outline/bl.png" width="10" height="10" alt=""></td>-->
 		            <!--<td background="<?php echo $def_theme; ?>/images/outline/bm.png"><img src="<?php echo $def_theme; ?>/images/outline/bm.png" width="10" height="10" alt=""></td>-->
 		            <!--<td><img src="<?php echo $def_theme; ?>/images/outline/br.png" width="10" height="10" alt="" /></td>-->
 		        </tr>

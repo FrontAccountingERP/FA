@@ -19,6 +19,14 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+27-Jun-2008 Joe Hunt
+# Minor html adjustment in login.php
+$ /access/login.php
+# Fixed a bug when trying to create a duplicate year
+$ /admin/fiscalyears.php
+# Fixed a misspelled parameter (OutstandingOnly) in manufacturing.php
+$ /applications/manufacturing.php
+
 26-Jun-2008 Janusz Dobrowolski
 + Ajax additions
 $ /includes/ui/ui_lists.inc
