@@ -19,6 +19,22 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+26-Jun-2008 Janusz Dobrowolski
++ Ajax additions
+$ /includes/ui/ui_lists.inc
+  /inventory/adjustments.php
+  /inventory/cost_update.php
+  /inventory/prices.php
+  /inventory/transfers.php
+  /inventory/includes/item_adjustments_ui.inc
+  /inventory/includes/stock_transfers_ui.inc
+  /inventory/inquiry/stock_movements.php
+  /inventory/manage/items.php
+  /manufacturing/work_order_entry.php
+  /purchasing/po_entry_items.php
+! Changes to items_cart API (line_items indexed by line# instead of stock_id)
+$ /includes/ui/items_cart.inc
+
 25-Jun-2008 Joe Hunt
 # Fixed 'div end out of order' in invoice_ui.inc causing the newwave bug with missing menu
 $ /purchasing/includes/ui/invoice_ui.inc

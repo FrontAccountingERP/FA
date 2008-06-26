@@ -540,7 +540,7 @@ function stock_items_list_cells($label, $name, $selected_id, $all_option=false, 
 	if ($label != null)
 		echo "<td>$label</td>\n";
 	$str = stock_items_list($name, $selected_id, $all_option, $submit_on_change,
-	array('cells'=>true));
+		array('cells'=>true));
 	return $str;
 }
 /*
@@ -642,8 +642,18 @@ function stock_component_items_list($name, $parent_stock_id, $selected_id,
 function stock_costable_items_list($name, $selected_id,
 	$all_option=false, $submit_on_change=false)
 {
-	return base_stock_items_list("mb_flag!='D'", $name, $selected_id,
-		$all_option, $submit_on_change);
+	$str = stock_items_list($name, $selected_id, $all_option, $submit_on_change,
+		array('where'=>array("mb_flag!='D'")));
+	return $str;
+}
+
+function stock_costable_items_list_cells($label, $name, $selected_id, $all_option=false, $submit_on_change=false)
+{
+	if ($label != null)
+		echo "<td>$label</td>\n";
+	$str = stock_items_list($name, $selected_id, $all_option, $submit_on_change,
+		array('where'=>array("mb_flag!='D'"), 'cells'=>true));
+	return $str;
 }
 
 //------------------------------------------------------------------------------------
@@ -1466,8 +1476,8 @@ function wo_types_list($name, $selected_id)
 {
 	$types = wo_types::get_all();
 
-	default_focus($name);	// FIX ajax
-	echo "<select name='$name' onchange='this.form.submit();'>";
+	default_focus($name);
+	echo "<select name='$name' onchange='JsHttpRequest.request(\"_{$name}_update\", this.form);'>";
 
 	if ($selected_id == null)
 		$selected_id = (!isset($_POST[$name]) ? "" : $_POST[$name]);

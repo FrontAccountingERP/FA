@@ -17,6 +17,12 @@ if ($use_date_picker)
 	$js .= get_js_date_picker();
 
 page(_("Inventory Item Movement"), false, false, "", $js);
+//------------------------------------------------------------------------------------------------
+
+if(get_post('ShowMoves')) 
+{
+	$Ajax->activate('doc_tbl');
+}
 
 if (isset($_GET['stock_id']))
 {
@@ -37,7 +43,7 @@ locations_list_cells(_("From Location:"), 'StockLocation', null);
 date_cells(_("From:"), 'AfterDate', '', null, -30);
 date_cells(_("To:"), 'BeforeDate');
 
-submit_cells('ShowMoves',_("Show Movements"));
+submit_cells('ShowMoves',_("Show Movements"),'',_('Refresh Inquiry'), true);
 end_table();
 end_form();
 
@@ -56,6 +62,7 @@ $result = db_query($sql, "could not query stock moves");
 
 check_db_error("The stock movements for the selected criteria could not be retrieved",$sql);
 
+div_start('doc_tbl');
 start_table("$table_style width=70%");
 $th = array(_("Type"), _("#"), _("Reference"), _("Date"), _("Detail"),
 	_("Quantity In"), _("Quantity Out"), _("Quantity On Hand"));
@@ -114,7 +121,6 @@ while ($myrow = db_fetch($result))
 	label_cell(get_trans_view_str($myrow["type"], $myrow["trans_no"]));
 
 	label_cell(get_trans_view_str($myrow["type"], $myrow["trans_no"], $myrow["reference"]));
-
 	label_cell($trandate);
 
 	$person = $myrow["person_id"];
@@ -179,7 +185,7 @@ while ($myrow = db_fetch($result))
 //}
 
 end_table(1);
-
+div_end();
 end_page();
 
 ?>

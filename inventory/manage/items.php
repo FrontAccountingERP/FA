@@ -13,6 +13,7 @@ include_once($path_to_root . "/includes/data_checks.inc");
 include_once($path_to_root . "/inventory/includes/inventory_db.inc");
 
 $user_comp = user_company();
+$new_item = (!isset($_POST['stock_id']) || $_POST['stock_id'] == ""); 
 //------------------------------------------------------------------------------------
 
 if (isset($_GET['stock_id']))
@@ -24,15 +25,17 @@ else if (isset($_POST['stock_id']))
 	$stock_id = strtoupper($_POST['stock_id']);
 }
 
-if (isset($_GET['New']) || !isset($_POST['NewStockID'])) 
-{
-	$_POST['New'] = "1";
-}
-
-if (isset($_POST['SelectStockItem'])) 
-{
+if(get_post('_stock_id_update')) {
 	$_POST['NewStockID'] = $_POST['stock_id'];
-	unset($_POST['New']);
+	if ($new_item) {
+	  clear_data();
+	  set_focus('NewStockID');
+	} else {
+	  set_focus('description');
+	}
+	$Ajax->activate('details');
+	$Ajax->activate('controls');
+//	unset($_POST['New']);
 }
 $upload_file = "";
 if (isset($_FILES['pic']) && $_FILES['pic']['name'] != '') 
@@ -88,6 +91,8 @@ check_db_has_item_tax_types(_("There are no item tax types defined in the system
 
 function clear_data()
 {
+	global $new_item;
+	
 	unset($_POST['long_description']);
 	unset($_POST['description']);
 	unset($_POST['category_id']);
@@ -97,7 +102,7 @@ function clear_data()
 	unset($_POST['NewStockID']);
 	unset($_POST['dimension_id']);
 	unset($_POST['dimension2_id']);
-	$_POST['New'] = "1";
+	$new_item = true;
 }
 
 //------------------------------------------------------------------------------------
@@ -133,7 +138,7 @@ if (isset($_POST['addupdate']))
 	if ($input_error != 1)
 	{
 
-		if (!isset($_POST['New'])) 
+		if (!$new_item) 
 		{ /*so its an existing one */
 
 			update_item($_POST['NewStockID'], $_POST['description'],
@@ -142,6 +147,9 @@ if (isset($_POST['addupdate']))
 				$_POST['adjustment_account'], $_POST['assembly_account'], 
 				$_POST['dimension_id'], $_POST['dimension2_id']);
 
+			display_notification(_("Item has been updated."));
+			set_focus('stock_id');
+			$Ajax->activate('details'); //update image if any
 		} 
 		else 
 		{ //it is a NEW part
@@ -152,8 +160,13 @@ if (isset($_POST['addupdate']))
 				$_POST['inventory_account'], $_POST['cogs_account'],
 				$_POST['adjustment_account'], $_POST['assembly_account'], 
 				$_POST['dimension_id'], $_POST['dimension2_id']);
+
+		display_notification(_("A new item has been added."));
+		$_POST['stock_id'] = $_POST['NewStockID'];
+		$new_item = false;
+		set_focus('stock_id');
+		$Ajax->activate('_page_body');
 		}
-		meta_forward($_SERVER['PHP_SELF']);
 	}
 }
 
@@ -212,7 +225,13 @@ if (isset($_POST['delete']) && strlen($_POST['delete']) > 1)
 		$filename = $comp_path . "/$user_comp/images/$stock_id.jpg";
 		if (file_exists($filename))
 			unlink($filename);
-		meta_forward($_SERVER['PHP_SELF']);
+		display_notification(_("Selected item has been deleted."));
+		$new_item = true;
+		$_POST['stock_id'] = '';
+		clear_data();
+		set_focus('stock_id');
+		$Ajax->activate('_page_body');
+//		meta_forward($_SERVER['PHP_SELF']);
 	}
 }
 
@@ -224,27 +243,27 @@ if (db_has_stock_items())
 {
 	start_table("class='tablestyle_noborder'");
 	start_row();
-    stock_items_list_cells(_("Select an item:"), 'stock_id', null);
-    submit_cells('SelectStockItem', _("Edit Item"));
+    stock_items_list_cells(_("Select an item:"), 'stock_id', null,
+	  _('New item'), true);
+//    submit_cells('SelectStockItem', _("Edit Item"));
 	end_row();
 	end_table();
 }
 
-hyperlink_params($_SERVER['PHP_SELF'], _("Enter a new item"), "New=1");
-echo "<br>";
+//hyperlink_params($_SERVER['PHP_SELF'], _("Enter a new item"), "New=1");
+//echo "<br>";
 
+div_start('details');
 start_table("$table_style2 width=40%");
 
 table_section_title(_("Item"));
 
 //------------------------------------------------------------------------------------
 
-if (!isset($_POST['NewStockID']) || isset($_POST['New'])) 
+if (!isset($_POST['NewStockID']) || $new_item) 
 {
 
 /*If the page was called without $_POST['NewStockID'] passed to page then assume a new item is to be entered show a form with a part Code field other wise the form showing the fields with the existing entries against the part will show for editing with only a hidden stock_id field. New is set to flag that the page may have called itself and still be entering a new part, in which case the page needs to know not to go looking up details for an existing part*/
-
-	hidden('New', 'Yes');
 
 	text_row(_("Item Code:"), 'NewStockID', null, 21, 20);
 
@@ -269,7 +288,7 @@ if (!isset($_POST['NewStockID']) || isset($_POST['New']))
 else 
 { // Must be modifying an existing item
 
-	if (!isset($_POST['New'])) 
+	if (!$new_item) 
 	{
 		$myrow = get_item($_POST['NewStockID']);
 
@@ -320,10 +339,10 @@ stock_categories_list_row(_("Category:"), 'category_id', null);
 item_tax_types_list_row(_("Item Tax Type:"), 'tax_type_id', null);
 
 stock_item_types_list_row(_("Item Type:"), 'mb_flag', null,
-	(!isset($_POST['NewStockID']) || isset($_POST['New'])));
+	(!isset($_POST['NewStockID']) || $new_item));
 
 stock_units_list_row(_('Units of Measure:'), 'units', null,
-	(!isset($_POST['NewStockID']) || isset($_POST['New'])));
+	(!isset($_POST['NewStockID']) || $new_item));
 end_table();
 start_table("$table_style2 width=40%");
 
@@ -364,20 +383,20 @@ if ($dim < 2)
 	hidden('dimension2_id', 0);
 
 end_table(1);
-
-if (!isset($_POST['NewStockID']) || (isset($_POST['New']) && $_POST['New'] != "")) 
+div_end();
+div_start('controls');
+if (!isset($_POST['NewStockID']) || $new_item) 
 {
-	submit_center('addupdate', _("Insert New Item"));
-
+	submit_center('addupdate', _("Insert New Item"), true, '', true);
 } 
 else 
 {
-	submit_center_first('addupdate', _("Update Item"));
+	submit_center_first('addupdate', _("Update Item"), '', true);
 
-	submit_center_last('delete', _("Delete This Item"));
+	submit_center_last('delete', _("Delete This Item"), '', true);
 }
 
-
+div_end();
 end_form();
 
 //------------------------------------------------------------------------------------

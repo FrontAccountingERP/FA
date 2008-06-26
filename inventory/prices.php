@@ -108,8 +108,10 @@ if (isset($_GET['delete']))
 	echo _("The selected price has been deleted.");
 
 }
-if (isset($_POST['_stock_id_update']))
+if (isset($_POST['_stock_id_update'])) {
 	$Ajax->activate('price_table');
+	$Ajax->activate('price');
+}
 //---------------------------------------------------------------------------------------------------
 
 $mb_flag = get_mb_flag($_POST['stock_id']);

@@ -26,7 +26,6 @@ if (isset($_GET['stock_id']))
 }
 
 //--------------------------------------------------------------------------------------
-
 if (isset($_POST['UpdateData']))
 {
 
@@ -80,11 +79,11 @@ stock_costable_items_list('stock_id', $_POST['stock_id'], false, true);
 echo "</center><hr>";
 set_global_stock_item($_POST['stock_id']);
 
-$sql = "SELECT description, units, last_cost, actual_cost, material_cost, labour_cost,
+$sql = "SELECT description, units, material_cost, labour_cost,
 	overhead_cost, mb_flag
 	FROM ".TB_PREF."stock_master
 	WHERE stock_id='" . $_POST['stock_id'] . "'
-	GROUP BY description, units, last_cost, actual_cost, material_cost, labour_cost, overhead_cost, mb_flag";
+	GROUP BY description, units, material_cost, labour_cost, overhead_cost, mb_flag";
 $result = db_query($sql);
 check_db_error("The cost details for the item could not be retrieved", $sql);
 
@@ -95,18 +94,20 @@ hidden("OldLabourCost", $myrow["labour_cost"]);
 hidden("OldOverheadCost", $myrow["overhead_cost"]);
 
 start_table($table_style2);
-label_row(_("Last Cost"), price_format($myrow["last_cost"]),
-	"class='tableheader2'", "nowrap align=right");
+
+$_POST['material_cost'] = price_format($myrow["material_cost"]);
+$_POST['labour_cost'] = price_format($myrow["labour_cost"]);
+$_POST['overhead_cost'] = price_format($myrow["overhead_cost"]);
 
 amount_row(_("Standard Material Cost Per Unit"), "material_cost",
-	price_format($myrow["material_cost"]), "class='tableheader2'");
+	null, "class='tableheader2'");
 
 if ($myrow["mb_flag"]=='M')
 {
 	amount_row(_("Standard Labour Cost Per Unit"), "labour_cost",
-		price_format($myrow["labour_cost"]), "class='tableheader2'");
+		null, "class='tableheader2'");
 	amount_row(_("Standard Overhead Cost Per Unit"), "overhead_cost",
-		price_format($myrow["overhead_cost"]), "class='tableheader2'");
+		null, "class='tableheader2'");
 }
 else
 {

@@ -40,7 +40,14 @@ if (isset($_GET['AddedID']))
 
 	display_footer_exit();
 }
+//--------------------------------------------------------------------------------------------------
 
+function line_start_focus() {
+  global 	$Ajax;
+
+  $Ajax->activate('items_table');
+  set_focus('_stock_id_edit');
+}
 //--------------------------------------------------------------------------------------------------
 
 function copy_to_st()
@@ -51,7 +58,6 @@ function copy_to_st()
 	$_SESSION['adj_items']->increase = $_POST['Increase'];
 	$_SESSION['adj_items']->memo_ = $_POST['memo_'];
 }
-
 //--------------------------------------------------------------------------------------------------
 
 function copy_from_st()
@@ -86,6 +92,13 @@ function handle_new_order()
 
 function can_process()
 {
+	$adj = &$_SESSION['adj_items'];
+
+	if (count($adj->line_items) == 0)	{
+		display_error(_("You must enter at least one non empty item line."));
+		set_focus('stock_id');
+		return false;
+	}
 	if (!references::is_valid($_POST['ref'])) 
 	{
 		display_error( _("You must enter a reference."));
@@ -111,15 +124,18 @@ function can_process()
 		display_error(_("The entered date is not in fiscal year."));
 		set_focus('AdjDate');
 		return false;
-	}
-	$failed_item = $_SESSION['adj_items']->check_qoh($_POST['StockLocation'], $_POST['AdjDate'], !$_POST['Increase']);
-	if ($failed_item != null) 
-	{
-    	display_error(_("The adjustment cannot be processed because an adjustment item would cause a negative inventory balance :") .
-    		" " . $failed_item->stock_id . " - " .  $failed_item->item_description);
+	} else {
+		$failed_item = $adj->check_qoh($_POST['StockLocation'], $_POST['AdjDate'], !$_POST['Increase']);
+		if ($failed_item >= 0) 
+		{
+			$line = $adj->line_items[$failed_item];
+    		display_error(_("The adjustment cannot be processed because an adjustment item would cause a negative inventory balance :") .
+    			" " . $line->stock_id . " - " .  $line->item_description);
+			$_POST['Edit'.$failed_item] = 1; // enter edit mode
+			unset($_POST['Process']);
 		return false;
+		}
 	}
-
 	return true;
 }
 
@@ -133,6 +149,7 @@ if (isset($_POST['Process']) && can_process()){
 
 	$_SESSION['adj_items']->clear_items();
 	unset($_SESSION['adj_items']);
+
    	meta_forward($_SERVER['PHP_SELF'], "AddedID=$trans_no");
 } /*end of process credit note */
 
@@ -163,16 +180,19 @@ function handle_update_item()
 {
     if($_POST['UpdateItem'] != "" && check_item_data())
     {
-    	$_SESSION['adj_items']->update_cart_item($_POST['stock_id'], 
-		  input_num('qty'), input_num('std_cost'));
+		$id = $_POST['LineNo'];
+    	$_SESSION['adj_items']->update_cart_item($id, input_num('qty'), 
+			input_num('std_cost'));
     }
+	line_start_focus();
 }
 
 //-----------------------------------------------------------------------------------------------
 
-function handle_delete_item()
+function handle_delete_item($id)
 {
-	$_SESSION['adj_items']->remove_from_cart($_GET['Delete']);
+	$_SESSION['adj_items']->remove_from_cart($id);
+	line_start_focus();
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -184,25 +204,28 @@ function handle_new_item()
 
 	add_to_order($_SESSION['adj_items'], $_POST['stock_id'], 
 	  input_num('qty'), input_num('std_cost'));
+	line_start_focus();
 }
 
 //-----------------------------------------------------------------------------------------------
+$id = find_submit('Delete');
+if ($id != -1)
+	handle_delete_item($id);
 
-if (isset($_GET['Delete']) || isset($_GET['Edit']))
-	copy_from_st();
-
-if (isset($_GET['Delete']))
-	handle_delete_item();
-
-if (isset($_POST['AddItem']) || isset($_POST['UpdateItem']))
+if (isset($_POST['AddItem']) || isset($_POST['UpdateItem'])) {
 	copy_to_st();
-	
+	line_start_focus();
+}
+
 if (isset($_POST['AddItem']))
 	handle_new_item();
 
 if (isset($_POST['UpdateItem']))
 	handle_update_item();
 
+if (isset($_POST['CancelItemChanges'])) {
+	line_start_focus();
+}
 //-----------------------------------------------------------------------------------------------
 
 if (isset($_GET['NewAdjustment']) || !isset($_SESSION['adj_items']))
@@ -211,7 +234,6 @@ if (isset($_GET['NewAdjustment']) || !isset($_SESSION['adj_items']))
 }
 
 //-----------------------------------------------------------------------------------------------
-
 start_form(false, true);
 
 display_order_header($_SESSION['adj_items']);
@@ -225,15 +247,8 @@ echo "</TD>";
 end_row();
 end_table(1);
 
-start_table();
-start_row();
-submit_cells('Update', _("Update"));
-if ($_SESSION['adj_items']->count_items() >= 1)
-{
-    submit_cells('Process', _("Process Adjustment"));
-}
-end_row();
-end_table();
+submit_center_first('Update', _("Update"), '', true);
+submit_center_last('Process', _("Process Transfer"), '', true);
 
 end_form();
 end_page();

@@ -412,9 +412,9 @@ div_start('controls', 'items_table');
 if ($_SESSION['PO']->order_has_items()) 
 {
 	if ($_SESSION['PO']->order_no)
-		submit_center_first('Commit', _("Update Order"));
+		submit_center_first('Commit', _("Update Order"), '', true);
 	else
-		submit_center_first('Commit', _("Place Order"));
+		submit_center_first('Commit', _("Place Order"), '', true);
 	submit_center_last('CancelOrder', _("Cancel Order")); 	
 }
 else
