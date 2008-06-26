@@ -31,14 +31,13 @@ class items_cart
 
 	// --------------- line item functions
 
-	function add_to_cart($stock_id, $qty, $standard_cost, $description=null)
+	function add_to_cart($line_no, $stock_id, $qty, $standard_cost, $description=null)
 	{
 
 		if (isset($stock_id) && $stock_id != "" && isset($qty))
 		{
-			$this->line_items[$stock_id] = new line_item($stock_id, $qty,
+			$this->line_items[$line_no] = new line_item($stock_id, $qty,
 				$standard_cost, $description);
-			$this->clear_editing_flags();
 			return true;
 		}
 		else
@@ -52,25 +51,22 @@ class items_cart
 
 	function find_cart_item($stock_id)
 	{
-		if (isset($this->line_items[$stock_id]) && $this->line_items[$stock_id] != null)
-			return $this->line_items[$stock_id];
+		foreach($this->line_items as $line_no=>$line) {
+			if ($line->stock_id == $stock_id)
+				return $this->line_items[$line_no];
+		}
 		return null;
 	}
 
-	function update_cart_item($update_item, $qty, $standard_cost)
+	function update_cart_item($line_no, $qty, $standard_cost)
 	{
-		$this->line_items[$update_item]->quantity = $qty;
-		$this->line_items[$update_item]->standard_cost = $standard_cost;
-		$this->clear_editing_flags();
+		$this->line_items[$line_no]->quantity = $qty;
+		$this->line_items[$line_no]->standard_cost = $standard_cost;
 	}
 
-	function remove_from_cart(&$stock_id)
+	function remove_from_cart($line_no)
 	{
-		if (isset($stock_id))
-		{
-			unset($this->line_items[$stock_id]);
-			$this->clear_editing_flags();
-		}
+			unset($this->line_items[$line_no]);
 	}
 
 	function count_items()
@@ -80,11 +76,11 @@ class items_cart
 
 	function check_qoh($location, $date_, $reverse=false)
 	{
-		foreach ($this->line_items as $line_item)
+		foreach ($this->line_items as $line_no => $line_item)
 		{
 			$item_ret = $line_item->check_qoh($location, $date_, $reverse);
 			if ($item_ret != null)
-				return $line_item;
+				return $line_no;
 		}
 	}
 
@@ -98,7 +94,6 @@ class items_cart
 			$this->gl_items[$this->gl_item_count] = new gl_item($this->gl_item_count,
 				$code_id, $dimension_id, $dimension2_id, $amount, $reference, $description);
 			$this->gl_item_count++;
-			$this->clear_editing_flags();
 			return true;
 		}
 		else
@@ -120,7 +115,6 @@ class items_cart
 		if ($description != null)
 			$this->gl_items[$index]->description = $description;
 
-		$this->clear_editing_flags();
 	}
 
 	function remove_gl_item($index)
@@ -128,7 +122,6 @@ class items_cart
 		if (isset($index))
 		{
 			unset($this->gl_items[$index]);
-			$this->clear_editing_flags();
 		}
 	}
 
@@ -178,34 +171,7 @@ class items_cart
 		$this->gl_items = array();
 		$this->gl_item_count = 1;
 
-		$this->clear_editing_flags();
 	}
-
-	function clear_editing_flags()
-	{
-		$this->editing_item = $this->deleting_item = 0;
-	}
-
-	function get_editing_item()
-	{
-		return $this->editing_item;
-	}
-
-	function get_deleting_item()
-	{
-		return $this->deleting_item;
-	}
-
-	function is_editing_item($index)
-	{
-		return ($this->editing_item > 0) && ($this->editing_item == $index);
-	}
-
-	function is_deleting_item($index)
-	{
-		return ($this->deleting_item > 0) && ($this->deleting_item == $index);
-	}
-
 }
 
 //--------------------------------------------------------------------------------------------
