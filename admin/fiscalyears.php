@@ -17,7 +17,7 @@ page(_("Fiscal Years"), false, false, "", $js);
 if (isset($_GET['selected_id']))
 {
 	$selected_id = $_GET['selected_id'];
-} 
+}
 elseif (isset($_POST['selected_id']))
 {
 	$selected_id = $_POST['selected_id'];
@@ -33,19 +33,19 @@ function check_data()
 		$from = $_POST['from_date'];
 	else
 		$from = $selected_id;
-	if (!is_date($from)) 
+	if (!is_date($from) || get_fiscalyear($from) !== false)
 	{
 		display_error( _("Invalid BEGIN date in fiscal year."));
 		set_focus('from_date');
 		return false;
 	}
-	if (!is_date($_POST['to_date'])) 
+	if (!is_date($_POST['to_date']))
 	{
 		display_error( _("Invalid END date in fiscal year."));
 		set_focus('to_date');
 		return false;
 	}
-	if (date1_greater_date2($from, $_POST['to_date'])) 
+	if (date1_greater_date2($from, $_POST['to_date']))
 	{
 		display_error( _("BEGIN date bigger than END date."));
 		set_focus('from_date');
@@ -63,11 +63,11 @@ function handle_submit()
 	if (!check_data())
 		return false;
 
-	if (isset($selected_id)) 
+	if (isset($selected_id))
 	{
    		update_fiscalyear($_POST['from_date'], $_POST['closed']);
-	} 
-	else 
+	}
+	else
 	{
    		add_fiscalyear($_POST['from_date'], $_POST['to_date'], $_POST['closed']);
 	}
@@ -87,7 +87,7 @@ function check_can_delete($todate)
 	$sql= "SELECT COUNT(*) FROM ".TB_PREF."gl_trans WHERE tran_date >= '$from' AND tran_date <= '$to'";
 	$result = db_query($sql, "could not query gl_trans master");
 	$myrow = db_fetch_row($result);
-	if ($myrow[0] > 0) 
+	if ($myrow[0] > 0)
 	{
 		display_error(_("Cannot delete this fiscal year because items have been created referring to it."));
 		return false;
@@ -127,22 +127,22 @@ function display_fiscalyears()
 	table_header($th);
 
 	$k=0;
-	while ($myrow=db_fetch($result)) 
+	while ($myrow=db_fetch($result))
 	{
-    	if ($myrow['id'] == $company_year) 
+    	if ($myrow['id'] == $company_year)
     	{
     		start_row("class='stockmankobg'");
-    	} 
+    	}
     	else
     		alt_table_row_color($k);
 
 		$from = sql2date($myrow["begin"]);
 		$to = sql2date($myrow["end"]);
-		if ($myrow["closed"] == 0) 
+		if ($myrow["closed"] == 0)
 		{
 			$closed_text = _("No");
-		} 
-		else 
+		}
+		else
 		{
 			$closed_text = _("Yes");
 		}
@@ -164,11 +164,11 @@ function display_fiscalyears()
 function display_fiscalyear_edit($selected_id)
 {
 	global $table_style2;
-	
+
 	start_form();
 	start_table($table_style2);
 
-	if ($selected_id) 
+	if ($selected_id)
 	{
 		$myrow = get_fiscalyear($selected_id);
 
@@ -180,8 +180,8 @@ function display_fiscalyear_edit($selected_id)
 		hidden('to_date', $_POST['to_date']);
 		label_row(_("Fiscal Year Begin:"), $_POST['from_date']);
 		label_row(_("Fiscal Year End:"), $_POST['to_date']);
-	} 
-	else 
+	}
+	else
 	{
 		date_row(_("Fiscal Year Begin:"), 'from_date', '', null, 0, 0, 1001);
 		date_row(_("Fiscal Year End:"), 'to_date', '', null, 0, 0, 1001);
@@ -198,9 +198,9 @@ function display_fiscalyear_edit($selected_id)
 
 //---------------------------------------------------------------------------------------------
 
-if (isset($_POST['ADD_ITEM']) || isset($_POST['UPDATE_ITEM'])) 
+if (isset($_POST['ADD_ITEM']) || isset($_POST['UPDATE_ITEM']))
 {
-	if (handle_submit()) 
+	if (handle_submit())
 	{
 		meta_forward($_SERVER['PHP_SELF']);
 	}
@@ -208,7 +208,7 @@ if (isset($_POST['ADD_ITEM']) || isset($_POST['UPDATE_ITEM']))
 
 //---------------------------------------------------------------------------------------------
 
-if (isset($_GET['delete'])) 
+if (isset($_GET['delete']))
 {
 	handle_delete($_GET['to_date']);
 }
