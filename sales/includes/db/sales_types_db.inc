@@ -2,11 +2,7 @@
 
 function add_sales_type($name, $tax_included, $factor)
 {
-	// maximum one base price list
-	  clear_base_sales_type();
-
 	$sql = "INSERT INTO ".TB_PREF."sales_types (sales_type,tax_included,factor) VALUES (".db_escape($name).",'$tax_included',$factor)";
-		
 	db_query($sql, "could not add sales type");		
 }
 

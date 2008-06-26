@@ -34,6 +34,8 @@ $ /includes/ui/ui_lists.inc
   /purchasing/po_entry_items.php
 ! Changes to items_cart API (line_items indexed by line# instead of stock_id)
 $ /includes/ui/items_cart.inc
+# Fixed bug 0000008 (call to no more existing function)
+$ /sales/includes/db/sales_types_db.inc
 
 25-Jun-2008 Joe Hunt
 # Fixed 'div end out of order' in invoice_ui.inc causing the newwave bug with missing menu
