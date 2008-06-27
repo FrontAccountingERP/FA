@@ -70,7 +70,7 @@ function display_transfer_items($title, &$order)
 		{
     		alt_table_row_color($k);
 
-    	 	label_cell("<a target='_blank' href='$path_to_root/inventory/inquiry/stock_status.php?" . SID . "stock_id=" . $stock_item->stock_id . "'>$stock_item->stock_id</a>");
+			view_stock_status_cell($stock_item->stock_id);
     		label_cell($stock_item->item_description);
     		qty_cell($stock_item->quantity, false, get_qty_dec($stock_item->stock_id));
     		label_cell($stock_item->units);
