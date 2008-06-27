@@ -23,6 +23,31 @@ else
 	$outstanding_only = 0;
 	page(_("Search Dimensions"), false, false, "", $js);
 }
+//-----------------------------------------------------------------------------------
+// Ajax updates
+//
+if (get_post('SearchOrders')) 
+{
+	$Ajax->activate('dim_table');
+} elseif (get_post('_OrderNumber_changed')) 
+{
+	$disable = get_post('OrderNumber') !== '';
+
+	$Ajax->addDisable(true, 'FromDate', $disable);
+	$Ajax->addDisable(true, 'ToDate', $disable);
+	$Ajax->addDisable(true, 'type_', $disable);
+	$Ajax->addDisable(true, 'OverdueOnly', $disable);
+	$Ajax->addDisable(true, 'OpenOnly', $disable);
+
+	if ($disable) {
+//		$Ajax->addFocus(true, 'OrderNumber');
+		set_focus('OrderNumber');
+	} else
+//		$Ajax->addFocus(true, 'StockLocation');
+		set_focus('type_');
+
+	$Ajax->activate('dim_table');
+}
 
 //--------------------------------------------------------------------------------------
 
@@ -36,7 +61,7 @@ start_form(false, true, $_SERVER['PHP_SELF'] ."?outstanding_only=" . $outstandin
 start_table("class='tablestyle_noborder'");
 start_row();
 
-ref_cells(_("Reference:"), 'OrderNumber');
+ref_cells(_("Reference:"), 'OrderNumber', '',null, '', true);
 
 number_list_cells(_("Type"), 'type_', null, 0, 2);
 date_cells(_("From:"), 'FromDate', '', null, 0, 0, -5);
@@ -51,7 +76,7 @@ if (!$outstanding_only)
 else
 	$_POST['OpenOnly'] = 1;
 
-submit_cells('SearchOrders', _("Search"));
+submit_cells('SearchOrders', _("Search"), '', '', true);
 
 end_row();
 end_table();
@@ -62,38 +87,39 @@ $dim = get_company_pref('use_dimension');
 
 $sql = "SELECT * FROM ".TB_PREF."dimensions WHERE id > 0";
 
-if ($dim == 1)
-	$sql .= " AND type_=1";
-
-if (isset($_POST['OpenOnly']))
-{
-   	$sql .= " AND closed=0";
-}
-
-if (isset($_POST['type_']) && ($_POST['type_'] > 0))
-{
-   	$sql .= " AND type_=" . $_POST['type_'];
-}
-
 if (isset($_POST['OrderNumber']) && $_POST['OrderNumber'] != "")
 {
 	$sql .= " AND reference LIKE '%". $_POST['OrderNumber'] . "%'";
+} else {
+
+	if ($dim == 1)
+		$sql .= " AND type_=1";
+
+	if (isset($_POST['OpenOnly']))
+	{
+   		$sql .= " AND closed=0";
+	}
+
+	if (isset($_POST['type_']) && ($_POST['type_'] > 0))
+	{
+   		$sql .= " AND type_=" . $_POST['type_'];
+	}
+
+	if (isset($_POST['OverdueOnly']))
+	{
+		$today = date2sql(Today());
+
+	   	$sql .= " AND due_date < '$today' ";
+	}
+
+	$sql .= " AND date_ >= '" . date2sql($_POST['FromDate']) . "'
+		AND date_ <= '" . date2sql($_POST['ToDate']) . "'";
 }
-
-if (isset($_POST['OverdueOnly']))
-{
-	$today = date2sql(Today());
-
-   	$sql .= " AND due_date < '$today' ";
-}
-
-$sql .= " AND date_ >= '" . date2sql($_POST['FromDate']) . "'
-	AND date_ <= '" . date2sql($_POST['ToDate']) . "'";
-
 $sql .= " ORDER BY due_date";
 
 $result = db_query($sql,"could not query dimensions");
 
+div_start('dim_table');
 start_table("$table_style width=80%");
 
 if (!$outstanding_only)
@@ -145,8 +171,8 @@ while ($myrow = db_fetch($result))
 	if (!$outstanding_only)
 		label_cell(($myrow["closed"] ? _("Yes") : _("No")));
 	amount_cell($row[0]);
-	if ($myrow["closed"] == 0)
-		label_cell("<a href='$mpage'>" . _("Edit") . "</a>");
+	
+	label_cell($myrow["closed"] == 0 ? ("<a href='$mpage'>" . _("Edit") . "</a>") :'');
 	end_row();
 
 	$j++;
@@ -160,7 +186,7 @@ while ($myrow = db_fetch($result))
 //end of while loop
 
 end_table(1);
-
+div_end();
 //---------------------------------------------------------------------------------
 
 end_page();

@@ -154,7 +154,7 @@ if (!isset($_POST['ProductionType']))
 yesno_list_row(_("Type:"), 'ProductionType', $_POST['ProductionType'],
 	_("Produce Finished Items"), _("Return Items to Work Order"));
 
-text_row(_("Quantity:"), 'quantity', $_POST['quantity'], 13, 15);
+small_qty_row(_("Quantity:"), 'quantity', null, null, null, get_qty_dec($wo_details["stock_id"]));
 
 date_row(_("Date:"), 'date_');
 
@@ -162,8 +162,8 @@ textarea_row(_("Memo:"), 'memo_', null, 40, 3);
 
 end_table(1);
 
-submit_center_first('Process', _("Process"));
-submit_center_last('ProcessAndClose', _("Process And Close Order"));
+submit_center_first('Process', _("Process"), '', true);
+submit_center_last('ProcessAndClose', _("Process And Close Order"), '', true);
 
 end_form();
 

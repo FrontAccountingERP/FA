@@ -88,7 +88,7 @@ if (can_process($myrow))
     
     end_table(1);
     
-    submit_center('release', _("Release Work Order"));
+    submit_center('release', _("Release Work Order"), true, '', true);
     
     hidden('selected_id', $selected_id);
     hidden('stock_id', $myrow['stock_id']);

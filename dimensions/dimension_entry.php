@@ -79,11 +79,8 @@ function safe_exit()
 	hyperlink_no_params("", _("Enter a new dimension"));
 	echo "<br>";
 	hyperlink_no_params($path_to_root . "/dimensions/inquiry/search_dimensions.php", _("Select an existing dimension"));
-	echo "<br><br>";
 
-	end_page();
-
-	exit;
+	display_footer_exit();
 }
 
 //-------------------------------------------------------------------------------------
@@ -98,14 +95,14 @@ function can_process()
     	if (!references::is_valid($_POST['ref'])) 
     	{
     		display_error( _("The dimension reference must be entered."));
-		set_focus('ref');
+			set_focus('ref');
     		return false;
     	}
 
     	if (!is_new_reference($_POST['ref'], systypes::dimension())) 
     	{
     		display_error(_("The entered reference is already in use."));
-		set_focus('ref');
+			set_focus('ref');
     		return false;
     	}
 	}
@@ -206,14 +203,14 @@ if ($selected_id != -1)
 	if (strlen($myrow[0]) == 0) 
 	{
 		display_error(_("The dimension sent is not valid."));
-		exit;
+		display_footer_exit();
 	}
 
 	// if it's a closed dimension can't edit it
 	if ($myrow["closed"] == 1) 
 	{
 		display_error(_("This dimension is closed and cannot be edited."));
-		exit;
+		display_footer_exit();
 	}
 
 	$_POST['ref'] = $myrow["reference"];
@@ -249,14 +246,14 @@ textarea_row(_("Memo:"), 'memo_', null, 40, 5);
 
 end_table(1);
 
-submit_add_or_update_center($selected_id == -1);
+submit_add_or_update_center($selected_id == -1, '', true);
 
 if ($selected_id != -1) 
 {
 	echo "<br>";
 
-	submit_center_first('close', _("Close This Dimension"));
-	submit_center_last('delete', _("Delete This Dimension"));
+	submit_center_first('close', _("Close This Dimension"), _('Mark this dimension as closed'), true);
+	submit_center_last('delete', _("Delete This Dimension"), _('Delete unused dimension'), true);
 }
 
 end_form();
