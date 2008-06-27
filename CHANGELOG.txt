@@ -19,6 +19,26 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+27-Jun-2008 Janusz Dobrowolski
++ Ajax additions
+$ /dimensions/dimension_entry.php
+  /dimensions/inquiry/search_dimensions.php
+  /manufacturing/work_order_add_finished.php
+  /manufacturing/work_order_issue.php
+  /manufacturing/work_order_release.php
+  /manufacturing/includes/work_order_issue_ui.inc
+  /manufacturing/search_work_orders.php
+! Default $selected_id=null (ie current $_POST value) for all lists;
+   standard view (ie with search box) of stock_component_list()
+$ /includes/ui/ui_lists.inc
+# Fixed selection for outstanding work orders
+$ /manufacturing/search_work_orders.php
+# Fixed stock item links
+$ /inventory/includes/item_adjustments_ui.inc
+  /inventory/includes/stock_transfers_ui.inc
+# Fixed typo in menu option
+$ /applications/manufacturing.php
+
 27-Jun-2008 Joe Hunt
 # Minor html adjustment in login.php
 $ /access/login.php
