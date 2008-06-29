@@ -153,7 +153,7 @@ var inserts = {
 				_set_combo_input(e);
 		}
 	},
-	'input.combo_submit,input.combo_select,input.combo2': 
+	'input.combo2,input[fallback]': 
 	function(e) {
   	    // this hides search button for js enabled browsers
 	    e.style.display = 'none';
