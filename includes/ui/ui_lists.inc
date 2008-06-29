@@ -5,16 +5,16 @@ include_once($path_to_root . "/includes/reserved.inc");
 include_once($path_to_root . "/includes/types.inc");
 include_once($path_to_root . "/includes/current_user.inc");
 
-$_search_button = "<input type='submit' class='combo_submit' style='border:0;background:url($path_to_root/themes/"
-	."%s/images/locate.png) no-repeat;%s' name='%s' value=' ' title='"._("Set filter")."'> ";
+$_search_button = "<input %s type='submit' class='combo_submit' style='border:0;background:url($path_to_root/themes/"
+	."%s/images/locate.png) no-repeat;%s' fallback='1' name='%s' value=' ' title='"._("Set filter")."'> ";
 
-$_select_button = "<input type='submit' class='combo_select' style='border:0;background:url($path_to_root/themes/"
-	."%s/images/button_ok.png) no-repeat;%s' name='%s' value=' ' title='"._("Select")."'> ";
+$_select_button = "<input %s type='submit' class='combo_select' style='border:0;background:url($path_to_root/themes/"
+	."%s/images/button_ok.png) no-repeat;%s' fallback='1' name='%s' value=' ' title='"._("Select")."'> ";
 
 $all_items = reserved_words::get_all();
 
 //----------------------------------------------------------------------------
-//	Universal combo generator
+//	Universal sql combo generator
 //	$sql must return selector values and selector texts in columns 0 & 1
 //	Options are merged with defaults.
 
@@ -46,7 +46,7 @@ $opts = array(		// default options
 	'cells' => false,	// combo displayed as 2 <td></td> cells
 	'search' => array(), // sql field names to search
 	'format' => null, 	 // format functions for regular options
-	'disabled' => false, // FIX todo
+	'disabled' => false,
 	'box_hint' => null // box/selectors hints; null = std see below
 );
 // ------ merge options with defaults ----------
@@ -60,6 +60,7 @@ $opts = array(		// default options
 	$spec_option = $opts['spec_option'];
 	$by_id = ($opts['type'] == 0);
 	$class = $by_id ? 'combo':'combo2';
+	$disabled = $opts['disabled'] ? "disabled" : '';
 
 	if(!count($opts['search'])) {
 		$opts['search'] = array($by_id ? $valfield : $namefield);
@@ -148,6 +149,7 @@ $opts = array(		// default options
 		}
 		db_free_result($result);
 	}
+
 	// Prepend special option.
 	if ($spec_option !== false) { // if special option used - add it
 		$first_id = $spec_id;
@@ -167,7 +169,7 @@ $opts = array(		// default options
 			$Ajax->addUpdate($name, $search_box, $txt);
 	}
 
-	$selector = "<select name='$name' class='$class' title='"
+	$selector = "<select $disabled name='$name' class='$class' title='"
 		. $opts['sel_hint']."' $rel>".$selector."</select>\n";
 
 	$Ajax->addUpdate($name, "_{$name}_sel", $selector);
@@ -179,7 +181,7 @@ $opts = array(		// default options
 	if ($select_submit != false) { // if submit on change is used - add select button
 		global $_select_button;
 	// button class selects form reload/ajax selector update
-		$selector .= sprintf($_select_button, user_theme(),
+		$selector .= sprintf($_select_button, $disabled, user_theme(),
 			(in_ajax() ? 'display:none;':''),
 			$select_submit)."\n";
 	}
@@ -187,7 +189,7 @@ $opts = array(		// default options
 
 	$edit_entry = '';
 	if ($search_box != false) {
-		$edit_entry = "<input type='text' name='$search_box' id='$search_box' size='".
+		$edit_entry = "<input $disabled type='text' name='$search_box' id='$search_box' size='".
 			$opts['size']."' maxlength='".$opts['max'].
 			"' value='$txt' class='$class' rel='$name' autocomplete='off' title='"
 			.$opts['box_hint']."'"
@@ -195,7 +197,7 @@ $opts = array(		// default options
 			.">\n";
 		if ($search_submit != false) {
 			global $_search_button;
-			$edit_entry .= sprintf($_search_button, user_theme(),
+			$edit_entry .= sprintf($_search_button, $disabled, user_theme(),
 				(in_ajax() ? 'display:none;':''),
 				$search_submit)."\n";
 		}
@@ -208,6 +210,104 @@ $opts = array(		// default options
 		echo $edit_entry.$selector;
 
 	return $str;
+}
+//----------------------------------------------------------------------------------------------
+//	Universal array combo generator
+//	$items is array of options 'value' => 'description'
+//	Options is reduced set of combo_selector options and is merged with defaults.
+
+function array_selector($name, $selected_id, $items, $options=null)
+{
+	global $Ajax;
+
+$opts = array(		// default options
+	'spec_option'=>false, 	// option text or false
+	'spec_id' => 0,		// option id
+	'select_submit' => false, //submit on select: true/false
+	'async' => true,	// select update via ajax (true) vs _page_body reload
+		// search box parameters
+	'sel_hint' => null,
+	'disabled' => false
+);
+// ------ merge options with defaults ----------
+	$opts = array_merge($opts, $options);
+	$select_submit =  $opts['select_submit']===true ? '_'.$name.'_update' : $opts['select_submit'];
+	$spec_id = $opts['spec_id'];
+	$spec_option = $opts['spec_option'];
+	$disabled = $opts['disabled'] ? "disabled" : '';
+
+	if ($selected_id == null) {
+		$selected_id = get_post($name, null);
+	}
+
+	if (isset($_POST[$select_submit])) {
+		if (!$opts['async'])
+			$Ajax->activate('_page_body');
+		else
+			$Ajax->activate($name);
+	}
+
+	// ------ make selector ----------
+	$selector = $first_opt = '';
+	$first_id = false;
+	$found = false;
+//if($name=='SelectStockFromList') display_error($sql);
+		foreach($items as $value=>$descr) {
+			$sel = '';
+			if ($selected_id == $value) {
+				$sel = 'selected';
+				$found = $value;
+			}
+			if ($first_id === false) {
+				$first_id = $value;
+				$first_opt = $descr;
+			}
+			$selector .= "<option $sel value='$value'>$descr</option>\n";
+		}
+
+	// Prepend special option.
+	if ($spec_option !== false) { // if special option used - add it
+		$first_id = $spec_id;
+		$first_opt = $spec_option;
+		$sel = $found===false ? 'selected' : '';
+		$selector = "<option $sel value='$spec_id'>$spec_option</option>\n"
+			. $selector;
+	}
+
+	if ($found === false) {
+		$_POST[$name] = $first_id;
+	}
+
+	$selector = "<select $disabled name='$name' class='combo' title='"
+		. $opts['sel_hint']."' >".$selector."</select>\n";
+
+	$Ajax->addUpdate($name, "_{$name}_sel", $selector);
+
+	$selector = "<span id='_{$name}_sel'>".$selector."</span>\n";
+
+	if ($select_submit != false) { // if submit on change is used - add select button
+		global $_select_button;
+		$selector .= sprintf($_select_button, $disabled, user_theme(),
+			(in_ajax() ? 'display:none;':''),
+			$select_submit)."\n";
+	}
+	default_focus($name);
+	echo $selector;
+
+	return $selector;
+}
+//----------------------------------------------------------------------------------------------
+
+function _format_add_curr($row)
+{
+	static $company_currency;
+
+	if ($company_currency == null)
+	{
+		$company_currency = get_company_currency();
+	}
+	return $row[1] . ($row[2] == $company_currency ?
+		'' : ("&nbsp;-&nbsp;" . $row[2]));
 }
 
 function supplier_list($name, $selected_id=null, $spec_option=false, $submit_on_change=false)
@@ -230,18 +330,6 @@ function supplier_list($name, $selected_id=null, $spec_option=false, $submit_on_
 		'sel_hint' => $mode ? _('Press Space tab to filter by name fragment') :
 		_('Select supplier')
 		));
-}
-
-function _format_add_curr($row)
-{
-static $company_currency;
-
-if ($company_currency == null)
-{
-	$company_currency = get_company_currency();
-}
-return $row[1] . ($row[2] == $company_currency ?
-	'' : ("&nbsp;-&nbsp;" . $row[2]));
 }
 
 function supplier_list_cells($label, $name, $selected_id=null, $all_option=false, $submit_on_change=false)
@@ -297,10 +385,10 @@ function customer_list_cells($label, $name, $selected_id=null, $all_option=false
 
 function customer_list_row($label, $name, $selected_id=null, $all_option = false, $submit_on_change=false)
 {
-echo "<tr><td>$label</td><td nowrap>";
-$str = customer_list($name, $selected_id, $all_option, $submit_on_change);
-echo "</td>\n</tr>\n";
-return $str;
+	echo "<tr><td>$label</td><td nowrap>";
+	$str = customer_list($name, $selected_id, $all_option, $submit_on_change);
+	echo "</td>\n</tr>\n";
+	return $str;
 }
 
 //------------------------------------------------------------------------------------------------
@@ -321,7 +409,6 @@ return  combo_input($name, $selected_id, $sql, 'branch_code', 'br_name',
 		'spec_id' => $all_items,
 		'select_submit'=> $submit_on_change,
 		'sel_hint' => _('Select customer branch')
-//		  'async' => false
 	) );
 }
 //------------------------------------------------------------------------------------------------
@@ -669,27 +756,12 @@ function stock_costable_items_list_cells($label, $name, $selected_id=null,
 }
 
 //------------------------------------------------------------------------------------
-
-function stock_purchasable_items_list($name, $selected_id=null,	$all_option=false,
-		$submit_on_change=false, $opts=array())
+function stock_purchasable_items_list($name, $selected_id=null,	
+	$all_option=false, $submit_on_change=false)
 {
- global $all_items;
-	$sql = "SELECT stock_id, s.description, c.description
-			FROM ".TB_PREF."stock_master s,".TB_PREF."stock_category c
-			WHERE s.category_id=c.category_id
-				AND mb_flag !='M' ";
-	return combo_input($name, $selected_id, $sql, 'stock_id', 's.description',
-	  array_merge( array(
-		'format' => '_format_stock_items',
-		'spec_option' => $all_option===true ?  _("All Items") : $all_option,
-		'spec_id' => $all_items,
-		'search_box' => true,
-		'search' => array("stock_id", "c.description","s.description"),
-		'search_submit' => get_company_pref('no_item_list')!=0,
-		'size'=>10,
-		'select_submit'=> $submit_on_change
-	  ), $opts) );
-
+	$str = stock_items_list($name, $selected_id, $all_option, $submit_on_change,
+		array('where'=>array("mb_flag!= 'M'")));
+	return $str;
 }
 
 function stock_purchasable_items_list_cells($label, $name, $selected_id=null,
@@ -697,9 +769,9 @@ function stock_purchasable_items_list_cells($label, $name, $selected_id=null,
 {
 	if ($label != null)
 		echo "<td>$label</td>\n";
-	$ret = stock_purchasable_items_list($name, $selected_id, $all_option,
-		$submit_on_change, array('cells'=>true) );
-	return $ret;
+	$str = stock_items_list($name, $selected_id, $all_option, $submit_on_change,
+		array('where'=>array("mb_flag!= 'M'"), 'cells'=>true));
+	return $str;
 }
 
 function stock_purchasable_items_list_row($label, $name, $selected_id=null,
@@ -716,59 +788,41 @@ function stock_purchasable_items_list_row($label, $name, $selected_id=null,
 
 function stock_item_types_list_row($label, $name, $selected_id=null, $enabled=true)
 {
-	default_focus($name);
+	$types = array(
+		'M' => _("Manufactured"),
+		'B' => _("Purchased"),
+		'D' => _("Service")
+	);
+
 	echo "<tr>";
-	if ($label != NULL)
+	if ($label != null)
 		echo "<td>$label</td>\n";
 	echo "<td>";
-	if ($enabled)
-		$sel = "<select name='$name' onchange='JsHttpRequest.request(\"_{$name}_update\", this.form);'>\n";
 
-	else
-		$sel =  "<select disabled name='$name'>\n";
-	if ($selected_id == null)
-		$selected_id = (!isset($_POST[$name]) ? "" : $_POST[$name]);
-	if ($selected_id == "")
-		$_POST[$name] = $selected_id = "B";
-	$sel .= "<option " . ($selected_id == 'M'?" selected ":"") . " value='M'>" . _("Manufactured"). "</option>\n";
-	$sel .= "<option " . ($selected_id == 'B'?" selected ":"") . " value='B'>" . _("Purchased"). "</option>\n";
-	$sel .= "<option " . ($selected_id == 'D'?" selected ":"") . " value='D'>" . _("Service"). "</option>\n";
-	$sel .= "</select>";
-	echo $sel;
+	array_selector($name, $selected_id, $types, 
+		array( 
+			'select_submit'=> true, 
+			'disabled' => !$enabled) );
 	echo "</td></tr>\n";
-	return $sel;
 }
 
 function stock_units_list_row($label, $name, $value=null, $enabled=true)
 {
-	default_focus($name);
 	$result = get_all_item_units();
-	echo "<tr><td>$label</td>\n";
-	if ($enabled)
-		echo "<td><select name='$name'>";
-	else
-		echo "<td><select disabled name='$name'>";
-
-	if ($value == null)
-		$value = (!isset($_POST[$name]) ? "" : $_POST[$name]);
+	echo "<tr>";
+	if ($label != null)
+		echo "<td>$label</td>\n";
+	echo "<td>";
 
 	while($unit = db_fetch($result))
-	{
-		if ($value == "")
-		{
-			$_POST[$name] = $unit['abbr'];
-		}
-		$descr = $unit['name'];
-		if ($value==$unit['abbr'])
-		{
-			echo "<option selected value='".$unit['abbr']."'>$descr</option>\n";
-		}
-		else
-		{
-			echo "<option value='".$unit['abbr']."'>$descr</option>\n";
-		}
-	}
-	echo "</select></td></tr>\n";
+		$units[$unit['abbr']] = $unit['name'];
+
+	array_selector($name, $value, $units, 
+		array( 
+			'select_submit'=> true, 
+			'disabled' => !$enabled) );
+
+	echo "</td></tr>\n";
 }
 
 //------------------------------------------------------------------------------------
@@ -1310,40 +1364,14 @@ function gl_all_accounts_list_row($label, $name, $selected_id=null, $skip_bank_a
 
 function yesno_list($name, $selected_id=null, $name_yes="", $name_no="", $submit_on_change=false)
 {
-	default_focus($name);
-	if ($submit_on_change == true)
-		echo "<select name='$name' onchange='this.form.submit();'>"; // FIX ajax
-	else
-		echo "<select name='$name'>";
+	$items = array();
+	$items['1'] = strlen($name_yes) ? $name_yes : _("Yes");
+	$items['0'] = strlen($name_no) ? $name_no : _("No");
 
-	if (strlen($name_yes) == 0)
-	{
-		unset($name_yes);
-	}
-	if (strlen($name_no) == 0)
-	{
-		unset($name_no);
-	}
-
-	if ($selected_id == null)
-		$selected_id = (!isset($_POST[$name]) ? 0 : $_POST[$name]);
-	if ($selected_id == 0)
-		echo "<option value=1>";
-	else
-		echo "<option selected value=1>";
-	if (!isset($name_yes))
-		echo _("Yes") . "</option>\n";
-	else
-		echo $name_yes . "</option>\n";
-	if ($selected_id == 0)
-		echo "<option selected value=0>";
-	else
-		echo "<option value=0>";
-	if (!isset($name_no))
-		echo _("No") . "</option>\n";
-	else
-		echo $name_no . "</option>\n";
-	echo "</select>";
+	return array_selector($name, $selected_id, $items, 
+		array( 
+			'select_submit'=> true, 
+			'async' => false ) ); // FIX?
 }
 
 function yesno_list_cells($label, $name, $selected_id=null, $name_yes="", $name_no="", $submit_on_change=false)
@@ -1370,18 +1398,11 @@ function languages_list($name, $selected_id=null)
 {
 	global $installed_languages;
 
-	default_focus($name);
-	echo "<select name='$name'>";
-
-	if ($selected_id == null)
-		$selected_id = (!isset($_POST[$name]) ? "" : $_POST[$name]);
+	$items = array();
 	foreach ($installed_languages as $lang)
-	{
-		echo "<option ";
-		if ($selected_id == $lang['code'])
-			echo "selected ";
-		echo "value='" . $lang['code'] . "'>" . $lang['name'] . "</option>\n";
-	}
+			$items[$lang['code']] = $lang['name'];
+	
+	return array_selector($name, $selected_id, $items );
 }
 
 function languages_list_cells($label, $name, $selected_id=null)
@@ -1404,20 +1425,18 @@ function languages_list_row($label, $name, $selected_id=null)
 
 function bank_account_types_list($name, $selected_id=null)
 {
-	$bank_account_types = bank_account_types::get_all();
+	$types = bank_account_types::get_all();
 
-	default_focus($name);
-	echo "<select name='$name'>";
-
-	if ($selected_id == null)
-		$selected_id = (!isset($_POST[$name]) ? "" : $_POST[$name]);
-	foreach ($bank_account_types as $type)
+	$items = array();
+	foreach ($types as $type)
 	{
-		echo "<option ";
-		if ($selected_id == "" || $selected_id == $type['id'])
-			echo "selected ";
-		echo "value='" . $type['id'] . "'>" . $type['name'] . "</option>\n";
+		if (payment_person_types::has_items($type['id']))
+		{
+			$items[$type['id']] = $type['name'];
+		}
 	}
+	
+	return array_selector($name, $selected_id, $items );
 }
 
 function bank_account_types_list_cells($label, $name, $selected_id=null)
@@ -1437,31 +1456,21 @@ function bank_account_types_list_row($label, $name, $selected_id=null)
 }
 
 //------------------------------------------------------------------------------------------------
-
-function payment_person_types_list($name, $selected_id=null, $related=null)
+function payment_person_types_list($name, $selected_id=null, $submit_on_change=false)
 {
 	$types = payment_person_types::get_all();
 
-	default_focus($name);
-	echo "<select name='$name'";
-	if ($related)	// FIX ajax
-		echo " onchange='this.form.$related.value=\"\"; this.form.submit();' ";
-	echo ">";
-
-	if ($selected_id == null)
-		$selected_id = (!isset($_POST[$name]) ? "" : $_POST[$name]);
+	$items = array();
 	foreach ($types as $type)
 	{
 		if (payment_person_types::has_items($type['id']))
 		{
-			if ($selected_id == "")
-				$_POST[$name] = $selected_id = $type['id'];
-			echo "<option ";
-			if ($selected_id == $type['id'])
-				echo "selected ";
-			echo "value='" . $type['id'] . "'>" . $type['name'] . "</option>\n";
+			$items[$type['id']] = $type['name'];
 		}
 	}
+	
+	return array_selector($name, $selected_id, $items, 
+		array( 'select_submit'=> $submit_on_change ) );
 }
 
 function payment_person_types_list_cells($label, $name, $selected_id=null, $related=null)
@@ -1488,19 +1497,12 @@ function wo_types_list($name, $selected_id=null)
 {
 	$types = wo_types::get_all();
 
-	default_focus($name);
-	echo "<select name='$name' onchange='JsHttpRequest.request(\"_{$name}_update\", this.form);'>";
-
-	if ($selected_id == null)
-		$selected_id = (!isset($_POST[$name]) ? "" : $_POST[$name]);
+	$items = array();
 	foreach ($types as $type)
-	{
-		echo "<option ";
-		if ($selected_id == $type['id'])
-			echo "selected ";
-		echo "value='" . $type['id'] . "'>" . $type['name'] . "</option>\n";
-	}
-	echo "</select>";
+		$items[$type['id']] = $type['name'];
+	
+	return array_selector($name, $selected_id, $items, 
+		array( 'select_submit'=> true, 'async' => true ) );
 }
 
 function wo_types_list_row($label, $name, $selected_id=null)
@@ -1517,115 +1519,42 @@ function dateformats_list_row($label, $name, $value=null)
 {
 	global $dateformats;
 
-	default_focus($name);
-	echo "<tr><td>$label</td>\n";
-	echo "<td><select name='$name'>";
-
-	if ($value == null)
-		$value = (!isset($_POST[$name]) ? 0 : $_POST[$name]);
-	$counter = 0;
-	foreach ($dateformats as $df)
-	{
-
-		if ($value==$counter)
-		{
-			echo "<option selected value='$counter'>$df</option>\n";
-		}
-		else
-		{
-			echo "<option value='$counter'>$df</option>\n";
-		}
-		$counter++;
-	}
-	echo "</select></td></tr>\n";
+	echo "<tr><td>$label</td>\n<td>";
+	array_selector( $name, $value, $dateformats );
+	echo "</td></tr>\n";
 }
 
 function dateseps_list_row($label, $name, $value=null)
 {
 	global $dateseps;
 
-	default_focus($name);
-	echo "<tr><td>$label</td>\n";
-	echo "<td><select name='$name'>";
-
-	if ($value == null)
-		$value = (!isset($_POST[$name]) ? 0 : $_POST[$name]);
-	$counter = 0;
-	foreach ($dateseps as $ds)
-	{
-
-		if ($value==$counter)
-		{
-			echo "<option selected value='$counter'>$ds</option>\n";
-		}
-		else
-		{
-			echo "<option value='$counter'>$ds</option>\n";
-		}
-		$counter++;
-	}
-	echo "</select></td></tr>\n";
+	echo "<tr><td>$label</td>\n<td>";
+	array_selector( $name, $value, $dateseps );
+	echo "</td></tr>\n";
 }
 
 function thoseps_list_row($label, $name, $value=null)
 {
 	global $thoseps;
 
-	default_focus($name);
-	echo "<tr><td>$label</td>\n";
-	echo "<td><select name='$name'>";
-
-	if ($value == null)
-		$value = (!isset($_POST[$name]) ? 0 : $_POST[$name]);
-	$counter = 0;
-	foreach ($thoseps as $ts)
-	{
-
-		if ($value==$counter)
-		{
-			echo "<option selected value='$counter'>$ts</option>\n";
-		}
-		else
-		{
-			echo "<option value='$counter'>$ts</option>\n";
-		}
-		$counter++;
-	}
-	echo "</select></td></tr>\n";
+	echo "<tr><td>$label</td>\n<td>";
+	array_selector( $name, $value, $thoseps );
+	echo "</td></tr>\n";
 }
 
 function decseps_list_row($label, $name, $value=null)
 {
 	global $decseps;
 
-	default_focus($name);
-	echo "<tr><td>$label</td>\n";
-	echo "<td><select name='$name'>";
-
-	if ($value == null)
-		$value = (!isset($_POST[$name]) ? 0 : $_POST[$name]);
-	$counter = 0;
-	foreach ($decseps as $ds)
-	{
-
-		if ($value==$counter)
-		{
-			echo "<option selected value='$counter'>$ds</option>\n";
-		}
-		else
-		{
-			echo "<option value='$counter'>$ds</option>\n";
-		}
-		$counter++;
-	}
-	echo "</select></td></tr>\n";
+	echo "<tr><td>$label</td>\n<td>";
+	array_selector( $name, $value, $decseps );
+	echo "</td></tr>\n";
 }
 
 function themes_list_row($label, $name, $value=null)
 {
 	global $path_to_root;
 
-	default_focus($name);
 	$path = $path_to_root.'/themes/';
 	$themes = array();
 	$themedir = opendir($path);
@@ -1633,109 +1562,58 @@ function themes_list_row($label, $name, $value=null)
 	{
 		if($fname!='.' && $fname!='..' && $fname!='CVS' && is_dir($path.$fname))
 		{
-			$themes[] =  $fname;
+			$themes[$fname] =  $fname;
 		}
 	}
-	sort($themes);
-	echo "<tr><td>$label</td>\n";
-	echo "<td><select name='$name'>";
+	ksort($themes);
 
-	if ($value == null)
-		$value = (!isset($_POST[$name]) ? "" : $_POST[$name]);
-	foreach ($themes as $th)
-	{
-
-		if ($value==$th)
-		{
-			echo "<option selected value='$th'>$th</option>\n";
-		}
-		else
-		{
-			echo "<option value='$th'>$th</option>\n";
-		}
-	}
-	echo "</select></td></tr>\n";
+	echo "<tr><td>$label</td>\n<td>";
+	array_selector( $name, $value, $themes );
+	echo "</td></tr>\n";
 }
 
 function pagesizes_list_row($label, $name, $value=null)
 {
 	global $pagesizes;
 
-	default_focus($name);
-	echo "<tr><td>$label</td>\n";
-	echo "<td><select name='$name'>";
-
-	if ($value == null)
-		$value = (!isset($_POST[$name]) ? "" : $_POST[$name]);
+	$items = array();
 	foreach ($pagesizes as $pz)
-	{
+		$items[$pz] = $pz;
 
-		if ($value==$pz)
-		{
-			echo "<option selected value='$pz'>$pz</option>\n";
-		}
-		else
-		{
-			echo "<option value='$pz'>$pz</option>\n";
-		}
-	}
-	echo "</select></td></tr>\n";
+	echo "<tr><td>$label</td>\n<td>";
+	array_selector( $name, $value, $items );
+	echo "</td></tr>\n";
 }
 
 function security_headings_list_row($label, $name, $value=null)
 {
 	global $security_headings;
 
-	default_focus($name);
-	echo "<tr><td>$label</td>\n";
-	echo "<td><select name='$name'>";
-
-	if ($value == null)
-		$value = (!isset($_POST[$name]) ? 0 : (int)$_POST[$name]);
-	$counter=0;
-	foreach ($security_headings as $sh)
-	{
-
-		if ($value==$counter)
-		{
-			echo "<option selected value='$counter'>$sh</option>\n";
-		}
-		else
-		{
-			echo "<option value='$counter'>$sh</option>\n";
-		}
-		$counter++;
-	}
-	echo "</select></td></tr>\n";
+	echo "<tr><td>$label</td>\n<td>";
+	array_selector( $name, $value, $security_headings );
+	echo "</td></tr>\n";
 }
 
 function systypes_list_cells($label, $name, $value=null, $submit_on_change=false)
 {
 	global $systypes_array;
 
-	default_focus($name);
 	if ($label != null)
 		echo "<td>$label</td>\n";
-	echo "<td><select name='$name'";
-	if ($submit_on_change)
-		echo " onchange='this.form.submit();'>";	// FIX ajax
-	else
-		echo ">";
-	if ($value == null)
-		$value = (!isset($_POST[$name]) ? "" : $_POST[$name]);
-	foreach ($systypes_array as $key=>$type)
-	{
+	echo "<td>";
 
-		if ($value==$key)
-		{
-			echo "<option selected value='$key'>".$type['name']."</option>\n";
-		}
-		else
-		{
-			echo "<option value='$key'>".$type['name']."</option>\n";
-		}
-	}
-	echo "</select></td>\n";
+	$items = array();
+	foreach ($systypes_array as $key=>$type)
+			$items[$key] = $type['name'];
+	
+	$str = array_selector($name, $value, $items, 
+		array( 
+			'select_submit'=> $submit_on_change,
+			'async' => false
+			)
+	);
+	echo "</td>\n";
+	return $str;
 }
 
 function systypes_list_row($label, $name, $value=null, $submit_on_change=false)
@@ -1749,53 +1627,51 @@ function systypes_list_row($label, $name, $value=null, $submit_on_change=false)
 function cust_allocations_list_cells($label, $name, $selected=null)
 {
 	global $all_items;
-	default_focus($name);
+
 	if ($label != null)
 		label_cell($label);
-	if ($selected == null)
-		$selected = (!isset($_POST[$name]) ? "" : $_POST[$name]);
-	echo "<td><select name='$name'>";
-	echo "<option " . ($selected == $all_items ? " selected " : "") . " value='$all_items'>" . _("All Types"). "</option>\n";
-	echo "<option " . ($selected == '1'?" selected ":"") . " value='1'>" . _("Sales Invoices"). "</option>\n";
-	echo "<option " . ($selected == '2'?" selected ":"") . " value='2'>" . _("Overdue Invoices"). "</option>\n";
-	echo "<option " . ($selected == '3'?" selected ":"") . " value='3'>" . _("Payments"). "</option>\n";
-	echo "<option " . ($selected == '4'?" selected ":"") . " value='4'>" . _("Credit Notes"). "</option>\n";
-	echo "<option " . ($selected == '5'?" selected ":"") . " value='5'>" . _("Delivery Notes"). "</option>\n";
-	echo "</select></td>\n";
+	echo "<td>\n";
+	$allocs = array( 
+		$all_items=>_("All Types"),
+		'1'=> _("Sales Invoices"),
+		'2'=> _("Overdue Invoices"),
+		'3' => _("Payments"),
+		'4' => _("Credit Notes"),
+		'5' => _("Delivery Notes")
+	);
+	$str = array_selector($name, $selected, $allocs);
+	echo "</td>\n";
+	return $str;
 }
 
-function supp_allocations_list_cells($name, $selected=null)
+function supp_allocations_list_cell($name, $selected=null)
 {
 	global $all_items;
 
-	default_focus($name);
-	if ($selected == null)
-		$selected = (!isset($_POST[$name]) ? "" : $_POST[$name]);
-	echo "<td><select name='$name'>";
-	echo "<option " . ($selected == $all_items ? " selected " : "") . " value='$all_items'>" . _("All Types"). "</option>\n";
-	echo "<option " . ($selected == '1'?" selected ":"") . " value='1'>" . _("Invoices"). "</option>\n";
-	echo "<option " . ($selected == '2'?" selected ":"") . " value='2'>" . _("Overdue Invoices"). "</option>\n";
-	echo "<option " . ($selected == '3'?" selected ":"") . " value='3'>" . _("Payments"). "</option>\n";
-	echo "<option " . ($selected == '4'?" selected ":"") . " value='4'>" . _("Credit Notes"). "</option>\n";
-	echo "<option " . ($selected == '5'?" selected ":"") . " value='5'>" . _("Overdue Credit Notes"). "</option>\n";
-	echo "</select></td>\n";
+	echo "<td>\n";
+	$allocs = array( 
+		$all_items=>_("All Types"),
+		'1'=> _("Invoices"),
+		'2'=> _("Overdue Invoices"),
+		'3' => _("Payments"),
+		'4' => _("Credit Notes"),
+		'5' => _("Overdue Credit Notes")
+	);
+	$str = array_selector($name, $selected, $allocs);
+	echo "</td>\n";
+	return $str;
 }
 
 function policy_list_cells($label, $name, $selected=null)
 {
-	default_focus($name);
-	if ($selected == null)
-	{
-		$selected = (!isset($_POST[$name]) ? "" : $_POST[$name]);
-		if ($selected == "")
-			$_POST[$name] = $selected;
-	}
 	if ($label != null)
 		label_cell($label);
-	echo "<td><select name='$name'>";
-	echo "<option " . ($selected == ''?" selected ":"") . " value=''>" . _("Automatically put balance on back order"). "</option>\n";
-	echo "<option " . ($selected == 'CAN'?" selected ":"") . " value='CAN'>" . _("Cancel any quantites not delivered"). "</option>\n";
-	echo "</select></td>\n";
+	echo "<td>\n";
+	$str = array_selector($name, $selected, 
+				array( '' => _("Automatically put balance on back order"),
+			 		'CAN' => _("Cancel any quantites not delivered")) );
+	echo "</td>\n";
+	return $str;
 }
 
 function policy_list_row($label, $name, $selected=null)
@@ -1807,23 +1683,15 @@ function policy_list_row($label, $name, $selected=null)
 
 function credit_type_list_cells($label, $name, $selected=null, $submit_on_change=false)
 {
-	default_focus($name);
-	if ($selected == null)
-	{
-		$selected = (!isset($_POST[$name]) ? "Return" : $_POST[$name]);
-		if ($selected == "Return")
-			$_POST[$name] = $selected;
-	}
 	if ($label != null)
 		label_cell($label);
-	echo "<td><select name='$name'";
-	if ($submit_on_change)
-		echo " onchange='JsHttpRequest.request(\"_{$name}_update\", this.form);'>";
-	else
-		echo ">";
-	echo "<option " . ($selected == 'Return'?" selected ":"") . " value='Return'>" . _("Items Returned to Inventory Location"). "</option>\n";
-	echo "<option " . ($selected == 'WriteOff'?" selected ":"") . " value='WriteOff'>" . _("Items Written Off"). "</option>\n";
-	echo "</select></td>\n";
+	echo "<td>\n";
+	$str = array_selector($name, $selected, 
+				array( 'Return' => _("Items Returned to Inventory Location"),
+			 		'WriteOff' => _("Items Written Off")),
+				array( 'select_submit'=> $submit_on_change ) );
+	echo "</td>\n";
+	return $str;
 }
 
 function credit_type_list_row($label, $name, $selected=null, $submit_on_change=false)
@@ -1836,38 +1704,13 @@ function credit_type_list_row($label, $name, $selected=null, $submit_on_change=f
 
 function number_list($name, $selected, $from, $to, $no_option=false)
 {
-	default_focus($name);
-	if ($selected == null)
-	{
-		$selected = (!isset($_POST[$name]) ? reserved_words::get_all_numeric() : $_POST[$name]);
-	}
-	echo "<select name='$name'>";
-	if ($no_option !== false)
-	{
-		$reserved_word = reserved_words::get_all_numeric();
-
-    	if ($selected == $reserved_word)
-    	{
-    	     echo "<option selected value='$reserved_word'>$no_option</option>\n";
-    	}
-    	else
-    	{
-    	     echo "<option value='$reserved_word'>$no_option</option>\n";
-    	}
-	}
-
+	$items = array();
 	for ($i = $from; $i <= $to; $i++)
-	{
-		if ($selected == $i)
-		{
-			echo "<option selected value='$i'>$i</option>\n";
-		}
-		else
-		{
-			echo "<option value='$i'>$i</option>\n";
-		}
-	}
-	echo "</select>\n";
+		$items[$i] = "$i";
+
+	return array_selector($name, $selected, $items,
+				array(	'spec_option' => $no_option,
+						'spec_id' => reserved_words::get_all_numeric()) );
 }
 
 function number_list_cells($label, $name, $selected, $from, $to, $no_option=false)
@@ -1885,4 +1728,5 @@ function number_list_row($label, $name, $selected, $from, $to, $no_option=false)
 	number_list_cells($label, $name, $selected, $from, $to, $no_option);
 	echo "</tr>\n";
 }
+
 ?>

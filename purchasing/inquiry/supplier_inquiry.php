@@ -38,7 +38,7 @@ supplier_list_cells(_("Select a supplier:"), 'supplier_id', null, true);
 date_cells(_("From:"), 'TransAfterDate', '', null, -30);
 date_cells(_("To:"), 'TransToDate');
 
-supp_allocations_list_cells("filterType", null);
+supp_allocations_list_cell("filterType", null);
 
 submit_cells('Refresh Inquiry', _("Search"),'',_('Refresh Inquiry'), true);
 
