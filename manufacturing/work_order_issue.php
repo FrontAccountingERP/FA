@@ -50,7 +50,7 @@ function handle_new_order()
 
      Session_register("issue_items");
 
-     $_SESSION['issue_items'] = new items_cart;
+     $_SESSION['issue_items'] = new items_cart(28);
      $_SESSION['issue_items']->order_id = $_GET['trans_no'];
 }
 

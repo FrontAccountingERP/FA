@@ -5,7 +5,7 @@ include_once($path_to_root . "/inventory/includes/inventory_db.inc");
 
 class items_cart
 {
-
+	var $trans_type;
 	var $line_items;
 	var $gl_items;
 
@@ -24,8 +24,9 @@ class items_cart
 	var $person_id;
 	var $branch_id;
 
-	function items_cart()
+	function items_cart($type)
 	{
+		$this->trans_type = $type;
 		$this->clear_items();
 	}
 

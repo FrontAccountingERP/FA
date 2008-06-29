@@ -79,7 +79,7 @@ function handle_new_order()
 
     session_register("transfer_items");
 
-	$_SESSION['transfer_items'] = new items_cart;
+	$_SESSION['transfer_items'] = new items_cart(systypes::location_transfer());
 	$_POST['AdjDate'] = Today();
 	if (!is_date_in_fiscalyear($_POST['AdjDate']))
 		$_POST['AdjDate'] = end_fiscalyear();
@@ -214,9 +214,6 @@ $id = find_submit('Delete');
 if ($id != -1)
 	handle_delete_item($id);
 
-//if (isset($_GET['Delete']) || isset($_GET['Edit']))
-//	copy_from_st();
-
 if (isset($_POST['AddItem']) || isset($_POST['UpdateItem'])) {
   	copy_to_st();
 	line_start_focus();
@@ -252,7 +249,7 @@ echo "</td>";
 end_row();
 end_table(1);
 
-submit_center_first('Update', _("Update"), '', true);
+submit_center_first('Update', _("Update"), '', null);
 submit_center_last('Process', _("Process Transfer"), '', true);
 
 end_form();

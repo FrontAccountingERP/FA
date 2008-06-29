@@ -81,7 +81,7 @@ function handle_new_order()
 
     session_register("adj_items");
 
-    $_SESSION['adj_items'] = new items_cart;
+    $_SESSION['adj_items'] = new items_cart(systypes::inventory_adjustment());
 	$_POST['AdjDate'] = Today();
 	if (!is_date_in_fiscalyear($_POST['AdjDate']))
 		$_POST['AdjDate'] = end_fiscalyear();
@@ -247,8 +247,8 @@ echo "</TD>";
 end_row();
 end_table(1);
 
-submit_center_first('Update', _("Update"), '', true);
-submit_center_last('Process', _("Process Transfer"), '', true);
+submit_center_first('Update', _("Update"), '', null);
+submit_center_last('Process', _("Process Adjustment"), '', true);
 
 end_form();
 end_page();
