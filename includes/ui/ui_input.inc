@@ -47,9 +47,13 @@ function input_num($postname=null)
 
 //---------------------------------------------------------------------------------
 
-function hidden($name, $value, $echo=true)
+function hidden($name, $value=null, $echo=true)
 {
   	global $Ajax;
+	
+	if ($value === null) 
+		$value = get_post($name);
+	
   	$ret = "<input type=\"hidden\" name=\"$name\" value=\"$value\">";
 	$Ajax->addUpdate($name, $name, $value);
 	if ($echo)
@@ -59,13 +63,21 @@ function hidden($name, $value, $echo=true)
 }
 
 //---------------------------------------------------------------------------------
-
+//	Submit button.
+//	$async parameter can have 3 values:
+//		false - normal submit via form action
+//		true  - when js is on submition via ajax call
+//		null - fallback button not visible in js enabled mode
+//
 function submit($name, $value, $echo=true, $title=false, $async=false)
 {
+
 	default_focus($name);
 	$submit_str = "<input type=\"submit\" class=\""
 	    .($async ? 'ajaxsubmit' : 'inputsubmit')
-	    ."\" name=\"$name\"  id=\"$name\" value=\"$value\""
+		."\""
+		.($async === null ? (in_ajax() ? " style='display:none;'" : ' fallback="1"' ): '')
+	    ." name=\"$name\"  id=\"$name\" value=\"$value\""
 	    .($title ? " title='$title'" : '')
 	    .">\n";
 	if ($echo)
@@ -169,7 +181,7 @@ function check_value($name)
 	return 1;
 }
 
-function check($label, $name, $value, $submit_on_change=false, $title=false)
+function check($label, $name, $value=null, $submit_on_change=false, $title=false)
 {
   	global $Ajax;
 
@@ -177,8 +189,8 @@ function check($label, $name, $value, $submit_on_change=false, $title=false)
 	if ($label)
 		echo $label . "  ";
 
-	if ($value == null)
-		$value = (!isset($_POST[$name]) ? 0 : $_POST[$name]);
+	if ($value === null)
+		$value = get_post($name,0);
 
 		echo "<input"
 		    .($value == 1 ? ' checked':'')
@@ -270,7 +282,7 @@ function label_row($label, $value, $params="", $params2="", $leftfill=0)
 
 //-----------------------------------------------------------------------------------
 
-function text_cells($label, $name, $value, $size="", $max="", $title=false, $params="", $post_label="", $disabled="")
+function text_cells($label, $name, $value=null, $size="", $max="", $title=false, $params="", $post_label="", $disabled="")
 {
   	global $Ajax;
 
@@ -279,8 +291,8 @@ function text_cells($label, $name, $value, $size="", $max="", $title=false, $par
 		label_cell($label, $params);
 	echo "<td>";
 
-	if ($value == null)
-		$value = (!isset($_POST[$name]) ? "" : $_POST[$name]);
+	if ($value === null)
+		$value = get_post($name);
 	echo "<input $disabled type=\"text\" name=\"$name\" size=\"$size\" maxlength=\"$max\" value=\"$value\""
 	    .($title ? " title='$title'" : '')
 	    .">";
@@ -406,7 +418,7 @@ function percent_row($label, $name, $init=null)
 
 	if (!isset($_POST[$name]) || $_POST[$name]=="")
 	{
-		$_POST[$name] = $init== null ? '' : $init;
+		$_POST[$name] = $init == null ? '' : $init;
 	}
 
 	small_amount_row($label, $name, $_POST[$name], null, "%", user_percent_dec());
