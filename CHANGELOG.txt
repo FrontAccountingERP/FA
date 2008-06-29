@@ -19,6 +19,32 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+29-Jun-2008 Janusz Dobrowolski
+! Rewritten bank deposit/payment related files, added ajax
+  /gl/gl_deposit.php (removed)
+  /gl/gl_payment.php (removed)
+  /gl/gl_bank.php (added)
+  /gl/includes/ui/gl_bank_ui.inc (new file)
+  /gl/includes/ui/gl_deposit_ui.inc (removed)
+  /gl/includes/ui/gl_payment_ui.inc (removed)
+  /gl/includes/db/gl_db_banking.inc
+  /gl/gl_journal.php
+  /manufacturing/search_work_orders.php
+  /applications/generalledger.php
++ Added fallback flag for non-js mode only ui elements
+$ /js/inserts.js
+! Default value from POST for check_box,hidden and text_cells inputs
+$ /includes/ui/ui_input.inc
+! Rewritten non-sql list selectors
+$ /includes/ui/ui_lists.inc
+  /purchasing/inquiry/supplier_allocation_inquiry.php
+  /purchasing/inquiry/supplier_inquiry.php
+! Added trans_type parameter to items_cart()  
+$ /includes/ui/items_cart.inc
+  /inventory/adjustments.php
+  /inventory/transfers.php
+  /manufacturing/work_order_issue.php
+
 27-Jun-2008 Janusz Dobrowolski
 + Ajax additions
 $ /dimensions/dimension_entry.php
