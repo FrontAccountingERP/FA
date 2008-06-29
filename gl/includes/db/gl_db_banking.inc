@@ -137,23 +137,4 @@ function add_bank_transaction($trans_type, $from_account, $items, $date_,
 
 //----------------------------------------------------------------------------------------
 
-function add_bank_payment($from_account, $items, $date_,
-	$person_type_id, $person_id, $person_detail_id,	$type, $ref, $memo_)
-{
-	return add_bank_transaction(systypes::bank_payment(), $from_account, $items, $date_,
-		$person_type_id, $person_id, $person_detail_id,	$type, $ref, $memo_);
-}
-
-//---------------------------------------------------------------------------------------------
-
-function add_bank_deposit($from_account, $items, $date_,
-	$person_type_id, $person_id, $person_detail_id,	$type, $ref, $memo_)
-{
-	return add_bank_transaction(systypes::bank_deposit(), $from_account, $items, $date_,
-		$person_type_id, $person_id, $person_detail_id,	$type, $ref, $memo_);
-}
-
-//---------------------------------------------------------------------------------------------
-
-
 ?>

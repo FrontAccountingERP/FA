@@ -156,7 +156,7 @@ while ($myrow = db_fetch($result))
 	 	{
 			$issue = $path_to_root . "/manufacturing/work_order_issue.php?" . SID . "trans_no=" .$myrow["id"];
 			$add_finished = $path_to_root . "/manufacturing/work_order_add_finished.php?" . SID . "trans_no=" .$myrow["id"];
-			$costs = $path_to_root . "/gl/gl_payment.php?NewPayment=1&PayType=" . payment_person_types::WorkOrder(). "&PayPerson=" .$myrow["id"];
+			$costs = $path_to_root . "/gl/gl_bank.php?NewPayment=1&PayType=" . payment_person_types::WorkOrder(). "&PayPerson=" .$myrow["id"];
 	 		$l2 = "<a href=$issue>" . _("Issue") . "</a>";
 	 		$l3 = "<a href=$add_finished>" . _("Produce") . "</a>";
 	 		$l4 = "<a href=$costs>" . _("Costs") . "</a>";

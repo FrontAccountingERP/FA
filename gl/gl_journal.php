@@ -67,7 +67,7 @@ function handle_new_order()
 
     session_register("journal_items");
 
-    $_SESSION['journal_items'] = new items_cart;
+    $_SESSION['journal_items'] = new items_cart(systypes::journal_entry());
 
 	$_POST['date_'] = Today();
 	if (!is_date_in_fiscalyear($_POST['date_']))
