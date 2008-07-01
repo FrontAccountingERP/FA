@@ -30,6 +30,7 @@ $opts = array(		// default options
 	'spec_option'=>false, 	// option text or false
 	'spec_id' => 0,		// option id
 		// submit on select parameters
+	'default' => '', // default value when $_POST is not set
 	'select_submit' => false, //submit on select: true/false
 	'async' => true,	// select update via ajax (true) vs _page_body reload
 		// search box parameters
@@ -67,7 +68,7 @@ $opts = array(		// default options
 	}
 	if ($opts['sel_hint'] === null)
 		$opts['sel_hint'] = $by_id || $search_box==false ?
-		'' : _('Press Space tab for search pattern entry');
+			'' : _('Press Space tab for search pattern entry');
 
 	if ($opts['box_hint'] === null)
 		$opts['box_hint'] = $search_box ?
@@ -75,7 +76,7 @@ $opts = array(		// default options
 			: _('Enter description fragment to search or * for all')) :'';
 
 	if ($selected_id == null) {
-		$selected_id = get_post($name, null);
+		$selected_id = get_post($name, $opts['default']);
 	}
 	$txt = get_post($search_box);
 	$rel = '';
@@ -160,15 +161,14 @@ $opts = array(		// default options
 	}
 
 	if ($found === false) {
-		$_POST[$name] = $first_id;
+		$selected_id = $first_id;
 	}
+	$_POST[$name] = $selected_id;
 
-	if ($by_id) {
+	if ($by_id && $search_box != false) {
 		$txt = $_POST[$name];
-		if ($search_box)
-			$Ajax->addUpdate($name, $search_box, $txt);
+		$Ajax->addUpdate($name, $search_box, $txt);
 	}
-
 	$selector = "<select $disabled name='$name' class='$class' title='"
 		. $opts['sel_hint']."' $rel>".$selector."</select>\n";
 
@@ -225,6 +225,7 @@ $opts = array(		// default options
 	'spec_id' => 0,		// option id
 	'select_submit' => false, //submit on select: true/false
 	'async' => true,	// select update via ajax (true) vs _page_body reload
+	'default' => '', // default value when $_POST is not set
 		// search box parameters
 	'sel_hint' => null,
 	'disabled' => false
@@ -237,7 +238,7 @@ $opts = array(		// default options
 	$disabled = $opts['disabled'] ? "disabled" : '';
 
 	if ($selected_id == null) {
-		$selected_id = get_post($name, null);
+		$selected_id = get_post($name, $opts['default']);
 	}
 
 	if (isset($_POST[$select_submit])) {
@@ -472,16 +473,12 @@ function currencies_list($name, $selected_id=null, $submit_on_change=false)
 	$sql = "SELECT curr_abrev, currency FROM ".TB_PREF."currencies";
 
 // default to the company currency
-	if ($selected_id == "")
-	{
-			$selected_id = get_company_currency();
-			$_POST[$name] = $selected_id;
-	}
 
 return combo_input($name, $selected_id, $sql, 'curr_abrev', 'currency',
 	array(
 		'select_submit'=> $submit_on_change,
-		'async' => false
+		'default' => get_company_currency(),
+		'async' => false		
 	) );
 }
 
@@ -511,15 +508,11 @@ function fiscalyears_list($name, $selected_id=null, $submit_on_change=false)
 	$sql = "SELECT * FROM ".TB_PREF."fiscal_year";
 
 // default to the company current fiscal year
-	if ($selected_id == "")
-	{
-			$selected_id = get_company_pref('f_year');
-			$_POST[$name] = $selected_id;
-	}
 
 return combo_input($name, $selected_id, $sql, 'id', '',
 	array(
 		'order' => 'begin',
+		'default' => get_company_pref('f_year'),
 		'format' => '_format_fiscalyears',
 		'select_submit'=> $submit_on_change,
 		'async' => false
@@ -565,9 +558,9 @@ $options = array(
 	);
 
 	if ($showclosed)
-	$options['where'][] = "closed=0";
+		$options['where'][] = "closed=0";
 	if($showtype)
-	$options['where'][] = "type_=$showtype";
+		$options['where'][] = "type_=$showtype";
 
 	return combo_input($name, $selected_id, $sql, 'id', 'ref', $options);
 }
