@@ -19,6 +19,30 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+01-Jul-2008 Janusz Dobrowolski
++ Ajax additions
+  /gl/bank_transfer.php
+  /gl/gl_budget.php
+  /gl/gl_journal.php
+  /gl/includes/ui/gl_journal_ui.inc
++ Added client side calculations for budget
+  /gl/gl_budget.php
+  /js/budget.js
+# Fixed default POST assigning [fixes 0000009]
+  /includes/ui/ui_lists.inc
+# Fixed submit type in submit_row()
+  /includes/ui/ui_input.inc
+# Small layout fix
+  /gl/manage/currencies.php
+! Code cleanup
+  /gl/gl_bank.php
+  /gl/includes/ui/gl_bank_ui.inc
+  /inventory/adjustments.php
+  /inventory/transfers.php
+  /purchasing/po_entry_items.php
+  /sales/sales_order_entry.php
+  /sales/credit_note_entry.php
+
 29-Jun-2008 Janusz Dobrowolski
 ! Rewritten bank deposit/payment related files, added ajax
   /gl/gl_deposit.php (removed)
