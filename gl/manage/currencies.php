@@ -176,7 +176,8 @@ function display_currencies()
 		edit_link_cell("selected_id=" . $myrow["curr_abrev"]);
 		if ($myrow["curr_abrev"] != $company_currency)
 			delete_link_cell("selected_id=" . $myrow["curr_abrev"]. "&delete=1");
-		
+		else
+			label_cell('');
 		end_row();
 		
     } //END WHILE LIST LOOP
