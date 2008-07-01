@@ -152,7 +152,7 @@ function submit_row($name, $value, $right=true, $extra="", $title=false, $async=
 	echo "<tr>";
 	if ($right)
 		echo "<td>&nbsp;</td>\n";
-	submit_cells($name, $value, $extra, $title);
+	submit_cells($name, $value, $extra, $title, $async);
 	echo "</tr>\n";
 }
 //---------------------------------------------------------------------------------
