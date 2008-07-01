@@ -84,7 +84,7 @@ function gl_payment_controls()
 	echo "</td></tr>";
 	end_table(1); // outer table
 
-    submit_center('AddPayment',_("Enter Transfer"));
+    submit_center('AddPayment',_("Enter Transfer"), true, '', true);
 
 	end_form();
 }

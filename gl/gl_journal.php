@@ -21,6 +21,13 @@ if ($use_date_picker)
 
 page(_("Journal Entry"), false, false,'', $js);
 
+//--------------------------------------------------------------------------------------------------
+function line_start_focus() {
+  global 	$Ajax;
+
+  $Ajax->activate('items_table');
+  set_focus('_code_id_edit');
+}
 //-----------------------------------------------------------------------------------------------
 
 if (isset($_GET['AddedID'])) 
@@ -36,26 +43,7 @@ if (isset($_GET['AddedID']))
 
 	display_footer_exit();
 }
-
 //--------------------------------------------------------------------------------------------------
-
-function copy_to_je()
-{
-	$_SESSION['journal_items']->tran_date = $_POST['date_'];
-	$_SESSION['journal_items']->transfer_type = check_value('Reverse');
-	$_SESSION['journal_items']->memo_ = $_POST['memo_'];
-}
-
-//--------------------------------------------------------------------------------------------------
-
-function copy_from_je()
-{
-	$_POST['date_'] = $_SESSION['journal_items']->tran_date;
-	$_POST['Reverse'] = $_SESSION['journal_items']->transfer_type;
-	$_POST['memo_'] = $_SESSION['journal_items']->memo_;
-}
-
-//----------------------------------------------------------------------------------------
 
 function handle_new_order()
 {
@@ -82,6 +70,19 @@ if (isset($_POST['Process']))
 
 	$input_error = 0;
 
+	if ($_SESSION['journal_items']->count_gl_items() < 1) {
+		display_error(_("You must enter at least one journal line."));
+		set_focus('code_id');
+		$input_error = 1;
+	}
+	if (abs($_SESSION['journal_items']->gl_items_total()) > 0.0001)
+	{
+		display_error(_("The journal must balance (debits equal to credits) before it can be processed."));
+		set_focus('code_id');
+		$input_error = 1;
+	}
+
+
 	if (!is_date($_POST['date_'])) 
 	{
 		display_error(_("The entered date is invalid."));
@@ -94,7 +95,7 @@ if (isset($_POST['Process']))
 		set_focus('date_');
 		$input_error = 1;
 	} 
-	elseif (!references::is_valid($_POST['ref'])) 
+	if (!references::is_valid($_POST['ref'])) 
 	{
 		display_error( _("You must enter a reference."));
 		set_focus('ref');
@@ -185,13 +186,15 @@ function handle_update_item()
     	$_SESSION['journal_items']->update_gl_item($_POST['Index'], $_POST['dimension_id'],
     		$_POST['dimension2_id'], $amount, $_POST['LineMemo']);
     }
+	line_start_focus();
 }
 
 //-----------------------------------------------------------------------------------------------
 
-function handle_delete_item()
+function handle_delete_item($id)
 {
-	$_SESSION['journal_items']->remove_gl_item($_GET['Delete']);
+	$_SESSION['journal_items']->remove_gl_item($id);
+	line_start_focus();
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -208,33 +211,22 @@ function handle_new_item()
 	
 	$_SESSION['journal_items']->add_gl_item($_POST['code_id'], $_POST['dimension_id'],
 		$_POST['dimension2_id'], $amount, $_POST['LineMemo']);
+	line_start_focus();
 }
 
 //-----------------------------------------------------------------------------------------------
-if (isset($_GET['Edit'])) {
-	copy_from_je();
-	set_focus('dimension_id');
-}
-if (isset($_GET['Delete'])) {
-	copy_from_je();
-	handle_delete_item();
-	set_focus('_code_id_edit');
-}
-if (isset($_POST['AddItem'])) {
-	copy_to_je();
-	handle_new_item();
-	set_focus('_code_id_edit');
-}
-if (isset($_POST['UpdateItem'])) {
-	copy_to_je();
-	handle_update_item();
-	set_focus('_code_id_edit');
-}
-if (isset($_POST['CancelItemChanges']))
-	set_focus('_code_id_edit');
+$id = find_submit('Delete');
+if ($id != -1)
+	handle_delete_item($id);
 
-if (isset($_POST['EditItem']))
-	set_focus('dimension_id');
+if (isset($_POST['AddItem'])) 
+	handle_new_item();
+
+if (isset($_POST['UpdateItem'])) 
+	handle_update_item();
+	
+if (isset($_POST['CancelItemChanges']))
+	line_start_focus();
 
 //-----------------------------------------------------------------------------------------------
 
@@ -258,18 +250,10 @@ echo "</td>";
 end_row();
 end_table(1);
 
-if ($_SESSION['journal_items']->count_gl_items() >= 1 &&
-	abs($_SESSION['journal_items']->gl_items_total()) < 0.0001)
-{
-    submit_center('Process', _("Process Journal Entry"));
-} 
-else 
-{
-	display_note(_("The journal must balance (debits equal to credits) before it can be processed."), 0, 1);
-}
+submit_center('Process', _("Process Journal Entry"), true , 
+	_('Process journal entry only if debits equal to credits'), true);
 
 end_form();
-
 //------------------------------------------------------------------------------------------------
 
 end_page();

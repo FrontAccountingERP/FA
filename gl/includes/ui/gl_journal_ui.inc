@@ -42,6 +42,7 @@ function display_gl_items($title, &$order)
 
 	$dim = get_company_pref('use_dimension');
 
+    div_start('items_table');
 	start_table("$table_style colspan=7 width=95%");
 	if ($dim == 2)
 		$th = array(_("Account Code"), _("Account Description"), _("Dimension")." 1",
@@ -59,9 +60,10 @@ function display_gl_items($title, &$order)
 
 	$k = 0;
 
+	$id = find_submit('Edit');
 	foreach ($order->gl_items as $item) 
 	{
-		if (!isset($_GET['Edit']) || $_GET['Edit'] != $item->index)
+		if ($id != $item->index)
 		{
     		alt_table_row_color($k);
 
@@ -81,9 +83,12 @@ function display_gl_items($title, &$order)
     			amount_cell(abs($item->amount));
     		}	
 			label_cell($item->reference);
-			edit_link_cell("Edit=$item->index");
-			delete_link_cell("Delete=$item->index");
-    		end_row();;
+
+			edit_button_cell("Edit$item->index", _("Edit"),
+				_('Edit journal line'));
+			edit_button_cell("Delete$item->index", _("Delete"),
+				_('Remove line from journal'));
+    		end_row();
 		} 
 		else 
 		{
@@ -91,7 +96,7 @@ function display_gl_items($title, &$order)
 		}
 	}
 
-	if (!isset($_GET['Edit']))
+	if ($id == -1)
 		gl_edit_item_controls($order, $dim);
 
 	if ($order->count_gl_items()) 
@@ -105,43 +110,37 @@ function display_gl_items($title, &$order)
 	}
 
     end_table();
+	div_end();
 }
 
 //---------------------------------------------------------------------------------
 
 function gl_edit_item_controls(&$order, $dim, $Index=null)
 {
+	global $Ajax;
 	start_row();
 
-	if (isset($_GET['Edit']) && $Index != null)
+	$id = find_submit('Edit');
+	if ($Index != -1 && $Index == $id)
 	{
 		$item = $order->gl_items[$Index];
-		if (!isset($_POST['code_id']))
-			$_POST['code_id'] = $item->code_id;
-		if (!isset($_POST['dimension_id']))
-			$_POST['dimension_id'] = $item->dimension_id;
-		if (!isset($_POST['dimension2_id']))
-			$_POST['dimension2_id'] = $item->dimension2_id;
-
-		if ((!isset($_POST['AmountDebit']) || ($_POST['AmountDebit']=="")) && $item->amount > 0)
-			$_POST['AmountDebit'] = price_format($item->amount);
-
-		if ((!isset($_POST['AmountCredit']) || ($_POST['AmountCredit']=="")) && $item->amount <= 0)
-			$_POST['AmountCredit'] = price_format(abs($item->amount));
-
-		if (!isset($_POST['description']) || ($_POST['description'] == ""))
-			$_POST['description'] = $item->description;
-		if (!isset($_POST['LineMemo']) || ($_POST['LineMemo'] == ""))
-			$_POST['LineMemo'] = $item->reference;
+		$_POST['code_id'] = $item->code_id;
+		$_POST['dimension_id'] = $item->dimension_id;
+		$_POST['dimension2_id'] = $item->dimension2_id;
+		$_POST['AmountDebit'] = price_format($item->amount);
+		$_POST['AmountCredit'] = price_format(abs($item->amount));
+		$_POST['description'] = $item->description;
+		$_POST['LineMemo'] = $item->reference;
 
 		hidden('Index', $item->index);
 		hidden('code_id', $item->code_id);
 		label_cell($_POST['code_id']);
 		label_cell($item->description);
 		if ($dim >= 1) 
-			dimensions_list_cells(null, 'dimension_id', $_POST['dimension_id'], true, " ", false, 1);
+			dimensions_list_cells(null, 'dimension_id', null, true, " ", false, 1);
 		if ($dim > 1) 
-			dimensions_list_cells(null, 'dimension2_id', $_POST['dimension2_id'], true, " ", false, 2);
+			dimensions_list_cells(null, 'dimension2_id', null, true, " ", false, 2);
+	    $Ajax->activate('items_table');
 	}
 	else
 	{
@@ -152,6 +151,9 @@ function gl_edit_item_controls(&$order, $dim, $Index=null)
 		$_POST['LineMemo'] = "";
 		$_POST['_code_id_edit'] = "";
 		$_POST['code_id'] = "";
+		if(isset($_POST['_code_id_update'])) {
+			    $Ajax->activate('code_id');
+		}
 		
 		$skip_bank = ($_SESSION["wa_current_user"]->access != 2);
 		gl_all_accounts_list('code_id', null, $skip_bank, false, true);
@@ -169,17 +171,20 @@ function gl_edit_item_controls(&$order, $dim, $Index=null)
 	small_amount_cells(null, 'AmountCredit');
 	text_cells_ex(null, 'LineMemo', 35, 50);
 
-	if (isset($_GET['Edit'])) 
+	if ($id != -1)
 	{
-    	submit_cells('UpdateItem', _("Update"));
-    	submit_cells('CancelItemChanges', _("Cancel"));
+		edit_button_cell('UpdateItem', _("Update"),
+				_('Confirm changes'));
+		edit_button_cell('CancelItemChanges', _("Cancel"),
+				_('Cancel changes'));
+ 		set_focus('amount');
 	} 
 	else 
-		submit_cells('AddItem', _("Add item"), "colspan=2");
+		submit_cells('AddItem', _("Add Item"), "colspan=2",
+		    _('Add new line to journal'), true);
 
 	end_row();
 }
-
 
 //---------------------------------------------------------------------------------
 
