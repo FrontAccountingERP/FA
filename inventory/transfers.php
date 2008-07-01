@@ -46,27 +46,6 @@ function line_start_focus() {
   $Ajax->activate('items_table');
   set_focus('_stock_id_edit');
 }
-//--------------------------------------------------------------------------------------------------
-
-function copy_to_st()
-{
-	$_SESSION['transfer_items']->from_loc = $_POST['FromStockLocation'];
-	$_SESSION['transfer_items']->to_loc = $_POST['ToStockLocation'];
-	$_SESSION['transfer_items']->tran_date = $_POST['AdjDate'];
-	$_SESSION['transfer_items']->transfer_type = $_POST['type'];
-	$_SESSION['transfer_items']->memo_ = $_POST['memo_'];
-}
-//--------------------------------------------------------------------------------------------------
-
-function copy_from_st()
-{
-	$_POST['FromStockLocation'] = $_SESSION['transfer_items']->from_loc;
-	$_POST['ToStockLocation'] = $_SESSION['transfer_items']->to_loc;
-	$_POST['AdjDate'] = $_SESSION['transfer_items']->tran_date;
-	$_POST['type'] = $_SESSION['transfer_items']->transfer_type;
-	$_POST['memo_'] = $_SESSION['transfer_items']->memo_;
-}
-
 //-----------------------------------------------------------------------------------------------
 
 function handle_new_order()
@@ -213,11 +192,6 @@ function handle_new_item()
 $id = find_submit('Delete');
 if ($id != -1)
 	handle_delete_item($id);
-
-if (isset($_POST['AddItem']) || isset($_POST['UpdateItem'])) {
-  	copy_to_st();
-	line_start_focus();
-}
 	
 if (isset($_POST['AddItem']))
 	handle_new_item();

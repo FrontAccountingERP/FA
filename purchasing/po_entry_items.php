@@ -61,32 +61,6 @@ function line_start_focus() {
 }
 //--------------------------------------------------------------------------------------------------
 
-function copy_to_po()
-{
-	$_SESSION['PO']->supplier_id = $_POST['supplier_id'];	
-	$_SESSION['PO']->orig_order_date = $_POST['OrderDate'];
-	$_SESSION['PO']->reference = $_POST['ref'];
-	$_SESSION['PO']->requisition_no = $_POST['Requisition'];
-	$_SESSION['PO']->Comments = $_POST['Comments'];	
-	$_SESSION['PO']->Location = $_POST['StkLocation'];
-	$_SESSION['PO']->delivery_address = $_POST['delivery_address'];
-}
-
-//--------------------------------------------------------------------------------------------------
-
-function copy_from_po()
-{
-	$_POST['supplier_id'] = $_SESSION['PO']->supplier_id;	
-	$_POST['OrderDate'] = $_SESSION['PO']->orig_order_date;	
-    $_POST['Requisition'] = $_SESSION['PO']->requisition_no;
-    $_POST['ref'] = $_SESSION['PO']->reference;
-	$_POST['Comments'] = $_SESSION['PO']->Comments;
-    $_POST['StkLocation'] = $_SESSION['PO']->Location;
-    $_POST['delivery_address'] = $_SESSION['PO']->delivery_address;	
-}
-
-//--------------------------------------------------------------------------------------------------
-
 function unset_form_variables() {
 	unset($_POST['stock_id']);
     unset($_POST['qty']);
@@ -259,14 +233,14 @@ function can_commit()
 	
 	if (!$_SESSION['PO']->order_no) 
 	{
-    	if (!references::is_valid($_SESSION['PO']->reference)) 
+    	if (!references::is_valid(get_post('ref'))) 
     	{
     		display_error(_("There is no reference entered for this purchase order."));
 			set_focus('ref');
     		return false;
     	} 
     	
-    	if (!is_new_reference($_SESSION['PO']->reference, systypes::po())) 
+    	if (!is_new_reference(get_post('ref'), systypes::po())) 
     	{
     		display_error(_("The entered reference is already in use."));
 			set_focus('ref');
@@ -274,14 +248,14 @@ function can_commit()
     	}
 	}
 	
-	if ($_SESSION['PO']->delivery_address == "")
+	if (get_post('delivery_address') == '')
 	{
 		display_error(_("There is no delivery address specified."));
 		set_focus('delivery_address');
 		return false;
 	} 
 	
-	if (!isset($_SESSION['PO']->Location) || $_SESSION['PO']->Location == "")
+	if (get_post('StkLocation') == '')
 	{
 		display_error(_("There is no location specified to move any items into."));
 		set_focus('StkLocation');
@@ -301,10 +275,16 @@ function can_commit()
 
 function handle_commit_order()
 {
-	copy_to_po();
 
 	if (can_commit())
 	{
+		$_SESSION['PO']->supplier_id = $_POST['supplier_id'];	
+		$_SESSION['PO']->orig_order_date = $_POST['OrderDate'];
+		$_SESSION['PO']->reference = $_POST['ref'];
+		$_SESSION['PO']->requisition_no = $_POST['Requisition'];
+		$_SESSION['PO']->Comments = $_POST['Comments'];	
+		$_SESSION['PO']->Location = $_POST['StkLocation'];
+		$_SESSION['PO']->delivery_address = $_POST['delivery_address'];
 
 		if ($_SESSION['PO']->order_no == 0)
 		{ 
@@ -334,34 +314,22 @@ $id = find_submit('Delete');
 if ($id != -1)
 	handle_delete_item($id);
 
-if (isset($_POST['Delete']) || isset($_POST['Edit']))
-{
-	copy_from_po();
-}
-	
 if (isset($_POST['Commit']))
 {
 	handle_commit_order();
 }
 if (isset($_POST['UpdateLine']))
-{
-	copy_to_po();
 	handle_update_item();
-}
+
 if (isset($_POST['EnterLine']))
-{
-	copy_to_po();
 	handle_add_new_item();
-} 
+
 if (isset($_POST['CancelOrder'])) 
-{
 	handle_cancel_po();
-}
+
 if (isset($_POST['CancelUpdate']))
-{
-	copy_to_po();
 	unset_form_variables();
-}
+
 if (isset($_GET['ModifyOrderNumber']) && $_GET['ModifyOrderNumber'] != "")
 {
 	create_new_po();
@@ -370,29 +338,22 @@ if (isset($_GET['ModifyOrderNumber']) && $_GET['ModifyOrderNumber'] != "")
 
 	/*read in all the selected order into the Items cart  */
 	read_po($_SESSION['PO']->order_no, $_SESSION['PO']);
-	copy_from_po();
+
+	$_POST['supplier_id'] = $_SESSION['PO']->supplier_id;	
+	$_POST['OrderDate'] = $_SESSION['PO']->orig_order_date;	
+    $_POST['Requisition'] = $_SESSION['PO']->requisition_no;
+    $_POST['ref'] = $_SESSION['PO']->reference;
+	$_POST['Comments'] = $_SESSION['PO']->Comments;
+    $_POST['StkLocation'] = $_SESSION['PO']->Location;
+    $_POST['delivery_address'] = $_SESSION['PO']->delivery_address;	
 }
+
 if (isset($_POST['CancelUpdate']) || isset($_POST['UpdateLine'])) {
 	line_start_focus();
 }
 
-//--------------------------------------------------------------------------------
-
 if (isset($_GET['NewOrder']))
-{
 	create_new_po();
-} 
-else 
-{
-	if (!isset($_POST['supplier_id']))
-		$_POST['supplier_id'] = $_SESSION['PO']->supplier_id;
-	if (!isset($_POST['OrderDate']))		
-		$_POST['OrderDate'] = $_SESSION['PO']->orig_order_date;
-	if (!isset($_POST['Requisition']))		
-		$_POST['Requisition'] = $_SESSION['PO']->requisition_no;
-	if (!isset($_POST['Comments']))		
-		$_POST['Comments'] = $_SESSION['PO']->Comments;
-}
 
 //---------------------------------------------------------------------------------------------------
 

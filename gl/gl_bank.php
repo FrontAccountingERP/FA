@@ -70,38 +70,7 @@ if (isset($_GET['AddedDep']))
 
 	display_footer_exit();
 }
-
 //--------------------------------------------------------------------------------------------------
-
-function copy_to_py()
-{
-	$_SESSION['pay_items']->from_loc = $_POST['bank_account'];
-	$_SESSION['pay_items']->tran_date = $_POST['date_'];
-	$_SESSION['pay_items']->transfer_type = $_POST['type'];
-	$_SESSION['pay_items']->increase = $_POST['PayType'];
-	if (!isset($_POST['person_id']))
-		$_POST['person_id'] = "";
-	$_SESSION['pay_items']->person_id = $_POST['person_id'];
-	if (!isset($_POST['PersonDetailID']))
-		$_POST['PersonDetailID'] = "";
-	$_SESSION['pay_items']->branch_id = $_POST['PersonDetailID'];
-	$_SESSION['pay_items']->memo_ = $_POST['memo_'];
-}
-
-//--------------------------------------------------------------------------------------------------
-
-function copy_from_py()
-{
-	$_POST['bank_account'] = $_SESSION['pay_items']->from_loc;
-	$_POST['date_'] = $_SESSION['pay_items']->tran_date;
-	$_POST['type'] = $_SESSION['pay_items']->transfer_type;
-	$_POST['PayType'] = $_SESSION['pay_items']->increase;
-	$_POST['person_id'] = $_SESSION['pay_items']->person_id;
-	$_POST['PersonDetailID'] = $_SESSION['pay_items']->branch_id;
-	$_POST['memo_'] = $_SESSION['pay_items']->memo_;
-}
-
-//-----------------------------------------------------------------------------------------------
 
 function handle_new_order($type)
 {
@@ -250,14 +219,8 @@ function handle_new_item()
 
 //-----------------------------------------------------------------------------------------------
 $id = find_submit('Delete');
-if ($id != -1) {
-	copy_from_py();
+if ($id != -1)
 	handle_delete_item($id);
-}
-if (isset($_POST['AddItem']) || isset($_POST['UpdateItem'])) {
-  	copy_to_py();
-	line_start_focus();
-}
 
 if (isset($_POST['AddItem']))
 	handle_new_item();
@@ -265,9 +228,9 @@ if (isset($_POST['AddItem']))
 if (isset($_POST['UpdateItem']))
 	handle_update_item();
 
-if (isset($_POST['CancelItemChanges'])) {
+if (isset($_POST['CancelItemChanges'])) 
 	line_start_focus();
-}
+
 
 //-----------------------------------------------------------------------------------------------
 

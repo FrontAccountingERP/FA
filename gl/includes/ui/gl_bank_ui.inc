@@ -72,15 +72,11 @@ function display_bank_header(&$order)
     	//	break;
     }
 
-	//$homeCurrency = get_company_currency();
 	$person_currency = payment_person_types::person_currency($_POST['PayType'], $_POST['person_id']);
 	$bank_currency = get_bank_account_currency($_POST['bank_account']);
 
-	if ($bank_currency != "" && $bank_currency != $person_currency)
-	{
-		exchange_rate_display($bank_currency, $person_currency, $_POST['date_']);
-	}
-	
+	exchange_rate_display($bank_currency, $person_currency, $_POST['date_']);
+
 	echo "</table>"; // inner table
 
 	echo "</td><td>";
@@ -175,18 +171,18 @@ function gl_edit_item_controls(&$order, $dim, $Index=null)
 	$id = find_submit('Edit');
 	if ($Index != -1 && $Index == $id)
 	{
-		$_POST['code_id'] = $order->gl_items[$Index]->code_id;
-		$_POST['dimension_id'] = $order->gl_items[$Index]->dimension_id;
-		$_POST['dimension2_id'] = $order->gl_items[$Index]->dimension2_id;
-		$_POST['amount'] = 
-			price_format(($payment ? 1 : -1) * $order->gl_items[$Index]->amount);
-		$_POST['description'] = $order->gl_items[$Index]->description;
-		$_POST['LineMemo'] = $order->gl_items[$Index]->reference;
+		$item = $order->gl_items[$Index];
+		$_POST['code_id'] = $item->code_id;
+		$_POST['dimension_id'] = $item->dimension_id;
+		$_POST['dimension2_id'] = $item->dimension2_id;
+		$_POST['amount'] = price_format(abs($item->amount));
+		$_POST['description'] = $item->description;
+		$_POST['LineMemo'] = $item->reference;
 
-		hidden('Index', $order->gl_items[$Index]->index);
-		hidden('code_id', $order->gl_items[$Index]->code_id);
+		hidden('Index', $item->index);
+		hidden('code_id', $item->code_id);
 		label_cell($_POST['code_id']);
-		label_cell($order->gl_items[$Index]->description);
+		label_cell($item->description);
 		if ($dim >= 1)
 			dimensions_list_cells(null, 'dimension_id', null, true, " ", false, 1);
 		if ($dim > 1)

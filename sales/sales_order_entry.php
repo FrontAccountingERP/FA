@@ -303,7 +303,6 @@ function handle_update_item()
 		 input_num('qty'), input_num('price'),
 		 input_num('Disc') / 100 );
 	}
-  copy_from_cart();
   line_start_focus();
 }
 
@@ -412,7 +411,7 @@ if (isset($_POST['UpdateItem']))
 if (isset($_POST['AddItem']))
 	handle_new_item();
 
-if (isset($_POST['CancelItemChanges']) || isset($_POST['UpdateItem'])) {
+if (isset($_POST['CancelItemChanges'])) {
 	line_start_focus();
 }
 

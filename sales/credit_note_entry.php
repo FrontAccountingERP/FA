@@ -208,27 +208,19 @@ $id = find_submit('Delete');
 if ($id!=-1)
 	handle_delete_item($id);
 
-if (isset($_POST['AddItem']) || isset($_POST['UpdateItem']))
-	copy_to_cn();
-
 if (isset($_POST['AddItem']))
 	handle_new_item();
 
 if (isset($_POST['UpdateItem']))
 	handle_update_item();
 
-if (isset($_POST['CancelItemChanges']) || isset($_POST['UpdateItem']))
+if (isset($_POST['CancelItemChanges']))
 	line_start_focus();
 
 //-----------------------------------------------------------------------------
 
 if (!processing_active()) {
 	handle_new_credit();
-} else {
-	if (!isset($_POST['customer_id']))
-		$_POST['customer_id'] = $_SESSION['Items']->customer_id;
-	if (!isset($_POST['branch_id']))
-		$_POST['branch_id'] = $_SESSION['Items']->Branch;
 }
 
 //-----------------------------------------------------------------------------
