@@ -13,18 +13,8 @@ if ($use_date_picker)
 	$js .= get_js_date_picker();
 page(_("Exchange Rates"), false, false, "", $js);
 
-//---------------------------------------------------------------------------------------------
+simple_page_mode(false);
 
-if (isset($_GET['selected_id']))
-{
-	$selected_id = $_GET['selected_id'];
-}
-elseif (isset($_POST['selected_id']))
-{
-	$selected_id = $_POST['selected_id'];
-}
-else
-	$selected_id = "";
 //---------------------------------------------------------------------------------------------
 function check_data()
 {
@@ -63,7 +53,7 @@ function handle_submit()
 	{
 
 		update_exchange_rate($_POST['curr_abrev'], $_POST['date_'],
-		 input_num('BuyRate'), input_num('BuyRate'));
+		input_num('BuyRate'), input_num('BuyRate'));
 	}
 	else
 	{
@@ -72,7 +62,7 @@ function handle_submit()
 		    input_num('BuyRate'), input_num('BuyRate'));
 	}
 
-	return true;
+	$selected_id = '';
 }
 
 //---------------------------------------------------------------------------------------------
@@ -84,8 +74,7 @@ function handle_delete()
 	if ($selected_id == "")
 		return;
 	delete_exchange_rate($selected_id);
-
-	meta_forward($_SERVER['PHP_SELF']);
+	$selected_id = '';
 }
 
 //---------------------------------------------------------------------------------------------
@@ -110,12 +99,12 @@ function display_rates($curr_code)
 
     	label_cell(sql2date($myrow["date_"]));
 		label_cell(number_format2($myrow["rate_buy"], user_exrate_dec()), "nowrap align=right");
-		edit_link_cell("selected_id=" . $myrow["id"]);
-		delete_link_cell("selected_id=" . $myrow["id"]. "&delete=1");
+ 		edit_button_cell("Edit".$myrow["id"], _("Edit"));
+ 		edit_button_cell("Delete".$myrow["id"], _("Delete"));
 
 		end_row();
 
-    } //END WHILE LIST LOOP
+    }
 
     end_table();
 }
@@ -124,14 +113,10 @@ function display_rates($curr_code)
 
 function display_rate_edit()
 {
-	global $selected_id, $table_style2;
+	global $selected_id, $table_style2, $Ajax;
 
 	start_table($table_style2);
 
-	if (isset($_POST['get_rate']))
-	{
-		$_POST['BuyRate'] = exrate_format(get_ecb_rate($_POST['curr_abrev']));
-	}
 	if ($selected_id != "")
 	{
 		//editing an existing exchange rate
@@ -143,20 +128,27 @@ function display_rate_edit()
 
 		hidden('selected_id', $selected_id);
 		hidden('date_', $_POST['date_']);
-		hidden('curr_abrev', $_POST['curr_abrev']);
 
 		label_row(_("Date to Use From:"), $_POST['date_']);
 	}
 	else
 	{
+		$_POST['date_'] = Today();
+		$_POST['BuyRate'] = '';
 		date_row(_("Date to Use From:"), 'date_');
 	}
+	if (isset($_POST['get_rate']))
+	{
+		$_POST['BuyRate'] = exrate_format(get_ecb_rate($_POST['curr_abrev']));
+		$Ajax->activate('BuyRate');
+	}
 	small_amount_row(_("Exchange Rate:"), 'BuyRate', null, '',
-	  	submit('get_rate',_("Get"), false), user_exrate_dec());
+	  	submit('get_rate',_("Get"), false, _('Get current ECB rate') , true),
+		user_exrate_dec());
 
 	end_table(1);
 
-	submit_add_or_update_center($selected_id == "");
+	submit_add_or_update_center($selected_id == '', '', true);
 
 	display_note(_("Exchange rates are entered against the company currency."), 1);
 }
@@ -172,22 +164,14 @@ function clear_data()
 
 //---------------------------------------------------------------------------------------------
 
-if (isset($_POST['ADD_ITEM']) || isset($_POST['UPDATE_ITEM']))
-{
-
-	if (handle_submit())
-	{
-		meta_forward($_SERVER['PHP_SELF']);
-	}
-}
+if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM') 
+	handle_submit();
 
 //---------------------------------------------------------------------------------------------
 
-if (isset($_GET['delete']))
-{
-
+if ($Mode == 'Delete')
 	handle_delete();
-}
+
 
 //---------------------------------------------------------------------------------------------
 
@@ -198,7 +182,7 @@ if (!isset($_POST['curr_abrev']))
 
 echo "<center>";
 echo _("Select a currency :") . "  ";
-currencies_list('curr_abrev', $_POST['curr_abrev'], true);
+currencies_list('curr_abrev', null, true);
 echo "</center>";
 
 // if currency sel has changed, clear the form
@@ -220,10 +204,7 @@ else
 {
 
     display_rates($_POST['curr_abrev']);
-
-   	hyperlink_no_params($_SERVER['PHP_SELF'], _("Enter a New Exchange Rate"));
    	br(1);
-
     display_rate_edit();
 }
 

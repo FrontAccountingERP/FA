@@ -18,6 +18,12 @@ if ($use_date_picker)
 page(_("Trial Balance"), false, false, "", $js);
 
 //----------------------------------------------------------------------------------------------------
+// Ajax updates
+//
+if (get_post('Show')) 
+{
+	$Ajax->activate('balance_tbl');
+}
 
 
 function gl_inquiry_controls()
@@ -30,7 +36,7 @@ function gl_inquiry_controls()
 	date_cells(_("To:"), 'TransToDate');
 	check_cells(_("No zero values"), 'NoZero', null);
 
-    submit_cells('Show',_("Show"));
+	submit_cells('Show',_("Show"),'','', true);
     end_table();
     end_form();
 }
@@ -72,6 +78,7 @@ function display_trial_balance()
 {
 	global $table_style, $path_to_root;
 
+	div_start('balance_tbl');
 	start_table($table_style);
 	$tableheader =  "<tr>
         <td rowspan=2 class='tableheader'>" . _("Account") . "</td>
@@ -124,7 +131,7 @@ function display_trial_balance()
 	}
 
 	end_table(1);
-
+	div_end();
 }
 
 //----------------------------------------------------------------------------------------------------

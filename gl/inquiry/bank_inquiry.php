@@ -20,10 +20,16 @@ page(_("Bank Statement"), false, false, "", $js);
 
 check_db_has_bank_accounts(_("There are no bank accounts defined in the system."));
 
+//-----------------------------------------------------------------------------------
+// Ajax updates
+//
+if (get_post('Show')) 
+{
+	$Ajax->activate('trans_tbl');
+}
 //------------------------------------------------------------------------------------------------
 
 start_form();
-
 start_table("class='tablestyle_noborder'");
 start_row();
 bank_accounts_list_cells(_("Account:"), 'bank_account', null);
@@ -31,7 +37,7 @@ bank_accounts_list_cells(_("Account:"), 'bank_account', null);
 date_cells(_("From:"), 'TransAfterDate', '', null, -30);
 date_cells(_("To:"), 'TransToDate');
 
-submit_cells('Show',_("Show"));
+submit_cells('Show',_("Show"),'','', true);
 end_row();
 end_table();
 end_form();
@@ -55,6 +61,7 @@ $result = db_query($sql,"The transactions for '" . $_POST['bank_account'] . "' c
 $act = get_bank_account($_POST["bank_account"]);
 display_heading($act['bank_account_name']." - ".$act['bank_curr_code']);
 
+div_start('trans_tbl');
 start_table($table_style);
 
 $th = array(_("Type"), _("#"), _("Reference"), _("Type"), _("Date"),
@@ -110,7 +117,7 @@ display_debit_or_credit_cells($running_total);
 label_cell("");
 end_row();
 end_table(2);
-
+div_end();
 //------------------------------------------------------------------------------------------------
 
 end_page();

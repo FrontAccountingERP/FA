@@ -10,16 +10,7 @@ include($path_to_root . "/gl/includes/gl_db.inc");
 
 include($path_to_root . "/includes/ui.inc");
 
-if (isset($_GET['selected_id']))
-{
-	$selected_id = $_GET['selected_id'];
-} 
-elseif(isset($_POST['selected_id']))
-{
-	$selected_id = $_POST['selected_id'];
-}
-else
-	$selected_id = -1;
+simple_page_mode(true);
 //-----------------------------------------------------------------------------------
 
 function can_process() 
@@ -37,7 +28,7 @@ function can_process()
 
 //-----------------------------------------------------------------------------------
 
-if (isset($_POST['ADD_ITEM']) || isset($_POST['UPDATE_ITEM'])) 
+if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM') 
 {
 
 	if (can_process()) 
@@ -45,16 +36,15 @@ if (isset($_POST['ADD_ITEM']) || isset($_POST['UPDATE_ITEM']))
 
     	if ($selected_id != -1) 
     	{
-
     		update_account_class($selected_id, $_POST['name'], $_POST['Balance']);
-
+			display_notification('Selected account class settings has been updated');
     	} 
     	else 
     	{
-
     		add_account_class($_POST['id'], $_POST['name'], $_POST['Balance']);
+			display_notification('New account class has been added');
     	}
-		meta_forward($_SERVER['PHP_SELF']);
+		$Mode = 'RESET';
 	}
 }
 
@@ -80,20 +70,27 @@ function can_delete($selected_id)
 
 //-----------------------------------------------------------------------------------
 
-if (isset($_GET['delete'])) 
+if ($Mode == 'Delete')
 {
 
 	if (can_delete($selected_id))
 	{
 		delete_account_class($selected_id);
-		meta_forward($_SERVER['PHP_SELF']);
+		display_notification('Selected account class has been deleted');
+		$Mode = 'RESET';
 	}
 }
 
 //-----------------------------------------------------------------------------------
+if ($Mode == 'RESET')
+{
+	$selected_id = -1;
+	$_POST['id']  = $_POST['name']  = $_POST['Balance'] = '';
+}
+//-----------------------------------------------------------------------------------
 
 $result = get_account_classes();
-
+start_form();
 start_table($table_style);
 $th = array(_("Class ID"), _("Class Name"), _("Balance Sheet"), "", "");
 table_header($th);
@@ -115,16 +112,15 @@ while ($myrow = db_fetch($result))
 	label_cell($myrow["cid"]);
 	label_cell($myrow['class_name']);
 	label_cell($bs_text);
-	edit_link_cell("selected_id=" . $myrow["cid"]);
-	delete_link_cell("selected_id=" . $myrow["cid"]. "&delete=1");
+	edit_button_cell("Edit".$myrow["cid"], _("Edit"));
+	edit_button_cell("Delete".$myrow["cid"], _("Delete"));
 	end_row();
 }
 
 end_table();
-
+end_form();
+echo '<br>';
 //-----------------------------------------------------------------------------------
-
-hyperlink_no_params($_SERVER['PHP_SELF'], _("New Account Class"));
 
 start_form();
 
@@ -132,14 +128,16 @@ start_table($table_style2);
 
 if ($selected_id != -1) 
 {
+ if ($Mode == 'Edit') {
 	//editing an existing status code
-
 	$myrow = get_account_class($selected_id);
 
 	$_POST['id']  = $myrow["cid"];
 	$_POST['name']  = $myrow["class_name"];
 	$_POST['Balance']  = $myrow["balance_sheet"];
 	hidden('selected_id', $selected_id);
+ }
+	hidden('id');
 	label_row(_("Class ID:"), $_POST['id']);
 
 } 
