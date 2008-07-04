@@ -19,6 +19,32 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+04-Jul-2008 Janusz Dobrowolski
++ Ajax additions
+  /gl/inquiry/bank_inquiry.php
+  /gl/inquiry/gl_account_inquiry.php
+  /gl/inquiry/gl_trial_balance.php
+  /gl/manage/bank_accounts.php
+  /gl/manage/bank_trans_types.php
+  /gl/manage/currencies.php
+  /gl/manage/exchange_rates.php
+  /gl/manage/gl_account_classes.php
+  /gl/manage/gl_account_types.php
+  /gl/manage/gl_accounts.php
+! Changed layout for simple db table editor pages
+$ /includes/ui/ui_input.inc
+- Removed unused GL account settings.
+$ /admin/gl_setup.php
+  /admin/db/company_db.inc
+  /gl/manage/gl_accounts.php
+# Fixed default sales account for customer branch.
+$ /admin/gl_setup.php
+  /sales/manage/customer_branches.php
+# Fixed focus after ajax page reload.
+$ /includes/ajax.inc
+# Fixed optional submit for yesno and gl_all_accounts lists.
+$ /includes/ui/ui_lists.inc
+
 01-Jul-2008 Janusz Dobrowolski
 + Ajax additions
   /gl/bank_transfer.php
@@ -32,7 +58,7 @@ $ -> Affected files
   /includes/ui/ui_lists.inc
 # Fixed submit type in submit_row()
   /includes/ui/ui_input.inc
-# Small layout fix
+# Small display fix
   /gl/manage/currencies.php
 ! Code cleanup
   /gl/gl_bank.php
