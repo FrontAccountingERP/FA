@@ -1,9 +1,8 @@
 <?php
 
 
-function update_company_gl_setup($debtors_act, $pyt_discount_act, $creditors_act, $grn_act,
-		$exchange_diff_act, $purch_exchange_diff_act,
-		$retained_earnings_act, $freight_act,
+function update_company_gl_setup($debtors_act, $pyt_discount_act, $creditors_act, 
+		$freight_act,
 		$default_sales_act,
 		$default_sales_discount_act,
 		$default_prompt_payment_act,
@@ -12,7 +11,6 @@ function update_company_gl_setup($debtors_act, $pyt_discount_act, $creditors_act
 		$default_adj_act,
 		$default_inv_sales_act,
 		$default_assembly_act,
-		$payroll_act,
 		$allow_negative_stock,
 		$po_over_receive,
 		$po_over_charge,
@@ -23,10 +21,7 @@ function update_company_gl_setup($debtors_act, $pyt_discount_act, $creditors_act
 {
 	$sql = "UPDATE ".TB_PREF."company SET
 		debtors_act=".db_escape($debtors_act).", pyt_discount_act=".db_escape($pyt_discount_act).",
-		creditors_act=".db_escape($creditors_act).", grn_act=".db_escape($grn_act).",
-		exchange_diff_act=".db_escape($exchange_diff_act).",
-		purch_exchange_diff_act=".db_escape($purch_exchange_diff_act).",
-		retained_earnings_act=".db_escape($retained_earnings_act).",
+		creditors_act=".db_escape($creditors_act).",
 		freight_act=".db_escape($freight_act).",
 		default_sales_act=".db_escape($default_sales_act).",
 		default_sales_discount_act=".db_escape($default_sales_discount_act).",
@@ -36,7 +31,6 @@ function update_company_gl_setup($debtors_act, $pyt_discount_act, $creditors_act
 		default_adj_act=".db_escape($default_adj_act).",
 		default_inv_sales_act=".db_escape($default_inv_sales_act).",
 		default_assembly_act=".db_escape($default_assembly_act).",
-		payroll_act=".db_escape($payroll_act).",
 		allow_negative_stock=$allow_negative_stock,
 		po_over_receive=$po_over_receive,
 		po_over_charge=$po_over_charge,
