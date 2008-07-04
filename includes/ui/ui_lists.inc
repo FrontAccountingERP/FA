@@ -1297,7 +1297,7 @@ function gl_account_types_list_row($label, $name, $selected_id=null, $all_option
 
 //-----------------------------------------------------------------------------------------------
 function gl_all_accounts_list($name, $selected_id=null, $skip_bank_accounts=false,
-	$show_group=false, $cells=false, $all_option=false)
+	$show_group=false, $cells=false, $all_option=false, $submit_on_change=false)
 {
 	if ($skip_bank_accounts)
 		$sql = "SELECT chart.account_code, chart.account_name, type.name
@@ -1321,7 +1321,9 @@ function gl_all_accounts_list($name, $selected_id=null, $skip_bank_accounts=fals
 			'search_submit' => false,
 			'size' => 12,
 			'max' => 10,
-			'cells' => true
+			'cells' => true,
+		'select_submit'=> $submit_on_change,
+		'async' => false
 	) );
 
 }
@@ -1363,7 +1365,7 @@ function yesno_list($name, $selected_id=null, $name_yes="", $name_no="", $submit
 
 	return array_selector($name, $selected_id, $items, 
 		array( 
-			'select_submit'=> true, 
+			'select_submit'=> $submit_on_change,
 			'async' => false ) ); // FIX?
 }
 
