@@ -255,10 +255,7 @@ else
 	{
 		$company_record = get_company_prefs();
 
-	    // $_POST['sales_account'] = $company_record["default_sales_act"];
-	    // 2008-06-14. Changed so if no account here the Item Sales Account is taken
-	    // Will be set if it should override the item sales account
-	    $_POST['sales_account'] = '';
+	    $_POST['sales_account'] = $company_record["default_sales_act"];
 	    $_POST['sales_discount_account'] = $company_record['default_sales_discount_act'];
 	    $_POST['receivables_account'] = $company_record['debtors_act'];
 	    $_POST['payment_discount_account'] = $company_record['default_prompt_payment_act'];
