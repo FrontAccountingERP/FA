@@ -32,6 +32,36 @@ function find_submit($prefix, $numeric=true)
     }
     return $numeric ? -1 : null;
 }
+//------------------------------------------------------------------------------
+//
+// Helper function for simple db table editor pages
+//
+function simple_page_mode($numeric_id = true)
+{
+	global $Ajax, $Mode, $selected_id;
+
+	$default = $numeric_id ? -1 : '';
+	$selected_id = get_post('selected_id', $default);
+	foreach (array('ADD_ITEM', 'UPDATE_ITEM', 'RESET') as $m) {
+		if (isset($_POST[$m])) {
+			$Ajax->activate('_page_body');
+			if ($m == 'RESET') 
+				$selected_id = $default;
+			$Mode = $m; return;
+		}
+	}
+	foreach (array('Edit', 'Delete') as $m) {
+		foreach ($_POST as $p => $pvar) {
+			if (strpos($p, $m) === 0) {
+				$selected_id = substr($p, strlen($m));
+				$Ajax->activate('_page_body');
+				$Mode = $m;
+				return;
+			}
+		}
+	}
+	$Mode = '';
+}
 
 //------------------------------------------------------------------------------
 //
@@ -110,9 +140,11 @@ function submit_center_last($name, $value, $title=false, $async=false)
 function submit_add_or_update($add=true, $title=false, $async=false)
 {
 	if ($add)
-		submit('ADD_ITEM', _("Save"), true, $title, $async);
-	else
+		submit('ADD_ITEM', _("Add new"), true, $title, $async);
+	else {
 		submit('UPDATE_ITEM', _("Update"), true, $title, $async);
+		submit('RESET', _("Cancel"), true, $title, $async);
+	}
 }
 
 function submit_add_or_update_center($add=true, $title=false, $async=false)
