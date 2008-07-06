@@ -94,8 +94,7 @@ function handle_submit()
 
 		display_notification(_("A new customer has been added."));
 
-		$Ajax->activate('customer_id');
-		$Ajax->activate('controls');
+		$Ajax->activate('_page_body');
 	}
 }
 
