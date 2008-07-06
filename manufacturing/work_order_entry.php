@@ -395,12 +395,11 @@ textarea_row(_("Memo:"), 'memo_', null, 40, 5);
 
 end_table(1);
 
-submit_add_or_update_center(!isset($selected_id), '', true);
-
 if (isset($selected_id))
 {
-	echo "<br><br><table align=center><tr>";
+	echo "<table align=center><tr>";
 
+	submit_cells('UPDATE_ITEM', _("Update"), '', _('Save changes to work order'), true);
 	if (isset($_POST['released']))
 	{
 		submit_cells('close', _("Close This Work Order"),'','',true);
@@ -408,6 +407,10 @@ if (isset($selected_id))
 	submit_cells('delete', _("Delete This Work Order"),'','',true);
 
 	echo "</tr></table>";
+}
+else
+{
+	submit_center('ADD_ITEM', _("Add Workorder"), true, '', true);
 }
 
 end_form();

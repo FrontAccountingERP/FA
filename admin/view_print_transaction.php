@@ -36,7 +36,7 @@ function viewing_controls()
 
     ref_cells(_("to #:"), 'ToTransNo');
 
-    submit_cells('ProcessSearch', _("Search"));
+    submit_cells('ProcessSearch', _("Search"), '', '', true);
 
 	end_row();
     end_table(1);
@@ -121,6 +121,7 @@ function handle_search()
 			else
 				$th = array(_("#"), _("View"), _("GL"));
 		}
+		div_start('transactions');
 		start_table($table_style);
 		table_header($th);
 		$k = 0;
@@ -142,6 +143,7 @@ function handle_search()
 		}
 
 		end_table();
+		div_end();
 	}
 }
 
@@ -151,6 +153,7 @@ if (isset($_POST['ProcessSearch']))
 {
 	if (!check_valid_entries())
 		unset($_POST['ProcessSearch']);
+	$Ajax->activate('transactions');
 }
 
 //----------------------------------------------------------------------------------------

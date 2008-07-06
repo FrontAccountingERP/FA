@@ -35,13 +35,13 @@ function voiding_controls()
 	end_table(1);
 
     if (!isset($_POST['ProcessVoiding']))
-    	submit_center('ProcessVoiding', _("Void Transaction"));
+    	submit_center('ProcessVoiding', _("Void Transaction"), true, '', true);
     else 
     {
  	
     	display_note(_("Are you sure you want to void this transaction ? This action cannot be undone."), 0, 1);
-    	submit_center_first('ConfirmVoiding', _("Proceed"));
-    	submit_center_last('CancelVoiding', _("Cancel"));
+    	submit_center_first('ConfirmVoiding', _("Proceed"), '', true);
+    	submit_center_last('CancelVoiding', _("Cancel"), '', true);
     }
 
 	end_form();
@@ -123,11 +123,18 @@ if (isset($_POST['ProcessVoiding']))
 {
 	if (!check_valid_entries())
 		unset($_POST['ProcessVoiding']);
+	$Ajax->activate('_page_body');
 }
 
 if (isset($_POST['ConfirmVoiding']))
 {
 	handle_void_transaction();
+	$Ajax->activate('_page_body');
+}
+
+if (isset($_POST['CancelVoiding']))
+{
+	$Ajax->activate('_page_body');
 }
 
 //----------------------------------------------------------------------------------------

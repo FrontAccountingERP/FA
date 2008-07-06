@@ -246,16 +246,17 @@ textarea_row(_("Memo:"), 'memo_', null, 40, 5);
 
 end_table(1);
 
-submit_add_or_update_center($selected_id == -1, '', true);
-
 if ($selected_id != -1) 
 {
 	echo "<br>";
-
-	submit_center_first('close', _("Close This Dimension"), _('Mark this dimension as closed'), true);
+	submit_center_first('UPDATE_ITEM', _("Update"), _('Save changes to dimension'), true);
+	submit('close', _("Close This Dimension"), true, _('Mark this dimension as closed'), true);
 	submit_center_last('delete', _("Delete This Dimension"), _('Delete unused dimension'), true);
 }
-
+else
+{
+	submit_center('ADD_ITEM', _("Add"), true, '', true);
+}
 end_form();
 
 //--------------------------------------------------------------------------------------------
