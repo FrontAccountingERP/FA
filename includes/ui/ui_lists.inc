@@ -482,20 +482,20 @@ return combo_input($name, $selected_id, $sql, 'curr_abrev', 'currency',
 	) );
 }
 
-function currencies_list_cells($label, $name, $selected_id=null)
+function currencies_list_cells($label, $name, $selected_id=null, $submit_on_change=false)
 {
 	if ($label != null)
 		echo "<td>$label</td>\n";
 	echo "<td>";
-	$str = currencies_list($name, $selected_id);
+	$str = currencies_list($name, $selected_id, $submit_on_change);
 	echo "</td>\n";
 	return $str;
 }
 
-function currencies_list_row($label, $name, $selected_id=null)
+function currencies_list_row($label, $name, $selected_id=null, $submit_on_change=false)
 {
 	echo "<tr>\n";
-	$str = currencies_list_cells($label, $name, $selected_id);
+	$str = currencies_list_cells($label, $name, $selected_id, $submit_on_change);
 	echo "</tr>\n";
 	return $str;
 }
