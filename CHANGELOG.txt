@@ -19,6 +19,25 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+06-Jul-2008 Janusz Dobrowolski
++ Ajax additions
+$ /admin/view_print_transaction.php
+  /admin/void_transaction.php
+  /dimensions/dimension_entry.php
+  /manufacturing/work_order_entry.php
+  /manufacturing/manage/bom_edit.php
+  /sales/manage/customer_branches.php
++ Default value calculated for new prices
+$ /inventory/prices.php
++ Optional default value for input_num()
+$ /includes/ui/ui_input.inc
++ Submit on change option for currency lists
+$ /includes/ui/ui_lists.inc
+# factor parameter in get_price() is now optional
+$ /sales/includes/sales_db.inc
+# Smaller fix to ajax page content update
+$ /sales/manage/customers.php
+
 05-Jul-2008 Janusz Dobrowolski
 + Ajax additions
 $ /admin/change_current_user_password.php
