@@ -19,6 +19,35 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+05-Jul-2008 Janusz Dobrowolski
++ Ajax additions
+$ /admin/change_current_user_password.php
+  /admin/company_preferences.php
+  /admin/forms_setup.php
+  /admin/gl_setup.php
+  /admin/payment_terms.php
+  /admin/shipping_companies.php
+  /admin/users.php
+  /inventory/manage/item_categories.php
+  /inventory/manage/item_units.php
+  /inventory/manage/locations.php
+  /inventory/manage/movement_types.php
+  /manufacturing/manage/work_centres.php
+  /sales/manage/credit_status.php
+  /sales/manage/sales_areas.php
+  /sales/manage/sales_people.php
+  /sales/manage/sales_types.php
+  /taxes/item_tax_types.php
+  /taxes/tax_groups.php
+  /taxes/tax_types.php
+# Gettext fixes
+$ /gl/manage/bank_accounts.php
+  /gl/manage/bank_trans_types.php
+  /gl/manage/currencies.php
+  /gl/manage/gl_account_classes.php
+  /gl/manage/gl_account_types.php
+  /gl/manage/gl_accounts.php
+
 04-Jul-2008 Janusz Dobrowolski
 + Ajax additions
   /gl/inquiry/bank_inquiry.php
