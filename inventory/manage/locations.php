@@ -10,16 +10,9 @@ include_once($path_to_root . "/includes/ui.inc");
 
 include_once($path_to_root . "/inventory/includes/inventory_db.inc");
 
-if (isset($_GET['selected_id']))
-{
-	$selected_id = $_GET['selected_id'];
-} 
-elseif (isset($_POST['selected_id']))
-{
-	$selected_id = $_POST['selected_id'];
-}
+simple_page_mode(true);
 
-if (isset($_POST['ADD_ITEM']) || isset($_POST['UPDATE_ITEM'])) 
+if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM') 
 {
 
 	//initialise no input errors assumed initially before we test
@@ -46,11 +39,12 @@ if (isset($_POST['ADD_ITEM']) || isset($_POST['UPDATE_ITEM']))
 
 	if ($input_error != 1) 
 	{
-    	if (isset($selected_id)) 
+    	if ($selected_id != -1) 
     	{
     
     		update_item_location($selected_id, $_POST['location_name'], $_POST['delivery_address'],
     			$_POST['phone'], $_POST['fax'], $_POST['email'], $_POST['contact']);	
+			display_notification(_('Selected location has been updated'));
     	} 
     	else 
     	{
@@ -59,9 +53,10 @@ if (isset($_POST['ADD_ITEM']) || isset($_POST['UPDATE_ITEM']))
     	
     		add_item_location($_POST['loc_code'], $_POST['location_name'], $_POST['delivery_address'], 
     		 	$_POST['phone'], $_POST['fax'], $_POST['email'], $_POST['contact']);
+			display_notification(_('New location has been added'));
     	}
 		
-		meta_forward($_SERVER['PHP_SELF']);   	
+		$Mode = 'RESET';
 	}
 } 
 
@@ -99,24 +94,27 @@ function can_delete($selected_id)
 
 //----------------------------------------------------------------------------------
 
-if (isset($_GET['delete'])) 
+if ($Mode == 'Delete')
 {
 
 	if (can_delete($selected_id)) 
 	{
 		delete_item_location($selected_id);
-		meta_forward($_SERVER['PHP_SELF']); 		
+		display_notification(_('Selected location has been deleted'));
+		$Mode = 'RESET';
 	} //end if Delete Location
 }
 
-/* It could still be the second time the page has been run and a record has been selected for modification - selected_id will exist because it was sent with the new call. If its the first time the page has been displayed with no parameters
-then none of the above are true and the list of locations will be displayed with
-links to delete or edit each. These will call the same page again and allow update/input
-or deletion of the records*/
+if ($Mode == 'RESET')
+{
+	$selected_id = -1;
+	unset($_POST);
+}
 
 $sql = "SELECT * FROM ".TB_PREF."locations";
 $result = db_query($sql, "could not query locations");;
 
+start_form();
 start_table("$table_style width=30%");
 $th = array(_("Location Code"), _("Location Name"), "", "");
 table_header($th);
@@ -128,8 +126,8 @@ while ($myrow = db_fetch_row($result))
 	
 	label_cell($myrow[0]);
 	label_cell($myrow[1]);
-	edit_link_cell("selected_id=$myrow[0]");
-	delete_link_cell("selected_id=$myrow[0]&delete=1");
+ 	edit_button_cell("Edit".$myrow[0], _("Edit"));
+ 	edit_button_cell("Delete".$myrow[0], _("Delete"));
 	end_row();
 }
 	//END WHILE LIST LOOP
@@ -138,27 +136,30 @@ while ($myrow = db_fetch_row($result))
 
 end_table();
 
-hyperlink_no_params($_SERVER['PHP_SELF'], _("New Location"));
+end_form();
+echo '<br>';
 
 start_form();
 
 start_table($table_style2);
-if (isset($selected_id)) 
+
+if ($selected_id != -1) 
 {
 	//editing an existing Location
 
-	$myrow = get_item_location($selected_id);
+ 	if ($Mode == 'Edit') {
+		$myrow = get_item_location($selected_id);
 
-	$_POST['loc_code'] = $myrow["loc_code"];
-	$_POST['location_name']  = $myrow["location_name"];
-	$_POST['delivery_address'] = $myrow["delivery_address"];
-	$_POST['contact'] = $myrow["contact"];
-	$_POST['phone'] = $myrow["phone"];
-	$_POST['fax'] = $myrow["fax"];
-	$_POST['email'] = $myrow["email"];
-
+		$_POST['loc_code'] = $myrow["loc_code"];
+		$_POST['location_name']  = $myrow["location_name"];
+		$_POST['delivery_address'] = $myrow["delivery_address"];
+		$_POST['contact'] = $myrow["contact"];
+		$_POST['phone'] = $myrow["phone"];
+		$_POST['fax'] = $myrow["fax"];
+		$_POST['email'] = $myrow["email"];
+	}
 	hidden("selected_id", $selected_id);
-	hidden("loc_code", $_POST['loc_code']);
+	hidden("loc_code");
 	label_row(_("Location Code:"), $_POST['loc_code']);
 } 
 else 
@@ -176,12 +177,10 @@ text_row_ex(_("Facsimile No:"), 'fax', 30, 30);
 text_row_ex(_("Email:"), 'email', 30, 30);
 
 end_table(1);
-submit_add_or_update_center(!isset($selected_id));
+submit_add_or_update_center($selected_id == -1, '', true);
 
 end_form();
 
-//end if record deleted no point displaying form to add record 
- 
- end_page();
+end_page();
 
 ?>

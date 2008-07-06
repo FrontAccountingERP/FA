@@ -7,16 +7,7 @@ include($path_to_root . "/includes/session.inc");
 page(_("Shipping Company"));
 include($path_to_root . "/includes/ui.inc");
 
-
-if (isset($_GET['selected_id']))
-{
-	$selected_id = $_GET['selected_id'];
-} 
-else if (isset($_POST['selected_id']))
-{
-	$selected_id = $_POST['selected_id'];
-}
-
+simple_page_mode(true);
 //----------------------------------------------------------------------------------------------
 
 function can_process() 
@@ -31,8 +22,7 @@ function can_process()
 }
 
 //----------------------------------------------------------------------------------------------
-
-if (isset($_POST['ADD_ITEM']) && can_process()) 
+if ($Mode=='ADD_ITEM' && can_process()) 
 {
 
 	$sql = "INSERT INTO ".TB_PREF."shippers (shipper_name, contact, phone, address)
@@ -42,12 +32,13 @@ if (isset($_POST['ADD_ITEM']) && can_process())
 		db_escape($_POST['address']) . ")";
 
 	db_query($sql,"The Shipping Company could not be added");
-	meta_forward($_SERVER['PHP_SELF']);
+	display_notification(_('New shipping company has been added'));
+	$Mode = 'RESET';
 }
 
 //----------------------------------------------------------------------------------------------
 
-if (isset($_POST['UPDATE_ITEM']) && can_process()) 
+if ($Mode=='UPDATE_ITEM' && can_process()) 
 {
 
 	$sql = "UPDATE ".TB_PREF."shippers SET shipper_name=" . db_escape($_POST['shipper_name']). " ,
@@ -57,12 +48,13 @@ if (isset($_POST['UPDATE_ITEM']) && can_process())
 		WHERE shipper_id = $selected_id";
 
 	db_query($sql,"The shipping company could not be updated");
-	meta_forward($_SERVER['PHP_SELF']);
+	display_notification(_('Selected shipping company has been updated'));
+	$Mode = 'RESET';
 }
 
 //----------------------------------------------------------------------------------------------
 
-if (isset($_GET['delete']))
+if ($Mode == 'Delete')
 {
 // PREVENT DELETES IF DEPENDENT RECORDS IN 'sales_orders'
 
@@ -90,17 +82,23 @@ if (isset($_GET['delete']))
 		{
 			$sql="DELETE FROM ".TB_PREF."shippers WHERE shipper_id=$selected_id";
 			db_query($sql,"could not delete shipper");
-
-			meta_forward($_SERVER['PHP_SELF']);
+			display_notification(_('Selected shipping company has been deleted'));
+ 			$Mode = 'RESET';
 		}
 	}
 }
 
+if ($Mode == 'RESET')
+{
+	$selected_id = -1;
+	unset($_POST);
+}
 //----------------------------------------------------------------------------------------------
 
 $sql = "SELECT * FROM ".TB_PREF."shippers ORDER BY shipper_id";
 $result = db_query($sql,"could not get shippers");
 
+start_form();
 start_table($table_style);
 $th = array(_("Name"), _("Contact Person"), _("Phone Number"), _("Address"), "", "");
 table_header($th);
@@ -114,35 +112,36 @@ while ($myrow = db_fetch($result))
 	label_cell($myrow["contact"]);
 	label_cell($myrow["phone"]);
 	label_cell($myrow["address"]);
-    edit_link_cell("selected_id=".$myrow[0]);
-    delete_link_cell("selected_id=".$myrow[0]."&delete=1");
+ 	edit_button_cell("Edit".$myrow[0], _("Edit"));
+ 	edit_button_cell("Delete".$myrow[0], _("Delete"));
 	end_row();
 }
 
 end_table();
+end_form();
+echo '<br>';
 
 //----------------------------------------------------------------------------------------------
-
-hyperlink_no_params($_SERVER['PHP_SELF'], _("New Shipping Company"));
 
 start_form();
 
 start_table($table_style2);
 
-if (isset($selected_id)) 
+if ($selected_id != -1) 
 {
-	//editing an existing Shipper
+ 	if ($Mode == 'Edit') {
+		//editing an existing Shipper
 
-	$sql = "SELECT * FROM ".TB_PREF."shippers WHERE shipper_id=$selected_id";
+		$sql = "SELECT * FROM ".TB_PREF."shippers WHERE shipper_id=$selected_id";
 
-	$result = db_query($sql, "could not get shipper");
-	$myrow = db_fetch($result);
+		$result = db_query($sql, "could not get shipper");
+		$myrow = db_fetch($result);
 
-	$_POST['shipper_name']	= $myrow["shipper_name"];
-	$_POST['contact']	= $myrow["contact"];
-	$_POST['phone']	= $myrow["phone"];
-	$_POST['address'] = $myrow["address"];
-
+		$_POST['shipper_name']	= $myrow["shipper_name"];
+		$_POST['contact']	= $myrow["contact"];
+		$_POST['phone']	= $myrow["phone"];
+		$_POST['address'] = $myrow["address"];
+	}
 	hidden('selected_id', $selected_id);
 }
 
@@ -156,7 +155,7 @@ text_row_ex(_("Address:"), 'address', 50);
 
 end_table(1);
 
-submit_add_or_update_center(!isset($selected_id));
+submit_add_or_update_center($selected_id == -1, '', true);
 
 end_form();
 end_page();

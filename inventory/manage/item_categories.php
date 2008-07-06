@@ -10,18 +10,10 @@ include_once($path_to_root . "/includes/ui.inc");
 
 include_once($path_to_root . "/inventory/includes/inventory_db.inc");
 
-if (isset($_GET['selected_id']))
-{
-	$selected_id = strtoupper($_GET['selected_id']);
-} 
-else if (isset($_POST['selected_id']))
-{
-	$selected_id = strtoupper($_POST['selected_id']);
-}
-
+simple_page_mode(true);
 //----------------------------------------------------------------------------------
 
-if (isset($_POST['ADD_ITEM']) || isset($_POST['UPDATE_ITEM'])) 
+if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM') 
 {
 
 	//initialise no input errors assumed initially before we test
@@ -36,21 +28,23 @@ if (isset($_POST['ADD_ITEM']) || isset($_POST['UPDATE_ITEM']))
 
 	if ($input_error !=1)
 	{
-    	if (isset($selected_id)) 
+    	if ($selected_id != -1) 
     	{
 		    update_item_category($selected_id, $_POST['description']);    		
+			display_notification(_('Selected item category has been updated'));
     	} 
     	else 
     	{
 		    add_item_category($_POST['description']);
+			display_notification(_('New item category has been added'));
     	}
-		meta_forward($_SERVER['PHP_SELF']); 
+		$Mode = 'RESET';
 	}
 }
 
 //---------------------------------------------------------------------------------- 
 
-if (isset($_GET['delete'])) 
+if ($Mode == 'Delete')
 {
 
 	// PREVENT DELETES IF DEPENDENT RECORDS IN 'stock_master'
@@ -60,20 +54,26 @@ if (isset($_GET['delete']))
 	if ($myrow[0] > 0) 
 	{
 		display_error(_("Cannot delete this item category because items have been created using this item category."));
-
 	} 
 	else 
 	{
 		delete_item_category($selected_id);
-		meta_forward($_SERVER['PHP_SELF']); 		
+		display_notification(_('Selected item category has been deleted'));
+		$Mode = 'RESET';
 	}
 }
 
+if ($Mode == 'RESET')
+{
+	$selected_id = -1;
+	unset($_POST);
+}
 //----------------------------------------------------------------------------------
 
 $sql = "SELECT * FROM ".TB_PREF."stock_category";
 $result = db_query($sql, "could not get stock categories");
 
+start_form();
 start_table("$table_style width=30%");
 $th = array(_("Name"), "", "");
 table_header($th);
@@ -85,39 +85,38 @@ while ($myrow = db_fetch($result))
 	alt_table_row_color($k);
 
 	label_cell($myrow["description"]);
-	edit_link_cell(SID."selected_id=$myrow[0]");
-	delete_link_cell(SID."selected_id=$myrow[0]&delete=yes");
+ 	edit_button_cell("Edit".$myrow[0], _("Edit"));
+ 	edit_button_cell("Delete".$myrow[0], _("Delete"));
 	end_row();
 }
 
 end_table();
-
+end_form();
+echo '<br>';
 //----------------------------------------------------------------------------------
-
-hyperlink_no_params($_SERVER['PHP_SELF'], _("New Item Category"));
 
 start_form();
 
 start_table("class='tablestyle_noborder'");
 
-if (isset($selected_id)) 
+if ($selected_id != -1) 
 {
-	//editing an existing item category
+ 	if ($Mode == 'Edit') {
+		//editing an existing item category
+		$myrow = get_item_category($selected_id);
 
-	$myrow = get_item_category($selected_id);
-
-	$_POST['category_id'] = $myrow["category_id"];
-	$_POST['description']  = $myrow["description"];
-
+		$_POST['category_id'] = $myrow["category_id"];
+		$_POST['description']  = $myrow["description"];
+	}
 	hidden('selected_id', $selected_id);
-	hidden('category_id', $_POST['category_id']);
+	hidden('category_id');
 }
 
 text_row(_("Category Name:"), 'description', null, 30, 30);  
 
 end_table(1);
 
-submit_add_or_update_center(!isset($selected_id));	
+submit_add_or_update_center($selected_id == -1, '', true);
 
 end_form();
 

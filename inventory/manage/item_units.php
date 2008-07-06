@@ -10,18 +10,10 @@ include_once($path_to_root . "/includes/ui.inc");
 
 include_once($path_to_root . "/inventory/includes/db/items_units_db.inc");
 
-if (isset($_GET['selected_id']))
-{
-	$selected_id = $_GET['selected_id'];
-}
-else if (isset($_POST['selected_id']))
-{
-	$selected_id = $_POST['selected_id'];
-}
-
+simple_page_mode(false);
 //----------------------------------------------------------------------------------
 
-if (isset($_POST['ADD_ITEM']) || isset($_POST['UPDATE_ITEM']))
+if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM') 
 {
 
 	//initialise no input errors assumed initially before we test
@@ -41,14 +33,18 @@ if (isset($_POST['ADD_ITEM']) || isset($_POST['UPDATE_ITEM']))
 	}
 
 	if ($input_error !=1) {
-    	write_item_unit(isset($selected_id) ? $selected_id : '', $_POST['abbr'], $_POST['description'], $_POST['decimals'] );
-		meta_forward($_SERVER['PHP_SELF']);
+    	write_item_unit($selected_id, $_POST['abbr'], $_POST['description'], $_POST['decimals'] );
+		if($selected_id != '')
+			display_notification(_('Selected unit has been updated'));
+		else
+			display_notification(_('New unit has been added'));
+		$Mode = 'RESET';
 	}
 }
 
 //----------------------------------------------------------------------------------
 
-if (isset($_GET['delete']))
+if ($Mode == 'Delete')
 {
 
 	// PREVENT DELETES IF DEPENDENT RECORDS IN 'stock_master'
@@ -61,13 +57,21 @@ if (isset($_GET['delete']))
 	else
 	{
 		delete_item_unit($selected_id);
-		meta_forward($_SERVER['PHP_SELF']);
+		display_notification(_('Selected unit has been deleted'));
+		$Mode = 'RESET';
 	}
+}
+
+if ($Mode == 'RESET')
+{
+	$selected_id = '';
+	unset($_POST);
 }
 
 //----------------------------------------------------------------------------------
 
 $result = get_all_item_units();
+start_form();
 start_table("$table_style width=50%");
 $th = array(_('Unit'), _('Description'), _('Decimals'), "", "");
 
@@ -83,35 +87,36 @@ while ($myrow = db_fetch($result))
 	label_cell($myrow["name"]);
 	label_cell(($myrow["decimals"]==-1?_("User Quantity Decimals"):$myrow["decimals"]));
 
-	edit_link_cell(SID."selected_id=$myrow[0]");
-	delete_link_cell(SID."selected_id=$myrow[0]&delete=yes");
+ 	edit_button_cell("Edit".$myrow[0], _("Edit"));
+ 	edit_button_cell("Delete".$myrow[0], _("Delete"));
 	end_row();
 }
 
 end_table();
+end_form();
+echo '<br>';
 
 //----------------------------------------------------------------------------------
-
-hyperlink_no_params($_SERVER['PHP_SELF'], _("New Unit of Measure"));
 
 start_form();
 
 start_table("class='tablestyle_noborder'");
 
-if (isset($selected_id))
+if ($selected_id != '') 
 {
-	//editing an existing item category
+ 	if ($Mode == 'Edit') {
+		//editing an existing item category
 
-	$myrow = get_item_unit($selected_id);
+		$myrow = get_item_unit($selected_id);
 
-	$_POST['abbr'] = $myrow["abbr"];
-	$_POST['description']  = $myrow["name"];
-	$_POST['decimals']  = $myrow["decimals"];
-
+		$_POST['abbr'] = $myrow["abbr"];
+		$_POST['description']  = $myrow["name"];
+		$_POST['decimals']  = $myrow["decimals"];
+	}
 	hidden('selected_id', $selected_id);
 }
 
-if (isset($selected_id) && item_unit_used($selected_id)) {
+if ($selected_id != '' && item_unit_used($selected_id)) {
     label_row(_("Unit Abbreviation:"), $_POST['abbr']);
     hidden('abbr', $_POST['abbr']);
 } else
@@ -122,7 +127,7 @@ number_list_row(_("Decimal Places:"), 'decimals', null, 0, 6, _("User Quantity D
 
 end_table(1);
 
-submit_add_or_update_center(!isset($selected_id));
+submit_add_or_update_center($selected_id == '', '', true);
 
 end_form();
 

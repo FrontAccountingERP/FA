@@ -184,7 +184,7 @@ text_row(_("Dimension Required By After:"), 'default_dim_required', $_POST['defa
 
 end_table(1);
 
-submit_center('submit', _("Update"));
+submit_center('submit', _("Update"), true, '', true);
 
 end_form(2);
 

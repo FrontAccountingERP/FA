@@ -8,21 +8,10 @@ page(_("Payment Terms"));
 
 include($path_to_root . "/includes/ui.inc");
 
-
+simple_page_mode(true);
 //-------------------------------------------------------------------------------------------
 
-if (isset($_GET['selected_id']))
-{
-	$selected_id = $_GET['selected_id'];
-} 
-elseif (isset($_POST['selected_id']))
-{
-	$selected_id = $_POST['selected_id'];
-}
-
-//-------------------------------------------------------------------------------------------
-
-if (isset($_POST['ADD_ITEM']) OR isset($_POST['UPDATE_ITEM'])) 
+if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM') 
 {
 
 	$inpug_error = 0;
@@ -57,7 +46,7 @@ if (isset($_POST['ADD_ITEM']) OR isset($_POST['UPDATE_ITEM']))
 
 	if ($inpug_error != 1)
 	{
-    	if (isset($selected_id)) 
+    	if ($selected_id != -1) 
     	{
     		if (check_value('DaysOrFoll')) 
     		{
@@ -73,7 +62,7 @@ if (isset($_POST['ADD_ITEM']) OR isset($_POST['UPDATE_ITEM']))
 					days_before_due=0
 					WHERE terms_indicator = " .db_escape( $selected_id );
     		}
-
+ 			$note = _('Selected payment terms have been updated');
     	} 
     	else 
     	{
@@ -92,16 +81,16 @@ if (isset($_POST['ADD_ITEM']) OR isset($_POST['UPDATE_ITEM']))
 					VALUES (" . db_escape($_POST['terms']) . ",
 					0, " . db_escape($_POST['DayNumber']) . ")";
     		}
-
+			$note = _('New payment terms have been added');
     	}
     	//run the sql from either of the above possibilites
     	db_query($sql,"The payment term could not be added or updated");
-
-		meta_forward($_SERVER['PHP_SELF']);
+		display_notification($note);
+ 		$Mode = 'RESET';
 	}
 }
 
-if (isset($_GET['delete'])) 
+if ($Mode == 'Delete')
 {
 	// PREVENT DELETES IF DEPENDENT RECORDS IN debtors_master
 
@@ -127,18 +116,23 @@ if (isset($_GET['delete']))
 
 			$sql="DELETE FROM ".TB_PREF."payment_terms WHERE terms_indicator='$selected_id'";
 			db_query($sql,"could not delete a payment terms");
-
-			meta_forward($_SERVER['PHP_SELF']);
+			display_notification(_('Selected payment terms have been deleted'));
+ 			$Mode = 'RESET';
 		}
 	}
 	//end if payment terms used in customer or supplier accounts
 }
 
+if ($Mode == 'RESET')
+{
+	$selected_id = -1;
+	unset($_POST);
+}
 //-------------------------------------------------------------------------------------------------
 
 $sql = "SELECT * FROM ".TB_PREF."payment_terms";
 $result = db_query($sql,"could not get payment terms");
-
+start_form();
 start_table($table_style);
 $th = array(_("Description"), _("Following Month On"), _("Due After (Days)"), "", "");
 table_header($th);
@@ -169,16 +163,16 @@ while ($myrow = db_fetch($result))
     label_cell($myrow["terms"]);
     label_cell($full_text);
     label_cell($after_text);
-    edit_link_cell("selected_id=".$myrow["terms_indicator"]);
-    delete_link_cell("selected_id=".$myrow["terms_indicator"]."&delete=1");
+ 	edit_button_cell("Edit".$myrow["terms_indicator"], _("Edit"));
+ 	edit_button_cell("Delete".$myrow["terms_indicator"], _("Delete"));
     end_row();
 
 
 } //END WHILE LIST LOOP
 
 end_table();
-
-hyperlink_no_params($_SERVER['PHP_SELF'], _("New Payment Term"));
+end_form();
+echo '<br>';
 
 //-------------------------------------------------------------------------------------------------
 
@@ -187,19 +181,20 @@ start_form();
 start_table($table_style2);
 
 $day_in_following_month = $days_before_due = 0;
-if (isset($selected_id)) 
+if ($selected_id != -1) 
 {
-	//editing an existing payment terms
-	$sql = "SELECT * FROM ".TB_PREF."payment_terms
-		WHERE terms_indicator='$selected_id'";
+	if ($Mode == 'Edit') {
+		//editing an existing payment terms
+		$sql = "SELECT * FROM ".TB_PREF."payment_terms
+			WHERE terms_indicator='$selected_id'";
 
-	$result = db_query($sql,"could not get payment term");
-	$myrow = db_fetch($result);
+		$result = db_query($sql,"could not get payment term");
+		$myrow = db_fetch($result);
 
-	$_POST['terms']  = $myrow["terms"];
-	$days_before_due  = $myrow["days_before_due"];
-	$day_in_following_month  = $myrow["day_in_following_month"];
-
+		$_POST['terms']  = $myrow["terms"];
+		$days_before_due  = $myrow["days_before_due"];
+		$day_in_following_month  = $myrow["day_in_following_month"];
+	}
 	hidden('selected_id', $selected_id);
 }
 text_row(_("Terms Description:"), 'terms', null, 40, 40);
@@ -218,7 +213,7 @@ text_row_ex(_("Days (Or Day In Following Month):"), 'DayNumber', 3);
 
 end_table(1);
 
-submit_add_or_update_center(!isset($selected_id));
+submit_add_or_update_center($selected_id == -1, '', true);
 
 end_form();
 

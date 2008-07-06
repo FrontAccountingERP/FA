@@ -10,18 +10,10 @@ include_once($path_to_root . "/inventory/includes/inventory_db.inc");
 
 include_once($path_to_root . "/includes/ui.inc");
 
-if (isset($_GET['selected_id']))
-{
-	$selected_id = $_GET['selected_id'];
-} 
-elseif(isset($_POST['selected_id']))
-{
-	$selected_id = $_POST['selected_id'];
-}
-
+simple_page_mode(true);
 //-----------------------------------------------------------------------------------
 
-if (isset($_POST['ADD_ITEM']) || isset($_POST['UPDATE_ITEM'])) 
+if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM') 
 {
 
 	//initialise no input errors assumed initially before we test
@@ -36,20 +28,18 @@ if (isset($_POST['ADD_ITEM']) || isset($_POST['UPDATE_ITEM']))
 
 	if ($input_error != 1) 
 	{
-		
-    	if (isset($selected_id)) 
+    	if ($selected_id != -1) 
     	{
-    		
     		update_movement_type($selected_id, $_POST['name']);
-    
+			display_notification(_('Selected movement type has been updated'));
     	} 
     	else 
     	{
-    
     		add_movement_type($_POST['name']);
+			display_notification(_('New movement type has been added'));
     	}
     	
-		meta_forward($_SERVER['PHP_SELF']);     	
+		$Mode = 'RESET';
 	}
 } 
 
@@ -73,20 +63,27 @@ function can_delete($selected_id)
 
 //-----------------------------------------------------------------------------------
 
-if (isset($_GET['delete'])) 
+if ($Mode == 'Delete')
 {
 
 	if (can_delete($selected_id))
 	{
 		delete_movement_type($selected_id);
-		meta_forward($_SERVER['PHP_SELF']); 
+		display_notification(_('Selected movement type has been deleted'));
+		$Mode = 'RESET';
 	}
 }
 
+if ($Mode == 'RESET')
+{
+	$selected_id = -1;
+	unset($_POST);
+}
 //-----------------------------------------------------------------------------------
 
 $result = get_all_movement_type();
 
+start_form();
 start_table("$table_style width=30%");
 
 $th = array(_("Description"), "", "");
@@ -98,29 +95,30 @@ while ($myrow = db_fetch($result))
 	alt_table_row_color($k);	
 
 	label_cell($myrow["name"]);
-	edit_link_cell("selected_id=" . $myrow["id"]);
-	delete_link_cell("selected_id=" . $myrow["id"]. "&delete=1");
+ 	edit_button_cell("Edit".$myrow['id'], _("Edit"));
+ 	edit_button_cell("Delete".$myrow['id'], _("Delete"));
 	end_row();
 }
 
 end_table();
+end_form();
+echo '<br>';
 
 //-----------------------------------------------------------------------------------
-
-hyperlink_no_params($_SERVER['PHP_SELF'], _("New Inventory Movement Type"));
 
 start_form();
 
 start_table();
 
-if (isset($selected_id)) 
+if ($selected_id != -1) 
 {
-	//editing an existing status code
+ 	if ($Mode == 'Edit') {
+		//editing an existing status code
 
-	$myrow = get_movement_type($selected_id);
+		$myrow = get_movement_type($selected_id);
 
-	$_POST['name']  = $myrow["name"];
-
+		$_POST['name']  = $myrow["name"];
+	}
 	hidden('selected_id', $selected_id);
 } 
 
@@ -128,7 +126,7 @@ text_row(_("Description:"), 'name', null, 50, 50);
 
 end_table(1);
 
-submit_add_or_update_center(!isset($selected_id));
+submit_add_or_update_center($selected_id == -1, '', true);
 
 end_form();
 

@@ -82,7 +82,7 @@ if (isset($_POST['submit']) && $_POST['submit'] != "")
 
 		display_notification_centered(_("Company setup has been updated."));
 	}
-
+	$Ajax->activate('_page_body');
 } /* end of if submit */
 
 //---------------------------------------------------------------------------------------------
@@ -168,7 +168,7 @@ end_row();
 
 end_table(1);
 hidden('coy_logo', $_POST['coy_logo']);
-submit_center('submit', _("Update"));
+submit_center('submit', _("Update"), true, '', true);
 
 end_form(2);
 //-------------------------------------------------------------------------------------------------

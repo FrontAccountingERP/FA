@@ -8,14 +8,7 @@ page(_("Tax Types"));
 include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/taxes/db/tax_types_db.inc");
 
-if (isset($_GET['selected_id']))
-{
-	$selected_id = $_GET['selected_id'];
-}
-elseif(isset($_POST['selected_id']))
-{
-	$selected_id = $_POST['selected_id'];
-}
+simple_page_mode(true);
 //-----------------------------------------------------------------------------------
 
 function can_process()
@@ -38,22 +31,24 @@ function can_process()
 
 //-----------------------------------------------------------------------------------
 
-if (isset($_POST['ADD_ITEM']) && can_process())
+if ($Mode=='ADD_ITEM' && can_process())
 {
 
 	add_tax_type($_POST['name'], $_POST['sales_gl_code'],
 		$_POST['purchasing_gl_code'], input_num('rate'));
-	meta_forward($_SERVER['PHP_SELF']);
+	display_notification(_('New tax type has been added'));
+	$Mode = 'RESET';
 }
 
 //-----------------------------------------------------------------------------------
 
-if (isset($_POST['UPDATE_ITEM']) && can_process())
+if ($Mode=='UPDATE_ITEM' && can_process())
 {
 
 	update_tax_type($selected_id, $_POST['name'],
     	$_POST['sales_gl_code'], $_POST['purchasing_gl_code'], input_num('rate'));
-	meta_forward($_SERVER['PHP_SELF']);
+	display_notification(_('Selected tax type has been updated'));
+	$Mode = 'RESET';
 }
 
 //-----------------------------------------------------------------------------------
@@ -76,20 +71,27 @@ function can_delete($selected_id)
 
 //-----------------------------------------------------------------------------------
 
-if (isset($_GET['delete']))
+if ($Mode == 'Delete')
 {
 
 	if (can_delete($selected_id))
 	{
 		delete_tax_type($selected_id);
-		meta_forward($_SERVER['PHP_SELF']);
+		display_notification(_('Selected tax type has been deleted'));
+		$Mode = 'RESET';
 	}
 }
 
+if ($Mode == 'RESET')
+{
+	$selected_id = -1;
+	unset($_POST);
+}
 //-----------------------------------------------------------------------------------
 
 $result = get_all_tax_types();
 
+start_form();
 start_table($table_style);
 
 $th = array(_("Description"), _("Default Rate (%)"),
@@ -107,17 +109,16 @@ while ($myrow = db_fetch($result))
 	label_cell($myrow["sales_gl_code"] . "&nbsp;" . $myrow["SalesAccountName"]);
 	label_cell($myrow["purchasing_gl_code"] . "&nbsp;" . $myrow["PurchasingAccountName"]);
 
-	edit_link_cell("selected_id=".$myrow["id"]);
-	delete_link_cell("selected_id=".$myrow["id"]."&delete=1");
+ 	edit_button_cell("Edit".$myrow["id"], _("Edit"));
+ 	edit_button_cell("Delete".$myrow["id"], _("Delete"));
 
 	end_row();
 }
 
 end_table();
 
-//-----------------------------------------------------------------------------------
-
-hyperlink_no_params($_SERVER['PHP_SELF'], _("New Tax Type"));
+end_form();
+echo '<br>';
 
 //-----------------------------------------------------------------------------------
 
@@ -125,17 +126,18 @@ start_form();
 
 start_table($table_style2);
 
-if (isset($selected_id))
+if ($selected_id != -1) 
 {
-	//editing an existing status code
+ 	if ($Mode == 'Edit') {
+		//editing an existing status code
 
-	$myrow = get_tax_type($selected_id);
+		$myrow = get_tax_type($selected_id);
 
-	$_POST['name']  = $myrow["name"];
-	$_POST['rate']  = percent_format($myrow["rate"]);
-	$_POST['sales_gl_code']  = $myrow["sales_gl_code"];
-	$_POST['purchasing_gl_code']  = $myrow["purchasing_gl_code"];
-
+		$_POST['name']  = $myrow["name"];
+		$_POST['rate']  = percent_format($myrow["rate"]);
+		$_POST['sales_gl_code']  = $myrow["sales_gl_code"];
+		$_POST['purchasing_gl_code']  = $myrow["purchasing_gl_code"];
+	}
 	hidden('selected_id', $selected_id);
 }
 text_row_ex(_("Description:"), 'name', 50);
@@ -146,7 +148,7 @@ gl_all_accounts_list_row(_("Purchasing GL Account:"), 'purchasing_gl_code', null
 
 end_table(1);
 
-submit_add_or_update_center(!isset($selected_id));
+submit_add_or_update_center($selected_id == -1, '', true);
 
 end_form();
 

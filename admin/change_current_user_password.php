@@ -14,11 +14,6 @@ include_once($path_to_root . "/admin/db/users_db.inc");
 $selected_id = $_SESSION["wa_current_user"]->username;
 
 
-if (isset($_GET['UpdatedID']))
-{
-    display_notification_centered(_("Your password has been updated."));
-}
-
 function can_process()
 {
 
@@ -51,14 +46,9 @@ if (isset($_POST['UPDATE_ITEM']))
 
 	if (can_process())
 	{
-    	if (isset($selected_id))
-    	{
-    		if ($_POST['password'] != "")
-    			update_user_password($_POST['user_id'], md5($_POST['password']));
-
-			unset($selected_id);
-    		meta_forward($_SERVER['PHP_SELF'], "UpdatedID=1");
-    	}
+		update_user_password($_POST['user_id'], md5($_POST['password']));
+	    display_notification(_("Your password has been updated."));
+		$Ajax->activate('_page_body');
 	}
 }
 
@@ -66,19 +56,14 @@ start_form();
 
 start_table($table_style);
 
-if (isset($selected_id))
-{
-	//editing an existing User
+$myrow = get_user($selected_id);
 
-	$myrow = get_user($selected_id);
+$_POST['user_id'] = $myrow["user_id"];
+hidden('selected_id', $selected_id);
+hidden('user_id', $_POST['user_id']);
 
-	$_POST['user_id'] = $myrow["user_id"];
-	hidden('selected_id', $selected_id);
-	hidden('user_id', $_POST['user_id']);
+label_row(_("User login:"), $_POST['user_id']);
 
-	label_row(_("User login:"), $_POST['user_id']);
-
-}
 $_POST['password'] = "";
 $_POST['passwordConfirm'] = "";
 
@@ -92,15 +77,11 @@ label_cell(_("Repeat password:"));
 label_cell("<input type='password' name='passwordConfirm' size=22 maxlength=20 value='" . $_POST['passwordConfirm'] . "'>");
 end_row();
 
-if (isset($selected_id))
-{
-	table_section_title(_("Enter your new password in the fields."));
-}
+table_section_title(_("Enter your new password in the fields."));
 
 end_table(1);
 
-submit_add_or_update_center(!isset($selected_id));
-
+submit_center( 'UPDATE_ITEM', _('Change password'), true, '', true);
 end_form();
 end_page();
 ?>

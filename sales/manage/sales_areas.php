@@ -9,16 +9,9 @@ page(_("Sales Areas"));
 
 include($path_to_root . "/includes/ui.inc");
 
-if (isset($_GET['selected_id']))
-{
-	$selected_id = strtoupper($_GET['selected_id']);
-} 
-elseif (isset($_POST['selected_id']))
-{
-	$selected_id = strtoupper($_POST['selected_id']);
-}
+simple_page_mode(true);
 
-if (isset($_POST['ADD_ITEM']) || isset($_POST['UPDATE_ITEM'])) 
+if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM') 
 {
 
 	$input_error = 0;
@@ -31,23 +24,24 @@ if (isset($_POST['ADD_ITEM']) || isset($_POST['UPDATE_ITEM']))
 
 	if ($input_error != 1)
 	{
-    	if (isset($selected_id)) 
+    	if ($selected_id != -1) 
     	{
     		$sql = "UPDATE ".TB_PREF."areas SET description=".db_escape($_POST['description'])." WHERE area_code = '$selected_id'";
+			$note = _('Selected sales area has been updated');
     	} 
     	else 
     	{
-    
     		$sql = "INSERT INTO ".TB_PREF."areas (description) VALUES (".db_escape($_POST['description']) . ")";
+			$note = _('New sales area has been added');
     	}
     
     	db_query($sql,"The sales area could not be updated or added");
-    	
-		meta_forward($_SERVER['PHP_SELF']);		 	
+		display_notification($note);    	
+		$Mode = 'RESET';
 	}
 } 
 
-if (isset($_GET['delete'])) 
+if ($Mode == 'Delete')
 {
 
 	$cancel_delete = 0;
@@ -67,15 +61,22 @@ if (isset($_GET['delete']))
 		$sql="DELETE FROM ".TB_PREF."areas WHERE area_code='" . $selected_id . "'";
 		db_query($sql,"could not delete sales area");
 
-		meta_forward($_SERVER['PHP_SELF']);			
+		display_notification(_('Selected sales area has been deleted'));
+		$Mode = 'RESET';
 	} //end if Delete area
 } 
 
+if ($Mode == 'RESET')
+{
+	$selected_id = -1;
+	unset($_POST);
+}
 //-------------------------------------------------------------------------------------------------
 
 $sql = "SELECT * FROM ".TB_PREF."areas";
 $result = db_query($sql,"could not get areas");
 
+start_form();
 start_table("$table_style width=40%");
 $th = array(_("Area Name"), "", "");
 table_header($th);
@@ -87,14 +88,15 @@ while ($myrow = db_fetch($result))
 	alt_table_row_color($k);
 		
 	label_cell($myrow["description"]);
-	edit_link_cell("selected_id=" . $myrow["area_code"]);
-	delete_link_cell("selected_id=" . $myrow["area_code"]. "&delete=1");
+ 	edit_button_cell("Edit".$myrow["area_code"], _("Edit"));
+ 	edit_button_cell("Delete".$myrow["area_code"], _("Delete"));
 	end_row();
 }
 
 
 end_table();
-hyperlink_no_params($_SERVER['PHP_SELF'], _("New Sales Area"));
+end_form();
+echo '<br>';
 
 //-------------------------------------------------------------------------------------------------
 
@@ -102,15 +104,17 @@ start_form();
 
 start_table("$table_style2 width=40%");
 
-if (isset($selected_id)) 
+if ($selected_id != -1) 
 {
-	//editing an existing area
-	$sql = "SELECT * FROM ".TB_PREF."areas WHERE area_code='$selected_id'";
+ 	if ($Mode == 'Edit') {
+		//editing an existing area
+		$sql = "SELECT * FROM ".TB_PREF."areas WHERE area_code='$selected_id'";
 
-	$result = db_query($sql,"could not get area");
-	$myrow = db_fetch($result);
+		$result = db_query($sql,"could not get area");
+		$myrow = db_fetch($result);
 
-	$_POST['description']  = $myrow["description"];
+		$_POST['description']  = $myrow["description"];
+	}
 	hidden("selected_id", $selected_id);
 } 
 
@@ -118,7 +122,7 @@ text_row_ex(_("Area Name:"), 'description', 30);
 
 end_table(1);
 
-submit_add_or_update_center(!isset($selected_id));
+submit_add_or_update_center($selected_id == -1, '', true);
 
 end_form();
 

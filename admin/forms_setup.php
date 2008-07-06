@@ -42,7 +42,7 @@ while ($type = db_fetch($systypes))
 
 end_table(1);
 
-submit_center('setprefs', _("Update"));
+submit_center('setprefs', _("Update"), true, '', true);
 
 end_form(2);
 
