@@ -6,6 +6,7 @@ include_once($path_to_root . "/sales/includes/db/sales_order_db.inc");
 include_once($path_to_root . "/sales/includes/db/sales_credit_db.inc");
 include_once($path_to_root . "/sales/includes/db/sales_invoice_db.inc");
 include_once($path_to_root . "/sales/includes/db/sales_delivery_db.inc");
+include_once($path_to_root . "/sales/includes/db/sales_types_db.inc");
 include_once($path_to_root . "/sales/includes/db/custalloc_db.inc");
 include_once($path_to_root . "/sales/includes/db/cust_trans_db.inc");
 include_once($path_to_root . "/sales/includes/db/cust_trans_details_db.inc");
@@ -46,10 +47,16 @@ function add_gl_trans_customer($type, $type_no, $date_, $account, $dimension, $d
 
 //----------------------------------------------------------------------------------------
 
-function get_price ($stock_id, $currency, $sales_type_id, $factor, $date=null)
+function get_price ($stock_id, $currency, $sales_type_id, $factor=null, $date=null)
 {
 	if ($date == null)
 	    $date = Today();
+
+	if ($factor == null) 
+	{
+		$myrow = get_sales_type(get_post('sales_type_id'));
+		$factor = $myrow['factor'];
+	}
 	    
 	$sql = "SELECT ".TB_PREF."prices.price
 		FROM ".TB_PREF."prices
