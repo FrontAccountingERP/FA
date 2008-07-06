@@ -186,7 +186,7 @@ if (isset($_POST['delete']))
 	{
 		delete_gl_account($selected_account);
 		$selected_account = $_POST['account_code'] = $_POST['AccountList'] = '';
-		display_notification("Selected account has been deleted");
+		display_notification(_("Selected account has been deleted"));
 		$Ajax->activate('_page_body');
 	}
 } 

@@ -57,14 +57,14 @@ function handle_submit()
 
 		update_currency($_POST['Abbreviation'], $_POST['Symbol'], $_POST['CurrencyName'], 
 			$_POST['country'], $_POST['hundreds_name']);
-		display_notification('Selected currency settings has been updated');
+		display_notification(_('Selected currency settings has been updated'));
 	} 
 	else 
 	{
 
 		add_currency($_POST['Abbreviation'], $_POST['Symbol'], $_POST['CurrencyName'], 
 			$_POST['country'], $_POST['hundreds_name']);
-		display_notification('New currency has been added');
+		display_notification(_('New currency has been added'));
 	}	
 	$Mode = 'RESET';
 }
@@ -128,7 +128,7 @@ function handle_delete()
 	//only delete if used in neither customer or supplier, comp prefs, bank trans accounts
 	
 	delete_currency($selected_id);
-	display_notification('Selected currency has been deleted');
+	display_notification(_('Selected currency has been deleted'));
 	$Mode = 'RESET';
 }
 

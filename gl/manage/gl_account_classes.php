@@ -37,12 +37,12 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
     	if ($selected_id != -1) 
     	{
     		update_account_class($selected_id, $_POST['name'], $_POST['Balance']);
-			display_notification('Selected account class settings has been updated');
+			display_notification(_('Selected account class settings has been updated'));
     	} 
     	else 
     	{
     		add_account_class($_POST['id'], $_POST['name'], $_POST['Balance']);
-			display_notification('New account class has been added');
+			display_notification(_('New account class has been added'));
     	}
 		$Mode = 'RESET';
 	}
@@ -76,7 +76,7 @@ if ($Mode == 'Delete')
 	if (can_delete($selected_id))
 	{
 		delete_account_class($selected_id);
-		display_notification('Selected account class has been deleted');
+		display_notification(_('Selected account class has been deleted'));
 		$Mode = 'RESET';
 	}
 }
@@ -153,7 +153,7 @@ yesno_list_row(_("Balance Sheet:"), 'Balance', null, "", "", false);
 
 end_table(1);
 
-submit_add_or_update_center($selected_id == -1);
+submit_add_or_update_center($selected_id == -1, '', true);
 
 end_form();
 

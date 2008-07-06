@@ -33,12 +33,12 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
     	if ($selected_id != -1) 
     	{
     		update_bank_trans_type($selected_id, $_POST['name']);
-			display_notification('Selected bank account settings has been updated');
+			display_notification(_('Selected bank account settings has been updated'));
     	} 
     	else 
     	{
        		add_bank_trans_type($_POST['name']);
-			display_notification('New bank account has been added');
+			display_notification(_('New bank account has been added'));
     	}
  		$Mode = 'RESET';
 	}
@@ -70,7 +70,7 @@ if( $Mode == 'Delete')
 	if (can_delete($selected_id))
 	{
 		delete_bank_trans_type($selected_id);
-		display_notification('Selected bank account has been deleted');
+		display_notification(_('Selected bank account has been deleted'));
 	}
 	$Mode = 'RESET';
 }

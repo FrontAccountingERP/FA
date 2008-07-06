@@ -33,7 +33,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
     		update_bank_account($selected_id, $_POST['account_type'], $_POST['bank_account_name'], $_POST['bank_name'], 
     			$_POST['bank_account_number'], 
     			$_POST['bank_address'], $_POST['BankAccountCurrency']);		
-			display_notification('Bank account has been updated');
+			display_notification(_('Bank account has been updated'));
     	} 
     	else 
     	{
@@ -41,7 +41,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
     		add_bank_account($_POST['account_code'], $_POST['account_type'], $_POST['bank_account_name'], $_POST['bank_name'], 
     			$_POST['bank_account_number'], 
     			$_POST['bank_address'], $_POST['BankAccountCurrency']);
-			display_notification('New bank account has been added');
+			display_notification(_('New bank account has been added'));
     	}
  		$Mode = 'RESET';
 	}
@@ -65,7 +65,7 @@ elseif( $Mode == 'Delete')
 	if (!$cancel_delete) 
 	{
 		delete_bank_account($selected_id);
-		display_notification('Selected bank account has been deleted');
+		display_notification(_('Selected bank account has been deleted'));
  		$Mode = 'RESET';
 	} //end if Delete bank account
 } 

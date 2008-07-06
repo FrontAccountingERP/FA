@@ -44,12 +44,12 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
     	if ($selected_id != "") 
     	{
     		update_account_type($selected_id, $_POST['name'], $_POST['class_id'], $_POST['parent']);
-			display_notification('Selected account type has been updated');
+			display_notification(_('Selected account type has been updated'));
     	} 
     	else 
     	{
     		add_account_type($_POST['name'], $_POST['class_id'], $_POST['parent']);
-			display_notification('New account type has been added');
+			display_notification(_('New account type has been added'));
     	}
 		$Mode = 'RESET';
 	}
@@ -93,7 +93,7 @@ if ($Mode == 'Delete')
 	if (can_delete($selected_id))
 	{
 		delete_account_type($selected_id);
-		display_notification('Selected currency has been deleted');
+		display_notification(_('Selected currency has been deleted'));
 		$Mode = 'RESET';
 	}
 }
