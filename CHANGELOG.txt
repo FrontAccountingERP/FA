@@ -19,6 +19,17 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+07-Jul-2008 Janusz Dobrowolski
++ Added ajax
+$ /admin/fiscalyears.php
+  /inventory/purchasing_data.php
+# Corrected factor parameter checking (fixes 00000012)
+$ /sales/includes/sales_db.inc
+! Changed selector for fiscal year functions to id
+$ /admin/db/company_db.inc
+# Checking options parameter for combos 
+$ /includes/ui/ui_lists.inc
+
 06-Jul-2008 Janusz Dobrowolski
 + Ajax additions
 $ /admin/view_print_transaction.php
