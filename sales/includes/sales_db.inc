@@ -52,7 +52,7 @@ function get_price ($stock_id, $currency, $sales_type_id, $factor=null, $date=nu
 	if ($date == null)
 	    $date = Today();
 
-	if ($factor == null) 
+	if ($factor === null) 
 	{
 		$myrow = get_sales_type(get_post('sales_type_id'));
 		$factor = $myrow['factor'];
