@@ -51,7 +51,8 @@ $opts = array(		// default options
 	'box_hint' => null // box/selectors hints; null = std see below
 );
 // ------ merge options with defaults ----------
-	$opts = array_merge($opts, $options);
+	if($options != null)
+		$opts = array_merge($opts, $options);
 	if (!is_array($opts['where']))  $opts['where'] = array($opts['where']);
 
 	$search_box = $opts['search_box']===true ? '_'.$name.'_edit' : $opts['search_box'];
@@ -231,7 +232,8 @@ $opts = array(		// default options
 	'disabled' => false
 );
 // ------ merge options with defaults ----------
-	$opts = array_merge($opts, $options);
+	if($options != null)
+		$opts = array_merge($opts, $options);
 	$select_submit =  $opts['select_submit']===true ? '_'.$name.'_update' : $opts['select_submit'];
 	$spec_id = $opts['spec_id'];
 	$spec_option = $opts['spec_option'];
