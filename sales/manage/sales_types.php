@@ -2,39 +2,39 @@
 
 $page_security = 14;
 $path_to_root="../..";
-include($path_to_root . "/includes/session.inc");
+include_once($path_to_root . "/includes/session.inc");
 
 page(_("Sales Types"));
 
-include($path_to_root . "/includes/ui.inc");
-include($path_to_root . "/sales/includes/db/sales_types_db.inc");
+include_once($path_to_root . "/includes/ui.inc");
+include_once($path_to_root . "/sales/includes/db/sales_types_db.inc");
 
 simple_page_mode(true);
 //----------------------------------------------------------------------------------------------------
 
-function can_process() 
+function can_process()
 {
-	if (strlen($_POST['sales_type']) == 0) 
+	if (strlen($_POST['sales_type']) == 0)
 	{
 		display_error(_("The sales type description cannot be empty."));
 		set_focus('sales_type');
 		return false;
-	} 
+	}
 
-	if (!check_num('factor', 0)) 
+	if (!check_num('factor', 0))
 	{
 		display_error(_("Calculation factor must be valid positive number."));
 		set_focus('factor');
 		return false;
-	} 
+	}
 	return true;
 }
 
 //----------------------------------------------------------------------------------------------------
 
-if ($Mode=='ADD_ITEM' && can_process()) 
+if ($Mode=='ADD_ITEM' && can_process())
 {
-	add_sales_type($_POST['sales_type'], isset($_POST['tax_included']) ? 1:0, 
+	add_sales_type($_POST['sales_type'], isset($_POST['tax_included']) ? 1:0,
 	    input_num('factor'));
 	display_notification(_('New sales type has been added'));
 	$Mode = 'RESET';
@@ -42,14 +42,14 @@ if ($Mode=='ADD_ITEM' && can_process())
 
 //----------------------------------------------------------------------------------------------------
 
-if ($Mode=='UPDATE_ITEM' && can_process()) 
+if ($Mode=='UPDATE_ITEM' && can_process())
 {
 
 	update_sales_type($selected_id, $_POST['sales_type'], isset($_POST['tax_included']) ? 1:0,
 	     input_num('factor'));
 	display_notification(_('Selected sales type has been updated'));
 	$Mode = 'RESET';
-} 
+}
 
 //----------------------------------------------------------------------------------------------------
 
@@ -62,24 +62,24 @@ if ($Mode == 'Delete')
 	check_db_error("The number of transactions using this Sales type record could not be retrieved", $sql);
 
 	$myrow = db_fetch_row($result);
-	if ($myrow[0] > 0) 
+	if ($myrow[0] > 0)
 	{
 		display_error(_("Cannot delete this sale type because customer transactions have been created using this sales type."));
 
-	} 
-	else 
+	}
+	else
 	{
 
 		$sql = "SELECT COUNT(*) FROM ".TB_PREF."debtors_master WHERE sales_type='$selected_id'";
 		$result = db_query($sql,"check failed");
   		check_db_error("The number of customers using this Sales type record could not be retrieved", $sql);
-  					
+
 		$myrow = db_fetch_row($result);
-		if ($myrow[0] > 0) 
+		if ($myrow[0] > 0)
 		{
 			display_error(_("Cannot delete this sale type because customers are currently set up to use this sales type."));
-		} 
-		else 
+		}
+		else
 		{
 			delete_sales_type($selected_id);
 			display_notification(_('Selected sales type has been deleted'));
@@ -105,7 +105,7 @@ table_header($th);
 $k = 0;
 $base_sales = get_base_sales_type();
 
-while ($myrow = db_fetch($result)) 
+while ($myrow = db_fetch($result))
 {
 	if ($myrow["id"] == $base_sales)
 	    start_row("class='overduebg'");
@@ -114,8 +114,8 @@ while ($myrow = db_fetch($result))
 	label_cell($myrow["sales_type"]);
 	$f = number_format2($myrow["factor"],4);
 	if($myrow["id"] == $base_sales) $f = "<I>"._('Base')."</I>";
-	label_cell($f);	
-	label_cell($myrow["tax_included"] ? _('Yes'):_('No'), 'align=center');	
+	label_cell($f);
+	label_cell($myrow["tax_included"] ? _('Yes'):_('No'), 'align=center');
  	edit_button_cell("Edit".$myrow['id'], _("Edit"));
  	edit_button_cell("Delete".$myrow['id'], _("Delete"));
 	end_row();
@@ -135,12 +135,12 @@ start_form();
 
 start_table("$table_style2 width=30%");
 
-if ($selected_id != -1) 
+if ($selected_id != -1)
 {
 
  	if ($Mode == 'Edit') {
 		$myrow = get_sales_type($selected_id);
-	
+
 		$_POST['sales_type']  = $myrow["sales_type"];
 		$_POST['tax_included']  = $myrow["tax_included"];
 		$_POST['factor']  = number_format2($myrow["factor"],4);
