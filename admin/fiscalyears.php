@@ -15,15 +15,24 @@ page(_("Fiscal Years"), false, false, "", $js);
 simple_page_mode(true);
 //---------------------------------------------------------------------------------------------
 
+function is_date_in_fiscalyears($date)
+{
+	$date = date2sql($date);
+	$sql = "SELECT * FROM ".TB_PREF."fiscal_year WHERE '$date' >= begin AND '$date' <= end";
+
+	$result = db_query($sql, "could not get all fiscal years");
+	return db_fetch($result) !== false;
+}
+
 function check_data()
 {
-	if (!is_date($_POST['from_date']))
+	if (!is_date($_POST['from_date']) || is_date_in_fiscalyears($_POST['from_date']))
 	{
 		display_error( _("Invalid BEGIN date in fiscal year."));
 		set_focus('from_date');
 		return false;
 	}
-	if (!is_date($_POST['to_date']))
+	if (!is_date($_POST['to_date']) || is_date_in_fiscalyears($_POST['to_date']))
 	{
 		display_error( _("Invalid END date in fiscal year."));
 		set_focus('to_date');
@@ -37,7 +46,6 @@ function check_data()
 	}
 	return true;
 }
-
 //---------------------------------------------------------------------------------------------
 
 function handle_submit()
@@ -163,10 +171,10 @@ function display_fiscalyear_edit($selected_id)
 			$_POST['to_date']  = sql2date($myrow["end"]);
 			$_POST['closed']  = $myrow["closed"];
 		}
-			hidden('from_date');
-			hidden('to_date');
-			label_row(_("Fiscal Year Begin:"), $_POST['from_date']);
-			label_row(_("Fiscal Year End:"), $_POST['to_date']);
+		hidden('from_date');
+		hidden('to_date');
+		label_row(_("Fiscal Year Begin:"), $_POST['from_date']);
+		label_row(_("Fiscal Year End:"), $_POST['to_date']);
 	}
 	else
 	{
@@ -186,7 +194,7 @@ function display_fiscalyear_edit($selected_id)
 
 //---------------------------------------------------------------------------------------------
 
-if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM') 
+if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 {
 	handle_submit();
 }
