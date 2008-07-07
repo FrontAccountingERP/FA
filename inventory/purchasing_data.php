@@ -1,6 +1,4 @@
 <?php
-
-
 $page_security = 4;
 $path_to_root="..";
 include_once($path_to_root . "/includes/session.inc");
@@ -15,23 +13,10 @@ include_once($path_to_root . "/includes/data_checks.inc");
 check_db_has_purchasable_items(_("There are no purchasable inventory items defined in the system."));
 check_db_has_suppliers(_("There are no suppliers defined in the system."));
 
-if (isset($_GET['supplier_id']))
-{
-	$supplier_id = strtoupper($_GET['supplier_id']);
-}
-elseif (isset($_POST['supplier_id']))
-{
-	$supplier_id = strtoupper($_POST['supplier_id']);
-}
-
-if (isset($_GET['stock_id']))
-{
-	$_POST['stock_id'] = $_GET['stock_id'];
-}
-
+simple_page_mode(true);
 //--------------------------------------------------------------------------------------------------
 
-if ((isset($_POST['AddRecord']) || isset($_POST['UpdateRecord'])) && isset($supplier_id))
+if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 {
 
    	$input_error = 0;
@@ -51,61 +36,62 @@ if ((isset($_POST['AddRecord']) || isset($_POST['UpdateRecord'])) && isset($supp
    	{
       	$input_error = 1;
       	display_error( _("The conversion factor entered was not numeric. The conversion factor is the number by which the price must be divided by to get the unit price in our unit of measure."));
-	set_focus('conversion_factor');
+		set_focus('conversion_factor');
    	}
 
 	if ($input_error == 0)
 	{
-       	if (isset($_POST['AddRecord']))
+     	if ($Mode == 'ADD_ITEM') 
        	{
 
     		$sql = "INSERT INTO ".TB_PREF."purch_data (supplier_id, stock_id, price, suppliers_uom,
     			conversion_factor, supplier_description) VALUES (";
-    		$sql .= "'$supplier_id', '" . $_POST['stock_id'] . "', " .
+    		$sql .= "'".$_POST['supplier_id']."', '" . $_POST['stock_id'] . "', " .
 		    input_num('price') . ", '" . $_POST['suppliers_uom'] . "', " .
     			input_num('conversion_factor') . ", '" . $_POST['supplier_description'] . "')";
 
     		db_query($sql,"The supplier purchasing details could not be added");
     		display_notification(_("This supplier purchasing data has been added."));
-       	}
-
-       	if (isset($_POST['UpdateRecord']))
+       	} else
        	{
           	$sql = "UPDATE ".TB_PREF."purch_data SET price=" . input_num('price') . ",
 				suppliers_uom='" . $_POST['suppliers_uom'] . "',
 				conversion_factor=" . input_num('conversion_factor') . ",
 				supplier_description='" . $_POST['supplier_description'] . "'
 				WHERE stock_id='" . $_POST['stock_id'] . "' AND
-				supplier_id='$supplier_id'";
+				supplier_id='$selected_id'";
           	db_query($sql,"The supplier purchasing details could not be updated");
 
     	  	display_notification(_("Supplier purchasing data has been updated."));
        	}
-
-       	if (isset($_POST['UpdateRecord']) || isset($_POST['AddRecord']))
-       	{
-          	//update or insert took place and need to clear the form
-          	unset($supplier_id);
-          	unset($_POST['price']);
-          	unset($_POST['suppliers_uom']);
-          	unset($_POST['conversion_factor']);
-          	unset($_POST['supplier_description']);
-       	}
+		$Mode = 'RESET';
 	}
 }
 
 //--------------------------------------------------------------------------------------------------
 
-if (isset($_GET['Delete']))
+if ($Mode == 'Delete')
 {
 
-	$sql = "DELETE FROM ".TB_PREF."purch_data WHERE supplier_id='$supplier_id'
+	$sql = "DELETE FROM ".TB_PREF."purch_data WHERE supplier_id='$selected_id'
 		AND stock_id='" . $_POST['stock_id'] . "'";
 	db_query($sql,"could not delete purchasing data");
 
-	display_note(_("The purchasing data item has been sucessfully deleted."));
-	unset ($supplier_id);
+	display_notification(_("The purchasing data item has been sucessfully deleted."));
+	$Mode = 'RESET';
 }
+
+if ($Mode == 'RESET')
+{
+	$selected_id = -1;
+}
+
+if (isset($_POST['_selected_id_update']) )
+{
+	$selected_id = $_POST['selected_id'];
+	$Ajax->activate('_page_body');
+}
+
 if (isset($_POST['_stock_id_update']))
 	$Ajax->activate('price_table');
 //--------------------------------------------------------------------------------------------------
@@ -163,8 +149,8 @@ else
             label_cell($myrow["curr_code"]);
             label_cell($myrow["suppliers_uom"]);
             label_cell($myrow["supplier_description"]);
-            edit_link_cell("stock_id=" . $_POST['stock_id']. "&supplier_id=" . $myrow["supplier_id"] . "&Edit=1");
-            delete_link_cell("stock_id=" . $_POST['stock_id']. "&supplier_id=" . $myrow["supplier_id"] . "&Delete=1");
+		 	edit_button_cell("Edit".$myrow['supplier_id'], _("Edit"));
+		 	edit_button_cell("Delete".$myrow['supplier_id'], _("Delete"));
             end_row();
 
             $j++;
@@ -180,14 +166,14 @@ else
  div_end();
 }
 
-//------------------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------------
 
-if (isset($_GET['Edit']))
+if ($Mode =='Edit')
 {
 
 	$sql = "SELECT ".TB_PREF."purch_data.*,".TB_PREF."suppliers.supp_name FROM ".TB_PREF."purch_data
 		INNER JOIN ".TB_PREF."suppliers ON ".TB_PREF."purch_data.supplier_id=".TB_PREF."suppliers.supplier_id
-		WHERE ".TB_PREF."purch_data.supplier_id='$supplier_id'
+		WHERE ".TB_PREF."purch_data.supplier_id='$selected_id'
 		AND ".TB_PREF."purch_data.stock_id='" . $_POST['stock_id'] . "'";
 
 	$result = db_query($sql, "The supplier purchasing details for the selected supplier and item could not be retrieved");
@@ -202,19 +188,19 @@ if (isset($_GET['Edit']))
 }
 
 echo "<br>";
+hidden('selected_id', $selected_id);
 start_table($table_style2);
 
-if (isset($_GET['Edit']))
+if ($Mode == 'Edit')
 {
-	hidden('supplier_id', $supplier_id);
+	hidden('supplier_id');
 	label_row(_("Supplier:"), $supp_name);
 }
 else
 {
 	supplier_list_row(_("Supplier:"), 'supplier_id', null, false, true);
-	$supplier_id = $_POST['supplier_id'];
 }
-amount_row(_("Price:"), 'price', null,'', get_supplier_currency($supplier_id));
+amount_row(_("Price:"), 'price', null,'', get_supplier_currency($selected_id));
 text_row(_("Suppliers Unit of Measure:"), 'suppliers_uom', null, 50, 51);
 
 if (!isset($_POST['conversion_factor']) || $_POST['conversion_factor'] == "")
@@ -227,14 +213,7 @@ text_row(_("Supplier's Code or Description:"), 'supplier_description', null, 50,
 
 end_table(1);
 
-if (isset($_GET['Edit']))
-{
-	submit_center('UpdateRecord', _("Update Purchasing Data"));
-}
-else
-{
-	submit_center('AddRecord', _("Add Purchasing Data"));
-}
+submit_add_or_update_center($selected_id == -1, '', true);
 
 end_form();
 end_page();
