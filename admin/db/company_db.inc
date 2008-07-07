@@ -107,12 +107,10 @@ function add_fiscalyear($from_date, $to_date, $closed)
 	db_query($sql, "could not add fiscal year");
 }
 
-function update_fiscalyear($from_date, $closed)
+function update_fiscalyear($id, $closed)
 {
-	$from = date2sql($from_date);
-
 	$sql = "UPDATE ".TB_PREF."fiscal_year SET closed=$closed
-		WHERE begin=".db_escape($from);
+		WHERE id=".db_escape($id);
 
 	db_query($sql, "could not update fiscal year");
 }
@@ -124,11 +122,9 @@ function get_all_fiscalyears()
 	return db_query($sql, "could not get all fiscal years");
 }
 
-function get_fiscalyear($from_date)
+function get_fiscalyear($id)
 {
-	$from = date2sql($from_date);
-
-	$sql = "SELECT * FROM ".TB_PREF."fiscal_year WHERE begin=".db_escape($from);
+	$sql = "SELECT * FROM ".TB_PREF."fiscal_year WHERE id=".db_escape($id);
 
 	$result = db_query($sql, "could not get fiscal year");
 
@@ -146,12 +142,11 @@ function get_current_fiscalyear()
 	return db_fetch($result);
 }
 
-function delete_fiscalyear($from_date)
+function delete_fiscalyear($id)
 {
-	$from = date2sql($from_date);
 	begin_transaction();
 
-	$sql="DELETE FROM ".TB_PREF."fiscal_year WHERE begin=".db_escape($from);
+	$sql="DELETE FROM ".TB_PREF."fiscal_year WHERE id=".db_escape($id);
 
 	db_query($sql, "could not delete fiscal year");
 
