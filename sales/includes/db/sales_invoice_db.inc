@@ -163,18 +163,18 @@ function void_sales_invoice($type, $type_no)
 	void_bank_trans($type, $type_no, true);
 	void_gl_trans($type, $type_no, true);
 
-	// for invoices and credits related to invoices,
-	// reverse all the changes in the sales order
+	// reverse all the changes in parent document(s)
 	$items_result = get_customer_trans_details($type, $type_no);
 
-	$delivery = get_customer_trans_link($type, $type_no);
+	$deliveries = get_parent_trans($type, $type_no);
 
-	if ($delivery) {
+	if (count($deliveries)) {
+		$srcdetails = get_customer_trans_details(get_parent_type($type), $deliveries);
 		while ($row = db_fetch($items_result)) {
-			update_parent_line(10, $row['id'], -$row['quantity']);
+			$src_line = db_fetch($srcdetails);
+			update_parent_line(10, $src_line['id'], -$row['quantity']);
 		}
 	}
-
 	// clear details after they've been reversed in the sales order
 	void_customer_trans_details($type, $type_no);
 

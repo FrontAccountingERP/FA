@@ -136,13 +136,33 @@ if ( (isset($_GET['DeliveryNumber']) && ($_GET['DeliveryNumber'] > 0) )
 
 	end_page();
 	exit;
-} else {
+} elseif (!check_quantities()) {
+	display_error(_("Selected quantity cannot be less than quantity credited nor more than quantity not invoiced yet."));
+}
+if (isset($_POST['Update'])) {
+	$Ajax->activate('Items');
+}
+//-----------------------------------------------------------------------------
+function check_quantities()
+{
+	$ok =1;
 	foreach ($_SESSION['Items']->line_items as $line_no=>$itm) {
 		if (isset($_POST['Line'.$line_no])) {
-			if (!check_num('Line'.$line_no, 0, ($itm->quantity - $itm->qty_done))) {
+			if($_SESSION['Items']->trans_no) {
+				$min = $itm->qty_done;
+				$max = $itm->quantity;
+			} else {
+				$min = 0;
+				$max = $itm->quantity - $itm->qty_done;
+			}
+			if (check_num('Line'.$line_no, $min, $max)) {
 				$_SESSION['Items']->line_items[$line_no]->qty_dispatched =
 				    input_num('Line'.$line_no);
 			}
+			else {
+				$ok = 0;
+			}
+				
 		}
 
 		if (isset($_POST['Line'.$line_no.'Desc'])) {
@@ -152,8 +172,8 @@ if ( (isset($_GET['DeliveryNumber']) && ($_GET['DeliveryNumber'] > 0) )
 			}
 		}
 	}
+ return $ok;
 }
-//-----------------------------------------------------------------------------
 
 function copy_to_cart()
 {
@@ -224,6 +244,11 @@ function check_data()
 
 	if ($_SESSION['Items']->has_items_dispatch() == 0 && input_num('ChargeFreightCost') == 0) {
 		display_error(_("There are no item quantities on this invoice."));
+		return false;
+	}
+
+	if (!check_quantities()) {
+		display_error(_("Selected quantity cannot be less than quantity credited nor more than quantity not invoiced yet."));
 		return false;
 	}
 
@@ -321,6 +346,7 @@ end_table();
 
 display_heading(_("Invoice Items"));
 
+div_start('Items');
 start_table("$table_style width=80%");
 $th = array(_("Item Code"), _("Item Description"), _("Delivered"), _("Units"), _("Invoiced"),
 	_("This Invoice"), _("Price"), _("Tax Type"), _("Discount"), _("Total"));
@@ -423,9 +449,9 @@ $display_total = price_format(($inv_items_total + input_num('ChargeFreightCost')
 label_row(_("Invoice Total"), $display_total, "colspan=9 align=right","align=right", $is_batch_invoice ? 2 : 0);
 
 end_table(1);
+div_end();
 
 start_table($table_style2);
-
 textarea_row(_("Memo"), 'Comments', null, 50, 4);
 
 end_table(1);

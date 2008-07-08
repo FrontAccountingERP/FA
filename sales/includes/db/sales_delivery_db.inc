@@ -128,15 +128,16 @@ function void_sales_delivery($type, $type_no)
 
 	void_gl_trans($type, $type_no, true);
 
-	// for invoices and credits related to invoices,
 	// reverse all the changes in the sales order
 	$items_result = get_customer_trans_details($type, $type_no);
 
 	$order = get_customer_trans_order($type, $type_no);
 
 	if ($order) {
+		$order_items = get_sales_order_details($order);
 		while ($row = db_fetch($items_result)) {
-			update_parent_line(13, $row['id'], -$row['quantity']);
+			$order_line = db_fetch($order_items);
+			update_parent_line(13, $order_line['id'], -$row['quantity']);
 		}
 	}
 

@@ -99,7 +99,10 @@ function can_process()
 		set_focus('ChargeFreightCost');
 		return false;
 	}
-
+	if (!check_quantities()) {
+		display_error(_("Selected quantity cannot be less than zero nor more than quantity not credited yet."));
+		return false;
+	}
 	return true;
 }
 
@@ -140,14 +143,23 @@ if (isset($_GET['InvoiceNumber']) && $_GET['InvoiceNumber'] > 0) {
 } elseif (!processing_active()) {
 	/* This page can only be called with an invoice number for crediting*/
 	die (_("This page can only be opened if an invoice has been selected for crediting."));
-} else {
+} elseif (!check_quantities()) {
+	display_error(_("Selected quantity cannot be less than zero nor more than quantity not credited yet."));
+}
+
+function check_quantities()
+{
+	$ok =1;
 	foreach ($_SESSION['Items']->line_items as $line_no=>$itm) {
 		if (isset($_POST['Line'.$line_no])) {
-			if (check_num('Line'.$line_no, ($itm->quantity - $itm->qty_done))) {
+			if (check_num('Line'.$line_no, 0, $itm->quantity))) {
 				$_SESSION['Items']->line_items[$line_no]->qty_dispatched =
 				  input_num('Line'.$line_no);
 			}
 	  	}
+		else {
+			$ok = 0;
+		}
 
 		if (isset($_POST['Line'.$line_no.'Desc'])) {
 			$line_desc = $_POST['Line'.$line_no.'Desc'];
@@ -156,6 +168,7 @@ if (isset($_GET['InvoiceNumber']) && $_GET['InvoiceNumber'] > 0) {
 			}
 	  	}
 	}
+	return $ok;
 }
 //-----------------------------------------------------------------------------
 

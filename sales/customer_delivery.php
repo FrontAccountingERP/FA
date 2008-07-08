@@ -73,7 +73,7 @@ if (isset($_GET['AddedID'])) {
 
 if (isset($_GET['OrderNumber']) && $_GET['OrderNumber'] > 0) {
 
-	$ord = new Cart(30,$_GET['OrderNumber'], true);
+	$ord = new Cart(30, $_GET['OrderNumber'], true);
 
 	/*read in all the selected order into the Items cart  */
 
@@ -104,7 +104,7 @@ if (isset($_GET['OrderNumber']) && $_GET['OrderNumber'] > 0) {
 	}
 
 	copy_from_cart();
-
+	
 } elseif ( !processing_active() ) {
 	/* This page can only be called with an order number for invoicing*/
 
@@ -188,7 +188,7 @@ function copy_to_cart()
 	$cart = &$_SESSION['Items'];
 	$cart->ship_via = $_POST['ship_via'];
 	$cart->freight_cost = input_num('ChargeFreightCost');
-	$cart->document_date =  $_POST['DispatchDate'];
+	$cart->document_date = $_POST['DispatchDate'];
 	$cart->due_date =  $_POST['due_date'];
 	$cart->Location = $_POST['Location'];
 	$cart->Comments = $_POST['Comments'];
@@ -203,10 +203,10 @@ function copy_from_cart()
 	$cart = &$_SESSION['Items'];
 	$_POST['ship_via'] = $cart->ship_via;
 	$_POST['ChargeFreightCost'] = price_format($cart->freight_cost);
-	$_POST['DispatchDate']= $cart->document_date;
+	$_POST['DispatchDate'] = $cart->document_date;
 	$_POST['due_date'] = $cart->due_date;
-	$_POST['Location']= $cart->Location;
-	$_POST['Comments']= $cart->Comments;
+	$_POST['Location'] = $cart->Location;
+	$_POST['Comments'] = $cart->Comments;
 }
 //------------------------------------------------------------------------------
 
@@ -216,10 +216,19 @@ function check_quantities()
 	// Update cart delivery quantities/descriptions
 	foreach ($_SESSION['Items']->line_items as $line=>$itm) {
 		if (isset($_POST['Line'.$line])) {
-			if (!check_num('Line'.$line, $itm->qty_done, $itm->quantity) == 0) {
+		if($_SESSION['Items']->trans_no) {
+			$min = $itm->qty_done;
+			$max = $itm->quantity;
+		} else {
+			$min = 0;
+			$max = $itm->quantity - $itm->qty_done;
+		}
+		
+			if (check_num('Line'.$line, $min, $max)) {
 				$_SESSION['Items']->line_items[$line]->qty_dispatched =
 				  input_num('Line'.$line);
 			} else {
+				set_focus('Line'.$line);
 				$ok = 0;
 			}
 
@@ -281,6 +290,9 @@ if (isset($_POST['process_delivery']) && check_data() && check_qoh()) {
 	}
 }
 
+if (isset($_POST['Update']) || isset($_POST['_Location_update'])) {
+	$Ajax->activate('Items');
+}
 //------------------------------------------------------------------------------
 start_form(false, true);
 
@@ -314,7 +326,7 @@ if (!isset($_POST['Location'])) {
 	$_POST['Location'] = $_SESSION['Items']->Location;
 }
 label_cell(_("Delivery From"), "class='tableheader2'");
-locations_list_cells(null, 'Location',$_POST['Location'], false, true);
+locations_list_cells(null, 'Location', null, false, true);
 
 if (!isset($_POST['ship_via'])) {
 	$_POST['ship_via'] = $_SESSION['Items']->ship_via;
@@ -348,7 +360,7 @@ echo "</td></tr>";
 end_table(1); // outer table
 
 display_heading(_("Delivery Items"));
-
+div_start('Items');
 start_table("$table_style width=80%");
 $th = array(_("Item Code"), _("Item Description"), _("Ordered"), _("Units"), _("Delivered"),
 	_("This Delivery"), _("Price"), _("Tax Type"), _("Discount"), _("Total"));
@@ -435,7 +447,7 @@ policy_list_row(_("Action For Balance"), "bo_policy", null);
 textarea_row(_("Memo"), 'Comments', null, 50, 4);
 
 end_table(1);
-
+div_end();
 submit_center_first('Update', _("Update"),
   _('Refresh document page'), true);
 submit_center_last('process_delivery', _("Process Dispatch"),

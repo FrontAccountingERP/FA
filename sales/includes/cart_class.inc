@@ -84,6 +84,7 @@ class cart
 						$line = &$this->line_items[$line_no];
 						$line->qty_dispatched = $line->quantity - $line->qty_done;
 					}
+					$this->document_date = Today();
 				}
 				} else {	// derivative transaction
 					read_sales_trans($type, $trans_no, $this);
