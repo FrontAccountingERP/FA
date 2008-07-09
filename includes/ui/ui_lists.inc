@@ -1427,10 +1427,7 @@ function bank_account_types_list($name, $selected_id=null)
 	$items = array();
 	foreach ($types as $type)
 	{
-		if (payment_person_types::has_items($type['id']))
-		{
 			$items[$type['id']] = $type['name'];
-		}
 	}
 	
 	return array_selector($name, $selected_id, $items );

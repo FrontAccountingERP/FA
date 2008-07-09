@@ -19,6 +19,17 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+09-Jul-2008 Janusz Dobrowolski
+# Corrections to maximum input lengths
+$ /gl/manage/bank_accounts.php
+  /gl/manage/gl_account_classes.php
+# Fixed spare Back link on restricted pages
+$ /includes/session.inc
+# Fixed bank_account_types_list()
+$ /includes/ui/ui_lists.inc
+# Fixed warning about unexisting POST var
+$ /sales/manage/customers.php
+
 08-Jul-2008 Janusz Dobrowolski
 # Added validation of entered quantities
 $ /sales/customer_credit_invoice.php

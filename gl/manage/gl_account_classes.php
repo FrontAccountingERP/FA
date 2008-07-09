@@ -147,7 +147,7 @@ else
 	text_row_ex(_("Class ID:"), 'id', 3);
 }
 
-text_row_ex(_("Class Name:"), 'name', 50);
+text_row_ex(_("Class Name:"), 'name', 50, 60);
 
 yesno_list_row(_("Balance Sheet:"), 'Balance', null, "", "", false);
 

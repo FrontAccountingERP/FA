@@ -90,7 +90,6 @@
 			echo "<center><br><br><br><b>";
 			echo _("The security settings on your account do not permit you to access this function");
 			echo "</b>";
-			echo "<br><br><a href='javascript:history.go(-1)'>" . _("Back") . "</a>";
 			echo "<br><br><br><br></center>";
 			//echo '<script type="text/javascript">';
 			//echo 'alert("' . _("The security settings on your account do not permit you to access this function") . '");';

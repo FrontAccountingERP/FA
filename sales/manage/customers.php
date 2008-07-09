@@ -175,7 +175,7 @@ if (db_has_customers())
 } 
 else 
 {
-	hidden('customer_id', $_POST['customer_id']);
+	hidden('customer_id');
 }
 
 start_table($table_style2, 7, 6);
