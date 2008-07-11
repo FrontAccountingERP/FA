@@ -16,16 +16,32 @@ include_once($path_to_root . "gl/includes/gl_db.inc");
 
 //----------------------------------------------------------------------------------------------------
 
-// trial_inquiry_controls();
 print_tax_report();
+
+function getTax($tno, $tpe)
+{
+	$sql = "SELECT amount, included_in_price FROM ".TB_PREF."debtor_trans_tax_details
+		WHERE ".TB_PREF."debtor_trans_tax_details.debtor_trans_no=$tno
+			AND ".TB_PREF."debtor_trans_tax_details.debtor_trans_type=$tpe
+			AND ".TB_PREF."debtor_trans_tax_details.amount <> 0";
+
+    $result = db_query($sql,"No transactions were returned");
+    return db_fetch($result);
+}
 
 function getCustTransactions($from, $to)
 {
 	$fromdate = date2sql($from);
 	$todate = date2sql($to);
 
+	$netamount = "IF(".TB_PREF."debtor_trans.type=11,-(ov_amount+ov_freight+ov_discount),ov_amount+ov_freight+ov_discount)*".TB_PREF."debtor_trans.rate";
+	//	IF(".TB_PREF."debtor_trans.type=11,-(ov_amount+ov_freight+ov_discount),ov_amount+ov_freight+ov_discount)*rate AS NetAmount,
+	//	IF(".TB_PREF."debtor_trans.type=11,-(ov_gst+ov_freight_tax),ov_gst+ov_freight_tax)*rate AS Tax
+
 	$sql = "SELECT ".TB_PREF."debtor_trans.reference,
+			".TB_PREF."debtor_trans.trans_no,
 			".TB_PREF."debtor_trans.type,
+			".TB_PREF."debtor_trans.rate,
 			".TB_PREF."sys_types.type_name,
 			".TB_PREF."debtor_trans.tran_date,
 			".TB_PREF."debtor_trans.debtor_no,
@@ -33,9 +49,7 @@ function getCustTransactions($from, $to)
 			".TB_PREF."debtors_master.curr_code,
 			".TB_PREF."debtor_trans.branch_code,
 			".TB_PREF."debtor_trans.order_,
-			(ov_amount+ov_freight)*rate AS NetAmount,
-			ov_freight*rate AS FreightAmount,
-			ov_gst*rate AS Tax
+			$netamount AS NetAmount
 		FROM ".TB_PREF."debtor_trans
 		INNER JOIN ".TB_PREF."debtors_master ON ".TB_PREF."debtor_trans.debtor_no=".TB_PREF."debtors_master.debtor_no
 		INNER JOIN ".TB_PREF."sys_types ON ".TB_PREF."debtor_trans.type=".TB_PREF."sys_types.type_id
@@ -61,7 +75,7 @@ function getSuppTransactions($from, $to)
 			".TB_PREF."suppliers.supp_name,
 			".TB_PREF."suppliers.curr_code,
 			".TB_PREF."supp_trans.rate,
-			ov_amount*rate AS NetAmount,
+			(ov_amount+ov_discount)*rate AS NetAmount,
 			ov_gst*rate AS Tax
 		FROM ".TB_PREF."supp_trans
 		INNER JOIN ".TB_PREF."suppliers ON ".TB_PREF."supp_trans.supplier_id=".TB_PREF."suppliers.supplier_id
@@ -91,15 +105,18 @@ function getCustInvTax($taxtype, $from, $to)
 {
 	$fromdate = date2sql($from);
 	$todate = date2sql($to);
+	$amount = "IF(".TB_PREF."debtor_trans_tax_details.debtor_trans_type=11,-amount,amount)*".TB_PREF."debtor_trans.rate";
+	$mamount = "IF(".TB_PREF."debtor_trans_tax_details.included_in_price=0, 0, $amount)";
+	$netamount = "IF(".TB_PREF."debtor_trans.type=11,-(ov_amount+ov_freight+ov_discount),ov_amount+ov_freight+ov_discount)*".TB_PREF."debtor_trans.rate-$mamount";
 
-	$sql = "SELECT SUM(unit_price * quantity*".TB_PREF."debtor_trans.rate), SUM(amount*".TB_PREF."debtor_trans.rate)
-		FROM ".TB_PREF."debtor_trans_details, ".TB_PREF."debtor_trans_tax_details, ".TB_PREF."debtor_trans
-				WHERE ".TB_PREF."debtor_trans_details.debtor_trans_type>=10
-					AND ".TB_PREF."debtor_trans_details.debtor_trans_type<=11
-					AND ".TB_PREF."debtor_trans_details.debtor_trans_no=".TB_PREF."debtor_trans.trans_no
-					AND ".TB_PREF."debtor_trans_details.debtor_trans_type=".TB_PREF."debtor_trans.type
-					AND ".TB_PREF."debtor_trans_details.debtor_trans_no=".TB_PREF."debtor_trans_tax_details.debtor_trans_no
-					AND ".TB_PREF."debtor_trans_details.debtor_trans_type=".TB_PREF."debtor_trans_tax_details.debtor_trans_type
+	$sql = "SELECT SUM($netamount),
+		SUM($amount)
+		FROM ".TB_PREF."debtor_trans_tax_details, ".TB_PREF."debtor_trans
+				WHERE ".TB_PREF."debtor_trans.type>=10
+					AND ".TB_PREF."debtor_trans.type<=11
+					AND ".TB_PREF."debtor_trans.trans_no=".TB_PREF."debtor_trans_tax_details.debtor_trans_no
+					AND ".TB_PREF."debtor_trans.type=".TB_PREF."debtor_trans_tax_details.debtor_trans_type
+					AND ".TB_PREF."debtor_trans_tax_details.amount <> 0
 					AND ".TB_PREF."debtor_trans_tax_details.tax_type_id=$taxtype
 					AND ".TB_PREF."debtor_trans.tran_date >= '$fromdate'
 					AND ".TB_PREF."debtor_trans.tran_date <= '$todate'";
@@ -112,16 +129,14 @@ function getSuppInvTax($taxtype, $from, $to)
 {
 	$fromdate = date2sql($from);
 	$todate = date2sql($to);
-
-	$sql = "SELECT SUM(unit_price * quantity * ".TB_PREF."supp_trans.rate), SUM(amount*".TB_PREF."supp_trans.rate)
-		FROM ".TB_PREF."supp_invoice_items, ".TB_PREF."supp_invoice_tax_items, ".TB_PREF."supp_trans
-				WHERE ".TB_PREF."supp_invoice_items.supp_trans_type>=20
-					AND ".TB_PREF."supp_invoice_items.supp_trans_type<=21
-					AND ".TB_PREF."supp_invoice_items.supp_trans_no=".TB_PREF."supp_invoice_tax_items.supp_trans_no
-					AND ".TB_PREF."supp_invoice_items.supp_trans_type=".TB_PREF."supp_invoice_tax_items.supp_trans_type
-					AND ".TB_PREF."supp_invoice_items.supp_trans_no=".TB_PREF."supp_trans.trans_no
-					AND ".TB_PREF."supp_invoice_items.supp_trans_type=".TB_PREF."supp_trans.type
+	$sql = "SELECT SUM((ov_amount+ov_discount) * ".TB_PREF."supp_trans.rate), SUM(amount*".TB_PREF."supp_trans.rate)
+		FROM ".TB_PREF."supp_invoice_tax_items, ".TB_PREF."supp_trans
+				WHERE ".TB_PREF."supp_trans.type>=20
+					AND ".TB_PREF."supp_trans.type<=21
+					AND ".TB_PREF."supp_trans.trans_no=".TB_PREF."supp_invoice_tax_items.supp_trans_no
+					AND ".TB_PREF."supp_trans.type=".TB_PREF."supp_invoice_tax_items.supp_trans_type
 					AND ".TB_PREF."supp_invoice_tax_items.tax_type_id=$taxtype
+					AND ".TB_PREF."supp_invoice_tax_items.amount <> 0
 					AND ".TB_PREF."supp_trans.tran_date >= '$fromdate'
 					AND ".TB_PREF."supp_trans.tran_date <= '$todate'";
 
@@ -188,6 +203,18 @@ function print_tax_report()
 
 	while ($trans=db_fetch($transactions))
 	{
+		$tx = getTax($trans['trans_no'], $trans['type']);
+		if ($tx === false)
+			$tax_amt = 0;
+		else
+		{
+			$tx['amount'] *= $trans['rate'];
+			if ($trans['type'] == 11)
+				$tx['amount'] *= -1;
+			if ($tx['included_in_price'])
+				$trans['NetAmount'] -= $tx['amount'];
+			$tax_amt = $tx['amount'];
+		}
 		if (!$summaryOnly)
 		{
 			$rep->TextCol(0, 1,	$trans['type_name']);
@@ -198,7 +225,7 @@ function print_tax_report()
 				$rep->TextCol(4, 5,	get_branch_name($trans["branch_code"]));
 
 			$rep->TextCol(5, 6,	number_format2($trans['NetAmount'], $dec));
-			$rep->TextCol(6, 7,	number_format2($trans['Tax'], $dec));
+			$rep->TextCol(6, 7,	number_format2($tax_amt, $dec));
 
 			$rep->NewLine();
 
@@ -209,7 +236,7 @@ function print_tax_report()
 			}
 		}
 		$totalnet += $trans['NetAmount'];
-		$totaltax += $trans['Tax'];
+		$totaltax += $tax_amt;
 
 	}
 	if (!$summaryOnly)
@@ -272,9 +299,9 @@ function print_tax_report()
 	}
 	$cols2 = array(0, 100, 200,	300, 400, 500, 600);
 
-	$headers2 = array(_('Tax Rate'), _('Outputs'), _('Output Tax'),	_('Inputs'), _('Input Tax'));
+	$headers2 = array(_('Tax Rate'), _('Outputs'), _('Output Tax'),	_('Inputs'), _('Input Tax'), '', '');
 
-	$aligns2 = array('left', 'right', 'right', 'right',	'right');
+	$aligns2 = array('left', 'right', 'right', 'right',	'right', 'right', 'right');
 
 	$invamount = 0.0;
 	for ($i = 0; $i < $idcounter; $i++)
@@ -285,29 +312,38 @@ function print_tax_report()
 		$invamount += $amt[0];
 	}
 	if ($totalnet != $invamount)
-		$totalinvout[$idcounter] = ($invamount - $totalnet);
+	{
+		$totalinvout[$idcounter] = ($totalnet - $invamount);
+		$totaltaxout[$idcounter] = 0.0;
+	}
+	$invamount2 = 0.0;
 	for ($i = 0; $i < $idcounter; $i++)
 	{
 		$amt = getSuppInvTax($taxes[$i], $from, $to);
 		$totalinvin[$i] += $amt[0];
 		$totaltaxin[$i] += $amt[1];
-		$invamount += $amt[0];
+		$invamount2 += $amt[0];
 	}
-	if ($totalinnet != $invamount)
-		$totalinvin[$idcounter] = ($totalinnet - $invamount);
-
-	for ($i = 0; $i < count($cols2) - 2; $i++)
+	if ($totalinnet != $invamount2)
+	{
+		$totalinvin[$idcounter] = ($totalinnet - $invamount2);
+		$totaltaxin[$idcounter] = 0.0;
+	}
+	if ($totalnet != $invamount || $totalinnet != $invamount2)
+		$idcounter++;
+	for ($i = 0; $i < count($cols2); $i++)
 	{
 		$rep->cols[$i] = $rep->leftMargin + $cols2[$i];
 		$rep->headers[$i] = $headers2[$i];
 		$rep->aligns[$i] = $aligns2[$i];
 	}
 	$rep->Header();
-	$counter = count($totalinvout);
-	$counter = max($counter, $idcounter);
+	//$counter = count($totalinvout);
+	//$counter = max($counter, $idcounter);
+
 	$trow = $rep->row;
 	$i = 0;
-	for ($j = 0; $j < $counter; $j++)
+	for ($j = 0; $j < $idcounter; $j++)
 	{
 		if (isset($taxes[$j]) && $taxes[$j] > 0)
 		{
@@ -321,28 +357,28 @@ function print_tax_report()
 	}
 	$i++;
 	$rep->row = $trow;
-	for ($j = 0; $j < $counter; $j++)
+	for ($j = 0; $j < $idcounter; $j++)
 	{
 		$rep->TextCol($i, $i + 1, number_format2($totalinvout[$j], $dec));
 		$rep->NewLine();
 	}
 	$i++;
 	$rep->row = $trow;
-	for ($j = 0; $j < $counter; $j++)
+	for ($j = 0; $j < $idcounter; $j++)
 	{
 		$rep->TextCol($i, $i + 1,number_format2($totaltaxout[$j], $dec));
 		$rep->NewLine();
 	}
 	$i++;
 	$rep->row = $trow;
-	for ($j = 0; $j < $counter; $j++)
+	for ($j = 0; $j < $idcounter; $j++)
 	{
 		$rep->TextCol($i, $i + 1, number_format2($totalinvin[$j], $dec));
 		$rep->NewLine();
 	}
 	$i++;
 	$rep->row = $trow;
-	for ($j = 0; $j < $counter; $j++)
+	for ($j = 0; $j < $idcounter; $j++)
 	{
 		$rep->TextCol($i, $i + 1, number_format2($totaltaxin[$j], $dec));
 		$rep->NewLine();
