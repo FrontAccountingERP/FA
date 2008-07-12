@@ -20,10 +20,11 @@ print_tax_report();
 
 function getTax($tno, $tpe)
 {
-	$sql = "SELECT amount, included_in_price FROM ".TB_PREF."debtor_trans_tax_details
-		WHERE ".TB_PREF."debtor_trans_tax_details.debtor_trans_no=$tno
-			AND ".TB_PREF."debtor_trans_tax_details.debtor_trans_type=$tpe
-			AND ".TB_PREF."debtor_trans_tax_details.amount <> 0";
+	//	GROUP BY debtor_trans_type, debtor_trans_no";
+	$sql = "SELECT SUM(amount) AS Amount, MAX(included_in_price) AS Included FROM ".TB_PREF."debtor_trans_tax_details
+		WHERE debtor_trans_no=$tno
+			AND debtor_trans_type=$tpe
+			AND amount <> 0";
 
     $result = db_query($sql,"No transactions were returned");
     return db_fetch($result);
@@ -107,13 +108,15 @@ function getCustInvTax($taxtype, $from, $to)
 	$todate = date2sql($to);
 	$amount = "IF(".TB_PREF."debtor_trans_tax_details.debtor_trans_type=11,-amount,amount)*".TB_PREF."debtor_trans.rate";
 	$mamount = "IF(".TB_PREF."debtor_trans_tax_details.included_in_price=0, 0, $amount)";
-	$netamount = "IF(".TB_PREF."debtor_trans.type=11,-(ov_amount+ov_freight+ov_discount),ov_amount+ov_freight+ov_discount)*".TB_PREF."debtor_trans.rate-$mamount";
+	$netamount = "IF(".TB_PREF."debtor_trans.type=11,-quantity,quantity)*unit_price*".TB_PREF."debtor_trans.rate-$mamount";
 
 	$sql = "SELECT SUM($netamount),
 		SUM($amount)
-		FROM ".TB_PREF."debtor_trans_tax_details, ".TB_PREF."debtor_trans
+		FROM ".TB_PREF."debtor_trans_details, ".TB_PREF."debtor_trans_tax_details, ".TB_PREF."debtor_trans
 				WHERE ".TB_PREF."debtor_trans.type>=10
 					AND ".TB_PREF."debtor_trans.type<=11
+					AND ".TB_PREF."debtor_trans_details.debtor_trans_no=".TB_PREF."debtor_trans.trans_no
+					AND ".TB_PREF."debtor_trans_details.debtor_trans_type=".TB_PREF."debtor_trans.type
 					AND ".TB_PREF."debtor_trans.trans_no=".TB_PREF."debtor_trans_tax_details.debtor_trans_no
 					AND ".TB_PREF."debtor_trans.type=".TB_PREF."debtor_trans_tax_details.debtor_trans_type
 					AND ".TB_PREF."debtor_trans_tax_details.amount <> 0
@@ -129,12 +132,14 @@ function getSuppInvTax($taxtype, $from, $to)
 {
 	$fromdate = date2sql($from);
 	$todate = date2sql($to);
-	$sql = "SELECT SUM((ov_amount+ov_discount) * ".TB_PREF."supp_trans.rate), SUM(amount*".TB_PREF."supp_trans.rate)
-		FROM ".TB_PREF."supp_invoice_tax_items, ".TB_PREF."supp_trans
+	$sql = "SELECT SUM(unit_price * quantity * ".TB_PREF."supp_trans.rate), SUM(amount*".TB_PREF."supp_trans.rate)
+		FROM ".TB_PREF."supp_invoice_items, ".TB_PREF."supp_invoice_tax_items, ".TB_PREF."supp_trans
 				WHERE ".TB_PREF."supp_trans.type>=20
 					AND ".TB_PREF."supp_trans.type<=21
 					AND ".TB_PREF."supp_trans.trans_no=".TB_PREF."supp_invoice_tax_items.supp_trans_no
 					AND ".TB_PREF."supp_trans.type=".TB_PREF."supp_invoice_tax_items.supp_trans_type
+					AND ".TB_PREF."supp_invoice_items.supp_trans_no=".TB_PREF."supp_trans.trans_no
+					AND ".TB_PREF."supp_invoice_items.supp_trans_type=".TB_PREF."supp_trans.type
 					AND ".TB_PREF."supp_invoice_tax_items.tax_type_id=$taxtype
 					AND ".TB_PREF."supp_invoice_tax_items.amount <> 0
 					AND ".TB_PREF."supp_trans.tran_date >= '$fromdate'
@@ -208,12 +213,12 @@ function print_tax_report()
 			$tax_amt = 0;
 		else
 		{
-			$tx['amount'] *= $trans['rate'];
+			$tx['Amount'] *= $trans['rate'];
 			if ($trans['type'] == 11)
-				$tx['amount'] *= -1;
-			if ($tx['included_in_price'])
-				$trans['NetAmount'] -= $tx['amount'];
-			$tax_amt = $tx['amount'];
+				$tx['Amount'] *= -1;
+			if ($tx['Included'] > 0)
+				$trans['NetAmount'] -= $tx['Amount'];
+			$tax_amt = $tx['Amount'];
 		}
 		if (!$summaryOnly)
 		{
