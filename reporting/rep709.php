@@ -36,8 +36,6 @@ function getCustTransactions($from, $to)
 	$todate = date2sql($to);
 
 	$netamount = "IF(".TB_PREF."debtor_trans.type=11,-(ov_amount+ov_freight+ov_discount),ov_amount+ov_freight+ov_discount)*".TB_PREF."debtor_trans.rate";
-	//	IF(".TB_PREF."debtor_trans.type=11,-(ov_amount+ov_freight+ov_discount),ov_amount+ov_freight+ov_discount)*rate AS NetAmount,
-	//	IF(".TB_PREF."debtor_trans.type=11,-(ov_gst+ov_freight_tax),ov_gst+ov_freight_tax)*rate AS Tax
 
 	$sql = "SELECT ".TB_PREF."debtor_trans.reference,
 			".TB_PREF."debtor_trans.trans_no,
@@ -386,6 +384,61 @@ function print_tax_report()
 	for ($j = 0; $j < $idcounter; $j++)
 	{
 		$rep->TextCol($i, $i + 1, number_format2($totaltaxin[$j], $dec));
+		$rep->NewLine();
+	}
+	$rep->Line($rep->row - 4);
+
+	$rep->row -= 16;
+	$rep->TextCol(0, 5, _("General Ledger"));
+	$rep->Line($rep->row - 6);
+
+	$rep->row -= 22;
+
+	$trow = $rep->row;
+
+	$idcounter = count($taxes);
+	$i = 0;
+	for ($j = 0; $j < $idcounter; $j++)
+	{
+		$tx = getTaxInfo($taxes[$j]);
+		$str = $tx['name'] . " " . number_format2($tx['rate'], $dec) . "%";
+		$rep->TextCol($i, $i + 1, $str);
+		$rep->NewLine();
+	}
+	$i++;
+	$rep->row = $trow;
+	for ($j = 0; $j < $idcounter; $j++)
+	{
+		$tx = getTaxInfo($taxes[$j]);
+		$acc = get_gl_account($tx['sales_gl_code']);
+		$rep->TextCol($i, $i + 1, $acc['account_code']." ".$acc['account_name']);
+		$rep->NewLine();
+	}
+	$i++;
+	$rep->row = $trow;
+	for ($j = 0; $j < $idcounter; $j++)
+	{
+		$tx = getTaxInfo($taxes[$j]);
+		$amount = get_gl_trans_from_to($from, $to, $tx['sales_gl_code']);
+		$rep->TextCol($i, $i + 1,number_format2(-$amount, $dec));
+		$rep->NewLine();
+	}
+	$i++;
+	$rep->row = $trow;
+	for ($j = 0; $j < $idcounter; $j++)
+	{
+		$tx = getTaxInfo($taxes[$j]);
+		$acc = get_gl_account($tx['purchasing_gl_code']);
+		$rep->TextCol($i, $i + 1, $acc['account_code']." ".$acc['account_name']);
+		$rep->NewLine();
+	}
+	$i++;
+	$rep->row = $trow;
+	for ($j = 0; $j < $idcounter; $j++)
+	{
+		$tx = getTaxInfo($taxes[$j]);
+		$amount = get_gl_trans_from_to($from, $to, $tx['purchasing_gl_code']);
+		$rep->TextCol($i, $i + 1,number_format2($amount, $dec));
 		$rep->NewLine();
 	}
 	$rep->Line($rep->row - 4);
