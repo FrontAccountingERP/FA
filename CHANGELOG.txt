@@ -19,6 +19,13 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+14-Jul-2008 Janusz Dobrowolski
+# Fixed bug [0000017] - error while checking qoh
+$ /includes/ui/items_cart.inc
+  /manufacturing/work_order_issue.php
+# Fixed ajax update
+$ /gl/manage/gl_accounts.php
+
 13-Jul-2008 Joe Hunt
 + Added GL Summary of Tax Report (rep709.php). Usable only if different Tax Accounts are used.
 $ /reporting/rep709.php

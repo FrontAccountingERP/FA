@@ -83,6 +83,7 @@ class items_cart
 			if ($item_ret != null)
 				return $line_no;
 		}
+		return -1;
 	}
 
 	// ----------- GL item functions
