@@ -70,9 +70,8 @@ if (isset($_POST['add']) || isset($_POST['update']))
     		add_gl_account($_POST['account_code'], $_POST['account_name'], $_POST['account_type'], $_POST['account_code2'], $_POST['tax_code']);
 			$selected_account = $_POST['AccountList'] = $_POST['account_code'];
 			display_notification(_("New account has been added."));
-			$Ajax->activate('_page_body');
 		}
-
+		$Ajax->activate('_page_body');
 	}
 } 
 
