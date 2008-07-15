@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+15-Jul-2008 Janusz Dobrowolski
+# Fixed bug [0000018] - unwanted freight cost reset on page update.
+$ /sales/customer_delivery.php
+
 14-Jul-2008 Janusz Dobrowolski
 # Fixed bug [0000017] - error while checking qoh
 $ /includes/ui/items_cart.inc

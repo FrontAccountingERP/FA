@@ -412,11 +412,8 @@ foreach ($_SESSION['Items']->line_items as $line=>$ln_itm) {
 	end_row();
 }
 
-$_POST['ChargeFreightCost'] = price_format($_SESSION['Items']->freight_cost);
-
-if (!check_num('ChargeFreightCost')) {
-		$_POST['ChargeFreightCost'] = price_format(0);
-}
+$_POST['ChargeFreightCost'] =  get_post('ChargeFreightCost', 
+	price_format($_SESSION['Items']->freight_cost));
 
 start_row();
 
