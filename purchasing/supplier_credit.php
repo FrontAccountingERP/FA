@@ -153,17 +153,19 @@ echo "<tr><td valign=center>"; // outer table
 echo "<center>";
 
 invoice_header($_SESSION['supp_trans']);
+if ($_POST['supplier_id']=='') 
+	display_error('No supplier found for entered search text');
+else {
+	echo "</td></tr><tr><td valign=center>"; // outer table
 
-echo "</td></tr><tr><td valign=center>"; // outer table
+	$total_grn_value = display_grn_items($_SESSION['supp_trans']);
 
-$total_grn_value = display_grn_items($_SESSION['supp_trans']);
+	$total_gl_value = display_gl_items($_SESSION['supp_trans']);
 
-$total_gl_value = display_gl_items($_SESSION['supp_trans']);
+	echo "</td></tr><tr><td align=center colspan=2>"; // outer table
 
-echo "</td></tr><tr><td align=center colspan=2>"; // outer table
-
-invoice_totals($_SESSION['supp_trans']);
-
+	invoice_totals($_SESSION['supp_trans']);
+}
 echo "</td></tr>";
 
 end_table(1); // outer table
