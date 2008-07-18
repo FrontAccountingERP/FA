@@ -152,7 +152,7 @@ function check_quantities()
 	$ok =1;
 	foreach ($_SESSION['Items']->line_items as $line_no=>$itm) {
 		if (isset($_POST['Line'.$line_no])) {
-			if (check_num('Line'.$line_no, 0, $itm->quantity))) {
+			if (check_num('Line'.$line_no, 0, $itm->quantity)) {
 				$_SESSION['Items']->line_items[$line_no]->qty_dispatched =
 				  input_num('Line'.$line_no);
 			}
@@ -367,7 +367,7 @@ if (isset($_POST['_CreditType_update']))
 }
 
 //-----------------------------------------------------------------------------
-if (get_post('Update')) 
+if (get_post('Update'))
 {
 	$Ajax->activate('credit_items');
 }

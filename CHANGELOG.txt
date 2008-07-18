@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+18-Jul-2008 Joe Hunt
+# Parse error fixed [0000021] in customer_credit_invoice.php
+$ /sales/customer_credit_invoice.php
+
 15-Jul-2008 Janusz Dobrowolski
 # Fixed bug [0000018] - unwanted freight cost reset on page update.
 $ /sales/customer_delivery.php
