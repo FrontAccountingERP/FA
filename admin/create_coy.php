@@ -14,7 +14,6 @@ page(_("Create/Update Company"));
 $comp_subdirs = array('images', 'pdf_files', 'backup','js_cache', 'reporting');
 
 //---------------------------------------------------------------------------------------------
-
 if (isset($_GET['selected_id']))
 {
 	$selected_id = $_GET['selected_id'];
@@ -310,7 +309,7 @@ function display_company_edit($selected_id)
 	text_row_ex(_("New script Admin Password"), 'admpassword', 20);
 
 	end_table();
-	display_note(_("Choose from Database scripts in SQL folder. No Datase is created without a script."), 0, 1);
+	display_note(_("Choose from Database scripts in SQL folder. No Database is created without a script."), 0, 1);
 	echo "<center><input onclick='javascript:updateCompany()' type='button' style='width:150px' value='". _("Save"). "'></center>";
 
 
@@ -344,7 +343,6 @@ hyperlink_no_params($_SERVER['PHP_SELF'], _("Create a new company"));
 display_company_edit($selected_id);
 
 //---------------------------------------------------------------------------------------------
-
 end_page();
 
 ?>
