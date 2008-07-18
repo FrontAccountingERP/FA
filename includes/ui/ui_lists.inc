@@ -6,10 +6,10 @@ include_once($path_to_root . "/includes/types.inc");
 include_once($path_to_root . "/includes/current_user.inc");
 
 $_search_button = "<input %s type='submit' class='combo_submit' style='border:0;background:url($path_to_root/themes/"
-	."%s/images/locate.png) no-repeat;%s' fallback='1' name='%s' value=' ' title='"._("Set filter")."'> ";
+	."%s/images/locate.png) no-repeat;%s' aspect='fallback' name='%s' value=' ' title='"._("Set filter")."'> ";
 
 $_select_button = "<input %s type='submit' class='combo_select' style='border:0;background:url($path_to_root/themes/"
-	."%s/images/button_ok.png) no-repeat;%s' fallback='1' name='%s' value=' ' title='"._("Select")."'> ";
+	."%s/images/button_ok.png) no-repeat;%s' aspect='fallback' name='%s' value=' ' title='"._("Select")."'> ";
 
 $all_items = reserved_words::get_all();
 

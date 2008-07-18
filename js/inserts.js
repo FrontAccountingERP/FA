@@ -5,10 +5,13 @@ function debug(msg) {
 	box.innerHTML= box.innerHTML+'<br>'+msg
 }
 
-function progbar(container) {
-    container.innerHTML= "<center><img src='"+
-	user.theme+"images/progressbar1.gif' /> "+
-	user.loadtxt+"</center>";
+function progbar() {
+	box = document.getElementById('msgbox');
+    box.innerHTML= "<center><table width='98%' border='1' cellpadding=3 "
+	+"style='border-collapse: collapse' bordercolor='#007700'>"
+	+"<tr><td align='center' bgcolor='#ccffcc' >"
+		+"<img src='"+user.theme+"images/progressbar.gif' alt='"
+		+user.loadtxt+"' /></td></tr></table></center><br>";
 }
 
 function save_focus(e) {
@@ -153,7 +156,7 @@ var inserts = {
 				_set_combo_input(e);
 		}
 	},
-	'input.combo2,input[fallback]': 
+	'input.combo2,input[aspect="fallback"]': 
 	function(e) {
   	    // this hides search button for js enabled browsers
 	    e.style.display = 'none';
@@ -161,6 +164,8 @@ var inserts = {
 	'input.ajaxsubmit,input.editbutton,input.navibutton': 
 	function(e) {
 	    e.onclick = function() {
+			if (this.getAttribute('aspect') == 'process')
+				progbar();
 			JsHttpRequest.request(this);
 			return false;
 	    }

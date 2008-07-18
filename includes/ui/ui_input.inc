@@ -95,9 +95,10 @@ function hidden($name, $value=null, $echo=true)
 //---------------------------------------------------------------------------------
 //	Submit button.
 //	$async parameter can have 3 values:
+//		null - fallback button not visible in js enabled mode
 //		false - normal submit via form action
 //		true  - when js is on submition via ajax call
-//		null - fallback button not visible in js enabled mode
+//		'process' - ditto with processing indicator in msgbox
 //
 function submit($name, $value, $echo=true, $title=false, $async=false)
 {
@@ -106,7 +107,8 @@ function submit($name, $value, $echo=true, $title=false, $async=false)
 	$submit_str = "<input type=\"submit\" class=\""
 	    .($async ? 'ajaxsubmit' : 'inputsubmit')
 		."\""
-		.($async === null ? (in_ajax() ? " style='display:none;'" : ' fallback="1"' ): '')
+		.($async === null ? (in_ajax() ? " style='display:none;'" : ' aspect="fallback"' ): 
+			($async === 'process' ? 'aspect="process"' : '') )
 	    ." name=\"$name\"  id=\"$name\" value=\"$value\""
 	    .($title ? " title='$title'" : '')
 	    .">\n";
