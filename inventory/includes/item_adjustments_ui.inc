@@ -125,7 +125,7 @@ function adjustment_edit_item_controls(&$order, $line_no=-1)
 
 		hidden('stock_id', $_POST['stock_id']);
 		label_cell($_POST['stock_id']);
-		label_cell($order->line_items[$id]->item_description);
+		label_cell($order->line_items[$id]->item_description, 'nowrap');
 	    $Ajax->activate('items_table');
 	}
 	else
