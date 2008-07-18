@@ -19,6 +19,24 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+18-Jul-2008 Janusz Dobrowolski
++ Added optional processing progressbar for submit buttons
+$ /includes/ui/ui_input.inc
+  /includes/ui/ui_lists.inc
+  /js/inserts.js
+  /themes/aqua/images/progressbar.gif (new)
+  /themes/cool/images/progressbar.gif (new)
+  /themes/default/images/progressbar.gif (new)
+# Fixed database error after empty supplier search result [0000022]
+$ /purchasing/supplier_credit.php
+  /purchasing/supplier_invoice.php
+# Fixed focus after update
+$ /admin/company_preferences.php
+# Fixed message typo.
+$ /admin/create_coy.php
+# Fixed line edition layout
+$ /inventory/includes/item_adjustments_ui.inc
+
 18-Jul-2008 Joe Hunt
 # Parse error fixed [0000021] in customer_credit_invoice.php
 $ /sales/customer_credit_invoice.php
