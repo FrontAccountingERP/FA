@@ -192,13 +192,18 @@ function br($num=1)
 
 $ajax_divs = array();
 
-function div_start($id='', $trigger=null)
+function div_start($id='', $trigger=null, $non_ajax=false)
 {
     global $ajax_divs;
 
-    array_push($ajax_divs, array($id, $trigger===null ? $id : $trigger));
-    echo "<div ". ($id !='' ? "id='$id'" : '').">";
-    ob_start();
+	if ($non_ajax) { // div for non-ajax elements
+   		array_push($ajax_divs, array($id, null));
+   		echo "<div style='display:none' class='js_only' ".($id !='' ? "id='$id'" : '').">";
+	} else { // ajax ready div
+   		array_push($ajax_divs, array($id, $trigger===null ? $id : $trigger));
+   		echo "<div ". ($id !='' ? "id='$id'" : '').">";
+   		ob_start();
+	}
 }
 
 function div_end()
@@ -208,7 +213,8 @@ function div_end()
     if (count($ajax_divs))
     {
 		$div = array_pop($ajax_divs);
-		$Ajax->addUpdate($div[1], $div[0], ob_get_flush());
+		if ($div[1] !== null) 
+			$Ajax->addUpdate($div[1], $div[0], ob_get_flush());
 		echo "</div>";
     }
 }

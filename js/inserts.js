@@ -8,10 +8,11 @@ function debug(msg) {
 function progbar() {
 	box = document.getElementById('msgbox');
     box.innerHTML= "<center><table width='98%' border='1' cellpadding=3 "
-	+"style='border-collapse: collapse' bordercolor='#007700'>"
+	+"bordercolor='#007700' style='border-collapse: collapse'>"
 	+"<tr><td align='center' bgcolor='#ccffcc' >"
 		+"<img src='"+user.theme+"images/progressbar.gif' alt='"
 		+user.loadtxt+"' /></td></tr></table></center><br>";
+	box.style.display = 'block';
 }
 
 function save_focus(e) {
@@ -160,6 +161,11 @@ var inserts = {
 	function(e) {
   	    // this hides search button for js enabled browsers
 	    e.style.display = 'none';
+	},
+	'div.js_only': 
+	function(e) {
+  	    // this shows divs for js enabled browsers only
+	    e.style.display = 'block';
 	},
 	'input.ajaxsubmit,input.editbutton,input.navibutton': 
 	function(e) {

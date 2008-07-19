@@ -15,7 +15,7 @@
     include_once($path_to_root . "/includes/ui/ui_view.inc");
     include_once($path_to_root . "/includes/ui/ui_controls.inc");
 	
-    function page($title, $no_menu=false, $is_index=false, $onload="", $js="")
+    function page($title, $no_menu=false, $is_index=false, $onload="", $js="", $script_only=false)
     {
 
     	global $path_to_root;
@@ -26,7 +26,14 @@
 
     	page_header($title, $no_menu, $is_index, $onload, $js);
 		error_box();
-		div_start('_page_body'); // whole page content for ajax reloading
+		if($script_only) {		
+			echo '<noscript>';
+			echo display_heading(_('This page is usable only with javascript enabled browsers.'));
+			echo '</noscript>';
+			div_start('_page_body', null, true);
+		} else {
+			div_start('_page_body'); // whole page content for ajax reloading
+		}
     }
 
     function end_page($no_menu=false, $is_index=false)
