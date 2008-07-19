@@ -265,8 +265,9 @@ function display_languages()
 			$rtl = _("No");
 		label_cell($rtl);
 		edit_link_cell("selected_id=" . $i);
-		if ($conn[$i]['code'] != $lang)
-			label_cell("<a href='javascript:deleteLanguage(" . $i . ")'>" . _("Delete") . "</a>");
+		
+		label_cell($conn[$i]['code'] == $lang ? '' :
+			"<a href='javascript:deleteLanguage(" . $i . ")'>" . _("Delete") . "</a>");
 		end_row();
 	}
 
