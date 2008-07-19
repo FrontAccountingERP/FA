@@ -20,7 +20,7 @@ if ($valid_paths != "")
 $db_name = $_SESSION["wa_current_user"]->company;
 $msg = handle_form($db_connections[$db_name]);
 
-page(_("Backup and Restore Database"));
+page(_("Backup and Restore Database"), false, false, '', '', true);
 
 //-------------------------------------------------------------------------------
 start_form(true, true);
