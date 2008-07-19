@@ -109,14 +109,20 @@ else
 	unset($selected_stock_item);
 }
 
-//---------------------------------------------------------------------------------------------
-if (isset($_POST['ChangeTmpl']) && $_POST['ChangeTmpl'] != 0)
+function change_tpl_flag($id)
 {
-  	$sql = "UPDATE ".TB_PREF."sales_orders SET type = !type WHERE order_no=".$_POST['ChangeTmpl'];
+	global	$Ajax;
+	
+  	$sql = "UPDATE ".TB_PREF."sales_orders SET type = !type WHERE order_no=$id";
 
   	db_query($sql, "Can't change sales order type");
 	$Ajax->activate('orders_tbl');
 }
+//---------------------------------------------------------------------------------------------
+$id = find_submit('_chgtpl');
+if ($id != -1)
+	change_tpl_flag($id);
+
 //---------------------------------------------------------------------------------------------
 
 $sql = "SELECT ".TB_PREF."sales_orders.order_no, ".TB_PREF."debtors_master.curr_code, ".TB_PREF."debtors_master.name, ".TB_PREF."cust_branch.br_name,
@@ -204,6 +210,11 @@ if ($result)
 		$view_page = get_customer_trans_view_str(systypes::sales_order(), $myrow["order_no"]);
 		$formated_del_date = sql2date($myrow["delivery_date"]);
 		$formated_order_date = sql2date($myrow["ord_date"]);
+		if (isset($_POST['Update']) && 
+				check_value( "chgtpl".$myrow["order_no"]) != $myrow["type"]) {
+				change_tpl_flag($myrow["order_no"]);
+				$myrow['type'] = !$myrow['type'];
+		}
 //	    $not_closed =  $myrow['type'] && ($myrow["TotDelivered"] < $myrow["TotQuantity"]);
 
     	// if overdue orders, then highlight as so
@@ -246,9 +257,8 @@ if ($result)
 		}
 		else
 		{
-		  	echo "<td><input ".($myrow["type"]==1 ? 'checked' : '')." type='checkbox' name='chgtpl" .$myrow["order_no"]. "' value='1'
-		   		onclick='this.form.ChangeTmpl.value= this.name.substr(6);
-		   		JsHttpRequest.request(this);' ></td>";
+		  	check_cells( null, "chgtpl" .$myrow["order_no"], $myrow["type"], true, 
+				_('Set this order as a template for direct deliveries/invoices'));
 
   		  	$modify_page = $path_to_root . "/sales/sales_order_entry.php?" . SID . "ModifyOrderNumber=" . $myrow["order_no"];
   		  	label_cell("<a href='$modify_page'>" . _("Edit") . "</a>");
@@ -265,12 +275,14 @@ if ($result)
 		//end of page full new headings if
 	}
 	//end of while loop
-  	hidden('ChangeTmpl', 0);
 	end_table();
 
    if ($overdue_items)
    		display_note(_("Marked items are overdue."), 0, 1, "class='overduefg'");
+	else
+		echo '<br>';
 	div_end();
+	submit_center('Update', _("Update"), true, '', null);
 	end_form();
 }
 
