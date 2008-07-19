@@ -19,6 +19,19 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+19-Jul-2008 Janusz Dobrowolski
+! Content of js-only pages superseded by the requirement notification in non-js browsers.
+$ /admin/backups.php
+  /reporting/reports_main.php
++ Support for js only divs/pages.
+$ /includes/main.inc
+  /includes/ui/ui_controls.inc
+  /js/inserts.js
+# Fixed page usability in non-js mode.
+$ /sales/inquiry/sales_orders_view.php
+# Small table view fix
+$ /admin/inst_lang.php
+
 18-Jul-2008 Janusz Dobrowolski
 + Added optional processing progressbar for submit buttons
 $ /includes/ui/ui_input.inc
