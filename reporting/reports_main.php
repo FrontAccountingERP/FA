@@ -288,7 +288,7 @@ echo "
 		function onWindowLoad() {
 			showClass(" . $_GET['Class'] . ")
 		}
-		window.onload=onWindowLoad;
+	Behaviour.addLoadEvent(onWindowLoad);
 	</script>
 ";
 echo $reports->getDisplay();

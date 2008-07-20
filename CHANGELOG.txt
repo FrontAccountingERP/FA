@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+20-Jul-2008 Janusz Dobrowolski
+# Corrected reports page display after yesterday change.
+$ /reporting/reports_main.php
+
 19-Jul-2008 Janusz Dobrowolski
 ! Content of js-only pages superseded by the requirement notification in non-js browsers.
 $ /admin/backups.php
