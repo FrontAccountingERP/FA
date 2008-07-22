@@ -19,6 +19,11 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+23-Jul-2008 Joe Hunt
+# Increment reference bug in GL Deposit and missing hyperlink parameter.
+$ /gl/gl_bank.php
+  /gl/includes/gl_bank_ui.inc
+  
 22-Jul-2008 Janusz Dobrowolski
 # Corrected backup maintenance page display during script download.
 $ /admin/backups.php

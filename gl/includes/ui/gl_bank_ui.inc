@@ -85,7 +85,10 @@ function display_bank_header(&$order)
 
 	bank_trans_types_list_row(_("Type:"), 'type', null);
 
-    ref_row(_("Reference:"), 'ref', '', references::get_next(systypes::bank_payment()));
+	if (isset($_GET['NewPayment']))
+    	ref_row(_("Reference:"), 'ref', '', references::get_next(systypes::bank_payment()));
+    else
+    	ref_row(_("Reference:"), 'ref', '', references::get_next(systypes::bank_deposit()));
 
 	echo "</table>"; // inner table
 
@@ -212,7 +215,7 @@ function gl_edit_item_controls(&$order, $dim, $Index=null)
 		elseif ($_POST['PayType'] == payment_person_types::WorkOrder())
 			$_POST['code_id'] = get_company_pref('default_assembly_act');
 		else {
-			$_POST['code_id'] = 
+			$_POST['code_id'] =
 				get_company_pref($payment ? 'default_cogs_act':'default_inv_sales_act');
 		}
 		gl_all_accounts_list('code_id', null, true, false, true);

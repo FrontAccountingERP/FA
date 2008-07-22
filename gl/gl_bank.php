@@ -52,7 +52,7 @@ if (isset($_GET['AddedID']))
 
 	display_note(get_gl_view_str($trans_type, $trans_no, _("View the GL Postings for this Payment")));
 
-	hyperlink_no_params($_SERVER['PHP_SELF'], _("Enter Another Payment"));
+	hyperlink_params($_SERVER['PHP_SELF'], _("Enter Another Payment"), "NewPayment=yes");
 
 	display_footer_exit();
 }
@@ -66,7 +66,7 @@ if (isset($_GET['AddedDep']))
 
 	display_note(get_gl_view_str($trans_type, $trans_no, _("View the GL Postings for this Deposit")));
 
-	hyperlink_no_params($_SERVER['PHP_SELF'], _("Enter Another Deposit"));
+	hyperlink_params($_SERVER['PHP_SELF'], _("Enter Another Deposit"), "NewDeposit=yes");
 
 	display_footer_exit();
 }
@@ -134,7 +134,7 @@ if (isset($_POST['Process']))
 
 if (isset($_POST['Process']))
 {
-	
+
 	$trans = add_bank_transaction(
 		$_SESSION['pay_items']->trans_type, $_POST['bank_account'],
 		$_SESSION['pay_items'], $_POST['date_'],
@@ -147,7 +147,7 @@ if (isset($_POST['Process']))
 	$_SESSION['pay_items']->clear_items();
 	unset($_SESSION['pay_items']);
 
-	meta_forward($_SERVER['PHP_SELF'], $trans_type==systypes::bank_payment() ? 
+	meta_forward($_SERVER['PHP_SELF'], $trans_type==systypes::bank_payment() ?
 		"AddedID=$trans_no" : "AddedDep=$trans_no");
 
 } /*end of process credit note */
@@ -211,7 +211,7 @@ function handle_new_item()
 	if (!check_item_data())
 		return;
 	$amount = ($_SESSION['pay_items']->trans_type==systypes::bank_payment() ? 1:-1) * input_num('amount');
- 
+
 	$_SESSION['pay_items']->add_gl_item($_POST['code_id'], $_POST['dimension_id'],
 		$_POST['dimension2_id'], $amount, $_POST['LineMemo']);
 	line_start_focus();
@@ -228,7 +228,7 @@ if (isset($_POST['AddItem']))
 if (isset($_POST['UpdateItem']))
 	handle_update_item();
 
-if (isset($_POST['CancelItemChanges'])) 
+if (isset($_POST['CancelItemChanges']))
 	line_start_focus();
 
 
@@ -241,7 +241,7 @@ display_bank_header($_SESSION['pay_items']);
 start_table("$table_style2 width=90%", 10);
 start_row();
 echo "<td>";
-display_gl_items($_SESSION['pay_items']->trans_type==systypes::bank_payment() ? 
+display_gl_items($_SESSION['pay_items']->trans_type==systypes::bank_payment() ?
 	_("Payment Items"):_("Deposit Items"), $_SESSION['pay_items']);
 gl_options_controls();
 echo "</td>";
@@ -249,7 +249,7 @@ end_row();
 end_table(1);
 
 submit_center_first('Update', _("Update"), '', null);
-submit_center_last('Process', $_SESSION['pay_items']->trans_type==systypes::bank_payment() ? 
+submit_center_last('Process', $_SESSION['pay_items']->trans_type==systypes::bank_payment() ?
 	_("Process Payment"):_("Process Deposit"), '', true);
 
 end_form();
