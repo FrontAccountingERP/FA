@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+22-Jul-2008 Janusz Dobrowolski
+# Corrected backup maintenance page display during script download.
+$ /admin/backups.php
+
 20-Jul-2008 Janusz Dobrowolski
 # Corrected reports page display after yesterday change.
 $ /reporting/reports_main.php

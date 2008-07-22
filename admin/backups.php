@@ -57,6 +57,7 @@ echo "
 	function downloadBackup() {
 		pFilename = document.forms[0].cmb_backups.options[document.forms[0].cmb_backups.selectedIndex].value
 		document.location.replace('backups.php?c=ds&fn='+pFilename)
+		Behaviour.apply();
 	}
 	function uploadBackup() {
 		if (document.forms[0].uploadfile.value=='') {
@@ -151,7 +152,8 @@ function handle_form($conn)
 			$filename = urlencode($_GET['fn']);
 			$msg = _("Backup is being downloaded...");
 			$msg .= "<script language='javascript'>";
-			$msg .= "function download_file() {location.href ='backups.php?c=d&fn=$filename'}; window.onload=download_file";
+			$msg .= "function download_file() {location.href ='backups.php?c=d&fn=$filename'}; 
+				Behaviour.addLoadEvent(download_file);";
 			$msg .= "</script>";
 			return $msg;
 		}
