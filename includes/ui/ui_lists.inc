@@ -72,7 +72,7 @@ $opts = array(		// default options
 			'' : _('Press Space tab for search pattern entry');
 
 	if ($opts['box_hint'] === null)
-		$opts['box_hint'] = $search_box ?
+		$opts['box_hint'] = $search_box && $search_submit != false ?
 			($by_id ? _('Enter code fragment to search or * for all')
 			: _('Enter description fragment to search or * for all')) :'';
 
