@@ -52,7 +52,7 @@ function meta_forward($forward_to, $params="")
     global $Ajax;
 	echo "<meta http-equiv='Refresh' content='0; url=$forward_to?$params'>\n";
 	echo "<center><br>" . _("You should automatically be forwarded.");
-	echo " " . _("If this does not happen") . " " . "<a href='$forward_to'>" . _("click here") . "</a> " . _("to continue") . ".<br><br></center>\n";
+	echo " " . _("If this does not happen") . " " . "<a href='$forward_to?$params'>" . _("click here") . "</a> " . _("to continue") . ".<br><br></center>\n";
 	$Ajax->redirect($forward_to.'?'.$params);
 	exit;
 }
@@ -213,7 +213,7 @@ function div_end()
     if (count($ajax_divs))
     {
 		$div = array_pop($ajax_divs);
-		if ($div[1] !== null) 
+		if ($div[1] !== null)
 			$Ajax->addUpdate($div[1], $div[0], ob_get_flush());
 		echo "</div>";
     }
