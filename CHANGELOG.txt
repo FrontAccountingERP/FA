@@ -19,6 +19,12 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+24-Jul-2008 Janusz Dobrowolski
+# Fixed hints for lists without submit [0000026]
+$ includes/ui/ui_lists.inc
+# Removed not used file (related to [0000023])
+$ sql/basic.sql
+
 24-Jul-2008 Joe Hunt
 # Pressing the link in the meta_forward function may result in a blank page.
 $ /includes/ui/ui_controls.inc
