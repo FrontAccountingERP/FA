@@ -20,6 +20,11 @@ Legend:
 $ -> Affected files
 
 25-Jul-2008 Joe Hunt
+# Minor adjustments
+$ /includes/page/header.inc
+  /manufacturing/work_order_release.php
+  
+25-Jul-2008 Joe Hunt
 # Default application setting does not work [0000034]
 $ /includes/page/header.inc
 
