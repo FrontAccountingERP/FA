@@ -36,6 +36,11 @@ function work_order_produce($woid, $ref, $quantity, $date_, $memo_, $close_wo)
 	// update wo quantity and close wo if requested
 	work_order_update_finished_quantity($woid, $quantity, $close_wo);
 
+	// -------------------------------------------------------------------------
+
+	work_order_quick_costs($woid, $details["stock_id"], $quantity, $date_, 0);
+
+	// -------------------------------------------------------------------------
 	if ($memo_)
 		add_comments(29, $id, $date_, $memo_);
 
