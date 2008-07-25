@@ -41,7 +41,7 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 	$version 		= "2.0 RC2";
 
 	// Build for development purposes
-	$build_version 	= "191";
+	$build_version 	= date("d.m.Y", filemtime("$path_to_root/CHANGELOG.txt"));
 
 	// Powered by
 	$power_by 		= "FrontAccounting";
