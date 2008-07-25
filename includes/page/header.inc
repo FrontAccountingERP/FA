@@ -93,7 +93,7 @@ function page_header($title, $no_menu=false, $is_index=false, $onload="", $js=""
 		$sel_app = $_SESSION["sel_app"];
 	else
 		$sel_app = $def_app;
-	$_SESSION["sel_app"] = $sel_app;
+	$_SESSION["App"]->selected_application = $_SESSION["sel_app"] = $sel_app;
 	$encoding = $_SESSION['language']->encoding;
 
 	if (!headers_sent()){

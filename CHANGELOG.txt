@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+25-Jul-2008 Joe Hunt
+# Default application setting does not work [0000034]
+$ /includes/page/header.inc
+
 25-jul-2008 Joe Hunt
 ! The built version in config.php now shows the last change date of this file (CHANGELOG.txt).
 $ config.php
