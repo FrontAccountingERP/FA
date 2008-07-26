@@ -144,6 +144,8 @@ function display_fiscalyears()
 	 	edit_button_cell("Edit".$myrow['id'], _("Edit"));
 		if ($myrow["id"] != $company_year)
  			edit_button_cell("Delete".$myrow['id'], _("Delete"));
+		else
+			label_cell('');
 		end_row();
 	}
 
