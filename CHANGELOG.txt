@@ -19,6 +19,16 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+26-Jul-2008 Janusz Dobrowolski
+! Potentially dangerous for whole FA site operations are currently available only for admins of first registered company (site admins).
+$ /config.php
+  /admin/create_coy.php
+  /admin/inst_lang.php
+  /admin/inst_module.php
+  /includes/current_user.inc
+# Small layout fix
+  /admin/fiscalyears.php
+
 25-Jul-2008 Joe Hunt
 # Minor adjustments
 $ /includes/page/header.inc
