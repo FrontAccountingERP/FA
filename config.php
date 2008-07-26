@@ -126,13 +126,17 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 	If the security setting of the page is contained in the security group as determined by the access level then the user will be allowed access.
 	Each page has a $page_security = x; variable
 	This value is compared to contents of the array applicable which is based on the access level of the user.
-	Access authorisation is checked in header.inc this is where _SESSION["AccessLevel"] is the index of the security_groups array. If you wish to add more security groups with then you must add a new SecurityHeading to the security_headings array
-	and a new array of Security categories to the Security Groups array
+	Access authorisation is checked in session.inc. If you wish to add more security groups 
+	with then you must add a new SecurityHeading to the security_headings array
+	and a new array of Security categories to the Security Groups _at_the_end_ of the array
 	This mechanism allows more fine grained control of access
 	security_groups is an array of arrays
 	The index is the order in which the array of allowed pages is defined new ones can be defined at will
 	or by changing the numbers in each array the security access can be tailored. These numbers need to read
 	in conjunction with the Page Security index
+	Special case is security level 20 which is reserved for admins of first
+	registered company (site admins). All potentially dangerous for whole FA 
+	site operations like installing addon modules require access level 20.
 	*/
 
 	$security_headings = array(
@@ -144,7 +148,7 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 	$security_groups = array(
 			array(1,2),
 			array(1,2,3,4,5,6,7,8,9,10,11,12,13,14,16),
-			array(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16),
+			array(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,20),
 	);
 
 	/*

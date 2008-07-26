@@ -72,7 +72,9 @@ class current_user
 	function can_access_page($page_level)
 	{
 		global $security_groups;
-		return isset($page_level) && in_array($page_level, $security_groups[$this->access]);
+		// first registered company has site admin privileges
+		return isset($page_level) && in_array($page_level, $security_groups[$this->access])
+			&& ($this->company == 0 || $page_level != 20); 
 	}
 
 	function get_db_connection()

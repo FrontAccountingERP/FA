@@ -1,6 +1,6 @@
 <?php
 
-$page_security = 15;
+$page_security = 20;
 $path_to_root="..";
 include_once($path_to_root . "/includes/session.inc");
 

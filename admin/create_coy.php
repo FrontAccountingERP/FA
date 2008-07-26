@@ -1,6 +1,6 @@
 <?php
 
-$page_security = 15;
+$page_security = 20;
 $path_to_root="..";
 include_once($path_to_root . "/includes/session.inc");
 
@@ -29,13 +29,14 @@ else
 
 function check_data()
 {
-	global $db_connections, $tb_pref_counter;
+	global $db_connections, $tb_pref_counter, $selected_id;
 
 	if ($_POST['name'] == "" || $_POST['host'] == "" || $_POST['dbuser'] == "" || $_POST['dbname'] == "")
 		return false;
 	foreach($db_connections as $id=>$con)
 	{
-	  	if ($_POST['host'] == $con['host'] && $_POST['dbname'] == $con['dbname'])
+	 if($id != $selected_id && $_POST['host'] == $con['host'] 
+	 	&& $_POST['dbname'] == $con['dbname'])
 	  	{
 			if ($_POST['tbpref'] == $con['tbpref'])
 			{
@@ -232,8 +233,8 @@ function display_companies()
 		label_cell($conn[$i]['tbpref']);
 		label_cell($what);
 		label_cell("<a href=" . $_SERVER['PHP_SELF']. "?selected_id=" . $i . ">" . _("Edit") . "</a>");
-		if ($i != $coyno)
-			label_cell("<a href='javascript:deleteCompany(" . $i . ")'>" . _("Delete") . "</a>");
+		label_cell( $i == $coyno ? '' :
+	"<a href='javascript:deleteCompany(" . $i . ")'>" . _("Delete") . "</a>");
 		end_row();
 	}
 
