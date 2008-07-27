@@ -165,8 +165,13 @@ function delete_link_cell($param, $title=false)
 
 function edit_button_cell($name, $value, $title=false)
 {
-    label_cell("<input type=\"submit\" class=\"editbutton\" name=\"$name\" value=\"$value\""
-	.($title ? " title='$title'":'')." />\n");
+// php silently changes dots,spaces,'[' and characters 128-159
+// to underscore in POST names, to maintain compatibility with register_globals
+
+    label_cell("<input type=\"submit\" class=\"editbutton\" name=\""
+		.htmlentities(strtr($name, array('.'=>'=2E',' '=>'=20','='=>'=3D','['=>'=5B')))
+		."\" value=\"$value\""
+		.($title ? " title='$title'":'')." />\n");
 }
 
 //-----------------------------------------------------------------------------------

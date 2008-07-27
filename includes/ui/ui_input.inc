@@ -53,7 +53,9 @@ function simple_page_mode($numeric_id = true)
 	foreach (array('Edit', 'Delete') as $m) {
 		foreach ($_POST as $p => $pvar) {
 			if (strpos($p, $m) === 0) {
-				$selected_id = substr($p, strlen($m));
+//				$selected_id = strtr(substr($p, strlen($m)), array('%2E'=>'.'));
+				unset($_POST['_focus']); // focus on first form entry
+				$selected_id = quoted_printable_decode(substr($p, strlen($m)));
 				$Ajax->activate('_page_body');
 				$Mode = $m;
 				return;

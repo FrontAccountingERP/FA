@@ -1,5 +1,4 @@
 <?php
-
 $page_security = 11;
 $path_to_root="../..";
 include($path_to_root . "/includes/session.inc");
@@ -33,7 +32,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 	}
 
 	if ($input_error !=1) {
-    	write_item_unit($selected_id, $_POST['abbr'], $_POST['description'], $_POST['decimals'] );
+    	write_item_unit(htmlentities($selected_id), $_POST['abbr'], $_POST['description'], $_POST['decimals'] );
 		if($selected_id != '')
 			display_notification(_('Selected unit has been updated'));
 		else
@@ -115,7 +114,6 @@ if ($selected_id != '')
 	}
 	hidden('selected_id', $selected_id);
 }
-
 if ($selected_id != '' && item_unit_used($selected_id)) {
     label_row(_("Unit Abbreviation:"), $_POST['abbr']);
     hidden('abbr', $_POST['abbr']);
