@@ -19,6 +19,16 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+27-Jul-2008 Janusz Dobrowolski
+# Fixed record selection on pages using non-numeric selectors with simple_page_mode() helper. 
+$ /includes/ui/ui_controls.inc
+  /includes/ui/ui_input.inc
+  /inventory/manage/item_units.php
+# Fixed focus setting on multi-form pages.
+$ /js/utils.js
+# Fixed ajax reload
+$ /manufacturing/work_order_release.php
+
 26-Jul-2008 Janusz Dobrowolski
 ! Potentially dangerous for whole FA site operations are currently available only for admins of first registered company (site admins).
 $ /config.php
@@ -38,7 +48,7 @@ $ /includes/page/header.inc
 # Default application setting does not work [0000034]
 $ /includes/page/header.inc
 
-25-jul-2008 Joe Hunt
+25-Jul-2008 Joe Hunt
 ! The built version in config.php now shows the last change date of this file (CHANGELOG.txt).
 $ config.php
 
