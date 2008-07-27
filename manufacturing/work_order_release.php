@@ -60,8 +60,8 @@ if (isset($_POST['release']))
 
 	hyperlink_no_params("search_work_orders.php", _("Select another work order"));
 
+	$Ajax->activate('_page_body');
 	end_page();
-
 	exit;
 }
 
@@ -87,7 +87,7 @@ if (can_process($myrow))
 
     end_table(1);
 
-    submit_center('release', _("Release Work Order"), true, '', false);
+    submit_center('release', _("Release Work Order"), true, '', true);
 
     hidden('selected_id', $selected_id);
     hidden('stock_id', $myrow['stock_id']);
