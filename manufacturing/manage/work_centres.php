@@ -78,8 +78,8 @@ if ($Mode == 'Delete')
 	{
 		delete_work_centre($selected_id);
 		display_notification(_('Selected work center has been deleted'));
-		$Mode = 'RESET';
 	}
+	$Mode = 'RESET';
 }
 
 if ($Mode == 'RESET')

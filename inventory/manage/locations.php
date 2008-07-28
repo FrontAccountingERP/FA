@@ -101,8 +101,8 @@ if ($Mode == 'Delete')
 	{
 		delete_item_location($selected_id);
 		display_notification(_('Selected location has been deleted'));
-		$Mode = 'RESET';
 	} //end if Delete Location
+	$Mode = 'RESET';
 }
 
 if ($Mode == 'RESET')

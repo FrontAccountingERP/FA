@@ -57,8 +57,8 @@ if ($Mode == 'Delete')
 	{
 		delete_item_unit($selected_id);
 		display_notification(_('Selected unit has been deleted'));
-		$Mode = 'RESET';
 	}
+	$Mode = 'RESET';
 }
 
 if ($Mode == 'RESET')

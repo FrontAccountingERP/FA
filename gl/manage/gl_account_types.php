@@ -94,8 +94,8 @@ if ($Mode == 'Delete')
 	{
 		delete_account_type($selected_id);
 		display_notification(_('Selected currency has been deleted'));
-		$Mode = 'RESET';
 	}
+	$Mode = 'RESET';
 }
 if ($Mode == 'RESET')
 {

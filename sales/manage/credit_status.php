@@ -71,8 +71,8 @@ if ($Mode == 'Delete')
 	{
 		delete_credit_status($selected_id);
 		display_notification(_('Selected credit status has been deleted'));
-		$Mode = 'RESET';
 	}
+	$Mode = 'RESET';
 }
 
 if ($Mode == 'RESET')

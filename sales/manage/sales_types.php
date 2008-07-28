@@ -83,9 +83,9 @@ if ($Mode == 'Delete')
 		{
 			delete_sales_type($selected_id);
 			display_notification(_('Selected sales type has been deleted'));
-			$Mode = 'RESET';
 		}
 	} //end if sales type used in debtor transactions or in customers set up
+	$Mode = 'RESET';
 }
 
 if ($Mode == 'RESET')

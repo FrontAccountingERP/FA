@@ -123,12 +123,11 @@ function check_can_delete()
 function handle_delete()
 {
 	global $selected_id, $Mode;
-	if (!check_can_delete())
-		return;
+	if (check_can_delete()) {
 	//only delete if used in neither customer or supplier, comp prefs, bank trans accounts
-	
-	delete_currency($selected_id);
-	display_notification(_('Selected currency has been deleted'));
+		delete_currency($selected_id);
+		display_notification(_('Selected currency has been deleted'));
+	}
 	$Mode = 'RESET';
 }
 

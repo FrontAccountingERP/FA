@@ -117,10 +117,10 @@ if ($Mode == 'Delete')
 			$sql="DELETE FROM ".TB_PREF."payment_terms WHERE terms_indicator='$selected_id'";
 			db_query($sql,"could not delete a payment terms");
 			display_notification(_('Selected payment terms have been deleted'));
- 			$Mode = 'RESET';
 		}
 	}
 	//end if payment terms used in customer or supplier accounts
+	$Mode = 'RESET';
 }
 
 if ($Mode == 'RESET')

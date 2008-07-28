@@ -59,8 +59,8 @@ if ($Mode == 'Delete')
 	{
 		delete_item_category($selected_id);
 		display_notification(_('Selected item category has been deleted'));
-		$Mode = 'RESET';
 	}
+	$Mode = 'RESET';
 }
 
 if ($Mode == 'RESET')

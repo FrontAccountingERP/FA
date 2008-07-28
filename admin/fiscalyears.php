@@ -94,12 +94,11 @@ function handle_delete()
 {
 	global $selected_id, $Mode;
 
-	if (!check_can_delete($selected_id))
-		return;
+	if (check_can_delete($selected_id)) {
 	//only delete if used in neither customer or supplier, comp prefs, bank trans accounts
-
-	delete_fiscalyear($selected_id);
-	display_notification(_('Selected fiscal year has been deleted'));
+		delete_fiscalyear($selected_id);
+		display_notification(_('Selected fiscal year has been deleted'));
+	}
 	$Mode = 'RESET';
 }
 

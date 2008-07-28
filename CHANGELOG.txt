@@ -19,6 +19,29 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+28-Jul-2008 Janusz Dobrowolski
+# Fixed control buttons reset after record deletion.
+$ /admin/fiscalyears.php
+  /admin/payment_terms.php
+  /admin/shipping_companies.php
+  /gl/manage/bank_accounts.php
+  /gl/manage/currencies.php
+  /gl/manage/gl_account_classes.php
+  /gl/manage/gl_account_types.php
+  /inventory/manage/item_categories.php
+  /inventory/manage/item_units.php
+  /inventory/manage/locations.php
+  /inventory/manage/movement_types.php
+  /manufacturing/manage/work_centres.php
+  /sales/manage/credit_status.php
+  /sales/manage/customer_branches.php
+  /sales/manage/sales_areas.php
+  /sales/manage/sales_people.php
+  /sales/manage/sales_types.php
+  /taxes/item_tax_types.php
+  /taxes/tax_groups.php
+  /taxes/tax_types.php
+
 27-Jul-2008 Janusz Dobrowolski
 # Fixed record selection on pages using non-numeric selectors with simple_page_mode() helper. 
 $ /includes/ui/ui_controls.inc

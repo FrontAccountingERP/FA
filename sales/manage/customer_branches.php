@@ -140,9 +140,9 @@ elseif ($Mode == 'Delete')
 			$sql="DELETE FROM ".TB_PREF."cust_branch WHERE branch_code='" . $_POST['branch_code']. "' AND debtor_no='" . $_POST['customer_id']. "'";
 			db_query($sql,"could not delete branch");
 			display_notification(_('Selected customer branch has been deleted'));
-			$Mode = 'RESET';
 		}
 	} //end ifs to test if the branch can be deleted
+	$Mode = 'RESET';
 }
 
 if ($Mode == 'RESET' || get_post('_customer_id_update'))

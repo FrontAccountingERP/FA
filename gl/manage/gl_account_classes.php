@@ -77,8 +77,8 @@ if ($Mode == 'Delete')
 	{
 		delete_account_class($selected_id);
 		display_notification(_('Selected account class has been deleted'));
-		$Mode = 'RESET';
 	}
+	$Mode = 'RESET';
 }
 
 //-----------------------------------------------------------------------------------

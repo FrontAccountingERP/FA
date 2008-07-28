@@ -88,8 +88,8 @@ if ($Mode == 'Delete')
 		$sql="DELETE FROM ".TB_PREF."salesman WHERE salesman_code='$selected_id'";
 		db_query($sql,"The sales-person could not be deleted");
 		display_notification(_('Selected sales person data have been deleted'));
-		$Mode = 'RESET';
 	}
+	$Mode = 'RESET';
 }
 
 if ($Mode == 'RESET')

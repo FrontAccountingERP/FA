@@ -65,13 +65,12 @@ function can_delete($selected_id)
 
 if ($Mode == 'Delete')
 {
-
 	if (can_delete($selected_id))
 	{
 		delete_movement_type($selected_id);
 		display_notification(_('Selected movement type has been deleted'));
-		$Mode = 'RESET';
 	}
+	$Mode = 'RESET';
 }
 
 if ($Mode == 'RESET')

@@ -66,8 +66,8 @@ elseif( $Mode == 'Delete')
 	{
 		delete_bank_account($selected_id);
 		display_notification(_('Selected bank account has been deleted'));
- 		$Mode = 'RESET';
 	} //end if Delete bank account
+	$Mode = 'RESET';
 } 
 
 if ($Mode == 'RESET')

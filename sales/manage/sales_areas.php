@@ -62,8 +62,8 @@ if ($Mode == 'Delete')
 		db_query($sql,"could not delete sales area");
 
 		display_notification(_('Selected sales area has been deleted'));
-		$Mode = 'RESET';
 	} //end if Delete area
+	$Mode = 'RESET';
 } 
 
 if ($Mode == 'RESET')

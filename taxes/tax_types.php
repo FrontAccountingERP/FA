@@ -78,8 +78,8 @@ if ($Mode == 'Delete')
 	{
 		delete_tax_type($selected_id);
 		display_notification(_('Selected tax type has been deleted'));
-		$Mode = 'RESET';
 	}
+	$Mode = 'RESET';
 }
 
 if ($Mode == 'RESET')

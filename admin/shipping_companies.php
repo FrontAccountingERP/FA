@@ -83,9 +83,9 @@ if ($Mode == 'Delete')
 			$sql="DELETE FROM ".TB_PREF."shippers WHERE shipper_id=$selected_id";
 			db_query($sql,"could not delete shipper");
 			display_notification(_('Selected shipping company has been deleted'));
- 			$Mode = 'RESET';
 		}
 	}
+	$Mode = 'RESET';
 }
 
 if ($Mode == 'RESET')
