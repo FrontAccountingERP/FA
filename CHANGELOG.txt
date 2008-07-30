@@ -19,6 +19,11 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+30-Jul-2008 Joe Hunt
+! Currency selection in Price Listing Report
+$ /reporting/rep104.php
+  /reporting/reports_main.php
+  
 28-Jul-2008 Janusz Dobrowolski
 # Fixed control buttons reset after record deletion.
 $ /admin/fiscalyears.php
