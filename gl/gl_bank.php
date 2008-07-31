@@ -54,6 +54,8 @@ if (isset($_GET['AddedID']))
 
 	hyperlink_params($_SERVER['PHP_SELF'], _("Enter Another Payment"), "NewPayment=yes");
 
+	hyperlink_params($_SERVER['PHP_SELF'], _("Enter A Deposit"), "NewDeposit=yes");
+
 	display_footer_exit();
 }
 
@@ -67,6 +69,8 @@ if (isset($_GET['AddedDep']))
 	display_note(get_gl_view_str($trans_type, $trans_no, _("View the GL Postings for this Deposit")));
 
 	hyperlink_params($_SERVER['PHP_SELF'], _("Enter Another Deposit"), "NewDeposit=yes");
+
+	hyperlink_params($_SERVER['PHP_SELF'], _("Enter A Payment"), "NewPayment=yes");
 
 	display_footer_exit();
 }
