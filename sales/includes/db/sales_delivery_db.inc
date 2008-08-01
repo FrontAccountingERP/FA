@@ -10,6 +10,7 @@ function write_sales_delivery(&$delivery,$bo_policy)
 
 	begin_transaction();
 
+	$customer = get_customer($delivery->customer_id);
 	$delivery_items_total = $delivery->get_items_total_dispatch();
 	$freight_tax = $delivery->get_shipping_tax();
 
@@ -74,9 +75,13 @@ function write_sales_delivery(&$delivery,$bo_policy)
 			if ($delivery_line->standard_cost != 0) {
 
 				/*first the cost of sales entry*/
+				// 2008-08-01. If there is a Customer Dimension, then override with this,
+				// else take the Item Dimension (if any)
+				$dim = ($customer['dimension_id'] != 0 ? $customer["dimension_id"] : $stock_gl_code["dimension_id"]);
+				$dim2 = ($customer['dimension2_id'] != 0 ? $customer["dimension2_id"] : $stock_gl_code["dimension2_id"]);
+
 				add_gl_trans_std_cost(13, $delivery_no,
-				$delivery->document_date, $stock_gl_code["cogs_account"],
-					$stock_gl_code["dimension_id"], $stock_gl_code["dimension2_id"], "",
+					$delivery->document_date, $stock_gl_code["cogs_account"], $dim, $dim2, "",
 					$delivery_line->standard_cost * $delivery_line->qty_dispatched,
 					payment_person_types::customer(), $delivery->customer_id,
 					"The cost of sales GL posting could not be inserted");

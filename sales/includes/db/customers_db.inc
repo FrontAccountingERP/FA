@@ -89,6 +89,15 @@ function get_customer_details($customer_id, $to=null)
 
 }
 
+function get_customer($customer_id)
+{
+	$sql = "SELECT * FROM ".TB_PREF."debtors_master WHERE debtor_no=$customer_id";
+
+	$result = db_query($sql, "could not get customer");
+
+	return db_fetch($result);
+}
+
 function get_customer_name($customer_id)
 {
 	$sql = "SELECT name FROM ".TB_PREF."debtors_master WHERE debtor_no=$customer_id";

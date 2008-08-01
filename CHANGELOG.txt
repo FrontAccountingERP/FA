@@ -19,6 +19,13 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+01-Aug-2008 Joe Hunt
+! Customer Dimension overrides an Item Dimension when creating GL transactions
+$ /sales/includes/db/customers_db.inc
+  /sales/includes/db/sales_credit_db.inc
+  /sales/includes/db/sales_delivery_db.inc
+  /sales/includes/db/sales_invoice_db.inc
+  
 31-Jul-2008 Joe Hunt
 + Added a new menu entry after that Bank Payment or Bank Deposit has been processed.
 $ /gl/gl_bank.php

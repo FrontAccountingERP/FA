@@ -198,14 +198,18 @@ function add_gl_trans_credit_costs($order, $order_line, $credit_no, $date_,
 	$credit_type, $write_off_gl_code, &$branch_data)
 {
 	$stock_gl_codes = get_stock_gl_code($order_line->stock_id);
+	$customer = get_customer($order->customer_id);
+	// 2008-08-01. If there is a Customer Dimension, then override with this,
+	// else take the Item Dimension (if any)
+	$dim = ($customer['dimension_id'] != 0 ? $customer["dimension_id"] : $stock_gl_codes["dimension_id"]);
+	$dim2 = ($customer['dimension2_id'] != 0 ? $customer["dimension2_id"] : $stock_gl_codes["dimension2_id"]);
 
 	/* insert gl_trans to credit stock and debit cost of sales at standard cost*/
 	if ($order_line->standard_cost != 0) {
 		/*first the cost of sales entry*/
 
 		add_gl_trans_std_cost(11, $credit_no, $date_, $stock_gl_codes["cogs_account"],
-			$stock_gl_codes["dimension_id"], $stock_gl_codes["dimension2_id"], "",
-			-($order_line->standard_cost * $order_line->qty_dispatched),
+			$dim, $dim2, "", -($order_line->standard_cost * $order_line->qty_dispatched),
 			payment_person_types::customer(), $order->customer_id,
 			"The cost of sales GL posting could not be inserted");
 
@@ -242,16 +246,14 @@ function add_gl_trans_credit_costs($order, $order_line, $credit_no, $date_,
 			$sales_account = $branch_data['sales_account'];
 		else
 			$sales_account = $stock_gl_codes['sales_account'];
-		add_gl_trans_customer(11, $credit_no, $date_, $sales_account, $stock_gl_codes["dimension_id"],
-			$stock_gl_codes["dimension2_id"],
+		add_gl_trans_customer(11, $credit_no, $date_, $sales_account, $dim, $dim2,
 			($line_taxfree_price * $order_line->qty_dispatched), $order->customer_id,
 			"The credit note GL posting could not be inserted");
 
 		if ($order_line->discount_percent != 0) {
 
 			add_gl_trans_customer(11, $credit_no, $date_, $branch_data["sales_discount_account"],
-				$stock_gl_codes["dimension_id"], $stock_gl_codes["dimension2_id"],
-				-($line_taxfree_price * $order_line->qty_dispatched * $order_line->discount_percent),
+				$dim, $dim2, -($line_taxfree_price * $order_line->qty_dispatched * $order_line->discount_percent),
 				$order->customer_id,
 				"The credit note discount GL posting could not be inserted");
 

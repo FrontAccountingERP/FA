@@ -19,6 +19,8 @@ function write_sales_invoice(&$invoice)
 
 	$branch_data = get_branch_accounts($invoice->Branch);
 
+	$customer = get_customer($invoice->customer_id);
+
 	// offer price values without freight costs
 	$items_total = $invoice->get_items_total_dispatch();
 	$freight_tax = $invoice->get_shipping_tax();
@@ -93,26 +95,25 @@ function write_sales_invoice(&$invoice)
 
 		if ($invoice_line->qty_dispatched != 0) {
 			$stock_gl_code = get_stock_gl_code($invoice_line->stock_id);
-			// 2008-06-14. If there is a Branch Sales Account, then override with this,
-			// else take the Item Sales Account
-			if ($branch_data['sales_account'] != "")
-				$sales_account = $branch_data['sales_account'];
-			else
-				$sales_account = $stock_gl_code['sales_account'];
 
 			if ($invoice_line->line_price() != 0) {
 				//Post sales transaction to GL credit sales
 
-					add_gl_trans_customer(10, $invoice_no, $date_, $sales_account,
-						$stock_gl_code["dimension_id"], $stock_gl_code["dimension2_id"],
-						(-$line_taxfree_price * $invoice_line->qty_dispatched),
-						$invoice->customer_id, "The sales price GL posting could not be inserted");
+				// 2008-06-14. If there is a Branch Sales Account, then override with this,
+				// else take the Item Sales Account
+				$sales_account = ($branch_data['sales_account'] != "" ? $branch_data['sales_account'] : $stock_gl_code['sales_account']);
+				// 2008-08-01. If there is a Customer Dimension, then override with this,
+				// else take the Item Dimension (if any)
+				$dim = ($customer['dimension_id'] != 0 ? $customer["dimension_id"] : $stock_gl_code["dimension_id"]);
+				$dim2 = ($customer['dimension2_id'] != 0 ? $customer["dimension2_id"] : $stock_gl_code["dimension2_id"]);
+				add_gl_trans_customer(10, $invoice_no, $date_, $sales_account, $dim, $dim2,
+					(-$line_taxfree_price * $invoice_line->qty_dispatched),
+					$invoice->customer_id, "The sales price GL posting could not be inserted");
 
 				if ($invoice_line->discount_percent != 0) {
 
 					add_gl_trans_customer(10, $invoice_no, $date_,
-						$branch_data["sales_discount_account"], $stock_gl_code["dimension_id"],
-						$stock_gl_code["dimension2_id"],
+						$branch_data["sales_discount_account"], $dim, $dim2,
 						($line_taxfree_price * $invoice_line->qty_dispatched * $invoice_line->discount_percent),
 						$invoice->customer_id, "The sales discount GL posting could not be inserted");
 				} /*end of if discount !=0 */
