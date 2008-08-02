@@ -37,7 +37,7 @@ if (isset($_GET['SelectedBranch']))
 
 //-----------------------------------------------------------------------------------------------
 
-if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM') 
+if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 {
 
 	//initialise no input errors assumed initially before we test
@@ -54,7 +54,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 	if ($input_error != 1)
 	{
 
-    	if ($selected_id != -1) 
+    	if ($selected_id != -1)
 		{
 			/*SelectedBranch could also exist if submit had not been clicked this code would not run in this case cos submit is false of course see the 	delete code below*/
 
@@ -256,7 +256,9 @@ elseif ($Mode != 'ADD_ITEM')
 	{
 		$company_record = get_company_prefs();
 
-	    $_POST['sales_account'] = $company_record["default_sales_act"];
+		// We use the Item Sales Account as default!
+	    // $_POST['sales_account'] = $company_record["default_sales_act"];
+	    $_POST['sales_account'] = "";
 	    $_POST['sales_discount_account'] = $company_record['default_sales_discount_act'];
 	    $_POST['receivables_account'] = $company_record['debtors_act'];
 	    $_POST['payment_discount_account'] = $company_record['default_prompt_payment_act'];

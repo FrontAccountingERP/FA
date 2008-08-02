@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+02-Aug-2008 Joe Hunt
+# Use Item Sales Account as default when creating new branch. Customer Branch Sales Account overrides Item Sales Accounts.
+$ /sales/manage/customer_branches.php
+
 01-Aug-2008 Joe Hunt
 ! Customer Dimension overrides an Item Dimension when creating GL transactions
 $ /sales/includes/db/customers_db.inc
