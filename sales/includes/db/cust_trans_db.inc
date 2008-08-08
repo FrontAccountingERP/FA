@@ -126,7 +126,7 @@ function get_customer_trans($trans_id, $trans_type)
 {
 	$sql = "SELECT ".TB_PREF."debtor_trans.*,
 		ov_amount+ov_gst+ov_freight+ov_freight_tax+ov_discount AS Total,
-		".TB_PREF."debtors_master.name AS DebtorName, ".TB_PREF."debtors_master.address, ".TB_PREF."debtors_master.email,
+		".TB_PREF."debtors_master.name AS DebtorName, ".TB_PREF."debtors_master.address, ".TB_PREF."debtors_master.email AS email2,
 		".TB_PREF."debtors_master.curr_code, ".TB_PREF."debtors_master.tax_id, ".TB_PREF."debtors_master.payment_terms ";
 
 	if ($trans_type == systypes::cust_payment()) {
@@ -192,7 +192,10 @@ function get_customer_trans($trans_id, $trans_type)
 		exit;
 	}
 
-	return db_fetch($result);
+	//return db_fetch($result);
+	$row = db_fetch($result);
+	$row['email'] = $row['email2'];
+	return $row;
 }
 
 //----------------------------------------------------------------------------------------
