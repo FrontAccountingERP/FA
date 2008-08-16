@@ -19,6 +19,20 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+16-Aug-2008 Janusz Dobrowolski
+# Fixed first supplier add confirmation [0000039].
+$ /purchasing/manage/suppliers.php
+# Fixed entering direct documents with date in the past [0000036]
+$ /sales/customer_delivery.php
+  /sales/includes/cart_class.inc
+# Fixed date_picker caching in debug mode
+$ /includes/ui/ui_view.inc
+# Some focus fixes after user entry error
+$ /sales/manage/credit_status.php
+  /sales/manage/customer_branches.php
+  /sales/manage/sales_areas.php
+  /sales/manage/sales_people.php
+
 08-Aug-2008 Joe Hunt
 # Wrong email-adress field taken when emailing documents [0000035].
 $ /sales/includes/db/cust_trans_db.inc
