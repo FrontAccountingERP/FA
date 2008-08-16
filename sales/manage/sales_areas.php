@@ -20,6 +20,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 	{
 		$input_error = 1;
 		display_error(_("The area description cannot be empty."));
+		set_focus('description');
 	}
 
 	if ($input_error != 1)

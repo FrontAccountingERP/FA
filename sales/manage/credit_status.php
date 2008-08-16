@@ -19,6 +19,7 @@ function can_process()
 	if (strlen($_POST['reason_description']) == 0) 
 	{
 		display_error(_("The credit status description cannot be empty."));
+		set_focus('reason_description');
 		return false;
 	}	
 	

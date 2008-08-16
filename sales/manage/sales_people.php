@@ -21,6 +21,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 	{
 		$input_error = 1;
 		display_error(_("The sales person name cannot be empty."));
+		set_focus('salesman_name');
 	}
 	$pr1 = check_num('provision', 0,100);
 	if (!$pr1 || !check_num('provision2', 0, 100)) {

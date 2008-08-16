@@ -49,6 +49,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 	{
 		$input_error = 1;
 		display_error(_("The Branch name cannot be empty."));
+		set_focus('br_name');
 	}
 
 	if ($input_error != 1)
