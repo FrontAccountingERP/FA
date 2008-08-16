@@ -590,7 +590,7 @@ function get_js_png_fix()
 
 function get_js_date_picker()
 {
-    global $comp_path;
+    global $comp_path, $go_debug;
     $fpath = $comp_path.'/'.user_company().'/js_cache/'.'date_picker.js';
 
 	$js = "<style>
@@ -617,7 +617,7 @@ function get_js_date_picker()
 ";
     add_js_source($js);
 
-    if (!file_exists($fpath)) {
+    if (!file_exists($fpath) || $go_debug) {
 
 	global $dateseps, $date_system;
 
