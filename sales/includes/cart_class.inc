@@ -84,7 +84,6 @@ class cart
 						$line = &$this->line_items[$line_no];
 						$line->qty_dispatched = $line->quantity - $line->qty_done;
 					}
-					$this->document_date = Today();
 				}
 				} else {	// derivative transaction
 					read_sales_trans($type, $trans_no, $this);
@@ -155,16 +154,27 @@ class cart
 			$src->reference = 'auto';
 
 			$src->write(1);
-
 			$type = $this->trans_type;
 			$ref = $this->reference;
+			$date = $this->document_date;
 			// re-read document
 			$this->read($src->trans_type, key($src->trans_no), true);
+			$this->document_date = $date;
 			$this->reference = $ref;
 			$this->trans_type = $type;
 			$this->src_docs= $this->trans_no;
 			$this->trans_no = 0;
 			$this->order_no= $this->trans_type==13 ? key($src->trans_no) : $src->order_no;
+		}
+// if we want to save old or derivative document first decode html entities
+// from text fields. For new documents this is not needed.
+		if ($this->trans_no || $this->trans_type != 30) {
+			$this->reference = @html_entity_decode($this->reference);
+			$this->Comments = @html_entity_decode($this->Comments);
+			foreach($this->line_items as $lineno => $line) {
+				$this->line_items[$lineno]->stock_id = @html_entity_decode($line->stock_id);
+				$this->line_items[$lineno]->description = @html_entity_decode($line->description);
+			}
 		}
 		switch($this->trans_type) {
 			case 10:

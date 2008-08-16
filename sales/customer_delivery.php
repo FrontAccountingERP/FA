@@ -88,6 +88,7 @@ if (isset($_GET['OrderNumber']) && $_GET['OrderNumber'] > 0) {
 	$ord->order_no = key($ord->trans_no);
 	$ord->trans_no = 0;
 	$ord->reference = references::get_next(13);
+	$ord->document_date = Today();
 	$_SESSION['Items'] = $ord;
 	copy_from_cart();
 
