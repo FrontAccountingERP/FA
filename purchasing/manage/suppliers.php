@@ -76,8 +76,7 @@ if (isset($_POST['submit']))
 			$_POST['supplier_id'] = db_insert_id();
 			$new_supplier = false;
 			display_notification(_("A new supplier has been added."));
-			$Ajax->activate('supplier_id');
-			$Ajax->activate('controls');
+			$Ajax->activate('_page_body');
 		}
 	}
 
@@ -134,7 +133,7 @@ if (db_has_suppliers())
 } 
 else 
 {
-	hidden('supplier_id', $_POST['supplier_id']);
+	hidden('supplier_id', get_post('supplier_id'));
 }
 
 //start_table("class='tablestyle2'", 0, 3);
