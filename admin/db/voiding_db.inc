@@ -79,6 +79,7 @@ function void_transaction($type, $type_no, $date_, $memo_)
 			break;
 
 		case systypes::cost_update() : // it's a stock cost update
+			return false;
 			break;
 	}
 

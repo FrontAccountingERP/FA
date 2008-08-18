@@ -20,6 +20,11 @@ Legend:
 $ -> Affected files
 
 18-Aug-2008 Joe Hunt
+# Bug [0000038] Voiding a cost update doesn't void even if it says so. There will now be an error msg saying
+  that this can not be done. 
+$ /admin/db/voiding_db.inc
+
+18-Aug-2008 Joe Hunt
 # Bug [0000037] Price diff and deliveries between po receive and supp invoice.
 $ /purchase/includes/db/grn_db.inc
   /purchase/includes/db/invoice_db.inc
