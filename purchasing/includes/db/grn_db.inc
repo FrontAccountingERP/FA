@@ -1,5 +1,39 @@
 <?php
 
+//------------------- update average material cost ------------------------------------------ Joe Hunt Mar-03-2008
+
+function update_average_material_cost($supplier, $stock_id, $price, $qty, $date, $adj_only)
+{
+	$currency = get_supplier_currency($supplier);
+	if ($currency != null)
+		$price_in_home_currency = to_home_currency($price, $currency, $date);
+	else
+		$price_in_home_currency = $price;
+	$sql = "SELECT material_cost FROM ".TB_PREF."stock_master WHERE stock_id='$stock_id'";
+	$result = db_query($sql);
+	$myrow = db_fetch($result);
+	$material_cost = $myrow['material_cost'];
+	$qoh = get_qoh_on_date($stock_id, null, $date);
+	if ($qoh + $qty <= 0)
+		$material_cost = 0;
+	else
+	{
+		if ($adj_only)
+		{
+			if ($qoh <= 0)
+				$material_cost = 0;
+			else
+				$material_cost = ($qoh * $material_cost + $qty * $price_in_home_currency) /	$qoh;
+		}
+		else
+			$material_cost = ($qoh * $material_cost + $qty * $price_in_home_currency) /	($qoh + $qty);
+	}
+	$sql = "UPDATE ".TB_PREF."stock_master SET material_cost=".db_escape($material_cost)."
+		WHERE stock_id='$stock_id'";
+	db_query($sql,"The cost details for the inventory item could not be updated");
+	return $material_cost;
+}
+
 //-------------------------------------------------------------------------------------------------------------
 
 function add_grn(&$po, $date_, $reference, $location)
@@ -16,6 +50,10 @@ function add_grn(&$po, $date_, $reference, $location)
 
 			/*Update sales_order_details for the new quantity received and the standard cost used for postings to GL and recorded in the stock movements for FIFO/LIFO stocks valuations*/
 
+			//------------------- update average material cost ------------------------------------------ Joe Hunt Mar-03-2008
+			update_average_material_cost($po->supplier_id, $order_line->stock_id, $order_line->price,
+				$order_line->receive_qty, $date_);
+			//----------------------------------------------------------------------------------------------------------------
 			if ($order_line->qty_received == 0)
 			{
 				/*This must be the first receipt of goods against this line */
@@ -23,32 +61,12 @@ function add_grn(&$po, $date_, $reference, $location)
 			   	$order_line->standard_cost = get_standard_cost($order_line->stock_id);
 			}
 
-			//------------------- update average material cost ------------------------------------------ Joe Hunt Mar-03-2008
-			$currency = get_supplier_currency($po->supplier_id);
-			if ($currency != null)
-				$price_in_home_currency = to_home_currency($order_line->price, $currency, $date_);
-			else
-				$price_in_home_currency = $order_line->price;
-			$sql = "SELECT material_cost FROM ".TB_PREF."stock_master WHERE stock_id='$order_line->stock_id'";
-			$result = db_query($sql);
-			$myrow = db_fetch($result);
-			$material_cost = $myrow['material_cost'];
-			$qoh = get_qoh_on_date($order_line->stock_id, null, $date_);
-			if ($qoh + $order_line->receive_qty <= 0)
-				$material_cost = 0;
-			else
-				$material_cost = ($qoh * $material_cost + $order_line->receive_qty * $price_in_home_currency) /
-					($qoh + $order_line->receive_qty);
-			$sql = "UPDATE ".TB_PREF."stock_master SET material_cost=".db_escape($material_cost)."
-				WHERE stock_id='$order_line->stock_id'";
-			db_query($sql,"The cost details for the inventory item could not be updated");
-			//----------------------------------------------------------------------------------------------------------------
 
 			/*Need to insert a grn item */
 
 			$grn_item = add_grn_detail_item($grn, $order_line->po_detail_rec,
 				$order_line->stock_id, $order_line->item_description,
-				$order_line->standard_cost,	$order_line->receive_qty);
+				$order_line->standard_cost,	$order_line->receive_qty, $order_line->price);
 
 			/* Update location stock records - NB  a po cannot be entered for a service/kit parts */
 
@@ -84,11 +102,12 @@ function add_grn_batch($po_number, $supplier_id, $reference, $location, $date_)
 //-------------------------------------------------------------------------------------------------------------
 
 function add_grn_detail_item($grn_batch_id, $po_detail_item, $item_code, $description, $standard_unit_cost,
-	$quantity_received)
+	$quantity_received, $price)
 {
 	$sql = "UPDATE ".TB_PREF."purch_order_details
         SET quantity_received = quantity_received + $quantity_received,
-        std_cost_unit=$standard_unit_cost
+        std_cost_unit=$standard_unit_cost,
+        act_price=$price
         WHERE po_detail_item = $po_detail_item";
 
 	db_query($sql, "a purchase order details record could not be updated. This receipt of goods has not been processed ");

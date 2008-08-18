@@ -19,6 +19,11 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+18-Aug-2008 Joe Hunt
+# Bug [0000037] Price diff and deliveries between po receive and supp invoice.
+$ /purchase/includes/db/grn_db.inc
+  /purchase/includes/db/invoice_db.inc
+  
 16-Aug-2008 Janusz Dobrowolski
 # Fixed first supplier add confirmation [0000039].
 $ /purchasing/manage/suppliers.php
