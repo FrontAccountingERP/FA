@@ -278,12 +278,12 @@ class FrontReport extends Cpdf
 
 	function SetDrawColor($r, $g, $b)
 	{
-		$this->setStrokeColor($r / 255, $g / 255, $b / 255);
+		$this->setStrokeColor($r, $g, $b);
 	}
 
 	function SetTextColor($r, $g, $b)
 	{
-		TCPDF::SetTextColor($r / 255, $g / 255, $b / 255);
+		TCPDF::SetTextColor($r, $g, $b);
 	}
 
 	function Text($c, $txt, $n=0, $corr=0, $r=0)

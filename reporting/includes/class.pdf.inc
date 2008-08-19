@@ -263,7 +263,7 @@ class Cpdf extends TCPDF {
 */
     function setStrokeColor($r,$g,$b,$force=0)
     {
-        TCPDF::SetDrawColor(255*$r,255*$g,255*$b);
+        TCPDF::SetDrawColor($r,$g,$b);
     }
 /**
 * this sets the line drawing style.
@@ -283,7 +283,7 @@ class Cpdf extends TCPDF {
  		$this->SetLineWidth($width);
 	}
 
-	function Text($x, $y, $txt, $stroke=0, $clip=false) 
+	function Text($x, $y, $txt, $stroke=0, $clip=false)
 	{
 		TCPDF::Text($x,$y, TCPDF::unhtmlentities($txt), $stroke, $clip);
 	}

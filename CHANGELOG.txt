@@ -19,6 +19,11 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+19-Aug-2008 Joe Hunt
+# Fixed some color conversion problems in the new PDF Engine
+$ /reporting/includes/pdf_report.inc
+  /reporting/includes/class.pdf.inc
+  
 19-Aut-2008 Joe Hunt
 ! Optimized the textwraplines in pdf_report.inc and header2.inc
   /reporting/includes/pdf_report.inc
