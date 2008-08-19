@@ -1,7 +1,8 @@
 <?php
 /* $Revision$ */
 $page_security = 8;
-include_once($path_to_root . "reporting/includes/class.pdf.inc");
+//include_once($path_to_root . "reporting/includes/class.pdf.inc");
+include_once(dirname(__FILE__)."/class.pdf.inc");
 include_once($path_to_root . "admin/db/company_db.inc");
 include_once($path_to_root . "config.php");
 class FrontReport extends Cpdf
@@ -21,7 +22,7 @@ class FrontReport extends Cpdf
 	var $rightMargin;
 	var $endLine;
 	var $lineHeight;
-	var $rtl;
+	//var $rtl;
 
 	var $cols;
 	var $params;
@@ -34,6 +35,7 @@ class FrontReport extends Cpdf
 	var $titleCol;
 	var $pageNumber;
 	var $fontSize;
+	var $oldFontSize;
 	var $currency;
 
 	function FrontReport($title, $filename, $size = 'A4', $fontsize = 9)
@@ -117,33 +119,20 @@ class FrontReport extends Cpdf
 		$this->titleCol = $this->leftMargin + 100;
 		$this->lineHeight = 12;
 		$this->fontSize = $fontsize;
+		$this->oldFontSize = 0;
+		$this->row = $this->pageHeight - $this->topMargin;
 		$this->currency = '';
-		$this->rtl = ($_SESSION['language']->dir == 'rtl');
-		// for quick testing
-		//$this->rtl = true;
-		$this->Cpdf($this->size);
+		$rtl = ($_SESSION['language']->dir === 'rtl' ? 'rtl' : 'ltr');
+		$code = $_SESSION['language']->code;
+		$enc = strtoupper($_SESSION['language']->encoding);
+		// for the language array in class.pdf.inc
+		$l = array('a_meta_charset' => $enc, 'a_meta_dir' => $rtl, 'a_meta_language' => $code, 'w_page' => 'page');
+		$this->Cpdf($size, $l);
 	}
 
 	function Font($style = 'normal')
 	{
-		global $path_to_root;
-		$own = false;
-		$locale = $path_to_root . "lang/" . $_SESSION['language']->code . "/locale.inc";
-		if (file_exists($locale))
-		{
-			$fontinclude = true;
-			include($locale);
-		}
-		if (!$own)
-		{
-			if ($style == 'italic')
-				$path = $path_to_root . 'reporting/fonts/Helvetica-Oblique.afm';
-			elseif ($style == 'bold')
-				$path = $path_to_root . 'reporting/fonts/Helvetica-Bold.afm';
-			else // even take misspelled styles
-				$path = $path_to_root . 'reporting/fonts/Helvetica.afm';
-		}
-		$this->selectFont($path, 'WinAnsiEncoding');
+		$this->selectFont("", $style);
 	}
 
 	function Info($params, $cols, $headers, $aligns,
@@ -236,7 +225,7 @@ class FrontReport extends Cpdf
 			$this->Font();
 		}
 		$str = _("Page") . ' ' . $this->pageNumber;
-		$this->Text($this->endLine - 35, $str);
+		$this->Text($this->endLine - 38, $str);
 		$this->Line($this->row - 5, 1);
 
 		$this->row -= ($this->lineHeight + 6);
@@ -281,8 +270,6 @@ class FrontReport extends Cpdf
 
 	function AddImage($logo, $x, $y, $w, $h)
 	{
-		if ($this->rtl)
-			$x = $this->pageWidth - $x - $w;
 		if (strpos($logo, ".png") || strpos($logo, ".PNG"))
 			$this->addPngFromFile($logo, $x, $y, $w, $h);
 		else
@@ -296,7 +283,7 @@ class FrontReport extends Cpdf
 
 	function SetTextColor($r, $g, $b)
 	{
-		$this->setColor($r / 255, $g / 255, $b / 255);
+		TCPDF::SetTextColor($r / 255, $g / 255, $b / 255);
 	}
 
 	function Text($c, $txt, $n=0, $corr=0, $r=0)
@@ -309,14 +296,10 @@ class FrontReport extends Cpdf
 
 	function TextWrap($xpos, $ypos, $len, $str, $align = 'left')
 	{
-		if ($this->rtl)
+		if ($this->fontSize != $this->oldFontSize)
 		{
-			$str = strrev($str);
-			$xpos = $this->pageWidth - $xpos - $len;
-			if ($align == 'left')
-				$align = 'right';
-			elseif ($align == 'right')
-				$align = 'left';
+			$this->SetFontSize($this->fontSize);
+			$this->oldFontSize = $this->fontSize;
 		}
 		return $this->addTextWrap($xpos, $ypos, $len, $this->fontSize, $str, $align);
 	}
@@ -368,13 +351,9 @@ class FrontReport extends Cpdf
 	{
 		global $go_debug, $path_to_root, $comp_path;
 
-		// this is no good in IE so has been replaced, see down under
-		// but good for debugging purposes in IE
-		//session_write_close();
-
 		if ($go_debug == 1)
 		{
-			$buf = $this->output(1);
+			$buf = $this->Output();
 			$len = strlen($buf);
 			$pdfcode = $buf;
 			$pdfcode = str_replace("\n", "\n<br>", htmlspecialchars($pdfcode));
@@ -391,7 +370,7 @@ class FrontReport extends Cpdf
 		}
 		else
 		{
-			$buf = $this->output();
+			$buf = $this->Output();
 			$len = strlen($buf);
 			$dir =  $comp_path.'/'.user_company(). '/pdf_files';
 			//save the file
@@ -478,7 +457,7 @@ class FrontReport extends Cpdf
                 header('Expires: 0');
                 header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
                 header('Pragma: public');
-                $this->stream();
+                $this->Stream();
 
 			}
 			// also have a look through the directory, and remove the files that are older than a week

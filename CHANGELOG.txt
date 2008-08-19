@@ -19,6 +19,18 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+19-Aug-2008 Joe Hunt
+! Replacing the PDF Engine with a slightly modified TCPDF
+$ /reporting/fonts/helvetica*.php (new php files)
+  /reporting/fonts/*.atm files removed
+  /reporting/includes/pdf_report.inc (changed)
+  /reporting/includes/class.pdf.inc (changed)
+  /reporting/includes/barcodes.php (new file)
+  /reporting/includes/htmlcolors.php (new file)
+  /reporting/includes/html_entity_decode_php4.php (new file)
+  /reporting/includes/tcpdf.php (new file, the PDF engine)
+  /reporting/includes/unicode_data2.php (new file, reduced unicode_data.php)
+  
 18-Aug-2008 Joe Hunt
 # Bug [0000038] Voiding a cost update doesn't void even if it says so. There will now be an error msg saying
   that this can not be done. 
