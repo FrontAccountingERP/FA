@@ -19,6 +19,11 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+19-Aut-2008 Joe Hunt
+! Optimized the textwraplines in pdf_report.inc and header2.inc
+  /reporting/includes/pdf_report.inc
+  /reporting/includes/header2.inc (This is important to download too!)
+  
 19-Aug-2008 Joe Hunt
 ! Replacing the PDF Engine with a slightly modified TCPDF
 $ /reporting/fonts/helvetica*.php (new php files)

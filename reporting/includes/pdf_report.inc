@@ -314,7 +314,13 @@ class FrontReport extends Cpdf
 		return $this->TextWrap($this->cols2[$c], $this->row - $r, $this->cols2[$n] - $this->cols2[$c] + $corr, $txt, $this->aligns2[$c]);
 	}
 
-	function TextColLines($c, $n, $txt, $corr=0)
+	function TextColLines($c, $n, $txt, $corr=0, $r=0)
+	{
+		$this->row -= $r;
+		$this->TextWrapLines($this->cols[$c], $this->cols[$n] - $this->cols[$c] + $corr, $txt, $this->aligns[$c]);
+	}
+
+	function TextWrapLines($c, $width, $txt, $align='left')
 	{
 		$str = Explode("\n", $txt);
 		for ($i = 0; $i < count($str); $i++)
@@ -322,7 +328,7 @@ class FrontReport extends Cpdf
 			$l = $str[$i];
 			do
 			{
-				$l = $this->TextCol($c, $n, $l, $corr);
+				$l = $this->TextWrap($c, $this->row , $width, $l, $align);
 				$this->NewLine();
 			}
 			while ($l != '');

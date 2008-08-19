@@ -84,7 +84,6 @@
 		if ($doctype == 9)
 		{
 			$this->Text($ccol, $myrow['name'], $icol);
-			$adr = array();
 		}
 		else
 		{
@@ -92,12 +91,8 @@
 				$this->Text($ccol, $myrow['supp_name'], $icol);
 			else
 				$this->Text($ccol, $myrow['DebtorName'], $icol);
-			$adr = explode("\n", $myrow['address']);
-		}
-		for ($i = 0; $i < count($adr); $i++)
-		{
 			$this->NewLine();
-			$this->Text($ccol, $adr[$i], $icol);
+			$this->TextWrapLines($ccol, $icol - $ccol, $myrow['address']);
 		}
 		if ($sales_order != NULL)
 		{
@@ -106,12 +101,8 @@
 				$this->Text($mcol, $this->company['coy_name']);
 			else
 				$this->Text($mcol, $sales_order['deliver_to']);
-			$adr = explode("\n", $sales_order['delivery_address']);
-			for ($i = 0; $i < count($adr); $i++)
-			{
-				$this->NewLine();
-				$this->Text($mcol, $adr[$i]);
-			}
+			$this->NewLine();
+			$this->TextWrapLines($mcol, $this->rightMargin - $mcol, $sales_order['delivery_address']);
 		}
 		$this->row = $iline2 - 2 * $this->lineHeight;
 		$this->Text($ccol, $doc_Shipping_Company . ":", $ccol2);
@@ -212,13 +203,7 @@
 		$this->fontSize += 4;
 		$this->NewLine();
 		$adrline = $this->row;
-
-		$adr = explode("\n", $this->company['postal_address']);
-		for ($i = 0; $i < count($adr); $i++)
-		{
-			$this->Text($ccol, $adr[$i], $ccol2 + 40);
-			$this->NewLine();
-		}
+		$this->TextWrapLines($ccol, $ccol2 + 40 - $ccol, $this->company['postal_address']);
 		$this->row = $adrline;
 		$this->Text($ccol2 + 30, $this->company['phone'], $mcol);
 		$this->NewLine();
@@ -229,16 +214,8 @@
 		$this->row = $adrline;
 		if (isset($bankaccount['bank_name']))
 			$this->Text($mcol, $bankaccount['bank_name'], $mcol2);
-		if (isset($bankaccount['bank_address']))
-			$adr = explode("\n", $bankaccount['bank_address']);
-		else
-			$adr = array();
-		for ($i = 0; $i < count($adr); $i++)
-		{
-			$this->NewLine();
-			$this->Text($mcol, $adr[$i], $mcol2);
-		}
-
+		$this->NewLine();
+		$this->TextWrapLines($mcol, $mcol2 - $mcol, $bankaccount['bank_address']);
 		$this->row = $adrline;
 		if (isset($bankaccount['bank_account_name']))
 			$this->Text($mcol2, $bankaccount['bank_account_name']);
