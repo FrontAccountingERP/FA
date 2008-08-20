@@ -19,6 +19,12 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+20-Aug-2008
+# Voiding PO GRN's could be dangerous, if deliveries have been done. Eliminating it. Use item adjustment with 0 price.
+$ /admin/db/voiding_db.inc
+# Fixing a minor bug in grn_db.inc
+$ /purchasing/includes/db/grn_db.inc 
+  
 19-Aug-2008 Joe Hunt
 # Fixed some color conversion problems in the new PDF Engine
 $ /reporting/includes/pdf_report.inc

@@ -50,10 +50,11 @@ function void_transaction($type, $type_no, $date_, $memo_)
 			void_stock_adjustment($type_no);
 			break;
 
+		case 25 : // it's a GRN
+			return false;
 		case 20 : // it's a suppler invoice
 		case 21 : // it's a supplier credit note
 		case 22 : // it's a supplier payment
-		case 25 : // it's a GRN
 			if (!exists_supp_trans($type, $type_no))
 				return false;
 			if (!post_void_supp_trans($type, $type_no))

@@ -2,7 +2,7 @@
 
 //------------------- update average material cost ------------------------------------------ Joe Hunt Mar-03-2008
 
-function update_average_material_cost($supplier, $stock_id, $price, $qty, $date, $adj_only)
+function update_average_material_cost($supplier, $stock_id, $price, $qty, $date, $adj_only=false)
 {
 	$currency = get_supplier_currency($supplier);
 	if ($currency != null)
