@@ -1,6 +1,6 @@
 <?php
 
-function get_qoh_on_date($stock_id, $location=null, $date_=null)
+function get_qoh_on_date($stock_id, $location=null, $date_=null, $exclude=0)
 {
 	if ($date_ == null)
 		$date_ = Today();
@@ -17,6 +17,18 @@ function get_qoh_on_date($stock_id, $location=null, $date_=null)
 	$result = db_query($sql, "QOH calulcation failed");
 
 	$myrow = db_fetch_row($result);
+	if ($exclude > 0)
+	{
+		$sql = "SELECT SUM(qty) FROM ".TB_PREF."stock_moves
+			WHERE stock_id='$stock_id'
+			AND type=$exclude
+			AND tran_date = '$date'";
+
+		$result = db_query($sql, "QOH calulcation failed");
+		$myrow2 = db_fetch_row($result);
+		if ($myrow2 !== false)
+			$myrow[0] -= $myrow2[0];
+	}
 
 	return $myrow[0];
 }
@@ -78,7 +90,7 @@ Function get_stock_gl_code($stock_id)
 // $price - in $person_id's currency
 
 function add_stock_move($type, $stock_id, $trans_no, $location,
-    $date_, $reference, $quantity, $std_cost, $person_id=null, $show_or_hide=1,
+    $date_, $reference, $quantity, $std_cost, $person_id=0, $show_or_hide=1,
     $price=0, $discount_percent=0, $error_msg="")
 {
 	// do not add a stock move if it's a non-inventory item
@@ -99,6 +111,15 @@ function add_stock_move($type, $stock_id, $trans_no, $location,
 	db_query($sql, $error_msg);
 
 	return db_insert_id();
+}
+
+function update_stock_move_pid($type, $stock_id, $from, $to, $pid, $cost)
+{
+	$from = date2sql($from);
+	$to = date2sql($to);
+	$sql = "UPDATE ".TB_PREF."stock_moves SET standard_cost=$cost WHERE type=$type
+		AND stock_id='$stock_id' AND tran_date>='$from' AND tran_date<='$to' AND person_id = $pid";
+	db_query($sql, "The stock movement standard_cost cannot be updated");
 }
 
 //--------------------------------------------------------------------------------------------------

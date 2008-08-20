@@ -19,8 +19,14 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+20-Aug-2008 Joe Hunt
+# Bug [0000037] Price diff and deliveries between po receive and supp invoice. (Again)
+$ /includes/db/inventory_db.inc
+  /purchase/includes/db/grn_db.inc
+  /purchase/includes/db/invoice_db.inc
+
 20-Aug-2008
-# Voiding PO GRN's could be dangerous, if deliveries have been done. Eliminating it. Use item adjustment with 0 price.
+# [0000041] Voiding PO GRN's could be dangerous, if deliveries have been done. Eliminating it. Use item adjustment with 0 price.
 $ /admin/db/voiding_db.inc
 # Fixing a minor bug in grn_db.inc
 $ /purchasing/includes/db/grn_db.inc 

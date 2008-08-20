@@ -13,7 +13,12 @@ function update_average_material_cost($supplier, $stock_id, $price, $qty, $date,
 	$result = db_query($sql);
 	$myrow = db_fetch($result);
 	$material_cost = $myrow['material_cost'];
-	$qoh = get_qoh_on_date($stock_id, null, $date);
+	if ($adj_only)
+		$exclude = 13;
+	else
+		$exclude = 0;
+	$qoh = get_qoh_on_date($stock_id, null, $date, $exclude);
+
 	if ($qoh + $qty <= 0)
 		$material_cost = 0;
 	else
@@ -69,7 +74,6 @@ function add_grn(&$po, $date_, $reference, $location)
 				$order_line->standard_cost,	$order_line->receive_qty, $order_line->price);
 
 			/* Update location stock records - NB  a po cannot be entered for a service/kit parts */
-
             add_stock_move(25, $order_line->stock_id, $grn, $location, $date_, "",
             	$order_line->receive_qty, $order_line->standard_cost,
             	$po->supplier_id, 1, $order_line->price);
