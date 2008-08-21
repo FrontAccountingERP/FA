@@ -19,6 +19,15 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+-------------------------------2.0 Final --------------------------------------------
+21_aug-2008 Joe Hunt
+! config.php file. Version changed to 2.0
+$ config.php
+! Set time out to 120 seconds.
+$ /install/save.php
+! fixing $amp in backup
+$ /js/utils.js
+
 20-Aug-2008 Joe Hunt
 # Bug [0000037] Price diff and deliveries between po receive and supp invoice. (Again)
 $ /includes/db/inventory_db.inc

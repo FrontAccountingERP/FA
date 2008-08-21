@@ -180,7 +180,8 @@ function setFocus(name, byId) {
   if(!name) {
 	if (_focus)	
 		name = _focus;	// last focus set in onfocus handlers
-	else {	// no current focus (first page display) -  set it from from last form
+	else 
+	 if (document.forms.length) {	// no current focus (first page display) -  set it from from last form
 	  var cur = document.getElementsByName('_focus')[document.forms.length-1];
 	  if(cur) name = cur.value;
 	}

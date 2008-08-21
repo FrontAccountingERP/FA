@@ -38,7 +38,7 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 	// Main Title
 	$app_title = "FrontAccounting";
 	// application version
-	$version 		= "2.0 RC2";
+	$version 		= "2.0";
 
 	// Build for development purposes
 	$build_version 	= date("d.m.Y", filemtime("$path_to_root/CHANGELOG.txt"));
@@ -126,7 +126,7 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 	If the security setting of the page is contained in the security group as determined by the access level then the user will be allowed access.
 	Each page has a $page_security = x; variable
 	This value is compared to contents of the array applicable which is based on the access level of the user.
-	Access authorisation is checked in session.inc. If you wish to add more security groups 
+	Access authorisation is checked in session.inc. If you wish to add more security groups
 	with then you must add a new SecurityHeading to the security_headings array
 	and a new array of Security categories to the Security Groups _at_the_end_ of the array
 	This mechanism allows more fine grained control of access
@@ -135,7 +135,7 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 	or by changing the numbers in each array the security access can be tailored. These numbers need to read
 	in conjunction with the Page Security index
 	Special case is security level 20 which is reserved for admins of first
-	registered company (site admins). All potentially dangerous for whole FA 
+	registered company (site admins). All potentially dangerous for whole FA
 	site operations like installing addon modules require access level 20.
 	*/
 
