@@ -32,6 +32,7 @@ function void_transaction($type, $type_no, $date_, $memo_)
 		case 10 : // it's a customer invoice
 		case 11 : // it's a customer credit note
 		case 12 : // it's a customer payment
+		case 13 : // it's a customer dispatch
 			if (!exists_customer_trans($type, $type_no))
 				return false;
 			post_void_customer_trans($type, $type_no);
@@ -49,10 +50,11 @@ function void_transaction($type, $type_no, $date_, $memo_)
 			void_stock_adjustment($type_no);
 			break;
 
+		case 25 : // it's a GRN
+			return false;
 		case 20 : // it's a suppler invoice
 		case 21 : // it's a supplier credit note
 		case 22 : // it's a supplier payment
-		case 25 : // it's a GRN
 			if (!exists_supp_trans($type, $type_no))
 				return false;
 			if (!post_void_supp_trans($type, $type_no))
@@ -78,6 +80,7 @@ function void_transaction($type, $type_no, $date_, $memo_)
 			break;
 
 		case systypes::cost_update() : // it's a stock cost update
+			return false;
 			break;
 	}
 
@@ -104,7 +107,7 @@ function add_voided_entry($type, $type_no, $date_, $memo_)
 {
 	$date = date2sql($date_);
 	$sql = "INSERT INTO ".TB_PREF."voided (type, id, date_, memo_)
-		VALUES ($type, $type_no, '$date', '$memo_')";
+		VALUES ($type, $type_no, ".db_escape($date).", ".db_escape($memo_).")";
 
 	db_query($sql, "could not add voided transaction entry");
 }

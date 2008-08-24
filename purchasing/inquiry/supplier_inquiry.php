@@ -35,12 +35,12 @@ start_row();
 
 supplier_list_cells(_("Select a supplier:"), 'supplier_id', null, true);
 
-date_cells(_("From:"), 'TransAfterDate', null, -30);
+date_cells(_("From:"), 'TransAfterDate', '', null, -30);
 date_cells(_("To:"), 'TransToDate');
 
-supp_allocations_list_cells("filterType", null);
+supp_allocations_list_cell("filterType", null);
 
-submit_cells('Refresh Inquiry', _("Search"));
+submit_cells('Refresh Inquiry', _("Search"),'',_('Refresh Inquiry'), true);
 
 end_row();
 end_table();
@@ -134,43 +134,50 @@ function get_transactions()
 
 //------------------------------------------------------------------------------------------------
 
+div_start('totals_tbl');
 if (($_POST['supplier_id'] != "") && ($_POST['supplier_id'] != reserved_words::get_all()))
 {
 	$supplier_record = get_supplier_details($_POST['supplier_id']);
     display_supplier_summary($supplier_record);
 }
+div_end();
 
 //------------------------------------------------------------------------------------------------
 
 $result = get_transactions();
 
-if (db_num_rows($result) == 0)
+if(get_post('Refresh Inquiry')) 
 {
-	display_note(_("There are no transactions to display for the given dates."), 1, 1);
-	end_page();
-	exit;
+	$Ajax->activate('trans_tbl');
+	$Ajax->activate('totals_tbl');
 }
 
 //------------------------------------------------------------------------------------------------
 
 /*show a table of the transactions returned by the sql */
 
-start_table("$table_style width=80%");
-if ($_POST['supplier_id'] == reserved_words::get_all())
+div_start('trans_tbl');
+if (db_num_rows($result) == 0)
+{
+	display_note(_("There are no transactions to display for the given dates."), 1, 1);
+} else 
+{
+ start_table("$table_style width=80%");
+ if ($_POST['supplier_id'] == reserved_words::get_all())
 	$th = array(_("Type"), _("#"), _("Reference"), _("Supplier"),
 		_("Supplier's Reference"), _("Date"), _("Due Date"), _("Currency"),
 		_("Debit"), _("Credit"), "");
-else		
+ else		
 	$th = array(_("Type"), _("#"), _("Reference"),
 		_("Supplier's Reference"), _("Date"), _("Due Date"),
 		_("Debit"), _("Credit"), "");
-table_header($th);
+ table_header($th);
 
-$j = 1;
-$k = 0; //row colour counter
-$over_due = false;
-while ($myrow = db_fetch($result)) 
-{
+ $j = 1;
+ $k = 0; //row colour counter
+ $over_due = false;
+ while ($myrow = db_fetch($result)) 
+ {
 
 	if ($myrow['OverDue'] == 1)
 	{
@@ -213,14 +220,14 @@ while ($myrow = db_fetch($result))
 		$j=1;
 		table_header($th);
 	}
-//end of page full new headings if
-}
-//end of while loop
+ //end of page full new headings if
+ }
+ //end of while loop
 
-end_table(1);
-if ($over_due)
+ end_table(1);
+ if ($over_due)
 	display_note(_("Marked items are overdue."), 0, 1, "class='overduefg'");
-
-
+}
+div_end();
 end_page();
 ?>

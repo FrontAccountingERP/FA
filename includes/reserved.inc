@@ -4,7 +4,7 @@
 
 $any_item = 'AN';
 $any_number = -1;
-$all_option = "___ALL___";
+$all_option = '';
 $all_option_numeric = -1;
 
 class reserved_words 

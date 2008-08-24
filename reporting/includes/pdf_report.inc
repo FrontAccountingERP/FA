@@ -1,9 +1,10 @@
 <?php
 /* $Revision$ */
 $page_security = 8;
-include_once($path_to_root . "reporting/includes/class.pdf.inc");
+//include_once($path_to_root . "reporting/includes/class.pdf.inc");
+include_once(dirname(__FILE__)."/class.pdf.inc");
 include_once($path_to_root . "admin/db/company_db.inc");
-
+include_once($path_to_root . "config.php");
 class FrontReport extends Cpdf
 {
 	var $size;
@@ -21,7 +22,7 @@ class FrontReport extends Cpdf
 	var $rightMargin;
 	var $endLine;
 	var $lineHeight;
-	var $rtl;
+	//var $rtl;
 
 	var $cols;
 	var $params;
@@ -34,6 +35,7 @@ class FrontReport extends Cpdf
 	var $titleCol;
 	var $pageNumber;
 	var $fontSize;
+	var $oldFontSize;
 	var $currency;
 
 	function FrontReport($title, $filename, $size = 'A4', $fontsize = 9)
@@ -117,39 +119,20 @@ class FrontReport extends Cpdf
 		$this->titleCol = $this->leftMargin + 100;
 		$this->lineHeight = 12;
 		$this->fontSize = $fontsize;
+		$this->oldFontSize = 0;
+		$this->row = $this->pageHeight - $this->topMargin;
 		$this->currency = '';
-		$this->rtl = ($_SESSION['language']->dir == 'rtl');
-		// for quick testing
-		//$this->rtl = true;
-		$this->Cpdf($this->size);
+		$rtl = ($_SESSION['language']->dir === 'rtl' ? 'rtl' : 'ltr');
+		$code = $_SESSION['language']->code;
+		$enc = strtoupper($_SESSION['language']->encoding);
+		// for the language array in class.pdf.inc
+		$l = array('a_meta_charset' => $enc, 'a_meta_dir' => $rtl, 'a_meta_language' => $code, 'w_page' => 'page');
+		$this->Cpdf($size, $l);
 	}
 
 	function Font($style = 'normal')
 	{
-		global $path_to_root;
-		$own = false;
-		$locale = $path_to_root . "lang/" . $_SESSION['language']->code . "/locale.inc";
-		if (file_exists($locale))
-		{
-			$fontinclude = true;
-			include($locale);
-		}
-		//if ($this->rtl) // this is good for presentation only
-		if (!$own)
-		{
-			if (user_price_dec() == 3) // only for presentation of farsi
-			{
-				$this->rtl = true;
-				$path = $path_to_root . 'reporting/fonts/farsi_1.afm';
-			}
-			elseif ($style == 'italic')
-				$path = $path_to_root . 'reporting/fonts/Helvetica-Oblique.afm';
-			elseif ($style == 'bold')
-				$path = $path_to_root . 'reporting/fonts/Helvetica-Bold.afm';
-			else // even take misspelled styles
-				$path = $path_to_root . 'reporting/fonts/Helvetica.afm';
-		}
-		$this->selectFont($path, 'WinAnsiEncoding');
+		$this->selectFont("", $style);
 	}
 
 	function Info($params, $cols, $headers, $aligns,
@@ -242,7 +225,7 @@ class FrontReport extends Cpdf
 			$this->Font();
 		}
 		$str = _("Page") . ' ' . $this->pageNumber;
-		$this->Text($this->endLine - 35, $str);
+		$this->Text($this->endLine - 38, $str);
 		$this->Line($this->row - 5, 1);
 
 		$this->row -= ($this->lineHeight + 6);
@@ -265,7 +248,7 @@ class FrontReport extends Cpdf
 
 	function Header2($myrow, $branch, $sales_order, $bankaccount, $doctype)
 	{
-		global $path_to_root, $print_as_quote, $print_invoice_no;
+		global $comp_path, $path_to_root, $print_as_quote, $print_invoice_no;
 
 		$this->pageNumber++;
 		if ($this->pageNumber > 1)
@@ -279,248 +262,14 @@ class FrontReport extends Cpdf
 		{
 			include($path_to_root . "reporting/includes/doctext.inc");
 		}
-		$this->row = $this->pageHeight - $this->topMargin;
 
-		$upper = $this->row - 2 * $this->lineHeight;
-		$lower = $this->bottomMargin + 6 * $this->lineHeight;
-		$iline1 = $upper - 4 * $this->lineHeight;
-		$iline2 = $iline1 - 8 * $this->lineHeight;
-		$iline3 = $iline2 - 8 * $this->lineHeight;
-		$iline4 = $iline3 - 2 * $this->lineHeight;
-		$iline5 = $lower + 5 * $this->lineHeight;
-		$icol = $this->pageWidth / 2;
-		$ccol = $this->cols[0] + 4;
-		$ccol2 = $icol / 2;
-		$mcol = $icol + 8;
-		$mcol2 = $this->pageWidth - $ccol2;
+		include($path_to_root . "reporting/includes/header2.inc");
 
-		$this->SetDrawColor(128, 128, 128);
-		$this->LineTo($this->pageWidth - $this->rightMargin, $upper ,$this->leftMargin, $upper);
-		$this->LineTo($this->leftMargin, $upper ,$this->leftMargin, $lower);
-		$this->LineTo($this->pageWidth - $this->rightMargin, $lower ,$this->leftMargin, $lower);
-		$this->LineTo($this->pageWidth - $this->rightMargin, $lower ,$this->pageWidth - $this->rightMargin, $upper);
-		$this->Line($iline1);
-		$this->Line($iline2);
-		$this->Line($iline3);
-		$this->Line($iline4);
-		$this->Line($iline5);
-		$this->LineTo($icol, $upper ,$icol, $iline1);
-		$this->NewLine();
-
-		$this->fontSize += 4;
-		$this->Font('bold');
-		$this->Text($mcol, $this->title);
-		$this->Font();
-		$this->fontSize -= 4;
-		if ($this->pageNumber > 1 && !strstr($this->filename, "Bulk"))
-			$this->Text($this->endLine - 35, _("Page") . ' ' . $this->pageNumber);
-		$this->fontSize -= 4;
-		$this->row = $upper - 5;
-
-		$this->Text($mcol, $doc_Invoice_no, $mcol + 90);
-		$this->Text($mcol + 90, $doc_Cust_no, $mcol + 180);
-		$this->Text($mcol + 180, $doc_Date);
-		$this->fontSize += 4;
-
-		$this->row = $upper - 2 * $this->lineHeight - 2;
-		if ($this->company['coy_logo'] != '')
-		{
-			$logo = $path_to_root . "themes/default/images/" . $this->company['coy_logo'];
-			$this->AddImage($logo, $ccol, $iline1 + 5, 250, 40);
-		}
-		else
-		{
-			$this->fontSize += 4;
-			$this->Font('bold');
-			$this->Text($ccol, $this->company['coy_name'], $icol);
-			$this->Font();
-			$this->fontSize -= 4;
-		}
-		if ($doctype == 8) // PO
-			$this->Text($mcol, $myrow['order_no'], $mcol + 90);
-		else if ($doctype == 9) // SO
-			$this->Text($mcol, $myrow['order_no'] ." ".$myrow['customer_ref'], $mcol + 90);
-		else // INV/CRE/STA
-		{
-			if ($print_invoice_no == 1)
-				$this->Text($mcol, $myrow['trans_no'], $mcol + 90);
-			else
-				$this->Text($mcol, $myrow['reference'], $mcol + 90);
-		}
-		$this->Text($mcol + 90, $myrow['debtor_no'], $mcol + 180);
-		if ($doctype == 8 || $doctype == 9)
-			$this->Text($mcol + 180, sql2date($myrow['ord_date']));
-		else
-			$this->Text($mcol + 180, sql2date($myrow['tran_date']));
-
-		$this->fontSize -= 4;
-		$this->row = $iline1 - 5;
-		$this->Text($ccol, $doc_Charge_To, $icol);
-		$this->Text($mcol, $doc_Delivered_To);
-		$this->fontSize += 4;
-
-		$this->NewLine(2);
-		$temp = $this->row;
-		if ($doctype == 9)
-		{
-			$this->Text($ccol, $myrow['name'], $icol);
-			//$adr = ?;
-		}
-		else
-		{
-			if ($doctype == 8)
-				$this->Text($ccol, $myrow['supp_name'], $icol);
-			else
-				$this->Text($ccol, $myrow['DebtorName'], $icol);
-			$adr = explode("\n", $myrow['address']);
-		}
-		for ($i = 0; $i < count($adr); $i++)
-		{
-			$this->NewLine();
-			$this->Text($ccol, $adr[$i], $icol);
-		}
-		if ($sales_order != NULL)
-		{
-			$this->row = $temp;
-			if ($doctype == 8)
-				$this->Text($mcol, $this->company['coy_name']);
-			else
-				$this->Text($mcol, $sales_order['deliver_to']);
-			$adr = explode("\n", $sales_order['delivery_address']);
-			for ($i = 0; $i < count($adr); $i++)
-			{
-				$this->NewLine();
-				$this->Text($mcol, $adr[$i]);
-			}
-		}
-		$this->row = $iline2 - 2 * $this->lineHeight;
-		$this->Text($ccol, $doc_Shipping_Company . ":", $ccol2);
-		if ($doctype != 8)
-			$this->Text($ccol2, $myrow['shipper_name'], $mcol);
-		$this->Text($mcol, $doc_Due_Date . ":", $mcol2);
-		if ($doctype == 9)
-			$this->Text($mcol2, sql2date($myrow['delivery_date']));
-		else if ($doctype != 8)
-			$this->Text($mcol2, sql2date($myrow['due_date']));
-		if ($branch != null)
-		{
-			$this->NewLine();
-			$this->Text($ccol, $doc_Your_Ref . ":", $ccol2);
-			$this->Text($ccol2, $branch['contact_name'], $mcol);
-			$this->Text($mcol, $doc_Our_Ref . ":", $mcol2);
-
-			$id = $branch['salesman'];
-			$sql = "SELECT salesman_name  FROM ".TB_PREF."salesman WHERE salesman_code='$id'";
-			$result = db_query($sql,"could not get sales person");
-			$row = db_fetch($result);
-
-			$this->Text($mcol2, $row['salesman_name']);
-		}
-		$this->NewLine();
-		$this->Text($ccol, $doc_Your_VAT_no . ":", $ccol2);
-		if ($doctype != 8)
-			$this->Text($ccol2, $myrow['tax_id'], $mcol);
-		$this->Text($mcol, $doc_Our_VAT_no . ":", $mcol2);
-		$this->Text($mcol2, $this->company['gst_no']);
-		$this->NewLine();
-		$this->Text($ccol, $doc_Payment_Terms . ":", $ccol2);
-
-		$id = $myrow['payment_terms'];
-		$sql = "SELECT terms FROM ".TB_PREF."payment_terms WHERE terms_indicator='$id'";
-		$result = db_query($sql,"could not get paymentterms");
-		$row = db_fetch($result);
-
-		$this->Text($ccol2, $row["terms"], $mcol);
-		$this->Text($mcol, $doc_Our_Order_No . ":", $mcol2);
-		$this->Text($mcol2, $myrow['order_']);
-
-		$locale = $path_to_root . "lang/" . $_SESSION['language']->code . "/locale.inc";
-		if (file_exists($locale))
-		{
-			$header2include = true;
-			include($locale);
-		}
-		$this->row = $iline3 - $this->lineHeight - 2;
-		$this->Font('bold');
-		$count = count($this->headers);
-		for ($i = 0; $i < $count; $i++)
-			$this->TextCol($i, $i + 1, $this->headers[$i], -2);
-		$this->Font();
-		$temp = $this->row - 2 * $this->lineHeight;
-		$this->row = $iline5 - $this->lineHeight - 6;
-		$this->Text($ccol, $doc_Please_Quote . " - " . $myrow['curr_code']);
-		$this->NewLine();
-		if ($branch['disable_branch'] > 0 && $doctype == 10) // payment links
-		{
-			if ($branch['disable_branch'] == 1)
-			{
-				$amt = number_format($myrow["ov_freight"] + $myrow["ov_gst"] +	$myrow["ov_amount"], user_price_dec());
-				$txt = $doc_Payment_Link . " PayPal: ";
-				$name = urlencode($this->title . " " . $myrow['reference']);
-				$url = "https://www.paypal.com/xclick/business=" . $this->company['email'] . "&item_name=" .
-					$name . "&amount=" . $amt . "&currency_code=" . $myrow['curr_code'];
-				$this->fontSize -= 2;
-				$this->Text($ccol, $txt);
-				$this->NewLine();
-				$this->SetTextColor(0, 0, 255);
-				$this->Text($ccol, $url);
-				$this->SetTextColor(0, 0, 0);
-				$this->addLink($url, $ccol, $this->row, $this->pageWidth - $this->rightMargin, $this->row + $this->lineHeight);
-				$this->fontSize += 2;
-			}
-		}
-		if ($this->params['comments'] != '')
-		{
-			$this->NewLine();
-			$this->Font('bold');
-			$this->Text($ccol, $this->params['comments']);
-			$this->Font();
-		}
-
-		$this->row = $lower - 5;
-		$this->fontSize -= 4;
-
-		$this->Text($ccol, $doc_Address, $ccol2 + 40);
-		$this->Text($ccol2 + 30, $doc_Phone_Fax_Email, $mcol);
-		$this->Text($mcol , $doc_Bank, $mcol2);
-		$this->Text($mcol2, $doc_Bank_Account);
-		$this->fontSize += 4;
-		$this->NewLine();
-		$adrline = $this->row;
-
-		$adr = explode("\n", $this->company['postal_address']);
-		for ($i = 0; $i < count($adr); $i++)
-		{
-			$this->Text($ccol, $adr[$i], $ccol2 + 40);
-			$this->NewLine();
-		}
-		$this->row = $adrline;
-		$this->Text($ccol2 + 30, $this->company['phone'], $mcol);
-		$this->NewLine();
-		$this->Text($ccol2 + 30, $this->company['fax'], $mcol);
-		$this->NewLine();
-		$this->Text($ccol2 + 30, $this->company['email'], $mcol);
-		// fetch this later
-		$this->row = $adrline;
-		$this->Text($mcol, $bankaccount['bank_name'], $mcol2);
-		$adr = explode("\n", $bankaccount['bank_address']);
-		for ($i = 0; $i < count($adr); $i++)
-		{
-			$this->NewLine();
-			$this->Text($mcol, $adr[$i], $mcol2);
-		}
-
-		$this->row = $adrline;
-		$this->Text($mcol2, $bankaccount['bank_account_name']);
-		$this->NewLine();
-		$this->Text($mcol2, $bankaccount['bank_account_number']);
 		$this->row = $temp;
 	}
 
 	function AddImage($logo, $x, $y, $w, $h)
 	{
-		if ($this->rtl)
-			$x = $this->pageWidth - $x - $w;
 		if (strpos($logo, ".png") || strpos($logo, ".PNG"))
 			$this->addPngFromFile($logo, $x, $y, $w, $h);
 		else
@@ -529,12 +278,12 @@ class FrontReport extends Cpdf
 
 	function SetDrawColor($r, $g, $b)
 	{
-		$this->setStrokeColor($r / 255, $g / 255, $b / 255);
+		$this->setStrokeColor($r, $g, $b);
 	}
 
 	function SetTextColor($r, $g, $b)
 	{
-		$this->setColor($r / 255, $g / 255, $b / 255);
+		TCPDF::SetTextColor($r, $g, $b);
 	}
 
 	function Text($c, $txt, $n=0, $corr=0, $r=0)
@@ -547,14 +296,10 @@ class FrontReport extends Cpdf
 
 	function TextWrap($xpos, $ypos, $len, $str, $align = 'left')
 	{
-		if ($this->rtl)
+		if ($this->fontSize != $this->oldFontSize)
 		{
-			$str = strrev($str);
-			$xpos = $this->pageWidth - $xpos - $len;
-			if ($align == 'left')
-				$align = 'right';
-			elseif ($align == 'right')
-				$align = 'left';
+			$this->SetFontSize($this->fontSize);
+			$this->oldFontSize = $this->fontSize;
 		}
 		return $this->addTextWrap($xpos, $ypos, $len, $this->fontSize, $str, $align);
 	}
@@ -569,7 +314,13 @@ class FrontReport extends Cpdf
 		return $this->TextWrap($this->cols2[$c], $this->row - $r, $this->cols2[$n] - $this->cols2[$c] + $corr, $txt, $this->aligns2[$c]);
 	}
 
-	function TextColLines($c, $n, $txt, $corr=0)
+	function TextColLines($c, $n, $txt, $corr=0, $r=0)
+	{
+		$this->row -= $r;
+		$this->TextWrapLines($this->cols[$c], $this->cols[$n] - $this->cols[$c] + $corr, $txt, $this->aligns[$c]);
+	}
+
+	function TextWrapLines($c, $width, $txt, $align='left')
 	{
 		$str = Explode("\n", $txt);
 		for ($i = 0; $i < count($str); $i++)
@@ -577,7 +328,7 @@ class FrontReport extends Cpdf
 			$l = $str[$i];
 			do
 			{
-				$l = $this->TextCol($c, $n, $l, $corr);
+				$l = $this->TextWrap($c, $this->row , $width, $l, $align);
 				$this->NewLine();
 			}
 			while ($l != '');
@@ -604,15 +355,11 @@ class FrontReport extends Cpdf
 
 	function End($email=0, $subject=null, $myrow=null, $doctype = 0)
 	{
-		global $go_debug, $path_to_root;
-
-		// this is no good in IE so has been replaced, see down under
-		// but good for debugging purposes in IE
-		//session_write_close();
+		global $go_debug, $path_to_root, $comp_path;
 
 		if ($go_debug == 1)
 		{
-			$buf = $this->output(1);
+			$buf = $this->Output();
 			$len = strlen($buf);
 			$pdfcode = $buf;
 			$pdfcode = str_replace("\n", "\n<br>", htmlspecialchars($pdfcode));
@@ -629,9 +376,9 @@ class FrontReport extends Cpdf
 		}
 		else
 		{
-			$buf = $this->output();
+			$buf = $this->Output();
 			$len = strlen($buf);
-			$dir = './pdf_files';
+			$dir =  $comp_path.'/'.user_company(). '/pdf_files';
 			//save the file
 			if (!file_exists($dir))
 			{
@@ -716,7 +463,7 @@ class FrontReport extends Cpdf
                 header('Expires: 0');
                 header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
                 header('Pragma: public');
-                $this->stream();
+                $this->Stream();
 
 			}
 			// also have a look through the directory, and remove the files that are older than a week

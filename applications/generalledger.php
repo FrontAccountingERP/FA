@@ -9,8 +9,8 @@
 			$this->application("GL",_("Banking and General Ledger"));
 
 			$this->add_module(_("Transactions"));
-			$this->add_lapp_function(0, _("Payments"),"gl/gl_payment.php?NewPayment=Yes");
-			$this->add_lapp_function(0, _("Deposits"),"gl/gl_deposit.php?NewDeposit=Yes");
+			$this->add_lapp_function(0, _("Payments"),"gl/gl_bank.php?NewPayment=Yes");
+			$this->add_lapp_function(0, _("Deposits"),"gl/gl_bank.php?NewDeposit=Yes");
 			$this->add_lapp_function(0, _("Bank Account Transfers"),"gl/bank_transfer.php?");
 			$this->add_rapp_function(0, _("Journal Entry"),"gl/gl_journal.php?NewJournal=Yes");
 			$this->add_rapp_function(0, _("Budget Entry"),"gl/gl_budget.php?");

@@ -21,13 +21,13 @@ display_heading(systypes::name(systypes::inventory_adjustment()) . " #$trans_no"
 $adjustment_items = get_stock_adjustment_items($trans_no);
 $k = 0;
 $header_shown = false;
-while ($adjustment = db_fetch($adjustment_items)) 
+while ($adjustment = db_fetch($adjustment_items))
 {
 
-	if (!$header_shown) 
+	if (!$header_shown)
 	{
 		$adjustment_type = get_movement_type($adjustment['person_id']) ;
-		
+
 		start_table("$table_style2 width=90%");
 		start_row();
 		label_cells(_("At Location"), $adjustment['location_name'], "class='tableheader2'");
@@ -45,14 +45,14 @@ while ($adjustment = db_fetch($adjustment_items))
 
     	$th = array(_("Item"), _("Description"), _("Quantity"),
     		_("Units"), _("Unit Cost"));
-    	table_header($th);	
+    	table_header($th);
 	}
 
     alt_table_row_color($k);
 
     label_cell($adjustment['stock_id']);
     label_cell($adjustment['description']);
-    qty_cell($adjustment['qty']);
+    qty_cell($adjustment['qty'], false, get_qty_dec($adjustment['stock_id']));
     label_cell($adjustment['units']);
     amount_cell($adjustment['standard_cost']);
     end_row();

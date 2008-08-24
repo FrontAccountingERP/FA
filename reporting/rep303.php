@@ -50,7 +50,7 @@ function getTransactions($category, $location)
 
 function getDemandQty($stockid, $location)
 {
-	$sql = "SELECT SUM(".TB_PREF."sales_order_details.quantity - ".TB_PREF."sales_order_details.qty_invoiced) AS QtyDemand
+	$sql = "SELECT SUM(".TB_PREF."sales_order_details.quantity - ".TB_PREF."sales_order_details.qty_sent) AS QtyDemand
 				FROM ".TB_PREF."sales_order_details,
 					".TB_PREF."sales_orders
 				WHERE ".TB_PREF."sales_order_details.order_no=".TB_PREF."sales_orders.order_no AND
@@ -64,7 +64,7 @@ function getDemandQty($stockid, $location)
 
 function getDemandAsmQty($stockid, $location)
 {
-	$sql = "SELECT SUM((".TB_PREF."sales_order_details.quantity-".TB_PREF."sales_order_details.qty_invoiced)*".TB_PREF."bom.quantity)
+	$sql = "SELECT SUM((".TB_PREF."sales_order_details.quantity-".TB_PREF."sales_order_details.qty_sent)*".TB_PREF."bom.quantity)
 				   AS Dem
 				   FROM ".TB_PREF."sales_order_details,
 						".TB_PREF."sales_orders,
@@ -73,7 +73,7 @@ function getDemandAsmQty($stockid, $location)
 				   WHERE ".TB_PREF."sales_order_details.stk_code=".TB_PREF."bom.parent AND
 				   ".TB_PREF."sales_orders.order_no = ".TB_PREF."sales_order_details.order_no AND
 				   ".TB_PREF."sales_orders.from_stk_loc='$location' AND
-				   ".TB_PREF."sales_order_details.quantity-".TB_PREF."sales_order_details.qty_invoiced > 0 AND
+				   ".TB_PREF."sales_order_details.quantity-".TB_PREF."sales_order_details.qty_sent > 0 AND
 				   ".TB_PREF."bom.component='$stockid' AND
 				   ".TB_PREF."stock_master.stock_id=".TB_PREF."bom.parent AND
 				   ".TB_PREF."stock_master.mb_flag='A'";
@@ -94,7 +94,7 @@ function getDemandAsmQty($stockid, $location)
 
 function print_stock_check()
 {
-    global $path_to_root, $pic_height, $pic_width;
+    global $comp_path, $path_to_root, $pic_height, $pic_width;
 
     include_once($path_to_root . "reporting/includes/pdf_report.inc");
 
@@ -102,8 +102,6 @@ function print_stock_check()
     $location = $_POST['PARAM_1'];
     $pictures = $_POST['PARAM_2'];
     $comments = $_POST['PARAM_3'];
-    
-    $dec = user_qty_dec();
 
 	if ($category == reserved_words::get_all_numeric())
 		$category = 0;
@@ -133,7 +131,7 @@ function print_stock_check()
 		$user_comp = user_company();
 	else
 		$user_comp = "";
-		
+
     $rep = new FrontReport(_('Stock Check Sheets'), "StockCheckSheet.pdf", user_pagesize());
 
     $rep->Font();
@@ -159,6 +157,7 @@ function print_stock_check()
 		$demandqty = getDemandQty($trans['stock_id'], $trans['loc_code']);
 		$demandqty += getDemandAsmQty($trans['stock_id'], $trans['loc_code']);
 		$rep->NewLine();
+		$dec = get_qty_dec($trans['stock_id']);
 		$rep->TextCol(0, 1, $trans['stock_id']);
 		$rep->TextCol(1, 2, $trans['description']);
 		$rep->TextCol(2, 3, number_format2($trans['QtyOnHand'], $dec));
@@ -166,7 +165,7 @@ function print_stock_check()
 		$rep->TextCol(4, 5, number_format2($trans['QtyOnHand'] - $demandqty, $dec));
 		if ($pictures)
 		{
-			$image = $path_to_root . "inventory/manage/image/" . $user_comp . "/" . $trans['stock_id'] . ".jpg";
+			$image = $comp_path .'/'. $user_comp . '/images/' . $trans['stock_id'] . '.jpg';
 			if (file_exists($image))
 			{
 				$rep->NewLine();
@@ -176,7 +175,7 @@ function print_stock_check()
 				$rep->row -= $pic_height;
 				$rep->NewLine();
 			}
-		}	
+		}
 	}
 	$rep->Line($rep->row - 4);
     $rep->End();

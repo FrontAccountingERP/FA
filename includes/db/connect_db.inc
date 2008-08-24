@@ -31,8 +31,10 @@ function db_query($sql, $err_msg=null)
 
 
 	$result = mysql_query($sql, $db);
-
 	if ($err_msg != null)
+	  if (function_exists('xdebug_call_file'))
+		check_db_error('<br>At file '.xdebug_call_file().':'.xdebug_call_line().':<br>'.$err_msg, $sql);
+	  else
 		check_db_error($err_msg, $sql);
 
 	return $result;
@@ -71,9 +73,34 @@ function db_num_fields ($result)
 	return mysql_num_fields($result);
 }
 
-function db_escape ($result)
+function db_escape($value = "", $nullify = false)
 {
-	return mysql_escape_string($result);
+	$value = @htmlspecialchars($value, ENT_COMPAT, $_SESSION['language']->encoding);
+
+  	//reset default if second parameter is skipped
+	$nullify = ($nullify === null) ? (false) : ($nullify);
+  	//undo slashes for poorly configured servers
+	$value = (get_magic_quotes_gpc()) ? (stripslashes($value)) : ($value);
+
+  	//check for null/unset/empty strings
+	if ((!isset($value)) || (is_null($value)) || ($value === "")) {
+		$value = ($nullify) ? ("NULL") : ("''");
+	} else {
+		if (is_string($value)) {
+      		//value is a string and should be quoted; determine best method based on available extensions
+			if (function_exists('mysql_real_escape_string')) {
+		  		$value = "'" . mysql_real_escape_string($value) . "'";
+			} else {
+			  $value = "'" . mysql_escape_string($value) . "'";
+			}
+		} else if (!is_numeric($value)) {
+			//value is not a string nor numeric
+			display_error("ERROR: incorrect data type send to sql query");
+			echo '<br><br>';
+			exit();
+		}
+	}
+	return $value;
 }
 
 function db_error_no ()

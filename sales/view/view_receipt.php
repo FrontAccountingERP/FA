@@ -17,7 +17,7 @@ if (isset($_GET["trans_no"]))
 
 $receipt = get_customer_trans($trans_id, systypes::cust_payment());
 
-display_heading(_("Customer Payment") . " #$trans_id");
+display_heading(sprintf(_("Customer Payment #%d"),$trans_id));
 
 echo "<br>";
 start_table("$table_style width=80%");
@@ -28,8 +28,8 @@ label_cells(_("Date of Deposit"), sql2date($receipt['tran_date']), "class='table
 end_row();
 start_row();
 label_cells(_("Payment Currency"), $receipt['curr_code'], "class='tableheader2'");
-label_cells(_("Amount"), number_format2(-$receipt['ov_amount'], user_price_dec()), "class='tableheader2'");
-label_cells(_("Discount"), number_format2(-$receipt['ov_discount'], user_price_dec()), "class='tableheader2'");
+label_cells(_("Amount"), price_format($receipt['ov_amount']), "class='tableheader2'");
+label_cells(_("Discount"), price_format($receipt['ov_discount']), "class='tableheader2'");
 end_row();
 start_row();
 label_cells(_("Payment Type"), $receipt['BankTransType'], "class='tableheader2'");

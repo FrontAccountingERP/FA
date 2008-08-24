@@ -14,7 +14,8 @@ Function get_next_trans_no ($trans_type){
 
     $next_number = $myrow[0] + 1;
 
-    $sql = "UPDATE ".TB_PREF."sys_types SET type_no = $next_number WHERE type_id = $trans_type";
+    $sql = "UPDATE ".TB_PREF."sys_types SET type_no = $next_number WHERE type_id = $trans_type
+	AND type_no = ". $myrow[0]; //concurrency paranoic protection
 
     db_query($sql,"The next transaction number for $trans_type could not be updated");
 
@@ -35,6 +36,7 @@ function get_systype_db_info($type)
         case     10 : return array("".TB_PREF."debtor_trans", "type", "trans_no", "reference", "tran_date");
         case     11 : return array("".TB_PREF."debtor_trans", "type", "trans_no", "reference", "tran_date");
         case     12 : return array("".TB_PREF."debtor_trans", "type", "trans_no", "reference", "tran_date");
+        case     13 : return array("".TB_PREF."debtor_trans", "type", "trans_no", "reference", "tran_date");
         case     16 : return array("".TB_PREF."stock_moves", "type", "trans_no", "reference", "tran_date");
         case     17 : return array("".TB_PREF."stock_moves", "type", "trans_no", "reference", "tran_date");
         case     18 : return array("".TB_PREF."purch_orders", null, "order_no", "reference", "tran_date");
@@ -46,6 +48,7 @@ function get_systype_db_info($type)
         case     28 : return array("".TB_PREF."wo_issues", null, "issue_no", "reference", "issue_date");
         case     29 : return array("".TB_PREF."wo_manufacture", null, "id", "reference", "date_");
         case     30 : return array("".TB_PREF."sales_orders", null, "order_no", "customer_ref", "ord_date");
+        case     31 : return array("".TB_PREF."service_orders", null, "order_no", "cust_ref", "date");
         case	 40 : return array("".TB_PREF."dimensions", null, "id", "reference", "date_");
         case     35 : return null;
 	}

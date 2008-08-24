@@ -8,14 +8,12 @@ function add_dimension($reference, $name, $type_, $date_, $due_date, $memo_)
 	$duedate = date2sql($due_date);
 
 	$sql = "INSERT INTO ".TB_PREF."dimensions (reference, name, type_, date_, due_date)
-		VALUES ('$reference', '$name', $type_, '$date', '$duedate')";
+		VALUES (".db_escape($reference).", ".db_escape($name).", $type_, '$date', '$duedate')";
 	db_query($sql, "could not add dimension");
 
 	$id = db_insert_id();
 
 	add_comments(systypes::dimension(), $id, $date_, $memo_);
-
-	add_forms_for_sys_type(systypes::dimension(), $id);
 
 	references::save_last($reference, systypes::dimension());
 
@@ -31,7 +29,7 @@ function update_dimension($id, $name, $type_, $date_, $due_date, $memo_)
 	$date = date2sql($date_);
 	$duedate = date2sql($due_date);
 
-	$sql = "UPDATE ".TB_PREF."dimensions SET name='$name',
+	$sql = "UPDATE ".TB_PREF."dimensions SET name=".db_escape($name).",
 		type_ = $type_,
 		date_='$date',
 		due_date='$duedate'
@@ -55,8 +53,6 @@ function delete_dimension($id)
 	db_query($sql,"The dimension could not be deleted");
 
 	delete_comments(systypes::dimension(), $id);
-
-	delete_forms_for_systype(systypes::dimension(), $id);
 
 	commit_transaction();
 }
@@ -83,15 +79,15 @@ function get_dimension_string($id, $html=false, $space=' ')
 	{
 		if ($html)
 			$dim = "&nbsp;";
-		else	
+		else
 			$dim = "";
-	}		
+	}
 	else
 	{
 		$row = get_dimension($id, true);
 		$dim = $row['reference'] . $space . $row['name'];
 	}
-	
+
 	return $dim;
 }
 

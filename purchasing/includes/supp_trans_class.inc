@@ -95,7 +95,8 @@ class supp_trans
         foreach ($this->grn_items as $ln_itm) 
         {
         	$items[] = $ln_itm->item_code;
-        	$prices[] = ($ln_itm->this_quantity_inv * $ln_itm->taxfree_charge_price($tax_group_id, $tax_group));
+        	$prices[] =round( ($ln_itm->this_quantity_inv * $ln_itm->taxfree_charge_price($tax_group_id, $tax_group)),
+			 user_price_dec());
         }
         
         if ($tax_group_id == null)
@@ -117,7 +118,8 @@ class supp_trans
 			$tax_group = null;    	
     	
 		foreach ($this->grn_items as $ln_itm)
-    		$total += ($ln_itm->this_quantity_inv * $ln_itm->taxfree_charge_price($tax_group_id, $tax_group));
+    		$total += round(($ln_itm->this_quantity_inv * $ln_itm->taxfree_charge_price($tax_group_id, $tax_group)),
+			 user_price_dec());
 
    		foreach ($this->gl_codes as $gl_line)
    			$total += $gl_line->amount;
@@ -165,16 +167,18 @@ all the info to do the necessary entries without looking up ie additional querie
 		$this->gl_code = $gl_code;
 	}
 	
-	function full_charge_price()
+	function full_charge_price($tax_group_id, $tax_group=null)
 	{
-		return $this->chg_price;
+		return get_full_price_for_item($this->item_code, 
+		  $this->chg_price, $tax_group_id, 0, $tax_group);
 	}
 	
 	function taxfree_charge_price($tax_group_id, $tax_group=null)
 	{
-		if ($tax_group_id==null)
-			return $this->chg_price;
-		return get_tax_free_price_for_item($this->item_code, $this->chg_price, $tax_group_id, $tax_group);
+//		if ($tax_group_id==null)
+//			return $this->chg_price;
+		return get_tax_free_price_for_item($this->item_code, $this->chg_price, 
+		  $tax_group_id, 0, $tax_group);
 	}
 }
 

@@ -2,11 +2,11 @@
 
 $path_to_root="..";
 
-include($path_to_root . "/purchasing/includes/supp_trans_class.inc");
+include_once($path_to_root . "/purchasing/includes/supp_trans_class.inc");
 
 $page_security=5;
 
-include($path_to_root . "/includes/session.inc");
+include_once($path_to_root . "/includes/session.inc");
 
 include_once($path_to_root . "/includes/data_checks.inc");
 
@@ -66,40 +66,47 @@ function check_data()
 	if (!$_SESSION['supp_trans']->is_valid_trans_to_post())
 	{
 		display_error(_("The credit note cannot be processed because the there are no items or values on the invoice.  Credit notes are expected to have a charge."));
+		set_focus('');
 		return false;
 	}
 
 	if (!references::is_valid($_SESSION['supp_trans']->reference)) 
 	{
 		display_error(_("You must enter an credit note reference."));
+		set_focus('reference');
 		return false;
 	}
 
 	if (!is_new_reference($_SESSION['supp_trans']->reference, 21)) 
 	{
 		display_error(_("The entered reference is already in use."));
+		set_focus('reference');
 		return false;
 	}
 
 	if (!references::is_valid($_SESSION['supp_trans']->supp_reference)) 
 	{
 		display_error(_("You must enter a supplier's credit note reference."));
+		set_focus('supp_reference');
 		return false;
 	}
 
 	if (!is_date($_SESSION['supp_trans']->tran_date))
 	{
 		display_error(_("The credit note as entered cannot be processed because the date entered is not valid."));
+		set_focus('tran_date');
 		return false;
 	} 
 	elseif (!is_date_in_fiscalyear($_SESSION['supp_trans']->tran_date)) 
 	{
 		display_error(_("The entered date is not in fiscal year."));
+		set_focus('tran_date');
 		return false;
 	}
 	if (!is_date( $_SESSION['supp_trans']->due_date))
 	{
 		display_error(_("The invoice as entered cannot be processed because the due date is in an incorrect format."));
+		set_focus('due_date');
 		return false;
 	}
 
@@ -146,22 +153,24 @@ echo "<tr><td valign=center>"; // outer table
 echo "<center>";
 
 invoice_header($_SESSION['supp_trans']);
+if ($_POST['supplier_id']=='') 
+	display_error('No supplier found for entered search text');
+else {
+	echo "</td></tr><tr><td valign=center>"; // outer table
 
-echo "</td></tr><tr><td valign=center>"; // outer table
+	$total_grn_value = display_grn_items($_SESSION['supp_trans']);
 
-$total_grn_value = display_grn_items($_SESSION['supp_trans']);
+	$total_gl_value = display_gl_items($_SESSION['supp_trans']);
 
-$total_gl_value = display_gl_items($_SESSION['supp_trans']);
+	echo "</td></tr><tr><td align=center colspan=2>"; // outer table
 
-echo "</td></tr><tr><td align=center colspan=2>"; // outer table
-
-invoice_totals($_SESSION['supp_trans']);
-
+	invoice_totals($_SESSION['supp_trans']);
+}
 echo "</td></tr>";
 
 end_table(1); // outer table
 
-submit_center('PostCreditNote', _("Enter Credit Note"));
+submit_center('PostCreditNote', _("Enter Credit Note"), true, '', true);
 echo "<br><br>";
 
 end_form();

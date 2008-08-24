@@ -13,22 +13,13 @@ include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/taxes/db/tax_groups_db.inc");
 include_once($path_to_root . "/taxes/db/tax_types_db.inc");
 
-if (isset($_GET['selected_id']))
-{
-	$selected_id = $_GET['selected_id'];
-} 
-elseif(isset($_POST['selected_id']))
-{
-	$selected_id = $_POST['selected_id'];
-}
-else
-	$selected_id = -1;
+simple_page_mode(true);
 	
 check_db_has_tax_types(_("There are no tax types defined. Define tax types before defining tax groups."));
 
 //-----------------------------------------------------------------------------------
 
-if (isset($_POST['ADD_ITEM']) || isset($_POST['UPDATE_ITEM'])) 
+if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM') 
 {
 
 	//initialise no input errors assumed initially before we test
@@ -38,6 +29,7 @@ if (isset($_POST['ADD_ITEM']) || isset($_POST['UPDATE_ITEM']))
 	{
 		$input_error = 1;
 		display_error(_("The tax group name cannot be empty."));
+		set_focus('name');
 	} 
 	else 
 	{
@@ -46,11 +38,12 @@ if (isset($_POST['ADD_ITEM']) || isset($_POST['UPDATE_ITEM']))
     	{
     		if (isset($_POST['tax_type_id' . $i]) && 
     			$_POST['tax_type_id' . $i] != reserved_words::get_all_numeric()	&& 
-    			(!is_numeric($_POST['rate' . $i]) || $_POST['rate' . $i] < 0))
+    			!check_num('rate' . $i, 0))
     		{
-				display_error( _("An entered tax rate is invalid or less than zero."));
+			display_error( _("An entered tax rate is invalid or less than zero."));
     			$input_error = 1;
-				break;
+			set_focus('rate');
+			break;
     		}
     	}
 	}
@@ -61,7 +54,6 @@ if (isset($_POST['ADD_ITEM']) || isset($_POST['UPDATE_ITEM']))
 		// create an array of the taxes and array of rates
     	$taxes = array();
     	$rates = array();
-    	$included = array();
 
     	for ($i = 0; $i < 5; $i++) 
     	{
@@ -69,28 +61,23 @@ if (isset($_POST['ADD_ITEM']) || isset($_POST['UPDATE_ITEM']))
    				$_POST['tax_type_id' . $i] != reserved_words::get_any_numeric()) 
    			{
         		$taxes[] = $_POST['tax_type_id' . $i];
-        		$rates[] = $_POST['rate' . $i];
-        		if (isset($_POST['included' . $i]))
-        			$included[] = 1;
-        		else	
-        			$included[] = 0;
+        		$rates[] = input_num('rate' . $i);
     		}
     	}
 
     	if ($selected_id != -1) 
     	{
-
-    		update_tax_group($selected_id, $_POST['name'], $_POST['tax_shipping'], $taxes, 
-    			$rates, $included);
-
+	   		update_tax_group($selected_id, $_POST['name'], $_POST['tax_shipping'], $taxes, 
+    			$rates);
+			display_notification(_('Selected tax group has been updated'));
     	} 
     	else 
     	{
-
-    		add_tax_group($_POST['name'], $_POST['tax_shipping'], $taxes, $rates, $included);
+	   		add_tax_group($_POST['name'], $_POST['tax_shipping'], $taxes, $rates);
+			display_notification(_('New tax group has been added'));
     	}
 
-		meta_forward($_SERVER['PHP_SELF']);
+		$Mode = 'RESET';
 	}
 }
 
@@ -125,20 +112,27 @@ function can_delete($selected_id)
 
 //-----------------------------------------------------------------------------------
 
-if (isset($_GET['delete'])) 
+if ($Mode == 'Delete')
 {
 
 	if (can_delete($selected_id))
 	{
 		delete_tax_group($selected_id);
-		meta_forward($_SERVER['PHP_SELF']);
+		display_notification(_('Selected tax group has been deleted'));
 	}
+	$Mode = 'RESET';
 }
 
+if ($Mode == 'RESET')
+{
+	$selected_id = -1;
+	unset($_POST);
+}
 //-----------------------------------------------------------------------------------
 
 $result = get_all_tax_groups();
 
+start_form();
 start_table($table_style);
 $th = array(_("Description"), _("Tax Shipping"), "", "");
 table_header($th);
@@ -159,16 +153,16 @@ while ($myrow = db_fetch($result))
 		if ($myrow["type" . $i] != reserved_words::get_all_numeric())
 			echo "<td>" . $myrow["type" . $i] . "</td>";*/
 
-	edit_link_cell("selected_id=" . $myrow["id"]);
-	delete_link_cell("selected_id=" . $myrow["id"]. "&delete=1");
+ 	edit_button_cell("Edit".$myrow["id"], _("Edit"));
+ 	edit_button_cell("Delete".$myrow["id"], _("Delete"));
 	end_row();;
 }
 
 end_table();
+end_form();
+echo '<br>';
 
 //-----------------------------------------------------------------------------------
-
-hyperlink_no_params($_SERVER['PHP_SELF'], _("New Tax Group"));
 
 start_form();
 
@@ -178,8 +172,7 @@ if ($selected_id != -1)
 {
 	//editing an existing status code
 
-	if (!isset($_POST['name']))
-	{
+ 	if ($Mode == 'Edit') {
     	$group = get_tax_group($selected_id);
 
     	$_POST['name']  = $group["name"];
@@ -191,8 +184,7 @@ if ($selected_id != -1)
     	while ($tax_item = db_fetch($items)) 
     	{
     		$_POST['tax_type_id' . $i]  = $tax_item["tax_type_id"];
-    		$_POST['rate' . $i]  = $tax_item["rate"];
-    		$_POST['included' . $i]  = $tax_item["included_in_price"];
+    		$_POST['rate' . $i]  = percent_format($tax_item["rate"]);
     		$i ++;
     	}
 	}
@@ -207,34 +199,32 @@ end_table();
 display_note(_("Select the taxes that are included in this group."), 1);
 
 start_table($table_style2);
-$th = array(_("Tax"), _("Default Rate (%)"), _("Rate (%)"), _("Include in Price"));
+$th = array(_("Tax"), _("Default Rate (%)"), _("Rate (%)"));
 table_header($th);
 for ($i = 0; $i < 5; $i++) 
 {
 	start_row();
 	if (!isset($_POST['tax_type_id' . $i]))
 		$_POST['tax_type_id' . $i] = 0;
-	if (!isset($_POST['included' . $i]))
-		$_POST['included' . $i] = 0;
-	tax_types_list_cells(null, 'tax_type_id' . $i, $_POST['tax_type_id' . $i], true, _("None"), true);
+	tax_types_list_cells(null, 'tax_type_id' . $i, $_POST['tax_type_id' . $i], _("None"), true);
 
 	if ($_POST['tax_type_id' . $i] != 0 && $_POST['tax_type_id' . $i] != reserved_words::get_all_numeric()) 
 	{
 
 		$default_rate = get_tax_type_default_rate($_POST['tax_type_id' . $i]);
-		label_cell(number_format2($default_rate, user_percent_dec()), "nowrap align=right");
+		label_cell(percent_format($default_rate), "nowrap align=right");
 
 		if (!isset($_POST['rate' . $i]) || $_POST['rate' . $i] == "")
-			$_POST['rate' . $i] = $default_rate;
-		text_cells(null, 'rate' . $i, $_POST['rate' . $i], 10, 10);
-		check_cells(null, 'included' . $i, $_POST['included' . $i]);
+			$_POST['rate' . $i] = percent_format($default_rate);
+		small_amount_cells(null, 'rate' . $i, $_POST['rate' . $i], null, null, 
+		  user_percent_dec());
 	}
 	end_row();
 }
 
 end_table(1);
 
-submit_add_or_update_center(!isset($selected_id));
+submit_add_or_update_center($selected_id == -1, '', true);
 
 end_form();
 

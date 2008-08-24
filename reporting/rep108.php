@@ -23,7 +23,7 @@ print_statements();
 
 function getTransactions($debtorno, $date)
 {
-    $sql = "SELECT ".TB_PREF."debtor_trans.*, ".TB_PREF."sys_types.type_name, 
+    $sql = "SELECT ".TB_PREF."debtor_trans.*, ".TB_PREF."sys_types.type_name,
 				(".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + ".TB_PREF."debtor_trans.ov_freight + ".TB_PREF."debtor_trans.ov_discount)
 				AS TotalAmount, ".TB_PREF."debtor_trans.alloc AS Allocated,
 				((".TB_PREF."debtor_trans.type = 10)
@@ -31,6 +31,7 @@ function getTransactions($debtorno, $date)
     			FROM ".TB_PREF."debtor_trans, ".TB_PREF."sys_types
     			WHERE ".TB_PREF."debtor_trans.tran_date <= '$date' AND ".TB_PREF."debtor_trans.debtor_no = '$debtorno'
     				AND ".TB_PREF."debtor_trans.type = ".TB_PREF."sys_types.type_id
+    				AND ".TB_PREF."debtor_trans.type <> 13
     				ORDER BY ".TB_PREF."debtor_trans.tran_date";
 
     return db_query($sql,"No transactions were returned");
@@ -41,32 +42,32 @@ function getTransactions($debtorno, $date)
 function print_statements()
 {
 	global $path_to_root;
-	
+
 	include_once($path_to_root . "reporting/includes/pdf_report.inc");
-	
+
 	$customer = $_POST['PARAM_0'];
 	$currency = $_POST['PARAM_1'];
 	$bankaccount = $_POST['PARAM_2'];
-	$email = $_POST['PARAM_3'];	
+	$email = $_POST['PARAM_3'];
 	$comments = $_POST['PARAM_4'];
 
 	$dec = user_price_dec();
-	
+
 	$cols = array(4, 100, 130, 190,	250, 320, 385, 450, 515);
-	
+
 	//$headers in doctext.inc
 
 	$aligns = array('left',	'left',	'left',	'left',	'right', 'right', 'right', 'right');
-	
+
 	$params = array('comments' => $comments,
 					'bankaccount' => $bankaccount);
-	
+
 	$baccount = get_bank_account($params['bankaccount']);
 
 	$cur = get_company_pref('curr_default');
 	$PastDueDays1 = get_company_pref('past_due_days');
 	$PastDueDays2 = 2 * $PastDueDays1;
-	
+
 	if ($email == 0)
 	{
 		$rep = new FrontReport(_('STATEMENT'), "StatementBulk.pdf", user_pagesize());
@@ -74,20 +75,20 @@ function print_statements()
 		$rep->Font();
 		$rep->Info($params, $cols, null, $aligns);
 	}
-	
+
 	$sql = "SELECT debtor_no, name AS DebtorName, address, tax_id, email, curr_code, curdate() AS tran_date, payment_terms FROM ".TB_PREF."debtors_master";
 	if ($customer != reserved_words::get_all_numeric())
 		$sql .= " WHERE debtor_no = $customer";
 	else
 		$sql .= " ORDER by name";
 	$result = db_query($sql, "The customers could not be retrieved");
-	
-	while ($myrow=db_fetch($result)) 
+
+	while ($myrow=db_fetch($result))
 	{
 		$date = date('Y-m-d');
-		
+
 		$myrow['order_'] = "";
-		
+
 		$TransResult = getTransactions($myrow['debtor_no'], $date);
 		if (db_num_rows($TransResult) == 0)
 			continue;
@@ -106,38 +107,35 @@ function print_statements()
 		$doctype = 12;
 		if ($rep->currency != $myrow['curr_code'])
 		{
-			include($path_to_root . "reporting/includes/doctext2.inc");			
-		}	
+			include($path_to_root . "reporting/includes/doctext2.inc");
+		}
 		else
 		{
-			include($path_to_root . "reporting/includes/doctext.inc");			
-		}	
+			include($path_to_root . "reporting/includes/doctext.inc");
+		}
 		$rep->fontSize += 2;
 		$rep->TextCol(0, 8, $doc_Outstanding);
 		$rep->fontSize -= 2;
 		$rep->NewLine(2);
-		while ($myrow2=db_fetch($TransResult)) 
+		while ($myrow2=db_fetch($TransResult))
 		{
 			$DisplayTotal = number_format2(Abs($myrow2["TotalAmount"]),$dec);
 			$DisplayAlloc = number_format2($myrow2["Allocated"],$dec);
-			if ($myrow2['type'] == 10)
-				$DisplayNet = number_format2($myrow2["TotalAmount"] - $myrow2["Allocated"],$dec);
-			else	
-				$DisplayNet = number_format2($myrow2["TotalAmount"] + $myrow2["Allocated"],$dec);
+			$DisplayNet = number_format2($myrow2["TotalAmount"] - $myrow2["Allocated"],$dec);
 
 			$rep->TextCol(0, 1,	$myrow2['type_name'], -2);
 			$rep->TextCol(1, 2,	$myrow2['reference'], -2);
 			$rep->TextCol(2, 3,	sql2date($myrow2['tran_date']), -2);
-			if ($myrow2['type'] == 10)	
+			if ($myrow2['type'] == 10)
 				$rep->TextCol(3, 4,	sql2date($myrow2['due_date']), -2);
-			if ($myrow2['TotalAmount'] > 0.0)	
+			if ($myrow2['type'] == 10)
 				$rep->TextCol(4, 5,	$DisplayTotal, -2);
-			else		
+			else
 				$rep->TextCol(5, 6,	$DisplayTotal, -2);
 			$rep->TextCol(6, 7,	$DisplayAlloc, -2);
 			$rep->TextCol(7, 8,	$DisplayNet, -2);
-			$rep->NewLine(); 
-			if ($rep->row < $rep->bottomMargin + (10 * $rep->lineHeight)) 
+			$rep->NewLine();
+			if ($rep->row < $rep->bottomMargin + (10 * $rep->lineHeight))
 				$rep->Header2($myrow, null, null, $baccount);
 		}
 		$nowdue = "1-" . $PastDueDays1 . " " . $doc_Days;
@@ -151,17 +149,17 @@ function print_statements()
 			number_format2($CustomerRecord["Overdue2"],$dec),
 			number_format2($CustomerRecord["Balance"],$dec));
 		$col = array($rep->cols[0], $rep->cols[0] + 110, $rep->cols[0] + 210, $rep->cols[0] + 310,
-			$rep->cols[0] + 410, $rep->cols[0] + 510);	
+			$rep->cols[0] + 410, $rep->cols[0] + 510);
 		$rep->row = $rep->bottomMargin + (8 * $rep->lineHeight);
 		for ($i = 0; $i < 5; $i++)
 			$rep->TextWrap($col[$i], $rep->row, $col[$i + 1] - $col[$i], $str[$i], 'right');
-		$rep->NewLine();	
+		$rep->NewLine();
 		for ($i = 0; $i < 5; $i++)
 			$rep->TextWrap($col[$i], $rep->row, $col[$i + 1] - $col[$i], $str2[$i], 'right');
 		if ($email == 1)
 			$rep->End($email, $doc_Statement . " " . $doc_as_of . " " . sql2date($date), $myrow, 12);
-			
-	}	
+
+	}
 	if ($email == 0)
 		$rep->End();
 }

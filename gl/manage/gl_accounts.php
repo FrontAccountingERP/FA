@@ -14,7 +14,7 @@ check_db_has_gl_account_groups(_("There are no account groups defined. Please de
 
 //-------------------------------------------------------------------------------------
 
-if (isset($_POST['Select'])) 
+if (isset($_POST['_AccountList_update'])) 
 {
 	$_POST['selected_account'] = $_POST['AccountList'];
 }
@@ -41,27 +41,37 @@ if (isset($_POST['add']) || isset($_POST['update']))
 	{
 		$input_error = 1;
 		display_error( _("The account code must be entered."));
+		set_focus('account_code');
 	} 
 	elseif (strlen($_POST['account_name']) == 0) 
 	{
 		$input_error = 1;
 		display_error( _("The account name cannot be empty."));
+		set_focus('account_name');
 	} 
 	elseif (!$accounts_alpha && !is_numeric($_POST['account_code'])) 
 	{
 	    $input_error = 1;
 	    display_error( _("The account code must be numeric."));
+		set_focus('account_code');
 	}
 
 	if ($input_error != 1)
 	{
 		if ($accounts_alpha == 2)
 			$_POST['account_code'] = strtoupper($_POST['account_code']);
-    	if ($selected_account)
-    		update_gl_account($_POST['account_code'], $_POST['account_name'], $_POST['account_type'], $_POST['account_code2'], $_POST['tax_code']);    		
-    	else
+    	if ($selected_account) 
+		{
+    		update_gl_account($_POST['account_code'], $_POST['account_name'], $_POST['account_type'], $_POST['account_code2'], $_POST['tax_code']);
+			display_notification(_("Account data has been updated."));
+		}
+    	else 
+		{
     		add_gl_account($_POST['account_code'], $_POST['account_name'], $_POST['account_type'], $_POST['account_code2'], $_POST['tax_code']);
-		meta_forward($_SERVER['PHP_SELF']);    	
+			$selected_account = $_POST['AccountList'] = $_POST['account_code'];
+			display_notification(_("New account has been added."));
+		}
+		$Ajax->activate('_page_body');
 	}
 } 
 
@@ -84,10 +94,6 @@ function can_delete($selected_account)
 	$sql= "SELECT COUNT(*) FROM ".TB_PREF."company WHERE debtors_act='$selected_account' 
 		OR pyt_discount_act='$selected_account' 
 		OR creditors_act='$selected_account' 
-		OR grn_act='$selected_account' 
-		OR exchange_diff_act='$selected_account' 
-		OR purch_exchange_diff_act='$selected_account' 
-		OR retained_earnings_act='$selected_account'
 		OR freight_act='$selected_account'
 		OR default_sales_act='$selected_account' 
 		OR default_sales_discount_act='$selected_account'
@@ -96,8 +102,7 @@ function can_delete($selected_account)
 		OR default_cogs_act='$selected_account'
 		OR default_adj_act='$selected_account'
 		OR default_inv_sales_act='$selected_account'
-		OR default_assembly_act='$selected_account'
-		OR payroll_act='$selected_account'";
+		OR default_assembly_act='$selected_account'";
 	$result = db_query($sql,"Couldn't test for default company GL codes");
 
 	$myrow = db_fetch_row($result);
@@ -179,7 +184,9 @@ if (isset($_POST['delete']))
 	if (can_delete($selected_account))
 	{
 		delete_gl_account($selected_account);
-		meta_forward($_SERVER['PHP_SELF']);		
+		$selected_account = $_POST['account_code'] = $_POST['AccountList'] = '';
+		display_notification(_("Selected account has been deleted"));
+		$Ajax->activate('_page_body');
 	}
 } 
 
@@ -191,15 +198,12 @@ if (db_has_gl_accounts())
 {
 	echo "<center>";
     echo _("Select an Account:") . "&nbsp;";
-    gl_all_accounts_list('AccountList', null);
-    echo "&nbsp;";
-    submit('Select', _("Edit Account"));
+    gl_all_accounts_list('AccountList', null, false, false, false,
+		_('New account'), true);
     echo "</center>";
-} 
+}
 	
-hyperlink_no_params($_SERVER['PHP_SELF'], _("New Account"));
 br(1);
-
 start_table($table_style2);
 
 if ($selected_account != "") 
@@ -214,12 +218,14 @@ if ($selected_account != "")
 	$_POST['tax_code'] = $myrow["tax_code"];
 
 	hidden('account_code', $_POST['account_code']);
-	hidden('selected_account', $_POST['selected_account']);
+	hidden('selected_account', $selected_account);
 		
 	label_row(_("Account Code:"), $_POST['account_code']);
 } 
 else 
 {
+	$_POST['account_code'] = $_POST['account_code2'] = '';
+	$_POST['account_name']	= $_POST['account_type'] = $_POST['tax_code'] = '';
 	text_row_ex(_("Account Code:"), 'account_code', 11);
 }
 
@@ -229,20 +235,19 @@ text_row_ex(_("Account Name:"), 'account_name', 60);
 
 gl_account_types_list_row(_("Account Group:"), 'account_type', null);
 
-tax_types_list_row(_("Tax Type:"), 'tax_code', null, true, _('No Tax'));
+tax_types_list_row(_("Tax Type:"), 'tax_code', null, _('No Tax'));
 
 end_table(1);
 
 if ($selected_account == "") 
 {
-	submit_center('add', _("Add Account"));
+	submit_center('add', _("Add Account"), true, '', true);
 } 
 else 
 {
-    submit_center_first('update', _("Update Account"));
-    submit_center_last('delete', _("Delete account"));
+    submit_center_first('update', _("Update Account"), '', true);
+    submit_center_last('delete', _("Delete account"), '',true);
 }
-
 end_form();
 
 end_page();

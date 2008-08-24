@@ -18,7 +18,6 @@ if ($use_date_picker)
 	$js .= get_js_date_picker();
 page(_("Inventory Location Transfers"), false, false, "", $js);
 
-
 //-----------------------------------------------------------------------------------------------
 
 check_db_has_costable_items(_("There are no inventory items defined in the system (Purchased or manufactured items)."));
@@ -39,29 +38,14 @@ if (isset($_GET['AddedID']))
 
 	display_footer_exit();
 }
-
 //--------------------------------------------------------------------------------------------------
 
-function copy_to_st()
-{
-	$_SESSION['transfer_items']->from_loc = $_POST['FromStockLocation'];
-	$_SESSION['transfer_items']->to_loc = $_POST['ToStockLocation'];
-	$_SESSION['transfer_items']->tran_date = $_POST['AdjDate'];
-	$_SESSION['transfer_items']->transfer_type = $_POST['type'];
-	$_SESSION['transfer_items']->memo_ = $_POST['memo_'];
+function line_start_focus() {
+  global 	$Ajax;
+
+  $Ajax->activate('items_table');
+  set_focus('_stock_id_edit');
 }
-
-//--------------------------------------------------------------------------------------------------
-
-function copy_from_st()
-{
-	$_POST['FromStockLocation'] = $_SESSION['transfer_items']->from_loc;
-	$_POST['ToStockLocation'] = $_SESSION['transfer_items']->to_loc;
-	$_POST['AdjDate'] = $_SESSION['transfer_items']->tran_date;
-	$_POST['type'] = $_SESSION['transfer_items']->transfer_type;
-	$_POST['memo_'] = $_SESSION['transfer_items']->memo_;
-}
-
 //-----------------------------------------------------------------------------------------------
 
 function handle_new_order()
@@ -74,7 +58,7 @@ function handle_new_order()
 
     session_register("transfer_items");
 
-	$_SESSION['transfer_items'] = new items_cart;
+	$_SESSION['transfer_items'] = new items_cart(systypes::location_transfer());
 	$_POST['AdjDate'] = Today();
 	if (!is_date_in_fiscalyear($_POST['AdjDate']))
 		$_POST['AdjDate'] = end_fiscalyear();
@@ -86,41 +70,54 @@ function handle_new_order()
 if (isset($_POST['Process']))
 {
 
+	$tr = &$_SESSION['transfer_items'];
 	$input_error = 0;
 
+	if (count($tr->line_items) == 0)	{
+		display_error(_("You must enter at least one non empty item line."));
+		set_focus('stock_id');
+		return false;
+	}
 	if (!references::is_valid($_POST['ref'])) 
 	{
 		display_error(_("You must enter a reference."));
+		set_focus('ref');
 		$input_error = 1;
 	} 
 	elseif (!is_new_reference($_POST['ref'], systypes::location_transfer())) 
 	{
 		display_error(_("The entered reference is already in use."));
+		set_focus('ref');
 		$input_error = 1;
 	} 
 	elseif (!is_date($_POST['AdjDate'])) 
 	{
 		display_error(_("The entered date for the adjustment is invalid."));
+		set_focus('AdjDate');
 		$input_error = 1;
 	} 
 	elseif (!is_date_in_fiscalyear($_POST['AdjDate'])) 
 	{
 		display_error(_("The entered date is not in fiscal year."));
+		set_focus('AdjDate');
 		$input_error = 1;
 	} 
 	elseif ($_POST['FromStockLocation'] == $_POST['ToStockLocation'])
 	{
 		display_error(_("The locations to transfer from and to must be different."));
+		set_focus('FromStockLocation');
 		$input_error = 1;
 	} 
 	else 
 	{
-		$failed_item = $_SESSION['transfer_items']->check_qoh($_POST['FromStockLocation'], $_POST['AdjDate'], true);
-		if ($failed_item != null) 
+		$failed_item = $tr->check_qoh($_POST['FromStockLocation'], $_POST['AdjDate'], true);
+		if ($failed_item >= 0) 
 		{
+			$line = $tr->line_items[$failed_item];
         	display_error(_("The quantity entered is greater than the available quantity for this item at the source location :") .
-        		" " . $failed_item->stock_id . " - " .  $failed_item->item_description);
+        		" " . $line->stock_id . " - " .  $line->item_description);
         	echo "<br>";
+			$_POST['Edit'.$failed_item] = 1; // enter edit mode
 			$input_error = 1;
 		}
 	}
@@ -148,18 +145,12 @@ if (isset($_POST['Process']))
 
 function check_item_data()
 {
-	if (!is_numeric($_POST['qty']) || ($_POST['qty'] == 0))
-	{
-		display_error( _("The quantity entered is not a valid number."));
-		return false;
-	}
-
-	if ($_POST['qty'] <= 0)
+	if (!check_num('qty', 0))
 	{
 		display_error(_("The quantity entered must be a positive number."));
+		set_focus('qty');
 		return false;
 	}
-
    	return true;
 }
 
@@ -169,17 +160,20 @@ function handle_update_item()
 {
     if($_POST['UpdateItem'] != "" && check_item_data())
     {
+		$id = $_POST['LineNo'];
     	if (!isset($_POST['std_cost']))
-    		$_POST['std_cost'] = $_SESSION['transfer_items']->line_items[$_POST['stock_id']]->standard_cost;
-    	$_SESSION['transfer_items']->update_cart_item($_POST['stock_id'], $_POST['qty'], $_POST['std_cost']);
+    		$_POST['std_cost'] = $_SESSION['transfer_items']->line_items[$id]->standard_cost;
+    	$_SESSION['transfer_items']->update_cart_item($id, input_num('qty'), $_POST['std_cost']);
     }
+	line_start_focus();
 }
 
 //-----------------------------------------------------------------------------------------------
 
-function handle_delete_item()
+function handle_delete_item($id)
 {
-	$_SESSION['transfer_items']->remove_from_cart($_GET['Delete']);
+	$_SESSION['transfer_items']->remove_from_cart($id);
+	line_start_focus();
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -190,19 +184,14 @@ function handle_new_item()
 		return;
 	if (!isset($_POST['std_cost']))
    		$_POST['std_cost'] = 0;
-	add_to_order($_SESSION['transfer_items'], $_POST['stock_id'], $_POST['qty'], $_POST['std_cost']);
+	add_to_order($_SESSION['transfer_items'], $_POST['stock_id'], input_num('qty'), $_POST['std_cost']);
+	line_start_focus();
 }
 
 //-----------------------------------------------------------------------------------------------
-
-if (isset($_GET['Delete']) || isset($_GET['Edit']))
-	copy_from_st();
-
-if (isset($_GET['Delete']))
-	handle_delete_item();
-
-if (isset($_POST['AddItem']) || isset($_POST['UpdateItem']))
-	copy_to_st();
+$id = find_submit('Delete');
+if ($id != -1)
+	handle_delete_item($id);
 	
 if (isset($_POST['AddItem']))
 	handle_new_item();
@@ -210,6 +199,9 @@ if (isset($_POST['AddItem']))
 if (isset($_POST['UpdateItem']))
 	handle_update_item();
 
+if (isset($_POST['CancelItemChanges'])) {
+	line_start_focus();
+}
 //-----------------------------------------------------------------------------------------------
 
 if (isset($_GET['NewTransfer']) || !isset($_SESSION['transfer_items']))
@@ -218,7 +210,6 @@ if (isset($_GET['NewTransfer']) || !isset($_SESSION['transfer_items']))
 }
 
 //-----------------------------------------------------------------------------------------------
-
 start_form(false, true);
 
 display_order_header($_SESSION['transfer_items']);
@@ -232,16 +223,9 @@ echo "</td>";
 end_row();
 end_table(1);
 
-if (!isset($_POST['Process']))
-{
-	if ($_SESSION['transfer_items']->count_items() >= 1)
-	{
-    	submit_center_first('Update', _("Update"));
-	    submit_center_last('Process', _("Process Transfer"));
-	}
-	else
-    	submit_center('Update', _("Update"));
-}
+submit_center_first('Update', _("Update"), '', null);
+submit_center_last('Process', _("Process Transfer"), '', true);
+
 end_form();
 end_page();
 

@@ -24,7 +24,7 @@ function display_allocatable_transactions()
 	{
 		unset($_SESSION['alloc']->allocs);
 		unset($_SESSION['alloc']);
-	}	
+	}
     if (!isset($_POST['customer_id']))
     	$_POST['customer_id'] = get_global_customer();
 
@@ -36,7 +36,7 @@ function display_allocatable_transactions()
 
 	set_global_customer($_POST['customer_id']);
 
-	if (isset($_POST['customer_id']) && ($_POST['customer_id'] == reserved_words::get_all())) 
+	if (isset($_POST['customer_id']) && ($_POST['customer_id'] == reserved_words::get_all()))
 	{
 		unset($_POST['customer_id']);
 	}
@@ -56,12 +56,12 @@ function display_allocatable_transactions()
 		$customer_id = $_POST['customer_id'];
 
 	$trans_items = get_allocatable_from_cust_transactions($customer_id, $settled);
-
+ div_start('alloc_tbl');
 	start_table($table_style);
 	if (!isset($_POST['customer_id']))
 		$th = array(_("Transaction Type"), _("#"), _("Reference"), _("Date"), _("Customer"),
 			_("Currency"), _("Total"), _("Left To Allocate"), "");
-	else	
+	else
 		$th = array(_("Transaction Type"), _("#"), _("Reference"), _("Date"),
 			_("Total"), _("Left To Allocate"), "");
 	table_header($th);
@@ -70,12 +70,12 @@ function display_allocatable_transactions()
 
 	while ($myrow = db_fetch($trans_items))
 	{
-      	if ($myrow["settled"] == 1) 
+      	if ($myrow["settled"] == 1)
       	{
       		start_row("class='settledbg'");
       		$has_settled_items = true;
-      	} 
-      	else 
+      	}
+      	else
       	{
     		alt_table_row_color($k);
       	}
@@ -90,10 +90,11 @@ function display_allocatable_transactions()
     		label_cell($myrow["DebtorName"]);
     		label_cell($myrow["curr_code"]);
 		}
-		amount_cell(-$myrow["Total"]);
-    	amount_cell(-$myrow["Total"] - $myrow["alloc"]);
-    	if (-$myrow["Total"] - $myrow["alloc"] != 0.0)
-    		label_cell("<a href='$path_to_root/sales/allocations/customer_allocate.php?trans_no=" . $myrow["trans_no"] . "&trans_type=" . $myrow["type"]  . "'>" . _("Allocate") . "</a>");
+		amount_cell($myrow["Total"]);
+    	amount_cell($myrow["Total"] - $myrow["alloc"]);
+    	if ($myrow["Total"] - $myrow["alloc"] != 0.0)
+    		label_cell("<a href='$path_to_root/sales/allocations/customer_allocate.php?trans_no="
+					.$myrow["trans_no"] . "&trans_type=" . $myrow["type"]  . "'>" . _("Allocate") . "</a>");
     	else
     		label_cell("");
     	end_row();
@@ -106,12 +107,14 @@ function display_allocatable_transactions()
 
 	if (db_num_rows($trans_items) == 0)
 		display_note(_("There are no allocations to be done."), 1, 2);
-
+	div_end();
 	end_form();
 }
 
 //--------------------------------------------------------------------------------
-
+if (get_post('_ShowSettled_update')) {
+	$Ajax->activate('alloc_tbl');
+}
 display_allocatable_transactions();
 
 //--------------------------------------------------------------------------------

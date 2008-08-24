@@ -7,18 +7,11 @@ include($path_to_root . "/includes/session.inc");
 page(_("Bank Accounts"));
 
 include($path_to_root . "/includes/ui.inc");
-include($path_to_root . "/includes/data_checks.inc");
 
-if (isset($_GET['selected_id'])) 
-{
-	$selected_id = $_GET['selected_id'];
-} 
-elseif (isset($_POST['selected_id'])) 
-{
-	$selected_id = $_POST['selected_id'];
-}
+simple_page_mode();
+//-----------------------------------------------------------------------------------
 
-if (isset($_POST['ADD_ITEM']) || isset($_POST['UPDATE_ITEM'])) 
+if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM') 
 {
 
 	//initialise no input errors assumed initially before we test
@@ -29,16 +22,18 @@ if (isset($_POST['ADD_ITEM']) || isset($_POST['UPDATE_ITEM']))
 	{
 		$input_error = 1;
 		display_error(_("The bank account name cannot be empty."));
+		set_focus('bank_account_name');
 	} 
 	
 	if ($input_error != 1)
 	{
-    	if (isset($selected_id)) 
+    	if ($selected_id != -1) 
     	{
     		
     		update_bank_account($selected_id, $_POST['account_type'], $_POST['bank_account_name'], $_POST['bank_name'], 
     			$_POST['bank_account_number'], 
     			$_POST['bank_address'], $_POST['BankAccountCurrency']);		
+			display_notification(_('Bank account has been updated'));
     	} 
     	else 
     	{
@@ -46,13 +41,12 @@ if (isset($_POST['ADD_ITEM']) || isset($_POST['UPDATE_ITEM']))
     		add_bank_account($_POST['account_code'], $_POST['account_type'], $_POST['bank_account_name'], $_POST['bank_name'], 
     			$_POST['bank_account_number'], 
     			$_POST['bank_address'], $_POST['BankAccountCurrency']);
+			display_notification(_('New bank account has been added'));
     	}
-		
-		meta_forward($_SERVER['PHP_SELF']); 
+ 		$Mode = 'RESET';
 	}
-
 } 
-elseif (isset($_GET['delete'])) 
+elseif( $Mode == 'Delete')
 {
 	//the link to delete a selected record was clicked instead of the submit button
 
@@ -71,8 +65,16 @@ elseif (isset($_GET['delete']))
 	if (!$cancel_delete) 
 	{
 		delete_bank_account($selected_id);
-		meta_forward($_SERVER['PHP_SELF']);
+		display_notification(_('Selected bank account has been deleted'));
 	} //end if Delete bank account
+	$Mode = 'RESET';
+} 
+
+if ($Mode == 'RESET')
+{
+ 	$selected_id = -1;
+	$_POST['bank_name']  = 	$_POST['bank_account_name']  = '';
+	$_POST['bank_account_number'] = $_POST['bank_address'] = '';
 }
 
 /* Always show the list of accounts */
@@ -83,10 +85,11 @@ $result = db_query($sql,"could not get bank accounts");
 
 check_db_error("The bank accounts set up could not be retreived", $sql);
 
+start_form();
 start_table("$table_style width='80%'");
 
 $th = array(_("GL Account"), _("Bank"), _("Account Name"),
-	_("Type"), _("Number"), _("Currency"), _("Bank Address"));
+	_("Type"), _("Number"), _("Currency"), _("Bank Address"),'','');
 table_header($th);	
 
 $k = 0; 
@@ -102,26 +105,23 @@ while ($myrow = db_fetch($result))
     label_cell($myrow["bank_account_number"], "nowrap");
     label_cell($myrow["bank_curr_code"], "nowrap");
     label_cell($myrow["bank_address"]);
-    edit_link_cell("selected_id=" . $myrow["account_code"]);
-    delete_link_cell("selected_id=" . $myrow["account_code"]. "&delete=1");
+ 	edit_button_cell("Edit".$myrow["account_code"], _("Edit"));
+ 	edit_button_cell("Delete".$myrow["account_code"], _("Delete"));
     end_row(); 
 }
-//END WHILE LIST LOOP
-
 
 end_table();
-
-hyperlink_no_params($_SERVER['PHP_SELF'], _("New Bank Account"));
-
+end_form();
+echo '<br>';
 start_form();
 
-$is_editing = (isset($selected_id) && !isset($_GET['delete'])); 
+$is_editing = $selected_id != -1; 
 
 start_table($table_style2);
 
 if ($is_editing) 
 {
-	
+  if ($Mode == 'Edit') {	
 	$myrow = get_bank_account($selected_id);
 
 	$_POST['account_code'] = $myrow["account_code"];
@@ -131,22 +131,24 @@ if ($is_editing)
 	$_POST['bank_account_number'] = $myrow["bank_account_number"];
 	$_POST['bank_address'] = $myrow["bank_address"];
 	$_POST['BankAccountCurrency'] = $myrow["bank_curr_code"];
-
+  }
 	hidden('selected_id', $selected_id);
-	hidden('account_code', $_POST['account_code']);
+	hidden('account_code');
 	hidden('BankAccountCurrency', $_POST['BankAccountCurrency']);	
 	label_row(_("Bank Account GL Code:"), $_POST['account_code']);
+	set_focus('account_type');
 } 
 else 
 {
 	gl_all_accounts_list_row(_("Bank Account GL Code:"), 'account_code', null, true);	
+	set_focus('account_code');
 }
 
 bank_account_types_list_row(_("Account Type:"), 'account_type', null); 
 
-text_row(_("Bank Name:"), 'bank_name', null, 50, 50);
-text_row(_("Bank Account Name:"), 'bank_account_name', null, 50, 50);
-text_row(_("Bank Account Number:"), 'bank_account_number', null, 30, 30);
+text_row(_("Bank Name:"), 'bank_name', null, 50, 60);
+text_row(_("Bank Account Name:"), 'bank_account_name', null, 50, 100);
+text_row(_("Bank Account Number:"), 'bank_account_number', null, 30, 60);
 
 if ($is_editing) 
 {
@@ -158,11 +160,10 @@ else
 }	
 
 textarea_row(_("Bank Address:"), 'bank_address', null, 40, 5);
-//text_row(_("Bank Address:"), 'bank_address', null, 70, 70);
 
 end_table(1);
 
-submit_add_or_update_center(!isset($selected_id));
+submit_add_or_update_center($selected_id == -1, '', true);
 
 end_form();
 

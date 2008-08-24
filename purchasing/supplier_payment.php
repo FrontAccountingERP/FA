@@ -41,16 +41,11 @@ if (isset($_GET['AddedID']))
 
     display_note(get_gl_view_str(22, $payment_id, _("View the GL Journal Entries for this Payment")));
 
-	echo "<center><br>";
     hyperlink_params($path_to_root . "/purchasing/allocations/supplier_allocate.php", _("Allocate this Payment"), "trans_no=$payment_id&trans_type=22");
 
-   	echo "<br><br>";
 	hyperlink_params($_SERVER['PHP_SELF'], _("Enter another supplier payment"), "supplier_id=" . $_POST['supplier_id']);
 
-   	echo "</center><br><br>";
-
-	end_page();
- 	exit;
+	display_footer_exit();
 }
 
 //----------------------------------------------------------------------------------------
@@ -97,7 +92,7 @@ function display_controls()
 
 	bank_trans_types_list_row(_("Payment Type:"), 'PaymentType', null);
 
-    ref_row(_("Reference:"), 'ref', references::get_next(22));
+    ref_row(_("Reference:"), 'ref', '', references::get_next(22));
 
     text_row(_("Memo:"), 'memo_', null, 52,50);
 
@@ -106,7 +101,7 @@ function display_controls()
 	echo "</td></tr>";
 	end_table(1); // outer table
 
-	submit_center('ProcessSuppPayment',_("Enter Payment"));
+	submit_center('ProcessSuppPayment',_("Enter Payment"), true, '', true);
 
 	if ($bank_currency != $supplier_currency) 
 	{
@@ -122,12 +117,13 @@ function check_inputs()
 {
 	if ($_POST['amount'] == "") 
 	{
-		$_POST['amount'] = 0;
+		$_POST['amount'] = price_format(0);
 	}
 
-	if (!is_numeric($_POST['amount']) || $_POST['amount'] < 0) 
+	if (!check_num('amount', 0))
 	{
 		display_error(_("The entered amount is invalid or less than zero."));
+		set_focus('amount');
 		return false;
 	}
 
@@ -136,37 +132,43 @@ function check_inputs()
 		$_POST['discount'] = 0;
 	}
 
-	if (!is_numeric($_POST['discount']) OR $_POST['discount'] < 0) 
+	if (!check_num('discount', 0))
 	{
 		display_error(_("The entered discount is invalid or less than zero."));
+		set_focus('amount');
 		return false;
 	}
 
-	if ($_POST['amount'] - $_POST['discount'] <= 0) 
+	if (input_num('amount') - input_num('discount') <= 0) 
 	{
 		display_error(_("The total of the amount and the discount negative. Please enter positive values."));
+		set_focus('amount');
 		return false;
 	}
 
    	if (!is_date($_POST['DatePaid']))
    	{
 		display_error(_("The entered date is invalid."));
+		set_focus('DatePaid');
 		return false;
 	} 
 	elseif (!is_date_in_fiscalyear($_POST['DatePaid'])) 
 	{
 		display_error(_("The entered date is not in fiscal year."));
+		set_focus('DatePaid');
 		return false;
 	}
     if (!references::is_valid($_POST['ref'])) 
     {
 		display_error(_("You must enter a reference."));
+		set_focus('ref');
 		return false;
 	}
 
 	if (!is_new_reference($_POST['ref'], 22)) 
 	{
 		display_error(_("The entered reference is already in use."));
+		set_focus('ref');
 		return false;
 	}
 
@@ -179,7 +181,7 @@ function handle_add_payment()
 {
 	$payment_id = add_supp_payment($_POST['supplier_id'], $_POST['DatePaid'],
 		$_POST['PaymentType'], $_POST['bank_account'],
-		$_POST['amount'], $_POST['discount'], $_POST['ref'], $_POST['memo_']);
+		input_num('amount'), input_num('discount'), $_POST['ref'], $_POST['memo_']);
 
 	//unset($_POST['supplier_id']);
    	unset($_POST['bank_account']);

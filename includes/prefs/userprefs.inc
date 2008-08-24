@@ -19,6 +19,7 @@ class user_prefs
 	var $dec_sep;
 	var $theme;
 	var $pagesize; // for printing
+	var $show_hints;
 
 	function user_prefs(&$user) 
 	{
@@ -39,6 +40,7 @@ class user_prefs
 		$this->dec_sep = $user["dec_sep"];
 		$this->theme = $user["theme"];
 		$this->pagesize = $user["page_size"];
+		$this->show_hints = $user["show_hints"];
 	}
 
 	function language() 
@@ -116,6 +118,11 @@ class user_prefs
 	function get_pagesize() 
 	{
 		return $this->pagesize;
+	}
+
+	function show_hints() 
+	{
+		return $this->show_hints;
 	}
 
 	function set_dec($price_dec, $qty_dec, $exrate_dec, $percent_dec, $showgl, $showcodes) 

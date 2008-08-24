@@ -48,16 +48,16 @@ start_table("$table_style width=90%");
 $th = array(_("Item"), _("Description"), _("Quantity"), _("Units"));
 table_header($th);
 $transfer_items = get_stock_moves(systypes::location_transfer(), $trans_no);
-
-while ($item = db_fetch($transfer_items))	
+$k = 0;
+while ($item = db_fetch($transfer_items))
 {
-	if ($item['loc_code'] == $to_trans['loc_code']) 
+	if ($item['loc_code'] == $to_trans['loc_code'])
 	{
         alt_table_row_color($k);
 
         label_cell($item['stock_id']);
         label_cell($item['description']);
-        qty_cell($item['qty']);
+        qty_cell($item['qty'], false, get_qty_dec($item['stock_id']));
         label_cell($item['units']);
         end_row();;
 	}

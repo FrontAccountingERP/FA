@@ -13,6 +13,8 @@ include_once($path_to_root . "/manufacturing/includes/manufacturing_db.inc");
 include_once($path_to_root . "/manufacturing/includes/manufacturing_ui.inc");
 include_once($path_to_root . "/manufacturing/includes/work_order_issue_ui.inc");
 $js = "";
+if ($use_popup_windows)
+	$js .= get_js_open_window(800, 500);
 if ($use_date_picker)
 	$js .= get_js_date_picker();
 page(_("Issue Items to Work Order"), false, false, "", $js);
@@ -25,8 +27,15 @@ if (isset($_GET['AddedID']))
    	echo "<br>";
    	hyperlink_no_params("search_work_orders.php", _("Select another Work Order to Process"));
    	echo "<br><br>";
-   	end_page();
-   	exit;
+	display_footer_exit();
+}
+//--------------------------------------------------------------------------------------------------
+
+function line_start_focus() {
+  global 	$Ajax;
+
+  $Ajax->activate('items_table');
+  set_focus('_stock_id_edit');
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -41,7 +50,7 @@ function handle_new_order()
 
      Session_register("issue_items");
 
-     $_SESSION['issue_items'] = new items_cart;
+     $_SESSION['issue_items'] = new items_cart(28);
      $_SESSION['issue_items']->order_id = $_GET['trans_no'];
 }
 
@@ -52,27 +61,31 @@ function can_process()
 	if (!is_date($_POST['date_'])) 
 	{
 		display_error(_("The entered date for the issue is invalid."));
+		set_focus('date_');
 		return false;
 	} 
 	elseif (!is_date_in_fiscalyear($_POST['date_'])) 
 	{
 		display_error(_("The entered date is not in fiscal year."));
+		set_focus('date_');
 		return false;
 	}
 	if (!references::is_valid($_POST['ref'])) 
 	{
 		display_error(_("You must enter a reference."));
+		set_focus('ref');
 		return false;
 	}
 
 	if (!is_new_reference($_POST['ref'], 28)) 
 	{
 		display_error(_("The entered reference is already in use."));
+		set_focus('ref');
 		return false;
 	}
 
 	$failed_item = $_SESSION['issue_items']->check_qoh($_POST['Location'], $_POST['date_'], !$_POST['IssueType']);
-	if ($failed_item != null) 
+	if ($failed_item >= 0) 
 	{
     	display_error( _("The issue cannot be processed because an entered item would cause a negative inventory balance :") .
     		" " . $failed_item->stock_id . " - " .  $failed_item->item_description);
@@ -82,7 +95,7 @@ function can_process()
 	return true;
 }
 
-if (isset($_POST['Process']))
+if (isset($_POST['Process']) && can_process())
 {
 
 	// if failed, returns a stockID
@@ -107,21 +120,17 @@ if (isset($_POST['Process']))
 
 function check_item_data()
 {
-	if (!is_numeric($_POST['qty']))
+	if (!check_num('qty', 0))
 	{
-		display_error(_("The quantity entered is not a valid number."));
+		display_error(_("The quantity entered is negative or invalid."));
+		set_focus('qty');
 		return false;
 	}
 
-	if ($_POST['qty'] <= 0)
-	{
-		display_error(_("The quantity entered must be greater than zero."));
-		return false;
-	}
-
-	if (!is_numeric($_POST['std_cost']) || $_POST['std_cost'] < 0)
+	if (!check_num('std_cost', 0))
 	{
 		display_error(_("The entered standard cost is negative or invalid."));
+		set_focus('std_cost');
 		return false;
 	}
 
@@ -134,15 +143,18 @@ function handle_update_item()
 {
     if($_POST['UpdateItem'] != "" && check_item_data())
     {
-    	$_SESSION['issue_items']->update_cart_item($_POST['stock_id'], $_POST['qty'], $_POST['std_cost']);
+		$id = $_POST['LineNo'];
+    	$_SESSION['issue_items']->update_cart_item($id, input_num('qty'), input_num('std_cost'));
     }
+	line_start_focus();
 }
 
 //-----------------------------------------------------------------------------------------------
 
-function handle_delete_item()
+function handle_delete_item($id)
 {
-	$_SESSION['issue_items']->remove_from_cart($_GET['Delete']);
+	$_SESSION['issue_items']->remove_from_cart($id);
+	line_start_focus();
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -152,19 +164,25 @@ function handle_new_item()
 	if (!check_item_data())
 		return;
 
-	add_to_order($_SESSION['issue_items'], $_POST['stock_id'], $_POST['qty'], $_POST['std_cost']);
+	add_to_issue($_SESSION['issue_items'], $_POST['stock_id'], input_num('qty'),
+		 input_num('std_cost'));
+	line_start_focus();
 }
 
 //-----------------------------------------------------------------------------------------------
+$id = find_submit('Delete');
+if ($id != -1)
+	handle_delete_item($id);
 
-if ($_GET['Delete']!="")
-	handle_delete_item();
-
-if ($_POST['AddItem']!="")
+if (isset($_POST['AddItem']))
 	handle_new_item();
 
-if ($_POST['UpdateItem']!="")
+if (isset($_POST['UpdateItem']))
 	handle_update_item();
+
+if (isset($_POST['CancelItemChanges'])) {
+	line_start_focus();
+}
 
 //-----------------------------------------------------------------------------------------------
 
@@ -175,30 +193,20 @@ if (isset($_GET['trans_no']))
 
 //-----------------------------------------------------------------------------------------------
 
-display_order_header($_SESSION['issue_items']);
+display_wo_details($_SESSION['issue_items']->order_id);
+echo "<br>";
 
 start_form(false, true);
 
-start_table("$table_style width=90%", '10');
+start_table("$table_style width=90%", 10);
 echo "<tr><td>";
-display_adjustment_items(_("Items to Issue"), $_SESSION['issue_items']);
-adjustment_options_controls();
+display_issue_items(_("Items to Issue"), $_SESSION['issue_items']);
+issue_options_controls();
 echo "</td></tr>";
 
 end_table();
 
-if (!isset($_POST['Process']))
-{
-	start_table();
-    start_row();
-    submit_cells('Update', _("Update"));
-	if ($_SESSION['issue_items']->count_items() >= 1)
-	{
-	    submit_cells('Process', _("Process Issue"));
-	}
-	end_row();
-	end_table();
-}
+submit_center('Process', _("Process Issue"), true, '', true);
 
 end_form();
 

@@ -12,18 +12,10 @@ include_once($path_to_root . "/taxes/db/tax_types_db.inc");
 
 include($path_to_root . "/includes/ui.inc");
 
-if (isset($_GET['selected_id']))
-{
-	$selected_id = $_GET['selected_id'];
-} 
-elseif(isset($_POST['selected_id']))
-{
-	$selected_id = $_POST['selected_id'];
-}
-
+simple_page_mode(true);
 //-----------------------------------------------------------------------------------
 
-if (isset($_POST['ADD_ITEM']) || isset($_POST['UPDATE_ITEM'])) 
+if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM') 
 {
 
 	$input_error = 0;
@@ -32,6 +24,7 @@ if (isset($_POST['ADD_ITEM']) || isset($_POST['UPDATE_ITEM']))
 	{
 		$input_error = 1;
 		display_error(_("The item tax type description cannot be empty."));
+		set_focus('name');
 	}
 
 	if ($input_error != 1) 
@@ -52,17 +45,17 @@ if (isset($_POST['ADD_ITEM']) || isset($_POST['UPDATE_ITEM']))
         	}
         }  
         
-    	if (isset($selected_id)) 
-    	{
-    		
+    	if ($selected_id != -1) 
+    	{    		
     		update_item_tax_type($selected_id, $_POST['name'], $_POST['exempt'], $exempt_from);
+			display_notification(_('Selected item tax type has been updated'));
     	} 
     	else 
     	{
-    
     		add_item_tax_type($_POST['name'], $_POST['exempt'], $exempt_from);
+			display_notification(_('New item tax type has been added'));
     	}
-		meta_forward($_SERVER['PHP_SELF']);     	
+		$Mode = 'RESET';
 	}
 } 
 
@@ -85,26 +78,34 @@ function can_delete($selected_id)
 
 //-----------------------------------------------------------------------------------
 
-if (isset($_GET['delete'])) 
+if ($Mode == 'Delete')
 {
 
 	if (can_delete($selected_id))
 	{
 		delete_item_tax_type($selected_id);
-		meta_forward($_SERVER['PHP_SELF']); 		
+		display_notification(_('Selected item tax type has been deleted'));
 	}
+	$Mode = 'RESET';
 }
 
+if ($Mode == 'RESET')
+{
+	$selected_id = -1;
+	unset($_POST);
+}
 //-----------------------------------------------------------------------------------
 
-$result = get_all_item_tax_types();
 
+$result2 = $result = get_all_item_tax_types();
+start_form();
 start_table("$table_style width=30%");
-$th = array(_("Name"), _("Tax exempt"), "", "");
+$th = array(_("Name"), _("Tax exempt"),'','');
+
 table_header($th);
 
 $k = 0;
-while ($myrow = db_fetch($result)) 
+while ($myrow = db_fetch($result2)) 
 {
 	
 	alt_table_row_color($k);	
@@ -120,41 +121,39 @@ while ($myrow = db_fetch($result))
 	
 	label_cell($myrow["name"]);
 	label_cell($disallow_text);
-	edit_link_cell("selected_id=" . $myrow["id"]);
-	delete_link_cell("selected_id=" . $myrow["id"]. "&delete=1");
+ 	edit_button_cell("Edit".$myrow["id"], _("Edit"));
+ 	edit_button_cell("Delete".$myrow["id"], _("Delete"));
 	end_row();
 }
 
 end_table();
+end_form();
+echo '<br>';
 
 //-----------------------------------------------------------------------------------
-
-hyperlink_no_params($_SERVER['PHP_SELF'], _("New Item Tax type"));
 
 start_form();
 
 start_table($table_style2);
 
-if (isset($selected_id)) 
+if ($selected_id != -1) 
 {
-	
-	if (!isset($_POST['name'])) 
-	{
-    	$myrow = get_item_tax_type($selected_id);
+	if ($Mode == 'Edit') {
+   		$myrow = get_item_tax_type($selected_id);
     
-    	$_POST['name']  = $myrow["name"];
-    	$_POST['exempt']  = $myrow["exempt"];
+   		$_POST['name']  = $myrow["name"];
+   		$_POST['exempt']  = $myrow["exempt"];
     	
-    	// read the exemptions and check the ones that are on
-    	$exemptions = get_item_tax_type_exemptions($selected_id);
+   		// read the exemptions and check the ones that are on
+   		$exemptions = get_item_tax_type_exemptions($selected_id);
     	
-    	if (db_num_rows($exemptions) > 0)
-    	{
-    		while ($exmp = db_fetch($exemptions)) 
-    		{
-    			$_POST['ExemptTax' . $exmp["tax_type_id"]] = 1;
-    		}
-    	}	
+   		if (db_num_rows($exemptions) > 0)
+   		{
+   			while ($exmp = db_fetch($exemptions)) 
+   			{
+   				$_POST['ExemptTax' . $exmp["tax_type_id"]] = 1;
+   			}
+   		}	
 	}
 
 	hidden('selected_id', $selected_id);
@@ -172,7 +171,7 @@ if (!isset($_POST['exempt']) || $_POST['exempt'] == 0)
     display_note(_("Select which taxes this item tax type is exempt from."), 0, 1);
     
     start_table($table_style2);
-    $th = array(_("Tax Name"), _("Is exempt"));
+    $th = array(_("Tax Name"), _("Rate"), _("Is exempt"));
     table_header($th);
     	
     $tax_types = get_all_tax_types_simple();    	
@@ -183,6 +182,7 @@ if (!isset($_POST['exempt']) || $_POST['exempt'] == 0)
     	alt_table_row_color($k);	
     
     	label_cell($myrow["name"]);
+		label_cell(percent_format($myrow["rate"])." %", "nowrap align=right");
     	check_cells("", 'ExemptTax' . $myrow["id"], null);
     	end_row();
     }
@@ -190,7 +190,7 @@ if (!isset($_POST['exempt']) || $_POST['exempt'] == 0)
     end_table(1);
 }
 
-submit_add_or_update_center(!isset($selected_id));
+submit_add_or_update_center($selected_id == -1, '', true);
 
 end_form();
 

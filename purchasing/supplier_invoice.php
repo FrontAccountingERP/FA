@@ -72,34 +72,40 @@ function check_data()
 	if (!references::is_valid($_SESSION['supp_trans']->reference)) 
 	{
 		display_error(_("You must enter an invoice reference."));
+		set_focus('reference');
 		return false;
 	}
 
 	if (!is_new_reference($_SESSION['supp_trans']->reference, 20)) 
 	{
 		display_error(_("The entered reference is already in use."));
+		set_focus('reference');
 		return false;
 	}
 
 	if (!references::is_valid($_SESSION['supp_trans']->supp_reference)) 
 	{
 		display_error(_("You must enter a supplier's invoice reference."));
+		set_focus('supp_reference');
 		return false;
 	}
 
 	if (!is_date( $_SESSION['supp_trans']->tran_date))
 	{
 		display_error(_("The invoice as entered cannot be processed because the invoice date is in an incorrect format."));
+		set_focus('trans_date');
 		return false;
 	} 
 	elseif (!is_date_in_fiscalyear($_SESSION['supp_trans']->tran_date)) 
 	{
 		display_error(_("The entered date is not in fiscal year."));
+		set_focus('trans_date');
 		return false;
 	}
 	if (!is_date( $_SESSION['supp_trans']->due_date))
 	{
 		display_error(_("The invoice as entered cannot be processed because the due date is in an incorrect format."));
+		set_focus('due_date');
 		return false;
 	}
 
@@ -150,25 +156,27 @@ echo "<tr><td valign=center>"; // outer table
 echo "<center>";
 
 invoice_header($_SESSION['supp_trans']);
+if ($_POST['supplier_id']=='') 
+	display_error('No supplier found for entered search text');
+else {
+	echo "</td></tr><tr><td valign=center>"; // outer table
 
-echo "</td></tr><tr><td valign=center>"; // outer table
+	echo "<center>";
 
-echo "<center>";
+	display_grn_items($_SESSION['supp_trans']);
 
-display_grn_items($_SESSION['supp_trans']);
+	display_gl_items($_SESSION['supp_trans']);
 
-display_gl_items($_SESSION['supp_trans']);
-
-//echo "</td></tr><tr><td align=center colspan=2>"; // outer table
-echo "<br>";
-invoice_totals($_SESSION['supp_trans']);
-
+	//echo "</td></tr><tr><td align=center colspan=2>"; // outer table
+	echo "<br>";
+	invoice_totals($_SESSION['supp_trans']);
+}
 echo "</td></tr>";
 
 end_table(); // outer table
 
 echo "<br>";
-submit_center('PostInvoice', _("Enter Invoice"));
+submit_center('PostInvoice', _("Enter Invoice"), true, '', true);
 echo "<br>";
 
 end_form();

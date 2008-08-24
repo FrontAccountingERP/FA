@@ -79,11 +79,8 @@ function safe_exit()
 	hyperlink_no_params("", _("Enter a new dimension"));
 	echo "<br>";
 	hyperlink_no_params($path_to_root . "/dimensions/inquiry/search_dimensions.php", _("Select an existing dimension"));
-	echo "<br><br>";
 
-	end_page();
-
-	exit;
+	display_footer_exit();
 }
 
 //-------------------------------------------------------------------------------------
@@ -98,12 +95,14 @@ function can_process()
     	if (!references::is_valid($_POST['ref'])) 
     	{
     		display_error( _("The dimension reference must be entered."));
+			set_focus('ref');
     		return false;
     	}
 
     	if (!is_new_reference($_POST['ref'], systypes::dimension())) 
     	{
     		display_error(_("The entered reference is already in use."));
+			set_focus('ref');
     		return false;
     	}
 	}
@@ -111,18 +110,21 @@ function can_process()
 	if (strlen($_POST['name']) == 0) 
 	{
 		display_error( _("The dimension name must be entered."));
+		set_focus('name');
 		return false;
 	}
 
 	if (!is_date($_POST['date_']))
 	{
 		display_error( _("The date entered is in an invalid format."));
+		set_focus('date_');
 		return false;
 	}
 
 	if (!is_date($_POST['due_date']))
 	{
 		display_error( _("The required by date entered is in an invalid format."));
+		set_focus('due_date');
 		return false;
 	}
 
@@ -165,6 +167,7 @@ if (isset($_POST['delete']))
 	if (dimension_has_payments($selected_id) || dimension_has_deposits($selected_id))
 	{
 		display_error(_("This dimension cannot be deleted because it has already been processed."));
+		set_focus('ref');
 		$cancel_delete = true;
 	}
 
@@ -200,14 +203,14 @@ if ($selected_id != -1)
 	if (strlen($myrow[0]) == 0) 
 	{
 		display_error(_("The dimension sent is not valid."));
-		exit;
+		display_footer_exit();
 	}
 
 	// if it's a closed dimension can't edit it
 	if ($myrow["closed"] == 1) 
 	{
 		display_error(_("This dimension is closed and cannot be edited."));
-		exit;
+		display_footer_exit();
 	}
 
 	$_POST['ref'] = $myrow["reference"];
@@ -226,7 +229,7 @@ if ($selected_id != -1)
 } 
 else 
 {
-	ref_row(_("Dimension Reference:"), 'ref', references::get_next(systypes::dimension()));
+	ref_row(_("Dimension Reference:"), 'ref', '', references::get_next(systypes::dimension()));
 }
 
 text_row_ex(_("Name") . ":", 'name', 50, 75);
@@ -237,22 +240,23 @@ number_list_row(_("Type"), 'type_', null, 1, $dim);
 
 date_row(_("Start Date") . ":", 'date_');
 
-date_row(_("Date Required By") . ":", 'due_date', null, sys_prefs::default_dimension_required_by());
+date_row(_("Date Required By") . ":", 'due_date', '', null, sys_prefs::default_dimension_required_by());
 
 textarea_row(_("Memo:"), 'memo_', null, 40, 5);
 
 end_table(1);
 
-submit_add_or_update_center($selected_id == -1);
-
 if ($selected_id != -1) 
 {
 	echo "<br>";
-
-	submit_center_first('close', _("Close This Dimension"));
-	submit_center_last('delete', _("Delete This Dimension"));
+	submit_center_first('UPDATE_ITEM', _("Update"), _('Save changes to dimension'), true);
+	submit('close', _("Close This Dimension"), true, _('Mark this dimension as closed'), true);
+	submit_center_last('delete', _("Delete This Dimension"), _('Delete unused dimension'), true);
 }
-
+else
+{
+	submit_center('ADD_ITEM', _("Add"), true, '', true);
+}
 end_form();
 
 //--------------------------------------------------------------------------------------------

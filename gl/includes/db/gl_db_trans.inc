@@ -11,7 +11,7 @@ function add_gl_trans($type, $trans_id, $date_, $account, $dimension, $dimension
 	$amount, $currency=null, $person_type_id=null, $person_id=null,	$err_msg="")
 {
 	global $use_audit_trail;
-	
+
 	$date = date2sql($date_);
 	if ($currency != null)
 		$amount_in_home_currency = to_home_currency($amount, $currency, $date_);
@@ -27,7 +27,7 @@ function add_gl_trans($type, $trans_id, $date_, $account, $dimension, $dimension
 			$memo_ = $_SESSION["wa_current_user"]->username;
 		else
 			$memo_ = $_SESSION["wa_current_user"]->username . " - " . $memo_;
-	}		
+	}
 	$sql = "INSERT INTO ".TB_PREF."gl_trans ( type, type_no, tran_date,
 		account, dimension_id, dimension2_id, memo_, amount";
 
@@ -37,7 +37,7 @@ function add_gl_trans($type, $trans_id, $date_, $account, $dimension, $dimension
 	$sql .= ") ";
 
 	$sql .= "VALUES ($type, $trans_id, '$date',
-		'$account', $dimension, $dimension2, '$memo_', $amount_in_home_currency";
+		'$account', $dimension, $dimension2, ".db_escape($memo_).", $amount_in_home_currency";
 
 	if ($person_type_id != null)
 		$sql .= ", $person_type_id, '$person_id'";
@@ -56,7 +56,7 @@ function add_gl_trans($type, $trans_id, $date_, $account, $dimension, $dimension
 // $date_ is display date (non-sql)
 // $amount is in HOME currency
 
-function add_gl_trans_std_cost($type, $trans_id, $date_, $account, $dimension, $dimension2, 
+function add_gl_trans_std_cost($type, $trans_id, $date_, $account, $dimension, $dimension2,
 	$memo_,	$amount, $person_type_id=null, $person_id=null, $err_msg="")
 {
 	if ($amount != 0)
@@ -160,17 +160,17 @@ function get_gl_trans_from_to($from_date, $to_date, $account, $dimension=0, $dim
 
 //--------------------------------------------------------------------------------
 
-function get_budget_trans_from_to($from_date, $to_date, $account, $dimension=0, $dimension2=0) 
+function get_budget_trans_from_to($from_date, $to_date, $account, $dimension=0, $dimension2=0)
 {
 
 	$from = date2sql($from_date);
 	$to = date2sql($to_date);
-	
+
 	$sql = "SELECT SUM(amount) FROM ".TB_PREF."budget_trans
 		WHERE account='$account' ";
-	if ($from_date != "")	
+	if ($from_date != "")
 		$sql .= " AND tran_date >= '$from' ";
-	if ($to_date != "")	
+	if ($to_date != "")
 		$sql .= " AND tran_date <= '$to' ";
 	if ($dimension > 0)
 		$sql .= " AND dimension_id = $dimension";
@@ -191,27 +191,27 @@ function add_journal_entries($items, $date_, $ref, $reverse, $memo_=null)
 	$trans_type = systypes::journal_entry();
 	$trans_id = get_next_trans_no($trans_type);
 
-	foreach ($items as $journal_item) 
+	foreach ($items as $journal_item)
 	{
 		$is_bank_to = is_bank_account($journal_item->code_id);
 
-		add_gl_trans($trans_type, $trans_id, $date_, $journal_item->code_id, 
-			$journal_item->dimension_id, $journal_item->dimension2_id, 
+		add_gl_trans($trans_type, $trans_id, $date_, $journal_item->code_id,
+			$journal_item->dimension_id, $journal_item->dimension2_id,
 			$journal_item->reference, $journal_item->amount);
-    	if ($is_bank_to) 
+    	if ($is_bank_to)
     	{
-    		add_bank_trans($trans_type, $trans_id, $journal_item->code_id, $ref, 
+    		add_bank_trans($trans_type, $trans_id, $journal_item->code_id, $ref,
     			$date_, 3, $journal_item->amount,
-    			0, "", get_company_currency(), 
-    			"Cannot insert a destination bank transaction");								
-    	}		
+    			0, "", get_company_currency(),
+    			"Cannot insert a destination bank transaction");
+    	}
 	}
 
 	add_comments($trans_type, $trans_id, $date_, $memo_);
 
 	references::save($trans_type, $trans_id, $ref);
 
-	if ($reverse) 
+	if ($reverse)
 	{
 
     	//$reversingDate = date(user_date_display(),
@@ -220,20 +220,20 @@ function add_journal_entries($items, $date_, $ref, $reverse, $memo_=null)
 
     	$trans_id_reverse = get_next_trans_no($trans_type);
 
-    	foreach ($items as $journal_item) 
+    	foreach ($items as $journal_item)
     	{
 			$is_bank_to = is_bank_account($journal_item->code_id);
 
     		add_gl_trans($trans_type, $trans_id_reverse, $reversingDate,
-    			$journal_item->code_id, $journal_item->dimension_id, $journal_item->dimension2_id, 
+    			$journal_item->code_id, $journal_item->dimension_id, $journal_item->dimension2_id,
     			$journal_item->reference, -$journal_item->amount);
-    		if ($is_bank_to) 
+    		if ($is_bank_to)
     		{
-    			add_bank_trans($trans_type, $trans_id_reverse, $journal_item->code_id, $ref, 
+    			add_bank_trans($trans_type, $trans_id_reverse, $journal_item->code_id, $ref,
     				$reversingDate, 3, $journal_item->amount,
-    				0, "", get_company_currency(), 
-    				"Cannot insert a destination bank transaction");								
-    		}		
+    				0, "", get_company_currency(),
+    				"Cannot insert a destination bank transaction");
+    		}
     	}
 
     	add_comments($trans_type, $trans_id_reverse, $reversingDate, $memo_);

@@ -29,7 +29,7 @@ $company_currency = get_company_currency();
 
 $show_currencies = false;
 
-if ($to_trans['bank_curr_code'] != $company_currency) 
+if ($to_trans['bank_curr_code'] != $company_currency)
 {
 	$show_currencies = true;
 }
@@ -75,9 +75,9 @@ $items = get_gl_trans(systypes::bank_deposit(), $trans_no);
 
 if (db_num_rows($items) == 0)
 {
-	echo "<br>" . _("There are no items for this deposit.");
-} 
-else 
+	display_note(_("There are no items for this deposit."));
+}
+else
 {
 
 	display_heading2(_("Items for this Deposit"));
@@ -87,15 +87,15 @@ else
     start_table("$table_style width=80%");
     $th = array(_("Account Code"), _("Account Description"),
     	_("Amount"), _("Memo"));
-    table_header($th);	
+    table_header($th);
 
     $k = 0; //row colour counter
 	$total_amount = 0;
 
-    while ($item = db_fetch($items)) 
+    while ($item = db_fetch($items))
     {
 
-		if ($item["account"] != $to_trans["account_code"]) 
+		if ($item["account"] != $to_trans["account_code"])
 		{
     		alt_table_row_color($k);
 

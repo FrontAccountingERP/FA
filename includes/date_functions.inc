@@ -83,7 +83,7 @@ function is_date($date_)
 			$year = substr($date_,0,4);
 		}
 	}
-	if ((int)$year > 9999) 
+	if (!isset($year)|| (int)$year > 9999) 
 	{
 		return 0;
 	}

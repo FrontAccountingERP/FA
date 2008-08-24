@@ -9,18 +9,8 @@ page(_("Customers"));
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/banking.inc");
 include_once($path_to_root . "/includes/ui.inc");
-include_once($path_to_root . "/includes/data_checks.inc");
 
-if (isset($_GET['New']) || !isset($_POST['customer_id']) || $_POST['customer_id'] == "") 
-{
-	$_POST['New'] = "1";
-}
-
-if (isset($_POST['SelectCustomer'])) 
-{
-	unset($_POST['New']);
-}
-
+$new_customer = (!isset($_POST['customer_id']) || $_POST['customer_id'] == ""); 
 //--------------------------------------------------------------------------------------------
 
 function can_process()
@@ -31,42 +21,24 @@ function can_process()
 		return false;
 	} 
 	
-	if (!is_numeric( $_POST['credit_limit'])) 
+	if (!check_num('credit_limit', 0))
 	{
-		display_error(_("The credit limit must be numeric."));
+		display_error(_("The credit limit must be numeric and not less than zero."));
 		return false;		
 	} 
 	
-	if (!is_numeric( $_POST['pymt_discount'])) 
+	if (!check_num('pymt_discount', 0, 100)) 
 	{
-		display_error(_("The payment discount must be numeric."));
+		display_error(_("The payment discount must be numeric and is expected to be less than 100% and greater than or equal to 0."));
 		return false;		
 	} 
 	
-	if (!is_numeric( $_POST['discount'])) 
+	if (!check_num('discount', 0, 100)) 
 	{
-		display_error(_("The discount percentage must be numeric."));
+		display_error(_("The discount percentage must be numeric and is expected to be less than 100% and greater than or equal to 0."));
 		return false;		
 	} 
-	
-	if ($_POST['credit_limit'] < 0) 
-	{
-		display_error(_("The credit limit must be a positive number."));
-		return false;		
-	} 
-	
-	if (($_POST['pymt_discount'] >= 100) || ($_POST['pymt_discount'] < 0)) 
-	{
-		display_error(_("The payment discount is expected to be less than 100% and greater than or equal to 0."));
-		return false;		
-	} 
-	
-	if (($_POST['discount'] >= 100) || ($_POST['discount'] < 0)) 
-	{
-		display_error(_("The discount percent is expected to be less than 100 and greater than or equal to 0."));
-		return false;		
-	}  	
-	
+
 	return true;
 }
 
@@ -74,33 +46,31 @@ function can_process()
 
 function handle_submit()
 {
-	global $path_to_root;
+	global $path_to_root, $new_customer, $Ajax;
+
 	if (!can_process())
 		return;
 		
-	if (!isset($_POST['New'])) 
+	if ($new_customer == false) 
 	{
 
-		// Sherifoz 22.06.03 convert percent to fraction
-		$sql = "UPDATE ".TB_PREF."debtors_master SET name='" . $_POST['CustName'] . "', 
-			address='" . $_POST['address'] . "', 
-			tax_id='" . $_POST['tax_id'] . "', 
-			curr_code='" . $_POST['curr_code'] . "', 
-			email='" . $_POST['email'] . "', 
-			dimension_id=" . $_POST['dimension_id'] . ", 
-			dimension2_id=" . $_POST['dimension2_id'] . ", 
-            credit_status='" . $_POST['credit_status'] . "', 
-            payment_terms='" . $_POST['payment_terms'] . "', 
-            discount=" . ($_POST['discount']) / 100 . ", 
-            pymt_discount=" . ($_POST['pymt_discount']) / 100 . ", 
-            credit_limit=" . $_POST['credit_limit'] . ", 
-            sales_type = '" . $_POST['sales_type'] . "' 
-            WHERE debtor_no = '" . $_POST['customer_id'] . "'";
+		$sql = "UPDATE ".TB_PREF."debtors_master SET name=" . db_escape($_POST['CustName']) . ", 
+			address=".db_escape($_POST['address']) . ", 
+			tax_id=".db_escape($_POST['tax_id']) . ", 
+			curr_code=".db_escape($_POST['curr_code']) . ", 
+			email=".db_escape($_POST['email']) . ", 
+			dimension_id=".db_escape($_POST['dimension_id']) . ", 
+			dimension2_id=".db_escape($_POST['dimension2_id']) . ", 
+            credit_status=".db_escape($_POST['credit_status']) . ", 
+            payment_terms=".db_escape($_POST['payment_terms']) . ", 
+            discount=" . input_num('discount') / 100 . ", 
+            pymt_discount=" . input_num('pymt_discount') / 100 . ", 
+            credit_limit=" . input_num('credit_limit') . ", 
+            sales_type = ".db_escape($_POST['sales_type']) . " 
+            WHERE debtor_no = '". $_POST['customer_id'] . "'";
 
 		db_query($sql,"The customer could not be updated");
 		display_notification(_("Customer has been updated."));
-		clear_fields();			
-
 	} 
 	else 
 	{ 	//it is a new customer
@@ -109,22 +79,22 @@ function handle_submit()
 
 		$sql = "INSERT INTO ".TB_PREF."debtors_master (name, address, tax_id, email, dimension_id, dimension2_id,  
 			curr_code, credit_status, payment_terms, discount, pymt_discount,credit_limit, 
-			sales_type) VALUES ('" . $_POST['CustName'] ."', '" . $_POST['address'] . "', '" . $_POST['tax_id'] . "',
-			'" . $_POST['email'] . "', " . $_POST['dimension_id'] . ", " . $_POST['dimension2_id'] . ", '" . $_POST['curr_code'] . "', 
-			" . $_POST['credit_status'] . ", '" . $_POST['payment_terms'] . "', " . ($_POST['discount'])/100 . ", 
-			" . ($_POST['pymt_discount'])/100 . ", " . $_POST['credit_limit'] . ", '" . $_POST['sales_type'] . "')";
+			sales_type) VALUES (".db_escape($_POST['CustName']) .", " 
+			.db_escape($_POST['address']) . ", " . db_escape($_POST['tax_id']) . ","
+			.db_escape($_POST['email']) . ", ".db_escape($_POST['dimension_id']) . ", " 
+			.db_escape($_POST['dimension2_id']) . ", ".db_escape($_POST['curr_code']) . ", 
+			" . db_escape($_POST['credit_status']) . ", ".db_escape($_POST['payment_terms']) . ", " . input_num('discount')/100 . ", 
+			" . input_num('pymt_discount')/100 . ", " . input_num('credit_limit') . ", ".db_escape($_POST['sales_type']) . ")";
 
 		db_query($sql,"The customer could not be added");
 
-		$new_customer_id = db_insert_id();
-		
+		$_POST['customer_id'] = db_insert_id();
+		$new_customer = false;
 		commit_transaction();			
 
 		display_notification(_("A new customer has been added."));
 
-		hyperlink_params($path_to_root . "/sales/manage/customer_branches.php", _("Add branches for this customer"), "debtor_no=$new_customer_id");
-
-		clear_fields();
+		$Ajax->activate('_page_body');
 	}
 }
 
@@ -183,28 +153,14 @@ if (isset($_POST['delete']))
 	{ 	//ie not cancelled the delete as a result of above tests
 		$sql = "DELETE FROM ".TB_PREF."debtors_master WHERE debtor_no='" . $_POST['customer_id'] . "'";
 		db_query($sql,"cannot delete customer");
-		
-		meta_forward($_SERVER['PHP_SELF']); 
+
+		display_notification(_("Selected customer has been deleted."));
+		unset($_POST['customer_id']);
+		$new_customer = true;
+		$Ajax->activate('_page_body');
 	} //end if Delete Customer
 }
 
-function clear_fields() 
-{
-	unset($_POST['CustName']);
-	unset($_POST['address']);
-	unset($_POST['tax_id']);
-	unset($_POST['email']);
-	unset($_POST['dimension_id']);
-	unset($_POST['dimension2_id']);
-	unset($_POST['credit_status']);
-	unset($_POST['payment_terms']);
-	unset($_POST['discount']);
-	unset($_POST['pymt_discount']);
-	unset($_POST['credit_limit']);
-	unset($_POST['sales_type']);
-	unset($_POST['customer_id']);
-	$_POST['New'] = 1;
-}
 
 check_db_has_sales_types(_("There are no sales types defined. Please define at least one sales type before adding a customer."));
  
@@ -213,39 +169,33 @@ start_form();
 if (db_has_customers()) 
 {
 	start_table("class = 'tablestyle_noborder'");
-	start_row();
-	customer_list_cells(_("Select a customer: "), 'customer_id', null);
-	submit_cells('SelectCustomer', _("Edit Customer"));
-	end_row();
+	customer_list_row(_("Select a customer: "), 'customer_id', null,
+	  _('New customer'), true);
 	end_table();
 } 
 else 
 {
-	hidden('customer_id', $_POST['customer_id']);
+	hidden('customer_id');
 }
-
-hyperlink_params($_SERVER['PHP_SELF'], _("Enter a new customer"), "New=1");
-echo "<br>";     
 
 start_table($table_style2, 7, 6);
 echo "<tr valign=top><td>"; // outer table	
 
+
 start_table("class='tablestyle_noborder'");	
 
-if (isset($_POST['New'])) 
+if ($new_customer) 
 {
-
-	hidden('New', 'Yes');
-
 	$_POST['CustName'] = $_POST['address'] = $_POST['tax_id']  = '';
 	$_POST['dimension_id'] = 0;
 	$_POST['dimension2_id'] = 0;
 	$_POST['sales_type'] = -1;
+	$_POST['email'] = '';
 	$_POST['curr_code']  = get_company_currency();
 	$_POST['credit_status']  = -1;
 	$_POST['payment_terms']  = '';
-	$_POST['discount']  = $_POST['pymt_discount'] = 0;
-	$_POST['credit_limit']	= sys_prefs::default_credit_limit();
+	$_POST['discount']  = $_POST['pymt_discount'] = percent_format(0);
+	$_POST['credit_limit']	= price_format(sys_prefs::default_credit_limit());
 } 
 else 
 {
@@ -265,9 +215,9 @@ else
 	$_POST['curr_code']  = $myrow["curr_code"];
 	$_POST['credit_status']  = $myrow["credit_status"];
 	$_POST['payment_terms']  = $myrow["payment_terms"];
-	$_POST['discount']  = $myrow["discount"] * 100; // Sherifoz 21.6.03 convert to displayable percentage
-	$_POST['pymt_discount']  = $myrow["pymt_discount"] * 100; // Sherifoz 21.6.03 convert to displayable percentage
-	$_POST['credit_limit']	= $myrow["credit_limit"];
+	$_POST['discount']  = percent_format($myrow["discount"] * 100);
+	$_POST['pymt_discount']  = percent_format($myrow["pymt_discount"] * 100);
+	$_POST['credit_limit']	= price_format($myrow["credit_limit"]);
 }
 
 text_row(_("Customer Name:"), 'CustName', $_POST['CustName'], 40, 40);
@@ -278,7 +228,7 @@ text_row(_("GSTNo:"), 'tax_id', null, 40, 40);
 
 
 // Sherifoz 23.09.03 currency can't be changed if editing
-if (isset($_POST['New'])) 
+if ($new_customer) 
 {
 	currencies_list_row(_("Customer's Currency:"), 'curr_code', $_POST['curr_code']);
 } 
@@ -304,27 +254,34 @@ if ($dim < 1)
 if ($dim < 2)
 	hidden('dimension2_id', 0);
 
-text_row(_("Discount Percent:"), 'discount', $_POST['discount'], 5, 4);
-text_row(_("Prompt Payment Discount Percent:"), 'pymt_discount', $_POST['pymt_discount'], 5, 4);
-text_row(_("Credit Limit:"), 'credit_limit', $_POST['credit_limit'], 16, 14);
+percent_row(_("Discount Percent:"), 'discount', $_POST['discount']);
+percent_row(_("Prompt Payment Discount Percent:"), 'pymt_discount', $_POST['pymt_discount']);
+amount_row(_("Credit Limit:"), 'credit_limit', $_POST['credit_limit']);
 
 payment_terms_list_row(_("Payment Terms:"), 'payment_terms', $_POST['payment_terms']);
 credit_status_list_row(_("Credit Status:"), 'credit_status', $_POST['credit_status']); 
-
+if (!$new_customer)  {
+start_row();
+ echo '<td>'._('Customer branches').':</td>';
+  hyperlink_params_td($path_to_root . "/sales/manage/customer_branches.php",'<b>'. _("Add or Edit").'</b>', "debtor_no=".$_POST['customer_id']);
+end_row();
+}
 end_table();
 
 end_table(1); // outer table	
-
-if (isset($_POST['New'])) 
+div_start('controls');
+if ($new_customer)
 {
-	submit_center('submit', _("Add New Customer"));
+	submit_center('submit', _("Add New Customer"), true, '', true);
 } 
 else 
 {
-	submit_center_first('submit', _("Update Customer"));
-	submit_center_last('delete', _("Delete Customer"));
+	submit_center_first('submit', _("Update Customer"), 
+	  _('Update customer data'), true);
+	submit_center_last('delete', _("Delete Customer"), 
+	  _('Delete customer data if have been never used'), true);
 }
-
+div_end();
 end_form();
 end_page();
 

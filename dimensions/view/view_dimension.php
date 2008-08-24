@@ -5,7 +5,10 @@ $path_to_root="../..";
 
 include_once($path_to_root . "/includes/session.inc");
 
-page(_("View Dimension"), true);
+$js = "";
+if ($use_popup_windows)
+	$js .= get_js_open_window(800, 500);
+page(_("View Dimension"), true, false, "", $js);
 
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
@@ -15,7 +18,7 @@ include_once($path_to_root . "/dimensions/includes/dimensions_ui.inc");
 
 //-------------------------------------------------------------------------------------------------
 
-if ($_GET['trans_no'] != "") 
+if ($_GET['trans_no'] != "")
 {
 	$id = $_GET['trans_no'];
 }
@@ -24,7 +27,7 @@ display_heading(systypes::name(systypes::dimension()) . " # " . $id);
 
 $myrow = get_dimension($id);
 
-if (strlen($myrow[0]) == 0) 
+if (strlen($myrow[0]) == 0)
 {
 	echo _("The work order number sent is not valid.");
     exit;
@@ -48,9 +51,9 @@ comments_display_row(systypes::dimension(), $id);
 
 end_table();
 
-if ($myrow["closed"] == true) 
+if ($myrow["closed"] == true)
 {
-	echo "<br>" . _("This dimension is closed.") . "<br>";
+	display_note(_("This dimension is closed."));
 }
 
 display_dimension_payments($id);

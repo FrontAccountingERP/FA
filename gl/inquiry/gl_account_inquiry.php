@@ -11,15 +11,22 @@ include_once($path_to_root . "/includes/data_checks.inc");
 
 include_once($path_to_root . "/gl/includes/gl_db.inc");
 
-$js = get_js_set_focus('account');
+$js = '';
+set_focus('account');
 if ($use_popup_windows)
 	$js .= get_js_open_window(800, 500);
 if ($use_date_picker)
 	$js .= get_js_date_picker();
 
-page(_("General Ledger Account Inquiry"), false, false, "setFocus()", $js);
+page(_("General Ledger Account Inquiry"), false, false, '', $js);
 
 //----------------------------------------------------------------------------------------------------
+// Ajax updates
+//
+if (get_post('Show')) 
+{
+	$Ajax->activate('trans_tbl');
+}
 
 if (isset($_GET["account"]))
 	$_POST["account"] = $_GET["account"];
@@ -47,9 +54,9 @@ function gl_inquiry_controls()
 
     gl_all_accounts_list_cells(_("Account:"), 'account', null);
 
-	date_cells(_("from:"), 'TransFromDate', null, -30);
+	date_cells(_("from:"), 'TransFromDate', '', null, -30);
 	date_cells(_("to:"), 'TransToDate');
-    submit_cells('Show',_("Show"));
+	submit_cells('Show',_("Show"),'','', true);
 
     end_row();
 
@@ -82,6 +89,7 @@ function show_results()
     	$_POST["account"], $_POST['Dimension'], $_POST['Dimension2']);
 
 	$colspan = ($dim == 2 ? "6" : ($dim == 1 ? "5" : "4"));
+	div_start('trans_tbl');
 	//echo "\nDimension =". $_POST['Dimension'];
 	display_heading($_POST["account"]. "&nbsp;&nbsp;&nbsp;".$act_name);
 
@@ -158,6 +166,7 @@ function show_results()
 	end_table(2);
 	if (db_num_rows($result) == 0)
 		display_note(_("No general ledger transactions have been created for this account on the selected dates."), 0, 1);
+	div_end();
 }
 
 //----------------------------------------------------------------------------------------------------

@@ -5,6 +5,7 @@ $path_to_root="../..";
 include($path_to_root . "/includes/session.inc");
 
 include($path_to_root . "/purchasing/includes/purchasing_ui.inc");
+include_once($path_to_root . "/reporting/includes/reporting.inc");
 $js = "";
 if ($use_popup_windows)
 	$js .= get_js_open_window(900, 500);
@@ -17,22 +18,45 @@ if (isset($_GET['order_number']))
 	$order_number = $_GET['order_number'];
 }
 
+//-----------------------------------------------------------------------------------
+// Ajax updates
+//
+if (get_post('SearchOrders')) 
+{
+	$Ajax->activate('orders_tbl');
+} elseif (get_post('_order_number_changed')) 
+{
+	$disable = get_post('order_number') !== '';
+
+	$Ajax->addDisable(true, 'OrdersAfterDate', $disable);
+	$Ajax->addDisable(true, 'OrdersToDate', $disable);
+	$Ajax->addDisable(true, 'StockLocation', $disable);
+	$Ajax->addDisable(true, '_SelectStockFromList_edit', $disable);
+	$Ajax->addDisable(true, 'SelectStockFromList', $disable);
+
+	if ($disable) {
+		$Ajax->addFocus(true, 'order_number');
+	} else
+		$Ajax->addFocus(true, 'OrdersAfterDate');
+
+	$Ajax->activate('orders_tbl');
+}
 //---------------------------------------------------------------------------------------------
 
 start_form(false, true);
 
 start_table("class='tablestyle_noborder'");
 start_row();
-ref_cells(_("#:"), 'order_number');
+ref_cells(_("#:"), 'order_number', '',null, '', true);
 
-date_cells(_("from:"), 'OrdersAfterDate', null, -30);
+date_cells(_("from:"), 'OrdersAfterDate', '', null, -30);
 date_cells(_("to:"), 'OrdersToDate');
 
 locations_list_cells(_("into location:"), 'StockLocation', null, true);
 
 stock_items_list_cells(_("for item:"), 'SelectStockFromList', null, true);
 
-submit_cells('SearchOrders', _("Search"));
+submit_cells('SearchOrders', _("Search"),'',_('Select documents'), true);
 end_row();
 end_table();
 
@@ -49,8 +73,8 @@ if (isset($_POST['SelectStockFromList']) &&	($_POST['SelectStockFromList'] != ""
 	($_POST['SelectStockFromList'] != reserved_words::get_all()))
 {
  	$selected_stock_item = $_POST['SelectStockFromList'];
-} 
-else 
+}
+else
 {
 	unset($selected_stock_item);
 }
@@ -66,11 +90,11 @@ $sql = "SELECT ".TB_PREF."purch_orders.order_no, ".TB_PREF."suppliers.supp_name,
 	AND ".TB_PREF."purch_orders.supplier_id = ".TB_PREF."suppliers.supplier_id
 	AND ".TB_PREF."locations.loc_code = ".TB_PREF."purch_orders.into_stock_location ";
 
-if (isset($order_number) && $order_number != "") 
+if (isset($order_number) && $order_number != "")
 {
 	$sql .= "AND ".TB_PREF."purch_orders.reference LIKE '%". $order_number . "%'";
-} 
-else 
+}
+else
 {
 
 	$data_after = date2sql($_POST['OrdersAfterDate']);
@@ -79,11 +103,11 @@ else
 	$sql .= " AND ".TB_PREF."purch_orders.ord_date >= '$data_after'";
 	$sql .= " AND ".TB_PREF."purch_orders.ord_date <= '$date_before'";
 
-	if (isset($_POST['StockLocation']) && $_POST['StockLocation'] != reserved_words::get_all()) 
+	if (isset($_POST['StockLocation']) && $_POST['StockLocation'] != reserved_words::get_all())
 	{
 		$sql .= " AND ".TB_PREF."purch_orders.into_stock_location = '". $_POST['StockLocation'] . "' ";
 	}
-	if (isset($selected_stock_item)) 
+	if (isset($selected_stock_item))
 	{
 		$sql .= " AND ".TB_PREF."purch_order_details.item_code='". $selected_stock_item ."' ";
 	}
@@ -94,20 +118,23 @@ $sql .= " GROUP BY ".TB_PREF."purch_orders.order_no";
 
 $result = db_query($sql,"No orders were returned");
 
+print_hidden_script(18);
+
+div_start('orders_tbl');
 start_table("$table_style colspan=7 width=80%");
 
 if (isset($_POST['StockLocation']) && $_POST['StockLocation'] == reserved_words::get_all())
 	$th = array(_("#"), _("Reference"), _("Supplier"), _("Location"),
-		_("Supplier's Reference"), _("Order Date"), _("Currency"), _("Order Total"));
-else		
-	$th = array(_("#"), _("Reference"), _("Supplier"), 
-		_("Supplier's Reference"), _("Order Date"), _("Currency"), _("Order Total"));
+		_("Supplier's Reference"), _("Order Date"), _("Currency"), _("Order Total"),"");
+else
+	$th = array(_("#"), _("Reference"), _("Supplier"),
+		_("Supplier's Reference"), _("Order Date"), _("Currency"), _("Order Total"),"");
 
 table_header($th);
 
 $j = 1;
 $k = 0; //row colour counter
-while ($myrow = db_fetch($result)) 
+while ($myrow = db_fetch($result))
 {
 
 	alt_table_row_color($k);
@@ -123,6 +150,7 @@ while ($myrow = db_fetch($result))
 	label_cell($date);
 	label_cell($myrow["curr_code"]);
 	amount_cell($myrow["OrderValue"]);
+  	label_cell(print_document_link($myrow['order_no'], _("Print")));
 	end_row();
 
 	$j++;
@@ -134,7 +162,7 @@ while ($myrow = db_fetch($result))
 }
 
 end_table(2);
-
+div_end();
 //---------------------------------------------------------------------------------------------------
 
 end_page();

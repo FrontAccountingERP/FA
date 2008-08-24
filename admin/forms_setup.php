@@ -37,12 +37,12 @@ table_header($th);
 
 while ($type = db_fetch($systypes)) 
 {
-	ref_row(systypes::name($type["type_id"]), 'id' . $type["type_id"], $type["next_reference"]);
+	ref_row(systypes::name($type["type_id"]), 'id' . $type["type_id"], '', $type["next_reference"]);
 }
 
 end_table(1);
 
-submit_center('setprefs', _("Update"));
+submit_center('setprefs', _("Update"), true, '', true);
 
 end_form(2);
 

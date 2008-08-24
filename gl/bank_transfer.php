@@ -75,7 +75,7 @@ function gl_payment_controls()
 
 	bank_trans_types_list_row(_("Transfer Type:"), 'TransferType', null);
 
-    ref_row(_("Reference:"), 'ref', references::get_next(systypes::bank_transfer()));
+    ref_row(_("Reference:"), 'ref', '', references::get_next(systypes::bank_transfer()));
 
     textarea_row(_("Memo:"), 'memo_', null, 40,4);
 
@@ -84,7 +84,7 @@ function gl_payment_controls()
 	echo "</td></tr>";
 	end_table(1); // outer table
 
-    submit_center('AddPayment',_("Enter Transfer"));
+    submit_center('AddPayment',_("Enter Transfer"), true, '', true);
 
 	end_form();
 }
@@ -96,40 +96,41 @@ function check_valid_entries()
 	if (!is_date($_POST['DatePaid'])) 
 	{
 		display_error(_("The entered date is invalid."));
+		set_focus('DatePaid');
 		return false;
 	}
 	if (!is_date_in_fiscalyear($_POST['DatePaid']))
 	{
 		display_error(_("The entered date is not in fiscal year."));
+		set_focus('DatePaid');
 		return false;
 	}
 
-	if (!is_numeric($_POST['amount'])) 
+	if (!check_num('amount', 0)) 
 	{
-		display_error(_("The entered amount is invalid."));
-		return false;
-	}
-	if ($_POST['amount'] <= 0) 
-	{
-		display_error(_("The entered amount must be a positive number."));
+		display_error(_("The entered amount is invalid or less than zero."));
+		set_focus('amount');
 		return false;
 	}
 
 	if (!references::is_valid($_POST['ref'])) 
 	{
 		display_error(_("You must enter a reference."));
+		set_focus('ref');
 		return false;
 	}
 
 	if (!is_new_reference($_POST['ref'], systypes::bank_transfer())) 
 	{
 		display_error(_("The entered reference is already in use."));
+		set_focus('ref');
 		return false;
 	}
 
 	if ($_POST['FromBankAccount'] == $_POST['ToBankAccount']) 
 	{
 		display_error(_("The source and destination bank accouts cannot be the same."));
+		set_focus('ToBankAccount');
 		return false;
 	}
 
@@ -143,7 +144,7 @@ function handle_add_deposit()
 	global $path_to_root;
 
 	$trans_no = add_bank_transfer($_POST['FromBankAccount'], $_POST['ToBankAccount'],
-		$_POST['DatePaid'], $_POST['amount'],
+		$_POST['DatePaid'], input_num('amount'),
 		$_POST['TransferType'], $_POST['ref'], $_POST['memo_']);
 
 	meta_forward($_SERVER['PHP_SELF'], "AddedID=$trans_no");

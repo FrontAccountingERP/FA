@@ -52,8 +52,6 @@ function print_bill_of_material()
     $frompart = $_POST['PARAM_0'];
     $topart = $_POST['PARAM_1'];
     $comments = $_POST['PARAM_2'];
-    
-    $dec = user_qty_dec();
 
 	$cols = array(0, 50, 305, 375, 445,	515);
 
@@ -87,12 +85,16 @@ function print_bill_of_material()
 			$parent = $trans['parent'];
 			$rep->NewLine();
 		}
-		
+
 		$rep->NewLine();
+		$dec = get_qty_dec($trans['component']);
 		$rep->TextCol(0, 1, $trans['component']);
 		$rep->TextCol(1, 2, $trans['CompDescription']);
-		$rep->TextCol(2, 3, $trans['loc_code']);
-		$rep->TextCol(3, 4, $trans['workcentre_added']);
+		//$rep->TextCol(2, 3, $trans['loc_code']);
+		//$rep->TextCol(3, 4, $trans['workcentre_added']);
+		$wc = get_work_centre($trans['workcentre_added']);
+		$rep->TextCol(2, 3, get_location_name($trans['loc_code']));
+		$rep->TextCol(3, 4, $wc['name']);
 		$rep->TextCol(4, 5, number_format2($trans['quantity'], $dec));
 	}
 	$rep->Line($rep->row - 4);

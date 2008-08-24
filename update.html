@@ -1,14 +1,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
-
-<head>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head>
   <meta content="text/html; charset=ISO-8859-1" http-equiv="content-type" />
 
-  
-  <title>FrontAccounting Update</title>
 
-</head>
-
+  <title>FrontAccounting Update</title></head>
 <body>
 <div><strong><span style="font-size: 20pt;"><span style="color: rgb(204, 102, 0); font-style: italic;">Front</span>Accounting&nbsp;Update</span></strong></div>
 <br />
@@ -17,43 +12,49 @@
 <h2>Important Notes</h2>
 
 <ul>
-  <li>You can easily upload all the files to your installation folder on the 
-server overwriting the existing files, <strong><em>if you take these important 
-steps</em></strong>: 
+  <li>You can easily upload all the files to your installation folder on the
+server overwriting the existing files, <strong><em>if you take these important
+steps</em></strong>:
     <ol>
-      <li>Backup&nbsp; (download) the following files to another folder: 
+      <li>Backup&nbsp; (download) the following files to another folder:
         <ol>
-          <li><strong>config_db.php</strong> (contains information about the&nbsp;companies and 
-connection info). 
+          <li><strong>config_db.php</strong> (contains information about the&nbsp;companies and
+connection info).
           </li>
-          <li><strong>config.php</strong> (contains various settings. You only need to 
-backup this file if you have done manually changes to it. 
+          <li><strong>config.php</strong> (contains various settings. You only need to
+backup this file if you have done manually changes to it.
           </li>
-          <li><strong>/lang/installed_languages.inc</strong> (contains information about the 
-installed languages) 
+          <li><strong>/lang/installed_languages.inc</strong> (contains information about the
+installed languages)
           </li>
-          <li><strong>/modules/installed_modules.php</strong> (contains information about 
-installed modules, <strong>only vers. 1.1</strong>) 
+          <li><strong>/modules/installed_modules.php</strong> (contains information about
+installed modules, <strong>only vers. 1.1</strong>)
           </li>
-          <li>if you have made <em>changes to other files</em>, like themes or so, backup 
+          <li>if you have made <em>changes to other files</em>, like themes or so, backup
 these files too. </li>
         </ol>
 
       </li>
-      <li>Upload all the new files. 
+      <li>Upload all the new files.
       </li>
-      <li>Restore the files mentioned in #1. Be <strong>careful</strong> with 
-        <strong>config.db</strong>. Look into variances. There might be new variables in 
-the new version. It might be easier to <em>manually change your former values in 
-the new file</em>. 
+      <li>Restore the files mentioned in #1. Be <strong>careful</strong> with
+        <strong>config.db</strong>. Look into variances. There might be new variables in
+the new version. It might be easier to <em>manually change your former values in
+the new file</em>.
       </li>
-      <li>Rename or remove the /install folder (you have already performed the install 
+      <li>Rename or remove the /install folder (you have already performed the install
 process earlier). </li>
     </ol>
   </li>
+  <li>If there are changes to the database structure, please run the script <strong><em>update_db.php</em></strong>
+from FrontAccounting root installation, Enter the database user and the
+password and choose the update script from the local harddisk.</li>
+  <li><strong>When updating release 1.XX to release 2.0, you must run the update_db.php script and select the file <em>- alter.sql -</em> that are located in the sql folder. You <em>must</em>
+do this, before entering FrontAccounting!
+Enter the database user and the password and choose the alter.sql
+script. &nbsp;Do the same for the alter2.sql script. If you have
+already updated release 2.0 Beta, you can just run the alter2.sql script.<br />You must also manuelly ensure that you have write permission to the new folder /company/0.</strong></li>
 </ul>
 
 <p>&nbsp;</p>
-</body>
-
-</html>
+</body></html>

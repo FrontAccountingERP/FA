@@ -17,7 +17,7 @@ function add_supp_trans($type, $supplier_id, $date_, $due_date, $reference, $sup
 	$sql = "INSERT INTO ".TB_PREF."supp_trans (trans_no, type, supplier_id, tran_date, due_date, 
 		reference, supp_reference, ov_amount, ov_gst, rate, ov_discount) ";
 	$sql .= "VALUES ($trans_no, $type, $supplier_id, '$date', '$due_date',
-		'$reference', '$supp_reference', $amount, $amount_tax, $rate, $discount)";
+		".db_escape($reference).", ".db_escape($supp_reference).", $amount, $amount_tax, $rate, $discount)";
 	
 	if ($err_msg == "")
 		$err_msg = "Cannot insert a supplier transaction record";

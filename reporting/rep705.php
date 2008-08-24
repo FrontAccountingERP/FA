@@ -99,7 +99,7 @@ function print_annual_expense_breakdown()
 
 	$cols = array(0, 40, 150, 180, 210, 240, 270, 300, 330, 360, 390, 420, 450, 480, 510);
 	//------------0--1---2----3----4----5----6----7----8----10---11---12---13---14---15-
-	
+
 	//$yr = date('Y');
 	//$mo = date('m'):
 	// from now
@@ -108,7 +108,7 @@ function print_annual_expense_breakdown()
 	$da = 1;
 	if ($date_system == 1)
 		list($yr, $mo, $da) = jalali_to_gregorian($yr, $mo, $da);
-	else if ($date_system == 2)
+	elseif ($date_system == 2)
 		list($yr, $mo, $da) = islamic_to_gregorian($yr, $mo, $da);
 	$per12 = strftime('%b',mktime(0,0,0,$mo,$da,$yr));
 	$per11 = strftime('%b',mktime(0,0,0,$mo-1,$da,$yr));
@@ -122,21 +122,21 @@ function print_annual_expense_breakdown()
 	$per03 = strftime('%b',mktime(0,0,0,$mo-9,$da,$yr));
 	$per02 = strftime('%b',mktime(0,0,0,$mo-10,$da,$yr));
 	$per01 = strftime('%b',mktime(0,0,0,$mo-11,$da,$yr));
-	
+
 	$headers = array(_('Account'), _('Account Name'), $per01, $per02, $per03, $per04,
 		$per05, $per06, $per07, $per08, $per09, $per10, $per11, $per12);
-	
+
 	$aligns = array('left',	'left',	'right', 'right', 'right',	'right', 'right', 'right',
 		'right', 'right', 'right',	'right', 'right', 'right');
-    
+
     if ($dim == 2)
     {
     	$params =   array( 	0 => $comments,
-                    	1 => array('text' => _("Year"), 
+                    	1 => array('text' => _("Year"),
                     		'from' => $year, 'to' => ''),
-                    	2 => array('text' => _("Dimension")." 1", 
+                    	2 => array('text' => _("Dimension")." 1",
                     		'from' => get_dimension_string($dimension), 'to' => ''),
-                    	3 => array('text' => _("Dimension")." 2", 
+                    	3 => array('text' => _("Dimension")." 2",
                     		'from' => get_dimension_string($dimension2), 'to' => ''),
                     	4 => array('text' => _('Info'), 'from' => _('Amounts in thousands'),
                     		'to' => ''));
@@ -144,9 +144,9 @@ function print_annual_expense_breakdown()
     else if ($dim == 1)
     {
     	$params =   array( 	0 => $comments,
-                    	1 => array('text' => _("Year"), 
+                    	1 => array('text' => _("Year"),
                     		'from' => $year, 'to' => ''),
-                    	2 => array('text' => _('Dimension'), 
+                    	2 => array('text' => _('Dimension'),
                     		'from' => get_dimension_string($dimension), 'to' => ''),
                     	3 => array('text' => _('Info'), 'from' => _('Amounts in thousands'),
                     		'to' => ''));
@@ -154,7 +154,7 @@ function print_annual_expense_breakdown()
     else
     {
     	$params =   array( 	0 => $comments,
-                    	1 => array('text' => _("Year"), 
+                    	1 => array('text' => _("Year"),
                     		'from' => $year, 'to' => ''),
                     	2 => array('text' => _('Info'), 'from' => _('Amounts in thousands'),
                     		'to' => ''));
@@ -168,30 +168,21 @@ function print_annual_expense_breakdown()
 
 	$classname = '';
 	$group = '';
-	$total = Array();
-	$total2 = Array();
-	$sales = Array();
-	$calc = Array();
-	unset($total);
-	unset($total2);
-	unset($sales);
-	unset($calc);
+	$total = Array(1 => 0,0,0,0,0,0,0,0,0,0,0,0);
+	$total2 = Array(1 => 0,0,0,0,0,0,0,0,0,0,0,0);
+	$sales = Array(1 => 0,0,0,0,0,0,0,0,0,0,0,0);
+	$calc = Array(1 => 0,0,0,0,0,0,0,0,0,0,0,0);
 	$accounts = get_gl_accounts_all(0);
 
 	while ($account = db_fetch($accounts))
 	{
 		$bal = getPeriods($year, $account["account_code"], $dimension, $dimension2);
-		if (!$bal['per01'] && !$bal['per02'] && !$bal['per03'] && !$bal['per04'] && 
-			!$bal['per05'] && !$bal['per06'] && !$bal['per07'] && !$bal['per08'] && 
+		if (!$bal['per01'] && !$bal['per02'] && !$bal['per03'] && !$bal['per04'] &&
+			!$bal['per05'] && !$bal['per06'] && !$bal['per07'] && !$bal['per08'] &&
 			!$bal['per09'] && !$bal['per10'] && !$bal['per11'] && !$bal['per12'])
 			continue;
-		//if (array_sum($bal) == 0.0)
-		//$i = 1;
-		//foreach ($bal as $b)
-		//	$balance[$i++] = $b;
-		//$balance = $bal;
-		$balance = Array(1 => $bal['per01'], $bal['per02'], $bal['per03'], $bal['per04'], 
-			$bal['per05'], $bal['per06'], $bal['per07'], $bal['per08'], 
+		$balance = array(1 => $bal['per01'], $bal['per02'], $bal['per03'], $bal['per04'],
+			$bal['per05'], $bal['per06'], $bal['per07'], $bal['per08'],
 			$bal['per09'], $bal['per10'], $bal['per11'], $bal['per12']);
 		if ($account['AccountClassName'] != $classname)
 		{
@@ -210,7 +201,7 @@ function print_annual_expense_breakdown()
 				$rep->TextCol(0, 2,	_('Total') . " " . $group);
 				for ($i = 1; $i <= 12; $i++)
 					$rep->TextCol($i + 1, $i + 2, number_format2($total[$i], $dec));
-				unset($total);
+				$total = Array(1 => 0,0,0,0,0,0,0,0,0,0,0,0);
 				$rep->row -= ($rep->lineHeight + 4);
 				if ($closeclass)
 				{
@@ -222,9 +213,9 @@ function print_annual_expense_breakdown()
 					{
 						$rep->TextCol($i + 1, $i + 2, number_format2($total2[$i], $dec));
 						$sales[$i] += $total2[$i];
-					}	
+					}
 					$rep->Font();
-					unset($total2);
+					$total2 = Array(1 => 0,0,0,0,0,0,0,0,0,0,0,0);
 					$rep->NewLine(3);
 					$closeclass = false;
 				}
@@ -249,7 +240,7 @@ function print_annual_expense_breakdown()
 			$rep->TextCol($i + 1, $i + 2, number_format2($balance[$i], $dec));
 			$total[$i] += $balance[$i];
 			$total2[$i] += $balance[$i];
-		}			
+		}
 
 		$rep->NewLine();
 
@@ -287,7 +278,7 @@ function print_annual_expense_breakdown()
 				{
 					$rep->TextCol($i + 1, $i + 2, number_format2($total2[$i], $dec));
 					$calc[$i] = $sales[$i] + $total2[$i];
-				}	
+				}
 
 				$rep->row -= ($rep->lineHeight + 8);
 				$rep->TextCol(0, 2,	_('Calculated Return'));

@@ -26,22 +26,24 @@ if (isset($_GET['stock_id']))
 }
 
 //--------------------------------------------------------------------------------------
-
 if (isset($_POST['UpdateData']))
 {
 
-   	$old_cost = $_POST['OldMaterialCost'] + $_POST['OldLabourCost'] + $_POST['OldLabourCost'];
-   	$new_cost = $_POST['material_cost'] + $_POST['labour_cost'] + $_POST['overhead_cost'];
+   	$old_cost = $_POST['OldMaterialCost'] + $_POST['OldLabourCost']
+	    + $_POST['OldOverheadCost'];
+   	$new_cost = input_num('material_cost') + input_num('labour_cost')
+	     + input_num('overhead_cost');
 
    	$should_update = true;
 
-	if (!is_numeric($_POST['material_cost']) || !is_numeric($_POST['labour_cost']) || 
-		!is_numeric($_POST['overhead_cost'])) 
+	if (!check_num('material_cost') || !check_num('labour_cost') ||
+		!check_num('overhead_cost'))
 	{
 		display_error( _("The entered cost is not numeric."));
+		set_focus('material_cost');
    	 	$should_update = false;
-	} 
-	elseif ($old_cost == $new_cost) 
+	}
+	elseif ($old_cost == $new_cost)
 	{
    	 	display_error( _("The new cost is the same as the old cost. Cost was not updated."));
    	 	$should_update = false;
@@ -49,8 +51,9 @@ if (isset($_POST['UpdateData']))
 
    	if ($should_update)
    	{
-		$update_no = stock_cost_update($_POST['stock_id'], $_POST['material_cost'],
-			$_POST['labour_cost'], $_POST['overhead_cost'],	$old_cost);
+		$update_no = stock_cost_update($_POST['stock_id'], 
+		    input_num('material_cost'), input_num('labour_cost'), 
+		    input_num('overhead_cost'),	$old_cost);
 
         display_note(_("Cost has been updated."));
 
@@ -61,6 +64,8 @@ if (isset($_POST['UpdateData']))
    	}
 }
 
+if (isset($_POST['_stock_id_update']))
+	$Ajax->activate('cost_table');
 //-----------------------------------------------------------------------------------------
 
 start_form(false, true);
@@ -74,41 +79,44 @@ stock_costable_items_list('stock_id', $_POST['stock_id'], false, true);
 echo "</center><hr>";
 set_global_stock_item($_POST['stock_id']);
 
-$sql = "SELECT description, units, last_cost, actual_cost, material_cost, labour_cost,
+$sql = "SELECT description, units, material_cost, labour_cost,
 	overhead_cost, mb_flag
 	FROM ".TB_PREF."stock_master
 	WHERE stock_id='" . $_POST['stock_id'] . "'
-	GROUP BY description, units, last_cost, actual_cost, material_cost, labour_cost, overhead_cost, mb_flag";
+	GROUP BY description, units, material_cost, labour_cost, overhead_cost, mb_flag";
 $result = db_query($sql);
 check_db_error("The cost details for the item could not be retrieved", $sql);
 
 $myrow = db_fetch($result);
-
+div_start('cost_table');
 hidden("OldMaterialCost", $myrow["material_cost"]);
 hidden("OldLabourCost", $myrow["labour_cost"]);
 hidden("OldOverheadCost", $myrow["overhead_cost"]);
 
 start_table($table_style2);
-label_row(_("Last Cost"), number_format2($myrow["last_cost"],user_price_dec()), 
-	"class='tableheader2'", "nowrap align=right");
 
-text_row(_("Standard Material Cost Per Unit"), "material_cost", 
-	number_format($myrow["material_cost"],user_price_dec()), "", "", "class='tableheader2'");
+$_POST['material_cost'] = price_format($myrow["material_cost"]);
+$_POST['labour_cost'] = price_format($myrow["labour_cost"]);
+$_POST['overhead_cost'] = price_format($myrow["overhead_cost"]);
+
+amount_row(_("Standard Material Cost Per Unit"), "material_cost",
+	null, "class='tableheader2'");
 
 if ($myrow["mb_flag"]=='M')
 {
-	text_row(_("Standard Labour Cost Per Unit"), "labour_cost", 
-		number_format($myrow["labour_cost"],user_price_dec()), "", "", "class='tableheader2'");
-	text_row(_("Standard Overhead Cost Per Unit"), "overhead_cost", 
-		number_format($myrow["overhead_cost"],user_price_dec()), "", "", "class='tableheader2'");
-} 
-else 
+	amount_row(_("Standard Labour Cost Per Unit"), "labour_cost",
+		null, "class='tableheader2'");
+	amount_row(_("Standard Overhead Cost Per Unit"), "overhead_cost",
+		null, "class='tableheader2'");
+}
+else
 {
 	hidden("labour_cost", 0);
 	hidden("overhead_cost", 0);
 }
 
 end_table(1);
+div_end();
 submit_center('UpdateData', _("Update"));
 
 end_form();

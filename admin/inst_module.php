@@ -1,6 +1,6 @@
 <?php
 
-$page_security = 15;
+$page_security = 20;
 $path_to_root="..";
 include_once($path_to_root . "/includes/session.inc");
 
@@ -13,15 +13,15 @@ include_once($path_to_root . "/modules/installed_modules.php");
 include_once($path_to_root . "/includes/ui.inc");
 
 $tabs = array('orders', 'AP', 'stock', 'manuf', 'proj', 'GL', 'system');
-$names = array(_("Sales"), _("Purchases"), _("Items and Inventory"), _("Manufacturing"), 
+$names = array(_("Sales"), _("Purchases"), _("Items and Inventory"), _("Manufacturing"),
 	_("Dimensions"), _("Banking and General Ledger"), _("Setup"));
-	
+
 //---------------------------------------------------------------------------------------------
 
 if (isset($_GET['selected_id']))
 {
 	$selected_id = $_GET['selected_id'];
-} 
+}
 elseif (isset($_POST['selected_id']))
 {
 	$selected_id = $_POST['selected_id'];
@@ -55,9 +55,9 @@ function tab_list_row($label, $name, $selected)
 	{
 		if ($selected == $tabs[$i])
 			echo "<option selected value='".$tabs[$i]."'>" . $names[$i]. "</option>\n";
-		else	
+		else
 			echo "<option value='".$tabs[$i]."'>" . $names[$i]. "</option>\n";
-	}		
+	}
 	echo "</select></td>\n";
 	echo "</tr>\n";
 }
@@ -66,6 +66,8 @@ function tab_list_row($label, $name, $selected)
 
 function check_data()
 {
+	if ($_POST['name'] == "" || $_POST['path'] == "")
+		return false;
 	return true;
 }
 
@@ -83,15 +85,15 @@ function array_natsort($aryData, $strIndex, $strSortBy, $strSortType=false)
    if (!is_array($aryData) || !$strIndex || !$strSortBy)
        //    return the array
        return $aryData;
-       
+
    //    create our temporary arrays
    $arySort = $aryResult = array();
-   
+
    //    loop through the array
    foreach ($aryData as $aryRow)
        //    set up the value in the array
        $arySort[$aryRow[$strIndex]] = $aryRow[$strSortBy];
-       
+
    //    apply the natural sort
    natsort($arySort);
 
@@ -99,7 +101,7 @@ function array_natsort($aryData, $strIndex, $strSortBy, $strSortType=false)
    if ($strSortType=="desc")
        //    reverse the array
        arsort($arySort);
-       
+
    //    loop through the sorted and original data
    foreach ($arySort as $arySortKey => $arySorted)
        foreach ($aryData as $aryOriginal)
@@ -110,7 +112,7 @@ function array_natsort($aryData, $strIndex, $strSortBy, $strSortType=false)
 
    //    return the return
    return $aryResult;
-} 
+}
 
 function write_modules()
 {
@@ -119,9 +121,9 @@ function write_modules()
 	$mods = array_natsort($installed_modules, 'tab', 'tab');
 	$installed_modules = $mods;
 	//reset($installed_languages);
-	$n = count($installed_modules);	
+	$n = count($installed_modules);
 	$msg = "<?php\n\n";
-	
+
 	$msg .= "/*****************************************************************\n";
 	$msg .= "External modules for FrontAccounting\n";
 	$msg .= "******************************************************************/\n";
@@ -145,16 +147,16 @@ function write_modules()
 
 	$filename = $path_to_root . "/modules/installed_modules.php";
 	// Check if the file exists and is writable first.
-	if (file_exists($filename) && is_writable($filename)) 
+	if (file_exists($filename) && is_writable($filename))
 	{
-		if (!$zp = fopen($filename, 'w')) 
+		if (!$zp = fopen($filename, 'w'))
 		{
 			display_error(_("Cannot open the modules file - ") . $filename);
 			return false;
-		} 
-		else 
+		}
+		else
 		{
-			if (!fwrite($zp, $msg)) 
+			if (!fwrite($zp, $msg))
 			{
 				display_error(_("Cannot write to the modules file - ") . $filename);
 				fclose($zp);
@@ -163,8 +165,8 @@ function write_modules()
 			// Close file
 			fclose($zp);
 		}
-	} 
-	else 
+	}
+	else
 	{
 		display_error(_("The modules file ") . $filename . _(" is not writable. Change its permissions so it is, then re-run the operation."));
 		return false;
@@ -186,11 +188,11 @@ function handle_submit()
 	$installed_modules[$id]['tab'] = $_POST['tab'];
 	$installed_modules[$id]['name'] = $_POST['name'];
 	$installed_modules[$id]['path'] = $_POST['path'];
-	$directory = $path_to_root . "/modules/" . $_POST['path'];	
+	$directory = $path_to_root . "/modules/" . $_POST['path'];
 	if (!file_exists($directory))
 	{
 		mkdir($directory);
-	}	
+	}
 	if (is_uploaded_file($_FILES['uploadfile']['tmp_name']))
 	{
 		$installed_modules[$id]['filename'] = $_FILES['uploadfile']['name'];
@@ -223,13 +225,13 @@ function handle_delete()
 {
 	global  $path_to_root, $installed_modules;
 
-	$id = $_GET['id'];	
+	$id = $_GET['id'];
 
 	$path = $installed_modules[$id]['path'];
-	$filename = "$path_to_root/modules/$path";	
-	if ($h = opendir($filename)) 
+	$filename = "$path_to_root/modules/$path";
+	if ($h = opendir($filename))
 	{
-   		while (($file = readdir($h)) !== false) 
+   		while (($file = readdir($h)) !== false)
    		{
    			if (is_file("$filename/$file"))
    		    	unlink("$filename/$file");
@@ -294,7 +296,7 @@ function display_module_edit($selected_id)
 		$n = $selected_id;
 	else
 		$n = count($installed_modules);
-	
+
 	start_form(true, true);
 
 	echo "
@@ -304,10 +306,10 @@ function display_module_edit($selected_id)
 			document.forms[0].submit()
 		}
 		</script>";
-	
+
 	start_table($table_style2);
 
-	if ($selected_id != -1) 
+	if ($selected_id != -1)
 	{
 		$mod = $installed_modules[$selected_id];
 		$_POST['tab']  = $mod['tab'];
@@ -316,7 +318,7 @@ function display_module_edit($selected_id)
 		$_POST['filename'] = $mod['filename'];
 		hidden('selected_id', $selected_id);
 		hidden('filename', $_POST['filename']);
-	} 
+	}
 	tab_list_row(_("Menu Tab"), 'tab', null);
 	text_row_ex(_("Name"), 'name', 30);
 	text_row_ex(_("Folder"), 'path', 20);
@@ -326,7 +328,7 @@ function display_module_edit($selected_id)
 
 	end_table(0);
 	display_note(_("Select your module PHP file from your local harddisk."), 0, 1);
-	echo "<center><input onclick='javascript:updateModule()' type='button' style='width:150' value='". _("Save"). "'>";
+	echo "<center><input onclick='javascript:updateModule()' type='button' style='width:150px' value='". _("Save"). "'></center>";
 
 
 	end_form();
@@ -337,18 +339,18 @@ function display_module_edit($selected_id)
 
 if (isset($_GET['c']))
 {
-	if ($_GET['c'] == 'df') 
+	if ($_GET['c'] == 'df')
 	{
 		handle_delete();
 	}
 
-	if ($_GET['c'] == 'u') 
+	if ($_GET['c'] == 'u')
 	{
-		if (handle_submit()) 
+		if (handle_submit())
 		{
 			//meta_forward($_SERVER['PHP_SELF']);
 		}
-	}	
+	}
 }
 
 //---------------------------------------------------------------------------------------------

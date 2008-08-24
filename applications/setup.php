@@ -1,9 +1,9 @@
 <?php
 
 	include_once("./modules/installed_modules.php");
-	class setup_app extends application 
+	class setup_app extends application
 	{
-		function setup_app() 
+		function setup_app()
 		{
 			global $installed_modules;
 			$this->application("system",_("Setup"));
@@ -38,7 +38,7 @@
 					if ($mod["tab"] == "system")
 						$this->add_rapp_function(2, $mod["name"], "modules/".$mod["path"]."/".$mod["filename"]."?");
 				}
-			}	
+			}
 		}
 	}
 

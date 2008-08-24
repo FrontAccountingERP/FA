@@ -104,7 +104,7 @@ function get_exchange_rate_to_home_currency($currency_code, $date_)
 function to_home_currency($amount, $currency_code, $date_)
 {
 	$ex_rate = get_exchange_rate_to_home_currency($currency_code, $date_);
-	return $amount / $ex_rate;	
+	return round($amount / $ex_rate,  user_price_dec());
 }
 
 //----------------------------------------------------------------------------------		

@@ -1,6 +1,6 @@
 <?php
 
-$page_security = 15;
+$page_security = 20;
 $path_to_root="..";
 include_once($path_to_root . "/includes/session.inc");
 
@@ -16,7 +16,7 @@ include_once($path_to_root . "/includes/ui.inc");
 if (isset($_GET['selected_id']))
 {
 	$selected_id = $_GET['selected_id'];
-} 
+}
 elseif (isset($_POST['selected_id']))
 {
 	$selected_id = $_POST['selected_id'];
@@ -28,6 +28,8 @@ else
 
 function check_data()
 {
+	if ($_POST['code'] == "" || $_POST['name'] == "" || $_POST['encoding'] == "")
+		return false;
 	return true;
 }
 
@@ -45,15 +47,15 @@ function array_natsort($aryData, $strIndex, $strSortBy, $strSortType=false)
    if (!is_array($aryData) || !$strIndex || !$strSortBy)
        //    return the array
        return $aryData;
-       
+
    //    create our temporary arrays
    $arySort = $aryResult = array();
-   
+
    //    loop through the array
    foreach ($aryData as $aryRow)
        //    set up the value in the array
        $arySort[$aryRow[$strIndex]] = $aryRow[$strSortBy];
-       
+
    //    apply the natural sort
    natsort($arySort);
 
@@ -61,7 +63,7 @@ function array_natsort($aryData, $strIndex, $strSortBy, $strSortType=false)
    if ($strSortType=="desc")
        //    reverse the array
        arsort($arySort);
-       
+
    //    loop through the sorted and original data
    foreach ($arySort as $arySortKey => $arySorted)
        foreach ($aryData as $aryOriginal)
@@ -72,7 +74,7 @@ function array_natsort($aryData, $strIndex, $strSortBy, $strSortType=false)
 
    //    return the return
    return $aryResult;
-} 
+}
 
 function write_lang()
 {
@@ -82,9 +84,9 @@ function write_lang()
 	$conn = array_natsort($installed_languages, 'code', 'code');
 	$installed_languages = $conn;
 	//reset($installed_languages);
-	$n = count($installed_languages);	
+	$n = count($installed_languages);
 	$msg = "<?php\n\n";
-	
+
 	$msg .= "/* How to make new entries here\n\n";
 	$msg .= "-- if adding languages at the beginning of the list, make sure it's index is set to 0 (it has ' 0 => ')\n";
 	$msg .= "-- 'code' should match the name of the directory for the language under \\lang\n";
@@ -112,16 +114,16 @@ function write_lang()
 
 	$filename = $path_to_root . "/lang/installed_languages.inc";
 	// Check if the file exists and is writable first.
-	if (file_exists($filename) && is_writable($filename)) 
+	if (file_exists($filename) && is_writable($filename))
 	{
-		if (!$zp = fopen($filename, 'w')) 
+		if (!$zp = fopen($filename, 'w'))
 		{
 			display_error(_("Cannot open the languages file - ") . $filename);
 			return false;
-		} 
-		else 
+		}
+		else
 		{
-			if (!fwrite($zp, $msg)) 
+			if (!fwrite($zp, $msg))
 			{
 				display_error(_("Cannot write to the language file - ") . $filename);
 				fclose($zp);
@@ -130,8 +132,8 @@ function write_lang()
 			// Close file
 			fclose($zp);
 		}
-	} 
-	else 
+	}
+	else
 	{
 		display_error(_("The language file ") . $filename . _(" is not writable. Change its permissions so it is, then re-run the operation."));
 		return false;
@@ -156,12 +158,12 @@ function handle_submit()
 	$installed_languages[$id]['rtl'] = (bool)$_POST['rtl'];
 	if (!write_lang())
 		return false;
-	$directory = $path_to_root . "/lang/" . $_POST['code'];	
+	$directory = $path_to_root . "/lang/" . $_POST['code'];
 	if (!file_exists($directory))
 	{
 		mkdir($directory);
 		mkdir($directory . "/LC_MESSAGES");
-	}	
+	}
 	if (is_uploaded_file($_FILES['uploadfile']['tmp_name']))
 	{
 		$file1 = $_FILES['uploadfile']['tmp_name'];
@@ -187,13 +189,13 @@ function handle_delete()
 {
 	global  $path_to_root, $installed_languages;
 
-	$id = $_GET['id'];	
+	$id = $_GET['id'];
 
 	$lang = $installed_languages[$id]['code'];
-	$filename = "$path_to_root/lang/$lang/LC_MESSAGES";	
-	if ($h = opendir($filename)) 
+	$filename = "$path_to_root/lang/$lang/LC_MESSAGES";
+	if ($h = opendir($filename))
 	{
-   		while (($file = readdir($h)) !== false) 
+   		while (($file = readdir($h)) !== false)
    		{
    			if (is_file("$filename/$file"))
    		    	unlink("$filename/$file");
@@ -201,10 +203,10 @@ function handle_delete()
    		closedir($h);
 	}
 	rmdir($filename);
-	$filename = "$path_to_root/lang/$lang";	
-	if ($h = opendir($filename)) 
+	$filename = "$path_to_root/lang/$lang";
+	if ($h = opendir($filename))
 	{
-   		while (($file = readdir($h)) !== false) 
+   		while (($file = readdir($h)) !== false)
    		{
    			if (is_file("$filename/$file"))
    		    	unlink("$filename/$file");
@@ -231,7 +233,7 @@ function display_languages()
 	global $table_style, $installed_languages;
 
 	$lang = $_SESSION["language"]->code;
-	
+
 	echo "
 		<script language='javascript'>
 		function deleteLanguage(id) {
@@ -263,8 +265,9 @@ function display_languages()
 			$rtl = _("No");
 		label_cell($rtl);
 		edit_link_cell("selected_id=" . $i);
-		if ($conn[$i]['code'] != $lang)
-			label_cell("<a href='javascript:deleteLanguage(" . $i . ")'>" . _("Delete") . "</a>");
+		
+		label_cell($conn[$i]['code'] == $lang ? '' :
+			"<a href='javascript:deleteLanguage(" . $i . ")'>" . _("Delete") . "</a>");
 		end_row();
 	}
 
@@ -282,7 +285,7 @@ function display_language_edit($selected_id)
 		$n = $selected_id;
 	else
 		$n = count($installed_languages);
-	
+
 	start_form(true, true);
 
 	echo "
@@ -292,10 +295,10 @@ function display_language_edit($selected_id)
 			document.forms[0].submit()
 		}
 		</script>";
-	
+
 	start_table($table_style2);
 
-	if ($selected_id != -1) 
+	if ($selected_id != -1)
 	{
 		$conn = $installed_languages[$selected_id];
 		$_POST['code'] = $conn['code'];
@@ -306,7 +309,7 @@ function display_language_edit($selected_id)
 		else
 			$_POST['rtl'] = false;
 		hidden('selected_id', $selected_id);
-	} 
+	}
 	text_row_ex(_("Language"), 'code', 20);
 	text_row_ex(_("Name"), 'name', 20);
 	text_row_ex(_("Encoding"), 'encoding', 20);
@@ -318,7 +321,7 @@ function display_language_edit($selected_id)
 
 	end_table(0);
 	display_note(_("Select your language files from your local harddisk."), 0, 1);
-	echo "<center><input onclick='javascript:updateLanguage()' type='button' style='width:150' value='". _("Save"). "'>";
+	echo "<center><input onclick='javascript:updateLanguage()' type='button' style='width:150px' value='". _("Save"). "'></center>";
 
 
 	end_form();
@@ -329,18 +332,18 @@ function display_language_edit($selected_id)
 
 if (isset($_GET['c']))
 {
-	if ($_GET['c'] == 'df') 
+	if ($_GET['c'] == 'df')
 	{
 		handle_delete();
 	}
 
-	if ($_GET['c'] == 'u') 
+	if ($_GET['c'] == 'u')
 	{
-		if (handle_submit()) 
+		if (handle_submit())
 		{
 			//meta_forward($_SERVER['PHP_SELF']);
 		}
-	}	
+	}
 }
 
 //---------------------------------------------------------------------------------------------

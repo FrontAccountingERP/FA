@@ -19,6 +19,7 @@ page(_("View or Print Transactions"), false, false, "", $js);
 
 function viewing_controls()
 {
+	display_note(_("Only documents can be printed."));
     start_form(false, true);
 
     start_table("class='tablestyle_noborder'");
@@ -26,11 +27,16 @@ function viewing_controls()
 
 	systypes_list_cells(_("Type:"), 'filterType', null, true);
 
+	if (!isset($_POST['FromTransNo']))
+		$_POST['FromTransNo'] = "1";
+	if (!isset($_POST['ToTransNo']))
+		$_POST['ToTransNo'] = "999999";
+
     ref_cells(_("from #:"), 'FromTransNo');
 
     ref_cells(_("to #:"), 'ToTransNo');
 
-    submit_cells('ProcessSearch', _("Search"));
+    submit_cells('ProcessSearch', _("Search"), '', '', true);
 
 	end_row();
     end_table(1);
@@ -53,6 +59,8 @@ function check_valid_entries()
 		echo _("The ending transaction number is expected to be numeric and greater than zero.");
 		return false;
 	}
+	if (!isset($_POST['filterType']) || $_POST['filterType'] == "")
+		return false;
 
 	return true;
 }
@@ -65,6 +73,9 @@ function handle_search()
 	if (check_valid_entries()==true)
 	{
 		$db_info = get_systype_db_info($_POST['filterType']);
+
+		if ($db_info == null)
+			return;
 
 		$table_name = $db_info[0];
 		$type_name = $db_info[1];
@@ -87,20 +98,34 @@ function handle_search()
 
 		$result = db_query($sql, "could not query transactions on $table_name");
 
-		if (db_num_rows($result) == 0) 
+		if (db_num_rows($result) == 0)
 		{
 			echo _("There are no transactions for the given parameters.");
 			return;
 		}
-
+		$print_type = $_POST['filterType'];
+		$print_out = ($print_type == 10 || $print_type == 11 || $print_type == systypes::cust_dispatch() ||
+			$print_type == systypes::po() || $print_type == systypes::sales_order());
+		if ($print_out)
+		{
+			print_hidden_script($print_type);
+			if ($trans_ref)
+				$th = array(_("#"), _("Reference"), _("View"), _("Print"), _("GL"));
+			else
+				$th = array(_("#"), _("View"), _("Print"), _("GL"));
+		}
+		else
+		{
+			if ($trans_ref)
+				$th = array(_("#"), _("Reference"), _("View"), _("GL"));
+			else
+				$th = array(_("#"), _("View"), _("GL"));
+		}
+		div_start('transactions');
 		start_table($table_style);
-		if ($trans_ref)
-			$th = array(_("#"), _("Reference"), _("View"), _("Print"));
-		else	
-			$th = array(_("#"), _("View"), _("Print"));
-		table_header($th);	
+		table_header($th);
 		$k = 0;
-		while ($line = db_fetch($result)) 
+		while ($line = db_fetch($result))
 		{
 
 			alt_table_row_color($k);
@@ -109,31 +134,16 @@ function handle_search()
 			if ($trans_ref)
 				label_cell($line[$trans_ref]);
 			label_cell(get_trans_view_str($_POST['filterType'],$line[$trans_no_name], _("View")));
-        	label_cell(get_gl_view_str_cell($_POST['filterType'], $line[$trans_no_name], _("View GL")));
+			if ($print_out)
+				label_cell(print_document_link($line[$trans_no_name], _("Print"), true,	$print_type));
+        	label_cell(get_gl_view_str($_POST['filterType'], $line[$trans_no_name], _("View GL")));
 
-        	$forms = get_form_entries($_POST['filterType'], $line[$trans_no_name]);
-        	while ($form_item = db_fetch($forms)) 
-        	{
-
-        		$param1 = $form_item['param1'];
-        		$param2 = $form_item['param2'];
-
-        		if ($_POST['filterType'] == systypes::bank_payment()
-        			|| $_POST['filterType'] == systypes::bank_deposit()
-        			|| $_POST['filterType'] == systypes::cust_payment()
-        			|| $_POST['filterType'] == systypes::supp_payment()) 
-        		{
-                		$param1 = payment_person_types::type_name($form_item['param1']);
-                		$param2 = payment_person_types::person_name($form_item['param1'], $form_item['param2'], false);
-        		}
-
-        		//label_cell(printTransaction(_("Print") . " " . getFormTypeName($form_item["form_type"]), $form_item['form_id'], $form_item['form_type'], $_POST['filterType'], $line[$trans_no_name], $line[$trans_ref], $param1, $param2));
-        	}
-        	end_row();
+	    	end_row();
 
 		}
 
 		end_table();
+		div_end();
 	}
 }
 
@@ -143,13 +153,12 @@ if (isset($_POST['ProcessSearch']))
 {
 	if (!check_valid_entries())
 		unset($_POST['ProcessSearch']);
+	$Ajax->activate('transactions');
 }
 
 //----------------------------------------------------------------------------------------
 
 viewing_controls();
-
-//echo getHiddenFieldScript();
 
 handle_search();
 

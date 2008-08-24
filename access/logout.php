@@ -39,7 +39,7 @@ page(_("Logout"), true, false, "", get_js_png_fix());
 <br>
 <?php
 
-	end_page();
+	end_page(false, true);
 	session_unset();
 	session_destroy();
 ?>

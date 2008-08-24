@@ -24,7 +24,7 @@ print_balance_sheet();
 
 function print_balance_sheet()
 {
-	global $path_to_root;
+	global $comp_path, $path_to_root;
 
 	include_once($path_to_root . "reporting/includes/pdf_report.inc");
 	$dim = get_company_pref('use_dimension');
@@ -54,17 +54,17 @@ function print_balance_sheet()
 	{
 		include_once($path_to_root . "reporting/includes/class.graphic.inc");
 		$pg = new graph();
-	}	
+	}
 	$dec = 0;
 
 	$cols = array(0, 50, 200, 350, 425,	500);
 	//------------0--1---2----3----4----5--
-	
+
 	$headers = array(_('Account'), _('Account Name'), _('Open Balance'), _('Period'),
 		_('Close Balance'));
-	
+
 	$aligns = array('left',	'left',	'right', 'right', 'right');
-    
+
     if ($dim == 2)
     {
     	$params =   array( 	0 => $comments,
@@ -104,6 +104,7 @@ function print_balance_sheet()
 	$assetsopen = 0.0;
 	$assetsperiod = 0.0;
 	$assetsclose = 0.0;
+	$closeclass = false;
 
 	$accounts = get_gl_accounts_all(1);
 
@@ -138,7 +139,7 @@ function print_balance_sheet()
 				{
 					$pg->x[] = $group;
 					$pg->y[] = abs($totalclose);
-				}	
+				}
 				$totalopen = $totalperiod = $totalclose = 0.0;
 				$rep->row -= ($rep->lineHeight + 4);
 				if ($closeclass)
@@ -215,7 +216,7 @@ function print_balance_sheet()
 			{
 				$pg->x[] = $group;
 				$pg->y[] = abs($totalclose);
-			}	
+			}
 			$rep->row -= ($rep->lineHeight + 4);
 			if ($closeclass)
 			{
@@ -233,7 +234,7 @@ function print_balance_sheet()
 				{
 					$pg->x[] = _('Calculated Return');
 					$pg->y[] = abs($calculateclose);
-				}	
+				}
 				$rep->row -= ($rep->lineHeight + 4);
 
 				$rep->Font('bold');
@@ -259,7 +260,7 @@ function print_balance_sheet()
 		$pg->built_in  = false;
 		$pg->fontfile  = $path_to_root . "reporting/fonts/Vera.ttf";
 		$pg->latin_notation = ($decseps[$_SESSION["wa_current_user"]->prefs->dec_sep()] != ".");
-		$filename = $path_to_root . "reporting/pdf_files/test.png";
+		$filename =  $comp_path.'/'.user_company()."/pdf_files/test.png";
 		$pg->display($filename, true);
 		$w = $pg->width / 1.5;
 		$h = $pg->height / 1.5;

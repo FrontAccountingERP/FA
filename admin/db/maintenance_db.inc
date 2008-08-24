@@ -96,7 +96,7 @@ function db_drop_db($connection)
         // get table structures
 		foreach ($all_tables as $table)
 		{
-			if (strpos($table['Name'], $connection["tbpref"]) !== false)
+			if (strpos($table['Name'], $connection["tbpref"]) === 0)
 				db_query("DROP TABLE `".$table['Name'] . "`");
 		}
 		//deleting the tables, how??
@@ -133,6 +133,12 @@ function db_import($filename, $connection)
 
 			// this line does not, too
 			if (strtolower(substr($line,0,6)) == "insert")
+			{
+				$data_queries[] = substr($line, 0, strlen($line) - 1);
+
+			// this line does not, too
+			}
+			elseif (strtolower(substr($line,0,6)) == "update")
 			{
 				$data_queries[] = substr($line, 0, strlen($line) - 1);
 
@@ -405,11 +411,7 @@ function db_export($conn, $filename, $zip='no', $comment='')
 					// run through each field
 					for ($k = 0; $k < $nf = db_num_fields($res2); $k++)
 					{
-						// identify null values and save them as null instead of ''
-						if ($field_type[$k] != "" && $field_type[$k] != "NO" && $row2[$k] == "")
-							$out .= "NULL";
-						else
-							$out .= "'" . db_escape($row2[$k]) . "'";
+						$out .= db_escape($row2[$k]);
 						if ($k < ($nf - 1))
 							$out .= ", ";
 					}
@@ -429,7 +431,7 @@ function db_export($conn, $filename, $zip='no', $comment='')
 			}
 			elseif ($error)
 			{
-				@unlink($path_to_root . BACKUP_PATH . $backupfile);
+				@unlink(BACKUP_PATH . $backupfile);
 				return false;
 			}
 
@@ -447,7 +449,7 @@ function db_export($conn, $filename, $zip='no', $comment='')
 	}
 	else
 	{
-		@unlink($path_to_root . BACKUP_PATH . $backupfile);
+		@unlink(BACKUP_PATH . $backupfile);
 		return false;
 	}
 
@@ -462,7 +464,7 @@ function db_export($conn, $filename, $zip='no', $comment='')
 	}
 	else
 	{
-		@unlink($path_to_root . BACKUP_PATH . $backupfile);
+		@unlink(BACKUP_PATH . $backupfile);
 		return false;
 	}
     return $backupfile;
@@ -525,7 +527,7 @@ function save_to_file($backupfile, $zip, $fileData)
 
     if ($zip == "gzip")
     {
-        if ($zp = @gzopen($path_to_root . BACKUP_PATH . $backupfile, "a9"))
+        if ($zp = @gzopen(BACKUP_PATH . $backupfile, "a9"))
         {
 			@gzwrite($zp, $fileData);
 			@gzclose($zp);
@@ -601,7 +603,7 @@ function save_to_file($backupfile, $zip, $fileData)
         // total # of entries "on this disk", total # of entries overall, size of central dir, offset to start of central dir, .zip file comment length
         $fileData .= pack('v', 1) . pack('v', 1) . pack('V', strlen($cdrec)) . pack('V', strlen($fr)) . "\x00\x00";
 
-        if ($zp = @fopen($path_to_root . BACKUP_PATH . $backupfile, "a"))
+        if ($zp = @fopen(BACKUP_PATH . $backupfile, "a"))
         {
 			@fwrite($zp, $fileData);
 			@fclose($zp);
@@ -616,7 +618,7 @@ function save_to_file($backupfile, $zip, $fileData)
     }
     else
     {
-        if ($zp = @fopen($path_to_root . BACKUP_PATH . $backupfile, "a"))
+        if ($zp = @fopen(BACKUP_PATH . $backupfile, "a"))
         {
 			@fwrite($zp, $fileData);
 			@fclose($zp);

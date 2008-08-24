@@ -41,7 +41,7 @@ function create_new_po()
 
 function display_po_header(&$order)
 {
-	global $table_style2;
+	global $table_style2, $Ajax;
 
 	$editable = ($order->order_no == 0);
 
@@ -54,15 +54,7 @@ function display_po_header(&$order)
         if (!isset($_POST['supplier_id']) && (get_global_supplier() != reserved_words::get_all()))
         	$_POST['supplier_id'] = get_global_supplier();
 
-    	supplier_list_row(_("Supplier:"), 'supplier_id', $_POST['supplier_id'], false, true);
-
-    	if ($order->supplier_id != $_POST['supplier_id'])
-    	{
-    		// supplier has changed
-    		// delete all the order items - drastic but necessary because of
-    		// change of currency, etc
-    		$order->clear_items();
-    	}
+    	supplier_list_row(_("Supplier:"), 'supplier_id', null, false, true);
 	}
 	else
 	{
@@ -70,9 +62,15 @@ function display_po_header(&$order)
 		label_row(_("Supplier:"), $order->supplier_name);
     }
 
-	//if ($editable || ($order->supplier_id != $_POST['supplier_id']))
-	get_supplier_details_to_order($order, $_POST['supplier_id']);
-
+	if ($order->supplier_id != get_post('supplier_id',-1)) {
+		get_supplier_details_to_order($order, $_POST['supplier_id']);
+		// supplier default price update
+		foreach ($order->line_items as $line_no=>$item) {
+			$line = &$order->line_items[$line_no];
+			$line->price =  get_purchase_price ($order->supplier_id, $_POST['stock_id']);
+		}
+	    $Ajax->activate('items_table');
+	}
 	set_global_supplier($_POST['supplier_id']);
 
 	if (!is_company_currency($order->curr_code))
@@ -84,7 +82,7 @@ function display_po_header(&$order)
 
     if ($editable)
     {
-    	ref_row(_("Reference:"), 'ref', references::get_next(systypes::po()));
+    	ref_row(_("Reference:"), 'ref', '', references::get_next(systypes::po()));
     }
     else
     {
@@ -106,7 +104,7 @@ function display_po_header(&$order)
 	//	if (!is_date_in_fiscalyear($_POST['OrderDate']))
 	//		$_POST['OrderDate'] = end_fiscalyear();
 	//}
-	date_row(_("Order Date:"), 'OrderDate', $_POST['OrderDate'], 0, 0, 0);
+	date_row(_("Order Date:"), 'OrderDate', '', $_POST['OrderDate'], 0, 0, 0);
 
   	text_row(_("Supplier's Reference:"), 'Requisition', null, 16, 15);
 
@@ -118,13 +116,11 @@ function display_po_header(&$order)
 
 	echo "<tr><td>" . _("Receive Into:") . "</td>";
 	echo "<td>";
-    locations_list('StkLocation', null);
-    echo "  ";
-    submit('GetAddress', _("Get Address"));
+    locations_list('StkLocation', null, false, true);
 	echo "</td></tr>";
 
     if (!isset($_POST['StkLocation']) || $_POST['StkLocation'] == "" ||
-    	isset($_POST['GetAddress']) || !isset($_POST['delivery_address']) ||
+    	isset($_POST['_StkLocation_update']) || !isset($_POST['delivery_address']) ||
     	$_POST['delivery_address'] == "")
     {
     	/*If this is the first time the form loaded set up defaults */
@@ -137,13 +133,14 @@ function display_po_header(&$order)
         {
     	  	$loc_row = db_fetch($result);
     	  	$_POST['delivery_address'] = $loc_row["delivery_address"];
+			$Ajax->activate('delivery_address');
     	  	$_SESSION['PO']->Location = $_POST['StkLocation'];
     	  	$_SESSION['PO']->delivery_address = $_POST['delivery_address'];
 
         }
         else
         { /*The default location of the user is crook */
-    	  	echo "<br>" . _("The default stock location set up for this user is not a currently defined stock location. Your system administrator needs to amend your user record.");
+    	  	display_error(_("The default stock location set up for this user is not a currently defined stock location. Your system administrator needs to amend your user record."));
         }
     }
 
@@ -162,26 +159,30 @@ function display_po_items(&$order, $editable=true)
 
     display_heading(_("Order Items"));
 
+    div_start('items_table');
     start_table("$table_style width=80%");
 
    	$th = array(_("Item Code"), _("Item Description"), _("Quantity"), _("Unit"),
    		_("Required Delivery Date"), _("Price"), _("Line Total"));
+
+	if (count($order->line_items)) $th[] = '';
    	table_header($th);
 
+	$id = find_submit('Edit');
 	$total = 0;
 	$k = 0;
-   	foreach ($order->line_items as $po_line)
+   	foreach ($order->line_items as $line_no => $po_line)
    	{
 
 		if ($po_line->Deleted == false)
 		{
-    		$line_total =	$po_line->quantity * $po_line->price;
-    		if (!$editable || !isset($_GET['Edit']) || $_GET['Edit'] != $po_line->line_no)
+    		$line_total =	round($po_line->quantity * $po_line->price,  user_price_dec());
+    		if (!$editable || ($id != $line_no))
 			{
     			alt_table_row_color($k);
         		label_cell($po_line->stock_id);
     			label_cell($po_line->item_description);
-                qty_cell($po_line->quantity);
+                qty_cell($po_line->quantity, false, get_qty_dec($po_line->stock_id));
     			label_cell($po_line->units);
                 label_cell($po_line->req_del_date);
     			amount_cell($po_line->price);
@@ -189,8 +190,10 @@ function display_po_items(&$order, $editable=true)
 
                 if ($editable)
                 {
-                    edit_link_cell(SID."Edit=" . $po_line->line_no);
-                    delete_link_cell(SID."Delete=" . $po_line->line_no);
+					edit_button_cell("Edit$line_no", _("Edit"),
+					  _('Edit document line'));
+					edit_button_cell("Delete$line_no", _("Delete"),
+					  _('Remove line from document'));
                 }
         		end_row();
 			}
@@ -202,14 +205,15 @@ function display_po_items(&$order, $editable=true)
 		}
     }
 
-	if (!isset($_GET['Edit']) && $editable)
+	if ($id==-1 && $editable)
 		po_item_controls($order);
 
-    $display_total = number_format2($total,user_price_dec());
+    $display_total = price_format($total);
     label_row(_("Total Excluding Shipping/Tax"), $display_total, "colspan=6 align=right",
     	"nowrap align=right");
 
 	end_table(1);
+	div_end();
 }
 
 //---------------------------------------------------------------------------------------------------
@@ -267,70 +271,70 @@ function display_po_summary(&$po, $is_self=false, $editable=false)
 
 function po_item_controls(&$order, $stock_id=null)
 {
+   global $Ajax;
 	start_row();
 
-	if (isset($_GET['Edit']) && $stock_id != null)
+	$id = find_submit('Edit');
+	if (($id != -1) && $stock_id != null)
 	{
-		hidden('line_no', $_GET['Edit']);
+		hidden('line_no', $id);
 
-		if (!isset($_POST['stock_id']))
-			$_POST['stock_id'] = $order->line_items[$_GET['Edit']]->stock_id;
-		if (!isset($_POST['qty']) || ($_POST['qty'] == ""))
-			$_POST['qty'] = $order->line_items[$_GET['Edit']]->quantity;
-		if (!isset($_POST['price']) || ($_POST['price'] == ""))
-			$_POST['price'] = $order->line_items[$_GET['Edit']]->price;
-		if (!isset($_POST['req_del_date']) || ($_POST['req_del_date'] == ""))
-			$_POST['req_del_date'] = $order->line_items[$_GET['Edit']]->req_del_date;
+		$_POST['stock_id'] = $order->line_items[$id]->stock_id;
+			$dec = get_qty_dec($_POST['stock_id']);
+		$_POST['qty'] = qty_format($order->line_items[$id]->quantity, $_POST['stock_id'], $dec);
+		$_POST['price'] = price_format($order->line_items[$id]->price);
+		$_POST['req_del_date'] = $order->line_items[$id]->req_del_date;
 
-		$_POST['units'] = $order->line_items[$_GET['Edit']]->units;
+		$_POST['units'] = $order->line_items[$id]->units;
 
 		hidden('stock_id', $_POST['stock_id']);
 		label_cell($_POST['stock_id']);
-		label_cell($order->line_items[$_GET['Edit']]->item_description);
+		label_cell($order->line_items[$id]->item_description);
+	    $Ajax->activate('items_table');
 	}
 	else
 	{
-		global $no_item_list;
-
 		hidden('line_no', ($_SESSION['PO']->lines_on_order + 1));
 
-		if ($no_item_list)
-		{
-			echo "<td colspan=2>\n";
-			stock_purchasable_items_list('stock_id', $_POST['stock_id'], false, true);
-			echo "</td>\n";
-		}
-		else
-		{
-			text_cells(null, "StockID2", "", 12, 10, "", "", "onkeyup='recalcAccounts();' onKeyDown='if(event.keyCode==13) event.keyCode=9;' onblur='return setAccount(0, true);'");
-			stock_purchasable_items_list_cells(null, 'stock_id', $_POST['stock_id'], false, false, "onchange='return setAccount(1, true)'");
+		stock_purchasable_items_list_cells(null, 'stock_id', null, false, true);
+		if(isset($_POST['_stock_id_update'])) {
+			    $Ajax->activate('price');
+			    $Ajax->activate('units');
+			    $Ajax->activate('qty');
+			    $Ajax->activate('req_del_date');
+			    $Ajax->activate('line_total');
 		}
     	$item_info = get_item_edit_info($_POST['stock_id']);
 		$_POST['units'] = $item_info["units"];
 
-   		$_POST['qty'] = 1;
-		$_POST['price'] = get_purchase_price ($order->supplier_id, $_POST['stock_id']);
+		$dec = get_qty_dec($_POST['stock_id']);
+   		$_POST['qty'] = qty_format(1, $_POST['stock_id'], $dec);
+		$_POST['price'] = price_format(get_purchase_price ($order->supplier_id, $_POST['stock_id']));
 		$_POST['req_del_date'] = add_days(Today(), 10);
 	}
 
-	text_cells(null, 'qty', null, 13, 15);
+	qty_cells(null, 'qty', null, null, null, $dec);
 
-	label_cell($_POST['units']);
-	date_cells(null, 'req_del_date', null, 0, 0, 0);
-	text_cells(null, 'price', null, 15, 14);
+	label_cell($_POST['units'], '', 'units');
+	date_cells(null, 'req_del_date', '', null, 0, 0, 0);
+	amount_cells(null, 'price', null);
 
 	//$line_total = $_POST['qty'] * $_POST['price'] * (1 - $_POST['Disc'] / 100);
-	$line_total = $_POST['qty'] * $_POST['price'];
-	amount_cell($line_total);
+	$line_total = round(input_num('qty') * input_num('price'),  user_price_dec());
+	amount_cell($line_total, false, '','line_total');
 
-	if (isset($_GET['Edit']))
+	if ($id!=-1)
 	{
-    	submit_cells('UpdateLine', _("Update"));
-    	submit_cells('CancelUpdate', _("Cancel"));
+		edit_button_cell('UpdateLine', _("Update"),
+				_('Confirm changes'));
+		edit_button_cell('CancelUpdate', _("Cancel"),
+				_('Cancel changes'));
+		set_focus('qty');
 	}
 	else
 	{
-		submit_cells('EnterLine', _("Add Item"), "colspan=2");
+		submit_cells('EnterLine', _("Add Item"), "colspan=2",
+		    _('Add new item to document'), true);
 	}
 
 	end_row();

@@ -3,16 +3,13 @@
 $page_security = 4;
 
 $path_to_root="..";
-include($path_to_root . "/purchasing/includes/po_class.inc");
+include_once($path_to_root . "/purchasing/includes/po_class.inc");
 
-include($path_to_root . "/includes/session.inc");
-
-include($path_to_root . "/includes/data_checks.inc");
-include($path_to_root . "/includes/manufacturing.inc");
+include_once($path_to_root . "/includes/session.inc");
 
 include_once($path_to_root . "/purchasing/includes/purchasing_ui.inc");
 
-$js = get_js_form_entry("StockID2", "stock_id", "qty");
+$js = '';
 if ($use_popup_windows)
 	$js .= get_js_open_window(900, 500);
 if ($use_date_picker)
@@ -56,31 +53,12 @@ if (isset($_GET['AddedID']))
 }
 
 //--------------------------------------------------------------------------------------------------
+function line_start_focus() {
+  global 	$Ajax;
 
-function copy_to_po()
-{
-	$_SESSION['PO']->supplier_id = $_POST['supplier_id'];	
-	$_SESSION['PO']->orig_order_date = $_POST['OrderDate'];
-	$_SESSION['PO']->reference = $_POST['ref'];
-	$_SESSION['PO']->requisition_no = $_POST['Requisition'];
-	$_SESSION['PO']->Comments = $_POST['Comments'];	
-	$_SESSION['PO']->Location = $_POST['StkLocation'];
-	$_SESSION['PO']->delivery_address = $_POST['delivery_address'];
+  $Ajax->activate('items_table');
+  set_focus('_stock_id_edit');
 }
-
-//--------------------------------------------------------------------------------------------------
-
-function copy_from_po()
-{
-	$_POST['supplier_id'] = $_SESSION['PO']->supplier_id;	
-	$_POST['OrderDate'] = $_SESSION['PO']->orig_order_date;	
-    $_POST['Requisition'] = $_SESSION['PO']->requisition_no;
-    $_POST['ref'] = $_SESSION['PO']->reference;
-	$_POST['Comments'] = $_SESSION['PO']->Comments;
-    $_POST['StkLocation'] = $_SESSION['PO']->Location;
-    $_POST['delivery_address'] = $_SESSION['PO']->delivery_address;	
-}
-
 //--------------------------------------------------------------------------------------------------
 
 function unset_form_variables() {
@@ -92,9 +70,8 @@ function unset_form_variables() {
 
 //---------------------------------------------------------------------------------------------------
 
-function handle_delete_item()
+function handle_delete_item($line_no)
 {
-	$line_no = $_GET['Delete'];
 	if($_SESSION['PO']->some_already_received($line_no) == 0)
 	{
 		$_SESSION['PO']->remove_from_order($line_no);
@@ -104,6 +81,7 @@ function handle_delete_item()
 	{
 		display_error(_("This item cannot be deleted because some of it has already been received."));
 	}	
+    line_start_focus();
 }
 
 //---------------------------------------------------------------------------------------------------
@@ -139,38 +117,26 @@ function handle_cancel_po()
 }
 
 //---------------------------------------------------------------------------------------------------
-if (isset($_GET['Delete']) || isset($_GET['Edit']))
-{
-	copy_from_po();
-}
-	
-if (isset($_GET['Delete']))
-{
-	handle_delete_item();
-}
-
-//---------------------------------------------------------------------------------------------------
 
 function check_data()
 {
-    if (!is_numeric($_POST['qty']))
+    if (!check_num('qty',0))
     {
-	   	display_error(_("The quantity of the order item must be numeric."));
+	   	display_error(_("The quantity of the order item must be numeric and not less than zero."));
+		set_focus('qty');
 	   	return false;
     }
-    if ($_POST['qty'] <= 0)
+
+    if (!check_num('price', 0))
     {
-	   	display_error(_("The quantity of the ordered item entered must be a positive amount."));
-	   	return false;	   
-    }
-    if (!is_numeric($_POST['price']))
-    {
-	   	display_error(_("The price entered must be numeric."));
+	   	display_error(_("The price entered must be numeric and not less than zero."));
+		set_focus('price');
 	   	return false;	   
     }
     if (!is_date($_POST['req_del_date'])){
-    	display_error(_("The date entered is in an invalid format."));
-	   	return false;    	 
+    		display_error(_("The date entered is in an invalid format."));
+		set_focus('req_del_date');
+   		return false;    	 
     }
      
     return true;	
@@ -183,17 +149,19 @@ function handle_update_item()
 	$allow_update = check_data(); 
 
 	if ($allow_update && 
-		($_SESSION['PO']->line_items[$_POST['line_no']]->qty_inv > $_POST['qty'] ||
-		$_SESSION['PO']->line_items[$_POST['line_no']]->qty_received > $_POST['qty']))
+		($_SESSION['PO']->line_items[$_POST['line_no']]->qty_inv > input_num('qty') ||
+		$_SESSION['PO']->line_items[$_POST['line_no']]->qty_received > input_num('qty')))
 	{
 		display_error(_("You are attempting to make the quantity ordered a quantity less than has already been invoiced or received.  This is prohibited.") .
 			"<br>" . _("The quantity received can only be modified by entering a negative receipt and the quantity invoiced can only be reduced by entering a credit note against this item."));
+		set_focus('qty');
 		return;
 	}
 	
-	$_SESSION['PO']->update_order_item($_POST['line_no'], $_POST['qty'], $_POST['price'],
+	$_SESSION['PO']->update_order_item($_POST['line_no'], input_num('qty'), input_num('price'),
   		$_POST['req_del_date']);
 	unset_form_variables();
+    line_start_focus();
 }
 
 //---------------------------------------------------------------------------------------------------
@@ -206,15 +174,15 @@ function handle_add_new_item()
 	{ 
 		if (count($_SESSION['PO']->line_items) > 0)
 		{
-		    foreach ($_SESSION['PO']->line_items AS $order_item) 
+		    foreach ($_SESSION['PO']->line_items as $order_item) 
 		    {
 
     			/* do a loop round the items on the order to see that the item
     			is not already on this order */
    			    if (($order_item->stock_id == $_POST['stock_id']) && 
-   			    	($order_item->Deleted==False)) 
+   			    	($order_item->Deleted == false)) 
    			    {
-				  	$allow_update = False;
+				  	$allow_update = false;
 				  	display_error(_("The selected item is already on this order."));
 			    }
 		    } /* end of the foreach loop to look for pre-existing items of the same code */
@@ -229,18 +197,18 @@ function handle_add_new_item()
 
 		    if (db_num_rows($result) == 0)
 		    {
-				$allow_update = False;
+				$allow_update = false;
 		    }		    
 
 			if ($allow_update)
 		   	{
 				$myrow = db_fetch($result);
-				$_SESSION['PO']->add_to_order ($_POST['line_no'], $_POST['stock_id'], $_POST['qty'], 
-					$myrow["description"], $_POST['price'], $myrow["units"],
+				$_SESSION['PO']->add_to_order ($_POST['line_no'], $_POST['stock_id'], input_num('qty'), 
+					$myrow["description"], input_num('price'), $myrow["units"],
 					$_POST['req_del_date'], 0, 0);
 
 				unset_form_variables();
-				$_POST['StockID2'] = $_POST['stock_id']	= "";
+				$_POST['stock_id']	= "";
 	   		} 
 	   		else 
 	   		{
@@ -249,6 +217,7 @@ function handle_add_new_item()
 
 		} /* end of if not already on the order and allow input was true*/
     }
+	line_start_focus();
 }
 
 //---------------------------------------------------------------------------------------------------
@@ -258,33 +227,38 @@ function can_commit()
 	if (!is_date($_POST['OrderDate'])) 
 	{
 		display_error(_("The entered order date is invalid."));
+		set_focus('OrderDate');
 		return false;
 	} 
 	
 	if (!$_SESSION['PO']->order_no) 
 	{
-    	if (!references::is_valid($_SESSION['PO']->reference)) 
+    	if (!references::is_valid(get_post('ref'))) 
     	{
     		display_error(_("There is no reference entered for this purchase order."));
+			set_focus('ref');
     		return false;
     	} 
     	
-    	if (!is_new_reference($_SESSION['PO']->reference, systypes::po())) 
+    	if (!is_new_reference(get_post('ref'), systypes::po())) 
     	{
     		display_error(_("The entered reference is already in use."));
+			set_focus('ref');
     		return false;
     	}
 	}
 	
-	if ($_SESSION['PO']->delivery_address == "")
+	if (get_post('delivery_address') == '')
 	{
 		display_error(_("There is no delivery address specified."));
+		set_focus('delivery_address');
 		return false;
 	} 
 	
-	if (!isset($_SESSION['PO']->Location) || $_SESSION['PO']->Location == "")
+	if (get_post('StkLocation') == '')
 	{
 		display_error(_("There is no location specified to move any items into."));
+		set_focus('StkLocation');
 		return false;
 	} 
 	
@@ -301,10 +275,16 @@ function can_commit()
 
 function handle_commit_order()
 {
-	copy_to_po();
 
 	if (can_commit())
 	{
+		$_SESSION['PO']->supplier_id = $_POST['supplier_id'];	
+		$_SESSION['PO']->orig_order_date = $_POST['OrderDate'];
+		$_SESSION['PO']->reference = $_POST['ref'];
+		$_SESSION['PO']->requisition_no = $_POST['Requisition'];
+		$_SESSION['PO']->Comments = $_POST['Comments'];	
+		$_SESSION['PO']->Location = $_POST['StkLocation'];
+		$_SESSION['PO']->delivery_address = $_POST['delivery_address'];
 
 		if ($_SESSION['PO']->order_no == 0)
 		{ 
@@ -329,46 +309,26 @@ function handle_commit_order()
 		}
 	}	
 }
-
 //---------------------------------------------------------------------------------------------------
+$id = find_submit('Delete');
+if ($id != -1)
+	handle_delete_item($id);
 
 if (isset($_POST['Commit']))
 {
 	handle_commit_order();
 }
-
-//--------------------------------------------------------------------------------------------------- 
-
 if (isset($_POST['UpdateLine']))
-{
-	copy_to_po();
 	handle_update_item();
-}
 
-//---------------------------------------------------------------------------------------------------
-
-If (isset($_POST['EnterLine']))
-{
-	copy_to_po();
+if (isset($_POST['EnterLine']))
 	handle_add_new_item();
-} 
-
-//---------------------------------------------------------------------------------------------------
 
 if (isset($_POST['CancelOrder'])) 
-{
 	handle_cancel_po();
-}
-
-//---------------------------------------------------------------------------------------------------
 
 if (isset($_POST['CancelUpdate']))
-{
-	copy_to_po();
 	unset_form_variables();
-}
-
-//---------------------------------------------------------------------------------------------------
 
 if (isset($_GET['ModifyOrderNumber']) && $_GET['ModifyOrderNumber'] != "")
 {
@@ -378,26 +338,22 @@ if (isset($_GET['ModifyOrderNumber']) && $_GET['ModifyOrderNumber'] != "")
 
 	/*read in all the selected order into the Items cart  */
 	read_po($_SESSION['PO']->order_no, $_SESSION['PO']);
-	copy_from_po();
+
+	$_POST['supplier_id'] = $_SESSION['PO']->supplier_id;	
+	$_POST['OrderDate'] = $_SESSION['PO']->orig_order_date;	
+    $_POST['Requisition'] = $_SESSION['PO']->requisition_no;
+    $_POST['ref'] = $_SESSION['PO']->reference;
+	$_POST['Comments'] = $_SESSION['PO']->Comments;
+    $_POST['StkLocation'] = $_SESSION['PO']->Location;
+    $_POST['delivery_address'] = $_SESSION['PO']->delivery_address;	
 }
 
-//--------------------------------------------------------------------------------
+if (isset($_POST['CancelUpdate']) || isset($_POST['UpdateLine'])) {
+	line_start_focus();
+}
 
 if (isset($_GET['NewOrder']))
-{
 	create_new_po();
-} 
-else 
-{
-	if (!isset($_POST['supplier_id']))
-		$_POST['supplier_id'] = $_SESSION['PO']->supplier_id;
-	if (!isset($_POST['OrderDate']))		
-		$_POST['OrderDate'] = $_SESSION['PO']->orig_order_date;
-	if (!isset($_POST['Requisition']))		
-		$_POST['Requisition'] = $_SESSION['PO']->requisition_no;
-	if (!isset($_POST['Comments']))		
-		$_POST['Comments'] = $_SESSION['PO']->Comments;
-}
 
 //---------------------------------------------------------------------------------------------------
 
@@ -412,17 +368,19 @@ start_table($table_style2);
 textarea_row(_("Memo:"), 'Comments', null, 70, 4);
 
 end_table(1);
+
+div_start('controls', 'items_table');
 if ($_SESSION['PO']->order_has_items()) 
 {
 	if ($_SESSION['PO']->order_no)
-		submit_center_first('Commit', _("Update Order"));
+		submit_center_first('Commit', _("Update Order"), '', true);
 	else
-		submit_center_first('Commit', _("Place Order"));
+		submit_center_first('Commit', _("Place Order"), '', true);
 	submit_center_last('CancelOrder', _("Cancel Order")); 	
 }
 else
 	submit_center('CancelOrder', _("Cancel Order")); 	
-
+div_end();
 //---------------------------------------------------------------------------------------------------
 
 end_form();

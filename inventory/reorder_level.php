@@ -17,10 +17,13 @@ check_db_has_costable_items(_("There are no inventory items defined in the syste
 //------------------------------------------------------------------------------------
 
 if (isset($_GET['stock_id']))
-{
 	$_POST['stock_id'] = $_GET['stock_id'];
-}
 
+if (isset($_POST['_stock_id_update']))
+{
+	$Ajax->activate('show_heading');
+	$Ajax->activate('reorders');
+}
 //------------------------------------------------------------------------------------
 
 start_form(false, true);
@@ -31,12 +34,14 @@ if (!isset($_POST['stock_id']))
 echo "<center>" . _("Item:"). "&nbsp;";
 stock_costable_items_list('stock_id', $_POST['stock_id'], false, true);
 
-echo "<hr>";
+echo "<hr></center>";
 
+div_start('show_heading');
 stock_item_heading($_POST['stock_id']);
-
+div_end();
 set_global_stock_item($_POST['stock_id']);
 
+div_start('reorders');
 start_table("$table_style width=30%");
 
 $th = array(_("Location"), _("Quantity On Hand"), _("Re-Order Level"));
@@ -47,23 +52,26 @@ $k=0; //row colour counter
 
 $result = get_loc_details($_POST['stock_id']);
 
-while ($myrow = db_fetch($result)) 
+while ($myrow = db_fetch($result))
 {
 
 	alt_table_row_color($k);
 
-	if (isset($_POST['UpdateData']) && is_numeric($_POST[$myrow["loc_code"]]))
+	if (isset($_POST['UpdateData']) && check_num($myrow["loc_code"]))
 	{
 
-		$myrow["reorder_level"] = $_POST[$myrow["loc_code"]];
-		set_reorder_level($_POST['stock_id'], $myrow["loc_code"], $_POST[$myrow["loc_code"]]);
+		$myrow["reorder_level"] = input_num($myrow["loc_code"]);
+		set_reorder_level($_POST['stock_id'], $myrow["loc_code"], input_num($myrow["loc_code"]));
 	}
 
 	$qoh = get_qoh_on_date($_POST['stock_id'], $myrow["loc_code"]);
 
 	label_cell($myrow["location_name"]);
-	label_cell(number_format2($qoh,user_qty_dec()), "nowrap align='right'");
-	text_cells(null, $myrow["loc_code"], $myrow["reorder_level"], 10, 10);
+
+	$_POST[$myrow["loc_code"]] = qty_format($myrow["reorder_level"], $_POST['stock_id'], $dec);
+
+	qty_cell($qoh, false, $dec);
+	qty_cells(null, $myrow["loc_code"], null, null, null, $dec);
 	end_row();
 	$j++;
 	If ($j == 12)
@@ -74,8 +82,8 @@ while ($myrow = db_fetch($result))
 }
 
 end_table(1);
-
-submit('UpdateData', _("Update"));
+div_end();
+submit_center('UpdateData', _("Update"));
 
 end_form();
 end_page();

@@ -54,7 +54,7 @@ function display_allocatable_transactions()
 		$supplier_id = $_POST['supplier_id'];
 
 	$trans_items = get_allocatable_from_supp_transactions($supplier_id, $settled);
-
+	div_start('alloc_tbl');
 	start_table($table_style);
 	if (!isset($_POST['supplier_id']))
 		$th = array(_("Transaction Type"), _("#"), _("Reference"), _("Date"), _("Supplier"), 
@@ -102,12 +102,15 @@ function display_allocatable_transactions()
 
 	if (db_num_rows($trans_items) == 0)
 		display_note(_("There are no allocations to be done."), 1, 2);
-
+	div_end();
 	end_form();
 }
 
 //--------------------------------------------------------------------------------
 
+if (get_post('_ShowSettled_update')) {
+	$Ajax->activate('alloc_tbl');
+}
 display_allocatable_transactions();
 
 //--------------------------------------------------------------------------------

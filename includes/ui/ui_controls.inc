@@ -12,13 +12,14 @@ function start_form($multi=false, $sid=false, $action="", $name="")
 	{
 		if (strpos($action, "?"))
 			$action .= "&" . SID;
-		else	
+		else
 			$action .= "?" . SID;
-	}		
+	}
 	if ($multi)
-		echo "<form enctype='multipart/form-data' method='post' action='$action' $name>\n";	
+		echo "<form enctype='multipart/form-data' method='post' action='$action' $name>\n";
 	else
-		echo "<form method='post' action='$action' $name>\n";	
+		echo "<form method='post' action='$action' $name>\n";
+
 }
 
 //---------------------------------------------------------------------------------
@@ -27,6 +28,7 @@ function end_form($breaks=0)
 {
 	if ($breaks)
 		br($breaks);
+	echo "<input type=\"hidden\" name=\"_focus\" value=\"".get_post('_focus')."\">\n";
 	echo "</form>\n";
 }
 
@@ -36,7 +38,7 @@ function start_table($extra="", $padding='2', $spacing='0')
 	if ($extra != "")
 		echo " $extra";
 	echo " cellpadding=$padding cellspacing=$spacing>\n";
-}	
+}
 
 function end_table($breaks=0)
 {
@@ -47,9 +49,11 @@ function end_table($breaks=0)
 
 function meta_forward($forward_to, $params="")
 {
+    global $Ajax;
 	echo "<meta http-equiv='Refresh' content='0; url=$forward_to?$params'>\n";
 	echo "<center><br>" . _("You should automatically be forwarded.");
-	echo " " . _("If this does not happen") . " " . "<a href='$forward_to'>" . _("click here") . "</a> " . _("to continue") . ".<br><br>\n";
+	echo " " . _("If this does not happen") . " " . "<a href='$forward_to?$params'>" . _("click here") . "</a> " . _("to continue") . ".<br><br></center>\n";
+	$Ajax->redirect($forward_to.'?'.$params);
 	exit;
 }
 
@@ -57,14 +61,13 @@ function meta_forward($forward_to, $params="")
 
 function hyperlink_back($center=true)
 {
-	echo  get_js_go_back();
-
 	if ($center)
 		echo "<center>";
-	echo "<a href='javascript:goBack();'>"._("Back")."</a>\n";
+	//echo "<a href='javascript:goBack();'>"._("Back")."</a>\n";
+	echo "<p><a href='javascript:goBack();'>"._("Back")."</a></p>\n";
 	if ($center)
 		echo "</center>";
-	echo "<br>";	
+	echo "<br>";
 }
 
 function hyperlink_no_params($target, $label, $center=true)
@@ -97,15 +100,19 @@ function hyperlink_params($target, $label, $params, $center=true)
 function hyperlink_params_td($target, $label, $params)
 {
 	echo "<td>";
-	hyperlink_params($target, $label, $params);
+	hyperlink_params($target, $label, $params, false);
 	echo "</td>\n";
 }
 
 //-----------------------------------------------------------------------------------
 
-function hyperlink_params_separate($target, $label, $params)
+function hyperlink_params_separate($target, $label, $params, $center=false)
 {
+	if ($center)
+		echo "<br><center>";
 	echo "<a target='_blank' href='$target?$params" . SID . "'>$label</a>\n";
+	if ($center)
+		echo "</center>";
 }
 
 function hyperlink_params_separate_td($target, $label, $params)
@@ -123,55 +130,97 @@ function alt_table_row_color(&$k)
 	{
 		echo "<tr class='oddrow'>\n";
 		$k = 0;
-	} 
-	else 
+	}
+	else
 	{
 		echo "<tr class='evenrow'>\n";
 		$k++;
 	}
 }
 
-function table_section_title($msg) 
+function table_section_title($msg)
 {
 	echo "<tr><td colspan=2 class='tableheader'>$msg</td><tr>\n";
 }
 
-function table_header($labels) 
+function table_header($labels)
 {
 	start_row();
 	foreach ($labels as $label)
 		labelheader_cell($label);
-	end_row();	
+	end_row();
 }
 
-function edit_link_cell($param)	
+function edit_link_cell($param, $title=false)
 {
-	label_cell("<a href='" . $_SERVER['PHP_SELF']. "?" . "$param'>" . _("Edit") . "</a>", "nowrap");
+    label_cell("<a href='" . $_SERVER['PHP_SELF']. "?" . "$param'"
+        .($title ? " title='$title'":'').">" . _("Edit") . "</a>", "nowrap");
 }
 
-function delete_link_cell($param)
+function delete_link_cell($param, $title=false)
 {
-	label_cell("<a href='" . $_SERVER['PHP_SELF']. "?" . "$param'>" . _("Delete") . "</a>", "nowrap");
+    label_cell("<a href='" . $_SERVER['PHP_SELF']. "?" . "$param'"
+	.($title ? " title='$title'":'') .">" . _("Delete") . "</a>", "nowrap");
+}
+
+function edit_button_cell($name, $value, $title=false)
+{
+// php silently changes dots,spaces,'[' and characters 128-159
+// to underscore in POST names, to maintain compatibility with register_globals
+
+    label_cell("<input type=\"submit\" class=\"editbutton\" name=\""
+		.htmlentities(strtr($name, array('.'=>'=2E',' '=>'=20','='=>'=3D','['=>'=5B')))
+		."\" value=\"$value\""
+		.($title ? " title='$title'":'')." />\n");
 }
 
 //-----------------------------------------------------------------------------------
 
-function start_row($param="") 
+function start_row($param="")
 {
 	if ($param != "")
 		echo "<tr $param>\n";
-	else	
+	else
 		echo "<tr>\n";
 }
 
-function end_row() 
+function end_row()
 {
 	echo "</tr>\n";
-}	
+}
 
 function br($num=1)
 {
 	for ($i = 0; $i < $num; $i++)
 		echo "<br>";
-}		
+}
+
+$ajax_divs = array();
+
+function div_start($id='', $trigger=null, $non_ajax=false)
+{
+    global $ajax_divs;
+
+	if ($non_ajax) { // div for non-ajax elements
+   		array_push($ajax_divs, array($id, null));
+   		echo "<div style='display:none' class='js_only' ".($id !='' ? "id='$id'" : '').">";
+	} else { // ajax ready div
+   		array_push($ajax_divs, array($id, $trigger===null ? $id : $trigger));
+   		echo "<div ". ($id !='' ? "id='$id'" : '').">";
+   		ob_start();
+	}
+}
+
+function div_end()
+{
+    global $ajax_divs, $Ajax;
+
+    if (count($ajax_divs))
+    {
+		$div = array_pop($ajax_divs);
+		if ($div[1] !== null)
+			$Ajax->addUpdate($div[1], $div[0], ob_get_flush());
+		echo "</div>";
+    }
+}
 ?>

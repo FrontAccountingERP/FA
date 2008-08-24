@@ -1,6 +1,6 @@
 <?php
 
-$page_security = 15;
+$page_security = 20;
 $path_to_root="..";
 include_once($path_to_root . "/includes/session.inc");
 
@@ -11,9 +11,9 @@ include_once($path_to_root . "/includes/ui.inc");
 
 page(_("Create/Update Company"));
 
+$comp_subdirs = array('images', 'pdf_files', 'backup','js_cache', 'reporting');
 
 //---------------------------------------------------------------------------------------------
-
 if (isset($_GET['selected_id']))
 {
 	$selected_id = $_GET['selected_id'];
@@ -29,14 +29,50 @@ else
 
 function check_data()
 {
+	global $db_connections, $tb_pref_counter, $selected_id;
+
+	if ($_POST['name'] == "" || $_POST['host'] == "" || $_POST['dbuser'] == "" || $_POST['dbname'] == "")
+		return false;
+	foreach($db_connections as $id=>$con)
+	{
+	 if($id != $selected_id && $_POST['host'] == $con['host'] 
+	 	&& $_POST['dbname'] == $con['dbname'])
+	  	{
+			if ($_POST['tbpref'] == $con['tbpref'])
+			{
+				display_error(_("This database settings are already used by another company."));
+				return false;
+			}
+			if ($_POST['tbpref'] == 0 || $con['tbpref'] == '')
+			{
+				display_error(_("You cannot have table set without prefix together with prefixed sets in the same database."));
+				return false;
+			}
+	  	}
+	}
 	return true;
 }
 
 //---------------------------------------------------------------------------------------------
 
+function remove_connection($id) {
+	global $db_connections;
+
+	$dbase = $db_connections[$id]['dbname'];
+	$err = db_drop_db($db_connections[$id]);
+
+	unset($db_connections[$id]);
+	$conn = array_values($db_connections);
+	$db_connections = $conn;
+	//$$db_connections = array_values($db_connections);
+    return $err;
+}
+//---------------------------------------------------------------------------------------------
+
 function handle_submit()
 {
-	global $db_connections, $def_coy, $tb_pref_counter, $db;
+	global $db_connections, $def_coy, $tb_pref_counter, $db,
+	    $comp_path, $comp_subdirs;
 
 	$new = false;
 
@@ -52,9 +88,10 @@ function handle_submit()
 	$db_connections[$id]['dbname'] = $_POST['dbname'];
 	if (isset($_GET['ul']) && $_GET['ul'] == 1)
 	{
-		if ($_POST['tbpref'] == 1)
+		if (is_numeric($_POST['tbpref']))
 		{
-			$db_connections[$id]['tbpref'] = $tb_pref_counter."_";
+			$db_connections[$id]['tbpref'] = $_POST['tbpref'] == 1 ?
+			  $tb_pref_counter."_" : '';
 			$new = true;
 		}
 		else if ($_POST['tbpref'] != "")
@@ -64,21 +101,13 @@ function handle_submit()
 	}
 	if ((bool)$_POST['def'] == true)
 		$def_coy = $id;
-	$error = write_config_db($new);
-	if ($error == -1)
-		display_error(_("Cannot open the configuration file - ") . $path_to_root . "/config_db.php");
-	else if ($error == -2)
-		display_error(_("Cannot write to the configuration file - ") . $path_to_root . "/config_db.php");
-	else if ($error == -3)
-		display_error(_("The configuration file ") . $path_to_root . "/config_db.php" . _(" is not writable. Change its permissions so it is, then re-run the operation."));
-	if ($error != 0)
-		return false;
 	if (isset($_GET['ul']) && $_GET['ul'] == 1)
 	{
 		$conn = $db_connections[$id];
 		if (($db = db_create_db($conn)) == 0)
 		{
 			display_error(_("Error creating Database: ") . $conn['dbname'] . _(", Please create it manually"));
+			remove_connection($id);
 			set_global_connection();
 			return false;
 		}
@@ -98,6 +127,31 @@ function handle_submit()
 		}
 		set_global_connection();
 	}
+	$error = write_config_db($new);
+	if ($error == -1)
+		display_error(_("Cannot open the configuration file - ") . $path_to_root . "/config_db.php");
+	else if ($error == -2)
+		display_error(_("Cannot write to the configuration file - ") . $path_to_root . "/config_db.php");
+	else if ($error == -3)
+		display_error(_("The configuration file ") . $path_to_root . "/config_db.php" . _(" is not writable. Change its permissions so it is, then re-run the operation."));
+	if ($error != 0)
+	{
+		return false;
+	}
+	$index = "<?php\nheader(\"Location: ../../index.php\");\n?>";
+
+	if ($new)
+	{
+	    $cdir = $comp_path.'/'.$id;
+	    @mkdir($cdir);
+	    save_to_file($cdir.'/'.'index.php', 0, $index);
+
+	    foreach($comp_subdirs as $dir)
+	    {
+			@mkdir($cdir.'/'.$dir);
+			save_to_file($cdir.'/'.$dir.'/'.'index.php', 0, $index);
+	    }
+	}
 	return true;
 }
 
@@ -105,18 +159,14 @@ function handle_submit()
 
 function handle_delete()
 {
-	global $def_coy, $db_connections;
+	global $comp_path, $def_coy, $db_connections, $comp_subdirs;
 
 	$id = $_GET['id'];
 
-	$dbase = $db_connections[$id]['dbname'];
-	$err = db_drop_db($db_connections[$id]);
+	$err = remove_connection($id);
+	if ($err == 0)
+		display_error(_("Error removing Database: ") . $dbase . _(", please remove it manuallly"));
 
-	unset($db_connections[$id]);
-	$conn = array_values($db_connections);
-	$db_connections = $conn;
-
-	//$$db_connections = array_values($db_connections);
 	if ($def_coy == $id)
 		$def_coy = 0;
 	$error = write_config_db();
@@ -128,10 +178,16 @@ function handle_delete()
 		display_error(_("The configuration file ") . $path_to_root . "/config_db.php" . _(" is not writable. Change its permissions so it is, then re-run the operation."));
 	if ($error != 0)
 		return;
-	if ($err == 0)
-		display_error(_("Error removing Database: ") . $dbase . _(", please remove it manuallly"));
-	else
-		meta_forward($_SERVER['PHP_SELF']);
+
+	$cdir = $comp_path.'/'.$id;
+	flush_dir($cdir);
+	if (!rmdir($cdir))
+	{
+		display_error(_("Cannot remove company data directory ") . $cdir);
+		return;
+	}
+
+	meta_forward($_SERVER['PHP_SELF']);
 }
 
 //---------------------------------------------------------------------------------------------
@@ -177,8 +233,8 @@ function display_companies()
 		label_cell($conn[$i]['tbpref']);
 		label_cell($what);
 		label_cell("<a href=" . $_SERVER['PHP_SELF']. "?selected_id=" . $i . ">" . _("Edit") . "</a>");
-		if ($i != $coyno)
-			label_cell("<a href='javascript:deleteCompany(" . $i . ")'>" . _("Delete") . "</a>");
+		label_cell( $i == $coyno ? '' :
+	"<a href='javascript:deleteCompany(" . $i . ")'>" . _("Delete") . "</a>");
 		end_row();
 	}
 
@@ -254,8 +310,8 @@ function display_company_edit($selected_id)
 	text_row_ex(_("New script Admin Password"), 'admpassword', 20);
 
 	end_table();
-	display_note(_("Choose from Database scripts in SQL folder. No Datase is created without a script."), 0, 1);
-	echo "<center><input onclick='javascript:updateCompany()' type='button' style='width:150' value='". _("Save"). "'>";
+	display_note(_("Choose from Database scripts in SQL folder. No Database is created without a script."), 0, 1);
+	echo "<center><input onclick='javascript:updateCompany()' type='button' style='width:150px' value='". _("Save"). "'></center>";
 
 
 	end_form();
@@ -288,7 +344,6 @@ hyperlink_no_params($_SERVER['PHP_SELF'], _("Create a new company"));
 display_company_edit($selected_id);
 
 //---------------------------------------------------------------------------------------------
-
 end_page();
 
 ?>

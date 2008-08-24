@@ -9,18 +9,8 @@ page(_("Currencies"));
 include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/includes/banking.inc");
 
-//---------------------------------------------------------------------------------------------
+simple_page_mode(false);
 
-if (isset($_GET['selected_id']))
-{
-	$selected_id = $_GET['selected_id'];
-} 
-elseif (isset($_POST['selected_id']))
-{
-	$selected_id = $_POST['selected_id'];
-}
-else
-	$selected_id = "";
 //---------------------------------------------------------------------------------------------
 
 function check_data()
@@ -28,21 +18,25 @@ function check_data()
 	if (strlen($_POST['Abbreviation']) == 0) 
 	{
 		display_error( _("The currency abbreviation must be entered."));
+		set_focus('Abbreviation');
 		return false;
 	} 
 	elseif (strlen($_POST['CurrencyName']) == 0) 
 	{
 		display_error( _("The currency name must be entered."));
+		set_focus('CurrencyName');
 		return false;		
 	} 
 	elseif (strlen($_POST['Symbol']) == 0) 
 	{
 		display_error( _("The currency symbol must be entered."));
+		set_focus('Symbol');
 		return false;		
 	} 
 	elseif (strlen($_POST['hundreds_name']) == 0) 
 	{
 		display_error( _("The hundredths name must be entered."));
+		set_focus('hundreds_name');
 		return false;		
 	}  	
 	
@@ -53,7 +47,7 @@ function check_data()
 
 function handle_submit()
 {
-	global $selected_id;
+	global $selected_id, $Mode;
 	
 	if (!check_data())
 		return false;
@@ -63,15 +57,16 @@ function handle_submit()
 
 		update_currency($_POST['Abbreviation'], $_POST['Symbol'], $_POST['CurrencyName'], 
 			$_POST['country'], $_POST['hundreds_name']);
+		display_notification(_('Selected currency settings has been updated'));
 	} 
 	else 
 	{
 
 		add_currency($_POST['Abbreviation'], $_POST['Symbol'], $_POST['CurrencyName'], 
 			$_POST['country'], $_POST['hundreds_name']);
-	}
-	
-	return true;
+		display_notification(_('New currency has been added'));
+	}	
+	$Mode = 'RESET';
 }
 
 //---------------------------------------------------------------------------------------------
@@ -127,14 +122,13 @@ function check_can_delete()
 
 function handle_delete()
 {
-	global $selected_id;
-	if (!check_can_delete())
-		return;
+	global $selected_id, $Mode;
+	if (check_can_delete()) {
 	//only delete if used in neither customer or supplier, comp prefs, bank trans accounts
-	
-	delete_currency($selected_id);
-
-	meta_forward($_SERVER['PHP_SELF']);
+		delete_currency($selected_id);
+		display_notification(_('Selected currency has been deleted'));
+	}
+	$Mode = 'RESET';
 }
 
 //---------------------------------------------------------------------------------------------
@@ -146,7 +140,7 @@ function display_currencies()
 	$company_currency = get_company_currency();	
 	
     $result = get_currencies();
-    
+	start_form();    
     start_table($table_style);
     $th = array(_("Abbreviation"), _("Symbol"), _("Currency Name"),
     	_("Hundredths name"), _("Country"), "", "");
@@ -169,16 +163,17 @@ function display_currencies()
 		label_cell($myrow["currency"]);
 		label_cell($myrow["hundreds_name"]);
 		label_cell($myrow["country"]);
-		edit_link_cell("selected_id=" . $myrow["curr_abrev"]);
+ 		edit_button_cell("Edit".$myrow["curr_abrev"], _("Edit"));
 		if ($myrow["curr_abrev"] != $company_currency)
-			delete_link_cell("selected_id=" . $myrow["curr_abrev"]. "&delete=1");
-		
+ 			edit_button_cell("Delete".$myrow["curr_abrev"], _("Delete"));
+		else
+			label_cell('');
 		end_row();
 		
     } //END WHILE LIST LOOP
     
     end_table();
-    
+	end_form();    
     display_note(_("The marked currency is the home currency which cannot be deleted."), 0, 0, "class='currentfg'");
 }
 
@@ -186,25 +181,26 @@ function display_currencies()
 
 function display_currency_edit($selected_id)
 {
-	global $table_style2;
+	global $table_style2, $Mode;
 	
 	start_form();
 	start_table($table_style2);
 
-	if ($selected_id != "") 
+	if ($selected_id != '') 
 	{
-		//editing an existing currency
-		$myrow = get_currency($selected_id);
+		if ($Mode == 'Edit') {
+			//editing an existing currency
+			$myrow = get_currency($selected_id);
 
-		$_POST['Abbreviation'] = $myrow["curr_abrev"];
-		$_POST['Symbol'] = $myrow["curr_symbol"];
-		$_POST['CurrencyName']  = $myrow["currency"];
-		$_POST['country']  = $myrow["country"];
-		$_POST['hundreds_name']  = $myrow["hundreds_name"];
-
+			$_POST['Abbreviation'] = $myrow["curr_abrev"];
+			$_POST['Symbol'] = $myrow["curr_symbol"];
+			$_POST['CurrencyName']  = $myrow["currency"];
+			$_POST['country']  = $myrow["country"];
+			$_POST['hundreds_name']  = $myrow["hundreds_name"];
+		}
+		hidden('Abbreviation');
 		hidden('selected_id', $selected_id);
-		hidden('Abbreviation', $_POST['Abbreviation']);
-		label_row(_("Currency Abbreviation:"), $_POST['Abbreviation']);		
+		label_row(_("Currency Abbreviation:"), $_POST['Abbreviation']);
 	} 
 	else 
 	{ 
@@ -218,35 +214,31 @@ function display_currency_edit($selected_id)
 
 	end_table(1);
 
-	submit_add_or_update_center($selected_id == "");
+	submit_add_or_update_center($selected_id == '', '', true);
 
 	end_form();
 }
 
 //---------------------------------------------------------------------------------------------
 
-if (isset($_POST['ADD_ITEM']) || isset($_POST['UPDATE_ITEM'])) 
-{
-
-	if (handle_submit()) 
-	{
-		meta_forward($_SERVER['PHP_SELF']);		
-	}	
-}
+if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM') 
+	handle_submit();
 
 //--------------------------------------------------------------------------------------------- 
 
-if (isset($_GET['delete'])) 
-{
-
+if ($Mode == 'Delete')
 	handle_delete();
-}
 
 //---------------------------------------------------------------------------------------------
+if ($Mode == 'RESET')
+{
+ 		$selected_id = '';
+		$_POST['Abbreviation'] = $_POST['Symbol'] = '';
+		$_POST['CurrencyName'] = $_POST['country']  = '';
+		$_POST['hundreds_name']  = '';
+}
 
 display_currencies();
-
-hyperlink_no_params($_SERVER['PHP_SELF'], _("Enter a New Currency"));
 
 display_currency_edit($selected_id);
 

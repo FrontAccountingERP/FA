@@ -10,16 +10,7 @@ include($path_to_root . "/gl/includes/gl_db.inc");
 
 include($path_to_root . "/includes/ui.inc");
 
-if (isset($_GET['selected_id']))
-{
-	$selected_id = $_GET['selected_id'];
-} 
-elseif(isset($_POST['selected_id']))
-{
-	$selected_id = $_POST['selected_id'];
-}
-else
-	$selected_id = "";
+simple_page_mode(false);
 //-----------------------------------------------------------------------------------
 
 function can_process() 
@@ -29,6 +20,7 @@ function can_process()
 	if (strlen($_POST['name']) == 0) 
 	{
 		display_error( _("The account group name cannot be empty."));
+		set_focus('name');
 		return false;
 	}
 
@@ -43,7 +35,7 @@ function can_process()
 
 //-----------------------------------------------------------------------------------
 
-if (isset($_POST['ADD_ITEM']) || isset($_POST['UPDATE_ITEM'])) 
+if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM') 
 {
 
 	if (can_process()) 
@@ -51,16 +43,15 @@ if (isset($_POST['ADD_ITEM']) || isset($_POST['UPDATE_ITEM']))
 
     	if ($selected_id != "") 
     	{
-
     		update_account_type($selected_id, $_POST['name'], $_POST['class_id'], $_POST['parent']);
-
+			display_notification(_('Selected account type has been updated'));
     	} 
     	else 
     	{
-
     		add_account_type($_POST['name'], $_POST['class_id'], $_POST['parent']);
+			display_notification(_('New account type has been added'));
     	}
-		meta_forward($_SERVER['PHP_SELF']);
+		$Mode = 'RESET';
 	}
 }
 
@@ -96,20 +87,27 @@ function can_delete($selected_id)
 
 //-----------------------------------------------------------------------------------
 
-if (isset($_GET['delete'])) 
+if ($Mode == 'Delete')
 {
 
 	if (can_delete($selected_id))
 	{
 		delete_account_type($selected_id);
-		meta_forward($_SERVER['PHP_SELF']);
+		display_notification(_('Selected currency has been deleted'));
 	}
+	$Mode = 'RESET';
 }
-
+if ($Mode == 'RESET')
+{
+ 	$selected_id = '';
+	$_POST['name']  = '';
+	unset($_POST['parent']);
+	unset($_POST['class_id']);
+}
 //-----------------------------------------------------------------------------------
 
 $result = get_account_types();
-
+start_form();
 start_table($table_style);
 $th = array(_("Name"), _("Subgroup Of"), _("Class Type"), "", "");
 table_header($th);
@@ -134,43 +132,40 @@ while ($myrow = db_fetch($result))
 	label_cell($myrow["name"]);
 	label_cell($parent_text);
 	label_cell($bs_text);
-	edit_link_cell("selected_id=" . $myrow["id"]);
-	delete_link_cell("selected_id=" . $myrow["id"]. "&delete=1");
+	edit_button_cell("Edit".$myrow["id"], _("Edit"));
+	edit_button_cell("Delete".$myrow["id"], _("Delete"));
 	end_row();
 }
 
 end_table();
-
+end_form();
+echo '<br>';
 //-----------------------------------------------------------------------------------
-
-hyperlink_no_params($_SERVER['PHP_SELF'], _("New Account Group"));
 
 start_form();
 
 start_table($table_style2);
 
-if ($selected_id != "") 
+if ($Mode == 'Edit') 
 {
 	//editing an existing status code
-
 	$myrow = get_account_type($selected_id);
 
 	$_POST['name']  = $myrow["name"];
 	$_POST['parent']  = $myrow["parent"];
 	$_POST['class_id']  = $myrow["class_id"];
-
+ }
 	hidden('selected_id', $selected_id);
-}
 
 text_row_ex(_("Name:"), 'name', 50);
 
-gl_account_types_list_row(_("Subgroup Of:"), 'parent', null, true, _("None"), true);
+gl_account_types_list_row(_("Subgroup Of:"), 'parent', null, _("None"), true);
 
 class_list_row(_("Class Type:"), 'class_id', null);
 
 end_table(1);
 
-submit_add_or_update_center($selected_id == "");
+submit_add_or_update_center($selected_id == '', '', true);
 
 end_form();
 

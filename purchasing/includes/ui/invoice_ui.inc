@@ -10,7 +10,6 @@ function copy_from_trans(&$supp_trans)
 	$_POST['supp_reference'] = $supp_trans->supp_reference;
 	$_POST['reference'] = $supp_trans->reference;
 	$_POST['supplier_id'] = $supp_trans->supplier_id;
-	$_POST['tax_group_id'] = $supp_trans->tax_group_id;
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -22,15 +21,14 @@ function copy_to_trans(&$supp_trans)
 	$supp_trans->due_date = $_POST['due_date'];
 	$supp_trans->supp_reference = $_POST['supp_reference'];
 	$supp_trans->reference = $_POST['reference'];
-	$supp_trans->tax_group_id = $_POST['tax_group_id'];
-
 
 	$supp_trans->ov_amount = 0; /* for starters */
 	if (count($supp_trans->grn_items) > 0)
 	{
 		foreach ( $supp_trans->grn_items as $grn)
 		{
-			$supp_trans->ov_amount += ($grn->this_quantity_inv * $grn->chg_price);
+			$supp_trans->ov_amount += round(($grn->this_quantity_inv * $grn->chg_price),
+			  user_price_dec());
 		}
 	}
 	if (count($supp_trans->gl_codes) > 0)
@@ -61,7 +59,7 @@ function invoice_header(&$supp_trans)
 
 	supplier_list_row(_("Supplier:"), 'supplier_id', $_POST['supplier_id'], false, true);
 
-	if ($supp_trans->supplier_id != $_POST['supplier_id']) 
+	if ($supp_trans->supplier_id != $_POST['supplier_id'])
 	{
 		// supplier has changed
 		// delete all the order items - drastic but necessary because of
@@ -72,9 +70,9 @@ function invoice_header(&$supp_trans)
 	}
 
 	if ($supp_trans->is_invoice)
-    	ref_row(_("Reference:"), 'reference', references::get_next(20));
+    	ref_row(_("Reference:"), 'reference', '', references::get_next(20));
     else
-    	ref_row(_("Reference:"), 'reference', references::get_next(21));
+    	ref_row(_("Reference:"), 'reference', '', references::get_next(21));
 
    	text_row(_("Supplier's Ref.:"), 'supp_reference', $_POST['supp_reference'], 20, 20);
 
@@ -84,9 +82,9 @@ function invoice_header(&$supp_trans)
 
 	echo "<table width=100%>";
 
-   	date_row(_("Date") . ":", 'tran_date', null, 0, 0, 0, "", true);
+   	date_row(_("Date") . ":", 'tran_date', '', null, 0, 0, 0, "", true);
 
-    date_row(_("Due Date") . ":", 'due_date', null);
+    date_row(_("Due Date") . ":", 'due_date');
 
     label_row(_("Terms:"), $supp_trans->terms_description);
 
@@ -106,11 +104,7 @@ function invoice_header(&$supp_trans)
 		exchange_rate_display($supplier_currency, $company_currency, $_POST['tran_date']);
 	}
 
-
-	if (!isset($_POST['tax_group_id']))
-       	$_POST['tax_group_id'] = $supp_trans->tax_group_id;
-    tax_groups_list_row(_("Tax Group:"), 'tax_group_id', $_POST['tax_group_id'], true);
-
+  label_row(_("Tax Group:"), $supp_trans->tax_description);
 	echo "</table>";
 
 	echo "</td>";
@@ -127,17 +121,17 @@ function invoice_totals(&$supp_trans)
 	copy_to_trans($supp_trans);
 
     start_table("$table_style width=95%");
-   	label_row(_("Sub-total:"), number_format2( $supp_trans->ov_amount,user_price_dec()), "align=right", "align=right");
+   	label_row(_("Sub-total:"), price_format( $supp_trans->ov_amount), "align=right", "align=right");
 
-    $taxes = $supp_trans->get_taxes($_POST['tax_group_id']);
-    $tax_total = display_edit_tax_items($taxes, 1);
+    $taxes = $supp_trans->get_taxes($supp_trans->tax_group_id);
+    $tax_total = display_edit_tax_items($taxes, 1, 0); // tax_included==0 (we are the company)
 
-    $display_total = number_format2(( $supp_trans->ov_amount + $tax_total), user_price_dec());
+    $display_total = price_format($supp_trans->ov_amount + $tax_total);
 
 	if ($supp_trans->is_invoice)
     	label_row(_("Invoice Total:"), $display_total, "align=right", "align=right");
     else
-		label_row("<font color=red>" . _("Credit Note Total:") . "</font>", 
+		label_row("<font color=red>" . _("Credit Note Total:") . "</font>",
 			"<font color=red><b>$display_total</b></font>", "align=right", "nowrap align=right");
 
     end_table();
@@ -182,16 +176,18 @@ function display_gl_items(&$supp_trans, $mode=0)
 
 	echo "<table width=100%>";
 	echo "<tr><td align=center><span class='headingtext'>$heading</span></td>";
-	if ($mode == 0) 
+	if ($mode == 0)
 	{
-    	submit_cells('InvGL', _("Edit"), "align=right");
+    	submit_cells('InvGL', _("Edit"), "align=right",
+			_('Moves to additional costs posting page'), true);
 	}
 	echo "</tr></table>";
 
 	echo "</td></tr><tr><td>"; // ouer table
 
+	div_start('gl_items');
 	echo "<table width=100% $table_style>";
-	
+
 	$dim = get_company_pref('use_dimension');
 	if ($dim == 2)
     	$th = array(_("Account"), _("Name"), _("Dimension")." 1", _("Dimension")." 2", _("Amount"), _("Memo"));
@@ -217,7 +213,7 @@ function display_gl_items(&$supp_trans, $mode=0)
 
 			label_cell($entered_gl_code->gl_code);
 			label_cell($entered_gl_code->gl_act_name);
-		
+
 			if ($dim >= 1)
    				label_cell(get_dimension_string($entered_gl_code->gl_dim, true));
 			if ($dim > 1)
@@ -227,7 +223,8 @@ function display_gl_items(&$supp_trans, $mode=0)
 			label_cell($entered_gl_code->memo_);
 
 			if ($mode == 1)
-				delete_link_cell(SID . "Delete=" . $entered_gl_code->Counter);
+				edit_button_cell("Delete" . $entered_gl_code->Counter, _("Delete"),
+					  _('Remove line from document'));
 
 			end_row();
 
@@ -236,22 +233,22 @@ function display_gl_items(&$supp_trans, $mode=0)
 			$i++;
 			if ($i > 15)
 			{
-				$i = 0; 
-				table_header($th); 
+				$i = 0;
+				table_header($th);
 			}
 		}
 
 	}
 	$colspan = ($dim == 2 ? 4 : ($dim == 1 ? 3 : 2));
-	label_row(_("Total"), number_format2($total_gl_value,user_price_dec()), 
+	label_row(_("Total"), price_format($total_gl_value),
 		"colspan=".$colspan." align=right", "nowrap align=right");
 
 	echo "</table>";
+	div_end();
 
     echo "</td></tr>";
-    
-    end_table(); // outertable
 
+    end_table(); // outertable
 	return $total_gl_value;
 }
 
@@ -287,17 +284,18 @@ function display_grn_items(&$supp_trans, $mode=0)
 		$heading = _("Received Items Charged on this Invoice");
 	else
 		$heading = _("Received Items Credited on this Note");
-
 	echo "<table width=100% >";
 	echo "<tr><td align=center><span class='headingtext'>$heading</span></td>";
-	if ($mode == 0) 
+	if ($mode == 0)
 	{
-		submit_cells('InvGRN', _("Edit"), "align=right");
+		submit_cells('InvGRN', _("Edit"), "align=right",
+			_('Moves to GRN selection page'), true);
 	}
 	echo "</tr></table>";
 
 	echo "</td></tr><tr><td>"; // outer table
 
+  div_start('grn_items');
 	echo "<table width=100% $table_style>";
 	$th = array(_("Delivery Sequence #"), _("Item"), _("Description"),
 		_("Quantity"), _("Price"), _("Line Value"));
@@ -317,16 +315,18 @@ function display_grn_items(&$supp_trans, $mode=0)
     		label_cell(get_trans_view_str(25,$entered_grn->id));
 			label_cell($entered_grn->item_code);
 			label_cell($entered_grn->item_description);
-			qty_cell(abs($entered_grn->this_quantity_inv));
+			qty_cell(abs($entered_grn->this_quantity_inv), false, get_qty_dec($entered_grn->item_code));
 			amount_cell($entered_grn->chg_price);
-			amount_cell($entered_grn->chg_price * abs($entered_grn->this_quantity_inv));
+			amount_cell( round($entered_grn->chg_price * abs($entered_grn->this_quantity_inv)), user_price_dec());
 
 			if ($mode == 1)
-				delete_link_cell(SID . "Delete=" . $entered_grn->id);
+				edit_button_cell("Delete" . $entered_grn->id, _("Delete"),
+					  _('Remove item from document'));
 
 			end_row();
 
-    		$total_grn_value += ($entered_grn->chg_price * abs($entered_grn->this_quantity_inv));
+    		$total_grn_value += round($entered_grn->chg_price * abs($entered_grn->this_quantity_inv),
+			   user_price_dec());
 
     		$i++;
     		if ($i > 15)
@@ -337,29 +337,28 @@ function display_grn_items(&$supp_trans, $mode=0)
     	}
     }
 
-	label_row(_("Total"), number_format2($total_grn_value,user_price_dec()),
+	label_row(_("Total"), price_format($total_grn_value),
 		"colspan=5 align=right", "nowrap align=right");
     echo "</table>";
-
+    div_end();
     echo "</td></tr>";
-    
-    end_table(); // outertable
 
+    end_table(); // outertable
 	return $total_grn_value;
 }
 
 //--------------------------------------------------------------------------------------------------
 function get_duedate_from_terms(&$supp_trans)
 {
-	if (!is_date($supp_trans->tran_date)) 
+	if (!is_date($supp_trans->tran_date))
 	{
 		$supp_trans->tran_date = Today();
 	}
-	if (substr( $supp_trans->terms, 0, 1) == "1") 
+	if (substr( $supp_trans->terms, 0, 1) == "1")
 	{ /*Its a day in the following month when due */
 		$supp_trans->due_date = add_days(end_month($supp_trans->tran_date), (int) substr( $supp_trans->terms,1));
-	} 
-	else 
+	}
+	else
 	{ /*Use the Days Before Due to add to the invoice date */
 		$supp_trans->due_date = add_days($supp_trans->tran_date, (int) substr( $supp_trans->terms,1));
 	}

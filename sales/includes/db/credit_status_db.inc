@@ -3,14 +3,14 @@
 function add_credit_status($description, $disallow_invoicing)
 {
 	$sql = "INSERT INTO ".TB_PREF."credit_status (reason_description, dissallow_invoices) 
-		VALUES ('$description',$disallow_invoicing)";
+		VALUES (".db_escape($description).",$disallow_invoicing)";
 		
 	db_query($sql, "could not add credit status");		
 }
 
 function update_credit_status($status_id, $description, $disallow_invoicing)
 {
-	$sql = "UPDATE ".TB_PREF."credit_status SET reason_description='$description',
+	$sql = "UPDATE ".TB_PREF."credit_status SET reason_description=".db_escape($description).",
 		dissallow_invoices=$disallow_invoicing WHERE id=$status_id";
 	
 	db_query($sql, "could not update credit status");			

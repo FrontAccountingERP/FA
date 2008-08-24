@@ -6,13 +6,14 @@ include_once($path_to_root . "/includes/session.inc");
 
 include_once($path_to_root . "/sales/includes/sales_ui.inc");
 include_once($path_to_root . "/sales/includes/sales_db.inc");
+include_once($path_to_root . "/reporting/includes/reporting.inc");
 
 $js = "";
 if ($use_popup_windows)
 	$js .= get_js_open_window(900, 500);
 if ($use_date_picker)
 	$js .= get_js_date_picker();
-page(_("Customer Inquiry"), false, false, "", $js);
+page(_("Customer Transactions"), false, false, "", $js);
 
 
 if (isset($_GET['customer_id']))
@@ -28,19 +29,20 @@ if (!isset($_POST['customer_id']))
 	$_POST['customer_id'] = get_global_customer();
 
 start_table("class='tablestyle_noborder'");
+start_row();
 
-customer_list_cells(_("Select a customer: "), 'customer_id', $_POST['customer_id'], true);
+customer_list_cells(_("Select a customer: "), 'customer_id', null, true);
 
-date_cells(_("From:"), 'TransAfterDate', null, -30);
-date_cells(_("To:"), 'TransToDate', null, 1);
+date_cells(_("From:"), 'TransAfterDate', '', null, -30);
+date_cells(_("To:"), 'TransToDate', '', null, 1);
 
 if (!isset($_POST['filterType']))
 	$_POST['filterType'] = 0;
 
-cust_allocations_list_cells(null, 'filterType', $_POST['filterType']);
+cust_allocations_list_cells(null, 'filterType', $_POST['filterType'], true);
 
-submit_cells('Refresh Inquiry', _("Search"));
-
+submit_cells('RefreshInquiry', _("Search"),'',_('Refresh Inquiry'), true);
+end_row();
 end_table();
 
 end_form();
@@ -63,11 +65,11 @@ function display_customer_summary($customer_record)
 	$nowdue = "1-" . $past1 . " " . _('Days');
 	$pastdue1 = $past1 + 1 . "-" . $past2 . " " . _('Days');
 	$pastdue2 = _('Over') . " " . $past2 . " " . _('Days');
-	
+
     start_table("width=80% $table_style");
     $th = array(_("Currency"), _("Terms"), _("Current"), $nowdue,
     	$pastdue1, $pastdue2, _("Total Balance"));
-    table_header($th);	
+    table_header($th);
 
 	start_row();
     label_cell($customer_record["curr_code"]);
@@ -91,7 +93,8 @@ function get_transactions()
 
     $sql = "SELECT ".TB_PREF."debtor_trans.*,
 		".TB_PREF."debtors_master.name AS CustName, ".TB_PREF."debtors_master.curr_code AS CustCurrCode,
-		(".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + ".TB_PREF."debtor_trans.ov_freight + ".TB_PREF."debtor_trans.ov_discount)
+		(".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + "
+		.TB_PREF."debtor_trans.ov_freight + ".TB_PREF."debtor_trans.ov_freight_tax + ".TB_PREF."debtor_trans.ov_discount)
 		AS TotalAmount, ".TB_PREF."debtor_trans.alloc AS Allocated,
 		((".TB_PREF."debtor_trans.type = 10)
 			AND (".TB_PREF."debtor_trans.due_date < '" . date2sql(Today()) . "')
@@ -109,82 +112,126 @@ function get_transactions()
 
    	if ($_POST['filterType'] != reserved_words::get_all())
    	{
-   		if ($_POST['filterType'] == '1') 
+   		if ($_POST['filterType'] == '1')
    		{
    			$sql .= " AND (".TB_PREF."debtor_trans.type = 10 OR ".TB_PREF."debtor_trans.type = 1) ";
-   		} 
-   		elseif ($_POST['filterType'] == '2') 
+   		}
+   		elseif ($_POST['filterType'] == '2')
    		{
    			$sql .= " AND (".TB_PREF."debtor_trans.type = 10) ";
-   		} 
-   		elseif ($_POST['filterType'] == '3') 
+   		}
+   		elseif ($_POST['filterType'] == '3')
    		{
 			$sql .= " AND (".TB_PREF."debtor_trans.type = " . systypes::cust_payment() . " OR ".TB_PREF."debtor_trans.type = 2) ";
-   		} 
-   		elseif ($_POST['filterType'] == '4') 
+   		}
+   		elseif ($_POST['filterType'] == '4')
    		{
 			$sql .= " AND ".TB_PREF."debtor_trans.type = 11 ";
    		}
+   		elseif ($_POST['filterType'] == '5')
+   		{
+			$sql .= " AND ".TB_PREF."debtor_trans.type = 13 ";
+   		}
 
-    	if ($_POST['filterType'] == '2') 
+    	if ($_POST['filterType'] == '2')
     	{
     		$today =  date2sql(Today());
     		$sql .= " AND ".TB_PREF."debtor_trans.due_date < '$today'
-				AND (".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + ".TB_PREF."debtor_trans.ov_freight + ".TB_PREF."debtor_trans.ov_discount - ".TB_PREF."debtor_trans.alloc > 0) ";
+				AND (".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + "
+				.TB_PREF."debtor_trans.ov_freight_tax + ".TB_PREF."debtor_trans.ov_freight + "
+				.TB_PREF."debtor_trans.ov_discount - ".TB_PREF."debtor_trans.alloc > 0) ";
     	}
    	}
 
-    $sql .= " ORDER BY ".TB_PREF."debtor_trans.tran_date";
+    $sql .= " ORDER BY ".TB_PREF."debtor_trans.tran_date DESC,
+	  ".TB_PREF."debtor_trans.type,".TB_PREF."debtor_trans.trans_no ";
 
     return db_query($sql,"No transactions were returned");
 }
 
 //------------------------------------------------------------------------------------------------
 
-if (($_POST['customer_id'] != "") && ($_POST['customer_id'] != reserved_words::get_all()))
+div_start('totals_tbl');
+if ($_POST['customer_id'] != "" && $_POST['customer_id'] != reserved_words::get_all())
 {
-	$customer_record = get_customer_details($_POST['customer_id']);
+	$customer_record = get_customer_details($_POST['customer_id'], $_POST['TransToDate']);
     display_customer_summary($customer_record);
     echo "<br>";
 }
-
+div_end();
 //------------------------------------------------------------------------------------------------
 
 $result = get_transactions();
 
+//------------------------------------------------------------------------------------------------
+if(get_post('RefreshInquiry'))
+{
+	$Ajax->activate('trans_tbl');
+	$Ajax->activate('totals_tbl');
+}
+//------------------------------------------------------------------------------------------------
+print_hidden_script(10);
+
+div_start('trans_tbl');
 if (db_num_rows($result) == 0)
 {
 	display_note(_("The selected customer has no transactions for the given dates."), 0, 2);
-	end_page();
-	exit;
-}
+} else {
 
-//------------------------------------------------------------------------------------------------
+	start_table("$table_style width='80%'");
 
-start_table("$table_style width='80%'");
-
-if ($_POST['customer_id'] == reserved_words::get_all())
 	$th = array(_("Type"), _("#"), _("Order"), _("Reference"), _("Date"), _("Due Date"),
-		_("Customer"), _("Branch"), _("Currency"), _("Debit"), _("Credit"), "", "");
-else		
-	$th = array(_("Type"), _("#"), _("Order"), _("Reference"), _("Date"), _("Due Date"),
-		_("Branch"), _("Debit"), _("Credit"), "", "");
-table_header($th);
+		_("Customer"), _("Branch"), _("Currency"), _("Debit"), _("Credit"), "", "","","");
+
+	if ($_POST['customer_id'] != reserved_words::get_all()) {
+	  unset($th[6], $th[8]);
+	}
+
+	table_header($th);
 
 
-$j = 1;
-$k = 0; //row colour counter
-$over_due = false;
-while ($myrow = db_fetch($result)) 
-{
+	$j = 1;
+	$k = 0; //row colour counter
+	$over_due = false;
+	while ($myrow = db_fetch($result))
+	{
 
 	if ($myrow['OverDue'] == 1)
 	{
 		start_row("class='overduebg'");
 		$over_due = true;
-	} 
+	}
 	else
 		alt_table_row_color($k);
+
+	$edit_page='';
+	$due_date_str = '';
+	$credit_me_str = '';
+
+	switch($myrow['type']) {
+	 case 10:
+		$due_date_str = sql2date($myrow["due_date"]);
+			/*Show a link to allow an invoice to be credited */
+		    // only allow crediting if it's not been totally allocated
+		if ($myrow["TotalAmount"] - $myrow["Allocated"] > 0)
+			$credit_me_str = "<a href='$path_to_root/sales/customer_credit_invoice.php?InvoiceNumber=" . $myrow["trans_no"] . "'>" . _("Credit This") . "</a>";
+		$edit_page= $path_to_root.'/sales/customer_invoice.php?ModifyInvoice='
+					. $myrow['trans_no'];
+		break;
+
+	 case 11:
+		if ($myrow['order_']==0) // free-hand credit note
+		    $edit_page= $path_to_root.'/sales/credit_note_entry.php?ModifyCredit='
+					. $myrow['trans_no'];
+		else	// credit invoice
+		    $edit_page= $path_to_root.'/sales/customer_credit_invoice.php?ModifyCredit='
+					. $myrow['trans_no'];
+		break;
+
+	 case 13:
+   		$edit_page= $path_to_root.'/sales/customer_delivery.php?ModifyDelivery='
+					. $myrow['trans_no']; break;
+	}
 
 	$date = sql2date($myrow["tran_date"]);
 
@@ -195,25 +242,8 @@ while ($myrow = db_fetch($result))
 
 	$gl_trans_str = get_gl_view_str_cell($myrow["type"], $myrow["trans_no"]);
 
-	$credit_me_str = "";
-
-	$credit_invoice_str = "<a href='$path_to_root/sales/customer_credit_invoice.php?InvoiceNumber=" . $myrow["trans_no"] . "'>" . _("Credit This") . "</a>";
-
-	$due_date_str = "";
-
-	if ($myrow["type"] == 10)
-		$due_date_str = sql2date($myrow["due_date"]);
-
-	if ($myrow["type"] == 10)
-	{
-		/*Show a link to allow an invoice to be credited */
-		// only allow crediting if it's not been totally allocated
-		if ($myrow["TotalAmount"] - $myrow["Allocated"] > 0)
-			$credit_me_str = $credit_invoice_str;
-	}
-
 	$branch_name = "";
-	if ($myrow["branch_code"] > 0) 
+	if ($myrow["branch_code"] > 0)
 	{
 		$branch_name = get_branch_name($myrow["branch_code"]);
 	}
@@ -232,29 +262,38 @@ while ($myrow = db_fetch($result))
 	label_cell($branch_name);
 	if ($_POST['customer_id'] == reserved_words::get_all())
 		label_cell($myrow["CustCurrCode"]);
-	display_debit_or_credit_cells($myrow["TotalAmount"]);
+	display_debit_or_credit_cells(
+	    $myrow['type']==11 || $myrow['type']==12 || $myrow['type']==2 ?
+		-$myrow["TotalAmount"] : $myrow["TotalAmount"]);
+
 	echo $gl_trans_str;
+
+  	label_cell($edit_page=='' ? '' :	"<a href='$edit_page'>" . _('Edit') . '</a>');
+  	if ($myrow['type'] == 10 || $myrow['type'] == 11)
+  		label_cell(print_document_link($myrow['trans_no'], _("Print"), true, $myrow['type']));
+  	else
+  		label_cell("");
+
 	if ($credit_me_str != "")
 		label_cell($credit_me_str, "nowrap");
-
-
+	else
+		label_cell('');
 	end_row();
 
-	$j++;
-	If ($j == 12)
-	{
-		$j = 1;
-		table_header($th);
-	}
-//end of page full new headings if
+		$j++;
+		if ($j == 12)
+		{
+			$j = 1;
+			table_header($th);
+		} //end of page full new headings if
+	} //end of transaction while loop
+
+	end_table(1);
+
+	if ($over_due)
+		display_note(_("Marked items are overdue."), 0, 1, "class='overduefg'");
 }
-//end of while loop
-
-end_table(1);
-
-if ($over_due)
-	display_note(_("Marked items are overdue."), 0, 1, "class='overduefg'");
-	
+div_end();
 end_page();
 
 ?>

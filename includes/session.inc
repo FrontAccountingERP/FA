@@ -9,20 +9,54 @@
     | by Joe Hunt Consulting         |
 	\--------------------------------------------------*/
 
-	if (!isset($path_to_root)) 
+	function output_html($text)
+	{
+  	  global $before_box, $Ajax, $messages;
+		// Fatal errors are not send to error_handler, 
+		// so we must check the output
+	  if ($text && preg_match('/\bFatal error(<.*?>)?:(.*)/i', $text, $m)) {
+       	$Ajax->aCommands = array();  // Don't update page on errors
+		
+		$messages[] = array(E_ERROR, $m[0], null, null);
+	  }
+	  $Ajax->run();
+  	  return  in_ajax() ? fmt_errors() : ($before_box.fmt_errors().$text);
+	}
+
+	if (!isset($path_to_root))
 	{
 		$path_to_root = ".";
 	}
 
     include_once($path_to_root . "/includes/current_user.inc");
 
-    include_once($path_to_root . "/config.php");
+/*
+	// Make sure this directory exists and is writable!
+	$session_save_path = dirname(__FILE__).'/tmp/';
+*/
 
-    include_once($path_to_root . "/includes/main.inc");
+	$session_save_path = session_save_path();
+	if (strpos($session_save_path, ";") !== false)
+		$session_save_path = substr($session_save_path, strpos($session_save_path, ";") + 1);
+
+	if (isset($session_save_path))
+	{
+		session_save_path($session_save_path);
+		unset($session_save_path);
+	}
+	if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_to_root']))
+		die("Restricted access");
+	include_once($path_to_root . "/includes/lang/language.php");
+	include_once($path_to_root . "/config_db.php");
+	include_once($path_to_root . "/config.php");
+	include_once($path_to_root . "/includes/ajax.inc");
+	$Ajax =& new Ajax();
+
+	include_once($path_to_root . "/includes/main.inc");
 
     //----------------------------------------------------------------------------------------
 
-	function kill_login() 
+	function kill_login()
 	{
         session_unset();
 		session_destroy();
@@ -30,7 +64,7 @@
 
 	//----------------------------------------------------------------------------------------
 
-	function login_fail() 
+	function login_fail()
 	{
         echo "<center><br><br><font size='5' color='red'><b>" . _("Incorrect Password") . "<b></font><br><br>";
         echo "<b>" . _("The user and password combination is not valid for the system.") . "<b><br><br>";
@@ -45,9 +79,9 @@
 
 	//----------------------------------------------------------------------------------------
 
-	function check_page_security($page_security) 
+	function check_page_security($page_security)
 	{
-		if (!$_SESSION["wa_current_user"]->check_user_access()) 
+		if (!$_SESSION["wa_current_user"]->check_user_access())
 		{
 			echo "<br><br><br><center>";
 			echo "<b>" . _("Security settings have not been defined for your user account.");
@@ -57,14 +91,13 @@
 			exit;
 		}
 
-		if (!$_SESSION["wa_current_user"]->can_access_page($page_security)) 
+		if (!$_SESSION["wa_current_user"]->can_access_page($page_security))
 		{
 			page(_("Access denied"));
 			echo "<center><br><br><br><b>";
 			echo _("The security settings on your account do not permit you to access this function");
 			echo "</b>";
-			echo "<br><br><a href='javascript:history.go(-1)'>" . _("Back") . "</a>";
-			echo "<br><br><br><br>";
+			echo "<br><br><br><br></center>";
 			//echo '<script type="text/javascript">';
 			//echo 'alert("' . _("The security settings on your account do not permit you to access this function") . '");';
 			//echo 'history.go(-1)';
@@ -76,35 +109,39 @@
 	}
 
 	//----------------------------------------------------------------------------------------
-
 	if (!isset($_SESSION["wa_current_user"]) ||
-		(isset($_SESSION["wa_current_user"]) && !$_SESSION["wa_current_user"]->logged_in())) 
+		(isset($_SESSION["wa_current_user"]) && !$_SESSION["wa_current_user"]->logged_in()))
 	{
 
 		$_SESSION["wa_current_user"] = new current_user();
 
         // Show login screen
-        if (!isset($_POST["user_name_entry_field"]) or $_POST["user_name_entry_field"] == "") 
+        if (!isset($_POST["user_name_entry_field"]) or $_POST["user_name_entry_field"] == "")
         {
 	        include($path_to_root . "/access/login.php");
+		$Ajax->redirect($path_to_root . "/access/login.php");
             exit;
         }
    	}
+	include_once($path_to_root . "/includes/ui/ui_msgs.inc");
+	// intercept all output to destroy it in case of ajax call
+	register_shutdown_function('ob_end_flush');
+	ob_start('output_html',0);
+	// colect all error msgs
+	set_error_handler('error_handler' /*, errtypes */);
 
-   	if (isset($_POST["user_name_entry_field"])) 
+   	if (isset($_POST["user_name_entry_field"]))
    	{
 		$succeed = $_SESSION["wa_current_user"]->login($_POST["company_login_name"],
 			$_POST["user_name_entry_field"],
 			md5($_POST["password"]));
 
-		if (!$succeed) 
+		if (!$succeed)
 		{
 			// Incorrect password
 			login_fail();
 		}
    	}
-
-   	check_page_security($page_security);
 
     // Run with debugging messages for the system administrator(s) but not anyone else
     /*if (in_array(15, $security_groups[$_SESSION["AccessLevel"]])) {
@@ -114,4 +151,9 @@
     }*/
 
 	//----------------------------------------------------------------------------------------
+
+   	check_page_security($page_security);
+
+
+
 ?>

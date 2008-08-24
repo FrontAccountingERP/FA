@@ -17,7 +17,7 @@ page(_("View Sales Invoice"), true, false, "", $js);
 if (isset($_GET["trans_no"]))
 {
 	$trans_id = $_GET["trans_no"];
-} 
+}
 elseif (isset($_POST["trans_no"]))
 {
 	$trans_id = $_POST["trans_no"];
@@ -29,9 +29,9 @@ $myrow = get_customer_trans($trans_id, 10);
 
 $branch = get_branch($myrow["branch_code"]);
 
-$sales_order = get_sales_order($myrow["order_"]);
+$sales_order = get_sales_order_header($myrow["order_"]);
 
-display_heading(_("SALES INVOICE") . " #$trans_id");
+display_heading(sprintf(_("SALES INVOICE #%d"),$trans_id));
 
 echo "<br>";
 start_table("$table_style2 width=95%");
@@ -75,7 +75,7 @@ start_table("$table_style width=100%");
 start_row();
 label_cells(_("Reference"), $myrow["reference"], "class='tableheader2'");
 label_cells(_("Currency"), $sales_order["curr_code"], "class='tableheader2'");
-label_cells(_("Our Order No"), 
+label_cells(_("Our Order No"),
 	get_customer_trans_view_str(systypes::sales_order(),$sales_order["order_no"]), "class='tableheader2'");
 end_row();
 start_row();
@@ -102,53 +102,54 @@ if (db_num_rows($result) > 0)
 {
 	$th = array(_("Item Code"), _("Item Description"), _("Quantity"),
 		_("Unit"), _("Price"), _("Discount %"), _("Total"));
-	table_header($th);	
+	table_header($th);
 
 	$k = 0;	//row colour counter
 	$sub_total = 0;
 	while ($myrow2 = db_fetch($result))
 	{
-
+	    if($myrow2["quantity"]==0) continue;
 		alt_table_row_color($k);
 
-		$net = ((1 - $myrow2["discount_percent"]) * $myrow2["FullUnitPrice"] * -$myrow2["quantity"]);
-		$sub_total += $net;
+		$value = round(((1 - $myrow2["discount_percent"]) * $myrow2["unit_price"] * $myrow2["quantity"]),
+		   user_price_dec());
+		$sub_total += $value;
 
 	    if ($myrow2["discount_percent"] == 0)
 	    {
 		  	$display_discount = "";
-	    } 
-	    else 
+	    }
+	    else
 	    {
-		  	$display_discount = number_format2($myrow2["discount_percent"]*100,user_percent_dec()) . "%";
+		  	$display_discount = percent_format($myrow2["discount_percent"]*100) . "%";
 	    }
 
 	    label_cell($myrow2["stock_id"]);
 		label_cell($myrow2["StockDescription"]);
-        qty_cell(-$myrow2["quantity"]);
+        qty_cell($myrow2["quantity"], false, get_qty_dec($myrow2["stock_id"]));
         label_cell($myrow2["units"], "align=right");
-        amount_cell($myrow2["FullUnitPrice"]);
+        amount_cell($myrow2["unit_price"]);
         label_cell($display_discount, "nowrap align=right");
-        amount_cell($net);
+        amount_cell($value);
 		end_row();
 	} //end while there are line items to print out
 
-} 
+}
 else
 	display_note(_("There are no line items on this invoice."), 1, 2);
 
-$display_sub_tot = number_format2($sub_total,user_price_dec());
-$display_freight = number_format2($myrow["ov_freight"],user_price_dec());
+$display_sub_tot = price_format($sub_total);
+$display_freight = price_format($myrow["ov_freight"]);
 
 /*Print out the invoice text entered */
-label_row(_("Sub-total"), $display_sub_tot, "colspan=6 align=right", 
+label_row(_("Sub-total"), $display_sub_tot, "colspan=6 align=right",
 	"nowrap align=right width=15%");
 label_row(_("Shipping"), $display_freight, "colspan=6 align=right", "nowrap align=right");
 
 $tax_items = get_customer_trans_tax_details(10, $trans_id);
 display_customer_trans_tax_details($tax_items, 6);
 
-$display_total = number_format2($myrow["ov_freight"]+$myrow["ov_gst"]+$myrow["ov_amount"],user_price_dec());
+$display_total = price_format($myrow["ov_freight"]+$myrow["ov_gst"]+$myrow["ov_amount"]+$myrow["ov_freight_tax"]);
 
 label_row(_("TOTAL INVOICE"), $display_total, "colspan=6 align=right",
 	"nowrap align=right");

@@ -31,13 +31,13 @@ function Achieve($d1, $d2)
 	if ($ret > 999)
 		$ret = 999;
 	return $ret;
-}	
-	
+}
+
 //----------------------------------------------------------------------------------------------------
 
 function print_profit_and_loss_statement()
 {
-	global $path_to_root;
+	global $comp_path, $path_to_root;
 
 	include_once($path_to_root . "reporting/includes/pdf_report.inc");
 	$dim = get_company_pref('use_dimension');
@@ -68,17 +68,17 @@ function print_profit_and_loss_statement()
 	{
 		include_once($path_to_root . "reporting/includes/class.graphic.inc");
 		$pg = new graph();
-	}	
+	}
 	$dec = 0;
 	$pdec = user_percent_dec();
 
 	$cols = array(0, 50, 200, 350, 425,	500);
 	//------------0--1---2----3----4----5--
-	
+
 	$headers = array(_('Account'), _('Account Name'), _('Period'), _('Accumulated'), _('Achieved %'));
-	
+
 	$aligns = array('left',	'left',	'right', 'right', 'right');
-    
+
     if ($dim == 2)
     {
     	$params =   array( 	0 => $comments,
@@ -140,14 +140,14 @@ function print_profit_and_loss_statement()
 	while ($account=db_fetch($accounts))
 	{
 		$per_balance = get_gl_trans_from_to($from, $to, $account["account_code"], $dimension, $dimension2);
-		
+
 		if ($compare == 2)
 			$acc_balance = get_budget_trans_from_to($begin, $end, $account["account_code"], $dimension, $dimension2);
 		else
 			$acc_balance = get_gl_trans_from_to($begin, $end, $account["account_code"], $dimension, $dimension2);
 		if (!$per_balance && !$acc_balance)
 			continue;
-			
+
 		if ($account['AccountClassName'] != $classname)
 		{
 			if ($classname != '')
@@ -171,7 +171,7 @@ function print_profit_and_loss_statement()
 					$pg->x[] = $group;
 					$pg->y[] = abs($totalper);
 					$pg->z[] = abs($totalacc);
-				}	
+				}
 				$totalper = $totalacc = 0.0;
 				$rep->row -= ($rep->lineHeight + 4);
 				if ($closeclass)
@@ -204,7 +204,7 @@ function print_profit_and_loss_statement()
 			$rep->row -= ($rep->lineHeight + 4);
 		}
 		$classname = $account['AccountClassName'];
-			
+
 		$per_balance *= -1;
 		$acc_balance *= -1;
 		$totalper += $per_balance;
@@ -248,7 +248,7 @@ function print_profit_and_loss_statement()
 				$pg->x[] = $group;
 				$pg->y[] = abs($totalper);
 				$pg->z[] = abs($totalacc);
-			}	
+			}
 			$rep->row -= ($rep->lineHeight + 4);
 			if ($closeclass)
 			{
@@ -273,8 +273,8 @@ function print_profit_and_loss_statement()
 					$pg->x[] = _('Calculated Return');
 					$pg->y[] = abs($calculateper);
 					$pg->z[] = abs($calculateacc);
-				}	
-				
+				}
+
 				$rep->Font();
 
 				$rep->NewLine();
@@ -295,7 +295,7 @@ function print_profit_and_loss_statement()
 		$pg->built_in  = false;
 		$pg->fontfile  = $path_to_root . "reporting/fonts/Vera.ttf";
 		$pg->latin_notation = ($decseps[$_SESSION["wa_current_user"]->prefs->dec_sep()] != ".");
-		$filename = $path_to_root . "reporting/pdf_files/test.png";
+		$filename = $comp_path.'/'.user_company(). "/pdf_files/test.png";
 		$pg->display($filename, true);
 		$w = $pg->width / 1.5;
 		$h = $pg->height / 1.5;

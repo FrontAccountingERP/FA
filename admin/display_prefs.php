@@ -22,12 +22,14 @@ if (isset($_POST['setprefs']))
 		check_value('show_codes'),
 		$_POST['date_format'], $_POST['date_sep'],
 		$_POST['tho_sep'], $_POST['dec_sep'],
-		$_POST['theme'], $_POST['page_size']);
+		$_POST['theme'], $_POST['page_size'], check_value('show_hints'));
 
 	language::set_language($_POST['language']);
-	
+
+	flush_dir($comp_path.'/'.user_company().'/js_cache');	
+
 	if (user_theme() != $theme)
-		Redirect("");
+		reload_page("");
 
 	display_notification_centered(_("Display settings have been updated."));
 }
@@ -37,10 +39,10 @@ start_table($table_style2);
 
 table_section_title(_("Decimal Places"));
 
-text_row_ex(_("Prices/Amounts:"), 'prices', 5, 5, user_price_dec());
-text_row_ex(_("Quantities:"), 'Quantities', 5, 5, user_qty_dec());
-text_row_ex(_("Exchange Rates:"), 'Rates', 5, 5, user_exrate_dec());
-text_row_ex(_("Percentages:"), 'Percent',  5, 5, user_percent_dec());
+text_row_ex(_("Prices/Amounts:"), 'prices', 5, 5, '', user_price_dec());
+text_row_ex(_("Quantities:"), 'Quantities', 5, 5, '', user_qty_dec());
+text_row_ex(_("Exchange Rates:"), 'Rates', 5, 5, '', user_exrate_dec());
+text_row_ex(_("Percentages:"), 'Percent',  5, 5, '', user_percent_dec());
 
 table_section_title(_("Dateformat and Separators"));
 
@@ -62,6 +64,8 @@ decseps_list_row(_("Decimal Separator:"), "dec_sep", user_dec_sep());
 possible separators can be added by modifying the array definition by editing that file */
 
 table_section_title(_("Miscellaneous"));
+
+check_row(_("Show hints for new users:"), 'show_hints', user_hints());
 
 check_row(_("Show GL Information:"), 'show_gl', user_show_gl_info());
 

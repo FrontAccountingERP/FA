@@ -10,15 +10,7 @@ include($path_to_root . "/sales/includes/db/credit_status_db.inc");
 
 include($path_to_root . "/includes/ui.inc");
 
-if (isset($_GET['selected_id']))
-{
-	$selected_id = $_GET['selected_id'];
-} 
-elseif (isset($_POST['selected_id']))
-{
-	$selected_id = $_POST['selected_id'];
-}
-
+simple_page_mode(true);
 //-----------------------------------------------------------------------------------
 
 function can_process() 
@@ -27,6 +19,7 @@ function can_process()
 	if (strlen($_POST['reason_description']) == 0) 
 	{
 		display_error(_("The credit status description cannot be empty."));
+		set_focus('reason_description');
 		return false;
 	}	
 	
@@ -35,20 +28,21 @@ function can_process()
 
 //-----------------------------------------------------------------------------------
 
-if (isset($_POST['ADD_ITEM']) && can_process()) 
+if ($Mode=='ADD_ITEM' && can_process()) 
 {
 
 	add_credit_status($_POST['reason_description'], $_POST['DisallowInvoices']);
-	meta_forward($_SERVER['PHP_SELF']);    	
+	display_notification(_('New credit status has been added'));
+	$Mode = 'RESET';
 } 
 
 //-----------------------------------------------------------------------------------
 
-if (isset($_POST['UPDATE_ITEM']) && can_process()) 
+if ($Mode=='UPDATE_ITEM' && can_process()) 
 {
-
+	display_notification(_('Selected credit status has been updated'));
 	update_credit_status($selected_id, $_POST['reason_description'], $_POST['DisallowInvoices']);
-	meta_forward($_SERVER['PHP_SELF']);    	
+	$Mode = 'RESET';
 }
 
 //-----------------------------------------------------------------------------------
@@ -71,22 +65,29 @@ function can_delete($selected_id)
 
 //-----------------------------------------------------------------------------------
 
-if (isset($_GET['delete'])) 
+if ($Mode == 'Delete')
 {
 
 	if (can_delete($selected_id))
 	{
 		delete_credit_status($selected_id);
-		meta_forward($_SERVER['PHP_SELF']);		
+		display_notification(_('Selected credit status has been deleted'));
 	}
+	$Mode = 'RESET';
 }
 
+if ($Mode == 'RESET')
+{
+	$selected_id = -1;
+	unset($_POST);
+}
 //-----------------------------------------------------------------------------------
 
 $result = get_all_credit_status();
 
+start_form();
 start_table("$table_style width=40%");
-$th = array(_("Description"), _("Dissallow Invoices"));
+$th = array(_("Description"), _("Dissallow Invoices"),'','');
 table_header($th);
 
 $k = 0;
@@ -106,30 +107,31 @@ while ($myrow = db_fetch($result))
 	
 	label_cell($myrow["reason_description"]);
 	label_cell($disallow_text);
-	edit_link_cell("selected_id=" . $myrow["id"]);
-	delete_link_cell("selected_id=" . $myrow["id"]. "&delete=1");
+ 	edit_button_cell("Edit".$myrow['id'], _("Edit"));
+ 	edit_button_cell("Delete".$myrow['id'], _("Delete"));
 	end_row();
 }
 
 end_table();
+end_form();
+echo '<br>';
 
 //-----------------------------------------------------------------------------------
-
-hyperlink_no_params($_SERVER['PHP_SELF'], _("New Credit Status"));
 
 start_form();
 
 start_table("$table_style2 width=40%");
 
-if (isset($selected_id)) 
+if ($selected_id != -1) 
 {
-	//editing an existing status code
+ 	if ($Mode == 'Edit') {
+		//editing an existing status code
 
-	$myrow = get_credit_status($selected_id);
+		$myrow = get_credit_status($selected_id);
 
-	$_POST['reason_description']  = $myrow["reason_description"];
-	$_POST['DisallowInvoices']  = $myrow["dissallow_invoices"];
-
+		$_POST['reason_description']  = $myrow["reason_description"];
+		$_POST['DisallowInvoices']  = $myrow["dissallow_invoices"];
+	}
 	hidden('selected_id', $selected_id);
 } 
 
@@ -139,7 +141,7 @@ yesno_list_row(_("Dissallow invoicing ?"), 'DisallowInvoices', null);
 
 end_table(1);
 
-submit_add_or_update_center(!isset($selected_id));
+submit_add_or_update_center($selected_id == -1, '', true);
 
 end_form();
 

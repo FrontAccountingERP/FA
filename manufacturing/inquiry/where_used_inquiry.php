@@ -8,7 +8,6 @@ page(_("Inventory Item Where Used Inquiry"));
 
 //include($path_to_root . "/includes/date_functions.inc");
 include($path_to_root . "/includes/ui.inc");
-include($path_to_root . "/includes/data_checks.inc");
 
 check_db_has_stock_items(_("There are no items defined in the system."));
 
@@ -19,25 +18,29 @@ if (!isset($_POST['stock_id']))
 
 echo "<center>" . _("Select an item to display its parent item(s).") . "&nbsp;";
 stock_items_list('stock_id', $_POST['stock_id'], false, true);
-echo "<hr><center>";
+echo "<hr></center>";
 
 set_global_stock_item($_POST['stock_id']);
 
-if (isset($_POST['stock_id'])) 
+if (isset($_POST['_stock_id_update']))
+	$Ajax->activate('usage_table');
+
+if (isset($_POST['stock_id']))
 {
     $sql = "SELECT ".TB_PREF."bom.*,".TB_PREF."stock_master.description,".TB_PREF."workcentres.name As WorkCentreName, ".TB_PREF."locations.location_name
 		FROM ".TB_PREF."bom, ".TB_PREF."stock_master, ".TB_PREF."workcentres, ".TB_PREF."locations
-		WHERE ".TB_PREF."bom.parent = ".TB_PREF."stock_master.stock_id AND CAST(".TB_PREF."bom.workcentre_added AS UNSIGNED) = ".TB_PREF."workcentres.id
+		WHERE ".TB_PREF."bom.parent = ".TB_PREF."stock_master.stock_id AND ".TB_PREF."bom.workcentre_added = ".TB_PREF."workcentres.id
 		AND ".TB_PREF."bom.loc_code = ".TB_PREF."locations.loc_code
 		AND ".TB_PREF."bom.component='" . $_POST['stock_id'] . "'";
 
     $result = db_query($sql,"No parent items were returned");
 
-   	if (db_num_rows($result) == 0) 
+	div_start('usage_table');
+   	if (db_num_rows($result) == 0)
    	{
    		display_note(_("The selected item is not used in any BOMs."));
-   	} 
-   	else 
+   	}
+   	else
    	{
 
         start_table("$table_style width=80%");
@@ -46,7 +49,7 @@ if (isset($_POST['stock_id']))
         table_header($th);
 
 		$k = $j = 0;
-        while ($myrow = db_fetch($result)) 
+        while ($myrow = db_fetch($result))
         {
 
 			alt_table_row_color($k);
@@ -56,9 +59,9 @@ if (isset($_POST['stock_id']))
         	label_cell("<a href='$select_item'>" . $myrow["parent"]. " - " . $myrow["description"]. "</a>");
         	label_cell($myrow["WorkCentreName"]);
         	label_cell($myrow["location_name"]);
-        	label_cell($myrow["quantity"]);
+        	qty_cell($myrow["quantity"], false, get_qty_dec($_POST['stock_id']));
 			end_row();
-			
+
         	$j++;
         	If ($j == 12)
         	{
@@ -70,6 +73,7 @@ if (isset($_POST['stock_id']))
 
         end_table();
    	}
+	div_end();
 }
 
 end_form();

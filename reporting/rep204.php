@@ -42,7 +42,7 @@ function getTransactions($fromsupp)
 		AND qty_recd-quantity_inv <>0 ";
 	if ($fromsupp != reserved_words::get_all_numeric())
 		$sql .= "AND ".TB_PREF."grn_batch.supplier_id ='" . $fromsupp . "' ";
-	$sql .= "ORDER BY ".TB_PREF."grn_batch.supplier_id, 
+	$sql .= "ORDER BY ".TB_PREF."grn_batch.supplier_id,
 			".TB_PREF."grn_batch.id";
 
     return db_query($sql, "No transactions were returned");
@@ -58,7 +58,7 @@ function print_outstanding_GRN()
 
     $fromsupp = $_POST['PARAM_0'];
     $comments = $_POST['PARAM_1'];
-    
+
 	if ($fromsupp == reserved_words::get_all_numeric())
 		$from = _('All');
 	else
@@ -85,9 +85,10 @@ function print_outstanding_GRN()
 	$Supplier = '';
 	$SuppTot_Val=0;
 	$res = getTransactions($fromsupp);
-	
+
 	While ($GRNs = db_fetch($res))
-	{	
+	{
+		$dec2 = get_qty_dec($GRNs['item_code']);
 		if ($Supplier != $GRNs['supplier_id'])
 		{
 			if ($Supplier != '')
@@ -106,11 +107,11 @@ function print_outstanding_GRN()
 		$rep->TextCol(0, 1, $GRNs['id']);
 		$rep->TextCol(1, 2, $GRNs['order_no']);
 		$rep->TextCol(2, 3, $GRNs['item_code'] . '-' . $GRNs['description']);
-		$rep->TextCol(3, 4, number_format2($GRNs['qty_recd'], $dec));
-		$rep->TextCol(4, 5, number_format2($GRNs['quantity_inv'], $dec));
+		$rep->TextCol(3, 4, number_format2($GRNs['qty_recd'], $dec2));
+		$rep->TextCol(4, 5, number_format2($GRNs['quantity_inv'], $dec2));
 		$QtyOstg = $GRNs['qty_recd'] - $GRNs['quantity_inv'];
 		$Value = ($GRNs['qty_recd'] - $GRNs['quantity_inv']) * $GRNs['std_cost_unit'];
-		$rep->TextCol(5, 6, number_format2($QtyOstg, $dec));
+		$rep->TextCol(5, 6, number_format2($QtyOstg, $dec2));
 		$rep->TextCol(6, 7, number_format2($GRNs['std_cost_unit'], $dec));
 		$rep->TextCol(7, 8, number_format2($Value, $dec));
 		$Tot_Val += $Value;

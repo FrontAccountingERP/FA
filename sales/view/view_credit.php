@@ -17,7 +17,7 @@ page(_("View Credit Note"), true, false, "", $js);
 if (isset($_GET["trans_no"]))
 {
 	$trans_id = $_GET["trans_no"];
-} 
+}
 elseif (isset($_POST["trans_no"]))
 {
 	$trans_id = $_POST["trans_no"];
@@ -27,7 +27,7 @@ $myrow = get_customer_trans($trans_id, 11);
 
 $branch = get_branch($myrow["branch_code"]);
 
-display_heading("<font color=red>" . _("CREDIT NOTE") . " #$trans_id</font>");
+display_heading("<font color=red>" . sprintf(_("CREDIT NOTE #%d"), $trans_id). "</font>");
 echo "<br>";
 
 start_table("$table_style2 width=95%");
@@ -80,7 +80,7 @@ if (db_num_rows($result) > 0)
 {
 	$th = array(_("Item Code"), _("Item Description"), _("Quantity"),
 		_("Unit"), _("Price"), _("Discount %"), _("Total"));
-	table_header($th);	
+	table_header($th);
 
 	$k = 0;	//row colour counter
 	$sub_total = 0;
@@ -90,37 +90,37 @@ if (db_num_rows($result) > 0)
 
 		alt_table_row_color($k);
 
-		$net = ((1 - $myrow2["discount_percent"]) * $myrow2["FullUnitPrice"] * $myrow2["quantity"]);
-		$sub_total += $net;
+		$value = round(((1 - $myrow2["discount_percent"]) * $myrow2["unit_price"] * $myrow2["quantity"]),
+		   user_price_dec());
+		$sub_total += $value;
 
 		if ($myrow2["discount_percent"] == 0)
 		{
 			$display_discount = "";
-		} 
-		else 
+		}
+		else
 		{
-		   $display_discount = number_format2($myrow2["discount_percent"]*100,user_percent_dec()) . "%";
+		   $display_discount = percent_format($myrow2["discount_percent"]*100) . "%";
 		}
 
 		label_cell($myrow2["stock_id"]);
 		label_cell($myrow2["StockDescription"]);
-		qty_cell($myrow2["quantity"]);
+		qty_cell($myrow2["quantity"], false, get_qty_dec($myrow2["stock_id"]));
 		label_cell($myrow2["units"], "align=right");
-		amount_cell($myrow2["FullUnitPrice"]);
+		amount_cell($myrow2["unit_price"]);
 		label_cell($display_discount, "align=right");
-		amount_cell($net);
+		amount_cell($value);
 		end_row();
 	} //end while there are line items to print out
-} 
+}
 else
 	display_note(_("There are no line items on this credit note."), 1, 2);
 
-$display_sub_tot = number_format2($sub_total,user_price_dec());
-$display_freight = number_format2(-$myrow["ov_freight"],user_price_dec());
+$display_sub_tot = price_format($sub_total);
+$display_freight = price_format($myrow["ov_freight"]);
 
-$display_tax = number_format2(-$myrow["ov_gst"],user_price_dec());
-$credit_total = -$myrow["ov_freight"]-$myrow["ov_gst"]-$myrow["ov_amount"];
-$display_total = number_format2($credit_total,user_price_dec());
+$credit_total = $myrow["ov_freight"]+$myrow["ov_gst"]+$myrow["ov_amount"]+$myrow["ov_freight_tax"];
+$display_total = price_format($credit_total);
 
 /*Print out the invoice text entered */
 if ($sub_total != 0)
@@ -138,7 +138,7 @@ end_table(1);
 $voided = is_voided_display(11, $trans_id, _("This credit note has been voided."));
 
 if (!$voided)
-	display_allocations_from(payment_person_types::customer(), 
+	display_allocations_from(payment_person_types::customer(),
 		$myrow['debtor_no'], 11, $trans_id, $credit_total);
 
 /* end of check to see that there was an invoice record to print */
