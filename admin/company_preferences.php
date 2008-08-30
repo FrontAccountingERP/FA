@@ -169,7 +169,7 @@ end_row();
 
 end_table(1);
 hidden('coy_logo', $_POST['coy_logo']);
-submit_center('submit', _("Update"), true, '', true);
+submit_center('submit', _("Update"), true, '', false);
 
 end_form(2);
 //-------------------------------------------------------------------------------------------------
