@@ -313,7 +313,7 @@ function db_export($conn, $filename, $zip='no', $comment='')
     $out.="# Backup Date and Time: ".date("Y-m-d H:i")."\n";
     $out.="# Built by " . $app_title . " " . $version ."\n";
     $out.="# ".$power_url."\n";
-    $out.="# Company: ".$company."\n";
+    $out.="# Company: ". @html_entity_decode($company, ENT_COMPAT, $_SESSION['language']->encoding)."\n";
     $out.="# User: ".$_SESSION["wa_current_user"]->name."\n\n";
 
 	// write users comment
@@ -411,7 +411,7 @@ function db_export($conn, $filename, $zip='no', $comment='')
 					// run through each field
 					for ($k = 0; $k < $nf = db_num_fields($res2); $k++)
 					{
-						$out .= db_escape($row2[$k]);
+						$out .= db_escape(@html_entity_decode($row2[$k], ENT_COMPAT, $_SESSION['language']->encoding));
 						if ($k < ($nf - 1))
 							$out .= ", ";
 					}
