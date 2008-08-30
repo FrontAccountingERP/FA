@@ -19,13 +19,20 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+30-Aug-2008 Janusz Dobrowolski
+! Up to date translation file
+$ /lang/new_language_template/LC_MASSAGES/empty.php
+# Fixed broken &amp's in backup files [0000040]
+$ /admin/db/maintenance_db.inc
+# Temporary fix (sync page reload) for uploading logo file
+$ /admin/company_preferences.php
 -------------------------------2.0 Final --------------------------------------------
 21_aug-2008 Joe Hunt
 ! config.php file. Version changed to 2.0
 $ config.php
 ! Set time out to 120 seconds.
 $ /install/save.php
-! fixing $amp in backup
+# Removed js warnings on index pages
 $ /js/utils.js
 
 20-Aug-2008 Joe Hunt
