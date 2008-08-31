@@ -19,6 +19,14 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+31-Aug-2008 Janusz Dobrowolski
++ Added ajax support for file uploading
+$ /js/utils.js
+# Final fix for logo file upload
+$ /admin/company_preferences.php
+# Fixed item image file upload
+$ /inventory/manage/items.php
+
 30-Aug-2008 Janusz Dobrowolski
 ! Up to date translation file
 $ /lang/new_language_template/LC_MASSAGES/empty.php
