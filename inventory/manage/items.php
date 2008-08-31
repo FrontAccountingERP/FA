@@ -67,7 +67,6 @@ if (isset($_FILES['pic']) && $_FILES['pic']['name'] != '')
 	} 
 	elseif (file_exists($filename))
 	{
-		display_notification(_('Attempting to overwrite an existing item image'));
 		$result = unlink($filename);
 		if (!$result) 
 		{
@@ -79,7 +78,6 @@ if (isset($_FILES['pic']) && $_FILES['pic']['name'] != '')
 	if ($upload_file == 'Yes')
 	{
 		$result  =  move_uploaded_file($_FILES['pic']['tmp_name'], $filename);
-		$message = ($result)?_('File url') ."<a href='$filename'>$filename</a>" : "Somthing is wrong with uploading a file.";
 	}
  /* EOF Add Image upload for New Item  - by Ori */
 }
@@ -149,7 +147,6 @@ if (isset($_POST['addupdate']))
 
 			display_notification(_("Item has been updated."));
 			set_focus('stock_id');
-			$Ajax->activate('details'); //update image if any
 		} 
 		else 
 		{ //it is a NEW part
@@ -165,8 +162,8 @@ if (isset($_POST['addupdate']))
 		$_POST['stock_id'] = $_POST['NewStockID'];
 		$new_item = false;
 		set_focus('stock_id');
-		$Ajax->activate('_page_body');
 		}
+		$Ajax->activate('_page_body');
 	}
 }
 
@@ -260,7 +257,7 @@ table_section_title(_("Item"));
 
 //------------------------------------------------------------------------------------
 
-if (!isset($_POST['NewStockID']) || $new_item) 
+if ($new_item) 
 {
 
 /*If the page was called without $_POST['NewStockID'] passed to page then assume a new item is to be entered show a form with a part Code field other wise the form showing the fields with the existing entries against the part will show for editing with only a hidden stock_id field. New is set to flag that the page may have called itself and still be entering a new part, in which case the page needs to know not to go looking up details for an existing part*/
@@ -322,14 +319,18 @@ start_table("$table_style2 width=40%");
 start_row();
 label_cells(_("Image File (.jpg)") . ":", "<input type='file' id='pic' name='pic'>");
 // Add Image upload for New Item  - by Joe
+$stock_img_link = "<img id='item_img' alt = '[";
 if (isset($_POST['NewStockID']) && file_exists("$comp_path/$user_comp/images/".$_POST['NewStockID'].".jpg")) 
 {
-	$stock_img_link = "<img src='$comp_path/$user_comp/images/".$_POST['NewStockID'].".jpg' width='$pic_width' height='$pic_height' border='0'>";
+ // 31/08/08 - rand() call is necessary here to avoid caching problems. Thanks to Peter D.
+	$stock_img_link .= $_POST['NewStockID'].".jpg".
+	"]' src='$comp_path/$user_comp/images/".$_POST['NewStockID'].".jpg?nocache=".rand()."'";
 } 
 else 
 {
-	$stock_img_link = "No Image";
+	$stock_img_link .= _("No image"). "]'";
 }
+$stock_img_link .= " width='$pic_width' height='$pic_height' border='0'>";
 
 label_cell($stock_img_link, "valign=top align=center rowspan=5");
 end_row();
