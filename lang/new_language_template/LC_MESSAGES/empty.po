@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FrontAccounting\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-08-31 18:02+0100\n"
+"PO-Revision-Date: 2008-09-01 00:53+0100\n"
 "Last-Translator: Joe Hunt <joe.hunt.consulting@gmail.com>\n"
 "Language-Team: Translators\n"
 "MIME-Version: 1.0\n"
@@ -251,6 +251,7 @@ msgstr ""
 #: c:\Apache2\htdocs\account2/taxes/item_tax_types.php:115
 #: c:\Apache2\htdocs\account2/taxes/tax_groups.php:150
 #: c:\Apache2\htdocs\account2/includes/ui/ui_lists.inc:1366
+#: c:\Apache2\htdocs\account2/reporting/includes/reports_classes.inc:170
 msgid "No"
 msgstr ""
 
@@ -631,6 +632,7 @@ msgstr ""
 #: c:\Apache2\htdocs\account2/purchasing/includes/ui/invoice_ui.inc:181
 #: c:\Apache2\htdocs\account2/purchasing/includes/ui/invoice_ui.inc:291
 #: c:\Apache2\htdocs\account2/purchasing/includes/ui/po_ui.inc:193
+#: c:\Apache2\htdocs\account2/sales/includes/ui/sales_credit_ui.inc:182
 #: c:\Apache2\htdocs\account2/sales/includes/ui/sales_order_ui.inc:126
 msgid "Edit"
 msgstr ""
@@ -674,6 +676,7 @@ msgstr ""
 #: c:\Apache2\htdocs\account2/purchasing/includes/ui/invoice_ui.inc:226
 #: c:\Apache2\htdocs\account2/purchasing/includes/ui/invoice_ui.inc:323
 #: c:\Apache2\htdocs\account2/purchasing/includes/ui/po_ui.inc:195
+#: c:\Apache2\htdocs\account2/sales/includes/ui/sales_credit_ui.inc:184
 #: c:\Apache2\htdocs\account2/sales/includes/ui/sales_order_ui.inc:128
 msgid "Delete"
 msgstr ""
@@ -8667,6 +8670,49 @@ msgstr ""
 msgid "Customer:"
 msgstr ""
 
+#: c:\Apache2\htdocs\account2/gl/includes/ui/gl_bank_ui.inc:145
+#: c:\Apache2\htdocs\account2/inventory/includes/item_adjustments_ui.inc:90
+#: c:\Apache2\htdocs\account2/inventory/includes/stock_transfers_ui.inc:79
+#: c:\Apache2\htdocs\account2/manufacturing/includes/work_order_issue_ui.inc:50
+#: c:\Apache2\htdocs\account2/purchasing/includes/ui/po_ui.inc:194
+#: c:\Apache2\htdocs\account2/sales/includes/ui/sales_credit_ui.inc:183
+#: c:\Apache2\htdocs\account2/sales/includes/ui/sales_order_ui.inc:127
+msgid "Edit document line"
+msgstr ""
+
+#: c:\Apache2\htdocs\account2/gl/includes/ui/gl_bank_ui.inc:147
+#: c:\Apache2\htdocs\account2/inventory/includes/item_adjustments_ui.inc:92
+#: c:\Apache2\htdocs\account2/inventory/includes/stock_transfers_ui.inc:81
+#: c:\Apache2\htdocs\account2/manufacturing/includes/work_order_issue_ui.inc:52
+#: c:\Apache2\htdocs\account2/purchasing/includes/ui/invoice_ui.inc:227
+#: c:\Apache2\htdocs\account2/purchasing/includes/ui/po_ui.inc:196
+#: c:\Apache2\htdocs\account2/sales/includes/ui/sales_credit_ui.inc:185
+#: c:\Apache2\htdocs\account2/sales/includes/ui/sales_order_ui.inc:129
+msgid "Remove line from document"
+msgstr ""
+
+#: c:\Apache2\htdocs\account2/gl/includes/ui/gl_bank_ui.inc:238
+#: c:\Apache2\htdocs\account2/gl/includes/ui/gl_journal_ui.inc:177
+#: c:\Apache2\htdocs\account2/inventory/includes/item_adjustments_ui.inc:156
+#: c:\Apache2\htdocs\account2/inventory/includes/stock_transfers_ui.inc:136
+#: c:\Apache2\htdocs\account2/manufacturing/includes/work_order_issue_ui.inc:118
+#: c:\Apache2\htdocs\account2/purchasing/includes/ui/po_ui.inc:329
+#: c:\Apache2\htdocs\account2/sales/includes/ui/sales_credit_ui.inc:272
+#: c:\Apache2\htdocs\account2/sales/includes/ui/sales_order_ui.inc:377
+msgid "Confirm changes"
+msgstr ""
+
+#: c:\Apache2\htdocs\account2/gl/includes/ui/gl_bank_ui.inc:240
+#: c:\Apache2\htdocs\account2/gl/includes/ui/gl_journal_ui.inc:179
+#: c:\Apache2\htdocs\account2/inventory/includes/item_adjustments_ui.inc:158
+#: c:\Apache2\htdocs\account2/inventory/includes/stock_transfers_ui.inc:138
+#: c:\Apache2\htdocs\account2/manufacturing/includes/work_order_issue_ui.inc:120
+#: c:\Apache2\htdocs\account2/purchasing/includes/ui/po_ui.inc:331
+#: c:\Apache2\htdocs\account2/sales/includes/ui/sales_credit_ui.inc:274
+#: c:\Apache2\htdocs\account2/sales/includes/ui/sales_order_ui.inc:379
+msgid "Cancel changes"
+msgstr ""
+
 #: c:\Apache2\htdocs\account2/gl/includes/ui/gl_bank_ui.inc:245
 #: c:\Apache2\htdocs\account2/gl/includes/ui/gl_journal_ui.inc:183
 #: c:\Apache2\htdocs\account2/inventory/includes/item_adjustments_ui.inc:164
@@ -8678,8 +8724,42 @@ msgstr ""
 msgid "Add Item"
 msgstr ""
 
+#: c:\Apache2\htdocs\account2/gl/includes/ui/gl_bank_ui.inc:246
+#: c:\Apache2\htdocs\account2/inventory/includes/item_adjustments_ui.inc:165
+#: c:\Apache2\htdocs\account2/inventory/includes/stock_transfers_ui.inc:145
+#: c:\Apache2\htdocs\account2/manufacturing/includes/work_order_issue_ui.inc:127
+#: c:\Apache2\htdocs\account2/purchasing/includes/ui/po_ui.inc:337
+#: c:\Apache2\htdocs\account2/sales/includes/ui/sales_credit_ui.inc:281
+#: c:\Apache2\htdocs\account2/sales/includes/ui/sales_order_ui.inc:386
+msgid "Add new item to document"
+msgstr ""
+
 #: c:\Apache2\htdocs\account2/gl/includes/ui/gl_journal_ui.inc:27
 msgid "Reverse Transaction:"
+msgstr ""
+
+#: c:\Apache2\htdocs\account2/gl/includes/ui/gl_journal_ui.inc:88
+msgid "Edit journal line"
+msgstr ""
+
+#: c:\Apache2\htdocs\account2/gl/includes/ui/gl_journal_ui.inc:90
+msgid "Remove line from journal"
+msgstr ""
+
+#: c:\Apache2\htdocs\account2/gl/includes/ui/gl_journal_ui.inc:184
+msgid "Add new line to journal"
+msgstr ""
+
+#: c:\Apache2\htdocs\account2/includes/current_user.inc:268
+msgid "Requesting data..."
+msgstr ""
+
+#: c:\Apache2\htdocs\account2/includes/errors.inc:44
+msgid "in file"
+msgstr ""
+
+#: c:\Apache2\htdocs\account2/includes/errors.inc:44
+msgid "at line "
 msgstr ""
 
 #: c:\Apache2\htdocs\account2/includes/errors.inc:77
@@ -8688,6 +8768,10 @@ msgstr ""
 
 #: c:\Apache2\htdocs\account2/includes/errors.inc:104
 msgid "The entered information is a duplicate. Please go back and enter different values."
+msgstr ""
+
+#: c:\Apache2\htdocs\account2/includes/main.inc:31
+msgid "This page is usable only with javascript enabled browsers."
 msgstr ""
 
 #: c:\Apache2\htdocs\account2/includes/session.inc:69
@@ -8834,6 +8918,7 @@ msgid "Add new"
 msgstr ""
 
 #: c:\Apache2\htdocs\account2/includes/ui/ui_input.inc:421
+#: c:\Apache2\htdocs\account2/reporting/includes/reports_classes.inc:166
 msgid "Click Here to Pick up the date"
 msgstr ""
 
@@ -9218,6 +9303,10 @@ msgstr ""
 msgid "GL Items for this Credit Note"
 msgstr ""
 
+#: c:\Apache2\htdocs\account2/purchasing/includes/ui/invoice_ui.inc:182
+msgid "Moves to additional costs posting page"
+msgstr ""
+
 #: c:\Apache2\htdocs\account2/purchasing/includes/ui/invoice_ui.inc:284
 msgid "Received Items Charged on this Invoice"
 msgstr ""
@@ -9226,8 +9315,16 @@ msgstr ""
 msgid "Received Items Credited on this Note"
 msgstr ""
 
+#: c:\Apache2\htdocs\account2/purchasing/includes/ui/invoice_ui.inc:292
+msgid "Moves to GRN selection page"
+msgstr ""
+
 #: c:\Apache2\htdocs\account2/purchasing/includes/ui/invoice_ui.inc:300
 msgid "Delivery Sequence #"
+msgstr ""
+
+#: c:\Apache2\htdocs\account2/purchasing/includes/ui/invoice_ui.inc:324
+msgid "Remove item from document"
 msgstr ""
 
 #: c:\Apache2\htdocs\account2/purchasing/includes/ui/po_ui.inc:78
@@ -9401,6 +9498,10 @@ msgstr ""
 msgid "Reports For Class: "
 msgstr ""
 
+#: c:\Apache2\htdocs\account2/reporting/includes/reports_classes.inc:113
+msgid "Invalid date format"
+msgstr ""
+
 #: c:\Apache2\htdocs\account2/reporting/includes/reports_classes.inc:118
 msgid "Display: "
 msgstr ""
@@ -9537,8 +9638,16 @@ msgstr ""
 msgid "No customer found for entered text."
 msgstr ""
 
+#: c:\Apache2\htdocs\account2/sales/includes/ui/sales_order_ui.inc:235
+msgid "Reference number unique for this document type"
+msgstr ""
+
 #: c:\Apache2\htdocs\account2/sales/includes/ui/sales_order_ui.inc:259
 msgid "Price List:"
+msgstr ""
+
+#: c:\Apache2\htdocs\account2/sales/includes/ui/sales_order_ui.inc:291
+msgid "Date of order receive"
 msgstr ""
 
 #: c:\Apache2\htdocs\account2/sales/includes/ui/sales_order_ui.inc:399
@@ -9561,16 +9670,36 @@ msgstr ""
 msgid "Deliver from Location:"
 msgstr ""
 
+#: c:\Apache2\htdocs\account2/sales/includes/ui/sales_order_ui.inc:422
+msgid "Enter requested day of delivery"
+msgstr ""
+
 #: c:\Apache2\htdocs\account2/sales/includes/ui/sales_order_ui.inc:424
 msgid "Deliver To:"
+msgstr ""
+
+#: c:\Apache2\htdocs\account2/sales/includes/ui/sales_order_ui.inc:425
+msgid "Additional identifier for delivery e.g. name of receiving person"
+msgstr ""
+
+#: c:\Apache2\htdocs\account2/sales/includes/ui/sales_order_ui.inc:428
+msgid "Delivery address. Default is address of customer branch"
 msgstr ""
 
 #: c:\Apache2\htdocs\account2/sales/includes/ui/sales_order_ui.inc:429
 msgid "Contact Phone Number:"
 msgstr ""
 
+#: c:\Apache2\htdocs\account2/sales/includes/ui/sales_order_ui.inc:430
+msgid "Phone number of ordering person. Defaults to branch phone number"
+msgstr ""
+
 #: c:\Apache2\htdocs\account2/sales/includes/ui/sales_order_ui.inc:438
 msgid "Customer Reference:"
+msgstr ""
+
+#: c:\Apache2\htdocs\account2/sales/includes/ui/sales_order_ui.inc:439
+msgid "Customer reference number for this order (if any)"
 msgstr ""
 
 #: c:\Apache2\htdocs\account2/sales/includes/ui/sales_order_ui.inc:440
