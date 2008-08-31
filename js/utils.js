@@ -10,25 +10,28 @@
 // 
     JsHttpRequest.request= function(trigger, form) {
 
-		
 		var submitObj = typeof(trigger) == "string" ? 
 			document.getElementsByName(trigger)[0] : trigger;
 		
 		form = form || (submitObj && submitObj.form);
 
+		var upload = form && form.enctype=='multipart/form-data';
+		
 		var url = form ? form.action : 
 		  window.location.toString();
 
+		var content = this.formInputs(trigger, form, upload);
+
 		if (!form) url = url.substring(0, url.indexOf('?'));
 
-		var values = this.formValues(trigger, form);
 		if (!submitObj) 
-			values[trigger] = 1;
+			content[trigger] = 1;
 		// this is to avoid caching problems
-		values['_random'] = Math.random()*1234567;
+		content['_random'] = Math.random()*1234567;
+
         JsHttpRequest.query(
-            'POST '+url, // backend
-	    	values,
+            (upload ? "form." : "")+"POST "+url, // force form loader
+	    	content,
             // Function is called when an answer arrives. 
 	    function(result, errors) {
                 // Write the answer.
@@ -78,13 +81,11 @@
             false  // do not disable caching
         );
     }
-	// returns input field values submitted when form button 'name' is pressed
-	//
-	JsHttpRequest.formValues = function(inp, objForm)
+	// collect all form input values plus inp trigger value
+	JsHttpRequest.formInputs = function(inp, objForm, upload)
 	{
 		var submitObj = inp;
 		var q = {};
-		
 
 		if (typeof(inp) == "string")
 			submitObj = document.getElementsByName(inp)[0];
@@ -99,7 +100,14 @@
 			for( var i=0; i < formElements.length; i++)
 			{
 			  var el = formElements[i];
+			  var name = el.name;
 				if (!el.name) continue;
+				if(upload) { // for form containing file inputs collect all 
+					// form elements and add value of trigger submit button
+					// (internally form is submitted via form.submit() not button click())
+					q[name] = submitObj.type=='submit' && el==submitObj ? el.value : el;
+					continue;
+				}
 				if (el.type )
 				  if( 
 				  ((el.type == 'radio' || el.type == 'checkbox') && el.checked == false)
@@ -107,7 +115,6 @@
 					continue;
 				if (el.disabled && el.disabled == true)
 					continue;
-				var name = el.name;
 				if (name)
 				{
 					if(el.type=='select-multiple')
