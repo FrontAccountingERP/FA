@@ -22,6 +22,7 @@ $ -> Affected files
 01-Sep-2008 Joe Hunt
 ! Up-to-date translation file (some strings were missing, single quotations in .inc files)
 $ /lang/new_language_template/LC_MASSAGES/empty.po
+  /lang/en_US/LC_MESSAGES/en_US.mo
 
 31-Aug-2008 Janusz Dobrowolski
 + Added ajax support for file uploading

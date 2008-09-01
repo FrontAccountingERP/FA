@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FrontAccounting\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-09-01 00:53+0100\n"
+"PO-Revision-Date: 2008-09-01 10:01+0100\n"
 "Last-Translator: Joe Hunt <joe.hunt.consulting@gmail.com>\n"
 "Language-Team: Translators\n"
 "MIME-Version: 1.0\n"
@@ -12,6 +12,7 @@ msgstr ""
 "X-Poedit-Country: UNITED KINGDOM\n"
 "X-Poedit-SourceCharset: iso-8859-1\n"
 "X-Poedit-Basepath: c:\\Apache2\\htdocs\\account2\n"
+"X-Poedit-KeywordsList: _\n"
 "X-Poedit-SearchPath-0: c:\\Apache2\\htdocs\\account2\n"
 
 #: c:\Apache2\htdocs\account2/config.php:143
@@ -55,7 +56,7 @@ msgstr ""
 #: c:\Apache2\htdocs\account2/config.php:162
 #: c:\Apache2\htdocs\account2/admin/inst_module.php:17
 #: c:\Apache2\htdocs\account2/applications/dimensions.php:10
-#: c:\Apache2\htdocs\account2/inventory/manage/items.php:374
+#: c:\Apache2\htdocs\account2/inventory/manage/items.php:375
 #: c:\Apache2\htdocs\account2/reporting/reports_main.php:141
 #: c:\Apache2\htdocs\account2/reporting/reports_main.php:144
 msgid "Dimensions"
@@ -311,82 +312,76 @@ msgstr ""
 msgid "Company Setup"
 msgstr ""
 
-#: c:\Apache2\htdocs\account2/admin/company_preferences.php:24
+#: c:\Apache2\htdocs\account2/admin/company_preferences.php:23
 msgid "The company name must be entered."
 msgstr ""
 
-#: c:\Apache2\htdocs\account2/admin/company_preferences.php:41
+#: c:\Apache2\htdocs\account2/admin/company_preferences.php:40
 #: c:\Apache2\htdocs\account2/inventory/manage/items.php:55
 msgid "Only jpg files are supported - a file extension of .jpg is expected"
 msgstr ""
 
-#: c:\Apache2\htdocs\account2/admin/company_preferences.php:46
+#: c:\Apache2\htdocs\account2/admin/company_preferences.php:45
 #: c:\Apache2\htdocs\account2/inventory/manage/items.php:60
 msgid "The file size is over the maximum allowed. The maximum size allowed in KB is"
 msgstr ""
 
-#: c:\Apache2\htdocs\account2/admin/company_preferences.php:51
+#: c:\Apache2\htdocs\account2/admin/company_preferences.php:50
 #: c:\Apache2\htdocs\account2/inventory/manage/items.php:65
 msgid "Only graphics files can be uploaded"
 msgstr ""
 
-#: c:\Apache2\htdocs\account2/admin/company_preferences.php:56
-#: c:\Apache2\htdocs\account2/inventory/manage/items.php:70
-msgid "Attempting to overwrite an existing item image"
-msgstr ""
-
-#: c:\Apache2\htdocs\account2/admin/company_preferences.php:60
-#: c:\Apache2\htdocs\account2/inventory/manage/items.php:74
+#: c:\Apache2\htdocs\account2/admin/company_preferences.php:58
+#: c:\Apache2\htdocs\account2/inventory/manage/items.php:73
 msgid "The existing image could not be removed"
 msgstr ""
 
-#: c:\Apache2\htdocs\account2/admin/company_preferences.php:69
-#: c:\Apache2\htdocs\account2/inventory/manage/items.php:82
-msgid "File url"
+#: c:\Apache2\htdocs\account2/admin/company_preferences.php:68
+msgid "Error uploading logo file"
 msgstr ""
 
-#: c:\Apache2\htdocs\account2/admin/company_preferences.php:83
+#: c:\Apache2\htdocs\account2/admin/company_preferences.php:80
 msgid "Company setup has been updated."
 msgstr ""
 
-#: c:\Apache2\htdocs\account2/admin/company_preferences.php:123
+#: c:\Apache2\htdocs\account2/admin/company_preferences.php:120
 msgid "Name (to appear on reports):"
 msgstr ""
 
-#: c:\Apache2\htdocs\account2/admin/company_preferences.php:124
+#: c:\Apache2\htdocs\account2/admin/company_preferences.php:121
 msgid "Official Company Number:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account2/admin/company_preferences.php:125
+#: c:\Apache2\htdocs\account2/admin/company_preferences.php:122
 msgid "Tax Authority Reference:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account2/admin/company_preferences.php:127
+#: c:\Apache2\htdocs\account2/admin/company_preferences.php:124
 msgid "Tax Periods:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account2/admin/company_preferences.php:127
+#: c:\Apache2\htdocs\account2/admin/company_preferences.php:124
 msgid "Months."
 msgstr ""
 
-#: c:\Apache2\htdocs\account2/admin/company_preferences.php:128
+#: c:\Apache2\htdocs\account2/admin/company_preferences.php:125
 msgid "Tax Last Period:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account2/admin/company_preferences.php:128
+#: c:\Apache2\htdocs\account2/admin/company_preferences.php:125
 msgid "Months back."
 msgstr ""
 
-#: c:\Apache2\htdocs\account2/admin/company_preferences.php:130
+#: c:\Apache2\htdocs\account2/admin/company_preferences.php:127
 msgid "Home Currency:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account2/admin/company_preferences.php:131
+#: c:\Apache2\htdocs\account2/admin/company_preferences.php:128
 #: c:\Apache2\htdocs\account2/gl/gl_budget.php:102
 msgid "Fiscal Year:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account2/admin/company_preferences.php:133
+#: c:\Apache2\htdocs\account2/admin/company_preferences.php:130
 #: c:\Apache2\htdocs\account2/admin/shipping_companies.php:154
 #: c:\Apache2\htdocs\account2/inventory/manage/locations.php:173
 #: c:\Apache2\htdocs\account2/purchasing/manage/suppliers.php:181
@@ -395,64 +390,64 @@ msgstr ""
 msgid "Address:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account2/admin/company_preferences.php:135
+#: c:\Apache2\htdocs\account2/admin/company_preferences.php:132
 msgid "Telephone Number:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account2/admin/company_preferences.php:136
+#: c:\Apache2\htdocs\account2/admin/company_preferences.php:133
 msgid "Facsimile Number:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account2/admin/company_preferences.php:137
+#: c:\Apache2\htdocs\account2/admin/company_preferences.php:134
 #: c:\Apache2\htdocs\account2/admin/users.php:176
 msgid "Email Address:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account2/admin/company_preferences.php:138
+#: c:\Apache2\htdocs\account2/admin/company_preferences.php:135
 msgid "Company Logo:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account2/admin/company_preferences.php:139
+#: c:\Apache2\htdocs\account2/admin/company_preferences.php:136
 msgid "New Company Logo (.jpg)"
 msgstr ""
 
-#: c:\Apache2\htdocs\account2/admin/company_preferences.php:141
+#: c:\Apache2\htdocs\account2/admin/company_preferences.php:138
 msgid "Domicile:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account2/admin/company_preferences.php:143
+#: c:\Apache2\htdocs\account2/admin/company_preferences.php:140
 msgid "Use Dimensions:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account2/admin/company_preferences.php:144
+#: c:\Apache2\htdocs\account2/admin/company_preferences.php:141
 msgid "Base for auto price calculations:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account2/admin/company_preferences.php:145
+#: c:\Apache2\htdocs\account2/admin/company_preferences.php:142
 msgid "No base price list"
 msgstr ""
 
-#: c:\Apache2\htdocs\account2/admin/company_preferences.php:147
+#: c:\Apache2\htdocs\account2/admin/company_preferences.php:144
 msgid "Search Item List"
 msgstr ""
 
-#: c:\Apache2\htdocs\account2/admin/company_preferences.php:148
+#: c:\Apache2\htdocs\account2/admin/company_preferences.php:145
 msgid "Search Customer List"
 msgstr ""
 
-#: c:\Apache2\htdocs\account2/admin/company_preferences.php:149
+#: c:\Apache2\htdocs\account2/admin/company_preferences.php:146
 msgid "Search Supplier List"
 msgstr ""
 
-#: c:\Apache2\htdocs\account2/admin/company_preferences.php:153
+#: c:\Apache2\htdocs\account2/admin/company_preferences.php:150
 msgid "Custom Field Name"
 msgstr ""
 
-#: c:\Apache2\htdocs\account2/admin/company_preferences.php:153
+#: c:\Apache2\htdocs\account2/admin/company_preferences.php:150
 msgid "Custom Field Value"
 msgstr ""
 
-#: c:\Apache2\htdocs\account2/admin/company_preferences.php:172
+#: c:\Apache2\htdocs\account2/admin/company_preferences.php:169
 #: c:\Apache2\htdocs\account2/admin/display_prefs.php:93
 #: c:\Apache2\htdocs\account2/admin/forms_setup.php:45
 #: c:\Apache2\htdocs\account2/admin/gl_setup.php:187
@@ -960,7 +955,7 @@ msgstr ""
 
 #: c:\Apache2\htdocs\account2/admin/gl_setup.php:129
 #: c:\Apache2\htdocs\account2/admin/gl_setup.php:161
-#: c:\Apache2\htdocs\account2/inventory/manage/items.php:351
+#: c:\Apache2\htdocs\account2/inventory/manage/items.php:352
 #: c:\Apache2\htdocs\account2/sales/manage/customer_branches.php:306
 msgid "Sales Account:"
 msgstr ""
@@ -1018,22 +1013,22 @@ msgid "Items Defaults"
 msgstr ""
 
 #: c:\Apache2\htdocs\account2/admin/gl_setup.php:163
-#: c:\Apache2\htdocs\account2/inventory/manage/items.php:353
+#: c:\Apache2\htdocs\account2/inventory/manage/items.php:354
 msgid "Inventory Account:"
 msgstr ""
 
 #: c:\Apache2\htdocs\account2/admin/gl_setup.php:165
-#: c:\Apache2\htdocs\account2/inventory/manage/items.php:357
+#: c:\Apache2\htdocs\account2/inventory/manage/items.php:358
 msgid "C.O.G.S. Account:"
 msgstr ""
 
 #: c:\Apache2\htdocs\account2/admin/gl_setup.php:167
-#: c:\Apache2\htdocs\account2/inventory/manage/items.php:358
+#: c:\Apache2\htdocs\account2/inventory/manage/items.php:359
 msgid "Inventory Adjustments Account:"
 msgstr ""
 
 #: c:\Apache2\htdocs\account2/admin/gl_setup.php:169
-#: c:\Apache2\htdocs\account2/inventory/manage/items.php:368
+#: c:\Apache2\htdocs\account2/inventory/manage/items.php:369
 msgid "Item Assembly Costs Account:"
 msgstr ""
 
@@ -1317,7 +1312,7 @@ msgstr ""
 
 #: c:\Apache2\htdocs\account2/admin/shipping_companies.php:148
 #: c:\Apache2\htdocs\account2/gl/manage/gl_account_types.php:160
-#: c:\Apache2\htdocs\account2/inventory/manage/items.php:315
+#: c:\Apache2\htdocs\account2/inventory/manage/items.php:312
 #: c:\Apache2\htdocs\account2/manufacturing/manage/work_centres.php:133
 #: c:\Apache2\htdocs\account2/gl/includes/ui/gl_bank_ui.inc:48
 msgid "Name:"
@@ -1906,7 +1901,7 @@ msgid "Exchange Rates"
 msgstr ""
 
 #: c:\Apache2\htdocs\account2/applications/generalledger.php:34
-#: c:\Apache2\htdocs\account2/inventory/manage/items.php:349
+#: c:\Apache2\htdocs\account2/inventory/manage/items.php:350
 #: c:\Apache2\htdocs\account2/sales/manage/customer_branches.php:303
 msgid "GL Accounts"
 msgstr ""
@@ -2651,8 +2646,8 @@ msgstr ""
 #: c:\Apache2\htdocs\account2/gl/inquiry/gl_account_inquiry.php:101
 #: c:\Apache2\htdocs\account2/gl/view/gl_trans_view.php:56
 #: c:\Apache2\htdocs\account2/gl/view/gl_trans_view.php:59
-#: c:\Apache2\htdocs\account2/inventory/manage/items.php:376
-#: c:\Apache2\htdocs\account2/inventory/manage/items.php:378
+#: c:\Apache2\htdocs\account2/inventory/manage/items.php:377
+#: c:\Apache2\htdocs\account2/inventory/manage/items.php:379
 #: c:\Apache2\htdocs\account2/purchasing/supplier_trans_gl.php:125
 #: c:\Apache2\htdocs\account2/purchasing/supplier_trans_gl.php:127
 #: c:\Apache2\htdocs\account2/purchasing/manage/suppliers.php:211
@@ -3209,7 +3204,7 @@ msgid "Cannot delete this bank transaction type because bank transactions have b
 msgstr ""
 
 #: c:\Apache2\htdocs\account2/gl/manage/bank_trans_types.php:124
-#: c:\Apache2\htdocs\account2/inventory/manage/items.php:317
+#: c:\Apache2\htdocs\account2/inventory/manage/items.php:314
 #: c:\Apache2\htdocs\account2/inventory/manage/movement_types.php:124
 #: c:\Apache2\htdocs\account2/manufacturing/manage/work_centres.php:134
 #: c:\Apache2\htdocs\account2/sales/manage/credit_status.php:138
@@ -4111,63 +4106,63 @@ msgstr ""
 msgid "On Order"
 msgstr ""
 
-#: c:\Apache2\htdocs\account2/inventory/manage/items.php:88
+#: c:\Apache2\htdocs\account2/inventory/manage/items.php:86
 msgid "There are no item categories defined in the system. At least one item category is required to add a item."
 msgstr ""
 
-#: c:\Apache2\htdocs\account2/inventory/manage/items.php:90
+#: c:\Apache2\htdocs\account2/inventory/manage/items.php:88
 msgid "There are no item tax types defined in the system. At least one item tax type is required to add a item."
 msgstr ""
 
-#: c:\Apache2\htdocs\account2/inventory/manage/items.php:119
+#: c:\Apache2\htdocs\account2/inventory/manage/items.php:117
 msgid "The item name must be entered."
 msgstr ""
 
-#: c:\Apache2\htdocs\account2/inventory/manage/items.php:125
+#: c:\Apache2\htdocs\account2/inventory/manage/items.php:123
 msgid "The item code cannot be empty"
 msgstr ""
 
-#: c:\Apache2\htdocs\account2/inventory/manage/items.php:133
+#: c:\Apache2\htdocs\account2/inventory/manage/items.php:131
 msgid "The item code cannot contain any of the following characters -  & + OR a space OR quotes"
 msgstr ""
 
-#: c:\Apache2\htdocs\account2/inventory/manage/items.php:150
+#: c:\Apache2\htdocs\account2/inventory/manage/items.php:148
 msgid "Item has been updated."
 msgstr ""
 
-#: c:\Apache2\htdocs\account2/inventory/manage/items.php:164
+#: c:\Apache2\htdocs\account2/inventory/manage/items.php:161
 msgid "A new item has been added."
 msgstr ""
 
-#: c:\Apache2\htdocs\account2/inventory/manage/items.php:182
+#: c:\Apache2\htdocs\account2/inventory/manage/items.php:179
 msgid "Cannot delete this item because there are stock movements that refer to this item."
 msgstr ""
 
-#: c:\Apache2\htdocs\account2/inventory/manage/items.php:191
+#: c:\Apache2\htdocs\account2/inventory/manage/items.php:188
 msgid "Cannot delete this item record because there are bills of material that require this part as a component."
 msgstr ""
 
-#: c:\Apache2\htdocs\account2/inventory/manage/items.php:200
+#: c:\Apache2\htdocs\account2/inventory/manage/items.php:197
 msgid "Cannot delete this item record because there are existing sales orders for this part."
 msgstr ""
 
-#: c:\Apache2\htdocs\account2/inventory/manage/items.php:209
+#: c:\Apache2\htdocs\account2/inventory/manage/items.php:206
 msgid "Cannot delete this item because there are existing purchase order items for it."
 msgstr ""
 
-#: c:\Apache2\htdocs\account2/inventory/manage/items.php:228
+#: c:\Apache2\htdocs\account2/inventory/manage/items.php:225
 msgid "Selected item has been deleted."
 msgstr ""
 
-#: c:\Apache2\htdocs\account2/inventory/manage/items.php:246
+#: c:\Apache2\htdocs\account2/inventory/manage/items.php:243
 msgid "Select an item:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account2/inventory/manage/items.php:247
+#: c:\Apache2\htdocs\account2/inventory/manage/items.php:244
 msgid "New item"
 msgstr ""
 
-#: c:\Apache2\htdocs\account2/inventory/manage/items.php:259
+#: c:\Apache2\htdocs\account2/inventory/manage/items.php:256
 #: c:\Apache2\htdocs\account2/inventory/view/view_adjustment.php:46
 #: c:\Apache2\htdocs\account2/inventory/view/view_transfer.php:30
 #: c:\Apache2\htdocs\account2/inventory/view/view_transfer.php:48
@@ -4182,40 +4177,44 @@ msgstr ""
 msgid "Item"
 msgstr ""
 
-#: c:\Apache2\htdocs\account2/inventory/manage/items.php:268
-#: c:\Apache2\htdocs\account2/inventory/manage/items.php:310
+#: c:\Apache2\htdocs\account2/inventory/manage/items.php:265
+#: c:\Apache2\htdocs\account2/inventory/manage/items.php:307
 msgid "Item Code:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account2/inventory/manage/items.php:323
+#: c:\Apache2\htdocs\account2/inventory/manage/items.php:320
 msgid "Image File (.jpg)"
 msgstr ""
 
-#: c:\Apache2\htdocs\account2/inventory/manage/items.php:337
+#: c:\Apache2\htdocs\account2/inventory/manage/items.php:331
+msgid "No image"
+msgstr ""
+
+#: c:\Apache2\htdocs\account2/inventory/manage/items.php:338
 msgid "Category:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account2/inventory/manage/items.php:339
+#: c:\Apache2\htdocs\account2/inventory/manage/items.php:340
 msgid "Item Tax Type:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account2/inventory/manage/items.php:341
+#: c:\Apache2\htdocs\account2/inventory/manage/items.php:342
 msgid "Item Type:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account2/inventory/manage/items.php:344
+#: c:\Apache2\htdocs\account2/inventory/manage/items.php:345
 msgid "Units of Measure:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account2/inventory/manage/items.php:390
+#: c:\Apache2\htdocs\account2/inventory/manage/items.php:391
 msgid "Insert New Item"
 msgstr ""
 
-#: c:\Apache2\htdocs\account2/inventory/manage/items.php:394
+#: c:\Apache2\htdocs\account2/inventory/manage/items.php:395
 msgid "Update Item"
 msgstr ""
 
-#: c:\Apache2\htdocs\account2/inventory/manage/items.php:396
+#: c:\Apache2\htdocs\account2/inventory/manage/items.php:397
 msgid "Delete This Item"
 msgstr ""
 
