@@ -36,11 +36,11 @@ function print_list_of_journal_entries()
 
     $cols = array(0, 100, 240, 300, 400, 460, 520, 580);
 
-    $headers = array(_('Type/Account'), _('Account Name'), _('Date/Dim.'), 
+    $headers = array(_('Type/Account'), _('Account Name'), _('Date/Dim.'),
     	_('Person/Item/Memo'), _('Debit'), _('Credit'));
-    
+
     $aligns = array('left', 'left', 'left', 'left', 'right', 'right');
-    
+
     $params =   array( 	0 => $comments,
     				    1 => array('text' => _('Period'), 'from' => $from,'to' => $to),
                     	2 => array('text' => _('Type'), 'from' => systypes::name($systype),
@@ -55,7 +55,7 @@ function print_list_of_journal_entries()
     if ($systype == -1)
         $systype = null;
 
-    $trans = get_gl_transactions($from, $to, -1, null, 0, $systype);
+    $trans = get_gl_transactions($from, $to, -1, null, 0, 0, $systype);
 
     $typeno = 0;
     while ($myrow=db_fetch($trans))
@@ -71,7 +71,7 @@ function print_list_of_journal_entries()
             $TransName = systypes::name($myrow['type']);
             $rep->TextCol(0, 2, $TransName . " # " . $myrow['type_no']);
             $rep->TextCol(2, 3, sql2date($myrow['tran_date']));
-            $coms =  payment_person_types::person_name($myrow["person_type_id"],$myrow["person_id"]);    
+            $coms =  payment_person_types::person_name($myrow["person_type_id"],$myrow["person_id"]);
             $memo = get_comments_string($myrow['type'], $myrow['type_no']);
             if ($memo != '')
             	$coms .= ($coms!= "")?"/":"" . $memo;
@@ -90,7 +90,7 @@ function print_list_of_journal_entries()
             $rep->TextCol(4, 5, number_format2(abs($myrow['amount']), $dec));
         else
             $rep->TextCol(5, 6, number_format2(abs($myrow['amount']), $dec));
-        $rep->NewLine(1, 2);    
+        $rep->NewLine(1, 2);
     }
     $rep->Line($rep->row  + 4);
     $rep->End();

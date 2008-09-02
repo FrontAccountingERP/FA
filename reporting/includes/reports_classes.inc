@@ -1,24 +1,24 @@
 <?php
-class BoxReports 
+class BoxReports
 {
 	var $ar_classes;
 
-	function ReportClasses() 
+	function ReportClasses()
 	{
 		$this->ar_classes = array();
 	}
 
-	function addReportClass($class_name) 
+	function addReportClass($class_name)
 	{
 		$this->ar_classes[$class_name] = array();
 	}
 
-	function addReport($class_name, $id, $rep_name, $params=null) 
+	function addReport($class_name, $id, $rep_name, $params=null)
 	{
 		$this->ar_classes[$class_name][] = new Report($id,$rep_name,$params);
 	}
 
-	function getDisplay($class=null) 
+	function getDisplay($class=null)
 	{
 		global $table_style2;
 		$temp = array_values($this->ar_classes);
@@ -28,12 +28,12 @@ class BoxReports
 		$st_reports = "";
 		$st_params = "";
 		$st_classes = "<b>" . _("Report Classes:") . "</b><br>";
-		foreach($this->ar_classes as $key=>$value) 
+		foreach($this->ar_classes as $key=>$value)
 		{
 			$style = $class_counter==0 ? '' : $style = "style='display:none'";
 			$st_classes .= "<a href='javascript:showClass($class_counter)'>$key</a> <br>";
 			$st_reports .= "<table id='TAB_" . $class_counter++ ."' $style cellpadding=0 cellspacing=0 border=0 width='100%'><tr><td><b>" . _("Reports For Class: ") . "&nbsp;$key</b></td></tr>";
-			foreach($value as $report) 
+			foreach($value as $report)
 			{
 				$st_reports .= "<tr><td><a href='javascript:showReport($rep_counter)'>" . $report->name . "</a></td></tr>";
 				$st_params .= "<table border=0 id='REP_" . $rep_counter++ . "' style='display:none'>";
@@ -71,27 +71,27 @@ class BoxReports
 	}
 }
 
-class Report 
+class Report
 {
 	var $id;
 	var $name;
 	var $ar_params;
 
-	function Report($id, $name, $ar_params) 
+	function Report($id, $name, $ar_params)
 	{
 		$this->id 			= $id;
 		$this->name 		= $name;
 		$this->ar_params	= $ar_params;
 	}
-	function getDisplay() 
+	function getDisplay()
 	{
 		global $comp_path, $path_to_root, $use_date_picker;
 
 	        $rep_file = $comp_path.'/'.user_company().
-		     "/reporting/rep".$this->id.".php";	 
+		     "/reporting/rep".$this->id.".php";
 		if (!file_exists($rep_file))
 		    $rep_file = $path_to_root ."/reporting/rep".$this->id.".php";
-		    
+
 		$st = "
 <script language='javascript'>
 	function displayReport_" . $this->id . "() {
@@ -117,12 +117,12 @@ class Report
 			";
 		$st .= "<input type='button' onclick='javascript:displayReport_" . $this->id ."()' value='" . _("Display: ") . $this->name . "'><br><br>";
 		$dummy = "";
-		if ($this->ar_params==null) 
+		if ($this->ar_params==null)
 			return "";
-		foreach($this->ar_params as $index=>$param) 
+		foreach($this->ar_params as $index=>$param)
 		{
 			$st .= $param->param_name . ':<br>';
-			switch ($param->param_type) 
+			switch ($param->param_type)
 			{
 				case 'CURRENCY':
 					$sql = "SELECT curr_abrev, concat(curr_abrev,' - ', currency) FROM ".TB_PREF."currencies";
@@ -157,20 +157,20 @@ class Report
 							$bdate = add_months($edate, -$row['tax_prd'] + 1);
 							$date = begin_month($bdate);
 						}
-					}	
-					$name = "RP_" . $this->id . "_$index";			
+					}
+					$name = "RP_" . $this->id . "_$index";
 					//$st .= "<input type='text' name='$name' value='$date' onblur='javascript:checkDate(this)'>";
 					$st .= "<input type='text' name='$name' value='$date'>";
 					if ($use_date_picker)
 						$st .= "<a href=\"javascript:date_picker(document.forms[0].$name);\">"
 						. "	<img src='$path_to_root/themes/default/images/cal.gif' width='16' height='16' border='0' alt='"._('Click Here to Pick up the date')."'></a>\n";
-					
+
 					break;
-				case 'YES_NO':	
+				case 'YES_NO':
 					$sel = array(_('No'), _("Yes"));
 					$st .= dup_simple_name_list("RP_" . $this->id . "_$index", $sel);
 					break;
-				case 'PAYMENT_LINK':	
+				case 'PAYMENT_LINK':
 					$sel = array(_("No Payment Link"), "PayPal");
 					$st .= dup_simple_name_list("RP_" . $this->id . "_$index", $sel);
 					break;
@@ -184,7 +184,7 @@ class Report
 					break;
 				case 'SYS_TYPES':
 					$st .= dup_systypes_list("RP_" . $this->id . "_$index", $dummy, true, _("No Type Filter"), true);
-					break;				
+					break;
 				case 'TEXT':
 					$st .= "<input type='text' name='RP_" . $this->id . "_$index'>";
 					break;
@@ -200,7 +200,7 @@ class Report
 					$st .= dup_simple_codeandname_list($sql, "RP_" . $this->id . "_$index", $dummy);
 					break;
 				case 'BANK_ACCOUNTS':
-					$sql = "SELECT ".TB_PREF."bank_accounts.account_code, concat(bank_account_name, if (bank_curr_code=curr_default,'', concat(' - ', bank_curr_code))) FROM ".TB_PREF."bank_accounts, ".TB_PREF."chart_master, ".TB_PREF."company 
+					$sql = "SELECT ".TB_PREF."bank_accounts.account_code, concat(bank_account_name, if (bank_curr_code=curr_default,'', concat(' - ', bank_curr_code))) FROM ".TB_PREF."bank_accounts, ".TB_PREF."chart_master, ".TB_PREF."company
 						WHERE ".TB_PREF."bank_accounts.account_code=".TB_PREF."chart_master.account_code";
 					$st .= dup_simple_codeandname_list($sql, "RP_" . $this->id . "_$index", $dummy);
 					break;
@@ -233,7 +233,7 @@ class Report
 					$sql = "SELECT debtor_no, name FROM ".TB_PREF."debtors_master ORDER BY name";
 					if ($param->param_type == 'CUSTOMERS_NO_FILTER')
 						$st .= dup_simple_codeandname_list($sql, "RP_" . $this->id . "_$index", $dummy, true, _("No Customer Filter"), true);
-					else	
+					else
 						$st .= dup_simple_codeandname_list($sql, "RP_" . $this->id . "_$index", $dummy);
 					break;
 				case 'SUPPLIERS_NO_FILTER':
@@ -241,36 +241,36 @@ class Report
 					$sql = "SELECT supplier_id, supp_name FROM ".TB_PREF."suppliers ORDER BY supp_name";
 					if ($param->param_type == 'SUPPLIERS_NO_FILTER')
 						$st .= dup_simple_codeandname_list($sql, "RP_" . $this->id . "_$index", $dummy, true, _("No Supplier Filter"), true);
-					else	
+					else
 						$st .= dup_simple_codeandname_list($sql, "RP_" . $this->id . "_$index", $dummy);
 					break;
 				case 'INVOICE':
 					$IV = _("IV");
 					$CN = _("CN");
-					$sql = "SELECT concat(".TB_PREF."debtor_trans.trans_no, '-', 
-						".TB_PREF."debtor_trans.type) AS TNO, concat(".TB_PREF."debtor_trans.trans_no, if (type=10, ' $IV ', ' $CN '), ".TB_PREF."debtors_master.name) as IName 
+					$sql = "SELECT concat(".TB_PREF."debtor_trans.trans_no, '-',
+						".TB_PREF."debtor_trans.type) AS TNO, concat(".TB_PREF."debtor_trans.trans_no, if (type=10, ' $IV ', ' $CN '), ".TB_PREF."debtors_master.name) as IName
 						FROM ".TB_PREF."debtors_master, ".TB_PREF."debtor_trans WHERE (type=10 OR type=11) AND ".TB_PREF."debtors_master.debtor_no=".TB_PREF."debtor_trans.debtor_no ORDER BY ".TB_PREF."debtor_trans.trans_no DESC";
 					$st .= dup_simple_codeandname_list($sql, "RP_" . $this->id . "_$index", $dummy);
 					break;
 				case 'DELIVERY':
 					$DN = _("DN");
-					$sql = "SELECT 
-					concat(".TB_PREF."debtor_trans.trans_no, '-', ".TB_PREF."debtor_trans.type) AS TNO, concat(".TB_PREF."debtor_trans.trans_no, ' $DN ', 
-					 ".TB_PREF."debtors_master.name) as IName 
-						FROM ".TB_PREF."debtors_master, ".TB_PREF."debtor_trans 
+					$sql = "SELECT
+					concat(".TB_PREF."debtor_trans.trans_no, '-', ".TB_PREF."debtor_trans.type) AS TNO, concat(".TB_PREF."debtor_trans.trans_no, ' $DN ',
+					 ".TB_PREF."debtors_master.name) as IName
+						FROM ".TB_PREF."debtors_master, ".TB_PREF."debtor_trans
 						WHERE type=13 AND ".TB_PREF."debtors_master.debtor_no=".
 						TB_PREF."debtor_trans.debtor_no ORDER BY ".TB_PREF."debtor_trans.trans_no DESC";
 					$st .= dup_simple_codeandname_list($sql, "RP_" . $this->id . "_$index", $dummy);
 					break;
 				case 'ORDERS':
-					$sql = "SELECT ".TB_PREF."sales_orders.order_no, concat(".TB_PREF."sales_orders.order_no, '-', 
-						".TB_PREF."debtors_master.name) as IName 
+					$sql = "SELECT ".TB_PREF."sales_orders.order_no, concat(".TB_PREF."sales_orders.order_no, '-',
+						".TB_PREF."debtors_master.name) as IName
 						FROM ".TB_PREF."debtors_master, ".TB_PREF."sales_orders WHERE ".TB_PREF."debtors_master.debtor_no=".TB_PREF."sales_orders.debtor_no ORDER BY ".TB_PREF."sales_orders.order_no DESC";
 					$st .= dup_simple_codeandname_list($sql, "RP_" . $this->id . "_$index", $dummy);
 					break;
 				case 'PO':
-					$sql = "SELECT ".TB_PREF."purch_orders.order_no, concat(".TB_PREF."purch_orders.order_no, '-', 
-						".TB_PREF."suppliers.supp_name) as IName  
+					$sql = "SELECT ".TB_PREF."purch_orders.order_no, concat(".TB_PREF."purch_orders.order_no, '-',
+						".TB_PREF."suppliers.supp_name) as IName
 						FROM ".TB_PREF."suppliers, ".TB_PREF."purch_orders WHERE ".TB_PREF."suppliers.supplier_id=".TB_PREF."purch_orders.supplier_id ORDER BY ".TB_PREF."purch_orders.order_no DESC";
 					$st .= dup_simple_codeandname_list($sql, "RP_" . $this->id . "_$index", $dummy);
 					break;
@@ -314,12 +314,12 @@ class Report
 	}
 }
 
-class ReportParam 
+class ReportParam
 {
 	var $param_name;
 	var $param_type;
 
-	function ReportParam($param_name, $param_type) 
+	function ReportParam($param_name, $param_type)
 	{
 		$this->param_name = $param_name;
 		$this->param_type = $param_type;
@@ -327,7 +327,7 @@ class ReportParam
 }
 
 function dup_simple_codeandname_list($sql, $name, &$selected_id,
-	$all_option=false, $all_option_name=null, $all_option_numeric=false, 
+	$all_option=false, $all_option_name=null, $all_option_numeric=false,
 	$submit_on_change=false)
 {
 	if ($submit_on_change == true)
@@ -345,12 +345,12 @@ function dup_simple_codeandname_list($sql, $name, &$selected_id,
     	if ($reserved_word == $selected_id)
     	{
     	     $st .= "<option selected value='" . $reserved_word . "'>" . $all_option_name . "</option>\n";
-    	} 
-    	else 
+    	}
+    	else
     	{
     	     $st .= "<option value='" . $reserved_word . "'>" . $all_option_name . "</option>\n";
     	}
-		if ($selected_id == "") 
+		if ($selected_id == "")
 		{
 			$selected_id =  $reserved_word;
 		}
@@ -358,19 +358,19 @@ function dup_simple_codeandname_list($sql, $name, &$selected_id,
 
 	$result = db_query($sql);
 
-	while ($row = db_fetch_row($result)) 
+	while ($row = db_fetch_row($result))
 	{
-		if ($selected_id == $row[0]) 
+		if ($selected_id == $row[0])
 		{
 			$st .= "<option selected value='" . $row[0] . "'>";
-		} 
-		else 
+		}
+		else
 		{
 			$st .= "<option value='" . $row[0] . "'>";
 		}
 		$st .= $row[1] . "</option>\n";
 
-		if ($selected_id == "") 
+		if ($selected_id == "")
 		{
 			$selected_id = $row[0];
 		}
@@ -396,26 +396,26 @@ function dup_simple_name_list($name, $selections)
 function dup_systypes_list($name, &$selected_id, $all_option=false, $all_option_name=null)
 {
 	global $systypes_array;
-	
+
    	$st = "<select name='$name'>";
 	if ($all_option == true)
 	{
 		$reserved_word = reserved_words::get_all_numeric();
     	if ($reserved_word == $selected_id)
     	     $st .= "<option selected value='" . $reserved_word . "'>" . $all_option_name . "</option>\n";
-    	else 
+    	else
     	     $st .= "<option value='" . $reserved_word . "'>" . $all_option_name . "</option>\n";
-		if ($selected_id == "") 
+		if ($selected_id == "")
 			$selected_id = $reserved_word;
 	}
 
 	foreach ($systypes_array as $i => $value)
 	{
-		if ($i == 16 || $i == 18 || $i == 25 || $i >= 28)
+		if ($i == 16 || $i == 18 || $i == 25 || ($i >= 28 && $i <= 30) || $i >= 40)
 			continue;
     	$st .= "<option" . ($selected_id == $i ? " selected" : "") . " value='$i'>" . $value['name'] . "</option>\n";
-	}    	
-    $st .= "<select>";
+	}
+    $st .= "</select>";
 	return $st;
 }
 
