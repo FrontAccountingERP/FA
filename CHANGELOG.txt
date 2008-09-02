@@ -21,10 +21,12 @@ $ -> Affected files
 
 03-Sep-2008 Joe Hunt
 # Bug [0000043] Inventory Adjustment Session doesn't update standard cost
-# Bug [0000044]Standard Cost error on credit note
+# Bug [0000044] Standard Cost error on credit note
 $ /inventory/includes/db/items_adjust_db.inc
   /purchasing/includes/db/grn_db.inc
   /purchasing/includes/invoice_db.inc
+# Bug [0000045] Cannot close fiscal year 
+$ /admin/fiscalyears.php
 
 02-Sep-2008 Joe Hunt
 # Bug when selecting report, List of Journal Entries, by type. Nothing selected.
