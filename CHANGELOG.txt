@@ -19,6 +19,13 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+03-Sep-2008 Joe Hunt
+# Bug [0000043] Inventory Adjustment Session doesn't update standard cost
+# Bug [0000044]Standard Cost error on credit note
+$ /inventory/includes/db/items_adjust_db.inc
+  /purchasing/includes/db/grn_db.inc
+  /purchasing/includes/invoice_db.inc
+
 02-Sep-2008 Joe Hunt
 # Bug when selecting report, List of Journal Entries, by type. Nothing selected.
 $ /reporting/includes/reports_classes.inc

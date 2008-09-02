@@ -74,6 +74,7 @@ function add_stock_adjustment_item($adj_id, $stock_id, $location, $date_, $type,
 
 		add_gl_trans_std_cost(systypes::inventory_adjustment(), $adj_id, $date_, $stock_gl_codes['inventory_account'], 0, 0, $memo_, ($standard_cost * $quantity));
 	}
+	update_average_material_cost(null, $stock_id, $standard_cost, $quantity, $date_);
 }
 
 //-------------------------------------------------------------------------------------------------------------

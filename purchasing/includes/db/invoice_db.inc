@@ -170,6 +170,8 @@ function add_supp_invoice($supp_trans) // do not receive as ref because we chang
     	if (!$supp_trans->is_invoice)
     	{
 			$entered_grn->this_quantity_inv = -$entered_grn->this_quantity_inv;
+			update_average_material_cost($supp_trans->supplier_id, $entered_grn->item_code,
+    			$entered_grn->chg_price, $entered_grn->this_quantity_inv, $date_);
     	}
 
 		$line_taxfree = $entered_grn->taxfree_charge_price($supp_trans->tax_group_id);
@@ -184,7 +186,7 @@ function add_supp_invoice($supp_trans) // do not receive as ref because we chang
 			$entered_grn->this_quantity_inv * $line_taxfree, $supp_trans->supplier_id);
     	// -------------- if price changed since po received. 16 Aug 2008 Joe Hunt
 		$old_price = $old[0];
-    	if ($old_price != $entered_grn->chg_price) // price-change, so update
+    	if ($supp_trans->is_invoice && $old_price != $entered_grn->chg_price) // price-change, so update
     	{
     		$diff = $entered_grn->chg_price - $old_price;
 			$old_date = sql2date($old[1]);

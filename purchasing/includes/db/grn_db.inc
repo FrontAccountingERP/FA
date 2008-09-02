@@ -4,7 +4,10 @@
 
 function update_average_material_cost($supplier, $stock_id, $price, $qty, $date, $adj_only=false)
 {
-	$currency = get_supplier_currency($supplier);
+	if ($supplier != null)
+		$currency = get_supplier_currency($supplier);
+	else
+		$currency = null;
 	if ($currency != null)
 		$price_in_home_currency = to_home_currency($price, $currency, $date);
 	else
