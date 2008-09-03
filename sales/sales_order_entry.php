@@ -255,7 +255,10 @@ if (isset($_POST['ProcessOrder']) && can_process()) {
 	$so_type = $_SESSION['Items']->so_type;
 
 	$_SESSION['Items']->write(1);
-
+	if (count($messages)) { // abort on failure or error messages are lost
+		$Ajax->activate('_page_body');
+		display_footer_exit();
+	}
 	$trans_no = key($_SESSION['Items']->trans_no);
 	$trans_type = $_SESSION['Items']->trans_type;
 
