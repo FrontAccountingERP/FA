@@ -15,9 +15,9 @@
 		// Fatal errors are not send to error_handler, 
 		// so we must check the output
 	  if ($text && preg_match('/\bFatal error(<.*?>)?:(.*)/i', $text, $m)) {
-       	$Ajax->aCommands = array();  // Don't update page on errors
-		
-		$messages[] = array(E_ERROR, $m[0], null, null);
+       	$Ajax->aCommands = array();  // Don't update page via ajax on errors
+		$text = preg_replace('/\bFatal error(<.*?>)?:(.*)/i','', $text);
+		$messages[] = array(E_ERROR, $m[2], null, null);
 	  }
 	  $Ajax->run();
   	  return  in_ajax() ? fmt_errors() : ($before_box.fmt_errors().$text);
