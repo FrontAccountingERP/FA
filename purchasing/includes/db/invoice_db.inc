@@ -170,47 +170,48 @@ function add_supp_invoice($supp_trans) // do not receive as ref because we chang
     	if (!$supp_trans->is_invoice)
     	{
 			$entered_grn->this_quantity_inv = -$entered_grn->this_quantity_inv;
-			update_average_material_cost($supp_trans->supplier_id, $entered_grn->item_code,
-    			$entered_grn->chg_price, $entered_grn->this_quantity_inv, $date_);
+			set_grn_item_credited($entered_grn, $supp_trans->supplier_id, $invoice_id, $date_);
     	}
 
 		$line_taxfree = $entered_grn->taxfree_charge_price($supp_trans->tax_group_id);
 		$line_tax = $entered_grn->full_charge_price($supp_trans->tax_group_id) - $line_taxfree;
-
-    	$old = update_supp_received_items_for_invoice($entered_grn->id, $entered_grn->po_detail_item,
-    		$entered_grn->this_quantity_inv, $entered_grn->chg_price);
 		$stock_gl_code = get_stock_gl_code($entered_grn->item_code);
 
 		add_gl_trans_supplier($trans_type, $invoice_id, $date_, $stock_gl_code["inventory_account"],
 			$stock_gl_code['dimension_id'], $stock_gl_code['dimension2_id'],
 			$entered_grn->this_quantity_inv * $line_taxfree, $supp_trans->supplier_id);
     	// -------------- if price changed since po received. 16 Aug 2008 Joe Hunt
-		$old_price = $old[0];
-    	if ($supp_trans->is_invoice && $old_price != $entered_grn->chg_price) // price-change, so update
+    	if($supp_trans->is_invoice)
     	{
-    		$diff = $entered_grn->chg_price - $old_price;
-			$old_date = sql2date($old[1]);
-			// only update the diff (last parameter, adj_only is set to true).
-    		$mat_cost = update_average_material_cost($supp_trans->supplier_id, $entered_grn->item_code,
-    			$diff, $entered_grn->this_quantity_inv, $old_date, true);
-    		// function just above this
-    		$deliveries = get_deliveries_between($entered_grn->item_code, $old_date, $date_);
-			if ($deliveries[0] != 0) // have deliveries been done during the period?
-    		{
+    		$old = update_supp_received_items_for_invoice($entered_grn->id, $entered_grn->po_detail_item,
+    			$entered_grn->this_quantity_inv, $entered_grn->chg_price);
+			$old_price = $old[0];
+			if ($old_price != $entered_grn->chg_price) // price-change, so update
+			{
+				$diff = $entered_grn->chg_price - $old_price;
+				$old_date = sql2date($old[1]);
+				// only update the diff (last parameter, adj_only is set to true).
+				$mat_cost = update_average_material_cost($supp_trans->supplier_id, $entered_grn->item_code,
+					$diff, $entered_grn->this_quantity_inv, $old_date, true);
+				// function just above this
+				$deliveries = get_deliveries_between($entered_grn->item_code, $old_date, $date_);
+				if ($deliveries[0] != 0) // have deliveries been done during the period?
+				{
 
-    			$amt = ($mat_cost - $deliveries[1]) * $deliveries[0]; // $amt in home currency
+					$amt = ($mat_cost - $deliveries[1]) * $deliveries[0]; // $amt in home currency
 
-				add_gl_trans($trans_type, $invoice_id, $date_,	$stock_gl_code["cogs_account"],
-					$stock_gl_code['dimension_id'], $stock_gl_code['dimension2_id'], _("Cost diff."),
-		    		$amt, null, null, null,
-		    		"The general ledger transaction could not be added for the price variance of the inventory item");
-				add_gl_trans($trans_type, $invoice_id, $date_,	$stock_gl_code["inventory_account"],
-					0, 0, _("Cost diff."), -$amt, null, null, null,
-		    		"The general ledger transaction could not be added for the price variance of the inventory item");
-				update_stock_move_pid(13, $entered_grn->item_code, $old_date, $date_, 0, $mat_cost);
-    		}
-			update_stock_move_pid(25, $entered_grn->item_code, $old_date, $old_date, $supp_trans->supplier_id, $mat_cost);
-    	}
+					add_gl_trans($trans_type, $invoice_id, $date_,	$stock_gl_code["cogs_account"],
+						$stock_gl_code['dimension_id'], $stock_gl_code['dimension2_id'], _("Cost diff."),
+						$amt, null, null, null,
+						"The general ledger transaction could not be added for the price variance of the inventory item");
+					add_gl_trans($trans_type, $invoice_id, $date_,	$stock_gl_code["inventory_account"],
+						0, 0, _("Cost diff."), -$amt, null, null, null,
+						"The general ledger transaction could not be added for the price variance of the inventory item");
+					update_stock_move_pid(13, $entered_grn->item_code, $old_date, $date_, 0, $mat_cost);
+				}
+				update_stock_move_pid(25, $entered_grn->item_code, $old_date, $old_date, $supp_trans->supplier_id, $mat_cost);
+			}
+		}
     	// ----------------------------------------------------------------------
 
 		add_supp_invoice_item($trans_type, $invoice_id, $entered_grn->item_code,

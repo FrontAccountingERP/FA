@@ -19,7 +19,7 @@ if ($use_date_picker)
 page(_("Inventory Item Movement"), false, false, "", $js);
 //------------------------------------------------------------------------------------------------
 
-if(get_post('ShowMoves')) 
+if(get_post('ShowMoves'))
 {
 	$Ajax->activate('doc_tbl');
 }
@@ -134,7 +134,7 @@ while ($myrow = db_fetch($result))
 			$person = $cust_row['name'] . " (" . $cust_row['br_name'] . ")";
 
 	}
-	elseif ($myrow["type"] == 25)
+	elseif ($myrow["type"] == 25 || $myrow['type'] == 21)
 	{
 		// get the supplier name
 		$sql = "SELECT supp_name FROM ".TB_PREF."suppliers WHERE supplier_id = '" . $myrow["person_id"] . "'";

@@ -20,6 +20,12 @@ Legend:
 $ -> Affected files
 
 03-Sep-2008 Joe Hunt
+# Bug [0000044] Standard Cost error on credit note. Reopened. Stock Movement forgot the credit note.
+$ /inventory/inquiry/stock_movements.php
+  /purchasing/includes/db/grn_db.inc
+  /purchasing/includes/invoice_db.inc
+
+03-Sep-2008 Joe Hunt
 # Bug [0000043] Inventory Adjustment Session doesn't update standard cost
 # Bug [0000044] Standard Cost error on credit note
 $ /inventory/includes/db/items_adjust_db.inc
