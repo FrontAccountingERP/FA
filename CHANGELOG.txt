@@ -19,6 +19,13 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+03-Sep-2008 Janusz Dobrowolski
+# Fixed fatal error handling in php5
+$ /includes/errors.inc
+  /includes/session.inc
+# Fixed display of errors while saving sales documents
+$ /sales/sales_order_entry.php
+
 03-Sep-2008 Joe Hunt
 # Bug [0000044] Standard Cost error on credit note. Reopened. Stock Movement forgot the credit note.
 $ /inventory/inquiry/stock_movements.php
