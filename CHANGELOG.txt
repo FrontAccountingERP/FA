@@ -19,6 +19,17 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+04-Sep-2008 Joe Hunt
+# Bug [0000047] Not possible to view delivery sequence
+$ /purchasing/supplier_credit_grns.php
+  /purchasing/supplier_invoice_grns.php
+  /purchasing/includes/db/grn_db.inc
+  /purchasing/includes/ui/invoice_ui.inc
+  /purchasing/view/view_po.php
+  /purchasing/view/view_supp_credit.php
+# Bug [0000048] Crediting invoice and choosing gl account for items to be written off doesn't work  
+$ /sales/includes/db/sales_credit_db.inc  
+
 03-Sep-2008 Janusz Dobrowolski
 # Fixed fatal error handling in php5
 $ /includes/errors.inc

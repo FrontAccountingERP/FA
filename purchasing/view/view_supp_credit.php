@@ -6,14 +6,17 @@ $path_to_root="../..";
 include_once($path_to_root . "/purchasing/includes/purchasing_db.inc");
 include_once($path_to_root . "/includes/session.inc");
 
-page(_("View Supplier Credit Note"), true);
-
 include_once($path_to_root . "/purchasing/includes/purchasing_ui.inc");
+
+$js = "";
+if ($use_popup_windows)
+	$js .= get_js_open_window(900, 500);
+page(_("View Supplier Credit Note"), true, false, "", $js);
 
 if (isset($_GET["trans_no"]))
 {
 	$trans_no = $_GET["trans_no"];
-} 
+}
 elseif (isset($_POST["trans_no"]))
 {
 	$trans_no = $_POST["trans_no"];
@@ -58,7 +61,7 @@ end_table(1);
 
 $voided = is_voided_display(21, $trans_no, _("This credit note has been voided."));
 
-if (!$voided) 
+if (!$voided)
 {
 	$tax_total = 0; // ??????
 	display_allocations_from(payment_person_types::supplier(), $supp_trans->supplier_id, 21, $trans_no, -($supp_trans->ov_amount + $tax_total));

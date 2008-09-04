@@ -297,7 +297,7 @@ function display_grn_items(&$supp_trans, $mode=0)
 
   div_start('grn_items');
 	echo "<table width=100% $table_style>";
-	$th = array(_("Delivery Sequence #"), _("Item"), _("Description"),
+	$th = array(_("Delivery"), _("Item"), _("Description"),
 		_("Quantity"), _("Price"), _("Line Value"));
 
 	table_header($th);
@@ -312,7 +312,8 @@ function display_grn_items(&$supp_trans, $mode=0)
 
     		alt_table_row_color($k);
 
-    		label_cell(get_trans_view_str(25,$entered_grn->id));
+			$grn_batch = get_grn_batch_from_item($entered_grn->id);
+    		label_cell(get_trans_view_str(25,$grn_batch));
 			label_cell($entered_grn->item_code);
 			label_cell($entered_grn->item_description);
 			qty_cell(abs($entered_grn->this_quantity_inv), false, get_qty_dec($entered_grn->item_code));

@@ -17,7 +17,7 @@ function write_credit_note($credit_note, $write_off_acc)
 		$trans_no = key($trans_no);
 	}
 
-	$credit_type = $write_off_acc == 0 ? 'Return' : 'Writeoff';
+	$credit_type = $write_off_acc == 0 ? 'Return' : 'WriteOff';
 
 	begin_transaction();
 
@@ -205,11 +205,12 @@ function add_gl_trans_credit_costs($order, $order_line, $credit_no, $date_,
 	$dim2 = ($customer['dimension2_id'] != 0 ? $customer["dimension2_id"] : $stock_gl_codes["dimension2_id"]);
 
 	/* insert gl_trans to credit stock and debit cost of sales at standard cost*/
-	if ($order_line->standard_cost != 0) {
+	$standard_cost = get_standard_cost($order_line->stock_id);
+	if ($standard_cost != 0) {
 		/*first the cost of sales entry*/
 
 		add_gl_trans_std_cost(11, $credit_no, $date_, $stock_gl_codes["cogs_account"],
-			$dim, $dim2, "", -($order_line->standard_cost * $order_line->qty_dispatched),
+			$dim, $dim2, "", -($standard_cost * $order_line->qty_dispatched),
 			payment_person_types::customer(), $order->customer_id,
 			"The cost of sales GL posting could not be inserted");
 
@@ -222,7 +223,7 @@ function add_gl_trans_credit_costs($order, $order_line, $credit_no, $date_,
 		}
 
 		add_gl_trans_std_cost(11, $credit_no, $date_, $stock_entry_account, 0, 0,
-			"", ($order_line->standard_cost * $order_line->qty_dispatched),
+			"", ($standard_cost * $order_line->qty_dispatched),
 			payment_person_types::customer(), $order->customer_id,
 			"The stock side (or write off) of the cost of sales GL posting could not be inserted");
 
