@@ -20,6 +20,10 @@ Legend:
 $ -> Affected files
 
 04-Sep-2008 Joe Hunt
+# Bug [0000052] Inventory Valuation Report
+$ /reporting/rep301.php
+
+04-Sep-2008 Joe Hunt
 # Bug [0000047] Not possible to view delivery sequence
 $ /purchasing/supplier_credit_grns.php
   /purchasing/supplier_invoice_grns.php
