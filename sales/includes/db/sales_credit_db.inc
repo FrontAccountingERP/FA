@@ -6,7 +6,7 @@
 //
 function write_credit_note($credit_note, $write_off_acc)
 {
-	$credit_invoice = count($credit_note->src_docs) ? key($credit_note->src_docs) : 0;
+	$credit_invoice = count($credit_note->src_docs) ? reset($credit_note->src_docs) : 0;
 
 
 	$credit_date = $credit_note->document_date;
