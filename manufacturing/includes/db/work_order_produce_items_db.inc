@@ -38,7 +38,7 @@ function work_order_produce($woid, $ref, $quantity, $date_, $memo_, $close_wo)
 
 	// -------------------------------------------------------------------------
 
-	work_order_quick_costs($woid, $details["stock_id"], $quantity, $date_, 0);
+	work_order_quick_costs($woid, $details["stock_id"], $quantity, $date_, 0, true);
 
 	// -------------------------------------------------------------------------
 	if ($memo_)

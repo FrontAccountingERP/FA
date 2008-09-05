@@ -19,7 +19,15 @@ Legend:
 ! -> Note
 $ -> Affected files
 
-04-Swp-2008 Joe Hunt
+05-Sep-2008 Joe Hunt
+# Bug [0000053] Missing GL postings on item issue on Work Order
+$ /manufacturing/includes/db/work_order_quick_db.inc
+  /manufacturing/includes/db/work_order_issues_db.inc
+  /manufacturing/includes/db/work_order_produce_items_db.inc
+! Bad layout in aging on report Statements
+$ /reporting/rep108.php
+
+04-Sep-2008 Joe Hunt
 # Bug [0000050] Invoice no. on all sales reports
 $ /reporting/includes/doctext.inc
   /reporting/includes/doctext2.inc

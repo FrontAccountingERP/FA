@@ -71,7 +71,7 @@ function add_work_order_quick($wo_ref, $loc_code, $units_reqd, $stock_id, $type,
 
 //--------------------------------------------------------------------------------------
 
-function work_order_quick_costs($woid, $stock_id, $units_reqd, $date_, $additional_costs)
+function work_order_quick_costs($woid, $stock_id, $units_reqd, $date_, $additional_costs, $advanced=false)
 {
 	$result = get_bom($stock_id);
 
@@ -84,10 +84,30 @@ function work_order_quick_costs($woid, $stock_id, $units_reqd, $date_, $addition
 
 		$bom_cost = $bom_item["standard_cost"] * $bom_item["quantity"] * $units_reqd;
 
+		if ($advanced)
+		{
+			// insert a -ve stock move for each item
+			add_stock_move(systypes::work_order(), $bom_item["component"], $woid,
+				$bom_item["loc_code"], $date_, "", -$bom_item["quantity"] * $units_reqd, 0);
+		}
 		add_gl_trans_std_cost(systypes::work_order(), $woid, $date_, $bom_accounts["inventory_account"], 0, 0,
 			null, -$bom_cost);
 
 		$total_cost += $bom_cost;
+	}
+	if ($advanced)
+	{
+		// also take the additional issues
+		$res = get_additional_issues($woid);
+		while ($item = db_fetch($res))
+		{
+			$standard_cost = get_standard_cost($item['stock_id']);
+			$issue_cost = $standard_cost * $item['qty_issued'];
+			$issue = get_stock_gl_code($item['stock_id']);
+			add_gl_trans_std_cost(systypes::work_order(), $woid, $date_, $issue["inventory_account"], 0, 0,
+				null, -$issue_cost);
+			$total_cost += $issue_cost;
+		}
 	}
 	// credit additional costs
 	$item_accounts = get_stock_gl_code($stock_id);
