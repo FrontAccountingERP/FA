@@ -19,6 +19,11 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+------------------------------- Release 2.0.1 --------------------------------------------
+07-Sep-2008 Joe Hunt
+! Release 2.0.1
+$ config.php
+
 05-Sep-2008 Janusz Dobrowolski
 # Bug [0000046] Sales invoice not working on some php versions (php bug #40509)
 $ /sales/includes/sales_db.inc
