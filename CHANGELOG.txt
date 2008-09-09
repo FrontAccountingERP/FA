@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+09-Sep-2008 Joe Hunt
+# Bug [0000055] Rasmus detected a cost diff. bug and changed some code for us. Very appreciated.
+$ /purchasing/includes/db/invoice_db.inc
+
 ------------------------------- Release 2.0.1 --------------------------------------------
 07-Sep-2008 Joe Hunt
 ! Release 2.0.1

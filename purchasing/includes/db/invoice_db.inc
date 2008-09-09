@@ -51,11 +51,14 @@ function update_supp_received_items_for_invoice($id, $po_detail_item, $qty_invoi
 {
 	if ($chg_price != null)
 	{
-		$sql = "SELECT act_price FROM ".TB_PREF."purch_order_details WHERE
+		$sql = "SELECT act_price, unit_price FROM ".TB_PREF."purch_order_details WHERE
 			po_detail_item = $po_detail_item";
 		$result = db_query($sql, "The old actual price of the purchase order line could not be retrieved");
 		$row = db_fetch_row($result);
 		$ret = $row[0];
+
+		$unit_price = $row[1]; //Added by Rasmus
+
 		$sql = "SELECT delivery_date FROM ".TB_PREF."grn_batch,".TB_PREF."grn_items WHERE
 			".TB_PREF."grn_batch.id = ".TB_PREF."grn_items.grn_batch_id AND ".TB_PREF."grn_items.id=$id";
 		$result = db_query($sql, "The old delivery date from the received record cout not be retrieved");
@@ -66,6 +69,7 @@ function update_supp_received_items_for_invoice($id, $po_detail_item, $qty_invoi
 	{
 		$ret = 0;
 		$date = "";
+		$unit_price = 0; // Added by Rasmus
 	}
     $sql = "UPDATE ".TB_PREF."purch_order_details
 		SET qty_invoiced = qty_invoiced + $qty_invoiced ";
@@ -80,7 +84,7 @@ function update_supp_received_items_for_invoice($id, $po_detail_item, $qty_invoi
         SET quantity_inv = quantity_inv + $qty_invoiced
         WHERE id = $id";
 	db_query($sql, "The quantity invoiced off the items received record could not be updated");
-	return array($ret, $date);
+	return array($ret, $date, $unit_price);
 }
 
 function get_deliveries_between($stock_id, $from, $to)
@@ -185,9 +189,21 @@ function add_supp_invoice($supp_trans) // do not receive as ref because we chang
     	{
     		$old = update_supp_received_items_for_invoice($entered_grn->id, $entered_grn->po_detail_item,
     			$entered_grn->this_quantity_inv, $entered_grn->chg_price);
-			$old_price = $old[0];
-			if ($old_price != $entered_grn->chg_price) // price-change, so update
-			{
+			// Since the standard cost is always calculated on basis of the po unit_price,
+			// this is also the price that should be the base of calculating the price diff.
+			// In cases where there is two different po invoices on the same delivery with different unit prices this will not work either
+
+			//$old_price = $old[0];
+			 
+			$old_price = $old[2];
+
+		
+
+			/*
+ 			If statement is removed. Should always check for deliveries nomatter if there has been a price change. 
+			*/
+			//if ($old_price != $entered_grn->chg_price) // price-change, so update
+			//{
 				$diff = $entered_grn->chg_price - $old_price;
 				$old_date = sql2date($old[1]);
 				// only update the diff (last parameter, adj_only is set to true).
@@ -210,7 +226,7 @@ function add_supp_invoice($supp_trans) // do not receive as ref because we chang
 					update_stock_move_pid(13, $entered_grn->item_code, $old_date, $date_, 0, $mat_cost);
 				}
 				update_stock_move_pid(25, $entered_grn->item_code, $old_date, $old_date, $supp_trans->supplier_id, $mat_cost);
-			}
+			//}
 		}
     	// ----------------------------------------------------------------------
 
