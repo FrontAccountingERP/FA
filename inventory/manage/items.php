@@ -29,7 +29,6 @@ if (list_updated('stock_id')) {
 	$_POST['NewStockID'] = get_post('stock_id');
 	$Ajax->activate('details');
 	$Ajax->activate('controls');
-//	unset($_POST['New']);
 }
 $upload_file = "";
 if (isset($_FILES['pic']) && $_FILES['pic']['name'] != '') 
@@ -83,8 +82,6 @@ check_db_has_item_tax_types(_("There are no item tax types defined in the system
 
 function clear_data()
 {
-//	global $new_item;
-	
 	unset($_POST['long_description']);
 	unset($_POST['description']);
 	unset($_POST['category_id']);
@@ -94,7 +91,6 @@ function clear_data()
 	unset($_POST['NewStockID']);
 	unset($_POST['dimension_id']);
 	unset($_POST['dimension2_id']);
-//	$new_item = true;
 }
 
 //------------------------------------------------------------------------------------
@@ -153,7 +149,6 @@ if (isset($_POST['addupdate']))
 
 		display_notification(_("A new item has been added."));
 		$_POST['stock_id'] = $_POST['NewStockID'];
-//		$new_item = false;
 		}
 		set_focus('stock_id');
 		$Ajax->activate('_page_body');
@@ -216,12 +211,10 @@ if (isset($_POST['delete']) && strlen($_POST['delete']) > 1)
 		if (file_exists($filename))
 			unlink($filename);
 		display_notification(_("Selected item has been deleted."));
-//		$new_item = true;
 		$_POST['stock_id'] = '';
 		clear_data();
 		set_focus('stock_id');
 		$Ajax->activate('_page_body');
-//		meta_forward($_SERVER['PHP_SELF']);
 	}
 }
 
@@ -239,9 +232,6 @@ if (db_has_stock_items())
 	end_row();
 	end_table();
 }
-
-//hyperlink_params($_SERVER['PHP_SELF'], _("Enter a new item"), "New=1");
-//echo "<br>";
 
 div_start('details');
 start_table("$table_style2 width=40%");
