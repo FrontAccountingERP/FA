@@ -58,7 +58,6 @@ function check_data()
 function remove_connection($id) {
 	global $db_connections;
 
-	$dbase = $db_connections[$id]['dbname'];
 	$err = db_drop_db($db_connections[$id]);
 
 	unset($db_connections[$id]);
@@ -163,9 +162,22 @@ function handle_delete()
 
 	$id = $_GET['id'];
 
+	$cdir = $comp_path.'/'.$id;
+	@flush_dir($cdir);
+	if (!rmdir($cdir))
+	{
+		display_error(_("Cannot remove company data directory ") . $cdir);
+		return;
+	}
+	for($i = $id+1; $i < count($db_connections); $i++) {
+		if (!rename($comp_path.'/'.$i, $comp_path.'/'.($i-1))) {
+			display_error(_("Cannot rename company subdirectory"));
+			return;
+		}	
+	}
 	$err = remove_connection($id);
 	if ($err == 0)
-		display_error(_("Error removing Database: ") . $dbase . _(", please remove it manuallly"));
+		display_error(_("Error removing Database: ") . $dbase . _(", please remove it manually"));
 
 	if ($def_coy == $id)
 		$def_coy = 0;
@@ -178,14 +190,6 @@ function handle_delete()
 		display_error(_("The configuration file ") . $path_to_root . "/config_db.php" . _(" is not writable. Change its permissions so it is, then re-run the operation."));
 	if ($error != 0)
 		return;
-
-	$cdir = $comp_path.'/'.$id;
-	flush_dir($cdir);
-	if (!rmdir($cdir))
-	{
-		display_error(_("Cannot remove company data directory ") . $cdir);
-		return;
-	}
 
 	meta_forward($_SERVER['PHP_SELF']);
 }
