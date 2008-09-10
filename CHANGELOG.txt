@@ -19,6 +19,26 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+10-Sep-2008 Janusz Dobrowolski
+# Fixed company folders renaming after company remove.
+$ /admin/create_coy.php
+# Fixed list selectors' behaviour during search.
+$ /includes/ui/ui_lists.inc
+# Fixed page update after item search. Closes bugs [0000051],[0000054].
+$ /inventory/cost_update.php
+  /inventory/prices.php
+  /inventory/purchasing_data.php
+  /inventory/reorder_level.php
+  /inventory/includes/item_adjustments_ui.inc
+  /inventory/includes/stock_transfers_ui.inc
+  /inventory/inquiry/stock_status.php
+  /inventory/manage/items.php
+  /manufacturing/includes/work_order_issue_ui.inc
+  /manufacturing/inquiry/where_used_inquiry.php
+  /purchasing/includes/ui/po_ui.inc
+  /sales/includes/ui/sales_credit_ui.inc
+  /sales/includes/ui/sales_order_ui.inc
+
 09-Sep-2008 Joe Hunt
 # Bug [0000055] Rasmus detected a cost diff. bug and changed some code for us. Very appreciated.
 $ /purchasing/includes/db/invoice_db.inc
