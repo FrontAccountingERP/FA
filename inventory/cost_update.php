@@ -64,7 +64,7 @@ if (isset($_POST['UpdateData']))
    	}
 }
 
-if (isset($_POST['_stock_id_update']))
+if (list_updated('stock_id')) 
 	$Ajax->activate('cost_table');
 //-----------------------------------------------------------------------------------------
 

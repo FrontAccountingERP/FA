@@ -297,7 +297,7 @@ function po_item_controls(&$order, $stock_id=null)
 		hidden('line_no', ($_SESSION['PO']->lines_on_order + 1));
 
 		stock_purchasable_items_list_cells(null, 'stock_id', null, false, true);
-		if(isset($_POST['_stock_id_update'])) {
+		if (list_updated('stock_id')) {
 			    $Ajax->activate('price');
 			    $Ajax->activate('units');
 			    $Ajax->activate('qty');

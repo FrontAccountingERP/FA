@@ -241,7 +241,7 @@ function credit_edit_item_controls(&$order, $rowcounter, $line_no=-1)
 	else
 	{
 		stock_items_list_cells(null,'stock_id', null, false, true);
-		if(isset($_POST['_stock_id_update'])) {
+		if (list_updated('stock_id')) {
 			    $Ajax->activate('price');
 			    $Ajax->activate('qty');
 			    $Ajax->activate('units');

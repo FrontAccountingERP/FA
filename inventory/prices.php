@@ -102,12 +102,11 @@ if ($Mode == 'RESET')
 	$selected_id = -1;
 }
 
-if (isset($_POST['_stock_id_update'])) {
+if (list_updated('stock_id')) {
 	$Ajax->activate('price_table');
 	$Ajax->activate('price_details');
 }
-if (isset($_POST['_stock_id_update']) || isset($_POST['_sales_type_id_update'])
-	 || isset($_POST['_curr_abrev_update']) ) {
+if (list_updated('stock_id')) || isset($_POST['_curr_abrev_update']) ) {
 	// after change of stock, currency or salestype selector
 	// display default calculated price for new settings. 
 	// If we have this price already in db it is overwritten later.

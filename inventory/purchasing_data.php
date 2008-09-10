@@ -92,7 +92,7 @@ if (isset($_POST['_selected_id_update']) )
 	$Ajax->activate('_page_body');
 }
 
-if (isset($_POST['_stock_id_update']))
+if (list_updated('stock_id')) 
 	$Ajax->activate('price_table');
 //--------------------------------------------------------------------------------------------------
 
