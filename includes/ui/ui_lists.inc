@@ -84,7 +84,6 @@ $opts = array(		// default options
 	$limit = '';
 
 	if (isset($_POST[$select_submit])) {
-
 		if ($by_id) $txt = $_POST[$name];
 
 		if (!$opts['async'])
@@ -98,6 +97,7 @@ $opts = array(		// default options
 	$rel = "rel='$search_box'"; // set relation to list
    if ($opts['search_submit']) {
 	if (isset($_POST[$search_submit])) {
+		$selected_id = ''; // ignore selected_id while search
 		if (!$opts['async'])
 			$Ajax->activate('_page_body');
 		else
@@ -139,10 +139,13 @@ $opts = array(		// default options
 			$descr = $opts['format']==null ?  $contact_row[1] :
 			call_user_func($opts['format'], $contact_row);
 			$sel = '';
-			if ((string)($selected_id) === $value) {
+			if (get_post($search_submit) && ($txt === $value)) {
+					$selected_id = $value; 
+			} 
+			 if ((string)($selected_id) === $value) {
 				$sel = 'selected';
 				$found = $value;
-			}
+			 }
 			if ($first_id === false) {
 				$first_id = $value;
 				$first_opt = $descr;
@@ -167,8 +170,8 @@ $opts = array(		// default options
 	$_POST[$name] = $selected_id;
 
 	if ($by_id && $search_box != false) {
-		$txt = $_POST[$name];
-		$Ajax->addUpdate($name, $search_box, $txt);
+ 		$txt = $found;
+		$Ajax->addUpdate($name, $search_box, $txt ? $txt : '');
 	}
 	$selector = "<select $disabled name='$name' class='$class' title='"
 		. $opts['sel_hint']."' $rel>".$selector."</select>\n";
@@ -211,6 +214,15 @@ $opts = array(		// default options
 		echo $edit_entry.$selector;
 
 	return $str;
+}
+
+/*
+	Helper function.
+	Returns true if selector $name is subject to update.
+*/
+function list_updated($name)
+{
+	return isset($_POST['_'.$name.'_update']) || isset($_POST['_'.$name.'_button']);
 }
 //----------------------------------------------------------------------------------------------
 //	Universal array combo generator
