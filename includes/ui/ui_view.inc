@@ -286,10 +286,17 @@ function exchange_rate_display($from_currency, $to_currency, $date_, $buttons=tr
 			else
 				$currency = $from_currency;
 			$rate = get_ecb_rate($currency);
-			if (get_date_exchange_rate($currency, $date_))
-				update_exchange_rate($currency, $date_, $rate, $rate);
-			else
-				add_exchange_rate($currency, $date_, $rate, $rate);
+			if ($rate==0) 
+			{
+				display_error(_("Cannot get exchange rate for this currency. Please add exchange rate manually on Exchange Rates page.") );
+				$rate = get_exchange_rate_from_to($to_currency, $from_currency, $date_);
+			} else 
+			{
+				if (get_date_exchange_rate($currency, $date_))
+					update_exchange_rate($currency, $date_, $rate, $rate);
+				else
+					add_exchange_rate($currency, $date_, $rate, $rate);
+			}
 			if ($from_currency == $comp_currency)
 				$rate = 1 / $rate;
 			$Ajax->activate('get_rate');

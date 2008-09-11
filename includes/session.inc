@@ -108,6 +108,23 @@
 		}
 	}
 
+	//-----------------------------------------------------------------------------
+	//	Removing magic quotes from nested arrays/variables
+	//
+	function strip_quotes($data)
+	{
+		if(get_magic_quotes_gpc()) {
+			if(is_array($data)) {
+				foreach($data as $k => $v) {
+					$data[$k] = strip_quotes($data[$k]);
+				}
+			} else
+				return stripslashes($data);
+		}
+		return $data;
+	}
+
+
 	//----------------------------------------------------------------------------------------
 	if (!isset($_SESSION["wa_current_user"]) ||
 		(isset($_SESSION["wa_current_user"]) && !$_SESSION["wa_current_user"]->logged_in()))
@@ -154,6 +171,8 @@
 
    	check_page_security($page_security);
 
-
+// POST vars cleanup needed for direct reuse.
+// We quote all values later with db_escape() before db update.
+	$_POST = strip_quotes($_POST);
 
 ?>
