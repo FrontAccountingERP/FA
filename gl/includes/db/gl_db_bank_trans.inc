@@ -29,7 +29,7 @@ function add_bank_trans($type, $trans_no, $bank_act, $ref, $date_, $bank_trans_t
 		trans_date, bank_trans_type_id, amount, person_type_id, person_id) ";
 
 	$sql .= "VALUES ($type, $trans_no, '$bank_act', ".db_escape($ref).", '$sqlDate', '$bank_trans_type_id',
-		$amount_bank, $person_type_id, '$person_id')";
+		$amount_bank, $person_type_id, ". db_escape($person_id).")";
 
 	if ($err_msg == "")
 		$err_msg = "The bank transaction could not be inserted";

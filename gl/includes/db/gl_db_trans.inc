@@ -40,7 +40,7 @@ function add_gl_trans($type, $trans_id, $date_, $account, $dimension, $dimension
 		'$account', $dimension, $dimension2, ".db_escape($memo_).", $amount_in_home_currency";
 
 	if ($person_type_id != null)
-		$sql .= ", $person_type_id, '$person_id'";
+		$sql .= ", $person_type_id, ". db_escape($person_id);
 
 	$sql .= ") ";
 
