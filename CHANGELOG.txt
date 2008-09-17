@@ -19,6 +19,14 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+17-Sep-2008 Joe Hunt
+! New PDF tcpdf.php file. Support for cid-0 fonts (Chinese, Japanese, Korean, CJK, Asian fonts) without embedding.
+  New cid-0 fonts will be available for download when release 2.0.2 is shipping. Reduces file size enormouusly
+$ /reporting/includes/tcpdf.php
+! Inventory column option in Report Stock Sheet Check.
+$ /reporting/reports_main.php
+  /reporting/rep303.php
+  
 11-Sep-2008 Janusz Dobrowolski
 # Fixed slash quotation problems on direct POST values display.
 $ /includes/session.inc
