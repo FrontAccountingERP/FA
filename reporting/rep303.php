@@ -101,7 +101,8 @@ function print_stock_check()
     $category = $_POST['PARAM_0'];
     $location = $_POST['PARAM_1'];
     $pictures = $_POST['PARAM_2'];
-    $comments = $_POST['PARAM_3'];
+    $check    = $_POST['PARAM_3'];
+    $comments = $_POST['PARAM_4'];
 
 	if ($category == reserved_words::get_all_numeric())
 		$category = 0;
@@ -117,11 +118,19 @@ function print_stock_check()
 	else
 		$loc = $location;
 
-	$cols = array(0, 100, 305, 375, 445,	515);
+	if ($check)
+	{
+		$cols = array(0, 100, 250, 305, 375, 445,	515);
+		$headers = array(_('Category'), _('Description'), _('Quantity'), _('Check'), _('Demand'), _('Difference'));
+		$aligns = array('left',	'left',	'right', 'right', 'right', 'right');
+	}
+	else
+	{
+		$cols = array(0, 100, 305, 375, 445,	515);
+		$headers = array(_('Category'), _('Description'), _('Quantity'), _('Demand'), _('Difference'));
+		$aligns = array('left',	'left',	'right', 'right', 'right');
+	}
 
-	$headers = array(_('Category'), _('Description'), _('Quantity'), _('Demand'), _('Difference'));
-
-	$aligns = array('left',	'left',	'right', 'right', 'right');
 
     $params =   array( 	0 => $comments,
     				    1 => array('text' => _('Category'), 'from' => $cat, 'to' => ''),
@@ -161,15 +170,24 @@ function print_stock_check()
 		$rep->TextCol(0, 1, $trans['stock_id']);
 		$rep->TextCol(1, 2, $trans['description']);
 		$rep->TextCol(2, 3, number_format2($trans['QtyOnHand'], $dec));
-		$rep->TextCol(3, 4, number_format2($demandqty, $dec));
-		$rep->TextCol(4, 5, number_format2($trans['QtyOnHand'] - $demandqty, $dec));
+		if ($check)
+		{
+			$rep->TextCol(3, 4, "_________");
+			$rep->TextCol(4, 5, number_format2($demandqty, $dec));
+			$rep->TextCol(5, 6, number_format2($trans['QtyOnHand'] - $demandqty, $dec));
+		}
+		else
+		{
+			$rep->TextCol(3, 4, number_format2($demandqty, $dec));
+			$rep->TextCol(4, 5, number_format2($trans['QtyOnHand'] - $demandqty, $dec));
+		}
 		if ($pictures)
 		{
 			$image = $comp_path .'/'. $user_comp . '/images/' . $trans['stock_id'] . '.jpg';
 			if (file_exists($image))
 			{
 				$rep->NewLine();
-				if ($rep->row - $height < $rep->bottomMargin)
+				if ($rep->row - $pic_height < $rep->bottomMargin)
 					$rep->Header();
 				$rep->AddImage($image, $rep->cols[1], $rep->row - $pic_height, $pic_width, $pic_height);
 				$rep->row -= $pic_height;

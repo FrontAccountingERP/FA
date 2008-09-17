@@ -124,6 +124,7 @@ $reports->addReport(_('Inventory'),303,_('Stock Check Sheets'),
 	array(	new ReportParam(_('Inventory Category'),'CATEGORIES'),
 			new ReportParam(_('Location'),'LOCATIONS'),
 			new ReportParam(_('Show Pictures'),'YES_NO'),
+			new ReportParam(_('Inventory Column'),'YES_NO'),
 			new ReportParam(_('Comments'),'TEXTBOX')));
 $reports->addReport(_('Inventory'),304,_('Inventory Sales Report'),
 	array(	new ReportParam(_('Start Date'),'DATEBEGINM'),
