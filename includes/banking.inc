@@ -85,6 +85,7 @@ function get_exchange_rate_from_home_currency($currency_code, $date_)
 	if (db_num_rows($result) == 0) 
 	{
 		// no stored exchange rate, just return 1
+		display_error(_("Cannot get exchange rate for this currency. Please add exchange rate manually on Exchange Rates page.") );
 		return 1.000;
 	}
 	

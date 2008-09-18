@@ -19,6 +19,7 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+18-Sep-2008 Janusz Dobrowolski
 + Support for calling external pages during document entry (e.g. for adding customer/supplier/items).
 $ /index.php
   /includes/ui/ui_controls.inc
@@ -48,6 +49,10 @@ $ /purchasing/supplier_credit.php
   /sales/manage/customers.php
 # Syntax error introduced in previous update fixed
 $ /inventory/prices.php
+# Fixed retreiving of exchange rates [0000057]
+$ /gl/manage/exchange_rates.php
+  /includes/banking.inc
+  /includes/ui/ui_view.inc
 
 18-Sep-2008 Joe Hunt
 + New Report - Bank Statement.

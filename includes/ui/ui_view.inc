@@ -285,24 +285,23 @@ function exchange_rate_display($from_currency, $to_currency, $date_, $buttons=tr
 				$currency = $to_currency;
 			else
 				$currency = $from_currency;
+
 			$rate = get_ecb_rate($currency);
-			if ($rate==0) 
-			{
-				display_error(_("Cannot get exchange rate for this currency. Please add exchange rate manually on Exchange Rates page.") );
-				$rate = get_exchange_rate_from_to($to_currency, $from_currency, $date_);
-			} else 
-			{
+			if ($rate && ($date_==Today())) {
 				if (get_date_exchange_rate($currency, $date_))
 					update_exchange_rate($currency, $date_, $rate, $rate);
 				else
 					add_exchange_rate($currency, $date_, $rate, $rate);
-			}
+			} else
+				$rate = get_exchange_rate_from_to($to_currency, $from_currency, $date_);
+			
 			if ($from_currency == $comp_currency)
 				$rate = 1 / $rate;
 			$Ajax->activate('get_rate');
 		}
 		else
 			$rate = get_exchange_rate_from_to($to_currency, $from_currency, $date_);
+
 		$rate = number_format2($rate, user_exrate_dec());
     	label_row(_("Exchange Rate:"),"1 " . $from_currency . " = <span id='_ex_rate'>" . $rate . "</span> " . $to_currency .
 		($buttons?"  " . submit('get_rate',_("Get"), false, $hint, true):""));
