@@ -32,6 +32,16 @@ check_db_has_bank_accounts(_("There are no bank accounts defined in the system."
 check_db_has_bank_trans_types(_("There are no bank payment types defined in the system."));
 
 //----------------------------------------------------------------------------------------
+if ($ret = context_restore()) {
+	if(isset($ret['supplier_id']))
+		$_POST['supplier_id'] = $ret['supplier_id'];
+}
+if (isset($_POST['_supplier_id_editor'])) {
+	context_call($path_to_root.'/purchasing/manage/suppliers.php?supplier_id='.$_POST['supplier_id'], 
+		array( 'supplier_id', 'bank_account', 'DatePaid', 
+			'PaymentType', 'ref', 'amount', 'discount', 'memo_') );
+}
+//----------------------------------------------------------------------------------------
 
 if (isset($_GET['AddedID'])) 
 {

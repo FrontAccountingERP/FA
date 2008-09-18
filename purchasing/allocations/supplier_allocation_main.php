@@ -16,6 +16,15 @@ if ($use_popup_windows)
 page(_("Supplier Allocations"), false, false, "", $js);
 
 //--------------------------------------------------------------------------------
+if ($ret = context_restore()) {
+	if(isset($ret['supplier_id']))
+		$_POST['supplier_id'] = $ret['supplier_id'];
+}
+if (isset($_POST['_supplier_id_editor'])) {
+	context_call($path_to_root.'/purchasing/manage/suppliers.php?supplier_id='.$_POST['supplier_id'] );
+}
+
+//--------------------------------------------------------------------------------
 
 function display_allocatable_transactions()
 {
