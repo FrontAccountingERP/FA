@@ -60,7 +60,7 @@ function print_bank_transactions()
 
 	$dec = user_price_dec();
 
-	$cols = array(0, 90, 110, 170, 230, 300, 380, 430, 490, 550);
+	$cols = array(0, 90, 110, 170, 225, 270, 350, 400, 460, 520);
 
 	$aligns = array('left',	'left',	'left',	'left',	'left',	'left',	'right', 'right', 'right');
 
