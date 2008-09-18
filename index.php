@@ -11,4 +11,5 @@
 	if (isset($_GET['application']))
 		$app->selected_application = $_GET['application'];
 	$app->display();
+	context_reset();
 ?>

@@ -138,6 +138,12 @@ function _set_combo_select(e) {
 				setFocus(box.name);
 			    return false;
 			 }
+			if (this.getAttribute('aspect') == 'editable' && key==115) {
+				// F4: call related database editor - not available in non-js fallback mode
+				JsHttpRequest.request('_'+this.name+'_editor', this.form);
+				return false; // prevent default binding
+				// TODO: preventDefault, stopPropagation when needed
+			}
 		}
 }		
 

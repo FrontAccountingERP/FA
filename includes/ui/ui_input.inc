@@ -191,6 +191,13 @@ function submit_row($name, $value, $right=true, $extra="", $title=false, $async=
 	submit_cells($name, $value, $extra, $title, $async);
 	echo "</tr>\n";
 }
+
+function submit_return($name, $value, $title=false, $async=false)
+{
+	if (count($_SESSION['Context'])) {
+		submit($name, $value, true, $title, $async);
+	}
+}
 //---------------------------------------------------------------------------------
 
 function button($name, $value, $onclick, $title=false)
