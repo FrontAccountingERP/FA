@@ -19,6 +19,11 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+18-Sep-2008 Joe Hunt
++ New Report - Bank Statement.
+$ /reporting/reports_main.php
+  /reporting/rep601.php (new file)
+  
 17-Sep-2008 Joe Hunt
 ! New PDF tcpdf.php file. Support for cid-0 fonts (Chinese, Japanese, Korean, CJK, Asian fonts) without embedding.
   New cid-0 fonts will be available for download when release 2.0.2 is shipping. Reduces file size enormouusly
