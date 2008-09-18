@@ -18,7 +18,7 @@ $new_item = get_post('stock_id')=='';
 
 if (isset($_GET['stock_id']))
 {
-	$stock_id = strtoupper($_GET['stock_id']);
+	$_POST['stock_id'] = $stock_id = strtoupper($_GET['stock_id']);
 }
 else if (isset($_POST['stock_id']))
 {
@@ -217,6 +217,12 @@ if (isset($_POST['delete']) && strlen($_POST['delete']) > 1)
 		$Ajax->activate('_page_body');
 	}
 }
+//-------------------------------------------------------------------------------------------- 
+
+if (isset($_POST['select']))
+{
+	context_return(array('stock_id' => $_POST['stock_id']));
+}
 
 //------------------------------------------------------------------------------------
 
@@ -376,7 +382,7 @@ if (!isset($_POST['NewStockID']) || $new_item)
 else 
 {
 	submit_center_first('addupdate', _("Update Item"), '', true);
-
+	submit_return('select', _("Return"), _("Select this items and return to document entry."), true);
 	submit_center_last('delete', _("Delete This Item"), '', true);
 }
 

@@ -31,6 +31,26 @@ check_db_has_suppliers(_("There are no suppliers defined in the system."));
 check_db_has_purchasable_items(_("There are no purchasable inventory items defined in the system."));
 
 //---------------------------------------------------------------------------------------------------------------
+if ($ret = context_restore()) {
+ // return from supplier/items editors
+	copy_from_cart();
+	if(isset($ret['supplier_id']))
+		$_POST['supplier_id'] = $ret['supplier_id'];
+	if(isset($ret['stock_id'])) {
+		$_POST['stock_id'] = $_POST['_stock_id_edit'] = $ret['stock_id'];
+		set_focus('qty');
+	}
+}
+if (isset($_POST['_supplier_id_editor'])) {
+	copy_to_cart();
+	context_call($path_to_root.'/purchasing/manage/suppliers.php?supplier_id='.$_POST['supplier_id'], 'PO');
+}
+
+if (isset($_POST['_stock_id_editor'])) {
+	copy_to_cart();
+	context_call($path_to_root.'/inventory/manage/items.php?stock_id='.$_POST['stock_id'], 'PO');
+}
+//------------------------------------------------------------------------------
 
 if (isset($_GET['AddedID'])) 
 {
@@ -51,8 +71,31 @@ if (isset($_GET['AddedID']))
 	
 	display_footer_exit();	
 }
-
 //--------------------------------------------------------------------------------------------------
+
+function copy_from_cart()
+{
+	$_POST['supplier_id'] = $_SESSION['PO']->supplier_id;	
+	$_POST['OrderDate'] = $_SESSION['PO']->orig_order_date;	
+    $_POST['Requisition'] = $_SESSION['PO']->requisition_no;
+    $_POST['ref'] = $_SESSION['PO']->reference;
+	$_POST['Comments'] = $_SESSION['PO']->Comments;
+    $_POST['StkLocation'] = $_SESSION['PO']->Location;
+    $_POST['delivery_address'] = $_SESSION['PO']->delivery_address;	
+}
+
+function copy_to_cart()
+{
+	$_SESSION['PO']->supplier_id = $_POST['supplier_id'];	
+	$_SESSION['PO']->orig_order_date = $_POST['OrderDate'];
+	$_SESSION['PO']->reference = $_POST['ref'];
+	$_SESSION['PO']->requisition_no = $_POST['Requisition'];
+	$_SESSION['PO']->Comments = $_POST['Comments'];	
+	$_SESSION['PO']->Location = $_POST['StkLocation'];
+	$_SESSION['PO']->delivery_address = $_POST['delivery_address'];
+}
+//--------------------------------------------------------------------------------------------------
+
 function line_start_focus() {
   global 	$Ajax;
 
@@ -278,13 +321,7 @@ function handle_commit_order()
 
 	if (can_commit())
 	{
-		$_SESSION['PO']->supplier_id = $_POST['supplier_id'];	
-		$_SESSION['PO']->orig_order_date = $_POST['OrderDate'];
-		$_SESSION['PO']->reference = $_POST['ref'];
-		$_SESSION['PO']->requisition_no = $_POST['Requisition'];
-		$_SESSION['PO']->Comments = $_POST['Comments'];	
-		$_SESSION['PO']->Location = $_POST['StkLocation'];
-		$_SESSION['PO']->delivery_address = $_POST['delivery_address'];
+		copy_to_cart();
 
 		if ($_SESSION['PO']->order_no == 0)
 		{ 
@@ -339,13 +376,7 @@ if (isset($_GET['ModifyOrderNumber']) && $_GET['ModifyOrderNumber'] != "")
 	/*read in all the selected order into the Items cart  */
 	read_po($_SESSION['PO']->order_no, $_SESSION['PO']);
 
-	$_POST['supplier_id'] = $_SESSION['PO']->supplier_id;	
-	$_POST['OrderDate'] = $_SESSION['PO']->orig_order_date;	
-    $_POST['Requisition'] = $_SESSION['PO']->requisition_no;
-    $_POST['ref'] = $_SESSION['PO']->reference;
-	$_POST['Comments'] = $_SESSION['PO']->Comments;
-    $_POST['StkLocation'] = $_SESSION['PO']->Location;
-    $_POST['delivery_address'] = $_SESSION['PO']->delivery_address;	
+	copy_from_cart();
 }
 
 if (isset($_POST['CancelUpdate']) || isset($_POST['UpdateLine'])) {
