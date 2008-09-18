@@ -33,6 +33,30 @@ check_db_has_bank_accounts(_("There are no bank accounts defined in the system."
 
 check_db_has_bank_trans_types(_("There are no bank payment types defined in the system."));
 
+//----------------------------------------------------------------------------------------
+if ($ret = context_restore()) {
+	if(isset($ret['supplier_id']))
+		$_POST['person_id'] = $ret['supplier_id'];
+	if(isset($ret['customer_id']))
+		$_POST['person_id'] = $ret['customer_id'];
+	set_focus('person_id');
+	if(isset($ret['branch_id'])) {
+		$_POST['PersonDetailID'] = $ret['branch_id'];
+		set_focus('PersonDetailID');
+	}
+}
+if (isset($_POST['_person_id_editor'])) {
+	if ($_POST['PayType']==payment_person_types::supplier())
+		$editor = '/purchasing/manage/suppliers.php?supplier_id=';
+	else
+		$editor = '/sales/manage/customers.php?debtor_no=';
+		
+//	$_SESSION['pay_items'] should stay unchanged during call
+//
+context_call($path_to_root.$editor.$_POST['person_id'], 
+	array('bank_account', 'date_', 'PayType', 'person_id',
+		'PersonDetailID', 'type', 'ref', 'memo_') );
+}
 //--------------------------------------------------------------------------------------------------
 function line_start_focus() {
   global 	$Ajax;
