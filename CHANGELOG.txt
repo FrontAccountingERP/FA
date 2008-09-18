@@ -19,6 +19,36 @@ Legend:
 ! -> Note
 $ -> Affected files
 
++ Support for calling external pages during document entry (e.g. for adding customer/supplier/items).
+$ /index.php
+  /includes/ui/ui_controls.inc
+  /includes/ui/ui_input.inc
+  /includes/ui/ui_lists.inc
+  /js/inserts.js
++ Add/view on F4 in customer/supplier selectors
+$ /gl/gl_bank.php
++ Add/view on F4 in supplier/items selectors
+$ /purchasing/po_entry_items.php
+  /inventory/manage/items.php
++ Add/view on F4 in supplier selector
+$ /purchasing/supplier_credit.php
+  /purchasing/supplier_invoice.php
+  /purchasing/supplier_payment.php
+  /purchasing/allocations/supplier_allocation_main.php
+  /purchasing/manage/suppliers.php
+  /inventory/purchasing_data.php
++ Add/view on F4 in customer selector
+  /sales/credit_note_entry.php
+  /sales/customer_payments.php
+  /sales/sales_order_entry.php
+  /sales/allocations/customer_allocation_main.php
+  /sales/includes/ui/sales_credit_ui.inc
+  /sales/includes/ui/sales_order_ui.inc
+  /sales/manage/customer_branches.php
+  /sales/manage/customers.php
+# Syntax error introduced in previous update fixed
+$ /inventory/prices.php
+
 18-Sep-2008 Joe Hunt
 + New Report - Bank Statement.
 $ /reporting/reports_main.php
