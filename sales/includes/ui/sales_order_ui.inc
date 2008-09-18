@@ -177,8 +177,6 @@ function display_order_header(&$order, $editable, $date_text, $display_tax_group
 		if ($order->customer_id != get_post('customer_id', -1))
 		{
 			// customer has changed
-			// clear the branch selection
-			$_POST['branch_id'] = '';
 			$Ajax->activate('branch_id');
   		}
 		customer_branches_list_row(_("Branch:"),

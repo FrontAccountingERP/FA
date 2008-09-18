@@ -27,6 +27,17 @@ check_db_has_bank_accounts(_("There are no bank accounts defined in the system."
 check_db_has_bank_trans_types(_("There are no bank payment types defined in the system."));
 
 //----------------------------------------------------------------------------------------
+if ($ret = context_restore()) {
+	if(isset($ret['customer_id']))
+		$_POST['customer_id'] = $ret['customer_id'];
+	if(isset($ret['branch_id']))
+		$_POST['BranchID'] = $ret['branch_id'];
+}
+if (isset($_POST['_customer_id_editor'])) {
+	context_call($path_to_root.'/sales/manage/customers.php?debtor_no='.$_POST['customer_id'], 
+		array( 'customer_id', 'BranchID', 'bank_account', 'DateBanked', 
+			'ReceiptType', 'ref', 'amount', 'discount', 'memo_') );
+}
 
 if (isset($_GET['AddedID'])) {
 	$payment_no = $_GET['AddedID'];
@@ -101,7 +112,7 @@ if (isset($_POST['AddPaymentItem'])) {
 }
 if (isset($_POST['_customer_id_button'])) {
 //	unset($_POST['branch_id']);
-	$Ajax->activate('branch_id');
+	$Ajax->activate('BranchID');
 }
 //----------------------------------------------------------------------------------------------
 

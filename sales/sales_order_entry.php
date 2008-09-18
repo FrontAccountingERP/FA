@@ -18,6 +18,19 @@ include_once($path_to_root . "/sales/includes/db/sales_types_db.inc");
 include_once($path_to_root . "/reporting/includes/reporting.inc");
 $js = '';
 
+if ($ret = context_restore()) {
+ // return from new customer add
+	copy_from_cart();
+	if(isset($ret['customer_id']))
+		$_POST['customer_id'] = $ret['customer_id'];
+	if(isset($ret['branch_id']))
+		$_POST['branch_id'] = $ret['branch_id'];
+}
+if (isset($_POST['_customer_id_editor'])) {
+	copy_to_cart(); //store context
+	context_call($path_to_root.'/sales/manage/customers.php?debtor_no='.$_POST['customer_id'], 'Items');
+}
+
 if ($use_popup_windows) {
 	$js .= get_js_open_window(900, 500);
 }

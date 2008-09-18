@@ -22,15 +22,7 @@ function display_credit_header(&$order)
 	if ($order->customer_id != $_POST['customer_id'] /*|| $order->sales_type != $_POST['sales_type_id']*/)
 	{
 		// customer has changed
-
-		// delete all the order items - drastic but necessary because of
-		// change of currency, sales type, etc
-//		$order->clear_items();
-
-		// clear the branch selection
-//		unset($_POST['branch_id']);
-			$_POST['branch_id'] = '';
-			$Ajax->activate('branch_id');
+		$Ajax->activate('branch_id');
 	}
 
 	customer_branches_list_row(_("Branch:"), $_POST['customer_id'], 
@@ -62,7 +54,7 @@ function display_credit_header(&$order)
 				}
 				if ($old_order->sales_type != $order->sales_type) {
 				//  || $old_order->default_discount!=$order->default_discount
-					$_POST['sales_type'] = $order->sales_type;
+					$_POST['sales_type_id'] = $order->sales_type;
 				    $Ajax->activate('sales_type_id');
 				    $change_prices = 1;
 				}
