@@ -32,8 +32,12 @@ $ /admin/gl_setup.php
   /sales/includes/db/sales_credit_db.inc
 ! New tcpdf.php file. Minor bugfixes from tcpdf.org
   /reporting/includes/tcpdf.php
+! Layout adjustments
+  /dimensions/includes/dimensions_ui.inc
+  /dimensions/view/view_dimension.php
+  /inventory/view/view_adjustment.php
+  /manufacturing/view/work_order_view.php
   
-
 18-Sep-2008 Janusz Dobrowolski
 + Support for calling external pages during document entry (e.g. for adding customer/supplier/items).
 $ /index.php

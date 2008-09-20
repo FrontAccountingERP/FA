@@ -25,6 +25,7 @@ if ($_GET['trans_no'] != "")
 
 display_heading(systypes::name(systypes::dimension()) . " # " . $id);
 
+br(1);
 $myrow = get_dimension($id);
 
 if (strlen($myrow[0]) == 0)
