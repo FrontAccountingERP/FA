@@ -2,9 +2,9 @@
 //============================================================+
 // File name   : tcpdf.php
 // Begin       : 2002-08-03
-// Last Update : 2008-09-17
+// Last Update : 2008-09-19
 // Author      : Nicola Asuni - info@tecnick.com - http://www.tcpdf.org
-// Version     : 4.0.026_PHP4
+// Version     : 4.0.027_PHP4
 // License     : GNU LGPL (http://www.gnu.org/copyleft/lesser.html)
 // 	----------------------------------------------------------------------------
 //  Copyright (C) 2002-2008  Nicola Asuni - Tecnick.com S.r.l.
@@ -120,7 +120,7 @@
  * @copyright 2004-2008 Nicola Asuni - Tecnick.com S.r.l (www.tecnick.com) Via Della Pace, 11 - 09044 - Quartucciu (CA) - ITALY - www.tecnick.com - info@tecnick.com
  * @link http://www.tcpdf.org
  * @license http://www.gnu.org/copyleft/lesser.html LGPL
- * @version 4.0.026_PHP4
+ * @version 4.0.027_PHP4
  */
 
 /**
@@ -178,14 +178,14 @@ if (!class_exists('TCPDF')) {
 	/**
 	 * define default PDF document producer
 	 */
-	define('PDF_PRODUCER','TCPDF 4.0.026_PHP4 (http://www.tcpdf.org)');
+	define('PDF_PRODUCER','TCPDF 4.0.027_PHP4 (http://www.tcpdf.org)');
 
 	/**
 	* This is a PHP class for generating PDF documents without requiring external extensions.<br>
 	* TCPDF project (http://www.tcpdf.org) has been originally derived in 2002 from the Public Domain FPDF class by Olivier Plathey (http://www.fpdf.org), but now is almost entirely rewritten.<br>
 	* @name TCPDF
 	* @package com.tecnick.tcpdf
-	* @version 4.0.026_PHP4
+	* @version 4.0.027_PHP4
 	* @author Nicola Asuni - info@tecnick.com
 	* @link http://www.tcpdf.org
 	* @license http://www.gnu.org/copyleft/lesser.html LGPL
@@ -7698,6 +7698,9 @@ if (!class_exists('TCPDF')) {
 			if (empty($this->javascript)) {
 				return;
 			}
+			// the following two lines are uded to avoid form fields duplication after saving
+			$js1 = sprintf("ftcpdfdocsaved=this.addField('%s','%s',%d,[%.2f,%.2f,%.2f,%.2f]);", 'tcpdfdocsaved', 'text', 0, 0, 1, 0, 1);
+			$js2 = "getField('tcpdfdocsaved').value = 'saved';";
 			$this->_newobj();
 			$this->n_js = $this->n;
 			$this->_out('<<');
@@ -7707,7 +7710,7 @@ if (!class_exists('TCPDF')) {
 			$this->_newobj();
 			$this->_out('<<');
 			$this->_out('/S /JavaScript');
-			$this->_out('/JS '.$this->_textstring($this->javascript));
+			$this->_out('/JS '.$this->_textstring($js1."\n".$this->javascript."\n".$js2));
 			$this->_out('>>');
 			$this->_out('endobj');
 		}
@@ -7744,6 +7747,8 @@ if (!class_exists('TCPDF')) {
 		* @since 2.1.002 (2008-02-12)
 		*/
 		function _addfield($type, $name, $x, $y, $w, $h, $prop) {
+			// the followind avoid fields duplication after saving the document
+			$this->javascript .= "if(getField('tcpdfdocsaved').value != 'saved') {";
 			$k = $this->k;
 			$this->javascript .= sprintf("f".$name."=this.addField('%s','%s',%d,[%.2f,%.2f,%.2f,%.2f]);", $name, $type, $this->PageNo()-1, $x*$k, ($this->h-$y)*$k+1, ($x+$w)*$k, ($this->h-$y-$h)*$k+1)."\n";
 			$this->javascript .= "f".$name.".textSize=".$this->FontSizePt.";\n";
@@ -7756,6 +7761,7 @@ if (!class_exists('TCPDF')) {
 				$this->javascript .= "f".$name.".".$key."=".$val.";\n";
 			}
 			$this->x += $w;
+			$this->javascript .= "}";
 		}
 
 		/*
@@ -9456,12 +9462,12 @@ if (!class_exists('TCPDF')) {
 			$yshift = 0;
 			$startlinepage = $this->page;
 			$newline = true;
-			if (isset($this->footerpos[$this->page])) {
+			if (isset($this->footerlen[$this->page])) {
 				$this->footerpos[$this->page] = strlen($this->pages[$this->page]) - $this->footerlen[$this->page];
-				$startlinepos = $this->footerpos[$this->page];
 			} else {
-				$startlinepos = strlen($this->pages[$this->page]);
+				$this->footerpos[$this->page] = strlen($this->pages[$this->page]);
 			}
+			$startlinepos = $this->footerpos[$this->page];
 			$lalign = $align;
 			$plalign = $align;
 			if ($this->rtl) {
@@ -9547,12 +9553,12 @@ if (!class_exists('TCPDF')) {
 							// the last line must be shifted to be aligned as requested
 							$linew = abs($this->endlinex - $startlinex);
 							$pstart = substr($this->pages[$startlinepage], 0, $startlinepos);
-							if (isset($opentagpos) AND isset($this->footerpos[$startlinepage])) {
+							if (isset($opentagpos) AND isset($this->footerlen[$startlinepage])) {
 								$this->footerpos[$startlinepage] = strlen($this->pages[$startlinepage]) - $this->footerlen[$startlinepage];
 								$midpos = min($opentagpos, $this->footerpos[$startlinepage]);
 							} elseif (isset($opentagpos)) {
 								$midpos = $opentagpos;
-							} elseif (isset($this->footerpos[$startlinepage])) {
+							} elseif (isset($this->footerlen[$startlinepage])) {
 								$this->footerpos[$startlinepage] = strlen($this->pages[$startlinepage]) - $this->footerlen[$startlinepage];
 								$midpos = $this->footerpos[$startlinepage];
 							} else {
@@ -9613,12 +9619,12 @@ if (!class_exists('TCPDF')) {
 						$startlinepos = $endlinepos;
 						unset($endlinepos);
 					} else {
-						if (isset($this->footerpos[$this->page])) {
+						if (isset($this->footerlen[$this->page])) {
 							$this->footerpos[$this->page] = strlen($this->pages[$this->page]) - $this->footerlen[$this->page];
-							$startlinepos = $this->footerpos[$this->page];
 						} else {
-							$startlinepos = strlen($this->pages[$this->page]);
+							$this->footerpos[$this->page] = strlen($this->pages[$this->page]);
 						}
+						$startlinepos = $this->footerpos[$this->page];
 					}
 					$plalign = $lalign;
 					$this->newline = false;
@@ -9704,12 +9710,12 @@ if (!class_exists('TCPDF')) {
 							}
 							// add rowspan information to table element
 							if ($rowspan > 1) {
-								if (isset($this->footerpos[$this->page])) {
+								if (isset($this->footerlen[$this->page])) {
 									$this->footerpos[$this->page] = strlen($this->pages[$this->page]) - $this->footerlen[$this->page];
-									$trintmrkpos = $this->footerpos[$this->page];
 								} else {
-									$trintmrkpos = strlen($this->pages[$this->page]);
+									$this->footerpos[$this->page] = strlen($this->pages[$this->page]);
 								}
+								$trintmrkpos = $this->footerpos[$this->page];
 								$trsid = array_push($dom[$table_el]['rowspans'], array('rowspan' => $rowspan, 'colspan' => $colspan, 'startpage' => $this->page, 'startx' => $this->x, 'starty' => $this->y, 'intmrkpos' => $trintmrkpos));
 							}
 							$cellid = array_push($dom[$trid]['cellpos'], array('startx' => $this->x));
@@ -9769,12 +9775,12 @@ if (!class_exists('TCPDF')) {
 						} else {
 							// opening tag (or self-closing tag)
 							if (!isset($opentagpos)) {
-								if (isset($this->footerpos[$this->page])) {
+								if (isset($this->footerlen[$this->page])) {
 									$this->footerpos[$this->page] = strlen($this->pages[$this->page]) - $this->footerlen[$this->page];
-									$opentagpos = $this->footerpos[$this->page];
 								} else {
-									$opentagpos = strlen($this->pages[$this->page]);
+									$this->footerpos[$this->page] = strlen($this->pages[$this->page]);
 								}
+								$opentagpos = $this->footerpos[$this->page];
 							}
 							$this->openHTMLTagHandler($dom, $key, $cell);
 						}
@@ -9851,12 +9857,12 @@ if (!class_exists('TCPDF')) {
 					// the last line must be shifted to be aligned as requested
 					$linew = abs($this->endlinex - $startlinex);
 					$pstart = substr($this->pages[$startlinepage], 0, $startlinepos);
-					if (isset($opentagpos) AND isset($this->footerpos[$startlinepage])) {
+					if (isset($opentagpos) AND isset($this->footerlen[$startlinepage])) {
 						$this->footerpos[$startlinepage] = strlen($this->pages[$startlinepage]) - $this->footerlen[$startlinepage];
 						$midpos = min($opentagpos, $this->footerpos[$startlinepage]);
 					} elseif (isset($opentagpos)) {
 						$midpos = $opentagpos;
-					} elseif (isset($this->footerpos[$startlinepage])) {
+					} elseif (isset($this->footerlen[$startlinepage])) {
 						$this->footerpos[$startlinepage] = strlen($this->pages[$startlinepage]) - $this->footerlen[$startlinepage];
 						$midpos = $this->footerpos[$startlinepage];
 					} else {

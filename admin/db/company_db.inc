@@ -1,8 +1,9 @@
 <?php
 
 
-function update_company_gl_setup($debtors_act, $pyt_discount_act, $creditors_act, 
+function update_company_gl_setup($debtors_act, $pyt_discount_act, $creditors_act,
 		$freight_act,
+		$exchange_diff_act,
 		$default_sales_act,
 		$default_sales_discount_act,
 		$default_prompt_payment_act,
@@ -23,6 +24,7 @@ function update_company_gl_setup($debtors_act, $pyt_discount_act, $creditors_act
 		debtors_act=".db_escape($debtors_act).", pyt_discount_act=".db_escape($pyt_discount_act).",
 		creditors_act=".db_escape($creditors_act).",
 		freight_act=".db_escape($freight_act).",
+		exchange_diff_act=".db_escape($exchange_diff_act).",
 		default_sales_act=".db_escape($default_sales_act).",
 		default_sales_discount_act=".db_escape($default_sales_discount_act).",
 		default_prompt_payment_act=".db_escape($default_prompt_payment_act).",
@@ -156,7 +158,7 @@ function delete_fiscalyear($id)
 function get_base_sales_type()
 {
 	$sql = "SELECT base_sales FROM ".TB_PREF."company WHERE coy_code=1";
-	
+
 	$result = db_query($sql, "could not get base sales type");
 	$myrow = db_fetch($result);
 	return $myrow[0];

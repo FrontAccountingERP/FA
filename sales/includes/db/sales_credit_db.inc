@@ -68,7 +68,7 @@ function write_credit_note($credit_note, $write_off_acc)
 		set_document_parent($credit_note);
 	} else {
 		delete_comments(11, $credit_no);
-		void_cust_allocations(11, $credit_no);
+		void_cust_allocations(11, $credit_no, $credit_date);
 		void_gl_trans(11, $credit_no, true);
 		void_stock_move(11, $credit_no);
 		void_customer_trans_tax_details(11, $credit_no);

@@ -19,6 +19,21 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+20-Sep-2008 Joe Hunt
+# Fix for exchange variation when allocating payments. re-inserted in System and GL Setup.
+$ /admin/gl_setup.php
+  /admin/db/company_db
+  /includes/banking.inc
+  /purchasing/allocations/supplier_allocate.php
+  /purchasing/includes/db/suppalloc_db.inc
+  /sales/allocations/customer_allocate.php
+  /sales/includes/db/custalloc_db.inc
+  /sales/includes/db/payment_db.inc
+  /sales/includes/db/sales_credit_db.inc
+! New tcpdf.php file. Minor bugfixes from tcpdf.org
+  /reporting/includes/tcpdf.php
+  
+
 18-Sep-2008 Janusz Dobrowolski
 + Support for calling external pages during document entry (e.g. for adding customer/supplier/items).
 $ /index.php

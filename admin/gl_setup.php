@@ -14,23 +14,23 @@ include_once($path_to_root . "/admin/db/company_db.inc");
 
 //-------------------------------------------------------------------------------------------------
 
-function can_process() 
+function can_process()
 {
-	if (!check_num('po_over_receive', 0, 100)) 
+	if (!check_num('po_over_receive', 0, 100))
 	{
 		display_error(_("The delivery over-receive allowance must be between 0 and 100."));
 		set_focus('po_over_receive');
 		return false;
 	}
 
-	if (!check_num('po_over_charge', 0, 100)) 
+	if (!check_num('po_over_charge', 0, 100))
 	{
 		display_error(_("The invoice over-charge allowance must be between 0 and 100."));
 		set_focus('po_over_charge');
 		return false;
 	}
 
-	if (!check_num('past_due_days', 0, 100)) 
+	if (!check_num('past_due_days', 0, 100))
 	{
 		display_error(_("The past due days interval allowance must be between 0 and 100."));
 		set_focus('past_due_days');
@@ -41,10 +41,11 @@ function can_process()
 
 //-------------------------------------------------------------------------------------------------
 
-if (isset($_POST['submit']) && can_process()) 
+if (isset($_POST['submit']) && can_process())
 {
 	update_company_gl_setup($_POST['debtors_act'], $_POST['pyt_discount_act'],
 		$_POST['creditors_act'], $_POST['freight_act'],
+		$_POST['exchange_diff_act'],
 		$_POST['default_sales_act'],
 		$_POST['default_sales_discount_act'],
 		$_POST['default_prompt_payment_act'],
@@ -77,6 +78,7 @@ $_POST['creditors_act']  = $myrow["creditors_act"];
 $_POST['freight_act'] = $myrow["freight_act"];
 $_POST['pyt_discount_act']  = $myrow["pyt_discount_act"];
 
+$_POST['exchange_diff_act'] = $myrow["exchange_diff_act"];
 $_POST['default_sales_act'] = $myrow["default_sales_act"];
 $_POST['default_sales_discount_act']  = $myrow["default_sales_discount_act"];
 $_POST['default_prompt_payment_act']  = $myrow["default_prompt_payment_act"];
@@ -109,14 +111,14 @@ table_section_title(_("General GL"));
 //gl_all_accounts_list_row(_("Payroll Account:"), 'payroll_act', $_POST['payroll_act']);
 
 text_row(_("Past Due Days Interval:"), 'past_due_days', $_POST['past_due_days'], 6, 6, '', "", _("days"));
+
+gl_all_accounts_list_row(_("Exchange Variances Account:"), 'exchange_diff_act', $_POST['exchange_diff_act']);
+
 //---------------
 
 table_section_title(_("Customers and Sales"));
 
 text_row(_("Default Credit Limit:"), 'default_credit_limit', $_POST['default_credit_limit'], 12, 12);
-
-// Not used in FA2.0.
-//gl_all_accounts_list_row(_("Sales Exchange Variances Account:"), 'exchange_diff_act', $_POST['exchange_diff_act']);
 
 gl_all_accounts_list_row(_("Shipping Charged Account:"), 'freight_act', $_POST['freight_act']);
 
