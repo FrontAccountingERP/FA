@@ -19,6 +19,37 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+21-Sep-2008 Janusz Dobrowolski
++ Added submit_on_change option for date fields
+$ /includes/ui/ui_input.inc
++ Automatic exchange rate update after document date change
+$ /gl/bank_transfer.php
+  /gl/gl_bank.php
+  /gl/includes/db/gl_db_rates.inc
+  /gl/includes/ui/gl_bank_ui.inc
+  /includes/banking.inc
+  /includes/ui/ui_view.inc
+  /purchasing/supplier_payment.php
+  /sales/customer_payments.php
+  /sales/includes/cart_class.inc
+# Sales/purchase terms update after document date change [0000058]
+$ /purchasing/includes/ui/invoice_ui.inc
+  /purchasing/includes/ui/po_ui.inc
+  /sales/customer_invoice.php
+# Fixed edit line total, price update after date change
+$ /sales/includes/ui/sales_credit_ui.inc
+  /sales/includes/ui/sales_order_ui.inc
+# Fixed unneeded page reload on enter key in text inputs
+$ /js/inserts.js
+# Fixed session variables conflicts with some third party software (e.g. XRMS)
+$ /includes/lang/language.php
+# Fixed calendar flicker, removed buttons from exchange_rate_display()
+$ /includes/ui/ui_view.inc
+! Default delivery required by changed to 1 day.
+$ /includes/prefs/sysprefs.inc
+# Small bug fix 
+$ /sales/includes/sales_db.inc
+
 20-Sep-2008 Joe Hunt
 # Fix for exchange variation when allocating payments. re-inserted in System and GL Setup.
 $ /admin/gl_setup.php
