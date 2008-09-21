@@ -54,7 +54,7 @@ function get_price ($stock_id, $currency, $sales_type_id, $factor=null, $date=nu
 
 	if ($factor === null) 
 	{
-		$myrow = get_sales_type(get_post('sales_type_id'));
+		$myrow = get_sales_type($sales_type_id);
 		$factor = $myrow['factor'];
 	}
 	    
