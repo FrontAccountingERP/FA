@@ -161,6 +161,18 @@ var inserts = {
 		}
 		if (e.className == 'combo' || e.className == 'combo2') {
 				_set_combo_input(e);
+		} 
+		else
+    	if(e.type == 'text' ) { //&& e.className != 'combo2') {
+   	  		e.onkeydown = function(ev) { 
+  				ev = ev||window.event;
+  				key = ev.keyCode||ev.which;
+ 	  			if(key == 13) {
+					if(e.className == 'searchbox') e.onblur();
+						return false;
+				} 
+				return true;
+	  		}
 		}
 	},
 	'input.combo2,input[aspect="fallback"]': 
