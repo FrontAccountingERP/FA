@@ -137,7 +137,7 @@ while ($myrow = db_fetch($result))
 	$sql = "SELECT SUM(amount) FROM ".TB_PREF."gl_trans WHERE tran_date >= '" .
 		date2sql($_POST['FromDate']) . "' AND
 		tran_date <= '" . date2sql($_POST['ToDate']) . "' AND (dimension_id = " .
-		$myrow['id']." OR dimension2_id = " .$myrow['id']);
+		$myrow['id']." OR dimension2_id = " .$myrow['id'].")";
 	$res = db_query($sql, "Transactions could not be calculated");
 	$row = db_fetch_row($res);
 
