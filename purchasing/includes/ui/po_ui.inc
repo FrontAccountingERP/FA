@@ -104,7 +104,10 @@ function display_po_header(&$order)
 	//	if (!is_date_in_fiscalyear($_POST['OrderDate']))
 	//		$_POST['OrderDate'] = end_fiscalyear();
 	//}
-	date_row(_("Order Date:"), 'OrderDate', '', $_POST['OrderDate'], 0, 0, 0);
+	date_row(_("Order Date:"), 'OrderDate', '', $_POST['OrderDate'], 0, 0, 0, null, true);
+	if (isset($_POST['_OrderDate_changed'])) {
+		$Ajax->activate('_ex_rate');
+	}
 
   	text_row(_("Supplier's Reference:"), 'Requisition', null, 16, 15);
 

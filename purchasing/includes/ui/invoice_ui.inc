@@ -44,6 +44,8 @@ function copy_to_trans(&$supp_trans)
 
 function invoice_header(&$supp_trans)
 {
+	global $Ajax;
+	
 	// if vars have been lost, recopy
 	if (!isset($_POST['tran_date']))
 		copy_from_trans($supp_trans);
@@ -83,6 +85,13 @@ function invoice_header(&$supp_trans)
 	echo "<table width=100%>";
 
    	date_row(_("Date") . ":", 'tran_date', '', null, 0, 0, 0, "", true);
+	if (isset($_POST['_tran_date_changed'])) {
+		$Ajax->activate('_ex_rate');
+		$supp_trans->tran_date = $_POST['tran_date'];
+		get_duedate_from_terms($supp_trans);
+		$_POST['due_date'] = $supp_trans->due_date;
+		$Ajax->activate('due_date');
+	}
 
     date_row(_("Due Date") . ":", 'due_date');
 
