@@ -39,6 +39,12 @@ class sys_prefs
 		return get_company_pref('default_workorder_required');
 	}
 
+	function default_delivery_required_by() 
+	{	 // FIX this in next major release
+//		return get_company_pref('default_delivery_required');
+		return 1;
+	}
+
 	function default_dimension_required_by() 
 	{
 		return get_company_pref('default_dim_required');
