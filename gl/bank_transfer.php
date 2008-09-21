@@ -37,6 +37,10 @@ if (isset($_GET['AddedID']))
 	safeExit();
 }
 
+if (isset($_POST['_DatePaid_changed'])) {
+	$Ajax->activate('_ex_rate');
+}
+
 //----------------------------------------------------------------------------------------
 
 function gl_payment_controls()
@@ -54,7 +58,7 @@ function gl_payment_controls()
 
     bank_accounts_list_row(_("To Account:"), 'ToBankAccount', null, true);
 
-    date_row(_("Transfer Date:"), 'DatePaid');
+    date_row(_("Transfer Date:"), 'DatePaid', '', null, 0, 0, 0, null, true);
 
 	$from_currency = get_bank_account_currency($_POST['FromBankAccount']);
 	$to_currency = get_bank_account_currency($_POST['ToBankAccount']);

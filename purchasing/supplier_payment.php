@@ -41,6 +41,9 @@ if (isset($_POST['_supplier_id_editor'])) {
 		array( 'supplier_id', 'bank_account', 'DatePaid', 
 			'PaymentType', 'ref', 'amount', 'discount', 'memo_') );
 }
+if (isset($_POST['_DatePaid_changed'])) {
+  $Ajax->activate('_ex_rate');
+}
 //----------------------------------------------------------------------------------------
 
 if (isset($_GET['AddedID'])) 
@@ -83,7 +86,7 @@ function display_controls()
 	amount_row(_("Amount of Payment:"), 'amount');
 	amount_row(_("Amount of Discount:"), 'discount');
 
-    date_row(_("Date Paid") . ":", 'DatePaid');
+    date_row(_("Date Paid") . ":", 'DatePaid', '', null, 0, 0, 0, null, true);
 
 	echo "</table>";
 	echo "</td><td valign=top class='tableseparator'>"; // outer table

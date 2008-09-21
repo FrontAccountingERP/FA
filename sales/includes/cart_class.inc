@@ -138,7 +138,7 @@ class cart
 					get_invoice_duedate($this->customer_id, $this->document_date);
 				else
 				  $this->due_date =
-					add_days($this->document_date, 10); // FIX this should be in company prefs
+					add_days($this->document_date, sys_prefs::default_delivery_required_by());
 			}
 	}
 

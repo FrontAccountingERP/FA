@@ -114,6 +114,9 @@ if (isset($_POST['_customer_id_button'])) {
 //	unset($_POST['branch_id']);
 	$Ajax->activate('BranchID');
 }
+if (isset($_POST['_DateBanked_changed'])) {
+  $Ajax->activate('_ex_rate');
+}
 //----------------------------------------------------------------------------------------------
 
 if (isset($_POST['AddPaymentItem'])) {
@@ -171,7 +174,6 @@ function display_item_form()
 	read_customer_data();
 
 	set_global_customer($_POST['customer_id']);
-
 	if (isset($_POST['HoldAccount']) && $_POST['HoldAccount'] != 0)	{
 		echo "</table></table>";
 		display_note(_("This customer account is on hold."), 0, 0, "class='redfb'");
@@ -184,7 +186,7 @@ function display_item_form()
 
 		label_row(_("Customer prompt payment discount :"), $display_discount_percent);
 
-		date_row(_("Date of Deposit:"), 'DateBanked');
+		date_row(_("Date of Deposit:"), 'DateBanked','',null, 0, 0, 0, null, true);
 
 		echo "</table>";
 		echo "</td><td valign=top class='tableseparator'>"; // outer table

@@ -98,6 +98,9 @@ if (isset($_GET['AddedDep']))
 
 	display_footer_exit();
 }
+if (isset($_POST['_date__changed'])) {
+	$Ajax->activate('_ex_rate');
+}
 //--------------------------------------------------------------------------------------------------
 
 function handle_new_order($type)
