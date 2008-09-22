@@ -11,7 +11,7 @@ function display_dimension_payments($id)
 	$sql = "SELECT ".TB_PREF."gl_trans.*,".TB_PREF."chart_master.account_name  FROM
 		".TB_PREF."gl_trans,".TB_PREF."chart_master WHERE
 		".TB_PREF."gl_trans.account = ".TB_PREF."chart_master.account_code AND
-		dimension_id = $id OR dimension2_id = $id ORDER BY account,tran_date";
+		(dimension_id = $id OR dimension2_id = $id) ORDER BY account,tran_date";
 	$result = db_query($sql, "Transactions could not be calculated");
 
     echo "<br>";

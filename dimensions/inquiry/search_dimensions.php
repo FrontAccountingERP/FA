@@ -63,7 +63,7 @@ start_row();
 
 ref_cells(_("Reference:"), 'OrderNumber', '',null, '', true);
 
-number_list_cells(_("Type"), 'type_', null, 0, 2);
+number_list_cells(_("Type"), 'type_', null, 1, 2, _("All"));
 date_cells(_("From:"), 'FromDate', '', null, 0, 0, -5);
 date_cells(_("To:"), 'ToDate');
 
