@@ -291,7 +291,6 @@ if (isset($_POST['ProcessOrder']) && can_process()) {
 
 function check_item_data()
 {
-
 	if (!check_num('qty', 0) || !check_num('Disc', 0, 100)) {
 		display_error( _("The item could not be updated because you are attempting to set the quantity ordered to less than 0, or the discount percent to more than 100."));
 		set_focus('qty');
@@ -306,6 +305,20 @@ function check_item_data()
 		set_focus('qty');
 		display_error(_("You attempting to make the quantity ordered a quantity less than has already been delivered. The quantity delivered cannot be modified retrospectively."));
 		return false;
+	} // Joe Hunt added 2008-09-22 -------------------------
+	elseif ($_SESSION['Items']->trans_type!=30 && !sys_prefs::allow_negative_stock() &&
+		is_inventory_item($_POST['stock_id']))
+	{
+		$qoh = get_qoh_on_date($_POST['stock_id'], $_POST['Location'], $_POST['OrderDate']);
+		if (input_num('qty') > $qoh)
+		{
+			$stock = get_item($_POST['stock_id']);
+			display_error(_("The delivery cannot be processed because there is an insufficient quantity for item:") .
+				" " . $stock['stock_id'] . " - " . $stock['description'] . " - " .
+				_("Quantity On Hand") . " = " . number_format2($qoh, get_qty_dec($_POST['stock_id'])));
+			return false;
+		}
+		return true;
 	}
 	return true;
 }

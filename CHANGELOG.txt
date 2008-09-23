@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+23-Sep-2008 Joe Hunt
+# Bug [0000059] Direct Invoice or Delivery Notes doesn't account for negative inventory flag
+$ /sales/sales_order_entry.php
+
 21-Sep-2008 Janusz Dobrowolski
 + Added submit_on_change option for date fields
 $ /includes/ui/ui_input.inc
