@@ -19,6 +19,13 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+------------------------------- Release 2.0.2 --------------------------------------------
+23-Sep-2008 Joe Hunt
+! Release 2.0.2
+$ config.php
+! Increased time_out to 3 minutes.
+$ /install/save.php
+
 23-Sep-2008 Joe Hunt
 # Bug [0000059] Direct Invoice or Delivery Notes doesn't account for negative inventory flag
 $ /sales/sales_order_entry.php
