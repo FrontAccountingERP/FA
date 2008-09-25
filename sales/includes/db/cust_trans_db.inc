@@ -78,7 +78,7 @@ function get_customer_trans_version($type, $trans_no) {
 // date_ is display date (non-sql)
 function write_customer_trans($trans_type, $trans_no, $debtor_no, $BranchNo,
 	$date_, $reference, $Total, $discount=0, $Tax=0, $Freight=0, $FreightTax=0,
-	$sales_type=0, $order_no=0, $trans_link=0, $ship_via="", $due_date=null,
+	$sales_type=0, $order_no=0, $trans_link=0, $ship_via=0, $due_date="",
 	$AllocAmt=0)
 {
 
@@ -86,7 +86,10 @@ function write_customer_trans($trans_type, $trans_no, $debtor_no, $BranchNo,
 	$rate = get_exchange_rate_from_home_currency($curr, $date_);
 
 	$SQLDate = date2sql($date_);
-	$SQLDueDate = date2sql($due_date);
+	if ($due_date == "")
+		$SQLDueDate = "000-00-00";
+	else
+		$SQLDueDate = date2sql($due_date);
 
 	if ($trans_no==0) {
 	$trans_no = get_next_trans_no($trans_type);

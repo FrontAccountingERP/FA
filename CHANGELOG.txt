@@ -19,6 +19,19 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+25-Sep-2008 Joe Hunt
+# if MySQL is in strict sql mode, a couple of files didn't pass that. Better not use strict sql mode.
+  This is not necessary, because FA handle this internally. in my.ini(win) or my.cnf(linux) set sql-mode="".
+$ /gl/gl_budget.php
+  /includes/db/comments_db.inc
+  /inventory/cost_update.php
+  /purchasing/includes/db/supp_trans_db.inc
+  /sales/includes/db/cust_trans_db.inc
+# Bug [0000060] table prefix error message and inconsistency at install
+$ /admin/db/maintenance_db.inc
+  /install/index.php
+  /install/save.php
+
 ------------------------------- Release 2.0.2 --------------------------------------------
 23-Sep-2008 Joe Hunt
 ! Release 2.0.2

@@ -30,7 +30,7 @@ function update_comments($type, $id, $date_, $memo_)
 	if ($date_ == null)
 	{
     	delete_comments($type, $id);
-    	add_comments($type, $id, '', $memo_);
+    	add_comments($type, $id, Today(), $memo_);
 	}
 	else
 	{
