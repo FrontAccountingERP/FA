@@ -110,6 +110,7 @@ function db_import($filename, $connection)
 	$drop_queries = array();
 	$table_queries = array();
 
+	ini_set("max_execution_time", "180");
 	// uncrompress gziped backup files
 	if (strpos($filename, ".gzip") || strpos($filename, ".GZIP"))
 		$lines = db_ungzip("lines", $filename);

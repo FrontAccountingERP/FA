@@ -213,9 +213,9 @@ function change_os(type) {
 			</td>
 		</tr>
 		<tr>
-			<td style="color: #666666;">Table Prefix:</td>
+			<td style="color: #666666;">Table Prefix ( 0_ ):</td>
 			<td>
-				<input type="text" tabindex="11" name="table_prefix" style="width: 250px;" value="<?php if(isset($_SESSION['table_prefix'])) { echo $_SESSION['table_prefix']; } else { echo '0_'; } ?>" />
+				<input type="checkbox" tabindex="11" name="table_prefix" id="table_prefix" value="true"<?php if(!isset($_SESSION['table_prefix'])) { echo ' checked'; } elseif($_SESSION['table_prefix'] == 'true') { echo ' checked'; } ?> />
 			</td>
 			<td>&nbsp;</td>
 			<td colspan="2">
