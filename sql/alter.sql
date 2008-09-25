@@ -16,9 +16,6 @@
 -- ALTER TABLE
 -- 
 
-ALTER TABLE `0_company` ADD `base_sales` INT( 11 ) DEFAULT '-1' NOT NULL AFTER `no_supplier_list` ;
-ALTER TABLE `0_sales_types` ADD `factor` DOUBLE DEFAULT '1' NOT NULL AFTER `tax_included` ;
-
 DROP TABLE IF EXISTS `0_item_units`; 
 CREATE TABLE IF NOT EXISTS `0_item_units` (
   `abbr` varchar(20) NOT NULL, 
@@ -38,6 +35,7 @@ ALTER TABLE `0_tax_types` DROP INDEX `name`, ADD UNIQUE `name` ( `name` , `rate`
 ALTER TABLE `0_tax_group_items` DROP `included_in_price`;
 ALTER TABLE `0_debtor_trans` ADD `ov_freight_tax` DOUBLE DEFAULT '0' NOT NULL AFTER `ov_freight` ;
 ALTER TABLE `0_sales_types` ADD `tax_included` INT( 1 ) DEFAULT '0' NOT NULL AFTER `sales_type` ;
+ALTER TABLE `0_sales_types` ADD `factor` DOUBLE DEFAULT '1' NOT NULL AFTER `tax_included` ;
 
 ALTER TABLE `0_bom` CHANGE `workcentre_added` `workcentre_added` INT( 11 ) NOT NULL DEFAULT '0';
 ALTER TABLE `0_wo_requirements` CHANGE `workcentre` `workcentre` INT( 11 ) NOT NULL DEFAULT '0';
@@ -60,7 +58,8 @@ ALTER TABLE `0_sales_order_details` ADD `id` INTEGER(11) NOT NULL AUTO_INCREMENT
 ALTER TABLE `0_company` ADD `no_item_list` TINYINT(1) NOT NULL DEFAULT '0' AFTER `f_year`;
 ALTER TABLE `0_company` ADD `no_customer_list` TINYINT(1) NOT NULL DEFAULT '0' AFTER `no_item_list`;
 ALTER TABLE `0_company` ADD `no_supplier_list` TINYINT(1) NOT NULL DEFAULT '0' AFTER `no_customer_list`;
-  
+ALTER TABLE `0_company` ADD `base_sales` INT( 11 ) DEFAULT '-1' NOT NULL AFTER `no_supplier_list` ;
+
 ALTER TABLE `0_salesman` ADD `provision` DOUBLE NOT NULL DEFAULT '0' AFTER `salesman_email`;
 ALTER TABLE `0_salesman` ADD `break_pt` DOUBLE NOT NULL DEFAULT '0' AFTER `provision`;
 ALTER TABLE `0_salesman` ADD `provision2` DOUBLE NOT NULL DEFAULT '0' AFTER `break_pt`;
