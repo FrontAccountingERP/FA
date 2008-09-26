@@ -6,8 +6,8 @@
 //
 function write_credit_note($credit_note, $write_off_acc)
 {
-	$credit_invoice = count($credit_note->src_docs) ? reset($credit_note->src_docs) : 0;
-
+	// Changed 2008-09-26 Joe Hunt -------
+	$credit_invoice = count(array_keys($credit_note->src_docs)) ? reset(array_keys($credit_note->src_docs)) : 0;
 
 	$credit_date = $credit_note->document_date;
 	$tax_group_id = $credit_note->tax_group_id;
@@ -87,6 +87,13 @@ function write_credit_note($credit_note, $write_off_acc)
 				update_debtor_trans_allocation(10, $credit_invoice, $allocate_amount);
 				update_debtor_trans_allocation(11, $credit_no, $allocate_amount); // ***
 				add_cust_allocation($allocate_amount, 11, $credit_no, 10, $credit_invoice);
+				// Exchange Variations Joe Hunt 2008-09-20 ////////////////////////////////////////
+
+				exchange_variation(11, $credit_no, 10, $credit_invoice, $credit_date,
+					$allocate_amount, payment_person_types::customer());
+
+				///////////////////////////////////////////////////////////////////////////
+
 			}
 		}
 	}
