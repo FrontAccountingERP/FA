@@ -113,7 +113,6 @@ if (isset($_GET['InvoiceNumber']) && $_GET['InvoiceNumber'] > 0) {
     $ci = new Cart(10, $_GET['InvoiceNumber'], true);
 
     $ci->trans_type = 11;
-    //$ci->src_docs = array($_GET['InvoiceNumber'], $ci->trans_no);
     $ci->src_docs = $ci->trans_no;
     $ci->src_date = $ci->document_date;
     $ci->trans_no = 0;
