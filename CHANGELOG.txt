@@ -31,6 +31,8 @@ $ /gl/gl_budget.php
 $ /admin/db/maintenance_db.inc
   /install/index.php
   /install/save.php
+# Bug [0000061] Delivery Modifitication (standard cost change)
+$ /sales/includes/db/sales_delivery_db.inc
 
 ------------------------------- Release 2.0.2 --------------------------------------------
 23-Sep-2008 Joe Hunt
