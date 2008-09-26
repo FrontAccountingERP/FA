@@ -38,6 +38,7 @@ function write_sales_delivery(&$delivery,$bo_policy)
 	} else {
 		void_gl_trans(13, $delivery_no, true);
 		void_stock_move(13, $delivery_no);
+		void_customer_trans_tax_details(13, $delivery_no);
 		delete_comments(13, $delivery_no);
 	}
 
