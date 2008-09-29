@@ -27,6 +27,7 @@ else if (isset($_POST['stock_id']))
 
 if (list_updated('stock_id')) {
 	$_POST['NewStockID'] = get_post('stock_id');
+    clear_data();
 	$Ajax->activate('details');
 	$Ajax->activate('controls');
 }
@@ -251,7 +252,6 @@ if ($new_item)
 
 /*If the page was called without $_POST['NewStockID'] passed to page then assume a new item is to be entered show a form with a part Code field other wise the form showing the fields with the existing entries against the part will show for editing with only a hidden stock_id field. New is set to flag that the page may have called itself and still be entering a new part, in which case the page needs to know not to go looking up details for an existing part*/
 
-    clear_data();
 	text_row(_("Item Code:"), 'NewStockID', null, 21, 20);
 
 	$company_record = get_company_prefs();

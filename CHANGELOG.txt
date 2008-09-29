@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+29-Sep-2008 Janusz Dobrowolski
+# Bug [0000065] Changing item type during adding new item caused record reset.
+$ /sales/includes/db/sales_delivery_db.inc
+
 26-Sep-2008 Joe Hunt
 # Bug [0000064] Credit This on an invoice should automatically allocate the credit to that invoice
 $ /sales/includes/db/sales_credit_db.inc
