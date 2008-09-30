@@ -21,9 +21,10 @@ $ -> Affected files
 
 30-Sep-2008 Janusz Dobrowolski
 # Bug [0000067] Settled supplier documents were displayed as overdued.
-$ purchasing/inquiry/supplier_inquiry.php
+$ /purchasing/inquiry/supplier_inquiry.php
+  /purchasing/inquiry/supplier_allocation_inquiry.php
 # Bug [0000068] Removed unneeded constraint on edition of fully allocated sales doc.
-$ sales/allocations/customer_allocation_main.php
+$ /sales/allocations/customer_allocation_main.php
 
 29-Sep-2008 Janusz Dobrowolski
 # Bug [0000065] Changing item type during adding new item caused record reset.
