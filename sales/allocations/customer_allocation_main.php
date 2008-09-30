@@ -99,11 +99,8 @@ function display_allocatable_transactions()
 		}
 		amount_cell($myrow["Total"]);
     	amount_cell($myrow["Total"] - $myrow["alloc"]);
-    	if ($myrow["Total"] - $myrow["alloc"] != 0.0)
-    		label_cell("<a href='$path_to_root/sales/allocations/customer_allocate.php?trans_no="
+   		label_cell("<a href='$path_to_root/sales/allocations/customer_allocate.php?trans_no="
 					.$myrow["trans_no"] . "&trans_type=" . $myrow["type"]  . "'>" . _("Allocate") . "</a>");
-    	else
-    		label_cell("");
     	end_row();
 	}
 
