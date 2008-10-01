@@ -31,6 +31,7 @@ function display_wo_issue($issue_no)
 
     $myrow = get_work_order_issue($issue_no);
 
+	br(1);
     start_table($table_style);
     $th = array(_("Issue #"), _("Reference"), _("For Work Order #"),
     	_("Item"), _("From Location"), _("To Work Centre"), _("Date of Issue"));

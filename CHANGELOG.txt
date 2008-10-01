@@ -19,6 +19,11 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+01-Oct-2008 Joe Hunt
+# When deleting the last module in FA a parce error arose:
+$ /admin/inst_module.php
+  /admin/inst_lang.php
+
 30-Sep-2008 Janusz Dobrowolski
 # Bug [0000067] Settled supplier documents were displayed as overdued.
 $ /purchasing/inquiry/supplier_inquiry.php
