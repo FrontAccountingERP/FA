@@ -61,6 +61,8 @@ function add_stock_adjustment_item($adj_id, $stock_id, $location, $date_, $type,
     	display_db_error("Cannot do inventory adjustment for Service item : $stock_id", "");
     }
 
+	update_average_material_cost(null, $stock_id, $standard_cost, $quantity, $date_);
+
 	add_stock_move(systypes::inventory_adjustment(), $stock_id, $adj_id, $location,
         $date_, $reference, $quantity, $standard_cost, $type);
 
@@ -74,7 +76,6 @@ function add_stock_adjustment_item($adj_id, $stock_id, $location, $date_, $type,
 
 		add_gl_trans_std_cost(systypes::inventory_adjustment(), $adj_id, $date_, $stock_gl_codes['inventory_account'], 0, 0, $memo_, ($standard_cost * $quantity));
 	}
-	update_average_material_cost(null, $stock_id, $standard_cost, $quantity, $date_);
 }
 
 //-------------------------------------------------------------------------------------------------------------
