@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+04-Oct-2008 Joe Hunt
+# Bug [0000069] Constraint on voiding delivery note if a non voided, linked invoice exists.
+$ /admin/db/voiding_db.inc
+
 01-Oct-2008 Joe Hunt
 # When deleting the last module in FA a parce error arose:
 $ /admin/inst_module.php
