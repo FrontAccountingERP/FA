@@ -19,6 +19,16 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+05-Oct-2008 Janusz Dobrowolski
+# Bugfix [0000063] Bad update of parent document lines after edition of sales documents.
+$ /sales/includes/cart_class.inc
+  /sales/includes/sales_db.inc
+  /sales/includes/db/sales_credit_db.inc
+  /sales/includes/db/sales_delivery_db.inc
+  /sales/includes/db/sales_invoice_db.inc
+# Bugfix [0000071] Ordering for customer with bad history available after F4 - Return
+$ /sales/manage/customers.php
+
 04-Oct-2008 Joe Hunt
 # Bug [0000069] Constraint on voiding delivery note if a non voided, linked invoice exists.
 $ /admin/db/voiding_db.inc
