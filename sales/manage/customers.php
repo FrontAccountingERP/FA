@@ -115,7 +115,8 @@ if (isset($_POST['submit']))
 
 if (isset($_POST['select']))
 {
-	context_return(array('customer_id' => $_POST['customer_id'])); // return to sales document
+	context_return(array('customer_id' => $_POST['customer_id'], 
+		'branch_id' => '')); // this fires customer history checks
 }
 //-------------------------------------------------------------------------------------------- 
 
