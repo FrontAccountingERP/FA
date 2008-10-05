@@ -63,7 +63,7 @@ function write_sales_delivery(&$delivery,$bo_policy)
 
 	// Now update sales_order_details for the quantity delivered
 		if ($delivery_line->qty_old != $delivery_line->qty_dispatched)
-			update_parent_line(13, $delivery_line->id,
+			update_parent_line(13, $delivery_line->src_id,
 				$delivery_line->qty_dispatched-$delivery_line->qty_old);
 
 		if ($delivery_line->qty_dispatched != 0) {

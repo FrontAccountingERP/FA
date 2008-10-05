@@ -91,7 +91,7 @@ function write_sales_invoice(&$invoice)
 
 		// Update delivery items for the quantity invoiced
 		if ($invoice_line->qty_old != $invoice_line->qty_dispatched)
-			update_parent_line(10, $invoice_line->id, ($invoice_line->qty_dispatched-$invoice_line->qty_old));
+			update_parent_line(10, $invoice_line->src_id, ($invoice_line->qty_dispatched-$invoice_line->qty_old));
 
 		if ($invoice_line->qty_dispatched != 0) {
 			$stock_gl_code = get_stock_gl_code($invoice_line->stock_id);

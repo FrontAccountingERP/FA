@@ -6,8 +6,8 @@
 //
 function write_credit_note($credit_note, $write_off_acc)
 {
-	// Changed 2008-09-26 Joe Hunt -------
-	$credit_invoice = count(array_keys($credit_note->src_docs)) ? reset(array_keys($credit_note->src_docs)) : 0;
+	$credit_invoice = 	is_array($credit_note->src_docs) ?
+		 reset(array_keys($credit_note->src_docs)) : $credit_note->src_docs;
 
 	$credit_date = $credit_note->document_date;
 	$tax_group_id = $credit_note->tax_group_id;
@@ -73,11 +73,10 @@ function write_credit_note($credit_note, $write_off_acc)
 		void_stock_move(11, $credit_no);
 		void_customer_trans_tax_details(11, $credit_no);
 	}
-
 	if ($credit_invoice) {
 		$invoice_alloc_balance = get_DebtorTrans_allocation_balance(10, $credit_invoice);
 		update_customer_trans_version(get_parent_type(11), $credit_note->src_docs );
-		if ($invoice_alloc_balance > 0) { 	/*the invoice is not already fully allocated */
+		if ($invoice_alloc_balance > 0) { 	//the invoice is not already fully allocated 
 			$total = $credit_note_total + $credit_note->freight_cost +
 			    $items_added_tax + $freight_added_tax;
 
@@ -98,10 +97,11 @@ function write_credit_note($credit_note, $write_off_acc)
 		}
 	}
 
+
 	foreach ($credit_note->line_items as $credit_line) {
 
 		if ($credit_invoice && $credit_line->qty_dispatched!=$credit_line->qty_old ) {
-			update_parent_line(11, $credit_line->id,($credit_line->qty_dispatched
+			update_parent_line(11, $credit_line->src_id,($credit_line->qty_dispatched
 					-$credit_line->qty_old));
 		}
 
@@ -151,7 +151,6 @@ function write_credit_note($credit_note, $write_off_acc)
 				"A tax GL posting for this credit note could not be inserted");
 		}
 	}
-
 	add_comments(11, $credit_no, $credit_date, $credit_note->Comments);
 
 	if ($trans_no == 0) {
