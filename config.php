@@ -23,7 +23,7 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 
 	$debug 			= 1;
 	$show_sql 		= 0;
-	$go_debug 		= 0;
+	$go_debug 		= 1;
 	if ($go_debug == 1)
 	{
 		error_reporting(E_ALL);
@@ -155,13 +155,13 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
  	System tabs. This variable should be in future included from separate file for extended module manager
 	*/
  	$applications = array (
- 		'orders' => _("Sales"),
- 		'AP'=>_("Purchases"),
- 		'stock'=> _("Items and Inventory"),
- 		'manuf'=> _("Manufacturing"),
- 		'proj'=>_("Dimensions"),
- 		'GL'=>_("Banking and General Ledger"),
- 		'system'=>_("Setup")
+ 		'orders' => _("&Sales"),
+ 		'AP'=>_("&Purchases"),
+ 		'stock'=> _("&Items and Inventory"),
+ 		'manuf'=> _("&Manufacturing"),
+ 		'proj'=>_("&Dimensions"),
+ 		'GL'=>_("&Banking and General Ledger"),
+ 		'system'=>_("S&etup")
  	);
 	/* default start-up tab (orders/AP/stock/manuf/proj/GL/system) */
 	$def_app = "orders";
