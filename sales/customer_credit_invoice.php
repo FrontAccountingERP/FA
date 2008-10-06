@@ -112,15 +112,6 @@ if (isset($_GET['InvoiceNumber']) && $_GET['InvoiceNumber'] > 0) {
 
     $ci = new Cart(10, $_GET['InvoiceNumber'], true);
 
-    if ($ci==null) {
-		display_error(_("This invoice can not be credited using the automatic facility."));
-		display_error("Please report that a duplicate debtor_trans header record was found for invoice " . key($ci->src_docs));
-		echo "<br><br>";
-		processing_end();
-		exit;
-    }
-    //valid invoice record returned from the entered invoice number
-
     $ci->trans_type = 11;
     $ci->src_docs = $ci->trans_no;
     $ci->src_date = $ci->document_date;

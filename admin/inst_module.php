@@ -130,7 +130,8 @@ function write_modules()
 	$msg .= "\n\n";
 
 	$msg .= "\$installed_modules = array (\n";
-	$msg .= "\t0 => ";
+	if ($n > 0)
+	    $msg .= "\t0 => ";
 	for ($i = 0; $i < $n; $i++)
 	{
 		if ($i > 0)

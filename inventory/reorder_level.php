@@ -19,7 +19,7 @@ check_db_has_costable_items(_("There are no inventory items defined in the syste
 if (isset($_GET['stock_id']))
 	$_POST['stock_id'] = $_GET['stock_id'];
 
-if (isset($_POST['_stock_id_update']))
+if (list_updated('stock_id')) 
 {
 	$Ajax->activate('show_heading');
 	$Ajax->activate('reorders');

@@ -18,7 +18,7 @@ if (isset($header2type))
 	$doc_Customers_Ref = _("Customers Reference:");
 	$doc_Our_Order_No = _("Our Order No");
 	$doc_Domicile = _("Domicile");
-	if($doctype == 13) {
+	if($doctype == 13 || $doctype == 8 || $doctype == 9) {
 	 $doc_Bank_Account = '';
 	 $doc_Please_Quote = _("All amounts stated in");
   } else {
@@ -65,7 +65,7 @@ if (isset($emailtype))
 }
 if (isset($header2type) || isset($linetype))
 {
-	$doc_Invoice_no = $doctype==13 ? _("Delivery Note No.") : _("Invoice No.");
+	$doc_Invoice_no = ($doctype==13 ? _("Delivery Note No.") : (($doctype==8 || $doctype==9) ? _("Order no.") : _("Invoice No.")));
 	$doc_Delivery_no = "Delivery Note No.";
 	$doc_Order_no = _("Order no.");
 }

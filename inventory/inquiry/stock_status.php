@@ -18,7 +18,7 @@ include_once($path_to_root . "/includes/data_checks.inc");
 
 include_once($path_to_root . "/inventory/includes/inventory_db.inc");
 
-if (isset($_POST['_stock_id_update']))
+if (list_updated('stock_id')) 
 	$Ajax->activate('status_tbl');
 //----------------------------------------------------------------------------------------------------
 

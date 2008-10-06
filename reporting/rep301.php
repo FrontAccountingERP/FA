@@ -36,8 +36,10 @@ function getTransactions($category, $location)
 		WHERE ".TB_PREF."stock_master.stock_id=".TB_PREF."stock_moves.stock_id
 		AND ".TB_PREF."stock_master.category_id=".TB_PREF."stock_category.category_id
 		GROUP BY ".TB_PREF."stock_master.category_id,
-			".TB_PREF."stock_category.description,
-			UnitCost,
+			".TB_PREF."stock_category.description, ";
+		if ($location != 'all')
+			$sql .= TB_PREF."stock_moves.loc_code, ";
+		$sql .= "UnitCost,
 			".TB_PREF."stock_master.stock_id,
 			".TB_PREF."stock_master.description
 		HAVING SUM(".TB_PREF."stock_moves.qty) != 0";

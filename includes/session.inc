@@ -15,9 +15,9 @@
 		// Fatal errors are not send to error_handler, 
 		// so we must check the output
 	  if ($text && preg_match('/\bFatal error(<.*?>)?:(.*)/i', $text, $m)) {
-       	$Ajax->aCommands = array();  // Don't update page on errors
-		
-		$messages[] = array(E_ERROR, $m[0], null, null);
+       	$Ajax->aCommands = array();  // Don't update page via ajax on errors
+		$text = preg_replace('/\bFatal error(<.*?>)?:(.*)/i','', $text);
+		$messages[] = array(E_ERROR, $m[2], null, null);
 	  }
 	  $Ajax->run();
   	  return  in_ajax() ? fmt_errors() : ($before_box.fmt_errors().$text);
@@ -108,6 +108,23 @@
 		}
 	}
 
+	//-----------------------------------------------------------------------------
+	//	Removing magic quotes from nested arrays/variables
+	//
+	function strip_quotes($data)
+	{
+		if(get_magic_quotes_gpc()) {
+			if(is_array($data)) {
+				foreach($data as $k => $v) {
+					$data[$k] = strip_quotes($data[$k]);
+				}
+			} else
+				return stripslashes($data);
+		}
+		return $data;
+	}
+
+
 	//----------------------------------------------------------------------------------------
 	if (!isset($_SESSION["wa_current_user"]) ||
 		(isset($_SESSION["wa_current_user"]) && !$_SESSION["wa_current_user"]->logged_in()))
@@ -154,6 +171,8 @@
 
    	check_page_security($page_security);
 
-
+// POST vars cleanup needed for direct reuse.
+// We quote all values later with db_escape() before db update.
+	$_POST = strip_quotes($_POST);
 
 ?>

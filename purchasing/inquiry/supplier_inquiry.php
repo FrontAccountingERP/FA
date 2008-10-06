@@ -179,7 +179,7 @@ if (db_num_rows($result) == 0)
  while ($myrow = db_fetch($result)) 
  {
 
-	if ($myrow['OverDue'] == 1)
+	if ($myrow['OverDue'] == 1 && $myrow['Settled'] == 0)
 	{
 		start_row("class='overduebg'");
 		$over_due = true;

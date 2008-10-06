@@ -10,6 +10,10 @@ include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/banking.inc");
 include_once($path_to_root . "/includes/ui.inc");
 
+if (isset($_GET['debtor_no'])) 
+{
+	$_POST['customer_id'] = $_GET['debtor_no'];
+}
 $new_customer = (!isset($_POST['customer_id']) || $_POST['customer_id'] == ""); 
 //--------------------------------------------------------------------------------------------
 
@@ -18,24 +22,28 @@ function can_process()
 	if (strlen($_POST['CustName']) == 0) 
 	{
 		display_error(_("The customer name cannot be empty."));
+		set_focus('CustName');
 		return false;
 	} 
 	
 	if (!check_num('credit_limit', 0))
 	{
 		display_error(_("The credit limit must be numeric and not less than zero."));
+		set_focus('credit_limit');
 		return false;		
 	} 
 	
 	if (!check_num('pymt_discount', 0, 100)) 
 	{
 		display_error(_("The payment discount must be numeric and is expected to be less than 100% and greater than or equal to 0."));
+		set_focus('pymt_discount');
 		return false;		
 	} 
 	
 	if (!check_num('discount', 0, 100)) 
 	{
 		display_error(_("The discount percentage must be numeric and is expected to be less than 100% and greater than or equal to 0."));
+		set_focus('discount');
 		return false;		
 	} 
 
@@ -97,15 +105,19 @@ function handle_submit()
 		$Ajax->activate('_page_body');
 	}
 }
-
 //--------------------------------------------------------------------------------------------
 
 if (isset($_POST['submit'])) 
 {
-	
 	handle_submit();
 }
+//-------------------------------------------------------------------------------------------- 
 
+if (isset($_POST['select']))
+{
+	context_return(array('customer_id' => $_POST['customer_id'], 
+		'branch_id' => '')); // this fires customer history checks
+}
 //-------------------------------------------------------------------------------------------- 
 
 if (isset($_POST['delete'])) 
@@ -160,7 +172,6 @@ if (isset($_POST['delete']))
 		$Ajax->activate('_page_body');
 	} //end if Delete Customer
 }
-
 
 check_db_has_sales_types(_("There are no sales types defined. Please define at least one sales type before adding a customer."));
  
@@ -261,10 +272,10 @@ amount_row(_("Credit Limit:"), 'credit_limit', $_POST['credit_limit']);
 payment_terms_list_row(_("Payment Terms:"), 'payment_terms', $_POST['payment_terms']);
 credit_status_list_row(_("Credit Status:"), 'credit_status', $_POST['credit_status']); 
 if (!$new_customer)  {
-start_row();
- echo '<td>'._('Customer branches').':</td>';
-  hyperlink_params_td($path_to_root . "/sales/manage/customer_branches.php",'<b>'. _("Add or Edit").'</b>', "debtor_no=".$_POST['customer_id']);
-end_row();
+	start_row();
+	echo '<td>'._('Customer branches').':</td>';
+  	hyperlink_params_td($path_to_root . "/sales/manage/customer_branches.php",'<b>'. (count($_SESSION['Context']) ?  _("Select or Add") : _("Add or Edit")).'</b>', "debtor_no=".$_POST['customer_id']);
+	end_row();
 }
 end_table();
 
@@ -278,6 +289,7 @@ else
 {
 	submit_center_first('submit', _("Update Customer"), 
 	  _('Update customer data'), true);
+	submit_return('select', _("Return"), _("Select this customer and return to document entry."), true);
 	submit_center_last('delete', _("Delete Customer"), 
 	  _('Delete customer data if have been never used'), true);
 }

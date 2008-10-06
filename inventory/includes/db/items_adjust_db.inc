@@ -61,6 +61,8 @@ function add_stock_adjustment_item($adj_id, $stock_id, $location, $date_, $type,
     	display_db_error("Cannot do inventory adjustment for Service item : $stock_id", "");
     }
 
+	update_average_material_cost(null, $stock_id, $standard_cost, $quantity, $date_);
+
 	add_stock_move(systypes::inventory_adjustment(), $stock_id, $adj_id, $location,
         $date_, $reference, $quantity, $standard_cost, $type);
 

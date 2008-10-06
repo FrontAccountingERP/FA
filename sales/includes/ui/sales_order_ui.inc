@@ -177,8 +177,6 @@ function display_order_header(&$order, $editable, $date_text, $display_tax_group
 		if ($order->customer_id != get_post('customer_id', -1))
 		{
 			// customer has changed
-			// clear the branch selection
-			$_POST['branch_id'] = '';
 			$Ajax->activate('branch_id');
   		}
 		customer_branches_list_row(_("Branch:"),
@@ -245,7 +243,7 @@ function display_order_header(&$order, $editable, $date_text, $display_tax_group
 		echo "<table height='5'>";
 		label_row(_("Customer Currency:"), $order->customer_currency);
 		exchange_rate_display($order->customer_currency, get_company_currency(),
-			($editable ? $_POST['OrderDate'] : $order->document_date), $editable);
+			($editable ? $_POST['OrderDate'] : $order->document_date));
 		echo "</table>";
 	    div_end();
 		echo "</td><td>"; // outer table
@@ -261,20 +259,11 @@ function display_order_header(&$order, $editable, $date_text, $display_tax_group
 	if ($order->sales_type != $_POST['sales_type']) {
 		$myrow = get_sales_type($_POST['sales_type']);
 		$order->set_sales_type($myrow['id'], $myrow['sales_type'],
-		$myrow['tax_included'], $myrow['factor']);
+			$myrow['tax_included'], $myrow['factor']);
 		$Ajax->activate('sales_type');
 		$change_prices = 1;
 	}
 
-	if ($change_prices != 0) {
-		foreach ($order->line_items as $line_no=>$item) {
-			$line = &$order->line_items[$line_no];
-			$line->price = get_price($line->stock_id, $order->customer_currency,
-				$order->sales_type, $order->price_factor, $order->document_date);
-		//		$line->discount_percent = $order->default_discount;
-		}
-	    $Ajax->activate('items_table');
-	}
 	label_row(_("Customer Discount:"), ($order->default_discount * 100) . "%");
 	echo "</table>";
 
@@ -288,7 +277,16 @@ function display_order_header(&$order, $editable, $date_text, $display_tax_group
 			$_POST['OrderDate'] = $order->document_date;
 
 		date_row($date_text, 'OrderDate',
-		  _('Date of order receive'));
+		  _('Date of order receive'), null, 0, 0, 0, null, true);
+		if (isset($_POST['_OrderDate_changed'])) {
+			$change_prices = 1;
+			$Ajax->activate('currency');
+			if ($order->trans_type == 10) {
+				$_POST['delivery_date'] = get_invoice_duedate(get_post('customer_id'), get_post('OrderDate'));
+			} else 
+				$_POST['delivery_date'] = add_days(get_post('OrderDate'), sys_prefs::default_delivery_required_by());
+			$Ajax->activate('delivery_date');
+		}
 	}
 	else
 	{
@@ -306,6 +304,16 @@ function display_order_header(&$order, $editable, $date_text, $display_tax_group
 	echo "</td></tr>";
 
 	end_table(1); // outer table
+
+	if ($change_prices != 0) {
+		foreach ($order->line_items as $line_no=>$item) {
+			$line = &$order->line_items[$line_no];
+			$line->price = get_price($line->stock_id, $order->customer_currency,
+				$order->sales_type, $order->price_factor, get_post('OrderDate'));
+		//		$line->discount_percent = $order->default_discount;
+		}
+	    $Ajax->activate('items_table');
+	}
 
 	return $customer_error;
 }
@@ -335,7 +343,7 @@ function sales_order_item_controls(&$order, &$rowcounter, $line_no=-1)
 	else
 	{
 		stock_items_list_cells(null,'stock_id', null, false, true);
-		if(isset($_POST['_stock_id_update'])) {
+		if (list_updated('stock_id')) {
 			    $Ajax->activate('price');
 			    $Ajax->activate('units');
 			    $Ajax->activate('qty');
@@ -349,7 +357,7 @@ function sales_order_item_controls(&$order, &$rowcounter, $line_no=-1)
 
 		$_POST['price'] = price_format(get_price ($_POST['stock_id'],
 			$order->customer_currency, $order->sales_type,
-			$order->price_factor, $order->document_date));
+			$order->price_factor, get_post('OrderDate')));
 		// default to the customer's discount %
 		$_POST['Disc'] = percent_format($order->default_discount * 100);
 
@@ -367,7 +375,7 @@ function sales_order_item_controls(&$order, &$rowcounter, $line_no=-1)
 
 	small_amount_cells(null, 'Disc', percent_format($_POST['Disc']), null, null, user_percent_dec());
 
-	$line_total = $_POST['qty'] * $_POST['price'] * (1 - $_POST['Disc'] / 100);
+	$line_total = input_num('qty') * input_num('price') * (1 - input_num('Disc') / 100);
 
 	amount_cell($line_total, false, '','line_total');
 

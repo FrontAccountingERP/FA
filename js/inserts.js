@@ -138,6 +138,12 @@ function _set_combo_select(e) {
 				setFocus(box.name);
 			    return false;
 			 }
+			if (this.getAttribute('aspect') == 'editable' && key==115) {
+				// F4: call related database editor - not available in non-js fallback mode
+				JsHttpRequest.request('_'+this.name+'_editor', this.form);
+				return false; // prevent default binding
+				// TODO: preventDefault, stopPropagation when needed
+			}
 		}
 }		
 
@@ -155,7 +161,19 @@ var inserts = {
 		}
 		if (e.className == 'combo' || e.className == 'combo2') {
 				_set_combo_input(e);
-		}
+		} 
+		else
+    		if(e.type == 'text' ) {
+   	  			e.onkeydown = function(ev) { 
+  					ev = ev||window.event;
+  					key = ev.keyCode||ev.which;
+ 	  				if(key == 13) {
+						if(e.className == 'searchbox') e.onblur();
+						return false;
+					} 
+					return true;
+	  			}
+			}
 	},
 	'input.combo2,input[aspect="fallback"]': 
 	function(e) {

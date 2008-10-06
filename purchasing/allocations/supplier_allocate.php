@@ -74,7 +74,7 @@ function handle_process()
 	begin_transaction();
 
 	// clear all the allocations for this payment/credit
-	clear_supp_alloctions($_SESSION['alloc']->type,	$_SESSION['alloc']->trans_no);
+	clear_supp_alloctions($_SESSION['alloc']->type,	$_SESSION['alloc']->trans_no, $_SESSION['alloc']->date_);
 
 	// now add the new allocations
 	$total_allocated = 0;
@@ -88,6 +88,14 @@ function handle_process()
 
 			update_supp_trans_allocation($alloc_item->type, $alloc_item->type_no,
 				$alloc_item->current_allocated);
+
+			// Exchange Variations Joe Hunt 2008-09-20 ////////////////////////////////////////
+
+			exchange_variation($_SESSION['alloc']->type, $_SESSION['alloc']->trans_no,
+				$alloc_item->type, $alloc_item->type_no, $_SESSION['alloc']->date_,
+				$alloc_item->current_allocated, payment_person_types::supplier());
+
+			///////////////////////////////////////////////////////////////////////////
 			$total_allocated += $alloc_item->current_allocated;
 		}
 

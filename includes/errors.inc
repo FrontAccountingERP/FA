@@ -11,7 +11,6 @@ $msg_colors = array(
 //-----------------------------------------------------------------------------
 //    Error handler - collects all php/user messages for
 //    display in message box.
-// FIX: fatal errors ?
 
 function error_handler($errno, $errstr, $file, $line) {
     global $messages;
@@ -65,6 +64,7 @@ function error_box() {
     echo "<div id='msgbox'>";
     $before_box = ob_get_clean(); // save html content before error box 
 // Necessary restart instead of get_contents/clean calls due to a bug in php 4.3.2
+	register_shutdown_function('ob_end_flush');
     ob_start('output_html');
     echo "</div>";
 }

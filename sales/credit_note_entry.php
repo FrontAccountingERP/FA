@@ -40,6 +40,18 @@ check_db_has_stock_items(_("There are no items defined in the system."));
 check_db_has_customer_branches(_("There are no customers, or there are no customers with branches. Please define customers and customer branches."));
 
 //-----------------------------------------------------------------------------
+if ($ret = context_restore()) {
+ // return from new customer add
+	copy_from_cn();
+	if(isset($ret['customer_id']))
+		$_POST['customer_id'] = $ret['customer_id'];
+	if(isset($ret['branch_id']))
+		$_POST['branch_id'] = $ret['branch_id'];
+}
+if (isset($_POST['_customer_id_editor'])) {
+	copy_to_cn(); //store context
+	context_call($path_to_root.'/sales/manage/customers.php?debtor_no='.$_POST['customer_id'], 'Items');
+}
 
 if (isset($_GET['AddedID'])) {
 	$credit_no = $_GET['AddedID'];
@@ -96,7 +108,6 @@ function handle_new_credit($trans_no)
 	processing_start();
 	$_SESSION['Items'] = new Cart(11,$trans_no);
 	copy_from_cn();
-    line_start_focus();
 }
 
 //-----------------------------------------------------------------------------

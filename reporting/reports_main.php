@@ -124,6 +124,7 @@ $reports->addReport(_('Inventory'),303,_('Stock Check Sheets'),
 	array(	new ReportParam(_('Inventory Category'),'CATEGORIES'),
 			new ReportParam(_('Location'),'LOCATIONS'),
 			new ReportParam(_('Show Pictures'),'YES_NO'),
+			new ReportParam(_('Inventory Column'),'YES_NO'),
 			new ReportParam(_('Comments'),'TEXTBOX')));
 $reports->addReport(_('Inventory'),304,_('Inventory Sales Report'),
 	array(	new ReportParam(_('Start Date'),'DATEBEGINM'),
@@ -151,11 +152,11 @@ if ($dim > 0)
 	//		new ReportParam(_('Comments'),'TEXTBOX')));
 }
 $reports->addReportClass(_('Banking'));
-//$reports->addReport(_('Banking'),601,_('Bank Account Transactions'),
-//	array(	new ReportParam(_('Bank Accounts'),'BANK_ACCOUNTS'),
-//			new ReportParam(_('Start Date'),'DATE'),
-//			new ReportParam(_('End Date'),'DATE'),
-//			new ReportParam(_('Comments'),'TEXTBOX')));
+	$reports->addReport(_('Banking'),601,_('Bank Statement'),
+	array(	new ReportParam(_('Bank Accounts'),'BANK_ACCOUNTS'),
+			new ReportParam(_('Start Date'),'DATEBEGINM'),
+			new ReportParam(_('End Date'),'DATEENDM'),
+			new ReportParam(_('Comments'),'TEXTBOX')));
 
 $reports->addReportClass(_('General Ledger'));
 $reports->addReport(_('General Ledger'),701,_('Chart of Accounts'),

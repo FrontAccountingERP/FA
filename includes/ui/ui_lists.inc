@@ -32,6 +32,7 @@ $opts = array(		// default options
 		// submit on select parameters
 	'default' => '', // default value when $_POST is not set
 	'select_submit' => false, //submit on select: true/false
+	'edit_submit' => false, // call editor on F4
 	'async' => true,	// select update via ajax (true) vs _page_body reload
 		// search box parameters
 	'sel_hint' => null,
@@ -67,7 +68,7 @@ $opts = array(		// default options
 	if(!count($opts['search'])) {
 		$opts['search'] = array($by_id ? $valfield : $namefield);
 	}
-	if ($opts['sel_hint'] === null)
+	if ($opts['sel_hint'] === null) 
 		$opts['sel_hint'] = $by_id || $search_box==false ?
 			'' : _('Press Space tab for search pattern entry');
 
@@ -84,7 +85,6 @@ $opts = array(		// default options
 	$limit = '';
 
 	if (isset($_POST[$select_submit])) {
-
 		if ($by_id) $txt = $_POST[$name];
 
 		if (!$opts['async'])
@@ -98,6 +98,7 @@ $opts = array(		// default options
 	$rel = "rel='$search_box'"; // set relation to list
    if ($opts['search_submit']) {
 	if (isset($_POST[$search_submit])) {
+		$selected_id = ''; // ignore selected_id while search
 		if (!$opts['async'])
 			$Ajax->activate('_page_body');
 		else
@@ -139,7 +140,13 @@ $opts = array(		// default options
 			$descr = $opts['format']==null ?  $contact_row[1] :
 			call_user_func($opts['format'], $contact_row);
 			$sel = '';
-			if ((string)($selected_id) === $value) {
+			if (get_post($search_submit) && ($txt === $value)) {
+					$selected_id = $value; 
+			} 
+ 		 	if (get_post($search_submit) && ($txt === $value)) {
+ 		 		$selected_id = $value;
+ 		 	}
+ 		 	if	((string)($selected_id) === $value) {
 				$sel = 'selected';
 				$found = $value;
 			}
@@ -167,11 +174,12 @@ $opts = array(		// default options
 	$_POST[$name] = $selected_id;
 
 	if ($by_id && $search_box != false) {
-		$txt = $_POST[$name];
-		$Ajax->addUpdate($name, $search_box, $txt);
+ 		$txt = $found;
+		$Ajax->addUpdate($name, $search_box, $txt ? $txt : '');
 	}
+	$aspect = $opts['edit_submit'] ? " aspect='editable'" : '';
 	$selector = "<select $disabled name='$name' class='$class' title='"
-		. $opts['sel_hint']."' $rel>".$selector."</select>\n";
+		. $opts['sel_hint']."'$aspect $rel>".$selector."</select>\n";
 
 	$Ajax->addUpdate($name, "_{$name}_sel", $selector);
 
@@ -212,6 +220,15 @@ $opts = array(		// default options
 
 	return $str;
 }
+
+/*
+	Helper function.
+	Returns true if selector $name is subject to update.
+*/
+function list_updated($name)
+{
+	return isset($_POST['_'.$name.'_update']) || isset($_POST['_'.$name.'_button']);
+}
 //----------------------------------------------------------------------------------------------
 //	Universal array combo generator
 //	$items is array of options 'value' => 'description'
@@ -225,6 +242,7 @@ $opts = array(		// default options
 	'spec_option'=>false, 	// option text or false
 	'spec_id' => 0,		// option id
 	'select_submit' => false, //submit on select: true/false
+	'edit_submit' => false, // call editor on F4
 	'async' => true,	// select update via ajax (true) vs _page_body reload
 	'default' => '', // default value when $_POST is not set
 		// search box parameters
@@ -281,8 +299,9 @@ $opts = array(		// default options
 		$_POST[$name] = $first_id;
 	}
 
+	$aspect = $opts['edit_submit'] ? " aspect='editable'" : '';
 	$selector = "<select $disabled name='$name' class='combo' title='"
-		. $opts['sel_hint']."' >".$selector."</select>\n";
+		. $opts['sel_hint']."'$aspect >".$selector."</select>\n";
 
 	$Ajax->addUpdate($name, "_{$name}_sel", $selector);
 
@@ -325,6 +344,7 @@ function supplier_list($name, $selected_id=null, $spec_option=false, $submit_on_
 	array(
 		'format' => '_format_add_curr',
 		'search_box' => $mode!=0,
+		'edit_submit' => true, 
 		'type' => 1,
 		'spec_option' => $spec_option === true ? _("All Suppliers") : $spec_option,
 		'spec_id' => $all_items,
@@ -370,8 +390,9 @@ return combo_input($name, $selected_id, $sql, 'debtor_no', 'name',
 		'spec_option' => $spec_option === true ? _("All Customers") : $spec_option,
 		'spec_id' => $all_items,
 		'select_submit'=> $submit_on_change,
+		'edit_submit' => true, // call editor on F4
 		'async' => false,
-		'sel_hint' => $mode ? _('Press Space tab to filter by name fragment') :
+		'sel_hint' => $mode ? _('Press Space tab to filter by name fragment; F4 - entry new customer') :
 		_('Select customer')
 	) );
 }
@@ -755,7 +776,8 @@ function stock_purchasable_items_list($name, $selected_id=null,
 	$all_option=false, $submit_on_change=false)
 {
 	$str = stock_items_list($name, $selected_id, $all_option, $submit_on_change,
-		array('where'=>array("mb_flag!= 'M'")));
+		array('where'=>array("mb_flag!= 'M'"), 
+			'edit_submit' => true));
 	return $str;
 }
 
@@ -765,7 +787,9 @@ function stock_purchasable_items_list_cells($label, $name, $selected_id=null,
 	if ($label != null)
 		echo "<td>$label</td>\n";
 	$str = stock_items_list($name, $selected_id, $all_option, $submit_on_change,
-		array('where'=>array("mb_flag!= 'M'"), 'cells'=>true));
+		array('where'=>array("mb_flag!= 'M'"), 
+			 'edit_submit' => true,
+			 'cells'=>true));
 	return $str;
 }
 

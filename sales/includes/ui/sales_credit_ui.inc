@@ -22,15 +22,7 @@ function display_credit_header(&$order)
 	if ($order->customer_id != $_POST['customer_id'] /*|| $order->sales_type != $_POST['sales_type_id']*/)
 	{
 		// customer has changed
-
-		// delete all the order items - drastic but necessary because of
-		// change of currency, sales type, etc
-//		$order->clear_items();
-
-		// clear the branch selection
-//		unset($_POST['branch_id']);
-			$_POST['branch_id'] = '';
-			$Ajax->activate('branch_id');
+		$Ajax->activate('branch_id');
 	}
 
 	customer_branches_list_row(_("Branch:"), $_POST['customer_id'], 
@@ -62,7 +54,7 @@ function display_credit_header(&$order)
 				}
 				if ($old_order->sales_type != $order->sales_type) {
 				//  || $old_order->default_discount!=$order->default_discount
-					$_POST['sales_type'] = $order->sales_type;
+					$_POST['sales_type_id'] = $order->sales_type;
 				    $Ajax->activate('sales_type_id');
 				    $change_prices = 1;
 				}
@@ -85,12 +77,14 @@ function display_credit_header(&$order)
 
 	if (!is_company_currency($order->customer_currency))
 	{
+	    div_start('currency');
 		echo "<table height='5'>";
 		label_row(_("Customer Currency:"), $order->customer_currency);
 		exchange_rate_display($order->customer_currency, get_company_currency(),
-			$_POST['OrderDate'], true);
+			$_POST['OrderDate']);
 		echo "</table>";
 		echo "</td><td>"; // outer table
+	    div_end();
 	}
 
 	echo "<table height='5'>";
@@ -107,16 +101,6 @@ function display_credit_header(&$order)
 		$change_prices = 1;
 	}
 
-	if ($change_prices != 0) {
-		foreach ($order->line_items as $line_no=>$item) {
-			$line = &$order->line_items[$line_no];
-			$line->price = get_price($line->stock_id, $order->customer_currency,
-				$order->sales_type, $order->price_factor, $order->document_date);
-		//		$line->discount_percent = $order->default_discount;
-		}
-	    $Ajax->activate('items_table');
-	}
-
 	label_row(_("Customer Discount:"), ($order->default_discount * 100) . "%");
 	echo "</table>";
 
@@ -127,8 +111,11 @@ function display_credit_header(&$order)
 	if (!isset($_POST['OrderDate']) || $_POST['OrderDate'] == "")
 		$_POST['OrderDate'] = $order->document_date;
 
-	date_row(_("Date:"), 'OrderDate');
-
+	date_row(_("Date:"), 'OrderDate', '', null, 0, 0, 0, null, true);
+	if (isset($_POST['_OrderDate_changed'])) {
+		$change_prices = 1;
+		$Ajax->activate('currency');
+	}
     shippers_list_row(_("Shipping Company:"), 'ShipperID', $order->ship_via);
 
 	echo "</table>";
@@ -136,6 +123,17 @@ function display_credit_header(&$order)
 	echo "</td></tr>";
 
 	end_table(1); // outer table
+
+	if ($change_prices != 0) {
+		foreach ($order->line_items as $line_no=>$item) {
+			$line = &$order->line_items[$line_no];
+			$line->price = get_price($line->stock_id, $order->customer_currency,
+				$order->sales_type, $order->price_factor, get_post('OrderDate'));
+		//		$line->discount_percent = $order->default_discount;
+		}
+	    $Ajax->activate('items_table');
+	}
+
 
 	return $customer_error;
 }
@@ -241,7 +239,7 @@ function credit_edit_item_controls(&$order, $rowcounter, $line_no=-1)
 	else
 	{
 		stock_items_list_cells(null,'stock_id', null, false, true);
-		if(isset($_POST['_stock_id_update'])) {
+		if (list_updated('stock_id')) {
 			    $Ajax->activate('price');
 			    $Ajax->activate('qty');
 			    $Ajax->activate('units');
@@ -264,7 +262,7 @@ function credit_edit_item_controls(&$order, $rowcounter, $line_no=-1)
 	amount_cells(null, 'price',  null);
 	small_amount_cells(null, 'Disc', percent_format(0), null, null, user_percent_dec());
 
-	amount_cell($_POST['qty'] * $_POST['price'] * (1 - $_POST['Disc']/100));
+	amount_cell(input_num('qty') * input_num('price') * (1 - input_num('Disc')/100));
 
 	if ($id!=-1)
 	{

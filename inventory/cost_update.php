@@ -51,20 +51,20 @@ if (isset($_POST['UpdateData']))
 
    	if ($should_update)
    	{
-		$update_no = stock_cost_update($_POST['stock_id'], 
-		    input_num('material_cost'), input_num('labour_cost'), 
+		$update_no = stock_cost_update($_POST['stock_id'],
+		    input_num('material_cost'), input_num('labour_cost'),
 		    input_num('overhead_cost'),	$old_cost);
 
-        display_note(_("Cost has been updated."));
+        display_notification(_("Cost has been updated."));
 
         if ($update_no > 0)
         {
-    		display_note(get_gl_view_str(systypes::cost_update(), $update_no, _("View the GL Journal Entries for this Cost Update")), 1, 0);
+    		display_note(get_gl_view_str(systypes::cost_update(), $update_no, _("View the GL Journal Entries for this Cost Update")), 0, 1);
         }
    	}
 }
 
-if (isset($_POST['_stock_id_update']))
+if (list_updated('stock_id'))
 	$Ajax->activate('cost_table');
 //-----------------------------------------------------------------------------------------
 

@@ -10,10 +10,9 @@ include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");
 
 include_once($path_to_root . "/admin/db/company_db.inc");
-
 //-------------------------------------------------------------------------------------------------
 
-if (isset($_POST['submit']) && $_POST['submit'] != "")
+if (isset($_POST['update']) && $_POST['update'] != "")
 {
 
 	$input_error = 0;
@@ -53,7 +52,6 @@ if (isset($_POST['submit']) && $_POST['submit'] != "")
 		}
 		elseif (file_exists($filename))
 		{
-			display_notification(_('Attempting to overwrite an existing item image'));
 			$result = unlink($filename);
 			if (!$result)
 			{
@@ -66,11 +64,10 @@ if (isset($_POST['submit']) && $_POST['submit'] != "")
 		{
 			$result  =  move_uploaded_file($_FILES['pic']['tmp_name'], $filename);
 			$_POST['coy_logo'] = $_FILES['pic']['name'];
-			$message = ($result)?_('File url') ."<a href='$filename'>$filename</a>" : "Somthing is wrong with uploading a file.";
+			if(!$result) 
+				display_error(_('Error uploading logo file'));
 		}
-	 /* EOF Add Image upload for New Item  - by Ori */
 	}
-
 	if ($input_error != 1)
 	{
 		update_company_setup($_POST['coy_name'], $_POST['coy_no'], $_POST['gst_no'], $_POST['tax_prd'], $_POST['tax_last'],
@@ -169,7 +166,7 @@ end_row();
 
 end_table(1);
 hidden('coy_logo', $_POST['coy_logo']);
-submit_center('submit', _("Update"), true, '', true);
+submit_center('update', _("Update"), true, '', true);
 
 end_form(2);
 //-------------------------------------------------------------------------------------------------

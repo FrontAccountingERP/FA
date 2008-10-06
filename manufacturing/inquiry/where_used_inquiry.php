@@ -22,7 +22,7 @@ echo "<hr></center>";
 
 set_global_stock_item($_POST['stock_id']);
 
-if (isset($_POST['_stock_id_update']))
+if (list_updated('stock_id')) 
 	$Ajax->activate('usage_table');
 
 if (isset($_POST['stock_id']))

@@ -142,6 +142,11 @@ if ( (isset($_GET['DeliveryNumber']) && ($_GET['DeliveryNumber'] > 0) )
 if (isset($_POST['Update'])) {
 	$Ajax->activate('Items');
 }
+if (isset($_POST['_InvoiceDate_changed'])) {
+	$_POST['due_date'] = get_invoice_duedate($_SESSION['Items']->customer_id, 
+		$_POST['InvoiceDate']);
+	$Ajax->activate('due_date');
+}
 //-----------------------------------------------------------------------------
 function check_quantities()
 {
@@ -333,7 +338,7 @@ if (!isset($_POST['InvoiceDate']) || !is_date($_POST['InvoiceDate'])) {
 	}
 }
 
-date_cells(_("Date"), 'InvoiceDate', '', $_POST['InvoiceDate'], 0, 0, 0, "class='tableheader2'");
+date_cells(_("Date"), 'InvoiceDate', '', $_POST['InvoiceDate'], 0, 0, 0, "class='tableheader2'", true);
 
 if (!isset($_POST['due_date']) || !is_date($_POST['due_date'])) {
 	$_POST['due_date'] = get_invoice_duedate($_SESSION['Items']->customer_id, $_POST['InvoiceDate']);

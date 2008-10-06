@@ -13,10 +13,10 @@ function write_customer_payment($trans_no, $customer_id, $branch_id, $bank_accou
 	    $customer_id, $branch_id, $date_, $ref, $amount, $discount);
 
 	if ($trans_no != 0) {
-	  delete_comments(12, $invoice_no);
-	  void_bank_trans(12, $type_no, true);
+	  delete_comments(12, $trans_no);
+	  void_bank_trans(12, $trans_no, true);
 	  void_gl_trans(12, $trans_no, true);
-	  void_cust_allocations(12, $trans_no);
+	  void_cust_allocations(12, $trans_no, $date_);
 	}
 
 	/* Bank account entry first */

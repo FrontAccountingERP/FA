@@ -13,29 +13,23 @@ include_once($path_to_root . "/includes/data_checks.inc");
 include_once($path_to_root . "/inventory/includes/inventory_db.inc");
 
 $user_comp = user_company();
-$new_item = (!isset($_POST['stock_id']) || $_POST['stock_id'] == ""); 
+$new_item = get_post('stock_id')==''; 
 //------------------------------------------------------------------------------------
 
 if (isset($_GET['stock_id']))
 {
-	$stock_id = strtoupper($_GET['stock_id']);
+	$_POST['stock_id'] = $stock_id = strtoupper($_GET['stock_id']);
 }
 else if (isset($_POST['stock_id']))
 {
 	$stock_id = strtoupper($_POST['stock_id']);
 }
 
-if(get_post('_stock_id_update')) {
-	$_POST['NewStockID'] = $_POST['stock_id'];
-	if ($new_item) {
-	  clear_data();
-	  set_focus('NewStockID');
-	} else {
-	  set_focus('description');
-	}
+if (list_updated('stock_id')) {
+	$_POST['NewStockID'] = get_post('stock_id');
+    clear_data();
 	$Ajax->activate('details');
 	$Ajax->activate('controls');
-//	unset($_POST['New']);
 }
 $upload_file = "";
 if (isset($_FILES['pic']) && $_FILES['pic']['name'] != '') 
@@ -67,7 +61,6 @@ if (isset($_FILES['pic']) && $_FILES['pic']['name'] != '')
 	} 
 	elseif (file_exists($filename))
 	{
-		display_notification(_('Attempting to overwrite an existing item image'));
 		$result = unlink($filename);
 		if (!$result) 
 		{
@@ -79,7 +72,6 @@ if (isset($_FILES['pic']) && $_FILES['pic']['name'] != '')
 	if ($upload_file == 'Yes')
 	{
 		$result  =  move_uploaded_file($_FILES['pic']['tmp_name'], $filename);
-		$message = ($result)?_('File url') ."<a href='$filename'>$filename</a>" : "Somthing is wrong with uploading a file.";
 	}
  /* EOF Add Image upload for New Item  - by Ori */
 }
@@ -91,8 +83,6 @@ check_db_has_item_tax_types(_("There are no item tax types defined in the system
 
 function clear_data()
 {
-	global $new_item;
-	
 	unset($_POST['long_description']);
 	unset($_POST['description']);
 	unset($_POST['category_id']);
@@ -102,7 +92,6 @@ function clear_data()
 	unset($_POST['NewStockID']);
 	unset($_POST['dimension_id']);
 	unset($_POST['dimension2_id']);
-	$new_item = true;
 }
 
 //------------------------------------------------------------------------------------
@@ -148,8 +137,6 @@ if (isset($_POST['addupdate']))
 				$_POST['dimension_id'], $_POST['dimension2_id']);
 
 			display_notification(_("Item has been updated."));
-			set_focus('stock_id');
-			$Ajax->activate('details'); //update image if any
 		} 
 		else 
 		{ //it is a NEW part
@@ -163,10 +150,9 @@ if (isset($_POST['addupdate']))
 
 		display_notification(_("A new item has been added."));
 		$_POST['stock_id'] = $_POST['NewStockID'];
-		$new_item = false;
+		}
 		set_focus('stock_id');
 		$Ajax->activate('_page_body');
-		}
 	}
 }
 
@@ -226,13 +212,17 @@ if (isset($_POST['delete']) && strlen($_POST['delete']) > 1)
 		if (file_exists($filename))
 			unlink($filename);
 		display_notification(_("Selected item has been deleted."));
-		$new_item = true;
 		$_POST['stock_id'] = '';
 		clear_data();
 		set_focus('stock_id');
 		$Ajax->activate('_page_body');
-//		meta_forward($_SERVER['PHP_SELF']);
 	}
+}
+//-------------------------------------------------------------------------------------------- 
+
+if (isset($_POST['select']))
+{
+	context_return(array('stock_id' => $_POST['stock_id']));
 }
 
 //------------------------------------------------------------------------------------
@@ -245,13 +235,10 @@ if (db_has_stock_items())
 	start_row();
     stock_items_list_cells(_("Select an item:"), 'stock_id', null,
 	  _('New item'), true);
-//    submit_cells('SelectStockItem', _("Edit Item"));
+	$new_item = get_post('stock_id')==''; 
 	end_row();
 	end_table();
 }
-
-//hyperlink_params($_SERVER['PHP_SELF'], _("Enter a new item"), "New=1");
-//echo "<br>";
 
 div_start('details');
 start_table("$table_style2 width=40%");
@@ -260,7 +247,7 @@ table_section_title(_("Item"));
 
 //------------------------------------------------------------------------------------
 
-if (!isset($_POST['NewStockID']) || $new_item) 
+if ($new_item) 
 {
 
 /*If the page was called without $_POST['NewStockID'] passed to page then assume a new item is to be entered show a form with a part Code field other wise the form showing the fields with the existing entries against the part will show for editing with only a hidden stock_id field. New is set to flag that the page may have called itself and still be entering a new part, in which case the page needs to know not to go looking up details for an existing part*/
@@ -287,9 +274,8 @@ if (!isset($_POST['NewStockID']) || $new_item)
 } 
 else 
 { // Must be modifying an existing item
+		$_POST['NewStockID'] = $_POST['stock_id'];
 
-	if (!$new_item) 
-	{
 		$myrow = get_item($_POST['NewStockID']);
 
 		$_POST['long_description'] = $myrow["long_description"];
@@ -309,7 +295,7 @@ else
 	
 		label_row(_("Item Code:"),$_POST['NewStockID']);
 		hidden('NewStockID', $_POST['NewStockID']);
-	}
+		set_focus('description');
 }
 
 text_row(_("Name:"), 'description', null, 52, 50);
@@ -322,14 +308,18 @@ start_table("$table_style2 width=40%");
 start_row();
 label_cells(_("Image File (.jpg)") . ":", "<input type='file' id='pic' name='pic'>");
 // Add Image upload for New Item  - by Joe
+$stock_img_link = "<img id='item_img' alt = '[";
 if (isset($_POST['NewStockID']) && file_exists("$comp_path/$user_comp/images/".$_POST['NewStockID'].".jpg")) 
 {
-	$stock_img_link = "<img src='$comp_path/$user_comp/images/".$_POST['NewStockID'].".jpg' width='$pic_width' height='$pic_height' border='0'>";
+ // 31/08/08 - rand() call is necessary here to avoid caching problems. Thanks to Peter D.
+	$stock_img_link .= $_POST['NewStockID'].".jpg".
+	"]' src='$comp_path/$user_comp/images/".$_POST['NewStockID'].".jpg?nocache=".rand()."'";
 } 
 else 
 {
-	$stock_img_link = "No Image";
+	$stock_img_link .= _("No image"). "]'";
 }
+$stock_img_link .= " width='$pic_width' height='$pic_height' border='0'>";
 
 label_cell($stock_img_link, "valign=top align=center rowspan=5");
 end_row();
@@ -392,7 +382,7 @@ if (!isset($_POST['NewStockID']) || $new_item)
 else 
 {
 	submit_center_first('addupdate', _("Update Item"), '', true);
-
+	submit_return('select', _("Return"), _("Select this items and return to document entry."), true);
 	submit_center_last('delete', _("Delete This Item"), '', true);
 }
 

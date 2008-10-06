@@ -26,10 +26,10 @@ else
 //-----------------------------------------------------------------------------------
 // Ajax updates
 //
-if (get_post('SearchOrders')) 
+if (get_post('SearchOrders'))
 {
 	$Ajax->activate('dim_table');
-} elseif (get_post('_OrderNumber_changed')) 
+} elseif (get_post('_OrderNumber_changed'))
 {
 	$disable = get_post('OrderNumber') !== '';
 
@@ -63,7 +63,7 @@ start_row();
 
 ref_cells(_("Reference:"), 'OrderNumber', '',null, '', true);
 
-number_list_cells(_("Type"), 'type_', null, 0, 2);
+number_list_cells(_("Type"), 'type_', null, 1, 2, _("All"));
 date_cells(_("From:"), 'FromDate', '', null, 0, 0, -5);
 date_cells(_("To:"), 'ToDate');
 
@@ -136,8 +136,8 @@ while ($myrow = db_fetch($result))
 {
 	$sql = "SELECT SUM(amount) FROM ".TB_PREF."gl_trans WHERE tran_date >= '" .
 		date2sql($_POST['FromDate']) . "' AND
-		tran_date <= '" . date2sql($_POST['ToDate']) . "' AND dimension_id = " .
-		$myrow['id'];
+		tran_date <= '" . date2sql($_POST['ToDate']) . "' AND (dimension_id = " .
+		$myrow['id']." OR dimension2_id = " .$myrow['id'].")";
 	$res = db_query($sql, "Transactions could not be calculated");
 	$row = db_fetch_row($res);
 
@@ -171,7 +171,7 @@ while ($myrow = db_fetch($result))
 	if (!$outstanding_only)
 		label_cell(($myrow["closed"] ? _("Yes") : _("No")));
 	amount_cell($row[0]);
-	
+
 	label_cell($myrow["closed"] == 0 ? ("<a href='$mpage'>" . _("Edit") . "</a>") :'');
 	end_row();
 

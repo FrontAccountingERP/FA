@@ -12,6 +12,13 @@ if ($use_popup_windows)
 page(_("Customer Allocations"), false, false, "", $js);
 
 //--------------------------------------------------------------------------------
+if ($ret = context_restore()) {
+	if(isset($ret['customer_id']))
+		$_POST['customer_id'] = $ret['customer_id'];
+}
+if (isset($_POST['_customer_id_editor'])) {
+	context_call($path_to_root.'/sales/manage/customers.php?debtor_no='.$_POST['customer_id'] );
+}
 
 function display_allocatable_transactions()
 {
@@ -92,11 +99,8 @@ function display_allocatable_transactions()
 		}
 		amount_cell($myrow["Total"]);
     	amount_cell($myrow["Total"] - $myrow["alloc"]);
-    	if ($myrow["Total"] - $myrow["alloc"] != 0.0)
-    		label_cell("<a href='$path_to_root/sales/allocations/customer_allocate.php?trans_no="
+   		label_cell("<a href='$path_to_root/sales/allocations/customer_allocate.php?trans_no="
 					.$myrow["trans_no"] . "&trans_type=" . $myrow["type"]  . "'>" . _("Allocate") . "</a>");
-    	else
-    		label_cell("");
     	end_row();
 	}
 

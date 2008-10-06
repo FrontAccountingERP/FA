@@ -77,6 +77,7 @@ class language
 
 }
 
+session_name('FrontAccounting');
 session_start();
 // this is to fix the "back-do-you-want-to-refresh" issue - thanx PHPFreaks
 header("Cache-control: private");

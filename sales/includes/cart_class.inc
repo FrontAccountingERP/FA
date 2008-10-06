@@ -75,17 +75,17 @@ class cart
 	function read($type, $trans_no = 0, $view=false ) {
 
 		if (!is_array($trans_no)) $trans_no = array($trans_no);
-
 		if ($trans_no[0]) {
 			if ($type == 30) { // sales order
 				read_sales_order($trans_no[0], $this);
 				if ($view) {	// prepare for DN/IV entry
 					for($line_no = 0; $line_no < count($this->line_items); $line_no++) {
 						$line = &$this->line_items[$line_no];
+						$line->src_id = $line->id; // save src line ids for update
 						$line->qty_dispatched = $line->quantity - $line->qty_done;
 					}
 				}
-				} else {	// derivative transaction
+			} else {	// derivative transaction
 					read_sales_trans($type, $trans_no, $this);
 					if ($this->order_no) { // free hand credit notes have no order_no
 						$sodata = get_sales_order_header($this->order_no);
@@ -111,12 +111,14 @@ class cart
 							$sign = 1; // $type==13 ?  1 : -1; // this is strange debtor_trans atavism
 							$line = &$this->line_items[$line_no];
 
+							$line->src_id = $srcline['id']; // save src line ids for update
 							$line->qty_old = $line->qty_dispatched = $line->quantity;
 							$line->quantity += $sign * ($srcline['quantity'] - $srcline['qty_done']); // add free qty on src doc
 						}
 					} else {
 						for($line_no = 0; $line_no < count($this->line_items); $line_no++) {
 							$line = &$this->line_items[$line_no];
+							$line->src_id = $line->id; // save src line ids for update
 							$line->qty_dispatched = $line->quantity;
 						}
 					}
@@ -138,7 +140,7 @@ class cart
 					get_invoice_duedate($this->customer_id, $this->document_date);
 				else
 				  $this->due_date =
-					add_days($this->document_date, 10); // FIX this should be in company prefs
+					add_days($this->document_date, sys_prefs::default_delivery_required_by());
 			}
 	}
 
@@ -403,6 +405,7 @@ class line_details
 	var $tax_type;
 	var $tax_type_name;
 	var $src_no;	// number of src doc for this line
+	var $src_id;
 	var $quantity;
 	var $price;
 	var $discount_percent;

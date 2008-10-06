@@ -44,6 +44,8 @@ function copy_to_trans(&$supp_trans)
 
 function invoice_header(&$supp_trans)
 {
+	global $Ajax;
+	
 	// if vars have been lost, recopy
 	if (!isset($_POST['tran_date']))
 		copy_from_trans($supp_trans);
@@ -83,6 +85,13 @@ function invoice_header(&$supp_trans)
 	echo "<table width=100%>";
 
    	date_row(_("Date") . ":", 'tran_date', '', null, 0, 0, 0, "", true);
+	if (isset($_POST['_tran_date_changed'])) {
+		$Ajax->activate('_ex_rate');
+		$supp_trans->tran_date = $_POST['tran_date'];
+		get_duedate_from_terms($supp_trans);
+		$_POST['due_date'] = $supp_trans->due_date;
+		$Ajax->activate('due_date');
+	}
 
     date_row(_("Due Date") . ":", 'due_date');
 
@@ -297,7 +306,7 @@ function display_grn_items(&$supp_trans, $mode=0)
 
   div_start('grn_items');
 	echo "<table width=100% $table_style>";
-	$th = array(_("Delivery Sequence #"), _("Item"), _("Description"),
+	$th = array(_("Delivery"), _("Item"), _("Description"),
 		_("Quantity"), _("Price"), _("Line Value"));
 
 	table_header($th);
@@ -312,7 +321,8 @@ function display_grn_items(&$supp_trans, $mode=0)
 
     		alt_table_row_color($k);
 
-    		label_cell(get_trans_view_str(25,$entered_grn->id));
+			$grn_batch = get_grn_batch_from_item($entered_grn->id);
+    		label_cell(get_trans_view_str(25,$grn_batch));
 			label_cell($entered_grn->item_code);
 			label_cell($entered_grn->item_description);
 			qty_cell(abs($entered_grn->this_quantity_inv), false, get_qty_dec($entered_grn->item_code));

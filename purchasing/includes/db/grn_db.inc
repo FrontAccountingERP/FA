@@ -4,7 +4,10 @@
 
 function update_average_material_cost($supplier, $stock_id, $price, $qty, $date, $adj_only=false)
 {
-	$currency = get_supplier_currency($supplier);
+	if ($supplier != null)
+		$currency = get_supplier_currency($supplier);
+	else
+		$currency = null;
 	if ($currency != null)
 		$price_in_home_currency = to_home_currency($price, $currency, $date);
 	else
@@ -125,6 +128,42 @@ function add_grn_detail_item($grn_batch_id, $po_detail_item, $item_code, $descri
 }
 
 //----------------------------------------------------------------------------------------
+function get_grn_batch_from_item($item)
+{
+	$sql = "SELECT grn_batch_id FROM ".TB_PREF."grn_items WHERE id=$item";
+	$result = db_query($sql, "Could not retreive GRN batch id");
+	$row = db_fetch_row($result);
+	return $row[0];
+}
+
+function set_grn_item_credited(&$entered_grn, $supplier, $transno, $date)
+{
+	$mcost = update_average_material_cost($supplier, $entered_grn->item_code,
+		$entered_grn->chg_price, $entered_grn->this_quantity_inv, $date);
+
+ 	$sql = "SELECT ".TB_PREF."grn_batch.*, ".TB_PREF."grn_items.*
+    	FROM ".TB_PREF."grn_batch, ".TB_PREF."grn_items
+    	WHERE ".TB_PREF."grn_items.grn_batch_id=".TB_PREF."grn_batch.id
+		AND ".TB_PREF."grn_items.id=$entered_grn->id
+    	AND ".TB_PREF."grn_items.item_code='$entered_grn->item_code' ";
+	$result = db_query($sql, "Could not retreive GRNS");
+	$myrow = db_fetch($result);
+
+	$sql = "UPDATE ".TB_PREF."purch_order_details
+        SET quantity_received = quantity_received + $entered_grn->this_quantity_inv,
+        std_cost_unit=$mcost,
+        act_price=$entered_grn->chg_price
+        WHERE po_detail_item = ".$myrow["po_detail_item"];
+	db_query($sql, "a purchase order details record could not be updated. This receipt of goods has not been processed ");
+
+	//$sql = "UPDATE ".TB_PREF."grn_items SET qty_recd=0, quantity_inv=0 WHERE id=$entered_grn->id";
+	$sql = "UPDATE ".TB_PREF."grn_items SET qty_recd=qty_recd+$entered_grn->this_quantity_inv,
+		quantity_inv=quantity_inv+$entered_grn->this_quantity_inv WHERE id=$entered_grn->id";
+	db_query($sql);
+
+    add_stock_move(21, $entered_grn->item_code, $transno, $myrow['loc_code'], $date, "",
+       	$entered_grn->this_quantity_inv, $mcost, $supplier, 1, $entered_grn->chg_price);
+}
 
 function get_grn_items($grn_batch_id=0, $supplier_id="", $outstanding_only=false,
 	$is_invoiced_only=false)

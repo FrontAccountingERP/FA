@@ -6,9 +6,13 @@ $path_to_root="../..";
 include($path_to_root . "/purchasing/includes/po_class.inc");
 
 include($path_to_root . "/includes/session.inc");
-page(_("View Purchase Order"), true);
-
 include($path_to_root . "/purchasing/includes/purchasing_ui.inc");
+
+$js = "";
+if ($use_popup_windows)
+	$js .= get_js_open_window(900, 500);
+page(_("View Purchase Order"), true, false, "", $js);
+
 
 if (!isset($_GET['trans_no']))
 {

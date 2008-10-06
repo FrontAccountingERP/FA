@@ -23,7 +23,7 @@ check_db_has_bank_accounts(_("There are no bank accounts defined in the system."
 //-----------------------------------------------------------------------------------
 // Ajax updates
 //
-if (get_post('Show')) 
+if (get_post('Show'))
 {
 	$Ajax->activate('trans_tbl');
 }
@@ -58,15 +58,15 @@ $sql = "SELECT ".TB_PREF."bank_trans.*,name AS BankTransType FROM ".TB_PREF."ban
 
 $result = db_query($sql,"The transactions for '" . $_POST['bank_account'] . "' could not be retrieved");
 
+div_start('trans_tbl');
 $act = get_bank_account($_POST["bank_account"]);
 display_heading($act['bank_account_name']." - ".$act['bank_curr_code']);
 
-div_start('trans_tbl');
 start_table($table_style);
 
 $th = array(_("Type"), _("#"), _("Reference"), _("Type"), _("Date"),
 	_("Debit"), _("Credit"), _("Balance"), _("Person/Item"), "");
-table_header($th);	
+table_header($th);
 
 $sql = "SELECT SUM(amount) FROM ".TB_PREF."bank_trans WHERE bank_act='" . $_POST['bank_account'] . "'
 	AND trans_date < '$date_after'";
@@ -83,7 +83,7 @@ end_row();
 $running_total = $bfw;
 $j = 1;
 $k = 0; //row colour counter
-while ($myrow = db_fetch($result)) 
+while ($myrow = db_fetch($result))
 {
 
 	alt_table_row_color($k);
@@ -105,7 +105,7 @@ while ($myrow = db_fetch($result))
 	if ($j == 12)
 	{
 		$j = 1;
-		table_header($th);	
+		table_header($th);
 	}
 	$j++;
 }

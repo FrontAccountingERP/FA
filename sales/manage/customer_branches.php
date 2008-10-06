@@ -35,6 +35,13 @@ if (isset($_GET['SelectedBranch']))
 	$selected_id = $_GET['SelectedBranch'];
 }
 
+$id = find_submit('Select');
+if ($id != -1)
+{
+	context_return(array('customer_id' => $_POST['customer_id'],
+		'branch_id' => $id)); // return to sales document
+}
+
 //-----------------------------------------------------------------------------------------------
 
 if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
@@ -179,6 +186,7 @@ if ($num_branches)
 
 	$th = array(_("Name"), _("Contact"), _("Sales Person"), _("Area"),
 		_("Phone No"), _("Fax No"), _("E-mail"), _("Tax Group"), "", "");
+	if (count($_SESSION['Context'])) $th[] = '';
 	table_header($th);
 
 	while ($myrow = db_fetch($result))
@@ -192,6 +200,8 @@ if ($num_branches)
 		label_cell($myrow["fax"]);
 		label_cell("<a href=mailto:" . $myrow["email"]. ">" . $myrow["email"]. "</a>");
 		label_cell($myrow["tax_group_name"]);
+		if (count($_SESSION['Context']))
+ 			edit_button_cell("Select".$myrow["branch_code"], _("Select"));
  		edit_button_cell("Edit".$myrow["branch_code"], _("Edit"));
  		edit_button_cell("Delete".$myrow["branch_code"], _("Delete"));
 		end_row();

@@ -94,7 +94,7 @@ function issue_edit_item_controls(&$order, $line_no=-1)
 
   		stock_component_items_list_cells(null, 'stock_id', 
 			$wo_details["stock_id"], null, false, true);
-		if(isset($_POST['_stock_id_update'])) {
+		if (list_updated('stock_id')) {
 			    $Ajax->activate('units');
 			    $Ajax->activate('qty');
 			    $Ajax->activate('std_cost');

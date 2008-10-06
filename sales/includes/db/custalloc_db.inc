@@ -46,14 +46,14 @@ function update_debtor_trans_allocation($trans_type, $trans_no, $alloc)
 
 //-------------------------------------------------------------------------------------------------------------
 
-function void_cust_allocations($type, $type_no)
+function void_cust_allocations($type, $type_no, $date="")
 {
-	return clear_cust_alloctions($type, $type_no);
+	return clear_cust_alloctions($type, $type_no, $date);
 }
 
 //-------------------------------------------------------------------------------------------------------------
 
-function clear_cust_alloctions($type, $type_no)
+function clear_cust_alloctions($type, $type_no, $date="")
 {
 	// clear any allocations for this transaction
 	$sql = "SELECT * FROM ".TB_PREF."cust_allocations
@@ -67,6 +67,11 @@ function clear_cust_alloctions($type, $type_no)
 			WHERE (type= " . $row['trans_type_from'] . " AND trans_no=" . $row['trans_no_from'] . ")
 			OR (type=" . $row['trans_type_to'] . " AND trans_no=" . $row['trans_no_to'] . ")";
 		db_query($sql, "could not clear allocation");
+		// 2008-09-20 Joe Hunt
+		if ($date != "")
+			exchange_variation($type, $type_no, $row['trans_type_to'], $row['trans_no_to'], $date,
+				$row['amt'], payment_person_types::customer(), true);
+		//////////////////////
 	}
 
 

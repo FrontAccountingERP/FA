@@ -19,13 +19,307 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+------------------------------- Release 2.0.3 --------------------------------------------
+07-Oct-2008 Joe Hunt
+! Release 2.0.3
+$ config.php
+# Bug [0000072] Item stock movement should check for if there is empty Inventory.
+$ /inventory/inquiry/stock_movements.php
+
+05-Oct-2008 Janusz Dobrowolski
+# Bugfix [0000063] Bad update of parent document lines after edition of sales documents.
+$ /sales/includes/cart_class.inc
+  /sales/includes/sales_db.inc
+  /sales/includes/db/sales_credit_db.inc
+  /sales/includes/db/sales_delivery_db.inc
+  /sales/includes/db/sales_invoice_db.inc
+# Bugfix [0000071] Ordering for customer with bad history available after F4 - Return
+$ /sales/manage/customers.php
+
+04-Oct-2008 Joe Hunt
+# Bug [0000069] Constraint on voiding delivery note if a non voided, linked invoice exists.
+$ /admin/db/voiding_db.inc
+# Bug [0000061] Cost Update doesn't compute correctly after inventory adjust.
+$ /inventory/includes/db/item_adjust_db.inc
+
+01-Oct-2008 Joe Hunt
+# When deleting the last module in FA a parce error arose:
+$ /admin/inst_module.php
+  /admin/inst_lang.php
+
+30-Sep-2008 Janusz Dobrowolski
+# Bug [0000067] Settled supplier documents were displayed as overdued.
+$ /purchasing/inquiry/supplier_inquiry.php
+  /purchasing/inquiry/supplier_allocation_inquiry.php
+# Bug [0000068] Removed unneeded constraint on edition of fully allocated sales doc.
+$ /sales/allocations/customer_allocation_main.php
+
+29-Sep-2008 Janusz Dobrowolski
+# Bug [0000065] Changing item type during adding new item caused record reset.
+$ /inventory/manage/items.php
+
+26-Sep-2008 Joe Hunt
+# Bug [0000064] Credit This on an invoice should automatically allocate the credit to that invoice
+$ /sales/includes/db/sales_credit_db.inc
+
+26-Sep-2008 Janusz Dobrowolski
+# Bug [0000062] Delivery Modifitication - duplicated tax details.
+$ /sales/includes/db/sales_delivery_db.inc
+
+25-Sep-2008 Joe Hunt
+# if MySQL is in strict sql mode, a couple of files didn't pass that. Better not use strict sql mode.
+  This is not necessary, because FA handle this internally. in my.ini(win) or my.cnf(linux) set sql-mode="".
+$ /gl/gl_budget.php
+  /includes/db/comments_db.inc
+  /inventory/cost_update.php
+  /purchasing/includes/db/supp_trans_db.inc
+  /sales/includes/db/cust_trans_db.inc
+# Bug [0000060] table prefix error message and inconsistency at install
+$ /admin/db/maintenance_db.inc
+  /install/index.php
+  /install/save.php
+# Bug [0000061] Delivery Modifitication (standard cost change)
+$ /sales/includes/db/sales_delivery_db.inc
+
+------------------------------- Release 2.0.2 --------------------------------------------
+23-Sep-2008 Joe Hunt
+! Release 2.0.2
+$ config.php
+! Increased time_out to 3 minutes.
+$ /install/save.php
+
+23-Sep-2008 Joe Hunt
+# Bug [0000059] Direct Invoice or Delivery Notes doesn't account for negative inventory flag
+$ /sales/sales_order_entry.php
+
+21-Sep-2008 Janusz Dobrowolski
++ Added submit_on_change option for date fields
+$ /includes/ui/ui_input.inc
++ Automatic exchange rate update after document date change
+$ /gl/bank_transfer.php
+  /gl/gl_bank.php
+  /gl/includes/db/gl_db_rates.inc
+  /gl/includes/ui/gl_bank_ui.inc
+  /includes/banking.inc
+  /includes/ui/ui_view.inc
+  /purchasing/supplier_payment.php
+  /sales/customer_payments.php
+  /sales/includes/cart_class.inc
+# Sales/purchase terms update after document date change [0000058]
+$ /purchasing/includes/ui/invoice_ui.inc
+  /purchasing/includes/ui/po_ui.inc
+  /sales/customer_invoice.php
+# Fixed edit line total, price update after date change
+$ /sales/includes/ui/sales_credit_ui.inc
+  /sales/includes/ui/sales_order_ui.inc
+# Fixed unneeded page reload on enter key in text inputs
+$ /js/inserts.js
+# Fixed session variables conflicts with some third party software (e.g. XRMS)
+$ /includes/lang/language.php
+# Fixed calendar flicker, removed buttons from exchange_rate_display()
+$ /includes/ui/ui_view.inc
+! Default delivery required by changed to 1 day.
+$ /includes/prefs/sysprefs.inc
+# Small bug fix 
+$ /sales/includes/sales_db.inc
+
+20-Sep-2008 Joe Hunt
+# Fix for exchange variation when allocating payments. re-inserted in System and GL Setup.
+$ /admin/gl_setup.php
+  /admin/db/company_db
+  /includes/banking.inc
+  /purchasing/allocations/supplier_allocate.php
+  /purchasing/includes/db/suppalloc_db.inc
+  /sales/allocations/customer_allocate.php
+  /sales/includes/db/custalloc_db.inc
+  /sales/includes/db/payment_db.inc
+  /sales/includes/db/sales_credit_db.inc
+! New tcpdf.php file. Minor bugfixes from tcpdf.org
+  /reporting/includes/tcpdf.php
+! Layout adjustments
+  /dimensions/includes/dimensions_ui.inc
+  /dimensions/view/view_dimension.php
+  /inventory/view/view_adjustment.php
+  /manufacturing/view/work_order_view.php
+  
+18-Sep-2008 Janusz Dobrowolski
++ Support for calling external pages during document entry (e.g. for adding customer/supplier/items).
+$ /index.php
+  /includes/ui/ui_controls.inc
+  /includes/ui/ui_input.inc
+  /includes/ui/ui_lists.inc
+  /js/inserts.js
++ Add/view on F4 in customer/supplier selectors
+$ /gl/gl_bank.php
++ Add/view on F4 in supplier/items selectors
+$ /purchasing/po_entry_items.php
+  /inventory/manage/items.php
++ Add/view on F4 in supplier selector
+$ /purchasing/supplier_credit.php
+  /purchasing/supplier_invoice.php
+  /purchasing/supplier_payment.php
+  /purchasing/allocations/supplier_allocation_main.php
+  /purchasing/manage/suppliers.php
+  /inventory/purchasing_data.php
++ Add/view on F4 in customer selector
+  /sales/credit_note_entry.php
+  /sales/customer_payments.php
+  /sales/sales_order_entry.php
+  /sales/allocations/customer_allocation_main.php
+  /sales/includes/ui/sales_credit_ui.inc
+  /sales/includes/ui/sales_order_ui.inc
+  /sales/manage/customer_branches.php
+  /sales/manage/customers.php
+# Syntax error introduced in previous update fixed
+$ /inventory/prices.php
+# Fixed retreiving of exchange rates [0000057]
+$ /gl/manage/exchange_rates.php
+  /includes/banking.inc
+  /includes/ui/ui_view.inc
+
+18-Sep-2008 Joe Hunt
++ New Report - Bank Statement.
+$ /reporting/reports_main.php
+  /reporting/rep601.php (new file)
+  
+17-Sep-2008 Joe Hunt
+! New PDF tcpdf.php file. Support for cid-0 fonts (Chinese, Japanese, Korean, CJK, Asian fonts) without embedding.
+  New cid-0 fonts will be available for download when release 2.0.2 is shipping. Reduces file size enormouusly
+$ /reporting/includes/tcpdf.php
+! Inventory column option in Report Stock Sheet Check.
+$ /reporting/reports_main.php
+  /reporting/rep303.php
+  
+11-Sep-2008 Janusz Dobrowolski
+# Fixed slash quotation problems on direct POST values display.
+$ /includes/session.inc
+  /includes/db/connect_db.inc
+# Added missing db_escape on person_id.
+$ /gl/includes/db/gl_db_bank_trans.inc
+  /gl/includes/db/gl_db_trans.inc
+# Added error message and suppressed db update on failed ECB exchange rate read.
+$ /includes/ui/ui_view.inc
+
+10-Sep-2008 Janusz Dobrowolski
+# Fixed company folders renaming after company remove.
+$ /admin/create_coy.php
+# Fixed list selectors' behaviour during search.
+$ /includes/ui/ui_lists.inc
+# Fixed page update after item search. Closes bugs [0000051],[0000054].
+$ /inventory/cost_update.php
+  /inventory/prices.php
+  /inventory/purchasing_data.php
+  /inventory/reorder_level.php
+  /inventory/includes/item_adjustments_ui.inc
+  /inventory/includes/stock_transfers_ui.inc
+  /inventory/inquiry/stock_status.php
+  /inventory/manage/items.php
+  /manufacturing/includes/work_order_issue_ui.inc
+  /manufacturing/inquiry/where_used_inquiry.php
+  /purchasing/includes/ui/po_ui.inc
+  /sales/includes/ui/sales_credit_ui.inc
+  /sales/includes/ui/sales_order_ui.inc
+
+09-Sep-2008 Joe Hunt
+# Bug [0000055] Rasmus detected a cost diff. bug and changed some code for us. Very appreciated.
+$ /purchasing/includes/db/invoice_db.inc
+
+------------------------------- Release 2.0.1 --------------------------------------------
+07-Sep-2008 Joe Hunt
+! Release 2.0.1
+$ config.php
+
+05-Sep-2008 Janusz Dobrowolski
+# Bug [0000046] Sales invoice not working on some php versions (php bug #40509)
+$ /sales/includes/sales_db.inc
+  /sales/includes/db/sales_credit_db.inc
+! Obsolete code removed
+$ /sales/customer_credit_invoice.php
+
+05-Sep-2008 Joe Hunt
+# Bug [0000053] Missing GL postings on item issue on Work Order
+$ /manufacturing/includes/db/work_order_quick_db.inc
+  /manufacturing/includes/db/work_order_issues_db.inc
+  /manufacturing/includes/db/work_order_produce_items_db.inc
+! Bad layout in aging on report Statements
+$ /reporting/rep108.php
+
+04-Sep-2008 Joe Hunt
+# Bug [0000050] Invoice no. on all sales reports
+$ /reporting/includes/doctext.inc
+  /reporting/includes/doctext2.inc
+  
+04-Sep-2008 Joe Hunt
+# Bug [0000052] Inventory Valuation Report
+$ /reporting/rep301.php
+
+04-Sep-2008 Joe Hunt
+# Bug [0000047] Not possible to view delivery sequence
+$ /purchasing/supplier_credit_grns.php
+  /purchasing/supplier_invoice_grns.php
+  /purchasing/includes/db/grn_db.inc
+  /purchasing/includes/ui/invoice_ui.inc
+  /purchasing/view/view_po.php
+  /purchasing/view/view_supp_credit.php
+# Bug [0000048] Crediting invoice and choosing gl account for items to be written off doesn't work  
+$ /sales/includes/db/sales_credit_db.inc  
+
+03-Sep-2008 Janusz Dobrowolski
+# Fixed fatal error handling in php5
+$ /includes/errors.inc
+  /includes/session.inc
+# Fixed display of errors while saving sales documents
+$ /sales/sales_order_entry.php
+
+03-Sep-2008 Joe Hunt
+# Bug [0000044] Standard Cost error on credit note. Reopened. Stock Movement forgot the credit note.
+$ /inventory/inquiry/stock_movements.php
+  /purchasing/includes/db/grn_db.inc
+  /purchasing/includes/invoice_db.inc
+
+03-Sep-2008 Joe Hunt
+# Bug [0000043] Inventory Adjustment Session doesn't update standard cost
+# Bug [0000044] Standard Cost error on credit note
+$ /inventory/includes/db/items_adjust_db.inc
+  /purchasing/includes/db/grn_db.inc
+  /purchasing/includes/invoice_db.inc
+# Bug [0000045] Cannot close fiscal year 
+$ /admin/fiscalyears.php
+# Update screen bug in Bank Account Inquiry.
+  $ /gl/inquiry/bank_inquiry.php
+
+02-Sep-2008 Joe Hunt
+# Bug when selecting report, List of Journal Entries, by type. Nothing selected.
+$ /reporting/includes/reports_classes.inc
+$ /reporting/rep702.php
+
+01-Sep-2008 Joe Hunt
+! Up-to-date translation file (some strings were missing, single quotations in .inc files)
+$ /lang/new_language_template/LC_MASSAGES/empty.po
+  /lang/en_US/LC_MESSAGES/en_US.mo
+
+31-Aug-2008 Janusz Dobrowolski
++ Added ajax support for file uploading
+$ /js/utils.js
+# Final fix for logo file upload
+$ /admin/company_preferences.php
+# Fixed item image file upload
+$ /inventory/manage/items.php
+
+30-Aug-2008 Janusz Dobrowolski
+! Up to date translation file
+$ /lang/new_language_template/LC_MASSAGES/empty.po
+# Fixed broken &amp's in backup files [0000040]
+$ /admin/db/maintenance_db.inc
+# Temporary fix (sync page reload) for uploading logo file
+$ /admin/company_preferences.php
 -------------------------------2.0 Final --------------------------------------------
 21_aug-2008 Joe Hunt
 ! config.php file. Version changed to 2.0
 $ config.php
 ! Set time out to 120 seconds.
 $ /install/save.php
-! fixing $amp in backup
+# Removed js warnings on index pages
 $ /js/utils.js
 
 20-Aug-2008 Joe Hunt

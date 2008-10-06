@@ -25,6 +25,7 @@ if ($_GET['trans_no'] != "")
 
 display_heading(systypes::name(systypes::work_order()) . " # " . $woid);
 
+br(1);
 $myrow = get_work_order($woid);
 
 if ($myrow["type"]  == wo_types::advanced())
@@ -35,7 +36,7 @@ else
 echo "<center>";
 
 // display the WO requirements
-echo "<br>";
+br(1);
 if ($myrow["released"] == false)
 {
     display_heading2(_("BOM for item:") . " " . $myrow["StockItemName"]);

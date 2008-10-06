@@ -271,37 +271,40 @@ function get_trans_view_str($type, $trans_no, $label="")
 }
 
 //--------------------------------------------------------------------------------------
-
-function exchange_rate_display($from_currency, $to_currency, $date_, $buttons=true)
+// Displays currency exchange rate for given date.
+// When there is no exrate for today, 
+// gets it form ECB and stores in local database.
+//
+function exchange_rate_display($from_currency, $to_currency, $date_)
 {
     global $Ajax;
-    $hint = _('Get daily ECB exchange rate and save for later use in invoicing process');
+
 	if ($from_currency != $to_currency)
 	{
-		if ($buttons && isset($_POST['get_rate']))
-		{
-			$comp_currency = get_company_currency();
-			if ($from_currency == $comp_currency)
-				$currency = $to_currency;
-			else
-				$currency = $from_currency;
-			$rate = get_ecb_rate($currency);
-			if (get_date_exchange_rate($currency, $date_))
-				update_exchange_rate($currency, $date_, $rate, $rate);
-			else
-				add_exchange_rate($currency, $date_, $rate, $rate);
-			if ($from_currency == $comp_currency)
-				$rate = 1 / $rate;
-			$Ajax->activate('get_rate');
-		}
+		$comp_currency = get_company_currency();
+		if ($from_currency == $comp_currency)
+			$currency = $to_currency;
 		else
-			$rate = get_exchange_rate_from_to($to_currency, $from_currency, $date_);
-		$rate = number_format2($rate, user_exrate_dec());
-    	label_row(_("Exchange Rate:"),"1 " . $from_currency . " = <span id='_ex_rate'>" . $rate . "</span> " . $to_currency .
-		($buttons?"  " . submit('get_rate',_("Get"), false, $hint, true):""));
-	    if($buttons) {
-		  $Ajax->addUpdate('get_rate','_ex_rate', $rate);
+			$currency = $from_currency;
+		$rate = 0;
+		if ($date_ == Today()) {
+			$rate = get_date_exchange_rate($currency, $date_);
+			if (!$rate) {
+				$rate = get_ecb_rate($currency);
+				if ($rate) 
+					add_exchange_rate($currency, $date_, $rate, $rate);
+			}
 		}
+		if (!$rate)
+			$rate = get_exchange_rate_from_to($to_currency, $from_currency, $date_);
+			
+		if ($from_currency == $comp_currency)
+			$rate = 1 / $rate;
+
+		$rate = number_format2($rate, user_exrate_dec());
+    	label_row(_("Exchange Rate:"),"1 " . $from_currency 
+			. " = <span id='_ex_rate'>" . $rate . "</span> " . $to_currency );
+		  $Ajax->addUpdate('_ex_rate','_ex_rate', $rate);
 	}
 }
 
@@ -840,6 +843,9 @@ function CC() {
 ";
 	$js .= "
       dateField.value = dateString;
+	  setFocus(dateField.name);
+	  if (dateField.className=='searchbox')
+	  	dateField.onblur();
       hide();
     }
     return;
@@ -1000,19 +1006,19 @@ function CC() {
     if(document.getElementById){
       calendar = document.getElementById(calendarId);
       calendar.innerHTML = calendarDrawTable(currentYear, currentMonth);
-      setProperty('display', 'block');
       var fieldPos = new positionInfo(dateField);
       var calendarPos = new positionInfo(calendarId);
       var x = fieldPos.getElementLeft();
       var y = fieldPos.getElementBottom();
       setProperty('left', x + 'px');
       setProperty('top', y + 'px');
+      setProperty('display', 'block');
       if (document.all) {
-        setElementProperty('display', 'block', 'CCIframe');
         setElementProperty('left', x + 'px', 'CCIframe');
         setElementProperty('top', y + 'px', 'CCIframe');
         setElementProperty('width', calendarPos.getElementWidth() + 'px', 'CCIframe');
         setElementProperty('height', calendarPos.getElementHeight() + 'px', 'CCIframe');
+        setElementProperty('display', 'block', 'CCIframe');
       }
     }
   }

@@ -27,6 +27,17 @@ check_db_has_bank_accounts(_("There are no bank accounts defined in the system."
 check_db_has_bank_trans_types(_("There are no bank payment types defined in the system."));
 
 //----------------------------------------------------------------------------------------
+if ($ret = context_restore()) {
+	if(isset($ret['customer_id']))
+		$_POST['customer_id'] = $ret['customer_id'];
+	if(isset($ret['branch_id']))
+		$_POST['BranchID'] = $ret['branch_id'];
+}
+if (isset($_POST['_customer_id_editor'])) {
+	context_call($path_to_root.'/sales/manage/customers.php?debtor_no='.$_POST['customer_id'], 
+		array( 'customer_id', 'BranchID', 'bank_account', 'DateBanked', 
+			'ReceiptType', 'ref', 'amount', 'discount', 'memo_') );
+}
 
 if (isset($_GET['AddedID'])) {
 	$payment_no = $_GET['AddedID'];
@@ -101,7 +112,10 @@ if (isset($_POST['AddPaymentItem'])) {
 }
 if (isset($_POST['_customer_id_button'])) {
 //	unset($_POST['branch_id']);
-	$Ajax->activate('branch_id');
+	$Ajax->activate('BranchID');
+}
+if (isset($_POST['_DateBanked_changed'])) {
+  $Ajax->activate('_ex_rate');
 }
 //----------------------------------------------------------------------------------------------
 
@@ -160,7 +174,6 @@ function display_item_form()
 	read_customer_data();
 
 	set_global_customer($_POST['customer_id']);
-
 	if (isset($_POST['HoldAccount']) && $_POST['HoldAccount'] != 0)	{
 		echo "</table></table>";
 		display_note(_("This customer account is on hold."), 0, 0, "class='redfb'");
@@ -173,7 +186,7 @@ function display_item_form()
 
 		label_row(_("Customer prompt payment discount :"), $display_discount_percent);
 
-		date_row(_("Date of Deposit:"), 'DateBanked');
+		date_row(_("Date of Deposit:"), 'DateBanked','',null, 0, 0, 0, null, true);
 
 		echo "</table>";
 		echo "</td><td valign=top class='tableseparator'>"; // outer table

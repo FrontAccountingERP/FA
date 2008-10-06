@@ -35,6 +35,17 @@ function void_transaction($type, $type_no, $date_, $memo_)
 		case 13 : // it's a customer dispatch
 			if (!exists_customer_trans($type, $type_no))
 				return false;
+			if ($type == 13)	// added 04 Oct 2008 by Joe Hunt. If delivery note has a not voided invoice, then NO.
+			{
+				$delivery = get_customer_trans($type_no, $type);
+				if ($delivery['trans_link'] != 0)
+				{
+					$inv = get_customer_trans($delivery['trans_link'], 10);
+					if ($inv['ov_amount'] != 0 || $inv['ov_discount'] != 0 || $inv['ov_gst'] != 0 || 
+						$inv['ov_freight'] != 0 || $inv['ov_freight_tax'] != 0 || $inv['alloc'] != 0)
+						return false;
+				}
+			}	
 			post_void_customer_trans($type, $type_no);
 			break;
 

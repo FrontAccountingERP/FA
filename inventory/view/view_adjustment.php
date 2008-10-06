@@ -18,6 +18,7 @@ if (isset($_GET["trans_no"]))
 
 display_heading(systypes::name(systypes::inventory_adjustment()) . " #$trans_no");
 
+br(1);
 $adjustment_items = get_stock_adjustment_items($trans_no);
 $k = 0;
 $header_shown = false;

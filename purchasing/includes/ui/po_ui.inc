@@ -104,7 +104,10 @@ function display_po_header(&$order)
 	//	if (!is_date_in_fiscalyear($_POST['OrderDate']))
 	//		$_POST['OrderDate'] = end_fiscalyear();
 	//}
-	date_row(_("Order Date:"), 'OrderDate', '', $_POST['OrderDate'], 0, 0, 0);
+	date_row(_("Order Date:"), 'OrderDate', '', $_POST['OrderDate'], 0, 0, 0, null, true);
+	if (isset($_POST['_OrderDate_changed'])) {
+		$Ajax->activate('_ex_rate');
+	}
 
   	text_row(_("Supplier's Reference:"), 'Requisition', null, 16, 15);
 
@@ -297,7 +300,7 @@ function po_item_controls(&$order, $stock_id=null)
 		hidden('line_no', ($_SESSION['PO']->lines_on_order + 1));
 
 		stock_purchasable_items_list_cells(null, 'stock_id', null, false, true);
-		if(isset($_POST['_stock_id_update'])) {
+		if (list_updated('stock_id')) {
 			    $Ajax->activate('price');
 			    $Ajax->activate('units');
 			    $Ajax->activate('qty');

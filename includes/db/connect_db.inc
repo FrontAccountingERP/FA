@@ -79,8 +79,6 @@ function db_escape($value = "", $nullify = false)
 
   	//reset default if second parameter is skipped
 	$nullify = ($nullify === null) ? (false) : ($nullify);
-  	//undo slashes for poorly configured servers
-	$value = (get_magic_quotes_gpc()) ? (stripslashes($value)) : ($value);
 
   	//check for null/unset/empty strings
 	if ((!isset($value)) || (is_null($value)) || ($value === "")) {

@@ -18,14 +18,18 @@ function get_exchange_rate($rate_id)
 	return db_fetch($result);
 }
 
+// Retrieves buy exchange rate for given currency/date, zero if no result
 function get_date_exchange_rate($curr_code, $date_)
 {
 	$date = date2sql($date_);
-	$sql = "SELECT date_ FROM ".TB_PREF."exchange_rates WHERE curr_code='$curr_code' 
+	$sql = "SELECT rate_buy FROM ".TB_PREF."exchange_rates WHERE curr_code='$curr_code' 
 		AND date_='$date'";
 	$result = db_query($sql, "could not get exchange rate for $curr_code - $date_");	
 
-	return (db_num_rows($result) == 1);
+	if(db_num_rows($result) == 0) 
+		return 0;
+	$row = db_fetch($result);
+		return $row[0];
 }
 
 //---------------------------------------------------------------------------------------------
@@ -100,11 +104,11 @@ function get_ecb_rate($curr_b)
 	$contents = str_replace ("<Cube currency='USD'", " <Cube currency='EUR' rate='1'/> <Cube currency='USD'", $contents);
 	$from_mask = "|<Cube\s*currency=\'" . $curr_a . "\'\s*rate=\'([\d.,]*)\'\s*/>|i";
 	preg_match ( $from_mask, $contents, $out );
-	$val_a = $out[1];
+	$val_a = isset($out[1]) ? $out[1] : 0;
 	$val_a = str_replace ( ',', '', $val_a );
 	$to_mask = "|<Cube\s*currency=\'" . $curr_b . "\'\s*rate=\'([\d.,]*)\'\s*/>|i";
 	preg_match ( $to_mask, $contents, $out );
-	$val_b = $out[1];
+	$val_b = isset($out[1]) ? $out[1] : 0;
 	$val_b = str_replace ( ',', '', $val_b );
 	if ($val_b) 
 	{

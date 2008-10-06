@@ -6,8 +6,8 @@
 //
 function write_credit_note($credit_note, $write_off_acc)
 {
-	$credit_invoice = count($credit_note->src_docs) ? key($credit_note->src_docs) : 0;
-
+	$credit_invoice = 	is_array($credit_note->src_docs) ?
+		 reset(array_keys($credit_note->src_docs)) : $credit_note->src_docs;
 
 	$credit_date = $credit_note->document_date;
 	$tax_group_id = $credit_note->tax_group_id;
@@ -17,7 +17,7 @@ function write_credit_note($credit_note, $write_off_acc)
 		$trans_no = key($trans_no);
 	}
 
-	$credit_type = $write_off_acc == 0 ? 'Return' : 'Writeoff';
+	$credit_type = $write_off_acc == 0 ? 'Return' : 'WriteOff';
 
 	begin_transaction();
 
@@ -68,16 +68,15 @@ function write_credit_note($credit_note, $write_off_acc)
 		set_document_parent($credit_note);
 	} else {
 		delete_comments(11, $credit_no);
-		void_cust_allocations(11, $credit_no);
+		void_cust_allocations(11, $credit_no, $credit_date);
 		void_gl_trans(11, $credit_no, true);
 		void_stock_move(11, $credit_no);
 		void_customer_trans_tax_details(11, $credit_no);
 	}
-
 	if ($credit_invoice) {
 		$invoice_alloc_balance = get_DebtorTrans_allocation_balance(10, $credit_invoice);
 		update_customer_trans_version(get_parent_type(11), $credit_note->src_docs );
-		if ($invoice_alloc_balance > 0) { 	/*the invoice is not already fully allocated */
+		if ($invoice_alloc_balance > 0) { 	//the invoice is not already fully allocated 
 			$total = $credit_note_total + $credit_note->freight_cost +
 			    $items_added_tax + $freight_added_tax;
 
@@ -87,14 +86,22 @@ function write_credit_note($credit_note, $write_off_acc)
 				update_debtor_trans_allocation(10, $credit_invoice, $allocate_amount);
 				update_debtor_trans_allocation(11, $credit_no, $allocate_amount); // ***
 				add_cust_allocation($allocate_amount, 11, $credit_no, 10, $credit_invoice);
+				// Exchange Variations Joe Hunt 2008-09-20 ////////////////////////////////////////
+
+				exchange_variation(11, $credit_no, 10, $credit_invoice, $credit_date,
+					$allocate_amount, payment_person_types::customer());
+
+				///////////////////////////////////////////////////////////////////////////
+
 			}
 		}
 	}
 
+
 	foreach ($credit_note->line_items as $credit_line) {
 
 		if ($credit_invoice && $credit_line->qty_dispatched!=$credit_line->qty_old ) {
-			update_parent_line(11, $credit_line->id,($credit_line->qty_dispatched
+			update_parent_line(11, $credit_line->src_id,($credit_line->qty_dispatched
 					-$credit_line->qty_old));
 		}
 
@@ -144,7 +151,6 @@ function write_credit_note($credit_note, $write_off_acc)
 				"A tax GL posting for this credit note could not be inserted");
 		}
 	}
-
 	add_comments(11, $credit_no, $credit_date, $credit_note->Comments);
 
 	if ($trans_no == 0) {
@@ -205,11 +211,12 @@ function add_gl_trans_credit_costs($order, $order_line, $credit_no, $date_,
 	$dim2 = ($customer['dimension2_id'] != 0 ? $customer["dimension2_id"] : $stock_gl_codes["dimension2_id"]);
 
 	/* insert gl_trans to credit stock and debit cost of sales at standard cost*/
-	if ($order_line->standard_cost != 0) {
+	$standard_cost = get_standard_cost($order_line->stock_id);
+	if ($standard_cost != 0) {
 		/*first the cost of sales entry*/
 
 		add_gl_trans_std_cost(11, $credit_no, $date_, $stock_gl_codes["cogs_account"],
-			$dim, $dim2, "", -($order_line->standard_cost * $order_line->qty_dispatched),
+			$dim, $dim2, "", -($standard_cost * $order_line->qty_dispatched),
 			payment_person_types::customer(), $order->customer_id,
 			"The cost of sales GL posting could not be inserted");
 
@@ -222,7 +229,7 @@ function add_gl_trans_credit_costs($order, $order_line, $credit_no, $date_,
 		}
 
 		add_gl_trans_std_cost(11, $credit_no, $date_, $stock_entry_account, 0, 0,
-			"", ($order_line->standard_cost * $order_line->qty_dispatched),
+			"", ($standard_cost * $order_line->qty_dispatched),
 			payment_person_types::customer(), $order->customer_id,
 			"The stock side (or write off) of the cost of sales GL posting could not be inserted");
 

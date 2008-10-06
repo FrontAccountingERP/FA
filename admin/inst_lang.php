@@ -95,7 +95,8 @@ function write_lang()
 	$msg .= "*/\n\n\n";
 
 	$msg .= "\$installed_languages = array (\n";
-	$msg .= "\t0 => ";
+	if ($n > 0)
+	    $msg .= "\t0 => ";
 	for ($i = 0; $i < $n; $i++)
 	{
 		if ($i > 0)

@@ -52,16 +52,15 @@ function handle_submit()
 {
 	global $selected_id, $Mode;
 
-	if (!check_data())
-		return false;
-
 	if ($selected_id != -1)
 	{
-   		update_fiscalyear($_POST['from_date'], $_POST['closed']);
+   		update_fiscalyear($selected_id, $_POST['closed']);
 		display_notification(_('Selected fiscal year has been updated'));
 	}
 	else
 	{
+		if (!check_data())
+			return false;
    		add_fiscalyear($_POST['from_date'], $_POST['to_date'], $_POST['closed']);
 		display_notification(_('New fiscal year has been added'));
 	}

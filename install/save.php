@@ -1,7 +1,7 @@
 <?php
 error_reporting(E_ALL);
 ini_set("display_errors", "On");
-ini_set("max_execution_time", "120");
+ini_set("max_execution_time", "180");
 
 // Start a session
 if(!defined('SESSION_STARTED'))
@@ -41,7 +41,14 @@ function set_error($message)
 			$_SESSION['database_username'] = $_POST['database_username'];
 			$_SESSION['database_password'] = $_POST['database_password'];
 			$_SESSION['database_name'] = $_POST['database_name'];
-			$_SESSION['table_prefix'] = $_POST['table_prefix'];
+			if(!isset($_POST['table_prefix']))
+			{
+				$_SESSION['table_prefix'] = false;
+			}
+			else
+			{
+				$_SESSION['table_prefix'] = true;
+			}
 			if(!isset($_POST['install_tables']))
 			{
 				$_SESSION['install_tables'] = false;
@@ -229,7 +236,11 @@ else
 	$database_name = $_POST['database_name'];
 }
 // Get table prefix
-$table_prefix = $_POST['table_prefix'];
+if (isset($_POST['table_prefix']) && $_POST['table_prefix'] == 'true')
+	$table_prefix = "0_";
+else
+	$table_prefix = "";
+
 // Find out if the user wants to install tables and data
 if (isset($_POST['install_tables']) && $_POST['install_tables'] == 'true')
 {

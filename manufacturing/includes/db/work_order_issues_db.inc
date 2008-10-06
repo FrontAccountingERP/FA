@@ -62,6 +62,14 @@ function get_work_order_issues($woid)
     return db_query($sql, "The work order issues could not be retrieved");
 }
 
+function get_additional_issues($woid)
+{
+	$sql = "SELECT ".TB_PREF."wo_issues.*, ".TB_PREF."wo_issue_items.*
+		FROM ".TB_PREF."wo_issues, ".TB_PREF."wo_issue_items
+		WHERE ".TB_PREF."wo_issues.issue_no=".TB_PREF."wo_issue_items.issue_id
+		AND ".TB_PREF."wo_issues.workorder_id=$woid ORDER BY ".TB_PREF."wo_issue_items.id";
+    return db_query($sql, "The work order issues could not be retrieved");
+}
 //--------------------------------------------------------------------------------------
 
 function get_work_order_issue($issue_no)

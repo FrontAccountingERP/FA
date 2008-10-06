@@ -12,6 +12,10 @@ include($path_to_root . "/includes/ui.inc");
 
 check_db_has_tax_groups(_("There are no tax groups defined in the system. At least one tax group is required before proceeding."));
 
+if (isset($_GET['supplier_id'])) 
+{
+	$_POST['supplier_id'] = $_GET['supplier_id'];
+}
 $new_supplier = get_post('supplier_id') == ''; 
 
 if (isset($_POST['submit'])) 
@@ -120,6 +124,10 @@ elseif (isset($_POST['delete']) && $_POST['delete'] != "")
 		$Ajax->activate('_page_body');
 	} //end if Delete supplier
 }
+elseif (isset($_POST['select']))
+{
+	context_return(array('supplier_id' => $_POST['supplier_id']));
+}
 
 start_form();
 
@@ -225,6 +233,7 @@ if (!$new_supplier)
 {
 	submit_center_first('submit', _("Update Supplier"), 
 	  _('Update supplier data'), true);
+	submit_return('select', _("Return"), _("Select this supplier and return to document entry."), true);
 	submit_center_last('delete', _("Delete Supplier"), 
 	  _('Delete supplier data if have been never used'), true);
 }

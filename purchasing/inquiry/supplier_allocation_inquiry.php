@@ -141,7 +141,7 @@ if (db_num_rows($result) == 0)
   while ($myrow = db_fetch($result))
   {
 
-	if ($myrow['OverDue'] == 1)
+	if (($myrow['TotalAmount']>$myrow['Allocated']) && $myrow['OverDue'] == 1)
 	{
 		start_row("class='overduebg'");
 		$over_due = true;
@@ -178,8 +178,6 @@ if (db_num_rows($result) == 0)
 		$balance = $myrow["TotalAmount"] - $myrow["Allocated"];
 	amount_cell($balance);
 
-	//if (($myrow["type"] == 1 || $myrow["type"] == 21 || $myrow["type"] == 22) &&
-	//	$myrow["Void"] == 0)
 	if (($myrow["type"] == 1 || $myrow["type"] == 21 || $myrow["type"] == 22) &&
 		$balance > 0)
 	{

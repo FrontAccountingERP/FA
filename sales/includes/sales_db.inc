@@ -54,7 +54,7 @@ function get_price ($stock_id, $currency, $sales_type_id, $factor=null, $date=nu
 
 	if ($factor === null) 
 	{
-		$myrow = get_sales_type(get_post('sales_type_id'));
+		$myrow = get_sales_type($sales_type_id);
 		$factor = $myrow['factor'];
 	}
 	    
@@ -125,7 +125,7 @@ function set_document_parent($cart)
 	if (count($cart->src_docs) == 1) {
 
 	// if this child document has only one parent - update child link
-	$del_no = key($cart->src_docs);
+	$del_no = reset(array_keys($cart->src_docs));
 
 	$sql = 'UPDATE '.TB_PREF.'debtor_trans SET trans_link = ' . $del_no .
 		' WHERE type='.$cart->trans_type.' AND trans_no='. $inv_no ;

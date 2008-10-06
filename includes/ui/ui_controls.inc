@@ -53,7 +53,8 @@ function meta_forward($forward_to, $params="")
 	echo "<meta http-equiv='Refresh' content='0; url=$forward_to?$params'>\n";
 	echo "<center><br>" . _("You should automatically be forwarded.");
 	echo " " . _("If this does not happen") . " " . "<a href='$forward_to?$params'>" . _("click here") . "</a> " . _("to continue") . ".<br><br></center>\n";
-	$Ajax->redirect($forward_to.'?'.$params);
+	if ($params !='') $params = '?'.$params;
+	$Ajax->redirect($forward_to.$params);
 	exit;
 }
 
@@ -163,15 +164,21 @@ function delete_link_cell($param, $title=false)
 	.($title ? " title='$title'":'') .">" . _("Delete") . "</a>", "nowrap");
 }
 
-function edit_button_cell($name, $value, $title=false)
+function edit_button($name, $value, $title=false)
 {
 // php silently changes dots,spaces,'[' and characters 128-159
 // to underscore in POST names, to maintain compatibility with register_globals
-
-    label_cell("<input type=\"submit\" class=\"editbutton\" name=\""
+	echo "<input type=\"submit\" class=\"editbutton\" name=\""
 		.htmlentities(strtr($name, array('.'=>'=2E',' '=>'=20','='=>'=3D','['=>'=5B')))
 		."\" value=\"$value\""
-		.($title ? " title='$title'":'')." />\n");
+		.($title ? " title='$title'":'')." />\n";
+}
+
+function edit_button_cell($name, $value, $title=false)
+{
+	echo "<td>";
+	edit_button($name, $value, $title);
+	echo "</td>";
 }
 
 //-----------------------------------------------------------------------------------
@@ -223,4 +230,79 @@ function div_end()
 		echo "</div>";
     }
 }
+
+/*
+	External page call with saving current context.
+	$call - url of external page
+	$ctx - optional. name of SESSION context object or array of names of POST 
+		variables saved on call
+*/
+function context_call($call, $ctx='')
+{
+	if (is_array($ctx)) 
+	{
+		foreach($ctx as $postname)
+		{
+		 	$context[$postname] = get_post($postname);
+		}
+	} else 
+		$context = isset($_SESSION[$ctx]) ? $_SESSION[$ctx] : null;
+
+	array_unshift($_SESSION['Context'], array('name' => $ctx, 
+		'ctx' => $context,
+		'caller' => $_SERVER['PHP_SELF'],
+		'ret' => array()));
+	meta_forward($call);
+}
+/*
+	Restores context after external page call and
+	returns array of data passed by external page.
+*/
+function context_restore()
+{
+	if ( count($_SESSION['Context'])) {
+		if ($_SERVER['PHP_SELF'] == $_SESSION['Context'][0]['caller']) {
+			$ctx = array_shift($_SESSION['Context']);
+			if ($ctx) {
+				if (is_array($ctx['ctx'])) {
+					foreach($ctx['ctx'] as $name => $val) 
+					{
+						$_POST[$name] = $val;
+					}
+				} else
+					if ($ctx['name']!='')
+						$_SESSION[$ctx['name']] = $ctx['ctx'];
+				return $ctx['ret'];
+			}
+		}
+	}
+	return false;
+}
+
+/*
+	Return to caller page if the page was called from external context.
+*/
+function context_return($ret)
+{
+	if ( count($_SESSION['Context'])) {
+		$ctx = &$_SESSION['Context'][0];
+		$ctx['ret'] = $ret;
+		meta_forward( $ctx['caller'] );
+	}
+}
+/*
+	Clearing context stack after page cancel.
+*/
+function context_reset()
+{
+	$_SESSION['Context'] = array();
+}
+
+/*
+	Context stack initialization
+*/
+if (!isset($_SESSION['Context'])) {
+		context_reset();
+}
+
 ?>

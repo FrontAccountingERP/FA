@@ -82,7 +82,7 @@ function handle_process()
 	begin_transaction();
 
 	// clear all the allocations for this payment/credit
-	clear_cust_alloctions($_SESSION['alloc']->type,	$_SESSION['alloc']->trans_no);
+	clear_cust_alloctions($_SESSION['alloc']->type,	$_SESSION['alloc']->trans_no, $_SESSION['alloc']->date_);
 
 	// now add the new allocations
 	$total_allocated = 0;
@@ -96,8 +96,15 @@ function handle_process()
 
 			update_debtor_trans_allocation($allocn_item->type, $allocn_item->type_no,
 				$allocn_item->current_allocated);
-			$total_allocated += $allocn_item->current_allocated;
 
+			// Exchange Variations Joe Hunt 2008-09-20 ////////////////////////////////////////
+
+			exchange_variation($_SESSION['alloc']->type, $_SESSION['alloc']->trans_no,
+				$allocn_item->type, $allocn_item->type_no, $_SESSION['alloc']->date_,
+				$allocn_item->current_allocated, payment_person_types::customer());
+
+			///////////////////////////////////////////////////////////////////////////
+			$total_allocated += $allocn_item->current_allocated;
 		}
 
 	}  /*end of the loop through the array of allocations made */
@@ -242,7 +249,7 @@ function edit_allocations_for_transaction($type, $trans_no)
 	else
 	{
     	display_note(_("There are no unsettled transactions to allocate."), 0, 1);
-   		
+
    		submit_center('Cancel', _("Back to Allocations"), true,
 			_('Abandon allocations and return to selection of allocatable amounts'), true);
     }

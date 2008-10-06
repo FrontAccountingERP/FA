@@ -191,6 +191,13 @@ function submit_row($name, $value, $right=true, $extra="", $title=false, $async=
 	submit_cells($name, $value, $extra, $title, $async);
 	echo "</tr>\n";
 }
+
+function submit_return($name, $value, $title=false, $async=false)
+{
+	if (count($_SESSION['Context'])) {
+		submit($name, $value, true, $title, $async);
+	}
+}
 //---------------------------------------------------------------------------------
 
 function button($name, $value, $onclick, $title=false)
@@ -392,7 +399,8 @@ function text_row_ex($label, $name, $size, $max=null, $title=null, $value=null, 
 
 //-----------------------------------------------------------------------------------
 
-function date_cells($label, $name, $title = null, $init=null, $inc_days=0, $inc_months=0, $inc_years=0, $params=null)
+function date_cells($label, $name, $title = null, $init=null, $inc_days=0, 
+	$inc_months=0, $inc_years=0, $params=null, $submit_on_change=false)
 {
 	global $use_date_picker, $path_to_root;
 	if (!isset($_POST[$name]) || $_POST[$name] == "")
@@ -421,13 +429,15 @@ function date_cells($label, $name, $title = null, $init=null, $inc_days=0, $inc_
 		. "	<img src='$path_to_root/themes/default/images/cal.gif' width='16' height='16' border='0' alt='"._('Click Here to Pick up the date')."'></a>\n";
 	else
 		$post_label = "";
-	text_cells_ex($label, $name, 9, 12, $_POST[$name], $title, $params, $post_label);
+	text_cells_ex($label, $name, 9, 12, $_POST[$name], $title, $params, $post_label, $submit_on_change);
 }
 
-function date_row($label, $name, $title=null, $init=null, $inc_days=0, $inc_months=0, $inc_years=0, $params=null)
+function date_row($label, $name, $title=null, $init=null, $inc_days=0, $inc_months=0, 
+	$inc_years=0, $params=null, $submit_on_change=false)
 {
 	echo "<tr>";
-	date_cells($label, $name, $title, $init, $inc_days, $inc_months, $inc_years, $params);
+	date_cells($label, $name, $title, $init, $inc_days, $inc_months, 
+		$inc_years, $params, $submit_on_change);
 	echo "</tr>\n";
 }
 

@@ -13,6 +13,16 @@ include_once($path_to_root . "/includes/data_checks.inc");
 check_db_has_purchasable_items(_("There are no purchasable inventory items defined in the system."));
 check_db_has_suppliers(_("There are no suppliers defined in the system."));
 
+//----------------------------------------------------------------------------------------
+if ($ret = context_restore()) {
+	if(isset($ret['supplier_id']))
+		$_POST['supplier_id'] = $ret['supplier_id'];
+}
+if (isset($_POST['_supplier_id_editor'])) {
+	context_call($path_to_root.'/purchasing/manage/suppliers.php?supplier_id='.$_POST['supplier_id'], 
+		array( 'supplier_id', 'stock_id','_stock_id_edit', 'price', 
+			'suppliers_uom', 'supplier_description','conversion_factor'));
+}
 simple_page_mode(true);
 //--------------------------------------------------------------------------------------------------
 
@@ -92,7 +102,7 @@ if (isset($_POST['_selected_id_update']) )
 	$Ajax->activate('_page_body');
 }
 
-if (isset($_POST['_stock_id_update']))
+if (list_updated('stock_id')) 
 	$Ajax->activate('price_table');
 //--------------------------------------------------------------------------------------------------
 

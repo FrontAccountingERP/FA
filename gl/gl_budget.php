@@ -28,14 +28,14 @@ function exists_gl_budget($date_, $account, $dimension, $dimension2)
 function add_update_gl_budget_trans($date_, $account, $dimension, $dimension2, $amount)
 {
 	$date = date2sql($date_);
-		
+
 	if (exists_gl_budget($date, $account, $dimension, $dimension2))
 		$sql = "UPDATE ".TB_PREF."budget_trans SET amount=$amount WHERE account='$account' AND
 			dimension_id=$dimension AND dimension2_id=$dimension2 AND tran_date='$date'";
 	else
 		$sql = "INSERT INTO ".TB_PREF."budget_trans (tran_date,
-			account, dimension_id, dimension2_id, amount) VALUES ('$date',
-			'$account', $dimension, $dimension2, $amount)";
+			account, dimension_id, dimension2_id, amount, memo_) VALUES ('$date',
+			'$account', $dimension, $dimension2, $amount, '')";
 
 	db_query($sql, "The GL budget transaction could not be saved");
 }
@@ -43,18 +43,18 @@ function add_update_gl_budget_trans($date_, $account, $dimension, $dimension2, $
 function delete_gl_budget_trans($date_, $account, $dimension, $dimension2)
 {
 	$date = date2sql($date_);
-		
+
 	$sql = "DELETE FROM ".TB_PREF."budget_trans WHERE account='$account' AND
 			dimension_id=$dimension AND dimension2_id=$dimension2 AND tran_date='$date'";
 	db_query($sql, "The GL budget transaction could not be deleted");
 }
 
-function get_only_budget_trans_from_to($from_date, $to_date, $account, $dimension=0, $dimension2=0) 
+function get_only_budget_trans_from_to($from_date, $to_date, $account, $dimension=0, $dimension2=0)
 {
 
 	$from = date2sql($from_date);
 	$to = date2sql($to_date);
-	
+
 	$sql = "SELECT SUM(amount) FROM ".TB_PREF."budget_trans
 		WHERE account='$account' AND tran_date >= '$from' AND tran_date <= '$to'
 		 AND dimension_id = $dimension AND dimension2_id = $dimension2";
@@ -66,28 +66,28 @@ function get_only_budget_trans_from_to($from_date, $to_date, $account, $dimensio
 
 //-------------------------------------------------------------------------------------
 
-if (isset($_POST['add']) || isset($_POST['delete'])) 
+if (isset($_POST['add']) || isset($_POST['delete']))
 {
 	begin_transaction();
-	
+
 	for ($i = 0, $da = $_POST['begin']; date1_greater_date2($_POST['end'], $da); $i++)
 	{
 		if (isset($_POST['add']))
 			add_update_gl_budget_trans($da, $_POST['account'], $_POST['dim1'], $_POST['dim2'], input_num('amount'.$i));
-		else	
+		else
 			delete_gl_budget_trans($da, $_POST['account'], $_POST['dim1'], $_POST['dim2']);
 		$da = add_months($da, 1);
 	}
 	commit_transaction();
-	
+
 	if (isset($_POST['add']))
 		display_notification_centered(_("The Budget has been saved."));
-	else	
+	else
 		display_notification_centered(_("The Budget has been deleted."));
-	
-	//meta_forward($_SERVER['PHP_SELF']);    	
+
+	//meta_forward($_SERVER['PHP_SELF']);
 	$Ajax->activate('budget_tbl');
-}	
+}
 if (isset($_POST['submit']) || isset($_POST['update']))
 	$Ajax->activate('budget_tbl');
 
@@ -95,16 +95,16 @@ if (isset($_POST['submit']) || isset($_POST['update']))
 
 start_form();
 
-if (db_has_gl_accounts()) 
+if (db_has_gl_accounts())
 {
 	$dim = get_company_pref('use_dimension');
 	start_table($table_style2);
 	fiscalyears_list_row(_("Fiscal Year:"), 'fyear', null);
 	gl_all_accounts_list_row(_("Account Code:"), 'account', null);
-	if (!isset($_POST['dim1']))	
-		$_POST['dim1'] = 0;	
-	if (!isset($_POST['dim2']))	
-		$_POST['dim2'] = 0;	
+	if (!isset($_POST['dim1']))
+		$_POST['dim1'] = 0;
+	if (!isset($_POST['dim2']))
+		$_POST['dim2'] = 0;
     if ($dim == 2)
     {
 		dimensions_list_row(_("Dimension")." 1", 'dim1', $_POST['dim1'], true, null, false, 1);
@@ -124,13 +124,13 @@ if (db_has_gl_accounts())
 	end_table(1);
 	div_start('budget_tbl');
 	start_table($table_style2);
-	$showdims = (($dim == 1 && $_POST['dim1'] == 0) || 
+	$showdims = (($dim == 1 && $_POST['dim1'] == 0) ||
 		($dim == 2 && $_POST['dim1'] == 0 && $_POST['dim2'] == 0));
-	if ($showdims)	
+	if ($showdims)
 		$th = array(_("Period"), _("Amount"), _("Dim. incl."), _("Last Year"));
-	else	
+	else
 		$th = array(_("Period"), _("Amount"), _("Last Year"));
-	table_header($th);	
+	table_header($th);
 	$year = $_POST['fyear'];
 	if (get_post('update') == '') {
 		$sql = "SELECT * FROM ".TB_PREF."fiscal_year WHERE id=$year";
@@ -149,16 +149,16 @@ if (db_has_gl_accounts())
 		start_row();
 		if (get_post('update') == '')
 			$_POST['amount'.$i] = number_format2(get_only_budget_trans_from_to(
-				$date_, $date_, $_POST['account'], $_POST['dim1'], $_POST['dim2']), 0); 
-		
-		label_cell($date_);	
+				$date_, $date_, $_POST['account'], $_POST['dim1'], $_POST['dim2']), 0);
+
+		label_cell($date_);
 		amount_cells(null, 'amount'.$i, null, 15, null, 0);
 		if ($showdims)
 		{
 			$d = get_budget_trans_from_to($date_, $date_, $_POST['account'], $_POST['dim1'], $_POST['dim2']);
 			label_cell(number_format2($d, 0), "nowrap align=right");
 			$btotal += $d;
-		}	
+		}
 		$lamount = get_gl_trans_from_to(add_years($date_, -1), add_years(end_month($date_), -1), $_POST['account'], $_POST['dim1'], $_POST['dim2']);
 		$total += input_num('amount'.$i);
 		$ltotal += $lamount;
@@ -178,9 +178,9 @@ if (db_has_gl_accounts())
 	submit_center_first('update', _("Update"), '', null);
 	submit('add', _("Save"), true, '', true);
 	submit_center_last('delete', _("Delete"), '', true);
-} 
+}
 end_form();
-	
+
 end_page();
-	
+
 ?>
