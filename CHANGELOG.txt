@@ -19,6 +19,13 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+------------------------------- Release 2.0.3 --------------------------------------------
+07-Oct-2008 Joe Hunt
+! Release 2.0.3
+$ config.php
+# Bug [0000072] Item stock movement should check for if there is empty Inventory.
+$ /inventory/inquiry/stock_movements.php
+
 05-Oct-2008 Janusz Dobrowolski
 # Bugfix [0000063] Bad update of parent document lines after edition of sales documents.
 $ /sales/includes/cart_class.inc
