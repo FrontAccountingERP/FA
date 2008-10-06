@@ -19,8 +19,36 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+06-Oct-2008 Janusz Dobrowolski
++ Menu hotkeys system implementation.
+$ /includes/page/header.inc
+  /includes/ui/ui_controls.inc
+  /includes/ui/ui_input.inc
+  /js/JsHttpRequest.js
+  /js/inserts.js
+  /js/utils.js
+  /reporting/includes/reports_classes.inc
+  /sales/sales_order_entry.php
+  /sales/manage/customers.php
+  /themes/aqua/default.css
+  /themes/aqua/renderer.php
+  /themes/cool/default.css
+  /themes/cool/renderer.php
+  /themes/default/default.css
+  /themes/default/renderer.php
++ Access keys added to menu options strings.
+$ /config.php
+  /applications/customers.php
+  /applications/dimensions.php
+  /applications/generalledger.php
+  /applications/inventory.php
+  /applications/manufacturing.php
+  /applications/setup.php
+  /applications/suppliers.php
+  /reporting/reports_main.php
+
 ------------------------------- Release 2.0.3 --------------------------------------------
-07-Oct-2008 Joe Hunt
+06-Oct-2008 Joe Hunt
 ! Release 2.0.3
 $ config.php
 # Bug [0000072] Item stock movement should check for if there is empty Inventory.
