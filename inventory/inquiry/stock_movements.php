@@ -19,6 +19,8 @@ if ($use_date_picker)
 page(_("Inventory Item Movement"), false, false, "", $js);
 //------------------------------------------------------------------------------------------------
 
+check_db_has_stock_items(_("There are no items defined in the system."));
+
 if(get_post('ShowMoves'))
 {
 	$Ajax->activate('doc_tbl');
