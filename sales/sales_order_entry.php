@@ -487,14 +487,15 @@ if ($customer_error == "") {
 	if ($_SESSION['Items']->trans_no == 0) {
 
 		submit_center_first('ProcessOrder', $porder,
-		    _('Check entered data and save document'), true);
+		    _('Check entered data and save document'), true, 'confirm.png');
 	} else {
 		submit_center_first('ProcessOrder', $corder,
-		    _('Validate changes and update document'), true);
+		    _('Validate changes and update document'), true, 'confirm.png');
 	}
 
 	submit_center_last('CancelOrder', $cancelorder,
-	   _('Cancels document entry or removes sales order when editing an old document'));
+	   _('Cancels document entry or removes sales order when editing an old document'),
+	   true, 'escape.png');
 } else {
 	display_error($customer_error);
 }

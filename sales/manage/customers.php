@@ -274,7 +274,9 @@ credit_status_list_row(_("Credit Status:"), 'credit_status', $_POST['credit_stat
 if (!$new_customer)  {
 	start_row();
 	echo '<td>'._('Customer branches').':</td>';
-  	hyperlink_params_td($path_to_root . "/sales/manage/customer_branches.php",'<b>'. (count($_SESSION['Context']) ?  _("Select or Add") : _("Add or Edit")).'</b>', "debtor_no=".$_POST['customer_id']);
+  	hyperlink_params_td($path_to_root . "/sales/manage/customer_branches.php",
+		'<b>'. (count($_SESSION['Context']) ?  _("Select or &Add") : _("&Add or Edit ")).'</b>', 
+		"debtor_no=".$_POST['customer_id']);
 	end_row();
 }
 end_table();

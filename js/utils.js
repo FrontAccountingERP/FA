@@ -183,7 +183,11 @@ function goBack() {
 }
 
 function setFocus(name, byId) {
-
+  if(document.location.pathname.indexOf('index.php') != -1) {
+  	// this is application menu page - set focus on first link
+	// var el = document.getElementById('msgbox');
+	// TODO find first link after msgbox and set focus
+  }
   if(!name) {
 	if (_focus)	
 		name = _focus;	// last focus set in onfocus handlers

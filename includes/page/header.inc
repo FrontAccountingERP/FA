@@ -17,7 +17,7 @@ function help_url($title, $app)
 	}
 	elseif ($title==_("Main Menu"))
 	{
-		$help_page_url = $applications[$app];
+		$help_page_url = access_string($applications[$app], true);
 	}
 	else
 	{

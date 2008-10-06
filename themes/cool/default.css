@@ -71,6 +71,16 @@ a:hover {
 	text-decoration: underline;
 }
 
+button {
+	font-size: 11px;
+	border: 1px #0066cc solid;
+	padding: 1px 0px;
+}
+
+button img, span {
+	padding: 0px 2px ;
+	vertical-align: middle;
+}
 
 .login {
 	background-color: #ffffff;

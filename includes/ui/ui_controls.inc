@@ -59,6 +59,27 @@ function meta_forward($forward_to, $params="")
 }
 
 //-----------------------------------------------------------------------------------
+// Find and replace hotkey marker.
+// if $clean == true marker is removed and clean label is returned 
+// (for use in wiki help system), otherwise result is array of label 
+// with underlined hotkey letter and access property string.
+//
+function access_string($label, $clean=false)
+{
+	$access = '';
+	$slices = array();
+
+	if (preg_match('/(.*)&([a-zA-Z0-9])(.*)/', $label, $slices))	
+	{
+		$label = $clean ? $slices[1].$slices[2].$slices[3] :
+			$slices[1].'<u>'.$slices[2].'</u>'.$slices[3];
+		$access = " accesskey='".strtoupper($slices[2])."'";
+	}
+	
+	$label = str_replace( '&&', '&', $label);
+
+	return $clean ? $label : array($label, $access);
+}
 
 function hyperlink_back($center=true)
 {
@@ -73,9 +94,10 @@ function hyperlink_back($center=true)
 
 function hyperlink_no_params($target, $label, $center=true)
 {
+	$pars = access_string($label);
 	if ($center)
 		echo "<br><center>";
-	echo "<a href='$target?=" . SID . "'>$label</a>\n";
+	echo "<a href='$target?=" . SID . "'$pars[1]>$pars[0]</a>\n";
 	if ($center)
 		echo "</center>";
 }
@@ -91,9 +113,10 @@ function hyperlink_no_params_td($target, $label)
 
 function hyperlink_params($target, $label, $params, $center=true)
 {
+	$pars = access_string($label);
 	if ($center)
 		echo "<br><center>";
-	echo "<a href='$target?$params'>$label</a>\n";
+	echo "<a href='$target?$params'$pars[1]>$pars[0]</a>\n";
 	if ($center)
 		echo "</center>";
 }
@@ -109,9 +132,10 @@ function hyperlink_params_td($target, $label, $params)
 
 function hyperlink_params_separate($target, $label, $params, $center=false)
 {
+	$pars = access_string($label);
 	if ($center)
 		echo "<br><center>";
-	echo "<a target='_blank' href='$target?$params" . SID . "'>$label</a>\n";
+	echo "<a target='_blank' href='$target?$params" . SID . "'$pars[1]>$pars[0]</a>\n";
 	if ($center)
 		echo "</center>";
 }

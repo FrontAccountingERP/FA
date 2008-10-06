@@ -94,50 +94,45 @@ function hidden($name, $value=null, $echo=true)
 		return $ret;
 }
 
-//---------------------------------------------------------------------------------
-//	Submit button.
-//	$async parameter can have 3 values:
-//		null - fallback button not visible in js enabled mode
-//		false - normal submit via form action
-//		true  - when js is on submition via ajax call
-//		'process' - ditto with processing indicator in msgbox
-//
-function submit($name, $value, $echo=true, $title=false, $async=false)
+function submit($name, $value, $echo=true, $title=false, $async=false, $icon=false)
 {
-
+	global $path_to_root;
+	
 	default_focus($name);
-	$submit_str = "<input type=\"submit\" class=\""
+	$submit_str = "<button class=\""
 	    .($async ? 'ajaxsubmit' : 'inputsubmit')
 		."\""
 		.($async === null ? (in_ajax() ? " style='display:none;'" : ' aspect="fallback"' ): 
 			($async === 'process' ? 'aspect="process"' : '') )
-	    ." name=\"$name\"  id=\"$name\" value=\"$value\""
+	    ." name=\"$name\"  id=\"$name\" " //value=\"$value\""
 	    .($title ? " title='$title'" : '')
-	    .">\n";
+	    ."><span>$value</span>"
+		.($icon ? "<img src='$path_to_root/themes/default/images/$icon'>" : '')
+		."</button>\n";
 	if ($echo)
 		echo $submit_str;
 	else
 		return $submit_str;
 }
 
-function submit_center($name, $value, $echo=true, $title=false, $async=false)
+function submit_center($name, $value, $echo=true, $title=false, $async=false, $icon=false)
 {
 	echo "<center>";
-	submit($name, $value, $echo, $title, $async);
+	submit($name, $value, $echo, $title, $async, $icon);
 	echo "</center>";
 }
 
-function submit_center_first($name, $value, $title=false, $async=false)
+function submit_center_first($name, $value, $title=false, $async=false, $icon=false)
 {
 	echo "<center>";
-	submit($name, $value, true, $title, $async);
+	submit($name, $value, true, $title, $async, $icon);
 	echo "&nbsp;";
 }
 
-function submit_center_last($name, $value, $title=false, $async=false)
+function submit_center_last($name, $value, $title=false, $async=false, $icon=false)
 {
 	echo "&nbsp;";
-	submit($name, $value, true, $title, $async);
+	submit($name, $value, true, $title, $async, $icon);
 	echo "</center>";
 }
 

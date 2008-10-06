@@ -37,9 +37,10 @@
 				echo "<div class=tabs>";
 				foreach($applications as $app => $name)
 				{
+					$acc = access_string($name);
 					echo "<a ".($sel_app == $app ? "class='selected' " : "").
 					"href='$local_path_to_root/index.php?application=".$app.
-						SID ."'>" .$name . "</a>";
+						SID ."'$acc[1]>" .$acc[0] . "</a>";
 				}
 				echo "</div>";
 
@@ -129,8 +130,11 @@
 
 				foreach ($module->lappfunctions as $appfunction)
 				{
-					if ($_SESSION["wa_current_user"]->can_access_page($appfunction->access))
-						echo "<a href='$appfunction->link'> " . $appfunction->label . "</a><br>";
+					if ($_SESSION["wa_current_user"]->can_access_page($appfunction->access)) 
+					{
+						$lnk = access_string($appfunction->label);
+						echo "<a href='$appfunction->link'$lnk[1]>$lnk[0]</a><br>";
+					}
 				}
 				echo "</td>";
 				if (sizeof($module->rappfunctions) > 0)
@@ -138,8 +142,11 @@
 					echo "<td width='50%' class='menu_group_items'>";
 					foreach ($module->rappfunctions as $appfunction)
 					{
-						if ($_SESSION["wa_current_user"]->can_access_page($appfunction->access))
-							echo "<a href='$appfunction->link'> " . $appfunction->label . "</a><br>";
+						if ($_SESSION["wa_current_user"]->can_access_page($appfunction->access)) 
+						{
+							$lnk = access_string($appfunction->label);
+							echo "<a href='$appfunction->link'$lnk[1]>$lnk[0]</a><br>";
+						}
 					}
 					echo "</td>";
 				}

@@ -31,11 +31,12 @@ class BoxReports
 		foreach($this->ar_classes as $key=>$value)
 		{
 			$style = $class_counter==0 ? '' : $style = "style='display:none'";
-			$st_classes .= "<a href='javascript:showClass($class_counter)'>$key</a> <br>";
+			$acc = access_string($key);
+			$st_classes .= "<a href='javascript:showClass($class_counter)'$acc[1]>$acc[0]</a> <br>";
 			$st_reports .= "<table id='TAB_" . $class_counter++ ."' $style cellpadding=0 cellspacing=0 border=0 width='100%'><tr><td><b>" . _("Reports For Class: ") . "&nbsp;$key</b></td></tr>";
 			foreach($value as $report)
-			{
-				$st_reports .= "<tr><td><a href='javascript:showReport($rep_counter)'>" . $report->name . "</a></td></tr>";
+			{	$acc = access_string($report->name);
+				$st_reports .= "<tr><td><a href='javascript:showReport($rep_counter)'$acc[1]>$acc[0]</a></td></tr>";
 				$st_params .= "<table border=0 id='REP_" . $rep_counter++ . "' style='display:none'>";
 				$st_params .= "<tr><td>" . $report->getDisplay() . "</td></tr></table>";
 			}
