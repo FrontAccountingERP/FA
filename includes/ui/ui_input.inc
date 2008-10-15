@@ -104,7 +104,7 @@ function submit($name, $value, $echo=true, $title=false, $async=false, $icon=fal
 		."\""
 		.($async === null ? (in_ajax() ? " style='display:none;'" : ' aspect="fallback"' ): 
 			($async === 'process' ? 'aspect="process"' : '') )
-	    ." name=\"$name\"  id=\"$name\" " //value=\"$value\""
+	    ." name=\"$name\"  id=\"$name\" value=\"$value\""
 	    .($title ? " title='$title'" : '')
 	    ."><span>$value</span>"
 		.($icon ? "<img src='$path_to_root/themes/default/images/$icon'>" : '')
@@ -302,17 +302,17 @@ function qty_cell($label, $bold=false, $dec=null, $id=null)
 		label_cell(number_format2($label, $dec), "nowrap align=right", $id);
 }
 
-function label_cells($label, $value, $params="", $params2="")
+function label_cells($label, $value, $params="", $params2="", $id='')
 {
 	if ($label != null)
 		echo "<td $params>$label</td>\n";
-	echo "<td $params2>$value</td>\n";
+	label_cell($value, $params2, $id);
 }
 
-function label_row($label, $value, $params="", $params2="", $leftfill=0)
+function label_row($label, $value, $params="", $params2="", $leftfill=0, $id='')
 {
 	echo "<tr>";
-	label_cells($label, $value, $params, $params2);
+	label_cells($label, $value, $params, $params2, $id);
 	if ($leftfill!=0)
 	  	echo "<td colspan=$leftfill></td>";
 	echo "</tr>\n";
