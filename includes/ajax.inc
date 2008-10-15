@@ -25,9 +25,15 @@ class Ajax extends JsHttpRequest {
 	//
 	function redirect($url) {
 	    if(in_ajax()) {
-		  $this->_addCommand(true, array('n'=>'rd'),$url);
+			$this->_addCommand(true, array('n'=>'rd'),$url);
 		  $this->run();
 	    }
+	}
+	//
+	// Popup window (target=_blank)
+	//
+	function popup($url) {
+		  $this->_addCommand(true, array('n'=>'pu'),$url);
 	}
 	//
 	// Adds an executable Javascript code.
