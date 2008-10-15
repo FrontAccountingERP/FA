@@ -133,16 +133,13 @@ $opts = array(		// default options
 	$selector = $first_opt = '';
 	$first_id = false;
 	$found = false;
-//if($name=='SelectStockFromList') display_error($sql);
+//if($name=='contact_sel') display_error($sql);
 	if($result = db_query($sql)) {
 		while ($contact_row = db_fetch($result)) {
 			$value = $contact_row[0];
 			$descr = $opts['format']==null ?  $contact_row[1] :
 			call_user_func($opts['format'], $contact_row);
 			$sel = '';
-			if (get_post($search_submit) && ($txt === $value)) {
-					$selected_id = $value; 
-			} 
  		 	if (get_post($search_submit) && ($txt === $value)) {
  		 		$selected_id = $value;
  		 	}
@@ -1746,5 +1743,50 @@ function number_list_row($label, $name, $selected, $from, $to, $no_option=false)
 	number_list_cells($label, $name, $selected, $from, $to, $no_option);
 	echo "</tr>\n";
 }
+
+function print_profiles_list_row($label, $name, $selected_id=null, $spec_opt=false,
+	$submit_on_change=true)
+{
+	$sql = "SELECT profile FROM ".TB_PREF."print_profiles"
+		." GROUP BY profile";
+	$result = db_query($sql, 'cannot get all profile names');
+	$profiles = array();
+	while($myrow=db_fetch($result)) {
+		$profiles[$myrow['profile']] = $myrow['profile'];
+	}
+
+	echo "<tr>";
+	if ($label != null)
+		echo "<td>$label</td>\n";
+	echo "<td>";
+
+	array_selector($name, $selected_id, $profiles, 
+		array( 'select_submit'=> $submit_on_change,
+			'spec_option'=>$spec_opt,
+			'spec_id' => ''
+		 ));
+
+	echo "</td></tr>\n";
+}
+
+function printers_list($name, $selected_id=null, $spec_opt=false, $submit_on_change=false)
+{
+	static $printers; // query only once for page display
+
+	if (!$printers) {
+		$sql = "SELECT id, name, description FROM ".TB_PREF."printers";	
+		$result = db_query($sql, 'cannot get all printers');
+		$printers = array();
+		while($myrow=db_fetch($result)) {
+			$printers[$myrow['id']] = $myrow['name'].'&nbsp;-&nbsp;'.$myrow['description'];
+		}
+	}
+	array_selector($name, $selected_id, $printers, 
+		array( 'select_submit'=> $submit_on_change,
+			'spec_option'=>$spec_opt,
+			'spec_id' => ''
+		 ));
+}
+
 
 ?>

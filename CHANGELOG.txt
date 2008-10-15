@@ -19,6 +19,47 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+15-Oct-2008 Janusz Dobrowolski
++ Added remote printing support
+$ /admin/print_profiles.php (new)
+  /admin/printers.php (new)
+  /admin/db/printers_db.inc (new)
+  /reporting/prn_redirect.php (new)
+  /reporting/includes/printer_class.inc (new)
+  /sql/alter2.1.sql (new)
+  /config.php
+  /admin/display_prefs.php
+  /admin/users.php
+  /admin/db/users_db.inc
+  /applications/setup.php
+  /includes/current_user.inc
+  /includes/prefs/userprefs.inc
+  /includes/ui/ui_lists.inc
+  /js/inserts.js
+  /js/utils.js
+  /reporting/rep109.php
+  /reporting/reports_main.php
+  /reporting/includes/pdf_report.inc
+  /reporting/includes/reporting.inc
+  /reporting/includes/reports_classes.inc
+!Fixes related to changed printing api.
+$ /admin/view_print_transaction.php
+  /purchasing/inquiry/po_search.php
+  /purchasing/inquiry/po_search_completed.php
+  /sales/customer_credit_invoice.php
+  /sales/customer_delivery.php
+  /sales/customer_invoice.php
+  /sales/sales_order_entry.php
+  /sales/inquiry/customer_inquiry.php
+  /sales/inquiry/sales_deliveries_view.php
+  /sales/inquiry/sales_orders_view.php
++ Added optional id parameter for label helpers; added value for buttons.
+$ /includes/ui/ui_input.inc
++ Added ajax popup screen command.
+$ /includes/ajax.inc
+# Skipping index.php file during flush_dir()
+$ /includes/main.inc
+
 06-Oct-2008 Janusz Dobrowolski
 + Menu hotkeys system implementation.
 $ /includes/page/header.inc

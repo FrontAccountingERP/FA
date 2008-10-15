@@ -257,6 +257,13 @@ var inserts = {
 			};
 		}
 	},
+	'a.printlink': 	function(l) {
+		l.onclick = function() {
+		    save_focus(this);
+			JsHttpRequest.request(this);
+			return false;
+		}
+	},
 	'ul.ajaxtabs':	function(ul) {
 	    var ulist=ul.getElementsByTagName("li");
 	    for (var x=0; x<ulist.length; x++){ //loop through each LI e

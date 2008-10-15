@@ -54,10 +54,10 @@ function print_sales_orders()
 
 	if ($email == 0)
 	{
-		if ($print_as_quote == 1)
-			$rep = new FrontReport(_("QUOTE"), "QuoteBulk.pdf", user_pagesize());
-		else
+		if ($print_as_quote == 0)
 			$rep = new FrontReport(_("SALES ORDER"), "SalesOrderBulk.pdf", user_pagesize());
+		else
+			$rep = new FrontReport(_("QUOTE"), "QuoteBulk.pdf", user_pagesize());
 		$rep->currency = $cur;
 		$rep->Font();
 		$rep->Info($params, $cols, null, $aligns);

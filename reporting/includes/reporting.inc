@@ -1,96 +1,85 @@
 <?php
+// Link to printing single document with bulk report template file.
+// Ex. label_cell(print_document_link($myrow['order_no'], _("Print")), $type);
+// or display_note(print_document_link($order_no, _("Print this order")));
+// You only need full parameter list for invoices/credit notes
 
-// Put this on the page only once an outside a form, e.g. print_hidden_script(systypes::sales_order());
-// If you have both invoices and credit notes on the same page use 10 or 11. Is doesn't matter which.
-
-function print_hidden_script($type_no)
+function print_document_link($doc_no, $link_text, $link=true, $type_no)
 {
 	global $path_to_root;
 	include_once($path_to_root . "/includes/types.inc");
-	$action = "";
+
+	$url = $path_to_root.'/reporting/prn_redirect.php?';
 
 	switch ($type_no)
 	{
 		case systypes::sales_order() :
-			$action = "$path_to_root/reporting/rep109.php";
+			$rep = 109;
+			// from, to, currency, bank acc, email, quote, comments
 			$ar = array(
-				'PARAM_0' => 0,		// from - these values are updated in print_document_link()
-				'PARAM_1' => 0, 	// to
-				'PARAM_2' => "", 	// currency
-				'PARAM_3' => get_first_bank_account(), 	// bank account
-				'PARAM_4' => 0, 	// email
-				'PARAM_5' => 0, 	// quote
-				'PARAM_6' => ""); 	// comments
+				'PARAM_0' => $doc_no, 
+				'PARAM_1' => $doc_no, 
+				'PARAM_2' => "", 
+				'PARAM_3' => get_first_bank_account(), 
+				'PARAM_4' => 0, 
+				'PARAM_5' => 0, 
+				'PARAM_6' => "");
 			break;
 		case systypes::cust_dispatch() :
-			$action = "$path_to_root/reporting/rep110.php";
+			$rep = 110;
+			// from, to, email, comments
 			$ar = array(
-				'PARAM_0' => 0,		// from - these values are updated in print_document_link()
-				'PARAM_1' => 0, 	// to
-				'PARAM_2' => 0, 	// email
-				'PARAM_3' => ""); 	// comments
+				'PARAM_0' => $doc_no, 
+				'PARAM_1' => $doc_no, 
+				'PARAM_2' => 0, 
+				'PARAM_3' => "");
 			break;
 		case 10 : // Sales Invoice
 		case 11 : // Customer Credit Note
-			$action = "$path_to_root/reporting/rep107.php";
+			$rep = 107;
+			// from, to, currency, bank acc, email, paylink, comments, type
 			$ar = array(
-				'PARAM_0' => 0,		// from - these values are updated in print_document_link()
-				'PARAM_1' => 0, 	// to
-				'PARAM_2' => "", 	// currency
-				'PARAM_3' => get_first_bank_account(), 	// bank account
-				'PARAM_4' => 0, 	// email
-				'PARAM_5' => "", 	// paylink
-				'PARAM_6' => "", 	// comments
-				'PARAM_7' => 0); 	// IV or CN
+				'PARAM_0' => $doc_no, 
+				'PARAM_1' => $doc_no, 
+				'PARAM_2' => "", 
+				'PARAM_3' => get_first_bank_account(), 
+				'PARAM_4' => 0, 
+				'PARAM_5' => "",
+				'PARAM_6' => "", 
+				'PARAM_7' => $type_no);
 			break;
 		case systypes::po() :
-			$action = "$path_to_root/reporting/rep209.php";
+			$rep = 209;
+			// from, to, currency, bank acc, email, comments
 			$ar = array(
-				'PARAM_0' => 0,		// from - these values are updated in print_document_link()
-				'PARAM_1' => 0, 	// to
-				'PARAM_2' => "", 	// currency
-				'PARAM_3' => get_first_bank_account(), 	// bank account
-				'PARAM_4' => 0, 	// email
-				'PARAM_5' => ""); 	// comments
+				'PARAM_0' => $doc_no, 
+				'PARAM_1' => $doc_no, 
+				'PARAM_2' => "", 
+				'PARAM_3' => get_first_bank_account(), 
+				'PARAM_4' => 0, 
+				'PARAM_5' => "");
 			break;
+//		default: $ar = array();
 	}
-	$st = "<form method='post' name='pdf_form' action='$action'>";
-	foreach ($ar as $key => $value)
-	{
-		$st .= "<input type='hidden' name='$key' value='$value' />";
-	}
-	$st .= "</form>\n";
-	$st .= "<script type='text/javascript'>
-<!--
-function printDocument(docno, typeno) {
-  document.pdf_form.PARAM_0.value = document.pdf_form.PARAM_1.value = docno;
-  if (typeno == 10 || typeno == 11)
-  	document.pdf_form.PARAM_7.value = typeno;
-  window.open('','REP_WINDOW','toolbar=no,scrollbar=no,resizable=yes,menubar=no');
-  document.pdf_form.target='REP_WINDOW';
-  document.pdf_form.submit();
+	
+	return print_link($link_text, $rep, $ar);
 }
--->
-</script>\n";
-
-	echo $st;
-}
-
-// Ex. label_cell(print_document_link($myrow['order_no'], _("Print")));
-// or display_note(print_document_link($order_no, _("Print this order")));
-// or if a button
-// button("button", _("Print this order"), print_document_link($order_no, "", false))";
-// or if a button inside a TD
-// button_cell("button", _("Print this order"), print_document_link($order_no, "", false))";
 //
-// You only need full parameter list for invoices/credit notes
-
-function print_document_link($doc_no, $link_text, $link=true, $type_no=0)
+//	Universal link to any kind of report.
+//
+function print_link($link_text, $rep, $pars = array(), $dir = '')
 {
-	if ($link)
-		return "<a href=\"javascript:printDocument('$doc_no', '$type_no');\">$link_text</a>";
-	else
-		return "javascript:printDocument('$doc_no', '$type_no');";
+	global $path_to_root;
+
+	$url = $dir == '' ?  $path_to_root.'/reporting/prn_redirect.php?' : $dir;
+
+	foreach($pars as $par => $val) {
+		$pars[$par] = "$par=".urlencode($val);
+	}
+	$pars[] = 'REP_ID='.urlencode($rep);
+	$url .= implode ('&', $pars);
+	
+	return "<a class='printlink' target='_blank' href='$url'>$link_text</a>";
 }
 
 function get_first_bank_account()

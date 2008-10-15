@@ -3,7 +3,9 @@
 $page_security = 8;
 //include_once($path_to_root . "reporting/includes/class.pdf.inc");
 include_once(dirname(__FILE__)."/class.pdf.inc");
+include_once(dirname(__FILE__)."/printer_class.inc");
 include_once($path_to_root . "admin/db/company_db.inc");
+include_once($path_to_root . "admin/db/printers_db.inc");
 include_once($path_to_root . "config.php");
 class FrontReport extends Cpdf
 {
@@ -355,9 +357,9 @@ class FrontReport extends Cpdf
 
 	function End($email=0, $subject=null, $myrow=null, $doctype = 0)
 	{
-		global $go_debug, $path_to_root, $comp_path;
+		global $pdf_debug, $path_to_root, $comp_path;
 
-		if ($go_debug == 1)
+		if ($pdf_debug == 1)
 		{
 			$buf = $this->Output();
 			$len = strlen($buf);
@@ -376,6 +378,7 @@ class FrontReport extends Cpdf
 		}
 		else
 		{
+
 			$buf = $this->Output();
 			$len = strlen($buf);
 			$dir =  $comp_path.'/'.user_company(). '/pdf_files';
@@ -384,7 +387,12 @@ class FrontReport extends Cpdf
 			{
 				mkdir ($dir,0777);
 			}
-			$fname = $dir . '/' . $this->filename;
+			// do not use standard filenames or your sensitive company data 
+			// are world readable
+//			$fname = $dir . '/' . $this->filename;
+			$fname = tempnam($dir, 'xx');
+			rename($fname, $fname.'.pdf');
+			$fname .= '.pdf';
 			$fp = fopen($fname,'w');
 			fwrite($fp,$buf);
 			fclose($fp);
@@ -448,36 +456,67 @@ class FrontReport extends Cpdf
 			}
 			else
 			{
-				//echo '<html>
-				//		<head>
-				//	  	  <SCRIPT LANGUAGE="JavaScript"><!--
-				//	      function go_now () { window.location.href = "'.$fname.'"; }
-				//	      //--></SCRIPT>
-				//	  </head>
-				//	  <body onLoad="go_now()"; >
-				//	    <a href="'.$fname.'">click here</a> if you are not re-directed.
-				//	  </body>
-				//    </html>';
-                header('Content-type: application/pdf');
-                header("Content-Disposition: inline; filename=$this->filename");
-                header('Expires: 0');
-                header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-                header('Pragma: public');
-                $this->Stream();
+				$printer = get_report_printer(user_print_profile(), $_POST['REP_ID']);
+				if ($printer == false) {
+					if(in_Ajax()) {
+						global $Ajax;
+						// in case of ajax call non-ajax page reload is forced.
+						// the alternative is to differ browser support from 
+						// call to remote printing by some attribute of print links,
+						// but in this case we should check related printer target 
+						// for any link on the page, even if never used.
 
+						// display in popup window ...
+//						$Ajax->popup($_SERVER['PHP_SELF'].'?'.$_SERVER['QUERY_STRING']);
+						// ... or fire browser download popup
+						//	$Ajax->redirect($_SERVER['PHP_SELF'].'?'.$_SERVER['QUERY_STRING']);
+// strip document root from file path
+						$fname = substr(realpath($fname), strlen($_SERVER['DOCUMENT_ROOT']));
+						if (substr($fname,0,1) != '/') $fname = '/'.$fname;
+
+						$Ajax->redirect($fname);
+					} else {
+					//echo '<html>
+					//		<head>
+					//	  	  <SCRIPT LANGUAGE="JavaScript"><!--
+					//	      function go_now () { window.location.href = "'.$fname.'"; }
+					//	      //--></SCRIPT>
+					//	  </head>
+					//	  <body onLoad="go_now()"; >
+					//	    <a href="'.$fname.'">click here</a> if you are not re-directed.
+					//	  </body>
+					//    </html>';
+	                header('Content-type: application/pdf');
+    	            header("Content-Disposition: inline; filename=$this->filename");
+        	        header('Expires: 0');
+            	    header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+                	header('Pragma: public');
+	                $this->Stream();
+					}
+				} else { // send report to network printer
+					$prn = new remote_printer($printer['queue'],$printer['host'],
+						$printer['port'], $printer['timeout']);
+					$error = $prn->print_file($fname);
+					if ($error)
+						display_error($error);
+					else
+						display_notification(_('Report has been sent to network printer ').$printer['name']);
+				}
 			}
-			// also have a look through the directory, and remove the files that are older than a week
-			// rather want to save 'em
-			/*if ($d = @opendir($dir)) {
+			// first have a look through the directory, 
+			// and remove old temporary pdfs
+			if ($d = @opendir($dir)) {
 				while (($file = readdir($d)) !== false) {
-					// then check to see if this one is too old
+					if (!is_file($dir.'/'.$file) || $file == 'index.php') continue;
+				// then check to see if this one is too old
 					$ftime = filemtime($dir.'/'.$file);
-					if (time()-$ftime > 3600*24*7){
+				 // seems 3 min is enough for any report download, isn't it?
+					if (time()-$ftime > 180){
 						unlink($dir.'/'.$file);
 					}
 				}
 				closedir($d);
-			}*/
+			}
 		}
 	}
 }

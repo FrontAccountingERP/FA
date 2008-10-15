@@ -274,19 +274,7 @@ $reports->addReport(_('General Ledger'),709,_('Ta&x Report'),
 			new ReportParam(_('Summary Only'),'YES_NO'),
 			new ReportParam(_('Comments'),'TEXTBOX')));
 
-echo "
-<form method=post>
-	<input type='hidden' name='REP_ID' value=''>
-	<input type='hidden' name='PARAM_COUNT' value=''>
-	<input type='hidden' name='PARAM_0' value=''>
-	<input type='hidden' name='PARAM_1' value=''>
-	<input type='hidden' name='PARAM_2' value=''>
-	<input type='hidden' name='PARAM_3' value=''>
-	<input type='hidden' name='PARAM_4' value=''>
-	<input type='hidden' name='PARAM_5' value=''>
-	<input type='hidden' name='PARAM_6' value=''>
-
-	<script language='javascript'>
+echo "<script language='javascript'>
 		function onWindowLoad() {
 			showClass(" . $_GET['Class'] . ")
 		}
@@ -294,7 +282,6 @@ echo "
 	</script>
 ";
 echo $reports->getDisplay();
-echo "</form>";
 
 end_page();
 ?>

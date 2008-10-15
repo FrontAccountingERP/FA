@@ -24,6 +24,7 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 	$debug 			= 1;
 	$show_sql 		= 0;
 	$go_debug 		= 1;
+	$pdf_debug 		= 0;
 	if ($go_debug == 1)
 	{
 		error_reporting(E_ALL);

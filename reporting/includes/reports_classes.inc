@@ -20,7 +20,8 @@ class BoxReports
 
 	function getDisplay($class=null)
 	{
-		global $table_style2;
+		global $table_style2, $comp_path, $path_to_root;
+
 		$temp = array_values($this->ar_classes);
 		$display_class = $class==null ? $temp[0] : $this->ar_classes[$class];
 		$class_counter = 0;
@@ -37,8 +38,16 @@ class BoxReports
 			foreach($value as $report)
 			{	$acc = access_string($report->name);
 				$st_reports .= "<tr><td><a href='javascript:showReport($rep_counter)'$acc[1]>$acc[0]</a></td></tr>";
-				$st_params .= "<table border=0 id='REP_" . $rep_counter++ . "' style='display:none'>";
-				$st_params .= "<tr><td>" . $report->getDisplay() . "</td></tr></table>";
+
+				$action = $path_to_root.'/reporting/prn_redirect.php';
+
+				$st_params .= "<div id='REP_" . $rep_counter++ . "' style='display:none'>";
+				$st_params .= "<table border=0><tr><td>\n"
+								. "<form method='POST' action='$action'>\n" 
+								. $report->getDisplay() 
+								. "\n</form>\n"
+								. "</td></tr></table></div>";
+
 			}
 			$st_reports .= "</table>";
 		}
@@ -54,11 +63,18 @@ class BoxReports
 						}
 					}
 					function showReport(pId) {
+//						JsHttpRequest.request('Rep'+pId);
 						var tab;
 						for(i=0; i<$rep_counter; i++) {
 							eval('document.getElementById(\"REP_\" + i).style.display=\"none\"')
 						}
 						eval('document.getElementById(\"REP_\" + pId).style.display=\"block\"')
+					}
+					function checkDate(pObj) {
+						var re = /^(3[01]|0[1-9]|[12]\d)\/(0[1-9]|1[012])\/\d{4}/;
+						if (re.test(pObj.value)==false) {
+							alert('" . _("Invalid date format") . "')
+						}
 					}
 				</script>
 				";
@@ -84,39 +100,15 @@ class Report
 		$this->name 		= $name;
 		$this->ar_params	= $ar_params;
 	}
+	
 	function getDisplay()
 	{
-		global $comp_path, $path_to_root, $use_date_picker;
+		global $path_to_root, $use_date_picker;
 
-	        $rep_file = $comp_path.'/'.user_company().
-		     "/reporting/rep".$this->id.".php";
-		if (!file_exists($rep_file))
-		    $rep_file = $path_to_root ."/reporting/rep".$this->id.".php";
-
-		$st = "
-<script language='javascript'>
-	function displayReport_" . $this->id . "() {
-		pParamCount = " . count($this->ar_params) . ";
-		document.forms[0].REP_ID.value = " . $this->id . ";
-		document.forms[0].PARAM_COUNT.value = pParamCount;
-		for (i=0; i<pParamCount; i++) {
-			eval('document.forms[0].PARAM_' + i + '.value=document.forms[0].RP_" . $this->id . "_' + i + '.value');
-		}
-
-		window.open('','REP_WINDOW','toolbar=no,scrollbar=no,resizable=yes,menubar=no');
-		document.forms[0].target='REP_WINDOW';
-		document.forms[0].action= '$rep_file';
-		document.forms[0].submit();
-	}
-	function checkDate(pObj) {
-		var re = /^(3[01]|0[1-9]|[12]\d)\/(0[1-9]|1[012])\/\d{4}/;
-		if (re.test(pObj.value)==false) {
-			alert('" . _("Invalid date format") . "')
-		}
-	}
-</script>
-			";
-		$st .= "<input type='button' onclick='javascript:displayReport_" . $this->id ."()' value='" . _("Display: ") . $this->name . "'><br><br>";
+		$st  = hidden('REP_ID', $this->id, false);
+		$st .= submit('Rep'.$this->id,  
+			_("Display: ") . access_string($this->name,true),
+			false, '', true) . '<br><br>';
 		$dummy = "";
 		if ($this->ar_params==null)
 			return "";
@@ -127,7 +119,7 @@ class Report
 			{
 				case 'CURRENCY':
 					$sql = "SELECT curr_abrev, concat(curr_abrev,' - ', currency) FROM ".TB_PREF."currencies";
-					$st .= dup_simple_codeandname_list($sql, "RP_" . $this->id . "_$index", $dummy, true, _("No Currency Filter"));
+					$st .= dup_simple_codeandname_list($sql, "PARAM_$index", $dummy, true, _("No Currency Filter"));
 					break;
 				case 'DATE':
 				case 'DATEBEGIN':
@@ -159,8 +151,8 @@ class Report
 							$date = begin_month($bdate);
 						}
 					}
-					$name = "RP_" . $this->id . "_$index";
-					//$st .= "<input type='text' name='$name' value='$date' onblur='javascript:checkDate(this)'>";
+					$name = "PARAM_$index";
+
 					$st .= "<input type='text' name='$name' value='$date'>";
 					if ($use_date_picker)
 						$st .= "<a href=\"javascript:date_picker(document.forms[0].$name);\">"
@@ -169,81 +161,81 @@ class Report
 					break;
 				case 'YES_NO':
 					$sel = array(_('No'), _("Yes"));
-					$st .= dup_simple_name_list("RP_" . $this->id . "_$index", $sel);
+					$st .= dup_simple_name_list("PARAM_$index", $sel);
 					break;
 				case 'PAYMENT_LINK':
 					$sel = array(_("No Payment Link"), "PayPal");
-					$st .= dup_simple_name_list("RP_" . $this->id . "_$index", $sel);
+					$st .= dup_simple_name_list("PARAM_$index", $sel);
 					break;
 				case 'COMPARE':
 					$sel = array(_("Accumulated"), _("Period Y-1"), _("Budget"));
-					$st .= dup_simple_name_list("RP_" . $this->id . "_$index", $sel);
+					$st .= dup_simple_name_list("PARAM_$index", $sel);
 					break;
 				case 'GRAPHIC':
 					$sel = array(_("No Graphics"), _("Vertical bars"), _("Horizontal bars"), _("Dots"), _("Lines"), _("Pie"), _("Donut"));
-					$st .= dup_simple_name_list("RP_" . $this->id . "_$index", $sel);
+					$st .= dup_simple_name_list("PARAM_$index", $sel);
 					break;
 				case 'SYS_TYPES':
-					$st .= dup_systypes_list("RP_" . $this->id . "_$index", $dummy, true, _("No Type Filter"), true);
+					$st .= dup_systypes_list("PARAM_$index", $dummy, true, _("No Type Filter"), true);
 					break;
 				case 'TEXT':
-					$st .= "<input type='text' name='RP_" . $this->id . "_$index'>";
+					$st .= "<input type='text' name='PARAM_$index'>";
 					break;
 				case 'TEXTBOX':
-					$st .= "<textarea rows=4 cols=30 name='RP_" . $this->id . "_$index'></textarea>";
+					$st .= "<textarea rows=4 cols=30 name='PARAM_$index'></textarea>";
 					break;
 				case 'ACCOUNTS':
 					$sql = "SELECT id, name FROM ".TB_PREF."chart_types ORDER BY name";
-					$st .= dup_simple_codeandname_list($sql, "RP_" . $this->id . "_$index", $dummy, true, _("No Account Group Filter"), true);
+					$st .= dup_simple_codeandname_list($sql, "PARAM_$index", $dummy, true, _("No Account Group Filter"), true);
 					break;
 				case 'GL_ACCOUNTS':
 					$sql = "SELECT account_code, concat(account_code, ' - ', account_name) as account_name FROM ".TB_PREF."chart_master ORDER BY account_code";
-					$st .= dup_simple_codeandname_list($sql, "RP_" . $this->id . "_$index", $dummy);
+					$st .= dup_simple_codeandname_list($sql, "PARAM_$index", $dummy);
 					break;
 				case 'BANK_ACCOUNTS':
 					$sql = "SELECT ".TB_PREF."bank_accounts.account_code, concat(bank_account_name, if (bank_curr_code=curr_default,'', concat(' - ', bank_curr_code))) FROM ".TB_PREF."bank_accounts, ".TB_PREF."chart_master, ".TB_PREF."company
 						WHERE ".TB_PREF."bank_accounts.account_code=".TB_PREF."chart_master.account_code";
-					$st .= dup_simple_codeandname_list($sql, "RP_" . $this->id . "_$index", $dummy);
+					$st .= dup_simple_codeandname_list($sql, "PARAM_$index", $dummy);
 					break;
 				case 'DIMENSION':
 					$sql = "SELECT reference, concat(reference, ' - ', name) AS DimName FROM ".TB_PREF."dimensions ORDER BY reference";
-					$st .= dup_simple_codeandname_list($sql, "RP_" . $this->id . "_$index", $dummy);
+					$st .= dup_simple_codeandname_list($sql, "PARAM_$index", $dummy);
 					break;
 				case 'DIMENSIONS':
 					$sql = "SELECT reference, concat(reference, ' - ', name) as DimName FROM ".TB_PREF."dimensions ORDER BY reference";
-					$st .= dup_simple_codeandname_list($sql, "RP_" . $this->id . "_$index", $dummy, true, _("No Dimension Filter"), true);
+					$st .= dup_simple_codeandname_list($sql, "PARAM_$index", $dummy, true, _("No Dimension Filter"), true);
 					break;
 				case 'DIMENSION1':
 					$sql = "SELECT reference, concat(reference, ' - ', name) AS DimName FROM ".TB_PREF."dimensions WHERE type_=1 ORDER BY reference";
-					$st .= dup_simple_codeandname_list($sql, "RP_" . $this->id . "_$index", $dummy);
+					$st .= dup_simple_codeandname_list($sql, "PARAM_$index". "_$index", $dummy);
 					break;
 				case 'DIMENSIONS1':
 					$sql = "SELECT reference, concat(reference, ' - ', name) as DimName FROM ".TB_PREF."dimensions WHERE type_=1 ORDER BY reference";
-					$st .= dup_simple_codeandname_list($sql, "RP_" . $this->id . "_$index", $dummy, true, _("No Dimension Filter"), true);
+					$st .= dup_simple_codeandname_list($sql, "PARAM_$index", $dummy, true, _("No Dimension Filter"), true);
 					break;
 				case 'DIMENSION2':
 					$sql = "SELECT reference, concat(reference, ' - ', name) AS DimName FROM ".TB_PREF."dimensions WHERE type_=2 ORDER BY reference";
-					$st .= dup_simple_codeandname_list($sql, "RP_" . $this->id . "_$index", $dummy);
+					$st .= dup_simple_codeandname_list($sql, "PARAM_$index", $dummy);
 					break;
 				case 'DIMENSIONS2':
 					$sql = "SELECT reference, concat(reference, ' - ', name) as DimName FROM ".TB_PREF."dimensions WHERE type_=2 ORDER BY reference";
-					$st .= dup_simple_codeandname_list($sql, "RP_" . $this->id . "_$index", $dummy, true, _("No Dimension Filter"), true);
+					$st .= dup_simple_codeandname_list($sql, "PARAM_$index", $dummy, true, _("No Dimension Filter"), true);
 					break;
 				case 'CUSTOMERS_NO_FILTER':
 				case 'CUSTOMERS':
 					$sql = "SELECT debtor_no, name FROM ".TB_PREF."debtors_master ORDER BY name";
 					if ($param->param_type == 'CUSTOMERS_NO_FILTER')
-						$st .= dup_simple_codeandname_list($sql, "RP_" . $this->id . "_$index", $dummy, true, _("No Customer Filter"), true);
+						$st .= dup_simple_codeandname_list($sql, "PARAM_$index", $dummy, true, _("No Customer Filter"), true);
 					else
-						$st .= dup_simple_codeandname_list($sql, "RP_" . $this->id . "_$index", $dummy);
+						$st .= dup_simple_codeandname_list($sql, "PARAM_$index", $dummy);
 					break;
 				case 'SUPPLIERS_NO_FILTER':
 				case 'SUPPLIERS':
 					$sql = "SELECT supplier_id, supp_name FROM ".TB_PREF."suppliers ORDER BY supp_name";
 					if ($param->param_type == 'SUPPLIERS_NO_FILTER')
-						$st .= dup_simple_codeandname_list($sql, "RP_" . $this->id . "_$index", $dummy, true, _("No Supplier Filter"), true);
+						$st .= dup_simple_codeandname_list($sql, "PARAM_$index", $dummy, true, _("No Supplier Filter"), true);
 					else
-						$st .= dup_simple_codeandname_list($sql, "RP_" . $this->id . "_$index", $dummy);
+						$st .= dup_simple_codeandname_list($sql, "PARAM_$index", $dummy);
 					break;
 				case 'INVOICE':
 					$IV = _("IV");
@@ -251,7 +243,7 @@ class Report
 					$sql = "SELECT concat(".TB_PREF."debtor_trans.trans_no, '-',
 						".TB_PREF."debtor_trans.type) AS TNO, concat(".TB_PREF."debtor_trans.trans_no, if (type=10, ' $IV ', ' $CN '), ".TB_PREF."debtors_master.name) as IName
 						FROM ".TB_PREF."debtors_master, ".TB_PREF."debtor_trans WHERE (type=10 OR type=11) AND ".TB_PREF."debtors_master.debtor_no=".TB_PREF."debtor_trans.debtor_no ORDER BY ".TB_PREF."debtor_trans.trans_no DESC";
-					$st .= dup_simple_codeandname_list($sql, "RP_" . $this->id . "_$index", $dummy);
+					$st .= dup_simple_codeandname_list($sql, "PARAM_$index", $dummy);
 					break;
 				case 'DELIVERY':
 					$DN = _("DN");
@@ -261,51 +253,51 @@ class Report
 						FROM ".TB_PREF."debtors_master, ".TB_PREF."debtor_trans
 						WHERE type=13 AND ".TB_PREF."debtors_master.debtor_no=".
 						TB_PREF."debtor_trans.debtor_no ORDER BY ".TB_PREF."debtor_trans.trans_no DESC";
-					$st .= dup_simple_codeandname_list($sql, "RP_" . $this->id . "_$index", $dummy);
+					$st .= dup_simple_codeandname_list($sql, "PARAM_$index", $dummy);
 					break;
 				case 'ORDERS':
 					$sql = "SELECT ".TB_PREF."sales_orders.order_no, concat(".TB_PREF."sales_orders.order_no, '-',
 						".TB_PREF."debtors_master.name) as IName
 						FROM ".TB_PREF."debtors_master, ".TB_PREF."sales_orders WHERE ".TB_PREF."debtors_master.debtor_no=".TB_PREF."sales_orders.debtor_no ORDER BY ".TB_PREF."sales_orders.order_no DESC";
-					$st .= dup_simple_codeandname_list($sql, "RP_" . $this->id . "_$index", $dummy);
+					$st .= dup_simple_codeandname_list($sql, "PARAM_$index", $dummy);
 					break;
 				case 'PO':
 					$sql = "SELECT ".TB_PREF."purch_orders.order_no, concat(".TB_PREF."purch_orders.order_no, '-',
 						".TB_PREF."suppliers.supp_name) as IName
 						FROM ".TB_PREF."suppliers, ".TB_PREF."purch_orders WHERE ".TB_PREF."suppliers.supplier_id=".TB_PREF."purch_orders.supplier_id ORDER BY ".TB_PREF."purch_orders.order_no DESC";
-					$st .= dup_simple_codeandname_list($sql, "RP_" . $this->id . "_$index", $dummy);
+					$st .= dup_simple_codeandname_list($sql, "PARAM_$index", $dummy);
 					break;
 				case 'ITEMS':
 					$sql = "SELECT stock_id, concat(stock_id, '-', description) as name FROM ".TB_PREF."stock_master WHERE (mb_flag='A' OR mb_flag='M') ORDER BY stock_id";
-					$st .= dup_simple_codeandname_list($sql, "RP_" . $this->id . "_$index", $dummy);
+					$st .= dup_simple_codeandname_list($sql, "PARAM_$index", $dummy);
 					break;
 				case 'LOCATIONS':
 					$sql = "SELECT loc_code, location_name FROM ".TB_PREF."locations ORDER BY location_name";
-					$st .= dup_simple_codeandname_list($sql, "RP_" . $this->id . "_$index", $dummy, true, _("No Location Filter"), false);
+					$st .= dup_simple_codeandname_list($sql, "PARAM_$index", $dummy, true, _("No Location Filter"), false);
 					break;
 				case 'CATEGORIES':
 					$sql = "SELECT category_id, description FROM ".TB_PREF."stock_category ORDER BY description";
-					$st .= dup_simple_codeandname_list($sql, "RP_" . $this->id . "_$index", $dummy, true, _("No Category Filter"), true);
+					$st .= dup_simple_codeandname_list($sql, "PARAM_$index", $dummy, true, _("No Category Filter"), true);
 					break;
 				case 'SALESTYPES':
 					$sql = "SELECT id, sales_type FROM ".TB_PREF."sales_types ORDER BY sales_type";
-					$st .= dup_simple_codeandname_list($sql, "RP_" . $this->id . "_$index", $dummy);
+					$st .= dup_simple_codeandname_list($sql, "PARAM_$index", $dummy);
 					break;
 				case 'AREAS':
 					$sql = "SELECT area_code, description FROM ".TB_PREF."areas ORDER BY description";
-					$st .= dup_simple_codeandname_list($sql, "RP_" . $this->id . "_$index", $dummy, true, _("No Area Filter"), true);
+					$st .= dup_simple_codeandname_list($sql, "PARAM_$index", $dummy, true, _("No Area Filter"), true);
 					break;
 				case 'SALESMEN':
 					$sql = "SELECT salesman_code, salesman_name FROM ".TB_PREF."salesman ORDER BY salesman_name";
-					$st .= dup_simple_codeandname_list($sql, "RP_" . $this->id . "_$index", $dummy, true, _("No Sales Folk Filter"), true);
+					$st .= dup_simple_codeandname_list($sql, "PARAM_$index", $dummy, true, _("No Sales Folk Filter"), true);
 					break;
 				case 'TRANS_YEARS':
 					$sql = "SELECT DISTINCT YEAR(tran_date), YEAR(tran_date) FROM ".TB_PREF."gl_trans";
-					$st .= dup_simple_codeandname_list($sql, "RP_" . $this->id . "_$index", $dummy);
+					$st .= dup_simple_codeandname_list($sql, "PARAM_$index", $dummy);
 					break;
 				case 'ACCOUNTS_NO_FILTER':
 					$sql = "SELECT id, name FROM ".TB_PREF."chart_types ORDER BY name";
-					$st .= dup_simple_codeandname_list($sql, "RP_" . $this->id . "_$index", $dummy);
+					$st .= dup_simple_codeandname_list($sql, "PARAM_$index", $dummy);
 					break;
 
 			}

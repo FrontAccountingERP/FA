@@ -54,7 +54,8 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
     	if ($selected_id != '') 
     	{
     		update_user($_POST['user_id'], $_POST['real_name'], $_POST['phone'],
-    			$_POST['email'], $_POST['Access'], $_POST['language']);
+    			$_POST['email'], $_POST['Access'], $_POST['language'], 
+				$_POST['profile']);
 
     		if ($_POST['password'] != "")
     			update_user_password($_POST['user_id'], md5($_POST['password']));
@@ -64,7 +65,8 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
     	else 
     	{
     		add_user($_POST['user_id'], $_POST['real_name'], md5($_POST['password']),
-				$_POST['phone'], $_POST['email'], $_POST['Access'], $_POST['language']);
+				$_POST['phone'], $_POST['email'], $_POST['Access'], $_POST['language'],
+				$_POST['profile']);
 
 			display_notification_centered(_("A new user has been added."));
     	}
@@ -147,6 +149,7 @@ if ($selected_id != '')
 		$_POST['email'] = $myrow["email"];
 		$_POST['Access'] = $myrow["full_access"];
 		$_POST['language'] = $myrow["language"];
+		$_POST['profile'] = $myrow["print_profile"];
 	}
 	hidden('selected_id', $selected_id);
 	hidden('user_id');
@@ -178,6 +181,9 @@ text_row_ex(_("Email Address:"), 'email', 50);
 security_headings_list_row(_("Access Level:"), 'Access', null); 
 
 languages_list_row(_("Language:"), 'language', null);
+
+print_profiles_list_row(_("Printing profile"). ':', 'profile', null,
+	_('Browser printing support'));
 
 end_table(1);
 

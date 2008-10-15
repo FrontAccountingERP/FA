@@ -19,10 +19,12 @@
 			$this->add_rapp_function(0, "","");
 			$this->add_rapp_function(0, _("System and &General GL Setup"),"admin/gl_setup.php?");
 			$this->add_rapp_function(0, _("&Fiscal Years"),"admin/fiscalyears.php?");
+			$this->add_rapp_function(0, _("&Print Profiles"),"admin/print_profiles.php?");
 
 			$this->add_module(_("Miscellaneous"));
 			$this->add_lapp_function(1, _("Pa&yment Terms"),"admin/payment_terms.php?");
 			$this->add_lapp_function(1, _("Shi&pping Company"),"admin/shipping_companies.php?");
+			$this->add_rapp_function(1, _("&Printers"),"admin/printers.php?");
 
 			$this->add_module(_("Maintanance"));
 			$this->add_lapp_function(2, _("&Void a Transaction"),"admin/void_transaction.php?");

@@ -9,7 +9,11 @@
 //		request is directed to current location 
 // 
     JsHttpRequest.request= function(trigger, form) {
-
+		if (trigger.tagName=='A') {
+			var content = {};
+			var upload = 0;
+			var url = trigger.href;
+		} else {
 		var submitObj = typeof(trigger) == "string" ? 
 			document.getElementsByName(trigger)[0] : trigger;
 		
@@ -23,10 +27,12 @@
 		var content = this.formInputs(trigger, form, upload);
 
 		if (!form) url = url.substring(0, url.indexOf('?'));
-
+		
 		if (!submitObj) 
 			content[trigger] = 1;
-		// this is to avoid caching problems
+			
+		}
+			// this is to avoid caching problems
 		content['_random'] = Math.random()*1234567;
 
         JsHttpRequest.query(
@@ -62,6 +68,8 @@
 				  eval(data);
 			  } else if(cmd=='rd') {	// client-side redirection
 				  window.location = data;
+			  } else if(cmd=='pu') {	// pop-up
+			  	  window.open(data,'REP_WINDOW','toolbar=no,scrollbar=no,resizable=yes,menubar=no');
 			  } else {
 				  errors = errors+'<br>Unknown ajax function: '+cmd;
 			}

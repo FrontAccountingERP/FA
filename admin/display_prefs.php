@@ -22,7 +22,8 @@ if (isset($_POST['setprefs']))
 		check_value('show_codes'),
 		$_POST['date_format'], $_POST['date_sep'],
 		$_POST['tho_sep'], $_POST['dec_sep'],
-		$_POST['theme'], $_POST['page_size'], check_value('show_hints'));
+		$_POST['theme'], $_POST['page_size'], check_value('show_hints'),
+		$_POST['profile']);
 
 	language::set_language($_POST['language']);
 
@@ -81,6 +82,12 @@ pagesizes_list_row(_("Page Size:"), "page_size", user_pagesize());
 /* The array $pagesizes is set up in config.php for modifications
 possible separators can be added by modifying the array definition by editing that file */
 
+if (!isset($_POST['profile']))
+	$_POST['profile'] = user_print_profile();
+
+print_profiles_list_row(_("Printing profile"). ':', 'profile', 
+	null, _('Browser printing support'));
+
 table_section_title(_("Language"));
 
 if (!isset($_POST['language']))
@@ -90,7 +97,7 @@ languages_list_row(_("Language:"), 'language', $_POST['language']);
 
 end_table(1);
 
-submit_center('setprefs', _("Update"));
+submit_center('setprefs', _("Update"), true, '', true);
 
 end_form(2);
 
