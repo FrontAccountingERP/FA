@@ -124,8 +124,6 @@ $sql .= " GROUP BY ".TB_PREF."purch_orders.order_no";
 
 $result = db_query($sql,"No orders were returned");
 
-print_hidden_script(18);
-
 /*show a table of the orders returned by the sql */
 
 div_start('orders_tbl');
@@ -171,7 +169,7 @@ while ($myrow = db_fetch($result))
 	label_cell($myrow["curr_code"]);
 	amount_cell($myrow["OrderValue"]);
 	label_cell("<a href=$modify>" . _("Edit") . "</a>");
-  	label_cell(print_document_link($myrow['order_no'], _("Print")));
+  	label_cell(print_document_link($myrow['order_no'], _("Print"), true, 18));
 	label_cell("<a href=$receive>" . _("Receive") . "</a>");
 	end_row();
 

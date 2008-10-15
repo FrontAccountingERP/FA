@@ -98,7 +98,6 @@ if (get_post('SearchOrders'))
 }
 
 //-----------------------------------------------------------------------------------
-print_hidden_script(13);
 
 start_form(false, false, $_SERVER['PHP_SELF'] ."?OutstandingOnly=" . $_POST['OutstandingOnly'] .SID);
 
@@ -260,7 +259,7 @@ if ($result)
     		$modify_page = $path_to_root . "/sales/customer_delivery.php?" . SID . "ModifyDelivery=" . $myrow["trans_no"];
     		$invoice_page = $path_to_root . "/sales/customer_invoice.php?" . SID . "DeliveryNumber=" .$myrow["trans_no"];
     		label_cell("<a href='$modify_page'>" . _("Edit") . "</a>");
-  		  	label_cell(print_document_link($myrow['trans_no'], _("Print")));
+  		  	label_cell(print_document_link($myrow['trans_no'], _("Print"), true, 13));
 
     		label_cell($not_closed ? "<a href='$invoice_page'>" . _("Invoice") . "</a>" : '');
 

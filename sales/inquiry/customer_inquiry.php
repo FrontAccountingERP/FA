@@ -166,7 +166,6 @@ if(get_post('RefreshInquiry'))
 	$Ajax->activate('totals_tbl');
 }
 //------------------------------------------------------------------------------------------------
-print_hidden_script(10);
 
 div_start('trans_tbl');
 if (db_num_rows($result) == 0)

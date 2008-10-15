@@ -108,7 +108,6 @@ function handle_search()
 			$print_type == systypes::po() || $print_type == systypes::sales_order());
 		if ($print_out)
 		{
-			print_hidden_script($print_type);
 			if ($trans_ref)
 				$th = array(_("#"), _("Reference"), _("View"), _("Print"), _("GL"));
 			else

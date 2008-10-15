@@ -40,7 +40,6 @@ if (isset($_GET['AddedID'])) {
 
 	$invoice_no = $_GET['AddedID'];
 	$trans_type = 10;
-	print_hidden_script(10);
 
 	display_notification(_("Selected deliveries has been processed"), true);
 
@@ -57,7 +56,6 @@ if (isset($_GET['AddedID'])) {
 } elseif (isset($_GET['UpdatedID']))  {
 
 	$invoice_no = $_GET['UpdatedID'];
-	print_hidden_script(10);
 
 	display_notification_centered(sprintf(_('Sales Invoice # %d has been updated.'),$invoice_no));
 

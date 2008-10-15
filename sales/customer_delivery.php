@@ -36,7 +36,6 @@ page($_SESSION['page_title'], false, false, "", $js);
 
 if (isset($_GET['AddedID'])) {
 	$dispatch_no = $_GET['AddedID'];
-	print_hidden_script(13);
 
 	display_notification(_("Dispatch processed:") . ' '.$_GET['AddedID'], true);
 
@@ -55,7 +54,6 @@ if (isset($_GET['AddedID'])) {
 } elseif (isset($_GET['UpdatedID'])) {
 
 	$delivery_no = $_GET['UpdatedID'];
-	print_hidden_script(13);
 
 	display_notification_centered(sprintf(_('Delivery Note # %d has been updated.'),$delivery_no));
 

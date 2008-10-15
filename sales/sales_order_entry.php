@@ -66,7 +66,6 @@ page($_SESSION['page_title'], false, false, "", $js);
 
 if (isset($_GET['AddedID'])) {
 	$order_no = $_GET['AddedID'];
-	print_hidden_script(30);
 
 	display_notification_centered(sprintf( _("Order # %d has been entered."),$order_no));
 
@@ -83,7 +82,6 @@ if (isset($_GET['AddedID'])) {
 
 } elseif (isset($_GET['UpdatedID'])) {
 	$order_no = $_GET['UpdatedID'];
-	print_hidden_script(30);
 
 	display_notification_centered(sprintf( _("Order # %d has been updated."),$order_no));
 
@@ -101,7 +99,6 @@ if (isset($_GET['AddedID'])) {
 
 } elseif (isset($_GET['AddedDN'])) {
 	$delivery = $_GET['AddedDN'];
-	print_hidden_script(13);
 
 	display_notification_centered(sprintf(_("Delivery # %d has been entered."),$delivery));
 
@@ -122,7 +119,6 @@ if (isset($_GET['AddedID'])) {
 
 } elseif (isset($_GET['AddedDI'])) {
 	$invoice = $_GET['AddedDI'];
-	print_hidden_script(10);
 
 	display_notification_centered(sprintf(_("Invoice # %d has been entered."),$invoice));
 
