@@ -51,7 +51,7 @@
     function flush_dir($path) {
 	$dir = opendir($path);
 	while(false !== ($fname = readdir($dir))) {
-		if($fname=='.' || $fname=='..') continue;
+		if($fname=='.' || $fname=='..' || $fname=='index.php') continue;
   		if(is_dir($path.'/'.$fname)) {
 		    flush_dir($path.'/'.$fname);
 		    @rmdir($path.'/'.$fname);
