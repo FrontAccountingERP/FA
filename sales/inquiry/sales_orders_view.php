@@ -217,8 +217,8 @@ if ($result)
 		}
 //	    $not_closed =  $myrow['type'] && ($myrow["TotDelivered"] < $myrow["TotQuantity"]);
 
-    	// if overdue orders, then highlight as so
-    	if ($myrow['type'] == 0 && date1_greater_date2(Today(), $formated_del_date))
+    	// if overdue orders, then highlight as so. 2008-10-15 added totdelivered < totquantity as well for qualifying overdue
+    	if ($myrow['type'] == 0 && date1_greater_date2(Today(), $formated_del_date) && ($myrow["TotDelivered"] < $myrow["TotQuantity"]))
     	{
         	 start_row("class='overduebg'");
         	 $overdue_items = true;

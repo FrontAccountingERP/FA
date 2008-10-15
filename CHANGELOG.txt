@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+15-Oct-2008 Joe Hunt
+# Bug [0000074] Marked items are overdue. For Filled (fully delivered) Sales Order
+$ /sales/inquiry/sales_orders_view.php
+
 08-Oct-2008 Janusz Dobrowolski
 # [0000071] Ordering from customer on hold was possible after double exact search in list.
 $ /sales/includes/ui/sales_order_ui.inc
