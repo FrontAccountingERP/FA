@@ -9,6 +9,8 @@
 //		request is directed to current location 
 // 
     JsHttpRequest.request= function(trigger, form) {
+		var mark = document.getElementById('ajaxmark');
+		if(mark) mark.style.visibility = 'visible';
 		if (trigger.tagName=='A') {
 			var content = {};
 			var upload = 0;
@@ -77,6 +79,8 @@
 
         // Write errors to the debug div.
 		  document.getElementById('msgbox').innerHTML = errors;
+		  var mark = document.getElementById('ajaxmark');
+		  if(mark) mark.style.visibility = 'hidden';
 
 		  Behaviour.apply();
 		  if (errors.length>0)
