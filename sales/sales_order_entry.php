@@ -361,9 +361,8 @@ function handle_new_item()
 
 function  handle_cancel_order()
 {
-	global $path_to_root;
+	global $path_to_root, $Ajax;
 
-	if ($_POST['CancelOrder'] != "") {
 
 	if ($_SESSION['Items']->trans_type == 13) {
 			display_note(_("Direct delivery entry has been cancelled as requested."), 1);
@@ -377,19 +376,23 @@ function  handle_cancel_order()
 		if ($_SESSION['Items']->trans_no != 0) {
 			if (sales_order_has_deliveries(key($_SESSION['Items']->trans_no)))
 				display_error(_("This order cannot be cancelled because some of it has already been invoiced or dispatched. However, the line item quantities may be modified."));
-			else
+			else {
 				delete_sales_order(key($_SESSION['Items']->trans_no));
-		}
 
 			display_note(_("This sales order has been cancelled as requested."), 1);
 				hyperlink_params($path_to_root . "/sales/sales_order_entry.php",
 				_("Enter a New Sales Order"), SID . "&NewOrder=Yes");
+			}
+		} else {
+			processing_end();
+			meta_forward($path_to_root.'/index.php?application=orders');
 		}
-		processing_end();
-		br(1);
-		end_page();
-		exit;
 	}
+	$Ajax->activate('_page_body');
+	processing_end();
+	br(1);
+	end_page();
+	exit;
 }
 
 //--------------------------------------------------------------------------------
