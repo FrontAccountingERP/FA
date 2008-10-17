@@ -69,7 +69,7 @@ function print_document_link($doc_no, $link_text, $link=true, $type_no)
 //
 function print_link($link_text, $rep, $pars = array(), $dir = '')
 {
-	global $path_to_root;
+	global $path_to_root, $pdf_debug;
 
 	$url = $dir == '' ?  $path_to_root.'/reporting/prn_redirect.php?' : $dir;
 
@@ -78,8 +78,8 @@ function print_link($link_text, $rep, $pars = array(), $dir = '')
 	}
 	$pars[] = 'REP_ID='.urlencode($rep);
 	$url .= implode ('&', $pars);
-	
-	return "<a class='printlink' target='_blank' href='$url'>$link_text</a>";
+	$class = $pdf_debug ? '' : "class='printlink'";
+	return "<a $class target='_blank' href='$url'>$link_text</a>";
 }
 
 function get_first_bank_account()

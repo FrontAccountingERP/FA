@@ -43,7 +43,7 @@ class BoxReports
 
 				$st_params .= "<div id='REP_" . $rep_counter++ . "' style='display:none'>";
 				$st_params .= "<table border=0><tr><td>\n"
-								. "<form method='POST' action='$action'>\n" 
+								. "<form method='POST' action='$action' target='_blank'>\n" 
 								. $report->getDisplay() 
 								. "\n</form>\n"
 								. "</td></tr></table></div>";
@@ -103,12 +103,12 @@ class Report
 	
 	function getDisplay()
 	{
-		global $path_to_root, $use_date_picker;
+		global $path_to_root, $use_date_picker, $pdf_debug;
 
 		$st  = hidden('REP_ID', $this->id, false);
 		$st .= submit('Rep'.$this->id,  
 			_("Display: ") . access_string($this->name,true),
-			false, '', true) . '<br><br>';
+			false, '', $pdf_debug==0) . '<br><br>';
 		$dummy = "";
 		if ($this->ar_params==null)
 			return "";
