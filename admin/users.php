@@ -55,7 +55,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
     	{
     		update_user($_POST['user_id'], $_POST['real_name'], $_POST['phone'],
     			$_POST['email'], $_POST['Access'], $_POST['language'], 
-				$_POST['profile']);
+				$_POST['profile'], check_value('rep_popup'));
 
     		if ($_POST['password'] != "")
     			update_user_password($_POST['user_id'], md5($_POST['password']));
@@ -66,7 +66,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
     	{
     		add_user($_POST['user_id'], $_POST['real_name'], md5($_POST['password']),
 				$_POST['phone'], $_POST['email'], $_POST['Access'], $_POST['language'],
-				$_POST['profile']);
+				$_POST['profile'], check_value('rep_popup'));
 
 			display_notification_centered(_("A new user has been added."));
     	}
@@ -150,6 +150,7 @@ if ($selected_id != '')
 		$_POST['Access'] = $myrow["full_access"];
 		$_POST['language'] = $myrow["language"];
 		$_POST['profile'] = $myrow["print_profile"];
+		$_POST['rep_popup'] = $myrow["rep_popup"];
 	}
 	hidden('selected_id', $selected_id);
 	hidden('user_id');
@@ -160,6 +161,7 @@ if ($selected_id != '')
 else 
 { //end of if $selected_id only do the else when a new record is being entered
 	text_row(_("User Login:"), "user_id",  null, 22, 20);
+	$_POST['rep_popup'] = 1;
 }
 $_POST['password'] = "";
 start_row();
@@ -184,6 +186,9 @@ languages_list_row(_("Language:"), 'language', null);
 
 print_profiles_list_row(_("Printing profile"). ':', 'profile', null,
 	_('Browser printing support'));
+
+check_row(_("Use popup window for reports:"), 'rep_popup', $_POST['rep_popup'],
+	false, _('Set this option to on if your browser directly supports pdf files'));
 
 end_table(1);
 

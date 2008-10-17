@@ -1,5 +1,6 @@
 
 ALTER TABLE `0_users` ADD `print_profile` VARCHAR(30) DEFAULT '' AFTER `show_hints` ;
+ALTER TABLE `0_users` ADD `rep_popup` TINYINT(1) DEFAULT '1' AFTER `print_profile` ;
 
 DROP TABLE IF EXISTS `0_print_profiles`;
 CREATE TABLE `0_print_profiles` (

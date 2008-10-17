@@ -361,9 +361,7 @@ class FrontReport extends Cpdf
 
 		if ($pdf_debug == 1)
 		{
-			$buf = $this->Output();
-			$len = strlen($buf);
-			$pdfcode = $buf;
+			$pdfcode = $this->Output();
 			$pdfcode = str_replace("\n", "\n<br>", htmlspecialchars($pdfcode));
 			echo '<html><body>';
 			echo trim($pdfcode);
@@ -474,7 +472,10 @@ class FrontReport extends Cpdf
 						$fname = substr(realpath($fname), strlen($_SERVER['DOCUMENT_ROOT']));
 						if (substr($fname,0,1) != '/') $fname = '/'.$fname;
 
-						$Ajax->redirect($fname);
+						if (user_rep_popup()) 
+							$Ajax->popup($fname);
+						else
+							$Ajax->redirect($fname);
 					} else {
 					//echo '<html>
 					//		<head>

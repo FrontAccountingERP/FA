@@ -23,7 +23,7 @@ if (isset($_POST['setprefs']))
 		$_POST['date_format'], $_POST['date_sep'],
 		$_POST['tho_sep'], $_POST['dec_sep'],
 		$_POST['theme'], $_POST['page_size'], check_value('show_hints'),
-		$_POST['profile']);
+		$_POST['profile'], check_value('rep_popup'));
 
 	language::set_language($_POST['language']);
 
@@ -87,6 +87,9 @@ if (!isset($_POST['profile']))
 
 print_profiles_list_row(_("Printing profile"). ':', 'profile', 
 	null, _('Browser printing support'));
+
+check_row(_("Use popup window to display reports:"), 'rep_popup', user_rep_popup(),
+	false, _('Set this option to on if your browser directly supports pdf files'));
 
 table_section_title(_("Language"));
 

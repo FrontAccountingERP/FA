@@ -95,10 +95,13 @@ class current_user
     	return $db;
 	}
 
-	function update_prefs($price_dec, $qty_dec, $exrate_dec, $percent_dec, $showgl, $showcodes,
-		$date_format, $date_sep, $tho_sep, $dec_sep, $theme, $pagesize, $show_hints, $profile) {
-		update_user_display_prefs($this->username, $price_dec, $qty_dec, $exrate_dec, $percent_dec, $showgl,
-			$showcodes, $date_format, $date_sep, $tho_sep, $dec_sep, $theme, $pagesize, $show_hints, $profile);
+	function update_prefs($price_dec, $qty_dec, $exrate_dec, $percent_dec, 
+		$showgl, $showcodes, $date_format, $date_sep, $tho_sep, $dec_sep, 
+		$theme, $pagesize, $show_hints, $profile, $rep_popup) {
+		update_user_display_prefs($this->username, $price_dec, 
+			$qty_dec, $exrate_dec, $percent_dec, $showgl, $showcodes, 
+			$date_format, $date_sep, $tho_sep, $dec_sep, $theme, $pagesize, 
+			$show_hints, $profile, $rep_popup);
 
 		// re-read the prefs
 		$user = get_user($this->username);
@@ -252,14 +255,19 @@ function user_print_profile()
 	return $_SESSION["wa_current_user"]->prefs->print_profile();
 }
 
+function user_rep_popup()
+{
+	return $_SESSION["wa_current_user"]->prefs->rep_popup();
+}
+
 function set_user_prefs($price_dec, $qty_dec, $exrate_dec, $percent_dec, $showgl, $showcodes,
 	$date_format, $date_sep, $tho_sep, $dec_sep, $theme, $pagesize, $show_hints,
-	$print_profile)
+	$print_profile, $rep_popup)
 {
 
 	$_SESSION["wa_current_user"]->update_prefs($price_dec, $qty_dec, $exrate_dec, $percent_dec, $showgl, $showcodes,
 		$date_format, $date_sep, $tho_sep, $dec_sep, $theme, $pagesize, $show_hints,
-		$print_profile);
+		$print_profile, $rep_popup);
 }
 
 function add_user_js_data() {

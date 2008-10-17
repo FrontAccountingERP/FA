@@ -1,13 +1,13 @@
 <?php
 
 function add_user($user_id, $real_name, $password, $phone, $email, $full_access, 
-	$language, $profile)
+	$language, $profile, $rep_popup)
 {
 	$sql = "INSERT INTO ".TB_PREF."users (user_id, real_name, password, phone, email, full_access, language, print_profile)
 		VALUES (".db_escape($user_id).", 
 		".db_escape($real_name).", ".db_escape($password) .",".db_escape($phone).",
 		 ".db_escape($email).", $full_access, ".db_escape($language).",
-		 ".db_escape($profile).")";
+		 ".db_escape($profile).", rep_popup=$rep_popup)";
 
 	db_query($sql, "could not add user for $user_id");
 }
@@ -25,22 +25,24 @@ function update_user_password($user_id, $password)
 //-----------------------------------------------------------------------------------------------
 
 function update_user($user_id, $real_name, $phone, $email, $full_access, 
-	$language, $profile)
+	$language, $profile, $rep_popup)
 {
 	$sql = "UPDATE ".TB_PREF."users SET real_name=".db_escape($real_name).
 	", phone=".db_escape($phone).",
 		email=".db_escape($email).",
 		full_access=$full_access,
 		language=".db_escape($language).",
-		print_profile=".db_escape($profile)."
+		print_profile=".db_escape($profile).",
+		rep_popup=$rep_popup
 		WHERE user_id = ".db_escape($user_id);
 	db_query($sql, "could not update user for $user_id");
 }
 
 //-----------------------------------------------------------------------------------------------
 
-function update_user_display_prefs($user_id, $price_dec, $qty_dec, $exrate_dec, $percent_dec, $showgl,
-	$showcodes, $date_format, $date_sep, $tho_sep, $dec_sep, $theme, $pagesize, $show_hints, $profile)
+function update_user_display_prefs($user_id, $price_dec, $qty_dec, $exrate_dec, 
+	$percent_dec, $showgl, $showcodes, $date_format, $date_sep, $tho_sep, 
+	$dec_sep, $theme, $pagesize, $show_hints, $profile, $rep_popup)
 {
 	$sql = "UPDATE ".TB_PREF."users SET
 		prices_dec=".db_escape($price_dec).",
@@ -56,7 +58,8 @@ function update_user_display_prefs($user_id, $price_dec, $qty_dec, $exrate_dec, 
 		theme=".db_escape($theme).",
 		page_size=".db_escape($pagesize).",
 		show_hints=$show_hints,
-		print_profile=".db_escape($profile)."
+		print_profile=".db_escape($profile).",
+		rep_popup=$rep_popup
 		WHERE user_id = ".db_escape($user_id);
 
 	db_query($sql, "could not update user display prefs for $user_id");
