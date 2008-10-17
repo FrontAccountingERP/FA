@@ -203,7 +203,7 @@ var inserts = {
   	    // this shows divs for js enabled browsers only
 	    e.style.display = 'block';
 	},
-	'input.ajaxsubmit,button.ajaxsubmit,button.editbutton,button.navibutton': 
+	'.ajaxsubmit,.editbutton,.navibutton': 
 	function(e) {
 	    e.onclick = function() {
 			if (this.getAttribute('aspect') == 'process')
