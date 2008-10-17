@@ -19,6 +19,35 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+17-Oct-2008 Janusz Dobrowolski
++ Added ajax request indicator.
+$ /js/utils.js
+  /themes/aqua/renderer.php
+  /themes/aqua/images/ajax-loader.gif (new)
+  /themes/cool/renderer.php
+  /themes/cool/images/ajax-loader.gif (new)
+  /themes/default/renderer.php
+  /themes/default/images/ajax-loader.gif (new)
++ Added optional popup for pdf reports display.
+$ /admin/display_prefs.php
+  /admin/users.php
+  /admin/db/users_db.inc
+  /includes/current_user.inc
+  /includes/prefs/userprefs.inc
+  /reporting/includes/pdf_report.inc
+  /sql/alter2.1.sql
+# Changed message for missing currency rate.
+$ /includes/banking.inc
+# Fixed submit/button behaviour.
+$ /js/inserts.js
+# Fixed canceling order.
+$ /sales/sales_order_entry.php
+# Fixed typo in css
+$ /themes/aqua/default.css
+# Fixed pdf_debug mode
+$ /reporting/includes/reporting.inc
+  /reporting/includes/reports_classes.inc
+
 15-Oct-2008 Janusz Dobrowolski
 + Added remote printing support
 $ /admin/print_profiles.php (new)
