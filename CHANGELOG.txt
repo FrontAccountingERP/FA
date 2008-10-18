@@ -19,6 +19,13 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+18-Oct-2008 Joe Hunt
+# Bug [0000075] Cost Update problems still (voiding supplier invoice). Can't remove GRNs from
+  Yet to be invoiced (supplier invoice). Can now be done with admin access.
+$ /purchasing/supplier_invoice_grns.php
+  /purchasing/includes/db/grn_db.inc
+  /purchasing/includes/db/invoice_db.inc
+  
 15-Oct-2008 Joe Hunt
 # Bug [0000074] Marked items are overdue. For Filled (fully delivered) Sales Order
 $ /sales/inquiry/sales_orders_view.php

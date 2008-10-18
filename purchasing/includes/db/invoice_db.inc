@@ -361,8 +361,19 @@ function void_supp_invoice($type, $type_no)
         {
          	if (strlen($details_row["grn_item_id"]) > 0) // it can be empty for GL items
          	{
-				update_supp_received_items_for_invoice($details_row["grn_item_id"],
-					$details_row["po_detail_item_id"], -$details_row["quantity"]);
+         		// Changed 2008-10-17 by Joe Hunt to get the avg. material cost updated
+				/*update_supp_received_items_for_invoice($details_row["grn_item_id"],
+					$details_row["po_detail_item_id"], -$details_row["quantity"]); 
+					No, this will catch the GRN for invoicing again. Better leave as is. */
+				$supp = get_supp_trans($type_no, $type);
+				$old_mat_cost = get_standard_cost($details_row["stock_id"]);
+				update_average_material_cost($supp["supplier_id"], $details_row["stock_id"],
+					$details_row["FullUnitPrice"], -$details_row["quantity"], Today());
+				$batch = get_grn_batch_from_item($details_row["grn_item_id"]);	
+				$grn = get_grn_batch($batch);
+ 	
+            	add_stock_move(25, $details_row["stock_id"], $batch, $grn['loc_code'], sql2date($grn["delivery_date"]), "",
+            		-$details_row["quantity"], $old_mat_cost, $supp["supplier_id"], 1, $details_row["FullUnitPrice"]);
          	}
         }
 	}

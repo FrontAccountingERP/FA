@@ -120,29 +120,32 @@ hyperlink_no_params("$path_to_root/purchasing/supplier_invoice.php", _("Back to 
 echo "<hr>";
 
 //-----------------------------------------------------------------------------------------
+start_form(false, true); // 2008-10-18 Joe Hunt. Moved form outside function
 
 function display_grn_items_for_selection()
 {
 	global $table_style;
 
+	div_start('grn_table'); // 2008-10-18 Joe Hunt Moved up a bit to compute num-rows = 0
 	$result = get_grn_items(0, $_SESSION['supp_trans']->supplier_id, true);
 
     if (db_num_rows($result) == 0)
     {
     	display_note(_("There are no outstanding items received from this supplier that have not been invoiced by them."), 0, 1);
-    	end_page();
-    	exit;
+		div_end(); // Changed 2008-10-18 Joe Hunt
+    	return;
     }
-
+    
     /*Set up a table to show the outstanding GRN items for selection */
-    start_form(false, true);
 
     display_heading2(_("Items Received Yet to be Invoiced"));
-	div_start('grn_table');
+	//div_start('grn_table');
     start_table("$table_style colspan=7 width=95%");
     $th = array(_("Delivery"), _("Sequence #"), _("P.O."), _("Item"), _("Description"),
     	_("Received On"), _("Quantity Received"), _("Quantity Invoiced"),
     	_("Uninvoiced Quantity"), _("Order Price"), _("Total"));
+    if ($_SESSION["wa_current_user"]->access == 2)	// Added 2008-10-18 by Joe Hunt. Only admins can remove GRNs
+    	$th[] = "";	
     table_header($th);
     $i = $k = 0;
 
@@ -176,6 +179,8 @@ function display_grn_items_for_selection()
             amount_cell($myrow["unit_price"]);
             amount_cell(round($myrow["unit_price"] * ($myrow["qty_recd"] - $myrow["quantity_inv"]),
 			   user_price_dec()));
+    		if ($_SESSION["wa_current_user"]->access == 2)	// Added 2008-10-18 by Joe Hunt. Only admins can remove GRNs
+        		submit_cells('void_item_id'.$myrow["id"], _("Remove"), '', '', true);
 			end_row();
 
     		$i++;
@@ -192,14 +197,44 @@ function display_grn_items_for_selection()
 }
 
 //-----------------------------------------------------------------------------------------
-if (find_submit('grn_item_id') || get_post('AddGRNToTrans'))
+$id = find_submit('grn_item_id');
+$id2 = find_submit('void_item_id');
+if ($id != -1 || id2 != -1 || get_post('AddGRNToTrans'))
 {
 	$Ajax->activate('grn_selector');
 }
-if (get_post('AddGRNToTrans'))
+if (get_post('AddGRNToTrans') || $id2 != -1)
 {
 	$Ajax->activate('grn_table');
 	$Ajax->activate('grn_items');
+}
+
+if ($_SESSION["wa_current_user"]->access == 2)
+{
+	if ($id2 != -1) // Added section 2008-10-18 Joe Hunt for voiding delivery lines
+	{
+		begin_transaction();
+		
+		$myrow = get_grn_item_detail($id2);
+
+		$grn = get_grn_batch($myrow['grn_batch_id']);
+
+	    $sql = "UPDATE ".TB_PREF."purch_order_details
+			SET quantity_received = qty_invoiced, quantity_ordered = qty_invoiced WHERE po_detail_item = ".$myrow["po_detail_item"];
+	    db_query($sql, "The quantity invoiced of the purchase order line could not be updated");
+
+	    $sql = "UPDATE ".TB_PREF."grn_items
+	    	SET qty_recd = quantity_inv WHERE id = ".$myrow["id"];
+		db_query($sql, "The quantity invoiced off the items received record could not be updated");
+	
+		update_average_material_cost($grn["supplier_id"], $myrow["item_code"],
+			$myrow["unit_price"], -$myrow["QtyOstdg"], Today());
+
+	   	add_stock_move(25, $myrow["item_code"], $myrow['grn_batch_id'], $grn['loc_code'], sql2date($grn["delivery_date"]), "",
+	   		-$myrow["QtyOstdg"], $myrow['std_cost_unit'], $grn["supplier_id"], 1, $myrow['unit_price']);
+	   		
+	   	commit_transaction();
+	}   		
 }
 
 display_grn_items_for_selection();
@@ -208,7 +243,7 @@ display_grn_items_for_selection();
 
 div_start('grn_selector');
 
-$id = find_submit('grn_item_id');
+//$id = find_submit('grn_item_id');
 if ($id != -1)
 {
 
