@@ -14,7 +14,8 @@ class current_user
 	var $access;
 
 	var $logged;
-
+	var $ui_mode = 0;
+	
 	var $prefs;
 
 	function current_user()
@@ -117,6 +118,12 @@ function number_format2($number, $decimals=0)
 	$tsep = $thoseps[$_SESSION["wa_current_user"]->prefs->tho_sep()];
 	$dsep = $decseps[$_SESSION["wa_current_user"]->prefs->dec_sep()];
 	return number_format($number, $decimals, $dsep,	$tsep);
+}
+//
+//	Current ui mode.
+//
+function fallback_mode() {
+    return $_SESSION["wa_current_user"]->ui_mode==0;
 }
 
 function price_format($number) {

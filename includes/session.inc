@@ -136,7 +136,7 @@
         if (!isset($_POST["user_name_entry_field"]) or $_POST["user_name_entry_field"] == "")
         {
 	        include($path_to_root . "/access/login.php");
-		$Ajax->redirect($path_to_root . "/access/login.php");
+			$Ajax->redirect($path_to_root . "/access/login.php");
             exit;
         }
    	}
@@ -152,7 +152,8 @@
 		$succeed = $_SESSION["wa_current_user"]->login($_POST["company_login_name"],
 			$_POST["user_name_entry_field"],
 			md5($_POST["password"]));
-
+		// select full vs fallback ui mode on login
+		$_SESSION["wa_current_user"]->ui_mode = $_POST['ui_mode'];
 		if (!$succeed)
 		{
 			// Incorrect password

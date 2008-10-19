@@ -102,7 +102,7 @@ function submit($name, $value, $echo=true, $title=false, $async=false, $icon=fal
 	$submit_str = "<button class=\""
 	    .($async ? 'ajaxsubmit' : 'inputsubmit')
 		."\""
-		.($async === null ? (in_ajax() ? " style='display:none;'" : ' aspect="fallback"' ): 
+		.($async === null ? (fallback_mode() ? ' aspect="fallback"' : " style='display:none;'" ): 
 			($async === 'process' ? 'aspect="process"' : '') )
 	    ." name=\"$name\"  id=\"$name\" value=\"$value\""
 	    .($title ? " title='$title'" : '')
