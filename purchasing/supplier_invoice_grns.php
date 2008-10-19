@@ -139,6 +139,9 @@ function display_grn_items_for_selection()
     /*Set up a table to show the outstanding GRN items for selection */
 
     display_heading2(_("Items Received Yet to be Invoiced"));
+    if ($_SESSION["wa_current_user"]->access == 2)	// Added 2008-10-18 by Joe Hunt. Only admins can remove GRNs
+    	display_note(_("WARNING! Be careful with removal. The operation is executed immediately and cannot be undone !!!"), 0, 0, "class='overduefg'");
+    //function display_note($msg, $br=0, $br2=0, $extra="")	
 	//div_start('grn_table');
     start_table("$table_style colspan=7 width=95%");
     $th = array(_("Delivery"), _("Sequence #"), _("P.O."), _("Item"), _("Description"),
