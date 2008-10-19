@@ -387,8 +387,7 @@ class FrontReport extends Cpdf
 			}
 			// do not use standard filenames or your sensitive company data 
 			// are world readable
-//			$fname = $dir . '/' . $this->filename;
-			$fname = tempnam($dir, 'xx');
+			$fname = tempnam($dir, 'FA');
 			rename($fname, $fname.'.pdf');
 			$fname .= '.pdf';
 			$fp = fopen($fname,'w');
@@ -456,26 +455,13 @@ class FrontReport extends Cpdf
 			{
 				$printer = get_report_printer(user_print_profile(), $_POST['REP_ID']);
 				if ($printer == false) {
-					if(in_Ajax()) {
+					if(in_ajax()) {
 						global $Ajax;
-						// in case of ajax call non-ajax page reload is forced.
-						// the alternative is to differ browser support from 
-						// call to remote printing by some attribute of print links,
-						// but in this case we should check related printer target 
-						// for any link on the page, even if never used.
-
-						// display in popup window ...
-//						$Ajax->popup($_SERVER['PHP_SELF'].'?'.$_SERVER['QUERY_STRING']);
-						// ... or fire browser download popup
-						//	$Ajax->redirect($_SERVER['PHP_SELF'].'?'.$_SERVER['QUERY_STRING']);
-// strip document root from file path
-						$fname = substr(realpath($fname), strlen($_SERVER['DOCUMENT_ROOT']));
-						if (substr($fname,0,1) != '/') $fname = '/'.$fname;
 
 						if (user_rep_popup()) 
-							$Ajax->popup($fname);
+							$Ajax->popup($fname); // when embeded pdf viewer used
 						else
-							$Ajax->redirect($fname);
+							$Ajax->redirect($fname); // otherwise use faster method
 					} else {
 					//echo '<html>
 					//		<head>

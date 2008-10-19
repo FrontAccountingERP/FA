@@ -25,15 +25,15 @@ class Ajax extends JsHttpRequest {
 	//
 	function redirect($url) {
 	    if(in_ajax()) {
-			$this->_addCommand(true, array('n'=>'rd'),$url);
-		  $this->run();
+			$this->_addCommand(true, array('n'=>'rd'), absolute_url($url));
+		  	$this->run();
 	    }
 	}
 	//
 	// Popup window (target=_blank)
 	//
 	function popup($url) {
-		  $this->_addCommand(true, array('n'=>'pu'),$url);
+		  $this->_addCommand(true, array('n'=>'pu'), absolute_url($url));
 	}
 	//
 	// Adds an executable Javascript code.
@@ -142,4 +142,11 @@ function in_ajax() {
     return $Ajax->isActive();
 }
 
+// Returns absolute path of relative $url. To be used in ajax calls
+// for proper redirection from any referer page.
+//
+function absolute_url($url) 
+{
+   return strpos($url, '..')===0 ? dirname($_SERVER['PHP_SELF']).'/'.$url : $url;
+}
 ?>
