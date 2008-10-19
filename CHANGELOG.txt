@@ -19,6 +19,22 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+19-Oct-2008 Janusz Dobrowolski
++ User interface mode (full vs fallback) detected and set on login
+$ /access/login.php
+  /includes/current_user.inc
+  /includes/session.inc
+  /includes/ui/ui_input.inc
+  /includes/ui/ui_lists.inc
++ More sales documents available for printing from inquiry page.
+$ /sales/inquiry/customer_inquiry.php
+  /reporting/includes/header2.inc
+! Changed version info.
+$ /config.php
+# Fixed ajax popup/redirection.
+$ /reporting/includes/pdf_report.inc
+  /includes/ajax.inc
+
 17-Oct-2008 Janusz Dobrowolski
 + Added ajax request indicator.
 $ /js/utils.js
