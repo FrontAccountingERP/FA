@@ -215,7 +215,8 @@
 		if (isset($bankaccount['bank_name']))
 			$this->Text($mcol, $bankaccount['bank_name'], $mcol2);
 		$this->NewLine();
-		$this->TextWrapLines($mcol, $mcol2 - $mcol, $bankaccount['bank_address']);
+		if (isset($bankaccount['bank_address']))
+			$this->TextWrapLines($mcol, $mcol2 - $mcol, $bankaccount['bank_address']);
 		$this->row = $adrline;
 		if (isset($bankaccount['bank_account_name']))
 			$this->Text($mcol2, $bankaccount['bank_account_name']);

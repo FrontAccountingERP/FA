@@ -264,7 +264,7 @@ if (db_num_rows($result) == 0)
 	echo $gl_trans_str;
 
   	label_cell($edit_page=='' ? '' :	"<a href='$edit_page'>" . _('Edit') . '</a>');
-  	if ($myrow['type'] == 10 || $myrow['type'] == 11)
+  	if ($myrow['type'] != 12) // customer payment printout not defined yet.
   		label_cell(print_document_link($myrow['trans_no'], _("Print"), true, $myrow['type']));
   	else
   		label_cell("");
