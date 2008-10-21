@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+21-Oct-2008 Joe Hunt
+# Bug [0000076] Voiding Supplier Invoice does a purchase delivery void as well
+$ /purchasing/includes/db/invoice_db.inc
+
 18-Oct-2008 Joe Hunt
 # Bug [0000075] Cost Update problems still (voiding supplier invoice). Can't remove GRNs from
   Yet to be invoiced (supplier invoice). Can now be done with admin access.
