@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+20-Oct-2008 Janusz Dobrowolski
+# Fix for pdf reports (php 5.2.4 issue)
+$ /reporting/includes/pdf_report.inc
+
 19-Oct-2008 Janusz Dobrowolski
 + User interface mode (full vs fallback) detected and set on login
 $ /access/login.php

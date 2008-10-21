@@ -387,9 +387,7 @@ class FrontReport extends Cpdf
 			}
 			// do not use standard filenames or your sensitive company data 
 			// are world readable
-			$fname = tempnam($dir, 'FA');
-			rename($fname, $fname.'.pdf');
-			$fname .= '.pdf';
+			$fname = $dir.'/'.uniqid('').'.pdf';
 			$fp = fopen($fname,'w');
 			fwrite($fp,$buf);
 			fclose($fp);
