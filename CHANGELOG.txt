@@ -19,6 +19,14 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+22-Oct-2008 Joe Hunt
++ Added Ending Balance in trial balance (also in report)
+$ /gl/inquiry/gl_trial_balance.php
+  /reporting/rep704.php
+  /reporting/rep708.php
+! Bad balance in GL trans for chart en_US-demo.sql
+$ /sql/en_US-demo.sql
+  
 21-Oct-2008 Joe Hunt
 # Bug [0000076] Voiding Supplier Invoice does a purchase delivery void as well
 $ /purchasing/includes/db/invoice_db.inc
