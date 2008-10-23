@@ -274,7 +274,7 @@ function display_gl_items(&$supp_trans, $mode=0)
 
 	}
 	if ($mode == 1)
-		display_gl_controls(&$supp_trans);
+		display_gl_controls($supp_trans);
 	$colspan = ($dim == 2 ? 4 : ($dim == 1 ? 3 : 2));
 	label_row(_("Total"), price_format($total_gl_value),
 		"colspan=".$colspan." align=right", "nowrap align=right");
