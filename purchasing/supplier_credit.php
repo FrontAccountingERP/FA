@@ -69,6 +69,63 @@ if (isset($_GET['New']))
 	$_SESSION['supp_trans']->is_invoice = false;
 }
 
+function clear_fields()
+{
+	global $Ajax;
+	
+	unset($_POST['gl_code']);
+	unset($_POST['dimension_id']);
+	unset($_POST['dimension2_id']);
+	unset($_POST['amount']);
+	unset($_POST['memo_']);
+	unset($_POST['AddGLCodeToTrans']);
+	$Ajax->activate('gl_ctrls');
+	set_focus('gl_code');
+}
+//------------------------------------------------------------------------------------------------
+//	GL postings are often entered in the same form to two accounts
+//  so fileds are cleared only on user demand.
+//
+if (isset($_POST['ClearFields']))
+{
+	clear_fields();
+}
+
+if (isset($_POST['AddGLCodeToTrans'])){
+
+	$Ajax->activate('gl_items');
+	$input_error = false;
+
+	$sql = "SELECT account_code, account_name FROM ".TB_PREF."chart_master WHERE account_code='" . $_POST['gl_code'] . "'";
+	$result = db_query($sql,"get account information");
+	if (db_num_rows($result) == 0)
+	{
+		display_error(_("The account code entered is not a valid code, this line cannot be added to the transaction."));
+		set_focus('gl_code');
+		$input_error = true;
+	}
+	else
+	{
+		$myrow = db_fetch_row($result);
+		$gl_act_name = $myrow[1];
+		if (!check_num('amount'))
+		{
+			display_error(_("The amount entered is not numeric. This line cannot be added to the transaction."));
+			set_focus('amount');
+			$input_error = true;
+		}
+	}
+
+	if ($input_error == false)
+	{
+		$_SESSION['supp_trans']->add_gl_codes_to_trans($_POST['gl_code'], $gl_act_name,
+			$_POST['dimension_id'], $_POST['dimension2_id'], 
+			input_num('amount'), $_POST['memo_']);
+		set_focus('gl_code');
+	}
+}
+
+
 //---------------------------------------------------------------------------------------------------
 
 function check_data()
@@ -155,11 +212,74 @@ if (isset($_POST['PostCreditNote']))
 	handle_commit_credit_note();
 }
 
+function check_item_data($n)
+{
+	if (!check_num('This_QuantityCredited'.$n, 0))
+	{
+		display_error(_("The quantity to credit must be numeric and greater than zero."));
+		set_focus('This_QuantityCredited'.$n);
+		return false;
+	}
+
+	if (!check_num('ChgPrice'.$n, 0))
+	{
+		display_error(_("The price is either not numeric or negative."));
+		set_focus('ChgPrice'.$n);
+		return false;
+	}
+
+	return true;
+}
+
+//-----------------------------------------------------------------------------------------
+
+$id = find_submit('grn_item_id');
+if ($id != -1)
+{
+	if (check_item_data($id))
+	{
+		$complete = False;
+
+		//$_SESSION['supp_trans']->add_grn_to_trans($_POST['GRNNumber'],
+    	//	$_POST['po_detail_item'], $_POST['item_code'],
+    	//	$_POST['item_description'], $_POST['qty_recd'],
+    	//	$_POST['prev_quantity_inv'], $_POST['This_QuantityCredited'],
+    	//	$_POST['order_price'], $_POST['ChgPrice'], $complete,
+    	//	$_POST['std_cost_unit'], $_POST['gl_code']);
+		$_SESSION['supp_trans']->add_grn_to_trans($id,
+    		$_POST['po_detail_item'.$id], $_POST['item_code'.$id],
+    		$_POST['item_description'.$id], $_POST['qty_recd'.$id],
+    		$_POST['prev_quantity_inv'.$id], input_num('This_QuantityCredited'.$id),
+    		$_POST['order_price'.$id], input_num('ChgPrice'.$id), $complete,
+    		$_POST['std_cost_unit'.$id], "");
+	}
+}
+
+//--------------------------------------------------------------------------------------------------
+$id = find_submit('Delete');
+if ($id != -1)
+{
+	$_SESSION['supp_trans']->remove_grn_from_trans($id);
+	$Ajax->activate('grn_items');
+	$Ajax->activate('grn_table');
+	$Ajax->activate('inv_tot');
+}
+
+$id = find_submit('Delete2');
+if ($id != -1)
+{
+	$_SESSION['supp_trans']->remove_gl_codes_from_trans($id);
+	clear_fields();
+	$Ajax->activate('gl_items');
+	$Ajax->activate('inv_tot');
+}
+
+
 //--------------------------------------------------------------------------------------------------
 
 start_form(false, true);
 
-start_table("$table_style width=80%", 8);
+start_table("$table_style width=98%", 8);
 echo "<tr><td valign=center>"; // outer table
 
 echo "<center>";
@@ -170,17 +290,30 @@ if ($_POST['supplier_id']=='')
 else {
 	echo "</td></tr><tr><td valign=center>"; // outer table
 
-	$total_grn_value = display_grn_items($_SESSION['supp_trans']);
+	$total_grn_value = display_grn_items($_SESSION['supp_trans'], 1);
 
-	$total_gl_value = display_gl_items($_SESSION['supp_trans']);
+	$total_gl_value = display_gl_items($_SESSION['supp_trans'], 1);
 
 	echo "</td></tr><tr><td align=center colspan=2>"; // outer table
-
+	div_start('inv_tot');
 	invoice_totals($_SESSION['supp_trans']);
+	div_end();
 }
 echo "</td></tr>";
 
 end_table(1); // outer table
+
+$id = find_submit('grn_item_id');
+if ($id != -1)
+{
+	$Ajax->activate('grn_table');
+	$Ajax->activate('grn_items');
+	$Ajax->activate('inv_tot');
+}
+
+if (get_post('AddGLCodeToTrans'))
+	$Ajax->activate('inv_tot');
+
 
 submit_center('PostCreditNote', _("Enter Credit Note"), true, '', true);
 echo "<br><br>";

@@ -19,6 +19,18 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+------------------------------- Release 2.0.4 --------------------------------------------
+23.Oct-2008 Joe Hunt
+! Release 2.0.4
+$ config.php
+! Changed design of Supplier Invoice/Credit. Everything is now done in one document form.
+$ /purchasing/supplier_invoice.php
+  /purchasing/supplier_credit.php
+  /purchasing/includes/ui/invoice_ui.inc
+  /purchasing/supplier_invoice_grns.php (File removed)
+  /purchasing/supplier_credit_grns.php (File removed)
+  /purchasing/supplier_trans_gl.php (File removed)
+  
 22-Oct-2008 Joe Hunt
 + Added Ending Balance in trial balance (also in report)
 $ /gl/inquiry/gl_trial_balance.php

@@ -152,9 +152,38 @@ function invoice_totals(&$supp_trans)
 }
 
 //--------------------------------------------------------------------------------------------------
+function display_gl_controls(&$supp_trans)
+{
+	global $table_style, $Ajax;
 
-// $mode = 0 display on invoice page
-//		 = 1 display on gl items edit page
+	div_start('gl_ctrls'); // 2008-10-18 Joe Hunt Moved up a bit to compute num-rows = 0
+
+	$accs = get_supplier_accounts($supp_trans->supplier_id);
+	$_POST['gl_code'] = $accs['purchase_account'];
+	$k = 0;
+	alt_table_row_color($k);
+	gl_all_accounts_list('gl_code', null, true, false, true);
+	$dim = get_company_pref('use_dimension');
+	if ($dim >= 1)
+		dimensions_list_cells(null, 'dimension_id', null, true, " ", false, 1);
+	if ($dim > 1)
+		dimensions_list_cells(null, 'dimension2_id', null, true, " ", false, 2);
+	if ($dim < 1)
+		hidden('dimension_id', 0);
+	if ($dim < 2)
+		hidden('dimension2_id', 0);
+	amount_cells(null, 'amount');
+	text_cells_ex(null, 'memo_', 35, 50);
+	submit_cells('AddGLCodeToTrans', _("Add"), "",
+		    _('Add GL Line'), true);
+	submit_cells('ClearFields', _("Reset"), "",
+		    _("Clear all GL entry fields"), true);
+	
+	div_end();
+}
+
+// $mode = 0 none at the moment
+//		 = 1 display on invoice/credit page
 //		 = 2 display on view invoice
 //		 = 3 display on view credit
 
@@ -162,16 +191,9 @@ function display_gl_items(&$supp_trans, $mode=0)
 {
 	global $table_style, $path_to_root;
 
-    if ($mode == 0 && isset($_POST["InvGL"]))
-    {
-    	copy_to_trans($supp_trans);
-		meta_forward("$path_to_root/purchasing/supplier_trans_gl.php");
-    	exit;
-    }
-
     // if displaying in form, and no items, exit
     if (($mode == 2 || $mode == 3) && count($supp_trans->gl_codes) == 0)
-    	return;
+    	return 0;
 
 	echo "<br>";
 
@@ -185,11 +207,6 @@ function display_gl_items(&$supp_trans, $mode=0)
 
 	echo "<table width=100%>";
 	echo "<tr><td align=center><span class='headingtext'>$heading</span></td>";
-	if ($mode == 0)
-	{
-    	submit_cells('InvGL', _("Edit"), "align=right",
-			_('Moves to additional costs posting page'), true);
-	}
 	echo "</tr></table>";
 
 	echo "</td></tr><tr><td>"; // ouer table
@@ -205,6 +222,11 @@ function display_gl_items(&$supp_trans, $mode=0)
     else
     	$th = array(_("Account"), _("Name"), _("Amount"), _("Memo"));
 
+	if ($mode == 1)
+	{
+		$th[] = "";
+		$th[] = "";
+	}	
 	table_header($th);
 	$total_gl_value=0;
 	$i = $k = 0;
@@ -232,9 +254,11 @@ function display_gl_items(&$supp_trans, $mode=0)
 			label_cell($entered_gl_code->memo_);
 
 			if ($mode == 1)
-				edit_button_cell("Delete" . $entered_gl_code->Counter, _("Delete"),
+			{
+				edit_button_cell("Delete2" . $entered_gl_code->Counter, _("Delete"),
 					  _('Remove line from document'));
-
+				label_cell("");
+			}	
 			end_row();
 
 			$total_gl_value += $entered_gl_code->amount;
@@ -248,6 +272,8 @@ function display_gl_items(&$supp_trans, $mode=0)
 		}
 
 	}
+	if ($mode == 1)
+		display_gl_controls(&$supp_trans);
 	$colspan = ($dim == 2 ? 4 : ($dim == 1 ? 3 : 2));
 	label_row(_("Total"), price_format($total_gl_value),
 		"colspan=".$colspan." align=right", "nowrap align=right");
@@ -261,10 +287,96 @@ function display_gl_items(&$supp_trans, $mode=0)
 	return $total_gl_value;
 }
 
-//--------------------------------------------------------------------------------------------------
+//--------------//-----------------------------------------------------------------------------------------
 
-// $mode = 0 display on invoice page
-//		 = 1 display on grn items edit page
+function display_grn_items_for_selection(&$supp_trans)
+{
+	global $table_style;
+
+	div_start('grn_table'); // 2008-10-18 Joe Hunt Moved up a bit to compute num-rows = 0
+	if ($supp_trans->is_invoice)
+		$result = get_grn_items(0, $supp_trans->supplier_id, true);
+	else	
+		$result = get_grn_items(0, $supp_trans->supplier_id, false, true);
+
+    if (db_num_rows($result) == 0)
+    {
+		if ($supp_trans->is_invoice)
+    		display_note(_("There are no outstanding items received from this supplier that have not been invoiced by them."), 0, 1);
+    	else
+    	{
+			display_note(_("There are no received items for the selected supplier that have been invoiced."));
+			display_note(_("Credits can only be applied to invoiced items."), 0, 1);
+    	}
+		div_end(); // Changed 2008-10-18 Joe Hunt
+    	return;
+    }
+    
+    /*Set up a table to show the outstanding GRN items for selection */
+
+    $k = 0;
+
+    while ($myrow = db_fetch($result))
+    {
+		$grn_already_on_invoice = false;
+
+    	foreach ($supp_trans->grn_items as $entered_grn)
+    	{
+    		if ($entered_grn->id == $myrow["id"])
+    		{
+    			$grn_already_on_invoice = true;
+    		}
+    	}
+    	if ($grn_already_on_invoice == false)
+    	{
+
+			alt_table_row_color($k);
+
+			$n = $myrow["id"];
+    		label_cell(get_trans_view_str(25, $myrow["grn_batch_id"]));
+        	label_cell($myrow["id"].
+            	hidden('qty_recd'.$n, $myrow["qty_recd"], false).
+            	hidden('item_code'.$n, $myrow["item_code"], false).
+            	hidden('item_description'.$n, $myrow["description"], false).
+            	hidden('prev_quantity_inv'.$n, $myrow['quantity_inv'], false).
+            	hidden('order_price'.$n, $myrow['unit_price'], false).
+            	hidden('std_cost_unit'.$n, $myrow['std_cost_unit'], false).
+            	hidden('po_detail_item'.$n, $myrow['po_detail_item'], false));
+        	label_cell(get_trans_view_str(systypes::po(), $myrow["purch_order_no"]));
+            label_cell($myrow["item_code"]);
+            label_cell($myrow["description"]);
+            label_cell(sql2date($myrow["delivery_date"]));
+            $dec = get_qty_dec($myrow["item_code"]);
+            qty_cell($myrow["qty_recd"], false, $dec);
+            qty_cell($myrow["quantity_inv"], false, $dec);
+            if ($supp_trans->is_invoice)
+            	qty_cells(null, 'this_quantity_inv'.$n, number_format2($myrow["qty_recd"] - $myrow["quantity_inv"], $dec), 
+            		null, null, $dec);
+            else		
+            	qty_cells(null, 'This_QuantityCredited'.$n, number_format2(max($myrow["quantity_inv"], 0), $dec), 
+            		null, null, $dec);
+            amount_cells(null, 'ChgPrice'.$n, price_format($myrow["unit_price"]));
+            if ($supp_trans->is_invoice)
+            	amount_cell(round($myrow["unit_price"] * ($myrow["qty_recd"] - $myrow["quantity_inv"]), user_price_dec()));
+            else	
+            	amount_cell(round($myrow["unit_price"] * max($myrow['quantity_inv'], 0), user_price_dec()));
+            if ($supp_trans->is_invoice)	
+        		submit_cells('grn_item_id'.$n, _("Add"), '', _("Add to Invoice"), true);
+        	else	
+        		submit_cells('grn_item_id'.$n, _("Add"), '', _("Add to Credit Note"), true);
+    		if ($supp_trans->is_invoice && $_SESSION["wa_current_user"]->access == 2)	// Added 2008-10-18 by Joe Hunt. Only admins can remove GRNs
+        		submit_cells('void_item_id'.$n, _("Remove"), '', _("WARNING! Be careful with removal. The operation is executed immediately and cannot be undone !!!"), true);
+			end_row();
+    	}
+    }
+
+	div_end();
+}
+
+//------------------------------------------------------------------------------------
+
+// $mode = 0 none at the moment
+//		 = 1 display on invoice/credit page
 //		 = 2 display on view invoice
 //		 = 3 display on view credit
 
@@ -272,42 +384,60 @@ function display_grn_items(&$supp_trans, $mode=0)
 {
 	global $table_style, $path_to_root;
 
-    if ($mode == 0 && isset($_POST["InvGRN"]))
-    {
-    	copy_to_trans($supp_trans);
-		if ($supp_trans->is_invoice)
-			meta_forward("$path_to_root/purchasing/supplier_invoice_grns.php");
-    	else
-			meta_forward("$path_to_root/purchasing/supplier_credit_grns.php");
-    	exit;
-    }
-
     // if displaying in form, and no items, exit
     if (($mode == 2  || $mode == 3) && count($supp_trans->grn_items) == 0)
-    	return;
+    	return 0;
 	br(1);
 	start_table("width=95%");
 	echo "<tr><td>"; // outertable
-
-	if ($supp_trans->is_invoice)
-		$heading = _("Received Items Charged on this Invoice");
+	$heading2 = "";
+	if ($mode == 1)
+	{
+		if ($supp_trans->is_invoice)
+		{
+			$heading = _("Items Received Yet to be Invoiced");
+    		if ($_SESSION["wa_current_user"]->access == 2)	// Added 2008-10-18 by Joe Hunt. Only admins can remove GRNs
+				$heading2 = _("WARNING! Be careful with removal. The operation is executed immediately and cannot be undone !!!");
+		}
+		else
+			$heading = _("Delivery Item Selected For Adding To A Supplier Credit Note");
+	}
 	else
-		$heading = _("Received Items Credited on this Note");
+	{
+		if ($supp_trans->is_invoice)
+			$heading = _("Received Items Charged on this Invoice");
+		else
+			$heading = _("Received Items Credited on this Note");
+	}		
 	echo "<table width=100% >";
 	echo "<tr><td align=center><span class='headingtext'>$heading</span></td>";
-	if ($mode == 0)
+	if ($mode == 1 && $heading2 != "")
 	{
-		submit_cells('InvGRN', _("Edit"), "align=right",
-			_('Moves to GRN selection page'), true);
-	}
+		echo "</tr><td>";
+		display_note($heading2, 0, 0, "class='overduefg'");
+		echo "</td>\n";
+	}	
 	echo "</tr></table>";
 
 	echo "</td></tr><tr><td>"; // outer table
 
-  div_start('grn_items');
+  	div_start('grn_items');
 	echo "<table width=100% $table_style>";
-	$th = array(_("Delivery"), _("Item"), _("Description"),
-		_("Quantity"), _("Price"), _("Line Value"));
+	if ($mode == 1)
+	{
+    	$th = array(_("Delivery"), _("Sequence #"), _("P.O."), _("Item"), _("Description"),
+    		_("Received On"), _("Quantity Received"), _("Quantity Invoiced"),
+    		_("Qty Yet To Invoice"), _("Order Price"), _("Total"), "");
+    	if ($supp_trans->is_invoice && $_SESSION["wa_current_user"]->access == 2)	// Added 2008-10-18 by Joe Hunt. Only admins can remove GRNs
+    		$th[] = "";
+		if (!$supp_trans->is_invoice)
+		{
+			$th[8] = _("Qty Yet To Credit");
+		}
+    }
+    else
+		$th = array(_("Delivery"), _("Item"), _("Description"),
+			_("Quantity"), _("Price"), _("Line Value"));
 
 	table_header($th);
     $total_grn_value = 0;
@@ -323,16 +453,31 @@ function display_grn_items(&$supp_trans, $mode=0)
 
 			$grn_batch = get_grn_batch_from_item($entered_grn->id);
     		label_cell(get_trans_view_str(25,$grn_batch));
+    		if ($mode == 1)
+    		{
+				label_cell($entered_grn->id);
+				label_cell(""); // PO
+			}	
 			label_cell($entered_grn->item_code);
 			label_cell($entered_grn->item_description);
-			qty_cell(abs($entered_grn->this_quantity_inv), false, get_qty_dec($entered_grn->item_code));
+            $dec = get_qty_dec($entered_grn->item_code);
+            if ($mode == 1)
+            {
+            	label_cell("");
+				qty_cell($entered_grn->qty_recd, false, $dec);
+				qty_cell($entered_grn->prev_quantity_inv, false, $dec);
+            }
+			qty_cell(abs($entered_grn->this_quantity_inv), false, $dec);
 			amount_cell($entered_grn->chg_price);
 			amount_cell( round($entered_grn->chg_price * abs($entered_grn->this_quantity_inv)), user_price_dec());
 
 			if ($mode == 1)
+			{
 				edit_button_cell("Delete" . $entered_grn->id, _("Delete"),
 					  _('Remove item from document'));
-
+				if ($supp_trans->is_invoice && $_SESSION["wa_current_user"]->access == 2)	  
+					label_cell("");
+			}	
 			end_row();
 
     		$total_grn_value += round($entered_grn->chg_price * abs($entered_grn->this_quantity_inv),
@@ -346,9 +491,15 @@ function display_grn_items(&$supp_trans, $mode=0)
     		}
     	}
     }
-
+	if ($mode == 1)
+	{
+		display_grn_items_for_selection($supp_trans);
+		$colspan = 10;
+	}
+	else
+		$colspan = 5;
 	label_row(_("Total"), price_format($total_grn_value),
-		"colspan=5 align=right", "nowrap align=right");
+		"colspan=$colspan align=right", "nowrap align=right");
     echo "</table>";
     div_end();
     echo "</td></tr>";

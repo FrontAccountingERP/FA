@@ -109,7 +109,7 @@ function show_results()
 	else
 	{
 		$begin = begin_fiscalyear();
-		if ($_POST['TransFromDate'] < $begin)
+		if (date1_greater_date2($begin, $_POST['TransFromDate']))
 			$begin = $_POST['TransFromDate'];
 		$begin = add_days($begin, -1);
 	}
