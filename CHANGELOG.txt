@@ -19,6 +19,27 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+23-Oct-2008 Janusz Dobrowolski
++ Improved report module performance, also usable without javascript.
+$ /reporting/reports_main.php
+  /reporting/includes/class.pdf.inc
+  /reporting/includes/pdf_report.inc
+  /reporting/includes/reports_classes.inc
+  /reporting/includes/header2.inc
++ Hotkey support for viewer links.
+$ /includes/ui/ui_view.inc
+  /js/inserts.js
++ Added purchase order printing after entry.
+$ /purchasing/po_entry_items.php
++ Added hotkeys to credit note final menu.
+$ /sales/credit_note_entry.php
+# Fixed submit button for IE7
+$ /includes/ui/ui_input.inc
+# Fixed ajax popup flicker.
+$ /js/utils.js
+# Fix after 2.0.4 merge
+$ /sales/inquiry/sales_orders_view.php
+
 23-Oct-2008 Joe Hunt
 ! Merging the changes up to 2-0-4
 $ /purchasing/supplier_invoice.php
