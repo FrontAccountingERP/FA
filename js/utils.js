@@ -15,6 +15,7 @@
 			var content = {};
 			var upload = 0;
 			var url = trigger.href;
+			if (trigger.id) content[trigger.id] = 1;
 		} else {
 		var submitObj = typeof(trigger) == "string" ? 
 			document.getElementsByName(trigger)[0] : trigger;
@@ -43,6 +44,7 @@
             // Function is called when an answer arrives. 
 	    function(result, errors) {
                 // Write the answer.
+			var newwin = 0;
 	        if (result) {
 		  	  for(var i in result ) { 
 			  atom = result[i];
@@ -71,6 +73,7 @@
 			  } else if(cmd=='rd') {	// client-side redirection
 				  window.location = data;
 			  } else if(cmd=='pu') {	// pop-up
+			  	  newwin = 1;
 			  	  window.open(data,'REP_WINDOW','toolbar=no,scrollbar=no,resizable=yes,menubar=no');
 			  } else {
 				  errors = errors+'<br>Unknown ajax function: '+cmd;
@@ -87,7 +90,9 @@
 			window.scrollTo(0,0);
 			//document.getElementById('msgbox').scrollIntoView(true);
 	  // Restore focus if we've just lost focus because of DOM element refresh
-		  setFocus();
+		  if(!newwin) { 
+		  	setFocus();
+		  }
 		}
             },
             false  // do not disable caching
