@@ -7,7 +7,7 @@ include_once($path_to_root . "/includes/types.inc");
 
 function get_supplier_trans_view_str($type, $trans_no, $label="")
 {
-	global $path_to_root, $use_popup_windows;
+	global $path_to_root;
 
 	$viewer = "";
 	if ($type == systypes::po())
@@ -28,10 +28,8 @@ function get_supplier_trans_view_str($type, $trans_no, $label="")
 
 	if ($viewer != "")
 	{
-		if ($use_popup_windows)
-			$preview_str = "<a target='_blank' href='$path_to_root/purchasing/view/$viewer?trans_no=$trans_no' onclick=\"javascript:openWindow(this.href,this.target); return false;\" >$label</a>";
-		else
-			$preview_str = "<a target='_blank' href='$path_to_root/purchasing/view/$viewer?trans_no=$trans_no'>$label</a>";
+		$pars = access_string($label);
+		$preview_str = "<a target='_blank' href='$path_to_root/purchasing/view/$viewer?trans_no=$trans_no' onclick=\"javascript:openWindow(this.href,this.target); return false;\"$pars[1]>$pars[0]</a>";
 	}
 	else
 		$preview_str = $label;
@@ -43,17 +41,15 @@ function get_supplier_trans_view_str($type, $trans_no, $label="")
 
 function get_gl_view_str($type, $trans_no, $label="", $force=false)
 {
-	global $path_to_root, $use_popup_windows;
+	global $path_to_root;
 
 	if (!$force && !user_show_gl_info())
 		return "";
 
 	if ($label == "")
 		$label = _("GL");
-	if ($use_popup_windows)
-		$gl_view = "<a target='_blank' href='$path_to_root/gl/view/gl_trans_view.php?type_id=$type&trans_no=$trans_no' onclick=\"javascript:openWindow(this.href,this.target); return false;\" >$label</a>";
-	else
-		$gl_view = "<a target='_blank' href='$path_to_root/gl/view/gl_trans_view.php?type_id=$type&trans_no=$trans_no'>$label</a>";
+	$pars = access_string($label);
+	$gl_view = "<a target='_blank' href='$path_to_root/gl/view/gl_trans_view.php?type_id=$type&trans_no=$trans_no' onclick=\"javascript:openWindow(this.href,this.target); return false;\"$pars[1]>$pars[0]</a>";
 
 	return $gl_view;
 }
@@ -71,7 +67,7 @@ function get_gl_view_str_cell($type, $trans_no, $label="")
 
 function get_customer_trans_view_str($type, $trans_no, $label="")
 {
-	global $path_to_root, $use_popup_windows;
+	global $path_to_root;
 
 	$viewer = "";
 	if ($type == 10)
@@ -99,10 +95,8 @@ function get_customer_trans_view_str($type, $trans_no, $label="")
 
 	if ($viewer != "")
 	{
-		if ($use_popup_windows)
-			$preview_str .= "<a target='_blank' href='$path_to_root/sales/view/$viewer?trans_no=$trans' onclick=\"javascript:openWindow(this.href,this.target); return false;\" >$lbl</a>";
-		else
-			$preview_str .= "<a target='_blank' href='$path_to_root/sales/view/$viewer?trans_no=$trans'>$lbl</a>";
+		$pars = access_string($lbl);
+		$preview_str = "<a target='_blank' href='$path_to_root/sales/view/$viewer?trans_no=$trans' onclick=\"javascript:openWindow(this.href,this.target); return false;\" $pars[1]>$pars[0]</a>";
 	}
 	else
 		$preview_str .= $lbl;
@@ -115,7 +109,7 @@ function get_customer_trans_view_str($type, $trans_no, $label="")
 
 function get_banking_trans_view_str($type, $trans_no, $label="")
 {
-	global $path_to_root, $use_popup_windows;
+	global $path_to_root;
 
 	$viewer = "";
 
@@ -135,10 +129,8 @@ function get_banking_trans_view_str($type, $trans_no, $label="")
 
 	if ($viewer != "")
 	{
-		if ($use_popup_windows)
-			$preview_str = "<a target='_blank' href='$path_to_root/gl/view/$viewer?trans_no=$trans_no' onclick=\"javascript:openWindow(this.href,this.target); return false;\" >$label</a>";
-		else
-			$preview_str = "<a target='_blank' href='$path_to_root/gl/view/$viewer?trans_no=$trans_no'>$label</a>";
+		$pars = access_string($label);
+		$preview_str = "<a target='_blank' href='$path_to_root/gl/view/$viewer?trans_no=$trans_no' onclick=\"javascript:openWindow(this.href,this.target); return false;\"$pars[1]>$pars[0]</a>";
 	}
 	else
 		$preview_str = $label;
@@ -150,7 +142,7 @@ function get_banking_trans_view_str($type, $trans_no, $label="")
 
 function get_inventory_trans_view_str($type, $trans_no, $label="")
 {
-	global $path_to_root, $use_popup_windows;
+	global $path_to_root;
 
 	$viewer = "";
 
@@ -166,10 +158,8 @@ function get_inventory_trans_view_str($type, $trans_no, $label="")
 
 	if ($viewer != "")
 	{
-		if ($use_popup_windows)
-			$preview_str = "<a target='_blank' href='$path_to_root/inventory/view/$viewer?trans_no=$trans_no' onclick=\"javascript:openWindow(this.href,this.target); return false;\" >$label</a>";
-		else
-			$preview_str = "<a target='_blank' href='$path_to_root/inventory/view/$viewer?trans_no=$trans_no'>$label</a>";
+		$pars = access_string($label);
+		$preview_str = "<a target='_blank' href='$path_to_root/inventory/view/$viewer?trans_no=$trans_no' onclick=\"javascript:openWindow(this.href,this.target); return false;\"$pars[1]>$pars[0]</a>";
 	}
 	else
 		$preview_str = $label;
@@ -181,7 +171,7 @@ function get_inventory_trans_view_str($type, $trans_no, $label="")
 
 function get_manufacturing_trans_view_str($type, $trans_no, $label="")
 {
-	global $path_to_root, $use_popup_windows;
+	global $path_to_root;
 
 	$viewer = "";
 
@@ -199,10 +189,8 @@ function get_manufacturing_trans_view_str($type, $trans_no, $label="")
 
 	if ($viewer != "")
 	{
-		if ($use_popup_windows)
-			$preview_str = "<a target='_blank' href='$path_to_root/manufacturing/view/$viewer?trans_no=$trans_no' onclick=\"javascript:openWindow(this.href,this.target); return false;\" >$label</a>";
-		else
-			$preview_str = "<a target='_blank' href='$path_to_root/manufacturing/view/$viewer?trans_no=$trans_no'>$label</a>";
+		$pars = access_string($label);
+		$preview_str = "<a target='_blank' href='$path_to_root/manufacturing/view/$viewer?trans_no=$trans_no' onclick=\"javascript:openWindow(this.href,this.target); return false;\"$pars[1]>$pars[0]</a>";
 	}
 	else
 		$preview_str = $label;
@@ -214,7 +202,7 @@ function get_manufacturing_trans_view_str($type, $trans_no, $label="")
 
 function get_dimensions_trans_view_str($type, $trans_no, $label="")
 {
-	global $path_to_root, $use_popup_windows;
+	global $path_to_root;
 
 	$viewer = "";
 
@@ -228,10 +216,8 @@ function get_dimensions_trans_view_str($type, $trans_no, $label="")
 
 	if ($viewer != "")
 	{
-		if ($use_popup_windows)
-			$preview_str = "<a target='_blank' href='$path_to_root/dimensions/view/$viewer?trans_no=$trans_no' onclick=\"javascript:openWindow(this.href,this.target); return false;\" >$label</a>";
-		else
-			$preview_str = "<a target='_blank' href='$path_to_root/dimensions/view/$viewer?trans_no=$trans_no'>$label</a>";
+		$pars = access_string($label);
+		$preview_str = "<a target='_blank' href='$path_to_root/dimensions/view/$viewer?trans_no=$trans_no' onclick=\"javascript:openWindow(this.href,this.target); return false;\"$pars[1]>$pars[0]</a>";
 	}
 	else
 		$preview_str = $label;

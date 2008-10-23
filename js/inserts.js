@@ -203,7 +203,8 @@ var inserts = {
   	    // this shows divs for js enabled browsers only
 	    e.style.display = 'block';
 	},
-	'.ajaxsubmit,.editbutton,.navibutton': 
+//	'.ajaxsubmit,.editbutton,.navibutton': // much slower on IE7
+	'button.ajaxsubmit,submit.ajaxsubmit,submit.editbutton,submit.navibutton': 
 	function(e) {
 	    e.onclick = function() {
 			if (this.getAttribute('aspect') == 'process')
@@ -343,7 +344,12 @@ function setHotKeys() {
 			if (key == 18) {
 				_hotkeys.alt = false;
 				if (_hotkeys.focus>=0) {
-					window.location = document.links[_hotkeys.focus].href;
+					var link = document.links[_hotkeys.focus];
+					if (link.target=='_blank') {
+//						window.open(link.href,'','toolbar=no,scrollbar=no,resizable=yes,menubar=no,width=900,height=500');
+						openWindow(link.href,'_blank');
+					} else
+						window.location = link.href;
 				}
 			} 
 			return stopEv(ev);
