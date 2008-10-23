@@ -168,17 +168,18 @@ function display_gl_controls(&$supp_trans)
 		dimensions_list_cells(null, 'dimension_id', null, true, " ", false, 1);
 	if ($dim > 1)
 		dimensions_list_cells(null, 'dimension2_id', null, true, " ", false, 2);
-	if ($dim < 1)
-		hidden('dimension_id', 0);
-	if ($dim < 2)
-		hidden('dimension2_id', 0);
 	amount_cells(null, 'amount');
-	text_cells_ex(null, 'memo_', 35, 50);
+	if ($dim < 1)	
+		text_cells_ex(null, 'memo_', 35, 50, null, null, null, hidden('dimension_id', 0, false).hidden('dimension2_id', 0, false));
+	else if ($dim < 2)	
+		text_cells_ex(null, 'memo_', 35, 50, null, null, null, hidden('dimension2_id', 0, false));
+	else	
+		text_cells_ex(null, 'memo_', 35, 50, null, null, null);
 	submit_cells('AddGLCodeToTrans', _("Add"), "",
 		    _('Add GL Line'), true);
 	submit_cells('ClearFields', _("Reset"), "",
 		    _("Clear all GL entry fields"), true);
-	
+	end_row();	
 	div_end();
 }
 
