@@ -182,6 +182,8 @@ $result = db_query($sql,"No orders were returned");
 //-----------------------------------------------------------------------------------
 if ($result)
 {
+	print_hidden_script(30);
+
 	start_form();
 	/*show a table of the orders returned by the sql */
 	div_start('orders_tbl');
@@ -215,8 +217,8 @@ if ($result)
 		}
 //	    $not_closed =  $myrow['type'] && ($myrow["TotDelivered"] < $myrow["TotQuantity"]);
 
-    	// if overdue orders, then highlight as so
-    	if ($myrow['type'] == 0 && date1_greater_date2(Today(), $formated_del_date))
+    	// if overdue orders, then highlight as so. 2008-10-15 added totdelivered < totquantity as well for qualifying overdue
+    	if ($myrow['type'] == 0 && date1_greater_date2(Today(), $formated_del_date) && ($myrow["TotDelivered"] < $myrow["TotQuantity"]))
     	{
         	 start_row("class='overduebg'");
         	 $overdue_items = true;
@@ -260,7 +262,7 @@ if ($result)
 
   		  	$modify_page = $path_to_root . "/sales/sales_order_entry.php?" . SID . "ModifyOrderNumber=" . $myrow["order_no"];
   		  	label_cell("<a href='$modify_page'>" . _("Edit") . "</a>");
-  		  	label_cell(print_document_link($myrow['order_no'], _("Print"), true, 30));
+  		  	label_cell(print_document_link($myrow['order_no'], _("Print")));
 		}
 		end_row();;
 

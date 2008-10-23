@@ -19,6 +19,24 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+23-Oct-2008 Joe Hunt
+! Merging the changes up to 2-0-4
+$ /purchasing/supplier_invoice.php
+  /purchasing/supplier_credit.php
+  /purchasing/includes/db/invoice_db.inc
+  /purchasing/includes/db/grn_db.inc
+  /purchasing/includes/ui/invoice_ui.inc
+  /purchasing/supplier_invoice_grns.php (File removed)
+  /purchasing/supplier_credit_grns.php (File removed)
+  /purchasing/supplier_trans_gl.php (File removed)
+  /gl/inquiry/gl_trial_balance.php
+  /gl/inquiry/gl_account_inquiry.php
+  /reporting/rep704.php
+  /reporting/rep708.php
+  /sql/en_US-demo.sql
+  /sales/includes/ui/sales_order_ui.inc
+  /sales/inquiry/sales_orders_view.php
+  
 20-Oct-2008 Janusz Dobrowolski
 # Fix for pdf reports (php 5.2.4 issue)
 $ /reporting/includes/pdf_report.inc

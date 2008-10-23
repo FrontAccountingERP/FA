@@ -106,10 +106,10 @@ function print_GL_transactions()
 			$begin = "";
 		else
 		{
-			if ($from < $begin)
-				$begin = add_days($from, -1);
-			else
-				$begin = add_days(begin_fiscalyear(), -1);
+			$begin = begin_fiscalyear();
+			if (date1_greater_date2($begin, $from))
+				$begin = $from;
+			$begin = add_days($begin, -1);
 		}
 		$prev_balance = get_gl_balance_from_to($begin, $from, $account["account_code"], $dimension, $dimension2);
 

@@ -136,6 +136,13 @@ function get_grn_batch_from_item($item)
 	return $row[0];
 }
 
+function get_grn_batch($grn)
+{
+	$sql = "SELECT * FROM ".TB_PREF."grn_batch WHERE id=$grn";
+	$result = db_query($sql, "Could not retreive GRN batch id");
+	return db_fetch($result);
+}
+
 function set_grn_item_credited(&$entered_grn, $supplier, $transno, $date)
 {
 	$mcost = update_average_material_cost($supplier, $entered_grn->item_code,

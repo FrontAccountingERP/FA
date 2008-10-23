@@ -91,6 +91,7 @@ function print_trial_balance()
 	$rep->Font();
 	$rep->Info($params, $cols, $headers, $aligns, $cols2, $headers2, $aligns2);
 	$rep->Header();
+	$totprev = $totcurr = 0.0;
 
 	$accounts = get_gl_accounts();
 
@@ -101,10 +102,10 @@ function print_trial_balance()
 			$begin = "";
 		else
 		{
-			if ($from < $begin)
-				$begin = add_days($from, -1);
-			else
-				$begin = add_days(begin_fiscalyear(), -1);
+			$begin = begin_fiscalyear();
+			if (date1_greater_date2($begin, $from))
+				$begin = $from;
+			$begin = add_days($begin, -1);
 		}
 
 		$prev_balance = get_gl_balance_from_to($begin, $from, $account["account_code"], $dimension, $dimension2);
@@ -113,19 +114,20 @@ function print_trial_balance()
 
 		if ($zero == 0 && !$prev_balance && !$curr_balance)
 			continue;
-
+		$totprev += $prev_balance;
+		$totcurr += $curr_balance;
 		$rep->TextCol(0, 1, $account['account_code']);
 		$rep->TextCol(1, 2,	$account['account_name']);
 
-		if ($prev_balance > 0.0)
+		if ($prev_balance >= 0.0)
 			$rep->TextCol(2, 3,	number_format2(abs($prev_balance), $dec));
 		else
 			$rep->TextCol(3, 4,	number_format2(abs($prev_balance), $dec));
-		if ($curr_balance > 0.0)
+		if ($curr_balance >= 0.0)
 			$rep->TextCol(4, 5,	number_format2(abs($curr_balance), $dec));
 		else
 			$rep->TextCol(5, 6,	number_format2(abs($curr_balance), $dec));
-		if ($curr_balance + $prev_balance > 0.0)
+		if ($curr_balance + $prev_balance >= 0.0)
 			$rep->TextCol(6, 7,	number_format2(abs($curr_balance + $prev_balance), $dec));
 		else
 			$rep->TextCol(7, 8,	number_format2(abs($curr_balance + $prev_balance), $dec));
@@ -139,6 +141,26 @@ function print_trial_balance()
 		}
 	}
 	$rep->Line($rep->row);
+	$rep->NewLine();
+	$rep->Font('bold');
+
+	$rep->TextCol(0, 2, _("Ending Balance"));
+
+	if ($totprev >= 0.0)
+		$rep->TextCol(2, 3,	number_format2(abs($totprev), $dec));
+	else
+		$rep->TextCol(3, 4,	number_format2(abs($totprev), $dec));
+	if ($totcurr >= 0.0)
+		$rep->TextCol(4, 5,	number_format2(abs($totcurr), $dec));
+	else
+		$rep->TextCol(5, 6,	number_format2(abs($totcurr), $dec));
+	if ($totcurr + $totprev >= 0.0)
+		$rep->TextCol(6, 7,	number_format2(abs($totcurr + $totprev), $dec));
+	else
+		$rep->TextCol(7, 8,	number_format2(abs($totcurr + $totprev), $dec));
+	
+	$rep->Line($rep->row - 6);
+	
 	$rep->End();
 }
 
