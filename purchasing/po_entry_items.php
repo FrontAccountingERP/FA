@@ -1,13 +1,11 @@
 <?php
 
 $page_security = 4;
-
 $path_to_root="..";
 include_once($path_to_root . "/purchasing/includes/po_class.inc");
-
 include_once($path_to_root . "/includes/session.inc");
-
 include_once($path_to_root . "/purchasing/includes/purchasing_ui.inc");
+include_once($path_to_root . "/reporting/includes/reporting.inc");
 
 $js = '';
 if ($use_popup_windows)
@@ -62,6 +60,8 @@ if (isset($_GET['AddedID']))
 	else
 		display_notification_centered(_("Purchase Order has been updated") . " #$order_no");
 	display_note(get_trans_view_str($trans_type, $order_no, _("View this order")));
+	echo '<br>';
+	display_note(print_document_link($order_no, _("Print This Order"), true, $trans_type));
 
 	hyperlink_params($path_to_root . "/purchasing/po_receive_items.php", _("Receive Items on this Purchase Order"), "PONumber=$order_no");
 
