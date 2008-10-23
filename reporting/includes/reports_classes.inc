@@ -20,7 +20,7 @@ class BoxReports
 
 	function getDisplay($class=null)
 	{
-		global $table_style2, $comp_path, $path_to_root;
+		global $table_style2, $comp_path, $path_to_root, $pdf_debug, $Ajax;
 
 		$temp = array_values($this->ar_classes);
 		$display_class = $class==null ? $temp[0] : $this->ar_classes[$class];
@@ -31,44 +31,50 @@ class BoxReports
 		$st_classes = "<b>" . _("Report Classes:") . "</b><br>";
 		foreach($this->ar_classes as $key=>$value)
 		{
-			$style = $class_counter==0 ? '' : $style = "style='display:none'";
+			$style = $class_counter==$_REQUEST['Class'] ? '' : "style='display:none'";
 			$acc = access_string($key);
-			$st_classes .= "<a href='javascript:showClass($class_counter)'$acc[1]>$acc[0]</a> <br>";
-			$st_reports .= "<table id='TAB_" . $class_counter++ ."' $style cellpadding=0 cellspacing=0 border=0 width='100%'><tr><td><b>" . _("Reports For Class: ") . "&nbsp;$key</b></td></tr>";
+			$st_classes .= "<a href='"
+				.$_SERVER['PHP_SELF']."?Class=$class_counter"
+				."' onclick='return showClass($class_counter);'$acc[1]>$acc[0]</a> <br>";
+			$st_reports .= "<table id='TAB_" . $class_counter ."' $style cellpadding=0 cellspacing=0 border=0 width='100%'><tr><td><b>" . _("Reports For Class: ") . "&nbsp;$key</b></td></tr>\n";
 			foreach($value as $report)
-			{	$acc = access_string($report->name);
-				$st_reports .= "<tr><td><a href='javascript:showReport($rep_counter)'$acc[1]>$acc[0]</a></td></tr>";
+			{
+				$acc = access_string($report->name);
+				$st_reports .= "<tr><td><a class='printlink' href='"
+					.$_SERVER['PHP_SELF']."?Class=$class_counter&rep_id=$report->id"
+					."'$acc[1]>$acc[0]</a><tr><td>\n";
+				if (isset($_REQUEST['rep_id']) && $_REQUEST['rep_id']==$report->id) {
 
-				$action = $path_to_root.'/reporting/prn_redirect.php';
-
-				$st_params .= "<div id='REP_" . $rep_counter++ . "' style='display:none'>";
-				$st_params .= "<table border=0><tr><td>\n"
-								. "<form method='POST' action='$action' target='_blank'>\n" 
-								. $report->getDisplay() 
-								. "\n</form>\n"
-								. "</td></tr></table></div>";
-
+					$action = $path_to_root.'/reporting/prn_redirect.php';
+	
+					$st_params = "<table border=0><tr><td>\n"
+						. "<form method='POST' action='$action' target='_blank'>\n";
+					$st_params .= hidden('REP_ID', $report->id, false);
+					$st_params .= submit('Rep'.$report->id,  
+						_("Display: ") . access_string($report->name,true),
+						false, '', $pdf_debug==0) . '<br><br>';
+					$st_params .= $report->getDisplay() 
+						. "\n</form></td></tr></table>\n";
+					$Ajax->addUpdate(true, 'rep_form', $st_params);
+				}
 			}
 			$st_reports .= "</table>";
+			$class_counter++;
 		}
+
+		$st_params = "<div id='rep_form'>".
+			"$st_params</div>";
+		
 
 		$st = 	"<script language='javascript'>
 					function showClass(pClass) {
 						for(i=0; i<$class_counter; i++) {
-							eval('document.getElementById(\"TAB_\" + i).style.display=\"none\"')
+							document.getElementById(\"TAB_\" + i).style.display=
+							i==pClass ? \"block\" : \"none\";
 						}
-						eval('document.getElementById(\"TAB_\" + pClass).style.display=\"block\"')
-						for (i=0; i<$rep_counter; i++) {
-							eval('document.getElementById(\"REP_\" + i).style.display=\"none\"')
-						}
-					}
-					function showReport(pId) {
-//						JsHttpRequest.request('Rep'+pId);
-						var tab;
-						for(i=0; i<$rep_counter; i++) {
-							eval('document.getElementById(\"REP_\" + i).style.display=\"none\"')
-						}
-						eval('document.getElementById(\"REP_\" + pId).style.display=\"block\"')
+						document.getElementById('rep_form').innerHTML = '';
+//						document.getElementById('rep_form').style.display = 'none';
+						return false;
 					}
 					function checkDate(pObj) {
 						var re = /^(3[01]|0[1-9]|[12]\d)\/(0[1-9]|1[012])\/\d{4}/;
@@ -105,10 +111,7 @@ class Report
 	{
 		global $path_to_root, $use_date_picker, $pdf_debug;
 
-		$st  = hidden('REP_ID', $this->id, false);
-		$st .= submit('Rep'.$this->id,  
-			_("Display: ") . access_string($this->name,true),
-			false, '', $pdf_debug==0) . '<br><br>';
+		$st = '';
 		$dummy = "";
 		if ($this->ar_params==null)
 			return "";

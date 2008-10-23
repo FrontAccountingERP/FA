@@ -202,14 +202,10 @@ class Cpdf extends TCPDF {
 	{
 		TCPDF::Ellipse($x0, $y0, $r1, $r2, $angle, $astart. $afinish, ($close?'C':''), "", "", $nSeg);
 	}
+
 	function Stream()
 	{
 		TCPDF::Output('', 'I');
-	}
-
-	function Output()
-	{
-		return TCPDF::Output('','S');
 	}
 
 	function calcTextWrap($txt, $width, $spacebreak=false)

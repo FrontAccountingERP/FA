@@ -361,7 +361,7 @@ class FrontReport extends Cpdf
 
 		if ($pdf_debug == 1)
 		{
-			$pdfcode = $this->Output();
+			$pdfcode = $this->Output('','S');
 			$pdfcode = str_replace("\n", "\n<br>", htmlspecialchars($pdfcode));
 			echo '<html><body>';
 			echo trim($pdfcode);
@@ -377,8 +377,6 @@ class FrontReport extends Cpdf
 		else
 		{
 
-			$buf = $this->Output();
-			$len = strlen($buf);
 			$dir =  $comp_path.'/'.user_company(). '/pdf_files';
 			//save the file
 			if (!file_exists($dir))
@@ -388,9 +386,7 @@ class FrontReport extends Cpdf
 			// do not use standard filenames or your sensitive company data 
 			// are world readable
 			$fname = $dir.'/'.uniqid('').'.pdf';
-			$fp = fopen($fname,'w');
-			fwrite($fp,$buf);
-			fclose($fp);
+			$this->Output($fname, 'F');
 			if ($email == 1)
 			{
 				$emailtype = true;

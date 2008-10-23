@@ -148,7 +148,7 @@
 		// 2008-06-16. Added customer's reference
 		$this->NewLine();
 		$this->Text($ccol, $doc_Customers_Ref, $ccol2);
-		if ($sales_order != NULL)
+		if (isset($sales_order["customer_ref"]))
 			$this->Text($ccol2, $sales_order["customer_ref"], $mcol);
 		$locale = $path_to_root . "lang/" . $_SESSION['language']->code . "/locale.inc";
 		if (file_exists($locale))
