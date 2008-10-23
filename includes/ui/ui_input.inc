@@ -101,7 +101,7 @@ function submit($name, $value, $echo=true, $title=false, $async=false, $icon=fal
 	default_focus($name);
 	$submit_str = "<button class=\""
 	    .($async ? 'ajaxsubmit' : 'inputsubmit')
-		."\""
+		."\" type=\"submit\""
 		.($async === null ? (fallback_mode() ? ' aspect="fallback"' : " style='display:none;'" ): 
 			($async === 'process' ? 'aspect="process"' : '') )
 	    ." name=\"$name\"  id=\"$name\" value=\"$value\""
