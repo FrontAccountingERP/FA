@@ -182,8 +182,6 @@ $result = db_query($sql,"No orders were returned");
 //-----------------------------------------------------------------------------------
 if ($result)
 {
-	print_hidden_script(30);
-
 	start_form();
 	/*show a table of the orders returned by the sql */
 	div_start('orders_tbl');
@@ -262,7 +260,7 @@ if ($result)
 
   		  	$modify_page = $path_to_root . "/sales/sales_order_entry.php?" . SID . "ModifyOrderNumber=" . $myrow["order_no"];
   		  	label_cell("<a href='$modify_page'>" . _("Edit") . "</a>");
-  		  	label_cell(print_document_link($myrow['order_no'], _("Print")));
+  		  	label_cell(print_document_link($myrow['order_no'], _("Print"), true, 30));
 		}
 		end_row();;
 
