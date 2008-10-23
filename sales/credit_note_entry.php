@@ -59,11 +59,11 @@ if (isset($_GET['AddedID'])) {
 
 	display_notification_centered(sprintf(_("Credit Note # %d has been processed"),$credit_no));
 
-	display_note(get_customer_trans_view_str($trans_type, $credit_no, _("View this credit note")), 0, 1);
+	display_note(get_customer_trans_view_str($trans_type, $credit_no, _("&View this credit note")), 0, 1);
 
-	display_note(get_gl_view_str($trans_type, $credit_no, _("View the GL Journal Entries for this Credit Note")));
+	display_note(get_gl_view_str($trans_type, $credit_no, _("View the GL &Journal Entries for this Credit Note")));
 
-	hyperlink_params($_SERVER['PHP_SELF'], _("Enter Another Credit Note"), "NewCredit=yes");
+	hyperlink_params($_SERVER['PHP_SELF'], _("Enter Another &Credit Note"), "NewCredit=yes");
 
 	display_footer_exit();
 }
