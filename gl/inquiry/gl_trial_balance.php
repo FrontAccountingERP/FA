@@ -99,7 +99,7 @@ function display_trial_balance()
 
 	$k = 0;
 
-	$totprev = $totcurr = 0.0;
+	$totprevd = $totprevc = $totcurrd = $totcurrc = 0.0;
 	$accounts = get_gl_accounts();
 
 	while ($account = db_fetch($accounts))
@@ -118,8 +118,14 @@ function display_trial_balance()
 		$curr_balance = get_balance($account["account_code"], $_POST['TransFromDate'], $_POST['TransToDate']);
 		if (check_value("NoZero") && !$prev_balance && !$curr_balance)
 			continue;
-		$totprev += $prev_balance;
-		$totcurr += $curr_balance;
+		if ($prev_balance >= 0.0)
+			$totprevd += $prev_balance;
+		else
+			$totprevc += $prev_balance;
+		if ($curr_balance >= 0.0)
+			$totcurrd += $curr_balance;
+		else
+			$totcurrc += $curr_balance;
 		alt_table_row_color($k);
 
 		$url = "<a href='$path_to_root/gl/inquiry/gl_account_inquiry.php?" . SID . "TransFromDate=" . $_POST["TransFromDate"] . "&TransToDate=" . $_POST["TransToDate"] . "&account=" . $account["account_code"] . "'>" . $account["account_code"] . "</a>";
@@ -132,8 +138,19 @@ function display_trial_balance()
 		display_debit_or_credit_cells($prev_balance + $curr_balance);
 		end_row();
 	}
-	start_row("class='inquirybg'");
-	label_cell("<b>" . _("Ending Balance") ." - ".$_POST['TransToDate']. "</b>", "colspan=2");
+	start_row("class='inquirybg' style='font-weight:bold'");
+	label_cell(_("Total") ." - ".$_POST['TransToDate'], "colspan=2");
+	amount_cell($totprevd);
+	amount_cell(abs($totprevc));
+	amount_cell($totcurrd);
+	amount_cell(abs($totcurrc));
+	amount_cell($totprevd + $totcurrd);
+	amount_cell(abs($totprevc + $totcurrc));
+	end_row();
+	$totprev = $totprevd + $totprevc;
+	$totcurr = $totcurrd + $totcurrc;
+	start_row("class='inquirybg' style='font-weight:bold'");
+	label_cell(_("Ending Balance") ." - ".$_POST['TransToDate'], "colspan=2");
 	display_debit_or_credit_cells($totprev);
 	display_debit_or_credit_cells($totcurr);
 	display_debit_or_credit_cells($totprev + $totcurr);

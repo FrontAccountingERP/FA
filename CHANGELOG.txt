@@ -19,8 +19,15 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+24-Oct-2008 Joe Hunt
+! [0000077] Added a total before ending balance in trial balance (also in report)
+$ /gl/inquiry/gl_trial_balance.php
+  /reporting/rep708.php
+! Increased memory limit if reports in unicode (48M)
+  /reporting/includes/class.pdf.inc
+  
 ------------------------------- Release 2.0.4 --------------------------------------------
-23.Oct-2008 Joe Hunt
+23-Oct-2008 Joe Hunt
 ! Release 2.0.4
 $ config.php
 ! Changed design of Supplier Invoice/Credit. Everything is now done in one document form.

@@ -91,7 +91,7 @@ function print_trial_balance()
 	$rep->Font();
 	$rep->Info($params, $cols, $headers, $aligns, $cols2, $headers2, $aligns2);
 	$rep->Header();
-	$totprev = $totcurr = 0.0;
+	$totprevd = $totprevc = $totcurrd = $totcurrc = 0.0;
 
 	$accounts = get_gl_accounts();
 
@@ -114,19 +114,29 @@ function print_trial_balance()
 
 		if ($zero == 0 && !$prev_balance && !$curr_balance)
 			continue;
-		$totprev += $prev_balance;
-		$totcurr += $curr_balance;
 		$rep->TextCol(0, 1, $account['account_code']);
 		$rep->TextCol(1, 2,	$account['account_name']);
 
 		if ($prev_balance >= 0.0)
+		{
+			$totprevd += $prev_balance;
 			$rep->TextCol(2, 3,	number_format2(abs($prev_balance), $dec));
+		}	
 		else
+		{
+			$totprevc += $prev_balance;
 			$rep->TextCol(3, 4,	number_format2(abs($prev_balance), $dec));
+		}	
 		if ($curr_balance >= 0.0)
+		{
+			$totcurrd += $curr_balance;
 			$rep->TextCol(4, 5,	number_format2(abs($curr_balance), $dec));
+		}	
 		else
+		{
+			$totcurrc += $curr_balance;
 			$rep->TextCol(5, 6,	number_format2(abs($curr_balance), $dec));
+		}	
 		if ($curr_balance + $prev_balance >= 0.0)
 			$rep->TextCol(6, 7,	number_format2(abs($curr_balance + $prev_balance), $dec));
 		else
@@ -143,7 +153,17 @@ function print_trial_balance()
 	$rep->Line($rep->row);
 	$rep->NewLine();
 	$rep->Font('bold');
+	$rep->TextCol(0, 2, _("Total"));
 
+	$rep->TextCol(2, 3,	number_format2(abs($totprevd), $dec));
+	$rep->TextCol(3, 4,	number_format2(abs($totprevc), $dec));
+	$rep->TextCol(4, 5,	number_format2(abs($totcurrd), $dec));
+	$rep->TextCol(5, 6,	number_format2(abs($totcurrc), $dec));
+	$rep->TextCol(6, 7,	number_format2(abs($totcurrd + $totprevd), $dec));
+	$rep->TextCol(7, 8,	number_format2(abs($totcurrc + $totprevc), $dec));
+	$rep->NewLine();
+	$totprev = $totprevd + $totprevc;
+	$totcurr = $totcurrd + $totcurrc;
 	$rep->TextCol(0, 2, _("Ending Balance"));
 
 	if ($totprev >= 0.0)
