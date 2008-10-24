@@ -269,18 +269,18 @@ if (isset($_POST['InvGRNAll']))
 
 
 //--------------------------------------------------------------------------------------------------
-$id = find_submit('Delete');
-if ($id != -1)
+$id3 = find_submit('Delete');
+if ($id3 != -1)
 {
-	$_SESSION['supp_trans']->remove_grn_from_trans($id);
+	$_SESSION['supp_trans']->remove_grn_from_trans($id3);
 	$Ajax->activate('grn_items');
 	$Ajax->activate('inv_tot');
 }
 
-$id = find_submit('Delete2');
-if ($id != -1)
+$id4 = find_submit('Delete2');
+if ($id4 != -1)
 {
-	$_SESSION['supp_trans']->remove_gl_codes_from_trans($id);
+	$_SESSION['supp_trans']->remove_gl_codes_from_trans($id4);
 	clear_fields();
 	$Ajax->activate('gl_items');
 	$Ajax->activate('inv_tot');
@@ -315,7 +315,6 @@ echo "</td></tr>";
 
 end_table(1); // outer table
 
-$id = find_submit('grn_item_id');
 if ($id != -1)
 {
 	$Ajax->activate('grn_items');

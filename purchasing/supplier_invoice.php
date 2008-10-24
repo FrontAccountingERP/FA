@@ -306,21 +306,51 @@ if (isset($_POST['InvGRNAll']))
 }	
 
 //--------------------------------------------------------------------------------------------------
-$id = find_submit('Delete');
-if ($id != -1)
+$id3 = find_submit('Delete');
+if ($id3 != -1)
 {
-	$_SESSION['supp_trans']->remove_grn_from_trans($id);
+	$_SESSION['supp_trans']->remove_grn_from_trans($id3);
 	$Ajax->activate('grn_items');
 	$Ajax->activate('inv_tot');
 }
 
-$id = find_submit('Delete2');
-if ($id != -1)
+$id4 = find_submit('Delete2');
+if ($id4 != -1)
 {
-	$_SESSION['supp_trans']->remove_gl_codes_from_trans($id);
+	$_SESSION['supp_trans']->remove_gl_codes_from_trans($id4);
 	clear_fields();
 	$Ajax->activate('gl_items');
 	$Ajax->activate('inv_tot');
+}
+
+$id2 = find_submit('void_item_id');
+
+if ($_SESSION["wa_current_user"]->access == 2)
+{
+	if ($id2 != -1) // Added section 2008-10-18 Joe Hunt for voiding delivery lines
+	{
+		begin_transaction();
+		
+		$myrow = get_grn_item_detail($id2);
+
+		$grn = get_grn_batch($myrow['grn_batch_id']);
+
+	    $sql = "UPDATE ".TB_PREF."purch_order_details
+			SET quantity_received = qty_invoiced, quantity_ordered = qty_invoiced WHERE po_detail_item = ".$myrow["po_detail_item"];
+	    db_query($sql, "The quantity invoiced of the purchase order line could not be updated");
+
+	    $sql = "UPDATE ".TB_PREF."grn_items
+	    	SET qty_recd = quantity_inv WHERE id = ".$myrow["id"];
+		db_query($sql, "The quantity invoiced off the items received record could not be updated");
+	
+		update_average_material_cost($grn["supplier_id"], $myrow["item_code"],
+			$myrow["unit_price"], -$myrow["QtyOstdg"], Today());
+
+	   	add_stock_move(25, $myrow["item_code"], $myrow['grn_batch_id'], $grn['loc_code'], sql2date($grn["delivery_date"]), "",
+	   		-$myrow["QtyOstdg"], $myrow['std_cost_unit'], $grn["supplier_id"], 1, $myrow['unit_price']);
+	   		
+	   	commit_transaction();
+	}   		
 }
 
 start_form(false, true);
@@ -354,8 +384,8 @@ echo "</td></tr>";
 end_table(); // outer table
 
 //-----------------------------------------------------------------------------------------
-$id = find_submit('grn_item_id');
-$id2 = find_submit('void_item_id');
+
+
 if ($id != -1 || $id2 != -1)
 {
 	$Ajax->activate('grn_items');
@@ -364,34 +394,6 @@ if ($id != -1 || $id2 != -1)
 
 if (get_post('AddGLCodeToTrans'))
 	$Ajax->activate('inv_tot');
-
-if ($_SESSION["wa_current_user"]->access == 2)
-{
-	if ($id2 != -1) // Added section 2008-10-18 Joe Hunt for voiding delivery lines
-	{
-		begin_transaction();
-		
-		$myrow = get_grn_item_detail($id2);
-
-		$grn = get_grn_batch($myrow['grn_batch_id']);
-
-	    $sql = "UPDATE ".TB_PREF."purch_order_details
-			SET quantity_received = qty_invoiced, quantity_ordered = qty_invoiced WHERE po_detail_item = ".$myrow["po_detail_item"];
-	    db_query($sql, "The quantity invoiced of the purchase order line could not be updated");
-
-	    $sql = "UPDATE ".TB_PREF."grn_items
-	    	SET qty_recd = quantity_inv WHERE id = ".$myrow["id"];
-		db_query($sql, "The quantity invoiced off the items received record could not be updated");
-	
-		update_average_material_cost($grn["supplier_id"], $myrow["item_code"],
-			$myrow["unit_price"], -$myrow["QtyOstdg"], Today());
-
-	   	add_stock_move(25, $myrow["item_code"], $myrow['grn_batch_id'], $grn['loc_code'], sql2date($grn["delivery_date"]), "",
-	   		-$myrow["QtyOstdg"], $myrow['std_cost_unit'], $grn["supplier_id"], 1, $myrow['unit_price']);
-	   		
-	   	commit_transaction();
-	}   		
-}
 
 echo "<br>";
 submit_center('PostInvoice', _("Enter Invoice"), true, '', true);

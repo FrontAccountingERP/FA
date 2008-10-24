@@ -141,7 +141,7 @@ function invoice_totals(&$supp_trans)
     	label_row(_("Invoice Total:"), $display_total, "align=right style='font-weight:bold;'", "align=right style='font-weight:bold;'");
     else
 		label_row(_("Credit Note Total"),
-			$display_total, "align=right style='font-weight:bold;color:red;'", "nowrap align=right style='font-weight:bold;color:red;'");
+			$display_total, "align=right style='font-weight:bold;color:red;'", "nowrap align=right style='font-weight:bold;'");
 
     end_table();
 	br(1);
@@ -464,8 +464,7 @@ function display_grn_items(&$supp_trans, $mode=0)
 
 			if ($mode == 1)
 			{
-				edit_button_cell("Delete" . $entered_grn->id, _("Delete"),
-					  _('Remove item from document'));
+				edit_button_cell("Delete" . $entered_grn->id, _("Edit"), _('Edit document line'));
 				if ($supp_trans->is_invoice && $_SESSION["wa_current_user"]->access == 2)	  
 					label_cell("");
 			}	
