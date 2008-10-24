@@ -59,15 +59,15 @@ if (isset($_GET['AddedID']))
 		display_notification_centered(_("Purchase Order has been entered"));
 	else
 		display_notification_centered(_("Purchase Order has been updated") . " #$order_no");
-	display_note(get_trans_view_str($trans_type, $order_no, _("View this order")));
+	display_note(get_trans_view_str($trans_type, $order_no, _("&View this order")));
 	echo '<br>';
-	display_note(print_document_link($order_no, _("Print This Order"), true, $trans_type));
+	display_note(print_document_link($order_no, _("&Print This Order"), true, $trans_type));
 
-	hyperlink_params($path_to_root . "/purchasing/po_receive_items.php", _("Receive Items on this Purchase Order"), "PONumber=$order_no");
+	hyperlink_params($path_to_root . "/purchasing/po_receive_items.php", _("&Receive Items on this Purchase Order"), "PONumber=$order_no");
 
-	hyperlink_params($_SERVER['PHP_SELF'], _("Enter Another Purchase Order"), "NewOrder=yes");
+	hyperlink_params($_SERVER['PHP_SELF'], _("Enter &Another Purchase Order"), "NewOrder=yes");
 	
-	hyperlink_no_params($path_to_root."/purchasing/inquiry/po_search.php", _("Select An Outstanding Purchase Order"));
+	hyperlink_no_params($path_to_root."/purchasing/inquiry/po_search.php", _("Select An &Outstanding Purchase Order"));
 	
 	display_footer_exit();	
 }

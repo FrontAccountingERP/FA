@@ -42,11 +42,11 @@ if (isset($_GET['AddedID'])) {
 
 	display_notification_centered(_("Credit Note has been processed"));
 
-	display_note(get_customer_trans_view_str($trans_type, $credit_no, _("View This Credit Note")), 0, 0);
+	display_note(get_customer_trans_view_str($trans_type, $credit_no, _("&View This Credit Note")), 0, 0);
 
-	display_note(print_document_link($credit_no, _("Print This Credit Note"), true, 11),1);
+	display_note(print_document_link($credit_no, _("&Print This Credit Note"), true, 11),1);
 
- 	display_note(get_gl_view_str($trans_type, $credit_no, _("View the GL Journal Entries for this Credit Note")),1);
+ 	display_note(get_gl_view_str($trans_type, $credit_no, _("View the GL &Journal Entries for this Credit Note")),1);
 
 	display_footer_exit();
 
@@ -56,11 +56,11 @@ if (isset($_GET['AddedID'])) {
 
 	display_notification_centered(_("Credit Note has been updated"));
 
-	display_note(get_customer_trans_view_str($trans_type, $credit_no, _("View This Credit Note")), 0, 0);
+	display_note(get_customer_trans_view_str($trans_type, $credit_no, _("&View This Credit Note")), 0, 0);
 
-	display_note(print_document_link($credit_no, _("Print This Credit Note"), true, 11),1);
+	display_note(print_document_link($credit_no, _("&Print This Credit Note"), true, 11),1);
 
- 	display_note(get_gl_view_str($trans_type, $credit_no, _("View the GL Journal Entries for this Credit Note")),1);
+ 	display_note(get_gl_view_str($trans_type, $credit_no, _("View the GL &Journal Entries for this Credit Note")),1);
 
 	display_footer_exit();
 }

@@ -37,9 +37,9 @@ if (isset($_GET['AddedID']))
 
    	display_notification_centered( _("Journal entry has been entered") . " #$trans_no");
 
-    display_note(get_gl_view_str($trans_type, $trans_no, _("View this Journal Entry")));
+    display_note(get_gl_view_str($trans_type, $trans_no, _("&View this Journal Entry")));
 
-   	hyperlink_no_params($_SERVER['PHP_SELF'], _("Enter Another Journal Entry"));
+   	hyperlink_no_params($_SERVER['PHP_SELF'], _("Enter &Another Journal Entry"));
 
 	display_footer_exit();
 }

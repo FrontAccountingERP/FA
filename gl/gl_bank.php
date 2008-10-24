@@ -74,11 +74,11 @@ if (isset($_GET['AddedID']))
 
    	display_notification_centered(_("Payment has been entered"));
 
-	display_note(get_gl_view_str($trans_type, $trans_no, _("View the GL Postings for this Payment")));
+	display_note(get_gl_view_str($trans_type, $trans_no, _("&View the GL Postings for this Payment")));
 
-	hyperlink_params($_SERVER['PHP_SELF'], _("Enter Another Payment"), "NewPayment=yes");
+	hyperlink_params($_SERVER['PHP_SELF'], _("Enter Another &Payment"), "NewPayment=yes");
 
-	hyperlink_params($_SERVER['PHP_SELF'], _("Enter A Deposit"), "NewDeposit=yes");
+	hyperlink_params($_SERVER['PHP_SELF'], _("Enter A &Deposit"), "NewDeposit=yes");
 
 	display_footer_exit();
 }

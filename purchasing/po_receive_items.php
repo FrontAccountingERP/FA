@@ -23,13 +23,13 @@ if (isset($_GET['AddedID']))
 
 	display_notification_centered(_("Purchase Order Delivery has been processed"));
 
-	display_note(get_trans_view_str($trans_type, $grn, _("View this Delivery")));
+	display_note(get_trans_view_str($trans_type, $grn, _("&View this Delivery")));
 
 	//echo "<BR>";
-	//echo get_gl_view_str(25, $grn, _("View the GL Journal Entries for this Delivery"));
+	//echo get_gl_view_str(25, $grn, _("View the GL &Journal Entries for this Delivery"));
 
 //	echo "<br>";
-	hyperlink_no_params("$path_to_root/purchasing/inquiry/po_search.php", _("Select a different purchase order for receiving items against"));
+	hyperlink_no_params("$path_to_root/purchasing/inquiry/po_search.php", _("Select a different &purchase order for receiving items against"));
 
 	display_footer_exit();
 }

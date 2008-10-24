@@ -44,11 +44,11 @@ if (isset($_GET['AddedID'])) {
 
 	display_notification_centered(_("The customer payment has been successfully entered."));
 
-	display_note(get_gl_view_str(12, $payment_no, _("View the GL Journal Entries for this Customer Payment")));
+	display_note(get_gl_view_str(12, $payment_no, _("&View the GL Journal Entries for this Customer Payment")));
 
-	hyperlink_params($path_to_root . "/sales/allocations/customer_allocate.php", _("Allocate this Customer Payment"), "trans_no=$payment_no&trans_type=12");
+	hyperlink_params($path_to_root . "/sales/allocations/customer_allocate.php", _("&Allocate this Customer Payment"), "trans_no=$payment_no&trans_type=12");
 
-	hyperlink_no_params($path_to_root . "/sales/customer_payments.php", _("Enter Another Customer Payment"));
+	hyperlink_no_params($path_to_root . "/sales/customer_payments.php", _("Enter Another &Customer Payment"));
 	br(1);
 	end_page();
 	exit;

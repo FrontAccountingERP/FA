@@ -69,14 +69,14 @@ if (isset($_GET['AddedID'])) {
 
 	display_notification_centered(sprintf( _("Order # %d has been entered."),$order_no));
 
-	display_note(get_trans_view_str(30, $order_no, _("View This Order")));
+	display_note(get_trans_view_str(30, $order_no, _("&View This Order")));
 	echo '<br>';
-	display_note(print_document_link($order_no, _("Print This Order"), true, 30));
+	display_note(print_document_link($order_no, _("&Print This Order"), true, 30));
 
 	hyperlink_params($path_to_root . "/sales/customer_delivery.php",
-		_("Make Delivery Against This Order"), "OrderNumber=$order_no");
+		_("Make &Delivery Against This Order"), "OrderNumber=$order_no");
 
-	hyperlink_params($_SERVER['PHP_SELF'], _("Enter a New Order"), "NewOrder=0");
+	hyperlink_params($_SERVER['PHP_SELF'], _("Enter a &New Order"), "NewOrder=0");
 
 	display_footer_exit();
 
@@ -85,15 +85,15 @@ if (isset($_GET['AddedID'])) {
 
 	display_notification_centered(sprintf( _("Order # %d has been updated."),$order_no));
 
-	display_note(get_trans_view_str(30, $order_no, _("View This Order")));
+	display_note(get_trans_view_str(30, $order_no, _("&View This Order")));
 	echo '<br>';
-	display_note(print_document_link($order_no, _("Print This Order"), true, 30));
+	display_note(print_document_link($order_no, _("&Print This Order"), true, 30));
 
 	hyperlink_params($path_to_root . "/sales/customer_delivery.php",
-		_("Confirm Order Quantities and Make Delivery"), "OrderNumber=$order_no");
+		_("Confirm Order Quantities and Make &Delivery"), "OrderNumber=$order_no");
 
 	hyperlink_params($path_to_root . "/sales/inquiry/sales_orders_view.php",
-		_("Select A Different Order"), "OutstandingOnly=1");
+		_("Select A Different &Order"), "OutstandingOnly=1");
 
 	display_footer_exit();
 
@@ -102,18 +102,18 @@ if (isset($_GET['AddedID'])) {
 
 	display_notification_centered(sprintf(_("Delivery # %d has been entered."),$delivery));
 
-	display_note(get_trans_view_str(13, $delivery, _("View This Delivery")));
+	display_note(get_trans_view_str(13, $delivery, _("&View This Delivery")));
 	echo '<br>';
-	display_note(print_document_link($delivery, _("Print Delivery Note"), true, 13));
+	display_note(print_document_link($delivery, _("&Print Delivery Note"), true, 13));
 
 	hyperlink_params($path_to_root . "/sales/customer_invoice.php",
-	_("Make Invoice Against This Delivery"), "DeliveryNumber=$delivery");
+	_("Make &Invoice Against This Delivery"), "DeliveryNumber=$delivery");
 
 	if ((isset($_GET['Type']) && $_GET['Type'] == 1))
 	hyperlink_params("inquiry/sales_orders_view.php",
-		_("Enter a New Template Delivery"), "DeliveryTemplates=Yes");
+		_("Enter a New Template &Delivery"), "DeliveryTemplates=Yes");
 	else
-	hyperlink_params($_SERVER['PHP_SELF'], _("Enter a New Delivery"), "NewDelivery=0");
+	hyperlink_params($_SERVER['PHP_SELF'], _("Enter a &New Delivery"), "NewDelivery=0");
 
 	display_footer_exit();
 
@@ -122,15 +122,15 @@ if (isset($_GET['AddedID'])) {
 
 	display_notification_centered(sprintf(_("Invoice # %d has been entered."),$invoice));
 
-	display_note(get_trans_view_str(10, $invoice, _("View This Invoice")));
+	display_note(get_trans_view_str(10, $invoice, _("&View This Invoice")));
 	echo '<br>';
-	display_note(print_document_link($invoice, _("Print Sales Invoice"), true, 10));
+	display_note(print_document_link($invoice, _("&Print Sales Invoice"), true, 10));
 
 	if ((isset($_GET['Type']) && $_GET['Type'] == 1))
 	hyperlink_params("inquiry/sales_orders_view.php",
-		_("Enter a New Template Invoice"), "InvoiceTemplates=Yes");
+		_("Enter a &New Template Invoice"), "InvoiceTemplates=Yes");
 	else
-	hyperlink_params($_SERVER['PHP_SELF'], _("Enter a New Direct Invoice"), "NewInvoice=0");
+	hyperlink_params($_SERVER['PHP_SELF'], _("Enter a &New Direct Invoice"), "NewInvoice=0");
 
 	display_footer_exit();
 }

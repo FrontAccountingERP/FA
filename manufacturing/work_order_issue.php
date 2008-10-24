@@ -25,7 +25,7 @@ if (isset($_GET['AddedID']))
 {
    	echo "<center>" . _("The work order issue has been entered.");
    	echo "<br>";
-   	hyperlink_no_params("search_work_orders.php", _("Select another Work Order to Process"));
+   	hyperlink_no_params("search_work_orders.php", _("Select another &Work Order to Process"));
    	echo "<br><br>";
 	display_footer_exit();
 }

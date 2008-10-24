@@ -43,13 +43,13 @@ if (isset($_GET['AddedID'])) {
 
 	display_notification(_("Selected deliveries has been processed"), true);
 
-	display_note(get_customer_trans_view_str($trans_type, $invoice_no, _("View This Invoice")), 0, 1);
+	display_note(get_customer_trans_view_str($trans_type, $invoice_no, _("&View This Invoice")), 0, 1);
 
-	display_note(print_document_link($invoice_no, _("Print This Invoice"), true, 10));
+	display_note(print_document_link($invoice_no, _("&Print This Invoice"), true, 10));
 
-	display_note(get_gl_view_str($trans_type, $invoice_no, _("View the GL Journal Entries for this Invoice")),1);
+	display_note(get_gl_view_str($trans_type, $invoice_no, _("View the GL &Journal Entries for this Invoice")),1);
 
-	hyperlink_params("$path_to_root/sales/inquiry/sales_deliveries_view.php", _("Select Another Delivery For Invoicing"), "OutstandingOnly=1");
+	hyperlink_params("$path_to_root/sales/inquiry/sales_deliveries_view.php", _("Select Another &Delivery For Invoicing"), "OutstandingOnly=1");
 
 	display_footer_exit();
 
@@ -59,11 +59,11 @@ if (isset($_GET['AddedID'])) {
 
 	display_notification_centered(sprintf(_('Sales Invoice # %d has been updated.'),$invoice_no));
 
-	display_note(get_trans_view_str(10, $invoice_no, _("View This Invoice")));
+	display_note(get_trans_view_str(10, $invoice_no, _("&View This Invoice")));
 	echo '<br>';
-	display_note(print_document_link($invoice_no, _("Print This Invoice"), true, 10));
+	display_note(print_document_link($invoice_no, _("&Print This Invoice"), true, 10));
 
-	hyperlink_no_params($path_to_root . "/sales/inquiry/customer_inquiry.php", _("Select A Different Invoice to Modify"));
+	hyperlink_no_params($path_to_root . "/sales/inquiry/customer_inquiry.php", _("Select A Different &Invoice to Modify"));
 
 	display_footer_exit();
 

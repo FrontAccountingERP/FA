@@ -76,9 +76,9 @@ function safe_exit()
 {
 	global $path_to_root;
 
-	hyperlink_no_params("", _("Enter a new dimension"));
+	hyperlink_no_params("", _("Enter a &new dimension"));
 	echo "<br>";
-	hyperlink_no_params($path_to_root . "/dimensions/inquiry/search_dimensions.php", _("Select an existing dimension"));
+	hyperlink_no_params($path_to_root . "/dimensions/inquiry/search_dimensions.php", _("&Select an existing dimension"));
 
 	display_footer_exit();
 }

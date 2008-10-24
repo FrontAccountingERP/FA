@@ -32,9 +32,9 @@ if (isset($_GET['AddedID']))
 	$trans_type = systypes::location_transfer();
 
 	display_notification_centered(_("Inventory transfer has been processed"));
-	display_note(get_trans_view_str($trans_type, $trans_no, _("View this transfer")));
+	display_note(get_trans_view_str($trans_type, $trans_no, _("&View this transfer")));
 
-	hyperlink_no_params($_SERVER['PHP_SELF'], _("Enter Another Inventory Transfer"));
+	hyperlink_no_params($_SERVER['PHP_SELF'], _("Enter &Another Inventory Transfer"));
 
 	display_footer_exit();
 }
