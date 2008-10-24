@@ -19,6 +19,30 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+24-Oct-2008 Janusz Dobrowolski
+! Added hotkeys to final menu options.
+$ /dimensions/dimension_entry.php
+  /gl/bank_transfer.php
+  /gl/gl_bank.php
+  /gl/gl_journal.php
+  /inventory/adjustments.php
+  /inventory/transfers.php
+  /manufacturing/work_order_add_finished.php
+  /manufacturing/work_order_issue.php
+  /manufacturing/work_order_release.php
+  /purchasing/po_entry_items.php
+  /purchasing/po_receive_items.php
+  /purchasing/supplier_payment.php
+  /sales/credit_note_entry.php
+  /sales/customer_credit_invoice.php
+  /sales/customer_invoice.php
+  /sales/customer_payments.php
+  /sales/sales_order_entry.php
+# Fixed TCPDF errors display.
+$ /reporting/includes/tcpdf.php
+# Fixed page position after message display.
+$  /js/utils.js
+
 23-Oct-2008 Janusz Dobrowolski
 + Improved report module performance, also usable without javascript.
 $ /reporting/reports_main.php
