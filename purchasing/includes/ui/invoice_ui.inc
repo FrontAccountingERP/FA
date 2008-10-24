@@ -400,7 +400,7 @@ function display_grn_items(&$supp_trans, $mode=0)
 	echo "<tr><td align=center><span class='headingtext'>$heading</span></td>";
 	if ($mode == 1)
 	{
-		submit_cells('InvGRNAll', _("Add All Items"), "align=right");
+		submit_cells('InvGRNAll', _("Add All Items"), "align=right",false,true);
 		if ($heading2 != "")
 		{
 			echo "</tr><td>";
