@@ -23,8 +23,12 @@ $ -> Affected files
 ! [0000077] Added a total before ending balance in trial balance (also in report)
 $ /gl/inquiry/gl_trial_balance.php
   /reporting/rep708.php
-! Increased memory limit if reports in unicode (48M)
+! Increased memory limit if reports in unicode (48M) as suggested in forum.
   /reporting/includes/class.pdf.inc
+! Improved layout of Supplier Invoice/Credit. All Items can now be added in one sweep.
+$ /purchasing/supplier_invoice.php
+  /purchasing/supplier_credit.php
+  /purchasing/includes/ui/invoice_ui.inc
   
 ------------------------------- Release 2.0.4 --------------------------------------------
 23-Oct-2008 Joe Hunt

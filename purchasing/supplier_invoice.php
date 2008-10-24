@@ -82,7 +82,7 @@ function clear_fields()
 	unset($_POST['amount']);
 	unset($_POST['memo_']);
 	unset($_POST['AddGLCodeToTrans']);
-	$Ajax->activate('gl_ctrls');
+	$Ajax->activate('gl_items');
 	set_focus('gl_code');
 }
 //------------------------------------------------------------------------------------------------
@@ -263,12 +263,11 @@ function check_item_data($n)
 	return true;
 }
 
-$id = find_submit('grn_item_id');
-if ($id != -1)
+function commit_item_data($n)
 {
-	if (check_item_data($id))
+	if (check_item_data($n))
 	{
-    	if (input_num('this_quantity_inv'.$id) >= ($_POST['qty_recd'.$id] - $_POST['prev_quantity_inv'.$id]))
+    	if (input_num('this_quantity_inv'.$n) >= ($_POST['qty_recd'.$n] - $_POST['prev_quantity_inv'.$n]))
     	{
     		$complete = true;
     	}
@@ -277,13 +276,34 @@ if ($id != -1)
     		$complete = false;
     	}
 
-		$_SESSION['supp_trans']->add_grn_to_trans($id, $_POST['po_detail_item'.$id],
-			$_POST['item_code'.$id], $_POST['item_description'.$id], $_POST['qty_recd'.$id],
-			$_POST['prev_quantity_inv'.$id], input_num('this_quantity_inv'.$id),
-			$_POST['order_price'.$id], input_num('ChgPrice'.$id), $complete,
-			$_POST['std_cost_unit'.$id], "");
+		$_SESSION['supp_trans']->add_grn_to_trans($n, $_POST['po_detail_item'.$n],
+			$_POST['item_code'.$n], $_POST['item_description'.$n], $_POST['qty_recd'.$n],
+			$_POST['prev_quantity_inv'.$n], input_num('this_quantity_inv'.$n),
+			$_POST['order_price'.$n], input_num('ChgPrice'.$n), $complete,
+			$_POST['std_cost_unit'.$n], "");
 	}
 }
+
+//-----------------------------------------------------------------------------------------
+
+$id = find_submit('grn_item_id');
+if ($id != -1)
+{
+	commit_item_data($id);
+}
+
+if (isset($_POST['InvGRNAll']))
+{
+   	foreach($_POST as $postkey=>$postval )
+    {
+		if (strpos($postkey, "qty_recd") === 0)
+		{
+			$id = substr($postkey, strlen("qty_recd"));
+			$id = (int)$id;
+			commit_item_data($id);
+		}
+    }
+}	
 
 //--------------------------------------------------------------------------------------------------
 $id = find_submit('Delete');
@@ -291,7 +311,6 @@ if ($id != -1)
 {
 	$_SESSION['supp_trans']->remove_grn_from_trans($id);
 	$Ajax->activate('grn_items');
-	$Ajax->activate('grn_table');
 	$Ajax->activate('inv_tot');
 }
 
@@ -339,7 +358,6 @@ $id = find_submit('grn_item_id');
 $id2 = find_submit('void_item_id');
 if ($id != -1 || $id2 != -1)
 {
-	$Ajax->activate('grn_table');
 	$Ajax->activate('grn_items');
 	$Ajax->activate('inv_tot');
 }
