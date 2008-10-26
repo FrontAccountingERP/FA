@@ -19,6 +19,27 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+27-Oct-2008 Joe Hunt
+! [0000078] Opened Exchange rate for editing (without storing) in sales/purchasing module payment
+# Fixed exchange rate display bugs in Supplier Payment (earlier dates).
+$ /gl/includes/db/gl_db.inc
+  /includes/banking.inc
+  /includes/ui/ui_view.inc
+  /purchasing/supplier_payment.php
+  /purchasing/includes/purchasing_db.inc
+  /purchasing/includes/db/supp_payment_db.inc
+  /purchasing/includes/db/supp_trans_db.inc
+  /sales/customer_payments.php
+  /sales/includes/sales_db.inc
+  /sales/includes/db/cust_trans_db.inc
+  /sales/includes/db/payment_db.inc
+# [0000078] Fixed some report with wrong exchange rates.
+$ /reporting/rep101.php
+  /reporting/rep106.php
+  /reporting/rep201.php
+  /reporting/rep203.php
+  /reporting/rep209.php
+
 24-Oct-2008 Joe Hunt
 ! [0000077] Added a total before ending balance in trial balance (also in report)
 $ /gl/inquiry/gl_trial_balance.php
