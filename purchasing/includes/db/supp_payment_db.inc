@@ -1,41 +1,50 @@
 <?php
 
 function add_supp_payment($supplier_id, $date_, $payment_type, $bank_account,
-	$amount, $discount, $ref, $memo_)
+	$amount, $discount, $ref, $memo_, $rate=0)
 {
 	begin_transaction();
 
    	$supplier_currency = get_supplier_currency($supplier_id);
     $bank_account_currency = get_bank_account_currency($bank_account);
 
-	$supp_amount = exchange_from_to($amount, $bank_account_currency, $supplier_currency, $date_);
-	$supp_discount = exchange_from_to($discount, $bank_account_currency, $supplier_currency, $date_);
+	if ($rate == 0)
+	{
+		$supp_amount = exchange_from_to($amount, $bank_account_currency, $supplier_currency, $date_);
+		$supp_discount = exchange_from_to($discount, $bank_account_currency, $supplier_currency, $date_);
+	}
+	else
+	{
+		$supp_amount = $amount / $rate;
+		$supp_discount = $discount / $rate;
+	}
+	
 
 	// it's a supplier payment
 	$trans_type = 22;
 
 	/* Create a supp_trans entry for the supplier payment */
 	$payment_id = add_supp_trans($trans_type, $supplier_id, $date_, $date_,
-		$ref, "", -$supp_amount, 0, -$supp_discount);
+		$ref, "", -$supp_amount, 0, -$supp_discount, "", $rate);
 
 	// Now debit creditors account with payment + discount
 
     $supplier_accounts = get_supplier_accounts($supplier_id);
 
 	add_gl_trans_supplier($trans_type, $payment_id, $date_, $supplier_accounts["payable_account"], 0, 0,
-		$supp_amount + $supp_discount, $supplier_id);
+		$supp_amount + $supp_discount, $supplier_id, "", $rate);
 
 	// Now credit discount received account with discounts
 	if ($supp_discount != 0)
 	{
 		add_gl_trans_supplier($trans_type, $payment_id, $date_, $supplier_accounts["payment_discount_account"], 0, 0,
-			-$supp_discount, $supplier_id);
+			-$supp_discount, $supplier_id, "", $rate);
 	}
 
 	if ($supp_amount != 0)
 	{
 		add_gl_trans_supplier($trans_type, $payment_id, $date_, $bank_account, 0, 0,
-			-$supp_amount, $supplier_id);
+			-$supp_amount, $supplier_id, "", $rate);
 	}
 
    /*now enter the bank_trans entry */

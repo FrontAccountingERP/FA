@@ -118,7 +118,7 @@ function print_customer_balances()
 				$rep->TextCol(3, 4,	sql2date($trans['due_date']));
 			$item[0] = $item[1] = 0.0;
 			if ($convert)
-				$rate = get_exchange_rate_from_home_currency($myrow['curr_code'], $date);
+				$rate = $trans['rate'];
 			else
 				$rate = 1.0;
 			if ($trans['type'] == 11 || $trans['type'] == 12 || $trans['type'] == 2)

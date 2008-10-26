@@ -86,6 +86,18 @@ function can_process()
 		return false;
 	}
 
+	if (isset($_POST['_ex_rate']) && !check_num('_ex_rate', 0.000001))
+	{
+		display_error(_("The exchange rate must be numeric and greater than zero."));
+		set_focus('_ex_rate');
+		return false;
+	}
+
+	if ($_POST['discount'] == "") 
+	{
+		$_POST['discount'] = 0;
+	}
+
 	if (!check_num('discount')) {
 		display_error(_("The entered discount is not a valid number."));
 		set_focus('discount');
@@ -120,9 +132,18 @@ if (isset($_POST['_DateBanked_changed'])) {
 //----------------------------------------------------------------------------------------------
 
 if (isset($_POST['AddPaymentItem'])) {
+	
+	$cust_currency = get_customer_currency($_POST['customer_id']);
+	$bank_currency = get_bank_account_currency($_POST['bank_account']);
+	$comp_currency = get_company_currency();
+	if ($comp_currency != $bank_currency && $bank_currency != $cust_currency)
+		$rate = 0;
+	else
+		$rate = input_num('_ex_rate');
+
 	$payment_no = write_customer_payment(0, $_POST['customer_id'], $_POST['BranchID'],
 		$_POST['bank_account'], $_POST['DateBanked'], $_POST['ReceiptType'], $_POST['ref'],
-		input_num('amount'), input_num('discount'), $_POST['memo_']);
+		input_num('amount'), input_num('discount'), $_POST['memo_'], $rate);
 
 	meta_forward($_SERVER['PHP_SELF'], "AddedID=$payment_no");
 }
@@ -198,7 +219,7 @@ function display_item_form()
 		$bank_currency = get_bank_account_currency($_POST['bank_account']);
 
 		if ($cust_currency != $bank_currency) {
-			exchange_rate_display($cust_currency, $bank_currency, $_POST['DateBanked']);
+			exchange_rate_display($bank_currency, $cust_currency, $_POST['DateBanked'], true);
 		}
 
 		bank_trans_types_list_row(_("Type:"), 'ReceiptType', null);

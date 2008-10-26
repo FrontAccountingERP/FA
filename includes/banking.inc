@@ -147,6 +147,7 @@ function exchange_variation($pyt_type, $pyt_no, $type, $trans_no, $pyt_date, $am
 	if ($person_type == payment_person_types::customer())
 	{
 		$trans = get_customer_trans($trans_no, $type);
+		$pyt_trans = get_customer_trans($pyt_no, $pyt_type);
 		$ar_ap_act = $trans['receivables_account'];
 		$person_id = $trans['debtor_no'];
 		$curr = $trans['curr_code'];
@@ -154,6 +155,7 @@ function exchange_variation($pyt_type, $pyt_no, $type, $trans_no, $pyt_date, $am
 	else
 	{
 		$trans = get_supp_trans($trans_no, $type);
+		$pyt_trans = get_supp_trans($pyt_no, $pyt_type);
 		$supp_accs = get_supplier_accounts($trans['supplier_id']);
 		$ar_ap_act = $supp_accs['payable_account'];
 		$person_id = $trans['supplier_id'];
@@ -161,9 +163,8 @@ function exchange_variation($pyt_type, $pyt_no, $type, $trans_no, $pyt_date, $am
 	}
 	if (is_company_currency($curr))
 		return;
-	$exc_var_act = get_company_pref('exchange_diff_act');
-	$inv_amt = to_home_currency($amount, $curr, sql2date($trans['tran_date']));
-	$pay_amt = to_home_currency($amount, $curr, $pyt_date);
+	$inv_amt = round($amount * $trans['rate'], user_price_dec()); 
+	$pay_amt = round($amount * $pyt_trans['rate'], user_price_dec());
 	if ($inv_amt != $pay_amt)
 	{
 		$diff = $inv_amt - $pay_amt;
@@ -171,6 +172,7 @@ function exchange_variation($pyt_type, $pyt_no, $type, $trans_no, $pyt_date, $am
 			$diff = -$diff;
 		if ($neg)
 			$diff = -$diff;
+		$exc_var_act = get_company_pref('exchange_diff_act');
 		$memo = systypes::name($type)." ".$trans_no;
 		add_gl_trans($pyt_type, $pyt_no, $pyt_date, $ar_ap_act, 0, 0, $memo, -$diff, null, $person_type, $person_id);
 		add_gl_trans($pyt_type, $pyt_no, $pyt_date, $exc_var_act, 0, 0, $memo, $diff, null, $person_type, $person_id);
