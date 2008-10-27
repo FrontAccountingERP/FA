@@ -35,7 +35,7 @@ function add_stock_move_customer($type, $stock_id, $trans_id, $location, $date_,
 // $amount is in CUSTOMER'S currency
 
 function add_gl_trans_customer($type, $type_no, $date_, $account, $dimension, $dimension2,
-	$amount, $customer_id, $err_msg="", $rate)
+	$amount, $customer_id, $err_msg="", $rate=0)
 {
 	if ($err_msg == "")
 		$err_msg = "The customer GL transaction could not be inserted";
