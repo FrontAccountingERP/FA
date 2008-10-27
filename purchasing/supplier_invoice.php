@@ -323,10 +323,19 @@ if ($id4 != -1)
 	$Ajax->activate('inv_tot');
 }
 
-$id2 = find_submit('void_item_id');
-
 if ($_SESSION["wa_current_user"]->access == 2)
 {
+	$id3 = find_submit('void_item_id');
+	if ($id3 != -1) 
+	{
+		$js = "if(confirm(\""
+		.sprintf(_('You are about to remove all yet non-invoiced items from delivery line #%d. This operation also irreversibly changes related order line. Do you want to continue ?'), $id3)
+		."\")) {
+			JsHttpRequest.request(\"void_confirm".$id3."\");
+		}";
+		$Ajax->addScript(true,$js);
+	}
+	$id2 = find_submit('void_confirm');
 	if ($id2 != -1) // Added section 2008-10-18 Joe Hunt for voiding delivery lines
 	{
 		begin_transaction();
@@ -350,6 +359,8 @@ if ($_SESSION["wa_current_user"]->access == 2)
 	   		-$myrow["QtyOstdg"], $myrow['std_cost_unit'], $grn["supplier_id"], 1, $myrow['unit_price']);
 	   		
 	   	commit_transaction();
+		display_notification(sprintf(_('All yet non-invoiced items on delivery line # %d has been removed.'), $id2));
+
 	}   		
 }
 
