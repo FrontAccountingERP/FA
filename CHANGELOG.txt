@@ -19,6 +19,12 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+28-Oct-2008 Joe Hunt
+# [000009] Delivery Note/Sales Invoice should not be editable after it has been voided.
+$ /admin/db/voiding_db.inc
+  /sales/inquiry/sales_deliveries_view.php
+  /sales/inquiry/customer_inquiry.php
+  
 27-Oct-2008 Joe Hunt
 ! [0000078] Opened Exchange rate for editing (without storing) in sales/purchasing module payment
 # Fixed exchange rate display bugs in Supplier Payment (earlier dates).

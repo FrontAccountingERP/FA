@@ -215,22 +215,28 @@ if (db_num_rows($result) == 0)
 		    // only allow crediting if it's not been totally allocated
 		if ($myrow["TotalAmount"] - $myrow["Allocated"] > 0)
 			$credit_me_str = "<a href='$path_to_root/sales/customer_credit_invoice.php?InvoiceNumber=" . $myrow["trans_no"] . "'>" . _("Credit This") . "</a>";
-		$edit_page= $path_to_root.'/sales/customer_invoice.php?ModifyInvoice='
+  		if (get_voided_entry(10, $myrow["trans_no"]) === false)
+			$edit_page= $path_to_root.'/sales/customer_invoice.php?ModifyInvoice='
 					. $myrow['trans_no'];
 		break;
 
 	 case 11:
-		if ($myrow['order_']==0) // free-hand credit note
-		    $edit_page= $path_to_root.'/sales/credit_note_entry.php?ModifyCredit='
+  		if (get_voided_entry(11, $myrow["trans_no"]) === false)
+		{	 
+			if ($myrow['order_']==0) // free-hand credit note
+			    $edit_page= $path_to_root.'/sales/credit_note_entry.php?ModifyCredit='
 					. $myrow['trans_no'];
-		else	// credit invoice
-		    $edit_page= $path_to_root.'/sales/customer_credit_invoice.php?ModifyCredit='
+			else	// credit invoice
+			    $edit_page= $path_to_root.'/sales/customer_credit_invoice.php?ModifyCredit='
 					. $myrow['trans_no'];
+		}			
 		break;
 
 	 case 13:
-   		$edit_page= $path_to_root.'/sales/customer_delivery.php?ModifyDelivery='
-					. $myrow['trans_no']; break;
+  		if (get_voided_entry(13, $myrow["trans_no"]) === false)
+   			$edit_page= $path_to_root.'/sales/customer_delivery.php?ModifyDelivery='
+					. $myrow['trans_no']; 
+		break;
 	}
 
 	$date = sql2date($myrow["tran_date"]);

@@ -259,7 +259,10 @@ if ($result)
 		{
     		$modify_page = $path_to_root . "/sales/customer_delivery.php?" . SID . "ModifyDelivery=" . $myrow["trans_no"];
     		$invoice_page = $path_to_root . "/sales/customer_invoice.php?" . SID . "DeliveryNumber=" .$myrow["trans_no"];
-    		label_cell("<a href='$modify_page'>" . _("Edit") . "</a>");
+    		if (get_voided_entry(13, $myrow["trans_no"]) === false)
+    			label_cell("<a href='$modify_page'>" . _("Edit") . "</a>");
+    		else
+    			label_cell("");
   		  	label_cell(print_document_link($myrow['trans_no'], _("Print")));
 
     		label_cell($not_closed ? "<a href='$invoice_page'>" . _("Invoice") . "</a>" : '');
