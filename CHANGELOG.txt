@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+29-Oct-2008 Joe Hunt
+# Voiding a supplier invoice/credit note with GL Postings creates a database error
+$ /purchasing/includes/db/invoice_db.inc
+
 28-Oct-2008 Joe Hunt
 # [000009] Delivery Note/Sales Invoice should not be editable after it has been voided.
 $ /admin/db/voiding_db.inc
