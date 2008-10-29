@@ -887,26 +887,26 @@ function tax_groups_list($name, $selected_id=null,
 	array(
 		'order' => 'id',
 		'spec_option' => $none_option,
-		'spec_id' => 0,
+		'spec_id' => reserved_words::get_all_numeric(),
 		'select_submit'=> $submit_on_change,
 		'async' => false,
 	) );
 }
 
-function tax_groups_list_cells($label, $name, $selected_id=null, $submit_on_change=false)
+function tax_groups_list_cells($label, $name, $selected_id=null, $none_option=false, $submit_on_change=false)
 {
 	if ($label != null)
 		echo "<td>$label</td>\n";
 	echo "<td>";
-	$str = tax_groups_list($name, $selected_id, false, $submit_on_change);
+	$str = tax_groups_list($name, $selected_id, $none_option, $submit_on_change);
 	echo "</td>\n";
 	return $str;
 }
 
-function tax_groups_list_row($label, $name, $selected_id=null, $submit_on_change=false)
+function tax_groups_list_row($label, $name, $selected_id=null, $none_option=false, $submit_on_change=false)
 {
 	echo "<tr>\n";
-	$str = tax_groups_list_cells($label, $name, $selected_id, false, $submit_on_change);
+	$str = tax_groups_list_cells($label, $name, $selected_id, $none_option, $submit_on_change);
 	echo "</tr>\n";
 	return $str;
 }
@@ -1505,6 +1505,33 @@ function payment_person_types_list_row($label, $name, $selected_id=null, $relate
 	echo "</tr>\n";
 	return $str;
 }
+
+//------------------------------------------------------------------------------------------------
+
+function quick_entries_list($name, $selected_id=null, $expense=true, $submit_on_change=false)
+{
+	$sql = "SELECT * FROM ".TB_PREF."quick_entries";
+	if ($expense)
+		$sql .= " WHERE deposit=0";
+	else
+		$sql .= " WHERE deposit=1";
+	combo_input($name, $selected_id, $sql, 'id', 'description',
+		array(
+			'spec_id' => '',
+			'order' => 'description',
+			'select_submit'=> $submit_on_change,
+			'async' => false
+		) );
+
+}
+
+function quick_entries_list_row($label, $name, $selected_id=null, $expense=true, $submit_on_change=false)
+{
+	echo "<tr><td>$label</td><td>\n";
+	quick_entries_list($name, $selected_id, $expense, $submit_on_change);
+	echo "</td></tr>\n";
+}
+
 
 //------------------------------------------------------------------------------------------------
 

@@ -67,6 +67,10 @@ function display_bank_header(&$order)
         		hidden('PersonDetailID');
         	}
     		break;
+		case payment_person_types::QuickEntry() :
+			quick_entries_list_row(_("Description:"), 'person_id', null, $payment);
+			amount_row(_("Total Amount"), 'totamount', null, null, "&nbsp;&nbsp;".submit('go', _("Go"), false, false, true));			
+			break;	
 		//case payment_person_types::Project() :
     	//	dimensions_list_row(_("Dimension:"), 'person_id', $_POST['person_id'], false, null, true);
     	//	break;

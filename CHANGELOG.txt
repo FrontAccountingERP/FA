@@ -19,6 +19,21 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+30-Oct-2008 Joe Hunt
+! Added Quick Entries in Bank Payments/Deposits (Banking and General Ledger).
+$ /applications/generalledger.php 
+  /includes/data_checks.inc
+  /includes/types.inc
+  /includes/ui/ui_lists.inc
+  /gl/gl_bank.php
+  /gl/includes/db/gl_db_bank_accounts.inc
+  /gl/includes/ui/gl_bank_ui.inc
+  /sales/manage/customer_branches.php
+! New table, 0_quick_entries
+$ /sql/alter2.1.sql
+! Changed GL Accounts form. The tax_code is now Tax Group instead of Tax Type.
+$ /gl/manage/gl_accounts.php
+
 24-Oct-2008 Janusz Dobrowolski
 ! Added hotkeys to final menu options.
 $ /dimensions/dimension_entry.php

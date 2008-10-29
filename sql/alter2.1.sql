@@ -1,3 +1,18 @@
+DROP TABLE IF EXISTS `0_quick_entries`;
+
+CREATE TABLE `0_quick_entries` (
+  `id` smallint(6) NOT NULL auto_increment,
+  `description` varchar(60) NOT NULL,
+  `account` varchar(11) NOT NULL,
+  `deposit` tinyint(1) NOT NULL default '0',
+  PRIMARY KEY  (`id`),
+  UNIQUE KEY `description` (`description`)
+) ENGINE=MyISAM AUTO_INCREMENT=1;
+
+INSERT INTO `0_quick_entries` VALUES ('1', 'Maintenance', '6600', '0');
+INSERT INTO `0_quick_entries` VALUES ('2', 'Phone', '6730', '0');
+INSERT INTO `0_quick_entries` VALUES ('3', 'Cash Sales', '3000', '1');
+
 
 ALTER TABLE `0_users` ADD `print_profile` VARCHAR(30) DEFAULT '' AFTER `show_hints` ;
 ALTER TABLE `0_users` ADD `rep_popup` TINYINT(1) DEFAULT '1' AFTER `print_profile` ;

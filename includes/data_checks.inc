@@ -420,6 +420,11 @@ function check_db_has_gl_account_groups($msg)
     }	
 }
 
+function db_has_quick_entries()
+{
+	return check_empty_result("SELECT COUNT(*) FROM ".TB_PREF."quick_entries");
+}
+
 function check_empty_result($sql)
 {
 	$result = db_query($sql, "could not do check empty query");	

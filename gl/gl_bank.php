@@ -262,6 +262,50 @@ if (isset($_POST['UpdateItem']))
 if (isset($_POST['CancelItemChanges']))
 	line_start_focus();
 
+if (isset($_POST['go']))
+{
+	if (!check_num('totamount', 0))
+	{
+		display_error( _("The amount entered is not a valid number or is less than zero."));
+		set_focus('totamount');
+	}
+	elseif (!get_post('person_id'))
+	{
+		if ($_SESSION['pay_items']->trans_type==systypes::bank_payment())	
+			display_error( _("No Quick Entries are defined for Payment."));
+		else	
+			display_error( _("No Quick Entries are defined for Deposit."));
+		set_focus('totamount');
+	}
+	else
+	{
+		$rate = 0;
+		$totamount = input_num('totamount');
+		$qe = get_quick_entry($_POST['person_id']);
+		$account = get_gl_account($qe['account']);
+		$tax_group = $account['tax_code'];
+		$items = get_tax_group_items($tax_group);
+		while ($item = db_fetch($items))
+			$rate += $item['rate'];
+		if ($rate != 0)
+			$totamount = $totamount * 100 / ($rate + 100);
+		$totamount = ($_SESSION['pay_items']->trans_type==systypes::bank_payment() ? 1:-1) * $totamount;
+		$_SESSION['pay_items']->clear_items();
+		$_SESSION['pay_items']->add_gl_item($qe['account'], 0, 0, $totamount, $qe['description']);
+		$items = get_tax_group_items($tax_group);
+		while ($item = db_fetch($items))
+		{
+			if ($item['rate'] != 0)
+			{
+				$amount = $totamount * $item['rate'] / 100;
+				$code = ($_SESSION['pay_items']->trans_type==systypes::bank_payment() ? $item['purchasing_gl_code'] : 
+					$item['sales_gl_code']);
+				$_SESSION['pay_items']->add_gl_item($code, 0, 0, $amount, $qe['description']);
+			}
+		}
+		line_start_focus();
+	}	
+}	
 
 //-----------------------------------------------------------------------------------------------
 

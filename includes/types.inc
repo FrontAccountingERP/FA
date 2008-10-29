@@ -144,6 +144,7 @@ $payment_person_types_array = array (
 							1=> array ('id' => 1, 'name' => _("Work Order")),
 							2=> array ('id' => 2, 'name' => _("Customer")),
 							3=> array ('id' => 3, 'name' => _("Supplier")),
+							4=> array ('id' => 4, 'name' => _("Quick Entry"))
 							);
 
 class payment_person_types 
@@ -175,12 +176,15 @@ class payment_person_types
     	return 3; 
     }
 
-    function dimension()  
+    function QuickEntry()  
     { 
     	return 4; 
     }
 
-    //function Project()  { return 4; }
+    function dimension()  
+    { 
+    	return 5; 
+    }
 
     function type_name($type)
     {
@@ -194,6 +198,9 @@ class payment_person_types
     	{
     		case payment_person_types::misc() :
     			return $person_id;
+    		case payment_person_types::QuickEntry() :
+    			$qe = get_quick_entry($person_id);
+    			return ($full?payment_person_types::type_name($type) . " ":"") . $qe["description"];
     		case payment_person_types::WorkOrder() :
     			$wo = get_work_order($person_id);
     			return ($full?payment_person_types::type_name($type) . " ":"") . $wo["wo_ref"];
@@ -201,8 +208,6 @@ class payment_person_types
     			return ($full?payment_person_types::type_name($type) . " ":"") . get_customer_name($person_id);
     		case payment_person_types::supplier() :
     			return ($full?payment_person_types::type_name($type) . " ":"") . get_supplier_name($person_id);
-    		//case payment_person_types::Project() :
-    		//	return ($full?payment_person_types::type_name($type) . " ":"") . get_dimension_string($person_id);
     		default :
     			//DisplayDBerror("Invalid type sent to person_name");
     			//return;
@@ -215,8 +220,8 @@ class payment_person_types
     	switch ($type)
     	{
     		case payment_person_types::misc() :
+    		case payment_person_types::QuickEntry() :
     		case payment_person_types::WorkOrder() :
-    		//case payment_person_types::Project() :
     			return get_company_currency();
 
     		case payment_person_types::customer() :
@@ -236,17 +241,17 @@ class payment_person_types
     	{
     		case payment_person_types::misc() :
     			return true;
-    		case payment_person_types::WorkOrder() : // 070305 changed to open workorders ES
+    		case payment_person_types::QuickEntry() :
+    			return db_has_quick_entries();
+    		case payment_person_types::WorkOrder() : // 070305 changed to open workorders JH
     			return db_has_open_workorders();
     		case payment_person_types::customer() :
     			return db_has_customers();
     		case payment_person_types::supplier() :
     			return db_has_suppliers();
-    		//case payment_person_types::Project() :
-    		//	return db_has_dimensions();
     		default :
     			display_db_error("Invalid type sent to has_items", "");
-    			return;
+    			return false;
     	}
     }
 }

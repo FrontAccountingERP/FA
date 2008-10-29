@@ -27,6 +27,7 @@
 			$this->add_module(_("Maintenance"));
 			$this->add_lapp_function(2, _("Bank &Accounts"),"gl/manage/bank_accounts.php?");
 			$this->add_lapp_function(2, _("Payment, Deposit and Transfer &Types"),"gl/manage/bank_trans_types.php?");
+			$this->add_lapp_function(2, _("Quick Entries"),"gl/manage/gl_quick_entries.php?");
 			$this->add_lapp_function(2, "","");
 			$this->add_lapp_function(2, _("&Currencies"),"gl/manage/currencies.php?");
 			$this->add_lapp_function(2, _("&Exchange Rates"),"gl/manage/exchange_rates.php?");

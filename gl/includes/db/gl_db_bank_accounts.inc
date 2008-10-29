@@ -48,4 +48,60 @@ function get_bank_account($account_code)
 
 //---------------------------------------------------------------------------------------------
 
+function add_quick_entry($description, $account, $deposit)
+{
+	$sql = "INSERT INTO ".TB_PREF."quick_entries (description, account, deposit) VALUES 
+		(".db_escape($description).", ".db_escape($account).", $deposit)";
+
+	db_query($sql, "could not insert quick entry for $description");
+}
+
+//---------------------------------------------------------------------------------------------
+
+function update_quick_entry($selected_id, $description, $account, $deposit)
+{
+	$sql = "UPDATE ".TB_PREF."quick_entries	SET description = ".db_escape($description).",
+		account=".db_escape($account).", deposit=$deposit 
+		WHERE id = $selected_id";
+
+	db_query($sql, "could not update quick entry for $selected_id");
+}
+
+//---------------------------------------------------------------------------------------------
+
+function delete_quick_entry($selected_id)
+{
+	$sql = "DELETE FROM ".TB_PREF."quick_entries WHERE id=$selected_id";
+
+	db_query($sql,"could not delete quick entry $selected_id");
+}
+
+//---------------------------------------------------------------------------------------------
+
+function get_quick_entries($type=false)
+{
+	$sql = "SELECT ".TB_PREF."quick_entries.*, ".TB_PREF."chart_master.account_name 
+		FROM ".TB_PREF."quick_entries, ".TB_PREF."chart_master WHERE
+		".TB_PREF."quick_entries.account = ".TB_PREF."chart_master.account_code";
+	if ($type == "deposit")
+		$sql .= " AND deposit=1";
+	elseif ($type == "payment")
+		$sql .= " AND deposit=0";
+
+	return db_query($sql, "could not retreive quick entries");
+}
+
+//---------------------------------------------------------------------------------------------
+
+function get_quick_entry($selected_id)
+{
+	$sql = "SELECT * FROM ".TB_PREF."quick_entries WHERE id=$selected_id";
+
+	$result = db_query($sql, "could not retreive quick entry for $selected_id");
+
+	return db_fetch($result);
+}
+
+//---------------------------------------------------------------------------------------------
+
 ?>

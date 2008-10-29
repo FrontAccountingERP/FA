@@ -300,7 +300,7 @@ locations_list_row(_("Default Inventory Location:"), 'default_location', null);
 
 shippers_list_row(_("Default Shipping Company:"), 'default_ship_via', null);
 
-tax_groups_list_row(_("Tax Group:"), 'tax_group_id', null, 31, 30);
+tax_groups_list_row(_("Tax Group:"), 'tax_group_id', null);
 
 yesno_list_row(_("Disable this Branch:"), 'disable_trans', null);
 
