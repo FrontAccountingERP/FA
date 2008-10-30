@@ -28,6 +28,7 @@ $ /applications/generalledger.php
   /gl/gl_bank.php
   /gl/includes/db/gl_db_bank_accounts.inc
   /gl/includes/ui/gl_bank_ui.inc
+  /gl/manage/gl_quick_entries.php
   /sales/manage/customer_branches.php
 ! New table, 0_quick_entries
 $ /sql/alter2.1.sql
