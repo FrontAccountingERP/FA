@@ -43,7 +43,7 @@ $voided = is_voided_display(systypes::cust_payment(), $trans_id, _("This custome
 
 if (!$voided)
 {
-	display_allocations_from(payment_person_types::customer(), $receipt['debtor_no'], systypes::cust_payment(), $trans_id, -$receipt['Total']);
+	display_allocations_from(payment_person_types::customer(), $receipt['debtor_no'], systypes::cust_payment(), $trans_id, $receipt['Total']);
 }
 
 end_page(true);
