@@ -5006,7 +5006,8 @@ if (!class_exists('TCPDF')) {
 		* @access protected
 		*/
 		function _putheader() {
-			$this->_out('%PDF-'.$this->PDFVersion);
+			$this->buffer = '%PDF-'.$this->PDFVersion."\n".$this->buffer;
+//			$this->_out('%PDF-'.$this->PDFVersion);
 		}
 
 		/**
