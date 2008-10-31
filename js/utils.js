@@ -91,7 +91,6 @@
 			window.scrollTo(0,0);
 			//document.getElementById('msgbox').scrollIntoView(true);
 	  // Restore focus if we've just lost focus because of DOM element refresh
-		  else
 		  	if(!newwin) { 
 		  		setFocus();
 			}
