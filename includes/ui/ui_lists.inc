@@ -1225,7 +1225,61 @@ function bank_accounts_list_row($label, $name, $selected_id=null, $submit_on_cha
 	echo "</tr>\n";
 	return $str;
 }
+//-----------------------------------------------------------------------------------------------
 
+function cash_accounts_list_row($label, $name, $selected_id=null, $submit_on_change=false)
+{
+	$sql = "SELECT ".TB_PREF."bank_accounts.account_code, bank_account_name, bank_curr_code
+		FROM ".TB_PREF."bank_accounts, ".TB_PREF."chart_master
+		WHERE ".TB_PREF."bank_accounts.account_code=".TB_PREF."chart_master.account_code"
+		. " AND ".TB_PREF."bank_accounts.account_type=3";
+
+	if ($label != null)
+		echo "<tr><td>$label</td>\n";
+	echo "<td>";
+	$str = combo_input($name, $selected_id, $sql, 'account_code', 'bank_account_name',
+	array(
+		'format' => '_format_add_curr',
+		'select_submit'=> $submit_on_change,
+		'async' => true
+	) );
+	echo "</td></tr>\n";
+	return $str;
+}
+//-----------------------------------------------------------------------------------------------
+
+function pos_list_row($label, $name, $selected_id=null, $spec_option=false, $submit_on_change=false)
+{
+	$sql = "SELECT id, pos_name FROM ".TB_PREF."sales_pos";
+
+	default_focus($name);
+	echo '<tr>';
+	if ($label != null)
+		echo "<td>$label</td>\n";
+	echo "<td>";
+
+	$str = combo_input($name, $selected_id, $sql, 'id', 'pos_name',
+	array(
+		'select_submit'=> $submit_on_change,
+		'async' => true,
+		'spec_option' =>$spec_option,
+		'spec_id' => -1,
+	) );
+	echo "</td></tr>\n";
+
+	return $str;	
+}
+//-----------------------------------------------------------------------------------------------
+
+function sale_payment_list_cells($label, $name, $selected_id=null, $submit_on_change=false)
+{
+	if ($label != null)
+		echo "<td>$label</td>\n";
+	echo "<td>";
+	$str = yesno_list($name, $selected_id, _('Cash'), _('Delayed'), $submit_on_change);
+	echo "</td>\n";
+	return $str;
+}
 //-----------------------------------------------------------------------------------------------
 
 function class_list($name, $selected_id=null, $submit_on_change=false)

@@ -143,19 +143,28 @@ function copy_to_cart()
 
 	if ($cart->trans_type!=30) {
 		$cart->reference = $_POST['ref'];
-	}
+	} 
 	$cart->Comments =  $_POST['Comments'];
 
 	$cart->document_date = $_POST['OrderDate'];
-	$cart->due_date = $_POST['delivery_date'];
-	$cart->cust_ref = $_POST['cust_ref'];
-	$cart->freight_cost = input_num('freight_cost');
-	$cart->deliver_to = $_POST['deliver_to'];
-	$cart->delivery_address = $_POST['delivery_address'];
-	$cart->phone = $_POST['phone'];
-	$cart->Location = $_POST['Location'];
-	$cart->ship_via = $_POST['ship_via'];
-
+	if ($cart->trans_type == 10)
+		$cart->cash = $_POST['cash']; 
+	if ($cart->cash) {
+		$cart->due_date = $cart->document_date;
+		$cart->phone = $cart->cust_ref = $cart->delivery_address = '';
+		$cart->freight_cost = 0;
+		$cart->ship_via = 1;
+		$cart->deliver_to = '';//$_POST['deliver_to'];
+	} else {
+		$cart->due_date = $_POST['delivery_date'];
+		$cart->cust_ref = $_POST['cust_ref'];
+		$cart->freight_cost = input_num('freight_cost');
+		$cart->deliver_to = $_POST['deliver_to'];
+		$cart->delivery_address = $_POST['delivery_address'];
+		$cart->phone = $_POST['phone'];
+		$cart->Location = $_POST['Location'];
+		$cart->ship_via = $_POST['ship_via'];
+	}
 	if (isset($_POST['email']))
 		$cart->email =$_POST['email'];
 	else
@@ -163,6 +172,7 @@ function copy_to_cart()
 	$cart->customer_id	= $_POST['customer_id'];
 	$cart->Branch = $_POST['branch_id'];
 	$cart->sales_type = $_POST['sales_type'];
+	// POS 
 }
 
 //-----------------------------------------------------------------------------
@@ -190,6 +200,9 @@ function copy_from_cart()
 
 	$_POST['branch_id'] = $cart->Branch;
 	$_POST['sales_type'] = $cart->sales_type;
+	// POS 
+	if ($cart->trans_type == 10)
+		$_POST['cash'] = $cart->cash;
 }
 //--------------------------------------------------------------------------------
 
@@ -217,35 +230,38 @@ function can_process() {
 		set_focus('AddItem');
 		return false;
 	}
+	if ($_SESSION['Items']->cash == 0) {
 	if (strlen($_POST['deliver_to']) <= 1) {
 		display_error(_("You must enter the person or company to whom delivery should be made to."));
 		set_focus('deliver_to');
 		return false;
 	}
-	if (strlen($_POST['delivery_address']) <= 1) {
-		display_error( _("You should enter the street address in the box provided. Orders cannot be accepted without a valid street address."));
-		set_focus('delivery_address');
-		return false;
-	}
 
-	if ($_POST['freight_cost'] == "")
-		$_POST['freight_cost'] = price_format(0);
+		if (strlen($_POST['delivery_address']) <= 1) {
+			display_error( _("You should enter the street address in the box provided. Orders cannot be accepted without a valid street address."));
+			set_focus('delivery_address');
+			return false;
+		}
 
-	if (!check_num('freight_cost',0)) {
-		display_error(_("The shipping cost entered is expected to be numeric."));
-		set_focus('freight_cost');
-		return false;
-	}
-	if (!is_date($_POST['delivery_date'])) {
-		display_error(_("The delivery date is invalid."));
-		set_focus('delivery_date');
-		return false;
-	}
-	//if (date1_greater_date2($_SESSION['Items']->document_date, $_POST['delivery_date'])) {
-	if (date1_greater_date2($_POST['OrderDate'], $_POST['delivery_date'])) {
-		display_error(_("The requested delivery date is before the date of the order."));
-		set_focus('delivery_date');
-		return false;
+		if ($_POST['freight_cost'] == "")
+			$_POST['freight_cost'] = price_format(0);
+
+		if (!check_num('freight_cost',0)) {
+			display_error(_("The shipping cost entered is expected to be numeric."));
+			set_focus('freight_cost');
+			return false;
+		}
+		if (!is_date($_POST['delivery_date'])) {
+			display_error(_("The delivery date is invalid."));
+			set_focus('delivery_date');
+			return false;
+		}
+		//if (date1_greater_date2($_SESSION['Items']->document_date, $_POST['delivery_date'])) {
+		if (date1_greater_date2($_POST['OrderDate'], $_POST['delivery_date'])) {
+			display_error(_("The requested delivery date is before the date of the order."));
+			set_focus('delivery_date');
+			return false;
+		}
 	}
 	if ($_SESSION['Items']->trans_type != 30 && !references::is_valid($_POST['ref'])) {
 		display_error(_("You must enter a reference."));
@@ -409,9 +425,16 @@ function create_cart($type, $trans_no)
 		$doc->trans_type = $type;
 		$doc->trans_no = 0;
 		$doc->document_date = Today(); // 2006-06-15. Added so Invoices and Deliveries get current day
-		if ($type == 10)
+		if ($type == 10) {
 			$doc->due_date = get_invoice_duedate($doc->customer_id, $doc->document_date);
-		else
+			$doc->pos = user_pos();
+			$pos = get_sales_point($doc->pos);
+			$doc->cash = $pos['cash_sale'];
+			if (!$pos['cash_sale'] || !$pos['credit_sale']) 
+				$doc->pos = -1; // mark not editable payment type
+			else
+				$doc->cash = date_diff($doc->due_date, Today(), 'd')<2;
+		} else
 			$doc->due_date = $doc->document_date;
 		$doc->reference = references::get_next($doc->trans_type);
 		$doc->Comments='';

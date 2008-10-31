@@ -148,8 +148,21 @@ function write_sales_invoice(&$invoice)
 
 	if ($trans_no == 0) {
 		references::save_last($invoice->reference, 10);
-	}
+		if ($invoice->cash) {
+			$amount = $items_total + $items_added_tax + $invoice->freight_cost 
+				+ $freight_added_tax;
 
+			// to use debtors.pmt_discount on cash sale:
+			// extend invoice entry page with final amount after discount 
+			// and change line below.
+			$discount = 0; // $invoice->cash_discount*$amount;
+			$pmtno = write_customer_payment(0, $invoice->customer_id, 
+				$invoice->Branch, $invoice->cash_account, $date_, 1,
+				references::get_next(12), $amount-$discount, $discount,
+				_('Cash invoice').' '.$invoice->trans_no);
+			add_cust_allocation($amount, 12, $pmtno, 10, $invoice_no);
+		}
+	}
 	commit_transaction();
 
 	return $invoice_no;

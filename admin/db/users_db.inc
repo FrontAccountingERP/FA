@@ -1,13 +1,14 @@
 <?php
 
 function add_user($user_id, $real_name, $password, $phone, $email, $full_access, 
-	$language, $profile, $rep_popup)
+	$language, $profile, $rep_popup, $pos)
 {
-	$sql = "INSERT INTO ".TB_PREF."users (user_id, real_name, password, phone, email, full_access, language, print_profile)
+	$sql = "INSERT INTO ".TB_PREF."users (user_id, real_name, password"
+		.", phone, email, full_access, language, pos, print_profile, rep_popup)
 		VALUES (".db_escape($user_id).", 
 		".db_escape($real_name).", ".db_escape($password) .",".db_escape($phone).",
 		 ".db_escape($email).", $full_access, ".db_escape($language).",
-		 ".db_escape($profile).", rep_popup=$rep_popup)";
+		 $pos,".db_escape($profile).",$rep_popup)";
 
 	db_query($sql, "could not add user for $user_id");
 }
@@ -25,7 +26,7 @@ function update_user_password($user_id, $password)
 //-----------------------------------------------------------------------------------------------
 
 function update_user($user_id, $real_name, $phone, $email, $full_access, 
-	$language, $profile, $rep_popup)
+	$language, $profile, $rep_popup, $pos)
 {
 	$sql = "UPDATE ".TB_PREF."users SET real_name=".db_escape($real_name).
 	", phone=".db_escape($phone).",
@@ -33,7 +34,8 @@ function update_user($user_id, $real_name, $phone, $email, $full_access,
 		full_access=$full_access,
 		language=".db_escape($language).",
 		print_profile=".db_escape($profile).",
-		rep_popup=$rep_popup
+		rep_popup=$rep_popup,
+		pos=$pos
 		WHERE user_id = ".db_escape($user_id);
 	db_query($sql, "could not update user for $user_id");
 }

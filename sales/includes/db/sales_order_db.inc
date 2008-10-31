@@ -60,7 +60,7 @@ function add_sales_order(&$order)
 			db_escape($order->Comments) .",'" . 
 			date2sql($order->document_date) . "', " .
 			db_escape($order->sales_type) . ", " .
-			$_POST['ship_via'] ."," . 
+			db_escape($order->ship_via)."," . 
 			db_escape($order->deliver_to) . "," .
 			db_escape($order->delivery_address) . ", " .
 			db_escape($order->phone) . ", " . 
@@ -454,7 +454,8 @@ function get_customer_to_order($customer_id) {
 		  .TB_PREF."sales_types.tax_included, "
 		  .TB_PREF."sales_types.factor, "
 		  .TB_PREF."debtors_master.curr_code, "
-		  .TB_PREF."debtors_master.discount
+		  .TB_PREF."debtors_master.discount,"
+		  .TB_PREF."debtors_master.pymt_discount
 		FROM ".TB_PREF."debtors_master, "
 		  .TB_PREF."credit_status, "
 		  .TB_PREF."sales_types

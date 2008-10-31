@@ -24,6 +24,7 @@
 			$this->add_module(_("Miscellaneous"));
 			$this->add_lapp_function(1, _("Pa&yment Terms"),"admin/payment_terms.php?");
 			$this->add_lapp_function(1, _("Shi&pping Company"),"admin/shipping_companies.php?");
+			$this->add_rapp_function(1, _("&Points of Sale"),"sales/manage/sales_points.php?");
 			$this->add_rapp_function(1, _("&Printers"),"admin/printers.php?");
 
 			$this->add_module(_("Maintanance"));

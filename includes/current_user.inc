@@ -11,6 +11,7 @@ class current_user
 	var $username;
 	var	$name;
 	var $company;
+	var $pos;
 	var $access;
 
 	var $logged;
@@ -48,6 +49,7 @@ class current_user
 
         	    $this->access = $myrow["full_access"];
         	    $this->name = $myrow["real_name"];
+        	    $this->pos = $myrow["pos"];
         	    $this->loginname = $loginname;
         	    $this->username = $this->loginname;
         	    $this->prefs = new user_prefs($myrow);
@@ -180,6 +182,11 @@ function user_numeric($input) {
 function user_company()
 {
 	return $_SESSION["wa_current_user"]->company;
+}
+
+function user_pos()
+{
+	return $_SESSION["wa_current_user"]->pos;
 }
 
 function user_language()

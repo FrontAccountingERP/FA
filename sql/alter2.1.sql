@@ -1,3 +1,21 @@
+DROP TABLE IF EXISTS `0_sales_pos`;
+
+CREATE TABLE `0_sales_pos` (
+  `id` smallint(6) NOT NULL auto_increment,
+  `pos_name` varchar(30) NOT NULL,
+  `cash_sale` tinyint(1) NOT NULL,
+  `credit_sale` tinyint(1) NOT NULL,
+  `pos_location` varchar(5) NOT NULL,
+  `pos_account` varchar(11) NOT NULL,
+  PRIMARY KEY  (`id`),
+  UNIQUE KEY(`pos_name`)
+) ENGINE=MyISAM AUTO_INCREMENT=3;
+
+INSERT INTO `0_sales_pos` VALUES ('1', 'Default', '1', '1', 'DEF', '1705');
+INSERT INTO `0_sales_pos` VALUES ('2', 'Cash sale', '1', '0', 'CWA', '1705');
+
+ALTER TABLE `0_users` ADD `pos` SMALLINT(6) DEFAULT '1';
+
 DROP TABLE IF EXISTS `0_quick_entries`;
 
 CREATE TABLE `0_quick_entries` (
@@ -12,7 +30,6 @@ CREATE TABLE `0_quick_entries` (
 INSERT INTO `0_quick_entries` VALUES ('1', 'Maintenance', '6600', '0');
 INSERT INTO `0_quick_entries` VALUES ('2', 'Phone', '6730', '0');
 INSERT INTO `0_quick_entries` VALUES ('3', 'Cash Sales', '3000', '1');
-
 
 ALTER TABLE `0_users` ADD `print_profile` VARCHAR(30) DEFAULT '' AFTER `show_hints` ;
 ALTER TABLE `0_users` ADD `rep_popup` TINYINT(1) DEFAULT '1' AFTER `print_profile` ;

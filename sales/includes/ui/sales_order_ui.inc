@@ -34,38 +34,44 @@ function get_customer_details_to_order(&$order, $customer_id, $branch_id)
 
 	$deliver = $myrow['address']; // in case no delivery address.
 
-	$order->set_customer($customer_id, $name, $myrow['curr_code'], $myrow['discount']);
+	$order->set_customer($customer_id, $name, $myrow['curr_code'], 
+		$myrow['discount'], $myrow['pymt_discount']);
 
 	// the sales type determines the price list to be used by default
 	$order->set_sales_type($myrow['salestype'], $myrow['sales_type'], $myrow['tax_included'],
 	    $myrow['factor']);
 
-//	if ($order->Branch != 0)
+	$result = get_branch_to_order($customer_id, $branch_id);
+
+	if (db_num_rows($result) == 0)
 	{
-		$result = get_branch_to_order($customer_id, $branch_id);
-
-		if (db_num_rows($result) == 0)
-		{
 		return _("The selected customer and branch are not valid, or the customer does not have any branches.");
-		}
-
-		$myrow = db_fetch($result);
-
-		$order->set_branch($branch_id, $myrow["tax_group_id"],
-		$myrow["tax_group_name"], $myrow["phone"], $myrow["email"]);
-
-		$address = $myrow["br_post_address"];
-
-		if (strlen($address) <= 1)	// if branch has no address
-			$address = $deliver;	// set sales order address
-
-		$order->set_location($myrow["default_location"], $myrow["location_name"]);
-		$order->set_delivery($myrow["default_ship_via"], $myrow["br_name"],
-		$address);
-		if ($order->trans_type == 10)
-			$order->due_date = get_invoice_duedate($customer_id, $order->document_date);
 	}
 
+	$myrow = db_fetch($result);
+
+	$order->set_branch($branch_id, $myrow["tax_group_id"],
+	$myrow["tax_group_name"], $myrow["phone"], $myrow["email"]);
+
+	$address = $myrow["br_post_address"];
+
+	if (strlen($address) <= 1)	// if branch has no address
+		$address = $deliver;	// set sales order address
+	$order->set_delivery($myrow["default_ship_via"], $myrow["br_name"],
+		$address);
+	if ($order->trans_type == 10) {
+		$order->due_date = get_invoice_duedate($customer_id, $order->document_date);
+		if ($order->pos != -1)
+			$order->cash = date_diff($order->due_date, Today(), 'd')<2;
+	}
+	if($order->cash ) {
+		if($order->pos != -1) {
+		$paym = get_sales_point($order->pos);
+		$order->set_location($paym["pos_location"], $paym["location_name"]);
+		}
+	} else
+		$order->set_location($myrow["default_location"], $myrow["location_name"]);
+		
 	return $ret_error;
 }
 
@@ -73,7 +79,7 @@ function get_customer_details_to_order(&$order, $customer_id, $branch_id)
 
 function display_order_summary($title, &$order, $editable_items=false)
 {
-	global $table_style, $path_to_root, $Ajax;
+	global $table_style, $path_to_root;
 
 	display_heading($title);
 
@@ -205,6 +211,7 @@ function display_order_header(&$order, $editable, $date_text, $display_tax_group
 				$_POST['deliver_to'] = $order->deliver_to;
 				$_POST['delivery_address'] = $order->delivery_address;
 				$_POST['phone'] = $order->phone;
+				$_POST['cash'] = $order->cash;
 				if ($order->trans_type == 10)
 				{
 					$_POST['delivery_date'] = $order->due_date;
@@ -214,6 +221,7 @@ function display_order_header(&$order, $editable, $date_text, $display_tax_group
 				$Ajax->activate('deliver_to');
 				$Ajax->activate('phone');
 				$Ajax->activate('delivery_address');
+				$Ajax->activate('cash');
 				// change prices if necessary
 				// what about discount in template case?
 				if ($old_order->customer_currency != $order->customer_currency) {
@@ -253,6 +261,26 @@ function display_order_header(&$order, $editable, $date_text, $display_tax_group
 
 
 	echo "<table height='5'>";
+	if ($order->trans_type == 10 && $order->pos != -1) {
+		sale_payment_list_cells(_('Payment:'), 'cash', null, true);
+		$cash_payment = get_post('cash', 0);
+		// current user can issue both credit and cash invoices
+		if ($order->cash != $cash_payment) {
+			$order->cash = $cash_payment;
+			if ($cash_payment) {
+				$paym = get_sales_point(user_pos());
+				$order->cash_account = $paym['pos_account'];
+				$order->account_name = $paym['bank_account_name'];
+				$_POST['Location'] = $order->Location = $paym['pos_location'];
+				$order->location_name = $paym['location_name'];
+			}
+			check_qoh($order);
+			$Ajax->activate('delivery');
+			set_focus($order->pos == -1 ? 'delivery_date' : 'account');
+		}
+	} else
+		hidden('cash', $order->cash);
+
 	if($editable) {
 		$str = sales_types_list_row(_("Price List"), 'sales_type', null, true);
 	} else {
@@ -403,61 +431,95 @@ function sales_order_item_controls(&$order, &$rowcounter, $line_no=-1)
 
 function display_delivery_details(&$order)
 {
-	global $table_style2;
-	if ($order->trans_type==10)
-	{
-		$title = _("Delivery Details");
-		$delname = _("Due Date").':';
+	global $table_style2, $Ajax;
+
+div_start('delivery');	
+
+	if (get_post('cash', 0)) {	// Direct payment sale
+		display_heading(_('Cash payment'));
+		echo "<table $table_style2 width=60% align=center>";
+		label_row(_("Deliver from Location:"), $order->location_name);
+
+		hidden('Location', $order->Location);
+		label_row(_("Cash account:"), $order->account_name);
+		textarea_row(_("Comments:"), "Comments", $order->Comments, 31, 5);
+		echo "</table>";
+	} else {
+
+		if ($order->trans_type==10)
+		{
+			$title = _("Delivery Details");
+			$delname = _("Due Date").':';
+		}
+		elseif ($order->trans_type==13)
+		{
+			$title = _("Invoice Delivery Details");
+			$delname = _("Invoice before").':';
+		}
+		else
+		{
+			$title = _("Order Delivery Details");
+			$delname = _("Required Delivery Date").':';
+		}
+		display_heading($title);
+		echo "<br>";
+		start_table("$table_style2 width=90%");
+		echo "<tr valign=top><td>"; // outer table
+		echo "<table>";
+
+		locations_list_row(_("Deliver from Location:"), 'Location', null, 
+			false, true);
+		if (list_updated('Location'))
+			check_qoh($order);
+
+		date_row($delname, 'delivery_date',
+			$order->trans_type==30 ?  _('Enter requested day of delivery') : '', 
+			$order->due_date, 0, 0, 0);
+		text_row(_("Deliver To:"), 'deliver_to', $order->deliver_to, 40, 40,
+			_('Additional identifier for delivery e.g. name of receiving person'));
+
+		textarea_row(_("Address:"), 'delivery_address', $order->delivery_address, 35, 5,
+			_('Delivery address. Default is address of customer branch'));
+		text_row(_("Contact Phone Number:"), 'phone', $order->phone, 25, 25,
+		    _('Phone number of ordering person. Defaults to branch phone number'));
+
+		echo "</table>";
+
+		echo "</td><td>"; // outer table
+
+		echo "<table>";
+
+		text_row(_("Customer Reference:"), 'cust_ref', $order->cust_ref, 25, 25,
+		  _('Customer reference number for this order (if any)'));
+		textarea_row(_("Comments:"), "Comments", $order->Comments, 31, 5);
+
+		small_amount_row(_("Shipping Charge:"), 'freight_cost',
+	    	price_format(get_post('freight_cost',0)));
+
+		shippers_list_row(_("Shipping Company:"), 'ship_via', $order->ship_via);
+		echo "</table>";
+		echo "</td></tr>";
+		end_table(1); // outer table
 	}
-	elseif ($order->trans_type==13)
-	{
-		$title = _("Invoice Delivery Details");
-		$delname = _("Invoice before").':';
-	}
-	else
-	{
-		$title = _("Order Delivery Details");
-		$delname = _("Required Delivery Date").':';
-	}
-	display_heading($title);
-	echo "<br>";
-	start_table("$table_style2 width=90%");
-	echo "<tr valign=top><td>"; // outer table
-
-	echo "<table>";
-
-	locations_list_row(_("Deliver from Location:"), 'Location', $order->Location);
-
-	date_row($delname, 'delivery_date',
-	    _('Enter requested day of delivery'), $order->due_date, 0, 0, 0);
-
-	text_row(_("Deliver To:"), 'deliver_to', $order->deliver_to, 40, 40,
-	_('Additional identifier for delivery e.g. name of receiving person'));
-
-	textarea_row(_("Address:"), 'delivery_address', $order->delivery_address, 35, 5,
-	_('Delivery address. Default is address of customer branch'));
-	text_row(_("Contact Phone Number:"), 'phone', $order->phone, 25, 25,
-	    _('Phone number of ordering person. Defaults to branch phone number'));
-
-	echo "</table>";
-
-	echo "</td><td>"; // outer table
-
-	echo "<table>";
-
-	text_row(_("Customer Reference:"), 'cust_ref', $order->cust_ref, 25, 25,
-	  _('Customer reference number for this order (if any)'));
-	textarea_row(_("Comments:"), "Comments", $order->Comments, 31, 5);
-
-	small_amount_row(_("Shipping Charge:"), 'freight_cost',
-	    price_format(get_post('freight_cost',0)));
-
-	shippers_list_row(_("Shipping Company:"), 'ship_via', $order->ship_via);
-
-	echo "</table>";
-
-	echo "</td></tr>";
-	end_table(1); // outer table
+	div_end();
 }
 
+function check_qoh($order) 
+{
+	$msg = '';
+	foreach($order->line_items as $line_no => $line) {
+		$qoh = get_qoh_on_date($line->stock_id, $_POST['Location'], $_POST['OrderDate']);
+		if ($line->qty_dispatched > $qoh)	{
+			$msg .= $line->stock_id . " - " . $line->item_description . ": " .
+				_("Quantity On Hand") . " = " 
+				. number_format2($qoh, get_qty_dec($line->stock_id)) . '<br>';
+		}
+	}
+	if (strlen($msg)) {
+		display_error(_("The delivery cannot be processed because there is an insufficient quantity for item:")
+			. '<br>'. $msg);
+		return false;
+	}
+	return true;
+}
 ?>

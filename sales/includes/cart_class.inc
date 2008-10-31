@@ -55,6 +55,12 @@ class cart
 	var $tax_group_name;
 	var $tax_group_array = null; // saves db queries
 	var $price_factor;	 // ditto for price calculations
+
+	var	$pos;			// user assigned POS
+	var $cash;			// cash transaction
+	var $cash_account;
+	var $account_name;
+	var $cash_discount;	// not used as of FA 2.1
 	//-------------------------------------------------------------------------
 	//
 	//  $trans_no==0 => open new/direct document
@@ -135,10 +141,23 @@ class cart
 				if (!is_date_in_fiscalyear($this->document_date))
 					$this->document_date = end_fiscalyear();
 				$this->reference = references::get_next($this->trans_type);
-				if ($type == 10)
+				if ($type == 10) {
 				  $this->due_date =
 					get_invoice_duedate($this->customer_id, $this->document_date);
-				else
+				  $this->pos = user_pos();
+				  $pos = get_sales_point($this->pos);
+				  $this->cash = !$pos['credit_sale'];
+				  if (!$pos['cash_sale'] || !$pos['credit_sale']) 
+				  	$this->pos = -1; // mark not editable payment type
+				  else
+					$this->cash = date_diff($this->due_date, Today(), 'd')<2;
+				if ($this->cash) {
+					$this->Location = $pos['pos_location'];
+					$this->location_name = $pos['location_name'];
+					$this->cash_account = $pos['account_code'];
+					$this->account_name = $pos['bank_account_name'];
+				}
+				} else
 				  $this->due_date =
 					add_days($this->document_date, sys_prefs::default_delivery_required_by());
 			}
@@ -193,11 +212,12 @@ class cart
 		}
 	}
 
-	function set_customer($customer_id, $customer_name, $currency, $discount)
+	function set_customer($customer_id, $customer_name, $currency, $discount, $cdiscount=0)
 	{
 		$this->customer_name = $customer_name;
 		$this->customer_id = $customer_id;
 		$this->default_discount = $discount;
+		$this->cash_discount = $cdiscount;
 		$this->customer_currency = $currency;
 	}
 
