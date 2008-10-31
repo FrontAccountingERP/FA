@@ -79,7 +79,8 @@ function print_link($link_text, $rep, $pars = array(), $dir = '')
 	$pars[] = 'REP_ID='.urlencode($rep);
 	$url .= implode ('&', $pars);
 	$class = $pdf_debug ? '' : "class='printlink'";
-	return "<a $class target='_blank' href='$url'>$link_text</a>";
+	$pars = access_string($link_text);
+	return "<a $class target='_blank' href='$url'$pars[1]>$pars[0]</a>";
 }
 
 function get_first_bank_account()
