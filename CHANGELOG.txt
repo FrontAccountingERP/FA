@@ -19,6 +19,32 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+31-Oct-2008 Janusz Dobrowolski
++ POS and cash sale support.
+$ /admin/users.php
+  /admin/db/users_db.inc
+  /applications/setup.php
+  /includes/current_user.inc
+  /includes/ui/ui_lists.inc
+  /sales/sales_order_entry.php
+  /sales/includes/cart_class.inc
+  /sales/includes/sales_db.inc
+  /sales/includes/ui/sales_order_ui.inc
+  /sales/manage/sales_points.php (New)
+  /sales/includes/db/sales_points_db.inc (New)
+  /sales/includes/cart_class.inc
+  /sales/includes/db/sales_invoice_db.inc
+  /sales/includes/db/sales_order_db.inc
+  /sql/alter2.1.sql
+# Fixed focus after error display.
+$ /js/utils.js
+# Fixed buggy output when SetLineWidth is used before first AddPage call.
+$ /reporting/includes/tcpdf.php
+# Fixed sign in payment view.
+$ /sales/view/view_receipt.php
+# Fixed missing hotkeys support for print links.
+$ /reporting/includes/reporting.inc
+
 30-Oct-2008 Joe Hunt
 ! Added Quick Entries in Bank Payments/Deposits (Banking and General Ledger).
 $ /applications/generalledger.php 
