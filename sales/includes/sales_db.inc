@@ -104,11 +104,11 @@ function get_price ($stock_id, $currency, $sales_type_id, $factor=null, $date=nu
 	{
 	    $price = $prices[$sales_type_id][$home_curr] / $rate;
 	}
-	if (isset($prices[$base_id][$currency])) 
+	elseif (isset($prices[$base_id][$currency])) 
 	{
 	    $price =$prices[$base_id][$currency] * $factor;
 	}
-	if (isset($prices[$base_id][$home_curr])) 
+	elseif (isset($prices[$base_id][$home_curr])) 
 	{
 	    $price =$prices[$base_id][$home_curr] * $factor / $rate;
 	}
