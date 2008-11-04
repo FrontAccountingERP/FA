@@ -375,6 +375,7 @@ input.amount {
   color:#808080;
   cursor: auto;
 }
+
 .navibutton {
    color:#0000FF;
    padding: 3px;
@@ -386,11 +387,14 @@ input.amount {
 
 .navibar {
     padding: 3px;
-    border: 1px solid #cccccc;
+    border: 1px solid #8cacbb;
     border-collapse: collapse;
     background-color: #dee7ec;
 }
 
+table.navibar td {
+    border: 0px none;
+}
 
 .listsubmit {
     display: none;
