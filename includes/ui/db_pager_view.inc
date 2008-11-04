@@ -1,0 +1,136 @@
+<?php
+//--------------------------------------------------------------------------------------------------
+function pager_link($link_text, $url)
+{
+	global $path_to_root;
+	
+	$link = access_string($link_text);
+
+	$href = $path_to_root . $url;
+	return "<a href='$href'$link[1]>" . $link[0] . "</a>";
+}
+
+function navi_button($name, $value, $enabled=true, $icon = false) {
+	global $path_to_root;
+  	return "<button ". ($enabled ? '':'disabled')
+  		." class=\"navibutton\" type=\"submit\""
+	    ." name=\"$name\"  id=\"$name\" value=\"$value\">"
+	  	.($icon ? "<img src='$path_to_root/themes/".user_theme()."/images/".$icon."'>":'')
+		."<span>$value</span></button>\n";
+}
+
+function navi_button_cell($name, $value, $enabled=true, $align='left') {
+	label_cell(navi_button($name, $value, $enabled), "align='$align'");
+}
+//-----------------------------------------------------------------------------
+//
+//    Sql paged table view. Call this function inside form.
+//
+function display_db_pager(&$pager) {
+    global	$table_style, $use_popup_windows, $use_date_picker, $path_to_root;
+
+	$pager->select_records();
+
+	div_start("_{$pager->name}_span");
+    $headers = array();
+//display_error(print_r($pager->columns,true));
+	foreach($pager->columns as $num_col=>$col) {
+    	if (isset($col['head'])) {
+			if (!isset($col['ord'])) 
+				$headers[] = $col['head'];
+			else {
+	  			$icon = (($col['ord'] == 'desc') ? 'sort_desc.gif' : 
+					($col['ord'] == 'asc' ? 'sort_asc.gif' : 'sort_none.gif'));
+				$headers[] = navi_button($pager->name.'_sort_'.$num_col, 
+					$col['head'], true, $icon);
+			}
+ 		}
+	}
+    /* show a table of records returned by the sql */
+    start_table("$table_style width=95%");
+    table_header($headers);
+
+	$cc = 0; //row colour counter
+   	foreach($pager->data as $line_no => $row) {	
+
+		$marker = $pager->marker;
+	    if ($marker && $marker($row)) 
+        	start_row("class='$pager->marker_class'");
+	    else	
+			alt_table_row_color($cc);
+	    foreach ($pager->columns as $k=>$col) {
+		   $coltype = $col['type'];
+		   $cell = isset($col['name']) ? $row[$col['name']] : '';
+
+		   switch($coltype) {
+		    case 'date':
+		  	  label_cell(sql2date($cell), "align='center'"); break;
+		    case 'dstamp':	// time stamp displayed as date
+		  	  label_cell(sql2date(substr($cell, 0, 10)), "align='center'"); break;
+		    case 'tstamp':	// time stamp - FIX user format
+		  	  label_cell(sql2date(substr($cell, 0, 10)).
+			  ' '. substr($cell, 10), "align='center'"); break;
+		    case 'percent':
+		  	  percent_cell($cell); break;
+		    case 'amount':
+		  	  amount_cell($cell); break;
+		    case 'qty':
+		  	  qty_cell($cell); break;
+		    case 'rate':
+		  	  rate_cell($cell);  break;
+			case 'insert':	// extra inserted column
+			case 'spec':	// special formatting function
+			  	$fun = $col['fun']; 
+				$param = $coltype=='spec' ? $cell : $row;
+			    if (method_exists($pager, $fun)) { 
+					$cell = $pager->$fun($param);
+  				} elseif (function_exists($fun)) {
+					$cell = $fun($param);
+				} else
+					$cell = '';
+//		    case 'text':
+		    default:
+		  	  label_cell($cell);
+		    case 'skip':	// column not displayed
+	  	  }
+	  }
+	    end_row();
+	}
+	//end of while loop
+	end_table();
+	start_table("$table_style align='center' class='navibar' width=95%");
+	start_row();
+	 if($pager->rec_count) {
+		$from = ($pager->curr_page-1)*$pager->page_len+1;
+		$to = $from + $pager->page_len - 1;
+		if ($to > $pager->rec_count)
+		  $to = $pager->rec_count;
+		$all = $pager->rec_count;
+		label_cell(sprintf( _('Records %d-%d of %d'), $from, $to, $all),
+			"style='border:none'");
+		echo "<td style='border:none'>";
+		$but_pref = $pager->name.'_page_';
+	    start_table("align='right'");
+		start_row();
+		echo navi_button_cell($but_pref.'first', _('First'), $pager->first_page, 'right');
+		echo navi_button_cell($but_pref.'prev', _('Prev'), $pager->prev_page,'right');
+		echo navi_button_cell($but_pref.'next', _('Next'), $pager->next_page,'right');
+		echo navi_button_cell($but_pref.'last', _('Last'), $pager->last_page, 'right');
+		end_row(); 
+		end_table();	
+		echo "</td>";
+	} else {
+	  label_cell( _('No records'));
+	}
+	end_row();
+	end_table();
+
+   if (isset($pager->marker_txt))
+   		display_note($pager->marker_txt, 0, 1, "class='$pager->notice_class'");
+
+  div_end();
+  return true;
+}
+
+
+?>
