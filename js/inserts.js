@@ -204,11 +204,12 @@ var inserts = {
 	    e.style.display = 'block';
 	},
 //	'.ajaxsubmit,.editbutton,.navibutton': // much slower on IE7
-	'button.ajaxsubmit,submit.ajaxsubmit,submit.editbutton,submit.navibutton': 
+	'button.ajaxsubmit,input.ajaxsubmit,input.editbutton,button.navibutton': 
 	function(e) {
 	    e.onclick = function() {
 			if (this.getAttribute('aspect') == 'process')
 				progbar();
+		    save_focus(this);
 			JsHttpRequest.request(this);
 			return false;
 	    }
