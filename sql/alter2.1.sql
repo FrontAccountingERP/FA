@@ -1,3 +1,5 @@
+ALTER TABLE `0_users` ADD `query_size` TINYINT(1) DEFAULT '10';
+
 DROP TABLE IF EXISTS `0_sales_pos`;
 
 CREATE TABLE `0_sales_pos` (

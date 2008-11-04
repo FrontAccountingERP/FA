@@ -15,24 +15,31 @@ include_once($path_to_root . "/admin/db/company_db.inc");
 
 if (isset($_POST['setprefs'])) 
 {
-	$theme = user_theme();
-	set_user_prefs($_POST['prices'], $_POST['Quantities'],
-		$_POST['Rates'], $_POST['Percent'],
-		check_value('show_gl'),
-		check_value('show_codes'),
-		$_POST['date_format'], $_POST['date_sep'],
-		$_POST['tho_sep'], $_POST['dec_sep'],
-		$_POST['theme'], $_POST['page_size'], check_value('show_hints'),
-		$_POST['profile'], check_value('rep_popup'));
+	if (!is_numeric($_POST['query_size']) || ($_POST['query_size']<1))
+	{
+		display_error($_POST['query_size']);
+		display_error( _("Query size must integer and greater than zero."));
+		set_focus('query_size');
+	} else {
+		$theme = user_theme();
+		set_user_prefs($_POST['prices'], $_POST['Quantities'],
+			$_POST['Rates'], $_POST['Percent'],
+			check_value('show_gl'),
+			check_value('show_codes'),
+			$_POST['date_format'], $_POST['date_sep'],
+			$_POST['tho_sep'], $_POST['dec_sep'],
+			$_POST['theme'], $_POST['page_size'], check_value('show_hints'),
+			$_POST['profile'], check_value('rep_popup'), (int)($_POST['query_size']));
 
-	language::set_language($_POST['language']);
+		language::set_language($_POST['language']);
 
-	flush_dir($comp_path.'/'.user_company().'/js_cache');	
+		flush_dir($comp_path.'/'.user_company().'/js_cache');	
 
-	if (user_theme() != $theme)
-		reload_page("");
+		if (user_theme() != $theme)
+			reload_page("");
 
-	display_notification_centered(_("Display settings have been updated."));
+		display_notification_centered(_("Display settings have been updated."));
+	}
 }
 
 start_form();
@@ -90,6 +97,8 @@ print_profiles_list_row(_("Printing profile"). ':', 'profile',
 
 check_row(_("Use popup window to display reports:"), 'rep_popup', user_rep_popup(),
 	false, _('Set this option to on if your browser directly supports pdf files'));
+
+text_row_ex(_("Query page size:"), 'query_size',  5, 5, '', user_query_size());
 
 table_section_title(_("Language"));
 

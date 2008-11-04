@@ -44,7 +44,7 @@ function update_user($user_id, $real_name, $phone, $email, $full_access,
 
 function update_user_display_prefs($user_id, $price_dec, $qty_dec, $exrate_dec, 
 	$percent_dec, $showgl, $showcodes, $date_format, $date_sep, $tho_sep, 
-	$dec_sep, $theme, $pagesize, $show_hints, $profile, $rep_popup)
+	$dec_sep, $theme, $pagesize, $show_hints, $profile, $rep_popup, $query_size)
 {
 	$sql = "UPDATE ".TB_PREF."users SET
 		prices_dec=".db_escape($price_dec).",
@@ -61,7 +61,8 @@ function update_user_display_prefs($user_id, $price_dec, $qty_dec, $exrate_dec,
 		page_size=".db_escape($pagesize).",
 		show_hints=$show_hints,
 		print_profile=".db_escape($profile).",
-		rep_popup=$rep_popup
+		rep_popup=$rep_popup,
+		query_size=$query_size
 		WHERE user_id = ".db_escape($user_id);
 
 	db_query($sql, "could not update user display prefs for $user_id");

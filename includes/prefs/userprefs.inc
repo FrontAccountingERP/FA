@@ -22,6 +22,7 @@ class user_prefs
 	var $rep_popup;
 	var $pagesize; // for printing
 	var $show_hints;
+	var $query_size; // table pager page length
 
 	function user_prefs(&$user) 
 	{
@@ -45,6 +46,7 @@ class user_prefs
 		$this->show_hints = $user["show_hints"];
 		$this->print_profile = $user["print_profile"];
 		$this->rep_popup = $user["rep_popup"];
+		$this->query_size = $user["query_size"];
 	}
 
 	function language() 
@@ -137,6 +139,11 @@ class user_prefs
 	function rep_popup() 
 	{
 		return $this->rep_popup;
+	}
+
+	function query_size() 
+	{
+		return $this->query_size;
 	}
 
 	function set_dec($price_dec, $qty_dec, $exrate_dec, $percent_dec, $showgl, $showcodes) 
