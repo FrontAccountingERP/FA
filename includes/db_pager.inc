@@ -300,6 +300,12 @@ class db_pager {
 		$sort = find_submit($this->name.'_sort_', false);
 		if ($page) {
 			$this->change_page($page);
+			if ($page == 'next' && !$this->next_page ||
+				$page == 'last' && !$this->last_page)
+					set_focus($this->name.'_page_prev');
+			if ($page == 'prev' && !$this->prev_page ||
+				$page == 'first' && !$this->first_page)
+					set_focus($this->name.'_page_next');
 		} elseif ($sort) {
 			$this->sort_table($sort);
 		} else
