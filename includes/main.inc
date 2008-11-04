@@ -248,4 +248,22 @@ function js_compress($sJS)
 	}
 	return $sJS;
 }
+//-----------------------------------------------------------------------------
+//	Inserts $elements into $array at position $index.
+//	In contrast to array_splice() preserves keys of $elements array.
+//
+function array_insert(&$array, $index, $elements)
+{
+	if (!is_array($elements)) $elements = array($elements);
+
+	$head  = array_splice($array, 0, $index);
+	$array = array_merge($head, $elements, $array);
+
+}
+
+function array_remove(&$array, $index, $len=1)
+{
+	array_splice($array, $index, $len);
+}
+
 ?>
