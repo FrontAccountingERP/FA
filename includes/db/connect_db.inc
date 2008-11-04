@@ -46,6 +46,12 @@ function db_fetch_row ($result)
 	return mysql_fetch_row($result);
 }
 
+function db_fetch_assoc ($result)
+{
+
+	return mysql_fetch_assoc($result);
+}
+
 function db_fetch ($result)
 {
 
