@@ -19,6 +19,36 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+04-Nov-2008 Janusz Dobrowolski
++ Added db_pager widget for paged/sorted sql query display.
+$ /includes/db_pager.inc (New)
+  /includes/ui/db_pager_view.inc (New)
+  /themes/aqua/images/sort_asc.gif (New)
+  /themes/aqua/images/sort_desc.gif (New)
+  /themes/aqua/images/sort_none.gif (New)
+  /themes/cool/images/sort_asc.gif (New)
+  /themes/cool/images/sort_desc.gif (New)
+  /themes/cool/images/sort_none.gif (New)
+  /themes/default/images/sort_asc.gif (New)
+  /themes/default/images/sort_desc.gif (New)
+  /themes/default/images/sort_none.gif (New)
+  /themes/default/default.css
+  /themes/aqua/default.css
++ Added query size user preference.
+$ /admin/display_prefs.php
+  /admin/db/users_db.inc
+  /includes/current_user.inc
+  /includes/prefs/userprefs.inc
+  /sql/alter2.1.sql
++ Added helper functions for array manipulation.
+$ /includes/main.inc
++ Added mysql_fetch_assoc() wrapper.
+$ /includes/db/connect_db.inc
+! Paged query result.
+$ /sales/inquiry/sales_orders_view.php
+# Two smaller fixes.
+$ /js/inserts.js
+
 31-Oct-2008 Janusz Dobrowolski
 + POS and cash sale support.
 $ /admin/users.php
