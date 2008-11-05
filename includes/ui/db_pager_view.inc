@@ -81,11 +81,10 @@ function display_db_pager(&$pager) {
 			case 'insert':	// extra inserted column
 			case 'spec':	// special formatting function
 			  	$fun = $col['fun']; 
-				$param = $coltype=='spec' ? $cell : $row;
 			    if (method_exists($pager, $fun)) { 
-					$cell = $pager->$fun($param);
+					$cell = $pager->$fun($row, $cell);
   				} elseif (function_exists($fun)) {
-					$cell = $fun($param);
+					$cell = $fun($row, $cell);
 				} else
 					$cell = '';
 //		    case 'text':
