@@ -69,7 +69,7 @@ function check_overdue($row)
 		&& ($row['TotDelivered'] < $row['TotQuantity']));
 }
 
-function view_link($order_no) 
+function view_link($dummy, $order_no)
 {
 	return  get_customer_trans_view_str(systypes::sales_order(), $order_no);
 }
@@ -189,34 +189,35 @@ end_form();
 //---------------------------------------------------------------------------------------------
 //	Orders inquiry table
 //
-$sql = "SELECT ".TB_PREF."sales_orders.order_no, "
-	.TB_PREF."debtors_master.name, "
-	.TB_PREF."cust_branch.br_name, "
-	.($_POST['order_view_mode']=='InvoiceTemplates' 
-	   	|| $_POST['order_view_mode']=='DeliveryTemplates' ?
-	 TB_PREF."sales_orders.comments, " : TB_PREF."sales_orders.customer_ref, ")
-	.TB_PREF."sales_orders.ord_date, "
-	.TB_PREF."sales_orders.delivery_date, "
-	.TB_PREF."sales_orders.deliver_to, "
-	." Sum(".TB_PREF."sales_order_details.unit_price*"
-		.TB_PREF."sales_order_details.quantity*(1-"
-		.TB_PREF."sales_order_details.discount_percent)) AS OrderValue, "
-	.TB_PREF."sales_orders.type, "
-	.TB_PREF."debtors_master.curr_code, "
-	." Sum(".TB_PREF."sales_order_details.qty_sent) AS TotDelivered, "
-	." Sum(".TB_PREF."sales_order_details.quantity) AS TotQuantity "
-
-	." FROM ".TB_PREF."sales_orders, ".TB_PREF."sales_order_details, ".TB_PREF."debtors_master, ".TB_PREF."cust_branch
-		WHERE ".TB_PREF."sales_orders.order_no = ".TB_PREF."sales_order_details.order_no
-		AND ".TB_PREF."sales_orders.debtor_no = ".TB_PREF."debtors_master.debtor_no
-		AND ".TB_PREF."sales_orders.branch_code = ".TB_PREF."cust_branch.branch_code
-		AND ".TB_PREF."debtors_master.debtor_no = ".TB_PREF."cust_branch.debtor_no ";
+$sql = "SELECT 
+		sorder.order_no,
+		debtor.name,
+		branch.br_name,"
+		.($_POST['order_view_mode']=='InvoiceTemplates' 
+		   	|| $_POST['order_view_mode']=='DeliveryTemplates' ?
+		 "sorder.comments, " : "sorder.customer_ref, ")
+		."sorder.ord_date,
+		sorder.delivery_date,
+		sorder.deliver_to,
+		Sum(line.unit_price*line.quantity*(1-line.discount_percent)) AS OrderValue,
+		sorder.type,
+		debtor.curr_code,
+		Sum(line.qty_sent) AS TotDelivered,
+		Sum(line.quantity) AS TotQuantity
+	FROM ".TB_PREF."sales_orders as sorder, "
+		.TB_PREF."sales_order_details as line, "
+		.TB_PREF."debtors_master as debtor, "
+		.TB_PREF."cust_branch as branch
+		WHERE sorder.order_no = line.order_no
+		AND sorder.debtor_no = debtor.debtor_no
+		AND sorder.branch_code = branch.branch_code
+		AND debtor.debtor_no = branch.debtor_no";
 
 if (isset($_POST['OrderNumber']) && $_POST['OrderNumber'] != "")
 {
 	// search orders with number like ...
-	$sql .= " AND ".TB_PREF."sales_orders.order_no LIKE '%". $_POST['OrderNumber'] ."'"
- 			." GROUP BY ".TB_PREF."sales_orders.order_no";
+	$sql .= " AND sorder.order_no LIKE '%". $_POST['OrderNumber'] ."'"
+ 			." GROUP BY sorder.order_no";
 }
 else	// ... or select inquiry constraints
 {
@@ -225,29 +226,29 @@ else	// ... or select inquiry constraints
 		$date_after = date2sql($_POST['OrdersAfterDate']);
 		$date_before = date2sql($_POST['OrdersToDate']);
 
-		$sql .=  " AND ".TB_PREF."sales_orders.ord_date >= '$date_after'"
-				." AND ".TB_PREF."sales_orders.ord_date <= '$date_before'";
+		$sql .=  " AND sorder.ord_date >= '$date_after'"
+				." AND sorder.ord_date <= '$date_before'";
   	}
 	if ($selected_customer != -1)
-		$sql .= " AND ".TB_PREF."sales_orders.debtor_no='" . $selected_customer . "'";
+		$sql .= " AND sorder.debtor_no='" . $selected_customer . "'";
 
 	if (isset($selected_stock_item))
-		$sql .= " AND ".TB_PREF."sales_order_details.stk_code='". $selected_stock_item ."'";
+		$sql .= " AND line.stk_code='". $selected_stock_item ."'";
 
 	if (isset($_POST['StockLocation']) && $_POST['StockLocation'] != reserved_words::get_all())
-		$sql .= " AND ".TB_PREF."sales_orders.from_stk_loc = '". $_POST['StockLocation'] . "' ";
+		$sql .= " AND sorder.from_stk_loc = '". $_POST['StockLocation'] . "' ";
 
 	if ($_POST['order_view_mode']=='OutstandingOnly')
-		$sql .= " AND ".TB_PREF."sales_order_details.qty_sent < ".TB_PREF."sales_order_details.quantity";
+		$sql .= " AND line.qty_sent < line.quantity";
 	elseif ($_POST['order_view_mode']=='InvoiceTemplates' || $_POST['order_view_mode']=='DeliveryTemplates')
-		$sql .= " AND ".TB_PREF."sales_orders.type=1";
+		$sql .= " AND sorder.type=1";
 
-	$sql .= " GROUP BY ".TB_PREF."sales_orders.order_no, "
-		.TB_PREF."sales_orders.debtor_no, "
-		.TB_PREF."sales_orders.branch_code, "
-		.TB_PREF."sales_orders.customer_ref, "
-		.TB_PREF."sales_orders.ord_date, "
-		.TB_PREF."sales_orders.deliver_to";
+	$sql .= " GROUP BY sorder.order_no,
+				sorder.debtor_no,
+				sorder.branch_code,
+				sorder.customer_ref,
+				sorder.ord_date,
+				sorder.deliver_to";
 }
 
 $cols = array(
@@ -264,25 +265,24 @@ $cols = array(
 );
 
 if ($_POST['order_view_mode'] == 'OutstandingOnly') {
-	array_remove($cols, 4);
-	array_insert($cols, 4, _("Cust Order Ref"));
-	$cols += array('' => array('type'=>'insert', 'fun'=>'dispatch_link'));
+	array_replace($cols, 3, 1, _("Cust Order Ref"));
+	array_append($cols, array(array('type'=>'insert', 'fun'=>'dispatch_link')));
 
 } elseif ($_POST['order_view_mode'] == 'InvoiceTemplates') {
-	array_remove($cols, 4);
-	array_insert($cols, 4, _("Description"));
-	$cols += array('' => array('type'=>'insert', 'fun'=>'invoice_link'));
+	array_replace($cols, 3, 1, _("Description"));
+	array_append($cols, array( array('type'=>'insert', 'fun'=>'invoice_link')));
 
 } else if ($_POST['order_view_mode'] == 'DeliveryTemplates') {
-	array_remove($cols, 4);
-	array_insert($cols, 4, _("Description"));
-	$cols += array('' => array('type'=>'insert', 'fun'=>'delivery_link'));
+	array_replace($cols, 3, 1, _("Description"));
+	array_append($cols, array(
+			array('type'=>'insert', 'fun'=>'delivery_link'))
+	);
 
 } else {
-	$cols += array(
+	 array_append($cols,array(
 			_("Tmpl") => array('type'=>'insert', 'fun'=>'tmpl_checkbox'),
-			array('type'=>'insert', 'fun'=>'edit_link'),
-			array('type'=>'insert', 'fun'=>'prt_link'));
+					array('type'=>'insert', 'fun'=>'edit_link'),
+					array('type'=>'insert', 'fun'=>'prt_link')));
 };
 
 
