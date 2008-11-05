@@ -112,7 +112,7 @@ class db_pager {
 	//	Change sort column direction 
 	//	in order asc->desc->none->asc
 	//
-	function sort_table($col=null) 
+	function sort_table($col) 
 	{
 	    $ord = $this->columns[$col]['ord'];
 	    $ord = ($ord == '') ? 'asc' : (($ord == 'asc') ? 'desc' : '');
@@ -196,7 +196,7 @@ class db_pager {
 			$flds = array($flds);
 		}
 		foreach ($flds as $colnum=>$coldef) {
-			if (!is_numeric($colnum)) {	// 'colname'=>params
+			if (is_string($colnum)) {	// 'colname'=>params
 			  $h = $colnum;
 			  $c = $coldef;
 			} else {			//  n=>params
@@ -207,9 +207,8 @@ class db_pager {
 			  		$h = $coldef;
 					$c = 'text';
 				}
-			  $c = '';
 			}
-			if (!is_array($c)) 			// params is simple column type
+			if (is_string($c)) 			// params is simple column type
 			  $c = array('type'=>$c);
 
 			if (!isset($c['type']))
@@ -249,7 +248,8 @@ class db_pager {
 			return "SELECT COUNT($group) FROM $from $where";
 		}
 
-		$sql = "$select FROM $from $where GROUP BY $group";
+		$sql = "$select FROM $from $where";
+		if($group) $sql.= " GROUP BY $group";
 	    $ord = array();
 
 	    foreach( $this->columns as $col) {
@@ -297,7 +297,7 @@ class db_pager {
 		global $Ajax;
 		
 		$page = find_submit($this->name.'_page_', false);
-		$sort = find_submit($this->name.'_sort_', false);
+		$sort = find_submit($this->name.'_sort_', true);
 		if ($page) {
 			$this->change_page($page);
 			if ($page == 'next' && !$this->next_page ||
@@ -306,7 +306,7 @@ class db_pager {
 			if ($page == 'prev' && !$this->prev_page ||
 				$page == 'first' && !$this->first_page)
 					set_focus($this->name.'_page_next');
-		} elseif ($sort) {
+		} elseif ($sort != -1) {
 			$this->sort_table($sort);
 		} else
 			$this->query();
