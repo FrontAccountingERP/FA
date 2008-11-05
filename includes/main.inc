@@ -250,7 +250,7 @@ function js_compress($sJS)
 }
 //-----------------------------------------------------------------------------
 //	Inserts $elements into $array at position $index.
-//	In contrast to array_splice() preserves keys of $elements array.
+//	$elements is list of any objects
 //
 function array_insert(&$array, $index, $elements)
 {
@@ -258,12 +258,27 @@ function array_insert(&$array, $index, $elements)
 
 	$head  = array_splice($array, 0, $index);
 	$array = array_merge($head, $elements, $array);
-
 }
 
 function array_remove(&$array, $index, $len=1)
 {
 	array_splice($array, $index, $len);
+}
+
+function array_replace(&$array, $index, $len, $elements)
+{
+	array_splice($array, $index, $len);
+	array_insert($array, $index, $elements);
+}
+
+function array_append(&$array, $elements)
+{
+	foreach($elements as $key => $el) {
+		if(is_int($key))
+			$array[] = $el;
+		else
+			$array[$key] = $el;
+	}
 }
 
 ?>
