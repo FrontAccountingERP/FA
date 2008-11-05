@@ -87,6 +87,7 @@ function get_customer_trans_view_str($type, $trans_no, $label="")
 
   $lbl = $label;
   $preview_str = '';
+
   foreach($trans_no as $trans) {
 	if ($label == "")
 		$lbl = $trans;
@@ -96,7 +97,7 @@ function get_customer_trans_view_str($type, $trans_no, $label="")
 	if ($viewer != "")
 	{
 		$pars = access_string($lbl);
-		$preview_str = "<a target='_blank' href='$path_to_root/sales/view/$viewer?trans_no=$trans' onclick=\"javascript:openWindow(this.href,this.target); return false;\" $pars[1]>$pars[0]</a>";
+		$preview_str .= "<a target='_blank' href='$path_to_root/sales/view/$viewer?trans_no=$trans' onclick=\"javascript:openWindow(this.href,this.target); return false;\" $pars[1]>$pars[0]</a>";
 	}
 	else
 		$preview_str .= $lbl;
