@@ -19,6 +19,22 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+05-Nov-2008 Janusz Dobrowolski
+! Changed dbpager API.
+$ /includes/ui/db_pager_view.inc
+# Polishing db_pager code.
+$ /includes/db_pager.inc
++ Added array_replace() and array_append() helpers.
+$ /includes/main.inc
+# Fixed multiply sales document view links.
+$ /includes/ui/ui_view.inc
+! Rewritten for paged query results.
+$ /sales/inquiry/customer_allocation_inquiry.php
+  /sales/inquiry/customer_inquiry.php
+  /sales/inquiry/sales_deliveries_view.php
+! Code cleanup.
+$ /sales/inquiry/sales_orders_view.php
+
 04-Nov-2008 Janusz Dobrowolski
 + Added db_pager widget for paged/sorted sql query display.
 $ /includes/db_pager.inc (New)
