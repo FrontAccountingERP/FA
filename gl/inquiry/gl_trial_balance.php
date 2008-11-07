@@ -35,6 +35,7 @@ function gl_inquiry_controls()
     date_cells(_("From:"), 'TransFromDate', '', null, -30);
 	date_cells(_("To:"), 'TransToDate');
 	check_cells(_("No zero values"), 'NoZero', null);
+	check_cells(_("Only balances"), 'Balance', null);
 
 	submit_cells('Show',_("Show"),'','', true);
     end_table();
@@ -43,33 +44,29 @@ function gl_inquiry_controls()
 
 //----------------------------------------------------------------------------------------------------
 
-function get_balance($account, $from, $to, $from_incl=true, $to_incl=true) {
-
-	$sql = "SELECT SUM(amount) As TransactionSum FROM ".TB_PREF."gl_trans
-		WHERE account='$account'";
-
-	if ($from)
-	{
-		$from_date = date2sql($from);
-		if ($from_incl)
-			$sql .= " AND tran_date >= '$from_date'";
-		else
-			$sql .= " AND tran_date > '$from_date'";
-	}
-
-	if ($to)
-	{
-		$to_date = date2sql($to);
-		if ($to_incl)
-			$sql .= " AND tran_date <= '$to_date' ";
-		else
-			$sql .= " AND tran_date < '$to_date' ";
-	}
+function get_balance($account, $from, $to, $from_incl=true, $to_incl=true) 
+{
+	$sql = "SELECT SUM(IF(amount >= 0, amount, 0)) as debit, SUM(IF(amount < 0, -amount, 0)) as credit, SUM(amount) as balance 
+		FROM ".TB_PREF."gl_trans,".TB_PREF."chart_master,".TB_PREF."chart_types, ".TB_PREF."chart_class 
+		WHERE ".TB_PREF."gl_trans.account=".TB_PREF."chart_master.account_code AND ".TB_PREF."chart_master.account_type=".TB_PREF."chart_types.id 
+		AND ".TB_PREF."chart_types.class_id=".TB_PREF."chart_class.cid AND";
+		
+	if ($account != null)
+		$sql .= " account='$account' AND";
+	$from_date = date2sql($from);
+	if ($from_incl)
+		$sql .= " tran_date >= '$from_date'  AND";
+	else
+		$sql .= " tran_date > IF(".TB_PREF."chart_class.balance_sheet=1, '0000-00-00', '$from_date') AND";
+	$to_date = date2sql($to);
+	if ($to_incl)
+		$sql .= " tran_date <= '$to_date' ";
+	else
+		$sql .= " tran_date < '$to_date' ";
 
 	$result = db_query($sql,"No general ledger accounts were returned");
 
-	$row = db_fetch_row($result);
-	return $row[0];
+	return db_fetch($result);
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -99,61 +96,64 @@ function display_trial_balance()
 
 	$k = 0;
 
-	$totprevd = $totprevc = $totcurrd = $totcurrc = 0.0;
 	$accounts = get_gl_accounts();
 
+	$begin = begin_fiscalyear();
+	if (date1_greater_date2($begin, $_POST['TransFromDate']))
+		$begin = $_POST['TransFromDate'];
+	$begin = add_days($begin, -1);
+	
 	while ($account = db_fetch($accounts))
 	{
-		if (is_account_balancesheet($account["account_code"]))
-			$begin = null;
-		else
-		{
-			$begin = begin_fiscalyear();
-			if (date1_greater_date2($begin, $_POST['TransFromDate']))
-				$begin = $_POST['TransFromDate'];
-			$begin = add_days($begin, -1);
-		}
-		$prev_balance = get_balance($account["account_code"], $begin, $_POST['TransFromDate'], false, false);
-
-		$curr_balance = get_balance($account["account_code"], $_POST['TransFromDate'], $_POST['TransToDate']);
-		if (check_value("NoZero") && !$prev_balance && !$curr_balance)
+		$prev = get_balance($account["account_code"], $begin, $_POST['TransFromDate'], false, false);
+		$curr = get_balance($account["account_code"], $_POST['TransFromDate'], $_POST['TransToDate'], true, true);
+		$tot = get_balance($account["account_code"], $begin, $_POST['TransToDate'], false, true);
+		if (check_value("NoZero") && !$prev['balance'] && !$curr['balance'] && !$tot['balance'])
 			continue;
-		if ($prev_balance >= 0.0)
-			$totprevd += $prev_balance;
-		else
-			$totprevc += $prev_balance;
-		if ($curr_balance >= 0.0)
-			$totcurrd += $curr_balance;
-		else
-			$totcurrc += $curr_balance;
 		alt_table_row_color($k);
 
 		$url = "<a href='$path_to_root/gl/inquiry/gl_account_inquiry.php?" . SID . "TransFromDate=" . $_POST["TransFromDate"] . "&TransToDate=" . $_POST["TransToDate"] . "&account=" . $account["account_code"] . "'>" . $account["account_code"] . "</a>";
 
 		label_cell($url);
 		label_cell($account["account_name"]);
-
-		display_debit_or_credit_cells($prev_balance);
-		display_debit_or_credit_cells($curr_balance);
-		display_debit_or_credit_cells($prev_balance + $curr_balance);
+		if (check_value('Balance'))
+		{
+			display_debit_or_credit_cells($prev['balance']);
+			display_debit_or_credit_cells($curr['balance']);
+			display_debit_or_credit_cells($tot['balance']);
+		}
+		else
+		{
+			amount_cell($prev['debit']);
+			amount_cell($prev['credit']);
+			amount_cell($curr['debit']);
+			amount_cell($curr['credit']);
+			amount_cell($tot['debit']);
+			amount_cell($tot['credit']);
+		}	
 		end_row();
 	}
-	start_row("class='inquirybg' style='font-weight:bold'");
-	label_cell(_("Total") ." - ".$_POST['TransToDate'], "colspan=2");
-	amount_cell($totprevd);
-	amount_cell(abs($totprevc));
-	amount_cell($totcurrd);
-	amount_cell(abs($totcurrc));
-	amount_cell($totprevd + $totcurrd);
-	amount_cell(abs($totprevc + $totcurrc));
-	end_row();
-	$totprev = $totprevd + $totprevc;
-	$totcurr = $totcurrd + $totcurrc;
+
+	$prev = get_balance(null, $begin, $_POST['TransFromDate'], false, false);
+	$curr = get_balance(null, $_POST['TransFromDate'], $_POST['TransToDate'], true, true);
+	$tot = get_balance(null, $begin, $_POST['TransToDate'], false, true);
+	if (!check_value('Balance'))
+	{
+		start_row("class='inquirybg' style='font-weight:bold'");
+		label_cell(_("Total") ." - ".$_POST['TransToDate'], "colspan=2");
+		amount_cell($prev['debit']);
+		amount_cell($prev['credit']);
+		amount_cell($curr['debit']);
+		amount_cell($curr['credit']);
+		amount_cell($tot['debit']);
+		amount_cell($tot['credit']);
+		end_row();
+	}	
 	start_row("class='inquirybg' style='font-weight:bold'");
 	label_cell(_("Ending Balance") ." - ".$_POST['TransToDate'], "colspan=2");
-	display_debit_or_credit_cells($totprev);
-	display_debit_or_credit_cells($totcurr);
-	display_debit_or_credit_cells($totprev + $totcurr);
+	display_debit_or_credit_cells($prev['balance']);
+	display_debit_or_credit_cells($curr['balance']);
+	display_debit_or_credit_cells($tot['balance']);
 	end_row();
 
 	end_table(1);

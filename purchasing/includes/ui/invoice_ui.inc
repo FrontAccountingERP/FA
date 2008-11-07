@@ -141,7 +141,7 @@ function invoice_totals(&$supp_trans)
     	label_row(_("Invoice Total:"), $display_total, "align=right style='font-weight:bold;'", "align=right style='font-weight:bold;'");
     else
 		label_row(_("Credit Note Total"),
-			$display_total, "align=right style='font-weight:bold;color:red;'", "nowrap align=right style='font-weight:bold;'");
+			$display_total, "align=right style='font-weight:bold;color:red;'", "nowrap align=right style='font-weight:bold;color:red;'");
 
     end_table();
 	br(1);

@@ -20,6 +20,36 @@ include_once($path_to_root . "gl/includes/gl_db.inc");
 print_trial_balance();
 
 //----------------------------------------------------------------------------------------------------
+function get_balance($account, $dimension, $dimension2, $from, $to, $from_incl=true, $to_incl=true) 
+{
+	$sql = "SELECT SUM(IF(amount >= 0, amount, 0)) as debit, SUM(IF(amount < 0, -amount, 0)) as credit, SUM(amount) as balance 
+		FROM ".TB_PREF."gl_trans,".TB_PREF."chart_master,".TB_PREF."chart_types, ".TB_PREF."chart_class 
+		WHERE ".TB_PREF."gl_trans.account=".TB_PREF."chart_master.account_code AND ".TB_PREF."chart_master.account_type=".TB_PREF."chart_types.id 
+		AND ".TB_PREF."chart_types.class_id=".TB_PREF."chart_class.cid AND";
+		
+	if ($account != null)
+		$sql .= " account='$account' AND";
+	if ($dimension > 0)
+		$sql .= " dimension_id=$dimension AND";
+	if ($dimension2 > 0)
+		$sql .= " dimension2_id=$dimension2 AND";
+	$from_date = date2sql($from);
+	if ($from_incl)
+		$sql .= " tran_date >= '$from_date'  AND";
+	else
+		$sql .= " tran_date > IF(".TB_PREF."chart_class.balance_sheet=1, '0000-00-00', '$from_date') AND";
+	$to_date = date2sql($to);
+	if ($to_incl)
+		$sql .= " tran_date <= '$to_date' ";
+	else
+		$sql .= " tran_date < '$to_date' ";
+
+	$result = db_query($sql,"No general ledger accounts were returned");
+
+	return db_fetch($result);
+}
+
+//----------------------------------------------------------------------------------------------------
 
 function print_trial_balance()
 {
@@ -32,20 +62,21 @@ function print_trial_balance()
 	$from = $_POST['PARAM_0'];
 	$to = $_POST['PARAM_1'];
 	$zero = $_POST['PARAM_2'];
+	$balances = $_POST['PARAM_3'];
 	if ($dim == 2)
 	{
-		$dimension = $_POST['PARAM_3'];
-		$dimension2 = $_POST['PARAM_4'];
-		$comments = $_POST['PARAM_5'];
+		$dimension = $_POST['PARAM_4'];
+		$dimension2 = $_POST['PARAM_5'];
+		$comments = $_POST['PARAM_6'];
 	}
 	else if ($dim == 1)
 	{
-		$dimension = $_POST['PARAM_3'];
-		$comments = $_POST['PARAM_4'];
+		$dimension = $_POST['PARAM_4'];
+		$comments = $_POST['PARAM_5'];
 	}
 	else
 	{
-		$comments = $_POST['PARAM_3'];
+		$comments = $_POST['PARAM_4'];
 	}
 	$dec = user_price_dec();
 
@@ -91,57 +122,47 @@ function print_trial_balance()
 	$rep->Font();
 	$rep->Info($params, $cols, $headers, $aligns, $cols2, $headers2, $aligns2);
 	$rep->Header();
-	$totprevd = $totprevc = $totcurrd = $totcurrc = 0.0;
 
 	$accounts = get_gl_accounts();
 
+	$begin = begin_fiscalyear();
+	if (date1_greater_date2($begin, $from))
+		$begin = $from;
+	$begin = add_days($begin, -1);
 	while ($account=db_fetch($accounts))
 	{
+		$prev = get_balance($account["account_code"], $dimension, $dimension2, $begin, $from, false, false);
+		$curr = get_balance($account["account_code"], $dimension, $dimension2, $from, $to, true, true);
+		$tot = get_balance($account["account_code"], $dimension, $dimension2, $begin, $to, false, true);
 
-		if (is_account_balancesheet($account["account_code"]))
-			$begin = "";
-		else
-		{
-			$begin = begin_fiscalyear();
-			if (date1_greater_date2($begin, $from))
-				$begin = $from;
-			$begin = add_days($begin, -1);
-		}
-
-		$prev_balance = get_gl_balance_from_to($begin, $from, $account["account_code"], $dimension, $dimension2);
-
-		$curr_balance = get_gl_trans_from_to($from, $to, $account["account_code"], $dimension, $dimension2);
-
-		if ($zero == 0 && !$prev_balance && !$curr_balance)
+		if ($zero == 0 && !$prev['balance'] && !$curr['balance'] && !$tot['balance'])
 			continue;
 		$rep->TextCol(0, 1, $account['account_code']);
 		$rep->TextCol(1, 2,	$account['account_name']);
-
-		if ($prev_balance >= 0.0)
+		if ($balances != 0)
 		{
-			$totprevd += $prev_balance;
-			$rep->TextCol(2, 3,	number_format2(abs($prev_balance), $dec));
-		}	
+			if ($prev['balance'] >= 0.0)
+				$rep->TextCol(2, 3,	number_format2($prev['balance'], $dec));
+			else
+				$rep->TextCol(3, 4,	number_format2(abs($prev['balance']), $dec));
+			if ($curr['balance'] >= 0.0)
+				$rep->TextCol(4, 5,	number_format2($curr['balance'], $dec));
+			else
+				$rep->TextCol(5, 6,	number_format2(abs($curr['balance']), $dec));
+			if ($tot['balance'] >= 0.0)
+				$rep->TextCol(6, 7,	number_format2($tot['balance'], $dec));
+			else
+				$rep->TextCol(7, 8,	number_format2(abs($tot['balance']), $dec));
+		}
 		else
 		{
-			$totprevc += $prev_balance;
-			$rep->TextCol(3, 4,	number_format2(abs($prev_balance), $dec));
+			$rep->TextCol(2, 3,	number_format2($prev['debit'], $dec));
+			$rep->TextCol(3, 4,	number_format2($prev['credit'], $dec));
+			$rep->TextCol(4, 5,	number_format2($curr['debit'], $dec));
+			$rep->TextCol(5, 6,	number_format2($curr['credit'], $dec));
+			$rep->TextCol(6, 7,	number_format2($tot['debit'], $dec));
+			$rep->TextCol(7, 8,	number_format2($tot['credit'], $dec));
 		}	
-		if ($curr_balance >= 0.0)
-		{
-			$totcurrd += $curr_balance;
-			$rep->TextCol(4, 5,	number_format2(abs($curr_balance), $dec));
-		}	
-		else
-		{
-			$totcurrc += $curr_balance;
-			$rep->TextCol(5, 6,	number_format2(abs($curr_balance), $dec));
-		}	
-		if ($curr_balance + $prev_balance >= 0.0)
-			$rep->TextCol(6, 7,	number_format2(abs($curr_balance + $prev_balance), $dec));
-		else
-			$rep->TextCol(7, 8,	number_format2(abs($curr_balance + $prev_balance), $dec));
-
 		$rep->NewLine();
 
 		if ($rep->row < $rep->bottomMargin + $rep->lineHeight)
@@ -153,31 +174,36 @@ function print_trial_balance()
 	$rep->Line($rep->row);
 	$rep->NewLine();
 	$rep->Font('bold');
-	$rep->TextCol(0, 2, _("Total"));
 
-	$rep->TextCol(2, 3,	number_format2(abs($totprevd), $dec));
-	$rep->TextCol(3, 4,	number_format2(abs($totprevc), $dec));
-	$rep->TextCol(4, 5,	number_format2(abs($totcurrd), $dec));
-	$rep->TextCol(5, 6,	number_format2(abs($totcurrc), $dec));
-	$rep->TextCol(6, 7,	number_format2(abs($totcurrd + $totprevd), $dec));
-	$rep->TextCol(7, 8,	number_format2(abs($totcurrc + $totprevc), $dec));
-	$rep->NewLine();
-	$totprev = $totprevd + $totprevc;
-	$totcurr = $totcurrd + $totcurrc;
+	$prev = get_balance(null, $dimension, $dimension2, $begin, $from, false, false);
+	$curr = get_balance(null, $dimension, $dimension2, $from, $to, true, true);
+	$tot = get_balance(null, $dimension, $dimension2, $begin, $to, false, true);
+
+	if ($balances == 0)
+	{
+		$rep->TextCol(0, 2, _("Total"));
+		$rep->TextCol(2, 3,	number_format2($prev['debit'], $dec));
+		$rep->TextCol(3, 4,	number_format2($prev['credit'], $dec));
+		$rep->TextCol(4, 5,	number_format2($curr['debit'], $dec));
+		$rep->TextCol(5, 6,	number_format2($curr['credit'], $dec));
+		$rep->TextCol(6, 7,	number_format2($tot['debit'], $dec));
+		$rep->TextCol(7, 8,	number_format2($tot['credit'], $dec));
+		$rep->NewLine();
+	}	
 	$rep->TextCol(0, 2, _("Ending Balance"));
 
-	if ($totprev >= 0.0)
-		$rep->TextCol(2, 3,	number_format2(abs($totprev), $dec));
+	if ($prev['balance'] >= 0.0)
+		$rep->TextCol(2, 3,	number_format2($prev['balance'], $dec));
 	else
-		$rep->TextCol(3, 4,	number_format2(abs($totprev), $dec));
-	if ($totcurr >= 0.0)
-		$rep->TextCol(4, 5,	number_format2(abs($totcurr), $dec));
+		$rep->TextCol(3, 4,	number_format2(abs($prev['balance']), $dec));
+	if ($curr['balance'] >= 0.0)
+		$rep->TextCol(4, 5,	number_format2($curr['balance'], $dec));
 	else
-		$rep->TextCol(5, 6,	number_format2(abs($totcurr), $dec));
-	if ($totcurr + $totprev >= 0.0)
-		$rep->TextCol(6, 7,	number_format2(abs($totcurr + $totprev), $dec));
+		$rep->TextCol(5, 6,	number_format2(abs($curr['balance']), $dec));
+	if ($tot['balance'] >= 0.0)
+		$rep->TextCol(6, 7,	number_format2($tot['balance'], $dec));
 	else
-		$rep->TextCol(7, 8,	number_format2(abs($totcurr + $totprev), $dec));
+		$rep->TextCol(7, 8,	number_format2(abs($tot['balance']), $dec));
 	
 	$rep->Line($rep->row - 6);
 	
