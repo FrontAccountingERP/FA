@@ -188,17 +188,8 @@ function fmt_credit($row)
 		."trans.ov_freight + trans.ov_freight_tax + "
 		."trans.ov_discount) - trans.alloc,6) != 0) ";
    	}
-
-//    $sql .= " ORDER BY trans.tran_date";
-
-/*
-if (db_num_rows($result) == 0)
-{
-	display_note(_("The selected customer has no transactions for the given dates."), 1, 1);
-} else {
-*/
-//	start_table("$table_style width='80%'");
 //------------------------------------------------------------------------------------------------
+
 $cols = array(
 	_("Type") => array('type'=>'spec', 'fun'=>'systype_name'),
 	_("Number") => array('type'=>'spec', 'fun'=>'view_link'),

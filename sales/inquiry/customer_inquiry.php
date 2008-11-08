@@ -146,11 +146,6 @@ function fmt_credit($row)
 	return $value>0 ? price_format($value) : '';
 }
 
-function gl_link($row)
-{
-	return get_gl_view_str($row["type"], $row["trans_no"]);
-}
-
 function alloc_link($row)
 {
 	if ($row['type'] == 10)
