@@ -19,6 +19,15 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+08-Nov-2008 Janusz Dobrowolski
+! Rewritten for paged query results.
+$ /purchasing/inquiry/supplier_inquiry.php
+# Fixed broken table content after customer selector change.
+$ /sales/inquiry/customer_allocation_inquiry.php
+  /sales/inquiry/customer_inquiry.php
+  /sales/inquiry/sales_deliveries_view.php
+  /sales/inquiry/sales_orders_view.php
+
 05-Nov-2008 Janusz Dobrowolski
 ! Changed dbpager API.
 $ /includes/ui/db_pager_view.inc
