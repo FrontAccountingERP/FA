@@ -2,6 +2,7 @@
 
 $page_security=2;
 $path_to_root="../..";
+include($path_to_root . "/includes/db_pager.inc");
 include($path_to_root . "/includes/session.inc");
 
 include($path_to_root . "/purchasing/includes/purchasing_ui.inc");
@@ -40,7 +41,7 @@ date_cells(_("To:"), 'TransToDate');
 
 supp_allocations_list_cell("filterType", null);
 
-submit_cells('Refresh Inquiry', _("Search"),'',_('Refresh Inquiry'), true);
+submit_cells('RefreshInquiry', _("Search"),'',_('Refresh Inquiry'), true);
 
 end_row();
 end_table();
@@ -78,60 +79,6 @@ function display_supplier_summary($supplier_record)
     end_row();
     end_table(1);
 }
-
-//------------------------------------------------------------------------------------------------
-
-function get_transactions()
-{
-	global $db;
-
-    $date_after = date2sql($_POST['TransAfterDate']);
-    $date_to = date2sql($_POST['TransToDate']);
-
-    // Sherifoz 22.06.03 Also get the description
-    $sql = "SELECT ".TB_PREF."supp_trans.type, ".TB_PREF."supp_trans.trans_no,
-    	".TB_PREF."supp_trans.tran_date, ".TB_PREF."supp_trans.reference, ".TB_PREF."supp_trans.supp_reference,
-    	(".TB_PREF."supp_trans.ov_amount + ".TB_PREF."supp_trans.ov_gst  + ".TB_PREF."supp_trans.ov_discount) AS TotalAmount, ".TB_PREF."supp_trans.alloc AS Allocated,
-		((".TB_PREF."supp_trans.type = 20 OR ".TB_PREF."supp_trans.type = 21) AND ".TB_PREF."supp_trans.due_date < '" . date2sql(Today()) . "') AS OverDue,
-    	(ABS(".TB_PREF."supp_trans.ov_amount + ".TB_PREF."supp_trans.ov_gst  + ".TB_PREF."supp_trans.ov_discount - ".TB_PREF."supp_trans.alloc) <= 0.005) AS Settled,
-		".TB_PREF."suppliers.curr_code, ".TB_PREF."suppliers.supp_name, ".TB_PREF."supp_trans.due_date
-    	FROM ".TB_PREF."supp_trans, ".TB_PREF."suppliers
-    	WHERE ".TB_PREF."suppliers.supplier_id = ".TB_PREF."supp_trans.supplier_id
-     	AND ".TB_PREF."supp_trans.tran_date >= '$date_after'
-    	AND ".TB_PREF."supp_trans.tran_date <= '$date_to'";
-   	if ($_POST['supplier_id'] != reserved_words::get_all())
-   		$sql .= " AND ".TB_PREF."supp_trans.supplier_id = '" . $_POST['supplier_id'] . "'";
-   	if (isset($_POST['filterType']) && $_POST['filterType'] != reserved_words::get_all())
-   	{
-   		if (($_POST['filterType'] == '1')) 
-   		{
-   			$sql .= " AND (".TB_PREF."supp_trans.type = 20 OR ".TB_PREF."supp_trans.type = 2)";
-   		} 
-   		elseif (($_POST['filterType'] == '2')) 
-   		{
-   			$sql .= " AND ".TB_PREF."supp_trans.type = 20 ";
-   		} 
-   		elseif ($_POST['filterType'] == '3') 
-   		{
-			$sql .= " AND (".TB_PREF."supp_trans.type = 22 OR ".TB_PREF."supp_trans.type = 1) ";
-   		} 
-   		elseif (($_POST['filterType'] == '4') || ($_POST['filterType'] == '5')) 
-   		{
-			$sql .= " AND ".TB_PREF."supp_trans.type = 21  ";
-   		}
-
-   		if (($_POST['filterType'] == '2') || ($_POST['filterType'] == '5')) 
-   		{
-   			$today =  date2sql(Today());
-			$sql .= " AND ".TB_PREF."supp_trans.due_date < '$today' ";
-   		}
-   	}
-
-    $sql .= " ORDER BY ".TB_PREF."supp_trans.tran_date";
-
-    return db_query($sql,"No supplier transactions were returned");
-}
-
 //------------------------------------------------------------------------------------------------
 
 div_start('totals_tbl');
@@ -143,91 +90,138 @@ if (($_POST['supplier_id'] != "") && ($_POST['supplier_id'] != reserved_words::g
 div_end();
 
 //------------------------------------------------------------------------------------------------
-
-$result = get_transactions();
-
-if(get_post('Refresh Inquiry')) 
+function systype_name($dummy, $type)
 {
+	return systypes::name($type);
+}
+
+function trans_view($trans)
+{
+	return get_trans_view_str($trans["type"], $trans["trans_no"]);
+}
+
+function due_date($row)
+{
+	return ($row["type"]== 20) || ($row["type"]== 21)
+		 ? sql2date($row["due_date"]) : '';
+}
+
+function gl_view($row)
+{
+	return get_gl_view_str($row["type"], $row["trans_no"]);
+}
+
+function fmt_debit($row)
+{
+	$value = $row["TotalAmount"];
+	return $value>=0 ? price_format($value) : '';
+
+}
+
+function fmt_credit($row)
+{
+	$value = -$row["TotalAmount"];
+	return $value>0 ? price_format($value) : '';
+}
+
+function prt_link($row)
+{
+ 		return print_document_link($row['trans_no'], _("Print"), true, $row['type']);
+}
+
+function check_overdue($row)
+{
+	return $row['OverDue'] == 1
+		&& (abs($row["TotalAmount"]) - $row["Allocated"] != 0);
+}
+//------------------------------------------------------------------------------------------------
+
+    $date_after = date2sql($_POST['TransAfterDate']);
+    $date_to = date2sql($_POST['TransToDate']);
+
+    // Sherifoz 22.06.03 Also get the description
+    $sql = "SELECT trans.type, 
+		trans.trans_no,
+		trans.reference, 
+		supplier.supp_name, 
+		trans.supp_reference,
+    	trans.tran_date, 
+		trans.due_date,
+		supplier.curr_code, 
+    	(trans.ov_amount + trans.ov_gst  + trans.ov_discount) AS TotalAmount, 
+		trans.alloc AS Allocated,
+		((trans.type = 20 OR trans.type = 21) AND trans.due_date < '" . date2sql(Today()) . "') AS OverDue,
+    	(ABS(trans.ov_amount + trans.ov_gst  + trans.ov_discount - trans.alloc) <= 0.005) AS Settled
+    	FROM ".TB_PREF."supp_trans as trans, ".TB_PREF."suppliers as supplier
+    	WHERE supplier.supplier_id = trans.supplier_id
+     	AND trans.tran_date >= '$date_after'
+    	AND trans.tran_date <= '$date_to'";
+   	if ($_POST['supplier_id'] != reserved_words::get_all())
+   		$sql .= " AND trans.supplier_id = '" . $_POST['supplier_id'] . "'";
+   	if (isset($_POST['filterType']) && $_POST['filterType'] != reserved_words::get_all())
+   	{
+   		if (($_POST['filterType'] == '1')) 
+   		{
+   			$sql .= " AND (trans.type = 20 OR trans.type = 2)";
+   		} 
+   		elseif (($_POST['filterType'] == '2')) 
+   		{
+   			$sql .= " AND trans.type = 20 ";
+   		} 
+   		elseif ($_POST['filterType'] == '3') 
+   		{
+			$sql .= " AND (trans.type = 22 OR trans.type = 1) ";
+   		} 
+   		elseif (($_POST['filterType'] == '4') || ($_POST['filterType'] == '5')) 
+   		{
+			$sql .= " AND trans.type = 21  ";
+   		}
+
+   		if (($_POST['filterType'] == '2') || ($_POST['filterType'] == '5')) 
+   		{
+   			$today =  date2sql(Today());
+			$sql .= " AND trans.due_date < '$today' ";
+   		}
+   	}
+
+$cols = array(
+			_("Type") => array('type'=>'spec', 'fun'=>'systype_name', 'ord'=>''), 
+			_("#") => array('type'=>'spec', 'fun'=>'trans_view', 'ord'=>''), 
+			_("Reference"), 
+			_("Supplier") => 'text',
+			_("Supplier's Reference"), 
+			_("Date") => array('type'=>'date', 'ord'=>'desc'), 
+			_("Due Date") => array('type'=>'spec', 'fun'=>'due_date'), 
+			_("Currency") => 'text',
+			_("Debit") => array('type'=>'spec', 'fun'=>'fmt_debit'), 
+			_("Credit") => array('type'=>'insert', 'fun'=>'fmt_credit'), 
+			array('type'=>'insert', 'fun'=>'gl_view'),
+			);
+
+if ($_POST['supplier_id'] != reserved_words::get_all())
+{
+	$cols[_("Supplier")] = 'skip';
+	$cols[_("Currency")] = 'skip';
+}
+//------------------------------------------------------------------------------------------------
+
+
+/*show a table of the transactions returned by the sql */
+$table =& new_db_pager('trans_tbl', $sql, $cols);
+$table->set_marker('check_overdue', _("Marked items are overdue."));
+
+if(get_post('RefreshInquiry'))
+{
+	$table->set_sql($sql);
+	$table->set_columns($cols);
 	$Ajax->activate('trans_tbl');
 	$Ajax->activate('totals_tbl');
 }
 
-//------------------------------------------------------------------------------------------------
+start_form();
+display_db_pager($table);
+end_form();
 
-/*show a table of the transactions returned by the sql */
-
-div_start('trans_tbl');
-if (db_num_rows($result) == 0)
-{
-	display_note(_("There are no transactions to display for the given dates."), 1, 1);
-} else 
-{
- start_table("$table_style width=80%");
- if ($_POST['supplier_id'] == reserved_words::get_all())
-	$th = array(_("Type"), _("#"), _("Reference"), _("Supplier"),
-		_("Supplier's Reference"), _("Date"), _("Due Date"), _("Currency"),
-		_("Debit"), _("Credit"), "");
- else		
-	$th = array(_("Type"), _("#"), _("Reference"),
-		_("Supplier's Reference"), _("Date"), _("Due Date"),
-		_("Debit"), _("Credit"), "");
- table_header($th);
-
- $j = 1;
- $k = 0; //row colour counter
- $over_due = false;
- while ($myrow = db_fetch($result)) 
- {
-
-	if ($myrow['OverDue'] == 1 && $myrow['Settled'] == 0)
-	{
-		start_row("class='overduebg'");
-		$over_due = true;
-	} 
-	else 
-	{
-		alt_table_row_color($k);
-	}
-
-	$date = sql2date($myrow["tran_date"]);
-
-	$duedate = ((($myrow["type"]== 20) || ($myrow["type"]== 21))?sql2date($myrow["due_date"]):"");
-
-
-	label_cell(systypes::name($myrow["type"]));
-	label_cell(get_trans_view_str($myrow["type"],$myrow["trans_no"]));	
-	label_cell(get_trans_view_str($myrow["type"],$myrow["trans_no"], $myrow["reference"]));
-	if ($_POST['supplier_id'] == reserved_words::get_all())
-		label_cell($myrow["supp_name"]);
-	label_cell($myrow["supp_reference"]);
-	label_cell($date);
-	label_cell($duedate);
-    if ($_POST['supplier_id'] == reserved_words::get_all())
-    	label_cell($myrow["curr_code"]);
-    if ($myrow["TotalAmount"] >= 0)
-    	label_cell("");
-	amount_cell(abs($myrow["TotalAmount"]));
-	if ($myrow["TotalAmount"] < 0)
-		label_cell("");
-
-	label_cell(get_gl_view_str($myrow["type"], $myrow["trans_no"]));
-
-	end_row();
-
-	$j++;
-	If ($j == 12)
-	{
-		$j=1;
-		table_header($th);
-	}
- //end of page full new headings if
- }
- //end of while loop
-
- end_table(1);
- if ($over_due)
-	display_note(_("Marked items are overdue."), 0, 1, "class='overduefg'");
-}
-div_end();
 end_page();
+
 ?>
