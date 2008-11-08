@@ -116,7 +116,7 @@ function trans_view($trans)
 
 function due_date($row)
 {
-	return $row["type"] == 10 ? sql2date($row["due_date"]) : '';
+	return ($row["type"]==20 || $row["type"]==21)? sql2date($row["due_date"]) : '';
 }
 
 function fmt_balance($row)
@@ -144,6 +144,11 @@ function fmt_credit($row)
 	    !($row['type']==11 || $row['type']==12 || $row['type']==2) ?
 		-$row["TotalAmount"] : $row["TotalAmount"];
 	return $value>0 ? price_format($value) : '';
+}
+
+function gl_link($row)
+{
+	return get_gl_view_str($row["type"], $row["trans_no"]);
 }
 
 function alloc_link($row)
@@ -272,9 +277,10 @@ $cols = array(
 	_("Due Date") => array('type'=>'spec', 'fun'=>'due_date'),
 	_("Customer") => array('ord'=>''), 
 	_("Branch") => array('ord'=>''), 
-	_("Currency"),
+	_("Currency") => 'text',
 	_("Debit") => array('type'=>'spec', 'fun'=>'fmt_debit'), 
 	_("Credit") => array('type'=>'insert', 'fun'=>'fmt_credit'), 
+		array('type'=>'insert', 'fun'=>'gl_view'),
 		array('type'=>'insert', 'fun'=>'alloc_link'),
 		array('type'=>'insert', 'fun'=>'credit_link'),
 		array('type'=>'insert', 'fun'=>'edit_link'),
@@ -282,8 +288,8 @@ $cols = array(
 	);
 
 if ($_POST['customer_id'] != reserved_words::get_all()) {
-	array_remove($cols, 6);
-	array_remove($cols, 8);
+	$cols[_("Customer")] = 'skip';
+	$cols[_("Currency")] = 'skip';
 }
 
 
@@ -294,6 +300,7 @@ $table->set_marker('check_overdue', _("Marked items are overdue."));
 if(get_post('RefreshInquiry'))
 {
 	$table->set_sql($sql);
+	$table->set_columns($cols);
 	$Ajax->activate('trans_tbl');
 	$Ajax->activate('totals_tbl');
 }

@@ -256,6 +256,7 @@ $table->set_marker('check_overdue', _("Marked items are overdue."));
 if(get_post('SearchOrders')) 
 {
 	$table->set_sql($sql);
+	$table->set_columns($cols);
 	$Ajax->activate('doc_tbl');
 }
 

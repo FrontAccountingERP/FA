@@ -206,8 +206,8 @@ $cols = array(
 	_("Order") => array('type'=>'spec', 'fun'=>'order_link'), 
 	_("Date") => array('type'=>'date', 'ord'=>'asc'),
 	_("Due Date") => array('type'=>'spec', 'fun'=>'due_date'),
-	_("Customer"), 
-	_("Currency"),
+	_("Customer") => 'text', 
+	_("Currency") => 'text',
 	_("Debit") => array('type'=>'spec', 'fun'=>'fmt_debit'), 
 	_("Credit") => array('type'=>'insert', 'fun'=>'fmt_credit'), 
 	_("Allocated") => 'amount', 
@@ -216,7 +216,8 @@ $cols = array(
 	);
 
 if ($_POST['customer_id'] != reserved_words::get_all()) {
-	array_remove($cols, 6, 2);
+	$cols[_("Customer")] = 'skip';
+	$cols[_("Currency")] = 'skip';
 }
 
 $table =& new_db_pager('doc_tbl', $sql, $cols);
@@ -226,6 +227,7 @@ $table->set_marker('check_overdue', _("Marked items are overdue."));
 if(get_post('RefreshInquiry')) 
 {
 	$table->set_sql($sql);
+	$table->set_columns($cols);
 	$Ajax->activate('doc_tbl');
 }
 
