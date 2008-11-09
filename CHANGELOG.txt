@@ -53,6 +53,11 @@ $ /sales/includes/db/cust_trans_db.inc
   /sales/includes/db/custalloc_db.inc
 # Small fix to avoid sql conflicts
 $ /sales/includes/db/sales_points_db.inc
+# Changes to POS addition related to above changes.
+$ /includes/ui/ui_lists.inc
+  /sales/includes/db/sales_points_db.inc
+  /sales/manage/sales_points.php
+  /sql/alter2.1.sql
 
 09-Nov-2008 Joe Hunt
 ! changed Quick Entries in Bank Payments/Deposits (Banking and General Ledger) to also work as Automatic Codings.
