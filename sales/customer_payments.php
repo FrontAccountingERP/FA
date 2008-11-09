@@ -24,8 +24,6 @@ check_db_has_customers(_("There are no customers defined in the system."));
 
 check_db_has_bank_accounts(_("There are no bank accounts defined in the system."));
 
-check_db_has_bank_trans_types(_("There are no bank payment types defined in the system."));
-
 //----------------------------------------------------------------------------------------
 if ($ret = context_restore()) {
 	if(isset($ret['customer_id']))
@@ -36,7 +34,7 @@ if ($ret = context_restore()) {
 if (isset($_POST['_customer_id_editor'])) {
 	context_call($path_to_root.'/sales/manage/customers.php?debtor_no='.$_POST['customer_id'], 
 		array( 'customer_id', 'BranchID', 'bank_account', 'DateBanked', 
-			'ReceiptType', 'ref', 'amount', 'discount', 'memo_') );
+			'ref', 'amount', 'discount', 'memo_') );
 }
 
 if (isset($_GET['AddedID'])) {
@@ -121,9 +119,8 @@ if (isset($_POST['_DateBanked_changed'])) {
 
 if (isset($_POST['AddPaymentItem'])) {
 	$payment_no = write_customer_payment(0, $_POST['customer_id'], $_POST['BranchID'],
-		$_POST['bank_account'], $_POST['DateBanked'], $_POST['ReceiptType'], $_POST['ref'],
+		$_POST['bank_account'], $_POST['DateBanked'], $_POST['ref'],
 		input_num('amount'), input_num('discount'), $_POST['memo_']);
-
 	meta_forward($_SERVER['PHP_SELF'], "AddedID=$payment_no");
 }
 
@@ -200,8 +197,6 @@ function display_item_form()
 		if ($cust_currency != $bank_currency) {
 			exchange_rate_display($cust_currency, $bank_currency, $_POST['DateBanked']);
 		}
-
-		bank_trans_types_list_row(_("Type:"), 'ReceiptType', null);
 
 		text_row(_("Reference:"), 'ref', null, 20, 40);
 

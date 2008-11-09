@@ -111,22 +111,6 @@ function check_db_has_movement_types($msg)
     }	
 }
 
-function db_has_bank_trans_types()
-{
-	return check_empty_result("SELECT COUNT(*) FROM ".TB_PREF."bank_trans_types");
-}
-
-function check_db_has_bank_trans_types($msg)
-{
-	global $path_to_root;
-    if (!db_has_bank_trans_types()) 
-    {
-    	display_error($msg, true);
-    	end_page();
-    	exit;	
-    }	
-}
-
 function db_customer_has_branches($customer_id)
 {
 	return check_empty_result("SELECT COUNT(*) FROM ".TB_PREF."cust_branch WHERE debtor_no='$customer_id'");

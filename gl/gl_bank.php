@@ -31,8 +31,6 @@ page($_SESSION['page_title'], false, false, '', $js);
 //-----------------------------------------------------------------------------------------------
 check_db_has_bank_accounts(_("There are no bank accounts defined in the system."));
 
-check_db_has_bank_trans_types(_("There are no bank payment types defined in the system."));
-
 //----------------------------------------------------------------------------------------
 if ($ret = context_restore()) {
 	if(isset($ret['supplier_id']))
@@ -55,7 +53,7 @@ if (isset($_POST['_person_id_editor'])) {
 //
 context_call($path_to_root.$editor.$_POST['person_id'], 
 	array('bank_account', 'date_', 'PayType', 'person_id',
-		'PersonDetailID', 'type', 'ref', 'memo_') );
+		'PersonDetailID', 'ref', 'memo_') );
 }
 //--------------------------------------------------------------------------------------------------
 function line_start_focus() {
@@ -170,7 +168,7 @@ if (isset($_POST['Process']))
 		$_SESSION['pay_items']->trans_type, $_POST['bank_account'],
 		$_SESSION['pay_items'], $_POST['date_'],
 		$_POST['PayType'], $_POST['person_id'], get_post('PersonDetailID'),
-		$_POST['type'],	$_POST['ref'], $_POST['memo_']);
+		$_POST['ref'], $_POST['memo_']);
 
 	$trans_type = $trans[0];
    	$trans_no = $trans[1];

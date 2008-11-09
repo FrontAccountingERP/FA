@@ -41,7 +41,7 @@ function get_supp_trans($trans_no, $trans_type=-1)
 	{
 		// it's a payment so also get the bank account
 		$sql .= ", ".TB_PREF."bank_accounts.bank_name, ".TB_PREF."bank_accounts.bank_account_name, ".TB_PREF."bank_accounts.bank_curr_code,
-			".TB_PREF."bank_trans_types.name AS BankTransType, ".TB_PREF."bank_trans.amount AS BankAmount,
+			".TB_PREF."bank_accounts.account_type AS BankTransType, ".TB_PREF."bank_trans.amount AS BankAmount,
 			".TB_PREF."bank_trans.ref ";
 	}
 
@@ -50,7 +50,7 @@ function get_supp_trans($trans_no, $trans_type=-1)
 	if ($trans_type == 22)
 	{
 		// it's a payment so also get the bank account
-		$sql .= ", ".TB_PREF."bank_trans, ".TB_PREF."bank_accounts, ".TB_PREF."bank_trans_types ";
+		$sql .= ", ".TB_PREF."bank_trans, ".TB_PREF."bank_accounts";
 	}
 
 	$sql .= " WHERE ".TB_PREF."supp_trans.trans_no=$trans_no
@@ -64,8 +64,7 @@ function get_supp_trans($trans_no, $trans_type=-1)
 		// it's a payment so also get the bank account
 		$sql .= " AND ".TB_PREF."bank_trans.trans_no =$trans_no
 			AND ".TB_PREF."bank_trans.type=$trans_type
-			AND ".TB_PREF."bank_trans_types.id = ".TB_PREF."bank_trans.bank_trans_type_id
-			AND ".TB_PREF."bank_accounts.account_code=".TB_PREF."bank_trans.bank_act ";
+			AND ".TB_PREF."bank_accounts.id=".TB_PREF."bank_trans.bank_act ";
 	}
 
 	$result = db_query($sql, "Cannot retreive a supplier transaction");

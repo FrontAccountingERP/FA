@@ -1,12 +1,13 @@
 <?php
 
-function add_supp_payment($supplier_id, $date_, $payment_type, $bank_account,
+function add_supp_payment($supplier_id, $date_, $bank_account,
 	$amount, $discount, $ref, $memo_)
 {
 	begin_transaction();
 
    	$supplier_currency = get_supplier_currency($supplier_id);
     $bank_account_currency = get_bank_account_currency($bank_account);
+	$bank_gl_account = get_bank_gl_account($bank_account);
 
 	$supp_amount = exchange_from_to($amount, $bank_account_currency, $supplier_currency, $date_);
 	$supp_discount = exchange_from_to($discount, $bank_account_currency, $supplier_currency, $date_);
@@ -34,13 +35,13 @@ function add_supp_payment($supplier_id, $date_, $payment_type, $bank_account,
 
 	if ($supp_amount != 0)
 	{
-		add_gl_trans_supplier($trans_type, $payment_id, $date_, $bank_account, 0, 0,
+		add_gl_trans_supplier($trans_type, $payment_id, $date_, $bank_gl_account, 0, 0,
 			-$supp_amount, $supplier_id);
 	}
 
    /*now enter the bank_trans entry */
 	add_bank_trans($trans_type, $payment_id, $bank_account, $ref,
-		$date_, $payment_type, -($amount), payment_person_types::supplier(),
+		$date_, -($amount), payment_person_types::supplier(),
 		$supplier_id, $bank_account_currency,
 		"Could not add the supplier payment bank transaction");
 

@@ -72,7 +72,7 @@ if ($show_both_amounts)
 end_row();
 start_row();
 label_cells(_("Date"), sql2date($from_trans['trans_date']), "class='tableheader2'");
-label_cells(_("Transfer Type"), $from_trans['BankTransType'], "class='tableheader2'");
+label_cells(_("Transfer Type"), bank_account_types::transfer_type($from_trans['account_type']), "class='tableheader2'");
 label_cells(_("Reference"), $from_trans['ref'], "class='tableheader2'");
 end_row();
 comments_display_row(systypes::bank_transfer(), $trans_no);

@@ -60,7 +60,7 @@ label_cells(_("Date"), sql2date($to_trans['trans_date']), "class='tableheader2'"
 end_row();
 start_row();
 label_cells(_("From"), payment_person_types::person_name($to_trans['person_type_id'], $to_trans['person_id']), "class='tableheader2'", "colspan=$colspan1");
-label_cells(_("Deposit Type"), $to_trans['BankTransType'], "class='tableheader2'");
+label_cells(_("Deposit Type"), bank_account_types::transfer_type($to_trans['account_type']), "class='tableheader2'");
 end_row();
 start_row();
 label_cells(_("Reference"), $to_trans['ref'], "class='tableheader2'", "colspan=$colspan2");

@@ -1,3 +1,14 @@
+ALTER TABLE `0_bank_accounts` DROP PRIMARY KEY;
+ALTER TABLE `0_bank_accounts` ADD `id` SMALLINT(6) AUTO_INCREMENT PRIMARY KEY;
+ALTER TABLE `0_bank_accounts` ADD KEY (`account_code`);
+
+# Version for any MySQL but usable with digital only gl account codes:
+# UPDATE 0_bank_accounts SET id = account_code;
+# For any Applicable only to  MySQL >=4.0.4 :
+UPDATE `0_bank_trans`, `0_bank_accounts` SET 0_bank_trans.bank_act=0_bank_accounts.id 
+	WHERE 0_bank_trans.bank_act=0_bank_accounts.account_code; */
+
+
 ALTER TABLE `0_users` ADD `query_size` TINYINT(1) DEFAULT '10';
 
 DROP TABLE IF EXISTS `0_sales_pos`;

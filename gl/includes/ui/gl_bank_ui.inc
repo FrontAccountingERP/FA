@@ -87,8 +87,6 @@ function display_bank_header(&$order)
 
 	echo "<table>"; // inner table
 
-	bank_trans_types_list_row(_("Type:"), 'type', null);
-
 	if (isset($_GET['NewPayment']))
     	ref_row(_("Reference:"), 'ref', '', references::get_next(systypes::bank_payment()));
     else

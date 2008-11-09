@@ -6,7 +6,7 @@
 // $amount is in $currency
 // $date_ is display date (non-sql)
 
-function add_bank_trans($type, $trans_no, $bank_act, $ref, $date_, $bank_trans_type_id,
+function add_bank_trans($type, $trans_no, $bank_act, $ref, $date_,
 	$amount, $person_type_id, $person_id, $currency="", $err_msg="")
 {
 	$sqlDate = date2sql($date_);
@@ -26,9 +26,9 @@ function add_bank_trans($type, $trans_no, $bank_act, $ref, $date_, $bank_trans_t
 	//$BankToHomeCurrencyRate = get_exchange_rate_to_home_currency($bank_account_currency, $date_);
 
 	$sql = "INSERT INTO ".TB_PREF."bank_trans (type, trans_no, bank_act, ref,
-		trans_date, bank_trans_type_id, amount, person_type_id, person_id) ";
+		trans_date, amount, person_type_id, person_id) ";
 
-	$sql .= "VALUES ($type, $trans_no, '$bank_act', ".db_escape($ref).", '$sqlDate', '$bank_trans_type_id',
+	$sql .= "VALUES ($type, $trans_no, '$bank_act', ".db_escape($ref).", '$sqlDate',
 		$amount_bank, $person_type_id, ". db_escape($person_id).")";
 
 	if ($err_msg == "")
@@ -52,10 +52,9 @@ function exists_bank_trans($type, $type_no)
 
 function get_bank_trans($type, $trans_no=null, $person_type_id=null, $person_id=null)
 {
-	$sql = "SELECT *, bank_account_name, account_code, bank_curr_code, name AS BankTransType
-		FROM ".TB_PREF."bank_trans, ".TB_PREF."bank_accounts, ".TB_PREF."bank_trans_types
-		WHERE ".TB_PREF."bank_trans_types.id = ".TB_PREF."bank_trans.bank_trans_type_id
-		AND ".TB_PREF."bank_accounts.account_code=".TB_PREF."bank_trans.bank_act ";
+	$sql = "SELECT *, bank_account_name, account_code, bank_curr_code
+		FROM ".TB_PREF."bank_trans, ".TB_PREF."bank_accounts
+		WHERE ".TB_PREF."bank_accounts.id=".TB_PREF."bank_trans.bank_act ";
 	if ($type != null)
 		$sql .= " AND type=$type ";
 	if ($trans_no != null)

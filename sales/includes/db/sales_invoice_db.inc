@@ -157,7 +157,7 @@ function write_sales_invoice(&$invoice)
 			// and change line below.
 			$discount = 0; // $invoice->cash_discount*$amount;
 			$pmtno = write_customer_payment(0, $invoice->customer_id, 
-				$invoice->Branch, $invoice->cash_account, $date_, 1,
+				$invoice->Branch, $invoice->cash_account, $date_,
 				references::get_next(12), $amount-$discount, $discount,
 				_('Cash invoice').' '.$invoice->trans_no);
 			add_cust_allocation($amount, 12, $pmtno, 10, $invoice_no);

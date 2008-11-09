@@ -32,7 +32,8 @@ label_cells(_("Amount"), price_format($receipt['ov_amount']), "class='tableheade
 label_cells(_("Discount"), price_format($receipt['ov_discount']), "class='tableheader2'");
 end_row();
 start_row();
-label_cells(_("Payment Type"), $receipt['BankTransType'], "class='tableheader2'");
+label_cells(_("Payment Type"), 
+	bank_account_types::transfer_type($receipt['BankTransType']), "class='tableheader2'");
 label_cells(_("Reference"), $receipt['reference'], "class='tableheader2'", "colspan=4");
 end_row();
 comments_display_row(systypes::cust_payment(), $trans_id);

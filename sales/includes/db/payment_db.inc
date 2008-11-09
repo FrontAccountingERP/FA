@@ -3,7 +3,7 @@
   Write/update customer payment.
 */
 function write_customer_payment($trans_no, $customer_id, $branch_id, $bank_account,
-	$date_, $receipt_type, $ref, $amount, $discount, $memo_)
+	$date_, $ref, $amount, $discount, $memo_)
 {
 	begin_transaction();
 
@@ -11,6 +11,8 @@ function write_customer_payment($trans_no, $customer_id, $branch_id, $bank_accou
 
 	$payment_no = write_customer_trans(12, $trans_no,
 	    $customer_id, $branch_id, $date_, $ref, $amount, $discount);
+
+	$bank_gl_account = get_bank_gl_account($bank_account);
 
 	if ($trans_no != 0) {
 	  delete_comments(12, $trans_no);
@@ -21,7 +23,7 @@ function write_customer_payment($trans_no, $customer_id, $branch_id, $bank_accou
 
 	/* Bank account entry first */
 	add_gl_trans_customer(12, $payment_no, $date_,
-		$bank_account, 0, 0, $amount,  $customer_id,
+		$bank_gl_account, 0, 0, $amount,  $customer_id,
 		"Cannot insert a GL transaction for the bank account debit");
 
 	if ($branch_id != reserved_words::get_any_numeric()) {
@@ -52,7 +54,7 @@ function write_customer_payment($trans_no, $customer_id, $branch_id, $bank_accou
 
 	/*now enter the bank_trans entry */
 	add_bank_trans(12, $payment_no, $bank_account, $ref,
-		$date_, $receipt_type, $amount, payment_person_types::customer(), $customer_id,
+		$date_, $amount, payment_person_types::customer(), $customer_id,
 		get_customer_currency($customer_id));
 
 	add_comments(12, $payment_no, $date_, $memo_);

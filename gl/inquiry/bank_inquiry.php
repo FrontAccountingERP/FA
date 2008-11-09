@@ -49,11 +49,10 @@ $date_after = date2sql($_POST['TransAfterDate']);
 $date_to = date2sql($_POST['TransToDate']);
 if (!isset($_POST['bank_account']))
 	$_POST['bank_account'] = "";
-$sql = "SELECT ".TB_PREF."bank_trans.*,name AS BankTransType FROM ".TB_PREF."bank_trans, ".TB_PREF."bank_trans_types
+$sql = "SELECT ".TB_PREF."bank_trans.* FROM ".TB_PREF."bank_trans
 	WHERE ".TB_PREF."bank_trans.bank_act = '" . $_POST['bank_account'] . "'
 	AND trans_date >= '$date_after'
 	AND trans_date <= '$date_to'
-	AND ".TB_PREF."bank_trans_types.id = ".TB_PREF."bank_trans.bank_trans_type_id
 	ORDER BY trans_date,".TB_PREF."bank_trans.id";
 
 $result = db_query($sql,"The transactions for '" . $_POST['bank_account'] . "' could not be retrieved");
@@ -94,7 +93,6 @@ while ($myrow = db_fetch($result))
 	label_cell(systypes::name($myrow["type"]));
 	label_cell(get_trans_view_str($myrow["type"],$myrow["trans_no"]));
 	label_cell(get_trans_view_str($myrow["type"],$myrow["trans_no"],$myrow['ref']));
-	label_cell($myrow["BankTransType"]);
 	label_cell($trandate);
 	display_debit_or_credit_cells($myrow["amount"]);
 	amount_cell($running_total);

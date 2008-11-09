@@ -29,8 +29,6 @@ check_db_has_suppliers(_("There are no suppliers defined in the system."));
 
 check_db_has_bank_accounts(_("There are no bank accounts defined in the system."));
 
-check_db_has_bank_trans_types(_("There are no bank payment types defined in the system."));
-
 //----------------------------------------------------------------------------------------
 if ($ret = context_restore()) {
 	if(isset($ret['supplier_id']))
@@ -38,8 +36,8 @@ if ($ret = context_restore()) {
 }
 if (isset($_POST['_supplier_id_editor'])) {
 	context_call($path_to_root.'/purchasing/manage/suppliers.php?supplier_id='.$_POST['supplier_id'], 
-		array( 'supplier_id', 'bank_account', 'DatePaid', 
-			'PaymentType', 'ref', 'amount', 'discount', 'memo_') );
+		array( 'supplier_id', 'bank_account', 'DatePaid', 'ref', 'amount', 
+			'discount', 'memo_') );
 }
 if (isset($_POST['_DatePaid_changed'])) {
   $Ajax->activate('_ex_rate');
@@ -102,8 +100,6 @@ function display_controls()
 	{
 		exchange_rate_display($bank_currency, $supplier_currency, $_POST['DatePaid']);
 	}
-
-	bank_trans_types_list_row(_("Payment Type:"), 'PaymentType', null);
 
     ref_row(_("Reference:"), 'ref', '', references::get_next(22));
 
@@ -193,13 +189,12 @@ function check_inputs()
 function handle_add_payment()
 {
 	$payment_id = add_supp_payment($_POST['supplier_id'], $_POST['DatePaid'],
-		$_POST['PaymentType'], $_POST['bank_account'],
-		input_num('amount'), input_num('discount'), $_POST['ref'], $_POST['memo_']);
+		$_POST['bank_account'],	input_num('amount'), input_num('discount'), 
+		$_POST['ref'], $_POST['memo_']);
 
 	//unset($_POST['supplier_id']);
    	unset($_POST['bank_account']);
    	unset($_POST['DatePaid']);
-   	unset($_POST['PaymentType']);
    	unset($_POST['currency']);
    	unset($_POST['memo_']);
    	unset($_POST['amount']);

@@ -110,11 +110,11 @@ class systypes
 //----------------------------------------------------------------------------------
 
 $bank_account_types_array = array (
-						0=> array ('id' => 0, 'name' => _("Savings Account")),
-						1=> array ('id' => 1, 'name' => _("Chequing Account")),
-						2=> array ('id' => 2, 'name' => _("Credit Account")),
-						3=> array ('id' => 3, 'name' => _("Cash Account"))
-			 			);
+	0=> array ('id' => 0, 'name' => _("Savings Account"), 'ptype' => _("Transfer")),
+	1=> array ('id' => 1, 'name' => _("Chequing Account"),'ptype' => _("Cheque")),
+	2=> array ('id' => 2, 'name' => _("Credit Account"), 'ptype' => _("Credit")),
+	3=> array ('id' => 3, 'name' => _("Cash Account"), 'ptype' => _("Cash"))
+	);
 
 class bank_account_types 
 {
@@ -130,8 +130,13 @@ class bank_account_types
 		global $bank_account_types_array;
 		return $bank_account_types_array[$index]['name'];
 	}
+	
+	function transfer_type($index) 
+	{
+		global $bank_account_types_array;
+		return $bank_account_types_array[$index]['ptype'];
+	}
 }
-
 //----------------------------------------------------------------------------------
 
 include_once($path_to_root . "/manufacturing/includes/manufacturing_db.inc");

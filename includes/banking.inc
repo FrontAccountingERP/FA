@@ -3,13 +3,22 @@
 include_once($path_to_root . "/gl/includes/gl_db.inc");
 
 //----------------------------------------------------------------------------------
-
+//	Check if given account is used by any bank_account. 
+//	Returns id of first bank_account using account_code, null otherwise.
+//
+//	Keep in mind that direct posting to bank account is depreciated
+//	because we have no way to select right bank account if 
+//	there is more than one using given gl account.
+//
 function is_bank_account($account_code)
 {
-	$sql= "SELECT account_code FROM ".TB_PREF."bank_accounts WHERE account_code='$account_code'";
-	$result = db_query($sql, "retreive bank account currency");
-
-	return (db_num_rows($result) > 0);
+	$sql= "SELECT id FROM ".TB_PREF."bank_accounts WHERE account_code='$account_code'";
+	$result = db_query($sql, "checking account is bank account");
+	if (db_num_rows($result) > 0) {
+		$acct = db_fetch($result);
+		return $acct['id'];
+	} else
+		return false;
 }
 
 //----------------------------------------------------------------------------------
@@ -35,9 +44,9 @@ function get_company_currency()
 
 //----------------------------------------------------------------------------------
 
-function get_bank_account_currency($bankAccount)
+function get_bank_account_currency($id)
 {
-	$sql= "SELECT bank_curr_code FROM ".TB_PREF."bank_accounts WHERE account_code='$bankAccount'";
+	$sql= "SELECT bank_curr_code FROM ".TB_PREF."bank_accounts WHERE id='$id'";
 	$result = db_query($sql, "retreive bank account currency");
 
 	$myrow = db_fetch_row($result);

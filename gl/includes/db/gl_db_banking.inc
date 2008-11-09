@@ -1,9 +1,13 @@
 <?php
 
 //----------------------------------------------------------------------------------
-
+//	Add bank tranfer to database.
+//
+//	$from_account - source bank account id
+//	$to_account   -	target bank account id
+//	
 function add_bank_transfer($from_account, $to_account, $date_,
-	$amount, $payment_type, $ref, $memo_)
+	$amount, $ref, $memo_)
 {
 	begin_transaction();
 
@@ -13,24 +17,25 @@ function add_bank_transfer($from_account, $to_account, $date_,
 
 	$trans_no = get_next_trans_no($trans_type);
 
+	$from_gl_account = get_bank_gl_account($from_account);
+	$to_gl_account = get_bank_gl_account($to_account);
+
 	// do the source account postings
-    add_gl_trans($trans_type, $trans_no, $date_, $from_account, 0, 0, "",
+    add_gl_trans($trans_type, $trans_no, $date_, $from_gl_account, 0, 0, "",
 		-$amount, $currency);
 
     add_bank_trans($trans_type, $trans_no, $from_account, $ref,
-		$date_, $payment_type, -$amount,
+		$date_, -$amount,
 		payment_person_types::misc(), "", $currency,
 		"Cannot insert a source bank transaction");
 
 	// do the destination account postings
-	add_gl_trans($trans_type, $trans_no, $date_, $to_account, 0, 0, "",
+	add_gl_trans($trans_type, $trans_no, $date_, $to_gl_account, 0, 0, "",
 		$amount, $currency);
 
 	add_bank_trans($trans_type, $trans_no, $to_account, $ref,
-		$date_, $payment_type, $amount,
-		payment_person_types::misc(), "",
-		$currency,
-		"Cannot insert a destination bank transaction");
+		$date_, $amount, payment_person_types::misc(), "",
+		$currency, "Cannot insert a destination bank transaction");
 
 	add_comments($trans_type, $trans_no, $date_, $memo_);
 
@@ -42,13 +47,18 @@ function add_bank_transfer($from_account, $to_account, $date_,
 }
 
 //----------------------------------------------------------------------------------
-
-// $amount is in $from_account's currency
-
+//	Add bank payment or deposit to database.
+//
+//	$from_account - bank account id
+//  $item - transaction cart (line item's amounts in bank account's currency)
+//  $person_type_id - defines type of $person_id identifiers
+//  $person_id	- supplier/customer/other id
+// $person_detail_id - customer branch id or not used
+//
 // returns an array of (inserted trans type, trans no)
 
 function add_bank_transaction($trans_type, $from_account, $items, $date_,
-	$person_type_id, $person_id, $person_detail_id,	$type, $ref, $memo_)
+	$person_type_id, $person_id, $person_detail_id,	$ref, $memo_)
 {
 	// we can only handle type 1 (payment)and type 2 (deposit)
 	if ($trans_type != systypes::bank_payment() && $trans_type != systypes::bank_deposit())
@@ -57,6 +67,7 @@ function add_bank_transaction($trans_type, $from_account, $items, $date_,
 	begin_transaction();
 
 	$currency = get_bank_account_currency($from_account);
+	$bank_gl_account = get_bank_gl_account($from_account);
 
 	// the gl items are already inversed/negated for type 2 (deposit)
 	$total_amount = $items->gl_items_total();
@@ -93,14 +104,12 @@ function add_bank_transaction($trans_type, $from_account, $items, $date_,
     }
 
 	// do the source account postings
-    add_gl_trans($trans_type, $trans_no, $date_, $from_account, 0, 0, "",
+    add_gl_trans($trans_type, $trans_no, $date_, $bank_gl_account, 0, 0, "",
     	-$total_amount, $currency, $person_type_id, $person_id);
 
     add_bank_trans($trans_type, $trans_no, $from_account, $ref,
-    	$date_, $type, -$total_amount,
-    	$person_type_id, $person_id,
-    	$currency,
-    	"Cannot insert a source bank transaction");
+    	$date_, -$total_amount,	$person_type_id, $person_id,
+    	$currency, "Cannot insert a source bank transaction");
 
 	foreach ($items->gl_items as $gl_item)
 	{
@@ -120,9 +129,8 @@ function add_bank_transaction($trans_type, $from_account, $items, $date_,
     	if ($is_bank_to)
     	{
     		add_bank_trans($trans_type, $trans_no, $gl_item->code_id, $ref,
-    			$date_, $type, $gl_item->amount,
-    			$person_type_id, $person_id, $currency,
-    			"Cannot insert a destination bank transaction");
+    			$date_, $gl_item->amount, $person_type_id, $person_id, 
+				$currency, "Cannot insert a destination bank transaction");
     	}
 	}
 

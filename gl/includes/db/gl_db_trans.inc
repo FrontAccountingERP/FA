@@ -193,6 +193,7 @@ function add_journal_entries($items, $date_, $ref, $reverse, $memo_=null)
 
 	foreach ($items as $journal_item)
 	{
+		// post to first found bank account using given gl acount code.
 		$is_bank_to = is_bank_account($journal_item->code_id);
 
 		add_gl_trans($trans_type, $trans_id, $date_, $journal_item->code_id,
@@ -200,8 +201,8 @@ function add_journal_entries($items, $date_, $ref, $reverse, $memo_=null)
 			$journal_item->reference, $journal_item->amount);
     	if ($is_bank_to)
     	{
-    		add_bank_trans($trans_type, $trans_id, $journal_item->code_id, $ref,
-    			$date_, 3, $journal_item->amount,
+    		add_bank_trans($trans_type, $trans_id, $is_bank_to, $ref,
+    			$date_, $journal_item->amount,
     			0, "", get_company_currency(),
     			"Cannot insert a destination bank transaction");
     	}
@@ -229,8 +230,8 @@ function add_journal_entries($items, $date_, $ref, $reverse, $memo_=null)
     			$journal_item->reference, -$journal_item->amount);
     		if ($is_bank_to)
     		{
-    			add_bank_trans($trans_type, $trans_id_reverse, $journal_item->code_id, $ref,
-    				$reversingDate, 3, $journal_item->amount,
+    			add_bank_trans($trans_type, $trans_id_reverse, $is_bank_to, $ref,
+    				$reversingDate, $journal_item->amount,
     				0, "", get_company_currency(),
     				"Cannot insert a destination bank transaction");
     		}

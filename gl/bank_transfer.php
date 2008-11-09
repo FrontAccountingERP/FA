@@ -19,7 +19,6 @@ if ($use_date_picker)
 page(_("Transfer between Bank Accounts"), false, false, "", $js);
 
 check_db_has_bank_accounts(_("There are no bank accounts defined in the system."));
-check_db_has_bank_trans_types(_("There are no bank transfer types defined in the system."));
 
 //----------------------------------------------------------------------------------------
 
@@ -76,8 +75,6 @@ function gl_payment_controls()
 	echo "</table>";
 	echo "</td><td valign=top class='tableseparator'>"; // outer table
 	echo "<table>";
-
-	bank_trans_types_list_row(_("Transfer Type:"), 'TransferType', null);
 
     ref_row(_("Reference:"), 'ref', '', references::get_next(systypes::bank_transfer()));
 
@@ -148,8 +145,7 @@ function handle_add_deposit()
 	global $path_to_root;
 
 	$trans_no = add_bank_transfer($_POST['FromBankAccount'], $_POST['ToBankAccount'],
-		$_POST['DatePaid'], input_num('amount'),
-		$_POST['TransferType'], $_POST['ref'], $_POST['memo_']);
+		$_POST['DatePaid'], input_num('amount'), $_POST['ref'], $_POST['memo_']);
 
 	meta_forward($_SERVER['PHP_SELF'], "AddedID=$trans_no");
 }

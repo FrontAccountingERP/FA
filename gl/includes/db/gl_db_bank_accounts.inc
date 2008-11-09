@@ -14,36 +14,49 @@ function add_bank_account($account_code, $account_type, $bank_account_name, $ban
 
 //---------------------------------------------------------------------------------------------
 
-function update_bank_account($account_code, $account_type, $bank_account_name, $bank_name, $bank_account_number,
+function update_bank_account($id, $account_code, $account_type, $bank_account_name, $bank_name, $bank_account_number,
 	$bank_address, $bank_curr_code)
 {
 	$sql = "UPDATE ".TB_PREF."bank_accounts	SET account_type = $account_type,
+		account_code=".db_escape($account_code).",
 		bank_account_name=".db_escape($bank_account_name).", bank_name=".db_escape($bank_name).",
 		bank_account_number=".db_escape($bank_account_number).", bank_curr_code='$bank_curr_code',
-		bank_address=".db_escape($bank_address)." WHERE account_code = '$account_code'";
+		bank_address=".db_escape($bank_address)." WHERE id = '$id'";
 
 	db_query($sql, "could not update bank account for $account_code");
 }
 
 //---------------------------------------------------------------------------------------------
 
-function delete_bank_account($account_code)
+function delete_bank_account($id)
 {
-	$sql = "DELETE FROM ".TB_PREF."bank_accounts WHERE account_code='$account_code'";
+	$sql = "DELETE FROM ".TB_PREF."bank_accounts WHERE id='$id'";
 
-	db_query($sql,"could not delete bank account for $account_code");
+	db_query($sql,"could not delete bank account for $id");
 }
 
 
 //---------------------------------------------------------------------------------------------
 
-function get_bank_account($account_code)
+function get_bank_account($id)
 {
-	$sql = "SELECT * FROM ".TB_PREF."bank_accounts WHERE account_code='$account_code'";
+	$sql = "SELECT * FROM ".TB_PREF."bank_accounts WHERE id='$id'";
 
-	$result = db_query($sql, "could not retreive bank account for $account_code");
+	$result = db_query($sql, "could not retreive bank account for $id");
 
 	return db_fetch($result);
+}
+
+//---------------------------------------------------------------------------------------------
+function get_bank_gl_account($id)
+{
+	$sql = "SELECT account_code FROM ".TB_PREF."bank_accounts WHERE id='$id'";
+
+	$result = db_query($sql, "could not retreive bank account for $id");
+
+	$bank_account = db_fetch($result);
+
+	return $bank_account['account_code'];
 }
 
 //---------------------------------------------------------------------------------------------

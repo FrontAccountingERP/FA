@@ -1137,7 +1137,7 @@ function movement_types_list_row($label, $name, $selected_id=null)
 }
 
 //-----------------------------------------------------------------------------------------------
-
+/*
 function bank_trans_types_list($name, $selected_id=null)
 {
 	$sql = "SELECT id, name FROM ".TB_PREF."bank_trans_types";
@@ -1159,7 +1159,7 @@ function bank_trans_types_list_row($label, $name, $selected_id=null)
 	bank_trans_types_list_cells($label, $name, $selected_id);
 	echo "</tr>\n";
 }
-
+*/
 //-----------------------------------------------------------------------------------------------
 
 function workcenter_list($name, $selected_id=null, $all_option=false)
@@ -1196,11 +1196,11 @@ function workcenter_list_row($label, $name, $selected_id=null, $all_option=false
 
 function bank_accounts_list($name, $selected_id=null, $submit_on_change=false)
 {
-	$sql = "SELECT ".TB_PREF."bank_accounts.account_code, bank_account_name, bank_curr_code
+	$sql = "SELECT ".TB_PREF."bank_accounts.id, bank_account_name, bank_curr_code
 		FROM ".TB_PREF."bank_accounts, ".TB_PREF."chart_master
 		WHERE ".TB_PREF."bank_accounts.account_code=".TB_PREF."chart_master.account_code";
 
-	return combo_input($name, $selected_id, $sql, 'account_code', 'bank_account_name',
+	return combo_input($name, $selected_id, $sql, 'id', 'bank_account_name',
 	array(
 		'format' => '_format_add_curr',
 		'select_submit'=> $submit_on_change,
