@@ -71,7 +71,7 @@ function simple_page_mode($numeric_id = true)
 //
 function input_num($postname=null, $dflt=null)
 {
-	if (!isset($_POST[$postname]))
+	if (!isset($_POST[$postname]) || $_POST[$postname] == "")
 	  	return $dflt;
 
     return user_numeric($_POST[$postname]);

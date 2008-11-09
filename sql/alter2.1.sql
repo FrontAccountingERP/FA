@@ -23,15 +23,34 @@ DROP TABLE IF EXISTS `0_quick_entries`;
 CREATE TABLE `0_quick_entries` (
   `id` smallint(6) NOT NULL auto_increment,
   `description` varchar(60) NOT NULL,
-  `account` varchar(11) NOT NULL,
   `deposit` tinyint(1) NOT NULL default '0',
+  `bank_only` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`id`),
-  UNIQUE KEY `description` (`description`)
+  KEY `description` (`description`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1;
 
-INSERT INTO `0_quick_entries` VALUES ('1', 'Maintenance', '6600', '0');
-INSERT INTO `0_quick_entries` VALUES ('2', 'Phone', '6730', '0');
-INSERT INTO `0_quick_entries` VALUES ('3', 'Cash Sales', '3000', '1');
+INSERT INTO `0_quick_entries` VALUES ('1', 'Maintenance', '0', '1');
+INSERT INTO `0_quick_entries` VALUES ('2', 'Phone', '0', '1');
+INSERT INTO `0_quick_entries` VALUES ('3', 'Cash Sales', '1', '1');
+
+DROP TABLE IF EXISTS `0_quick_entry_lines`;
+
+CREATE TABLE `0_quick_entry_lines` (
+  `id` smallint(6) NOT NULL auto_increment,
+  `qid` smallint(6) NOT NULL,
+  `account` varchar(11) NOT NULL,
+  `tax_acc` tinyint(1) NOT NULL default '0',
+  `pct` tinyint(1) NOT NULL default '0',
+  `amount` double default NULL default '0',
+  `dimension_id` int(11) NOT NULL default '0',
+  `dimension2_id` int(11) NOT NULL default '0',
+  PRIMARY KEY  (`id`),
+  KEY `qid` (`qid`)
+) ENGINE=MyISAM AUTO_INCREMENT=1;
+
+INSERT INTO `0_quick_entry_lines` VALUES ('1', '1', '6600', '1', '0', 0, '0', '0');
+INSERT INTO `0_quick_entry_lines` VALUES ('2', '2', '6730', '1', '0', 0, '0', '0');
+INSERT INTO `0_quick_entry_lines` VALUES ('3', '3', '3000', '1', '0', 0, '0', '0');
 
 ALTER TABLE `0_users` ADD `print_profile` VARCHAR(30) DEFAULT '' AFTER `show_hints` ;
 ALTER TABLE `0_users` ADD `rep_popup` TINYINT(1) DEFAULT '1' AFTER `print_profile` ;

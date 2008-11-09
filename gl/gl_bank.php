@@ -187,12 +187,12 @@ if (isset($_POST['Process']))
 
 function check_item_data()
 {
-	if (!check_num('amount', 0))
-	{
-		display_error( _("The amount entered is not a valid number or is less than zero."));
-		set_focus('amount');
-		return false;
-	}
+	//if (!check_num('amount', 0))
+	//{
+	//	display_error( _("The amount entered is not a valid number or is less than zero."));
+	//	set_focus('amount');
+	//	return false;
+	//}
 
 	if ($_POST['code_id'] == $_POST['bank_account'])
 	{
@@ -201,15 +201,15 @@ function check_item_data()
 		return false;
 	}
 
-	if (is_bank_account($_POST['code_id']))
-	{
-		if ($_SESSION['pay_items']->trans_type == systypes::bank_payment())
-			display_error( _("You cannot make a payment to a bank account. Please use the transfer funds facility for this."));
-		else
- 			display_error( _("You cannot make a deposit from a bank account. Please use the transfer funds facility for this."));
-		set_focus('code_id');
-		return false;
-	}
+	//if (is_bank_account($_POST['code_id']))
+	//{
+	//	if ($_SESSION['pay_items']->trans_type == systypes::bank_payment())
+	//		display_error( _("You cannot make a payment to a bank account. Please use the transfer funds facility for this."));
+	//	else
+ 	//		display_error( _("You cannot make a deposit from a bank account. Please use the transfer funds facility for this."));
+	//	set_focus('code_id');
+	//	return false;
+	//}
 
    	return true;
 }
@@ -281,27 +281,45 @@ if (isset($_POST['go']))
 	{
 		$rate = 0;
 		$totamount = input_num('totamount');
-		$qe = get_quick_entry($_POST['person_id']);
-		$account = get_gl_account($qe['account']);
-		$tax_group = $account['tax_code'];
-		$items = get_tax_group_items($tax_group);
-		while ($item = db_fetch($items))
-			$rate += $item['rate'];
-		if ($rate != 0)
-			$totamount = $totamount * 100 / ($rate + 100);
 		$totamount = ($_SESSION['pay_items']->trans_type==systypes::bank_payment() ? 1:-1) * $totamount;
-		$_SESSION['pay_items']->clear_items();
-		$_SESSION['pay_items']->add_gl_item($qe['account'], 0, 0, $totamount, $qe['description']);
-		$items = get_tax_group_items($tax_group);
-		while ($item = db_fetch($items))
+		$qe = get_quick_entry($_POST['person_id']);
+		$qe_lines = get_quick_entry_lines($_POST['person_id']);
+		while ($qe_line = db_fetch($qe_lines))
 		{
-			if ($item['rate'] != 0)
+			if ($qe_line['tax_acc'])
 			{
-				$amount = $totamount * $item['rate'] / 100;
-				$code = ($_SESSION['pay_items']->trans_type==systypes::bank_payment() ? $item['purchasing_gl_code'] : 
-					$item['sales_gl_code']);
-				$_SESSION['pay_items']->add_gl_item($code, 0, 0, $amount, $qe['description']);
+				$account = get_gl_account($qe_line['account']);
+				$tax_group = $account['tax_code'];
+				$items = get_tax_group_items($tax_group);
+				while ($item = db_fetch($items))
+					$rate += $item['rate'];
+				if ($rate != 0)
+					$totamount = $totamount * 100 / ($rate + 100);
+				$_SESSION['pay_items']->clear_items();
+
+				$_SESSION['pay_items']->add_gl_item($qe_line['account'], $qe_line['dimension_id'], $qe_line['dimension2_id'], 
+					$totamount, $qe['description']);
+				$items = get_tax_group_items($tax_group);
+				while ($item = db_fetch($items))
+				{
+					if ($item['rate'] != 0)
+					{
+						$amount = $totamount * $item['rate'] / 100;
+						$code = ($_SESSION['pay_items']->trans_type==systypes::bank_payment() ? $item['purchasing_gl_code'] : 
+							$item['sales_gl_code']);
+						$_SESSION['pay_items']->add_gl_item($code, 0, 0, $amount, $qe['description']);
+					}
+				}
 			}
+			else
+			{
+				if ($qe_line['pct'])
+					$amount = $totamount * $qe_line['amount'] / 100;
+				else
+					$amount = $qe_line['amount'];
+				$_SESSION['pay_items']->add_gl_item($qe_line['account'], $qe_line['dimension_id'], $qe_line['dimension2_id'], 
+					$amount, $qe['description']);
+			}		
 		}
 		line_start_focus();
 	}	

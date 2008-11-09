@@ -1562,13 +1562,17 @@ function payment_person_types_list_row($label, $name, $selected_id=null, $relate
 
 //------------------------------------------------------------------------------------------------
 
-function quick_entries_list($name, $selected_id=null, $expense=true, $submit_on_change=false)
+function quick_entries_list($name, $selected_id=null, $expense=true, $bank_only=true, $submit_on_change=false)
 {
-	$sql = "SELECT * FROM ".TB_PREF."quick_entries";
+	$sql = "SELECT id, description FROM ".TB_PREF."quick_entries";
 	if ($expense)
 		$sql .= " WHERE deposit=0";
 	else
 		$sql .= " WHERE deposit=1";
+	if ($bank_only)
+		$sql .= " AND bank_only=1";
+	else
+		$sql .= " AND bank_only=0";
 	combo_input($name, $selected_id, $sql, 'id', 'description',
 		array(
 			'spec_id' => '',
@@ -1579,10 +1583,10 @@ function quick_entries_list($name, $selected_id=null, $expense=true, $submit_on_
 
 }
 
-function quick_entries_list_row($label, $name, $selected_id=null, $expense=true, $submit_on_change=false)
+function quick_entries_list_row($label, $name, $selected_id=null, $expense=true, $bank_only=true, $submit_on_change=false)
 {
 	echo "<tr><td>$label</td><td>\n";
-	quick_entries_list($name, $selected_id, $expense, $submit_on_change);
+	quick_entries_list($name, $selected_id, $expense, $bank_only, $submit_on_change);
 	echo "</td></tr>\n";
 }
 

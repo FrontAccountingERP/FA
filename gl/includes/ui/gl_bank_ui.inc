@@ -142,7 +142,11 @@ function display_gl_items($title, &$order)
 				label_cell(get_dimension_string($item->dimension_id, true));
     		if ($dim > 1)
 				label_cell(get_dimension_string($item->dimension2_id, true));
-			amount_cell(abs($item->amount));
+			//amount_cell(abs($item->amount));
+			if ($order->trans_type == systypes::bank_deposit())
+				amount_cell(-$item->amount);
+			else		
+				amount_cell($item->amount);
 			label_cell($item->reference);
 
 			edit_button_cell("Edit$item->index", _("Edit"),
@@ -222,7 +226,7 @@ function gl_edit_item_controls(&$order, $dim, $Index=null)
 			$_POST['code_id'] =
 				get_company_pref($payment ? 'default_cogs_act':'default_inv_sales_act');
 		}
-		gl_all_accounts_list('code_id', null, true, false, true);
+		gl_all_accounts_list('code_id', null, false, false, true);
 		if ($dim >= 1)
 			dimensions_list_cells(null, 'dimension_id', null, true, " ", false, 1);
 		if ($dim > 1)

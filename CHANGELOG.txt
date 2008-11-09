@@ -19,6 +19,19 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+09-Nov-2008 Joe Hunt
+30-Oct-2008 Joe Hunt
+! changed Quick Entries in Bank Payments/Deposits (Banking and General Ledger) to also work as Automatic Codings.
+$ /includes/ui/ui_lists.inc 
+  /includes/ui/ui_input.inc 
+  /gl/gl_bank.php
+  /gl/includes/db/gl_db_bank_accounts.inc
+  /gl/includes/ui/gl_bank_ui.inc
+  /gl/manage/gl_quick_entries.php
+! New table, 0:quick_entry_lines, change to 0_quick_entries
+$ /sql/alter2.1.sql
+
+
 08-Nov-2008 Janusz Dobrowolski
 ! Rewritten for paged query results.
 $ /purchasing/inquiry/supplier_inquiry.php
