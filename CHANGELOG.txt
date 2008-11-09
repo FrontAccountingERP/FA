@@ -19,8 +19,42 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+! Allowed multiply bank accounts on one GL account, removed obsolete bank trans type.
+$ /applications/generalledger.php
+  /gl/bank_transfer.php
+  /gl/gl_bank.php
+  /gl/includes/db/gl_db_bank_accounts.inc
+  /gl/includes/db/gl_db_bank_trans.inc
+  /gl/includes/db/gl_db_banking.inc
+  /gl/includes/db/gl_db_trans.inc
+  /gl/includes/ui/gl_bank_ui.inc
+  /gl/inquiry/bank_inquiry.php
+  /gl/manage/bank_accounts.php
+  /gl/view/bank_transfer_view.php
+  /gl/view/gl_deposit_view.php
+  /gl/view/gl_payment_view.php
+  /includes/banking.inc
+  /includes/data_checks.inc
+  /includes/types.inc
+  /includes/ui/ui_lists.inc
+  /purchasing/supplier_payment.php
+  /purchasing/includes/db/supp_payment_db.inc
+  /purchasing/includes/db/supp_trans_db.inc
+  /purchasing/view/view_supp_payment.php
+  /sales/customer_payments.php
+  /sales/includes/db/payment_db.inc
+  /sales/includes/db/sales_invoice_db.inc
+  /sales/view/view_receipt.php
+  /sql/alter2.1.sql
+! Fixed session name for multiuser debuging tests.
+  /includes/lang/language.php
+! Preparing to paged table view in customer_allocation_main.php 
+$ /sales/includes/db/cust_trans_db.inc
+  /sales/includes/db/custalloc_db.inc
+# Small fix to avoid sql conflicts
+$ /sales/includes/db/sales_points_db.inc
+
 09-Nov-2008 Joe Hunt
-30-Oct-2008 Joe Hunt
 ! changed Quick Entries in Bank Payments/Deposits (Banking and General Ledger) to also work as Automatic Codings.
 $ /includes/ui/ui_lists.inc 
   /includes/ui/ui_input.inc 
@@ -30,7 +64,6 @@ $ /includes/ui/ui_lists.inc
   /gl/manage/gl_quick_entries.php
 ! New table, 0:quick_entry_lines, change to 0_quick_entries
 $ /sql/alter2.1.sql
-
 
 08-Nov-2008 Janusz Dobrowolski
 ! Rewritten for paged query results.
