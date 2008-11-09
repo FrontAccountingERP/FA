@@ -19,6 +19,14 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+10-Nov-2008 Joe Hunt
+! Changed Bank Statement Report in accourding to Bank Account Change
+$ /reporting/rep601.php
+  /reporting/includes/reports_classes.inc
+# Removed Type header from bank inquiry.
+  /gl/inquiry/bank_inquiry.php
+  
+09-Nov-2008 Janusz Dobrowolski
 ! Allowed multiply bank accounts on one GL account, removed obsolete bank trans type.
 $ /applications/generalledger.php
   /gl/bank_transfer.php

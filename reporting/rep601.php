@@ -35,11 +35,10 @@ function get_bank_transactions($from, $to, $account)
 {
 	$from = date2sql($from);
 	$to = date2sql($to);
-	$sql = "SELECT ".TB_PREF."bank_trans.*,name AS BankTransType FROM ".TB_PREF."bank_trans, ".TB_PREF."bank_trans_types
+	$sql = "SELECT ".TB_PREF."bank_trans.* FROM ".TB_PREF."bank_trans
 		WHERE ".TB_PREF."bank_trans.bank_act = '$account'
 		AND trans_date >= '$from'
 		AND trans_date <= '$to'
-		AND ".TB_PREF."bank_trans_types.id = ".TB_PREF."bank_trans.bank_trans_type_id
 		ORDER BY trans_date,".TB_PREF."bank_trans.id";
 
 	return db_query($sql,"The transactions for '$account' could not be retrieved");
@@ -60,11 +59,11 @@ function print_bank_transactions()
 
 	$dec = user_price_dec();
 
-	$cols = array(0, 90, 110, 170, 225, 270, 350, 400, 460, 520);
+	$cols = array(0, 90, 110, 170, 225, 350, 400, 460, 520);
 
-	$aligns = array('left',	'left',	'left',	'left',	'left',	'left',	'right', 'right', 'right');
+	$aligns = array('left',	'left',	'left',	'left',	'left',	'right', 'right', 'right');
 
-	$headers = array(_('Type'),	_('#'),	_('Reference'), _('Date'), _('Type'), _('Person/Item'),
+	$headers = array(_('Type'),	_('#'),	_('Reference'), _('Date'), _('Person/Item'),
 		_('Debit'),	_('Credit'), _('Balance'));
 
 	$account = get_bank_account($acc);
@@ -78,9 +77,9 @@ function print_bank_transactions()
 	$rep->Header();
 
 
-	$prev_balance = get_bank_balance_to($from, $account["account_code"]);
+	$prev_balance = get_bank_balance_to($from, $account["id"]);
 
-	$trans = get_bank_transactions($from, $to, $account['account_code']);
+	$trans = get_bank_transactions($from, $to, $account['id']);
 
 	$rows = db_num_rows($trans);
 	if ($prev_balance != 0.0 || $rows != 0)
@@ -105,13 +104,12 @@ function print_bank_transactions()
 				$rep->TextCol(1, 2,	$myrow['trans_no']);
 				$rep->TextCol(2, 3,	$myrow['ref']);
 				$rep->TextCol(3, 4,	sql2date($myrow["trans_date"]));
-				$rep->TextCol(4, 5,	$myrow['BankTransType']);
-				$rep->TextCol(5, 6,	payment_person_types::person_name($myrow["person_type_id"],$myrow["person_id"], false));
+				$rep->TextCol(4, 5,	payment_person_types::person_name($myrow["person_type_id"],$myrow["person_id"], false));
 				if ($myrow['amount'] > 0.0)
-					$rep->TextCol(6, 7,	number_format2(abs($myrow['amount']), $dec));
+					$rep->TextCol(5, 6,	number_format2(abs($myrow['amount']), $dec));
 				else
-					$rep->TextCol(7, 8,	number_format2(abs($myrow['amount']), $dec));
-				$rep->TextCol(8, 9,	number_format2($total, $dec));
+					$rep->TextCol(6, 7,	number_format2(abs($myrow['amount']), $dec));
+				$rep->TextCol(7, 8,	number_format2($total, $dec));
 				$rep->NewLine();
 				if ($rep->row < $rep->bottomMargin + $rep->lineHeight)
 				{

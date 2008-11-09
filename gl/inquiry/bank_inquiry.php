@@ -63,7 +63,7 @@ display_heading($act['bank_account_name']." - ".$act['bank_curr_code']);
 
 start_table($table_style);
 
-$th = array(_("Type"), _("#"), _("Reference"), _("Type"), _("Date"),
+$th = array(_("Type"), _("#"), _("Reference"), _("Date"),
 	_("Debit"), _("Credit"), _("Balance"), _("Person/Item"), "");
 table_header($th);
 

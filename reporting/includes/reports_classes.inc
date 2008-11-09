@@ -196,8 +196,7 @@ class Report
 					$st .= dup_simple_codeandname_list($sql, "PARAM_$index", $dummy);
 					break;
 				case 'BANK_ACCOUNTS':
-					$sql = "SELECT ".TB_PREF."bank_accounts.account_code, concat(bank_account_name, if (bank_curr_code=curr_default,'', concat(' - ', bank_curr_code))) FROM ".TB_PREF."bank_accounts, ".TB_PREF."chart_master, ".TB_PREF."company
-						WHERE ".TB_PREF."bank_accounts.account_code=".TB_PREF."chart_master.account_code";
+					$sql = "SELECT ".TB_PREF."bank_accounts.id, concat(bank_account_name, if (bank_curr_code=curr_default,'', concat(' - ', bank_curr_code))) FROM ".TB_PREF."bank_accounts, ".TB_PREF."company";
 					$st .= dup_simple_codeandname_list($sql, "PARAM_$index", $dummy);
 					break;
 				case 'DIMENSION':

@@ -6,7 +6,7 @@ ALTER TABLE `0_bank_accounts` ADD KEY (`account_code`);
 # UPDATE 0_bank_accounts SET id = account_code;
 # For any Applicable only to  MySQL >=4.0.4 :
 UPDATE `0_bank_trans`, `0_bank_accounts` SET 0_bank_trans.bank_act=0_bank_accounts.id 
-	WHERE 0_bank_trans.bank_act=0_bank_accounts.account_code; */
+	WHERE 0_bank_trans.bank_act=0_bank_accounts.account_code; 
 
 
 ALTER TABLE `0_users` ADD `query_size` TINYINT(1) DEFAULT '10';
