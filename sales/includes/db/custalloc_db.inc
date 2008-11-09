@@ -82,6 +82,39 @@ function clear_cust_alloctions($type, $type_no, $date="")
 
 	db_query($sql, "could not void debtor transactions for type=$type and trans_no=$type_no");
 }
+//----------------------------------------------------------------------------------------
+
+function get_customer_transactions($extra_fields=null, $extra_conditions=null, $extra_tables=null)
+{
+	$sql = "SELECT trans.trans_no,
+		trans.type,
+		trans.tran_date,
+		trans.due_date,
+		trans.reference,
+		trans.alloc,
+		ov_amount+ov_gst+ov_freight+ov_freight_tax+ov_discount AS Total,
+		debtor.name AS DebtorName, debtor.address,
+		debtor.curr_code, 
+		trans.version ";
+
+	if ($extra_fields)
+		$sql .= ", $extra_fields ";
+
+	$sql .= " FROM ".TB_PREF."debtor_trans as trans, "
+				.TB_PREF."debtors_master as debtor";
+	if ($extra_tables)
+		$sql .= ",$extra_tables ";
+
+	$sql .= " WHERE trans.debtor_no=debtor.debtor_no";
+
+	if ($extra_conditions)
+		$sql .= " AND $extra_conditions ";
+
+	$sql .= " ORDER BY trans_no";
+
+	return db_query($sql, "Cannot retreive debtor transactions");
+}
+
 
 //-------------------------------------------------------------------------------------------------------------
 
@@ -94,10 +127,10 @@ function get_allocatable_from_cust_transactions($customer_id, $settled)
 	}
 	$cust_sql = "";
 	if ($customer_id != null)
-		$cust_sql = " AND ".TB_PREF."debtor_trans.debtor_no = $customer_id";
+		$cust_sql = " AND trans.debtor_no = $customer_id";
 
 	return get_customer_transactions("round(ov_amount+ov_gst+ov_freight+ov_freight_tax+ov_discount-alloc,6) <= 0 AS settled",
-		"(type=12 OR type=11 OR type=2) AND (".TB_PREF."debtor_trans.ov_amount > 0) " . $settled_sql . $cust_sql);
+		"(type=12 OR type=11 OR type=2) AND (trans.ov_amount > 0) " . $settled_sql . $cust_sql);
 }
 
 //-------------------------------------------------------------------------------------------------------------
@@ -106,21 +139,21 @@ function get_allocatable_to_cust_transactions($customer_id, $trans_no=null, $typ
 {
 	if ($trans_no != null and $type != null)
 	{
-		return get_customer_transactions("amt", "".TB_PREF."debtor_trans.trans_no = ".TB_PREF."cust_allocations.trans_no_to
-			AND ".TB_PREF."debtor_trans.type = ".TB_PREF."cust_allocations.trans_type_to
-			AND ".TB_PREF."cust_allocations.trans_no_from=$trans_no
-			AND ".TB_PREF."cust_allocations.trans_type_from=$type
-			AND ".TB_PREF."debtor_trans.debtor_no=$customer_id",
-			"".TB_PREF."cust_allocations");
+		return get_customer_transactions("amt", "trans.trans_no = alloc.trans_no_to
+			AND trans.type = alloc.trans_type_to
+			AND alloc.trans_no_from=$trans_no
+			AND alloc.trans_type_from=$type
+			AND trans.debtor_no=$customer_id",
+			"".TB_PREF."cust_allocations as alloc");
 	}
 	else
 	{
 		return get_customer_transactions(null, "round(ov_amount+ov_gst+ov_freight+ov_freight_tax+ov_discount-alloc,6) > 0
-			AND ".TB_PREF."debtor_trans.type != " . systypes::cust_payment() . "
-			AND ".TB_PREF."debtor_trans.type != " . systypes::bank_deposit() . "
-			AND ".TB_PREF."debtor_trans.type != 11
-			AND ".TB_PREF."debtor_trans.type != 13
-			AND ".TB_PREF."debtor_trans.debtor_no=$customer_id");
+			AND trans.type != " . systypes::cust_payment() . "
+			AND trans.type != " . systypes::bank_deposit() . "
+			AND trans.type != 11
+			AND trans.type != 13
+			AND trans.debtor_no=$customer_id");
 	}
 }
 
