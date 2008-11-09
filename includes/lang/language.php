@@ -76,8 +76,7 @@ class language
 	}
 
 }
-
-session_name('FrontAccounting');
+session_name('FrontAccounting'.user_company());
 session_start();
 // this is to fix the "back-do-you-want-to-refresh" issue - thanx PHPFreaks
 header("Cache-control: private");
