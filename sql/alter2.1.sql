@@ -24,8 +24,7 @@ CREATE TABLE `0_sales_pos` (
   UNIQUE KEY(`pos_name`)
 ) ENGINE=MyISAM AUTO_INCREMENT=3;
 
-INSERT INTO `0_sales_pos` VALUES ('1', 'Default', '1', '1', 'DEF', '1705');
-INSERT INTO `0_sales_pos` VALUES ('2', 'Cash sale', '1', '0', 'CWA', '1705');
+INSERT INTO `0_sales_pos` VALUES ('1', 'Default', '1', '1', 'DEF', '1');
 
 ALTER TABLE `0_users` ADD `pos` SMALLINT(6) DEFAULT '1';
 

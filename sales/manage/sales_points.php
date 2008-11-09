@@ -108,15 +108,15 @@ if ($selected_id != -1)
 		$_POST['name']  = $myrow["pos_name"];
 		$_POST['location']  = $myrow["pos_location"];
 		$_POST['account']  = $myrow["pos_account"];
-		$_POST['credit_sale']  = $myrow["credit_sale"];
-		$_POST['cash_sale']  = $myrow["cash_sale"];
+		if ($myrow["credit_sale"]) $_POST['credit_sale']  = 1;
+		if ($myrow["cash_sale"]) $_POST['cash_sale'] = 1;
 	}
 	hidden('selected_id', $selected_id);
 } 
 
 text_row_ex(_("Point of Sale Name").':', 'name', 20, 30);
-check_row(_('Allowed credit sale'), 'credit', null);
-check_row(_('Allowed cash sale'), 'cash', null);
+check_row(_('Allowed credit sale'), 'credit', check_value('credit_sale'));
+check_row(_('Allowed cash sale'), 'cash',  check_value('cash_sale'));
 locations_list_row(_("POS location").':', 'location');
 cash_accounts_list_row(_("Default cash account").':', 'account');
 

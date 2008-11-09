@@ -1197,8 +1197,9 @@ function workcenter_list_row($label, $name, $selected_id=null, $all_option=false
 function bank_accounts_list($name, $selected_id=null, $submit_on_change=false)
 {
 	$sql = "SELECT ".TB_PREF."bank_accounts.id, bank_account_name, bank_curr_code
-		FROM ".TB_PREF."bank_accounts, ".TB_PREF."chart_master
-		WHERE ".TB_PREF."bank_accounts.account_code=".TB_PREF."chart_master.account_code";
+		FROM ".TB_PREF."bank_accounts";
+//		, ".TB_PREF."chart_master
+//		WHERE ".TB_PREF."bank_accounts.account_code=".TB_PREF."chart_master.account_code";
 
 	return combo_input($name, $selected_id, $sql, 'id', 'bank_account_name',
 	array(
@@ -1229,15 +1230,14 @@ function bank_accounts_list_row($label, $name, $selected_id=null, $submit_on_cha
 
 function cash_accounts_list_row($label, $name, $selected_id=null, $submit_on_change=false)
 {
-	$sql = "SELECT ".TB_PREF."bank_accounts.account_code, bank_account_name, bank_curr_code
-		FROM ".TB_PREF."bank_accounts, ".TB_PREF."chart_master
-		WHERE ".TB_PREF."bank_accounts.account_code=".TB_PREF."chart_master.account_code"
-		. " AND ".TB_PREF."bank_accounts.account_type=3";
+	$sql = "SELECT ".TB_PREF."bank_accounts.id, bank_account_name, bank_curr_code
+		FROM ".TB_PREF."bank_accounts
+		WHERE ".TB_PREF."bank_accounts.account_type=3";
 
 	if ($label != null)
 		echo "<tr><td>$label</td>\n";
 	echo "<td>";
-	$str = combo_input($name, $selected_id, $sql, 'account_code', 'bank_account_name',
+	$str = combo_input($name, $selected_id, $sql, 'id', 'bank_account_name',
 	array(
 		'format' => '_format_add_curr',
 		'select_submit'=> $submit_on_change,
@@ -1381,7 +1381,7 @@ function gl_all_accounts_list($name, $selected_id=null, $skip_bank_accounts=fals
 			FROM (".TB_PREF."chart_master chart,".TB_PREF."chart_types type) "
 			."LEFT JOIN ".TB_PREF."bank_accounts acc "
 			."ON chart.account_code=acc.account_code
-				WHERE acc.account_code IS NULL
+				WHERE acc.account_code  IS NULL
 			AND chart.account_type=type.id";
 	else
 		$sql = "SELECT chart.account_code, chart.account_name, type.name
