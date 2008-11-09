@@ -38,7 +38,7 @@ function get_sales_point($id)
 		.TB_PREF."sales_pos as pos,"
 		.TB_PREF."locations as loc,"
 		.TB_PREF."bank_accounts as acc"
-		." WHERE id=$id AND pos.pos_location=loc.loc_code AND pos.pos_account=acc.account_code";
+		." WHERE pos.id=$id AND pos.pos_location=loc.loc_code AND pos.pos_account=acc.account_code";
 	
 	$result = db_query($sql, "could not get POS definition");
 	
