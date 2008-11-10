@@ -56,6 +56,7 @@
 //				debug(cmd+':'+property+':'+type+':'+id);
 			// seek element by id if there is no elemnt with given name
 			  objElement = document.getElementsByName(id)[0] || document.getElementById(id);
+			  if(!objElement) continue;
     		  if(cmd=='as') {
 				  eval("objElement.setAttribute('"+property+"',"+data+");");
 			  } else if(cmd=='up') {
