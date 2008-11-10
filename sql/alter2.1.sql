@@ -1,3 +1,5 @@
+DROP TABLE IF EXISTS `0_bank_trans_types`;
+
 ALTER TABLE `0_bank_accounts` DROP PRIMARY KEY;
 ALTER TABLE `0_bank_accounts` ADD `id` SMALLINT(6) AUTO_INCREMENT PRIMARY KEY;
 ALTER TABLE `0_bank_accounts` ADD KEY (`account_code`);
@@ -22,7 +24,7 @@ CREATE TABLE `0_sales_pos` (
   `pos_account` varchar(11) NOT NULL,
   PRIMARY KEY  (`id`),
   UNIQUE KEY(`pos_name`)
-) ENGINE=MyISAM AUTO_INCREMENT=3;
+) TYPE=MyISAM AUTO_INCREMENT=1;
 
 INSERT INTO `0_sales_pos` VALUES ('1', 'Default', '1', '1', 'DEF', '1');
 
@@ -37,7 +39,7 @@ CREATE TABLE `0_quick_entries` (
   `bank_only` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`id`),
   KEY `description` (`description`)
-) ENGINE=MyISAM AUTO_INCREMENT=1;
+) TYPE=MyISAM AUTO_INCREMENT=1;
 
 INSERT INTO `0_quick_entries` VALUES ('1', 'Maintenance', '0', '1');
 INSERT INTO `0_quick_entries` VALUES ('2', 'Phone', '0', '1');
@@ -56,7 +58,7 @@ CREATE TABLE `0_quick_entry_lines` (
   `dimension2_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`id`),
   KEY `qid` (`qid`)
-) ENGINE=MyISAM AUTO_INCREMENT=1;
+) TYPE=MyISAM AUTO_INCREMENT=1;
 
 INSERT INTO `0_quick_entry_lines` VALUES ('1', '1', '6600', '1', '0', 0, '0', '0');
 INSERT INTO `0_quick_entry_lines` VALUES ('2', '2', '6730', '1', '0', 0, '0', '0');
@@ -73,7 +75,7 @@ CREATE TABLE `0_print_profiles` (
   `printer` tinyint(5) NOT NULL,
   PRIMARY KEY  (`id`),
   UNIQUE KEY `profile` (`profile`,`report`)
-) ENGINE=MyISAM AUTO_INCREMENT=10;
+) TYPE=MyISAM AUTO_INCREMENT=10;
 
 INSERT INTO `0_print_profiles` VALUES ('1', 'Out of office', '', '0');
 INSERT INTO `0_print_profiles` VALUES ('2', 'Sales Department', '', '0');
@@ -97,7 +99,7 @@ CREATE TABLE `0_printers` (
   `timeout` tinyint(3) unsigned NOT NULL,
   PRIMARY KEY  (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=MyISAM AUTO_INCREMENT=4;
+) TYPE=MyISAM AUTO_INCREMENT=4;
 
 INSERT INTO `0_printers` VALUES ('1', 'QL500', 'Label printer', 'QL500', 'server', '127', '20');
 INSERT INTO `0_printers` VALUES ('2', 'Samsung', 'Main network printer', 'scx4521F', 'server', '515', '5');
