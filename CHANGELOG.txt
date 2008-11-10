@@ -19,6 +19,16 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+10-Nov-2008 Janusz Dobrowolski
+# Suppressed page update after import errors
+$ /admin/backups.php
+# More fail safe db_import()
+$ /admin/db/maintenance_db.inc
+# Added check for POS relations before account delete.
+$ /gl/manage/bank_accounts.php
+# Fixed for MySQL <4.0.18, removed bank_trans_types
+$ /sql/alter2.1.sql
+
 10-Nov-2008 Joe Hunt
 ! changing the default.css style sheets to handle the new navibar/buttons
 $ /themes/default/default.css 
