@@ -168,8 +168,8 @@ function handle_form($conn)
 		if ($_GET['c']=='r')
 		{
 			$filename=$_GET['fn'];
-			restore_backup(BACKUP_PATH . $filename, $conn);
-			header("Location: backups.php?c=rs&fn=" . urlencode($filename));
+			if( restore_backup(BACKUP_PATH . $filename, $conn) )
+				header("Location: backups.php?c=rs&fn=" . urlencode($filename));
 			return "";
 		}
 		//Print restore success message
@@ -184,8 +184,10 @@ function handle_form($conn)
 			$filename = $_FILES['uploadfile']['tmp_name'];
 			if (is_uploaded_file ($filename))
 			{
-				restore_backup($filename, $conn);
-				$msg = _("Uploaded file has been restored.");
+				if( restore_backup($filename, $conn) )
+					$msg = _("Uploaded file has been restored.");
+				else
+					$msg = _("Database restore failed.");	
 			}
 			else
 			{
