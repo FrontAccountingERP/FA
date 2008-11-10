@@ -380,9 +380,10 @@ input.amount {
   color:#808080;
   cursor: auto;
 }
-.navibutton {
-   color:#0000FF;
-   padding: 3px;
+button.navibutton {
+	font-weight: bold;
+   color:#fff;
+   padding: 0 3px;
    background-color:transparent;
    border-style:none;
    text-decoration:underline;
@@ -390,10 +391,15 @@ input.amount {
 }
 
 .navibar {
-    padding: 3px;
+    padding: 0 3px;
     border: 1px solid #cccccc;
     border-collapse: collapse;
-    background-color: #dee7ec;
+    background-color: #788da1;
+}
+
+table.navibar td {
+	color: #fff;
+    border: 0px none;
 }
 
 

@@ -20,6 +20,14 @@ Legend:
 $ -> Affected files
 
 10-Nov-2008 Joe Hunt
+! changing the default.css style sheets to handle the new navibar/buttons
+$ /themes/default/default.css 
+  /themes/aqua/default.css
+  /themes/cool/default.css
+  /themes/cool/images/sort_asc.gif
+  /themes/cool/images/sort_desc.gif
+  
+10-Nov-2008 Joe Hunt
 ! Changed Bank Statement Report in accourding to Bank Account Change
 $ /reporting/rep601.php
   /reporting/includes/reports_classes.inc
