@@ -97,7 +97,7 @@ function display_trial_balance()
 	$k = 0;
 
 	$accounts = get_gl_accounts();
-
+	$pdeb = $pcre = $cdeb = $ccre = $tdeb = $tcre = $pbal = $cbal = $tbal = 0;
 	$begin = begin_fiscalyear();
 	if (date1_greater_date2($begin, $_POST['TransFromDate']))
 		$begin = $_POST['TransFromDate'];
@@ -121,6 +121,7 @@ function display_trial_balance()
 			display_debit_or_credit_cells($prev['balance']);
 			display_debit_or_credit_cells($curr['balance']);
 			display_debit_or_credit_cells($tot['balance']);
+			
 		}
 		else
 		{
@@ -130,30 +131,39 @@ function display_trial_balance()
 			amount_cell($curr['credit']);
 			amount_cell($tot['debit']);
 			amount_cell($tot['credit']);
+			$pdeb += $prev['debit'];
+			$pcre += $prev['credit'];
+			$cdeb += $curr['debit'];
+			$ccre += $curr['credit'];
+			$tdeb += $tot['debit'];
+			$tcre += $tot['credit'];
 		}	
+		$pbal += $prev['balance'];
+		$cbal += $curr['balance'];
+		$tbal += $tot['balance'];
 		end_row();
 	}
 
-	$prev = get_balance(null, $begin, $_POST['TransFromDate'], false, false);
-	$curr = get_balance(null, $_POST['TransFromDate'], $_POST['TransToDate'], true, true);
-	$tot = get_balance(null, $begin, $_POST['TransToDate'], false, true);
+	//$prev = get_balance(null, $begin, $_POST['TransFromDate'], false, false);
+	//$curr = get_balance(null, $_POST['TransFromDate'], $_POST['TransToDate'], true, true);
+	//$tot = get_balance(null, $begin, $_POST['TransToDate'], false, true);
 	if (!check_value('Balance'))
 	{
 		start_row("class='inquirybg' style='font-weight:bold'");
 		label_cell(_("Total") ." - ".$_POST['TransToDate'], "colspan=2");
-		amount_cell($prev['debit']);
-		amount_cell($prev['credit']);
-		amount_cell($curr['debit']);
-		amount_cell($curr['credit']);
-		amount_cell($tot['debit']);
-		amount_cell($tot['credit']);
+		amount_cell($pdeb);
+		amount_cell($pcre);
+		amount_cell($cdeb);
+		amount_cell($ccre);
+		amount_cell($tdeb);
+		amount_cell($tcre);
 		end_row();
 	}	
 	start_row("class='inquirybg' style='font-weight:bold'");
 	label_cell(_("Ending Balance") ." - ".$_POST['TransToDate'], "colspan=2");
-	display_debit_or_credit_cells($prev['balance']);
-	display_debit_or_credit_cells($curr['balance']);
-	display_debit_or_credit_cells($tot['balance']);
+	display_debit_or_credit_cells($pbal);
+	display_debit_or_credit_cells($cbal);
+	display_debit_or_credit_cells($tbal);
 	end_row();
 
 	end_table(1);

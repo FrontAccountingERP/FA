@@ -125,6 +125,7 @@ function print_trial_balance()
 
 	$accounts = get_gl_accounts();
 
+	$pdeb = $pcre = $cdeb = $ccre = $tdeb = $tcre = $pbal = $cbal = $tbal = 0;
 	$begin = begin_fiscalyear();
 	if (date1_greater_date2($begin, $from))
 		$begin = $from;
@@ -162,7 +163,17 @@ function print_trial_balance()
 			$rep->TextCol(5, 6,	number_format2($curr['credit'], $dec));
 			$rep->TextCol(6, 7,	number_format2($tot['debit'], $dec));
 			$rep->TextCol(7, 8,	number_format2($tot['credit'], $dec));
+			$pdeb += $prev['debit'];
+			$pcre += $prev['credit'];
+			$cdeb += $curr['debit'];
+			$ccre += $curr['credit'];
+			$tdeb += $tot['debit'];
+			$tcre += $tot['credit'];
+			
 		}	
+		$pbal += $prev['balance'];
+		$cbal += $curr['balance'];
+		$tbal += $tot['balance'];
 		$rep->NewLine();
 
 		if ($rep->row < $rep->bottomMargin + $rep->lineHeight)
@@ -175,35 +186,35 @@ function print_trial_balance()
 	$rep->NewLine();
 	$rep->Font('bold');
 
-	$prev = get_balance(null, $dimension, $dimension2, $begin, $from, false, false);
-	$curr = get_balance(null, $dimension, $dimension2, $from, $to, true, true);
-	$tot = get_balance(null, $dimension, $dimension2, $begin, $to, false, true);
+	//$prev = get_balance(null, $dimension, $dimension2, $begin, $from, false, false);
+	//$curr = get_balance(null, $dimension, $dimension2, $from, $to, true, true);
+	//$tot = get_balance(null, $dimension, $dimension2, $begin, $to, false, true);
 
 	if ($balances == 0)
 	{
 		$rep->TextCol(0, 2, _("Total"));
-		$rep->TextCol(2, 3,	number_format2($prev['debit'], $dec));
-		$rep->TextCol(3, 4,	number_format2($prev['credit'], $dec));
-		$rep->TextCol(4, 5,	number_format2($curr['debit'], $dec));
-		$rep->TextCol(5, 6,	number_format2($curr['credit'], $dec));
-		$rep->TextCol(6, 7,	number_format2($tot['debit'], $dec));
-		$rep->TextCol(7, 8,	number_format2($tot['credit'], $dec));
+		$rep->TextCol(2, 3,	number_format2($pdeb, $dec));
+		$rep->TextCol(3, 4,	number_format2($pcre, $dec));
+		$rep->TextCol(4, 5,	number_format2($cdeb, $dec));
+		$rep->TextCol(5, 6,	number_format2($ccre, $dec));
+		$rep->TextCol(6, 7,	number_format2($tdeb, $dec));
+		$rep->TextCol(7, 8,	number_format2($tcre, $dec));
 		$rep->NewLine();
 	}	
 	$rep->TextCol(0, 2, _("Ending Balance"));
 
 	if ($prev['balance'] >= 0.0)
-		$rep->TextCol(2, 3,	number_format2($prev['balance'], $dec));
+		$rep->TextCol(2, 3,	number_format2($pbal, $dec));
 	else
-		$rep->TextCol(3, 4,	number_format2(abs($prev['balance']), $dec));
+		$rep->TextCol(3, 4,	number_format2(abs($pbal), $dec));
 	if ($curr['balance'] >= 0.0)
-		$rep->TextCol(4, 5,	number_format2($curr['balance'], $dec));
+		$rep->TextCol(4, 5,	number_format2($cbal, $dec));
 	else
-		$rep->TextCol(5, 6,	number_format2(abs($curr['balance']), $dec));
+		$rep->TextCol(5, 6,	number_format2(abs($cbal), $dec));
 	if ($tot['balance'] >= 0.0)
-		$rep->TextCol(6, 7,	number_format2($tot['balance'], $dec));
+		$rep->TextCol(6, 7,	number_format2($tbal, $dec));
 	else
-		$rep->TextCol(7, 8,	number_format2(abs($tot['balance']), $dec));
+		$rep->TextCol(7, 8,	number_format2(abs($tbal), $dec));
 	
 	$rep->Line($rep->row - 6);
 	

@@ -19,6 +19,11 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+10-Nov-2008 Joe Hunt
+! [0000081] Trial Balance again minor changes.
+$ /gl/inquiry/gl_trial_balance.php
+  /reporting/rep708.php
+
 07-Nov-2008 Joe Hunt
 ! [0000081] Changed Trial Balance to show all debits and credits (option to only show balances)
 $ /gl/inquiry/gl_trial_balance.php
