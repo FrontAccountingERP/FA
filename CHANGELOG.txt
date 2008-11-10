@@ -28,8 +28,8 @@ $ /admin/db/maintenance_db.inc
 $ /gl/manage/bank_accounts.php
 # Fixed for MySQL <4.0.18, removed bank_trans_types
 $ /sql/alter2.1.sql
-# Fixed hangups on ajax update of nonexistent element.
-$ /js/utils.js
+# Fixed page update after branch/customer change.
+$ /sales/includes/ui/sales_order_ui.inc
 
 10-Nov-2008 Joe Hunt
 ! changing the default.css style sheets to handle the new navibar/buttons

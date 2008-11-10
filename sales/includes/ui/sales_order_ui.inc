@@ -211,17 +211,21 @@ function display_order_header(&$order, $editable, $date_text, $display_tax_group
 				$_POST['deliver_to'] = $order->deliver_to;
 				$_POST['delivery_address'] = $order->delivery_address;
 				$_POST['phone'] = $order->phone;
-				$_POST['cash'] = $order->cash;
-				if ($order->trans_type == 10)
-				{
-					$_POST['delivery_date'] = $order->due_date;
-					$Ajax->activate('delivery_date');
+				if (get_post('cash') !== $order->cash) {
+					$_POST['cash'] = $order->cash;
+					$Ajax->activate('delivery');
+					$Ajax->activate('cash');
+				} else {
+					if ($order->trans_type == 10)
+					{
+						$_POST['delivery_date'] = $order->due_date;
+						$Ajax->activate('delivery_date');
+					}
+					$Ajax->activate('Location');
+					$Ajax->activate('deliver_to');
+					$Ajax->activate('phone');
+					$Ajax->activate('delivery_address');
 				}
-				$Ajax->activate('Location');
-				$Ajax->activate('deliver_to');
-				$Ajax->activate('phone');
-				$Ajax->activate('delivery_address');
-				$Ajax->activate('cash');
 				// change prices if necessary
 				// what about discount in template case?
 				if ($old_order->customer_currency != $order->customer_currency) {
