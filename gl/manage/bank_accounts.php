@@ -64,6 +64,14 @@ elseif( $Mode == 'Delete')
 		$cancel_delete = 1;
 		display_error(_("Cannot delete this bank account because transactions have been created using this account."));
 	}
+	$sql= "SELECT COUNT(*) FROM ".TB_PREF."sales_pos WHERE pos_account='$selected_id'";
+	$result = db_query($sql,"check failed");
+	$myrow = db_fetch_row($result);
+	if ($myrow[0] > 0) 
+	{
+		$cancel_delete = 1;
+		display_error(_("Cannot delete this bank account because POS definitions have been created using this account."));
+	}
 	if (!$cancel_delete) 
 	{
 		delete_bank_account($selected_id);
