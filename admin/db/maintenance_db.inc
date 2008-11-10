@@ -82,6 +82,7 @@ function db_create_db($connection)
 
 function db_drop_db($connection)
 {
+
 	if ($connection["tbpref"] == "")
 	{
 		$sql = "DROP DATABASE " . $connection["dbname"] . "";
@@ -106,9 +107,18 @@ function db_drop_db($connection)
 
 function db_import($filename, $connection)
 {
+	global $db;
+	$allowed_commands = array(
+		"create"  => 'table_queries', 
+		"alter table" => 'table_queries', 
+		"insert" => 'data_queries', 
+		"update" => 'data_queries', 
+		"drop table if exists" => 'drop_queries');
+
 	$data_queries = array();
 	$drop_queries = array();
 	$table_queries = array();
+	$sql_errors = array();
 
 	ini_set("max_execution_time", "180");
 	// uncrompress gziped backup files
@@ -119,74 +129,56 @@ function db_import($filename, $connection)
 	else
 		$lines = file("". $filename);
 
-	// divide insert and create sql queries
-	// $table is set to TRUE if the next line belongs to a create sql query
-	$table = false;
-	foreach($lines as $line)
+	// parse input file
+	$query_table = '';
+	foreach($lines as $line_no => $line)
 	{
 		$line = trim($line);
-
+		
 		$line = str_replace("0_", $connection["tbpref"], $line);
-		// $line = str_replace("Y_", "0_", $line);
-		// the last line did not belong to a 'create' sql query
-		if (!$table)
-		{
 
-			// this line does not, too
-			if (strtolower(substr($line,0,6)) == "insert")
+		if ($query_table == '') 
+		{	// check if line begins with one of allowed queries
+		 	foreach($allowed_commands as $cmd => $table) 
 			{
-				$data_queries[] = substr($line, 0, strlen($line) - 1);
-
-			// this line does not, too
-			}
-			elseif (strtolower(substr($line,0,6)) == "update")
+				if (strtolower(substr($line, 0, strlen($cmd))) == $cmd) 
+				{
+					$query_table = $table;
+					${$query_table}[] = array('', $line_no+1);
+					break;
+				}
+		 	}
+		 }
+		 if($query_table != '')  // inside allowed query
+		 {
+		 	$table = $query_table;
+			if (substr($line, -1) == ';') // end of query found
 			{
-				$data_queries[] = substr($line, 0, strlen($line) - 1);
-
-			// this line does not, too
+				$line = substr($line, 0, strlen($line) - 1); // strip ';'
+				$query_table = '';
 			}
-			elseif (strtolower(substr($line, 0, 20)) == "drop table if exists")
-			{
-				$drop_queries[] = substr($line, 0, strlen($line) - 1);
-
-			// this line does!
-			}
-			elseif (strtolower(substr($line, 0, 6)) == "create")
-			{
-				$table = true;
-				$table_queries[] = $line . "\n";
-			}
-			elseif (strtolower(substr($line, 0, 11)) == "alter table")
-			{
-				$data_queries[] = substr($line, 0, strlen($line) - 1);
-			}
-
-		// the current line belongs to a create sql query
+			${$table}[count(${$table}) - 1][0] .= $line . "\n";
 		}
-		else
-		{
-
-			// create sql query ending in this line
-			if (strtolower(substr($line, 0, 1)) == ")") {
-				$table = false;
-				$line = substr($line,0,strlen($line)-1);
-		  }
-			$table_queries[count($table_queries) - 1] .= $line . "\n";
-		}
+		
 	}
 
-	$sql_error = false;
-
+/*	{ 	// for debugging purposes
+	global $path_to_root;
+	$f = fopen($path_to_root.'/tmp/dbimport.txt', 'w');
+	fwrite($f, print_r($drop_queries,true) ."\n");
+	fwrite(print_r($table_queries,true) ."\n");
+	fwrite(print_r($data_queries,true));
+	fclose($f);
+	}
+*/
 	// execute drop tables if exists queries
 	if (is_array($drop_queries))
 	{
 		foreach($drop_queries as $drop_query)
 		{
-			$sql_error = false;
-			if (!db_query($drop_query))
+			if (!db_query($drop_query[0]))
 			{
-				$sql_error = true;
-				//if ($CONF['import_error']) echo nl2br($drop_query)."\n<div class=\"bold_left\">".mysql_error()."</div><br>\n";
+				$sql_errors[] = array(db_error_msg($db), $drop_query[1]);
 			}
 		}
 	}
@@ -196,11 +188,9 @@ function db_import($filename, $connection)
 	{
 		foreach($table_queries as $table_query)
 		{
-			$sql_error = false;
-			if (!db_query($table_query))
+			if (!db_query($table_query[0]))
 			{
-				$sql_error = true;
-				//if ($CONF['import_error']) echo nl2br($table_query)."\n<div class=\"bold_left\">".mysql_error()."</div><br>\n";
+				$sql_errors[] = array(db_error_msg($db), $table_query[1]);
 			}
 		}
 	}
@@ -210,23 +200,22 @@ function db_import($filename, $connection)
 	{
 		foreach($data_queries as $data_query)
 		{
-			$sql_error = false;
-			if (!db_query($data_query))
+			if (!db_query($data_query[0]))
 			{
-				//if ($CONF['import_error']) echo $data_query."\n<div class=\"bold_left\">".mysql_error()."</div><br>\n";
-				$sql_error = true;
-				return false;
+				$sql_errors[] = array(db_error_msg($db), $data_query[1]);
+				break;
 			}
 		}
 	}
-
-	// show number successful executed querys or if an error did occur
-	if ($sql_error == 1)
+	
+	if (count($sql_errors)) {
+		// display first failure message; the rest are probably derivative 
+		$err = $sql_errors[0];
+		display_error(sprintf(_("SQL script execution failed in line %d: %s"),
+			$err[1], $err[0]));
 		return false;
-		//echo "<div class=\"red\">".IM_ERROR.".</div>\n";
-	else
+	} else
 		return true;
-		//echo "<div class=\"green\">".IM_SUCCESS." ".count($table_queries)." ".IM_TABLES." ".count($data_queries)." ".IM_ROWS." (".$import_file.")</div>\n";
 	//$shell_command = C_MYSQL_PATH . " -h $host -u $user -p{$password} $dbname < $filename";
 	//shell_exec($shell_command);
 }
