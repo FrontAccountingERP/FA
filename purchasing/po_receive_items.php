@@ -114,9 +114,8 @@ function check_po_changed()
 	// Otherwise if you try to fullfill item quantities separately will give error.
 	$sql = "SELECT item_code, quantity_ordered, quantity_received, qty_invoiced
 		FROM ".TB_PREF."purch_order_details
-		WHERE order_no=" . $_SESSION['PO']->order_no . "
-		AND (quantity_ordered > quantity_received)
-		ORDER BY po_detail_item";
+		WHERE order_no=" . $_SESSION['PO']->order_no 
+		." ORDER BY po_detail_item";
 
 	$result = db_query($sql, "could not query purch order details");
     check_db_error("Could not check that the details of the purchase order had not been changed by another user ", $sql);
@@ -125,7 +124,6 @@ function check_po_changed()
 	while ($myrow = db_fetch($result))
 	{
 		$ln_item = $_SESSION['PO']->line_items[$line_no];
-
 		// only compare against items that are outstanding
 		$qty_outstanding = $ln_item->quantity - $ln_item->qty_received;
 		if ($qty_outstanding > 0)
@@ -138,7 +136,7 @@ function check_po_changed()
     			return true;
     		}
 		}
-		$line_no++;
+	 	$line_no++;
 	} /*loop through all line items of the order to ensure none have been invoiced */
 
 	return false;
@@ -224,15 +222,17 @@ function process_receive_po()
 
 	if (check_po_changed())
 	{
-		echo "<br> " . _("This order has been changed or invoiced since this delivery was started to be actioned. Processing halted. To enter a delivery against this purchase order, it must be re-selected and re-read again to update the changes made by the other user.") . "<BR>";
-
-		echo "<center><a href='$path_to_root/purchasing/inquiry/po_search.php?" . SID . "'>" . _("Select a different purchase order for receiving goods against") . "</a></center>";
-		echo "<center><a href='$path_to_root/po_receive_items.php?" . SID . "PONumber=" . $_SESSION['PO']->OrderNumber . "'>" . _("Re-Read the updated purchase order for receiving goods against") . "</a></center>";
+		display_error(_("This order has been changed or invoiced since this delivery was started to be actioned. Processing halted. To enter a delivery against this purchase order, it must be re-selected and re-read again to update the changes made by the other user."));
+		hyperlink_no_params("$path_to_root/purchasing/inquiry/po_search.php",
+		 _("Select a different purchase order for receiving goods against"));
+		hyperlink_params("$path_to_root/purchasing/po_receive_items.php", 
+			 _("Re-Read the updated purchase order for receiving goods against"),
+			 "PONumber=" . $_SESSION['PO']->order_no);
 		unset($_SESSION['PO']->line_items);
 		unset($_SESSION['PO']);
 		unset($_POST['ProcessGoodsReceived']);
 		$Ajax->activate('_page_body');
-		exit;
+		display_footer_exit();
 	}
 
 	$grn = add_grn($_SESSION['PO'], $_POST['DefaultReceivedDate'],
