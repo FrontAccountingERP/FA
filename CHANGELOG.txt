@@ -19,6 +19,12 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+11-Nov-2008 Janusz Dobrowolski
+# Fixed right alignment of amount cells.
+$ /includes/ui/ui_input.inc
+# Fixed display bug for fully received items.
+  /purchasing/po_receive_items.php
+
 10-Nov-2008 Joe Hunt
 ! [0000081] Trial Balance again minor changes.
 $ /gl/inquiry/gl_trial_balance.php
