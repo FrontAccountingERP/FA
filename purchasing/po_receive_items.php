@@ -90,8 +90,7 @@ function display_po_receive_items()
 			if ($qty_outstanding > 0)
 				qty_cells(null, $ln_itm->line_no, number_format2($ln_itm->receive_qty, $dec), "align=right", null, $dec);
 			else
-				qty_cells(null, $ln_itm->line_no, number_format2($ln_itm->receive_qty, $dec), "align=right",
-					"disabled", $dec);
+				label_cell(number_format2($ln_itm->receive_qty, $dec), "align=right");
 
 			amount_cell($ln_itm->price);
 			amount_cell($line_total);
@@ -265,7 +264,7 @@ if (isset($_POST['Update']) || isset($_POST['ProcessGoodsReceived']))
  	set from the post to the quantity to be received in this receival*/
 	foreach ($_SESSION['PO']->line_items as $line)
 	{
-
+	 if( ($line->quantity - $line->qty_received)>0) {
 		$_POST[$line->line_no] = max($_POST[$line->line_no], 0);
 		if (!check_num($line->line_no))
 			$_POST[$line->line_no] = number_format2(0, get_qty_dec($line->stock_id));
@@ -279,6 +278,7 @@ if (isset($_POST['Update']) || isset($_POST['ProcessGoodsReceived']))
 		{
 			$_SESSION['PO']->line_items[$line->line_no]->item_description = $_POST[$line->stock_id . "Desc"];
 		}
+	 }
 	}
 	$Ajax->activate('grn_items');
 }
