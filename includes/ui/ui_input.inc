@@ -489,7 +489,7 @@ function amount_cells_ex($label, $name, $size, $max=null, $init=null, $params=nu
 	if (!isset($max))
 		$max = $size;
 
-	echo "<td>";
+	echo "<td align='right'>";
 
 	echo "<input class='amount' type=\"text\" name=\"$name\" size=\"$size\" maxlength=\"$max\" dec=\"$dec\" value=\"" . $_POST[$name]. "\">";
 
