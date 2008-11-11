@@ -80,14 +80,16 @@ function print_trial_balance()
 	}
 	$dec = user_price_dec();
 
-	$cols2 = array(0, 50, 230, 330, 430, 530);
+	//$cols2 = array(0, 50, 230, 330, 430, 530);
+	$cols2 = array(0, 50, 190, 310, 430, 530);
 	//-------------0--1---2----3----4----5--
 
 	$headers2 = array('', '', _('Brought Forward'),	_('This Period'), _('Balance'));
 
 	$aligns2 = array('left', 'left', 'left', 'left', 'left');
 
-	$cols = array(0, 50, 200, 250, 300,	350, 400, 450, 500,	550);
+	//$cols = array(0, 50, 200, 250, 300,	350, 400, 450, 500,	550);
+	$cols = array(0, 50, 150, 210, 270,	330, 390, 450, 510,	570);
 	//------------0--1---2----3----4----5----6----7----8----9--
 
 	$headers = array(_('Account'), _('Account Name'), _('Debit'), _('Credit'), _('Debit'),
@@ -203,15 +205,15 @@ function print_trial_balance()
 	}	
 	$rep->TextCol(0, 2, _("Ending Balance"));
 
-	if ($prev['balance'] >= 0.0)
+	if ($pbal >= 0.0)
 		$rep->TextCol(2, 3,	number_format2($pbal, $dec));
 	else
 		$rep->TextCol(3, 4,	number_format2(abs($pbal), $dec));
-	if ($curr['balance'] >= 0.0)
+	if ($cbal >= 0.0)
 		$rep->TextCol(4, 5,	number_format2($cbal, $dec));
 	else
 		$rep->TextCol(5, 6,	number_format2(abs($cbal), $dec));
-	if ($tot['balance'] >= 0.0)
+	if ($tbal >= 0.0)
 		$rep->TextCol(6, 7,	number_format2($tbal, $dec));
 	else
 		$rep->TextCol(7, 8,	number_format2(abs($tbal), $dec));
