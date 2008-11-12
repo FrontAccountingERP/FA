@@ -349,7 +349,7 @@ function get_comments_string($type, $type_no)
 
 //--------------------------------------------------------------------------------------
 
-function view_stock_status($stock_id, $description=null)
+function view_stock_status($stock_id, $description=null, $echo=true)
 {
 	global $path_to_root;
 	if ($description)
@@ -358,7 +358,9 @@ function view_stock_status($stock_id, $description=null)
 	else
 		//hyperlink_params_separate($path_to_root . "/inventory/inquiry/stock_status.php", $stock_id, "stock_id=$stock_id");
 		$preview_str = "<a target='_blank' href='$path_to_root/inventory/inquiry/stock_status.php?stock_id=$stock_id' onclick=\"javascript:openWindow(this.href,this.target); return false;\" >$stock_id</a>";
-	echo $preview_str;
+	if($echo)
+		echo $preview_str;
+	return $preview_str;
 }
 
 function view_stock_status_cell($stock_id, $description=null)
