@@ -73,12 +73,12 @@ function view_link($trans)
 
 function due_date($row)
 {
-	return $row["type"] == 10 ? sql2date($row["due_date"]) : '';
+	return $row["type"] == 10 ? $row["due_date"] : '';
 }
 
 function fmt_balance($row)
 {
-	return price_format($row["TotalAmount"] - $row["Allocated"]);
+	return $row["TotalAmount"] - $row["Allocated"];
 }
 
 function alloc_link($row)
@@ -191,19 +191,19 @@ function fmt_credit($row)
 //------------------------------------------------------------------------------------------------
 
 $cols = array(
-	_("Type") => array('type'=>'spec', 'fun'=>'systype_name'),
-	_("Number") => array('type'=>'spec', 'fun'=>'view_link'),
+	_("Type") => array('fun'=>'systype_name'),
+	_("Number") => array('fun'=>'view_link'),
 	_("Reference"), 
-	_("Order") => array('type'=>'spec', 'fun'=>'order_link'), 
+	_("Order") => array('fun'=>'order_link'), 
 	_("Date") => array('type'=>'date', 'ord'=>'asc'),
-	_("Due Date") => array('type'=>'spec', 'fun'=>'due_date'),
-	_("Customer") => 'text', 
-	_("Currency") => 'text',
-	_("Debit") => array('type'=>'spec', 'fun'=>'fmt_debit'), 
-	_("Credit") => array('type'=>'insert', 'fun'=>'fmt_credit'), 
+	_("Due Date") => array('type'=>'date', 'fun'=>'due_date'),
+	_("Customer"), 
+	_("Currency") => array('align'=>'center'),
+	_("Debit") => array('align'=>'right','fun'=>'fmt_debit'), 
+	_("Credit") => array('align'=>'right','insert'=>true, 'fun'=>'fmt_credit'), 
 	_("Allocated") => 'amount', 
-	_("Balance") => array('type'=>'insert', 'fun'=>'fmt_balance'),
-	array('type'=>'insert', 'fun'=>'alloc_link')
+	_("Balance") => array('type'=>'amount', 'insert'=>true, 'fun'=>'fmt_balance'),
+	array('insert'=>true, 'fun'=>'alloc_link')
 	);
 
 if ($_POST['customer_id'] != reserved_words::get_all()) {

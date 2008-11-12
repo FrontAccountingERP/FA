@@ -129,7 +129,7 @@ function batch_checkbox($row)
 {
 	$name = "Sel_" .$row['trans_no'];
 	return $row['Done'] ? '' :
-		"<center><input type='checkbox' name='$name' value='1' ></center>"
+		"<input type='checkbox' name='$name' value='1' >"
 // add also trans_no => branch code for checking after 'Batch' submit
 	 ."<input name='Sel_[".$row['trans_no']."]' type='hidden' value='"
 	 .$row['branch_code']."'>\n";
@@ -217,7 +217,7 @@ else
 } //end no delivery number selected
 
 $cols = array(
-		_("Delivery #") => array('type'=>'spec', 'fun'=>'trans_view'), 
+		_("Delivery #") => array('fun'=>'trans_view'), 
 		_("Customer"), 
 		'branch_code' => 'skip',
 		_("Branch") => array('ord'=>''), 
@@ -227,12 +227,12 @@ $cols = array(
 		_("Delivery Date") => array('type'=>'date', 'ord'=>''),
 		_("Due By") => 'date', 
 		_("Delivery Total") => array('type'=>'amount', 'ord'=>''),
-		_("Currency"),
+		_("Currency") => array('align'=>'center'),
 		submit('BatchInvoice','Batch Inv', false) 
-			=> array('type'=>'insert', 'fun'=>'batch_checkbox'),
-		array('type'=>'insert', 'fun'=>'edit_link'),
-		array('type'=>'insert', 'fun'=>'invoice_link'),
-		array('type'=>'insert', 'fun'=>'prt_link')
+			=> array('insert'=>true, 'fun'=>'batch_checkbox', 'align'=>'center'),
+		array('insert'=>true, 'fun'=>'edit_link'),
+		array('insert'=>true, 'fun'=>'invoice_link'),
+		array('insert'=>true, 'fun'=>'prt_link')
 );
 
 //-----------------------------------------------------------------------------------

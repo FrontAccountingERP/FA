@@ -252,7 +252,7 @@ else	// ... or select inquiry constraints
 }
 
 $cols = array(
-	_("Order #") => array('type'=>'spec', 'fun'=>'view_link'),
+	_("Order #") => array('fun'=>'view_link'),
 	_("Customer"),
 	_("Branch"), 
 	_("Comments"),
@@ -261,28 +261,28 @@ $cols = array(
 	_("Delivery To"), 
 	_("Order Total") => array('type'=>'amount', 'ord'=>''),
 	'Type' => 'skip',
-	_("Currency")
+	_("Currency") => array('align'=>'center')
 );
 
 if ($_POST['order_view_mode'] == 'OutstandingOnly') {
 	array_replace($cols, 3, 1, _("Cust Order Ref"));
-	array_append($cols, array(array('type'=>'insert', 'fun'=>'dispatch_link')));
+	array_append($cols, array(array('insert'=>true, 'fun'=>'dispatch_link')));
 
 } elseif ($_POST['order_view_mode'] == 'InvoiceTemplates') {
 	array_replace($cols, 3, 1, _("Description"));
-	array_append($cols, array( array('type'=>'insert', 'fun'=>'invoice_link')));
+	array_append($cols, array( array('insert'=>true, 'fun'=>'invoice_link')));
 
 } else if ($_POST['order_view_mode'] == 'DeliveryTemplates') {
 	array_replace($cols, 3, 1, _("Description"));
 	array_append($cols, array(
-			array('type'=>'insert', 'fun'=>'delivery_link'))
+			array('insert'=>true, 'fun'=>'delivery_link'))
 	);
 
 } else {
 	 array_append($cols,array(
-			_("Tmpl") => array('type'=>'insert', 'fun'=>'tmpl_checkbox'),
-					array('type'=>'insert', 'fun'=>'edit_link'),
-					array('type'=>'insert', 'fun'=>'prt_link')));
+			_("Tmpl") => array('insert'=>true, 'fun'=>'tmpl_checkbox'),
+					array('insert'=>true, 'fun'=>'edit_link'),
+					array('insert'=>true, 'fun'=>'prt_link')));
 };
 
 
