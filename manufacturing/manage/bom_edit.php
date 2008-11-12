@@ -24,11 +24,11 @@ $selected_component = $selected_id;
 //{
 //	$_POST['stock_id'] = $_GET["NewItem"];
 //}
-//if (isset($_GET['stock_id']))
-//{
-//	$_POST['stock_id'] = $_GET['stock_id'];
-//	$selected_parent =  $_GET['stock_id'];
-//}
+if (isset($_GET['stock_id']))
+{
+	$_POST['stock_id'] = $_GET['stock_id'];
+	$selected_parent =  $_GET['stock_id'];
+}
 
 /* selected_parent could come from a post or a get */
 /*if (isset($_GET["selected_parent"]))
@@ -207,17 +207,17 @@ if ($Mode == 'RESET')
 start_form(false, true);
 
 echo "<center>" . _("Select a manufacturable item:") . "&nbsp;";
-stock_bom_items_list('selected_parent', null, false, true);
+stock_bom_items_list('stock_id', null, false, true);
 echo "</center><br>";
 
 end_form();
-if (isset($_POST['_selected_parent_update']))
+if (isset($_POST['_stock_id_update']))
 	$Ajax->activate('_page_body');
 //--------------------------------------------------------------------------------------------------
 
-if (get_post('selected_parent') != '')
+if (get_post('stock_id') != '')
 { //Parent Item selected so display bom or edit component
-	$selected_parent = $_POST['selected_parent'];
+	$selected_parent = $_POST['stock_id'];
 	if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 		on_submit($selected_parent, $selected_component);
 	//--------------------------------------------------------------------------------------
@@ -263,7 +263,7 @@ start_form();
 		echo "</td>";
 		end_row();
 	}
-	hidden('selected_parent', $selected_parent);
+	hidden('stock_id', $selected_parent);
 
 	locations_list_row(_("Location to Draw From:"), 'loc_code', null);
 	workcenter_list_row(_("Work Centre Added:"), 'workcentre_added', null);
