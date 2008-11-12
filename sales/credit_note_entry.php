@@ -13,6 +13,7 @@ include_once($path_to_root . "/sales/includes/sales_ui.inc");
 include_once($path_to_root . "/sales/includes/db/sales_types_db.inc");
 include_once($path_to_root . "/sales/includes/ui/sales_credit_ui.inc");
 include_once($path_to_root . "/sales/includes/ui/sales_order_ui.inc");
+include_once($path_to_root . "/reporting/includes/reporting.inc");
 
 $js = "";
 if ($use_popup_windows) {
@@ -61,7 +62,7 @@ if (isset($_GET['AddedID'])) {
 
 	display_note(get_customer_trans_view_str($trans_type, $credit_no, _("&View this credit note")), 0, 1);
 
-	display_note(print_document_link($credit_no, _("&Print This Credit Invoice"), true, 11),1);
+	display_note(print_document_link($credit_no, _("&Print This Credit Invoice"), true, 11),0, 1);
 
 	display_note(get_gl_view_str($trans_type, $credit_no, _("View the GL &Journal Entries for this Credit Note")));
 
@@ -88,6 +89,8 @@ function copy_to_cn()
 	$_SESSION['Items']->sales_type = $_POST['sales_type_id'];
 	$_SESSION['Items']->reference = $_POST['ref'];
 	$_SESSION['Items']->ship_via = $_POST['ShipperID'];
+	$_SESSION['Items']->dimension_id = $_POST['dimension_id'];
+	$_SESSION['Items']->dimension2_id = $_POST['dimension2_id'];
 }
 
 //-----------------------------------------------------------------------------
@@ -101,6 +104,8 @@ function copy_from_cn()
 	$_POST['sales_type_id'] = $_SESSION['Items']->sales_type;
 	$_POST['ref'] = $_SESSION['Items']->reference;
 	$_POST['ShipperID'] = $_SESSION['Items']->ship_via;
+	$_POST['dimension_id'] = $_SESSION['Items']->dimension_id;
+	$_POST['dimension2_id'] = $_SESSION['Items']->dimension2_id;
 }
 
 //-----------------------------------------------------------------------------

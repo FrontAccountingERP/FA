@@ -450,6 +450,8 @@ function get_customer_to_order($customer_id) {
 		  .TB_PREF."debtors_master.address, "
 		  .TB_PREF."credit_status.dissallow_invoices, "
 		  .TB_PREF."debtors_master.sales_type AS salestype, "
+		  .TB_PREF."debtors_master.dimension_id, "
+		  .TB_PREF."debtors_master.dimension2_id, "
 		  .TB_PREF."sales_types.sales_type, "
 		  .TB_PREF."sales_types.tax_included, "
 		  .TB_PREF."sales_types.factor, "

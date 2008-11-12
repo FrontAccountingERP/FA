@@ -61,6 +61,8 @@ class cart
 	var $cash_account;
 	var $account_name;
 	var $cash_discount;	// not used as of FA 2.1
+	var $dimension_id;
+	var $dimension2_id;
 	//-------------------------------------------------------------------------
 	//
 	//  $trans_no==0 => open new/direct document
@@ -72,6 +74,8 @@ class cart
 		$this->line_items = array();
 		$this->sales_type = "";
 		$this->trans_type = 30;
+		$this->dimension_id = 0;
+		$this->dimension2_id = 0;
 		$this->read($type, $trans_no, $view );
 	}
 
@@ -141,6 +145,27 @@ class cart
 				if (!is_date_in_fiscalyear($this->document_date))
 					$this->document_date = end_fiscalyear();
 				$this->reference = references::get_next($this->trans_type);
+				if ($type != 30) // Added 2.1 Joe Hunt 2008-11-12
+				{
+					$dim = get_company_pref('use_dimension');
+					if ($dim > 0)
+					{
+						if ($this->customer_id == '')
+							$this->dimension_id = 0;
+						else
+						{
+							$cust = get_customer($this->customer_id);
+							$this->dimension_id = $cust['dimension_id'];
+						}	
+						if ($dim > 1)
+						{
+							if ($this->customer_id == '')
+								$this->dimension2_id = 0;
+							else
+								$this->dimension2_id = $cust['dimension2_id'];
+						}		
+					}		
+				}	
 				if ($type == 10) {
 				  $this->due_date =
 					get_invoice_duedate($this->customer_id, $this->document_date);

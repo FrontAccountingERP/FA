@@ -172,7 +172,11 @@ function copy_to_cart()
 	$cart->customer_id	= $_POST['customer_id'];
 	$cart->Branch = $_POST['branch_id'];
 	$cart->sales_type = $_POST['sales_type'];
-	// POS 
+	// POS
+	if ($cart->trans_type!=30) { // 2008-11-12 Joe Hunt
+		$cart->dimension_id = $_POST['dimension_id'];
+		$cart->dimension2_id = $_POST['dimension2_id'];
+	}	
 }
 
 //-----------------------------------------------------------------------------
@@ -203,6 +207,11 @@ function copy_from_cart()
 	// POS 
 	if ($cart->trans_type == 10)
 		$_POST['cash'] = $cart->cash;
+	if ($cart->trans_type!=30) { // 2008-11-12 Joe Hunt
+		$_POST['dimension_id'] = $cart->dimension_id;
+		$_POST['dimension2_id'] = $cart->dimension2_id;
+	}	
+		
 }
 //--------------------------------------------------------------------------------
 
@@ -278,7 +287,6 @@ if (isset($_POST['ProcessOrder']) && can_process()) {
 
 	$modified = ($_SESSION['Items']->trans_no != 0);
 	$so_type = $_SESSION['Items']->so_type;
-
 	$_SESSION['Items']->write(1);
 	if (count($messages)) { // abort on failure or error messages are lost
 		$Ajax->activate('_page_body');

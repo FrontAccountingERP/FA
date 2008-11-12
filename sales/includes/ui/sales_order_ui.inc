@@ -41,6 +41,11 @@ function get_customer_details_to_order(&$order, $customer_id, $branch_id)
 	$order->set_sales_type($myrow['salestype'], $myrow['sales_type'], $myrow['tax_included'],
 	    $myrow['factor']);
 
+	if ($order->trans_type != 30)
+	{
+		$order->dimension_id = $myrow['dimension_id'];
+		$order->dimension2_id = $myrow['dimension2_id'];
+	}
 	$result = get_branch_to_order($customer_id, $branch_id);
 
 	if (db_num_rows($result) == 0)
@@ -175,6 +180,10 @@ function display_order_header(&$order, $editable, $date_text, $display_tax_group
 		hidden('customer_id', $order->customer_id);
 		hidden('branch_id', $order->Branch);
 		hidden('sales_type', $order->sales_type);
+		if ($order->trans_type != 30) {
+			hidden('dimension_id', $order->dimension_id); // 2008-11-12 Joe Hunt
+			hidden('dimension2_id', $order->dimension2_id);
+		}	
 	}
 	else
 	{
@@ -236,6 +245,14 @@ function display_order_header(&$order, $editable, $date_text, $display_tax_group
 					$_POST['sales_type'] = $order->sales_type;
 				    $Ajax->activate('sales_type');
 				    $change_prices = 1;
+				}
+				if ($old_order->dimension_id != $order->dimension_id) {
+					$_POST['dimension_id'] = $order->dimension_id;
+				    $Ajax->activate('dimension_id');
+				}
+				if ($old_order->dimension2_id != $order->dimension2_id) {
+					$_POST['dimension2_id'] = $order->dimension2_id;
+				    $Ajax->activate('dimension2_id');
 				}
 				unset($old_order);
 			}
@@ -321,6 +338,30 @@ function display_order_header(&$order, $editable, $date_text, $display_tax_group
 				$_POST['delivery_date'] = add_days(get_post('OrderDate'), sys_prefs::default_delivery_required_by());
 			$Ajax->activate('delivery_date');
 		}
+		if ($order->trans_type != 30)
+		{	// 2008-11-12 Joe Hunt added dimensions
+			$dim = get_company_pref('use_dimension');
+			if ($dim > 0)
+			{
+				if ($order->dimension_id != $_POST['dimension_id']) {
+					$order->dimension_id = $_POST['dimension_id'];
+					$Ajax->activate('dimension_id');
+				}	
+				dimensions_list_row(_("Dimension:"), 'dimension_id', null, true, ' ', false, 1, true);
+				if ($dim > 1)
+				{
+					if ($order->dimension2_id != $_POST['dimension2_id']) {
+						$order->dimension2_id = $_POST['dimension2_id'];
+						$Ajax->activate('dimension2_id');
+					}	
+					dimensions_list_row(_("Dimension")." 2:", 'dimension2_id', null, true, ' ', false, 2, true);
+				}	
+			}		
+			if ($dim < 2)
+				hidden('dimension2_id', 0);
+			if ($dim < 1)
+				hidden('dimension_id', 0);
+		}	
 	}
 	else
 	{
@@ -348,6 +389,9 @@ function display_order_header(&$order, $editable, $date_text, $display_tax_group
 		}
 	    $Ajax->activate('items_table');
 	}
+	$f = fopen(dirname(__FILE__)."/debug.txt", "w");
+	fwrite($f, "dimension=".$order->dimension_id.",dimension 2=".$order->dimension2_id."\n");
+	fclose($f);
 
 	return $customer_error;
 }

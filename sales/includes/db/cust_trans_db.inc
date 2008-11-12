@@ -79,7 +79,7 @@ function get_customer_trans_version($type, $trans_no) {
 function write_customer_trans($trans_type, $trans_no, $debtor_no, $BranchNo,
 	$date_, $reference, $Total, $discount=0, $Tax=0, $Freight=0, $FreightTax=0,
 	$sales_type=0, $order_no=0, $trans_link=0, $ship_via=0, $due_date="",
-	$AllocAmt=0)
+	$AllocAmt=0, $dimension_id=0, $dimension2_id=0)
 {
 
 	$curr = get_customer_currency($debtor_no);
@@ -101,13 +101,15 @@ function write_customer_trans($trans_type, $trans_no, $debtor_no, $BranchNo,
 		reference, tpe,
 		order_, ov_amount, ov_discount,
 		ov_gst, ov_freight, ov_freight_tax,
-		rate, ship_via, alloc, trans_link
+		rate, ship_via, alloc, trans_link,
+		dimension_id, dimension2_id
 		) VALUES ($trans_no, $trans_type,
 		".db_escape($debtor_no).", ".db_escape($BranchNo).",
 		'$SQLDate', '$SQLDueDate', ".db_escape($reference).",
 		".db_escape($sales_type).", $order_no, $Total, ".db_escape($discount).", $Tax,
 		".db_escape($Freight).",
-		$FreightTax, $rate, ".db_escape($ship_via).", $AllocAmt, ".db_escape($trans_link).")";
+		$FreightTax, $rate, ".db_escape($ship_via).", $AllocAmt, ".db_escape($trans_link).",
+		$dimension_id, $dimension2_id)";
 	} else {	// may be optional argument should stay unchanged ?
 	$sql = "UPDATE ".TB_PREF."debtor_trans SET
 		debtor_no=".db_escape($debtor_no)." , branch_code=".db_escape($BranchNo).",
@@ -115,7 +117,8 @@ function write_customer_trans($trans_type, $trans_no, $debtor_no, $BranchNo,
 		reference=".db_escape($reference).", tpe=".db_escape($sales_type).", order_=$order_no,
 		ov_amount=$Total, ov_discount=".db_escape($discount).", ov_gst=$Tax,
 		ov_freight=".db_escape($Freight).", ov_freight_tax=$FreightTax, rate=$rate,
-		ship_via=".db_escape($ship_via).", alloc=$AllocAmt, trans_link=$trans_link
+		ship_via=".db_escape($ship_via).", alloc=$AllocAmt, trans_link=$trans_link,
+		dimension_id=$dimension_id, dimension2_id=$dimension2_id
 		WHERE trans_no=$trans_no AND type=$trans_type";
 	}
 	db_query($sql, "The debtor transaction record could not be inserted");

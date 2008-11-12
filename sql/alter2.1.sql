@@ -1,3 +1,6 @@
+ALTER TABLE `0_debtor_trans` ADD `dimension_id` int(11) NOT NULL default '0';
+ALTER TABLE `0_debtor_trans` ADD `dimension2_id` int(11) NOT NULL default '0';
+
 DROP TABLE IF EXISTS `0_bank_trans_types`;
 
 ALTER TABLE `0_bank_accounts` DROP PRIMARY KEY;

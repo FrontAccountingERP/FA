@@ -586,22 +586,22 @@ $options = array(
 }
 
 function dimensions_list_cells($label, $name, $selected_id=null, $no_option=false, $showname=null,
-	$showclosed=false, $showtype=0)
+	$showclosed=false, $showtype=0, $submit_on_change=false)
 {
 	if ($label != null)
 		echo "<td>$label</td>\n";
 	echo "<td>";
-	$str = dimensions_list($name, $selected_id, $no_option, $showname, false, $showclosed, $showtype);
+	$str = dimensions_list($name, $selected_id, $no_option, $showname, $submit_on_change, $showclosed, $showtype);
 	echo "</td>\n";
 	return $str;
 }
 
 function dimensions_list_row($label, $name, $selected_id=null, $no_option=false, $showname=null,
-	$showclosed=false, $showtype=0)
+	$showclosed=false, $showtype=0, $submit_on_change=false)
 {
 	echo "<tr>\n";
 	$str = dimensions_list_cells($label, $name, $selected_id, $no_option, $showname,
-		$showclosed, $showtype);
+		$showclosed, $showtype, $submit_on_change);
 	echo "</tr>\n";
 	return $str;
 }

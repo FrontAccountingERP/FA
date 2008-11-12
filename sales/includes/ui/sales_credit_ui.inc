@@ -58,6 +58,14 @@ function display_credit_header(&$order)
 				    $Ajax->activate('sales_type_id');
 				    $change_prices = 1;
 				}
+				if ($old_order->dimension_id != $order->dimension_id) {
+					$_POST['dimension_id'] = $order->dimension_id;
+				    $Ajax->activate('dimension_id');
+				}
+				if ($old_order->dimension2_id != $order->dimension2_id) {
+					$_POST['dimension2_id'] = $order->dimension2_id;
+				    $Ajax->activate('dimension2_id');
+				}
 				unset($old_order);
 	  }
 	set_global_customer($_POST['customer_id']);
@@ -101,6 +109,8 @@ function display_credit_header(&$order)
 		$change_prices = 1;
 	}
 
+    shippers_list_row(_("Shipping Company:"), 'ShipperID', $order->ship_via);
+
 	label_row(_("Customer Discount:"), ($order->default_discount * 100) . "%");
 	echo "</table>";
 
@@ -116,8 +126,29 @@ function display_credit_header(&$order)
 		$change_prices = 1;
 		$Ajax->activate('currency');
 	}
-    shippers_list_row(_("Shipping Company:"), 'ShipperID', $order->ship_via);
-
+	// 2008-11-12 Joe Hunt added dimensions
+	$dim = get_company_pref('use_dimension');
+	if ($dim > 0)
+	{
+		if ($order->dimension_id != $_POST['dimension_id']) {
+			$order->dimension_id = $_POST['dimension_id'];
+			$Ajax->activate('dimension_id');
+		}	
+		dimensions_list_row(_("Dimension:"), 'dimension_id', null, true, ' ', false, 1, true);
+		if ($dim > 1)
+		{
+			if ($order->dimension2_id != $_POST['dimension2_id']) {
+				$order->dimension2_id = $_POST['dimension2_id'];
+				$Ajax->activate('dimension2_id');
+			}	
+			dimensions_list_row(_("Dimension")." 2:", 'dimension2_id', null, true, ' ', false, 2, true);
+		}	
+	}		
+	if ($dim < 2)
+		hidden('dimension2_id', 0);
+	if ($dim < 1)
+		hidden('dimension_id', 0);
+	
 	echo "</table>";
 
 	echo "</td></tr>";
