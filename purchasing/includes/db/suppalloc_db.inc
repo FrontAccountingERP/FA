@@ -85,9 +85,45 @@ function clear_supp_alloctions($type, $type_no, $date="")
 	db_query($sql, "could not void supp transactions for type=$type and trans_no=$type_no");
 }
 
+//----------------------------------------------------------------------------------------
+function get_alloc_supp_sql($extra_fields=null, $extra_conditions=null, $extra_tables=null)
+{
+	$sql = "SELECT
+		trans.type,
+		trans.trans_no,
+		trans.reference,
+		trans.tran_date,
+		supplier.supp_name, 
+		supplier.curr_code, 
+		ov_amount+ov_gst+ov_discount AS Total,
+		trans.alloc,
+		trans.due_date,
+		trans.supplier_id,
+		supplier.address";
+/*	$sql = "SELECT trans.*,
+		ov_amount+ov_gst+ov_discount AS Total,
+		supplier.supp_name, supplier.address,
+		supplier.curr_code ";
+*/
+	if ($extra_fields)
+		$sql .= ", $extra_fields ";
+
+	$sql .= " FROM ".TB_PREF."supp_trans as trans, ".TB_PREF."suppliers as supplier";
+	if ($extra_tables)
+		$sql .= " ,$extra_tables ";
+
+	$sql .= " WHERE trans.supplier_id=supplier.supplier_id";
+
+	if ($extra_conditions)
+		$sql .= " AND $extra_conditions ";
+
+	return $sql;
+}
+
+
 //-------------------------------------------------------------------------------------------------------------
 
-function get_allocatable_from_supp_transactions($supplier_id, $settled)
+function get_allocatable_from_supp_sql($supplier_id, $settled)
 {
 	$settled_sql = "";
 	if (!$settled)
@@ -97,10 +133,12 @@ function get_allocatable_from_supp_transactions($supplier_id, $settled)
 
 	$supp_sql = "";
 	if ($supplier_id != null)
-		$supp_sql = " AND ".TB_PREF."supp_trans.supplier_id = $supplier_id";
+		$supp_sql = " AND trans.supplier_id = $supplier_id";
 
-	return get_supplier_transactions("round(ABS(ov_amount+ov_gst+ov_discount)-alloc,6) <= 0 AS settled",
+	$sql = get_alloc_supp_sql("round(ABS(ov_amount+ov_gst+ov_discount)-alloc,6) <= 0 AS settled",
 		"(type=22 OR type=21 OR type=1) AND (ov_amount < 0) " . $settled_sql . $supp_sql);
+
+	return $sql;
 }
 
 //-------------------------------------------------------------------------------------------------------------
@@ -109,19 +147,21 @@ function get_allocatable_to_supp_transactions($supplier_id, $trans_no=null, $typ
 {
 	if ($trans_no != null && $type!= null)
 	{
-		return get_supplier_transactions("amt", "".TB_PREF."supp_trans.trans_no = ".TB_PREF."supp_allocations.trans_no_to
-			AND ".TB_PREF."supp_trans.type = ".TB_PREF."supp_allocations.trans_type_to
-			AND ".TB_PREF."supp_allocations.trans_no_from=$trans_no
-			AND ".TB_PREF."supp_allocations.trans_type_from=$type
-			AND ".TB_PREF."supp_trans.supplier_id=$supplier_id",
-			"".TB_PREF."supp_allocations");
+		$sql = get_alloc_supp_sql("amt", "trans.trans_no = alloc.trans_no_to
+			AND trans.type = alloc.trans_type_to
+			AND alloc.trans_no_from=$trans_no
+			AND alloc.trans_type_from=$type
+			AND trans.supplier_id=$supplier_id",
+			"".TB_PREF."supp_allocations as alloc");
 	}
 	else
 	{
-		return get_supplier_transactions(null, "round(ABS(ov_amount+ov_gst+ov_discount)-alloc,6) > 0
-			AND ".TB_PREF."supp_trans.type != 22
-			AND ".TB_PREF."supp_trans.supplier_id=$supplier_id");
+		$sql = get_alloc_supp_sql(null, "round(ABS(ov_amount+ov_gst+ov_discount)-alloc,6) > 0
+			AND trans.type != 22
+			AND trans.supplier_id=$supplier_id");
 	}
+
+	return db_query($sql." ORDER BY trans_no", "Cannot retreive alloc to transactions");
 }
 
 

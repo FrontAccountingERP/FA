@@ -84,17 +84,19 @@ function clear_cust_alloctions($type, $type_no, $date="")
 }
 //----------------------------------------------------------------------------------------
 
-function get_customer_transactions($extra_fields=null, $extra_conditions=null, $extra_tables=null)
+function get_alloc_trans_sql($extra_fields=null, $extra_conditions=null, $extra_tables=null)
 {
-	$sql = "SELECT trans.trans_no,
+	$sql = "SELECT
 		trans.type,
-		trans.tran_date,
-		trans.due_date,
+		trans.trans_no,
 		trans.reference,
-		trans.alloc,
-		ov_amount+ov_gst+ov_freight+ov_freight_tax+ov_discount AS Total,
-		debtor.name AS DebtorName, debtor.address,
+		trans.tran_date,
+		debtor.name AS DebtorName, 
 		debtor.curr_code, 
+		ov_amount+ov_gst+ov_freight+ov_freight_tax+ov_discount AS Total,
+		trans.alloc,
+		trans.due_date,
+		debtor.address,
 		trans.version ";
 
 	if ($extra_fields)
@@ -109,16 +111,14 @@ function get_customer_transactions($extra_fields=null, $extra_conditions=null, $
 
 	if ($extra_conditions)
 		$sql .= " AND $extra_conditions ";
-
-	$sql .= " ORDER BY trans_no";
-
-	return db_query($sql, "Cannot retreive debtor transactions");
+	
+	return $sql;
 }
 
 
 //-------------------------------------------------------------------------------------------------------------
 
-function get_allocatable_from_cust_transactions($customer_id, $settled)
+function get_allocatable_from_cust_sql($customer_id, $settled)
 {
 	$settled_sql = "";
 	if (!$settled)
@@ -129,8 +129,10 @@ function get_allocatable_from_cust_transactions($customer_id, $settled)
 	if ($customer_id != null)
 		$cust_sql = " AND trans.debtor_no = $customer_id";
 
-	return get_customer_transactions("round(ov_amount+ov_gst+ov_freight+ov_freight_tax+ov_discount-alloc,6) <= 0 AS settled",
+	$sql = get_alloc_trans_sql("round(ov_amount+ov_gst+ov_freight+ov_freight_tax+ov_discount-alloc,6) <= 0 AS settled",
 		"(type=12 OR type=11 OR type=2) AND (trans.ov_amount > 0) " . $settled_sql . $cust_sql);
+
+	return $sql;
 }
 
 //-------------------------------------------------------------------------------------------------------------
@@ -139,7 +141,7 @@ function get_allocatable_to_cust_transactions($customer_id, $trans_no=null, $typ
 {
 	if ($trans_no != null and $type != null)
 	{
-		return get_customer_transactions("amt", "trans.trans_no = alloc.trans_no_to
+		$sql = get_alloc_trans_sql("amt", "trans.trans_no = alloc.trans_no_to
 			AND trans.type = alloc.trans_type_to
 			AND alloc.trans_no_from=$trans_no
 			AND alloc.trans_type_from=$type
@@ -148,13 +150,15 @@ function get_allocatable_to_cust_transactions($customer_id, $trans_no=null, $typ
 	}
 	else
 	{
-		return get_customer_transactions(null, "round(ov_amount+ov_gst+ov_freight+ov_freight_tax+ov_discount-alloc,6) > 0
+		$sql = get_alloc_trans_sql(null, "round(ov_amount+ov_gst+ov_freight+ov_freight_tax+ov_discount-alloc,6) > 0
 			AND trans.type != " . systypes::cust_payment() . "
 			AND trans.type != " . systypes::bank_deposit() . "
 			AND trans.type != 11
 			AND trans.type != 13
 			AND trans.debtor_no=$customer_id");
 	}
+
+	return db_query($sql." ORDER BY trans_no", "Cannot retreive alloc to transactions");
 }
 
 

@@ -88,32 +88,6 @@ function get_supp_trans($trans_no, $trans_type=-1)
 
 //----------------------------------------------------------------------------------------
 
-function get_supplier_transactions($extra_fields=null, $extra_conditions=null, $extra_tables=null)
-{
-	$sql = "SELECT ".TB_PREF."supp_trans.*,
-		ov_amount+ov_gst+ov_discount AS Total,
-		".TB_PREF."suppliers.supp_name, ".TB_PREF."suppliers.address,
-		".TB_PREF."suppliers.curr_code ";
-
-	if ($extra_fields)
-		$sql .= ", $extra_fields ";
-
-	$sql .= " FROM ".TB_PREF."supp_trans, ".TB_PREF."suppliers ";
-	if ($extra_tables)
-		$sql .= " ,$extra_tables ";
-
-	$sql .= " WHERE ".TB_PREF."supp_trans.supplier_id=".TB_PREF."suppliers.supplier_id";
-
-	if ($extra_conditions)
-		$sql .= " AND $extra_conditions ";
-
-	$sql .= " ORDER BY trans_no";
-
-	return db_query($sql, "Cannot retreive supplier transactions");
-}
-
-//----------------------------------------------------------------------------------------
-
 function exists_supp_trans($type, $type_no)
 {
 	if ($type == 25)
