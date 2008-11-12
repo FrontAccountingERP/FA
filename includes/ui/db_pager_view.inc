@@ -62,7 +62,17 @@ function display_db_pager(&$pager) {
 		   $coltype = $col['type'];
 		   $cell = isset($col['name']) ? $row[$col['name']] : '';
 
-		   switch($coltype) {
+		   if (isset($col['fun'])) { // use data input function if defined
+		    $fun = $col['fun']; 
+		    if (method_exists($pager, $fun)) { 
+				$cell = $pager->$fun($row, $cell);
+  			} elseif (function_exists($fun)) {
+				$cell = $fun($row, $cell);
+			} else
+				$cell = '';
+		   }
+
+		   switch($coltype) { // format column
 		    case 'date':
 		  	  label_cell(sql2date($cell), "align='center'"); break;
 		    case 'dstamp':	// time stamp displayed as date
@@ -73,23 +83,17 @@ function display_db_pager(&$pager) {
 		    case 'percent':
 		  	  percent_cell($cell); break;
 		    case 'amount':
-		  	  amount_cell($cell); break;
+		  	  amount_cell($cell, false); break;
 		    case 'qty':
 		  	  qty_cell($cell); break;
 		    case 'rate':
 		  	  rate_cell($cell);  break;
-			case 'insert':	// extra inserted column
-			case 'spec':	// special formatting function
-			  	$fun = $col['fun']; 
-			    if (method_exists($pager, $fun)) { 
-					$cell = $pager->$fun($row, $cell);
-  				} elseif (function_exists($fun)) {
-					$cell = $fun($row, $cell);
-				} else
-					$cell = '';
-//		    case 'text':
 		    default:
-		  	  label_cell($cell);
+//		    case 'text':
+			  if (isset( $col['align']))
+			  	  label_cell($cell, "align='" . $col['align'] . "'");
+			  else
+			  	  label_cell($cell);
 		    case 'skip':	// column not displayed
 	  	  }
 	  }

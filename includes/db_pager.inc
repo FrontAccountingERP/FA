@@ -145,7 +145,7 @@ class db_pager {
 		  // add result field names to column defs for 
 		  // col value retrieve and sort purposes 
 			for ($c = $i = 0; $c < count($this->columns); $c++) {
-				if ($this->columns[$c]['type'] != 'insert')
+				if (!(isset($this->columns[$c]['insert']) && $this->columns[$c]['insert']))
 			 		$this->columns[$c]['name']= mysql_field_name($result, $i++);
 		  	}
 		  
@@ -330,16 +330,15 @@ class db_pager {
 //  $sql  - base sql for data inquiry. Order of fields implies
 //		pager columns order.
 //	$coldef - array of column definitions. Example definitions
-//		Text column with title 'User name':
+//		Column with title 'User name' and default text format:
 //				'User name'
 //		Skipped field from sql query. Data for the field is not displayed:
 //				'dummy' => 'skip'
-//		Column without title, formated with function func(). Field value 
-// is passed as parameter:
-//	 			array('type'=>'spec', 'fun'=>'func')
-// 		Inserted column with title 'Some', formated with function rowfun(). Row
-//  		values are passed as parameter array:
-//				'Some' => array('type'=>'insert', 'fun'=>'rowfun')
+//		Column without title, data retrieved form row data with function func():
+//	 			array('fun'=>'func')
+// 		Inserted column with title 'Some', formated with function rowfun().
+//  	formated as date:
+//				'Some' => array('type'=>'date, 'insert'=>true, 'fun'=>'rowfun')
 // 		Column with name 'Another', formatted as date, 
 // sortable with ascending start order (available orders: asc,desc, '').
 //				'Another' => array('type'=>'date', 'ord'=>'asc')
