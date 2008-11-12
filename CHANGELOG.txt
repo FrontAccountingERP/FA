@@ -19,6 +19,23 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+12-Nov-2008 Janusz Dobrowolski
+! Rewritten for paged query results.
+$ /manufacturing/search_work_orders.php
+  /manufacturing/inquiry/where_used_inquiry.php
+  /purchasing/allocations/supplier_allocation_main.php
+  /sales/allocations/customer_allocation_main.php
+! Code reorganization to reuse sql query by db_pager.
+  /purchasing/includes/db/supp_trans_db.inc
+  /purchasing/includes/db/suppalloc_db.inc
+  /sales/includes/db/custalloc_db.inc
+! Added $echo parameter to view_stock_status()
+$ /includes/ui/ui_view.inc
+# Fixed sql query (duplicated rows in query result)
+$ /sales/inquiry/customer_inquiry.php
+# Fixed bom selection via $_GET['stock_id']
+$  /manufacturing/manage/bom_edit.php
+
 12-Nov-2008 Joe Hunt
 ! Added dimension entries in delivery and invoice forms
 $ /includes/ui/ui_lists.inc
