@@ -19,6 +19,21 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+12-Nov-2008 Janusz Dobrowolski
+! Changed db_pager API for inserted columns.
+$ /includes/db_pager.inc
+  /includes/ui/db_pager_view.inc
+! Fixed $cols according to api change.
+$ /purchasing/inquiry/supplier_inquiry.php
+  /sales/inquiry/customer_allocation_inquiry.php
+  /sales/inquiry/customer_inquiry.php
+  /sales/inquiry/sales_deliveries_view.php
+  /sales/inquiry/sales_orders_view.php
+! Rewritten for paged query results.
+$ /purchasing/inquiry/po_search.php
+  /purchasing/inquiry/po_search_completed.php
+  /purchasing/inquiry/supplier_allocation_inquiry.php
+
 10-Nov-2008 Janusz Dobrowolski
 # Suppressed page update after import errors
 $ /admin/backups.php
