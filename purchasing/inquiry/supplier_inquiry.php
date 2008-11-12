@@ -103,7 +103,7 @@ function trans_view($trans)
 function due_date($row)
 {
 	return ($row["type"]== 20) || ($row["type"]== 21)
-		 ? sql2date($row["due_date"]) : '';
+		 ? $row["due_date"] : '';
 }
 
 function gl_view($row)
@@ -185,17 +185,17 @@ function check_overdue($row)
    	}
 
 $cols = array(
-			_("Type") => array('type'=>'spec', 'fun'=>'systype_name', 'ord'=>''), 
-			_("#") => array('type'=>'spec', 'fun'=>'trans_view', 'ord'=>''), 
+			_("Type") => array('fun'=>'systype_name', 'ord'=>''), 
+			_("#") => array('fun'=>'trans_view', 'ord'=>''), 
 			_("Reference"), 
-			_("Supplier") => 'text',
+			_("Supplier"),
 			_("Supplier's Reference"), 
 			_("Date") => array('type'=>'date', 'ord'=>'desc'), 
-			_("Due Date") => array('type'=>'spec', 'fun'=>'due_date'), 
-			_("Currency") => 'text',
-			_("Debit") => array('type'=>'spec', 'fun'=>'fmt_debit'), 
-			_("Credit") => array('type'=>'insert', 'fun'=>'fmt_credit'), 
-			array('type'=>'insert', 'fun'=>'gl_view'),
+			_("Due Date") => array('type'=>'date', 'fun'=>'due_date'), 
+			_("Currency") => array('align'=>'center'),
+			_("Debit") => array('align'=>'right', 'fun'=>'fmt_debit'), 
+			_("Credit") => array('align'=>'right', 'insert'=>true,'fun'=>'fmt_credit'), 
+			array('insert'=>true, 'fun'=>'gl_view'),
 			);
 
 if ($_POST['supplier_id'] != reserved_words::get_all())
