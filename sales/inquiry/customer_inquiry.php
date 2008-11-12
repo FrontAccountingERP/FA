@@ -142,17 +142,6 @@ function fmt_credit($row)
 	return $value>0 ? price_format($value) : '';
 }
 
-function alloc_link($row)
-{
-	if ($row['type'] == 10)
-		if ($row["TotalAmount"] - $row["Allocated"] > 0)
-			return pager_link(_("Allocation"),
-				"/sales/allocations/customer_allocate.php"
-				."?trans_no={$row['trans_no']}&trans_type="
-				.$row['type']);
-	return '';
-}
-
 function credit_link($row)
 {
 	return $row['type'] == 10 ?
@@ -219,7 +208,8 @@ function check_overdue($row)
 			.TB_PREF."cust_branch as branch
 		WHERE debtor.debtor_no = trans.debtor_no
 			AND trans.tran_date >= '$date_after'
-			AND trans.tran_date <= '$date_to'";
+			AND trans.tran_date <= '$date_to'
+			AND trans.branch_code = branch.branch_code";
 
    	if ($_POST['customer_id'] != reserved_words::get_all())
    		$sql .= " AND trans.debtor_no = '" . $_POST['customer_id'] . "'";
@@ -272,7 +262,6 @@ $cols = array(
 	_("Debit") => array('align'=>'right', 'fun'=>'fmt_debit'), 
 	_("Credit") => array('align'=>'right','insert'=>true, 'fun'=>'fmt_credit'), 
 		array('insert'=>true, 'fun'=>'gl_view'),
-		array('insert'=>true, 'fun'=>'alloc_link'),
 		array('insert'=>true, 'fun'=>'credit_link'),
 		array('insert'=>true, 'fun'=>'edit_link'),
 		array('insert'=>true, 'fun'=>'prt_link')
