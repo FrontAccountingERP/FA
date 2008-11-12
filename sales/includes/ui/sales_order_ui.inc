@@ -389,9 +389,6 @@ function display_order_header(&$order, $editable, $date_text, $display_tax_group
 		}
 	    $Ajax->activate('items_table');
 	}
-	$f = fopen(dirname(__FILE__)."/debug.txt", "w");
-	fwrite($f, "dimension=".$order->dimension_id.",dimension 2=".$order->dimension2_id."\n");
-	fclose($f);
 
 	return $customer_error;
 }
