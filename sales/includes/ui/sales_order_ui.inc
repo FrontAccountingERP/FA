@@ -342,25 +342,15 @@ function display_order_header(&$order, $editable, $date_text, $display_tax_group
 		{	// 2008-11-12 Joe Hunt added dimensions
 			$dim = get_company_pref('use_dimension');
 			if ($dim > 0)
-			{
-				if ($order->dimension_id != $_POST['dimension_id']) {
-					$order->dimension_id = $_POST['dimension_id'];
-					$Ajax->activate('dimension_id');
-				}	
-				dimensions_list_row(_("Dimension:"), 'dimension_id', null, true, ' ', false, 1, true);
-				if ($dim > 1)
-				{
-					if ($order->dimension2_id != $_POST['dimension2_id']) {
-						$order->dimension2_id = $_POST['dimension2_id'];
-						$Ajax->activate('dimension2_id');
-					}	
-					dimensions_list_row(_("Dimension")." 2:", 'dimension2_id', null, true, ' ', false, 2, true);
-				}	
-			}		
-			if ($dim < 2)
-				hidden('dimension2_id', 0);
-			if ($dim < 1)
+				dimensions_list_row(_("Dimension").":", 'dimension_id', 
+					null, true, ' ', false, 1, false);
+			else
 				hidden('dimension_id', 0);
+			if ($dim > 1)
+				dimensions_list_row(_("Dimension")." 2:", 'dimension2_id', 
+					null, true, ' ', false, 2, false);
+			else
+				hidden('dimension2_id', 0);
 		}	
 	}
 	else
