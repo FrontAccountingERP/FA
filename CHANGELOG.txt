@@ -19,6 +19,12 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+13-Nov-2008 Janusz Dobrowolski
+! Rewritten for paged query results.
+$ /dimensions/inquiry/search_dimensions.php
+# Removed obsolete dimension list submit_on_change option.
+$ /sales/includes/ui/sales_order_ui.inc
+
 12-Nov-2008 Janusz Dobrowolski
 ! Rewritten for paged query results.
 $ /manufacturing/search_work_orders.php
