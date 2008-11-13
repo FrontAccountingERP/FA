@@ -152,6 +152,7 @@ function can_process()
 //-----------------------------------------------------------------------------
 
 if (isset($_POST['ProcessCredit']) && can_process()) {
+	copy_to_cn();
 	if ($_POST['CreditType'] == "WriteOff" && (!isset($_POST['WriteOffGLCode']) ||
 		$_POST['WriteOffGLCode'] == '')) {
 		display_note(_("For credit notes created to write off the stock, a general ledger account is required to be selected."), 1, 0);

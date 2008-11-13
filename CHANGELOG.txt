@@ -24,6 +24,8 @@ $ -> Affected files
 $ /dimensions/inquiry/search_dimensions.php
 # Removed obsolete dimension list submit_on_change option.
 $ /sales/includes/ui/sales_order_ui.inc
+  /sales/credit_note_entry.php
+  /sales/includes/ui/sales_credit_ui.inc
 
 12-Nov-2008 Janusz Dobrowolski
 ! Rewritten for paged query results.
