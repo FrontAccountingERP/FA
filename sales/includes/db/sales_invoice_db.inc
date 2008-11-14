@@ -105,8 +105,10 @@ function write_sales_invoice(&$invoice)
 				$sales_account = ($branch_data['sales_account'] != "" ? $branch_data['sales_account'] : $stock_gl_code['sales_account']);
 				// 2008-08-01. If there is a Customer Dimension, then override with this,
 				// else take the Item Dimension (if any)
-				$dim = ($invoice->dimension_id > 0 ? $invoice->dimension_id : ($customer['dimension_id'] != 0 ? $customer["dimension_id"] : $stock_gl_code["dimension_id"]));
-				$dim2 = ($invoice->dimension2_id > 0 ? $invoice->dimension2_id : ($customer['dimension2_id'] != 0 ? $customer["dimension2_id"] : $stock_gl_code["dimension2_id"]));
+				$dim = ($invoice->dimension_id != $customer['dimension_id'] ? $invoice->dimension_id : 
+					($customer['dimension_id'] != 0 ? $customer["dimension_id"] : $stock_gl_code["dimension_id"]));
+				$dim2 = ($invoice->dimension2_id != $customer['dimension2_id'] ? $invoice->dimension2_id : 
+					($customer['dimension2_id'] != 0 ? $customer["dimension2_id"] : $stock_gl_code["dimension2_id"]));
 				add_gl_trans_customer(10, $invoice_no, $date_, $sales_account, $dim, $dim2,
 					(-$line_taxfree_price * $invoice_line->qty_dispatched),
 					$invoice->customer_id, "The sales price GL posting could not be inserted");

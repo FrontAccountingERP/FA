@@ -82,6 +82,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
     	        default_location=".db_escape($_POST['default_location']) . ",
     	        br_post_address =".db_escape($_POST['br_post_address']) . ",
     	        disable_trans=".db_escape($_POST['disable_trans']) . ",
+				group_no=".db_escape($_POST['group_no']) . ", 
     	        default_ship_via=".db_escape($_POST['default_ship_via']) . "
     	        WHERE branch_code =".db_escape($_POST['branch_code']) . "
     	        AND debtor_no=".db_escape($_POST['customer_id']);
@@ -94,7 +95,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 			$sql = "INSERT INTO ".TB_PREF."cust_branch (debtor_no, br_name, br_address,
 				salesman, phone, fax,
 				contact_name, area, email, tax_group_id, sales_account, receivables_account, payment_discount_account, sales_discount_account, default_location,
-				br_post_address, disable_trans, default_ship_via)
+				br_post_address, disable_trans, group_no, default_ship_via)
 				VALUES (".db_escape($_POST['customer_id']). ",".db_escape($_POST['br_name']) . ", "
 					.db_escape($_POST['br_address']) . ", ".db_escape($_POST['salesman']) . ", "
 					.db_escape($_POST['phone']) . ", ".db_escape($_POST['fax']) . ","
@@ -107,6 +108,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 					.db_escape($_POST['default_location']) . ", "
 					.db_escape($_POST['br_post_address']) . ","
 					.db_escape($_POST['disable_trans']) . ", "
+					.db_escape($_POST['group_no']) . ", "					
 					.db_escape($_POST['default_ship_via']) . ")";
 
 			$note = _('New customer branch has been added');
@@ -248,6 +250,7 @@ if ($selected_id != -1)
 	    $_POST['sales_discount_account'] = $myrow['sales_discount_account'];
 	    $_POST['receivables_account'] = $myrow['receivables_account'];
 	    $_POST['payment_discount_account'] = $myrow['payment_discount_account'];
+		$_POST['group_no']  = $myrow["group_no"];
 	}
 }
 elseif ($Mode != 'ADD_ITEM')
@@ -303,6 +306,8 @@ shippers_list_row(_("Default Shipping Company:"), 'default_ship_via', null);
 tax_groups_list_row(_("Tax Group:"), 'tax_group_id', null);
 
 yesno_list_row(_("Disable this Branch:"), 'disable_trans', null);
+
+sales_groups_list_row(_("Sales Group:"), 'group_no', null, true);
 
 echo "</table>";
 

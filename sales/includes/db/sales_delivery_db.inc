@@ -81,8 +81,10 @@ function write_sales_delivery(&$delivery,$bo_policy)
 				/*first the cost of sales entry*/
 				// 2008-08-01. If there is a Customer Dimension, then override with this,
 				// else take the Item Dimension (if any)
-				$dim = ($delivery->dimension_id > 0 ? $delivery->dimension_id : ($customer['dimension_id'] != 0 ? $customer["dimension_id"] : $stock_gl_code["dimension_id"]));
-				$dim2 = ($delivery->dimension2_id > 0 ? $delivery->dimension2_id : ($customer['dimension2_id'] != 0 ? $customer["dimension2_id"] : $stock_gl_code["dimension2_id"]));
+				$dim = ($delivery->dimension_id != $customer['dimension_id'] ? $delivery->dimension_id : 
+					($customer['dimension_id'] != 0 ? $customer["dimension_id"] : $stock_gl_code["dimension_id"]));
+				$dim2 = ($delivery->dimension2_id != $customer['dimension2_id'] ? $delivery->dimension2_id : 
+					($customer['dimension2_id'] != 0 ? $customer["dimension2_id"] : $stock_gl_code["dimension2_id"]));
 
 				add_gl_trans_std_cost(13, $delivery_no,
 					$delivery->document_date, $stock_gl_code["cogs_account"], $dim, $dim2, "",

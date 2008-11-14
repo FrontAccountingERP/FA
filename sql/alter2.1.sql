@@ -1,3 +1,35 @@
+DROP TABLE IF EXISTS `0_groups`;
+
+CREATE TABLE `0_groups` (
+  `id` int(11) NOT NULL auto_increment,
+  `description` varchar(60) NOT NULL default '',
+  PRIMARY KEY  (`id`),
+  UNIQUE KEY `description` (`description`)
+) TYPE=MyISAM AUTO_INCREMENT=1 ;
+
+INSERT INTO `0_groups` VALUES ('1', 'Small');
+INSERT INTO `0_groups` VALUES ('2', 'Medium');
+INSERT INTO `0_groups` VALUES ('3', 'Large');
+
+DROP TABLE IF EXISTS `0_recurrent_invoices`;
+
+CREATE TABLE `0_recurrent_invoices` (
+  `id` int(11) NOT NULL auto_increment,
+  `description` varchar(60) NOT NULL default '',
+  `order_no` int(11) NOT NULL default '0',
+  `debtor_no` int(11) NOT NULL default '0',
+  `group_no` int(11) NOT NULL default '0',
+  `days` int(11) NOT NULL default '0',
+  `monthly` int(11) NOT NULL default '0',
+  `begin` date NOT NULL default '0000-00-00',
+  `end` date NOT NULL default '0000-00-00',
+  `last_sent` date NOT NULL default '0000-00-00',
+  PRIMARY KEY  (`id`),
+  UNIQUE KEY `description` (`description`)
+) TYPE=InnoDB AUTO_INCREMENT=1 ;
+
+ALTER TABLE `0_cust_branch` ADD `group_no` int(11) NOT NULL default '0';
+
 ALTER TABLE `0_debtor_trans` ADD `dimension_id` int(11) NOT NULL default '0';
 ALTER TABLE `0_debtor_trans` ADD `dimension2_id` int(11) NOT NULL default '0';
 

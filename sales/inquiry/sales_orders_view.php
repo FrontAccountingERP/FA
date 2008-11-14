@@ -3,10 +3,10 @@
 $page_security = 2;
 $path_to_root="../..";
 
-include($path_to_root . "/sales/includes/sales_ui.inc");
 include($path_to_root . "/includes/db_pager.inc");
-include_once($path_to_root . "/reporting/includes/reporting.inc");
 include($path_to_root . "/includes/session.inc");
+include($path_to_root . "/sales/includes/sales_ui.inc");
+include_once($path_to_root . "/reporting/includes/reporting.inc");
 
 $js = "";
 if ($use_popup_windows)

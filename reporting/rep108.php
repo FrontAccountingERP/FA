@@ -136,7 +136,7 @@ function print_statements()
 			$rep->TextCol(7, 8,	$DisplayNet, -2);
 			$rep->NewLine();
 			if ($rep->row < $rep->bottomMargin + (10 * $rep->lineHeight))
-				$rep->Header2($myrow, null, null, $baccount);
+				$rep->Header2($myrow, null, null, $baccount, 12);
 		}
 		$nowdue = "1-" . $PastDueDays1 . " " . $doc_Days;
 		$pastdue1 = $PastDueDays1 + 1 . "-" . $PastDueDays2 . " " . $doc_Days;

@@ -19,6 +19,24 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+14-Nov-2008 Joe Hunt
++ Added Sales Groups and Recurrent Invoices.
+$ /applications/customers.php
+  /includes/ui/ui_lists.inc
+  /reporting/includes/reporting.inc
+  /reporting/rep108.php
+  /sales/includes/db/branches_db.inc
+  /sales/includes/db/sales_credit_db.inc
+  /sales/includes/db/sales_delivery_db.inc
+  /sales/includes/db/sales_invoice_db.inc
+  /sales/inquiry/sales_orders_view.php
+  /sales/manage/customer_branches.php
+  /sales/manage/customers.php
+  /sql/alter2.1.sql
+  /sales/create_recurrent_invoices.php (new file)
+  /sales/manage/recurrent_invoices.php (new file)
+  /sales/manage/sales_groups.php (new file)
+
 13-Nov-2008 Janusz Dobrowolski
 ! Rewritten for paged query results.
 $ /dimensions/inquiry/search_dimensions.php

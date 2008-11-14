@@ -85,7 +85,7 @@ function print_link($link_text, $rep, $pars = array(), $dir = '')
 
 function get_first_bank_account()
 {
-	$sql = "SELECT ".TB_PREF."bank_accounts.account_code FROM ".TB_PREF."bank_accounts, ".TB_PREF."company
+	$sql = "SELECT ".TB_PREF."bank_accounts.id FROM ".TB_PREF."bank_accounts, ".TB_PREF."company
 		WHERE bank_curr_code=curr_default LIMIT 0, 1";
 	$result = db_query($sql);
 	$row = db_fetch_row($result);

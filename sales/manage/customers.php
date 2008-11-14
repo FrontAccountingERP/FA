@@ -86,7 +86,7 @@ function handle_submit()
 		begin_transaction();
 
 		$sql = "INSERT INTO ".TB_PREF."debtors_master (name, address, tax_id, email, dimension_id, dimension2_id,  
-			curr_code, credit_status, payment_terms, discount, pymt_discount,credit_limit, 
+			curr_code, credit_status, payment_terms, discount, pymt_discount,credit_limit,  
 			sales_type) VALUES (".db_escape($_POST['CustName']) .", " 
 			.db_escape($_POST['address']) . ", " . db_escape($_POST['tax_id']) . ","
 			.db_escape($_POST['email']) . ", ".db_escape($_POST['dimension_id']) . ", " 

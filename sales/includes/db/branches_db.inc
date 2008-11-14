@@ -34,4 +34,11 @@ function get_branch_name($branch_id)
 	return $myrow[0];
 }
 
+function get_cust_branches_from_group($group_no)
+{
+	$sql = "SELECT branch_code, debtor_no FROM ".TB_PREF."cust_branch 
+		WHERE group_no = '$group_no'";
+
+	return db_query($sql,"could not retreive branches for group " . $group_no);
+}
 ?>

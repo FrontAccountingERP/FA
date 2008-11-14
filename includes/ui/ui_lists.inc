@@ -1009,6 +1009,68 @@ function sales_areas_list_row($label, $name, $selected_id=null)
 
 //------------------------------------------------------------------------------------
 
+function sales_groups_list($name, $selected_id=null, $special_option=false)
+{
+	$sql = "SELECT id, description FROM ".TB_PREF."groups";
+	combo_input($name, $selected_id, $sql, 'id', 'description', array(
+		'spec_option' => $special_option===true ? ' ' : $special_option,
+		'order' => 'description', 'spec_id' => 0,
+	));
+}
+
+function sales_groups_list_cells($label, $name, $selected_id=null, $special_option=false)
+{
+	if ($label != null)
+		echo "<td>$label</td>\n";
+	echo "<td>";
+	sales_groups_list($name, $selected_id, $special_option);
+	echo "</td>\n";
+}
+
+function sales_groups_list_row($label, $name, $selected_id=null, $special_option=false)
+{
+	echo "<tr>\n";
+	sales_groups_list_cells($label, $name, $selected_id, $special_option);
+	echo "</tr>\n";
+}
+
+//------------------------------------------------------------------------------------
+
+function _format_template_items($row)
+{
+	return ($row[0] . "&nbsp;- &nbsp;" . _("Amount") . "&nbsp;".$row[1]);
+}
+
+function templates_list($name, $selected_id=null, $special_option=false)
+{
+	$sql = "SELECT sorder.order_no,	Sum(line.unit_price*line.quantity*(1-line.discount_percent)) AS OrderValue
+		FROM ".TB_PREF."sales_orders as sorder, ".TB_PREF."sales_order_details as line
+		WHERE sorder.order_no = line.order_no AND sorder.type = 1 GROUP BY line.order_no";
+	combo_input($name, $selected_id, $sql, 'order_no', 'OrderValue', array(
+		'format' => '_format_template_items',
+		'spec_option' => $special_option===true ? ' ' : $special_option,
+		'order' => 'order_no', 'spec_id' => 0,
+	));
+}
+
+function templates_list_cells($label, $name, $selected_id=null, $special_option=false)
+{
+	if ($label != null)
+		echo "<td>$label</td>\n";
+	echo "<td>";
+	templates_list($name, $selected_id, $special_option);
+	echo "</td>\n";
+}
+
+function templates_list_row($label, $name, $selected_id=null, $special_option=false)
+{
+	echo "<tr>\n";
+	templates_list_cells($label, $name, $selected_id, $special_option);
+	echo "</tr>\n";
+}
+
+//------------------------------------------------------------------------------------
+
 function workorders_list($name, $selected_id=null)
 {
 	$sql = "SELECT id, wo_ref FROM ".TB_PREF."workorders WHERE closed=0";

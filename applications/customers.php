@@ -18,6 +18,7 @@
 
 			$this->add_rapp_function(0, _("&Template Delivery"),"sales/inquiry/sales_orders_view.php?DeliveryTemplates=Yes");
 			$this->add_rapp_function(0, _("&Template Invoice"),"sales/inquiry/sales_orders_view.php?InvoiceTemplates=Yes");
+			$this->add_rapp_function(0, _("&Create and Print Recurrent Invoices"),"sales/create_recurrent_invoices.php?");
 			$this->add_rapp_function(0, "","");
 			$this->add_rapp_function(0, _("Customer &Payments"),"sales/customer_payments.php?");
 			$this->add_rapp_function(0, _("Customer &Credit Notes"),"sales/credit_note_entry.php?NewCredit=Yes");
@@ -34,6 +35,8 @@
 			$this->add_module(_("Maintenance"));
 			$this->add_lapp_function(2, _("Add and Manage &Customers"),"sales/manage/customers.php?");
 			$this->add_lapp_function(2, _("Customer &Branches"),"sales/manage/customer_branches.php?");
+			$this->add_lapp_function(2, _("Sales &Groups"),"sales/manage/sales_groups.php?");
+			$this->add_lapp_function(2, _("Recurrent &Invoices"),"sales/manage/recurrent_invoices.php?");
 			$this->add_rapp_function(2, _("Sales T&ypes"),"sales/manage/sales_types.php?");
 			$this->add_rapp_function(2, _("Sales &Persons"),"sales/manage/sales_people.php?");
 			$this->add_rapp_function(2, _("Sales &Areas"),"sales/manage/sales_areas.php?");
