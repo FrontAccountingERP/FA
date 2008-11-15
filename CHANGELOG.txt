@@ -19,6 +19,11 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+15-Nov-2008 Joe Hunt
++ Added Tax Inquiry in Banking and General Ledger tab.
+$ /applications/generalledger.php
+  /gl/inquiry/tax_inquiry.php (new file)
+  
 14-Nov-2008 Joe Hunt
 + Added Sales Groups and Recurrent Invoices.
 $ /applications/customers.php
