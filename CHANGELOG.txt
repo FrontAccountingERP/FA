@@ -20,6 +20,15 @@ Legend:
 $ -> Affected files
 
 15-Nov-2008 Joe Hunt
++ Added Quick Entries in GL Journal Entry and changed some needed fixes.
+$ /gl/gl_bank.php
+  /gl/gl_journal.php
+  /gl/includes/db/gl_db_bank_accounts.inc
+  /gl/includes/ui/gl_bank_ui.inc
+  /gl/includes/ui/gl_journal_ui.inc
+  /includes/ui/ui_lists.inc
+  
+15-Nov-2008 Joe Hunt
 + Added Tax Inquiry in Banking and General Ledger tab.
 $ /applications/generalledger.php
   /gl/inquiry/tax_inquiry.php (new file)

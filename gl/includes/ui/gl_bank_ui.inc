@@ -68,7 +68,7 @@ function display_bank_header(&$order)
         	}
     		break;
 		case payment_person_types::QuickEntry() :
-			quick_entries_list_row(_("Description:"), 'person_id', null, $payment);
+			quick_entries_list_row(_("Description:"), 'person_id', null, ($payment ? 0 : 1), 1);
 			amount_row(_("Total Amount"), 'totamount', null, null, "&nbsp;&nbsp;".submit('go', _("Go"), false, false, true));			
 			break;	
 		//case payment_person_types::Project() :

@@ -214,6 +214,61 @@ function handle_new_item()
 	line_start_focus();
 }
 
+function display_quick_entries(&$cart)
+{
+	if (!get_post('person_id'))
+	{
+		display_error( _("No Quick Entries are defined."));
+		set_focus('totamount');
+	}
+	else
+	{
+		$rate = 0;
+		$totamount = input_num('totamount');
+		//$totamount = ($cart->trans_type==systypes::bank_payment() ? 1:-1) * $totamount;
+		$qe = get_quick_entry($_POST['person_id']);
+		$qe_lines = get_quick_entry_lines($_POST['person_id']);
+		while ($qe_line = db_fetch($qe_lines))
+		{
+			if ($qe_line['tax_acc'])
+			{
+				$account = get_gl_account($qe_line['account']);
+				$tax_group = $account['tax_code'];
+				$items = get_tax_group_items($tax_group);
+				while ($item = db_fetch($items))
+					$rate += $item['rate'];
+				if ($rate != 0)
+					$totamount = $totamount * 100 / ($rate + 100);
+				$cart->clear_items();
+
+				$cart->add_gl_item($qe_line['account'], $qe_line['dimension_id'], $qe_line['dimension2_id'], 
+					$totamount, $qe['description']);
+				$items = get_tax_group_items($tax_group);
+				while ($item = db_fetch($items))
+				{
+					if ($item['rate'] != 0)
+					{
+						$amount = $totamount * $item['rate'] / 100;
+						$code = ($amount < 0 ? $item['purchasing_gl_code'] : 
+							$item['sales_gl_code']);
+						$cart->add_gl_item($code, 0, 0, $amount, $qe['description']);
+					}
+				}
+			}
+			else
+			{
+				if ($qe_line['pct'])
+					$amount = $totamount * $qe_line['amount'] / 100;
+				else
+					$amount = $qe_line['amount'];
+				$cart->add_gl_item($qe_line['account'], $qe_line['dimension_id'], $qe_line['dimension2_id'], 
+					$amount, $qe['description']);
+			}		
+		}
+		line_start_focus();
+	}	
+}
+
 //-----------------------------------------------------------------------------------------------
 $id = find_submit('Delete');
 if ($id != -1)
@@ -228,6 +283,8 @@ if (isset($_POST['UpdateItem']))
 if (isset($_POST['CancelItemChanges']))
 	line_start_focus();
 
+if (isset($_POST['go']))
+	display_quick_entries($_SESSION['journal_items']);
 //-----------------------------------------------------------------------------------------------
 
 if (isset($_GET['NewJournal']) || !isset($_SESSION['journal_items']))

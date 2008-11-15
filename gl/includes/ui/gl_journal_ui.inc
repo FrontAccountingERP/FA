@@ -9,8 +9,12 @@ function display_order_header(&$Order)
 {
 	global $table_style2;
 
+	$qes = has_quick_entries(-1, 0);
 	start_table("$table_style2 width=90%");
-	echo "<tr><td valign=top width=50%>"; // outer table
+	if ($qes)
+		echo "<tr><td valign=top width=30%>"; // outer table
+	else	
+		echo "<tr><td valign=top width=50%>"; // outer table
 
 	echo "<table>";
 	start_row();
@@ -20,13 +24,27 @@ function display_order_header(&$Order)
 
 	echo "</table>";
 
-	echo "</td><td width=50%>"; // outer table
+	if ($qes)
+		echo "</td><td width=20%>"; // outer table
+	else	
+		echo "</td><td width=50%>"; // outer table
 
 	echo "<table>";
-
-	check_row(_("Reverse Transaction:"), 'Reverse', null);
-
+	start_row();
+	check_cells(_("Reverse Transaction:"), 'Reverse', null);
+	end_row();
 	echo "</table>";
+	if ($qes !== false)
+	{
+		echo "</td><td width=50%>"; // outer table
+		echo "<table>";
+		start_row();
+		quick_entries_list_cells(_("Quick Entry:"), 'person_id', null, -1, 0);
+		amount_cells(_("Total Amount"), 'totamount', null, null, "&nbsp;&nbsp;".submit('go', _("Go"), false, false, true));			
+		end_row();
+		echo "</table>";
+	}
+		
 
 	echo "</td></tr>"; // outer table
 	end_table(1);
@@ -127,8 +145,16 @@ function gl_edit_item_controls(&$order, $dim, $Index=null)
 		$_POST['code_id'] = $item->code_id;
 		$_POST['dimension_id'] = $item->dimension_id;
 		$_POST['dimension2_id'] = $item->dimension2_id;
-		$_POST['AmountDebit'] = price_format($item->amount);
-		$_POST['AmountCredit'] = price_format(abs($item->amount));
+		if ($item->amount > 0)
+		{
+			$_POST['AmountDebit'] = price_format($item->amount);
+			$_POST['AmountCredit'] = "";
+		}
+		else
+		{
+			$_POST['AmountDebit'] = "";
+			$_POST['AmountCredit'] = price_format(abs($item->amount));
+		}	
 		$_POST['description'] = $item->description;
 		$_POST['LineMemo'] = $item->reference;
 

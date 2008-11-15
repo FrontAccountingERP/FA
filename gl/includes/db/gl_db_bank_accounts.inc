@@ -119,16 +119,38 @@ function delete_quick_entry_line($selected_id)
 }
 //---------------------------------------------------------------------------------------------
 
-function get_quick_entries($deposit=null, $bank_only=null)
+
+function has_quick_entries($deposit=-1, $bank_only=-1)
 {
 	$where = false;
-	$sql = "SELECT * FROM ".TB_PREF."quick_entries";
-	if ($deposit != null)
+	$sql = "SELECT id FROM ".TB_PREF."quick_entries";
+	if ($deposit != -1)
 	{
 		$sql .= " WHERE deposit=$deposit";
 		$where = true;
 	}		
-	if ($bank_only != null)
+	if ($bank_only != -1)
+	{
+		if ($where)
+			$sql .= " AND bank_only=$bank_only";
+		else	
+			$sql .= " WHERE bank_only=$bank_only";
+	}		
+
+	$result = db_query($sql, "could not retreive quick entries");
+	return db_num_rows($result) > 0;
+}
+
+function get_quick_entries($deposit=-1, $bank_only=-1)
+{
+	$where = false;
+	$sql = "SELECT * FROM ".TB_PREF."quick_entries";
+	if ($deposit != -1)
+	{
+		$sql .= " WHERE deposit=$deposit";
+		$where = true;
+	}		
+	if ($bank_only != -1)
 	{
 		if ($where)
 			$sql .= " AND bank_only=$bank_only";
