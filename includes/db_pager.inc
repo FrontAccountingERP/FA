@@ -16,7 +16,10 @@ class db_pager {
 	var $marker_txt;	
 	var $marker_class;
 	var $notice_class;
-			
+	var $header_fun;	// additional row between title and body
+	var $header_class;
+	var $footer_fun;
+	var $footer_class;
 	var $data = array();
 
 	var $curr_page,
@@ -35,7 +38,8 @@ class db_pager {
 		$group;
 	var	$extra_where;
 	
-	var $ready = false;
+	var $ready = false; // this var is false after change in sql before first
+						// and before first query.
 
 	//  db_pager constructor
 	//  accepts $sql like 'SELECT .... FROM .... [WHERE ...] [GROUP ...]'
@@ -237,7 +241,7 @@ class db_pager {
 		$group = $this->group;		
 
 		if(count($this->extra_where)) {
-		    $wherw .= ($where=='' ? '' : ' AND ')
+		    $where .= ($where=='' ? '' : ' AND ')
 				.implode( $this->extra_where, ' AND ');
 		}
 		if ($where) $where = " WHERE($where)";
@@ -321,6 +325,24 @@ class db_pager {
 		$this->marker_class = $markercl;
 		$this->notice_class = $msgclass;
 	}
+	//
+	//	Set handler to display additional row between titles and pager body.
+	//	Return array of column contents.
+	//
+	function set_header($func, $headercl='inquirybg')
+	{
+		$this->header_fun = $func;
+		$this->header_class = $headercl;
+	}
+	//
+	//	Set handler to display additional row between pager body and navibar.
+	//	Return array of column contents.
+	//
+	function set_footer($func, $footercl='inquirybg')
+	{
+		$this->footer_fun = $func;
+		$this->footer_class = $footercl;
+	}
 };
 //-----------------------------------------------------------------------------
 //	Creates new db_pager $_SESSION object on first page call.
@@ -350,17 +372,15 @@ class db_pager {
 
 function &new_db_pager($name, $sql, $coldef, $page_len = 0)  {
 
-    if (isset($name) && isset($_SESSION[$name])) {
-		 // kill old pager if any on first page call
-	    if ($_SERVER['REQUEST_METHOD'] == 'GET')
-			unset($_SESSION[$name]);
-	    else
-    		return $_SESSION[$name];
-    }
-    $ret =& new db_pager($sql, $name, $page_len);
-    $ret->set_columns($coldef);
+    if ($_SERVER['REQUEST_METHOD'] == 'GET')
+		unset($_SESSION[$name]); // kill old pager if any exists on first page call
 
-    if (isset($name)) $_SESSION[$name] = &$ret;
+	if (!isset($_SESSION[$name]))
+	    $_SESSION[$name] =& new db_pager($sql, $name, $page_len);
+	
+	$ret = &$_SESSION[$name];
+    $ret->set_sql($sql);
+    $ret->set_columns($coldef);
 
     return $ret;
 }

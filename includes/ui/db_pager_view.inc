@@ -50,6 +50,22 @@ function display_db_pager(&$pager) {
     start_table("$table_style width=95%");
     table_header($headers);
 
+	if($pager->header_fun) {	// if set header handler
+		start_row("class='{$pager->header_class}'");
+		$fun = $pager->header_fun;
+		if (method_exists($pager, $fun)) { 
+			$h = $pager->$fun($pager);
+  		} elseif (function_exists($fun)) {
+			$h = $fun($pager);
+		}
+		
+		foreach($h as $c) {	 // draw header columns
+			$pars = isset($c[1]) ? $c[1] : '';
+			label_cell($c[0], $pars);
+		}
+		end_row();
+	}
+
 	$cc = 0; //row colour counter
    	foreach($pager->data as $line_no => $row) {	
 
@@ -83,7 +99,10 @@ function display_db_pager(&$pager) {
 		    case 'percent':
 		  	  percent_cell($cell); break;
 		    case 'amount':
-		  	  amount_cell($cell, false); break;
+			  if ($cell=='')
+			  	label_cell('');
+			  else
+		  	  	amount_cell($cell, false); break;
 		    case 'qty':
 		  	  qty_cell($cell); break;
 		    case 'rate':
@@ -100,6 +119,23 @@ function display_db_pager(&$pager) {
 	    end_row();
 	}
 	//end of while loop
+
+	if($pager->footer_fun) {	// if set footer handler
+		start_row("class='{$pager->footer_class}'");
+		$fun = $pager->footer_fun;
+		if (method_exists($pager, $fun)) { 
+			$h = $pager->$fun($pager);
+  		} elseif (function_exists($fun)) {
+			$h = $fun($pager);
+		}
+		
+		foreach($h as $c) {	 // draw footer columns
+			$pars = isset($c[1]) ? $c[1] : '';
+			label_cell($c[0], $pars);
+		}
+		end_row();
+	}
+
 	end_table();
 	start_table("$table_style align='center' class='navibar' width=95%");
 	start_row();
