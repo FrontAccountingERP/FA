@@ -19,6 +19,25 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+16-Nov-2008 Janusz Dobrowolski
+! Rewritten for paged query results.
+$ /inventory/inquiry/stock_movements.php
++ Added optional footer and header in db_pager, simplified usage.
+$ /includes/db_pager.inc
+  /includes/ui/db_pager_view.inc
+! Code cleanup.
+$ /dimensions/inquiry/search_dimensions.php
+  /manufacturing/search_work_orders.php
+  /manufacturing/inquiry/where_used_inquiry.php
+  /purchasing/inquiry/po_search.php
+  /purchasing/inquiry/po_search_completed.php
+  /purchasing/inquiry/supplier_allocation_inquiry.php
+  /purchasing/inquiry/supplier_inquiry.php
+  /sales/inquiry/customer_allocation_inquiry.php
+  /sales/inquiry/customer_inquiry.php
+  /sales/inquiry/sales_deliveries_view.php
+  /sales/inquiry/sales_orders_view.php
+
 16-Nov-2008 Joe Hunt
 + Added Attachment of Documents and a couple of links from supplier invoice/crfedit note
 $ /admin/attachments.php (new file)
