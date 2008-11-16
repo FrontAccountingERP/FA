@@ -1,3 +1,19 @@
+DROP TABLE IF EXISTS `0_attachments`;
+
+CREATE TABLE `0_attachments` (
+  `id` int(11) NOT NULL auto_increment,
+  `description` varchar(60) NOT NULL default '',
+  `type_no` int(11) NOT NULL default '0',
+  `trans_no` int(11) NOT NULL default '0',
+  `bin_data` mediumblob NOT NULL,
+  `tran_date` date NOT NULL default '0000-00-00',
+  `filename` varchar(60) NOT NULL default '',
+  `filesize` int(11) NOT NULL default '0',
+  `filetype` varchar(60) NOT NULL default '',
+  PRIMARY KEY  (`id`),
+  KEY `type_no` (`type_no`,`trans_no`)
+) TYPE=MyISAM AUTO_INCREMENT=1 ;
+
 DROP TABLE IF EXISTS `0_groups`;
 
 CREATE TABLE `0_groups` (

@@ -30,6 +30,7 @@
 			$this->add_module(_("Maintanance"));
 			$this->add_lapp_function(2, _("&Void a Transaction"),"admin/void_transaction.php?");
 			$this->add_lapp_function(2, _("View or &Print Transactions"),"admin/view_print_transaction.php?");
+			$this->add_lapp_function(2, _("Attach Documents"),"admin/attachments.php?filterType=20");
 			$this->add_rapp_function(2, _("&Backup and Restore"),"admin/backups.php?", 15);
 			$this->add_rapp_function(2, _("Create/Update &Companies"),"admin/create_coy.php?", 14);
 			$this->add_rapp_function(2, _("Install/Update &Languages"),"admin/inst_lang.php?", 14);

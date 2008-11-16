@@ -19,6 +19,16 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+16-Nov-2008 Joe Hunt
++ Added Attachment of Documents and a couple of links from supplier invoice/crfedit note
+$ /admin/attachments.php (new file)
+  /applications/setup.php
+  /purchasing/supplier_credit,php
+  /purchasing/supplier_invoice.php
+  /sql/alter2.1.sql
+# Minor bug in view_print_transactions.php
+$ /admin/view_print_transactions.php
+
 15-Nov-2008 Joe Hunt
 + Added Quick Entries in GL Journal Entry and changed some needed fixes.
 $ /gl/gl_bank.php

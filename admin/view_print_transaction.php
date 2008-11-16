@@ -50,13 +50,13 @@ function check_valid_entries()
 {
 	if (!is_numeric($_POST['FromTransNo']) OR $_POST['FromTransNo'] <= 0)
 	{
-		display_note(_("The starting transaction number is expected to be numeric and greater than zero."));
+		display_error(_("The starting transaction number is expected to be numeric and greater than zero."));
 		return false;
 	}
 
 	if (!is_numeric($_POST['ToTransNo']) OR $_POST['ToTransNo'] <= 0)
 	{
-		echo _("The ending transaction number is expected to be numeric and greater than zero.");
+		display_error(_("The ending transaction number is expected to be numeric and greater than zero."));
 		return false;
 	}
 	if (!isset($_POST['filterType']) || $_POST['filterType'] == "")
@@ -100,7 +100,7 @@ function handle_search()
 
 		if (db_num_rows($result) == 0)
 		{
-			echo _("There are no transactions for the given parameters.");
+			display_notification(_("There are no transactions for the given parameters."));
 			return;
 		}
 		$print_type = $_POST['filterType'];
