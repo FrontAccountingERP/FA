@@ -289,17 +289,11 @@ if ($_POST['order_view_mode'] == 'OutstandingOnly') {
 $table =& new_db_pager('orders_tbl', $sql, $cols);
 $table->set_marker('check_overdue', _("Marked items are overdue."));
 
+start_form();
 
-if (get_post('SearchOrders')) 
-{
-	$table->set_sql($sql);
-	$table->set_columns($cols);
-	$Ajax->activate('orders_tbl');
-} 
-	start_form();
-	display_db_pager($table);
+display_db_pager($table);
+submit_center('Update', _("Update"), true, '', null);
 
-	submit_center('Update', _("Update"), true, '', null);
-	end_form();
+end_form();
 end_page();
 ?>

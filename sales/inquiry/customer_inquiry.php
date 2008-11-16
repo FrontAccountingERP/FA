@@ -95,8 +95,12 @@ if ($_POST['customer_id'] != "" && $_POST['customer_id'] != reserved_words::get_
 }
 div_end();
 
-
+if(get_post('RefreshInquiry'))
+{
+	$Ajax->activate('totals_tbl');
+}
 //------------------------------------------------------------------------------------------------
+
 function systype_name($dummy, $type)
 {
 	return systypes::name($type);
@@ -277,18 +281,11 @@ $table =& new_db_pager('trans_tbl', $sql, $cols);
 $table->set_marker('check_overdue', _("Marked items are overdue."));
 
 
-if(get_post('RefreshInquiry'))
-{
-	$table->set_sql($sql);
-	$table->set_columns($cols);
-	$Ajax->activate('trans_tbl');
-	$Ajax->activate('totals_tbl');
-}
+start_form();
 
-	start_form();
-	display_db_pager($table);
-	end_form();
+display_db_pager($table);
+
+end_form();
 end_page();
-
 
 ?>

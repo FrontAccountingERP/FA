@@ -52,12 +52,6 @@ $sql = "SELECT
 
 $table =& new_db_pager('usage_table', $sql, $cols);
 
-if (list_updated('stock_id')) {
-	$table->set_sql($sql);
-	$table->set_columns($cols);
-	$Ajax->activate('usage_table');
-}
-
 display_db_pager($table);
 
 end_form();

@@ -243,26 +243,14 @@ if (isset($_SESSION['Batch']))
     unset($_SESSION['Batch']);
 }
 
-/*
-dla ka¿dego rz±dku
- $_SESSION['Batch'][] = array('trans'=>$myrow["trans_no"],
-    'cust'=>$myrow["name"],'branch'=>$myrow["br_name"] );
-*/
-
 $table =& new_db_pager('deliveries_tbl', $sql, $cols);
 $table->set_marker('check_overdue', _("Marked items are overdue."));
 
+start_form();
 
-if(get_post('SearchOrders')) 
-{
-	$table->set_sql($sql);
-	$table->set_columns($cols);
-	$Ajax->activate('doc_tbl');
-}
+display_db_pager($table);
 
-	start_form();
-	display_db_pager($table);
-	end_form();
+end_form();
 end_page();
 
 ?>

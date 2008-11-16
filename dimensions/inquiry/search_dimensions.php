@@ -176,13 +176,6 @@ if ($outstanding_only) {
 $table =& new_db_pager('dim_tbl', $sql, $cols);
 $table->set_marker('is_overdue', _("Marked dimensions are overdue."));
 
-
-if (get_post('SearchOrders')) 
-{
-	$table->set_sql($sql);
-	$table->set_columns($cols);
-	$Ajax->activate('dim_tbl');
-} 
 start_form();
 
 display_db_pager($table);
