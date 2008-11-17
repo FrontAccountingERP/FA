@@ -19,7 +19,7 @@ if ($use_date_picker)
 
 page(_("Inventory Item Movement"), false, false, "", $js);
 //------------------------------------------------------------------------------------------------
-include $path_to_root.'/sql/upgrade.php';
+
 check_db_has_stock_items(_("There are no items defined in the system."));
 
 if (isset($_GET['stock_id']))
