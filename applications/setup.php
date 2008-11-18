@@ -35,6 +35,7 @@
 			$this->add_rapp_function(2, _("Create/Update &Companies"),"admin/create_coy.php?", 14);
 			$this->add_rapp_function(2, _("Install/Update &Languages"),"admin/inst_lang.php?", 14);
 			$this->add_rapp_function(2, _("Install/Update &Modules"),"admin/inst_module.php?", 15);
+			$this->add_rapp_function(2, _("Software &Upgrade"),"admin/inst_upgrade.php?", 15);
 			if (count($installed_modules) > 0)
 			{
 				foreach ($installed_modules as $mod)

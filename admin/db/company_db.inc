@@ -80,9 +80,10 @@ function update_company_setup($coy_name, $coy_no, $gst_no, $tax_prd, $tax_last, 
 	db_query($sql, "The company setup could not be updated ");
 }
 
-function get_company_prefs()
+function get_company_prefs($tbpref = TB_PREF)
 {
-	$sql = "SELECT * FROM ".TB_PREF."company WHERE coy_code=1";
+	$sql = "SELECT * FROM ".$tbpref."company WHERE coy_code=1";
+	
 	$result = db_query($sql, "The company preferences could not be retrieved");
 
 	if (db_num_rows($result) == 0)
@@ -91,9 +92,9 @@ function get_company_prefs()
 	return db_fetch($result);
 }
 
-function get_company_pref($pref_name)
+function get_company_pref($pref_name, $tbpref = TB_PREF)
 {
-	$prefs = get_company_prefs();
+	$prefs = get_company_prefs($tbpref);
 	return $prefs[$pref_name];
 }
 

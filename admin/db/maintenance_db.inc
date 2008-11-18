@@ -105,7 +105,7 @@ function db_drop_db($connection)
 	}
 }
 
-function db_import($filename, $connection)
+function db_import($filename, $connection, $force=true)
 {
 	global $db;
 	$allowed_commands = array(
@@ -172,7 +172,7 @@ function db_import($filename, $connection)
 	}
 */
 	// execute drop tables if exists queries
-	if (is_array($drop_queries))
+	if ($force && is_array($drop_queries))
 	{
 		foreach($drop_queries as $drop_query)
 		{
@@ -277,13 +277,12 @@ function db_unzip($mode, $path)
 
 // generates a dump of $db database
 // $drop and $zip tell if to include the drop table statement or dry to pack
-function db_export($conn, $filename, $zip='no', $comment='')
+function db_export($conn, $filename, $zip='no', $comment='', $tbpref = TB_PREF)
 {
 
 	global $app_title, $version, $power_url, $path_to_root;
 
     $error = false;
-
     // set max string size before writing to file
     $max_size = 1048576 * 2; // 2 MB
     // changes max size if value can be retrieved
@@ -297,7 +296,8 @@ function db_export($conn, $filename, $zip='no', $comment='')
     	$backupfile = $filename . ".zip";
     else
     	$backupfile = $filename;
-    $company = get_company_pref('coy_name');
+    $company = get_company_pref('coy_name', $tbpref);
+
     //create comment
     $out="# MySQL dump of database '".$conn["dbname"]."' on host '".$conn["host"]."'\n";
     $out.="# Backup Date and Time: ".date("Y-m-d H:i")."\n";
