@@ -106,7 +106,7 @@ hidden('OutstandingOnly', $_POST['OutstandingOnly']);
 end_row();
 
 end_table();
-
+end_form();
 //---------------------------------------------------------------------------------------------
 
 if (isset($_POST['SelectStockFromList']) && ($_POST['SelectStockFromList'] != "") &&
@@ -246,6 +246,10 @@ if (isset($_SESSION['Batch']))
 $table =& new_db_pager('deliveries_tbl', $sql, $cols);
 $table->set_marker('check_overdue', _("Marked items are overdue."));
 
+if (get_post('SearchOrders')) {
+	$table->set_sql($sql);
+	$table->set_columns($cols);
+}
 start_form();
 
 display_db_pager($table);

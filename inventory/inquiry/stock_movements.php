@@ -76,7 +76,6 @@ function get_summary(&$table)
 	$sum['dec'] = $item_dec = get_qty_dec($_POST['stock_id']);
 
 	$table->sum = $sum;
-	$Ajax->activate('summary');
  }
 //-----------------------------------------------------------------------------
 
@@ -157,12 +156,12 @@ function before_status($pager)
 		.':'."</b>", "align='right' colspan=5");
 	if($pager->sum['beg']>=0) {
 		$r[] = array (number_format2($pager->sum['beg'], $pager->sum['dec']),
-		"align='right'");
+			"align='right'");
 		$r[] = array("&nbsp;");
 	} else {
 		$r[] = array("&nbsp;");
 		$r[] = array (number_format2($pager->sum['beg'], $pager->sum['dec']),
-		"align='right'");
+			"align='right'");
 	}
 	return $r;
 }
@@ -174,12 +173,12 @@ function after_status($pager)
 		.':'."</b>", "align='right' colspan=5");
 	if($pager->sum['end']>=0) {
 		$r[] = array (number_format2($pager->sum['end'], $pager->sum['dec']),
-		"align='right'");
-		$r[] = array("&nbsp;", "colspan=2");
+			"align='right'");
+		$r[] = array("&nbsp;");
 	} else {
-		$r[] = array("&nbsp;", "colspan=2");
+		$r[] = array("&nbsp;");
 		$r[] = array (number_format2($pager->sum['end'], $pager->sum['dec']),
-		"align='right'");
+			"align='right'");
 	}
 	return $r;
 }
@@ -207,8 +206,8 @@ $cols = array(
 	_("Reference"), 
 	_("Date") => array('date', 'ord'=>'desc'), 
 	_("Detail") => array('fun'=>'show_details' ), 
-	_("Quantity In") => array('type'=>'amount', 'dec'=> $item_dec, 'insert'=>true,'fun'=>'qty_in' ),
-	_("Quantity Out") => array('type'=>'amount', 'dec'=> $item_dec,'insert'=>true,'fun'=>'qty_out' ), 
+	_("Quantity In") => array('type'=>'qty', 'dec'=> $item_dec, 'insert'=>true,'fun'=>'qty_in' ),
+	_("Quantity Out") => array('type'=>'qty', 'dec'=> $item_dec,'insert'=>true,'fun'=>'qty_out' ), 
 //	_("Quantity On Hand") => array('insert'=>true,'type'=>'amount', 'fun'=>'show_qoh' )
 );
 
@@ -217,8 +216,12 @@ $table->set_header('before_status');
 $table->set_footer('after_status');
 
 if (!$table->ready)  // new sql query - update summary
-	get_summary(&$table);
+	get_summary($table);
 
+if (get_post('ShowMoves')) {
+	$table->set_sql($sql);
+	$table->set_columns($cols);
+}
 start_form();
 
 display_db_pager($table);

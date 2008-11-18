@@ -44,8 +44,7 @@ start_form();
     echo "<br>";
     check(_("Show Settled Items:"), 'ShowSettled', null, true);
 	echo "</center><br><br>";
-
-end_form();
+	end_form();
 	set_global_supplier($_POST['supplier_id']);
 
 	if (isset($_POST['supplier_id']) && ($_POST['supplier_id'] == reserved_words::get_all())) 
@@ -119,13 +118,11 @@ $table->set_marker('check_settled', _("Marked items are settled."), 'settledbg',
 if (get_post('_ShowSettled_update') || get_post('_supplier_id_update') ) {
 	$table->set_sql($sql);
 	$table->set_columns($cols);
-	$Ajax->activate('alloc_tbl');
 }
+start_form();
 
-	start_form();
-	display_db_pager($table);
-	end_form();
+display_db_pager($table);
+
+end_form();
 end_page();
-
-
 ?>

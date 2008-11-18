@@ -201,6 +201,10 @@ $cols = array(
 $table =& new_db_pager('orders_tbl', $sql, $cols);
 $table->set_marker('check_overdue', _("Marked orders are overdue."));
 
+if (get_post('SearchOrders')) {
+	$table->set_sql($sql);
+	$table->set_columns($cols);
+}
 start_form();
 
 display_db_pager($table);

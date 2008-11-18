@@ -62,9 +62,7 @@ stock_items_list_cells(_("Item:"), 'SelectStockFromList', null, true);
 submit_cells('SearchOrders', _("Search"),'',_('Select documents'), true);
 end_row();
 end_table();
-
 end_form();
-
 //---------------------------------------------------------------------------------------------
 function trans_view($trans)
 {
@@ -182,6 +180,10 @@ if (get_post('StockLocation') != $all_items) {
 $table =& new_db_pager('orders_tbl', $sql, $cols);
 $table->set_marker('check_overdue', _("Marked orders have overdue items."));
 
+if (get_post('SearchOrders')) {
+	$table->set_sql($sql);
+	$table->set_columns($cols);
+}
 start_form();
 
 display_db_pager($table);

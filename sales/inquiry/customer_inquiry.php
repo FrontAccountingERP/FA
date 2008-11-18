@@ -45,9 +45,7 @@ cust_allocations_list_cells(null, 'filterType', $_POST['filterType'], true);
 submit_cells('RefreshInquiry', _("Search"),'',_('Refresh Inquiry'), true);
 end_row();
 end_table();
-
 end_form();
-
 set_global_customer($_POST['customer_id']);
 
 //------------------------------------------------------------------------------------------------
@@ -82,7 +80,7 @@ function display_customer_summary($customer_record)
 	amount_cell($customer_record["Balance"]);
 	end_row();
 
-	end_table();;
+	end_table();
 }
 //------------------------------------------------------------------------------------------------
 
@@ -280,9 +278,11 @@ if ($_POST['customer_id'] != reserved_words::get_all()) {
 $table =& new_db_pager('trans_tbl', $sql, $cols);
 $table->set_marker('check_overdue', _("Marked items are overdue."));
 
-
+if (get_post('RefreshInquiry')) {
+	$table->set_sql($sql);
+	$table->set_columns($cols);
+}
 start_form();
-
 display_db_pager($table);
 
 end_form();

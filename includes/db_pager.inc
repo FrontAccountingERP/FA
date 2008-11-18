@@ -375,12 +375,13 @@ function &new_db_pager($name, $sql, $coldef, $page_len = 0)  {
     if ($_SERVER['REQUEST_METHOD'] == 'GET')
 		unset($_SESSION[$name]); // kill old pager if any exists on first page call
 
-	if (!isset($_SESSION[$name]))
+	if (!isset($_SESSION[$name])) {
 	    $_SESSION[$name] =& new db_pager($sql, $name, $page_len);
+		$_SESSION[$name]->set_sql($sql);
+		$_SESSION[$name]->set_columns($coldef);
+	}
 	
 	$ret = &$_SESSION[$name];
-    $ret->set_sql($sql);
-    $ret->set_columns($coldef);
 
     return $ret;
 }

@@ -38,8 +38,6 @@ start_form();
     check(_("Show Settled Items:"), 'ShowSettled', null, true);
 	echo "</center><br><br>";
 
-end_form();
-
 	set_global_customer($_POST['customer_id']);
 
 	if (isset($_POST['customer_id']) && ($_POST['customer_id'] == reserved_words::get_all()))
@@ -116,12 +114,10 @@ $table->set_marker('check_settled', _("Marked items are settled."), 'settledbg',
 if (get_post('_ShowSettled_update') || get_post('_customer_id_update')) {
 	$table->set_sql($sql);
 	$table->set_columns($cols);
-	$Ajax->activate('alloc_tbl');
 }
 
-	start_form();
-	display_db_pager($table);
-	end_form();
-end_page();
+display_db_pager($table);
+end_form();
 
+end_page();
 ?>

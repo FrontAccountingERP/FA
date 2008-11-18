@@ -185,6 +185,10 @@ if ($_POST['supplier_id'] != reserved_words::get_all()) {
 $table =& new_db_pager('doc_tbl', $sql, $cols);
 $table->set_marker('check_overdue', _("Marked items are overdue."));
 
+if (get_post('RefreshInquiry')) {
+	$table->set_sql($sql);
+	$table->set_columns($cols);
+}
 start_form();
 
 display_db_pager($table);

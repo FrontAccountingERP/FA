@@ -104,7 +104,10 @@ function display_db_pager(&$pager) {
 			  else
 		  	  	amount_cell($cell, false); break;
 		    case 'qty':
-		  	  qty_cell($cell); break;
+			  if ($cell=='')
+			  	label_cell('');
+			  else
+		  	  	qty_cell($cell, false, isset($col['dec']) ? $col['dec'] : null); break;
 		    case 'rate':
 		  	  rate_cell($cell);  break;
 		    default:

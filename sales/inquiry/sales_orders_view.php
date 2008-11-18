@@ -185,7 +185,6 @@ end_row();
 
 end_table(1);
 end_form();
-
 //---------------------------------------------------------------------------------------------
 //	Orders inquiry table
 //
@@ -289,6 +288,10 @@ if ($_POST['order_view_mode'] == 'OutstandingOnly') {
 $table =& new_db_pager('orders_tbl', $sql, $cols);
 $table->set_marker('check_overdue', _("Marked items are overdue."));
 
+if (get_post('SearchOrders')) {
+	$table->set_sql($sql);
+	$table->set_columns($cols);
+}
 start_form();
 
 display_db_pager($table);
