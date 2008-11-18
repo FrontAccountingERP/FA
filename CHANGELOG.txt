@@ -19,6 +19,32 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+18-Nov-2008 Janusz Dobrowolski
++ System upgrade page for site admins
+$ /admin/db/maintenance_db.inc
+  /applications/setup.php
+  /admin/inst_upgrade.php	(new)
+  /sql/alter2.1.php		(new)
+! Added $tbpref parameter to get_user_prefs()
+$ /admin/db/company_db.inc
+# Next fixes to db_pager behaviour.
+$ /includes/db_pager.inc
+  /includes/ui/db_pager_view.inc
+  /dimensions/inquiry/search_dimensions.php
+  /inventory/inquiry/stock_movements.php
+  /manufacturing/search_work_orders.php
+  /manufacturing/inquiry/where_used_inquiry.php
+  /purchasing/allocations/supplier_allocation_main.php
+  /purchasing/inquiry/po_search.php
+  /purchasing/inquiry/po_search_completed.php
+  /purchasing/inquiry/supplier_allocation_inquiry.php
+  /purchasing/inquiry/supplier_inquiry.php
+  /sales/allocations/customer_allocation_main.php
+  /sales/inquiry/customer_allocation_inquiry.php
+  /sales/inquiry/customer_inquiry.php
+  /sales/inquiry/sales_deliveries_view.php
+  /sales/inquiry/sales_orders_view.php
+
 16-Nov-2008 Janusz Dobrowolski
 ! Rewritten for paged query results.
 $ /inventory/inquiry/stock_movements.php
