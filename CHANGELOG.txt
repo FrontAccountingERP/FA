@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+19-Nov-2008 Joe Hunt
+! Changed the default header2.inc.
+$ /reporting/includes/header2.inc
+
 18-Nov-2008 Janusz Dobrowolski
 + System upgrade page for site admins
 $ /admin/db/maintenance_db.inc
@@ -65,7 +69,7 @@ $ /dimensions/inquiry/search_dimensions.php
   /sales/inquiry/sales_orders_view.php
 
 16-Nov-2008 Joe Hunt
-+ Added Attachment of Documents and a couple of links from supplier invoice/crfedit note
++ Added Attachment of Documents and a couple of links from supplier invoice/credit note
 $ /admin/attachments.php (new file)
   /applications/setup.php
   /purchasing/supplier_credit,php
