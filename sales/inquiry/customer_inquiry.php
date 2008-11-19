@@ -215,13 +215,13 @@ if (db_num_rows($result) == 0)
 		    // only allow crediting if it's not been totally allocated
 		if ($myrow["TotalAmount"] - $myrow["Allocated"] > 0)
 			$credit_me_str = "<a href='$path_to_root/sales/customer_credit_invoice.php?InvoiceNumber=" . $myrow["trans_no"] . "'>" . _("Credit This") . "</a>";
-  		if (get_voided_entry(10, $myrow["trans_no"]) === false)
+  		if (get_voided_entry(10, $myrow["trans_no"]) === false && $myrow['Allocated'] == 0) // 2008-11-19 Joe Hunt
 			$edit_page= $path_to_root.'/sales/customer_invoice.php?ModifyInvoice='
 					. $myrow['trans_no'];
 		break;
 
 	 case 11:
-  		if (get_voided_entry(11, $myrow["trans_no"]) === false)
+  		if (get_voided_entry(11, $myrow["trans_no"]) === false && $myrow['Allocated'] == 0) // 2008-11-19 Joe Hunt
 		{	 
 			if ($myrow['order_']==0) // free-hand credit note
 			    $edit_page= $path_to_root.'/sales/credit_note_entry.php?ModifyCredit='
