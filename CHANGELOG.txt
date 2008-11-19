@@ -19,6 +19,13 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+19-Nov-2008 Janusz Dobrowolski
+# Fixed error handling during database upgrade in normal and forced mode.
+$ /admin/db/maintenance_db.inc
+! Additions needed for foreign item codes support.
+$ /sql/alter2.1.php
+  /sql/alter2.1.sql
+
 19-Nov-2008 Joe Hunt
 ! Changed the default header2.inc.
 $ /reporting/includes/header2.inc
