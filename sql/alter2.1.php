@@ -31,6 +31,32 @@ class fa2_1 {
 				return false;
 			}
 		}
+		// copy all item codes from stock_master into item_codes
+		$sql = "SELECT `stock_id`,`description` FROM `".$pref."stock_master`";
+		$result = db_query($sql);
+		if (!$result) {
+			display_error(_("Cannot select stock identificators")
+				.':<br>'. db_error_msg($db));
+			return false;
+		} else {
+			while ($row = db_fetch_assoc($result)) {
+				$sql = "INSERT IGNORE "
+					.$pref."item_codes (`item_code`,`stock_id`,`description`)
+					VALUES('".$row['stock_id']."','".$row['stock_id']."','"
+					.$row['description']."')";
+				$res2 = db_query($sql);
+				if (!$res2) {
+					display_error(_("Cannot insert stock id into item_codes")
+						.':<br>'. db_error_msg($db));
+					return false;
+				}
+			}
+		}
+		// remove obsolete bank_trans_types table 
+		// (DROP queries are skipped during non-forced upgrade)
+		$sql = "DROP TABLE IF EXISTS `0_bank_trans_types`";
+		db_query($sql);
+		
 		return true;
 	}
 	//
@@ -44,7 +70,9 @@ class fa2_1 {
 	//	Test if patch was applied before.
 	//
 	function installed($pref) {
-		return !check_table($pref, 'item_codes');
+		if (check_table($pref, 'item_codes')) return false;
+		if (check_table($pref, 'company', 'foreign_codes')) return false;
+		return true;
 	}
 };
 

@@ -1,3 +1,16 @@
+#
+#	Database upgrade script Front Accounting 
+#	Source version: 2.0.x
+#	Target version:	2.1.0
+#	
+#	To make upgrades clean and failsafe:
+#	* Precede all CREATE TABLE statment with DROP TABLE IF EXISTS
+#	* Precede all ALTER TABLE statements using ADD column with respective
+#		ALTER TABLE with DROP column
+#	* Move all other DROP queries (e.g. removing obsolete tables) to installer
+#		- they are not executed during non-forced upgrade.
+#
+
 DROP TABLE IF EXISTS `0_attachments`;
 
 CREATE TABLE `0_attachments` (
@@ -44,24 +57,19 @@ CREATE TABLE `0_recurrent_invoices` (
   UNIQUE KEY `description` (`description`)
 ) TYPE=InnoDB AUTO_INCREMENT=1 ;
 
+ALTER TABLE `0_cust_branch` DROP COLUMN `group_no`;
 ALTER TABLE `0_cust_branch` ADD `group_no` int(11) NOT NULL default '0';
 
+ALTER TABLE `0_debtor_trans` DROP COLUMN `dimension_id`;
 ALTER TABLE `0_debtor_trans` ADD `dimension_id` int(11) NOT NULL default '0';
+ALTER TABLE `0_debtor_trans` DROP COLUMN `dimension2_id`;
 ALTER TABLE `0_debtor_trans` ADD `dimension2_id` int(11) NOT NULL default '0';
 
-DROP TABLE IF EXISTS `0_bank_trans_types`;
-
+ALTER TABLE `0_bank_accounts` DROP COLUMN `id`;
 ALTER TABLE `0_bank_accounts` DROP PRIMARY KEY;
 ALTER TABLE `0_bank_accounts` ADD `id` SMALLINT(6) AUTO_INCREMENT PRIMARY KEY;
-ALTER TABLE `0_bank_accounts` ADD KEY (`account_code`);
 
-# Version for any MySQL but usable with digital only gl account codes:
-# UPDATE 0_bank_accounts SET id = account_code;
-# For any Applicable only to  MySQL >=4.0.4 :
-UPDATE `0_bank_trans`, `0_bank_accounts` SET 0_bank_trans.bank_act=0_bank_accounts.id 
-	WHERE 0_bank_trans.bank_act=0_bank_accounts.account_code; 
-
-
+ALTER TABLE `0_users` DROP COLUMN `query_size`;
 ALTER TABLE `0_users` ADD `query_size` TINYINT(1) DEFAULT '10';
 
 DROP TABLE IF EXISTS `0_sales_pos`;
@@ -79,6 +87,7 @@ CREATE TABLE `0_sales_pos` (
 
 INSERT INTO `0_sales_pos` VALUES ('1', 'Default', '1', '1', 'DEF', '1');
 
+ALTER TABLE `0_users` DROP COLUMN `pos`;
 ALTER TABLE `0_users` ADD `pos` SMALLINT(6) DEFAULT '1';
 
 DROP TABLE IF EXISTS `0_quick_entries`;
@@ -115,7 +124,9 @@ INSERT INTO `0_quick_entry_lines` VALUES ('1', '1', '6600', '1', '0', 0, '0', '0
 INSERT INTO `0_quick_entry_lines` VALUES ('2', '2', '6730', '1', '0', 0, '0', '0');
 INSERT INTO `0_quick_entry_lines` VALUES ('3', '3', '3000', '1', '0', 0, '0', '0');
 
+ALTER TABLE `0_users` DROP COLUMN `print_profile`;
 ALTER TABLE `0_users` ADD `print_profile` VARCHAR(30) DEFAULT '' AFTER `show_hints` ;
+ALTER TABLE `0_users` DROP COLUMN `rep_popup`;
 ALTER TABLE `0_users` ADD `rep_popup` TINYINT(1) DEFAULT '1' AFTER `print_profile` ;
 
 DROP TABLE IF EXISTS `0_print_profiles`;
@@ -155,3 +166,19 @@ CREATE TABLE `0_printers` (
 INSERT INTO `0_printers` VALUES ('1', 'QL500', 'Label printer', 'QL500', 'server', '127', '20');
 INSERT INTO `0_printers` VALUES ('2', 'Samsung', 'Main network printer', 'scx4521F', 'server', '515', '5');
 INSERT INTO `0_printers` VALUES ('3', 'Local', 'Local print server at user IP', 'lp', '', '515', '10');
+
+DROP TABLE IF EXISTS `0_item_codes`;
+
+CREATE TABLE `0_item_codes` (
+  `id` int(11) NOT NULL auto_increment,
+  `item_code` varchar(20) NOT NULL,
+  `stock_id` varchar(20) NOT NULL,
+  `description` varchar(200) NOT NULL default '',
+  `quantity` double NOT NULL default '1',
+  `foreign` tinyint(1) NOT NULL default 0,
+  PRIMARY KEY  (`id`),
+  UNIQUE KEY(`stock_id`, `item_code`)
+) TYPE=MyISAM AUTO_INCREMENT=1;
+
+ALTER TABLE `0_company` DROP COLUMN `foreign_codes`;
+ALTER TABLE `0_company` ADD `foreign_codes` TINYINT(1) NOT NULL DEFAULT '0';
