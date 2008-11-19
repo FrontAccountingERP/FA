@@ -114,7 +114,13 @@ function db_import($filename, $connection, $force=true)
 		"insert" => 'data_queries', 
 		"update" => 'data_queries', 
 		"drop table if exists" => 'drop_queries');
-
+	$ignored_mysql_errors = array( //errors ignored in normal (non forced) mode
+		'1022',	// duplicate key
+		'1060', // duplicate column name
+		'1061', // duplicate key name
+		'1062', // duplicate key entry
+		'1091'  // can't drop key/column check if exists
+	);
 	$data_queries = array();
 	$drop_queries = array();
 	$table_queries = array();
@@ -144,6 +150,8 @@ function db_import($filename, $connection, $force=true)
 				if (strtolower(substr($line, 0, strlen($cmd))) == $cmd) 
 				{
 					$query_table = $table;
+					if (strstr(strtolower($line), ' drop column '))
+						$query_table = 'drop_queries';
 					${$query_table}[] = array('', $line_no+1);
 					break;
 				}
@@ -161,13 +169,13 @@ function db_import($filename, $connection, $force=true)
 		}
 		
 	}
-
-/*	{ 	// for debugging purposes
+/*
+	{ 	// for debugging purposes
 	global $path_to_root;
-	$f = fopen($path_to_root.'/tmp/dbimport.txt', 'w');
+	$f = fopen($path_to_root.'/tmp/dbimport.txt', 'w+');
 	fwrite($f, print_r($drop_queries,true) ."\n");
-	fwrite(print_r($table_queries,true) ."\n");
-	fwrite(print_r($data_queries,true));
+	fwrite($f, print_r($table_queries,true) ."\n");
+	fwrite($f, print_r($data_queries,true));
 	fclose($f);
 	}
 */
@@ -178,7 +186,8 @@ function db_import($filename, $connection, $force=true)
 		{
 			if (!db_query($drop_query[0]))
 			{
-				$sql_errors[] = array(db_error_msg($db), $drop_query[1]);
+				if (!in_array(db_error_no(), $ignored_mysql_errors))
+					$sql_errors[] = array(db_error_no().':'.db_error_msg($db), $drop_query[1]);
 			}
 		}
 	}
@@ -190,7 +199,8 @@ function db_import($filename, $connection, $force=true)
 		{
 			if (!db_query($table_query[0]))
 			{
-				$sql_errors[] = array(db_error_msg($db), $table_query[1]);
+				if (!$force || !in_array(db_error_no(), $ignored_mysql_errors))
+					$sql_errors[] = array(db_error_msg($db), $table_query[1]);
 			}
 		}
 	}
@@ -202,8 +212,8 @@ function db_import($filename, $connection, $force=true)
 		{
 			if (!db_query($data_query[0]))
 			{
-				$sql_errors[] = array(db_error_msg($db), $data_query[1]);
-				break;
+				if (!$force || !in_array(db_error_no(),$ignored_mysql_errors))
+					$sql_errors[] = array(db_error_msg($db), $data_query[1]);
 			}
 		}
 	}
