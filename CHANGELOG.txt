@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+20-Nov-2008 Joe Hunt
++ Added new AGPL license file
+$ /doc/license.txt (new file)
+
 19-Nov-2008 Janusz Dobrowolski
 # Fixed error handling during database upgrade in normal and forced mode.
 $ /admin/db/maintenance_db.inc
