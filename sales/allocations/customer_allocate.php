@@ -54,7 +54,7 @@ function check_data()
 
 		  /*Now check to see that the AllocAmt is no greater than the
 		amount left to be allocated against the transaction under review */
-		if (input_num('amount' . $counter) > $_POST['un_allocated' . $counter])
+		if (input_num('amount' . $counter) > input_num('un_allocated' . $counter))
 		{
 		    //$_POST['amount' . $counter] = $_POST['un_allocated' . $counter];
 		}
@@ -219,7 +219,7 @@ function edit_allocations_for_transaction($type, $trans_no)
 			label_cell("<a href='#' name='Alloc$counter' onclick='allocate_all(this.name.substr(5));return true;'>"
 					 . _("All") . "</a>");
 			label_cell("<a href='#' name='DeAll$counter' onclick='allocate_none(this.name.substr(5));return true;'>"
-					 . _("None") . "</a>".hidden("un_allocated" . $counter, $un_allocated, false));
+					 . _("None") . "</a>".hidden("un_allocated" . $counter, price_format($un_allocated), false));
 			end_row();
 
     	    $total_allocated += input_num('amount' . $counter);
