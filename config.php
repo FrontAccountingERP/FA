@@ -1,15 +1,15 @@
 <?php
-	/*--------------------------------------------------\
-	| 		|               | config.php        		|
-	|---------------------------------------------------|
-	| FrontAccounting 									|
-	| http://frontaccounting.com/  						|
-	| by FrontAccounting                       			|
-	|---------------------------------------------------|
-	|                                                   |
-	\--------------------------------------------------*/
-
-	//--------------------------------------------------
+/**********************************************************************
+    Copyright (C) 2005-2008  FrontAccounting, LLC.
+	Released under the terms of the GNU Affero General Public License,
+	AGPL, as published by the Free Software Foundation, either version 
+	3 of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/agpl-3.0.html>.
+***********************************************************************/
+    //--------------------------------------------------
 
 	// User configurable variables
 	//---------------------------------------------------
@@ -180,4 +180,20 @@ if(isset($_SESSION["wa_current_user"])) {
 	// additional js source included in header
 	$js_lib = $js_userlib = array();
 
+if (!defined('ICON_EDIT'))
+{
+	define("ICON_EDIT", "edit.gif");	
+	define("ICON_DELETE", "delete.gif");	
+	define("ICON_ADD", "add.png");	
+	define("ICON_GL", "gl.png");	
+	define("ICON_PRINT", "print.png");	
+	define("ICON_PDF", "pdf.gif");	
+	define("ICON_DOC", "invoice.gif");	
+	define("ICON_CREDIT", "credit.gif");	
+	define("ICON_DOWN", "download.gif");	
+	define("ICON_MONEY", "money.png");	
+	define("ICON_REMOVE", "remove.png");	
+	define("ICON_REPORT", "report.png");	
+	define("ICON_VIEW", "view.gif");	
+}
 ?>

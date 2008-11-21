@@ -1,5 +1,14 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) 2005-2008  FrontAccounting, LLC.
+	Released under the terms of the GNU Affero General Public License,
+	AGPL, as published by the Free Software Foundation, either version 
+	3 of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/agpl-3.0.html>.
+***********************************************************************/
 class user_prefs 
 {
 
@@ -23,6 +32,7 @@ class user_prefs
 	var $pagesize; // for printing
 	var $show_hints;
 	var $query_size; // table pager page length
+	var $graphic_links; // use graphic links
 
 	function user_prefs(&$user) 
 	{
@@ -47,6 +57,7 @@ class user_prefs
 		$this->print_profile = $user["print_profile"];
 		$this->rep_popup = $user["rep_popup"];
 		$this->query_size = $user["query_size"];
+		$this->graphic_links = $user["graphic_links"];
 	}
 
 	function language() 
@@ -144,6 +155,11 @@ class user_prefs
 	function query_size() 
 	{
 		return $this->query_size;
+	}
+
+	function graphic_links() 
+	{
+		return $this->graphic_links;
 	}
 
 	function set_dec($price_dec, $qty_dec, $exrate_dec, $percent_dec, $showgl, $showcodes) 

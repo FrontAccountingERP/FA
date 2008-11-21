@@ -2,7 +2,7 @@
 * @version $Id$
 * @package FrontAccounting
 * @copyright (C) 2005 - 2008 FrontAccounting
-* @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
+* @license http://www.gnu.org/copyleft/agpl-3.0.html GNU/AGPL
 * FrontAccounting is Free Software
 */
 
@@ -19,6 +19,23 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+21-Nov-2008 Joe Hunt
++ Preparing for Graphic Links instead of Text Links (user display option, default)
+  (new field in 0_users, graphic_links)
+$ config.php
+  /admin/display_prefs.php
+  /admin/db/users_db.inc
+  /includes/current_user.inc
+  /includes/prefs/userprefs.inc
+  /includes/ui/ui_controls.inc
+  /sql/alter2.1.sql 
+  /themes/default/images/add.png, credit.gif, delete.gif, download.gif, edit.gif, gl.png, 
+          invoice.gif, money.png, pdf.gif, print.png, remove.png, report.png, view.gif 
+  /themes/aqua/images/add.png, credit.gif, delete.gif, download.gif, edit.gif, gl.png, 
+          invoice.gif, money.png, pdf.gif, print.png, remove.png, report.png, view.gif 
+  /themes/cool/images/add.png, credit.gif, delete.gif, download.gif, edit.gif, gl.png, 
+          invoice.gif, money.png, pdf.gif, print.png, remove.png, report.png, view.gif 
+  
 20-Nov-2008 Joe Hunt
 + Added new AGPL license file
 $ /doc/license.txt (new file)
@@ -3045,5 +3062,5 @@ $  /admin/gl_setup.php
 
 2. Copyright and disclaimer
 ---------------------------
-This application is opensource software released under the GPL.  Please
+This application is opensource software released under the AGPL.  Please
 see source code and the LICENSE file

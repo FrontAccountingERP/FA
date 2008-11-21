@@ -1,4 +1,14 @@
 <?php
+/**********************************************************************
+    Copyright (C) 2005-2008  FrontAccounting, LLC.
+	Released under the terms of the GNU Affero General Public License,
+	AGPL, as published by the Free Software Foundation, either version 
+	3 of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/agpl-3.0.html>.
+***********************************************************************/
 
 function add_user($user_id, $real_name, $password, $phone, $email, $full_access, 
 	$language, $profile, $rep_popup, $pos)
@@ -44,7 +54,7 @@ function update_user($user_id, $real_name, $phone, $email, $full_access,
 
 function update_user_display_prefs($user_id, $price_dec, $qty_dec, $exrate_dec, 
 	$percent_dec, $showgl, $showcodes, $date_format, $date_sep, $tho_sep, 
-	$dec_sep, $theme, $pagesize, $show_hints, $profile, $rep_popup, $query_size)
+	$dec_sep, $theme, $pagesize, $show_hints, $profile, $rep_popup, $query_size, $graphic_links)
 {
 	$sql = "UPDATE ".TB_PREF."users SET
 		prices_dec=".db_escape($price_dec).",
@@ -62,7 +72,8 @@ function update_user_display_prefs($user_id, $price_dec, $qty_dec, $exrate_dec,
 		show_hints=$show_hints,
 		print_profile=".db_escape($profile).",
 		rep_popup=$rep_popup,
-		query_size=$query_size
+		query_size=$query_size,
+		graphic_links=$graphic_links
 		WHERE user_id = ".db_escape($user_id);
 
 	db_query($sql, "could not update user display prefs for $user_id");

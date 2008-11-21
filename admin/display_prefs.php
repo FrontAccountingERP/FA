@@ -1,5 +1,14 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) 2005-2008  FrontAccounting, LLC.
+	Released under the terms of the GNU Affero General Public License,
+	AGPL, as published by the Free Software Foundation, either version 
+	3 of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/agpl-3.0.html>.
+***********************************************************************/
 $page_security =10;
 $path_to_root="..";
 include($path_to_root . "/includes/session.inc");
@@ -29,7 +38,7 @@ if (isset($_POST['setprefs']))
 			$_POST['date_format'], $_POST['date_sep'],
 			$_POST['tho_sep'], $_POST['dec_sep'],
 			$_POST['theme'], $_POST['page_size'], check_value('show_hints'),
-			$_POST['profile'], check_value('rep_popup'), (int)($_POST['query_size']));
+			$_POST['profile'], check_value('rep_popup'), (int)($_POST['query_size']), check_value('graphic_links'));
 
 		language::set_language($_POST['language']);
 
@@ -97,6 +106,9 @@ print_profiles_list_row(_("Printing profile"). ':', 'profile',
 
 check_row(_("Use popup window to display reports:"), 'rep_popup', user_rep_popup(),
 	false, _('Set this option to on if your browser directly supports pdf files'));
+
+check_row(_("Use icons instead of text links:"), 'graphic_links', user_graphic_links(),
+	false, _('Set this option to on for using icons instead of text links'));
 
 text_row_ex(_("Query page size:"), 'query_size',  5, 5, '', user_query_size());
 

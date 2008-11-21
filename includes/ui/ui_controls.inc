@@ -1,5 +1,14 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) 2005-2008  FrontAccounting, LLC.
+	Released under the terms of the GNU Affero General Public License,
+	AGPL, as published by the Free Software Foundation, either version 
+	3 of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/agpl-3.0.html>.
+***********************************************************************/
 //---------------------------------------------------------------------------------
 
 function start_form($multi=false, $sid=false, $action="", $name="")
@@ -188,20 +197,28 @@ function delete_link_cell($param, $title=false)
 	.($title ? " title='$title'":'') .">" . _("Delete") . "</a>", "nowrap");
 }
 
-function edit_button($name, $value, $title=false)
+function edit_button($name, $value, $title=false, $icon=false)
 {
-// php silently changes dots,spaces,'[' and characters 128-159
-// to underscore in POST names, to maintain compatibility with register_globals
-	echo "<input type=\"submit\" class=\"editbutton\" name=\""
-		.htmlentities(strtr($name, array('.'=>'=2E',' '=>'=20','='=>'=3D','['=>'=5B')))
-		."\" value=\"$value\""
-		.($title ? " title='$title'":'')." />\n";
+	// php silently changes dots,spaces,'[' and characters 128-159
+	// to underscore in POST names, to maintain compatibility with register_globals
+	if (user_graphic_links() && $icon)
+	{
+		global $path_to_root;
+		$name = htmlentities(strtr($name, array('.'=>'=2E',' '=>'=20','='=>'=3D','['=>'=5B')));
+		echo "<button type='submit' class='editbutton' name='$name' value='' /><img src='$path_to_root/themes/".user_theme().
+		"/images/$icon' width='14' height='14' border='0' ".($title ? "title='$title'" : "title='$value'")." />\n";
+	}
+	else
+		echo "<input type=\"submit\" class=\"editbutton\" name=\""
+			.htmlentities(strtr($name, array('.'=>'=2E',' '=>'=20','='=>'=3D','['=>'=5B')))
+			."\" value=\"$value\""
+			.($title ? " title='$title'":'')." />\n";
 }
 
-function edit_button_cell($name, $value, $title=false)
+function edit_button_cell($name, $value, $title=false, $icon=false)
 {
 	echo "<td>";
-	edit_button($name, $value, $title);
+	edit_button($name, $value, $title, $icon);
 	echo "</td>";
 }
 

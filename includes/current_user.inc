@@ -1,5 +1,14 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) 2005-2008  FrontAccounting, LLC.
+	Released under the terms of the GNU Affero General Public License,
+	AGPL, as published by the Free Software Foundation, either version 
+	3 of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/agpl-3.0.html>.
+***********************************************************************/
 include_once($path_to_root . "/includes/prefs/userprefs.inc");
 
 //--------------------------------------------------------------------------
@@ -100,11 +109,11 @@ class current_user
 
 	function update_prefs($price_dec, $qty_dec, $exrate_dec, $percent_dec, 
 		$showgl, $showcodes, $date_format, $date_sep, $tho_sep, $dec_sep, 
-		$theme, $pagesize, $show_hints, $profile, $rep_popup, $query_size) {
+		$theme, $pagesize, $show_hints, $profile, $rep_popup, $query_size, $graphic_links) {
 		update_user_display_prefs($this->username, $price_dec, 
 			$qty_dec, $exrate_dec, $percent_dec, $showgl, $showcodes, 
 			$date_format, $date_sep, $tho_sep, $dec_sep, $theme, $pagesize, 
-			$show_hints, $profile, $rep_popup, $query_size);
+			$show_hints, $profile, $rep_popup, $query_size, $graphic_links);
 
 		// re-read the prefs
 		$user = get_user($this->username);
@@ -279,14 +288,19 @@ function user_query_size()
 	return $_SESSION["wa_current_user"]->prefs->query_size();
 }
 
+function user_graphic_links()
+{
+	return $_SESSION["wa_current_user"]->prefs->graphic_links();
+}
+
 function set_user_prefs($price_dec, $qty_dec, $exrate_dec, $percent_dec, $showgl, $showcodes,
 	$date_format, $date_sep, $tho_sep, $dec_sep, $theme, $pagesize, $show_hints,
-	$print_profile, $rep_popup, $query_size)
+	$print_profile, $rep_popup, $query_size, $graphic_links)
 {
 
 	$_SESSION["wa_current_user"]->update_prefs($price_dec, $qty_dec, $exrate_dec, $percent_dec, $showgl, $showcodes,
 		$date_format, $date_sep, $tho_sep, $dec_sep, $theme, $pagesize, $show_hints,
-		$print_profile, $rep_popup, $query_size);
+		$print_profile, $rep_popup, $query_size, $graphic_links);
 }
 
 function add_user_js_data() {

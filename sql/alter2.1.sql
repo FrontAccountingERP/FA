@@ -72,6 +72,9 @@ ALTER TABLE `0_bank_accounts` ADD `id` SMALLINT(6) AUTO_INCREMENT PRIMARY KEY;
 ALTER TABLE `0_users` DROP COLUMN `query_size`;
 ALTER TABLE `0_users` ADD `query_size` TINYINT(1) DEFAULT '10';
 
+ALTER TABLE `0_users` DROP COLUMN `graphic_links`;
+ALTER TABLE `0_users` ADD `graphic_links` TINYINT(1) DEFAULT '1';
+
 DROP TABLE IF EXISTS `0_sales_pos`;
 
 CREATE TABLE `0_sales_pos` (
