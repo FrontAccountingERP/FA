@@ -1,5 +1,14 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU Affero General Public License,
+	AGPL, as published by the Free Software Foundation, either version 
+	3 of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/agpl-3.0.html>.
+***********************************************************************/
 $page_security = 2;
 $path_to_root="../..";
 include($path_to_root . "/includes/db_pager.inc");
@@ -73,19 +82,19 @@ function edit_link($row)
 {
   return pager_link( _("Edit"),
 	"/purchasing/po_entry_items.php?" . SID 
-	. "ModifyOrderNumber=" . $row["order_no"]);
+	. "ModifyOrderNumber=" . $row["order_no"], ICON_EDIT);
 }
 
 function prt_link($row)
 {
-	return print_document_link($row['order_no'], _("Print"), true, 18);
+	return print_document_link($row['order_no'], _("Print"), true, 18, ICON_PRINT);
 }
 
 function receive_link($row) 
 {
   return pager_link( _("Receive"),
 	"/purchasing/po_receive_items.php?" . SID 
-	. "PONumber=" . $row["order_no"]);
+	. "PONumber=" . $row["order_no"], ICON_RECEIVE);
 }
 
 function check_overdue($row)

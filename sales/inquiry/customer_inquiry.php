@@ -1,5 +1,14 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU Affero General Public License,
+	AGPL, as published by the Free Software Foundation, either version 
+	3 of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/agpl-3.0.html>.
+***********************************************************************/
 $page_security = 1;
 $path_to_root="../..";
 include($path_to_root . "/includes/db_pager.inc");
@@ -149,7 +158,7 @@ function credit_link($row)
 	return $row['type'] == 10 ?
 		pager_link(_("Credit This"),
 			"/sales/customer_credit_invoice.php?InvoiceNumber=".
-			$row['trans_no'])
+			$row['trans_no'], ICON_CREDIT)
 			: '';
 }
 
@@ -171,13 +180,13 @@ function edit_link($row)
    		$str = "/sales/customer_delivery.php?ModifyDelivery=".$row['trans_no'];
 		break;
 	}
-	return pager_link(_('Edit'), $str);
+	return pager_link(_('Edit'), $str, ICON_EDIT);
 }
 
 function prt_link($row)
 {
   	if ($row['type'] != 12) // customer payment printout not defined yet.
- 		return print_document_link($row['trans_no'], _("Print"), true, $row['type']);
+ 		return print_document_link($row['trans_no'], _("Print"), true, $row['type'], ICON_PRINT);
 }
 
 function check_overdue($row)

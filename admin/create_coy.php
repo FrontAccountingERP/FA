@@ -1,6 +1,6 @@
 <?php
 /**********************************************************************
-    Copyright (C) 2005-2008  FrontAccounting, LLC.
+    Copyright (C) FrontAccounting, LLC.
 	Released under the terms of the GNU Affero General Public License,
 	AGPL, as published by the Free Software Foundation, either version 
 	3 of the License, or (at your option) any later version.
@@ -249,9 +249,8 @@ function display_companies()
 		$delete = _("Delete");
 		if (user_graphic_links())
 		{
-			global $path_to_root;
-			$edit = "<img src='$path_to_root/themes/".user_theme()."/images/".ICON_EDIT."' width='14' height='14' border='0' title='$edit' />\n";
-			$delete = "<img src='$path_to_root/themes/".user_theme()."/images/".ICON_DELETE."' width='14' height='14' border='0' title='$delete' />\n";
+			$edit = set_icon(ICON_EDIT, $edit);
+			$delete = set_icon(ICON_DELETE, $delete);
 		}
     	label_cell("<a href='" . $_SERVER['PHP_SELF']. "?selected_id=$i'>$edit</a>");
 		label_cell( $i == $coyno ? '' :

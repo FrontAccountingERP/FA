@@ -1,6 +1,6 @@
 <?php
 /**********************************************************************
-    Copyright (C) 2005-2008  FrontAccounting, LLC.
+    Copyright (C) FrontAccounting, LLC.
 	Released under the terms of the GNU Affero General Public License,
 	AGPL, as published by the Free Software Foundation, either version 
 	3 of the License, or (at your option) any later version.
@@ -39,7 +39,7 @@ function get_supplier_trans_view_str($type, $trans_no, $label="", $icon=false)
 	{
 		$pars = access_string($label);
 		if (user_graphic_links() && $icon)
-			$pars[0] = "<img src='$path_to_root/themes/".user_theme()."/images/$icon' width='14' height='14' border='0' title='$pars[0]' />\n";
+			$pars[0] = set_icon($icon, $pars[0]);
 		$preview_str = "<a target='_blank' href='$path_to_root/purchasing/view/$viewer?trans_no=$trans_no' onclick=\"javascript:openWindow(this.href,this.target); return false;\"$pars[1]>$pars[0]</a>";
 	}
 	else
@@ -65,7 +65,7 @@ function get_gl_view_str($type, $trans_no, $label="", $force=false)
 	}	
 	$pars = access_string($label);
 	if (user_graphic_links() && $icon)
-		$pars[0] = "<img src='$path_to_root/themes/".user_theme()."/images/$icon' width='14' height='14' border='0' title='$pars[0]' />\n";
+		$pars[0] = set_icon($icon, $pars[0]);
 	$gl_view = "<a target='_blank' href='$path_to_root/gl/view/gl_trans_view.php?type_id=$type&trans_no=$trans_no' onclick=\"javascript:openWindow(this.href,this.target); return false;\"$pars[1]>$pars[0]</a>";
 
 	return $gl_view;
@@ -114,7 +114,7 @@ function get_customer_trans_view_str($type, $trans_no, $label="", $icon=false)
 	{
 		$pars = access_string($lbl);
 		if (user_graphic_links() && $icon)
-			$pars[0] = "<img src='$path_to_root/themes/".user_theme()."/images/$icon' width='14' height='14' border='0' title='$pars[0]' />\n";
+			$pars[0] = set_icon($icon, $pars[0]);
 		$preview_str .= "<a target='_blank' href='$path_to_root/sales/view/$viewer?trans_no=$trans' onclick=\"javascript:openWindow(this.href,this.target); return false;\" $pars[1]>$pars[0]</a>";
 	}
 	else
@@ -150,7 +150,7 @@ function get_banking_trans_view_str($type, $trans_no, $label="", $icon=false)
 	{
 		$pars = access_string($label);
 		if (user_graphic_links() && $icon)
-			$pars[0] = "<img src='$path_to_root/themes/".user_theme()."/images/$icon' width='14' height='14' border='0' title='$pars[0]' />\n";
+			$pars[0] = set_icon($icon, $pars[0]);
 		$preview_str = "<a target='_blank' href='$path_to_root/gl/view/$viewer?trans_no=$trans_no' onclick=\"javascript:openWindow(this.href,this.target); return false;\"$pars[1]>$pars[0]</a>";
 	}
 	else
@@ -181,7 +181,7 @@ function get_inventory_trans_view_str($type, $trans_no, $label="", $icon=false)
 	{
 		$pars = access_string($label);
 		if (user_graphic_links() && $icon)
-			$pars[0] = "<img src='$path_to_root/themes/".user_theme()."/images/$icon' width='14' height='14' border='0' title='$pars[0]' />\n";
+			$pars[0] = set_icon($icon, $pars[0]);
 		$preview_str = "<a target='_blank' href='$path_to_root/inventory/view/$viewer?trans_no=$trans_no' onclick=\"javascript:openWindow(this.href,this.target); return false;\"$pars[1]>$pars[0]</a>";
 	}
 	else
@@ -214,7 +214,7 @@ function get_manufacturing_trans_view_str($type, $trans_no, $label="", $icon=fal
 	{
 		$pars = access_string($label);
 		if (user_graphic_links() && $icon)
-			$pars[0] = "<img src='$path_to_root/themes/".user_theme()."/images/$icon' width='14' height='14' border='0' title='$pars[0]' />\n";
+			$pars[0] = set_icon($icon, $pars[0]);
 		$preview_str = "<a target='_blank' href='$path_to_root/manufacturing/view/$viewer?trans_no=$trans_no' onclick=\"javascript:openWindow(this.href,this.target); return false;\"$pars[1]>$pars[0]</a>";
 	}
 	else
@@ -243,7 +243,7 @@ function get_dimensions_trans_view_str($type, $trans_no, $label="", $icon=false)
 	{
 		$pars = access_string($label);
 		if (user_graphic_links() && $icon)
-			$pars[0] = "<img src='$path_to_root/themes/".user_theme()."/images/$icon' width='14' height='14' border='0' title='$pars[0]' />\n";
+			$pars[0] = set_icon($icon, $pars[0]);
 		$preview_str = "<a target='_blank' href='$path_to_root/dimensions/view/$viewer?trans_no=$trans_no' onclick=\"javascript:openWindow(this.href,this.target); return false;\"$pars[1]>$pars[0]</a>";
 	}
 	else

@@ -1,6 +1,6 @@
 <?php
 /**********************************************************************
-    Copyright (C) 2005-2008  FrontAccounting, LLC.
+    Copyright (C) FrontAccounting, LLC.
 	Released under the terms of the GNU Affero General Public License,
 	AGPL, as published by the Free Software Foundation, either version 
 	3 of the License, or (at your option) any later version.
@@ -91,7 +91,7 @@ function print_link($link_text, $rep, $pars = array(), $dir = '', $icon=false)
 	$class = $pdf_debug ? '' : "class='printlink'";
 	$pars = access_string($link_text);
 	if (user_graphic_links() && $icon)
-		$pars[0] = "<img src='$path_to_root/themes/".user_theme()."/images/$icon' width='14' height='14' border='0' title='$pars[0]' />\n";
+		$pars[0] = set_icon($icon, $pars[0]);
 	return "<a $class target='_blank' href='$url'$pars[1]>$pars[0]</a>";
 }
 

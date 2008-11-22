@@ -19,6 +19,32 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+22-Nov-2008 Joe Hunt
++ Preparing for Graphic Links final.Optimized.
+$ config.php
+  /admin/create_coy.php
+  /admin/inst_lang.php
+  /admin/inst_module.php
+  /dimensions/inquiry/search_dimensions.php
+  /includes/ui/ui_controls.inc
+  /includes/ui/ui_view.inc
+  /includes/db_pager_view.inc
+  /manufacturing/search_work_orders.php
+  /purchasing/inquiry/po_search.php
+  /purchasing/inquiry/po_search_completed.php
+  /purchasing/inquiry/supplier_allocation_inquiry.php
+  /purchasing/allocations/supplier_allocation_main.php
+  /reporting/includes/reporting.inc
+  /sales/allocations/customer_allocation_main.php
+  /sales/inquiry/customer_allocation_inquiry.php
+  /sales/inquiry/customer_inquiry.php
+  /sales/inquiry/sales_orders_view.php
+  /sales/inquiry/sales_deliveries_view.php
+  /themes/default/images/receive.gif (new file)
+  /themes/aquat/images/receive.gif (new file)
+  /themes/cool/images/receive.gif (new file)
+  
+  
 21-Nov-2008 Joe Hunt
 + Preparing for Graphic Links instead of Text Links (user display option, default)
   (new field in 0_users, graphic_links)

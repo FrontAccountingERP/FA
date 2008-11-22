@@ -1,6 +1,6 @@
 <?php
 /**********************************************************************
-    Copyright (C) 2005-2008  FrontAccounting, LLC.
+    Copyright (C) FrontAccounting, LLC.
 	Released under the terms of the GNU Affero General Public License,
 	AGPL, as published by the Free Software Foundation, either version 
 	3 of the License, or (at your option) any later version.
@@ -190,6 +190,7 @@ if (!defined('ICON_EDIT'))
 	define("ICON_PDF", "pdf.gif");	
 	define("ICON_DOC", "invoice.gif");	
 	define("ICON_CREDIT", "credit.gif");	
+	define("ICON_RECEIVE", "receive.gif");	
 	define("ICON_DOWN", "download.gif");	
 	define("ICON_MONEY", "money.png");	
 	define("ICON_REMOVE", "remove.png");	

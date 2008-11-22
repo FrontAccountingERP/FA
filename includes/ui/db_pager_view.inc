@@ -1,10 +1,22 @@
 <?php
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU Affero General Public License,
+	AGPL, as published by the Free Software Foundation, either version 
+	3 of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/agpl-3.0.html>.
+***********************************************************************/
 //--------------------------------------------------------------------------------------------------
-function pager_link($link_text, $url)
+function pager_link($link_text, $url, $icon=false)
 {
 	global $path_to_root;
 	
 	$link = access_string($link_text);
+	if (user_graphic_links() && $icon)
+		$link[0] = set_icon($icon, $link[0]);
 
 	$href = $path_to_root . $url;
 	return "<a href='$href'$link[1]>" . $link[0] . "</a>";

@@ -12,6 +12,6 @@
 
 $installed_languages = array (
 	0 => array ('code' => 'en_GB', 'name' => 'English', 'encoding' => 'iso-8859-1'),
-		array ('code' => 'en_US', 'name' => 'English (US)', 'encoding' => 'iso-8859-1')
+		array ('code' => 'en_US', 'name' => 'English (US)', 'encoding' => 'iso-8859-1'),
 	);
 ?>

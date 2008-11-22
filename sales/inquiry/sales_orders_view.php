@@ -1,5 +1,14 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU Affero General Public License,
+	AGPL, as published by the Free Software Foundation, either version 
+	3 of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/agpl-3.0.html>.
+***********************************************************************/
 $page_security = 2;
 $path_to_root="../..";
 
@@ -76,31 +85,31 @@ function view_link($dummy, $order_no)
 
 function prt_link($row)
 {
-	return print_document_link($row['order_no'], _("Print"), true, 30);
+	return print_document_link($row['order_no'], _("Print"), true, 30, ICON_PRINT);
 }
 
 function edit_link($row) 
 {
   return pager_link( _("Edit"),
-    "/sales/sales_order_entry.php?" . SID . "ModifyOrderNumber=" . $row['order_no']);
+    "/sales/sales_order_entry.php?" . SID . "ModifyOrderNumber=" . $row['order_no'], ICON_EDIT);
 }
 
 function dispatch_link($row)
 {
   return pager_link( _("Dispatch"),
-	"/sales/customer_delivery.php?" . SID . "OrderNumber=" .$row['order_no']);
+	"/sales/customer_delivery.php?" . SID . "OrderNumber=" .$row['order_no'], ICON_DOC);
 }
 
 function invoice_link($row)
 {
   return pager_link( _("Invoice"),
-	"/sales/sales_order_entry.php?" . SID . "NewInvoice=" .$row["order_no"]);
+	"/sales/sales_order_entry.php?" . SID . "NewInvoice=" .$row["order_no"], ICON_DOC);
 }
 
 function delivery_link($row)
 {
   return pager_link( _("Delivery"),
-	"/sales/sales_order_entry.php?" . SID . "NewDelivery=" .$row['order_no']);
+	"/sales/sales_order_entry.php?" . SID . "NewDelivery=" .$row['order_no'], ICON_DOC);
 }
 
 function tmpl_checkbox($row)
