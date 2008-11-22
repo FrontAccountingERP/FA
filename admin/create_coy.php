@@ -1,5 +1,14 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) 2005-2008  FrontAccounting, LLC.
+	Released under the terms of the GNU Affero General Public License,
+	AGPL, as published by the Free Software Foundation, either version 
+	3 of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/agpl-3.0.html>.
+***********************************************************************/
 $page_security = 20;
 $path_to_root="..";
 include_once($path_to_root . "/includes/session.inc");
@@ -236,9 +245,17 @@ function display_companies()
 		label_cell($conn[$i]['dbname']);
 		label_cell($conn[$i]['tbpref']);
 		label_cell($what);
-		label_cell("<a href=" . $_SERVER['PHP_SELF']. "?selected_id=" . $i . ">" . _("Edit") . "</a>");
+		$edit = _("Edit");
+		$delete = _("Delete");
+		if (user_graphic_links())
+		{
+			global $path_to_root;
+			$edit = "<img src='$path_to_root/themes/".user_theme()."/images/".ICON_EDIT."' width='14' height='14' border='0' title='$edit' />\n";
+			$delete = "<img src='$path_to_root/themes/".user_theme()."/images/".ICON_DELETE."' width='14' height='14' border='0' title='$delete' />\n";
+		}
+    	label_cell("<a href='" . $_SERVER['PHP_SELF']. "?selected_id=$i'>$edit</a>");
 		label_cell( $i == $coyno ? '' :
-	"<a href='javascript:deleteCompany(" . $i . ")'>" . _("Delete") . "</a>");
+			"<a href='javascript:deleteCompany(" . $i . ")'>$delete</a>");
 		end_row();
 	}
 

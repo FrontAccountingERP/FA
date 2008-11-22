@@ -24,10 +24,16 @@ $ -> Affected files
   (new field in 0_users, graphic_links)
 $ config.php
   /admin/display_prefs.php
+  /admin/create_coy.php
+  /admin/inst_lang.php
+  /admin/inst_module.php
   /admin/db/users_db.inc
   /includes/current_user.inc
   /includes/prefs/userprefs.inc
   /includes/ui/ui_controls.inc
+  /includes/ui/ui_input.inc
+  /includes/ui/ui_view.inc
+  /reporting/includes/reporting.inc
   /sql/alter2.1.sql 
   /themes/default/images/add.png, credit.gif, delete.gif, download.gif, edit.gif, gl.png, 
           invoice.gif, money.png, pdf.gif, print.png, remove.png, report.png, view.gif 

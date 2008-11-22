@@ -1,10 +1,20 @@
 <?php
+/**********************************************************************
+    Copyright (C) 2005-2008  FrontAccounting, LLC.
+	Released under the terms of the GNU Affero General Public License,
+	AGPL, as published by the Free Software Foundation, either version 
+	3 of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/agpl-3.0.html>.
+***********************************************************************/
 // Link to printing single document with bulk report template file.
 // Ex. label_cell(print_document_link($myrow['order_no'], _("Print")), $type);
 // or display_note(print_document_link($order_no, _("Print this order")));
 // You only need full parameter list for invoices/credit notes
 
-function print_document_link($doc_no, $link_text, $link=true, $type_no)
+function print_document_link($doc_no, $link_text, $link=true, $type_no, $icon=false)
 {
 	global $path_to_root;
 	include_once($path_to_root . "/includes/types.inc");
@@ -62,12 +72,12 @@ function print_document_link($doc_no, $link_text, $link=true, $type_no)
 //		default: $ar = array();
 	}
 	
-	return print_link($link_text, $rep, $ar);
+	return print_link($link_text, $rep, $ar, "", $icon);
 }
 //
 //	Universal link to any kind of report.
 //
-function print_link($link_text, $rep, $pars = array(), $dir = '')
+function print_link($link_text, $rep, $pars = array(), $dir = '', $icon=false)
 {
 	global $path_to_root, $pdf_debug;
 
@@ -80,6 +90,8 @@ function print_link($link_text, $rep, $pars = array(), $dir = '')
 	$url .= implode ('&', $pars);
 	$class = $pdf_debug ? '' : "class='printlink'";
 	$pars = access_string($link_text);
+	if (user_graphic_links() && $icon)
+		$pars[0] = "<img src='$path_to_root/themes/".user_theme()."/images/$icon' width='14' height='14' border='0' title='$pars[0]' />\n";
 	return "<a $class target='_blank' href='$url'$pars[1]>$pars[0]</a>";
 }
 

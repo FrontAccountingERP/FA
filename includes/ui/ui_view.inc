@@ -1,11 +1,20 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) 2005-2008  FrontAccounting, LLC.
+	Released under the terms of the GNU Affero General Public License,
+	AGPL, as published by the Free Software Foundation, either version 
+	3 of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/agpl-3.0.html>.
+***********************************************************************/
 include_once($path_to_root . "/admin/db/voiding_db.inc");
 include_once($path_to_root . "/includes/types.inc");
 
 //--------------------------------------------------------------------------------------
 
-function get_supplier_trans_view_str($type, $trans_no, $label="")
+function get_supplier_trans_view_str($type, $trans_no, $label="", $icon=false)
 {
 	global $path_to_root;
 
@@ -29,6 +38,8 @@ function get_supplier_trans_view_str($type, $trans_no, $label="")
 	if ($viewer != "")
 	{
 		$pars = access_string($label);
+		if (user_graphic_links() && $icon)
+			$pars[0] = "<img src='$path_to_root/themes/".user_theme()."/images/$icon' width='14' height='14' border='0' title='$pars[0]' />\n";
 		$preview_str = "<a target='_blank' href='$path_to_root/purchasing/view/$viewer?trans_no=$trans_no' onclick=\"javascript:openWindow(this.href,this.target); return false;\"$pars[1]>$pars[0]</a>";
 	}
 	else
@@ -46,9 +57,15 @@ function get_gl_view_str($type, $trans_no, $label="", $force=false)
 	if (!$force && !user_show_gl_info())
 		return "";
 
+	$icon = false;
 	if ($label == "")
+	{
 		$label = _("GL");
+		$icon = ICON_GL;
+	}	
 	$pars = access_string($label);
+	if (user_graphic_links() && $icon)
+		$pars[0] = "<img src='$path_to_root/themes/".user_theme()."/images/$icon' width='14' height='14' border='0' title='$pars[0]' />\n";
 	$gl_view = "<a target='_blank' href='$path_to_root/gl/view/gl_trans_view.php?type_id=$type&trans_no=$trans_no' onclick=\"javascript:openWindow(this.href,this.target); return false;\"$pars[1]>$pars[0]</a>";
 
 	return $gl_view;
@@ -65,7 +82,7 @@ function get_gl_view_str_cell($type, $trans_no, $label="")
 
 //--------------------------------------------------------------------------------------
 
-function get_customer_trans_view_str($type, $trans_no, $label="")
+function get_customer_trans_view_str($type, $trans_no, $label="", $icon=false)
 {
 	global $path_to_root;
 
@@ -91,12 +108,13 @@ function get_customer_trans_view_str($type, $trans_no, $label="")
   foreach($trans_no as $trans) {
 	if ($label == "")
 		$lbl = $trans;
-
 	if($preview_str!='') $preview_str .= ',';
 
 	if ($viewer != "")
 	{
 		$pars = access_string($lbl);
+		if (user_graphic_links() && $icon)
+			$pars[0] = "<img src='$path_to_root/themes/".user_theme()."/images/$icon' width='14' height='14' border='0' title='$pars[0]' />\n";
 		$preview_str .= "<a target='_blank' href='$path_to_root/sales/view/$viewer?trans_no=$trans' onclick=\"javascript:openWindow(this.href,this.target); return false;\" $pars[1]>$pars[0]</a>";
 	}
 	else
@@ -108,7 +126,7 @@ function get_customer_trans_view_str($type, $trans_no, $label="")
 
 //--------------------------------------------------------------------------------------
 
-function get_banking_trans_view_str($type, $trans_no, $label="")
+function get_banking_trans_view_str($type, $trans_no, $label="", $icon=false)
 {
 	global $path_to_root;
 
@@ -131,6 +149,8 @@ function get_banking_trans_view_str($type, $trans_no, $label="")
 	if ($viewer != "")
 	{
 		$pars = access_string($label);
+		if (user_graphic_links() && $icon)
+			$pars[0] = "<img src='$path_to_root/themes/".user_theme()."/images/$icon' width='14' height='14' border='0' title='$pars[0]' />\n";
 		$preview_str = "<a target='_blank' href='$path_to_root/gl/view/$viewer?trans_no=$trans_no' onclick=\"javascript:openWindow(this.href,this.target); return false;\"$pars[1]>$pars[0]</a>";
 	}
 	else
@@ -141,7 +161,7 @@ function get_banking_trans_view_str($type, $trans_no, $label="")
 
 //--------------------------------------------------------------------------------------
 
-function get_inventory_trans_view_str($type, $trans_no, $label="")
+function get_inventory_trans_view_str($type, $trans_no, $label="", $icon=false)
 {
 	global $path_to_root;
 
@@ -160,6 +180,8 @@ function get_inventory_trans_view_str($type, $trans_no, $label="")
 	if ($viewer != "")
 	{
 		$pars = access_string($label);
+		if (user_graphic_links() && $icon)
+			$pars[0] = "<img src='$path_to_root/themes/".user_theme()."/images/$icon' width='14' height='14' border='0' title='$pars[0]' />\n";
 		$preview_str = "<a target='_blank' href='$path_to_root/inventory/view/$viewer?trans_no=$trans_no' onclick=\"javascript:openWindow(this.href,this.target); return false;\"$pars[1]>$pars[0]</a>";
 	}
 	else
@@ -170,7 +192,7 @@ function get_inventory_trans_view_str($type, $trans_no, $label="")
 
 //--------------------------------------------------------------------------------------
 
-function get_manufacturing_trans_view_str($type, $trans_no, $label="")
+function get_manufacturing_trans_view_str($type, $trans_no, $label="", $icon=false)
 {
 	global $path_to_root;
 
@@ -191,6 +213,8 @@ function get_manufacturing_trans_view_str($type, $trans_no, $label="")
 	if ($viewer != "")
 	{
 		$pars = access_string($label);
+		if (user_graphic_links() && $icon)
+			$pars[0] = "<img src='$path_to_root/themes/".user_theme()."/images/$icon' width='14' height='14' border='0' title='$pars[0]' />\n";
 		$preview_str = "<a target='_blank' href='$path_to_root/manufacturing/view/$viewer?trans_no=$trans_no' onclick=\"javascript:openWindow(this.href,this.target); return false;\"$pars[1]>$pars[0]</a>";
 	}
 	else
@@ -201,7 +225,7 @@ function get_manufacturing_trans_view_str($type, $trans_no, $label="")
 
 //--------------------------------------------------------------------------------------
 
-function get_dimensions_trans_view_str($type, $trans_no, $label="")
+function get_dimensions_trans_view_str($type, $trans_no, $label="", $icon=false)
 {
 	global $path_to_root;
 
@@ -218,6 +242,8 @@ function get_dimensions_trans_view_str($type, $trans_no, $label="")
 	if ($viewer != "")
 	{
 		$pars = access_string($label);
+		if (user_graphic_links() && $icon)
+			$pars[0] = "<img src='$path_to_root/themes/".user_theme()."/images/$icon' width='14' height='14' border='0' title='$pars[0]' />\n";
 		$preview_str = "<a target='_blank' href='$path_to_root/dimensions/view/$viewer?trans_no=$trans_no' onclick=\"javascript:openWindow(this.href,this.target); return false;\"$pars[1]>$pars[0]</a>";
 	}
 	else
@@ -228,29 +254,29 @@ function get_dimensions_trans_view_str($type, $trans_no, $label="")
 
 //--------------------------------------------------------------------------------------
 
-function get_trans_view_str($type, $trans_no, $label="")
+function get_trans_view_str($type, $trans_no, $label="", $icon=false)
 {
-	$view_str = get_customer_trans_view_str($type, $trans_no, $label);
+	$view_str = get_customer_trans_view_str($type, $trans_no, $label, $icon);
 	if ($view_str != null)
 		return $view_str;
 
-	$view_str = get_supplier_trans_view_str($type, $trans_no, $label);
+	$view_str = get_supplier_trans_view_str($type, $trans_no, $label, $icon);
 	if ($view_str != null)
 		return $view_str;
 
-	$view_str = get_banking_trans_view_str($type, $trans_no, $label);
+	$view_str = get_banking_trans_view_str($type, $trans_no, $label, $icon);
 	if ($view_str != null)
 		return $view_str;
 
-	$view_str = get_inventory_trans_view_str($type, $trans_no, $label);
+	$view_str = get_inventory_trans_view_str($type, $trans_no, $label, $icon);
 	if ($view_str != null)
 		return $view_str;
 
-	$view_str = get_manufacturing_trans_view_str($type, $trans_no, $label);
+	$view_str = get_manufacturing_trans_view_str($type, $trans_no, $label, $icon);
 	if ($view_str != null)
 		return $view_str;
 
-	$view_str = get_dimensions_trans_view_str($type, $trans_no, $label);
+	$view_str = get_dimensions_trans_view_str($type, $trans_no, $label, $icon);
 	if ($view_str != null)
 		return $view_str;
 

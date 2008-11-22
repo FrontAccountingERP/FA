@@ -168,8 +168,8 @@ while ($myrow = db_fetch($result))
 	label_cell($myrow['description']);
 	label_cell($deposit_text);
 	label_cell($bank_text);
-	edit_button_cell("Edit".$myrow["id"], _("Edit"), false, ICON_EDIT);
-	edit_button_cell("Delete".$myrow["id"], _("Delete"), false, ICON_DELETE);
+	edit_button_cell("Edit".$myrow["id"], _("Edit"));
+	delete_button_cell("Delete".$myrow["id"], _("Delete"));
 	end_row();
 }
 
@@ -236,8 +236,8 @@ if ($selected_id != -1)
 			label_cell(get_dimension_string($myrow['dimension_id'], true));
    		if ($dim > 1)
 			label_cell(get_dimension_string($myrow['dimension2_id'], true));
-		edit_button_cell("BEd".$myrow["id"], _("Edit"), false, ICON_EDIT);
-		edit_button_cell("BDel".$myrow["id"], _("Delete"), false, ICON_DELETE);
+		edit_button_cell("BEd".$myrow["id"], _("Edit"));
+		delete_button_cell("BDel".$myrow["id"], _("Delete"));
 		end_row();
 	}
 	end_table();

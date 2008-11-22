@@ -135,7 +135,7 @@ function handle_search()
 			label_cell(get_trans_view_str($_POST['filterType'],$line[$trans_no_name], _("View")));
 			if ($print_out)
 				label_cell(print_document_link($line[$trans_no_name], _("Print"), true,	$print_type));
-        	label_cell(get_gl_view_str($_POST['filterType'], $line[$trans_no_name], _("View GL")));
+        	label_cell(get_gl_view_str($_POST['filterType'], $line[$trans_no_name]));
 
 	    	end_row();
 

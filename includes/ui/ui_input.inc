@@ -1,4 +1,14 @@
 <?php
+/**********************************************************************
+    Copyright (C) 2005-2008  FrontAccounting, LLC.
+	Released under the terms of the GNU Affero General Public License,
+	AGPL, as published by the Free Software Foundation, either version 
+	3 of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/agpl-3.0.html>.
+***********************************************************************/
 
 function get_post($name, $dflt='')
 {
@@ -194,7 +204,7 @@ function submit_return($name, $value, $title=false, $async=false)
 	}
 }
 //---------------------------------------------------------------------------------
-
+/*
 function button($name, $value, $onclick, $title=false)
 {
   	default_focus($name);
@@ -209,7 +219,7 @@ function button_cell($name, $value, $onclick, $title=false)
 	button($name, $value, $onclick, $title);
 	echo "</td>\n";
 }
-
+*/
 //-----------------------------------------------------------------------------------
 
 function check_value($name)
