@@ -155,7 +155,7 @@ function fmt_credit($row)
 
 function credit_link($row)
 {
-	return $row['type'] == 10 ?
+	return $row['type'] == 10 && $row["TotalAmount"] - $row["Allocated"] > 0 ?
 		pager_link(_("Credit This"),
 			"/sales/customer_credit_invoice.php?InvoiceNumber=".
 			$row['trans_no'], ICON_CREDIT)
@@ -168,24 +168,31 @@ function edit_link($row)
 
 	switch($row['type']) {
 	case 10:
-		$str = "/sales/customer_invoice.php?ModifyInvoice=".$row['trans_no'];
+		if (get_voided_entry(10, $row["trans_no"]) === false && $row['Allocated'] == 0)
+			$str = "/sales/customer_invoice.php?ModifyInvoice=".$row['trans_no'];
 		break;
 	case 11:
-		if ($row['order_']==0) // free-hand credit note
-		    $str = "/sales/credit_note_entry.php?ModifyCredit=".$row['trans_no'];
-		else	// credit invoice
-		    $str = "/sales/customer_credit_invoice.php?ModifyCredit=".$row['trans_no'];
+  		if (get_voided_entry(11, $row["trans_no"]) === false && $row['Allocated'] == 0) // 2008-11-19 Joe Hunt
+		{	 
+			if ($row['order_']==0) // free-hand credit note
+			    $str = "/sales/credit_note_entry.php?ModifyCredit=".$row['trans_no'];
+			else	// credit invoice
+			    $str = "/sales/customer_credit_invoice.php?ModifyCredit=".$row['trans_no'];
+		}	    
 		break;
 	 case 13:
-   		$str = "/sales/customer_delivery.php?ModifyDelivery=".$row['trans_no'];
+  		if (get_voided_entry(13, $row["trans_no"]) === false)
+   			$str = "/sales/customer_delivery.php?ModifyDelivery=".$row['trans_no'];
 		break;
 	}
-	return pager_link(_('Edit'), $str, ICON_EDIT);
+	if ($str != "")
+		return pager_link(_('Edit'), $str, ICON_EDIT);
+	return '';	
 }
 
 function prt_link($row)
 {
-  	if ($row['type'] != 12) // customer payment printout not defined yet.
+  	if ($row['type'] != 12 && $row['type'] != 2) // customer payment or bank deposit printout not defined yet.
  		return print_document_link($row['trans_no'], _("Print"), true, $row['type'], ICON_PRINT);
 }
 

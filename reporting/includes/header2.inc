@@ -193,7 +193,7 @@
 		$col += $width;	
 		if ($doctype == 9)
 			$this->TextWrap($col, $this->row, $width, sql2date($myrow['delivery_date']), 'C');
-		else if ($doctype != 8 && isset($myrow['due_date']))
+		else if ($doctype != 8 && $doctype != 11 && isset($myrow['due_date']))
 			$this->TextWrap($col, $this->row, $width, sql2date($myrow['due_date']), 'C');
 		
 		$this->row = $iline5 - $this->lineHeight - 1;

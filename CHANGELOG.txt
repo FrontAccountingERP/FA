@@ -19,6 +19,22 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+24-Nov-2008 Joe Hunt
+! Preparing for graphic Links
+$ config.php
+  /includes/ui/ui_input.inc
+  /sales/sales_order_entry.php
+  /sales/includes/ui/sales_order_ui.inc
+  /themes/aqua/images/ok.gif
+  /themes/cool/images/ok.gif
+  /themes/default/images/ok.gif
+# Small layout bug in header2.inc
+$ /reporting/includes/header2.inc
+# Small layout bug in report bank statement
+$ /reporting/rep601.php
+# Restriction on links
+$ /sales/inquiry/customer_inquiry.php
+
 22-Nov-2008 Joe Hunt
 + Preparing for Graphic Links final.Optimized.
 $ config.php

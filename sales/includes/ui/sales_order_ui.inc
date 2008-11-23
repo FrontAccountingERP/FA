@@ -136,7 +136,7 @@ function display_order_summary($title, &$order, $editable_items=false)
 			{
 				edit_button_cell("Edit$line_no", _("Edit"),
 				_('Edit document line'));
-				edit_button_cell("Delete$line_no", _("Delete"),
+				delete_button_cell("Delete$line_no", _("Delete"),
 				_('Remove line from document'));
 			}
 			end_row();
@@ -446,10 +446,10 @@ function sales_order_item_controls(&$order, &$rowcounter, $line_no=-1)
 
 	if ($id!=-1)
 	{
-		edit_button_cell('UpdateItem', _("Update"),
-				_('Confirm changes'));
-		edit_button_cell('CancelItemChanges', _("Cancel"),
-				_('Cancel changes'));
+		button_cell('UpdateItem', _("Update"),
+				_('Confirm changes'), ICON_UPDATE);
+		button_cell('CancelItemChanges', _("Cancel"),
+				_('Cancel changes'), ICON_CANCEL);
 		hidden('LineNo', $line_no);
 		set_focus('qty');
 	}

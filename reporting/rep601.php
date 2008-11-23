@@ -88,9 +88,9 @@ function print_bank_transactions()
 		$rep->TextCol(0, 3,	$act);
 		$rep->TextCol(3, 5, _('Opening Balance'));
 		if ($prev_balance > 0.0)
-			$rep->TextCol(6, 7,	number_format2(abs($prev_balance), $dec));
+			$rep->TextCol(5, 6,	number_format2(abs($prev_balance), $dec));
 		else
-			$rep->TextCol(7, 8,	number_format2(abs($prev_balance), $dec));
+			$rep->TextCol(6, 7,	number_format2(abs($prev_balance), $dec));
 		$rep->Font();
 		$total = $prev_balance;
 		$rep->NewLine(2);
@@ -122,9 +122,9 @@ function print_bank_transactions()
 		$rep->Font('bold');
 		$rep->TextCol(3, 5,	_("Ending Balance"));
 		if ($total > 0.0)
-			$rep->TextCol(6, 7,	number_format2(abs($total), $dec));
+			$rep->TextCol(5, 6,	number_format2(abs($total), $dec));
 		else
-			$rep->TextCol(7, 8,	number_format2(abs($total), $dec));
+			$rep->TextCol(6, 7,	number_format2(abs($total), $dec));
 		$rep->Font();
 		$rep->Line($rep->row - $rep->lineHeight + 4);
 		$rep->NewLine(2, 1);
