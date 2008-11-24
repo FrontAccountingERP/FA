@@ -1094,9 +1094,10 @@ if (!function_exists('_vd'))
   	function _vd($mixed, $title = '', $exit = false)
   	{
     	// Only the site admin is able to proceed here.
-    	echo (!empty($title) ? ($title .':') : '') .'<pre>';
-    	var_dump($mixed);
-    	echo "</pre>\n";
+    	$str = (!empty($title) ? ($title .':') : '') .'<pre>';
+    	$str .= print_r($mixed, true); //var_dump($mixed);
+    	$str .= "</pre>\n";
+		display_error('<table><tr><td>'.$str.'</td></tr></table>');
     	if ($exit)
     		exit;
   	}
