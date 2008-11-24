@@ -310,8 +310,8 @@ function po_item_controls(&$order, $stock_id=null)
     	$item_info = get_item_edit_info($_POST['stock_id']);
 		$_POST['units'] = $item_info["units"];
 
-		$dec = get_qty_dec($_POST['stock_id']);
-   		$_POST['qty'] = qty_format(1, $_POST['stock_id'], $dec);
+   		$dec = $item_info["decimals"];
+   		$_POST['qty'] =	number_format2(1, $dec);
 		$_POST['price'] = price_format(get_purchase_price ($order->supplier_id, $_POST['stock_id']));
 		$_POST['req_del_date'] = add_days(Today(), 10);
 	}
