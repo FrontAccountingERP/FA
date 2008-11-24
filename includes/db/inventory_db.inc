@@ -37,8 +37,10 @@ function get_qoh_on_date($stock_id, $location=null, $date_=null, $exclude=0)
 
 function get_item_edit_info($stock_id)
 {
-	$sql = "SELECT material_cost + labour_cost + overhead_cost AS standard_cost, units
-		FROM ".TB_PREF."stock_master WHERE stock_id='$stock_id'";
+	$sql = "SELECT material_cost + labour_cost + overhead_cost AS standard_cost, units, decimals
+		FROM ".TB_PREF."stock_master,".TB_PREF."item_units
+		WHERE stock_id='$stock_id'
+		AND ".TB_PREF."stock_master.units=".TB_PREF."item_units.abbr";
 	$result = db_query($sql, "The standard cost cannot be retrieved");
 
 	return db_fetch($result);
