@@ -111,7 +111,7 @@
 		$this->Text($mcol, $doc_Due_Date . ":", $mcol2);
 		if ($doctype == 9)
 			$this->Text($mcol2, sql2date($myrow['delivery_date']));
-		else if ($doctype != 8 && isset($myrow['due_date']))
+		else if ($doctype != 8 && $doctype != 11 && isset($myrow['due_date']))
 			$this->Text($mcol2, sql2date($myrow['due_date']));
 		if ($branch != null)
 		{

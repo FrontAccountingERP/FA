@@ -19,6 +19,16 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+------------------------------- Release 2.0.5 --------------------------------------------
+24-Nov.2008 Joe Hunt
+! Release 2.0.5
+$ config.php
+! Changed update.html
+$ update.html
+# Small bug fixes
+$ /reporting/includes/header2.inc
+  /sales/view/view_receipt.php
+
 20-Nov-2008 Janusz Dobrowolski
 # [0000082] Bad js allocation on All/None button press.
 $ /sales/allocations/customer_allocate.php
