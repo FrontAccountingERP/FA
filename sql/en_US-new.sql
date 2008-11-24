@@ -1360,7 +1360,7 @@ INSERT INTO `0_fiscal_year` VALUES(1, '2008-01-01', '2008-12-31', 0);
 -- Dumping data for table `0_item_units`
 --
 
-INSERT INTO `0_item_units` VALUES('ea.', 'Each', 0);
+INSERT INTO `0_item_units` VALUES('each', 'Each', 0);
 
 --
 -- Dumping data for table `0_locations`

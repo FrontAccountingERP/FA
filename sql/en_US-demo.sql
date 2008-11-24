@@ -1778,7 +1778,7 @@ INSERT INTO `0_stock_master` VALUES ('102', '1', '1', '17 inch VGA Monitor', '',
 INSERT INTO `0_stock_master` VALUES ('103', '1', '1', '32MB VGA Card', '', 'each', 'B', '3000', '4010', '1420', '4210', '0', NULL, NULL, '0', '0', '20', '0', '0');
 INSERT INTO `0_stock_master` VALUES ('104', '1', '1', '52x CD Drive', '', 'each', 'B', '3000', '4010', '1420', '4210', '0', NULL, NULL, '0', '0', '18', '0', '0');
 INSERT INTO `0_stock_master` VALUES ('201', '2', '1', 'Assembly Labour', '', 'each', 'D', '3000', '4010', '1420', '4210', '0', NULL, NULL, '0', '0', '0', '0', '0');
-INSERT INTO `0_stock_master` VALUES ('202', '1', '2', 'Electric stimulator', '', 'ea.', 'B', '3000', '4010', '1420', '4210', '1410', '0', '0', '0', '0', '30', '0', '0');
+INSERT INTO `0_stock_master` VALUES ('202', '1', '2', 'Electric stimulator', '', 'each', 'B', '3000', '4010', '1420', '4210', '1410', '0', '0', '0', '0', '30', '0', '0');
 INSERT INTO `0_stock_master` VALUES ('3400', '3', '1', 'P4 Business System', '', 'each', 'M', '3000', '4010', '1420', '4210', '1400', NULL, NULL, '0', '160', '100', '30', '10');
 INSERT INTO `0_stock_master` VALUES ('AA101', '1', '1', 'olie 5w40', 'Shell Helix 5w40', 'l', 'B', '3000', '4010', '1420', '4210', '1410', '0', '0', '0', '0', '5.0599509174312', '0', '0');
 
