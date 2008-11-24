@@ -304,7 +304,7 @@ function percent_cell($label, $bold=false, $id=null)
 // 2008-06-15. Changed
 function qty_cell($label, $bold=false, $dec=null, $id=null)
 {
-	if ($dec == null)
+	if (!isset($dec))
 		$dec = get_qty_dec();
 	if ($bold)
 		label_cell("<b>".number_format2($label, $dec)."</b>", "nowrap align=right", $id);
@@ -498,9 +498,10 @@ function amount_cells_ex($label, $name, $size, $max=null, $init=null, $params=nu
 
 	echo "<input class='amount' type=\"text\" name=\"$name\" size=\"$size\" maxlength=\"$max\" dec=\"$dec\" value=\"" . $_POST[$name]. "\">";
 
-	if ($post_label)
-		echo " " . $post_label;
-
+	if ($post_label) {
+		echo "<span id='_{$name}_label'> $post_label</span>";
+		$Ajax->addUpdate($name, '_'.$name.'_label', $post_label);
+	}
 	echo "</td>\n";
 	$Ajax->addUpdate($name, $name, $_POST[$name]);
 	$Ajax->addAssign($name, $name, 'dec', $dec);
