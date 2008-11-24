@@ -102,7 +102,8 @@ function issue_edit_item_controls(&$order, $line_no=-1)
 
     	$item_info = get_item_edit_info($_POST['stock_id']);
 
-   		$_POST['qty'] = qty_format(0, $_POST['stock_id'], $dec);
+   		$dec = $item_info["decimals"];
+   		$_POST['qty'] =	number_format2(0, $dec);
 		$_POST['std_cost'] = price_format($item_info["standard_cost"]);
 		$_POST['units'] = $item_info["units"];
 	}
