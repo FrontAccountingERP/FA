@@ -177,8 +177,9 @@ CREATE TABLE `0_item_codes` (
   `item_code` varchar(20) NOT NULL,
   `stock_id` varchar(20) NOT NULL,
   `description` varchar(200) NOT NULL default '',
+  `category_id` int(11) NOT NULL,
   `quantity` double NOT NULL default '1',
-  `foreign` tinyint(1) NOT NULL default 0,
+  `is_foreign` tinyint(1) NOT NULL default 0,
   PRIMARY KEY  (`id`),
   UNIQUE KEY(`stock_id`, `item_code`)
 ) TYPE=MyISAM AUTO_INCREMENT=1;

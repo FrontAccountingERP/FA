@@ -32,7 +32,7 @@ class fa2_1 {
 			}
 		}
 		// copy all item codes from stock_master into item_codes
-		$sql = "SELECT `stock_id`,`description` FROM `".$pref."stock_master`";
+		$sql = "SELECT `stock_id`,`description`,`category_id` FROM ".$pref."stock_master";
 		$result = db_query($sql);
 		if (!$result) {
 			display_error(_("Cannot select stock identificators")
@@ -41,9 +41,9 @@ class fa2_1 {
 		} else {
 			while ($row = db_fetch_assoc($result)) {
 				$sql = "INSERT IGNORE "
-					.$pref."item_codes (`item_code`,`stock_id`,`description`)
+					.$pref."item_codes (`item_code`,`stock_id`,`description`,`category_id`)
 					VALUES('".$row['stock_id']."','".$row['stock_id']."','"
-					.$row['description']."')";
+					.$row['description']."','".$row['category_id']."')";
 				$res2 = db_query($sql);
 				if (!$res2) {
 					display_error(_("Cannot insert stock id into item_codes")
