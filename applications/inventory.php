@@ -19,6 +19,8 @@
 
 			$this->add_module(_("Maintenance"));
 			$this->add_lapp_function(2, _("&Items"),"inventory/manage/items.php?");
+			$this->add_lapp_function(2, _("&Foreign Item Codes"),"inventory/manage/item_codes.php?");
+			$this->add_lapp_function(2, _("Sales &Kits"),"inventory/manage/sales_kits.php?");
 			$this->add_lapp_function(2, _("Item &Categories"),"inventory/manage/item_categories.php?");
 			$this->add_lapp_function(2, _("Inventory &Locations"),"inventory/manage/locations.php?");
 			$this->add_rapp_function(2, _("Inventory &Movement Types"),"inventory/manage/movement_types.php?");

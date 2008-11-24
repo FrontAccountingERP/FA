@@ -19,6 +19,38 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+24-Nov-2008 Janusz Dobrowolski
++ Added alias/foreign item codes and sales kits support.
+$ /applications/inventory.php
+  /includes/ui/ui_lists.inc
+  /inventory/prices.php
+  /inventory/includes/inventory_db.inc
+  /inventory/includes/db/items_category_db.inc
+  /inventory/includes/db/items_db.inc
+  /inventory/manage/items.php
+  /inventory/includes/db/items_codes_db.inc (new)
+  /inventory/manage/item_codes.php (new)
+  /inventory/manage/sales_kits.php (new)
+  /sales/includes/sales_db.inc
+  /sales/includes/ui/sales_order_ui.inc
+! Added decimals to get_item_edit_info() return (sql usage optimization).
+$ /includes/db/inventory_db.inc
+  /inventory/includes/item_adjustments_ui.inc
+  /inventory/includes/stock_transfers_ui.inc
+  /manufacturing/includes/work_order_issue_ui.inc
+  /purchasing/includes/ui/po_ui.inc
+  /sales/includes/ui/sales_credit_ui.inc
+! Added postlabel update in amount_cells_ex() and derivative helpers, fixed qty_cell $dec handling
+$ /includes/ui/ui_input.inc
+# Fixed _vd() debug function for use also in ajax mode.
+$ /includes/ui/ui_view.inc
+! Changed foreign column name to avoid mysql syntax problems, added category.
+$ /sql/alter2.1.sql
+  /sql/alter2.1.php
+# Fixed unconsistent units of measure.
+$ /sql/en_US-demo.sql
+  /sql/en_US-new.sql
+
 24-Nov-2008 Joe Hunt
 ! Preparing for graphic Links
 $ config.php

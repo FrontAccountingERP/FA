@@ -59,11 +59,11 @@ function get_price ($stock_id, $currency, $sales_type_id, $factor=null, $date=nu
 		$factor = $myrow['factor'];
 	}
 	    
-	$sql = "SELECT ".TB_PREF."prices.price
+	$sql = "SELECT price
 		FROM ".TB_PREF."prices
-		WHERE ".TB_PREF."prices.stock_id = '" . $stock_id . "' "
-		." AND ".TB_PREF."prices.sales_type_id = " . $sales_type_id
-		." AND ".TB_PREF."prices.curr_abrev = '$currency'";
+		WHERE stock_id = '" . $stock_id . "' "
+		." AND sales_type_id = " . $sales_type_id
+		." AND curr_abrev = '$currency'";
 
 	$msg = "There was a problem retrieving the pricing information for the part $stock_id for customer";
 	$result = db_query($sql, $msg);
@@ -73,21 +73,20 @@ function get_price ($stock_id, $currency, $sales_type_id, $factor=null, $date=nu
 		$myrow = db_fetch_row($result);
 		return $myrow[0];
 	}
-	if ($factor == 0) return 0; // auto price calculations off
+	if ($factor == 0) return false; // auto price calculations off
 
 	$base_id = get_base_sales_type();
         $home_curr = get_company_currency();
 
     // get all prices which we can use to guess the price.
     // alternative is make up to 2 additional sql queries
-	$sql = "SELECT ".TB_PREF."prices.price,".TB_PREF."prices.curr_abrev,
-		".TB_PREF."prices.sales_type_id
+	$sql = "SELECT price, curr_abrev, sales_type_id
 		FROM ".TB_PREF."prices
-		WHERE ".TB_PREF."prices.stock_id = '" . $stock_id . "' "
-		." AND (".TB_PREF."prices.sales_type_id = " . $sales_type_id
-		." OR ".TB_PREF."prices.sales_type_id = " . $base_id.")"
-		." AND (".TB_PREF."prices.curr_abrev = '$currency'"
-		." OR ".TB_PREF."prices.curr_abrev = '$home_curr')";
+		WHERE stock_id = '" . $stock_id . "' "
+		." AND (sales_type_id = " . $sales_type_id
+		." OR sales_type_id = " . $base_id.")"
+		." AND (curr_abrev = '$currency'"
+		." OR curr_abrev = '$home_curr')";
 
 	$result = db_query($sql, $msg);
 
@@ -99,7 +98,7 @@ function get_price ($stock_id, $currency, $sales_type_id, $factor=null, $date=nu
 	
 	$rate = round(get_exchange_rate_from_home_currency($currency, $date),
 	    user_exrate_dec());
-	$price = 0.00;
+	$price = false;
 	
 	if (isset($prices[$sales_type_id][$home_curr])) 
 	{
@@ -107,14 +106,49 @@ function get_price ($stock_id, $currency, $sales_type_id, $factor=null, $date=nu
 	}
 	if (isset($prices[$base_id][$currency])) 
 	{
-	    $price =$prices[$base_id][$currency] * $factor;
+	    $price = $prices[$base_id][$currency] * $factor;
 	}
 	if (isset($prices[$base_id][$home_curr])) 
 	{
-	    $price =$prices[$base_id][$home_curr] * $factor / $rate;
+	    $price = $prices[$base_id][$home_curr] * $factor / $rate;
 	}
 	
-	return round($price, user_price_dec());
+	return $price === false ? false : round($price, user_price_dec());
+}
+//----------------------------------------------------------------------------------------
+//
+//	Get price for given item or kit.
+//  When $std==true price is calculated as a sum of all included stock items,
+//	otherwise all prices set for kits and items are accepted.
+//
+function get_kit_price($item_code, $currency, $sales_type_id, $factor=null, 
+	$date=null, $std = false)
+{
+	$kit_price = 0.00;
+	if (!$std) {
+		$kit_price = get_price( $item_code, $currency, $sales_type_id, 
+			$factor, $date);
+
+		if ($kit_price !== false) {
+			return $kit_price;
+		}
+	}	
+	// no price for kit found, get total value of all items
+	$kit = get_item_kit($item_code);
+	
+	while($item = db_fetch($kit)) {
+		if ($item['item_code'] != $item['stock_id']) {
+			// foreign/kit code
+			$kit_price += $item['quantity'] * get_kit_price( $item['stock_id'], 
+				$currency, $sales_type_id, $factor, $date, $std);
+
+		} else {
+			// stock item
+			$kit_price += $item['quantity'] * get_price( $item['stock_id'], 
+				$currency, $sales_type_id, $factor, $date);
+		}
+	}
+	return $kit_price;
 }
 
 //-----------------------------------------------------------------------------
@@ -270,7 +304,8 @@ function read_sales_trans($doc_type, $trans_no, &$cart)
 		$result = get_customer_trans_details($doc_type,$trans_no);
 		if (db_num_rows($result) > 0) {
 			for($line_no=0; $myrow = db_fetch($result); $line_no++)	{
-				$cart->add_to_cart($line_no,$myrow["stock_id"],$myrow["quantity"],
+				$cart->line_items[$line_no] = new line_details(
+					$myrow["stock_id"],$myrow["quantity"],
 					$myrow["unit_price"], $myrow["discount_percent"],
 					$myrow["qty_done"], $myrow["standard_cost"],
 					$myrow["StockDescription"],$myrow["id"], $myrow["debtor_trans_no"]);

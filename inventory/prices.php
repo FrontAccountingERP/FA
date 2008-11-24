@@ -45,7 +45,7 @@ if (!isset($_POST['stock_id']))
 	$_POST['stock_id'] = get_global_stock_item();
 
 echo "<center>" . _("Item:"). "&nbsp;";
-stock_items_list('stock_id', $_POST['stock_id'], false, true);
+sales_items_list('stock_id', $_POST['stock_id'], false, true);
 echo "<hr></center>";
 
 set_global_stock_item($_POST['stock_id']);
@@ -110,7 +110,7 @@ if (list_updated('stock_id') || isset($_POST['_curr_abrev_update']) ) {
 	// after change of stock, currency or salestype selector
 	// display default calculated price for new settings. 
 	// If we have this price already in db it is overwritten later.
-	$_POST['price'] = price_format(get_price(get_post('stock_id'), 
+	$_POST['price'] = price_format(get_kit_price(get_post('stock_id'), 
 		get_post('curr_abrev'),	get_post('sales_type_id')));
 	$Ajax->activate('price_details');
 }

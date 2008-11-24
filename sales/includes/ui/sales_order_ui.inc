@@ -15,19 +15,58 @@ include_once($path_to_root . "/includes/manufacturing.inc");
 //--------------------------------------------------------------------------------
 function add_to_order(&$order, $new_item, $new_item_qty, $price, $discount)
 {
+	// calculate item price to sum of kit element prices factor for 
+	// value distribution over all exploded kit items
+	 $std_price = get_kit_price($new_item, $order->customer_currency, 
+		$order->sales_type,	$order->price_factor, get_post('OrderDate'), true);
 
-	foreach ($order->line_items AS $order_item)
-	{
-		if (strcasecmp($order_item->stock_id, $new_item) == 0)
-		{
-			display_notification(_("For Part :") . $new_item . " " . _("This item is already on this order. You have been warned."));
-			break;
+	if ($std_price == 0)
+		$price_factor = 0;
+	else
+		$price_factor = $price/$std_price;
+
+	$kit = get_item_kit($new_item);
+	$item_num = db_num_rows($kit);
+
+	while($item = db_fetch($kit)) {
+		$std_price = get_kit_price($item['stock_id'], $order->customer_currency, 
+			$order->sales_type,	$order->price_factor, get_post('OrderDate'), true);
+
+		// rounding differences are included in last price item in kit
+		$item_num--;
+		if ($item_num) {
+			$price -= $item['quantity']*$std_price*$price_factor;
+			$item_price = $std_price*$price_factor;
+		} else {
+			if ($item['quantity']) 
+				$price = $price/$item['quantity'];
+			$item_price = $price;
 		}
+		$item_price = round($item_price, user_price_dec());
+
+	 if (!$item['is_foreign'] && $item['item_code'] != $item['stock_id'])
+	 {	// this is sales kit - recurse 
+		add_to_order($order, $item['stock_id'], $new_item_qty*$item['quantity'],
+			$item_price, $discount, $std_price);
+	 }
+	 else
+	 {	// stock item record eventually with foreign code
+
+		// check duplicate stock item
+		foreach ($order->line_items as $order_item)
+		{
+			if (strcasecmp($order_item->stock_id, $item['stock_id']) == 0)
+			{
+				display_notification(_("For Part :").$item['stock_id']. " " 
+					. _("This item is already on this order. You have been warned."));
+				break;
+			}
+		}
+		$order->add_to_cart (count($order->line_items),	$item['stock_id'], 
+			$new_item_qty*$item['quantity'], $item_price, $discount);
+	 }
 	}
-
-	$order->add_to_cart (count($order->line_items),$new_item, $new_item_qty, $price, $discount);
 }
-
 //---------------------------------------------------------------------------------
 
 function get_customer_details_to_order(&$order, $customer_id, $branch_id)
@@ -382,7 +421,7 @@ function display_order_header(&$order, $editable, $date_text, $display_tax_group
 	if ($change_prices != 0) {
 		foreach ($order->line_items as $line_no=>$item) {
 			$line = &$order->line_items[$line_no];
-			$line->price = get_price($line->stock_id, $order->customer_currency,
+			$line->price = get_kit_price($line->stock_id, $order->customer_currency,
 				$order->sales_type, $order->price_factor, get_post('OrderDate'));
 		//		$line->discount_percent = $order->default_discount;
 		}
@@ -401,7 +440,7 @@ function sales_order_item_controls(&$order, &$rowcounter, $line_no=-1)
 	alt_table_row_color($rowcounter);
 
 	$id = find_submit('Edit');
-	if ($line_no!=-1 && $line_no == $id)
+	if ($line_no!=-1 && $line_no == $id) // edit old line
 	{
 		$_POST['stock_id'] = $order->line_items[$id]->stock_id;
 		$dec = get_qty_dec($_POST['stock_id']);
@@ -414,9 +453,9 @@ function sales_order_item_controls(&$order, &$rowcounter, $line_no=-1)
 		label_cell($order->line_items[$line_no]->item_description, "nowrap");
 	    $Ajax->activate('items_table');
 	}
-	else
+	else	// prepare new line
 	{
-		stock_items_list_cells(null,'stock_id', null, false, true);
+		sales_items_list_cells(null,'stock_id', null, false, true);
 		if (list_updated('stock_id')) {
 			    $Ajax->activate('price');
 			    $Ajax->activate('units');
@@ -426,15 +465,14 @@ function sales_order_item_controls(&$order, &$rowcounter, $line_no=-1)
 
 		$item_info = get_item_edit_info($_POST['stock_id']);
 		$units = $item_info["units"];
-		$dec = get_qty_dec($_POST['stock_id']);
+		$dec = $item_info['decimals'];
 		$_POST['qty'] = number_format2(1, $dec);
-
-		$_POST['price'] = price_format(get_price ($_POST['stock_id'],
+		$price = get_kit_price($_POST['stock_id'],
 			$order->customer_currency, $order->sales_type,
-			$order->price_factor, get_post('OrderDate')));
+			$order->price_factor, get_post('OrderDate'));
+		$_POST['price'] = price_format($price);
 		// default to the customer's discount %
 		$_POST['Disc'] = percent_format($order->default_discount * 100);
-
 	}
 
 	qty_cells(null, 'qty', $_POST['qty'], null, null, $dec);

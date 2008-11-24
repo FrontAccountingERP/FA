@@ -123,7 +123,13 @@ if (isset($_POST['addupdate']))
 		set_focus('NewStockID');
 
 	}
-
+	elseif ($new_item && db_num_rows(get_item_kit($_POST['NewStockID'])))
+	{
+		  	$input_error = 1;
+      		display_error( _("This item code is already assigned to stock item or sale kit."));
+			set_focus('NewStockID');
+	}
+	
 	if ($input_error != 1)
 	{
 
@@ -195,7 +201,22 @@ function can_delete($stock_id)
 		display_error(_('Cannot delete this item because there are existing purchase order items for it.'));
 		return false;
 	}
+	$kits = get_where_used($stock_id);
+	$num_kits = db_num_rows($kits);
+	if ($num_kits) {
+		$msg = _("This item cannot be deleted because some code aliases 
+			or foreign codes was entered for it, or there are kits defined 
+			using this item as component")
+			.':<br>';
 
+		while($num_kits--) {
+			$kit = db_fetch($kits);
+			$msg .= "'".$kit[0]."'";
+			if ($num_kits) $msg .= ',';
+		}
+		display_error($msg);
+		return false;
+	}
 	return true;
 }
 

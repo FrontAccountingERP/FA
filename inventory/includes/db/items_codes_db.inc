@@ -1,0 +1,152 @@
+<?php
+/*
+	item_codes table is used to store both multiply foreign codes and 
+	sale kits definition.
+*/
+function update_item_code($id, $item_code, $stock_id, $description, $category, $qty, $foreign=0)
+{
+	$sql = "UPDATE ".TB_PREF."item_codes SET
+	 	item_code = ".db_escape($item_code).",
+	 	stock_id = ".db_escape($stock_id).",
+	 	description = ".db_escape($description).",
+	 	category_id = $category,
+	 	quantity = ".db_escape($qty).",
+	 	is_foreign = ".db_escape($foreign)."
+        	WHERE ";
+			
+	if ($id == -1) // update with unknown $id i.e. from items table editor
+	 	"item_code = ".db_escape($item_code)
+		." AND stock_id = ".db_escape($stock_id);
+	else
+		$sql .= "id = $id";
+
+	db_query($sql,"an item code could not be updated");
+}
+
+function add_item_code($item_code, $stock_id, $description, $category, $qty, $foreign=0)
+{
+	$sql = "INSERT INTO ".TB_PREF."item_codes
+			(item_code, stock_id, description, category_id, quantity, is_foreign) 
+			VALUES( ".db_escape($item_code).",".db_escape($stock_id).",
+	  		".db_escape($description).",$category,".db_escape($qty).",".$foreign.")";
+
+	db_query($sql,"an item code could not be added");
+}
+
+function delete_item_code($id)
+{
+	$sql="DELETE FROM ".TB_PREF."item_codes WHERE id=$id";
+	db_query($sql,"an item code could not be deleted");
+}
+
+function get_item_code($id)
+{
+	$sql="SELECT * FROM ".TB_PREF."item_codes WHERE id='$id'";
+
+	$result = db_query($sql,"item code could not be retrieved");
+
+	return db_fetch($result);
+}
+
+function get_all_item_codes($stock_id, $foreign=1)
+{
+	$sql="SELECT i.*, c.description as cat_name FROM "
+		.TB_PREF."item_codes as i,"
+		.TB_PREF."stock_category as c
+		WHERE stock_id='$stock_id'
+		AND i.category_id=c.category_id
+		AND i.is_foreign=$foreign";
+
+	$result = db_query($sql,"all item codes could not be retrieved");
+
+	return $result;
+}
+
+function delete_item_kit($item_code)
+{
+	$sql="DELETE FROM ".TB_PREF."item_codes WHERE item_code='$item_code'";
+	db_query($sql,"an item kit could not be deleted");
+}
+
+function get_item_kit($item_code)
+{
+	$sql="SELECT DISTINCT kit.*, item.units, comp.description as comp_name 
+		FROM "
+		.TB_PREF."item_codes kit,"
+		.TB_PREF."item_codes comp
+		LEFT JOIN "
+		.TB_PREF."stock_master item
+		ON 
+			item.stock_id=comp.item_code
+		WHERE
+			kit.stock_id=comp.item_code
+			AND kit.item_code='$item_code'";
+
+	$result = db_query($sql,"item kit could not be retrieved");
+
+	return $result;
+}
+
+function get_item_code_dflts($stock_id)
+{
+	$sql = "SELECT units, decimals, description, category_id
+		FROM ".TB_PREF."stock_master,".TB_PREF."item_units
+		WHERE stock_id='$stock_id'";
+
+	$result = db_query($sql,"item code defaults could not be retrieved");
+	return db_fetch($result);
+}
+//
+//	Check if kit contains given item, optionally recursive.
+//
+function check_item_in_kit($old_id, $kit_code, $item_code, $recurse=false)
+{
+	$result = get_item_kit($kit_code);
+	if ($result != 0)
+	{
+		while ($myrow = db_fetch($result))
+		{
+			if ($myrow['id'] == $old_id) 
+				continue;
+				
+			if ($myrow['stock_id'] == $item_code)
+			{
+				return 1;
+			}
+
+			if ($recurse && $myrow['item_code'] != $myrow['stock_id']
+				&& check_item_in_kit($old_id, $item_code, $myrow['stock_id'], true))
+			{
+				return 1;
+			}
+		}
+	}
+	return 0;
+}
+
+function get_kit_props($kit_code)
+{
+	$sql = "SELECT description, category_id FROM ".TB_PREF."item_codes "
+		. " WHERE item_code='$kit_code'";
+	$res = db_query($sql, "kit name query failed");
+	return db_fetch($res);
+}
+
+function update_kit_props($kit_code, $name, $category)
+{
+	$sql = "UPDATE ".TB_PREF."item_codes SET description="
+		. db_escape($name).",category_id=".db_escape($category)		
+		. " WHERE item_code='$kit_code'";
+	db_query($sql, "kit name update failed");
+}
+
+function get_where_used($item_code)
+{
+	$sql = "SELECT item_code, description FROM "
+		.TB_PREF."item_codes "
+		. " WHERE stock_id='$item_code'
+			AND item_
+			code!='$item_code'";
+	return db_query($sql, "where used query failed");
+}
+?>

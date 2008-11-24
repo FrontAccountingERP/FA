@@ -652,6 +652,73 @@ function stock_items_list_row($label, $name, $selected_id=null, $all_option=fals
 	return $str;
 }
 */
+//---------------------------------------------------------------------------------------------------
+//
+// Select item via foreign code.
+//
+function sales_items_list($name, $selected_id=null, $all_option=false, 
+	$submit_on_change=false, $type='', $opts=array())
+{
+	global $all_items;
+	// all sales codes
+	$sql = "SELECT i.item_code, i.description, c.description, count(*)>1 as kit
+			FROM
+			".TB_PREF."item_codes i
+			LEFT JOIN
+			".TB_PREF."stock_category c
+			ON i.category_id=c.category_id";
+
+	if ($type == 'local')	{ // exclude foreign codes
+		$sql .=	" WHERE NOT i.is_foreign"; 
+	} elseif ($type == 'kits') { // sales kits
+		$sql .=	" WHERE NOT i.is_foreign 
+			AND NOT i.item_code=i.stock_id";
+	}
+				
+	$sql .= " GROUP BY i.item_code";
+
+	return combo_input($name, $selected_id, $sql, 'i.item_code', 'c.description',
+	array_merge(
+	  array(
+		'format' => '_format_stock_items',
+		'spec_option' => $all_option===true ?  _("All Items") : $all_option,
+		'spec_id' => $all_items,
+		'search_box' => true,
+		'search' => array("i.item_code", "c.description","s.description"),
+		'search_submit' => get_company_pref('no_item_list')!=0,
+		'size'=>15,
+		'select_submit'=> $submit_on_change,
+		'order' => 'i.item_code'
+	  ), $opts) );
+}
+
+function sales_items_list_cells($label, $name, $selected_id=null, $all_option=false, $submit_on_change=false)
+{
+	if ($label != null)
+		echo "<td>$label</td>\n";
+	$str = sales_items_list($name, $selected_id, $all_option, $submit_on_change,
+		'', array('cells'=>true));
+	return $str;
+}
+
+function sales_kits_list($name, $selected_id=null, $all_option=false, $submit_on_change=false)
+{
+	$str = sales_items_list($name, $selected_id, $all_option, $submit_on_change,
+		'kits', array('cells'=>false));
+	return $str;
+}
+
+function sales_local_items_list_row($label, $name, $selected_id=null, $all_option=false, $submit_on_change=false)
+{
+	echo "<tr>";
+	if ($label != null)
+		echo "<td>$label</td>\n";
+	echo "<td>";
+	$str = sales_items_list($name, $selected_id, $all_option, $submit_on_change,
+		'local', array('cells'=>false));
+	echo "</td></tr>";
+	return $str;
+}
 //------------------------------------------------------------------------------------
 
 function base_stock_items_list($where, $name, $selected_id=null,

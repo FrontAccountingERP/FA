@@ -18,6 +18,8 @@ function update_item($stock_id, $description, $long_description, $category_id, $
 		WHERE stock_id='$stock_id'";
 
 	db_query($sql, "The item could not be updated");
+
+	update_item_code(-1, $stock_id, $stock_id, $description, 1, 0);
 }
 
 function add_item($stock_id, $description, $long_description, $category_id, $tax_type_id, $units, $mb_flag,
@@ -38,6 +40,8 @@ function add_item($stock_id, $description, $long_description, $category_id, $tax
 		SELECT ".TB_PREF."locations.loc_code, '$stock_id' FROM ".TB_PREF."locations";
 
 	db_query($sql, "The item locstock could not be added");
+
+	add_item_code($stock_id, $stock_id, $description, 1, 0);
 }
 
 function delete_item($stock_id)
@@ -60,6 +64,8 @@ function delete_item($stock_id)
 	/*and cascade delete the bill of material if any */
 	$sql = "DELETE FROM ".TB_PREF."bom WHERE parent='$stock_id'";
 	db_query($sql, "could not delete stock item bom");
+
+	delete_item_kit($stock_id);
 }
 
 function get_item($stock_id)
