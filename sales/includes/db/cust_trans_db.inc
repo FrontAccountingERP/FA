@@ -79,7 +79,7 @@ function get_customer_trans_version($type, $trans_no) {
 function write_customer_trans($trans_type, $trans_no, $debtor_no, $BranchNo,
 	$date_, $reference, $Total, $discount=0, $Tax=0, $Freight=0, $FreightTax=0,
 	$sales_type=0, $order_no=0, $trans_link=0, $ship_via=0, $due_date="",
-	$AllocAmt=0, $dimension_id=0, $dimension2_id=0)
+	$AllocAmt=0, $rate=0, $dimension_id=0, $dimension2_id=0)
 {
 
 	$curr = get_customer_currency($debtor_no);

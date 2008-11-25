@@ -31,7 +31,7 @@ function write_sales_delivery(&$delivery,$bo_policy)
 		$delivery->freight_cost,
 		$delivery->tax_included ? 0 : $freight_tax,
 		$delivery->sales_type, $delivery->order_no, 0,
-		$delivery->ship_via, $delivery->due_date, 0, $delivery->dimension_id, $delivery->dimension2_id);
+		$delivery->ship_via, $delivery->due_date, 0, 0, $delivery->dimension_id, $delivery->dimension2_id);
 
 	if ($trans_no == 0) {
 		$delivery->trans_no = array($delivery_no=>0);
