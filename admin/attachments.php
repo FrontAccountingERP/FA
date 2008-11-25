@@ -1,14 +1,5 @@
 <?php
-/**********************************************************************
-    Copyright (C) FrontAccounting, LLC.
-	Released under the terms of the GNU Affero General Public License,
-	AGPL, as published by the Free Software Foundation, either version 
-	3 of the License, or (at your option) any later version.
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
-    See the License here <http://www.gnu.org/licenses/agpl-3.0.html>.
-***********************************************************************/
+
 $path_to_root="..";
 $page_security = 8;
 
@@ -179,9 +170,9 @@ function display_rows($type)
 		label_cell($row['filetype']);
 		label_cell(sql2date($row['tran_date']));
  		edit_button_cell("Edit".$row['id'], _("Edit"));
- 		button_cell("view".$row['id'], _("View"), false, ICON_VIEW);
- 		button_cell("download".$row['id'], _("Download"), false, ICON_DOWN);
- 		delete_button_cell("Delete".$row['id'], _("Delete"));
+ 		edit_button_cell("view".$row['id'], _("View"));
+ 		edit_button_cell("download".$row['id'], _("Download"));
+ 		edit_button_cell("Delete".$row['id'], _("Delete"));
     	end_row();
 	}	
 	end_table(1);

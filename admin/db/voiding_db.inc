@@ -1,14 +1,5 @@
 <?php
-/**********************************************************************
-    Copyright (C) FrontAccounting, LLC.
-	Released under the terms of the GNU Affero General Public License,
-	AGPL, as published by the Free Software Foundation, either version 
-	3 of the License, or (at your option) any later version.
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
-    See the License here <http://www.gnu.org/licenses/agpl-3.0.html>.
-***********************************************************************/
+
 include_once($path_to_root . "/sales/includes/sales_db.inc");
 include_once($path_to_root . "/purchasing/includes/purchasing_db.inc");
 include_once($path_to_root . "/inventory/includes/inventory_db.inc");
@@ -49,7 +40,9 @@ function void_transaction($type, $type_no, $date_, $memo_)
 				$delivery = get_customer_trans($type_no, $type);
 				if ($delivery['trans_link'] != 0)
 				{
-					if (get_voided_entry(10, $delivery['trans_link']) === false)
+					$inv = get_customer_trans($delivery['trans_link'], 10);
+					if ($inv['ov_amount'] != 0 || $inv['ov_discount'] != 0 || $inv['ov_gst'] != 0 || 
+						$inv['ov_freight'] != 0 || $inv['ov_freight_tax'] != 0 || $inv['alloc'] != 0)
 						return false;
 				}
 			}	

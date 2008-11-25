@@ -1,14 +1,5 @@
 <?php
-/**********************************************************************
-    Copyright (C) FrontAccounting, LLC.
-	Released under the terms of the GNU Affero General Public License,
-	AGPL, as published by the Free Software Foundation, either version 
-	3 of the License, or (at your option) any later version.
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
-    See the License here <http://www.gnu.org/licenses/agpl-3.0.html>.
-***********************************************************************/
+
 $path_to_root="..";
 $page_security = 14;
 include_once($path_to_root . "/includes/session.inc");
@@ -21,82 +12,9 @@ include_once($path_to_root . "/admin/db/voiding_db.inc");
 $js = "";
 if ($use_date_picker)
 	$js .= get_js_date_picker();
-if ($use_popup_windows)
-	$js .= get_js_open_window(800, 500);
-	
 page(_("Void a Transaction"), false, false, "", $js);
 
 //----------------------------------------------------------------------------------------
-function exist_transaction($type, $type_no)
-{
-	$void_entry = get_voided_entry($type, $type_no);
-
-	if ($void_entry != null)
-		return false;
-
-	switch ($type) 
-	{
-		case 0 : // it's a journal entry
-			if (!exists_gl_trans($type, $type_no))
-				return false;
-			break;
-
-		case 1 : // it's a payment
-		case 2 : // it's a deposit
-		case 4 : // it's a transfer
-			if (!exists_bank_trans($type, $type_no))
-				return false;
-			break;
-
-		case 10 : // it's a customer invoice
-		case 11 : // it's a customer credit note
-		case 12 : // it's a customer payment
-		case 13 : // it's a customer dispatch
-			if (!exists_customer_trans($type, $type_no))
-				return false;
-			break;
-
-		case systypes::location_transfer() : // it's a stock transfer
-			if (get_stock_transfer_items($type_no) == null)
-				return false;
-			break;
-
-		case systypes::inventory_adjustment() : // it's a stock adjustment
-			if (get_stock_adjustment_items($type_no) == null)
-				return false;
-			break;
-
-		case 25 : // it's a GRN
-			return false;
-		case 20 : // it's a suppler invoice
-		case 21 : // it's a supplier credit note
-		case 22 : // it's a supplier payment
-			if (!exists_supp_trans($type, $type_no))
-				return false;
-			break;
-
-		case systypes::work_order() : // it's a work order
-			if (!get_work_order($type_no, true))
-				return false;
-			break;
-
-		case 28 : // it's a work order issue
-			if (!exists_work_order_issue($type_no))
-				return false;
-			break;
-
-		case 29 : // it's a work order production
-			if (!exists_work_order_produce($type_no))
-				return false;
-			break;
-
-		case systypes::cost_update() : // it's a stock cost update
-			return false;
-			break;
-	}
-
-	return true;
-}
 
 function voiding_controls()
 {
@@ -120,26 +38,10 @@ function voiding_controls()
     	submit_center('ProcessVoiding', _("Void Transaction"), true, '', true);
     else 
     {
- 		if (!exist_transaction($_POST['filterType'],$_POST['trans_no']))
- 		{
-			display_error(_("The entered transaction does not exist or cannot be voided."));
-			unset($_POST['trans_no']);
-			unset($_POST['memo_']);
-			unset($_POST['date_']);
-    		submit_center('ProcessVoiding', _("Void Transaction"), true, '', true);
-		}	
- 		else
- 		{
-    		display_notification_centered(_("Are you sure you want to void this transaction ? This action cannot be undone."), 0, 1);
-    		if ($_POST['filterType'] == 0) // GL transaction are not included in get_trans_view_str
-    			$view_str = get_gl_view_str($_POST['filterType'],$_POST['trans_no'], _("View Transaction"));
-    		else
-    			$view_str = get_trans_view_str($_POST['filterType'],$_POST['trans_no'], _("View Transaction"));
-    		display_note($view_str);
-   			br();
-    		submit_center_first('ConfirmVoiding', _("Proceed"), '', true);
-    		submit_center_last('CancelVoiding', _("Cancel"), '', true);
-    	}	
+ 	
+    	display_note(_("Are you sure you want to void this transaction ? This action cannot be undone."), 0, 1);
+    	submit_center_first('ConfirmVoiding', _("Proceed"), '', true);
+    	submit_center_last('CancelVoiding', _("Cancel"), '', true);
     }
 
 	end_form();
