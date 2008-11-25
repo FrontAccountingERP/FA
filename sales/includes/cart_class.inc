@@ -261,7 +261,7 @@ class cart
 
 	function remove_from_cart($line_no)
 	{
-		unset($this->line_items[$line_no]);
+		array_splice($this->line_items, $line_no, 1);
 	}
 
 	function clear_items()
