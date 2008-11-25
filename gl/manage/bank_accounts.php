@@ -1,5 +1,14 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU Affero General Public License,
+	AGPL, as published by the Free Software Foundation, either version 
+	3 of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/agpl-3.0.html>.
+***********************************************************************/
 $page_security = 10;
 $path_to_root="../..";
 include($path_to_root . "/includes/session.inc");
@@ -119,7 +128,7 @@ while ($myrow = db_fetch($result))
     label_cell($myrow["bank_account_number"], "nowrap");
     label_cell($myrow["bank_address"]);
  	edit_button_cell("Edit".$myrow["id"], _("Edit"));
- 	edit_button_cell("Delete".$myrow["id"], _("Delete"));
+ 	delete_button_cell("Delete".$myrow["id"], _("Delete"));
     end_row(); 
 }
 

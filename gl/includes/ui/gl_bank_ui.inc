@@ -1,5 +1,14 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU Affero General Public License,
+	AGPL, as published by the Free Software Foundation, either version 
+	3 of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/agpl-3.0.html>.
+***********************************************************************/
 function display_bank_header(&$order)
 {
 	global $table_style2, $Ajax;
@@ -114,13 +123,13 @@ function display_gl_items($title, &$order)
 
 	if ($dim == 2)
 		$th = array(_("Account Code"), _("Account Description"), _("Dimension")." 1",
-			_("Dimension")." 2", _("Amount"), _("Memo"));
+			_("Dimension")." 2", _("Amount"), _("Memo"), "");
 	else if ($dim == 1)
 		$th = array(_("Account Code"), _("Account Description"), _("Dimension"),
-			_("Amount"), _("Memo"));
+			_("Amount"), _("Memo"), "");
 	else
 		$th = array(_("Account Code"), _("Account Description"),
-			_("Amount"), _("Memo"));
+			_("Amount"), _("Memo"), "");
 
 	if (count($order->gl_items)) $th[] = '';
 
@@ -149,7 +158,7 @@ function display_gl_items($title, &$order)
 
 			edit_button_cell("Edit$item->index", _("Edit"),
 				_('Edit document line'));
-			edit_button_cell("Delete$item->index", _("Delete"),
+			delete_button_cell("Delete$item->index", _("Delete"),
 				_('Remove line from document'));
     		end_row();
 		}
@@ -240,10 +249,10 @@ function gl_edit_item_controls(&$order, $dim, $Index=null)
 
 	if ($id != -1)
 	{
-		edit_button_cell('UpdateItem', _("Update"),
-				_('Confirm changes'));
-		edit_button_cell('CancelItemChanges', _("Cancel"),
-				_('Cancel changes'));
+		button_cell('UpdateItem', _("Update"),
+				_('Confirm changes'), ICON_UPDATE);
+		button_cell('CancelItemChanges', _("Cancel"),
+				_('Cancel changes'), ICON_CANCEL);
  		set_focus('amount');
 	}
 	else

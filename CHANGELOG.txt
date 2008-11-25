@@ -19,6 +19,43 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+25-Nov-2008 Joe Hunt
+! Inserted Copyright Notice and fixed graphic items
+$ /access/login.php
+  /access/logout.php
+  /admin/attachments.php
+  /admin/backups.php
+  /admin/change_current_user_password.php
+  /admin/db/company_db.inc
+  /admin/db/maintenence_db.inc
+  /admin/db/printers_db.inc
+  /admin/db/users_db.inc
+  /admin/db/v_banktrans.inc
+  /admin/db/voiding_db.inc
+  /admin/display_prefs.php
+  /admin/fiscalyears.php
+  /admin/forms_setup.php
+  /admin/gl_setup.php
+  /admin/inst_upgrade.php
+  /admin/payment_terms.php
+  /admin/print_profiles.php
+  /admin/printers.php
+  /admin/shipping_companies.php
+  /admin/users.php
+  /admin/view_print_transaction.php
+  /admin/void_transaction.php
+  /gl/gl_journal.php
+  /gl/includes/ui/gl_bank_ui.inc
+  /gl/includes/ui/gl_journal_ui.inc
+  /gl/inquiry/bank_inquiry.php
+  /gl/inquiry/tax_inquiry.php
+  /gl/manage/bank_accounts.php
+  /includes/ui/ui_controls.inc
+  /reporting/includes/pdf_report.inc
+  /reporting/rep709.php
+  /sales/includes/ui/sales_credit_ui.inc
+  /sql/alter2.1.php
+  
 24-Nov-2008 Janusz Dobrowolski
 + Added alias/foreign item codes and sales kits support.
 $ /applications/inventory.php

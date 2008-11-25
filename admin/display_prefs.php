@@ -1,6 +1,6 @@
 <?php
 /**********************************************************************
-    Copyright (C) 2005-2008  FrontAccounting, LLC.
+    Copyright (C) 2008  FrontAccounting, LLC.
 	Released under the terms of the GNU Affero General Public License,
 	AGPL, as published by the Free Software Foundation, either version 
 	3 of the License, or (at your option) any later version.

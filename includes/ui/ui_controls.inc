@@ -187,10 +187,10 @@ function table_header($labels)
 
 //-----------------------------------------------------------------------------------
 
-function set_icon($icon, $title)
+function set_icon($icon, $title=false)
 {
 	global $path_to_root;
-	return "<img src='$path_to_root/themes/".user_theme()."/images/$icon' width='14' height='14' border='0' title='$title' />\n";	
+	return "<img src='$path_to_root/themes/".user_theme()."/images/$icon' width='14' height='14' border='0'".($title ? " title='$title'" : "")." />\n";	
 }
 
 function button($name, $value, $title=false, $icon=false)
@@ -203,7 +203,7 @@ function button($name, $value, $title=false, $icon=false)
 			$icon = ICON_DELETE;
 		echo "<button type='submit' class='editbutton' name='".
 			htmlentities(strtr($name, array('.'=>'=2E',' '=>'=20','='=>'=3D','['=>'=5B'))).
-			"' value='' />".set_icon($icon, ($title ? $title: $value))."\n";
+			"' value=''" . ($title ? " title='$title'":" title='$value'")." />".set_icon($icon)."\n";
 	}
 	else
 		echo "<input type='submit' class='editbutton' name='"

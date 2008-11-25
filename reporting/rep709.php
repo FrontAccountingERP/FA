@@ -1,5 +1,14 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU Affero General Public License,
+	AGPL, as published by the Free Software Foundation, either version 
+	3 of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/agpl-3.0.html>.
+***********************************************************************/
 $page_security = 2;
 // ----------------------------------------------------------------
 // $ Revision:	2.0 $
@@ -89,7 +98,7 @@ function getSuppTransactions($from, $to)
 
 function getTaxTypes()
 {
-	$sql = "SELECT id FROM ".TB_PREF."tax_types ORDER BY id";
+	$sql = "SELECT * FROM ".TB_PREF."tax_types ORDER BY id";
     return db_query($sql,"No transactions were returned");
 }
 
@@ -187,9 +196,9 @@ function print_tax_report()
 		$cols = array(0, 80, 130, 190, 290, 370, 435, 500, 565);
 
 		$headers = array(_('Trans Type'), _('#'), _('Date'), _('Name'),	_('Branch Name'),
-			_('Net'), _('Tax'));
+			_('Net'), _('Tax'), '');
 
-		$aligns = array('left', 'left', 'left', 'left', 'left', 'right', 'right');
+		$aligns = array('left', 'left', 'left', 'left', 'left', 'right', 'right', 'right');
 
 		$params =   array( 	0 => $comments,
 							1 => array('text' => _('Period'), 'from' => $from, 'to' => $to),
@@ -389,58 +398,68 @@ function print_tax_report()
 	$rep->Line($rep->row - 4);
 
 	$rep->row -= 16;
-	$rep->TextCol(0, 5, _("General Ledger"));
+	$rep->Font('italic');
+	$rep->TextCol(0, 1, _("General Ledger"));
+	$rep->aligns[1] = 'left';
+	$rep->TextCol(1, 3, _("Description"));
+	$rep->TextCol(3, 4, _("Amount"));
+	$rep->Font();
 	$rep->Line($rep->row - 6);
 
 	$rep->row -= 22;
+	
+	$taxes = getTaxTypes();
+	$total = 0;
+	$bdate = date2sql($from);
+	$edate = date2sql($to);
 
-	$trow = $rep->row;
-
-	$idcounter = count($taxes);
-	$i = 0;
-	for ($j = 0; $j < $idcounter; $j++)
+	while ($tx = db_fetch($taxes))
 	{
-		$tx = getTaxInfo($taxes[$j]);
-		$str = $tx['name'] . " " . number_format2($tx['rate'], $dec) . "%";
-		$rep->TextCol($i, $i + 1, $str);
+		if ($tx['sales_gl_code'] == $tx['purchasing_gl_code'])
+		{
+			$sql = "SELECT SUM(IF(amount >= 0, amount, 0)) AS payable, SUM(IF(amount < 0, -amount, 0)) AS collectible
+				FROM ".TB_PREF."gl_trans WHERE account = '".$tx['sales_gl_code']."' AND tran_date >= '$bdate' AND tran_date <= '$edate'";
+			$result = db_query($sql, "Error retrieving tax inquiry");
+			$row = db_fetch($result);
+			$payable = -$row['payable'];
+			$collectible.= -$row['collectible'];
+		}
+		else
+		{
+			$sql = "SELECT SUM(amount) AS collectible
+				FROM ".TB_PREF."gl_trans WHERE account = '".$tx['sales_gl_code']."' AND tran_date >= '$bdate' AND tran_date <= '$edate'";
+			$result = db_query($sql, "Error retrieving tax inquiry");
+			$row = db_fetch($result);
+			$collectible = -$row['collectible'];
+			$sql = "SELECT SUM(amount) AS payable
+				FROM ".TB_PREF."gl_trans WHERE account = '".$tx['purchasing_gl_code']."' AND tran_date >= '$bdate' AND tran_date <= '$edate'";
+			$result = db_query($sql, "Error retrieving tax inquiry");
+			$row = db_fetch($result);
+			$payable = -$row['payable'];
+		}
+		$net = $collectible + $payable;
+		$total += $net;
+		$rep->TextCol(0, 1, $tx['name'] . " " . $tx['rate'] . "%");
+		$rep->TextCol(1, 3, _("Charged on sales") . " (" . _("Output Tax")."):");
+		$rep->TextCol(3, 4, number_format2($collectible, $dec));
+		$rep->NewLine();
+		$rep->TextCol(0, 1, $tx['name'] . " " . $tx['rate'] . "%");
+		$rep->TextCol(1, 3, _("Paid on purchases") . " (" . _("Input Tax")."):");
+		$rep->TextCol(3, 4, number_format2($payable, $dec));
+		$rep->NewLine();
+		$rep->Font('bold');
+		$rep->TextCol(0, 1, $tx['name'] . " " . $tx['rate'] . "%");
+		$rep->TextCol(1, 3, _("Net payable or collectible"));
+		$rep->TextCol(3, 4, number_format2($net, $dec));
+		$rep->Font();
 		$rep->NewLine();
 	}
-	$i++;
-	$rep->row = $trow;
-	for ($j = 0; $j < $idcounter; $j++)
-	{
-		$tx = getTaxInfo($taxes[$j]);
-		$acc = get_gl_account($tx['sales_gl_code']);
-		$rep->TextCol($i, $i + 1, $acc['account_code']." ".$acc['account_name']);
-		$rep->NewLine();
-	}
-	$i++;
-	$rep->row = $trow;
-	for ($j = 0; $j < $idcounter; $j++)
-	{
-		$tx = getTaxInfo($taxes[$j]);
-		$amount = get_gl_trans_from_to($from, $to, $tx['sales_gl_code']);
-		$rep->TextCol($i, $i + 1,number_format2(-$amount, $dec));
-		$rep->NewLine();
-	}
-	$i++;
-	$rep->row = $trow;
-	for ($j = 0; $j < $idcounter; $j++)
-	{
-		$tx = getTaxInfo($taxes[$j]);
-		$acc = get_gl_account($tx['purchasing_gl_code']);
-		$rep->TextCol($i, $i + 1, $acc['account_code']." ".$acc['account_name']);
-		$rep->NewLine();
-	}
-	$i++;
-	$rep->row = $trow;
-	for ($j = 0; $j < $idcounter; $j++)
-	{
-		$tx = getTaxInfo($taxes[$j]);
-		$amount = get_gl_trans_from_to($from, $to, $tx['purchasing_gl_code']);
-		$rep->TextCol($i, $i + 1,number_format2($amount, $dec));
-		$rep->NewLine();
-	}
+	$rep->Font('bold');
+	$rep->TextCol(1, 3, _("Total payable or refund"));
+	$rep->TextCol(3, 4, number_format2($total, $dec));
+	$rep->Font();
+	$rep->NewLine();
+	
 	$rep->Line($rep->row - 4);
 
 	$locale = $path_to_root . "lang/" . $_SESSION['language']->code . "/locale.inc";

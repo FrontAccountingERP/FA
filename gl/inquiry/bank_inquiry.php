@@ -1,5 +1,14 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU Affero General Public License,
+	AGPL, as published by the Free Software Foundation, either version 
+	3 of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/agpl-3.0.html>.
+***********************************************************************/
 $page_security = 8;
 $path_to_root="../..";
 include_once($path_to_root . "/includes/session.inc");
@@ -72,7 +81,7 @@ $sql = "SELECT SUM(amount) FROM ".TB_PREF."bank_trans WHERE bank_act='" . $_POST
 $before_qty = db_query($sql, "The starting balance on hand could not be calculated");
 
 start_row("class='inquirybg'");
-label_cell("<b>"._("Opening Balance")." - ".$_POST['TransAfterDate']."</b>", "colspan=5");
+label_cell("<b>"._("Opening Balance")." - ".$_POST['TransAfterDate']."</b>", "colspan=4");
 $bfw_row = db_fetch_row($before_qty);
 $bfw = $bfw_row[0];
 display_debit_or_credit_cells($bfw);
@@ -110,7 +119,7 @@ while ($myrow = db_fetch($result))
 //end of while loop
 
 start_row("class='inquirybg'");
-label_cell("<b>" . _("Ending Balance")." - ". $_POST['TransToDate']. "</b>", "colspan=5");
+label_cell("<b>" . _("Ending Balance")." - ". $_POST['TransToDate']. "</b>", "colspan=4");
 display_debit_or_credit_cells($running_total);
 label_cell("");
 end_row();
