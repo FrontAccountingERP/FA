@@ -19,6 +19,17 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+25-Nov-2008 Janusz Dobrowolski
+# [0000084] Low inventory items are not marked properly.
+$ /sales/customer_delivery.php
+# [0000086] New line added to document sometimes overwrites old one.
+$ /sales/includes/cart_class.inc
+# [0000087] Change of order date always updates prices.
+$ /sales/includes/ui/sales_credit_ui.inc
+  /sales/includes/ui/sales_order_ui.inc
+# Fixed automatic price calculations always on.
+$ /sales/includes/sales_db.inc
+
 ------------------------------- Release 2.0.5 --------------------------------------------
 24-Nov.2008 Joe Hunt
 ! Release 2.0.5
