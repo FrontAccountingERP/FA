@@ -4,11 +4,15 @@ $page_security = 1;
 $path_to_root="../..";
 include_once($path_to_root . "/includes/session.inc");
 
-page(_("View Customer Payment"), true);
-
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/sales/includes/sales_db.inc");
+
+$js = "";
+if ($use_popup_windows)
+	$js .= get_js_open_window(900, 600);
+
+page(_("View Customer Payment"), true, false, "", $js);
 
 if (isset($_GET["trans_no"]))
 {

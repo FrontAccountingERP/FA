@@ -3,7 +3,7 @@
 //-------------------------------------------------------------------------------------------------------------
 
 function add_supp_trans($type, $supplier_id, $date_, $due_date, $reference, $supp_reference,
-	$amount, $amount_tax, $discount, $err_msg="")
+	$amount, $amount_tax, $discount, $err_msg="", $rate=0)
 {
 	$date = date2sql($date_);
 	if ($due_date == "")
@@ -14,7 +14,9 @@ function add_supp_trans($type, $supplier_id, $date_, $due_date, $reference, $sup
 	$trans_no = get_next_trans_no($type);
 
 	$curr = get_supplier_currency($supplier_id);
-	$rate = get_exchange_rate_from_home_currency($curr, $date_);
+	
+	if ($rate == 0)
+		$rate = get_exchange_rate_from_home_currency($curr, $date_);
 
 
 	$sql = "INSERT INTO ".TB_PREF."supp_trans (trans_no, type, supplier_id, tran_date, due_date,

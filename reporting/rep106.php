@@ -127,7 +127,7 @@ function print_salesman_list()
 			$subprov = 0;
 		}
 		$date = sql2date($myrow['tran_date']);
-		$rate = get_exchange_rate_from_home_currency($myrow['curr_code'], $date);
+		$rate = $myrow['rate'];
 		$amt = $myrow['InvoiceTotal'] * $rate;
 		if ($subprov > $myrow['break_pt'] && $myrow['provision2'] != 0)
 			$prov = $myrow['provision2'] * $amt / 100;

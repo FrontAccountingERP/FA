@@ -111,7 +111,7 @@ function print_po()
 			$DisplayNet = number_format2($Net,$dec);
 			//$rep->TextCol(0, 1,	$myrow2['item_code'], -2);
 			$rep->TextCol(0, 2,	$myrow2['description'], -2);
-			$rep->TextCol(2, 3,	$myrow2['delivery_date'], -2);
+			$rep->TextCol(2, 3,	sql2date($myrow2['delivery_date']), -2);
 			$rep->TextCol(3, 4,	$DisplayQty, -2);
 			$rep->TextCol(4, 5,	$myrow2['units'], -2);
 			$rep->TextCol(5, 6,	$DisplayPrice, -2);

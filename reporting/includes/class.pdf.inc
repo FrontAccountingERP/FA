@@ -58,8 +58,8 @@ class Cpdf extends TCPDF {
 			$l = array('a_meta_charset' => 'ISO-8859-1', 'a_meta_dir' => 'ltr', 'a_meta_language' => 'en_GB', 'w_page' => 'page');
 		$enc = $l['a_meta_charset'];
 		$uni = ($enc == 'UTF-8' || $enc == 'GB2312' ? true : false);
-		if ($enc == "GB2312")
-			ini_set("memory_limit", "25M");
+		if ($uni)
+			ini_set("memory_limit", "48M");
 		$this->TCPDF('P', 'pt', $pageSize, $uni, $enc);
 		$this->setLanguageArray($l);
 		$this->setPrintHeader(false);

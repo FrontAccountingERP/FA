@@ -189,7 +189,7 @@ function on_submit($selected_parent, $selected_component=-1)
 
 if ($Mode == 'Delete')
 {
-	$sql = "DELETE FROM ".TB_PREF."bom WHERE id='" . $selected_component. "'";
+	$sql = "DELETE FROM ".TB_PREF."bom WHERE id='" . $selected_id. "'";
 	db_query($sql,"Could not delete this bom components");
 
 	display_notification(_("The component item has been deleted from this bom"));
@@ -198,7 +198,7 @@ if ($Mode == 'Delete')
 
 if ($Mode == 'RESET')
 {
-	$selected_component = -1;
+	$selected_id = -1;
 	unset($_POST['quantity']);
 }
 
@@ -219,7 +219,7 @@ if (get_post('stock_id') != '')
 { //Parent Item selected so display bom or edit component
 	$selected_parent = $_POST['stock_id'];
 	if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
-		on_submit($selected_parent, $selected_component);
+		on_submit($selected_parent, $selected_id);
 	//--------------------------------------------------------------------------------------
 
 start_form();
@@ -231,12 +231,12 @@ start_form();
 
 	start_table($table_style2);
 
-	if ($selected_component != -1)
+	if ($selected_id != -1)
 	{
  		if ($Mode == 'Edit') {
 			//editing a selected component from the link to the line item
 			$sql = "SELECT ".TB_PREF."bom.*,".TB_PREF."stock_master.description FROM ".TB_PREF."bom,".TB_PREF."stock_master
-				WHERE id='$selected_component'
+				WHERE id='$selected_id'
 				AND ".TB_PREF."stock_master.stock_id=".TB_PREF."bom.component";
 
 			$result = db_query($sql, "could not get bom");
@@ -245,9 +245,9 @@ start_form();
 			$_POST['loc_code'] = $myrow["loc_code"];
 			$_POST['workcentre_added']  = $myrow["workcentre_added"];
 			$_POST['quantity'] = number_format2($myrow["quantity"], get_qty_dec($myrow["component"]));
-		}
-		hidden('component', $selected_component);
 		label_row(_("Component:"), $myrow["component"] . " - " . $myrow["description"]);
+		}
+		hidden('selected_id', $selected_id);
 	}
 	else
 	{
@@ -272,7 +272,7 @@ start_form();
 	qty_row(_("Quantity:"), 'quantity', null, null, null, $dec);
 
 	end_table(1);
-	submit_add_or_update_center($selected_component == -1, '', true);
+	submit_add_or_update_center($selected_id == -1, '', true);
 	end_form();
 }
 // ----------------------------------------------------------------------------------

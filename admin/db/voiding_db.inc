@@ -49,9 +49,7 @@ function void_transaction($type, $type_no, $date_, $memo_)
 				$delivery = get_customer_trans($type_no, $type);
 				if ($delivery['trans_link'] != 0)
 				{
-					$inv = get_customer_trans($delivery['trans_link'], 10);
-					if ($inv['ov_amount'] != 0 || $inv['ov_discount'] != 0 || $inv['ov_gst'] != 0 || 
-						$inv['ov_freight'] != 0 || $inv['ov_freight_tax'] != 0 || $inv['alloc'] != 0)
+					if (get_voided_entry(10, $delivery['trans_link']) === false)
 						return false;
 				}
 			}	

@@ -8,13 +8,18 @@
 // if $currency is not set, then defaults to no conversion
 
 function add_gl_trans($type, $trans_id, $date_, $account, $dimension, $dimension2, $memo_,
-	$amount, $currency=null, $person_type_id=null, $person_id=null,	$err_msg="")
+	$amount, $currency=null, $person_type_id=null, $person_id=null,	$err_msg="", $rate=0)
 {
 	global $use_audit_trail;
 
 	$date = date2sql($date_);
 	if ($currency != null)
-		$amount_in_home_currency = to_home_currency($amount, $currency, $date_);
+	{
+		if ($rate == 0)
+			$amount_in_home_currency = to_home_currency($amount, $currency, $date_);
+		else
+			$amount_in_home_currency = round($amount * $rate,  user_price_dec());
+	}		
 	else
 		$amount_in_home_currency = $amount;
 	if ($dimension == null || $dimension < 0)

@@ -203,6 +203,7 @@ if ($dim == 2)
 	array(	new ReportParam(_('Start Date'),'DATEBEGINM'),
 			new ReportParam(_('End Date'),'DATEENDM'),
 			new ReportParam(_('Zero values'),'YES_NO'),
+			new ReportParam(_('Only balances'),'YES_NO'),
 			new ReportParam(_('Dimension')." 1", 'DIMENSIONS1'),
 			new ReportParam(_('Dimension')." 2", 'DIMENSIONS2'),
 			new ReportParam(_('Comments'),'TEXTBOX')));
@@ -237,6 +238,7 @@ else if ($dim == 1)
 	array(	new ReportParam(_('Start Date'),'DATEBEGINM'),
 			new ReportParam(_('End Date'),'DATEENDM'),
 			new ReportParam(_('Zero values'),'YES_NO'),
+			new ReportParam(_('Only balances'),'YES_NO'),
 			new ReportParam(_('Dimension'), 'DIMENSIONS1'),
 			new ReportParam(_('Comments'),'TEXTBOX')));
 }
@@ -266,6 +268,7 @@ else
 	array(	new ReportParam(_('Start Date'),'DATEBEGINM'),
 			new ReportParam(_('End Date'),'DATEENDM'),
 			new ReportParam(_('Zero values'),'YES_NO'),
+			new ReportParam(_('Only balances'),'YES_NO'),
 			new ReportParam(_('Comments'),'TEXTBOX')));
 }
 $reports->addReport(_('General Ledger'),709,_('Ta&x Report'),

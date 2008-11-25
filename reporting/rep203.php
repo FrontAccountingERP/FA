@@ -25,17 +25,19 @@ function getTransactions($supplier, $date)
 
 	$sql = "SELECT ".TB_PREF."sys_types.type_name,
 			".TB_PREF."supp_trans.supp_reference,
+			".TB_PREF."supp_trans.tran_date,
 			".TB_PREF."supp_trans.due_date,
 			".TB_PREF."supp_trans.trans_no,
 			".TB_PREF."supp_trans.type,
-			(".TB_PREF."supp_trans.ov_amount + ".TB_PREF."supp_trans.ov_gst - ".TB_PREF."supp_trans.alloc) AS Balance,
-			(".TB_PREF."supp_trans.ov_amount + ".TB_PREF."supp_trans.ov_gst ) AS TranTotal
+			".TB_PREF."supp_trans.rate,
+			(ABS(".TB_PREF."supp_trans.ov_amount) + ABS(".TB_PREF."supp_trans.ov_gst) - ".TB_PREF."supp_trans.alloc) AS Balance,
+			(ABS(".TB_PREF."supp_trans.ov_amount) + ABS(".TB_PREF."supp_trans.ov_gst) ) AS TranTotal
 		FROM ".TB_PREF."supp_trans,
 			".TB_PREF."sys_types
 		WHERE ".TB_PREF."sys_types.type_id = ".TB_PREF."supp_trans.type
 		AND ".TB_PREF."supp_trans.supplier_id = '" . $supplier . "'
-		AND ".TB_PREF."supp_trans.ov_amount + ".TB_PREF."supp_trans.ov_gst - ".TB_PREF."supp_trans.alloc != 0
-		AND ".TB_PREF."supp_trans.due_date <='" . $date . "'
+		AND ABS(".TB_PREF."supp_trans.ov_amount) + ABS(".TB_PREF."supp_trans.ov_gst) - ".TB_PREF."supp_trans.alloc != 0
+		AND ".TB_PREF."supp_trans.tran_date <='" . $date . "'
 		ORDER BY ".TB_PREF."supp_trans.type,
 			".TB_PREF."supp_trans.trans_no";
 
@@ -106,12 +108,7 @@ function print_payment_report()
 		$rep->fontSize += 2;
 		$rep->TextCol(0, 6, $myrow['name'] . " - " . $myrow['terms']);
 		if ($convert)
-		{
-			$rate = get_exchange_rate_from_home_currency($myrow['curr_code'], $to);
 			$rep->TextCol(6, 7,	$myrow['curr_code']);
-		}
-		else
-			$rate = 1.0;
 		$rep->fontSize -= 2;
 		$rep->NewLine(1, 2);
 		$res = getTransactions($myrow['supplier_id'], $to);
@@ -121,11 +118,23 @@ function print_payment_report()
 		$total[0] = $total[1] = 0.0;
 		while ($trans=db_fetch($res))
 		{
+			if ($convert)
+				$rate = $trans['rate'];
+			else
+				$rate = 1.0;
 			$rep->NewLine(1, 2);
 			$rep->TextCol(0, 1,	$trans['type_name']);
 			$rep->TextCol(1, 2,	$trans['supp_reference']);
-			$rep->TextCol(2, 3,	sql2date($trans['due_date']));
-			$item[0] = Abs($trans['TranTotal']) * $rate;
+			if ($trans['type'] == 20)
+				$rep->TextCol(2, 3,	sql2date($trans['due_date']));
+			else	
+				$rep->TextCol(2, 3,	sql2date($trans['tran_date']));
+			if ($trans['type'] != 20)
+			{
+				$trans['TranTotal'] = -$trans['TranTotal'];
+				$trans['Balance'] = -$trans['Balance'];
+			}
+			$item[0] = $trans['TranTotal'] * $rate;
 			$rep->TextCol(6, 7,	number_format2($item[0], $dec));
 			$item[1] = $trans['Balance'] * $rate;
 			$rep->TextCol(7, 8,	number_format2($item[1], $dec));

@@ -3,14 +3,14 @@
   Write/update customer payment.
 */
 function write_customer_payment($trans_no, $customer_id, $branch_id, $bank_account,
-	$date_, $ref, $amount, $discount, $memo_)
+	$date_, $ref, $amount, $discount, $memo_, $rate=0)
 {
 	begin_transaction();
 
 	$company_record = get_company_prefs();
 
-	$payment_no = write_customer_trans(12, $trans_no,
-	    $customer_id, $branch_id, $date_, $ref, $amount, $discount);
+	$payment_no = write_customer_trans(12, $trans_no, $customer_id, $branch_id, 
+		$date_, $ref, $amount, $discount, 0, 0, 0, 0, 0, 0, 0, "", 0, $rate);
 
 	$bank_gl_account = get_bank_gl_account($bank_account);
 
@@ -24,7 +24,7 @@ function write_customer_payment($trans_no, $customer_id, $branch_id, $bank_accou
 	/* Bank account entry first */
 	add_gl_trans_customer(12, $payment_no, $date_,
 		$bank_gl_account, 0, 0, $amount,  $customer_id,
-		"Cannot insert a GL transaction for the bank account debit");
+		"Cannot insert a GL transaction for the bank account debit", $rate);
 
 	if ($branch_id != reserved_words::get_any_numeric()) {
 
@@ -42,14 +42,14 @@ function write_customer_payment($trans_no, $customer_id, $branch_id, $bank_accou
 		/* Now Credit Debtors account with receipts + discounts */
 		add_gl_trans_customer(12, $payment_no, $date_,
 			$debtors_account, 0, 0, -($discount + $amount), $customer_id,
-			"Cannot insert a GL transaction for the debtors account credit");
+			"Cannot insert a GL transaction for the debtors account credit", $rate);
 	}
 
 	if ($discount != 0)	{
 		/* Now Debit discount account with discounts allowed*/
 		add_gl_trans_customer(12, $payment_no, $date_,
 			$discount_account, 0, 0, $discount, $customer_id,
-			"Cannot insert a GL transaction for the payment discount debit");
+			"Cannot insert a GL transaction for the payment discount debit", $rate);
 	}
 
 	/*now enter the bank_trans entry */

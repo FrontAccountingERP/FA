@@ -36,14 +36,14 @@ function add_stock_move_customer($type, $stock_id, $trans_id, $location, $date_,
 // $amount is in CUSTOMER'S currency
 
 function add_gl_trans_customer($type, $type_no, $date_, $account, $dimension, $dimension2,
-	$amount, $customer_id, $err_msg="")
+	$amount, $customer_id, $err_msg="", $rate=0)
 {
 	if ($err_msg == "")
 		$err_msg = "The customer GL transaction could not be inserted";
 
 	return add_gl_trans($type, $type_no, $date_, $account, $dimension, $dimension2, "", $amount,
 		get_customer_currency($customer_id),
-		payment_person_types::customer(), $customer_id, $err_msg);
+		payment_person_types::customer(), $customer_id, $err_msg, $rate);
 }
 
 //----------------------------------------------------------------------------------------
@@ -104,11 +104,11 @@ function get_price ($stock_id, $currency, $sales_type_id, $factor=null, $date=nu
 	{
 	    $price = $prices[$sales_type_id][$home_curr] / $rate;
 	}
-	if (isset($prices[$base_id][$currency])) 
+	elseif (isset($prices[$base_id][$currency])) 
 	{
 	    $price = $prices[$base_id][$currency] * $factor;
 	}
-	if (isset($prices[$base_id][$home_curr])) 
+	elseif (isset($prices[$base_id][$home_curr])) 
 	{
 	    $price = $prices[$base_id][$home_curr] * $factor / $rate;
 	}

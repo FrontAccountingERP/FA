@@ -288,7 +288,7 @@ function get_trans_view_str($type, $trans_no, $label="", $icon=false)
 // When there is no exrate for today, 
 // gets it form ECB and stores in local database.
 //
-function exchange_rate_display($from_currency, $to_currency, $date_)
+function exchange_rate_display($from_currency, $to_currency, $date_, $edit_rate=false)
 {
     global $Ajax;
 
@@ -309,15 +309,16 @@ function exchange_rate_display($from_currency, $to_currency, $date_)
 			}
 		}
 		if (!$rate)
-			$rate = get_exchange_rate_from_to($to_currency, $from_currency, $date_);
-			
-		if ($from_currency == $comp_currency)
-			$rate = 1 / $rate;
+			$rate = get_exchange_rate_from_home_currency($currency, $date_);
+		if ($from_currency != $comp_currency)
+			$rate = 1 / ($rate / get_exchange_rate_from_home_currency($to_currency, $date_));
 
 		$rate = number_format2($rate, user_exrate_dec());
-    	label_row(_("Exchange Rate:"),"1 " . $from_currency 
-			. " = <span id='_ex_rate'>" . $rate . "</span> " . $to_currency );
-		  $Ajax->addUpdate('_ex_rate','_ex_rate', $rate);
+		if ($edit_rate)
+			text_row(_("Exchange Rate:"), '_ex_rate', $rate, 8, 8, null, "", " $from_currency = 1 $to_currency"); 
+		else
+    		label_row(_("Exchange Rate:"),"<span id='_ex_rate'>$rate</span> $from_currency = 1 $to_currency" );
+	  	$Ajax->addUpdate('_ex_rate','_ex_rate', $rate);
 	}
 }
 

@@ -83,7 +83,8 @@ function write_customer_trans($trans_type, $trans_no, $debtor_no, $BranchNo,
 {
 
 	$curr = get_customer_currency($debtor_no);
-	$rate = get_exchange_rate_from_home_currency($curr, $date_);
+	if ($rate == 0)
+		$rate = get_exchange_rate_from_home_currency($curr, $date_);
 
 	$SQLDate = date2sql($date_);
 	if ($due_date == "")
