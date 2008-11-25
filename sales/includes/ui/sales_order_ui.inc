@@ -281,7 +281,10 @@ function display_order_header(&$order, $editable, $date_text, $display_tax_group
 		date_row($date_text, 'OrderDate',
 		  _('Date of order receive'), null, 0, 0, 0, null, true);
 		if (isset($_POST['_OrderDate_changed'])) {
-			$change_prices = 1;
+			if (!is_company_currency($order->customer_currency) 
+				&& (get_base_sales_type()>0)) {
+					$change_prices = 1;
+			}
 			$Ajax->activate('currency');
 			if ($order->trans_type == 10) {
 				$_POST['delivery_date'] = get_invoice_duedate(get_post('customer_id'), get_post('OrderDate'));
