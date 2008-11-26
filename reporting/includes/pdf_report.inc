@@ -349,7 +349,7 @@ class FrontReport extends Cpdf
 	function NewLine($l=1, $np=0)
 	{
 		$this->row -= ($l * $this->lineHeight);
-		if ($np > 0 && 	$this->row < $this->bottomMargin + ($np * $this->lineHeight))
+		if ($this->row < $this->bottomMargin + ($np * $this->lineHeight))
 			$this->Header();
 	}
 
