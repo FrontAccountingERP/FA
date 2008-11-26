@@ -121,8 +121,15 @@ $opts = array(		// default options
    }
 	// sql completion
 	if (count($opts['where'])) {
-		$sql .= strpos($sql, 'WHERE')==false ? ' WHERE ':' AND ';
-		$sql .= '('. implode($opts['where'], ' AND ') . ')';
+		$where = strpos($sql, 'WHERE')==false ? ' WHERE ':' AND ';
+		$where .= '('. implode($opts['where'], ' AND ') . ')';
+		$group_pos = strpos($sql, 'GROUP BY');
+		if ($group_pos) {
+			$group = substr($sql, $group_pos);
+			$sql = substr($sql, 0, $group_pos) . $where.' '.$group;
+		} else {
+			$sql .= $where;
+		}
 	}
 	if ($opts['order'] != false) {
 		$sql .= ' ORDER BY '.$opts['order'];
@@ -133,7 +140,7 @@ $opts = array(		// default options
 	$selector = $first_opt = '';
 	$first_id = false;
 	$found = false;
-//if($name=='contact_sel') display_error($sql);
+//if($name=='stock_id') display_error($sql);
 	if($result = db_query($sql)) {
 		while ($contact_row = db_fetch($result)) {
 			$value = $contact_row[0];
@@ -684,7 +691,7 @@ function sales_items_list($name, $selected_id=null, $all_option=false,
 		'spec_option' => $all_option===true ?  _("All Items") : $all_option,
 		'spec_id' => $all_items,
 		'search_box' => true,
-		'search' => array("i.item_code", "c.description","s.description"),
+		'search' => array("i.item_code", "c.description"),
 		'search_submit' => get_company_pref('no_item_list')!=0,
 		'size'=>15,
 		'select_submit'=> $submit_on_change,
