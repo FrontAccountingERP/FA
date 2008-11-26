@@ -175,12 +175,14 @@ function get_tax_for_items($items, $prices, $shipping_cost, $tax_group, $tax_inc
 			foreach ($item_taxes as $item_tax) 
 			{
 				$index = $item_tax['tax_type_id'];
-				if($tax_included==1)
-				  $ret_tax_array[$index]['Value'] += round($prices[$i] * $item_tax['rate'] 
-					/ ($item_tax['rate'] + 100),  user_price_dec());
+				if($tax_included==1) // 2008-11-26 Joe Hunt Taxes are stored without roundings
+				  //$ret_tax_array[$index]['Value'] += round($prices[$i] * $item_tax['rate'] 
+				  //	/ ($item_tax['rate'] + 100),  user_price_dec());
+				  $ret_tax_array[$index]['Value'] += ($prices[$i] * $item_tax['rate'] / ($item_tax['rate'] + 100));
 				else
-				  $ret_tax_array[$index]['Value'] += 
-					round($prices[$i] * $item_tax['rate'] / 100,  user_price_dec());
+				  //$ret_tax_array[$index]['Value'] += 
+				  //	round($prices[$i] * $item_tax['rate'] / 100,  user_price_dec());
+				  $ret_tax_array[$index]['Value'] += ($prices[$i] * $item_tax['rate'] / 100);
 			}
 		}
 	}
@@ -195,12 +197,14 @@ function get_tax_for_items($items, $prices, $shipping_cost, $tax_group, $tax_inc
 			{
 				$index = $item_tax['tax_type_id'];
 				if(isset($ret_tax_array[$index])) {
-				  if($tax_included==1)
-					$ret_tax_array[$index]['Value'] += round($shipping_cost * $item_tax['rate'] 
-					  / ($item_tax['rate'] + 100),  user_price_dec());
+				  if($tax_included==1) // 2008-11-26 Joe Hunt Taxes are stored without roundings
+					//$ret_tax_array[$index]['Value'] += round($shipping_cost * $item_tax['rate'] 
+					//  / ($item_tax['rate'] + 100),  user_price_dec());
+					$ret_tax_array[$index]['Value'] += ($shipping_cost * $item_tax['rate'] / ($item_tax['rate'] + 100));
 				  else
-					$ret_tax_array[$index]['Value'] += 
-					  round($shipping_cost * $item_tax['rate'] / 100,  user_price_dec());
+					//$ret_tax_array[$index]['Value'] += 
+					//  round($shipping_cost * $item_tax['rate'] / 100,  user_price_dec());
+					$ret_tax_array[$index]['Value'] += ($shipping_cost * $item_tax['rate'] / 100);
 				}
 			}
 		}
