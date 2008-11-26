@@ -19,6 +19,12 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+26-Nov-2008 Janusz Dobrowolski
+# Fixed layout of amount_ex() fields with label.
+$ /includes/ui/ui_input.inc
+# Fixed combo_input for $sql with GROUP BY option
+$ /includes/ui/ui_lists.inc
+
 25-Nov-2008 Janusz Dobrowolski
 ! Merged all changes from main trunk up to 2.0.5 (see details below)
 $ /CHANGELOG.txt
