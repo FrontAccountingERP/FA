@@ -100,15 +100,9 @@ function get_deliveries_between($stock_id, $from, $to)
 
 function get_diff_in_home_currency($supplier, $old_date, $date, $amount1, $amount2)
 {
-	if ($supplier != null)
-		$currency = get_supplier_currency($supplier);
-	else
-		$currency = null;
-	if ($currency != null)
-	{
-		$amount1 = to_home_currency($amount1, $currency, $old_date);
-		$amount2 = to_home_currency($amount2, $currency, $date);
-	}	
+	$currency = get_supplier_currency($supplier);
+	$amount1 = to_home_currency($amount1, $currency, $old_date);
+	$amount2 = to_home_currency($amount2, $currency, $date);
 	return $amount2 - $amount1;
 }
 //----------------------------------------------------------------------------------------
@@ -211,39 +205,37 @@ function add_supp_invoice($supp_trans) // do not receive as ref because we chang
 			 
 			$old_price = $old[2];
 
-		
-
 			/*
  			If statement is removed. Should always check for deliveries nomatter if there has been a price change. 
 			*/
 			//if ($old_price != $entered_grn->chg_price) // price-change, so update
 			//{
-				//$diff = $entered_grn->chg_price - $old_price;
-				$old_date = sql2date($old[1]);
-				$diff = get_diff_in_home_currency($supp_trans->supplier_id, $old_date, $date_, $old_price, 
-					$entered_grn->chg_price);
-				// always return due to change in currency.
-				$mat_cost = update_average_material_cost(null, $entered_grn->item_code,
-					$diff, $entered_grn->this_quantity_inv, $old_date, true);
-				$deliveries = get_deliveries_between($entered_grn->item_code, $old_date, $date_);
-				if ($deliveries[0] != 0) // have deliveries been done during the period?
+			//$diff = $entered_grn->chg_price - $old_price;
+			$old_date = sql2date($old[1]);
+			$diff = get_diff_in_home_currency($supp_trans->supplier_id, $old_date, $date_, $old_price, 
+				$entered_grn->chg_price);
+			// always return due to change in currency.
+			$mat_cost = update_average_material_cost(null, $entered_grn->item_code,
+				$diff, $entered_grn->this_quantity_inv, $old_date, true);
+			$deliveries = get_deliveries_between($entered_grn->item_code, $old_date, $date_);
+			if ($deliveries[0] != 0) // have deliveries been done during the period?
+			{
+				$deliveries[1] /= $deliveries[0];
+				$amt = ($mat_cost - $deliveries[1]) * $deliveries[0]; // $amt in home currency
+				if ($amt != 0.0)
 				{
-					$deliveries[1] /= $deliveries[0];
-					$amt = ($mat_cost - $deliveries[1]) * $deliveries[0]; // $amt in home currency
-					if ($amt != 0.0)
-					{
-						add_gl_trans($trans_type, $invoice_id, $date_,	$stock_gl_code["cogs_account"],
-							$stock_gl_code['dimension_id'], $stock_gl_code['dimension2_id'], _("Cost diff."),
-							$amt, null, null, null,
-							"The general ledger transaction could not be added for the price variance of the inventory item");
-						add_gl_trans($trans_type, $invoice_id, $date_,	$stock_gl_code["inventory_account"],
-							0, 0, _("Cost diff."), -$amt, null, null, null,
-							"The general ledger transaction could not be added for the price variance of the inventory item");
-					}		
-					update_stock_move_pid(13, $entered_grn->item_code, $old_date, $date_, 0, $mat_cost);
-				}
-				update_stock_move_pid(25, $entered_grn->item_code, $old_date, $old_date, $supp_trans->supplier_id, $mat_cost);
-			//}
+					add_gl_trans($trans_type, $invoice_id, $date_,	$stock_gl_code["cogs_account"],
+						$stock_gl_code['dimension_id'], $stock_gl_code['dimension2_id'], _("Cost diff."),
+						$amt, null, null, null,
+						"The general ledger transaction could not be added for the price variance of the inventory item");
+					add_gl_trans($trans_type, $invoice_id, $date_,	$stock_gl_code["inventory_account"],
+						0, 0, _("Cost diff."), -$amt, null, null, null,
+						"The general ledger transaction could not be added for the price variance of the inventory item");
+				}		
+				update_stock_move_pid(13, $entered_grn->item_code, $old_date, $date_, 0, $mat_cost);
+			}
+			update_stock_move_pid(25, $entered_grn->item_code, $old_date, $old_date, $supp_trans->supplier_id, $mat_cost);
+		//}
 		}
     	// ----------------------------------------------------------------------
 
@@ -393,7 +385,7 @@ function void_supp_invoice($type, $type_no)
 					$details_row["FullUnitPrice"]);
 				// Only adjust the avg for the diff
 				$mat_cost = update_average_material_cost(null, $details_row["stock_id"],
-					-$diff, $details_row["quantity"], $old_date, true);
+					$diff, -$details_row["quantity"], $date_, true);
 
 				$deliveries = get_deliveries_between($details_row["stock_id"], $old_date, $date_);
 				if ($deliveries[0] != 0) // have deliveries been done during the period?
