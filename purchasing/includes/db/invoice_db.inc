@@ -217,7 +217,7 @@ function add_supp_invoice($supp_trans) // do not receive as ref because we chang
 			// always return due to change in currency.
 			$mat_cost = update_average_material_cost(null, $entered_grn->item_code,
 				$diff, $entered_grn->this_quantity_inv, $old_date, true);
-			$deliveries = get_deliveries_between($entered_grn->item_code, $old_date, $date_);
+			$deliveries = get_deliveries_between($entered_grn->item_code, $old_date, Today()); // extend the period, if invoice is before any deliveries.
 			if ($deliveries[0] != 0) // have deliveries been done during the period?
 			{
 				$deliveries[1] /= $deliveries[0];
