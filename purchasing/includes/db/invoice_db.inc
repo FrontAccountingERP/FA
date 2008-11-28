@@ -91,11 +91,25 @@ function get_deliveries_between($stock_id, $from, $to)
 {
 	$from = date2sql($from);
 	$to = date2sql($to);
-	$sql = "SELECT SUM(-qty), AVG(standard_cost) FROM ".TB_PREF."stock_moves
+	$sql = "SELECT SUM(-qty), SUM(-qty*standard_cost) FROM ".TB_PREF."stock_moves
 		WHERE type=13 AND stock_id='$stock_id' AND
 			tran_date>='$from' AND tran_date<='$to' GROUP BY stock_id";
 	$result = db_query($sql, "The deliveries could not be updated");
 	return db_fetch_row($result);
+}
+
+function get_diff_in_home_currency($supplier, $old_date, $date, $amount1, $amount2)
+{
+	if ($supplier != null)
+		$currency = get_supplier_currency($supplier);
+	else
+		$currency = null;
+	if ($currency != null)
+	{
+		$amount1 = to_home_currency($amount1, $currency, $old_date);
+		$amount2 = to_home_currency($amount2, $currency, $date);
+	}	
+	return $amount2 - $amount1;
 }
 //----------------------------------------------------------------------------------------
 
@@ -204,16 +218,17 @@ function add_supp_invoice($supp_trans) // do not receive as ref because we chang
 			*/
 			//if ($old_price != $entered_grn->chg_price) // price-change, so update
 			//{
-				$diff = $entered_grn->chg_price - $old_price;
+				//$diff = $entered_grn->chg_price - $old_price;
 				$old_date = sql2date($old[1]);
-				// only update the diff (last parameter, adj_only is set to true).
-				$mat_cost = update_average_material_cost($supp_trans->supplier_id, $entered_grn->item_code,
+				$diff = get_diff_in_home_currency($supp_trans->supplier_id, $old_date, $date_, $old_price, 
+					$entered_grn->chg_price);
+				// always return due to change in currency.
+				$mat_cost = update_average_material_cost(null, $entered_grn->item_code,
 					$diff, $entered_grn->this_quantity_inv, $old_date, true);
-				// function just above this
 				$deliveries = get_deliveries_between($entered_grn->item_code, $old_date, $date_);
 				if ($deliveries[0] != 0) // have deliveries been done during the period?
 				{
-
+					$deliveries[1] /= $deliveries[0];
 					$amt = ($mat_cost - $deliveries[1]) * $deliveries[0]; // $amt in home currency
 					if ($amt != 0.0)
 					{
@@ -368,20 +383,22 @@ function void_supp_invoice($type, $type_no)
 				$old = update_supp_received_items_for_invoice($details_row["grn_item_id"],
 					$details_row["po_detail_item_id"], -$details_row["quantity"], $details_row["FullUnitPrice"]); 
 				
-				$diff = $details_row["FullUnitPrice"] - $old[2];
+				//$diff = $details_row["FullUnitPrice"] - $old[2];
 				$old_date = sql2date($old[1]);
 				
 				$batch = get_grn_batch_from_item($details_row["grn_item_id"]);	
 				$grn = get_grn_batch($batch);
 				
+				$diff = get_diff_in_home_currency($grn["supplier_id"], $old_date, $date_, $old[2], 
+					$details_row["FullUnitPrice"]);
 				// Only adjust the avg for the diff
-				$mat_cost = update_average_material_cost($grn["supplier_id"], $details_row["stock_id"],
-						$diff, -$details_row["quantity"], $date_, true);
+				$mat_cost = update_average_material_cost(null, $details_row["stock_id"],
+					-$diff, $details_row["quantity"], $old_date, true);
 
 				$deliveries = get_deliveries_between($details_row["stock_id"], $old_date, $date_);
 				if ($deliveries[0] != 0) // have deliveries been done during the period?
 				{
-
+					$deliveries[1] /= $deliveries[0];
 					$amt = ($mat_cost - $deliveries[1]) * $deliveries[0]; // $amt in home currency
 					if ($amt != 0.0)
 					{
