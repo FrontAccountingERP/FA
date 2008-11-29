@@ -19,6 +19,11 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+29-Nov-2008 Joe Hunt
+# [0000094] Report does not show items that have 0 qty but have demand qty
+$ /reporting/rep302.php
+  /reporting/rep303.php
+  
 28-Nov-2008 Joe Hunt
 # [0000093] Voiding Supplier Invoices Causes some lines cost update to go to 0 and exchange rate change
 $ /purchasing/includes/db/invoice_db.inc

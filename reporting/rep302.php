@@ -26,23 +26,22 @@ function getTransactions($category, $location)
 			".TB_PREF."stock_category.description AS cat_description,
 			".TB_PREF."stock_master.stock_id,
 			".TB_PREF."stock_master.description,
-			".TB_PREF."stock_moves.loc_code,
-			SUM(".TB_PREF."stock_moves.qty) AS qty_on_hand
-		FROM ".TB_PREF."stock_master,
-			".TB_PREF."stock_category,
-			".TB_PREF."stock_moves
-		WHERE ".TB_PREF."stock_master.stock_id=".TB_PREF."stock_moves.stock_id
-		AND ".TB_PREF."stock_master.category_id=".TB_PREF."stock_category.category_id
+			IF(".TB_PREF."stock_moves.stock_id IS NULL, '', ".TB_PREF."stock_moves.loc_code) AS loc_code,
+			SUM(IF(".TB_PREF."stock_moves.stock_id IS NULL,0,".TB_PREF."stock_moves.qty)) AS qty_on_hand
+		FROM (".TB_PREF."stock_master,
+			".TB_PREF."stock_category)
+		LEFT JOIN ".TB_PREF."stock_moves ON
+			(".TB_PREF."stock_master.stock_id=".TB_PREF."stock_moves.stock_id OR ".TB_PREF."stock_master.stock_id IS NULL)
+		WHERE ".TB_PREF."stock_master.category_id=".TB_PREF."stock_category.category_id
 		AND (".TB_PREF."stock_master.mb_flag='B' OR ".TB_PREF."stock_master.mb_flag='M')";
 	if ($category != 0)
 		$sql .= " AND ".TB_PREF."stock_master.category_id = '$category'";
 	if ($location != 'all')
 		$sql .= " AND ".TB_PREF."stock_moves.loc_code = '$location'";
 	$sql .= " GROUP BY ".TB_PREF."stock_master.category_id,
-		".TB_PREF."stock_master.description,
 		".TB_PREF."stock_category.description,
-		".TB_PREF."stock_moves.stock_id,
-		".TB_PREF."stock_master.stock_id
+		".TB_PREF."stock_master.stock_id,
+		".TB_PREF."stock_master.description
 		ORDER BY ".TB_PREF."stock_master.category_id,
 		".TB_PREF."stock_master.stock_id";
 
@@ -55,9 +54,10 @@ function getCustQty($stockid, $location)
 	$sql = "SELECT SUM(".TB_PREF."sales_order_details.quantity - ".TB_PREF."sales_order_details.qty_sent) AS qty_demand
 				FROM ".TB_PREF."sales_order_details,
 					".TB_PREF."sales_orders
-				WHERE ".TB_PREF."sales_order_details.order_no=".TB_PREF."sales_orders.order_no AND
-					".TB_PREF."sales_orders.from_stk_loc ='$location' AND
-					".TB_PREF."sales_order_details.stk_code = '$stockid'";
+				WHERE ".TB_PREF."sales_order_details.order_no=".TB_PREF."sales_orders.order_no AND ";
+	if ($location != "")
+		$sql .= TB_PREF."sales_orders.from_stk_loc ='$location' AND ";
+	$sql .= TB_PREF."sales_order_details.stk_code = '$stockid'";
 
     $TransResult = db_query($sql,"No transactions were returned");
 	$DemandRow = db_fetch($TransResult);
@@ -73,9 +73,10 @@ function getCustAsmQty($stockid, $location)
 						".TB_PREF."bom,
 						".TB_PREF."stock_master
 				   WHERE ".TB_PREF."sales_order_details.stk_code=".TB_PREF."bom.parent AND
-				   ".TB_PREF."sales_orders.order_no = ".TB_PREF."sales_order_details.order_no AND
-				   ".TB_PREF."sales_orders.from_stk_loc='$location' AND
-				   ".TB_PREF."sales_order_details.quantity-".TB_PREF."sales_order_details.qty_sent > 0 AND
+				   ".TB_PREF."sales_orders.order_no = ".TB_PREF."sales_order_details.order_no AND ";
+	if ($location != "")
+		$sql .= TB_PREF."sales_orders.from_stk_loc ='$location' AND ";
+	$sql .= TB_PREF."sales_order_details.quantity-".TB_PREF."sales_order_details.qty_sent > 0 AND
 				   ".TB_PREF."bom.component='$stockid' AND
 				   ".TB_PREF."stock_master.stock_id=".TB_PREF."bom.parent AND
 				   ".TB_PREF."stock_master.mb_flag='A'";
@@ -98,8 +99,9 @@ function getSuppQty($stockid, $location)
 				FROM ".TB_PREF."purch_order_details,
 					".TB_PREF."purch_orders
 				WHERE ".TB_PREF."purch_order_details.order_no = ".TB_PREF."purch_orders.order_no
-				AND ".TB_PREF."purch_order_details.item_code = '$stockid'
-				AND ".TB_PREF."purch_orders.into_stock_location= '$location'";
+				AND ".TB_PREF."purch_order_details.item_code = '$stockid'";
+	if ($location != "")			
+		$sql .= " AND ".TB_PREF."purch_orders.into_stock_location= '$location'";
 
     $TransResult = db_query($sql,"No transactions were returned");
 	$DemandRow = db_fetch($TransResult);
@@ -196,10 +198,13 @@ function print_inventory_planning()
 			$catt = $trans['cat_description'];
 			$rep->NewLine();
 		}
-
-		$custqty = getCustQty($trans['stock_id'], $trans['loc_code']);
-		$custqty += getCustAsmQty($trans['stock_id'], $trans['loc_code']);
-		$suppqty = getSuppQty($trans['stock_id'], $trans['loc_code']);
+		if ($location == 'all')
+			$loc_code = "";
+		else
+			$loc_code = $trans['loc_code'];
+		$custqty = getCustQty($trans['stock_id'], $loc_code);
+		$custqty += getCustAsmQty($trans['stock_id'], $loc_code);
+		$suppqty = getSuppQty($trans['stock_id'], $loc_code);
 		$period = getPeriods($trans['stock_id'], $trans['loc_code']);
 		$rep->NewLine();
 		$dec = get_qty_dec($trans['stock_id']);
