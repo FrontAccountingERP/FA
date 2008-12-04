@@ -143,10 +143,6 @@ function add_supp_invoice($supp_trans) // do not receive as ref because we chang
 
     /* Now the control account */
     $supplier_accounts = get_supplier_accounts($supp_trans->supplier_id);
-    add_gl_trans_supplier($trans_type, $invoice_id, $date_, $supplier_accounts["payable_account"], 0, 0,
-		-($invoice_items_total +  $tax_total + $supp_trans->ov_discount),
-		$supp_trans->supplier_id,
-		"The general ledger transaction for the control total could not be added");
 
     /*Loop through the GL Entries and create a debit posting for each of the accounts entered */
 
@@ -159,7 +155,7 @@ function add_supp_invoice($supp_trans) // do not receive as ref because we chang
     between the std cost and the currency cost charged as converted at the ex rate of of the invoice is written off
     to the purchase price variance account applicable to the item being invoiced.
     */
-
+	$total = 0;
     foreach ($supp_trans->gl_codes as $entered_gl_code)
     {
 
@@ -170,7 +166,7 @@ function add_supp_invoice($supp_trans) // do not receive as ref because we chang
 			$entered_gl_code->amount = -$entered_gl_code->amount;
 
 		$memo_ = $entered_gl_code->memo_;
-		add_gl_trans_supplier($trans_type, $invoice_id, $date_, $entered_gl_code->gl_code,
+		$total += add_gl_trans_supplier($trans_type, $invoice_id, $date_, $entered_gl_code->gl_code,
 			$entered_gl_code->gl_dim, $entered_gl_code->gl_dim2, $entered_gl_code->amount, $supp_trans->supplier_id);
 
 		add_supp_invoice_gl_item($trans_type, $invoice_id, $entered_gl_code->gl_code,
@@ -189,7 +185,7 @@ function add_supp_invoice($supp_trans) // do not receive as ref because we chang
 		$line_tax = $entered_grn->full_charge_price($supp_trans->tax_group_id) - $line_taxfree;
 		$stock_gl_code = get_stock_gl_code($entered_grn->item_code);
 
-		add_gl_trans_supplier($trans_type, $invoice_id, $date_, $stock_gl_code["inventory_account"],
+		$total += add_gl_trans_supplier($trans_type, $invoice_id, $date_, $stock_gl_code["inventory_account"],
 			$stock_gl_code['dimension_id'], $stock_gl_code['dimension2_id'],
 			$entered_grn->this_quantity_inv * $line_taxfree, $supp_trans->supplier_id);
     	// -------------- if price changed since po received. 16 Aug 2008 Joe Hunt
@@ -255,12 +251,15 @@ function add_supp_invoice($supp_trans) // do not receive as ref because we chang
 			add_supp_invoice_tax_item($trans_type, $invoice_id, $taxitem['tax_type_id'],
 				$taxitem['rate'], 0, $taxitem['Value']);
 
-    		add_gl_trans_supplier($trans_type, $invoice_id, $date_,
+    		$total += add_gl_trans_supplier($trans_type, $invoice_id, $date_,
     			$taxitem['purchasing_gl_code'], 0, 0, $taxitem['Value'],
     			$supp_trans->supplier_id,
     			"A general ledger transaction for the tax amount could not be added");
     	}
     }
+	add_gl_trans($trans_type, $invoice_id, $date_, $supplier_accounts["payable_account"], 0, 0, "",
+		-$total, null, payment_person_types::supplier(), $supp_trans->supplier_id, 
+		"The general ledger transaction for the control total could not be added");
 	add_comments($trans_type, $invoice_id, $date_, $supp_trans->Comments);
 
 	references::save_last($supp_trans->reference, $trans_type);

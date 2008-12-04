@@ -21,7 +21,7 @@ function add_gl_trans($type, $trans_id, $date_, $account, $dimension, $dimension
 			$amount_in_home_currency = round($amount * $rate,  user_price_dec());
 	}		
 	else
-		$amount_in_home_currency = $amount;
+		$amount_in_home_currency = round($amount, user_price_dec());
 	if ($dimension == null || $dimension < 0)
 		$dimension = 0;
 	if ($dimension2 == null || $dimension2 < 0)
@@ -52,7 +52,8 @@ function add_gl_trans($type, $trans_id, $date_, $account, $dimension, $dimension
 	if ($err_msg == "")
 		$err_msg = "The GL transaction could not be inserted";
 
-	return db_query($sql, $err_msg);
+	db_query($sql, $err_msg);
+	return $amount_in_home_currency;
 }
 
 //--------------------------------------------------------------------------------
@@ -68,7 +69,7 @@ function add_gl_trans_std_cost($type, $trans_id, $date_, $account, $dimension, $
 		return add_gl_trans($type, $trans_id, $date_, $account, $dimension, $dimension2, $memo_,
 			$amount, null, $person_type_id, $person_id, $err_msg);
 	else
-		return null;
+		return 0;
 }
 
 //--------------------------------------------------------------------------------

@@ -72,7 +72,7 @@ function write_sales_invoice(&$invoice)
 		void_cust_allocations(10, $invoice_no); // ?
 		void_customer_trans_tax_details(10, $invoice_no);
 	}
-
+	$total = 0;
 	foreach ($invoice->line_items as $invoice_line) {
 
 		$line_taxfree_price = get_tax_free_price_for_item($invoice_line->stock_id,
@@ -106,13 +106,13 @@ function write_sales_invoice(&$invoice)
 				// else take the Item Dimension (if any)
 				$dim = ($customer['dimension_id'] != 0 ? $customer["dimension_id"] : $stock_gl_code["dimension_id"]);
 				$dim2 = ($customer['dimension2_id'] != 0 ? $customer["dimension2_id"] : $stock_gl_code["dimension2_id"]);
-				add_gl_trans_customer(10, $invoice_no, $date_, $sales_account, $dim, $dim2,
+				$total += add_gl_trans_customer(10, $invoice_no, $date_, $sales_account, $dim, $dim2,
 					(-$line_taxfree_price * $invoice_line->qty_dispatched),
 					$invoice->customer_id, "The sales price GL posting could not be inserted");
 
 				if ($invoice_line->discount_percent != 0) {
 
-					add_gl_trans_customer(10, $invoice_no, $date_,
+					$total += add_gl_trans_customer(10, $invoice_no, $date_,
 						$branch_data["sales_discount_account"], $dim, $dim2,
 						($line_taxfree_price * $invoice_line->qty_dispatched * $invoice_line->discount_percent),
 						$invoice->customer_id, "The sales discount GL posting could not be inserted");
@@ -121,14 +121,8 @@ function write_sales_invoice(&$invoice)
 		} /*quantity dispatched is more than 0 */
 	} /*end of delivery_line loop */
 
-	/*Post debtors transaction to GL debit debtors, credit freight re-charged and credit sales */
-	if (($items_total + $charge_shipping) != 0) {
-		add_gl_trans_customer(10, $invoice_no, $date_, $branch_data["receivables_account"], 0, 0,
-			($items_total + $charge_shipping + $items_added_tax + $freight_added_tax),
-			$invoice->customer_id, "The total debtor GL posting could not be inserted");
-	}
 	if ($charge_shipping != 0) {
-		add_gl_trans_customer(10, $invoice_no, $date_, $company_data["freight_act"], 0, 0,
+		$total += add_gl_trans_customer(10, $invoice_no, $date_, $company_data["freight_act"], 0, 0,
 			-$invoice->get_tax_free_shipping(), $invoice->customer_id,
 			"The freight GL posting could not be inserted");
 	}
@@ -138,12 +132,18 @@ function write_sales_invoice(&$invoice)
 			add_customer_trans_tax_detail_item(10, $invoice_no, $taxitem['tax_type_id'],
 				$taxitem['rate'], $invoice->tax_included, $taxitem['Value']);
 
-			add_gl_trans_customer(10, $invoice_no, $date_, $taxitem['sales_gl_code'], 0, 0,
+			$total += add_gl_trans_customer(10, $invoice_no, $date_, $taxitem['sales_gl_code'], 0, 0,
 				(-$taxitem['Value']), $invoice->customer_id,
 				"A tax GL posting could not be inserted");
 		}
 	}
 
+	/*Post debtors transaction to GL debit debtors, credit freight re-charged and credit sales */
+	if (($items_total + $charge_shipping) != 0) {
+		add_gl_trans(10, $invoice_no, $date_, $branch_data["receivables_account"], 0, 0, "",
+			-$total, null, payment_person_types::customer(), $invoice->customer_id, 
+			"The total debtor GL posting could not be inserted");
+	}
 	add_comments(10, $invoice_no, $date_, $invoice->Comments);
 
 	if ($trans_no == 0) {
