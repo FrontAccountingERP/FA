@@ -141,8 +141,13 @@ function add_supp_invoice($supp_trans) // do not receive as ref because we chang
 		$supp_trans->reference, $supp_trans->supp_reference,
 		$invoice_items_total, $tax_total, $supp_trans->ov_discount);
 
+	$total = 0;
     /* Now the control account */
     $supplier_accounts = get_supplier_accounts($supp_trans->supplier_id);
+    $total += add_gl_trans_supplier($trans_type, $invoice_id, $date_, $supplier_accounts["payable_account"], 0, 0,
+		-($invoice_items_total +  $tax_total + $supp_trans->ov_discount),
+		$supp_trans->supplier_id,
+		"The general ledger transaction for the control total could not be added");
 
     /*Loop through the GL Entries and create a debit posting for each of the accounts entered */
 
@@ -155,7 +160,6 @@ function add_supp_invoice($supp_trans) // do not receive as ref because we chang
     between the std cost and the currency cost charged as converted at the ex rate of of the invoice is written off
     to the purchase price variance account applicable to the item being invoiced.
     */
-	$total = 0;
     foreach ($supp_trans->gl_codes as $entered_gl_code)
     {
 
@@ -257,9 +261,10 @@ function add_supp_invoice($supp_trans) // do not receive as ref because we chang
     			"A general ledger transaction for the tax amount could not be added");
     	}
     }
-	add_gl_trans($trans_type, $invoice_id, $date_, $supplier_accounts["payable_account"], 0, 0, "",
-		-$total, null, payment_person_types::supplier(), $supp_trans->supplier_id, 
-		"The general ledger transaction for the control total could not be added");
+	
+	/*Post a balance post if $total != 0 */
+	add_gl_balance($trans_type, $invoice_id, $date_, -$total, payment_person_types::supplier(), $supp_trans->supplier_id);	
+
 	add_comments($trans_type, $invoice_id, $date_, $supp_trans->Comments);
 
 	references::save_last($supp_trans->reference, $trans_type);

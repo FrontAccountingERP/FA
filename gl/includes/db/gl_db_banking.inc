@@ -24,9 +24,11 @@ function add_bank_transfer($from_account, $to_account, $date_,
 		"Cannot insert a source bank transaction");
 
 	// do the destination account postings
-	add_gl_trans($trans_type, $trans_no, $date_, $to_account, 0, 0, "",
-		-$total, null);
-
+	$total += add_gl_trans($trans_type, $trans_no, $date_, $to_account, 0, 0, "",
+		$amount, $currency);
+	/*Post a balance post if $total != 0 */
+	add_gl_balance($trans_type, $trans_no, $date_, -$total);	
+	
 	add_bank_trans($trans_type, $trans_no, $to_account, $ref,
 		$date_, $payment_type, $amount,
 		payment_person_types::misc(), "",

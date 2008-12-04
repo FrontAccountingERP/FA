@@ -29,9 +29,11 @@ function add_supp_payment($supplier_id, $date_, $payment_type, $bank_account,
 
 	// Now debit creditors account with payment + discount
 
-    $supplier_accounts = get_supplier_accounts($supplier_id);
-
 	$total = 0;
+    $supplier_accounts = get_supplier_accounts($supplier_id);
+	$total += add_gl_trans_supplier($trans_type, $payment_id, $date_, $supplier_accounts["payable_account"], 0, 0,
+		$supp_amount + $supp_discount, $supplier_id, "", $rate);
+
 	// Now credit discount received account with discounts
 	if ($supp_discount != 0)
 	{
@@ -45,8 +47,9 @@ function add_supp_payment($supplier_id, $date_, $payment_type, $bank_account,
 			-$supp_amount, $supplier_id, "", $rate);
 	}
 
-	add_gl_trans($trans_type, $payment_id, $date_, $supplier_accounts["payable_account"], 0, 0, "",
-		-$total, null, payment_person_types::supplier(), $supplier_id);
+	/*Post a balance post if $total != 0 */
+	add_gl_balance($trans_type, $payment_id, $date_, -$total, payment_person_types::supplier(), $supplier_id);	
+
    /*now enter the bank_trans entry */
 	add_bank_trans($trans_type, $payment_id, $bank_account, $ref,
 		$date_, $payment_type, -($amount), payment_person_types::supplier(),
