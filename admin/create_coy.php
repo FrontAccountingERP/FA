@@ -137,19 +137,10 @@ function handle_submit()
 	{
 		return false;
 	}
-	$index = "<?php\nheader(\"Location: ../../index.php\");\n?>";
 
 	if ($new)
 	{
-	    $cdir = $comp_path.'/'.$id;
-	    @mkdir($cdir);
-	    save_to_file($cdir.'/'.'index.php', 0, $index);
-
-	    foreach($comp_subdirs as $dir)
-	    {
-			@mkdir($cdir.'/'.$dir);
-			save_to_file($cdir.'/'.$dir.'/'.'index.php', 0, $index);
-	    }
+		create_comp_dirs("$comp_path/$id", $comp_subdirs);
 	}
 	return true;
 }
