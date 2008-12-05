@@ -19,6 +19,19 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+05-Dec-2008 Janusz Dobrowolski
+! Allowed optional ORDER BY option in base db_pager sql query
+$ /includes/db_pager.inc
+# Small fixes to pager layout
+$ /includes/ui/db_pager_view.inc
+! Reusable button code
+$ /includes/ui/ui_controls.inc
+! Button helpers moved from ui_controls.inc
+$ /includes/ui/ui_input.inc
+  /includes/ui/ui_controls.inc
+# Fixed errors during focus on nonexistent elements
+$ /js/utils.js
+
 26-Nov-2008 Janusz Dobrowolski
 # Fixed layout of amount_ex() fields with label.
 $ /includes/ui/ui_input.inc
