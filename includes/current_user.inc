@@ -113,7 +113,8 @@ function number_format2($number, $decimals=0)
 	global $thoseps, $decseps;
 	$tsep = $thoseps[$_SESSION["wa_current_user"]->prefs->tho_sep()];
 	$dsep = $decseps[$_SESSION["wa_current_user"]->prefs->dec_sep()];
-	return number_format($number, $decimals, $dsep,	$tsep);
+	//return number_format($number, $decimals, $dsep,	$tsep);
+	return number_format($number+.000001, $decimals, $dsep,	$tsep);
 }
 
 function price_format($number) {
