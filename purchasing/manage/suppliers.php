@@ -195,7 +195,7 @@ else
 	$_POST['sales_type'] = -1;
 	$_POST['email'] = $_POST['phone'] = $_POST['fax'] = $_POST['gst_no'] = $_POST['contact'] = $_POST['bank_account'] = '';
 	$_POST['payment_terms']  = '';
-	$_POST['credit_limit']	= price_format(sys_prefs::default_credit_limit());
+	$_POST['credit_limit']	= "";
 
 	$company_record = get_company_prefs();
 	$_POST['curr_code']  = $company_record["curr_default"];
