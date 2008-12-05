@@ -19,6 +19,14 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+05-Dec-2008 Joe Hunt
++ New fields in suppliers, phone, fax, vat no, contact and credit limit
+$ /purchasing/suppliers.php
+  /sql/alter2.1.sql
+! Changed dimension view to show result instead of ledger trans
+$ /dimensions/view/view_dimension.php
+  /dimensions/includes/dimension_ui.inc
+  
 05-Dec-2008 Janusz Dobrowolski
 ! Allowed optional ORDER BY option in base db_pager sql query
 $ /includes/db_pager.inc

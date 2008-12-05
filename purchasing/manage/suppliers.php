@@ -44,8 +44,14 @@ if (isset($_POST['submit']))
 
 			$sql = "UPDATE ".TB_PREF."suppliers SET supp_name=".db_escape($_POST['supp_name']) . ",
                 address=".db_escape($_POST['address']) . ",
+                supp_address=".db_escape($_POST['supp_address']) . ",
+                phone=".db_escape($_POST['phone']) . ",
+                fax=".db_escape($_POST['fax']) . ",
+                gst_no=".db_escape($_POST['gst_no']) . ",
                 email=".db_escape($_POST['email']) . ",
+                contact=".db_escape($_POST['contact']) . ",
                 bank_account=".db_escape($_POST['bank_account']) . ",
+                credit_limit=".db_escape($_POST['credit_limit']) . ",
                 dimension_id=".db_escape($_POST['dimension_id']) . ",
                 dimension2_id=".db_escape($_POST['dimension2_id']) . ",
                 curr_code=".db_escape($_POST['curr_code']).",
@@ -61,12 +67,19 @@ if (isset($_POST['submit']))
 		else 
 		{
 
-			$sql = "INSERT INTO ".TB_PREF."suppliers (supp_name, address, email, bank_account, dimension_id, dimension2_id, curr_code,
+			$sql = "INSERT INTO ".TB_PREF."suppliers (supp_name, address, supp_address, phone, fax, gst_no, email, 
+				contact, bank_account, credit_limit, dimension_id, dimension2_id, curr_code,
 				payment_terms, payable_account, purchase_account, payment_discount_account, tax_group_id)
 				VALUES (".db_escape($_POST['supp_name']). ", "
 				.db_escape($_POST['address']) . ", "
+				.db_escape($_POST['supp_address']) . ", "
+				.db_escape($_POST['phone']). ", "
+				.db_escape($_POST['fax']). ", "
+				.db_escape($_POST['gst_no']). ", "
 				.db_escape($_POST['email']). ", "
+				.db_escape($_POST['contact']). ", "
 				.db_escape($_POST['bank_account']). ", "
+				.db_escape($_POST['credit_limit']). ", "
 				.db_escape($_POST['dimension_id']). ", "
 				.db_escape($_POST['dimension2_id']). ", "
 				.db_escape($_POST['curr_code']). ", "
@@ -156,12 +169,18 @@ if (!$new_supplier)
 
 	$_POST['supp_name'] = $myrow["supp_name"];
 	$_POST['address']  = $myrow["address"];
+	$_POST['supp_address']  = $myrow["supp_address"];
+	$_POST['phone']  = $myrow["phone"];
+	$_POST['fax']  = $myrow["fax"];
+	$_POST['gst_no']  = $myrow["gst_no"];
 	$_POST['email']  = $myrow["email"];
+	$_POST['contact']  = $myrow["contact"];
 	$_POST['bank_account']  = $myrow["bank_account"];
 	$_POST['dimension_id']  = $myrow["dimension_id"];
 	$_POST['dimension2_id']  = $myrow["dimension2_id"];
 	$_POST['curr_code']  = $myrow["curr_code"];
 	$_POST['payment_terms']  = $myrow["payment_terms"];
+	$_POST['credit_limit']  = $myrow["credit_limit"];
 	$_POST['tax_group_id'] = $myrow["tax_group_id"];
 	$_POST['payable_account']  = $myrow["payable_account"];
 	$_POST['purchase_account']  = $myrow["purchase_account"];
@@ -170,11 +189,11 @@ if (!$new_supplier)
 } 
 else 
 {
-	$_POST['supp_name'] = $_POST['address'] = $_POST['tax_group_id']  = '';
+	$_POST['supp_name'] = $_POST['address'] = $_POST['supp_address'] = $_POST['tax_group_id']  = '';
 	$_POST['dimension_id'] = 0;
 	$_POST['dimension2_id'] = 0;
 	$_POST['sales_type'] = -1;
-	$_POST['email'] = $_POST['bank_account'] = '';
+	$_POST['email'] = $_POST['phone'] = $_POST['fax'] = $_POST['gst_no'] = $_POST['contact'] = $_POST['bank_account'] = '';
 	$_POST['payment_terms']  = '';
 	$_POST['credit_limit']	= price_format(sys_prefs::default_credit_limit());
 
@@ -186,10 +205,15 @@ else
 }
 
 text_row(_("Supplier Name:"), 'supp_name', null, 42, 40);
-textarea_row(_("Address:"), 'address', null, 35, 5);
+textarea_row(_("Postal ddress:"), 'address', null, 35, 5);
+textarea_row(_("Physical Address:"), 'supp_address', null, 35, 5);
+text_row(_("Phone:"), 'phone', null, 42, 40);
+text_row(_("Fax:"), 'fax', null, 42, 40);
+text_row(_("GSTNo:"), 'gst_no', null, 42, 40);
 text_row(_("Email:"), 'email', null, 42, 40);
-text_row(_("Bank Account:"), 'bank_account', null, 42, 40);
-
+text_row(_("Contact:"), 'contact', null, 42, 40);
+text_row(_("Bank Name/Account:"), 'bank_account', null, 42, 40);
+amount_row(_("Credit Limit:"), 'credit_limit', null);
 // Sherifoz 23.09.03 currency can't be changed if editing
 if (!$new_supplier) 
 {

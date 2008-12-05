@@ -186,3 +186,23 @@ CREATE TABLE `0_item_codes` (
 
 ALTER TABLE `0_company` DROP COLUMN `foreign_codes`;
 ALTER TABLE `0_company` ADD `foreign_codes` TINYINT(1) NOT NULL DEFAULT '0';
+
+ALTER TABLE `0_suppliers` DROP COLUMN `supp_address`;
+ALTER TABLE `0_suppliers` ADD `supp_address` tinytext NOT NULL DEFAULT '' AFTER `address`;
+
+ALTER TABLE `0_suppliers` DROP COLUMN `phone`;
+ALTER TABLE `0_suppliers` ADD `phone` varchar(30) NOT NULL DEFAULT '' AFTER `supp_address`;
+
+ALTER TABLE `0_suppliers` DROP COLUMN `fax`;
+ALTER TABLE `0_suppliers` ADD `fax` varchar(30) NOT NULL DEFAULT '' AFTER `phone`;
+
+ALTER TABLE `0_suppliers` DROP COLUMN `gst_no`;
+ALTER TABLE `0_suppliers` ADD `gst_no` varchar(25) NOT NULL DEFAULT '' AFTER `fax`;
+
+ALTER TABLE `0_suppliers` DROP COLUMN `contact`;
+ALTER TABLE `0_suppliers` ADD `contact` varchar(60) NOT NULL DEFAULT '' AFTER `gst_no`;
+
+ALTER TABLE `0_suppliers` DROP COLUMN `credit_limit`;
+ALTER TABLE `0_suppliers` ADD `credit_limit` double NOT NULL DEFAULT '0' AFTER `tax_group_id`;
+
+ALTER TABLE `0_chart_types` DROP INDEX `name`, ADD INDEX `name` ( `name` );
