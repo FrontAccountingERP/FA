@@ -59,11 +59,13 @@
     		  if(cmd=='as') {
 				  eval("objElement.setAttribute('"+property+"',"+data+");");
 			  } else if(cmd=='up') {
-//				if(!objElement) debug('No element "'+id+'"');
+//				if(!objElement) alert('No element "'+id+'"');
+				if(objElement) {
 			    if (objElement.tagName == 'INPUT' || objElement.tagName == 'TEXTAREA')
 				  objElement.value = data;
 			    else
 				  objElement.innerHTML = data; // selector, div, span etc
+				}
 		  	  } else if(cmd=='di') { // disable/enable element
 				  objElement.disabled = data;
 			  } else if(cmd=='fc') { // set focus
