@@ -103,7 +103,7 @@ function print_po()
 		$SubTotal = 0;
 		while ($myrow2=db_fetch($result))
 		{
-			$Net = round(($myrow2["unit_price"] * $myrow2["quantity_ordered"]),
+			$Net = round2(($myrow2["unit_price"] * $myrow2["quantity_ordered"]),
 			  user_price_dec());
 			$SubTotal += $Net;
 			$DisplayPrice = number_format2($myrow2["unit_price"],$dec);

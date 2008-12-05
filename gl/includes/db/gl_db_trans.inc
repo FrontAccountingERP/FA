@@ -18,10 +18,10 @@ function add_gl_trans($type, $trans_id, $date_, $account, $dimension, $dimension
 		if ($rate == 0)
 			$amount_in_home_currency = to_home_currency($amount, $currency, $date_);
 		else
-			$amount_in_home_currency = round($amount * $rate,  user_price_dec());
+			$amount_in_home_currency = round2($amount * $rate,  user_price_dec());
 	}		
 	else
-		$amount_in_home_currency = round($amount, user_price_dec());
+		$amount_in_home_currency = round2($amount, user_price_dec());
 	if ($dimension == null || $dimension < 0)
 		$dimension = 0;
 	if ($dimension2 == null || $dimension2 < 0)
@@ -75,7 +75,7 @@ function add_gl_trans_std_cost($type, $trans_id, $date_, $account, $dimension, $
 // Function for even out rounding problems
 function add_gl_balance($type, $trans_id, $date_, $amount, $person_type_id=null, $person_id=null)
 {
-	$amount = round($amount, user_price_dec());
+	$amount = round2($amount, user_price_dec());
 	if ($amount != 0)
 		return add_gl_trans($type, $trans_id, $date_, get_company_pref('exchange_diff_act'), 0, 0, "",
 			$amount, null, $person_type_id, $person_id, "The balanced GL transaction could not be inserted");

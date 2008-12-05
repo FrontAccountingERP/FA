@@ -20,8 +20,19 @@ Legend:
 $ -> Affected files
 
 05-Dec-2008 Joe Hunt
-# [0000095] Bad behaviour of routine number_format in Windows.
-$ /includes/current_user.inc
+# [0000095] Bad behaviour of routine number_format and round in Windows.
+$ /gl/includes/gl_db_trans.inc
+  /includes/banking.inc
+  /includes/current_user.inc
+  /purchasing/includes/ui/invoice_ui.inc
+  /reporting/rep107.php
+  /reporting/rep109.php
+  /reporting/rep110.php
+  /reporting/rep209.php
+  /sales/view/view_credit.php
+  /sales/view/view_dispatch.php
+  /sales/view/view_invoice.php
+  /sales/view/view_sales_order.php
 
 04-Dec-2008 Janusz Dobrowolski
 # Check write permissions and create per company subdirectory structure.

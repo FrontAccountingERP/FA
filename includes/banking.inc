@@ -105,7 +105,7 @@ function get_exchange_rate_to_home_currency($currency_code, $date_)
 function to_home_currency($amount, $currency_code, $date_)
 {
 	$ex_rate = get_exchange_rate_to_home_currency($currency_code, $date_);
-	return round($amount / $ex_rate,  user_price_dec());
+	return round2($amount / $ex_rate,  user_price_dec());
 }
 
 //----------------------------------------------------------------------------------
@@ -163,8 +163,8 @@ function exchange_variation($pyt_type, $pyt_no, $type, $trans_no, $pyt_date, $am
 	}
 	if (is_company_currency($curr))
 		return;
-	$inv_amt = round($amount * $trans['rate'], user_price_dec()); 
-	$pay_amt = round($amount * $pyt_trans['rate'], user_price_dec());
+	$inv_amt = round2($amount * $trans['rate'], user_price_dec()); 
+	$pay_amt = round2($amount * $pyt_trans['rate'], user_price_dec());
 	if ($inv_amt != $pay_amt)
 	{
 		$diff = $inv_amt - $pay_amt;

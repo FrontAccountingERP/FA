@@ -177,7 +177,7 @@ $k = 0;  //row colour counter
 
 foreach ($_SESSION['Items']->line_items as $stock_item) {
 
-	$line_total = round($stock_item->quantity * $stock_item->price * (1 - $stock_item->discount_percent),
+	$line_total = round2($stock_item->quantity * $stock_item->price * (1 - $stock_item->discount_percent),
 	   user_price_dec());
 
 	alt_table_row_color($k);
