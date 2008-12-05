@@ -35,14 +35,15 @@ class db_pager {
 	var $select,
 		$where,
 	    $from,
-		$group;
+		$group,
+		$order;
 	var	$extra_where;
 	
 	var $ready = false; // this var is false after change in sql before first
 						// and before first query.
 
 	//  db_pager constructor
-	//  accepts $sql like 'SELECT .... FROM .... [WHERE ...] [GROUP ...]'
+	//  accepts $sql like 'SELECT ...[FROM ...][WHERE ...][GROUP ...][ORDER ...]'
 	//	$name is base name for pager controls
 	function db_pager($sql, $name, $page_len=0) 
 	{
@@ -59,49 +60,44 @@ class db_pager {
 		if ($sql != $this->sql) {
 		    $this->sql = $sql;
 		    $this->ready = false;
-			$select = $sql;
-			$from = $where = $group = '';
+    		$parts = preg_split('/\sORDER\s*BY\s/si', $sql, 2);
+			if(count($parts) == 2) {
+				$sql = $parts[0];
+				$this->order = $parts[1];
+			}
+    		$parts = preg_split('/\sGROUP\s*BY\s/si', $sql, 2);
+			if(count($parts) == 2) {
+				$sql = $parts[0];
+				$this->group = $parts[1];
+			}
+	    	$parts = preg_split('/\sWHERE\s/si', $sql, 2);
+			if(count($parts) == 2) {
+				$sql = $parts[0];
+				$this->where = $parts[1];
+			}
 	    	$parts = preg_split('/\sFROM\s/si', $sql, 2);
 			if(count($parts) == 2) {
-				$select = $parts[0];
-				$from = $parts[1];
-		    	$parts = preg_split('/\sWHERE\s/si', $from, 2);
-				if(count($parts) == 2) {
-					$from = $parts[0];
-					$where = $parts[1];
-		    		$parts = preg_split('/\sGROUP\s*BY\s/si', $where, 2);
-					if(count($parts) == 2) {
-						$where = $parts[0];
-						$group = $parts[1];
-					}
-				}
+				$sql = $parts[0];
+				$this->from = $parts[1];
 			}
-			$this->select = $select;
-			$this->from = $from;
-			$this->where = $where;
-			$this->group = $group;
-/*
-		display_error("sql: $sql");
-		display_error($select);
-		display_error("FROM $from");
-		display_error("WHERE $where");
-		display_error("GROUP BY $group");
-*/
+			$this->select = $sql;
 		}
 	}
 	//
 	//	Set additional constraint on record set
 	//
-	function set_where($where) 
+	function set_where($where = null)
 	{
-	    if (!is_array($where))
-		  $where = array($where);
+	 	if ($where) {
+	    	if (!is_array($where))
+			  $where = array($where);
 
-	    if (count($where) != count($this->extra_where) || 
-			count(array_diff($this->extra_where, $where))) {
-				$this->extra_where = $where;
-				$this->ready = false;
-	    }
+		    if (count($where) == count($this->extra_where) &&
+				!count(array_diff($this->extra_where, $where)))
+				 return;
+		}
+		$this->extra_where = $where;
+		$this->ready = false;
 	}
 	//
 	//	Set query result page
@@ -239,12 +235,13 @@ class db_pager {
 		$from = $this->from;
 		$where = $this->where;
 		$group = $this->group;		
+		$order = $this->order;
 
 		if(count($this->extra_where)) {
 		    $where .= ($where=='' ? '' : ' AND ')
 				.implode( $this->extra_where, ' AND ');
 		}
-		if ($where) $where = " WHERE($where)";
+		if ($where) $where = " WHERE ($where)";
 
 		if ($count) {
 			$group = $group == '' ? "*" : "DISTINCT $group";
@@ -264,8 +261,12 @@ class db_pager {
 			}
 	    }
 				
-	    if (count($ord)) 
+	    if (count($ord)) {
 			$sql .= " ORDER BY " . implode($ord, ',');
+		} else {
+			if($order)
+				$sql .= " ORDER BY $order"; // original base query order
+		}
 
 	    $page_len = $this->page_len;
 	    $offset = ($this->curr_page - 1) * $page_len;
@@ -385,5 +386,12 @@ function &new_db_pager($name, $sql, $coldef, $page_len = 0)  {
 
     return $ret;
 }
-
+//
+//	Force pager initialization.
+//
+function refresh_pager($name)
+{
+	if (isset($_SESSION[$name]))
+		$_SESSION[$name]->ready = false;
+}
 ?>
