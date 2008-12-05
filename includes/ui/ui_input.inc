@@ -203,23 +203,49 @@ function submit_return($name, $value, $title=false, $async=false)
 		submit($name, $value, true, $title, $async);
 	}
 }
-//---------------------------------------------------------------------------------
-/*
-function button($name, $value, $onclick, $title=false)
+//-----------------------------------------------------------------------------------
+
+function set_icon($icon, $title=false)
 {
-  	default_focus($name);
-  	echo "<input type=\"button\" class=\"inputsubmit\" name=\"$name\" value=\"$value\" onclick=\"$onclick\""
-	    .($title ? " title='$title'" : '')
-	    ." />\n";
+	global $path_to_root;
+	return "<img src='$path_to_root/themes/".user_theme()."/images/$icon' width='14' height='14' border='0'".($title ? " title='$title'" : "")." />\n";	
 }
 
-function button_cell($name, $value, $onclick, $title=false)
+function button($name, $value, $title=false, $icon=false)
+{
+	// php silently changes dots,spaces,'[' and characters 128-159
+	// to underscore in POST names, to maintain compatibility with register_globals
+	if (user_graphic_links() && $icon)
+	{
+		if ($value == _("Delete")) // Helper during implementation
+			$icon = ICON_DELETE;
+		return "<button type='submit' class='editbutton' name='".
+			htmlentities(strtr($name, array('.'=>'=2E',' '=>'=20','='=>'=3D','['=>'=5B'))).
+			"' value=''" . ($title ? " title='$title'":" title='$value'")." />".set_icon($icon)."\n";
+	}
+	else
+		return "<input type='submit' class='editbutton' name='"
+			.htmlentities(strtr($name, array('.'=>'=2E',' '=>'=20','='=>'=3D','['=>'=5B')))
+			."' value='$value'"
+			.($title ? " title='$title'":'')." />\n";
+}
+
+function button_cell($name, $value, $title=false, $icon=false)
 {
 	echo "<td>";
-	button($name, $value, $onclick, $title);
-	echo "</td>\n";
+	echo button($name, $value, $title, $icon);
+	echo "</td>";
 }
-*/
+
+function delete_button_cell($name, $value, $title=false)
+{
+	button_cell($name, $value, $title, ICON_DELETE);
+}
+
+function edit_button_cell($name, $value, $title=false)
+{
+	button_cell($name, $value, $title, ICON_EDIT);
+}
 //-----------------------------------------------------------------------------------
 
 function check_value($name)

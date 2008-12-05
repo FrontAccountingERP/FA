@@ -184,51 +184,6 @@ function table_header($labels)
 		labelheader_cell($label);
 	end_row();
 }
-
-//-----------------------------------------------------------------------------------
-
-function set_icon($icon, $title=false)
-{
-	global $path_to_root;
-	return "<img src='$path_to_root/themes/".user_theme()."/images/$icon' width='14' height='14' border='0'".($title ? " title='$title'" : "")." />\n";	
-}
-
-function button($name, $value, $title=false, $icon=false)
-{
-	// php silently changes dots,spaces,'[' and characters 128-159
-	// to underscore in POST names, to maintain compatibility with register_globals
-	if (user_graphic_links() && $icon)
-	{
-		if ($value == _("Delete")) // Helper during implementation
-			$icon = ICON_DELETE;
-		echo "<button type='submit' class='editbutton' name='".
-			htmlentities(strtr($name, array('.'=>'=2E',' '=>'=20','='=>'=3D','['=>'=5B'))).
-			"' value=''" . ($title ? " title='$title'":" title='$value'")." />".set_icon($icon)."\n";
-	}
-	else
-		echo "<input type='submit' class='editbutton' name='"
-			.htmlentities(strtr($name, array('.'=>'=2E',' '=>'=20','='=>'=3D','['=>'=5B')))
-			."' value='$value'"
-			.($title ? " title='$title'":'')." />\n";
-}
-
-function button_cell($name, $value, $title=false, $icon=false)
-{
-	echo "<td>";
-	button($name, $value, $title, $icon);
-	echo "</td>";
-}
-
-function delete_button_cell($name, $value, $title=false)
-{
-	button_cell($name, $value, $title, ICON_DELETE);
-}
-
-function edit_button_cell($name, $value, $title=false)
-{
-	button_cell($name, $value, $title, ICON_EDIT);
-}
-
 //-----------------------------------------------------------------------------------
 
 function start_row($param="")
