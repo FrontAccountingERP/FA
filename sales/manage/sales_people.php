@@ -1,5 +1,14 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU Affero General Public License,
+	AGPL, as published by the Free Software Foundation, either version 
+	3 of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/agpl-3.0.html>.
+***********************************************************************/
 $page_security = 3;
 $path_to_root="../..";
 include($path_to_root . "/includes/session.inc");
@@ -118,12 +127,12 @@ while ($myrow = db_fetch($result))
     label_cell($myrow["salesman_name"]);
    	label_cell($myrow["salesman_phone"]);
    	label_cell($myrow["salesman_fax"]);
-   	label_cell($myrow["salesman_email"]);
+	label_cell("<a href=mailto:" . $myrow["salesman_email"]. ">" . $myrow["salesman_email"]. "</a>");
 	label_cell(percent_format($myrow["provision"])." %", "nowrap align=right");
    	amount_cell($myrow["break_pt"]);
 	label_cell(percent_format($myrow["provision2"])." %", "nowrap align=right");
  	edit_button_cell("Edit".$myrow["salesman_code"], _("Edit"));
- 	edit_button_cell("Delete".$myrow["salesman_code"], _("Delete"));
+ 	delete_button_cell("Delete".$myrow["salesman_code"], _("Delete"));
   	end_row();
 
 } //END WHILE LIST LOOP
@@ -136,6 +145,8 @@ echo '<br>';
 
 start_form();
 
+
+$_POST['salesman_email'] = "";
 if ($selected_id != -1) 
 {
  	if ($Mode == 'Edit') {
@@ -165,7 +176,7 @@ start_table("$table_style2 width=60%");
 text_row_ex(_("Sales person name:"), 'salesman_name', 30);
 text_row_ex(_("Telephone number:"), 'salesman_phone', 20);
 text_row_ex(_("Fax number:"), 'salesman_fax', 20);
-text_row_ex(_("Email:"), 'salesman_email', 40);
+text_row_ex("<a href='Mailto:".$_POST['salesman_email']."'>" . _("E-mail:") . "</a>", 'salesman_email', 40);
 percent_row(_("Provision").':', 'provision');
 amount_row(_("Break Pt.:"), 'break_pt');
 percent_row(_("Provision")." 2:", 'provision2');

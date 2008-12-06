@@ -1,5 +1,14 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU Affero General Public License,
+	AGPL, as published by the Free Software Foundation, either version 
+	3 of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/agpl-3.0.html>.
+***********************************************************************/
 $page_security =10;
 $path_to_root="..";
 include($path_to_root . "/includes/session.inc");
@@ -131,7 +140,7 @@ textarea_row(_("Address:"), 'postal_address', $_POST['postal_address'], 35, 5);
 
 text_row_ex(_("Telephone Number:"), 'phone', 25, 55);
 text_row_ex(_("Facsimile Number:"), 'fax', 25);
-text_row_ex(_("Email Address:"), 'email', 25, 55);
+text_row_ex("<a href='Mailto:".$_POST['email']."'>" . _("E-mail Address:") . "</a>", 'email', 25, 55);
 label_row(_("Company Logo:"), $_POST['coy_logo']);
 label_row(_("New Company Logo (.jpg)") . ":", "<input type='file' id='pic' name='pic'>");
 

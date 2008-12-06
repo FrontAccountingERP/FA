@@ -1,5 +1,14 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU Affero General Public License,
+	AGPL, as published by the Free Software Foundation, either version 
+	3 of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/agpl-3.0.html>.
+***********************************************************************/
 $page_security = 3;
 $path_to_root="../..";
 
@@ -189,11 +198,11 @@ else
 	hidden('customer_id');
 }
 
-start_table($table_style2, 7, 6);
+br();
+start_table($table_style2, 5);
 echo "<tr valign=top><td>"; // outer table	
 
-
-start_table("class='tablestyle_noborder'");	
+echo "<table>";
 
 if ($new_customer) 
 {
@@ -231,10 +240,12 @@ else
 	$_POST['credit_limit']	= price_format($myrow["credit_limit"]);
 }
 
+table_section_title(_("Name and Address"));
+
 text_row(_("Customer Name:"), 'CustName', $_POST['CustName'], 40, 40);
 textarea_row(_("Address:"), 'address', $_POST['address'], 35, 5);
 
-text_row(_("Email:"), 'email', null, 40, 40);
+text_row("<a href='Mailto:".$_POST['email']."'>" . _("E-mail:") . "</a>", 'email', null, 40, 40);
 text_row(_("GSTNo:"), 'tax_id', null, 40, 40);
 
 
@@ -252,9 +263,17 @@ end_table();
 
 echo "</td><td class='tableseparator'>"; // outer table
 
-start_table("class='tablestyle_noborder'");	
+echo"<table>";
+
+table_section_title(_("Sales"));
 
 sales_types_list_row(_("Sales Type/Price List:"), 'sales_type', $_POST['sales_type']);
+percent_row(_("Discount Percent:"), 'discount', $_POST['discount']);
+percent_row(_("Prompt Payment Discount Percent:"), 'pymt_discount', $_POST['pymt_discount']);
+amount_row(_("Credit Limit:"), 'credit_limit', $_POST['credit_limit']);
+
+payment_terms_list_row(_("Payment Terms:"), 'payment_terms', $_POST['payment_terms']);
+credit_status_list_row(_("Credit Status:"), 'credit_status', $_POST['credit_status']); 
 $dim = get_company_pref('use_dimension');
 if ($dim >= 1)
 	dimensions_list_row(_("Dimension")." 1:", 'dimension_id', $_POST['dimension_id'], true, " ", false, 1);
@@ -265,12 +284,6 @@ if ($dim < 1)
 if ($dim < 2)
 	hidden('dimension2_id', 0);
 
-percent_row(_("Discount Percent:"), 'discount', $_POST['discount']);
-percent_row(_("Prompt Payment Discount Percent:"), 'pymt_discount', $_POST['pymt_discount']);
-amount_row(_("Credit Limit:"), 'credit_limit', $_POST['credit_limit']);
-
-payment_terms_list_row(_("Payment Terms:"), 'payment_terms', $_POST['payment_terms']);
-credit_status_list_row(_("Credit Status:"), 'credit_status', $_POST['credit_status']); 
 if (!$new_customer)  {
 	start_row();
 	echo '<td>'._('Customer branches').':</td>';

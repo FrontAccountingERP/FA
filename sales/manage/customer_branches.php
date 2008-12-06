@@ -1,5 +1,14 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU Affero General Public License,
+	AGPL, as published by the Free Software Foundation, either version 
+	3 of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/agpl-3.0.html>.
+***********************************************************************/
 $page_security = 3;
 $path_to_root="../..";
 include($path_to_root . "/includes/session.inc");
@@ -205,7 +214,7 @@ if ($num_branches)
 		if (count($_SESSION['Context']))
  			edit_button_cell("Select".$myrow["branch_code"], _("Select"));
  		edit_button_cell("Edit".$myrow["branch_code"], _("Edit"));
- 		edit_button_cell("Delete".$myrow["branch_code"], _("Delete"));
+ 		delete_button_cell("Delete".$myrow["branch_code"], _("Delete"));
 		end_row();
 	}
 	end_table();
@@ -215,12 +224,13 @@ else
 	display_note(_("The selected customer does not have any branches. Please create at least one branch."));
 
 echo "<br>";
-start_table("$table_style2 width=60%", 5);
+start_table("$table_style2 width=70%", 5);
 echo "<tr valign=top><td>"; // outer table
 
 echo "<table>";
 
 
+$_POST['email'] = "";
 if ($selected_id != -1)
 {
  	if ($Mode == 'Edit') {
@@ -291,7 +301,7 @@ text_row(_("Contact Person:"), 'contact_name', null, 35, 40);
 text_row(_("Phone Number:"), 'phone', null, 20, 20);
 text_row(_("Fax Number:"), 'fax', null, 20, 20);
 
-text_row("<a href='Mailto:'>" . _("E-mail:") . "</a>", 'email', null, 35, 55);
+text_row("<a href='Mailto:".$_POST['email']."'>" . _("E-mail:") . "</a>", 'email', null, 35, 55);
 
 table_section_title(_("Sales"));
 

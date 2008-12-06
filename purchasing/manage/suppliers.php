@@ -1,5 +1,14 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU Affero General Public License,
+	AGPL, as published by the Free Software Foundation, either version 
+	3 of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/agpl-3.0.html>.
+***********************************************************************/
 $page_security=5;
 $path_to_root="../..";
 include($path_to_root . "/includes/session.inc");
@@ -157,10 +166,11 @@ else
 	hidden('supplier_id', get_post('supplier_id'));
 }
 
-//start_table("class='tablestyle2'", 0, 3);
-start_table("class='tablestyle'", 3);
+br();
+start_table("$table_style2 width=65%", 5);
+echo "<tr valign=top><td>"; // outer table
 
-table_section_title(_("Supplier"));
+echo "<table>";
 
 if (!$new_supplier) 
 {
@@ -204,17 +214,30 @@ else
 	$_POST['payment_discount_account'] = $company_record['pyt_discount_act'];
 }
 
+table_section_title(_("Name and Contact"));
+
 text_row(_("Supplier Name:"), 'supp_name', null, 42, 40);
-textarea_row(_("Postal ddress:"), 'address', null, 35, 5);
-textarea_row(_("Physical Address:"), 'supp_address', null, 35, 5);
-text_row(_("Phone:"), 'phone', null, 42, 40);
-text_row(_("Fax:"), 'fax', null, 42, 40);
-text_row(_("GSTNo:"), 'gst_no', null, 42, 40);
-text_row(_("Email:"), 'email', null, 42, 40);
 text_row(_("Contact:"), 'contact', null, 42, 40);
+
+text_row(_("Phone Number:"), 'phone', null, 42, 40);
+text_row(_("Fax Number:"), 'fax', null, 42, 40);
+
+text_row("<a href='Mailto:".$_POST['email']."'>" . _("E-mail:") . "</a>", 'email', null, 35, 55);
+
+table_section_title(_("Addresses"));
+textarea_row(_("Mailing Address:"), 'address', null, 35, 5);
+textarea_row(_("Physical Address:"), 'supp_address', null, 35, 5);
+
+echo "</table>";
+
+echo "</td><td  class='tableseparator'>"; // outer table
+
+echo"<table>";
+
+table_section_title(_("Purchasing"));
+text_row(_("GSTNo:"), 'gst_no', null, 42, 40);
 text_row(_("Bank Name/Account:"), 'bank_account', null, 42, 40);
 amount_row(_("Credit Limit:"), 'credit_limit', null);
-// Sherifoz 23.09.03 currency can't be changed if editing
 if (!$new_supplier) 
 {
 	label_row(_("Supplier's Currency:"), $_POST['curr_code']);
@@ -251,7 +274,10 @@ if ($dim < 1)
 if ($dim < 2)
 	hidden('dimension2_id', 0);
 
+end_table();
+
 end_table(1);
+
 div_start('controls');
 if (!$new_supplier) 
 {

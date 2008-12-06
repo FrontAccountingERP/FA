@@ -125,7 +125,7 @@ while ($myrow = db_fetch($result))
 	label_cell($myrow["user_id"]);
 	label_cell($myrow["real_name"]);
 	label_cell($myrow["phone"]);
-	label_cell($myrow["email"]);
+	label_cell("<a href=mailto:" . $myrow["email"]. ">" . $myrow["email"]. "</a>");
 	label_cell($last_visit_date, "nowrap");
 	label_cell($security_headings[$myrow["full_access"]]);
  	edit_button_cell("Edit".$myrow["user_id"], _("Edit"));
@@ -146,6 +146,8 @@ echo '<br>';
 start_form();
 
 start_table($table_style2);
+
+$_POST['email'] = "";
 if ($selected_id != '') 
 {
   	if ($Mode == 'Edit') {
@@ -188,7 +190,7 @@ text_row_ex(_("Full Name").":", 'real_name',  50);
 
 text_row_ex(_("Telephone No.:"), 'phone', 30);
 
-text_row_ex(_("Email Address:"), 'email', 50);
+text_row_ex("<a href='Mailto:".$_POST['email']."'>" . _("Email Address:") . "</a>", 'email', 50);
 
 security_headings_list_row(_("Access Level:"), 'Access', null); 
 
