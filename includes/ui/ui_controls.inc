@@ -56,6 +56,30 @@ function end_table($breaks=0)
 		br($breaks);
 }
 
+function start_outer_table($extra="", $padding='2', $spacing='0')
+{
+	br();
+	start_table($extra, $padding, $spacing);
+	echo "<tr valign=top><td>\n"; // outer table
+}
+
+function table_section($number=1)
+{
+	if ($number == 2)
+	{
+		echo "</table>\n";
+		echo "</td><td  class='tableseparator'>\n"; // outer table
+	}
+	echo "<table>\n";
+}	
+
+function end_outer_table($breaks=0)
+{
+	echo "</table>\n";
+	echo "</td></tr>\n";
+	end_table($breaks);
+}
+
 function meta_forward($forward_to, $params="")
 {
     global $Ajax;
@@ -172,9 +196,9 @@ function alt_table_row_color(&$k)
 	}
 }
 
-function table_section_title($msg)
+function table_section_title($msg, $colspan=2)
 {
-	echo "<tr><td colspan=2 class='tableheader'>$msg</td><tr>\n";
+	echo "<tr><td colspan=$colspan class='tableheader'>$msg</td></tr>\n";
 }
 
 function table_header($labels)

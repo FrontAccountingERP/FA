@@ -198,11 +198,9 @@ else
 	hidden('customer_id');
 }
 
-br();
-start_table($table_style2, 5);
-echo "<tr valign=top><td>"; // outer table	
+start_outer_table($table_style2, 5);
 
-echo "<table>";
+table_section(1);
 
 if ($new_customer) 
 {
@@ -245,11 +243,10 @@ table_section_title(_("Name and Address"));
 text_row(_("Customer Name:"), 'CustName', $_POST['CustName'], 40, 40);
 textarea_row(_("Address:"), 'address', $_POST['address'], 35, 5);
 
-text_row("<a href='Mailto:".$_POST['email']."'>" . _("E-mail:") . "</a>", 'email', null, 40, 40);
+email_row(_("E-mail:"), 'email', null, 40, 40);
 text_row(_("GSTNo:"), 'tax_id', null, 40, 40);
 
 
-// Sherifoz 23.09.03 currency can't be changed if editing
 if ($new_customer) 
 {
 	currencies_list_row(_("Customer's Currency:"), 'curr_code', $_POST['curr_code']);
@@ -259,11 +256,8 @@ else
 	label_row(_("Customer's Currency:"), $_POST['curr_code']);
 	hidden('curr_code', $_POST['curr_code']);				
 }	
-end_table();
 
-echo "</td><td class='tableseparator'>"; // outer table
-
-echo"<table>";
+table_section(2);
 
 table_section_title(_("Sales"));
 
@@ -292,9 +286,9 @@ if (!$new_customer)  {
 		"debtor_no=".$_POST['customer_id']);
 	end_row();
 }
-end_table();
 
-end_table(1); // outer table	
+end_outer_table(1);
+
 div_start('controls');
 if ($new_customer)
 {

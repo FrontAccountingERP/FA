@@ -166,11 +166,9 @@ else
 	hidden('supplier_id', get_post('supplier_id'));
 }
 
-br();
-start_table("$table_style2 width=65%", 5);
-echo "<tr valign=top><td>"; // outer table
+start_outer_table($table_style2, 5);
 
-echo "<table>";
+table_section(1);
 
 if (!$new_supplier) 
 {
@@ -217,22 +215,18 @@ else
 table_section_title(_("Name and Contact"));
 
 text_row(_("Supplier Name:"), 'supp_name', null, 42, 40);
-text_row(_("Contact:"), 'contact', null, 42, 40);
+text_row(_("Contact Person:"), 'contact', null, 42, 40);
 
 text_row(_("Phone Number:"), 'phone', null, 42, 40);
 text_row(_("Fax Number:"), 'fax', null, 42, 40);
 
-text_row("<a href='Mailto:".$_POST['email']."'>" . _("E-mail:") . "</a>", 'email', null, 35, 55);
+email_row(_("E-mail:"), 'email', null, 35, 55);
 
 table_section_title(_("Addresses"));
 textarea_row(_("Mailing Address:"), 'address', null, 35, 5);
 textarea_row(_("Physical Address:"), 'supp_address', null, 35, 5);
 
-echo "</table>";
-
-echo "</td><td  class='tableseparator'>"; // outer table
-
-echo"<table>";
+table_section(2);
 
 table_section_title(_("Purchasing"));
 text_row(_("GSTNo:"), 'gst_no', null, 42, 40);
@@ -274,9 +268,7 @@ if ($dim < 1)
 if ($dim < 2)
 	hidden('dimension2_id', 0);
 
-end_table();
-
-end_table(1);
+end_outer_table(1);
 
 div_start('controls');
 if (!$new_supplier) 

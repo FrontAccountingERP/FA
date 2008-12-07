@@ -312,6 +312,11 @@ function label_cell($label, $params="", $id=null)
 	return $label;
 }
 
+function email_cell($label, $params="", $id=null)
+{
+	label_cell("<a href='mailto:$label'>$label</a>", $params, $id);
+}
+
 function amount_cell($label, $bold=false, $params="", $id=null)
 {
 	if ($bold)
@@ -426,6 +431,17 @@ function text_row_ex($label, $name, $size, $max=null, $title=null, $value=null, 
 	text_cells_ex($label, $name, $size, $max, $value, $title, $params, $post_label);
 
 	echo "</tr>\n";
+}
+
+//-----------------------------------------------------------------------------------
+function email_row($label, $name, $value, $size, $max, $title=null, $params="", $post_label="")
+{
+	text_row("<a href='Mailto:".$_POST[$name]."'>$label</a>", $name, $value, $size, $max, $title, $params, $post_label);
+}
+
+function email_row_ex($label, $name, $size, $max=null, $title=null, $value=null, $params=null, $post_label=null)
+{
+	text_row_ex("<a href='Mailto:".$_POST[$name]."'>$label</a>", $name, $size, $max, $title, $value, $params, $post_label);
 }
 
 //-----------------------------------------------------------------------------------

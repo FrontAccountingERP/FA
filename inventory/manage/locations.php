@@ -184,7 +184,7 @@ textarea_row(_("Address:"), 'delivery_address', null, 35, 5);
 
 text_row_ex(_("Telephone No:"), 'phone', 30, 30);
 text_row_ex(_("Facsimile No:"), 'fax', 30, 30);
-text_row_ex("<a href='Mailto:".$_POST['email']."'>" . _("E-mail:") . "</a>", 'email', 30);
+email_row_ex(_("E-mail:"), 'email', 30);
 
 end_table(1);
 submit_add_or_update_center($selected_id == -1, '', true);

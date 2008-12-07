@@ -78,7 +78,10 @@ if (isset($_POST['submit']) && can_process())
 //-------------------------------------------------------------------------------------------------
 
 start_form();
-start_table("class='tablestyle'");
+
+start_outer_table("class='tablestyle'");
+
+table_section(1);
 
 $myrow = get_company_prefs();
 
@@ -156,13 +159,13 @@ percent_row(_("Invoice Over-Charge Allowance:"), 'po_over_charge');
 // Not used in FA2.0.
 //gl_all_accounts_list_row(_("Goods Received Clearing Account:"), 'grn_act', $_POST['grn_act']);
 
+//---------------
+table_section(2);
 table_section_title(_("Suppliers and Purchasing Defaults"));
 
 gl_all_accounts_list_row(_("Payable Account:"), 'creditors_act', $_POST['creditors_act']);
 
 gl_all_accounts_list_row(_("Purchase Discount Account:"), 'pyt_discount_act', $_POST['pyt_discount_act']);
-
-//---------------
 
 table_section_title(_("Inventory"));
 
@@ -193,7 +196,7 @@ text_row(_("Dimension Required By After:"), 'default_dim_required', $_POST['defa
 
 //----------------
 
-end_table(1);
+end_outer_table(1);
 
 submit_center('submit', _("Update"), true, '', true);
 

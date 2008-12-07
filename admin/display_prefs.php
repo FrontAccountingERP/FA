@@ -52,8 +52,10 @@ if (isset($_POST['setprefs']))
 }
 
 start_form();
-start_table($table_style2);
 
+start_outer_table($table_style2);
+
+table_section(1);
 table_section_title(_("Decimal Places"));
 
 text_row_ex(_("Prices/Amounts:"), 'prices', 5, 5, '', user_price_dec());
@@ -79,7 +81,14 @@ decseps_list_row(_("Decimal Separator:"), "dec_sep", user_dec_sep());
 
 /* The array $decseps is set up in config.php for modifications
 possible separators can be added by modifying the array definition by editing that file */
+if (!isset($_POST['language']))
+	$_POST['language'] = $_SESSION['language']->code;
 
+table_section_title(_("Language"));
+
+languages_list_row(_("Language:"), 'language', $_POST['language']);
+
+table_section(2);
 table_section_title(_("Miscellaneous"));
 
 check_row(_("Show hints for new users:"), 'show_hints', user_hints());
@@ -112,14 +121,7 @@ check_row(_("Use icons instead of text links:"), 'graphic_links', user_graphic_l
 
 text_row_ex(_("Query page size:"), 'query_size',  5, 5, '', user_query_size());
 
-table_section_title(_("Language"));
-
-if (!isset($_POST['language']))
-	$_POST['language'] = $_SESSION['language']->code;
-
-languages_list_row(_("Language:"), 'language', $_POST['language']);
-
-end_table(1);
+end_outer_table(1);
 
 submit_center('setprefs', _("Update"), true, '', true);
 

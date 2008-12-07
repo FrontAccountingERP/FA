@@ -19,6 +19,20 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+07-Dec-2008 Joe Hunt
+! Better layout. Copyright notes. Mailto links.
+$ /admin/company_preferences.php
+  /admin/display_prefs.php
+  /gl_setup.php
+  /admin/users.php
+  /includes/ui_controls.inc
+  /includes/ui_input.inc
+  /inventory/manage/locations.php
+  /purchasing/manage/suppliers.php
+  /sales/manage/customer_branches.php
+  /sales/manage/customers.php
+  /sales/manage/sales_people.php
+  
 05-Dec-2008 Joe Hunt
 + New fields in suppliers, phone, fax, vat no, contact and credit limit
 $ /purchasing/suppliers.php

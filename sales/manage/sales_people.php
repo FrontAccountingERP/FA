@@ -127,7 +127,7 @@ while ($myrow = db_fetch($result))
     label_cell($myrow["salesman_name"]);
    	label_cell($myrow["salesman_phone"]);
    	label_cell($myrow["salesman_fax"]);
-	label_cell("<a href=mailto:" . $myrow["salesman_email"]. ">" . $myrow["salesman_email"]. "</a>");
+	email_cell($myrow["salesman_email"]);
 	label_cell(percent_format($myrow["provision"])." %", "nowrap align=right");
    	amount_cell($myrow["break_pt"]);
 	label_cell(percent_format($myrow["provision2"])." %", "nowrap align=right");
@@ -176,7 +176,7 @@ start_table("$table_style2 width=60%");
 text_row_ex(_("Sales person name:"), 'salesman_name', 30);
 text_row_ex(_("Telephone number:"), 'salesman_phone', 20);
 text_row_ex(_("Fax number:"), 'salesman_fax', 20);
-text_row_ex("<a href='Mailto:".$_POST['salesman_email']."'>" . _("E-mail:") . "</a>", 'salesman_email', 40);
+email_row_ex(_("E-mail:"), 'salesman_email', 40);
 percent_row(_("Provision").':', 'provision');
 amount_row(_("Break Pt.:"), 'break_pt');
 percent_row(_("Provision")." 2:", 'provision2');

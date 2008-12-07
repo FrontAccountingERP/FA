@@ -209,7 +209,7 @@ if ($num_branches)
 		label_cell($myrow["description"]);
 		label_cell($myrow["phone"]);
 		label_cell($myrow["fax"]);
-		label_cell("<a href=mailto:" . $myrow["email"]. ">" . $myrow["email"]. "</a>");
+		email_cell($myrow["email"]);
 		label_cell($myrow["tax_group_name"]);
 		if (count($_SESSION['Context']))
  			edit_button_cell("Select".$myrow["branch_code"], _("Select"));
@@ -223,12 +223,9 @@ if ($num_branches)
 else
 	display_note(_("The selected customer does not have any branches. Please create at least one branch."));
 
-echo "<br>";
-start_table("$table_style2 width=70%", 5);
-echo "<tr valign=top><td>"; // outer table
+start_outer_table($table_style2, 5);
 
-echo "<table>";
-
+table_section(1);
 
 $_POST['email'] = "";
 if ($selected_id != -1)
@@ -301,13 +298,15 @@ text_row(_("Contact Person:"), 'contact_name', null, 35, 40);
 text_row(_("Phone Number:"), 'phone', null, 20, 20);
 text_row(_("Fax Number:"), 'fax', null, 20, 20);
 
-text_row("<a href='Mailto:".$_POST['email']."'>" . _("E-mail:") . "</a>", 'email', null, 35, 55);
+email_row(_("E-mail:"), 'email', null, 35, 55);
 
 table_section_title(_("Sales"));
 
 sales_persons_list_row( _("Sales Person:"), 'salesman', null);
 
 sales_areas_list_row( _("Sales Area:"), 'area', null);
+
+sales_groups_list_row(_("Sales Group:"), 'group_no', null, true);
 
 locations_list_row(_("Default Inventory Location:"), 'default_location', null);
 
@@ -317,13 +316,7 @@ tax_groups_list_row(_("Tax Group:"), 'tax_group_id', null);
 
 yesno_list_row(_("Disable this Branch:"), 'disable_trans', null);
 
-sales_groups_list_row(_("Sales Group:"), 'group_no', null, true);
-
-echo "</table>";
-
-echo "</td><td  class='tableseparator'>"; // outer table
-
-echo"<table>";
+table_section(2);
 
 table_section_title(_("GL Accounts"));
 
@@ -342,9 +335,7 @@ textarea_row(_("Mailing Address:"), 'br_post_address', null, 35, 5);
 
 textarea_row(_("Billing Address:"), 'br_address', null, 35, 5);
 
-end_table();
-
-end_table(1); // outer table
+end_outer_table(1);
 
 submit_add_or_update_center($selected_id == -1, '', true);
 
