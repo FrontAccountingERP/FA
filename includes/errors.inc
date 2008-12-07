@@ -5,7 +5,7 @@ $before_box = ''; // temporary container for output html data before error box
 
 $msg_colors = array( 
 	E_USER_ERROR => array('bg'=>'#ffcccc', 'txt'=>'#dd2200', 'bd'=>'#cc3300'),
-    E_USER_WARNING => array('bg'=>'#ffcccc', 'txt'=>'#dd2200', 'bd'=>'#cc3300'),
+    E_USER_WARNING => array('bg'=>'#ffdd33', 'txt'=>'#ff5500', 'bd'=>'#ff9900'),
     E_USER_NOTICE => array('bg'=>'#ccffcc', 'txt'=>'#007700', 'bd'=>'#33cc00'));
 
 //-----------------------------------------------------------------------------
@@ -16,9 +16,9 @@ function error_handler($errno, $errstr, $file, $line) {
     global $messages;
 
 	// error_reporting==0 when messages are set off with @ 
-	if ($errno & error_reporting())
+	if ($errno & error_reporting()) {
 		$messages[] = array($errno, $errstr, $file, $line);
-
+	}
     return true;
 }
 //------------------------------------------------------------------------------
@@ -33,9 +33,16 @@ function fmt_errors($center=true) {
 	$content = '';
 	foreach($messages as $msg) {
 		if ($msg[0]>$type) continue;
-		if ($msg[0]<$type && $type>E_USER_ERROR) {
-			$content = ''; // clean notices when we have errors
-			$type = E_USER_ERROR; // php or user errors 
+
+		if ($msg[0]<$type) { 
+			if ($msg[0] == E_USER_WARNING) {
+				$type = E_USER_WARNING; // user warnings 
+				$content = ''; 			// clean notices when we have errors
+			} else  {
+				$type = E_USER_ERROR; 	// php or user errors 
+				if($type == E_USER_WARNING)
+					$content = ''; 			// clean other messages
+			}
 		}
 	    $str = $msg[1];
 		$c = $msg_colors[$type];
@@ -43,7 +50,7 @@ function fmt_errors($center=true) {
 		  $str .= ' '._('in file').': '.$msg[2].' '._('at line ').$msg[3];
 		$content .= "<tr><td  " . ($center?"align='center' ":"").
 		  " width='100%' bgcolor='{$c['bg']}'><font color='{$c['txt']}'>"
-		  .$str."</font></td></tr>";
+		  .$msg[1]."</font></td></tr>";
 	}
 
   	$str = "<center><table border='1' cellpadding='3' cellspacing='0' style='border-collapse: collapse' bordercolor='{$c['bd']}' width='98%'>"
