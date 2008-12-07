@@ -135,12 +135,21 @@
 		}
 		else
 		{
-			if ($doctype == 8)
-				$this->Text($ccol, $myrow['supp_name'], $icol);
-			else
-				$this->Text($ccol, $myrow['DebtorName'], $icol);
+			if ($doctype == 8) {
+				$name = $myrow['supp_name'];
+				$addr = $myrow['address'];
+			} else {
+				if (trim($branch['br_address']) != '') {
+					$name = $branch['br_name'];
+					$addr = $branch['br_address'];
+				} else {
+					$name = $myrow['DebtorName'];
+					$addr = $myrow['address'];
+				}
+			}
+			$this->Text($ccol, $name, $icol);
 			$this->NewLine();
-			$this->TextWrapLines($ccol, $icol - $ccol, $myrow['address']);
+			$this->TextWrapLines($ccol, $icol - $ccol, $addr);
 		}
 		if ($sales_order != NULL)
 		{
@@ -167,7 +176,7 @@
 		$this->TextWrap($col, $this->row, $width, $doc_Due_Date, 'C');
 		$this->row = $iline3 - $this->lineHeight - 1;
 		$col = $this->leftMargin;
-		if ($sales_order != NULL)
+		if (isset($sales_order["customer_ref"]))
 			$this->TextWrap($col, $this->row, $width, $sales_order["customer_ref"], 'C');
 		$col += $width;	
 		if ($branch != null)
