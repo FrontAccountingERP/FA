@@ -214,10 +214,10 @@ function display_order_header(&$order, $editable, $date_text, $display_tax_group
 {
 	global $table_style, $Ajax;
 
-	start_table("width=80% $table_style");
-	echo "<tr><td valign=top>"; // outer table
-	echo "<table>";
+	start_outer_table("width=80% $table_style");
 
+	table_section(1);
+	
 	$customer_error = "";
 	$change_prices = 0;
 
@@ -312,24 +312,18 @@ function display_order_header(&$order, $editable, $date_text, $display_tax_group
 		ref_cells(_("Reference").':', 'ref', _('Reference number unique for this document type'), null, '');
 	}
 
-	echo "</table>";
-
-	echo "</td><td>"; // outer table
-
 	if (!is_company_currency($order->customer_currency))
 	{
+	    table_section(2);
+
 	    div_start('currency');
-		echo "<table height='5'>";
 		label_row(_("Customer Currency:"), $order->customer_currency);
 		exchange_rate_display($order->customer_currency, get_company_currency(),
 			($editable ? $_POST['OrderDate'] : $order->document_date));
-		echo "</table>";
 	    div_end();
-		echo "</td><td>"; // outer table
 	}
+	table_section(3);
 
-
-	echo "<table height='5'>";
 	if ($order->trans_type == 10 && $order->pos != -1) {
 		sale_payment_list_cells(_('Payment:'), 'cash', null, true);
 		$cash_payment = get_post('cash', 0);
@@ -364,11 +358,8 @@ function display_order_header(&$order, $editable, $date_text, $display_tax_group
 	}
 
 	label_row(_("Customer Discount:"), ($order->default_discount * 100) . "%");
-	echo "</table>";
-
-	echo "</td><td>"; // outer table
-
-	echo "<table height='5'>";
+	
+	table_section(4);
 
 	if ($editable)
 	{
@@ -412,11 +403,8 @@ function display_order_header(&$order, $editable, $date_text, $display_tax_group
 	    label_row(_("Tax Group:"), $order->tax_group_name);
 	    hidden('tax_group_id', $_SESSION['Items']->tax_group_id);
 	}
-	echo "</table>";
 
-	echo "</td></tr>";
-
-	end_table(1); // outer table
+	end_outer_table(1); // outer table
 
 	if ($change_prices != 0) {
 		foreach ($order->line_items as $line_no=>$item) {
@@ -515,17 +503,17 @@ function display_delivery_details(&$order)
 {
 	global $table_style2, $Ajax;
 
-div_start('delivery');	
+	div_start('delivery');	
 
 	if (get_post('cash', 0)) {	// Direct payment sale
 		display_heading(_('Cash payment'));
-		echo "<table $table_style2 width=60% align=center>";
+		start_table("$table_style2 width=60%");
 		label_row(_("Deliver from Location:"), $order->location_name);
 
 		hidden('Location', $order->Location);
 		label_row(_("Cash account:"), $order->account_name);
 		textarea_row(_("Comments:"), "Comments", $order->Comments, 31, 5);
-		echo "</table>";
+		end_table();
 	} else {
 
 		if ($order->trans_type==10)
@@ -544,10 +532,8 @@ div_start('delivery');
 			$delname = _("Required Delivery Date").':';
 		}
 		display_heading($title);
-		echo "<br>";
-		start_table("$table_style2 width=90%");
-		echo "<tr valign=top><td>"; // outer table
-		echo "<table>";
+		start_outer_table("$table_style2 width=90%");
+		table_section(1);
 
 		locations_list_row(_("Deliver from Location:"), 'Location', null, 
 			false, true);
@@ -565,11 +551,7 @@ div_start('delivery');
 		text_row(_("Contact Phone Number:"), 'phone', $order->phone, 25, 25,
 		    _('Phone number of ordering person. Defaults to branch phone number'));
 
-		echo "</table>";
-
-		echo "</td><td>"; // outer table
-
-		echo "<table>";
+		table_section(2);
 
 		text_row(_("Customer Reference:"), 'cust_ref', $order->cust_ref, 25, 25,
 		  _('Customer reference number for this order (if any)'));
@@ -579,9 +561,8 @@ div_start('delivery');
 	    	price_format(get_post('freight_cost',0)));
 
 		shippers_list_row(_("Shipping Company:"), 'ship_via', $order->ship_via);
-		echo "</table>";
-		echo "</td></tr>";
-		end_table(1); // outer table
+
+		end_outer_table(1);
 	}
 	div_end();
 }

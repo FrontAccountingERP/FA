@@ -19,44 +19,33 @@ function display_order_header(&$Order)
 	global $table_style2;
 
 	$qes = has_quick_entries(-1, 0);
-	start_table("$table_style2 width=90%");
-	if ($qes)
-		echo "<tr><td valign=top width=30%>"; // outer table
-	else	
-		echo "<tr><td valign=top width=50%>"; // outer table
 
-	echo "<table>";
+	start_outer_table("$table_style2 width=90%");
+	table_section(1);
+
 	start_row();
     date_cells(_("Date:"), 'date_');
 	ref_cells(_("Reference:"), 'ref', '', references::get_next(0));
 	end_row();
 
-	echo "</table>";
-
 	if ($qes)
-		echo "</td><td width=20%>"; // outer table
+		table_section(2, "20%");
 	else	
-		echo "</td><td width=50%>"; // outer table
+		table_section(2, "50%");
 
-	echo "<table>";
 	start_row();
 	check_cells(_("Reverse Transaction:"), 'Reverse', null);
 	end_row();
-	echo "</table>";
 	if ($qes !== false)
 	{
-		echo "</td><td width=50%>"; // outer table
-		echo "<table>";
+		table_section(3, "50%");
 		start_row();
 		quick_entries_list_cells(_("Quick Entry:"), 'person_id', null, -1, 0);
 		amount_cells(_("Total Amount"), 'totamount', null, null, "&nbsp;&nbsp;".submit('go', _("Go"), false, false, true));			
 		end_row();
-		echo "</table>";
 	}
 		
-
-	echo "</td></tr>"; // outer table
-	end_table(1);
+	end_outer_table(1);
 }
 
 //---------------------------------------------------------------------------------

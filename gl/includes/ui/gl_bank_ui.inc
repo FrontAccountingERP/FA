@@ -15,20 +15,16 @@ function display_bank_header(&$order)
 	$payment = $order->trans_type == systypes::bank_payment();
 
 	div_start('pmt_header');
-	start_table("width=90% $table_style2"); // outer table
-	echo "<tr><td valign=top width=33%>";
 
-	echo "<table>"; // inner table
+	start_outer_table("width=90% $table_style2"); // outer table
 
+	table_section(1);
+	
     bank_accounts_list_row( $payment ? _("From:") : _("To:"), 'bank_account', null, true);
 
     date_row(_("Date:"), 'date_', '', null, 0, 0, 0, null, true);
 
-	echo "</table>"; // inner table
-
-	echo "</td><td width=33%>";
-
-	echo "<table>"; // inner table
+	table_section(2, "33%");
 
 	if (!isset($_POST['PayType']))
 	{
@@ -90,22 +86,15 @@ function display_bank_header(&$order)
 
 	exchange_rate_display($bank_currency, $person_currency, $_POST['date_']);
 
-	echo "</table>"; // inner table
-
-	echo "</td><td>";
-
-	echo "<table>"; // inner table
+	table_section(3, "33%");
 
 	if (isset($_GET['NewPayment']))
     	ref_row(_("Reference:"), 'ref', '', references::get_next(systypes::bank_payment()));
     else
     	ref_row(_("Reference:"), 'ref', '', references::get_next(systypes::bank_deposit()));
 
-	echo "</table>"; // inner table
+	end_outer_table(1); // outer table
 
-	echo "</td></tr>";
-
-	end_table(1); // outer table
 	div_end();
 }
 //---------------------------------------------------------------------------------

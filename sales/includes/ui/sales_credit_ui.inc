@@ -16,9 +16,9 @@ include_once($path_to_root . "/includes/ui.inc");
 function display_credit_header(&$order)
 {
 	global $table_style, $Ajax;
-	start_table("width=80% $table_style");
-	echo "<tr><td valign=top>"; // outer table
-	echo "<table>";
+
+	start_outer_table("width=80% $table_style");
+	table_section(1);
 
 	$customer_error = "";
 	$change_prices = 0;
@@ -87,24 +87,17 @@ function display_credit_header(&$order)
 	    label_row(_("Reference").':', $_POST['ref'] );
 
 
-
-	echo "</table>";
-
-	echo "</td><td>"; // outer table
-
 	if (!is_company_currency($order->customer_currency))
 	{
+		table_section(2);
+		
 	    div_start('currency');
-		echo "<table height='5'>";
 		label_row(_("Customer Currency:"), $order->customer_currency);
 		exchange_rate_display($order->customer_currency, get_company_currency(),
 			$_POST['OrderDate']);
-		echo "</table>";
-		echo "</td><td>"; // outer table
 	    div_end();
 	}
-
-	echo "<table height='5'>";
+	table_section(3);
 
     if (!isset($_POST['sales_type_id']))
     	$_POST['sales_type_id'] = $order->sales_type;
@@ -121,11 +114,8 @@ function display_credit_header(&$order)
     shippers_list_row(_("Shipping Company:"), 'ShipperID', $order->ship_via);
 
 	label_row(_("Customer Discount:"), ($order->default_discount * 100) . "%");
-	echo "</table>";
 
-	echo "</td><td>"; // outer table
-
-	echo "<table height='5'>";
+	table_section(4);
 
 	if (!isset($_POST['OrderDate']) || $_POST['OrderDate'] == "")
 		$_POST['OrderDate'] = $order->document_date;
@@ -148,11 +138,7 @@ function display_credit_header(&$order)
 	else
 		hidden('dimension2_id', 0);
 
-	echo "</table>";
-
-	echo "</td></tr>";
-
-	end_table(1); // outer table
+	end_outer_table(1); // outer table
 
 	if ($change_prices != 0) {
 		foreach ($order->line_items as $line_no=>$item) {

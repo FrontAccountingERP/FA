@@ -1,5 +1,14 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU Affero General Public License,
+	AGPL, as published by the Free Software Foundation, either version 
+	3 of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/agpl-3.0.html>.
+***********************************************************************/
 //--------------------------------------------------------------------------------------------------
 
 function copy_from_trans(&$supp_trans)
@@ -44,17 +53,15 @@ function copy_to_trans(&$supp_trans)
 
 function invoice_header(&$supp_trans)
 {
-	global $Ajax;
+	global $Ajax, $table_style;
 	
 	// if vars have been lost, recopy
 	if (!isset($_POST['tran_date']))
 		copy_from_trans($supp_trans);
 
-	start_table("width=100%", 5);
-	start_row();
-	echo"<td>"; // outer
+	start_outer_table("$table_style width=98%", 5);
 
-	echo "<table width=100%>";
+	table_section(1);
 
     if (!isset($_POST['supplier_id']) && (get_global_supplier() != reserved_words::get_all()))
     	$_POST['supplier_id'] = get_global_supplier();
@@ -78,11 +85,7 @@ function invoice_header(&$supp_trans)
 
    	text_row(_("Supplier's Ref.:"), 'supp_reference', $_POST['supp_reference'], 20, 20);
 
-	echo "</table>";
-
-	echo "</td><td class='tableseparator'>"; // outer
-
-	echo "<table width=100%>";
+	table_section(2, "33%");
 
    	date_row(_("Date") . ":", 'tran_date', '', null, 0, 0, 0, "", true);
 	if (isset($_POST['_tran_date_changed'])) {
@@ -97,11 +100,7 @@ function invoice_header(&$supp_trans)
 
     label_row(_("Terms:"), $supp_trans->terms_description);
 
-	echo "</table>";
-
-	echo "</td><td class='tableseparator'>"; // outer
-
-	echo "<table width=100%>";
+	table_section(3, "33%");
 
 	$supplier_currency = get_supplier_currency($supp_trans->supplier_id);
 
@@ -113,12 +112,9 @@ function invoice_header(&$supp_trans)
 		exchange_rate_display($supplier_currency, $company_currency, $_POST['tran_date']);
 	}
 
-  label_row(_("Tax Group:"), $supp_trans->tax_description);
-	echo "</table>";
+  	label_row(_("Tax Group:"), $supp_trans->tax_description);
 
-	echo "</td>";
-	end_row();
-	end_table(); // outer
+	end_outer_table();
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -143,12 +139,10 @@ function invoice_totals(&$supp_trans)
 		label_row(_("Credit Note Total"),
 			$display_total, "align=right style='font-weight:bold;color:red;'", "nowrap align=right style='font-weight:bold;color:red;'");
 
-    end_table();
-	br(1);
+    end_table(1);
     start_table($table_style2);
     textarea_row(_("Memo:"), "Comments", null, 50, 3);
-    end_table();
-    br(1);
+    end_table(1);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -193,24 +187,17 @@ function display_gl_items(&$supp_trans, $mode=0)
     if (($mode == 2 || $mode == 3) && count($supp_trans->gl_codes) == 0)
     	return 0;
 
-	echo "<br>";
-
-	start_table("width=95%");
-	echo "<tr><td>"; // outertable
+	start_outer_table("width=95%");
 
 	if ($supp_trans->is_invoice)
 		$heading = _("GL Items for this Invoice");
 	else
 		$heading = _("GL Items for this Credit Note");
 
-	echo "<table width=100%>";
-	echo "<tr><td align=center><span class='headingtext'>$heading</span></td>";
-	echo "</tr></table>";
-
-	echo "</td></tr><tr><td>"; // ouer table
+	vertical_space(); // ouer table
 
 	div_start('gl_items');
-	echo "<table width=100% $table_style>";
+	start_table("$table_style width=100%");
 
 	$dim = get_company_pref('use_dimension');
 	if ($dim == 2)
@@ -253,7 +240,7 @@ function display_gl_items(&$supp_trans, $mode=0)
 
 			if ($mode == 1)
 			{
-				edit_button_cell("Delete2" . $entered_gl_code->Counter, _("Delete"),
+				delete_button_cell("Delete2" . $entered_gl_code->Counter, _("Delete"),
 					  _('Remove line from document'));
 				label_cell("");
 			}	
@@ -276,12 +263,10 @@ function display_gl_items(&$supp_trans, $mode=0)
 	label_row(_("Total"), price_format($total_gl_value),
 		"colspan=".$colspan." align=right", "nowrap align=right");
 
-	echo "</table>";
+	end_table();
 	div_end();
 
-    echo "</td></tr>";
-
-    end_table(); // outertable
+    end_outer_table(0, false); // outertable
 	return $total_gl_value;
 }
 
@@ -374,9 +359,9 @@ function display_grn_items(&$supp_trans, $mode=0)
     // if displaying in form, and no items, exit
     if (($mode == 2  || $mode == 3) && count($supp_trans->grn_items) == 0)
     	return 0;
-	br(1);
-	start_table("width=95%");
-	echo "<tr><td>"; // outertable
+
+	start_outer_table("width=95%");
+
 	$heading2 = "";
 	if ($mode == 1)
 	{
@@ -410,10 +395,10 @@ function display_grn_items(&$supp_trans, $mode=0)
 	}	
 	echo "</tr></table>";
 
-	echo "</td></tr><tr><td>"; // outer table
+	vertical_space(); // outer table
 
   	div_start('grn_items');
-	echo "<table width=100% $table_style>";
+	start_table("$table_style width=100%");
 	if ($mode == 1)
 	{
     	$th = array(_("Delivery"), _("Sequence #"), _("P.O."), _("Item"), _("Description"),
@@ -464,7 +449,7 @@ function display_grn_items(&$supp_trans, $mode=0)
 
 			if ($mode == 1)
 			{
-				edit_button_cell("Delete" . $entered_grn->id, _("Edit"), _('Edit document line'));
+				delete_button_cell("Delete" . $entered_grn->id, _("Edit"), _('Edit document line'));
 				if ($supp_trans->is_invoice && $_SESSION["wa_current_user"]->access == 2)	  
 					label_cell("");
 			}	
@@ -490,7 +475,7 @@ function display_grn_items(&$supp_trans, $mode=0)
 		$colspan = 5;
 	label_row(_("Total"), price_format($total_grn_value),
 		"colspan=$colspan align=right", "nowrap align=right");
-    echo "</table>";
+    end_table();
 	if (!$ret)
 	{
 		if ($supp_trans->is_invoice)
@@ -502,9 +487,8 @@ function display_grn_items(&$supp_trans, $mode=0)
 		}
 	}	
     div_end();
-    echo "</td></tr>";
 
-    end_table(); // outertable
+    end_outer_table(0, false); // outertable
 	return $total_grn_value;
 }
 

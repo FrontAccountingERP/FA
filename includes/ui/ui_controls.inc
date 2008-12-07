@@ -63,23 +63,29 @@ function start_outer_table($extra="", $padding='2', $spacing='0')
 	echo "<tr valign=top><td>\n"; // outer table
 }
 
-function table_section($number=1)
+function table_section($number=1, $width=false)
 {
-	if ($number == 2)
+	if ($number > 1)
 	{
 		echo "</table>\n";
-		echo "</td><td  class='tableseparator'>\n"; // outer table
+		$width = ($width ? "width=$width" : "");
+		echo "</td><td class='tableseparator' $width>\n"; // outer table
 	}
 	echo "<table>\n";
 }	
 
-function end_outer_table($breaks=0)
+function end_outer_table($breaks=0, $close_table=true)
 {
-	echo "</table>\n";
+	if ($close_table)
+		echo "</table>\n";
 	echo "</td></tr>\n";
 	end_table($breaks);
 }
 
+function vertical_space()
+{
+	echo "</td></tr><tr><td valign=center>"; // outer table
+}
 function meta_forward($forward_to, $params="")
 {
     global $Ajax;

@@ -1,5 +1,14 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU Affero General Public License,
+	AGPL, as published by the Free Software Foundation, either version 
+	3 of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/agpl-3.0.html>.
+***********************************************************************/
 include_once($path_to_root . "/purchasing/includes/purchasing_db.inc");
 
 // ------------------------------------------------------------------------------
@@ -45,10 +54,9 @@ function display_po_header(&$order)
 
 	$editable = ($order->order_no == 0);
 
-	start_table("width=80% $table_style2");
-	echo "<tr><td valign=center>"; // outer table
-	echo "<table>";
+	start_outer_table("width=80% $table_style2");
 
+	table_section(1);
     if ($editable)
     {
         if (!isset($_POST['supplier_id']) && (get_global_supplier() != reserved_words::get_all()))
@@ -90,11 +98,8 @@ function display_po_header(&$order)
     	label_row(_("Reference:"), $order->reference);
     }
 
-	echo "</table>";
+	table_section(2);
 
-	echo "</td><td valign=center>"; // outer table
-
-	echo "<table height='5'>";
 	// check this out?????????
 	//if (!isset($_POST['OrderDate']) || $_POST['OrderDate'] == "")
 	//	$_POST['OrderDate'] = $order->orig_order_date;
@@ -111,16 +116,12 @@ function display_po_header(&$order)
 
   	text_row(_("Supplier's Reference:"), 'Requisition', null, 16, 15);
 
-	echo "</table>";
-
-	echo "</td><td valign=center>"; // outer table
-
-  	echo "<table height='5'>";
-
 	echo "<tr><td>" . _("Receive Into:") . "</td>";
 	echo "<td>";
     locations_list('StkLocation', null, false, true);
 	echo "</td></tr>";
+
+	table_section(3);
 
     if (!isset($_POST['StkLocation']) || $_POST['StkLocation'] == "" ||
     	isset($_POST['_StkLocation_update']) || !isset($_POST['delivery_address']) ||
@@ -148,10 +149,8 @@ function display_po_header(&$order)
     }
 
 	textarea_row(_("Deliver to:"), 'delivery_address', $_POST['delivery_address'], 35, 4);
-  	echo "</table>";
 
-	echo "</td></tr>";
-	end_table(); // outer table
+	end_outer_table(); // outer table
 }
 
 //---------------------------------------------------------------------------------------------------
@@ -166,7 +165,7 @@ function display_po_items(&$order, $editable=true)
     start_table("$table_style width=80%");
 
    	$th = array(_("Item Code"), _("Item Description"), _("Quantity"), _("Unit"),
-   		_("Required Delivery Date"), _("Price"), _("Line Total"));
+   		_("Required Delivery Date"), _("Price"), _("Line Total"), "");
 
 	if (count($order->line_items)) $th[] = '';
    	table_header($th);
@@ -195,7 +194,7 @@ function display_po_items(&$order, $editable=true)
                 {
 					edit_button_cell("Edit$line_no", _("Edit"),
 					  _('Edit document line'));
-					edit_button_cell("Delete$line_no", _("Delete"),
+					delete_button_cell("Delete$line_no", _("Delete"),
 					  _('Remove line from document'));
                 }
         		end_row();
@@ -328,10 +327,10 @@ function po_item_controls(&$order, $stock_id=null)
 
 	if ($id!=-1)
 	{
-		edit_button_cell('UpdateLine', _("Update"),
-				_('Confirm changes'));
-		edit_button_cell('CancelUpdate', _("Cancel"),
-				_('Cancel changes'));
+		button_cell('UpdateLine', _("Update"),
+				_('Confirm changes'), ICON_UPDATE);
+		button_cell('CancelUpdate', _("Cancel"),
+				_('Cancel changes'), ICON_CANCEL);
 		set_focus('qty');
 	}
 	else

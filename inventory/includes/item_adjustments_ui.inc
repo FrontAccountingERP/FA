@@ -1,5 +1,14 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU Affero General Public License,
+	AGPL, as published by the Free Software Foundation, either version 
+	3 of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/agpl-3.0.html>.
+***********************************************************************/
 include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/includes/ui/items_cart.inc");
 
@@ -19,26 +28,18 @@ function display_order_header(&$order)
 {
 	global $table_style2;
 
-	start_table("width=70% $table_style2"); // outer table
-	echo "<tr><td valign=top width=33%>";
-	echo "<table>"; // inner table
+	start_outer_table("width=70% $table_style2"); // outer table
+	table_section(1);
 
 	locations_list_row(_("Location:"), 'StockLocation', null);
 	ref_row(_("Reference:"), 'ref', '', references::get_next(systypes::inventory_adjustment()));
 
-	echo "</table>"; // inner table
-
-	echo "</td><td width=33%>";
-
-	echo "<table>"; // inner table
+	table_section(2, "33%");
 
     date_row(_("Date:"), 'AdjDate');
 
-	echo "</table>"; // inner table
+	table_section(3, "33%");
 
-	echo "</td><td width=33%>";
-
-	echo "<table>"; // inner table
     movement_types_list_row(_("Detail:"), 'type', null);
 
     if (!isset($_POST['Increase']))
@@ -46,10 +47,7 @@ function display_order_header(&$order)
     yesno_list_row(_("Type:"), 'Increase', $_POST['Increase'],
     	_("Positive Adjustment"), _("Negative Adjustment"));
 
-	echo "</table>"; // inner table
-
-	echo "</td></tr>";
-	end_table(1); // outer table
+	end_outer_table(1); // outer table
 }
 
 //---------------------------------------------------------------------------------
@@ -62,7 +60,7 @@ function display_adjustment_items($title, &$order)
     div_start('items_table');
 	start_table("$table_style width=80%");
 	$th = array(_("Item Code"), _("Item Description"), _("Quantity"),
-		_("Unit"), _("Unit Cost"), _("Total"));
+		_("Unit"), _("Unit Cost"), _("Total"), "");
 	if ( count($order->line_items)) $th[] = '';
 
 	table_header($th);
@@ -88,7 +86,7 @@ function display_adjustment_items($title, &$order)
 
 			edit_button_cell("Edit$line_no", _("Edit"),
 				_('Edit document line'));
-			edit_button_cell("Delete$line_no", _("Delete"),
+			delete_button_cell("Delete$line_no", _("Delete"),
 				_('Remove line from document'));
 			end_row();
 		}
@@ -152,10 +150,10 @@ function adjustment_edit_item_controls(&$order, $line_no=-1)
 
 	if ($id != -1)
 	{
-		edit_button_cell('UpdateItem', _("Update"),
-				_('Confirm changes'));
-		edit_button_cell('CancelItemChanges', _("Cancel"),
-				_('Cancel changes'));
+		button_cell('UpdateItem', _("Update"),
+				_('Confirm changes'), ICON_UPDATE);
+		button_cell('CancelItemChanges', _("Cancel"),
+				_('Cancel changes'), ICON_CANCEL);
 		hidden('LineNo', $line_no);
  		set_focus('qty');
 	}

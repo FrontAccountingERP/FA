@@ -20,18 +20,32 @@ Legend:
 $ -> Affected files
 
 07-Dec-2008 Joe Hunt
-! Better layout. Copyright notes. Mailto links.
+! Better layout. Copyright notes. Mailto links, outer table routines.
 $ /admin/company_preferences.php
   /admin/display_prefs.php
-  /gl_setup.php
+  /admin/gl_setup.php
   /admin/users.php
+  /gl/includes/ui/gl_bank_ui.inc
+  /gl/includes/ui/gl_journal_ui.inc
   /includes/ui_controls.inc
   /includes/ui_input.inc
+  /inventory/adjustments.php
+  /inventory/transfers.php
+  /inventory/includes/item_adjustments_ui.inc
+  /inventory/includes/stock_transfers_ui.inc
   /inventory/manage/locations.php
+  /purchasing/includes/ui/invoice_ui.inc
+  /purchasing/includes/ui/po_ui.inc
   /purchasing/manage/suppliers.php
+  /purchasing/supplier_credit.php
+  /purchasing/supplier_invoice.php
+  /purchasing/supplier_payment.php
+  /sales/includes/ui/sales_credit_ui.inc
+  /sales/includes/ui/sales_order_ui.inc
   /sales/manage/customer_branches.php
   /sales/manage/customers.php
   /sales/manage/sales_people.php
+  /sales/customer_payments.php
   
 05-Dec-2008 Joe Hunt
 + New fields in suppliers, phone, fax, vat no, contact and credit limit

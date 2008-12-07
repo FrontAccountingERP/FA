@@ -1,5 +1,14 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU Affero General Public License,
+	AGPL, as published by the Free Software Foundation, either version 
+	3 of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/agpl-3.0.html>.
+***********************************************************************/
 $path_to_root="..";
 
 include_once($path_to_root . "/purchasing/includes/supp_trans_class.inc");
@@ -292,29 +301,22 @@ if ($id4 != -1)
 
 start_form(false, true);
 
-start_table("$table_style width=98%", 8);
-echo "<tr><td valign=center>"; // outer table
-
-echo "<center>";
-
 invoice_header($_SESSION['supp_trans']);
 if ($_POST['supplier_id']=='') 
 	display_error('No supplier found for entered search text');
 else {
-	echo "</td></tr><tr><td valign=center>"; // outer table
+	start_outer_table("$table_style2 width=98%", 5);
 
 	$total_grn_value = display_grn_items($_SESSION['supp_trans'], 1);
 
 	$total_gl_value = display_gl_items($_SESSION['supp_trans'], 1);
 
-	echo "</td></tr><tr><td align=center colspan=2>"; // outer table
 	div_start('inv_tot');
 	invoice_totals($_SESSION['supp_trans']);
 	div_end();
-}
-echo "</td></tr>";
 
-end_table(1); // outer table
+	end_outer_table(0, false);
+}
 
 if ($id != -1)
 {
@@ -325,9 +327,9 @@ if ($id != -1)
 if (get_post('AddGLCodeToTrans'))
 	$Ajax->activate('inv_tot');
 
-
+br();
 submit_center('PostCreditNote', _("Enter Credit Note"), true, '', true);
-echo "<br><br>";
+br();
 
 end_form();
 end_page();

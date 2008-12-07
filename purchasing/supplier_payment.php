@@ -1,5 +1,14 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU Affero General Public License,
+	AGPL, as published by the Free Software Foundation, either version 
+	3 of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/agpl-3.0.html>.
+***********************************************************************/
 $path_to_root="..";
 $page_security = 5;
 include_once($path_to_root . "/includes/session.inc");
@@ -74,11 +83,13 @@ function display_controls()
 		if (!is_date_in_fiscalyear($_POST['DatePaid']))
 			$_POST['DatePaid'] = end_fiscalyear();
 	}		
-	start_table($table_style2, 5, 7);
-	echo "<tr><td valign=top>"; // outer table
+	//start_table($table_style2, 5, 7);
+	//echo "<tr><td valign=top>"; // outer table
+	start_outer_table($table_style2, 5);
 
-	echo "<table>";
-
+	//echo "<table>";
+	table_section(1);
+	
     bank_accounts_list_row(_("From Bank Account:"), 'bank_account', null, true);
 
 	amount_row(_("Amount of Payment:"), 'amount');
@@ -86,9 +97,10 @@ function display_controls()
 
     date_row(_("Date Paid") . ":", 'DatePaid', '', null, 0, 0, 0, null, true);
 
-	echo "</table>";
-	echo "</td><td valign=top class='tableseparator'>"; // outer table
-	echo "<table>";
+	table_section(2);
+	//echo "</table>";
+	//echo "</td><td valign=top class='tableseparator'>"; // outer table
+	//echo "<table>";
 
     supplier_list_row(_("Payment To:"), 'supplier_id', null, false, true);
 
@@ -105,10 +117,10 @@ function display_controls()
 
     text_row(_("Memo:"), 'memo_', null, 52,50);
 
-	echo "</table>";
+	//echo "</table>";
 
-	echo "</td></tr>";
-	end_table(1); // outer table
+	//echo "</td></tr>";
+	end_outer_table(1); // outer table
 
 	submit_center('ProcessSuppPayment',_("Enter Payment"), true, '', true);
 

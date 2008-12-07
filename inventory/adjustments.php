@@ -1,5 +1,14 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU Affero General Public License,
+	AGPL, as published by the Free Software Foundation, either version 
+	3 of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/agpl-3.0.html>.
+***********************************************************************/
 $page_security = 3;
 $path_to_root="..";
 include_once($path_to_root . "/includes/ui/items_cart.inc");
@@ -212,14 +221,12 @@ start_form(false, true);
 
 display_order_header($_SESSION['adj_items']);
 
-start_table("$table_style width=70%", 10);
-start_row();
-echo "<TD>";
+start_outer_table("$table_style width=70%", 10);
+
 display_adjustment_items(_("Adjustment Items"), $_SESSION['adj_items']);
 adjustment_options_controls();
-echo "</TD>";
-end_row();
-end_table(1);
+
+end_outer_table(1, false);
 
 submit_center_first('Update', _("Update"), '', null);
 submit_center_last('Process', _("Process Adjustment"), '', true);
