@@ -86,6 +86,8 @@ end_row();
 start_row();
 label_cells(_("Invoice Date"), sql2date($myrow["tran_date"]), "class='tableheader2'", "nowrap");
 label_cells(_("Due Date"), sql2date($myrow["due_date"]), "class='tableheader2'", "nowrap");
+label_cells(_("Deliveries"), get_customer_trans_view_str(systypes::cust_dispatch(), 
+	get_parent_trans(10,$trans_id)), "class='tableheader2'");
 end_row();
 comments_display_row(10, $trans_id);
 end_table();
