@@ -79,7 +79,8 @@ if (isset($_POST['submit']) && can_process())
 
 start_form();
 
-start_outer_table("class='tablestyle'");
+//start_outer_table("class='tablestyle'");
+start_outer_table($table_style2, 5);
 
 table_section(1);
 
