@@ -49,7 +49,8 @@ $opts = array(		// default options
 	'search' => array(), // sql field names to search
 	'format' => null, 	 // format functions for regular options
 	'disabled' => false,
-	'box_hint' => null // box/selectors hints; null = std see below
+	'box_hint' => null, // box/selectors hints; null = std see below
+	'category' => false	// category column name or false
 );
 // ------ merge options with defaults ----------
 	if($options != null)
@@ -140,6 +141,7 @@ $opts = array(		// default options
 	$selector = $first_opt = '';
 	$first_id = false;
 	$found = false;
+	$lastcat = null;
 //if($name=='stock_id') display_error($sql);
 	if($result = db_query($sql)) {
 		while ($contact_row = db_fetch($result)) {
@@ -157,6 +159,11 @@ $opts = array(		// default options
 			if ($first_id === false) {
 				$first_id = $value;
 				$first_opt = $descr;
+			}
+			$cat = $contact_row[$opts['category']];
+			if ($opts['category'] !== false && $cat != $lastcat){
+				$selector .= "<optgroup label='".$cat."'>\n";
+				$lastcat = $cat;
 			}
 			$selector .= "<option $sel value='$value'>$descr</option>\n";
 		}
@@ -632,14 +639,14 @@ function stock_items_list($name, $selected_id=null, $all_option=false, $submit_o
 		'search' => array("stock_id", "c.description","s.description"),
 		'search_submit' => get_company_pref('no_item_list')!=0,
 		'size'=>10,
-		'select_submit'=> $submit_on_change
+		'select_submit'=> $submit_on_change,
+		'category' => 2
 	  ), $opts) );
 }
 
 function _format_stock_items($row)
 {
-	return (user_show_codes() ?  ($row[0] . "&nbsp;-&nbsp;") : "")
-		. $row[2] . "&nbsp;-&nbsp;" . $row[1];
+	return (user_show_codes() ?  ($row[0] . "&nbsp;-&nbsp;") : "") . $row[1];
 }
 
 function stock_items_list_cells($label, $name, $selected_id=null, $all_option=false, $submit_on_change=false)
@@ -695,7 +702,8 @@ function sales_items_list($name, $selected_id=null, $all_option=false,
 		'search_submit' => get_company_pref('no_item_list')!=0,
 		'size'=>15,
 		'select_submit'=> $submit_on_change,
-		'order' => 'i.item_code'
+		'order' => 'i.item_code',
+		'category' => 2
 	  ), $opts) );
 }
 
@@ -743,8 +751,8 @@ function base_stock_items_list($where, $name, $selected_id=null,
 		'spec_option' => $all_option==true ?  _("All Items") : $all_option,
 		'spec_id' => $all_items,
 		'select_submit'=> $submit_on_change,
-		'where' => $where
-	) );
+		'where' => $where,
+		'category' => 2	) );
 }
 //------------------------------------------------------------------------------------
 
@@ -1510,7 +1518,7 @@ function gl_account_types_list_row($label, $name, $selected_id=null, $all_option
 
 //-----------------------------------------------------------------------------------------------
 function gl_all_accounts_list($name, $selected_id=null, $skip_bank_accounts=false,
-	$show_group=false, $cells=false, $all_option=false, $submit_on_change=false)
+	$show_group=true, $cells=false, $all_option=false, $submit_on_change=false)
 {
 	if ($skip_bank_accounts)
 		$sql = "SELECT chart.account_code, chart.account_name, type.name
@@ -1526,7 +1534,7 @@ function gl_all_accounts_list($name, $selected_id=null, $skip_bank_accounts=fals
 
 	combo_input($name, $selected_id, $sql, 'chart.account_code', 'chart.account_name',
 	array(
-		'format' => '_format_account' .  ($show_group ? '2' : ''),
+		'format' => '_format_account',
 		'spec_option' => $all_option===true ?  _("Use Item Sales Accounts") : $all_option,
 		'spec_id' => '',
 		'order' => 'account_code',
@@ -1536,7 +1544,8 @@ function gl_all_accounts_list($name, $selected_id=null, $skip_bank_accounts=fals
 			'max' => 10,
 			'cells' => true,
 		'select_submit'=> $submit_on_change,
-		'async' => false
+		'async' => false,
+		'category' => ($show_group ? 2 : false)
 	) );
 
 }
@@ -1544,11 +1553,6 @@ function gl_all_accounts_list($name, $selected_id=null, $skip_bank_accounts=fals
 function _format_account($row)
 {
 		return $row[0] .  "&nbsp;&nbsp;&nbsp;&nbsp;" . $row[1];
-}
-
-function _format_account2($row)
-{
-		return $row[0] .  "&nbsp;&nbsp;&nbsp;&nbsp;" . $row[2] . "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" . $row[1];
 }
 
 function gl_all_accounts_list_cells($label, $name, $selected_id=null, $skip_bank_accounts=false,
