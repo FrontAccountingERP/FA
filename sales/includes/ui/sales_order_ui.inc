@@ -57,7 +57,7 @@ function add_to_order(&$order, $new_item, $new_item_qty, $price, $discount)
 		{
 			if (strcasecmp($order_item->stock_id, $item['stock_id']) == 0)
 			{
-				display_notification(_("For Part :").$item['stock_id']. " " 
+				display_warning(_("For Part :").$item['stock_id']. " " 
 					. _("This item is already on this order. You have been warned."));
 				break;
 			}
@@ -80,7 +80,7 @@ function get_customer_details_to_order(&$order, $customer_id, $branch_id)
 	if ($myrow['dissallow_invoices'] == 1)
 		$ret_error = _("The selected customer account is currently on hold. Please contact the credit control personnel to discuss.");
 
-	$deliver = $myrow['address']; // in case no delivery address.
+	$deliver = $myrow['address']; // in case no branch address use company address
 
 	$order->set_customer($customer_id, $name, $myrow['curr_code'], 
 		$myrow['discount'], $myrow['pymt_discount']);
@@ -106,10 +106,9 @@ function get_customer_details_to_order(&$order, $customer_id, $branch_id)
 	$order->set_branch($branch_id, $myrow["tax_group_id"],
 	$myrow["tax_group_name"], $myrow["phone"], $myrow["email"]);
 
-	$address = $myrow["br_post_address"];
+	$address = trim($myrow["br_post_address"]) != '' ? $myrow["br_post_address"]
+		: (trim($myrow["br_address"]) != '' ? $myrow["br_address"]:$deliver);
 
-	if (strlen($address) <= 1)	// if branch has no address
-		$address = $deliver;	// set sales order address
 	$order->set_delivery($myrow["default_ship_via"], $myrow["br_name"],
 		$address);
 	if ($order->trans_type == 10) {
