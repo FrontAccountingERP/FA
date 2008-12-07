@@ -82,7 +82,7 @@ class fa2_1 {
 	function installed($pref) {
 		if (check_table($pref, 'item_codes')) return false;
 		if (check_table($pref, 'company', 'foreign_codes')) return false;
-		if (check_table($pref, 'supplier', 'credit_limit') return false;		
+		if (check_table($pref, 'suppliers', 'credit_limit')) return false;
 		return true;
 	}
 };
