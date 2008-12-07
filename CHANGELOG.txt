@@ -19,6 +19,24 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+07-Dec-2008 Janusz Dobrowolski
++ Added list category grouping.
+$ /includes/ui/ui_lists.inc
+! Changed branch/customer invoice address/name selection on reports
+$ /reporting/includes/doctext.inc
+  /reporting/includes/doctext2.inc
+  /reporting/includes/header2.inc
+! Fixed default delivery address selection
+$ /sales/includes/ui/sales_order_ui.inc
++ Added delivery links
+$ /sales/view/view_invoice.php
+# Small syntax fix.
+$ /sql/alter2.1.php
+# Fixed error handling during upgrade
+$ /admin/db/maintenance_db.inc
+# Fixed warnings display
+$ /includes/errors.inc
+
 07-Dec-2008 Joe Hunt
 ! Better layout. Copyright notes. Mailto links, outer table routines.
 $ /admin/company_preferences.php
