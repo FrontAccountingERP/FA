@@ -125,6 +125,7 @@ function db_import($filename, $connection, $force=true)
 		"drop table if exists" => 'drop_queries');
 	$ignored_mysql_errors = array( //errors ignored in normal (non forced) mode
 		'1022',	// duplicate key
+		'1050', // Table %s already exists
 		'1060', // duplicate column name
 		'1061', // duplicate key name
 		'1062', // duplicate key entry
@@ -196,7 +197,7 @@ function db_import($filename, $connection, $force=true)
 			if (!db_query($drop_query[0]))
 			{
 				if (!in_array(db_error_no(), $ignored_mysql_errors))
-					$sql_errors[] = array(db_error_no().':'.db_error_msg($db), $drop_query[1]);
+					$sql_errors[] = array(db_error_msg($db), $drop_query[1]);
 			}
 		}
 	}
@@ -207,9 +208,10 @@ function db_import($filename, $connection, $force=true)
 		foreach($table_queries as $table_query)
 		{
 			if (!db_query($table_query[0]))
-			{
-				if (!$force || !in_array(db_error_no(), $ignored_mysql_errors))
+			{	
+				if (!$force && !in_array(db_error_no(), $ignored_mysql_errors)) {
 					$sql_errors[] = array(db_error_msg($db), $table_query[1]);
+				}
 			}
 		}
 	}
@@ -221,7 +223,7 @@ function db_import($filename, $connection, $force=true)
 		{
 			if (!db_query($data_query[0]))
 			{
-				if (!$force || !in_array(db_error_no(),$ignored_mysql_errors))
+				if (!$force && !in_array(db_error_no(),$ignored_mysql_errors))
 					$sql_errors[] = array(db_error_msg($db), $data_query[1]);
 			}
 		}
