@@ -37,6 +37,13 @@ $ /admin/db/maintenance_db.inc
 # Fixed warnings display
 $ /includes/errors.inc
 
+08-Dec-2008 Joe Hunt
+# Bad and missing parameter to header2 funciton
+$ /reporting/rep109.php
+  /reporting/rep209.php
+! Rerun of invoice_ui.inc
+$ /purchasing/includes/ui/invoice_ui.inc
+
 07-Dec-2008 Joe Hunt
 ! Better layout. Copyright notes. Mailto links, outer table routines.
 $ /admin/company_preferences.php

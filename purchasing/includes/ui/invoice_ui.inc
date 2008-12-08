@@ -194,6 +194,8 @@ function display_gl_items(&$supp_trans, $mode=0)
 	else
 		$heading = _("GL Items for this Credit Note");
 
+	display_heading($heading);
+
 	vertical_space(); // ouer table
 
 	div_start('gl_items');
@@ -381,21 +383,19 @@ function display_grn_items(&$supp_trans, $mode=0)
 		else
 			$heading = _("Received Items Credited on this Note");
 	}		
-	echo "<table width=100% >";
-	echo "<tr><td align=center><span class='headingtext'>$heading</span></td>";
+
+	start_outer_table("width=100%");
+
+	display_heading($heading);
+
 	if ($mode == 1)
 	{
-		submit_cells('InvGRNAll', _("Add All Items"), "align=right",false,true);
 		if ($heading2 != "")
-		{
-			echo "</tr><td>";
-			display_note($heading2, 0, 0, "class='overduefg'");
-			echo "</td>\n";
-		}
+			display_note($heading2."</td>", 0, 0, "class='overduefg'");
+		submit_cells('InvGRNAll', _("Add All Items"), "align=right",false,true);
 	}	
-	echo "</tr></table>";
 
-	vertical_space(); // outer table
+	end_outer_table(0, false);
 
   	div_start('grn_items');
 	start_table("$table_style width=100%");
