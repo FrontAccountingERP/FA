@@ -39,6 +39,10 @@ $ /admin/gl_setup.php
   /sales/manage/customer_branches.php
 # Fixed Win AltGr issue in hotkeys system.
 $ /js/inserts.js
+# Fixed sales_items selector for MySql 3.xx compatibility
+$ /includes/ui/ui_lists.inc
+# Fixed broken syntax in delete_item_code()
+$ /inventory/includes/db/items_codes_db.inc
 ! Merged changes from main trunk up to version 2.0.6 (see below)
 $ /config.php
   /update.html
