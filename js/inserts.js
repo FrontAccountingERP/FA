@@ -307,7 +307,7 @@ function setHotKeys() {
 	document.onkeydown = function(ev) {
 		ev = ev||window.event;
 		key = ev.keyCode||ev.which;
-		if (key == 18) {	// start selection
+		if (key == 18 && !ev.ctrlKey) {	// start selection, skip Win AltGr
 			_hotkeys.alt = true;
 			_hotkeys.focus = -1;
 			return stopEv(ev);
