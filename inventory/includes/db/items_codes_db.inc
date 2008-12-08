@@ -35,7 +35,7 @@ function add_item_code($item_code, $stock_id, $description, $category, $qty, $fo
 
 function delete_item_code($id)
 {
-	$sql="DELETE FROM ".TB_PREF."item_codes WHERE id=$id";
+	$sql="DELETE FROM ".TB_PREF."item_codes WHERE id='$id'";
 	db_query($sql,"an item code could not be deleted");
 }
 
@@ -145,8 +145,7 @@ function get_where_used($item_code)
 	$sql = "SELECT item_code, description FROM "
 		.TB_PREF."item_codes "
 		. " WHERE stock_id='$item_code'
-			AND item_
-			code!='$item_code'";
+			AND item_code!='$item_code'";
 	return db_query($sql, "where used query failed");
 }
 ?>
