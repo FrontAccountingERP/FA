@@ -642,5 +642,21 @@ function save_to_file($backupfile, $zip, $fileData)
     }
 }
 
+function create_comp_dirs($comp_path, $comp_subdirs)
+{
+		$index = "<?php\nheader(\"Location: ../index.php\");\n?>";
+	    $cdir = $comp_path;
+	    @mkdir($cdir);
+		$f = @fopen("$cdir/index.php", "wb");
+		@fwrite($f, $index);
+		@fclose($f);
 
+	    foreach($comp_subdirs as $dir)
+	    {
+			@mkdir($cdir.'/'.$dir);
+			$f = @fopen("$cdir/$dir/index.php", "wb");
+			@fwrite($f, $index);
+			@fclose($f);
+	    }
+}
 ?>

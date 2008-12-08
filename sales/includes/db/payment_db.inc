@@ -20,9 +20,9 @@ function write_customer_payment($trans_no, $customer_id, $branch_id, $bank_accou
 	  void_gl_trans(12, $trans_no, true);
 	  void_cust_allocations(12, $trans_no, $date_);
 	}
-
+	$total = 0;
 	/* Bank account entry first */
-	add_gl_trans_customer(12, $payment_no, $date_,
+	$total += add_gl_trans_customer(12, $payment_no, $date_,
 		$bank_gl_account, 0, 0, $amount,  $customer_id,
 		"Cannot insert a GL transaction for the bank account debit", $rate);
 
@@ -40,17 +40,19 @@ function write_customer_payment($trans_no, $customer_id, $branch_id, $bank_accou
 
 	if (($discount + $amount) != 0)	{
 		/* Now Credit Debtors account with receipts + discounts */
-		add_gl_trans_customer(12, $payment_no, $date_,
+		$total += add_gl_trans_customer(12, $payment_no, $date_,
 			$debtors_account, 0, 0, -($discount + $amount), $customer_id,
 			"Cannot insert a GL transaction for the debtors account credit", $rate);
 	}
-
 	if ($discount != 0)	{
 		/* Now Debit discount account with discounts allowed*/
-		add_gl_trans_customer(12, $payment_no, $date_,
+		$total += add_gl_trans_customer(12, $payment_no, $date_,
 			$discount_account, 0, 0, $discount, $customer_id,
 			"Cannot insert a GL transaction for the payment discount debit", $rate);
 	}
+
+	/*Post a balance post if $total != 0 */
+	add_gl_balance(12, $payment_no, $date_, -$total, payment_person_types::customer(), $customer_id);	
 
 	/*now enter the bank_trans entry */
 	add_bank_trans(12, $payment_no, $bank_account, $ref,

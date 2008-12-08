@@ -9,6 +9,8 @@ $js .= get_js_set_focus("user");
 $image = $path_to_root."/themes/default/images/logo_frontaccounting.png";
 $title = "Update All Company Databases";
 
+$comp_subdirs = array('images', 'pdf_files', 'backup','js_cache');
+
 function get_js_png_fix()
 {
 	$js = "<script type=\"text/javascript\">\n"
@@ -97,7 +99,17 @@ echo "<br>";
 
 if (isset($_POST["submit"]))
 {
-	if (!isset($_FILES['uploadfile']['tmp_name']) || !is_uploaded_file($_FILES['uploadfile']['tmp_name']))
+	$perms_ok = is_writable($path_to_root.'/company') && is_writable($path_to_root.'/company/0');
+	$checkdirs = $comp_subdirs;
+	foreach ($checkdirs as $dir) {
+		$perms_ok &= is_writable($path_to_root.'/company/0/'.$dir);
+	}
+
+	if (!$perms_ok) {
+		display_error("'System 'company' directory or any of its subdirectories 
+			is not writable.<br> Change webserver access permissions to those 
+			directories.");
+	} elseif (!isset($_FILES['uploadfile']['tmp_name']) || !is_uploaded_file($_FILES['uploadfile']['tmp_name']))
 	{
 		display_error("You must select an SQL script for update");;
 	}
@@ -127,6 +139,11 @@ if (isset($_POST["submit"]))
 						display_notification("Database has been updated for company: "
 							. $id . " " .  $conn['name']);
 				}
+				$cdir = "$path_to_root/company/$id";
+				if (!file_exists($cdir))
+				{
+					create_comp_dirs($cdir, $comp_subdirs);
+				}
 			}
 		}
 	}
@@ -135,7 +152,7 @@ if (!isset($_POST['passwd']))
 	$_POST['passwd'] = "";
 if (!isset($_POST['user']))
 	$_POST['user'] = "";
-
+	
 echo "<form enctype='multipart/form-data' method='post' action='".$_SERVER['PHP_SELF']."'>\n";
 
 echo "<table align='center' width='50%' cellpadding=3 border=1 bordercolor='#cccccc' style='border-collapse: collapse'>\n";

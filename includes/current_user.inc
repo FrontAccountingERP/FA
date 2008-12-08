@@ -123,12 +123,20 @@ class current_user
 
 //--------------------------------------------------------------------------
 
+function round2($number, $decimals=0)
+{
+	$delta = ($number < 0 ? -.000001 : .000001);
+	return round($number+$delta, $decimals);
+}
+
 function number_format2($number, $decimals=0)
 {
 	global $thoseps, $decseps;
 	$tsep = $thoseps[$_SESSION["wa_current_user"]->prefs->tho_sep()];
 	$dsep = $decseps[$_SESSION["wa_current_user"]->prefs->dec_sep()];
-	return number_format($number, $decimals, $dsep,	$tsep);
+	//return number_format($number, $decimals, $dsep,	$tsep);
+	$delta = ($number < 0 ? -.000001 : .000001);
+	return number_format($number+$delta, $decimals, $dsep,	$tsep);
 }
 //
 //	Current ui mode.

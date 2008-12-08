@@ -116,7 +116,7 @@ function print_po()
 					$myrow2['quantiry_ordered'] = round($myrow2['quantiry_ordered'] / $data['conversion_factor'], user_qty_dec());
 				}
 			}	
-			$Net = round(($myrow2["unit_price"] * $myrow2["quantity_ordered"]),
+			$Net = round2(($myrow2["unit_price"] * $myrow2["quantity_ordered"]),
 			  user_price_dec());
 			$SubTotal += $Net;
 			$DisplayPrice = number_format2($myrow2["unit_price"],$dec);

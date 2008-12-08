@@ -20,8 +20,9 @@ function add_bank_transfer($from_account, $to_account, $date_,
 	$from_gl_account = get_bank_gl_account($from_account);
 	$to_gl_account = get_bank_gl_account($to_account);
 
+	$total = 0;
 	// do the source account postings
-    add_gl_trans($trans_type, $trans_no, $date_, $from_gl_account, 0, 0, "",
+    $total += add_gl_trans($trans_type, $trans_no, $date_, $from_gl_account, 0, 0, "",
 		-$amount, $currency);
 
     add_bank_trans($trans_type, $trans_no, $from_account, $ref,
@@ -30,9 +31,11 @@ function add_bank_transfer($from_account, $to_account, $date_,
 		"Cannot insert a source bank transaction");
 
 	// do the destination account postings
-	add_gl_trans($trans_type, $trans_no, $date_, $to_gl_account, 0, 0, "",
+	$total += add_gl_trans($trans_type, $trans_no, $date_, $to_gl_account, 0, 0, "",
 		$amount, $currency);
-
+	/*Post a balance post if $total != 0 */
+	add_gl_balance($trans_type, $trans_no, $date_, -$total);	
+	
 	add_bank_trans($trans_type, $trans_no, $to_account, $ref,
 		$date_, $amount, payment_person_types::misc(), "",
 		$currency, "Cannot insert a destination bank transaction");
@@ -108,9 +111,11 @@ function add_bank_transaction($trans_type, $from_account, $items, $date_,
     	-$total_amount, $currency, $person_type_id, $person_id);
 
     add_bank_trans($trans_type, $trans_no, $from_account, $ref,
-    	$date_, -$total_amount,	$person_type_id, $person_id,
-    	$currency, "Cannot insert a source bank transaction");
-
+    	$date_, -$total_amount,
+    	$person_type_id, $person_id,
+    	$currency,
+    	"Cannot insert a source bank transaction");
+	$total = 0;
 	foreach ($items->gl_items as $gl_item)
 	{
 		$is_bank_to = is_bank_account($gl_item->code_id);
@@ -122,7 +127,7 @@ function add_bank_transaction($trans_type, $from_account, $items, $date_,
 		}
 
     	// do the destination account postings
-    	add_gl_trans($trans_type, $trans_no, $date_, $gl_item->code_id,
+    	$total += add_gl_trans($trans_type, $trans_no, $date_, $gl_item->code_id,
     		$gl_item->dimension_id, $gl_item->dimension2_id, $gl_item->reference,
     		$gl_item->amount, $currency, $person_type_id, $person_id);
 
@@ -133,6 +138,10 @@ function add_bank_transaction($trans_type, $from_account, $items, $date_,
 				$currency, "Cannot insert a destination bank transaction");
     	}
 	}
+
+	// do the source account postings
+    add_gl_trans($trans_type, $trans_no, $date_, $bank_gl_account, 0, 0, "",
+    	-$total, null, $person_type_id, $person_id);
 
 	add_comments($trans_type, $trans_no, $date_, $memo_);
 

@@ -76,7 +76,9 @@ function get_price ($stock_id, $currency, $sales_type_id, $factor=null, $date=nu
 	if ($factor == 0) return false; // auto price calculations off
 
 	$base_id = get_base_sales_type();
-        $home_curr = get_company_currency();
+	if ($base_id <= 0) return 0; // auto price calculations off
+	
+    $home_curr = get_company_currency();
 
     // get all prices which we can use to guess the price.
     // alternative is make up to 2 additional sql queries

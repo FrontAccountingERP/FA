@@ -26,13 +26,13 @@ function getTransactions($category, $location)
 			".TB_PREF."stock_category.description AS cat_description,
 			".TB_PREF."stock_master.stock_id,
 			".TB_PREF."stock_master.description,
-			".TB_PREF."stock_moves.loc_code,
-			SUM(".TB_PREF."stock_moves.qty) AS QtyOnHand
-		FROM ".TB_PREF."stock_master,
-			".TB_PREF."stock_category,
-			".TB_PREF."stock_moves
-		WHERE ".TB_PREF."stock_master.stock_id=".TB_PREF."stock_moves.stock_id
-		AND ".TB_PREF."stock_master.category_id=".TB_PREF."stock_category.category_id
+			IF(".TB_PREF."stock_moves.stock_id IS NULL, '', ".TB_PREF."stock_moves.loc_code) AS loc_code,
+			SUM(IF(".TB_PREF."stock_moves.stock_id IS NULL,0,".TB_PREF."stock_moves.qty)) AS QtyOnHand
+		FROM (".TB_PREF."stock_master,
+			".TB_PREF."stock_category)
+		LEFT JOIN ".TB_PREF."stock_moves ON
+			(".TB_PREF."stock_master.stock_id=".TB_PREF."stock_moves.stock_id OR ".TB_PREF."stock_master.stock_id IS NULL)
+		WHERE ".TB_PREF."stock_master.category_id=".TB_PREF."stock_category.category_id
 		AND (".TB_PREF."stock_master.mb_flag='B' OR ".TB_PREF."stock_master.mb_flag='M')";
 	if ($category != 0)
 		$sql .= " AND ".TB_PREF."stock_master.category_id = '$category'";
@@ -53,9 +53,10 @@ function getDemandQty($stockid, $location)
 	$sql = "SELECT SUM(".TB_PREF."sales_order_details.quantity - ".TB_PREF."sales_order_details.qty_sent) AS QtyDemand
 				FROM ".TB_PREF."sales_order_details,
 					".TB_PREF."sales_orders
-				WHERE ".TB_PREF."sales_order_details.order_no=".TB_PREF."sales_orders.order_no AND
-					".TB_PREF."sales_orders.from_stk_loc ='$location' AND
-					".TB_PREF."sales_order_details.stk_code = '$stockid'";
+				WHERE ".TB_PREF."sales_order_details.order_no=".TB_PREF."sales_orders.order_no AND ";
+	if ($location != "")
+		$sql .= TB_PREF."sales_orders.from_stk_loc ='$location' AND ";
+	$sql .= TB_PREF."sales_order_details.stk_code = '$stockid'";
 
     $TransResult = db_query($sql,"No transactions were returned");
 	$DemandRow = db_fetch($TransResult);
@@ -71,9 +72,10 @@ function getDemandAsmQty($stockid, $location)
 						".TB_PREF."bom,
 						".TB_PREF."stock_master
 				   WHERE ".TB_PREF."sales_order_details.stk_code=".TB_PREF."bom.parent AND
-				   ".TB_PREF."sales_orders.order_no = ".TB_PREF."sales_order_details.order_no AND
-				   ".TB_PREF."sales_orders.from_stk_loc='$location' AND
-				   ".TB_PREF."sales_order_details.quantity-".TB_PREF."sales_order_details.qty_sent > 0 AND
+				   ".TB_PREF."sales_orders.order_no = ".TB_PREF."sales_order_details.order_no AND ";
+	if ($location != "")
+		$sql .= TB_PREF."sales_orders.from_stk_loc ='$location' AND ";
+	$sql .= TB_PREF."sales_order_details.quantity-".TB_PREF."sales_order_details.qty_sent > 0 AND
 				   ".TB_PREF."bom.component='$stockid' AND
 				   ".TB_PREF."stock_master.stock_id=".TB_PREF."bom.parent AND
 				   ".TB_PREF."stock_master.mb_flag='A'";
@@ -163,8 +165,12 @@ function print_stock_check()
 			$catt = $trans['cat_description'];
 			$rep->NewLine();
 		}
-		$demandqty = getDemandQty($trans['stock_id'], $trans['loc_code']);
-		$demandqty += getDemandAsmQty($trans['stock_id'], $trans['loc_code']);
+		if ($location == 'all')
+			$loc_code = "";
+		else
+			$loc_code = $trans['loc_code'];
+		$demandqty = getDemandQty($trans['stock_id'], $loc_code);
+		$demandqty += getDemandAsmQty($trans['stock_id'], $loc_code);
 		$rep->NewLine();
 		$dec = get_qty_dec($trans['stock_id']);
 		$rep->TextCol(0, 1, $trans['stock_id']);

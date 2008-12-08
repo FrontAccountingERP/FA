@@ -122,7 +122,10 @@ function display_credit_header(&$order)
 
 	date_row(_("Date:"), 'OrderDate', '', null, 0, 0, 0, null, true);
 	if (isset($_POST['_OrderDate_changed'])) {
-		$change_prices = 1;
+		if (!is_company_currency($order->customer_currency) 
+			&& (get_base_sales_type()>0)) {
+				$change_prices = 1;
+		}
 		$Ajax->activate('currency');
 	}
 	// 2008-11-12 Joe Hunt added dimensions

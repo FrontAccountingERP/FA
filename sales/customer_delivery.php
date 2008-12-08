@@ -366,13 +366,13 @@ $th = array(_("Item Code"), _("Item Description"), _("Ordered"), _("Units"), _("
 table_header($th);
 $k = 0;
 $has_marked = false;
-$show_qoh = true;
 
 foreach ($_SESSION['Items']->line_items as $line=>$ln_itm) {
 	if ($ln_itm->quantity==$ln_itm->qty_done) {
 		continue; //this line is fully delivered
 	}
 	// if it's a non-stock item (eg. service) don't show qoh
+	$show_qoh = true;
 	if (sys_prefs::allow_negative_stock() || !has_stock_holding($ln_itm->mb_flag) ||
 		$ln_itm->qty_dispatched == 0) {
 		$show_qoh = false;

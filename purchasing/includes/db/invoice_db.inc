@@ -91,11 +91,19 @@ function get_deliveries_between($stock_id, $from, $to)
 {
 	$from = date2sql($from);
 	$to = date2sql($to);
-	$sql = "SELECT SUM(-qty), AVG(standard_cost) FROM ".TB_PREF."stock_moves
+	$sql = "SELECT SUM(-qty), SUM(-qty*standard_cost) FROM ".TB_PREF."stock_moves
 		WHERE type=13 AND stock_id='$stock_id' AND
 			tran_date>='$from' AND tran_date<='$to' GROUP BY stock_id";
 	$result = db_query($sql, "The deliveries could not be updated");
 	return db_fetch_row($result);
+}
+
+function get_diff_in_home_currency($supplier, $old_date, $date, $amount1, $amount2)
+{
+	$currency = get_supplier_currency($supplier);
+	$amount1 = to_home_currency($amount1, $currency, $old_date);
+	$amount2 = to_home_currency($amount2, $currency, $date);
+	return $amount2 - $amount1;
 }
 //----------------------------------------------------------------------------------------
 
@@ -133,9 +141,10 @@ function add_supp_invoice($supp_trans) // do not receive as ref because we chang
 		$supp_trans->reference, $supp_trans->supp_reference,
 		$invoice_items_total, $tax_total, $supp_trans->ov_discount);
 
+	$total = 0;
     /* Now the control account */
     $supplier_accounts = get_supplier_accounts($supp_trans->supplier_id);
-    add_gl_trans_supplier($trans_type, $invoice_id, $date_, $supplier_accounts["payable_account"], 0, 0,
+    $total += add_gl_trans_supplier($trans_type, $invoice_id, $date_, $supplier_accounts["payable_account"], 0, 0,
 		-($invoice_items_total +  $tax_total + $supp_trans->ov_discount),
 		$supp_trans->supplier_id,
 		"The general ledger transaction for the control total could not be added");
@@ -151,7 +160,6 @@ function add_supp_invoice($supp_trans) // do not receive as ref because we chang
     between the std cost and the currency cost charged as converted at the ex rate of of the invoice is written off
     to the purchase price variance account applicable to the item being invoiced.
     */
-
     foreach ($supp_trans->gl_codes as $entered_gl_code)
     {
 
@@ -162,7 +170,7 @@ function add_supp_invoice($supp_trans) // do not receive as ref because we chang
 			$entered_gl_code->amount = -$entered_gl_code->amount;
 
 		$memo_ = $entered_gl_code->memo_;
-		add_gl_trans_supplier($trans_type, $invoice_id, $date_, $entered_gl_code->gl_code,
+		$total += add_gl_trans_supplier($trans_type, $invoice_id, $date_, $entered_gl_code->gl_code,
 			$entered_gl_code->gl_dim, $entered_gl_code->gl_dim2, $entered_gl_code->amount, $supp_trans->supplier_id);
 
 		add_supp_invoice_gl_item($trans_type, $invoice_id, $entered_gl_code->gl_code,
@@ -181,7 +189,7 @@ function add_supp_invoice($supp_trans) // do not receive as ref because we chang
 		$line_tax = $entered_grn->full_charge_price($supp_trans->tax_group_id) - $line_taxfree;
 		$stock_gl_code = get_stock_gl_code($entered_grn->item_code);
 
-		add_gl_trans_supplier($trans_type, $invoice_id, $date_, $stock_gl_code["inventory_account"],
+		$total += add_gl_trans_supplier($trans_type, $invoice_id, $date_, $stock_gl_code["inventory_account"],
 			$stock_gl_code['dimension_id'], $stock_gl_code['dimension2_id'],
 			$entered_grn->this_quantity_inv * $line_taxfree, $supp_trans->supplier_id);
     	// -------------- if price changed since po received. 16 Aug 2008 Joe Hunt
@@ -197,41 +205,39 @@ function add_supp_invoice($supp_trans) // do not receive as ref because we chang
 			 
 			$old_price = $old[2];
 
-		
-
 			/*
  			If statement is removed. Should always check for deliveries nomatter if there has been a price change. 
 			*/
 			//if ($old_price != $entered_grn->chg_price) // price-change, so update
 			//{
-				$diff = $entered_grn->chg_price - $old_price;
-				$old_date = sql2date($old[1]);
-				// only update the diff (last parameter, adj_only is set to true).
-				$mat_cost = update_average_material_cost($supp_trans->supplier_id, $entered_grn->item_code,
-					$diff, $entered_grn->this_quantity_inv, $old_date, true);
-				// added 2008-12-08 Joe Hunt. Update the purchase data table
-				add_or_update_purchase_data($supp_trans->supplier_id, $entered_grn->item_code, $entered_grn->chg_price); 
-					
-				// function just above this
-				$deliveries = get_deliveries_between($entered_grn->item_code, $old_date, $date_);
-				if ($deliveries[0] != 0) // have deliveries been done during the period?
+			//$diff = $entered_grn->chg_price - $old_price;
+			$old_date = sql2date($old[1]);
+			$diff = get_diff_in_home_currency($supp_trans->supplier_id, $old_date, $date_, $old_price, 
+				$entered_grn->chg_price);
+			// always return due to change in currency.
+			$mat_cost = update_average_material_cost(null, $entered_grn->item_code,
+				$diff, $entered_grn->this_quantity_inv, $old_date, true);
+			// added 2008-12-08 Joe Hunt. Update the purchase data table
+			add_or_update_purchase_data($supp_trans->supplier_id, $entered_grn->item_code, $entered_grn->chg_price); 
+			$deliveries = get_deliveries_between($entered_grn->item_code, $old_date, Today()); // extend the period, if invoice is before any deliveries.
+			if ($deliveries[0] != 0) // have deliveries been done during the period?
+			{
+				$deliveries[1] /= $deliveries[0];
+				$amt = ($mat_cost - $deliveries[1]) * $deliveries[0]; // $amt in home currency
+				if ($amt != 0.0)
 				{
-
-					$amt = ($mat_cost - $deliveries[1]) * $deliveries[0]; // $amt in home currency
-					if ($amt != 0.0)
-					{
-						add_gl_trans($trans_type, $invoice_id, $date_,	$stock_gl_code["cogs_account"],
-							$stock_gl_code['dimension_id'], $stock_gl_code['dimension2_id'], _("Cost diff."),
-							$amt, null, null, null,
-							"The general ledger transaction could not be added for the price variance of the inventory item");
-						add_gl_trans($trans_type, $invoice_id, $date_,	$stock_gl_code["inventory_account"],
-							0, 0, _("Cost diff."), -$amt, null, null, null,
-							"The general ledger transaction could not be added for the price variance of the inventory item");
-					}		
-					update_stock_move_pid(13, $entered_grn->item_code, $old_date, $date_, 0, $mat_cost);
-				}
-				update_stock_move_pid(25, $entered_grn->item_code, $old_date, $old_date, $supp_trans->supplier_id, $mat_cost);
-			//}
+					add_gl_trans($trans_type, $invoice_id, $date_,	$stock_gl_code["cogs_account"],
+						$stock_gl_code['dimension_id'], $stock_gl_code['dimension2_id'], _("Cost diff."),
+						$amt, null, null, null,
+						"The general ledger transaction could not be added for the price variance of the inventory item");
+					add_gl_trans($trans_type, $invoice_id, $date_,	$stock_gl_code["inventory_account"],
+						0, 0, _("Cost diff."), -$amt, null, null, null,
+						"The general ledger transaction could not be added for the price variance of the inventory item");
+				}		
+				update_stock_move_pid(13, $entered_grn->item_code, $old_date, $date_, 0, $mat_cost);
+			}
+			update_stock_move_pid(25, $entered_grn->item_code, $old_date, $old_date, $supp_trans->supplier_id, $mat_cost);
+		//}
 		}
     	// ----------------------------------------------------------------------
 
@@ -251,12 +257,16 @@ function add_supp_invoice($supp_trans) // do not receive as ref because we chang
 			add_supp_invoice_tax_item($trans_type, $invoice_id, $taxitem['tax_type_id'],
 				$taxitem['rate'], 0, $taxitem['Value']);
 
-    		add_gl_trans_supplier($trans_type, $invoice_id, $date_,
+    		$total += add_gl_trans_supplier($trans_type, $invoice_id, $date_,
     			$taxitem['purchasing_gl_code'], 0, 0, $taxitem['Value'],
     			$supp_trans->supplier_id,
     			"A general ledger transaction for the tax amount could not be added");
     	}
     }
+	
+	/*Post a balance post if $total != 0 */
+	add_gl_balance($trans_type, $invoice_id, $date_, -$total, payment_person_types::supplier(), $supp_trans->supplier_id);	
+
 	add_comments($trans_type, $invoice_id, $date_, $supp_trans->Comments);
 
 	references::save_last($supp_trans->reference, $trans_type);
@@ -371,20 +381,22 @@ function void_supp_invoice($type, $type_no)
 				$old = update_supp_received_items_for_invoice($details_row["grn_item_id"],
 					$details_row["po_detail_item_id"], -$details_row["quantity"], $details_row["FullUnitPrice"]); 
 				
-				$diff = $details_row["FullUnitPrice"] - $old[2];
+				//$diff = $details_row["FullUnitPrice"] - $old[2];
 				$old_date = sql2date($old[1]);
 				
 				$batch = get_grn_batch_from_item($details_row["grn_item_id"]);	
 				$grn = get_grn_batch($batch);
 				
+				$diff = get_diff_in_home_currency($grn["supplier_id"], $old_date, $date_, $old[2], 
+					$details_row["FullUnitPrice"]);
 				// Only adjust the avg for the diff
-				$mat_cost = update_average_material_cost($grn["supplier_id"], $details_row["stock_id"],
-						$diff, -$details_row["quantity"], $date_, true);
+				$mat_cost = update_average_material_cost(null, $details_row["stock_id"],
+					$diff, -$details_row["quantity"], $date_, true);
 
 				$deliveries = get_deliveries_between($details_row["stock_id"], $old_date, $date_);
 				if ($deliveries[0] != 0) // have deliveries been done during the period?
 				{
-
+					$deliveries[1] /= $deliveries[0];
 					$amt = ($mat_cost - $deliveries[1]) * $deliveries[0]; // $amt in home currency
 					if ($amt != 0.0)
 					{
