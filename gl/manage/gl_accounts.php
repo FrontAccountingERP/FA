@@ -198,7 +198,7 @@ if (db_has_gl_accounts())
 {
 	echo "<center>";
     echo _("Select an Account:") . "&nbsp;";
-    gl_all_accounts_list('AccountList', null, false, false, false,
+    gl_all_accounts_list('AccountList', null, false, false,
 		_('New account'), true);
     echo "</center>";
 }

@@ -268,7 +268,7 @@ if ($selected_id != -1)
 	 	}
 	} 
 
-	gl_all_accounts_list_row(_("Account"), 'account', null, true);
+	gl_all_accounts_list_row(_("Account"), 'account', null);
 	yesno_list_row(_("Use Tax:"), 'tax_acc', null, "", "", false);
 	yesno_list_row(_("Use Percent:"), 'pct', null, "", "", false);
 	amount_row(_("Amount"), 'amount', null);

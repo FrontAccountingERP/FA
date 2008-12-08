@@ -180,7 +180,7 @@ function gl_edit_item_controls(&$order, $dim, $Index=null)
 		}
 		
 		$skip_bank = ($_SESSION["wa_current_user"]->access != 2);
-		gl_all_accounts_list('code_id', null, $skip_bank, false, true);
+		gl_all_accounts_list('code_id', null, $skip_bank, true);
 		if ($dim >= 1)
 			dimensions_list_cells(null, 'dimension_id', null, true, " ", false, 1);
 		if ($dim > 1)

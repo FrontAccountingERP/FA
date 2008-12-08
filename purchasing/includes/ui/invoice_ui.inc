@@ -36,7 +36,7 @@ function copy_to_trans(&$supp_trans)
 	{
 		foreach ( $supp_trans->grn_items as $grn)
 		{
-			$supp_trans->ov_amount += round(($grn->this_quantity_inv * $grn->chg_price),
+			$supp_trans->ov_amount += round2(($grn->this_quantity_inv * $grn->chg_price),
 			  user_price_dec());
 		}
 	}
@@ -154,7 +154,7 @@ function display_gl_controls(&$supp_trans, $k)
 	$_POST['gl_code'] = $accs['purchase_account'];
 
 	alt_table_row_color($k);
-	gl_all_accounts_list('gl_code', null, true, false, true);
+	gl_all_accounts_list('gl_code', null, true, true);
 	$dim = get_company_pref('use_dimension');
 	if ($dim >= 1)
 		dimensions_list_cells(null, 'dimension_id', null, true, " ", false, 1);
@@ -331,9 +331,9 @@ function display_grn_items_for_selection(&$supp_trans, $k)
             		null, null, $dec);
             amount_cells(null, 'ChgPrice'.$n, price_format($myrow["unit_price"]));
             if ($supp_trans->is_invoice)
-            	amount_cell(round($myrow["unit_price"] * ($myrow["qty_recd"] - $myrow["quantity_inv"]), user_price_dec()));
+            	amount_cell(round2($myrow["unit_price"] * ($myrow["qty_recd"] - $myrow["quantity_inv"]), user_price_dec()));
             else	
-            	amount_cell(round($myrow["unit_price"] * max($myrow['quantity_inv'], 0), user_price_dec()));
+            	amount_cell(round2($myrow["unit_price"] * max($myrow['quantity_inv'], 0), user_price_dec()));
             if ($supp_trans->is_invoice)	
         		submit_cells('grn_item_id'.$n, _("Add"), '', _("Add to Invoice"), true);
         	else	
@@ -449,7 +449,7 @@ function display_grn_items(&$supp_trans, $mode=0)
             }
 			qty_cell(abs($entered_grn->this_quantity_inv), true, $dec);
 			amount_cell($entered_grn->chg_price);
-			amount_cell( round($entered_grn->chg_price * abs($entered_grn->this_quantity_inv), user_price_dec()), true);
+			amount_cell( round2($entered_grn->chg_price * abs($entered_grn->this_quantity_inv), user_price_dec()), true);
 
 			if ($mode == 1)
 			{
@@ -459,7 +459,7 @@ function display_grn_items(&$supp_trans, $mode=0)
 			}	
 			end_row();
 
-    		$total_grn_value += round($entered_grn->chg_price * abs($entered_grn->this_quantity_inv),
+    		$total_grn_value += round2($entered_grn->chg_price * abs($entered_grn->this_quantity_inv),
 			   user_price_dec());
 
     		$i++;

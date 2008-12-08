@@ -321,7 +321,7 @@ table_section(2);
 table_section_title(_("GL Accounts"));
 
 // 2006-06-14. Changed gl_al_accounts_list to have an optional all_option 'Use Item Sales Accounts'
-gl_all_accounts_list_row(_("Sales Account:"), 'sales_account', null, false,	false, false, true);
+gl_all_accounts_list_row(_("Sales Account:"), 'sales_account', null, false, false, true);
 
 gl_all_accounts_list_row(_("Sales Discount Account:"), 'sales_discount_account');
 

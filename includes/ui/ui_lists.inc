@@ -1518,7 +1518,7 @@ function gl_account_types_list_row($label, $name, $selected_id=null, $all_option
 
 //-----------------------------------------------------------------------------------------------
 function gl_all_accounts_list($name, $selected_id=null, $skip_bank_accounts=false,
-	$show_group=true, $cells=false, $all_option=false, $submit_on_change=false)
+	$cells=false, $all_option=false, $submit_on_change=false)
 {
 	if ($skip_bank_accounts)
 		$sql = "SELECT chart.account_code, chart.account_name, type.name
@@ -1545,7 +1545,7 @@ function gl_all_accounts_list($name, $selected_id=null, $skip_bank_accounts=fals
 			'cells' => true,
 		'select_submit'=> $submit_on_change,
 		'async' => false,
-		'category' => ($show_group ? 2 : false)
+		'category' => 2
 	) );
 
 }
@@ -1555,22 +1555,23 @@ function _format_account($row)
 		return $row[0] .  "&nbsp;&nbsp;&nbsp;&nbsp;" . $row[1];
 }
 
-function gl_all_accounts_list_cells($label, $name, $selected_id=null, $skip_bank_accounts=false,
-	$show_group=false, $cells=false, $all_option=false)
+function gl_all_accounts_list_cells($label, $name, $selected_id=null, 
+	$skip_bank_accounts=false, $cells=false, $all_option=false)
 {
 	if ($label != null)
 		echo "<td>$label</td>\n";
 	echo "<td>";
-	gl_all_accounts_list($name, $selected_id, $skip_bank_accounts, $show_group, $cells, $all_option);
+	gl_all_accounts_list($name, $selected_id, 
+		$skip_bank_accounts, $cells, $all_option);
 	echo "</td>\n";
 }
 
-function gl_all_accounts_list_row($label, $name, $selected_id=null, $skip_bank_accounts=false,
-	$show_group=false, $cells=false, $all_option=false)
+function gl_all_accounts_list_row($label, $name, $selected_id=null, 
+	$skip_bank_accounts=false, $cells=false, $all_option=false)
 {
 	echo "<tr>\n";
-	gl_all_accounts_list_cells($label, $name, $selected_id, $skip_bank_accounts,
-		$show_group, $cells, $all_option);
+	gl_all_accounts_list_cells($label, $name, $selected_id, 
+		$skip_bank_accounts, $cells, $all_option);
 	echo "</tr>\n";
 }
 

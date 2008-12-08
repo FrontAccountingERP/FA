@@ -176,7 +176,7 @@ else
 if($is_editing)
 	label_row(_("Bank Account GL Code:"), $_POST['account_code']);
 else 
-	gl_all_accounts_list_row(_("Bank Account GL Code:"), 'account_code', null, false);
+	gl_all_accounts_list_row(_("Bank Account GL Code:"), 'account_code', null);
 
 text_row(_("Bank Name:"), 'bank_name', null, 50, 60);
 text_row(_("Bank Account Number:"), 'bank_account_number', null, 30, 60);
