@@ -683,10 +683,9 @@ function sales_items_list($name, $selected_id=null, $all_option=false,
 			ON i.category_id=c.category_id";
 
 	if ($type == 'local')	{ // exclude foreign codes
-		$sql .=	" WHERE NOT i.is_foreign"; 
+		$sql .=	" WHERE !i.is_foreign"; 
 	} elseif ($type == 'kits') { // sales kits
-		$sql .=	" WHERE NOT i.is_foreign 
-			AND NOT i.item_code=i.stock_id";
+		$sql .=	" WHERE !i.is_foreign AND i.item_code!=i.stock_id";
 	}
 				
 	$sql .= " GROUP BY i.item_code";
