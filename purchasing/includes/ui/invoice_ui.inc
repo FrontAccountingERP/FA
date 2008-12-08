@@ -391,7 +391,10 @@ function display_grn_items(&$supp_trans, $mode=0)
 	if ($mode == 1)
 	{
 		if ($heading2 != "")
-			display_note($heading2."</td>", 0, 0, "class='overduefg'");
+		{
+			display_note($heading2, 0, 0, "class='overduefg'");
+			echo "</td>";
+		}	
 		submit_cells('InvGRNAll', _("Add All Items"), "align=right",false,true);
 	}	
 
