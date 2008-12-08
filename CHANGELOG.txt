@@ -19,6 +19,11 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+------------------------------- Release 2.0.6 --------------------------------------------
+08-Dec-2008
+! New release 2.0.6
+$ config.php
+
 05-Dec-2008 Joe Hunt
 # [0000095] Bad behaviour of routine number_format and round in Windows.
 $ /gl/includes/gl_db_trans.inc
