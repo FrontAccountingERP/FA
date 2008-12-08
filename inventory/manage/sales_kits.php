@@ -143,7 +143,10 @@ if ($Mode == 'Delete')
 	// 
 	$other_kits = get_where_used($_POST['item_code']);
 	$num_kits = db_num_rows($other_kits);
-	if ($num_kits) {
+
+	$kit = get_item_kit($_POST['item_code']);
+	if ((db_num_rows($kit) == 1) && $num_kits) {
+
 		$msg = _("This item cannot be deleted because it is the last item in the kit used by following kits")
 			.':<br>';
 
@@ -229,7 +232,8 @@ if (get_post('item_code') == '') {
 		$Ajax->activate('quantity');
 		$Ajax->activate('category');
 	}
-	qty_row(_("Quantity:"), 'quantity', null, '', $units, $dec);
+	
+	qty_row(_("Quantity:"), 'quantity', number_format2(1, $dec), '', $units, $dec);
 
 	end_table(1);
 	submit_add_or_update_center($selected_id == -1, '', true);

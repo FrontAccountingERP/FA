@@ -43,6 +43,9 @@ $ /js/inserts.js
 $ /includes/ui/ui_lists.inc
 # Fixed broken syntax in delete_item_code()
 $ /inventory/includes/db/items_codes_db.inc
+# Additional fixes to foreign/kit codes
+$ /inventory/manage/item_codes.php
+  /inventory/manage/sales_kits.php
 ! Merged changes from main trunk up to version 2.0.6 (see below)
 $ /config.php
   /update.html

@@ -72,7 +72,7 @@ if ($Mode == 'Delete')
 {
 	delete_item_code($selected_id);
 	
-	display_notification(_("The purchasing data item has been sucessfully deleted."));
+	display_notification(_("Item code has been sucessfully deleted."));
 	$Mode = 'RESET';
 }
 
