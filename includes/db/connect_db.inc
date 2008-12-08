@@ -18,7 +18,7 @@ $db_duplicate_error_code = 1062;
 
 function db_query($sql, $err_msg=null)
 {
-	global $db, $show_sql;
+	global $db, $show_sql, $sql_trail, $select_trail;
 
 	//echo "<br>$sql<br>";
 	if ($show_sql)
@@ -28,9 +28,19 @@ function db_query($sql, $err_msg=null)
 		echo $sql;
 		echo "</pre>\n";
 	}
-
+	
 
 	$result = mysql_query($sql, $db);
+	if($sql_trail) {
+		if ($select_trail || (strstr($sql, 'SELECT') === false)) {
+			mysql_query(
+			"INSERT INTO ".TB_PREF."sql_trail
+				(`sql`, `result`, `msg`)
+				VALUES(".db_escape($sql).",".($result ? 1 : 0).",
+				".db_escape($err_msg).")", $db);
+		}
+	}
+
 	if ($err_msg != null)
 	  if (function_exists('xdebug_call_file'))
 		check_db_error('<br>At file '.xdebug_call_file().':'.xdebug_call_line().':<br>'.$err_msg, $sql);

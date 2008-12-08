@@ -25,6 +25,13 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 	$show_sql 		= 0;
 	$go_debug 		= 1;
 	$pdf_debug 		= 0;
+	// set $sql_trail to 1 only if you want to perform bugtracking sql trail
+	// Warning: this produces huge amount of data in sql_trail table.
+	// Don't forget switch the option off and flush the table manually after 
+	// trail, or your future backup files are overloaded with unneeded data.
+	//
+	$sql_trail 		= 0; // save all sql queries in sql_trail
+	$select_trail 	= 0; // track also SELECT queries
 	if ($go_debug == 1)
 	{
 		error_reporting(E_ALL);

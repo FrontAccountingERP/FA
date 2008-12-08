@@ -206,3 +206,14 @@ ALTER TABLE `0_suppliers` DROP COLUMN `credit_limit`;
 ALTER TABLE `0_suppliers` ADD `credit_limit` double NOT NULL DEFAULT '0' AFTER `tax_group_id`;
 
 ALTER TABLE `0_chart_types` DROP INDEX `name`, ADD INDEX `name` ( `name` );
+
+DROP TABLE IF EXISTS `0_sql_trail`; 
+
+CREATE TABLE IF NOT EXISTS `0_sql_trail` (
+  `id` int(11) NOT NULL auto_increment,
+  `sql` text NOT NULL, 
+  `result` tinyint(1) NOT NULL, 
+  `msg` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) TYPE = MyISAM;
+
