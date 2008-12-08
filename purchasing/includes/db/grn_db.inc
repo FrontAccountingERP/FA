@@ -68,7 +68,9 @@ function add_grn(&$po, $date_, $reference, $location)
 			   	/*Need to get the standard cost as it is now so we can process GL jorunals later*/
 			   	$order_line->standard_cost = get_standard_cost($order_line->stock_id);
 			}
-
+			// added 2008-12-08 Joe Hunt. Update the purchase data table
+			add_or_update_purchase_data($po->supplier_id, $order_line->stock_id, $order_line->price, 
+				$order_line->item_description); 
 
 			/*Need to insert a grn item */
 

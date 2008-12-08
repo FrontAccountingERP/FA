@@ -174,6 +174,14 @@ function read_po_items($order_no, &$order, $open_items_only=false)
 
 		while ($myrow = db_fetch($result))
         {
+        	$data = get_purchase_data($order->supplier_id, $myrow['item_code']);
+        	if ($data !== false)
+        	{
+        		if ($data['supplier_description'] != "")
+        			$myrow['description'] = $data['supplier_description'];
+        		if ($data['suppliers_uom'] != "")
+        			$myrow['units'] = $data['suppliers_uon'];
+        	}		
             if (is_null($myrow["units"]))
             {
 		       	$units = "";

@@ -209,6 +209,9 @@ function add_supp_invoice($supp_trans) // do not receive as ref because we chang
 				// only update the diff (last parameter, adj_only is set to true).
 				$mat_cost = update_average_material_cost($supp_trans->supplier_id, $entered_grn->item_code,
 					$diff, $entered_grn->this_quantity_inv, $old_date, true);
+				// added 2008-12-08 Joe Hunt. Update the purchase data table
+				add_or_update_purchase_data($supp_trans->supplier_id, $entered_grn->item_code, $entered_grn->chg_price); 
+					
 				// function just above this
 				$deliveries = get_deliveries_between($entered_grn->item_code, $old_date, $date_);
 				if ($deliveries[0] != 0) // have deliveries been done during the period?

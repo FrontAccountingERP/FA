@@ -55,5 +55,36 @@ function get_purchase_price($supplier_id, $stock_id)
 
 //----------------------------------------------------------------------------------------
 
+function get_purchase_data($supplier_id, $stock_id)
+{
+	$sql = "SELECT * FROM ".TB_PREF."purch_data 
+		WHERE supplier_id = '" . $supplier_id . "' 
+		AND stock_id = '". $stock_id . "'";
+	$result = db_query($sql, "The supplier pricing details for " . $stock_id . " could not be retrieved");    
+
+	return db_fetch($result);
+}
+
+function add_or_update_purchase_data($supplier_id, $stock_id, $price, $description="", $uom="")
+{
+	$data = get_purchase_data($supplier_id, $stock_id);
+	if ($data === false)
+	{
+		$sql = "INSERT INTO ".TB_PREF."purch_data (supplier_id, stock_id, price, suppliers_uom,
+			conversion_factor, supplier_description) VALUES ('$supplier_id', '$stock_id', 
+			$price, '$uom', 1, '$description')";
+		db_query($sql,"The supplier purchasing details could not be added");
+		return;
+	}	
+	$price = round($price * $data['conversion_factor'], user_price_dec());	
+	$sql = "UPDATE ".TB_PREF."purch_data SET price=$price";
+	if ($uom != "")
+		$sql .= ",suppliers_uom='$uom'";
+	if ($description != "")	
+		$sql .= ",supplier_description='$description'";
+	$sql .= " WHERE stock_id='$stock_id' AND supplier_id='$supplier_id'";
+	db_query($sql,"The supplier purchasing details could not be updated");
+	return true;
+}
 
 ?>

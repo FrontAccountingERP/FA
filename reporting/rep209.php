@@ -103,6 +103,19 @@ function print_po()
 		$SubTotal = 0;
 		while ($myrow2=db_fetch($result))
 		{
+			$data = get_purchase_data($myrow['supplier_id'], $myrow2['item_code']);
+			if ($data !== false)
+			{
+				if ($data['supplier_description'] != "")
+					$myrow2['description'] = $data['supplier_description'];
+				if ($data['suppliers_uom'] != "")
+					$myrow2['units'] = $data['suppliers_uom'];
+				if ($data['conversion_factor'] != 1)
+				{
+					$myrow2['unit_price'] = round($myrow2['unit_price'] / $data['conversion_factor'], user_price_dec());
+					$myrow2['quantiry_ordered'] = round($myrow2['quantiry_ordered'] / $data['conversion_factor'], user_qty_dec());
+				}
+			}	
 			$Net = round(($myrow2["unit_price"] * $myrow2["quantity_ordered"]),
 			  user_price_dec());
 			$SubTotal += $Net;

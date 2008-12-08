@@ -19,6 +19,15 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+08-Dec-2008 Joe Hunt
+! Better support for purchasing data (automatic updating from PO receive)
+$ /purchasing/includes/db/grn_db.inc
+  /purchasing/includes/db/invoice_db.inc
+  /purchasing/includes/db/po_db.inc
+  /purchasing/includes/ui/invoice_ui.inc
+  /purchasing/includes/purchasing_db.inc
+  /reporting/rep209.php
+
 07-Dec-2008 Janusz Dobrowolski
 + Added list category grouping.
 $ /includes/ui/ui_lists.inc
