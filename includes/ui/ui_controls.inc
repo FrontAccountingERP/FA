@@ -337,5 +337,33 @@ function context_reset()
 if (!isset($_SESSION['Context'])) {
 		context_reset();
 }
+/*
+	Redirector for selector F4 calls.
+	$sel_editors is array of selname=>editor_page
+*/
+function editor_redirect($sel_editors, $save_fun='') {
+	foreach ($sel_editors as $selname=>$editor)
+		if (isset($_POST['_'.$selname.'_editor'])) {
+			if (function_exists($save_fun))
+				$save_fun();
+			unset($_POST['_'.$selname.'_editor']);
+			context_call($editor, array_keys($_POST));
+		}
+}
+/*
+	Return procedure for selector F4 calls
+*/
+function editor_return($vars, $restore_fun='') {
+	if (function_exists($restore_fun))
+		$restore_fun();
+
+	if ($ret = context_restore()) {
+		foreach ($vars as $postname=>$retname)
+			if (isset($ret[$retname])) {
+				$_POST[$postname] = $ret[$retname];
+				set_focus($postname);
+			}
+	}
+}
 
 ?>
