@@ -142,7 +142,7 @@ table_section_title(_("Customers and Sales Defaults"));
 gl_all_accounts_list_row(_("Receivable Account:"), 'debtors_act');
 
 gl_all_accounts_list_row(_("Sales Account:"), 'default_sales_act', null,
-	false, false, false, true);
+	false, false, true);
 
 gl_all_accounts_list_row(_("Sales Discount Account:"), 'default_sales_discount_act');
 
