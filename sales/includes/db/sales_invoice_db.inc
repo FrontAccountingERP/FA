@@ -172,11 +172,11 @@ function void_sales_invoice($type, $type_no)
 
 	$deliveries = get_parent_trans($type, $type_no);
 
-	if (count($deliveries)) {
+	if ($deliveries !== 0) {
 		$srcdetails = get_customer_trans_details(get_parent_type($type), $deliveries);
 		while ($row = db_fetch($items_result)) {
 			$src_line = db_fetch($srcdetails);
-			update_parent_line(10, $src_line['id'], -$row['quantity']);
+			update_parent_line($type, $src_line['id'], -$row['quantity']);
 		}
 	}
 	// clear details after they've been reversed in the sales order
