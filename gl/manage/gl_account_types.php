@@ -1,5 +1,14 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU Affero General Public License,
+	AGPL, as published by the Free Software Foundation, either version 
+	3 of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/agpl-3.0.html>.
+***********************************************************************/
 $page_security = 3;
 $path_to_root="../..";
 include($path_to_root . "/includes/session.inc");
@@ -10,7 +19,7 @@ include($path_to_root . "/gl/includes/gl_db.inc");
 
 include($path_to_root . "/includes/ui.inc");
 
-simple_page_mode(false);
+simple_page_mode(true);
 //-----------------------------------------------------------------------------------
 
 function can_process() 
@@ -41,14 +50,14 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 	if (can_process()) 
 	{
 
-    	if ($selected_id != "") 
+    	if ($selected_id != -1) 
     	{
     		update_account_type($selected_id, $_POST['name'], $_POST['class_id'], $_POST['parent']);
 			display_notification(_('Selected account type has been updated'));
     	} 
     	else 
     	{
-    		add_account_type($_POST['name'], $_POST['class_id'], $_POST['parent']);
+    		add_account_type($_POST['id'], $_POST['name'], $_POST['class_id'], $_POST['parent']);
 			display_notification(_('New account type has been added'));
     	}
 		$Mode = 'RESET';
@@ -59,7 +68,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 
 function can_delete($selected_id)
 {
-	if ($selected_id == "")
+	if ($selected_id == -1)
 		return false;
 	$sql= "SELECT COUNT(*) FROM ".TB_PREF."chart_master
 		WHERE account_type=$selected_id";
@@ -99,8 +108,8 @@ if ($Mode == 'Delete')
 }
 if ($Mode == 'RESET')
 {
- 	$selected_id = '';
-	$_POST['name']  = '';
+ 	$selected_id = -1;
+	$_POST['id']  = $_POST['name']  = '';
 	unset($_POST['parent']);
 	unset($_POST['class_id']);
 }
@@ -109,7 +118,7 @@ if ($Mode == 'RESET')
 $result = get_account_types();
 start_form();
 start_table($table_style);
-$th = array(_("Name"), _("Subgroup Of"), _("Class Type"), "", "");
+$th = array(_("ID"), _("Name"), _("Subgroup Of"), _("Class Type"), "", "");
 table_header($th);
 
 $k = 0;
@@ -129,11 +138,12 @@ while ($myrow = db_fetch($result))
 		$parent_text = get_account_type_name($myrow["parent"]);
 	}
 
+	label_cell($myrow["id"]);
 	label_cell($myrow["name"]);
 	label_cell($parent_text);
 	label_cell($bs_text);
 	edit_button_cell("Edit".$myrow["id"], _("Edit"));
-	edit_button_cell("Delete".$myrow["id"], _("Delete"));
+	delete_button_cell("Delete".$myrow["id"], _("Delete"));
 	end_row();
 }
 
@@ -146,17 +156,24 @@ start_form();
 
 start_table($table_style2);
 
-if ($Mode == 'Edit') 
+if ($selected_id != -1)
 {
-	//editing an existing status code
-	$myrow = get_account_type($selected_id);
-
-	$_POST['name']  = $myrow["name"];
-	$_POST['parent']  = $myrow["parent"];
-	$_POST['class_id']  = $myrow["class_id"];
- }
-	hidden('selected_id', $selected_id);
-
+	if ($Mode == 'Edit') 
+	{
+		//editing an existing status code
+		$myrow = get_account_type($selected_id);
+	
+		$_POST['id']  = $myrow["id"];
+		$_POST['name']  = $myrow["name"];
+		$_POST['parent']  = $myrow["parent"];
+		$_POST['class_id']  = $myrow["class_id"];
+		hidden('selected_id', $selected_id);
+ 	}
+ 	hidden('id');
+	label_row(_("ID:"), $_POST['id']);
+}
+else
+	text_row_ex(_("ID:"), 'id', 4);
 text_row_ex(_("Name:"), 'name', 50);
 
 gl_account_types_list_row(_("Subgroup Of:"), 'parent', null, _("None"), true);
@@ -165,7 +182,7 @@ class_list_row(_("Class Type:"), 'class_id', null);
 
 end_table(1);
 
-submit_add_or_update_center($selected_id == '', '', true);
+submit_add_or_update_center($selected_id == -1, '', true);
 
 end_form();
 
