@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+09-Dec-2008 Joe Hunt
+# Bug in document right-margin when more than 1 page.
+$ /reporting/includes/header2.inc
+
 08-Dec-2008 Janusz Dobrowolski
 + Added helpers for list editor F4 calls.
 $ /includes/ui/ui_controls.inc

@@ -208,10 +208,7 @@
 		$this->row = $iline5 - $this->lineHeight - 1;
 		$this->Font('bold');
 		$count = count($this->headers);
-		if (user_pagesize() == "Letter")
-			$this->cols[$count] += 40;
-		else	
-			$this->cols[$count] += 5;
+		$this->cols[$count] = $right - 3;
 		for ($i = 0; $i < $count; $i++)
 			$this->TextCol($i, $i + 1, $this->headers[$i], -2);
 		$this->Font();
