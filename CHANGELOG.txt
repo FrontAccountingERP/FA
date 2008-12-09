@@ -19,8 +19,16 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+09-Dec-2008 Janusz Dobrowolski
+# [0000098] Unable issue of credit note for invoice with removed item lines.
+$ /sales/customer_credit_invoice.php
+# [0000097] Can't void freehand customer credit note.
+$ /sales/includes/db/sales_invoice_db.inc
+# Fixed to hide empty credit note lines.
+$ /sales/view/view_credit.php
+
 ------------------------------- Release 2.0.6 --------------------------------------------
-08-Dec-2008
+08-Dec-2008 Joe Hunt
 ! New release 2.0.6
 $ config.php
 
