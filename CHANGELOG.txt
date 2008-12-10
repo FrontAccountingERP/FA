@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+10-Dec-2008 Janusz Dobrowolski
+# [0000099] New line added to inventory transfer/adjustment sometimes overwrites old one.
+$ /inlucdes/ui/items_cart.inc
+
 09-Dec-2008 Janusz Dobrowolski
 # [0000098] Unable issue of credit note for invoice with removed item lines.
 $ /sales/customer_credit_invoice.php

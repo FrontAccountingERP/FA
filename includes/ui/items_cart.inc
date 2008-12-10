@@ -67,7 +67,7 @@ class items_cart
 
 	function remove_from_cart($line_no)
 	{
-			unset($this->line_items[$line_no]);
+		array_splice($this->line_items, $line_no, 1);
 	}
 
 	function count_items()
@@ -123,7 +123,7 @@ class items_cart
 	{
 		if (isset($index))
 		{
-			unset($this->gl_items[$index]);
+			array_splice($this->gl_items, $line_no, 1);
 		}
 	}
 
