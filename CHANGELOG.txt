@@ -19,6 +19,12 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+10-Dec-2008 Janusz Dobrowolski
+# File and line was not displayed for devel error messages.
+$ /includes/errors.inc
+# Fixed duplicate groups in list selectors.
+$ /includes/ui/ui_lists.inc
+
 09-Dec-2008 Joe Hunt
 # Bug in document right-margin when more than 1 page.
 $ /reporting/includes/header2.inc
