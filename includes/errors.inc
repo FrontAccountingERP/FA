@@ -46,11 +46,12 @@ function fmt_errors($center=true) {
 		}
 	    $str = $msg[1];
 		$c = $msg_colors[$type];
-		if ($msg[0]<E_USER_ERROR && $msg[2]!=null)
+		if ($msg[0] < E_USER_ERROR && $msg[2] != null)
 		  $str .= ' '._('in file').': '.$msg[2].' '._('at line ').$msg[3];
+
 		$content .= "<tr><td  " . ($center?"align='center' ":"").
 		  " width='100%' bgcolor='{$c['bg']}'><font color='{$c['txt']}'>"
-		  .$msg[1]."</font></td></tr>";
+		  .$str."</font></td></tr>";
 	}
 
   	$str = "<center><table border='1' cellpadding='3' cellspacing='0' style='border-collapse: collapse' bordercolor='{$c['bd']}' width='98%'>"
