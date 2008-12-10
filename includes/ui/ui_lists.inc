@@ -133,7 +133,9 @@ $opts = array(		// default options
 		}
 	}
 	if ($opts['order'] != false) {
-		$sql .= ' ORDER BY '.$opts['order'];
+		if (!is_array($opts['order']))
+			$opts['order'] = array($opts['order']);
+		$sql .= ' ORDER BY '.implode(',',$opts['order']);
 	}
 
 	$sql .= $limit;
@@ -640,7 +642,8 @@ function stock_items_list($name, $selected_id=null, $all_option=false, $submit_o
 		'search_submit' => get_company_pref('no_item_list')!=0,
 		'size'=>10,
 		'select_submit'=> $submit_on_change,
-		'category' => 2
+		'category' => 2,
+		'order' => array('c.description','stock_id')
 	  ), $opts) );
 }
 
@@ -701,8 +704,8 @@ function sales_items_list($name, $selected_id=null, $all_option=false,
 		'search_submit' => get_company_pref('no_item_list')!=0,
 		'size'=>15,
 		'select_submit'=> $submit_on_change,
-		'order' => 'i.item_code',
-		'category' => 2
+		'category' => 2,
+		'order' => array('c.description','i.item_code')
 	  ), $opts) );
 }
 
@@ -1536,7 +1539,7 @@ function gl_all_accounts_list($name, $selected_id=null, $skip_bank_accounts=fals
 		'format' => '_format_account',
 		'spec_option' => $all_option===true ?  _("Use Item Sales Accounts") : $all_option,
 		'spec_id' => '',
-		'order' => 'account_code',
+		'order' => array('name','account_code'),
 		'search_box' => $cells,
 			'search_submit' => false,
 			'size' => 12,
