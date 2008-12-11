@@ -187,6 +187,12 @@ CREATE TABLE `0_item_codes` (
 ALTER TABLE `0_company` DROP COLUMN `foreign_codes`;
 ALTER TABLE `0_company` ADD `foreign_codes` TINYINT(1) NOT NULL DEFAULT '0';
 
+ALTER TABLE `0_company` DROP COLUMN `accumulate_shipping`;
+ALTER TABLE `0_company` ADD `accumulate_shipping` TINYINT(1) NOT NULL DEFAULT '0';
+
+ALTER TABLE `0_company` DROP COLUMN `legal_text`;
+ALTER TABLE `0_company` ADD `legal_text` tinytext NOT NULL DEFAULT '';
+
 ALTER TABLE `0_suppliers` DROP COLUMN `supp_address`;
 ALTER TABLE `0_suppliers` ADD `supp_address` tinytext NOT NULL DEFAULT '' AFTER `address`;
 

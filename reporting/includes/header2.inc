@@ -248,6 +248,12 @@
 			$this->TextWrap($ccol, $this->row, $right - $ccol, $this->params['comments'], 'C');
 			$this->NewLine();
 		}
+		$legal = get_company_pref('legal_text');
+		if ($doctype == 10 && $legal != "") 
+		{
+			$this->TextWrap($ccol, $this->row, $right - $ccol, $legal, 'C');
+			$this->NewLine();
+		}
 		$this->Font();
 		$temp = $iline6 - $this->lineHeight - 2;
 ?>

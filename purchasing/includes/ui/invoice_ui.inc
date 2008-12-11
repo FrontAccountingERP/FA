@@ -395,7 +395,7 @@ function display_grn_items(&$supp_trans, $mode=0)
 			//br();
 			display_note($heading2, 0, 0, "class='overduefg'");
 		}	
-		echo "</td><td align='right'>";
+		echo "</td><td width=10% align='right'>";
 		submit('InvGRNAll', _("Add All Items"), true, false,true);
 	}	
 

@@ -66,6 +66,8 @@ if (isset($_POST['submit']) && can_process())
 		check_value('allow_negative_stock'),
 		input_num('po_over_receive'),
 		input_num('po_over_charge'),
+		check_value('accumulate_shipping'),
+		$_POST['legal_text'],
 		$_POST['past_due_days'],
 		$_POST['default_credit_limit'],
 		$_POST['default_workorder_required'],
@@ -109,6 +111,8 @@ $_POST['po_over_charge'] = percent_format($myrow['po_over_charge']);
 $_POST['past_due_days'] = $myrow['past_due_days'];
 
 $_POST['default_credit_limit'] = $myrow['default_credit_limit'];
+$_POST['legal_text'] = $myrow['legal_text'];
+$_POST['accumulate_shipping'] = $myrow['accumulate_shipping'];
 
 $_POST['default_workorder_required'] = $myrow['default_workorder_required'];
 $_POST['default_dim_required'] = $myrow['default_dim_required'];
@@ -133,6 +137,10 @@ table_section_title(_("Customers and Sales"));
 
 text_row(_("Default Credit Limit:"), 'default_credit_limit', $_POST['default_credit_limit'], 12, 12);
 
+check_row(_("Accumulate batch shipping:"), 'accumulate_shipping', null);
+
+textarea_row(_("Legal Text on Invoice:"), 'legal_text', $_POST['legal_text'], 32, 3);
+
 gl_all_accounts_list_row(_("Shipping Charged Account:"), 'freight_act', $_POST['freight_act']);
 
 //---------------
@@ -148,20 +156,26 @@ gl_all_accounts_list_row(_("Sales Discount Account:"), 'default_sales_discount_a
 
 gl_all_accounts_list_row(_("Prompt Payment Discount Account:"), 'default_prompt_payment_act');
 
+//----------------
+
+table_section_title(_("Dimension Defaults"));
+
+text_row(_("Dimension Required By After:"), 'default_dim_required', $_POST['default_dim_required'], 6, 6, '', "", _("days"));
 //---------------
+
+table_section(2);
 
 table_section_title(_("Suppliers and Purchasing"));
 
 percent_row(_("Delivery Over-Receive Allowance:"), 'po_over_receive');
 
 percent_row(_("Invoice Over-Charge Allowance:"), 'po_over_charge');
+
 // Not used in FA2.0.
 //gl_all_accounts_list_row(_("Purchases Exchange Variances Account:"), 'purch_exchange_diff_act', $_POST['purch_exchange_diff_act']);
 // Not used in FA2.0.
 //gl_all_accounts_list_row(_("Goods Received Clearing Account:"), 'grn_act', $_POST['grn_act']);
 
-//---------------
-table_section(2);
 table_section_title(_("Suppliers and Purchasing Defaults"));
 
 gl_all_accounts_list_row(_("Payable Account:"), 'creditors_act', $_POST['creditors_act']);
@@ -189,11 +203,6 @@ table_section_title(_("Manufacturing Defaults"));
 
 text_row(_("Work Order Required By After:"), 'default_workorder_required', $_POST['default_workorder_required'], 6, 6, '', "", _("days"));
 
-//----------------
-
-table_section_title(_("Dimension Defaults"));
-
-text_row(_("Dimension Required By After:"), 'default_dim_required', $_POST['default_dim_required'], 6, 6, '', "", _("days"));
 
 //----------------
 

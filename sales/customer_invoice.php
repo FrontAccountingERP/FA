@@ -77,6 +77,10 @@ if (isset($_GET['AddedID'])) {
 		}
 	}
 	unset($line);
+
+    // Remove also src_doc delivery note
+    $sources = &$_SESSION['Items']->src_docs;
+    unset($sources[$_GET['RemoveDN']]);
 }
 
 //-----------------------------------------------------------------------------
@@ -177,6 +181,24 @@ function check_quantities()
 	}
  return $ok;
 }
+
+function set_delivery_shipping_sum($delivery_notes) 
+{
+    
+    $shipping = 0;
+    
+    foreach($delivery_notes as $delivery_num) 
+    {
+        $myrow = get_customer_trans($delivery_num, 13);
+        //$branch = get_branch($myrow["branch_code"]);
+        //$sales_order = get_sales_order_header($myrow["order_"]);
+        
+        //$shipping += $sales_order['freight_cost'];
+        $shipping += $myrow['ov_freight'];
+    }
+    $_POST['ChargeFreightCost'] = price_format($shipping);
+}
+
 
 function copy_to_cart()
 {
@@ -297,6 +319,7 @@ $dspans[] = $spanlen;
 //-----------------------------------------------------------------------------
 
 $is_batch_invoice = count($_SESSION['Items']->src_docs) > 1;
+
 $is_edition = $_SESSION['Items']->trans_type == 10 && $_SESSION['Items']->trans_no != 0;
 start_form(false, true);
 
@@ -429,6 +452,10 @@ if (!isset($_POST['ChargeFreightCost']) || $_POST['ChargeFreightCost'] == "") {
 		$_POST['ChargeFreightCost'] = price_format(0);
 	}
 }
+
+$accumulate_shipping = get_company_pref('accumulate_shipping');
+if ($is_batch_invoice && $accumulate_shipping)
+	set_delivery_shipping_sum(array_keys($_SESSION['Items']->src_docs));
 
 start_row();
 

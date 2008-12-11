@@ -19,6 +19,16 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+11-Dec-2008 Joe Hunt
++ Two new fields in company table, accumulate_shipping and logal_text
+  Accumulat shipping is for accumulating shipping on batch invoice
+  Legal text is a last line legal info on sales invoices.
+$ /sql/alter2.1.sql
+  /admin/db/company_db.inc
+  /admin/gl_setup.php
+  /reporting/includes/header2.inc
+  /sales/customer_invoice.php
+
 10-Dec-2008 Janusz Dobrowolski
 # File and line was not displayed for devel error messages.
 $ /includes/errors.inc
