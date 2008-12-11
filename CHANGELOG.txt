@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+12-Dec-2008 Joe Hunt
+! Changed so document Sales Invoice now shows delivery notes instead of sales order
+$ /reporting/includes/header2.inc
+.
 11-Dec-2008 Joe Hunt
 + Two new fields in company table, accumulate_shipping and logal_text
   Accumulat shipping is for accumulating shipping on batch invoice

@@ -169,7 +169,10 @@
 		$col += $width;
 		$this->TextWrap($col, $this->row, $width, $doc_Your_VAT_no, 'C');
 		$col += $width;
-		$this->TextWrap($col, $this->row, $width, $doc_Our_Order_No, 'C');
+		if ($doctype == 10)
+			$this->TextWrap($col, $this->row, $width, $doc_Delivery_no, 'C');
+		else
+			$this->TextWrap($col, $this->row, $width, $doc_Our_Order_No, 'C');
 		$col += $width;
 		$this->TextWrap($col, $this->row, $width, $doc_Payment_Terms, 'C');
 		$col += $width;
@@ -191,7 +194,20 @@
 		if ($doctype != 8 && isset($myrow['tax_id']))
 			$this->TextWrap($col, $this->row, $width, $myrow['tax_id'], 'C');
 		$col += $width;	
-		if (isset($myrow['order_']))
+		if ($doctype == 10)
+		{
+			$deliveries = get_parent_trans(10,$myrow['trans_no']);
+			$line = "";
+			foreach ($deliveries as $delivery)
+			{
+				if ($line == "")
+					$line .= "$delivery";
+				else
+					$line .= ",$delivery";
+			}		
+			$this->TextWrap($col, $this->row, $width, $line, 'C');
+		}
+		elseif (isset($myrow['order_']))
 			$this->TextWrap($col, $this->row, $width, $myrow['order_'], 'C');
 		$col += $width;	
 		$id = $myrow['payment_terms'];
