@@ -265,7 +265,7 @@
 			$this->NewLine();
 		}
 		$legal = get_company_pref('legal_text');
-		if ($doctype == 10 && $legal != "") 
+		if (($doctype == 10 || $doctype == 12) && $legal != "") 
 		{
 			$this->TextWrap($ccol, $this->row, $right - $ccol, $legal, 'C');
 			$this->NewLine();
