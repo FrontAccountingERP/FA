@@ -307,7 +307,7 @@ function display_order_header(&$order, $editable, $date_text, $display_tax_group
 		} // changed branch
 	}
 
-	if ($_SESSION['Items']->trans_type!=30) {
+	if ($order->trans_type != 30) {
 		ref_cells(_("Reference").':', 'ref', _('Reference number unique for this document type'), null, '');
 	}
 
@@ -403,7 +403,7 @@ function display_order_header(&$order, $editable, $date_text, $display_tax_group
 	if ($display_tax_group)
 	{
 	    label_row(_("Tax Group:"), $order->tax_group_name);
-	    hidden('tax_group_id', $_SESSION['Items']->tax_group_id);
+	    hidden('tax_group_id', $order->tax_group_id);
 	}
 
 	end_outer_table(1); // outer table

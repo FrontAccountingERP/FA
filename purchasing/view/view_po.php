@@ -21,11 +21,6 @@ if (!isset($_GET['trans_no']))
 
 display_heading(_("Purchase Order") . " #" . $_GET['trans_no']);
 
-if (isset($_SESSION['Items']))
-{
-	unset ($_SESSION['Items']);
-}
-
 $purchase_order = new purch_order;
 
 read_po($_GET['trans_no'], $purchase_order);

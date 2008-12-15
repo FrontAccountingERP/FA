@@ -81,7 +81,7 @@ function display_credit_header(&$order)
 
 	if (!isset($_POST['ref']))
 		$_POST['ref'] = references::get_next(11);
-	if ($_SESSION['Items']->trans_no==0)
+	if ($order->trans_no==0)
 	    ref_row(_("Reference").':', 'ref');
 	else
 	    label_row(_("Reference").':', $_POST['ref'] );
@@ -225,7 +225,7 @@ function display_credit_items($title, &$order)
 
     $taxes = $order->get_taxes($_POST['ChargeFreightCost']);
 
-    $tax_total = display_edit_tax_items($taxes, 6, $_SESSION['Items']->tax_included);
+    $tax_total = display_edit_tax_items($taxes, 6, $order->tax_included);
 
     $display_total = price_format(($subtotal + $_POST['ChargeFreightCost'] + $tax_total));
 
@@ -305,7 +305,7 @@ function credit_edit_item_controls(&$order, $rowcounter, $line_no=-1)
 
 //---------------------------------------------------------------------------------
 
-function credit_options_controls()
+function credit_options_controls($credit)
 {
 	global $table_style2, $Ajax;
 	echo "<br>";
@@ -323,7 +323,7 @@ if (isset($_POST['_CreditType_update']))
 
 		/*if the credit note is a return of goods then need to know which location to receive them into */
 		if (!isset($_POST['Location']))
-			$_POST['Location'] = $_SESSION['Items']->Location;
+			$_POST['Location'] = $credit->Location;
 	   	locations_list_row(_("Items Returned to Location"), 'Location', $_POST['Location']);
 	}
 	else

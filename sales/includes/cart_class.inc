@@ -17,7 +17,7 @@ class cart
 	var $trans_type; // invoice, order, delivery note ...
 	var $trans_no = array();// array (num1=>ver1,..) or 0 for new
 	var $so_type = 0;		// for sales order: simple=0 template=1
-
+	var $cart_id;		// used to detect multi-tab edition conflits
 	var $line_items;  //array of objects of class line_details
 
 	var $src_docs = array();	// array of arrays(num1=>ver1,...) or 0 for no src
@@ -77,6 +77,7 @@ class cart
 		$this->dimension_id = 0;
 		$this->dimension2_id = 0;
 		$this->read($type, $trans_no, $view );
+		$this->cart_id = uniqid('');
 	}
 
 	//-------------------------------------------------------------------------
