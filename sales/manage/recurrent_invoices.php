@@ -38,8 +38,8 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
     			order_no=".db_escape($_POST['order_no']).", 
     			debtor_no=".db_escape($_POST['debtor_no']).", 
     			group_no=".db_escape($_POST['group_no']).", 
-    			days=".input_num('days').", 
-    			monthly=".input_num('monthly').", 
+    			days=".input_num('days', 0).", 
+    			monthly=".input_num('monthly', 0).", 
     			begin='".date2sql($_POST['begin'])."', 
     			end='".date2sql($_POST['end'])."' 
     			WHERE id = '$selected_id'";
@@ -50,7 +50,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
     		$sql = "INSERT INTO ".TB_PREF."recurrent_invoices (description, order_no, debtor_no,
     			group_no, days, monthly, begin, end, last_sent) VALUES (".db_escape($_POST['description']) . ", "
     			.db_escape($_POST['order_no']).", ".db_escape($_POST['debtor_no']).", "
-    			.db_escape($_POST['group_no']).", ".input_num('days').", ".input_num('monthly').", '"
+    			.db_escape($_POST['group_no']).", ".input_num('days', 0).", ".input_num('monthly', 0).", '"
     			.date2sql($_POST['begin'])."', '".date2sql($_POST['end'])."', '".date2sql(Add_Years($_POST['begin'], -5))."')";
 			$note = _('New recurrent invoice has been added');
     	}
@@ -155,9 +155,9 @@ if ($selected_id != -1)
 		$_POST['monthly']  = $myrow["monthly"];
 		$_POST['begin']  = sql2date($myrow["begin"]);
 		$_POST['end']  = sql2date($myrow["end"]);
-	}
+	} 
 	hidden("selected_id", $selected_id);
-} 
+}
 
 
 text_row_ex(_("Description:"), 'description', 50); 
@@ -171,9 +171,9 @@ if ($_POST['debtor_no'] > 0)
 else	
 	sales_groups_list_row(_("Sales Group:"), 'group_no', null, " ");
 
-small_amount_row(_("Days:"), 'days', null, null, null, 0);
+small_amount_row(_("Days:"), 'days', 0, null, null, 0);
 
-small_amount_row(_("Monthly:"), 'monthly', null, null, null, 0);
+small_amount_row(_("Monthly:"), 'monthly', 0, null, null, 0);
 
 date_row(_("Begin:"), 'begin');
 
