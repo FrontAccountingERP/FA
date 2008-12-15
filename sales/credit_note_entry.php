@@ -69,7 +69,9 @@ if (isset($_GET['AddedID'])) {
 	hyperlink_params($_SERVER['PHP_SELF'], _("Enter Another &Credit Note"), "NewCredit=yes");
 
 	display_footer_exit();
-}
+} else
+	check_edit_conflicts();
+
 //--------------------------------------------------------------------------------
 
 function line_start_focus() {
@@ -82,30 +84,33 @@ function line_start_focus() {
 
 function copy_to_cn()
 {
-	$_SESSION['Items']->Comments = $_POST['CreditText'];
-	$_SESSION['Items']->document_date = $_POST['OrderDate'];
-	$_SESSION['Items']->freight_cost = input_num('ChargeFreightCost');
-	$_SESSION['Items']->Location = $_POST["Location"];
-	$_SESSION['Items']->sales_type = $_POST['sales_type_id'];
-	$_SESSION['Items']->reference = $_POST['ref'];
-	$_SESSION['Items']->ship_via = $_POST['ShipperID'];
-	$_SESSION['Items']->dimension_id = $_POST['dimension_id'];
-	$_SESSION['Items']->dimension2_id = $_POST['dimension2_id'];
+	$cart = &$_SESSION['Items'];
+	$cart->Comments = $_POST['CreditText'];
+	$cart->document_date = $_POST['OrderDate'];
+	$cart->freight_cost = input_num('ChargeFreightCost');
+	$cart->Location = $_POST["Location"];
+	$cart->sales_type = $_POST['sales_type_id'];
+	$cart->reference = $_POST['ref'];
+	$cart->ship_via = $_POST['ShipperID'];
+	$cart->dimension_id = $_POST['dimension_id'];
+	$cart->dimension2_id = $_POST['dimension2_id'];
 }
 
 //-----------------------------------------------------------------------------
 
 function copy_from_cn()
 {
-	$_POST['CreditText'] = $_SESSION['Items']->Comments;
-	$_POST['OrderDate'] = $_SESSION['Items']->document_date;
-	$_POST['ChargeFreightCost'] = price_format($_SESSION['Items']->freight_cost);
-	$_POST['Location'] = $_SESSION['Items']->Location;
-	$_POST['sales_type_id'] = $_SESSION['Items']->sales_type;
-	$_POST['ref'] = $_SESSION['Items']->reference;
-	$_POST['ShipperID'] = $_SESSION['Items']->ship_via;
-	$_POST['dimension_id'] = $_SESSION['Items']->dimension_id;
-	$_POST['dimension2_id'] = $_SESSION['Items']->dimension2_id;
+	$cart = &$_SESSION['Items'];
+	$_POST['CreditText'] = $cart->Comments;
+	$_POST['OrderDate'] = $cart->document_date;
+	$_POST['ChargeFreightCost'] = price_format($cart->freight_cost);
+	$_POST['Location'] = $cart->Location;
+	$_POST['sales_type_id'] = $cart->sales_type;
+	$_POST['ref'] = $cart->reference;
+	$_POST['ShipperID'] = $cart->ship_via;
+	$_POST['dimension_id'] = $cart->dimension_id;
+	$_POST['dimension2_id'] = $cart->dimension2_id;
+	$_POST['cart_id'] = $cart->cart_id;
 }
 
 //-----------------------------------------------------------------------------
@@ -245,6 +250,7 @@ if (!processing_active()) {
 //-----------------------------------------------------------------------------
 
 start_form(false, true);
+hidden('cart_id');
 
 $customer_error = display_credit_header($_SESSION['Items']);
 
@@ -252,7 +258,7 @@ if ($customer_error == "") {
 	start_table("$table_style width=80%", 10);
 	echo "<tr><td>";
 	display_credit_items(_("Credit Note Items"), $_SESSION['Items']);
-	credit_options_controls();
+	credit_options_controls($_SESSION['Items']);
 	echo "</td></tr>";
 	end_table();
 } else {

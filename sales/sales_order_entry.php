@@ -139,7 +139,8 @@ if (isset($_GET['AddedID'])) {
 	hyperlink_params($_SERVER['PHP_SELF'], _("Enter a &New Direct Invoice"), "NewInvoice=0");
 
 	display_footer_exit();
-}
+} else
+	check_edit_conflicts();
 
 //-----------------------------------------------------------------------------
 
@@ -217,6 +218,7 @@ function copy_from_cart()
 		$_POST['dimension_id'] = $cart->dimension_id;
 		$_POST['dimension2_id'] = $cart->dimension2_id;
 	}	
+	$_POST['cart_id'] = $cart->cart_id;
 		
 }
 //--------------------------------------------------------------------------------
@@ -506,6 +508,7 @@ if ($_SESSION['Items']->trans_type == 10) {
 	$corder = _("Commit Order Changes");
 }
 start_form(false, true);
+hidden('cart_id');
 
 $customer_error = display_order_header($_SESSION['Items'],
 	($_SESSION['Items']->any_already_delivered() == 0), $idate);

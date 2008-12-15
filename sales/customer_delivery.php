@@ -114,14 +114,17 @@ if (isset($_GET['OrderNumber']) && $_GET['OrderNumber'] > 0) {
 	end_page();
 	exit;
 
-} elseif (!check_quantities()) {
-	display_error(_("Selected quantity cannot be less than quantity invoiced nor more than quantity
-		not dispatched on sales order."));
+} else {
+	check_edit_conflicts();
 
-} elseif(!check_num('ChargeFreightCost', 0))
-	display_error(_("Freight cost cannot be less than zero"));
-	set_focus('ChargeFreightCost');
+	if (!check_quantities()) {
+		display_error(_("Selected quantity cannot be less than quantity invoiced nor more than quantity
+			not dispatched on sales order."));
 
+	} elseif(!check_num('ChargeFreightCost', 0))
+		display_error(_("Freight cost cannot be less than zero"));
+		set_focus('ChargeFreightCost');
+}
 
 //-----------------------------------------------------------------------------
 
@@ -206,6 +209,7 @@ function copy_from_cart()
 	$_POST['due_date'] = $cart->due_date;
 	$_POST['Location'] = $cart->Location;
 	$_POST['Comments'] = $cart->Comments;
+	$_POST['cart_id'] = $cart->cart_id;
 }
 //------------------------------------------------------------------------------
 
@@ -294,6 +298,7 @@ if (isset($_POST['Update']) || isset($_POST['_Location_update'])) {
 }
 //------------------------------------------------------------------------------
 start_form(false, true);
+hidden('cart_id');
 
 start_table("$table_style2 width=80%", 5);
 echo "<tr><td>"; // outer table

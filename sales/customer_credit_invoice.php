@@ -63,7 +63,9 @@ if (isset($_GET['AddedID'])) {
  	display_note(get_gl_view_str($trans_type, $credit_no, _("View the GL &Journal Entries for this Credit Note")),1);
 
 	display_footer_exit();
-}
+} else
+	check_edit_conflicts();
+
 
 //-----------------------------------------------------------------------------
 
@@ -180,6 +182,7 @@ function copy_from_cart()
   $_POST['CreditDate']= $cart->document_date;
   $_POST['Location']= $cart->Location;
   $_POST['CreditText']= $cart->Comments;
+  $_POST['cart_id'] = $cart->cart_id;
 }
 //-----------------------------------------------------------------------------
 
@@ -214,6 +217,7 @@ function display_credit_items()
 	global $table_style, $table_style2;
 
     start_form(false, true);
+	hidden('cart_id');
 
 	start_table("$table_style2 width=80%", 5);
 	echo "<tr><td>"; // outer table

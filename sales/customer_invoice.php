@@ -35,6 +35,7 @@ if (isset($_GET['ModifyInvoice'])) {
 page($_SESSION['page_title'], false, false, "", $js);
 
 //-----------------------------------------------------------------------------
+check_edit_conflicts();
 
 if (isset($_GET['AddedID'])) {
 
@@ -86,7 +87,7 @@ if (isset($_GET['AddedID'])) {
 //-----------------------------------------------------------------------------
 
 if ( (isset($_GET['DeliveryNumber']) && ($_GET['DeliveryNumber'] > 0) )
-	|| isset($_GET['BatchInvoice'])) {
+|| isset($_GET['BatchInvoice'])) {
 
 	processing_start();
 
@@ -149,6 +150,7 @@ if (isset($_POST['_InvoiceDate_changed'])) {
 		$_POST['InvoiceDate']);
 	$Ajax->activate('due_date');
 }
+
 //-----------------------------------------------------------------------------
 function check_quantities()
 {
@@ -219,6 +221,7 @@ function copy_from_cart()
 	$_POST['InvoiceDate']= $cart->document_date;
 	$_POST['due_date'] = $cart->due_date;
 	$_POST['Comments']= $cart->Comments;
+	$_POST['cart_id'] = $cart->cart_id;
 }
 
 //-----------------------------------------------------------------------------
@@ -322,6 +325,7 @@ $is_batch_invoice = count($_SESSION['Items']->src_docs) > 1;
 
 $is_edition = $_SESSION['Items']->trans_type == 10 && $_SESSION['Items']->trans_no != 0;
 start_form(false, true);
+hidden('cart_id');
 
 start_table("$table_style2 width=80%", 5);
 
