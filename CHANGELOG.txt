@@ -19,6 +19,14 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+16-Dec-2008 Joe Hunt
+# [0000100] Keep getting left allocated weird results (rounding problems).
+$ /includes/ui/ui_view.inc
+  /purchasing/inquiry/supplier_allocation_inquiry.php
+  /reporting/rep101.php
+  /reporting/rep201.php
+  /sales/inquiry/customer_allocation_inquiry.php
+
 10-Dec-2008 Janusz Dobrowolski
 # [0000099] New line added to inventory transfer/adjustment sometimes overwrites old one.
 $ /inlucdes/ui/items_cart.inc

@@ -198,6 +198,8 @@ while ($myrow = db_fetch($result))
 		label_cell($myrow["CustName"]);
 		label_cell($myrow["CustCurrCode"]);
 	}
+	$myrow["TotalAmount"] = round2($myrow["TotalAmount"], user_price_dec());
+	$myrow["Allocated"] = round2($myrow["Allocated"], user_price_dec());
 	display_debit_or_credit_cells(
 	    $myrow['type']==11 || $myrow['type']==12 || $myrow['type']==2 ?
 		-$myrow["TotalAmount"] : $myrow["TotalAmount"]);

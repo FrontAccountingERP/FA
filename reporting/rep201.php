@@ -124,20 +124,26 @@ function print_supplier_balances()
 				$rate = 1.0;
 			if ($trans['TotalAmount'] > 0.0)
 			{
-				$item[0] = Abs($trans['TotalAmount']) * $rate;
+				$item[0] = round2(abs($trans['TotalAmount']) * $rate, $dec);
 				$rep->TextCol(4, 5,	number_format2($item[0], $dec));
 			}
 			else
 			{
-				$item[1] = Abs($trans['TotalAmount']) * $rate;
+				$item[1] = round2(abs($trans['TotalAmount']) * $rate, $dec);
 				$rep->TextCol(5, 6,	number_format2($item[1], $dec));
 			}
-			$item[2] = $trans['Allocated'] * $rate;
+			$item[2] = round2($trans['Allocated'] * $rate, $dec);
 			$rep->TextCol(6, 7,	number_format2($item[2], $dec));
+			/*
 			if ($trans['type'] == 20)
 				$item[3] = ($trans['TotalAmount'] - $trans['Allocated']) * $rate;
 			else
 				$item[3] = ($trans['TotalAmount'] + $trans['Allocated']) * $rate;
+			*/	
+			if ($trans['type'] == 20)
+				$item[3] = $item[0] + $item[1] - $item[2];
+			else	
+				$item[3] = $item[0] - $item[1] + $item[2];
 			$rep->TextCol(7, 8,	number_format2($item[3], $dec));
 			for ($i = 0; $i < 4; $i++)
 			{

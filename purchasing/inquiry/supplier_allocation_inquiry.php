@@ -166,6 +166,8 @@ if (db_num_rows($result) == 0)
 	label_cell($duedate);
     if ($_POST['supplier_id'] == reserved_words::get_all())
     	label_cell($myrow["curr_code"]);
+	$myrow["TotalAmount"] = round2($myrow["TotalAmount"], user_price_dec());
+	$myrow["Allocated"] = round2($myrow["Allocated"], user_price_dec());
     if ($myrow["TotalAmount"] >= 0)
     	label_cell("");
 	amount_cell(abs($myrow["TotalAmount"]));
