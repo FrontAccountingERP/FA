@@ -35,6 +35,7 @@ function write_sales_invoice(&$invoice)
 	$taxes = $invoice->get_taxes(); // all taxes with freight_tax
 
 	foreach ($taxes as $taxitem) {
+		$taxitem['Value'] =  round2($taxitem['Value'], user_price_dec());
 		$ov_gst +=  $taxitem['Value'];
 	}
 

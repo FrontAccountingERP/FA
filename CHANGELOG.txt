@@ -19,6 +19,14 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+17-Dec-2008 Joe Hunt
+# [0000101] More wonderful rounding issues 
+$ /includes/ui/ui_view.inc
+  /purchasing/includes/db/invoice_db.inc
+  /sales/includes/db/sales_credit_db.inc
+  /sales/includes/db/sales_delivery_db.inc
+  /sales/includes/db/sales_invoice_db.inc
+  
 16-Dec-2008 Joe Hunt
 # [0000100] Keep getting left allocated weird results (rounding problems).
 $ /includes/ui/ui_view.inc

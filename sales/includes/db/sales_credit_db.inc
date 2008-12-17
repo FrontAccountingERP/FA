@@ -31,7 +31,8 @@ function write_credit_note($credit_note, $write_off_acc)
 
 	$tax_total = 0;
 	foreach ($taxes as $taxitem) {
-		$tax_total +=  $taxitem['Value'];
+		$taxitem['Value'] =  round2($taxitem['Value'], user_price_dec());
+		$tax_total += $taxitem['Value'];
 	}
 
 	if ($credit_note->tax_included == 0) {

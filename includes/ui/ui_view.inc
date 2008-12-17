@@ -453,7 +453,7 @@ function display_edit_tax_items($taxes, $columns, $tax_included, $leftspan=0)
     	{
         	label_row($taxitem['tax_type_name'] . " (" . $taxitem['rate'] . "%)",
         		number_format2($taxitem['Value'],user_price_dec()), "colspan=$columns align=right", "align=right",$leftspan);
-        	$total +=  $taxitem['Value'];
+        	$total +=  round2($taxitem['Value'], user_price_dec());
     	}
     }
 
