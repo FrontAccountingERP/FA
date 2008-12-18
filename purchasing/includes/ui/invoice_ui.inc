@@ -194,7 +194,27 @@ function display_gl_items(&$supp_trans, $mode=0)
 	else
 		$heading = _("GL Items for this Credit Note");
 
+	start_outer_table("width=100%");
+
+	if ($mode == 1)
+	{
+		$qes = has_quick_entries(-1, 0);
+		if ($qes !== false)
+		{
+			echo "<div style='float:right;'>";
+			echo _("Quick Entry:")."&nbsp;"; 
+			quick_entries_list('qid', null, 0, 1);
+			echo "&nbsp;"._("Amount")."&nbsp;";
+			$amount = input_num('totamount');
+			$dec = user_price_dec();
+			echo "<input class='amount' type='text' name='totamount' size='7' maxlength='12' dec='$dec' value='$amount'>&nbsp;";
+			submit('go', _("Go"), true, false, true);
+			echo "</div>";
+		}	
+	}
 	display_heading($heading);
+
+	end_outer_table(0, false);
 
 	vertical_space(); // ouer table
 

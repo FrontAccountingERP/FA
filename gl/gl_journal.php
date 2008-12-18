@@ -223,6 +223,7 @@ function handle_new_item()
 	line_start_focus();
 }
 
+/*
 function display_quick_entries(&$cart)
 {
 	if (!get_post('person_id'))
@@ -277,7 +278,7 @@ function display_quick_entries(&$cart)
 		line_start_focus();
 	}	
 }
-
+*/
 //-----------------------------------------------------------------------------------------------
 $id = find_submit('Delete');
 if ($id != -1)
@@ -293,7 +294,7 @@ if (isset($_POST['CancelItemChanges']))
 	line_start_focus();
 
 if (isset($_POST['go']))
-	display_quick_entries($_SESSION['journal_items']);
+	display_quick_entries($_SESSION['journal_items'], $_POST['person_id'], input_num('totamount'));
 //-----------------------------------------------------------------------------------------------
 
 if (isset($_GET['NewJournal']) || !isset($_SESSION['journal_items']))

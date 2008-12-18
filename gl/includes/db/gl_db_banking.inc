@@ -107,8 +107,6 @@ function add_bank_transaction($trans_type, $from_account, $items, $date_,
     }
 
 	// do the source account postings
-    add_gl_trans($trans_type, $trans_no, $date_, $bank_gl_account, 0, 0, "",
-    	-$total_amount, $currency, $person_type_id, $person_id);
 
     add_bank_trans($trans_type, $trans_no, $from_account, $ref,
     	$date_, -$total_amount,

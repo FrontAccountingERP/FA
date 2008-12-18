@@ -547,6 +547,84 @@ function display_allocations_from($person_type, $person_id, $type, $type_no, $to
 	}
 }
 
+//--------------------------------------------------------------------------------------
+function display_quick_entries(&$cart, $id, $totamount, $payment=true, $supp_trans=false)
+{
+	if (!isset($id) || $id == null || $id == "")
+	{
+		display_error( _("No Quick Entries are defined."));
+		set_focus('totamount');
+	}
+	else
+	{
+		$rate = 0;
+		if (!$payment)
+			$totamount = -$totamount;
+		if (!$supp_trans)	
+			$cart->clear_items();
+		$qe = get_quick_entry($id);
+		$qe_lines = get_quick_entry_lines($id);
+		while ($qe_line = db_fetch($qe_lines))
+		{
+			if ($qe_line['tax_acc'])
+			{
+				$account = get_gl_account($qe_line['account']);
+				$tax_group = $account['tax_code'];
+				$items = get_tax_group_items($tax_group);
+				while ($item = db_fetch($items))
+					$rate += $item['rate'];
+				if ($rate != 0)
+					$totamount = $totamount * 100 / ($rate + 100);
+				//$cart->clear_items();
+				if (!$supp_trans)
+					$cart->add_gl_item($qe_line['account'], $qe_line['dimension_id'], $qe_line['dimension2_id'], 
+						$totamount, $qe['description']);
+				else
+				{
+					$acc_name = get_gl_account_name($qe_line['account']);
+					$cart->add_gl_codes_to_trans($qe_line['account'], $acc_name, $qe_line['dimension_id'], 
+						$qe_line['dimension2_id'], $totamount, $qe['description']);
+				}		
+				$items = get_tax_group_items($tax_group);
+				while ($item = db_fetch($items))
+				{
+					if ($item['rate'] != 0)
+					{
+						$amount = $totamount * $item['rate'] / 100;
+						$code = ($amount < 0 ? $item['purchasing_gl_code'] : 
+							$item['sales_gl_code']);
+						if (!$supp_trans)	
+							$cart->add_gl_item($code, 0, 0, $amount, $qe['description']);
+						else
+						{
+							$acc_name = get_gl_account_name($qe_line['account']);
+							$cart->add_gl_codes_to_trans($code, $acc_name, 0, 0, $amount, $qe['description']);
+						}
+					}
+				}
+			}
+			else
+			{
+				if ($qe_line['pct'])
+					$amount = $totamount * $qe_line['amount'] / 100;
+				else
+					$amount = $qe_line['amount'];
+				if (!$supp_trans)	
+					$cart->add_gl_item($qe_line['account'], $qe_line['dimension_id'], $qe_line['dimension2_id'], 
+						$amount, $qe['description']);
+				else
+				{
+					$acc_name = get_gl_account_name($qe_line['account']);
+					$cart->add_gl_codes_to_trans($qe_line['account'], $acc_name, $qe_line['dimension_id'], 
+						$qe_line['dimension2_id'], $amount, $qe['description']);
+				}
+			}		
+		}
+		//line_start_focus();
+	}	
+}
+
+
 function get_js_open_window($width, $height)
 {
 	$js = "\n<script type=\"text/javascript\">\n"

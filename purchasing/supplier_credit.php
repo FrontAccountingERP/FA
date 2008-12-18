@@ -296,6 +296,13 @@ if ($id4 != -1)
 	$Ajax->activate('inv_tot');
 }
 
+if (isset($_POST['go']))
+{
+	$Ajax->activate('gl_items');
+	display_quick_entries($_SESSION['supp_trans'], $_POST['qid'], input_num('totamount'), true, true);
+	$Ajax->activate('inv_tot');
+}
+
 
 //--------------------------------------------------------------------------------------------------
 

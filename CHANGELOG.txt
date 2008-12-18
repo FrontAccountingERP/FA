@@ -19,6 +19,16 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+18-Dec-2008 Joe Hunt
++ Added quick entries in supplier invoice/credit note as well. Based on bank payments
+$ /gl/gl_bank.php
+  /gl/gl_journal.php
+  /gl/includes/db/gl_db_banking.inc
+  /includes/ui/ui_view.inc
+  /purchasing/supplier_credit.php
+  /purchasing/supplier_invoice.php
+  /purchasing/includes/ui/invoice_ui.inc
+
 15-Dec-2008 Janusz Dobrowolski
 # [0000085] Fixed session conflicts during document edition in multiply tabs.
 $ /sales/includes/cart_class.inc

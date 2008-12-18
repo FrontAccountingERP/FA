@@ -375,6 +375,13 @@ if ($_SESSION["wa_current_user"]->access == 2)
 	}   		
 }
 
+if (isset($_POST['go']))
+{
+	$Ajax->activate('gl_items');
+	display_quick_entries($_SESSION['supp_trans'], $_POST['qid'], input_num('totamount'), true, true);
+	$Ajax->activate('inv_tot');
+}
+
 start_form(false, true);
 
 invoice_header($_SESSION['supp_trans']);

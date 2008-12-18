@@ -245,7 +245,7 @@ function handle_new_item()
 		$_POST['dimension2_id'], $amount, $_POST['LineMemo']);
 	line_start_focus();
 }
-
+/*
 function display_quick_entries(&$cart)
 {
 	if (!check_num('totamount', 0))
@@ -308,6 +308,7 @@ function display_quick_entries(&$cart)
 		line_start_focus();
 	}	
 }
+*/
 //-----------------------------------------------------------------------------------------------
 $id = find_submit('Delete');
 if ($id != -1)
@@ -323,7 +324,8 @@ if (isset($_POST['CancelItemChanges']))
 	line_start_focus();
 
 if (isset($_POST['go']))
-	display_quick_entries($_SESSION['pay_items']);
+	display_quick_entries($_SESSION['pay_items'], $_POST['person_id'], input_num('totamount'), 
+		$_SESSION['pay_items']->trans_type==systypes::bank_payment());
 
 //-----------------------------------------------------------------------------------------------
 
