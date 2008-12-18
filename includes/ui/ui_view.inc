@@ -597,7 +597,7 @@ function display_quick_entries(&$cart, $id, $totamount, $payment=true, $supp_tra
 							$cart->add_gl_item($code, 0, 0, $amount, $qe['description']);
 						else
 						{
-							$acc_name = get_gl_account_name($qe_line['account']);
+							$acc_name = get_gl_account_name($code);
 							$cart->add_gl_codes_to_trans($code, $acc_name, 0, 0, $amount, $qe['description']);
 						}
 					}
