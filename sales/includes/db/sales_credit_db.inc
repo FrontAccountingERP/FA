@@ -127,6 +127,14 @@ function write_credit_note($credit_note, $write_off_acc)
 	/*Post credit note transaction to GL credit debtors,
 	debit freight re-charged and debit sales */
 
+	if (($credit_note_total + $credit_note->freight_cost) != 0) {
+
+		$total += add_gl_trans_customer(11, $credit_no, $credit_date, $branch_data["receivables_account"], 0, 0,
+			-($credit_note_total + $credit_note->freight_cost + $items_added_tax + $freight_added_tax),
+			$credit_note->customer_id,
+			"The total debtor GL posting for the credit note could not be inserted");
+	}
+
 	if ($credit_note->freight_cost !=0) {
 		$total += add_gl_trans_customer(11, $credit_no, $credit_date, $company_data["freight_act"], 0, 0,
 			$credit_note->get_tax_free_shipping(), $credit_note->customer_id,
@@ -144,13 +152,6 @@ function write_credit_note($credit_note, $write_off_acc)
 				"A tax GL posting for this credit note could not be inserted");
 		}
 	}
-	if (($credit_note_total + $credit_note->freight_cost) != 0) {
-
-		$total += add_gl_trans(11, $credit_no, $credit_date, $branch_data["receivables_account"], 0, 0, "", 
-			-$total, null, payment_person_types::customer(), $credit_note->customer_id, 
-			"The total debtor GL posting for the credit note could not be inserted");
-	}
-
 	/*Post a balance post if $total != 0 */
 	add_gl_balance(11, $credit_no, $credit_date, -$total, payment_person_types::customer(), $credit_note->customer_id);	
 
