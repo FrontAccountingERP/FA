@@ -324,9 +324,11 @@ if (isset($_POST['CancelItemChanges']))
 	line_start_focus();
 
 if (isset($_POST['go']))
+{
 	display_quick_entries($_SESSION['pay_items'], $_POST['person_id'], input_num('totamount'), 
 		$_SESSION['pay_items']->trans_type==systypes::bank_payment());
-
+	line_start_focus();
+}
 //-----------------------------------------------------------------------------------------------
 
 start_form(false, true);
