@@ -122,12 +122,6 @@ function write_sales_invoice(&$invoice)
 		} /*quantity dispatched is more than 0 */
 	} /*end of delivery_line loop */
 
-	if (($items_total + $charge_shipping) != 0) {
-		$total += add_gl_trans_customer(10, $invoice_no, $date_, $branch_data["receivables_account"], 0, 0,
-			($items_total + $charge_shipping + $items_added_tax + $freight_added_tax),
-			$invoice->customer_id, "The total debtor GL posting could not be inserted");
-	}
-
 	if ($charge_shipping != 0) {
 		$total += add_gl_trans_customer(10, $invoice_no, $date_, $company_data["freight_act"], 0, 0,
 			-$invoice->get_tax_free_shipping(), $invoice->customer_id,
@@ -143,6 +137,11 @@ function write_sales_invoice(&$invoice)
 				(-$taxitem['Value']), $invoice->customer_id,
 				"A tax GL posting could not be inserted");
 		}
+	}
+
+	if (($items_total + $charge_shipping) != 0) {
+		$total += add_gl_trans(10, $invoice_no, $date_, $branch_data["receivables_account"], 0, 0, "", 
+			-$total, null, payment_person_types::customer(), $invoice->customer_id, "The total debtor GL posting could not be inserted");
 	}
 
 	/*Post a balance post if $total != 0 */

@@ -145,10 +145,6 @@ function add_supp_invoice($supp_trans) // do not receive as ref because we chang
 	$total = 0;
     /* Now the control account */
     $supplier_accounts = get_supplier_accounts($supp_trans->supplier_id);
-    $total += add_gl_trans_supplier($trans_type, $invoice_id, $date_, $supplier_accounts["payable_account"], 0, 0,
-		-($invoice_items_total +  $tax_total + $supp_trans->ov_discount),
-		$supp_trans->supplier_id,
-		"The general ledger transaction for the control total could not be added");
 
     /*Loop through the GL Entries and create a debit posting for each of the accounts entered */
 
@@ -263,6 +259,10 @@ function add_supp_invoice($supp_trans) // do not receive as ref because we chang
     	}
     }
 	
+	$total += add_gl_trans($trans_type, $invoice_id, $date_, $supplier_accounts["payable_account"], 0, 0, "", 
+		-$total, null, payment_person_types::supplier(), $supp_trans->supplier_id, 
+		"The general ledger transaction for the control total could not be added");
+
 	/*Post a balance post if $total != 0 */
 	add_gl_balance($trans_type, $invoice_id, $date_, -$total, payment_person_types::supplier(), $supp_trans->supplier_id);	
 
