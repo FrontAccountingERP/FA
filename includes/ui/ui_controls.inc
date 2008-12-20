@@ -56,9 +56,10 @@ function end_table($breaks=0)
 		br($breaks);
 }
 
-function start_outer_table($extra="", $padding='2', $spacing='0')
+function start_outer_table($extra="", $padding='2', $spacing='0', $br=false)
 {
-	br();
+	if ($br)
+		br();
 	start_table($extra, $padding, $spacing);
 	echo "<tr valign=top><td>\n"; // outer table
 }

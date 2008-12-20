@@ -22,6 +22,8 @@ $ -> Affected files
 20-Dec-2008 Joe Hunt
 ! Replaced the ajax paging in stock movements with the old file.
 $ /inventory/inquiry/stock_movements.php
+! Better layout in big forms
+$ /includes/ui/ui_controls.inc
 
 18-Dec-2008 Joe Hunt
 + Added quick entries in supplier invoice/credit note as well. Based on bank payments
