@@ -19,6 +19,12 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+21-Dec-2008 Joe Hunt
+# Minor bugs in layout and quick entries.
+$ /Includes/ui/ui_view.inc
+  /purchasing/includes/ui/invoice_ui.inc
+  /purchasing/supplier_invoice.php
+  
 20-Dec-2008 Joe Hunt
 ! Replaced the ajax paging in stock movements with the old file.
 $ /inventory/inquiry/stock_movements.php

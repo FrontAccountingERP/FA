@@ -114,7 +114,7 @@ function invoice_header(&$supp_trans)
 
   	label_row(_("Tax Group:"), $supp_trans->tax_description);
 
-	end_outer_table();
+	end_outer_table(1);
 }
 
 //--------------------------------------------------------------------------------------------------

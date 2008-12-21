@@ -591,7 +591,7 @@ function display_quick_entries(&$cart, $id, $totamount, $payment=true, $supp_tra
 					if ($item['rate'] != 0)
 					{
 						$amount = $totamount * $item['rate'] / 100;
-						$code = ($amount < 0 ? $item['purchasing_gl_code'] : 
+						$code = (($amount < 0 || $payment || $supp_trans) ? $item['purchasing_gl_code'] : 
 							$item['sales_gl_code']);
 						if (!$supp_trans)	
 							$cart->add_gl_item($code, 0, 0, $amount, $qe['description']);

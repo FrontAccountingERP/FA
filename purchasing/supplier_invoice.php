@@ -334,6 +334,7 @@ if ($id4 != -1)
 	$Ajax->activate('inv_tot');
 }
 
+$id2 = -1;
 if ($_SESSION["wa_current_user"]->access == 2)
 {
 	$id3 = find_submit('void_item_id');
