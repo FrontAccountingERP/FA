@@ -574,7 +574,7 @@ function display_quick_entries(&$cart, $id, $totamount, $payment=true, $supp_tra
 				while ($item = db_fetch($items))
 					$rate += $item['rate'];
 				if ($rate != 0)
-					$totamount = $totamount * 100 / ($rate + 100);
+					$totamount = round2($totamount * 100 / ($rate + 100), user_price_dec());
 				//$cart->clear_items();
 				if (!$supp_trans)
 					$cart->add_gl_item($qe_line['account'], $qe_line['dimension_id'], $qe_line['dimension2_id'], 
@@ -590,7 +590,7 @@ function display_quick_entries(&$cart, $id, $totamount, $payment=true, $supp_tra
 				{
 					if ($item['rate'] != 0)
 					{
-						$amount = $totamount * $item['rate'] / 100;
+						$amount = round2($totamount * $item['rate'] / 100, user_price_dec());
 						$code = (($amount < 0 || $payment || $supp_trans) ? $item['purchasing_gl_code'] : 
 							$item['sales_gl_code']);
 						if (!$supp_trans)	
@@ -606,7 +606,7 @@ function display_quick_entries(&$cart, $id, $totamount, $payment=true, $supp_tra
 			else
 			{
 				if ($qe_line['pct'])
-					$amount = $totamount * $qe_line['amount'] / 100;
+					$amount = round2($totamount * $qe_line['amount'] / 100, user_price_dec());
 				else
 					$amount = $qe_line['amount'];
 				if (!$supp_trans)	
