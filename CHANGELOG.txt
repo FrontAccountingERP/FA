@@ -24,6 +24,9 @@ $ -> Affected files
 $ /Includes/ui/ui_view.inc
   /purchasing/includes/ui/invoice_ui.inc
   /purchasing/supplier_invoice.php
+# Minor bugs in doctext.inc and doctext2.inc
+$ /reporting/includes/doctext.inc
+  /reporting/includes/doctext2.inc
   
 20-Dec-2008 Joe Hunt
 ! Replaced the ajax paging in stock movements with the old file.

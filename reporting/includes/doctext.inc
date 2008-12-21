@@ -66,7 +66,7 @@ if (isset($emailtype))
 if (isset($header2type) || isset($linetype))
 {
 	$doc_Invoice_no = ($doctype==13 ? _("Delivery Note No.") : (($doctype==8 || $doctype==9) ? _("Order no.") : _("Invoice No.")));
-	$doc_Delivery_no = "Delivery Note No.";
+	$doc_Delivery_no = _("Delivery Note No.");
 	$doc_Order_no = _("Order no.");
 }
 if (isset($linetype))
