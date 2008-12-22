@@ -15,7 +15,7 @@ function update_item_code($id, $item_code, $stock_id, $description, $category, $
         	WHERE ";
 			
 	if ($id == -1) // update with unknown $id i.e. from items table editor
-	 	"item_code = ".db_escape($item_code)
+	 	$sqk .= "item_code = ".db_escape($item_code)
 		." AND stock_id = ".db_escape($stock_id);
 	else
 		$sql .= "id = $id";

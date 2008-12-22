@@ -19,6 +19,11 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+22-Dec-2008 Janusz Dobrowolski
+# Fixed item_code database update on item creation.
+$ /inventory/includes/db/item_codes_db.inc
+  /inventory/includes/db/items_db.inc
+
 21-Dec-2008 Joe Hunt
 # Minor bugs in layout and quick entries.
 $ /Includes/ui/ui_view.inc
