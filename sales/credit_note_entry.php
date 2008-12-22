@@ -79,26 +79,30 @@ function line_start_focus() {
 
 function copy_to_cn()
 {
-	$_SESSION['Items']->Comments = $_POST['CreditText'];
-	$_SESSION['Items']->document_date = $_POST['OrderDate'];
-	$_SESSION['Items']->freight_cost = input_num('ChargeFreightCost');
-	$_SESSION['Items']->Location = $_POST["Location"];
-	$_SESSION['Items']->sales_type = $_POST['sales_type_id'];
-	$_SESSION['Items']->reference = $_POST['ref'];
-	$_SESSION['Items']->ship_via = $_POST['ShipperID'];
+	$cart = &$_SESSION['Items'];
+
+	$cart->Comments = $_POST['CreditText'];
+	$cart->document_date = $_POST['OrderDate'];
+	$cart->freight_cost = input_num('ChargeFreightCost');
+	$cart->Location = $_POST["Location"];
+	$cart->sales_type = $_POST['sales_type_id'];
+	$cart->reference = $_POST['ref'];
+	$cart->ship_via = $_POST['ShipperID'];
 }
 
 //-----------------------------------------------------------------------------
 
 function copy_from_cn()
 {
-	$_POST['CreditText'] = $_SESSION['Items']->Comments;
-	$_POST['OrderDate'] = $_SESSION['Items']->document_date;
-	$_POST['ChargeFreightCost'] = price_format($_SESSION['Items']->freight_cost);
-	$_POST['Location'] = $_SESSION['Items']->Location;
-	$_POST['sales_type_id'] = $_SESSION['Items']->sales_type;
-	$_POST['ref'] = $_SESSION['Items']->reference;
-	$_POST['ShipperID'] = $_SESSION['Items']->ship_via;
+	$cart = &$_SESSION['Items'];
+
+	$_POST['CreditText'] = $cart->Comments;
+	$_POST['OrderDate'] = $cart->document_date;
+	$_POST['ChargeFreightCost'] = price_format($cart->freight_cost);
+	$_POST['Location'] = $cart->Location;
+	$_POST['sales_type_id'] = $cart->sales_type;
+	$_POST['ref'] = $cart->reference;
+	$_POST['ShipperID'] = $cart->ship_via;
 }
 
 //-----------------------------------------------------------------------------
@@ -155,6 +159,7 @@ if (isset($_POST['ProcessCredit']) && can_process()) {
 	if (!isset($_POST['WriteOffGLCode'])) {
 		$_POST['WriteOffGLCode'] = 0;
 	}
+	copy_to_cn();
 	$credit_no = $_SESSION['Items']->write($_POST['WriteOffGLCode']);
 	processing_end();
 	meta_forward($_SERVER['PHP_SELF'], "AddedID=$credit_no");
