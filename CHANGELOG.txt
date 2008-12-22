@@ -19,6 +19,12 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+22-Dec-2008 Janusz Dobrowolski
+# [0000102] Credit note was stored without entered shippment cost and comment.
+$ /sales/credit_note_entry.php
+# [0000103] Error during save of modified freehand credit note.
+$ /sales/includes/db/cust_trans_db.inc
+
 18-Dec-2008 Joe Hunt
 # [0000101] Roll back of yeasterday issues
 $ /purchasing/includes/db/invoice_db.inc
