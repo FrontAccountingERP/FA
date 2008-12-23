@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+23-Dec-2008 Joe Hunt
+# Fixed an accounting sync in GL when adding bank account transactions (no customer/supplier trans)
+$ /gl/includes/db/bl_db_banking.inc
+
 22-Dec-2008 Janusz Dobrowolski
 # [0000102] Credit note was stored without entered shippment cost and comment.
 $ /sales/credit_note_entry.php
