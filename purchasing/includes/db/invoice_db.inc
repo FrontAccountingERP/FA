@@ -107,7 +107,7 @@ function get_diff_in_home_currency($supplier, $old_date, $date, $amount1, $amoun
 }
 //----------------------------------------------------------------------------------------
 
-function add_supp_invoice($supp_trans) // do not receive as ref because we change locally
+function add_supp_invoice($supp_trans, $invoice_no=0) // do not receive as ref because we change locally
 {
 	//$company_currency = get_company_currency();
 	/*Start an sql transaction */
@@ -270,6 +270,34 @@ function add_supp_invoice($supp_trans) // do not receive as ref because we chang
 	add_comments($trans_type, $invoice_id, $date_, $supp_trans->Comments);
 
 	references::save_last($supp_trans->reference, $trans_type);
+
+	if ($invoice_no != 0)
+	{
+		$invoice_alloc_balance = get_supp_trans_allocation_balance(20, $invoice_no);
+		if ($invoice_alloc_balance > 0) 
+		{ 	//the invoice is not already fully allocated 
+
+			$trans = get_supp_trans($invoice_no, 20);
+			$total = $trans['Total'];
+
+			$allocate_amount = ($invoice_alloc_balance > $total) ? $total : $invoice_alloc_balance;
+			/*Now insert the allocation record if > 0 */
+			if ($allocate_amount != 0) 
+			{
+				update_supp_trans_allocation(20, $invoice_no, $allocate_amount);
+				update_supp_trans_allocation(21, $invoice_id, $allocate_amount); // ***
+				add_supp_allocation($allocate_amount, 21, $invoice_id, 20, $invoice_no,
+					$date_);
+				// Exchange Variations Joe Hunt 2008-09-20 ////////////////////////////////////////
+
+				exchange_variation(21, $invoice_id, 20, $invoice_no, $date_,
+					$allocate_amount, payment_person_types::supplier());
+
+				///////////////////////////////////////////////////////////////////////////
+			}
+		}
+	}
+	
 
     commit_transaction();
 

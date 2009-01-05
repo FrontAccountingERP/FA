@@ -211,7 +211,10 @@ function handle_commit_credit_note()
 	if (!check_data())
 		return;
 
-	$invoice_no = add_supp_invoice($_SESSION['supp_trans']);
+	if (isset($_POST['invoice_no']))
+		$invoice_no = add_supp_invoice($_SESSION['supp_trans'], $_POST['invoice_no']);
+	else
+		$invoice_no = add_supp_invoice($_SESSION['supp_trans']);
 
     $_SESSION['supp_trans']->clear_items();
     unset($_SESSION['supp_trans']);

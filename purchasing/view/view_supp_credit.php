@@ -63,8 +63,7 @@ $voided = is_voided_display(21, $trans_no, _("This credit note has been voided."
 
 if (!$voided)
 {
-	$tax_total = 0; // ??????
-	display_allocations_from(payment_person_types::supplier(), $supp_trans->supplier_id, 21, $trans_no, -($supp_trans->ov_amount + $tax_total));
+	display_allocations_from(payment_person_types::supplier(), $supp_trans->supplier_id, 21, $trans_no, -($supp_trans->ov_amount + $supp_trans->ov_gst));
 }
 
 end_page(true);
