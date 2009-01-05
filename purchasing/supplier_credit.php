@@ -77,6 +77,10 @@ if (isset($_GET['New']))
 
 	$_SESSION['supp_trans'] = new supp_trans;
 	$_SESSION['supp_trans']->is_invoice = false;
+	if (isset($_GET['invoice_no']))
+	{
+		$_SESSION['supp_trans']->supp_reference = $_POST['invoice_no'] = $_GET['invoice_no'];
+	}
 }
 
 function clear_fields()

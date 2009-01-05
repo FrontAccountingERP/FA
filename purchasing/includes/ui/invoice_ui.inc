@@ -63,11 +63,20 @@ function invoice_header(&$supp_trans)
 
 	table_section(1);
 
-    if (!isset($_POST['supplier_id']) && (get_global_supplier() != reserved_words::get_all()))
-    	$_POST['supplier_id'] = get_global_supplier();
+	if (isset($_POST['invoice_no']))
+	{
+		$trans = get_supp_trans($_POST['invoice_no'], 20);
+		$_POST['supplier_id'] = $trans['supplier_id'];
+		$supp = $trans['supplier_name'] . " - " . $trans['SupplierCurrCode'];
+		label_row(_("Supplier:"), $supp.hidden('supplier_id', $_POST['supplier_id'], false));
+	}	
+	else
+	{
+    	if (!isset($_POST['supplier_id']) && (get_global_supplier() != reserved_words::get_all()))
+    		$_POST['supplier_id'] = get_global_supplier();
 
-	supplier_list_row(_("Supplier:"), 'supplier_id', $_POST['supplier_id'], false, true);
-
+		supplier_list_row(_("Supplier:"), 'supplier_id', $_POST['supplier_id'], false, true);
+	}
 	if ($supp_trans->supplier_id != $_POST['supplier_id'])
 	{
 		// supplier has changed
@@ -83,7 +92,12 @@ function invoice_header(&$supp_trans)
     else
     	ref_row(_("Reference:"), 'reference', '', references::get_next(21));
 
-   	text_row(_("Supplier's Ref.:"), 'supp_reference', $_POST['supp_reference'], 20, 20);
+	if (isset($_POST['invoice_no']))
+	{
+		label_row(_("Supplier's Ref.:"), $_POST['invoice_no'].hidden('invoice_no', $_POST['invoice_no'], false).hidden('supp_reference', $_POST['invoice_no'], false));
+	}	
+	else
+   		text_row(_("Supplier's Ref.:"), 'supp_reference', $_POST['supp_reference'], 20, 20);
 
 	table_section(2, "33%");
 
@@ -300,9 +314,13 @@ function display_grn_items_for_selection(&$supp_trans, $k)
 
 	if ($supp_trans->is_invoice)
 		$result = get_grn_items(0, $supp_trans->supplier_id, true);
-	else	
-		$result = get_grn_items(0, $supp_trans->supplier_id, false, true);
-
+	else
+	{
+		if (isset($_POST['invoice_no']))
+			$result = get_grn_items(0, $supp_trans->supplier_id, false, true, $_POST['invoice_no']);
+		else	
+			$result = get_grn_items(0, $supp_trans->supplier_id, false, true);
+	}
     if (db_num_rows($result) == 0)
     {
     	return false;

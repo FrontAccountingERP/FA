@@ -114,6 +114,15 @@ function gl_view($row)
 	return get_gl_view_str($row["type"], $row["trans_no"]);
 }
 
+function credit_link($row)
+{
+	return $row['type'] == 20 && $row["TotalAmount"] - $row["Allocated"] > 0 ?
+		pager_link(_("Credit This"),
+			"/purchasing/supplier_credit.php?New=1&invoice_no=".
+			$row['trans_no'], ICON_CREDIT)
+			: '';
+}
+
 function fmt_debit($row)
 {
 	$value = $row["TotalAmount"];
@@ -199,6 +208,7 @@ $cols = array(
 			_("Debit") => array('align'=>'right', 'fun'=>'fmt_debit'), 
 			_("Credit") => array('align'=>'right', 'insert'=>true,'fun'=>'fmt_credit'), 
 			array('insert'=>true, 'fun'=>'gl_view'),
+			array('insert'=>true, 'fun'=>'credit_link')
 			);
 
 if ($_POST['supplier_id'] != reserved_words::get_all())

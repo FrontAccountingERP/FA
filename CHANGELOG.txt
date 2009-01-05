@@ -19,6 +19,14 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+05-Jan-2009 Joe Hunt
++ Possibility to 'Credit This' in supplier transactions like in customer transaction.
+  If there are many invoice items during a year, there would be many rows suggestions.
+$ /purchasing/includes/db/grn_db.inc
+  /purchasing/includes/ui/invoice_ui.inc
+  /purchasing/supplier_credit.php
+  /purchasing/inquiry/supplier_inquiry.php
+  
 22-Dec-2008 Janusz Dobrowolski
 # Fixed item_code database update on item creation.
 $ /inventory/includes/db/item_codes_db.inc
