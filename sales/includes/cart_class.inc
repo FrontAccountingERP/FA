@@ -180,7 +180,7 @@ class cart
 				if ($this->cash) {
 					$this->Location = $pos['pos_location'];
 					$this->location_name = $pos['location_name'];
-					$this->cash_account = $pos['account_code'];
+					$this->cash_account = $pos['pos_account'];
 					$this->account_name = $pos['bank_account_name'];
 				}
 				} else
