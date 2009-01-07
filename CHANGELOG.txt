@@ -19,6 +19,14 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+07-Jan-2009 Janusz Dobrowolski
+# [0000105] Not initialized user pos numbers after upgrade, fixed some new table fields.
+$ /sql/alter2.1.sql
+# [0000106] Error blocking direct invoice for currencies not listed by ECB.
+$ sales/includes/cart_class.inc
++ Added backtrace debugging function;
+$ /includes/ui/ui_view.inc
+
 05-Jan-2009 Joe Hunt
 + Possibility to 'Credit This' in supplier transactions like in customer transaction.
   If there are many invoice items during a year, there would be many rows suggestions.
