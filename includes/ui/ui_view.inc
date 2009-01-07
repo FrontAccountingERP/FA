@@ -1182,4 +1182,43 @@ if (!function_exists('_vd'))
   	}
 }
 
+function display_backtrace($cond=true, $msg='') {
+
+	if ($cond) {
+		if ($msg) 
+			$str = "<center><span class='headingtext'>$msg</span></center>\n";
+		else
+			$str = '';
+		$str .= '<table border=0>';
+        $trace = debug_backtrace();
+		foreach($trace as $trn => $tr) {
+			if (!$trn) continue;
+			$str .= '<tr><td>';
+			$str .= $tr['file'].':'.$tr['line'].': ';
+			$str .= '</td><td>';
+			if (isset($tr['type'])) {
+			 	if($tr['type'] == '::') {
+					$str .= $tr['class'].'::';
+				} else if($tr['type'] == '->') {
+					$str .= '('.$tr['class'].' Object)'.'->';
+				}
+			}
+			foreach($tr['args'] as $n=>$a) {
+				if (is_object($tr['args'][$n]))
+					$tr['args'][$n] = "(".get_class($tr['args'][$n])." Object)";
+				if (is_array($tr['args'][$n]))
+					$tr['args'][$n] = "(Array[".count($tr['args'][$n])."])";
+				else
+					$tr['args'][$n] = "'".$tr['args'][$n]."'";
+			}
+			$str .= $tr['function'].'('. implode(',',$tr['args']).')</td>';
+
+			$str .= '</tr>';
+		}
+		
+		$str .= '</table>';
+       	display_error($str);
+	}
+}
+
 ?>
