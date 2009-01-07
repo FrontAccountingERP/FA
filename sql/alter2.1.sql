@@ -14,7 +14,7 @@
 DROP TABLE IF EXISTS `0_attachments`;
 
 CREATE TABLE `0_attachments` (
-  `id` int(11) NOT NULL auto_increment,
+  `id` int(11) UNSIGNED NOT NULL auto_increment,
   `description` varchar(60) NOT NULL default '',
   `type_no` int(11) NOT NULL default '0',
   `trans_no` int(11) NOT NULL default '0',
@@ -30,7 +30,7 @@ CREATE TABLE `0_attachments` (
 DROP TABLE IF EXISTS `0_groups`;
 
 CREATE TABLE `0_groups` (
-  `id` int(11) NOT NULL auto_increment,
+  `id` smallint(6) UNSIGNED NOT NULL auto_increment,
   `description` varchar(60) NOT NULL default '',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `description` (`description`)
@@ -43,11 +43,11 @@ INSERT INTO `0_groups` VALUES ('3', 'Large');
 DROP TABLE IF EXISTS `0_recurrent_invoices`;
 
 CREATE TABLE `0_recurrent_invoices` (
-  `id` int(11) NOT NULL auto_increment,
+  `id` smallint(6) UNSIGNED NOT NULL auto_increment,
   `description` varchar(60) NOT NULL default '',
-  `order_no` int(11) NOT NULL default '0',
-  `debtor_no` int(11) NOT NULL default '0',
-  `group_no` int(11) NOT NULL default '0',
+  `order_no` int(11) UNSIGNED NOT NULL,
+  `debtor_no` int(11) UNSIGNED NULL default NULL,
+  `group_no` smallint(6) UNSIGNED NULL default NULL,
   `days` int(11) NOT NULL default '0',
   `monthly` int(11) NOT NULL default '0',
   `begin` date NOT NULL default '0000-00-00',
@@ -78,12 +78,12 @@ ALTER TABLE `0_users` ADD `graphic_links` TINYINT(1) DEFAULT '1';
 DROP TABLE IF EXISTS `0_sales_pos`;
 
 CREATE TABLE `0_sales_pos` (
-  `id` smallint(6) NOT NULL auto_increment,
+  `id` smallint(6) UNSIGNED NOT NULL auto_increment,
   `pos_name` varchar(30) NOT NULL,
   `cash_sale` tinyint(1) NOT NULL,
   `credit_sale` tinyint(1) NOT NULL,
   `pos_location` varchar(5) NOT NULL,
-  `pos_account` varchar(11) NOT NULL,
+  `pos_account` smallint(6) UNSIGNED NOT NULL,
   PRIMARY KEY  (`id`),
   UNIQUE KEY(`pos_name`)
 ) TYPE=MyISAM AUTO_INCREMENT=1;
@@ -96,7 +96,7 @@ ALTER TABLE `0_users` ADD `pos` SMALLINT(6) DEFAULT '1';
 DROP TABLE IF EXISTS `0_quick_entries`;
 
 CREATE TABLE `0_quick_entries` (
-  `id` smallint(6) NOT NULL auto_increment,
+  `id` smallint(6) UNSIGNED NOT NULL auto_increment,
   `description` varchar(60) NOT NULL,
   `deposit` tinyint(1) NOT NULL default '0',
   `bank_only` tinyint(1) NOT NULL default '0',
@@ -111,14 +111,14 @@ INSERT INTO `0_quick_entries` VALUES ('3', 'Cash Sales', '1', '1');
 DROP TABLE IF EXISTS `0_quick_entry_lines`;
 
 CREATE TABLE `0_quick_entry_lines` (
-  `id` smallint(6) NOT NULL auto_increment,
-  `qid` smallint(6) NOT NULL,
+  `id` smallint(6) UNSIGNED NOT NULL auto_increment,
+  `qid` smallint(6) UNSIGNED NOT NULL,
   `account` varchar(11) NOT NULL,
   `tax_acc` tinyint(1) NOT NULL default '0',
   `pct` tinyint(1) NOT NULL default '0',
   `amount` double default NULL default '0',
-  `dimension_id` int(11) NOT NULL default '0',
-  `dimension2_id` int(11) NOT NULL default '0',
+  `dimension_id` smallint(6) UNSIGNED NULL default NULL,
+  `dimension2_id` smallint(6) UNSIGNED NULL default NULL,
   PRIMARY KEY  (`id`),
   KEY `qid` (`qid`)
 ) TYPE=MyISAM AUTO_INCREMENT=1;
@@ -128,16 +128,16 @@ INSERT INTO `0_quick_entry_lines` VALUES ('2', '2', '6730', '1', '0', 0, '0', '0
 INSERT INTO `0_quick_entry_lines` VALUES ('3', '3', '3000', '1', '0', 0, '0', '0');
 
 ALTER TABLE `0_users` DROP COLUMN `print_profile`;
-ALTER TABLE `0_users` ADD `print_profile` VARCHAR(30) DEFAULT '' AFTER `show_hints` ;
+ALTER TABLE `0_users` ADD `print_profile` NOT NULL VARCHAR(30) DEFAULT '1';
 ALTER TABLE `0_users` DROP COLUMN `rep_popup`;
-ALTER TABLE `0_users` ADD `rep_popup` TINYINT(1) DEFAULT '1' AFTER `print_profile` ;
+ALTER TABLE `0_users` ADD `rep_popup` TINYINT(1) DEFAULT '1';
 
 DROP TABLE IF EXISTS `0_print_profiles`;
 CREATE TABLE `0_print_profiles` (
-  `id` tinyint(11) NOT NULL auto_increment,
+  `id` smallint(6) UNSIGNED NOT NULL auto_increment,
   `profile` varchar(30) NOT NULL,
-  `report` varchar(5) NOT NULL,
-  `printer` tinyint(5) NOT NULL,
+  `report` varchar(5) NULL default NULL,
+  `printer` tinyint(3) UNSIGNED NULL default NULL,
   PRIMARY KEY  (`id`),
   UNIQUE KEY `profile` (`profile`,`report`)
 ) TYPE=MyISAM AUTO_INCREMENT=10;
@@ -155,7 +155,7 @@ INSERT INTO `0_print_profiles` VALUES ('9', 'Sales Department', '201', '2');
 DROP TABLE IF EXISTS `0_printers`;
 
 CREATE TABLE `0_printers` (
-  `id` smallint(6) NOT NULL auto_increment,
+  `id` tinyint(3) UNSIGNED NOT NULL auto_increment,
   `name` varchar(20) NOT NULL,
   `description` varchar(60) NOT NULL,
   `queue` varchar(20) NOT NULL,
@@ -173,11 +173,11 @@ INSERT INTO `0_printers` VALUES ('3', 'Local', 'Local print server at user IP', 
 DROP TABLE IF EXISTS `0_item_codes`;
 
 CREATE TABLE `0_item_codes` (
-  `id` int(11) NOT NULL auto_increment,
+  `id` int(11) UNSIGNED NOT NULL auto_increment,
   `item_code` varchar(20) NOT NULL,
   `stock_id` varchar(20) NOT NULL,
   `description` varchar(200) NOT NULL default '',
-  `category_id` int(11) NOT NULL,
+  `category_id` smallint(6) UNSIGNED NOT NULL,
   `quantity` double NOT NULL default '1',
   `is_foreign` tinyint(1) NOT NULL default 0,
   PRIMARY KEY  (`id`),
@@ -216,7 +216,7 @@ ALTER TABLE `0_chart_types` DROP INDEX `name`, ADD INDEX `name` ( `name` );
 DROP TABLE IF EXISTS `0_sql_trail`; 
 
 CREATE TABLE IF NOT EXISTS `0_sql_trail` (
-  `id` int(11) NOT NULL auto_increment,
+  `id` int(11) UNSIGNED NOT NULL auto_increment,
   `sql` text NOT NULL, 
   `result` tinyint(1) NOT NULL, 
   `msg` varchar(255) NOT NULL,
