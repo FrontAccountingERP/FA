@@ -19,6 +19,12 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+07-Jan-2009 Joe Hunt
+! Changed supplier credit note to only show items for a period, default 30 days back.
+$ /purchasing/includes/db/grn_db.inc
+  /purchasing/includes/invoice_ui.inc
+  /purchasing/supplier_credit.php
+  
 07-Jan-2009 Janusz Dobrowolski
 # [0000105] Not initialized user pos numbers after upgrade, fixed some new table fields.
 $ /sql/alter2.1.sql

@@ -175,7 +175,7 @@ function set_grn_item_credited(&$entered_grn, $supplier, $transno, $date)
 }
 
 function get_grn_items($grn_batch_id=0, $supplier_id="", $outstanding_only=false,
-	$is_invoiced_only=false, $invoice_no=0)
+	$is_invoiced_only=false, $invoice_no=0, $begin="", $end="")
 {
     $sql = "SELECT ".TB_PREF."grn_batch.*, ".TB_PREF."grn_items.*, ".TB_PREF."purch_order_details.unit_price,
 		".TB_PREF."purch_order_details.std_cost_unit, units
@@ -190,6 +190,10 @@ function get_grn_items($grn_batch_id=0, $supplier_id="", $outstanding_only=false
 			".TB_PREF."grn_items.id=".TB_PREF."supp_invoice_items.grn_item_id";
 	$sql .= " AND ".TB_PREF."stock_master.stock_id=".TB_PREF."grn_items.item_code ";
 
+	if ($begin != "")
+		$sql .= " AND ".TB_PREF."grn_batch.delivery_date>='".date2sql($begin)."'";
+	if ($end != "")
+		$sql .= " AND ".TB_PREF."grn_batch.delivery_date<='".date2sql($end)."'";
 	if ($grn_batch_id != 0)
 		$sql .= " AND ".TB_PREF."grn_batch.id=$grn_batch_id AND ".TB_PREF."grn_items.grn_batch_id=$grn_batch_id ";
 

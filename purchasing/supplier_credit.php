@@ -302,6 +302,11 @@ if ($id4 != -1)
 	$Ajax->activate('gl_items');
 	$Ajax->activate('inv_tot');
 }
+if (isset($_POST['RefreshInquiry']))
+{
+	$Ajax->activate('grn_items');
+	$Ajax->activate('inv_tot');
+}
 
 if (isset($_POST['go']))
 {

@@ -316,7 +316,9 @@ function display_grn_items_for_selection(&$supp_trans, $k)
 		$result = get_grn_items(0, $supp_trans->supplier_id, true);
 	else
 	{
-		if (isset($_POST['invoice_no']))
+		if (isset($_POST['receive_begin']) && isset($_POST['receive_end']))
+			$result = get_grn_items(0, $supp_trans->supplier_id, false, true, 0, $_POST['receive_begin'], $_POST['receive_end']);
+		else if (isset($_POST['invoice_no']))
 			$result = get_grn_items(0, $supp_trans->supplier_id, false, true, $_POST['invoice_no']);
 		else	
 			$result = get_grn_items(0, $supp_trans->supplier_id, false, true);
@@ -428,6 +430,15 @@ function display_grn_items(&$supp_trans, $mode=0)
 
 	if ($mode == 1)
 	{
+		if (!$supp_trans->is_invoice && !isset($_POST['invoice_no']))
+		{
+			echo "</td>";
+			date_cells(_("Received between"), 'receive_begin', "", null, -30);
+			date_cells(_("and"), 'receive_end', '', null, 1);
+			submit_cells('RefreshInquiry', _("Search"),'',_('Refresh Inquiry'), true);
+			echo "<td>";
+		}	
+			
 		if ($heading2 != "")
 		{
 			//br();
