@@ -137,6 +137,8 @@ function db_import($filename, $connection, $force=true)
 	$sql_errors = array();
 
 	ini_set("max_execution_time", "180");
+	db_query("SET foreign_key_checks=0");
+
 	// uncrompress gziped backup files
 	if (strpos($filename, ".gzip") || strpos($filename, ".GZIP"))
 		$lines = db_ungzip("lines", $filename);
@@ -209,7 +211,7 @@ function db_import($filename, $connection, $force=true)
 		{
 			if (!db_query($table_query[0]))
 			{	
-				if (!$force && !in_array(db_error_no(), $ignored_mysql_errors)) {
+				if (!in_array(db_error_no(), $ignored_mysql_errors) || !$force) {
 					$sql_errors[] = array(db_error_msg($db), $table_query[1]);
 				}
 			}
@@ -223,12 +225,14 @@ function db_import($filename, $connection, $force=true)
 		{
 			if (!db_query($data_query[0]))
 			{
-				if (!$force && !in_array(db_error_no(),$ignored_mysql_errors))
+				if (!in_array(db_error_no(),$ignored_mysql_errors) || !$force)
 					$sql_errors[] = array(db_error_msg($db), $data_query[1]);
 			}
 		}
 	}
 	
+	db_query("SET foreign_key_checks=1");
+
 	if (count($sql_errors)) {
 		// display first failure message; the rest are probably derivative 
 		$err = $sql_errors[0];

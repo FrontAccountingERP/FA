@@ -24,6 +24,8 @@ $ -> Affected files
 $ /sql/alter2.1.sql
 # [0000106] Error blocking direct invoice for currencies not listed by ECB.
 $ sales/includes/cart_class.inc
+# Fixed error handling in forced upgrade mode.
+$ admin/db/maintenance_db.inc
 + Added backtrace debugging function;
 $ /includes/ui/ui_view.inc
 
