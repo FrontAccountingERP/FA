@@ -128,7 +128,7 @@ INSERT INTO `0_quick_entry_lines` VALUES ('2', '2', '6730', '1', '0', 0, '0', '0
 INSERT INTO `0_quick_entry_lines` VALUES ('3', '3', '3000', '1', '0', 0, '0', '0');
 
 ALTER TABLE `0_users` DROP COLUMN `print_profile`;
-ALTER TABLE `0_users` ADD `print_profile` NOT NULL VARCHAR(30) DEFAULT '1';
+ALTER TABLE `0_users` ADD `print_profile` VARCHAR(30) NOT NULL DEFAULT '1';
 ALTER TABLE `0_users` DROP COLUMN `rep_popup`;
 ALTER TABLE `0_users` ADD `rep_popup` TINYINT(1) DEFAULT '1';
 
