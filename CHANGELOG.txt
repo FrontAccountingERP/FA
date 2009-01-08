@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+08-Jan-2009 Janusz Dobrowolski
+# Numeric check on class id added.
+$ /gl/manage/gl_account_classes.php
+
 02-Jan-2009 Joe Hunt
 # [0000104] minor language updates in a few sales files 
 $ /sales/customer_invoice.php
@@ -61,7 +65,7 @@ $ /includes/ui/ui_view.inc
 
 10-Dec-2008 Janusz Dobrowolski
 # [0000099] New line added to inventory transfer/adjustment sometimes overwrites old one.
-$ /inlucdes/ui/items_cart.inc
+$ /includes/ui/items_cart.inc
 
 09-Dec-2008 Janusz Dobrowolski
 # [0000098] Unable issue of credit note for invoice with removed item lines.
