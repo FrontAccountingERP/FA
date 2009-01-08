@@ -79,7 +79,7 @@ if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM')
 			fwrite($fp, $index_file);
 			fclose($fp);
 		}
-		if ($Mode == 'UPDATE_ITEM')
+		if ($Mode == 'UPDATE_ITEM' && file_exists($dir."/".$_POST['unique_name']))
 			unlink($dir."/".$_POST['unique_name']);
 
 		$unique_name = uniqid('');
