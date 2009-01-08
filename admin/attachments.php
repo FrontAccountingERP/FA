@@ -125,6 +125,10 @@ if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM')
 
 if ($Mode == 'Delete')
 {
+	$row = get_attachment($selected_id);
+	$dir =  $comp_path."/".user_company(). "/attachments";
+	if (file_exists($dir."/".$row['unique_name']))
+		unlink($dir."/".$row['unique_name']);
 	$sql = "DELETE FROM ".TB_PREF."attachments WHERE id = $selected_id";
 	db_query($sql, "Could not delete attachment");
 	display_notification(_("Attachment has been deleted.")); 
