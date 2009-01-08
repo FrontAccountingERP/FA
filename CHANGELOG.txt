@@ -19,6 +19,11 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+08-Jan-2009 Joe Hunt
+! Changed attachments to use unique files store instead of blobs
+$ /admin/attachments/attachments.php
+  /sql/alter2.1.sql
+  
 07-Jan-2009 Joe Hunt
 ! Changed supplier credit note to only show items for a period, default 30 days back.
 $ /purchasing/includes/db/grn_db.inc

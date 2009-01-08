@@ -18,7 +18,7 @@ CREATE TABLE `0_attachments` (
   `description` varchar(60) NOT NULL default '',
   `type_no` int(11) NOT NULL default '0',
   `trans_no` int(11) NOT NULL default '0',
-  `bin_data` mediumblob NOT NULL,
+  `unique_name` varchar(60) NOT NULL default '',
   `tran_date` date NOT NULL default '0000-00-00',
   `filename` varchar(60) NOT NULL default '',
   `filesize` int(11) NOT NULL default '0',

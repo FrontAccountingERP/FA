@@ -31,7 +31,7 @@ if ($view_id != -1)
     		header('Content-Disposition: attachment; filename='.$row['filename']);
     	else
 	 		header("Content-Disposition: inline");
-    	echo $row["bin_data"];
+    	echo file_get_contents($comp_path."/".user_company(). "/attachments/".$row['unique_name']);
     	exit();
 	}	
 }
@@ -46,7 +46,7 @@ if ($download_id != -1)
     	header("Content-type: ".$type);
     	header('Content-Length: '.$row['filesize']);
     	header('Content-Disposition: attachment; filename='.$row['filename']);
-    	echo $row["bin_data"];
+    	echo file_get_contents($comp_path."/".user_company(). "/attachments/".$row['unique_name']);
     	exit();
 	}	
 }
@@ -69,27 +69,37 @@ if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM')
 	{
 		//$content = base64_encode(file_get_contents($_FILES['filename']['tmp_name']));
 		$tmpname = $_FILES['filename']['tmp_name'];
-		$fp      = fopen($tmpname, 'r');
-		$content = fread($fp, filesize($tmpname));
-		$content = addslashes($content);
-		fclose($fp);
 
-		//$content = addslashes(file_get_contents($_FILES['filename']['tmp_name']));
+		$dir =  $comp_path."/".user_company(). "/attachments";
+		if (!file_exists($dir))
+		{
+			mkdir ($dir,0777);
+			$index_file = "<?php\nheader(\"Location: ../index.php\");\n?>";
+			$fp = fopen($dir."/index.php", "w");
+			fwrite($fp, $index_file);
+			fclose($fp);
+		}
+		if ($Mode == 'UPDATE_ITEM')
+			unlink($dir."/".$_POST['unique_name']);
+
+		$unique_name = uniqid('');
+		move_uploaded_file($tmpname, $dir."/".$unique_name);
+		//save the file
 		$filename = $_FILES['filename']['name'];
 		$filesize = $_FILES['filename']['size'];
 		$filetype = $_FILES['filename']['type'];
 	}
 	else
 	{
-		$content = $filename = $filetype = "";
+		$unique_name = $filename = $filetype = "";
 		$filesize = 0;
 	}
 	$date = date2sql(Today());
 	if ($Mode == 'ADD_ITEM')
 	{
-		$sql = "INSERT INTO ".TB_PREF."attachments (type_no, trans_no, description, bin_data, filename,
+		$sql = "INSERT INTO ".TB_PREF."attachments (type_no, trans_no, description, filename, unique_name,
 			filesize, filetype, tran_date) VALUES (".$_POST['filterType'].",".$_POST['trans_no'].",".
-			db_escape($_POST['description']).",'$content', '$filename', '$filesize', '$filetype', '$date')";
+			db_escape($_POST['description']).", '$filename', '$unique_name', '$filesize', '$filetype', '$date')";
 		db_query($sql, "Attachment could not be inserted");		
 		display_notification(_("Attachment has been inserted.")); 
 	}
@@ -101,8 +111,8 @@ if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM')
 			description=".db_escape($_POST['description']).", ";
 		if ($filename != "")
 		{
-			$sql .= "bin_data='$content',
-			filename='$filename',
+			$sql .= "filename='$filename',
+			unique_name='$unique_name',
 			filesize='$filesize',
 			filetype='$filetype', ";
 		}	
@@ -209,6 +219,7 @@ if ($selected_id != -1)
 		$_POST['trans_no']  = $row["trans_no"];
 		$_POST['description']  = $row["description"];
 		hidden('trans_no', $row['trans_no']);
+		hidden('unique_name', $row['unique_name']);
 		label_row(_("Transaction #"), $row['trans_no']);
 	}	
 	hidden('selected_id', $selected_id);
