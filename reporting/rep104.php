@@ -47,6 +47,22 @@ function fetch_items($category=0)
 
     return db_query($sql,"No transactions were returned");
 }
+
+function get_kits($category=0)
+{
+	$sql = "SELECT i.item_code AS kit_code, i.description AS kit_name, c.category_id AS cat_id, c.description AS cat_name, count(*)>1 AS kit
+			FROM
+			".TB_PREF."item_codes i
+			LEFT JOIN
+			".TB_PREF."stock_category c
+			ON i.category_id=c.category_id";
+	$sql .=	" WHERE !i.is_foreign AND i.item_code!=i.stock_id";
+	if ($category != 0)
+		$sql .= " AND c.category_id = '$category'";
+	$sql .= " GROUP BY i.item_code";
+    return db_query($sql,"No kits were returned");
+}
+
 //----------------------------------------------------------------------------------------------------
 
 function print_price_listing()
@@ -156,6 +172,38 @@ function print_price_listing()
 			$rep->NewLine(0, 1);
 	}
 	$rep->Line($rep->row  - 4);
+
+	$result = get_kits($category);
+
+	$catgor = '';
+	while ($myrow=db_fetch($result))
+	{
+		if ($catgor != $myrow['cat_name'])
+		{
+			if ($catgor == '')
+			{
+				$rep->NewLine(2);
+				$rep->fontSize += 2;
+				$rep->TextCol(0, 3, _("Sales Kits"));
+				$rep->fontSize -= 2;
+			}	
+			$rep->Line($rep->row  - $rep->lineHeight);
+			$rep->NewLine(2);
+			$rep->fontSize += 2;
+			$rep->TextCol(0, 3, $myrow['cat_id'] . " - " . $myrow['cat_name']);
+			$catgor = $myrow['cat_name'];
+			$rep->fontSize -= 2;
+			$rep->NewLine();
+		}
+		$rep->NewLine();
+		$rep->TextCol(0, 1,	$myrow['kit_code']);
+		$rep->TextCol(1, 2, $myrow['kit_name']);
+		$price = get_kit_price($myrow['kit_code'], $currency, $salestype);
+		$rep->TextCol(2, 3,	number_format2($price, $dec));
+		$rep->NewLine(0, 1);
+	}
+	$rep->Line($rep->row  - 4);
+	
     $rep->End();
 }
 

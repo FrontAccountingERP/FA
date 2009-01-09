@@ -77,6 +77,22 @@ if (isset($_POST['update']) && $_POST['update'] != "")
 				display_error(_('Error uploading logo file'));
 		}
 	}
+	if (check_value('del_coy_logo'))
+	{
+		$user_comp = user_company();
+		$filename = $comp_path . "/$user_comp/images/".$_POST['coy_logo'];
+		if (file_exists($filename))
+		{
+			$result = unlink($filename);
+			if (!$result)
+			{
+				display_error(_('The existing image could not be removed'));
+				$input_error = 1;
+			}
+			else
+				$_POST['coy_logo'] = "";
+		}
+	}
 	if ($input_error != 1)
 	{
 		update_company_setup($_POST['coy_name'], $_POST['coy_no'], $_POST['gst_no'], $_POST['tax_prd'], $_POST['tax_last'],
@@ -123,6 +139,7 @@ $_POST['custom2_value']  = $myrow["custom2_value"];
 $_POST['custom3_value']  = $myrow["custom3_value"];
 $_POST['curr_default']  = $myrow["curr_default"];
 $_POST['f_year']  = $myrow["f_year"];
+$_POST['del_coy_logo']  = 0;
 
 start_outer_table($table_style2);
 
@@ -148,7 +165,7 @@ table_section(2);
 fiscalyears_list_row(_("Fiscal Year:"), 'f_year', $_POST['f_year']);
 label_row(_("Company Logo:"), $_POST['coy_logo']);
 label_row(_("New Company Logo (.jpg)") . ":", "<input type='file' id='pic' name='pic'>");
-
+check_row(_("Delete Company Logo:"), 'del_coy_logo', $_POST['del_coy_logo']);
 text_row_ex(_("Domicile:"), 'domicile', 25, 55);
 
 number_list_row(_("Use Dimensions:"), 'use_dimension', null, 0, 2);

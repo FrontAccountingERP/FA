@@ -22,6 +22,13 @@ $ -> Affected files
 09-Jan-2009 Joe Hunt
 ! Changed $path_to_root in report files and stamped copyright
 $ All report files
++ Added Sales kits to Items price list.
+$ /reporting/rep104.php
+# Company logo can not be deleted.
+$ /admin/company_preferences.php
+# Bug [0000107] and [0000108]
+$ /inventory/includes/db/items_codes_db.inc
+  /gl/manage/gl_account_types.php
 
 08-Jan-2009 Joe Hunt
 ! Changed attachments to use unique files store instead of blobs

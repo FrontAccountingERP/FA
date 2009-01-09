@@ -26,6 +26,12 @@ function can_process()
 {
 	global $selected_id;
 
+	if (!input_num('id'))
+	{
+	    display_error( _("The account id must be an integer and cannot be empty."));
+	    set_focus('id');
+	    return false;
+	}
 	if (strlen($_POST['name']) == 0) 
 	{
 		display_error( _("The account group name cannot be empty."));
