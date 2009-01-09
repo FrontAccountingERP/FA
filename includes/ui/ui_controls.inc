@@ -208,11 +208,11 @@ function table_section_title($msg, $colspan=2)
 	echo "<tr><td colspan=$colspan class='tableheader'>$msg</td></tr>\n";
 }
 
-function table_header($labels)
+function table_header($labels, $params='')
 {
 	start_row();
 	foreach ($labels as $label)
-		labelheader_cell($label);
+		labelheader_cell($label, $params);
 	end_row();
 }
 //-----------------------------------------------------------------------------------
