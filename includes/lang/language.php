@@ -12,7 +12,8 @@ class language
 	var $encoding;		// eg. UTF-8, CP1256, ISO8859-1
 	var	$dir;			// Currently support for Left-to-Right (ltr) and
 						// Right-To-Left (rtl)
-
+	var $is_locale_file;
+	
 	function language($name, $code, $encoding) 
 	{
 		$this->name = $name;
@@ -35,22 +36,19 @@ class language
 
 	function set_language($code) 
 	{
-	    global $comp_path;
+	    global $comp_path, $path_to_root;
 	    
 		if (isset($_SESSION['languages'][$code]) &&
 			$_SESSION['language'] != $_SESSION['languages'][$code]) 
 		{
-	    
 		// flush cache as we can use several languages in one account
 		    flush_dir($comp_path.'/'.user_company().'/js_cache');
 		    $_SESSION['language'] = $_SESSION['languages'][$code];
+			$locale = $path_to_root . "/lang/" . $_SESSION['language']->code . "/locale.inc";
+			// check id file exists only once for session
+			$_SESSION['language']->is_locale_file = file_exists($locale);
 		    reload_page("");
 		}
-	}
-
-	function get_stylesheet() 
-	{
-		return 'lang/' . $_SESSION['language']->code . '/stylesheet.css';
 	}
 
 	/**
@@ -76,6 +74,25 @@ class language
 	}
 
 }
+/*
+	Test if named function is defined in locale.inc file.
+*/
+function has_locale($fun=null)
+{
+	global $path_to_root;
+	
+	if ($_SESSION['language']->is_locale_file)
+	{
+		global $path_to_root;
+		include_once($path_to_root . "/lang/" . 
+			$_SESSION['language']->code . "/locale.inc");
+
+		if (!isset($fun) || function_exists($fun))
+			return true;
+	}
+	return false;
+}
+
 session_name('FrontAccounting'.user_company());
 session_start();
 // this is to fix the "back-do-you-want-to-refresh" issue - thanx PHPFreaks
