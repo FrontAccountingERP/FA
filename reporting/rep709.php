@@ -16,12 +16,12 @@ $page_security = 2;
 // date_:	2005-05-19
 // Title:	Tax Report
 // ----------------------------------------------------------------
-$path_to_root="../";
+$path_to_root="..";
 
-include_once($path_to_root . "includes/session.inc");
-include_once($path_to_root . "includes/date_functions.inc");
-include_once($path_to_root . "includes/data_checks.inc");
-include_once($path_to_root . "gl/includes/gl_db.inc");
+include_once($path_to_root . "/includes/session.inc");
+include_once($path_to_root . "/includes/date_functions.inc");
+include_once($path_to_root . "/includes/data_checks.inc");
+include_once($path_to_root . "/gl/includes/gl_db.inc");
 
 //----------------------------------------------------------------------------------------------------
 
@@ -162,7 +162,7 @@ function print_tax_report()
 {
 	global $path_to_root;
 
-	include_once($path_to_root . "reporting/includes/pdf_report.inc");
+	include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 
 	$rep = new FrontReport(_('Tax Report'), "TaxReport.pdf", user_pagesize());
 
@@ -462,7 +462,7 @@ function print_tax_report()
 	
 	$rep->Line($rep->row - 4);
 
-	$locale = $path_to_root . "lang/" . $_SESSION['language']->code . "/locale.inc";
+	$locale = $path_to_root . "/lang/" . $_SESSION['language']->code . "/locale.inc";
 	if (file_exists($locale))
 	{
 		$taxinclude = true;

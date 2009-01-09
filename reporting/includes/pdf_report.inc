@@ -14,9 +14,9 @@ $page_security = 8;
 //include_once($path_to_root . "reporting/includes/class.pdf.inc");
 include_once(dirname(__FILE__)."/class.pdf.inc");
 include_once(dirname(__FILE__)."/printer_class.inc");
-include_once($path_to_root . "admin/db/company_db.inc");
-include_once($path_to_root . "admin/db/printers_db.inc");
-include_once($path_to_root . "config.php");
+include_once($path_to_root . "/admin/db/company_db.inc");
+include_once($path_to_root . "/admin/db/printers_db.inc");
+include_once($path_to_root . "/config.php");
 class FrontReport extends Cpdf
 {
 	var $size;
@@ -150,7 +150,7 @@ class FrontReport extends Cpdf
 	function Info($params, $cols, $headers, $aligns,
 		$cols2 = null, $headers2 = null, $aligns2 = null)
 	{
-		global $app_title, $version, $power_by, $power_url, $path_to_root,	$db_connections;
+		global $app_title, $version, $power_by, $power_url;
 
 		$this->addinfo('Title', $this->title);
 		$this->addinfo('Subject', $this->title);
@@ -164,7 +164,6 @@ class FrontReport extends Cpdf
 		$this->fiscal_year = sql2date($year['begin']) . " - " . sql2date($year['end']) . "  " . "(" . $how . ")";
 		$this->company = get_company_prefs();
 		$this->user = $_SESSION["wa_current_user"]->name;
-		//$this->host = $db_connections[$_SESSION["wa_current_user"]->company]["host"];
 		$this->host = $_SERVER['SERVER_NAME'];
 		$this->params = $params;
 		$this->cols = $cols;
@@ -268,14 +267,14 @@ class FrontReport extends Cpdf
 		$header2type = true;
 		if ($this->currency != $myrow['curr_code'])
 		{
-			include($path_to_root . "reporting/includes/doctext2.inc");
+			include($path_to_root . "/reporting/includes/doctext2.inc");
 		}
 		else
 		{
-			include($path_to_root . "reporting/includes/doctext.inc");
+			include($path_to_root . "/reporting/includes/doctext.inc");
 		}
 
-		include($path_to_root . "reporting/includes/header2.inc");
+		include($path_to_root . "/reporting/includes/header2.inc");
 
 		$this->row = $temp;
 	}

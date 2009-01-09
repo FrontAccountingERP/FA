@@ -1,5 +1,14 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU Affero General Public License,
+	AGPL, as published by the Free Software Foundation, either version 
+	3 of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/agpl-3.0.html>.
+***********************************************************************/
 $page_security = 2;
 
 // ----------------------------------------------------------------
@@ -8,12 +17,12 @@ $page_security = 2;
 // date_:	2005-05-19
 // Title:	Customer Balances
 // ----------------------------------------------------------------
-$path_to_root="../";
+$path_to_root="..";
 
-include_once($path_to_root . "includes/session.inc");
-include_once($path_to_root . "includes/date_functions.inc");
-include_once($path_to_root . "includes/data_checks.inc");
-include_once($path_to_root . "gl/includes/gl_db.inc");
+include_once($path_to_root . "/includes/session.inc");
+include_once($path_to_root . "/includes/date_functions.inc");
+include_once($path_to_root . "/includes/data_checks.inc");
+include_once($path_to_root . "/gl/includes/gl_db.inc");
 
 //----------------------------------------------------------------------------------------------------
 
@@ -45,7 +54,7 @@ function print_customer_balances()
 {
     global $path_to_root;
 
-	include_once($path_to_root . "reporting/includes/pdf_report.inc");
+	include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 
     $to = $_POST['PARAM_0'];
     $fromcust = $_POST['PARAM_1'];
