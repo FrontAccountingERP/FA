@@ -19,6 +19,35 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+09-Jan-2009 Janusz Dobrowolski
++ Added hook file for localized functions.
+$ /includes/lang/language.php
+! Removed obsolete local css file inclusion.
+$ /includes/page/header.inc
+! Optional params in table_header() added.
+$ /includes/ui/ui_controls.inc
+! Added table pager in exchange rates editor.
+$ /gl/includes/db/gl_db_rates.inc
+  /gl/manage/exchange_rates.php
+! Fixed rate column, added width table parameter
+$ /includes/db_pager.inc
+  /includes/ui/db_pager_view.inc
+# Added hot key for attachments menu option.
+$ /applications/setup.php
+# Removed bank_trans_types_db.inc inclusion.
+$ /gl/includes/gl_db.inc
+- Removed obsolete files
+$ /gl/manage/bank_trans_types.php (removed)
+  /gl/includes/db/bank_trans_types.inc (removed)
+  /lang/en_US/stylesheet.css (removed)
+  /lang/new_language_template/stylesheet.css (removed)
+- Example picture files moved to company/0
+$ /inventory/manage/image (removed)
+  /inventory/manage/image/0 (removed)
+  /inventory/manage/image/0/102.jpg (removed)
+  /inventory/manage/image/0/103.jpg (removed)
+  /inventory/manage/image/0/104.jpg (removed)
+
 09-Jan-2009 Joe Hunt
 ! Changed $path_to_root in report files and stamped copyright
 $ All report files
