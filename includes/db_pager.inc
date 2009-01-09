@@ -16,6 +16,7 @@ class db_pager {
 	var $marker_txt;	
 	var $marker_class;
 	var $notice_class;
+	var $width;			// table width (default '95%')
 	var $header_fun;	// additional row between title and body
 	var $header_class;
 	var $footer_fun;
@@ -47,6 +48,8 @@ class db_pager {
 	//	$name is base name for pager controls
 	function db_pager($sql, $name, $page_len=0) 
 	{
+		global $table_style;
+		$this->width = "95%";
 		if ($page_len == 0) $page_len = user_query_size();
 		$this->name = $name;
 		$this->page_len = $page_len;
