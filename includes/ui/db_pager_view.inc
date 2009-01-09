@@ -45,7 +45,7 @@ function display_db_pager(&$pager) {
 
 	div_start("_{$pager->name}_span");
     $headers = array();
-//display_error(print_r($pager->columns,true));
+
 	foreach($pager->columns as $num_col=>$col) {
     	if (isset($col['head'])) {
 			if (!isset($col['ord'])) 
@@ -59,8 +59,8 @@ function display_db_pager(&$pager) {
  		}
 	}
     /* show a table of records returned by the sql */
-    start_table("$table_style width=95%");
-    table_header($headers);
+    start_table("$table_style width=".$pager->width);
+    table_header($headers, 'nowrap');
 
 	if($pager->header_fun) {	// if set header handler
 		start_row("class='{$pager->header_class}'");
@@ -123,7 +123,7 @@ function display_db_pager(&$pager) {
 			  else
 		  	  	qty_cell($cell, false, isset($col['dec']) ? $col['dec'] : null); break;
 		    case 'rate':
-		  	  rate_cell($cell);  break;
+				label_cell(number_format2($cell, user_exrate_dec()), "align=center"); break;
 		    default:
 //		    case 'text':
 			  if (isset( $col['align']))
@@ -154,7 +154,7 @@ function display_db_pager(&$pager) {
 	}
 
 	end_table();
-	start_table("$table_style align='center' class='navibar' width=95%");
+	start_table("$table_style align='center' class='navibar' width=".$pager->width);
 	start_row();
 	 if($pager->rec_count) {
 		$from = ($pager->curr_page-1)*$pager->page_len+1;
