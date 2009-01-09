@@ -2,6 +2,7 @@
 
 $page_security = 9;
 $path_to_root="../..";
+include($path_to_root . "/includes/db_pager.inc");
 include_once($path_to_root . "/includes/session.inc");
 
 include_once($path_to_root . "/includes/date_functions.inc");
@@ -78,35 +79,38 @@ function handle_delete()
 }
 
 //---------------------------------------------------------------------------------------------
+function edit_link($row) 
+{
+  return button('Edit'.$row["id"], _("Edit"), true, ICON_EDIT);
+}
+
+function del_link($row) 
+{
+  return button('Delete'.$row["id"], _("Delete"), true, ICON_DELETE);
+}
 
 function display_rates($curr_code)
 {
 	global $table_style;
 
-	$result = get_exchange_rates($curr_code);
+	$sql = "SELECT date_, rate_buy, id FROM "
+		.TB_PREF."exchange_rates "
+		."WHERE curr_code='$curr_code'
+		 ORDER BY date_ DESC";
 
-	br(2);
-	start_table($table_style);
-	$th = array(_("Date to Use From"), _("Exchange Rate"), "", "");
-	table_header($th);
-
-    $k = 0; //row colour counter
-
-    while ($myrow = db_fetch($result))
-    {
-
-   		alt_table_row_color($k);
-
-    	label_cell(sql2date($myrow["date_"]));
-		label_cell(number_format2($myrow["rate_buy"], user_exrate_dec()), "nowrap align=right");
- 		edit_button_cell("Edit".$myrow["id"], _("Edit"));
- 		edit_button_cell("Delete".$myrow["id"], _("Delete"));
-
-		end_row();
-
-    }
-
-    end_table();
+	$cols = array(
+		_("Date to Use From") => 'date', 
+		_("Exchange Rate") => 'rate',
+		array('insert'=>true, 'fun'=>'edit_link'),
+		array('insert'=>true, 'fun'=>'del_link'),
+	);
+	$table =& new_db_pager('orders_tbl', $sql, $cols);
+	if (list_updated('curr_abrev')) {
+		$table->set_sql($sql);
+		$table->set_columns($cols);
+	}
+	$table->width = "40%";
+	display_db_pager($table);
 }
 
 //---------------------------------------------------------------------------------------------
@@ -206,6 +210,7 @@ if (is_company_currency($_POST['curr_abrev']))
 else
 {
 
+	br(1);
     display_rates($_POST['curr_abrev']);
    	br(1);
     display_rate_edit();
