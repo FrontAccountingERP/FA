@@ -1,15 +1,5 @@
 <?php
-
-//--------------------------------------------------------------------------------------------------
-
-function get_exchange_rates($curr_code)
-{
-	$sql = "SELECT * FROM ".TB_PREF."exchange_rates WHERE curr_code='$curr_code' ORDER BY date_ DESC";	
-	return db_query($sql, "could not get exchange rates for $curr_code");
-}
-
 //---------------------------------------------------------------------------------------------
-
 function get_exchange_rate($rate_id)
 {
 	$sql = "SELECT * FROM ".TB_PREF."exchange_rates WHERE id=$rate_id";
