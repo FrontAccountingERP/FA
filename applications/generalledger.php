@@ -14,7 +14,8 @@
 			$this->add_lapp_function(0, _("Bank Account &Transfers"),"gl/bank_transfer.php?");
 			$this->add_rapp_function(0, _("&Journal Entry"),"gl/gl_journal.php?NewJournal=Yes");
 			$this->add_rapp_function(0, _("&Budget Entry"),"gl/gl_budget.php?");
-
+			//Added by Rob Mallon on 1/8/09
+            $this->add_rapp_function(0, _("Reconcile Bank Account"),"gl/bank_account_reconcile.php?");
 			$this->add_module(_("Inquiries and Reports"));
 			$this->add_lapp_function(1, _("Bank Account &Inquiry"),"gl/inquiry/bank_inquiry.php?");
 			$this->add_lapp_function(1, _("GL Account &Inquiry"),"gl/inquiry/gl_account_inquiry.php?");

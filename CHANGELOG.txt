@@ -19,6 +19,12 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+10-Jan-2009 Joe Hunt
++ Addition of Bank Reconciliation. Author Rob Mallon
+$ /applications/generalledger.php 
+  /gl/bank_account_reconcile.php (new file)
+  /sql/alter2.1.sql
+  
 09-Jan-2009 Janusz Dobrowolski
 + Added hook file for localized functions.
 $ /includes/lang/language.php

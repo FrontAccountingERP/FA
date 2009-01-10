@@ -68,6 +68,13 @@ ALTER TABLE `0_debtor_trans` ADD `dimension2_id` int(11) NOT NULL default '0';
 ALTER TABLE `0_bank_accounts` DROP COLUMN `id`;
 ALTER TABLE `0_bank_accounts` DROP PRIMARY KEY;
 ALTER TABLE `0_bank_accounts` ADD `id` SMALLINT(6) AUTO_INCREMENT PRIMARY KEY;
+ALTER TABLE `0_bank_accounts` DROP COLUMN `last_reconciled_date`;
+ALTER TABLE `0_bank_accounts` ADD `last_reconciled_date` timestamp NOT NULL default '0000-00-00';
+ALTER TABLE `0_bank_accounts` DROP COLUMN `ending_reconcile_balance`;
+ALTER TABLE `0_bank_accounts` ADD `ending_reconcile_balance` double NOT NULL default '0';
+
+ALTER TABLE `0_bank_trans` DROP COLUMN `reconciled`;
+ALTER TABLE `0_bank_trans` ADD `reconciled` tinyint(1) NOT NULL default '0';
 
 ALTER TABLE `0_users` DROP COLUMN `query_size`;
 ALTER TABLE `0_users` ADD `query_size` TINYINT(1) DEFAULT '10';
