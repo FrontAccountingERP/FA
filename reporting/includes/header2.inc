@@ -189,7 +189,9 @@
 		$this->TextWrap($col, $this->row, $width, $doc_Due_Date, 'C');
 		$this->row = $iline3 - $this->lineHeight - 1;
 		$col = $this->leftMargin;
-		if (isset($sales_order["customer_ref"]))
+		if ($doctype == 8)
+			$this->TextWrap($col, $this->row, $width, $myrow['supp_account_no'], 'C');
+		elseif (isset($sales_order["customer_ref"]))
 			$this->TextWrap($col, $this->row, $width, $sales_order["customer_ref"], 'C');
 		$col += $width;	
 		if ($branch != null)

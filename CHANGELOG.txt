@@ -24,6 +24,12 @@ $ -> Affected files
 $ /applications/generalledger.php 
   /gl/bank_account_reconcile.php (new file)
   /sql/alter2.1.sql
++ Added more fields to suppliers table and fixed PO document
+$ /sql/alter2.1.sql
+  /includes/ui/ui_input.inc (new link_row)
+  /purchasing/manage/suppliers.php
+  /reporting/includes/header2.inc
+  /reporting/rep209.php
   
 09-Jan-2009 Janusz Dobrowolski
 + Added hook file for localized functions.

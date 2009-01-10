@@ -218,6 +218,15 @@ ALTER TABLE `0_suppliers` ADD `contact` varchar(60) NOT NULL DEFAULT '' AFTER `g
 ALTER TABLE `0_suppliers` DROP COLUMN `credit_limit`;
 ALTER TABLE `0_suppliers` ADD `credit_limit` double NOT NULL DEFAULT '0' AFTER `tax_group_id`;
 
+ALTER TABLE `0_suppliers` DROP COLUMN `supp_account_no`;
+ALTER TABLE `0_suppliers` ADD `supp_account_no` varchar(40) NOT NULL DEFAULT '' AFTER `contact`;
+
+ALTER TABLE `0_suppliers` DROP COLUMN `website`;
+ALTER TABLE `0_suppliers` ADD `website` varchar(100) NOT NULL DEFAULT '' AFTER `email`;
+
+ALTER TABLE `0_suppliers` DROP COLUMN `notes`;
+ALTER TABLE `0_suppliers` ADD `notes` tinytext NOT NULL DEFAULT '';
+
 ALTER TABLE `0_chart_types` DROP INDEX `name`, ADD INDEX `name` ( `name` );
 
 DROP TABLE IF EXISTS `0_sql_trail`; 

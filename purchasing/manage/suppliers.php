@@ -58,7 +58,9 @@ if (isset($_POST['submit']))
                 fax=".db_escape($_POST['fax']) . ",
                 gst_no=".db_escape($_POST['gst_no']) . ",
                 email=".db_escape($_POST['email']) . ",
+                website=".db_escape($_POST['website']) . ",
                 contact=".db_escape($_POST['contact']) . ",
+                supp_account_no=".db_escape($_POST['supp_account_no']) . ",
                 bank_account=".db_escape($_POST['bank_account']) . ",
                 credit_limit=".db_escape($_POST['credit_limit']) . ",
                 dimension_id=".db_escape($_POST['dimension_id']) . ",
@@ -68,6 +70,7 @@ if (isset($_POST['submit']))
 				payable_account=".db_escape($_POST['payable_account']) . ",
 				purchase_account=".db_escape($_POST['purchase_account']) . ",
 				payment_discount_account=".db_escape($_POST['payment_discount_account']) . ",
+                notes=".db_escape($_POST['notes']) . ",
 				tax_group_id=".db_escape($_POST['tax_group_id']) . " WHERE supplier_id = '" . $_POST['supplier_id'] . "'";
 
 			db_query($sql,"The supplier could not be updated");
@@ -76,9 +79,9 @@ if (isset($_POST['submit']))
 		else 
 		{
 
-			$sql = "INSERT INTO ".TB_PREF."suppliers (supp_name, address, supp_address, phone, fax, gst_no, email, 
-				contact, bank_account, credit_limit, dimension_id, dimension2_id, curr_code,
-				payment_terms, payable_account, purchase_account, payment_discount_account, tax_group_id)
+			$sql = "INSERT INTO ".TB_PREF."suppliers (supp_name, address, supp_address, phone, fax, gst_no, email, website,
+				contact, supp_account_no, bank_account, credit_limit, dimension_id, dimension2_id, curr_code,
+				payment_terms, payable_account, purchase_account, payment_discount_account, notes, tax_group_id)
 				VALUES (".db_escape($_POST['supp_name']). ", "
 				.db_escape($_POST['address']) . ", "
 				.db_escape($_POST['supp_address']) . ", "
@@ -86,7 +89,9 @@ if (isset($_POST['submit']))
 				.db_escape($_POST['fax']). ", "
 				.db_escape($_POST['gst_no']). ", "
 				.db_escape($_POST['email']). ", "
+				.db_escape($_POST['website']). ", "
 				.db_escape($_POST['contact']). ", "
+				.db_escape($_POST['supp_account_no']). ", "
 				.db_escape($_POST['bank_account']). ", "
 				.db_escape($_POST['credit_limit']). ", "
 				.db_escape($_POST['dimension_id']). ", "
@@ -96,6 +101,7 @@ if (isset($_POST['submit']))
 				.db_escape($_POST['payable_account']). ", "
 				.db_escape($_POST['purchase_account']). ", "
 				.db_escape($_POST['payment_discount_account']). ", "
+				.db_escape($_POST['notes']). ", "
 				.db_escape($_POST['tax_group_id']). ")";
 
 			db_query($sql,"The supplier could not be added");
@@ -182,7 +188,9 @@ if (!$new_supplier)
 	$_POST['fax']  = $myrow["fax"];
 	$_POST['gst_no']  = $myrow["gst_no"];
 	$_POST['email']  = $myrow["email"];
+	$_POST['website']  = $myrow["website"];
 	$_POST['contact']  = $myrow["contact"];
+	$_POST['supp_account_no']  = $myrow["supp_account_no"];
 	$_POST['bank_account']  = $myrow["bank_account"];
 	$_POST['dimension_id']  = $myrow["dimension_id"];
 	$_POST['dimension2_id']  = $myrow["dimension2_id"];
@@ -193,11 +201,13 @@ if (!$new_supplier)
 	$_POST['payable_account']  = $myrow["payable_account"];
 	$_POST['purchase_account']  = $myrow["purchase_account"];
 	$_POST['payment_discount_account'] = $myrow["payment_discount_account"];
+	$_POST['notes']  = $myrow["notes"];
 
 } 
 else 
 {
-	$_POST['supp_name'] = $_POST['address'] = $_POST['supp_address'] = $_POST['tax_group_id']  = '';
+	$_POST['supp_name'] = $_POST['address'] = $_POST['supp_address'] = $_POST['tax_group_id']  = 
+		$_POST['website'] = $_POST['supp_account_no'] = $_POST['notes'] = '';
 	$_POST['dimension_id'] = 0;
 	$_POST['dimension2_id'] = 0;
 	$_POST['sales_type'] = -1;
@@ -221,6 +231,8 @@ text_row(_("Phone Number:"), 'phone', null, 42, 40);
 text_row(_("Fax Number:"), 'fax', null, 42, 40);
 
 email_row(_("E-mail:"), 'email', null, 35, 55);
+link_row(_("Website:"), 'website', null, 35, 55);
+text_row(_("Supplier Account No.:"), 'supp_account_no', null, 42, 40);
 
 table_section_title(_("Addresses"));
 textarea_row(_("Mailing Address:"), 'address', null, 35, 5);
@@ -267,6 +279,8 @@ if ($dim < 1)
 	hidden('dimension_id', 0);
 if ($dim < 2)
 	hidden('dimension2_id', 0);
+table_section_title(_("General"));
+textarea_row(_("General Notes:"), 'notes', null, 35, 5);
 
 end_outer_table(1);
 
