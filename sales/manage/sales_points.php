@@ -4,7 +4,7 @@ $page_security = 15;
 $path_to_root="../..";
 include_once($path_to_root . "/includes/session.inc");
 
-page(_("Sales Types"));
+page(_("POS settings"));
 
 include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/sales/includes/db/sales_points_db.inc");
