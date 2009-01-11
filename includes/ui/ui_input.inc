@@ -258,18 +258,22 @@ function check_value($name)
 function check($label, $name, $value=null, $submit_on_change=false, $title=false)
 {
   	global $Ajax;
-
+	
 	default_focus($name);
 	if ($label)
 		echo $label . "  ";
-
+	if ($submit_on_change !== false) {
+		if ($submit_on_change === true)
+			$submit_on_change = 
+				"JsHttpRequest.request(\"_{$name}_update\", this.form);";
+	}
 	if ($value === null)
 		$value = get_post($name,0);
 
 		echo "<input"
 		    .($value == 1 ? ' checked':'')
 		    ." type='checkbox' name='$name' value='1'"
-		    .($submit_on_change ? " onclick='JsHttpRequest.request(\"_{$name}_update\", this.form);'" : '')
+		    .($submit_on_change ? " onclick='$submit_on_change'" : '')
 		    .($title ? " title='$title'" : '')
 		    ." >\n";
 	$Ajax->addUpdate($name, $name, $value);
