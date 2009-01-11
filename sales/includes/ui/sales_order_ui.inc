@@ -573,6 +573,7 @@ function check_qoh($order)
 {
 	$msg = '';
 	foreach($order->line_items as $line_no => $line) {
+		if (!is_inventory_item($line['stock_id'])) continue;
 		$qoh = get_qoh_on_date($line->stock_id, $_POST['Location'], $_POST['OrderDate']);
 		if ($line->qty_dispatched > $qoh)	{
 			$msg .= $line->stock_id . " - " . $line->item_description . ": " .
