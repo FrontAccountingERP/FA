@@ -19,6 +19,13 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+11-Jan-2009 Joe Hunt
+! Changed notice msg to warnings and changed bg color for warning
+$ /admin/company_preferences.php
+  /admin/void_transaction.php
+  /includes/errors.inc
+  /inventory/manage/items.php
+  
 10-Jan-2009 Joe Hunt
 + Addition of Bank Reconciliation. Author Rob Mallon
 $ /applications/generalledger.php 

@@ -1,5 +1,14 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU Affero General Public License,
+	AGPL, as published by the Free Software Foundation, either version 
+	3 of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/agpl-3.0.html>.
+***********************************************************************/
 $page_security = 11;
 $path_to_root="../..";
 include($path_to_root . "/includes/session.inc");
@@ -46,17 +55,17 @@ if (isset($_FILES['pic']) && $_FILES['pic']['name'] != '')
 	 //But check for the worst 
 	if (strtoupper(substr(trim($_FILES['pic']['name']), strlen($_FILES['pic']['name']) - 3)) != 'JPG')
 	{
-		display_notification(_('Only jpg files are supported - a file extension of .jpg is expected'));
+		display_warning(_('Only jpg files are supported - a file extension of .jpg is expected'));
 		$upload_file ='No';
 	} 
 	elseif ( $_FILES['pic']['size'] > ($max_image_size * 1024)) 
 	{ //File Size Check
-		display_notification(_('The file size is over the maximum allowed. The maximum size allowed in KB is') . ' ' . $max_image_size);
+		display_warning(_('The file size is over the maximum allowed. The maximum size allowed in KB is') . ' ' . $max_image_size);
 		$upload_file ='No';
 	} 
 	elseif ( $_FILES['pic']['type'] == "text/plain" ) 
 	{  //File type Check
-		display_notification( _('Only graphics files can be uploaded'));
+		display_warning( _('Only graphics files can be uploaded'));
          	$upload_file ='No';
 	} 
 	elseif (file_exists($filename))

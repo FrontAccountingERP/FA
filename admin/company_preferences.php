@@ -46,17 +46,17 @@ if (isset($_POST['update']) && $_POST['update'] != "")
 		 //But check for the worst
 		if (strtoupper(substr(trim($_FILES['pic']['name']), strlen($_FILES['pic']['name']) - 3)) != 'JPG')
 		{
-			display_notification(_('Only jpg files are supported - a file extension of .jpg is expected'));
+			display_error(_('Only jpg files are supported - a file extension of .jpg is expected'));
 			$input_error = 1;
 		}
 		elseif ( $_FILES['pic']['size'] > ($max_image_size * 1024))
 		{ //File Size Check
-			display_notification(_('The file size is over the maximum allowed. The maximum size allowed in KB is') . ' ' . $max_image_size);
+			display_error(_('The file size is over the maximum allowed. The maximum size allowed in KB is') . ' ' . $max_image_size);
 			$input_error = 1;
 		}
 		elseif ( $_FILES['pic']['type'] == "text/plain" )
 		{  //File type Check
-			display_notification( _('Only graphics files can be uploaded'));
+			display_error( _('Only graphics files can be uploaded'));
 			$input_error = 1;
 		}
 		elseif (file_exists($filename))

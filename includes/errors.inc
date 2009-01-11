@@ -1,11 +1,20 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU Affero General Public License,
+	AGPL, as published by the Free Software Foundation, either version 
+	3 of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/agpl-3.0.html>.
+***********************************************************************/
 $messages = array(); // container for system messages
 $before_box = ''; // temporary container for output html data before error box
 
 $msg_colors = array( 
 	E_USER_ERROR => array('bg'=>'#ffcccc', 'txt'=>'#dd2200', 'bd'=>'#cc3300'),
-    E_USER_WARNING => array('bg'=>'#ffdd33', 'txt'=>'#ff5500', 'bd'=>'#ff9900'),
+    E_USER_WARNING => array('bg'=>'#ffff00', 'txt'=>'#ff5500', 'bd'=>'#ff9900'),
     E_USER_NOTICE => array('bg'=>'#ccffcc', 'txt'=>'#007700', 'bd'=>'#33cc00'));
 
 //-----------------------------------------------------------------------------

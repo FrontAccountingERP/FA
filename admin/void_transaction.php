@@ -130,7 +130,7 @@ function voiding_controls()
 		}	
  		else
  		{
-    		display_notification_centered(_("Are you sure you want to void this transaction ? This action cannot be undone."), 0, 1);
+    		display_warning(_("Are you sure you want to void this transaction ? This action cannot be undone."), 0, 1);
     		if ($_POST['filterType'] == 0) // GL transaction are not included in get_trans_view_str
     			$view_str = get_gl_view_str($_POST['filterType'],$_POST['trans_no'], _("View Transaction"));
     		else
