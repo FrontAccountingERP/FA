@@ -19,6 +19,20 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+11-Jan-2009 Janusz Dobrowolski
+! Added table pager.
+$ /admin/view_print_transaction.php
+! Improved check_cells().
+$ /includes/ui/ui_input.inc
+# Added new attachments per company subdirectory.
+$ /admin/create_coy.php
+# Added hotkey for reconciliation menu option.
+$ /applications/generalledger.php
+# Fixed false qoh alerts.
+$ /sales/includes/ui/sales_order_ui.inc
+# Fixed page title.
+$ /sales/manage/sales_points.php
+
 11-Jan-2009 Joe Hunt
 ! Changed notice msg to warnings and changed bg color for warning
 $ /admin/company_preferences.php
