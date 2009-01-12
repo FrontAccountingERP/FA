@@ -293,11 +293,11 @@ function change_os(type) {
 <table cellpadding="0" cellspacing="0" border="0" width="100%" style="padding: 10px 0px 10px 0px;">
 <tr>
 	<td align="center" style="font-size: 10px;">
-		<!-- Please note: the below reference to the GNU GPL should not be removed, as it provides a link for users to read about warranty, etc. -->
+		<!-- Please note: the below reference to the GNU AGPL should not be removed, as it provides a link for users to read about warranty, etc. -->
 		<a href="http://frontaccounting.com/" style="color: #000000;" target="_blank">FrontAccounting</a>
 		is	released under the
-		<a href="http://www.gnu.org/licenses/gpl.html" style="color: #000000;" target="_blank">GNU General Public License</a>
-		<!-- Please note: the above reference to the GNU GPL should not be removed, as it provides a link for users to read about warranty, etc. -->
+		<a href="http://www.gnu.org/licenses/agpl-3.0.html" style="color: #000000;" target="_blank">GNU Affero General Public License</a>
+		<!-- Please note: the above reference to the GNU AGPL should not be removed, as it provides a link for users to read about warranty, etc. -->
 	</td>
 </tr>
 </table>

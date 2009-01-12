@@ -19,6 +19,12 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+12-Jan-2009 Joe Hunt
+! Updating install and update helpers
+$ install.html
+  update.html
+  /install/index.php
+  
 11-Jan-2009 Janusz Dobrowolski
 ! Added table pager.
 $ /admin/view_print_transaction.php
