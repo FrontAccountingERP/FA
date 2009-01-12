@@ -24,6 +24,9 @@ $ -> Affected files
 $ install.html
   update.html
   /install/index.php
+# Fixing price formatting of left to allocate
+$ /purchasing/allocations/supplier_allocation_main.php
+  /sales/allocations/customer_allocation_main.php
   
 11-Jan-2009 Janusz Dobrowolski
 ! Added table pager.

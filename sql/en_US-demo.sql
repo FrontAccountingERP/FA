@@ -792,7 +792,6 @@ CREATE TABLE `0_exchange_rates` (
 
 ### Data of table `0_exchange_rates` ###
 
-INSERT INTO `0_exchange_rates` VALUES ('1', 'LE', '0.149', '0.149', '2006-01-18');
 INSERT INTO `0_exchange_rates` VALUES ('2', 'GBP', '1.2', '1.2', '2006-01-18');
 INSERT INTO `0_exchange_rates` VALUES ('3', 'SEK', '0.1667', '0.1667', '2007-01-29');
 INSERT INTO `0_exchange_rates` VALUES ('4', 'DKK', '0.2', '0.2', '2007-03-05');

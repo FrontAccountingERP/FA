@@ -88,7 +88,7 @@ function alloc_link($row)
 
 function amount_left($row)
 {
-	return -$row["Total"]-$row["alloc"];
+	return price_format(-$row["Total"]-$row["alloc"]);
 }
 
 function amount_total($row)
