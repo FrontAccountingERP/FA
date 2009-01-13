@@ -182,24 +182,26 @@ function display_order_header(&$order, $editable, $date_text, $display_tax_group
 		customer_branches_list_row(_("Branch:"),
 	  	  $_POST['customer_id'], 'branch_id', null, false, true, true);
 
-	if( ($order->customer_id != get_post('customer_id', -1)) ||
+		$customer_error = get_customer_details_to_order($order, $_POST['customer_id'], $_POST['branch_id']);
+		if( ($order->customer_id != get_post('customer_id', -1)) ||
 			($order->Branch != get_post('branch_id', -1)) ||
-			list_updated('customer_id')) {
+			list_updated('customer_id')) 
+		{
 
-		if (!isset($_POST['branch_id']) || $_POST['branch_id'] == "")
-		{
-			// ignore errors on customer search box call
-			if ($_POST['customer_id'] == '')
-			    $customer_error = _("No customer found for entered text.");
+			if (!isset($_POST['branch_id']) || $_POST['branch_id'] == "")
+			{
+				// ignore errors on customer search box call
+				if ($_POST['customer_id'] == '')
+					$customer_error = _("No customer found for entered text.");
+				else
+					$customer_error = _("The selected customer does not have any branches. Please create at least one branch.");
+				unset($_POST['branch_id']);
+				$order->Branch = 0;
+			} 
 			else
-			    $customer_error = _("The selected customer does not have any branches. Please create at least one branch.");
-		    unset($_POST['branch_id']);
-		    $order->Branch = 0;
-		} else
-		{
+			{
 
 				$old_order = (PHP_VERSION<5) ? $order : clone( $order );
-				$customer_error = get_customer_details_to_order($order, $_POST['customer_id'], $_POST['branch_id']);
 
 				$_POST['Location'] = $order->Location;
 				$_POST['deliver_to'] = $order->deliver_to;
@@ -217,17 +219,17 @@ function display_order_header(&$order, $editable, $date_text, $display_tax_group
 				// change prices if necessary
 				// what about discount in template case?
 				if ($old_order->customer_currency != $order->customer_currency) {
-				    $change_prices = 1;
+					$change_prices = 1;
 				}
 				if ($old_order->sales_type != $order->sales_type) {
 				//  || $old_order->default_discount!=$order->default_discount
 					$_POST['sales_type'] = $order->sales_type;
-				    $Ajax->activate('sales_type');
-				    $change_prices = 1;
+					$Ajax->activate('sales_type');
+					$change_prices = 1;
 				}
 				unset($old_order);
 			}
-		set_global_customer($_POST['customer_id']);
+			set_global_customer($_POST['customer_id']);
 		} // changed branch
 	}
 

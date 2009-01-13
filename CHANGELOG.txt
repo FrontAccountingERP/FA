@@ -19,6 +19,12 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+13-Jan-2009 Joe Hunt
+# Bug [0000111] Accounts on Credit Hold can still process delivery notes on sales order and invoicing.
+$ /sales/customer_delivery.php
+  /sales/customer_invoice.php
+  /sales/includes/ui/sales_order_ui.inc
+  
 08-Jan-2009 Janusz Dobrowolski
 # Numeric check on class id added.
 $ /gl/manage/gl_account_classes.php

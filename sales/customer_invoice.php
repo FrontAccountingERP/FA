@@ -349,6 +349,15 @@ date_cells(_("Due Date"), 'due_date', '', $_POST['due_date'], 0, 0, 0, "class='t
 end_row();
 end_table();
 
+$row = get_customer_to_order($_SESSION['Items']->customer_id);
+if ($row['dissallow_invoices'] == 1)
+{
+	display_error(_("The selected customer account is currently on hold. Please contact the credit control personnel to discuss."));
+	end_form();
+	end_page();
+	exit();
+}	
+
 display_heading(_("Invoice Items"));
 
 div_start('Items');

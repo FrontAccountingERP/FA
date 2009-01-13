@@ -360,6 +360,14 @@ end_table();
 echo "</td></tr>";
 end_table(1); // outer table
 
+$row = get_customer_to_order($_SESSION['Items']->customer_id);
+if ($row['dissallow_invoices'] == 1)
+{
+	display_error(_("The selected customer account is currently on hold. Please contact the credit control personnel to discuss."));
+	end_form();
+	end_page();
+	exit();
+}	
 display_heading(_("Delivery Items"));
 div_start('Items');
 start_table("$table_style width=80%");
