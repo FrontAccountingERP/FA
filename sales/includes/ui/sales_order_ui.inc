@@ -182,7 +182,6 @@ function display_order_header(&$order, $editable, $date_text, $display_tax_group
 		customer_branches_list_row(_("Branch:"),
 	  	  $_POST['customer_id'], 'branch_id', null, false, true, true);
 
-		$customer_error = get_customer_details_to_order($order, $_POST['customer_id'], $_POST['branch_id']);
 		if( ($order->customer_id != get_post('customer_id', -1)) ||
 			($order->Branch != get_post('branch_id', -1)) ||
 			list_updated('customer_id')) 
@@ -203,6 +202,7 @@ function display_order_header(&$order, $editable, $date_text, $display_tax_group
 
 				$old_order = (PHP_VERSION<5) ? $order : clone( $order );
 
+				$customer_error = get_customer_details_to_order($order, $_POST['customer_id'], $_POST['branch_id']);
 				$_POST['Location'] = $order->Location;
 				$_POST['deliver_to'] = $order->deliver_to;
 				$_POST['delivery_address'] = $order->delivery_address;
@@ -231,6 +231,13 @@ function display_order_header(&$order, $editable, $date_text, $display_tax_group
 			}
 			set_global_customer($_POST['customer_id']);
 		} // changed branch
+		else
+		{
+			$row = get_customer_to_order($_POST['customer_id']);
+			if ($row['dissallow_invoices'] == 1)
+				$customer_error = _("The selected customer account is currently on hold. Please contact the credit control personnel to discuss.");
+		
+		}
 	}
 
 	if ($_SESSION['Items']->trans_type!=30) {
