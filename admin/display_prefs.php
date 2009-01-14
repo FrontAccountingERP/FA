@@ -46,8 +46,7 @@ if (isset($_POST['setprefs']))
 		flush_dir($comp_path.'/'.user_company().'/js_cache');	
 
 		if (user_theme() != $theme)
-			//reload_page("");
-			meta_forward($_SERVER['PHP_SELF']);
+			reload_page("");
 
 		display_notification_centered(_("Display settings have been updated."));
 	}

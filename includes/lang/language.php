@@ -56,8 +56,7 @@ class language
 			$locale = $path_to_root . "/lang/" . $_SESSION['language']->code . "/locale.inc";
 			// check id file exists only once for session
 			$_SESSION['language']->is_locale_file = file_exists($locale);
-		    //reload_page("");
-			meta_forward($_SERVER['PHP_SELF']);
+		    reload_page("");
 		}
 	}
 
@@ -140,9 +139,10 @@ function _set($key,$value)
 {
 	get_text::set_var($key,$value);
 }
-/*
+
 function reload_page($msg) 
 {
+	global $Ajax;
 //	header("Location: $_SERVER['PHP_SELF']."");
 //	exit;
 	echo "<html>";
@@ -157,8 +157,9 @@ function reload_page($msg)
 	echo "</div>";	
 	echo "</body>";
 	echo "</html>";
+	$Ajax->redirect($_SERVER['PHP_SELF']);
 }
-*/
+
 
 
 ?>
