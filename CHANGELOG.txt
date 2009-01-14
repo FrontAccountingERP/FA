@@ -19,6 +19,12 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+14-Jan-2009 Joe Hunt
+! Page reload problem, progress bar in backup/restore, 
+$ /admin/backups.php
+  /admin/display_prefs.php
+  /includes/lang/language.php
+  
 12-Jan-2009 Joe Hunt
 ! Updating install and update helpers
 $ install.html

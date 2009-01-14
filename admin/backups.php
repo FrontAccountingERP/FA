@@ -40,11 +40,13 @@ $compr = get_compr_combo();
 echo "
 	<script language='javascript'>
 	function createBackup() {
+		progbar();
 		ext = document.forms[0].cmb_comp.options[document.forms[0].cmb_comp.selectedIndex].value
 		comm = document.forms[0].comments.value
 		document.location.replace('backups.php?c=g&comp='+ext+'&comm='+comm)
 	}
 	function restoreBackup() {
+		progbar();
 		pFilename = document.forms[0].cmb_backups.options[document.forms[0].cmb_backups.selectedIndex].value
 		document.location.replace('backups.php?c=r&fn='+pFilename)
 	}
@@ -73,6 +75,7 @@ echo "
 			alert('" . _("Please select a file to upload.") . "')
 			return
 		}
+		progbar();
 		document.forms[0].action='backups.php?c=u&fn=' + document.forms[0].uploadfile.value
 		document.forms[0].submit()
 	}

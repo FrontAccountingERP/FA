@@ -40,12 +40,14 @@ if (isset($_POST['setprefs']))
 			$_POST['theme'], $_POST['page_size'], check_value('show_hints'),
 			$_POST['profile'], check_value('rep_popup'), (int)($_POST['query_size']), check_value('graphic_links'));
 
-		language::set_language($_POST['language']);
+		if ($_SESSION['language'] != $_POST['language'])
+			language::set_language($_POST['language']);
 
 		flush_dir($comp_path.'/'.user_company().'/js_cache');	
 
 		if (user_theme() != $theme)
-			reload_page("");
+			//reload_page("");
+			meta_forward($_SERVER['PHP_SELF']);
 
 		display_notification_centered(_("Display settings have been updated."));
 	}
