@@ -255,13 +255,14 @@ function check_value($name)
 	return 1;
 }
 
-function check($label, $name, $value=null, $submit_on_change=false, $title=false)
+function checkbox($label, $name, $value=null, $submit_on_change=false, $title=false)
 {
   	global $Ajax;
-	
+
+	$str = '';	
 	default_focus($name);
 	if ($label)
-		echo $label . "  ";
+		$str .= $label . "  ";
 	if ($submit_on_change !== false) {
 		if ($submit_on_change === true)
 			$submit_on_change = 
@@ -270,13 +271,20 @@ function check($label, $name, $value=null, $submit_on_change=false, $title=false
 	if ($value === null)
 		$value = get_post($name,0);
 
-		echo "<input"
-		    .($value == 1 ? ' checked':'')
-		    ." type='checkbox' name='$name' value='1'"
-		    .($submit_on_change ? " onclick='$submit_on_change'" : '')
-		    .($title ? " title='$title'" : '')
-		    ." >\n";
+	$str .= "<input"
+	    .($value == 1 ? ' checked':'')
+	    ." type='checkbox' name='$name' value='1'"
+	    .($submit_on_change ? " onclick='$submit_on_change'" : '')
+	    .($title ? " title='$title'" : '')
+	    ." >\n";
+
 	$Ajax->addUpdate($name, $name, $value);
+	return $str;
+}
+
+function check($label, $name, $value=null, $submit_on_change=false, $title=false)
+{
+	echo checkbox($label, $name, $value, $submit_on_change, $title);
 }
 
 function check_cells($label, $name, $value, $submit_on_change=false, $title=false)
@@ -284,14 +292,14 @@ function check_cells($label, $name, $value, $submit_on_change=false, $title=fals
 	if ($label != null)
 		echo "<td>$label</td>\n";
 	echo "<td>";
-	check(null, $name, $value, $submit_on_change, $title);
+	echo check(null, $name, $value, $submit_on_change, $title);
 	echo "</td>";
 }
 
 function check_row($label, $name, $value, $submit_on_change=false, $title=false)
 {
 	echo "<tr>";
-	check_cells($label, $name, $value, $submit_on_change, $title);
+	echo check_cells($label, $name, $value, $submit_on_change, $title);
 	echo "</tr>\n";
 }
 
