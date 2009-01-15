@@ -193,6 +193,7 @@ if (get_post('SearchOrders')) {
 	$table->set_sql($sql);
 	$table->set_columns($cols);
 }
+$table->width = "80%";
 start_form();
 
 display_db_pager($table);

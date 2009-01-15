@@ -267,6 +267,7 @@ display_heading($act['bank_account_name']." - ".$act['bank_curr_code']);
 		$table->set_sql($sql);
 		$table->set_columns($cols);
 	}
+	$table->width = "60%";
 	display_db_pager($table);
 
 br(1);

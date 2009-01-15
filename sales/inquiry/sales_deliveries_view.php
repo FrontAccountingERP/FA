@@ -237,7 +237,7 @@ $cols = array(
 		_("Due By") => 'date', 
 		_("Delivery Total") => array('type'=>'amount', 'ord'=>''),
 		_("Currency") => array('align'=>'center'),
-		submit('BatchInvoice','Batch Inv', false) 
+		submit('BatchInvoice',_("Batch"), false, _("Batch Invoicing")) 
 			=> array('insert'=>true, 'fun'=>'batch_checkbox', 'align'=>'center'),
 		array('insert'=>true, 'fun'=>'edit_link'),
 		array('insert'=>true, 'fun'=>'invoice_link'),
@@ -259,6 +259,8 @@ if (get_post('SearchOrders')) {
 	$table->set_sql($sql);
 	$table->set_columns($cols);
 }
+//$table->width = "92%";
+
 start_form();
 
 display_db_pager($table);

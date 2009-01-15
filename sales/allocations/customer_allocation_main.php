@@ -123,6 +123,7 @@ if (get_post('_ShowSettled_update') || get_post('_customer_id_update')) {
 	$table->set_sql($sql);
 	$table->set_columns($cols);
 }
+$table->width = "75%";
 
 display_db_pager($table);
 end_form();

@@ -171,7 +171,7 @@ function fmt_credit($row)
 
 $cols = array(
 	_("Type") => array('fun'=>'systype_name'),
-	_("Number") => array('fun'=>'view_link', 'ord'=>''),
+	_("#") => array('fun'=>'view_link', 'ord'=>''),
 	_("Reference"), 
 	_("Supplier") => array('ord'=>''), 
 	_("Supp Reference"),
@@ -198,6 +198,7 @@ if (get_post('RefreshInquiry')) {
 	$table->set_sql($sql);
 	$table->set_columns($cols);
 }
+$table->width = "90%";
 start_form();
 
 display_db_pager($table);

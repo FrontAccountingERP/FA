@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+15-Jan-2009 Joe Hunt
+! Adjustment of db pager width. Copyright notes.
+$ All files with db pager
+
 15-Jan-2009 Janusz Dobrowolski
 ! Rewritten reconciliation page.
 $ /gl/bank_account_reconcile.php

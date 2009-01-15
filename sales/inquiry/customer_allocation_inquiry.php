@@ -200,7 +200,7 @@ function fmt_credit($row)
 
 $cols = array(
 	_("Type") => array('fun'=>'systype_name'),
-	_("Number") => array('fun'=>'view_link'),
+	_("#") => array('fun'=>'view_link'),
 	_("Reference"), 
 	_("Order") => array('fun'=>'order_link'), 
 	_("Date") => array('type'=>'date', 'ord'=>'asc'),
@@ -226,6 +226,7 @@ if (get_post('RefreshInquiry')) {
 	$table->set_sql($sql);
 	$table->set_columns($cols);
 }
+$table->width = "80%";
 start_form();
 
 display_db_pager($table);

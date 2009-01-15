@@ -91,7 +91,7 @@ CREATE TABLE `0_bank_trans` (
   `dimension2_id` int(11) NOT NULL default '0',
   `person_type_id` int(11) NOT NULL default '0',
   `person_id` tinyblob,
-  `reconciled` tinyint(1) NOT NULL default '0',
+  `reconciled` date default NULL,
   PRIMARY KEY  (`id`),
   KEY `bank_act` (`bank_act`,`ref`),
   KEY `type` (`type`,`trans_no`)

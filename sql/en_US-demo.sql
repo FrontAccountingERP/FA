@@ -95,7 +95,7 @@ CREATE TABLE `0_bank_trans` (
   `dimension2_id` int(11) NOT NULL default '0',
   `person_type_id` int(11) NOT NULL default '0',
   `person_id` tinyblob,
-  `reconciled` tinyint(1) NOT NULL default '0',
+  `reconciled` date default NULL,
   PRIMARY KEY  (`id`),
   KEY `bank_act` (`bank_act`,`ref`),
   KEY `type` (`type`,`trans_no`)
@@ -104,27 +104,27 @@ CREATE TABLE `0_bank_trans` (
 
 ### Data of table `0_bank_trans` ###
 
-INSERT INTO `0_bank_trans` VALUES ('1', '12', '2', '1', '111', '2006-01-18', '1', '5000', '0', '0', '2', '1', '0');
-INSERT INTO `0_bank_trans` VALUES ('2', '12', '3', '1', '112', '2006-01-18', '1', '240', '0', '0', '2', '2', '0');
-INSERT INTO `0_bank_trans` VALUES ('3', '12', '4', '1', '113', '2006-01-18', '1', '360', '0', '0', '2', '2', '0');
-INSERT INTO `0_bank_trans` VALUES ('4', '12', '5', '1', '114', '2006-01-18', '1', '500', '0', '0', '2', '1', '0');
-INSERT INTO `0_bank_trans` VALUES ('8', '4', '2', '1', '4', '2006-01-18', '1', '-300', '0', '0', '0', '', '0');
-INSERT INTO `0_bank_trans` VALUES ('9', '4', '2', '3', '4', '2006-01-18', '1', '250', '0', '0', '0', '', '0');
-INSERT INTO `0_bank_trans` VALUES ('10', '22', '2', '1', '1', '2006-01-18', '1', '-5000', '0', '0', '3', '1', '0');
-INSERT INTO `0_bank_trans` VALUES ('11', '22', '3', '3', '2', '2006-01-18', '1', '-3300', '0', '0', '3', '2', '0');
-INSERT INTO `0_bank_trans` VALUES ('12', '2', '2', '1', '11', '2006-01-20', '1', '1050', '0', '0', '0', '', '0');
-INSERT INTO `0_bank_trans` VALUES ('13', '12', '6', '1', '115', '2007-01-30', '1', '200', '0', '0', '2', '1', '0');
-INSERT INTO `0_bank_trans` VALUES ('15', '2', '3', '1', '12', '2007-01-30', '3', '70', '0', '0', '4', '2', '0');
-INSERT INTO `0_bank_trans` VALUES ('16', '4', '3', '1', '5', '2007-03-09', '1', '-222', '0', '0', '0', '', '0');
-INSERT INTO `0_bank_trans` VALUES ('17', '4', '3', '2', '5', '2007-03-09', '1', '222', '0', '0', '0', '', '0');
-INSERT INTO `0_bank_trans` VALUES ('18', '2', '4', '1', '13', '2007-03-09', '3', '200', '0', '0', '2', '1', '0');
-INSERT INTO `0_bank_trans` VALUES ('20', '1', '7', '1', '6', '2007-03-22', '1', '-125', '0', '0', '0', 'Gas Transport', '0');
-INSERT INTO `0_bank_trans` VALUES ('21', '12', '7', '1', '6', '2008-03-06', '1', '100', '0', '0', '2', '1', '0');
-INSERT INTO `0_bank_trans` VALUES ('22', '12', '8', '1', '7', '2008-03-06', '1', '100', '0', '0', '2', '4', '0');
-INSERT INTO `0_bank_trans` VALUES ('23', '12', '9', '1', '8', '2008-03-07', '1', '2000', '0', '0', '2', '1', '0');
-INSERT INTO `0_bank_trans` VALUES ('24', '12', '10', '1', '9', '2009-01-10', '', '1000', '0', '0', '2', '1', '0');
-INSERT INTO `0_bank_trans` VALUES ('25', '12', '11', '1', '10', '2009-01-10', '', '183.62116393597', '0', '0', '2', '3', '0');
-INSERT INTO `0_bank_trans` VALUES ('26', '22', '4', '1', '3', '2009-01-10', '', '-200', '0', '0', '3', '1', '0');
+INSERT INTO `0_bank_trans` VALUES ('1', '12', '2', '1', '111', '2006-01-18', '1', '5000', '0', '0', '2', '1', NULL);
+INSERT INTO `0_bank_trans` VALUES ('2', '12', '3', '1', '112', '2006-01-18', '1', '240', '0', '0', '2', '2', NULL);
+INSERT INTO `0_bank_trans` VALUES ('3', '12', '4', '1', '113', '2006-01-18', '1', '360', '0', '0', '2', '2', NULL);
+INSERT INTO `0_bank_trans` VALUES ('4', '12', '5', '1', '114', '2006-01-18', '1', '500', '0', '0', '2', '1', NULL);
+INSERT INTO `0_bank_trans` VALUES ('8', '4', '2', '1', '4', '2006-01-18', '1', '-300', '0', '0', '0', '', NULL);
+INSERT INTO `0_bank_trans` VALUES ('9', '4', '2', '3', '4', '2006-01-18', '1', '250', '0', '0', '0', '', NULL);
+INSERT INTO `0_bank_trans` VALUES ('10', '22', '2', '1', '1', '2006-01-18', '1', '-5000', '0', '0', '3', '1', NULL);
+INSERT INTO `0_bank_trans` VALUES ('11', '22', '3', '3', '2', '2006-01-18', '1', '-3300', '0', '0', '3', '2', NULL);
+INSERT INTO `0_bank_trans` VALUES ('12', '2', '2', '1', '11', '2006-01-20', '1', '1050', '0', '0', '0', '', NULL);
+INSERT INTO `0_bank_trans` VALUES ('13', '12', '6', '1', '115', '2007-01-30', '1', '200', '0', '0', '2', '1', NULL);
+INSERT INTO `0_bank_trans` VALUES ('15', '2', '3', '1', '12', '2007-01-30', '3', '70', '0', '0', '4', '2', NULL);
+INSERT INTO `0_bank_trans` VALUES ('16', '4', '3', '1', '5', '2007-03-09', '1', '-222', '0', '0', '0', '', NULL);
+INSERT INTO `0_bank_trans` VALUES ('17', '4', '3', '2', '5', '2007-03-09', '1', '222', '0', '0', '0', '', NULL);
+INSERT INTO `0_bank_trans` VALUES ('18', '2', '4', '1', '13', '2007-03-09', '3', '200', '0', '0', '2', '1', NULL);
+INSERT INTO `0_bank_trans` VALUES ('20', '1', '7', '1', '6', '2007-03-22', '1', '-125', '0', '0', '0', 'Gas Transport', NULL);
+INSERT INTO `0_bank_trans` VALUES ('21', '12', '7', '1', '6', '2008-03-06', '1', '100', '0', '0', '2', '1', NULL);
+INSERT INTO `0_bank_trans` VALUES ('22', '12', '8', '1', '7', '2008-03-06', '1', '100', '0', '0', '2', '4', NULL);
+INSERT INTO `0_bank_trans` VALUES ('23', '12', '9', '1', '8', '2008-03-07', '1', '2000', '0', '0', '2', '1', NULL);
+INSERT INTO `0_bank_trans` VALUES ('24', '12', '10', '1', '9', '2009-01-10', '', '1000', '0', '0', '2', '1', NULL);
+INSERT INTO `0_bank_trans` VALUES ('25', '12', '11', '1', '10', '2009-01-10', '', '183.62116393597', '0', '0', '2', '3', NULL);
+INSERT INTO `0_bank_trans` VALUES ('26', '22', '4', '1', '3', '2009-01-10', '', '-200', '0', '0', '3', '1', NULL);
 
 
 ### Structure of table `0_bom` ###
