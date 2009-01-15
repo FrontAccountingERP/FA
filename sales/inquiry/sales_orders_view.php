@@ -115,15 +115,13 @@ function delivery_link($row)
 function tmpl_checkbox($row)
 {
 	$name = "chgtpl" .$row['order_no'];
-	$value = $row['type'] ? ' checked' : '';
+	$value = $row['type'] ? 1:0;
 
- return "<input $value type='checkbox' name='$name' value='1'"
-     ." onclick='JsHttpRequest.request(\"_{$name}_update\", this.form);'"
-     ." title='"._('Set this order as a template for direct deliveries/invoices')
-     ."' >"
-// add also old checkbox name+value for check after 'Update'
-	 ."<input name='last[".$row['order_no']."]' type='hidden' value='"
-	 .($row['type'] ? 1 : 0)."'>\n";
+// save also in hidden field for testing during 'Update'
+
+ return checkbox(null, $name, $value, true,
+ 	_('Set this order as a template for direct deliveries/invoices'))
+	. hidden('last['.$row['order_no'].']', $value, false);
 }
 //---------------------------------------------------------------------------------------------
 // Update db record if respective checkbox value has changed.
