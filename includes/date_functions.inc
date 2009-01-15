@@ -359,7 +359,7 @@ and converts to a yyyy/mm/dd format */
 		list($year, $month, $day) = jalali_to_gregorian($year, $month, $day); 
 	else if ($date_system == 2)
 		list($year, $month, $day) = islamic_to_gregorian($year, $month, $day); 
-	return $year."/".$month."/".$day;
+	return $year."-".$month."-".$day;
 }// end of function
 
 function date1_greater_date2 ($date1, $date2) 
@@ -369,8 +369,8 @@ function date1_greater_date2 ($date1, $date2)
 
 	$date1 = date2sql($date1);
 	$date2 = date2sql($date2);
-	list($year1, $month1, $day1) = explode("/", $date1);
-	list($year2, $month2, $day2) = explode("/", $date2);
+	list($year1, $month1, $day1) = explode("-", $date1);
+	list($year2, $month2, $day2) = explode("-", $date2);
 
 	if ($year1 > $year2)
 	{
@@ -403,8 +403,8 @@ provided that both dates are after 1970. Also only works for dates up to the yea
 
 	$date1 = date2sql($date1);
 	$date2 = date2sql($date2);
-	list($year1, $month1, $day1) = explode("/", $date1);
-	list($year2, $month2, $day2) = explode("/", $date2);
+	list($year1, $month1, $day1) = explode("-", $date1);
+	list($year2, $month2, $day2) = explode("-", $date2);
 
 	$stamp1 = mktime(0,0,0, (int)$month1, (int)$day1, (int)$year1);
 	$stamp2 = mktime(0,0,0, (int)$month2, (int)$day2, (int)$year2);
@@ -438,7 +438,7 @@ function explode_date_to_dmy($date_)
 		echo "<br>Dates must be entered in the format $disp. Sent was $date_<br>";
 		exit;
 	}
-	list($year, $month, $day) = explode("/", $date);
+	list($year, $month, $day) = explode("-", $date);
 	return array($day, $month, $year);
 }
 
