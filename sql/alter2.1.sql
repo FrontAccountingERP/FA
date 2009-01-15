@@ -74,7 +74,7 @@ ALTER TABLE `0_bank_accounts` DROP COLUMN `ending_reconcile_balance`;
 ALTER TABLE `0_bank_accounts` ADD `ending_reconcile_balance` double NOT NULL default '0';
 
 ALTER TABLE `0_bank_trans` DROP COLUMN `reconciled`;
-ALTER TABLE `0_bank_trans` ADD `reconciled` tinyint(1) NOT NULL default '0';
+ALTER TABLE `0_bank_trans` ADD `reconciled` date default NULL;
 
 ALTER TABLE `0_users` DROP COLUMN `query_size`;
 ALTER TABLE `0_users` ADD `query_size` TINYINT(1) DEFAULT '10';

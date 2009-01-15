@@ -12,6 +12,7 @@
 /* Author Rob Mallon */
 $page_security = 8;
 $path_to_root="..";
+include($path_to_root . "/includes/db_pager.inc");
 include_once($path_to_root . "/includes/session.inc");
 
 include_once($path_to_root . "/includes/date_functions.inc");
@@ -21,201 +22,256 @@ include_once($path_to_root . "/includes/data_checks.inc");
 include_once($path_to_root . "/gl/includes/gl_db.inc");
 include_once($path_to_root . "/includes/banking.inc");
 
-//Added 1/9/09
-if (isset($_POST["command"]) && $_POST["command"]=="Reconcile") {
-	//echo "Made it\n";
-    $reconcile_id = strtok($_POST["reconcile_idtokens"], "|");
-    while ($reconcile_id !== false) {
-		$formfield="reconcile".$reconcile_id;
-		if (!isset($_POST[$formfield]))
-			$_POST[$formfield] = 0;
-		$reconcile_value=$_POST[$formfield];
-		$sql="UPDATE ".TB_PREF."bank_trans SET reconciled=$reconcile_value WHERE id=$reconcile_id";
-		$result = db_query($sql,"Error setting reconcile flag on trans id $reconcile_id");
-		$reconcile_id = strtok("|");
-    }
-    $sql2="UPDATE ".TB_PREF."bank_accounts SET last_reconciled_date='".date2sql($_POST["reconcile_date"])."',
-        ending_reconcile_balance=".$_POST["reconcile_ending_balance"]." WHERE id=".$_POST["bank_account"];
-	$result = db_query($sql2,"Error updating reconciliation information");
-}
-
 $js = "";
 if ($use_popup_windows)
 	$js .= get_js_open_window(800, 500);
 if ($use_date_picker)
 	$js .= get_js_date_picker();
+
+add_js_file('reconcile.js');
+
 page(_("Reconcile Bank Account"), false, false, "", $js);
-
-?>
-<script>
-function handleReconcileClick(form,reconcile_value,reconcile_amount) {
-       var val1=form.reconcile_difference.value*1;
-       val1=(Math.round(val1*100))/100;
-       var val2=reconcile_amount*1;
-       val2=(Math.round(val2*100))/100;
-       var val4=form.reconcile_amount.value*1;
-       val4=(Math.round(val4*100))/100;
-//Unchecking a line
-       if (reconcile_value=='1') {
-		val3=(Math.round((val1-val2)*100))/100;
-               form.reconcile_difference.value=val3;
-		val5=(Math.round((val4+val2)*100))/100;
-               form.reconcile_amount.value=val5;
-//Checking a line
-       } else {
-		val3=(Math.round((val1+val2)*100))/100;
-               form.reconcile_difference.value=val3;
-		val5=(Math.round((val4-val2)*100))/100;
-               form.reconcile_amount.value=val5;
-       }
-
-}
-
-function handleReconcileDifference(form) {
-	form.reconcile_difference.value=Number(form.reconcile_ending_balance.value)-Number(form.reconcile_beginning_balance.value);
-}
-
-</script>
-<?php
 
 check_db_has_bank_accounts(_("There are no bank accounts defined in the system."));
 
-//-----------------------------------------------------------------------------------
-// Ajax updates
-//
-if (get_post('Show'))
-{
-       $Ajax->activate('trans_tbl');
+function check_date() {
+	if (!is_date(get_post('reconcile_date'))) {
+		display_error(_("Invalid reconcile date format"));
+		set_focus('reconcile_date');
+		return false;
+	}
+	return true;
 }
+//
+//	This function can be used directly in table pager 
+//	if we would like to change page layout.
+//
+function rec_checkbox($row)
+{
+	$name = "rec_" .$row['id'];
+	$hidden = 'last['.$row['id'].']';
+	$value = $row['reconciled'] != '';
+
+// save also in hidden field for testing during 'Reconcile'
+	return checkbox(null, $name, $value, true, _('Reconcile this transaction'))
+		. hidden($hidden, $value, false);
+}
+
+function systype_name($dummy, $type)
+{
+	return systypes::name($type);
+}
+
+function trans_view($trans)
+{
+	return get_trans_view_str($trans["type"], $trans["trans_no"]);
+}
+
+function gl_view($row)
+{
+	return get_gl_view_str($row["type"], $row["trans_no"]);
+}
+
+function fmt_debit($row)
+{
+	$value = $row["amount"];
+	return $value>=0 ? price_format($value) : '';
+}
+
+function fmt_credit($row)
+{
+	$value = -$row["amount"];
+	return $value>0 ? price_format($value) : '';
+}
+
+function fmt_person($row)
+{
+	return payment_person_types::person_name($row["person_type_id"],$row["person_id"]);
+}
+
+$update_pager = false;
+function update_data()
+{
+	global $Ajax, $update_pager;
+	
+	unset($_POST["beg_balance"]);
+	unset($_POST["end_balance"]);
+	$Ajax->activate('summary');
+	$update_pager = true;
+}
+//---------------------------------------------------------------------------------------------
+// Update db record if respective checkbox value has changed.
+//
+function change_tpl_flag($reconcile_id)
+{
+	global	$Ajax;
+
+	if (!check_date()) 
+		return false;
+
+	if (get_post('bank_date')=='')	// new reconciliation
+		$Ajax->activate('bank_date');
+
+	$_POST['bank_date'] = date2sql(get_post('reconcile_date'));
+	$reconcile_value = check_value("rec_".$reconcile_id) 
+						? ("'".$_POST['bank_date'] ."'") : 'NULL';
+	$sql = "UPDATE ".TB_PREF."bank_trans SET reconciled=$reconcile_value WHERE id=$reconcile_id";
+
+  	db_query($sql, "Can't change reconciliation status");
+	// save last reconcilation status (date, end balance)
+    $sql2="UPDATE ".TB_PREF."bank_accounts SET last_reconciled_date='"
+			.date2sql($_POST["reconcile_date"])."',
+    	    ending_reconcile_balance=".input_num("end_balance")
+			." WHERE id=".$_POST["bank_account"];
+
+	$result = db_query($sql2,"Error updating reconciliation information");
+	$Ajax->activate('reconciled');
+	$Ajax->activate('difference');
+	return true;
+}
+
+if (!isset($_POST['reconcile_date'])) { // init page
+	$_POST['reconcile_date'] = Today();
+//	$_POST['bank_date'] = date2sql(Today());
+}
+
+if (list_updated('bank_account')) {
+    $Ajax->activate('bank_date');
+	update_data();
+}
+if (list_updated('bank_date')) {
+	$_POST['reconcile_date'] = 
+		get_post('bank_date')=='' ? Today() : sql2date($_POST['bank_date']);
+	update_data();
+}
+if (get_post('_reconcile_date_changed')) {
+	$_POST['bank_date'] = check_date() ? date2sql(get_post('reconcile_date')) : '';
+    $Ajax->activate('bank_date');
+	update_data();
+}
+
+$id = find_submit('_rec_');
+if ($id != -1) 
+	change_tpl_flag($id);
+
+if (isset($_POST['Reconcile'])) {
+	set_focus('bank_date');
+	foreach($_POST['last'] as $id => $value)
+		if ($value != check_value('rec_'.$id))
+			if(!change_tpl_flag($id)) break;
+    $Ajax->activate('_page_body');
+}
+
 //------------------------------------------------------------------------------------------------
-//Added 1/9/09
 start_form();
 start_table("class='tablestyle_noborder'");
 start_row();
-bank_accounts_list_cells(_("Account:"), 'bank_account', null);
+bank_accounts_list_cells(_("Account:"), 'bank_account', null, true);
 
-date_cells(_("From:"), 'TransAfterDate', '', null, -30);
-date_cells(_("To:"), 'TransToDate');
-//Added 1/8/09
-if (!isset($_POST['ShowReconciled']))
-	$_POST['ShowReconciled'] = 0;
-$show_reconciled = $_POST['ShowReconciled'];	
-yesno_list_cells(_("Show Reconciled:"), 'ShowReconciled');
-
-submit_cells('Show',_("Show"),'','', false);
+bank_reconciliation_list_cells(_("Bank Statement:"), get_post('bank_account'),
+	'bank_date', null, true, _("New"));
 end_row();
 end_table();
-end_form();
-//Added 1/9/09
-$reconcile_sql="SELECT last_reconciled_date,ending_reconcile_balance FROM ".TB_PREF."bank_accounts WHERE id=".$_POST['bank_account'];
-$reconcile_result = db_query($reconcile_sql,"Error");
-if ($reconcile_row = db_fetch($reconcile_result)) {
-   	echo "<hr>";
-   	start_table("class='tablestyle_noborder'");
-   	start_row();
-   	label_cell("<b>Last Reconciled Date: </b>");
-   	label_cell("<b>".sql2date($reconcile_row["last_reconciled_date"])."</b>");
-   	label_cell("&nbsp;&nbsp;&nbsp;&nbsp;");
-   	label_cell("<b>Last Reconciled Ending Balance: </b>");
-   	amount_cell($reconcile_row["ending_reconcile_balance"],true);
-   	end_row();
-   	end_table();
-} else {
-    echo "Error: $reconcile_sql<br>";
+
+$date = date2sql(get_post('reconcile_date'));
+
+$sql = "SELECT MAX(reconciled) as last_date,
+		 SUM(IF(reconciled<='$date', amount, 0)) as end_balance,
+		 SUM(IF(reconciled<'$date', amount, 0)) as beg_balance,
+		 SUM(amount) as total
+	FROM ".TB_PREF."bank_trans trans
+	WHERE bank_act=".$_POST['bank_account'];
+//	." AND trans.reconciled IS NOT NULL";
+
+$result = db_query($sql,"Cannot retrieve reconciliation data");
+
+if ($row = db_fetch($result)) {
+	$_POST["reconciled"] = price_format($row["end_balance"]-$row["beg_balance"]);
+	$total = $row["total"];
+	if (!isset($_POST["beg_balance"])) { // new selected account/statement
+		$_POST["last_date"] = sql2date($row["last_date"]);
+		$_POST["beg_balance"] = price_format($row["beg_balance"]);
+		$_POST["end_balance"] = price_format($row["end_balance"]);
+		if (get_post('bank_date')) {
+			// if it is the last updated bank statement retrieve ending balance
+			$sql = "SELECT ending_reconcile_balance
+				FROM ".TB_PREF."bank_accounts WHERE id=".$_POST['bank_account']
+				. " AND last_reconciled_date='".$_POST['bank_date']."'";
+			$result = db_query($sql,"Cannot retrieve last reconciliation");
+			$row = db_fetch($result);
+			if($row) {
+				$_POST["end_balance"] = price_format($row["ending_reconcile_balance"]);
+			}
+		}
+	} 
 }
-start_form(false,false,"", 'reconcileform');
+
+echo "<hr>";
+
+div_start('summary');
+
 start_table($table_style);
-$th = array(_("Reconcile Date"), _("Beginning<br>Balance"), _("Ending<br>Balance"), _("Reconciled<br>Amount"), _("Difference"));
+$th = array(_("Reconcile Date"), _("Beginning<br>Balance"), 
+	_("Ending<br>Balance"), _("Account<br>Total"),_("Reconciled<br>Amount"), _("Difference"));
 table_header($th);
 start_row();
-date_cells("", "reconcile_date");
-text_cells("", "reconcile_beginning_balance", $reconcile_row["ending_reconcile_balance"], 7, "", false, "", "", "onchange='handleReconcileDifference(this.form);'");
-text_cells("", "reconcile_ending_balance", 0,7, "", false, "", "", "onchange='handleReconcileDifference(this.form);'");
-text_cells("", "reconcile_amount", 0, 7, "", false, "", "", "READONLY");
-text_cells("", "reconcile_difference", 0, 7, "", false, "", "", "READONLY");
+
+date_cells("", "reconcile_date", _('Date of bank statement to reconcile'), 
+	null, 0, 0, 0, null, true);
+
+amount_cells_ex("", "beg_balance", 15);
+
+amount_cells_ex("", "end_balance", 15);
+
+$reconciled = input_num('reconciled');
+$difference = input_num("end_balance") - input_num("beg_balance") - $reconciled;
+
+amount_cell($total);
+amount_cell($reconciled, false, '', "reconciled");
+amount_cell($difference, false, '', "difference");
+
 end_row();
 end_table();
+div_end();
 echo "<hr>";
 //------------------------------------------------------------------------------------------------
-
-$date_after = date2sql($_POST['TransAfterDate']);
-$date_to = date2sql($_POST['TransToDate']);
 
 if (!isset($_POST['bank_account']))
     $_POST['bank_account'] = "";
 
-//Modified 1/9/09
-$sql = "SELECT ".TB_PREF."bank_trans.* FROM ".TB_PREF."bank_trans
-	WHERE ".TB_PREF."bank_trans.bank_act = '" . $_POST['bank_account'] . "'
-	AND trans_date >= '$date_after'
-	AND trans_date <= '$date_to'";
-//Added line 1/9/09
-if ($show_reconciled=='0') 
-	$sql .= " AND ".TB_PREF."bank_trans.reconciled=0 ";
-$sql .= " ORDER BY trans_date,".TB_PREF."bank_trans.id";
+$sql = "SELECT	type, trans_no, ref, trans_date, 
+				amount,	person_id, person_type_id, reconciled, id
+		FROM ".TB_PREF."bank_trans
+		WHERE ".TB_PREF."bank_trans.bank_act = '" . $_POST['bank_account'] . "'
+			AND (reconciled IS NULL OR reconciled='". $date ."')
+		ORDER BY trans_date,".TB_PREF."bank_trans.id";
+// or	ORDER BY reconciled desc, trans_date,".TB_PREF."bank_trans.id";
 
-$result = db_query($sql,"The transactions for '" . $_POST['bank_account'] . "' could not be retrieved");
-
-div_start('trans_tbl');
 $act = get_bank_account($_POST["bank_account"]);
 display_heading($act['bank_account_name']." - ".$act['bank_curr_code']);
 
-//Added 1/9/09
+	$cols =
+	array(
+		_("Type") => array('fun'=>'systype_name', 'ord'=>''),
+		_("#") => array('fun'=>'trans_view', 'ord'=>''),
+		_("Reference"), 
+		_("Date") => 'date',
+		_("Debit") => array('align'=>'right', 'fun'=>'fmt_debit'), 
+		_("Credit") => array('align'=>'right','insert'=>true, 'fun'=>'fmt_credit'), 
+	    _("Person/Item") => array('fun'=>'fmt_person'), 
+		array('insert'=>true, 'fun'=>'gl_view'),
+		"X"=>array('insert'=>true, 'fun'=>'rec_checkbox')
+	   );
+	$table =& new_db_pager('trans_tbl', $sql, $cols);
+	if ($update_pager) {
+		$table->set_sql($sql);
+		$table->set_columns($cols);
+	}
+	display_db_pager($table);
 
-hidden('command', 'Reconcile');
-hidden('Show', 'Show');
-hidden('bank_account', $_POST["bank_account"]);
-hidden('TransAfterDate',$_POST["TransAfterDate"]);
-hidden('TransToDate',$_POST["TransToDate"]);
-hidden('ShowReconciled',$_POST["ShowReconciled"]);
+br(1);
+submit_center('Reconcile', _("Reconcile"), true, '', null);
 
-start_table($table_style);
-
-$th = array(_("Type"), _("#"), _("Reference"), _("Date"),
-       _("Debit"), _("Credit"), _("Person/Item"), "", "X");
-table_header($th);
-$idtokens="";
-$k = 0; //row colour counter
-while ($myrow = db_fetch($result))
-{
-   	$idtokens.=$myrow["id"]."|";
-   	alt_table_row_color($k);
-
-   	$trandate = sql2date($myrow["trans_date"]);
-	//Added 1/9/09
-    $reconcile_check_name="reconcile".$myrow["id"];
-    label_cell(systypes::name($myrow["type"]));
-    label_cell(get_trans_view_str($myrow["type"],$myrow["trans_no"]));
-    label_cell(get_trans_view_str($myrow["type"],$myrow["trans_no"],$myrow['ref']));
-    label_cell($trandate);
-    display_debit_or_credit_cells($myrow["amount"]);
-    //amount_cell($running_total);
-    label_cell(payment_person_types::person_name($myrow["person_type_id"],$myrow["person_id"]));
-    label_cell(get_gl_view_str($myrow["type"], $myrow["trans_no"]));
-	//Added 1/9/09 I needed the javascript action onclick, so I made my own checkbox
-    echo "<td>";
-    echo "<input type='checkbox' name='$reconcile_check_name' ";
-    if ($myrow["reconciled"]==1) echo "CHECKED ";
-    echo "value='1' ";
-    echo "onclick=\"javascript:handleReconcileClick(this.form,this.checked,'".$myrow["amount"]."');\">";
-    echo "</td>";
-    //check_cells('', $reconcile_check_name, $myrow["reconciled"], false);
-    end_row();
-    //Removed by Rob Mallon on 1/8/09
-    //if ($j == 12)
-    //{
-    //      $j = 1;
-    //      table_header($th);
-    //}
-    //$j++;
-}
-//end of while loop
-
-end_table(2);
-hidden('reconcile_idtokens',$idtokens);
-submit_center('Reconcile',_("Reconcile"),true,'', false);
-
-div_end();
 end_form();
 
 //------------------------------------------------------------------------------------------------

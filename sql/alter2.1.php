@@ -83,6 +83,8 @@ class fa2_1 {
 		if (check_table($pref, 'item_codes')) return false;
 		if (check_table($pref, 'company', 'foreign_codes')) return false;
 		if (check_table($pref, 'suppliers', 'credit_limit')) return false;
+		if (check_table($pref, 'bank_trans', 'reconciled', 
+			array('Type'=>'date'))) return false;
 		return true;
 	}
 };

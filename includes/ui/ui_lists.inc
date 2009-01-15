@@ -1283,26 +1283,38 @@ function movement_types_list_row($label, $name, $selected_id=null)
 }
 
 //-----------------------------------------------------------------------------------------------
-/*
-function bank_trans_types_list($name, $selected_id=null)
+function _format_date($row)
 {
-	$sql = "SELECT id, name FROM ".TB_PREF."bank_trans_types";
-	combo_input($name, $selected_id, $sql, 'id', 'name', array());
+	return sql2date($row['reconciled']);
 }
 
-function bank_trans_types_list_cells($label, $name, $selected_id=null)
+function bank_reconciliation_list($account, $name, $selected_id=null, $submit_on_change=false, $special_option=false)
+{
+	$sql = "SELECT reconciled, reconciled FROM ".TB_PREF."bank_trans
+		WHERE bank_act=".db_escape($account)." AND reconciled IS NOT NULL
+		GROUP BY reconciled";
+	combo_input($name, $selected_id, $sql, 'id', 'reconciled',
+	array(
+		'spec_option' => $special_option,
+		'format' => '_format_date',
+		'spec_id' => '',
+		'select_submit'=> $submit_on_change
+	) );
+}
+
+function bank_reconciliation_list_cells($label,$account, $name, $selected_id=null, $submit_on_change=false, $special_option=false)
 {
 	if ($label != null)
 		echo "<td>$label</td>\n";
 	echo "<td>";
-	bank_trans_types_list($name, $selected_id);
+	bank_reconciliation_list($account, $name, $selected_id, $submit_on_change, $special_option);
 	echo "</td>\n";
 }
-
-function bank_trans_types_list_row($label, $name, $selected_id=null)
+/*
+function bank_reconciliation_list_row($label, $account, $name, $selected_id=null, $submit_on_change=false, $special_option=false)
 {
 	echo "<tr>\n";
-	bank_trans_types_list_cells($label, $name, $selected_id);
+	bank_reconciliation_list_cells($label, $account, $name, $selected_id, $submit_on_change, $special_option);
 	echo "</tr>\n";
 }
 */
