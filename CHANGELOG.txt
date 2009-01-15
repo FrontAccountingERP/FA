@@ -19,6 +19,20 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+15-Jan-2009 Janusz Dobrowolski
+! Rewritten reconciliation page.
+$ /gl/bank_account_reconcile.php
+  /includes/ui/ui_lists.inc
+  /sql/alter2.1.php
+  /sql/alter2.1.sql
+  /js/reconcile.js (added)
+! Standard mysql separator in date functions
+$ /includes/date_functions.inc
++ Separated checkbox generation for indirect display use
+$ /includes/ui/ui_input.inc
+! Standard checkbox helper use.
+$ /sales/inquiry/sales_orders_view.php
+
 14-Jan-2009 Joe Hunt
 ! Page reload problem, progress bar in backup/restore, 
 $ /admin/backups.php
