@@ -20,8 +20,12 @@ Legend:
 $ -> Affected files
 
 15-Jan-2009 Joe Hunt
-! Adjustment of db pager width. Copyright notes.
+! Adjustment of db pager width. Copyright notes. 
 $ All files with db pager
+  /db_pager_view.inc
+  /themes/default/default.css
+  /themes/aqua/default.css
+  /themes/cool/default.css
 
 15-Jan-2009 Janusz Dobrowolski
 ! Rewritten reconciliation page.

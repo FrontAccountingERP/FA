@@ -59,7 +59,7 @@ function display_db_pager(&$pager) {
  		}
 	}
     /* show a table of records returned by the sql */
-    start_table("$table_style width=".$pager->width);
+    start_table("$table_style width=$pager->width");
     table_header($headers, 'nowrap');
 
 	if($pager->header_fun) {	// if set header handler
@@ -153,18 +153,22 @@ function display_db_pager(&$pager) {
 		end_row();
 	}
 
-	end_table();
-	start_table("$table_style align='center' class='navibar' width=".$pager->width);
-	start_row();
+	//end_table();
+	//start_table("$table_style align='center' class='navibar' width=100%");
+	/*
+	start_row("class='navibar'");
+	$colspan = count($pager->columns);
 	 if($pager->rec_count) {
 		$from = ($pager->curr_page-1)*$pager->page_len+1;
 		$to = $from + $pager->page_len - 1;
 		if ($to > $pager->rec_count)
 		  $to = $pager->rec_count;
 		$all = $pager->rec_count;
+		$lcols = ($colspan > 4 ? 3 : 2);
 		label_cell(sprintf( _('Records %d-%d of %d'), $from, $to, $all),
-			"style='border:none'");
-		echo "<td style='border:none'>";
+			"colspan=$lcols class='navibar' style='border:none'");
+		//echo "<td colspan=".($pager->columns -.$lcols)." style='border:none'>";
+		echo "<td colspan=".($colspan-3)." style='border:none'>";
 		$but_pref = $pager->name.'_page_';
 	    start_table("align='right'");
 		start_row();
@@ -176,9 +180,37 @@ function display_db_pager(&$pager) {
 		end_table();	
 		echo "</td>";
 	} else {
-	  label_cell( _('No records'));
+	  label_cell( _('No records'), "colspan=$colspan class='navibar'");
 	}
 	end_row();
+	*/
+	start_row("class='navibar'");
+	$colspan = count($pager->columns);
+	 if($pager->rec_count) {
+		echo "<td colspan=$colspan class='navibar' style='border:none;padding:3px;'>";
+		echo "<div style='float:right;'>";
+		$but_pref = $pager->name.'_page_';
+	    start_table();
+		start_row();
+		echo navi_button_cell($but_pref.'first', _('First'), $pager->first_page, 'right');
+		echo navi_button_cell($but_pref.'prev', _('Prev'), $pager->prev_page,'right');
+		echo navi_button_cell($but_pref.'next', _('Next'), $pager->next_page,'right');
+		echo navi_button_cell($but_pref.'last', _('Last'), $pager->last_page, 'right');
+		end_row(); 
+		end_table();
+		echo "</div>";
+		$from = ($pager->curr_page-1)*$pager->page_len+1;
+		$to = $from + $pager->page_len - 1;
+		if ($to > $pager->rec_count)
+		  $to = $pager->rec_count;
+		$all = $pager->rec_count;
+		echo sprintf( _('Records %d-%d of %d'), $from, $to, $all);
+		echo "</td>";
+	} else {
+	  label_cell( _('No records'), "colspan=$colspan class='navibar'");
+	}
+	end_row();
+
 	end_table();
 
    if (isset($pager->marker_txt))

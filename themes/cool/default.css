@@ -393,15 +393,11 @@ button.navibutton {
 }
 
 .navibar {
+	color: #fff;
     padding: 0 3px;
     border: 1px solid #cccccc;
     border-collapse: collapse;
     background-color: #788da1;
-}
-
-table.navibar td {
-	color: #fff;
-    border: 0px none;
 }
 
 
