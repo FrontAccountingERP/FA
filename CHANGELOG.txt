@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+16-Jan-2009 Janusz Dobrowolski
+! Fixed new pager generation on first display.
+$ /gl/manage/exchange_rates.php
+
 15-Jan-2009 Joe Hunt
 ! Adjustment of db pager width. Copyright notes. 
 $ All files with db pager

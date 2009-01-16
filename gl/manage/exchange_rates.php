@@ -93,24 +93,6 @@ function display_rates($curr_code)
 {
 	global $table_style;
 
-	$sql = "SELECT date_, rate_buy, id FROM "
-		.TB_PREF."exchange_rates "
-		."WHERE curr_code='$curr_code'
-		 ORDER BY date_ DESC";
-
-	$cols = array(
-		_("Date to Use From") => 'date', 
-		_("Exchange Rate") => 'rate',
-		array('insert'=>true, 'fun'=>'edit_link'),
-		array('insert'=>true, 'fun'=>'del_link'),
-	);
-	$table =& new_db_pager('orders_tbl', $sql, $cols);
-	if (list_updated('curr_abrev')) {
-		$table->set_sql($sql);
-		$table->set_columns($cols);
-	}
-	$table->width = "40%";
-	display_db_pager($table);
 }
 
 //---------------------------------------------------------------------------------------------
@@ -201,6 +183,19 @@ if ($_POST['curr_abrev'] != get_global_curr_code())
 
 set_global_curr_code($_POST['curr_abrev']);
 
+$sql = "SELECT date_, rate_buy, id FROM "
+	.TB_PREF."exchange_rates "
+	."WHERE curr_code='".$_POST['curr_abrev']."'
+	 ORDER BY date_ DESC";
+
+$cols = array(
+	_("Date to Use From") => 'date', 
+	_("Exchange Rate") => 'rate',
+	array('insert'=>true, 'fun'=>'edit_link'),
+	array('insert'=>true, 'fun'=>'del_link'),
+);
+$table =& new_db_pager('orders_tbl', $sql, $cols);
+
 if (is_company_currency($_POST['curr_abrev']))
 {
 
@@ -211,7 +206,12 @@ else
 {
 
 	br(1);
-    display_rates($_POST['curr_abrev']);
+   	if (list_updated('curr_abrev')) {
+		$table->set_sql($sql);
+		$table->set_columns($cols);
+	}
+	$table->width = "40%";
+	display_db_pager($table);
    	br(1);
     display_rate_edit();
 }
