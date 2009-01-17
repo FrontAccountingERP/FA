@@ -73,7 +73,7 @@ $result = db_query($sql, "could not query stock moves");
 check_db_error("The stock movements for the selected criteria could not be retrieved",$sql);
 
 div_start('doc_tbl');
-start_table("$table_style width=70%");
+start_table("$table_style width=65%");
 $th = array(_("Type"), _("#"), _("Reference"), _("Date"), _("Detail"),
 	_("Quantity In"), _("Quantity Out"), _("Quantity On Hand"));
 

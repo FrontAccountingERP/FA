@@ -86,6 +86,7 @@ $bfw_row = db_fetch_row($before_qty);
 $bfw = $bfw_row[0];
 display_debit_or_credit_cells($bfw);
 label_cell("");
+label_cell("", "colspan=2");
 
 end_row();
 $running_total = $bfw;
@@ -122,6 +123,7 @@ start_row("class='inquirybg'");
 label_cell("<b>" . _("Ending Balance")." - ". $_POST['TransToDate']. "</b>", "colspan=4");
 display_debit_or_credit_cells($running_total);
 label_cell("");
+label_cell("", "colspan=2");
 end_row();
 end_table(2);
 div_end();

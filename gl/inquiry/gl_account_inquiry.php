@@ -1,5 +1,14 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU Affero General Public License,
+	AGPL, as published by the Free Software Foundation, either version 
+	3 of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/agpl-3.0.html>.
+***********************************************************************/
 $page_security = 8;
 $path_to_root="../..";
 include_once($path_to_root . "/includes/session.inc");
@@ -120,6 +129,7 @@ function show_results()
 	label_cell("<b>"._("Opening Balance")." - ".$_POST['TransFromDate']."</b>", "colspan=$colspan");
 	display_debit_or_credit_cells($bfw);
 	label_cell("");
+	label_cell("");
 	end_row();
 	//$running_total =0;
 	$running_total = $bfw;
@@ -160,6 +170,7 @@ function show_results()
 	start_row("class='inquirybg'");
 	label_cell("<b>" . _("Ending Balance") ." - ".$_POST['TransToDate']. "</b>", "colspan=$colspan");
 	display_debit_or_credit_cells($running_total);
+	label_cell("");
 	label_cell("");
 	end_row();
 
