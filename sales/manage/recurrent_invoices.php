@@ -1,6 +1,14 @@
 <?php
-
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU Affero General Public License,
+	AGPL, as published by the Free Software Foundation, either version 
+	3 of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/agpl-3.0.html>.
+***********************************************************************/
 $page_security = 3;
 $path_to_root="../..";
 include($path_to_root . "/includes/session.inc");
@@ -13,7 +21,6 @@ if ($use_date_picker)
 	$js .= get_js_date_picker();
 
 page(_("Recurrent Invoices"), false, false, "", $js);
-
 
 simple_page_mode(true);
 
@@ -124,7 +131,7 @@ while ($myrow = db_fetch($result))
 	label_cell($end);
 	label_cell($last_sent);
  	edit_button_cell("Edit".$myrow["id"], _("Edit"));
- 	edit_button_cell("Delete".$myrow["id"], _("Delete"));
+ 	delete_button_cell("Delete".$myrow["id"], _("Delete"));
  	end_row();
 }
 end_table();
@@ -136,7 +143,7 @@ echo '<br>';
 
 start_form();
 
-start_table("$table_style2 width=40%");
+start_table($table_style2);
 
 if ($selected_id != -1) 
 {

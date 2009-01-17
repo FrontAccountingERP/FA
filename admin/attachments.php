@@ -213,7 +213,7 @@ if (isset($_POST['filterType']))
 
 start_form(true);
 
-start_table("$table_style2 width=30%");
+start_table($table_style2);
 
 if ($selected_id != -1)
 {

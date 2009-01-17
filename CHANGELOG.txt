@@ -1,7 +1,7 @@
 /**
 * @version $Id$
 * @package FrontAccounting
-* @copyright (C) 2005 - 2008 FrontAccounting
+* @copyright (C) 2005 - 2009 FrontAccounting
 * @license http://www.gnu.org/copyleft/agpl-3.0.html GNU/AGPL
 * FrontAccounting is Free Software
 */
@@ -18,6 +18,10 @@ Legend:
 - -> Removed
 ! -> Note
 $ -> Affected files
+
+17-Jan-2009 Joe Hunt
+! Changed all smaller forms and tables to be uniform. Copyright notes.
+$ All files with small forms and tables.
 
 16-Jan-2009 Janusz Dobrowolski
 ! Fixed new pager generation on first display.

@@ -171,7 +171,7 @@ if ($selected_id != -1)
 		$_POST['provision2'] = percent_format(0);	
 }
 
-start_table("$table_style2 width=60%");
+start_table($table_style2);
 
 text_row_ex(_("Sales person name:"), 'salesman_name', 30);
 text_row_ex(_("Telephone number:"), 'salesman_phone', 20);

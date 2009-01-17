@@ -37,6 +37,7 @@ if (isset($_POST['setprefs']))
 }
 
 start_form();
+
 start_table("class='tablestyle'");
 
 $systypes = get_systypes();

@@ -1,6 +1,14 @@
 <?php
-
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU Affero General Public License,
+	AGPL, as published by the Free Software Foundation, either version 
+	3 of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/agpl-3.0.html>.
+***********************************************************************/
 $page_security = 3;
 $path_to_root="../..";
 include($path_to_root . "/includes/session.inc");
@@ -78,7 +86,7 @@ $sql = "SELECT * FROM ".TB_PREF."areas";
 $result = db_query($sql,"could not get areas");
 
 start_form();
-start_table("$table_style width=40%");
+start_table("$table_style width=30%");
 $th = array(_("Area Name"), "", "");
 table_header($th);
 $k = 0; 
@@ -90,7 +98,7 @@ while ($myrow = db_fetch($result))
 		
 	label_cell($myrow["description"]);
  	edit_button_cell("Edit".$myrow["area_code"], _("Edit"));
- 	edit_button_cell("Delete".$myrow["area_code"], _("Delete"));
+ 	delete_button_cell("Delete".$myrow["area_code"], _("Delete"));
 	end_row();
 }
 
@@ -103,7 +111,7 @@ echo '<br>';
 
 start_form();
 
-start_table("$table_style2 width=40%");
+start_table($table_style2);
 
 if ($selected_id != -1) 
 {

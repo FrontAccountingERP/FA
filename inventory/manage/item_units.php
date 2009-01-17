@@ -1,4 +1,14 @@
 <?php
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU Affero General Public License,
+	AGPL, as published by the Free Software Foundation, either version 
+	3 of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/agpl-3.0.html>.
+***********************************************************************/
 $page_security = 11;
 $path_to_root="../..";
 include($path_to_root . "/includes/session.inc");
@@ -71,7 +81,7 @@ if ($Mode == 'RESET')
 
 $result = get_all_item_units();
 start_form();
-start_table("$table_style width=50%");
+start_table("$table_style width=40%");
 $th = array(_('Unit'), _('Description'), _('Decimals'), "", "");
 
 table_header($th);
@@ -87,7 +97,7 @@ while ($myrow = db_fetch($result))
 	label_cell(($myrow["decimals"]==-1?_("User Quantity Decimals"):$myrow["decimals"]));
 
  	edit_button_cell("Edit".$myrow[0], _("Edit"));
- 	edit_button_cell("Delete".$myrow[0], _("Delete"));
+ 	delete_button_cell("Delete".$myrow[0], _("Delete"));
 	end_row();
 }
 
@@ -99,7 +109,7 @@ echo '<br>';
 
 start_form();
 
-start_table("class='tablestyle_noborder'");
+start_table($table_style2);
 
 if ($selected_id != '') 
 {
