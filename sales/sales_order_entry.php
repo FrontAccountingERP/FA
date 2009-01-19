@@ -356,9 +356,11 @@ function check_item_data()
 function handle_update_item()
 {
 	if ($_POST['UpdateItem'] != '' && check_item_data()) {
+		//alert("description=".$_POST['item_description']);
+		//$_SESSION['items']->line_items[$_POST['LineNo']]->item_description = $_POST['item_description'];
 		$_SESSION['Items']->update_cart_item($_POST['LineNo'],
 		 input_num('qty'), input_num('price'),
-		 input_num('Disc') / 100 );
+		 input_num('Disc') / 100, $_POST['item_description'] );
 	}
   line_start_focus();
 }

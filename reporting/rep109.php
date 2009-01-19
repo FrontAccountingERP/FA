@@ -112,13 +112,17 @@ function print_sales_orders()
 			else
 				$DisplayDiscount = number_format2($myrow2["discount_percent"]*100,user_percent_dec()) . "%";
 			$rep->TextCol(0, 1,	$myrow2['stk_code'], -2);
-			$rep->TextCol(1, 2,	$myrow2['description'], -2);
+			$oldrow = $rep->row;
+			$rep->TextColLines(1, 2, $myrow2['description'], -2);
+			$newrow = $rep->row;
+			$rep->row = $oldrow;
 			$rep->TextCol(2, 3,	$DisplayQty, -2);
 			$rep->TextCol(3, 4,	$myrow2['units'], -2);
 			$rep->TextCol(4, 5,	$DisplayPrice, -2);
 			$rep->TextCol(5, 6,	$DisplayDiscount, -2);
 			$rep->TextCol(6, 7,	$DisplayNet, -2);
-			$rep->NewLine(1);
+			$rep->row = $newrow;
+			//$rep->NewLine(1);
 			if ($rep->row < $rep->bottomMargin + (15 * $rep->lineHeight))
 				$rep->Header2($myrow, $branch, $myrow, $baccount, 9);
 		}

@@ -19,6 +19,16 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+19-Jan-2009 Joe Hunt
+! Changed direct sales document line descriptions to be editable (via edit link)
+$ /sales/sales_order_entry.php
+  /includes/cart_class.inc
+  /includes/ui/sales_order_ui.inc
+! Fixed so the printed documents can handle multiple lines of description
+$ /reporting/rep107.php
+  /reporting/rep109.php
+  /reporting/rep110.php
+  
 17-Jan-2009 Joe Hunt
 ! Changed all smaller forms and tables to be uniform. Copyright notes.
 $ All files with small forms and tables.

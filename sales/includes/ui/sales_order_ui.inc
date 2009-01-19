@@ -167,7 +167,8 @@ function display_order_summary($title, &$order, $editable_items=false)
 
 			view_stock_status_cell($stock_item->stock_id);
 
-			label_cell($stock_item->item_description, "nowrap" );
+			//label_cell($stock_item->item_description, "nowrap" );
+			label_cell($stock_item->item_description );
 			qty_cell($stock_item->qty_dispatched, false, get_qty_dec($stock_item->stock_id));
 
 			if ($order->trans_no!=0)
@@ -437,10 +438,12 @@ function sales_order_item_controls(&$order, &$rowcounter, $line_no=-1)
 		$_POST['qty'] = number_format2($order->line_items[$id]->qty_dispatched, $dec);
 		$_POST['price'] = price_format($order->line_items[$id]->price);
 		$_POST['Disc'] = percent_format($order->line_items[$id]->discount_percent*100);
+		$_POST['item_description'] = $order->line_items[$id]->item_description;
 		$units = $order->line_items[$id]->units;
 		hidden('stock_id', $_POST['stock_id']);
 		label_cell($_POST['stock_id']);
-		label_cell($order->line_items[$line_no]->item_description, "nowrap");
+		text_cells(null,'item_description', null, 45, 150);
+		//label_cell($order->line_items[$line_no]->item_description, "nowrap");
 	    $Ajax->activate('items_table');
 	}
 	else	// prepare new line
