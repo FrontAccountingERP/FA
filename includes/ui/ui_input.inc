@@ -221,7 +221,7 @@ function button($name, $value, $title=false, $icon=false)
 			$icon = ICON_DELETE;
 		return "<button type='submit' class='editbutton' name='".
 			htmlentities(strtr($name, array('.'=>'=2E',' '=>'=20','='=>'=3D','['=>'=5B'))).
-			"' value=''" . ($title ? " title='$title'":" title='$value'")." />".set_icon($icon)."\n";
+			"' value='1'" . ($title ? " title='$title'":" title='$value'")." />".set_icon($icon)."\n";
 	}
 	else
 		return "<input type='submit' class='editbutton' name='"

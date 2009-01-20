@@ -24,6 +24,8 @@ $ -> Affected files
 $ installed_extensions.php (new file)
   frontaccounting.php
   /includes/main.inc
+# Bad handling of graphic links in certain browsers
+  /includes/ui/ui_input.inc
   
 19-Jan-2009 Joe Hunt
 ! Changed direct sales document line descriptions to be editable (via edit link)
