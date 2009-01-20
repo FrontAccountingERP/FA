@@ -1,4 +1,14 @@
 <?php
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU Affero General Public License,
+	AGPL, as published by the Free Software Foundation, either version 
+	3 of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/agpl-3.0.html>.
+***********************************************************************/
 	include_once('applications/application.php');
 	include_once('applications/customers.php');
 	include_once('applications/suppliers.php');
@@ -7,6 +17,7 @@
 	include_once('applications/dimensions.php');
 	include_once('applications/generalledger.php');
 	include_once('applications/setup.php');
+	include_once('installed_extensions.php');
 	$path_to_root=".";
 	include_once($path_to_root . "/includes/session.inc");
 
@@ -54,7 +65,8 @@
 			$rend->wa_footer();
 		}
 		function init()
-				{
+		{
+			global $installed_extensions, $applications;
 			$this->menu = new menu(_("Main  Menu"));
 			$this->menu->add_item(_("Main  Menu"), "index.php");
 			$this->menu->add_item(_("Logout"), "/account/access/logout.php");
@@ -65,6 +77,20 @@
 			$this->add_application(new manufacturing_app());
 			$this->add_application(new dimensions_app());
 			$this->add_application(new general_ledger_app());
+			if (count($installed_extensions) > 0)
+			{
+				foreach ($installed_extensions as $ext)
+				{
+					$s = $applications['system'];
+					array_pop($applications);
+					$applications[$ext['name']] = $ext['title'];;
+					$applications['system'] = $s;
+					include_once("applications/".$ext['app_file']);
+					$class = $ext['name']."_app";
+					$this->add_application(new $class());
+				}
+			}	
+			
 			$this->add_application(new setup_app());
 			}
 }

@@ -19,6 +19,11 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+20-Jan-2009 Joe Hunt
+! Preparing for installing of extensions
+$ installed_extensions.php (new file)
+  frontaccounting.php
+  
 19-Jan-2009 Joe Hunt
 ! Changed direct sales document line descriptions to be editable (via edit link)
 $ /sales/sales_order_entry.php
