@@ -23,6 +23,7 @@ $ -> Affected files
 ! Preparing for installing of extensions
 $ installed_extensions.php (new file)
   frontaccounting.php
+  /includes/main.inc
   
 19-Jan-2009 Joe Hunt
 ! Changed direct sales document line descriptions to be editable (via edit link)

@@ -12,9 +12,10 @@
 
 $installed_extensions = array ();
 
-/* example
+// example
+/*
 $installed_extensions = array (
-	0 => array ('app_file' => 'organizer.php', 'name' => 'organizer', 'title' => 'Organizer', 'folder' => 'organizer')
+	0 => array ('app_file' => 'organizer.php', 'name' => 'organizer', 'title' => 'Organizer', 'folder' => 'organizer'),
 	array ('app_file' => 'payroll.php', 'name' => 'payroll', 'title' => 'Payroll', 'folder' => 'payroll')
 	);
 */	

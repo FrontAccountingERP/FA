@@ -81,10 +81,6 @@
 			{
 				foreach ($installed_extensions as $ext)
 				{
-					$s = $applications['system'];
-					array_pop($applications);
-					$applications[$ext['name']] = $ext['title'];;
-					$applications['system'] = $s;
 					include_once("applications/".$ext['app_file']);
 					$class = $ext['name']."_app";
 					$this->add_application(new $class());
