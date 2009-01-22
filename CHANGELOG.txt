@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+22-Jan-2009 Joe Hunt
+# Bug [0000112] It shows invoices as overdue still (in red), even though its been payed and allocated. 
+$ /sales/inquiry/customer_inquiry.php
+
 13-Jan-2009 Joe Hunt
 # Bug [0000111] Accounts on Credit Hold can still process delivery notes on sales order and invoicing.
 $ /sales/customer_delivery.php

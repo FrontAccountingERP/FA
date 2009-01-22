@@ -90,7 +90,8 @@ function get_transactions()
 {
     $date_after = date2sql($_POST['TransAfterDate']);
     $date_to = date2sql($_POST['TransToDate']);
-
+	$dec = user_price_dec();
+	
     $sql = "SELECT ".TB_PREF."debtor_trans.*,
 		".TB_PREF."debtors_master.name AS CustName, ".TB_PREF."debtors_master.curr_code AS CustCurrCode,
 		(".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + "
@@ -98,9 +99,9 @@ function get_transactions()
 		AS TotalAmount, ".TB_PREF."debtor_trans.alloc AS Allocated,
 		((".TB_PREF."debtor_trans.type = 10)
 			AND (".TB_PREF."debtor_trans.due_date < '" . date2sql(Today()) . "')
-			AND ((".TB_PREF."debtor_trans.ov_amount + "
-			  .TB_PREF."debtor_trans.ov_gst + "
-			  .TB_PREF."debtor_trans.ov_freight )>".TB_PREF."debtor_trans.alloc
+			AND ((".TB_PREF."debtor_trans.ov_amount + 
+				ROUND(".TB_PREF."debtor_trans.ov_gst,$dec) + "
+			  .TB_PREF."debtor_trans.ov_freight + ".TB_PREF."debtor_trans.ov_freight_tax)>".TB_PREF."debtor_trans.alloc
 		)) AS OverDue
 		FROM ".TB_PREF."debtor_trans, ".TB_PREF."debtors_master
 		WHERE ".TB_PREF."debtors_master.debtor_no = ".TB_PREF."debtor_trans.debtor_no
