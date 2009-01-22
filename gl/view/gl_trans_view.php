@@ -66,6 +66,7 @@ $heading_shown = false;
 
 while ($myrow = db_fetch($result)) 
 {
+	if ($myrow['amount'] == 0) continue;
 	if (!$heading_shown)
 	{
 		display_gl_heading($myrow);
