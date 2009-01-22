@@ -9,7 +9,7 @@ $js .= get_js_set_focus("user");
 $image = $path_to_root."/themes/default/images/logo_frontaccounting.png";
 $title = "Update All Company Databases";
 
-$comp_subdirs = array('images', 'pdf_files', 'backup','js_cache');
+$comp_subdirs = array('images', 'pdf_files', 'backup', 'js_cache', 'attachments');
 
 function get_js_png_fix()
 {
