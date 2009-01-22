@@ -200,7 +200,24 @@ function get_budget_trans_from_to($from_date, $to_date, $account, $dimension=0, 
 }
 
 //--------------------------------------------------------------------------------
+//	Stores GL journal/bank transaction on tax account for tax report
+//
+function add_gl_tax_details($gl_code, $trans_type, $trans_id, $amount)
+{
+	$tax_type = is_tax_account($gl_code);
+	if(!$tax_type) return;	// $gl_code is not tax account
 
+	$tax = get_tax_type($tax_type);
+	if ($gl_code == $tax['sales_gl_code'])
+		add_customer_trans_tax_detail_item($trans_type, $trans_id, 
+			$tax['id'], $tax['rate'], 0, -$amount);
+	else
+		add_supp_invoice_tax_item($trans_type, $trans_id, 
+			$tax['id'], $tax['rate'], 0, $amount);
+			
+}
+
+//--------------------------------------------------------------------------------
 function add_journal_entries($items, $date_, $ref, $reverse, $memo_=null)
 {
 	begin_transaction();
@@ -223,8 +240,11 @@ function add_journal_entries($items, $date_, $ref, $reverse, $memo_=null)
     			0, "", get_company_currency(),
     			"Cannot insert a destination bank transaction");
     	}
+		// store tax details if the gl account is a tax account
+		add_gl_tax_details($journal_item->code_id, 
+			$trans_type, $trans_id, $journal_item->amount);
 	}
-
+	
 	add_comments($trans_type, $trans_id, $date_, $memo_);
 
 	references::save($trans_type, $trans_id, $ref);
@@ -252,6 +272,9 @@ function add_journal_entries($items, $date_, $ref, $reverse, $memo_=null)
     				0, "", get_company_currency(),
     				"Cannot insert a destination bank transaction");
     		}
+			// store tax details if the gl account is a tax account
+			add_gl_tax_details($journal_item->code_id, 
+				$trans_type, $trans_id, -$journal_item->amount);
     	}
 
     	add_comments($trans_type, $trans_id_reverse, $reversingDate, $memo_);

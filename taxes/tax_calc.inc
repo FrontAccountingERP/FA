@@ -214,6 +214,68 @@ function get_tax_for_items($items, $prices, $shipping_cost, $tax_group, $tax_inc
 
 	return $ret_tax_array;
 }
+//
+//	Get all taxes for given tax_type_id. This can be used when 
+//	no tax group exemptions are active (local sales).
+//	To be used in quick entries.
+//
+function get_taxes_for_item_tax($tax_type_id)
+{
+	$item_tax_type = get_item_tax_type($tax_type_id);
+	
+	// if the item is exempt from all taxes then return 0
+	if ($item_tax_type["exempt"])
+		return null;
+		
+	// get the exemptions for this item tax type
+	$item_tax_type_exemptions_db = get_item_tax_type_exemptions($tax_type_id);
+	
+	// read them all into an array to minimize db querying
+	$item_tax_type_exemptions = array();
+	while ($item_tax_type_exemp = db_fetch($item_tax_type_exemptions_db))
+	{
+		$item_tax_type_exemptions[] = $item_tax_type_exemp["tax_type_id"];
+	}
+	
+	$ret_tax_array = array();
 
+	$tax_rates = get_all_tax_types_simple();
+	// if any of the taxes are in the exemptions, then skip
+	while($tax_rate = db_fetch($tax_rates)) 
+	{ 
+		
+		$skip = false;			
+		
+		// if it's in the exemptions, skip
+		foreach ($item_tax_type_exemptions as $exemption) 
+		{
+			if (($tax_rate['id'] == $exemption)) 
+			{
+    			$skip = true;
+    			break;
+			}
+		}
+		
+		if (!$skip) 
+		{
+			$index = $tax_rate['id'];
+			$ret_tax_array[$index] = $tax_rate;
+		}
+	}
+	
+	return $ret_tax_array;
+}
+
+function is_tax_account($account_code)
+{
+	$sql= "SELECT id FROM ".TB_PREF."tax_types WHERE 
+		sales_gl_code='$account_code' OR purchasing_gl_code='$account_code'";
+	$result = db_query($sql, "checking account is tax account");
+	if (db_num_rows($result) > 0) {
+		$acct = db_fetch($result);
+		return $acct['id'];
+	} else
+		return false;
+}
 
 ?>

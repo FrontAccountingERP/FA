@@ -135,10 +135,14 @@ function add_bank_transaction($trans_type, $from_account, $items, $date_,
     			$date_, $gl_item->amount, $person_type_id, $person_id, 
 				$currency, "Cannot insert a destination bank transaction");
     	}
+		// store tax details if the gl account is a tax account
+
+		$amount = $gl_item->amount;
+		add_gl_tax_details($gl_item->code_id, $trans_type, $trans_no, $amount);
 	}
 
 	// do the source account postings
-    add_gl_trans($trans_type, $trans_no, $date_, $bank_gl_account, 0, 0, "",
+    add_gl_trans($trans_type, $trans_no, $date_, $bank_gl_account, 0, 0, $memo_,
     	-$total, null, $person_type_id, $person_id);
 
 	add_comments($trans_type, $trans_no, $date_, $memo_);

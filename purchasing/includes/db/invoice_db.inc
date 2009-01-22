@@ -175,6 +175,10 @@ function add_supp_invoice($supp_trans, $invoice_no=0) // do not receive as ref b
 
 		add_supp_invoice_gl_item($trans_type, $invoice_id, $entered_gl_code->gl_code,
 			$entered_gl_code->amount, $memo_);
+
+		// store tax details if the gl account is a tax account
+		add_gl_tax_details($entered_gl_code->gl_code, 
+			$trans_type, $invoice_id, $entered_gl_code->amount);
     }
     foreach ($supp_trans->grn_items as $entered_grn)
     {
