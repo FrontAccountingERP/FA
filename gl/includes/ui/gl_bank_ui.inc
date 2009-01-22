@@ -72,9 +72,16 @@ function display_bank_header(&$order)
         		hidden('PersonDetailID');
         	}
     		break;
+
 		case payment_person_types::QuickEntry() :
-			quick_entries_list_row(_("Description:"), 'person_id', null, ($payment ? 0 : 1), 1);
-			amount_row(_("Total Amount"), 'totamount', null, null, "&nbsp;&nbsp;".submit('go', _("Go"), false, false, true));			
+			quick_entries_list_row(_("Type").":", 'person_id', null, ($payment ? QE_PAYMENT : QE_DEPOSIT), true);
+			$qid = get_quick_entry(get_post('person_id'));
+			if (list_updated('person_id')) {
+				unset($_POST['totamount']); // enable default
+				$Ajax->activate('totamount');
+			}
+			amount_row($qid['base_desc'].":", 'totamount', price_format($qid['base_amount']),
+				 null, "&nbsp;&nbsp;".submit('go', _("Go"), false, false, true));
 			break;	
 		//case payment_person_types::Project() :
     	//	dimensions_list_row(_("Dimension:"), 'person_id', $_POST['person_id'], false, null, true);

@@ -300,5 +300,33 @@ class wo_types
 	}
 }
 
+$quick_actions = array(
+	'=' => _('Remainder'), // post current base amount to GL account
+	'-' => _('Amount, reduce base'), // post amount to GL account and reduce base
+	'+' => _('Amount, increase base'), // post amount to GL account and increase base
+	'%' => _('% amount of base'),	// store acc*amount% to GL account
+	'%+' => _('% amount of base, increase base'),	// ditto & increase base amount
+	'%-' => _('% amount of base, reduce base'),	// ditto & reduce base amount
+	'T' => _('Taxes added'), // post taxes calculated on base amount
+	'T+' => _('Taxes added, increase base'), // ditto & increase base amount
+	'T-' => _('Taxes added, reduce base'), // ditto & reduce base amount
+	't' => _('Taxes included'), // post taxes calculated on base amount
+	't+' => _('Taxes included, increase base'), // ditto & increase base amount
+	't-' => _('Taxes included, reduce base') // ditto & reduce base amount
+);
+
+define('QE_DEPOSIT', '1');
+define('QE_PAYMENT', '2');
+define('QE_JOURNAL', '3');
+define('QE_SUPPINV', '4');
+
+$quick_entry_types = array(
+		QE_DEPOSIT => _("Bank Deposit"),
+		QE_PAYMENT => _("Bank Payment"),
+		QE_JOURNAL => _("Journal Entry"),
+		QE_SUPPINV => _("Supplier Invoice/Credit")
+);
+
+
 
 ?>

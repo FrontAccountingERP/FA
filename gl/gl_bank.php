@@ -105,7 +105,6 @@ function handle_new_order($type)
 {
 	if (isset($_SESSION['pay_items']))
 	{
-		$_SESSION['pay_items']->clear_items();
 		unset ($_SESSION['pay_items']);
 	}
 
@@ -262,7 +261,8 @@ if (isset($_POST['CancelItemChanges']))
 if (isset($_POST['go']))
 {
 	display_quick_entries($_SESSION['pay_items'], $_POST['person_id'], input_num('totamount'), 
-		$_SESSION['pay_items']->trans_type==systypes::bank_payment());
+		$_SESSION['pay_items']->trans_type==systypes::bank_payment() ? QE_PAYMENT : QE_DEPOSIT);
+	$_POST['totamount'] = price_format(0); $Ajax->activate('totamount');
 	line_start_focus();
 }
 //-----------------------------------------------------------------------------------------------

@@ -101,7 +101,7 @@ class items_cart
 		else
 		{
 			// shouldn't come here under normal circumstances
-			display_db_error("unexpected - adding an invalid item or null quantity", "", true);
+			display_db_error("unexpected - invalid parameters in add_gl_item($code_id, $dimension_id, $dimension2_id, $amount,...)", "", true);
 		}
 
 		return false;

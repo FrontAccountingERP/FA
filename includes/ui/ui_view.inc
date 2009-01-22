@@ -548,8 +548,14 @@ function display_allocations_from($person_type, $person_id, $type, $type_no, $to
 }
 
 //--------------------------------------------------------------------------------------
-function display_quick_entries(&$cart, $id, $totamount, $payment=true, $supp_trans=false)
+//
+//	Expands selected quick entry $id into GL posings and adds to cart.
+//		returns calculated amount posted to bank GL account.
+//
+function display_quick_entries(&$cart, $id, $base, $type, $descr='')
 {
+	$bank_amount = 0;
+	
 	if (!isset($id) || $id == null || $id == "")
 	{
 		display_error( _("No Quick Entries are defined."));
@@ -557,71 +563,80 @@ function display_quick_entries(&$cart, $id, $totamount, $payment=true, $supp_tra
 	}
 	else
 	{
-		$rate = 0;
-		if (!$payment)
-			$totamount = -$totamount;
-		if (!$supp_trans)	
+		if ($type == QE_DEPOSIT)
+			$base = -$base;
+		if ($type != QE_SUPPINV)	// only one quick entry on journal/bank transaction
 			$cart->clear_items();
 		$qe = get_quick_entry($id);
+		if ($descr != '') $qe['description'] .= ': '.$descr;
 		$qe_lines = get_quick_entry_lines($id);
 		while ($qe_line = db_fetch($qe_lines))
 		{
-			if ($qe_line['tax_acc'])
-			{
-				$account = get_gl_account($qe_line['account']);
-				$tax_group = $account['tax_code'];
-				$items = get_tax_group_items($tax_group);
-				while ($item = db_fetch($items))
-					$rate += $item['rate'];
-				if ($rate != 0)
-					$totamount = round2($totamount * 100 / ($rate + 100), user_price_dec());
-				//$cart->clear_items();
-				if (!$supp_trans)
-					$cart->add_gl_item($qe_line['account'], $qe_line['dimension_id'], $qe_line['dimension2_id'], 
-						$totamount, $qe['description']);
-				else
-				{
-					$acc_name = get_gl_account_name($qe_line['account']);
-					$cart->add_gl_codes_to_trans($qe_line['account'], $acc_name, $qe_line['dimension_id'], 
-						$qe_line['dimension2_id'], $totamount, $qe['description']);
-				}		
-				$items = get_tax_group_items($tax_group);
-				while ($item = db_fetch($items))
-				{
-					if ($item['rate'] != 0)
-					{
-						$amount = round2($totamount * $item['rate'] / 100, user_price_dec());
-						$code = (($amount < 0 || $payment || $supp_trans) ? $item['purchasing_gl_code'] : 
-							$item['sales_gl_code']);
-						if (!$supp_trans)	
-							$cart->add_gl_item($code, 0, 0, $amount, $qe['description']);
+			switch (strtolower($qe_line['action'])) {
+				case "=": // post current base amount to GL account
+					$part = $base;
+					break;
+				case "-": // post amount to GL account and reduce base
+					$part = $qe_line['amount']; $base -= $part;
+					break;
+				case "+": // post amount to GL account and increase base
+					$part = $qe_line['amount']; $base += $part;
+					break;
+				case "%":	// store acc*amount% to GL account
+					$part = round2($base * $qe_line['amount'] / 100, user_price_dec());
+					break;
+				case "%+":	// ditto & increase base amount
+					$part = round2($base * $qe_line['amount'] / 100, user_price_dec());
+					$base += $part;
+					break;
+				case "%-":	// ditto & reduce base amount
+					$part = round2($base * $qe_line['amount'] / 100, user_price_dec());
+					$base -= $part;
+					break;
+				case "t": // post taxes calculated on base amount
+				case "t+": // ditto & increase base amount
+				case "t-": // ditto & reduce base amount
+					$taxes = get_taxes_for_item_tax($qe_line['dest_id']);
+					$tax_total = 0;
+					foreach ($taxes as $index => $item_tax) {
+						if(substr($qe_line['action'],0,1) != 'T')
+							$tax = round($base * $item_tax['rate'] 
+						  		/ ($item_tax['rate'] + 100),  user_price_dec());
 						else
-						{
-							$acc_name = get_gl_account_name($code);
-							$cart->add_gl_codes_to_trans($code, $acc_name, 0, 0, $amount, $qe['description']);
+							$tax = round($base * $item_tax['rate'] / 100,  user_price_dec());
+
+						$gl_code = $type != QE_DEPOSIT 
+							? $item_tax['purchasing_gl_code'] : $item_tax['sales_gl_code'];
+						$tax_total += $tax;
+						if ($type != QE_SUPPINV)
+							$cart->add_gl_item($gl_code, 
+								$qe_line['dimension_id'], $qe_line['dimension2_id'], 
+								$tax, $qe['description']);
+						else {
+							$acc_name = get_gl_account_name($gl_code);
+							$cart->add_gl_codes_to_trans($gl_code, 
+								$acc_name, $qe_line['dimension_id'], 
+								$qe_line['dimension2_id'], $tax, $qe['description']);
 						}
 					}
-				}
+					if (strpos($qe_line['action'], '+'))
+						$base += $tax_total;
+					elseif (strpos($qe_line['action'], '-'))
+						$base -= $tax_total;
+					continue 2;
 			}
-			else
-			{
-				if ($qe_line['pct'])
-					$amount = round2($totamount * $qe_line['amount'] / 100, user_price_dec());
-				else
-					$amount = $qe_line['amount'];
-				if (!$supp_trans)	
-					$cart->add_gl_item($qe_line['account'], $qe_line['dimension_id'], $qe_line['dimension2_id'], 
-						$amount, $qe['description']);
-				else
-				{
-					$acc_name = get_gl_account_name($qe_line['account']);
-					$cart->add_gl_codes_to_trans($qe_line['account'], $acc_name, $qe_line['dimension_id'], 
-						$qe_line['dimension2_id'], $amount, $qe['description']);
-				}
-			}		
+			if ($type != QE_SUPPINV)
+				$cart->add_gl_item($qe_line['dest_id'], $qe_line['dimension_id'],
+					$qe_line['dimension2_id'], $part, $qe['description']);
+			else {
+					$acc_name = get_gl_account_name($qe_line['dest_id']);
+					$cart->add_gl_codes_to_trans($qe_line['dest_id'], 
+						$acc_name, $qe_line['dimension_id'], 
+						$qe_line['dimension2_id'], $part, $qe['description']);
+			}
 		}
-		//line_start_focus();
 	}	
+	return $bank_amount;
 }
 
 

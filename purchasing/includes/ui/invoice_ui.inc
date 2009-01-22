@@ -195,7 +195,7 @@ function display_gl_controls(&$supp_trans, $k)
 
 function display_gl_items(&$supp_trans, $mode=0)
 {
-	global $table_style, $path_to_root;
+	global $table_style, $path_to_root, $Ajax;
 
     // if displaying in form, and no items, exit
     if (($mode == 2 || $mode == 3) && count($supp_trans->gl_codes) == 0)
@@ -212,18 +212,25 @@ function display_gl_items(&$supp_trans, $mode=0)
 
 	if ($mode == 1)
 	{
-		$qes = has_quick_entries(-1, 0);
+		$qes = has_quick_entries(QE_SUPPINV);
 		if ($qes !== false)
 		{
 			echo "<div style='float:right;'>";
 			echo _("Quick Entry:")."&nbsp;"; 
-			quick_entries_list('qid', null, 0, 1);
-			echo "&nbsp;"._("Amount")."&nbsp;";
-			$amount = input_num('totamount');
+			quick_entries_list('qid', null, QE_SUPPINV, true);
+			$qid = get_quick_entry(get_post('qid'));
+			if (list_updated('qid')) {
+				unset($_POST['totamount']); // enable default
+				$Ajax->activate('totamount');
+			}
+			echo "&nbsp;".$qid['base_desc'].":"."&nbsp;";
+
+			$amount = input_num('totamount', $qid['base_amount']);
 			$dec = user_price_dec();
 			echo "<input class='amount' type='text' name='totamount' size='7' maxlength='12' dec='$dec' value='$amount'>&nbsp;";
 			submit('go', _("Go"), true, false, true);
 			echo "</div>";
+
 		}	
 	}
 	display_heading($heading);

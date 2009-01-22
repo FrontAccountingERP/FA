@@ -1472,51 +1472,47 @@ INSERT INTO `0_purch_orders` VALUES ('12', '0', '4', '', '2008-03-25', '13', '',
 INSERT INTO `0_purch_orders` VALUES ('13', '0', '4', '', '2008-03-25', '14', '', 'DEF', 'N/A');
 INSERT INTO `0_purch_orders` VALUES ('14', '0', '1', '', '2009-01-10', '15', '', 'CWA', 'address');
 
-
 ### Structure of table `0_quick_entries` ###
 
 DROP TABLE IF EXISTS `0_quick_entries`;
 
 CREATE TABLE `0_quick_entries` (
-  `id` smallint(6) unsigned NOT NULL auto_increment,
+  `id` smallint(6) UNSIGNED NOT NULL auto_increment,
+  `type` tinyint(1) NOT NULL default '0',
   `description` varchar(60) NOT NULL,
-  `deposit` tinyint(1) NOT NULL default '0',
-  `bank_only` tinyint(1) NOT NULL default '0',
+  `base_amount` double NOT NULL default '0',
+  `base_desc` varchar(60) NULL,
   PRIMARY KEY  (`id`),
   KEY `description` (`description`)
-) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
-
+) TYPE=MyISAM AUTO_INCREMENT=1;
 
 ### Data of table `0_quick_entries` ###
 
-INSERT INTO `0_quick_entries` VALUES ('1', 'Maintenance', '0', '1');
-INSERT INTO `0_quick_entries` VALUES ('2', 'Phone', '0', '1');
-INSERT INTO `0_quick_entries` VALUES ('3', 'Cash Sales', '1', '1');
-
+INSERT INTO `0_quick_entries` VALUES ('1', '1', 'Maintenance', '0', 'Amount');
+INSERT INTO `0_quick_entries` VALUES ('2', '1', 'Phone', '0', 'Amount');
+INSERT INTO `0_quick_entries` VALUES ('3', '2', 'Cash Sales', '0', 'Amount');
 
 ### Structure of table `0_quick_entry_lines` ###
 
 DROP TABLE IF EXISTS `0_quick_entry_lines`;
 
 CREATE TABLE `0_quick_entry_lines` (
-  `id` smallint(6) unsigned NOT NULL auto_increment,
-  `qid` smallint(6) unsigned NOT NULL,
-  `account` varchar(11) NOT NULL,
-  `tax_acc` tinyint(1) NOT NULL default '0',
-  `pct` tinyint(1) NOT NULL default '0',
-  `amount` double default '0',
-  `dimension_id` smallint(6) unsigned default NULL,
-  `dimension2_id` smallint(6) unsigned default NULL,
+  `id` smallint(6) UNSIGNED NOT NULL auto_increment,
+  `qid` smallint(6) UNSIGNED NOT NULL,
+  `amount` double default NULL default '0',
+  `action` varchar(2) NOT NULL,
+  `dest_id` varchar(11) NOT NULL,
+  `dimension_id` smallint(6) UNSIGNED NULL default NULL,
+  `dimension2_id` smallint(6) UNSIGNED NULL default NULL,
   PRIMARY KEY  (`id`),
   KEY `qid` (`qid`)
-) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
-
+) TYPE=MyISAM AUTO_INCREMENT=1;
 
 ### Data of table `0_quick_entry_lines` ###
 
-INSERT INTO `0_quick_entry_lines` VALUES ('1', '1', '6600', '1', '0', '0', '0', '0');
-INSERT INTO `0_quick_entry_lines` VALUES ('2', '2', '6730', '1', '0', '0', '0', '0');
-INSERT INTO `0_quick_entry_lines` VALUES ('3', '3', '3000', '1', '0', '0', '0', '0');
+INSERT INTO `0_quick_entry_lines` VALUES ('1', '1','0','=', '6600', '0', '0');
+INSERT INTO `0_quick_entry_lines` VALUES ('2', '2','0','=', '6730', '0', '0');
+INSERT INTO `0_quick_entry_lines` VALUES ('3', '3','0','=', '3000', '0', '0');
 
 
 ### Structure of table `0_recurrent_invoices` ###

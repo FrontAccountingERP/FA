@@ -239,7 +239,8 @@ if (isset($_POST['CancelItemChanges']))
 
 if (isset($_POST['go']))
 {
-	display_quick_entries($_SESSION['journal_items'], $_POST['person_id'], input_num('totamount'));
+	display_quick_entries($_SESSION['journal_items'], $_POST['person_id'], input_num('totamount'), QE_JOURNAL);
+	$_POST['totamount'] = price_format(0); $Ajax->activate('totamount');
 	line_start_focus();
 }	
 //-----------------------------------------------------------------------------------------------

@@ -1717,49 +1717,6 @@ function payment_person_types_list_row($label, $name, $selected_id=null, $relate
 
 //------------------------------------------------------------------------------------------------
 
-function quick_entries_list($name, $selected_id=null, $expense=-1, $bank_only=-1, $submit_on_change=false)
-{
-	$where = false;
-	$sql = "SELECT id, description FROM ".TB_PREF."quick_entries";
-	if ($expense != -1)
-	{
-		$sql .= " WHERE deposit=$expense";
-		$where = true;
-	}	
-	if ($bank_only != -1)
-	{
-		if ($where)
-			$sql .= " AND bank_only=$bank_only";
-		else	
-			$sql .= " WHERE bank_only=$bank_only";
-	}
-	combo_input($name, $selected_id, $sql, 'id', 'description',
-		array(
-			'spec_id' => '',
-			'order' => 'description',
-			'select_submit'=> $submit_on_change,
-			'async' => false
-		) );
-
-}
-
-function quick_entries_list_cells($label, $name, $selected_id=null, $expense=-1, $bank_only=-1, $submit_on_change=false)
-{
-	echo "<td>$label</td><td>\n";
-	quick_entries_list($name, $selected_id, $expense, $bank_only, $submit_on_change);
-	echo "</td>";
-}
-
-function quick_entries_list_row($label, $name, $selected_id=null, $expense=-1, $bank_only=-1, $submit_on_change=false)
-{
-	echo "<tr>\n";
-	quick_entries_list_cells($label, $name, $selected_id, $expense, $bank_only, $submit_on_change);
-	echo "</tr>\n";
-}
-
-
-//------------------------------------------------------------------------------------------------
-
 function wo_types_list($name, $selected_id=null)
 {
 	$types = wo_types::get_all();
@@ -2038,6 +1995,64 @@ function printers_list($name, $selected_id=null, $spec_opt=false, $submit_on_cha
 			'spec_option'=>$spec_opt,
 			'spec_id' => ''
 		 ));
+}
+
+//------------------------------------------------------------------------------------------------
+
+function quick_entries_list($name, $selected_id=null, $type=null, $submit_on_change=false)
+{
+	$where = false;
+	$sql = "SELECT id, description FROM ".TB_PREF."quick_entries";
+	if ($type != null)
+		$sql .= " WHERE type=$type";
+
+	combo_input($name, $selected_id, $sql, 'id', 'description',
+		array(
+			'spec_id' => '',
+			'order' => 'description',
+			'select_submit'=> $submit_on_change,
+			'async' => false
+		) );
+
+}
+
+function quick_entries_list_cells($label, $name, $selected_id=null, $type, $submit_on_change=false)
+{
+	echo "<td>$label</td><td>\n";
+	quick_entries_list($name, $selected_id, $type, $submit_on_change);
+	echo "</td>";
+}
+
+function quick_entries_list_row($label, $name, $selected_id=null, $type, $submit_on_change=false)
+{
+	echo "<tr>\n";
+	quick_entries_list_cells($label, $name, $selected_id, $type, $submit_on_change);
+	echo "</tr>\n";
+}
+
+
+function quick_actions_list_row($label, $name, $selected_id=null, $submit_on_change=false)
+{
+	global $quick_actions;
+	
+	echo "<tr><td>$label</td><td>";
+	array_selector($name, $selected_id, $quick_actions, 
+		array( 
+			'select_submit'=> $submit_on_change
+		) );
+	echo "</td></tr>\n";
+}
+
+function quick_entry_types_list_row($label, $name, $selected_id=null, $submit_on_change=false)
+{
+	global $quick_entry_types;
+		
+	echo "<tr><td>$label</td><td>";
+	array_selector($name, $selected_id, $quick_entry_types, 
+		array( 
+			'select_submit'=> $submit_on_change
+			) );
+	echo "</td></tr>\n";
 }
 
 

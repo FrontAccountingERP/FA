@@ -74,6 +74,12 @@ function can_process()
 		set_focus('description');
 		return false;
 	}
+	if (strlen($_POST['base_desc']) == 0) 
+	{
+		display_error( _("The base amount description cannot be empty."));
+		set_focus('base_desc');
+		return false;
+	}
 
 	return true;
 }
@@ -88,12 +94,14 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 
 		if ($selected_id != -1) 
 		{
-			update_quick_entry($selected_id, $_POST['description'], $_POST['deposit'], $_POST['bank_only']);
+			update_quick_entry($selected_id, $_POST['description'], $_POST['type'],
+				 input_num('base_amount'), $_POST['base_desc']);
 			display_notification(_('Selected quick entry has been updated'));
 		} 
 		else 
 		{
-			add_quick_entry($_POST['description'], $_POST['deposit'], $_POST['bank_only']);
+			add_quick_entry($_POST['description'], $_POST['type'], 
+				input_num('base_amount'), $_POST['base_desc']);
 			display_notification(_('New quick entry has been added'));
 		}
 		$Mode = 'RESET';
@@ -104,13 +112,13 @@ if ($Mode2=='ADD_ITEM2' || $Mode2=='UPDATE_ITEM2')
 {
 	if ($selected_id2 != -1) 
 	{
-		update_quick_entry_line($selected_id2, $selected_id, $_POST['account'], $_POST['tax_acc'], $_POST['pct'], input_num('amount', 0), 
+		update_quick_entry_line($selected_id2, $selected_id, $_POST['actn'], $_POST['dest_id'], input_num('amount', 0), 
 			$_POST['dimension_id'], $_POST['dimension2_id']);
 		display_notification(_('Selected quick entry line has been updated'));
 	} 
 	else 
 	{
-		add_quick_entry_line($selected_id, $_POST['account'], $_POST['tax_acc'], $_POST['pct'], input_num('amount', 0), 
+		add_quick_entry_line($selected_id, $_POST['actn'], $_POST['dest_id'], input_num('amount', 0), 
 			$_POST['dimension_id'], $_POST['dimension2_id']);
 		display_notification(_('New quick entry line has been added'));
 	}
@@ -144,36 +152,37 @@ if ($Mode2 == 'BDel')
 if ($Mode == 'RESET')
 {
 	$selected_id = -1;
-	$_POST['description'] = $_POST['deposit'] = $_POST['bank_only'] = '';
+	$_POST['description'] = $_POST['type'] = '';
+	$_POST['base_desc']= _('Base Amount');
+	$_POST['base_amount'] = price_format(0);
 }
 if ($Mode2 == 'RESET2')
 {
 	$selected_id2 = -1;
-	$_POST['account'] = $_POST['tax_acc'] = $_POST['pct'] = $_POST['amount'] = $_POST['dimension_id'] = $_POST['dimension2_id'] = '';
+	$_POST['actn'] = $_POST['dest_id'] = $_POST['amount'] = 
+		$_POST['dimension_id'] = $_POST['dimension2_id'] = '';
 }
 //-----------------------------------------------------------------------------------
 
 $result = get_quick_entries();
 start_form();
 start_table($table_style);
-$th = array(_("Description"), _("Deposit"), _("Bank Only"), "", "");
+$th = array(_("Description"), _("Type"), "", "");
 table_header($th);
 
 $k = 0;
 while ($myrow = db_fetch($result)) 
 {
 	alt_table_row_color($k);
-	$deposit_text = ($myrow["deposit"] == 0 ? _("No") : _("Yes"));
-	$bank_text = ($myrow["bank_only"] == 0 ? _("No") : _("Yes"));
+	$type_text = $quick_entry_types[$myrow["type"]];
 	label_cell($myrow['description']);
-	label_cell($deposit_text);
-	label_cell($bank_text);
+	label_cell($type_text);
 	edit_button_cell("Edit".$myrow["id"], _("Edit"));
 	delete_button_cell("Delete".$myrow["id"], _("Delete"));
 	end_row();
 }
 
-end_table();
+end_table(1);
 end_form();
 //-----------------------------------------------------------------------------------
 
@@ -190,23 +199,27 @@ if ($selected_id != -1)
 
 		$_POST['id']  = $myrow["id"];
 		$_POST['description']  = $myrow["description"];
-		$_POST['deposit']  = $myrow["deposit"];
-		$_POST['bank_only']  = $myrow["bank_only"];
+		$_POST['deposit']  = $myrow["type"];
+		$_POST['base_desc']  = $myrow["base_desc"];
+		$_POST['base_amount']  = price_format($myrow["base_amount"]);
 		hidden('selected_id', $selected_id);
  	//}
 } 
 
-text_row_ex(_("Description:"), 'description', 50, 60);
+text_row_ex(_("Description").':', 'description', 50, 60);
 
-yesno_list_row(_("Deposit:"), 'deposit', null, "", "", false);
+quick_entry_types_list_row(_("Entry Type").':', 'type');
 
-yesno_list_row(_("Bank Only:"), 'bank_only', null, "", "", false);
+text_row_ex(_("Base Amount Description").':', 'base_desc', 50, 60, '',_('Base Amount'));
+
+amount_row(_("Default Base Amount").':', 'base_amount', price_format(0));
 
 end_table(1);
 
 submit_add_or_update_center($selected_id == -1, '', true);
 
 end_form();
+
 
 if ($selected_id != -1)
 {
@@ -216,22 +229,34 @@ if ($selected_id != -1)
 	start_table($table_style2);
 	$dim = get_company_pref('use_dimension');
 	if ($dim == 2)
-		$th = array(_("Account"), _("Use Tax"), _("Percent"), _("Amount"), _("Dimension"), _("Dimension")." 2", "", "");
+		$th = array(_("Post"), _("Account/Tax Type"), _("Amount"), _("Dimension"), _("Dimension")." 2", "", "");
 	else if ($dim == 1)	
-		$th = array(_("Account"), _("Use Tax"), _("Percent"), _("Amount"), _("Dimension"), "", "");
+		$th = array(_("Post"), _("Account/Tax Type"), _("Amount"), _("Dimension"), "", "");
 	else	
-		$th = array(_("Account"), _("Use Tax"), _("Percent"), _("Amount"), "", "");
+		$th = array(_("Post"), _("Account/Tax Type"), _("Amount"), "", "");
+
 	table_header($th);
 	$k = 0;
 	while ($myrow = db_fetch($result)) 
 	{
 		alt_table_row_color($k);
-		label_cell($myrow['account']." ".$myrow['account_name']);
-		$tax_text = ($myrow['tax_acc'] == 0 ? _("No") : _("Yes"));
-		label_cell($tax_text);
-		$pct_text = ($myrow['pct'] == 0 ? _("No") : _("Yes"));
-		label_cell($pct_text);
-		amount_cell($myrow['amount']);
+		
+		label_cell($quick_actions[$myrow['action']]);
+
+		$act_type = strtolower(substr($myrow['action'], 0, 1));
+
+		if ($act_type == 't') {
+			label_cells($myrow['tax_name'], '');
+		} else {
+			label_cell($myrow['dest_id'].' '.$myrow['account_name']);
+			if ($act_type == '=') 
+				label_cell('');
+			else
+			if ($act_type == '%') 
+				percent_cell($myrow['amount']);
+			else
+				amount_cell($myrow['amount']);
+		}		
    		if ($dim >= 1)
 			label_cell(get_dimension_string($myrow['dimension_id'], true));
    		if ($dim > 1)
@@ -240,15 +265,15 @@ if ($selected_id != -1)
 		delete_button_cell("BDel".$myrow["id"], _("Delete"));
 		end_row();
 	}
-	end_table();
+	end_table(1);
 	hidden('selected_id', $selected_id);
 	hidden('selected_id2', $selected_id2);
 	hidden('description', $_POST['description']);
-	hidden('deposit', $_POST['deposit']);
-	hidden('bank_only', $_POST['bank_only']);
+	hidden('type', $_POST['type']);
 	end_form();
 	start_form();
 
+	div_start('edit_line');
 	start_table($table_style2);
 
 	if ($selected_id2 != -1) 
@@ -259,34 +284,47 @@ if ($selected_id != -1)
 			$myrow = get_quick_entry_line($selected_id2);
 
 			$_POST['id']  = $myrow["id"];
-			$_POST['account']  = $myrow["account"];
-			$_POST['tax_acc']  = $myrow["tax_acc"];
-			$_POST['pct']  = $myrow["pct"];
+			$_POST['dest_id']  = $myrow["dest_id"];
+			$_POST['actn']  = $myrow["action"];
 			$_POST['amount']  = $myrow["amount"];
 			$_POST['dimension_id']  = $myrow["dimension_id"];
 			$_POST['dimension2_id']  = $myrow["dimension2_id"];
 	 	}
 	} 
 
-	gl_all_accounts_list_row(_("Account"), 'account', null);
-	yesno_list_row(_("Use Tax:"), 'tax_acc', null, "", "", false);
-	yesno_list_row(_("Use Percent:"), 'pct', null, "", "", false);
-	amount_row(_("Amount"), 'amount', null);
+	quick_actions_list_row(_("Posted").":",'actn', null, true);
+	if (list_updated('actn'))
+		$Ajax->activate('edit_line');
+
+	$actn = strtolower(substr($_POST['actn'],0,1));
+
+	if ($actn == 't') {
+		item_tax_types_list_row(_("Item Tax Type").":",'dest_id', null);
+	} else {
+		gl_all_accounts_list_row(_("Account").":", 'dest_id', null);
+		if ($actn != '=') {
+			if ($actn = '%') 
+				percent_row(_("Part").":", 'amount', percent_format(0));
+			else
+				amount_row(_("Amount").":", 'amount', price_format(0));
+		}
+	}
 	if ($dim >= 1) 
-		dimensions_list_row(_("Dimension"), 'dimension_id', null, true, " ", false, 1);
+		dimensions_list_row(_("Dimension").":", 'dimension_id', null, true, " ", false, 1);
 	if ($dim > 1) 
-		dimensions_list_row(_("Dimension")." 2", 'dimension2_id', null, true, " ", false, 2);
+		dimensions_list_row(_("Dimension")." 2:", 'dimension2_id', null, true, " ", false, 2);
 	
 	end_table(1);
 	if ($dim < 2)
 		hidden('dimension2_id', 0);
 	if ($dim < 1)
 		hidden('dimension_id', 0);
+	div_end();
+
 	hidden('selected_id', $selected_id);
 	hidden('selected_id2', $selected_id2);
 	hidden('description', $_POST['description']);
-	hidden('deposit', $_POST['deposit']);
-	hidden('bank_only', $_POST['bank_only']);
+	hidden('type', $_POST['type']);
 
 	submit_add_or_update_center2($selected_id2 == -1, '', true);
 

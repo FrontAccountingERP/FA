@@ -311,7 +311,8 @@ if (isset($_POST['RefreshInquiry']))
 if (isset($_POST['go']))
 {
 	$Ajax->activate('gl_items');
-	display_quick_entries($_SESSION['supp_trans'], $_POST['qid'], input_num('totamount'), true, true);
+	display_quick_entries($_SESSION['supp_trans'], $_POST['qid'], input_num('totamount'), QE_SUPPINV);
+	$_POST['totamount'] = price_format(0); $Ajax->activate('totamount');
 	$Ajax->activate('inv_tot');
 }
 
