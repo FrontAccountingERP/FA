@@ -167,6 +167,9 @@ function write_sales_invoice(&$invoice)
 				references::get_next(12), $amount-$discount, $discount,
 				_('Cash invoice').' '.$invoice->trans_no);
 			add_cust_allocation($amount, 12, $pmtno, 10, $invoice_no);
+
+			update_debtor_trans_allocation(10, $invoice_no, $amount);
+			update_debtor_trans_allocation(12, $pmtno, $amount);
 		}
 	}
 	commit_transaction();
