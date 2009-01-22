@@ -61,20 +61,22 @@ function get_bank_gl_account($id)
 
 //---------------------------------------------------------------------------------------------
 
-function add_quick_entry($description, $deposit, $bank_only)
+function add_quick_entry($description, $type, $base_amount, $base_desc)
 {
-	$sql = "INSERT INTO ".TB_PREF."quick_entries (description, deposit, bank_only) VALUES 
-		(".db_escape($description).", $deposit, $bank_only)";
+	$sql = "INSERT INTO ".TB_PREF."quick_entries (description, type, base_amount, base_desc) 
+	VALUES (".db_escape($description).", $type, "
+		.db_escape($base_amount).", ".db_escape($base_desc).")";
 
 	db_query($sql, "could not insert quick entry for $description");
 }
 
 //---------------------------------------------------------------------------------------------
 
-function update_quick_entry($selected_id, $description, $deposit, $bank_only)
+function update_quick_entry($selected_id, $description, $type, $base_amount, $base_desc)
 {
 	$sql = "UPDATE ".TB_PREF."quick_entries	SET description = ".db_escape($description).",
-		deposit=$deposit, bank_only=$bank_only	WHERE id = $selected_id";
+		type=$type, base_amount=".db_escape($base_amount).", base_desc=".db_escape($base_desc)."
+		WHERE id = $selected_id";
 
 	db_query($sql, "could not update quick entry for $selected_id");
 }
@@ -90,20 +92,23 @@ function delete_quick_entry($selected_id)
 
 //---------------------------------------------------------------------------------------------
 
-function add_quick_entry_line($qid, $account, $tax_acc, $pct, $amount, $dim, $dim2)
+function add_quick_entry_line($qid, $action, $dest_id, $amount, $dim, $dim2)
 {
-	$sql = "INSERT INTO ".TB_PREF."quick_entry_lines (qid, account, tax_acc, pct, amount, dimension_id, dimension2_id) VALUES 
-		($qid, ".db_escape($account).", $tax_acc, $pct, $amount, $dim, $dim2)";
+	$sql = "INSERT INTO ".TB_PREF."quick_entry_lines 
+		(qid, action, dest_id, amount, dimension_id, dimension2_id) 
+	VALUES 
+		($qid, ".db_escape($action).",".db_escape($dest_id).",
+			$amount, $dim, $dim2)";
 
 	db_query($sql, "could not insert quick entry line for $qid");
 }
 
 //---------------------------------------------------------------------------------------------
 
-function update_quick_entry_line($selected_id, $qid, $account, $tax_acc, $pct, $amount, $dim, $dim2)
+function update_quick_entry_line($selected_id, $qid, $action, $dest_id, $amount, $dim, $dim2)
 {
-	$sql = "UPDATE ".TB_PREF."quick_entry_lines	SET qid = $qid, account=".db_escape($account).",
-		tax_acc=$tax_acc, pct=$pct, amount=$amount, dimension_id=$dim, dimension2_id=$dim2 
+	$sql = "UPDATE ".TB_PREF."quick_entry_lines	SET qid = $qid, action=".db_escape($action).",
+		dest_id=".db_escape($dest_id).", amount=$amount, dimension_id=$dim, dimension2_id=$dim2 
 		WHERE id = $selected_id";
 
 	db_query($sql, "could not update quick entry line for $selected_id");
@@ -120,43 +125,21 @@ function delete_quick_entry_line($selected_id)
 //---------------------------------------------------------------------------------------------
 
 
-function has_quick_entries($deposit=-1, $bank_only=-1)
+function has_quick_entries($type=null)
 {
-	$where = false;
 	$sql = "SELECT id FROM ".TB_PREF."quick_entries";
-	if ($deposit != -1)
-	{
-		$sql .= " WHERE deposit=$deposit";
-		$where = true;
-	}		
-	if ($bank_only != -1)
-	{
-		if ($where)
-			$sql .= " AND bank_only=$bank_only";
-		else	
-			$sql .= " WHERE bank_only=$bank_only";
-	}		
+	if ($type != null)
+		$sql .= " WHERE type=$type";
 
 	$result = db_query($sql, "could not retreive quick entries");
 	return db_num_rows($result) > 0;
 }
 
-function get_quick_entries($deposit=-1, $bank_only=-1)
+function get_quick_entries($type = null)
 {
-	$where = false;
 	$sql = "SELECT * FROM ".TB_PREF."quick_entries";
-	if ($deposit != -1)
-	{
-		$sql .= " WHERE deposit=$deposit";
-		$where = true;
-	}		
-	if ($bank_only != -1)
-	{
-		if ($where)
-			$sql .= " AND bank_only=$bank_only";
-		else	
-			$sql .= " WHERE bank_only=$bank_only";
-	}		
+	if ($type != null)
+		$sql .= " WHERE type=$type";
 	$sql .= " ORDER BY description";
 
 	return db_query($sql, "could not retreive quick entries");
@@ -173,10 +156,16 @@ function get_quick_entry($selected_id)
 
 function get_quick_entry_lines($qid)
 {
-	$sql = "SELECT ".TB_PREF."quick_entry_lines.*, ".TB_PREF."chart_master.account_name 
-		FROM ".TB_PREF."quick_entry_lines, ".TB_PREF."chart_master 
-		WHERE ".TB_PREF."quick_entry_lines.account = ".TB_PREF."chart_master.account_code
-		AND qid=$qid";
+	$sql = "SELECT ".TB_PREF."quick_entry_lines.*, ".TB_PREF."chart_master.account_name,
+			".TB_PREF."item_tax_types.name as tax_name
+		FROM ".TB_PREF."quick_entry_lines
+		LEFT JOIN ".TB_PREF."chart_master ON
+			".TB_PREF."quick_entry_lines.dest_id = ".TB_PREF."chart_master.account_code
+		LEFT JOIN ".TB_PREF."item_tax_types ON
+			".TB_PREF."quick_entry_lines.dest_id = ".TB_PREF."item_tax_types.id
+		WHERE 
+			qid=$qid
+		ORDER by id";
 
 	return db_query($sql, "could not retreive quick entries");
 }
