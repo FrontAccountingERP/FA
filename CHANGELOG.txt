@@ -19,6 +19,15 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+23-Jan-2009 Joe Hunt
++ Added new files in doc subdirectory
+$ /doc/attachments.txt
+  /doc/bank_reconciliation.txt
+  /doc/dim_on_invoice.txt
+  /doc/license.txt
+  /doc/quick_entries.txt
+  /doc/recurrent_invoice.txt
+  
 22-Jan-2009 Janusz Dobrowolski
 # Added attachments to company sub_dirs
 $ /update_db.php
