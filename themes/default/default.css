@@ -42,6 +42,10 @@ input, select {
 	padding: 1px;
 }
 
+select {
+    max-width: 200px;
+}
+
 input.big {
 	width: 100px;
 }

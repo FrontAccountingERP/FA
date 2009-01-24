@@ -19,6 +19,12 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+24-Jan-2009 Janusz Dobrowolski
+! Set maximum width for select to avoid broken layout in two column layout.
+$ /themes/aqua/default.css
+  /themes/cool/default.css
+  /themes/default/default.css
+
 23-Jan-2009 Joe Hunt
 + Added new files in doc subdirectory
 $ /doc/attachments.txt
