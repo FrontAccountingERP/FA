@@ -25,9 +25,7 @@ function void_transaction($type, $type_no, $date_, $memo_)
 		case 0 : // it's a journal entry
 			if (!exists_gl_trans($type, $type_no))
 				return false;
-			void_gl_trans($type, $type_no);
-			if (exists_bank_trans($type, $type_no))
-				void_bank_trans($type, $type_no);
+			void_journal_trans($type, $type_no);
 			break;
 
 		case 1 : // it's a payment

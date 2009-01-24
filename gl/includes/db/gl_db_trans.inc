@@ -312,6 +312,18 @@ function void_gl_trans($type, $trans_id, $nested=false)
 		commit_transaction();
 }
 
-//--------------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------
+
+function void_journal_trans($type, $type_no)
+{
+	begin_transaction();
+
+	void_gl_trans($type, $type_no, true);
+	void_bank_trans($type, $type_no,true);
+	void_customer_trans_tax_details($type, $type_no);
+	void_supp_invoice_tax_items($type, $type_no);
+
+	commit_transaction();
+}
 
 ?>

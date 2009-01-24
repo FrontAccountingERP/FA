@@ -315,8 +315,8 @@ $quick_actions = array(
 	't-' => _('Taxes included, reduce base') // ditto & reduce base amount
 );
 
-define('QE_DEPOSIT', '1');
-define('QE_PAYMENT', '2');
+define('QE_PAYMENT', '1');
+define('QE_DEPOSIT', '2');
 define('QE_JOURNAL', '3');
 define('QE_SUPPINV', '4');
 
