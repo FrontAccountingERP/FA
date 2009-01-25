@@ -199,7 +199,7 @@ if ($selected_id != -1)
 
 		$_POST['id']  = $myrow["id"];
 		$_POST['description']  = $myrow["description"];
-		$_POST['deposit']  = $myrow["type"];
+		$_POST['type']  = $myrow["type"];
 		$_POST['base_desc']  = $myrow["base_desc"];
 		$_POST['base_amount']  = price_format($myrow["base_amount"]);
 		hidden('selected_id', $selected_id);
@@ -245,15 +245,17 @@ if ($selected_id != -1)
 
 		$act_type = strtolower(substr($myrow['action'], 0, 1));
 
-		if ($act_type == 't') {
+		if ($act_type == 't') 
+		{
 			label_cells($myrow['tax_name'], '');
-		} else {
+		} 
+		else 
+		{
 			label_cell($myrow['dest_id'].' '.$myrow['account_name']);
 			if ($act_type == '=') 
 				label_cell('');
-			else
-			if ($act_type == '%') 
-				percent_cell($myrow['amount']);
+			elseif ($act_type == '%') 
+				label_cell(number_format2($myrow['amount'], user_exrate_dec()), "nowrap align=right ");
 			else
 				amount_cell($myrow['amount']);
 		}		
@@ -298,13 +300,17 @@ if ($selected_id != -1)
 
 	$actn = strtolower(substr($_POST['actn'],0,1));
 
-	if ($actn == 't') {
+	if ($actn == 't') 
+	{
 		item_tax_types_list_row(_("Item Tax Type").":",'dest_id', null);
-	} else {
+	} 
+	else 
+	{
 		gl_all_accounts_list_row(_("Account").":", 'dest_id', null);
-		if ($actn != '=') {
-			if ($actn = '%') 
-				percent_row(_("Part").":", 'amount', percent_format(0));
+		if ($actn != '=') 
+		{
+			if ($actn == '%') 
+				small_amount_row(_("Part").":", 'amount', price_format(0), null, "%", user_exrate_dec());
 			else
 				amount_row(_("Amount").":", 'amount', price_format(0));
 		}

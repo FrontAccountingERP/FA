@@ -302,8 +302,9 @@ class wo_types
 
 $quick_actions = array(
 	'=' => _('Remainder'), // post current base amount to GL account
-	'-' => _('Amount, reduce base'), // post amount to GL account and reduce base
-	'+' => _('Amount, increase base'), // post amount to GL account and increase base
+	'a' => _('Amount'), // post amount to GL account
+	'a+' => _('Amount, increase base'), // post amount to GL account and increase base
+	'a-' => _('Amount, reduce base'), // post amount to GL account and reduce base
 	'%' => _('% amount of base'),	// store acc*amount% to GL account
 	'%+' => _('% amount of base, increase base'),	// ditto & increase base amount
 	'%-' => _('% amount of base, reduce base'),	// ditto & reduce base amount

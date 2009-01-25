@@ -576,11 +576,14 @@ function display_quick_entries(&$cart, $id, $base, $type, $descr='')
 				case "=": // post current base amount to GL account
 					$part = $base;
 					break;
-				case "-": // post amount to GL account and reduce base
-					$part = $qe_line['amount']; $base -= $part;
+				case "a": // post amount to GL account and reduce base
+					$part = $qe_line['amount'];
 					break;
-				case "+": // post amount to GL account and increase base
+				case "a+": // post amount to GL account and increase base
 					$part = $qe_line['amount']; $base += $part;
+					break;
+				case "a-": // post amount to GL account and reduce base
+					$part = $qe_line['amount']; $base -= $part;
 					break;
 				case "%":	// store acc*amount% to GL account
 					$part = round2($base * $qe_line['amount'] / 100, user_price_dec());
@@ -600,10 +603,10 @@ function display_quick_entries(&$cart, $id, $base, $type, $descr='')
 					$tax_total = 0;
 					foreach ($taxes as $index => $item_tax) {
 						if(substr($qe_line['action'],0,1) != 'T')
-							$tax = round($base * $item_tax['rate'] 
+							$tax = round2($base * $item_tax['rate'] 
 						  		/ ($item_tax['rate'] + 100),  user_price_dec());
 						else
-							$tax = round($base * $item_tax['rate'] / 100,  user_price_dec());
+							$tax = round2($base * $item_tax['rate'] / 100,  user_price_dec());
 
 						$gl_code = $type != QE_DEPOSIT 
 							? $item_tax['purchasing_gl_code'] : $item_tax['sales_gl_code'];
@@ -612,7 +615,8 @@ function display_quick_entries(&$cart, $id, $base, $type, $descr='')
 							$cart->add_gl_item($gl_code, 
 								$qe_line['dimension_id'], $qe_line['dimension2_id'], 
 								$tax, $qe['description']);
-						else {
+						else 
+						{
 							$acc_name = get_gl_account_name($gl_code);
 							$cart->add_gl_codes_to_trans($gl_code, 
 								$acc_name, $qe_line['dimension_id'], 
@@ -628,11 +632,12 @@ function display_quick_entries(&$cart, $id, $base, $type, $descr='')
 			if ($type != QE_SUPPINV)
 				$cart->add_gl_item($qe_line['dest_id'], $qe_line['dimension_id'],
 					$qe_line['dimension2_id'], $part, $qe['description']);
-			else {
-					$acc_name = get_gl_account_name($qe_line['dest_id']);
-					$cart->add_gl_codes_to_trans($qe_line['dest_id'], 
-						$acc_name, $qe_line['dimension_id'], 
-						$qe_line['dimension2_id'], $part, $qe['description']);
+			else 
+			{
+				$acc_name = get_gl_account_name($qe_line['dest_id']);
+				$cart->add_gl_codes_to_trans($qe_line['dest_id'], 
+					$acc_name, $qe_line['dimension_id'], 
+					$qe_line['dimension2_id'], $part, $qe['description']);
 			}
 		}
 	}	

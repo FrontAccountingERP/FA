@@ -19,6 +19,14 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+26-Jan-2009 Joe Hunt
++ Added one Post option to Post options in Quick Entry Lines (amount without decrease or increase). Minor bug fixes.
+$ /gl/manage/gl_quick_entries.php
+  /includes/types.inc
+  /includes/ui/ui_view.inc
++ Added 'inactive' field in most 'catalog' tables.
+$ /sql/alter2.1.sql
+
 24-Jan-2009 Janusz Dobrowolski
 ! Set maximum width for select to avoid broken layout in two column layout.
 $ /themes/aqua/default.css

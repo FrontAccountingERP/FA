@@ -32,13 +32,14 @@ DROP TABLE IF EXISTS `0_groups`;
 CREATE TABLE `0_groups` (
   `id` smallint(6) UNSIGNED NOT NULL auto_increment,
   `description` varchar(60) NOT NULL default '',
+  `inactive` tinyint(1) NOT NULL default 0,
   PRIMARY KEY  (`id`),
   UNIQUE KEY `description` (`description`)
 ) TYPE=MyISAM AUTO_INCREMENT=1 ;
 
-INSERT INTO `0_groups` VALUES ('1', 'Small');
-INSERT INTO `0_groups` VALUES ('2', 'Medium');
-INSERT INTO `0_groups` VALUES ('3', 'Large');
+INSERT INTO `0_groups` VALUES ('1', 'Small', '0');
+INSERT INTO `0_groups` VALUES ('2', 'Medium', '0');
+INSERT INTO `0_groups` VALUES ('3', 'Large', '0');
 
 DROP TABLE IF EXISTS `0_recurrent_invoices`;
 
@@ -91,11 +92,12 @@ CREATE TABLE `0_sales_pos` (
   `credit_sale` tinyint(1) NOT NULL,
   `pos_location` varchar(5) NOT NULL,
   `pos_account` smallint(6) UNSIGNED NOT NULL,
+  `inactive` tinyint(1) NOT NULL default 0,
   PRIMARY KEY  (`id`),
   UNIQUE KEY(`pos_name`)
 ) TYPE=MyISAM AUTO_INCREMENT=1;
 
-INSERT INTO `0_sales_pos` VALUES ('1', 'Default', '1', '1', 'DEF', '1');
+INSERT INTO `0_sales_pos` VALUES ('1', 'Default', '1', '1', 'DEF', '1', '0');
 
 ALTER TABLE `0_users` DROP COLUMN `pos`;
 ALTER TABLE `0_users` ADD `pos` SMALLINT(6) DEFAULT '1';
@@ -187,6 +189,7 @@ CREATE TABLE `0_item_codes` (
   `category_id` smallint(6) UNSIGNED NOT NULL,
   `quantity` double NOT NULL default '1',
   `is_foreign` tinyint(1) NOT NULL default 0,
+  `inactive` tinyint(1) NOT NULL default 0,
   PRIMARY KEY  (`id`),
   UNIQUE KEY(`stock_id`, `item_code`)
 ) TYPE=MyISAM AUTO_INCREMENT=1;
@@ -239,3 +242,49 @@ CREATE TABLE IF NOT EXISTS `0_sql_trail` (
   PRIMARY KEY (`id`)
 ) TYPE = MyISAM;
 
+ALTER TABLE `0_tax_types` DROP COLUMN `out`;
+
+ALTER TABLE `0_chart_master` DROP COLUMN `inactive`;
+ALTER TABLE `0_chart_master` ADD `inactive` tinyint(1) NOT NULL DEFAULT '0';
+
+ALTER TABLE `0_currencies` DROP COLUMN `inactive`;
+ALTER TABLE `0_currencies` ADD `inactive` tinyint(1) NOT NULL DEFAULT '0';
+
+ALTER TABLE `0_bank_accounts` DROP COLUMN `inactive`;
+ALTER TABLE `0_bank_accounts` ADD `inactive` tinyint(1) NOT NULL DEFAULT '0';
+
+ALTER TABLE `0_stock_master` DROP COLUMN `inactive`;
+ALTER TABLE `0_stock_master` ADD `inactive` tinyint(1) NOT NULL DEFAULT '0';
+
+ALTER TABLE `0_workcentres` DROP COLUMN `inactive`;
+ALTER TABLE `0_workcentres` ADD `inactive` tinyint(1) NOT NULL DEFAULT '0';
+
+ALTER TABLE `0_locations` DROP COLUMN `inactive`;
+ALTER TABLE `0_locations` ADD `inactive` tinyint(1) NOT NULL DEFAULT '0';
+
+ALTER TABLE `0_sales_types` DROP COLUMN `inactive`;
+ALTER TABLE `0_sales_types` ADD `inactive` tinyint(1) NOT NULL DEFAULT '0';
+
+ALTER TABLE `0_areas` DROP COLUMN `inactive`;
+ALTER TABLE `0_areas` ADD `inactive` tinyint(1) NOT NULL DEFAULT '0';
+
+ALTER TABLE `0_salesman` DROP COLUMN `inactive`;
+ALTER TABLE `0_salesman` ADD `inactive` tinyint(1) NOT NULL DEFAULT '0';
+
+ALTER TABLE `0_shippers` DROP COLUMN `inactive`;
+ALTER TABLE `0_shippers` ADD `inactive` tinyint(1) NOT NULL DEFAULT '0';
+
+ALTER TABLE `0_credit_status` DROP COLUMN `inactive`;
+ALTER TABLE `0_credit_status` ADD `inactive` tinyint(1) NOT NULL DEFAULT '0';
+
+ALTER TABLE `0_payment_terms` DROP COLUMN `inactive`;
+ALTER TABLE `0_payment_terms` ADD `inactive` tinyint(1) NOT NULL DEFAULT '0';
+
+ALTER TABLE `0_suppliers` DROP COLUMN `inactive`;
+ALTER TABLE `0_suppliers` ADD `inactive` tinyint(1) NOT NULL DEFAULT '0';
+
+ALTER TABLE `0_stock_category` DROP COLUMN `inactive`;
+ALTER TABLE `0_stock_category` ADD `inactive` tinyint(1) NOT NULL DEFAULT '0';
+
+ALTER TABLE `0_item_units` DROP COLUMN `inactive`;
+ALTER TABLE `0_item_units` ADD `inactive` tinyint(1) NOT NULL DEFAULT '0';
