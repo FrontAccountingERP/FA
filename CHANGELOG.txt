@@ -28,6 +28,10 @@ $ /gl/manage/gl_quick_entries.php
 $ /sql/alter2.1.sql
   /sql/en_US-new.sql
   /sql/en_US-demo.sql
++ Added graphics for cancel. (door-out)
+  /themes/aqua/images/cancel.png
+  /themes/cool/images/cancel.png
+  /themes/default/images/cancel.png
 
 24-Jan-2009 Janusz Dobrowolski
 ! Set maximum width for select to avoid broken layout in two column layout.

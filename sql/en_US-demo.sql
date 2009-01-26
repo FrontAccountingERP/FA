@@ -4,7 +4,7 @@
 # http://frontaccounting.net
 # Company: Drill Company Inc.
 # User: Administrator
-
+# Database: en_US-demo.sql release 2.1
 
 
 ### Structure of table `0_areas` ###
@@ -17,7 +17,7 @@ CREATE TABLE `0_areas` (
   `inactive` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`area_code`),
   UNIQUE KEY `description` (`description`)
-) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
+) TYPE=MyISAM AUTO_INCREMENT=5  AUTO_INCREMENT=5 ;
 
 
 ### Data of table `0_areas` ###
@@ -44,7 +44,7 @@ CREATE TABLE `0_attachments` (
   `filetype` varchar(60) NOT NULL default '',
   PRIMARY KEY  (`id`),
   KEY `type_no` (`type_no`,`trans_no`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) TYPE=MyISAM  AUTO_INCREMENT=1 ;
 
 
 ### Data of table `0_attachments` ###
@@ -70,7 +70,7 @@ CREATE TABLE `0_bank_accounts` (
   PRIMARY KEY  (`id`),
   KEY `bank_account_name` (`bank_account_name`),
   KEY `bank_account_number` (`bank_account_number`)
-) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
+) TYPE=MyISAM AUTO_INCREMENT=4  AUTO_INCREMENT=4 ;
 
 
 ### Data of table `0_bank_accounts` ###
@@ -101,7 +101,7 @@ CREATE TABLE `0_bank_trans` (
   PRIMARY KEY  (`id`),
   KEY `bank_act` (`bank_act`,`ref`),
   KEY `type` (`type`,`trans_no`)
-) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=latin1 AUTO_INCREMENT=27 ;
+) TYPE=InnoDB AUTO_INCREMENT=27  AUTO_INCREMENT=27 ;
 
 
 ### Data of table `0_bank_trans` ###
@@ -147,7 +147,7 @@ CREATE TABLE `0_bom` (
   KEY `parent` (`parent`,`loc_code`),
   KEY `Parent_2` (`parent`),
   KEY `workcentre_added` (`workcentre_added`)
-) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=latin1 AUTO_INCREMENT=6 ;
+) TYPE=MyISAM AUTO_INCREMENT=6  AUTO_INCREMENT=6 ;
 
 
 ### Data of table `0_bom` ###
@@ -177,7 +177,7 @@ CREATE TABLE `0_budget_trans` (
   `person_id` tinyblob,
   PRIMARY KEY  (`counter`),
   KEY `Type_and_Number` (`type`,`type_no`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) TYPE=InnoDB  AUTO_INCREMENT=1 ;
 
 
 ### Data of table `0_budget_trans` ###
@@ -193,7 +193,7 @@ CREATE TABLE `0_chart_class` (
   `class_name` varchar(60) NOT NULL default '',
   `balance_sheet` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`cid`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 ;
+) TYPE=MyISAM  ;
 
 
 ### Data of table `0_chart_class` ###
@@ -219,7 +219,7 @@ CREATE TABLE `0_chart_master` (
   PRIMARY KEY  (`account_code`),
   KEY `account_code` (`account_code`),
   KEY `account_name` (`account_name`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 ;
+) TYPE=MyISAM  ;
 
 
 ### Data of table `0_chart_master` ###
@@ -282,7 +282,7 @@ CREATE TABLE `0_chart_types` (
   `parent` int(11) NOT NULL default '-1',
   PRIMARY KEY  (`id`),
   KEY `name` (`name`)
-) ENGINE=MyISAM AUTO_INCREMENT=53 DEFAULT CHARSET=latin1 AUTO_INCREMENT=53 ;
+) TYPE=MyISAM AUTO_INCREMENT=53  AUTO_INCREMENT=53 ;
 
 
 ### Data of table `0_chart_types` ###
@@ -309,7 +309,7 @@ CREATE TABLE `0_comments` (
   `id` int(11) NOT NULL default '0',
   `date_` date default '0000-00-00',
   `memo_` tinytext
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 ;
+) TYPE=InnoDB  ;
 
 
 ### Data of table `0_comments` ###
@@ -383,7 +383,7 @@ CREATE TABLE `0_company` (
   `accumulate_shipping` tinyint(1) NOT NULL default '0',
   `legal_text` tinytext NOT NULL,
   PRIMARY KEY  (`coy_code`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 ;
+) TYPE=MyISAM  ;
 
 
 ### Data of table `0_company` ###
@@ -402,7 +402,7 @@ CREATE TABLE `0_credit_status` (
   `inactive` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `reason_description` (`reason_description`)
-) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
+) TYPE=MyISAM AUTO_INCREMENT=5  AUTO_INCREMENT=5 ;
 
 
 ### Data of table `0_credit_status` ###
@@ -424,7 +424,7 @@ CREATE TABLE `0_currencies` (
   `hundreds_name` varchar(15) NOT NULL default '',
   `inactive` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`curr_abrev`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 ;
+) TYPE=MyISAM  ;
 
 
 ### Data of table `0_currencies` ###
@@ -449,7 +449,7 @@ CREATE TABLE `0_cust_allocations` (
   `trans_no_to` int(11) default NULL,
   `trans_type_to` int(11) default NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=latin1 AUTO_INCREMENT=12 ;
+) TYPE=InnoDB AUTO_INCREMENT=12  AUTO_INCREMENT=12 ;
 
 
 ### Data of table `0_cust_allocations` ###
@@ -493,7 +493,7 @@ CREATE TABLE `0_cust_branch` (
   PRIMARY KEY  (`branch_code`,`debtor_no`),
   KEY `branch_code` (`branch_code`),
   KEY `br_name` (`br_name`)
-) ENGINE=MyISAM AUTO_INCREMENT=8 DEFAULT CHARSET=latin1 AUTO_INCREMENT=8 ;
+) TYPE=MyISAM AUTO_INCREMENT=8  AUTO_INCREMENT=8 ;
 
 
 ### Data of table `0_cust_branch` ###
@@ -534,7 +534,7 @@ CREATE TABLE `0_debtor_trans` (
   `dimension2_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`trans_no`,`type`),
   KEY `debtor_no` (`debtor_no`,`branch_code`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 ;
+) TYPE=InnoDB  ;
 
 
 ### Data of table `0_debtor_trans` ###
@@ -608,7 +608,7 @@ CREATE TABLE `0_debtor_trans_details` (
   `standard_cost` double NOT NULL default '0',
   `qty_done` double NOT NULL default '0',
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=48 DEFAULT CHARSET=latin1 AUTO_INCREMENT=48 ;
+) TYPE=InnoDB AUTO_INCREMENT=48  AUTO_INCREMENT=48 ;
 
 
 ### Data of table `0_debtor_trans_details` ###
@@ -676,7 +676,7 @@ CREATE TABLE `0_debtor_trans_tax_details` (
   `included_in_price` tinyint(1) NOT NULL default '0',
   `amount` double NOT NULL default '0',
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=42 DEFAULT CHARSET=latin1 AUTO_INCREMENT=42 ;
+) TYPE=InnoDB AUTO_INCREMENT=42  AUTO_INCREMENT=42 ;
 
 
 ### Data of table `0_debtor_trans_tax_details` ###
@@ -746,7 +746,7 @@ CREATE TABLE `0_debtors_master` (
   `inactive` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`debtor_no`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
+) TYPE=MyISAM AUTO_INCREMENT=5  AUTO_INCREMENT=5 ;
 
 
 ### Data of table `0_debtors_master` ###
@@ -771,7 +771,7 @@ CREATE TABLE `0_dimensions` (
   `due_date` date NOT NULL default '0000-00-00',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `reference` (`reference`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
+) TYPE=InnoDB AUTO_INCREMENT=4  AUTO_INCREMENT=4 ;
 
 
 ### Data of table `0_dimensions` ###
@@ -793,7 +793,7 @@ CREATE TABLE `0_exchange_rates` (
   `date_` date NOT NULL default '0000-00-00',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `curr_code` (`curr_code`,`date_`)
-) ENGINE=MyISAM AUTO_INCREMENT=15 DEFAULT CHARSET=latin1 AUTO_INCREMENT=15 ;
+) TYPE=MyISAM AUTO_INCREMENT=15  AUTO_INCREMENT=15 ;
 
 
 ### Data of table `0_exchange_rates` ###
@@ -823,7 +823,7 @@ CREATE TABLE `0_fiscal_year` (
   `end` date default '0000-00-00',
   `closed` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1 AUTO_INCREMENT=8 ;
+) TYPE=InnoDB AUTO_INCREMENT=8  AUTO_INCREMENT=8 ;
 
 
 ### Data of table `0_fiscal_year` ###
@@ -853,7 +853,7 @@ CREATE TABLE `0_gl_trans` (
   `person_id` tinyblob,
   PRIMARY KEY  (`counter`),
   KEY `Type_and_Number` (`type`,`type_no`)
-) ENGINE=InnoDB AUTO_INCREMENT=188 DEFAULT CHARSET=latin1 AUTO_INCREMENT=188 ;
+) TYPE=InnoDB AUTO_INCREMENT=188  AUTO_INCREMENT=188 ;
 
 
 ### Data of table `0_gl_trans` ###
@@ -1040,7 +1040,7 @@ CREATE TABLE `0_grn_batch` (
   `delivery_date` date NOT NULL default '0000-00-00',
   `loc_code` varchar(5) default NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=latin1 AUTO_INCREMENT=14 ;
+) TYPE=InnoDB AUTO_INCREMENT=14  AUTO_INCREMENT=14 ;
 
 
 ### Data of table `0_grn_batch` ###
@@ -1073,7 +1073,7 @@ CREATE TABLE `0_grn_items` (
   `qty_recd` double NOT NULL default '0',
   `quantity_inv` double NOT NULL default '0',
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=latin1 AUTO_INCREMENT=18 ;
+) TYPE=InnoDB AUTO_INCREMENT=18  AUTO_INCREMENT=18 ;
 
 
 ### Data of table `0_grn_items` ###
@@ -1107,7 +1107,7 @@ CREATE TABLE `0_groups` (
   `inactive` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `description` (`description`)
-) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
+) TYPE=MyISAM AUTO_INCREMENT=4  AUTO_INCREMENT=4 ;
 
 
 ### Data of table `0_groups` ###
@@ -1132,7 +1132,7 @@ CREATE TABLE `0_item_codes` (
   `inactive` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `stock_id` (`stock_id`,`item_code`)
-) ENGINE=MyISAM AUTO_INCREMENT=8 DEFAULT CHARSET=latin1 AUTO_INCREMENT=8 ;
+) TYPE=MyISAM AUTO_INCREMENT=8  AUTO_INCREMENT=8 ;
 
 
 ### Data of table `0_item_codes` ###
@@ -1154,7 +1154,7 @@ CREATE TABLE `0_item_tax_type_exemptions` (
   `item_tax_type_id` int(11) NOT NULL default '0',
   `tax_type_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`item_tax_type_id`,`tax_type_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 ;
+) TYPE=InnoDB  ;
 
 
 ### Data of table `0_item_tax_type_exemptions` ###
@@ -1175,7 +1175,7 @@ CREATE TABLE `0_item_tax_types` (
   `exempt` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
+) TYPE=InnoDB AUTO_INCREMENT=3  AUTO_INCREMENT=3 ;
 
 
 ### Data of table `0_item_tax_types` ###
@@ -1195,7 +1195,7 @@ CREATE TABLE `0_item_units` (
   `inactive` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`abbr`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='units of measure' ;
+) TYPE=MyISAM  COMMENT='units of measure' ;
 
 
 ### Data of table `0_item_units` ###
@@ -1222,7 +1222,7 @@ CREATE TABLE `0_loc_stock` (
   `reorder_level` bigint(20) NOT NULL default '0',
   PRIMARY KEY  (`loc_code`,`stock_id`),
   KEY `stock_id` (`stock_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 ;
+) TYPE=InnoDB  ;
 
 
 ### Data of table `0_loc_stock` ###
@@ -1257,7 +1257,7 @@ CREATE TABLE `0_locations` (
   `contact` varchar(30) NOT NULL default '',
   `inactive` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`loc_code`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 ;
+) TYPE=MyISAM  ;
 
 
 ### Data of table `0_locations` ###
@@ -1275,7 +1275,7 @@ CREATE TABLE `0_movement_types` (
   `name` varchar(60) NOT NULL default '',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
+) TYPE=MyISAM AUTO_INCREMENT=2  AUTO_INCREMENT=2 ;
 
 
 ### Data of table `0_movement_types` ###
@@ -1295,7 +1295,7 @@ CREATE TABLE `0_payment_terms` (
   `inactive` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`terms_indicator`),
   UNIQUE KEY `terms` (`terms`)
-) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
+) TYPE=MyISAM AUTO_INCREMENT=5  AUTO_INCREMENT=5 ;
 
 
 ### Data of table `0_payment_terms` ###
@@ -1318,7 +1318,7 @@ CREATE TABLE `0_prices` (
   `price` double NOT NULL default '0',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `price` (`stock_id`,`sales_type_id`,`curr_abrev`)
-) ENGINE=MyISAM AUTO_INCREMENT=13 DEFAULT CHARSET=latin1 AUTO_INCREMENT=13 ;
+) TYPE=MyISAM AUTO_INCREMENT=13  AUTO_INCREMENT=13 ;
 
 
 ### Data of table `0_prices` ###
@@ -1348,7 +1348,7 @@ CREATE TABLE `0_print_profiles` (
   `printer` tinyint(3) unsigned default NULL,
   PRIMARY KEY  (`id`),
   UNIQUE KEY `profile` (`profile`,`report`)
-) ENGINE=MyISAM AUTO_INCREMENT=10 DEFAULT CHARSET=latin1 AUTO_INCREMENT=10 ;
+) TYPE=MyISAM AUTO_INCREMENT=10  AUTO_INCREMENT=10 ;
 
 
 ### Data of table `0_print_profiles` ###
@@ -1378,7 +1378,7 @@ CREATE TABLE `0_printers` (
   `timeout` tinyint(3) unsigned NOT NULL,
   PRIMARY KEY  (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
+) TYPE=MyISAM AUTO_INCREMENT=4  AUTO_INCREMENT=4 ;
 
 
 ### Data of table `0_printers` ###
@@ -1400,7 +1400,7 @@ CREATE TABLE `0_purch_data` (
   `conversion_factor` double NOT NULL default '1',
   `supplier_description` char(50) NOT NULL default '',
   PRIMARY KEY  (`supplier_id`,`stock_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 ;
+) TYPE=MyISAM  ;
 
 
 ### Data of table `0_purch_data` ###
@@ -1427,7 +1427,7 @@ CREATE TABLE `0_purch_order_details` (
   `quantity_ordered` double NOT NULL default '0',
   `quantity_received` double NOT NULL default '0',
   PRIMARY KEY  (`po_detail_item`)
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=latin1 AUTO_INCREMENT=19 ;
+) TYPE=InnoDB AUTO_INCREMENT=19  AUTO_INCREMENT=19 ;
 
 
 ### Data of table `0_purch_order_details` ###
@@ -1465,7 +1465,7 @@ CREATE TABLE `0_purch_orders` (
   `into_stock_location` varchar(5) NOT NULL default '',
   `delivery_address` tinytext NOT NULL,
   PRIMARY KEY  (`order_no`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=latin1 AUTO_INCREMENT=15 ;
+) TYPE=InnoDB AUTO_INCREMENT=15  AUTO_INCREMENT=15 ;
 
 
 ### Data of table `0_purch_orders` ###
@@ -1496,7 +1496,7 @@ CREATE TABLE `0_quick_entries` (
   `base_desc` varchar(60) default NULL,
   PRIMARY KEY  (`id`),
   KEY `description` (`description`)
-) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
+) TYPE=MyISAM AUTO_INCREMENT=4  AUTO_INCREMENT=4 ;
 
 
 ### Data of table `0_quick_entries` ###
@@ -1520,7 +1520,7 @@ CREATE TABLE `0_quick_entry_lines` (
   `dimension2_id` smallint(6) unsigned default NULL,
   PRIMARY KEY  (`id`),
   KEY `qid` (`qid`)
-) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
+) TYPE=MyISAM AUTO_INCREMENT=4  AUTO_INCREMENT=4 ;
 
 
 ### Data of table `0_quick_entry_lines` ###
@@ -1547,7 +1547,7 @@ CREATE TABLE `0_recurrent_invoices` (
   `last_sent` date NOT NULL default '0000-00-00',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `description` (`description`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) TYPE=InnoDB  AUTO_INCREMENT=1 ;
 
 
 ### Data of table `0_recurrent_invoices` ###
@@ -1563,7 +1563,7 @@ CREATE TABLE `0_refs` (
   `type` int(11) NOT NULL default '0',
   `reference` varchar(100) NOT NULL default '',
   PRIMARY KEY  (`id`,`type`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 ;
+) TYPE=InnoDB  ;
 
 
 ### Data of table `0_refs` ###
@@ -1601,7 +1601,7 @@ CREATE TABLE `0_sales_order_details` (
   `quantity` double NOT NULL default '0',
   `discount_percent` double NOT NULL default '0',
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=latin1 AUTO_INCREMENT=25 ;
+) TYPE=InnoDB AUTO_INCREMENT=25  AUTO_INCREMENT=25 ;
 
 
 ### Data of table `0_sales_order_details` ###
@@ -1654,7 +1654,7 @@ CREATE TABLE `0_sales_orders` (
   `from_stk_loc` varchar(5) NOT NULL default '',
   `delivery_date` date NOT NULL default '0000-00-00',
   PRIMARY KEY  (`order_no`)
-) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=latin1 AUTO_INCREMENT=23 ;
+) TYPE=InnoDB AUTO_INCREMENT=23  AUTO_INCREMENT=23 ;
 
 
 ### Data of table `0_sales_orders` ###
@@ -1697,7 +1697,7 @@ CREATE TABLE `0_sales_pos` (
   `inactive` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `pos_name` (`pos_name`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
+) TYPE=MyISAM AUTO_INCREMENT=2  AUTO_INCREMENT=2 ;
 
 
 ### Data of table `0_sales_pos` ###
@@ -1717,7 +1717,7 @@ CREATE TABLE `0_sales_types` (
   `inactive` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `sales_type` (`sales_type`)
-) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
+) TYPE=MyISAM AUTO_INCREMENT=3  AUTO_INCREMENT=3 ;
 
 
 ### Data of table `0_sales_types` ###
@@ -1742,7 +1742,7 @@ CREATE TABLE `0_salesman` (
   `inactive` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`salesman_code`),
   UNIQUE KEY `salesman_name` (`salesman_name`)
-) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
+) TYPE=MyISAM AUTO_INCREMENT=3  AUTO_INCREMENT=3 ;
 
 
 ### Data of table `0_salesman` ###
@@ -1764,7 +1764,7 @@ CREATE TABLE `0_shippers` (
   `inactive` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`shipper_id`),
   UNIQUE KEY `name` (`shipper_name`)
-) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
+) TYPE=MyISAM AUTO_INCREMENT=3  AUTO_INCREMENT=3 ;
 
 
 ### Data of table `0_shippers` ###
@@ -1783,7 +1783,7 @@ CREATE TABLE `0_sql_trail` (
   `result` tinyint(1) NOT NULL,
   `msg` varchar(255) NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) TYPE=MyISAM  AUTO_INCREMENT=1 ;
 
 
 ### Data of table `0_sql_trail` ###
@@ -1804,7 +1804,7 @@ CREATE TABLE `0_stock_category` (
   `inactive` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`category_id`),
   UNIQUE KEY `description` (`description`)
-) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
+) TYPE=MyISAM AUTO_INCREMENT=5  AUTO_INCREMENT=5 ;
 
 
 ### Data of table `0_stock_category` ###
@@ -1841,7 +1841,7 @@ CREATE TABLE `0_stock_master` (
   `overhead_cost` double NOT NULL default '0',
   `inactive` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`stock_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 ;
+) TYPE=InnoDB  ;
 
 
 ### Data of table `0_stock_master` ###
@@ -1875,7 +1875,7 @@ CREATE TABLE `0_stock_moves` (
   `visible` tinyint(1) NOT NULL default '1',
   PRIMARY KEY  (`trans_id`),
   KEY `type` (`type`,`trans_no`)
-) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=latin1 AUTO_INCREMENT=43 ;
+) TYPE=InnoDB AUTO_INCREMENT=43  AUTO_INCREMENT=43 ;
 
 
 ### Data of table `0_stock_moves` ###
@@ -1936,7 +1936,7 @@ CREATE TABLE `0_supp_allocations` (
   `trans_no_to` int(11) default NULL,
   `trans_type_to` int(11) default NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=latin1 AUTO_INCREMENT=11 ;
+) TYPE=InnoDB AUTO_INCREMENT=11  AUTO_INCREMENT=11 ;
 
 
 ### Data of table `0_supp_allocations` ###
@@ -1965,7 +1965,7 @@ CREATE TABLE `0_supp_invoice_items` (
   `unit_tax` double NOT NULL default '0',
   `memo_` tinytext,
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=latin1 AUTO_INCREMENT=24 ;
+) TYPE=InnoDB AUTO_INCREMENT=24  AUTO_INCREMENT=24 ;
 
 
 ### Data of table `0_supp_invoice_items` ###
@@ -2001,7 +2001,7 @@ CREATE TABLE `0_supp_invoice_tax_items` (
   `included_in_price` tinyint(1) NOT NULL default '0',
   `amount` double NOT NULL default '0',
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1 AUTO_INCREMENT=7 ;
+) TYPE=InnoDB AUTO_INCREMENT=7  AUTO_INCREMENT=7 ;
 
 
 ### Data of table `0_supp_invoice_tax_items` ###
@@ -2035,7 +2035,7 @@ CREATE TABLE `0_supp_trans` (
   KEY `supplier_id` (`supplier_id`),
   KEY `SupplierID_2` (`supplier_id`,`supp_reference`),
   KEY `type` (`type`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 ;
+) TYPE=InnoDB  ;
 
 
 ### Data of table `0_supp_trans` ###
@@ -2086,7 +2086,7 @@ CREATE TABLE `0_suppliers` (
   `notes` tinytext NOT NULL,
   `inactive` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`supplier_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
+) TYPE=MyISAM AUTO_INCREMENT=5  AUTO_INCREMENT=5 ;
 
 
 ### Data of table `0_suppliers` ###
@@ -2107,7 +2107,7 @@ CREATE TABLE `0_sys_types` (
   `type_no` int(11) NOT NULL default '1',
   `next_reference` varchar(100) NOT NULL default '',
   PRIMARY KEY  (`type_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 ;
+) TYPE=InnoDB  ;
 
 
 ### Data of table `0_sys_types` ###
@@ -2145,7 +2145,7 @@ CREATE TABLE `0_tax_group_items` (
   `rate` double NOT NULL default '0',
   `included_in_price` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`tax_group_id`,`tax_type_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 ;
+) TYPE=InnoDB  ;
 
 
 ### Data of table `0_tax_group_items` ###
@@ -2165,7 +2165,7 @@ CREATE TABLE `0_tax_groups` (
   `tax_shipping` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
+) TYPE=InnoDB AUTO_INCREMENT=5  AUTO_INCREMENT=5 ;
 
 
 ### Data of table `0_tax_groups` ###
@@ -2186,7 +2186,7 @@ CREATE TABLE `0_tax_types` (
   `purchasing_gl_code` varchar(11) NOT NULL default '',
   `name` varchar(60) NOT NULL default '',
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
+) TYPE=InnoDB AUTO_INCREMENT=4  AUTO_INCREMENT=4 ;
 
 
 ### Data of table `0_tax_types` ###
@@ -2228,7 +2228,7 @@ CREATE TABLE `0_users` (
   `print_profile` varchar(30) NOT NULL default '1',
   `rep_popup` tinyint(1) default '1',
   PRIMARY KEY  (`user_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 ;
+) TYPE=MyISAM  ;
 
 
 ### Data of table `0_users` ###
@@ -2247,7 +2247,7 @@ CREATE TABLE `0_voided` (
   `date_` date NOT NULL default '0000-00-00',
   `memo_` tinytext NOT NULL,
   UNIQUE KEY `id` (`type`,`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 ;
+) TYPE=InnoDB  ;
 
 
 ### Data of table `0_voided` ###
@@ -2269,7 +2269,7 @@ CREATE TABLE `0_wo_issue_items` (
   `issue_id` int(11) default NULL,
   `qty_issued` double default NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
+) TYPE=InnoDB AUTO_INCREMENT=2  AUTO_INCREMENT=2 ;
 
 
 ### Data of table `0_wo_issue_items` ###
@@ -2289,7 +2289,7 @@ CREATE TABLE `0_wo_issues` (
   `loc_code` varchar(5) default NULL,
   `workcentre_id` int(11) default NULL,
   PRIMARY KEY  (`issue_no`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
+) TYPE=InnoDB AUTO_INCREMENT=2  AUTO_INCREMENT=2 ;
 
 
 ### Data of table `0_wo_issues` ###
@@ -2308,7 +2308,7 @@ CREATE TABLE `0_wo_manufacture` (
   `quantity` double NOT NULL default '0',
   `date_` date NOT NULL default '0000-00-00',
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
+) TYPE=InnoDB AUTO_INCREMENT=3  AUTO_INCREMENT=3 ;
 
 
 ### Data of table `0_wo_manufacture` ###
@@ -2331,7 +2331,7 @@ CREATE TABLE `0_wo_requirements` (
   `loc_code` char(5) NOT NULL default '',
   `units_issued` double NOT NULL default '0',
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=latin1 AUTO_INCREMENT=29 ;
+) TYPE=InnoDB AUTO_INCREMENT=29  AUTO_INCREMENT=29 ;
 
 
 ### Data of table `0_wo_requirements` ###
@@ -2377,7 +2377,7 @@ CREATE TABLE `0_workcentres` (
   `inactive` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
+) TYPE=MyISAM AUTO_INCREMENT=2  AUTO_INCREMENT=2 ;
 
 
 ### Data of table `0_workcentres` ###
@@ -2405,7 +2405,7 @@ CREATE TABLE `0_workorders` (
   `additional_costs` double NOT NULL default '0',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `wo_ref` (`wo_ref`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1 AUTO_INCREMENT=8 ;
+) TYPE=InnoDB AUTO_INCREMENT=8  AUTO_INCREMENT=8 ;
 
 
 ### Data of table `0_workorders` ###

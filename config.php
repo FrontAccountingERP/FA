@@ -194,7 +194,7 @@ if (!defined('ICON_EDIT'))
 	define("ICON_ADD", "ok.gif");	
 	define("ICON_UPDATE", "ok.gif");	
 	define("ICON_OK", "ok.gif");	
-	define("ICON_CANCEL", "delete.gif");	
+	define("ICON_CANCEL", "cancel.png");	
 	define("ICON_GL", "gl.png");	
 	define("ICON_PRINT", "print.png");	
 	define("ICON_PDF", "pdf.gif");	
