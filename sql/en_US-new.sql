@@ -1,5 +1,5 @@
-# MySQL dump of database 'unstable' on host 'localhost'
-# Backup Date and Time: 2009-01-10 16:22
+# MySQL dump of database 'fa' on host 'localhost'
+# Backup Date and Time: 2009-01-26 10:11
 # Built by FrontAccounting 2.1.0 CVS
 # http://frontaccounting.net
 # Company: Company name
@@ -14,6 +14,7 @@ DROP TABLE IF EXISTS `0_areas`;
 CREATE TABLE `0_areas` (
   `area_code` int(11) NOT NULL auto_increment,
   `description` varchar(60) NOT NULL default '',
+  `inactive` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`area_code`),
   UNIQUE KEY `description` (`description`)
 ) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
@@ -21,7 +22,7 @@ CREATE TABLE `0_areas` (
 
 ### Data of table `0_areas` ###
 
-INSERT INTO `0_areas` VALUES ('1', 'USA');
+INSERT INTO `0_areas` VALUES ('1', 'USA', '0');
 
 
 ### Structure of table `0_attachments` ###
@@ -62,6 +63,7 @@ CREATE TABLE `0_bank_accounts` (
   `id` smallint(6) NOT NULL auto_increment,
   `last_reconciled_date` timestamp NOT NULL default '0000-00-00 00:00:00',
   `ending_reconcile_balance` double NOT NULL default '0',
+  `inactive` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`id`),
   KEY `bank_account_name` (`bank_account_name`),
   KEY `bank_account_number` (`bank_account_number`)
@@ -70,8 +72,8 @@ CREATE TABLE `0_bank_accounts` (
 
 ### Data of table `0_bank_accounts` ###
 
-INSERT INTO `0_bank_accounts` VALUES ('1700', '0', 'Current account', 'N/A', 'N/A', '', 'USD', '1', '0000-00-00 00:00:00', '0');
-INSERT INTO `0_bank_accounts` VALUES ('1705', '0', 'Petty Cash account', 'N/A', 'N/A', '', 'USD', '2', '0000-00-00 00:00:00', '0');
+INSERT INTO `0_bank_accounts` VALUES ('1700', '0', 'Current account', 'N/A', 'N/A', '', 'USD', '1', '0000-00-00 00:00:00', '0', '0');
+INSERT INTO `0_bank_accounts` VALUES ('1705', '0', 'Petty Cash account', 'N/A', 'N/A', '', 'USD', '2', '0000-00-00 00:00:00', '0', '0');
 
 
 ### Structure of table `0_bank_trans` ###
@@ -182,6 +184,7 @@ CREATE TABLE `0_chart_master` (
   `account_name` varchar(60) NOT NULL default '',
   `account_type` int(11) NOT NULL default '0',
   `tax_code` int(11) NOT NULL default '0',
+  `inactive` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`account_code`),
   KEY `account_code` (`account_code`),
   KEY `account_name` (`account_name`)
@@ -190,51 +193,51 @@ CREATE TABLE `0_chart_master` (
 
 ### Data of table `0_chart_master` ###
 
-INSERT INTO `0_chart_master` VALUES ('3000', '', 'Sales', '1', '1');
-INSERT INTO `0_chart_master` VALUES ('3010', '', 'Sales  - Wholesale', '1', '1');
-INSERT INTO `0_chart_master` VALUES ('3020', '', 'Sales of Other items', '1', '1');
-INSERT INTO `0_chart_master` VALUES ('3400', '', 'Difference On Exchange', '1', '0');
-INSERT INTO `0_chart_master` VALUES ('5000', '', 'Direct Labour', '2', '0');
-INSERT INTO `0_chart_master` VALUES ('5050', '', 'Direct Labour Recovery', '2', '0');
-INSERT INTO `0_chart_master` VALUES ('4200', '', 'Material Usage Varaiance', '2', '4');
-INSERT INTO `0_chart_master` VALUES ('4210', '', 'Consumable Materials', '2', '4');
-INSERT INTO `0_chart_master` VALUES ('4220', '', 'Purchase price Variance', '2', '0');
-INSERT INTO `0_chart_master` VALUES ('4000', '', 'Purchases of materials', '2', '4');
-INSERT INTO `0_chart_master` VALUES ('4250', '', 'Discounts Received', '2', '0');
-INSERT INTO `0_chart_master` VALUES ('4260', '', 'Exchange Variation', '2', '0');
-INSERT INTO `0_chart_master` VALUES ('4300', '', 'Freight Inwards', '2', '4');
-INSERT INTO `0_chart_master` VALUES ('4010', '', 'Cost of Goods Sold - Retail', '2', '4');
-INSERT INTO `0_chart_master` VALUES ('6790', '', 'Bank Charges', '5', '4');
-INSERT INTO `0_chart_master` VALUES ('6800', '', 'Entertainments', '5', '4');
-INSERT INTO `0_chart_master` VALUES ('6810', '', 'Legal Expenses', '5', '4');
-INSERT INTO `0_chart_master` VALUES ('6600', '', 'Repairs and Maintenance Office', '5', '4');
-INSERT INTO `0_chart_master` VALUES ('6730', '', 'phone', '5', '4');
-INSERT INTO `0_chart_master` VALUES ('8200', '', 'Bank Interest', '52', '0');
-INSERT INTO `0_chart_master` VALUES ('6840', '', 'Credit Control', '5', '0');
-INSERT INTO `0_chart_master` VALUES ('7040', '', 'Depreciation Office Equipment', '51', '0');
-INSERT INTO `0_chart_master` VALUES ('3800', '', 'Freight Outwards', '5', '4');
-INSERT INTO `0_chart_master` VALUES ('4500', '', 'Packaging', '5', '4');
-INSERT INTO `0_chart_master` VALUES ('6400', '', 'Commissions', '5', '0');
-INSERT INTO `0_chart_master` VALUES ('3200', '', 'Prompt Payment Discounts', '1', '0');
-INSERT INTO `0_chart_master` VALUES ('6700', '', 'General Expenses', '5', '4');
-INSERT INTO `0_chart_master` VALUES ('5200', '', 'Indirect Labour', '2', '0');
-INSERT INTO `0_chart_master` VALUES ('5210', '', 'Overhead Recovery', '5', '0');
-INSERT INTO `0_chart_master` VALUES ('1700', '', 'Bank account', '10', '0');
-INSERT INTO `0_chart_master` VALUES ('1705', '', 'Petty Cash', '10', '0');
-INSERT INTO `0_chart_master` VALUES ('1710', '', 'Foreign currency account', '10', '0');
-INSERT INTO `0_chart_master` VALUES ('1500', '', 'Accounts Receivable', '20', '0');
-INSERT INTO `0_chart_master` VALUES ('1400', '', 'Stocks of Raw Materials', '45', '0');
-INSERT INTO `0_chart_master` VALUES ('1410', '', 'Stocks of Work In Progress', '45', '0');
-INSERT INTO `0_chart_master` VALUES ('1420', '', 'Stocks of Finsihed Goods', '45', '0');
-INSERT INTO `0_chart_master` VALUES ('1430', '', 'Goods Received Clearing account', '30', '0');
-INSERT INTO `0_chart_master` VALUES ('2630', '', 'Accounts Payable', '30', '0');
-INSERT INTO `0_chart_master` VALUES ('2660', '', 'VAT out 5', '30', '0');
-INSERT INTO `0_chart_master` VALUES ('2662', '', 'VAT out 1', '30', '0');
-INSERT INTO `0_chart_master` VALUES ('2664', '', 'VAT out 25', '30', '0');
-INSERT INTO `0_chart_master` VALUES ('2680', '', 'VAT In 5', '30', '0');
-INSERT INTO `0_chart_master` VALUES ('2682', '', 'VAT In 25', '30', '0');
-INSERT INTO `0_chart_master` VALUES ('2050', '', 'Retained Earnings', '50', '0');
-INSERT INTO `0_chart_master` VALUES ('2000', '', 'Share Capital', '50', '0');
+INSERT INTO `0_chart_master` VALUES ('3000', '', 'Sales', '1', '1', '0');
+INSERT INTO `0_chart_master` VALUES ('3010', '', 'Sales  - Wholesale', '1', '1', '0');
+INSERT INTO `0_chart_master` VALUES ('3020', '', 'Sales of Other items', '1', '1', '0');
+INSERT INTO `0_chart_master` VALUES ('3400', '', 'Difference On Exchange', '1', '0', '0');
+INSERT INTO `0_chart_master` VALUES ('5000', '', 'Direct Labour', '2', '0', '0');
+INSERT INTO `0_chart_master` VALUES ('5050', '', 'Direct Labour Recovery', '2', '0', '0');
+INSERT INTO `0_chart_master` VALUES ('4200', '', 'Material Usage Varaiance', '2', '4', '0');
+INSERT INTO `0_chart_master` VALUES ('4210', '', 'Consumable Materials', '2', '4', '0');
+INSERT INTO `0_chart_master` VALUES ('4220', '', 'Purchase price Variance', '2', '0', '0');
+INSERT INTO `0_chart_master` VALUES ('4000', '', 'Purchases of materials', '2', '4', '0');
+INSERT INTO `0_chart_master` VALUES ('4250', '', 'Discounts Received', '2', '0', '0');
+INSERT INTO `0_chart_master` VALUES ('4260', '', 'Exchange Variation', '2', '0', '0');
+INSERT INTO `0_chart_master` VALUES ('4300', '', 'Freight Inwards', '2', '4', '0');
+INSERT INTO `0_chart_master` VALUES ('4010', '', 'Cost of Goods Sold - Retail', '2', '4', '0');
+INSERT INTO `0_chart_master` VALUES ('6790', '', 'Bank Charges', '5', '4', '0');
+INSERT INTO `0_chart_master` VALUES ('6800', '', 'Entertainments', '5', '4', '0');
+INSERT INTO `0_chart_master` VALUES ('6810', '', 'Legal Expenses', '5', '4', '0');
+INSERT INTO `0_chart_master` VALUES ('6600', '', 'Repairs and Maintenance Office', '5', '4', '0');
+INSERT INTO `0_chart_master` VALUES ('6730', '', 'phone', '5', '4', '0');
+INSERT INTO `0_chart_master` VALUES ('8200', '', 'Bank Interest', '52', '0', '0');
+INSERT INTO `0_chart_master` VALUES ('6840', '', 'Credit Control', '5', '0', '0');
+INSERT INTO `0_chart_master` VALUES ('7040', '', 'Depreciation Office Equipment', '51', '0', '0');
+INSERT INTO `0_chart_master` VALUES ('3800', '', 'Freight Outwards', '5', '4', '0');
+INSERT INTO `0_chart_master` VALUES ('4500', '', 'Packaging', '5', '4', '0');
+INSERT INTO `0_chart_master` VALUES ('6400', '', 'Commissions', '5', '0', '0');
+INSERT INTO `0_chart_master` VALUES ('3200', '', 'Prompt Payment Discounts', '1', '0', '0');
+INSERT INTO `0_chart_master` VALUES ('6700', '', 'General Expenses', '5', '4', '0');
+INSERT INTO `0_chart_master` VALUES ('5200', '', 'Indirect Labour', '2', '0', '0');
+INSERT INTO `0_chart_master` VALUES ('5210', '', 'Overhead Recovery', '5', '0', '0');
+INSERT INTO `0_chart_master` VALUES ('1700', '', 'Bank account', '10', '0', '0');
+INSERT INTO `0_chart_master` VALUES ('1705', '', 'Petty Cash', '10', '0', '0');
+INSERT INTO `0_chart_master` VALUES ('1710', '', 'Foreign currency account', '10', '0', '0');
+INSERT INTO `0_chart_master` VALUES ('1500', '', 'Accounts Receivable', '20', '0', '0');
+INSERT INTO `0_chart_master` VALUES ('1400', '', 'Stocks of Raw Materials', '45', '0', '0');
+INSERT INTO `0_chart_master` VALUES ('1410', '', 'Stocks of Work In Progress', '45', '0', '0');
+INSERT INTO `0_chart_master` VALUES ('1420', '', 'Stocks of Finsihed Goods', '45', '0', '0');
+INSERT INTO `0_chart_master` VALUES ('1430', '', 'Goods Received Clearing account', '30', '0', '0');
+INSERT INTO `0_chart_master` VALUES ('2630', '', 'Accounts Payable', '30', '0', '0');
+INSERT INTO `0_chart_master` VALUES ('2660', '', 'VAT out 5', '30', '0', '0');
+INSERT INTO `0_chart_master` VALUES ('2662', '', 'VAT out 1', '30', '0', '0');
+INSERT INTO `0_chart_master` VALUES ('2664', '', 'VAT out 25', '30', '0', '0');
+INSERT INTO `0_chart_master` VALUES ('2680', '', 'VAT In 5', '30', '0', '0');
+INSERT INTO `0_chart_master` VALUES ('2682', '', 'VAT In 25', '30', '0', '0');
+INSERT INTO `0_chart_master` VALUES ('2050', '', 'Retained Earnings', '50', '0', '0');
+INSERT INTO `0_chart_master` VALUES ('2000', '', 'Share Capital', '50', '0', '0');
 
 
 ### Structure of table `0_chart_types` ###
@@ -345,7 +348,7 @@ CREATE TABLE `0_company` (
 
 ### Data of table `0_company` ###
 
-INSERT INTO `0_company` VALUES ('1', 'Company name', '', '', '1', '1', 'N/A', '', '', '', '', '', 'USD', '1500', '4250', '2630', '1430', '4260', '4220', '2050', '3800', '3000', '3000', '3200', '1420', '4010', '4210', '3000', '1410', '5000', '', '', '', '', '', '', '0', '10', '10', '1000', '20', '20', '30', '1', '1', '0', '0', '0', '-1', '0', '0', '');
+INSERT INTO `0_company` VALUES ('1', 'Company name', '', '', '1', '1', 'N/A', '', '', '', '', '', 'USD', '1500', '4250', '2630', '1430', '4260', '4220', '2050', '3800', '3000', '3000', '3200', '1420', '4010', '4210', '3000', '1410', '5000', '', '', '', '', '', '', '0', '10', '10', '1000', '20', '20', '30', '1', '2', '0', '0', '0', '0', '0', '0', '');
 
 
 ### Structure of table `0_credit_status` ###
@@ -356,6 +359,7 @@ CREATE TABLE `0_credit_status` (
   `id` int(11) NOT NULL auto_increment,
   `reason_description` char(100) NOT NULL default '',
   `dissallow_invoices` tinyint(1) NOT NULL default '0',
+  `inactive` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `reason_description` (`reason_description`)
 ) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
@@ -363,9 +367,9 @@ CREATE TABLE `0_credit_status` (
 
 ### Data of table `0_credit_status` ###
 
-INSERT INTO `0_credit_status` VALUES ('1', 'Good History', '0');
-INSERT INTO `0_credit_status` VALUES ('3', 'No more work until payment received', '1');
-INSERT INTO `0_credit_status` VALUES ('4', 'In liquidation', '1');
+INSERT INTO `0_credit_status` VALUES ('1', 'Good History', '0', '0');
+INSERT INTO `0_credit_status` VALUES ('3', 'No more work until payment received', '1', '0');
+INSERT INTO `0_credit_status` VALUES ('4', 'In liquidation', '1', '0');
 
 
 ### Structure of table `0_currencies` ###
@@ -378,15 +382,16 @@ CREATE TABLE `0_currencies` (
   `curr_symbol` varchar(10) NOT NULL default '',
   `country` varchar(100) NOT NULL default '',
   `hundreds_name` varchar(15) NOT NULL default '',
+  `inactive` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`curr_abrev`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 ;
 
 
 ### Data of table `0_currencies` ###
 
-INSERT INTO `0_currencies` VALUES ('Euro', 'EUR', '?', 'Europe', 'Cents');
-INSERT INTO `0_currencies` VALUES ('Pounds', 'GBP', '?', 'England', 'Pence');
-INSERT INTO `0_currencies` VALUES ('US Dollars', 'USD', '$', 'United States', 'Cents');
+INSERT INTO `0_currencies` VALUES ('Euro', 'EUR', '?', 'Europe', 'Cents', '0');
+INSERT INTO `0_currencies` VALUES ('Pounds', 'GBP', '?', 'England', 'Pence', '0');
+INSERT INTO `0_currencies` VALUES ('US Dollars', 'USD', '$', 'United States', 'Cents', '0');
 
 
 ### Structure of table `0_cust_allocations` ###
@@ -543,6 +548,7 @@ CREATE TABLE `0_debtors_master` (
   `discount` double NOT NULL default '0',
   `pymt_discount` double NOT NULL default '0',
   `credit_limit` float NOT NULL default '1000',
+  `inactive` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`debtor_no`),
   UNIQUE KEY `name` (`name`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
@@ -602,12 +608,12 @@ CREATE TABLE `0_fiscal_year` (
   `end` date default '0000-00-00',
   `closed` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
 
 
 ### Data of table `0_fiscal_year` ###
 
-INSERT INTO `0_fiscal_year` VALUES ('1', '2008-01-01', '2008-12-31', '0');
+INSERT INTO `0_fiscal_year` VALUES ('2', '2009-01-01', '2009-12-31', '0');
 
 
 ### Structure of table `0_gl_trans` ###
@@ -681,6 +687,7 @@ DROP TABLE IF EXISTS `0_groups`;
 CREATE TABLE `0_groups` (
   `id` smallint(6) unsigned NOT NULL auto_increment,
   `description` varchar(60) NOT NULL default '',
+  `inactive` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `description` (`description`)
 ) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
@@ -688,9 +695,9 @@ CREATE TABLE `0_groups` (
 
 ### Data of table `0_groups` ###
 
-INSERT INTO `0_groups` VALUES ('1', 'Small');
-INSERT INTO `0_groups` VALUES ('2', 'Medium');
-INSERT INTO `0_groups` VALUES ('3', 'Large');
+INSERT INTO `0_groups` VALUES ('1', 'Small', '0');
+INSERT INTO `0_groups` VALUES ('2', 'Medium', '0');
+INSERT INTO `0_groups` VALUES ('3', 'Large', '0');
 
 
 ### Structure of table `0_item_codes` ###
@@ -705,6 +712,7 @@ CREATE TABLE `0_item_codes` (
   `category_id` smallint(6) unsigned NOT NULL,
   `quantity` double NOT NULL default '1',
   `is_foreign` tinyint(1) NOT NULL default '0',
+  `inactive` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `stock_id` (`stock_id`,`item_code`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
@@ -754,6 +762,7 @@ CREATE TABLE `0_item_units` (
   `abbr` varchar(20) NOT NULL,
   `name` varchar(40) NOT NULL,
   `decimals` tinyint(2) NOT NULL,
+  `inactive` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`abbr`),
   UNIQUE KEY `name` (`name`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 ;
@@ -761,7 +770,7 @@ CREATE TABLE `0_item_units` (
 
 ### Data of table `0_item_units` ###
 
-INSERT INTO `0_item_units` VALUES ('each', 'Each', '0');
+INSERT INTO `0_item_units` VALUES ('each', 'Each', '0', '0');
 
 
 ### Structure of table `0_loc_stock` ###
@@ -793,13 +802,14 @@ CREATE TABLE `0_locations` (
   `fax` varchar(30) NOT NULL default '',
   `email` varchar(100) NOT NULL default '',
   `contact` varchar(30) NOT NULL default '',
+  `inactive` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`loc_code`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 ;
 
 
 ### Data of table `0_locations` ###
 
-INSERT INTO `0_locations` VALUES ('DEF', 'Default', 'N/A', '', '', '', '');
+INSERT INTO `0_locations` VALUES ('DEF', 'Default', 'N/A', '', '', '', '', '0');
 
 
 ### Structure of table `0_movement_types` ###
@@ -828,6 +838,7 @@ CREATE TABLE `0_payment_terms` (
   `terms` char(80) NOT NULL default '',
   `days_before_due` smallint(6) NOT NULL default '0',
   `day_in_following_month` smallint(6) NOT NULL default '0',
+  `inactive` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`terms_indicator`),
   UNIQUE KEY `terms` (`terms`)
 ) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
@@ -835,10 +846,10 @@ CREATE TABLE `0_payment_terms` (
 
 ### Data of table `0_payment_terms` ###
 
-INSERT INTO `0_payment_terms` VALUES ('1', 'Due 15th Of the Following Month', '0', '17');
-INSERT INTO `0_payment_terms` VALUES ('2', 'Due By End Of The Following Month', '0', '30');
-INSERT INTO `0_payment_terms` VALUES ('3', 'Payment due within 10 days', '10', '0');
-INSERT INTO `0_payment_terms` VALUES ('4', 'Cash Only', '1', '0');
+INSERT INTO `0_payment_terms` VALUES ('1', 'Due 15th Of the Following Month', '0', '17', '0');
+INSERT INTO `0_payment_terms` VALUES ('2', 'Due By End Of The Following Month', '0', '30', '0');
+INSERT INTO `0_payment_terms` VALUES ('3', 'Payment due within 10 days', '10', '0', '0');
+INSERT INTO `0_payment_terms` VALUES ('4', 'Cash Only', '1', '0', '0');
 
 
 ### Structure of table `0_prices` ###
@@ -973,39 +984,53 @@ CREATE TABLE `0_purch_orders` (
 
 ### Data of table `0_purch_orders` ###
 
+
+
 ### Structure of table `0_quick_entries` ###
 
 DROP TABLE IF EXISTS `0_quick_entries`;
 
 CREATE TABLE `0_quick_entries` (
-  `id` smallint(6) UNSIGNED NOT NULL auto_increment,
+  `id` smallint(6) unsigned NOT NULL auto_increment,
   `type` tinyint(1) NOT NULL default '0',
   `description` varchar(60) NOT NULL,
   `base_amount` double NOT NULL default '0',
-  `base_desc` varchar(60) NULL,
+  `base_desc` varchar(60) default NULL,
   PRIMARY KEY  (`id`),
   KEY `description` (`description`)
-) TYPE=MyISAM AUTO_INCREMENT=1;
+) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
+
 
 ### Data of table `0_quick_entries` ###
+
+INSERT INTO `0_quick_entries` VALUES ('1', '1', 'Maintenance', '0', 'Amount');
+INSERT INTO `0_quick_entries` VALUES ('2', '1', 'Phone', '0', 'Amount');
+INSERT INTO `0_quick_entries` VALUES ('3', '2', 'Cash Sales', '0', 'Amount');
+
 
 ### Structure of table `0_quick_entry_lines` ###
 
 DROP TABLE IF EXISTS `0_quick_entry_lines`;
 
 CREATE TABLE `0_quick_entry_lines` (
-  `id` smallint(6) UNSIGNED NOT NULL auto_increment,
-  `qid` smallint(6) UNSIGNED NOT NULL,
-  `amount` double default NULL default '0',
+  `id` smallint(6) unsigned NOT NULL auto_increment,
+  `qid` smallint(6) unsigned NOT NULL,
+  `amount` double default '0',
   `action` varchar(2) NOT NULL,
   `dest_id` varchar(11) NOT NULL,
-  `dimension_id` smallint(6) UNSIGNED NULL default NULL,
-  `dimension2_id` smallint(6) UNSIGNED NULL default NULL,
+  `dimension_id` smallint(6) unsigned default NULL,
+  `dimension2_id` smallint(6) unsigned default NULL,
   PRIMARY KEY  (`id`),
   KEY `qid` (`qid`)
-) TYPE=MyISAM AUTO_INCREMENT=1;
+) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
+
 
 ### Data of table `0_quick_entry_lines` ###
+
+INSERT INTO `0_quick_entry_lines` VALUES ('1', '1', '0', '=', '6600', '0', '0');
+INSERT INTO `0_quick_entry_lines` VALUES ('2', '2', '0', '=', '6730', '0', '0');
+INSERT INTO `0_quick_entry_lines` VALUES ('3', '3', '0', '=', '3000', '0', '0');
+
 
 ### Structure of table `0_recurrent_invoices` ###
 
@@ -1109,6 +1134,7 @@ CREATE TABLE `0_sales_pos` (
   `credit_sale` tinyint(1) NOT NULL,
   `pos_location` varchar(5) NOT NULL,
   `pos_account` smallint(6) unsigned NOT NULL,
+  `inactive` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `pos_name` (`pos_name`)
 ) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
@@ -1116,7 +1142,7 @@ CREATE TABLE `0_sales_pos` (
 
 ### Data of table `0_sales_pos` ###
 
-INSERT INTO `0_sales_pos` VALUES ('1', 'Default', '1', '1', 'DEF', '1');
+INSERT INTO `0_sales_pos` VALUES ('1', 'Default', '1', '1', 'DEF', '1', '0');
 
 
 ### Structure of table `0_sales_types` ###
@@ -1128,6 +1154,7 @@ CREATE TABLE `0_sales_types` (
   `sales_type` char(50) NOT NULL default '',
   `tax_included` int(1) NOT NULL default '0',
   `factor` double NOT NULL default '1',
+  `inactive` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `sales_type` (`sales_type`)
 ) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
@@ -1135,8 +1162,8 @@ CREATE TABLE `0_sales_types` (
 
 ### Data of table `0_sales_types` ###
 
-INSERT INTO `0_sales_types` VALUES ('1', 'Retail', '0', '1');
-INSERT INTO `0_sales_types` VALUES ('2', 'Wholesale', '0', '1');
+INSERT INTO `0_sales_types` VALUES ('1', 'Retail', '0', '1', '0');
+INSERT INTO `0_sales_types` VALUES ('2', 'Wholesale', '0', '1', '0');
 
 
 ### Structure of table `0_salesman` ###
@@ -1152,6 +1179,7 @@ CREATE TABLE `0_salesman` (
   `provision` double NOT NULL default '0',
   `break_pt` double NOT NULL default '0',
   `provision2` double NOT NULL default '0',
+  `inactive` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`salesman_code`),
   UNIQUE KEY `salesman_name` (`salesman_name`)
 ) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
@@ -1159,7 +1187,7 @@ CREATE TABLE `0_salesman` (
 
 ### Data of table `0_salesman` ###
 
-INSERT INTO `0_salesman` VALUES ('1', 'Sales Person', '', '', '', '5', '1000', '4');
+INSERT INTO `0_salesman` VALUES ('1', 'Sales Person', '', '', '', '5', '1000', '4', '0');
 
 
 ### Structure of table `0_shippers` ###
@@ -1172,6 +1200,7 @@ CREATE TABLE `0_shippers` (
   `phone` varchar(30) NOT NULL default '',
   `contact` tinytext NOT NULL,
   `address` tinytext NOT NULL,
+  `inactive` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`shipper_id`),
   UNIQUE KEY `name` (`shipper_name`)
 ) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
@@ -1179,7 +1208,7 @@ CREATE TABLE `0_shippers` (
 
 ### Data of table `0_shippers` ###
 
-INSERT INTO `0_shippers` VALUES ('1', 'Default', '', '', '');
+INSERT INTO `0_shippers` VALUES ('1', 'Default', '', '', '', '0');
 
 
 ### Structure of table `0_sql_trail` ###
@@ -1210,6 +1239,7 @@ CREATE TABLE `0_stock_category` (
   `cogs_act` varchar(11) default NULL,
   `adj_gl_act` varchar(11) default NULL,
   `purch_price_var_act` varchar(11) default NULL,
+  `inactive` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`category_id`),
   UNIQUE KEY `description` (`description`)
 ) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
@@ -1217,10 +1247,10 @@ CREATE TABLE `0_stock_category` (
 
 ### Data of table `0_stock_category` ###
 
-INSERT INTO `0_stock_category` VALUES ('1', 'Components', '', '', '', '');
-INSERT INTO `0_stock_category` VALUES ('2', 'Charges', '', '', '', '');
-INSERT INTO `0_stock_category` VALUES ('3', 'Systems', '', '', '', '');
-INSERT INTO `0_stock_category` VALUES ('4', 'Services', '', '', '', '');
+INSERT INTO `0_stock_category` VALUES ('1', 'Components', '', '', '', '', '0');
+INSERT INTO `0_stock_category` VALUES ('2', 'Charges', '', '', '', '', '0');
+INSERT INTO `0_stock_category` VALUES ('3', 'Systems', '', '', '', '', '0');
+INSERT INTO `0_stock_category` VALUES ('4', 'Services', '', '', '', '', '0');
 
 
 ### Structure of table `0_stock_master` ###
@@ -1247,6 +1277,7 @@ CREATE TABLE `0_stock_master` (
   `material_cost` double NOT NULL default '0',
   `labour_cost` double NOT NULL default '0',
   `overhead_cost` double NOT NULL default '0',
+  `inactive` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`stock_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 ;
 
@@ -1403,6 +1434,7 @@ CREATE TABLE `0_suppliers` (
   `payable_account` varchar(11) default NULL,
   `payment_discount_account` varchar(11) default NULL,
   `notes` tinytext NOT NULL,
+  `inactive` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`supplier_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
@@ -1641,6 +1673,7 @@ CREATE TABLE `0_workcentres` (
   `id` int(11) NOT NULL auto_increment,
   `name` char(40) NOT NULL default '',
   `description` char(50) NOT NULL default '',
+  `inactive` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `name` (`name`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;

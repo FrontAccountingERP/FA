@@ -253,6 +253,9 @@ ALTER TABLE `0_currencies` ADD `inactive` tinyint(1) NOT NULL DEFAULT '0';
 ALTER TABLE `0_bank_accounts` DROP COLUMN `inactive`;
 ALTER TABLE `0_bank_accounts` ADD `inactive` tinyint(1) NOT NULL DEFAULT '0';
 
+ALTER TABLE `0_debtors_master` DROP COLUMN `inactive`;
+ALTER TABLE `0_debtors_master` ADD `inactive` tinyint(1) NOT NULL DEFAULT '0';
+
 ALTER TABLE `0_stock_master` DROP COLUMN `inactive`;
 ALTER TABLE `0_stock_master` ADD `inactive` tinyint(1) NOT NULL DEFAULT '0';
 
