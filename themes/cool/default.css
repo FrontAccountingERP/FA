@@ -380,8 +380,9 @@ input.amount {
    cursor: pointer;
 }
 
-.navibutton[disabled] {
-  color:#808080;
+.navibutton[disabled], .navibutton[disabled] span {
+  color:#ddd;
+  text-decoration: none;
   cursor: auto;
 }
 button.navibutton {
@@ -392,13 +393,16 @@ button.navibutton {
    padding: 0 3px;
    background-color:transparent;
    border-style:none;
-   /*text-decoration:underline;*/
    cursor: pointer;
 }
 
+.navibutton span {
+	text-decoration: underline;
+}	
+
 .navibar {
-	color: #fff;
     padding: 0 3px;
+	color: #fff;
     border: 1px solid #cccccc;
     border-collapse: collapse;
     background-color: #788da1;
