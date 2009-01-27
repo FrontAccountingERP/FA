@@ -19,6 +19,11 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+27-Jan-2009 Joe Hunt
+- Removed file update_db.php (obsolete). Finetuning en_US-demo.sql
+$ update_db.php
+  /sql/en_US-demo.sql
+  
 26-Jan-2009 Joe Hunt
 + Added one Post option to Post options in Quick Entry Lines (amount without decrease or increase). Minor bug fixes.
 $ /gl/manage/gl_quick_entries.php

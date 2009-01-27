@@ -106,21 +106,6 @@ CREATE TABLE `0_bank_trans` (
 
 ### Data of table `0_bank_trans` ###
 
-INSERT INTO `0_bank_trans` VALUES ('1', '12', '2', '1', '111', '2006-01-18', '1', '5000', '0', '0', '2', '1', '');
-INSERT INTO `0_bank_trans` VALUES ('2', '12', '3', '1', '112', '2006-01-18', '1', '240', '0', '0', '2', '2', '');
-INSERT INTO `0_bank_trans` VALUES ('3', '12', '4', '1', '113', '2006-01-18', '1', '360', '0', '0', '2', '2', '');
-INSERT INTO `0_bank_trans` VALUES ('4', '12', '5', '1', '114', '2006-01-18', '1', '500', '0', '0', '2', '1', '');
-INSERT INTO `0_bank_trans` VALUES ('8', '4', '2', '1', '4', '2006-01-18', '1', '-300', '0', '0', '0', '', '');
-INSERT INTO `0_bank_trans` VALUES ('9', '4', '2', '3', '4', '2006-01-18', '1', '250', '0', '0', '0', '', '');
-INSERT INTO `0_bank_trans` VALUES ('10', '22', '2', '1', '1', '2006-01-18', '1', '-5000', '0', '0', '3', '1', '');
-INSERT INTO `0_bank_trans` VALUES ('11', '22', '3', '3', '2', '2006-01-18', '1', '-3300', '0', '0', '3', '2', '');
-INSERT INTO `0_bank_trans` VALUES ('12', '2', '2', '1', '11', '2006-01-20', '1', '1050', '0', '0', '0', '', '');
-INSERT INTO `0_bank_trans` VALUES ('13', '12', '6', '1', '115', '2007-01-30', '1', '200', '0', '0', '2', '1', '');
-INSERT INTO `0_bank_trans` VALUES ('15', '2', '3', '1', '12', '2007-01-30', '3', '70', '0', '0', '4', '2', '');
-INSERT INTO `0_bank_trans` VALUES ('16', '4', '3', '1', '5', '2007-03-09', '1', '-222', '0', '0', '0', '', '');
-INSERT INTO `0_bank_trans` VALUES ('17', '4', '3', '2', '5', '2007-03-09', '1', '222', '0', '0', '0', '', '');
-INSERT INTO `0_bank_trans` VALUES ('18', '2', '4', '1', '13', '2007-03-09', '3', '200', '0', '0', '2', '1', '');
-INSERT INTO `0_bank_trans` VALUES ('20', '1', '7', '1', '6', '2007-03-22', '1', '-125', '0', '0', '0', 'Gas Transport', '');
 INSERT INTO `0_bank_trans` VALUES ('21', '12', '7', '1', '6', '2008-03-06', '1', '100', '0', '0', '2', '1', '');
 INSERT INTO `0_bank_trans` VALUES ('22', '12', '8', '1', '7', '2008-03-06', '1', '100', '0', '0', '2', '4', '');
 INSERT INTO `0_bank_trans` VALUES ('23', '12', '9', '1', '8', '2008-03-07', '1', '2000', '0', '0', '2', '1', '');
@@ -454,8 +439,6 @@ CREATE TABLE `0_cust_allocations` (
 
 ### Data of table `0_cust_allocations` ###
 
-INSERT INTO `0_cust_allocations` VALUES ('1', '200', '2007-01-30', '6', '12', '6', '10');
-INSERT INTO `0_cust_allocations` VALUES ('4', '133', '2007-03-09', '4', '2', '6', '10');
 INSERT INTO `0_cust_allocations` VALUES ('5', '135', '2008-03-06', '1', '11', '5', '10');
 INSERT INTO `0_cust_allocations` VALUES ('6', '135', '2008-03-06', '2', '11', '6', '10');
 INSERT INTO `0_cust_allocations` VALUES ('7', '135', '2008-03-06', '3', '11', '4', '10');
@@ -1941,9 +1924,6 @@ CREATE TABLE `0_supp_allocations` (
 
 ### Data of table `0_supp_allocations` ###
 
-INSERT INTO `0_supp_allocations` VALUES ('7', '1529', '2007-01-30', '2', '22', '4', '20');
-INSERT INTO `0_supp_allocations` VALUES ('8', '3445', '2007-01-30', '2', '22', '2', '20');
-INSERT INTO `0_supp_allocations` VALUES ('9', '26', '2007-01-30', '2', '22', '3', '20');
 INSERT INTO `0_supp_allocations` VALUES ('10', '200', '2009-01-10', '4', '22', '7', '20');
 
 
@@ -1970,13 +1950,8 @@ CREATE TABLE `0_supp_invoice_items` (
 
 ### Data of table `0_supp_invoice_items` ###
 
-INSERT INTO `0_supp_invoice_items` VALUES ('1', '2', '20', '0', '1', '1', '102', '17 inch VGA Monitor', '5', '3020', '0', '');
-INSERT INTO `0_supp_invoice_items` VALUES ('2', '2', '20', '0', '2', '2', '103', '32MB VGA Card', '25', '90', '0', '');
-INSERT INTO `0_supp_invoice_items` VALUES ('3', '3', '20', '0', '3', '3', '104', '52x CD Drive', '1', '26', '0', '');
 INSERT INTO `0_supp_invoice_items` VALUES ('4', '4', '20', '0', '1', '1', '102', '17 inch VGA Monitor', '5', '3020', '0', '');
 INSERT INTO `0_supp_invoice_items` VALUES ('5', '4', '20', '0', '2', '2', '103', '32MB VGA Card', '25', '90', '0', '');
-INSERT INTO `0_supp_invoice_items` VALUES ('6', '5', '20', '0', '4', '6', '104', '52x CD Drive (upgraded)', '302', '22', '0', '');
-INSERT INTO `0_supp_invoice_items` VALUES ('7', '6', '20', '6730', '0', '0', '', '', '0', '200', '0', 'yes');
 INSERT INTO `0_supp_invoice_items` VALUES ('8', '7', '20', '0', '5', '7', '102', '17 inch VGA Monitor', '10', '25', '0', '');
 INSERT INTO `0_supp_invoice_items` VALUES ('9', '7', '20', '0', '6', '8', '103', '32MB VGA Card', '10', '30', '0', '');
 INSERT INTO `0_supp_invoice_items` VALUES ('12', '8', '20', '0', '11', '13', '102', '17 inch VGA Monitor', '5', '0', '0', '');
@@ -2006,8 +1981,6 @@ CREATE TABLE `0_supp_invoice_tax_items` (
 
 ### Data of table `0_supp_invoice_tax_items` ###
 
-INSERT INTO `0_supp_invoice_tax_items` VALUES ('1', '2', '20', '1', '', '5', '0', '162.5');
-INSERT INTO `0_supp_invoice_tax_items` VALUES ('2', '2', '20', '2', '', '1', '0', '32.5');
 INSERT INTO `0_supp_invoice_tax_items` VALUES ('3', '10', '20', '3', '', '25', '0', '5.2');
 INSERT INTO `0_supp_invoice_tax_items` VALUES ('4', '11', '20', '3', '', '25', '0', '331.5');
 INSERT INTO `0_supp_invoice_tax_items` VALUES ('5', '12', '20', '1', '', '5', '0', '25');
@@ -2040,15 +2013,7 @@ CREATE TABLE `0_supp_trans` (
 
 ### Data of table `0_supp_trans` ###
 
-INSERT INTO `0_supp_trans` VALUES ('2', '20', '1', '22', '22', '2006-01-18', '2006-02-22', '3250', '0', '195', '1', '3445');
-INSERT INTO `0_supp_trans` VALUES ('2', '22', '1', '1', '', '2006-01-18', '2006-01-18', '-5000', '0', '0', '1', '5000');
-INSERT INTO `0_supp_trans` VALUES ('3', '20', '1', '23', 'asdf', '2006-01-18', '2006-02-22', '26', '0', '0', '1', '26');
-INSERT INTO `0_supp_trans` VALUES ('3', '22', '2', '2', '', '2006-01-18', '2006-01-18', '-3300', '0', '0', '1.2', '0');
-INSERT INTO `0_supp_trans` VALUES ('4', '20', '1', '24', 'Himself', '2007-01-30', '2007-02-22', '17350', '0', '0', '1', '1529');
 INSERT INTO `0_supp_trans` VALUES ('4', '22', '1', '3', '', '2009-01-10', '2009-01-10', '-200', '0', '0', '1', '200');
-INSERT INTO `0_supp_trans` VALUES ('5', '20', '1', '25', '6789', '2007-02-03', '2007-03-22', '6644', '0', '0', '1', '0');
-INSERT INTO `0_supp_trans` VALUES ('6', '1', '1', '5', '', '2007-03-22', '0000-00-00', '0', '0', '0', '1', '0');
-INSERT INTO `0_supp_trans` VALUES ('6', '20', '3', '26', '333333', '2007-03-05', '2007-03-12', '200', '0', '0', '0.2', '0');
 INSERT INTO `0_supp_trans` VALUES ('7', '20', '1', '27', 'eee', '2008-03-06', '2008-04-17', '550', '0', '0', '1', '200');
 INSERT INTO `0_supp_trans` VALUES ('8', '20', '2', '28', '213', '2008-03-20', '2008-04-17', '0', '0', '0', '1.2', '0');
 INSERT INTO `0_supp_trans` VALUES ('9', '20', '2', '29', 'aaa', '2008-03-25', '2008-04-17', '10', '0', '0', '1.9816266221251', '0');
