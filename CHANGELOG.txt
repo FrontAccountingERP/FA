@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+28-Jan-2009 Joe Hunt
++ Copyright notes at top op every source file
+$ All files still missing
+
 27-Jan-2009 Joe Hunt
 - Removed file update_db.php (obsolete). Finetuning en_US-demo.sql
 $ update_db.php

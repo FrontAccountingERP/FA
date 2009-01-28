@@ -1,5 +1,14 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU Affero General Public License,
+	AGPL, as published by the Free Software Foundation, either version 
+	3 of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/agpl-3.0.html>.
+***********************************************************************/
 set_global_connection();
 
 function set_global_connection()
@@ -70,7 +79,7 @@ function db_fetch ($result)
 
 function db_seek (&$result,$record)
 {
-	mysql_data_seek($result, $record);
+	return mysql_data_seek($result, $record);
 }
 
 function db_free_result ($result)

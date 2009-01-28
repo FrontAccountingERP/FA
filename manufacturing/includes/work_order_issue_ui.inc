@@ -1,5 +1,14 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU Affero General Public License,
+	AGPL, as published by the Free Software Foundation, either version 
+	3 of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/agpl-3.0.html>.
+***********************************************************************/
 include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/includes/ui/items_cart.inc");
 
@@ -48,7 +57,7 @@ function display_issue_items($title, &$order)
 
 			edit_button_cell("Edit$line_no", _("Edit"),
 				_('Edit document line'));
-			edit_button_cell("Delete$line_no", _("Delete"),
+			delete_button_cell("Delete$line_no", _("Delete"),
 				_('Remove line from document'));
 			end_row();
 		}
@@ -115,10 +124,10 @@ function issue_edit_item_controls(&$order, $line_no=-1)
 
 	if ($id != -1)
 	{
-		edit_button_cell('UpdateItem', _("Update"),
-				_('Confirm changes'));
-		edit_button_cell('CancelItemChanges', _("Cancel"),
-				_('Cancel changes'));
+		button_cell('UpdateItem', _("Update"),
+				_('Confirm changes'), ICON_UPDATE);
+		button_cell('CancelItemChanges', _("Cancel"),
+				_('Cancel changes'), ICON_CANCEL);
 		hidden('LineNo', $line_no);
  		set_focus('qty');
 	}
