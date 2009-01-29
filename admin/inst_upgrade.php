@@ -98,7 +98,7 @@ function upgrade_step($index, $conn)
 	{
 		if (!$inst->installed($pref) || $force) 
 		{
-	//		if(!$inst->pre_check($pref)) return false;
+			if (!$inst->pre_check($pref)) return false;
 
 			if ($sql != '')
 				$ret &= db_import($path_to_root.'/sql/'.$sql, $conn, $force);
