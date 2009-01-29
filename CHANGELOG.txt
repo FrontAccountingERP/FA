@@ -19,6 +19,16 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+29-Jan-2009 Joe Hunt
+# A few minor fixes to get the tax report and inquiry right and syncronized
+$ /gl/includes/db/gl_db_trans.inc
+  /gl/inquiry/tax_inquiry.php
+  /reporting/rep709.php
+# Missing parameter to add_trans_tax_details
+$ /sales/includes/db/sales_credit_db.inc
+  /sales/includes/db/sales_delivery_db.inc
+  /sales/includes/db/sales_invoice_db.inc
+  
 29-Jan-2009 Janusz Dobrowolski
 # Changes related to rewrite and optimalization of tax registration
 $ /gl/includes/db/gl_db_bank_trans.inc

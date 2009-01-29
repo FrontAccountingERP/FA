@@ -101,7 +101,7 @@ function show_results()
 
 		$payable = $tx['payable'];
 		$collectible = $tx['collectible'];
-		$net = $collectible - $payable;
+		$net = $collectible + $payable;
 		$total += $net;
 		alt_table_row_color($k);
 		label_cell($tx['name'] . " " . $tx['rate'] . "%");

@@ -149,10 +149,9 @@ function print_tax_report()
 			$taxes[$trans['tax_type_id']]['taxout'] += $trans['amount'];
 			$taxes[$trans['tax_type_id']]['out'] += $trans['net_amount'];
 		} else {
-			$taxes[$trans['tax_type_id']]['taxin'] -= $trans['amount'];
-			$taxes[$trans['tax_type_id']]['in'] -= $trans['net_amount'];
+			$taxes[$trans['tax_type_id']]['taxin'] += $trans['amount'];
+			$taxes[$trans['tax_type_id']]['in'] += $trans['net_amount'];
 		}
-		
 		$totalnet += $trans['net_amount'];
 		$totaltax += $trans['amount'];
 	}
@@ -181,8 +180,8 @@ function print_tax_report()
 		$rep->TextCol(2, 3,number_format2($sum['taxout'], $dec));
 		$rep->TextCol(3, 4, number_format2($sum['in'], $dec));
 		$rep->TextCol(4, 5,number_format2($sum['taxin'], $dec)); 
-		$rep->TextCol(5, 6, number_format2($sum['taxout']-$sum['taxin'], $dec));
-		$taxtotal += $sum['taxout']-$sum['taxin'];
+		$rep->TextCol(5, 6, number_format2($sum['taxout']+$sum['taxin'], $dec));
+		$taxtotal += $sum['taxout']+$sum['taxin'];
 		$rep->NewLine();
 	}
 
