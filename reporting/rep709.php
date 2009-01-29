@@ -48,6 +48,7 @@ function getTaxTransactions($from, $to)
 		LEFT JOIN ".TB_PREF."cust_branch as branch ON dtrans.branch_code=branch.branch_code,
 		".TB_PREF."sys_types stype
 		WHERE taxrec.trans_type=stype.type_id
+			AND (taxrec.amount != 0 OR taxrec.net_amount != 0)
 			AND taxrec.trans_type != 13
 			AND taxrec.tran_date >= '$fromdate'
 			AND taxrec.tran_date <= '$todate'
@@ -144,7 +145,7 @@ function print_tax_report()
 				$rep->Header();
 			}
 		}
-		if ($trans['net_amount'] > 0) {
+		if (in_array($trans['trans_type'], array(0,2,10,11))) {
 			$taxes[$trans['tax_type_id']]['taxout'] += $trans['amount'];
 			$taxes[$trans['tax_type_id']]['out'] += $trans['net_amount'];
 		} else {
