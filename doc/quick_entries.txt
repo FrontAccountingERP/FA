@@ -60,7 +60,7 @@ the percent amount in the amount field, f.i. 9 for 9% VAT. And another line
 with the outgoing VAT with the same percent and amount (remember to set 
 this as -9 for correct posting).
 You can also use the 'Post percent part' for depreciations,
-create fixed amount lines (Post percent part = 100%) etc. etc. You can have as many lines as you want 
+create fixed amount lines (Post Amount) etc. etc. You can have as many lines as you want 
 or need. Remember nothing is posted before you press the Process button in 
 the bank payments/deposits/journal entry/supplier invoice/credit forms. You can always delete the lines 
 or leave the form and nothing has been performed. You might have entered 

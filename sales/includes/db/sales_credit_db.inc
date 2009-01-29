@@ -151,7 +151,7 @@ function write_credit_note($credit_note, $write_off_acc)
 	}
 
 	foreach ($taxes as $taxitem) {
-		if ($taxitem['Value'] != 0) {
+		if ($taxitem['Net'] != 0) {
 
 			add_trans_tax_details(11, $credit_no, $taxitem['tax_type_id'],
 				$taxitem['rate'], $credit_note->tax_included, $taxitem['Value'],

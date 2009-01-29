@@ -262,7 +262,7 @@ function add_supp_invoice($supp_trans, $invoice_no=0) // do not receive as ref b
     /* Now the TAX account */
     foreach ($taxes as $taxitem)
     {
-    	if ($taxitem['Value'] != 0)
+    	if ($taxitem['Net'] != 0)
     	{
 
     		if (!$supp_trans->is_invoice)

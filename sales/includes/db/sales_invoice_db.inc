@@ -147,7 +147,7 @@ function write_sales_invoice(&$invoice)
 	// post all taxes
 	foreach ($taxes as $taxitem) {
 
-		if ($taxitem['Value'] != 0) {
+		if ($taxitem['Net'] != 0) {
 			add_trans_tax_details(10, $invoice_no, $taxitem['tax_type_id'],
 				$taxitem['rate'], $invoice->tax_included, $taxitem['Value'],
 				 $taxitem['Net'], $date_, $invoice->reference);

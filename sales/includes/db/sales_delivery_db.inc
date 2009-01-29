@@ -123,7 +123,7 @@ function write_sales_delivery(&$delivery,$bo_policy)
 
 	// taxes - this is for printing purposes
 	foreach ($taxes as $taxitem) {
-		if ($taxitem['Value'] != 0) {
+		if ($taxitem['Net'] != 0) {
     		    add_trans_tax_details(13, $delivery_no, $taxitem['tax_type_id'],
 				$taxitem['rate'], $delivery->tax_included, $taxitem['Value'],
 				$taxitem['Net'], $delivery->document_date, $delivery->reference );

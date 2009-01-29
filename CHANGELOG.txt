@@ -20,6 +20,14 @@ Legend:
 $ -> Affected files
 
 28-Jan-2009 Joe Hunt
+! Changes to committed tax report routines.
+$ /sales/includes/db/sales_invoice_db.inc
+  /sales/includes/db/sales_delivery_db.inc
+  /sales/includes/db/sales_credit_db.inc
+  /purchasing/includes/db/invoice_db.inc
+  /reporting/rep709.php
+  
+28-Jan-2009 Joe Hunt
 + Copyright notes at top op every source file
 $ All files still missing
 
