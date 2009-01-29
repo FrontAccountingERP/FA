@@ -71,12 +71,12 @@ if (isset($_POST['add']) || isset($_POST['update']))
 			$_POST['account_code'] = strtoupper($_POST['account_code']);
     	if ($selected_account) 
 		{
-    		update_gl_account($_POST['account_code'], $_POST['account_name'], $_POST['account_type'], $_POST['account_code2'], $_POST['tax_code']);
+    		update_gl_account($_POST['account_code'], $_POST['account_name'], $_POST['account_type'], $_POST['account_code2']);
 			display_notification(_("Account data has been updated."));
 		}
     	else 
 		{
-    		add_gl_account($_POST['account_code'], $_POST['account_name'], $_POST['account_type'], $_POST['account_code2'], $_POST['tax_code']);
+    		add_gl_account($_POST['account_code'], $_POST['account_name'], $_POST['account_type'], $_POST['account_code2']);
 			$selected_account = $_POST['AccountList'] = $_POST['account_code'];
 			display_notification(_("New account has been added."));
 		}
@@ -224,7 +224,6 @@ if ($selected_account != "")
 	$_POST['account_code2'] = $myrow["account_code2"];
 	$_POST['account_name']	= $myrow["account_name"];
 	$_POST['account_type'] = $myrow["account_type"];
-	$_POST['tax_code'] = $myrow["tax_code"];
 
 	hidden('account_code', $_POST['account_code']);
 	hidden('selected_account', $selected_account);
@@ -234,7 +233,7 @@ if ($selected_account != "")
 else 
 {
 	$_POST['account_code'] = $_POST['account_code2'] = '';
-	$_POST['account_name']	= $_POST['account_type'] = $_POST['tax_code'] = '';
+	$_POST['account_name']	= $_POST['account_type'] = '';
 	text_row_ex(_("Account Code:"), 'account_code', 11);
 }
 
@@ -243,8 +242,6 @@ text_row_ex(_("Account Code 2:"), 'account_code2', 11);
 text_row_ex(_("Account Name:"), 'account_name', 60);
 
 gl_account_types_list_row(_("Account Group:"), 'account_type', null);
-
-tax_types_list_row(_("Tax Type:"), 'tax_code', null, _('No Tax'));
 
 end_table(1);
 
