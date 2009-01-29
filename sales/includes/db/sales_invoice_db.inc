@@ -148,9 +148,10 @@ function write_sales_invoice(&$invoice)
 	foreach ($taxes as $taxitem) {
 
 		if ($taxitem['Net'] != 0) {
+			$ex_rate = get_exchange_rate_from_home_currency(get_customer_currency($invoice->customer_id), $date_);
 			add_trans_tax_details(10, $invoice_no, $taxitem['tax_type_id'],
 				$taxitem['rate'], $invoice->tax_included, $taxitem['Value'],
-				 $taxitem['Net'], $date_, $invoice->reference);
+				 $taxitem['Net'], $ex_rate, $date_, $invoice->reference);
 
 			$total += add_gl_trans_customer(10, $invoice_no, $date_, $taxitem['sales_gl_code'], 0, 0,
 				(-$taxitem['Value']), $invoice->customer_id,

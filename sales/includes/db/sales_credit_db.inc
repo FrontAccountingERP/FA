@@ -153,6 +153,7 @@ function write_credit_note($credit_note, $write_off_acc)
 	foreach ($taxes as $taxitem) {
 		if ($taxitem['Net'] != 0) {
 
+			$ex_rate = get_exchange_rate_from_home_currency(get_customer_currency($credit_note->customer_id), $credit_note->document_date);
 			add_trans_tax_details(11, $credit_no, $taxitem['tax_type_id'],
 				$taxitem['rate'], $credit_note->tax_included, $taxitem['Value'],
 				$taxitem['Net'], $credit_note->document_date, $credit_note->reference);
