@@ -75,31 +75,35 @@ function get_ecb_rate($curr_b)
 {
 	$curr_a = get_company_pref('curr_default');
 	$ecb_filename = 'http://www.ecb.int/stats/eurofxref/eurofxref-daily.xml';
-	$handle = @fopen($ecb_filename, 'rb');
 	$contents = '';
-	if ($handle)
-	{
-		do 
-		{
-			$data = @fread( $handle, 4096 );
-			if ( strlen ( $data ) == 0 ) 
-   				break;
-   			$contents .= $data; // with this syntax only text will be translated, whole text with htmlspecialchars($data)
-		} 
-		while (true);
-		@fclose( $handle );
-	} // end handle
-	else
-	{
+
+	if (function_exists('curl_init'))
+	{	// first check with curl as we can set short timeout;
        $ch = curl_init();
        curl_setopt ($ch, CURLOPT_URL, $ecb_filename);
        curl_setopt ($ch, CURLOPT_COOKIEJAR, "cookie.txt");
        curl_setopt ($ch, CURLOPT_HEADER, 0);
        curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
        curl_setopt ($ch, CURLOPT_FOLLOWLOCATION, 1);
-       curl_setopt ($ch, CURLOPT_TIMEOUT, 120);
+       curl_setopt ($ch, CURLOPT_TIMEOUT, 5);
        $contents = curl_exec ($ch);
        curl_close($ch);
+	} else {
+		$handle = @fopen($ecb_filename, 'rb');
+		if ($handle) {
+			do 
+			{
+				$data = @fread( $handle, 4096 );
+				if ( strlen ( $data ) == 0 ) 
+   					break;
+   				$contents .= $data; // with this syntax only text will be translated, whole text with htmlspecialchars($data)
+			} 
+			while (true);
+			@fclose( $handle );
+		} // end handle
+	}
+	if (!$contents) {
+		display_warning(_('Cannot retrieve currency rate from ECB page. Please set the rate manually.'));
 	}
 	$contents = str_replace ("<Cube currency='USD'", " <Cube currency='EUR' rate='1'/> <Cube currency='USD'", $contents);
 	$from_mask = "|<Cube\s*currency=\'" . $curr_a . "\'\s*rate=\'([\d.,]*)\'\s*/>|i";
@@ -119,6 +123,6 @@ function get_ecb_rate($curr_b)
 		$val = 0;
 	}
 	return $val;
-} // end function get_ecb_rate
+}  // end function get_ecb_rate
 
 ?>
