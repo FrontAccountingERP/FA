@@ -211,7 +211,7 @@ function get_budget_trans_from_to($from_date, $to_date, $account, $dimension=0, 
 //--------------------------------------------------------------------------------
 //	Stores journal/bank transaction tax details if applicable
 //
-function add_gl_tax_details($gl_code, $trans_type, $trans_no, $amount, $date, $memo)
+function add_gl_tax_details($gl_code, $trans_type, $trans_no, $amount, $ex_rate, $date, $memo)
 {
 	$tax_type = is_tax_account($gl_code);
 	if(!$tax_type) return;	// $gl_code is not tax account
@@ -228,8 +228,9 @@ function add_gl_tax_details($gl_code, $trans_type, $trans_no, $amount, $date, $m
 		// calculate net amount
 		$net_amount = $amount/$tax['rate']*100; 
 	}
+		
 	add_trans_tax_details($trans_type, $trans_no, $tax['id'], $tax['rate'], 0, 
-		$amount, $net_amount, $date, $memo);
+		$amount, $net_amount, $ex_rate, $date, $memo);
 			
 }
 
@@ -239,14 +240,16 @@ function add_gl_tax_details($gl_code, $trans_type, $trans_no, $amount, $date, $m
 //	actual tax type rate.
 //
 function add_trans_tax_details($trans_type, $trans_no, $tax_id, $rate, $included,
-	$amount, $net_amount, $tran_date, $memo)
+	$amount, $net_amount, $ex_rate, $tran_date, $memo)
 {
+
 	$sql = "INSERT INTO ".TB_PREF."trans_tax_details 
-		(trans_type, trans_no, tran_date, tax_type_id, rate,
+		(trans_type, trans_no, tran_date, tax_type_id, rate, ex_rate,
 			included_in_price, net_amount, amount, memo)
 		VALUES (".db_escape($trans_type)."," . db_escape($trans_no).",'"
 				.date2sql($tran_date)."',".db_escape($tax_id).","
-				.$rate.",".($included ? 1:0).",".db_escape($net_amount).","
+				.$rate.",".$ex_rate.",".($included ? 1:0).","
+				.db_escape($net_amount).","
 				.db_escape($amount).",".db_escape($memo).")";
 
 	db_query($sql, "Cannot save trans tax details");
@@ -260,7 +263,7 @@ function get_trans_tax_details($trans_type, $trans_no)
 		FROM ".TB_PREF."trans_tax_details,".TB_PREF."tax_types
 		WHERE trans_type = $trans_type
 		AND trans_no = $trans_no
-		AND amount != 0
+		AND (net_amount != 0 OR amount != 0)
 		AND ".TB_PREF."tax_types.id = ".TB_PREF."trans_tax_details.tax_type_id";
 
 	return db_query($sql, "The transaction tax details could not be retrieved");
@@ -277,6 +280,33 @@ function void_trans_tax_details($type, $type_no)
 	db_query($sql, "The transaction tax details could not be voided");
 }
 
+function get_tax_summary($from, $to)
+{
+	$fromdate = date2sql($from);
+	$todate = date2sql($to);
+
+	$sql = "SELECT 
+				SUM(IF( trans_type=1 || trans_type=11 || trans_type=20,-1,1)*
+				IF(trans_type=0 || trans_type=2 || trans_type=10 || trans_type=11, net_amount*ex_rate,0)) net_input,
+				SUM(IF( trans_type=1 || trans_type=11 || trans_type=20,-1,1)*
+				IF(trans_type=0 || trans_type=2 || trans_type=10 || trans_type=11, amount*ex_rate,0)) payable,
+				SUM(IF( trans_type=1 || trans_type=11 || trans_type=20,-1,1)*
+				IF(trans_type=0 || trans_type=2 || trans_type=10 || trans_type=11, 0, net_amount*ex_rate)) net_output,
+				SUM(IF( trans_type=1 || trans_type=11 || trans_type=20,-1,1)*
+				IF(trans_type=0 || trans_type=2 || trans_type=10 || trans_type=11, 0, amount*ex_rate)) collectible,
+				taxrec.rate,
+				ttype.id,
+				ttype.name
+		FROM ".TB_PREF."tax_types ttype,
+			 ".TB_PREF."trans_tax_details taxrec
+		WHERE taxrec.tax_type_id=ttype.id
+			AND taxrec.trans_type != 13
+			AND taxrec.tran_date >= '$fromdate'
+			AND taxrec.tran_date <= '$todate'
+		GROUP BY ttype.id";
+//display_error($sql);
+    return db_query($sql,"Cannot retrieve tax summary");
+}
 //--------------------------------------------------------------------------------
 function add_journal_entries($items, $date_, $ref, $reverse, $memo_=null)
 {
@@ -302,7 +332,7 @@ function add_journal_entries($items, $date_, $ref, $reverse, $memo_=null)
     	}
 		// store tax details if the gl account is a tax account
 		add_gl_tax_details($journal_item->code_id, 
-			$trans_type, $trans_id, -$journal_item->amount, $date_, $memo_);
+			$trans_type, $trans_id, -$journal_item->amount, 1, $date_, $memo_);
 	}
 	
 	add_comments($trans_type, $trans_id, $date_, $memo_);
@@ -334,7 +364,7 @@ function add_journal_entries($items, $date_, $ref, $reverse, $memo_=null)
     		}
 			// store tax details if the gl account is a tax account
 			add_gl_tax_details($journal_item->code_id, 
-				$trans_type, $trans_id, $journal_item->amount, $date, $memo_);
+				$trans_type, $trans_id, $journal_item->amount, 1, $date, $memo_);
     	}
 
     	add_comments($trans_type, $trans_id_reverse, $reversingDate, $memo_);

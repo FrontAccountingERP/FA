@@ -75,7 +75,8 @@ class fa2_1 {
 	$move_sql =array( 
 	"debtor_trans_tax_details" =>
 		"SELECT tr.tran_date, tr.type, tr.trans_no, dt.tax_type_id, 
-			dt.rate, dt.included_in_price, dt.amount, tr.reference as ref
+			dt.rate, dt.included_in_price, dt.amount, tr.reference as ref,
+			tr.rate as ex_rate
 		FROM ".$pref."debtor_trans_tax_details dt	
 			LEFT JOIN ".$pref."trans_tax_details tt
 				ON dt.debtor_trans_no=tt.trans_no 
@@ -87,7 +88,8 @@ class fa2_1 {
 	
 	"supp_invoice_tax_items" =>
 		"SELECT tr.tran_date, tr.type, tr.trans_no, st.tax_type_id, 
-			st.rate, st.included_in_price, st.amount, tr.supp_reference as ref
+			st.rate, st.included_in_price, st.amount, tr.supp_reference as ref,
+			tr.rate as ex_rate
 			FROM ".$pref."supp_invoice_tax_items st	
 				LEFT JOIN ".$pref."trans_tax_details tt
 					ON st.supp_trans_no=tt.trans_no 
@@ -106,12 +108,12 @@ class fa2_1 {
 							($row['amount']/$row['rate']*(100-$row['rate']))
 							:($row['amount']/$row['rate']*100));
 				$sql2 = "INSERT INTO ".$pref."trans_tax_details 
-				(trans_type,trans_no,tran_date,tax_type_id,rate,
+				(trans_type,trans_no,tran_date,tax_type_id,rate,ex_rate,
 					included_in_price, net_amount, amount, memo)
 				VALUES ('".$row['type']."','".$row['trans_no']."','"
 					.$row['tran_date']."','".$row['tax_type_id']."','"
-					.$row['rate']."','".$row['included_in_price']."','"
-					.$net_amount
+					.$row['rate']."','".$row['ex_rate']."','"
+					.$row['included_in_price']."','".$net_amount
 					."','".$row['amount']."','".$row['ref']."')";
 				db_query($sql2, "Cannot move trans tax details from $tbl");
 			}

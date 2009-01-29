@@ -33,12 +33,10 @@ function getTaxTransactions($from, $to)
 	$fromdate = date2sql($from);
 	$todate = date2sql($to);
 
-	$sql = "SELECT taxrec.*, IF(ISNULL(dtrans.rate),IF(ISNULL(strans.rate), taxrec.amount, taxrec.amount*strans.rate), 
-				taxrec.amount*dtrans.rate) AS amount,
-	            IF(ISNULL(dtrans.rate),IF(ISNULL(strans.rate), taxrec.net_amount,taxrec.net_amount*strans.rate),
-	            taxrec.net_amount*dtrans.rate) AS net_amount,
+	$sql = "SELECT taxrec.*, taxrec.amount*ex_rate AS amount,
+	            taxrec.net_amount*ex_rate AS net_amount,
 				stype.type_name,
-				if(supp.supp_name is null, debt.name, supp.supp_name) as name,
+				IF(ISNULL(supp.supp_name), debt.name, supp.supp_name) as name,
 				branch.br_name
 		FROM ".TB_PREF."trans_tax_details taxrec
 		LEFT JOIN ".TB_PREF."supp_trans strans

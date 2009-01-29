@@ -147,8 +147,10 @@ function add_bank_transaction($trans_type, $from_account, $items, $date_,
 		// store tax details if the gl account is a tax account
 
 		$amount = $gl_item->amount;
+		$ex_rate = get_exchange_rate_from_home_currency($currency, $date_);
+			
 		add_gl_tax_details($gl_item->code_id, $trans_type, $trans_no, $amount,
-			$date_, $memo);
+			$ex_rate, $date_, $memo_);
 	}
 
 	// do the source account postings

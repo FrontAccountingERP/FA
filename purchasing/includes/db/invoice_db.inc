@@ -144,6 +144,7 @@ function add_supp_invoice($supp_trans, $invoice_no=0) // do not receive as ref b
 	}
 
     $date_ = $supp_trans->tran_date;
+	$ex_rate = get_exchange_rate_from_home_currency(get_supplier_currency($supp_trans->supplier_id), $date_);
 
     /*First insert the invoice into the supp_trans table*/
 	$invoice_id = add_supp_trans($trans_type, $supp_trans->supplier_id, $date_, $supp_trans->due_date,
@@ -188,7 +189,7 @@ function add_supp_invoice($supp_trans, $invoice_no=0) // do not receive as ref b
 		// store tax details if the gl account is a tax account
 		add_gl_tax_details($entered_gl_code->gl_code, 
 			$trans_type, $invoice_id, $entered_gl_code->amount,
-			$date_, $supp_trans->supp_reference);
+			$ex_rate, $date_, $supp_trans->supp_reference);
     }
     foreach ($supp_trans->grn_items as $entered_grn)
     {
@@ -270,7 +271,7 @@ function add_supp_invoice($supp_trans, $invoice_no=0) // do not receive as ref b
     		// here we suppose that tax is never included in price (we are company customer).
 			add_trans_tax_details($trans_type, $invoice_id, 
 				$taxitem['tax_type_id'], $taxitem['rate'], 0, $taxitem['Value'],
-				$taxitem['Net'], $date_, $supp_trans->supp_reference);
+				$taxitem['Net'], $ex_rate, $date_, $supp_trans->supp_reference);
 
     		$total += add_gl_trans_supplier($trans_type, $invoice_id, $date_,
     			$taxitem['purchasing_gl_code'], 0, 0, $taxitem['Value'],

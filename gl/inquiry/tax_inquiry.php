@@ -83,8 +83,6 @@ function show_results()
 {
 	global $path_to_root, $table_style;
 
-	$taxes = get_tax_types();
-
     /*Now get the transactions  */
 	div_start('trans_tbl');
 	start_table($table_style);
@@ -95,31 +93,15 @@ function show_results()
 	$total = 0;
 	$bdate = date2sql($_POST['TransFromDate']);
 	$edate  = date2sql($_POST['TransToDate']);
+
+	$taxes = get_tax_summary($_POST['TransFromDate'], $_POST['TransToDate']);
+
 	while ($tx = db_fetch($taxes))
 	{
-		if ($tx['sales_gl_code'] == $tx['purchasing_gl_code'])
-		{
-			$sql = "SELECT SUM(IF(amount >= 0, amount, 0)) AS payable, SUM(IF(amount < 0, -amount, 0)) AS collectible
-				FROM ".TB_PREF."gl_trans WHERE account = '".$tx['sales_gl_code']."' AND tran_date >= '$bdate' AND tran_date <= '$edate'";
-			$result = db_query($sql, "Error retrieving tax inquiry");
-			$row = db_fetch($result);
-			$payable = -$row['payable'];
-			$collectible.= -$row['collectible'];
-		}
-		else
-		{
-			$sql = "SELECT SUM(amount) AS collectible
-				FROM ".TB_PREF."gl_trans WHERE account = '".$tx['sales_gl_code']."' AND tran_date >= '$bdate' AND tran_date <= '$edate'";
-			$result = db_query($sql, "Error retrieving tax inquiry");
-			$row = db_fetch($result);
-			$collectible = -$row['collectible'];
-			$sql = "SELECT SUM(amount) AS payable
-				FROM ".TB_PREF."gl_trans WHERE account = '".$tx['purchasing_gl_code']."' AND tran_date >= '$bdate' AND tran_date <= '$edate'";
-			$result = db_query($sql, "Error retrieving tax inquiry");
-			$row = db_fetch($result);
-			$payable = -$row['payable'];
-		}
-		$net = $collectible + $payable;
+
+		$payable = $tx['payable'];
+		$collectible = $tx['collectible'];
+		$net = $collectible - $payable;
 		$total += $net;
 		alt_table_row_color($k);
 		label_cell($tx['name'] . " " . $tx['rate'] . "%");

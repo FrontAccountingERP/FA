@@ -301,6 +301,7 @@ CREATE TABLE `0_trans_tax_details` (
   `tran_date` date NOT NULL,
   `tax_type_id` int(11) NOT NULL default '0',
   `rate` double NOT NULL default '0',
+  `ex_rate` double NOT NULL default '1',
   `included_in_price` tinyint(1) NOT NULL default '0',
   `net_amount` double NOT NULL default '0',
   `amount` double NOT NULL default '0',
