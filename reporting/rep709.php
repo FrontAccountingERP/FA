@@ -99,20 +99,19 @@ function print_tax_report()
 	while ($tax=db_fetch($res))
 		$taxes[$tax['id']] = array('in'=>0, 'out'=>0, 'taxin'=>0, 'taxout'=>0);
 
+	$params =   array( 	0 => $comments,
+						1 => array('text' => _('Period'), 'from' => $from, 'to' => $to),
+						2 => array('text' => _('Type'), 'from' => $summary, 'to' => ''));
+
+	$cols = array(0, 80, 130, 180, 290, 370, 455, 505, 555);
+
+	$headers = array(_('Trans Type'), _('Ref'), _('Date'), _('Name'), _('Branch Name'),
+		_('Net'), _('Rate'), _('Tax'));
+	$aligns = array('left', 'left', 'left', 'left', 'left', 'right', 'right', 'right');
+	$rep->Font();
+	$rep->Info($params, $cols, $headers, $aligns);
 	if (!$summaryOnly)
 	{
-		$cols = array(0, 80, 130, 180, 290, 370, 455, 505, 555);
-
-		$headers = array(_('Trans Type'), _('Ref'), _('Date'), _('Name'), _('Branch Name'),
-			_('Net'), _('Rate'), _('Tax'));
-		$aligns = array('left', 'left', 'left', 'left', 'left', 'right', 'right', 'right');
-
-		$params =   array( 	0 => $comments,
-							1 => array('text' => _('Period'), 'from' => $from, 'to' => $to),
-							2 => array('text' => _('Type'), 'from' => $summary, 'to' => ''));
-
-		$rep->Font();
-		$rep->Info($params, $cols, $headers, $aligns);
 		$rep->Header();
 	}
 	
