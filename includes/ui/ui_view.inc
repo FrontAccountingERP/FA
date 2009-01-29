@@ -444,7 +444,7 @@ function display_supp_trans_tax_details($tax_items, $columns)
     	$tax = number_format2(abs($tax_item['amount']),user_price_dec());
     	if ($tax_item['included_in_price'])
         	label_row(_("Included") . " " . $tax_item['tax_type_name'] . " (" . $tax_item['rate'] . "%) " .
-        		_("Amount:") . ": $tax", "colspan=$columns align=right", "align=right");
+        		_("Amount") . ": $tax", "colspan=$columns align=right", "align=right");
     	else
         	label_row($tax_item['tax_type_name'] . " (" . $tax_item['rate'] . "%)",
         		$tax, "colspan=$columns align=right", "align=right");
