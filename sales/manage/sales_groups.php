@@ -57,7 +57,7 @@ if ($Mode == 'Delete')
 
 	// PREVENT DELETES IF DEPENDENT RECORDS IN 'debtors_master'
 
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."debtors_master WHERE group_no='$selected_id'";
+	$sql= "SELECT COUNT(*) FROM ".TB_PREF."cust_branch WHERE group_no='$selected_id'";
 	$result = db_query($sql,"check failed");
 	$myrow = db_fetch_row($result);
 	if ($myrow[0] > 0) 
