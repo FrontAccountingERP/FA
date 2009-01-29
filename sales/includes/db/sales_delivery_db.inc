@@ -48,7 +48,7 @@ function write_sales_delivery(&$delivery,$bo_policy)
 	} else {
 		void_gl_trans(13, $delivery_no, true);
 		void_stock_move(13, $delivery_no);
-		void_customer_trans_tax_details(13, $delivery_no);
+		void_trans_tax_details(13, $delivery_no);
 		delete_comments(13, $delivery_no);
 	}
 
@@ -124,8 +124,9 @@ function write_sales_delivery(&$delivery,$bo_policy)
 	// taxes - this is for printing purposes
 	foreach ($taxes as $taxitem) {
 		if ($taxitem['Value'] != 0) {
-    		    add_customer_trans_tax_detail_item(13, $delivery_no, $taxitem['tax_type_id'],
-				$taxitem['rate'], $delivery->tax_included, $taxitem['Value']);
+    		    add_trans_tax_details(13, $delivery_no, $taxitem['tax_type_id'],
+				$taxitem['rate'], $delivery->tax_included, $taxitem['Value'],
+				$taxitem['Net'], $delivery->document_date, $delivery->reference );
 		}
 	}
 
@@ -165,7 +166,7 @@ function void_sales_delivery($type, $type_no)
 	// clear details after they've been reversed in the sales order
 	void_customer_trans_details($type, $type_no);
 
-	void_customer_trans_tax_details($type, $type_no);
+	void_trans_tax_details($type, $type_no);
 
 	void_cust_allocations($type, $type_no);
 

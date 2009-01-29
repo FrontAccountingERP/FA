@@ -57,39 +57,4 @@ function void_supp_invoice_items($type, $type_no)
 	db_query($sql, "could not void supptrans details");
 }
 
-//----------------------------------------------------------------------------------------
-
-function add_supp_invoice_tax_item($supp_trans_type, $supp_trans_no, $tax_type_id,
-	$rate, $included_in_price, $amount)
-{
-	$sql = "INSERT INTO ".TB_PREF."supp_invoice_tax_items (supp_trans_type, supp_trans_no, tax_type_id, rate, included_in_price, amount)
-		VALUES ($supp_trans_type, $supp_trans_no, $tax_type_id, $rate, $included_in_price, $amount)";
-
-	db_query($sql, "The supplier transaction tax detail could not be added");
-}
-
-//----------------------------------------------------------------------------------------
-
-function get_supp_invoice_tax_items($supp_trans_type, $supp_trans_no)
-{
-	$sql = "SELECT ".TB_PREF."supp_invoice_tax_items.*, ".TB_PREF."tax_types.name AS tax_type_name
-		FROM ".TB_PREF."supp_invoice_tax_items,".TB_PREF."tax_types
-		WHERE supp_trans_type = $supp_trans_type
-		AND supp_trans_no = $supp_trans_no
-		AND ".TB_PREF."tax_types.id = ".TB_PREF."supp_invoice_tax_items.tax_type_id";
-
-	return db_query($sql, "The supplier transaction tax details could not be queried");
-}
-
-//----------------------------------------------------------------------------------------
-
-function void_supp_invoice_tax_items($type, $type_no)
-{
-	$sql = "UPDATE ".TB_PREF."supp_invoice_tax_items SET amount=0
-		WHERE supp_trans_type = $type
-		AND supp_trans_no=$type_no";
-
-	db_query($sql, "The supplier transaction tax details could not be voided");
-}
-
 ?>

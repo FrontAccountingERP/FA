@@ -147,7 +147,7 @@ function print_deliveries()
 			$rep->TextCol(3, 6, $doc_Shipping, -2);
 			$rep->TextCol(6, 7,	$DisplayFreight, -2);
 			$rep->NewLine();
-			$tax_items = get_customer_trans_tax_details(13, $i);
+			$tax_items = get_trans_tax_details(13, $i);
     		while ($tax_item = db_fetch($tax_items))
     		{
     			$DisplayTax = number_format2($tax_item['amount'], $dec);

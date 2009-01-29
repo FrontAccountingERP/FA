@@ -291,3 +291,20 @@ ALTER TABLE `0_stock_category` ADD `inactive` tinyint(1) NOT NULL DEFAULT '0';
 
 ALTER TABLE `0_item_units` DROP COLUMN `inactive`;
 ALTER TABLE `0_item_units` ADD `inactive` tinyint(1) NOT NULL DEFAULT '0';
+
+DROP TABLE IF EXISTS `0_trans_tax_details`;
+
+CREATE TABLE `0_trans_tax_details` (
+  `id` int(11) NOT NULL auto_increment,
+  `trans_type` smallint(6) default NULL,
+  `trans_no` int(11) default NULL,
+  `tran_date` date NOT NULL,
+  `tax_type_id` int(11) NOT NULL default '0',
+  `rate` double NOT NULL default '0',
+  `included_in_price` tinyint(1) NOT NULL default '0',
+  `net_amount` double NOT NULL default '0',
+  `amount` double NOT NULL default '0',
+  `memo` tinytext default NULL,
+  PRIMARY KEY  (`id`)
+) TYPE=InnoDB AUTO_INCREMENT=1 ;
+

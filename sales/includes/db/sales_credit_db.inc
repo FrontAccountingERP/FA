@@ -81,7 +81,7 @@ function write_credit_note($credit_note, $write_off_acc)
 		void_cust_allocations(11, $credit_no, $credit_date);
 		void_gl_trans(11, $credit_no, true);
 		void_stock_move(11, $credit_no);
-		void_customer_trans_tax_details(11, $credit_no);
+		void_trans_tax_details(11, $credit_no);
 	}
 	if ($credit_invoice) {
 		$invoice_alloc_balance = get_DebtorTrans_allocation_balance(10, $credit_invoice);
@@ -153,8 +153,9 @@ function write_credit_note($credit_note, $write_off_acc)
 	foreach ($taxes as $taxitem) {
 		if ($taxitem['Value'] != 0) {
 
-			add_customer_trans_tax_detail_item(11, $credit_no, $taxitem['tax_type_id'],
-				$taxitem['rate'], $credit_note->tax_included, $taxitem['Value']);
+			add_trans_tax_details(11, $credit_no, $taxitem['tax_type_id'],
+				$taxitem['rate'], $credit_note->tax_included, $taxitem['Value'],
+				$taxitem['Net'], $credit_note->document_date, $credit_note->reference);
 
 			$total += add_gl_trans_customer(11, $credit_no, $credit_date, $taxitem['sales_gl_code'], 0, 0,
 				$taxitem['Value'], $credit_note->customer_id,

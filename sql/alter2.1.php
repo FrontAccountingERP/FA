@@ -66,14 +66,78 @@ class fa2_1 {
 		// (DROP queries are skipped during non-forced upgrade)
 		$sql = "DROP TABLE IF EXISTS `0_bank_trans_types`";
 		db_query($sql);
+		//
+		//	Move all debtor and supplier trans tax details to new table
+		// (INSERT INTO t  SELECT ... FROM t ... available after 4.0.14)
+		// No easy way to restore net amount for 0% tax rate for moved
+		// FA 2.0 transactions, but who cares?
+		//
+	$move_sql =array( 
+	"debtor_trans_tax_details" =>
+		"SELECT tr.tran_date, tr.type, tr.trans_no, dt.tax_type_id, 
+			dt.rate, dt.included_in_price, dt.amount, tr.reference as ref
+		FROM ".$pref."debtor_trans_tax_details dt	
+			LEFT JOIN ".$pref."trans_tax_details tt
+				ON dt.debtor_trans_no=tt.trans_no 
+				AND dt.debtor_trans_type=tt.trans_type,
+			".$pref."debtor_trans tr
+		WHERE tt.trans_type is NULL
+			AND dt.debtor_trans_no = tr.trans_no 
+			AND dt.debtor_trans_type = tr.type",
+	
+	"supp_invoice_tax_items" =>
+		"SELECT tr.tran_date, tr.type, tr.trans_no, st.tax_type_id, 
+			st.rate, st.included_in_price, st.amount, tr.supp_reference as ref
+			FROM ".$pref."supp_invoice_tax_items st	
+				LEFT JOIN ".$pref."trans_tax_details tt
+					ON st.supp_trans_no=tt.trans_no 
+					AND st.supp_trans_type=tt.trans_type,
+					".$pref."supp_trans tr
+				WHERE tt.trans_type is NULL
+					AND st.supp_trans_no = tr.trans_no 
+					AND st.supp_trans_type = tr.type");
+
+	foreach ($move_sql as $tbl => $sql) {
+		if (!check_table($pref, $tbl)){
+			$res = db_query($sql, "Cannot retrieve trans tax details from $tbl");
+			while ($row = db_fetch($res)) {
+				$net_amount = $row['rate'] == 0 ?
+				 	0 : ($row['included_in_price'] ? 
+							($row['amount']/$row['rate']*(100-$row['rate']))
+							:($row['amount']/$row['rate']*100));
+				$sql2 = "INSERT INTO ".$pref."trans_tax_details 
+				(trans_type,trans_no,tran_date,tax_type_id,rate,
+					included_in_price, net_amount, amount, memo)
+				VALUES ('".$row['type']."','".$row['trans_no']."','"
+					.$row['tran_date']."','".$row['tax_type_id']."','"
+					.$row['rate']."','".$row['included_in_price']."','"
+					.$net_amount
+					."','".$row['amount']."','".$row['ref']."')";
+				db_query($sql2, "Cannot move trans tax details from $tbl");
+			}
+			db_query("DROP TABLE ".$pref.$tbl, "cannot remove $tbl");
+		}
+	}
 		
 		return true;
 	}
 	//
 	//	Checking before install
 	//
-	function pre_check($pref) 
+	function pre_check($pref)
 	{
+	// We cannot perform successfull upgrade on system where the
+	// trans tax details tables was deleted during previous try.  
+		if (check_table($pref, 'debtor_trans_tax_details') 
+			|| check_table($pref, 'supp_invoice_tax_items')) {
+			display_error(_("Seems that system upgrade to version 2.1 has 
+			been performed for this company already.<br> If something has gone 
+			wrong and you want to retry upgrade process you MUST perform 
+			database restore from last backup file first."));
+
+			return false;
+		} 
+
 		return true; // true when ok, fail otherwise
 	}
 	//
@@ -85,6 +149,7 @@ class fa2_1 {
 		if (check_table($pref, 'suppliers', 'credit_limit')) return false;
 		if (check_table($pref, 'bank_trans', 'reconciled', 
 			array('Type'=>'date'))) return false;
+		if (check_table($pref, 'trans_tax_details')) return false;
 		return true;
 	}
 };

@@ -157,7 +157,7 @@ label_row(_("Sub-total"), $display_sub_tot, "colspan=6 align=right",
 	"nowrap align=right width=15%");
 label_row(_("Shipping"), $display_freight, "colspan=6 align=right", "nowrap align=right");
 
-$tax_items = get_customer_trans_tax_details(10, $trans_id);
+$tax_items = get_trans_tax_details(10, $trans_id);
 display_customer_trans_tax_details($tax_items, 6);
 
 $display_total = price_format($myrow["ov_freight"]+$myrow["ov_gst"]+$myrow["ov_amount"]+$myrow["ov_freight_tax"]);

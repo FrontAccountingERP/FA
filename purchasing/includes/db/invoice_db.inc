@@ -187,7 +187,8 @@ function add_supp_invoice($supp_trans, $invoice_no=0) // do not receive as ref b
 
 		// store tax details if the gl account is a tax account
 		add_gl_tax_details($entered_gl_code->gl_code, 
-			$trans_type, $invoice_id, $entered_gl_code->amount);
+			$trans_type, $invoice_id, $entered_gl_code->amount,
+			$date_, $supp_trans->supp_reference);
     }
     foreach ($supp_trans->grn_items as $entered_grn)
     {
@@ -267,8 +268,9 @@ function add_supp_invoice($supp_trans, $invoice_no=0) // do not receive as ref b
     		if (!$supp_trans->is_invoice)
     			$taxitem['Value'] = -$taxitem['Value'];
     		// here we suppose that tax is never included in price (we are company customer).
-			add_supp_invoice_tax_item($trans_type, $invoice_id, $taxitem['tax_type_id'],
-				$taxitem['rate'], 0, $taxitem['Value']);
+			add_trans_tax_details($trans_type, $invoice_id, 
+				$taxitem['tax_type_id'], $taxitem['rate'], 0, $taxitem['Value'],
+				$taxitem['Net'], $date_, $supp_trans->supp_reference);
 
     		$total += add_gl_trans_supplier($trans_type, $invoice_id, $date_,
     			$taxitem['purchasing_gl_code'], 0, 0, $taxitem['Value'],
@@ -459,7 +461,7 @@ function void_supp_invoice($type, $type_no)
 	}
 
 	void_supp_invoice_items($type, $type_no);
-	void_supp_invoice_tax_items($type, $type_no);
+	void_trans_tax_details($type, $type_no);
 
 	commit_transaction();
 }

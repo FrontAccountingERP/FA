@@ -209,21 +209,72 @@ function get_budget_trans_from_to($from_date, $to_date, $account, $dimension=0, 
 }
 
 //--------------------------------------------------------------------------------
-//	Stores GL journal/bank transaction on tax account for tax report
+//	Stores journal/bank transaction tax details if applicable
 //
-function add_gl_tax_details($gl_code, $trans_type, $trans_id, $amount)
+function add_gl_tax_details($gl_code, $trans_type, $trans_no, $amount, $date, $memo)
 {
 	$tax_type = is_tax_account($gl_code);
 	if(!$tax_type) return;	// $gl_code is not tax account
-
+	
 	$tax = get_tax_type($tax_type);
-	if ($gl_code == $tax['sales_gl_code'])
-		add_customer_trans_tax_detail_item($trans_type, $trans_id, 
-			$tax['id'], $tax['rate'], 0, -$amount);
-	else
-		add_supp_invoice_tax_item($trans_type, $trans_id, 
-			$tax['id'], $tax['rate'], 0, $amount);
+	if ($gl_code == $tax['sales_gl_code']) 
+		$amount = -$amount;
+	// we have to restore net amount as we cannot know the base amount
+	if ($tax['rate'] == 0) {
+//		display_warning(_("You should not post gl transactions  
+//			to tax account with	zero tax rate."));
+		$net_amount = 0;
+	} else { 
+		// calculate net amount
+		$net_amount = $amount/$tax['rate']*100; 
+	}
+	add_trans_tax_details($trans_type, $trans_no, $tax['id'], $tax['rate'], 0, 
+		$amount, $net_amount, $date, $memo);
 			
+}
+
+//--------------------------------------------------------------------------------
+//
+//	Store transaction tax details for fiscal purposes with 'freezed' 
+//	actual tax type rate.
+//
+function add_trans_tax_details($trans_type, $trans_no, $tax_id, $rate, $included,
+	$amount, $net_amount, $tran_date, $memo)
+{
+	$sql = "INSERT INTO ".TB_PREF."trans_tax_details 
+		(trans_type, trans_no, tran_date, tax_type_id, rate,
+			included_in_price, net_amount, amount, memo)
+		VALUES (".db_escape($trans_type)."," . db_escape($trans_no).",'"
+				.date2sql($tran_date)."',".db_escape($tax_id).","
+				.$rate.",".($included ? 1:0).",".db_escape($net_amount).","
+				.db_escape($amount).",".db_escape($memo).")";
+
+	db_query($sql, "Cannot save trans tax details");
+
+}
+//----------------------------------------------------------------------------------------
+
+function get_trans_tax_details($trans_type, $trans_no)
+{
+	$sql = "SELECT ".TB_PREF."trans_tax_details.*, ".TB_PREF."tax_types.name AS tax_type_name
+		FROM ".TB_PREF."trans_tax_details,".TB_PREF."tax_types
+		WHERE trans_type = $trans_type
+		AND trans_no = $trans_no
+		AND amount != 0
+		AND ".TB_PREF."tax_types.id = ".TB_PREF."trans_tax_details.tax_type_id";
+
+	return db_query($sql, "The transaction tax details could not be retrieved");
+}
+
+//----------------------------------------------------------------------------------------
+
+function void_trans_tax_details($type, $type_no)
+{
+	$sql = "UPDATE ".TB_PREF."trans_tax_details SET amount=0, net_amount=0
+		WHERE trans_no=$type_no
+		AND trans_type=$type";
+
+	db_query($sql, "The transaction tax details could not be voided");
 }
 
 //--------------------------------------------------------------------------------
@@ -251,7 +302,7 @@ function add_journal_entries($items, $date_, $ref, $reverse, $memo_=null)
     	}
 		// store tax details if the gl account is a tax account
 		add_gl_tax_details($journal_item->code_id, 
-			$trans_type, $trans_id, $journal_item->amount);
+			$trans_type, $trans_id, -$journal_item->amount, $date_, $memo_);
 	}
 	
 	add_comments($trans_type, $trans_id, $date_, $memo_);
@@ -283,7 +334,7 @@ function add_journal_entries($items, $date_, $ref, $reverse, $memo_=null)
     		}
 			// store tax details if the gl account is a tax account
 			add_gl_tax_details($journal_item->code_id, 
-				$trans_type, $trans_id, -$journal_item->amount);
+				$trans_type, $trans_id, $journal_item->amount, $date, $memo_);
     	}
 
     	add_comments($trans_type, $trans_id_reverse, $reversingDate, $memo_);
@@ -329,8 +380,7 @@ function void_journal_trans($type, $type_no)
 
 	void_gl_trans($type, $type_no, true);
 	void_bank_trans($type, $type_no,true);
-	void_customer_trans_tax_details($type, $type_no);
-	void_supp_invoice_tax_items($type, $type_no);
+	void_trans_tax_details($type, $type_no);
 
 	commit_transaction();
 }

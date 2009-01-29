@@ -105,13 +105,13 @@ function void_bank_trans($type, $type_no, $nested=false)
 
 	// in case it's a customer trans - probably better to check first
 	void_cust_allocations($type, $type_no);
-	void_customer_trans_tax_details($type, $type_no);
 	void_customer_trans($type, $type_no);
 
 	// in case it's a supplier trans - probably better to check first
 	void_supp_allocations($type, $type_no);
-	void_supp_invoice_tax_items($type, $type_no);
 	void_supp_trans($type, $type_no);
+
+	void_trans_tax_details($type, $type_no);
 
 	if (!$nested)
 		commit_transaction();

@@ -137,7 +137,7 @@ if ($sub_total != 0)
 		"nowrap align=right width=15%");
 label_row(_("Shipping"), $display_freight, "colspan=6 align=right", "nowrap align=right");
 
-$tax_items = get_customer_trans_tax_details(11, $trans_id);
+$tax_items = get_trans_tax_details(11, $trans_id);
 display_customer_trans_tax_details($tax_items, 6);
 
 label_row("<font color=red>" . _("TOTAL CREDIT") . "</font",

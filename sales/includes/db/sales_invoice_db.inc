@@ -80,7 +80,7 @@ function write_sales_invoice(&$invoice)
 		delete_comments(10, $invoice_no);
 		void_gl_trans(10, $invoice_no, true);
 		void_cust_allocations(10, $invoice_no); // ?
-		void_customer_trans_tax_details(10, $invoice_no);
+		void_trans_tax_details(10, $invoice_no);
 	}
 	$total = 0;
 	foreach ($invoice->line_items as $invoice_line) {
@@ -146,9 +146,11 @@ function write_sales_invoice(&$invoice)
 	}
 	// post all taxes
 	foreach ($taxes as $taxitem) {
+
 		if ($taxitem['Value'] != 0) {
-			add_customer_trans_tax_detail_item(10, $invoice_no, $taxitem['tax_type_id'],
-				$taxitem['rate'], $invoice->tax_included, $taxitem['Value']);
+			add_trans_tax_details(10, $invoice_no, $taxitem['tax_type_id'],
+				$taxitem['rate'], $invoice->tax_included, $taxitem['Value'],
+				 $taxitem['Net'], $date_, $invoice->reference);
 
 			$total += add_gl_trans_customer(10, $invoice_no, $date_, $taxitem['sales_gl_code'], 0, 0,
 				(-$taxitem['Value']), $invoice->customer_id,
@@ -210,7 +212,7 @@ function void_sales_invoice($type, $type_no)
 	// clear details after they've been reversed in the sales order
 	void_customer_trans_details($type, $type_no);
 
-	void_customer_trans_tax_details($type, $type_no);
+	void_trans_tax_details($type, $type_no);
 
 	void_cust_allocations($type, $type_no);
 

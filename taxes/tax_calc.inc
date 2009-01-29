@@ -173,7 +173,10 @@ function get_tax_for_items($items, $prices, $shipping_cost, $tax_group, $tax_inc
 	  $ret_tax_array = $tax_items_array;
 	else
 	  $ret_tax_array = get_tax_group_items_as_array($tax_group);
-	
+
+	foreach($ret_tax_array as $k=>$t)
+		$ret_tax_array[$k]['Net'] = 0;
+
 	// loop for all items
 	for ($i = 0; $i < count($items); $i++)
 	{
@@ -184,14 +187,17 @@ function get_tax_for_items($items, $prices, $shipping_cost, $tax_group, $tax_inc
 			foreach ($item_taxes as $item_tax) 
 			{
 				$index = $item_tax['tax_type_id'];
-				if($tax_included==1) // 2008-11-26 Joe Hunt Taxes are stored without roundings
+				if($tax_included==1) {// 2008-11-26 Joe Hunt Taxes are stored without roundings
 				  //$ret_tax_array[$index]['Value'] += round($prices[$i] * $item_tax['rate'] 
 				  //	/ ($item_tax['rate'] + 100),  user_price_dec());
 				  $ret_tax_array[$index]['Value'] += ($prices[$i] * $item_tax['rate'] / ($item_tax['rate'] + 100));
-				else
+				  $ret_tax_array[$index]['Net'] += ($prices[$i] * 100 / ($item_tax['rate'] + 100));
+				} else {
 				  //$ret_tax_array[$index]['Value'] += 
 				  //	round($prices[$i] * $item_tax['rate'] / 100,  user_price_dec());
 				  $ret_tax_array[$index]['Value'] += ($prices[$i] * $item_tax['rate'] / 100);
+				  $ret_tax_array[$index]['Net'] += $prices[$i];
+				}
 			}
 		}
 	}
@@ -206,14 +212,17 @@ function get_tax_for_items($items, $prices, $shipping_cost, $tax_group, $tax_inc
 			{
 				$index = $item_tax['tax_type_id'];
 				if(isset($ret_tax_array[$index])) {
-				  if($tax_included==1) // 2008-11-26 Joe Hunt Taxes are stored without roundings
+				  if($tax_included==1) {// 2008-11-26 Joe Hunt Taxes are stored without roundings
 					//$ret_tax_array[$index]['Value'] += round($shipping_cost * $item_tax['rate'] 
 					//  / ($item_tax['rate'] + 100),  user_price_dec());
 					$ret_tax_array[$index]['Value'] += ($shipping_cost * $item_tax['rate'] / ($item_tax['rate'] + 100));
-				  else
+				    $ret_tax_array[$index]['Net'] += ($shipping_cost * 100 / ($item_tax['rate'] + 100));
+				  } else {
 					//$ret_tax_array[$index]['Value'] += 
 					//  round($shipping_cost * $item_tax['rate'] / 100,  user_price_dec());
 					$ret_tax_array[$index]['Value'] += ($shipping_cost * $item_tax['rate'] / 100);
+				    $ret_tax_array[$index]['Net'] += $shipping_cost;
+				 }
 				}
 			}
 		}

@@ -147,7 +147,8 @@ function add_bank_transaction($trans_type, $from_account, $items, $date_,
 		// store tax details if the gl account is a tax account
 
 		$amount = $gl_item->amount;
-		add_gl_tax_details($gl_item->code_id, $trans_type, $trans_no, $amount);
+		add_gl_tax_details($gl_item->code_id, $trans_type, $trans_no, $amount,
+			$date_, $memo);
 	}
 
 	// do the source account postings

@@ -52,42 +52,6 @@ function void_customer_trans_details($type, $type_no)
 }
 //----------------------------------------------------------------------------------------
 
-function add_customer_trans_tax_detail_item($debtor_trans_type, $debtor_trans_no,
-	$tax_type_id, $rate, $included_in_price, $amount)
-{
-	$sql = "INSERT INTO ".TB_PREF."debtor_trans_tax_details (debtor_trans_no, debtor_trans_type, tax_type_id, rate, included_in_price, amount)
-		VALUES ($debtor_trans_no, $debtor_trans_type, $tax_type_id, $rate, $included_in_price, $amount)";
-
-	db_query($sql, "The debtor transaction tax detail could not be added");
-}
-
-//----------------------------------------------------------------------------------------
-
-function get_customer_trans_tax_details($debtor_trans_type, $debtor_trans_no)
-{
-	$sql = "SELECT ".TB_PREF."debtor_trans_tax_details.*, ".TB_PREF."tax_types.name AS tax_type_name
-		FROM ".TB_PREF."debtor_trans_tax_details,".TB_PREF."tax_types
-		WHERE debtor_trans_no=$debtor_trans_no
-		AND debtor_trans_type=$debtor_trans_type
-		AND amount != 0
-		AND ".TB_PREF."tax_types.id = ".TB_PREF."debtor_trans_tax_details.tax_type_id";
-
-	return db_query($sql, "The debtor transaction tax details could not be queried");
-}
-
-//----------------------------------------------------------------------------------------
-
-function void_customer_trans_tax_details($type, $type_no)
-{
-	$sql = "UPDATE ".TB_PREF."debtor_trans_tax_details SET amount=0
-		WHERE debtor_trans_no=$type_no
-		AND debtor_trans_type=$type";
-
-	db_query($sql, "The debtor transaction tax details could not be voided");
-}
-
-//----------------------------------------------------------------------------------------
-
 function write_customer_trans_detail_item($debtor_trans_type, $debtor_trans_no, $stock_id, $description,
 	$quantity, $unit_price, $unit_tax, $discount_percent, $std_cost, $line_id=0)
 {
