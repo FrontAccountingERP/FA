@@ -287,13 +287,13 @@ function get_tax_summary($from, $to)
 
 	$sql = "SELECT 
 				SUM(IF( trans_type=1 || trans_type=11 || trans_type=20,-1,1)*
-				IF(trans_type=0 || trans_type=2 || trans_type=10 || trans_type=11, net_amount*ex_rate,0)) net_input,
+				IF(trans_type=0 || trans_type=2 || trans_type=10 || trans_type=11, net_amount*ex_rate,0)) net_output,
 				SUM(IF( trans_type=1 || trans_type=11 || trans_type=20,-1,1)*
-				IF(trans_type=0 || trans_type=2 || trans_type=10 || trans_type=11, amount*ex_rate,0)) collectible,
+				IF(trans_type=0 || trans_type=2 || trans_type=10 || trans_type=11, amount*ex_rate,0)) payable,
 				SUM(IF( trans_type=1 || trans_type=11 || trans_type=20,-1,1)*
-				IF(trans_type=0 || trans_type=2 || trans_type=10 || trans_type=11, 0, net_amount*ex_rate)) net_output,
+				IF(trans_type=0 || trans_type=2 || trans_type=10 || trans_type=11, 0, net_amount*ex_rate)) net_input,
 				SUM(IF( trans_type=1 || trans_type=11 || trans_type=20,-1,1)*
-				IF(trans_type=0 || trans_type=2 || trans_type=10 || trans_type=11, 0, amount*ex_rate)) payable,
+				IF(trans_type=0 || trans_type=2 || trans_type=10 || trans_type=11, 0, amount*ex_rate)) collectible,
 				taxrec.rate,
 				ttype.id,
 				ttype.name

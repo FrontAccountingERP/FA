@@ -106,14 +106,14 @@ function show_results()
 		alt_table_row_color($k);
 		label_cell($tx['name'] . " " . $tx['rate'] . "%");
 		label_cell(_("Charged on sales") . " (" . _("Output Tax")."):");
-		amount_cell($collectible);
-		amount_cell($tx['net_input']);
+		amount_cell($payable);
+		amount_cell($tx['net_output']);
 		end_row();
 		alt_table_row_color($k);
 		label_cell($tx['name'] . " " . $tx['rate'] . "%");
 		label_cell(_("Paid on purchases") . " (" . _("Input Tax")."):");
-		amount_cell($payable);
-		amount_cell($tx['net_output']);
+		amount_cell($collectible);
+		amount_cell($tx['net_input']);
 		end_row();
 		alt_table_row_color($k);
 		label_cell("<b>".$tx['name'] . " " . $tx['rate'] . "%</b>");
