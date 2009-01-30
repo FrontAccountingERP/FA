@@ -244,6 +244,8 @@ CREATE TABLE IF NOT EXISTS `0_sql_trail` (
 
 ALTER TABLE `0_tax_types` DROP COLUMN `out`;
 
+ALTER TABLE `0_chart_master` DROP COLUMN `tax_code`;
+
 ALTER TABLE `0_chart_master` DROP COLUMN `inactive`;
 ALTER TABLE `0_chart_master` ADD `inactive` tinyint(1) NOT NULL DEFAULT '0';
 

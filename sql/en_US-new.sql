@@ -1,5 +1,5 @@
 # MySQL dump of database 'fa' on host 'localhost'
-# Backup Date and Time: 2009-01-26 10:11
+# Backup Date and Time: 2009-01-30 11:03
 # Built by FrontAccounting 2.1.0 CVS
 # http://frontaccounting.net
 # Company: Company name
@@ -183,7 +183,6 @@ CREATE TABLE `0_chart_master` (
   `account_code2` varchar(11) default '',
   `account_name` varchar(60) NOT NULL default '',
   `account_type` int(11) NOT NULL default '0',
-  `tax_code` int(11) NOT NULL default '0',
   `inactive` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`account_code`),
   KEY `account_code` (`account_code`),
@@ -193,51 +192,51 @@ CREATE TABLE `0_chart_master` (
 
 ### Data of table `0_chart_master` ###
 
-INSERT INTO `0_chart_master` VALUES ('3000', '', 'Sales', '1', '1', '0');
-INSERT INTO `0_chart_master` VALUES ('3010', '', 'Sales  - Wholesale', '1', '1', '0');
-INSERT INTO `0_chart_master` VALUES ('3020', '', 'Sales of Other items', '1', '1', '0');
-INSERT INTO `0_chart_master` VALUES ('3400', '', 'Difference On Exchange', '1', '0', '0');
-INSERT INTO `0_chart_master` VALUES ('5000', '', 'Direct Labour', '2', '0', '0');
-INSERT INTO `0_chart_master` VALUES ('5050', '', 'Direct Labour Recovery', '2', '0', '0');
-INSERT INTO `0_chart_master` VALUES ('4200', '', 'Material Usage Varaiance', '2', '4', '0');
-INSERT INTO `0_chart_master` VALUES ('4210', '', 'Consumable Materials', '2', '4', '0');
-INSERT INTO `0_chart_master` VALUES ('4220', '', 'Purchase price Variance', '2', '0', '0');
-INSERT INTO `0_chart_master` VALUES ('4000', '', 'Purchases of materials', '2', '4', '0');
-INSERT INTO `0_chart_master` VALUES ('4250', '', 'Discounts Received', '2', '0', '0');
-INSERT INTO `0_chart_master` VALUES ('4260', '', 'Exchange Variation', '2', '0', '0');
-INSERT INTO `0_chart_master` VALUES ('4300', '', 'Freight Inwards', '2', '4', '0');
-INSERT INTO `0_chart_master` VALUES ('4010', '', 'Cost of Goods Sold - Retail', '2', '4', '0');
-INSERT INTO `0_chart_master` VALUES ('6790', '', 'Bank Charges', '5', '4', '0');
-INSERT INTO `0_chart_master` VALUES ('6800', '', 'Entertainments', '5', '4', '0');
-INSERT INTO `0_chart_master` VALUES ('6810', '', 'Legal Expenses', '5', '4', '0');
-INSERT INTO `0_chart_master` VALUES ('6600', '', 'Repairs and Maintenance Office', '5', '4', '0');
-INSERT INTO `0_chart_master` VALUES ('6730', '', 'phone', '5', '4', '0');
-INSERT INTO `0_chart_master` VALUES ('8200', '', 'Bank Interest', '52', '0', '0');
-INSERT INTO `0_chart_master` VALUES ('6840', '', 'Credit Control', '5', '0', '0');
-INSERT INTO `0_chart_master` VALUES ('7040', '', 'Depreciation Office Equipment', '51', '0', '0');
-INSERT INTO `0_chart_master` VALUES ('3800', '', 'Freight Outwards', '5', '4', '0');
-INSERT INTO `0_chart_master` VALUES ('4500', '', 'Packaging', '5', '4', '0');
-INSERT INTO `0_chart_master` VALUES ('6400', '', 'Commissions', '5', '0', '0');
-INSERT INTO `0_chart_master` VALUES ('3200', '', 'Prompt Payment Discounts', '1', '0', '0');
-INSERT INTO `0_chart_master` VALUES ('6700', '', 'General Expenses', '5', '4', '0');
-INSERT INTO `0_chart_master` VALUES ('5200', '', 'Indirect Labour', '2', '0', '0');
-INSERT INTO `0_chart_master` VALUES ('5210', '', 'Overhead Recovery', '5', '0', '0');
-INSERT INTO `0_chart_master` VALUES ('1700', '', 'Bank account', '10', '0', '0');
-INSERT INTO `0_chart_master` VALUES ('1705', '', 'Petty Cash', '10', '0', '0');
-INSERT INTO `0_chart_master` VALUES ('1710', '', 'Foreign currency account', '10', '0', '0');
-INSERT INTO `0_chart_master` VALUES ('1500', '', 'Accounts Receivable', '20', '0', '0');
-INSERT INTO `0_chart_master` VALUES ('1400', '', 'Stocks of Raw Materials', '45', '0', '0');
-INSERT INTO `0_chart_master` VALUES ('1410', '', 'Stocks of Work In Progress', '45', '0', '0');
-INSERT INTO `0_chart_master` VALUES ('1420', '', 'Stocks of Finsihed Goods', '45', '0', '0');
-INSERT INTO `0_chart_master` VALUES ('1430', '', 'Goods Received Clearing account', '30', '0', '0');
-INSERT INTO `0_chart_master` VALUES ('2630', '', 'Accounts Payable', '30', '0', '0');
-INSERT INTO `0_chart_master` VALUES ('2660', '', 'VAT out 5', '30', '0', '0');
-INSERT INTO `0_chart_master` VALUES ('2662', '', 'VAT out 1', '30', '0', '0');
-INSERT INTO `0_chart_master` VALUES ('2664', '', 'VAT out 25', '30', '0', '0');
-INSERT INTO `0_chart_master` VALUES ('2680', '', 'VAT In 5', '30', '0', '0');
-INSERT INTO `0_chart_master` VALUES ('2682', '', 'VAT In 25', '30', '0', '0');
-INSERT INTO `0_chart_master` VALUES ('2050', '', 'Retained Earnings', '50', '0', '0');
-INSERT INTO `0_chart_master` VALUES ('2000', '', 'Share Capital', '50', '0', '0');
+INSERT INTO `0_chart_master` VALUES ('3000', '', 'Sales', '1', '0');
+INSERT INTO `0_chart_master` VALUES ('3010', '', 'Sales  - Wholesale', '1', '0');
+INSERT INTO `0_chart_master` VALUES ('3020', '', 'Sales of Other items', '1', '0');
+INSERT INTO `0_chart_master` VALUES ('3400', '', 'Difference On Exchange', '1', '0');
+INSERT INTO `0_chart_master` VALUES ('5000', '', 'Direct Labour', '2', '0');
+INSERT INTO `0_chart_master` VALUES ('5050', '', 'Direct Labour Recovery', '2', '0');
+INSERT INTO `0_chart_master` VALUES ('4200', '', 'Material Usage Varaiance', '2', '0');
+INSERT INTO `0_chart_master` VALUES ('4210', '', 'Consumable Materials', '2', '0');
+INSERT INTO `0_chart_master` VALUES ('4220', '', 'Purchase price Variance', '2', '0');
+INSERT INTO `0_chart_master` VALUES ('4000', '', 'Purchases of materials', '2', '0');
+INSERT INTO `0_chart_master` VALUES ('4250', '', 'Discounts Received', '2', '0');
+INSERT INTO `0_chart_master` VALUES ('4260', '', 'Exchange Variation', '2', '0');
+INSERT INTO `0_chart_master` VALUES ('4300', '', 'Freight Inwards', '2', '0');
+INSERT INTO `0_chart_master` VALUES ('4010', '', 'Cost of Goods Sold - Retail', '2', '0');
+INSERT INTO `0_chart_master` VALUES ('6790', '', 'Bank Charges', '5', '0');
+INSERT INTO `0_chart_master` VALUES ('6800', '', 'Entertainments', '5', '0');
+INSERT INTO `0_chart_master` VALUES ('6810', '', 'Legal Expenses', '5', '0');
+INSERT INTO `0_chart_master` VALUES ('6600', '', 'Repairs and Maintenance Office', '5', '0');
+INSERT INTO `0_chart_master` VALUES ('6730', '', 'phone', '5', '0');
+INSERT INTO `0_chart_master` VALUES ('8200', '', 'Bank Interest', '52', '0');
+INSERT INTO `0_chart_master` VALUES ('6840', '', 'Credit Control', '5', '0');
+INSERT INTO `0_chart_master` VALUES ('7040', '', 'Depreciation Office Equipment', '51', '0');
+INSERT INTO `0_chart_master` VALUES ('3800', '', 'Freight Outwards', '5', '0');
+INSERT INTO `0_chart_master` VALUES ('4500', '', 'Packaging', '5', '0');
+INSERT INTO `0_chart_master` VALUES ('6400', '', 'Commissions', '5', '0');
+INSERT INTO `0_chart_master` VALUES ('3200', '', 'Prompt Payment Discounts', '1', '0');
+INSERT INTO `0_chart_master` VALUES ('6700', '', 'General Expenses', '5', '0');
+INSERT INTO `0_chart_master` VALUES ('5200', '', 'Indirect Labour', '2', '0');
+INSERT INTO `0_chart_master` VALUES ('5210', '', 'Overhead Recovery', '5', '0');
+INSERT INTO `0_chart_master` VALUES ('1700', '', 'Bank account', '10', '0');
+INSERT INTO `0_chart_master` VALUES ('1705', '', 'Petty Cash', '10', '0');
+INSERT INTO `0_chart_master` VALUES ('1710', '', 'Foreign currency account', '10', '0');
+INSERT INTO `0_chart_master` VALUES ('1500', '', 'Accounts Receivable', '20', '0');
+INSERT INTO `0_chart_master` VALUES ('1400', '', 'Stocks of Raw Materials', '45', '0');
+INSERT INTO `0_chart_master` VALUES ('1410', '', 'Stocks of Work In Progress', '45', '0');
+INSERT INTO `0_chart_master` VALUES ('1420', '', 'Stocks of Finsihed Goods', '45', '0');
+INSERT INTO `0_chart_master` VALUES ('1430', '', 'Goods Received Clearing account', '30', '0');
+INSERT INTO `0_chart_master` VALUES ('2630', '', 'Accounts Payable', '30', '0');
+INSERT INTO `0_chart_master` VALUES ('2660', '', 'VAT out 5', '30', '0');
+INSERT INTO `0_chart_master` VALUES ('2662', '', 'VAT out 1', '30', '0');
+INSERT INTO `0_chart_master` VALUES ('2664', '', 'VAT out 25', '30', '0');
+INSERT INTO `0_chart_master` VALUES ('2680', '', 'VAT In 5', '30', '0');
+INSERT INTO `0_chart_master` VALUES ('2682', '', 'VAT In 25', '30', '0');
+INSERT INTO `0_chart_master` VALUES ('2050', '', 'Retained Earnings', '50', '0');
+INSERT INTO `0_chart_master` VALUES ('2000', '', 'Share Capital', '50', '0');
 
 
 ### Structure of table `0_chart_types` ###
@@ -348,7 +347,7 @@ CREATE TABLE `0_company` (
 
 ### Data of table `0_company` ###
 
-INSERT INTO `0_company` VALUES ('1', 'Company name', '', '', '1', '1', 'N/A', '', '', '', '', '', 'USD', '1500', '4250', '2630', '1430', '4260', '4220', '2050', '3800', '3000', '3000', '3200', '1420', '4010', '4210', '3000', '1410', '5000', '', '', '', '', '', '', '0', '10', '10', '1000', '20', '20', '30', '1', '2', '0', '0', '0', '0', '0', '0', '');
+INSERT INTO `0_company` VALUES ('1', 'Company name', '', '', '1', '1', 'N/A', '', '', '', '', '', 'USD', '1500', '4250', '2630', '1430', '4260', '4220', '2050', '3800', '3000', '3000', '3200', '1420', '4010', '4210', '3000', '1410', '5000', '', '', '', '', '', '', '0', '10', '10', '1000', '20', '20', '30', '1', '1', '0', '0', '0', '-1', '0', '0', '');
 
 
 ### Structure of table `0_credit_status` ###
@@ -508,27 +507,6 @@ CREATE TABLE `0_debtor_trans_details` (
 
 
 
-### Structure of table `0_debtor_trans_tax_details` ###
-
-DROP TABLE IF EXISTS `0_debtor_trans_tax_details`;
-
-CREATE TABLE `0_debtor_trans_tax_details` (
-  `id` int(11) NOT NULL auto_increment,
-  `debtor_trans_no` int(11) default NULL,
-  `debtor_trans_type` int(11) default NULL,
-  `tax_type_id` int(11) NOT NULL default '0',
-  `tax_type_name` varchar(60) default NULL,
-  `rate` double NOT NULL default '0',
-  `included_in_price` tinyint(1) NOT NULL default '0',
-  `amount` double NOT NULL default '0',
-  PRIMARY KEY  (`id`)
-) TYPE=InnoDB  AUTO_INCREMENT=1 ;
-
-
-### Data of table `0_debtor_trans_tax_details` ###
-
-
-
 ### Structure of table `0_debtors_master` ###
 
 DROP TABLE IF EXISTS `0_debtors_master`;
@@ -608,12 +586,12 @@ CREATE TABLE `0_fiscal_year` (
   `end` date default '0000-00-00',
   `closed` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`id`)
-) TYPE=InnoDB AUTO_INCREMENT=3  AUTO_INCREMENT=3 ;
+) TYPE=InnoDB AUTO_INCREMENT=2  AUTO_INCREMENT=2 ;
 
 
 ### Data of table `0_fiscal_year` ###
 
-INSERT INTO `0_fiscal_year` VALUES ('2', '2009-01-01', '2009-12-31', '0');
+INSERT INTO `0_fiscal_year` VALUES ('1', '2008-01-01', '2008-12-31', '0');
 
 
 ### Structure of table `0_gl_trans` ###
@@ -770,7 +748,7 @@ CREATE TABLE `0_item_units` (
 
 ### Data of table `0_item_units` ###
 
-INSERT INTO `0_item_units` VALUES ('each', 'Each', '0', '0');
+INSERT INTO `0_item_units` VALUES ('ea.', 'Each', '0', '0');
 
 
 ### Structure of table `0_loc_stock` ###
@@ -1358,27 +1336,6 @@ CREATE TABLE `0_supp_invoice_items` (
 
 
 
-### Structure of table `0_supp_invoice_tax_items` ###
-
-DROP TABLE IF EXISTS `0_supp_invoice_tax_items`;
-
-CREATE TABLE `0_supp_invoice_tax_items` (
-  `id` int(11) NOT NULL auto_increment,
-  `supp_trans_no` int(11) default NULL,
-  `supp_trans_type` int(11) default NULL,
-  `tax_type_id` int(11) NOT NULL default '0',
-  `tax_type_name` varchar(60) default NULL,
-  `rate` double NOT NULL default '0',
-  `included_in_price` tinyint(1) NOT NULL default '0',
-  `amount` double NOT NULL default '0',
-  PRIMARY KEY  (`id`)
-) TYPE=InnoDB  AUTO_INCREMENT=1 ;
-
-
-### Data of table `0_supp_invoice_tax_items` ###
-
-
-
 ### Structure of table `0_supp_trans` ###
 
 DROP TABLE IF EXISTS `0_supp_trans`;
@@ -1530,6 +1487,30 @@ CREATE TABLE `0_tax_types` (
 
 
 ### Data of table `0_tax_types` ###
+
+
+
+### Structure of table `0_trans_tax_details` ###
+
+DROP TABLE IF EXISTS `0_trans_tax_details`;
+
+CREATE TABLE `0_trans_tax_details` (
+  `id` int(11) NOT NULL auto_increment,
+  `trans_type` smallint(6) default NULL,
+  `trans_no` int(11) default NULL,
+  `tran_date` date NOT NULL,
+  `tax_type_id` int(11) NOT NULL default '0',
+  `rate` double NOT NULL default '0',
+  `ex_rate` double NOT NULL default '1',
+  `included_in_price` tinyint(1) NOT NULL default '0',
+  `net_amount` double NOT NULL default '0',
+  `amount` double NOT NULL default '0',
+  `memo` tinytext,
+  PRIMARY KEY  (`id`)
+) TYPE=InnoDB  AUTO_INCREMENT=1 ;
+
+
+### Data of table `0_trans_tax_details` ###
 
 
 

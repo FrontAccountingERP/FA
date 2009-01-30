@@ -1,10 +1,11 @@
 # MySQL dump of database 'fa' on host 'localhost'
-# Backup Date and Time: 2009-01-26 10:15
+# Backup Date and Time: 2009-01-30 10:42
 # Built by FrontAccounting 2.1.0 CVS
 # http://frontaccounting.net
-# Company: Drill Company Inc.
+# Company: Training Co.
 # User: Administrator
-# Database: en_US-demo.sql release 2.1
+# Database: en_US-demo.sql
+
 
 
 ### Structure of table `0_areas` ###
@@ -101,7 +102,7 @@ CREATE TABLE `0_bank_trans` (
   PRIMARY KEY  (`id`),
   KEY `bank_act` (`bank_act`,`ref`),
   KEY `type` (`type`,`trans_no`)
-) TYPE=InnoDB AUTO_INCREMENT=27  AUTO_INCREMENT=27 ;
+) TYPE=InnoDB AUTO_INCREMENT=30  AUTO_INCREMENT=30 ;
 
 
 ### Data of table `0_bank_trans` ###
@@ -112,6 +113,9 @@ INSERT INTO `0_bank_trans` VALUES ('23', '12', '9', '1', '8', '2008-03-07', '1',
 INSERT INTO `0_bank_trans` VALUES ('24', '12', '10', '1', '9', '2009-01-10', '0', '1000', '0', '0', '2', '1', '');
 INSERT INTO `0_bank_trans` VALUES ('25', '12', '11', '1', '10', '2009-01-10', '0', '183.62116393597', '0', '0', '2', '3', '');
 INSERT INTO `0_bank_trans` VALUES ('26', '22', '4', '1', '3', '2009-01-10', '0', '-200', '0', '0', '3', '1', '');
+INSERT INTO `0_bank_trans` VALUES ('27', '2', '5', '1', '14', '2009-01-29', '', '200', '0', '0', '4', '3', '');
+INSERT INTO `0_bank_trans` VALUES ('28', '1', '8', '1', '7', '2009-01-29', '', '-50', '0', '0', '4', '1', '');
+INSERT INTO `0_bank_trans` VALUES ('29', '2', '6', '1', '15', '2009-01-29', '', '50', '0', '0', '4', '3', '');
 
 
 ### Structure of table `0_bom` ###
@@ -199,7 +203,6 @@ CREATE TABLE `0_chart_master` (
   `account_code2` varchar(11) default '',
   `account_name` varchar(60) NOT NULL default '',
   `account_type` int(11) NOT NULL default '0',
-  `tax_code` int(11) NOT NULL default '0',
   `inactive` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`account_code`),
   KEY `account_code` (`account_code`),
@@ -209,51 +212,51 @@ CREATE TABLE `0_chart_master` (
 
 ### Data of table `0_chart_master` ###
 
-INSERT INTO `0_chart_master` VALUES ('3000', '', 'Sales', '1', '1', '0');
-INSERT INTO `0_chart_master` VALUES ('3010', '', 'Sales  - Wholesale', '1', '1', '0');
-INSERT INTO `0_chart_master` VALUES ('3020', '', 'Sales of Other items', '1', '1', '0');
-INSERT INTO `0_chart_master` VALUES ('3400', '', 'Difference On Exchange', '1', '0', '0');
-INSERT INTO `0_chart_master` VALUES ('5000', '', 'Direct Labour', '2', '0', '0');
-INSERT INTO `0_chart_master` VALUES ('5050', '', 'Direct Labour Recovery', '2', '0', '0');
-INSERT INTO `0_chart_master` VALUES ('4200', '', 'Material Usage Varaiance', '2', '4', '0');
-INSERT INTO `0_chart_master` VALUES ('4210', '', 'Consumable Materials', '2', '4', '0');
-INSERT INTO `0_chart_master` VALUES ('4220', '', 'Purchase price Variance', '2', '0', '0');
-INSERT INTO `0_chart_master` VALUES ('4000', '', 'Purchases of materials', '2', '4', '0');
-INSERT INTO `0_chart_master` VALUES ('4250', '', 'Discounts Received', '2', '0', '0');
-INSERT INTO `0_chart_master` VALUES ('4260', '', 'Exchange Variation', '2', '0', '0');
-INSERT INTO `0_chart_master` VALUES ('4300', '', 'Freight Inwards', '2', '4', '0');
-INSERT INTO `0_chart_master` VALUES ('4010', '', 'Cost of Goods Sold - Retail', '2', '4', '0');
-INSERT INTO `0_chart_master` VALUES ('6790', '', 'Bank Charges', '5', '4', '0');
-INSERT INTO `0_chart_master` VALUES ('6800', '', 'Entertainments', '5', '4', '0');
-INSERT INTO `0_chart_master` VALUES ('6810', '', 'Legal Expenses', '5', '4', '0');
-INSERT INTO `0_chart_master` VALUES ('6600', '', 'Repairs and Maintenance Office', '5', '4', '0');
-INSERT INTO `0_chart_master` VALUES ('6730', '', 'phone', '5', '4', '0');
-INSERT INTO `0_chart_master` VALUES ('8200', '', 'Bank Interest', '52', '0', '0');
-INSERT INTO `0_chart_master` VALUES ('6840', '', 'Credit Control', '5', '0', '0');
-INSERT INTO `0_chart_master` VALUES ('7040', '', 'Depreciation Office Equipment', '51', '0', '0');
-INSERT INTO `0_chart_master` VALUES ('3800', '', 'Freight Outwards', '5', '4', '0');
-INSERT INTO `0_chart_master` VALUES ('4500', '', 'Packaging', '5', '4', '0');
-INSERT INTO `0_chart_master` VALUES ('6400', '', 'Commissions', '5', '0', '0');
-INSERT INTO `0_chart_master` VALUES ('3200', '', 'Prompt Payment Discounts', '1', '0', '0');
-INSERT INTO `0_chart_master` VALUES ('6700', '', 'General Expenses', '5', '4', '0');
-INSERT INTO `0_chart_master` VALUES ('5200', '', 'Indirect Labour', '2', '0', '0');
-INSERT INTO `0_chart_master` VALUES ('5210', '', 'Overhead Recovery', '5', '0', '0');
-INSERT INTO `0_chart_master` VALUES ('1700', '', 'Bank account', '10', '0', '0');
-INSERT INTO `0_chart_master` VALUES ('1705', '', 'Petty Cash', '10', '0', '0');
-INSERT INTO `0_chart_master` VALUES ('1710', '', 'Foreign currency account', '10', '0', '0');
-INSERT INTO `0_chart_master` VALUES ('1500', '', 'Accounts Receivable', '20', '0', '0');
-INSERT INTO `0_chart_master` VALUES ('1400', '', 'Stocks of Raw Materials', '45', '0', '0');
-INSERT INTO `0_chart_master` VALUES ('1410', '', 'Stocks of Work In Progress', '45', '0', '0');
-INSERT INTO `0_chart_master` VALUES ('1420', '', 'Stocks of Finsihed Goods', '45', '0', '0');
-INSERT INTO `0_chart_master` VALUES ('1430', '', 'Goods Received Clearing account', '30', '0', '0');
-INSERT INTO `0_chart_master` VALUES ('2630', '', 'Accounts Payable', '30', '0', '0');
-INSERT INTO `0_chart_master` VALUES ('2660', '', 'VAT out 5', '30', '0', '0');
-INSERT INTO `0_chart_master` VALUES ('2662', '', 'VAT out 1', '30', '0', '0');
-INSERT INTO `0_chart_master` VALUES ('2664', '', 'VAT out 25', '30', '0', '0');
-INSERT INTO `0_chart_master` VALUES ('2680', '', 'VAT In 5', '30', '0', '0');
-INSERT INTO `0_chart_master` VALUES ('2682', '', 'VAT In 25', '30', '0', '0');
-INSERT INTO `0_chart_master` VALUES ('2050', '', 'Retained Earnings', '50', '0', '0');
-INSERT INTO `0_chart_master` VALUES ('2000', '', 'Share Capital', '50', '0', '0');
+INSERT INTO `0_chart_master` VALUES ('3000', '', 'Sales', '1', '0');
+INSERT INTO `0_chart_master` VALUES ('3010', '', 'Sales  - Wholesale', '1', '0');
+INSERT INTO `0_chart_master` VALUES ('3020', '', 'Sales of Other items', '1', '0');
+INSERT INTO `0_chart_master` VALUES ('3400', '', 'Difference On Exchange', '1', '0');
+INSERT INTO `0_chart_master` VALUES ('5000', '', 'Direct Labour', '2', '0');
+INSERT INTO `0_chart_master` VALUES ('5050', '', 'Direct Labour Recovery', '2', '0');
+INSERT INTO `0_chart_master` VALUES ('4200', '', 'Material Usage Varaiance', '2', '0');
+INSERT INTO `0_chart_master` VALUES ('4210', '', 'Consumable Materials', '2', '0');
+INSERT INTO `0_chart_master` VALUES ('4220', '', 'Purchase price Variance', '2', '0');
+INSERT INTO `0_chart_master` VALUES ('4000', '', 'Purchases of materials', '2', '0');
+INSERT INTO `0_chart_master` VALUES ('4250', '', 'Discounts Received', '2', '0');
+INSERT INTO `0_chart_master` VALUES ('4260', '', 'Exchange Variation', '2', '0');
+INSERT INTO `0_chart_master` VALUES ('4300', '', 'Freight Inwards', '2', '0');
+INSERT INTO `0_chart_master` VALUES ('4010', '', 'Cost of Goods Sold - Retail', '2', '0');
+INSERT INTO `0_chart_master` VALUES ('6790', '', 'Bank Charges', '5', '0');
+INSERT INTO `0_chart_master` VALUES ('6800', '', 'Entertainments', '5', '0');
+INSERT INTO `0_chart_master` VALUES ('6810', '', 'Legal Expenses', '5', '0');
+INSERT INTO `0_chart_master` VALUES ('6600', '', 'Repairs and Maintenance Office', '5', '0');
+INSERT INTO `0_chart_master` VALUES ('6730', '', 'phone', '5', '0');
+INSERT INTO `0_chart_master` VALUES ('8200', '', 'Bank Interest', '52', '0');
+INSERT INTO `0_chart_master` VALUES ('6840', '', 'Credit Control', '5', '0');
+INSERT INTO `0_chart_master` VALUES ('7040', '', 'Depreciation Office Equipment', '51', '0');
+INSERT INTO `0_chart_master` VALUES ('3800', '', 'Freight Outwards', '5', '0');
+INSERT INTO `0_chart_master` VALUES ('4500', '', 'Packaging', '5', '0');
+INSERT INTO `0_chart_master` VALUES ('6400', '', 'Commissions', '5', '0');
+INSERT INTO `0_chart_master` VALUES ('3200', '', 'Prompt Payment Discounts', '1', '0');
+INSERT INTO `0_chart_master` VALUES ('6700', '', 'General Expenses', '5', '0');
+INSERT INTO `0_chart_master` VALUES ('5200', '', 'Indirect Labour', '2', '0');
+INSERT INTO `0_chart_master` VALUES ('5210', '', 'Overhead Recovery', '5', '0');
+INSERT INTO `0_chart_master` VALUES ('1700', '', 'Bank account', '10', '0');
+INSERT INTO `0_chart_master` VALUES ('1705', '', 'Petty Cash', '10', '0');
+INSERT INTO `0_chart_master` VALUES ('1710', '', 'Foreign currency account', '10', '0');
+INSERT INTO `0_chart_master` VALUES ('1500', '', 'Accounts Receivable', '20', '0');
+INSERT INTO `0_chart_master` VALUES ('1400', '', 'Stocks of Raw Materials', '45', '0');
+INSERT INTO `0_chart_master` VALUES ('1410', '', 'Stocks of Work In Progress', '45', '0');
+INSERT INTO `0_chart_master` VALUES ('1420', '', 'Stocks of Finsihed Goods', '45', '0');
+INSERT INTO `0_chart_master` VALUES ('1430', '', 'Goods Received Clearing account', '30', '0');
+INSERT INTO `0_chart_master` VALUES ('2630', '', 'Accounts Payable', '30', '0');
+INSERT INTO `0_chart_master` VALUES ('2660', '', 'VAT out 5', '30', '0');
+INSERT INTO `0_chart_master` VALUES ('2662', '', 'VAT out 1', '30', '0');
+INSERT INTO `0_chart_master` VALUES ('2664', '', 'VAT out 25', '30', '0');
+INSERT INTO `0_chart_master` VALUES ('2680', '', 'VAT In 5', '30', '0');
+INSERT INTO `0_chart_master` VALUES ('2682', '', 'VAT In 25', '30', '0');
+INSERT INTO `0_chart_master` VALUES ('2050', '', 'Retained Earnings', '50', '0');
+INSERT INTO `0_chart_master` VALUES ('2000', '', 'Share Capital', '50', '0');
 
 
 ### Structure of table `0_chart_types` ###
@@ -373,7 +376,7 @@ CREATE TABLE `0_company` (
 
 ### Data of table `0_company` ###
 
-INSERT INTO `0_company` VALUES ('1', 'Drill Company Inc.', '987654321', '123123123', '1', '1', 'N/A', '202-122320', '202-18889123', 'delta@delta.com', 'logo_frontaccounting.jpg', 'DownTown', 'USD', '1500', '4250', '2630', '1430', '4260', '4220', '2050', '3800', '3000', '3000', '3200', '1420', '4010', '4210', '3000', '1410', '5000', '', '', '', '', '', '', '0', '10', '10', '1000', '20', '20', '30', '1', '7', '0', '0', '0', '0', '0', '0', '');
+INSERT INTO `0_company` VALUES ('1', 'Training Co.', '987654321', '123123123', '1', '1', 'N/A', '202-122320', '202-18889123', 'delta@delta.com', 'logo_frontaccounting.jpg', 'DownTown', 'USD', '1500', '4250', '2630', '1430', '4260', '4220', '2050', '3800', '3000', '3000', '3200', '1420', '4010', '4210', '3000', '1410', '5000', '', '', '', '', '', '', '0', '10', '10', '1000', '20', '20', '30', '1', '7', '0', '0', '0', '0', '0', '0', '');
 
 
 ### Structure of table `0_credit_status` ###
@@ -486,7 +489,7 @@ INSERT INTO `0_cust_branch` VALUES ('2', '1', 'Service divison', '', '4', '1', '
 INSERT INTO `0_cust_branch` VALUES ('3', '2', 'Main', '', '4', '2', '', '', 'Money Makers Ltd.', '', 'DEF', '2', '3000', '3000', '1500', '3200', '1', '0', '', '0');
 INSERT INTO `0_cust_branch` VALUES ('5', '3', 'Main', '', '4', '1', '', '', 'Junk Beer ApS', '', 'CWA', '2', '3000', '3000', '1500', '3200', '1', '0', '', '0');
 INSERT INTO `0_cust_branch` VALUES ('6', '4', 'Johny Bravo', 'Never Mind 13', '1', '1', '123', '', 'Johny Bravo', '', 'DEF', '1', '3000', '3000', '1500', '3200', '1', '0', 'Never Mind 13', '0');
-INSERT INTO `0_cust_branch` VALUES ('7', '3', 'Junk Beer ApS', 'N/A', '1', '1', '1223123', '', 'junk@junkbeer.dk', '', 'DEF', '1', '3000', '3000', '1500', '3200', '1', '0', 'N/A', '0');
+INSERT INTO `0_cust_branch` VALUES ('7', '3', 'Junk Beer ApS', 'N/A', '1', '1', '1223123', '', 'junk@junkbeer.dk', '', 'DEF', '5', '3000', '3000', '1500', '3200', '1', '0', 'N/A', '0');
 
 
 ### Structure of table `0_debtor_trans` ###
@@ -571,7 +574,18 @@ INSERT INTO `0_debtor_trans` VALUES ('19', '10', '0', '4', '6', '2008-03-29', '2
 INSERT INTO `0_debtor_trans` VALUES ('19', '13', '1', '3', '5', '2008-03-29', '2008-04-17', 'auto', '1', '20', '0', '0', '0', '0', '0', '0', '0.20674817019223', '1', '18', '0', '0');
 INSERT INTO `0_debtor_trans` VALUES ('20', '10', '0', '1', '1', '2009-01-10', '2009-02-17', '19', '2', '22', '30', '7.5', '0', '0', '0', '0', '1', '1', '21', '0', '0');
 INSERT INTO `0_debtor_trans` VALUES ('20', '13', '1', '4', '6', '2008-03-29', '2008-04-08', '8', '1', '21', '125', '0', '0', '0', '0', '0', '1', '1', '19', '0', '0');
+INSERT INTO `0_debtor_trans` VALUES ('21', '10', '0', '3', '7', '2009-01-29', '2009-01-29', '20', '1', '23', '100', '0', '0', '0', '0', '0', '0.17593462333271', '1', '22', '0', '0');
 INSERT INTO `0_debtor_trans` VALUES ('21', '13', '1', '1', '1', '2009-01-10', '2009-02-17', 'auto', '2', '22', '30', '7.5', '0', '0', '0', '0', '1', '1', '20', '0', '0');
+INSERT INTO `0_debtor_trans` VALUES ('22', '10', '0', '3', '7', '2009-01-29', '2009-02-17', '21', '1', '24', '100', '0', '0', '0', '0', '0', '0.17593462333271', '1', '23', '0', '0');
+INSERT INTO `0_debtor_trans` VALUES ('22', '13', '1', '3', '7', '2009-01-29', '2009-01-29', 'auto', '1', '23', '100', '0', '0', '0', '0', '0', '0.17593462333271', '1', '21', '0', '0');
+INSERT INTO `0_debtor_trans` VALUES ('23', '10', '0', '3', '7', '2009-01-29', '2009-02-17', '22', '1', '25', '100', '0', '0', '0', '0', '0', '0.17593462333271', '1', '24', '0', '0');
+INSERT INTO `0_debtor_trans` VALUES ('23', '13', '1', '3', '7', '2009-01-29', '2009-02-17', 'auto', '1', '24', '100', '0', '0', '0', '0', '0', '0.17593462333271', '1', '22', '0', '0');
+INSERT INTO `0_debtor_trans` VALUES ('24', '10', '0', '3', '7', '2009-01-29', '2009-02-17', '23', '1', '26', '100', '0', '0', '0', '0', '0', '0.17593462333271', '1', '25', '0', '0');
+INSERT INTO `0_debtor_trans` VALUES ('24', '13', '1', '3', '7', '2009-01-29', '2009-02-17', 'auto', '1', '25', '100', '0', '0', '0', '0', '0', '0.17593462333271', '1', '23', '0', '0');
+INSERT INTO `0_debtor_trans` VALUES ('25', '10', '0', '3', '7', '2009-01-29', '2009-02-17', '24', '1', '27', '100', '0', '0', '0', '0', '0', '0.17593462333271', '1', '26', '0', '0');
+INSERT INTO `0_debtor_trans` VALUES ('25', '13', '1', '3', '7', '2009-01-29', '2009-02-17', 'auto', '1', '26', '100', '0', '0', '0', '0', '0', '0.17593462333271', '1', '24', '0', '0');
+INSERT INTO `0_debtor_trans` VALUES ('26', '13', '1', '3', '7', '2009-01-29', '2009-02-17', 'auto', '1', '27', '100', '0', '0', '0', '0', '0', '0.17593462333271', '1', '25', '0', '0');
+INSERT INTO `0_debtor_trans` VALUES ('27', '13', '0', '3', '7', '2009-01-30', '2009-01-31', '9', '1', '28', '110', '0', '0', '0', '0', '0', '0.17593462333271', '1', '0', '0', '0');
 
 
 ### Structure of table `0_debtor_trans_details` ###
@@ -591,7 +605,7 @@ CREATE TABLE `0_debtor_trans_details` (
   `standard_cost` double NOT NULL default '0',
   `qty_done` double NOT NULL default '0',
   PRIMARY KEY  (`id`)
-) TYPE=InnoDB AUTO_INCREMENT=48  AUTO_INCREMENT=48 ;
+) TYPE=InnoDB AUTO_INCREMENT=59  AUTO_INCREMENT=59 ;
 
 
 ### Data of table `0_debtor_trans_details` ###
@@ -643,68 +657,17 @@ INSERT INTO `0_debtor_trans_details` VALUES ('44', '20', '13', '102', '17 inch V
 INSERT INTO `0_debtor_trans_details` VALUES ('45', '19', '10', '102', '17 inch VGA Monitor', '125', '25', '1', '0', '-3.4114285714283', '0');
 INSERT INTO `0_debtor_trans_details` VALUES ('46', '21', '13', '201', 'Assembly Labour', '30', '7.5', '1', '0', '0', '1');
 INSERT INTO `0_debtor_trans_details` VALUES ('47', '20', '10', '201', 'Assembly Labour', '30', '7.5', '1', '0', '0', '0');
-
-
-### Structure of table `0_debtor_trans_tax_details` ###
-
-DROP TABLE IF EXISTS `0_debtor_trans_tax_details`;
-
-CREATE TABLE `0_debtor_trans_tax_details` (
-  `id` int(11) NOT NULL auto_increment,
-  `debtor_trans_no` int(11) default NULL,
-  `debtor_trans_type` int(11) default NULL,
-  `tax_type_id` int(11) NOT NULL default '0',
-  `tax_type_name` varchar(60) default NULL,
-  `rate` double NOT NULL default '0',
-  `included_in_price` tinyint(1) NOT NULL default '0',
-  `amount` double NOT NULL default '0',
-  PRIMARY KEY  (`id`)
-) TYPE=InnoDB AUTO_INCREMENT=42  AUTO_INCREMENT=42 ;
-
-
-### Data of table `0_debtor_trans_tax_details` ###
-
-INSERT INTO `0_debtor_trans_tax_details` VALUES ('1', '1', '13', '3', '', '25', '1', '27');
-INSERT INTO `0_debtor_trans_tax_details` VALUES ('2', '1', '10', '3', '', '25', '1', '27');
-INSERT INTO `0_debtor_trans_tax_details` VALUES ('3', '2', '13', '3', '', '25', '1', '27');
-INSERT INTO `0_debtor_trans_tax_details` VALUES ('4', '2', '10', '3', '', '25', '1', '27');
-INSERT INTO `0_debtor_trans_tax_details` VALUES ('5', '3', '13', '3', '', '25', '1', '27');
-INSERT INTO `0_debtor_trans_tax_details` VALUES ('6', '3', '10', '3', '', '25', '1', '27');
-INSERT INTO `0_debtor_trans_tax_details` VALUES ('7', '4', '13', '3', '', '25', '1', '27');
-INSERT INTO `0_debtor_trans_tax_details` VALUES ('8', '4', '10', '3', '', '25', '1', '27');
-INSERT INTO `0_debtor_trans_tax_details` VALUES ('9', '5', '13', '3', '', '25', '1', '27');
-INSERT INTO `0_debtor_trans_tax_details` VALUES ('10', '5', '10', '3', '', '25', '1', '27');
-INSERT INTO `0_debtor_trans_tax_details` VALUES ('11', '1', '11', '3', '', '25', '1', '27');
-INSERT INTO `0_debtor_trans_tax_details` VALUES ('12', '6', '13', '3', '', '25', '1', '27');
-INSERT INTO `0_debtor_trans_tax_details` VALUES ('13', '6', '10', '3', '', '25', '1', '27');
-INSERT INTO `0_debtor_trans_tax_details` VALUES ('14', '7', '13', '3', '', '25', '1', '27');
-INSERT INTO `0_debtor_trans_tax_details` VALUES ('15', '2', '11', '3', '', '25', '1', '27');
-INSERT INTO `0_debtor_trans_tax_details` VALUES ('16', '3', '11', '3', '', '25', '1', '27');
-INSERT INTO `0_debtor_trans_tax_details` VALUES ('17', '4', '11', '3', '', '25', '0', '25');
-INSERT INTO `0_debtor_trans_tax_details` VALUES ('18', '8', '13', '3', '', '25', '1', '27');
-INSERT INTO `0_debtor_trans_tax_details` VALUES ('19', '9', '13', '3', '', '25', '1', '27');
-INSERT INTO `0_debtor_trans_tax_details` VALUES ('20', '7', '10', '3', '', '25', '1', '27');
-INSERT INTO `0_debtor_trans_tax_details` VALUES ('21', '10', '13', '3', '', '25', '1', '27.5');
-INSERT INTO `0_debtor_trans_tax_details` VALUES ('22', '8', '10', '3', '', '25', '1', '27.5');
-INSERT INTO `0_debtor_trans_tax_details` VALUES ('23', '11', '13', '3', '', '25', '0', '27.5');
-INSERT INTO `0_debtor_trans_tax_details` VALUES ('24', '9', '10', '3', '', '25', '0', '27.5');
-INSERT INTO `0_debtor_trans_tax_details` VALUES ('25', '12', '13', '3', '', '25', '1', '27');
-INSERT INTO `0_debtor_trans_tax_details` VALUES ('26', '10', '10', '3', '', '25', '1', '27');
-INSERT INTO `0_debtor_trans_tax_details` VALUES ('27', '13', '13', '3', '', '25', '1', '8');
-INSERT INTO `0_debtor_trans_tax_details` VALUES ('28', '14', '13', '3', '', '25', '0', '25');
-INSERT INTO `0_debtor_trans_tax_details` VALUES ('29', '11', '10', '3', '', '25', '0', '25');
-INSERT INTO `0_debtor_trans_tax_details` VALUES ('30', '15', '13', '3', '', '25', '0', '25');
-INSERT INTO `0_debtor_trans_tax_details` VALUES ('31', '12', '10', '3', '', '25', '0', '25');
-INSERT INTO `0_debtor_trans_tax_details` VALUES ('32', '13', '10', '3', '', '25', '1', '27');
-INSERT INTO `0_debtor_trans_tax_details` VALUES ('33', '17', '13', '3', '', '25', '1', '27');
-INSERT INTO `0_debtor_trans_tax_details` VALUES ('34', '14', '10', '3', '', '25', '1', '27');
-INSERT INTO `0_debtor_trans_tax_details` VALUES ('35', '15', '10', '3', '', '25', '1', '8');
-INSERT INTO `0_debtor_trans_tax_details` VALUES ('36', '18', '13', '3', '', '25', '1', '27');
-INSERT INTO `0_debtor_trans_tax_details` VALUES ('37', '16', '10', '3', '', '25', '1', '27');
-INSERT INTO `0_debtor_trans_tax_details` VALUES ('38', '20', '13', '3', '', '25', '1', '25');
-INSERT INTO `0_debtor_trans_tax_details` VALUES ('39', '19', '10', '3', '', '25', '1', '25');
-INSERT INTO `0_debtor_trans_tax_details` VALUES ('40', '21', '13', '3', '', '25', '0', '7.5');
-INSERT INTO `0_debtor_trans_tax_details` VALUES ('41', '20', '10', '3', '', '25', '0', '7.5');
+INSERT INTO `0_debtor_trans_details` VALUES ('48', '22', '13', '201', 'Assembly Labour', '100', '20', '1', '0', '0', '1');
+INSERT INTO `0_debtor_trans_details` VALUES ('49', '21', '10', '201', 'Assembly Labour', '100', '20', '1', '0', '0', '0');
+INSERT INTO `0_debtor_trans_details` VALUES ('50', '23', '13', '201', 'Assembly Labour', '100', '20', '1', '0', '0', '1');
+INSERT INTO `0_debtor_trans_details` VALUES ('51', '22', '10', '201', 'Assembly Labour', '100', '20', '1', '0', '0', '0');
+INSERT INTO `0_debtor_trans_details` VALUES ('52', '24', '13', '201', 'Assembly Labour', '100', '20', '1', '0', '0', '1');
+INSERT INTO `0_debtor_trans_details` VALUES ('53', '23', '10', '201', 'Assembly Labour', '100', '20', '1', '0', '0', '0');
+INSERT INTO `0_debtor_trans_details` VALUES ('54', '25', '13', '201', 'Assembly Labour', '100', '20', '1', '0', '0', '1');
+INSERT INTO `0_debtor_trans_details` VALUES ('55', '24', '10', '201', 'Assembly Labour', '100', '20', '1', '0', '0', '0');
+INSERT INTO `0_debtor_trans_details` VALUES ('56', '26', '13', '201', 'Assembly Labour', '100', '0', '1', '0', '0', '1');
+INSERT INTO `0_debtor_trans_details` VALUES ('57', '25', '10', '201', 'Assembly Labour', '100', '0', '1', '0', '0', '0');
+INSERT INTO `0_debtor_trans_details` VALUES ('58', '27', '13', '201', 'Assembly Labour', '110', '0', '1', '0', '0', '0');
 
 
 ### Structure of table `0_debtors_master` ###
@@ -776,7 +739,7 @@ CREATE TABLE `0_exchange_rates` (
   `date_` date NOT NULL default '0000-00-00',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `curr_code` (`curr_code`,`date_`)
-) TYPE=MyISAM AUTO_INCREMENT=15  AUTO_INCREMENT=15 ;
+) TYPE=MyISAM AUTO_INCREMENT=21  AUTO_INCREMENT=21 ;
 
 
 ### Data of table `0_exchange_rates` ###
@@ -794,6 +757,12 @@ INSERT INTO `0_exchange_rates` VALUES ('11', 'EUR', '1.5569', '1.5569', '2008-03
 INSERT INTO `0_exchange_rates` VALUES ('12', 'EUR', '1.5796', '1.5796', '2008-03-28');
 INSERT INTO `0_exchange_rates` VALUES ('13', 'DKK', '0.18362116393597', '0.18362116393597', '2009-01-10');
 INSERT INTO `0_exchange_rates` VALUES ('14', 'GBP', '1.5292802860975', '1.5292802860975', '2009-01-10');
+INSERT INTO `0_exchange_rates` VALUES ('15', 'DKK', '0.17593462333271', '0.17593462333271', '2009-01-29');
+INSERT INTO `0_exchange_rates` VALUES ('16', 'GBP', '1.4293813028073', '1.4293813028073', '2009-01-29');
+INSERT INTO `0_exchange_rates` VALUES ('17', 'DKK', '0.17593462333271', '0.17593462333271', '2009-01-30');
+INSERT INTO `0_exchange_rates` VALUES ('18', 'GBP', '1.4293813028073', '1.4293813028073', '2009-01-30');
+INSERT INTO `0_exchange_rates` VALUES ('19', 'EUR', '1.3111', '1.3111', '2009-01-30');
+INSERT INTO `0_exchange_rates` VALUES ('20', 'SEK', '0.12446246001082', '0.12446246001082', '2009-01-30');
 
 
 ### Structure of table `0_fiscal_year` ###
@@ -836,7 +805,7 @@ CREATE TABLE `0_gl_trans` (
   `person_id` tinyblob,
   PRIMARY KEY  (`counter`),
   KEY `Type_and_Number` (`type`,`type_no`)
-) TYPE=InnoDB AUTO_INCREMENT=188  AUTO_INCREMENT=188 ;
+) TYPE=InnoDB AUTO_INCREMENT=215  AUTO_INCREMENT=215 ;
 
 
 ### Data of table `0_gl_trans` ###
@@ -1009,6 +978,33 @@ INSERT INTO `0_gl_trans` VALUES ('184', '20', '12', '2009-01-10', '2680', '', '2
 INSERT INTO `0_gl_trans` VALUES ('185', '20', '12', '2009-01-10', '2682', '', '50', '0', '0', '3', '1');
 INSERT INTO `0_gl_trans` VALUES ('186', '22', '4', '2009-01-10', '2630', '', '200', '0', '0', '3', '1');
 INSERT INTO `0_gl_trans` VALUES ('187', '22', '4', '2009-01-10', '1700', '', '-200', '0', '0', '3', '1');
+INSERT INTO `0_gl_trans` VALUES ('188', '10', '21', '2009-01-29', '3000', '', '-14.07', '0', '0', '2', '3');
+INSERT INTO `0_gl_trans` VALUES ('189', '10', '21', '2009-01-29', '1500', '', '17.59', '0', '0', '2', '3');
+INSERT INTO `0_gl_trans` VALUES ('190', '10', '21', '2009-01-29', '2664', '', '-3.52', '0', '0', '2', '3');
+INSERT INTO `0_gl_trans` VALUES ('191', '10', '22', '2009-01-29', '3000', '', '-14.07', '0', '0', '2', '3');
+INSERT INTO `0_gl_trans` VALUES ('192', '10', '22', '2009-01-29', '1500', '', '17.59', '0', '0', '2', '3');
+INSERT INTO `0_gl_trans` VALUES ('193', '10', '22', '2009-01-29', '2664', '', '-3.52', '0', '0', '2', '3');
+INSERT INTO `0_gl_trans` VALUES ('194', '10', '23', '2009-01-29', '3000', '', '-14.07', '0', '0', '2', '3');
+INSERT INTO `0_gl_trans` VALUES ('195', '10', '23', '2009-01-29', '1500', '', '17.59', '0', '0', '2', '3');
+INSERT INTO `0_gl_trans` VALUES ('196', '10', '23', '2009-01-29', '2664', '', '-3.52', '0', '0', '2', '3');
+INSERT INTO `0_gl_trans` VALUES ('197', '10', '24', '2009-01-29', '3000', '', '-14.07', '0', '0', '2', '3');
+INSERT INTO `0_gl_trans` VALUES ('198', '10', '24', '2009-01-29', '1500', '', '17.59', '0', '0', '2', '3');
+INSERT INTO `0_gl_trans` VALUES ('199', '10', '24', '2009-01-29', '2664', '', '-3.52', '0', '0', '2', '3');
+INSERT INTO `0_gl_trans` VALUES ('200', '10', '25', '2009-01-29', '3000', '', '-17.59', '0', '0', '2', '3');
+INSERT INTO `0_gl_trans` VALUES ('201', '10', '25', '2009-01-29', '1500', '', '17.59', '0', '0', '2', '3');
+INSERT INTO `0_gl_trans` VALUES ('202', '10', '25', '2009-01-29', '1430', '', '0', '0', '0', '2', '3');
+INSERT INTO `0_gl_trans` VALUES ('203', '2', '5', '2009-01-29', '2664', 'Cash Sales', '-40', '0', '0', '4', '3');
+INSERT INTO `0_gl_trans` VALUES ('204', '2', '5', '2009-01-29', '3000', 'Cash Sales', '-160', '0', '0', '4', '3');
+INSERT INTO `0_gl_trans` VALUES ('205', '2', '5', '2009-01-29', '1700', '', '200', '0', '0', '4', '3');
+INSERT INTO `0_gl_trans` VALUES ('206', '1', '8', '2009-01-29', '2682', 'Maintenance', '10', '0', '0', '4', '1');
+INSERT INTO `0_gl_trans` VALUES ('207', '1', '8', '2009-01-29', '6600', 'Maintenance', '40', '0', '0', '4', '1');
+INSERT INTO `0_gl_trans` VALUES ('208', '1', '8', '2009-01-29', '1700', '', '-50', '0', '0', '4', '1');
+INSERT INTO `0_gl_trans` VALUES ('209', '20', '13', '2009-01-29', '2630', '', '-50', '0', '0', '3', '1');
+INSERT INTO `0_gl_trans` VALUES ('210', '20', '13', '2009-01-29', '2682', '', '10', '0', '0', '3', '1');
+INSERT INTO `0_gl_trans` VALUES ('211', '20', '13', '2009-01-29', '6730', '', '40', '0', '0', '3', '1');
+INSERT INTO `0_gl_trans` VALUES ('212', '2', '6', '2009-01-29', '2664', 'Cash Sales', '-10', '0', '0', '4', '3');
+INSERT INTO `0_gl_trans` VALUES ('213', '2', '6', '2009-01-29', '3000', 'Cash Sales', '-40', '0', '0', '4', '3');
+INSERT INTO `0_gl_trans` VALUES ('214', '2', '6', '2009-01-29', '1700', '', '50', '0', '0', '4', '3');
 
 
 ### Structure of table `0_grn_batch` ###
@@ -1144,6 +1140,7 @@ CREATE TABLE `0_item_tax_type_exemptions` (
 
 INSERT INTO `0_item_tax_type_exemptions` VALUES ('1', '1');
 INSERT INTO `0_item_tax_type_exemptions` VALUES ('1', '2');
+INSERT INTO `0_item_tax_type_exemptions` VALUES ('1', '4');
 INSERT INTO `0_item_tax_type_exemptions` VALUES ('2', '2');
 INSERT INTO `0_item_tax_type_exemptions` VALUES ('2', '3');
 
@@ -1485,7 +1482,7 @@ CREATE TABLE `0_quick_entries` (
 ### Data of table `0_quick_entries` ###
 
 INSERT INTO `0_quick_entries` VALUES ('1', '1', 'Maintenance', '0', 'Amount');
-INSERT INTO `0_quick_entries` VALUES ('2', '1', 'Phone', '0', 'Amount');
+INSERT INTO `0_quick_entries` VALUES ('2', '4', 'Phone', '0', 'Amount');
 INSERT INTO `0_quick_entries` VALUES ('3', '2', 'Cash Sales', '0', 'Amount');
 
 
@@ -1503,14 +1500,17 @@ CREATE TABLE `0_quick_entry_lines` (
   `dimension2_id` smallint(6) unsigned default NULL,
   PRIMARY KEY  (`id`),
   KEY `qid` (`qid`)
-) TYPE=MyISAM AUTO_INCREMENT=4  AUTO_INCREMENT=4 ;
+) TYPE=MyISAM AUTO_INCREMENT=7  AUTO_INCREMENT=7 ;
 
 
 ### Data of table `0_quick_entry_lines` ###
 
-INSERT INTO `0_quick_entry_lines` VALUES ('1', '1', '0', '=', '6600', '0', '0');
-INSERT INTO `0_quick_entry_lines` VALUES ('2', '2', '0', '=', '6730', '0', '0');
-INSERT INTO `0_quick_entry_lines` VALUES ('3', '3', '0', '=', '3000', '0', '0');
+INSERT INTO `0_quick_entry_lines` VALUES ('1', '1', '0', 't-', '1', '0', '0');
+INSERT INTO `0_quick_entry_lines` VALUES ('2', '2', '0', 't-', '1', '0', '0');
+INSERT INTO `0_quick_entry_lines` VALUES ('3', '3', '0', 't-', '1', '0', '0');
+INSERT INTO `0_quick_entry_lines` VALUES ('4', '3', '0', '=', '3000', '0', '0');
+INSERT INTO `0_quick_entry_lines` VALUES ('5', '1', '0', '=', '6600', '0', '0');
+INSERT INTO `0_quick_entry_lines` VALUES ('6', '2', '0', '=', '6730', '0', '0');
 
 
 ### Structure of table `0_recurrent_invoices` ###
@@ -1584,7 +1584,7 @@ CREATE TABLE `0_sales_order_details` (
   `quantity` double NOT NULL default '0',
   `discount_percent` double NOT NULL default '0',
   PRIMARY KEY  (`id`)
-) TYPE=InnoDB AUTO_INCREMENT=25  AUTO_INCREMENT=25 ;
+) TYPE=InnoDB AUTO_INCREMENT=31  AUTO_INCREMENT=31 ;
 
 
 ### Data of table `0_sales_order_details` ###
@@ -1612,6 +1612,12 @@ INSERT INTO `0_sales_order_details` VALUES ('21', '19', 'AA101', 'olie 5w40', '1
 INSERT INTO `0_sales_order_details` VALUES ('22', '20', '102', '17 inch VGA Monitor', '1', '0', '1', '0');
 INSERT INTO `0_sales_order_details` VALUES ('23', '21', '102', '17 inch VGA Monitor', '1', '125', '1', '0');
 INSERT INTO `0_sales_order_details` VALUES ('24', '22', '201', 'Assembly Labour', '1', '30', '1', '0');
+INSERT INTO `0_sales_order_details` VALUES ('25', '23', '201', 'Assembly Labour', '1', '100', '1', '0');
+INSERT INTO `0_sales_order_details` VALUES ('26', '24', '201', 'Assembly Labour', '1', '100', '1', '0');
+INSERT INTO `0_sales_order_details` VALUES ('27', '25', '201', 'Assembly Labour', '1', '100', '1', '0');
+INSERT INTO `0_sales_order_details` VALUES ('28', '26', '201', 'Assembly Labour', '1', '100', '1', '0');
+INSERT INTO `0_sales_order_details` VALUES ('29', '27', '201', 'Assembly Labour', '1', '100', '1', '0');
+INSERT INTO `0_sales_order_details` VALUES ('30', '28', '201', 'Assembly Labour', '1', '110', '1', '0');
 
 
 ### Structure of table `0_sales_orders` ###
@@ -1637,7 +1643,7 @@ CREATE TABLE `0_sales_orders` (
   `from_stk_loc` varchar(5) NOT NULL default '',
   `delivery_date` date NOT NULL default '0000-00-00',
   PRIMARY KEY  (`order_no`)
-) TYPE=InnoDB AUTO_INCREMENT=23  AUTO_INCREMENT=23 ;
+) TYPE=InnoDB AUTO_INCREMENT=29  AUTO_INCREMENT=29 ;
 
 
 ### Data of table `0_sales_orders` ###
@@ -1664,6 +1670,12 @@ INSERT INTO `0_sales_orders` VALUES ('19', '2', '0', '4', '6', '', '', '2008-03-
 INSERT INTO `0_sales_orders` VALUES ('20', '1', '0', '3', '5', '', '', '2008-03-29', '1', '1', 'N/A', '', '', 'Main', '0', 'CWA', '2008-04-17');
 INSERT INTO `0_sales_orders` VALUES ('21', '1', '0', '4', '6', '', '', '2008-03-29', '1', '1', 'Never Mind 13', '123', '', 'Johny Bravo', '0', 'DEF', '2008-04-08');
 INSERT INTO `0_sales_orders` VALUES ('22', '1', '0', '1', '1', '', '', '2009-01-10', '2', '1', 'The Road', '', '', 'Main', '0', 'DEF', '2009-02-17');
+INSERT INTO `0_sales_orders` VALUES ('23', '1', '0', '3', '7', '', '', '2009-01-29', '1', '1', 'N/A', '1223123', '', 'Junk Beer ApS', '0', 'DEF', '2009-01-29');
+INSERT INTO `0_sales_orders` VALUES ('24', '1', '0', '3', '7', '', '', '2009-01-29', '1', '1', 'N/A', '1223123', '', 'Junk Beer ApS', '0', 'DEF', '2009-02-17');
+INSERT INTO `0_sales_orders` VALUES ('25', '1', '0', '3', '7', '', '', '2009-01-29', '1', '1', 'N/A', '1223123', '', 'Junk Beer ApS', '0', 'DEF', '2009-02-17');
+INSERT INTO `0_sales_orders` VALUES ('26', '1', '0', '3', '7', '', '', '2009-01-29', '1', '1', 'N/A', '1223123', '', 'Junk Beer ApS', '0', 'DEF', '2009-02-17');
+INSERT INTO `0_sales_orders` VALUES ('27', '1', '0', '3', '7', '', '', '2009-01-29', '1', '1', 'N/A', '1223123', '', 'Junk Beer ApS', '0', 'DEF', '2009-02-17');
+INSERT INTO `0_sales_orders` VALUES ('28', '1', '0', '3', '7', '', '', '2009-01-30', '1', '1', 'N/A', '1223123', '', 'Junk Beer ApS', '0', 'DEF', '2009-01-31');
 
 
 ### Structure of table `0_sales_pos` ###
@@ -1945,7 +1957,7 @@ CREATE TABLE `0_supp_invoice_items` (
   `unit_tax` double NOT NULL default '0',
   `memo_` tinytext,
   PRIMARY KEY  (`id`)
-) TYPE=InnoDB AUTO_INCREMENT=24  AUTO_INCREMENT=24 ;
+) TYPE=InnoDB AUTO_INCREMENT=26  AUTO_INCREMENT=26 ;
 
 
 ### Data of table `0_supp_invoice_items` ###
@@ -1960,31 +1972,8 @@ INSERT INTO `0_supp_invoice_items` VALUES ('20', '10', '20', '0', '9', '12', 'AA
 INSERT INTO `0_supp_invoice_items` VALUES ('21', '11', '20', '0', '10', '12', 'AA101', 'olie 5w40', '408', '3.25', '0.81', '');
 INSERT INTO `0_supp_invoice_items` VALUES ('22', '12', '20', '0', '7', '9', '104', '52x CD Drive', '10', '20', '5', '');
 INSERT INTO `0_supp_invoice_items` VALUES ('23', '12', '20', '0', '8', '10', '202', 'Electric stimulator', '10', '50', '2.5', '');
-
-
-### Structure of table `0_supp_invoice_tax_items` ###
-
-DROP TABLE IF EXISTS `0_supp_invoice_tax_items`;
-
-CREATE TABLE `0_supp_invoice_tax_items` (
-  `id` int(11) NOT NULL auto_increment,
-  `supp_trans_no` int(11) default NULL,
-  `supp_trans_type` int(11) default NULL,
-  `tax_type_id` int(11) NOT NULL default '0',
-  `tax_type_name` varchar(60) default NULL,
-  `rate` double NOT NULL default '0',
-  `included_in_price` tinyint(1) NOT NULL default '0',
-  `amount` double NOT NULL default '0',
-  PRIMARY KEY  (`id`)
-) TYPE=InnoDB AUTO_INCREMENT=7  AUTO_INCREMENT=7 ;
-
-
-### Data of table `0_supp_invoice_tax_items` ###
-
-INSERT INTO `0_supp_invoice_tax_items` VALUES ('3', '10', '20', '3', '', '25', '0', '5.2');
-INSERT INTO `0_supp_invoice_tax_items` VALUES ('4', '11', '20', '3', '', '25', '0', '331.5');
-INSERT INTO `0_supp_invoice_tax_items` VALUES ('5', '12', '20', '1', '', '5', '0', '25');
-INSERT INTO `0_supp_invoice_tax_items` VALUES ('6', '12', '20', '3', '', '25', '0', '50');
+INSERT INTO `0_supp_invoice_items` VALUES ('24', '13', '20', '2682', '0', '0', '', '', '0', '10', '0', 'Phone');
+INSERT INTO `0_supp_invoice_items` VALUES ('25', '13', '20', '6730', '0', '0', '', '', '0', '40', '0', 'Phone');
 
 
 ### Structure of table `0_supp_trans` ###
@@ -2020,6 +2009,7 @@ INSERT INTO `0_supp_trans` VALUES ('9', '20', '2', '29', 'aaa', '2008-03-25', '2
 INSERT INTO `0_supp_trans` VALUES ('10', '20', '4', '30', '12w', '2008-03-25', '2008-04-17', '20.8', '0', '5.2', '1.5569', '0');
 INSERT INTO `0_supp_trans` VALUES ('11', '20', '4', '31', 'jan', '2008-03-28', '2008-04-17', '1326', '0', '331.5', '1.5796', '0');
 INSERT INTO `0_supp_trans` VALUES ('12', '20', '1', '32', 'ga', '2009-01-10', '2009-02-17', '700', '0', '75', '1', '0');
+INSERT INTO `0_supp_trans` VALUES ('13', '20', '1', '33', 'gg', '2009-01-29', '2009-02-17', '50', '0', '0', '1', '0');
 
 
 ### Structure of table `0_suppliers` ###
@@ -2078,17 +2068,17 @@ CREATE TABLE `0_sys_types` (
 ### Data of table `0_sys_types` ###
 
 INSERT INTO `0_sys_types` VALUES ('0', 'Journal - GL', '18', '34');
-INSERT INTO `0_sys_types` VALUES ('1', 'Payment - GL', '7', '7');
-INSERT INTO `0_sys_types` VALUES ('2', 'Receipt - GL', '4', '14');
+INSERT INTO `0_sys_types` VALUES ('1', 'Payment - GL', '8', '8');
+INSERT INTO `0_sys_types` VALUES ('2', 'Receipt - GL', '6', '16');
 INSERT INTO `0_sys_types` VALUES ('4', 'Funds Transfer', '3', '6');
-INSERT INTO `0_sys_types` VALUES ('10', 'Sales Invoice', '20', '20');
+INSERT INTO `0_sys_types` VALUES ('10', 'Sales Invoice', '25', '25');
 INSERT INTO `0_sys_types` VALUES ('11', 'Credit Note', '4', '4');
 INSERT INTO `0_sys_types` VALUES ('12', 'Receipt', '11', '11');
-INSERT INTO `0_sys_types` VALUES ('13', 'Delivery', '21', '9');
+INSERT INTO `0_sys_types` VALUES ('13', 'Delivery', '27', '10');
 INSERT INTO `0_sys_types` VALUES ('16', 'Location Transfer', '2', '2');
 INSERT INTO `0_sys_types` VALUES ('17', 'Inventory Adjustment', '2', '2');
 INSERT INTO `0_sys_types` VALUES ('18', 'Purchase Order', '1', '16');
-INSERT INTO `0_sys_types` VALUES ('20', 'Supplier Invoice', '12', '33');
+INSERT INTO `0_sys_types` VALUES ('20', 'Supplier Invoice', '13', '34');
 INSERT INTO `0_sys_types` VALUES ('21', 'Supplier Credit Note', '1', '2');
 INSERT INTO `0_sys_types` VALUES ('22', 'Supplier Payment', '4', '4');
 INSERT INTO `0_sys_types` VALUES ('25', 'Purchase Order Delivery', '1', '14');
@@ -2118,6 +2108,7 @@ CREATE TABLE `0_tax_group_items` (
 INSERT INTO `0_tax_group_items` VALUES ('1', '1', '5', '0');
 INSERT INTO `0_tax_group_items` VALUES ('1', '3', '25', '0');
 INSERT INTO `0_tax_group_items` VALUES ('4', '3', '25', '0');
+INSERT INTO `0_tax_group_items` VALUES ('5', '4', '0', '0');
 
 
 ### Structure of table `0_tax_groups` ###
@@ -2130,7 +2121,7 @@ CREATE TABLE `0_tax_groups` (
   `tax_shipping` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `name` (`name`)
-) TYPE=InnoDB AUTO_INCREMENT=5  AUTO_INCREMENT=5 ;
+) TYPE=InnoDB AUTO_INCREMENT=6  AUTO_INCREMENT=6 ;
 
 
 ### Data of table `0_tax_groups` ###
@@ -2138,6 +2129,7 @@ CREATE TABLE `0_tax_groups` (
 INSERT INTO `0_tax_groups` VALUES ('1', 'VAT', '0');
 INSERT INTO `0_tax_groups` VALUES ('2', 'Tax-Free', '0');
 INSERT INTO `0_tax_groups` VALUES ('4', 'Shipping', '1');
+INSERT INTO `0_tax_groups` VALUES ('5', 'Export', '0');
 
 
 ### Structure of table `0_tax_types` ###
@@ -2151,7 +2143,7 @@ CREATE TABLE `0_tax_types` (
   `purchasing_gl_code` varchar(11) NOT NULL default '',
   `name` varchar(60) NOT NULL default '',
   PRIMARY KEY  (`id`)
-) TYPE=InnoDB AUTO_INCREMENT=4  AUTO_INCREMENT=4 ;
+) TYPE=InnoDB AUTO_INCREMENT=5  AUTO_INCREMENT=5 ;
 
 
 ### Data of table `0_tax_types` ###
@@ -2159,6 +2151,90 @@ CREATE TABLE `0_tax_types` (
 INSERT INTO `0_tax_types` VALUES ('1', '5', '2660', '2680', 'VAT');
 INSERT INTO `0_tax_types` VALUES ('2', '1', '2662', '2680', 'Manufact tax 1');
 INSERT INTO `0_tax_types` VALUES ('3', '25', '2664', '2682', 'VAT');
+INSERT INTO `0_tax_types` VALUES ('4', '0', '2660', '2680', 'Export');
+
+
+### Structure of table `0_trans_tax_details` ###
+
+DROP TABLE IF EXISTS `0_trans_tax_details`;
+
+CREATE TABLE `0_trans_tax_details` (
+  `id` int(11) NOT NULL auto_increment,
+  `trans_type` smallint(6) default NULL,
+  `trans_no` int(11) default NULL,
+  `tran_date` date NOT NULL,
+  `tax_type_id` int(11) NOT NULL default '0',
+  `rate` double NOT NULL default '0',
+  `ex_rate` double NOT NULL default '1',
+  `included_in_price` tinyint(1) NOT NULL default '0',
+  `net_amount` double NOT NULL default '0',
+  `amount` double NOT NULL default '0',
+  `memo` tinytext,
+  PRIMARY KEY  (`id`)
+) TYPE=InnoDB AUTO_INCREMENT=60  AUTO_INCREMENT=60 ;
+
+
+### Data of table `0_trans_tax_details` ###
+
+INSERT INTO `0_trans_tax_details` VALUES ('1', '13', '1', '2008-03-06', '3', '25', '1', '1', '81', '27', '0');
+INSERT INTO `0_trans_tax_details` VALUES ('2', '10', '1', '2008-03-06', '3', '25', '1', '1', '81', '27', '0');
+INSERT INTO `0_trans_tax_details` VALUES ('3', '13', '2', '2008-03-06', '3', '25', '1', '1', '81', '27', 'auto');
+INSERT INTO `0_trans_tax_details` VALUES ('4', '10', '2', '2008-03-06', '3', '25', '1', '1', '81', '27', '1');
+INSERT INTO `0_trans_tax_details` VALUES ('5', '13', '3', '2008-03-06', '3', '25', '1', '1', '81', '27', 'auto');
+INSERT INTO `0_trans_tax_details` VALUES ('6', '10', '3', '2008-03-06', '3', '25', '1', '1', '81', '27', '2');
+INSERT INTO `0_trans_tax_details` VALUES ('7', '13', '4', '2008-03-06', '3', '25', '1', '1', '81', '27', 'auto');
+INSERT INTO `0_trans_tax_details` VALUES ('8', '10', '4', '2008-03-06', '3', '25', '1', '1', '81', '27', '3');
+INSERT INTO `0_trans_tax_details` VALUES ('9', '13', '5', '2008-03-06', '3', '25', '1', '1', '81', '27', 'auto');
+INSERT INTO `0_trans_tax_details` VALUES ('10', '10', '5', '2008-03-06', '3', '25', '1', '1', '81', '27', '4');
+INSERT INTO `0_trans_tax_details` VALUES ('11', '11', '1', '2008-03-06', '3', '25', '1', '1', '81', '27', '0');
+INSERT INTO `0_trans_tax_details` VALUES ('12', '13', '6', '2008-03-06', '3', '25', '1', '1', '81', '27', 'auto');
+INSERT INTO `0_trans_tax_details` VALUES ('13', '10', '6', '2008-03-06', '3', '25', '1', '1', '81', '27', '5');
+INSERT INTO `0_trans_tax_details` VALUES ('14', '13', '7', '2008-03-06', '3', '25', '1', '1', '81', '27', '1');
+INSERT INTO `0_trans_tax_details` VALUES ('15', '11', '2', '2008-03-06', '3', '25', '1', '1', '81', '27', '1');
+INSERT INTO `0_trans_tax_details` VALUES ('16', '11', '3', '2008-03-06', '3', '25', '1', '1', '81', '27', '2');
+INSERT INTO `0_trans_tax_details` VALUES ('17', '11', '4', '2008-03-07', '3', '25', '1', '0', '100', '25', '3');
+INSERT INTO `0_trans_tax_details` VALUES ('18', '13', '8', '2008-03-07', '3', '25', '1', '1', '81', '27', '2');
+INSERT INTO `0_trans_tax_details` VALUES ('19', '13', '9', '2008-03-08', '3', '25', '1', '1', '81', '27', 'auto');
+INSERT INTO `0_trans_tax_details` VALUES ('20', '10', '7', '2008-03-08', '3', '25', '1', '1', '81', '27', '6');
+INSERT INTO `0_trans_tax_details` VALUES ('21', '13', '10', '2008-03-09', '3', '25', '1', '1', '82.5', '27.5', 'auto');
+INSERT INTO `0_trans_tax_details` VALUES ('22', '10', '8', '2008-03-09', '3', '25', '1', '1', '82.5', '27.5', '7');
+INSERT INTO `0_trans_tax_details` VALUES ('23', '13', '11', '2008-03-09', '3', '25', '1', '0', '110', '27.5', 'auto');
+INSERT INTO `0_trans_tax_details` VALUES ('24', '10', '9', '2008-03-09', '3', '25', '1', '0', '110', '27.5', '8');
+INSERT INTO `0_trans_tax_details` VALUES ('25', '13', '12', '2008-03-09', '3', '25', '1', '1', '81', '27', 'auto');
+INSERT INTO `0_trans_tax_details` VALUES ('26', '10', '10', '2008-03-09', '3', '25', '1', '1', '81', '27', '9');
+INSERT INTO `0_trans_tax_details` VALUES ('27', '13', '13', '2008-03-10', '3', '25', '1', '1', '24', '8', '3');
+INSERT INTO `0_trans_tax_details` VALUES ('28', '13', '14', '2008-03-10', '3', '25', '1', '0', '100', '25', '4');
+INSERT INTO `0_trans_tax_details` VALUES ('29', '10', '11', '2008-03-10', '3', '25', '1', '0', '100', '25', '10');
+INSERT INTO `0_trans_tax_details` VALUES ('30', '13', '15', '2008-03-10', '3', '25', '1', '0', '100', '25', '5');
+INSERT INTO `0_trans_tax_details` VALUES ('31', '10', '12', '2008-03-10', '3', '25', '1', '0', '100', '25', '11');
+INSERT INTO `0_trans_tax_details` VALUES ('32', '10', '13', '2008-03-07', '3', '25', '1', '1', '81', '27', '12');
+INSERT INTO `0_trans_tax_details` VALUES ('33', '13', '17', '2008-03-10', '3', '25', '1', '1', '81', '27', 'auto');
+INSERT INTO `0_trans_tax_details` VALUES ('34', '10', '14', '2008-03-10', '3', '25', '1', '1', '81', '27', '13');
+INSERT INTO `0_trans_tax_details` VALUES ('35', '10', '15', '2008-03-10', '3', '25', '1', '1', '24', '8', '14');
+INSERT INTO `0_trans_tax_details` VALUES ('36', '13', '18', '2008-03-17', '3', '25', '1', '1', '81', '27', '7');
+INSERT INTO `0_trans_tax_details` VALUES ('37', '10', '16', '2008-03-17', '3', '25', '1', '1', '81', '27', '15');
+INSERT INTO `0_trans_tax_details` VALUES ('38', '13', '20', '2008-03-29', '3', '25', '1', '1', '75', '25', '8');
+INSERT INTO `0_trans_tax_details` VALUES ('39', '10', '19', '2008-03-29', '3', '25', '1', '1', '75', '25', '18');
+INSERT INTO `0_trans_tax_details` VALUES ('40', '13', '21', '2009-01-10', '3', '25', '1', '0', '30', '7.5', 'auto');
+INSERT INTO `0_trans_tax_details` VALUES ('41', '10', '20', '2009-01-10', '3', '25', '1', '0', '30', '7.5', '19');
+INSERT INTO `0_trans_tax_details` VALUES ('42', '20', '10', '2008-03-25', '3', '25', '1.5569', '0', '20.8', '5.2', '12w');
+INSERT INTO `0_trans_tax_details` VALUES ('43', '20', '11', '2008-03-28', '3', '25', '1.5796', '0', '1326', '331.5', 'jan');
+INSERT INTO `0_trans_tax_details` VALUES ('44', '20', '12', '2009-01-10', '1', '5', '1', '0', '500', '25', 'ga');
+INSERT INTO `0_trans_tax_details` VALUES ('45', '20', '12', '2009-01-10', '3', '25', '1', '0', '200', '50', 'ga');
+INSERT INTO `0_trans_tax_details` VALUES ('46', '13', '22', '0000-00-00', '3', '25', '1.7164140368342e-005', '1', '80', '20', '');
+INSERT INTO `0_trans_tax_details` VALUES ('47', '10', '21', '0000-00-00', '3', '25', '1.7164140368342e-005', '1', '80', '20', '');
+INSERT INTO `0_trans_tax_details` VALUES ('48', '13', '23', '0000-00-00', '3', '25', '1.7164140368342e-005', '1', '80', '20', '');
+INSERT INTO `0_trans_tax_details` VALUES ('49', '10', '22', '2009-01-29', '3', '25', '0.17593462333271', '1', '80', '20', '21');
+INSERT INTO `0_trans_tax_details` VALUES ('50', '13', '24', '2009-01-29', '3', '25', '1', '1', '80', '20', 'auto');
+INSERT INTO `0_trans_tax_details` VALUES ('51', '10', '23', '2009-01-29', '3', '25', '0.17593462333271', '1', '80', '20', '22');
+INSERT INTO `0_trans_tax_details` VALUES ('52', '13', '25', '2009-01-29', '3', '25', '0.17593462333271', '1', '80', '20', 'auto');
+INSERT INTO `0_trans_tax_details` VALUES ('53', '10', '24', '2009-01-29', '3', '25', '0.17593462333271', '1', '80', '20', '23');
+INSERT INTO `0_trans_tax_details` VALUES ('54', '13', '26', '2009-01-29', '4', '0', '0.17593462333271', '1', '100', '0', 'auto');
+INSERT INTO `0_trans_tax_details` VALUES ('55', '10', '25', '2009-01-29', '4', '0', '0.17593462333271', '1', '100', '0', '24');
+INSERT INTO `0_trans_tax_details` VALUES ('56', '2', '5', '2009-01-29', '3', '25', '1', '0', '160', '40', '');
+INSERT INTO `0_trans_tax_details` VALUES ('57', '1', '8', '2009-01-29', '3', '25', '1', '0', '40', '10', '');
+INSERT INTO `0_trans_tax_details` VALUES ('58', '20', '13', '2009-01-29', '3', '25', '1', '0', '40', '10', 'gg');
+INSERT INTO `0_trans_tax_details` VALUES ('59', '2', '6', '2009-01-29', '3', '25', '1', '0', '40', '10', '');
 
 
 ### Structure of table `0_users` ###
@@ -2199,7 +2275,7 @@ CREATE TABLE `0_users` (
 ### Data of table `0_users` ###
 
 INSERT INTO `0_users` VALUES ('demouser', '5f4dcc3b5aa765d61d8327deb882cf99', 'Demo User', '1', '999-999-999', 'demo@demo.nu', 'en_US', '0', '0', '0', '0', 'default', 'Letter', '2', '2', '3', '1', '1', '0', '0', '2008-02-06 19:02:35', '10', '1', '1', '1', '1');
-INSERT INTO `0_users` VALUES ('admin', '5f4dcc3b5aa765d61d8327deb882cf99', 'Administrator', '2', '', 'adm@adm.com', 'en_US', '0', '0', '0', '0', 'default', 'Letter', '2', '2', '4', '1', '1', '0', '0', '2008-03-20 10:52:46', '10', '1', '1', '1', '1');
+INSERT INTO `0_users` VALUES ('admin', '5f4dcc3b5aa765d61d8327deb882cf99', 'Administrator', '2', '', 'adm@adm.com', 'en_US', '0', '0', '0', '0', 'modern', 'Letter', '2', '2', '4', '1', '1', '0', '0', '2009-01-30 09:39:03', '10', '1', '1', '', '1');
 
 
 ### Structure of table `0_voided` ###
