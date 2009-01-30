@@ -87,7 +87,7 @@ function show_results()
 	div_start('trans_tbl');
 	start_table($table_style);
 
-	$th = array(_("Type"), _("Description"), _("Amount"));
+	$th = array(_("Type"), _("Description"), _("Amount"), _("Outputs")."/"._("Inputs"));
 	table_header($th);
 	$k = 0;
 	$total = 0;
@@ -107,11 +107,13 @@ function show_results()
 		label_cell($tx['name'] . " " . $tx['rate'] . "%");
 		label_cell(_("Charged on sales") . " (" . _("Output Tax")."):");
 		amount_cell($collectible);
+		amount_cell($tx['net_input']);
 		end_row();
 		alt_table_row_color($k);
 		label_cell($tx['name'] . " " . $tx['rate'] . "%");
 		label_cell(_("Paid on purchases") . " (" . _("Input Tax")."):");
 		amount_cell($payable);
+		amount_cell($tx['net_output']);
 		end_row();
 		alt_table_row_color($k);
 		label_cell("<b>".$tx['name'] . " " . $tx['rate'] . "%</b>");
