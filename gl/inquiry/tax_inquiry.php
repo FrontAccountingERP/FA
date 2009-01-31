@@ -50,12 +50,6 @@ if (get_post('TransFromDate') == "" && get_post('TransToDate') == "")
 
 //----------------------------------------------------------------------------------------------------
 
-function get_tax_types()
-{
-	$sql = "SELECT * FROM ".TB_PREF."tax_types ORDER BY id";
-    return db_query($sql,"No transactions were returned");
-}
-
 function tax_inquiry_controls()
 {
 	global $table_style2;
@@ -119,12 +113,14 @@ function show_results()
 		label_cell("<b>".$tx['name'] . " " . $tx['rate'] . "%</b>");
 		label_cell("<b>"._("Net payable or collectible") . ":</b>");
 		amount_cell($net, true);
+		label_cell("");
 		end_row();
 	}	
 	alt_table_row_color($k);
 	label_cell("");
 	label_cell("<b>"._("Total payable or refund") . ":</b>");
 	amount_cell($total, true);
+	label_cell("");
 	end_row();
 
 	end_table(2);

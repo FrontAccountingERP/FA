@@ -76,8 +76,8 @@ CREATE TABLE `0_bank_accounts` (
 
 ### Data of table `0_bank_accounts` ###
 
-INSERT INTO `0_bank_accounts` VALUES ('1700', '0', 'Current account', 'N/A', 'N/A', '', 'USD', '1', '0000-00-00 00:00:00', '0', '0');
-INSERT INTO `0_bank_accounts` VALUES ('1705', '0', 'Petty Cash account', 'N/A', 'N/A', '', 'USD', '2', '0000-00-00 00:00:00', '0', '0');
+INSERT INTO `0_bank_accounts` VALUES ('1700', '1', 'Current account', 'N/A', 'N/A', '', 'USD', '1', '0000-00-00 00:00:00', '0', '0');
+INSERT INTO `0_bank_accounts` VALUES ('1705', '3', 'Petty Cash account', 'N/A', 'N/A', '', 'USD', '2', '0000-00-00 00:00:00', '0', '0');
 INSERT INTO `0_bank_accounts` VALUES ('1710', '0', 'Saving account', '10001000', 'Saving Bank', '', 'GBP', '3', '0000-00-00 00:00:00', '0', '0');
 
 
@@ -107,15 +107,15 @@ CREATE TABLE `0_bank_trans` (
 
 ### Data of table `0_bank_trans` ###
 
-INSERT INTO `0_bank_trans` VALUES ('21', '12', '7', '1', '6', '2008-03-06', '1', '100', '0', '0', '2', '1', '');
-INSERT INTO `0_bank_trans` VALUES ('22', '12', '8', '1', '7', '2008-03-06', '1', '100', '0', '0', '2', '4', '');
-INSERT INTO `0_bank_trans` VALUES ('23', '12', '9', '1', '8', '2008-03-07', '1', '2000', '0', '0', '2', '1', '');
-INSERT INTO `0_bank_trans` VALUES ('24', '12', '10', '1', '9', '2009-01-10', '0', '1000', '0', '0', '2', '1', '');
-INSERT INTO `0_bank_trans` VALUES ('25', '12', '11', '1', '10', '2009-01-10', '0', '183.62116393597', '0', '0', '2', '3', '');
-INSERT INTO `0_bank_trans` VALUES ('26', '22', '4', '1', '3', '2009-01-10', '0', '-200', '0', '0', '3', '1', '');
-INSERT INTO `0_bank_trans` VALUES ('27', '2', '5', '1', '14', '2009-01-29', '', '200', '0', '0', '4', '3', '');
-INSERT INTO `0_bank_trans` VALUES ('28', '1', '8', '1', '7', '2009-01-29', '', '-50', '0', '0', '4', '1', '');
-INSERT INTO `0_bank_trans` VALUES ('29', '2', '6', '1', '15', '2009-01-29', '', '50', '0', '0', '4', '3', '');
+INSERT INTO `0_bank_trans` VALUES ('21', '12', '7', '1', '6', '2008-03-06', '1', '100', '0', '0', '2', '1', NULL);
+INSERT INTO `0_bank_trans` VALUES ('22', '12', '8', '1', '7', '2008-03-06', '1', '100', '0', '0', '2', '4', NULL);
+INSERT INTO `0_bank_trans` VALUES ('23', '12', '9', '1', '8', '2008-03-07', '1', '2000', '0', '0', '2', '1', NULL);
+INSERT INTO `0_bank_trans` VALUES ('24', '12', '10', '1', '9', '2009-01-10', '0', '1000', '0', '0', '2', '1', NULL);
+INSERT INTO `0_bank_trans` VALUES ('25', '12', '11', '1', '10', '2009-01-10', '0', '183.62116393597', '0', '0', '2', '3', NULL);
+INSERT INTO `0_bank_trans` VALUES ('26', '22', '4', '1', '3', '2009-01-10', '0', '-200', '0', '0', '3', '1', NULL);
+INSERT INTO `0_bank_trans` VALUES ('27', '2', '5', '1', '14', '2009-01-29', '', '200', '0', '0', '4', '3', NULL);
+INSERT INTO `0_bank_trans` VALUES ('28', '1', '8', '1', '7', '2009-01-29', '', '-50', '0', '0', '4', '1', NULL);
+INSERT INTO `0_bank_trans` VALUES ('29', '2', '6', '1', '15', '2009-01-29', '', '50', '0', '0', '4', '3', NULL);
 
 
 ### Structure of table `0_bom` ###
@@ -1697,7 +1697,7 @@ CREATE TABLE `0_sales_pos` (
 
 ### Data of table `0_sales_pos` ###
 
-INSERT INTO `0_sales_pos` VALUES ('1', 'Default', '1', '1', 'DEF', '1', '0');
+INSERT INTO `0_sales_pos` VALUES ('1', 'Default', '1', '1', 'DEF', '2', '0');
 
 
 ### Structure of table `0_sales_types` ###
@@ -2275,7 +2275,7 @@ CREATE TABLE `0_users` (
 ### Data of table `0_users` ###
 
 INSERT INTO `0_users` VALUES ('demouser', '5f4dcc3b5aa765d61d8327deb882cf99', 'Demo User', '1', '999-999-999', 'demo@demo.nu', 'en_US', '0', '0', '0', '0', 'default', 'Letter', '2', '2', '3', '1', '1', '0', '0', '2008-02-06 19:02:35', '10', '1', '1', '1', '1');
-INSERT INTO `0_users` VALUES ('admin', '5f4dcc3b5aa765d61d8327deb882cf99', 'Administrator', '2', '', 'adm@adm.com', 'en_US', '0', '0', '0', '0', 'modern', 'Letter', '2', '2', '4', '1', '1', '0', '0', '2009-01-30 09:39:03', '10', '1', '1', '', '1');
+INSERT INTO `0_users` VALUES ('admin', '5f4dcc3b5aa765d61d8327deb882cf99', 'Administrator', '2', '', 'adm@adm.com', 'en_US', '0', '0', '0', '0', 'default', 'Letter', '2', '2', '4', '1', '1', '0', '0', '2009-01-30 09:39:03', '10', '1', '1', '', '1');
 
 
 ### Structure of table `0_voided` ###
