@@ -32,6 +32,8 @@ $ /dimensions/inquiry/search_dimensions.php
   /sales/inquiry/customer_inquiry.php
 # Fixed due date display for invoices.
 $ /sales/inquiry/customer_inquiry.php
+# Bugfix [0000115] - error on empty table update in fallback mode.
+$ /sales/inquiry/customer_allocation_inquiry.php
 
 30-Jan-2009 Joe Hunt
 + Outputs/Inputs on tax inquiry as well (why not)
