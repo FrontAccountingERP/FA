@@ -19,6 +19,12 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+02-Feb-2009 Joe Hunt
+! Better layout in Form setup
+$ /admin/forms_setup.php
+# sql2date around row[date] in due date.
+$ /sales/inquiry/customer_inquiry.php
+
 02-Feb-2009 Janusz Dobrowolski
 # Fixed initial sort order in pagers
 $ /dimensions/inquiry/search_dimensions.php

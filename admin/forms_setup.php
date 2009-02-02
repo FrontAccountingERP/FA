@@ -38,19 +38,25 @@ if (isset($_POST['setprefs']))
 
 start_form();
 
-start_table("class='tablestyle'");
+start_outer_table("class='tablestyle'");
 
 $systypes = get_systypes();
+table_section(1);
 
 $th = array(_("Form"), _("Next Reference"));
 table_header($th);
-
+$i = 0;
 while ($type = db_fetch($systypes)) 
 {
+	if ($i++ == 11)
+	{
+		table_section(2);
+		table_header($th);
+	}	
 	ref_row(systypes::name($type["type_id"]), 'id' . $type["type_id"], '', $type["next_reference"]);
 }
 
-end_table(1);
+end_outer_table(1);
 
 submit_center('setprefs', _("Update"), true, '', true);
 
