@@ -172,7 +172,7 @@ $cols = array(
 	_("Name"), 
 	_("Type"), 
 	_("Date") =>'date',
-	_("Due Date") => array('date', 'ord'=>'asc'), 
+	_("Due Date") => array('name'=>'due_date', 'date', 'ord'=>'asc'), 
 	_("Closed") => array('fun'=>'is_closed'),
 	_("Balance") => array('type'=>'amount', 'insert'=>true, 'fun'=>'sum_dimension'),
 	array('insert'=>true, 'fun'=>'edit_link')

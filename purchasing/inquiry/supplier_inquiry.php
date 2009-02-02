@@ -211,7 +211,7 @@ $cols = array(
 			_("Reference"), 
 			_("Supplier"),
 			_("Supplier's Reference"), 
-			_("Date") => array('type'=>'date', 'ord'=>'desc'), 
+			_("Date") => array('name'=>'tran_date', 'type'=>'date', 'ord'=>'desc'), 
 			_("Due Date") => array('type'=>'date', 'fun'=>'due_date'), 
 			_("Currency") => array('align'=>'center'),
 			_("Debit") => array('align'=>'right', 'fun'=>'fmt_debit'), 

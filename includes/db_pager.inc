@@ -263,10 +263,10 @@ class db_pager {
 		}
 
 		$sql = "$select FROM $from $where";
-		if($group) $sql.= " GROUP BY $group";
+		if ($group) $sql.= " GROUP BY $group";
 	    $ord = array();
 
-	    foreach( $this->columns as $col) {
+	    foreach ($this->columns as $col) {
 	       	if (isset($col['ord'])) {
 	        	if ( $col['ord'] != '' && isset($col['name'])) {
 		    	    $ord[] = $col['name'] .' '. $col['ord'];
@@ -294,6 +294,8 @@ class db_pager {
 	//
 	function _init() 
 	{
+		global $go_debug;
+		
 	    if ($this->ready == false ) {
 			$sql = $this->_sql_gen(true);
 			$result = db_query($sql, 'Error reading record set');
@@ -302,6 +304,18 @@ class db_pager {
 			$row = db_fetch_row($result);
 			$this->rec_count = $row[0];
 	  		$this->max_page = ceil($this->rec_count/$this->page_len);
+		
+			if ($go_debug) { // FIX - need column name parsing, but for now:
+				// check if field names are set explicite in col def
+				// for all initially ordered columns
+			    foreach ($this->columns as $col) {
+		    	   	if (isset($col['ord']) && $col['ord'] != '' 
+						&&  !isset($col['name'])) {
+							display_warning("Result field names must be set
+								for all intially ordered db_pager columns.");
+			    	}
+				}
+	    	}
 	  		$this->set_page(1);
 	  		$this->ready = true;
 	    }

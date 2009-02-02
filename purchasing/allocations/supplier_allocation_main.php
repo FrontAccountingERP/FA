@@ -108,7 +108,7 @@ $cols = array(
 	_("Transaction Type") => array('fun'=>'systype_name'),
 	_("#") => array('fun'=>'trans_view'),
 	_("Reference"), 
-	_("Date") => array('type'=>'date', 'ord'=>'asc'),
+	_("Date") => array('name'=>'tran_date', 'type'=>'date', 'ord'=>'asc'),
 	_("Supplier") => array('ord'=>''),
 	_("Currency") => array('align'=>'center'),
 	_("Total") => 'amount', 

@@ -203,7 +203,7 @@ $cols = array(
 	_("#") => array('fun'=>'view_link'),
 	_("Reference"), 
 	_("Order") => array('fun'=>'order_link'), 
-	_("Date") => array('type'=>'date', 'ord'=>'asc'),
+	_("Date") => array('name'=>'tran_date', 'type'=>'date', 'ord'=>'asc'),
 	_("Due Date") => array('type'=>'date', 'fun'=>'due_date'),
 	_("Customer"), 
 	_("Currency") => array('align'=>'center'),

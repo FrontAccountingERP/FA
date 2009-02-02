@@ -149,7 +149,7 @@ $cols = array(
 		_("Supplier") => array('ord'=>''),
 		_("Location"),
 		_("Supplier's Reference"), 
-		_("Order Date") => array('type'=>'date', 'ord'=>'desc'),
+		_("Order Date") => array('name'=>'ord_date', 'type'=>'date', 'ord'=>'desc'),
 		_("Currency") => array('align'=>'center'), 
 		_("Order Total") => 'amount',
 		array('insert'=>true, 'fun'=>'prt_link'),
