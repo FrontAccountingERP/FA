@@ -281,9 +281,8 @@ function change_os(type) {
 					<td>Please note: &nbsp;</td>
 					<td>
 						FrontAccounting is released under the
-						<a href="http://www.gnu.org/licenses/agpl-3.0.html" target="_blank" tabindex="19">GNU Affero General Public License</a>
-						<br />
-						By clicking install, you are accepting the license.
+						<a href="http://www.gnu.org/licenses/agpl-3.0.html" target="_blank" tabindex="19">GNU Affero General Public License.</a> By 
+						clicking install, you are accepting the license.
 					</td>
 				</tr>
 				</table>
