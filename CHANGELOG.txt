@@ -1,7 +1,7 @@
 /**
 * @version $Id$
 * @package FrontAccounting
-* @copyright (C) 2005 - 2008 FrontAccounting
+* @copyright (C) 2005 - 2009 FrontAccounting
 * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
 * FrontAccounting is Free Software
 */
@@ -18,6 +18,11 @@ Legend:
 - -> Removed
 ! -> Note
 $ -> Affected files
+
+------------------------------- Release 2.0.7 --------------------------------------------
+03-Feb-2009 Joe Hunt
+! New release 2.0.7
+$ config.php
 
 22-Jan-2009 Joe Hunt
 # Bug [0000112] It shows invoices as overdue still (in red), even though its been payed and allocated. 
