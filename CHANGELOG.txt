@@ -20,6 +20,100 @@ Legend:
 $ -> Affected files
 
 03-Feb-2009 Janusz Dobrowolski
+! Merging bugfixes since 2.0.6 from main trunk (see below)
+$ /config.php
+  /gl/includes/db/gl_db_banking.inc
+  /gl/manage/gl_account_classes.php
+  /includes/ui/items_cart.inc
+  /includes/ui/ui_view.inc
+  /purchasing/includes/db/invoice_db.inc
+  /reporting/rep101.php
+  /reporting/rep201.php
+  /reporting/includes/class.pdf.inc
+  /sales/credit_note_entry.php
+  /sales/customer_credit_invoice.php
+  /sales/customer_delivery.php
+  /sales/customer_invoice.php
+  /sales/includes/db/payment_db.inc
+  /sales/includes/db/sales_credit_db.inc
+  /sales/includes/db/sales_delivery_db.inc
+  /sales/includes/db/sales_invoice_db.inc
+  /sales/includes/ui/sales_order_ui.inc
+  /sales/view/view_credit.php
+
+------------------------------- Release 2.0.7 --------------------------------------------
+03-Feb-2009 Joe Hunt
+! New release 2.0.7
+$ config.php
+
+22-Jan-2009 Joe Hunt
+# Bug [0000112] It shows invoices as overdue still (in red), even though its been payed and allocated. 
+$ /sales/inquiry/customer_inquiry.php
+
+13-Jan-2009 Joe Hunt
+# Bug [0000111] Accounts on Credit Hold can still process delivery notes on sales order and invoicing.
+$ /sales/customer_delivery.php
+  /sales/customer_invoice.php
+  /sales/includes/ui/sales_order_ui.inc
+  
+08-Jan-2009 Janusz Dobrowolski
+# Numeric check on class id added.
+$ /gl/manage/gl_account_classes.php
+
+02-Jan-2009 Joe Hunt
+# [0000104] minor language updates in a few sales files 
+$ /sales/customer_invoice.php
+
+23-Dec-2008 Joe Hunt
+# Fixed an accounting sync in GL when adding bank account transactions (no customer/supplier trans)
+$ /gl/includes/db/gl_db_banking.inc
+
+22-Dec-2008 Janusz Dobrowolski
+# [0000102] Credit note was stored without entered shippment cost and comment.
+$ /sales/credit_note_entry.php
+# [0000103] Error during save of modified freehand credit note.
+$ /sales/includes/db/cust_trans_db.inc
+
+18-Dec-2008 Joe Hunt
+# [0000101] Roll back of yeasterday issues
+$ /purchasing/includes/db/invoice_db.inc
+  /purchasing/includes/db/supp_payment_db.inc
+  /sales/includes/db/payment_db.inc
+  /sales/includes/db/sales_credit_db.inc
+  /sales/includes/db/sales_invoice_db.inc
+
+17-Dec-2008 Joe Hunt
+# [0000101] More wonderful rounding issues 
+$ /includes/ui/ui_view.inc
+  /purchasing/includes/db/invoice_db.inc
+  /purchasing/includes/db/supp_payment_db.inc
+  /sales/includes/db/payment_db.inc
+  /sales/includes/db/sales_credit_db.inc
+  /sales/includes/db/sales_delivery_db.inc
+  /sales/includes/db/sales_invoice_db.inc
+  
+16-Dec-2008 Joe Hunt
+# [0000100] Keep getting left allocated weird results (rounding problems).
+$ /includes/ui/ui_view.inc
+  /purchasing/inquiry/supplier_allocation_inquiry.php
+  /reporting/rep101.php
+  /reporting/rep201.php
+  /sales/inquiry/customer_allocation_inquiry.php
+
+10-Dec-2008 Janusz Dobrowolski
+# [0000099] New line added to inventory transfer/adjustment sometimes overwrites old one.
+$ /includes/ui/items_cart.inc
+
+09-Dec-2008 Janusz Dobrowolski
+# [0000098] Unable issue of credit note for invoice with removed item lines.
+$ /sales/customer_credit_invoice.php
+# [0000097] Can't void freehand customer credit note.
+$ /sales/includes/db/sales_invoice_db.inc
+# Fixed to hide empty credit note lines.
+$ /sales/view/view_credit.php
+-------------------------------------------------------------------------------
+
+03-Feb-2009 Janusz Dobrowolski
 # sql2date around row[date] in due date.
 $ /purchasing/inquiry/supplier_inquiry.php
 # Bugfix [0000115] once again.

@@ -49,10 +49,10 @@ function write_customer_payment($trans_no, $customer_id, $branch_id, $bank_accou
 	}
 
 	if (($discount + $amount) != 0)	{
-		/* Now Credit Debtors account with receipts + discounts */
-		$total += add_gl_trans_customer(12, $payment_no, $date_,
-			$debtors_account, 0, 0, -($discount + $amount), $customer_id,
-			"Cannot insert a GL transaction for the debtors account credit", $rate);
+	/* Now Credit Debtors account with receipts + discounts */
+	$total += add_gl_trans_customer(12, $payment_no, $date_,
+		$debtors_account, 0, 0, -($discount + $amount), $customer_id,
+		"Cannot insert a GL transaction for the debtors account credit", $rate);
 	}
 	if ($discount != 0)	{
 		/* Now Debit discount account with discounts allowed*/

@@ -127,6 +127,7 @@ function add_supp_invoice($supp_trans, $invoice_no=0) // do not receive as ref b
 
     foreach ($taxes as $taxitem)
     {
+		$taxitem['Value'] =  round2($taxitem['Value'], user_price_dec());
     	$tax_total += $taxitem['Value'];
     }
 

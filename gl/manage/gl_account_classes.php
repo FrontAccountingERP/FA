@@ -24,7 +24,12 @@ simple_page_mode(true);
 
 function can_process() 
 {
-
+	if (!is_numeric($_POST['id'])) 
+	{
+		display_error( _("The account class ID must be numeric."));
+		set_focus('id');
+		return false;
+	}
 	if (strlen($_POST['name']) == 0) 
 	{
 		display_error( _("The account class name cannot be empty."));

@@ -468,7 +468,7 @@ function display_edit_tax_items($taxes, $columns, $tax_included, $leftspan=0)
     	{
         	label_row($taxitem['tax_type_name'] . " (" . $taxitem['rate'] . "%)",
         		number_format2($taxitem['Value'],user_price_dec()), "colspan=$columns align=right", "align=right",$leftspan);
-        	$total +=  $taxitem['Value'];
+        	$total +=  round2($taxitem['Value'], user_price_dec());
     	}
     }
 
@@ -510,6 +510,8 @@ function display_allocations($alloc_result, $total)
     	label_cell(systypes::name($alloc_row['type']));
     	label_cell(get_trans_view_str($alloc_row['type'],$alloc_row['trans_no']));
     	label_cell(sql2date($alloc_row['tran_date']));
+    	$alloc_row['Total'] = round2($alloc_row['Total'], user_price_dec());
+    	$alloc_row['amt'] = round2($alloc_row['amt'], user_price_dec());
     	amount_cell($alloc_row['Total']);
     	//amount_cell($alloc_row['Total'] - $alloc_row['PrevAllocs'] - $alloc_row['amt']);
     	amount_cell($alloc_row['Total'] - $alloc_row['amt']);
@@ -524,6 +526,7 @@ function display_allocations($alloc_result, $total)
 	end_row();
 	start_row();
     label_cell(_("Left to Allocate:"), "align=right colspan=5");
+    $total = round2($total, user_price_dec());
     amount_cell($total - $total_allocated);
     end_row();
 

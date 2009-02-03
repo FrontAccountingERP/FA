@@ -128,7 +128,7 @@ if ( (isset($_GET['DeliveryNumber']) && ($_GET['DeliveryNumber'] > 0) )
 } elseif (isset($_GET['ModifyInvoice']) && $_GET['ModifyInvoice'] > 0) {
 
 	if ( get_parent_trans(10, $_GET['ModifyInvoice']) == 0) { // 1.xx compatibility hack
-		echo"<center><br><b>" . _("There in no delivery notes for this invoice.<br>
+		echo"<center><br><b>" . _("There are no delivery notes for this invoice.<br>
 		Most likely this invoice was created in Front Accounting version prior to 2.0
 		and therefore can not be modified.") . "</b></center>";
 		display_footer_exit();
@@ -383,6 +383,15 @@ date_cells(_("Due Date"), 'due_date', '', $_POST['due_date'], 0, 0, 0, "class='t
 
 end_row();
 end_table();
+
+$row = get_customer_to_order($_SESSION['Items']->customer_id);
+if ($row['dissallow_invoices'] == 1)
+{
+	display_error(_("The selected customer account is currently on hold. Please contact the credit control personnel to discuss."));
+	end_form();
+	end_page();
+	exit();
+}	
 
 display_heading(_("Invoice Items"));
 

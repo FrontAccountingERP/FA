@@ -31,6 +31,7 @@ function write_sales_delivery(&$delivery,$bo_policy)
 	$taxes = $delivery->get_taxes(); // all taxes with freight_tax
 
 	foreach ($taxes as $taxitem) {
+		$taxitem['Value'] =  round2($taxitem['Value'], user_price_dec());
 		$tax_total +=  $taxitem['Value'];
 	}
 	/* Insert/update the debtor_trans */

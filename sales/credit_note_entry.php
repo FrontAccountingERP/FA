@@ -178,6 +178,7 @@ if (isset($_POST['ProcessCredit']) && can_process()) {
 	if (!isset($_POST['WriteOffGLCode'])) {
 		$_POST['WriteOffGLCode'] = 0;
 	}
+	copy_to_cn();
 	$credit_no = $_SESSION['Items']->write($_POST['WriteOffGLCode']);
 	processing_end();
 	meta_forward($_SERVER['PHP_SELF'], "AddedID=$credit_no");

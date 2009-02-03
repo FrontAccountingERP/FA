@@ -152,6 +152,9 @@ function check_quantities()
 {
 	$ok =1;
 	foreach ($_SESSION['Items']->line_items as $line_no=>$itm) {
+		if ($itm->quantity == $itm->qty_done) {
+			continue; // this line was fully credited/removed
+		}
 		if (isset($_POST['Line'.$line_no])) {
 			if (check_num('Line'.$line_no, 0, $itm->quantity)) {
 				$_SESSION['Items']->line_items[$line_no]->qty_dispatched =
@@ -287,8 +290,8 @@ function display_credit_items()
     $k = 0; //row colour counter
 
     foreach ($_SESSION['Items']->line_items as $line_no=>$ln_itm) {
-		if ($ln_itm->quantity==$ln_itm->qty_done) {
-			continue; // this line was fully credited
+		if ($ln_itm->quantity == $ln_itm->qty_done) {
+			continue; // this line was fully credited/removed
 		}
 		alt_table_row_color($k);
 
