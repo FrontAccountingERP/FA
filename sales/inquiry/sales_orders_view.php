@@ -140,7 +140,7 @@ $id = find_submit('_chgtpl');
 if ($id != -1)
 	change_tpl_flag($id);
 
-if (isset($_POST['Update']) && isset($_POST['last']) {
+if (isset($_POST['Update']) && isset($_POST['last'])) {
 	foreach($_POST['last'] as $id => $value)
 		if ($value != check_value('chgtpl'.$id))
 			change_tpl_flag($id);

@@ -21,7 +21,9 @@ $ -> Affected files
 
 03-Feb-2009 Janusz Dobrowolski
 # sql2date around row[date] in due date.
-$ /sales/inquiry/supplier_inquiry.php
+$ /purchasing/inquiry/supplier_inquiry.php
+# Bugfix [0000115] once again.
+$ /sales/inquiry/sales_orders_view.php
 
 02-Feb-2009 Joe Hunt
 ! Better layout in Form setup
