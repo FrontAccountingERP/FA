@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+03-Feb-2009 Joe Hunt
+! install/index.php link to AGPL license
+$ /install/index.php
+
 03-Feb-2009 Janusz Dobrowolski
 ! Merging bugfixes since 2.0.6 from main trunk (see below)
 $ /config.php
