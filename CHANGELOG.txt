@@ -40,6 +40,9 @@ $ /config.php
   /sales/includes/db/sales_invoice_db.inc
   /sales/includes/ui/sales_order_ui.inc
   /sales/view/view_credit.php
+# Due date display finally fixed.
+$ /purchasing/inquiry/supplier_inquiry.php
+  /sales/inquiry/customer_inquiry.php
 
 ------------------------------- Release 2.0.7 --------------------------------------------
 03-Feb-2009 Joe Hunt

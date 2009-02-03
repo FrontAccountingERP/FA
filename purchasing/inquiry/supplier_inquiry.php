@@ -114,8 +114,7 @@ function trans_view($trans)
 
 function due_date($row)
 {
-	return ($row["type"]== 20) || ($row["type"]== 21)
-		 ? sql2date($row["due_date"]) : '';
+	return ($row["type"]== 20) || ($row["type"]== 21) ? $row["due_date"] : '';
 }
 
 function gl_view($row)

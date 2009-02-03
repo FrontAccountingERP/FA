@@ -127,7 +127,7 @@ function trans_view($trans)
 
 function due_date($row)
 {
-	return	$row["type"] == 10	? sql2date($row["due_date"]) : '';
+	return	$row["type"] == 10	? $row["due_date"] : '';
 }
 
 function gl_view($row)
@@ -272,7 +272,7 @@ $cols = array(
 	_("Order") => array('fun'=>'order_view'), 
 	_("Reference"), 
 	_("Date") => array('name'=>'tran_date', 'type'=>'date', 'ord'=>'desc'),
-	_("Due Date") => array('type=>date', 'fun'=>'due_date'),
+	_("Due Date") => array('type'=>'date', 'fun'=>'due_date'),
 	_("Customer") => array('ord'=>''), 
 	_("Branch") => array('ord'=>''), 
 	_("Currency") => array('align'=>'center'),
