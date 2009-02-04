@@ -19,6 +19,7 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+------------------------------- Release 2.1.0 beta --------------------------------------------
 04-Feb-2009 Joe Hunt
 # Software Upgrade (re-read of current user needed)
 $ /admin/inst_upgrade.php
