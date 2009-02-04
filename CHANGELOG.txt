@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+04-Feb-2009 Joe Hunt
+# Software Upgrade (re-read of current user needed)
+$ /admin/inst_upgrade.php
+
 03-Feb-2009 Joe Hunt
 ! install/index.php link to AGPL license
 $ /install/index.php

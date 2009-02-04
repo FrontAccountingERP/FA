@@ -156,7 +156,13 @@ if (get_post('Upgrade'))
 		if (!$ret) break;
 	}
 	if($ret)
+	{	// re-read the prefs
+		global $path_to_root;
+		include_once($path_to_root . "/admin/db/users_db.inc");
+		$user = get_user($_SESSION["wa_current_user"]->username);
+		$_SESSION["wa_current_user"]->prefs = new user_prefs($user);
 		display_notification(_('All companies data has been successfully updated'));
+	}	
 	$Ajax->activate('_page_body');
 }
 
