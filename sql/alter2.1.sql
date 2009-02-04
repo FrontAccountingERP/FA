@@ -58,29 +58,20 @@ CREATE TABLE `0_recurrent_invoices` (
   UNIQUE KEY `description` (`description`)
 ) TYPE=InnoDB AUTO_INCREMENT=1 ;
 
-ALTER TABLE `0_cust_branch` DROP COLUMN `group_no`;
 ALTER TABLE `0_cust_branch` ADD `group_no` int(11) NOT NULL default '0';
 
-ALTER TABLE `0_debtor_trans` DROP COLUMN `dimension_id`;
 ALTER TABLE `0_debtor_trans` ADD `dimension_id` int(11) NOT NULL default '0';
-ALTER TABLE `0_debtor_trans` DROP COLUMN `dimension2_id`;
 ALTER TABLE `0_debtor_trans` ADD `dimension2_id` int(11) NOT NULL default '0';
 
-ALTER TABLE `0_bank_accounts` DROP COLUMN `id`;
 ALTER TABLE `0_bank_accounts` DROP PRIMARY KEY;
 ALTER TABLE `0_bank_accounts` ADD `id` SMALLINT(6) AUTO_INCREMENT PRIMARY KEY;
-ALTER TABLE `0_bank_accounts` DROP COLUMN `last_reconciled_date`;
 ALTER TABLE `0_bank_accounts` ADD `last_reconciled_date` timestamp NOT NULL default '0000-00-00';
-ALTER TABLE `0_bank_accounts` DROP COLUMN `ending_reconcile_balance`;
 ALTER TABLE `0_bank_accounts` ADD `ending_reconcile_balance` double NOT NULL default '0';
 
-ALTER TABLE `0_bank_trans` DROP COLUMN `reconciled`;
 ALTER TABLE `0_bank_trans` ADD `reconciled` date default NULL;
 
-ALTER TABLE `0_users` DROP COLUMN `query_size`;
 ALTER TABLE `0_users` ADD `query_size` TINYINT(1) DEFAULT '10';
 
-ALTER TABLE `0_users` DROP COLUMN `graphic_links`;
 ALTER TABLE `0_users` ADD `graphic_links` TINYINT(1) DEFAULT '1';
 
 DROP TABLE IF EXISTS `0_sales_pos`;
@@ -99,7 +90,6 @@ CREATE TABLE `0_sales_pos` (
 
 INSERT INTO `0_sales_pos` VALUES ('1', 'Default', '1', '1', 'DEF', '1', '0');
 
-ALTER TABLE `0_users` DROP COLUMN `pos`;
 ALTER TABLE `0_users` ADD `pos` SMALLINT(6) DEFAULT '1';
 
 DROP TABLE IF EXISTS `0_quick_entries`;
@@ -136,9 +126,7 @@ INSERT INTO `0_quick_entry_lines` VALUES ('1', '1','0','=', '6600', '0', '0');
 INSERT INTO `0_quick_entry_lines` VALUES ('2', '2','0','=', '6730', '0', '0');
 INSERT INTO `0_quick_entry_lines` VALUES ('3', '3','0','=', '3000', '0', '0');
 
-ALTER TABLE `0_users` DROP COLUMN `print_profile`;
 ALTER TABLE `0_users` ADD `print_profile` VARCHAR(30) NOT NULL DEFAULT '1';
-ALTER TABLE `0_users` DROP COLUMN `rep_popup`;
 ALTER TABLE `0_users` ADD `rep_popup` TINYINT(1) DEFAULT '1';
 
 DROP TABLE IF EXISTS `0_print_profiles`;
@@ -194,40 +182,28 @@ CREATE TABLE `0_item_codes` (
   UNIQUE KEY(`stock_id`, `item_code`)
 ) TYPE=MyISAM AUTO_INCREMENT=1;
 
-ALTER TABLE `0_company` DROP COLUMN `foreign_codes`;
 ALTER TABLE `0_company` ADD `foreign_codes` TINYINT(1) NOT NULL DEFAULT '0';
 
-ALTER TABLE `0_company` DROP COLUMN `accumulate_shipping`;
 ALTER TABLE `0_company` ADD `accumulate_shipping` TINYINT(1) NOT NULL DEFAULT '0';
 
-ALTER TABLE `0_company` DROP COLUMN `legal_text`;
 ALTER TABLE `0_company` ADD `legal_text` tinytext NOT NULL DEFAULT '';
 
-ALTER TABLE `0_suppliers` DROP COLUMN `supp_address`;
 ALTER TABLE `0_suppliers` ADD `supp_address` tinytext NOT NULL DEFAULT '' AFTER `address`;
 
-ALTER TABLE `0_suppliers` DROP COLUMN `phone`;
 ALTER TABLE `0_suppliers` ADD `phone` varchar(30) NOT NULL DEFAULT '' AFTER `supp_address`;
 
-ALTER TABLE `0_suppliers` DROP COLUMN `fax`;
 ALTER TABLE `0_suppliers` ADD `fax` varchar(30) NOT NULL DEFAULT '' AFTER `phone`;
 
-ALTER TABLE `0_suppliers` DROP COLUMN `gst_no`;
 ALTER TABLE `0_suppliers` ADD `gst_no` varchar(25) NOT NULL DEFAULT '' AFTER `fax`;
 
-ALTER TABLE `0_suppliers` DROP COLUMN `contact`;
 ALTER TABLE `0_suppliers` ADD `contact` varchar(60) NOT NULL DEFAULT '' AFTER `gst_no`;
 
-ALTER TABLE `0_suppliers` DROP COLUMN `credit_limit`;
 ALTER TABLE `0_suppliers` ADD `credit_limit` double NOT NULL DEFAULT '0' AFTER `tax_group_id`;
 
-ALTER TABLE `0_suppliers` DROP COLUMN `supp_account_no`;
 ALTER TABLE `0_suppliers` ADD `supp_account_no` varchar(40) NOT NULL DEFAULT '' AFTER `contact`;
 
-ALTER TABLE `0_suppliers` DROP COLUMN `website`;
 ALTER TABLE `0_suppliers` ADD `website` varchar(100) NOT NULL DEFAULT '' AFTER `email`;
 
-ALTER TABLE `0_suppliers` DROP COLUMN `notes`;
 ALTER TABLE `0_suppliers` ADD `notes` tinytext NOT NULL DEFAULT '';
 
 ALTER TABLE `0_chart_types` DROP INDEX `name`, ADD INDEX `name` ( `name` );
@@ -246,52 +222,36 @@ ALTER TABLE `0_tax_types` DROP COLUMN `out`;
 
 ALTER TABLE `0_chart_master` DROP COLUMN `tax_code`;
 
-ALTER TABLE `0_chart_master` DROP COLUMN `inactive`;
 ALTER TABLE `0_chart_master` ADD `inactive` tinyint(1) NOT NULL DEFAULT '0';
 
-ALTER TABLE `0_currencies` DROP COLUMN `inactive`;
 ALTER TABLE `0_currencies` ADD `inactive` tinyint(1) NOT NULL DEFAULT '0';
 
-ALTER TABLE `0_bank_accounts` DROP COLUMN `inactive`;
 ALTER TABLE `0_bank_accounts` ADD `inactive` tinyint(1) NOT NULL DEFAULT '0';
 
-ALTER TABLE `0_debtors_master` DROP COLUMN `inactive`;
 ALTER TABLE `0_debtors_master` ADD `inactive` tinyint(1) NOT NULL DEFAULT '0';
 
-ALTER TABLE `0_stock_master` DROP COLUMN `inactive`;
 ALTER TABLE `0_stock_master` ADD `inactive` tinyint(1) NOT NULL DEFAULT '0';
 
-ALTER TABLE `0_workcentres` DROP COLUMN `inactive`;
 ALTER TABLE `0_workcentres` ADD `inactive` tinyint(1) NOT NULL DEFAULT '0';
 
-ALTER TABLE `0_locations` DROP COLUMN `inactive`;
 ALTER TABLE `0_locations` ADD `inactive` tinyint(1) NOT NULL DEFAULT '0';
 
-ALTER TABLE `0_sales_types` DROP COLUMN `inactive`;
 ALTER TABLE `0_sales_types` ADD `inactive` tinyint(1) NOT NULL DEFAULT '0';
 
-ALTER TABLE `0_areas` DROP COLUMN `inactive`;
 ALTER TABLE `0_areas` ADD `inactive` tinyint(1) NOT NULL DEFAULT '0';
 
-ALTER TABLE `0_salesman` DROP COLUMN `inactive`;
 ALTER TABLE `0_salesman` ADD `inactive` tinyint(1) NOT NULL DEFAULT '0';
 
-ALTER TABLE `0_shippers` DROP COLUMN `inactive`;
 ALTER TABLE `0_shippers` ADD `inactive` tinyint(1) NOT NULL DEFAULT '0';
 
-ALTER TABLE `0_credit_status` DROP COLUMN `inactive`;
 ALTER TABLE `0_credit_status` ADD `inactive` tinyint(1) NOT NULL DEFAULT '0';
 
-ALTER TABLE `0_payment_terms` DROP COLUMN `inactive`;
 ALTER TABLE `0_payment_terms` ADD `inactive` tinyint(1) NOT NULL DEFAULT '0';
 
-ALTER TABLE `0_suppliers` DROP COLUMN `inactive`;
 ALTER TABLE `0_suppliers` ADD `inactive` tinyint(1) NOT NULL DEFAULT '0';
 
-ALTER TABLE `0_stock_category` DROP COLUMN `inactive`;
 ALTER TABLE `0_stock_category` ADD `inactive` tinyint(1) NOT NULL DEFAULT '0';
 
-ALTER TABLE `0_item_units` DROP COLUMN `inactive`;
 ALTER TABLE `0_item_units` ADD `inactive` tinyint(1) NOT NULL DEFAULT '0';
 
 DROP TABLE IF EXISTS `0_trans_tax_details`;

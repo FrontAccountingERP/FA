@@ -19,6 +19,17 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+04-Feb-2009
+! Removed ALTER TABLE DROP columns
+$ /sql/alter2.1.sql
+! Removed files from CVS
+/company/0/images/logo_frontaccounting.png
+/reporting/fonts/vera.afm
++ Added files to CVS
+/doc/2.1_Beta.txt
+/doc/extensions.txt
+/themes/default/images/escape.png
+
 ------------------------------- Release 2.1.0 beta --------------------------------------------
 04-Feb-2009 Joe Hunt
 # Software Upgrade (re-read of current user needed)
