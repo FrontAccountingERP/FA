@@ -19,11 +19,19 @@ Legend:
 ! -> Note
 $ -> Affected files
 
-08-Feb-2009
+------------------------------- Release 2.1.0 beta --------------------------------------------
+
+08-Feb-2009 Janusz Dobrowolski
+# Fixed division by zero bug in empty pager
+$ includes/db_pager.inc
+# Fixed special char display issue in item name [0000116]
+$ sales/includes/cart_class.inc
+
+08-Feb-2009 Joe Hunt
 ! Changed license type to GNU GPLv3. Stamped headers changed.
 $ all appropriate source files
 
-04-Feb-2009
+04-Feb-2009 Joe Hunt
 ! Removed ALTER TABLE DROP columns
 $ /sql/alter2.1.sql
 ! Removed files from CVS
@@ -34,7 +42,6 @@ $ /sql/alter2.1.sql
 /doc/extensions.txt
 /themes/default/images/escape.png
 
-------------------------------- Release 2.1.0 beta --------------------------------------------
 04-Feb-2009 Joe Hunt
 # Software Upgrade (re-read of current user needed)
 $ /admin/inst_upgrade.php
@@ -145,6 +152,8 @@ $ /sales/view/view_credit.php
 $ /purchasing/inquiry/supplier_inquiry.php
 # Bugfix [0000115] once again.
 $ /sales/inquiry/sales_orders_view.php
+# Division by zero avoided in db_pager
+$ /includes/db_pager.inc
 
 02-Feb-2009 Joe Hunt
 ! Better layout in Form setup
