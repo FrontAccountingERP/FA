@@ -303,7 +303,8 @@ class db_pager {
 				return false;
 			$row = db_fetch_row($result);
 			$this->rec_count = $row[0];
-	  		$this->max_page = ceil($this->rec_count/$this->page_len);
+	  		$this->max_page = $this->page_len ?
+				ceil($this->rec_count/$this->page_len) : 0;
 		
 			if ($go_debug) { // FIX - need column name parsing, but for now:
 				// check if field names are set explicite in col def
