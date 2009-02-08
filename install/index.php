@@ -1,13 +1,13 @@
 <?php
 /**********************************************************************
     Copyright (C) FrontAccounting, LLC.
-	Released under the terms of the GNU Affero General Public License,
-	AGPL, as published by the Free Software Foundation, either version 
-	3 of the License, or (at your option) any later version.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
-    See the License here <http://www.gnu.org/licenses/agpl-3.0.html>.
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
 error_reporting(E_ALL);
 ini_set("display_errors", "On");
@@ -281,7 +281,7 @@ function change_os(type) {
 					<td>Please note: &nbsp;</td>
 					<td>
 						FrontAccounting is released under the
-						<a href="http://www.gnu.org/licenses/agpl-3.0.html" target="_blank" tabindex="19">GNU Affero General Public License.</a> By 
+						<a href="http://www.gnu.org/licenses/gpl-3.0.html" target="_blank" tabindex="19">GNU General Public License.</a> By 
 						clicking install, you are accepting the license.
 					</td>
 				</tr>
@@ -302,11 +302,11 @@ function change_os(type) {
 <table cellpadding="0" cellspacing="0" border="0" width="100%" style="padding: 10px 0px 10px 0px;">
 <tr>
 	<td align="center" style="font-size: 10px;">
-		<!-- Please note: the below reference to the GNU AGPL should not be removed, as it provides a link for users to read about warranty, etc. -->
+		<!-- Please note: the below reference to the GNU GPL should not be removed, as it provides a link for users to read about warranty, etc. -->
 		<a href="http://frontaccounting.com/" style="color: #000000;" target="_blank">FrontAccounting</a>
 		is	released under the
-		<a href="http://www.gnu.org/licenses/agpl-3.0.html" style="color: #000000;" target="_blank">GNU Affero General Public License</a>
-		<!-- Please note: the above reference to the GNU AGPL should not be removed, as it provides a link for users to read about warranty, etc. -->
+		<a href="http://www.gnu.org/licenses/gpl-3.0.html" style="color: #000000;" target="_blank">GNU General Public License</a>
+		<!-- Please note: the above reference to the GNU GPL should not be removed, as it provides a link for users to read about warranty, etc. -->
 	</td>
 </tr>
 </table>

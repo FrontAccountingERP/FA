@@ -12,7 +12,7 @@ Common
 - Document files in doc subdirectory
 - An inactive field in most 'catalog' tables to prepare for making records inactive.
 - Option for graphic links instead of text links in tables.
-- Changed license type to GNU Affero GPL v.3. Stamped in all source files.
+- Changed license type to GNU GPL v.3. Stamped in all source files.
 
 Sales
 -----
