@@ -19,6 +19,15 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+12-Feb-2009 Janusz Dobrowolski
+! Changed extension menu file placement, added support for gettext in extensions.
+$ /frontaccounting.php
+# Fix for some buggy curl versions.
+$ /gl/includes/db/gl_db_rates.inc
+  /gl/manage/exchange_rates.php
+# Fixed get_amount() to return 0 for invalid input.
+$ /js/utils.js
+
 ------------------------------- Release 2.1.0 beta --------------------------------------------
 
 08-Feb-2009 Janusz Dobrowolski
