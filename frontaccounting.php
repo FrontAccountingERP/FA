@@ -66,7 +66,7 @@
 		}
 		function init()
 		{
-			global $installed_extensions, $applications;
+			global $installed_extensions, $applications, $path_to_root;
 			$this->menu = new menu(_("Main  Menu"));
 			$this->menu->add_item(_("Main  Menu"), "index.php");
 			$this->menu->add_item(_("Logout"), "/account/access/logout.php");
@@ -81,9 +81,13 @@
 			{
 				foreach ($installed_extensions as $ext)
 				{
-					include_once("applications/".$ext['app_file']);
+					get_text::add_domain($_SESSION['language']->code, 
+						$ext['folder']."/lang");
+					include_once($ext['folder']."/".$ext['app_file']);
 					$class = $ext['name']."_app";
 					$this->add_application(new $class());
+					get_text::add_domain($_SESSION['language']->code, 
+						$path_to_root."/lang");
 				}
 			}	
 			
