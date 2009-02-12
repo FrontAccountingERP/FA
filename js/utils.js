@@ -201,8 +201,8 @@ function get_amount(doc, label) {
 	    else
 		var val = document.getElementsByName(doc)[0].value;
 		val = val.replace(new RegExp('\\'+user.ts, 'g'),'');
-		val = val.replace(new RegExp('\\'+user.ds, 'g'),'.');
-		return 1*val;
+		val = +val.replace(new RegExp('\\'+user.ds, 'g'),'.');
+		return isNaN(val) ? 0 : val;
 }
 
 function goBack() {
