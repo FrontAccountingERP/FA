@@ -135,9 +135,6 @@ function display_rate_edit()
 	if (isset($_POST['get_rate']))
 	{
 		$_POST['BuyRate'] = exrate_format(get_ecb_rate($_POST['curr_abrev']));
-		if ($_POST['BuyRate'] == 0) {
-			display_error(_('This currency is not listed by ECB. Enter exchange rate manually.'));
-		}
 		$Ajax->activate('BuyRate');
 	}
 	small_amount_row(_("Exchange Rate:"), 'BuyRate', null, '',

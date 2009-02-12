@@ -74,20 +74,28 @@ function delete_exchange_rate($rate_id)
 function get_ecb_rate($curr_b) 
 {
 	$curr_a = get_company_pref('curr_default');
-	$ecb_filename = 'http://www.ecb.int/stats/eurofxref/eurofxref-daily.xml';
+	$ecb_filename = '/stats/eurofxref/eurofxref-daily.xml';
+	$ecb_site = 'www.ecb.int';
 	$contents = '';
 
 	if (function_exists('curl_init'))
 	{	// first check with curl as we can set short timeout;
-       $ch = curl_init();
-       curl_setopt ($ch, CURLOPT_URL, $ecb_filename);
-       curl_setopt ($ch, CURLOPT_COOKIEJAR, "cookie.txt");
-       curl_setopt ($ch, CURLOPT_HEADER, 0);
-       curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
-       curl_setopt ($ch, CURLOPT_FOLLOWLOCATION, 1);
-       curl_setopt ($ch, CURLOPT_TIMEOUT, 5);
-       $contents = curl_exec ($ch);
-       curl_close($ch);
+		$retry = 1;
+	 	do {
+	       $ch = curl_init();
+    	   curl_setopt ($ch, CURLOPT_URL, 'http://'.$ecb_site.$ecb_filename);
+	       curl_setopt ($ch, CURLOPT_COOKIEJAR, "cookie.txt");
+    	   curl_setopt ($ch, CURLOPT_HEADER, 0);
+	       curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
+    	   curl_setopt ($ch, CURLOPT_FOLLOWLOCATION, 1);
+	       curl_setopt ($ch, CURLOPT_TIMEOUT, 3);
+    	   $contents = curl_exec ($ch);
+	       curl_close($ch);
+			// due to resolver bug in some curl versions (e.g. 7.15.5) 
+			// try again for constant IP.
+		   $ecb_site="195.128.2.97";
+	   } while( ($contents == '') && $retry--);
+	   
 	} else {
 		$handle = @fopen($ecb_filename, 'rb');
 		if ($handle) {
