@@ -611,8 +611,8 @@ function display_quick_entries(&$cart, $id, $base, $type, $descr='')
 						else
 							$tax = round2($base * $item_tax['rate'] / 100,  user_price_dec());
 
-						$gl_code = $type != QE_DEPOSIT 
-							? $item_tax['purchasing_gl_code'] : $item_tax['sales_gl_code'];
+						$gl_code = ($type == QE_DEPOSIT || ($type == QE_JOURNAL && $base < 0)) 
+							? $item_tax['sales_gl_code'] : $item_tax['purchasing_gl_code'];
 						$tax_total += $tax;
 						if ($type != QE_SUPPINV)
 							$cart->add_gl_item($gl_code, 

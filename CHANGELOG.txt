@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+13-Feb-2009 Joe Hunt
+# Minor bug fix in Quick Entry tax account choice for Journal Entry.
+$ /includes/ui/ui_view.inc
+
 12-Feb-2009 Janusz Dobrowolski
 ! Changed extension menu file placement, added support for gettext in extensions.
 $ /frontaccounting.php
