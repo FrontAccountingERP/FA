@@ -27,7 +27,7 @@ if (isset($_POST['setprefs']))
 	if (!is_numeric($_POST['query_size']) || ($_POST['query_size']<1))
 	{
 		display_error($_POST['query_size']);
-		display_error( _("Query size must integer and greater than zero."));
+		display_error( _("Query size must be integer and greater than zero."));
 		set_focus('query_size');
 	} else {
 		$theme = user_theme();
