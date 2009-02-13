@@ -10,7 +10,7 @@
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
 if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_to_root']))
-	die("Restricted access");
+	die(_("Restricted access"));
 include_once($path_to_root . "/lang/installed_languages.inc");
 include_once($path_to_root . "/includes/lang/gettext.php");
 
@@ -66,7 +66,7 @@ class language
      */
 	function load_languages() 
 	{
-		global $installed_languages;
+		global $installed_languages, $dflt_lang;
 
 		$_SESSION['languages'] = array();
 
@@ -79,7 +79,7 @@ class language
         }
 
 		if (!isset($_SESSION['language']))
-			$_SESSION['language'] = $_SESSION['languages']['en_GB'];
+			$_SESSION['language'] = $_SESSION['languages'][$dflt_lang];
 	}
 
 }
