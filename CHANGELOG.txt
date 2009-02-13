@@ -27,6 +27,8 @@ $ /access/login.php
   /lang/installed_languages.inc
 # Message typo fixed
 $ /admin/display_prefs.php
+# Unified display_error function name in install wizard and main code
+$ /install/save.php
 
 13-Feb-2009 Joe Hunt
 # Minor bug fix in Quick Entry tax account choice for Journal Entry.
