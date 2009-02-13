@@ -10,17 +10,17 @@
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
 	if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_to_root']))
-		die("Restricted access");
+		die(_("Restricted access"));
 	include_once($path_to_root . "/includes/ui/ui_view.inc");
+
 	// Display demo user name and password within login form if "$allow_demo_mode" is true
-	$demo_text = "";
-	if ($allow_demo_mode == True)
+	if ($allow_demo_mode == true)
 	{
-	    $demo_text = "Login as user: demouser and password: cooldemo";
+	    $demo_text = _("Login as user: demouser and password: password");
 	}
 	else
 	{
-		$demo_text = "Please login here";
+		$demo_text = _("Please login here");
 	}
 	if (!isset($def_coy))
 		$def_coy = 0;
@@ -78,12 +78,12 @@ function defaultCompany()
                                     </tr>
 
                                     <tr>
-                                        <td width="90"></td><td class="loginText" width="283"><span>User name:</span><br />
-                                         <input type="text" name="user_name_entry_field"/><br />
-                                         <span>Password:</span><br />
-                                         <input type="password" name="password">
+                                        <td width="90"></td><td class="loginText" width="283"><span><?php echo _("User name"); ?>:</span><br />
+                                         <input type="text" name="user_name_entry_field" value="<?php echo $allow_demo_mode ? "demouser":""; ?>"/><br />
+                                         <span><?php echo _("Password"); ?>:</span><br />
+                                         <input type="password" name="password"  value="<?php echo $allow_demo_mode ? "password":""; ?>">
                                          <br />
-											<span>Company:</span><br />
+											<span><?php echo _("Company"); ?>:</span><br />
 											<!--<select name="company_login_name" onchange="setCookie()">-->
 											<select name="company_login_name">
 <?php
@@ -99,7 +99,7 @@ for ($i = 0; $i < count($db_connections); $i++)
                                     </tr>
 
                                     <tr>
-                                        <td></td><td align="left"><input type="submit" value=" Login -->" name="SubmitUser" /></td>
+                                        <td></td><td align="left"><input type="submit" value= "<?php echo _("Login -->");?> " name="SubmitUser" /></td>
                                     </tr>
                                 </table>
 	                        </td>
