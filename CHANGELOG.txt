@@ -19,6 +19,15 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+13-Feb-2009 Janusz Dobrowolski
+! Added login page language setting
+$ /access/login.php
+  /admin/inst_lang.php
+  /includes/lang/language.php
+  /lang/installed_languages.inc
+# Message typo fixed
+$ /admin/display_prefs.php
+
 13-Feb-2009 Joe Hunt
 # Minor bug fix in Quick Entry tax account choice for Journal Entry.
 $ /includes/ui/ui_view.inc
