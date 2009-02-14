@@ -92,7 +92,6 @@ CREATE TABLE `0_bank_trans` (
   `bank_act` varchar(11) default NULL,
   `ref` varchar(40) default NULL,
   `trans_date` date NOT NULL default '0000-00-00',
-  `bank_trans_type_id` int(10) unsigned default NULL,
   `amount` double default NULL,
   `dimension_id` int(11) NOT NULL default '0',
   `dimension2_id` int(11) NOT NULL default '0',
@@ -107,15 +106,15 @@ CREATE TABLE `0_bank_trans` (
 
 ### Data of table `0_bank_trans` ###
 
-INSERT INTO `0_bank_trans` VALUES ('21', '12', '7', '1', '6', '2008-03-06', '1', '100', '0', '0', '2', '1', NULL);
-INSERT INTO `0_bank_trans` VALUES ('22', '12', '8', '1', '7', '2008-03-06', '1', '100', '0', '0', '2', '4', NULL);
-INSERT INTO `0_bank_trans` VALUES ('23', '12', '9', '1', '8', '2008-03-07', '1', '2000', '0', '0', '2', '1', NULL);
-INSERT INTO `0_bank_trans` VALUES ('24', '12', '10', '1', '9', '2009-01-10', '0', '1000', '0', '0', '2', '1', NULL);
-INSERT INTO `0_bank_trans` VALUES ('25', '12', '11', '1', '10', '2009-01-10', '0', '183.62116393597', '0', '0', '2', '3', NULL);
-INSERT INTO `0_bank_trans` VALUES ('26', '22', '4', '1', '3', '2009-01-10', '0', '-200', '0', '0', '3', '1', NULL);
-INSERT INTO `0_bank_trans` VALUES ('27', '2', '5', '1', '14', '2009-01-29', '', '200', '0', '0', '4', '3', NULL);
-INSERT INTO `0_bank_trans` VALUES ('28', '1', '8', '1', '7', '2009-01-29', '', '-50', '0', '0', '4', '1', NULL);
-INSERT INTO `0_bank_trans` VALUES ('29', '2', '6', '1', '15', '2009-01-29', '', '50', '0', '0', '4', '3', NULL);
+INSERT INTO `0_bank_trans` VALUES ('21', '12', '7', '1', '6', '2008-03-06', '100', '0', '0', '2', '1', NULL);
+INSERT INTO `0_bank_trans` VALUES ('22', '12', '8', '1', '7', '2008-03-06', '100', '0', '0', '2', '4', NULL);
+INSERT INTO `0_bank_trans` VALUES ('23', '12', '9', '1', '8', '2008-03-07', '2000', '0', '0', '2', '1', NULL);
+INSERT INTO `0_bank_trans` VALUES ('24', '12', '10', '1', '9', '2009-01-10', '1000', '0', '0', '2', '1', NULL);
+INSERT INTO `0_bank_trans` VALUES ('25', '12', '11', '1', '10', '2009-01-10', '183.62116393597', '0', '0', '2', '3', NULL);
+INSERT INTO `0_bank_trans` VALUES ('26', '22', '4', '1', '3', '2009-01-10', '-200', '0', '0', '3', '1', NULL);
+INSERT INTO `0_bank_trans` VALUES ('27', '2', '5', '1', '14', '2009-01-29','200', '0', '0', '4', '3', NULL);
+INSERT INTO `0_bank_trans` VALUES ('28', '1', '8', '1', '7', '2009-01-29', '-50', '0', '0', '4', '1', NULL);
+INSERT INTO `0_bank_trans` VALUES ('29', '2', '6', '1', '15', '2009-01-29','50', '0', '0', '4', '3', NULL);
 
 
 ### Structure of table `0_bom` ###
