@@ -1,3 +1,4 @@
+<?php
 /**********************************************************************
     Copyright (C) FrontAccounting, LLC.
 	Released under the terms of the GNU General Public License,
