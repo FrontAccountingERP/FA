@@ -21,6 +21,11 @@ if(!defined('SESSION_STARTED'))
 	define('SESSION_STARTED', true);
 }
 
+if (!function_exists("_")) {
+	function _($msg) {
+		return $msg;
+	}
+}
 // Installer version of display_error function.
 //
 function display_error($message)
