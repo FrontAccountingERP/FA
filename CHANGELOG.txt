@@ -19,6 +19,14 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+14-Feb-2009 Janusz Dobrowolski
+# Removed obsolete bank_trans field
+$ /sql/alter2.1.sql
+  /sql/en_US-demo.sql
+  /sql/en_US-new.sql
+# Drop column queries executed also in not forced upgrade install 
+$ /admin/db/maintenance_db.inc
+
 13-Feb-2009 Janusz Dobrowolski
 ! Added login page language setting
 $ /access/login.php
