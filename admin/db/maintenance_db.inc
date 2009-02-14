@@ -1,4 +1,3 @@
-<?php
 /**********************************************************************
     Copyright (C) FrontAccounting, LLC.
 	Released under the terms of the GNU General Public License,
@@ -163,8 +162,6 @@ function db_import($filename, $connection, $force=true)
 				if (strtolower(substr($line, 0, strlen($cmd))) == $cmd) 
 				{
 					$query_table = $table;
-					if (strstr(strtolower($line), ' drop column '))
-						$query_table = 'drop_queries';
 					${$query_table}[] = array('', $line_no+1);
 					break;
 				}
