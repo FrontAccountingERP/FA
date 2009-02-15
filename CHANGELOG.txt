@@ -19,6 +19,11 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+------------------------------- Release 2.1.0 beta 2 -------------------------------------------
+15-Feb-2009 Joe Hunt
+! Release 2.1.0 beta 2
+$ config.php
+
 14-Feb-2009 Janusz Dobrowolski
 # Removed obsolete bank_trans field
 $ /sql/alter2.1.sql
