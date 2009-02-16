@@ -22,6 +22,8 @@ $ -> Affected files
 16-Feb-2009 Joe Hunt
 # Instruction in update.html should include switch to standard theme before upgrade
 $ update.html
+# Bug in function get_ecb_rate when no function curl_init (missing url part)
+$ /gl/includes/db/gl_db_rates.inc
 
 ------------------------------- Release 2.1.0 beta 2 -------------------------------------------
 15-Feb-2009 Joe Hunt

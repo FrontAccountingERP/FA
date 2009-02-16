@@ -97,7 +97,7 @@ function get_ecb_rate($curr_b)
 	   } while( ($contents == '') && $retry--);
 	   
 	} else {
-		$handle = @fopen($ecb_filename, 'rb');
+		$handle = @fopen("http://".$ecb_site.$ecb_filename, 'rb');
 		if ($handle) {
 			do 
 			{
