@@ -38,7 +38,7 @@ if (isset($_POST['setprefs']))
 
 start_form();
 
-start_outer_table("class='tablestyle'");
+start_outer_table($table_style2);
 
 $systypes = get_systypes();
 table_section(1);

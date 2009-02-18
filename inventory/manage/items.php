@@ -271,7 +271,9 @@ if (db_has_stock_items())
 }
 
 div_start('details');
-start_table("$table_style2 width=40%");
+start_outer_table($table_style2, 5);
+
+table_section(1);
 
 table_section_title(_("Item"));
 
@@ -330,29 +332,7 @@ else
 
 text_row(_("Name:"), 'description', null, 52, 50);
 
-textarea_row(_('Description:'), 'long_description', null, 45, 3);
-
-end_table();
-start_table("$table_style2 width=40%");
-// Add image upload for New Item  - by Joe
-start_row();
-label_cells(_("Image File (.jpg)") . ":", "<input type='file' id='pic' name='pic'>");
-// Add Image upload for New Item  - by Joe
-$stock_img_link = "<img id='item_img' alt = '[";
-if (isset($_POST['NewStockID']) && file_exists("$comp_path/$user_comp/images/".$_POST['NewStockID'].".jpg")) 
-{
- // 31/08/08 - rand() call is necessary here to avoid caching problems. Thanks to Peter D.
-	$stock_img_link .= $_POST['NewStockID'].".jpg".
-	"]' src='$comp_path/$user_comp/images/".$_POST['NewStockID'].".jpg?nocache=".rand()."'";
-} 
-else 
-{
-	$stock_img_link .= _("No image"). "]'";
-}
-$stock_img_link .= " width='$pic_width' height='$pic_height' border='0'>";
-
-label_cell($stock_img_link, "valign=top align=center rowspan=5");
-end_row();
+textarea_row(_('Description:'), 'long_description', null, 42, 3);
 
 stock_categories_list_row(_("Category:"), 'category_id', null);
 
@@ -363,8 +343,22 @@ stock_item_types_list_row(_("Item Type:"), 'mb_flag', null,
 
 stock_units_list_row(_('Units of Measure:'), 'units', null,
 	(!isset($_POST['NewStockID']) || $new_item));
-end_table();
-start_table("$table_style2 width=40%");
+
+$dim = get_company_pref('use_dimension');
+if ($dim >= 1)
+{
+	table_section_title(_("Dimensions"));
+
+	dimensions_list_row(_("Dimension")." 1", 'dimension_id', null, true, " ", false, 1);
+	if ($dim > 1)
+		dimensions_list_row(_("Dimension")." 2", 'dimension2_id', null, true, " ", false, 2);
+}
+if ($dim < 1)
+	hidden('dimension_id', 0);
+if ($dim < 2)
+	hidden('dimension2_id', 0);
+
+table_section(2);
 
 table_section_title(_("GL Accounts"));
 
@@ -388,21 +382,28 @@ if (is_manufactured($_POST['mb_flag']))
 	gl_all_accounts_list_row(_("Item Assembly Costs Account:"), 'assembly_account', $_POST['assembly_account']);
 else
 	hidden('assembly_account', $_POST['assembly_account']);
-$dim = get_company_pref('use_dimension');
-if ($dim >= 1)
+
+table_section_title(_("Picture"));
+
+// Add image upload for New Item  - by Joe
+label_row(_("Image File (.jpg)") . ":", "<input type='file' id='pic' name='pic'>");
+// Add Image upload for New Item  - by Joe
+$stock_img_link = "";
+if (isset($_POST['NewStockID']) && file_exists("$comp_path/$user_comp/images/".$_POST['NewStockID'].".jpg")) 
 {
-	table_section_title(_("Dimensions"));
-
-	dimensions_list_row(_("Dimension")." 1", 'dimension_id', null, true, " ", false, 1);
-	if ($dim > 1)
-		dimensions_list_row(_("Dimension")." 2", 'dimension2_id', null, true, " ", false, 2);
+ // 31/08/08 - rand() call is necessary here to avoid caching problems. Thanks to Peter D.
+	$stock_img_link .= "<img id='item_img' alt = '[".$_POST['NewStockID'].".jpg".
+		"]' src='$comp_path/$user_comp/images/".$_POST['NewStockID'].".jpg?nocache=".rand()."'".
+		" width='$pic_width' height='$pic_height' border='0'>";
+} 
+else 
+{
+	$stock_img_link .= _("No image");
 }
-if ($dim < 1)
-	hidden('dimension_id', 0);
-if ($dim < 2)
-	hidden('dimension2_id', 0);
 
-end_table(1);
+label_row("&nbsp;", $stock_img_link);
+
+end_outer_table(1);
 div_end();
 div_start('controls');
 if (!isset($_POST['NewStockID']) || $new_item) 
