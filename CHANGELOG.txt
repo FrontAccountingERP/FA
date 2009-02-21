@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+21-Feb-2009 Joe Hunt
+! Added nowrap for date type fields in db_pager_view.inc. Problems with (-)
+$ /includes/ui/db_pager_view.inc
+
 18-Feb-2009 Joe Hunt
 ! Better layout in Items form.
 $ /inventory/manage/items.php
