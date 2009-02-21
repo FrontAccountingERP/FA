@@ -20,8 +20,10 @@ Legend:
 $ -> Affected files
 
 21-Feb-2009 Joe Hunt
-! Added nowrap for date type fields in db_pager_view.inc. Problems with (-)
+! Added nowrap for date type fields in db_pager_view.inc. Problems with (-) sep.
 $ /includes/ui/db_pager_view.inc
+! Better layout in stock_movements.php
+$ /inventory/inquiry/stock_movements.php
 
 18-Feb-2009 Joe Hunt
 ! Better layout in Items form.
