@@ -44,6 +44,15 @@ $ /includes/ui/ui_view.inc
   /themes/aqua/default.css
   /themes/cool/default.css
   /themes/default/default.css
+# Fixed charset selection on login screen
+$ /access/login.php
+# Blocked password changes in demo mode
+$ /admin/change_current_user_password.php
+! Default theme and language set for not logged user
+$ /includes/current_user.inc
+  /includes/prefs/userprefs.inc
+# Fixed initial query order.
+$ /purchasing/inquiry/po_search.php
 
 21-Feb-2009 Joe Hunt
 ! Added nowrap for date type fields in db_pager_view.inc. Problems with (-) sep.
