@@ -713,30 +713,6 @@ function get_js_date_picker()
     global $comp_path, $go_debug;
     $fpath = $comp_path.'/'.user_company().'/js_cache/'.'date_picker.js';
 
-	$js = "<style>
-#CCIframe { display: none; left: 0px; position: absolute; top: 0px; height: 250px; width: 270px; z-index: 99;}
-#CC { position:absolute; background-color:#FFF; margin:0; padding:0; display:none; z-index: 100;}
-#CC table { font-family: arial, verdana, helvetica, sans-serif;font-size: 8pt; border-left: 1px solid #336; border-right: 1px solid #336;}
-#CC th { font-weight: normal; text-align: center;}
-#CC th a { font-weight: normal; text-decoration: none; color: #FFF; padding: 1px;}
-#CC td { text-align: center;}
-#CC .header { background-color: #336;}
-#CC .weekday { background-color: #DDD; color: #000;}
-#CC .weekend { background-color: #FFC; color: #000;}
-#CC .weekno { background-color: #c0daf8; color: #555;}
-#CC .current { border: 1px solid #339; background-color: #336; color: #FFF;}
-#CC .weekday,#CC .weekend,#CC .current { display: block; text-decoration: none; border: 1px solid #FFF; width: 2em;}
-#CC .weekday:hover,#CC .weekend:hover,#CC .current:hover { color: #FFF; background-color: #336; border: 1px solid #999;}
-#CC .previous { text-align: left;}
-#CC .next { text-align: right;}
-#CC .previous,#CC .next { padding: 1px 3px 1px 3px; font-size: 1.4em;}
-#CC .previous a,#CC .next a { color: #FFF; text-decoration: none; font-weight: bold;}
-#CC .title { text-align: center; font-weight: bold; color: #FFF;}
-#CC .empty { background-color: #CCC; border: 1px solid #FFF;}
-</style>
-";
-    add_js_source($js);
-
     if (!file_exists($fpath) || $go_debug) {
 
 	global $dateseps, $date_system;
