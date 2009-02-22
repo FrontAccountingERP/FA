@@ -9,17 +9,16 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-	include_once('applications/application.php');
-	include_once('applications/customers.php');
-	include_once('applications/suppliers.php');
-	include_once('applications/inventory.php');
-	include_once('applications/manufacturing.php');
-	include_once('applications/dimensions.php');
-	include_once('applications/generalledger.php');
-	include_once('applications/setup.php');
-	include_once('installed_extensions.php');
-	$path_to_root=".";
-	include_once($path_to_root . "/includes/session.inc");
+	include_once($path_to_root . '/applications/application.php');
+	include_once($path_to_root . '/applications/customers.php');
+	include_once($path_to_root . '/applications/suppliers.php');
+	include_once($path_to_root . '/applications/inventory.php');
+	include_once($path_to_root . '/applications/manufacturing.php');
+	include_once($path_to_root . '/applications/dimensions.php');
+	include_once($path_to_root . '/applications/generalledger.php');
+	include_once($path_to_root . '/applications/setup.php');
+	include_once($path_to_root . '/installed_extensions.php');
+	include_once($path_to_root . '/modules/installed_modules.php');
 
 	class front_accounting
 		{

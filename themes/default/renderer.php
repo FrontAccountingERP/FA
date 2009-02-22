@@ -23,7 +23,8 @@
 
 		function menu_header($title, $no_menu, $is_index)
 		{
-			global $path_to_root, $applications, $help_base_url, $db_connections;
+			global $path_to_root, $help_base_url, $db_connections;
+			
 			// you can owerride the table styles from config.php here, if you want.
 			//global $table_style, $table_style2;
 			//$table_style 	= "cellpadding=3 border=1 bordercolor='#8cacbb' style='border-collapse: collapse'";
@@ -40,15 +41,16 @@
 			echo "<td class='quick_menu'>\n";
 			if (!$no_menu)
 			{
+				$applications = $_SESSION['App']->applications;
 				$local_path_to_root = $path_to_root;
 				$sel_app = $_SESSION['sel_app'];
 				echo "<table cellpadding=0 cellspacing=0 width='100%'><tr><td>";
 				echo "<div class=tabs>";
-				foreach($applications as $app => $name)
+				foreach($applications as $app)
 				{
-					$acc = access_string($name);
-					echo "<a ".($sel_app == $app ? "class='selected' " : "").
-					"href='$local_path_to_root/index.php?application=".$app.
+					$acc = access_string($app->name);
+					echo "<a ".($sel_app == $app->id ? "class='selected' " : "").
+					"href='$local_path_to_root/index.php?application=".$app->id.
 						SID ."'$acc[1]>" .$acc[0] . "</a>";
 				}
 				echo "</div>";

@@ -56,7 +56,6 @@ class language
 			$locale = $path_to_root . "/lang/" . $_SESSION['language']->code . "/locale.inc";
 			// check id file exists only once for session
 			$_SESSION['language']->is_locale_file = file_exists($locale);
-		    reload_page("");
 		}
 	}
 
@@ -102,39 +101,6 @@ function has_locale($fun=null)
 	return false;
 }
 
-session_name('FrontAccounting'.user_company());
-session_start();
-// this is to fix the "back-do-you-want-to-refresh" issue - thanx PHPFreaks
-header("Cache-control: private");
-
-// Page Initialisation
-if (!isset($_SESSION['languages'])) 
-{
-	language::load_languages();
-}
-
-$lang = $_SESSION['language'];
-
-// get_text support
-get_text::init();
-get_text::set_language($lang->code, $lang->encoding);
-//get_text::add_domain("wa", $path_to_root . "/lang");
-get_text::add_domain($lang->code, $path_to_root . "/lang");
-// Unnecessary for ajax calls. 
-// Due to bug in php 4.3.10 for this version set globally in php.ini
-ini_set('default_charset', $_SESSION['language']->encoding);
-
-if (!function_exists("_")) 
-{
-	function _($text) 
-	{
-		$retVal = get_text::gettext($text);
-		if ($retVal == "")
-			return $text;
-		return $retVal;
-	}
-}
-
 function _set($key,$value) 
 {
 	get_text::set_var($key,$value);
@@ -160,6 +126,14 @@ function reload_page($msg)
 	$Ajax->redirect($_SERVER['PHP_SELF']);
 }
 
-
-
+if (!function_exists("_")) 
+{
+	function _($text) 
+	{
+		$retVal = get_text::gettext($text);
+		if ($retVal == "")
+			return $text;
+		return $retVal;
+	}
+}
 ?>

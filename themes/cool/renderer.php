@@ -23,7 +23,7 @@
 
 		function menu_header($title, $no_menu, $is_index)
 		{
-			global $path_to_root, $applications, $help_base_url, $db_connections;
+			global $path_to_root, $help_base_url, $db_connections;
 			// you can owerride the table styles from config.php here, if you want.
 			//global $table_style, $table_style2;
 			//$table_style 	= "cellpadding=3 border=1 bordercolor='#8cacbb' style='border-collapse: collapse'";
@@ -40,6 +40,7 @@
 			echo "<td class='quick_menu'>\n";
 			if (!$no_menu)
 			{
+				$applications = $_SESSION['App']->applications;
 				$local_path_to_root = $path_to_root;
 				$sel_app = $_SESSION['sel_app'];
 				echo "<table cellpadding=0 cellspacing=0 width='100%'><tr><td>";

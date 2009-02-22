@@ -9,7 +9,6 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-	include_once("./modules/installed_modules.php");
 	class setup_app extends application
 	{
 		function setup_app()
