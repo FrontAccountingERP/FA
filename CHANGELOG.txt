@@ -19,6 +19,32 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+22-Feb-2009 Janusz Dobrowolski
+! Application startup code cleanup.
+$ /frontaccounting.php
+  /index.php
+  /applications/customers.php
+  /applications/dimensions.php
+  /applications/generalledger.php
+  /applications/inventory.php
+  /applications/manufacturing.php
+  /applications/setup.php
+  /applications/suppliers.php
+  /includes/session.inc
+  /includes/lang/language.php
+  /themes/default/renderer.php
+  /themes/aqua/renderer.php
+  /themes/cool/renderer.php
+! Removed obsolete $applications array.
+$ /config.php
+! Cosmetic cleanup
+$ /includes/main.inc
+! Calendar style moved to theme default.css
+$ /includes/ui/ui_view.inc
+  /themes/aqua/default.css
+  /themes/cool/default.css
+  /themes/default/default.css
+
 21-Feb-2009 Joe Hunt
 ! Added nowrap for date type fields in db_pager_view.inc. Problems with (-) sep.
 $ /includes/ui/db_pager_view.inc
