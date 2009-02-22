@@ -9,68 +9,65 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-    include_once($path_to_root . "/includes/db/connect_db.inc");
+include_once($path_to_root . "/includes/db/connect_db.inc");
 
-    include_once($path_to_root . "/includes/reserved.inc");
-    include_once($path_to_root . "/includes/errors.inc");
-    include_once($path_to_root . "/includes/types.inc");
-    include_once($path_to_root . "/includes/systypes.inc");
-    include_once($path_to_root . "/includes/references.inc");
-    include_once($path_to_root . "/includes/prefs/sysprefs.inc");
-    include_once($path_to_root . "/includes/db/comments_db.inc");
-    include_once($path_to_root . "/includes/db/sql_functions.inc");
+include_once($path_to_root . "/includes/reserved.inc");
+include_once($path_to_root . "/includes/errors.inc");
+include_once($path_to_root . "/includes/types.inc");
+include_once($path_to_root . "/includes/systypes.inc");
+include_once($path_to_root . "/includes/references.inc");
+include_once($path_to_root . "/includes/prefs/sysprefs.inc");
+include_once($path_to_root . "/includes/db/comments_db.inc");
+include_once($path_to_root . "/includes/db/sql_functions.inc");
 
-    include_once($path_to_root . "/admin/db/users_db.inc");
-    include_once($path_to_root . "/includes/ui/ui_view.inc");
-    include_once($path_to_root . "/includes/ui/ui_controls.inc");
-    include_once($path_to_root . "/installed_extensions.php");
+include_once($path_to_root . "/admin/db/users_db.inc");
+include_once($path_to_root . "/includes/ui/ui_view.inc");
+include_once($path_to_root . "/includes/ui/ui_controls.inc");
+include_once($path_to_root . "/installed_extensions.php");
 	
-    function page($title, $no_menu=false, $is_index=false, $onload="", $js="", $script_only=false)
-    {
+function page($title, $no_menu=false, $is_index=false, $onload="", $js="", $script_only=false)
+{
 
-    	global $path_to_root, $installed_extensions;
+   	global $path_to_root, $installed_extensions;
 
-    	$hide_menu = $no_menu;
+   	$hide_menu = $no_menu;
 
-		if ($no_menu==false && count($installed_extensions))
+	if ($no_menu==false && count($installed_extensions))
+	{
+		global $applications;
+		foreach ($installed_extensions as $ext)
 		{
-			global $applications;
-			foreach ($installed_extensions as $ext)
-			{
-				$s = $applications['system'];
-				array_pop($applications);
-				$applications[$ext['name']] = $ext['title'];;
-				$applications['system'] = $s;
-			}	
+			$s = $applications['system'];
+			array_pop($applications);
+			$applications[$ext['name']] = $ext['title'];;
+			$applications['system'] = $s;
 		}	
+	}	
+   	include($path_to_root . "/includes/page/header.inc");
 
-    	include($path_to_root . "/includes/page/header.inc");
+   	page_header($title, $no_menu, $is_index, $onload, $js);
+	error_box();
+	if($script_only) {		
+		echo '<noscript>';
+		echo display_heading(_('This page is usable only with javascript enabled browsers.'));
+		echo '</noscript>';
+		div_start('_page_body', null, true);
+	} else {
+		div_start('_page_body'); // whole page content for ajax reloading
+	}
+}
 
-    	page_header($title, $no_menu, $is_index, $onload, $js);
-		error_box();
-		if($script_only) {		
-			echo '<noscript>';
-			echo display_heading(_('This page is usable only with javascript enabled browsers.'));
-			echo '</noscript>';
-			div_start('_page_body', null, true);
-		} else {
-			div_start('_page_body'); // whole page content for ajax reloading
-		}
-    }
-
-    function end_page($no_menu=false, $is_index=false)
-    {
-    	global $path_to_root, $Ajax;
-
+function end_page($no_menu=false, $is_index=false)
+{
+   	global $path_to_root, $Ajax;
     	$hide_menu = $no_menu;
-
 		div_end();	// _page_body section
-    	include($path_to_root . "/includes/page/footer.inc");
-
+   	include($path_to_root . "/includes/page/footer.inc");
     	page_footer($no_menu, $is_index);
-    }
+}
 
-    function flush_dir($path) {
+function flush_dir($path) 
+{
 	$dir = opendir($path);
 	while(false !== ($fname = readdir($dir))) {
 		if($fname=='.' || $fname=='..' || $fname=='index.php') continue;
@@ -80,10 +77,10 @@
 		} else
 		    @unlink($path.'/'.$fname);
   	}
-    }
+}
 
-    function cache_js_file($fpath, $text) 
-    {
+function cache_js_file($fpath, $text) 
+{
 	global $go_debug;
 
 	if(!$go_debug) $text = js_compress($text);
@@ -93,34 +90,34 @@
 	if (!fwrite($file, $text)) return false;
 	return fclose($file);
 
-    }
+}
 
-    function add_js_file($filename) 
-    {
+function add_js_file($filename) 
+{
 	  global $js_static;
 
 	  $search = array_search($filename, $js_static);
 	  if ($search === false || $search === null) // php>4.2.0 returns null
 		$js_static[] = $filename;	
-    }
+}
 
-    function add_js_ufile($filename) 
-    {
+function add_js_ufile($filename) 
+{
 	  global $js_userlib;
 
 	  $search = array_search($filename, $js_userlib);
 	  if ($search === false || $search === null) // php>4.2.0 returns null
 		$js_userlib[] = $filename;
-    }
+}
 
-    function add_js_source($text) 
-    {
+function add_js_source($text) 
+{
 	  global $js_lib;
 	  
 	  $search = array_search($text, $js_lib);
 	  if ($search === false || $search === null) // php>4.2.0 returns null
 		$js_lib[] = $text;
-    }
+}
 
 /**
  * Compresses the Javascript code for more efficient delivery.
