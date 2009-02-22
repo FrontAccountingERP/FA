@@ -45,11 +45,11 @@
 				$sel_app = $_SESSION['sel_app'];
 				echo "<table cellpadding=0 cellspacing=0 width='100%'><tr><td>";
 				echo "<div class=tabs>";
-				foreach($applications as $app => $name)
+				foreach($applications as $app)
 				{
-					$acc = access_string($name);
-					echo "<a ".($sel_app == $app ? "class='selected' " : "").
-					"href='$local_path_to_root/index.php?application=".$app.
+					$acc = access_string($app->name);
+					echo "<a ".($sel_app == $app->id ? "class='selected' " : "").
+					"href='$local_path_to_root/index.php?application=".$app->id.
 						SID ."'$acc[1]>" .$acc[0] . "</a>";
 				}
 				echo "</div>";
