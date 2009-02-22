@@ -55,8 +55,12 @@ if (isset($_POST['UPDATE_ITEM']))
 
 	if (can_process())
 	{
-		update_user_password($_POST['user_id'], md5($_POST['password']));
-	    display_notification(_("Your password has been updated."));
+		if ($allow_demo_mode) {
+		    display_warning(_("Password cannot be changed in demo mode."));
+		} else {
+			update_user_password($_POST['user_id'], md5($_POST['password']));
+		    display_notification(_("Your password has been updated."));
+		}
 		$Ajax->activate('_page_body');
 	}
 }
