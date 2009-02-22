@@ -159,21 +159,8 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 			array(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,20),
 	);
 
-	/*
- 	System tabs. This variable should be in future included from separate file for extended module manager
-	*/
- 	$applications = array (
- 		'orders' => _("&Sales"),
- 		'AP'=>_("&Purchases"),
- 		'stock'=> _("&Items and Inventory"),
- 		'manuf'=> _("&Manufacturing"),
- 		'proj'=>_("&Dimensions"),
- 		'GL'=>_("&Banking and General Ledger"),
- 		'system'=>_("S&etup")
- 	);
 	/* default start-up tab (orders/AP/stock/manuf/proj/GL/system) */
 	$def_app = "orders";
-
 
 	//MySQL Backup and Restore Settings
 
