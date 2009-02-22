@@ -34,30 +34,38 @@ class user_prefs
 	var $query_size; // table pager page length
 	var $graphic_links; // use graphic links
 
-	function user_prefs(&$user) 
+	function user_prefs($user=null)
 	{
+		if ($user == null) { 
+			// set default values, used before login
+			global $dflt_lang;
+			
+			$this->language = $dflt_lang;
+			$this->theme = 'default';
+			
+		} else {
+			$this->language = $user["language"];
+			language::set_language($this->language);
 
-		$this->language = $user["language"];
-		language::set_language($this->language);
+			$this->qty_dec = $user["qty_dec"];
+			$this->price_dec = $user["prices_dec"];
+			$this->exrate_dec = $user["rates_dec"];
+			$this->percent_dec = $user["percent_dec"];
 
-		$this->qty_dec = $user["qty_dec"];
-		$this->price_dec = $user["prices_dec"];
-		$this->exrate_dec = $user["rates_dec"];
-		$this->percent_dec = $user["percent_dec"];
-
-		$this->show_gl_info = $user["show_gl"];
-		$this->show_codes = $user["show_codes"];
-		$this->date_format = $user["date_format"];
-		$this->date_sep = $user["date_sep"];
-		$this->tho_sep = $user["tho_sep"];
-		$this->dec_sep = $user["dec_sep"];
-		$this->theme = $user["theme"];
-		$this->pagesize = $user["page_size"];
-		$this->show_hints = $user["show_hints"];
-		$this->print_profile = $user["print_profile"];
-		$this->rep_popup = $user["rep_popup"];
-		$this->query_size = $user["query_size"];
-		$this->graphic_links = $user["graphic_links"];
+			$this->show_gl_info = $user["show_gl"];
+			$this->show_codes = $user["show_codes"];
+			$this->date_format = $user["date_format"];
+			$this->date_sep = $user["date_sep"];
+			$this->tho_sep = $user["tho_sep"];
+			$this->dec_sep = $user["dec_sep"];
+			$this->theme = $user["theme"];
+			$this->pagesize = $user["page_size"];
+			$this->show_hints = $user["show_hints"];
+			$this->print_profile = $user["print_profile"];
+			$this->rep_popup = $user["rep_popup"];
+			$this->query_size = $user["query_size"];
+			$this->graphic_links = $user["graphic_links"];
+		}
 	}
 
 	function language() 

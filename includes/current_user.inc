@@ -30,10 +30,10 @@ class current_user
 
 	function current_user()
 	{
-		$this->loginname = $username = $this->name = $this->company = "";
+		$this->loginname = $this->username = $this->name = $this->company = "";
 		$this->logged = false;
 
-		$this->prefs = null;
+		$this->prefs = new user_prefs();
 	}
 
 	function logged_in()
