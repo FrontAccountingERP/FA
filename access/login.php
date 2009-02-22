@@ -37,7 +37,7 @@ function defaultCompany()
 }
 </script>
     <title><?php echo $app_title . " " . $version;?></title>
-    <meta http-equiv="Content-type" content="text/html; charset=iso-8859-1" />
+    <meta http-equiv="Content-type" content="text/html; charset=<?php echo $_SESSION['language']->encoding;?>" />
     <link rel="stylesheet" href="<?php echo $def_theme;?>/login.css" type="text/css" />
 </head>
 
