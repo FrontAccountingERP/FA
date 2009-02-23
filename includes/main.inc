@@ -28,21 +28,10 @@ include_once($path_to_root . "/installed_extensions.php");
 function page($title, $no_menu=false, $is_index=false, $onload="", $js="", $script_only=false)
 {
 
-   	global $path_to_root, $installed_extensions;
+   	global $path_to_root;
 
    	$hide_menu = $no_menu;
 
-	if ($no_menu==false && count($installed_extensions))
-	{
-		global $applications;
-		foreach ($installed_extensions as $ext)
-		{
-			$s = $applications['system'];
-			array_pop($applications);
-			$applications[$ext['name']] = $ext['title'];;
-			$applications['system'] = $s;
-		}	
-	}	
    	include($path_to_root . "/includes/page/header.inc");
 
    	page_header($title, $no_menu, $is_index, $onload, $js);

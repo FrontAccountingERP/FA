@@ -19,6 +19,11 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+23-Feb-2009 Joe Hunt
+! Changed extension include to be outside function. Didn't work in submenus.
+$ frontaccounting.php
+  /includes/main.inc
+  
 22-Feb-2009 Janusz Dobrowolski
 ! Application startup code cleanup.
 $ /frontaccounting.php

@@ -18,6 +18,14 @@
 	include_once($path_to_root . '/applications/generalledger.php');
 	include_once($path_to_root . '/applications/setup.php');
 	include_once($path_to_root . '/installed_extensions.php');
+	if (count($installed_extensions) > 0)
+	{
+		foreach ($installed_extensions as $ext)
+		{
+			include_once($path_to_root."/".$ext['folder']."/".$ext['app_file']);
+		}
+	}	
+
 	include_once($path_to_root . '/modules/installed_modules.php');
 
 	class front_accounting
@@ -65,7 +73,7 @@
 		}
 		function init()
 		{
-			global $installed_extensions, $applications, $path_to_root;
+			global $installed_extensions, $path_to_root;
 			$this->menu = new menu(_("Main  Menu"));
 			$this->menu->add_item(_("Main  Menu"), "index.php");
 			$this->menu->add_item(_("Logout"), "/account/access/logout.php");
@@ -82,7 +90,6 @@
 				{
 					get_text::add_domain($_SESSION['language']->code, 
 						$ext['folder']."/lang");
-					include_once($ext['folder']."/".$ext['app_file']);
 					$class = $ext['name']."_app";
 					$this->add_application(new $class());
 					get_text::add_domain($_SESSION['language']->code, 
