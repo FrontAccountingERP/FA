@@ -504,10 +504,10 @@ ul.ajaxtabs li input.current, ul.ajaxtabs li input.current:hover{
 	text-align: center;
 }
 #CC .header {
-	background-color: #336;
+	background-color: #518fad;
 }
 #CC .weekday {
-	background-color: #DDD;
+	background-color: #eee;
 	color: #000;
 }
 #CC .weekend {
@@ -515,12 +515,12 @@ ul.ajaxtabs li input.current, ul.ajaxtabs li input.current:hover{
 	color: #000;
 }
 #CC .weekno {
-	background-color: #c0daf8;
+	background-color: #d5cea7;
 	color: #555;
 }
 #CC .current {
 	border: 1px solid #339;
-	background-color: #336;
+	background-color: #518fad;
 	color: #FFF;
 }
 #CC .weekday, #CC .weekend, #CC .current {
@@ -531,7 +531,7 @@ ul.ajaxtabs li input.current, ul.ajaxtabs li input.current:hover{
 }
 #CC .weekday:hover, #CC .weekend:hover, #CC .current:hover {
 	color: #FFF;
-	background-color: #336;
+	background-color: #518fad;
 	border: 1px solid #999;
 }
 #CC .previous {
@@ -544,7 +544,7 @@ ul.ajaxtabs li input.current, ul.ajaxtabs li input.current:hover{
 	padding: 1px 3px 1px 3px;
 	font-size: 1.4em;
 }
-#CC .previous a, CC .next a {
+#CC .previous a, #CC .next a {
 	color: #FFF;
 	text-decoration: none;
 	font-weight: bold;
@@ -555,6 +555,6 @@ ul.ajaxtabs li input.current, ul.ajaxtabs li input.current:hover{
 	color: #FFF;
 }
 #CC .empty {
-	background-color: #CCC;
+	background-color: #ddd;
 	border: 1px solid #FFF;
 }

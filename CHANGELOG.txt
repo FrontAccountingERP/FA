@@ -23,6 +23,10 @@ $ -> Affected files
 ! Changed extension include to be outside function. Didn't work in submenus.
 $ frontaccounting.php
   /includes/main.inc
+! Better color in data picker
+$ /themes/aqua/default.css
+  /themes/cool/default.css
+  /themes/default/default.css
   
 22-Feb-2009 Janusz Dobrowolski
 ! Application startup code cleanup.
