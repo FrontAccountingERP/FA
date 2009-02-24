@@ -41,7 +41,7 @@
 		{
 			//$this->renderer =& new renderer();
 		}
-		function add_application($app)
+		function add_application(&$app)
 				{
 							$this->applications[$app->id] = &$app;
 				}
