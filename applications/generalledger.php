@@ -14,7 +14,7 @@
 		function general_ledger_app() 
 		{
 			global $installed_modules;
-			$this->application("GL",_("Banking and General Ledger"));
+			$this->application("GL",_("&Banking and General Ledger"));
 
 			$this->add_module(_("Transactions"));
 			$this->add_lapp_function(0, _("&Payments"),"gl/gl_bank.php?NewPayment=Yes");

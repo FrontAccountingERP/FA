@@ -14,7 +14,7 @@
 		function suppliers_app() 
 		{
 			global $installed_modules;
-			$this->application("AP",_("Purchases"));
+			$this->application("AP",_("&Purchases"));
 			
 			$this->add_module(_("Transactions"));
 			$this->add_lapp_function(0, _("Purchase &Order Entry"),"purchasing/po_entry_items.php?NewOrder=Yes");

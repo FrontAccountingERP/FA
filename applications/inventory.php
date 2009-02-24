@@ -14,7 +14,7 @@
 		function inventory_app() 
 		{
 			global $installed_modules;
-			$this->application("stock",_("Items and Inventory"));
+			$this->application("stock",_("&Items and Inventory"));
 
 			$this->add_module(_("Transactions"));
 			$this->add_lapp_function(0, _("Inventory Location &Transfers"),"inventory/transfers.php?NewTransfer=1");

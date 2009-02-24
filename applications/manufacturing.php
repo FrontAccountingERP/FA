@@ -14,7 +14,7 @@
 		function manufacturing_app()
 		{
 			global $installed_modules;
-			$this->application("manuf",_("Manufacturing"));
+			$this->application("manuf",_("&Manufacturing"));
 
 			$this->add_module(_("Transactions"));
 			$this->add_lapp_function(0, _("Work &Order Entry"),"manufacturing/work_order_entry.php?");

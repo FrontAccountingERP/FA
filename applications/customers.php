@@ -14,7 +14,7 @@
 		function customers_app() 
 		{
 			global $installed_modules;
-			$this->application("orders",_("Sales"));
+			$this->application("orders",_("&Sales"));
 		
 			$this->add_module(_("Transactions"));
 			$this->add_lapp_function(0, _("Sales &Order Entry"),"sales/sales_order_entry.php?NewOrder=Yes");

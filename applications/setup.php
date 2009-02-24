@@ -14,7 +14,7 @@
 		function setup_app()
 		{
 			global $installed_modules;
-			$this->application("system",_("Setup"));
+			$this->application("system",_("S&etup"));
 
 			$this->add_module(_("Company Setup"));
 			$this->add_lapp_function(0, _("&Company Setup"),"admin/company_preferences.php?");
