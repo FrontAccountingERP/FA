@@ -103,6 +103,8 @@ include_once($path_to_root . "/includes/current_user.inc");
 include_once($path_to_root . "/includes/lang/language.php");
 include_once($path_to_root . "/config_db.php");
 include_once($path_to_root . "/includes/ajax.inc");
+include_once($path_to_root . "/includes/main.inc");
+include_once($path_to_root . "/includes/ui/ui_msgs.inc");
 
 /*
 	Make sure this directory exists and is writable!
@@ -114,31 +116,23 @@ session_start();
 // this is to fix the "back-do-you-want-to-refresh" issue - thanx PHPFreaks
 header("Cache-control: private");
 
+get_text::init();
+
 // Page Initialisation
 if (!isset($_SESSION['languages'])) 
 {
-	language::load_languages();
+	language::load_languages(); // sets also default $_SESSION['language']
 }
 
-$lang = $_SESSION['language'];
-
-// get_text support
-get_text::init();
-get_text::set_language($lang->code, $lang->encoding);
-//get_text::add_domain("wa", $path_to_root . "/lang");
-get_text::add_domain($lang->code, $path_to_root . "/lang");
-
-// Necessary for ajax calls. Due to bug in php 4.3.10 for this 
-// version set globally in php.ini
-ini_set('default_charset', $_SESSION['language']->encoding);
+language::set_language($_SESSION['language']->code);
 
 include_once($path_to_root . "/config.php");
 
 $Ajax =& new Ajax();
 
-include_once($path_to_root . "/includes/main.inc");
+//include_once($path_to_root . "/includes/main.inc");
 
-include_once($path_to_root . "/includes/ui/ui_msgs.inc");
+//include_once($path_to_root . "/includes/ui/ui_msgs.inc");
 
 // intercept all output to destroy it in case of ajax call
 register_shutdown_function('ob_end_flush');
@@ -149,6 +143,7 @@ set_error_handler('error_handler' /*, errtypes */);
 
 if (!isset($_SESSION["wa_current_user"]))
 	$_SESSION["wa_current_user"] = new current_user();
+set_global_connection();
 
 if (!$_SESSION["wa_current_user"]->logged_in())
 {
@@ -170,10 +165,14 @@ if (!$_SESSION["wa_current_user"]->logged_in())
 			login_fail();
 		}
 		$lang = $_SESSION['language'];
-		get_text::set_language($lang->code, $lang->encoding);
+		language::set_language($_SESSION['language']->code);
 	}
 }
 
+if (!isset($_SESSION["App"])) {
+	$_SESSION["App"] = new front_accounting();
+	$_SESSION["App"]->init();
+}
 
 // Run with debugging messages for the system administrator(s) but not anyone else
 /*if (in_array(15, $security_groups[$_SESSION["AccessLevel"]])) {

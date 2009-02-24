@@ -94,9 +94,9 @@ class get_text
         } 
         elseif (!isset($support_obj)) 
         {
-            trigger_error("get_text not initialized !". endl.
+            trigger_error("get_text not initialized !". '\n'.
             	"Please call get_text::init() before calling ".
-                "any get_text function !" . endl , E_USER_ERROR);
+                "any get_text function !" . '\n' , E_USER_ERROR);
         }
         return $support_obj;
     }
@@ -216,7 +216,7 @@ class get_text
 }
 
 function raise_error($str) {
-	//echo "$str";
+//	echo "$str";
 	return 1;
 }
 

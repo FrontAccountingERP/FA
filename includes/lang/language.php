@@ -9,8 +9,6 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_to_root']))
-	die(_("Restricted access"));
 include_once($path_to_root . "/lang/installed_languages.inc");
 include_once($path_to_root . "/includes/lang/gettext.php");
 
@@ -36,7 +34,6 @@ class language
 		return "lang/" . $this->code;
 	}
 
-
 	function get_current_language_dir() 
 	{
 		$lang = $_SESSION['language'];
@@ -46,9 +43,9 @@ class language
 	function set_language($code) 
 	{
 	    global $comp_path, $path_to_root;
-	    
-		if (isset($_SESSION['languages'][$code]) &&
-			$_SESSION['language'] != $_SESSION['languages'][$code]) 
+		
+		$changed = $_SESSION['language']->code != $code;
+		if (isset($_SESSION['languages'][$code]) && $changed)
 		{
 		// flush cache as we can use several languages in one account
 		    flush_dir($comp_path.'/'.user_company().'/js_cache');
@@ -57,6 +54,17 @@ class language
 			// check id file exists only once for session
 			$_SESSION['language']->is_locale_file = file_exists($locale);
 		}
+
+		$lang = $_SESSION['language'];
+		get_text::set_language($lang->code, $lang->encoding);
+		get_text::add_domain($lang->code, $path_to_root . "/lang");
+		
+		// Necessary for ajax calls. Due to bug in php 4.3.10 for this 
+		// version set globally in php.ini
+		ini_set('default_charset', $lang->encoding);
+
+		if (isset($_SESSION['App']) && $changed)
+			$_SESSION['App']->init(); // refresh menu
 	}
 
 	/**
@@ -104,26 +112,6 @@ function has_locale($fun=null)
 function _set($key,$value) 
 {
 	get_text::set_var($key,$value);
-}
-
-function reload_page($msg) 
-{
-	global $Ajax;
-//	header("Location: $_SERVER['PHP_SELF']."");
-//	exit;
-	echo "<html>";
-	echo "<head>";
-    echo "<title>Changing Languages</title>";
-	echo '<meta http-equiv="refresh" content="0;url=' . $_SERVER['PHP_SELF'] . '">';
-	echo '</head>';
-	echo '<body>';
-	echo '<div>';
-	if ($msg != "")
-		echo $msg . " " . $_SERVER['PHP_SELF'];
-	echo "</div>";	
-	echo "</body>";
-	echo "</html>";
-	$Ajax->redirect($_SERVER['PHP_SELF']);
 }
 
 if (!function_exists("_")) 
