@@ -19,6 +19,27 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+24-Feb-2009 Janusz Dobrowolski
+# Cleaning startup code
+$ /index.php
+  /frontaccounting.php
+  /includes/session.inc
+  /includes/db/connect_db.inc
+  /includes/lang/gettext.php
+  /includes/lang/language.php
+# Language changed on display prefs page stored to database.
+$ /admin/display_prefs.php
+  /admin/db/users_db.inc
+  /includes/current_user.inc
+# Fixed tab hot keys
+$ /applications/customers.php
+  /applications/dimensions.php
+  /applications/generalledger.php
+  /applications/inventory.php
+  /applications/manufacturing.php
+  /applications/setup.php
+  /applications/suppliers.php
+
 23-Feb-2009 Joe Hunt
 ! Changed extension include to be outside function. Didn't work in submenus.
 $ frontaccounting.php
