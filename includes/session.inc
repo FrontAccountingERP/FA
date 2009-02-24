@@ -103,7 +103,6 @@ include_once($path_to_root . "/includes/current_user.inc");
 include_once($path_to_root . "/includes/lang/language.php");
 include_once($path_to_root . "/config_db.php");
 include_once($path_to_root . "/includes/ajax.inc");
-include_once($path_to_root . "/includes/main.inc");
 include_once($path_to_root . "/includes/ui/ui_msgs.inc");
 
 /*
@@ -127,6 +126,7 @@ if (!isset($_SESSION['languages']))
 language::set_language($_SESSION['language']->code);
 
 include_once($path_to_root . "/config.php");
+include_once($path_to_root . "/includes/main.inc");
 
 $Ajax =& new Ajax();
 
