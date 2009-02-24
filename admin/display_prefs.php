@@ -30,7 +30,9 @@ if (isset($_POST['setprefs']))
 		display_error( _("Query size must be integer and greater than zero."));
 		set_focus('query_size');
 	} else {
-		$theme = user_theme();
+		$chg_theme = user_theme() != $_POST['theme'];
+		$chg_lang = $_SESSION['language']->code != $_POST['language'];
+
 		set_user_prefs($_POST['prices'], $_POST['Quantities'],
 			$_POST['Rates'], $_POST['Percent'],
 			check_value('show_gl'),
@@ -38,15 +40,18 @@ if (isset($_POST['setprefs']))
 			$_POST['date_format'], $_POST['date_sep'],
 			$_POST['tho_sep'], $_POST['dec_sep'],
 			$_POST['theme'], $_POST['page_size'], check_value('show_hints'),
-			$_POST['profile'], check_value('rep_popup'), (int)($_POST['query_size']), check_value('graphic_links'));
+			$_POST['profile'], check_value('rep_popup'), 
+			(int)($_POST['query_size']), check_value('graphic_links'), 
+			$_POST['language']);
 
-		if ($_SESSION['language'] != $_POST['language'])
+		if ($chg_lang)
 			language::set_language($_POST['language']);
+			// refresh main menu
 
 		flush_dir($comp_path.'/'.user_company().'/js_cache');	
 
-		if (user_theme() != $theme)
-			reload_page("");
+		if ($chg_theme || $chg_lang)
+			meta_forward($_SERVER['PHP_SELF']);
 
 		display_notification_centered(_("Display settings have been updated."));
 	}
