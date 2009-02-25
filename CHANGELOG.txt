@@ -19,6 +19,12 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+25-Feb-2009 Joe Hunt
+! Improved layout
+$ /inventory/prices.php
+  /inventory/reorder_level.php
+  /inventory/inquiry/stock_status.php
+  
 24-Feb-2009 Janusz Dobrowolski
 # Cleaning startup code
 $ /index.php

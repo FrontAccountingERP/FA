@@ -152,7 +152,7 @@ while ($myrow = db_fetch($prices_list))
 end_table();
 if (db_num_rows($prices_list) == 0)
 {
-	display_note(_("There are no prices set up for this part."));
+	display_note(_("There are no prices set up for this part."), 1);
 }
 div_end();
 //------------------------------------------------------------------------------------------------

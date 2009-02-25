@@ -49,15 +49,15 @@ set_global_stock_item($_POST['stock_id']);
 $mb_flag = get_mb_flag($_POST['stock_id']);
 $kitset_or_service = false;
 
+div_start('status_tbl');
 if (is_service($mb_flag))
 {
-	display_note(_("This is a service and cannot have a stock holding, only the total quantity on outstanding sales orders is shown."));
+	display_note(_("This is a service and cannot have a stock holding, only the total quantity on outstanding sales orders is shown."), 0, 1);
 	$kitset_or_service = true;
 }
 
 $loc_details = get_loc_details($_POST['stock_id']);
 
-div_start('status_tbl');
 start_table($table_style);
 
 if ($kitset_or_service == true)

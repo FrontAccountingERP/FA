@@ -47,6 +47,7 @@ echo "<hr></center>";
 
 div_start('show_heading');
 stock_item_heading($_POST['stock_id']);
+br();
 div_end();
 set_global_stock_item($_POST['stock_id']);
 
