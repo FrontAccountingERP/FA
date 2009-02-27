@@ -9,6 +9,8 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
+if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_to_root']))
+	die("Restricted access");
 	include_once($path_to_root . '/applications/application.php');
 	include_once($path_to_root . '/applications/customers.php');
 	include_once($path_to_root . '/applications/suppliers.php');
