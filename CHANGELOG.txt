@@ -19,6 +19,22 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+28-Feb-2009 Joe Hunt
+! Improved layout in standard themes (graphics)
+$ /themes/aqua/renderer.php
+  /themes/aqua/help.gif (new file)
+  /themes/aqua/login.gif (new file)
+  /themes/aqua/right.gif (new file)
+  /themes/cool/renderer.php
+  /themes/cool/help.gif (new file)
+  /themes/cool/login.gif (new file)
+  /themes/cool/right.gif (new file)
+  /themes/default/renderer.php
+  /themes/default/help.gif (new file)
+  /themes/default/login.gif (new file)
+  /themes/default/right.gif (new file)
+  /themes/themes/login.css
+    
 27-Feb-2009 Janusz Dobrowolski
 # Security fix to my last commit.
 $ /frontaccounting.php

@@ -2,12 +2,12 @@
 |               |               | login.css         |
 |---------------------------------------------------|
 | For use with:                                     |
-| OpenAccounting 									|
-| http://open-accounting.sourceforge.net/  			|
-| by KylieTech Consulting                           |
+| FrontAccounting 									|
+| http://frontaccounting.net/           			|
+| by FrontAccount, LLC                              |
 |---------------------------------------------------|
 | Developer:                                        |
-| Shane Barnaby                                     |
+| Joe Hunt                                          |
 |                                                   |
 |---------------------------------------------------|
 | Note:                                             |
@@ -41,5 +41,6 @@ input.small {
 }
 
 td.login {
-	background: #dddddd;
+	border: 1px solid #ccc;
+	background-color: #eee;
 }	

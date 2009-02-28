@@ -42,6 +42,8 @@
 			{
 				$applications = $_SESSION['App']->applications;
 				$local_path_to_root = $path_to_root;
+				$img = "<img src='$local_path_to_root/themes/aqua/images/login.gif' width='14' height='14' border='0' alt='"._('Logout')."'>&nbsp;&nbsp;";
+				$himg = "<img src='$local_path_to_root/themes/aqua/images/help.gif' width='14' height='14' border='0' alt='"._('Help')."'>&nbsp;&nbsp;";
 				$sel_app = $_SESSION['sel_app'];
 				echo "<table cellpadding=0 cellspacing=0 width='100%'><tr><td>";
 				echo "<div class=tabs>";
@@ -65,9 +67,9 @@
 
 				if ($help_base_url != null)
 				{
-					echo "<a target = '_blank' onclick=" .'"'."javascript:openWindow(this.href,this.target); return false;".'" '. "href='". help_url($title, $sel_app)."'>" . _("Help") . "</a>&nbsp;&nbsp;&nbsp;";
+					echo "$himg<a target = '_blank' onclick=" .'"'."javascript:openWindow(this.href,this.target); return false;".'" '. "href='". help_url($title, $sel_app)."'>" . _("Help") . "</a>&nbsp;&nbsp;&nbsp;";
 				}
-				echo "<a href='$local_path_to_root/access/logout.php?'>" . _("Logout") . "</a>&nbsp;&nbsp;&nbsp;";
+				echo "$img<a href='$local_path_to_root/access/logout.php?'>" . _("Logout") . "</a>&nbsp;&nbsp;&nbsp;";
 				echo "</td></tr></table>";
 			}
 			echo "</td></tr></table>";
@@ -125,9 +127,11 @@
 
 		function display_applications(&$waapp)
 		{
-
+			global $path_to_root;
+			
 			$selected_app = $waapp->get_selected_application();
 
+			$img = "<img src='$path_to_root/themes/aqua/images/right.gif' style='vertical-align:middle;' width='17' height='17' border='0'>&nbsp;&nbsp;";
 			foreach ($selected_app->modules as $module)
 			{
 				// image
@@ -144,8 +148,13 @@
 				{
 					if ($_SESSION["wa_current_user"]->can_access_page($appfunction->access)) 
 					{
-						$lnk = access_string($appfunction->label);
-						echo "<a href='$appfunction->link'$lnk[1]>$lnk[0]</a><br>";
+						if ($appfunction->label == "")
+							echo "&nbsp;<br>";
+						else
+						{
+							$lnk = access_string($appfunction->label);
+							echo "$img<a href='$appfunction->link'$lnk[1]>$lnk[0]</a><br>";
+						}	
 					}
 				}
 				echo "</td>";
@@ -156,9 +165,14 @@
 					{
 						if ($_SESSION["wa_current_user"]->can_access_page($appfunction->access)) 
 						{
-							$lnk = access_string($appfunction->label);
-							echo "<a href='$appfunction->link'$lnk[1]>$lnk[0]</a><br>";
-						}
+							if ($appfunction->label == "")
+								echo "&nbsp;<br>";
+							else
+							{
+								$lnk = access_string($appfunction->label);
+								echo "$img<a href='$appfunction->link'$lnk[1]>$lnk[0]</a><br>";
+							}
+						}	
 					}
 					echo "</td>";
 				}
