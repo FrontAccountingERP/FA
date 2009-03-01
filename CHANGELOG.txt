@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+01-Mar-2009 Janusz Dobrowolski
+# Setting magic_quotes_gpc and register_globals to off in htaccess file
+$ /.htaccess (new)
+
 28-Feb-2009 Joe Hunt
 ! Improved layout in standard themes (graphics)
 $ /themes/aqua/renderer.php
