@@ -180,6 +180,10 @@ class Report
 					$sel = array(_("No Payment Link"), "PayPal");
 					$st .= dup_simple_name_list("PARAM_$index", $sel);
 					break;
+				case 'DESTINATION':
+					$sel = array(_("PDF/Printer"), "Excel");
+					$st .= dup_simple_name_list("PARAM_$index", $sel);
+					break;
 				case 'COMPARE':
 					$sel = array(_("Accumulated"), _("Period Y-1"), _("Budget"));
 					$st .= dup_simple_name_list("PARAM_$index", $sel);

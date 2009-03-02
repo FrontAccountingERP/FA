@@ -319,6 +319,18 @@ class FrontReport extends Cpdf
 	{
 		return $this->TextWrap($this->cols[$c], $this->row - $r, $this->cols[$n] - $this->cols[$c] + $corr, $txt, $this->aligns[$c]);
 	}
+	
+	function AmountCol($c, $n, $txt, $dec=0, $corr=0, $r=0)
+	{
+		return $this->TextCol($c, $n, number_format2($txt, $dec), $corr, $r);
+	}
+
+	function DateCol($c, $n, $txt, $conv=false, $corr=0, $r=0)
+	{
+		if ($conv)
+			$txt = sql2date($txt);
+		return $this->TextCol($c, $n, $txt, $corr, $r);
+	}
 
 	function TextCol2($c, $n, $txt, $corr=0, $r=0)
 	{

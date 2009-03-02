@@ -81,7 +81,6 @@ function print_annual_expense_breakdown()
 {
 	global $path_to_root, $date_system;
 
-	include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 	$dim = get_company_pref('use_dimension');
 	$dimension = $dimension2 = 0;
 
@@ -91,17 +90,30 @@ function print_annual_expense_breakdown()
 		$dimension = $_POST['PARAM_1'];
 		$dimension2 = $_POST['PARAM_2'];
 		$comments = $_POST['PARAM_3'];
+		$destination = $_POST['PARAM_4'];
 	}
 	else if ($dim == 1)
 	{
 		$year = $_POST['PARAM_0'];
 		$dimension = $_POST['PARAM_1'];
 		$comments = $_POST['PARAM_2'];
+		$destination = $_POST['PARAM_3'];
 	}
 	else
 	{
 		$year = $_POST['PARAM_0'];
 		$comments = $_POST['PARAM_1'];
+		$destination = $_POST['PARAM_2'];
+	}
+	if (isset($destination) && $destination)
+	{
+		include_once($path_to_root . "/reporting/includes/excel_report.inc");
+		$filename = "AnnualBreakDown.xml";
+	}	
+	else
+	{
+		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
+		$filename = "AnnualBreakDown.pdf";
 	}
 	$dec = 1;
 	//$pdec = user_percent_dec();
@@ -169,7 +181,7 @@ function print_annual_expense_breakdown()
                     		'to' => ''));
     }
 
-	$rep = new FrontReport(_('Annual Expense Breakdown'), "AnnualBreakDown.pdf", user_pagesize());
+	$rep = new FrontReport(_('Annual Expense Breakdown'), $filename, user_pagesize());
 
 	$rep->Font();
 	$rep->Info($params, $cols, $headers, $aligns);
@@ -205,27 +217,29 @@ function print_annual_expense_breakdown()
 		{
 			if ($group != '')
 			{
-				$rep->Line($rep->row + 6);
-				$rep->row -= 6;
+				$rep->row += 6;
+				$rep->Line($rep->row);
+				$rep->NewLine();
 				$rep->TextCol(0, 2,	_('Total') . " " . $group);
 				for ($i = 1; $i <= 12; $i++)
-					$rep->TextCol($i + 1, $i + 2, number_format2($total[$i], $dec));
+					$rep->AmountCol($i + 1, $i + 2, $total[$i], $dec);
 				$total = Array(1 => 0,0,0,0,0,0,0,0,0,0,0,0);
-				$rep->row -= ($rep->lineHeight + 4);
+				$rep->NewLine();
 				if ($closeclass)
 				{
-					$rep->Line($rep->row + 6);
-					$rep->row -= 6;
+					$rep->row += 6;
+					$rep->Line($rep->row);
+					$rep->NewLine();
 					$rep->Font('bold');
 					$rep->TextCol(0, 2,	_('Total') . " " . $classname);
 					for ($i = 1; $i <= 12; $i++)
 					{
-						$rep->TextCol($i + 1, $i + 2, number_format2($total2[$i], $dec));
+						$rep->AmountCol($i + 1, $i + 2, $total2[$i], $dec);
 						$sales[$i] += $total2[$i];
 					}
 					$rep->Font();
 					$total2 = Array(1 => 0,0,0,0,0,0,0,0,0,0,0,0);
-					$rep->NewLine(3);
+					$rep->NewLine(2);
 					$closeclass = false;
 				}
 			}
@@ -234,19 +248,21 @@ function print_annual_expense_breakdown()
 				$rep->Font('bold');
 				$rep->TextCol(0, 5, $account['AccountClassName']);
 				$rep->Font();
-				$rep->row -= ($rep->lineHeight + 4);
+				$rep->NewLine();
 			}
 			$group = $account['AccountTypeName'];
+			$rep->row -= 4;
 			$rep->TextCol(0, 5, $account['AccountTypeName']);
-			$rep->Line($rep->row - 4);
-			$rep->row -= ($rep->lineHeight + 4);
+			$rep->row -= 4;
+			$rep->Line($rep->row);
+			$rep->NewLine();
 		}
 		$classname = $account['AccountClassName'];
 		$rep->TextCol(0, 1,	$account['account_code']);
 		$rep->TextCol(1, 2,	$account['account_name']);
 		for ($i = 1; $i <= 12; $i++)
 		{
-			$rep->TextCol($i + 1, $i + 2, number_format2($balance[$i], $dec));
+			$rep->AmountCol($i + 1, $i + 2, $balance[$i], $dec);
 			$total[$i] += $balance[$i];
 			$total2[$i] += $balance[$i];
 		}
@@ -270,29 +286,31 @@ function print_annual_expense_breakdown()
 	{
 		if ($group != '')
 		{
-			$rep->Line($rep->row + 6);
-			$rep->row -= 6;
+			$rep->row += 6;
+			$rep->Line($rep->row);
+			$rep->NewLine();
 			$rep->TextCol(0, 2,	_('Total') . " " . $group);
 			for ($i = 1; $i <= 12; $i++)
-				$rep->TextCol($i + 1, $i + 2, number_format2($total[$i], $dec));
-			$rep->row -= ($rep->lineHeight + 4);
+				$rep->AmountCol($i + 1, $i + 2, $total[$i], $dec);
+			$rep->NewLine();
 			if ($closeclass)
 			{
-				$rep->Line($rep->row + 6);
-				$rep->row -= 6;
+				$rep->row += 6;
+				$rep->Line($rep->row);
+				$rep->NewLine();
 
 				$rep->Font('bold');
 				$rep->TextCol(0, 2,	_('Total') . " " . $classname);
 				for ($i = 1; $i <= 12; $i++)
 				{
-					$rep->TextCol($i + 1, $i + 2, number_format2($total2[$i], $dec));
+					$rep->AmountCol($i + 1, $i + 2, $total2[$i], $dec);
 					$calc[$i] = $sales[$i] + $total2[$i];
 				}
 
-				$rep->row -= ($rep->lineHeight + 8);
+				$rep->NewLine(2);
 				$rep->TextCol(0, 2,	_('Calculated Return'));
 				for ($i = 1; $i <= 12; $i++)
-					$rep->TextCol($i + 1, $i + 2, number_format2($calc[$i], $dec));
+					$rep->AmountCol($i + 1, $i + 2, $calc[$i], $dec);
 				$rep->Font();
 
 				$rep->NewLine();

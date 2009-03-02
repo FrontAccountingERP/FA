@@ -19,6 +19,20 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+02-Mar-2009 Joe Hunt
++ Preparation for report destination PDF/Printer and Excel (and Open Office Calc)
+$ /reporting/includes/reports_classes.inc
+  /reporting/includes/pdf_report.inc
+  /reporting/includes/ExcelWriterXML.php (new file)
+  /reporting/includes/ExcelWriterXML_Sheet.php (new file)
+  /reporting/includes/ExcelWriterXM__Style (new file)
+  /reporting/includes/excel_report.inc (new file)
+  /reporting/reports_main.php
+  /reporting/rep701.php
+  /reporting/rep705.php
+  /reporting/rep706.php
+  /reporting/rep707.php
+  
 01-Mar-2009 Janusz Dobrowolski
 # Setting magic_quotes_gpc and register_globals to off in htaccess file
 $ /.htaccess (new)
