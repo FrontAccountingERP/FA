@@ -189,7 +189,7 @@ class FrontReport
 
 		$str = _("Print Out Date") . ':';
 		$this->sheet->writeString($this->y, 1, $str);
-		$date = $this->sheet->convertMysqlDateTime(date('Y-m-d h:i:s'));
+		$date = $this->sheet->convertMysqlDateTime(date('Y-m-d H:i:s'));
 		$this->sheet->writeDateTime($this->y, 2, $date, $this->formatDateTime);
 		$this->sheet->writeString($this->y, 4, $this->company['coy_name']);
 		$this->sheet->cellMerge($this->y, 4, 1, 0);
