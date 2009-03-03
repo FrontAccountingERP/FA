@@ -68,12 +68,21 @@ function print_inventory_valuation_report()
 {
     global $path_to_root;
 
-    include_once($path_to_root . "/reporting/includes/pdf_report.inc");
-
     $category = $_POST['PARAM_0'];
     $location = $_POST['PARAM_1'];
     $detail = $_POST['PARAM_2'];
     $comments = $_POST['PARAM_3'];
+	$destination = $_POST['PARAM_4'];
+	if ($destination)
+	{
+		include_once($path_to_root . "/reporting/includes/excel_report.inc");
+		$filename = "InventoryValReport.xml";
+	}	
+	else
+	{
+		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
+		$filename = "InventoryValReport.pdf";
+	}
 
     $dec = user_price_dec();
 
@@ -101,7 +110,7 @@ function print_inventory_valuation_report()
     				    1 => array('text' => _('Category'), 'from' => $cat, 'to' => ''),
     				    2 => array('text' => _('Location'), 'from' => $loc, 'to' => ''));
 
-    $rep = new FrontReport(_('Inventory Valuation Report'), "InventoryValReport.pdf", user_pagesize());
+    $rep = new FrontReport(_('Inventory Valuation Report'), $filename, user_pagesize());
 
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);
@@ -121,7 +130,7 @@ function print_inventory_valuation_report()
 					$rep->NewLine(2, 3);
 					$rep->TextCol(0, 4, _('Total'));
 				}
-				$rep->Textcol(4, 5, number_format2($total, $dec));
+				$rep->AmountCol(4, 5, $total, $dec);
 				if ($detail)
 				{
 					$rep->Line($rep->row - 2);
@@ -142,9 +151,9 @@ function print_inventory_valuation_report()
 			$rep->fontsize -= 2;
 			$rep->TextCol(0, 1, $trans['stock_id']);
 			$rep->TextCol(1, 2, $trans['description']);
-			$rep->TextCol(2, 3, number_format2($trans['QtyOnHand'], get_qty_dec($trans['stock_id'])));
-			$rep->TextCol(3, 4, number_format2($trans['UnitCost'], $dec));
-			$rep->TextCol(4, 5, number_format2($trans['ItemTotal'], $dec));
+			$rep->AmountCol(2, 3, $trans['QtyOnHand'], get_qty_dec($trans['stock_id']));
+			$rep->AmountCol(3, 4, $trans['UnitCost'], $dec);
+			$rep->AmountCol(4, 5, $trans['ItemTotal'], $dec);
 			$rep->fontsize += 2;
 		}
 		$total += $trans['ItemTotal'];
@@ -155,7 +164,7 @@ function print_inventory_valuation_report()
 		$rep->NewLine(2, 3);
 		$rep->TextCol(0, 4, _('Total'));
 	}
-	$rep->Textcol(4, 5, number_format2($total, $dec));
+	$rep->Amountcol(4, 5, $total, $dec);
 	if ($detail)
 	{
 		$rep->Line($rep->row - 2);
@@ -163,8 +172,9 @@ function print_inventory_valuation_report()
 	}
 	$rep->NewLine(2, 1);
 	$rep->TextCol(0, 4, _('Grand Total'));
-	$rep->TextCol(4, 5, number_format2($grandtotal, $dec));
+	$rep->AmountCol(4, 5, $grandtotal, $dec);
 	$rep->Line($rep->row  - 4);
+	$rep->NewLine();
     $rep->End();
 }
 

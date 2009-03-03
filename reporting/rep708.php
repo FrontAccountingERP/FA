@@ -64,7 +64,6 @@ function print_trial_balance()
 {
 	global $path_to_root;
 
-	include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 	$dim = get_company_pref('use_dimension');
 	$dimension = $dimension2 = 0;
 
@@ -77,15 +76,28 @@ function print_trial_balance()
 		$dimension = $_POST['PARAM_4'];
 		$dimension2 = $_POST['PARAM_5'];
 		$comments = $_POST['PARAM_6'];
+		$destination = $_POST['PARAM_7'];
 	}
 	else if ($dim == 1)
 	{
 		$dimension = $_POST['PARAM_4'];
 		$comments = $_POST['PARAM_5'];
+		$destination = $_POST['PARAM_6'];
 	}
 	else
 	{
 		$comments = $_POST['PARAM_4'];
+		$destination = $_POST['PARAM_5'];
+	}
+	if ($destination)
+	{
+		include_once($path_to_root . "/reporting/includes/excel_report.inc");
+		$filename = "TrialBalance.xml";
+	}	
+	else
+	{
+		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
+		$filename = "TrialBalance.pdf";
 	}
 	$dec = user_price_dec();
 
@@ -128,7 +140,7 @@ function print_trial_balance()
     				    1 => array('text' => _('Period'),'from' => $from, 'to' => $to));
     }
 
-	$rep = new FrontReport(_('Trial Balance'), "TrialBalance.pdf", user_pagesize());
+	$rep = new FrontReport(_('Trial Balance'), $filename, user_pagesize());
 
 	$rep->Font();
 	$rep->Info($params, $cols, $headers, $aligns, $cols2, $headers2, $aligns2);
@@ -154,26 +166,26 @@ function print_trial_balance()
 		if ($balances != 0)
 		{
 			if ($prev['balance'] >= 0.0)
-				$rep->TextCol(2, 3,	number_format2($prev['balance'], $dec));
+				$rep->AmountCol(2, 3, $prev['balance'], $dec);
 			else
-				$rep->TextCol(3, 4,	number_format2(abs($prev['balance']), $dec));
+				$rep->AmountCol(3, 4, abs($prev['balance']), $dec);
 			if ($curr['balance'] >= 0.0)
-				$rep->TextCol(4, 5,	number_format2($curr['balance'], $dec));
+				$rep->AmountCol(4, 5, $curr['balance'], $dec);
 			else
-				$rep->TextCol(5, 6,	number_format2(abs($curr['balance']), $dec));
+				$rep->AmountCol(5, 6, abs($curr['balance']), $dec);
 			if ($tot['balance'] >= 0.0)
-				$rep->TextCol(6, 7,	number_format2($tot['balance'], $dec));
+				$rep->AmountCol(6, 7, $tot['balance'], $dec);
 			else
-				$rep->TextCol(7, 8,	number_format2(abs($tot['balance']), $dec));
+				$rep->AmountCol(7, 8, abs($tot['balance']), $dec);
 		}
 		else
 		{
-			$rep->TextCol(2, 3,	number_format2($prev['debit'], $dec));
-			$rep->TextCol(3, 4,	number_format2($prev['credit'], $dec));
-			$rep->TextCol(4, 5,	number_format2($curr['debit'], $dec));
-			$rep->TextCol(5, 6,	number_format2($curr['credit'], $dec));
-			$rep->TextCol(6, 7,	number_format2($tot['debit'], $dec));
-			$rep->TextCol(7, 8,	number_format2($tot['credit'], $dec));
+			$rep->AmountCol(2, 3, $prev['debit'], $dec);
+			$rep->AmountCol(3, 4, $prev['credit'], $dec);
+			$rep->AmountCol(4, 5, $curr['debit'], $dec);
+			$rep->AmountCol(5, 6, $curr['credit'], $dec);
+			$rep->AmountCol(6, 7, $tot['debit'], $dec);
+			$rep->AmountCol(7, 8, $tot['credit'], $dec);
 			$pdeb += $prev['debit'];
 			$pcre += $prev['credit'];
 			$cdeb += $curr['debit'];
@@ -204,30 +216,31 @@ function print_trial_balance()
 	if ($balances == 0)
 	{
 		$rep->TextCol(0, 2, _("Total"));
-		$rep->TextCol(2, 3,	number_format2($pdeb, $dec));
-		$rep->TextCol(3, 4,	number_format2($pcre, $dec));
-		$rep->TextCol(4, 5,	number_format2($cdeb, $dec));
-		$rep->TextCol(5, 6,	number_format2($ccre, $dec));
-		$rep->TextCol(6, 7,	number_format2($tdeb, $dec));
-		$rep->TextCol(7, 8,	number_format2($tcre, $dec));
+		$rep->AmountCol(2, 3, $pdeb, $dec);
+		$rep->AmountCol(3, 4, $pcre, $dec);
+		$rep->AmountCol(4, 5, $cdeb, $dec);
+		$rep->AmountCol(5, 6, $ccre, $dec);
+		$rep->AmountCol(6, 7, $tdeb, $dec);
+		$rep->AmountCol(7, 8, $tcre, $dec);
 		$rep->NewLine();
 	}	
 	$rep->TextCol(0, 2, _("Ending Balance"));
 
 	if ($pbal >= 0.0)
-		$rep->TextCol(2, 3,	number_format2($pbal, $dec));
+		$rep->AmountCol(2, 3, $pbal, $dec);
 	else
-		$rep->TextCol(3, 4,	number_format2(abs($pbal), $dec));
+		$rep->AmountCol(3, 4, abs($pbal), $dec);
 	if ($cbal >= 0.0)
-		$rep->TextCol(4, 5,	number_format2($cbal, $dec));
+		$rep->AmountCol(4, 5, $cbal, $dec);
 	else
-		$rep->TextCol(5, 6,	number_format2(abs($cbal), $dec));
+		$rep->AmountCol(5, 6, abs($cbal), $dec);
 	if ($tbal >= 0.0)
-		$rep->TextCol(6, 7,	number_format2($tbal, $dec));
+		$rep->AmountCol(6, 7, $tbal, $dec);
 	else
-		$rep->TextCol(7, 8,	number_format2(abs($tbal), $dec));
+		$rep->AmountCol(7, 8, abs($tbal), $dec);
+	$rep->NewLine();
 	
-	$rep->Line($rep->row - 6);
+	$rep->Line($rep->row);
 	
 	$rep->End();
 }

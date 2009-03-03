@@ -64,7 +64,7 @@ class ExcelWriterXML
 	function ExcelWriterXML($fileName = 'file.xml')
 	{
 		// Add default style
-		$style = $this->addStyle('Default');
+		$style =& $this->addStyle('Default');
 		$style->name('Normal');
 		$style->alignVertical('Bottom');
 		
@@ -174,7 +174,7 @@ class ExcelWriterXML
      * will default to "CustomStyle" + n (e.g. "CustomStyle1")
      * @return ExcelWriterXML_Style Reference to a new style class
      */
-	function addStyle($id = null)
+	function &addStyle($id = null)
 	{
 		static $styleNum = 1;
 		if (trim($id) == '') 
@@ -196,8 +196,8 @@ class ExcelWriterXML
 		}
 		
 		$style =& new ExcelWriterXML_Style($id);
-		$this->styles[] = $style;
-		return ($style);
+		$this->styles[$id] = &$style;
+		return $style;
 	}
 	
 	/**
@@ -210,7 +210,7 @@ class ExcelWriterXML
      * will default to "Sheet" + n (e.g. "Sheet1")
      * @return ExcelWriterXML_Sheet Reference to a new sheet class
      */
-	function addSheet($id = null)
+	function &addSheet($id = null)
 	{
 		static $sheetNum = 1;
 		if (trim($id) == '') 
@@ -232,8 +232,8 @@ class ExcelWriterXML
 		}
 		
 		$sheet =& new ExcelWriterXML_Sheet($id);
-		$this->sheets[] = $sheet;
-		return ($sheet);
+		$this->sheets[$id] = &$sheet;
+		return $sheet;
 	}
 	
 	/**
@@ -241,16 +241,9 @@ class ExcelWriterXML
 	 * @param string $id The sheet id to be checked
 	 * @return boolean True if the id is unique, false otherwise
 	 */
-	function _checkSheetID($id){
-		foreach($this->sheets as $sheet)
-		{
-			$sheetID = $sheet->getID();
-			if ($id == $sheetID)
+	function _checkSheetID($id)
 			{
-				return false;
-			}
-		}
-		return true;
+		return !isset($this->sheets[$id]);
 	}
 
 	/**
@@ -260,15 +253,7 @@ class ExcelWriterXML
 	 */
 	function _checkStyleID($id)
 	{
-		foreach($this->styles as $style)
-		{
-			$styleID = $style->getID();
-			if ($id == $styleID)
-			{
-				return false;
-			}
-		}
-		return true;
+		return !isset($this->styles[$id]);
 	}
 
 	// 2009-02-28 Added by Joe Hunt, FA
@@ -295,11 +280,10 @@ class ExcelWriterXML
 		
 		if ($this->showErrorSheet == true)
 		{
-			$format = $this->addStyle('formatErrorsHeader');
+			$format =& $this->addStyle('formatErrorsHeader');
 			$format->fontBold();
 			$format->bgColor('red');
 		}
-		
 		if (!empty($this->docTitle)) 
 			$docTitle = '<Title>'.htmlspecialchars($this->docTitle).'</Title>'."\r";
 		if (!empty($this->docSubject)) 
@@ -367,7 +351,7 @@ class ExcelWriterXML
 		
 		if ($errors == true && $this->showErrorSheet == true)
 		{
-			$sheet = $this->addSheet('formatErrors');
+			$sheet =& $this->addSheet('formatErrors');
 			$sheet->cellMerge(1,1,3,0);	// Merge the first three cells across in row 1
 			$sheet->writeString(1,1,'Formatting Errors');
 			$sheet->writeString(2,1,'Type','formatErrorsHeader');

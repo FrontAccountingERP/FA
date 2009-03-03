@@ -322,8 +322,7 @@ $reports->addReport(_('General Ledger'),709,_('Ta&x Report'),
 	array(	new ReportParam(_('Start Date'),'DATEBEGINTAX'),
 			new ReportParam(_('End Date'),'DATEENDTAX'),
 			new ReportParam(_('Summary Only'),'YES_NO'),
-			new ReportParam(_('Comments'),'TEXTBOX'),
-			new ReportParam(_('Destination'),'DESTINATION')));
+			new ReportParam(_('Comments'),'TEXTBOX')));
 
 echo "<script language='javascript'>
 		function onWindowLoad() {

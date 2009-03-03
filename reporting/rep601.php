@@ -57,15 +57,24 @@ function print_bank_transactions()
 {
 	global $path_to_root;
 
-	include_once($path_to_root . "/reporting/includes/pdf_report.inc");
-
-	$rep = new FrontReport(_('Bank Statement'), "BankStatement.pdf", user_pagesize());
-
 	$acc = $_POST['PARAM_0'];
 	$from = $_POST['PARAM_1'];
 	$to = $_POST['PARAM_2'];
 	$comments = $_POST['PARAM_3'];
+	$destination = $_POST['PARAM_4'];
 
+	if ($destination)
+	{
+		include_once($path_to_root . "/reporting/includes/excel_report.inc");
+		$filename = "BankStatement.xml";
+	}	
+	else
+	{
+		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
+		$filename = "BankStatement.pdf";
+	}
+
+	$rep = new FrontReport(_('Bank Statement'), $filename, user_pagesize());
 	$dec = user_price_dec();
 
 	$cols = array(0, 90, 110, 170, 225, 350, 400, 460, 520);
@@ -97,9 +106,9 @@ function print_bank_transactions()
 		$rep->TextCol(0, 3,	$act);
 		$rep->TextCol(3, 5, _('Opening Balance'));
 		if ($prev_balance > 0.0)
-			$rep->TextCol(5, 6,	number_format2(abs($prev_balance), $dec));
+			$rep->AmountCol(5, 6, abs($prev_balance), $dec);
 		else
-			$rep->TextCol(6, 7,	number_format2(abs($prev_balance), $dec));
+			$rep->AmountCol(6, 7, abs($prev_balance), $dec);
 		$rep->Font();
 		$total = $prev_balance;
 		$rep->NewLine(2);
@@ -112,13 +121,13 @@ function print_bank_transactions()
 				$rep->TextCol(0, 1,	systypes::name($myrow["type"]));
 				$rep->TextCol(1, 2,	$myrow['trans_no']);
 				$rep->TextCol(2, 3,	$myrow['ref']);
-				$rep->TextCol(3, 4,	sql2date($myrow["trans_date"]));
+				$rep->DateCol(3, 4,	$myrow["trans_date"], true);
 				$rep->TextCol(4, 5,	payment_person_types::person_name($myrow["person_type_id"],$myrow["person_id"], false));
 				if ($myrow['amount'] > 0.0)
-					$rep->TextCol(5, 6,	number_format2(abs($myrow['amount']), $dec));
+					$rep->AmountCol(5, 6, abs($myrow['amount']), $dec);
 				else
-					$rep->TextCol(6, 7,	number_format2(abs($myrow['amount']), $dec));
-				$rep->TextCol(7, 8,	number_format2($total, $dec));
+					$rep->AmountCol(6, 7, abs($myrow['amount']), $dec);
+				$rep->AmountCol(7, 8, $total, $dec);
 				$rep->NewLine();
 				if ($rep->row < $rep->bottomMargin + $rep->lineHeight)
 				{
@@ -131,9 +140,9 @@ function print_bank_transactions()
 		$rep->Font('bold');
 		$rep->TextCol(3, 5,	_("Ending Balance"));
 		if ($total > 0.0)
-			$rep->TextCol(5, 6,	number_format2(abs($total), $dec));
+			$rep->AmountCol(5, 6, abs($total), $dec);
 		else
-			$rep->TextCol(6, 7,	number_format2(abs($total), $dec));
+			$rep->AmountCol(6, 7, abs($total), $dec);
 		$rep->Font();
 		$rep->Line($rep->row - $rep->lineHeight + 4);
 		$rep->NewLine(2, 1);

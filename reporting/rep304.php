@@ -106,14 +106,23 @@ function print_inventory_sales()
 {
     global $path_to_root;
 
-    include_once($path_to_root . "/reporting/includes/pdf_report.inc");
-
 	$from = $_POST['PARAM_0'];
 	$to = $_POST['PARAM_1'];
     $category = $_POST['PARAM_2'];
     $location = $_POST['PARAM_3'];
     $detail = $_POST['PARAM_4'];
 	$comments = $_POST['PARAM_5'];
+	$destination = $_POST['PARAM_6'];
+	if ($destination)
+	{
+		include_once($path_to_root . "/reporting/includes/excel_report.inc");
+		$filename = "InventorySalesReport.xml";
+	}	
+	else
+	{
+		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
+		$filename = "InventorySalesReport.pdf";
+	}
 
     $dec = user_price_dec();
 
@@ -165,9 +174,9 @@ function print_inventory_sales()
 					$rep->NewLine(2, 3);
 					$rep->TextCol(0, 2, _('Total'));
 				}
-				$rep->TextCol(2, 3, number_format2($total, $dec));
-				$rep->TextCol(3, 4, number_format2($total1, $dec));
-				$rep->Textcol(4, 5, number_format2($total2, $dec));
+				$rep->AmountCol(2, 3, $total, $dec);
+				$rep->AmountCol(3, 4, $total1, $dec);
+				$rep->AmountCol(4, 5, $total2, $dec);
 				if ($detail)
 				{
 					$rep->Line($rep->row - 2);
@@ -192,9 +201,9 @@ function print_inventory_sales()
 					$rep->fontsize -= 2;
 					$rep->TextCol(0, 1, $stock_id);
 					$rep->TextCol(1, 2, $stock_desc);
-					$rep->TextCol(2, 3, number_format2($amt, $dec));
-					$rep->TextCol(3, 4, number_format2($cost, $dec));
-					$rep->TextCol(4, 5, number_format2($cb, $dec));
+					$rep->AmountCol(2, 3, $amt, $dec);
+					$rep->AmountCol(3, 4, $cost, $dec);
+					$rep->AmountCol(4, 5, $cb, $dec);
 					$rep->fontsize += 2;
 				}
 				$amt = $cost = $cb = 0;
@@ -222,17 +231,17 @@ function print_inventory_sales()
 		$rep->fontsize -= 2;
 		$rep->TextCol(0, 1, $stock_id);
 		$rep->TextCol(1, 2, $stock_desc);
-		$rep->TextCol(2, 3, number_format2($amt, $dec));
-		$rep->TextCol(3, 4, number_format2($cost, $dec));
-		$rep->TextCol(4, 5, number_format2($cb, $dec));
+		$rep->AmountCol(2, 3, $amt, $dec);
+		$rep->AmountCol(3, 4, $cost, $dec);
+		$rep->AmountCol(4, 5, $cb, $dec);
 		$rep->fontsize += 2;
 
 		$rep->NewLine(2, 3);
 		$rep->TextCol(0, 2, _('Total'));
 	}
-	$rep->TextCol(2, 3, number_format2($total, $dec));
-	$rep->TextCol(3, 4, number_format2($total1, $dec));
-	$rep->Textcol(4, 5, number_format2($total2, $dec));
+	$rep->AmountCol(2, 3, $total, $dec);
+	$rep->AmountCol(3, 4, $total1, $dec);
+	$rep->AmountCol(4, 5, $total2, $dec);
 	if ($detail)
 	{
 		$rep->Line($rep->row - 2);
@@ -240,11 +249,12 @@ function print_inventory_sales()
 	}
 	$rep->NewLine(2, 1);
 	$rep->TextCol(0, 2, _('Grand Total'));
-	$rep->TextCol(2, 3, number_format2($grandtotal, $dec));
-	$rep->TextCol(3, 4, number_format2($grandtotal1, $dec));
-	$rep->Textcol(4, 5, number_format2($grandtotal2, $dec));
+	$rep->AmountCol(2, 3, $grandtotal, $dec);
+	$rep->AmountCol(3, 4, $grandtotal1, $dec);
+	$rep->AmountCol(4, 5, $grandtotal2, $dec);
 
 	$rep->Line($rep->row  - 4);
+	$rep->NewLine();
     $rep->End();
 }
 

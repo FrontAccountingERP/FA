@@ -61,7 +61,7 @@ function print_balance_sheet()
 		$comments = $_POST['PARAM_3'];
 		$destination = $_POST['PARAM_4'];
 	}
-	if (isset($destination) && $destination)
+	if ($destination)
 	{
 		include_once($path_to_root . "/reporting/includes/excel_report.inc");
 		$filename = "BalanceSheet.xml";

@@ -69,14 +69,23 @@ function print_price_listing()
 {
     global $comp_path, $path_to_root, $pic_height, $pic_width;
 
-    include_once($path_to_root . "/reporting/includes/pdf_report.inc");
-
     $currency = $_POST['PARAM_0'];
     $category = $_POST['PARAM_1'];
     $salestype = $_POST['PARAM_2'];
     $pictures = $_POST['PARAM_3'];
     $showGP = $_POST['PARAM_4'];
     $comments = $_POST['PARAM_5'];
+	$destination = $_POST['PARAM_6'];
+	if ($destination)
+	{
+		include_once($path_to_root . "/reporting/includes/excel_report.inc");
+		$filename = "PriceListing.xml";
+	}	
+	else
+	{
+		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
+		$filename = "PriceListing.pdf";
+	}
 
     $dec = user_price_dec();
 
@@ -145,7 +154,7 @@ function print_price_listing()
 		$rep->TextCol(0, 1,	$myrow['stock_id']);
 		$rep->TextCol(1, 2, $myrow['name']);
 		$price = get_price($myrow['stock_id'], $currency, $salestype);
-		$rep->TextCol(2, 3,	number_format2($price, $dec));
+		$rep->AmountCol(2, 3, $price, $dec);
 		if ($showGP)
 		{
 			$price2 = get_price($myrow['stock_id'], $home_curr, $salestype);
@@ -199,11 +208,11 @@ function print_price_listing()
 		$rep->TextCol(0, 1,	$myrow['kit_code']);
 		$rep->TextCol(1, 2, $myrow['kit_name']);
 		$price = get_kit_price($myrow['kit_code'], $currency, $salestype);
-		$rep->TextCol(2, 3,	number_format2($price, $dec));
+		$rep->AmountCol(2, 3, $price, $dec);
 		$rep->NewLine(0, 1);
 	}
 	$rep->Line($rep->row  - 4);
-	
+	$rep->NewLine();
     $rep->End();
 }
 

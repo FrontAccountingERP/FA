@@ -60,12 +60,21 @@ function print_salesman_list()
 {
 	global $path_to_root;
 
-	include_once($path_to_root . "/reporting/includes/pdf_report.inc");
-
 	$from = $_POST['PARAM_0'];
 	$to = $_POST['PARAM_1'];
 	$summary = $_POST['PARAM_2'];
 	$comments = $_POST['PARAM_3'];
+	$destination = $_POST['PARAM_4'];
+	if ($destination)
+	{
+		include_once($path_to_root . "/reporting/includes/excel_report.inc");
+		$filename = "SalesmanListing.xml";
+	}	
+	else
+	{
+		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
+		$filename = "SalesmanListing.pdf";
+	}
 
 	if ($summary == 0)
 		$sum = _("No");
@@ -91,7 +100,7 @@ function print_salesman_list()
 	$cols2 = $cols;
 	$aligns2 = $aligns;
 
-	$rep = new FrontReport(_('Salesman Listing'), "SalesmanListing.pdf", user_pagesize());
+	$rep = new FrontReport(_('Salesman Listing'), $filename, user_pagesize());
 	$rep->Font();
 	$rep->Info($params, $cols, $headers, $aligns, $cols2, $headers2, $aligns2);
 
@@ -116,17 +125,16 @@ function print_salesman_list()
 				$rep->Line($rep->row - 8);
 				$rep->NewLine(2);
 				$rep->TextCol(0, 3, _('Total'));
-				$rep->TextCol(5, 6, number_format2($subtotal, $dec));
-				$rep->TextCol(6, 7, number_format2($subprov, $dec));
+				$rep->AmountCol(5, 6, $subtotal, $dec);
+				$rep->AmountCol(6, 7, $subprov, $dec);
     			$rep->Line($rep->row  - 4);
     			$rep->NewLine(2);
-				//$rep->Line($rep->row);
 			}
 			$rep->TextCol(0, 2,	$myrow['salesman_code']." ".$myrow['salesman_name']);
 			$rep->TextCol(2, 3,	$myrow['salesman_phone']);
 			$rep->TextCol(3, 4,	$myrow['salesman_email']);
 			$rep->TextCol(4, 5,	number_format2($myrow['provision'], user_percent_dec()) ." %");
-			$rep->TextCol(5, 6,	number_format2($myrow['break_pt'], $dec));
+			$rep->AmountCol(5, 6, $myrow['break_pt'], $dec);
 			$rep->TextCol(6, 7,	number_format2($myrow['provision2'], user_percent_dec()) ." %");
 			$rep->NewLine(2);
 			$salesman = $myrow['salesman_code'];
@@ -135,7 +143,6 @@ function print_salesman_list()
 			$subtotal = 0;
 			$subprov = 0;
 		}
-		$date = sql2date($myrow['tran_date']);
 		$rate = $myrow['rate'];
 		$amt = $myrow['InvoiceTotal'] * $rate;
 		if ($subprov > $myrow['break_pt'] && $myrow['provision2'] != 0)
@@ -148,9 +155,9 @@ function print_salesman_list()
 			$rep->TextCol(1, 2,	$myrow['DebtorName']);
 			$rep->TextCol(2, 3,	$myrow['br_name']);
 			$rep->TextCol(3, 4,	$myrow['contact_name']);
-			$rep->TextCol(4, 5,	$date);
-			$rep->TextCol(5, 6,	number_format2($amt, $dec));
-			$rep->TextCol(6, 7,	number_format2($prov, $dec));
+			$rep->DateCol(4, 5,	$myrow['tran_date'], true);
+			$rep->AmountCol(5, 6, $amt, $dec);
+			$rep->AmountCol(6, 7, $prov, $dec);
 			$rep->NewLine();
 			if ($rep->row < $rep->bottomMargin + (2 * $rep->lineHeight))
 			{
@@ -166,20 +173,20 @@ function print_salesman_list()
 		$rep->Line($rep->row - 4);
 		$rep->NewLine(2);
 		$rep->TextCol(0, 3, _('Total'));
-		$rep->TextCol(5, 6, number_format2($subtotal, $dec));
-		$rep->TextCol(6, 7, number_format2($subprov, $dec));
+		$rep->AmountCol(5, 6, $subtotal, $dec);
+		$rep->AmountCol(6, 7, $subprov, $dec);
 		$rep->Line($rep->row  - 4);
 		$rep->NewLine(2);
-		//$rep->Line($rep->row);
 		$total += $subtotal;
 		$provtotal += $subprov;
 	}
 	$rep->fontSize += 2;
 	$rep->TextCol(0, 3, _('Grand Total'));
 	$rep->fontSize -= 2;
-	$rep->TextCol(5, 6, number_format2($total, $dec));
-	$rep->TextCol(6, 7, number_format2($provtotal, $dec));
+	$rep->AmountCol(5, 6, $total, $dec);
+	$rep->AmountCol(6, 7, $provtotal, $dec);
 	$rep->Line($rep->row  - 4);
+	$rep->NewLine();
 	$rep->End();
 }
 

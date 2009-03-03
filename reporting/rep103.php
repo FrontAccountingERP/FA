@@ -25,7 +25,6 @@ include_once($path_to_root . "/gl/includes/gl_db.inc");
 
 //----------------------------------------------------------------------------------------------------
 
-// trial_inquiry_controls();
 print_customer_details_listing();
 
 function get_customer_details_for_report($area=0, $salesid=0) 
@@ -96,14 +95,23 @@ function print_customer_details_listing()
 {
     global $path_to_root;
 
-    include_once($path_to_root . "/reporting/includes/pdf_report.inc");
-
     $from = $_POST['PARAM_0'];
     $area = $_POST['PARAM_1'];
     $folk = $_POST['PARAM_2'];
     $more = $_POST['PARAM_3'];
     $less = $_POST['PARAM_4'];
     $comments = $_POST['PARAM_5'];
+	$destination = $_POST['PARAM_6'];
+	if ($destination)
+	{
+		include_once($path_to_root . "/reporting/includes/excel_report.inc");
+		$filename = "CustomerDetailsListing.xml";
+	}	
+	else
+	{
+		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
+		$filename = "CustomerDetailsListing.pdf";
+	}
     
     $dec = 0;
 
@@ -145,7 +153,7 @@ function print_customer_details_listing()
     				    3 => array('text' => _('Sales Folk'), 		'from' => $salesfolk, 	'to' => ''),
     				    4 => array('text' => _('Activity'), 		'from' => $morestr, 	'to' => $lessstr));
 
-    $rep = new FrontReport(_('Customer Details Listing'), "CustomerDetailsListing.pdf", user_pagesize());
+    $rep = new FrontReport(_('Customer Details Listing'), $filename, user_pagesize());
 
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);

@@ -35,12 +35,22 @@ function print_list_of_journal_entries()
 {
     global $path_to_root;
 
-    include_once($path_to_root . "/reporting/includes/pdf_report.inc");
-
     $from = $_POST['PARAM_0'];
     $to = $_POST['PARAM_1'];
     $systype = $_POST['PARAM_2'];
     $comments = $_POST['PARAM_3'];
+	$destination = $_POST['PARAM_4'];
+	if (isset($destination) && $destination)
+	{
+		include_once($path_to_root . "/reporting/includes/excel_report.inc");
+		$filename = "JournalEntries.xml";
+	}	
+	else
+	{
+		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
+		$filename = "JournalEntries.pdf";
+	}
+
     $dec = user_price_dec();
 
     $cols = array(0, 100, 240, 300, 400, 460, 520, 580);
@@ -55,7 +65,7 @@ function print_list_of_journal_entries()
                     	2 => array('text' => _('Type'), 'from' => systypes::name($systype),
                             'to' => ''));
 
-    $rep = new FrontReport(_('List of Journal Entries'), "JournalEntries.pdf", user_pagesize());
+    $rep = new FrontReport(_('List of Journal Entries'), $filename, user_pagesize());
 
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);
@@ -79,7 +89,7 @@ function print_list_of_journal_entries()
             $typeno = $myrow['type_no'];
             $TransName = systypes::name($myrow['type']);
             $rep->TextCol(0, 2, $TransName . " # " . $myrow['type_no']);
-            $rep->TextCol(2, 3, sql2date($myrow['tran_date']));
+            $rep->DateCol(2, 3, $myrow['tran_date'], true);
             $coms =  payment_person_types::person_name($myrow["person_type_id"],$myrow["person_id"]);
             $memo = get_comments_string($myrow['type'], $myrow['type_no']);
             if ($memo != '')
@@ -96,9 +106,9 @@ function print_list_of_journal_entries()
         $rep->TextCol(2, 3, $dim_str);
         $rep->TextCol(3, 4, $myrow['memo_']);
         if ($myrow['amount'] > 0.0)
-            $rep->TextCol(4, 5, number_format2(abs($myrow['amount']), $dec));
+            $rep->AmountCol(4, 5, abs($myrow['amount']), $dec);
         else
-            $rep->TextCol(5, 6, number_format2(abs($myrow['amount']), $dec));
+            $rep->AmountCol(5, 6, abs($myrow['amount']), $dec);
         $rep->NewLine(1, 2);
     }
     $rep->Line($rep->row  + 4);

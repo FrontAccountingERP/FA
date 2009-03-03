@@ -70,14 +70,23 @@ function print_aged_supplier_analysis()
 {
     global $comp_path, $path_to_root;
 
-    include_once($path_to_root . "/reporting/includes/pdf_report.inc");
-
     $to = $_POST['PARAM_0'];
     $fromsupp = $_POST['PARAM_1'];
     $currency = $_POST['PARAM_2'];
 	$summaryOnly = $_POST['PARAM_3'];
     $graphics = $_POST['PARAM_4'];
     $comments = $_POST['PARAM_5'];
+	$destination = $_POST['PARAM_6'];
+	if ($destination)
+	{
+		include_once($path_to_root . "/reporting/includes/excel_report.inc");
+		$filename = "AgedSupplierAnalysis.xml";
+	}	
+	else
+	{
+		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
+		$filename = "AgedSupplierAnalysis.pdf";
+	}
 	if ($graphics)
 	{
 		include_once($path_to_root . "/reporting/includes/class.graphic.inc");
@@ -122,7 +131,7 @@ function print_aged_supplier_analysis()
 
 	if ($convert)
 		$headers[2] = _('currency');
-    $rep = new FrontReport(_('Aged Supplier Analysis'), "AgedSupplierAnalysis.pdf", user_pagesize());
+    $rep = new FrontReport(_('Aged Supplier Analysis'), $filename, user_pagesize());
 
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);
@@ -148,11 +157,11 @@ function print_aged_supplier_analysis()
 		if (!$convert && $currency != $myrow['curr_code'])
 			continue;
 		$rep->fontSize += 2;
-		$rep->TextCol(0, 3,	$myrow['name']);
+		$rep->TextCol(0, 2,	$myrow['name']);
 		if ($convert)
 		{
 			$rate = get_exchange_rate_from_home_currency($myrow['curr_code'], $to);
-			$rep->TextCol(2, 4,	$myrow['curr_code']);
+			$rep->TextCol(2, 3,	$myrow['curr_code']);
 		}
 		else
 			$rate = 1.0;
@@ -165,13 +174,13 @@ function print_aged_supplier_analysis()
 		$total[2] += ($supprec["Overdue1"]-$supprec["Overdue2"]);
 		$total[3] += $supprec["Overdue2"];
 		$total[4] += $supprec["Balance"];
-		$str = array(number_format2(($supprec["Balance"] - $supprec["Due"]),$dec),
-			number_format2(($supprec["Due"]-$supprec["Overdue1"]),$dec),
-			number_format2(($supprec["Overdue1"]-$supprec["Overdue2"]) ,$dec),
-			number_format2($supprec["Overdue2"],$dec),
-			number_format2($supprec["Balance"],$dec));
+		$str = array($supprec["Balance"] - $supprec["Due"],
+			$supprec["Due"]-$supprec["Overdue1"],
+			$supprec["Overdue1"]-$supprec["Overdue2"],
+			$supprec["Overdue2"],
+			$supprec["Balance"]);
 		for ($i = 0; $i < count($str); $i++)
-			$rep->TextCol($i + 3, $i + 4, $str[$i]);
+			$rep->AmountCol($i + 3, $i + 4, $str[$i], $dec);
 		$rep->NewLine(1, 2);
 		if (!$summaryOnly)
 		{
@@ -187,13 +196,13 @@ function print_aged_supplier_analysis()
 				$rep->TextCol(2, 3,	sql2date($trans['tran_date']), -2);
 				foreach ($trans as $i => $value)
 					$trans[$i] *= $rate;
-				$str = array(number_format2(($trans["Balance"] - $trans["Due"]),$dec),
-					number_format2(($trans["Due"]-$trans["Overdue1"]),$dec),
-					number_format2(($trans["Overdue1"]-$trans["Overdue2"]) ,$dec),
-					number_format2($trans["Overdue2"],$dec),
-					number_format2($trans["Balance"],$dec));
+				$str = array($trans["Balance"] - $trans["Due"],
+					$trans["Due"]-$trans["Overdue1"],
+					$trans["Overdue1"]-$trans["Overdue2"],
+					$trans["Overdue2"],
+					$trans["Balance"]);
 				for ($i = 0; $i < count($str); $i++)
-					$rep->TextCol($i + 3, $i + 4, $str[$i]);
+					$rep->AmountCol($i + 3, $i + 4, $str[$i], $dec);
 			}
 			$rep->Line($rep->row - 8);
 			$rep->NewLine(2);
@@ -209,13 +218,14 @@ function print_aged_supplier_analysis()
 	$rep->fontSize -= 2;
 	for ($i = 0; $i < count($total); $i++)
 	{
-		$rep->TextCol($i + 3, $i + 4, number_format2($total[$i], $dec));
+		$rep->AmountCol($i + 3, $i + 4, $total[$i], $dec);
 		if ($graphics && $i < count($total) - 1)
 		{
 			$pg->y[$i] = abs($total[$i]);
 		}
 	}
    	$rep->Line($rep->row  - 8);
+   	$rep->NewLine();
    	if ($graphics)
    	{
    		global $decseps, $graph_skin;

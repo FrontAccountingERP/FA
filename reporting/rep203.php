@@ -59,12 +59,21 @@ function print_payment_report()
 {
     global $path_to_root;
 
-    include_once($path_to_root . "/reporting/includes/pdf_report.inc");
-
     $to = $_POST['PARAM_0'];
     $fromsupp = $_POST['PARAM_1'];
     $currency = $_POST['PARAM_2'];
     $comments = $_POST['PARAM_3'];
+	$destination = $_POST['PARAM_4'];
+	if ($destination)
+	{
+		include_once($path_to_root . "/reporting/includes/excel_report.inc");
+		$filename = "PaymentReport.xml";
+	}	
+	else
+	{
+		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
+		$filename = "PaymentReport.pdf";
+	}
 
 	if ($fromsupp == reserved_words::get_all_numeric())
 		$from = _('All');
@@ -135,18 +144,18 @@ function print_payment_report()
 			$rep->TextCol(0, 1,	$trans['type_name']);
 			$rep->TextCol(1, 2,	$trans['supp_reference']);
 			if ($trans['type'] == 20)
-				$rep->TextCol(2, 3,	sql2date($trans['due_date']));
+				$rep->DateCol(2, 3,	$trans['due_date'], true);
 			else	
-				$rep->TextCol(2, 3,	sql2date($trans['tran_date']));
+				$rep->DateCol(2, 3,	$trans['tran_date'], true);
 			if ($trans['type'] != 20)
 			{
 				$trans['TranTotal'] = -$trans['TranTotal'];
 				$trans['Balance'] = -$trans['Balance'];
 			}
 			$item[0] = $trans['TranTotal'] * $rate;
-			$rep->TextCol(6, 7,	number_format2($item[0], $dec));
+			$rep->AmountCol(6, 7, $item[0], $dec);
 			$item[1] = $trans['Balance'] * $rate;
-			$rep->TextCol(7, 8,	number_format2($item[1], $dec));
+			$rep->AmountCol(7, 8, $item[1], $dec);
 			for ($i = 0; $i < 2; $i++)
 			{
 				$total[$i] += $item[$i];
@@ -158,7 +167,7 @@ function print_payment_report()
 		$rep->TextCol(0, 3,	_('Total'));
 		for ($i = 0; $i < 2; $i++)
 		{
-			$rep->TextCol($i + 6, $i + 7, number_format2($total[$i], $dec));
+			$rep->AmountCol($i + 6, $i + 7, $total[$i], $dec);
 			$total[$i] = 0.0;
 		}
     	$rep->Line($rep->row  - 4);
@@ -168,8 +177,9 @@ function print_payment_report()
 	$rep->TextCol(0, 3,	_('Grand Total'));
 	$rep->fontSize -= 2;
 	for ($i = 0; $i < 2; $i++)
-		$rep->TextCol($i + 6, $i + 7,number_format2($grandtotal[$i], $dec));
+		$rep->AmountCol($i + 6, $i + 7,$grandtotal[$i], $dec);
 	$rep->Line($rep->row  - 4);
+	$rep->NewLine();
     $rep->End();
 }
 

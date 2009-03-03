@@ -76,17 +76,17 @@ function print_tax_report()
 {
 	global $path_to_root, $trans_dir;
 	
-	
-	include_once($path_to_root . "/reporting/includes/pdf_report.inc");
-
-	$rep = new FrontReport(_('Tax Report'), "TaxReport.pdf", user_pagesize());
-
 	$from = $_POST['PARAM_0'];
 	$to = $_POST['PARAM_1'];
 	$summaryOnly = $_POST['PARAM_2'];
 	$comments = $_POST['PARAM_3'];
+
+	include_once($path_to_root . "/reporting/includes/pdf_report.inc");
+	$filename = "TaxReport.pdf";
+
 	$dec = user_price_dec();
 
+	$rep = new FrontReport(_('Tax Report'), $filename, user_pagesize());
 	if ($summaryOnly == 1)
 		$summary = _('Summary Only');
 	else
@@ -129,13 +129,13 @@ function print_tax_report()
 		{
 			$rep->TextCol(0, 1,	$trans['type_name']);
 			$rep->TextCol(1, 2,	$trans['memo']);
-			$rep->TextCol(2, 3,	sql2date($trans['tran_date']));
+			$rep->DateCol(2, 3,	$trans['tran_date'], true);
 			$rep->TextCol(3, 4,	$trans['name']);
 			$rep->TextCol(4, 5,	$trans['br_name']);
 
-			$rep->TextCol(5, 6,	number_format2($trans['net_amount'], $dec));
-			$rep->TextCol(6, 7,	number_format2($trans['rate'], $dec));
-			$rep->TextCol(7, 8,	number_format2($trans['amount'], $dec));
+			$rep->AmountCol(5, 6, $trans['net_amount'], $dec);
+			$rep->AmountCol(6, 7, $trans['rate'], $dec);
+			$rep->AmountCol(7, 8, $trans['amount'], $dec);
 
 			$rep->NewLine();
 
@@ -176,11 +176,11 @@ function print_tax_report()
 		$tx = getTaxInfo($id);
 		
 		$rep->TextCol(0, 1, $tx['name'] . " " . number_format2($tx['rate'], $dec) . "%");
-		$rep->TextCol(1, 2, number_format2($sum['out'], $dec));
-		$rep->TextCol(2, 3,number_format2($sum['taxout'], $dec));
-		$rep->TextCol(3, 4, number_format2($sum['in'], $dec));
-		$rep->TextCol(4, 5,number_format2($sum['taxin'], $dec)); 
-		$rep->TextCol(5, 6, number_format2($sum['taxout']+$sum['taxin'], $dec));
+		$rep->AmountCol(1, 2, $sum['out'], $dec);
+		$rep->AmountCol(2, 3, $sum['taxout'], $dec);
+		$rep->AmountCol(3, 4, $sum['in'], $dec);
+		$rep->AmountCol(4, 5, $sum['taxin'], $dec); 
+		$rep->AmountCol(5, 6, $sum['taxout']+$sum['taxin'], $dec);
 		$taxtotal += $sum['taxout']+$sum['taxin'];
 		$rep->NewLine();
 	}
@@ -189,7 +189,7 @@ function print_tax_report()
 	$rep->NewLine();
 	$rep->Line($rep->row + $rep->lineHeight);
 	$rep->TextCol(3, 5,	_("Total payable or refund"));
-	$rep->TextCol(5, 6,	number_format2($taxtotal, $dec));
+	$rep->AmountCol(5, 6, $taxtotal, $dec);
 	$rep->Line($rep->row - 5);
 	$rep->Font();
 	$rep->NewLine();

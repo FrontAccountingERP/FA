@@ -19,6 +19,14 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+03-Mar-2009 Joe Hunt/Janusz Dobrowolski
++ Preparation for Excel Writer continued
+$ /reporting/includes/ExcelWriterXML.php
+  /reporting/includes/ExcelWriterXML_Sheet.php
+  /reporting/includes/ExcelWriterXML_Style.php
+  /reporting/includes/excel_report.inc
+  /reporting all repXXX.php that are not documents
+  
 02-Mar-2009 Joe Hunt
 + Preparation for report destination PDF/Printer and Excel (and Open Office Calc)
 $ /reporting/includes/reports_classes.inc

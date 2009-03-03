@@ -25,7 +25,6 @@ include_once($path_to_root . "/gl/includes/gl_db.inc");
 
 //----------------------------------------------------------------------------------------------------
 
-// trial_inquiry_controls();
 print_aged_customer_analysis();
 
 function get_invoices($costomer_id, $to)
@@ -69,14 +68,23 @@ function print_aged_customer_analysis()
 {
     global $comp_path, $path_to_root;
 
-    include_once($path_to_root . "/reporting/includes/pdf_report.inc");
-
     $to = $_POST['PARAM_0'];
     $fromcust = $_POST['PARAM_1'];
     $currency = $_POST['PARAM_2'];
 	$summaryOnly = $_POST['PARAM_3'];
     $graphics = $_POST['PARAM_4'];
     $comments = $_POST['PARAM_5'];
+	$destination = $_POST['PARAM_6'];
+	if ($destination)
+	{
+		include_once($path_to_root . "/reporting/includes/excel_report.inc");
+		$filename = "AgedCustomerAnalysis.xml";
+	}	
+	else
+	{
+		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
+		$filename = "AgedCustomerAnalysis.pdf";
+	}
 	if ($graphics)
 	{
 		include_once($path_to_root . "/reporting/includes/class.graphic.inc");
@@ -121,7 +129,7 @@ function print_aged_customer_analysis()
 
 	if ($convert)
 		$headers[2] = _('Currency');
-    $rep = new FrontReport(_('Aged Customer Analysis'), "AgedCustomerAnalysis.pdf", user_pagesize());
+    $rep = new FrontReport(_('Aged Customer Analysis'), $filename, user_pagesize());
 
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);
@@ -140,11 +148,11 @@ function print_aged_customer_analysis()
 		if (!$convert && $currency != $myrow['curr_code'])
 			continue;
 		$rep->fontSize += 2;
-		$rep->TextCol(0, 3, $myrow['name']);
+		$rep->TextCol(0, 2, $myrow['name']);
 		if ($convert)
 		{
 			$rate = get_exchange_rate_from_home_currency($myrow['curr_code'], $to);
-			$rep->TextCol(2, 4,	$myrow['curr_code']);
+			$rep->TextCol(2, 3,	$myrow['curr_code']);
 		}
 		else
 			$rate = 1.0;
@@ -157,13 +165,13 @@ function print_aged_customer_analysis()
 		$total[2] += ($custrec["Overdue1"]-$custrec["Overdue2"]);
 		$total[3] += $custrec["Overdue2"];
 		$total[4] += $custrec["Balance"];
-		$str = array(number_format2(($custrec["Balance"] - $custrec["Due"]),$dec),
-			number_format2(($custrec["Due"]-$custrec["Overdue1"]),$dec),
-			number_format2(($custrec["Overdue1"]-$custrec["Overdue2"]) ,$dec),
-			number_format2($custrec["Overdue2"],$dec),
-			number_format2($custrec["Balance"],$dec));
+		$str = array($custrec["Balance"] - $custrec["Due"],
+			$custrec["Due"]-$custrec["Overdue1"],
+			$custrec["Overdue1"]-$custrec["Overdue2"],
+			$custrec["Overdue2"],
+			$custrec["Balance"]);
 		for ($i = 0; $i < count($str); $i++)
-			$rep->TextCol($i + 3, $i + 4, $str[$i]);
+			$rep->AmountCol($i + 3, $i + 4, $str[$i], $dec);
 		$rep->NewLine(1, 2);
 		if (!$summaryOnly)
 		{
@@ -176,7 +184,7 @@ function print_aged_customer_analysis()
 				$rep->NewLine(1, 2);
         		$rep->TextCol(0, 1,	$trans['type_name'], -2);
 				$rep->TextCol(1, 2,	$trans['reference'], -2);
-				$rep->TextCol(2, 3, sql2date($trans['tran_date']), -2);
+				$rep->DateCol(2, 3, $trans['tran_date'], true, -2);
 				if ($trans['type'] == 11 || $trans['type'] == 12 || $trans['type'] == 2)
 				{
 					$trans['Balance'] *= -1;
@@ -186,13 +194,13 @@ function print_aged_customer_analysis()
 				}
 				foreach ($trans as $i => $value)
 					$trans[$i] *= $rate;
-				$str = array(number_format2(($trans["Balance"] - $trans["Due"]),$dec),
-					number_format2(($trans["Due"]-$trans["Overdue1"]),$dec),
-					number_format2(($trans["Overdue1"]-$trans["Overdue2"]) ,$dec),
-					number_format2($trans["Overdue2"],$dec),
-					number_format2($trans["Balance"],$dec));
+				$str = array($trans["Balance"] - $trans["Due"],
+					$trans["Due"]-$trans["Overdue1"],
+					$trans["Overdue1"]-$trans["Overdue2"],
+					$trans["Overdue2"],
+					$trans["Balance"]);
 				for ($i = 0; $i < count($str); $i++)
-					$rep->TextCol($i + 3, $i + 4, $str[$i]);
+					$rep->AmountCol($i + 3, $i + 4, $str[$i], $dec);
 			}
 			$rep->Line($rep->row - 8);
 			$rep->NewLine(2);
@@ -208,7 +216,7 @@ function print_aged_customer_analysis()
 	$rep->fontSize -= 2;
 	for ($i = 0; $i < count($total); $i++)
 	{
-		$rep->TextCol($i + 3, $i + 4, number_format2($total[$i], $dec));
+		$rep->AmountCol($i + 3, $i + 4, $total[$i], $dec);
 		if ($graphics && $i < count($total) - 1)
 		{
 			$pg->y[$i] = abs($total[$i]);
@@ -238,6 +246,7 @@ function print_aged_customer_analysis()
 			$rep->Header();
 		$rep->AddImage($filename, $x, $rep->row - $h, $w, $h);
 	}
+	$rep->NewLine();
     $rep->End();
 }
 

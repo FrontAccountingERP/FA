@@ -71,13 +71,21 @@ function print_dimension_summary()
 {
     global $path_to_root;
 
-    include_once($path_to_root . "/reporting/includes/pdf_report.inc");
-
     $fromdim = $_POST['PARAM_0'];
     $todim = $_POST['PARAM_1'];
     $showbal = $_POST['PARAM_2'];
     $comments = $_POST['PARAM_3'];
-    
+	$destination = $_POST['PARAM_4'];
+	if ($destination)
+	{
+		include_once($path_to_root . "/reporting/includes/excel_report.inc");
+		$filename = "DimensionSummary.xml";
+	}	
+	else
+	{
+		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
+		$filename = "DimensionSummary.pdf";
+	}
 
 	$cols = array(0, 50, 210, 250, 320, 395, 465,	515);
 
@@ -88,7 +96,7 @@ function print_dimension_summary()
     $params =   array( 	0 => $comments,
     				    1 => array('text' => _('Dimension'), 'from' => $fromdim, 'to' => $todim));
 
-    $rep = new FrontReport(_('Dimension Summary'), "DimensionSummary.pdf", user_pagesize());
+    $rep = new FrontReport(_('Dimension Summary'), $filename, user_pagesize());
 
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);
@@ -100,8 +108,8 @@ function print_dimension_summary()
 		$rep->TextCol(0, 1, $trans['reference']);
 		$rep->TextCol(1, 2, $trans['name']);
 		$rep->TextCol(2, 3, $trans['type_']);
-		$rep->TextCol(3, 4, $trans['date_']);
-		$rep->TextCol(4, 5, $trans['due_date']);
+		$rep->DateCol(3, 4, $trans['date_'], true);
+		$rep->DateCol(4, 5, $trans['due_date'], true);
 		if ($trans['closed'])
 			$str = _('Yes');
 		else
@@ -110,7 +118,7 @@ function print_dimension_summary()
 		if ($showbal)
 		{
 			$balance = getYTD($trans['id']);
-			$rep->TextCol(6, 7, number_format2($balance, 0));
+			$rep->AmountCol(6, 7, $balance, 0);
 		}	
 		$rep->NewLine(1, 2);
 	}

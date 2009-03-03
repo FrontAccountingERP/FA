@@ -281,7 +281,7 @@ class ExcelWriterXML_Sheet
 	{
 		if ($style != null)
 		{
-			if (gettype($style) == 'object')
+/*			if (gettype($style) == 'object')
 			{
 				if (get_class($style) == 'ExcelWriterXML_Style')
 				{
@@ -294,7 +294,7 @@ class ExcelWriterXML_Sheet
 				}
 			}
 			else
-			{
+*/			{
 				$styleID = $style;
 			}
 		}
@@ -327,7 +327,6 @@ class ExcelWriterXML_Sheet
 	function getSheetXML()
 	{
 		ksort($this->cells);
-		
 		$displayRightToLeft = ($this->displayRightToLeft) ? 'ss:RightToLeft="1"' : '';
 		
 		$xml = '<Worksheet ss:Name="'.$this->id.'" '.$displayRightToLeft.'>'."\r";
