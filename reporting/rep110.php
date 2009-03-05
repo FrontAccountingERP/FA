@@ -26,7 +26,6 @@ include_once($path_to_root . "/sales/includes/sales_db.inc");
 
 //----------------------------------------------------------------------------------------------------
 
-// trial_inquiry_controls();
 print_deliveries();
 
 //----------------------------------------------------------------------------------------------------
@@ -62,7 +61,7 @@ function print_deliveries()
 
 	if ($email == 0)
 	{
-		$rep = new FrontReport(_('DELIVERY'), "DeliveryNoteBulk.pdf", user_pagesize());
+		$rep = new FrontReport(_('DELIVERY'), "DeliveryNoteBulk", user_pagesize());
 		$rep->currency = $cur;
 		$rep->Font();
 		$rep->Info($params, $cols, null, $aligns);

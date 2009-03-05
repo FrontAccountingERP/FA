@@ -25,16 +25,12 @@ include_once($path_to_root . "/gl/includes/gl_db.inc");
 
 //----------------------------------------------------------------------------------------------------
 
-// trial_inquiry_controls();
 print_annual_expense_breakdown();
 
 //----------------------------------------------------------------------------------------------------
 
 function getPeriods($year, $account, $dimension, $dimension2)
 {
-	//$yr = date('Y');
-	//$mo = date('m'):
-	// from now
 	$yr = $year;
 	$mo = 12;
 	$date13 = date('Y-m-d',mktime(0,0,0,$mo+1,1,$yr));
@@ -105,16 +101,11 @@ function print_annual_expense_breakdown()
 		$comments = $_POST['PARAM_1'];
 		$destination = $_POST['PARAM_2'];
 	}
-	if (isset($destination) && $destination)
-	{
+	if ($destination)
 		include_once($path_to_root . "/reporting/includes/excel_report.inc");
-		$filename = "AnnualBreakDown.xml";
-	}	
 	else
-	{
 		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
-		$filename = "AnnualBreakDown.pdf";
-	}
+
 	$dec = 1;
 	//$pdec = user_percent_dec();
 
@@ -181,7 +172,7 @@ function print_annual_expense_breakdown()
                     		'to' => ''));
     }
 
-	$rep = new FrontReport(_('Annual Expense Breakdown'), $filename, user_pagesize());
+	$rep = new FrontReport(_('Annual Expense Breakdown'), "AnnualBreakDown", user_pagesize());
 
 	$rep->Font();
 	$rep->Info($params, $cols, $headers, $aligns);

@@ -79,15 +79,9 @@ function print_order_status_list()
 	$comments = $_POST['PARAM_5'];
 	$destination = $_POST['PARAM_6'];
 	if ($destination)
-	{
 		include_once($path_to_root . "/reporting/includes/excel_report.inc");
-		$filename = "OrderStatusListing.xml";
-	}	
 	else
-	{
 		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
-		$filename = "OrderStatusListing.pdf";
-	}
 
 	if ($category == reserved_words::get_all_numeric())
 		$category = 0;
@@ -125,7 +119,7 @@ function print_order_status_list()
 	$cols2 = $cols;
 	$aligns2 = $aligns;
 
-	$rep = new FrontReport(_('Order Status Listing'), $filename, user_pagesize());
+	$rep = new FrontReport(_('Order Status Listing'), "OrderStatusListing", user_pagesize());
 	$rep->Font();
 	$rep->Info($params, $cols, $headers, $aligns, $cols2, $headers2, $aligns2);
 

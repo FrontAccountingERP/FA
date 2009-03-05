@@ -25,7 +25,6 @@ include_once($path_to_root . "/gl/includes/gl_db.inc");
 
 //----------------------------------------------------------------------------------------------------
 
-// trial_inquiry_controls();
 print_Chart_of_Accounts();
 
 //----------------------------------------------------------------------------------------------------
@@ -37,16 +36,11 @@ function print_Chart_of_Accounts()
 	$showbalance = $_POST['PARAM_0'];
 	$comments = $_POST['PARAM_1'];
 	$destination = $_POST['PARAM_2'];
-	if (isset($destination) && $destination)
-	{
+	if ($destination)
 		include_once($path_to_root . "/reporting/includes/excel_report.inc");
-		$filename = "ChartOfAccounts.xml";
-	}	
 	else
-	{
 		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
-		$filename = "ChartOfAccounts.pdf";
-	}
+
 	$dec = 0;
 
 	$cols = array(0, 50, 300, 425, 500);
@@ -57,7 +51,7 @@ function print_Chart_of_Accounts()
 	
 	$params = array(0 => $comments);
 
-	$rep = new FrontReport(_('Chart of Accounts'), $filename, user_pagesize());
+	$rep = new FrontReport(_('Chart of Accounts'), "ChartOfAccounts", user_pagesize());
 	
 	$rep->Font();
 	$rep->Info($params, $cols, $headers, $aligns);

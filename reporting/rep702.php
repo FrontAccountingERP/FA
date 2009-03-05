@@ -26,7 +26,6 @@ include_once($path_to_root . "/includes/ui/ui_view.inc");
 
 //----------------------------------------------------------------------------------------------------
 
-// trial_inquiry_controls();
 print_list_of_journal_entries();
 
 //----------------------------------------------------------------------------------------------------
@@ -40,16 +39,10 @@ function print_list_of_journal_entries()
     $systype = $_POST['PARAM_2'];
     $comments = $_POST['PARAM_3'];
 	$destination = $_POST['PARAM_4'];
-	if (isset($destination) && $destination)
-	{
+	if ($destination)
 		include_once($path_to_root . "/reporting/includes/excel_report.inc");
-		$filename = "JournalEntries.xml";
-	}	
 	else
-	{
 		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
-		$filename = "JournalEntries.pdf";
-	}
 
     $dec = user_price_dec();
 
@@ -65,7 +58,7 @@ function print_list_of_journal_entries()
                     	2 => array('text' => _('Type'), 'from' => systypes::name($systype),
                             'to' => ''));
 
-    $rep = new FrontReport(_('List of Journal Entries'), $filename, user_pagesize());
+    $rep = new FrontReport(_('List of Journal Entries'), "JournalEntries", user_pagesize());
 
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);

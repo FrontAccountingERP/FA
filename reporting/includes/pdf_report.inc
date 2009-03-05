@@ -124,7 +124,7 @@ class FrontReport extends Cpdf
 		}
 		$this->size = array(0, 0, $this->pageWidth, $this->pageHeight);
 		$this->title = $title;
-		$this->filename = $filename;
+		$this->filename = $filename.".pdf";
 		$this->pageNumber = 0;
 		$this->endLine = $this->pageWidth - $this->rightMargin;
 		$this->companyCol = $this->endLine - 150;

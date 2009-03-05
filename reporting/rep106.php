@@ -26,7 +26,6 @@ include_once($path_to_root . "/inventory/includes/db/items_category_db.inc");
 
 //----------------------------------------------------------------------------------------------------
 
-// trial_inquiry_controls();
 print_salesman_list();
 
 //----------------------------------------------------------------------------------------------------
@@ -66,15 +65,9 @@ function print_salesman_list()
 	$comments = $_POST['PARAM_3'];
 	$destination = $_POST['PARAM_4'];
 	if ($destination)
-	{
 		include_once($path_to_root . "/reporting/includes/excel_report.inc");
-		$filename = "SalesmanListing.xml";
-	}	
 	else
-	{
 		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
-		$filename = "SalesmanListing.pdf";
-	}
 
 	if ($summary == 0)
 		$sum = _("No");
@@ -100,7 +93,7 @@ function print_salesman_list()
 	$cols2 = $cols;
 	$aligns2 = $aligns;
 
-	$rep = new FrontReport(_('Salesman Listing'), $filename, user_pagesize());
+	$rep = new FrontReport(_('Salesman Listing'), "SalesmanListing", user_pagesize());
 	$rep->Font();
 	$rep->Info($params, $cols, $headers, $aligns, $cols2, $headers2, $aligns2);
 

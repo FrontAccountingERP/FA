@@ -27,46 +27,12 @@ include_once($path_to_root . "/inventory/includes/db/items_category_db.inc");
 
 //----------------------------------------------------------------------------------------------------
 
-// trial_inquiry_controls();
 print_inventory_sales();
 
 function getTransactions($category, $location, $from, $to)
 {
 	$from = date2sql($from);
 	$to = date2sql($to);
-/*
-	$sql = "SELECT ".TB_PREF."stock_master.category_id,
-			".TB_PREF."stock_category.description AS cat_description,
-			".TB_PREF."stock_master.stock_id,
-			".TB_PREF."stock_master.description,
-			".TB_PREF."stock_moves.loc_code,
-			SUM(-".TB_PREF."stock_moves.qty*".TB_PREF."stock_moves.price*(1-".TB_PREF."stock_moves.discount_percent)) AS amt,
-			SUM(-".TB_PREF."stock_moves.qty) *(".TB_PREF."stock_master.material_cost + ".TB_PREF."stock_master.labour_cost + ".TB_PREF."stock_master.overhead_cost) AS cost
-		FROM ".TB_PREF."stock_master,
-			".TB_PREF."stock_category,
-			".TB_PREF."debtor_trans,
-			".TB_PREF."stock_moves
-		WHERE ".TB_PREF."stock_master.stock_id=".TB_PREF."stock_moves.stock_id
-		AND ".TB_PREF."stock_master.category_id=".TB_PREF."stock_category.category_id
-
-		AND ".TB_PREF."stock_moves.type=".TB_PREF."debtor_trans.type
-		AND ".TB_PREF."stock_moves.trans_no=".TB_PREF."debtor_trans.trans_no
-		AND ".TB_PREF."stock_moves.tran_date>='$from'
-		AND ".TB_PREF."stock_moves.tran_date<='$to'
-		AND ((".TB_PREF."debtor_trans.type=13 AND ".TB_PREF."debtor_trans.version=1) OR ".TB_PREF."stock_moves.type=11)
-		AND (".TB_PREF."stock_master.mb_flag='B' OR ".TB_PREF."stock_master.mb_flag='M')";
-		if ($category != 0)
-			$sql .= " AND ".TB_PREF."stock_master.category_id = '$category'";
-		if ($location != 'all')
-			$sql .= " AND ".TB_PREF."stock_moves.loc_code = '$location'";
-		//$sql .= " AND SUM(".TB_PREF."stock_moves.qty) != 0
-		$sql .= " GROUP BY ".TB_PREF."stock_master.category_id,
-			".TB_PREF."stock_category.description,
-			".TB_PREF."stock_master.stock_id,
-			".TB_PREF."stock_master.description
-		ORDER BY ".TB_PREF."stock_master.category_id,
-			".TB_PREF."stock_master.stock_id";
-*/
 	$sql = "SELECT ".TB_PREF."stock_master.category_id,
 			".TB_PREF."stock_category.description AS cat_description,
 			".TB_PREF."stock_master.stock_id,
@@ -114,15 +80,9 @@ function print_inventory_sales()
 	$comments = $_POST['PARAM_5'];
 	$destination = $_POST['PARAM_6'];
 	if ($destination)
-	{
 		include_once($path_to_root . "/reporting/includes/excel_report.inc");
-		$filename = "InventorySalesReport.xml";
-	}	
 	else
-	{
 		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
-		$filename = "InventorySalesReport.pdf";
-	}
 
     $dec = user_price_dec();
 
@@ -151,7 +111,7 @@ function print_inventory_sales()
     				    2 => array('text' => _('Category'), 'from' => $cat, 'to' => ''),
     				    3 => array('text' => _('Location'), 'from' => $loc, 'to' => ''));
 
-    $rep = new FrontReport(_('Inventory Sales Report'), "InventorySalesReport.pdf", user_pagesize());
+    $rep = new FrontReport(_('Inventory Sales Report'), "InventorySalesReport", user_pagesize());
 
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);

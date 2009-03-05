@@ -11,13 +11,12 @@
 ***********************************************************************/
 /* $Revision$ */
 $page_security = 8;
-include_once($path_to_root . "/reporting/includes/ExcelWriterXML.php");
+include_once($path_to_root . "/reporting/includes/Workbook.php");
 include_once($path_to_root . "/admin/db/company_db.inc");
 include_once($path_to_root . "/config.php");
 
-class FrontReport extends ExcelWriterXML
+class FrontReport extends Workbook
 {
-	var $xml;
 	var $size;
 	var $company;
 	var $user;
@@ -25,6 +24,7 @@ class FrontReport extends ExcelWriterXML
 	var $fiscal_year;
 	var $title;
 	var $filename;
+	var $unique_name;
 	var $path;
 	var $rtl;
 	var $code;
@@ -46,11 +46,19 @@ class FrontReport extends ExcelWriterXML
 	var $y;
 	var $numcols;
 	
+	var $formatTitle;
+	var $formatDateTime;
+	var $formatDate;
+	var $formatHeaderLeft;
+	var $formatHeaderRight;
+	var $formatFooter;
+	var $formatAmount = array();
+	
 	var $sheet;
 
 	function FrontReport($title, $filename, $size = 'A4', $fontsize = 9)
 	{
-		global $comp_path, $dateseps, $thoseps, $decseps;
+		global $comp_path, $dateseps;
 		
 		$this->size = $size;
 		$this->title = $title;
@@ -61,20 +69,19 @@ class FrontReport extends ExcelWriterXML
 		$this->currency = '';
 		$this->rtl = ($_SESSION['language']->dir === 'rtl' ? 'rtl' : 'ltr');
 		$this->code = $_SESSION['language']->encoding;
-		$this->filename = $filename;
-		$this->path = $comp_path.'/'.user_company(). '/pdf_files/';
-		$this->ExcelWriterXML($this->filename);
-		$this->setCharSet($this->code);
-		$this->overwriteFile();
-		$this->showErrorSheet(true);
+		$this->filename = $filename.".xls";
+		$this->unique_name = uniqid('').".xls";
+		$this->path = $comp_path.'/'.user_company(). '/pdf_files';
+		$this->Workbook($this->path."/".$this->unique_name);
 		
-		$this->sheet =& $this->addSheet($this->title);
+		$this->sheet =& $this->add_worksheet($this->title);
 		if ($this->rtl === 'rtl')
-			$this->sheet->displayRightToLeft();
-		$formatTitle =& $this->addStyle('formatTitle');	
-		$formatTitle->fontSize('16');
-		$formatTitle->fontBold();
-		$formatTitle->border('Top', '2', 'darkgray');
+			$this->sheet->set_rtl();
+		$this->formatTitle =& $this->add_format();	
+		$this->formatTitle->set_size(16);
+		$this->formatTitle->set_bold();
+		$this->formatTitle->set_top(2);
+		$this->formatTitle->set_top_color('gray');
 	
 		$how = user_date_format();
 		$sep = $dateseps[user_date_sep()];
@@ -95,48 +102,52 @@ class FrontReport extends ExcelWriterXML
 			$dateformat_long = "yyyy{$sep}mm{$sep}dd\ \ hh:mm";
 			$dateformat = "yyyy{$sep}mm{$sep}dd";
 		}	
-		$formatDateTime =& $this->addStyle('formatDateTime');
-		$formatDateTime->numberFormatDateTime($dateformat_long);
-		$formatDateTime->alignHorizontal('Left');
-		$formatDate =& $this->addStyle('formatDate');
-		$formatDate->numberFormatDateTime($dateformat);
-		$formatDate->alignHorizontal('Left');
-		$formatRight =& $this->addStyle('formatRight');
-		$formatRight->alignHorizontal('Right');
+		$this->formatDateTime =& $this->add_format();
+		$this->formatDateTime->set_num_format($dateformat_long);
+		$this->formatDateTime->set_align('left');
+		$this->formatDate =& $this->add_format();
+		$this->formatDate->set_num_format($dateformat);
+		$this->formatDate->set_align('left');
+		$this->formatRight =& $this->add_format();
+		$this->formatRight->set_align('right');
 		
-		$formatHeaderLeft =& $this->addStyle("formatHeaderLeft");
-		$formatHeaderLeft->fontItalic();
-		$formatHeaderLeft->border('Top', '2', 'darkgray');
-		$formatHeaderLeft->border('Bottom', '2', 'darkgray');
-		$formatHeaderLeft->alignVertical('Center');
-		$formatHeaderRight =& $this->addStyle("formatHeaderRight");
-		$formatHeaderRight->fontItalic();
-		$formatHeaderRight->alignHorizontal('Right');
-		$formatHeaderRight->border('Top', '2', 'darkgray');
-		$formatHeaderRight->border('Bottom', '2', 'darkgray');
-		$formatHeaderRight->alignVertical('Center');
-		$formatFooter =& $this->addStyle("formatFooter");
-		$formatFooter->border('Top', '2', 'darkgray');
+		$this->formatHeaderLeft =& $this->add_format();
+		$this->formatHeaderLeft->set_italic();
+		$this->formatHeaderLeft->set_top(2);
+		$this->formatHeaderLeft->set_top_color('gray');
+		$this->formatHeaderLeft->set_bottom(2);
+		$this->formatHeaderLeft->set_bottom_color('gray');
+		$this->formatHeaderLeft->set_align('vcenter');
+		$this->formatHeaderLeft->set_align('left');
+		$this->formatHeaderRight =& $this->add_format();
+		$this->formatHeaderRight->set_italic();
+		$this->formatHeaderRight->set_top(2);
+		$this->formatHeaderRight->set_top_color('gray');
+		$this->formatHeaderRight->set_bottom(2);
+		$this->formatHeaderRight->set_bottom_color('gray');
+		$this->formatHeaderRight->set_align('vcenter');
+		$this->formatHeaderRight->set_align('right');
+		$this->formatFooter =& $this->add_format();
+		$this->formatFooter->set_top(2);
+		$this->formatFooter->set_top_color('gray');
 	}
 	
 	function NumFormat($dec) 
 	{
-		global $thoseps,$decseps;
-		
-		$dec = (int)$dec;
-		$stylename = 'formatAmount'.$dec;
-		if (!isset($this->styles[$stylename])) 
+		if (!isset($this->formatAmount[$dec]))
 		{
+			global $thoseps,$decseps;
+			$dec = (int)$dec;
 			$tsep = $thoseps[user_tho_sep()];
 			$dsep = $decseps[user_dec_sep()];
 			$format = "###{$tsep}###{$tsep}###{$tsep}##0";
 			if ($dec>0)
 				$format .= "{$dsep}".str_repeat('0',$dec);
-			$style =& $this->addStyle($stylename);
-			$style->numberFormat($format);
-			$style->alignHorizontal('Right');
+			$this->formatAmount[$dec] =& $this->add_format();
+			$this->formatAmount[$dec]->set_num_format($format);
+			$this->formatAmount[$dec]->set_align('right');
 		}
-		return $stylename;
+		return $this->formatAmount[$dec];
 	}
 
 	function Font($style = 'normal')
@@ -148,10 +159,10 @@ class FrontReport extends ExcelWriterXML
 	{
 		global $app_title, $version, $power_by, $power_url;
 		$this->company = get_company_prefs();
-		$this->docTitle($this->title);
-		$this->docAuthor($app_title . ' ' . $version);
-		$this->docCompany($this->company['coy_name']);
-		$this->docManager($power_by . ' - ' . $power_url);
+		//$this->docTitle($this->title);
+		//$this->docAuthor($app_title . ' ' . $version);
+		//$this->docCompany($this->company['coy_name']);
+		//$this->docManager($power_by . ' - ' . $power_url);
 		$year = get_current_fiscalyear();
 		if ($year['closed'] == 0)
 			$how = _("Active");
@@ -172,48 +183,47 @@ class FrontReport extends ExcelWriterXML
 		if ($tcols > $this->numcols)
 			$this->numcols = $tcols;
 		for ($i = 0; $i < $this->numcols; $i++)
-			$this->sheet->columnWidth($i+1, $this->cols[$i + 1] - $this->cols[$i]);
+			$this->sheet->set_column($i, $i, $this->px2units($this->cols[$i + 1] - $this->cols[$i]));
 	}
 
 	function Header()
 	{
 		$this->y = 0;
 		$tcol = $this->numcols - 1;
-		$this->NewLine();
-		$this->sheet->rowHeight($this->y, 20);
-		$this->sheet->writeString($this->y, 1, $this->title, 'formatTitle');
-		$this->sheet->cellMerge($this->y, 1, $tcol, 0);
-
+		$this->sheet->set_row($this->y, 20);
+		for ($i = 0; $i < $this->numcols; $i++)
+			$this->sheet->write_blank($this->y, $i, $this->formatTitle);
+		$this->sheet->write_string($this->y, 0, $this->title, $this->formatTitle);
+		$this->sheet->merge_cells($this->y, 0, $this->y, $tcol);
 		$this->NewLine();
 
 		$str = _("Print Out Date") . ':';
-		$this->sheet->writeString($this->y, 1, $str);
-		$date = $this->sheet->convertMysqlDateTime(date('Y-m-d H:i:s'));
-		$this->sheet->writeDateTime($this->y, 2, $date, 'formatDateTime');
-		$this->sheet->writeString($this->y, $tcol, $this->company['coy_name']);
-		$this->sheet->cellMerge($this->y, $tcol, 1, 0);
+		$this->sheet->write_string($this->y, 0, $str);
+		$this->sheet->write_string($this->y, 1, Today() . "  ".Now());
+		$this->sheet->write_string($this->y, $tcol-1, $this->company['coy_name']);
+		$this->sheet->merge_cells($this->y, $tcol-1, $this->y, $tcol);
 		$this->NewLine();
 		$str = _("Fiscal Year") . ':';
-		$this->sheet->writeString($this->y, 1, $str);
+		$this->sheet->write_string($this->y, 0, $str);
 		$str = $this->fiscal_year;
-		$this->sheet->writeString($this->y, 2, $str);
-		$this->sheet->writeString($this->y, $tcol, $this->host);
-		$this->sheet->cellMerge($this->y, $tcol, 1, 0);
+		$this->sheet->write_string($this->y, 1, $str);
+		$this->sheet->write_string($this->y, $tcol-1, $this->host);
+		$this->sheet->merge_cells($this->y, $tcol-1, $this->y, $tcol);
 		for ($i = 1; $i < count($this->params); $i++)
 		{
 			if ($this->params[$i]['from'] != '')
 			{
 				$this->NewLine();
 				$str = $this->params[$i]['text'] . ':';
-				$this->sheet->writeString($this->y, 1, $str);
+				$this->sheet->write_string($this->y, 0, $str);
 				$str = $this->params[$i]['from'];
 				if ($this->params[$i]['to'] != '')
 					$str .= " - " . $this->params[$i]['to'];
-				$this->sheet->writeString($this->y, 2, $str);
+				$this->sheet->write_string($this->y, 1, $str);
 				if ($i == 1)
 				{
-					$this->sheet->writeString($this->y, $tcol, $this->user);
-					$this->sheet->cellMerge($this->y, $tcol, 1, 0);
+					$this->sheet->write_string($this->y, $tcol-1, $this->user);
+					$this->sheet->merge_cells($this->y, $tcol-1, $this->y, $tcol);
 				}	
 			}
 		}
@@ -221,8 +231,8 @@ class FrontReport extends ExcelWriterXML
 		{
 			$this->NewLine();
 			$str = _("Comments") . ':';
-			$this->sheet->writeString($this->y, 1, $str);
-			$this->sheet->writeString($this->y, 2, $this->params[0]);
+			$this->sheet->write_string($this->y, 0, $str);
+			$this->sheet->write_string($this->y, 1, $this->params[0]);
 		}
 		$this->NewLine();
 		if ($this->headers2 != null)
@@ -232,13 +242,13 @@ class FrontReport extends ExcelWriterXML
 				if ($this->cols2[$j] >= $this->cols[$i] && $this->cols2[$j] <= $this->cols[$i + 1])
 				{
 					if ($this->aligns2[$j] == "right")
-						$this->sheet->writeString($this->y, $i + 1, $this->headers2[$j], 'formatHeaderRight');
+						$this->sheet->write_string($this->y, $i, $this->headers2[$j], $this->formatHeaderRight);
 					else	
-						$this->sheet->writeString($this->y, $i + 1, $this->headers2[$j], 'formatHeaderLeft');
+						$this->sheet->write_string($this->y, $i, $this->headers2[$j], $this->formatHeaderLeft);
 					$j++;	
 				}
 				else
-					$this->sheet->writeString($this->y, $i + 1, "", 'formatHeaderLeft');
+					$this->sheet->write_string($this->y, $i, "", $this->formatHeaderLeft);
 			}		
 			$this->NewLine();
 		}
@@ -250,9 +260,9 @@ class FrontReport extends ExcelWriterXML
 			else
 				$header = $this->headers[$i];
 			if ($this->aligns[$i] == "right")
-				$this->sheet->writeString($this->y, $i + 1, $header, 'formatHeaderRight');
+				$this->sheet->write_string($this->y, $i, $header, $this->formatHeaderRight);
 			else	
-				$this->sheet->writeString($this->y, $i + 1, $header, 'formatHeaderLeft');
+				$this->sheet->write_string($this->y, $i, $header, $this->formatHeaderLeft);
 		}		
 		$this->NewLine();
 	}
@@ -290,33 +300,36 @@ class FrontReport extends ExcelWriterXML
 	function TextCol($c, $n, $txt, $corr=0, $r=0)
 	{
 		if ($this->aligns[$c] == 'right')
-			$this->sheet->writeString($this->y, $c + 1, $txt, 'formatRight');
+			$this->sheet->write_string($this->y, $c, $txt, $this->formatRight);
 		else	
-			$this->sheet->writeString($this->y, $c + 1, $txt);
+			$this->sheet->write_string($this->y, $c, $txt);
 		if ($n - $c > 1)
-			$this->sheet->cellMerge($this->y, $c + 1, $n - $c - 1, 0);
+			$this->sheet->merge_cells($this->y, $c, $this->y, $n - 1);
 	}
 
 	function AmountCol($c, $n, $txt, $dec=0, $corr=0, $r=0) 
 	{ 
 		if (!is_numeric($txt))
 			$txt = 0;
-		$this->sheet->writeNumber($this->y, $c + 1, $txt, $this->NumFormat($dec)); 
+		$this->sheet->write_number($this->y, $c, $txt, $this->NumFormat($dec)); 
 	}
 	
 	function DateCol($c, $n, $txt, $conv=false, $corr=0, $r=0) 
 	{
 		if (!$conv)
 			$txt = date2sql($txt);
-		$date = $this->sheet->convertMysqlDate($txt);
-		$this->sheet->writeDateTime($this->y, $c + 1, $date, 'formatDate');
+		list($year, $mo, $day) = explode("-", $txt);	
+		$date = $this->ymd2date((int)$year, (int)$mo, (int)$day);
+		//$date = $this->ymd2date(2009, 3, 2);
+		$this->sheet->write_number($this->y, $c, $date, $this->formatDate);
+		//$this->sheet->write_string($this->y, $c, $txt);
 	}
 
 	function TextCol2($c, $n, $txt, $corr=0, $r=0)
 	{
-		$this->sheet->writeString($this->y, $c + 1, $txt);
+		$this->sheet->write_string($this->y, $c, $txt);
 		if ($n - $c > 1)
-			$this->sheet->cellMerge($this->y, $c + 1, $n - $c - 1, 0);
+			$this->sheet->merge_cells($this->y, $c, $this->y, $n - 1);
 	}
 
 	function TextColLines($c, $n, $txt, $corr=0, $r=0)
@@ -344,52 +357,78 @@ class FrontReport extends ExcelWriterXML
 		$this->y += $l;
 	}
 
+  	function ymd2Date($year, $mon, $day) // XLS internal date representation is a number between 1900-01-01 and 2078-12-31
+  	{										// if we need the time part too, we have to add this value after a decimalpoint.
+      	$mo = array(0,31,28,31,30,31,30,31,31,30,31,30,31);
+      	$BASE = 1900;
+  	  	$MAXYEAR = 2075;
+  	  	if (($year % 4) == 0)
+      		$mo[2]++;
+      	if ($mon < 1)
+      	    $mon = 1;
+      	elseif ($mon > 12)
+      	    $mon = 12;
+      	if ($day < 1)
+      	    $day = 1;
+      	elseif ($day > $mo[$mon])
+      	    $day = $mo[$mon];
+      	if ($year < $BASE)
+      	    $year = $BASE;
+      	elseif ($year > $MAXYEAR)
+      	    $year = $MAXYEAR;
+      	$jul = (int)$day;
+      	for ($n = 1; $n < $mon; $n++)
+      	{
+      	    $jul += $mo[$n];
+      	}
+      	for ($n = $BASE; $n < $year; $n++)
+      	{
+      	    $jul += 365;
+      	    if (($n % 4) == 0)
+      	    	$jul++;
+      	}
+      	return $jul;
+  	}
+  
+  	function px2units($px) // XLS app conversion. Not bulletproof.
+  	{
+  		$excel_column_width_factor = 256;
+  		$unit_offset_length = 6.5;
+  		/*	
+  		$unit_offset_map = array(0, 36, 73, 109, 146, 182, 219);
+  		$width_units = $excel_column_width_factor * ($px / $unit_offset_length);
+  		$width_units += $unit_offset_map[($px % $unit_offset_length)];
+  		return $width_units;
+  	  	$pixels = (float)((float)$px / (float)$excel_column_width_factor) * $unit_offset_length;
+    	$ofs = $px % $excel_column_width_factor;
+    	$pixels += round((float)$ofs / ((float) $excel_column_width_factor / $unit_offset_length));
+    	return (int)$pixels;
+  		*/
+  		return ($px / $unit_offset_length);
+  	}	
+
 	function End($email=0, $subject=null, $myrow=null, $doctype = 0)
 	{
-		global $comp_path;
-		$this->sheet->cellMerge($this->y, 1, $this->numcols - 1, 0);
-		$this->sheet->writeString($this->y, 1, "", 'formatFooter');
-		
-		$dir =  $comp_path.'/'.user_company(). '/pdf_files';
-		//save the file
-		if (!file_exists($dir))
-		{
-			mkdir ($dir,0777);
-		}
-		if(in_ajax()) 
-		{
-			global $Ajax;
-			// do not use standard filenames or your sensitive company data 
-			// are world readable
-			//$fname = $dir.'/'.uniqid('').'.xml';
-			$fname = $dir.'/'."test".'.xml';
-			$this->writeData($fname);
-			if (user_rep_popup()) 
-				$Ajax->popup($fname); // when embeded pdf viewer used
-			else
-				$Ajax->redirect($fname); // otherwise use faster method
-		} 
-		else 
-		{
-			$this->sendHeaders();
-			$this->writeData();
-		}	
+		for ($i = 0; $i < $this->numcols; $i++)
+			$this->sheet->write_blank($this->y, $i, $this->formatFooter);
+		$this->sheet->merge_cells($this->y, 0, $this->y, $this->numcols - 1);
+		$this->close();
 		// first have a look through the directory, 
 		// and remove old temporary pdfs
-		/*
-		if ($d = @opendir($dir)) {
+		if ($d = @opendir($this->path)) {
 			while (($file = readdir($d)) !== false) {
-				if (!is_file($dir.'/'.$file) || $file == 'index.php') continue;
-			// then check to see if this one is too old
-				$ftime = filemtime($dir.'/'.$file);
-			 // seems 3 min is enough for any report download, isn't it?
+				if (!is_file($this->path.'/'.$file) || $file == 'index.php') continue;
+				// then check to see if this one is too old
+				$ftime = filemtime($this->path.'/'.$file);
+			 	// seems 3 min is enough for any report download, isn't it?
 				if (time()-$ftime > 180){
-					unlink($dir.'/'.$file);
+					unlink($this->path.'/'.$file);
 				}
 			}
 			closedir($d);
 		}
-		*/
+		meta_forward($_SERVER['PHP_SELF'], "xls=1&filename=$this->filename&unique=$this->unique_name");
+		exit();
 	}
 }
 

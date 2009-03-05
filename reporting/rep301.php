@@ -26,7 +26,6 @@ include_once($path_to_root . "/inventory/includes/db/items_category_db.inc");
 
 //----------------------------------------------------------------------------------------------------
 
-// trial_inquiry_controls();
 print_inventory_valuation_report();
 
 function getTransactions($category, $location)
@@ -74,15 +73,9 @@ function print_inventory_valuation_report()
     $comments = $_POST['PARAM_3'];
 	$destination = $_POST['PARAM_4'];
 	if ($destination)
-	{
 		include_once($path_to_root . "/reporting/includes/excel_report.inc");
-		$filename = "InventoryValReport.xml";
-	}	
 	else
-	{
 		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
-		$filename = "InventoryValReport.pdf";
-	}
 
     $dec = user_price_dec();
 
@@ -110,7 +103,7 @@ function print_inventory_valuation_report()
     				    1 => array('text' => _('Category'), 'from' => $cat, 'to' => ''),
     				    2 => array('text' => _('Location'), 'from' => $loc, 'to' => ''));
 
-    $rep = new FrontReport(_('Inventory Valuation Report'), $filename, user_pagesize());
+    $rep = new FrontReport(_('Inventory Valuation Report'), "InventoryValReport", user_pagesize());
 
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);

@@ -25,7 +25,6 @@ include_once($path_to_root . "/gl/includes/gl_db.inc");
 
 //----------------------------------------------------------------------------------------------------
 
-// trial_inquiry_controls();
 print_outstanding_GRN();
 
 function getTransactions($fromsupp)
@@ -67,15 +66,9 @@ function print_outstanding_GRN()
     $comments = $_POST['PARAM_1'];
 	$destination = $_POST['PARAM_2'];
 	if ($destination)
-	{
 		include_once($path_to_root . "/reporting/includes/excel_report.inc");
-		$filename = "OutstandingGRN.xml";
-	}	
 	else
-	{
 		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
-		$filename = "OutstandingGRN.pdf";
-	}
 
 	if ($fromsupp == reserved_words::get_all_numeric())
 		$from = _('All');
@@ -93,7 +86,7 @@ function print_outstanding_GRN()
     $params =   array( 	0 => $comments,
     				    1 => array('text' => _('Supplier'), 'from' => $from, 'to' => ''));
 
-    $rep = new FrontReport(_('Outstanding GRNs Report'), $filename, user_pagesize());
+    $rep = new FrontReport(_('Outstanding GRNs Report'), "OutstandingGRN", user_pagesize());
 
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);

@@ -25,7 +25,6 @@ include_once($path_to_root . "/gl/includes/gl_db.inc");
 
 //----------------------------------------------------------------------------------------------------
 
-// trial_inquiry_controls();
 print_payment_report();
 
 function getTransactions($supplier, $date)
@@ -65,15 +64,9 @@ function print_payment_report()
     $comments = $_POST['PARAM_3'];
 	$destination = $_POST['PARAM_4'];
 	if ($destination)
-	{
 		include_once($path_to_root . "/reporting/includes/excel_report.inc");
-		$filename = "PaymentReport.xml";
-	}	
 	else
-	{
 		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
-		$filename = "PaymentReport.pdf";
-	}
 
 	if ($fromsupp == reserved_words::get_all_numeric())
 		$from = _('All');
@@ -102,7 +95,7 @@ function print_payment_report()
     				    2 => array('text' => _('Supplier'), 'from' => $from, 'to' => ''),
     				    3 => array(  'text' => _('Currency'),'from' => $currency, 'to' => ''));
 
-    $rep = new FrontReport(_('Payment Report'), "PaymentReport.pdf", user_pagesize());
+    $rep = new FrontReport(_('Payment Report'), "PaymentReport", user_pagesize());
 
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);

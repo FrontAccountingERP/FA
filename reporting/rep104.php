@@ -28,7 +28,6 @@ include_once($path_to_root . "/inventory/includes/db/items_category_db.inc");
 
 //----------------------------------------------------------------------------------------------------
 
-// trial_inquiry_controls();
 print_price_listing();
 
 function fetch_items($category=0)
@@ -77,15 +76,9 @@ function print_price_listing()
     $comments = $_POST['PARAM_5'];
 	$destination = $_POST['PARAM_6'];
 	if ($destination)
-	{
 		include_once($path_to_root . "/reporting/includes/excel_report.inc");
-		$filename = "PriceListing.xml";
-	}	
 	else
-	{
 		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
-		$filename = "PriceListing.pdf";
-	}
 
     $dec = user_price_dec();
 
@@ -128,7 +121,7 @@ function print_price_listing()
 	else
 		$user_comp = "";
 
-    $rep = new FrontReport(_('Price Listing'), "PriceListing.pdf", user_pagesize());
+    $rep = new FrontReport(_('Price Listing'), "PriceListing", user_pagesize());
 
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);

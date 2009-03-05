@@ -25,7 +25,6 @@ include_once($path_to_root . "/sales/includes/sales_db.inc");
 
 //----------------------------------------------------------------------------------------------------
 
-// trial_inquiry_controls();
 print_sales_orders();
 
 $print_as_quote = 0;
@@ -64,9 +63,9 @@ function print_sales_orders()
 	if ($email == 0)
 	{
 		if ($print_as_quote == 0)
-			$rep = new FrontReport(_("SALES ORDER"), "SalesOrderBulk.pdf", user_pagesize());
+			$rep = new FrontReport(_("SALES ORDER"), "SalesOrderBulk", user_pagesize());
 		else
-			$rep = new FrontReport(_("QUOTE"), "QuoteBulk.pdf", user_pagesize());
+			$rep = new FrontReport(_("QUOTE"), "QuoteBulk", user_pagesize());
 		$rep->currency = $cur;
 		$rep->Font();
 		$rep->Info($params, $cols, null, $aligns);

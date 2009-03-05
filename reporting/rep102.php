@@ -76,15 +76,9 @@ function print_aged_customer_analysis()
     $comments = $_POST['PARAM_5'];
 	$destination = $_POST['PARAM_6'];
 	if ($destination)
-	{
 		include_once($path_to_root . "/reporting/includes/excel_report.inc");
-		$filename = "AgedCustomerAnalysis.xml";
-	}	
 	else
-	{
 		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
-		$filename = "AgedCustomerAnalysis.pdf";
-	}
 	if ($graphics)
 	{
 		include_once($path_to_root . "/reporting/includes/class.graphic.inc");
@@ -129,7 +123,7 @@ function print_aged_customer_analysis()
 
 	if ($convert)
 		$headers[2] = _('Currency');
-    $rep = new FrontReport(_('Aged Customer Analysis'), $filename, user_pagesize());
+    $rep = new FrontReport(_('Aged Customer Analysis'), "AgedCustomerAnalysis", user_pagesize());
 
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);

@@ -25,7 +25,6 @@ include_once($path_to_root . "/gl/includes/gl_db.inc");
 
 //----------------------------------------------------------------------------------------------------
 
-// trial_inquiry_controls();
 print_bank_transactions();
 
 //----------------------------------------------------------------------------------------------------
@@ -62,19 +61,12 @@ function print_bank_transactions()
 	$to = $_POST['PARAM_2'];
 	$comments = $_POST['PARAM_3'];
 	$destination = $_POST['PARAM_4'];
-
 	if ($destination)
-	{
 		include_once($path_to_root . "/reporting/includes/excel_report.inc");
-		$filename = "BankStatement.xml";
-	}	
 	else
-	{
 		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
-		$filename = "BankStatement.pdf";
-	}
 
-	$rep = new FrontReport(_('Bank Statement'), $filename, user_pagesize());
+	$rep = new FrontReport(_('Bank Statement'), "BankStatement", user_pagesize());
 	$dec = user_price_dec();
 
 	$cols = array(0, 90, 110, 170, 225, 350, 400, 460, 520);

@@ -24,7 +24,6 @@ include_once($path_to_root . "/includes/data_checks.inc");
 
 //----------------------------------------------------------------------------------------------------
 
-// trial_inquiry_controls();
 print_po();
 
 //----------------------------------------------------------------------------------------------------
@@ -84,7 +83,7 @@ function print_po()
 
 	if ($email == 0)
 	{
-		$rep = new FrontReport(_('PURCHASE ORDER'), "PurchaseOrderBulk.pdf", user_pagesize());
+		$rep = new FrontReport(_('PURCHASE ORDER'), "PurchaseOrderBulk", user_pagesize());
 		$rep->currency = $cur;
 		$rep->Font();
 		$rep->Info($params, $cols, null, $aligns);

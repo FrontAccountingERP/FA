@@ -25,7 +25,6 @@ include_once($path_to_root . "/gl/includes/gl_db.inc");
 
 //----------------------------------------------------------------------------------------------------
 
-// trial_inquiry_controls();
 print_aged_supplier_analysis();
 
 //----------------------------------------------------------------------------------------------------
@@ -78,15 +77,9 @@ function print_aged_supplier_analysis()
     $comments = $_POST['PARAM_5'];
 	$destination = $_POST['PARAM_6'];
 	if ($destination)
-	{
 		include_once($path_to_root . "/reporting/includes/excel_report.inc");
-		$filename = "AgedSupplierAnalysis.xml";
-	}	
 	else
-	{
 		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
-		$filename = "AgedSupplierAnalysis.pdf";
-	}
 	if ($graphics)
 	{
 		include_once($path_to_root . "/reporting/includes/class.graphic.inc");
@@ -131,7 +124,7 @@ function print_aged_supplier_analysis()
 
 	if ($convert)
 		$headers[2] = _('currency');
-    $rep = new FrontReport(_('Aged Supplier Analysis'), $filename, user_pagesize());
+    $rep = new FrontReport(_('Aged Supplier Analysis'), "AgedSupplierAnalysis", user_pagesize());
 
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);

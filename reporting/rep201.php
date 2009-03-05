@@ -25,7 +25,6 @@ include_once($path_to_root . "/gl/includes/gl_db.inc");
 
 //----------------------------------------------------------------------------------------------------
 
-// trial_inquiry_controls();
 print_supplier_balances();
 
 function getTransactions($supplier_id, $date)
@@ -59,15 +58,9 @@ function print_supplier_balances()
     $comments = $_POST['PARAM_3'];
 	$destination = $_POST['PARAM_4'];
 	if ($destination)
-	{
 		include_once($path_to_root . "/reporting/includes/excel_report.inc");
-		$filename = "SupplierBalances.xml";
-	}	
 	else
-	{
 		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
-		$filename = "SupplierBalances.pdf";
-	}
 
 	if ($fromsupp == reserved_words::get_all_numeric())
 		$from = _('All');
@@ -95,7 +88,7 @@ function print_supplier_balances()
     				    2 => array('text' => _('Supplier'), 'from' => $from, 'to' => ''),
     				    3 => array(  'text' => _('Currency'),'from' => $currency, 'to' => ''));
 
-    $rep = new FrontReport(_('Supplier Balances'), $filename, user_pagesize());
+    $rep = new FrontReport(_('Supplier Balances'), "SupplierBalances", user_pagesize());
 
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);

@@ -26,7 +26,6 @@ include_once($path_to_root . "/inventory/includes/db/items_category_db.inc");
 
 //----------------------------------------------------------------------------------------------------
 
-// trial_inquiry_controls();
 print_stock_check();
 
 function getTransactions($category, $location)
@@ -114,15 +113,9 @@ function print_stock_check()
     $comments = $_POST['PARAM_4'];
 	$destination = $_POST['PARAM_5'];
 	if ($destination)
-	{
 		include_once($path_to_root . "/reporting/includes/excel_report.inc");
-		$filename = "StockCheckSheet.xml";
-	}	
 	else
-	{
 		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
-		$filename = "StockCheckSheet.pdf";
-	}
 
 	if ($category == reserved_words::get_all_numeric())
 		$category = 0;
@@ -161,7 +154,7 @@ function print_stock_check()
 	else
 		$user_comp = "";
 
-    $rep = new FrontReport(_('Stock Check Sheets'), $filename, user_pagesize());
+    $rep = new FrontReport(_('Stock Check Sheets'), "StockCheckSheet", user_pagesize());
 
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);

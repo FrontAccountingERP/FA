@@ -25,7 +25,6 @@ include_once($path_to_root . "/gl/includes/gl_db.inc");
 
 //----------------------------------------------------------------------------------------------------
 
-// trial_inquiry_controls();
 print_trial_balance();
 
 //----------------------------------------------------------------------------------------------------
@@ -90,15 +89,9 @@ function print_trial_balance()
 		$destination = $_POST['PARAM_5'];
 	}
 	if ($destination)
-	{
 		include_once($path_to_root . "/reporting/includes/excel_report.inc");
-		$filename = "TrialBalance.xml";
-	}	
 	else
-	{
 		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
-		$filename = "TrialBalance.pdf";
-	}
 	$dec = user_price_dec();
 
 	//$cols2 = array(0, 50, 230, 330, 430, 530);
@@ -140,7 +133,7 @@ function print_trial_balance()
     				    1 => array('text' => _('Period'),'from' => $from, 'to' => $to));
     }
 
-	$rep = new FrontReport(_('Trial Balance'), $filename, user_pagesize());
+	$rep = new FrontReport(_('Trial Balance'), "TrialBalance", user_pagesize());
 
 	$rep->Font();
 	$rep->Info($params, $cols, $headers, $aligns, $cols2, $headers2, $aligns2);

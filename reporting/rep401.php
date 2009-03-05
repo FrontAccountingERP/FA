@@ -26,7 +26,6 @@ include_once($path_to_root . "/inventory/includes/db/items_db.inc");
 
 //----------------------------------------------------------------------------------------------------
 
-// trial_inquiry_controls();
 print_bill_of_material();
 
 function getTransactions($from, $to)
@@ -61,15 +60,9 @@ function print_bill_of_material()
     $comments = $_POST['PARAM_2'];
 	$destination = $_POST['PARAM_3'];
 	if ($destination)
-	{
 		include_once($path_to_root . "/reporting/includes/excel_report.inc");
-		$filename = "BillOfMaterial.xml";
-	}	
 	else
-	{
 		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
-		$filename = "BillOfMaterial.pdf";
-	}
 
 	$cols = array(0, 50, 305, 375, 445,	515);
 
@@ -80,7 +73,7 @@ function print_bill_of_material()
     $params =   array( 	0 => $comments,
     				    1 => array('text' => _('Component'), 'from' => $frompart, 'to' => $topart));
 
-    $rep = new FrontReport(_('Bill of Material Listing'), $filename, user_pagesize());
+    $rep = new FrontReport(_('Bill of Material Listing'), "BillOfMaterial", user_pagesize());
 
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);

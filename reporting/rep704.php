@@ -25,7 +25,6 @@ include_once($path_to_root . "/gl/includes/gl_db.inc");
 
 //----------------------------------------------------------------------------------------------------
 
-// trial_inquiry_controls();
 print_GL_transactions();
 
 //----------------------------------------------------------------------------------------------------
@@ -59,17 +58,12 @@ function print_GL_transactions()
 		$comments = $_POST['PARAM_4'];
 		$destination = $_POST['PARAM_5'];
 	}
-	if (isset($destination) && $destination)
-	{
+	if ($destination)
 		include_once($path_to_root . "/reporting/includes/excel_report.inc");
-		$filename = "GLAccountTransactions.xml";
-	}	
 	else
-	{
 		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
-		$filename = "GLAccountTransactions.pdf";
-	}
-	$rep = new FrontReport(_('GL Account Transactions'), $filename, user_pagesize());
+
+	$rep = new FrontReport(_('GL Account Transactions'), "GLAccountTransactions", user_pagesize());
 	$dec = user_price_dec();
 
 	$cols = array(0, 70, 90, 140, 210, 280, 340, 400, 450, 510, 570);

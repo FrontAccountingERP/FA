@@ -25,7 +25,6 @@ include_once($path_to_root . "/gl/includes/gl_db.inc");
 
 //----------------------------------------------------------------------------------------------------
 
-// trial_inquiry_controls();
 print_balance_sheet();
 
 
@@ -62,15 +61,9 @@ function print_balance_sheet()
 		$destination = $_POST['PARAM_4'];
 	}
 	if ($destination)
-	{
 		include_once($path_to_root . "/reporting/includes/excel_report.inc");
-		$filename = "BalanceSheet.xml";
-	}	
 	else
-	{
 		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
-		$filename = "BalanceSheet.pdf";
-	}
 	if ($graphics)
 	{
 		include_once($path_to_root . "/reporting/includes/class.graphic.inc");
@@ -107,9 +100,8 @@ function print_balance_sheet()
     	$params =   array( 	0 => $comments,
     				    1 => array('text' => _('Period'),'from' => $from, 'to' => $to));
     }
-	//display_error("Error!");
 
-	$rep = new FrontReport(_('Balance Sheet'), $filename, user_pagesize());
+	$rep = new FrontReport(_('Balance Sheet'), "BalanceSheet", user_pagesize());
 	$rep->Font();
 	$rep->Info($params, $cols, $headers, $aligns);
 	$rep->Header();

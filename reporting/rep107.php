@@ -25,7 +25,6 @@ include_once($path_to_root . "/sales/includes/sales_db.inc");
 
 //----------------------------------------------------------------------------------------------------
 
-// trial_inquiry_controls();
 print_invoices();
 
 //----------------------------------------------------------------------------------------------------
@@ -66,7 +65,7 @@ function print_invoices()
 
 	if ($email == 0)
 	{
-		$rep = new FrontReport(_('INVOICE'), "InvoiceBulk.pdf", user_pagesize());
+		$rep = new FrontReport(_('INVOICE'), "InvoiceBulk", user_pagesize());
 		$rep->currency = $cur;
 		$rep->Font();
 		$rep->Info($params, $cols, null, $aligns);

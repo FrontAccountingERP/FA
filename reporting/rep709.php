@@ -82,11 +82,10 @@ function print_tax_report()
 	$comments = $_POST['PARAM_3'];
 
 	include_once($path_to_root . "/reporting/includes/pdf_report.inc");
-	$filename = "TaxReport.pdf";
 
 	$dec = user_price_dec();
 
-	$rep = new FrontReport(_('Tax Report'), $filename, user_pagesize());
+	$rep = new FrontReport(_('Tax Report'), "TaxReport", user_pagesize());
 	if ($summaryOnly == 1)
 		$summary = _('Summary Only');
 	else

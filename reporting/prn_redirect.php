@@ -17,6 +17,33 @@ $path_to_root = "..";
 $page_security = 2;	// this level is later overriden in rep file
 include_once($path_to_root . "/includes/session.inc");
 
+if (isset($_GET['xls']))
+{
+	$filename = $_GET['filename'];
+	$unique_name = $_GET['unique'];
+	$path =  $comp_path.'/'.user_company(). '/pdf_files/';
+	header("Content-type: application/vnd.ms-excel");
+	header("Content-Disposition: attachment; filename=$filename" );
+	header("Expires: 0");
+	header("Cache-Control: must-revalidate, post-check=0,pre-check=0");
+	header("Pragma: public");
+	echo file_get_contents($path.$unique_name);
+	exit();
+}
+elseif (isset($_GET['xml']))
+{
+	$filename = $_GET['filename'];
+	$unique_name = $_GET['unique'];
+	$path =  $comp_path.'/'.user_company(). '/pdf_files/';
+	header("content-type: text/xml");
+	header("Content-Disposition: attachment; filename=$filename");
+	header("Expires: 0");
+	header("Cache-Control: must-revalidate, post-check=0,pre-check=0");
+	header("Pragma: public");
+	echo file_get_contents($path.$unique_name);
+	exit();
+}
+	
 if (!isset($_POST['REP_ID'])) {	// print link clicked
 	$def_pars = array(0, 0, '', '', 0, '', '', 0); //default values
 	$rep = $_POST['REP_ID'] = $_GET['REP_ID'];

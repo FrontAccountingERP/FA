@@ -103,15 +103,9 @@ function print_customer_details_listing()
     $comments = $_POST['PARAM_5'];
 	$destination = $_POST['PARAM_6'];
 	if ($destination)
-	{
 		include_once($path_to_root . "/reporting/includes/excel_report.inc");
-		$filename = "CustomerDetailsListing.xml";
-	}	
 	else
-	{
 		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
-		$filename = "CustomerDetailsListing.pdf";
-	}
     
     $dec = 0;
 
@@ -153,7 +147,7 @@ function print_customer_details_listing()
     				    3 => array('text' => _('Sales Folk'), 		'from' => $salesfolk, 	'to' => ''),
     				    4 => array('text' => _('Activity'), 		'from' => $morestr, 	'to' => $lessstr));
 
-    $rep = new FrontReport(_('Customer Details Listing'), $filename, user_pagesize());
+    $rep = new FrontReport(_('Customer Details Listing'), "CustomerDetailsListing", user_pagesize());
 
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);

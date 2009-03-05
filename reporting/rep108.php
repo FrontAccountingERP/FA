@@ -25,7 +25,6 @@ include_once($path_to_root . "/sales/includes/sales_db.inc");
 
 //----------------------------------------------------------------------------------------------------
 
-// trial_inquiry_controls();
 print_statements();
 
 //----------------------------------------------------------------------------------------------------
@@ -79,7 +78,7 @@ function print_statements()
 
 	if ($email == 0)
 	{
-		$rep = new FrontReport(_('STATEMENT'), "StatementBulk.pdf", user_pagesize());
+		$rep = new FrontReport(_('STATEMENT'), "StatementBulk", user_pagesize());
 		$rep->currency = $cur;
 		$rep->Font();
 		$rep->Info($params, $cols, null, $aligns);

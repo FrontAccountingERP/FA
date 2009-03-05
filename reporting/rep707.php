@@ -25,7 +25,6 @@ include_once($path_to_root . "/gl/includes/gl_db.inc");
 
 //----------------------------------------------------------------------------------------------------
 
-// trial_inquiry_controls();
 print_profit_and_loss_statement();
 
 //----------------------------------------------------------------------------------------------------
@@ -75,16 +74,10 @@ function print_profit_and_loss_statement()
 		$comments = $_POST['PARAM_4'];
 		$destination = $_POST['PARAM_5'];
 	}
-	if (isset($destination) && $destination)
-	{
+	if ($destination)
 		include_once($path_to_root . "/reporting/includes/excel_report.inc");
-		$filename = "ProfitAndLoss.xml";
-	}	
 	else
-	{
 		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
-		$filename = "ProfitAndLoss.pdf";
-	}
 	if ($graphics)
 	{
 		include_once($path_to_root . "/reporting/includes/class.graphic.inc");
@@ -141,7 +134,7 @@ function print_profit_and_loss_statement()
 		$headers[3] = _('Period Y-1');
 	}
 
-	$rep = new FrontReport(_('Profit and Loss Statement'), $filename, user_pagesize());
+	$rep = new FrontReport(_('Profit and Loss Statement'), "ProfitAndLoss", user_pagesize());
 
 	$rep->Font();
 	$rep->Info($params, $cols, $headers, $aligns);
