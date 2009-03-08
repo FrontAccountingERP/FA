@@ -14,8 +14,8 @@ $page_security = 8;
 include_once($path_to_root . "/reporting/includes/Workbook.php");
 include_once($path_to_root . "/admin/db/company_db.inc");
 include_once($path_to_root . "/config.php");
-
-class FrontReport extends Workbook
+// xls version
+class FrontReport extends Spreadsheet_Excel_Writer_Workbook
 {
 	var $size;
 	var $company;
@@ -26,7 +26,6 @@ class FrontReport extends Workbook
 	var $filename;
 	var $unique_name;
 	var $path;
-	var $rtl;
 	var $code;
 	var $bottomMargin = 0;
 	var $lineHeight;
@@ -67,22 +66,27 @@ class FrontReport extends Workbook
 		$this->oldFontSize = 0;
 		$this->y = 1;
 		$this->currency = '';
-		$this->rtl = ($_SESSION['language']->dir === 'rtl' ? 'rtl' : 'ltr');
-		$this->code = $_SESSION['language']->encoding;
+		$rtl = ($_SESSION['language']->dir == 'rtl');
+		$this->code = strtolower($_SESSION['language']->encoding);
 		$this->filename = $filename.".xls";
 		$this->unique_name = uniqid('').".xls";
 		$this->path = $comp_path.'/'.user_company(). '/pdf_files';
-		$this->Workbook($this->path."/".$this->unique_name);
-		
-		$this->sheet =& $this->add_worksheet($this->title);
-		if ($this->rtl === 'rtl')
-			$this->sheet->set_rtl();
-		$this->formatTitle =& $this->add_format();	
-		$this->formatTitle->set_size(16);
-		$this->formatTitle->set_bold();
-		$this->formatTitle->set_top(2);
-		$this->formatTitle->set_top_color('gray');
-	
+		$this->Spreadsheet_Excel_Writer_Workbook($this->path."/".$this->unique_name);
+		//$this->setCountry(48);
+		if ($this->code != "iso-8859-1")
+			$this->setVersion(8); // set biff version to 8 (0x0006 internal)
+		$this->sheet =& $this->addWorksheet($this->title);
+		if ($this->code != "iso-8859-1")
+			$this->sheet->setInputEncoding($this->code); // set sheet encoding
+		if ($rtl)
+			$this->sheet->setRTL();
+		$this->formatTitle =& $this->addFormat();	
+		$this->formatTitle->setSize(16);
+		$this->formatTitle->setBold();
+		$this->formatTitle->setAlign($rtl ? 'right' : 'left');
+		$this->formatTitle->setTop(2);
+		$this->formatTitle->setTopColor('gray');
+
 		$how = user_date_format();
 		$sep = $dateseps[user_date_sep()];
 		if ($sep == '.')
@@ -102,34 +106,36 @@ class FrontReport extends Workbook
 			$dateformat_long = "yyyy{$sep}mm{$sep}dd\ \ hh:mm";
 			$dateformat = "yyyy{$sep}mm{$sep}dd";
 		}	
-		$this->formatDateTime =& $this->add_format();
-		$this->formatDateTime->set_num_format($dateformat_long);
-		$this->formatDateTime->set_align('left');
-		$this->formatDate =& $this->add_format();
-		$this->formatDate->set_num_format($dateformat);
-		$this->formatDate->set_align('left');
-		$this->formatRight =& $this->add_format();
-		$this->formatRight->set_align('right');
+		$this->formatDateTime =& $this->addFormat();
+		$this->formatDateTime->setNumFormat($dateformat_long);
+		$this->formatDateTime->setAlign($rtl ? 'right' : 'left');
+		$this->formatDate =& $this->addFormat();
+		$this->formatDate->setNumFormat($dateformat);
+		$this->formatDate->setAlign($rtl ? 'right' : 'left');
+		$this->formatRight =& $this->addFormat();
+		$this->formatRight->setAlign($rtl ? 'left' : 'right');
+		$this->formatLeft =& $this->addFormat();
+		$this->formatLeft->setAlign($rtl ? 'right' : 'left');
 		
-		$this->formatHeaderLeft =& $this->add_format();
-		$this->formatHeaderLeft->set_italic();
-		$this->formatHeaderLeft->set_top(2);
-		$this->formatHeaderLeft->set_top_color('gray');
-		$this->formatHeaderLeft->set_bottom(2);
-		$this->formatHeaderLeft->set_bottom_color('gray');
-		$this->formatHeaderLeft->set_align('vcenter');
-		$this->formatHeaderLeft->set_align('left');
-		$this->formatHeaderRight =& $this->add_format();
-		$this->formatHeaderRight->set_italic();
-		$this->formatHeaderRight->set_top(2);
-		$this->formatHeaderRight->set_top_color('gray');
-		$this->formatHeaderRight->set_bottom(2);
-		$this->formatHeaderRight->set_bottom_color('gray');
-		$this->formatHeaderRight->set_align('vcenter');
-		$this->formatHeaderRight->set_align('right');
-		$this->formatFooter =& $this->add_format();
-		$this->formatFooter->set_top(2);
-		$this->formatFooter->set_top_color('gray');
+		$this->formatHeaderLeft =& $this->addFormat();
+		$this->formatHeaderLeft->setItalic();
+		$this->formatHeaderLeft->setTop(2);
+		$this->formatHeaderLeft->setTopColor('gray');
+		$this->formatHeaderLeft->setBottom(2);
+		$this->formatHeaderLeft->setBottomColor('gray');
+		$this->formatHeaderLeft->setAlign('vcenter');
+		$this->formatDate->setAlign($rtl ? 'right' : 'left');
+		$this->formatHeaderRight =& $this->addFormat();
+		$this->formatHeaderRight->setItalic();
+		$this->formatHeaderRight->setTop(2);
+		$this->formatHeaderRight->setTopColor('gray');
+		$this->formatHeaderRight->setBottom(2);
+		$this->formatHeaderRight->setBottomColor('gray');
+		$this->formatHeaderRight->setAlign('vcenter');
+		$this->formatHeaderRight->setAlign('right');
+		$this->formatFooter =& $this->addFormat();
+		$this->formatFooter->setTop(2);
+		$this->formatFooter->setTopColor('gray');
 	}
 	
 	function NumFormat($dec) 
@@ -143,9 +149,9 @@ class FrontReport extends Workbook
 			$format = "###{$tsep}###{$tsep}###{$tsep}##0";
 			if ($dec>0)
 				$format .= "{$dsep}".str_repeat('0',$dec);
-			$this->formatAmount[$dec] =& $this->add_format();
-			$this->formatAmount[$dec]->set_num_format($format);
-			$this->formatAmount[$dec]->set_align('right');
+			$this->formatAmount[$dec] =& $this->addFormat();
+			$this->formatAmount[$dec]->setNumFormat($format);
+			$this->formatAmount[$dec]->setAlign('right');
 		}
 		return $this->formatAmount[$dec];
 	}
@@ -183,47 +189,46 @@ class FrontReport extends Workbook
 		if ($tcols > $this->numcols)
 			$this->numcols = $tcols;
 		for ($i = 0; $i < $this->numcols; $i++)
-			$this->sheet->set_column($i, $i, $this->px2units($this->cols[$i + 1] - $this->cols[$i]));
+			$this->sheet->setColumn($i, $i, $this->px2units($this->cols[$i + 1] - $this->cols[$i]));
 	}
 
 	function Header()
 	{
 		$this->y = 0;
 		$tcol = $this->numcols - 1;
-		$this->sheet->set_row($this->y, 20);
+		$this->sheet->setRow($this->y, 20);
 		for ($i = 0; $i < $this->numcols; $i++)
-			$this->sheet->write_blank($this->y, $i, $this->formatTitle);
-		$this->sheet->write_string($this->y, 0, $this->title, $this->formatTitle);
-		$this->sheet->merge_cells($this->y, 0, $this->y, $tcol);
+			$this->sheet->writeBlank($this->y, $i, $this->formatTitle);
+		$this->sheet->writeString($this->y, 0, $this->title, $this->formatTitle);
+		$this->sheet->mergeCells($this->y, 0, $this->y, $tcol);
 		$this->NewLine();
-
 		$str = _("Print Out Date") . ':';
-		$this->sheet->write_string($this->y, 0, $str);
-		$this->sheet->write_string($this->y, 1, Today() . "  ".Now());
-		$this->sheet->write_string($this->y, $tcol-1, $this->company['coy_name']);
-		$this->sheet->merge_cells($this->y, $tcol-1, $this->y, $tcol);
+		$this->sheet->writeString($this->y, 0, $str, $this->formatLeft);
+		$this->sheet->writeString($this->y, 1, Today() . "  ".Now(), $this->formatLeft);
+		$this->sheet->writeString($this->y, $tcol-1, $this->company['coy_name'], $this->formatLeft);
+		$this->sheet->mergeCells($this->y, $tcol-1, $this->y, $tcol);
 		$this->NewLine();
 		$str = _("Fiscal Year") . ':';
-		$this->sheet->write_string($this->y, 0, $str);
+		$this->sheet->writeString($this->y, 0, $str, $this->formatLeft);
 		$str = $this->fiscal_year;
-		$this->sheet->write_string($this->y, 1, $str);
-		$this->sheet->write_string($this->y, $tcol-1, $this->host);
-		$this->sheet->merge_cells($this->y, $tcol-1, $this->y, $tcol);
+		$this->sheet->writeString($this->y, 1, $str, $this->formatLeft);
+		$this->sheet->writeString($this->y, $tcol-1, $this->host, $this->formatLeft);
+		$this->sheet->mergeCells($this->y, $tcol-1, $this->y, $tcol);
 		for ($i = 1; $i < count($this->params); $i++)
 		{
 			if ($this->params[$i]['from'] != '')
 			{
 				$this->NewLine();
 				$str = $this->params[$i]['text'] . ':';
-				$this->sheet->write_string($this->y, 0, $str);
+				$this->sheet->writeString($this->y, 0, $str);
 				$str = $this->params[$i]['from'];
 				if ($this->params[$i]['to'] != '')
 					$str .= " - " . $this->params[$i]['to'];
-				$this->sheet->write_string($this->y, 1, $str);
+				$this->sheet->writeString($this->y, 1, $str, $this->formatLeft);
 				if ($i == 1)
 				{
-					$this->sheet->write_string($this->y, $tcol-1, $this->user);
-					$this->sheet->merge_cells($this->y, $tcol-1, $this->y, $tcol);
+					$this->sheet->writeString($this->y, $tcol-1, $this->user, $this->formatLeft);
+					$this->sheet->mergeCells($this->y, $tcol-1, $this->y, $tcol);
 				}	
 			}
 		}
@@ -231,8 +236,8 @@ class FrontReport extends Workbook
 		{
 			$this->NewLine();
 			$str = _("Comments") . ':';
-			$this->sheet->write_string($this->y, 0, $str);
-			$this->sheet->write_string($this->y, 1, $this->params[0]);
+			$this->sheet->writeString($this->y, 0, $str, $this->formatLeft);
+			$this->sheet->writeString($this->y, 1, $this->params[0], $this->formatLeft);
 		}
 		$this->NewLine();
 		if ($this->headers2 != null)
@@ -242,13 +247,13 @@ class FrontReport extends Workbook
 				if ($this->cols2[$j] >= $this->cols[$i] && $this->cols2[$j] <= $this->cols[$i + 1])
 				{
 					if ($this->aligns2[$j] == "right")
-						$this->sheet->write_string($this->y, $i, $this->headers2[$j], $this->formatHeaderRight);
+						$this->sheet->writeString($this->y, $i, $this->headers2[$j], $this->formatHeaderRight);
 					else	
-						$this->sheet->write_string($this->y, $i, $this->headers2[$j], $this->formatHeaderLeft);
+						$this->sheet->writeString($this->y, $i, $this->headers2[$j], $this->formatHeaderLeft);
 					$j++;	
 				}
 				else
-					$this->sheet->write_string($this->y, $i, "", $this->formatHeaderLeft);
+					$this->sheet->writeString($this->y, $i, "", $this->formatHeaderLeft);
 			}		
 			$this->NewLine();
 		}
@@ -260,10 +265,10 @@ class FrontReport extends Workbook
 			else
 				$header = $this->headers[$i];
 			if ($this->aligns[$i] == "right")
-				$this->sheet->write_string($this->y, $i, $header, $this->formatHeaderRight);
+				$this->sheet->writeString($this->y, $i, $header, $this->formatHeaderRight);
 			else	
-				$this->sheet->write_string($this->y, $i, $header, $this->formatHeaderLeft);
-		}		
+				$this->sheet->writeString($this->y, $i, $header, $this->formatHeaderLeft);
+		}
 		$this->NewLine();
 	}
 
@@ -300,18 +305,18 @@ class FrontReport extends Workbook
 	function TextCol($c, $n, $txt, $corr=0, $r=0)
 	{
 		if ($this->aligns[$c] == 'right')
-			$this->sheet->write_string($this->y, $c, $txt, $this->formatRight);
+			$this->sheet->writeString($this->y, $c, $txt, $this->formatRight);
 		else	
-			$this->sheet->write_string($this->y, $c, $txt);
+			$this->sheet->writeString($this->y, $c, $txt, $this->formatLeft);
 		if ($n - $c > 1)
-			$this->sheet->merge_cells($this->y, $c, $this->y, $n - 1);
+			$this->sheet->mergeCells($this->y, $c, $this->y, $n - 1);
 	}
 
 	function AmountCol($c, $n, $txt, $dec=0, $corr=0, $r=0) 
 	{ 
 		if (!is_numeric($txt))
 			$txt = 0;
-		$this->sheet->write_number($this->y, $c, $txt, $this->NumFormat($dec)); 
+		$this->sheet->writeNumber($this->y, $c, $txt, $this->NumFormat($dec)); 
 	}
 	
 	function DateCol($c, $n, $txt, $conv=false, $corr=0, $r=0) 
@@ -321,15 +326,15 @@ class FrontReport extends Workbook
 		list($year, $mo, $day) = explode("-", $txt);	
 		$date = $this->ymd2date((int)$year, (int)$mo, (int)$day);
 		//$date = $this->ymd2date(2009, 3, 2);
-		$this->sheet->write_number($this->y, $c, $date, $this->formatDate);
+		$this->sheet->writeNumber($this->y, $c, $date, $this->formatDate);
 		//$this->sheet->write_string($this->y, $c, $txt);
 	}
 
 	function TextCol2($c, $n, $txt, $corr=0, $r=0)
 	{
-		$this->sheet->write_string($this->y, $c, $txt);
+		$this->sheet->writeString($this->y, $c, $txt, $this->formatLeft);
 		if ($n - $c > 1)
-			$this->sheet->merge_cells($this->y, $c, $this->y, $n - 1);
+			$this->sheet->mergeCells($this->y, $c, $this->y, $n - 1);
 	}
 
 	function TextColLines($c, $n, $txt, $corr=0, $r=0)
@@ -410,8 +415,8 @@ class FrontReport extends Workbook
 	function End($email=0, $subject=null, $myrow=null, $doctype = 0)
 	{
 		for ($i = 0; $i < $this->numcols; $i++)
-			$this->sheet->write_blank($this->y, $i, $this->formatFooter);
-		$this->sheet->merge_cells($this->y, 0, $this->y, $this->numcols - 1);
+			$this->sheet->writeBlank($this->y, $i, $this->formatFooter);
+		$this->sheet->mergeCells($this->y, 0, $this->y, $this->numcols - 1);
 		$this->close();
 		// first have a look through the directory, 
 		// and remove old temporary pdfs

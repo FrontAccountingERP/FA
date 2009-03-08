@@ -19,12 +19,17 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+08-Mar-2009 Joe Hunt
+! XLS engine now compatible med PEAR Excel Writer.
+$ /reporting/includes/excel_report.inc
+  /reporting/includes/Workbook.php
+  
 05-Mar-2009 Joe Hunt
 ! Replaced the Excel Writer engine with XLS driver (the XML driver can later be downloaded)
 $ /reporting/includes/ExcelWriterXML.php, ExcelWriterXML_Sheet.php and ExcelWriterXM__Style.php removed.
   /reporting/includes/Workbook.php (new file)
-  /reporting/excel_report.inc
-  /reporting/pdf_report.inc
+  /reporting/includes/excel_report.inc
+  /reporting/includes/pdf_report.inc
   /reporting/prn_redirect.php
   /reporting all repXXX.php files
   
