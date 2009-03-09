@@ -19,6 +19,14 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+09-Mar-2009 Janusz Dobrowolski
+# Initial prefs for new created user now copied form current admin settings.
+$ /admin/users.php
+# Changed page_security level to 1
+$ /admin/display_prefs.php
+# Cosmetic cleanup
+$ /includes/session.inc
+
 08-Mar-2009 Joe Hunt
 ! XLS engine now compatible med PEAR Excel Writer.
 $ /reporting/includes/excel_report.inc
