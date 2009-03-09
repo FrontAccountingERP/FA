@@ -1,5 +1,14 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 //---------------------------------------------------------------------------------
 
 function start_form($multi=false, $sid=false, $action="", $name="")
@@ -47,6 +56,37 @@ function end_table($breaks=0)
 		br($breaks);
 }
 
+function start_outer_table($extra="", $padding='2', $spacing='0', $br=false)
+{
+	if ($br)
+		br();
+	start_table($extra, $padding, $spacing);
+	echo "<tr valign=top><td>\n"; // outer table
+}
+
+function table_section($number=1, $width=false)
+{
+	if ($number > 1)
+	{
+		echo "</table>\n";
+		$width = ($width ? "width=$width" : "");
+		echo "</td><td class='tableseparator' $width>\n"; // outer table
+	}
+	echo "<table>\n";
+}	
+
+function end_outer_table($breaks=0, $close_table=true)
+{
+	if ($close_table)
+		echo "</table>\n";
+	echo "</td></tr>\n";
+	end_table($breaks);
+}
+
+function vertical_space()
+{
+	echo "</td></tr><tr><td valign=center>"; // outer table
+}
 function meta_forward($forward_to, $params="")
 {
     global $Ajax;
@@ -59,6 +99,27 @@ function meta_forward($forward_to, $params="")
 }
 
 //-----------------------------------------------------------------------------------
+// Find and replace hotkey marker.
+// if $clean == true marker is removed and clean label is returned 
+// (for use in wiki help system), otherwise result is array of label 
+// with underlined hotkey letter and access property string.
+//
+function access_string($label, $clean=false)
+{
+	$access = '';
+	$slices = array();
+
+	if (preg_match('/(.*)&([a-zA-Z0-9])(.*)/', $label, $slices))	
+	{
+		$label = $clean ? $slices[1].$slices[2].$slices[3] :
+			$slices[1].'<u>'.$slices[2].'</u>'.$slices[3];
+		$access = " accesskey='".strtoupper($slices[2])."'";
+	}
+	
+	$label = str_replace( '&&', '&', $label);
+
+	return $clean ? $label : array($label, $access);
+}
 
 function hyperlink_back($center=true)
 {
@@ -73,9 +134,10 @@ function hyperlink_back($center=true)
 
 function hyperlink_no_params($target, $label, $center=true)
 {
+	$pars = access_string($label);
 	if ($center)
 		echo "<br><center>";
-	echo "<a href='$target?=" . SID . "'>$label</a>\n";
+	echo "<a href='$target?=" . SID . "'$pars[1]>$pars[0]</a>\n";
 	if ($center)
 		echo "</center>";
 }
@@ -91,9 +153,10 @@ function hyperlink_no_params_td($target, $label)
 
 function hyperlink_params($target, $label, $params, $center=true)
 {
+	$pars = access_string($label);
 	if ($center)
 		echo "<br><center>";
-	echo "<a href='$target?$params'>$label</a>\n";
+	echo "<a href='$target?$params'$pars[1]>$pars[0]</a>\n";
 	if ($center)
 		echo "</center>";
 }
@@ -109,9 +172,10 @@ function hyperlink_params_td($target, $label, $params)
 
 function hyperlink_params_separate($target, $label, $params, $center=false)
 {
+	$pars = access_string($label);
 	if ($center)
 		echo "<br><center>";
-	echo "<a target='_blank' href='$target?$params" . SID . "'>$label</a>\n";
+	echo "<a target='_blank' href='$target?$params" . SID . "'$pars[1]>$pars[0]</a>\n";
 	if ($center)
 		echo "</center>";
 }
@@ -139,48 +203,18 @@ function alt_table_row_color(&$k)
 	}
 }
 
-function table_section_title($msg)
+function table_section_title($msg, $colspan=2)
 {
-	echo "<tr><td colspan=2 class='tableheader'>$msg</td><tr>\n";
+	echo "<tr><td colspan=$colspan class='tableheader'>$msg</td></tr>\n";
 }
 
-function table_header($labels)
+function table_header($labels, $params='')
 {
 	start_row();
 	foreach ($labels as $label)
-		labelheader_cell($label);
+		labelheader_cell($label, $params);
 	end_row();
 }
-
-function edit_link_cell($param, $title=false)
-{
-    label_cell("<a href='" . $_SERVER['PHP_SELF']. "?" . "$param'"
-        .($title ? " title='$title'":'').">" . _("Edit") . "</a>", "nowrap");
-}
-
-function delete_link_cell($param, $title=false)
-{
-    label_cell("<a href='" . $_SERVER['PHP_SELF']. "?" . "$param'"
-	.($title ? " title='$title'":'') .">" . _("Delete") . "</a>", "nowrap");
-}
-
-function edit_button($name, $value, $title=false)
-{
-// php silently changes dots,spaces,'[' and characters 128-159
-// to underscore in POST names, to maintain compatibility with register_globals
-	echo "<input type=\"submit\" class=\"editbutton\" name=\""
-		.htmlentities(strtr($name, array('.'=>'=2E',' '=>'=20','='=>'=3D','['=>'=5B')))
-		."\" value=\"$value\""
-		.($title ? " title='$title'":'')." />\n";
-}
-
-function edit_button_cell($name, $value, $title=false)
-{
-	echo "<td>";
-	edit_button($name, $value, $title);
-	echo "</td>";
-}
-
 //-----------------------------------------------------------------------------------
 
 function start_row($param="")
@@ -303,6 +337,34 @@ function context_reset()
 */
 if (!isset($_SESSION['Context'])) {
 		context_reset();
+}
+/*
+	Redirector for selector F4 calls.
+	$sel_editors is array of selname=>editor_page
+*/
+function editor_redirect($sel_editors, $save_fun='') {
+	foreach ($sel_editors as $selname=>$editor)
+		if (isset($_POST['_'.$selname.'_editor'])) {
+			if (function_exists($save_fun))
+				$save_fun();
+			unset($_POST['_'.$selname.'_editor']);
+			context_call($editor, array_keys($_POST));
+		}
+}
+/*
+	Return procedure for selector F4 calls
+*/
+function editor_return($vars, $restore_fun='') {
+	if (function_exists($restore_fun))
+		$restore_fun();
+
+	if ($ret = context_restore()) {
+		foreach ($vars as $postname=>$retname)
+			if (isset($ret[$retname])) {
+				$_POST[$postname] = $ret[$retname];
+				set_focus($postname);
+			}
+	}
 }
 
 ?>

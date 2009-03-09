@@ -1,5 +1,14 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 $path_to_root="..";
 $page_security = 3;
 include_once($path_to_root . "/includes/session.inc");
@@ -24,8 +33,6 @@ check_db_has_customers(_("There are no customers defined in the system."));
 
 check_db_has_bank_accounts(_("There are no bank accounts defined in the system."));
 
-check_db_has_bank_trans_types(_("There are no bank payment types defined in the system."));
-
 //----------------------------------------------------------------------------------------
 if ($ret = context_restore()) {
 	if(isset($ret['customer_id']))
@@ -36,7 +43,7 @@ if ($ret = context_restore()) {
 if (isset($_POST['_customer_id_editor'])) {
 	context_call($path_to_root.'/sales/manage/customers.php?debtor_no='.$_POST['customer_id'], 
 		array( 'customer_id', 'BranchID', 'bank_account', 'DateBanked', 
-			'ReceiptType', 'ref', 'amount', 'discount', 'memo_') );
+			'ref', 'amount', 'discount', 'memo_') );
 }
 
 if (isset($_GET['AddedID'])) {
@@ -44,11 +51,11 @@ if (isset($_GET['AddedID'])) {
 
 	display_notification_centered(_("The customer payment has been successfully entered."));
 
-	display_note(get_gl_view_str(12, $payment_no, _("View the GL Journal Entries for this Customer Payment")));
+	display_note(get_gl_view_str(12, $payment_no, _("&View the GL Journal Entries for this Customer Payment")));
 
-	hyperlink_params($path_to_root . "/sales/allocations/customer_allocate.php", _("Allocate this Customer Payment"), "trans_no=$payment_no&trans_type=12");
+	hyperlink_params($path_to_root . "/sales/allocations/customer_allocate.php", _("&Allocate this Customer Payment"), "trans_no=$payment_no&trans_type=12");
 
-	hyperlink_no_params($path_to_root . "/sales/customer_payments.php", _("Enter Another Customer Payment"));
+	hyperlink_no_params($path_to_root . "/sales/customer_payments.php", _("Enter Another &Customer Payment"));
 	br(1);
 	end_page();
 	exit;
@@ -142,9 +149,8 @@ if (isset($_POST['AddPaymentItem'])) {
 		$rate = input_num('_ex_rate');
 
 	$payment_no = write_customer_payment(0, $_POST['customer_id'], $_POST['BranchID'],
-		$_POST['bank_account'], $_POST['DateBanked'], $_POST['ReceiptType'], $_POST['ref'],
+		$_POST['bank_account'], $_POST['DateBanked'], $_POST['ref'],
 		input_num('amount'), input_num('discount'), $_POST['memo_'], $rate);
-
 	meta_forward($_SERVER['PHP_SELF'], "AddedID=$payment_no");
 }
 
@@ -172,10 +178,9 @@ function read_customer_data()
 function display_item_form()
 {
 	global $table_style2;
-	start_table($table_style2, 5, 7);
-	echo "<tr><td valign=top>"; // outer table
 
-	echo "<table>";
+	start_outer_table($table_style2, 5);
+	table_section(1);
 
 	if (!isset($_POST['customer_id']))
 		$_POST['customer_id'] = get_global_customer(false);
@@ -196,8 +201,8 @@ function display_item_form()
 
 	set_global_customer($_POST['customer_id']);
 	if (isset($_POST['HoldAccount']) && $_POST['HoldAccount'] != 0)	{
-		echo "</table></table>";
-		display_note(_("This customer account is on hold."), 0, 0, "class='redfb'");
+		end_outer_table();
+		display_error(_("This customer account is on hold."));
 	} else {
 		$display_discount_percent = percent_format($_POST['pymt_discount']*100) . "%";
 
@@ -209,9 +214,7 @@ function display_item_form()
 
 		date_row(_("Date of Deposit:"), 'DateBanked','',null, 0, 0, 0, null, true);
 
-		echo "</table>";
-		echo "</td><td valign=top class='tableseparator'>"; // outer table
-		echo "<table>";
+		table_section(2);
 
 		bank_accounts_list_row(_("Into Bank Account:"), 'bank_account', null, true);
 
@@ -222,16 +225,11 @@ function display_item_form()
 			exchange_rate_display($bank_currency, $cust_currency, $_POST['DateBanked'], true);
 		}
 
-		bank_trans_types_list_row(_("Type:"), 'ReceiptType', null);
-
 		text_row(_("Reference:"), 'ref', null, 20, 40);
 
 		textarea_row(_("Memo:"), 'memo_', null, 22, 4);
 
-		echo "</table>";
-
-		echo "</td></tr>";
-		end_table(); // outer table
+		end_outer_table(1);
 
 		if ($cust_currency != $bank_currency)
 			display_note(_("Amount and discount are in customer's currency."));

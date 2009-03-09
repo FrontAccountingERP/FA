@@ -1,5 +1,14 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 include_once($path_to_root . "/purchasing/includes/db/invoice_items_db.inc");
 
 //--------------------------------------------------------------------------------------------------
@@ -107,7 +116,7 @@ function get_diff_in_home_currency($supplier, $old_date, $date, $amount1, $amoun
 }
 //----------------------------------------------------------------------------------------
 
-function add_supp_invoice($supp_trans) // do not receive as ref because we change locally
+function add_supp_invoice($supp_trans, $invoice_no=0) // do not receive as ref because we change locally
 {
 	//$company_currency = get_company_currency();
 	/*Start an sql transaction */
@@ -136,6 +145,7 @@ function add_supp_invoice($supp_trans) // do not receive as ref because we chang
 	}
 
     $date_ = $supp_trans->tran_date;
+	$ex_rate = get_exchange_rate_from_home_currency(get_supplier_currency($supp_trans->supplier_id), $date_);
 
     /*First insert the invoice into the supp_trans table*/
 	$invoice_id = add_supp_trans($trans_type, $supp_trans->supplier_id, $date_, $supp_trans->due_date,
@@ -176,6 +186,11 @@ function add_supp_invoice($supp_trans) // do not receive as ref because we chang
 
 		add_supp_invoice_gl_item($trans_type, $invoice_id, $entered_gl_code->gl_code,
 			$entered_gl_code->amount, $memo_);
+
+		// store tax details if the gl account is a tax account
+		add_gl_tax_details($entered_gl_code->gl_code, 
+			$trans_type, $invoice_id, $entered_gl_code->amount,
+			$ex_rate, $date_, $supp_trans->supp_reference);
     }
     foreach ($supp_trans->grn_items as $entered_grn)
     {
@@ -218,6 +233,8 @@ function add_supp_invoice($supp_trans) // do not receive as ref because we chang
 			// always return due to change in currency.
 			$mat_cost = update_average_material_cost(null, $entered_grn->item_code,
 				$diff, $entered_grn->this_quantity_inv, $old_date, true);
+			// added 2008-12-08 Joe Hunt. Update the purchase data table
+			add_or_update_purchase_data($supp_trans->supplier_id, $entered_grn->item_code, $entered_grn->chg_price); 
 			$deliveries = get_deliveries_between($entered_grn->item_code, $old_date, Today()); // extend the period, if invoice is before any deliveries.
 			if ($deliveries[0] != 0) // have deliveries been done during the period?
 			{
@@ -247,14 +264,15 @@ function add_supp_invoice($supp_trans) // do not receive as ref because we chang
     /* Now the TAX account */
     foreach ($taxes as $taxitem)
     {
-    	if ($taxitem['Value'] != 0)
+    	if ($taxitem['Net'] != 0)
     	{
 
     		if (!$supp_trans->is_invoice)
     			$taxitem['Value'] = -$taxitem['Value'];
     		// here we suppose that tax is never included in price (we are company customer).
-			add_supp_invoice_tax_item($trans_type, $invoice_id, $taxitem['tax_type_id'],
-				$taxitem['rate'], 0, $taxitem['Value']);
+			add_trans_tax_details($trans_type, $invoice_id, 
+				$taxitem['tax_type_id'], $taxitem['rate'], 0, $taxitem['Value'],
+				$taxitem['Net'], $ex_rate, $date_, $supp_trans->supp_reference);
 
     		$total += add_gl_trans_supplier($trans_type, $invoice_id, $date_,
     			$taxitem['purchasing_gl_code'], 0, 0, $taxitem['Value'],
@@ -269,6 +287,34 @@ function add_supp_invoice($supp_trans) // do not receive as ref because we chang
 	add_comments($trans_type, $invoice_id, $date_, $supp_trans->Comments);
 
 	references::save_last($supp_trans->reference, $trans_type);
+
+	if ($invoice_no != 0)
+	{
+		$invoice_alloc_balance = get_supp_trans_allocation_balance(20, $invoice_no);
+		if ($invoice_alloc_balance > 0) 
+		{ 	//the invoice is not already fully allocated 
+
+			$trans = get_supp_trans($invoice_no, 20);
+			$total = $trans['Total'];
+
+			$allocate_amount = ($invoice_alloc_balance > $total) ? $total : $invoice_alloc_balance;
+			/*Now insert the allocation record if > 0 */
+			if ($allocate_amount != 0) 
+			{
+				update_supp_trans_allocation(20, $invoice_no, $allocate_amount);
+				update_supp_trans_allocation(21, $invoice_id, $allocate_amount); // ***
+				add_supp_allocation($allocate_amount, 21, $invoice_id, 20, $invoice_no,
+					$date_);
+				// Exchange Variations Joe Hunt 2008-09-20 ////////////////////////////////////////
+
+				exchange_variation(21, $invoice_id, 20, $invoice_no, $date_,
+					$allocate_amount, payment_person_types::supplier());
+
+				///////////////////////////////////////////////////////////////////////////
+			}
+		}
+	}
+	
 
     commit_transaction();
 
@@ -417,7 +463,7 @@ function void_supp_invoice($type, $type_no)
 	}
 
 	void_supp_invoice_items($type, $type_no);
-	void_supp_invoice_tax_items($type, $type_no);
+	void_trans_tax_details($type, $type_no);
 
 	commit_transaction();
 }

@@ -1,5 +1,14 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 $page_security = 2;
 // ----------------------------------------------------------------
 // $ Revision:	2.0 $
@@ -7,16 +16,15 @@ $page_security = 2;
 // date_:	2005-05-19
 // Title:	Profit and Loss Statement
 // ----------------------------------------------------------------
-$path_to_root="../";
+$path_to_root="..";
 
-include_once($path_to_root . "includes/session.inc");
-include_once($path_to_root . "includes/date_functions.inc");
-include_once($path_to_root . "includes/data_checks.inc");
-include_once($path_to_root . "gl/includes/gl_db.inc");
+include_once($path_to_root . "/includes/session.inc");
+include_once($path_to_root . "/includes/date_functions.inc");
+include_once($path_to_root . "/includes/data_checks.inc");
+include_once($path_to_root . "/gl/includes/gl_db.inc");
 
 //----------------------------------------------------------------------------------------------------
 
-// trial_inquiry_controls();
 print_profit_and_loss_statement();
 
 //----------------------------------------------------------------------------------------------------
@@ -39,7 +47,6 @@ function print_profit_and_loss_statement()
 {
 	global $comp_path, $path_to_root;
 
-	include_once($path_to_root . "reporting/includes/pdf_report.inc");
 	$dim = get_company_pref('use_dimension');
 	$dimension = $dimension2 = 0;
 
@@ -52,21 +59,28 @@ function print_profit_and_loss_statement()
 		$dimension2 = $_POST['PARAM_4'];
 		$graphics = $_POST['PARAM_5'];
 		$comments = $_POST['PARAM_6'];
+		$destination = $_POST['PARAM_7'];
 	}
 	else if ($dim == 1)
 	{
 		$dimension = $_POST['PARAM_3'];
 		$graphics = $_POST['PARAM_4'];
 		$comments = $_POST['PARAM_5'];
+		$destination = $_POST['PARAM_6'];
 	}
 	else
 	{
 		$graphics = $_POST['PARAM_3'];
 		$comments = $_POST['PARAM_4'];
+		$destination = $_POST['PARAM_5'];
 	}
+	if ($destination)
+		include_once($path_to_root . "/reporting/includes/excel_report.inc");
+	else
+		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 	if ($graphics)
 	{
-		include_once($path_to_root . "reporting/includes/class.graphic.inc");
+		include_once($path_to_root . "/reporting/includes/class.graphic.inc");
 		$pg = new graph();
 	}
 	$dec = 0;
@@ -120,7 +134,7 @@ function print_profit_and_loss_statement()
 		$headers[3] = _('Period Y-1');
 	}
 
-	$rep = new FrontReport(_('Profit and Loss Statement'), "ProfitAndLoss.pdf", user_pagesize());
+	$rep = new FrontReport(_('Profit and Loss Statement'), "ProfitAndLoss", user_pagesize());
 
 	$rep->Font();
 	$rep->Info($params, $cols, $headers, $aligns);
@@ -160,12 +174,13 @@ function print_profit_and_loss_statement()
 		{
 			if ($group != '')
 			{
-				$rep->Line($rep->row + 6);
-				$rep->row -= 6;
+				$rep->row += 6;
+				$rep->Line($rep->row);
+				$rep->NewLine();
 				$rep->TextCol(0, 2,	_('Total') . " " . $group);
-				$rep->TextCol(2, 3,	number_format2($totalper, $dec));
-				$rep->TextCol(3, 4,	number_format2($totalacc, $dec));
-				$rep->TextCol(4, 5,	number_format2(Achieve($totalper, $totalacc), $pdec));
+				$rep->AmountCol(2, 3, $totalper, $dec);
+				$rep->AmountCol(3, 4, $totalacc, $dec);
+				$rep->AmountCol(4, 5, Achieve($totalper, $totalacc), $pdec);
 				if ($graphics)
 				{
 					$pg->x[] = $group;
@@ -173,21 +188,22 @@ function print_profit_and_loss_statement()
 					$pg->z[] = abs($totalacc);
 				}
 				$totalper = $totalacc = 0.0;
-				$rep->row -= ($rep->lineHeight + 4);
+				$rep->NewLine();
 				if ($closeclass)
 				{
-					$rep->Line($rep->row + 6);
-					$rep->row -= 6;
+					$rep->row += 6;
+					$rep->Line($rep->row);
+					$rep->NewLine();
 					$rep->Font('bold');
 					$rep->TextCol(0, 2,	_('Total') . " " . $classname);
-					$rep->TextCol(2, 3,	number_format2($classper, $dec));
-					$rep->TextCol(3, 4,	number_format2($classacc, $dec));
-					$rep->TextCol(4, 5,	number_format2(Achieve($classper, $classacc), $pdec));
+					$rep->AmountCol(2, 3, $classper, $dec);
+					$rep->AmountCol(3, 4, $classacc, $dec);
+					$rep->AmountCol(4, 5, Achieve($classper, $classacc), $pdec);
 					$rep->Font();
 					$salesper += $classper;
 					$salesacc += $classacc;
 					$classper = $classacc = 0.0;
-					$rep->NewLine(3);
+					$rep->NewLine(2);
 					$closeclass = false;
 				}
 			}
@@ -196,12 +212,14 @@ function print_profit_and_loss_statement()
 				$rep->Font('bold');
 				$rep->TextCol(0, 5, $account['AccountClassName']);
 				$rep->Font();
-				$rep->row -= ($rep->lineHeight + 4);
+				$rep->NewLine();
 			}
 			$group = $account['AccountTypeName'];
+			$rep->row -= 4;
 			$rep->TextCol(0, 5, $account['AccountTypeName']);
-			$rep->Line($rep->row - 4);
-			$rep->row -= ($rep->lineHeight + 4);
+			$rep->row -= 4;
+			$rep->Line($rep->row);
+			$rep->NewLine();
 		}
 		$classname = $account['AccountClassName'];
 
@@ -214,9 +232,9 @@ function print_profit_and_loss_statement()
 		$rep->TextCol(0, 1,	$account['account_code']);
 		$rep->TextCol(1, 2,	$account['account_name']);
 
-		$rep->TextCol(2, 3,	number_format2($per_balance, $dec));
-		$rep->TextCol(3, 4,	number_format2($acc_balance, $dec));
-		$rep->TextCol(4, 5,	number_format2(Achieve($per_balance, $acc_balance), $pdec));
+		$rep->AmountCol(2, 3, $per_balance, $dec);
+		$rep->AmountCol(3, 4, $acc_balance, $dec);
+		$rep->AmountCol(4, 5, Achieve($per_balance, $acc_balance), $pdec);
 
 		$rep->NewLine();
 
@@ -237,37 +255,40 @@ function print_profit_and_loss_statement()
 	{
 		if ($group != '')
 		{
-			$rep->Line($rep->row + 6);
-			$rep->row -= 6;
+			$rep->row += 6;
+			$rep->Line($rep->row);
+			$rep->NewLine();
 			$rep->TextCol(0, 2,	_('Total') . " " . $group);
-			$rep->TextCol(2, 3,	number_format2($totalper, $dec));
-			$rep->TextCol(3, 4,	number_format2($totalacc, $dec));
-			$rep->TextCol(4, 5,	number_format2(Achieve($totalper, $totalacc), $pdec));
+			$rep->AmountCol(2, 3, $totalper, $dec);
+			$rep->AmountCol(3, 4, $totalacc, $dec);
+			$rep->AmountCol(4, 5, Achieve($totalper, $totalacc), $pdec);
 			if ($graphics)
 			{
 				$pg->x[] = $group;
 				$pg->y[] = abs($totalper);
 				$pg->z[] = abs($totalacc);
 			}
-			$rep->row -= ($rep->lineHeight + 4);
+			$rep->NewLine();
 			if ($closeclass)
 			{
 				$rep->Line($rep->row + 6);
 				$calculateper = $salesper + $classper;
 				$calculateacc = $salesacc + $classacc;
-				$rep->row -= 6;
+				$rep->row += 6;
+				$rep->Line($rep->row);
+				$rep->NewLine();
 
 				$rep->Font('bold');
 				$rep->TextCol(0, 2,	_('Total') . " " . $classname);
-				$rep->TextCol(2, 3,	number_format2($classper, $dec));
-				$rep->TextCol(3, 4,	number_format2($classacc, $dec));
-				$rep->TextCol(4, 5,	number_format2(Achieve($classper, $classacc), $pdec));
+				$rep->AmountCol(2, 3, $classper, $dec);
+				$rep->AmountCol(3, 4, $classacc, $dec);
+				$rep->AmountCol(4, 5, Achieve($classper, $classacc), $pdec);
 
-				$rep->row -= ($rep->lineHeight + 8);
+				$rep->NewLine(2);
 				$rep->TextCol(0, 2,	_('Calculated Return'));
-				$rep->TextCol(2, 3,	number_format2($calculateper, $dec));
-				$rep->TextCol(3, 4,	number_format2($calculateacc, $dec));
-				$rep->TextCol(4, 5,	number_format2(Achieve($calculateper, $calculateacc), $pdec));
+				$rep->AmountCol(2, 3, $calculateper, $dec);
+				$rep->AmountCol(3, 4, $calculateacc, $dec);
+				$rep->AmountCol(4, 5, Achieve($calculateper, $calculateacc), $pdec);
 				if ($graphics)
 				{
 					$pg->x[] = _('Calculated Return');
@@ -293,7 +314,7 @@ function print_profit_and_loss_statement()
 		$pg->type      = $graphics;
 		$pg->skin      = $graph_skin;
 		$pg->built_in  = false;
-		$pg->fontfile  = $path_to_root . "reporting/fonts/Vera.ttf";
+		$pg->fontfile  = $path_to_root . "/reporting/fonts/Vera.ttf";
 		$pg->latin_notation = ($decseps[$_SESSION["wa_current_user"]->prefs->dec_sep()] != ".");
 		$filename = $comp_path.'/'.user_company(). "/pdf_files/test.png";
 		$pg->display($filename, true);

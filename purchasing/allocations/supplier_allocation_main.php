@@ -1,7 +1,17 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 $path_to_root="../..";
 $page_security = 3;
+include($path_to_root . "/includes/db_pager.inc");
 include_once($path_to_root . "/includes/session.inc");
 
 include_once($path_to_root . "/includes/date_functions.inc");
@@ -26,10 +36,7 @@ if (isset($_POST['_supplier_id_editor'])) {
 
 //--------------------------------------------------------------------------------
 
-function display_allocatable_transactions()
-{
-	global $table_style, $path_to_root;
-	start_form();
+start_form();
 
 	/* show all outstanding receipts and credits to be allocated */
 	/*Clear any previous allocation records */
@@ -46,7 +53,7 @@ function display_allocatable_transactions()
     echo "<br>";
     check(_("Show Settled Items:"), 'ShowSettled', null, true);
 	echo "</center><br><br>";
-
+	end_form();
 	set_global_supplier($_POST['supplier_id']);
 
 	if (isset($_POST['supplier_id']) && ($_POST['supplier_id'] == reserved_words::get_all())) 
@@ -57,73 +64,75 @@ function display_allocatable_transactions()
 	$settled = false;
 	if (check_value('ShowSettled'))
 		$settled = true;
-
 	$supplier_id = null;
 	if (isset($_POST['supplier_id']))
 		$supplier_id = $_POST['supplier_id'];
 
-	$trans_items = get_allocatable_from_supp_transactions($supplier_id, $settled);
-	div_start('alloc_tbl');
-	start_table($table_style);
-	if (!isset($_POST['supplier_id']))
-		$th = array(_("Transaction Type"), _("#"), _("Reference"), _("Date"), _("Supplier"), 
-			_("Currency"), _("Total"), _("Left To Allocate"));
-	else
-		$th = array(_("Transaction Type"), _("#"), _("Reference"), _("Date"), 
-			_("Total"), _("Left To Allocate"));
-	table_header($th);	
-
-	$k = 0; //row colour counter
-	$has_settled_items = false;
-
-	while ($myrow = db_fetch($trans_items))
-	{
-      	if ($myrow["settled"] == 1) 
-      	{
-      		start_row("class='settledbg'");
-      		$has_settled_items = true;
-      	} 
-      	else 
-      	{
-    		alt_table_row_color($k);
-      	}
-
-    	label_cell(systypes::name($myrow["type"]));
-		label_cell(get_trans_view_str($myrow["type"], $myrow["trans_no"]));
-		label_cell($myrow["reference"]);
-    	label_cell(sql2date($myrow["tran_date"]));
-
-		if (!isset($_POST['supplier_id']))
-		{
-    		label_cell($myrow["supp_name"]);
-    		label_cell($myrow["curr_code"]);
-		}
-		amount_cell(-$myrow["Total"]);
-    	amount_cell(-$myrow["Total"]-$myrow["alloc"]);
-    	label_cell("<a href='$path_to_root/purchasing/allocations/supplier_allocate.php?trans_no=" . $myrow["trans_no"] . "&trans_type=" . $myrow["type"]  . "'>" . _("Allocate") . "</a>");
-    	end_row();
-	}
-
-	end_table();
-
-	if ($has_settled_items)
-		display_note(_("Marked items are settled."), 0, 1, "class='settledfg'");
-
-	if (db_num_rows($trans_items) == 0)
-		display_note(_("There are no allocations to be done."), 1, 2);
-	div_end();
-	end_form();
+//--------------------------------------------------------------------------------
+function systype_name($dummy, $type)
+{
+	return systypes::name($type);
 }
 
-//--------------------------------------------------------------------------------
-
-if (get_post('_ShowSettled_update')) {
-	$Ajax->activate('alloc_tbl');
+function trans_view($trans)
+{
+	return get_trans_view_str($trans["type"], $trans["trans_no"]);
 }
-display_allocatable_transactions();
 
-//--------------------------------------------------------------------------------
+function alloc_link($row)
+{
+	return pager_link(_("Allocate"),
+		"/purchasing/allocations/supplier_allocate.php?trans_no="
+			.$row["trans_no"] . "&trans_type=" . $row["type"], ICON_MONEY );
+}
 
+function amount_left($row)
+{
+	return price_format(-$row["Total"]-$row["alloc"]);
+}
+
+function amount_total($row)
+{
+	return -$row["Total"];
+}
+
+function check_settled($row)
+{
+	return $row['settled'] == 1;
+}
+
+
+$sql = get_allocatable_from_supp_sql($supplier_id, $settled);
+
+$cols = array(
+	_("Transaction Type") => array('fun'=>'systype_name'),
+	_("#") => array('fun'=>'trans_view'),
+	_("Reference"), 
+	_("Date") => array('name'=>'tran_date', 'type'=>'date', 'ord'=>'asc'),
+	_("Supplier") => array('ord'=>''),
+	_("Currency") => array('align'=>'center'),
+	_("Total") => 'amount', 
+	_("Left to Allocate") => array('align'=>'right','insert'=>true, 'fun'=>'amount_left'), 
+	array('insert'=>true, 'fun'=>'alloc_link')
+	);
+
+if (isset($_POST['customer_id'])) {
+	$cols[_("Supplier")] = 'skip';
+	$cols[_("Currency")] = 'skip';
+}
+
+$table =& new_db_pager('alloc_tbl', $sql, $cols);
+$table->set_marker('check_settled', _("Marked items are settled."), 'settledbg', 'settledfg');
+
+if (get_post('_ShowSettled_update') || get_post('_supplier_id_update') ) {
+	$table->set_sql($sql);
+	$table->set_columns($cols);
+}
+$table->width = "80%";
+start_form();
+
+display_db_pager($table);
+
+end_form();
 end_page();
-
 ?>

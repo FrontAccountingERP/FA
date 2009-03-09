@@ -1,5 +1,14 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 $page_security = 2;
 // ----------------------------------------------------------------
 // $ Revision:	2.0 $
@@ -7,16 +16,15 @@ $page_security = 2;
 // date_:	2005-05-19
 // Title:	Customer Details Listing
 // ----------------------------------------------------------------
-$path_to_root="../";
+$path_to_root="..";
 
-include_once($path_to_root . "includes/session.inc");
-include_once($path_to_root . "includes/date_functions.inc");
-include_once($path_to_root . "includes/data_checks.inc");
-include_once($path_to_root . "gl/includes/gl_db.inc");
+include_once($path_to_root . "/includes/session.inc");
+include_once($path_to_root . "/includes/date_functions.inc");
+include_once($path_to_root . "/includes/data_checks.inc");
+include_once($path_to_root . "/gl/includes/gl_db.inc");
 
 //----------------------------------------------------------------------------------------------------
 
-// trial_inquiry_controls();
 print_customer_details_listing();
 
 function get_customer_details_for_report($area=0, $salesid=0) 
@@ -87,14 +95,17 @@ function print_customer_details_listing()
 {
     global $path_to_root;
 
-    include_once($path_to_root . "reporting/includes/pdf_report.inc");
-
     $from = $_POST['PARAM_0'];
     $area = $_POST['PARAM_1'];
     $folk = $_POST['PARAM_2'];
     $more = $_POST['PARAM_3'];
     $less = $_POST['PARAM_4'];
     $comments = $_POST['PARAM_5'];
+	$destination = $_POST['PARAM_6'];
+	if ($destination)
+		include_once($path_to_root . "/reporting/includes/excel_report.inc");
+	else
+		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
     
     $dec = 0;
 
@@ -136,7 +147,7 @@ function print_customer_details_listing()
     				    3 => array('text' => _('Sales Folk'), 		'from' => $salesfolk, 	'to' => ''),
     				    4 => array('text' => _('Activity'), 		'from' => $morestr, 	'to' => $lessstr));
 
-    $rep = new FrontReport(_('Customer Details Listing'), "CustomerDetailsListing.pdf", user_pagesize());
+    $rep = new FrontReport(_('Customer Details Listing'), "CustomerDetailsListing", user_pagesize());
 
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);

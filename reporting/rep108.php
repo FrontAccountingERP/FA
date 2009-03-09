@@ -1,5 +1,14 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 $page_security = 2;
 // ----------------------------------------------------------------
 // $ Revision:	2.0 $
@@ -7,16 +16,15 @@ $page_security = 2;
 // date_:	2005-05-19
 // Title:	Print Statements
 // ----------------------------------------------------------------
-$path_to_root="../";
+$path_to_root="..";
 
-include_once($path_to_root . "includes/session.inc");
-include_once($path_to_root . "includes/date_functions.inc");
-include_once($path_to_root . "includes/data_checks.inc");
-include_once($path_to_root . "sales/includes/sales_db.inc");
+include_once($path_to_root . "/includes/session.inc");
+include_once($path_to_root . "/includes/date_functions.inc");
+include_once($path_to_root . "/includes/data_checks.inc");
+include_once($path_to_root . "/sales/includes/sales_db.inc");
 
 //----------------------------------------------------------------------------------------------------
 
-// trial_inquiry_controls();
 print_statements();
 
 //----------------------------------------------------------------------------------------------------
@@ -43,7 +51,7 @@ function print_statements()
 {
 	global $path_to_root;
 
-	include_once($path_to_root . "reporting/includes/pdf_report.inc");
+	include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 
 	$customer = $_POST['PARAM_0'];
 	$currency = $_POST['PARAM_1'];
@@ -70,7 +78,7 @@ function print_statements()
 
 	if ($email == 0)
 	{
-		$rep = new FrontReport(_('STATEMENT'), "StatementBulk.pdf", user_pagesize());
+		$rep = new FrontReport(_('STATEMENT'), "StatementBulk", user_pagesize());
 		$rep->currency = $cur;
 		$rep->Font();
 		$rep->Info($params, $cols, null, $aligns);
@@ -107,11 +115,11 @@ function print_statements()
 		$doctype = 12;
 		if ($rep->currency != $myrow['curr_code'])
 		{
-			include($path_to_root . "reporting/includes/doctext2.inc");
+			include($path_to_root . "/reporting/includes/doctext2.inc");
 		}
 		else
 		{
-			include($path_to_root . "reporting/includes/doctext.inc");
+			include($path_to_root . "/reporting/includes/doctext.inc");
 		}
 		$rep->fontSize += 2;
 		$rep->TextCol(0, 8, $doc_Outstanding);
@@ -136,7 +144,7 @@ function print_statements()
 			$rep->TextCol(7, 8,	$DisplayNet, -2);
 			$rep->NewLine();
 			if ($rep->row < $rep->bottomMargin + (10 * $rep->lineHeight))
-				$rep->Header2($myrow, null, null, $baccount);
+				$rep->Header2($myrow, null, null, $baccount, 12);
 		}
 		$nowdue = "1-" . $PastDueDays1 . " " . $doc_Days;
 		$pastdue1 = $PastDueDays1 + 1 . "-" . $PastDueDays2 . " " . $doc_Days;

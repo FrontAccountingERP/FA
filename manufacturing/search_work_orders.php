@@ -1,7 +1,17 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 $page_security = 2;
 $path_to_root="..";
+include($path_to_root . "/includes/db_pager.inc");
 include_once($path_to_root . "/includes/session.inc");
 
 include_once($path_to_root . "/includes/date_functions.inc");
@@ -36,10 +46,8 @@ if (get_post('SearchOrders'))
 	$Ajax->addDisable(true, 'SelectedStockItem', $disable);
 
 	if ($disable) {
-//		$Ajax->addFocus(true, 'OrderNumber');
 		set_focus('OrderNumber');
 	} else
-//		$Ajax->addFocus(true, 'StockLocation');
 		set_focus('StockLocation');
 
 	$Ajax->activate('orders_tbl');
@@ -73,121 +81,144 @@ end_table();
 
 end_form();
 
-$sql = "SELECT ".TB_PREF."workorders.*, ".TB_PREF."stock_master.description,".TB_PREF."locations.location_name
-	FROM ".TB_PREF."workorders,".TB_PREF."stock_master,".TB_PREF."locations
-	WHERE ".TB_PREF."stock_master.stock_id=".TB_PREF."workorders.stock_id AND
-	".TB_PREF."locations.loc_code=".TB_PREF."workorders.loc_code ";
+//-----------------------------------------------------------------------------
+function check_overdue($row)
+{
+	return (!$row["closed"] 
+		&& date_diff(Today(), sql2date($row["required_by"]), "d") > 0);
+}
+
+function view_link($dummy, $order_no)
+{
+	return get_trans_view_str(systypes::work_order(), $order_no);
+}
+
+function view_stock($row)
+{
+	return view_stock_status($row["stock_id"], $row["description"], false);
+}
+
+function wo_type_name($dummy, $type)
+{
+	return wo_types::name($type);
+}
+
+function edit_link($row)
+{
+	return  $row['closed'] ? '<i>'._('Closed').'</i>' :
+		pager_link(_("Edit"),
+			"/manufacturing/work_order_entry.php?trans_no=" . $row["id"], ICON_EDIT);
+}
+
+function release_link($row)
+{
+	return $row["closed"] ? '' : 
+		($row["released"]==0 ?
+		pager_link(_('Release'),
+			"/manufacturing/work_order_release.php?trans_no=" . $row["id"])
+		: 
+		pager_link(_('Issue'),
+			"/manufacturing/work_order_issue.php?trans_no=" .$row["id"]));
+}
+
+function produce_link($row)
+{
+	return $row["closed"] || !$row["released"] ? '' :
+		pager_link(_('Produce'),
+			"/manufacturing/work_order_add_finished.php?trans_no=" .$row["id"]);
+}
+
+function costs_link($row)
+{
+	return $row["closed"] || !$row["released"] ? '' :
+		pager_link(_('Costs'),
+			"/gl/gl_bank.php?NewPayment=1&PayType=" 
+			.payment_person_types::WorkOrder(). "&PayPerson=" .$row["id"]);
+}
+
+function dec_amount($row, $amount)
+{
+	return number_format2($amount, $row['decimals']);
+}
+
+$sql = "SELECT
+	workorder.id,
+	workorder.wo_ref,
+	workorder.type,
+	location.location_name,
+	item.description,
+	workorder.units_reqd,
+	workorder.units_issued,
+	workorder.date_,
+	workorder.required_by,
+	workorder.released_date,
+	workorder.closed,
+	workorder.released,
+	workorder.stock_id,
+	unit.decimals
+	FROM ".TB_PREF."workorders as workorder,"
+		.TB_PREF."stock_master as item,"
+		.TB_PREF."item_units as unit,"
+		.TB_PREF."locations as location
+	WHERE workorder.stock_id=item.stock_id 
+		AND workorder.loc_code=location.loc_code
+		AND item.units=unit.abbr";
 
 if (check_value('OpenOnly') || $outstanding_only != 0)
 {
-	$sql .= " AND ".TB_PREF."workorders.closed=0 ";
+	$sql .= " AND workorder.closed=0";
 }
 
 if (isset($_POST['StockLocation']) && $_POST['StockLocation'] != $all_items)
 {
-	$sql .= "AND ".TB_PREF."workorders.loc_code='" . $_POST['StockLocation'] . "' ";
+	$sql .= " AND workorder.loc_code='" . $_POST['StockLocation'] . "' ";
 }
 
 if (isset($_POST['OrderNumber']) && $_POST['OrderNumber'] != "")
 {
-	$sql .= "AND ".TB_PREF."workorders.wo_ref LIKE '%". $_POST['OrderNumber'] . "%'";
+	$sql .= " AND workorder.wo_ref LIKE '%". $_POST['OrderNumber'] . "%'";
 }
 
 if (isset($_POST['SelectedStockItem']) && $_POST['SelectedStockItem'] != $all_items)
 {
-	$sql .= "AND ".TB_PREF."workorders.stock_id='". $_POST['SelectedStockItem'] . "'";
+	$sql .= " AND workorder.stock_id='". $_POST['SelectedStockItem'] . "'";
 }
 
 if (check_value('OverdueOnly'))
 {
 	$Today = date2sql(Today());
 
-	$sql .= "AND ".TB_PREF."workorders.required_by < '$Today' ";
+	$sql .= " AND workorder.required_by < '$Today' ";
 }
-$sql .= " ORDER BY ".TB_PREF."workorders.required_by";
 
-$result = db_query($sql,"No orders were returned");
+$cols = array(
+	_("#") => array('fun'=>'view_link'), 
+	_("Reference"), // viewlink 2 ?
+	_("Type") => array('fun'=>'wo_type_name'),
+	_("Location"), 
+	_("Item") => array('fun'=>'view_stock'),
+	_("Required") => array('fun'=>'dec_amount', 'align'=>'right'),
+	_("Manufactured") => array('fun'=>'dec_amount', 'align'=>'right'),
+	_("Date") => 'date', 
+	_("Required By") => array('type'=>'date', 'ord'=>''),
+	array('insert'=>true, 'fun'=> 'edit_link'),
+	array('insert'=>true, 'fun'=> 'release_link'),
+	array('insert'=>true, 'fun'=> 'produce_link'),
+	array('insert'=>true, 'fun'=> 'costs_link')
+);
 
-div_start('orders_tbl');
-start_table("$table_style width=80%");
+$table =& new_db_pager('orders_tbl', $sql, $cols);
+$table->set_marker('check_overdue', _("Marked orders are overdue."));
 
-$th = array(_("#"), _("Reference"), _("Type"), _("Location"), _("Item"),
-	_("Required"), _("Manufactured"), _("Date"), _("Required By"),
-	'', '', '', '', '');
-table_header($th);
-
-$j = 1;
-$k = 0;
-
-while ($myrow = db_fetch($result))
-{
-
-
-	// check if it's an overdue work order
-	if (!$myrow["closed"] && date_diff(Today(), sql2date($myrow["required_by"]), "d") > 0)
-	{
-		start_row("class='overduebg'");
-	}
-	else
-		alt_table_row_color($k);
-
-	$dec = get_qty_dec($myrow["stock_id"]);
-	label_cell(get_trans_view_str(systypes::work_order(), $myrow["id"]));
-	label_cell(get_trans_view_str(systypes::work_order(), $myrow["id"], $myrow["wo_ref"]));
-	label_cell(wo_types::name($myrow["type"]));
-	label_cell($myrow["location_name"]);
-	view_stock_status_cell($myrow["stock_id"], $myrow["description"]);
-	qty_cell($myrow["units_reqd"], false, $dec);
-	qty_cell($myrow["units_issued"], false, $dec);
-	label_cell(sql2date($myrow["date_"]));
-	label_cell(sql2date($myrow["required_by"]));
-
-	$l1 = $l2 = $l3 = $l4 = '';
-	if ($myrow["closed"] == 0)
-	{
-		$modify_page = $path_to_root . "/manufacturing/work_order_entry.php?" . SID . "trans_no=" . $myrow["id"];
-		$l1 = "<a href=$modify_page>"._('Edit').'</a>';
-	 	if ($myrow["released"] == 0) 
-	 	{
-			$release_page = $path_to_root . "/manufacturing/work_order_release.php?" . SID . "trans_no=" . $myrow["id"];
-	 		$l2 = "<a href=$release_page>"._('Release').'</a>';
-	 	} 
-	 	else 
-	 	{
-			$issue = $path_to_root . "/manufacturing/work_order_issue.php?" . SID . "trans_no=" .$myrow["id"];
-			$add_finished = $path_to_root . "/manufacturing/work_order_add_finished.php?" . SID . "trans_no=" .$myrow["id"];
-			$costs = $path_to_root . "/gl/gl_bank.php?NewPayment=1&PayType=" . payment_person_types::WorkOrder(). "&PayPerson=" .$myrow["id"];
-	 		$l2 = "<a href=$issue>" . _("Issue") . "</a>";
-	 		$l3 = "<a href=$add_finished>" . _("Produce") . "</a>";
-	 		$l4 = "<a href=$costs>" . _("Costs") . "</a>";
-		}
-	}
-	else
-	{
-		$l1 = "<i>"._('Closed')."</i>";
-	}
-	label_cell($l1);
-	label_cell($l2);
-	label_cell($l3);
-	label_cell($l4);
-	label_cell(get_gl_view_str(systypes::work_order(), $myrow["id"]));
-
-	end_row();
-
-	$j++;
-	If ($j == 12)
-	{
-		$j = 1;
-		table_header($th);
-	}
-	//end of page full new headings if
+if (get_post('SearchOrders')) {
+	$table->set_sql($sql);
+	$table->set_columns($cols);
 }
-//end of while loop
+$table->width = "90%";
+start_form();
 
-end_table(1);
-div_end();
-//---------------------------------------------------------------------------------
+display_db_pager($table);
 
+end_form();
 end_page();
-
 ?>

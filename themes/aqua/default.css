@@ -42,6 +42,10 @@ input, select {
 	padding: 1px;
 }
 
+select {
+    max-width: 200px;
+}
+
 input.big {
 	width: 100px;
 }
@@ -57,7 +61,7 @@ a {
 }
 
 a:link {
-	color: #00000bb;
+	color: #0000bb;
 	text-decoration: none;
 }
 
@@ -69,6 +73,17 @@ a:active {
 a:hover {
 	color: #2d8628;
 	text-decoration: underline;
+}
+
+button {
+	font-size: 11px;
+	border: 1px #0066cc solid;
+	padding: 1px 0px;
+}
+
+button img, span {
+	padding: 0px 2px ;
+	vertical-align: middle;
 }
 
 .login {
@@ -360,26 +375,33 @@ input.amount {
    cursor: pointer;
 }
 
-.navibutton[disabled] {
+.navibutton[disabled], .navibutton[disabled] span {
   color:#808080;
-  cursor: auto;
+  cursor: inherit;
 }
-.navibutton {
-   color:#0000FF;
-   padding: 3px;
+
+button.navibutton {
+	font-family: Verdana, Arial, Helvetica;
+	font-size: 11px;
+	font-weight: bold;
+   color:#000;
+   padding: 0 3px;
    background-color:transparent;
    border-style:none;
-   text-decoration:underline;
    cursor: pointer;
 }
 
-.navibar {
-    padding: 3px;
-    border: 1px solid #cccccc;
-    border-collapse: collapse;
-    background-color: #dee7ec;
-}
+.navibutton span {
+	text-decoration: underline;
+}	
 
+.navibar {
+    padding: 0 3px;
+	color: #000;
+	border: 1px solid #8cacbb;
+    border-collapse: collapse;
+    background-color: #d5cea7;
+}
 
 .listsubmit {
     display: none;
@@ -435,11 +457,104 @@ ul.ajaxtabs li input.current, ul.ajaxtabs li input.current:hover{
 	color:#FFFFFF;
 }
 #hints {
-  font-size: 13px;
-  padding: 5px;
-  border-bottom: 1px solid #8cacbb;
-  margin: -4px -2px -2px;
-  border: 1px solid #8cacbb;
-  background-color: #FFFFE0;
-  white-space: nowrap;
+	font-size: 13px;
+	padding: 5px;
+	border-bottom: 1px solid #8cacbb;
+	margin: -4px -2px -2px;
+	border: 1px solid #8cacbb;
+	background-color: #FFFFE0;
+	white-space: nowrap;
+}
+/*
+	Calendar style
+*/
+#CCIframe {
+	display: none;
+	left: 0px;
+	position: absolute;
+	top: 0px;
+	height: 250px;
+	width: 270px;
+	z-index: 99;
+}
+#CC { 
+	position:absolute;
+	background-color:#FFF;
+	margin:0; padding:0;
+	display:none;
+	z-index: 100;
+}
+#CC table { 
+	font-family: arial, verdana, helvetica, sans-serif;
+	font-size: 8pt;
+	border-left: 1px solid #336;
+	border-right: 1px solid #336;
+}
+#CC th {
+	font-weight: normal;
+	text-align: center;
+}
+#CC th a {
+	font-weight: normal;
+	text-decoration: none;
+	color: #FFF;
+	padding: 1px;
+}
+#CC td {
+	text-align: center;
+}
+#CC .header {
+	background-color: #518fad;
+}
+#CC .weekday {
+	background-color: #eee;
+	color: #000;
+}
+#CC .weekend {
+	background-color: #FFC;
+	color: #000;
+}
+#CC .weekno {
+	background-color: #d5cea7;
+	color: #555;
+}
+#CC .current {
+	border: 1px solid #339;
+	background-color: #518fad;
+	color: #FFF;
+}
+#CC .weekday, #CC .weekend, #CC .current {
+	display: block;
+	text-decoration: none;
+	border: 1px solid #FFF;
+	width: 2em;
+}
+#CC .weekday:hover, #CC .weekend:hover, #CC .current:hover {
+	color: #FFF;
+	background-color: #518fad;
+	border: 1px solid #999;
+}
+#CC .previous {
+	text-align: left;
+}
+#CC .next {
+	text-align: right;
+}
+#CC .previous, #CC .next {
+	padding: 1px 3px 1px 3px;
+	font-size: 1.4em;
+}
+#CC .previous a, #CC .next a {
+	color: #FFF;
+	text-decoration: none;
+	font-weight: bold;
+}
+#CC .title {
+	text-align: center;
+	font-weight: bold; 
+	color: #FFF;
+}
+#CC .empty {
+	background-color: #ddd;
+	border: 1px solid #FFF;
 }

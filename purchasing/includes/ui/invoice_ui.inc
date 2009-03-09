@@ -1,5 +1,14 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 //--------------------------------------------------------------------------------------------------
 
 function copy_from_trans(&$supp_trans)
@@ -44,23 +53,30 @@ function copy_to_trans(&$supp_trans)
 
 function invoice_header(&$supp_trans)
 {
-	global $Ajax;
+	global $Ajax, $table_style;
 	
 	// if vars have been lost, recopy
 	if (!isset($_POST['tran_date']))
 		copy_from_trans($supp_trans);
 
-	start_table("width=100%", 5);
-	start_row();
-	echo"<td>"; // outer
+	start_outer_table("$table_style width=98%", 5);
 
-	echo "<table width=100%>";
+	table_section(1);
 
-    if (!isset($_POST['supplier_id']) && (get_global_supplier() != reserved_words::get_all()))
-    	$_POST['supplier_id'] = get_global_supplier();
+	if (isset($_POST['invoice_no']))
+	{
+		$trans = get_supp_trans($_POST['invoice_no'], 20);
+		$_POST['supplier_id'] = $trans['supplier_id'];
+		$supp = $trans['supplier_name'] . " - " . $trans['SupplierCurrCode'];
+		label_row(_("Supplier:"), $supp.hidden('supplier_id', $_POST['supplier_id'], false));
+	}	
+	else
+	{
+    	if (!isset($_POST['supplier_id']) && (get_global_supplier() != reserved_words::get_all()))
+    		$_POST['supplier_id'] = get_global_supplier();
 
-	supplier_list_row(_("Supplier:"), 'supplier_id', $_POST['supplier_id'], false, true);
-
+		supplier_list_row(_("Supplier:"), 'supplier_id', $_POST['supplier_id'], false, true);
+	}
 	if ($supp_trans->supplier_id != $_POST['supplier_id'])
 	{
 		// supplier has changed
@@ -76,13 +92,14 @@ function invoice_header(&$supp_trans)
     else
     	ref_row(_("Reference:"), 'reference', '', references::get_next(21));
 
-   	text_row(_("Supplier's Ref.:"), 'supp_reference', $_POST['supp_reference'], 20, 20);
+	if (isset($_POST['invoice_no']))
+	{
+		label_row(_("Supplier's Ref.:"), $_POST['invoice_no'].hidden('invoice_no', $_POST['invoice_no'], false).hidden('supp_reference', $_POST['invoice_no'], false));
+	}	
+	else
+   		text_row(_("Supplier's Ref.:"), 'supp_reference', $_POST['supp_reference'], 20, 20);
 
-	echo "</table>";
-
-	echo "</td><td class='tableseparator'>"; // outer
-
-	echo "<table width=100%>";
+	table_section(2, "33%");
 
    	date_row(_("Date") . ":", 'tran_date', '', null, 0, 0, 0, "", true);
 	if (isset($_POST['_tran_date_changed'])) {
@@ -97,11 +114,7 @@ function invoice_header(&$supp_trans)
 
     label_row(_("Terms:"), $supp_trans->terms_description);
 
-	echo "</table>";
-
-	echo "</td><td class='tableseparator'>"; // outer
-
-	echo "<table width=100%>";
+	table_section(3, "33%");
 
 	$supplier_currency = get_supplier_currency($supp_trans->supplier_id);
 
@@ -113,12 +126,9 @@ function invoice_header(&$supp_trans)
 		exchange_rate_display($supplier_currency, $company_currency, $_POST['tran_date']);
 	}
 
-  label_row(_("Tax Group:"), $supp_trans->tax_description);
-	echo "</table>";
+  	label_row(_("Tax Group:"), $supp_trans->tax_description);
 
-	echo "</td>";
-	end_row();
-	end_table(); // outer
+	end_outer_table(1);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -143,12 +153,10 @@ function invoice_totals(&$supp_trans)
 		label_row(_("Credit Note Total"),
 			$display_total, "align=right style='font-weight:bold;color:red;'", "nowrap align=right style='font-weight:bold;color:red;'");
 
-    end_table();
-	br(1);
+    end_table(1);
     start_table($table_style2);
     textarea_row(_("Memo:"), "Comments", null, 50, 3);
-    end_table();
-    br(1);
+    end_table(1);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -160,7 +168,7 @@ function display_gl_controls(&$supp_trans, $k)
 	$_POST['gl_code'] = $accs['purchase_account'];
 
 	alt_table_row_color($k);
-	gl_all_accounts_list('gl_code', null, true, false, true);
+	gl_all_accounts_list('gl_code', null, true, true);
 	$dim = get_company_pref('use_dimension');
 	if ($dim >= 1)
 		dimensions_list_cells(null, 'dimension_id', null, true, " ", false, 1);
@@ -187,30 +195,52 @@ function display_gl_controls(&$supp_trans, $k)
 
 function display_gl_items(&$supp_trans, $mode=0)
 {
-	global $table_style, $path_to_root;
+	global $table_style, $path_to_root, $Ajax;
 
     // if displaying in form, and no items, exit
     if (($mode == 2 || $mode == 3) && count($supp_trans->gl_codes) == 0)
     	return 0;
 
-	echo "<br>";
-
-	start_table("width=95%");
-	echo "<tr><td>"; // outertable
+	start_outer_table("width=95%");
 
 	if ($supp_trans->is_invoice)
 		$heading = _("GL Items for this Invoice");
 	else
 		$heading = _("GL Items for this Credit Note");
 
-	echo "<table width=100%>";
-	echo "<tr><td align=center><span class='headingtext'>$heading</span></td>";
-	echo "</tr></table>";
+	start_outer_table("width=100%");
 
-	echo "</td></tr><tr><td>"; // ouer table
+	if ($mode == 1)
+	{
+		$qes = has_quick_entries(QE_SUPPINV);
+		if ($qes !== false)
+		{
+			echo "<div style='float:right;'>";
+			echo _("Quick Entry:")."&nbsp;"; 
+			quick_entries_list('qid', null, QE_SUPPINV, true);
+			$qid = get_quick_entry(get_post('qid'));
+			if (list_updated('qid')) {
+				unset($_POST['totamount']); // enable default
+				$Ajax->activate('totamount');
+			}
+			echo "&nbsp;".$qid['base_desc'].":"."&nbsp;";
+
+			$amount = input_num('totamount', $qid['base_amount']);
+			$dec = user_price_dec();
+			echo "<input class='amount' type='text' name='totamount' size='7' maxlength='12' dec='$dec' value='$amount'>&nbsp;";
+			submit('go', _("Go"), true, false, true);
+			echo "</div>";
+
+		}	
+	}
+	display_heading($heading);
+
+	end_outer_table(0, false);
+
+	vertical_space(); // ouer table
 
 	div_start('gl_items');
-	echo "<table width=100% $table_style>";
+	start_table("$table_style width=100%");
 
 	$dim = get_company_pref('use_dimension');
 	if ($dim == 2)
@@ -253,7 +283,7 @@ function display_gl_items(&$supp_trans, $mode=0)
 
 			if ($mode == 1)
 			{
-				edit_button_cell("Delete2" . $entered_gl_code->Counter, _("Delete"),
+				delete_button_cell("Delete2" . $entered_gl_code->Counter, _("Delete"),
 					  _('Remove line from document'));
 				label_cell("");
 			}	
@@ -276,12 +306,10 @@ function display_gl_items(&$supp_trans, $mode=0)
 	label_row(_("Total"), price_format($total_gl_value),
 		"colspan=".$colspan." align=right", "nowrap align=right");
 
-	echo "</table>";
+	end_table();
 	div_end();
 
-    echo "</td></tr>";
-
-    end_table(); // outertable
+    end_outer_table(0, false); // outertable
 	return $total_gl_value;
 }
 
@@ -293,9 +321,15 @@ function display_grn_items_for_selection(&$supp_trans, $k)
 
 	if ($supp_trans->is_invoice)
 		$result = get_grn_items(0, $supp_trans->supplier_id, true);
-	else	
-		$result = get_grn_items(0, $supp_trans->supplier_id, false, true);
-
+	else
+	{
+		if (isset($_POST['receive_begin']) && isset($_POST['receive_end']))
+			$result = get_grn_items(0, $supp_trans->supplier_id, false, true, 0, $_POST['receive_begin'], $_POST['receive_end']);
+		else if (isset($_POST['invoice_no']))
+			$result = get_grn_items(0, $supp_trans->supplier_id, false, true, $_POST['invoice_no']);
+		else	
+			$result = get_grn_items(0, $supp_trans->supplier_id, false, true);
+	}
     if (db_num_rows($result) == 0)
     {
     	return false;
@@ -374,9 +408,9 @@ function display_grn_items(&$supp_trans, $mode=0)
     // if displaying in form, and no items, exit
     if (($mode == 2  || $mode == 3) && count($supp_trans->grn_items) == 0)
     	return 0;
-	br(1);
-	start_table("width=95%");
-	echo "<tr><td>"; // outertable
+
+	start_outer_table("width=95%");
+
 	$heading2 = "";
 	if ($mode == 1)
 	{
@@ -396,24 +430,35 @@ function display_grn_items(&$supp_trans, $mode=0)
 		else
 			$heading = _("Received Items Credited on this Note");
 	}		
-	echo "<table width=100% >";
-	echo "<tr><td align=center><span class='headingtext'>$heading</span></td>";
+
+	start_outer_table("width=100%");
+
+	display_heading($heading);
+
 	if ($mode == 1)
 	{
-		submit_cells('InvGRNAll', _("Add All Items"), "align=right",false,true);
+		if (!$supp_trans->is_invoice && !isset($_POST['invoice_no']))
+		{
+			echo "</td>";
+			date_cells(_("Received between"), 'receive_begin', "", null, -30);
+			date_cells(_("and"), 'receive_end', '', null, 1);
+			submit_cells('RefreshInquiry', _("Search"),'',_('Refresh Inquiry'), true);
+			echo "<td>";
+		}	
+			
 		if ($heading2 != "")
 		{
-			echo "</tr><td>";
+			//br();
 			display_note($heading2, 0, 0, "class='overduefg'");
-			echo "</td>\n";
-		}
+		}	
+		echo "</td><td width=10% align='right'>";
+		submit('InvGRNAll', _("Add All Items"), true, false,true);
 	}	
-	echo "</tr></table>";
 
-	echo "</td></tr><tr><td>"; // outer table
+	end_outer_table(0, false);
 
   	div_start('grn_items');
-	echo "<table width=100% $table_style>";
+	start_table("$table_style width=100%");
 	if ($mode == 1)
 	{
     	$th = array(_("Delivery"), _("Sequence #"), _("P.O."), _("Item"), _("Description"),
@@ -464,7 +509,7 @@ function display_grn_items(&$supp_trans, $mode=0)
 
 			if ($mode == 1)
 			{
-				edit_button_cell("Delete" . $entered_grn->id, _("Edit"), _('Edit document line'));
+				delete_button_cell("Delete" . $entered_grn->id, _("Edit"), _('Edit document line'));
 				if ($supp_trans->is_invoice && $_SESSION["wa_current_user"]->access == 2)	  
 					label_cell("");
 			}	
@@ -490,7 +535,7 @@ function display_grn_items(&$supp_trans, $mode=0)
 		$colspan = 5;
 	label_row(_("Total"), price_format($total_grn_value),
 		"colspan=$colspan align=right", "nowrap align=right");
-    echo "</table>";
+    end_table();
 	if (!$ret)
 	{
 		if ($supp_trans->is_invoice)
@@ -502,9 +547,8 @@ function display_grn_items(&$supp_trans, $mode=0)
 		}
 	}	
     div_end();
-    echo "</td></tr>";
 
-    end_table(); // outertable
+    end_outer_table(0, false); // outertable
 	return $total_grn_value;
 }
 

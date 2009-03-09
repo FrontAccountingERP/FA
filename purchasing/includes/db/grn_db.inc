@@ -1,5 +1,14 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 //------------------- update average material cost ------------------------------------------ Joe Hunt Mar-03-2008
 
 function update_average_material_cost($supplier, $stock_id, $price, $qty, $date, $adj_only=false)
@@ -68,7 +77,9 @@ function add_grn(&$po, $date_, $reference, $location)
 			   	/*Need to get the standard cost as it is now so we can process GL jorunals later*/
 			   	$order_line->standard_cost = get_standard_cost($order_line->stock_id);
 			}
-
+			// added 2008-12-08 Joe Hunt. Update the purchase data table
+			add_or_update_purchase_data($po->supplier_id, $order_line->stock_id, $order_line->price, 
+				$order_line->item_description); 
 
 			/*Need to insert a grn item */
 
@@ -173,15 +184,25 @@ function set_grn_item_credited(&$entered_grn, $supplier, $transno, $date)
 }
 
 function get_grn_items($grn_batch_id=0, $supplier_id="", $outstanding_only=false,
-	$is_invoiced_only=false)
+	$is_invoiced_only=false, $invoice_no=0, $begin="", $end="")
 {
     $sql = "SELECT ".TB_PREF."grn_batch.*, ".TB_PREF."grn_items.*, ".TB_PREF."purch_order_details.unit_price,
 		".TB_PREF."purch_order_details.std_cost_unit, units
-    	FROM ".TB_PREF."grn_batch, ".TB_PREF."grn_items, ".TB_PREF."purch_order_details, ".TB_PREF."stock_master
-    	WHERE ".TB_PREF."grn_items.grn_batch_id=".TB_PREF."grn_batch.id
-		AND ".TB_PREF."grn_items.po_detail_item=".TB_PREF."purch_order_details.po_detail_item
-    	AND ".TB_PREF."stock_master.stock_id=".TB_PREF."grn_items.item_code ";
+    	FROM ".TB_PREF."grn_batch, ".TB_PREF."grn_items, ".TB_PREF."purch_order_details, ".TB_PREF."stock_master";
+    if ($invoice_no != 0)
+    	$sql .= ", ".TB_PREF."supp_invoice_items";
+    $sql .= " WHERE ".TB_PREF."grn_items.grn_batch_id=".TB_PREF."grn_batch.id
+		AND ".TB_PREF."grn_items.po_detail_item=".TB_PREF."purch_order_details.po_detail_item";
+	if ($invoice_no != 0)
+		$sql .= " AND ".TB_PREF."supp_invoice_items.supp_trans_type=20 AND 
+			".TB_PREF."supp_invoice_items.supp_trans_no=$invoice_no AND
+			".TB_PREF."grn_items.id=".TB_PREF."supp_invoice_items.grn_item_id";
+	$sql .= " AND ".TB_PREF."stock_master.stock_id=".TB_PREF."grn_items.item_code ";
 
+	if ($begin != "")
+		$sql .= " AND ".TB_PREF."grn_batch.delivery_date>='".date2sql($begin)."'";
+	if ($end != "")
+		$sql .= " AND ".TB_PREF."grn_batch.delivery_date<='".date2sql($end)."'";
 	if ($grn_batch_id != 0)
 		$sql .= " AND ".TB_PREF."grn_batch.id=$grn_batch_id AND ".TB_PREF."grn_items.grn_batch_id=$grn_batch_id ";
 

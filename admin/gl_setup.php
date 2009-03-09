@@ -1,5 +1,14 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 $page_security =10;
 $path_to_root="..";
 include($path_to_root . "/includes/session.inc");
@@ -57,6 +66,8 @@ if (isset($_POST['submit']) && can_process())
 		check_value('allow_negative_stock'),
 		input_num('po_over_receive'),
 		input_num('po_over_charge'),
+		check_value('accumulate_shipping'),
+		$_POST['legal_text'],
 		$_POST['past_due_days'],
 		$_POST['default_credit_limit'],
 		$_POST['default_workorder_required'],
@@ -69,7 +80,11 @@ if (isset($_POST['submit']) && can_process())
 //-------------------------------------------------------------------------------------------------
 
 start_form();
-start_table("class='tablestyle'");
+
+//start_outer_table("class='tablestyle'");
+start_outer_table($table_style2, 5);
+
+table_section(1);
 
 $myrow = get_company_prefs();
 
@@ -96,6 +111,8 @@ $_POST['po_over_charge'] = percent_format($myrow['po_over_charge']);
 $_POST['past_due_days'] = $myrow['past_due_days'];
 
 $_POST['default_credit_limit'] = $myrow['default_credit_limit'];
+$_POST['legal_text'] = $myrow['legal_text'];
+$_POST['accumulate_shipping'] = $myrow['accumulate_shipping'];
 
 $_POST['default_workorder_required'] = $myrow['default_workorder_required'];
 $_POST['default_dim_required'] = $myrow['default_dim_required'];
@@ -120,6 +137,10 @@ table_section_title(_("Customers and Sales"));
 
 text_row(_("Default Credit Limit:"), 'default_credit_limit', $_POST['default_credit_limit'], 12, 12);
 
+check_row(_("Accumulate batch shipping:"), 'accumulate_shipping', null);
+
+textarea_row(_("Legal Text on Invoice:"), 'legal_text', $_POST['legal_text'], 32, 3);
+
 gl_all_accounts_list_row(_("Shipping Charged Account:"), 'freight_act', $_POST['freight_act']);
 
 //---------------
@@ -129,19 +150,27 @@ table_section_title(_("Customers and Sales Defaults"));
 gl_all_accounts_list_row(_("Receivable Account:"), 'debtors_act');
 
 gl_all_accounts_list_row(_("Sales Account:"), 'default_sales_act', null,
-	false, false, false, true);
+	false, false, true);
 
 gl_all_accounts_list_row(_("Sales Discount Account:"), 'default_sales_discount_act');
 
 gl_all_accounts_list_row(_("Prompt Payment Discount Account:"), 'default_prompt_payment_act');
 
+//----------------
+
+table_section_title(_("Dimension Defaults"));
+
+text_row(_("Dimension Required By After:"), 'default_dim_required', $_POST['default_dim_required'], 6, 6, '', "", _("days"));
 //---------------
+
+table_section(2);
 
 table_section_title(_("Suppliers and Purchasing"));
 
 percent_row(_("Delivery Over-Receive Allowance:"), 'po_over_receive');
 
 percent_row(_("Invoice Over-Charge Allowance:"), 'po_over_charge');
+
 // Not used in FA2.0.
 //gl_all_accounts_list_row(_("Purchases Exchange Variances Account:"), 'purch_exchange_diff_act', $_POST['purch_exchange_diff_act']);
 // Not used in FA2.0.
@@ -152,8 +181,6 @@ table_section_title(_("Suppliers and Purchasing Defaults"));
 gl_all_accounts_list_row(_("Payable Account:"), 'creditors_act', $_POST['creditors_act']);
 
 gl_all_accounts_list_row(_("Purchase Discount Account:"), 'pyt_discount_act', $_POST['pyt_discount_act']);
-
-//---------------
 
 table_section_title(_("Inventory"));
 
@@ -176,15 +203,10 @@ table_section_title(_("Manufacturing Defaults"));
 
 text_row(_("Work Order Required By After:"), 'default_workorder_required', $_POST['default_workorder_required'], 6, 6, '', "", _("days"));
 
-//----------------
-
-table_section_title(_("Dimension Defaults"));
-
-text_row(_("Dimension Required By After:"), 'default_dim_required', $_POST['default_dim_required'], 6, 6, '', "", _("days"));
 
 //----------------
 
-end_table(1);
+end_outer_table(1);
 
 submit_center('submit', _("Update"), true, '', true);
 

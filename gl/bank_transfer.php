@@ -1,5 +1,14 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 $path_to_root="..";
 $page_security = 5;
 
@@ -19,7 +28,6 @@ if ($use_date_picker)
 page(_("Transfer between Bank Accounts"), false, false, "", $js);
 
 check_db_has_bank_accounts(_("There are no bank accounts defined in the system."));
-check_db_has_bank_trans_types(_("There are no bank transfer types defined in the system."));
 
 //----------------------------------------------------------------------------------------
 
@@ -30,9 +38,9 @@ if (isset($_GET['AddedID']))
 
    	display_notification_centered( _("Transfer has been entered"));
 
-	display_note(get_gl_view_str($trans_type, $trans_no, _("View the GL Journal Entries for this Transfer")));
+	display_note(get_gl_view_str($trans_type, $trans_no, _("&View the GL Journal Entries for this Transfer")));
 
-   	hyperlink_no_params($_SERVER['PHP_SELF'], _("Enter Another Transfer"));
+   	hyperlink_no_params($_SERVER['PHP_SELF'], _("Enter &Another Transfer"));
 
 	safeExit();
 }
@@ -76,8 +84,6 @@ function gl_payment_controls()
 	echo "</table>";
 	echo "</td><td valign=top class='tableseparator'>"; // outer table
 	echo "<table>";
-
-	bank_trans_types_list_row(_("Transfer Type:"), 'TransferType', null);
 
     ref_row(_("Reference:"), 'ref', '', references::get_next(systypes::bank_transfer()));
 
@@ -145,11 +151,8 @@ function check_valid_entries()
 
 function handle_add_deposit()
 {
-	global $path_to_root;
-
 	$trans_no = add_bank_transfer($_POST['FromBankAccount'], $_POST['ToBankAccount'],
-		$_POST['DatePaid'], input_num('amount'),
-		$_POST['TransferType'], $_POST['ref'], $_POST['memo_']);
+		$_POST['DatePaid'], input_num('amount'), $_POST['ref'], $_POST['memo_']);
 
 	meta_forward($_SERVER['PHP_SELF'], "AddedID=$trans_no");
 }
@@ -158,7 +161,6 @@ function handle_add_deposit()
 
 function safeExit()
 {
-	global $path_to_root;
 	echo "<br><br>";
 	end_page();
 	exit;

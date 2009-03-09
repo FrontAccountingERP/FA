@@ -1,5 +1,14 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 $page_security = 1;
 $path_to_root="../..";
 include_once($path_to_root . "/includes/session.inc");
@@ -146,7 +155,7 @@ label_row(_("Sub-total"), $display_sub_tot, "colspan=6 align=right",
 	"nowrap align=right width=15%");
 label_row(_("Shipping"), $display_freight, "colspan=6 align=right", "nowrap align=right");
 
-$tax_items = get_customer_trans_tax_details(13, $trans_id);
+$tax_items = get_trans_tax_details(13, $trans_id);
 display_customer_trans_tax_details($tax_items, 6);
 
 $display_total = price_format($myrow["ov_freight"]+$myrow["ov_amount"]+$myrow["ov_freight_tax"]+$myrow["ov_gst"]);

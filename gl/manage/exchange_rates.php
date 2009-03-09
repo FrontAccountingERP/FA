@@ -1,7 +1,17 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 $page_security = 9;
 $path_to_root="../..";
+include($path_to_root . "/includes/db_pager.inc");
 include_once($path_to_root . "/includes/session.inc");
 
 include_once($path_to_root . "/includes/date_functions.inc");
@@ -78,35 +88,20 @@ function handle_delete()
 }
 
 //---------------------------------------------------------------------------------------------
+function edit_link($row) 
+{
+  return button('Edit'.$row["id"], _("Edit"), true, ICON_EDIT);
+}
+
+function del_link($row) 
+{
+  return button('Delete'.$row["id"], _("Delete"), true, ICON_DELETE);
+}
 
 function display_rates($curr_code)
 {
 	global $table_style;
 
-	$result = get_exchange_rates($curr_code);
-
-	br(2);
-	start_table($table_style);
-	$th = array(_("Date to Use From"), _("Exchange Rate"), "", "");
-	table_header($th);
-
-    $k = 0; //row colour counter
-
-    while ($myrow = db_fetch($result))
-    {
-
-   		alt_table_row_color($k);
-
-    	label_cell(sql2date($myrow["date_"]));
-		label_cell(number_format2($myrow["rate_buy"], user_exrate_dec()), "nowrap align=right");
- 		edit_button_cell("Edit".$myrow["id"], _("Edit"));
- 		edit_button_cell("Delete".$myrow["id"], _("Delete"));
-
-		end_row();
-
-    }
-
-    end_table();
 }
 
 //---------------------------------------------------------------------------------------------
@@ -140,9 +135,6 @@ function display_rate_edit()
 	if (isset($_POST['get_rate']))
 	{
 		$_POST['BuyRate'] = exrate_format(get_ecb_rate($_POST['curr_abrev']));
-		if ($_POST['BuyRate'] == 0) {
-			display_error(_('This currency is not listed by ECB. Enter exchange rate manually.'));
-		}
 		$Ajax->activate('BuyRate');
 	}
 	small_amount_row(_("Exchange Rate:"), 'BuyRate', null, '',
@@ -197,6 +189,19 @@ if ($_POST['curr_abrev'] != get_global_curr_code())
 
 set_global_curr_code($_POST['curr_abrev']);
 
+$sql = "SELECT date_, rate_buy, id FROM "
+	.TB_PREF."exchange_rates "
+	."WHERE curr_code='".$_POST['curr_abrev']."'
+	 ORDER BY date_ DESC";
+
+$cols = array(
+	_("Date to Use From") => 'date', 
+	_("Exchange Rate") => 'rate',
+	array('insert'=>true, 'fun'=>'edit_link'),
+	array('insert'=>true, 'fun'=>'del_link'),
+);
+$table =& new_db_pager('orders_tbl', $sql, $cols);
+
 if (is_company_currency($_POST['curr_abrev']))
 {
 
@@ -206,7 +211,13 @@ if (is_company_currency($_POST['curr_abrev']))
 else
 {
 
-    display_rates($_POST['curr_abrev']);
+	br(1);
+   	if (list_updated('curr_abrev')) {
+		$table->set_sql($sql);
+		$table->set_columns($cols);
+	}
+	$table->width = "40%";
+	display_db_pager($table);
    	br(1);
     display_rate_edit();
 }

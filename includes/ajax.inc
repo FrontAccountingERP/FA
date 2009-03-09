@@ -1,4 +1,14 @@
 <?php
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 require_once($path_to_root. "/includes/JsHttpRequest.php");
 
 class Ajax extends JsHttpRequest {
@@ -25,9 +35,15 @@ class Ajax extends JsHttpRequest {
 	//
 	function redirect($url) {
 	    if(in_ajax()) {
-		  $this->_addCommand(true, array('n'=>'rd'),$url);
-		  $this->run();
+			$this->_addCommand(true, array('n'=>'rd'), absolute_url($url));
+		  	$this->run();
 	    }
+	}
+	//
+	// Popup window (target=_blank)
+	//
+	function popup($url) {
+		  $this->_addCommand(true, array('n'=>'pu'), absolute_url($url));
 	}
 	//
 	// Adds an executable Javascript code.
@@ -136,4 +152,11 @@ function in_ajax() {
     return $Ajax->isActive();
 }
 
+// Returns absolute path of relative $url. To be used in ajax calls
+// for proper redirection from any referer page.
+//
+function absolute_url($url) 
+{
+   return strpos($url, '..')===0 ? dirname($_SERVER['PHP_SELF']).'/'.$url : $url;
+}
 ?>

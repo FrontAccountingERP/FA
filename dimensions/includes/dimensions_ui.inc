@@ -1,71 +1,65 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 include_once($path_to_root . "/includes/ui.inc");
 
 //--------------------------------------------------------------------------------------
 
-function display_dimension_payments($id)
+function display_dimension_balance($id, $from, $to)
 {
 	global $path_to_root, $table_style;
 
-	$sql = "SELECT ".TB_PREF."gl_trans.*,".TB_PREF."chart_master.account_name  FROM
+	$from = date2sql($from);
+	$to = date2sql($to);
+	$sql = "SELECT account, ".TB_PREF."chart_master.account_name, sum(amount) AS amt FROM
 		".TB_PREF."gl_trans,".TB_PREF."chart_master WHERE
 		".TB_PREF."gl_trans.account = ".TB_PREF."chart_master.account_code AND
-		(dimension_id = $id OR dimension2_id = $id) ORDER BY account,tran_date";
+		(dimension_id = $id OR dimension2_id = $id) AND
+		tran_date >= '$from' AND tran_date <= '$to' GROUP BY account";
 	$result = db_query($sql, "Transactions could not be calculated");
-
-    echo "<br>";
 
     if (db_num_rows($result) == 0)
     {
-    	display_note(_("There are no transactions for this dimension."));
+    	display_note(_("There are no transactions for this dimension for the selected period."));
     }
     else
     {
-		display_heading2(_("Transactions for this Dimension"));
+		display_heading2(_("Balance for this Dimension"));
+		br();
 		start_table($table_style);
-		$th = array(_("Type"), _("#"), _("Account"),
-			_("Date"), _("Debit"), _("Credit"));
+		$th = array(_("Account"), _("Debit"), _("Credit"));
 		table_header($th);
 
-        $total = $grand_total = $k = 0;
-		$account = "";
+        $total = $k = 0;
         while ($myrow = db_fetch($result))
         {
-			if ($account != $myrow["account"])
-			{
-				if ($account != "")
-				{
-					start_row();
-					label_cell(_("Total"), "colspan=4");
-					display_debit_or_credit_cells($total);
-					end_row();
-					$total = 0;
-				}
-				$account = $myrow["account"];
-			}
-
 			alt_table_row_color($k);
 
-        	label_cell(systypes::name($myrow["type"]));
-			label_cell(get_gl_view_str($myrow["type"], $myrow["type_no"], $myrow["type_no"], true));
 			label_cell($myrow["account"]." ".$myrow['account_name']);
-			label_cell(sql2date($myrow["tran_date"]));
-			display_debit_or_credit_cells($myrow["amount"]);
-
-			$total += $myrow["amount"];
-			$grand_total += $myrow["amount"];
-
+			display_debit_or_credit_cells($myrow["amt"]);
+			$total += $myrow["amt"];
 			end_row();
 		}
 		start_row();
-		label_cell(_("Total"), "colspan=4");
-		display_debit_or_credit_cells($total);
-		end_row();
-
-		start_row();
-		label_cell(_("Grand Total"), "colspan=4");
-		display_debit_or_credit_cells($grand_total);
+		label_cell("<b>"._("Balance")."</b>");
+		if ($total >= 0)
+		{
+			amount_cell($total, true);
+			label_cell("");
+		}
+		else
+		{
+			label_cell("");
+			amount_cell(abs($total), true);
+		}
 		end_row();
 
 		end_table();

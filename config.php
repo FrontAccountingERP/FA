@@ -1,15 +1,15 @@
 <?php
-	/*--------------------------------------------------\
-	| 		|               | config.php        		|
-	|---------------------------------------------------|
-	| FrontAccounting 									|
-	| http://frontaccounting.com/  						|
-	| by FrontAccounting                       			|
-	|---------------------------------------------------|
-	|                                                   |
-	\--------------------------------------------------*/
-
-	//--------------------------------------------------
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
+    //--------------------------------------------------
 
 	// User configurable variables
 	//---------------------------------------------------
@@ -24,6 +24,14 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 	$debug 			= 1;
 	$show_sql 		= 0;
 	$go_debug 		= 0;
+	$pdf_debug 		= 0;
+	// set $sql_trail to 1 only if you want to perform bugtracking sql trail
+	// Warning: this produces huge amount of data in sql_trail table.
+	// Don't forget switch the option off and flush the table manually after 
+	// trail, or your future backup files are overloaded with unneeded data.
+	//
+	$sql_trail 		= 0; // save all sql queries in sql_trail
+	$select_trail 	= 0; // track also SELECT queries
 	if ($go_debug == 1)
 	{
 		error_reporting(E_ALL);
@@ -38,7 +46,7 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 	// Main Title
 	$app_title = "FrontAccounting";
 	// application version
-	$version 		= "2.0.7";
+	$version 		= "2.1.0 RC";
 
 	// Build for development purposes
 	$build_version 	= date("d.m.Y", filemtime("$path_to_root/CHANGELOG.txt"));
@@ -151,21 +159,8 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 			array(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,20),
 	);
 
-	/*
- 	System tabs. This variable should be in future included from separate file for extended module manager
-	*/
- 	$applications = array (
- 		'orders' => _("Sales"),
- 		'AP'=>_("Purchases"),
- 		'stock'=> _("Items and Inventory"),
- 		'manuf'=> _("Manufacturing"),
- 		'proj'=>_("Dimensions"),
- 		'GL'=>_("Banking and General Ledger"),
- 		'system'=>_("Setup")
- 	);
 	/* default start-up tab (orders/AP/stock/manuf/proj/GL/system) */
 	$def_app = "orders";
-
 
 	//MySQL Backup and Restore Settings
 
@@ -179,4 +174,24 @@ if(isset($_SESSION["wa_current_user"])) {
 	// additional js source included in header
 	$js_lib = $js_userlib = array();
 
+if (!defined('ICON_EDIT'))
+{
+	define("ICON_EDIT", "edit.gif");	
+	define("ICON_DELETE", "delete.gif");	
+	define("ICON_ADD", "ok.gif");	
+	define("ICON_UPDATE", "ok.gif");	
+	define("ICON_OK", "ok.gif");	
+	define("ICON_CANCEL", "cancel.png");	
+	define("ICON_GL", "gl.png");	
+	define("ICON_PRINT", "print.png");	
+	define("ICON_PDF", "pdf.gif");	
+	define("ICON_DOC", "invoice.gif");	
+	define("ICON_CREDIT", "credit.gif");	
+	define("ICON_RECEIVE", "receive.gif");	
+	define("ICON_DOWN", "download.gif");	
+	define("ICON_MONEY", "money.png");	
+	define("ICON_REMOVE", "remove.png");	
+	define("ICON_REPORT", "report.png");	
+	define("ICON_VIEW", "view.gif");	
+}
 ?>

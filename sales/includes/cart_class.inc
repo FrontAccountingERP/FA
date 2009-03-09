@@ -1,5 +1,14 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 /* Definition of the cart class
 this class can hold all the information for:
 
@@ -17,7 +26,7 @@ class cart
 	var $trans_type; // invoice, order, delivery note ...
 	var $trans_no = array();// array (num1=>ver1,..) or 0 for new
 	var $so_type = 0;		// for sales order: simple=0 template=1
-
+	var $cart_id;		// used to detect multi-tab edition conflits
 	var $line_items;  //array of objects of class line_details
 
 	var $src_docs = array();	// array of arrays(num1=>ver1,...) or 0 for no src
@@ -55,6 +64,14 @@ class cart
 	var $tax_group_name;
 	var $tax_group_array = null; // saves db queries
 	var $price_factor;	 // ditto for price calculations
+
+	var	$pos;			// user assigned POS
+	var $cash;			// cash transaction
+	var $cash_account;
+	var $account_name;
+	var $cash_discount;	// not used as of FA 2.1
+	var $dimension_id;
+	var $dimension2_id;
 	//-------------------------------------------------------------------------
 	//
 	//  $trans_no==0 => open new/direct document
@@ -66,7 +83,10 @@ class cart
 		$this->line_items = array();
 		$this->sales_type = "";
 		$this->trans_type = 30;
+		$this->dimension_id = 0;
+		$this->dimension2_id = 0;
 		$this->read($type, $trans_no, $view );
+		$this->cart_id = uniqid('');
 	}
 
 	//-------------------------------------------------------------------------
@@ -135,10 +155,44 @@ class cart
 				if (!is_date_in_fiscalyear($this->document_date))
 					$this->document_date = end_fiscalyear();
 				$this->reference = references::get_next($this->trans_type);
-				if ($type == 10)
+				if ($type != 30) // Added 2.1 Joe Hunt 2008-11-12
+				{
+					$dim = get_company_pref('use_dimension');
+					if ($dim > 0)
+					{
+						if ($this->customer_id == '')
+							$this->dimension_id = 0;
+						else
+						{
+							$cust = get_customer($this->customer_id);
+							$this->dimension_id = $cust['dimension_id'];
+						}	
+						if ($dim > 1)
+						{
+							if ($this->customer_id == '')
+								$this->dimension2_id = 0;
+							else
+								$this->dimension2_id = $cust['dimension2_id'];
+						}		
+					}		
+				}	
+				if ($type == 10) {
 				  $this->due_date =
 					get_invoice_duedate($this->customer_id, $this->document_date);
-				else
+				  $this->pos = user_pos();
+				  $pos = get_sales_point($this->pos);
+				  $this->cash = !$pos['credit_sale'];
+				  if (!$pos['cash_sale'] || !$pos['credit_sale']) 
+				  	$this->pos = -1; // mark not editable payment type
+				  else
+					$this->cash = date_diff($this->due_date, Today(), 'd')<2;
+				if ($this->cash) {
+					$this->Location = $pos['pos_location'];
+					$this->location_name = $pos['location_name'];
+					$this->cash_account = $pos['pos_account'];
+					$this->account_name = $pos['bank_account_name'];
+				}
+				} else
 				  $this->due_date =
 					add_days($this->document_date, sys_prefs::default_delivery_required_by());
 			}
@@ -168,15 +222,11 @@ class cart
 			$this->trans_no = 0;
 			$this->order_no= $this->trans_type==13 ? key($src->trans_no) : $src->order_no;
 		}
-// if we want to save old or derivative document first decode html entities
-// from text fields. For new documents this is not needed.
-		if ($this->trans_no || $this->trans_type != 30) {
-			$this->reference = @html_entity_decode($this->reference);
-			$this->Comments = @html_entity_decode($this->Comments);
-			foreach($this->line_items as $lineno => $line) {
-				$this->line_items[$lineno]->stock_id = @html_entity_decode($line->stock_id);
-				$this->line_items[$lineno]->description = @html_entity_decode($line->description);
-			}
+		$this->reference = @html_entity_decode($this->reference);
+		$this->Comments = @html_entity_decode($this->Comments);
+		foreach($this->line_items as $lineno => $line) {
+			$this->line_items[$lineno]->stock_id = @html_entity_decode($line->stock_id);
+			$this->line_items[$lineno]->item_description = @html_entity_decode($line->item_description);
 		}
 		switch($this->trans_type) {
 			case 10:
@@ -193,11 +243,12 @@ class cart
 		}
 	}
 
-	function set_customer($customer_id, $customer_name, $currency, $discount)
+	function set_customer($customer_id, $customer_name, $currency, $discount, $cdiscount=0)
 	{
 		$this->customer_name = $customer_name;
 		$this->customer_id = $customer_id;
 		$this->default_discount = $discount;
+		$this->cash_discount = $cdiscount;
 		$this->customer_currency = $currency;
 	}
 
@@ -246,8 +297,10 @@ class cart
 		return 0;
 	}
 
-	function update_cart_item($line_no, $qty, $price, $disc)
+	function update_cart_item($line_no, $qty, $price, $disc, $description="")
 	{
+		if ($description != "")
+			$this->line_items[$line_no]->item_description = $description;
 		$this->line_items[$line_no]->quantity = $qty;
 		$this->line_items[$line_no]->qty_dispatched = $qty;
 		$this->line_items[$line_no]->price = $price;

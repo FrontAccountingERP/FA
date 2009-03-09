@@ -1,12 +1,22 @@
 <?php
-
-function add_supp_payment($supplier_id, $date_, $payment_type, $bank_account,
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
+function add_supp_payment($supplier_id, $date_, $bank_account,
 	$amount, $discount, $ref, $memo_, $rate=0)
 {
 	begin_transaction();
 
    	$supplier_currency = get_supplier_currency($supplier_id);
     $bank_account_currency = get_bank_account_currency($bank_account);
+	$bank_gl_account = get_bank_gl_account($bank_account);
 
 	if ($rate == 0)
 	{
@@ -43,7 +53,7 @@ function add_supp_payment($supplier_id, $date_, $payment_type, $bank_account,
 
 	if ($supp_amount != 0)
 	{
-		$total += add_gl_trans_supplier($trans_type, $payment_id, $date_, $bank_account, 0, 0,
+		$total += add_gl_trans_supplier($trans_type, $payment_id, $date_, $bank_gl_account, 0, 0,
 			-$supp_amount, $supplier_id, "", $rate);
 	}
 
@@ -52,7 +62,7 @@ function add_supp_payment($supplier_id, $date_, $payment_type, $bank_account,
 
    /*now enter the bank_trans entry */
 	add_bank_trans($trans_type, $payment_id, $bank_account, $ref,
-		$date_, $payment_type, -($amount), payment_person_types::supplier(),
+		$date_, -($amount), payment_person_types::supplier(),
 		$supplier_id, $bank_account_currency,
 		"Could not add the supplier payment bank transaction");
 

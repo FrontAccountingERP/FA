@@ -1,5 +1,14 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 $page_security = 20;
 $path_to_root="..";
 include_once($path_to_root . "/includes/session.inc");
@@ -11,7 +20,7 @@ include_once($path_to_root . "/includes/ui.inc");
 
 page(_("Create/Update Company"));
 
-$comp_subdirs = array('images', 'pdf_files', 'backup','js_cache', 'reporting');
+$comp_subdirs = array('images', 'pdf_files', 'backup','js_cache', 'reporting', 'attachments');
 
 //---------------------------------------------------------------------------------------------
 if (isset($_GET['selected_id']))
@@ -227,9 +236,16 @@ function display_companies()
 		label_cell($conn[$i]['dbname']);
 		label_cell($conn[$i]['tbpref']);
 		label_cell($what);
-		label_cell("<a href=" . $_SERVER['PHP_SELF']. "?selected_id=" . $i . ">" . _("Edit") . "</a>");
+		$edit = _("Edit");
+		$delete = _("Delete");
+		if (user_graphic_links())
+		{
+			$edit = set_icon(ICON_EDIT, $edit);
+			$delete = set_icon(ICON_DELETE, $delete);
+		}
+    	label_cell("<a href='" . $_SERVER['PHP_SELF']. "?selected_id=$i'>$edit</a>");
 		label_cell( $i == $coyno ? '' :
-	"<a href='javascript:deleteCompany(" . $i . ")'>" . _("Delete") . "</a>");
+			"<a href='javascript:deleteCompany(" . $i . ")'>$delete</a>");
 		end_row();
 	}
 

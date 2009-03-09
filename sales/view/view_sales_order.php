@@ -1,5 +1,14 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 $page_security = 2;
 $path_to_root="../..";
 include_once($path_to_root . "/sales/includes/cart_class.inc");
@@ -18,12 +27,12 @@ page(_("View Sales Order"), true, false, "", $js);
 
 display_heading(sprintf(_("Sales Order #%d"),$_GET['trans_no']));
 
-if (isset($_SESSION['Items']))
+if (isset($_SESSION['View']))
 {
-	unset ($_SESSION['Items']);
+	unset ($_SESSION['View']);
 }
 
-$_SESSION['Items'] = new Cart(30, $_GET['trans_no'], true);
+$_SESSION['View'] = new Cart(30, $_GET['trans_no'], true);
 
 start_table("$table_style2 width=95%", 5);
 echo "<tr valign=top><td>";
@@ -37,27 +46,27 @@ echo "</td></tr>";
 echo "<tr valign=top><td>";
 
 start_table("$table_style width=95%");
-label_row(_("Customer Name"), $_SESSION['Items']->customer_name, "class='tableheader2'",
+label_row(_("Customer Name"), $_SESSION['View']->customer_name, "class='tableheader2'",
 	"colspan=3");
 start_row();
-label_cells(_("Customer Order Ref."), $_SESSION['Items']->cust_ref, "class='tableheader2'");
-label_cells(_("Deliver To Branch"), $_SESSION['Items']->deliver_to, "class='tableheader2'");
+label_cells(_("Customer Order Ref."), $_SESSION['View']->cust_ref, "class='tableheader2'");
+label_cells(_("Deliver To Branch"), $_SESSION['View']->deliver_to, "class='tableheader2'");
 end_row();
 start_row();
-label_cells(_("Ordered On"), $_SESSION['Items']->document_date, "class='tableheader2'");
-label_cells(_("Requested Delivery"), $_SESSION['Items']->due_date, "class='tableheader2'");
+label_cells(_("Ordered On"), $_SESSION['View']->document_date, "class='tableheader2'");
+label_cells(_("Requested Delivery"), $_SESSION['View']->due_date, "class='tableheader2'");
 end_row();
 start_row();
-label_cells(_("Order Currency"), $_SESSION['Items']->customer_currency, "class='tableheader2'");
-label_cells(_("Deliver From Location"), $_SESSION['Items']->location_name, "class='tableheader2'");
+label_cells(_("Order Currency"), $_SESSION['View']->customer_currency, "class='tableheader2'");
+label_cells(_("Deliver From Location"), $_SESSION['View']->location_name, "class='tableheader2'");
 end_row();
 
-label_row(_("Delivery Address"), nl2br($_SESSION['Items']->delivery_address),
+label_row(_("Delivery Address"), nl2br($_SESSION['View']->delivery_address),
 	"class='tableheader2'", "colspan=3");
-label_row(_("Telephone"), $_SESSION['Items']->phone, "class='tableheader2'", "colspan=3");
-label_row(_("E-mail"), "<a href='mailto:" . $_SESSION['Items']->email . "'>" . $_SESSION['Items']->email . "</a>",
+label_row(_("Telephone"), $_SESSION['View']->phone, "class='tableheader2'", "colspan=3");
+label_row(_("E-mail"), "<a href='mailto:" . $_SESSION['View']->email . "'>" . $_SESSION['View']->email . "</a>",
 	"class='tableheader2'", "colspan=3");
-label_row(_("Comments"), $_SESSION['Items']->Comments, "class='tableheader2'", "colspan=3");
+label_row(_("Comments"), $_SESSION['View']->Comments, "class='tableheader2'", "colspan=3");
 end_table();
 
 echo "</td><td valign='top'>";
@@ -175,7 +184,7 @@ table_header($th);
 
 $k = 0;  //row colour counter
 
-foreach ($_SESSION['Items']->line_items as $stock_item) {
+foreach ($_SESSION['View']->line_items as $stock_item) {
 
 	$line_total = round2($stock_item->quantity * $stock_item->price * (1 - $stock_item->discount_percent),
 	   user_price_dec());
@@ -195,11 +204,11 @@ foreach ($_SESSION['Items']->line_items as $stock_item) {
 	end_row();
 }
 
-$items_total = $_SESSION['Items']->get_items_total();
+$items_total = $_SESSION['View']->get_items_total();
 
-$display_total = price_format($items_total + $_SESSION['Items']->freight_cost);
+$display_total = price_format($items_total + $_SESSION['View']->freight_cost);
 
-label_row(_("Shipping"), price_format($_SESSION['Items']->freight_cost),
+label_row(_("Shipping"), price_format($_SESSION['View']->freight_cost),
 	"align=right colspan=6", "nowrap align=right");
 label_row(_("Total Order Value"), $display_total, "align=right colspan=6",
 	"nowrap align=right");

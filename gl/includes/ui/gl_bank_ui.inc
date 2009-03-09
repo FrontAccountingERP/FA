@@ -1,25 +1,30 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 function display_bank_header(&$order)
 {
 	global $table_style2, $Ajax;
 	$payment = $order->trans_type == systypes::bank_payment();
 
 	div_start('pmt_header');
-	start_table("width=90% $table_style2"); // outer table
-	echo "<tr><td valign=top width=33%>";
 
-	echo "<table>"; // inner table
+	start_outer_table("width=90% $table_style2"); // outer table
 
+	table_section(1);
+	
     bank_accounts_list_row( $payment ? _("From:") : _("To:"), 'bank_account', null, true);
 
     date_row(_("Date:"), 'date_', '', null, 0, 0, 0, null, true);
 
-	echo "</table>"; // inner table
-
-	echo "</td><td width=33%>";
-
-	echo "<table>"; // inner table
+	table_section(2, "33%");
 
 	if (!isset($_POST['PayType']))
 	{
@@ -67,6 +72,17 @@ function display_bank_header(&$order)
         		hidden('PersonDetailID');
         	}
     		break;
+
+		case payment_person_types::QuickEntry() :
+			quick_entries_list_row(_("Type").":", 'person_id', null, ($payment ? QE_PAYMENT : QE_DEPOSIT), true);
+			$qid = get_quick_entry(get_post('person_id'));
+			if (list_updated('person_id')) {
+				unset($_POST['totamount']); // enable default
+				$Ajax->activate('totamount');
+			}
+			amount_row($qid['base_desc'].":", 'totamount', price_format($qid['base_amount']),
+				 null, "&nbsp;&nbsp;".submit('go', _("Go"), false, false, true));
+			break;	
 		//case payment_person_types::Project() :
     	//	dimensions_list_row(_("Dimension:"), 'person_id', $_POST['person_id'], false, null, true);
     	//	break;
@@ -77,24 +93,15 @@ function display_bank_header(&$order)
 
 	exchange_rate_display($bank_currency, $person_currency, $_POST['date_']);
 
-	echo "</table>"; // inner table
-
-	echo "</td><td>";
-
-	echo "<table>"; // inner table
-
-	bank_trans_types_list_row(_("Type:"), 'type', null);
+	table_section(3, "33%");
 
 	if (isset($_GET['NewPayment']))
     	ref_row(_("Reference:"), 'ref', '', references::get_next(systypes::bank_payment()));
     else
     	ref_row(_("Reference:"), 'ref', '', references::get_next(systypes::bank_deposit()));
 
-	echo "</table>"; // inner table
+	end_outer_table(1); // outer table
 
-	echo "</td></tr>";
-
-	end_table(1); // outer table
 	div_end();
 }
 //---------------------------------------------------------------------------------
@@ -112,13 +119,13 @@ function display_gl_items($title, &$order)
 
 	if ($dim == 2)
 		$th = array(_("Account Code"), _("Account Description"), _("Dimension")." 1",
-			_("Dimension")." 2", _("Amount"), _("Memo"));
+			_("Dimension")." 2", _("Amount"), _("Memo"), "");
 	else if ($dim == 1)
 		$th = array(_("Account Code"), _("Account Description"), _("Dimension"),
-			_("Amount"), _("Memo"));
+			_("Amount"), _("Memo"), "");
 	else
 		$th = array(_("Account Code"), _("Account Description"),
-			_("Amount"), _("Memo"));
+			_("Amount"), _("Memo"), "");
 
 	if (count($order->gl_items)) $th[] = '';
 
@@ -138,12 +145,16 @@ function display_gl_items($title, &$order)
 				label_cell(get_dimension_string($item->dimension_id, true));
     		if ($dim > 1)
 				label_cell(get_dimension_string($item->dimension2_id, true));
-			amount_cell(abs($item->amount));
+			//amount_cell(abs($item->amount));
+			if ($order->trans_type == systypes::bank_deposit())
+				amount_cell(-$item->amount);
+			else		
+				amount_cell($item->amount);
 			label_cell($item->reference);
 
 			edit_button_cell("Edit$item->index", _("Edit"),
 				_('Edit document line'));
-			edit_button_cell("Delete$item->index", _("Delete"),
+			delete_button_cell("Delete$item->index", _("Delete"),
 				_('Remove line from document'));
     		end_row();
 		}
@@ -218,7 +229,7 @@ function gl_edit_item_controls(&$order, $dim, $Index=null)
 			$_POST['code_id'] =
 				get_company_pref($payment ? 'default_cogs_act':'default_inv_sales_act');
 		}
-		gl_all_accounts_list('code_id', null, true, false, true);
+		gl_all_accounts_list('code_id', null, false, true);
 		if ($dim >= 1)
 			dimensions_list_cells(null, 'dimension_id', null, true, " ", false, 1);
 		if ($dim > 1)
@@ -234,10 +245,10 @@ function gl_edit_item_controls(&$order, $dim, $Index=null)
 
 	if ($id != -1)
 	{
-		edit_button_cell('UpdateItem', _("Update"),
-				_('Confirm changes'));
-		edit_button_cell('CancelItemChanges', _("Cancel"),
-				_('Cancel changes'));
+		button_cell('UpdateItem', _("Update"),
+				_('Confirm changes'), ICON_UPDATE);
+		button_cell('CancelItemChanges', _("Cancel"),
+				_('Cancel changes'), ICON_CANCEL);
  		set_focus('amount');
 	}
 	else

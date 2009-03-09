@@ -1,5 +1,14 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 $page_security = 3;
 $path_to_root="../..";
 include($path_to_root . "/includes/session.inc");
@@ -82,6 +91,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
     	        default_location=".db_escape($_POST['default_location']) . ",
     	        br_post_address =".db_escape($_POST['br_post_address']) . ",
     	        disable_trans=".db_escape($_POST['disable_trans']) . ",
+				group_no=".db_escape($_POST['group_no']) . ", 
     	        default_ship_via=".db_escape($_POST['default_ship_via']) . "
     	        WHERE branch_code =".db_escape($_POST['branch_code']) . "
     	        AND debtor_no=".db_escape($_POST['customer_id']);
@@ -94,7 +104,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 			$sql = "INSERT INTO ".TB_PREF."cust_branch (debtor_no, br_name, br_address,
 				salesman, phone, fax,
 				contact_name, area, email, tax_group_id, sales_account, receivables_account, payment_discount_account, sales_discount_account, default_location,
-				br_post_address, disable_trans, default_ship_via)
+				br_post_address, disable_trans, group_no, default_ship_via)
 				VALUES (".db_escape($_POST['customer_id']). ",".db_escape($_POST['br_name']) . ", "
 					.db_escape($_POST['br_address']) . ", ".db_escape($_POST['salesman']) . ", "
 					.db_escape($_POST['phone']) . ", ".db_escape($_POST['fax']) . ","
@@ -107,6 +117,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 					.db_escape($_POST['default_location']) . ", "
 					.db_escape($_POST['br_post_address']) . ","
 					.db_escape($_POST['disable_trans']) . ", "
+					.db_escape($_POST['group_no']) . ", "					
 					.db_escape($_POST['default_ship_via']) . ")";
 
 			$note = _('New customer branch has been added');
@@ -198,12 +209,12 @@ if ($num_branches)
 		label_cell($myrow["description"]);
 		label_cell($myrow["phone"]);
 		label_cell($myrow["fax"]);
-		label_cell("<a href=mailto:" . $myrow["email"]. ">" . $myrow["email"]. "</a>");
+		email_cell($myrow["email"]);
 		label_cell($myrow["tax_group_name"]);
 		if (count($_SESSION['Context']))
  			edit_button_cell("Select".$myrow["branch_code"], _("Select"));
  		edit_button_cell("Edit".$myrow["branch_code"], _("Edit"));
- 		edit_button_cell("Delete".$myrow["branch_code"], _("Delete"));
+ 		delete_button_cell("Delete".$myrow["branch_code"], _("Delete"));
 		end_row();
 	}
 	end_table();
@@ -212,13 +223,11 @@ if ($num_branches)
 else
 	display_note(_("The selected customer does not have any branches. Please create at least one branch."));
 
-echo "<br>";
-start_table("$table_style2 width=60%", 5);
-echo "<tr valign=top><td>"; // outer table
+start_outer_table($table_style2, 5);
 
-echo "<table>";
+table_section(1);
 
-
+$_POST['email'] = "";
 if ($selected_id != -1)
 {
  	if ($Mode == 'Edit') {
@@ -248,6 +257,7 @@ if ($selected_id != -1)
 	    $_POST['sales_discount_account'] = $myrow['sales_discount_account'];
 	    $_POST['receivables_account'] = $myrow['receivables_account'];
 	    $_POST['payment_discount_account'] = $myrow['payment_discount_account'];
+		$_POST['group_no']  = $myrow["group_no"];
 	}
 }
 elseif ($Mode != 'ADD_ITEM')
@@ -288,7 +298,7 @@ text_row(_("Contact Person:"), 'contact_name', null, 35, 40);
 text_row(_("Phone Number:"), 'phone', null, 20, 20);
 text_row(_("Fax Number:"), 'fax', null, 20, 20);
 
-text_row("<a href='Mailto:'>" . _("E-mail:") . "</a>", 'email', null, 35, 55);
+email_row(_("E-mail:"), 'email', null, 35, 55);
 
 table_section_title(_("Sales"));
 
@@ -296,24 +306,22 @@ sales_persons_list_row( _("Sales Person:"), 'salesman', null);
 
 sales_areas_list_row( _("Sales Area:"), 'area', null);
 
+sales_groups_list_row(_("Sales Group:"), 'group_no', null, true);
+
 locations_list_row(_("Default Inventory Location:"), 'default_location', null);
 
 shippers_list_row(_("Default Shipping Company:"), 'default_ship_via', null);
 
-tax_groups_list_row(_("Tax Group:"), 'tax_group_id', null, 31, 30);
+tax_groups_list_row(_("Tax Group:"), 'tax_group_id', null);
 
 yesno_list_row(_("Disable this Branch:"), 'disable_trans', null);
 
-echo "</table>";
-
-echo "</td><td  class='tableseparator'>"; // outer table
-
-echo"<table>";
+table_section(2);
 
 table_section_title(_("GL Accounts"));
 
 // 2006-06-14. Changed gl_al_accounts_list to have an optional all_option 'Use Item Sales Accounts'
-gl_all_accounts_list_row(_("Sales Account:"), 'sales_account', null, false,	false, false, true);
+gl_all_accounts_list_row(_("Sales Account:"), 'sales_account', null, false, false, true);
 
 gl_all_accounts_list_row(_("Sales Discount Account:"), 'sales_discount_account');
 
@@ -327,9 +335,7 @@ textarea_row(_("Mailing Address:"), 'br_post_address', null, 35, 5);
 
 textarea_row(_("Billing Address:"), 'br_address', null, 35, 5);
 
-end_table();
-
-end_table(1); // outer table
+end_outer_table(1);
 
 submit_add_or_update_center($selected_id == -1, '', true);
 

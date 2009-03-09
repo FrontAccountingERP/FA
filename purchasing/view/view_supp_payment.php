@@ -1,5 +1,14 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 $page_security = 1;
 $path_to_root="../..";
 
@@ -49,7 +58,7 @@ start_row();
 if ($show_currencies)
 	label_cells(_("Payment Currency"), $receipt['bank_curr_code'], "class='tableheader2'");
 label_cells(_("Amount"), number_format2(-$receipt['BankAmount'], user_price_dec()), "class='tableheader2'");
-label_cells(_("Payment Type"), $receipt['BankTransType'], "class='tableheader2'");
+label_cells(_("Payment Type"), bank_account_types::transfer_type($receipt['BankTransType']), "class='tableheader2'");
 end_row();
 start_row();
 if ($show_currencies) 

@@ -1,5 +1,14 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 $page_security = 11;
 $path_to_root="../..";
 include($path_to_root . "/includes/session.inc");
@@ -46,17 +55,17 @@ if (isset($_FILES['pic']) && $_FILES['pic']['name'] != '')
 	 //But check for the worst 
 	if (strtoupper(substr(trim($_FILES['pic']['name']), strlen($_FILES['pic']['name']) - 3)) != 'JPG')
 	{
-		display_notification(_('Only jpg files are supported - a file extension of .jpg is expected'));
+		display_warning(_('Only jpg files are supported - a file extension of .jpg is expected'));
 		$upload_file ='No';
 	} 
 	elseif ( $_FILES['pic']['size'] > ($max_image_size * 1024)) 
 	{ //File Size Check
-		display_notification(_('The file size is over the maximum allowed. The maximum size allowed in KB is') . ' ' . $max_image_size);
+		display_warning(_('The file size is over the maximum allowed. The maximum size allowed in KB is') . ' ' . $max_image_size);
 		$upload_file ='No';
 	} 
 	elseif ( $_FILES['pic']['type'] == "text/plain" ) 
 	{  //File type Check
-		display_notification( _('Only graphics files can be uploaded'));
+		display_warning( _('Only graphics files can be uploaded'));
          	$upload_file ='No';
 	} 
 	elseif (file_exists($filename))
@@ -123,7 +132,13 @@ if (isset($_POST['addupdate']))
 		set_focus('NewStockID');
 
 	}
-
+	elseif ($new_item && db_num_rows(get_item_kit($_POST['NewStockID'])))
+	{
+		  	$input_error = 1;
+      		display_error( _("This item code is already assigned to stock item or sale kit."));
+			set_focus('NewStockID');
+	}
+	
 	if ($input_error != 1)
 	{
 
@@ -195,7 +210,22 @@ function can_delete($stock_id)
 		display_error(_('Cannot delete this item because there are existing purchase order items for it.'));
 		return false;
 	}
+	$kits = get_where_used($stock_id);
+	$num_kits = db_num_rows($kits);
+	if ($num_kits) {
+		$msg = _("This item cannot be deleted because some code aliases 
+			or foreign codes was entered for it, or there are kits defined 
+			using this item as component")
+			.':<br>';
 
+		while($num_kits--) {
+			$kit = db_fetch($kits);
+			$msg .= "'".$kit[0]."'";
+			if ($num_kits) $msg .= ',';
+		}
+		display_error($msg);
+		return false;
+	}
 	return true;
 }
 
@@ -215,6 +245,7 @@ if (isset($_POST['delete']) && strlen($_POST['delete']) > 1)
 		$_POST['stock_id'] = '';
 		clear_data();
 		set_focus('stock_id');
+		$new_item = true;
 		$Ajax->activate('_page_body');
 	}
 }
@@ -241,7 +272,9 @@ if (db_has_stock_items())
 }
 
 div_start('details');
-start_table("$table_style2 width=40%");
+start_outer_table($table_style2, 5);
+
+table_section(1);
 
 table_section_title(_("Item"));
 
@@ -300,29 +333,7 @@ else
 
 text_row(_("Name:"), 'description', null, 52, 50);
 
-textarea_row(_('Description:'), 'long_description', null, 45, 3);
-
-end_table();
-start_table("$table_style2 width=40%");
-// Add image upload for New Item  - by Joe
-start_row();
-label_cells(_("Image File (.jpg)") . ":", "<input type='file' id='pic' name='pic'>");
-// Add Image upload for New Item  - by Joe
-$stock_img_link = "<img id='item_img' alt = '[";
-if (isset($_POST['NewStockID']) && file_exists("$comp_path/$user_comp/images/".$_POST['NewStockID'].".jpg")) 
-{
- // 31/08/08 - rand() call is necessary here to avoid caching problems. Thanks to Peter D.
-	$stock_img_link .= $_POST['NewStockID'].".jpg".
-	"]' src='$comp_path/$user_comp/images/".$_POST['NewStockID'].".jpg?nocache=".rand()."'";
-} 
-else 
-{
-	$stock_img_link .= _("No image"). "]'";
-}
-$stock_img_link .= " width='$pic_width' height='$pic_height' border='0'>";
-
-label_cell($stock_img_link, "valign=top align=center rowspan=5");
-end_row();
+textarea_row(_('Description:'), 'long_description', null, 42, 3);
 
 stock_categories_list_row(_("Category:"), 'category_id', null);
 
@@ -333,8 +344,22 @@ stock_item_types_list_row(_("Item Type:"), 'mb_flag', null,
 
 stock_units_list_row(_('Units of Measure:'), 'units', null,
 	(!isset($_POST['NewStockID']) || $new_item));
-end_table();
-start_table("$table_style2 width=40%");
+
+$dim = get_company_pref('use_dimension');
+if ($dim >= 1)
+{
+	table_section_title(_("Dimensions"));
+
+	dimensions_list_row(_("Dimension")." 1", 'dimension_id', null, true, " ", false, 1);
+	if ($dim > 1)
+		dimensions_list_row(_("Dimension")." 2", 'dimension2_id', null, true, " ", false, 2);
+}
+if ($dim < 1)
+	hidden('dimension_id', 0);
+if ($dim < 2)
+	hidden('dimension2_id', 0);
+
+table_section(2);
 
 table_section_title(_("GL Accounts"));
 
@@ -358,21 +383,28 @@ if (is_manufactured($_POST['mb_flag']))
 	gl_all_accounts_list_row(_("Item Assembly Costs Account:"), 'assembly_account', $_POST['assembly_account']);
 else
 	hidden('assembly_account', $_POST['assembly_account']);
-$dim = get_company_pref('use_dimension');
-if ($dim >= 1)
+
+table_section_title(_("Picture"));
+
+// Add image upload for New Item  - by Joe
+label_row(_("Image File (.jpg)") . ":", "<input type='file' id='pic' name='pic'>");
+// Add Image upload for New Item  - by Joe
+$stock_img_link = "";
+if (isset($_POST['NewStockID']) && file_exists("$comp_path/$user_comp/images/".$_POST['NewStockID'].".jpg")) 
 {
-	table_section_title(_("Dimensions"));
-
-	dimensions_list_row(_("Dimension")." 1", 'dimension_id', null, true, " ", false, 1);
-	if ($dim > 1)
-		dimensions_list_row(_("Dimension")." 2", 'dimension2_id', null, true, " ", false, 2);
+ // 31/08/08 - rand() call is necessary here to avoid caching problems. Thanks to Peter D.
+	$stock_img_link .= "<img id='item_img' alt = '[".$_POST['NewStockID'].".jpg".
+		"]' src='$comp_path/$user_comp/images/".$_POST['NewStockID'].".jpg?nocache=".rand()."'".
+		" width='$pic_width' height='$pic_height' border='0'>";
+} 
+else 
+{
+	$stock_img_link .= _("No image");
 }
-if ($dim < 1)
-	hidden('dimension_id', 0);
-if ($dim < 2)
-	hidden('dimension2_id', 0);
 
-end_table(1);
+label_row("&nbsp;", $stock_img_link);
+
+end_outer_table(1);
 div_end();
 div_start('controls');
 if (!isset($_POST['NewStockID']) || $new_item) 

@@ -1,5 +1,14 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 $path_to_root="..";
 $page_security = 5;
 include_once($path_to_root . "/includes/session.inc");
@@ -29,8 +38,6 @@ check_db_has_suppliers(_("There are no suppliers defined in the system."));
 
 check_db_has_bank_accounts(_("There are no bank accounts defined in the system."));
 
-check_db_has_bank_trans_types(_("There are no bank payment types defined in the system."));
-
 //----------------------------------------------------------------------------------------
 if ($ret = context_restore()) {
 	if(isset($ret['supplier_id']))
@@ -38,8 +45,8 @@ if ($ret = context_restore()) {
 }
 if (isset($_POST['_supplier_id_editor'])) {
 	context_call($path_to_root.'/purchasing/manage/suppliers.php?supplier_id='.$_POST['supplier_id'], 
-		array( 'supplier_id', 'bank_account', 'DatePaid', 
-			'PaymentType', 'ref', 'amount', 'discount', 'memo_') );
+		array( 'supplier_id', 'bank_account', 'DatePaid', 'ref', 'amount', 
+			'discount', 'memo_') );
 }
 if (isset($_POST['_DatePaid_changed'])) {
   $Ajax->activate('_ex_rate');
@@ -52,11 +59,11 @@ if (isset($_GET['AddedID']))
 
    	display_notification_centered( _("Payment has been sucessfully entered"));
 
-    display_note(get_gl_view_str(22, $payment_id, _("View the GL Journal Entries for this Payment")));
+    display_note(get_gl_view_str(22, $payment_id, _("View the GL &Journal Entries for this Payment")));
 
-    hyperlink_params($path_to_root . "/purchasing/allocations/supplier_allocate.php", _("Allocate this Payment"), "trans_no=$payment_id&trans_type=22");
+    hyperlink_params($path_to_root . "/purchasing/allocations/supplier_allocate.php", _("&Allocate this Payment"), "trans_no=$payment_id&trans_type=22");
 
-	hyperlink_params($_SERVER['PHP_SELF'], _("Enter another supplier payment"), "supplier_id=" . $_POST['supplier_id']);
+	hyperlink_params($_SERVER['PHP_SELF'], _("Enter another supplier &payment"), "supplier_id=" . $_POST['supplier_id']);
 
 	display_footer_exit();
 }
@@ -76,11 +83,13 @@ function display_controls()
 		if (!is_date_in_fiscalyear($_POST['DatePaid']))
 			$_POST['DatePaid'] = end_fiscalyear();
 	}		
-	start_table($table_style2, 5, 7);
-	echo "<tr><td valign=top>"; // outer table
+	//start_table($table_style2, 5, 7);
+	//echo "<tr><td valign=top>"; // outer table
+	start_outer_table($table_style2, 5);
 
-	echo "<table>";
-
+	//echo "<table>";
+	table_section(1);
+	
     bank_accounts_list_row(_("From Bank Account:"), 'bank_account', null, true);
 
 	amount_row(_("Amount of Payment:"), 'amount');
@@ -88,9 +97,10 @@ function display_controls()
 
     date_row(_("Date Paid") . ":", 'DatePaid', '', null, 0, 0, 0, null, true);
 
-	echo "</table>";
-	echo "</td><td valign=top class='tableseparator'>"; // outer table
-	echo "<table>";
+	table_section(2);
+	//echo "</table>";
+	//echo "</td><td valign=top class='tableseparator'>"; // outer table
+	//echo "<table>";
 
     supplier_list_row(_("Payment To:"), 'supplier_id', null, false, true);
 
@@ -103,16 +113,14 @@ function display_controls()
 		exchange_rate_display($bank_currency, $supplier_currency, $_POST['DatePaid'], true);
 	}
 
-	bank_trans_types_list_row(_("Payment Type:"), 'PaymentType', null);
-
     ref_row(_("Reference:"), 'ref', '', references::get_next(22));
 
     text_row(_("Memo:"), 'memo_', null, 52,50);
 
-	echo "</table>";
+	//echo "</table>";
 
-	echo "</td></tr>";
-	end_table(1); // outer table
+	//echo "</td></tr>";
+	end_outer_table(1); // outer table
 
 	submit_center('ProcessSuppPayment',_("Enter Payment"), true, '', true);
 
@@ -208,13 +216,12 @@ function handle_add_payment()
 		$rate = input_num('_ex_rate');
 
 	$payment_id = add_supp_payment($_POST['supplier_id'], $_POST['DatePaid'],
-		$_POST['PaymentType'], $_POST['bank_account'],
-		input_num('amount'), input_num('discount'), $_POST['ref'], $_POST['memo_'], $rate);
+		$_POST['bank_account'],	input_num('amount'), input_num('discount'), 
+		$_POST['ref'], $_POST['memo_'], $rate);
 
 	//unset($_POST['supplier_id']);
    	unset($_POST['bank_account']);
    	unset($_POST['DatePaid']);
-   	unset($_POST['PaymentType']);
    	unset($_POST['currency']);
    	unset($_POST['memo_']);
    	unset($_POST['amount']);

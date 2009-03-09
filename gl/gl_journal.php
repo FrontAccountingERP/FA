@@ -1,5 +1,14 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 $page_security = 3;
 $path_to_root="..";
 include_once($path_to_root . "/includes/ui/items_cart.inc");
@@ -37,9 +46,9 @@ if (isset($_GET['AddedID']))
 
    	display_notification_centered( _("Journal entry has been entered") . " #$trans_no");
 
-    display_note(get_gl_view_str($trans_type, $trans_no, _("View this Journal Entry")));
+    display_note(get_gl_view_str($trans_type, $trans_no, _("&View this Journal Entry")));
 
-   	hyperlink_no_params($_SERVER['PHP_SELF'], _("Enter Another Journal Entry"));
+   	hyperlink_no_params($_SERVER['PHP_SELF'], _("Enter &Another Journal Entry"));
 
 	display_footer_exit();
 }
@@ -228,6 +237,12 @@ if (isset($_POST['UpdateItem']))
 if (isset($_POST['CancelItemChanges']))
 	line_start_focus();
 
+if (isset($_POST['go']))
+{
+	display_quick_entries($_SESSION['journal_items'], $_POST['person_id'], input_num('totamount'), QE_JOURNAL);
+	$_POST['totamount'] = price_format(0); $Ajax->activate('totamount');
+	line_start_focus();
+}	
 //-----------------------------------------------------------------------------------------------
 
 if (isset($_GET['NewJournal']) || !isset($_SESSION['journal_items']))

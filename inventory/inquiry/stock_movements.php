@@ -1,6 +1,14 @@
 <?php
-
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 $page_security = 2;
 $path_to_root="../..";
 include_once($path_to_root . "/includes/session.inc");
@@ -65,7 +73,7 @@ $result = db_query($sql, "could not query stock moves");
 check_db_error("The stock movements for the selected criteria could not be retrieved",$sql);
 
 div_start('doc_tbl');
-start_table("$table_style width=70%");
+start_table($table_style);
 $th = array(_("Type"), _("#"), _("Reference"), _("Date"), _("Detail"),
 	_("Quantity In"), _("Quantity Out"), _("Quantity On Hand"));
 
@@ -175,16 +183,12 @@ while ($myrow = db_fetch($result))
 }
 //end of while loop
 
-// 2008-06-14. Always write this.
-//if ($total_in != 0 || $total_out != 0)
-//{
-	start_row("class='inquirybg'");
-    label_cell("<b>"._("Quantity on hand after") . " " . $_POST['BeforeDate']."</b>", "align=center colspan=5");
-    qty_cell($total_in, false, $dec);
-    qty_cell($total_out, false, $dec);
-    qty_cell($after_qty, false, $dec);
-    end_row();
-//}
+start_row("class='inquirybg'");
+label_cell("<b>"._("Quantity on hand after") . " " . $_POST['BeforeDate']."</b>", "align=center colspan=5");
+qty_cell($total_in, false, $dec);
+qty_cell($total_out, false, $dec);
+qty_cell($after_qty, false, $dec);
+end_row();
 
 end_table(1);
 div_end();

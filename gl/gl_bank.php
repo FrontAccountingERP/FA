@@ -1,5 +1,14 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 $page_security = 3;
 $path_to_root="..";
 include_once($path_to_root . "/includes/ui/items_cart.inc");
@@ -31,8 +40,6 @@ page($_SESSION['page_title'], false, false, '', $js);
 //-----------------------------------------------------------------------------------------------
 check_db_has_bank_accounts(_("There are no bank accounts defined in the system."));
 
-check_db_has_bank_trans_types(_("There are no bank payment types defined in the system."));
-
 //----------------------------------------------------------------------------------------
 if ($ret = context_restore()) {
 	if(isset($ret['supplier_id']))
@@ -55,7 +62,7 @@ if (isset($_POST['_person_id_editor'])) {
 //
 context_call($path_to_root.$editor.$_POST['person_id'], 
 	array('bank_account', 'date_', 'PayType', 'person_id',
-		'PersonDetailID', 'type', 'ref', 'memo_') );
+		'PersonDetailID', 'ref', 'memo_') );
 }
 //--------------------------------------------------------------------------------------------------
 function line_start_focus() {
@@ -74,11 +81,11 @@ if (isset($_GET['AddedID']))
 
    	display_notification_centered(_("Payment has been entered"));
 
-	display_note(get_gl_view_str($trans_type, $trans_no, _("View the GL Postings for this Payment")));
+	display_note(get_gl_view_str($trans_type, $trans_no, _("&View the GL Postings for this Payment")));
 
-	hyperlink_params($_SERVER['PHP_SELF'], _("Enter Another Payment"), "NewPayment=yes");
+	hyperlink_params($_SERVER['PHP_SELF'], _("Enter Another &Payment"), "NewPayment=yes");
 
-	hyperlink_params($_SERVER['PHP_SELF'], _("Enter A Deposit"), "NewDeposit=yes");
+	hyperlink_params($_SERVER['PHP_SELF'], _("Enter A &Deposit"), "NewDeposit=yes");
 
 	display_footer_exit();
 }
@@ -107,7 +114,6 @@ function handle_new_order($type)
 {
 	if (isset($_SESSION['pay_items']))
 	{
-		$_SESSION['pay_items']->clear_items();
 		unset ($_SESSION['pay_items']);
 	}
 
@@ -170,7 +176,7 @@ if (isset($_POST['Process']))
 		$_SESSION['pay_items']->trans_type, $_POST['bank_account'],
 		$_SESSION['pay_items'], $_POST['date_'],
 		$_POST['PayType'], $_POST['person_id'], get_post('PersonDetailID'),
-		$_POST['type'],	$_POST['ref'], $_POST['memo_']);
+		$_POST['ref'], $_POST['memo_']);
 
 	$trans_type = $trans[0];
    	$trans_no = $trans[1];
@@ -187,12 +193,12 @@ if (isset($_POST['Process']))
 
 function check_item_data()
 {
-	if (!check_num('amount', 0))
-	{
-		display_error( _("The amount entered is not a valid number or is less than zero."));
-		set_focus('amount');
-		return false;
-	}
+	//if (!check_num('amount', 0))
+	//{
+	//	display_error( _("The amount entered is not a valid number or is less than zero."));
+	//	set_focus('amount');
+	//	return false;
+	//}
 
 	if ($_POST['code_id'] == $_POST['bank_account'])
 	{
@@ -201,15 +207,15 @@ function check_item_data()
 		return false;
 	}
 
-	if (is_bank_account($_POST['code_id']))
-	{
-		if ($_SESSION['pay_items']->trans_type == systypes::bank_payment())
-			display_error( _("You cannot make a payment to a bank account. Please use the transfer funds facility for this."));
-		else
- 			display_error( _("You cannot make a deposit from a bank account. Please use the transfer funds facility for this."));
-		set_focus('code_id');
-		return false;
-	}
+	//if (is_bank_account($_POST['code_id']))
+	//{
+	//	if ($_SESSION['pay_items']->trans_type == systypes::bank_payment())
+	//		display_error( _("You cannot make a payment to a bank account. Please use the transfer funds facility for this."));
+	//	else
+ 	//		display_error( _("You cannot make a deposit from a bank account. Please use the transfer funds facility for this."));
+	//	set_focus('code_id');
+	//	return false;
+	//}
 
    	return true;
 }
@@ -247,7 +253,6 @@ function handle_new_item()
 		$_POST['dimension2_id'], $amount, $_POST['LineMemo']);
 	line_start_focus();
 }
-
 //-----------------------------------------------------------------------------------------------
 $id = find_submit('Delete');
 if ($id != -1)
@@ -262,7 +267,13 @@ if (isset($_POST['UpdateItem']))
 if (isset($_POST['CancelItemChanges']))
 	line_start_focus();
 
-
+if (isset($_POST['go']))
+{
+	display_quick_entries($_SESSION['pay_items'], $_POST['person_id'], input_num('totamount'), 
+		$_SESSION['pay_items']->trans_type==systypes::bank_payment() ? QE_PAYMENT : QE_DEPOSIT);
+	$_POST['totamount'] = price_format(0); $Ajax->activate('totamount');
+	line_start_focus();
+}
 //-----------------------------------------------------------------------------------------------
 
 start_form(false, true);

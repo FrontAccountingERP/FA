@@ -1,5 +1,14 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 $page_security = 20;
 $path_to_root="..";
 include_once($path_to_root . "/includes/session.inc");
@@ -28,8 +37,10 @@ else
 
 function check_data()
 {
-	if ($_POST['code'] == "" || $_POST['name'] == "" || $_POST['encoding'] == "")
+	if ($_POST['code'] == "" || $_POST['name'] == "" || $_POST['encoding'] == "") {
+		display_error(_("Language name, code nor encoding cannot be empty"));
 		return false;
+	}
 	return true;
 }
 
@@ -78,7 +89,7 @@ function array_natsort($aryData, $strIndex, $strSortBy, $strSortType=false)
 
 function write_lang()
 {
-	global $path_to_root, $installed_languages;
+	global $path_to_root, $installed_languages, $dflt_lang;
 	include_once($path_to_root . "/lang/installed_languages.inc");
 
 	$conn = array_natsort($installed_languages, 'code', 'code');
@@ -111,7 +122,9 @@ function write_lang()
 		else
 			$msg .= "),\n";
 	}
-	$msg .= "\t);\n?>";
+
+	$msg .= "\t);\n";
+	$msg .= "\n\$dflt_lang = '$dflt_lang';\n?>\n";
 
 	$filename = $path_to_root . "/lang/installed_languages.inc";
 	// Check if the file exists and is writable first.
@@ -146,13 +159,17 @@ function write_lang()
 
 function handle_submit()
 {
-	global $path_to_root, $installed_languages;
+	global $path_to_root, $installed_languages, $dflt_lang;
 
 	if (!check_data())
 		return false;
 
 	$id = $_GET['id'];
 
+	if ($_POST['dflt']) {
+			$dflt_lang = $_POST['code'];
+	}
+	
 	$installed_languages[$id]['code'] = $_POST['code'];
 	$installed_languages[$id]['name'] = $_POST['name'];
 	$installed_languages[$id]['encoding'] = $_POST['encoding'];
@@ -188,42 +205,28 @@ function handle_submit()
 
 function handle_delete()
 {
-	global  $path_to_root, $installed_languages;
+	global  $path_to_root, $installed_languages, $dflt_lang;
 
 	$id = $_GET['id'];
 
 	$lang = $installed_languages[$id]['code'];
 	$filename = "$path_to_root/lang/$lang/LC_MESSAGES";
-	if ($h = opendir($filename))
-	{
-   		while (($file = readdir($h)) !== false)
-   		{
-   			if (is_file("$filename/$file"))
-   		    	unlink("$filename/$file");
-   		}
-   		closedir($h);
-	}
-	rmdir($filename);
-	$filename = "$path_to_root/lang/$lang";
-	if ($h = opendir($filename))
-	{
-   		while (($file = readdir($h)) !== false)
-   		{
-   			if (is_file("$filename/$file"))
-   		    	unlink("$filename/$file");
-   		}
-   		closedir($h);
-	}
-	rmdir($filename);
 
+	if ($lang == $dflt_lang ) { 
+		// on delete set default to current.
+		$dflt_lang = $_SESSION['language']->code;
+	}
+	
 	unset($installed_languages[$id]);
-	$conn = array_values($installed_languages);
-	$installed_languages = $conn;
-
-	//$$db_connections = array_values($db_connections);
+	$installed_languages = array_values($installed_languages);
 
 	if (!write_lang())
 		return;
+
+	$filename = "$path_to_root/lang/$lang";
+	flush_dir($filename);
+	rmdir($filename);
+
 	meta_forward($_SERVER['PHP_SELF']);
 }
 
@@ -231,7 +234,7 @@ function handle_delete()
 
 function display_languages()
 {
-	global $table_style, $installed_languages;
+	global $table_style, $installed_languages, $dflt_lang;
 
 	$lang = $_SESSION["language"]->code;
 
@@ -244,7 +247,7 @@ function display_languages()
 		}
 		</script>";
 	start_table($table_style);
-	$th = array(_("Language"), _("Name"), _("Encoding"), _("Right To Left"), "", "");
+	$th = array(_("Language"), _("Name"), _("Encoding"), _("Right To Left"), _("Default"), "", "");
 	table_header($th);
 
 	$k = 0;
@@ -265,10 +268,17 @@ function display_languages()
 		else
 			$rtl = _("No");
 		label_cell($rtl);
-		edit_link_cell("selected_id=" . $i);
-		
+		label_cell($dflt_lang == $conn[$i]['code'] ? _("Yes") :_("No"));
+		$edit = _("Edit");
+		$delete = _("Delete");
+		if (user_graphic_links())
+		{
+			$edit = set_icon(ICON_EDIT, $edit);
+			$delete = set_icon(ICON_DELETE, $delete);
+		}
+    	label_cell("<a href='" . $_SERVER['PHP_SELF']. "?selected_id=$i'>$edit</a>");
 		label_cell($conn[$i]['code'] == $lang ? '' :
-			"<a href='javascript:deleteLanguage(" . $i . ")'>" . _("Delete") . "</a>");
+			"<a href='javascript:deleteLanguage(" . $i . ")'>$delete</a>");
 		end_row();
 	}
 
@@ -280,7 +290,7 @@ function display_languages()
 
 function display_language_edit($selected_id)
 {
-	global $installed_languages, $table_style2;
+	global $installed_languages, $table_style2, $dflt_lang;
 
 	if ($selected_id != -1)
 		$n = $selected_id;
@@ -309,13 +319,15 @@ function display_language_edit($selected_id)
 			$_POST['rtl']  = $conn['rtl'];
 		else
 			$_POST['rtl'] = false;
+		$_POST['dflt'] = $dflt_lang == $conn['code'];
 		hidden('selected_id', $selected_id);
 	}
-	text_row_ex(_("Language"), 'code', 20);
-	text_row_ex(_("Name"), 'name', 20);
+	text_row_ex(_("Language Code"), 'code', 20);
+	text_row_ex(_("Language Name"), 'name', 20);
 	text_row_ex(_("Encoding"), 'encoding', 20);
 
 	yesno_list_row(_("Right To Left"), 'rtl', null, "", "", false);
+	yesno_list_row(_("Default Language"), 'dflt', null, "", "", false);
 
 	label_row(_("Language File") . " (PO)", "<input name='uploadfile' type='file'>");
 	label_row(_("Language File") . " (MO)", "<input name='uploadfile2' type='file'>");

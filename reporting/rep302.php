@@ -1,5 +1,14 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 $page_security = 2;
 // ----------------------------------------------------------------
 // $ Revision:	2.0 $
@@ -7,17 +16,16 @@ $page_security = 2;
 // date_:	2005-05-19
 // Title:	Inventory Planning
 // ----------------------------------------------------------------
-$path_to_root="../";
+$path_to_root="..";
 
-include_once($path_to_root . "includes/session.inc");
-include_once($path_to_root . "includes/date_functions.inc");
-include_once($path_to_root . "includes/data_checks.inc");
-include_once($path_to_root . "gl/includes/gl_db.inc");
-include_once($path_to_root . "inventory/includes/db/items_category_db.inc");
+include_once($path_to_root . "/includes/session.inc");
+include_once($path_to_root . "/includes/date_functions.inc");
+include_once($path_to_root . "/includes/data_checks.inc");
+include_once($path_to_root . "/gl/includes/gl_db.inc");
+include_once($path_to_root . "/inventory/includes/db/items_category_db.inc");
 
 //----------------------------------------------------------------------------------------------------
 
-// trial_inquiry_controls();
 print_inventory_planning();
 
 function getTransactions($category, $location)
@@ -138,11 +146,14 @@ function print_inventory_planning()
 {
     global $path_to_root;
 
-    include_once($path_to_root . "reporting/includes/pdf_report.inc");
-
     $category = $_POST['PARAM_0'];
     $location = $_POST['PARAM_1'];
     $comments = $_POST['PARAM_2'];
+	$destination = $_POST['PARAM_3'];
+	if ($destination)
+		include_once($path_to_root . "/reporting/includes/excel_report.inc");
+	else
+		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 
 	if ($category == reserved_words::get_all_numeric())
 		$category = 0;
@@ -176,7 +187,7 @@ function print_inventory_planning()
     				    1 => array('text' => _('Category'), 'from' => $cat, 'to' => ''),
     				    2 => array('text' => _('Location'), 'from' => $loc, 'to' => ''));
 
-    $rep = new FrontReport(_('Inventory Planning Report'), "InventoryPlanning.pdf", user_pagesize());
+    $rep = new FrontReport(_('Inventory Planning Report'), "InventoryPlanning", user_pagesize());
 
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);
@@ -210,26 +221,27 @@ function print_inventory_planning()
 		$dec = get_qty_dec($trans['stock_id']);
 		$rep->TextCol(0, 1, $trans['stock_id']);
 		$rep->TextCol(1, 2, $trans['description']);
-		$rep->TextCol(2, 3, number_format2($period['prd0'], $dec));
-		$rep->TextCol(3, 4, number_format2($period['prd1'], $dec));
-		$rep->TextCol(4, 5, number_format2($period['prd2'], $dec));
-		$rep->TextCol(5, 6, number_format2($period['prd3'], $dec));
-		$rep->TextCol(6, 7, number_format2($period['prd4'], $dec));
+		$rep->AmountCol(2, 3, $period['prd0'], $dec);
+		$rep->AmountCol(3, 4, $period['prd1'], $dec);
+		$rep->AmountCol(4, 5, $period['prd2'], $dec);
+		$rep->AmountCol(5, 6, $period['prd3'], $dec);
+		$rep->AmountCol(6, 7, $period['prd4'], $dec);
 
 		$MaxMthSales = Max($period['prd0'], $period['prd1'], $period['prd2'], $period['prd3']);
 		$IdealStockHolding = $MaxMthSales * 3;
-		$rep->TextCol(7, 8, number_format2($IdealStockHolding, $dec));
+		$rep->AmountCol(7, 8, $IdealStockHolding, $dec);
 
-		$rep->TextCol(8, 9, number_format2($trans['qty_on_hand'], $dec));
-		$rep->TextCol(9, 10, number_format2($custqty, $dec));
-		$rep->TextCol(10, 11, number_format2($suppqty, $dec));
+		$rep->AmountCol(8, 9, $trans['qty_on_hand'], $dec);
+		$rep->AmountCol(9, 10, $custqty, $dec);
+		$rep->AmountCol(10, 11, $suppqty, $dec);
 
 		$SuggestedTopUpOrder = $IdealStockHolding - $trans['qty_on_hand'] + $custqty - $suppqty;
 		if ($SuggestedTopUpOrder < 0.0)
 			$SuggestedTopUpOrder = 0.0;
-		$rep->TextCol(11, 12, number_format2($SuggestedTopUpOrder, $dec));
+		$rep->AmountCol(11, 12, $SuggestedTopUpOrder, $dec);
 	}
 	$rep->Line($rep->row - 4);
+	$rep->NewLine();
     $rep->End();
 }
 

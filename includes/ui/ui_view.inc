@@ -1,13 +1,22 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 include_once($path_to_root . "/admin/db/voiding_db.inc");
 include_once($path_to_root . "/includes/types.inc");
 
 //--------------------------------------------------------------------------------------
 
-function get_supplier_trans_view_str($type, $trans_no, $label="")
+function get_supplier_trans_view_str($type, $trans_no, $label="", $icon=false)
 {
-	global $path_to_root, $use_popup_windows;
+	global $path_to_root;
 
 	$viewer = "";
 	if ($type == systypes::po())
@@ -28,10 +37,10 @@ function get_supplier_trans_view_str($type, $trans_no, $label="")
 
 	if ($viewer != "")
 	{
-		if ($use_popup_windows)
-			$preview_str = "<a target='_blank' href='$path_to_root/purchasing/view/$viewer?trans_no=$trans_no' onclick=\"javascript:openWindow(this.href,this.target); return false;\" >$label</a>";
-		else
-			$preview_str = "<a target='_blank' href='$path_to_root/purchasing/view/$viewer?trans_no=$trans_no'>$label</a>";
+		$pars = access_string($label);
+		if (user_graphic_links() && $icon)
+			$pars[0] = set_icon($icon, $pars[0]);
+		$preview_str = "<a target='_blank' href='$path_to_root/purchasing/view/$viewer?trans_no=$trans_no' onclick=\"javascript:openWindow(this.href,this.target); return false;\"$pars[1]>$pars[0]</a>";
 	}
 	else
 		$preview_str = $label;
@@ -43,17 +52,21 @@ function get_supplier_trans_view_str($type, $trans_no, $label="")
 
 function get_gl_view_str($type, $trans_no, $label="", $force=false)
 {
-	global $path_to_root, $use_popup_windows;
+	global $path_to_root;
 
 	if (!$force && !user_show_gl_info())
 		return "";
 
+	$icon = false;
 	if ($label == "")
+	{
 		$label = _("GL");
-	if ($use_popup_windows)
-		$gl_view = "<a target='_blank' href='$path_to_root/gl/view/gl_trans_view.php?type_id=$type&trans_no=$trans_no' onclick=\"javascript:openWindow(this.href,this.target); return false;\" >$label</a>";
-	else
-		$gl_view = "<a target='_blank' href='$path_to_root/gl/view/gl_trans_view.php?type_id=$type&trans_no=$trans_no'>$label</a>";
+		$icon = ICON_GL;
+	}	
+	$pars = access_string($label);
+	if (user_graphic_links() && $icon)
+		$pars[0] = set_icon($icon, $pars[0]);
+	$gl_view = "<a target='_blank' href='$path_to_root/gl/view/gl_trans_view.php?type_id=$type&trans_no=$trans_no' onclick=\"javascript:openWindow(this.href,this.target); return false;\"$pars[1]>$pars[0]</a>";
 
 	return $gl_view;
 }
@@ -69,9 +82,9 @@ function get_gl_view_str_cell($type, $trans_no, $label="")
 
 //--------------------------------------------------------------------------------------
 
-function get_customer_trans_view_str($type, $trans_no, $label="")
+function get_customer_trans_view_str($type, $trans_no, $label="", $icon=false)
 {
-	global $path_to_root, $use_popup_windows;
+	global $path_to_root;
 
 	$viewer = "";
 	if ($type == 10)
@@ -91,18 +104,18 @@ function get_customer_trans_view_str($type, $trans_no, $label="")
 
   $lbl = $label;
   $preview_str = '';
+
   foreach($trans_no as $trans) {
 	if ($label == "")
 		$lbl = $trans;
-
 	if($preview_str!='') $preview_str .= ',';
 
 	if ($viewer != "")
 	{
-		if ($use_popup_windows)
-			$preview_str .= "<a target='_blank' href='$path_to_root/sales/view/$viewer?trans_no=$trans' onclick=\"javascript:openWindow(this.href,this.target); return false;\" >$lbl</a>";
-		else
-			$preview_str .= "<a target='_blank' href='$path_to_root/sales/view/$viewer?trans_no=$trans'>$lbl</a>";
+		$pars = access_string($lbl);
+		if (user_graphic_links() && $icon)
+			$pars[0] = set_icon($icon, $pars[0]);
+		$preview_str .= "<a target='_blank' href='$path_to_root/sales/view/$viewer?trans_no=$trans' onclick=\"javascript:openWindow(this.href,this.target); return false;\" $pars[1]>$pars[0]</a>";
 	}
 	else
 		$preview_str .= $lbl;
@@ -113,9 +126,9 @@ function get_customer_trans_view_str($type, $trans_no, $label="")
 
 //--------------------------------------------------------------------------------------
 
-function get_banking_trans_view_str($type, $trans_no, $label="")
+function get_banking_trans_view_str($type, $trans_no, $label="", $icon=false)
 {
-	global $path_to_root, $use_popup_windows;
+	global $path_to_root;
 
 	$viewer = "";
 
@@ -135,10 +148,10 @@ function get_banking_trans_view_str($type, $trans_no, $label="")
 
 	if ($viewer != "")
 	{
-		if ($use_popup_windows)
-			$preview_str = "<a target='_blank' href='$path_to_root/gl/view/$viewer?trans_no=$trans_no' onclick=\"javascript:openWindow(this.href,this.target); return false;\" >$label</a>";
-		else
-			$preview_str = "<a target='_blank' href='$path_to_root/gl/view/$viewer?trans_no=$trans_no'>$label</a>";
+		$pars = access_string($label);
+		if (user_graphic_links() && $icon)
+			$pars[0] = set_icon($icon, $pars[0]);
+		$preview_str = "<a target='_blank' href='$path_to_root/gl/view/$viewer?trans_no=$trans_no' onclick=\"javascript:openWindow(this.href,this.target); return false;\"$pars[1]>$pars[0]</a>";
 	}
 	else
 		$preview_str = $label;
@@ -148,9 +161,9 @@ function get_banking_trans_view_str($type, $trans_no, $label="")
 
 //--------------------------------------------------------------------------------------
 
-function get_inventory_trans_view_str($type, $trans_no, $label="")
+function get_inventory_trans_view_str($type, $trans_no, $label="", $icon=false)
 {
-	global $path_to_root, $use_popup_windows;
+	global $path_to_root;
 
 	$viewer = "";
 
@@ -166,10 +179,10 @@ function get_inventory_trans_view_str($type, $trans_no, $label="")
 
 	if ($viewer != "")
 	{
-		if ($use_popup_windows)
-			$preview_str = "<a target='_blank' href='$path_to_root/inventory/view/$viewer?trans_no=$trans_no' onclick=\"javascript:openWindow(this.href,this.target); return false;\" >$label</a>";
-		else
-			$preview_str = "<a target='_blank' href='$path_to_root/inventory/view/$viewer?trans_no=$trans_no'>$label</a>";
+		$pars = access_string($label);
+		if (user_graphic_links() && $icon)
+			$pars[0] = set_icon($icon, $pars[0]);
+		$preview_str = "<a target='_blank' href='$path_to_root/inventory/view/$viewer?trans_no=$trans_no' onclick=\"javascript:openWindow(this.href,this.target); return false;\"$pars[1]>$pars[0]</a>";
 	}
 	else
 		$preview_str = $label;
@@ -179,9 +192,9 @@ function get_inventory_trans_view_str($type, $trans_no, $label="")
 
 //--------------------------------------------------------------------------------------
 
-function get_manufacturing_trans_view_str($type, $trans_no, $label="")
+function get_manufacturing_trans_view_str($type, $trans_no, $label="", $icon=false)
 {
-	global $path_to_root, $use_popup_windows;
+	global $path_to_root;
 
 	$viewer = "";
 
@@ -199,10 +212,10 @@ function get_manufacturing_trans_view_str($type, $trans_no, $label="")
 
 	if ($viewer != "")
 	{
-		if ($use_popup_windows)
-			$preview_str = "<a target='_blank' href='$path_to_root/manufacturing/view/$viewer?trans_no=$trans_no' onclick=\"javascript:openWindow(this.href,this.target); return false;\" >$label</a>";
-		else
-			$preview_str = "<a target='_blank' href='$path_to_root/manufacturing/view/$viewer?trans_no=$trans_no'>$label</a>";
+		$pars = access_string($label);
+		if (user_graphic_links() && $icon)
+			$pars[0] = set_icon($icon, $pars[0]);
+		$preview_str = "<a target='_blank' href='$path_to_root/manufacturing/view/$viewer?trans_no=$trans_no' onclick=\"javascript:openWindow(this.href,this.target); return false;\"$pars[1]>$pars[0]</a>";
 	}
 	else
 		$preview_str = $label;
@@ -212,9 +225,9 @@ function get_manufacturing_trans_view_str($type, $trans_no, $label="")
 
 //--------------------------------------------------------------------------------------
 
-function get_dimensions_trans_view_str($type, $trans_no, $label="")
+function get_dimensions_trans_view_str($type, $trans_no, $label="", $icon=false)
 {
-	global $path_to_root, $use_popup_windows;
+	global $path_to_root;
 
 	$viewer = "";
 
@@ -228,10 +241,10 @@ function get_dimensions_trans_view_str($type, $trans_no, $label="")
 
 	if ($viewer != "")
 	{
-		if ($use_popup_windows)
-			$preview_str = "<a target='_blank' href='$path_to_root/dimensions/view/$viewer?trans_no=$trans_no' onclick=\"javascript:openWindow(this.href,this.target); return false;\" >$label</a>";
-		else
-			$preview_str = "<a target='_blank' href='$path_to_root/dimensions/view/$viewer?trans_no=$trans_no'>$label</a>";
+		$pars = access_string($label);
+		if (user_graphic_links() && $icon)
+			$pars[0] = set_icon($icon, $pars[0]);
+		$preview_str = "<a target='_blank' href='$path_to_root/dimensions/view/$viewer?trans_no=$trans_no' onclick=\"javascript:openWindow(this.href,this.target); return false;\"$pars[1]>$pars[0]</a>";
 	}
 	else
 		$preview_str = $label;
@@ -241,29 +254,29 @@ function get_dimensions_trans_view_str($type, $trans_no, $label="")
 
 //--------------------------------------------------------------------------------------
 
-function get_trans_view_str($type, $trans_no, $label="")
+function get_trans_view_str($type, $trans_no, $label="", $icon=false)
 {
-	$view_str = get_customer_trans_view_str($type, $trans_no, $label);
+	$view_str = get_customer_trans_view_str($type, $trans_no, $label, $icon);
 	if ($view_str != null)
 		return $view_str;
 
-	$view_str = get_supplier_trans_view_str($type, $trans_no, $label);
+	$view_str = get_supplier_trans_view_str($type, $trans_no, $label, $icon);
 	if ($view_str != null)
 		return $view_str;
 
-	$view_str = get_banking_trans_view_str($type, $trans_no, $label);
+	$view_str = get_banking_trans_view_str($type, $trans_no, $label, $icon);
 	if ($view_str != null)
 		return $view_str;
 
-	$view_str = get_inventory_trans_view_str($type, $trans_no, $label);
+	$view_str = get_inventory_trans_view_str($type, $trans_no, $label, $icon);
 	if ($view_str != null)
 		return $view_str;
 
-	$view_str = get_manufacturing_trans_view_str($type, $trans_no, $label);
+	$view_str = get_manufacturing_trans_view_str($type, $trans_no, $label, $icon);
 	if ($view_str != null)
 		return $view_str;
 
-	$view_str = get_dimensions_trans_view_str($type, $trans_no, $label);
+	$view_str = get_dimensions_trans_view_str($type, $trans_no, $label, $icon);
 	if ($view_str != null)
 		return $view_str;
 
@@ -363,7 +376,7 @@ function get_comments_string($type, $type_no)
 
 //--------------------------------------------------------------------------------------
 
-function view_stock_status($stock_id, $description=null)
+function view_stock_status($stock_id, $description=null, $echo=true)
 {
 	global $path_to_root;
 	if ($description)
@@ -372,7 +385,9 @@ function view_stock_status($stock_id, $description=null)
 	else
 		//hyperlink_params_separate($path_to_root . "/inventory/inquiry/stock_status.php", $stock_id, "stock_id=$stock_id");
 		$preview_str = "<a target='_blank' href='$path_to_root/inventory/inquiry/stock_status.php?stock_id=$stock_id' onclick=\"javascript:openWindow(this.href,this.target); return false;\" >$stock_id</a>";
-	echo $preview_str;
+	if($echo)
+		echo $preview_str;
+	return $preview_str;
 }
 
 function view_stock_status_cell($stock_id, $description=null)
@@ -429,7 +444,7 @@ function display_supp_trans_tax_details($tax_items, $columns)
     	$tax = number_format2(abs($tax_item['amount']),user_price_dec());
     	if ($tax_item['included_in_price'])
         	label_row(_("Included") . " " . $tax_item['tax_type_name'] . " (" . $tax_item['rate'] . "%) " .
-        		_("Amount:") . ": $tax", "colspan=$columns align=right", "align=right");
+        		_("Amount") . ": $tax", "colspan=$columns align=right", "align=right");
     	else
         	label_row($tax_item['tax_type_name'] . " (" . $tax_item['rate'] . "%)",
         		$tax, "colspan=$columns align=right", "align=right");
@@ -535,6 +550,104 @@ function display_allocations_from($person_type, $person_id, $type, $type_no, $to
 	}
 }
 
+//--------------------------------------------------------------------------------------
+//
+//	Expands selected quick entry $id into GL posings and adds to cart.
+//		returns calculated amount posted to bank GL account.
+//
+function display_quick_entries(&$cart, $id, $base, $type, $descr='')
+{
+	$bank_amount = 0;
+	
+	if (!isset($id) || $id == null || $id == "")
+	{
+		display_error( _("No Quick Entries are defined."));
+		set_focus('totamount');
+	}
+	else
+	{
+		if ($type == QE_DEPOSIT)
+			$base = -$base;
+		if ($type != QE_SUPPINV)	// only one quick entry on journal/bank transaction
+			$cart->clear_items();
+		$qe = get_quick_entry($id);
+		if ($descr != '') $qe['description'] .= ': '.$descr;
+		$qe_lines = get_quick_entry_lines($id);
+		while ($qe_line = db_fetch($qe_lines))
+		{
+			switch (strtolower($qe_line['action'])) {
+				case "=": // post current base amount to GL account
+					$part = $base;
+					break;
+				case "a": // post amount to GL account and reduce base
+					$part = $qe_line['amount'];
+					break;
+				case "a+": // post amount to GL account and increase base
+					$part = $qe_line['amount']; $base += $part;
+					break;
+				case "a-": // post amount to GL account and reduce base
+					$part = $qe_line['amount']; $base -= $part;
+					break;
+				case "%":	// store acc*amount% to GL account
+					$part = round2($base * $qe_line['amount'] / 100, user_price_dec());
+					break;
+				case "%+":	// ditto & increase base amount
+					$part = round2($base * $qe_line['amount'] / 100, user_price_dec());
+					$base += $part;
+					break;
+				case "%-":	// ditto & reduce base amount
+					$part = round2($base * $qe_line['amount'] / 100, user_price_dec());
+					$base -= $part;
+					break;
+				case "t": // post taxes calculated on base amount
+				case "t+": // ditto & increase base amount
+				case "t-": // ditto & reduce base amount
+					$taxes = get_taxes_for_item_tax($qe_line['dest_id']);
+					$tax_total = 0;
+					foreach ($taxes as $index => $item_tax) {
+						if(substr($qe_line['action'],0,1) != 'T')
+							$tax = round2($base * $item_tax['rate'] 
+						  		/ ($item_tax['rate'] + 100),  user_price_dec());
+						else
+							$tax = round2($base * $item_tax['rate'] / 100,  user_price_dec());
+
+						$gl_code = ($type == QE_DEPOSIT || ($type == QE_JOURNAL && $base < 0)) 
+							? $item_tax['sales_gl_code'] : $item_tax['purchasing_gl_code'];
+						$tax_total += $tax;
+						if ($type != QE_SUPPINV)
+							$cart->add_gl_item($gl_code, 
+								$qe_line['dimension_id'], $qe_line['dimension2_id'], 
+								$tax, $qe['description']);
+						else 
+						{
+							$acc_name = get_gl_account_name($gl_code);
+							$cart->add_gl_codes_to_trans($gl_code, 
+								$acc_name, $qe_line['dimension_id'], 
+								$qe_line['dimension2_id'], $tax, $qe['description']);
+						}
+					}
+					if (strpos($qe_line['action'], '+'))
+						$base += $tax_total;
+					elseif (strpos($qe_line['action'], '-'))
+						$base -= $tax_total;
+					continue 2;
+			}
+			if ($type != QE_SUPPINV)
+				$cart->add_gl_item($qe_line['dest_id'], $qe_line['dimension_id'],
+					$qe_line['dimension2_id'], $part, $qe['description']);
+			else 
+			{
+				$acc_name = get_gl_account_name($qe_line['dest_id']);
+				$cart->add_gl_codes_to_trans($qe_line['dest_id'], 
+					$acc_name, $qe_line['dimension_id'], 
+					$qe_line['dimension2_id'], $part, $qe['description']);
+			}
+		}
+	}	
+	return $bank_amount;
+}
+
+
 function get_js_open_window($width, $height)
 {
 	$js = "\n<script type=\"text/javascript\">\n"
@@ -599,30 +712,6 @@ function get_js_date_picker()
 {
     global $comp_path, $go_debug;
     $fpath = $comp_path.'/'.user_company().'/js_cache/'.'date_picker.js';
-
-	$js = "<style>
-#CCIframe { display: none; left: 0px; position: absolute; top: 0px; height: 250px; width: 270px; z-index: 99;}
-#CC { position:absolute; background-color:#FFF; margin:0; padding:0; display:none; z-index: 100;}
-#CC table { font-family: arial, verdana, helvetica, sans-serif;font-size: 8pt; border-left: 1px solid #336; border-right: 1px solid #336;}
-#CC th { font-weight: normal; text-align: center;}
-#CC th a { font-weight: normal; text-decoration: none; color: #FFF; padding: 1px;}
-#CC td { text-align: center;}
-#CC .header { background-color: #336;}
-#CC .weekday { background-color: #DDD; color: #000;}
-#CC .weekend { background-color: #FFC; color: #000;}
-#CC .weekno { background-color: #c0daf8; color: #555;}
-#CC .current { border: 1px solid #339; background-color: #336; color: #FFF;}
-#CC .weekday,#CC .weekend,#CC .current { display: block; text-decoration: none; border: 1px solid #FFF; width: 2em;}
-#CC .weekday:hover,#CC .weekend:hover,#CC .current:hover { color: #FFF; background-color: #336; border: 1px solid #999;}
-#CC .previous { text-align: left;}
-#CC .next { text-align: right;}
-#CC .previous,#CC .next { padding: 1px 3px 1px 3px; font-size: 1.4em;}
-#CC .previous a,#CC .next a { color: #FFF; text-decoration: none; font-weight: bold;}
-#CC .title { text-align: center; font-weight: bold; color: #FFF;}
-#CC .empty { background-color: #CCC; border: 1px solid #FFF;}
-</style>
-";
-    add_js_source($js);
 
     if (!file_exists($fpath) || $go_debug) {
 
@@ -1083,12 +1172,52 @@ if (!function_exists('_vd'))
   	function _vd($mixed, $title = '', $exit = false)
   	{
     	// Only the site admin is able to proceed here.
-    	echo (!empty($title) ? ($title .':') : '') .'<pre>';
-    	var_dump($mixed);
-    	echo "</pre>\n";
+    	$str = (!empty($title) ? ($title .':') : '') .'<pre>';
+    	$str .= print_r($mixed, true); //var_dump($mixed);
+    	$str .= "</pre>\n";
+		display_error('<table><tr><td>'.$str.'</td></tr></table>');
     	if ($exit)
     		exit;
   	}
+}
+
+function display_backtrace($cond=true, $msg='') {
+
+	if ($cond) {
+		if ($msg) 
+			$str = "<center><span class='headingtext'>$msg</span></center>\n";
+		else
+			$str = '';
+		$str .= '<table border=0>';
+        $trace = debug_backtrace();
+		foreach($trace as $trn => $tr) {
+			if (!$trn) continue;
+			$str .= '<tr><td>';
+			$str .= $tr['file'].':'.$tr['line'].': ';
+			$str .= '</td><td>';
+			if (isset($tr['type'])) {
+			 	if($tr['type'] == '::') {
+					$str .= $tr['class'].'::';
+				} else if($tr['type'] == '->') {
+					$str .= '('.$tr['class'].' Object)'.'->';
+				}
+			}
+			foreach($tr['args'] as $n=>$a) {
+				if (is_object($tr['args'][$n]))
+					$tr['args'][$n] = "(".get_class($tr['args'][$n])." Object)";
+				if (is_array($tr['args'][$n]))
+					$tr['args'][$n] = "(Array[".count($tr['args'][$n])."])";
+				else
+					$tr['args'][$n] = "'".$tr['args'][$n]."'";
+			}
+			$str .= $tr['function'].'('. implode(',',$tr['args']).')</td>';
+
+			$str .= '</tr>';
+		}
+		
+		$str .= '</table>';
+       	display_error($str);
+	}
 }
 
 ?>

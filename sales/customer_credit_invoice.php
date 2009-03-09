@@ -1,4 +1,14 @@
 <?php
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 //---------------------------------------------------------------------------
 //
 //	Entry/Modify Credit Note for selected Sales Invoice
@@ -39,33 +49,33 @@ page($_SESSION['page_title'], false, false, "", $js);
 if (isset($_GET['AddedID'])) {
 	$credit_no = $_GET['AddedID'];
 	$trans_type = 11;
-	print_hidden_script(11);
 
 	display_notification_centered(_("Credit Note has been processed"));
 
-	display_note(get_customer_trans_view_str($trans_type, $credit_no, _("View This Credit Note")), 0, 0);
+	display_note(get_customer_trans_view_str($trans_type, $credit_no, _("&View This Credit Note")), 0, 0);
 
-	display_note(print_document_link($credit_no, _("Print This Credit Note"), true, 11),1);
+	display_note(print_document_link($credit_no, _("&Print This Credit Note"), true, 11),1);
 
- 	display_note(get_gl_view_str($trans_type, $credit_no, _("View the GL Journal Entries for this Credit Note")),1);
+ 	display_note(get_gl_view_str($trans_type, $credit_no, _("View the GL &Journal Entries for this Credit Note")),1);
 
 	display_footer_exit();
 
 } elseif (isset($_GET['UpdatedID'])) {
 	$credit_no = $_GET['UpdatedID'];
 	$trans_type = 11;
-	print_hidden_script(11);
 
 	display_notification_centered(_("Credit Note has been updated"));
 
-	display_note(get_customer_trans_view_str($trans_type, $credit_no, _("View This Credit Note")), 0, 0);
+	display_note(get_customer_trans_view_str($trans_type, $credit_no, _("&View This Credit Note")), 0, 0);
 
-	display_note(print_document_link($credit_no, _("Print This Credit Note"), true, 11),1);
+	display_note(print_document_link($credit_no, _("&Print This Credit Note"), true, 11),1);
 
- 	display_note(get_gl_view_str($trans_type, $credit_no, _("View the GL Journal Entries for this Credit Note")),1);
+ 	display_note(get_gl_view_str($trans_type, $credit_no, _("View the GL &Journal Entries for this Credit Note")),1);
 
 	display_footer_exit();
-}
+} else
+	check_edit_conflicts();
+
 
 //-----------------------------------------------------------------------------
 
@@ -185,6 +195,7 @@ function copy_from_cart()
   $_POST['CreditDate']= $cart->document_date;
   $_POST['Location']= $cart->Location;
   $_POST['CreditText']= $cart->Comments;
+  $_POST['cart_id'] = $cart->cart_id;
 }
 //-----------------------------------------------------------------------------
 
@@ -219,6 +230,7 @@ function display_credit_items()
 	global $table_style, $table_style2;
 
     start_form(false, true);
+	hidden('cart_id');
 
 	start_table("$table_style2 width=80%", 5);
 	echo "<tr><td>"; // outer table

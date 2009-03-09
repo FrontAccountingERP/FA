@@ -1,15 +1,15 @@
 <?php
-
-//--------------------------------------------------------------------------------------------------
-
-function get_exchange_rates($curr_code)
-{
-	$sql = "SELECT * FROM ".TB_PREF."exchange_rates WHERE curr_code='$curr_code' ORDER BY date_ DESC";	
-	return db_query($sql, "could not get exchange rates for $curr_code");
-}
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 //---------------------------------------------------------------------------------------------
-
 function get_exchange_rate($rate_id)
 {
 	$sql = "SELECT * FROM ".TB_PREF."exchange_rates WHERE id=$rate_id";
@@ -74,32 +74,44 @@ function delete_exchange_rate($rate_id)
 function get_ecb_rate($curr_b) 
 {
 	$curr_a = get_company_pref('curr_default');
-	$ecb_filename = 'http://www.ecb.int/stats/eurofxref/eurofxref-daily.xml';
-	$handle = @fopen($ecb_filename, 'rb');
+	$ecb_filename = '/stats/eurofxref/eurofxref-daily.xml';
+	$ecb_site = 'www.ecb.int';
 	$contents = '';
-	if ($handle)
-	{
-		do 
-		{
-			$data = @fread( $handle, 4096 );
-			if ( strlen ( $data ) == 0 ) 
-   				break;
-   			$contents .= $data; // with this syntax only text will be translated, whole text with htmlspecialchars($data)
-		} 
-		while (true);
-		@fclose( $handle );
-	} // end handle
-	else
-	{
-       $ch = curl_init();
-       curl_setopt ($ch, CURLOPT_URL, $ecb_filename);
-       curl_setopt ($ch, CURLOPT_COOKIEJAR, "cookie.txt");
-       curl_setopt ($ch, CURLOPT_HEADER, 0);
-       curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
-       curl_setopt ($ch, CURLOPT_FOLLOWLOCATION, 1);
-       curl_setopt ($ch, CURLOPT_TIMEOUT, 120);
-       $contents = curl_exec ($ch);
-       curl_close($ch);
+
+	if (function_exists('curl_init'))
+	{	// first check with curl as we can set short timeout;
+		$retry = 1;
+	 	do {
+	       $ch = curl_init();
+    	   curl_setopt ($ch, CURLOPT_URL, 'http://'.$ecb_site.$ecb_filename);
+	       curl_setopt ($ch, CURLOPT_COOKIEJAR, "cookie.txt");
+    	   curl_setopt ($ch, CURLOPT_HEADER, 0);
+	       curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
+    	   curl_setopt ($ch, CURLOPT_FOLLOWLOCATION, 1);
+	       curl_setopt ($ch, CURLOPT_TIMEOUT, 3);
+    	   $contents = curl_exec ($ch);
+	       curl_close($ch);
+			// due to resolver bug in some curl versions (e.g. 7.15.5) 
+			// try again for constant IP.
+		   $ecb_site="195.128.2.97";
+	   } while( ($contents == '') && $retry--);
+	   
+	} else {
+		$handle = @fopen("http://".$ecb_site.$ecb_filename, 'rb');
+		if ($handle) {
+			do 
+			{
+				$data = @fread( $handle, 4096 );
+				if ( strlen ( $data ) == 0 ) 
+   					break;
+   				$contents .= $data; // with this syntax only text will be translated, whole text with htmlspecialchars($data)
+			} 
+			while (true);
+			@fclose( $handle );
+		} // end handle
+	}
+	if (!$contents) {
+		display_warning(_('Cannot retrieve currency rate from ECB page. Please set the rate manually.'));
 	}
 	$contents = str_replace ("<Cube currency='USD'", " <Cube currency='EUR' rate='1'/> <Cube currency='USD'", $contents);
 	$from_mask = "|<Cube\s*currency=\'" . $curr_a . "\'\s*rate=\'([\d.,]*)\'\s*/>|i";
@@ -119,6 +131,6 @@ function get_ecb_rate($curr_b)
 		$val = 0;
 	}
 	return $val;
-} // end function get_ecb_rate
+}  // end function get_ecb_rate
 
 ?>

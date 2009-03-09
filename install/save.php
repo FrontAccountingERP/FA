@@ -1,4 +1,14 @@
 <?php
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 error_reporting(E_ALL);
 ini_set("display_errors", "On");
 ini_set("max_execution_time", "180");
@@ -11,8 +21,14 @@ if(!defined('SESSION_STARTED'))
 	define('SESSION_STARTED', true);
 }
 
-// Function to set error
-function set_error($message)
+if (!function_exists("_")) {
+	function _($msg) {
+		return $msg;
+	}
+}
+// Installer version of display_error function.
+//
+function display_error($message)
 {
 	global $_POST;
 	if(isset($message) AND $message != '')
@@ -135,7 +151,7 @@ else
 // Set error if no post vars found
 if (!isset($_POST['company_name']))
 {
-	set_error('Please fill-in the form below');
+	display_error('Please fill-in the form below');
 }
 // End check to see if form was even submitted
 
@@ -144,7 +160,7 @@ if (!isset($_POST['company_name']))
 // Check if user has entered the installation url
 if (!isset($_POST['ba_url']) || $_POST['ba_url'] == '')
 {
-	set_error('Please enter an absolute URL');
+	display_error('Please enter an absolute URL');
 }
 else
 {
@@ -174,7 +190,7 @@ if(substr($ba_url, strlen($ba_url) - 1, 1) == "\\")
 // Get operating system
 if (!isset($_POST['operating_system']) || $_POST['operating_system'] != 'linux' && $_POST['operating_system'] != 'windows')
 {
-	set_error('Please select a valid operating system');
+	display_error('Please select a valid operating system');
 }
 else
 {
@@ -202,7 +218,7 @@ else
 // Check if user has entered a database host
 if (!isset($_POST['database_host']) || $_POST['database_host'] == '')
 {
-	set_error('Please enter a database host name');
+	display_error('Please enter a database host name');
 }
 else
 {
@@ -211,7 +227,7 @@ else
 // Check if user has entered a database username
 if (!isset($_POST['database_username']) || $_POST['database_username'] == '')
 {
-	set_error('Please enter a database username');
+	display_error('Please enter a database username');
 }
 else
 {
@@ -220,7 +236,7 @@ else
 // Check if user has entered a database password
 if (!isset($_POST['database_password']))
 {
-	set_error('Please enter a database password');
+	display_error('Please enter a database password');
 }
 else
 {
@@ -229,7 +245,7 @@ else
 // Check if user has entered a database name
 if (!isset($_POST['database_name']) || $_POST['database_name'] == '')
 {
-	set_error('Please enter a database name');
+	display_error('Please enter a database name');
 }
 else
 {
@@ -256,7 +272,7 @@ else
 // Get company name
 if (!isset($_POST['company_name']) || $_POST['company_name'] == '')
 {
-	set_error('Please enter a company name');
+	display_error('Please enter a company name');
 }
 else
 {
@@ -267,13 +283,13 @@ else
 // Check if the user has entered a correct path
 if (!file_exists($path_to_root.'/sql/en_US-demo.sql'))
 {
-	set_error('It appears the Absolute path that you entered is incorrect');
+	display_error('It appears the Absolute path that you entered is incorrect');
 }
 
 // Get admin email and validate it
 if (!isset($_POST['admin_email']) || $_POST['admin_email'] == '')
 {
-	set_error('Please enter an email for the Administrator account');
+	display_error('Please enter an email for the Administrator account');
 }
 else
 {
@@ -283,13 +299,13 @@ else
 	}
 	else
 	{
-		set_error('Please enter a valid email address for the Administrator account');
+		display_error('Please enter a valid email address for the Administrator account');
 	}
 }
 // Get the two admin passwords entered, and check that they match
 if (!isset($_POST['admin_password']) || $_POST['admin_password'] == '')
 {
-	set_error('Please enter a password for the Administrator account');
+	display_error('Please enter a password for the Administrator account');
 }
 else
 {
@@ -297,7 +313,7 @@ else
 }
 if (!isset($_POST['admin_repassword']) || $_POST['admin_repassword'] == '')
 {
-	set_error('Please make sure you re-enter the password for the Administrator account');
+	display_error('Please make sure you re-enter the password for the Administrator account');
 }
 else
 {
@@ -305,7 +321,7 @@ else
 }
 if ($admin_password != $admin_repassword)
 {
-	set_error('Sorry, the two Administrator account passwords you entered do not match');
+	display_error('Sorry, the two Administrator account passwords you entered do not match');
 }
 // End admin user details code
 
@@ -329,18 +345,18 @@ $config_filename = $path_to_root . '/config_db.php';
 
 $err = write_config_db($table_prefix != "");
 if ($err == -1)
-	set_error("Cannot open the configuration file ($config_filename)");
+	display_error("Cannot open the configuration file ($config_filename)");
 else if ($err == -2)
-	set_error("Cannot write to the configuration file ($config_filename)");
+	display_error("Cannot write to the configuration file ($config_filename)");
 else if ($err == -3)
-	set_error("The configuration file $config_filename is not writable. Change its permissions so it is, then re-run step 4.");
+	display_error("The configuration file $config_filename is not writable. Change its permissions so it is, then re-run step 4.");
 
 // Try connecting to database
 
 $db = mysql_connect($database_host, $database_username, $database_password);
 if (!$db)
 {
-	set_error('Database host name, username and/or password incorrect. MySQL Error:<br />'.mysql_error());
+	display_error('Database host name, username and/or password incorrect. MySQL Error:<br />'.mysql_error());
 }
 
 if($install_tables == true)
@@ -353,8 +369,7 @@ if($install_tables == true)
 		mysql_select_db($database_name, $db);
 	}
 	$import_filename = $path_to_root."/sql/en_US-demo.sql";
-	if (!db_import($import_filename, $db_connections[$id]))
-		set_error("Import error, try to import $import_filename manually via phpMyAdmin");
+	db_import($import_filename, $db_connections[$id]);
 }
 else
 {

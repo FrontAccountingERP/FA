@@ -1,5 +1,14 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 $page_security=5;
 $path_to_root="../..";
 include($path_to_root . "/includes/session.inc");
@@ -44,8 +53,16 @@ if (isset($_POST['submit']))
 
 			$sql = "UPDATE ".TB_PREF."suppliers SET supp_name=".db_escape($_POST['supp_name']) . ",
                 address=".db_escape($_POST['address']) . ",
+                supp_address=".db_escape($_POST['supp_address']) . ",
+                phone=".db_escape($_POST['phone']) . ",
+                fax=".db_escape($_POST['fax']) . ",
+                gst_no=".db_escape($_POST['gst_no']) . ",
                 email=".db_escape($_POST['email']) . ",
+                website=".db_escape($_POST['website']) . ",
+                contact=".db_escape($_POST['contact']) . ",
+                supp_account_no=".db_escape($_POST['supp_account_no']) . ",
                 bank_account=".db_escape($_POST['bank_account']) . ",
+                credit_limit=".db_escape($_POST['credit_limit']) . ",
                 dimension_id=".db_escape($_POST['dimension_id']) . ",
                 dimension2_id=".db_escape($_POST['dimension2_id']) . ",
                 curr_code=".db_escape($_POST['curr_code']).",
@@ -53,6 +70,7 @@ if (isset($_POST['submit']))
 				payable_account=".db_escape($_POST['payable_account']) . ",
 				purchase_account=".db_escape($_POST['purchase_account']) . ",
 				payment_discount_account=".db_escape($_POST['payment_discount_account']) . ",
+                notes=".db_escape($_POST['notes']) . ",
 				tax_group_id=".db_escape($_POST['tax_group_id']) . " WHERE supplier_id = '" . $_POST['supplier_id'] . "'";
 
 			db_query($sql,"The supplier could not be updated");
@@ -61,12 +79,21 @@ if (isset($_POST['submit']))
 		else 
 		{
 
-			$sql = "INSERT INTO ".TB_PREF."suppliers (supp_name, address, email, bank_account, dimension_id, dimension2_id, curr_code,
-				payment_terms, payable_account, purchase_account, payment_discount_account, tax_group_id)
+			$sql = "INSERT INTO ".TB_PREF."suppliers (supp_name, address, supp_address, phone, fax, gst_no, email, website,
+				contact, supp_account_no, bank_account, credit_limit, dimension_id, dimension2_id, curr_code,
+				payment_terms, payable_account, purchase_account, payment_discount_account, notes, tax_group_id)
 				VALUES (".db_escape($_POST['supp_name']). ", "
 				.db_escape($_POST['address']) . ", "
+				.db_escape($_POST['supp_address']) . ", "
+				.db_escape($_POST['phone']). ", "
+				.db_escape($_POST['fax']). ", "
+				.db_escape($_POST['gst_no']). ", "
 				.db_escape($_POST['email']). ", "
+				.db_escape($_POST['website']). ", "
+				.db_escape($_POST['contact']). ", "
+				.db_escape($_POST['supp_account_no']). ", "
 				.db_escape($_POST['bank_account']). ", "
+				.db_escape($_POST['credit_limit']). ", "
 				.db_escape($_POST['dimension_id']). ", "
 				.db_escape($_POST['dimension2_id']). ", "
 				.db_escape($_POST['curr_code']). ", "
@@ -74,6 +101,7 @@ if (isset($_POST['submit']))
 				.db_escape($_POST['payable_account']). ", "
 				.db_escape($_POST['purchase_account']). ", "
 				.db_escape($_POST['payment_discount_account']). ", "
+				.db_escape($_POST['notes']). ", "
 				.db_escape($_POST['tax_group_id']). ")";
 
 			db_query($sql,"The supplier could not be added");
@@ -144,10 +172,9 @@ else
 	hidden('supplier_id', get_post('supplier_id'));
 }
 
-//start_table("class='tablestyle2'", 0, 3);
-start_table("class='tablestyle'", 3);
+start_outer_table($table_style2, 5);
 
-table_section_title(_("Supplier"));
+table_section(1);
 
 if (!$new_supplier) 
 {
@@ -156,27 +183,37 @@ if (!$new_supplier)
 
 	$_POST['supp_name'] = $myrow["supp_name"];
 	$_POST['address']  = $myrow["address"];
+	$_POST['supp_address']  = $myrow["supp_address"];
+	$_POST['phone']  = $myrow["phone"];
+	$_POST['fax']  = $myrow["fax"];
+	$_POST['gst_no']  = $myrow["gst_no"];
 	$_POST['email']  = $myrow["email"];
+	$_POST['website']  = $myrow["website"];
+	$_POST['contact']  = $myrow["contact"];
+	$_POST['supp_account_no']  = $myrow["supp_account_no"];
 	$_POST['bank_account']  = $myrow["bank_account"];
 	$_POST['dimension_id']  = $myrow["dimension_id"];
 	$_POST['dimension2_id']  = $myrow["dimension2_id"];
 	$_POST['curr_code']  = $myrow["curr_code"];
 	$_POST['payment_terms']  = $myrow["payment_terms"];
+	$_POST['credit_limit']  = $myrow["credit_limit"];
 	$_POST['tax_group_id'] = $myrow["tax_group_id"];
 	$_POST['payable_account']  = $myrow["payable_account"];
 	$_POST['purchase_account']  = $myrow["purchase_account"];
 	$_POST['payment_discount_account'] = $myrow["payment_discount_account"];
+	$_POST['notes']  = $myrow["notes"];
 
 } 
 else 
 {
-	$_POST['supp_name'] = $_POST['address'] = $_POST['tax_group_id']  = '';
+	$_POST['supp_name'] = $_POST['address'] = $_POST['supp_address'] = $_POST['tax_group_id']  = 
+		$_POST['website'] = $_POST['supp_account_no'] = $_POST['notes'] = '';
 	$_POST['dimension_id'] = 0;
 	$_POST['dimension2_id'] = 0;
 	$_POST['sales_type'] = -1;
-	$_POST['email'] = $_POST['bank_account'] = '';
+	$_POST['email'] = $_POST['phone'] = $_POST['fax'] = $_POST['gst_no'] = $_POST['contact'] = $_POST['bank_account'] = '';
 	$_POST['payment_terms']  = '';
-	$_POST['credit_limit']	= price_format(sys_prefs::default_credit_limit());
+	$_POST['credit_limit']	= "";
 
 	$company_record = get_company_prefs();
 	$_POST['curr_code']  = $company_record["curr_default"];
@@ -185,12 +222,28 @@ else
 	$_POST['payment_discount_account'] = $company_record['pyt_discount_act'];
 }
 
-text_row(_("Supplier Name:"), 'supp_name', null, 42, 40);
-textarea_row(_("Address:"), 'address', null, 35, 5);
-text_row(_("Email:"), 'email', null, 42, 40);
-text_row(_("Bank Account:"), 'bank_account', null, 42, 40);
+table_section_title(_("Name and Contact"));
 
-// Sherifoz 23.09.03 currency can't be changed if editing
+text_row(_("Supplier Name:"), 'supp_name', null, 42, 40);
+text_row(_("Contact Person:"), 'contact', null, 42, 40);
+
+text_row(_("Phone Number:"), 'phone', null, 42, 40);
+text_row(_("Fax Number:"), 'fax', null, 42, 40);
+
+email_row(_("E-mail:"), 'email', null, 35, 55);
+link_row(_("Website:"), 'website', null, 35, 55);
+text_row(_("Supplier Account No.:"), 'supp_account_no', null, 42, 40);
+
+table_section_title(_("Addresses"));
+textarea_row(_("Mailing Address:"), 'address', null, 35, 5);
+textarea_row(_("Physical Address:"), 'supp_address', null, 35, 5);
+
+table_section(2);
+
+table_section_title(_("Purchasing"));
+text_row(_("GSTNo:"), 'gst_no', null, 42, 40);
+text_row(_("Bank Name/Account:"), 'bank_account', null, 42, 40);
+amount_row(_("Credit Limit:"), 'credit_limit', null);
 if (!$new_supplier) 
 {
 	label_row(_("Supplier's Currency:"), $_POST['curr_code']);
@@ -226,8 +279,11 @@ if ($dim < 1)
 	hidden('dimension_id', 0);
 if ($dim < 2)
 	hidden('dimension2_id', 0);
+table_section_title(_("General"));
+textarea_row(_("General Notes:"), 'notes', null, 35, 5);
 
-end_table(1);
+end_outer_table(1);
+
 div_start('controls');
 if (!$new_supplier) 
 {

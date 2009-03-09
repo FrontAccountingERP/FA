@@ -1,4 +1,14 @@
 <?php
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 //---------------------------------------------------------------------------
 //
 //	Entry/Modify Sales Invoice against single delivery
@@ -35,37 +45,36 @@ if (isset($_GET['ModifyInvoice'])) {
 page($_SESSION['page_title'], false, false, "", $js);
 
 //-----------------------------------------------------------------------------
+check_edit_conflicts();
 
 if (isset($_GET['AddedID'])) {
 
 	$invoice_no = $_GET['AddedID'];
 	$trans_type = 10;
-	print_hidden_script(10);
 
 	display_notification(_("Selected deliveries has been processed"), true);
 
-	display_note(get_customer_trans_view_str($trans_type, $invoice_no, _("View This Invoice")), 0, 1);
+	display_note(get_customer_trans_view_str($trans_type, $invoice_no, _("&View This Invoice")), 0, 1);
 
-	display_note(print_document_link($invoice_no, _("Print This Invoice"), true, 10));
+	display_note(print_document_link($invoice_no, _("&Print This Invoice"), true, 10));
 
-	display_note(get_gl_view_str($trans_type, $invoice_no, _("View the GL Journal Entries for this Invoice")),1);
+	display_note(get_gl_view_str($trans_type, $invoice_no, _("View the GL &Journal Entries for this Invoice")),1);
 
-	hyperlink_params("$path_to_root/sales/inquiry/sales_deliveries_view.php", _("Select Another Delivery For Invoicing"), "OutstandingOnly=1");
+	hyperlink_params("$path_to_root/sales/inquiry/sales_deliveries_view.php", _("Select Another &Delivery For Invoicing"), "OutstandingOnly=1");
 
 	display_footer_exit();
 
 } elseif (isset($_GET['UpdatedID']))  {
 
 	$invoice_no = $_GET['UpdatedID'];
-	print_hidden_script(10);
 
 	display_notification_centered(sprintf(_('Sales Invoice # %d has been updated.'),$invoice_no));
 
-	display_note(get_trans_view_str(10, $invoice_no, _("View This Invoice")));
+	display_note(get_trans_view_str(10, $invoice_no, _("&View This Invoice")));
 	echo '<br>';
-	display_note(print_document_link($invoice_no, _("Print This Invoice"), true, 10));
+	display_note(print_document_link($invoice_no, _("&Print This Invoice"), true, 10));
 
-	hyperlink_no_params($path_to_root . "/sales/inquiry/customer_inquiry.php", _("Select A Different Invoice to Modify"));
+	hyperlink_no_params($path_to_root . "/sales/inquiry/customer_inquiry.php", _("Select A Different &Invoice to Modify"));
 
 	display_footer_exit();
 
@@ -79,12 +88,16 @@ if (isset($_GET['AddedID'])) {
 		}
 	}
 	unset($line);
+
+    // Remove also src_doc delivery note
+    $sources = &$_SESSION['Items']->src_docs;
+    unset($sources[$_GET['RemoveDN']]);
 }
 
 //-----------------------------------------------------------------------------
 
 if ( (isset($_GET['DeliveryNumber']) && ($_GET['DeliveryNumber'] > 0) )
-	|| isset($_GET['BatchInvoice'])) {
+|| isset($_GET['BatchInvoice'])) {
 
 	processing_start();
 
@@ -147,6 +160,7 @@ if (isset($_POST['_InvoiceDate_changed'])) {
 		$_POST['InvoiceDate']);
 	$Ajax->activate('due_date');
 }
+
 //-----------------------------------------------------------------------------
 function check_quantities()
 {
@@ -180,6 +194,24 @@ function check_quantities()
  return $ok;
 }
 
+function set_delivery_shipping_sum($delivery_notes) 
+{
+    
+    $shipping = 0;
+    
+    foreach($delivery_notes as $delivery_num) 
+    {
+        $myrow = get_customer_trans($delivery_num, 13);
+        //$branch = get_branch($myrow["branch_code"]);
+        //$sales_order = get_sales_order_header($myrow["order_"]);
+        
+        //$shipping += $sales_order['freight_cost'];
+        $shipping += $myrow['ov_freight'];
+    }
+    $_POST['ChargeFreightCost'] = price_format($shipping);
+}
+
+
 function copy_to_cart()
 {
 	$cart = &$_SESSION['Items'];
@@ -199,6 +231,7 @@ function copy_from_cart()
 	$_POST['InvoiceDate']= $cart->document_date;
 	$_POST['due_date'] = $cart->due_date;
 	$_POST['Comments']= $cart->Comments;
+	$_POST['cart_id'] = $cart->cart_id;
 }
 
 //-----------------------------------------------------------------------------
@@ -299,8 +332,10 @@ $dspans[] = $spanlen;
 //-----------------------------------------------------------------------------
 
 $is_batch_invoice = count($_SESSION['Items']->src_docs) > 1;
+
 $is_edition = $_SESSION['Items']->trans_type == 10 && $_SESSION['Items']->trans_no != 0;
 start_form(false, true);
+hidden('cart_id');
 
 start_table("$table_style2 width=80%", 5);
 
@@ -440,6 +475,10 @@ if (!isset($_POST['ChargeFreightCost']) || $_POST['ChargeFreightCost'] == "") {
 		$_POST['ChargeFreightCost'] = price_format(0);
 	}
 }
+
+$accumulate_shipping = get_company_pref('accumulate_shipping');
+if ($is_batch_invoice && $accumulate_shipping)
+	set_delivery_shipping_sum(array_keys($_SESSION['Items']->src_docs));
 
 start_row();
 

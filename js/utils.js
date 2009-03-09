@@ -1,3 +1,13 @@
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 //
 //	JsHttpRequest class extensions.
 //
@@ -9,7 +19,14 @@
 //		request is directed to current location 
 // 
     JsHttpRequest.request= function(trigger, form) {
-
+		var mark = document.getElementById('ajaxmark');
+		if(mark) mark.style.visibility = 'visible';
+		if (trigger.tagName=='A') {
+			var content = {};
+			var upload = 0;
+			var url = trigger.href;
+			if (trigger.id) content[trigger.id] = 1;
+		} else {
 		var submitObj = typeof(trigger) == "string" ? 
 			document.getElementsByName(trigger)[0] : trigger;
 		
@@ -23,10 +40,12 @@
 		var content = this.formInputs(trigger, form, upload);
 
 		if (!form) url = url.substring(0, url.indexOf('?'));
-
+		
 		if (!submitObj) 
 			content[trigger] = 1;
-		// this is to avoid caching problems
+			
+		}
+			// this is to avoid caching problems
 		content['_random'] = Math.random()*1234567;
 
         JsHttpRequest.query(
@@ -35,6 +54,7 @@
             // Function is called when an answer arrives. 
 	    function(result, errors) {
                 // Write the answer.
+			var newwin = 0;
 	        if (result) {
 		  	  for(var i in result ) { 
 			  atom = result[i];
@@ -49,11 +69,13 @@
     		  if(cmd=='as') {
 				  eval("objElement.setAttribute('"+property+"',"+data+");");
 			  } else if(cmd=='up') {
-//				if(!objElement) debug('No element "'+id+'"');
+//				if(!objElement) alert('No element "'+id+'"');
+				if(objElement) {
 			    if (objElement.tagName == 'INPUT' || objElement.tagName == 'TEXTAREA')
 				  objElement.value = data;
 			    else
 				  objElement.innerHTML = data; // selector, div, span etc
+				}
 		  	  } else if(cmd=='di') { // disable/enable element
 				  objElement.disabled = data;
 			  } else if(cmd=='fc') { // set focus
@@ -62,6 +84,9 @@
 				  eval(data);
 			  } else if(cmd=='rd') {	// client-side redirection
 				  window.location = data;
+			  } else if(cmd=='pu') {	// pop-up
+			  	  newwin = 1;
+			  	  window.open(data,'REP_WINDOW','toolbar=no,scrollbar=no,resizable=yes,menubar=no');
 			  } else {
 				  errors = errors+'<br>Unknown ajax function: '+cmd;
 			}
@@ -69,13 +94,18 @@
 
         // Write errors to the debug div.
 		  document.getElementById('msgbox').innerHTML = errors;
+		  var mark = document.getElementById('ajaxmark');
+		  if(mark) mark.style.visibility = 'hidden';
 
 		  Behaviour.apply();
+
 		  if (errors.length>0)
 			window.scrollTo(0,0);
 			//document.getElementById('msgbox').scrollIntoView(true);
 	  // Restore focus if we've just lost focus because of DOM element refresh
-		  setFocus();
+		  	if(!newwin) { 
+		  		setFocus();
+			}
 		}
             },
             false  // do not disable caching
@@ -171,8 +201,8 @@ function get_amount(doc, label) {
 	    else
 		var val = document.getElementsByName(doc)[0].value;
 		val = val.replace(new RegExp('\\'+user.ts, 'g'),'');
-		val = val.replace(new RegExp('\\'+user.ds, 'g'),'.');
-		return 1*val;
+		val = +val.replace(new RegExp('\\'+user.ds, 'g'),'.');
+		return isNaN(val) ? 0 : val;
 }
 
 function goBack() {
@@ -183,7 +213,11 @@ function goBack() {
 }
 
 function setFocus(name, byId) {
-
+  if(document.location.pathname.indexOf('index.php') != -1) {
+  	// this is application menu page - set focus on first link
+	// var el = document.getElementById('msgbox');
+	// TODO find first link after msgbox and set focus
+  }
   if(!name) {
 	if (_focus)	
 		name = _focus;	// last focus set in onfocus handlers

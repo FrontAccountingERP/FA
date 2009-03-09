@@ -1,5 +1,14 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 $page_security = 1;
 $path_to_root="../..";
 include_once($path_to_root . "/includes/session.inc");
@@ -36,7 +45,8 @@ label_cells(_("Amount"), price_format($receipt['ov_amount']), "class='tableheade
 label_cells(_("Discount"), price_format($receipt['ov_discount']), "class='tableheader2'");
 end_row();
 start_row();
-label_cells(_("Payment Type"), $receipt['BankTransType'], "class='tableheader2'");
+label_cells(_("Payment Type"), 
+	bank_account_types::transfer_type($receipt['BankTransType']), "class='tableheader2'");
 label_cells(_("Reference"), $receipt['reference'], "class='tableheader2'", "colspan=4");
 end_row();
 comments_display_row(systypes::cust_payment(), $trans_id);

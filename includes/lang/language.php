@@ -1,6 +1,16 @@
 <?php
-
-if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_to_root']))
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
+// Prevent register_globals vulnerability
+if (isset($_GET['path_to_root']) || isset($_POST['path_to_root']))
 	die("Restricted access");
 include_once($path_to_root . "/lang/installed_languages.inc");
 include_once($path_to_root . "/includes/lang/gettext.php");
@@ -12,7 +22,8 @@ class language
 	var $encoding;		// eg. UTF-8, CP1256, ISO8859-1
 	var	$dir;			// Currently support for Left-to-Right (ltr) and
 						// Right-To-Left (rtl)
-
+	var $is_locale_file;
+	
 	function language($name, $code, $encoding) 
 	{
 		$this->name = $name;
@@ -26,7 +37,6 @@ class language
 		return "lang/" . $this->code;
 	}
 
-
 	function get_current_language_dir() 
 	{
 		$lang = $_SESSION['language'];
@@ -35,22 +45,29 @@ class language
 
 	function set_language($code) 
 	{
-	    global $comp_path;
-	    
-		if (isset($_SESSION['languages'][$code]) &&
-			$_SESSION['language'] != $_SESSION['languages'][$code]) 
+	    global $comp_path, $path_to_root;
+		
+		$changed = $_SESSION['language']->code != $code;
+		if (isset($_SESSION['languages'][$code]) && $changed)
 		{
-	    
 		// flush cache as we can use several languages in one account
 		    flush_dir($comp_path.'/'.user_company().'/js_cache');
 		    $_SESSION['language'] = $_SESSION['languages'][$code];
-		    reload_page("");
+			$locale = $path_to_root . "/lang/" . $_SESSION['language']->code . "/locale.inc";
+			// check id file exists only once for session
+			$_SESSION['language']->is_locale_file = file_exists($locale);
 		}
-	}
 
-	function get_stylesheet() 
-	{
-		return 'lang/' . $_SESSION['language']->code . '/stylesheet.css';
+		$lang = $_SESSION['language'];
+		get_text::set_language($lang->code, $lang->encoding);
+		get_text::add_domain($lang->code, $path_to_root . "/lang");
+		
+		// Necessary for ajax calls. Due to bug in php 4.3.10 for this 
+		// version set globally in php.ini
+		ini_set('default_charset', $lang->encoding);
+
+		if (isset($_SESSION['App']) && $changed)
+			$_SESSION['App']->init(); // refresh menu
 	}
 
 	/**
@@ -59,7 +76,7 @@ class language
      */
 	function load_languages() 
 	{
-		global $installed_languages;
+		global $installed_languages, $dflt_lang;
 
 		$_SESSION['languages'] = array();
 
@@ -72,32 +89,33 @@ class language
         }
 
 		if (!isset($_SESSION['language']))
-			$_SESSION['language'] = $_SESSION['languages']['en_GB'];
+			$_SESSION['language'] = $_SESSION['languages'][$dflt_lang];
 	}
 
 }
-
-session_name('FrontAccounting');
-session_start();
-// this is to fix the "back-do-you-want-to-refresh" issue - thanx PHPFreaks
-header("Cache-control: private");
-
-// Page Initialisation
-if (!isset($_SESSION['languages'])) 
+/*
+	Test if named function is defined in locale.inc file.
+*/
+function has_locale($fun=null)
 {
-	language::load_languages();
+	global $path_to_root;
+	
+	if ($_SESSION['language']->is_locale_file)
+	{
+		global $path_to_root;
+		include_once($path_to_root . "/lang/" . 
+			$_SESSION['language']->code . "/locale.inc");
+
+		if (!isset($fun) || function_exists($fun))
+			return true;
+	}
+	return false;
 }
 
-$lang = $_SESSION['language'];
-
-// get_text support
-get_text::init();
-get_text::set_language($lang->code, $lang->encoding);
-//get_text::add_domain("wa", $path_to_root . "/lang");
-get_text::add_domain($lang->code, $path_to_root . "/lang");
-// Unnecessary for ajax calls. 
-// Due to bug in php 4.3.10 for this version set globally in php.ini
-ini_set('default_charset', $_SESSION['language']->encoding);
+function _set($key,$value) 
+{
+	get_text::set_var($key,$value);
+}
 
 if (!function_exists("_")) 
 {
@@ -109,30 +127,4 @@ if (!function_exists("_"))
 		return $retVal;
 	}
 }
-
-function _set($key,$value) 
-{
-	get_text::set_var($key,$value);
-}
-
-function reload_page($msg) 
-{
-//	header("Location: $_SERVER['PHP_SELF']."");
-//	exit;
-	echo "<html>";
-	echo "<head>";
-    echo "<title>Changing Languages</title>";
-	echo '<meta http-equiv="refresh" content="0;url=' . $_SERVER['PHP_SELF'] . '">';
-	echo '</head>';
-	echo '<body>';
-	echo '<div>';
-	if ($msg != "")
-		echo $msg . " " . $_SERVER['PHP_SELF'];
-	echo "</div>";	
-	echo "</body>";
-	echo "</html>";
-}
-
-
-
 ?>

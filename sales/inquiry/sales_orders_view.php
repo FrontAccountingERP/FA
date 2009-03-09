@@ -1,9 +1,19 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 $page_security = 2;
 $path_to_root="../..";
-include($path_to_root . "/includes/session.inc");
 
+include($path_to_root . "/includes/db_pager.inc");
+include($path_to_root . "/includes/session.inc");
 include($path_to_root . "/sales/includes/sales_ui.inc");
 include_once($path_to_root . "/reporting/includes/reporting.inc");
 
@@ -47,13 +57,99 @@ elseif (isset($_POST['selected_customer']))
 else
 	$selected_customer = -1;
 
-//-----------------------------------------------------------------------------------
-// Ajax updates
-//
-if (get_post('SearchOrders')) 
+//---------------------------------------------------------------------------------------------
+
+if (isset($_POST['SelectStockFromList']) && ($_POST['SelectStockFromList'] != "") &&
+	($_POST['SelectStockFromList'] != reserved_words::get_all()))
 {
+ 	$selected_stock_item = $_POST['SelectStockFromList'];
+}
+else
+{
+	unset($selected_stock_item);
+}
+//---------------------------------------------------------------------------------------------
+//	Query format functions
+//
+function check_overdue($row)
+{
+	return ($row['type'] == 0
+		&& date1_greater_date2(Today(), sql2date($row['ord_date']))
+		&& ($row['TotDelivered'] < $row['TotQuantity']));
+}
+
+function view_link($dummy, $order_no)
+{
+	return  get_customer_trans_view_str(systypes::sales_order(), $order_no);
+}
+
+function prt_link($row)
+{
+	return print_document_link($row['order_no'], _("Print"), true, 30, ICON_PRINT);
+}
+
+function edit_link($row) 
+{
+  return pager_link( _("Edit"),
+    "/sales/sales_order_entry.php?" . SID . "ModifyOrderNumber=" . $row['order_no'], ICON_EDIT);
+}
+
+function dispatch_link($row)
+{
+  return pager_link( _("Dispatch"),
+	"/sales/customer_delivery.php?" . SID . "OrderNumber=" .$row['order_no'], ICON_DOC);
+}
+
+function invoice_link($row)
+{
+  return pager_link( _("Invoice"),
+	"/sales/sales_order_entry.php?" . SID . "NewInvoice=" .$row["order_no"], ICON_DOC);
+}
+
+function delivery_link($row)
+{
+  return pager_link( _("Delivery"),
+	"/sales/sales_order_entry.php?" . SID . "NewDelivery=" .$row['order_no'], ICON_DOC);
+}
+
+function tmpl_checkbox($row)
+{
+	$name = "chgtpl" .$row['order_no'];
+	$value = $row['type'] ? 1:0;
+
+// save also in hidden field for testing during 'Update'
+
+ return checkbox(null, $name, $value, true,
+ 	_('Set this order as a template for direct deliveries/invoices'))
+	. hidden('last['.$row['order_no'].']', $value, false);
+}
+//---------------------------------------------------------------------------------------------
+// Update db record if respective checkbox value has changed.
+//
+function change_tpl_flag($id)
+{
+	global	$Ajax;
+	
+  	$sql = "UPDATE ".TB_PREF."sales_orders SET type = !type WHERE order_no=$id";
+
+  	db_query($sql, "Can't change sales order type");
 	$Ajax->activate('orders_tbl');
-} elseif (get_post('_OrderNumber_changed')) 
+}
+
+$id = find_submit('_chgtpl');
+if ($id != -1)
+	change_tpl_flag($id);
+
+if (isset($_POST['Update']) && isset($_POST['last'])) {
+	foreach($_POST['last'] as $id => $value)
+		if ($value != check_value('chgtpl'.$id))
+			change_tpl_flag($id);
+}
+
+//---------------------------------------------------------------------------------------------
+//	Order range form
+//
+if (get_post('_OrderNumber_changed')) // enable/disable selection controls
 {
 	$disable = get_post('OrderNumber') !== '';
 
@@ -94,198 +190,121 @@ hidden('order_view_mode', $_POST['order_view_mode']);
 
 end_row();
 
-end_table();
+end_table(1);
 end_form();
-
 //---------------------------------------------------------------------------------------------
+//	Orders inquiry table
+//
+$sql = "SELECT 
+		sorder.order_no,
+		debtor.name,
+		branch.br_name,"
+		.($_POST['order_view_mode']=='InvoiceTemplates' 
+		   	|| $_POST['order_view_mode']=='DeliveryTemplates' ?
+		 "sorder.comments, " : "sorder.customer_ref, ")
+		."sorder.ord_date,
+		sorder.delivery_date,
+		sorder.deliver_to,
+		Sum(line.unit_price*line.quantity*(1-line.discount_percent)) AS OrderValue,
+		sorder.type,
+		debtor.curr_code,
+		Sum(line.qty_sent) AS TotDelivered,
+		Sum(line.quantity) AS TotQuantity
+	FROM ".TB_PREF."sales_orders as sorder, "
+		.TB_PREF."sales_order_details as line, "
+		.TB_PREF."debtors_master as debtor, "
+		.TB_PREF."cust_branch as branch
+		WHERE sorder.order_no = line.order_no
+		AND sorder.debtor_no = debtor.debtor_no
+		AND sorder.branch_code = branch.branch_code
+		AND debtor.debtor_no = branch.debtor_no";
 
-if (isset($_POST['SelectStockFromList']) && ($_POST['SelectStockFromList'] != "") &&
-	($_POST['SelectStockFromList'] != reserved_words::get_all()))
-{
- 	$selected_stock_item = $_POST['SelectStockFromList'];
-}
-else
-{
-	unset($selected_stock_item);
-}
-
-function change_tpl_flag($id)
-{
-	global	$Ajax;
-	
-  	$sql = "UPDATE ".TB_PREF."sales_orders SET type = !type WHERE order_no=$id";
-
-  	db_query($sql, "Can't change sales order type");
-	$Ajax->activate('orders_tbl');
-}
-//---------------------------------------------------------------------------------------------
-$id = find_submit('_chgtpl');
-if ($id != -1)
-	change_tpl_flag($id);
-
-//---------------------------------------------------------------------------------------------
-
-$sql = "SELECT ".TB_PREF."sales_orders.order_no, ".TB_PREF."debtors_master.curr_code, ".TB_PREF."debtors_master.name, ".TB_PREF."cust_branch.br_name,
-	".TB_PREF."sales_orders.ord_date, ".TB_PREF."sales_orders.deliver_to, ".TB_PREF."sales_orders.delivery_date,
-	".TB_PREF."sales_orders.type, ";
-$sql .= " Sum(".TB_PREF."sales_order_details.qty_sent) AS TotDelivered, ";
-$sql .= " Sum(".TB_PREF."sales_order_details.quantity) AS TotQuantity, ";
-$sql .= " Sum(".TB_PREF."sales_order_details.unit_price*".TB_PREF."sales_order_details.quantity*(1-".TB_PREF."sales_order_details.discount_percent)) AS OrderValue, ";
-
-//if ($_POST['order_view_mode']=='InvoiceTemplates' || $_POST['order_view_mode']=='DeliveryTemplates')
-  $sql .= TB_PREF."sales_orders.comments, ";
-//else
-  $sql .= TB_PREF."sales_orders.customer_ref";
-
-$sql .=	" FROM ".TB_PREF."sales_orders, ".TB_PREF."sales_order_details, ".TB_PREF."debtors_master, ".TB_PREF."cust_branch
-		WHERE ".TB_PREF."sales_orders.order_no = ".TB_PREF."sales_order_details.order_no
-			AND ".TB_PREF."sales_orders.debtor_no = ".TB_PREF."debtors_master.debtor_no
-			AND ".TB_PREF."sales_orders.branch_code = ".TB_PREF."cust_branch.branch_code
-			AND ".TB_PREF."debtors_master.debtor_no = ".TB_PREF."cust_branch.debtor_no ";
-
-//figure out the sql required from the inputs available
 if (isset($_POST['OrderNumber']) && $_POST['OrderNumber'] != "")
 {
-// if ($_POST['OrderNumber'] != '*')  // TODO paged table
-	$sql .= " AND ".TB_PREF."sales_orders.order_no LIKE '%". $_POST['OrderNumber'] ."'";
- $sql .= " GROUP BY ".TB_PREF."sales_orders.order_no";
+	// search orders with number like ...
+	$sql .= " AND sorder.order_no LIKE '%". $_POST['OrderNumber'] ."'"
+ 			." GROUP BY sorder.order_no";
 }
-else
+else	// ... or select inquiry constraints
 {
   	if ($_POST['order_view_mode']!='DeliveryTemplates' && $_POST['order_view_mode']!='InvoiceTemplates')
   	{
 		$date_after = date2sql($_POST['OrdersAfterDate']);
 		$date_before = date2sql($_POST['OrdersToDate']);
 
-		$sql .= " AND ".TB_PREF."sales_orders.ord_date >= '$date_after'";
-		$sql .= " AND ".TB_PREF."sales_orders.ord_date <= '$date_before'";
+		$sql .=  " AND sorder.ord_date >= '$date_after'"
+				." AND sorder.ord_date <= '$date_before'";
   	}
 	if ($selected_customer != -1)
-		$sql .= " AND ".TB_PREF."sales_orders.debtor_no='" . $selected_customer . "'";
+		$sql .= " AND sorder.debtor_no='" . $selected_customer . "'";
 
 	if (isset($selected_stock_item))
-		$sql .= " AND ".TB_PREF."sales_order_details.stk_code='". $selected_stock_item ."'";
+		$sql .= " AND line.stk_code='". $selected_stock_item ."'";
 
 	if (isset($_POST['StockLocation']) && $_POST['StockLocation'] != reserved_words::get_all())
-		$sql .= " AND ".TB_PREF."sales_orders.from_stk_loc = '". $_POST['StockLocation'] . "' ";
+		$sql .= " AND sorder.from_stk_loc = '". $_POST['StockLocation'] . "' ";
 
 	if ($_POST['order_view_mode']=='OutstandingOnly')
-		$sql .= " AND ".TB_PREF."sales_order_details.qty_sent < ".TB_PREF."sales_order_details.quantity";
+		$sql .= " AND line.qty_sent < line.quantity";
 	elseif ($_POST['order_view_mode']=='InvoiceTemplates' || $_POST['order_view_mode']=='DeliveryTemplates')
-		$sql .= " AND ".TB_PREF."sales_orders.type=1";
+		$sql .= " AND sorder.type=1";
 
-	$sql .= " GROUP BY ".TB_PREF."sales_orders.order_no, ".TB_PREF."sales_orders.debtor_no, ".TB_PREF."sales_orders.branch_code,
-		".TB_PREF."sales_orders.customer_ref, ".TB_PREF."sales_orders.ord_date, ".TB_PREF."sales_orders.deliver_to";
-
-} //end not order number selected
-$result = db_query($sql,"No orders were returned");
-//-----------------------------------------------------------------------------------
-if ($result)
-{
-	print_hidden_script(30);
-
-	start_form();
-	/*show a table of the orders returned by the sql */
-	div_start('orders_tbl');
-
-	start_table("$table_style colspan=6 width=95%");
-	$th = array(_("Order #"), _("Customer"), _("Branch"), _("Cust Order #"), _("Order Date"),
-		_("Required By"), _("Delivery To"), _("Order Total"), _("Currency"), "");
-
-  	if($_POST['order_view_mode']=='InvoiceTemplates' || $_POST['order_view_mode']=='DeliveryTemplates')
-	{
-		$th[3] = _('Description');
-	} elseif ($_POST['order_view_mode'] != 'OutstandingOnly') {
-		$th[9] = _('Tmpl');
-	 $th[] =''; $th[] ='';
-	} 
-
-	table_header($th);
-
-	$j = 1;
-	$k = 0; //row colour counter
-	$overdue_items = false;
-	while ($myrow = db_fetch($result))
-	{
-		$view_page = get_customer_trans_view_str(systypes::sales_order(), $myrow["order_no"]);
-		$formated_del_date = sql2date($myrow["delivery_date"]);
-		$formated_order_date = sql2date($myrow["ord_date"]);
-		if (isset($_POST['Update']) && 
-				check_value( "chgtpl".$myrow["order_no"]) != $myrow["type"]) {
-				change_tpl_flag($myrow["order_no"]);
-				$myrow['type'] = !$myrow['type'];
-		}
-//	    $not_closed =  $myrow['type'] && ($myrow["TotDelivered"] < $myrow["TotQuantity"]);
-
-    	// if overdue orders, then highlight as so. 2008-10-15 added totdelivered < totquantity as well for qualifying overdue
-    	if ($myrow['type'] == 0 && date1_greater_date2(Today(), $formated_del_date) && ($myrow["TotDelivered"] < $myrow["TotQuantity"]))
-    	{
-        	 start_row("class='overduebg'");
-        	 $overdue_items = true;
-    	}
-    	else
-    	{
-			alt_table_row_color($k);
-    	}
-
-		label_cell($view_page);
-		label_cell($myrow["name"]);
-		label_cell($myrow["br_name"]);
-	  	if($_POST['order_view_mode']=='InvoiceTemplates' || $_POST['order_view_mode']=='DeliveryTemplates')
-		  	label_cell($myrow["comments"]);
-	  	else
-		  	label_cell($myrow["customer_ref"]);
-		label_cell($formated_order_date);
-		label_cell($formated_del_date);
-		label_cell($myrow["deliver_to"]);
-		amount_cell($myrow["OrderValue"]);
-		label_cell($myrow["curr_code"]);
-		if ($_POST['order_view_mode']=='OutstandingOnly'/* || $not_closed*/)
-		{
-    		$delivery_note = $path_to_root . "/sales/customer_delivery.php?" . SID . "OrderNumber=" .$myrow["order_no"];
-    		label_cell("<a href='$delivery_note'>" . _("Dispatch") . "</a>");
-		}
-  		elseif ($_POST['order_view_mode']=='InvoiceTemplates')
-		{
-    		$select_order= $path_to_root . "/sales/sales_order_entry.php?" . SID . "NewInvoice=" .$myrow["order_no"];
-    		label_cell("<a href='$select_order'>" . _("Invoice") . "</a>");
-		}
-  		elseif ($_POST['order_view_mode']=='DeliveryTemplates')
-		{
-  			$select_order= $path_to_root . "/sales/sales_order_entry.php?" . SID . "NewDelivery=" .$myrow["order_no"];
-    		label_cell("<a href='$select_order'>" . _("Delivery") . "</a>");
-		}
-		else
-		{
-		  	check_cells( null, "chgtpl" .$myrow["order_no"], $myrow["type"], true, 
-				_('Set this order as a template for direct deliveries/invoices'));
-
-  		  	$modify_page = $path_to_root . "/sales/sales_order_entry.php?" . SID . "ModifyOrderNumber=" . $myrow["order_no"];
-  		  	label_cell("<a href='$modify_page'>" . _("Edit") . "</a>");
-  		  	label_cell(print_document_link($myrow['order_no'], _("Print")));
-		}
-		end_row();;
-
-		$j++;
-		if ($j == 12)
-		{
-			$j = 1;
-			table_header($th);
-		}
-		//end of page full new headings if
-	}
-	//end of while loop
-	end_table();
-
-   if ($overdue_items)
-   		display_note(_("Marked items are overdue."), 0, 1, "class='overduefg'");
-	else
-		echo '<br>';
-	div_end();
-	submit_center('Update', _("Update"), true, '', null);
-	end_form();
+	$sql .= " GROUP BY sorder.order_no,
+				sorder.debtor_no,
+				sorder.branch_code,
+				sorder.customer_ref,
+				sorder.ord_date,
+				sorder.deliver_to";
 }
 
-echo "<br>";
+$cols = array(
+	_("Order #") => array('fun'=>'view_link'),
+	_("Customer"),
+	_("Branch"), 
+	_("Comments"),
+	_("Order Date") => 'date',
+	_("Required By") =>array('type'=>'date', 'ord'=>''),
+	_("Delivery To"), 
+	_("Order Total") => array('type'=>'amount', 'ord'=>''),
+	'Type' => 'skip',
+	_("Currency") => array('align'=>'center')
+);
+
+if ($_POST['order_view_mode'] == 'OutstandingOnly') {
+	array_replace($cols, 3, 1, _("Cust Order Ref"));
+	array_append($cols, array(array('insert'=>true, 'fun'=>'dispatch_link')));
+
+} elseif ($_POST['order_view_mode'] == 'InvoiceTemplates') {
+	array_replace($cols, 3, 1, _("Description"));
+	array_append($cols, array( array('insert'=>true, 'fun'=>'invoice_link')));
+
+} else if ($_POST['order_view_mode'] == 'DeliveryTemplates') {
+	array_replace($cols, 3, 1, _("Description"));
+	array_append($cols, array(
+			array('insert'=>true, 'fun'=>'delivery_link'))
+	);
+
+} else {
+	 array_append($cols,array(
+			_("Tmpl") => array('insert'=>true, 'fun'=>'tmpl_checkbox'),
+					array('insert'=>true, 'fun'=>'edit_link'),
+					array('insert'=>true, 'fun'=>'prt_link')));
+};
+
+
+$table =& new_db_pager('orders_tbl', $sql, $cols);
+$table->set_marker('check_overdue', _("Marked items are overdue."));
+
+if (get_post('SearchOrders')) {
+	$table->set_sql($sql);
+	$table->set_columns($cols);
+}
+$table->width = "80%";
+start_form();
+
+display_db_pager($table);
+submit_center('Update', _("Update"), true, '', null);
+
+end_form();
 end_page();
 ?>

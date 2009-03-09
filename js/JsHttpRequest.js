@@ -255,7 +255,7 @@ function JsHttpRequest() {
                     if (tn == 'FORM') {
                         // FORM itself is passed.
                         formAdded = true;
-                    } else if (tn == 'INPUT' || tn == 'TEXTAREA' || tn == 'SELECT') {
+                    } else if (tn == 'INPUT' || tn == 'TEXTAREA' || tn == 'SELECT' || tn == 'BUTTON') {
                         // This is a single form elemenent.
                     } else {
                         return this._error('inv_form_el', (v.name||''), v.tagName);

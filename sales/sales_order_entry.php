@@ -1,4 +1,14 @@
 <?php
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 //-----------------------------------------------------------------------------
 //
 //	Entry/Modify Sales Order
@@ -18,18 +28,14 @@ include_once($path_to_root . "/sales/includes/db/sales_types_db.inc");
 include_once($path_to_root . "/reporting/includes/reporting.inc");
 $js = '';
 
-if ($ret = context_restore()) {
- // return from new customer add
-	copy_from_cart();
-	if(isset($ret['customer_id']))
-		$_POST['customer_id'] = $ret['customer_id'];
-	if(isset($ret['branch_id']))
-		$_POST['branch_id'] = $ret['branch_id'];
-}
-if (isset($_POST['_customer_id_editor'])) {
-	copy_to_cart(); //store context
-	context_call($path_to_root.'/sales/manage/customers.php?debtor_no='.$_POST['customer_id'], 'Items');
-}
+editor_redirect( array(
+	'customer_id' => $path_to_root.'/sales/manage/customers.php?debtor_no='.get_post('customer_id'),
+	'branch_id' => $path_to_root.'/sales/manage/customer_branches.php?branch_id='.get_post('branch_id'),
+	));
+
+editor_return( array(
+	'customer_id'=>'customer_id',
+	'branch_id'=>'branch_id'));
 
 if ($use_popup_windows) {
 	$js .= get_js_open_window(900, 500);
@@ -66,78 +72,75 @@ page($_SESSION['page_title'], false, false, "", $js);
 
 if (isset($_GET['AddedID'])) {
 	$order_no = $_GET['AddedID'];
-	print_hidden_script(30);
 
 	display_notification_centered(sprintf( _("Order # %d has been entered."),$order_no));
 
-	display_note(get_trans_view_str(30, $order_no, _("View This Order")));
+	display_note(get_trans_view_str(30, $order_no, _("&View This Order")));
 	echo '<br>';
-	display_note(print_document_link($order_no, _("Print This Order"), true, 30));
+	display_note(print_document_link($order_no, _("&Print This Order"), true, 30));
 
 	hyperlink_params($path_to_root . "/sales/customer_delivery.php",
-		_("Make Delivery Against This Order"), "OrderNumber=$order_no");
+		_("Make &Delivery Against This Order"), "OrderNumber=$order_no");
 
-	hyperlink_params($_SERVER['PHP_SELF'], _("Enter a New Order"), "NewOrder=0");
+	hyperlink_params($_SERVER['PHP_SELF'], _("Enter a &New Order"), "NewOrder=0");
 
 	display_footer_exit();
 
 } elseif (isset($_GET['UpdatedID'])) {
 	$order_no = $_GET['UpdatedID'];
-	print_hidden_script(30);
 
 	display_notification_centered(sprintf( _("Order # %d has been updated."),$order_no));
 
-	display_note(get_trans_view_str(30, $order_no, _("View This Order")));
+	display_note(get_trans_view_str(30, $order_no, _("&View This Order")));
 	echo '<br>';
-	display_note(print_document_link($order_no, _("Print This Order"), true, 30));
+	display_note(print_document_link($order_no, _("&Print This Order"), true, 30));
 
 	hyperlink_params($path_to_root . "/sales/customer_delivery.php",
-		_("Confirm Order Quantities and Make Delivery"), "OrderNumber=$order_no");
+		_("Confirm Order Quantities and Make &Delivery"), "OrderNumber=$order_no");
 
 	hyperlink_params($path_to_root . "/sales/inquiry/sales_orders_view.php",
-		_("Select A Different Order"), "OutstandingOnly=1");
+		_("Select A Different &Order"), "OutstandingOnly=1");
 
 	display_footer_exit();
 
 } elseif (isset($_GET['AddedDN'])) {
 	$delivery = $_GET['AddedDN'];
-	print_hidden_script(13);
 
 	display_notification_centered(sprintf(_("Delivery # %d has been entered."),$delivery));
 
-	display_note(get_trans_view_str(13, $delivery, _("View This Delivery")));
+	display_note(get_trans_view_str(13, $delivery, _("&View This Delivery")));
 	echo '<br>';
-	display_note(print_document_link($delivery, _("Print Delivery Note"), true, 13));
+	display_note(print_document_link($delivery, _("&Print Delivery Note"), true, 13));
 
 	hyperlink_params($path_to_root . "/sales/customer_invoice.php",
-	_("Make Invoice Against This Delivery"), "DeliveryNumber=$delivery");
+	_("Make &Invoice Against This Delivery"), "DeliveryNumber=$delivery");
 
 	if ((isset($_GET['Type']) && $_GET['Type'] == 1))
 	hyperlink_params("inquiry/sales_orders_view.php",
-		_("Enter a New Template Delivery"), "DeliveryTemplates=Yes");
+		_("Enter a New Template &Delivery"), "DeliveryTemplates=Yes");
 	else
-	hyperlink_params($_SERVER['PHP_SELF'], _("Enter a New Delivery"), "NewDelivery=0");
+	hyperlink_params($_SERVER['PHP_SELF'], _("Enter a &New Delivery"), "NewDelivery=0");
 
 	display_footer_exit();
 
 } elseif (isset($_GET['AddedDI'])) {
 	$invoice = $_GET['AddedDI'];
-	print_hidden_script(10);
 
 	display_notification_centered(sprintf(_("Invoice # %d has been entered."),$invoice));
 
-	display_note(get_trans_view_str(10, $invoice, _("View This Invoice")));
+	display_note(get_trans_view_str(10, $invoice, _("&View This Invoice")));
 	echo '<br>';
-	display_note(print_document_link($invoice, _("Print Sales Invoice"), true, 10));
+	display_note(print_document_link($invoice, _("&Print Sales Invoice"), true, 10));
 
 	if ((isset($_GET['Type']) && $_GET['Type'] == 1))
 	hyperlink_params("inquiry/sales_orders_view.php",
-		_("Enter a New Template Invoice"), "InvoiceTemplates=Yes");
+		_("Enter a &New Template Invoice"), "InvoiceTemplates=Yes");
 	else
-	hyperlink_params($_SERVER['PHP_SELF'], _("Enter a New Direct Invoice"), "NewInvoice=0");
+	hyperlink_params($_SERVER['PHP_SELF'], _("Enter a &New Direct Invoice"), "NewInvoice=0");
 
 	display_footer_exit();
-}
+} else
+	check_edit_conflicts();
 
 //-----------------------------------------------------------------------------
 
@@ -147,19 +150,28 @@ function copy_to_cart()
 
 	if ($cart->trans_type!=30) {
 		$cart->reference = $_POST['ref'];
-	}
+	} 
 	$cart->Comments =  $_POST['Comments'];
 
 	$cart->document_date = $_POST['OrderDate'];
-	$cart->due_date = $_POST['delivery_date'];
-	$cart->cust_ref = $_POST['cust_ref'];
-	$cart->freight_cost = input_num('freight_cost');
-	$cart->deliver_to = $_POST['deliver_to'];
-	$cart->delivery_address = $_POST['delivery_address'];
-	$cart->phone = $_POST['phone'];
-	$cart->Location = $_POST['Location'];
-	$cart->ship_via = $_POST['ship_via'];
-
+	if ($cart->trans_type == 10)
+		$cart->cash = $_POST['cash']; 
+	if ($cart->cash) {
+		$cart->due_date = $cart->document_date;
+		$cart->phone = $cart->cust_ref = $cart->delivery_address = '';
+		$cart->freight_cost = 0;
+		$cart->ship_via = 1;
+		$cart->deliver_to = '';//$_POST['deliver_to'];
+	} else {
+		$cart->due_date = $_POST['delivery_date'];
+		$cart->cust_ref = $_POST['cust_ref'];
+		$cart->freight_cost = input_num('freight_cost');
+		$cart->deliver_to = $_POST['deliver_to'];
+		$cart->delivery_address = $_POST['delivery_address'];
+		$cart->phone = $_POST['phone'];
+		$cart->Location = $_POST['Location'];
+		$cart->ship_via = $_POST['ship_via'];
+	}
 	if (isset($_POST['email']))
 		$cart->email =$_POST['email'];
 	else
@@ -167,6 +179,11 @@ function copy_to_cart()
 	$cart->customer_id	= $_POST['customer_id'];
 	$cart->Branch = $_POST['branch_id'];
 	$cart->sales_type = $_POST['sales_type'];
+	// POS
+	if ($cart->trans_type!=30) { // 2008-11-12 Joe Hunt
+		$cart->dimension_id = $_POST['dimension_id'];
+		$cart->dimension2_id = $_POST['dimension2_id'];
+	}	
 }
 
 //-----------------------------------------------------------------------------
@@ -194,6 +211,15 @@ function copy_from_cart()
 
 	$_POST['branch_id'] = $cart->Branch;
 	$_POST['sales_type'] = $cart->sales_type;
+	// POS 
+	if ($cart->trans_type == 10)
+		$_POST['cash'] = $cart->cash;
+	if ($cart->trans_type!=30) { // 2008-11-12 Joe Hunt
+		$_POST['dimension_id'] = $cart->dimension_id;
+		$_POST['dimension2_id'] = $cart->dimension2_id;
+	}	
+	$_POST['cart_id'] = $cart->cart_id;
+		
 }
 //--------------------------------------------------------------------------------
 
@@ -221,35 +247,38 @@ function can_process() {
 		set_focus('AddItem');
 		return false;
 	}
+	if ($_SESSION['Items']->cash == 0) {
 	if (strlen($_POST['deliver_to']) <= 1) {
 		display_error(_("You must enter the person or company to whom delivery should be made to."));
 		set_focus('deliver_to');
 		return false;
 	}
-	if (strlen($_POST['delivery_address']) <= 1) {
-		display_error( _("You should enter the street address in the box provided. Orders cannot be accepted without a valid street address."));
-		set_focus('delivery_address');
-		return false;
-	}
 
-	if ($_POST['freight_cost'] == "")
-		$_POST['freight_cost'] = price_format(0);
+		if (strlen($_POST['delivery_address']) <= 1) {
+			display_error( _("You should enter the street address in the box provided. Orders cannot be accepted without a valid street address."));
+			set_focus('delivery_address');
+			return false;
+		}
 
-	if (!check_num('freight_cost',0)) {
-		display_error(_("The shipping cost entered is expected to be numeric."));
-		set_focus('freight_cost');
-		return false;
-	}
-	if (!is_date($_POST['delivery_date'])) {
-		display_error(_("The delivery date is invalid."));
-		set_focus('delivery_date');
-		return false;
-	}
-	//if (date1_greater_date2($_SESSION['Items']->document_date, $_POST['delivery_date'])) {
-	if (date1_greater_date2($_POST['OrderDate'], $_POST['delivery_date'])) {
-		display_error(_("The requested delivery date is before the date of the order."));
-		set_focus('delivery_date');
-		return false;
+		if ($_POST['freight_cost'] == "")
+			$_POST['freight_cost'] = price_format(0);
+
+		if (!check_num('freight_cost',0)) {
+			display_error(_("The shipping cost entered is expected to be numeric."));
+			set_focus('freight_cost');
+			return false;
+		}
+		if (!is_date($_POST['delivery_date'])) {
+			display_error(_("The delivery date is invalid."));
+			set_focus('delivery_date');
+			return false;
+		}
+		//if (date1_greater_date2($_SESSION['Items']->document_date, $_POST['delivery_date'])) {
+		if (date1_greater_date2($_POST['OrderDate'], $_POST['delivery_date'])) {
+			display_error(_("The requested delivery date is before the date of the order."));
+			set_focus('delivery_date');
+			return false;
+		}
 	}
 	if ($_SESSION['Items']->trans_type != 30 && !references::is_valid($_POST['ref'])) {
 		display_error(_("You must enter a reference."));
@@ -266,7 +295,6 @@ if (isset($_POST['ProcessOrder']) && can_process()) {
 
 	$modified = ($_SESSION['Items']->trans_no != 0);
 	$so_type = $_SESSION['Items']->so_type;
-
 	$_SESSION['Items']->write(1);
 	if (count($messages)) { // abort on failure or error messages are lost
 		$Ajax->activate('_page_body');
@@ -328,9 +356,11 @@ function check_item_data()
 function handle_update_item()
 {
 	if ($_POST['UpdateItem'] != '' && check_item_data()) {
+		//alert("description=".$_POST['item_description']);
+		//$_SESSION['items']->line_items[$_POST['LineNo']]->item_description = $_POST['item_description'];
 		$_SESSION['Items']->update_cart_item($_POST['LineNo'],
 		 input_num('qty'), input_num('price'),
-		 input_num('Disc') / 100 );
+		 input_num('Disc') / 100, $_POST['item_description'] );
 	}
   line_start_focus();
 }
@@ -365,9 +395,8 @@ function handle_new_item()
 
 function  handle_cancel_order()
 {
-	global $path_to_root;
+	global $path_to_root, $Ajax;
 
-	if ($_POST['CancelOrder'] != "") {
 
 	if ($_SESSION['Items']->trans_type == 13) {
 			display_note(_("Direct delivery entry has been cancelled as requested."), 1);
@@ -381,19 +410,23 @@ function  handle_cancel_order()
 		if ($_SESSION['Items']->trans_no != 0) {
 			if (sales_order_has_deliveries(key($_SESSION['Items']->trans_no)))
 				display_error(_("This order cannot be cancelled because some of it has already been invoiced or dispatched. However, the line item quantities may be modified."));
-			else
+			else {
 				delete_sales_order(key($_SESSION['Items']->trans_no));
-		}
 
 			display_note(_("This sales order has been cancelled as requested."), 1);
 				hyperlink_params($path_to_root . "/sales/sales_order_entry.php",
 				_("Enter a New Sales Order"), SID . "&NewOrder=Yes");
+			}
+		} else {
+			processing_end();
+			meta_forward($path_to_root.'/index.php?application=orders');
 		}
-		processing_end();
-		br(1);
-		end_page();
-		exit;
 	}
+	$Ajax->activate('_page_body');
+	processing_end();
+	br(1);
+	end_page();
+	exit;
 }
 
 //--------------------------------------------------------------------------------
@@ -410,9 +443,16 @@ function create_cart($type, $trans_no)
 		$doc->trans_type = $type;
 		$doc->trans_no = 0;
 		$doc->document_date = Today(); // 2006-06-15. Added so Invoices and Deliveries get current day
-		if ($type == 10)
+		if ($type == 10) {
 			$doc->due_date = get_invoice_duedate($doc->customer_id, $doc->document_date);
-		else
+			$doc->pos = user_pos();
+			$pos = get_sales_point($doc->pos);
+			$doc->cash = $pos['cash_sale'];
+			if (!$pos['cash_sale'] || !$pos['credit_sale']) 
+				$doc->pos = -1; // mark not editable payment type
+			else
+				$doc->cash = date_diff($doc->due_date, Today(), 'd')<2;
+		} else
 			$doc->due_date = $doc->document_date;
 		$doc->reference = references::get_next($doc->trans_type);
 		$doc->Comments='';
@@ -470,6 +510,7 @@ if ($_SESSION['Items']->trans_type == 10) {
 	$corder = _("Commit Order Changes");
 }
 start_form(false, true);
+hidden('cart_id');
 
 $customer_error = display_order_header($_SESSION['Items'],
 	($_SESSION['Items']->any_already_delivered() == 0), $idate);
@@ -494,7 +535,8 @@ if ($customer_error == "") {
 	}
 
 	submit_center_last('CancelOrder', $cancelorder,
-	   _('Cancels document entry or removes sales order when editing an old document'));
+	   _('Cancels document entry or removes sales order when editing an old document'),
+	   true);
 } else {
 	display_error($customer_error);
 }

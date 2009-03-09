@@ -1,53 +1,63 @@
 <?php
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 
 		$this->row = $this->pageHeight - $this->topMargin;
 
 		$upper = $this->row - 2 * $this->lineHeight;
 		$lower = $this->bottomMargin + 6 * $this->lineHeight;
-		$iline1 = $upper - 4 * $this->lineHeight;
+		$iline1 = $upper - 7 * $this->lineHeight;
 		$iline2 = $iline1 - 8 * $this->lineHeight;
-		$iline3 = $iline2 - 8 * $this->lineHeight;
-		$iline4 = $iline3 - 2 * $this->lineHeight;
-		$iline5 = $lower + 4 * $this->lineHeight;
+		$iline3 = $iline2 - 1.5 * $this->lineHeight;
+		$iline4 = $iline3 - 1.5 * $this->lineHeight;
+		$iline5 = $iline4 - 3 * $this->lineHeight;
+		$iline6 = $iline5 - 1.5 * $this->lineHeight;
+		$iline7 = $lower;
+		$right = $this->pageWidth - $this->rightMargin;
+		$width = ($right - $this->leftMargin) / 6;
 		$icol = $this->pageWidth / 2;
 		$ccol = $this->cols[0] + 4;
+		$c2col = $ccol + 60;
 		$ccol2 = $icol / 2;
 		$mcol = $icol + 8;
 		$mcol2 = $this->pageWidth - $ccol2;
-
+		$cols = count($this->cols);
+		$this->SetDrawColor(205, 205, 205);
+		$this->Line($iline1, 3);
 		$this->SetDrawColor(128, 128, 128);
-		$this->LineTo($this->pageWidth - $this->rightMargin, $upper ,$this->leftMargin, $upper);
-		$this->LineTo($this->leftMargin, $upper ,$this->leftMargin, $lower);
-		$this->LineTo($this->pageWidth - $this->rightMargin, $lower ,$this->leftMargin, $lower);
-		$this->LineTo($this->pageWidth - $this->rightMargin, $lower ,$this->pageWidth - $this->rightMargin, $upper);
 		$this->Line($iline1);
+		$this->rectangle($this->leftMargin, $iline2, $right - $this->leftMargin, $iline2 - $iline3, "F", null, array(222, 231, 236));   
 		$this->Line($iline2);
 		$this->Line($iline3);
 		$this->Line($iline4);
+		$this->rectangle($this->leftMargin, $iline5, $right - $this->leftMargin, $iline5 - $iline6, "F", null, array(222, 231, 236));   
 		$this->Line($iline5);
-		$this->LineTo($icol, $upper ,$icol, $iline1);
+		$this->Line($iline6);
+		$this->Line($iline7);
+		$this->LineTo($this->leftMargin, $iline2 ,$this->leftMargin, $iline4);
+		$col = $this->leftMargin;
+		for ($i = 0; $i < 5; $i++)
+		{
+			$this->LineTo($col += $width, $iline2,$col, $iline4);
+		}	
+		$this->LineTo($right, $iline2 ,$right, $iline4);
+		$this->LineTo($this->leftMargin, $iline5 ,$this->leftMargin, $iline7);
+		$this->LineTo($this->cols[$cols - 2] + 4, $iline5 ,$this->cols[$cols - 2] + 4, $iline7);
+		$this->LineTo($right, $iline5 ,$right, $iline7);
+
 		$this->NewLine();
-
-		$this->fontSize += 4;
-		$this->Font('bold');
-		$this->Text($mcol, $this->title);
-		$this->Font();
-		$this->fontSize -= 4;
-		if ($this->pageNumber > 1 && !strstr($this->filename, "Bulk"))
-			$this->Text($this->endLine - 35, _("Page") . ' ' . $this->pageNumber);
-		$this->fontSize -= 4;
-		$this->row = $upper - 5;
-
-		$this->Text($mcol, $doc_Invoice_no, $mcol + 90);
-		$this->Text($mcol + 90, $doc_Cust_no, $mcol + 180);
-		$this->Text($mcol + 180, $doc_Date);
-		$this->fontSize += 4;
-
-		$this->row = $upper - 2 * $this->lineHeight - 2;
 		if ($this->company['coy_logo'] != '')
 		{
 			$logo = $comp_path .'/'. user_company() . "/images/" . $this->company['coy_logo'];
-			$this->AddImage($logo, $ccol, $iline1 + 5, 0, 40);
+			$this->AddImage($logo, $ccol, $this->row - 10, 0, 40);
 		}
 		else
 		{
@@ -57,29 +67,77 @@
 			$this->Font();
 			$this->fontSize -= 4;
 		}
-		if ($doctype == 8 || $doctype == 9) // PO or SO
-			$this->Text($mcol, $myrow['order_no'], $mcol + 90);
-		else if (isset($myrow['trans_no']) && isset($myrow['reference'])) // INV/CRE/STA
+		$this->SetTextColor(190, 190, 190);
+		$this->fontSize += 10;
+		$this->Font('bold');
+		$this->TextWrap($mcol, $this->row, $this->pageWidth - $this->rightMargin - $mcol - 20, $this->title, 'right');
+		$this->Font();
+		$this->fontSize -= 10;
+		$this->NewLine();
+		$this->SetTextColor(0, 0, 0);
+		$adrline = $this->row;
+		$this->TextWrapLines($ccol, $icol, $this->company['postal_address']);
+		$this->Font('italic');
+		if ($this->company['phone'] != "")
 		{
-			if ($print_invoice_no == 1)
-				$this->Text($mcol, $myrow['trans_no'], $mcol + 90);
-			else
-				$this->Text($mcol, $myrow['reference'], $mcol + 90);
-		}
-		if (isset($myrow['debtor_no']))
-			$this->Text($mcol + 90, $myrow['debtor_no'], $mcol + 180);
+			$this->Text($ccol, _("Phone"), $c2col);
+			$this->Text($c2col, $this->company['phone'], $mcol);
+			$this->NewLine();
+		}	
+		if ($this->company['fax'] != "")
+		{
+			$this->Text($ccol, _("Fax"), $c2col);
+			$this->Text($c2col, $this->company['fax'], $mcol);
+			$this->NewLine();
+		}	
+		if ($this->company['email'] != "")
+		{
+			$this->Text($ccol, _("Email"), $c2col);
+
+			$url = "mailto:" . $this->company['email'];
+			$this->SetTextColor(0, 0, 255);
+			$this->Text($c2col, $this->company['email'], $mcol);
+			$this->SetTextColor(0, 0, 0);
+			$this->addLink($url, $c2col, $this->row, $mcol, $this->row + $this->lineHeight);
+
+			$this->NewLine();
+		}	
+		if ($this->company['gst_no'] != "")
+		{
+			$this->Text($ccol, $doc_Our_VAT_no, $c2col);
+			$this->Text($c2col, $this->company['gst_no'], $mcol);
+			$this->NewLine();
+		}	
+		$this->Font();
+		$this->row = $adrline;
+		$this->NewLine(3);
+		$this->Text($mcol + 100, $doc_Date.":");
 		if ($doctype == 8 || $doctype == 9)
 			$this->Text($mcol + 180, sql2date($myrow['ord_date']));
 		else
 			$this->Text($mcol + 180, sql2date($myrow['tran_date']));
+		$this->NewLine();
+		$this->Text($mcol + 100, $doc_Invoice_no);
+		if ($doctype == 8 || $doctype == 9) // PO or SO
+			$this->Text($mcol + 180, $myrow['order_no']);
+		else if (isset($myrow['trans_no']) && isset($myrow['reference'])) // INV/CRE/STA
+		{
+			if ($print_invoice_no == 1)
+				$this->Text($mcol + 180, $myrow['trans_no']);
+			else
+				$this->Text($mcol + 180, $myrow['reference']);
+		}
 
+		if ($this->pageNumber > 1 && !strstr($this->filename, "Bulk"))
+			$this->Text($this->endLine - 35, _("Page") . ' ' . $this->pageNumber);
+		$this->row = $iline1 - $this->lineHeight;
 		$this->fontSize -= 4;
-		$this->row = $iline1 - 5;
 		$this->Text($ccol, $doc_Charge_To, $icol);
 		$this->Text($mcol, $doc_Delivered_To);
 		$this->fontSize += 4;
 
-		$this->NewLine(2);
+		$this->row = $this->row - $this->lineHeight - 5;
+
 		$temp = $this->row;
 		if ($doctype == 9)
 		{
@@ -87,12 +145,21 @@
 		}
 		else
 		{
-			if ($doctype == 8)
-				$this->Text($ccol, $myrow['supp_name'], $icol);
-			else
-				$this->Text($ccol, $myrow['DebtorName'], $icol);
+			if ($doctype == 8) {
+				$name = $myrow['supp_name'];
+				$addr = $myrow['address'];
+			} else {
+				if (trim($branch['br_address']) != '') {
+					$name = $branch['br_name'];
+					$addr = $branch['br_address'];
+				} else {
+					$name = $myrow['DebtorName'];
+					$addr = $myrow['address'];
+				}
+			}
+			$this->Text($ccol, $name, $icol);
 			$this->NewLine();
-			$this->TextWrapLines($ccol, $icol - $ccol, $myrow['address']);
+			$this->TextWrapLines($ccol, $icol - $ccol, $addr);
 		}
 		if ($sales_order != NULL)
 		{
@@ -104,68 +171,86 @@
 			$this->NewLine();
 			$this->TextWrapLines($mcol, $this->rightMargin - $mcol, $sales_order['delivery_address']);
 		}
-		$this->row = $iline2 - 2 * $this->lineHeight;
-		$this->Text($ccol, $doc_Shipping_Company . ":", $ccol2);
-		if ($doctype != 8 && isset($myrow['shipper_name']))
-			$this->Text($ccol2, $myrow['shipper_name'], $mcol);
-		$this->Text($mcol, $doc_Due_Date . ":", $mcol2);
-		if ($doctype == 9)
-			$this->Text($mcol2, sql2date($myrow['delivery_date']));
-		else if ($doctype != 8 && $doctype != 11 && isset($myrow['due_date']))
-			$this->Text($mcol2, sql2date($myrow['due_date']));
+		$this->row = $iline2 - $this->lineHeight - 1;
+		$col = $this->leftMargin;
+		$this->TextWrap($col, $this->row, $width, $doc_Customers_Ref, 'C');
+		$col += $width;
+		$this->TextWrap($col, $this->row, $width, $doc_Our_Ref, 'C');
+		$col += $width;
+		$this->TextWrap($col, $this->row, $width, $doc_Your_VAT_no, 'C');
+		$col += $width;
+		if ($doctype == 10)
+			$this->TextWrap($col, $this->row, $width, $doc_Delivery_no, 'C');
+		else
+			$this->TextWrap($col, $this->row, $width, $doc_Our_Order_No, 'C');
+		$col += $width;
+		$this->TextWrap($col, $this->row, $width, $doc_Payment_Terms, 'C');
+		$col += $width;
+		$this->TextWrap($col, $this->row, $width, $doc_Due_Date, 'C');
+		$this->row = $iline3 - $this->lineHeight - 1;
+		$col = $this->leftMargin;
+		if ($doctype == 8)
+			$this->TextWrap($col, $this->row, $width, $myrow['supp_account_no'], 'C');
+		elseif (isset($sales_order["customer_ref"]))
+			$this->TextWrap($col, $this->row, $width, $sales_order["customer_ref"], 'C');
+		$col += $width;	
 		if ($branch != null)
 		{
-			$this->NewLine();
-			$this->Text($ccol, $doc_Your_Ref . ":", $ccol2);
-			$this->Text($ccol2, $branch['contact_name'], $mcol);
-			$this->Text($mcol, $doc_Our_Ref . ":", $mcol2);
-
 			$id = $branch['salesman'];
 			$sql = "SELECT salesman_name  FROM ".TB_PREF."salesman WHERE salesman_code='$id'";
 			$result = db_query($sql,"could not get sales person");
 			$row = db_fetch($result);
-
-			$this->Text($mcol2, $row['salesman_name']);
-		}
-		$this->NewLine();
-		$this->Text($ccol, $doc_Your_VAT_no . ":", $ccol2);
+			$this->TextWrap($col, $this->row, $width, $row['salesman_name'], 'C');
+		}		
+		$col += $width;	
 		if ($doctype != 8 && isset($myrow['tax_id']))
-			$this->Text($ccol2, $myrow['tax_id'], $mcol);
-		$this->Text($mcol, $doc_Our_VAT_no . ":", $mcol2);
-		$this->Text($mcol2, $this->company['gst_no']);
-		$this->NewLine();
-		$this->Text($ccol, $doc_Payment_Terms . ":", $ccol2);
-
+			$this->TextWrap($col, $this->row, $width, $myrow['tax_id'], 'C');
+		$col += $width;	
+		if ($doctype == 10)
+		{
+			$deliveries = get_parent_trans(10,$myrow['trans_no']);
+			$line = "";
+			foreach ($deliveries as $delivery)
+			{
+				if ($line == "")
+					$line .= "$delivery";
+				else
+					$line .= ",$delivery";
+			}		
+			$this->TextWrap($col, $this->row, $width, $line, 'C');
+		}
+		elseif (isset($myrow['order_']))
+			$this->TextWrap($col, $this->row, $width, $myrow['order_'], 'C');
+		$col += $width;	
 		$id = $myrow['payment_terms'];
 		$sql = "SELECT terms FROM ".TB_PREF."payment_terms WHERE terms_indicator='$id'";
 		$result = db_query($sql,"could not get paymentterms");
 		$row = db_fetch($result);
-
-		$this->Text($ccol2, $row["terms"], $mcol);
-		$this->Text($mcol, $doc_Our_Order_No . ":", $mcol2);
-		if (isset($myrow['order_']))
-			$this->Text($mcol2, $myrow['order_']);
-		// 2008-06-16. Added customer's reference
-		$this->NewLine();
-		$this->Text($ccol, $doc_Customers_Ref, $ccol2);
-		if ($sales_order != NULL)
-			$this->Text($ccol2, $sales_order["customer_ref"], $mcol);
-		$locale = $path_to_root . "lang/" . $_SESSION['language']->code . "/locale.inc";
-		if (file_exists($locale))
-		{
-			$header2include = true;
-			include($locale);
-		}
-		$this->row = $iline3 - $this->lineHeight - 2;
+		$this->TextWrap($col, $this->row, $width, $row["terms"], 'C');
+		$col += $width;	
+		if ($doctype == 9)
+			$this->TextWrap($col, $this->row, $width, sql2date($myrow['delivery_date']), 'C');
+		else if ($doctype != 8 && $doctype != 11 && isset($myrow['due_date']))
+			$this->TextWrap($col, $this->row, $width, sql2date($myrow['due_date']), 'C');
+		
+		$this->row = $iline5 - $this->lineHeight - 1;
 		$this->Font('bold');
 		$count = count($this->headers);
+		$this->cols[$count] = $right - 3;
 		for ($i = 0; $i < $count; $i++)
 			$this->TextCol($i, $i + 1, $this->headers[$i], -2);
 		$this->Font();
-		$temp = $this->row - 2 * $this->lineHeight;
-		$this->row = $iline5 - $this->lineHeight - 6;
-		$this->Text($ccol, $doc_Please_Quote . " - " . $myrow['curr_code']);
+		$this->Font('italic');
+		$this->row = $iline7 - $this->lineHeight - 6;
+		$this->TextWrap($ccol, $this->row, $right - $ccol, $doc_Please_Quote . " - " . $myrow['curr_code'], 'C');
 		$this->NewLine();
+
+		if (isset($bankaccount['bank_name']))
+		{
+			$txt = $doc_Bank . ": ".$bankaccount['bank_name']. ", " . $doc_Bank_Account . ": " . $bankaccount['bank_account_number'];
+			$this->TextWrap($ccol, $this->row, $right - $ccol, $txt, 'C');
+			$this->NewLine();
+		}	
 		if ($doctype == 10 && $branch['disable_branch'] > 0) // payment links
 		{
 			if ($branch['disable_branch'] == 1)
@@ -176,50 +261,27 @@
 				$url = "https://www.paypal.com/xclick/business=" . $this->company['email'] . "&item_name=" .
 					$name . "&amount=" . $amt . "&currency_code=" . $myrow['curr_code'];
 				$this->fontSize -= 2;
-				$this->Text($ccol, $txt);
+				$this->TextWrap($ccol, $this->row, $right - $ccol, $txt, 'C');
 				$this->NewLine();
 				$this->SetTextColor(0, 0, 255);
-				$this->Text($ccol, $url);
+				$this->TextWrap($ccol, $this->row, $right - $ccol, $url, 'C');
 				$this->SetTextColor(0, 0, 0);
 				$this->addLink($url, $ccol, $this->row, $this->pageWidth - $this->rightMargin, $this->row + $this->lineHeight);
 				$this->fontSize += 2;
+				$this->NewLine();
 			}
 		}
 		if ($this->params['comments'] != '')
 		{
+			$this->TextWrap($ccol, $this->row, $right - $ccol, $this->params['comments'], 'C');
 			$this->NewLine();
-			$this->Font('bold');
-			$this->Text($ccol, $this->params['comments']);
-			$this->Font();
 		}
-
-		$this->row = $lower - 5;
-		$this->fontSize -= 4;
-
-		$this->Text($ccol, $doc_Address, $ccol2 + 40);
-		$this->Text($ccol2 + 30, $doc_Phone_Fax_Email, $mcol);
-		$this->Text($mcol , $doc_Bank, $mcol2);
-		$this->Text($mcol2, $doc_Bank_Account);
-		$this->fontSize += 4;
-		$this->NewLine();
-		$adrline = $this->row;
-		$this->TextWrapLines($ccol, $ccol2 + 40 - $ccol, $this->company['postal_address']);
-		$this->row = $adrline;
-		$this->Text($ccol2 + 30, $this->company['phone'], $mcol);
-		$this->NewLine();
-		$this->Text($ccol2 + 30, $this->company['fax'], $mcol);
-		$this->NewLine();
-		$this->Text($ccol2 + 30, $this->company['email'], $mcol);
-		// fetch this later
-		$this->row = $adrline;
-		if (isset($bankaccount['bank_name']))
-			$this->Text($mcol, $bankaccount['bank_name'], $mcol2);
-		$this->NewLine();
-		$this->TextWrapLines($mcol, $mcol2 - $mcol, $bankaccount['bank_address']);
-		$this->row = $adrline;
-		if (isset($bankaccount['bank_account_name']))
-			$this->Text($mcol2, $bankaccount['bank_account_name']);
-		$this->NewLine();
-		if (isset($bankaccount['bank_account_number']))
-			$this->Text($mcol2, $bankaccount['bank_account_number']);
+		$legal = get_company_pref('legal_text');
+		if (($doctype == 10 || $doctype == 12) && $legal != "") 
+		{
+			$this->TextWrap($ccol, $this->row, $right - $ccol, $legal, 'C');
+			$this->NewLine();
+		}
+		$this->Font();
+		$temp = $iline6 - $this->lineHeight - 2;
 ?>

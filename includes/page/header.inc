@@ -1,5 +1,14 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 function help_url($title, $app)
 {
 
@@ -17,7 +26,7 @@ function help_url($title, $app)
 	}
 	elseif ($title==_("Main Menu"))
 	{
-		$help_page_url = $applications[$app];
+		$help_page_url = access_string($applications[$app], true);
 	}
 	else
 	{
@@ -104,11 +113,8 @@ function page_header($title, $no_menu=false, $is_index=false, $onload="", $js=""
 	echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n";
 	echo "<html dir='" . $_SESSION['language']->dir . "' >\n";
 	echo "<head><title>$title</title>";
-	$local_stylesheet = $_SESSION['language']->get_stylesheet();
 	echo "<meta http-equiv='Content-type' content='text/html; charset=$encoding'>";
 	echo "<link href='$local_path_to_root/themes/$theme/default.css' rel='stylesheet' type='text/css'> \n";
-	if (file_exists($local_path_to_root. "/".$local_stylesheet))
-		echo "<link href='$local_path_to_root/$local_stylesheet' rel='stylesheet' type='text/css'> \n";
 	send_scripts($js);
 
 	echo "</head> \n";

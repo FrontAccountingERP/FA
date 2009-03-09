@@ -1,8 +1,18 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 $path_to_root="..";
 $page_security = 5;
 
+include($path_to_root . "/includes/db_pager.inc");
 include_once($path_to_root . "/includes/session.inc");
 
 include_once($path_to_root . "/includes/date_functions.inc");
@@ -16,11 +26,25 @@ if ($use_popup_windows)
 page(_("View or Print Transactions"), false, false, "", $js);
 
 //----------------------------------------------------------------------------------------
+function view_link($trans)
+{
+	return get_trans_view_str($trans["type"], $trans["trans_no"]);
+}
+
+function prt_link($row)
+{
+  	if ($row['type'] != 12 && $row['type'] != 2) // customer payment or bank deposit printout not defined yet.
+ 		return print_document_link($row['trans_no'], _("Print"), true, $row['type'], ICON_PRINT);
+}
+
+function gl_view($row)
+{
+	return get_gl_view_str($row["type"], $row["trans_no"]);
+}
 
 function viewing_controls()
 {
 	display_note(_("Only documents can be printed."));
-    start_form(false, true);
 
     start_table("class='tablestyle_noborder'");
 	start_row();
@@ -41,7 +65,6 @@ function viewing_controls()
 	end_row();
     end_table(1);
 
-	end_form();
 }
 
 //----------------------------------------------------------------------------------------
@@ -50,13 +73,13 @@ function check_valid_entries()
 {
 	if (!is_numeric($_POST['FromTransNo']) OR $_POST['FromTransNo'] <= 0)
 	{
-		display_note(_("The starting transaction number is expected to be numeric and greater than zero."));
+		display_error(_("The starting transaction number is expected to be numeric and greater than zero."));
 		return false;
 	}
 
 	if (!is_numeric($_POST['ToTransNo']) OR $_POST['ToTransNo'] <= 0)
 	{
-		echo _("The ending transaction number is expected to be numeric and greater than zero.");
+		display_error(_("The ending transaction number is expected to be numeric and greater than zero."));
 		return false;
 	}
 	if (!isset($_POST['filterType']) || $_POST['filterType'] == "")
@@ -82,69 +105,48 @@ function handle_search()
 		$trans_no_name = $db_info[2];
 		$trans_ref = $db_info[3];
 
-		$sql = "SELECT DISTINCT $trans_no_name ";
+		$sql = "SELECT DISTINCT $trans_no_name as trans_no";
 
 		if ($trans_ref)
 			$sql .= " ,$trans_ref ";
 
-		$sql .= " FROM $table_name
+		$sql .= ", ".$_POST['filterType']." as type FROM $table_name
 			WHERE $trans_no_name >= " . $_POST['FromTransNo']. "
 			AND  $trans_no_name <= " . $_POST['ToTransNo'];
 
 		if ($type_name != null)
-			$sql .= " AND $type_name = " . $_POST['filterType'];
+			$sql .= " AND `$type_name` = " . $_POST['filterType'];
 
 		$sql .= " ORDER BY $trans_no_name";
 
-		$result = db_query($sql, "could not query transactions on $table_name");
 
-		if (db_num_rows($result) == 0)
-		{
-			echo _("There are no transactions for the given parameters.");
-			return;
-		}
 		$print_type = $_POST['filterType'];
 		$print_out = ($print_type == 10 || $print_type == 11 || $print_type == systypes::cust_dispatch() ||
 			$print_type == systypes::po() || $print_type == systypes::sales_order());
-		if ($print_out)
-		{
-			print_hidden_script($print_type);
-			if ($trans_ref)
-				$th = array(_("#"), _("Reference"), _("View"), _("Print"), _("GL"));
-			else
-				$th = array(_("#"), _("View"), _("Print"), _("GL"));
+
+		$cols = array(
+			_("#"), 
+			_("Reference"), 
+			_("View") => array('insert'=>true, 'fun'=>'view_link'),
+			_("Print") => array('insert'=>true, 'fun'=>'prt_link'), 
+			_("GL") => array('insert'=>true, 'fun'=>'gl_view')
+		);
+		if(!$print_out) {
+			array_remove($cols, 3);
 		}
-		else
-		{
-			if ($trans_ref)
-				$th = array(_("#"), _("Reference"), _("View"), _("GL"));
-			else
-				$th = array(_("#"), _("View"), _("GL"));
-		}
-		div_start('transactions');
-		start_table($table_style);
-		table_header($th);
-		$k = 0;
-		while ($line = db_fetch($result))
-		{
-
-			alt_table_row_color($k);
-
-			label_cell($line[$trans_no_name]);
-			if ($trans_ref)
-				label_cell($line[$trans_ref]);
-			label_cell(get_trans_view_str($_POST['filterType'],$line[$trans_no_name], _("View")));
-			if ($print_out)
-				label_cell(print_document_link($line[$trans_no_name], _("Print"), true,	$print_type));
-        	label_cell(get_gl_view_str($_POST['filterType'], $line[$trans_no_name], _("View GL")));
-
-	    	end_row();
-
+		if(!$trans_ref) {
+			array_remove($cols, 1);
 		}
 
-		end_table();
-		div_end();
+		$table =& new_db_pager('transactions', $sql, $cols);
+		if (list_updated('filterType')) {
+			$table->set_sql($sql);
+			$table->set_columns($cols);
+		}
+		$table->width = "40%";
+		display_db_pager($table);
 	}
+
 }
 
 //----------------------------------------------------------------------------------------
@@ -158,11 +160,10 @@ if (isset($_POST['ProcessSearch']))
 
 //----------------------------------------------------------------------------------------
 
-viewing_controls();
-
-handle_search();
-
-br(2);
+start_form(false, true);
+	viewing_controls();
+	handle_search();
+end_form(2);
 
 end_page();
 

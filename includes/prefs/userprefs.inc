@@ -1,5 +1,14 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 class user_prefs 
 {
 
@@ -18,29 +27,45 @@ class user_prefs
 	var $tho_sep;
 	var $dec_sep;
 	var $theme;
+	var $print_profile;
+	var $rep_popup;
 	var $pagesize; // for printing
 	var $show_hints;
+	var $query_size; // table pager page length
+	var $graphic_links; // use graphic links
 
-	function user_prefs(&$user) 
+	function user_prefs($user=null)
 	{
+		if ($user == null) { 
+			// set default values, used before login
+			global $dflt_lang;
+			
+			$this->language = $dflt_lang;
+			$this->theme = 'default';
+			
+		} else {
+			$this->language = $user["language"];
+			language::set_language($this->language);
 
-		$this->language = $user["language"];
-		language::set_language($this->language);
+			$this->qty_dec = $user["qty_dec"];
+			$this->price_dec = $user["prices_dec"];
+			$this->exrate_dec = $user["rates_dec"];
+			$this->percent_dec = $user["percent_dec"];
 
-		$this->qty_dec = $user["qty_dec"];
-		$this->price_dec = $user["prices_dec"];
-		$this->exrate_dec = $user["rates_dec"];
-		$this->percent_dec = $user["percent_dec"];
-
-		$this->show_gl_info = $user["show_gl"];
-		$this->show_codes = $user["show_codes"];
-		$this->date_format = $user["date_format"];
-		$this->date_sep = $user["date_sep"];
-		$this->tho_sep = $user["tho_sep"];
-		$this->dec_sep = $user["dec_sep"];
-		$this->theme = $user["theme"];
-		$this->pagesize = $user["page_size"];
-		$this->show_hints = $user["show_hints"];
+			$this->show_gl_info = $user["show_gl"];
+			$this->show_codes = $user["show_codes"];
+			$this->date_format = $user["date_format"];
+			$this->date_sep = $user["date_sep"];
+			$this->tho_sep = $user["tho_sep"];
+			$this->dec_sep = $user["dec_sep"];
+			$this->theme = $user["theme"];
+			$this->pagesize = $user["page_size"];
+			$this->show_hints = $user["show_hints"];
+			$this->print_profile = $user["print_profile"];
+			$this->rep_popup = $user["rep_popup"];
+			$this->query_size = $user["query_size"];
+			$this->graphic_links = $user["graphic_links"];
+		}
 	}
 
 	function language() 
@@ -123,6 +148,26 @@ class user_prefs
 	function show_hints() 
 	{
 		return $this->show_hints;
+	}
+
+	function print_profile() 
+	{
+		return $this->print_profile;
+	}
+
+	function rep_popup() 
+	{
+		return $this->rep_popup;
+	}
+
+	function query_size() 
+	{
+		return $this->query_size;
+	}
+
+	function graphic_links() 
+	{
+		return $this->graphic_links;
 	}
 
 	function set_dec($price_dec, $qty_dec, $exrate_dec, $percent_dec, $showgl, $showcodes) 

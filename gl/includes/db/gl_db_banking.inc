@@ -1,6 +1,14 @@
 <?php
-
-//----------------------------------------------------------------------------------
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 function add_exchange_variation($trans_type, $trans_no, $date_, $account,
     $currency, $person_type_id=null, $person_id = "")
 {
@@ -41,9 +49,14 @@ function add_exchange_variation_all()
 			$myrow['currency_code']);
 }
 //----------------------------------------------------------------------------------
+//	Add bank tranfer to database.
+//
+//	$from_account - source bank account id
+//	$to_account   -	target bank account id
+//	
 
 function add_bank_transfer($from_account, $to_account, $date_,
-	$amount, $payment_type, $ref, $memo_)
+	$amount, $ref, $memo_)
 {
 	begin_transaction();
 
@@ -53,13 +66,16 @@ function add_bank_transfer($from_account, $to_account, $date_,
 
 	$trans_no = get_next_trans_no($trans_type);
 
+	$from_gl_account = get_bank_gl_account($from_account);
+	$to_gl_account = get_bank_gl_account($to_account);
+
 	$total = 0;
 	// do the source account postings
-    $total += add_gl_trans($trans_type, $trans_no, $date_, $from_account, 0, 0, "",
+    $total += add_gl_trans($trans_type, $trans_no, $date_, $from_gl_account, 0, 0, "",
 		-$amount, $currency);
 
     add_bank_trans($trans_type, $trans_no, $from_account, $ref,
-		$date_, $payment_type, -$amount,
+		$date_, -$amount,
 		payment_person_types::misc(), "", $currency,
 		"Cannot insert a source bank transaction");
 
@@ -67,17 +83,15 @@ function add_bank_transfer($from_account, $to_account, $date_,
 		$currency, payment_person_types::misc(), "");
 
 	// do the destination account postings
-	$total += add_gl_trans($trans_type, $trans_no, $date_, $to_account, 0, 0, "",
+	$total += add_gl_trans($trans_type, $trans_no, $date_, $to_gl_account, 0, 0, "",
 		$amount, $currency);
 		
 	/*Post a balance post if $total != 0 */
 	add_gl_balance($trans_type, $trans_no, $date_, -$total);	
 	
 	add_bank_trans($trans_type, $trans_no, $to_account, $ref,
-		$date_, $payment_type, $amount,
-		payment_person_types::misc(), "",
-		$currency,
-		"Cannot insert a destination bank transaction");
+		$date_, $amount, payment_person_types::misc(), "",
+		$currency, "Cannot insert a destination bank transaction");
 
 	add_exchange_variation($trans_type, $trans_no, $date_, $from_account, 
 		$currency, payment_person_types::misc(), "");
@@ -92,13 +106,18 @@ function add_bank_transfer($from_account, $to_account, $date_,
 }
 
 //----------------------------------------------------------------------------------
-
-// $amount is in $from_account's currency
-
+//	Add bank payment or deposit to database.
+//
+//	$from_account - bank account id
+//  $item - transaction cart (line item's amounts in bank account's currency)
+//  $person_type_id - defines type of $person_id identifiers
+//  $person_id	- supplier/customer/other id
+// $person_detail_id - customer branch id or not used
+//
 // returns an array of (inserted trans type, trans no)
 
 function add_bank_transaction($trans_type, $from_account, $items, $date_,
-	$person_type_id, $person_id, $person_detail_id,	$type, $ref, $memo_)
+	$person_type_id, $person_id, $person_detail_id,	$ref, $memo_)
 {
 	// we can only handle type 1 (payment)and type 2 (deposit)
 	if ($trans_type != systypes::bank_payment() && $trans_type != systypes::bank_deposit())
@@ -109,6 +128,7 @@ function add_bank_transaction($trans_type, $from_account, $items, $date_,
 	begin_transaction();
 
 	$currency = get_bank_account_currency($from_account);
+	$bank_gl_account = get_bank_gl_account($from_account);
 
 	// the gl items are already inversed/negated for type 2 (deposit)
 	$total_amount = $items->gl_items_total();
@@ -145,8 +165,10 @@ function add_bank_transaction($trans_type, $from_account, $items, $date_,
     	$do_exchange_variance = true;
     }
 
+	// do the source account postings
+
     add_bank_trans($trans_type, $trans_no, $from_account, $ref,
-    	$date_, $type, -$total_amount,
+    	$date_, -$total_amount,
     	$person_type_id, $person_id,
     	$currency,
     	"Cannot insert a source bank transaction");
@@ -169,17 +191,24 @@ function add_bank_transaction($trans_type, $from_account, $items, $date_,
     	if ($is_bank_to)
     	{
     		add_bank_trans($trans_type, $trans_no, $gl_item->code_id, $ref,
-    			$date_, $type, $gl_item->amount,
+    			$date_, $gl_item->amount,
     			$person_type_id, $person_id, $currency,
     			"Cannot insert a destination bank transaction");
     		if ($do_exchange_variance)
     			add_exchange_variation($trans_type, $trans_no, $date_, $gl_item->code_id, 
     				$currency, $person_type_id, $person_id);
     	}
+		// store tax details if the gl account is a tax account
+
+		$amount = $gl_item->amount;
+		$ex_rate = get_exchange_rate_from_home_currency($currency, $date_);
+			
+		add_gl_tax_details($gl_item->code_id, $trans_type, $trans_no, $amount,
+			$ex_rate, $date_, $memo_);
 	}
 
 	// do the source account postings
-    add_gl_trans($trans_type, $trans_no, $date_, $from_account, 0, 0, "",
+    add_gl_trans($trans_type, $trans_no, $date_, $bank_gl_account, 0, 0, $memo_,
     	-$total, null, $person_type_id, $person_id);
 
     if ($do_exchange_variance)

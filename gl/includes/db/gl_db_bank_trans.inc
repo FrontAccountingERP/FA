@@ -1,12 +1,21 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 //----------------------------------------------------------------------------------
 
 // add a bank transaction
 // $amount is in $currency
 // $date_ is display date (non-sql)
 
-function add_bank_trans($type, $trans_no, $bank_act, $ref, $date_, $bank_trans_type_id,
+function add_bank_trans($type, $trans_no, $bank_act, $ref, $date_,
 	$amount, $person_type_id, $person_id, $currency="", $err_msg="")
 {
 	$sqlDate = date2sql($date_);
@@ -26,9 +35,9 @@ function add_bank_trans($type, $trans_no, $bank_act, $ref, $date_, $bank_trans_t
 	//$BankToHomeCurrencyRate = get_exchange_rate_to_home_currency($bank_account_currency, $date_);
 
 	$sql = "INSERT INTO ".TB_PREF."bank_trans (type, trans_no, bank_act, ref,
-		trans_date, bank_trans_type_id, amount, person_type_id, person_id) ";
+		trans_date, amount, person_type_id, person_id) ";
 
-	$sql .= "VALUES ($type, $trans_no, '$bank_act', ".db_escape($ref).", '$sqlDate', '$bank_trans_type_id',
+	$sql .= "VALUES ($type, $trans_no, '$bank_act', ".db_escape($ref).", '$sqlDate',
 		$amount_bank, $person_type_id, ". db_escape($person_id).")";
 
 	if ($err_msg == "")
@@ -52,10 +61,9 @@ function exists_bank_trans($type, $type_no)
 
 function get_bank_trans($type, $trans_no=null, $person_type_id=null, $person_id=null)
 {
-	$sql = "SELECT *, bank_account_name, account_code, bank_curr_code, name AS BankTransType
-		FROM ".TB_PREF."bank_trans, ".TB_PREF."bank_accounts, ".TB_PREF."bank_trans_types
-		WHERE ".TB_PREF."bank_trans_types.id = ".TB_PREF."bank_trans.bank_trans_type_id
-		AND ".TB_PREF."bank_accounts.account_code=".TB_PREF."bank_trans.bank_act ";
+	$sql = "SELECT *, bank_account_name, account_code, bank_curr_code
+		FROM ".TB_PREF."bank_trans, ".TB_PREF."bank_accounts
+		WHERE ".TB_PREF."bank_accounts.id=".TB_PREF."bank_trans.bank_act ";
 	if ($type != null)
 		$sql .= " AND type=$type ";
 	if ($trans_no != null)
@@ -102,6 +110,8 @@ function void_bank_trans($type, $type_no, $nested=false)
 	// in case it's a supplier trans - probably better to check first
 	void_supp_allocations($type, $type_no);
 	void_supp_trans($type, $type_no);
+
+	void_trans_tax_details($type, $type_no);
 
 	if (!$nested)
 		commit_transaction();

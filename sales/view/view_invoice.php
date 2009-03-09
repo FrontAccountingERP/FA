@@ -1,5 +1,14 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 $page_security = 1;
 $path_to_root="../..";
 include_once($path_to_root . "/includes/session.inc");
@@ -86,6 +95,8 @@ end_row();
 start_row();
 label_cells(_("Invoice Date"), sql2date($myrow["tran_date"]), "class='tableheader2'", "nowrap");
 label_cells(_("Due Date"), sql2date($myrow["due_date"]), "class='tableheader2'", "nowrap");
+label_cells(_("Deliveries"), get_customer_trans_view_str(systypes::cust_dispatch(), 
+	get_parent_trans(10,$trans_id)), "class='tableheader2'");
 end_row();
 comments_display_row(10, $trans_id);
 end_table();
@@ -146,7 +157,7 @@ label_row(_("Sub-total"), $display_sub_tot, "colspan=6 align=right",
 	"nowrap align=right width=15%");
 label_row(_("Shipping"), $display_freight, "colspan=6 align=right", "nowrap align=right");
 
-$tax_items = get_customer_trans_tax_details(10, $trans_id);
+$tax_items = get_trans_tax_details(10, $trans_id);
 display_customer_trans_tax_details($tax_items, 6);
 
 $display_total = price_format($myrow["ov_freight"]+$myrow["ov_gst"]+$myrow["ov_amount"]+$myrow["ov_freight_tax"]);

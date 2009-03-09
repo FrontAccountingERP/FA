@@ -1,5 +1,14 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 $path_to_root="..";
 $page_security = 14;
 include_once($path_to_root . "/includes/session.inc");
@@ -121,7 +130,7 @@ function voiding_controls()
 		}	
  		else
  		{
-    		display_notification_centered(_("Are you sure you want to void this transaction ? This action cannot be undone."), 0, 1);
+    		display_warning(_("Are you sure you want to void this transaction ? This action cannot be undone."), 0, 1);
     		if ($_POST['filterType'] == 0) // GL transaction are not included in get_trans_view_str
     			$view_str = get_gl_view_str($_POST['filterType'],$_POST['trans_no'], _("View Transaction"));
     		else

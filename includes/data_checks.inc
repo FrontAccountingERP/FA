@@ -1,4 +1,14 @@
 <?php
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 function db_has_customers()
 {
 	return check_empty_result("SELECT COUNT(*) FROM ".TB_PREF."debtors_master");
@@ -104,22 +114,6 @@ function check_db_has_movement_types($msg)
 {
 	global $path_to_root;
     if (!db_has_movement_types()) 
-    {
-    	display_error($msg, true);
-    	end_page();
-    	exit;	
-    }	
-}
-
-function db_has_bank_trans_types()
-{
-	return check_empty_result("SELECT COUNT(*) FROM ".TB_PREF."bank_trans_types");
-}
-
-function check_db_has_bank_trans_types($msg)
-{
-	global $path_to_root;
-    if (!db_has_bank_trans_types()) 
     {
     	display_error($msg, true);
     	end_page();
@@ -418,6 +412,11 @@ function check_db_has_gl_account_groups($msg)
     	end_page();
     	exit;	
     }	
+}
+
+function db_has_quick_entries()
+{
+	return check_empty_result("SELECT COUNT(*) FROM ".TB_PREF."quick_entries");
 }
 
 function check_empty_result($sql)

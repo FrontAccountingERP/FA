@@ -1,5 +1,14 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 include_once($path_to_root . "/includes/prefs/userprefs.inc");
 
 //--------------------------------------------------------------------------
@@ -11,18 +20,20 @@ class current_user
 	var $username;
 	var	$name;
 	var $company;
+	var $pos;
 	var $access;
 
 	var $logged;
-
+	var $ui_mode = 0;
+	
 	var $prefs;
 
 	function current_user()
 	{
-		$this->loginname = $username = $this->name = $this->company = "";
+		$this->loginname = $this->username = $this->name = $this->company = "";
 		$this->logged = false;
 
-		$this->prefs = null;
+		$this->prefs = new user_prefs();
 	}
 
 	function logged_in()
@@ -47,6 +58,7 @@ class current_user
 
         	    $this->access = $myrow["full_access"];
         	    $this->name = $myrow["real_name"];
+        	    $this->pos = $myrow["pos"];
         	    $this->loginname = $loginname;
         	    $this->username = $this->loginname;
         	    $this->prefs = new user_prefs($myrow);
@@ -95,10 +107,14 @@ class current_user
     	return $db;
 	}
 
-	function update_prefs($price_dec, $qty_dec, $exrate_dec, $percent_dec, $showgl, $showcodes,
-		$date_format, $date_sep, $tho_sep, $dec_sep, $theme, $pagesize, $show_hints) {
-		update_user_display_prefs($this->username, $price_dec, $qty_dec, $exrate_dec, $percent_dec, $showgl,
-			$showcodes, $date_format, $date_sep, $tho_sep, $dec_sep, $theme, $pagesize, $show_hints);
+	function update_prefs($price_dec, $qty_dec, $exrate_dec, $percent_dec, 
+		$showgl, $showcodes, $date_format, $date_sep, $tho_sep, $dec_sep, 
+		$theme, $pagesize, $show_hints, $profile, $rep_popup, $query_size, 
+		$graphic_links, $lang) {
+		update_user_display_prefs($this->username, $price_dec, 
+			$qty_dec, $exrate_dec, $percent_dec, $showgl, $showcodes, 
+			$date_format, $date_sep, $tho_sep, $dec_sep, $theme, $pagesize, 
+			$show_hints, $profile, $rep_popup, $query_size, $graphic_links, $lang);
 
 		// re-read the prefs
 		$user = get_user($this->username);
@@ -122,6 +138,12 @@ function number_format2($number, $decimals=0)
 	//return number_format($number, $decimals, $dsep,	$tsep);
 	$delta = ($number < 0 ? -.000001 : .000001);
 	return number_format($number+$delta, $decimals, $dsep,	$tsep);
+}
+//
+//	Current ui mode.
+//
+function fallback_mode() {
+    return $_SESSION["wa_current_user"]->ui_mode==0;
 }
 
 function price_format($number) {
@@ -178,6 +200,11 @@ function user_numeric($input) {
 function user_company()
 {
 	return $_SESSION["wa_current_user"]->company;
+}
+
+function user_pos()
+{
+	return $_SESSION["wa_current_user"]->pos;
 }
 
 function user_language()
@@ -255,12 +282,34 @@ function user_hints()
 	return $_SESSION["wa_current_user"]->prefs->show_hints();
 }
 
+function user_print_profile()
+{
+	return $_SESSION["wa_current_user"]->prefs->print_profile();
+}
+
+function user_rep_popup()
+{
+	return $_SESSION["wa_current_user"]->prefs->rep_popup();
+}
+
+function user_query_size()
+{
+	return $_SESSION["wa_current_user"]->prefs->query_size();
+}
+
+function user_graphic_links()
+{
+	return $_SESSION["wa_current_user"]->prefs->graphic_links();
+}
+
 function set_user_prefs($price_dec, $qty_dec, $exrate_dec, $percent_dec, $showgl, $showcodes,
-	$date_format, $date_sep, $tho_sep, $dec_sep, $theme, $pagesize, $show_hints)
+	$date_format, $date_sep, $tho_sep, $dec_sep, $theme, $pagesize, $show_hints,
+	$print_profile, $rep_popup, $query_size, $graphic_links, $lang)
 {
 
 	$_SESSION["wa_current_user"]->update_prefs($price_dec, $qty_dec, $exrate_dec, $percent_dec, $showgl, $showcodes,
-		$date_format, $date_sep, $tho_sep, $dec_sep, $theme, $pagesize, $show_hints);
+		$date_format, $date_sep, $tho_sep, $dec_sep, $theme, $pagesize, $show_hints,
+		$print_profile, $rep_popup, $query_size, $graphic_links, $lang);
 }
 
 function add_user_js_data() {

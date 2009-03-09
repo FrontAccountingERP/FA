@@ -1,4 +1,14 @@
 <?php
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 //-----------------------------------------------------------------------------
 // insert/update sales delivery
 //
@@ -32,14 +42,14 @@ function write_sales_delivery(&$delivery,$bo_policy)
 		$delivery->freight_cost,
 		$delivery->tax_included ? 0 : $freight_tax,
 		$delivery->sales_type, $delivery->order_no, 0,
-		$delivery->ship_via, $delivery->due_date);
+		$delivery->ship_via, $delivery->due_date, 0, 0, $delivery->dimension_id, $delivery->dimension2_id);
 
 	if ($trans_no == 0) {
 		$delivery->trans_no = array($delivery_no=>0);
 	} else {
 		void_gl_trans(13, $delivery_no, true);
 		void_stock_move(13, $delivery_no);
-		void_customer_trans_tax_details(13, $delivery_no);
+		void_trans_tax_details(13, $delivery_no);
 		delete_comments(13, $delivery_no);
 	}
 
@@ -82,8 +92,10 @@ function write_sales_delivery(&$delivery,$bo_policy)
 				/*first the cost of sales entry*/
 				// 2008-08-01. If there is a Customer Dimension, then override with this,
 				// else take the Item Dimension (if any)
-				$dim = ($customer['dimension_id'] != 0 ? $customer["dimension_id"] : $stock_gl_code["dimension_id"]);
-				$dim2 = ($customer['dimension2_id'] != 0 ? $customer["dimension2_id"] : $stock_gl_code["dimension2_id"]);
+				$dim = ($delivery->dimension_id != $customer['dimension_id'] ? $delivery->dimension_id : 
+					($customer['dimension_id'] != 0 ? $customer["dimension_id"] : $stock_gl_code["dimension_id"]));
+				$dim2 = ($delivery->dimension2_id != $customer['dimension2_id'] ? $delivery->dimension2_id : 
+					($customer['dimension2_id'] != 0 ? $customer["dimension2_id"] : $stock_gl_code["dimension2_id"]));
 
 				add_gl_trans_std_cost(13, $delivery_no,
 					$delivery->document_date, $stock_gl_code["cogs_account"], $dim, $dim2, "",
@@ -112,9 +124,11 @@ function write_sales_delivery(&$delivery,$bo_policy)
 
 	// taxes - this is for printing purposes
 	foreach ($taxes as $taxitem) {
-		if ($taxitem['Value'] != 0) {
-    		    add_customer_trans_tax_detail_item(13, $delivery_no, $taxitem['tax_type_id'],
-				$taxitem['rate'], $delivery->tax_included, $taxitem['Value']);
+		if ($taxitem['Net'] != 0) {
+				$ex_rate = get_exchange_rate_from_home_currency(get_customer_currency($delivery->customer_id), $delivery->document_date);
+    		    add_trans_tax_details(13, $delivery_no, $taxitem['tax_type_id'],
+				$taxitem['rate'], $delivery->tax_included, $taxitem['Value'],
+				$taxitem['Net'], $ex_rate, $delivery->document_date, $delivery->reference );
 		}
 	}
 
@@ -154,7 +168,7 @@ function void_sales_delivery($type, $type_no)
 	// clear details after they've been reversed in the sales order
 	void_customer_trans_details($type, $type_no);
 
-	void_customer_trans_tax_details($type, $type_no);
+	void_trans_tax_details($type, $type_no);
 
 	void_cust_allocations($type, $type_no);
 

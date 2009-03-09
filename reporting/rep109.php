@@ -1,5 +1,14 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 $page_security = 2;
 // ----------------------------------------------------------------
 // $ Revision:	2.0 $
@@ -7,16 +16,15 @@ $page_security = 2;
 // date_:	2005-05-19
 // Title:	Print Sales Orders
 // ----------------------------------------------------------------
-$path_to_root="../";
+$path_to_root="..";
 
-include_once($path_to_root . "includes/session.inc");
-include_once($path_to_root . "includes/date_functions.inc");
-include_once($path_to_root . "includes/data_checks.inc");
-include_once($path_to_root . "sales/includes/sales_db.inc");
+include_once($path_to_root . "/includes/session.inc");
+include_once($path_to_root . "/includes/date_functions.inc");
+include_once($path_to_root . "/includes/data_checks.inc");
+include_once($path_to_root . "/sales/includes/sales_db.inc");
 
 //----------------------------------------------------------------------------------------------------
 
-// trial_inquiry_controls();
 print_sales_orders();
 
 $print_as_quote = 0;
@@ -25,7 +33,7 @@ function print_sales_orders()
 {
 	global $path_to_root, $print_as_quote;
 
-	include_once($path_to_root . "reporting/includes/pdf_report.inc");
+	include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 
 	$from = $_POST['PARAM_0'];
 	$to = $_POST['PARAM_1'];
@@ -54,10 +62,10 @@ function print_sales_orders()
 
 	if ($email == 0)
 	{
-		if ($print_as_quote == 1)
-			$rep = new FrontReport(_("QUOTE"), "QuoteBulk.pdf", user_pagesize());
+		if ($print_as_quote == 0)
+			$rep = new FrontReport(_("SALES ORDER"), "SalesOrderBulk", user_pagesize());
 		else
-			$rep = new FrontReport(_("SALES ORDER"), "SalesOrderBulk.pdf", user_pagesize());
+			$rep = new FrontReport(_("QUOTE"), "QuoteBulk", user_pagesize());
 		$rep->currency = $cur;
 		$rep->Font();
 		$rep->Info($params, $cols, null, $aligns);
@@ -103,15 +111,19 @@ function print_sales_orders()
 			else
 				$DisplayDiscount = number_format2($myrow2["discount_percent"]*100,user_percent_dec()) . "%";
 			$rep->TextCol(0, 1,	$myrow2['stk_code'], -2);
-			$rep->TextCol(1, 2,	$myrow2['description'], -2);
+			$oldrow = $rep->row;
+			$rep->TextColLines(1, 2, $myrow2['description'], -2);
+			$newrow = $rep->row;
+			$rep->row = $oldrow;
 			$rep->TextCol(2, 3,	$DisplayQty, -2);
 			$rep->TextCol(3, 4,	$myrow2['units'], -2);
 			$rep->TextCol(4, 5,	$DisplayPrice, -2);
 			$rep->TextCol(5, 6,	$DisplayDiscount, -2);
 			$rep->TextCol(6, 7,	$DisplayNet, -2);
-			$rep->NewLine(1);
+			$rep->row = $newrow;
+			//$rep->NewLine(1);
 			if ($rep->row < $rep->bottomMargin + (15 * $rep->lineHeight))
-				$rep->Header2($myrow, $branch, $sales_order, $baccount);
+				$rep->Header2($myrow, $branch, $myrow, $baccount, 9);
 		}
 		if ($myrow['comments'] != "")
 		{
@@ -126,11 +138,11 @@ function print_sales_orders()
 		$doctype = 9;
 		if ($rep->currency != $myrow['curr_code'])
 		{
-			include($path_to_root . "reporting/includes/doctext2.inc");
+			include($path_to_root . "/reporting/includes/doctext2.inc");
 		}
 		else
 		{
-			include($path_to_root . "reporting/includes/doctext.inc");
+			include($path_to_root . "/reporting/includes/doctext.inc");
 		}
 
 		$rep->TextCol(3, 6, $doc_Sub_total, -2);

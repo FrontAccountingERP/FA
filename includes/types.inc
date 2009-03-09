@@ -1,5 +1,14 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 //----------------------------------------------------------------------------------
 
 $systypes_array = array (
@@ -110,11 +119,11 @@ class systypes
 //----------------------------------------------------------------------------------
 
 $bank_account_types_array = array (
-						0=> array ('id' => 0, 'name' => _("Savings Account")),
-						1=> array ('id' => 1, 'name' => _("Chequing Account")),
-						2=> array ('id' => 2, 'name' => _("Credit Account")),
-						3=> array ('id' => 3, 'name' => _("Cash Account"))
-			 			);
+	0=> array ('id' => 0, 'name' => _("Savings Account"), 'ptype' => _("Transfer")),
+	1=> array ('id' => 1, 'name' => _("Chequing Account"),'ptype' => _("Cheque")),
+	2=> array ('id' => 2, 'name' => _("Credit Account"), 'ptype' => _("Credit")),
+	3=> array ('id' => 3, 'name' => _("Cash Account"), 'ptype' => _("Cash"))
+	);
 
 class bank_account_types 
 {
@@ -130,8 +139,13 @@ class bank_account_types
 		global $bank_account_types_array;
 		return $bank_account_types_array[$index]['name'];
 	}
+	
+	function transfer_type($index) 
+	{
+		global $bank_account_types_array;
+		return $bank_account_types_array[$index]['ptype'];
+	}
 }
-
 //----------------------------------------------------------------------------------
 
 include_once($path_to_root . "/manufacturing/includes/manufacturing_db.inc");
@@ -144,6 +158,7 @@ $payment_person_types_array = array (
 							1=> array ('id' => 1, 'name' => _("Work Order")),
 							2=> array ('id' => 2, 'name' => _("Customer")),
 							3=> array ('id' => 3, 'name' => _("Supplier")),
+							4=> array ('id' => 4, 'name' => _("Quick Entry"))
 							);
 
 class payment_person_types 
@@ -175,12 +190,15 @@ class payment_person_types
     	return 3; 
     }
 
-    function dimension()  
+    function QuickEntry()  
     { 
     	return 4; 
     }
 
-    //function Project()  { return 4; }
+    function dimension()  
+    { 
+    	return 5; 
+    }
 
     function type_name($type)
     {
@@ -194,6 +212,9 @@ class payment_person_types
     	{
     		case payment_person_types::misc() :
     			return $person_id;
+    		case payment_person_types::QuickEntry() :
+    			$qe = get_quick_entry($person_id);
+    			return ($full?payment_person_types::type_name($type) . " ":"") . $qe["description"];
     		case payment_person_types::WorkOrder() :
     			$wo = get_work_order($person_id);
     			return ($full?payment_person_types::type_name($type) . " ":"") . $wo["wo_ref"];
@@ -201,8 +222,6 @@ class payment_person_types
     			return ($full?payment_person_types::type_name($type) . " ":"") . get_customer_name($person_id);
     		case payment_person_types::supplier() :
     			return ($full?payment_person_types::type_name($type) . " ":"") . get_supplier_name($person_id);
-    		//case payment_person_types::Project() :
-    		//	return ($full?payment_person_types::type_name($type) . " ":"") . get_dimension_string($person_id);
     		default :
     			//DisplayDBerror("Invalid type sent to person_name");
     			//return;
@@ -215,8 +234,8 @@ class payment_person_types
     	switch ($type)
     	{
     		case payment_person_types::misc() :
+    		case payment_person_types::QuickEntry() :
     		case payment_person_types::WorkOrder() :
-    		//case payment_person_types::Project() :
     			return get_company_currency();
 
     		case payment_person_types::customer() :
@@ -236,17 +255,17 @@ class payment_person_types
     	{
     		case payment_person_types::misc() :
     			return true;
-    		case payment_person_types::WorkOrder() : // 070305 changed to open workorders ES
+    		case payment_person_types::QuickEntry() :
+    			return db_has_quick_entries();
+    		case payment_person_types::WorkOrder() : // 070305 changed to open workorders JH
     			return db_has_open_workorders();
     		case payment_person_types::customer() :
     			return db_has_customers();
     		case payment_person_types::supplier() :
     			return db_has_suppliers();
-    		//case payment_person_types::Project() :
-    		//	return db_has_dimensions();
     		default :
     			display_db_error("Invalid type sent to has_items", "");
-    			return;
+    			return false;
     	}
     }
 }
@@ -289,6 +308,35 @@ class wo_types
 		return $wo_types_array[$index]['name'];
 	}
 }
+
+$quick_actions = array(
+	'=' => _('Remainder'), // post current base amount to GL account
+	'a' => _('Amount'), // post amount to GL account
+	'a+' => _('Amount, increase base'), // post amount to GL account and increase base
+	'a-' => _('Amount, reduce base'), // post amount to GL account and reduce base
+	'%' => _('% amount of base'),	// store acc*amount% to GL account
+	'%+' => _('% amount of base, increase base'),	// ditto & increase base amount
+	'%-' => _('% amount of base, reduce base'),	// ditto & reduce base amount
+	'T' => _('Taxes added'), // post taxes calculated on base amount
+	'T+' => _('Taxes added, increase base'), // ditto & increase base amount
+	'T-' => _('Taxes added, reduce base'), // ditto & reduce base amount
+	't' => _('Taxes included'), // post taxes calculated on base amount
+	't+' => _('Taxes included, increase base'), // ditto & increase base amount
+	't-' => _('Taxes included, reduce base') // ditto & reduce base amount
+);
+
+define('QE_PAYMENT', '1');
+define('QE_DEPOSIT', '2');
+define('QE_JOURNAL', '3');
+define('QE_SUPPINV', '4');
+
+$quick_entry_types = array(
+		QE_DEPOSIT => _("Bank Deposit"),
+		QE_PAYMENT => _("Bank Payment"),
+		QE_JOURNAL => _("Journal Entry"),
+		QE_SUPPINV => _("Supplier Invoice/Credit")
+);
+
 
 
 ?>

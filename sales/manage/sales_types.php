@@ -1,5 +1,14 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 $page_security = 14;
 $path_to_root="../..";
 include_once($path_to_root . "/includes/session.inc");
@@ -117,7 +126,7 @@ while ($myrow = db_fetch($result))
 	label_cell($f);
 	label_cell($myrow["tax_included"] ? _('Yes'):_('No'), 'align=center');
  	edit_button_cell("Edit".$myrow['id'], _("Edit"));
- 	edit_button_cell("Delete".$myrow['id'], _("Delete"));
+ 	delete_button_cell("Delete".$myrow['id'], _("Delete"));
 	end_row();
 }
 
@@ -133,7 +142,7 @@ start_form();
  if (!isset($_POST['base']))
 	$_POST['base'] = 0;
 
-start_table("$table_style2 width=30%");
+start_table($table_style2);
 
 if ($selected_id != -1)
 {

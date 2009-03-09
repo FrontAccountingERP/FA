@@ -1,5 +1,14 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 include_once($path_to_root . "/taxes/db/tax_groups_db.inc");
 include_once($path_to_root . "/taxes/db/tax_types_db.inc");
 include_once($path_to_root . "/taxes/db/item_tax_types_db.inc");
@@ -164,7 +173,10 @@ function get_tax_for_items($items, $prices, $shipping_cost, $tax_group, $tax_inc
 	  $ret_tax_array = $tax_items_array;
 	else
 	  $ret_tax_array = get_tax_group_items_as_array($tax_group);
-	
+
+	foreach($ret_tax_array as $k=>$t)
+		$ret_tax_array[$k]['Net'] = 0;
+
 	// loop for all items
 	for ($i = 0; $i < count($items); $i++)
 	{
@@ -175,14 +187,17 @@ function get_tax_for_items($items, $prices, $shipping_cost, $tax_group, $tax_inc
 			foreach ($item_taxes as $item_tax) 
 			{
 				$index = $item_tax['tax_type_id'];
-				if($tax_included==1) // 2008-11-26 Joe Hunt Taxes are stored without roundings
+				if($tax_included==1) {// 2008-11-26 Joe Hunt Taxes are stored without roundings
 				  //$ret_tax_array[$index]['Value'] += round($prices[$i] * $item_tax['rate'] 
 				  //	/ ($item_tax['rate'] + 100),  user_price_dec());
 				  $ret_tax_array[$index]['Value'] += ($prices[$i] * $item_tax['rate'] / ($item_tax['rate'] + 100));
-				else
+				  $ret_tax_array[$index]['Net'] += ($prices[$i] * 100 / ($item_tax['rate'] + 100));
+				} else {
 				  //$ret_tax_array[$index]['Value'] += 
 				  //	round($prices[$i] * $item_tax['rate'] / 100,  user_price_dec());
 				  $ret_tax_array[$index]['Value'] += ($prices[$i] * $item_tax['rate'] / 100);
+				  $ret_tax_array[$index]['Net'] += $prices[$i];
+				}
 			}
 		}
 	}
@@ -197,14 +212,17 @@ function get_tax_for_items($items, $prices, $shipping_cost, $tax_group, $tax_inc
 			{
 				$index = $item_tax['tax_type_id'];
 				if(isset($ret_tax_array[$index])) {
-				  if($tax_included==1) // 2008-11-26 Joe Hunt Taxes are stored without roundings
+				  if($tax_included==1) {// 2008-11-26 Joe Hunt Taxes are stored without roundings
 					//$ret_tax_array[$index]['Value'] += round($shipping_cost * $item_tax['rate'] 
 					//  / ($item_tax['rate'] + 100),  user_price_dec());
 					$ret_tax_array[$index]['Value'] += ($shipping_cost * $item_tax['rate'] / ($item_tax['rate'] + 100));
-				  else
+				    $ret_tax_array[$index]['Net'] += ($shipping_cost * 100 / ($item_tax['rate'] + 100));
+				  } else {
 					//$ret_tax_array[$index]['Value'] += 
 					//  round($shipping_cost * $item_tax['rate'] / 100,  user_price_dec());
 					$ret_tax_array[$index]['Value'] += ($shipping_cost * $item_tax['rate'] / 100);
+				    $ret_tax_array[$index]['Net'] += $shipping_cost;
+				 }
 				}
 			}
 		}
@@ -214,6 +232,68 @@ function get_tax_for_items($items, $prices, $shipping_cost, $tax_group, $tax_inc
 
 	return $ret_tax_array;
 }
+//
+//	Get all taxes for given tax_type_id. This can be used when 
+//	no tax group exemptions are active (local sales).
+//	To be used in quick entries.
+//
+function get_taxes_for_item_tax($tax_type_id)
+{
+	$item_tax_type = get_item_tax_type($tax_type_id);
+	
+	// if the item is exempt from all taxes then return 0
+	if ($item_tax_type["exempt"])
+		return null;
+		
+	// get the exemptions for this item tax type
+	$item_tax_type_exemptions_db = get_item_tax_type_exemptions($tax_type_id);
+	
+	// read them all into an array to minimize db querying
+	$item_tax_type_exemptions = array();
+	while ($item_tax_type_exemp = db_fetch($item_tax_type_exemptions_db))
+	{
+		$item_tax_type_exemptions[] = $item_tax_type_exemp["tax_type_id"];
+	}
+	
+	$ret_tax_array = array();
 
+	$tax_rates = get_all_tax_types_simple();
+	// if any of the taxes are in the exemptions, then skip
+	while($tax_rate = db_fetch($tax_rates)) 
+	{ 
+		
+		$skip = false;			
+		
+		// if it's in the exemptions, skip
+		foreach ($item_tax_type_exemptions as $exemption) 
+		{
+			if (($tax_rate['id'] == $exemption)) 
+			{
+    			$skip = true;
+    			break;
+			}
+		}
+		
+		if (!$skip) 
+		{
+			$index = $tax_rate['id'];
+			$ret_tax_array[$index] = $tax_rate;
+		}
+	}
+	
+	return $ret_tax_array;
+}
+
+function is_tax_account($account_code)
+{
+	$sql= "SELECT id FROM ".TB_PREF."tax_types WHERE 
+		sales_gl_code='$account_code' OR purchasing_gl_code='$account_code'";
+	$result = db_query($sql, "checking account is tax account");
+	if (db_num_rows($result) > 0) {
+		$acct = db_fetch($result);
+		return $acct['id'];
+	} else
+		return false;
+}
 
 ?>

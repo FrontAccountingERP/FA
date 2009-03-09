@@ -1,4 +1,14 @@
 <?php
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 //---------------------------------------------------------------------------
 //
 //	Entry/Modify free hand Credit Note
@@ -13,6 +23,7 @@ include_once($path_to_root . "/sales/includes/sales_ui.inc");
 include_once($path_to_root . "/sales/includes/db/sales_types_db.inc");
 include_once($path_to_root . "/sales/includes/ui/sales_credit_ui.inc");
 include_once($path_to_root . "/sales/includes/ui/sales_order_ui.inc");
+include_once($path_to_root . "/reporting/includes/reporting.inc");
 
 $js = "";
 if ($use_popup_windows) {
@@ -59,14 +70,18 @@ if (isset($_GET['AddedID'])) {
 
 	display_notification_centered(sprintf(_("Credit Note # %d has been processed"),$credit_no));
 
-	display_note(get_customer_trans_view_str($trans_type, $credit_no, _("View this credit note")), 0, 1);
+	display_note(get_customer_trans_view_str($trans_type, $credit_no, _("&View this credit note")), 0, 1);
 
-	display_note(get_gl_view_str($trans_type, $credit_no, _("View the GL Journal Entries for this Credit Note")));
+	display_note(print_document_link($credit_no, _("&Print This Credit Invoice"), true, 11),0, 1);
 
-	hyperlink_params($_SERVER['PHP_SELF'], _("Enter Another Credit Note"), "NewCredit=yes");
+	display_note(get_gl_view_str($trans_type, $credit_no, _("View the GL &Journal Entries for this Credit Note")));
+
+	hyperlink_params($_SERVER['PHP_SELF'], _("Enter Another &Credit Note"), "NewCredit=yes");
 
 	display_footer_exit();
-}
+} else
+	check_edit_conflicts();
+
 //--------------------------------------------------------------------------------
 
 function line_start_focus() {
@@ -80,7 +95,6 @@ function line_start_focus() {
 function copy_to_cn()
 {
 	$cart = &$_SESSION['Items'];
-
 	$cart->Comments = $_POST['CreditText'];
 	$cart->document_date = $_POST['OrderDate'];
 	$cart->freight_cost = input_num('ChargeFreightCost');
@@ -88,6 +102,8 @@ function copy_to_cn()
 	$cart->sales_type = $_POST['sales_type_id'];
 	$cart->reference = $_POST['ref'];
 	$cart->ship_via = $_POST['ShipperID'];
+	$cart->dimension_id = $_POST['dimension_id'];
+	$cart->dimension2_id = $_POST['dimension2_id'];
 }
 
 //-----------------------------------------------------------------------------
@@ -95,7 +111,6 @@ function copy_to_cn()
 function copy_from_cn()
 {
 	$cart = &$_SESSION['Items'];
-
 	$_POST['CreditText'] = $cart->Comments;
 	$_POST['OrderDate'] = $cart->document_date;
 	$_POST['ChargeFreightCost'] = price_format($cart->freight_cost);
@@ -103,6 +118,9 @@ function copy_from_cn()
 	$_POST['sales_type_id'] = $cart->sales_type;
 	$_POST['ref'] = $cart->reference;
 	$_POST['ShipperID'] = $cart->ship_via;
+	$_POST['dimension_id'] = $cart->dimension_id;
+	$_POST['dimension2_id'] = $cart->dimension2_id;
+	$_POST['cart_id'] = $cart->cart_id;
 }
 
 //-----------------------------------------------------------------------------
@@ -149,6 +167,7 @@ function can_process()
 //-----------------------------------------------------------------------------
 
 if (isset($_POST['ProcessCredit']) && can_process()) {
+	copy_to_cn();
 	if ($_POST['CreditType'] == "WriteOff" && (!isset($_POST['WriteOffGLCode']) ||
 		$_POST['WriteOffGLCode'] == '')) {
 		display_note(_("For credit notes created to write off the stock, a general ledger account is required to be selected."), 1, 0);
@@ -242,6 +261,7 @@ if (!processing_active()) {
 //-----------------------------------------------------------------------------
 
 start_form(false, true);
+hidden('cart_id');
 
 $customer_error = display_credit_header($_SESSION['Items']);
 
@@ -249,7 +269,7 @@ if ($customer_error == "") {
 	start_table("$table_style width=80%", 10);
 	echo "<tr><td>";
 	display_credit_items(_("Credit Note Items"), $_SESSION['Items']);
-	credit_options_controls();
+	credit_options_controls($_SESSION['Items']);
 	echo "</td></tr>";
 	end_table();
 } else {

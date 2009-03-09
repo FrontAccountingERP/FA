@@ -1,22 +1,29 @@
 <?php
-
-
-function add_gl_account($account_code, $account_name, $account_type, $account_code2, $tax_code)
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
+function add_gl_account($account_code, $account_name, $account_type, $account_code2)
 {
 	$account_name = db_escape($account_name);
-	$sql = "INSERT INTO ".TB_PREF."chart_master (account_code, account_code2, account_name, account_type,
-		tax_code)
-		VALUES (".db_escape($account_code).", ".db_escape($account_code2).", $account_name, $account_type, $tax_code)";
+	$sql = "INSERT INTO ".TB_PREF."chart_master (account_code, account_code2, account_name, account_type)
+		VALUES (".db_escape($account_code).", ".db_escape($account_code2).", $account_name, $account_type)";
 
 	db_query($sql, "could not add gl account");
 }
 
-function update_gl_account($account_code, $account_name, $account_type, $account_code2, $tax_code)
+function update_gl_account($account_code, $account_name, $account_type, $account_code2)
 {
 	$account_name = db_escape($account_name);
     $sql = "UPDATE ".TB_PREF."chart_master SET account_name=$account_name,
-		account_type=$account_type, account_code2=".db_escape($account_code2).",
-		tax_code=$tax_code WHERE account_code = '$account_code'";
+		account_type=$account_type, account_code2=".db_escape($account_code2)
+		." WHERE account_code = '$account_code'";
 
 	db_query($sql, "could not update gl account");
 }

@@ -1,5 +1,14 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 include_once($path_to_root . "/includes/ui.inc");
 
 // ------------------------------------------------------------------------------
@@ -7,9 +16,9 @@ include_once($path_to_root . "/includes/ui.inc");
 function display_credit_header(&$order)
 {
 	global $table_style, $Ajax;
-	start_table("width=80% $table_style");
-	echo "<tr><td valign=top>"; // outer table
-	echo "<table>";
+
+	start_outer_table("width=80% $table_style");
+	table_section(1);
 
 	$customer_error = "";
 	$change_prices = 0;
@@ -58,36 +67,37 @@ function display_credit_header(&$order)
 				    $Ajax->activate('sales_type_id');
 				    $change_prices = 1;
 				}
+				if ($old_order->dimension_id != $order->dimension_id) {
+					$_POST['dimension_id'] = $order->dimension_id;
+				    $Ajax->activate('dimension_id');
+				}
+				if ($old_order->dimension2_id != $order->dimension2_id) {
+					$_POST['dimension2_id'] = $order->dimension2_id;
+				    $Ajax->activate('dimension2_id');
+				}
 				unset($old_order);
 	  }
 	set_global_customer($_POST['customer_id']);
 
 	if (!isset($_POST['ref']))
 		$_POST['ref'] = references::get_next(11);
-	if ($_SESSION['Items']->trans_no==0)
+	if ($order->trans_no==0)
 	    ref_row(_("Reference").':', 'ref');
 	else
 	    label_row(_("Reference").':', $_POST['ref'] );
 
 
-
-	echo "</table>";
-
-	echo "</td><td>"; // outer table
-
 	if (!is_company_currency($order->customer_currency))
 	{
+		table_section(2);
+		
 	    div_start('currency');
-		echo "<table height='5'>";
 		label_row(_("Customer Currency:"), $order->customer_currency);
 		exchange_rate_display($order->customer_currency, get_company_currency(),
 			$_POST['OrderDate']);
-		echo "</table>";
-		echo "</td><td>"; // outer table
 	    div_end();
 	}
-
-	echo "<table height='5'>";
+	table_section(3);
 
     if (!isset($_POST['sales_type_id']))
     	$_POST['sales_type_id'] = $order->sales_type;
@@ -101,12 +111,11 @@ function display_credit_header(&$order)
 		$change_prices = 1;
 	}
 
+    shippers_list_row(_("Shipping Company:"), 'ShipperID', $order->ship_via);
+
 	label_row(_("Customer Discount:"), ($order->default_discount * 100) . "%");
-	echo "</table>";
 
-	echo "</td><td>"; // outer table
-
-	echo "<table height='5'>";
+	table_section(4);
 
 	if (!isset($_POST['OrderDate']) || $_POST['OrderDate'] == "")
 		$_POST['OrderDate'] = $order->document_date;
@@ -119,13 +128,20 @@ function display_credit_header(&$order)
 		}
 		$Ajax->activate('currency');
 	}
-    shippers_list_row(_("Shipping Company:"), 'ShipperID', $order->ship_via);
+	// 2008-11-12 Joe Hunt added dimensions
+	$dim = get_company_pref('use_dimension');
+	if ($dim > 0)
+		dimensions_list_row(_("Dimension").":", 'dimension_id', 
+			null, true, ' ', false, 1, false);
+	else
+		hidden('dimension_id', 0);
+	if ($dim > 1)
+		dimensions_list_row(_("Dimension")." 2:", 'dimension2_id', 
+			null, true, ' ', false, 2, false);
+	else
+		hidden('dimension2_id', 0);
 
-	echo "</table>";
-
-	echo "</td></tr>";
-
-	end_table(1); // outer table
+	end_outer_table(1); // outer table
 
 	if ($change_prices != 0) {
 		foreach ($order->line_items as $line_no=>$item) {
@@ -177,12 +193,12 @@ function display_credit_items($title, &$order)
     	    label_cell($line->units);
     	    amount_cell($line->price);
 
-	    amount_cell($line->discount_percent * 100);
+	    	percent_cell($line->discount_percent * 100);
     	    amount_cell($line_total);
 
     	    edit_button_cell("Edit$line_no", _('Edit'),
 				_('Edit document line'));
-    	    edit_button_cell("Delete$line_no", _('Delete'),
+    	    delete_button_cell("Delete$line_no", _('Delete'),
 				_('Remove line from document'));
 
     	    end_row();
@@ -209,7 +225,7 @@ function display_credit_items($title, &$order)
 
     $taxes = $order->get_taxes($_POST['ChargeFreightCost']);
 
-    $tax_total = display_edit_tax_items($taxes, 6, $_SESSION['Items']->tax_included);
+    $tax_total = display_edit_tax_items($taxes, 6, $order->tax_included);
 
     $display_total = price_format(($subtotal + $_POST['ChargeFreightCost'] + $tax_total));
 
@@ -250,8 +266,9 @@ function credit_edit_item_controls(&$order, $rowcounter, $line_no=-1)
 		}
   		$item_info = get_item_edit_info($_POST['stock_id']);
 
+		$dec = $item_info['decimals'];
+   		$_POST['qty'] = number_format2(0, $dec);
 		$_POST['units'] = $item_info["units"];
-   		$_POST['qty'] = qty_format(0, $_POST['stock_id'], $dec);
 		$_POST['price'] = price_format(get_price($_POST['stock_id'], $order->customer_currency,
 		    $order->sales_type, $order->price_factor, $order->document_date));
 
@@ -269,10 +286,10 @@ function credit_edit_item_controls(&$order, $rowcounter, $line_no=-1)
 
 	if ($id!=-1)
 	{
-		edit_button_cell('UpdateItem', _("Update"),
-				_('Confirm changes'));
-		edit_button_cell('CancelItemChanges', _("Cancel"),
-				_('Cancel changes'));
+		button_cell('UpdateItem', _("Update"),
+				_('Confirm changes'), ICON_UPDATE);
+		button_cell('CancelItemChanges', _("Cancel"),
+				_('Cancel changes'), ICON_CANCEL);
 		hidden('line_no', $line_no);
 		set_focus('qty');
 	}
@@ -288,7 +305,7 @@ function credit_edit_item_controls(&$order, $rowcounter, $line_no=-1)
 
 //---------------------------------------------------------------------------------
 
-function credit_options_controls()
+function credit_options_controls($credit)
 {
 	global $table_style2, $Ajax;
 	echo "<br>";
@@ -306,7 +323,7 @@ if (isset($_POST['_CreditType_update']))
 
 		/*if the credit note is a return of goods then need to know which location to receive them into */
 		if (!isset($_POST['Location']))
-			$_POST['Location'] = $_SESSION['Items']->Location;
+			$_POST['Location'] = $credit->Location;
 	   	locations_list_row(_("Items Returned to Location"), 'Location', $_POST['Location']);
 	}
 	else

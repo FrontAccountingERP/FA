@@ -1,5 +1,14 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 function update_item($stock_id, $description, $long_description, $category_id, $tax_type_id,
 	$sales_account, $inventory_account, $cogs_account, $adjustment_account,
 	$assembly_account, $dimension_id, $dimension2_id)
@@ -18,6 +27,8 @@ function update_item($stock_id, $description, $long_description, $category_id, $
 		WHERE stock_id='$stock_id'";
 
 	db_query($sql, "The item could not be updated");
+
+	update_item_code(-1, $stock_id, $stock_id, $description, $category_id, 1, 0);
 }
 
 function add_item($stock_id, $description, $long_description, $category_id, $tax_type_id, $units, $mb_flag,
@@ -38,6 +49,8 @@ function add_item($stock_id, $description, $long_description, $category_id, $tax
 		SELECT ".TB_PREF."locations.loc_code, '$stock_id' FROM ".TB_PREF."locations";
 
 	db_query($sql, "The item locstock could not be added");
+
+	add_item_code($stock_id, $stock_id, $description, $category_id, 1, 0);
 }
 
 function delete_item($stock_id)
@@ -60,6 +73,8 @@ function delete_item($stock_id)
 	/*and cascade delete the bill of material if any */
 	$sql = "DELETE FROM ".TB_PREF."bom WHERE parent='$stock_id'";
 	db_query($sql, "could not delete stock item bom");
+
+	delete_item_kit($stock_id);
 }
 
 function get_item($stock_id)

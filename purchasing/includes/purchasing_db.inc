@@ -1,5 +1,14 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 include_once($path_to_root . "/purchasing/includes/supp_trans_class.inc");
 
 include_once($path_to_root . "/includes/banking.inc");
@@ -55,5 +64,36 @@ function get_purchase_price($supplier_id, $stock_id)
 
 //----------------------------------------------------------------------------------------
 
+function get_purchase_data($supplier_id, $stock_id)
+{
+	$sql = "SELECT * FROM ".TB_PREF."purch_data 
+		WHERE supplier_id = '" . $supplier_id . "' 
+		AND stock_id = '". $stock_id . "'";
+	$result = db_query($sql, "The supplier pricing details for " . $stock_id . " could not be retrieved");    
+
+	return db_fetch($result);
+}
+
+function add_or_update_purchase_data($supplier_id, $stock_id, $price, $description="", $uom="")
+{
+	$data = get_purchase_data($supplier_id, $stock_id);
+	if ($data === false)
+	{
+		$sql = "INSERT INTO ".TB_PREF."purch_data (supplier_id, stock_id, price, suppliers_uom,
+			conversion_factor, supplier_description) VALUES ('$supplier_id', '$stock_id', 
+			$price, '$uom', 1, '$description')";
+		db_query($sql,"The supplier purchasing details could not be added");
+		return;
+	}	
+	$price = round($price * $data['conversion_factor'], user_price_dec());	
+	$sql = "UPDATE ".TB_PREF."purch_data SET price=$price";
+	if ($uom != "")
+		$sql .= ",suppliers_uom='$uom'";
+	if ($description != "")	
+		$sql .= ",supplier_description='$description'";
+	$sql .= " WHERE stock_id='$stock_id' AND supplier_id='$supplier_id'";
+	db_query($sql,"The supplier purchasing details could not be updated");
+	return true;
+}
 
 ?>

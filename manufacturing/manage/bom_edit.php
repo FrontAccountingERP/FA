@@ -1,5 +1,14 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 $page_security = 9;
 $path_to_root="../..";
 include_once($path_to_root . "/includes/session.inc");
@@ -18,6 +27,39 @@ check_db_has_workcentres(_("There are no work centres defined in the system. BOM
 
 simple_page_mode(true);
 $selected_component = $selected_id;
+//--------------------------------------------------------------------------------------------------
+
+//if (isset($_GET["NewItem"]))
+//{
+//	$_POST['stock_id'] = $_GET["NewItem"];
+//}
+if (isset($_GET['stock_id']))
+{
+	$_POST['stock_id'] = $_GET['stock_id'];
+	$selected_parent =  $_GET['stock_id'];
+}
+
+/* selected_parent could come from a post or a get */
+/*if (isset($_GET["selected_parent"]))
+{
+	$selected_parent = $_GET["selected_parent"];
+}
+else if (isset($_POST["selected_parent"]))
+{
+	$selected_parent = $_POST["selected_parent"];
+}
+*/
+/* selected_component could also come from a post or a get */
+/*if (isset($_GET["selected_component"]))
+{
+	$selected_component = $_GET["selected_component"];
+}
+else
+{
+	$selected_component = get_post("selected_component", -1);
+}
+*/
+
 //--------------------------------------------------------------------------------------------------
 
 function check_for_recursive_bom($ultimate_parent, $component_to_check)
@@ -75,7 +117,7 @@ div_start('bom');
         qty_cell($myrow["quantity"], false, get_qty_dec($myrow["component"]));
         label_cell($myrow["units"]);
  		edit_button_cell("Edit".$myrow['id'], _("Edit"));
- 		edit_button_cell("Delete".$myrow['id'], _("Delete"));
+ 		delete_button_cell("Delete".$myrow['id'], _("Delete"));
         end_row();
 
 	} //END WHILE LIST LOOP
@@ -174,17 +216,17 @@ if ($Mode == 'RESET')
 start_form(false, true);
 
 echo "<center>" . _("Select a manufacturable item:") . "&nbsp;";
-stock_bom_items_list('selected_parent', null, false, true);
+stock_bom_items_list('stock_id', null, false, true);
 echo "</center><br>";
 
 end_form();
-if (isset($_POST['_selected_parent_update']))
+if (isset($_POST['_stock_id_update']))
 	$Ajax->activate('_page_body');
 //--------------------------------------------------------------------------------------------------
 
-if (get_post('selected_parent') != '')
+if (get_post('stock_id') != '')
 { //Parent Item selected so display bom or edit component
-	$selected_parent = $_POST['selected_parent'];
+	$selected_parent = $_POST['stock_id'];
 	if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 		on_submit($selected_parent, $selected_id);
 	//--------------------------------------------------------------------------------------
@@ -230,7 +272,7 @@ start_form();
 		echo "</td>";
 		end_row();
 	}
-	hidden('selected_parent', $selected_parent);
+	hidden('stock_id', $selected_parent);
 
 	locations_list_row(_("Location to Draw From:"), 'loc_code', null);
 	workcenter_list_row(_("Work Centre Added:"), 'workcentre_added', null);

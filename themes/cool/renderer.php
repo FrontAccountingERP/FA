@@ -1,5 +1,14 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 	class renderer
 	{
 		function wa_header()
@@ -14,7 +23,7 @@
 
 		function menu_header($title, $no_menu, $is_index)
 		{
-			global $path_to_root, $applications, $help_base_url, $db_connections;
+			global $path_to_root, $help_base_url, $db_connections;
 			// you can owerride the table styles from config.php here, if you want.
 			//global $table_style, $table_style2;
 			//$table_style 	= "cellpadding=3 border=1 bordercolor='#8cacbb' style='border-collapse: collapse'";
@@ -31,15 +40,19 @@
 			echo "<td class='quick_menu'>\n";
 			if (!$no_menu)
 			{
+				$applications = $_SESSION['App']->applications;
 				$local_path_to_root = $path_to_root;
+				$img = "<img src='$local_path_to_root/themes/cool/images/login.gif' width='14' height='14' border='0' alt='"._('Logout')."'>&nbsp;&nbsp;";
+				$himg = "<img src='$local_path_to_root/themes/cool/images/help.gif' width='14' height='14' border='0' alt='"._('Help')."'>&nbsp;&nbsp;";
 				$sel_app = $_SESSION['sel_app'];
 				echo "<table cellpadding=0 cellspacing=0 width='100%'><tr><td>";
 				echo "<div class=tabs>";
-				foreach($applications as $app => $name)
+				foreach($applications as $app)
 				{
-					echo "<a ".($sel_app == $app ? "class='selected' " : "").
-					"href='$local_path_to_root/index.php?application=".$app.
-						SID ."'>" .$name . "</a>";
+					$acc = access_string($app->name);
+					echo "<a ".($sel_app == $app->id ? "class='selected' " : "").
+					"href='$local_path_to_root/index.php?application=".$app->id.
+						SID ."'$acc[1]>" .$acc[0] . "</a>";
 				}
 				echo "</div>";
 
@@ -47,14 +60,16 @@
 
 				echo "<table class=logoutBar>";
 				echo "<tr><td class=headingtext3>" . $db_connections[$_SESSION["wa_current_user"]->company]["name"] . " | " . $_SERVER['SERVER_NAME'] . " | " . $_SESSION["wa_current_user"]->name . "</td>";
+				$indicator = "$path_to_root/themes/".user_theme(). "/images/ajax-loader.gif";
+				echo "<td class='logoutBarRight'><img id='ajaxmark' src='$indicator' align='center' style='visibility:hidden;'></td>";
 				echo "  <td class='logoutBarRight'><a href='$path_to_root/admin/display_prefs.php?'>" . _("Preferences") . "</a>&nbsp;&nbsp;&nbsp;\n";
 				echo "  <a href='$path_to_root/admin/change_current_user_password.php?selected_id=" . $_SESSION["wa_current_user"]->username . "'>" . _("Change password") . "</a>&nbsp;&nbsp;&nbsp;\n";
 
 				if ($help_base_url != null)
 				{
-					echo "<a target = '_blank' onclick=" .'"'."javascript:openWindow(this.href,this.target); return false;".'" '. "href='". help_url($title, $sel_app)."'>" . _("Help") . "</a>&nbsp;&nbsp;&nbsp;";
+					echo "$himg<a target = '_blank' onclick=" .'"'."javascript:openWindow(this.href,this.target); return false;".'" '. "href='". help_url($title, $sel_app)."'>" . _("Help") . "</a>&nbsp;&nbsp;&nbsp;";
 				}
-				echo "<a href='$local_path_to_root/access/logout.php?'>" . _("Logout") . "</a>&nbsp;&nbsp;&nbsp;";
+				echo "$img<a href='$local_path_to_root/access/logout.php?'>" . _("Logout") . "</a>&nbsp;&nbsp;&nbsp;";
 				echo "</td></tr></table>";
 			}
 			echo "</td></tr></table>";
@@ -112,9 +127,10 @@
 
 		function display_applications(&$waapp)
 		{
-
+			global $path_to_root;
 			$selected_app = $waapp->get_selected_application();
 
+			$img = "<img src='$path_to_root/themes/cool/images/right.gif' style='vertical-align:middle;' width='17' height='17' border='0'>&nbsp;&nbsp;";
 			foreach ($selected_app->modules as $module)
 			{
 				// image
@@ -129,8 +145,16 @@
 
 				foreach ($module->lappfunctions as $appfunction)
 				{
-					if ($_SESSION["wa_current_user"]->can_access_page($appfunction->access))
-						echo "<a href='$appfunction->link'> " . $appfunction->label . "</a><br>";
+					if ($_SESSION["wa_current_user"]->can_access_page($appfunction->access)) 
+					{
+						if ($appfunction->label == "")
+							echo "&nbsp;<br>";
+						else
+						{
+							$lnk = access_string($appfunction->label);
+							echo "$img<a href='$appfunction->link'$lnk[1]>$lnk[0]</a><br>";
+						}	
+					}
 				}
 				echo "</td>";
 				if (sizeof($module->rappfunctions) > 0)
@@ -138,8 +162,16 @@
 					echo "<td width='50%' class='menu_group_items'>";
 					foreach ($module->rappfunctions as $appfunction)
 					{
-						if ($_SESSION["wa_current_user"]->can_access_page($appfunction->access))
-							echo "<a href='$appfunction->link'> " . $appfunction->label . "</a><br>";
+						if ($_SESSION["wa_current_user"]->can_access_page($appfunction->access)) 
+						{
+							if ($appfunction->label == "")
+								echo "&nbsp;<br>";
+							else
+							{
+								$lnk = access_string($appfunction->label);
+								echo "$img<a href='$appfunction->link'$lnk[1]>$lnk[0]</a><br>";
+							}	
+						}
 					}
 					echo "</td>";
 				}

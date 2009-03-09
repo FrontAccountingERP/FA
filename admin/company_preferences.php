@@ -1,5 +1,14 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 $page_security =10;
 $path_to_root="..";
 include($path_to_root . "/includes/session.inc");
@@ -37,17 +46,17 @@ if (isset($_POST['update']) && $_POST['update'] != "")
 		 //But check for the worst
 		if (strtoupper(substr(trim($_FILES['pic']['name']), strlen($_FILES['pic']['name']) - 3)) != 'JPG')
 		{
-			display_notification(_('Only jpg files are supported - a file extension of .jpg is expected'));
+			display_error(_('Only jpg files are supported - a file extension of .jpg is expected'));
 			$input_error = 1;
 		}
 		elseif ( $_FILES['pic']['size'] > ($max_image_size * 1024))
 		{ //File Size Check
-			display_notification(_('The file size is over the maximum allowed. The maximum size allowed in KB is') . ' ' . $max_image_size);
+			display_error(_('The file size is over the maximum allowed. The maximum size allowed in KB is') . ' ' . $max_image_size);
 			$input_error = 1;
 		}
 		elseif ( $_FILES['pic']['type'] == "text/plain" )
 		{  //File type Check
-			display_notification( _('Only graphics files can be uploaded'));
+			display_error( _('Only graphics files can be uploaded'));
 			$input_error = 1;
 		}
 		elseif (file_exists($filename))
@@ -66,6 +75,22 @@ if (isset($_POST['update']) && $_POST['update'] != "")
 			$_POST['coy_logo'] = $_FILES['pic']['name'];
 			if(!$result) 
 				display_error(_('Error uploading logo file'));
+		}
+	}
+	if (check_value('del_coy_logo'))
+	{
+		$user_comp = user_company();
+		$filename = $comp_path . "/$user_comp/images/".$_POST['coy_logo'];
+		if (file_exists($filename))
+		{
+			$result = unlink($filename);
+			if (!$result)
+			{
+				display_error(_('The existing image could not be removed'));
+				$input_error = 1;
+			}
+			else
+				$_POST['coy_logo'] = "";
 		}
 	}
 	if ($input_error != 1)
@@ -114,27 +139,33 @@ $_POST['custom2_value']  = $myrow["custom2_value"];
 $_POST['custom3_value']  = $myrow["custom3_value"];
 $_POST['curr_default']  = $myrow["curr_default"];
 $_POST['f_year']  = $myrow["f_year"];
+$_POST['del_coy_logo']  = 0;
 
-start_table($table_style2);
+start_outer_table($table_style2);
+
+table_section(1);
 
 text_row_ex(_("Name (to appear on reports):"), 'coy_name', 42, 50);
+textarea_row(_("Address:"), 'postal_address', $_POST['postal_address'], 35, 5);
+
+text_row_ex(_("Phone Number:"), 'phone', 25, 55);
+text_row_ex(_("Fax Number:"), 'fax', 25);
+email_row_ex(_("Email Address:"), 'email', 25, 55);
+
 text_row_ex(_("Official Company Number:"), 'coy_no', 25);
-text_row_ex(_("Tax Authority Reference:"), 'gst_no', 25);
+text_row_ex(_("GSTNo:"), 'gst_no', 25);
 
 text_row_ex(_("Tax Periods:"), 'tax_prd', 10, 10, '', null, null, _('Months.'));
 text_row_ex(_("Tax Last Period:"), 'tax_last', 10, 10, '', null, null, _('Months back.'));
 
 currencies_list_row(_("Home Currency:"), 'curr_default', $_POST['curr_default']);
+
+table_section(2);
+
 fiscalyears_list_row(_("Fiscal Year:"), 'f_year', $_POST['f_year']);
-
-textarea_row(_("Address:"), 'postal_address', $_POST['postal_address'], 35, 5);
-
-text_row_ex(_("Telephone Number:"), 'phone', 25, 55);
-text_row_ex(_("Facsimile Number:"), 'fax', 25);
-text_row_ex(_("Email Address:"), 'email', 25, 55);
 label_row(_("Company Logo:"), $_POST['coy_logo']);
 label_row(_("New Company Logo (.jpg)") . ":", "<input type='file' id='pic' name='pic'>");
-
+check_row(_("Delete Company Logo:"), 'del_coy_logo', $_POST['del_coy_logo']);
 text_row_ex(_("Domicile:"), 'domicile', 25, 55);
 
 number_list_row(_("Use Dimensions:"), 'use_dimension', null, 0, 2);
@@ -164,7 +195,8 @@ text_cells(null, 'custom3_name', $_POST['custom3_name'], 25, 25);
 text_cells(null, 'custom3_value', $_POST['custom3_value'], 30, 30);
 end_row();
 
-end_table(1);
+end_outer_table(1);
+
 hidden('coy_logo', $_POST['coy_logo']);
 submit_center('update', _("Update"), true, '', true);
 

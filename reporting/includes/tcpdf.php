@@ -1756,7 +1756,8 @@ if (!class_exists('TCPDF')) {
 		*/
 		function Error($msg) {
 			//Fatal error
-			die('<strong>TCPDF error: </strong>'.$msg);
+			display_error('<strong>TCPDF error: </strong>'.$msg);
+			exit;
 		}
 
 		/**
@@ -2602,9 +2603,9 @@ if (!class_exists('TCPDF')) {
 			if (isset($cw)) {
 				unset($cw);
 			}
-			include($this->_getfontpath().$file);
+			@include($this->_getfontpath().$file);
 			if ((!isset($type)) OR (!isset($cw))) {
-				$this->Error('Could not include font definition file');
+				$this->Error("Could not include font definition file: ".$file);
 			}
 			$i = count($this->fonts) + 1;
 			// register CID font (all styles at once)
@@ -5005,7 +5006,8 @@ if (!class_exists('TCPDF')) {
 		* @access protected
 		*/
 		function _putheader() {
-			$this->_out('%PDF-'.$this->PDFVersion);
+			$this->buffer = '%PDF-'.$this->PDFVersion."\n".$this->buffer;
+//			$this->_out('%PDF-'.$this->PDFVersion);
 		}
 
 		/**

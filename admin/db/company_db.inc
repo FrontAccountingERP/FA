@@ -1,5 +1,14 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 
 function update_company_gl_setup($debtors_act, $pyt_discount_act, $creditors_act,
 		$freight_act,
@@ -15,6 +24,8 @@ function update_company_gl_setup($debtors_act, $pyt_discount_act, $creditors_act
 		$allow_negative_stock,
 		$po_over_receive,
 		$po_over_charge,
+		$accumulate_shipping,
+		$legal_text,
 		$past_due_days,
 		$default_credit_limit,
 		$default_workorder_required,
@@ -36,6 +47,8 @@ function update_company_gl_setup($debtors_act, $pyt_discount_act, $creditors_act
 		allow_negative_stock=$allow_negative_stock,
 		po_over_receive=$po_over_receive,
 		po_over_charge=$po_over_charge,
+		accumulate_shipping=$accumulate_shipping,
+		legal_text=".db_escape($legal_text).",
 		past_due_days=$past_due_days,
 		default_credit_limit=$default_credit_limit,
 		default_workorder_required=$default_workorder_required,
@@ -80,9 +93,10 @@ function update_company_setup($coy_name, $coy_no, $gst_no, $tax_prd, $tax_last, 
 	db_query($sql, "The company setup could not be updated ");
 }
 
-function get_company_prefs()
+function get_company_prefs($tbpref = TB_PREF)
 {
-	$sql = "SELECT * FROM ".TB_PREF."company WHERE coy_code=1";
+	$sql = "SELECT * FROM ".$tbpref."company WHERE coy_code=1";
+	
 	$result = db_query($sql, "The company preferences could not be retrieved");
 
 	if (db_num_rows($result) == 0)
@@ -91,9 +105,9 @@ function get_company_prefs()
 	return db_fetch($result);
 }
 
-function get_company_pref($pref_name)
+function get_company_pref($pref_name, $tbpref = TB_PREF)
 {
-	$prefs = get_company_prefs();
+	$prefs = get_company_prefs($tbpref);
 	return $prefs[$pref_name];
 }
 

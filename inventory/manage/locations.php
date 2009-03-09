@@ -1,5 +1,14 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 $page_security = 11;
 $path_to_root="../..";
 include($path_to_root . "/includes/session.inc");
@@ -127,7 +136,7 @@ while ($myrow = db_fetch_row($result))
 	label_cell($myrow[0]);
 	label_cell($myrow[1]);
  	edit_button_cell("Edit".$myrow[0], _("Edit"));
- 	edit_button_cell("Delete".$myrow[0], _("Delete"));
+ 	delete_button_cell("Delete".$myrow[0], _("Delete"));
 	end_row();
 }
 	//END WHILE LIST LOOP
@@ -143,6 +152,7 @@ start_form();
 
 start_table($table_style2);
 
+$_POST['email'] = "";
 if ($selected_id != -1) 
 {
 	//editing an existing Location
@@ -174,7 +184,7 @@ textarea_row(_("Address:"), 'delivery_address', null, 35, 5);
 
 text_row_ex(_("Telephone No:"), 'phone', 30, 30);
 text_row_ex(_("Facsimile No:"), 'fax', 30, 30);
-text_row_ex(_("Email:"), 'email', 30, 30);
+email_row_ex(_("E-mail:"), 'email', 30);
 
 end_table(1);
 submit_add_or_update_center($selected_id == -1, '', true);

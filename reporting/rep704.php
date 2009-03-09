@@ -1,5 +1,14 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 $page_security = 2;
 // ----------------------------------------------------------------
 // $ Revision:	2.0 $
@@ -7,16 +16,15 @@ $page_security = 2;
 // date_:	2005-05-19
 // Title:	GL Accounts Transactions
 // ----------------------------------------------------------------
-$path_to_root="../";
+$path_to_root="..";
 
-include_once($path_to_root . "includes/session.inc");
-include_once($path_to_root . "includes/date_functions.inc");
-include_once($path_to_root . "includes/data_checks.inc");
-include_once($path_to_root . "gl/includes/gl_db.inc");
+include_once($path_to_root . "/includes/session.inc");
+include_once($path_to_root . "/includes/date_functions.inc");
+include_once($path_to_root . "/includes/data_checks.inc");
+include_once($path_to_root . "/gl/includes/gl_db.inc");
 
 //----------------------------------------------------------------------------------------------------
 
-// trial_inquiry_controls();
 print_GL_transactions();
 
 //----------------------------------------------------------------------------------------------------
@@ -25,9 +33,6 @@ function print_GL_transactions()
 {
 	global $path_to_root;
 
-	include_once($path_to_root . "reporting/includes/pdf_report.inc");
-
-	$rep = new FrontReport(_('GL Account Transactions'), "GLAccountTransactions.pdf", user_pagesize());
 	$dim = get_company_pref('use_dimension');
 	$dimension = $dimension2 = 0;
 
@@ -40,16 +45,25 @@ function print_GL_transactions()
 		$dimension = $_POST['PARAM_4'];
 		$dimension2 = $_POST['PARAM_5'];
 		$comments = $_POST['PARAM_6'];
+		$destination = $_POST['PARAM_7'];
 	}
 	else if ($dim == 1)
 	{
 		$dimension = $_POST['PARAM_4'];
 		$comments = $_POST['PARAM_5'];
+		$destination = $_POST['PARAM_6'];
 	}
 	else
 	{
 		$comments = $_POST['PARAM_4'];
+		$destination = $_POST['PARAM_5'];
 	}
+	if ($destination)
+		include_once($path_to_root . "/reporting/includes/excel_report.inc");
+	else
+		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
+
+	$rep = new FrontReport(_('GL Account Transactions'), "GLAccountTransactions", user_pagesize());
 	$dec = user_price_dec();
 
 	$cols = array(0, 70, 90, 140, 210, 280, 340, 400, 450, 510, 570);
@@ -62,7 +76,7 @@ function print_GL_transactions()
 	if ($dim == 2)
 		$headers = array(_('Type'),	_('#'),	_('Date'), _('Dimension')." 1", _('Dimension')." 2",
 			_('Person/Item'), _('Debit'),	_('Credit'), _('Balance'));
-	else if ($dim == 1)
+	elseif ($dim == 1)
 		$headers = array(_('Type'),	_('#'),	_('Date'), _('Dimension'), "", _('Person/Item'),
 			_('Debit'),	_('Credit'), _('Balance'));
 	else
@@ -121,9 +135,9 @@ function print_GL_transactions()
 		$rep->TextCol(0, 3,	$account['account_code'] . " " . $account['account_name']);
 		$rep->TextCol(3, 5, _('Opening Balance'));
 		if ($prev_balance > 0.0)
-			$rep->TextCol(6, 7,	number_format2(abs($prev_balance), $dec));
+			$rep->AmountCol(6, 7, abs($prev_balance), $dec);
 		else
-			$rep->TextCol(7, 8,	number_format2(abs($prev_balance), $dec));
+			$rep->AmountCol(7, 8, abs($prev_balance), $dec);
 		$rep->Font();
 		$total = $prev_balance;
 		$rep->NewLine(2);
@@ -135,16 +149,16 @@ function print_GL_transactions()
 
 				$rep->TextCol(0, 1,	systypes::name($myrow["type"]));
 				$rep->TextCol(1, 2,	$myrow['type_no']);
-				$rep->TextCol(2, 3,	sql2date($myrow["tran_date"]));
+				$rep->DateCol(2, 3,	$myrow["tran_date"], true);
 				if ($dim >= 1)
 					$rep->TextCol(3, 4,	get_dimension_string($myrow['dimension_id']));
 				if ($dim > 1)
 					$rep->TextCol(4, 5,	get_dimension_string($myrow['dimension2_id']));
 				$rep->TextCol(5, 6,	payment_person_types::person_name($myrow["person_type_id"],$myrow["person_id"], false));
 				if ($myrow['amount'] > 0.0)
-					$rep->TextCol(6, 7,	number_format2(abs($myrow['amount']), $dec));
+					$rep->AmountCol(6, 7, abs($myrow['amount']), $dec);
 				else
-					$rep->TextCol(7, 8,	number_format2(abs($myrow['amount']), $dec));
+					$rep->AmountCol(7, 8, abs($myrow['amount']), $dec);
 				$rep->TextCol(8, 9,	number_format2($total, $dec));
 				$rep->NewLine();
 				if ($rep->row < $rep->bottomMargin + $rep->lineHeight)
@@ -158,9 +172,9 @@ function print_GL_transactions()
 		$rep->Font('bold');
 		$rep->TextCol(3, 5,	_("Ending Balance"));
 		if ($total > 0.0)
-			$rep->TextCol(6, 7,	number_format2(abs($total), $dec));
+			$rep->AmountCol(6, 7, abs($total), $dec);
 		else
-			$rep->TextCol(7, 8,	number_format2(abs($total), $dec));
+			$rep->AmountCol(7, 8, abs($total), $dec);
 		$rep->Font();
 		$rep->Line($rep->row - $rep->lineHeight + 4);
 		$rep->NewLine(2, 1);

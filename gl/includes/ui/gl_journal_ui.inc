@@ -1,5 +1,14 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/includes/ui/items_cart.inc");
 
@@ -9,27 +18,41 @@ function display_order_header(&$Order)
 {
 	global $table_style2;
 
-	start_table("$table_style2 width=90%");
-	echo "<tr><td valign=top width=50%>"; // outer table
+	$qes = has_quick_entries(QE_JOURNAL);
 
-	echo "<table>";
+	start_outer_table("$table_style2 width=90%");
+	table_section(1);
+
 	start_row();
     date_cells(_("Date:"), 'date_');
 	ref_cells(_("Reference:"), 'ref', '', references::get_next(0));
 	end_row();
 
-	echo "</table>";
+	if ($qes)
+		table_section(2, "20%");
+	else	
+		table_section(2, "50%");
 
-	echo "</td><td width=50%>"; // outer table
+	start_row();
+	check_cells(_("Reverse Transaction:"), 'Reverse', null);
+	end_row();
+	if ($qes !== false)
+	{
+		table_section(3, "50%");
+		start_row();
+		quick_entries_list_cells(_("Quick Entry").":", 'person_id', null, QE_JOURNAL, true);
+		$qid = get_quick_entry(get_post('person_id'));
+		if (list_updated('person_id')) {
+			unset($_POST['totamount']); // enable default
+		$Ajax->activate('totamount');
+		}
+		amount_cells($qid['base_desc'].":", 'totamount', price_format($qid['base_amount']),
+		 null, "&nbsp;&nbsp;".submit('go', _("Go"), false, false, true));
+		end_row();
 
-	echo "<table>";
-
-	check_row(_("Reverse Transaction:"), 'Reverse', null);
-
-	echo "</table>";
-
-	echo "</td></tr>"; // outer table
-	end_table(1);
+	}
+		
+	end_outer_table(1);
 }
 
 //---------------------------------------------------------------------------------
@@ -46,13 +69,13 @@ function display_gl_items($title, &$order)
 	start_table("$table_style colspan=7 width=95%");
 	if ($dim == 2)
 		$th = array(_("Account Code"), _("Account Description"), _("Dimension")." 1",
-			_("Dimension")." 2", _("Debit"), _("Credit"), _("Memo"));
+			_("Dimension")." 2", _("Debit"), _("Credit"), _("Memo"), "");
 	else if ($dim == 1)
 		$th = array(_("Account Code"), _("Account Description"), _("Dimension"),
-			_("Debit"), _("Credit"), _("Memo"));
+			_("Debit"), _("Credit"), _("Memo"), "");
 	else
 		$th = array(_("Account Code"), _("Account Description"),
-			_("Debit"), _("Credit"), _("Memo"));
+			_("Debit"), _("Credit"), _("Memo"), "");
 
 	if (count($order->gl_items)) $th[] = '';
 
@@ -86,7 +109,7 @@ function display_gl_items($title, &$order)
 
 			edit_button_cell("Edit$item->index", _("Edit"),
 				_('Edit journal line'));
-			edit_button_cell("Delete$item->index", _("Delete"),
+			delete_button_cell("Delete$item->index", _("Delete"),
 				_('Remove line from journal'));
     		end_row();
 		} 
@@ -127,8 +150,16 @@ function gl_edit_item_controls(&$order, $dim, $Index=null)
 		$_POST['code_id'] = $item->code_id;
 		$_POST['dimension_id'] = $item->dimension_id;
 		$_POST['dimension2_id'] = $item->dimension2_id;
-		$_POST['AmountDebit'] = price_format($item->amount);
-		$_POST['AmountCredit'] = price_format(abs($item->amount));
+		if ($item->amount > 0)
+		{
+			$_POST['AmountDebit'] = price_format($item->amount);
+			$_POST['AmountCredit'] = "";
+		}
+		else
+		{
+			$_POST['AmountDebit'] = "";
+			$_POST['AmountCredit'] = price_format(abs($item->amount));
+		}	
 		$_POST['description'] = $item->description;
 		$_POST['LineMemo'] = $item->reference;
 
@@ -156,7 +187,7 @@ function gl_edit_item_controls(&$order, $dim, $Index=null)
 		}
 		
 		$skip_bank = ($_SESSION["wa_current_user"]->access != 2);
-		gl_all_accounts_list('code_id', null, $skip_bank, false, true);
+		gl_all_accounts_list('code_id', null, $skip_bank, true);
 		if ($dim >= 1)
 			dimensions_list_cells(null, 'dimension_id', null, true, " ", false, 1);
 		if ($dim > 1)
@@ -173,10 +204,10 @@ function gl_edit_item_controls(&$order, $dim, $Index=null)
 
 	if ($id != -1)
 	{
-		edit_button_cell('UpdateItem', _("Update"),
-				_('Confirm changes'));
-		edit_button_cell('CancelItemChanges', _("Cancel"),
-				_('Cancel changes'));
+		button_cell('UpdateItem', _("Update"),
+				_('Confirm changes'), ICON_UPDATE);
+		button_cell('CancelItemChanges', _("Cancel"),
+				_('Cancel changes'), ICON_CANCEL);
  		set_focus('amount');
 	} 
 	else 

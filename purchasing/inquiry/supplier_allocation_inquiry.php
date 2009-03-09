@@ -1,7 +1,17 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 $page_security=2;
 $path_to_root="../..";
+include($path_to_root . "/includes/db_pager.inc");
 include($path_to_root . "/includes/session.inc");
 
 include($path_to_root . "/purchasing/includes/purchasing_ui.inc");
@@ -51,48 +61,106 @@ set_global_supplier($_POST['supplier_id']);
 end_row();
 end_table();
 end_form();
+//------------------------------------------------------------------------------------------------
+function check_overdue($row)
+{
+	return ($row['TotalAmount']>$row['Allocated']) && 
+		$row['OverDue'] == 1;
+}
 
+function systype_name($dummy, $type)
+{
+	return systypes::name($type);
+}
 
+function view_link($trans)
+{
+	return get_trans_view_str($trans["type"], $trans["trans_no"]);
+}
+
+function due_date($row)
+{
+	return (($row["type"] == 20) || ($row["type"]== 21))
+		? $row["due_date"] : "";
+}
+
+function fmt_balance($row)
+{
+	$value = ($row["type"] == 1 || $row["type"] == 21 || $row["type"] == 22)
+		? -$row["TotalAmount"] - $row["Allocated"]
+		: $row["TotalAmount"] - $row["Allocated"];
+	return $value;
+}
+
+function alloc_link($row)
+{
+	$link = 
+	pager_link(_("Allocations"),
+		"/purchasing/allocations/supplier_allocate.php?trans_no=" .
+			$row["trans_no"]. "&trans_type=" . $row["type"], ICON_MONEY );
+
+	return (($row["type"] == 1 || $row["type"] == 21 || $row["type"] == 22) 
+		&& (-$row["TotalAmount"] - $row["Allocated"]) > 0)
+		? $link : '';
+}
+
+function fmt_debit($row)
+{
+	$value = -$row["TotalAmount"];
+	return $value>=0 ? price_format($value) : '';
+
+}
+
+function fmt_credit($row)
+{
+	$value = $row["TotalAmount"];
+	return $value>0 ? price_format($value) : '';
+}
 //------------------------------------------------------------------------------------------------
 
-function get_transactions()
-{
-	global $db;
-
-    $date_after = date2sql($_POST['TransAfterDate']);
-    $date_to = date2sql($_POST['TransToDate']);
+ $date_after = date2sql($_POST['TransAfterDate']);
+ $date_to = date2sql($_POST['TransToDate']);
 
     // Sherifoz 22.06.03 Also get the description
-    $sql = "SELECT ".TB_PREF."supp_trans.type, ".TB_PREF."supp_trans.trans_no,
-    	".TB_PREF."supp_trans.tran_date, ".TB_PREF."supp_trans.reference, ".TB_PREF."supp_trans.supp_reference,
-    	(".TB_PREF."supp_trans.ov_amount + ".TB_PREF."supp_trans.ov_gst  + ".TB_PREF."supp_trans.ov_discount) AS TotalAmount, ".TB_PREF."supp_trans.alloc AS Allocated,
-		((".TB_PREF."supp_trans.type = 20 OR ".TB_PREF."supp_trans.type = 21) AND ".TB_PREF."supp_trans.due_date < '" . date2sql(Today()) . "') AS OverDue,
-		".TB_PREF."suppliers.curr_code, ".TB_PREF."suppliers.supp_name, ".TB_PREF."supp_trans.due_date
-    	FROM ".TB_PREF."supp_trans, ".TB_PREF."suppliers
-    	WHERE ".TB_PREF."suppliers.supplier_id = ".TB_PREF."supp_trans.supplier_id
-     	AND ".TB_PREF."supp_trans.tran_date >= '$date_after'
-    	AND ".TB_PREF."supp_trans.tran_date <= '$date_to'";
+    $sql = "SELECT 
+		trans.type, 
+		trans.trans_no,
+		trans.reference, 
+		supplier.supp_name, 
+		trans.supp_reference,
+    	trans.tran_date, 
+		trans.due_date,
+		supplier.curr_code, 
+    	(trans.ov_amount + trans.ov_gst  + trans.ov_discount) AS TotalAmount, 
+		trans.alloc AS Allocated,
+		((trans.type = 20 OR trans.type = 21) AND trans.due_date < '" . date2sql(Today()) . "') AS OverDue
+    	FROM "
+			.TB_PREF."supp_trans as trans, "
+			.TB_PREF."suppliers as supplier
+    	WHERE supplier.supplier_id = trans.supplier_id
+     	AND trans.tran_date >= '$date_after'
+    	AND trans.tran_date <= '$date_to'";
    	if ($_POST['supplier_id'] != reserved_words::get_all())
-   		$sql .= " AND ".TB_PREF."supp_trans.supplier_id = '" . $_POST['supplier_id'] . "'";
+   		$sql .= " AND trans.supplier_id = '" . $_POST['supplier_id'] . "'";
    	if (isset($_POST['filterType']) && $_POST['filterType'] != reserved_words::get_all())
    	{
    		if (($_POST['filterType'] == '1') || ($_POST['filterType'] == '2'))
    		{
-   			$sql .= " AND ".TB_PREF."supp_trans.type = 20 ";
+   			$sql .= " AND trans.type = 20 ";
    		}
    		elseif ($_POST['filterType'] == '3')
    		{
-			$sql .= " AND ".TB_PREF."supp_trans.type = 22 ";
+			$sql .= " AND trans.type = 22 ";
    		}
    		elseif (($_POST['filterType'] == '4') || ($_POST['filterType'] == '5'))
    		{
-			$sql .= " AND ".TB_PREF."supp_trans.type = 21 ";
+			$sql .= " AND trans.type = 21 ";
    		}
 
    		if (($_POST['filterType'] == '2') || ($_POST['filterType'] == '5'))
    		{
    			$today =  date2sql(Today());
-			$sql .= " AND ".TB_PREF."supp_trans.due_date < '$today' ";
+			$sql .= " AND trans.due_date < '$today' ";
    		}
    	}
 
@@ -101,110 +169,40 @@ function get_transactions()
    		$sql .= " AND (round(abs(ov_amount + ov_gst + ov_discount) - alloc,6) != 0) ";
    	}
 
-    $sql .= " ORDER BY ".TB_PREF."supp_trans.tran_date";
+$cols = array(
+	_("Type") => array('fun'=>'systype_name'),
+	_("#") => array('fun'=>'view_link', 'ord'=>''),
+	_("Reference"), 
+	_("Supplier") => array('ord'=>''), 
+	_("Supp Reference"),
+	_("Date") => array('name'=>'tran_date', 'type'=>'date', 'ord'=>'asc'),
+	_("Due Date") => array('fun'=>'due_date'),
+	_("Currency") => array('align'=>'center'),
+	_("Debit") => array('align'=>'right', 'fun'=>'fmt_debit'), 
+	_("Credit") => array('align'=>'right', 'insert'=>true, 'fun'=>'fmt_credit'), 
+	_("Allocated") => 'amount', 
+	_("Balance") => array('type'=>'amount', 'insert'=>true, 'fun'=>'fmt_balance'),
+	array('insert'=>true, 'fun'=>'alloc_link')
+	);
 
-    return db_query($sql,"No supplier transactions were returned");
+if ($_POST['supplier_id'] != reserved_words::get_all()) {
+	$cols[_("Supplier")] = 'skip';
+	$cols[_("Currency")] = 'skip';
 }
-
 //------------------------------------------------------------------------------------------------
 
-$result = get_transactions();
-//------------------------------------------------------------------------------------------------
-if(get_post('RefreshInquiry')) 
-{
-	$Ajax->activate('doc_tbl');
+$table =& new_db_pager('doc_tbl', $sql, $cols);
+$table->set_marker('check_overdue', _("Marked items are overdue."));
+
+if (get_post('RefreshInquiry')) {
+	$table->set_sql($sql);
+	$table->set_columns($cols);
 }
+$table->width = "90%";
+start_form();
 
-//------------------------------------------------------------------------------------------------
+display_db_pager($table);
 
-/*show a table of the transactions returned by the sql */
-
-div_start('doc_tbl');
-if (db_num_rows($result) == 0)
-{
-	display_note(_("There are no transactions to display for the given dates."), 1, 1);
-} else
-{
-  start_table("$table_style width=90%");
-  if ($_POST['supplier_id'] == reserved_words::get_all())
-	$th = array(_("Type"), _("Number"), _("Reference"), _("Supplier"),
-		_("Supp Reference"), _("Date"), _("Due Date"), _("Currency"),
-		_("Debit"), _("Credit"), _("Allocated"), _("Balance"), "");
-  else
-	$th = array(_("Type"), _("Number"), _("Reference"),	_("Supp Reference"), _("Date"), _("Due Date"),
-		_("Debit"), _("Credit"), _("Allocated"), _("Balance"), "");
-  table_header($th);
-
-  $j = 1;
-  $k = 0; //row colour counter
-  $over_due = false;
-  while ($myrow = db_fetch($result))
-  {
-
-	if (($myrow['TotalAmount']>$myrow['Allocated']) && $myrow['OverDue'] == 1)
-	{
-		start_row("class='overduebg'");
-		$over_due = true;
-	}
-	else
-	{
-		alt_table_row_color($k);
-	}
-
-	$date = sql2date($myrow["tran_date"]);
-
-	$duedate = ((($myrow["type"] == 20) || ($myrow["type"]== 21))?sql2date($myrow["due_date"]):"");
-
-
-	label_cell(systypes::name($myrow["type"]));
-	label_cell(get_trans_view_str($myrow["type"],$myrow["trans_no"]));
-	label_cell($myrow["reference"]);
-	if ($_POST['supplier_id'] == reserved_words::get_all())
-		label_cell($myrow["supp_name"]);
-	label_cell($myrow["supp_reference"]);
-	label_cell($date);
-	label_cell($duedate);
-    if ($_POST['supplier_id'] == reserved_words::get_all())
-    	label_cell($myrow["curr_code"]);
-	$myrow["TotalAmount"] = round2($myrow["TotalAmount"], user_price_dec());
-	$myrow["Allocated"] = round2($myrow["Allocated"], user_price_dec());
-    if ($myrow["TotalAmount"] >= 0)
-    	label_cell("");
-	amount_cell(abs($myrow["TotalAmount"]));
-	if ($myrow["TotalAmount"] < 0)
-		label_cell("");
-	amount_cell($myrow["Allocated"]);
-	if ($myrow["type"] == 1 || $myrow["type"] == 21 || $myrow["type"] == 22)
-		$balance = -$myrow["TotalAmount"] - $myrow["Allocated"];
-	else
-		$balance = $myrow["TotalAmount"] - $myrow["Allocated"];
-	amount_cell($balance);
-
-	if (($myrow["type"] == 1 || $myrow["type"] == 21 || $myrow["type"] == 22) &&
-		$balance > 0)
-	{
-		label_cell("<a href='$path_to_root/purchasing/allocations/supplier_allocate.php?trans_no=" .
-			$myrow["trans_no"]. "&trans_type=" . $myrow["type"] . "'>" . _("Allocations") . "</a>");
-	}
-	else
-		label_cell("");
-
-	end_row();
-
-	$j++;
-	If ($j == 12)
-	{
-		$j = 1;
-		table_header($th);
-	}
-  //end of page full new headings if
-  }
-  //end of while loop
-
-  end_table(1);
-  if ($over_due)
-	display_note(_("Marked items are overdue."), 0, 1, "class='overduefg'");
-}
-div_end();
+end_form();
 end_page();
 ?>

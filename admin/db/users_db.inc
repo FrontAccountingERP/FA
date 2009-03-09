@@ -1,11 +1,24 @@
 <?php
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 
-function add_user($user_id, $real_name, $password, $phone, $email, $full_access, $language)
+function add_user($user_id, $real_name, $password, $phone, $email, $full_access, 
+	$language, $profile, $rep_popup, $pos)
 {
-	$sql = "INSERT INTO ".TB_PREF."users (user_id, real_name, password, phone, email, full_access, language)
+	$sql = "INSERT INTO ".TB_PREF."users (user_id, real_name, password"
+		.", phone, email, full_access, language, pos, print_profile, rep_popup)
 		VALUES (".db_escape($user_id).", 
 		".db_escape($real_name).", ".db_escape($password) .",".db_escape($phone).",
-		 ".db_escape($email).", $full_access, ".db_escape($language).")";
+		 ".db_escape($email).", $full_access, ".db_escape($language).",
+		 $pos,".db_escape($profile).",$rep_popup)";
 
 	db_query($sql, "could not add user for $user_id");
 }
@@ -22,22 +35,27 @@ function update_user_password($user_id, $password)
 
 //-----------------------------------------------------------------------------------------------
 
-function update_user($user_id, $real_name, $phone, $email, $full_access, $language)
+function update_user($user_id, $real_name, $phone, $email, $full_access, 
+	$language, $profile, $rep_popup, $pos)
 {
 	$sql = "UPDATE ".TB_PREF."users SET real_name=".db_escape($real_name).
 	", phone=".db_escape($phone).",
 		email=".db_escape($email).",
 		full_access=$full_access,
-		language=".db_escape($language)."
+		language=".db_escape($language).",
+		print_profile=".db_escape($profile).",
+		rep_popup=$rep_popup,
+		pos=$pos
 		WHERE user_id = ".db_escape($user_id);
-
 	db_query($sql, "could not update user for $user_id");
 }
 
 //-----------------------------------------------------------------------------------------------
 
-function update_user_display_prefs($user_id, $price_dec, $qty_dec, $exrate_dec, $percent_dec, $showgl,
-	$showcodes, $date_format, $date_sep, $tho_sep, $dec_sep, $theme, $pagesize, $show_hints)
+function update_user_display_prefs($user_id, $price_dec, $qty_dec, $exrate_dec, 
+	$percent_dec, $showgl, $showcodes, $date_format, $date_sep, $tho_sep, 
+	$dec_sep, $theme, $pagesize, $show_hints, $profile, $rep_popup, $query_size, 
+	$graphic_links,	$lang)
 {
 	$sql = "UPDATE ".TB_PREF."users SET
 		prices_dec=".db_escape($price_dec).",
@@ -52,7 +70,12 @@ function update_user_display_prefs($user_id, $price_dec, $qty_dec, $exrate_dec, 
 		dec_sep=".db_escape($dec_sep).",
 		theme=".db_escape($theme).",
 		page_size=".db_escape($pagesize).",
-		show_hints=$show_hints
+		show_hints=$show_hints,
+		print_profile=".db_escape($profile).",
+		rep_popup=$rep_popup,
+		query_size=$query_size,
+		graphic_links=$graphic_links,
+		language=".db_escape($lang)."
 		WHERE user_id = ".db_escape($user_id);
 
 	db_query($sql, "could not update user display prefs for $user_id");

@@ -1,5 +1,14 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 $page_security=5;
 $path_to_root="..";
 
@@ -49,8 +58,10 @@ if (isset($_GET['AddedID']))
 
 	display_note(get_gl_view_str($trans_type, $invoice_no, _("View the GL Journal Entries for this Invoice")), 1);
 
-    hyperlink_params($_SERVER['PHP_SELF'], _("Enter Another Invoice"), "New=1");
+	hyperlink_params($_SERVER['PHP_SELF'], _("Enter Another Invoice"), "New=1");
 
+	hyperlink_params("$path_to_root/admin/attachments.php", _("Add an Attachment"), "filterType=$trans_type&trans_no=$invoice_no");
+	
 	display_footer_exit();
 }
 
@@ -323,6 +334,7 @@ if ($id4 != -1)
 	$Ajax->activate('inv_tot');
 }
 
+$id2 = -1;
 if ($_SESSION["wa_current_user"]->access == 2)
 {
 	$id3 = find_submit('void_item_id');
@@ -364,38 +376,35 @@ if ($_SESSION["wa_current_user"]->access == 2)
 	}   		
 }
 
+if (isset($_POST['go']))
+{
+	$Ajax->activate('gl_items');
+	display_quick_entries($_SESSION['supp_trans'], $_POST['qid'], input_num('totamount'), QE_SUPPINV);
+	$_POST['totamount'] = price_format(0); $Ajax->activate('totamount');
+	$Ajax->activate('inv_tot');
+}
+
 start_form(false, true);
 
-start_table("$table_style2 width=98%", 8);
-echo "<tr><td valign=center>"; // outer table
-
-echo "<center>";
-
 invoice_header($_SESSION['supp_trans']);
+
 if ($_POST['supplier_id']=='') 
 	display_error('No supplier found for entered search text');
 else {
-	echo "</td></tr><tr><td valign=center>"; // outer table
-
-	echo "<center>";
+	start_outer_table("$table_style2 width=98%", 5);
 
 	display_grn_items($_SESSION['supp_trans'], 1);
-	//display_grn_items_for_selection();
-	display_gl_items($_SESSION['supp_trans'], 1);
-	//display_gl_controls();
 
-	//echo "</td></tr><tr><td align=center colspan=2>"; // outer table
-	echo "<br>";
+	display_gl_items($_SESSION['supp_trans'], 1);
+
 	div_start('inv_tot');
 	invoice_totals($_SESSION['supp_trans']);
 	div_end();
-}
-echo "</td></tr>";
 
-end_table(); // outer table
+	end_outer_table(0, false);
+}
 
 //-----------------------------------------------------------------------------------------
-
 
 if ($id != -1 || $id2 != -1)
 {
@@ -406,9 +415,9 @@ if ($id != -1 || $id2 != -1)
 if (get_post('AddGLCodeToTrans'))
 	$Ajax->activate('inv_tot');
 
-echo "<br>";
+br();
 submit_center('PostInvoice', _("Enter Invoice"), true, '', true);
-echo "<br>";
+br();
 
 end_form();
 

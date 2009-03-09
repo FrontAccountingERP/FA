@@ -1,5 +1,14 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 $page_security = 3;
 $path_to_root="..";
 include_once($path_to_root . "/includes/ui/items_cart.inc");
@@ -32,9 +41,9 @@ if (isset($_GET['AddedID']))
 	$trans_type = systypes::location_transfer();
 
 	display_notification_centered(_("Inventory transfer has been processed"));
-	display_note(get_trans_view_str($trans_type, $trans_no, _("View this transfer")));
+	display_note(get_trans_view_str($trans_type, $trans_no, _("&View this transfer")));
 
-	hyperlink_no_params($_SERVER['PHP_SELF'], _("Enter Another Inventory Transfer"));
+	hyperlink_no_params($_SERVER['PHP_SELF'], _("Enter &Another Inventory Transfer"));
 
 	display_footer_exit();
 }

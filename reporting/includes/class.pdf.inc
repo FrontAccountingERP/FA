@@ -1,4 +1,14 @@
 <?php
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 /*
 	This class is an extension to the tcpdf class using a syntax that the original reports were written in
 	(the R &OS pdf.php class) - due to easily portation this wrapper class
@@ -203,14 +213,10 @@ class Cpdf extends TCPDF {
 	{
 		TCPDF::Ellipse($x0, $y0, $r1, $r2, $angle, $astart. $afinish, ($close?'C':''), "", "", $nSeg);
 	}
+
 	function Stream()
 	{
 		TCPDF::Output('', 'I');
-	}
-
-	function Output()
-	{
-		return TCPDF::Output('','S');
 	}
 
 	function calcTextWrap($txt, $width, $spacebreak=false)

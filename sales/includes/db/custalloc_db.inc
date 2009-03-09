@@ -1,5 +1,14 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 //----------------------------------------------------------------------------------------
 
 function add_cust_allocation($amount, $trans_type_from, $trans_no_from,
@@ -82,10 +91,43 @@ function clear_cust_alloctions($type, $type_no, $date="")
 
 	db_query($sql, "could not void debtor transactions for type=$type and trans_no=$type_no");
 }
+//----------------------------------------------------------------------------------------
+
+function get_alloc_trans_sql($extra_fields=null, $extra_conditions=null, $extra_tables=null)
+{
+	$sql = "SELECT
+		trans.type,
+		trans.trans_no,
+		trans.reference,
+		trans.tran_date,
+		debtor.name AS DebtorName, 
+		debtor.curr_code, 
+		ov_amount+ov_gst+ov_freight+ov_freight_tax+ov_discount AS Total,
+		trans.alloc,
+		trans.due_date,
+		debtor.address,
+		trans.version ";
+
+	if ($extra_fields)
+		$sql .= ", $extra_fields ";
+
+	$sql .= " FROM ".TB_PREF."debtor_trans as trans, "
+				.TB_PREF."debtors_master as debtor";
+	if ($extra_tables)
+		$sql .= ",$extra_tables ";
+
+	$sql .= " WHERE trans.debtor_no=debtor.debtor_no";
+
+	if ($extra_conditions)
+		$sql .= " AND $extra_conditions ";
+	
+	return $sql;
+}
+
 
 //-------------------------------------------------------------------------------------------------------------
 
-function get_allocatable_from_cust_transactions($customer_id, $settled)
+function get_allocatable_from_cust_sql($customer_id, $settled)
 {
 	$settled_sql = "";
 	if (!$settled)
@@ -94,10 +136,12 @@ function get_allocatable_from_cust_transactions($customer_id, $settled)
 	}
 	$cust_sql = "";
 	if ($customer_id != null)
-		$cust_sql = " AND ".TB_PREF."debtor_trans.debtor_no = $customer_id";
+		$cust_sql = " AND trans.debtor_no = $customer_id";
 
-	return get_customer_transactions("round(ov_amount+ov_gst+ov_freight+ov_freight_tax+ov_discount-alloc,6) <= 0 AS settled",
-		"(type=12 OR type=11 OR type=2) AND (".TB_PREF."debtor_trans.ov_amount > 0) " . $settled_sql . $cust_sql);
+	$sql = get_alloc_trans_sql("round(ov_amount+ov_gst+ov_freight+ov_freight_tax+ov_discount-alloc,6) <= 0 AS settled",
+		"(type=12 OR type=11 OR type=2) AND (trans.ov_amount > 0) " . $settled_sql . $cust_sql);
+
+	return $sql;
 }
 
 //-------------------------------------------------------------------------------------------------------------
@@ -106,22 +150,24 @@ function get_allocatable_to_cust_transactions($customer_id, $trans_no=null, $typ
 {
 	if ($trans_no != null and $type != null)
 	{
-		return get_customer_transactions("amt", "".TB_PREF."debtor_trans.trans_no = ".TB_PREF."cust_allocations.trans_no_to
-			AND ".TB_PREF."debtor_trans.type = ".TB_PREF."cust_allocations.trans_type_to
-			AND ".TB_PREF."cust_allocations.trans_no_from=$trans_no
-			AND ".TB_PREF."cust_allocations.trans_type_from=$type
-			AND ".TB_PREF."debtor_trans.debtor_no=$customer_id",
-			"".TB_PREF."cust_allocations");
+		$sql = get_alloc_trans_sql("amt", "trans.trans_no = alloc.trans_no_to
+			AND trans.type = alloc.trans_type_to
+			AND alloc.trans_no_from=$trans_no
+			AND alloc.trans_type_from=$type
+			AND trans.debtor_no=$customer_id",
+			"".TB_PREF."cust_allocations as alloc");
 	}
 	else
 	{
-		return get_customer_transactions(null, "round(ov_amount+ov_gst+ov_freight+ov_freight_tax+ov_discount-alloc,6) > 0
-			AND ".TB_PREF."debtor_trans.type != " . systypes::cust_payment() . "
-			AND ".TB_PREF."debtor_trans.type != " . systypes::bank_deposit() . "
-			AND ".TB_PREF."debtor_trans.type != 11
-			AND ".TB_PREF."debtor_trans.type != 13
-			AND ".TB_PREF."debtor_trans.debtor_no=$customer_id");
+		$sql = get_alloc_trans_sql(null, "round(ov_amount+ov_gst+ov_freight+ov_freight_tax+ov_discount-alloc,6) > 0
+			AND trans.type != " . systypes::cust_payment() . "
+			AND trans.type != " . systypes::bank_deposit() . "
+			AND trans.type != 11
+			AND trans.type != 13
+			AND trans.debtor_no=$customer_id");
 	}
+
+	return db_query($sql." ORDER BY trans_no", "Cannot retreive alloc to transactions");
 }
 
 

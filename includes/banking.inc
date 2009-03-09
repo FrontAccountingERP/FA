@@ -1,15 +1,33 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 include_once($path_to_root . "/gl/includes/gl_db.inc");
 
 //----------------------------------------------------------------------------------
-
+//	Check if given account is used by any bank_account. 
+//	Returns id of first bank_account using account_code, null otherwise.
+//
+//	Keep in mind that direct posting to bank account is depreciated
+//	because we have no way to select right bank account if 
+//	there is more than one using given gl account.
+//
 function is_bank_account($account_code)
 {
-	$sql= "SELECT account_code FROM ".TB_PREF."bank_accounts WHERE account_code='$account_code'";
-	$result = db_query($sql, "retreive bank account currency");
-
-	return (db_num_rows($result) > 0);
+	$sql= "SELECT id FROM ".TB_PREF."bank_accounts WHERE account_code='$account_code'";
+	$result = db_query($sql, "checking account is bank account");
+	if (db_num_rows($result) > 0) {
+		$acct = db_fetch($result);
+		return $acct['id'];
+	} else
+		return false;
 }
 
 //----------------------------------------------------------------------------------
@@ -35,9 +53,9 @@ function get_company_currency()
 
 //----------------------------------------------------------------------------------
 
-function get_bank_account_currency($bankAccount)
+function get_bank_account_currency($id)
 {
-	$sql= "SELECT bank_curr_code FROM ".TB_PREF."bank_accounts WHERE account_code='$bankAccount'";
+	$sql= "SELECT bank_curr_code FROM ".TB_PREF."bank_accounts WHERE id='$id'";
 	$result = db_query($sql, "retreive bank account currency");
 
 	$myrow = db_fetch_row($result);
@@ -85,7 +103,9 @@ function get_exchange_rate_from_home_currency($currency_code, $date_)
 	if (db_num_rows($result) == 0)
 	{
 		// no stored exchange rate, just return 1
-		display_error(_("Cannot retrieve currency exchange rate for this date. Please add exchange rate manually on Exchange Rates page.") );
+		display_error(
+			sprintf(_("Cannot retrieve exchange rate for currency %s as of %s. Please add exchange rate manually on Exchange Rates page."),
+				 $currency_code, $date_));
 		return 1.000;
 	}
 

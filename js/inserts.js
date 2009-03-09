@@ -1,4 +1,18 @@
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 var _focus;
+var _hotkeys = {
+	'alt': false,	// whether is the Alt key pressed
+	'focus': -1	// currently selected indeks of document.links
+};
 
 function debug(msg) {
     box = document.getElementById('msgbox')
@@ -142,7 +156,7 @@ function _set_combo_select(e) {
 				// F4: call related database editor - not available in non-js fallback mode
 				JsHttpRequest.request('_'+this.name+'_editor', this.form);
 				return false; // prevent default binding
-				// TODO: preventDefault, stopPropagation when needed
+				// TODO: stopPropagation when needed
 			}
 		}
 }		
@@ -151,6 +165,20 @@ function _set_combo_select(e) {
  Behaviour definitions
 */
 var inserts = {
+	'form': function(e) {
+  		e.onkeydown = function(ev) { 
+			ev = ev||window.event;
+			key = ev.keyCode||ev.which;
+			if((ev.ctrlKey && key == 13) || key == 27) {
+				ev.cancelBubble = true;
+    			if(ev.stopPropagation) ev.stopPropagation();
+// here ctrl-enter/escape support
+				ev.returnValue = false;
+				return false;
+			} 
+			return true;
+	  	}
+	},
 	'input': function(e) {
 		if(e.onfocus==undefined) {
 			e.onfocus = function() {
@@ -185,11 +213,13 @@ var inserts = {
   	    // this shows divs for js enabled browsers only
 	    e.style.display = 'block';
 	},
-	'input.ajaxsubmit,input.editbutton,input.navibutton': 
+//	'.ajaxsubmit,.editbutton,.navibutton': // much slower on IE7
+	'button.ajaxsubmit,input.ajaxsubmit,input.editbutton,button.navibutton': 
 	function(e) {
 	    e.onclick = function() {
 			if (this.getAttribute('aspect') == 'process')
 				progbar();
+		    save_focus(this);
 			JsHttpRequest.request(this);
 			return false;
 	    }
@@ -239,6 +269,13 @@ var inserts = {
 			};
 		}
 	},
+	'a.printlink': 	function(l) {
+		l.onclick = function() {
+		    save_focus(this);
+			JsHttpRequest.request(this);
+			return false;
+		}
+	},
 	'ul.ajaxtabs':	function(ul) {
 	    var ulist=ul.getElementsByTagName("li");
 	    for (var x=0; x<ulist.length; x++){ //loop through each LI e
@@ -266,7 +303,73 @@ var inserts = {
 	}
 */
 };
+function stopEv(ev) {
+			ev.returnValue = false;
+			ev.cancelBubble = true;
+			if(ev.preventDefault) ev.preventDefault();
+			return false;
+}
+/*
+	Modified accesskey system. While Alt key is pressed letter keys moves 
+	focus to next marked link. Alt key release activates focused link.
+*/
+function setHotKeys() {
+	document.onkeydown = function(ev) {
+		ev = ev||window.event;
+		key = ev.keyCode||ev.which;
+		if (key == 18 && !ev.ctrlKey) {	// start selection, skip Win AltGr
+			_hotkeys.alt = true;
+			_hotkeys.focus = -1;
+			return stopEv(ev);
+		} else
+		if (key == 27) { // cancel selection
+			_hotkeys.alt = false;
+			_hotkeys.focus = -1;
+			return stopEv(ev);
+		} 
+		else if (_hotkeys.alt && ((key>47 && key<58) || (key>64 && key<91))) {
+			var n = _hotkeys.focus;
+			var l = document.links;
+			var cnt = l.length;
+			key = String.fromCharCode(key);
+			for (var i=0; i<cnt; i++) { 
+				n = (n+1)%cnt;
+				// check also if the link is visible
+				if (l[n].accessKey==key && l[n].scrollWidth) {
+					_hotkeys.focus = n;
+	    // The timeout is needed to prevent unpredictable behaviour on IE.
+					var tmp = function() {document.links[_hotkeys.focus].focus();};
+					setTimeout(tmp, 0);
+					break;
+				}
+			}
+			return stopEv(ev);
+		}
+		return true;
+	};
+	document.onkeyup = function(ev) {
+		if (_hotkeys.alt==true) {
+			ev = ev||window.event;
+			key = ev.keyCode||ev.which;
+
+			if (key == 18) {
+				_hotkeys.alt = false;
+				if (_hotkeys.focus>=0) {
+					var link = document.links[_hotkeys.focus];
+					if (link.target=='_blank') {
+//						window.open(link.href,'','toolbar=no,scrollbar=no,resizable=yes,menubar=no,width=900,height=500');
+						openWindow(link.href,'_blank');
+					} else
+						window.location = link.href;
+				}
+			} 
+			return stopEv(ev);
+		}
+		return true;
+	}
+}
 
 Behaviour.register(inserts);
 
 Behaviour.addLoadEvent(setFocus);
+Behaviour.addLoadEvent(setHotKeys);

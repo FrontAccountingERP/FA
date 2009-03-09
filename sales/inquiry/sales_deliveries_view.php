@@ -1,7 +1,17 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 $page_security = 2;
 $path_to_root="../..";
+include($path_to_root . "/includes/db_pager.inc");
 include($path_to_root . "/includes/session.inc");
 
 include($path_to_root . "/sales/includes/sales_ui.inc");
@@ -37,50 +47,37 @@ else
 
 if (isset($_POST['BatchInvoice']))
 {
-
 	// checking batch integrity
     $del_count = 0;
-    foreach($_SESSION['Batch'] as $delivery)
-    {
-	  	$checkbox = 'Sel_'.$delivery['trans'];
-	  	if (check_value($checkbox))
-	  	{
-	    	if (!$del_count)
-	    	{
-				$del_customer = $delivery['cust'];
-				$del_branch = $delivery['branch'];
+    foreach($_POST['Sel_'] as $delivery => $branch) {
+	  	$checkbox = 'Sel_'.$delivery;
+	  	if (check_value($checkbox))	{
+	    	if (!$del_count) {
+				$del_branch = $branch;
 	    	}
-	    	else
-	    	{
-				if ($del_customer!=$delivery['cust'] || $del_branch != $delivery['branch'])
-				{
+	    	else {
+				if ($del_branch != $branch)	{
 		    		$del_count=0;
 		    		break;
 				}
 	    	}
-	    	$selected[] = $delivery['trans'];
+	    	$selected[] = $delivery;
 	    	$del_count++;
 	  	}
     }
 
-    if (!$del_count)
-    {
+    if (!$del_count) {
 		display_error(_('For batch invoicing you should
 		    select at least one delivery. All items must be dispatched to
 		    the same customer branch.'));
-    }
-    else
-    {
+    } else {
 		$_SESSION['DeliveryBatch'] = $selected;
 		meta_forward($path_to_root . '/sales/customer_invoice.php','BatchInvoice=Yes');
     }
 }
 
 //-----------------------------------------------------------------------------------
-if (get_post('SearchOrders')) 
-{
-	$Ajax->activate('deliveries_tbl');
-} elseif (get_post('_DeliveryNumber_changed')) 
+if (get_post('_DeliveryNumber_changed')) 
 {
 	$disable = get_post('DeliveryNumber') !== '';
 
@@ -98,7 +95,6 @@ if (get_post('SearchOrders'))
 }
 
 //-----------------------------------------------------------------------------------
-print_hidden_script(13);
 
 start_form(false, false, $_SERVER['PHP_SELF'] ."?OutstandingOnly=" . $_POST['OutstandingOnly'] .SID);
 
@@ -119,7 +115,7 @@ hidden('OutstandingOnly', $_POST['OutstandingOnly']);
 end_row();
 
 end_table();
-
+end_form();
 //---------------------------------------------------------------------------------------------
 
 if (isset($_POST['SelectStockFromList']) && ($_POST['SelectStockFromList'] != "") &&
@@ -133,71 +129,120 @@ else
 }
 
 //---------------------------------------------------------------------------------------------
-$sql = "SELECT ".TB_PREF."debtor_trans.trans_no, "
-	.TB_PREF."debtors_master.curr_code, "
-	.TB_PREF."debtors_master.name, "
-	.TB_PREF."cust_branch.br_name, "
-	.TB_PREF."debtor_trans.reference, "
-	.TB_PREF."debtor_trans.tran_date, "
-	.TB_PREF."debtor_trans.due_date, "
-	.TB_PREF."sales_orders.customer_ref, "
-	.TB_PREF."sales_orders.deliver_to, ";
+function trans_view($trans, $trans_no)
+{
+	return get_customer_trans_view_str(13, $trans['trans_no']);
+}
 
-$sql .= " Sum(".TB_PREF."debtor_trans_details.quantity-"
-		 .TB_PREF."debtor_trans_details.qty_done) AS Outstanding, ";
+function batch_checkbox($row)
+{
+	$name = "Sel_" .$row['trans_no'];
+	return $row['Done'] ? '' :
+		"<input type='checkbox' name='$name' value='1' >"
+// add also trans_no => branch code for checking after 'Batch' submit
+	 ."<input name='Sel_[".$row['trans_no']."]' type='hidden' value='"
+	 .$row['branch_code']."'>\n";
+}
 
-$sql .= " Sum(".TB_PREF."debtor_trans_details.qty_done) AS Done, ";
+function edit_link($row)
+{
+	return $row["Outstanding"]==0 ? '' :
+		pager_link(_('Edit'), "/sales/customer_delivery.php?ModifyDelivery="
+			.$row['trans_no'], ICON_EDIT);
+}
 
-$sql .= "(ov_amount+ov_gst+ov_freight+ov_freight_tax) AS DeliveryValue";
-$sql .=" FROM "
-	 .TB_PREF."sales_orders, "
-	 .TB_PREF."debtor_trans, "
-	 .TB_PREF."debtor_trans_details, "
-	 .TB_PREF."debtors_master, "
-	 .TB_PREF."cust_branch
-		WHERE "
-		.TB_PREF."sales_orders.order_no = ".TB_PREF."debtor_trans.order_ AND "
-		.TB_PREF."debtor_trans.debtor_no = ".TB_PREF."debtors_master.debtor_no
-			AND ".TB_PREF."debtor_trans.type = 13
-			AND ".TB_PREF."debtor_trans_details.debtor_trans_no = ".TB_PREF."debtor_trans.trans_no
-			AND ".TB_PREF."debtor_trans_details.debtor_trans_type = ".TB_PREF."debtor_trans.type
-			AND ".TB_PREF."debtor_trans.branch_code = ".TB_PREF."cust_branch.branch_code
-			AND ".TB_PREF."debtor_trans.debtor_no = ".TB_PREF."cust_branch.debtor_no ";
+function prt_link($row)
+{
+	return print_document_link($row['trans_no'], _("Print"), true, 13, ICON_PRINT);
+}
 
-	if ($_POST['OutstandingOnly'] == true) {
-	 $sql .= " AND ".TB_PREF."debtor_trans_details.qty_done < ".TB_PREF."debtor_trans_details.quantity ";
-	}
+function invoice_link($row)
+{
+	return $row["Outstanding"]==0 ? '' :
+		pager_link(_('Invoice'), "/sales/customer_invoice.php?DeliveryNumber=" 
+			.$row['trans_no'], ICON_DOC);
+}
+
+function check_overdue($row)
+{
+   	return date1_greater_date2(Today(), sql2date($row["due_date"])) && 
+			$row["Outstanding"]!=0;
+}
+//------------------------------------------------------------------------------------------------
+$sql = "SELECT trans.trans_no,
+		debtor.name,
+		branch.branch_code,
+		branch.br_name,
+		sorder.deliver_to,
+		trans.reference,
+		sorder.customer_ref,
+		trans.tran_date,
+		trans.due_date,
+		(ov_amount+ov_gst+ov_freight+ov_freight_tax) AS DeliveryValue,
+		debtor.curr_code,
+		Sum(line.quantity-line.qty_done) AS Outstanding,
+		Sum(line.qty_done) AS Done
+	FROM "
+	 .TB_PREF."sales_orders as sorder, "
+	 .TB_PREF."debtor_trans as trans, "
+	 .TB_PREF."debtor_trans_details as line, "
+	 .TB_PREF."debtors_master as debtor, "
+	 .TB_PREF."cust_branch as branch
+		WHERE
+		sorder.order_no = trans.order_ AND
+		trans.debtor_no = debtor.debtor_no
+			AND trans.type = 13
+			AND line.debtor_trans_no = trans.trans_no
+			AND line.debtor_trans_type = trans.type
+			AND trans.branch_code = branch.branch_code
+			AND trans.debtor_no = branch.debtor_no ";
+
+if ($_POST['OutstandingOnly'] == true) {
+	 $sql .= " AND line.qty_done < line.quantity ";
+}
 
 //figure out the sql required from the inputs available
 if (isset($_POST['DeliveryNumber']) && $_POST['DeliveryNumber'] != "")
 {
-// if ($_POST['DeliveryNumber'] != '*') // TODO paged table
-	$sql .= " AND ".TB_PREF."debtor_trans.trans_no LIKE '%". $_POST['DeliveryNumber'] ."'";
- $sql .= " GROUP BY ".TB_PREF."debtor_trans.trans_no";
+	$sql .= " AND trans.trans_no LIKE '%". $_POST['DeliveryNumber'] ."'";
+ 	$sql .= " GROUP BY trans.trans_no";
 }
 else
 {
-
-	$date_after = date2sql($_POST['DeliveryAfterDate']);
-	$date_before = date2sql($_POST['DeliveryToDate']);
-
-	$sql .= " AND ".TB_PREF."debtor_trans.tran_date >= '$date_after'";
-	$sql .= " AND ".TB_PREF."debtor_trans.tran_date <= '$date_before'";
+	$sql .= " AND trans.tran_date >= '".date2sql($_POST['DeliveryAfterDate'])."'";
+	$sql .= " AND trans.tran_date <= '".date2sql($_POST['DeliveryToDate'])."'";
 
 	if ($selected_customer != -1)
-		$sql .= " AND ".TB_PREF."debtor_trans.debtor_no='" . $selected_customer . "' ";
+		$sql .= " AND trans.debtor_no='" . $selected_customer . "' ";
 
 	if (isset($selected_stock_item))
-		$sql .= " AND ".TB_PREF."debtor_trans_details.stock_id='". $selected_stock_item ."' ";
+		$sql .= " AND line.stock_id='". $selected_stock_item ."' ";
 
 	if (isset($_POST['StockLocation']) && $_POST['StockLocation'] != reserved_words::get_all())
-		$sql .= " AND ".TB_PREF."sales_orders.from_stk_loc = '". $_POST['StockLocation'] . "' ";
+		$sql .= " AND sorder.from_stk_loc = '". $_POST['StockLocation'] . "' ";
 
-	$sql .= " GROUP BY ".TB_PREF."debtor_trans.trans_no ";
+	$sql .= " GROUP BY trans.trans_no ";
 
 } //end no delivery number selected
 
-$result = db_query($sql,"No deliveries were returned");
+$cols = array(
+		_("Delivery #") => array('fun'=>'trans_view'), 
+		_("Customer"), 
+		'branch_code' => 'skip',
+		_("Branch") => array('ord'=>''), 
+		_("Contact"),
+		_("Reference"), 
+		_("Cust Ref"), 
+		_("Delivery Date") => array('type'=>'date', 'ord'=>''),
+		_("Due By") => 'date', 
+		_("Delivery Total") => array('type'=>'amount', 'ord'=>''),
+		_("Currency") => array('align'=>'center'),
+		submit('BatchInvoice',_("Batch"), false, _("Batch Invoicing")) 
+			=> array('insert'=>true, 'fun'=>'batch_checkbox', 'align'=>'center'),
+		array('insert'=>true, 'fun'=>'edit_link'),
+		array('insert'=>true, 'fun'=>'invoice_link'),
+		array('insert'=>true, 'fun'=>'prt_link')
+);
 
 //-----------------------------------------------------------------------------------
 if (isset($_SESSION['Batch']))
@@ -206,96 +251,22 @@ if (isset($_SESSION['Batch']))
     	unset($_SESSION['Batch'][$trans]);
     unset($_SESSION['Batch']);
 }
-if ($result)
-{
-	/*show a table of the deliveries returned by the sql */
 
-	div_start('deliveries_tbl');
+$table =& new_db_pager('deliveries_tbl', $sql, $cols);
+$table->set_marker('check_overdue', _("Marked items are overdue."));
 
-	start_table("$table_style colspan=7 width=95%");
-	$th = array(_("Delivery #"), _("Customer"), _("Branch"), _("Reference"), _("Delivery Date"),
-		_("Due By"), _("Delivery Total"), _("Currency"), submit('BatchInvoice','Batch Inv', false),
-		 "", "", "");
-	table_header($th);
-
-	$j = 1;
-	$k = 0; //row colour counter
-	$overdue_items = false;
-	while ($myrow = db_fetch($result))
-	{
-	    $_SESSION['Batch'][] = array('trans'=>$myrow["trans_no"],
-	    'cust'=>$myrow["name"],'branch'=>$myrow["br_name"] );
-
-	    $view_page = get_customer_trans_view_str(13, $myrow["trans_no"]);
-	    $formated_del_date = sql2date($myrow["tran_date"]);
-	    $formated_due_date = sql2date($myrow["due_date"]);
-	    $not_closed =  $myrow["Outstanding"]!=0;
-
-    	// if overdue orders, then highlight as so
-
-    	if (date1_greater_date2(Today(), $formated_due_date) && $not_closed )
-    	{
-        	 start_row("class='overduebg'");
-        	 $overdue_items = true;
-    	}
-    	else
-    	{
-			alt_table_row_color($k);
-    	}
-
-		label_cell($view_page);
-		label_cell($myrow["name"]);
-		label_cell($myrow["br_name"]);
-		label_cell($myrow["reference"]);
-		label_cell($formated_del_date);
-		label_cell($formated_due_date);
-		amount_cell($myrow["DeliveryValue"]);
-		label_cell($myrow["curr_code"]);
-		if (!$myrow['Done'])
-		    check_cells(null,'Sel_'. $myrow['trans_no'],0,false);
-		else
-    		    label_cell("");
-		if ($_POST['OutstandingOnly'] == true || $not_closed)
-		{
-    		$modify_page = $path_to_root . "/sales/customer_delivery.php?" . SID . "ModifyDelivery=" . $myrow["trans_no"];
-    		$invoice_page = $path_to_root . "/sales/customer_invoice.php?" . SID . "DeliveryNumber=" .$myrow["trans_no"];
-    		if (get_voided_entry(13, $myrow["trans_no"]) === false)
-    			label_cell("<a href='$modify_page'>" . _("Edit") . "</a>");
-    		else
-    			label_cell("");
-  		  	label_cell(print_document_link($myrow['trans_no'], _("Print")));
-
-    		label_cell($not_closed ? "<a href='$invoice_page'>" . _("Invoice") . "</a>" : '');
-
-		}
-		else
-		{
-    		label_cell("");
-    		label_cell("");
-    		label_cell("");
-		}
-		end_row();;
-
-		$j++;
-		If ($j == 12)
-		{
-			$j = 1;
-			table_header($th);
-		}
-		//end of page full new headings if
-	}
-	//end of while loop
-
-	end_table();
-
-   if ($overdue_items)
-   		display_note(_("Marked items are overdue."), 0, 1, "class='overduefg'");
-div_end();
+if (get_post('SearchOrders')) {
+	$table->set_sql($sql);
+	$table->set_columns($cols);
 }
+//$table->width = "92%";
 
-echo "<br>";
+start_form();
+
+display_db_pager($table);
+
 end_form();
-
 end_page();
+
 ?>
 

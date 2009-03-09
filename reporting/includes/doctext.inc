@@ -1,4 +1,14 @@
 <?php
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 if (isset($header2type))
 {
 	$doc_Cust_no = _("Cust no");
@@ -15,7 +25,7 @@ if (isset($header2type))
 	$doc_Your_VAT_no = _("Your VAT no.");
 	$doc_Our_VAT_no = _("Our VAT No.");
 	$doc_Payment_Terms = _("Payment Terms");
-	$doc_Customers_Ref = _("Customers Reference:");
+	$doc_Customers_Ref = _("Customers Reference");
 	$doc_Our_Order_No = _("Our Order No");
 	$doc_Domicile = _("Domicile");
 	if($doctype == 13 || $doctype == 8 || $doctype == 9) {
@@ -66,7 +76,7 @@ if (isset($emailtype))
 if (isset($header2type) || isset($linetype))
 {
 	$doc_Invoice_no = ($doctype==13 ? _("Delivery Note No.") : (($doctype==8 || $doctype==9) ? _("Order no.") : _("Invoice No.")));
-	$doc_Delivery_no = "Delivery Note No.";
+	$doc_Delivery_no = _("Delivery Note No.");
 	$doc_Order_no = _("Order no.");
 }
 if (isset($linetype))

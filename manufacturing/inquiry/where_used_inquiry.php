@@ -1,12 +1,21 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 $page_security = 2;
 $path_to_root="../..";
+include($path_to_root . "/includes/db_pager.inc");
 include($path_to_root . "/includes/session.inc");
 
 page(_("Inventory Item Where Used Inquiry"));
 
-//include($path_to_root . "/includes/date_functions.inc");
 include($path_to_root . "/includes/ui.inc");
 
 check_db_has_stock_items(_("There are no items defined in the system."));
@@ -21,60 +30,42 @@ stock_items_list('stock_id', $_POST['stock_id'], false, true);
 echo "<hr></center>";
 
 set_global_stock_item($_POST['stock_id']);
-
-if (list_updated('stock_id')) 
-	$Ajax->activate('usage_table');
-
-if (isset($_POST['stock_id']))
+//-----------------------------------------------------------------------------
+function select_link($row)
 {
-    $sql = "SELECT ".TB_PREF."bom.*,".TB_PREF."stock_master.description,".TB_PREF."workcentres.name As WorkCentreName, ".TB_PREF."locations.location_name
-		FROM ".TB_PREF."bom, ".TB_PREF."stock_master, ".TB_PREF."workcentres, ".TB_PREF."locations
-		WHERE ".TB_PREF."bom.parent = ".TB_PREF."stock_master.stock_id AND ".TB_PREF."bom.workcentre_added = ".TB_PREF."workcentres.id
-		AND ".TB_PREF."bom.loc_code = ".TB_PREF."locations.loc_code
-		AND ".TB_PREF."bom.component='" . $_POST['stock_id'] . "'";
-
-    $result = db_query($sql,"No parent items were returned");
-
-	div_start('usage_table');
-   	if (db_num_rows($result) == 0)
-   	{
-   		display_note(_("The selected item is not used in any BOMs."));
-   	}
-   	else
-   	{
-
-        start_table("$table_style width=80%");
-
-        $th = array(_("Parent Item"), _("Work Centre"), _("Location"), _("Quantity Required"));
-        table_header($th);
-
-		$k = $j = 0;
-        while ($myrow = db_fetch($result))
-        {
-
-			alt_table_row_color($k);
-
-    		$select_item = $path_to_root . "/manufacturing/manage/bom_edit.php?" . SID . "stock_id=" . $myrow["parent"];
-
-        	label_cell("<a href='$select_item'>" . $myrow["parent"]. " - " . $myrow["description"]. "</a>");
-        	label_cell($myrow["WorkCentreName"]);
-        	label_cell($myrow["location_name"]);
-        	qty_cell($myrow["quantity"], false, get_qty_dec($_POST['stock_id']));
-			end_row();
-
-        	$j++;
-        	If ($j == 12)
-        	{
-        		$j = 1;
-        		table_header($th);
-        	}
-        //end of page full new headings if
-        }
-
-        end_table();
-   	}
-	div_end();
+	return  pager_link( $row["parent"]. " - " . $row["description"],
+    		"/manufacturing/manage/bom_edit.php?stock_id=" . $row["parent"]);
 }
+
+$sql = "SELECT 
+		bom.parent,
+		workcentre.name As WorkCentreName,
+		location.location_name,
+		bom.quantity,
+		parent.description
+		FROM ".TB_PREF."bom as bom, "
+			.TB_PREF."stock_master as parent, "
+			.TB_PREF."workcentres as workcentre, "
+			.TB_PREF."locations as location
+		WHERE bom.parent = parent.stock_id 
+			AND bom.workcentre_added = workcentre.id
+			AND bom.loc_code = location.loc_code
+			AND bom.component='" . $_POST['stock_id'] . "'";
+
+   $cols = array(
+   	_("Parent Item") => array('fun'=>'select_link'), 
+	_("Work Centre"), 
+	_("Location"), 
+	_("Quantity Required")
+	);
+
+$table =& new_db_pager('usage_table', $sql, $cols);
+
+if (get_post('_stock_id_update'))
+	$table->set_sql($sql);
+
+$table->width = "80%";
+display_db_pager($table);
 
 end_form();
 end_page();

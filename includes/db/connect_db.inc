@@ -1,6 +1,14 @@
 <?php
-
-set_global_connection();
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 
 function set_global_connection()
 {
@@ -18,7 +26,7 @@ $db_duplicate_error_code = 1062;
 
 function db_query($sql, $err_msg=null)
 {
-	global $db, $show_sql;
+	global $db, $show_sql, $sql_trail, $select_trail;
 
 	//echo "<br>$sql<br>";
 	if ($show_sql)
@@ -28,9 +36,19 @@ function db_query($sql, $err_msg=null)
 		echo $sql;
 		echo "</pre>\n";
 	}
-
+	
 
 	$result = mysql_query($sql, $db);
+	if($sql_trail) {
+		if ($select_trail || (strstr($sql, 'SELECT') === false)) {
+			mysql_query(
+			"INSERT INTO ".TB_PREF."sql_trail
+				(`sql`, `result`, `msg`)
+				VALUES(".db_escape($sql).",".($result ? 1 : 0).",
+				".db_escape($err_msg).")", $db);
+		}
+	}
+
 	if ($err_msg != null)
 	  if (function_exists('xdebug_call_file'))
 		check_db_error('<br>At file '.xdebug_call_file().':'.xdebug_call_line().':<br>'.$err_msg, $sql);
@@ -46,6 +64,12 @@ function db_fetch_row ($result)
 	return mysql_fetch_row($result);
 }
 
+function db_fetch_assoc ($result)
+{
+
+	return mysql_fetch_assoc($result);
+}
+
 function db_fetch ($result)
 {
 
@@ -54,7 +78,7 @@ function db_fetch ($result)
 
 function db_seek (&$result,$record)
 {
-	mysql_data_seek($result, $record);
+	return mysql_data_seek($result, $record);
 }
 
 function db_free_result ($result)

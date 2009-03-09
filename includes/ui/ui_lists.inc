@@ -1,5 +1,14 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 include_once($path_to_root . "/includes/banking.inc");
 include_once($path_to_root . "/includes/reserved.inc");
 include_once($path_to_root . "/includes/types.inc");
@@ -49,7 +58,8 @@ $opts = array(		// default options
 	'search' => array(), // sql field names to search
 	'format' => null, 	 // format functions for regular options
 	'disabled' => false,
-	'box_hint' => null // box/selectors hints; null = std see below
+	'box_hint' => null, // box/selectors hints; null = std see below
+	'category' => false	// category column name or false
 );
 // ------ merge options with defaults ----------
 	if($options != null)
@@ -121,11 +131,20 @@ $opts = array(		// default options
    }
 	// sql completion
 	if (count($opts['where'])) {
-		$sql .= strpos($sql, 'WHERE')==false ? ' WHERE ':' AND ';
-		$sql .= '('. implode($opts['where'], ' AND ') . ')';
+		$where = strpos($sql, 'WHERE')==false ? ' WHERE ':' AND ';
+		$where .= '('. implode($opts['where'], ' AND ') . ')';
+		$group_pos = strpos($sql, 'GROUP BY');
+		if ($group_pos) {
+			$group = substr($sql, $group_pos);
+			$sql = substr($sql, 0, $group_pos) . $where.' '.$group;
+		} else {
+			$sql .= $where;
+		}
 	}
 	if ($opts['order'] != false) {
-		$sql .= ' ORDER BY '.$opts['order'];
+		if (!is_array($opts['order']))
+			$opts['order'] = array($opts['order']);
+		$sql .= ' ORDER BY '.implode(',',$opts['order']);
 	}
 
 	$sql .= $limit;
@@ -133,16 +152,14 @@ $opts = array(		// default options
 	$selector = $first_opt = '';
 	$first_id = false;
 	$found = false;
-//if($name=='SelectStockFromList') display_error($sql);
+	$lastcat = null;
+//if($name=='stock_id') display_error($sql);
 	if($result = db_query($sql)) {
 		while ($contact_row = db_fetch($result)) {
 			$value = $contact_row[0];
 			$descr = $opts['format']==null ?  $contact_row[1] :
 			call_user_func($opts['format'], $contact_row);
 			$sel = '';
-			if (get_post($search_submit) && ($txt === $value)) {
-					$selected_id = $value; 
-			} 
  		 	if (get_post($search_submit) && ($txt === $value)) {
  		 		$selected_id = $value;
  		 	}
@@ -153,6 +170,11 @@ $opts = array(		// default options
 			if ($first_id === false) {
 				$first_id = $value;
 				$first_opt = $descr;
+			}
+			$cat = $contact_row[$opts['category']];
+			if ($opts['category'] !== false && $cat != $lastcat){
+				$selector .= "<optgroup label='".$cat."'>\n";
+				$lastcat = $cat;
 			}
 			$selector .= "<option $sel value='$value'>$descr</option>\n";
 		}
@@ -191,7 +213,7 @@ $opts = array(		// default options
 		global $_select_button;
 	// button class selects form reload/ajax selector update
 		$selector .= sprintf($_select_button, $disabled, user_theme(),
-			(in_ajax() ? 'display:none;':''),
+			(fallback_mode() ? '' : 'display:none;'),
 			$select_submit)."\n";
 	}
 // ------ make combo ----------
@@ -202,12 +224,12 @@ $opts = array(		// default options
 			$opts['size']."' maxlength='".$opts['max'].
 			"' value='$txt' class='$class' rel='$name' autocomplete='off' title='"
 			.$opts['box_hint']."'"
-			.(in_ajax() && !$by_id ? " style=display:none;":'')
+			.(!fallback_mode() && !$by_id ? " style=display:none;":'')
 			.">\n";
 		if ($search_submit != false) {
 			global $_search_button;
 			$edit_entry .= sprintf($_search_button, $disabled, user_theme(),
-				(in_ajax() ? 'display:none;':''),
+				(fallback_mode() ? '' : 'display:none;'),
 				$search_submit)."\n";
 		}
 	}
@@ -310,7 +332,7 @@ $opts = array(		// default options
 	if ($select_submit != false) { // if submit on change is used - add select button
 		global $_select_button;
 		$selector .= sprintf($_select_button, $disabled, user_theme(),
-			(in_ajax() ? 'display:none;':''),
+			(fallback_mode() ? '' : 'display:none;'),
 			$select_submit)."\n";
 	}
 	default_focus($name);
@@ -589,22 +611,22 @@ $options = array(
 }
 
 function dimensions_list_cells($label, $name, $selected_id=null, $no_option=false, $showname=null,
-	$showclosed=false, $showtype=0)
+	$showclosed=false, $showtype=0, $submit_on_change=false)
 {
 	if ($label != null)
 		echo "<td>$label</td>\n";
 	echo "<td>";
-	$str = dimensions_list($name, $selected_id, $no_option, $showname, false, $showclosed, $showtype);
+	$str = dimensions_list($name, $selected_id, $no_option, $showname, $submit_on_change, $showclosed, $showtype);
 	echo "</td>\n";
 	return $str;
 }
 
 function dimensions_list_row($label, $name, $selected_id=null, $no_option=false, $showname=null,
-	$showclosed=false, $showtype=0)
+	$showclosed=false, $showtype=0, $submit_on_change=false)
 {
 	echo "<tr>\n";
 	$str = dimensions_list_cells($label, $name, $selected_id, $no_option, $showname,
-		$showclosed, $showtype);
+		$showclosed, $showtype, $submit_on_change);
 	echo "</tr>\n";
 	return $str;
 }
@@ -628,14 +650,15 @@ function stock_items_list($name, $selected_id=null, $all_option=false, $submit_o
 		'search' => array("stock_id", "c.description","s.description"),
 		'search_submit' => get_company_pref('no_item_list')!=0,
 		'size'=>10,
-		'select_submit'=> $submit_on_change
+		'select_submit'=> $submit_on_change,
+		'category' => 2,
+		'order' => array('c.description','stock_id')
 	  ), $opts) );
 }
 
 function _format_stock_items($row)
 {
-	return (user_show_codes() ?  ($row[0] . "&nbsp;-&nbsp;") : "")
-		. $row[2] . "&nbsp;-&nbsp;" . $row[1];
+	return (user_show_codes() ?  ($row[0] . "&nbsp;-&nbsp;") : "") . $row[1];
 }
 
 function stock_items_list_cells($label, $name, $selected_id=null, $all_option=false, $submit_on_change=false)
@@ -655,6 +678,73 @@ function stock_items_list_row($label, $name, $selected_id=null, $all_option=fals
 	return $str;
 }
 */
+//---------------------------------------------------------------------------------------------------
+//
+// Select item via foreign code.
+//
+function sales_items_list($name, $selected_id=null, $all_option=false, 
+	$submit_on_change=false, $type='', $opts=array())
+{
+	global $all_items;
+	// all sales codes
+	$sql = "SELECT i.item_code, i.description, c.description, count(*)>1 as kit
+			FROM
+			".TB_PREF."item_codes i
+			LEFT JOIN
+			".TB_PREF."stock_category c
+			ON i.category_id=c.category_id";
+
+	if ($type == 'local')	{ // exclude foreign codes
+		$sql .=	" WHERE !i.is_foreign"; 
+	} elseif ($type == 'kits') { // sales kits
+		$sql .=	" WHERE !i.is_foreign AND i.item_code!=i.stock_id";
+	}
+				
+	$sql .= " GROUP BY i.item_code";
+
+	return combo_input($name, $selected_id, $sql, 'i.item_code', 'c.description',
+	array_merge(
+	  array(
+		'format' => '_format_stock_items',
+		'spec_option' => $all_option===true ?  _("All Items") : $all_option,
+		'spec_id' => $all_items,
+		'search_box' => true,
+		'search' => array("i.item_code", "c.description"),
+		'search_submit' => get_company_pref('no_item_list')!=0,
+		'size'=>15,
+		'select_submit'=> $submit_on_change,
+		'category' => 2,
+		'order' => array('c.description','i.item_code')
+	  ), $opts) );
+}
+
+function sales_items_list_cells($label, $name, $selected_id=null, $all_option=false, $submit_on_change=false)
+{
+	if ($label != null)
+		echo "<td>$label</td>\n";
+	$str = sales_items_list($name, $selected_id, $all_option, $submit_on_change,
+		'', array('cells'=>true));
+	return $str;
+}
+
+function sales_kits_list($name, $selected_id=null, $all_option=false, $submit_on_change=false)
+{
+	$str = sales_items_list($name, $selected_id, $all_option, $submit_on_change,
+		'kits', array('cells'=>false));
+	return $str;
+}
+
+function sales_local_items_list_row($label, $name, $selected_id=null, $all_option=false, $submit_on_change=false)
+{
+	echo "<tr>";
+	if ($label != null)
+		echo "<td>$label</td>\n";
+	echo "<td>";
+	$str = sales_items_list($name, $selected_id, $all_option, $submit_on_change,
+		'local', array('cells'=>false));
+	echo "</td></tr>";
+	return $str;
+}
 //------------------------------------------------------------------------------------
 
 function base_stock_items_list($where, $name, $selected_id=null,
@@ -672,8 +762,8 @@ function base_stock_items_list($where, $name, $selected_id=null,
 		'spec_option' => $all_option==true ?  _("All Items") : $all_option,
 		'spec_id' => $all_items,
 		'select_submit'=> $submit_on_change,
-		'where' => $where
-	) );
+		'where' => $where,
+		'category' => 2	) );
 }
 //------------------------------------------------------------------------------------
 
@@ -890,26 +980,26 @@ function tax_groups_list($name, $selected_id=null,
 	array(
 		'order' => 'id',
 		'spec_option' => $none_option,
-		'spec_id' => 0,
+		'spec_id' => reserved_words::get_all_numeric(),
 		'select_submit'=> $submit_on_change,
 		'async' => false,
 	) );
 }
 
-function tax_groups_list_cells($label, $name, $selected_id=null, $submit_on_change=false)
+function tax_groups_list_cells($label, $name, $selected_id=null, $none_option=false, $submit_on_change=false)
 {
 	if ($label != null)
 		echo "<td>$label</td>\n";
 	echo "<td>";
-	$str = tax_groups_list($name, $selected_id, false, $submit_on_change);
+	$str = tax_groups_list($name, $selected_id, $none_option, $submit_on_change);
 	echo "</td>\n";
 	return $str;
 }
 
-function tax_groups_list_row($label, $name, $selected_id=null, $submit_on_change=false)
+function tax_groups_list_row($label, $name, $selected_id=null, $none_option=false, $submit_on_change=false)
 {
 	echo "<tr>\n";
-	$str = tax_groups_list_cells($label, $name, $selected_id, false, $submit_on_change);
+	$str = tax_groups_list_cells($label, $name, $selected_id, $none_option, $submit_on_change);
 	echo "</tr>\n";
 	return $str;
 }
@@ -1007,6 +1097,68 @@ function sales_areas_list_row($label, $name, $selected_id=null)
 {
 	echo "<tr>\n";
 	sales_areas_list_cells($label, $name, $selected_id);
+	echo "</tr>\n";
+}
+
+//------------------------------------------------------------------------------------
+
+function sales_groups_list($name, $selected_id=null, $special_option=false)
+{
+	$sql = "SELECT id, description FROM ".TB_PREF."groups";
+	combo_input($name, $selected_id, $sql, 'id', 'description', array(
+		'spec_option' => $special_option===true ? ' ' : $special_option,
+		'order' => 'description', 'spec_id' => 0,
+	));
+}
+
+function sales_groups_list_cells($label, $name, $selected_id=null, $special_option=false)
+{
+	if ($label != null)
+		echo "<td>$label</td>\n";
+	echo "<td>";
+	sales_groups_list($name, $selected_id, $special_option);
+	echo "</td>\n";
+}
+
+function sales_groups_list_row($label, $name, $selected_id=null, $special_option=false)
+{
+	echo "<tr>\n";
+	sales_groups_list_cells($label, $name, $selected_id, $special_option);
+	echo "</tr>\n";
+}
+
+//------------------------------------------------------------------------------------
+
+function _format_template_items($row)
+{
+	return ($row[0] . "&nbsp;- &nbsp;" . _("Amount") . "&nbsp;".$row[1]);
+}
+
+function templates_list($name, $selected_id=null, $special_option=false)
+{
+	$sql = "SELECT sorder.order_no,	Sum(line.unit_price*line.quantity*(1-line.discount_percent)) AS OrderValue
+		FROM ".TB_PREF."sales_orders as sorder, ".TB_PREF."sales_order_details as line
+		WHERE sorder.order_no = line.order_no AND sorder.type = 1 GROUP BY line.order_no";
+	combo_input($name, $selected_id, $sql, 'order_no', 'OrderValue', array(
+		'format' => '_format_template_items',
+		'spec_option' => $special_option===true ? ' ' : $special_option,
+		'order' => 'order_no', 'spec_id' => 0,
+	));
+}
+
+function templates_list_cells($label, $name, $selected_id=null, $special_option=false)
+{
+	if ($label != null)
+		echo "<td>$label</td>\n";
+	echo "<td>";
+	templates_list($name, $selected_id, $special_option);
+	echo "</td>\n";
+}
+
+function templates_list_row($label, $name, $selected_id=null, $special_option=false)
+{
+	echo "<tr>\n";
+	templates_list_cells($label, $name, $selected_id, $special_option);
 	echo "</tr>\n";
 }
 
@@ -1140,29 +1292,41 @@ function movement_types_list_row($label, $name, $selected_id=null)
 }
 
 //-----------------------------------------------------------------------------------------------
-
-function bank_trans_types_list($name, $selected_id=null)
+function _format_date($row)
 {
-	$sql = "SELECT id, name FROM ".TB_PREF."bank_trans_types";
-	combo_input($name, $selected_id, $sql, 'id', 'name', array());
+	return sql2date($row['reconciled']);
 }
 
-function bank_trans_types_list_cells($label, $name, $selected_id=null)
+function bank_reconciliation_list($account, $name, $selected_id=null, $submit_on_change=false, $special_option=false)
+{
+	$sql = "SELECT reconciled, reconciled FROM ".TB_PREF."bank_trans
+		WHERE bank_act=".db_escape($account)." AND reconciled IS NOT NULL
+		GROUP BY reconciled";
+	combo_input($name, $selected_id, $sql, 'id', 'reconciled',
+	array(
+		'spec_option' => $special_option,
+		'format' => '_format_date',
+		'spec_id' => '',
+		'select_submit'=> $submit_on_change
+	) );
+}
+
+function bank_reconciliation_list_cells($label,$account, $name, $selected_id=null, $submit_on_change=false, $special_option=false)
 {
 	if ($label != null)
 		echo "<td>$label</td>\n";
 	echo "<td>";
-	bank_trans_types_list($name, $selected_id);
+	bank_reconciliation_list($account, $name, $selected_id, $submit_on_change, $special_option);
 	echo "</td>\n";
 }
-
-function bank_trans_types_list_row($label, $name, $selected_id=null)
+/*
+function bank_reconciliation_list_row($label, $account, $name, $selected_id=null, $submit_on_change=false, $special_option=false)
 {
 	echo "<tr>\n";
-	bank_trans_types_list_cells($label, $name, $selected_id);
+	bank_reconciliation_list_cells($label, $account, $name, $selected_id, $submit_on_change, $special_option);
 	echo "</tr>\n";
 }
-
+*/
 //-----------------------------------------------------------------------------------------------
 
 function workcenter_list($name, $selected_id=null, $all_option=false)
@@ -1199,11 +1363,12 @@ function workcenter_list_row($label, $name, $selected_id=null, $all_option=false
 
 function bank_accounts_list($name, $selected_id=null, $submit_on_change=false)
 {
-	$sql = "SELECT ".TB_PREF."bank_accounts.account_code, bank_account_name, bank_curr_code
-		FROM ".TB_PREF."bank_accounts, ".TB_PREF."chart_master
-		WHERE ".TB_PREF."bank_accounts.account_code=".TB_PREF."chart_master.account_code";
+	$sql = "SELECT ".TB_PREF."bank_accounts.id, bank_account_name, bank_curr_code
+		FROM ".TB_PREF."bank_accounts";
+//		, ".TB_PREF."chart_master
+//		WHERE ".TB_PREF."bank_accounts.account_code=".TB_PREF."chart_master.account_code";
 
-	return combo_input($name, $selected_id, $sql, 'account_code', 'bank_account_name',
+	return combo_input($name, $selected_id, $sql, 'id', 'bank_account_name',
 	array(
 		'format' => '_format_add_curr',
 		'select_submit'=> $submit_on_change,
@@ -1228,7 +1393,60 @@ function bank_accounts_list_row($label, $name, $selected_id=null, $submit_on_cha
 	echo "</tr>\n";
 	return $str;
 }
+//-----------------------------------------------------------------------------------------------
 
+function cash_accounts_list_row($label, $name, $selected_id=null, $submit_on_change=false)
+{
+	$sql = "SELECT ".TB_PREF."bank_accounts.id, bank_account_name, bank_curr_code
+		FROM ".TB_PREF."bank_accounts
+		WHERE ".TB_PREF."bank_accounts.account_type=3";
+
+	if ($label != null)
+		echo "<tr><td>$label</td>\n";
+	echo "<td>";
+	$str = combo_input($name, $selected_id, $sql, 'id', 'bank_account_name',
+	array(
+		'format' => '_format_add_curr',
+		'select_submit'=> $submit_on_change,
+		'async' => true
+	) );
+	echo "</td></tr>\n";
+	return $str;
+}
+//-----------------------------------------------------------------------------------------------
+
+function pos_list_row($label, $name, $selected_id=null, $spec_option=false, $submit_on_change=false)
+{
+	$sql = "SELECT id, pos_name FROM ".TB_PREF."sales_pos";
+
+	default_focus($name);
+	echo '<tr>';
+	if ($label != null)
+		echo "<td>$label</td>\n";
+	echo "<td>";
+
+	$str = combo_input($name, $selected_id, $sql, 'id', 'pos_name',
+	array(
+		'select_submit'=> $submit_on_change,
+		'async' => true,
+		'spec_option' =>$spec_option,
+		'spec_id' => -1,
+	) );
+	echo "</td></tr>\n";
+
+	return $str;	
+}
+//-----------------------------------------------------------------------------------------------
+
+function sale_payment_list_cells($label, $name, $selected_id=null, $submit_on_change=false)
+{
+	if ($label != null)
+		echo "<td>$label</td>\n";
+	echo "<td>";
+	$str = yesno_list($name, $selected_id, _('Cash'), _('Delayed'), $submit_on_change);
+	echo "</td>\n";
+	return $str;
+}
 //-----------------------------------------------------------------------------------------------
 
 function class_list($name, $selected_id=null, $submit_on_change=false)
@@ -1323,14 +1541,14 @@ function gl_account_types_list_row($label, $name, $selected_id=null, $all_option
 
 //-----------------------------------------------------------------------------------------------
 function gl_all_accounts_list($name, $selected_id=null, $skip_bank_accounts=false,
-	$show_group=false, $cells=false, $all_option=false, $submit_on_change=false)
+	$cells=false, $all_option=false, $submit_on_change=false)
 {
 	if ($skip_bank_accounts)
 		$sql = "SELECT chart.account_code, chart.account_name, type.name
 			FROM (".TB_PREF."chart_master chart,".TB_PREF."chart_types type) "
 			."LEFT JOIN ".TB_PREF."bank_accounts acc "
 			."ON chart.account_code=acc.account_code
-				WHERE acc.account_code IS NULL
+				WHERE acc.account_code  IS NULL
 			AND chart.account_type=type.id";
 	else
 		$sql = "SELECT chart.account_code, chart.account_name, type.name
@@ -1339,17 +1557,18 @@ function gl_all_accounts_list($name, $selected_id=null, $skip_bank_accounts=fals
 
 	combo_input($name, $selected_id, $sql, 'chart.account_code', 'chart.account_name',
 	array(
-		'format' => '_format_account' .  ($show_group ? '2' : ''),
+		'format' => '_format_account',
 		'spec_option' => $all_option===true ?  _("Use Item Sales Accounts") : $all_option,
 		'spec_id' => '',
-		'order' => 'account_code',
+		'order' => array('name','account_code'),
 		'search_box' => $cells,
 			'search_submit' => false,
 			'size' => 12,
 			'max' => 10,
 			'cells' => true,
 		'select_submit'=> $submit_on_change,
-		'async' => false
+		'async' => false,
+		'category' => 2
 	) );
 
 }
@@ -1359,27 +1578,23 @@ function _format_account($row)
 		return $row[0] .  "&nbsp;&nbsp;&nbsp;&nbsp;" . $row[1];
 }
 
-function _format_account2($row)
-{
-		return $row[0] .  "&nbsp;&nbsp;&nbsp;&nbsp;" . $row[2] . "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" . $row[1];
-}
-
-function gl_all_accounts_list_cells($label, $name, $selected_id=null, $skip_bank_accounts=false,
-	$show_group=false, $cells=false, $all_option=false)
+function gl_all_accounts_list_cells($label, $name, $selected_id=null, 
+	$skip_bank_accounts=false, $cells=false, $all_option=false)
 {
 	if ($label != null)
 		echo "<td>$label</td>\n";
 	echo "<td>";
-	gl_all_accounts_list($name, $selected_id, $skip_bank_accounts, $show_group, $cells, $all_option);
+	gl_all_accounts_list($name, $selected_id, 
+		$skip_bank_accounts, $cells, $all_option);
 	echo "</td>\n";
 }
 
-function gl_all_accounts_list_row($label, $name, $selected_id=null, $skip_bank_accounts=false,
-	$show_group=false, $cells=false, $all_option=false)
+function gl_all_accounts_list_row($label, $name, $selected_id=null, 
+	$skip_bank_accounts=false, $cells=false, $all_option=false)
 {
 	echo "<tr>\n";
-	gl_all_accounts_list_cells($label, $name, $selected_id, $skip_bank_accounts,
-		$show_group, $cells, $all_option);
+	gl_all_accounts_list_cells($label, $name, $selected_id, 
+		$skip_bank_accounts, $cells, $all_option);
 	echo "</tr>\n";
 }
 
@@ -1746,5 +1961,108 @@ function number_list_row($label, $name, $selected, $from, $to, $no_option=false)
 	number_list_cells($label, $name, $selected, $from, $to, $no_option);
 	echo "</tr>\n";
 }
+
+function print_profiles_list_row($label, $name, $selected_id=null, $spec_opt=false,
+	$submit_on_change=true)
+{
+	$sql = "SELECT profile FROM ".TB_PREF."print_profiles"
+		." GROUP BY profile";
+	$result = db_query($sql, 'cannot get all profile names');
+	$profiles = array();
+	while($myrow=db_fetch($result)) {
+		$profiles[$myrow['profile']] = $myrow['profile'];
+	}
+
+	echo "<tr>";
+	if ($label != null)
+		echo "<td>$label</td>\n";
+	echo "<td>";
+
+	array_selector($name, $selected_id, $profiles, 
+		array( 'select_submit'=> $submit_on_change,
+			'spec_option'=>$spec_opt,
+			'spec_id' => ''
+		 ));
+
+	echo "</td></tr>\n";
+}
+
+function printers_list($name, $selected_id=null, $spec_opt=false, $submit_on_change=false)
+{
+	static $printers; // query only once for page display
+
+	if (!$printers) {
+		$sql = "SELECT id, name, description FROM ".TB_PREF."printers";	
+		$result = db_query($sql, 'cannot get all printers');
+		$printers = array();
+		while($myrow=db_fetch($result)) {
+			$printers[$myrow['id']] = $myrow['name'].'&nbsp;-&nbsp;'.$myrow['description'];
+		}
+	}
+	array_selector($name, $selected_id, $printers, 
+		array( 'select_submit'=> $submit_on_change,
+			'spec_option'=>$spec_opt,
+			'spec_id' => ''
+		 ));
+}
+
+//------------------------------------------------------------------------------------------------
+
+function quick_entries_list($name, $selected_id=null, $type=null, $submit_on_change=false)
+{
+	$where = false;
+	$sql = "SELECT id, description FROM ".TB_PREF."quick_entries";
+	if ($type != null)
+		$sql .= " WHERE type=$type";
+
+	combo_input($name, $selected_id, $sql, 'id', 'description',
+		array(
+			'spec_id' => '',
+			'order' => 'description',
+			'select_submit'=> $submit_on_change,
+			'async' => false
+		) );
+
+}
+
+function quick_entries_list_cells($label, $name, $selected_id=null, $type, $submit_on_change=false)
+{
+	echo "<td>$label</td><td>\n";
+	quick_entries_list($name, $selected_id, $type, $submit_on_change);
+	echo "</td>";
+}
+
+function quick_entries_list_row($label, $name, $selected_id=null, $type, $submit_on_change=false)
+{
+	echo "<tr>\n";
+	quick_entries_list_cells($label, $name, $selected_id, $type, $submit_on_change);
+	echo "</tr>\n";
+}
+
+
+function quick_actions_list_row($label, $name, $selected_id=null, $submit_on_change=false)
+{
+	global $quick_actions;
+	
+	echo "<tr><td>$label</td><td>";
+	array_selector($name, $selected_id, $quick_actions, 
+		array( 
+			'select_submit'=> $submit_on_change
+		) );
+	echo "</td></tr>\n";
+}
+
+function quick_entry_types_list_row($label, $name, $selected_id=null, $submit_on_change=false)
+{
+	global $quick_entry_types;
+		
+	echo "<tr><td>$label</td><td>";
+	array_selector($name, $selected_id, $quick_entry_types, 
+		array( 
+			'select_submit'=> $submit_on_change
+			) );
+	echo "</td></tr>\n";
+}
+
 
 ?>

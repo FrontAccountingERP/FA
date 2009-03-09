@@ -1,5 +1,14 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 $page_security = 10;
 $path_to_root="../..";
 include($path_to_root . "/includes/session.inc");
@@ -62,12 +71,12 @@ if (isset($_POST['add']) || isset($_POST['update']))
 			$_POST['account_code'] = strtoupper($_POST['account_code']);
     	if ($selected_account) 
 		{
-    		update_gl_account($_POST['account_code'], $_POST['account_name'], $_POST['account_type'], $_POST['account_code2'], $_POST['tax_code']);
+    		update_gl_account($_POST['account_code'], $_POST['account_name'], $_POST['account_type'], $_POST['account_code2']);
 			display_notification(_("Account data has been updated."));
 		}
     	else 
 		{
-    		add_gl_account($_POST['account_code'], $_POST['account_name'], $_POST['account_type'], $_POST['account_code2'], $_POST['tax_code']);
+    		add_gl_account($_POST['account_code'], $_POST['account_name'], $_POST['account_type'], $_POST['account_code2']);
 			$selected_account = $_POST['AccountList'] = $_POST['account_code'];
 			display_notification(_("New account has been added."));
 		}
@@ -198,7 +207,7 @@ if (db_has_gl_accounts())
 {
 	echo "<center>";
     echo _("Select an Account:") . "&nbsp;";
-    gl_all_accounts_list('AccountList', null, false, false, false,
+    gl_all_accounts_list('AccountList', null, false, false,
 		_('New account'), true);
     echo "</center>";
 }
@@ -215,7 +224,6 @@ if ($selected_account != "")
 	$_POST['account_code2'] = $myrow["account_code2"];
 	$_POST['account_name']	= $myrow["account_name"];
 	$_POST['account_type'] = $myrow["account_type"];
-	$_POST['tax_code'] = $myrow["tax_code"];
 
 	hidden('account_code', $_POST['account_code']);
 	hidden('selected_account', $selected_account);
@@ -225,7 +233,7 @@ if ($selected_account != "")
 else 
 {
 	$_POST['account_code'] = $_POST['account_code2'] = '';
-	$_POST['account_name']	= $_POST['account_type'] = $_POST['tax_code'] = '';
+	$_POST['account_name']	= $_POST['account_type'] = '';
 	text_row_ex(_("Account Code:"), 'account_code', 11);
 }
 
@@ -234,8 +242,6 @@ text_row_ex(_("Account Code 2:"), 'account_code2', 11);
 text_row_ex(_("Account Name:"), 'account_name', 60);
 
 gl_account_types_list_row(_("Account Group:"), 'account_type', null);
-
-tax_types_list_row(_("Tax Type:"), 'tax_code', null, _('No Tax'));
 
 end_table(1);
 

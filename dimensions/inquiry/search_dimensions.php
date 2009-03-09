@@ -1,8 +1,18 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 $page_security = 2;
 $path_to_root="../..";
 
+include($path_to_root . "/includes/db_pager.inc");
 include_once($path_to_root . "/includes/session.inc");
 
 include_once($path_to_root . "/includes/date_functions.inc");
@@ -43,7 +53,6 @@ if (get_post('SearchOrders'))
 //		$Ajax->addFocus(true, 'OrderNumber');
 		set_focus('OrderNumber');
 	} else
-//		$Ajax->addFocus(true, 'StockLocation');
 		set_focus('type_');
 
 	$Ajax->activate('dim_table');
@@ -85,7 +94,48 @@ end_form();
 
 $dim = get_company_pref('use_dimension');
 
-$sql = "SELECT * FROM ".TB_PREF."dimensions WHERE id > 0";
+function view_link($row) 
+{
+	return get_dimensions_trans_view_str(systypes::dimension(), $row["id"]);
+}
+
+function is_closed($row)
+{
+	return $row['closed'] ? _('Yes') : _('No');
+}
+
+function sum_dimension($row) 
+{
+	$sql = "SELECT SUM(amount) FROM ".TB_PREF."gl_trans WHERE tran_date >= '" .
+		date2sql($_POST['FromDate']) . "' AND
+		tran_date <= '" . date2sql($_POST['ToDate']) . "' AND (dimension_id = " .
+		$row['id']." OR dimension2_id = " .$row['id'].")";
+	$res = db_query($sql, "Sum of transactions could not be calculated");
+	$row = db_fetch_row($res);
+
+	return $row[0];
+}
+
+function is_overdue($row)
+{
+	return date_diff(Today(), sql2date($row["due_date"]), "d") > 0;
+}
+
+function edit_link($row)
+{
+	return $row["closed"] ?  '' :
+		pager_link(_("Edit"),
+			"/dimensions/dimension_entry.php?trans_no=" . $row["id"], ICON_EDIT);
+}
+
+$sql = "SELECT dim.id,
+	dim.reference,
+	dim.name,
+	dim.type_,
+	dim.date_,
+	dim.due_date,
+	dim.closed
+	FROM ".TB_PREF."dimensions as dim WHERE id > 0";
 
 if (isset($_POST['OrderNumber']) && $_POST['OrderNumber'] != "")
 {
@@ -115,80 +165,36 @@ if (isset($_POST['OrderNumber']) && $_POST['OrderNumber'] != "")
 	$sql .= " AND date_ >= '" . date2sql($_POST['FromDate']) . "'
 		AND date_ <= '" . date2sql($_POST['ToDate']) . "'";
 }
-$sql .= " ORDER BY due_date";
 
-$result = db_query($sql,"could not query dimensions");
+$cols = array(
+	_("#") => array('fun'=>'view_link'), 
+	_("Reference"), 
+	_("Name"), 
+	_("Type"), 
+	_("Date") =>'date',
+	_("Due Date") => array('name'=>'due_date', 'date', 'ord'=>'asc'), 
+	_("Closed") => array('fun'=>'is_closed'),
+	_("Balance") => array('type'=>'amount', 'insert'=>true, 'fun'=>'sum_dimension'),
+	array('insert'=>true, 'fun'=>'edit_link')
+);
 
-div_start('dim_table');
-start_table("$table_style width=80%");
-
-if (!$outstanding_only)
-	$th = array(_("#"), _("Reference"), _("Name"), _("Type"), _("Date"),
-		_("Due Date"), _("Closed"), _("Balance"));
-else
-	$th = array(_("#"), _("Reference"), _("Name"), _("Type"), _("Date"),
-		_("Due Date"), _("Balance"));
-table_header($th);
-$j = 1;
-$k = 0;
-
-while ($myrow = db_fetch($result))
-{
-	$sql = "SELECT SUM(amount) FROM ".TB_PREF."gl_trans WHERE tran_date >= '" .
-		date2sql($_POST['FromDate']) . "' AND
-		tran_date <= '" . date2sql($_POST['ToDate']) . "' AND (dimension_id = " .
-		$myrow['id']." OR dimension2_id = " .$myrow['id'].")";
-	$res = db_query($sql, "Transactions could not be calculated");
-	$row = db_fetch_row($res);
-
-	if ($k == 1)
-	{
-		$row_text = "class='oddrow'";
-		$k = 0;
-	}
-	else
-	{
-		$row_text = "class='evenrow'";
-		$k++;
-	}
-
-	// check if it's an overdue work order
-	if (date_diff(Today(), sql2date($myrow["due_date"]), "d") > 0)
-	{
-		$row_text = "class='overduebg'";
-	}
-
-	start_row($row_text);
-
-	$mpage = $path_to_root . "/dimensions/dimension_entry.php?" . SID . "trans_no=" . $myrow["id"];
-
-	label_cell(get_dimensions_trans_view_str(systypes::dimension(), $myrow["id"]));
-	label_cell(get_dimensions_trans_view_str(systypes::dimension(), $myrow["id"], $myrow["reference"]));
-	label_cell($myrow["name"]);
-	label_cell($myrow["type_"]);
-	label_cell(sql2date($myrow["date_"]));
-	label_cell(sql2date($myrow["due_date"]));
-	if (!$outstanding_only)
-		label_cell(($myrow["closed"] ? _("Yes") : _("No")));
-	amount_cell($row[0]);
-
-	label_cell($myrow["closed"] == 0 ? ("<a href='$mpage'>" . _("Edit") . "</a>") :'');
-	end_row();
-
-	$j++;
-	If ($j == 12)
-	{
-		$j = 1;
-		table_header($th);
-	}
-	//end of page full new headings if
+if ($outstanding_only) {
+	$cols[_("Closed")] = 'skip';
 }
-//end of while loop
 
-end_table(1);
-div_end();
-//---------------------------------------------------------------------------------
+$table =& new_db_pager('dim_tbl', $sql, $cols);
+$table->set_marker('is_overdue', _("Marked dimensions are overdue."));
 
+if (get_post('SearchOrders')) {
+	$table->set_sql($sql);
+	$table->set_columns($cols);
+}
+$table->width = "80%";
+start_form();
+
+display_db_pager($table);
+
+end_form();
 end_page();
 
 ?>

@@ -1,5 +1,14 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 $page_security = 2;
 // ----------------------------------------------------------------
 // $ Revision:	2.0 $
@@ -7,17 +16,16 @@ $page_security = 2;
 // date_:	2005-05-19
 // Title:	List of Journal Entries
 // ----------------------------------------------------------------
-$path_to_root="../";
+$path_to_root="..";
 
-include_once($path_to_root . "includes/session.inc");
-include_once($path_to_root . "includes/date_functions.inc");
-include_once($path_to_root . "includes/data_checks.inc");
-include_once($path_to_root . "gl/includes/gl_db.inc");
-include_once($path_to_root . "includes/ui/ui_view.inc");
+include_once($path_to_root . "/includes/session.inc");
+include_once($path_to_root . "/includes/date_functions.inc");
+include_once($path_to_root . "/includes/data_checks.inc");
+include_once($path_to_root . "/gl/includes/gl_db.inc");
+include_once($path_to_root . "/includes/ui/ui_view.inc");
 
 //----------------------------------------------------------------------------------------------------
 
-// trial_inquiry_controls();
 print_list_of_journal_entries();
 
 //----------------------------------------------------------------------------------------------------
@@ -26,12 +34,16 @@ function print_list_of_journal_entries()
 {
     global $path_to_root;
 
-    include_once($path_to_root . "reporting/includes/pdf_report.inc");
-
     $from = $_POST['PARAM_0'];
     $to = $_POST['PARAM_1'];
     $systype = $_POST['PARAM_2'];
     $comments = $_POST['PARAM_3'];
+	$destination = $_POST['PARAM_4'];
+	if ($destination)
+		include_once($path_to_root . "/reporting/includes/excel_report.inc");
+	else
+		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
+
     $dec = user_price_dec();
 
     $cols = array(0, 100, 240, 300, 400, 460, 520, 580);
@@ -46,7 +58,7 @@ function print_list_of_journal_entries()
                     	2 => array('text' => _('Type'), 'from' => systypes::name($systype),
                             'to' => ''));
 
-    $rep = new FrontReport(_('List of Journal Entries'), "JournalEntries.pdf", user_pagesize());
+    $rep = new FrontReport(_('List of Journal Entries'), "JournalEntries", user_pagesize());
 
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);
@@ -70,7 +82,7 @@ function print_list_of_journal_entries()
             $typeno = $myrow['type_no'];
             $TransName = systypes::name($myrow['type']);
             $rep->TextCol(0, 2, $TransName . " # " . $myrow['type_no']);
-            $rep->TextCol(2, 3, sql2date($myrow['tran_date']));
+            $rep->DateCol(2, 3, $myrow['tran_date'], true);
             $coms =  payment_person_types::person_name($myrow["person_type_id"],$myrow["person_id"]);
             $memo = get_comments_string($myrow['type'], $myrow['type_no']);
             if ($memo != '')
@@ -87,9 +99,9 @@ function print_list_of_journal_entries()
         $rep->TextCol(2, 3, $dim_str);
         $rep->TextCol(3, 4, $myrow['memo_']);
         if ($myrow['amount'] > 0.0)
-            $rep->TextCol(4, 5, number_format2(abs($myrow['amount']), $dec));
+            $rep->AmountCol(4, 5, abs($myrow['amount']), $dec);
         else
-            $rep->TextCol(5, 6, number_format2(abs($myrow['amount']), $dec));
+            $rep->AmountCol(5, 6, abs($myrow['amount']), $dec);
         $rep->NewLine(1, 2);
     }
     $rep->Line($rep->row  + 4);

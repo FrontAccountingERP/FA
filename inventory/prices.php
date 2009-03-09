@@ -1,5 +1,14 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 $page_security = 2;
 $path_to_root="..";
 include_once($path_to_root . "/includes/session.inc");
@@ -45,7 +54,7 @@ if (!isset($_POST['stock_id']))
 	$_POST['stock_id'] = get_global_stock_item();
 
 echo "<center>" . _("Item:"). "&nbsp;";
-stock_items_list('stock_id', $_POST['stock_id'], false, true);
+sales_items_list('stock_id', $_POST['stock_id'], false, true);
 echo "<hr></center>";
 
 set_global_stock_item($_POST['stock_id']);
@@ -110,10 +119,10 @@ if (list_updated('stock_id') || isset($_POST['_curr_abrev_update']) ) {
 	// after change of stock, currency or salestype selector
 	// display default calculated price for new settings. 
 	// If we have this price already in db it is overwritten later.
-	$_POST['price'] = price_format(get_price(get_post('stock_id'), 
-		get_post('curr_abrev'),	get_post('sales_type_id')));
+	unset($_POST['price']);
 	$Ajax->activate('price_details');
 }
+
 //---------------------------------------------------------------------------------------------------
 
 $mb_flag = get_mb_flag($_POST['stock_id']);
@@ -136,14 +145,14 @@ while ($myrow = db_fetch($prices_list))
     label_cell($myrow["sales_type"]);
     amount_cell($myrow["price"]);
  	edit_button_cell("Edit".$myrow['id'], _("Edit"));
- 	edit_button_cell("Delete".$myrow['id'], _("Delete"));
+ 	delete_button_cell("Delete".$myrow['id'], _("Delete"));
     end_row();
 
 }
 end_table();
 if (db_num_rows($prices_list) == 0)
 {
-	display_note(_("There are no prices set up for this part."));
+	display_note(_("There are no prices set up for this part."), 1);
 }
 div_end();
 //------------------------------------------------------------------------------------------------
@@ -165,8 +174,13 @@ start_table($table_style2);
 currencies_list_row(_("Currency:"), 'curr_abrev', null, true);
 
 sales_types_list_row(_("Sales Type:"), 'sales_type_id', null, true);
+if (!isset($_POST['price'])) {
+	$_POST['price'] = price_format(get_kit_price(get_post('stock_id'), 
+		get_post('curr_abrev'),	get_post('sales_type_id')));
+}
 
-small_amount_row(_("Price:"), 'price', null);
+$kit = get_item_code_dflts($_POST['stock_id']);
+small_amount_row(_("Price:"), 'price', null, '', _('per') .' '.$kit["units"]);
 
 end_table(1);
 

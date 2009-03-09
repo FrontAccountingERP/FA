@@ -1,5 +1,14 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 $page_security = 3;
 $path_to_root="../..";
 
@@ -86,7 +95,7 @@ function handle_submit()
 		begin_transaction();
 
 		$sql = "INSERT INTO ".TB_PREF."debtors_master (name, address, tax_id, email, dimension_id, dimension2_id,  
-			curr_code, credit_status, payment_terms, discount, pymt_discount,credit_limit, 
+			curr_code, credit_status, payment_terms, discount, pymt_discount,credit_limit,  
 			sales_type) VALUES (".db_escape($_POST['CustName']) .", " 
 			.db_escape($_POST['address']) . ", " . db_escape($_POST['tax_id']) . ","
 			.db_escape($_POST['email']) . ", ".db_escape($_POST['dimension_id']) . ", " 
@@ -189,11 +198,9 @@ else
 	hidden('customer_id');
 }
 
-start_table($table_style2, 7, 6);
-echo "<tr valign=top><td>"; // outer table	
+start_outer_table($table_style2, 5);
 
-
-start_table("class='tablestyle_noborder'");	
+table_section(1);
 
 if ($new_customer) 
 {
@@ -231,14 +238,15 @@ else
 	$_POST['credit_limit']	= price_format($myrow["credit_limit"]);
 }
 
+table_section_title(_("Name and Address"));
+
 text_row(_("Customer Name:"), 'CustName', $_POST['CustName'], 40, 40);
 textarea_row(_("Address:"), 'address', $_POST['address'], 35, 5);
 
-text_row(_("Email:"), 'email', null, 40, 40);
+email_row(_("E-mail:"), 'email', null, 40, 40);
 text_row(_("GSTNo:"), 'tax_id', null, 40, 40);
 
 
-// Sherifoz 23.09.03 currency can't be changed if editing
 if ($new_customer) 
 {
 	currencies_list_row(_("Customer's Currency:"), 'curr_code', $_POST['curr_code']);
@@ -248,13 +256,18 @@ else
 	label_row(_("Customer's Currency:"), $_POST['curr_code']);
 	hidden('curr_code', $_POST['curr_code']);				
 }	
-end_table();
 
-echo "</td><td class='tableseparator'>"; // outer table
+table_section(2);
 
-start_table("class='tablestyle_noborder'");	
+table_section_title(_("Sales"));
 
 sales_types_list_row(_("Sales Type/Price List:"), 'sales_type', $_POST['sales_type']);
+percent_row(_("Discount Percent:"), 'discount', $_POST['discount']);
+percent_row(_("Prompt Payment Discount Percent:"), 'pymt_discount', $_POST['pymt_discount']);
+amount_row(_("Credit Limit:"), 'credit_limit', $_POST['credit_limit']);
+
+payment_terms_list_row(_("Payment Terms:"), 'payment_terms', $_POST['payment_terms']);
+credit_status_list_row(_("Credit Status:"), 'credit_status', $_POST['credit_status']); 
 $dim = get_company_pref('use_dimension');
 if ($dim >= 1)
 	dimensions_list_row(_("Dimension")." 1:", 'dimension_id', $_POST['dimension_id'], true, " ", false, 1);
@@ -265,21 +278,17 @@ if ($dim < 1)
 if ($dim < 2)
 	hidden('dimension2_id', 0);
 
-percent_row(_("Discount Percent:"), 'discount', $_POST['discount']);
-percent_row(_("Prompt Payment Discount Percent:"), 'pymt_discount', $_POST['pymt_discount']);
-amount_row(_("Credit Limit:"), 'credit_limit', $_POST['credit_limit']);
-
-payment_terms_list_row(_("Payment Terms:"), 'payment_terms', $_POST['payment_terms']);
-credit_status_list_row(_("Credit Status:"), 'credit_status', $_POST['credit_status']); 
 if (!$new_customer)  {
 	start_row();
 	echo '<td>'._('Customer branches').':</td>';
-  	hyperlink_params_td($path_to_root . "/sales/manage/customer_branches.php",'<b>'. (count($_SESSION['Context']) ?  _("Select or Add") : _("Add or Edit")).'</b>', "debtor_no=".$_POST['customer_id']);
+  	hyperlink_params_td($path_to_root . "/sales/manage/customer_branches.php",
+		'<b>'. (count($_SESSION['Context']) ?  _("Select or &Add") : _("&Add or Edit ")).'</b>', 
+		"debtor_no=".$_POST['customer_id']);
 	end_row();
 }
-end_table();
 
-end_table(1); // outer table	
+end_outer_table(1);
+
 div_start('controls');
 if ($new_customer)
 {

@@ -1,5 +1,14 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 $page_security = 1;
 $path_to_root="../..";
 
@@ -51,7 +60,7 @@ $display_sub_tot = number_format2($total_gl+$total_grn,user_price_dec());
 start_table("$table_style width=95%");
 label_row(_("Sub Total"), $display_sub_tot, "align=right", "nowrap align=right width=17%");
 
-$tax_items = get_supp_invoice_tax_items(21, $trans_no);
+$tax_items = get_trans_tax_details(21, $trans_no);
 display_supp_trans_tax_details($tax_items, 1);
 
 $display_total = number_format2(-($supp_trans->ov_amount + $supp_trans->ov_gst),user_price_dec());
@@ -63,8 +72,7 @@ $voided = is_voided_display(21, $trans_no, _("This credit note has been voided."
 
 if (!$voided)
 {
-	$tax_total = 0; // ??????
-	display_allocations_from(payment_person_types::supplier(), $supp_trans->supplier_id, 21, $trans_no, -($supp_trans->ov_amount + $tax_total));
+	display_allocations_from(payment_person_types::supplier(), $supp_trans->supplier_id, 21, $trans_no, -($supp_trans->ov_amount + $supp_trans->ov_gst));
 }
 
 end_page(true);

@@ -1,4 +1,14 @@
 <?php
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 //-----------------------------------------------------------------------------
 //
 //	Entry/Modify Delivery Note against Sales Order
@@ -36,7 +46,6 @@ page($_SESSION['page_title'], false, false, "", $js);
 
 if (isset($_GET['AddedID'])) {
 	$dispatch_no = $_GET['AddedID'];
-	print_hidden_script(13);
 
 	display_notification(_("Dispatch processed:") . ' '.$_GET['AddedID'], true);
 
@@ -55,7 +64,6 @@ if (isset($_GET['AddedID'])) {
 } elseif (isset($_GET['UpdatedID'])) {
 
 	$delivery_no = $_GET['UpdatedID'];
-	print_hidden_script(13);
 
 	display_notification_centered(sprintf(_('Delivery Note # %d has been updated.'),$delivery_no));
 
@@ -116,14 +124,17 @@ if (isset($_GET['OrderNumber']) && $_GET['OrderNumber'] > 0) {
 	end_page();
 	exit;
 
-} elseif (!check_quantities()) {
-	display_error(_("Selected quantity cannot be less than quantity invoiced nor more than quantity
-		not dispatched on sales order."));
+} else {
+	check_edit_conflicts();
 
-} elseif(!check_num('ChargeFreightCost', 0))
-	display_error(_("Freight cost cannot be less than zero"));
-	set_focus('ChargeFreightCost');
+	if (!check_quantities()) {
+		display_error(_("Selected quantity cannot be less than quantity invoiced nor more than quantity
+			not dispatched on sales order."));
 
+	} elseif(!check_num('ChargeFreightCost', 0))
+		display_error(_("Freight cost cannot be less than zero"));
+		set_focus('ChargeFreightCost');
+}
 
 //-----------------------------------------------------------------------------
 
@@ -208,6 +219,7 @@ function copy_from_cart()
 	$_POST['due_date'] = $cart->due_date;
 	$_POST['Location'] = $cart->Location;
 	$_POST['Comments'] = $cart->Comments;
+	$_POST['cart_id'] = $cart->cart_id;
 }
 //------------------------------------------------------------------------------
 
@@ -296,6 +308,7 @@ if (isset($_POST['Update']) || isset($_POST['_Location_update'])) {
 }
 //------------------------------------------------------------------------------
 start_form(false, true);
+hidden('cart_id');
 
 start_table("$table_style2 width=80%", 5);
 echo "<tr><td>"; // outer table

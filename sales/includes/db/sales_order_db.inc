@@ -1,5 +1,14 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 //----------------------------------------------------------------------------------------
 function get_demand_qty($stockid, $location)
 {
@@ -60,7 +69,7 @@ function add_sales_order(&$order)
 			db_escape($order->Comments) .",'" . 
 			date2sql($order->document_date) . "', " .
 			db_escape($order->sales_type) . ", " .
-			$_POST['ship_via'] ."," . 
+			db_escape($order->ship_via)."," . 
 			db_escape($order->deliver_to) . "," .
 			db_escape($order->delivery_address) . ", " .
 			db_escape($order->phone) . ", " . 
@@ -450,11 +459,14 @@ function get_customer_to_order($customer_id) {
 		  .TB_PREF."debtors_master.address, "
 		  .TB_PREF."credit_status.dissallow_invoices, "
 		  .TB_PREF."debtors_master.sales_type AS salestype, "
+		  .TB_PREF."debtors_master.dimension_id, "
+		  .TB_PREF."debtors_master.dimension2_id, "
 		  .TB_PREF."sales_types.sales_type, "
 		  .TB_PREF."sales_types.tax_included, "
 		  .TB_PREF."sales_types.factor, "
 		  .TB_PREF."debtors_master.curr_code, "
-		  .TB_PREF."debtors_master.discount
+		  .TB_PREF."debtors_master.discount,"
+		  .TB_PREF."debtors_master.pymt_discount
 		FROM ".TB_PREF."debtors_master, "
 		  .TB_PREF."credit_status, "
 		  .TB_PREF."sales_types

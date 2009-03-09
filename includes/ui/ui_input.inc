@@ -1,4 +1,14 @@
 <?php
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 
 function get_post($name, $dflt='')
 {
@@ -71,7 +81,7 @@ function simple_page_mode($numeric_id = true)
 //
 function input_num($postname=null, $dflt=null)
 {
-	if (!isset($_POST[$postname]))
+	if (!isset($_POST[$postname]) || $_POST[$postname] == "")
 	  	return $dflt;
 
     return user_numeric($_POST[$postname]);
@@ -94,50 +104,45 @@ function hidden($name, $value=null, $echo=true)
 		return $ret;
 }
 
-//---------------------------------------------------------------------------------
-//	Submit button.
-//	$async parameter can have 3 values:
-//		null - fallback button not visible in js enabled mode
-//		false - normal submit via form action
-//		true  - when js is on submition via ajax call
-//		'process' - ditto with processing indicator in msgbox
-//
-function submit($name, $value, $echo=true, $title=false, $async=false)
+function submit($name, $value, $echo=true, $title=false, $async=false, $icon=false)
 {
-
+	global $path_to_root;
+	
 	default_focus($name);
-	$submit_str = "<input type=\"submit\" class=\""
+	$submit_str = "<button class=\""
 	    .($async ? 'ajaxsubmit' : 'inputsubmit')
-		."\""
-		.($async === null ? (in_ajax() ? " style='display:none;'" : ' aspect="fallback"' ): 
+		."\" type=\"submit\""
+		.($async === null ? (fallback_mode() ? ' aspect="fallback"' : " style='display:none;'" ): 
 			($async === 'process' ? 'aspect="process"' : '') )
 	    ." name=\"$name\"  id=\"$name\" value=\"$value\""
 	    .($title ? " title='$title'" : '')
-	    .">\n";
+	    ."><span>$value</span>"
+		.($icon ? "<img src='$path_to_root/themes/".user_theme()."/images/$icon'>" : '')
+		."</button>\n";
 	if ($echo)
 		echo $submit_str;
 	else
 		return $submit_str;
 }
 
-function submit_center($name, $value, $echo=true, $title=false, $async=false)
+function submit_center($name, $value, $echo=true, $title=false, $async=false, $icon=false)
 {
 	echo "<center>";
-	submit($name, $value, $echo, $title, $async);
+	submit($name, $value, $echo, $title, $async, $icon);
 	echo "</center>";
 }
 
-function submit_center_first($name, $value, $title=false, $async=false)
+function submit_center_first($name, $value, $title=false, $async=false, $icon=false)
 {
 	echo "<center>";
-	submit($name, $value, true, $title, $async);
+	submit($name, $value, true, $title, $async, $icon);
 	echo "&nbsp;";
 }
 
-function submit_center_last($name, $value, $title=false, $async=false)
+function submit_center_last($name, $value, $title=false, $async=false, $icon=false)
 {
 	echo "&nbsp;";
-	submit($name, $value, true, $title, $async);
+	submit($name, $value, true, $title, $async, $icon);
 	echo "</center>";
 }
 
@@ -198,23 +203,49 @@ function submit_return($name, $value, $title=false, $async=false)
 		submit($name, $value, true, $title, $async);
 	}
 }
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------
 
-function button($name, $value, $onclick, $title=false)
+function set_icon($icon, $title=false)
 {
-  	default_focus($name);
-  	echo "<input type=\"button\" class=\"inputsubmit\" name=\"$name\" value=\"$value\" onclick=\"$onclick\""
-	    .($title ? " title='$title'" : '')
-	    ." />\n";
+	global $path_to_root;
+	return "<img src='$path_to_root/themes/".user_theme()."/images/$icon' width='14' height='14' border='0'".($title ? " title='$title'" : "")." />\n";	
 }
 
-function button_cell($name, $value, $onclick, $title=false)
+function button($name, $value, $title=false, $icon=false)
+{
+	// php silently changes dots,spaces,'[' and characters 128-159
+	// to underscore in POST names, to maintain compatibility with register_globals
+	if (user_graphic_links() && $icon)
+	{
+		if ($value == _("Delete")) // Helper during implementation
+			$icon = ICON_DELETE;
+		return "<button type='submit' class='editbutton' name='".
+			htmlentities(strtr($name, array('.'=>'=2E',' '=>'=20','='=>'=3D','['=>'=5B'))).
+			"' value='1'" . ($title ? " title='$title'":" title='$value'")." />".set_icon($icon)."\n";
+	}
+	else
+		return "<input type='submit' class='editbutton' name='"
+			.htmlentities(strtr($name, array('.'=>'=2E',' '=>'=20','='=>'=3D','['=>'=5B')))
+			."' value='$value'"
+			.($title ? " title='$title'":'')." />\n";
+}
+
+function button_cell($name, $value, $title=false, $icon=false)
 {
 	echo "<td>";
-	button($name, $value, $onclick, $title);
-	echo "</td>\n";
+	echo button($name, $value, $title, $icon);
+	echo "</td>";
 }
 
+function delete_button_cell($name, $value, $title=false)
+{
+	button_cell($name, $value, $title, ICON_DELETE);
+}
+
+function edit_button_cell($name, $value, $title=false)
+{
+	button_cell($name, $value, $title, ICON_EDIT);
+}
 //-----------------------------------------------------------------------------------
 
 function check_value($name)
@@ -224,24 +255,36 @@ function check_value($name)
 	return 1;
 }
 
-function check($label, $name, $value=null, $submit_on_change=false, $title=false)
+function checkbox($label, $name, $value=null, $submit_on_change=false, $title=false)
 {
   	global $Ajax;
 
+	$str = '';	
 	default_focus($name);
 	if ($label)
-		echo $label . "  ";
-
+		$str .= $label . "  ";
+	if ($submit_on_change !== false) {
+		if ($submit_on_change === true)
+			$submit_on_change = 
+				"JsHttpRequest.request(\"_{$name}_update\", this.form);";
+	}
 	if ($value === null)
 		$value = get_post($name,0);
 
-		echo "<input"
-		    .($value == 1 ? ' checked':'')
-		    ." type='checkbox' name='$name' value='1'"
-		    .($submit_on_change ? " onclick='JsHttpRequest.request(\"_{$name}_update\", this.form);'" : '')
-		    .($title ? " title='$title'" : '')
-		    ." >\n";
+	$str .= "<input"
+	    .($value == 1 ? ' checked':'')
+	    ." type='checkbox' name='$name' value='1'"
+	    .($submit_on_change ? " onclick='$submit_on_change'" : '')
+	    .($title ? " title='$title'" : '')
+	    ." >\n";
+
 	$Ajax->addUpdate($name, $name, $value);
+	return $str;
+}
+
+function check($label, $name, $value=null, $submit_on_change=false, $title=false)
+{
+	echo checkbox($label, $name, $value, $submit_on_change, $title);
 }
 
 function check_cells($label, $name, $value, $submit_on_change=false, $title=false)
@@ -249,14 +292,14 @@ function check_cells($label, $name, $value, $submit_on_change=false, $title=fals
 	if ($label != null)
 		echo "<td>$label</td>\n";
 	echo "<td>";
-	check(null, $name, $value, $submit_on_change, $title);
+	echo check(null, $name, $value, $submit_on_change, $title);
 	echo "</td>";
 }
 
 function check_row($label, $name, $value, $submit_on_change=false, $title=false)
 {
 	echo "<tr>";
-	check_cells($label, $name, $value, $submit_on_change, $title);
+	echo check_cells($label, $name, $value, $submit_on_change, $title);
 	echo "</tr>\n";
 }
 
@@ -281,6 +324,11 @@ function label_cell($label, $params="", $id=null)
 	return $label;
 }
 
+function email_cell($label, $params="", $id=null)
+{
+	label_cell("<a href='mailto:$label'>$label</a>", $params, $id);
+}
+
 function amount_cell($label, $bold=false, $params="", $id=null)
 {
 	if ($bold)
@@ -299,7 +347,7 @@ function percent_cell($label, $bold=false, $id=null)
 // 2008-06-15. Changed
 function qty_cell($label, $bold=false, $dec=null, $id=null)
 {
-	if ($dec == null)
+	if (!isset($dec))
 		$dec = get_qty_dec();
 	if ($bold)
 		label_cell("<b>".number_format2($label, $dec)."</b>", "nowrap align=right", $id);
@@ -307,17 +355,17 @@ function qty_cell($label, $bold=false, $dec=null, $id=null)
 		label_cell(number_format2($label, $dec), "nowrap align=right", $id);
 }
 
-function label_cells($label, $value, $params="", $params2="")
+function label_cells($label, $value, $params="", $params2="", $id='')
 {
 	if ($label != null)
 		echo "<td $params>$label</td>\n";
-	echo "<td $params2>$value</td>\n";
+	label_cell($value, $params2, $id);
 }
 
-function label_row($label, $value, $params="", $params2="", $leftfill=0)
+function label_row($label, $value, $params="", $params2="", $leftfill=0, $id='')
 {
 	echo "<tr>";
-	label_cells($label, $value, $params, $params2);
+	label_cells($label, $value, $params, $params2, $id);
 	if ($leftfill!=0)
 	  	echo "<td colspan=$leftfill></td>";
 	echo "</tr>\n";
@@ -395,6 +443,27 @@ function text_row_ex($label, $name, $size, $max=null, $title=null, $value=null, 
 	text_cells_ex($label, $name, $size, $max, $value, $title, $params, $post_label);
 
 	echo "</tr>\n";
+}
+
+//-----------------------------------------------------------------------------------
+function email_row($label, $name, $value, $size, $max, $title=null, $params="", $post_label="")
+{
+	text_row("<a href='Mailto:".$_POST[$name]."'>$label</a>", $name, $value, $size, $max, $title, $params, $post_label);
+}
+
+function email_row_ex($label, $name, $size, $max=null, $title=null, $value=null, $params=null, $post_label=null)
+{
+	text_row_ex("<a href='Mailto:".$_POST[$name]."'>$label</a>", $name, $size, $max, $title, $value, $params, $post_label);
+}
+
+function link_row($label, $name, $value, $size, $max, $title=null, $params="", $post_label="")
+{
+	text_row("<a href='".$_POST[$name]."' target='_blank'>$label</a>", $name, $value, $size, $max, $title, $params, $post_label);
+}
+
+function link_row_ex($label, $name, $size, $max=null, $title=null, $value=null, $params=null, $post_label=null)
+{
+	text_row_ex("<a href='".$_POST[$name]."' target='_blank'>$label</a>", $name, $size, $max, $title, $value, $params, $post_label);
 }
 
 //-----------------------------------------------------------------------------------
@@ -489,13 +558,17 @@ function amount_cells_ex($label, $name, $size, $max=null, $init=null, $params=nu
 	if (!isset($max))
 		$max = $size;
 
-	echo "<td align='right'>";
+	if ($label != null)
+		echo "<td>";
+	else
+		echo "<td align='right'>";
 
 	echo "<input class='amount' type=\"text\" name=\"$name\" size=\"$size\" maxlength=\"$max\" dec=\"$dec\" value=\"" . $_POST[$name]. "\">";
 
-	if ($post_label)
-		echo " " . $post_label;
-
+	if ($post_label) {
+		echo "<span id='_{$name}_label'> $post_label</span>";
+		$Ajax->addUpdate($name, '_'.$name.'_label', $post_label);
+	}
 	echo "</td>\n";
 	$Ajax->addUpdate($name, $name, $_POST[$name]);
 	$Ajax->addAssign($name, $name, 'dec', $dec);

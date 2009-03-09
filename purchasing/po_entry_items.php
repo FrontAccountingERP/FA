@@ -1,13 +1,20 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 $page_security = 4;
-
 $path_to_root="..";
 include_once($path_to_root . "/purchasing/includes/po_class.inc");
-
 include_once($path_to_root . "/includes/session.inc");
-
 include_once($path_to_root . "/purchasing/includes/purchasing_ui.inc");
+include_once($path_to_root . "/reporting/includes/reporting.inc");
 
 $js = '';
 if ($use_popup_windows)
@@ -61,13 +68,15 @@ if (isset($_GET['AddedID']))
 		display_notification_centered(_("Purchase Order has been entered"));
 	else
 		display_notification_centered(_("Purchase Order has been updated") . " #$order_no");
-	display_note(get_trans_view_str($trans_type, $order_no, _("View this order")));
+	display_note(get_trans_view_str($trans_type, $order_no, _("&View this order")));
+	echo '<br>';
+	display_note(print_document_link($order_no, _("&Print This Order"), true, $trans_type));
 
-	hyperlink_params($path_to_root . "/purchasing/po_receive_items.php", _("Receive Items on this Purchase Order"), "PONumber=$order_no");
+	hyperlink_params($path_to_root . "/purchasing/po_receive_items.php", _("&Receive Items on this Purchase Order"), "PONumber=$order_no");
 
-	hyperlink_params($_SERVER['PHP_SELF'], _("Enter Another Purchase Order"), "NewOrder=yes");
+	hyperlink_params($_SERVER['PHP_SELF'], _("Enter &Another Purchase Order"), "NewOrder=yes");
 	
-	hyperlink_no_params($path_to_root."/purchasing/inquiry/po_search.php", _("Select An Outstanding Purchase Order"));
+	hyperlink_no_params($path_to_root."/purchasing/inquiry/po_search.php", _("Select An &Outstanding Purchase Order"));
 	
 	display_footer_exit();	
 }

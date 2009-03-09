@@ -1,5 +1,14 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 //-----------------------------------------------------------------------------
 //	Add or update Sales Invoice
 //
@@ -62,7 +71,8 @@ function write_sales_invoice(&$invoice)
 		$invoice->Branch, $date_, $invoice->reference, $items_total, 0,
 		$items_added_tax, $invoice->freight_cost, $freight_added_tax,
 		$invoice->sales_type, $sales_order, $delivery_no,
-		$invoice->ship_via, $invoice->due_date, $alloc); // 2008-06-14 extra $alloc
+		$invoice->ship_via, $invoice->due_date, $alloc, 0, $invoice->dimension_id, $invoice->dimension2_id); 
+		// 2008-06-14 extra $alloc, 2008-11-12 added dimension_id Joe Hunt
 
 	if ($trans_no == 0) {
 		$invoice->trans_no = array($invoice_no=>0);
@@ -71,7 +81,7 @@ function write_sales_invoice(&$invoice)
 		delete_comments(10, $invoice_no);
 		void_gl_trans(10, $invoice_no, true);
 		void_cust_allocations(10, $invoice_no); // ?
-		void_customer_trans_tax_details(10, $invoice_no);
+		void_trans_tax_details(10, $invoice_no);
 	}
 	$total = 0;
 	foreach ($invoice->line_items as $invoice_line) {
@@ -105,8 +115,10 @@ function write_sales_invoice(&$invoice)
 				$sales_account = ($branch_data['sales_account'] != "" ? $branch_data['sales_account'] : $stock_gl_code['sales_account']);
 				// 2008-08-01. If there is a Customer Dimension, then override with this,
 				// else take the Item Dimension (if any)
-				$dim = ($customer['dimension_id'] != 0 ? $customer["dimension_id"] : $stock_gl_code["dimension_id"]);
-				$dim2 = ($customer['dimension2_id'] != 0 ? $customer["dimension2_id"] : $stock_gl_code["dimension2_id"]);
+				$dim = ($invoice->dimension_id != $customer['dimension_id'] ? $invoice->dimension_id : 
+					($customer['dimension_id'] != 0 ? $customer["dimension_id"] : $stock_gl_code["dimension_id"]));
+				$dim2 = ($invoice->dimension2_id != $customer['dimension2_id'] ? $invoice->dimension2_id : 
+					($customer['dimension2_id'] != 0 ? $customer["dimension2_id"] : $stock_gl_code["dimension2_id"]));
 				$total += add_gl_trans_customer(10, $invoice_no, $date_, $sales_account, $dim, $dim2,
 					(-$line_taxfree_price * $invoice_line->qty_dispatched),
 					$invoice->customer_id, "The sales price GL posting could not be inserted");
@@ -135,9 +147,12 @@ function write_sales_invoice(&$invoice)
 	}
 	// post all taxes
 	foreach ($taxes as $taxitem) {
-		if ($taxitem['Value'] != 0) {
-			add_customer_trans_tax_detail_item(10, $invoice_no, $taxitem['tax_type_id'],
-				$taxitem['rate'], $invoice->tax_included, $taxitem['Value']);
+
+		if ($taxitem['Net'] != 0) {
+			$ex_rate = get_exchange_rate_from_home_currency(get_customer_currency($invoice->customer_id), $date_);
+			add_trans_tax_details(10, $invoice_no, $taxitem['tax_type_id'],
+				$taxitem['rate'], $invoice->tax_included, $taxitem['Value'],
+				 $taxitem['Net'], $ex_rate, $date_, $invoice->reference);
 
 			$total += add_gl_trans_customer(10, $invoice_no, $date_, $taxitem['sales_gl_code'], 0, 0,
 				(-$taxitem['Value']), $invoice->customer_id,
@@ -152,8 +167,24 @@ function write_sales_invoice(&$invoice)
 
 	if ($trans_no == 0) {
 		references::save_last($invoice->reference, 10);
-	}
+		if ($invoice->cash) {
+			$amount = $items_total + $items_added_tax + $invoice->freight_cost 
+				+ $freight_added_tax;
 
+			// to use debtors.pmt_discount on cash sale:
+			// extend invoice entry page with final amount after discount 
+			// and change line below.
+			$discount = 0; // $invoice->cash_discount*$amount;
+			$pmtno = write_customer_payment(0, $invoice->customer_id, 
+				$invoice->Branch, $invoice->cash_account, $date_,
+				references::get_next(12), $amount-$discount, $discount,
+				_('Cash invoice').' '.$invoice->trans_no);
+			add_cust_allocation($amount, 12, $pmtno, 10, $invoice_no);
+
+			update_debtor_trans_allocation(10, $invoice_no, $amount);
+			update_debtor_trans_allocation(12, $pmtno, $amount);
+		}
+	}
 	commit_transaction();
 
 	return $invoice_no;
@@ -183,7 +214,7 @@ function void_sales_invoice($type, $type_no)
 	// clear details after they've been reversed in the sales order
 	void_customer_trans_details($type, $type_no);
 
-	void_customer_trans_tax_details($type, $type_no);
+	void_trans_tax_details($type, $type_no);
 
 	void_cust_allocations($type, $type_no);
 

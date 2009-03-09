@@ -1,5 +1,14 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 $page_security = 2;
 // ----------------------------------------------------------------
 // $ Revision:	2.0 $
@@ -7,17 +16,16 @@ $page_security = 2;
 // date_:	2005-05-19
 // Title:	Order Status List
 // ----------------------------------------------------------------
-$path_to_root="../";
+$path_to_root="..";
 
-include_once($path_to_root . "includes/session.inc");
-include_once($path_to_root . "includes/date_functions.inc");
-include_once($path_to_root . "includes/data_checks.inc");
-include_once($path_to_root . "sales/includes/sales_db.inc");
-include_once($path_to_root . "inventory/includes/db/items_category_db.inc");
+include_once($path_to_root . "/includes/session.inc");
+include_once($path_to_root . "/includes/date_functions.inc");
+include_once($path_to_root . "/includes/data_checks.inc");
+include_once($path_to_root . "/sales/includes/sales_db.inc");
+include_once($path_to_root . "/inventory/includes/db/items_category_db.inc");
 
 //----------------------------------------------------------------------------------------------------
 
-// trial_inquiry_controls();
 print_order_status_list();
 
 //----------------------------------------------------------------------------------------------------
@@ -63,14 +71,17 @@ function print_order_status_list()
 {
 	global $path_to_root;
 
-	include_once($path_to_root . "reporting/includes/pdf_report.inc");
-
 	$from = $_POST['PARAM_0'];
 	$to = $_POST['PARAM_1'];
 	$category = $_POST['PARAM_2'];
 	$location = $_POST['PARAM_3'];
 	$backorder = $_POST['PARAM_4'];
 	$comments = $_POST['PARAM_5'];
+	$destination = $_POST['PARAM_6'];
+	if ($destination)
+		include_once($path_to_root . "/reporting/includes/excel_report.inc");
+	else
+		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 
 	if ($category == reserved_words::get_all_numeric())
 		$category = 0;
@@ -108,7 +119,7 @@ function print_order_status_list()
 	$cols2 = $cols;
 	$aligns2 = $aligns;
 
-	$rep = new FrontReport(_('Order Status Listing'), "OrderStatusListing.pdf", user_pagesize());
+	$rep = new FrontReport(_('Order Status Listing'), "OrderStatusListing", user_pagesize());
 	$rep->Font();
 	$rep->Info($params, $cols, $headers, $aligns, $cols2, $headers2, $aligns2);
 
@@ -136,8 +147,8 @@ function print_order_status_list()
 			$rep->TextCol(1, 2,	get_customer_name($myrow['debtor_no']));
 			$rep->TextCol(2, 3,	get_branch_name($myrow['branch_code']));
 			$rep->TextCol(3, 4,	$myrow['customer_ref']);
-			$rep->TextCol(4, 5,	sql2date($myrow['ord_date']));
-			$rep->TextCol(5, 6,	sql2date($myrow['delivery_date']));
+			$rep->DateCol(4, 5,	$myrow['ord_date'], true);
+			$rep->DateCol(5, 6,	$myrow['delivery_date'], true);
 			$rep->TextCol(6, 7,	$myrow['from_stk_loc']);
 			$rep->NewLine(2);
 			$orderno = $myrow['order_no'];
@@ -145,9 +156,9 @@ function print_order_status_list()
 		$rep->TextCol(0, 1,	$myrow['stk_code']);
 		$rep->TextCol(1, 2,	$myrow['description']);
 		$dec = get_qty_dec($myrow['stk_code']);
-		$rep->TextCol(2, 3,	number_format2($myrow['quantity'], $dec));
-		$rep->TextCol(3, 4,	number_format2($myrow['qty_sent'], $dec));
-		$rep->TextCol(4, 5,	number_format2($myrow['quantity'] - $myrow['qty_sent'], $dec));
+		$rep->AmountCol(2, 3, $myrow['quantity'], $dec);
+		$rep->AmountCol(3, 4, $myrow['qty_sent'], $dec);
+		$rep->AmountCol(4, 5, $myrow['quantity'] - $myrow['qty_sent'], $dec);
 		if ($myrow['quantity'] - $myrow['qty_sent'] > 0)
 		{
 			$rep->Font('italic');

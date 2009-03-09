@@ -1,6 +1,15 @@
 <?php
-
-$page_security =10;
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
+$page_security = 1;
 $path_to_root="..";
 include($path_to_root . "/includes/session.inc");
 
@@ -15,28 +24,44 @@ include_once($path_to_root . "/admin/db/company_db.inc");
 
 if (isset($_POST['setprefs'])) 
 {
-	$theme = user_theme();
-	set_user_prefs($_POST['prices'], $_POST['Quantities'],
-		$_POST['Rates'], $_POST['Percent'],
-		check_value('show_gl'),
-		check_value('show_codes'),
-		$_POST['date_format'], $_POST['date_sep'],
-		$_POST['tho_sep'], $_POST['dec_sep'],
-		$_POST['theme'], $_POST['page_size'], check_value('show_hints'));
+	if (!is_numeric($_POST['query_size']) || ($_POST['query_size']<1))
+	{
+		display_error($_POST['query_size']);
+		display_error( _("Query size must be integer and greater than zero."));
+		set_focus('query_size');
+	} else {
+		$chg_theme = user_theme() != $_POST['theme'];
+		$chg_lang = $_SESSION['language']->code != $_POST['language'];
 
-	language::set_language($_POST['language']);
+		set_user_prefs($_POST['prices'], $_POST['Quantities'],
+			$_POST['Rates'], $_POST['Percent'],
+			check_value('show_gl'),
+			check_value('show_codes'),
+			$_POST['date_format'], $_POST['date_sep'],
+			$_POST['tho_sep'], $_POST['dec_sep'],
+			$_POST['theme'], $_POST['page_size'], check_value('show_hints'),
+			$_POST['profile'], check_value('rep_popup'), 
+			(int)($_POST['query_size']), check_value('graphic_links'), 
+			$_POST['language']);
 
-	flush_dir($comp_path.'/'.user_company().'/js_cache');	
+		if ($chg_lang)
+			language::set_language($_POST['language']);
+			// refresh main menu
 
-	if (user_theme() != $theme)
-		reload_page("");
+		flush_dir($comp_path.'/'.user_company().'/js_cache');	
 
-	display_notification_centered(_("Display settings have been updated."));
+		if ($chg_theme || $chg_lang)
+			meta_forward($_SERVER['PHP_SELF']);
+
+		display_notification_centered(_("Display settings have been updated."));
+	}
 }
 
 start_form();
-start_table($table_style2);
 
+start_outer_table($table_style2);
+
+table_section(1);
 table_section_title(_("Decimal Places"));
 
 text_row_ex(_("Prices/Amounts:"), 'prices', 5, 5, '', user_price_dec());
@@ -62,7 +87,14 @@ decseps_list_row(_("Decimal Separator:"), "dec_sep", user_dec_sep());
 
 /* The array $decseps is set up in config.php for modifications
 possible separators can be added by modifying the array definition by editing that file */
+if (!isset($_POST['language']))
+	$_POST['language'] = $_SESSION['language']->code;
 
+table_section_title(_("Language"));
+
+languages_list_row(_("Language:"), 'language', $_POST['language']);
+
+table_section(2);
 table_section_title(_("Miscellaneous"));
 
 check_row(_("Show hints for new users:"), 'show_hints', user_hints());
@@ -81,16 +113,23 @@ pagesizes_list_row(_("Page Size:"), "page_size", user_pagesize());
 /* The array $pagesizes is set up in config.php for modifications
 possible separators can be added by modifying the array definition by editing that file */
 
-table_section_title(_("Language"));
+if (!isset($_POST['profile']))
+	$_POST['profile'] = user_print_profile();
 
-if (!isset($_POST['language']))
-	$_POST['language'] = $_SESSION['language']->code;
+print_profiles_list_row(_("Printing profile"). ':', 'profile', 
+	null, _('Browser printing support'));
 
-languages_list_row(_("Language:"), 'language', $_POST['language']);
+check_row(_("Use popup window to display reports:"), 'rep_popup', user_rep_popup(),
+	false, _('Set this option to on if your browser directly supports pdf files'));
 
-end_table(1);
+check_row(_("Use icons instead of text links:"), 'graphic_links', user_graphic_links(),
+	false, _('Set this option to on for using icons instead of text links'));
 
-submit_center('setprefs', _("Update"));
+text_row_ex(_("Query page size:"), 'query_size',  5, 5, '', user_query_size());
+
+end_outer_table(1);
+
+submit_center('setprefs', _("Update"), true, '', true);
 
 end_form(2);
 

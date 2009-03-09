@@ -1,5 +1,14 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 $page_security = 2;
 // ----------------------------------------------------------------
 // $ Revision:	2.0 $
@@ -7,22 +16,20 @@ $page_security = 2;
 // date_:	2005-05-19
 // Title:	Purchase Orders
 // ----------------------------------------------------------------
-$path_to_root="../";
+$path_to_root="..";
 
-include_once($path_to_root . "includes/session.inc");
-include_once($path_to_root . "includes/date_functions.inc");
-include_once($path_to_root . "includes/data_checks.inc");
-//include_once($path_to_root . "sales/includes/sales_db.inc");
+include_once($path_to_root . "/includes/session.inc");
+include_once($path_to_root . "/includes/date_functions.inc");
+include_once($path_to_root . "/includes/data_checks.inc");
 
 //----------------------------------------------------------------------------------------------------
 
-// trial_inquiry_controls();
 print_po();
 
 //----------------------------------------------------------------------------------------------------
 function get_po($order_no)
 {
-   	$sql = "SELECT ".TB_PREF."purch_orders.*, ".TB_PREF."suppliers.supp_name,
+   	$sql = "SELECT ".TB_PREF."purch_orders.*, ".TB_PREF."suppliers.supp_name,  ".TB_PREF."suppliers.supp_account_no,
    		".TB_PREF."suppliers.curr_code, ".TB_PREF."suppliers.payment_terms, ".TB_PREF."locations.location_name,
    		".TB_PREF."suppliers.email, ".TB_PREF."suppliers.address
 		FROM ".TB_PREF."purch_orders, ".TB_PREF."suppliers, ".TB_PREF."locations
@@ -48,7 +55,7 @@ function print_po()
 {
 	global $path_to_root;
 
-	include_once($path_to_root . "reporting/includes/pdf_report.inc");
+	include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 
 	$from = $_POST['PARAM_0'];
 	$to = $_POST['PARAM_1'];
@@ -76,7 +83,7 @@ function print_po()
 
 	if ($email == 0)
 	{
-		$rep = new FrontReport(_('PURCHASE ORDER'), "PurchaseOrderBulk.pdf", user_pagesize());
+		$rep = new FrontReport(_('PURCHASE ORDER'), "PurchaseOrderBulk", user_pagesize());
 		$rep->currency = $cur;
 		$rep->Font();
 		$rep->Info($params, $cols, null, $aligns);
@@ -103,6 +110,19 @@ function print_po()
 		$SubTotal = 0;
 		while ($myrow2=db_fetch($result))
 		{
+			$data = get_purchase_data($myrow['supplier_id'], $myrow2['item_code']);
+			if ($data !== false)
+			{
+				if ($data['supplier_description'] != "")
+					$myrow2['description'] = $data['supplier_description'];
+				if ($data['suppliers_uom'] != "")
+					$myrow2['units'] = $data['suppliers_uom'];
+				if ($data['conversion_factor'] != 1)
+				{
+					$myrow2['unit_price'] = round($myrow2['unit_price'] / $data['conversion_factor'], user_price_dec());
+					$myrow2['quantiry_ordered'] = round($myrow2['quantiry_ordered'] / $data['conversion_factor'], user_qty_dec());
+				}
+			}	
 			$Net = round2(($myrow2["unit_price"] * $myrow2["quantity_ordered"]),
 			  user_price_dec());
 			$SubTotal += $Net;
@@ -118,7 +138,7 @@ function print_po()
 			$rep->TextCol(6, 7,	$DisplayNet, -2);
 			$rep->NewLine(1);
 			if ($rep->row < $rep->bottomMargin + (15 * $rep->lineHeight))
-				$rep->Header2($myrow, $branch, $sales_order, $baccount);
+				$rep->Header2($myrow, $branch, $myrow, $baccount, 8);
 		}
 		if ($myrow['comments'] != "")
 		{
@@ -132,11 +152,11 @@ function print_po()
 		$doctype = 8;
 		if ($rep->currency != $myrow['curr_code'])
 		{
-			include($path_to_root . "reporting/includes/doctext2.inc");
+			include($path_to_root . "/reporting/includes/doctext2.inc");
 		}
 		else
 		{
-			include($path_to_root . "reporting/includes/doctext.inc");
+			include($path_to_root . "/reporting/includes/doctext.inc");
 		}
 
 		$rep->TextCol(3, 6, $doc_Sub_total, -2);

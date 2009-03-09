@@ -1,5 +1,14 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 $page_security = 8;
 $path_to_root="../..";
 
@@ -46,7 +55,7 @@ function gl_inquiry_controls()
 
 function get_balance($account, $from, $to, $from_incl=true, $to_incl=true) 
 {
-	$sql = "SELECT SUM(IF(amount >= 0, amount, 0)) as debit, SUM(IF(amount < 0, -amount, 0)) as credit, SUM(amount) as balance 
+	$sql = "SELECT SUM(IF(amount >= 0, amount, 0)) AS debit, SUM(IF(amount < 0, -amount, 0)) AS credit, SUM(amount) AS balance 
 		FROM ".TB_PREF."gl_trans,".TB_PREF."chart_master,".TB_PREF."chart_types, ".TB_PREF."chart_class 
 		WHERE ".TB_PREF."gl_trans.account=".TB_PREF."chart_master.account_code AND ".TB_PREF."chart_master.account_type=".TB_PREF."chart_types.id 
 		AND ".TB_PREF."chart_types.class_id=".TB_PREF."chart_class.cid AND";

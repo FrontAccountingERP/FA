@@ -1,5 +1,14 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 $page_security = 3;
 $path_to_root="..";
 include_once($path_to_root . "/includes/ui/items_cart.inc");
@@ -32,11 +41,11 @@ if (isset($_GET['AddedID']))
 	$trans_type = systypes::inventory_adjustment();
 
 	display_notification_centered(_("Items adjustment has been processed"));
-	display_note(get_trans_view_str($trans_type, $trans_no, _("View this adjustment")));
+	display_note(get_trans_view_str($trans_type, $trans_no, _("&View this adjustment")));
 
-	display_note(get_gl_view_str($trans_type, $trans_no, _("View the GL Postings for this Adjustment")), 1, 0);
+	display_note(get_gl_view_str($trans_type, $trans_no, _("View the GL &Postings for this Adjustment")), 1, 0);
 
-	hyperlink_no_params($_SERVER['PHP_SELF'], _("Enter Another Adjustment"));
+	hyperlink_no_params($_SERVER['PHP_SELF'], _("Enter &Another Adjustment"));
 
 	display_footer_exit();
 }
@@ -212,14 +221,12 @@ start_form(false, true);
 
 display_order_header($_SESSION['adj_items']);
 
-start_table("$table_style width=70%", 10);
-start_row();
-echo "<TD>";
+start_outer_table("$table_style width=70%", 10);
+
 display_adjustment_items(_("Adjustment Items"), $_SESSION['adj_items']);
 adjustment_options_controls();
-echo "</TD>";
-end_row();
-end_table(1);
+
+end_outer_table(1, false);
 
 submit_center_first('Update', _("Update"), '', null);
 submit_center_last('Process', _("Process Adjustment"), '', true);

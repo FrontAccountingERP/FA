@@ -1,5 +1,14 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 //----------------------------------------------------------------------------------------
 
 function delete_po($po)
@@ -174,6 +183,14 @@ function read_po_items($order_no, &$order, $open_items_only=false)
 
 		while ($myrow = db_fetch($result))
         {
+        	$data = get_purchase_data($order->supplier_id, $myrow['item_code']);
+        	if ($data !== false)
+        	{
+        		if ($data['supplier_description'] != "")
+        			$myrow['description'] = $data['supplier_description'];
+        		if ($data['suppliers_uom'] != "")
+        			$myrow['units'] = $data['suppliers_uon'];
+        	}		
             if (is_null($myrow["units"]))
             {
 		       	$units = "";

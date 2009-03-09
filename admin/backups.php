@@ -1,5 +1,14 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 $page_security = 15;
 
 $path_to_root="..";
@@ -18,7 +27,7 @@ if ($valid_paths != "")
 }
 
 $db_name = $_SESSION["wa_current_user"]->company;
-$msg = handle_form($db_connections[$db_name]);
+handle_form($db_connections[$db_name]);
 
 page(_("Backup and Restore Database"), false, false, '', '', true);
 
@@ -31,11 +40,13 @@ $compr = get_compr_combo();
 echo "
 	<script language='javascript'>
 	function createBackup() {
+		progbar();
 		ext = document.forms[0].cmb_comp.options[document.forms[0].cmb_comp.selectedIndex].value
 		comm = document.forms[0].comments.value
 		document.location.replace('backups.php?c=g&comp='+ext+'&comm='+comm)
 	}
 	function restoreBackup() {
+		progbar();
 		pFilename = document.forms[0].cmb_backups.options[document.forms[0].cmb_backups.selectedIndex].value
 		document.location.replace('backups.php?c=r&fn='+pFilename)
 	}
@@ -64,13 +75,13 @@ echo "
 			alert('" . _("Please select a file to upload.") . "')
 			return
 		}
+		progbar();
 		document.forms[0].action='backups.php?c=u&fn=' + document.forms[0].uploadfile.value
 		document.forms[0].submit()
 	}
 	</script>
 	<center>
 	<table cellpadding=2 cellspacing=2 border=0>
-	<tr><td colspan=2 style='color:darkred'><b>$msg</b>&nbsp;</td></tr>
 	<tr>
 		<td style='padding-right:30px'>" . _("Backup scripts") . "</td>
 	</tr>
@@ -109,92 +120,75 @@ end_page();
 
 function handle_form($conn)
 {
-	global $path_to_root;
-	//Generate Only
-	if (isset($_GET['c']))
+if(isset($_GET['c']))
+	switch($_GET['c'])
 	{
-		if ($_GET['c']=='g')
-		{
+		case 'g':	//Generate Only
 			$filename = generate_backup($conn, $_GET['comp'], $_GET['comm']);
 			header("Location: backups.php?c=gs&fn=" . urlencode($filename));
-			return "";
-		}
-		//Generate and download
-		if ($_GET['c']=='gd')
-		{
+			break;
+
+		case 'gd':	//Generate and download
 			$filename = generate_backup($conn);
 			header("Location: backups.php?c=ds&fn=" . urlencode($filename));
-			return "";
-		}
-		//Download the file
-		if ($_GET['c']=='d')
-		{
+			break;
+
+		case 'd':	//Download the file
 			download_file(BACKUP_PATH . $_GET['fn']);
 			exit;
-		}
-		//Delete the file
-		if ($_GET['c']=='df')
-		{
+
+		case 'df':	//Delete the file
 			$filename = $_GET['fn'];
 			@unlink(BACKUP_PATH . $filename);
 			header("Location: backups.php?c=dff&fn=" . urlencode($filename));
-			return "";
-		}
-		if ($_GET['c']=='dff')
-		{
-			$msg = _("File successfully deleted.")."&nbsp;&nbsp;&nbsp;";
-			$msg .= _("Filename") . " = " . $_GET['fn'];
-			return $msg;
-		}
-		//Write JS script to open download window
-		if ($_GET['c']=='ds')
-		{
-			$filename = urlencode($_GET['fn']);
-			$msg = _("Backup is being downloaded...");
-			$msg .= "<script language='javascript'>";
-			$msg .= "function download_file() {location.href ='backups.php?c=d&fn=$filename'}; 
-				Behaviour.addLoadEvent(download_file);";
-			$msg .= "</script>";
-			return $msg;
-		}
-		//Print backup success message
-		if ($_GET['c']=='gs')
-		{
-			$msg = _("Backup successfully generated.")."&nbsp;&nbsp;&nbsp;";
-			$msg .= _("Filename") . " = " . $_GET['fn'];
-			return $msg;
-		}
-		//Restore backup
-		if ($_GET['c']=='r')
-		{
-			$filename=$_GET['fn'];
-			restore_backup(BACKUP_PATH . $filename, $conn);
-			header("Location: backups.php?c=rs&fn=" . urlencode($filename));
-			return "";
-		}
-		//Print restore success message
-		if ($_GET['c']=='rs')
-		{
-			$msg = _("Restore backup completed.")."&nbsp;&nbsp;&nbsp;";
-			return $msg;
-		}
+			break;
 
-		if ($_GET['c']=='u')
-		{
+		case 'dff':
+			$msg = _("File successfully deleted.")." ";
+			$msg .= _("Filename") . " = " . $_GET['fn'];
+			display_notification($msg);
+			break;
+
+		case 'ds':	//Write JS script to open download window
+			$filename = urlencode($_GET['fn']);
+			display_notification(_("Backup is being downloaded..."));
+			
+			add_js_source("<script language='javascript'>
+			function download_file() {location.href ='backups.php?c=d&fn=$filename'}; 
+				Behaviour.addLoadEvent(download_file);
+			</script>");
+			break;
+
+		case 'gs':	//Print backup success message
+			$msg = _("Backup successfully generated."). ' ';
+			$msg .= _("Filename") . " = " . $_GET['fn'];
+			display_notification($msg);
+			break;
+
+		case 'r':	//Restore backup
+			$filename=$_GET['fn'];
+			if( restore_backup(BACKUP_PATH . $filename, $conn) )
+				header("Location: backups.php?c=rs&fn=" . urlencode($filename));
+			break;
+
+		case 'rs':	//Print restore success message
+			display_notification(_("Restore backup completed."));
+			break;
+
+		case 'u':
 			$filename = $_FILES['uploadfile']['tmp_name'];
 			if (is_uploaded_file ($filename))
 			{
-				restore_backup($filename, $conn);
-				$msg = _("Uploaded file has been restored.");
+				if( restore_backup($filename, $conn) )
+					display_notification(_("Uploaded file has been restored."));
+				else
+					display_error(_("Database restore failed."));
 			}
 			else
 			{
-				$msg = _("Backup was not uploaded into the system.");
+				display_error(_("Backup was not uploaded into the system."));
 			}
-			return $msg;
 		}
-	}
-	return "";
 }
 
 function generate_backup($conn, $ext='no', $comm='')
@@ -253,7 +247,7 @@ function download_file($filename)
 {
     if (empty($filename) || !file_exists($filename))
     {
-        return FALSE;
+        return false;
     }
     $saveasname = basename($filename);
     header('Content-type: application/octet-stream');

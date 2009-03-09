@@ -1,10 +1,22 @@
 <?php
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 /* $Revision$ */
 $page_security = 8;
 //include_once($path_to_root . "reporting/includes/class.pdf.inc");
 include_once(dirname(__FILE__)."/class.pdf.inc");
-include_once($path_to_root . "admin/db/company_db.inc");
-include_once($path_to_root . "config.php");
+include_once(dirname(__FILE__)."/printer_class.inc");
+include_once($path_to_root . "/admin/db/company_db.inc");
+include_once($path_to_root . "/admin/db/printers_db.inc");
+include_once($path_to_root . "/config.php");
 class FrontReport extends Cpdf
 {
 	var $size;
@@ -112,7 +124,7 @@ class FrontReport extends Cpdf
 		}
 		$this->size = array(0, 0, $this->pageWidth, $this->pageHeight);
 		$this->title = $title;
-		$this->filename = $filename;
+		$this->filename = $filename.".pdf";
 		$this->pageNumber = 0;
 		$this->endLine = $this->pageWidth - $this->rightMargin;
 		$this->companyCol = $this->endLine - 150;
@@ -138,7 +150,7 @@ class FrontReport extends Cpdf
 	function Info($params, $cols, $headers, $aligns,
 		$cols2 = null, $headers2 = null, $aligns2 = null)
 	{
-		global $app_title, $version, $power_by, $power_url, $path_to_root,	$db_connections;
+		global $app_title, $version, $power_by, $power_url;
 
 		$this->addinfo('Title', $this->title);
 		$this->addinfo('Subject', $this->title);
@@ -152,7 +164,6 @@ class FrontReport extends Cpdf
 		$this->fiscal_year = sql2date($year['begin']) . " - " . sql2date($year['end']) . "  " . "(" . $how . ")";
 		$this->company = get_company_prefs();
 		$this->user = $_SESSION["wa_current_user"]->name;
-		//$this->host = $db_connections[$_SESSION["wa_current_user"]->company]["host"];
 		$this->host = $_SERVER['SERVER_NAME'];
 		$this->params = $params;
 		$this->cols = $cols;
@@ -256,14 +267,14 @@ class FrontReport extends Cpdf
 		$header2type = true;
 		if ($this->currency != $myrow['curr_code'])
 		{
-			include($path_to_root . "reporting/includes/doctext2.inc");
+			include($path_to_root . "/reporting/includes/doctext2.inc");
 		}
 		else
 		{
-			include($path_to_root . "reporting/includes/doctext.inc");
+			include($path_to_root . "/reporting/includes/doctext.inc");
 		}
 
-		include($path_to_root . "reporting/includes/header2.inc");
+		include($path_to_root . "/reporting/includes/header2.inc");
 
 		$this->row = $temp;
 	}
@@ -307,6 +318,18 @@ class FrontReport extends Cpdf
 	function TextCol($c, $n, $txt, $corr=0, $r=0)
 	{
 		return $this->TextWrap($this->cols[$c], $this->row - $r, $this->cols[$n] - $this->cols[$c] + $corr, $txt, $this->aligns[$c]);
+	}
+	
+	function AmountCol($c, $n, $txt, $dec=0, $corr=0, $r=0)
+	{
+		return $this->TextCol($c, $n, number_format2($txt, $dec), $corr, $r);
+	}
+
+	function DateCol($c, $n, $txt, $conv=false, $corr=0, $r=0)
+	{
+		if ($conv)
+			$txt = sql2date($txt);
+		return $this->TextCol($c, $n, $txt, $corr, $r);
 	}
 
 	function TextCol2($c, $n, $txt, $corr=0, $r=0)
@@ -355,13 +378,11 @@ class FrontReport extends Cpdf
 
 	function End($email=0, $subject=null, $myrow=null, $doctype = 0)
 	{
-		global $go_debug, $path_to_root, $comp_path;
+		global $pdf_debug, $path_to_root, $comp_path;
 
-		if ($go_debug == 1)
+		if ($pdf_debug == 1)
 		{
-			$buf = $this->Output();
-			$len = strlen($buf);
-			$pdfcode = $buf;
+			$pdfcode = $this->Output('','S');
 			$pdfcode = str_replace("\n", "\n<br>", htmlspecialchars($pdfcode));
 			echo '<html><body>';
 			echo trim($pdfcode);
@@ -376,18 +397,17 @@ class FrontReport extends Cpdf
 		}
 		else
 		{
-			$buf = $this->Output();
-			$len = strlen($buf);
+
 			$dir =  $comp_path.'/'.user_company(). '/pdf_files';
 			//save the file
 			if (!file_exists($dir))
 			{
 				mkdir ($dir,0777);
 			}
-			$fname = $dir . '/' . $this->filename;
-			$fp = fopen($fname,'w');
-			fwrite($fp,$buf);
-			fclose($fp);
+			// do not use standard filenames or your sensitive company data 
+			// are world readable
+			$fname = $dir.'/'.uniqid('').'.pdf';
+			$this->Output($fname, 'F');
 			if ($email == 1)
 			{
 				$emailtype = true;
@@ -448,36 +468,57 @@ class FrontReport extends Cpdf
 			}
 			else
 			{
-				//echo '<html>
-				//		<head>
-				//	  	  <SCRIPT LANGUAGE="JavaScript"><!--
-				//	      function go_now () { window.location.href = "'.$fname.'"; }
-				//	      //--></SCRIPT>
-				//	  </head>
-				//	  <body onLoad="go_now()"; >
-				//	    <a href="'.$fname.'">click here</a> if you are not re-directed.
-				//	  </body>
-				//    </html>';
-                header('Content-type: application/pdf');
-                header("Content-Disposition: inline; filename=$this->filename");
-                header('Expires: 0');
-                header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-                header('Pragma: public');
-                $this->Stream();
+				$printer = get_report_printer(user_print_profile(), $_POST['REP_ID']);
+				if ($printer == false) {
+					if(in_ajax()) {
+						global $Ajax;
 
+						if (user_rep_popup()) 
+							$Ajax->popup($fname); // when embeded pdf viewer used
+						else
+							$Ajax->redirect($fname); // otherwise use faster method
+					} else {
+					//echo '<html>
+					//		<head>
+					//	  	  <SCRIPT LANGUAGE="JavaScript"><!--
+					//	      function go_now () { window.location.href = "'.$fname.'"; }
+					//	      //--></SCRIPT>
+					//	  </head>
+					//	  <body onLoad="go_now()"; >
+					//	    <a href="'.$fname.'">click here</a> if you are not re-directed.
+					//	  </body>
+					//    </html>';
+	                header('Content-type: application/pdf');
+    	            header("Content-Disposition: inline; filename=$this->filename");
+        	        header('Expires: 0');
+            	    header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+                	header('Pragma: public');
+	                $this->Stream();
+					}
+				} else { // send report to network printer
+					$prn = new remote_printer($printer['queue'],$printer['host'],
+						$printer['port'], $printer['timeout']);
+					$error = $prn->print_file($fname);
+					if ($error)
+						display_error($error);
+					else
+						display_notification(_('Report has been sent to network printer ').$printer['name']);
+				}
 			}
-			// also have a look through the directory, and remove the files that are older than a week
-			// rather want to save 'em
-			/*if ($d = @opendir($dir)) {
+			// first have a look through the directory, 
+			// and remove old temporary pdfs
+			if ($d = @opendir($dir)) {
 				while (($file = readdir($d)) !== false) {
-					// then check to see if this one is too old
+					if (!is_file($dir.'/'.$file) || $file == 'index.php') continue;
+				// then check to see if this one is too old
 					$ftime = filemtime($dir.'/'.$file);
-					if (time()-$ftime > 3600*24*7){
+				 // seems 3 min is enough for any report download, isn't it?
+					if (time()-$ftime > 180){
 						unlink($dir.'/'.$file);
 					}
 				}
 				closedir($d);
-			}*/
+			}
 		}
 	}
 }

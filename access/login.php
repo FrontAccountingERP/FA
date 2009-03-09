@@ -1,16 +1,26 @@
 <?php
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 	if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_to_root']))
-		die("Restricted access");
+		die(_("Restricted access"));
 	include_once($path_to_root . "/includes/ui/ui_view.inc");
+
 	// Display demo user name and password within login form if "$allow_demo_mode" is true
-	$demo_text = "";
-	if ($allow_demo_mode == True)
+	if ($allow_demo_mode == true)
 	{
-	    $demo_text = "Login as user: demouser and password: cooldemo";
+	    $demo_text = _("Login as user: demouser and password: password");
 	}
 	else
 	{
-		$demo_text = "Please login here";
+		$demo_text = _("Please login here");
 	}
 	if (!isset($def_coy))
 		$def_coy = 0;
@@ -23,10 +33,11 @@
 function defaultCompany()
 {
 	document.forms[0].company_login_name.options[<?php echo $def_coy; ?>].selected = true;
+	document.getElementById('ui_mode').value = 1;
 }
 </script>
     <title><?php echo $app_title . " " . $version;?></title>
-    <meta http-equiv="Content-type" content="text/html; charset=iso-8859-1" />
+    <meta http-equiv="Content-type" content="text/html; charset=<?php echo $_SESSION['language']->encoding;?>" />
     <link rel="stylesheet" href="<?php echo $def_theme;?>/login.css" type="text/css" />
 </head>
 
@@ -45,6 +56,7 @@ function defaultCompany()
 		            <td colspan="2" rowspan="2">
                     <table width="346" border="0" cellpadding="0" cellspacing="0">
 					<form action="<?php echo $_SERVER['PHP_SELF'];?>" name="loginform" method="post">
+						<input type="hidden" id=ui_mode name="ui_mode" value="0">
                         <tr>
                             <td colspan="5" bgcolor="#FFFFFF"><img src="<?php echo $def_theme; ?>/images/spacer.png" width="346" height="1" alt="" /></td>
 
@@ -66,12 +78,12 @@ function defaultCompany()
                                     </tr>
 
                                     <tr>
-                                        <td width="90"></td><td class="loginText" width="283"><span>User name:</span><br />
-                                         <input type="text" name="user_name_entry_field"/><br />
-                                         <span>Password:</span><br />
-                                         <input type="password" name="password">
+                                        <td width="90"></td><td class="loginText" width="283"><span><?php echo _("User name"); ?>:</span><br />
+                                         <input type="text" name="user_name_entry_field" value="<?php echo $allow_demo_mode ? "demouser":""; ?>"/><br />
+                                         <span><?php echo _("Password"); ?>:</span><br />
+                                         <input type="password" name="password"  value="<?php echo $allow_demo_mode ? "password":""; ?>">
                                          <br />
-											<span>Company:</span><br />
+											<span><?php echo _("Company"); ?>:</span><br />
 											<!--<select name="company_login_name" onchange="setCookie()">-->
 											<select name="company_login_name">
 <?php
@@ -87,7 +99,7 @@ for ($i = 0; $i < count($db_connections); $i++)
                                     </tr>
 
                                     <tr>
-                                        <td></td><td align="left"><input type="submit" value=" Login -->" name="SubmitUser" /></td>
+                                        <td></td><td align="left"><input type="submit" value= "<?php echo _("Login -->");?> " name="SubmitUser" /></td>
                                     </tr>
                                 </table>
 	                        </td>

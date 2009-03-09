@@ -1,5 +1,14 @@
 <?php
-
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
 $page_security = 2;
 // ----------------------------------------------------------------
 // $ Revision:	2.0 $
@@ -7,17 +16,16 @@ $page_security = 2;
 // date_:	2005-05-19
 // Title:	Supplier Balances
 // ----------------------------------------------------------------
-$path_to_root="../";
+$path_to_root="..";
 
-include_once($path_to_root . "includes/session.inc");
-include_once($path_to_root . "includes/date_functions.inc");
-include_once($path_to_root . "includes/data_checks.inc");
-include_once($path_to_root . "gl/includes/gl_db.inc");
-include_once($path_to_root . "inventory/includes/db/items_category_db.inc");
+include_once($path_to_root . "/includes/session.inc");
+include_once($path_to_root . "/includes/date_functions.inc");
+include_once($path_to_root . "/includes/data_checks.inc");
+include_once($path_to_root . "/gl/includes/gl_db.inc");
+include_once($path_to_root . "/inventory/includes/db/items_category_db.inc");
 
 //----------------------------------------------------------------------------------------------------
 
-// trial_inquiry_controls();
 print_inventory_valuation_report();
 
 function getTransactions($category, $location)
@@ -59,12 +67,15 @@ function print_inventory_valuation_report()
 {
     global $path_to_root;
 
-    include_once($path_to_root . "reporting/includes/pdf_report.inc");
-
     $category = $_POST['PARAM_0'];
     $location = $_POST['PARAM_1'];
     $detail = $_POST['PARAM_2'];
     $comments = $_POST['PARAM_3'];
+	$destination = $_POST['PARAM_4'];
+	if ($destination)
+		include_once($path_to_root . "/reporting/includes/excel_report.inc");
+	else
+		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 
     $dec = user_price_dec();
 
@@ -92,7 +103,7 @@ function print_inventory_valuation_report()
     				    1 => array('text' => _('Category'), 'from' => $cat, 'to' => ''),
     				    2 => array('text' => _('Location'), 'from' => $loc, 'to' => ''));
 
-    $rep = new FrontReport(_('Inventory Valuation Report'), "InventoryValReport.pdf", user_pagesize());
+    $rep = new FrontReport(_('Inventory Valuation Report'), "InventoryValReport", user_pagesize());
 
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);
@@ -112,7 +123,7 @@ function print_inventory_valuation_report()
 					$rep->NewLine(2, 3);
 					$rep->TextCol(0, 4, _('Total'));
 				}
-				$rep->Textcol(4, 5, number_format2($total, $dec));
+				$rep->AmountCol(4, 5, $total, $dec);
 				if ($detail)
 				{
 					$rep->Line($rep->row - 2);
@@ -133,9 +144,9 @@ function print_inventory_valuation_report()
 			$rep->fontsize -= 2;
 			$rep->TextCol(0, 1, $trans['stock_id']);
 			$rep->TextCol(1, 2, $trans['description']);
-			$rep->TextCol(2, 3, number_format2($trans['QtyOnHand'], get_qty_dec($trans['stock_id'])));
-			$rep->TextCol(3, 4, number_format2($trans['UnitCost'], $dec));
-			$rep->TextCol(4, 5, number_format2($trans['ItemTotal'], $dec));
+			$rep->AmountCol(2, 3, $trans['QtyOnHand'], get_qty_dec($trans['stock_id']));
+			$rep->AmountCol(3, 4, $trans['UnitCost'], $dec);
+			$rep->AmountCol(4, 5, $trans['ItemTotal'], $dec);
 			$rep->fontsize += 2;
 		}
 		$total += $trans['ItemTotal'];
@@ -146,7 +157,7 @@ function print_inventory_valuation_report()
 		$rep->NewLine(2, 3);
 		$rep->TextCol(0, 4, _('Total'));
 	}
-	$rep->Textcol(4, 5, number_format2($total, $dec));
+	$rep->Amountcol(4, 5, $total, $dec);
 	if ($detail)
 	{
 		$rep->Line($rep->row - 2);
@@ -154,8 +165,9 @@ function print_inventory_valuation_report()
 	}
 	$rep->NewLine(2, 1);
 	$rep->TextCol(0, 4, _('Grand Total'));
-	$rep->TextCol(4, 5, number_format2($grandtotal, $dec));
+	$rep->AmountCol(4, 5, $grandtotal, $dec);
 	$rep->Line($rep->row  - 4);
+	$rep->NewLine();
     $rep->End();
 }
 
