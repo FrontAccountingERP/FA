@@ -165,10 +165,6 @@ class FrontReport extends Spreadsheet_Excel_Writer_Workbook
 	{
 		global $app_title, $version, $power_by, $power_url;
 		$this->company = get_company_prefs();
-		//$this->docTitle($this->title);
-		//$this->docAuthor($app_title . ' ' . $version);
-		//$this->docCompany($this->company['coy_name']);
-		//$this->docManager($power_by . ' - ' . $power_url);
 		$year = get_current_fiscalyear();
 		if ($year['closed'] == 0)
 			$how = _("Active");
@@ -325,9 +321,7 @@ class FrontReport extends Spreadsheet_Excel_Writer_Workbook
 			$txt = date2sql($txt);
 		list($year, $mo, $day) = explode("-", $txt);	
 		$date = $this->ymd2date((int)$year, (int)$mo, (int)$day);
-		//$date = $this->ymd2date(2009, 3, 2);
 		$this->sheet->writeNumber($this->y, $c, $date, $this->formatDate);
-		//$this->sheet->write_string($this->y, $c, $txt);
 	}
 
 	function TextCol2($c, $n, $txt, $corr=0, $r=0)
@@ -399,16 +393,6 @@ class FrontReport extends Spreadsheet_Excel_Writer_Workbook
   	{
   		$excel_column_width_factor = 256;
   		$unit_offset_length = 6.5;
-  		/*	
-  		$unit_offset_map = array(0, 36, 73, 109, 146, 182, 219);
-  		$width_units = $excel_column_width_factor * ($px / $unit_offset_length);
-  		$width_units += $unit_offset_map[($px % $unit_offset_length)];
-  		return $width_units;
-  	  	$pixels = (float)((float)$px / (float)$excel_column_width_factor) * $unit_offset_length;
-    	$ofs = $px % $excel_column_width_factor;
-    	$pixels += round((float)$ofs / ((float) $excel_column_width_factor / $unit_offset_length));
-    	return (int)$pixels;
-  		*/
   		return ($px / $unit_offset_length);
   	}	
 

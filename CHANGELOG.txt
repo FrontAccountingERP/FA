@@ -19,6 +19,13 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+------------------------------- Release 2.1.0 RC ------------------------------------------------
+09-Mar-2009 Joe Hunt
+! Release 2.1.0 Release Candidate (RC).
+$ config.php
+! Report clean up
+$ /reporting/includes/excel_report.inc
+
 09-Mar-2009 Janusz Dobrowolski
 # Initial prefs for new created user now copied form current admin settings.
 $ /admin/users.php
@@ -30,7 +37,7 @@ $ /inventory/manage/items.php
 $ /includes/session.inc
 
 08-Mar-2009 Joe Hunt
-! XLS engine now compatible med PEAR Excel Writer.
+! XLS engine now compatible with PEAR Excel Writer.
 $ /reporting/includes/excel_report.inc
   /reporting/includes/Workbook.php
   
