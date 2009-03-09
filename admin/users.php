@@ -77,6 +77,15 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 				$_POST['phone'], $_POST['email'], $_POST['Access'], $_POST['language'],
 				$_POST['profile'], check_value('rep_popup'), $_POST['pos']);
 
+			// use current user display preferences as start point for new user
+			update_user_display_prefs($_POST['user_id'], 
+				user_price_dec(), user_qty_dec(), user_exrate_dec(), 
+				user_percent_dec(), user_show_gl_info(), user_show_codes(), 
+				user_date_format(), user_date_sep(), user_tho_sep(), 
+				user_dec_sep(), user_theme(), user_pagesize(), user_hints(), 
+				$_POST['profile'], check_value('rep_popup'), user_query_size(), 
+				user_graphic_links(), $_POST['language']);
+
 			display_notification_centered(_("A new user has been added."));
     	}
 		$Mode = 'RESET';
@@ -173,7 +182,10 @@ if ($selected_id != '')
 else 
 { //end of if $selected_id only do the else when a new record is being entered
 	text_row(_("User Login:"), "user_id",  null, 22, 20);
-	$_POST['rep_popup'] = 1;
+	$_POST['language'] = user_language();
+	$_POST['profile'] = user_print_profile();
+	$_POST['rep_popup'] = user_rep_popup();
+	$_POST['pos'] = user_pos();
 }
 $_POST['password'] = "";
 start_row();
