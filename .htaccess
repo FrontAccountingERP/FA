@@ -1,0 +1,11 @@
+# These settings are recommended
+# Maybe you might have problems
+# with other scripts that needs
+# register_globals ON
+php_flag magic_quotes_gpc Off
+php_flag register_globals Off
+
+#Sometimes neccessary to add those
+#
+#AddType application/x-javascript .js
+#AddType text/css .css
