@@ -24,6 +24,8 @@ $ -> Affected files
 $ /admin/users.php
 # Changed page_security level to 1
 $ /admin/display_prefs.php
+# Fixed item code display after item delete
+$ /inventory/manage/items.php
 # Cosmetic cleanup
 $ /includes/session.inc
 

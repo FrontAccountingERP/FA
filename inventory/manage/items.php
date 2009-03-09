@@ -245,6 +245,7 @@ if (isset($_POST['delete']) && strlen($_POST['delete']) > 1)
 		$_POST['stock_id'] = '';
 		clear_data();
 		set_focus('stock_id');
+		$new_item = true;
 		$Ajax->activate('_page_body');
 	}
 }
