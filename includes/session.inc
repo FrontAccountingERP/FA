@@ -130,10 +130,6 @@ include_once($path_to_root . "/includes/main.inc");
 
 $Ajax =& new Ajax();
 
-//include_once($path_to_root . "/includes/main.inc");
-
-//include_once($path_to_root . "/includes/ui/ui_msgs.inc");
-
 // intercept all output to destroy it in case of ajax call
 register_shutdown_function('ob_end_flush');
 ob_start('output_html',0);
