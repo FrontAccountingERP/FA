@@ -24,6 +24,9 @@ $ -> Affected files
 $ /includes/ui/ui_lists.inc
 # Fixed email_row/link_row display for empty input value.
 $ /includes/ui/ui_inputs.inc
+# Small layout fix 
+$ /purchasing/allocations/supplier_allocate.php
+  /sales/allocations/customer_allocate.php
 
 ------------------------------- Release 2.1.0 RC ------------------------------------------------
 09-Mar-2009 Joe Hunt
