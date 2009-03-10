@@ -448,22 +448,38 @@ function text_row_ex($label, $name, $size, $max=null, $title=null, $value=null, 
 //-----------------------------------------------------------------------------------
 function email_row($label, $name, $value, $size, $max, $title=null, $params="", $post_label="")
 {
-	text_row("<a href='Mailto:".$_POST[$name]."'>$label</a>", $name, $value, $size, $max, $title, $params, $post_label);
+	if (get_post($name)) 
+		$label = "<a href='Mailto:".$_POST[$name]."'>$label</a>";
+	text_row($label, $name, $value, $size, $max, $title, $params, $post_label);
 }
 
 function email_row_ex($label, $name, $size, $max=null, $title=null, $value=null, $params=null, $post_label=null)
 {
-	text_row_ex("<a href='Mailto:".$_POST[$name]."'>$label</a>", $name, $size, $max, $title, $value, $params, $post_label);
+	if (get_post($name)) 
+		$label = "<a href='Mailto:".$_POST[$name]."'>$label</a>";
+	text_row_ex($label, $name, $size, $max, $title, $value, $params, $post_label);
 }
 
 function link_row($label, $name, $value, $size, $max, $title=null, $params="", $post_label="")
 {
-	text_row("<a href='".$_POST[$name]."' target='_blank'>$label</a>", $name, $value, $size, $max, $title, $params, $post_label);
+	$val = get_post($name);
+	if ($val) {
+		if (strpos($val,'http://')===false)
+			$val = 'http://'.$val;
+		$label = "<a href='$val' target='_blank'>$label</a>";
+	}
+	text_row($label, $name, $value, $size, $max, $title, $params, $post_label);
 }
 
 function link_row_ex($label, $name, $size, $max=null, $title=null, $value=null, $params=null, $post_label=null)
 {
-	text_row_ex("<a href='".$_POST[$name]."' target='_blank'>$label</a>", $name, $size, $max, $title, $value, $params, $post_label);
+	$val = get_post($name);
+	if ($val) {
+		if (strpos($val,'http://')===false)
+			$val = 'http://'.$val;
+		$label = "<a href='$val' target='_blank'>$label</a>";
+	}
+	text_row_ex($label, $name, $size, $max, $title, $value, $params, $post_label);
 }
 
 //-----------------------------------------------------------------------------------
