@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+10-Mar-2009 Janusz Dobrowolski
+# [0000119] Fixed search by item description in sales item selector.
+$ /includes/ui/ui_lists.inc
+
 ------------------------------- Release 2.1.0 RC ------------------------------------------------
 09-Mar-2009 Joe Hunt
 ! Release 2.1.0 Release Candidate (RC).
