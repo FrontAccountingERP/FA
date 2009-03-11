@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+11-Mar-2009 Joe Hunt
+# Several errors related to new bank account id in /gl/includes/db/gl_db_banking.inc
+$ /gl/include/db/gl_db_banking.inc
+
 10-Mar-2009 Janusz Dobrowolski
 # [0000119] Fixed search by item description in sales item selector.
 $ /includes/ui/ui_lists.inc

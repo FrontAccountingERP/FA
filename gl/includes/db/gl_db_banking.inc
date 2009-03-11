@@ -9,16 +9,16 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-function add_exchange_variation($trans_type, $trans_no, $date_, $account,
+function add_exchange_variation($trans_type, $trans_no, $date_, $acc_id, $account,
     $currency, $person_type_id=null, $person_id = "")
 {
 	if (is_company_currency($currency))
 		return;
 	if ($date_ == null)
 		$date_ = Today();
-	$rate = get_exchange_rate_from_home_currency($currency, $date_);	
+	$rate = get_exchange_rate_from_home_currency($currency, $date_);
 	$result = db_query("SELECT SUM(amount) FROM ".TB_PREF."bank_trans WHERE 
-		bank_act='$account' AND trans_date<='".date2sql($date_)."'", 
+		bank_act='$acc_id' AND trans_date<='".date2sql($date_)."'", 
 		"Transactions for account $account could not be calculated");
 	$row = db_fetch_row($result);
 	$foreign_amount = $row[0];
@@ -45,7 +45,7 @@ function add_exchange_variation_all()
 	$sql = "SELECT * FROM ".TB_PREF."bank_accounts";
 	$result = db_query($sql, "could not retreive bank accounts");
 	while ($myrow = db_fetch($result))
-		add_exchange_variation(0, $trans_no, null, $myrow['account_code'],
+		add_exchange_variation(0, $trans_no, null, $myrow['id'], $myrow['account_code'],
 			$myrow['currency_code']);
 }
 //----------------------------------------------------------------------------------
@@ -79,7 +79,7 @@ function add_bank_transfer($from_account, $to_account, $date_,
 		payment_person_types::misc(), "", $currency,
 		"Cannot insert a source bank transaction");
 
-	add_exchange_variation($trans_type, $trans_no, $date_, $from_account, 
+	add_exchange_variation($trans_type, $trans_no, $date_, $from_account, $from_gl_account, 
 		$currency, payment_person_types::misc(), "");
 
 	// do the destination account postings
@@ -93,7 +93,7 @@ function add_bank_transfer($from_account, $to_account, $date_,
 		$date_, $amount, payment_person_types::misc(), "",
 		$currency, "Cannot insert a destination bank transaction");
 
-	add_exchange_variation($trans_type, $trans_no, $date_, $from_account, 
+	add_exchange_variation($trans_type, $trans_no, $date_, $from_account, $from_gl_account, 
 		$currency, payment_person_types::misc(), "");
 	
 	add_comments($trans_type, $trans_no, $date_, $memo_);
@@ -190,12 +190,12 @@ function add_bank_transaction($trans_type, $from_account, $items, $date_,
 
     	if ($is_bank_to)
     	{
-    		add_bank_trans($trans_type, $trans_no, $gl_item->code_id, $ref,
+    		add_bank_trans($trans_type, $trans_no, $is_bank_to, $ref,
     			$date_, $gl_item->amount,
     			$person_type_id, $person_id, $currency,
     			"Cannot insert a destination bank transaction");
     		if ($do_exchange_variance)
-    			add_exchange_variation($trans_type, $trans_no, $date_, $gl_item->code_id, 
+    			add_exchange_variation($trans_type, $trans_no, $date_, $is_bank_to, $gl_item->code_id, 
     				$currency, $person_type_id, $person_id);
     	}
 		// store tax details if the gl account is a tax account
@@ -212,7 +212,7 @@ function add_bank_transaction($trans_type, $from_account, $items, $date_,
     	-$total, null, $person_type_id, $person_id);
 
     if ($do_exchange_variance)
-    	add_exchange_variation($trans_type, $trans_no, $date_, $from_account, 
+    	add_exchange_variation($trans_type, $trans_no, $date_, $from_account, $bank_gl_account, 
     		$currency, $person_type_id, $person_id);
 
 	add_comments($trans_type, $trans_no, $date_, $memo_);
