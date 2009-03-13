@@ -15,6 +15,7 @@ include_once($path_to_root . "/includes/session.inc");
 
 page(_("Costed Bill Of Material Inquiry"));
 
+include_once($path_to_root . "/manufacturing/includes/manufacturing_ui.inc");
 include_once($path_to_root . "/includes/manufacturing.inc");
 include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/includes/banking.inc");
@@ -29,7 +30,8 @@ if (isset($_GET['stock_id']))
 
 start_form(false, true);
 echo "<center> " . _("Item:") . " ";	
-stock_bom_items_list('stock_id', $_POST['stock_id'], false, true);
+//stock_bom_items_list('stock_id', $_POST['stock_id'], false, true);
+stock_bom_items_list('stock_id', null, false, true);
 
 echo "<hr>";
 

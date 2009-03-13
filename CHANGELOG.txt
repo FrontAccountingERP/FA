@@ -19,13 +19,14 @@ Legend:
 ! -> Note
 $ -> Affected files
 
-13-Mar-2009 Janusz Dobrowolski
+13-Mar-2009 Janusz Dobrowolski/Joe Hunt
 # GL line delete bug fixed.
 $ /gl/includes/ui/gl_bank_ui.inc
   /gl/includes/ui/gl_journal_ui.inc
   /includes/ui/items_cart.inc
-# Random syntax error.
+# Random syntax error + new menu item :).
 $ /manufacturing/inquiry/bom_cost_inquiry.php
+  /applications/manufacturing.php
 
 11-Mar-2009 Joe Hunt
 # Several errors related to new bank account id in /gl/includes/db/gl_db_banking.inc
