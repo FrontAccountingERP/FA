@@ -27,7 +27,7 @@ if (isset($_GET['stock_id']))
 	$_POST['stock_id'] = $_GET['stock_id'];
 } 
 
-start_form(false, true));
+start_form(false, true);
 echo "<center> " . _("Item:") . " ";	
 stock_bom_items_list('stock_id', $_POST['stock_id'], false, true);
 
