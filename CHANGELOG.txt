@@ -27,6 +27,8 @@ $ /gl/includes/ui/gl_bank_ui.inc
 # Random syntax error + new menu item :).
 $ /manufacturing/inquiry/bom_cost_inquiry.php
   /applications/manufacturing.php
+- Removed non used file
+$ /admin/db/v_banktrans.inc (removed)
 
 11-Mar-2009 Joe Hunt
 # Several errors related to new bank account id in /gl/includes/db/gl_db_banking.inc
