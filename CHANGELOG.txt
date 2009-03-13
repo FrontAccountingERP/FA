@@ -19,6 +19,12 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+13-Mar-2009 Janusz Dobrowolski
+# GL line delete bug fixed.
+$ /gl/includes/ui/gl_bank_ui.inc
+  /gl/includes/ui/gl_journal_ui.inc
+  /includes/ui/items_cart.inc
+
 11-Mar-2009 Joe Hunt
 # Several errors related to new bank account id in /gl/includes/db/gl_db_banking.inc
 $ /gl/include/db/gl_db_banking.inc

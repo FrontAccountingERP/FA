@@ -84,9 +84,9 @@ function display_gl_items($title, &$order)
 	$k = 0;
 
 	$id = find_submit('Edit');
-	foreach ($order->gl_items as $item) 
+	foreach ($order->gl_items as $line => $item) 
 	{
-		if ($id != $item->index)
+		if ($id != $line)
 		{
     		alt_table_row_color($k);
 
@@ -107,15 +107,15 @@ function display_gl_items($title, &$order)
     		}	
 			label_cell($item->reference);
 
-			edit_button_cell("Edit$item->index", _("Edit"),
+			edit_button_cell("Edit$line", _("Edit"),
 				_('Edit journal line'));
-			delete_button_cell("Delete$item->index", _("Delete"),
+			delete_button_cell("Delete$line", _("Delete"),
 				_('Remove line from journal'));
     		end_row();
 		} 
 		else 
 		{
-			gl_edit_item_controls($order, $dim, $item->index);
+			gl_edit_item_controls($order, $dim, $line);
 		}
 	}
 
@@ -129,6 +129,7 @@ function display_gl_items($title, &$order)
 		label_cell(_("Total"), "align=right colspan=" . $colspan);
 		amount_cell($order->gl_items_total_debit());
 		amount_cell(abs($order->gl_items_total_credit()));
+		label_cell('', "colspan=3");
 		end_row();
 	}
 
@@ -163,7 +164,7 @@ function gl_edit_item_controls(&$order, $dim, $Index=null)
 		$_POST['description'] = $item->description;
 		$_POST['LineMemo'] = $item->reference;
 
-		hidden('Index', $item->index);
+		hidden('Index', $id);
 		hidden('code_id', $item->code_id);
 		label_cell($_POST['code_id']);
 		label_cell($item->description);

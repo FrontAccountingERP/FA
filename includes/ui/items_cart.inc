@@ -18,8 +18,6 @@ class items_cart
 	var $line_items;
 	var $gl_items;
 
-	var $gl_item_count;
-
 	var	$order_id;
 
 	var $editing_item, $deleting_item;
@@ -102,9 +100,7 @@ class items_cart
 		if (isset($code_id) && $code_id != "" && isset($amount) && isset($dimension_id)  &&
 			isset($dimension2_id))
 		{
-			$this->gl_items[$this->gl_item_count] = new gl_item($this->gl_item_count,
-				$code_id, $dimension_id, $dimension2_id, $amount, $reference, $description);
-			$this->gl_item_count++;
+			$this->gl_items[] = new gl_item($code_id, $dimension_id, $dimension2_id, $amount, $reference, $description);
 			return true;
 		}
 		else
@@ -118,7 +114,6 @@ class items_cart
 
 	function update_gl_item($index, $dimension_id, $dimension2_id, $amount, $reference, $description=null)
 	{
-		$this->gl_items[$index]->index = $index;
 		$this->gl_items[$index]->dimension_id = $dimension_id;
 		$this->gl_items[$index]->dimension2_id = $dimension2_id;
 		$this->gl_items[$index]->amount = $amount;
@@ -130,10 +125,7 @@ class items_cart
 
 	function remove_gl_item($index)
 	{
-		if (isset($index))
-		{
-			array_splice($this->gl_items, $line_no, 1);
-		}
+		array_splice($this->gl_items, $index, 1);
 	}
 
 	function count_gl_items()
@@ -180,7 +172,6 @@ class items_cart
 
     	unset($this->gl_items);
 		$this->gl_items = array();
-		$this->gl_item_count = 1;
 
 	}
 }
@@ -254,7 +245,6 @@ class line_item
 class gl_item
 {
 
-	var $index;
 	var $code_id;
 	var $dimension_id;
 	var $dimension2_id;
@@ -262,7 +252,7 @@ class gl_item
 	var $reference;
 	var $description;
 
-	function gl_item($index, $code_id, $dimension_id, $dimension2_id, $amount, $reference,
+	function gl_item($code_id, $dimension_id, $dimension2_id, $amount, $reference,
 		$description=null)
 	{
 		//echo "adding $index, $code_id, $dimension_id, $amount, $reference<br>";
@@ -272,7 +262,6 @@ class gl_item
 		else
 			$this->description = $description;
 
-		$this->index = $index;
 		$this->code_id = $code_id;
 		$this->dimension_id = $dimension_id;
 		$this->dimension2_id = $dimension2_id;
