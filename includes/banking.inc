@@ -171,6 +171,7 @@ function exchange_variation($pyt_type, $pyt_no, $type, $trans_no, $pyt_date, $am
 		$ar_ap_act = $trans['receivables_account'];
 		$person_id = $trans['debtor_no'];
 		$curr = $trans['curr_code'];
+		$date = sql2date($trans['tran_date']);
 	}
 	else
 	{
@@ -180,6 +181,7 @@ function exchange_variation($pyt_type, $pyt_no, $type, $trans_no, $pyt_date, $am
 		$ar_ap_act = $supp_accs['payable_account'];
 		$person_id = $trans['supplier_id'];
 		$curr = $trans['SupplierCurrCode'];
+		$date = sql2date($trans['tran_date']);
 	}
 	if (is_company_currency($curr))
 		return;
@@ -193,9 +195,18 @@ function exchange_variation($pyt_type, $pyt_no, $type, $trans_no, $pyt_date, $am
 		if ($neg)
 			$diff = -$diff;
 		$exc_var_act = get_company_pref('exchange_diff_act');
-		$memo = systypes::name($type)." ".$trans_no;
-		add_gl_trans($pyt_type, $pyt_no, $pyt_date, $ar_ap_act, 0, 0, $memo, -$diff, null, $person_type, $person_id);
-		add_gl_trans($pyt_type, $pyt_no, $pyt_date, $exc_var_act, 0, 0, $memo, $diff, null, $person_type, $person_id);
+		if (date1_greater_date2($date, $pyt_date))
+		{
+			$memo = systypes::name($pyt_type)." ".$pyt_no;
+			add_gl_trans($type, $trans_no, $date, $ar_ap_act, 0, 0, $memo, -$diff, null, $person_type, $person_id);
+			add_gl_trans($type, $trans_no, $date, $exc_var_act, 0, 0, $memo, $diff, null, $person_type, $person_id);
+		}
+		else
+		{
+			$memo = systypes::name($type)." ".$trans_no;
+			add_gl_trans($pyt_type, $pyt_no, $pyt_date, $ar_ap_act, 0, 0, $memo, -$diff, null, $person_type, $person_id);
+			add_gl_trans($pyt_type, $pyt_no, $pyt_date, $exc_var_act, 0, 0, $memo, $diff, null, $person_type, $person_id);
+		}
 	}
 }
 

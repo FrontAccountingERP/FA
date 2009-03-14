@@ -19,6 +19,11 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+14-Mar-2009 Joe Hunt
+! Changed so exchange variances is stamped on invoice GL instead of payment GL
+  if invoice date is later than payment date
+$ /includes/banking.inc
+
 13-Mar-2009 Janusz Dobrowolski/Joe Hunt
 # GL line delete bug fixed.
 $ /gl/includes/ui/gl_bank_ui.inc
