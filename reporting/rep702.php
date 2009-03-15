@@ -69,10 +69,10 @@ function print_list_of_journal_entries()
 
     $trans = get_gl_transactions($from, $to, -1, null, 0, 0, $systype);
 
-    $typeno = 0;
+    $typeno = $type = 0;
     while ($myrow=db_fetch($trans))
     {
-        if ($typeno != $myrow['type_no'])
+        if ($type != $myrow['type'] || $typeno != $myrow['type_no'])
         {
             if ($typeno != 0)
             {
@@ -80,6 +80,7 @@ function print_list_of_journal_entries()
                 $rep->NewLine();
             }
             $typeno = $myrow['type_no'];
+            $type = $myrow['type'];
             $TransName = systypes::name($myrow['type']);
             $rep->TextCol(0, 2, $TransName . " # " . $myrow['type_no']);
             $rep->DateCol(2, 3, $myrow['tran_date'], true);

@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+15-Mar-2009 Joe Hunt
+# Minor bug in Report List of Journal Entries
+$ /reporting/rep702.php
+
 14-Mar-2009 Joe Hunt
 ! Changed so exchange variances is stamped on invoice GL instead of payment GL
   if invoice date is later than payment date
