@@ -13,6 +13,7 @@
 	{
 		function wa_header()
 		{
+//			add_js_ufile("themes/default/renderer.js");
 			page(_("Main Menu"), false, true);
 		}
 
@@ -24,7 +25,6 @@
 		function menu_header($title, $no_menu, $is_index)
 		{
 			global $path_to_root, $help_base_url, $db_connections;
-			
 			// you can owerride the table styles from config.php here, if you want.
 			//global $table_style, $table_style2;
 			//$table_style 	= "cellpadding=3 border=1 bordercolor='#8cacbb' style='border-collapse: collapse'";
@@ -51,9 +51,10 @@
 				foreach($applications as $app)
 				{
 					$acc = access_string($app->name);
-					echo "<a ".($sel_app == $app->id ? "class='selected' " : "").
-					"href='$local_path_to_root/index.php?application=".$app->id.
-						SID ."'$acc[1]>" .$acc[0] . "</a>";
+					echo "<a ".($sel_app == $app->id ? 
+						("class='selected'") : "")
+						." href='$local_path_to_root/index.php?application=".$app->id
+						."'$acc[1]>" .$acc[0] . "</a>";
 				}
 				echo "</div>";
 				echo "</td></tr></table>";
@@ -151,10 +152,7 @@
 						if ($appfunction->label == "")
 							echo "&nbsp;<br>";
 						else
-						{
-							$lnk = access_string($appfunction->label);
-							echo "$img<a href='$appfunction->link'$lnk[1]>$lnk[0]</a><br>";
-						}	
+							echo $img.menu_link($appfunction->link, $appfunction->label)."<br>\n";
 					}
 				}
 				echo "</td>";
@@ -168,10 +166,7 @@
 							if ($appfunction->label == "")
 								echo "&nbsp;<br>";
 							else
-							{
-								$lnk = access_string($appfunction->label);
-								echo "$img<a href='$appfunction->link'$lnk[1]>$lnk[0]</a><br>";
-							}	
+								echo $img.menu_link($appfunction->link, $appfunction->label)."<br>\n";
 						}
 					}
 					echo "</td>";

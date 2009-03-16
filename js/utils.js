@@ -213,12 +213,8 @@ function goBack() {
 }
 
 function setFocus(name, byId) {
-  if(document.location.pathname.indexOf('index.php') != -1) {
-  	// this is application menu page - set focus on first link
-	// var el = document.getElementById('msgbox');
-	// TODO find first link after msgbox and set focus
-  }
-  if(!name) {
+
+  if(!name) { // page load/ajax update
 	if (_focus)	
 		name = _focus;	// last focus set in onfocus handlers
 	else 
@@ -227,10 +223,8 @@ function setFocus(name, byId) {
 	  if(cur) name = cur.value;
 	}
   }
-  if(byId)
+  if(byId || !(el = document.getElementsByName(name)[0]))
 	el = document.getElementById(name);
-  else
-  	el = document.getElementsByName(name)[0];
 
   if(el && el.focus) {
     // The timeout is needed to prevent unpredictable behaviour on IE & Gecko.
@@ -239,4 +233,65 @@ function setFocus(name, byId) {
     var tmp = function() {el.focus(); if (el.select) el.select();};
 	setTimeout(tmp, 0);
   }
+}
+/*
+	Find closest element in neighbourhood and set focus.
+	dir is direction as arrow code.
+*/
+function move_focus(dir, e, neighbours)
+{
+	var p0 = element_pos(e);
+	var t;
+	var l=0;
+	for(var i=0; i<neighbours.length; i++) {
+		var p = element_pos(neighbours[i]);
+		if (neighbours[i].className!='menu_option') continue;
+		if (((dir==40) && (p.y>p0.y)) || (dir==38 && (p.y<p0.y)) 
+			|| ((dir==37) && (p.x<p0.x)) || ((dir==39 && (p.x>p0.x)))) {
+				var l1 = (p.y-p0.y)*(p.y-p0.y)+(p.x-p0.x)*(p.x-p0.x);
+				if ((l1<l) || (l==0)) {
+					l = l1; t = neighbours[i];
+				}
+		}
+	}
+	if (t) {
+    	var tmp = function() {t.focus(); if (t.select) t.select();};
+		setTimeout(tmp, 0);
+	}
+	return t;
+}
+
+var __isFireFox = navigator.userAgent.match(/gecko/i);
+//returns the absolute position of some element within document
+function element_pos(e) {
+	var res = new Object();
+		res.x = 0; res.y = 0;
+	if (element !== null) {
+		res.x = e.offsetLeft;
+		res.y = e.offsetTop;
+		var offsetParent = e.offsetParent;
+		var parentNode = e.parentNode;
+
+		while (offsetParent !== null) {
+			res.x += offsetParent.offsetLeft;
+			res.y += offsetParent.offsetTop;
+
+			if (offsetParent != document.body && offsetParent != document.documentElement) {
+				res.x -= offsetParent.scrollLeft;
+				res.y -= offsetParent.scrollTop;
+			}
+			      //next lines are necessary to support FireFox problem with offsetParent
+			if (__isFireFox) {
+				while (offsetParent != parentNode && parentNode !== null) {
+					res.x -= parentNode.scrollLeft;
+					res.y -= parentNode.scrollTop;
+
+					parentNode = parentNode.parentNode;
+				}
+			}
+			parentNode = offsetParent.parentNode;
+			offsetParent = offsetParent.offsetParent;
+		}
+	}
+	return res;
 }

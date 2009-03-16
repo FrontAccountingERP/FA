@@ -51,8 +51,8 @@
 				{
 					$acc = access_string($app->name);
 					echo "<a ".($sel_app == $app->id ? "class='selected' " : "").
-					"href='$local_path_to_root/index.php?application=".$app->id.
-						SID ."'$acc[1]>" .$acc[0] . "</a>";
+					"href='$local_path_to_root/index.php?application=".$app->id
+						."'$acc[1]>" .$acc[0] . "</a>";
 				}
 				echo "</div>";
 
@@ -151,10 +151,7 @@
 						if ($appfunction->label == "")
 							echo "&nbsp;<br>";
 						else
-						{
-							$lnk = access_string($appfunction->label);
-							echo "$img<a href='$appfunction->link'$lnk[1]>$lnk[0]</a><br>";
-						}	
+							echo $img.menu_link($appfunction->link, $appfunction->label)."<br>\n";
 					}
 				}
 				echo "</td>";
@@ -168,10 +165,7 @@
 							if ($appfunction->label == "")
 								echo "&nbsp;<br>";
 							else
-							{
-								$lnk = access_string($appfunction->label);
-								echo "$img<a href='$appfunction->link'$lnk[1]>$lnk[0]</a><br>";
-							}
+								echo $img.menu_link($appfunction->link, $appfunction->label)."<br>\n";
 						}	
 					}
 					echo "</td>";

@@ -9,11 +9,6 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-
-function get_post($name, $dflt='')
-{
-	return ((!isset($_POST[$name]) || $_POST[$name] === '') ? $dflt : $_POST[$name]);
-}
 //
 // Sets local POST value and adds Value to ajax posting if needed
 //
@@ -103,21 +98,48 @@ function hidden($name, $value=null, $echo=true)
 	else
 		return $ret;
 }
-
-function submit($name, $value, $echo=true, $title=false, $async=false, $icon=false)
+/*
+	Universal submit form button.
+	$atype - type of submit:
+	 Normal submit:
+		false - normal button; optional icon
+		null  - button visible only in fallback mode; optional icon
+	 Ajax submit:
+		true	  - standard button; optional icon
+		'process' - displays progress bar during call; optional icon
+		'default' - default form submit on Ctrl-Enter press; dflt ICON_OK icon
+		'cancel'  - cancel form entry on Escape press; dflt ICON_CANCEL
+*/
+function submit($name, $value, $echo=true, $title=false, $atype=false, $icon=false)
 {
 	global $path_to_root;
-	
+
+	$aspect='';
+	if (!is_bool($atype)) // necessary: switch uses '=='
+	  switch($atype) {
+		case 'process':
+			$aspect = " aspect='process'"; break;
+		case 'default':
+			$aspect = " aspect='default'"; 
+			if ($icon===false) $icon=ICON_SUBMIT; break;
+		case 'cancel':
+			$aspect = " aspect='cancel'"; 
+			if ($icon===false) $icon=ICON_ESCAPE; break;
+		case null: 
+			$aspect = fallback_mode() ? 
+				" aspect='fallback'" : " style='display:none;'"; break;
+	 }
+
 	default_focus($name);
 	$submit_str = "<button class=\""
-	    .($async ? 'ajaxsubmit' : 'inputsubmit')
+	    .($atype ? 'ajaxsubmit' : 'inputsubmit')
 		."\" type=\"submit\""
-		.($async === null ? (fallback_mode() ? ' aspect="fallback"' : " style='display:none;'" ): 
-			($async === 'process' ? 'aspect="process"' : '') )
+		.$aspect
 	    ." name=\"$name\"  id=\"$name\" value=\"$value\""
 	    .($title ? " title='$title'" : '')
-	    ."><span>$value</span>"
+	    .">"
 		.($icon ? "<img src='$path_to_root/themes/".user_theme()."/images/$icon'>" : '')
+		."<span>$value</span>"
 		."</button>\n";
 	if ($echo)
 		echo $submit_str;

@@ -21,6 +21,7 @@ function page_footer($no_menu=false, $is_index=false)
 	include_once($path_to_root."/themes/".user_theme()."/renderer.php");
 	$rend = new renderer();
 	$rend->menu_footer($no_menu, $is_index);
+	echo "<script>_focus = '".get_post('_focus')."';</script>";
     echo "</body></html>\n";
 }
 

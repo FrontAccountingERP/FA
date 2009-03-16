@@ -9,21 +9,21 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
+function get_post($name, $dflt='')
+{
+	return ((!isset($_POST[$name]) || $_POST[$name] === '') ? $dflt : $_POST[$name]);
+}
 //---------------------------------------------------------------------------------
 
-function start_form($multi=false, $sid=false, $action="", $name="")
+function start_form($multi=false, $dummy=false, $action="", $name="")
 {
+	// $dummy - leaved for compatibility with 2.0 API
+
 	if ($name != "")
 		$name = "name='$name'";
 	if ($action == "")
 		$action = $_SERVER['PHP_SELF'];
-	if ($sid)
-	{
-		if (strpos($action, "?"))
-			$action .= "&" . SID;
-		else
-			$action .= "?" . SID;
-	}
+
 	if ($multi)
 		echo "<form enctype='multipart/form-data' method='post' action='$action' $name>\n";
 	else
@@ -125,7 +125,6 @@ function hyperlink_back($center=true)
 {
 	if ($center)
 		echo "<center>";
-	//echo "<a href='javascript:goBack();'>"._("Back")."</a>\n";
 	echo "<p><a href='javascript:goBack();'>"._("Back")."</a></p>\n";
 	if ($center)
 		echo "</center>";
@@ -134,10 +133,11 @@ function hyperlink_back($center=true)
 
 function hyperlink_no_params($target, $label, $center=true)
 {
+	$id = default_focus();
 	$pars = access_string($label);
 	if ($center)
 		echo "<br><center>";
-	echo "<a href='$target?=" . SID . "'$pars[1]>$pars[0]</a>\n";
+	echo "<a href='$target' $id='$id' $pars[1]>$pars[0]</a>\n";
 	if ($center)
 		echo "</center>";
 }
@@ -149,14 +149,65 @@ function hyperlink_no_params_td($target, $label)
 	echo "</td>\n";
 }
 
+function viewer_link($label, $url='', $class='', $id='',  $icon=null)
+{
+	global $path_to_root;
+	
+	if ($class != '')
+		$class = " class='$class'";
+
+	if ($id != '')
+		$class = " id='$id'";
+
+	if ($url != "")
+	{
+		$pars = access_string($label);
+		if (user_graphic_links() && $icon)
+			$pars[0] = set_icon($icon, $pars[0]);
+		$preview_str = "<a target='_blank' $class $id href='$path_to_root/$url' onclick=\"javascript:openWindow(this.href,this.target); return false;\"$pars[1]>$pars[0]</a>";
+	}
+	else
+		$preview_str = $label;
+
+ return $preview_str;
+}
+
+function menu_link($url, $label, $id=null)
+{
+
+	$id = default_focus($id);
+	$pars = access_string($label);
+	return "<a href='$url' class='menu_option' id='$id' $pars[1]>$pars[0]</a>";
+}
+
+function submenu_option($title, $url, $id=null)
+{
+	global $path_to_root;
+	display_note(menu_link($path_to_root . $url, $title, $id));
+	echo '<br>';
+}
+
+function submenu_view($title, $type, $number, $id=null)
+{
+	display_note(get_trans_view_str($type, $number, $title, false, 'menu_option', $id));
+	echo '<br>';
+}
+
+function submenu_print($title, $type, $number, $id=null)
+{
+	display_note(print_document_link($number, $title, true, $type, false, 'menu_option', $id));
+	echo '<br>';
+}
 //-----------------------------------------------------------------------------------
 
 function hyperlink_params($target, $label, $params, $center=true)
 {
+	$id = default_focus();
+	
 	$pars = access_string($label);
 	if ($center)
 		echo "<br><center>";
-	echo "<a href='$target?$params'$pars[1]>$pars[0]</a>\n";
+	echo "<a id='$id' href='$target?$params'$pars[1]>$pars[0]</a>\n";
 	if ($center)
 		echo "</center>";
 }
@@ -172,10 +223,12 @@ function hyperlink_params_td($target, $label, $params)
 
 function hyperlink_params_separate($target, $label, $params, $center=false)
 {
+	$id = default_focus();
+
 	$pars = access_string($label);
 	if ($center)
 		echo "<br><center>";
-	echo "<a target='_blank' href='$target?$params" . SID . "'$pars[1]>$pars[0]</a>\n";
+	echo "<a target='_blank' $id='$id' href='$target?$params' $pars[1]>$pars[0]</a>\n";
 	if ($center)
 		echo "</center>";
 }

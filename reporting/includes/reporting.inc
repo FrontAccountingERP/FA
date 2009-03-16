@@ -14,7 +14,8 @@
 // or display_note(print_document_link($order_no, _("Print this order")));
 // You only need full parameter list for invoices/credit notes
 
-function print_document_link($doc_no, $link_text, $link=true, $type_no, $icon=false)
+function print_document_link($doc_no, $link_text, $link=true, $type_no, 
+	$icon=false, $class='', $id='')
 {
 	global $path_to_root;
 	include_once($path_to_root . "/includes/types.inc");
@@ -72,27 +73,33 @@ function print_document_link($doc_no, $link_text, $link=true, $type_no, $icon=fa
 //		default: $ar = array();
 	}
 	
-	return print_link($link_text, $rep, $ar, "", $icon);
+	return print_link($link_text, $rep, $ar, "", $icon, $class, $id);
 }
 //
 //	Universal link to any kind of report.
 //
-function print_link($link_text, $rep, $pars = array(), $dir = '', $icon=false)
+function print_link($link_text, $rep, $pars = array(), $dir = '', 
+	$icon=false, $class='', $id='')
 {
 	global $path_to_root, $pdf_debug;
 
 	$url = $dir == '' ?  $path_to_root.'/reporting/prn_redirect.php?' : $dir;
 
+	$id = default_focus($id);
 	foreach($pars as $par => $val) {
 		$pars[$par] = "$par=".urlencode($val);
 	}
 	$pars[] = 'REP_ID='.urlencode($rep);
 	$url .= implode ('&', $pars);
-	$class = $pdf_debug ? '' : "class='printlink'";
+
+	if ($class != '')
+		$class = $pdf_debug ? '' : " class='$class'";
+	if ($id != '')
+		$id = " id='$id'";
 	$pars = access_string($link_text);
 	if (user_graphic_links() && $icon)
 		$pars[0] = set_icon($icon, $pars[0]);
-	return "<a $class target='_blank' href='$url'$pars[1]>$pars[0]</a>";
+	return "<a target='_blank' href='$url'$id$class $pars[1]>$pars[0]</a>";
 }
 
 function get_first_bank_account()

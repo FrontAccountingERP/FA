@@ -70,7 +70,7 @@ a:active {
 	text-decoration: none;
 }
 
-a:hover {
+a:hover, a:focus {
 	color: #2d8628;
 	text-decoration: underline;
 }

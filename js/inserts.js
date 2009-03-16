@@ -11,7 +11,7 @@
 var _focus;
 var _hotkeys = {
 	'alt': false,	// whether is the Alt key pressed
-	'focus': -1	// currently selected indeks of document.links
+	'focus': -1,	// currently selected indeks of document.links
 };
 
 function debug(msg) {
@@ -172,7 +172,13 @@ var inserts = {
 			if((ev.ctrlKey && key == 13) || key == 27) {
 				ev.cancelBubble = true;
     			if(ev.stopPropagation) ev.stopPropagation();
-// here ctrl-enter/escape support
+				// activate submit/escape form
+				for (var i=0; i<this.elements.length; i++){
+					var asp = this.elements[i].getAttribute('aspect');
+					if ((asp=='default' && key==13)||(asp=='cancel' && key==27))
+						JsHttpRequest.request(this.elements[i]);
+				}
+			
 				ev.returnValue = false;
 				return false;
 			} 
@@ -267,6 +273,10 @@ var inserts = {
 			e.onfocus = function() {
 			    save_focus(this);
 			};
+			e.onmouseover = function(e) {
+		    	setFocus(this.id, 1);
+				return false;
+			}
 		}
 	},
 	'a.printlink': 	function(l) {
@@ -274,6 +284,16 @@ var inserts = {
 		    save_focus(this);
 			JsHttpRequest.request(this);
 			return false;
+		}
+	},
+	'a': function(e) { // traverse menu
+  		e.onkeydown = function(ev) { 
+			ev = ev||window.event;
+			key = ev.keyCode||ev.which;
+			if(key==37 || key==38 || key==39 || key==40) {
+					move_focus(key, e, document.links);
+					return false;
+			}
 		}
 	},
 	'ul.ajaxtabs':	function(ul) {
@@ -290,7 +310,20 @@ var inserts = {
 		}
 	    }
 	},
-	'#msgbox': function(e) {
+/*	'tr.editrow': function(e) {
+		  	e.onkeydown = function(ev) { 
+	  		ev = ev||window.event;
+	  		key = ev.keyCode||ev.which;
+	  		if(key == 13) {
+			  // Find & click additem/update button
+			  
+	  		} else	if(key == 27) {
+	  		  return false;
+			}
+		}
+
+	},
+*/	'#msgbox': function(e) {
 	// this is to avoid changing div height after ajax update in IE7
 	  e.style.display = e.innerHTML.length ? 'block' : 'none';
 	}
@@ -368,7 +401,7 @@ function setHotKeys() {
 		return true;
 	}
 }
-
+ 
 Behaviour.register(inserts);
 
 Behaviour.addLoadEvent(setFocus);

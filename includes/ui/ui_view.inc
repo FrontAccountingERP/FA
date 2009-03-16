@@ -14,46 +14,34 @@ include_once($path_to_root . "/includes/types.inc");
 
 //--------------------------------------------------------------------------------------
 
-function get_supplier_trans_view_str($type, $trans_no, $label="", $icon=false)
+function get_supplier_trans_view_str($type, $trans_no, $label="", $icon=false, 
+	$class='', $id='')
 {
-	global $path_to_root;
-
-	$viewer = "";
+	$viewer = "purchasing/view/";
 	if ($type == systypes::po())
-		$viewer = "view_po.php";
+		$viewer .= "view_po.php";
 	elseif ($type == 20)
-		$viewer = "view_supp_invoice.php";
+		$viewer .= "view_supp_invoice.php";
 	elseif ($type == 21)
-		$viewer = "view_supp_credit.php";
+		$viewer .= "view_supp_credit.php";
 	elseif ($type == 22)
 		$viewer = "view_supp_payment.php";
 	elseif ($type == 25)
-		$viewer = "view_grn.php";
+		$viewer .= "view_grn.php";
 	else
 		return null;
+	$viewer .= "?trans_no=$trans_no";
 
 	if ($label == "")
 		$label = $trans_no;
 
-	if ($viewer != "")
-	{
-		$pars = access_string($label);
-		if (user_graphic_links() && $icon)
-			$pars[0] = set_icon($icon, $pars[0]);
-		$preview_str = "<a target='_blank' href='$path_to_root/purchasing/view/$viewer?trans_no=$trans_no' onclick=\"javascript:openWindow(this.href,this.target); return false;\"$pars[1]>$pars[0]</a>";
-	}
-	else
-		$preview_str = $label;
-
-	return $preview_str;
+	return viewer_link($label, $viewer, $class, $id,  $icon);
 }
 
 //--------------------------------------------------------------------------------------
 
-function get_gl_view_str($type, $trans_no, $label="", $force=false)
+function get_gl_view_str($type, $trans_no, $label="", $force=false, $class='', $id='')
 {
-	global $path_to_root;
-
 	if (!$force && !user_show_gl_info())
 		return "";
 
@@ -63,12 +51,10 @@ function get_gl_view_str($type, $trans_no, $label="", $force=false)
 		$label = _("GL");
 		$icon = ICON_GL;
 	}	
-	$pars = access_string($label);
-	if (user_graphic_links() && $icon)
-		$pars[0] = set_icon($icon, $pars[0]);
-	$gl_view = "<a target='_blank' href='$path_to_root/gl/view/gl_trans_view.php?type_id=$type&trans_no=$trans_no' onclick=\"javascript:openWindow(this.href,this.target); return false;\"$pars[1]>$pars[0]</a>";
 
-	return $gl_view;
+	return viewer_link($label, 
+		"gl/view/gl_trans_view.php?type_id=$type&trans_no=$trans_no", 
+		$class, $id, $icon);
 }
 
 //--------------------------------------------------------------------------------------
@@ -82,21 +68,21 @@ function get_gl_view_str_cell($type, $trans_no, $label="")
 
 //--------------------------------------------------------------------------------------
 
-function get_customer_trans_view_str($type, $trans_no, $label="", $icon=false)
+function get_customer_trans_view_str($type, $trans_no, $label="", $icon=false, 
+	$class='', $id='')
 {
-	global $path_to_root;
+	$viewer = "sales/view/";
 
-	$viewer = "";
 	if ($type == 10)
-		$viewer = "view_invoice.php";
+		$viewer .= "view_invoice.php";
 	elseif ($type == 11)
-		$viewer = "view_credit.php";
+		$viewer .= "view_credit.php";
 	elseif ($type == 12)
-		$viewer = "view_receipt.php";
+		$viewer .= "view_receipt.php";
 	elseif ($type == 13)
-		$viewer = "view_dispatch.php";
+		$viewer .= "view_dispatch.php";
 	elseif ($type == 30)
-		$viewer = "view_sales_order.php";
+		$viewer .= "view_sales_order.php";
 	else
 		return null;
 
@@ -110,27 +96,20 @@ function get_customer_trans_view_str($type, $trans_no, $label="", $icon=false)
 		$lbl = $trans;
 	if($preview_str!='') $preview_str .= ',';
 
-	if ($viewer != "")
-	{
-		$pars = access_string($lbl);
-		if (user_graphic_links() && $icon)
-			$pars[0] = set_icon($icon, $pars[0]);
-		$preview_str .= "<a target='_blank' href='$path_to_root/sales/view/$viewer?trans_no=$trans' onclick=\"javascript:openWindow(this.href,this.target); return false;\" $pars[1]>$pars[0]</a>";
-	}
-	else
-		$preview_str .= $lbl;
-  }
+	$preview_str .= viewer_link($lbl, $viewer."?trans_no=$trans", 
+		$class, $id, $icon);
 
-	return $preview_str;
+  }
+  return $preview_str;
 }
 
 //--------------------------------------------------------------------------------------
 
-function get_banking_trans_view_str($type, $trans_no, $label="", $icon=false)
+function get_banking_trans_view_str($type, $trans_no, $label="", 
+	$icon=false, $class='', $id='')
 {
-	global $path_to_root;
-
-	$viewer = "";
+	if ($label == "")
+		$label = $trans_no;
 
 	if ($type == 4)
 		$viewer = "bank_transfer_view.php";
@@ -139,144 +118,101 @@ function get_banking_trans_view_str($type, $trans_no, $label="", $icon=false)
 	elseif ($type == 2)
 		$viewer = "gl_deposit_view.php";
 	elseif ($type == 0)
-		$viewer = "";
+		return $label;
 	else
 		return null;
 
-	if ($label == "")
-		$label = $trans_no;
-
-	if ($viewer != "")
-	{
-		$pars = access_string($label);
-		if (user_graphic_links() && $icon)
-			$pars[0] = set_icon($icon, $pars[0]);
-		$preview_str = "<a target='_blank' href='$path_to_root/gl/view/$viewer?trans_no=$trans_no' onclick=\"javascript:openWindow(this.href,this.target); return false;\"$pars[1]>$pars[0]</a>";
-	}
-	else
-		$preview_str = $label;
-
-	return $preview_str;
+	return viewer_link($label, "gl/view/$viewer?trans_no=$trans_no", 
+		$class, $id,  $icon);
 }
 
 //--------------------------------------------------------------------------------------
 
-function get_inventory_trans_view_str($type, $trans_no, $label="", $icon=false)
+function get_inventory_trans_view_str($type, $trans_no, $label="", 
+	$icon=false, $class='', $id='')
 {
-	global $path_to_root;
-
-	$viewer = "";
+	$viewer = "inventory/view/";
 
 	if ($type == systypes::inventory_adjustment())
-		$viewer = "view_adjustment.php";
+		$viewer .= "view_adjustment.php";
 	elseif ($type == systypes::location_transfer())
-		$viewer = "view_transfer.php";
+		$viewer .= "view_transfer.php";
 	else
 		return null;
+	$viewer .= "?trans_no=$trans_no";
 
 	if ($label == "")
 		$label = $trans_no;
 
-	if ($viewer != "")
-	{
-		$pars = access_string($label);
-		if (user_graphic_links() && $icon)
-			$pars[0] = set_icon($icon, $pars[0]);
-		$preview_str = "<a target='_blank' href='$path_to_root/inventory/view/$viewer?trans_no=$trans_no' onclick=\"javascript:openWindow(this.href,this.target); return false;\"$pars[1]>$pars[0]</a>";
-	}
-	else
-		$preview_str = $label;
-
-	return $preview_str;
+	return viewer_link($label, $viewer, $class, $id,  $icon);
 }
 
 //--------------------------------------------------------------------------------------
 
-function get_manufacturing_trans_view_str($type, $trans_no, $label="", $icon=false)
+function get_manufacturing_trans_view_str($type, $trans_no, $label="", 
+	$icon=false, $class='', $id='')
 {
-	global $path_to_root;
-
-	$viewer = "";
+	$viewer = "manufacturing/view/";
 
 	if ($type == 28)
-		$viewer = "wo_issue_view.php";
+		$viewer .= "wo_issue_view.php";
 	elseif ($type == 29)
-		$viewer = "wo_production_view.php";
+		$viewer .= "wo_production_view.php";
 	elseif ($type == systypes::work_order())
-		$viewer = "work_order_view.php";
+		$viewer .= "work_order_view.php";
 	else
 		return null;
+
+	$viewer .= "?trans_no=$trans_no";
 
 	if ($label == "")
 		$label = $trans_no;
 
-	if ($viewer != "")
-	{
-		$pars = access_string($label);
-		if (user_graphic_links() && $icon)
-			$pars[0] = set_icon($icon, $pars[0]);
-		$preview_str = "<a target='_blank' href='$path_to_root/manufacturing/view/$viewer?trans_no=$trans_no' onclick=\"javascript:openWindow(this.href,this.target); return false;\"$pars[1]>$pars[0]</a>";
-	}
-	else
-		$preview_str = $label;
-
-	return $preview_str;
+	return viewer_link($label, $viewer, $class, $id,  $icon);
 }
 
 //--------------------------------------------------------------------------------------
 
-function get_dimensions_trans_view_str($type, $trans_no, $label="", $icon=false)
+function get_dimensions_trans_view_str($type, $trans_no, $label="", $icon=false, 
+	$class='', $id='')
 {
-	global $path_to_root;
-
-	$viewer = "";
-
 	if ($type == 40)
-		$viewer = "view_dimension.php";
+		$viewer = "dimensions/view_dimension.php?trans_no=$trans_no";
 	else
 		return null;
 
 	if ($label == "")
 		$label = $trans_no;
 
-	if ($viewer != "")
-	{
-		$pars = access_string($label);
-		if (user_graphic_links() && $icon)
-			$pars[0] = set_icon($icon, $pars[0]);
-		$preview_str = "<a target='_blank' href='$path_to_root/dimensions/view/$viewer?trans_no=$trans_no' onclick=\"javascript:openWindow(this.href,this.target); return false;\"$pars[1]>$pars[0]</a>";
-	}
-	else
-		$preview_str = $label;
-
-	return $preview_str;
+	return viewer_link($label, $viewer, $class, $id,  $icon);
 }
 
 //--------------------------------------------------------------------------------------
 
-function get_trans_view_str($type, $trans_no, $label="", $icon=false)
+function get_trans_view_str($type, $trans_no, $label="", $icon=false, 
+	$class='', $id='')
 {
-	$view_str = get_customer_trans_view_str($type, $trans_no, $label, $icon);
+	$view_str = get_customer_trans_view_str($type, $trans_no, $label, $icon, $class, $id);
 	if ($view_str != null)
 		return $view_str;
 
-	$view_str = get_supplier_trans_view_str($type, $trans_no, $label, $icon);
+	$view_str = get_supplier_trans_view_str($type, $trans_no, $label, $icon, $class, $id);
 	if ($view_str != null)
 		return $view_str;
 
-	$view_str = get_banking_trans_view_str($type, $trans_no, $label, $icon);
+	$view_str = get_banking_trans_view_str($type, $trans_no, $label, $icon, $class, $id);
 	if ($view_str != null)
 		return $view_str;
 
-	$view_str = get_inventory_trans_view_str($type, $trans_no, $label, $icon);
+	$view_str = get_inventory_trans_view_str($type, $trans_no, $label, $icon, $class, $id);
 	if ($view_str != null)
 		return $view_str;
 
-	$view_str = get_manufacturing_trans_view_str($type, $trans_no, $label, $icon);
+	$view_str = get_manufacturing_trans_view_str($type, $trans_no, $label, $icon, $class, $id);
 	if ($view_str != null)
 		return $view_str;
 
-	$view_str = get_dimensions_trans_view_str($type, $trans_no, $label, $icon);
+	$view_str = get_dimensions_trans_view_str($type, $trans_no, $label, $icon, $class, $id);
 	if ($view_str != null)
 		return $view_str;
 
@@ -674,11 +610,15 @@ function set_focus($name, $form_no=0) {
 }
 //
 //	Set default focus on first field $name if not set yet
-//
-function default_focus($name, $form_no=0) {
+//	Returns unique name if $name=null
+//	
+function default_focus($name=null, $form_no=0) {
+	if ($name==null) 
+		$name = uniqid('_el');
     if (!isset($_POST['_focus'])) {
 	  set_focus($name);
     }
+	return $name;
 }
 
 function get_js_png_fix()
