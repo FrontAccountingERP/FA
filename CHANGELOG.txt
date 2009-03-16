@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+16-Mar-2009 Janusz Dobrowolski
+# Fixed redirection after order cancelation.
+$ /sales/sales_order_entry.php
+
 15-Mar-2009 Joe Hunt
 # Minor bug in Report List of Journal Entries
 $ /reporting/rep702.php
