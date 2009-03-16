@@ -193,5 +193,7 @@ if (!defined('ICON_EDIT'))
 	define("ICON_REMOVE", "remove.png");	
 	define("ICON_REPORT", "report.png");	
 	define("ICON_VIEW", "view.gif");	
+ 	define("ICON_SUBMIT", "ok.gif");
+ 	define("ICON_ESCAPE", "escape.png");	
 }
 ?>
