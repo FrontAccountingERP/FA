@@ -40,7 +40,7 @@ page(_("Logout"), true, false, "", get_js_png_fix());
   <tr>
     <td><div align="center">
         <?php
-     echo "<a href='$path_to_root/index.php?" . SID ."'><b>" . _("Click here to Login Again.") . "</b></a>";
+     echo "<a href='$path_to_root/index.php'><b>" . _("Click here to Login Again.") . "</b></a>";
 ?>
       </div></td>
   </tr>

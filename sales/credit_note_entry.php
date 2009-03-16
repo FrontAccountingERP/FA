@@ -260,7 +260,7 @@ if (!processing_active()) {
 
 //-----------------------------------------------------------------------------
 
-start_form(false, true);
+start_form();
 hidden('cart_id');
 
 $customer_error = display_credit_header($_SESSION['Items']);

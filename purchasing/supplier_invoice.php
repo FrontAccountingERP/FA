@@ -384,7 +384,7 @@ if (isset($_POST['go']))
 	$Ajax->activate('inv_tot');
 }
 
-start_form(false, true);
+start_form();
 
 invoice_header($_SESSION['supp_trans']);
 

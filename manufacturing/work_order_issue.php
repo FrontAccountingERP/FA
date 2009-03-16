@@ -205,7 +205,7 @@ if (isset($_GET['trans_no']))
 display_wo_details($_SESSION['issue_items']->order_id);
 echo "<br>";
 
-start_form(false, true);
+start_form();
 
 start_table("$table_style width=90%", 10);
 echo "<tr><td>";

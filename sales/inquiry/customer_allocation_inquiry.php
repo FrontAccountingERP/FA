@@ -34,7 +34,7 @@ if (isset($_GET['customer_id']))
 if (!isset($_POST['customer_id']))
 	$_POST['customer_id'] = get_global_customer();
 
-start_form(false, true);
+start_form();
 
 start_table("class='tablestyle_noborder'");
 start_row();

@@ -170,7 +170,7 @@ if ($Mode == 'Delete')
 
 //---------------------------------------------------------------------------------------------
 
-start_form(false, true);
+start_form();
 
 if (!isset($_POST['curr_abrev']))
 	$_POST['curr_abrev'] = get_global_curr_code();

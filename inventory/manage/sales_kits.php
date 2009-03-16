@@ -181,7 +181,7 @@ if ($Mode == 'RESET')
 
 //--------------------------------------------------------------------------------------------------
 
-start_form(false, true);
+start_form();
 
 echo "<center>" . _("Select a sale kit:") . "&nbsp;";
 sales_kits_list('item_code', null, _('New kit'), true);

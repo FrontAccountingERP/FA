@@ -314,7 +314,7 @@ function display_module_edit($selected_id)
 	else
 		$n = count($installed_modules);
 
-	start_form(true, true);
+	start_form(true);
 
 	echo "
 		<script language='javascript'>

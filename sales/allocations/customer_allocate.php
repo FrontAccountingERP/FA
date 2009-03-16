@@ -195,7 +195,7 @@ function edit_allocations_for_transaction($type, $trans_no)
 
     echo "<br>";
 
-	start_form(false, true);
+	start_form();
 	div_start('alloc_tbl');
     if (count($_SESSION['alloc']->allocs) > 0)
     {

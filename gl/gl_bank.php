@@ -276,7 +276,7 @@ if (isset($_POST['go']))
 }
 //-----------------------------------------------------------------------------------------------
 
-start_form(false, true);
+start_form();
 
 display_bank_header($_SESSION['pay_items']);
 

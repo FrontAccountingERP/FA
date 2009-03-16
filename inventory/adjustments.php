@@ -217,7 +217,7 @@ if (isset($_GET['NewAdjustment']) || !isset($_SESSION['adj_items']))
 }
 
 //-----------------------------------------------------------------------------------------------
-start_form(false, true);
+start_form();
 
 display_order_header($_SESSION['adj_items']);
 

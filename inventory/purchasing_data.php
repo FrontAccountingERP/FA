@@ -116,7 +116,7 @@ if (list_updated('stock_id'))
 	$Ajax->activate('price_table');
 //--------------------------------------------------------------------------------------------------
 
-start_form(false, true);
+start_form();
 
 if (!isset($_POST['stock_id']))
 	$_POST['stock_id'] = get_global_stock_item();

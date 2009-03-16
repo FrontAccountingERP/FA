@@ -219,7 +219,7 @@ if (isset($_GET['NewTransfer']) || !isset($_SESSION['transfer_items']))
 }
 
 //-----------------------------------------------------------------------------------------------
-start_form(false, true);
+start_form();
 
 display_order_header($_SESSION['transfer_items']);
 

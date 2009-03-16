@@ -229,7 +229,7 @@ function display_credit_items()
 {
 	global $table_style, $table_style2;
 
-    start_form(false, true);
+    start_form();
 	hidden('cart_id');
 
 	start_table("$table_style2 width=80%", 5);

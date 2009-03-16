@@ -4,6 +4,8 @@
 # register_globals ON
 php_flag magic_quotes_gpc Off
 php_flag register_globals Off
+# do not use SID in url
+php_flag session.use_trans_sid Off
 
 #Sometimes neccessary to add those
 #

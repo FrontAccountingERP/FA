@@ -160,7 +160,7 @@ if (isset($_POST['ProcessSearch']))
 
 //----------------------------------------------------------------------------------------
 
-start_form(false, true);
+start_form(false);
 	viewing_controls();
 	handle_search();
 end_form(2);

@@ -187,7 +187,7 @@ function display_credit_items($title, &$order)
 	{
 	    alt_table_row_color($k);
 
-    	    label_cell("<a target='_blank' href='$path_to_root/inventory/inquiry/stock_status.php?" . SID . "stock_id=" . $line->stock_id . "'>$line->stock_id</a>");
+    	    label_cell("<a target='_blank' href='$path_to_root/inventory/inquiry/stock_status.php?stock_id=" . $line->stock_id . "'>$line->stock_id</a>");
     	    label_cell($line->item_description, "nowrap");
     	    qty_cell($line->qty_dispatched, false, get_qty_dec($line->stock_id));
     	    label_cell($line->units);

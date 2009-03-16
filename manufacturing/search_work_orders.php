@@ -60,7 +60,7 @@ if (isset($_GET["stock_id"]))
 
 //--------------------------------------------------------------------------------------
 
-start_form(false, false, $_SERVER['PHP_SELF'] ."?outstanding_only=" . $outstanding_only .SID);
+start_form(false, false, $_SERVER['PHP_SELF'] ."?outstanding_only=$outstanding_only");
 
 start_table("class='tablestyle_noborder'");
 start_row();

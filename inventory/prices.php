@@ -48,7 +48,7 @@ if (!isset($_POST['curr_abrev']))
 
 //---------------------------------------------------------------------------------------------------
 
-start_form(false, true);
+start_form();
 
 if (!isset($_POST['stock_id']))
 	$_POST['stock_id'] = get_global_stock_item();

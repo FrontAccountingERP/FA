@@ -39,7 +39,7 @@ if (isset($_GET['stock_id']))
 	$_POST['stock_id'] = $_GET['stock_id'];
 }
 
-start_form(false, true);
+start_form();
 
 if (!isset($_POST['stock_id']))
 	$_POST['stock_id'] = get_global_stock_item();

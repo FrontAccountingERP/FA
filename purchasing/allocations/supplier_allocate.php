@@ -185,7 +185,7 @@ function edit_allocations_for_transaction($type, $trans_no)
 {
 	global $table_style;
 
-	start_form(false, true);
+	start_form();
 
     display_heading(_("Allocation of") . " " . systypes::name($_SESSION['alloc']->type) . " # " . $_SESSION['alloc']->trans_no);
 

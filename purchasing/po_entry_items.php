@@ -397,7 +397,7 @@ if (isset($_GET['NewOrder']))
 
 //---------------------------------------------------------------------------------------------------
 
-start_form(false, true);
+start_form();
 
 display_po_header($_SESSION['PO']);
 echo "<br>";

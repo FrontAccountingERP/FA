@@ -53,7 +53,7 @@ if (get_post('SearchOrders'))
 }
 //---------------------------------------------------------------------------------------------
 
-start_form(false, true);
+start_form();
 
 start_table("class='tablestyle_noborder'");
 start_row();

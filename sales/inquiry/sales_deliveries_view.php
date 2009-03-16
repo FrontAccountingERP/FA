@@ -96,7 +96,7 @@ if (get_post('_DeliveryNumber_changed'))
 
 //-----------------------------------------------------------------------------------
 
-start_form(false, false, $_SERVER['PHP_SELF'] ."?OutstandingOnly=" . $_POST['OutstandingOnly'] .SID);
+start_form(false, false, $_SERVER['PHP_SELF'] ."?OutstandingOnly=".$_POST['OutstandingOnly']);
 
 start_table("class='tablestyle_noborder'");
 start_row();

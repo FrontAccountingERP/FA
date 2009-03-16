@@ -307,7 +307,7 @@ if (isset($_POST['Update']) || isset($_POST['_Location_update'])) {
 	$Ajax->activate('Items');
 }
 //------------------------------------------------------------------------------
-start_form(false, true);
+start_form();
 hidden('cart_id');
 
 start_table("$table_style2 width=80%", 5);

@@ -334,7 +334,7 @@ $dspans[] = $spanlen;
 $is_batch_invoice = count($_SESSION['Items']->src_docs) > 1;
 
 $is_edition = $_SESSION['Items']->trans_type == 10 && $_SESSION['Items']->trans_no != 0;
-start_form(false, true);
+start_form();
 hidden('cart_id');
 
 start_table("$table_style2 width=80%", 5);

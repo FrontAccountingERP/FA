@@ -213,7 +213,7 @@ if ($Mode == 'RESET')
 
 //--------------------------------------------------------------------------------------------------
 
-start_form(false, true);
+start_form();
 
 echo "<center>" . _("Select a manufacturable item:") . "&nbsp;";
 stock_bom_items_list('stock_id', null, false, true);
@@ -233,10 +233,8 @@ if (get_post('stock_id') != '')
 
 start_form();
 	display_bom_items($selected_parent);
-//end_form();
 	//--------------------------------------------------------------------------------------
 	echo '<br>';
-//	start_form(false, true);
 
 	start_table($table_style2);
 

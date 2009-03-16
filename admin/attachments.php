@@ -144,7 +144,7 @@ if ($Mode == 'RESET')
 
 function viewing_controls()
 {
-    start_form(false, true);
+    start_form();
 
     start_table("class='tablestyle_noborder'");
 

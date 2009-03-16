@@ -55,7 +55,7 @@ if (get_post('SearchOrders'))
 
 //---------------------------------------------------------------------------------------------
 
-start_form(false, true);
+start_form();
 
 start_table("class='tablestyle_noborder'");
 start_row();
@@ -81,8 +81,7 @@ function trans_view($trans)
 function edit_link($row) 
 {
   return pager_link( _("Edit"),
-	"/purchasing/po_entry_items.php?" . SID 
-	. "ModifyOrderNumber=" . $row["order_no"], ICON_EDIT);
+	"/purchasing/po_entry_items.php?ModifyOrderNumber=" . $row["order_no"], ICON_EDIT);
 }
 
 function prt_link($row)
@@ -93,8 +92,7 @@ function prt_link($row)
 function receive_link($row) 
 {
   return pager_link( _("Receive"),
-	"/purchasing/po_receive_items.php?" . SID 
-	. "PONumber=" . $row["order_no"], ICON_RECEIVE);
+	"/purchasing/po_receive_items.php?PONumber=" . $row["order_no"], ICON_RECEIVE);
 }
 
 function check_overdue($row)

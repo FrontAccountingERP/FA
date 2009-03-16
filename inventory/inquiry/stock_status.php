@@ -33,7 +33,7 @@ if (list_updated('stock_id'))
 
 check_db_has_stock_items(_("There are no items defined in the system."));
 
-start_form(false, true);
+start_form();
 
 if (!isset($_POST['stock_id']))
 	$_POST['stock_id'] = get_global_stock_item();

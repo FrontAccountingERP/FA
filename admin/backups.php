@@ -32,7 +32,7 @@ handle_form($db_connections[$db_name]);
 page(_("Backup and Restore Database"), false, false, '', '', true);
 
 //-------------------------------------------------------------------------------
-start_form(true, true);
+start_form(true);
 
 $cmb = get_backup_file_combo();
 $compr = get_compr_combo();

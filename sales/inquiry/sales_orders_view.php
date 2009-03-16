@@ -91,25 +91,25 @@ function prt_link($row)
 function edit_link($row) 
 {
   return pager_link( _("Edit"),
-    "/sales/sales_order_entry.php?" . SID . "ModifyOrderNumber=" . $row['order_no'], ICON_EDIT);
+    "/sales/sales_order_entry.php?ModifyOrderNumber=" . $row['order_no'], ICON_EDIT);
 }
 
 function dispatch_link($row)
 {
   return pager_link( _("Dispatch"),
-	"/sales/customer_delivery.php?" . SID . "OrderNumber=" .$row['order_no'], ICON_DOC);
+	"/sales/customer_delivery.php?OrderNumber=" .$row['order_no'], ICON_DOC);
 }
 
 function invoice_link($row)
 {
   return pager_link( _("Invoice"),
-	"/sales/sales_order_entry.php?" . SID . "NewInvoice=" .$row["order_no"], ICON_DOC);
+	"/sales/sales_order_entry.php?NewInvoice=" .$row["order_no"], ICON_DOC);
 }
 
 function delivery_link($row)
 {
   return pager_link( _("Delivery"),
-	"/sales/sales_order_entry.php?" . SID . "NewDelivery=" .$row['order_no'], ICON_DOC);
+	"/sales/sales_order_entry.php?NewDelivery=" .$row['order_no'], ICON_DOC);
 }
 
 function tmpl_checkbox($row)
@@ -170,7 +170,7 @@ if (get_post('_OrderNumber_changed')) // enable/disable selection controls
 	$Ajax->activate('orders_tbl');
 }
 
-start_form(false, false, $_SERVER['PHP_SELF'] .SID);
+start_form();
 
 start_table("class='tablestyle_noborder'");
 start_row();

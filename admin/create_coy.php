@@ -264,7 +264,7 @@ function display_company_edit($selected_id)
 	else
 		$n = count($db_connections);
 
-	start_form(true, true);
+	start_form(true);
 
 	echo "
 		<script language='javascript'>

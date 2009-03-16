@@ -319,7 +319,7 @@ if (isset($_POST['go']))
 
 //--------------------------------------------------------------------------------------------------
 
-start_form(false, true);
+start_form();
 
 invoice_header($_SESSION['supp_trans']);
 if ($_POST['supplier_id']=='') 

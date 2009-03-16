@@ -102,7 +102,7 @@ function voiding_controls()
 {
 	global $table_style2;
 	
-	start_form(false, true);
+	start_form();
 
 	start_table($table_style2);
 

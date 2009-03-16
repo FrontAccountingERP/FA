@@ -302,7 +302,7 @@ if (isset($_POST['ProcessGoodsReceived']))
 
 //--------------------------------------------------------------------------------------------------
 
-start_form(false, true);
+start_form();
 
 display_grn_summary($_SESSION['PO'], true);
 display_heading(_("Items to Receive"));

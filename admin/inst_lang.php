@@ -297,7 +297,7 @@ function display_language_edit($selected_id)
 	else
 		$n = count($installed_languages);
 
-	start_form(true, true);
+	start_form(true);
 
 	echo "
 		<script language='javascript'>

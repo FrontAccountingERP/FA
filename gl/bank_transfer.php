@@ -56,7 +56,7 @@ function gl_payment_controls()
 	global $table_style2;
 	$home_currency = get_company_currency();
 
-	start_form(false, true);
+	start_form();
 
 	start_table($table_style2, 5, 7);
 	echo "<tr><td valign=top>"; // outer table

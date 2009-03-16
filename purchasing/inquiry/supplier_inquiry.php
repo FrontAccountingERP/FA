@@ -35,7 +35,7 @@ if (isset($_GET['ToDate'])){
 
 //------------------------------------------------------------------------------------------------
 
-start_form(false, true);
+start_form();
 
 if (!isset($_POST['supplier_id']))
 	$_POST['supplier_id'] = get_global_supplier();
