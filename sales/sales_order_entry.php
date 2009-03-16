@@ -72,17 +72,17 @@ page($_SESSION['page_title'], false, false, "", $js);
 
 if (isset($_GET['AddedID'])) {
 	$order_no = $_GET['AddedID'];
-
 	display_notification_centered(sprintf( _("Order # %d has been entered."),$order_no));
 
-	display_note(get_trans_view_str(30, $order_no, _("&View This Order")));
-	echo '<br>';
-	display_note(print_document_link($order_no, _("&Print This Order"), true, 30));
+	submenu_view(_("&View This Order"), 30, $order_no);
 
-	hyperlink_params($path_to_root . "/sales/customer_delivery.php",
-		_("Make &Delivery Against This Order"), "OrderNumber=$order_no");
+	submenu_print(_("&Print This Order"), 30, $order_no, 'prtopt');
+	set_focus('prtopt');
+	
+	submenu_option(_("Make &Delivery Against This Order"),
+		"/sales/customer_delivery.php?OrderNumber=$order_no");
 
-	hyperlink_params($_SERVER['PHP_SELF'], _("Enter a &New Order"), "NewOrder=0");
+	submenu_option(_("Enter a &New Order"),	$_SERVER['PHP_SELF']."?NewOrder=0");
 
 	display_footer_exit();
 
@@ -91,15 +91,16 @@ if (isset($_GET['AddedID'])) {
 
 	display_notification_centered(sprintf( _("Order # %d has been updated."),$order_no));
 
-	display_note(get_trans_view_str(30, $order_no, _("&View This Order")));
-	echo '<br>';
-	display_note(print_document_link($order_no, _("&Print This Order"), true, 30));
+	submenu_view(_("&View This Order"), 30, $order_no);
 
-	hyperlink_params($path_to_root . "/sales/customer_delivery.php",
-		_("Confirm Order Quantities and Make &Delivery"), "OrderNumber=$order_no");
+	submenu_print(_("&Print This Order"), 30, $order_no, 'prtopt');
+	set_focus('prtopt');
 
-	hyperlink_params($path_to_root . "/sales/inquiry/sales_orders_view.php",
-		_("Select A Different &Order"), "OutstandingOnly=1");
+	submenu_option(_("Confirm Order Quantities and Make &Delivery"),
+		"/sales/customer_delivery.php?OrderNumber=$order_no");
+
+	submenu_option(_("Select A Different &Order"),
+		"/sales/inquiry/sales_orders_view.php?OutstandingOnly=1");
 
 	display_footer_exit();
 
@@ -108,35 +109,39 @@ if (isset($_GET['AddedID'])) {
 
 	display_notification_centered(sprintf(_("Delivery # %d has been entered."),$delivery));
 
-	display_note(get_trans_view_str(13, $delivery, _("&View This Delivery")));
-	echo '<br>';
-	display_note(print_document_link($delivery, _("&Print Delivery Note"), true, 13));
+	submenu_view(_("&View This Delivery"), 13, $delivery);
 
-	hyperlink_params($path_to_root . "/sales/customer_invoice.php",
-	_("Make &Invoice Against This Delivery"), "DeliveryNumber=$delivery");
+	submenu_print(_("&Print Delivery Note"), 13, $delivery, 'prtopt');
+	set_focus('prtopt');
+
+	submenu_option(_("Make &Invoice Against This Delivery"),
+		"/sales/customer_invoice.php?DeliveryNumber=$delivery");
 
 	if ((isset($_GET['Type']) && $_GET['Type'] == 1))
-	hyperlink_params("inquiry/sales_orders_view.php",
-		_("Enter a New Template &Delivery"), "DeliveryTemplates=Yes");
+		submenu_option(_("Enter a New Template &Delivery"),
+			"inquiry/sales_orders_view.php?DeliveryTemplates=Yes");
 	else
-	hyperlink_params($_SERVER['PHP_SELF'], _("Enter a &New Delivery"), "NewDelivery=0");
+		submenu_option(_("Enter a &New Delivery"), 
+			$_SERVER['PHP_SELF']."?NewDelivery=0");
 
 	display_footer_exit();
 
 } elseif (isset($_GET['AddedDI'])) {
 	$invoice = $_GET['AddedDI'];
 
-	display_notification_centered(sprintf(_("Invoice # %d has been entered."),$invoice));
+	display_notification_centered(sprintf(_("Invoice # %d has been entered."), $invoice));
 
-	display_note(get_trans_view_str(10, $invoice, _("&View This Invoice")));
-	echo '<br>';
-	display_note(print_document_link($invoice, _("&Print Sales Invoice"), true, 10));
+	submenu_view(_("&View This Invoice"), 10, $invoice);
+
+	submenu_print(_("&Print Sales Invoice"), 10, $invoice, 'prtopt');
+	set_focus('prtopt');
 
 	if ((isset($_GET['Type']) && $_GET['Type'] == 1))
-	hyperlink_params("inquiry/sales_orders_view.php",
-		_("Enter a &New Template Invoice"), "InvoiceTemplates=Yes");
+		submenu_option(_("Enter a &New Template Invoice"), 
+			"inquiry/sales_orders_view.php?InvoiceTemplates=Yes");
 	else
-	hyperlink_params($_SERVER['PHP_SELF'], _("Enter a &New Direct Invoice"), "NewInvoice=0");
+		submenu_option(_("Enter a &New Direct Invoice"),
+			$_SERVER['PHP_SELF']."?NewInvoice=0");
 
 	display_footer_exit();
 } else
@@ -399,13 +404,12 @@ function  handle_cancel_order()
 
 
 	if ($_SESSION['Items']->trans_type == 13) {
-			display_note(_("Direct delivery entry has been cancelled as requested."), 1);
-			hyperlink_params($path_to_root . "/sales/sales_order_entry.php",
-					_("Enter a New Sales Delivery"), SID . "&NewDelivery=0");
+		display_note(_("Direct delivery entry has been cancelled as requested."), 1);
+		submenu_option(_("Enter a New Sales Delivery"),	$_SERVER['PHP_SELF']."?NewDelivery=0");
+
 	} elseif ($_SESSION['Items']->trans_type == 10) {
-			display_note(_("Direct invoice entry has been cancelled as requested."), 1);
-			hyperlink_params($path_to_root . "/sales/sales_order_entry.php",
-					_("Enter a New Sales Delivery"), SID . "&NewDelivery=0");
+		display_note(_("Direct invoice entry has been cancelled as requested."), 1);
+		submenu_option(_("Enter a New Sales Invoice"),	$_SERVER['PHP_SELF']."?NewInvoice=0");
 	} else {
 		if ($_SESSION['Items']->trans_no != 0) {
 			if (sales_order_has_deliveries(key($_SESSION['Items']->trans_no)))
@@ -414,8 +418,7 @@ function  handle_cancel_order()
 				delete_sales_order(key($_SESSION['Items']->trans_no));
 
 			display_note(_("This sales order has been cancelled as requested."), 1);
-				hyperlink_params($path_to_root . "/sales/sales_order_entry.php",
-				_("Enter a New Sales Order"), SID . "&NewOrder=Yes");
+			submenu_option(_("Enter a New Sales Order"), $_SERVER['PHP_SELF']."?NewOrder=Yes");
 			}
 		} else {
 			processing_end();
@@ -509,7 +512,7 @@ if ($_SESSION['Items']->trans_type == 10) {
 	$porder = _("Place Order");
 	$corder = _("Commit Order Changes");
 }
-start_form(false, true);
+start_form();
 hidden('cart_id');
 
 $customer_error = display_order_header($_SESSION['Items'],
@@ -528,15 +531,14 @@ if ($customer_error == "") {
 	if ($_SESSION['Items']->trans_no == 0) {
 
 		submit_center_first('ProcessOrder', $porder,
-		    _('Check entered data and save document'), true);
+		    _('Check entered data and save document'), 'default');
 	} else {
 		submit_center_first('ProcessOrder', $corder,
-		    _('Validate changes and update document'), true);
+		    _('Validate changes and update document'), 'default');
 	}
 
 	submit_center_last('CancelOrder', $cancelorder,
-	   _('Cancels document entry or removes sales order when editing an old document'),
-	   true);
+	   _('Cancels document entry or removes sales order when editing an old document'));
 } else {
 	display_error($customer_error);
 }
