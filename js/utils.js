@@ -214,18 +214,21 @@ function goBack() {
 
 function setFocus(name, byId) {
 
-  if(!name) { // page load/ajax update
-	if (_focus)	
-		name = _focus;	// last focus set in onfocus handlers
-	else 
-	 if (document.forms.length) {	// no current focus (first page display) -  set it from from last form
-	  var cur = document.getElementsByName('_focus')[document.forms.length-1];
-	  if(cur) name = cur.value;
-	}
+ if(typeof(name)=='object')
+ 	el = name;
+ else {
+	if(!name) { // page load/ajax update
+		if (_focus)	
+			name = _focus;	// last focus set in onfocus handlers
+		else 
+	 		if (document.forms.length) {	// no current focus (first page display) -  set it from from last form
+			  var cur = document.getElementsByName('_focus')[document.forms.length-1];
+			  if(cur) name = cur.value;
+			}
+	  }
+	  if(byId || !(el = document.getElementsByName(name)[0]))
+		el = document.getElementById(name);
   }
-  if(byId || !(el = document.getElementsByName(name)[0]))
-	el = document.getElementById(name);
-
   if(el && el.focus) {
     // The timeout is needed to prevent unpredictable behaviour on IE & Gecko.
     // Using tmp var prevents crash on IE5
@@ -254,10 +257,8 @@ function move_focus(dir, e, neighbours)
 				}
 		}
 	}
-	if (t) {
-    	var tmp = function() {t.focus(); if (t.select) t.select();};
-		setTimeout(tmp, 0);
-	}
+	if (t)
+		setFocus(t);
 	return t;
 }
 

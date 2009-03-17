@@ -73,7 +73,7 @@ function _set_combo_input(e) {
 		  } else if(this.className=='combo2') {
 				this.style.display = 'none';
 				select.style.display = 'inline';
-				setFocus(select.name);
+				setFocus(select);
 		  }
 		  return false;
 		};
@@ -149,7 +149,7 @@ function _set_combo_select(e) {
 			    this.style.display = 'none';
 			    box.style.display = 'inline';
 				box.value='';
-				setFocus(box.name);
+				setFocus(box);
 			    return false;
 			 }
 			if (this.getAttribute('aspect') == 'editable' && key==115) {
@@ -274,7 +274,7 @@ var inserts = {
 			    save_focus(this);
 			};
 			e.onmouseover = function(e) {
-		    	if (this.id) setFocus(this.id, 1);
+		    	setFocus(this);
 				return false;
 			}
 		}
