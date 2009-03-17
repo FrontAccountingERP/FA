@@ -337,6 +337,11 @@ $quick_entry_types = array(
 		QE_SUPPINV => _("Supplier Invoice/Credit")
 );
 
-
+// Types of stock items
+$stock_types = array(
+		'M' => _("Manufactured"),
+		'B' => _("Purchased"),
+		'D' => _("Service")
+);
 
 ?>

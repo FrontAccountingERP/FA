@@ -897,18 +897,14 @@ function stock_purchasable_items_list_row($label, $name, $selected_id=null,
 
 function stock_item_types_list_row($label, $name, $selected_id=null, $enabled=true)
 {
-	$types = array(
-		'M' => _("Manufactured"),
-		'B' => _("Purchased"),
-		'D' => _("Service")
-	);
+	global $stock_types;
 
 	echo "<tr>";
 	if ($label != null)
 		echo "<td>$label</td>\n";
 	echo "<td>";
 
-	array_selector($name, $selected_id, $types, 
+	array_selector($name, $selected_id, $stock_types, 
 		array( 
 			'select_submit'=> true, 
 			'disabled' => !$enabled) );
@@ -1481,26 +1477,29 @@ function class_list_row($label, $name, $selected_id=null, $submit_on_change=fals
 
 //-----------------------------------------------------------------------------------------------
 
-function stock_categories_list($name, $selected_id=null)
+function stock_categories_list($name, $selected_id=null, $submit_on_change=false)
 {
 	$sql = "SELECT category_id, description FROM ".TB_PREF."stock_category";
 	combo_input($name, $selected_id, $sql, 'category_id', 'description',
-	array('order'=>'category_id'));
+ 	array('order'=>'category_id',
+ 		'select_submit'=> $submit_on_change,
+ 		'async' => true
+ 	));
 }
 
-function stock_categories_list_cells($label, $name, $selected_id=null)
+function stock_categories_list_cells($label, $name, $selected_id=null, $submit_on_change=false)
 {
 	if ($label != null)
 		echo "<td>$label</td>\n";
 	echo "<td>";
-	stock_categories_list($name, $selected_id);
+	stock_categories_list($name, $selected_id, $submit_on_change);
 	echo "</td>\n";
 }
 
-function stock_categories_list_row($label, $name, $selected_id=null)
+function stock_categories_list_row($label, $name, $selected_id=null, $submit_on_change=false)
 {
 	echo "<tr>\n";
-	stock_categories_list_cells($label, $name, $selected_id);
+	stock_categories_list_cells($label, $name, $selected_id, $submit_on_change);
 	echo "</tr>\n";
 }
 
