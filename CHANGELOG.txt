@@ -33,11 +33,23 @@ $ /admin/company_preferences.php
   /sql/alter2.2.sql (new)
   /sql/en_US-demo.sql
   /sql/en_US-new.sql
++ Item category now contains default parameters for new items.
+$ /inventory/includes/db/items_category_db.inc
+  /inventory/manage/item_categories.php
+  /inventory/manage/items.php
+  /sql/alter2.2.php
+  /sql/alter2.2.sql
+  /sql/en_US-demo.sql
+  /sql/en_US-new.sql
 ! Updated FA version string.
 $ /config.php
-# Small syntax fix
+! Stock item types moved to types.inc
+$ /includes/types.inc
+  /includes/ui/ui_lists.inc
+! Focus js code optimization
 $ /js/inserts.js
-
+  /js/utils.js
+ 
 16-Mar-2009 Janusz Dobrowolski
 + Support for default buttons with Ctrl-Enter/Escape hotkeys, 
 	arrow navigation in menus
