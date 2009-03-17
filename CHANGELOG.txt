@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+17-Mar-2009 Joe Hunt
+! Changed so company domicile is printed on invoices and statements if filled out.
+$ /reporting/includes/header2.inc
+
 17-Mar-2009 Janusz Dobrowolski
 + Added default delivery required by parameter, removed custom company fileds/names.
 $ /admin/company_preferences.php

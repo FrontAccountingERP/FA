@@ -14,7 +14,7 @@
 
 		$upper = $this->row - 2 * $this->lineHeight;
 		$lower = $this->bottomMargin + 6 * $this->lineHeight;
-		$iline1 = $upper - 7 * $this->lineHeight;
+		$iline1 = $upper - 7.5 * $this->lineHeight;
 		$iline2 = $iline1 - 8 * $this->lineHeight;
 		$iline3 = $iline2 - 1.5 * $this->lineHeight;
 		$iline4 = $iline3 - 1.5 * $this->lineHeight;
@@ -107,7 +107,13 @@
 			$this->Text($ccol, $doc_Our_VAT_no, $c2col);
 			$this->Text($c2col, $this->company['gst_no'], $mcol);
 			$this->NewLine();
-		}	
+		}
+		if (($doctype == 10 || $doctype == 12) && $this->company['domicile'] != "")
+		{
+			$this->Text($ccol, $doc_Domicile, $c2col);
+			$this->Text($c2col, $this->company['domicile'], $mcol);
+			$this->NewLine();
+		}
 		$this->Font();
 		$this->row = $adrline;
 		$this->NewLine(3);
@@ -276,10 +282,9 @@
 			$this->TextWrap($ccol, $this->row, $right - $ccol, $this->params['comments'], 'C');
 			$this->NewLine();
 		}
-		$legal = get_company_pref('legal_text');
-		if (($doctype == 10 || $doctype == 12) && $legal != "") 
+		if (($doctype == 10 || $doctype == 12) && $this->company['legal_text'] != "") 
 		{
-			$this->TextWrap($ccol, $this->row, $right - $ccol, $legal, 'C');
+			$this->TextWrap($ccol, $this->row, $right - $ccol, $this->company['legal_text'], 'C');
 			$this->NewLine();
 		}
 		$this->Font();
