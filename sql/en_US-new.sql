@@ -1207,10 +1207,16 @@ DROP TABLE IF EXISTS `0_stock_category`;
 CREATE TABLE `0_stock_category` (
   `category_id` int(11) NOT NULL auto_increment,
   `description` varchar(60) NOT NULL default '',
-  `stock_act` varchar(11) default NULL,
-  `cogs_act` varchar(11) default NULL,
-  `adj_gl_act` varchar(11) default NULL,
-  `purch_price_var_act` varchar(11) default NULL,
+  `dflt_tax_type` int(11) NOT NULL default '0',
+  `dflt_units` varchar(20) NOT NULL default 'each',
+  `dflt_mb_flag` char(1) NOT NULL default 'B',
+  `dflt_sales_act` varchar(11) NOT NULL default '',
+  `dflt_cogs_act` varchar(11) NOT NULL default '',
+  `dflt_inventory_act` varchar(11) NOT NULL default '',
+  `dflt_adjustment_act` varchar(11) NOT NULL default '',
+  `dflt_assembly_act` varchar(11) NOT NULL default '',
+  `dflt_dim1` int(11) default NULL,
+  `dflt_dim2` int(11) default NULL,
   `inactive` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`category_id`),
   UNIQUE KEY `description` (`description`)
@@ -1219,10 +1225,10 @@ CREATE TABLE `0_stock_category` (
 
 ### Data of table `0_stock_category` ###
 
-INSERT INTO `0_stock_category` VALUES ('1', 'Components', '', '', '', '', '0');
-INSERT INTO `0_stock_category` VALUES ('2', 'Charges', '', '', '', '', '0');
-INSERT INTO `0_stock_category` VALUES ('3', 'Systems', '', '', '', '', '0');
-INSERT INTO `0_stock_category` VALUES ('4', 'Services', '', '', '', '', '0');
+INSERT INTO `0_stock_category` VALUES ('1', 'Components', '0');
+INSERT INTO `0_stock_category` VALUES ('2', 'Charges', '0');
+INSERT INTO `0_stock_category` VALUES ('3', 'Systems', '0');
+INSERT INTO `0_stock_category` VALUES ('4', 'Services', '0');
 
 
 ### Structure of table `0_stock_master` ###

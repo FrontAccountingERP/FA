@@ -9,34 +9,62 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-function add_item_category($description)
-
+function add_item_category($description, $tax_type_id, $sales_account, 
+	$cogs_account, $inventory_account, $adjustment_account, $assembly_account, 
+	$units, $mb_flag, $dim1, $dim2)
 {
-	$sql = "INSERT INTO ".TB_PREF."stock_category (description)
-		VALUES (".db_escape($description).")";
+	$sql = "INSERT INTO ".TB_PREF."stock_category (description, dflt_tax_type,
+			dflt_units, dflt_mb_flag, dflt_sales_act, dflt_cogs_act, 
+			dflt_inventory_act, dflt_adjustment_act, dflt_assembly_act, 
+			dflt_dim1, flt_dim2)
+		VALUES ("
+		.db_escape($description).","
+		.db_escape($tax_type_id).","
+		.db_escape($units).","
+		.db_escape($mb_flag).","
+		.db_escape($sales_account).","
+		.db_escape($cogs_account).","
+		.db_escape($inventory_account).","
+		.db_escape($adjustment_account).","
+		.db_escape($assembly_account).","
+		.db_escape($dim1).","
+		.db_escape($dim2).")";
 
 	db_query($sql,"an item category could not be added");
 }
 
-function update_item_category($ItemCategory, $description)
+function update_item_category($id, $description, $tax_type_id, 
+	$sales_account, $cogs_account, $inventory_account, $adjustment_account, 
+	$assembly_account, $units, $mb_flag, $dim1, $dim2)
 
 {
-	$sql = "UPDATE ".TB_PREF."stock_category SET description = ".db_escape($description)."
-        WHERE category_id = '$ItemCategory'";
+	$sql = "UPDATE ".TB_PREF."stock_category SET "
+		."description = ".db_escape($description).","
+		."dflt_tax_type = ".db_escape($tax_type_id).","
+		."dflt_units = ".db_escape($units).","
+		."dflt_mb_flag = ".db_escape($mb_flag).","
+		."dflt_sales_act = ".db_escape($sales_account).","
+		."dflt_cogs_act = ".db_escape($cogs_account).","
+		."dflt_inventory_act = ".db_escape($inventory_account).","
+		."dflt_adjustment_act = ".db_escape($adjustment_account).","
+		."dflt_assembly_act = ".db_escape($assembly_account).","
+		."dflt_dim1 = ".db_escape($dim1).","
+		."dflt_dim2 = ".db_escape($dim2)
+        ." WHERE category_id = '$id'";
 
 	db_query($sql,"an item category could not be updated");
 }
 
-function delete_item_category($ItemCategory)
+function delete_item_category($id)
 {
-	$sql="DELETE FROM ".TB_PREF."stock_category WHERE category_id='$ItemCategory'";
+	$sql="DELETE FROM ".TB_PREF."stock_category WHERE category_id='$id'";
 
 	db_query($sql,"an item category could not be deleted");
 }
 
-function get_item_category($ItemCategory)
+function get_item_category($id)
 {
-	$sql="SELECT * FROM ".TB_PREF."stock_category WHERE category_id='$ItemCategory'";
+	$sql="SELECT * FROM ".TB_PREF."stock_category WHERE category_id='$id'";
 
 	$result = db_query($sql,"an item category could not be retrieved");
 

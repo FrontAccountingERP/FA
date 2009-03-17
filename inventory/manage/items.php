@@ -40,6 +40,9 @@ if (list_updated('stock_id')) {
 	$Ajax->activate('details');
 	$Ajax->activate('controls');
 }
+if (list_updated('category_id') || list_updated('mb_flag')) {
+	$Ajax->activate('details');
+}
 $upload_file = "";
 if (isset($_FILES['pic']) && $_FILES['pic']['name'] != '') 
 {
@@ -164,7 +167,7 @@ if (isset($_POST['addupdate']))
 				$_POST['dimension_id'], $_POST['dimension2_id']);
 
 		display_notification(_("A new item has been added."));
-		$_POST['stock_id'] = $_POST['NewStockID'];
+		$_POST['stock_id'] = $_POST['NewStockID'] = '';
 		}
 		set_focus('stock_id');
 		$Ajax->activate('_page_body');
@@ -179,7 +182,7 @@ function can_delete($stock_id)
 	$result = db_query($sql, "could not query stock moves");
 	$myrow = db_fetch_row($result);
 	if ($myrow[0] > 0) 
-	{
+{
 		display_error(_('Cannot delete this item because there are stock movements that refer to this item.'));
 		return false;
 	}
@@ -256,6 +259,7 @@ if (isset($_POST['select']))
 	context_return(array('stock_id' => $_POST['stock_id']));
 }
 
+
 //------------------------------------------------------------------------------------
 
 start_form(true);
@@ -287,22 +291,8 @@ if ($new_item)
 
 	text_row(_("Item Code:"), 'NewStockID', null, 21, 20);
 
-	$company_record = get_company_prefs();
-
-    if (!isset($_POST['inventory_account']) || $_POST['inventory_account'] == "")
-    	$_POST['inventory_account'] = $company_record["default_inventory_act"];
-
-    if (!isset($_POST['cogs_account']) || $_POST['cogs_account'] == "")
-    	$_POST['cogs_account'] = $company_record["default_cogs_act"];
-
-	if (!isset($_POST['sales_account']) || $_POST['sales_account'] == "")
-		$_POST['sales_account'] = $company_record["default_inv_sales_act"];
-
-	if (!isset($_POST['adjustment_account']) || $_POST['adjustment_account'] == "")
-		$_POST['adjustment_account'] = $company_record["default_adj_act"];
-
-	if (!isset($_POST['assembly_account']) || $_POST['assembly_account'] == "")
-		$_POST['assembly_account'] = $company_record["default_assembly_act"];
+	$_POST['long_description'] = '';
+	$_POST['description'] = '';
 
 } 
 else 
@@ -335,7 +325,23 @@ text_row(_("Name:"), 'description', null, 52, 50);
 
 textarea_row(_('Description:'), 'long_description', null, 42, 3);
 
-stock_categories_list_row(_("Category:"), 'category_id', null);
+stock_categories_list_row(_("Category:"), 'category_id', null, $new_item);
+
+if ($new_item && (list_updated('category_id') || !isset($_POST['units']))) {
+
+	$category_record = get_item_category($_POST['category_id']);
+
+	$_POST['tax_type_id'] = $category_record["dflt_tax_type"];
+	$_POST['units'] = $category_record["dflt_units"];
+	$_POST['mb_flag'] = $category_record["dflt_mb_flag"];
+   	$_POST['inventory_account'] = $category_record["dflt_inventory_act"];
+   	$_POST['cogs_account'] = $category_record["dflt_cogs_act"];
+	$_POST['sales_account'] = $category_record["dflt_sales_act"];
+	$_POST['adjustment_account'] = $category_record["dflt_adjustment_act"];
+	$_POST['assembly_account'] = $category_record["dflt_assembly_act"];
+	$_POST['dimension_id'] = $category_record["dflt_dim1"];
+	$_POST['dimension2_id'] = $category_record["dflt_dim2"];
+}
 
 item_tax_types_list_row(_("Item Tax Type:"), 'tax_type_id', null);
 

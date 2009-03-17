@@ -20,8 +20,16 @@ class fa2_2 {
 	function install($pref, $force) 
 	{
 		global $db;
-				
-		return true;
+		// set item category dflt accounts to values from company GL setup
+		$prefs = get_company_prefs();
+		$sql = "UPDATE {$pref}stock_category SET "
+			."dflt_sales_act = '" . $prefs['default_inv_sales_act'] . "',"
+			."dflt_cogs_act = '". $prefs['default_cogs_act'] . "',"
+			."dflt_inventory_act = '" . $prefs['default_inventory_act'] . "',"
+			."dflt_adjustment_act = '" . $prefs['default_adj_act'] . "',"
+			."dflt_assembly_act = '" . $prefs['default_assembly_act']."'";
+		$ret = db_query($sql, "Cannot update category default GL accounts");
+		return $ret;
 	}
 	//
 	//	Checking before install
@@ -35,6 +43,7 @@ class fa2_2 {
 	//
 	function installed($pref) {
 		if (check_table($pref, 'company', 'default_delivery_required')) return false;
+		if (check_table($pref, 'stock_category', 'dflt_dim2')) return false;
 		return true;
 	}
 };
