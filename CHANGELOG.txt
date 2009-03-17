@@ -20,6 +20,17 @@ Legend:
 $ -> Affected files
 
 17-Mar-2009 Janusz Dobrowolski
++ Added default delivery required by parameter, removed custom company fileds/names.
+$ /admin/company_preferences.php
+  /admin/gl_setup.php
+  /admin/db/company_db.inc
+  /includes/prefs/sysprefs.inc
+  /sql/alter2.2.php (new)
+  /sql/alter2.2.sql (new)
+  /sql/en_US-demo.sql
+  /sql/en_US-new.sql
+! Updated FA version string.
+$ /config.php
 # Small syntax fix
 $ /js/inserts.js
 
