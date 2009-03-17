@@ -274,7 +274,7 @@ var inserts = {
 			    save_focus(this);
 			};
 			e.onmouseover = function(e) {
-		    	setFocus(this.id, 1);
+		    	if (this.id) setFocus(this.id, 1);
 				return false;
 			}
 		}
