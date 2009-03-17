@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+17-Mar-2009 Janusz Dobrowolski
+# Small syntax fix
+$ /js/inserts.js
+
 16-Mar-2009 Janusz Dobrowolski
 + Support for default buttons with Ctrl-Enter/Escape hotkeys, 
 	arrow navigation in menus
@@ -41,7 +45,7 @@ $ /includes/ui/ui_input.inc
   /sales/sales_order_entry.php
 
 ! SID & start_form() cleanup
-  /.htaccess
+$ /.htaccess
   /access/logout.php
   /admin/attachments.php
   /admin/backups.php

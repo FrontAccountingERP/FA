@@ -11,7 +11,7 @@
 var _focus;
 var _hotkeys = {
 	'alt': false,	// whether is the Alt key pressed
-	'focus': -1,	// currently selected indeks of document.links
+	'focus': -1		// currently selected indeks of document.links
 };
 
 function debug(msg) {
