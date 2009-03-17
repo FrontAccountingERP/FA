@@ -71,7 +71,8 @@ if (isset($_POST['submit']) && can_process())
 		$_POST['past_due_days'],
 		$_POST['default_credit_limit'],
 		$_POST['default_workorder_required'],
-		$_POST['default_dim_required']);
+		$_POST['default_dim_required'],
+		$_POST['default_delivery_required']);
 
 	display_notification(_("The general GL setup has been updated."));
 
@@ -116,6 +117,7 @@ $_POST['accumulate_shipping'] = $myrow['accumulate_shipping'];
 
 $_POST['default_workorder_required'] = $myrow['default_workorder_required'];
 $_POST['default_dim_required'] = $myrow['default_dim_required'];
+$_POST['default_delivery_required'] = $myrow['default_delivery_required'];
 
 //---------------
 
@@ -155,6 +157,8 @@ gl_all_accounts_list_row(_("Sales Account:"), 'default_sales_act', null,
 gl_all_accounts_list_row(_("Sales Discount Account:"), 'default_sales_discount_act');
 
 gl_all_accounts_list_row(_("Prompt Payment Discount Account:"), 'default_prompt_payment_act');
+
+text_row(_("Delivery Required By:"), 'default_delivery_required', $_POST['default_delivery_required'], 6, 6, '', "", _("days"));
 
 //----------------
 

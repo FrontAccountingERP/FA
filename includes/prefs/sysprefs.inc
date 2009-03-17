@@ -49,8 +49,8 @@ class sys_prefs
 	}
 
 	function default_delivery_required_by() 
-	{	 // FIX this in next major release
-//		return get_company_pref('default_delivery_required');
+	{
+		return get_company_pref('default_delivery_required');
 		return 1;
 	}
 

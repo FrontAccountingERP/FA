@@ -318,12 +318,6 @@ CREATE TABLE `0_company` (
   `default_inv_sales_act` varchar(11) NOT NULL default '',
   `default_assembly_act` varchar(11) NOT NULL default '',
   `payroll_act` varchar(11) NOT NULL default '',
-  `custom1_name` varchar(60) NOT NULL default '',
-  `custom2_name` varchar(60) NOT NULL default '',
-  `custom3_name` varchar(60) NOT NULL default '',
-  `custom1_value` varchar(100) NOT NULL default '',
-  `custom2_value` varchar(100) NOT NULL default '',
-  `custom3_value` varchar(100) NOT NULL default '',
   `allow_negative_stock` tinyint(1) NOT NULL default '0',
   `po_over_receive` int(11) NOT NULL default '10',
   `po_over_charge` int(11) NOT NULL default '10',
@@ -340,13 +334,14 @@ CREATE TABLE `0_company` (
   `foreign_codes` tinyint(1) NOT NULL default '0',
   `accumulate_shipping` tinyint(1) NOT NULL default '0',
   `legal_text` tinytext NOT NULL,
+  `default_delivery_required` smallint(6) NOT NULL default '1',
   PRIMARY KEY  (`coy_code`)
 ) TYPE=MyISAM  ;
 
 
 ### Data of table `0_company` ###
 
-INSERT INTO `0_company` VALUES ('1', 'Company name', '', '', '1', '1', 'N/A', '', '', '', '', '', 'USD', '1500', '4250', '2630', '1430', '4260', '4220', '2050', '3800', '3000', '3000', '3200', '1420', '4010', '4210', '3000', '1410', '5000', '', '', '', '', '', '', '0', '10', '10', '1000', '20', '20', '30', '1', '1', '0', '0', '0', '-1', '0', '0', '');
+INSERT INTO `0_company` VALUES ('1', 'Company name', '', '', '1', '1', 'N/A', '', '', '', '', '', 'USD', '1500', '4250', '2630', '1430', '4260', '4220', '2050', '3800', '3000', '3000', '3200', '1420', '4010', '4210', '3000', '1410', '5000', '0', '10', '10', '1000', '20', '20', '30', '1', '1', '0', '0', '0', '-1', '0', '0', '', '1');
 
 
 ### Structure of table `0_credit_status` ###
