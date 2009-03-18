@@ -27,6 +27,7 @@ $ /themes/aqua/images/escape.png (new)
   /themes/cool/images/escape.png (new)
 + Arrow navigation also in report menus
 $ /js/utils.js
+  /js/inserts.js
 + Added default keys for form submition/cancelling when apprioprate.
 $ All form entry files.
 
