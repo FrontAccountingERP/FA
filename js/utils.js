@@ -239,22 +239,24 @@ function setFocus(name, byId) {
 }
 /*
 	Find closest element in neighbourhood and set focus.
-	dir is direction as arrow code.
+	dir is arrow keycode.
 */
-function move_focus(dir, e, neighbours)
+function move_focus(dir, e0, neighbours)
 {
-	var p0 = element_pos(e);
+	var p0 = element_pos(e0);
 	var t;
 	var l=0;
 	for(var i=0; i<neighbours.length; i++) {
-		var p = element_pos(neighbours[i]);
-		if (neighbours[i].className!='menu_option') continue;
-		if (((dir==40) && (p.y>p0.y)) || (dir==38 && (p.y<p0.y)) 
-			|| ((dir==37) && (p.x<p0.x)) || ((dir==39 && (p.x>p0.x)))) {
-				var l1 = (p.y-p0.y)*(p.y-p0.y)+(p.x-p0.x)*(p.x-p0.x);
-				if ((l1<l) || (l==0)) {
-					l = l1; t = neighbours[i];
-				}
+		var e = neighbours[i];
+		var p = element_pos(e);
+		if (p!=null && (e.className=='menu_option' || e.className=='printlink')) {
+			if (((dir==40) && (p.y>p0.y)) || (dir==38 && (p.y<p0.y)) 
+				|| ((dir==37) && (p.x<p0.x)) || ((dir==39 && (p.x>p0.x)))) {
+					var l1 = (p.y-p0.y)*(p.y-p0.y)+(p.x-p0.x)*(p.x-p0.x);
+					if ((l1<l) || (l==0)) {
+						l = l1; t = e;
+					}
+			}
 		}
 	}
 	if (t)
@@ -267,7 +269,7 @@ var __isFireFox = navigator.userAgent.match(/gecko/i);
 function element_pos(e) {
 	var res = new Object();
 		res.x = 0; res.y = 0;
-	if (element !== null) {
+	if (e !== null) {
 		res.x = e.offsetLeft;
 		res.y = e.offsetTop;
 		var offsetParent = e.offsetParent;
@@ -276,7 +278,6 @@ function element_pos(e) {
 		while (offsetParent !== null) {
 			res.x += offsetParent.offsetLeft;
 			res.y += offsetParent.offsetTop;
-
 			if (offsetParent != document.body && offsetParent != document.documentElement) {
 				res.x -= offsetParent.scrollLeft;
 				res.y -= offsetParent.scrollTop;
@@ -294,5 +295,7 @@ function element_pos(e) {
 			offsetParent = offsetParent.offsetParent;
 		}
 	}
+	// parentNode has style.display set to none
+	if (parentNode!=document.documentElement) return null;
 	return res;
 }
