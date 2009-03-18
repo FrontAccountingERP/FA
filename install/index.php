@@ -131,6 +131,30 @@ function change_os(type) {
 				?>
 			</td>
 		</tr>
+		<?php if (substr(php_sapi_name(), 0, 3) == 'cgi') {	?>
+		<tr>
+			<td width="140" style="color: #666666;">Magic Quotes GPC</td>
+			<td width="35">
+				<?php
+				if(ini_get('magic_quotes_gpc')) {
+					echo '<font class="bad">Enabled</font>';
+				} else {
+					echo '<font class="good">Disabled</font>';
+				}
+				?>
+			</td>
+			<td width="140" style="color: #666666;">Register Globals</td>
+			<td width="35">
+				<?php
+				if (ini_get('register_globals')) {
+					echo '<font class="bad">Enabled</font>';
+				} else {
+					echo '<font class="good">Disabled</font>';
+				}
+				?>
+			</td>
+		</tr>
+		<?php } ?>
 		</table>
 		<table cellpadding="3" cellspacing="0" width="100%" align="center">
 		<tr>

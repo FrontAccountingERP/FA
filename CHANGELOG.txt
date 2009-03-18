@@ -24,6 +24,12 @@ $ -> Affected files
 ! Release 2.1
 $ config.php
 
+18-Mar-2009 Janusz Dobrowolski
+# Additional php.ini checks and fixes for php in CGI mode
+$ /.htaccess
+  /install.html
+  /install/index.php
+
 16-Mar-2009 Janusz Dobrowolski
 # Fixed redirection after order cancelation.
 $ /sales/sales_order_entry.php
