@@ -216,7 +216,7 @@ amount_row(_("Default Base Amount").':', 'base_amount', price_format(0));
 
 end_table(1);
 
-submit_add_or_update_center($selected_id == -1, '', true);
+submit_add_or_update_center($selected_id == -1, '', 'both');
 
 end_form();
 

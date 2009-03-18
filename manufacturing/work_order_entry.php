@@ -408,7 +408,7 @@ if (isset($selected_id))
 {
 	echo "<table align=center><tr>";
 
-	submit_cells('UPDATE_ITEM', _("Update"), '', _('Save changes to work order'), true);
+	submit_cells('UPDATE_ITEM', _("Update"), '', _('Save changes to work order'), 'default');
 	if (isset($_POST['released']))
 	{
 		submit_cells('close', _("Close This Work Order"),'','',true);
@@ -419,7 +419,7 @@ if (isset($selected_id))
 }
 else
 {
-	submit_center('ADD_ITEM', _("Add Workorder"), true, '', true);
+	submit_center('ADD_ITEM', _("Add Workorder"), true, '', 'default');
 }
 
 end_form();

@@ -126,7 +126,7 @@ else
 
 end_table(1);
 div_end();
-submit_center('UpdateData', _("Update"));
+submit_center('UpdateData', _("Update"), true, false, 'default');
 
 end_form();
 end_page();

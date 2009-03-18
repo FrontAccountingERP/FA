@@ -278,7 +278,7 @@ if ($customer_error == "") {
 
 echo "<br><center><table><tr>";
 submit_cells('Update', _("Update"));
-submit_cells('ProcessCredit', _("Process Credit Note"));
+submit_cells('ProcessCredit', _("Process Credit Note"), '', false, 'default');
 echo "</tr></table></center>";
 
 end_form();

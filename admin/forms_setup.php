@@ -58,7 +58,7 @@ while ($type = db_fetch($systypes))
 
 end_outer_table(1);
 
-submit_center('setprefs', _("Update"), true, '', true);
+submit_center('setprefs', _("Update"), true, '', 'default');
 
 end_form(2);
 

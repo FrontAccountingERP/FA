@@ -233,7 +233,7 @@ end_row();
 end_table(1);
 
 submit_center_first('Update', _("Update"), '', null);
-submit_center_last('Process', _("Process Transfer"), '', true);
+submit_center_last('Process', _("Process Transfer"), '',  'default');
 
 end_form();
 end_page();

@@ -212,7 +212,7 @@ text_row(_("Work Order Required By After:"), 'default_workorder_required', $_POS
 
 end_outer_table(1);
 
-submit_center('submit', _("Update"), true, '', true);
+submit_center('submit', _("Update"), true, '', 'default');
 
 end_form(2);
 

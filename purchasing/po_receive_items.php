@@ -309,7 +309,7 @@ display_heading(_("Items to Receive"));
 display_po_receive_items();
 
 echo '<br>';
-submit_center_first('Update', _("Update"), '', true);
+submit_center_first('Update', _("Update"), '', 'default');
 submit_center_last('ProcessGoodsReceived', _("Process Receive Items"), _("Clear all GL entry fields"), true);
 
 end_form();

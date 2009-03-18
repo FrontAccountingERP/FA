@@ -158,7 +158,7 @@ gl_all_accounts_list_row(_("Purchasing GL Account:"), 'purchasing_gl_code', null
 
 end_table(1);
 
-submit_add_or_update_center($selected_id == -1, '', true);
+submit_add_or_update_center($selected_id == -1, '', 'both');
 
 end_form();
 

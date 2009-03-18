@@ -131,7 +131,7 @@ text_row_ex(_("Group Name:"), 'description', 30);
 
 end_table(1);
 
-submit_add_or_update_center($selected_id == -1, '', true);
+submit_add_or_update_center($selected_id == -1, '', 'both');
 
 end_form();
 

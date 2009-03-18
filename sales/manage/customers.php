@@ -292,13 +292,13 @@ end_outer_table(1);
 div_start('controls');
 if ($new_customer)
 {
-	submit_center('submit', _("Add New Customer"), true, '', true);
+	submit_center('submit', _("Add New Customer"), true, '', 'default');
 } 
 else 
 {
 	submit_center_first('submit', _("Update Customer"), 
 	  _('Update customer data'), true);
-	submit_return('select', _("Return"), _("Select this customer and return to document entry."), true);
+	submit_return('select', _("Return"), _("Select this customer and return to document entry."), 'default');
 	submit_center_last('delete', _("Delete Customer"), 
 	  _('Delete customer data if have been never used'), true);
 }

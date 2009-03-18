@@ -292,7 +292,7 @@ end_table(1);
 
 submit_center_first('Update', _("Update"), '', null);
 submit_center_last('Process', $_SESSION['pay_items']->trans_type==systypes::bank_payment() ?
-	_("Process Payment"):_("Process Deposit"), '', true);
+	_("Process Payment"):_("Process Deposit"), '', 'default');
 
 end_form();
 

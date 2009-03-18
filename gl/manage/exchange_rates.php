@@ -143,7 +143,7 @@ function display_rate_edit()
 
 	end_table(1);
 
-	submit_add_or_update_center($selected_id == '', '', true);
+	submit_add_or_update_center($selected_id == '', '', 'default');
 
 	display_note(_("Exchange rates are entered against the company currency."), 1);
 }

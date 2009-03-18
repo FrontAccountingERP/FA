@@ -135,7 +135,7 @@ number_list_row(_("Decimal Places:"), 'decimals', null, 0, 6, _("User Quantity D
 
 end_table(1);
 
-submit_add_or_update_center($selected_id == '', '', true);
+submit_add_or_update_center($selected_id == '', '', 'both');
 
 end_form();
 

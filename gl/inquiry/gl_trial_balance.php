@@ -46,7 +46,7 @@ function gl_inquiry_controls()
 	check_cells(_("No zero values"), 'NoZero', null);
 	check_cells(_("Only balances"), 'Balance', null);
 
-	submit_cells('Show',_("Show"),'','', true);
+	submit_cells('Show',_("Show"),'','', 'default');
     end_table();
     end_form();
 }

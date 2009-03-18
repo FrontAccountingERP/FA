@@ -470,7 +470,7 @@ div_end();
 submit_center_first('Update', _("Update"),
   _('Refresh document page'), true);
 submit_center_last('process_delivery', _("Process Dispatch"),
-  _('Check entered data and save document'), true);
+  _('Check entered data and save document'), 'default');
 
 end_form();
 

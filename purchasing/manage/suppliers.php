@@ -288,14 +288,14 @@ div_start('controls');
 if (!$new_supplier) 
 {
 	submit_center_first('submit', _("Update Supplier"), 
-	  _('Update supplier data'), true);
-	submit_return('select', _("Return"), _("Select this supplier and return to document entry."), true);
+	  _('Update supplier data'), 'default');
+	submit_return('select', _("Return"), _("Select this supplier and return to document entry."), 'cancel');
 	submit_center_last('delete', _("Delete Supplier"), 
 	  _('Delete supplier data if have been never used'), true);
 }
 else 
 {
-	submit_center('submit', _("Add New Supplier Details"), true, '', true);
+	submit_center('submit', _("Add New Supplier Details"), true, '', 'default');
 }
 div_end();
 end_form();

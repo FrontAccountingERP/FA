@@ -415,12 +415,12 @@ div_end();
 div_start('controls');
 if (!isset($_POST['NewStockID']) || $new_item) 
 {
-	submit_center('addupdate', _("Insert New Item"), true, '', true);
+	submit_center('addupdate', _("Insert New Item"), true, '', 'default');
 } 
 else 
 {
-	submit_center_first('addupdate', _("Update Item"), '', true);
-	submit_return('select', _("Return"), _("Select this items and return to document entry."), true);
+	submit_center_first('addupdate', _("Update Item"), '', 'default');
+	submit_return('select', _("Return"), _("Select this items and return to document entry."), 'default');
 	submit_center_last('delete', _("Delete This Item"), '', true);
 }
 

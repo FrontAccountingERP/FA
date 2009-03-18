@@ -182,7 +182,7 @@ amount_row(_("Break Pt.:"), 'break_pt');
 percent_row(_("Provision")." 2:", 'provision2');
 end_table(1);
 
-submit_add_or_update_center($selected_id == -1, '', true);
+submit_add_or_update_center($selected_id == -1, '', 'both');
 
 end_form();
 

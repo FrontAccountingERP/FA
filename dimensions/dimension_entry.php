@@ -257,13 +257,13 @@ end_table(1);
 if ($selected_id != -1) 
 {
 	echo "<br>";
-	submit_center_first('UPDATE_ITEM', _("Update"), _('Save changes to dimension'), true);
+	submit_center_first('UPDATE_ITEM', _("Update"), _('Save changes to dimension'), 'default');
 	submit('close', _("Close This Dimension"), true, _('Mark this dimension as closed'), true);
 	submit_center_last('delete', _("Delete This Dimension"), _('Delete unused dimension'), true);
 }
 else
 {
-	submit_center('ADD_ITEM', _("Add"), true, '', true);
+	submit_center('ADD_ITEM', _("Add"), true, '', 'default');
 }
 end_form();
 

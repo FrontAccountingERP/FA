@@ -48,7 +48,7 @@ cust_allocations_list_cells(_("Type:"), 'filterType', null);
 
 check_cells(" " . _("show settled:"), 'showSettled', null);
 
-submit_cells('RefreshInquiry', _("Search"),'',_('Refresh Inquiry'), true);
+submit_cells('RefreshInquiry', _("Search"),'',_('Refresh Inquiry'), 'default');
 
 set_global_customer($_POST['customer_id']);
 

@@ -129,7 +129,7 @@ text_row_ex(_("Query page size:"), 'query_size',  5, 5, '', user_query_size());
 
 end_outer_table(1);
 
-submit_center('setprefs', _("Update"), true, '', true);
+submit_center('setprefs', _("Update"), true, '',  'default');
 
 end_form(2);
 

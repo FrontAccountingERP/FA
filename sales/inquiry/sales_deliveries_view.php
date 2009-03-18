@@ -108,7 +108,7 @@ locations_list_cells(_("Location:"), 'StockLocation', null, true);
 
 stock_items_list_cells(_("Item:"), 'SelectStockFromList', null, true);
 
-submit_cells('SearchOrders', _("Search"),'',_('Select documents'), true);
+submit_cells('SearchOrders', _("Search"),'',_('Select documents'), 'default');
 
 hidden('OutstandingOnly', $_POST['OutstandingOnly']);
 

@@ -94,7 +94,7 @@ table_section_title(_("Enter your new password in the fields."));
 
 end_table(1);
 
-submit_center( 'UPDATE_ITEM', _('Change password'), true, '', true);
+submit_center( 'UPDATE_ITEM', _('Change password'), true, '',  'default');
 end_form();
 end_page();
 ?>

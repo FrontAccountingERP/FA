@@ -416,7 +416,7 @@ if (get_post('AddGLCodeToTrans'))
 	$Ajax->activate('inv_tot');
 
 br();
-submit_center('PostInvoice', _("Enter Invoice"), true, '', true);
+submit_center('PostInvoice', _("Enter Invoice"), true, '', 'default');
 br();
 
 end_form();

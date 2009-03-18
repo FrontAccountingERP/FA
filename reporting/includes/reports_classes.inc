@@ -44,15 +44,17 @@ class BoxReports
 			$style = $class_counter==$_REQUEST['Class'] ? '' : "style='display:none'";
 			$acc = access_string($key);
 			$st_classes .= "<a href='"
-				.$_SERVER['PHP_SELF']."?Class=$class_counter"
-				."' onclick='return showClass($class_counter);'$acc[1]>$acc[0]</a> <br>";
+				.$_SERVER['PHP_SELF']."?Class=$class_counter'"
+				." class='menu_option' id='".default_focus()."'"
+				." onclick='return showClass($class_counter);'$acc[1]>$acc[0]</a> <br>";
 			$st_reports .= "<table id='TAB_" . $class_counter ."' $style cellpadding=0 cellspacing=0 border=0 width='100%'><tr><td><b>" . _("Reports For Class: ") . "&nbsp;$key</b></td></tr>\n";
 			foreach($value as $report)
 			{
 				$acc = access_string($report->name);
 				$st_reports .= "<tr><td><a class='printlink' href='"
-					.$_SERVER['PHP_SELF']."?Class=$class_counter&rep_id=$report->id"
-					."'$acc[1]>$acc[0]</a><tr><td>\n";
+					.$_SERVER['PHP_SELF']."?Class=$class_counter&rep_id=$report->id'"
+					." id='".default_focus()."'"
+					."$acc[1]>$acc[0]</a><tr><td>\n";
 				if (isset($_REQUEST['rep_id']) && $_REQUEST['rep_id']==$report->id) {
 
 					$action = $path_to_root.'/reporting/prn_redirect.php';
@@ -61,8 +63,8 @@ class BoxReports
 						. "<form method='POST' action='$action' target='_blank'>\n";
 					$st_params .= hidden('REP_ID', $report->id, false);
 					$st_params .= submit('Rep'.$report->id,  
-						_("Display: ") . access_string($report->name,true),
-						false, '', $pdf_debug==0) . '<br><br>';
+						_("Display: ") . access_string($report->name, true),
+						false, '', $pdf_debug ? false : 'default') . '<br><br>';
 					$st_params .= $report->getDisplay() 
 						. "\n</form></td></tr></table>\n";
 					$Ajax->addUpdate(true, 'rep_form', $st_params);

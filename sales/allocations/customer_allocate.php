@@ -252,15 +252,15 @@ function edit_allocations_for_transaction($type, $trans_no)
 
        	hidden('TotalNumberOfAllocs', $counter);
        	submit_center_first('UpdateDisplay', _("Refresh"), _('Start again allocation of selected amount'), true);
-       	submit('Process', _("Process"), true, _('Process allocations'), true);
-   		submit_center_last('Cancel', _("Back to Allocations"),_('Abandon allocations and return to selection of allocatable amounts'), true);
+       	submit('Process', _("Process"), true, _('Process allocations'), 'default');
+   		submit_center_last('Cancel', _("Back to Allocations"),_('Abandon allocations and return to selection of allocatable amounts'), 'cancel');
 	}
 	else
 	{
     	display_note(_("There are no unsettled transactions to allocate."), 0, 1);
 
    		submit_center('Cancel', _("Back to Allocations"), true,
-			_('Abandon allocations and return to selection of allocatable amounts'), true);
+			_('Abandon allocations and return to selection of allocatable amounts'), 'cancel');
     }
 	div_end();
   	end_form();

@@ -215,7 +215,7 @@ echo "</td></tr>";
 
 end_table();
 
-submit_center('Process', _("Process Issue"), true, '', true);
+submit_center('Process', _("Process Issue"), true, '', 'default');
 
 end_form();
 

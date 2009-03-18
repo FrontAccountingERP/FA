@@ -185,7 +185,7 @@ if (db_has_gl_accounts())
 	end_table(1);
 	div_end();
 	submit_center_first('update', _("Update"), '', null);
-	submit('add', _("Save"), true, '', true);
+	submit('add', _("Save"), true, '', 'default');
 	submit_center_last('delete', _("Delete"), '', true);
 }
 end_form();

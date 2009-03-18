@@ -154,12 +154,15 @@ function handle_cancel_po()
 	if($_SESSION['PO']->order_no != 0)
 	{
 		delete_po($_SESSION['PO']->order_no);
-	}	
+	} else {
+		unset($_SESSION['PO']);
+		meta_forward($path_to_root.'/index.php','application=AP');
+	}
 
 	$_SESSION['PO']->clear_items();
 	$_SESSION['PO'] = new purch_order;
 
-	display_note(_("This purchase order has been cancelled."), 0, 1);
+	display_notification(_("This purchase order has been cancelled."));
 
 	hyperlink_params($path_to_root . "/purchasing/po_entry_items.php", _("Enter a new purchase order"), "NewOrder=Yes");
 	echo "<br>";
@@ -413,13 +416,13 @@ div_start('controls', 'items_table');
 if ($_SESSION['PO']->order_has_items()) 
 {
 	if ($_SESSION['PO']->order_no)
-		submit_center_first('Commit', _("Update Order"), '', true);
+		submit_center_first('Commit', _("Update Order"), '', 'default');
 	else
-		submit_center_first('Commit', _("Place Order"), '', true);
+		submit_center_first('Commit', _("Place Order"), '', 'default');
 	submit_center_last('CancelOrder', _("Cancel Order")); 	
 }
 else
-	submit_center('CancelOrder', _("Cancel Order")); 	
+	submit_center('CancelOrder', _("Cancel Order"), true, false, 'cancel');
 div_end();
 //---------------------------------------------------------------------------------------------------
 

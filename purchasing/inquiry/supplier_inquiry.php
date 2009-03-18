@@ -50,7 +50,7 @@ date_cells(_("To:"), 'TransToDate');
 
 supp_allocations_list_cell("filterType", null);
 
-submit_cells('RefreshInquiry', _("Search"),'',_('Refresh Inquiry'), true);
+submit_cells('RefreshInquiry', _("Search"),'',_('Refresh Inquiry'), 'default');
 
 end_row();
 end_table();

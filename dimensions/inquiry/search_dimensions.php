@@ -85,7 +85,7 @@ if (!$outstanding_only)
 else
 	$_POST['OpenOnly'] = 1;
 
-submit_cells('SearchOrders', _("Search"), '', '', true);
+submit_cells('SearchOrders', _("Search"), '', '', 'default');
 
 end_row();
 end_table();

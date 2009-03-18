@@ -122,7 +122,7 @@ function display_controls()
 	//echo "</td></tr>";
 	end_outer_table(1); // outer table
 
-	submit_center('ProcessSuppPayment',_("Enter Payment"), true, '', true);
+	submit_center('ProcessSuppPayment',_("Enter Payment"), true, '', 'default');
 
 	if ($bank_currency != $supplier_currency) 
 	{

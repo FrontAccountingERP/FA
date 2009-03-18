@@ -385,7 +385,7 @@ display_credit_options();
 echo "<br><center>";
 submit('Update', _("Update"), true, _('Update credit value for quantities entered'), true);
 echo "&nbsp";
-submit('ProcessCredit', _("Process Credit Note"), true, '', true);
+submit('ProcessCredit', _("Process Credit Note"), true, '', 'default');
 echo "</center>";
 
 end_form();

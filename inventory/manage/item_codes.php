@@ -179,7 +179,7 @@ stock_categories_list_row(_("Category:"), 'category_id', null);
 
 end_table(1);
 
-submit_add_or_update_center($selected_id == -1, '', true);
+submit_add_or_update_center($selected_id == -1, '', 'both');
 
 end_form();
 end_page();

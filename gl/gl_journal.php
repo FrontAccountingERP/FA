@@ -266,7 +266,7 @@ end_row();
 end_table(1);
 
 submit_center('Process', _("Process Journal Entry"), true , 
-	_('Process journal entry only if debits equal to credits'), true);
+	_('Process journal entry only if debits equal to credits'), 'default');
 
 end_form();
 //------------------------------------------------------------------------------------------------

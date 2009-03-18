@@ -236,7 +236,7 @@ function display_item_form()
 
 		echo"<br>";
 
-		submit_center('AddPaymentItem', _("Add Payment"), true, '', true);
+		submit_center('AddPaymentItem', _("Add Payment"), true, '', 'default');
 	}
 
 	echo "<br>";

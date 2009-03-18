@@ -233,7 +233,7 @@ text_row(_("Supplier's Code or Description:"), 'supplier_description', null, 50,
 
 end_table(1);
 
-submit_add_or_update_center($selected_id == -1, '', true);
+submit_add_or_update_center($selected_id == -1, '', 'both');
 
 end_form();
 end_page();

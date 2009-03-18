@@ -222,7 +222,7 @@ text_row_ex(_("Days (Or Day In Following Month):"), 'DayNumber', 3);
 
 end_table(1);
 
-submit_add_or_update_center($selected_id == -1, '', true);
+submit_add_or_update_center($selected_id == -1, '', 'default');
 
 end_form();
 

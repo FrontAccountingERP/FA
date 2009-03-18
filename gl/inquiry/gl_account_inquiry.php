@@ -65,7 +65,7 @@ function gl_inquiry_controls()
 
 	date_cells(_("from:"), 'TransFromDate', '', null, -30);
 	date_cells(_("to:"), 'TransToDate');
-	submit_cells('Show',_("Show"),'','', true);
+	submit_cells('Show',_("Show"),'','', 'default');
 
     end_row();
 

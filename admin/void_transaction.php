@@ -117,7 +117,7 @@ function voiding_controls()
 	end_table(1);
 
     if (!isset($_POST['ProcessVoiding']))
-    	submit_center('ProcessVoiding', _("Void Transaction"), true, '', true);
+    	submit_center('ProcessVoiding', _("Void Transaction"), true, '', 'default');
     else 
     {
  		if (!exist_transaction($_POST['filterType'],$_POST['trans_no']))
@@ -126,7 +126,7 @@ function voiding_controls()
 			unset($_POST['trans_no']);
 			unset($_POST['memo_']);
 			unset($_POST['date_']);
-    		submit_center('ProcessVoiding', _("Void Transaction"), true, '', true);
+    		submit_center('ProcessVoiding', _("Void Transaction"), true, '', 'default');
 		}	
  		else
  		{
@@ -138,7 +138,7 @@ function voiding_controls()
     		display_note($view_str);
    			br();
     		submit_center_first('ConfirmVoiding', _("Proceed"), '', true);
-    		submit_center_last('CancelVoiding', _("Cancel"), '', true);
+    		submit_center_last('CancelVoiding', _("Cancel"), '', 'cancel');
     	}	
     }
 

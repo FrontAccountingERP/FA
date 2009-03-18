@@ -348,7 +348,7 @@ if (get_post('AddGLCodeToTrans'))
 	$Ajax->activate('inv_tot');
 
 br();
-submit_center('PostCreditNote', _("Enter Credit Note"), true, '', true);
+submit_center('PostCreditNote', _("Enter Credit Note"), true, '', 'default');
 br();
 
 end_form();

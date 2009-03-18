@@ -171,7 +171,7 @@ textarea_row(_("Memo:"), 'memo_', null, 40, 3);
 
 end_table(1);
 
-submit_center_first('Process', _("Process"), '', true);
+submit_center_first('Process', _("Process"), '', 'default');
 submit_center_last('ProcessAndClose', _("Process And Close Order"), '', true);
 
 end_form();

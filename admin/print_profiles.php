@@ -174,10 +174,10 @@ else
 
 div_start('controls');
 if (get_post('profile_id') == '') {
-	submit_center('submit', _("Add New Profile"), true, '', true);
+	submit_center('submit', _("Add New Profile"), true, '', 'default');
 } else {
 	submit_center_first('submit', _("Update Profile"), 
-	  _('Update printer profile'), true);
+	  _('Update printer profile'), 'default');
 	submit_center_last('delete', _("Delete Profile"), 
 	  _('Delete printer profile (only if not used by any user)'), true);
 }

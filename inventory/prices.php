@@ -184,7 +184,7 @@ small_amount_row(_("Price:"), 'price', null, '', _('per') .' '.$kit["units"]);
 
 end_table(1);
 
-submit_add_or_update_center($selected_id == -1, '', true);
+submit_add_or_update_center($selected_id == -1, '', 'both');
 div_end();
 
 end_form();

@@ -75,7 +75,7 @@ if ($outstanding_only==0)
 
 stock_manufactured_items_list_cells(_("for item:"), 'SelectedStockItem', null, true);
 
-submit_cells('SearchOrders', _("Search"),'',_('Select documents'), true);
+submit_cells('SearchOrders', _("Search"),'',_('Select documents'),  'default');
 end_row();
 end_table();
 

@@ -247,11 +247,11 @@ end_table(1);
 
 if ($selected_account == "") 
 {
-	submit_center('add', _("Add Account"), true, '', true);
+	submit_center('add', _("Add Account"), true, '', 'default');
 } 
 else 
 {
-    submit_center_first('update', _("Update Account"), '', true);
+    submit_center_first('update', _("Update Account"), '', 'default');
     submit_center_last('delete', _("Delete account"), '',true);
 }
 end_form();

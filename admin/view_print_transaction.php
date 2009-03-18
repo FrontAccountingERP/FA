@@ -60,7 +60,7 @@ function viewing_controls()
 
     ref_cells(_("to #:"), 'ToTransNo');
 
-    submit_cells('ProcessSearch', _("Search"), '', '', true);
+    submit_cells('ProcessSearch', _("Search"), '', '', 'default');
 
 	end_row();
     end_table(1);

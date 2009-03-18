@@ -229,7 +229,7 @@ adjustment_options_controls();
 end_outer_table(1, false);
 
 submit_center_first('Update', _("Update"), '', null);
-submit_center_last('Process', _("Process Adjustment"), '', true);
+submit_center_last('Process', _("Process Adjustment"), '', 'default');
 
 end_form();
 end_page();

@@ -51,7 +51,7 @@ if (!isset($_POST['filterType']))
 
 cust_allocations_list_cells(null, 'filterType', $_POST['filterType'], true);
 
-submit_cells('RefreshInquiry', _("Search"),'',_('Refresh Inquiry'), true);
+submit_cells('RefreshInquiry', _("Search"),'',_('Refresh Inquiry'), 'default');
 end_row();
 end_table();
 end_form();
