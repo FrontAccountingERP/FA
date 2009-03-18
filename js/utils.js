@@ -275,9 +275,10 @@ function element_pos(e) {
 		var offsetParent = e.offsetParent;
 		var parentNode = e.parentNode;
 
-		while (offsetParent !== null) {
+		while (offsetParent !== null && offsetParent.style.display != 'none') {
 			res.x += offsetParent.offsetLeft;
 			res.y += offsetParent.offsetTop;
+			// the second case is for IE6/7 in some doctypes
 			if (offsetParent != document.body && offsetParent != document.documentElement) {
 				res.x -= offsetParent.scrollLeft;
 				res.y -= offsetParent.scrollTop;
@@ -296,6 +297,6 @@ function element_pos(e) {
 		}
 	}
 	// parentNode has style.display set to none
-	if (parentNode!=document.documentElement) return null;
+	if (parentNode != document.documentElement) return null;
 	return res;
 }
