@@ -27,6 +27,14 @@ system relies on. Classes are used extensively by this system. When
 sessions are required they are started by the system and this setting
 of <strong><em>session.auto_start</em></strong>
 can and should be set to 0. </li>
+<li>
+For security reasons both Register Globals and Magic Quotes php settings 
+should be set to Off. When FrontAccounting is used with www server running 
+php as Apache module, respective flags are set in .htaccess file. When your
+server uses CGI interface to PHP you should set 
+<strong><em>magic_quotes_gpc = 0</em></strong> and 
+<strong><em>register_globals = 0</em></strong> in php.ini file.
+</li>
 <li><strong><em>Innodb</em></strong>
 tables must be enabled in the MySQL server. These tables allow database
 transactions which are a critical component of the software. This is
