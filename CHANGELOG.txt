@@ -29,6 +29,7 @@ $ config.php
 $ /.htaccess
   /install.html
   /install/index.php
+  /install/save.php
 
 16-Mar-2009 Janusz Dobrowolski
 # Fixed redirection after order cancelation.
