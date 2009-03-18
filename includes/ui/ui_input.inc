@@ -167,14 +167,28 @@ function submit_center_last($name, $value, $title=false, $async=false, $icon=fal
 	submit($name, $value, true, $title, $async, $icon);
 	echo "</center>";
 }
-
+/*
+	For following controls:
+	'both' - use both Ctrl-Enter and Escape hotkeys 
+	'cancel' - apply to 'RESET' button
+*/
 function submit_add_or_update($add=true, $title=false, $async=false)
 {
+	$cancel = $async;
+
+	if ($async === 'both') {
+		$async = 'default'; $cancel = 'cancel';
+	} 
+	else if ($async === 'default')
+		$cancel = true;
+	else if ($async === 'cancel')
+		$async = true;
+	
 	if ($add)
 		submit('ADD_ITEM', _("Add new"), true, $title, $async);
 	else {
 		submit('UPDATE_ITEM', _("Update"), true, $title, $async);
-		submit('RESET', _("Cancel"), true, $title, $async);
+		submit('RESET', _("Cancel"), true, $title, $cancel);
 	}
 }
 
