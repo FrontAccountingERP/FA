@@ -233,7 +233,7 @@ $opts = array(		// default options
 				$search_submit)."\n";
 		}
 	}
-	default_focus($name);
+	default_focus($search_box ? $search_box : $name);
 	$str = $selector;
 	if ($search_box && $opts['cells'])
 		echo ($edit_entry!='' ? "<td>$edit_entry</td>" : '')."<td>$selector</td>";
