@@ -19,6 +19,17 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+18-Mar-2009 Janusz Dobrowolski
++ Additional option for submit_add_or_update_x() helpers
+$ /includes/ui/ui_input.inc
++ Icon for default escape button
+$ /themes/aqua/images/escape.png (new)
+  /themes/cool/images/escape.png (new)
++ Arrow navigation also in report menus
+$ /js/utils.js
++ Added default keys for form submition/cancelling when apprioprate.
+$ All form entry files.
+
 17-Mar-2009 Joe Hunt
 ! Changed so company domicile is printed on invoices and statements if filled out.
 $ /reporting/includes/header2.inc
