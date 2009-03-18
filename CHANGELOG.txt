@@ -30,6 +30,10 @@ $ /.htaccess
   /install.html
   /install/index.php
   /install/save.php
+# Default focus in lists on searchbox if used.
+$ /includes/ui/ui_lists.inc
+# Fixed update after code search.
+$ /inventory/manage/sales_kits.php
 
 16-Mar-2009 Janusz Dobrowolski
 # Fixed redirection after order cancelation.
