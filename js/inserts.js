@@ -292,6 +292,7 @@ var inserts = {
 			key = ev.keyCode||ev.which;
 			if(key==37 || key==38 || key==39 || key==40) {
 					move_focus(key, e, document.links);
+					ev.returnValue = false;
 					return false;
 			}
 		}
