@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+19-Mar-2009 Joe Hunt
+# [0000120] SQL Error when leaving Default Rate: blank when adding Tax Types
+$ /taxes/tax_types.php
+
 19-Mar-2009 Janusz Dobrowolski
 # Fixed quick entry amount update on list change.
 $ /gl/includes/ui/gl_journal_ui.inc
