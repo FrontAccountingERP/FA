@@ -16,7 +16,7 @@ include_once($path_to_root . "/includes/ui/items_cart.inc");
 
 function display_order_header(&$Order)
 {
-	global $table_style2;
+	global $table_style2, $Ajax;
 
 	$qes = has_quick_entries(QE_JOURNAL);
 
