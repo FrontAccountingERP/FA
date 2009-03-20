@@ -218,7 +218,7 @@ check_row(_("Use popup window for reports:"), 'rep_popup', $_POST['rep_popup'],
 
 end_table(1);
 
-submit_add_or_update_center($selected_id == '', '', 'default');
+submit_add_or_update_center($selected_id == '', '', 'both');
 
 end_form();
 end_page();

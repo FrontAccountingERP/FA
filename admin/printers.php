@@ -142,7 +142,7 @@ text_row(_("Timeout").':', 'tout', null, 5, 5);
 
 end_table(1);
 
-submit_add_or_update_center($selected_id == -1, '', 'default');
+submit_add_or_update_center($selected_id == -1, '', 'both');
 
 end_form();
 

@@ -167,7 +167,7 @@ yesno_list_row(_("Balance Sheet:"), 'Balance', null, "", "", false);
 
 end_table(1);
 
-submit_add_or_update_center($selected_id == -1, '', 'default');
+submit_add_or_update_center($selected_id == -1, '', 'both');
 
 end_form();
 

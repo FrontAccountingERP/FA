@@ -239,7 +239,7 @@ end_table(1);
 if (isset($_POST['filterType']))
 	hidden('filterType', $_POST['filterType']);
 
-submit_add_or_update_center($selected_id == -1, '', 'default');
+submit_add_or_update_center($selected_id == -1, '', 'both');
 
 end_form();
 

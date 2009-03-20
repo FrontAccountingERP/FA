@@ -188,7 +188,7 @@ class_list_row(_("Class Type:"), 'class_id', null);
 
 end_table(1);
 
-submit_add_or_update_center($selected_id == -1, '', 'default');
+submit_add_or_update_center($selected_id == -1, '', 'both');
 
 end_form();
 
