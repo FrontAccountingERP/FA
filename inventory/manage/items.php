@@ -286,14 +286,7 @@ table_section_title(_("Item"));
 
 if ($new_item) 
 {
-
-/*If the page was called without $_POST['NewStockID'] passed to page then assume a new item is to be entered show a form with a part Code field other wise the form showing the fields with the existing entries against the part will show for editing with only a hidden stock_id field. New is set to flag that the page may have called itself and still be entering a new part, in which case the page needs to know not to go looking up details for an existing part*/
-
 	text_row(_("Item Code:"), 'NewStockID', null, 21, 20);
-
-	$_POST['long_description'] = '';
-	$_POST['description'] = '';
-
 } 
 else 
 { // Must be modifying an existing item
