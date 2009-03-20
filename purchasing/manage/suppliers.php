@@ -62,7 +62,7 @@ if (isset($_POST['submit']))
                 contact=".db_escape($_POST['contact']) . ",
                 supp_account_no=".db_escape($_POST['supp_account_no']) . ",
                 bank_account=".db_escape($_POST['bank_account']) . ",
-                credit_limit=".db_escape($_POST['credit_limit']) . ",
+                credit_limit=".input_num('credit_limit', 0) . ",
                 dimension_id=".db_escape($_POST['dimension_id']) . ",
                 dimension2_id=".db_escape($_POST['dimension2_id']) . ",
                 curr_code=".db_escape($_POST['curr_code']).",
@@ -196,7 +196,7 @@ if (!$new_supplier)
 	$_POST['dimension2_id']  = $myrow["dimension2_id"];
 	$_POST['curr_code']  = $myrow["curr_code"];
 	$_POST['payment_terms']  = $myrow["payment_terms"];
-	$_POST['credit_limit']  = $myrow["credit_limit"];
+	$_POST['credit_limit']  = price_format($myrow["credit_limit"]);
 	$_POST['tax_group_id'] = $myrow["tax_group_id"];
 	$_POST['payable_account']  = $myrow["payable_account"];
 	$_POST['purchase_account']  = $myrow["purchase_account"];
@@ -213,7 +213,7 @@ else
 	$_POST['sales_type'] = -1;
 	$_POST['email'] = $_POST['phone'] = $_POST['fax'] = $_POST['gst_no'] = $_POST['contact'] = $_POST['bank_account'] = '';
 	$_POST['payment_terms']  = '';
-	$_POST['credit_limit']	= "";
+	$_POST['credit_limit']	= price_format(0);
 
 	$company_record = get_company_prefs();
 	$_POST['curr_code']  = $company_record["curr_default"];

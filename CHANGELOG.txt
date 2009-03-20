@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+20-Mar-2009 Joe Hunt
+# Truncation bug when inserting/updating entered supplier credit limit
+$ /purchasing/manage/suppliers.php
+
 19-Mar-2009 Joe Hunt
 # [0000120] SQL Error when leaving Default Rate: blank when adding Tax Types
 $ /taxes/tax_types.php
