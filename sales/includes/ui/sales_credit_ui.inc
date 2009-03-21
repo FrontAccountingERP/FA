@@ -91,11 +91,9 @@ function display_credit_header(&$order)
 	{
 		table_section(2);
 		
-	    div_start('currency');
 		label_row(_("Customer Currency:"), $order->customer_currency);
 		exchange_rate_display($order->customer_currency, get_company_currency(),
 			$_POST['OrderDate']);
-	    div_end();
 	}
 	table_section(3);
 
@@ -126,7 +124,7 @@ function display_credit_header(&$order)
 			&& (get_base_sales_type()>0)) {
 				$change_prices = 1;
 		}
-		$Ajax->activate('currency');
+		$Ajax->activate('_ex_rate');
 	}
 	// 2008-11-12 Joe Hunt added dimensions
 	$dim = get_company_pref('use_dimension');

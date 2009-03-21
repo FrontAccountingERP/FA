@@ -325,11 +325,9 @@ function display_order_header(&$order, $editable, $date_text, $display_tax_group
 	{
 	    table_section(2);
 
-	    div_start('currency');
 		label_row(_("Customer Currency:"), $order->customer_currency);
 		exchange_rate_display($order->customer_currency, get_company_currency(),
 			($editable ? $_POST['OrderDate'] : $order->document_date));
-	    div_end();
 	}
 	table_section(3);
 
@@ -382,7 +380,7 @@ function display_order_header(&$order, $editable, $date_text, $display_tax_group
 				&& (get_base_sales_type()>0)) {
 					$change_prices = 1;
 			}
-			$Ajax->activate('currency');
+			$Ajax->activate('_ex_rate');
 			if ($order->trans_type == 10) {
 				$_POST['delivery_date'] = get_invoice_duedate(get_post('customer_id'), get_post('OrderDate'));
 			} else 

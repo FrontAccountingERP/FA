@@ -19,6 +19,11 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+21-Mar-2009 Janusz Dobrowolski
+# Broken currency section after date change.
+$ /sales/includes/ui/sales_credit_ui.inc
+  /sales/includes/ui/sales_order_ui.inc
+
 20-Mar-2009 Joe Hunt
 # Truncation bug when inserting/updating entered supplier credit limit
 $ /purchasing/manage/suppliers.php
