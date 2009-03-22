@@ -409,18 +409,19 @@ function label_row($label, $value, $params="", $params2="", $leftfill=0, $id='')
 
 //-----------------------------------------------------------------------------------
 
-function text_cells($label, $name, $value=null, $size="", $max="", $title=false, $params="", $post_label="", $disabled="")
+function text_cells($label, $name, $value=null, $size="", $max="", $title=false, 
+	$labparams="", $post_label="", $inparams="")
 {
   	global $Ajax;
 
 	default_focus($name);
 	if ($label != null)
-		label_cell($label, $params);
+		label_cell($label, $labparams);
 	echo "<td>";
 
 	if ($value === null)
 		$value = get_post($name);
-	echo "<input $disabled type=\"text\" name=\"$name\" size=\"$size\" maxlength=\"$max\" value=\"$value\""
+	echo "<input $inparams type=\"text\" name=\"$name\" size=\"$size\" maxlength=\"$max\" value=\"$value\""
 	    .($title ? " title='$title'" : '')
 	    .">";
 
@@ -431,7 +432,8 @@ function text_cells($label, $name, $value=null, $size="", $max="", $title=false,
 	$Ajax->addUpdate($name, $name, $value);
 }
 
-function text_cells_ex($label, $name, $size, $max=null, $init=null, $title=null, $params=null, $post_label=null, $submit_on_change=false)
+function text_cells_ex($label, $name, $size, $max=null, $init=null, $title=null,
+	$labparams=null, $post_label=null, $submit_on_change=false)
 {
   	global $Ajax;
 
@@ -444,7 +446,7 @@ function text_cells_ex($label, $name, $size, $max=null, $init=null, $title=null,
 			$_POST[$name] = "";
 	}
 	if ($label != null)
-		label_cell($label, $params);
+		label_cell($label, $labparams);
 
 	if (!isset($max))
 		$max = $size;
@@ -503,45 +505,61 @@ function link_row_ex($label, $name, $size, $max=null, $title=null, $value=null, 
 }
 
 //-----------------------------------------------------------------------------------
-
-function date_cells($label, $name, $title = null, $init=null, $inc_days=0, 
+//
+//	Since FA 2.2  $init parameter is superseded by $check. 
+//  When $check!=null current date is displayed in red when set to other 
+//	than current date.
+//	
+function date_cells($label, $name, $title = null, $check=null, $inc_days=0, 
 	$inc_months=0, $inc_years=0, $params=null, $submit_on_change=false)
 {
-	global $use_date_picker, $path_to_root;
+	global $use_date_picker, $path_to_root, $Ajax;
+
 	if (!isset($_POST[$name]) || $_POST[$name] == "")
 	{
-		if (!$init)
-		{
-			if ($inc_years == 1001)
-				$_POST[$name] = null;
-			else
-			{
-				$dd = Today();
-				if ($inc_days != 0)
-					$dd = add_days($dd, $inc_days);
-				if ($inc_months != 0)
-					$dd = add_months($dd, $inc_months);
-				if ($inc_years != 0)
-					$dd = add_years($dd, $inc_years);
-				$_POST[$name] = $dd;
-			}
-		}
+		if ($inc_years == 1001)
+			$_POST[$name] = null;
 		else
-			$_POST[$name] = $init;
+		{
+			$dd = Today();
+			if ($inc_days != 0)
+				$dd = add_days($dd, $inc_days);
+			if ($inc_months != 0)
+				$dd = add_months($dd, $inc_months);
+			if ($inc_years != 0)
+				$dd = add_years($dd, $inc_years);
+			$_POST[$name] = $dd;
+		}
 	}
 	if ($use_date_picker)
 		$post_label = "<a tabindex='-1' href=\"javascript:date_picker(document.getElementsByName('$name')[0]);\">"
 		. "	<img src='$path_to_root/themes/default/images/cal.gif' width='16' height='16' border='0' alt='"._('Click Here to Pick up the date')."'></a>\n";
 	else
 		$post_label = "";
-	text_cells_ex($label, $name, 9, 12, $_POST[$name], $title, $params, $post_label, $submit_on_change);
+
+	if ($label != null)
+		label_cell($label, $params);
+
+	echo "<td>";
+	
+	$class = $submit_on_change ? 'class="searchbox"' : '';
+
+	$aspect = $check ? 'aspect="cdate"' : '';
+	if ($check && (get_post($name) != Today()))
+		$aspect .= ' style="color:#FF0000"';
+
+	echo "<input type=\"text\" name=\"$name\" $class $aspect size=\"9\" maxlength=\"12\" value=\"" 
+	 . $_POST[$name]. "\""
+	 .($title ? " title='$title'": '')." > $post_label";
+	echo "</td>\n";
+	$Ajax->addUpdate($name, $name, $_POST[$name]);
 }
 
-function date_row($label, $name, $title=null, $init=null, $inc_days=0, $inc_months=0, 
+function date_row($label, $name, $title=null, $check=null, $inc_days=0, $inc_months=0, 
 	$inc_years=0, $params=null, $submit_on_change=false)
 {
 	echo "<tr>";
-	date_cells($label, $name, $title, $init, $inc_days, $inc_months, 
+	date_cells($label, $name, $title, $check, $inc_days, $inc_months, 
 		$inc_years, $params, $submit_on_change);
 	echo "</tr>\n";
 }
