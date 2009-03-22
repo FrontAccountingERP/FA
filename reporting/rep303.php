@@ -22,7 +22,7 @@ include_once($path_to_root . "/includes/session.inc");
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
 include_once($path_to_root . "/gl/includes/gl_db.inc");
-include_once($path_to_root . "/inventory/includes/db/items_category_db.inc");
+include_once($path_to_root . "/inventory/includes/db/inventory_db.inc");
 
 //----------------------------------------------------------------------------------------------------
 
@@ -200,7 +200,8 @@ function print_stock_check()
 		}
 		if ($pictures)
 		{
-			$image = $comp_path .'/'. $user_comp . '/images/' . $trans['stock_id'] . '.jpg';
+			$image = $comp_path .'/'. $user_comp . '/images/' 
+				. item_img_name($trans['stock_id']) . '.jpg';
 			if (file_exists($image))
 			{
 				$rep->NewLine();

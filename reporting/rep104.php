@@ -24,7 +24,7 @@ include_once($path_to_root . "/includes/ui/ui_input.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
 include_once($path_to_root . "/gl/includes/gl_db.inc");
 include_once($path_to_root . "/sales/includes/db/sales_types_db.inc");
-include_once($path_to_root . "/inventory/includes/db/items_category_db.inc");
+include_once($path_to_root . "/inventory/includes/db/inventory_db.inc");
 
 //----------------------------------------------------------------------------------------------------
 
@@ -159,7 +159,8 @@ function print_price_listing()
 		}
 		if ($pictures)
 		{
-			$image = $comp_path . '/'. $user_comp . "/images/" . $myrow['stock_id'] . ".jpg";
+			$image = $comp_path . '/'. $user_comp . "/images/" 
+				. item_img_name($myrow['stock_id']) . ".jpg";
 			if (file_exists($image))
 			{
 				$rep->NewLine();

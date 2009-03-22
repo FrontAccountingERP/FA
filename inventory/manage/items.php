@@ -27,11 +27,11 @@ $new_item = get_post('stock_id')=='';
 
 if (isset($_GET['stock_id']))
 {
-	$_POST['stock_id'] = $stock_id = strtoupper($_GET['stock_id']);
+	$_POST['stock_id'] = $stock_id = $_GET['stock_id'];
 }
 else if (isset($_POST['stock_id']))
 {
-	$stock_id = strtoupper($_POST['stock_id']);
+	$stock_id = $_POST['stock_id'];
 }
 
 if (list_updated('stock_id')) {
@@ -50,7 +50,7 @@ if (isset($_FILES['pic']) && $_FILES['pic']['name'] != '')
 	{
 		mkdir($filename);
 	}	
-	$filename .= "/$stock_id.jpg";
+	$filename .= "/".item_img_name($stock_id).".jpg";
 	
 	 //But check for the worst 
 	if (strtoupper(substr(trim($_FILES['pic']['name']), strlen($_FILES['pic']['name']) - 3)) != 'JPG')
@@ -239,7 +239,7 @@ if (isset($_POST['delete']) && strlen($_POST['delete']) > 1)
 
 		$stock_id = $_POST['NewStockID'];
 		delete_item($stock_id);
-		$filename = $comp_path . "/$user_comp/images/$stock_id.jpg";
+		$filename = $comp_path . "/$user_comp/images/".item_img_name($stock_id).".jpg";
 		if (file_exists($filename))
 			unlink($filename);
 		display_notification(_("Selected item has been deleted."));
@@ -391,11 +391,12 @@ table_section_title(_("Picture"));
 label_row(_("Image File (.jpg)") . ":", "<input type='file' id='pic' name='pic'>");
 // Add Image upload for New Item  - by Joe
 $stock_img_link = "";
-if (isset($_POST['NewStockID']) && file_exists("$comp_path/$user_comp/images/".$_POST['NewStockID'].".jpg")) 
+if (isset($_POST['NewStockID']) && file_exists("$comp_path/$user_comp/images/"
+	.item_img_name($_POST['NewStockID']).".jpg")) 
 {
  // 31/08/08 - rand() call is necessary here to avoid caching problems. Thanks to Peter D.
 	$stock_img_link .= "<img id='item_img' alt = '[".$_POST['NewStockID'].".jpg".
-		"]' src='$comp_path/$user_comp/images/".$_POST['NewStockID'].".jpg?nocache=".rand()."'".
+		"]' src='$comp_path/$user_comp/images/".item_img_name($_POST['NewStockID']).".jpg?nocache=".rand()."'".
 		" width='$pic_width' height='$pic_height' border='0'>";
 } 
 else 
