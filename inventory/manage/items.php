@@ -82,6 +82,7 @@ if (isset($_FILES['pic']) && $_FILES['pic']['name'] != '')
 	{
 		$result  =  move_uploaded_file($_FILES['pic']['tmp_name'], $filename);
 	}
+	$Ajax->activate('details');
  /* EOF Add Image upload for New Item  - by Ori */
 }
 

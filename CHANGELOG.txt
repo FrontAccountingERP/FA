@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+22-Mar-2009 Janusz Dobrowolski
+# Fixed item picture display after upload
+$ /inventory/manage/items.php
+
 21-Mar-2009 Janusz Dobrowolski
 # Broken currency section after date change.
 $ /sales/includes/ui/sales_credit_ui.inc
