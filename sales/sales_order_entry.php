@@ -307,7 +307,7 @@ if (isset($_POST['ProcessOrder']) && can_process()) {
 	}
 	$trans_no = key($_SESSION['Items']->trans_no);
 	$trans_type = $_SESSION['Items']->trans_type;
-
+	new_doc_date($_SESSION['Items']->document_date);
 	processing_end();
 	if ($modified) {
 		meta_forward($_SERVER['PHP_SELF'], "UpdatedID=$trans_no");
@@ -445,7 +445,7 @@ function create_cart($type, $trans_no)
 		$doc = new Cart(30, array($trans_no));
 		$doc->trans_type = $type;
 		$doc->trans_no = 0;
-		$doc->document_date = Today(); // 2006-06-15. Added so Invoices and Deliveries get current day
+		$doc->document_date = new_doc_date();
 		if ($type == 10) {
 			$doc->due_date = get_invoice_duedate($doc->customer_id, $doc->document_date);
 			$doc->pos = user_pos();

@@ -877,6 +877,8 @@ function CC() {
 	$js .= "
       dateField.value = dateString;
 	  setFocus(dateField.name);
+	if(dateField.getAttribute('aspect')=='cdate')
+      setElementProperty('color', (dateField.value==user.date ? 'black':'red'), dateField);
 	  if (dateField.className=='searchbox')
 	  	dateField.onblur();
       hide();

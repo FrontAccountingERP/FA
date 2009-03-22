@@ -121,7 +121,7 @@ function handle_new_order($type)
 
 	$_SESSION['pay_items'] = new items_cart($type);
 
-	$_POST['date_'] = Today();
+	$_POST['date_'] = new_doc_date();
 	if (!is_date_in_fiscalyear($_POST['date_']))
 		$_POST['date_'] = end_fiscalyear();
 	$_SESSION['pay_items']->tran_date = $_POST['date_'];
@@ -180,6 +180,7 @@ if (isset($_POST['Process']))
 
 	$trans_type = $trans[0];
    	$trans_no = $trans[1];
+	new_doc_date($_POST['date_']);
 
 	$_SESSION['pay_items']->clear_items();
 	unset($_SESSION['pay_items']);

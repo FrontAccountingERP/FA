@@ -39,7 +39,7 @@ function display_order_header(&$order)
 
 	ref_row(_("Reference:"), 'ref', '', references::get_next(systypes::location_transfer()));
 
-    date_row(_("Date:"), 'AdjDate');
+    date_row(_("Date:"), 'AdjDate', '', true);
 
 	table_section(3, "33%");
 

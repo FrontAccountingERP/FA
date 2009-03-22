@@ -148,6 +148,8 @@ if (isset($_POST['AddPaymentItem'])) {
 	else
 		$rate = input_num('_ex_rate');
 
+	new_doc_date($_POST['DateBanked']);
+
 	$payment_no = write_customer_payment(0, $_POST['customer_id'], $_POST['BranchID'],
 		$_POST['bank_account'], $_POST['DateBanked'], $_POST['ref'],
 		input_num('amount'), input_num('discount'), $_POST['memo_'], $rate);
@@ -185,7 +187,7 @@ function display_item_form()
 	if (!isset($_POST['customer_id']))
 		$_POST['customer_id'] = get_global_customer(false);
 	if (!isset($_POST['DateBanked'])) {
-		$_POST['DateBanked'] = Today();
+		$_POST['DateBanked'] = new_doc_date();
 		if (!is_date_in_fiscalyear($_POST['DateBanked'])) {
 			$_POST['DateBanked'] = end_fiscalyear();
 		}
@@ -212,7 +214,7 @@ function display_item_form()
 
 		label_row(_("Customer prompt payment discount :"), $display_discount_percent);
 
-		date_row(_("Date of Deposit:"), 'DateBanked','',null, 0, 0, 0, null, true);
+		date_row(_("Date of Deposit:"), 'DateBanked', '', true, 0, 0, 0, null, true);
 
 		table_section(2);
 

@@ -126,7 +126,7 @@ if (isset($_GET['InvoiceNumber']) && $_GET['InvoiceNumber'] > 0) {
     $ci->src_docs = $ci->trans_no;
     $ci->src_date = $ci->document_date;
     $ci->trans_no = 0;
-    $ci->document_date = Today();
+    $ci->document_date = new_doc_date();
     $ci->reference = references::get_next(11);
 
     for ($line_no=0; $line_no<count($ci->line_items); $line_no++) {
@@ -207,6 +207,7 @@ if (isset($_POST['ProcessCredit']) && can_process()) {
 		$_POST['WriteOffGLCode'] = 0;
 
 	copy_to_cart();
+	if ($new_credit) new_doc_date($_SESSION['Items']->document_date);
     $credit_no = $_SESSION['Items']->write($_POST['WriteOffGLCode']);
 
 	processing_end();
@@ -273,7 +274,7 @@ function display_credit_items()
 
     label_row(_("Invoice Date"), $_SESSION['Items']->src_date, "class='tableheader2'");
 
-    date_row(_("Credit Note Date"), 'CreditDate', '', null, 0, 0, 0, "class='tableheader2'");
+    date_row(_("Credit Note Date"), 'CreditDate', '', $_SESSION['Items']->trans_no==0, 0, 0, 0, "class='tableheader2'");
 
     end_table();
 

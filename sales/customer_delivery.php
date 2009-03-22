@@ -96,7 +96,7 @@ if (isset($_GET['OrderNumber']) && $_GET['OrderNumber'] > 0) {
 	$ord->order_no = key($ord->trans_no);
 	$ord->trans_no = 0;
 	$ord->reference = references::get_next(13);
-	$ord->document_date = Today();
+	$ord->document_date = new_doc_date();
 	$_SESSION['Items'] = $ord;
 	copy_from_cart();
 
@@ -293,6 +293,7 @@ if (isset($_POST['process_delivery']) && check_data() && check_qoh()) {
 	$newdelivery = ($dn->trans_no == 0);
 
 	copy_to_cart();
+	if ($new_delivery) new_doc_date($dn->document_date);
 	$delivery_no = $dn->write($bo_policy);
 
 	processing_end();
@@ -350,12 +351,12 @@ shippers_list_cells(null, 'ship_via', $_POST['ship_via']);
 
 // set this up here cuz it's used to calc qoh
 if (!isset($_POST['DispatchDate']) || !is_date($_POST['DispatchDate'])) {
-	$_POST['DispatchDate'] = Today();
+	$_POST['DispatchDate'] = new_doc_date();
 	if (!is_date_in_fiscalyear($_POST['DispatchDate'])) {
 		$_POST['DispatchDate'] = end_fiscalyear();
 	}
 }
-date_cells(_("Date"), 'DispatchDate', '', $_POST['DispatchDate'], 0, 0, 0, "class='tableheader2'");
+date_cells(_("Date"), 'DispatchDate', '', $_SESSION['Items']->trans_no==0, 0, 0, 0, "class='tableheader2'");
 end_row();
 
 end_table();
@@ -367,7 +368,7 @@ start_table("$table_style width=90%");
 if (!isset($_POST['due_date']) || !is_date($_POST['due_date'])) {
 	$_POST['due_date'] = get_invoice_duedate($_SESSION['Items']->customer_id, $_POST['DispatchDate']);
 }
-date_row(_("Invoice Dead-line"), 'due_date', '', $_POST['due_date'], 0, 0, 0, "class='tableheader2'");
+date_row(_("Invoice Dead-line"), 'due_date', '', null, 0, 0, 0, "class='tableheader2'");
 end_table();
 
 echo "</td></tr>";

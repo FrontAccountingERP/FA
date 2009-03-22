@@ -42,9 +42,9 @@ function display_grn_summary(&$po, $editable=false)
         locations_list_cells(null, "Location", $_POST['Location']);
         
     	if (!isset($_POST['DefaultReceivedDate']))
-     	  	$_POST['DefaultReceivedDate'] = Today();
+     	  	$_POST['DefaultReceivedDate'] = new_doc_date();
     	
-    	date_cells(_("Date Items Received"), 'DefaultReceivedDate', '', null, 0, 0, 0, "class='tableheader2'");    
+    	date_cells(_("Date Items Received"), 'DefaultReceivedDate', '', true, 0, 0, 0, "class='tableheader2'");    
         
     } 
     else 

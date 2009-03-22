@@ -434,7 +434,7 @@ function get_invoice_duedate($debtorno, $invdate)
 {
 	if (!is_date($invdate))
 	{
-		return Today();
+		return new_doc_date();
 	}
 	$sql = "SELECT ".TB_PREF."debtors_master.debtor_no, ".TB_PREF."debtors_master.payment_terms, ".TB_PREF."payment_terms.* FROM ".TB_PREF."debtors_master,
 		".TB_PREF."payment_terms WHERE ".TB_PREF."debtors_master.payment_terms = ".TB_PREF."payment_terms.terms_indicator AND

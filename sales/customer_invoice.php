@@ -298,6 +298,7 @@ if (isset($_POST['process_invoice']) && check_data()) {
 
 	$newinvoice=  $_SESSION['Items']->trans_no == 0;
 	copy_to_cart();
+	if ($new_invoice) new_doc_date($_SESSION['Items']->document_date);
 	$invoice_no = $_SESSION['Items']->write();
 
 	processing_end();
@@ -367,19 +368,20 @@ label_cell(_("Shipping Company"), "class='tableheader2'");
 shippers_list_cells(null, 'ship_via', $_POST['ship_via']);
 
 if (!isset($_POST['InvoiceDate']) || !is_date($_POST['InvoiceDate'])) {
-	$_POST['InvoiceDate'] = Today();
+	$_POST['InvoiceDate'] = new_doc_date();
 	if (!is_date_in_fiscalyear($_POST['InvoiceDate'])) {
 		$_POST['InvoiceDate'] = end_fiscalyear();
 	}
 }
 
-date_cells(_("Date"), 'InvoiceDate', '', $_POST['InvoiceDate'], 0, 0, 0, "class='tableheader2'", true);
+date_cells(_("Date"), 'InvoiceDate', '', $_SESSION['Items']->trans_no == 0, 
+	0, 0, 0, "class='tableheader2'", true);
 
 if (!isset($_POST['due_date']) || !is_date($_POST['due_date'])) {
 	$_POST['due_date'] = get_invoice_duedate($_SESSION['Items']->customer_id, $_POST['InvoiceDate']);
 }
 
-date_cells(_("Due Date"), 'due_date', '', $_POST['due_date'], 0, 0, 0, "class='tableheader2'");
+date_cells(_("Due Date"), 'due_date', '', null, 0, 0, 0, "class='tableheader2'");
 
 end_row();
 end_table();

@@ -70,7 +70,7 @@ function handle_new_order()
     session_register("adj_items");
 
     $_SESSION['adj_items'] = new items_cart(systypes::inventory_adjustment());
-	$_POST['AdjDate'] = Today();
+	$_POST['AdjDate'] = new_doc_date();
 	if (!is_date_in_fiscalyear($_POST['AdjDate']))
 		$_POST['AdjDate'] = end_fiscalyear();
 	$_SESSION['adj_items']->tran_date = $_POST['AdjDate'];	
@@ -134,7 +134,7 @@ if (isset($_POST['Process']) && can_process()){
 	$trans_no = add_stock_adjustment($_SESSION['adj_items']->line_items,
 		$_POST['StockLocation'], $_POST['AdjDate'],	$_POST['type'], $_POST['Increase'],
 		$_POST['ref'], $_POST['memo_']);
-
+	new_doc_date($_POST['AdjDate']);
 	$_SESSION['adj_items']->clear_items();
 	unset($_SESSION['adj_items']);
 

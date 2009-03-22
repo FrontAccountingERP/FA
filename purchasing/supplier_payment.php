@@ -79,7 +79,7 @@ function display_controls()
 		$_POST['supplier_id'] = get_global_supplier(false);
 	if (!isset($_POST['DatePaid']))
 	{
-		$_POST['DatePaid'] = Today();
+		$_POST['DatePaid'] = new_doc_date();
 		if (!is_date_in_fiscalyear($_POST['DatePaid']))
 			$_POST['DatePaid'] = end_fiscalyear();
 	}		
@@ -95,7 +95,7 @@ function display_controls()
 	amount_row(_("Amount of Payment:"), 'amount');
 	amount_row(_("Amount of Discount:"), 'discount');
 
-    date_row(_("Date Paid") . ":", 'DatePaid', '', null, 0, 0, 0, null, true);
+    date_row(_("Date Paid") . ":", 'DatePaid', '', true, 0, 0, 0, null, true);
 
 	table_section(2);
 	//echo "</table>";
@@ -218,7 +218,7 @@ function handle_add_payment()
 	$payment_id = add_supp_payment($_POST['supplier_id'], $_POST['DatePaid'],
 		$_POST['bank_account'],	input_num('amount'), input_num('discount'), 
 		$_POST['ref'], $_POST['memo_'], $rate);
-
+	new_doc_date($_POST['DatePaid']);
 	//unset($_POST['supplier_id']);
    	unset($_POST['bank_account']);
    	unset($_POST['DatePaid']);

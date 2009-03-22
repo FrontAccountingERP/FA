@@ -22,7 +22,7 @@ function display_bank_header(&$order)
 	
     bank_accounts_list_row( $payment ? _("From:") : _("To:"), 'bank_account', null, true);
 
-    date_row(_("Date:"), 'date_', '', null, 0, 0, 0, null, true);
+    date_row(_("Date:"), 'date_', '', true, 0, 0, 0, null, true);
 
 	table_section(2, "33%");
 

@@ -141,6 +141,19 @@ function Now()
 	else
 		return date("H:i");
 }
+//
+//	Retrieve and optionaly set default date for new document.
+//
+function new_doc_date($date=null)
+{
+	if (isset($date))
+		$_SESSION['_default_date'] = $date;
+
+	if (!isset($_SESSION['_default_date']) || !sticky_doc_date())
+		$_SESSION['_default_date'] = Today();
+
+	return $_SESSION['_default_date'];
+}
 
 function is_date_in_fiscalyear($date, $convert=false)
 {

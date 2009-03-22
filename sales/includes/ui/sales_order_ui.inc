@@ -375,8 +375,8 @@ function display_order_header(&$order, $editable, $date_text, $display_tax_group
 		if (!isset($_POST['OrderDate']) || $_POST['OrderDate'] == "")
 			$_POST['OrderDate'] = $order->document_date;
 
-		date_row($date_text, 'OrderDate',
-		  _('Date of order receive'), null, 0, 0, 0, null, true);
+		date_row($date_text, 'OrderDate', _('Date of order receive'),
+			$order->trans_no==0, 0, 0, 0, null, true);
 		if (isset($_POST['_OrderDate_changed'])) {
 			if (!is_company_currency($order->customer_currency) 
 				&& (get_base_sales_type()>0)) {
@@ -553,10 +553,9 @@ function display_delivery_details(&$order)
 			false, true);
 		if (list_updated('Location'))
 			check_qoh($order);
-
+//		$_POST['delivery_date'] = get_post('delivery_date', $order->due_date);
 		date_row($delname, 'delivery_date',
-			$order->trans_type==30 ?  _('Enter requested day of delivery') : '', 
-			$order->due_date, 0, 0, 0);
+			$order->trans_type==30 ?  _('Enter requested day of delivery') : '');
 		text_row(_("Deliver To:"), 'deliver_to', $order->deliver_to, 40, 40,
 			_('Additional identifier for delivery e.g. name of receiving person'));
 

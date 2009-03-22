@@ -180,6 +180,7 @@ if (isset($_POST['ProcessCredit']) && can_process()) {
 	}
 	copy_to_cn();
 	$credit_no = $_SESSION['Items']->write($_POST['WriteOffGLCode']);
+	new_doc_date($_SESSION['Items']->document_date);
 	processing_end();
 	meta_forward($_SERVER['PHP_SELF'], "AddedID=$credit_no");
 

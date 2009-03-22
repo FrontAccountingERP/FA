@@ -101,7 +101,7 @@ function invoice_header(&$supp_trans)
 
 	table_section(2, "33%");
 
-   	date_row(_("Date") . ":", 'tran_date', '', null, 0, 0, 0, "", true);
+   	date_row(_("Date") . ":", 'tran_date', '', true, 0, 0, 0, "", true);
 	if (isset($_POST['_tran_date_changed'])) {
 		$Ajax->activate('_ex_rate');
 		$supp_trans->tran_date = $_POST['tran_date'];

@@ -40,7 +40,7 @@ function create_new_po()
 	session_register("PO");
 
 	$_SESSION['PO'] = new purch_order;
-	$_POST['OrderDate'] = Today();
+	$_POST['OrderDate'] = new_doc_date();
 	if (!is_date_in_fiscalyear($_POST['OrderDate']))
 		$_POST['OrderDate'] = end_fiscalyear();
 	$_SESSION['PO']->orig_order_date = $_POST['OrderDate'];
@@ -109,7 +109,7 @@ function display_po_header(&$order)
 	//	if (!is_date_in_fiscalyear($_POST['OrderDate']))
 	//		$_POST['OrderDate'] = end_fiscalyear();
 	//}
-	date_row(_("Order Date:"), 'OrderDate', '', $_POST['OrderDate'], 0, 0, 0, null, true);
+	date_row(_("Order Date:"), 'OrderDate', '', true, 0, 0, 0, null, true);
 	if (isset($_POST['_OrderDate_changed'])) {
 		$Ajax->activate('_ex_rate');
 	}

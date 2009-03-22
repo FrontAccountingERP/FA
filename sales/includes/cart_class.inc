@@ -151,7 +151,7 @@ class cart
 				  $this->customer_id = get_global_customer();
 				else
 				  $this->customer_id = '';
-				$this->document_date = Today();
+				$this->document_date = 	new_doc_date();
 				if (!is_date_in_fiscalyear($this->document_date))
 					$this->document_date = end_fiscalyear();
 				$this->reference = references::get_next($this->trans_type);

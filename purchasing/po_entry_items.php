@@ -340,7 +340,7 @@ function handle_commit_order()
 			
 			/*its a new order to be inserted */
 			$order_no = add_po($_SESSION['PO']);
-			 
+			new_doc_date($_SESSION['PO']->orig_order_date); 
 			unset($_SESSION['PO']);
 			 
         	meta_forward($_SERVER['PHP_SELF'], "AddedID=$order_no");	
@@ -387,7 +387,7 @@ if (isset($_GET['ModifyOrderNumber']) && $_GET['ModifyOrderNumber'] != "")
 
 	/*read in all the selected order into the Items cart  */
 	read_po($_SESSION['PO']->order_no, $_SESSION['PO']);
-
+	
 	copy_from_cart();
 }
 

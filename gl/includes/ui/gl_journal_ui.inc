@@ -24,7 +24,7 @@ function display_order_header(&$Order)
 	table_section(1);
 
 	start_row();
-    date_cells(_("Date:"), 'date_');
+    date_cells(_("Date:"), 'date_', '', true);
 	ref_cells(_("Reference:"), 'ref', '', references::get_next(0));
 	end_row();
 

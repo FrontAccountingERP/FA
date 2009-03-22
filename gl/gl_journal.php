@@ -66,7 +66,7 @@ function handle_new_order()
 
     $_SESSION['journal_items'] = new items_cart(systypes::journal_entry());
 
-	$_POST['date_'] = Today();
+	$_POST['date_'] = new_doc_date();
 	if (!is_date_in_fiscalyear($_POST['date_']))
 		$_POST['date_'] = end_fiscalyear();
 	$_SESSION['journal_items']->tran_date = $_POST['date_'];	
@@ -128,6 +128,7 @@ if (isset($_POST['Process']))
 		$_POST['date_'], $_POST['ref'], check_value('Reverse'), $_POST['memo_']);
 
 	$_SESSION['journal_items']->clear_items();
+	new_doc_date($_POST['date_']);
 	unset($_SESSION['journal_items']);
 
 	meta_forward($_SERVER['PHP_SELF'], "AddedID=$trans_no");

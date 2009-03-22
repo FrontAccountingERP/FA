@@ -100,7 +100,7 @@ function safe_exit()
 //-------------------------------------------------------------------------------------
 if (!isset($_POST['date_']))
 {
-	$_POST['date_'] = Today();
+	$_POST['date_'] = new_doc_date();
 	if (!is_date_in_fiscalyear($_POST['date_']))
 		$_POST['date_'] = end_fiscalyear();
 }
@@ -239,7 +239,7 @@ if (isset($_POST['ADD_ITEM']) && can_process())
 	$id = add_work_order($_POST['wo_ref'], $_POST['StockLocation'], input_num('quantity'),
 		$_POST['stock_id'],  $_POST['type'], $_POST['date_'],
 		$_POST['RequDate'], input_num('Costs'), $_POST['memo_']);
-
+	new_doc_date($_POST['date_']);
 	meta_forward($_SERVER['PHP_SELF'], "AddedID=$id");
 }
 
@@ -250,7 +250,7 @@ if (isset($_POST['UPDATE_ITEM']) && can_process())
 
 	update_work_order($selected_id, $_POST['StockLocation'], input_num('quantity'),
 		$_POST['stock_id'],  $_POST['date_'], $_POST['RequDate'], $_POST['memo_']);
-
+	new_doc_date($_POST['date_']);
 	meta_forward($_SERVER['PHP_SELF'], "UpdatedID=$selected_id");
 }
 
@@ -382,13 +382,13 @@ if (get_post('type') == wo_types::advanced())
     qty_row(_("Quantity Required:"), 'quantity', null, null, null, $dec);
     if ($_POST['released'])
     	label_row(_("Quantity Manufactured:"), number_format($_POST['units_issued'], get_qty_dec($_POST['stock_id'])));
-    date_row(_("Date") . ":", 'date_');
+    date_row(_("Date") . ":", 'date_', '', true);
 	date_row(_("Date Required By") . ":", 'RequDate', '', null, sys_prefs::default_wo_required_by());
 }
 else
 {
     qty_row(_("Quantity:"), 'quantity', null, null, null, $dec);
-    date_row(_("Date") . ":", 'date_');
+    date_row(_("Date") . ":", 'date_', '', true);
 	hidden('RequDate', '');
 
 	if (!isset($_POST['Costs']))

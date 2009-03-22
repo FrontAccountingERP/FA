@@ -60,7 +60,7 @@ function add_gl_trans_customer($type, $type_no, $date_, $account, $dimension, $d
 function get_price ($stock_id, $currency, $sales_type_id, $factor=null, $date=null)
 {
 	if ($date == null)
-	    $date = Today();
+	    $date = new_doc_date();
 
 	if ($factor === null) 
 	{

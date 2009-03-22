@@ -68,7 +68,7 @@ function handle_new_order()
     session_register("transfer_items");
 
 	$_SESSION['transfer_items'] = new items_cart(systypes::location_transfer());
-	$_POST['AdjDate'] = Today();
+	$_POST['AdjDate'] = new_doc_date();
 	if (!is_date_in_fiscalyear($_POST['AdjDate']))
 		$_POST['AdjDate'] = end_fiscalyear();
 	$_SESSION['transfer_items']->tran_date = $_POST['AdjDate'];	
@@ -143,7 +143,7 @@ if (isset($_POST['Process']))
 	$trans_no = add_stock_transfer($_SESSION['transfer_items']->line_items,
 		$_POST['FromStockLocation'], $_POST['ToStockLocation'],
 		$_POST['AdjDate'], $_POST['type'], $_POST['ref'], $_POST['memo_']);
-
+	new_doc_date($_POST['AdjDate']);
 	$_SESSION['transfer_items']->clear_items();
 	unset($_SESSION['transfer_items']);
 

@@ -131,7 +131,7 @@ function change_tpl_flag($reconcile_id)
 }
 
 if (!isset($_POST['reconcile_date'])) { // init page
-	$_POST['reconcile_date'] = Today();
+	$_POST['reconcile_date'] = new_doc_date();
 //	$_POST['bank_date'] = date2sql(Today());
 }
 
@@ -217,7 +217,7 @@ table_header($th);
 start_row();
 
 date_cells("", "reconcile_date", _('Date of bank statement to reconcile'), 
-	null, 0, 0, 0, null, true);
+	get_post('bank_date')=='', 0, 0, 0, null, true);
 
 amount_cells_ex("", "beg_balance", 15);
 

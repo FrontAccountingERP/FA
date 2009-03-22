@@ -36,7 +36,7 @@ function display_order_header(&$order)
 
 	table_section(2, "33%");
 
-    date_row(_("Date:"), 'AdjDate');
+    date_row(_("Date:"), 'AdjDate', '', true);
 
 	table_section(3, "33%");
 
