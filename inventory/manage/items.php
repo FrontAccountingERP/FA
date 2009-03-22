@@ -142,7 +142,13 @@ if (isset($_POST['addupdate']))
 	
 	if ($input_error != 1)
 	{
-
+		if (check_value('del_image'))
+		{
+			$filename = $comp_path . "/$user_comp/images/".item_img_name($_POST['NewStockID']).".jpg";
+			if (file_exists($filename))
+				unlink($filename);
+		}
+		
 		if (!$new_item) 
 		{ /*so its an existing one */
 
@@ -164,8 +170,8 @@ if (isset($_POST['addupdate']))
 				$_POST['adjustment_account'], $_POST['assembly_account'], 
 				$_POST['dimension_id'], $_POST['dimension2_id']);
 
-		display_notification(_("A new item has been added."));
-		$_POST['stock_id'] = $_POST['NewStockID'];
+			display_notification(_("A new item has been added."));
+			$_POST['stock_id'] = $_POST['NewStockID'];
 		}
 		set_focus('stock_id');
 		$Ajax->activate('_page_body');
@@ -326,7 +332,7 @@ else
 		$_POST['assembly_account']	= $myrow['assembly_account'];
 		$_POST['dimension_id']	= $myrow['dimension_id'];
 		$_POST['dimension2_id']	= $myrow['dimension2_id'];
-	
+		$_POST['del_image'] = 0;	
 		label_row(_("Item Code:"),$_POST['NewStockID']);
 		hidden('NewStockID', $_POST['NewStockID']);
 		set_focus('description');
@@ -391,6 +397,7 @@ table_section_title(_("Picture"));
 label_row(_("Image File (.jpg)") . ":", "<input type='file' id='pic' name='pic'>");
 // Add Image upload for New Item  - by Joe
 $stock_img_link = "";
+$check_remove_image = false;
 if (isset($_POST['NewStockID']) && file_exists("$comp_path/$user_comp/images/"
 	.item_img_name($_POST['NewStockID']).".jpg")) 
 {
@@ -398,6 +405,7 @@ if (isset($_POST['NewStockID']) && file_exists("$comp_path/$user_comp/images/"
 	$stock_img_link .= "<img id='item_img' alt = '[".$_POST['NewStockID'].".jpg".
 		"]' src='$comp_path/$user_comp/images/".item_img_name($_POST['NewStockID']).".jpg?nocache=".rand()."'".
 		" height='$pic_height' border='0'>";
+	$check_remove_image = true;	
 } 
 else 
 {
@@ -405,7 +413,9 @@ else
 }
 
 label_row("&nbsp;", $stock_img_link);
-
+if ($check_remove_image)
+	check_row(_("Delete Image:"), 'del_image', $_POST['del_image']);
+	
 end_outer_table(1);
 div_end();
 div_start('controls');
