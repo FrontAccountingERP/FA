@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+23-Mar-2009 Joe Hunt
+# Bad thousand/decimal formatting in XLS reports.(OpenOffice)
+$ /reporting/including/excel_report.inc
+
 22-Mar-2009 Janusz Dobrowolski/Joe Hun rerun, didn't work (empty file when inserting)
 # Fixed item picture display after upload, fixed item image filenames. Option to remove image.
 $ /inventory/manage/items.php
