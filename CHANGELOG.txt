@@ -20,8 +20,11 @@ Legend:
 $ -> Affected files
 
 22-Mar-2009 Janusz Dobrowolski
-# Fixed item picture display after upload
+# Fixed item picture display after upload, fixed item image filenames.
 $ /inventory/manage/items.php
+  /inventory/includes/inventory_db.inc
+  /reporting/rep104.php
+  /reporting/rep303.php
 
 21-Mar-2009 Janusz Dobrowolski
 # Broken currency section after date change.
