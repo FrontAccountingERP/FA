@@ -19,6 +19,49 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+21-Mar-2009 Janusz Dobrowolski
++ Option to use last document date on subsequent new documents.
+$ /admin/display_prefs.php
+  /admin/db/users_db.inc
+  /includes/current_user.inc
+  /includes/prefs/userprefs.inc
+  /sql/alter2.2.php
+  /sql/alter2.2.sql
+  /sql/en_US-demo.sql
+  /sql/en_US-new.sql
++ Optional check for current date in date_cells()/date_row()
+$ /includes/ui/ui_input.inc
+! Save/retrieve last document date.
+$ /gl/bank_account_reconcile.php
+  /gl/gl_bank.php
+  /gl/gl_journal.php
+  /gl/includes/ui/gl_bank_ui.inc
+  /gl/includes/ui/gl_journal_ui.inc
+  /includes/date_functions.inc
+  /includes/ui/ui_view.inc
+  /inventory/adjustments.php
+  /inventory/transfers.php
+  /inventory/includes/item_adjustments_ui.inc
+  /inventory/includes/stock_transfers_ui.inc
+  /manufacturing/work_order_entry.php
+  /purchasing/po_entry_items.php
+  /purchasing/po_receive_items.php
+  /purchasing/supplier_payment.php
+  /purchasing/includes/ui/grn_ui.inc
+  /purchasing/includes/ui/invoice_ui.inc
+  /purchasing/includes/ui/po_ui.inc
+  /sales/credit_note_entry.php
+  /sales/customer_credit_invoice.php
+  /sales/customer_delivery.php
+  /sales/customer_invoice.php
+  /sales/customer_payments.php
+  /sales/sales_order_entry.php
+  /sales/includes/cart_class.inc
+  /sales/includes/sales_db.inc
+  /sales/includes/db/sales_order_db.inc
+  /sales/includes/ui/sales_credit_ui.inc
+  /sales/includes/ui/sales_order_ui.inc
+
 18-Mar-2009 Janusz Dobrowolski
 + Additional option for submit_add_or_update_x() helpers
 $ /includes/ui/ui_input.inc
