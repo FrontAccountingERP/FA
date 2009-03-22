@@ -33,7 +33,8 @@ class user_prefs
 	var $show_hints;
 	var $query_size; // table pager page length
 	var $graphic_links; // use graphic links
-
+	var $sticky_date;	// save date on subsequent document entry
+	
 	function user_prefs($user=null)
 	{
 		if ($user == null) { 
@@ -65,6 +66,7 @@ class user_prefs
 			$this->rep_popup = $user["rep_popup"];
 			$this->query_size = $user["query_size"];
 			$this->graphic_links = $user["graphic_links"];
+			$this->sticky_date = $user["sticky_doc_date"];
 		}
 	}
 
@@ -169,7 +171,12 @@ class user_prefs
 	{
 		return $this->graphic_links;
 	}
-
+	
+	function sticky_date()
+	{
+		return $this->sticky_date;
+	}
+	
 	function set_dec($price_dec, $qty_dec, $exrate_dec, $percent_dec, $showgl, $showcodes) 
 	{
 		$this->price_dec = $price_dec;

@@ -42,7 +42,7 @@ if (isset($_POST['setprefs']))
 			$_POST['theme'], $_POST['page_size'], check_value('show_hints'),
 			$_POST['profile'], check_value('rep_popup'), 
 			(int)($_POST['query_size']), check_value('graphic_links'), 
-			$_POST['language']);
+			$_POST['language'], check_value('sticky_doc_date'));
 
 		if ($chg_lang)
 			language::set_language($_POST['language']);
@@ -126,6 +126,9 @@ check_row(_("Use icons instead of text links:"), 'graphic_links', user_graphic_l
 	false, _('Set this option to on for using icons instead of text links'));
 
 text_row_ex(_("Query page size:"), 'query_size',  5, 5, '', user_query_size());
+
+check_row(_("Remember last document date:"), 'sticky_doc_date', sticky_doc_date(),
+	false, _('If set document date is remembered on subsequent documents, otherwise default is current date'));
 
 end_outer_table(1);
 
