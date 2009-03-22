@@ -166,7 +166,7 @@ function print_price_listing()
 				$rep->NewLine();
 				if ($rep->row - $pic_height < $rep->bottomMargin)
 					$rep->Header();
-				$rep->AddImage($image, $rep->cols[1], $rep->row - $pic_height, $pic_width, $pic_height);
+				$rep->AddImage($image, $rep->cols[1], $rep->row - $pic_height, 0, $pic_height);
 				$rep->row -= $pic_height;
 				$rep->NewLine();
 			}

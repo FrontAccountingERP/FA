@@ -29,11 +29,10 @@ if (isset($_GET['stock_id']))
 {
 	$_POST['stock_id'] = $stock_id = $_GET['stock_id'];
 }
-else if (isset($_POST['stock_id']))
+elseif (isset($_POST['stock_id']))
 {
 	$stock_id = $_POST['stock_id'];
 }
-
 if (list_updated('stock_id')) {
 	$_POST['NewStockID'] = get_post('stock_id');
     clear_data();
@@ -43,6 +42,7 @@ if (list_updated('stock_id')) {
 $upload_file = "";
 if (isset($_FILES['pic']) && $_FILES['pic']['name'] != '') 
 {
+	$stock_id = $_POST['NewStockID'];
 	$result = $_FILES['pic']['error'];
  	$upload_file = 'Yes'; //Assume all is well to start off with
 	$filename = $comp_path . "/$user_comp/images";
@@ -397,7 +397,7 @@ if (isset($_POST['NewStockID']) && file_exists("$comp_path/$user_comp/images/"
  // 31/08/08 - rand() call is necessary here to avoid caching problems. Thanks to Peter D.
 	$stock_img_link .= "<img id='item_img' alt = '[".$_POST['NewStockID'].".jpg".
 		"]' src='$comp_path/$user_comp/images/".item_img_name($_POST['NewStockID']).".jpg?nocache=".rand()."'".
-		" width='$pic_width' height='$pic_height' border='0'>";
+		" height='$pic_height' border='0'>";
 } 
 else 
 {

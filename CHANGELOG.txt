@@ -19,7 +19,7 @@ Legend:
 ! -> Note
 $ -> Affected files
 
-22-Mar-2009 Janusz Dobrowolski
+22-Mar-2009 Janusz Dobrowolski/Joe Hun rerun, didn't work (empty file when inserting)
 # Fixed item picture display after upload, fixed item image filenames.
 $ /inventory/manage/items.php
   /inventory/includes/inventory_db.inc
