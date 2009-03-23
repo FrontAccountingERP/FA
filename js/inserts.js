@@ -170,6 +170,7 @@ var inserts = {
 			ev = ev||window.event;
 			key = ev.keyCode||ev.which;
 			if((ev.ctrlKey && key == 13) || key == 27) {
+				_hotkeys.alt = false;
 				ev.cancelBubble = true;
     			if(ev.stopPropagation) ev.stopPropagation();
 // here ctrl-enter/escape support
@@ -317,17 +318,15 @@ function setHotKeys() {
 	document.onkeydown = function(ev) {
 		ev = ev||window.event;
 		key = ev.keyCode||ev.which;
-		if (key == 18 && !ev.ctrlKey) {	// start selection, skip Win AltGr
-			_hotkeys.alt = true;
-			_hotkeys.focus = -1;
-			return stopEv(ev);
-		} else
-		if (key == 27) { // cancel selection
+
+		if (key == 27 && ev.altKey) { // cancel selection
 			_hotkeys.alt = false;
 			_hotkeys.focus = -1;
 			return stopEv(ev);
 		} 
-		else if (_hotkeys.alt && ((key>47 && key<58) || (key>64 && key<91))) {
+		else 
+		if (ev.altKey && !ev.ctrlKey && ((key>47 && key<58) || (key>64 && key<91))) {
+			_hotkeys.alt = true;
 			var n = _hotkeys.focus;
 			var l = document.links;
 			var cnt = l.length;
