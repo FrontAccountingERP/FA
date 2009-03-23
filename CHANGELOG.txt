@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+24-Mar-2009 Joe Hunt
+# Wrong price decimals in Report Salesman Listing
+$ /reporting/rep106.php
+
 23-Mar-2009 Janusz Dobrowolski
 # Fixed keybord access issue after AltTab
 $ /js/inserts.js
