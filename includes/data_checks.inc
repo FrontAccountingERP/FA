@@ -385,12 +385,19 @@ function db_has_bank_accounts()
 function check_db_has_bank_accounts($msg)
 {
 	global $path_to_root;
+
     if (!db_has_bank_accounts()) 
     {
     	display_error($msg, true);
     	end_page();
     	exit;	
     }	
+}
+
+function db_has_cash_accounts()
+{
+	return check_empty_result("SELECT COUNT(*) FROM ".TB_PREF."bank_accounts
+		WHERE account_type=3");
 }
 
 function db_has_gl_accounts()
