@@ -89,7 +89,8 @@ CREATE TABLE `0_sales_pos` (
   UNIQUE KEY(`pos_name`)
 ) TYPE=MyISAM AUTO_INCREMENT=1;
 
-INSERT INTO `0_sales_pos` VALUES ('1', 'Default', '1', '1', 'DEF', '1', '0');
+# After upgrade default POS cash sale is off. Change in POS setup if you wish.
+INSERT INTO `0_sales_pos` VALUES ('1', 'Default', '0', '1', 'DEF', '1', '0');
 
 ALTER TABLE `0_users` ADD `pos` SMALLINT(6) DEFAULT '1';
 
