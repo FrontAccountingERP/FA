@@ -106,6 +106,10 @@ echo '<br>';
 
 start_form();
 
+$cash = db_has_cash_accounts();
+
+if (!$cash) display_note(_("To have cash POS first define at least one cash bank account."));
+
 start_table($table_style2);
 
 if ($selected_id != -1)
@@ -124,11 +128,17 @@ if ($selected_id != -1)
 } 
 
 text_row_ex(_("Point of Sale Name").':', 'name', 20, 30);
-check_row(_('Allowed credit sale'), 'credit', check_value('credit_sale'));
-check_row(_('Allowed cash sale'), 'cash',  check_value('cash_sale'));
-locations_list_row(_("POS location").':', 'location');
-cash_accounts_list_row(_("Default cash account").':', 'account');
+if($cash) {
+	check_row(_('Allowed credit sale'), 'credit', check_value('credit_sale'));
+	check_row(_('Allowed cash sale'), 'cash',  check_value('cash_sale'));
+	cash_accounts_list_row(_("Default cash account").':', 'account');
+} else {
+	hidden('credit', 1);
+	hidden('cash', 0);
+	hidden('account', 0);
+}
 
+locations_list_row(_("POS location").':', 'location');
 end_table(1);
 
 submit_add_or_update_center($selected_id == -1, '', true);
