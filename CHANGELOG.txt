@@ -19,6 +19,13 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+26-Mar-2009 Janusz Dobrowolski
+# Fixed problems with cash invoices created after db upgrade.
+$ /includes/data_checks.inc
+  /sales/includes/db/sales_points_db.inc
+  /sales/manage/sales_points.php
+  /sql/alter2.1.sql
+
 24-Mar-2009 Joe Hunt
 # Wrong price decimals in Report Salesman Listing
 $ /reporting/rep106.php
