@@ -24,7 +24,7 @@ include_once($path_to_root . "/includes/ui/ui_input.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
 include_once($path_to_root . "/gl/includes/gl_db.inc");
 include_once($path_to_root . "/sales/includes/db/sales_types_db.inc");
-include_once($path_to_root . "/inventory/includes/db/inventory_db.inc");
+include_once($path_to_root . "/inventory/includes/inventory_db.inc");
 
 //----------------------------------------------------------------------------------------------------
 

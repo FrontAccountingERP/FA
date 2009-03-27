@@ -19,6 +19,11 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+27-Mar-2009 Janusz Dobrowolski
+# Fixed include file path in reports 104,303
+$ /reporting/rep104.php
+  /reporting/rep303.php
+
 26-Mar-2009 Janusz Dobrowolski
 # Fixed problems with cash invoices created after db upgrade.
 $ /includes/data_checks.inc
