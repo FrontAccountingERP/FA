@@ -19,6 +19,11 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+
+28-Mar-2009 Janusz Dobrowolski
+# [0000124] Cannot add exchange rate <1 when comma is set as dec separator.
+$ /gl/manage/exchange_rates.php
+
 27-Mar-2009 Janusz Dobrowolski
 # Fixed include file path in reports 104,303
 $ /reporting/rep104.php

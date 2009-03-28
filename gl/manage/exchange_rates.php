@@ -34,13 +34,7 @@ function check_data()
 		set_focus('date_');
 		return false;
 	}
-	if (!check_num('BuyRate', 0))
-	{
-		display_error( _("The exchange rate must be numeric and greater than zero."));
-		set_focus('BuyRate');
-		return false;
-	}
-	if ($_POST['BuyRate'] <= 0)
+	if (input_num('BuyRate') <= 0)
 	{
 		display_error( _("The exchange rate cannot be zero or a negative number."));
 		set_focus('BuyRate');
