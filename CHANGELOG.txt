@@ -19,10 +19,14 @@ Legend:
 ! -> Note
 $ -> Affected files
 
-
 29-Mar-2009 Janusz Dobrowolski
 ! Added cancel button
 $ /inventory/manage/items.php
+! Element id generation speedup
+$ /includes/ui/ui_view.inc
+# Fixed hotkeys behaviour in report module
+$ /js/inserts.js
+  /reporting/includes/reports_classes.inc
 
 21-Mar-2009 Janusz Dobrowolski
 + Option to use last document date on subsequent new documents.
