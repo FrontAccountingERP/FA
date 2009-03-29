@@ -19,6 +19,14 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+29-Mar-2009 Janusz Dobrowolski
+# [0000126] 'Invoice' words on credit note document.
+$ /reporting/includes/doctext.inc
+  /reporting/includes/doctext2.inc
+# [0000125] Sql error when creating credit note.
+$ /sales/includes/db/sales_credit_db.inc
+# [0000121] Error during qoh calculations.
+$ /sales/includes/ui/sales_order_ui.inc
 
 28-Mar-2009 Janusz Dobrowolski
 # [0000124] Cannot add exchange rate <1 when comma is set as dec separator.
