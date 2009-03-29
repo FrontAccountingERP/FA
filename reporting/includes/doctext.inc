@@ -33,7 +33,9 @@ if (isset($header2type))
 	 $doc_Please_Quote = _("All amounts stated in");
   } else {
 	 $doc_Bank_Account = _("Bank Account");
-	 $doc_Please_Quote = _("Please quote Invoice no. when paying. All amounts stated in");
+	 $doc_Please_Quote = $doctype==10 ? 
+	 _("Please quote Invoice no. when paying. All amounts stated in") :
+	 _("Please quote Credit no. when paying. All amounts stated in");
 	}
 	$doc_Address = _("Address");
 	$doc_Phone_Fax_Email = _("Phone/Fax/Email");
@@ -75,7 +77,8 @@ if (isset($emailtype))
 }
 if (isset($header2type) || isset($linetype))
 {
-	$doc_Invoice_no = ($doctype==13 ? _("Delivery Note No.") : (($doctype==8 || $doctype==9) ? _("Order no.") : _("Invoice No.")));
+	$doc_Invoice_no = ($doctype==13 ? _("Delivery Note No.") : (($doctype==8 || $doctype==9) ? _("Order no.") : 
+		($doctype==10 ? _("Invoice No.") : _("Credit No."))));
 	$doc_Delivery_no = _("Delivery Note No.");
 	$doc_Order_no = _("Order no.");
 }
@@ -87,7 +90,7 @@ if (isset($linetype))
 		$doc_Shipping = _("Shipping");
 		$doc_Included = _("Included");
 		$doc_Amount = _("Amount");
-		$doc_TOTAL_INVOICE = _("TOTAL INVOICE");
+		$doc_TOTAL_INVOICE = $doctype ==10 ? _("TOTAL INVOICE") : _("TOTAL CREDIT");
 		$doc_TOTAL_ORDER = _("TOTAL ORDER EX VAT");
 		$doc_TOTAL_PO = _("TOTAL PO EX VAT");
 		$doc_TOTAL_DELIVERY = _("TOTAL DELIVERY INCL. VAT");
