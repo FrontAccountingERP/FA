@@ -22,7 +22,7 @@ include_once($path_to_root . "/includes/data_checks.inc");
 include_once($path_to_root . "/inventory/includes/inventory_db.inc");
 
 $user_comp = user_company();
-$new_item = get_post('stock_id')==''; 
+$new_item = get_post('stock_id')=='' || get_post('cancel'); 
 //------------------------------------------------------------------------------------
 
 if (isset($_GET['stock_id']))
@@ -40,6 +40,14 @@ if (list_updated('stock_id')) {
 	$Ajax->activate('details');
 	$Ajax->activate('controls');
 }
+
+if (get_post('cancel')) {
+	$_POST['NewStockID'] = $_POST['stock_id'] = '';
+    clear_data();
+	set_focus('stock_id');
+	$Ajax->activate('_page_body');
+}
+
 if (list_updated('category_id') || list_updated('mb_flag')) {
 	$Ajax->activate('details');
 }
@@ -412,9 +420,11 @@ if (!isset($_POST['NewStockID']) || $new_item)
 } 
 else 
 {
-	submit_center_first('addupdate', _("Update Item"), '', 'default');
+	submit_center_first('addupdate', _("Update Item"), '', 
+	count($_SESSION['Context']) ? true : 'default');
 	submit_return('select', _("Return"), _("Select this items and return to document entry."), 'default');
-	submit_center_last('delete', _("Delete This Item"), '', true);
+	submit('delete', _("Delete This Item"), true, '', true);
+	submit_center_last('cancel', _("Cancel"), _("Cancel Edition"), 'cancel');
 }
 
 div_end();
