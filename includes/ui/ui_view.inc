@@ -613,8 +613,9 @@ function set_focus($name, $form_no=0) {
 //	Returns unique name if $name=null
 //	
 function default_focus($name=null, $form_no=0) {
+	static $next; 
 	if ($name==null) 
-		$name = uniqid('_el');
+		$name = uniqid('_el',true);
     if (!isset($_POST['_focus'])) {
 	  set_focus($name);
     }
