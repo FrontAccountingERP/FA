@@ -165,26 +165,6 @@ function _set_combo_select(e) {
  Behaviour definitions
 */
 var inserts = {
-	'form': function(e) {
-  		e.onkeydown = function(ev) { 
-			ev = ev||window.event;
-			key = ev.keyCode||ev.which;
-			if((ev.ctrlKey && key == 13) || key == 27) {
-				ev.cancelBubble = true;
-    			if(ev.stopPropagation) ev.stopPropagation();
-				// activate submit/escape form
-				for (var i=0; i<this.elements.length; i++){
-					var asp = this.elements[i].getAttribute('aspect');
-					if ((asp=='default' && key==13)||(asp=='cancel' && key==27))
-						JsHttpRequest.request(this.elements[i]);
-				}
-			
-				ev.returnValue = false;
-				return false;
-			} 
-			return true;
-	  	}
-	},
 	'input': function(e) {
 		if(e.onfocus==undefined) {
 			e.onfocus = function() {
@@ -249,15 +229,7 @@ var inserts = {
 					JsHttpRequest.request('_'+this.name+'_changed', this.form);
 				}
 			}
-/*    	  	e.onkeydown = function(ev) { 
-	  			ev = ev||window.event;
-	  			key = ev.keyCode||ev.which;
-	  			if (key == 13 && (this.value != this.getAttribute('_last_val'))) {
-			  		this.blur();
-  		 	  		return false;
-	  			}
-		  	}
-*/		},
+		},
 	'select': function(e) {
 		if(e.onfocus==undefined) {
 			e.onfocus = function() {
@@ -355,12 +327,7 @@ function setHotKeys() {
 			_hotkeys.alt = true;
 			_hotkeys.focus = -1;
 			return stopEv(ev);
-		} else
-		if (key == 27) { // cancel selection
-			_hotkeys.alt = false;
-			_hotkeys.focus = -1;
-			return stopEv(ev);
-		} 
+		}
 		else if (_hotkeys.alt && ((key>47 && key<58) || (key>64 && key<91))) {
 			var n = _hotkeys.focus;
 			var l = document.links;
@@ -379,6 +346,24 @@ function setHotKeys() {
 			}
 			return stopEv(ev);
 		}
+		if((ev.ctrlKey && key == 13) || key == 27) {
+			_hotkeys.alt = false; // cancel link selection
+			_hotkeys.focus = -1;
+			ev.cancelBubble = true;
+   			if(ev.stopPropagation) ev.stopPropagation();
+			// activate submit/escape form
+			var form = this.forms[0];
+			if(form) {
+				for (var i=0; i<form.elements.length; i++){
+					var el = form.elements[i];
+					var asp = el.getAttribute('aspect');
+					if ((asp=='default' && key==13)||(asp=='cancel' && key==27))
+						JsHttpRequest.request(el);
+				}
+			}
+			ev.returnValue = false;
+			return false;
+		} 
 		return true;
 	};
 	document.onkeyup = function(ev) {
@@ -402,7 +387,7 @@ function setHotKeys() {
 		return true;
 	}
 }
- 
+
 Behaviour.register(inserts);
 
 Behaviour.addLoadEvent(setFocus);

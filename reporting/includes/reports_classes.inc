@@ -67,6 +67,7 @@ class BoxReports
 						false, '', $pdf_debug ? false : 'default') . '<br><br>';
 					$st_params .= $report->getDisplay() 
 						. "\n</form></td></tr></table>\n";
+					set_focus('Rep'.$report->id);
 					$Ajax->addUpdate(true, 'rep_form', $st_params);
 				}
 			}
