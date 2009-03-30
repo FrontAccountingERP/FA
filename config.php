@@ -23,7 +23,7 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 
 	$debug 			= 1;
 	$show_sql 		= 0;
-	$go_debug 		= 0;
+	$go_debug 		= 1;
 	$pdf_debug 		= 0;
 	// set $sql_trail to 1 only if you want to perform bugtracking sql trail
 	// Warning: this produces huge amount of data in sql_trail table.
@@ -46,7 +46,7 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 	// Main Title
 	$app_title = "FrontAccounting";
 	// application version
-	$version 		= "2.1";
+	$version 		= "2.1.1";
 
 	// Build for development purposes
 	$build_version 	= date("d.m.Y", filemtime("$path_to_root/CHANGELOG.txt"));

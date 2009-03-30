@@ -28,6 +28,8 @@ $ /sales/includes/ui/sales_order_ui.inc
   /themes/default/default.css
 # Updated gettext template file
 $ /lang/new_language_template/LC_MASSAGES/empty.po
+! Release 2.1.1
+$ config.php
 
 29-Mar-2009 Janusz Dobrowolski
 # [0000126] 'Invoice' words on credit note document.
