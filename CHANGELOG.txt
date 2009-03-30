@@ -19,12 +19,15 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+------------------------------- Release 2.1.1 ----------------------------------
 30-Mar-2009 Janusz Dobrowolski
 # Fixed display of unsufficient quantities in sales docs.
 $ /sales/includes/ui/sales_order_ui.inc
   /themes/aqua/default.css
   /themes/cool/default.css
   /themes/default/default.css
+# Updated gettext template file
+$ /lang/new_language_template/LC_MASSAGES/empty.po
 
 29-Mar-2009 Janusz Dobrowolski
 # [0000126] 'Invoice' words on credit note document.
