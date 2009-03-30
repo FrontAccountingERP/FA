@@ -178,7 +178,6 @@ if ($Mode == 'RESET')
 	unset($_POST['quantity']);
 	unset($_POST['component']);
 }
-
 //--------------------------------------------------------------------------------------------------
 
 start_form();
@@ -188,7 +187,7 @@ sales_kits_list('item_code', null, _('New kit'), true);
 echo "</center><br>";
 $props = get_kit_props($_POST['item_code']);
 
-if (isset($_POST['_item_code_update'])) {
+if (list_updated('item_code')) {
 	if (get_post('item_code') == '')
 		$_POST['description'] = '';
 	$Ajax->activate('_page_body');

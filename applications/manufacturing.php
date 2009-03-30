@@ -21,7 +21,7 @@
 			$this->add_lapp_function(0, _("&Outstanding Work Orders"),"manufacturing/search_work_orders.php?outstanding_only=1");
 
 			$this->add_module(_("Inquiries and Reports"));
-			//$this->add_lapp_function(1, _("Costed Bill Of Material Inquiry"),"manufacturing/inquiry/bom_cost_inquiry.php?");
+			$this->add_lapp_function(1, _("Costed Bill Of Material Inquiry"),"manufacturing/inquiry/bom_cost_inquiry.php?");
 			$this->add_lapp_function(1, _("Inventory Item Where Used &Inquiry"),"manufacturing/inquiry/where_used_inquiry.php?");
 			$this->add_lapp_function(1, _("Work Order &Inquiry"),"manufacturing/search_work_orders.php?");
 			$this->add_rapp_function(1, _("Manufacturing &Reports"),"reporting/reports_main.php?Class=3");

@@ -19,6 +19,51 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+30-Mar-2009 Janusz Dobrowolski
+! Merged changes from main trunk for versions 2.1RC-2.1.1 (see below)
+$ /admin/db/v_banktrans.inc (removed)
+  /applications/manufacturing.php
+  /gl/include/db/gl_db_banking.inc
+  /gl/includes/ui/gl_bank_ui.inc
+  /gl/includes/ui/gl_journal_ui.inc
+  /gl/manage/exchange_rates.php
+  /.htaccess
+  /includes/banking.inc
+  /includes/data_checks.inc
+  /includes/ui/items_cart.inc
+  /includes/ui/ui_inputs.inc
+  /includes/ui/ui_lists.inc
+  /install.html
+  /install/index.php
+  /install/save.php
+  /inventory/includes/inventory_db.inc
+  /inventory/manage/items.php
+  /inventory/manage/sales_kits.php
+  /js/inserts.js
+  /lang/new_language_template/LC_MASSAGES/empty.po
+  /manufacturing/inquiry/bom_cost_inquiry.php
+  /purchasing/allocations/supplier_allocate.php
+  /purchasing/manage/suppliers.php
+  /reporting/includes/doctext2.inc
+  /reporting/includes/doctext.inc
+  /reporting/including/excel_report.inc
+  /reporting/rep104.php
+  /reporting/rep106.php
+  /reporting/rep303.php
+  /reporting/rep702.php
+  /sales/allocations/customer_allocate.php
+  /sales/includes/db/sales_credit_db.inc
+  /sales/includes/db/sales_points_db.inc
+  /sales/includes/ui/sales_credit_ui.inc
+  /sales/includes/ui/sales_order_ui.inc
+  /sales/manage/sales_points.php
+  /sales/sales_order_entry.php
+  /sql/alter2.1.sql
+  /taxes/tax_types.php
+  /themes/aqua/default.css
+  /themes/cool/default.css
+  /themes/default/default.css
+
 29-Mar-2009 Janusz Dobrowolski
 ! Added cancel button
 $ /inventory/manage/items.php
@@ -183,6 +228,133 @@ $ /.htaccess
   /sales/inquiry/customer_allocation_inquiry.php
   /sales/inquiry/sales_deliveries_view.php
   /sales/inquiry/sales_orders_view.php
+
+=======
+------------------------------- Release 2.1.1 ----------------------------------
+30-Mar-2009 Janusz Dobrowolski
+# Fixed display of unsufficient quantities in sales docs.
+$ /sales/includes/ui/sales_order_ui.inc
+  /themes/aqua/default.css
+  /themes/cool/default.css
+  /themes/default/default.css
+# Updated gettext template file
+$ /lang/new_language_template/LC_MASSAGES/empty.po
+! Release 2.1.1
+$ config.php
+
+29-Mar-2009 Janusz Dobrowolski
+# [0000126] 'Invoice' words on credit note document.
+$ /reporting/includes/doctext.inc
+  /reporting/includes/doctext2.inc
+# [0000125] Sql error when creating credit note.
+$ /sales/includes/db/sales_credit_db.inc
+# [0000121] Error during qoh calculations.
+$ /sales/includes/ui/sales_order_ui.inc
+
+28-Mar-2009 Janusz Dobrowolski
+# [0000124] Cannot add exchange rate <1 when comma is set as dec separator.
+$ /gl/manage/exchange_rates.php
+
+27-Mar-2009 Janusz Dobrowolski
+# Fixed include file path in reports 104,303
+$ /reporting/rep104.php
+  /reporting/rep303.php
+
+26-Mar-2009 Janusz Dobrowolski
+# Fixed problems with cash invoices created after db upgrade.
+$ /includes/data_checks.inc
+  /sales/includes/db/sales_points_db.inc
+  /sales/manage/sales_points.php
+  /sql/alter2.1.sql
+
+24-Mar-2009 Joe Hunt
+# Wrong price decimals in Report Salesman Listing
+$ /reporting/rep106.php
+
+23-Mar-2009 Janusz Dobrowolski
+# Fixed keybord access issue after AltTab
+$ /js/inserts.js
+
+23-Mar-2009 Joe Hunt
+# Bad thousand/decimal formatting in XLS reports.(OpenOffice)
+$ /reporting/including/excel_report.inc
+
+22-Mar-2009 Janusz Dobrowolski/Joe Hun rerun, didn't work (empty file when inserting)
+# Fixed item picture display after upload, fixed item image filenames. Option to remove image.
+$ /inventory/manage/items.php
+  /inventory/includes/inventory_db.inc
+  /reporting/rep104.php
+  /reporting/rep303.php
+
+21-Mar-2009 Janusz Dobrowolski
+# Broken currency section after date change.
+$ /sales/includes/ui/sales_credit_ui.inc
+  /sales/includes/ui/sales_order_ui.inc
+
+20-Mar-2009 Joe Hunt
+# Truncation bug when inserting/updating entered supplier credit limit
+$ /purchasing/manage/suppliers.php
+
+19-Mar-2009 Joe Hunt
+# [0000120] SQL Error when leaving Default Rate: blank when adding Tax Types
+$ /taxes/tax_types.php
+
+19-Mar-2009 Janusz Dobrowolski
+# Fixed quick entry amount update on list change.
+$ /gl/includes/ui/gl_journal_ui.inc
+
+------------------------------- Release 2.1 ----------------------------------------------------
+18-Mar-2009 Joe Hunt
+! Release 2.1
+$ config.php
+
+18-Mar-2009 Janusz Dobrowolski
+# Additional php.ini checks and fixes for php in CGI mode
+$ /.htaccess
+  /install.html
+  /install/index.php
+  /install/save.php
+# Default focus in lists on searchbox if used.
+$ /includes/ui/ui_lists.inc
+# Fixed update after code search.
+$ /inventory/manage/sales_kits.php
+
+16-Mar-2009 Janusz Dobrowolski
+# Fixed redirection after order cancelation.
+$ /sales/sales_order_entry.php
+
+15-Mar-2009 Joe Hunt
+# Minor bug in Report List of Journal Entries
+$ /reporting/rep702.php
+
+14-Mar-2009 Joe Hunt
+! Changed so exchange variances is stamped on invoice GL instead of payment GL
+  if invoice date is later than payment date
+$ /includes/banking.inc
+
+13-Mar-2009 Janusz Dobrowolski/Joe Hunt
+# GL line delete bug fixed.
+$ /gl/includes/ui/gl_bank_ui.inc
+  /gl/includes/ui/gl_journal_ui.inc
+  /includes/ui/items_cart.inc
+# Random syntax error + new menu item :).
+$ /manufacturing/inquiry/bom_cost_inquiry.php
+  /applications/manufacturing.php
+- Removed non used file
+$ /admin/db/v_banktrans.inc (removed)
+
+11-Mar-2009 Joe Hunt
+# Several errors related to new bank account id in /gl/includes/db/gl_db_banking.inc
+$ /gl/include/db/gl_db_banking.inc
+
+10-Mar-2009 Janusz Dobrowolski
+# [0000119] Fixed search by item description in sales item selector.
+$ /includes/ui/ui_lists.inc
+# Fixed email_row/link_row display for empty input value.
+$ /includes/ui/ui_inputs.inc
+# Small layout fix 
+$ /purchasing/allocations/supplier_allocate.php
+  /sales/allocations/customer_allocate.php
 
 ------------------------------- Release 2.1.0 RC ------------------------------------------------
 09-Mar-2009 Joe Hunt
@@ -4434,8 +4606,3 @@ $  /admin/gl_setup.php
 -------------------- 1.0 Stable Released ----------------------
 10-Apr-2007 Joe Hunt
  ! Release 1.0 established on SourceForge.
-
-2. Copyright and disclaimer
----------------------------
-This application is opensource software released under the GPL.  Please
-see source code and the LICENSE file

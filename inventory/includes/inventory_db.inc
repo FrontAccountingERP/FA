@@ -24,4 +24,9 @@ include_once($path_to_root . "/inventory/includes/db/items_adjust_db.inc");
 include_once($path_to_root . "/inventory/includes/db/items_transfer_db.inc");
 include_once($path_to_root . "/inventory/includes/db/items_units_db.inc");
 
+function item_img_name($stock_id)
+{
+	return strtr($stock_id, "><\\/:|*?", '________');
+}
+
 ?>

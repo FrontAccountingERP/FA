@@ -45,7 +45,7 @@ if ($Mode=='ADD_ITEM' && can_process())
 {
 
 	add_tax_type($_POST['name'], $_POST['sales_gl_code'],
-		$_POST['purchasing_gl_code'], input_num('rate'));
+		$_POST['purchasing_gl_code'], input_num('rate', 0));
 	display_notification(_('New tax type has been added'));
 	$Mode = 'RESET';
 }

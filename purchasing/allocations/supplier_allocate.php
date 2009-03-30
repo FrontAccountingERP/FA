@@ -201,7 +201,7 @@ function edit_allocations_for_transaction($type, $trans_no)
     {
 		start_table($table_style);
    		$th = array(_("Transaction Type"), _("#"), _("Date"), _("Due Date"), _("Amount"),
-   			_("Other Allocations"), _("This Allocation"), _("Left to Allocate"),'');
+   			_("Other Allocations"), _("This Allocation"), _("Left to Allocate"),'','');
    		table_header($th);
 
         $k = $counter = $total_allocated = 0;
@@ -233,7 +233,7 @@ function edit_allocations_for_transaction($type, $trans_no)
        	}
 
         label_row(_("Total Allocated"), number_format2($total_allocated,user_price_dec()),
-        	"colspan=6 align=right", "align=right id='total_allocated'");
+        	"colspan=6 align=right", "align=right id='total_allocated'", 3);
         if (-$_SESSION['alloc']->amount - $total_allocated < 0)
         {
         	$font1 = "<font color=red>";
@@ -243,7 +243,7 @@ function edit_allocations_for_transaction($type, $trans_no)
         	$font1 = $font2 = "";
 		$left_to_allocate = price_format(-$_SESSION['alloc']->amount - $total_allocated);
         label_row(_("Left to Allocate"), $font1 . $left_to_allocate . $font2, "colspan=6 align=right",
-        	"nowrap align=right id='left_to_allocate'");
+        	"nowrap align=right id='left_to_allocate'", 3);
 		end_table();
 
 		hidden('TotalNumberOfAllocs', $counter);

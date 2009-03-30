@@ -9,7 +9,6 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-/* $Revision$ */
 $page_security = 8;
 include_once($path_to_root . "/reporting/includes/Workbook.php");
 include_once($path_to_root . "/admin/db/company_db.inc");
@@ -142,10 +141,12 @@ class FrontReport extends Spreadsheet_Excel_Writer_Workbook
 	{
 		if (!isset($this->formatAmount[$dec]))
 		{
-			global $thoseps,$decseps;
+			//global $thoseps,$decseps;
 			$dec = (int)$dec;
-			$tsep = $thoseps[user_tho_sep()];
-			$dsep = $decseps[user_dec_sep()];
+			//$tsep = $thoseps[user_tho_sep()];
+			//$dsep = $decseps[user_dec_sep()];
+			$tsep = ',';
+			$dsep = '.';
 			$format = "###{$tsep}###{$tsep}###{$tsep}##0";
 			if ($dec>0)
 				$format .= "{$dsep}".str_repeat('0',$dec);

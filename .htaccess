@@ -2,10 +2,16 @@
 # Maybe you might have problems
 # with other scripts that needs
 # register_globals ON
-php_flag magic_quotes_gpc Off
-php_flag register_globals Off
-# do not use SID in url
-php_flag session.use_trans_sid Off
+<IfModule mod_php4.c>
+	php_flag magic_quotes_gpc Off
+	php_flag register_globals Off
+	php_flag session.use_trans_sid Off
+</IfModule>
+<IfModule mod_php5.c>
+	php_flag magic_quotes_gpc Off
+	php_flag register_globals Off
+	php_flag session.use_trans_sid Off
+</IfModule>
 
 #Sometimes neccessary to add those
 #

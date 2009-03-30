@@ -343,14 +343,6 @@ $def_coy = $id;
 
 $config_filename = $path_to_root . '/config_db.php';
 
-$err = write_config_db($table_prefix != "");
-if ($err == -1)
-	display_error("Cannot open the configuration file ($config_filename)");
-else if ($err == -2)
-	display_error("Cannot write to the configuration file ($config_filename)");
-else if ($err == -3)
-	display_error("The configuration file $config_filename is not writable. Change its permissions so it is, then re-run step 4.");
-
 // Try connecting to database
 
 $db = mysql_connect($database_host, $database_username, $database_password);
@@ -358,6 +350,14 @@ if (!$db)
 {
 	display_error('Database host name, username and/or password incorrect. MySQL Error:<br />'.mysql_error());
 }
+
+$err = write_config_db($table_prefix != "");
+if ($err == -1)
+	display_error("Cannot open the configuration file ($config_filename)");
+else if ($err == -2)
+	display_error("Cannot write to the configuration file ($config_filename)");
+else if ($err == -3)
+	display_error("The configuration file $config_filename is not writable. Change its permissions so it is, then re-run step 4.");
 
 if($install_tables == true)
 {

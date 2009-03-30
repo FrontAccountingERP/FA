@@ -33,21 +33,20 @@ function update_sales_point($id, $name, $location, $account, $cash, $credit)
 function get_all_sales_points()
 {
 	$sql = "SELECT pos.*, loc.location_name, acc.bank_account_name FROM "
-		.TB_PREF."sales_pos as pos,"
-		.TB_PREF."locations as loc,"
-		.TB_PREF."bank_accounts as acc"
-		." WHERE pos.pos_location=loc.loc_code AND pos.pos_account=acc.id";
+		.TB_PREF."sales_pos as pos
+		LEFT JOIN ".TB_PREF."locations as loc on pos.pos_location=loc.loc_code
+		LEFT JOIN ".TB_PREF."bank_accounts as acc on pos.pos_account=acc.id";
 	
 	return db_query($sql, "could not get all POS definitions");
 } 
 
 function get_sales_point($id)
 {
-	$sql = "SELECT pos.*, loc.location_name, acc.bank_account_name, acc.account_code FROM "
-		.TB_PREF."sales_pos as pos,"
-		.TB_PREF."locations as loc,"
-		.TB_PREF."bank_accounts as acc"
-		." WHERE pos.id=$id AND pos.pos_location=loc.loc_code AND pos.pos_account=acc.id";
+	$sql = "SELECT pos.*, loc.location_name, acc.bank_account_name FROM "
+		.TB_PREF."sales_pos as pos
+		LEFT JOIN ".TB_PREF."locations as loc on pos.pos_location=loc.loc_code
+		LEFT JOIN ".TB_PREF."bank_accounts as acc on pos.pos_account=acc.id
+		WHERE pos.id='$id'";
 	
 	$result = db_query($sql, "could not get POS definition");
 	

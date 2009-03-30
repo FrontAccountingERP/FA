@@ -27,13 +27,12 @@ $new_item = get_post('stock_id')=='' || get_post('cancel');
 
 if (isset($_GET['stock_id']))
 {
-	$_POST['stock_id'] = $stock_id = strtoupper($_GET['stock_id']);
+	$_POST['stock_id'] = $stock_id = $_GET['stock_id'];
 }
-else if (isset($_POST['stock_id']))
+elseif (isset($_POST['stock_id']))
 {
-	$stock_id = strtoupper($_POST['stock_id']);
+	$stock_id = $_POST['stock_id'];
 }
-
 if (list_updated('stock_id')) {
 	$_POST['NewStockID'] = get_post('stock_id');
     clear_data();
@@ -54,6 +53,7 @@ if (list_updated('category_id') || list_updated('mb_flag')) {
 $upload_file = "";
 if (isset($_FILES['pic']) && $_FILES['pic']['name'] != '') 
 {
+	$stock_id = $_POST['NewStockID'];
 	$result = $_FILES['pic']['error'];
  	$upload_file = 'Yes'; //Assume all is well to start off with
 	$filename = $comp_path . "/$user_comp/images";
@@ -61,7 +61,7 @@ if (isset($_FILES['pic']) && $_FILES['pic']['name'] != '')
 	{
 		mkdir($filename);
 	}	
-	$filename .= "/$stock_id.jpg";
+	$filename .= "/".item_img_name($stock_id).".jpg";
 	
 	 //But check for the worst 
 	if (strtoupper(substr(trim($_FILES['pic']['name']), strlen($_FILES['pic']['name']) - 3)) != 'JPG')
@@ -93,6 +93,7 @@ if (isset($_FILES['pic']) && $_FILES['pic']['name'] != '')
 	{
 		$result  =  move_uploaded_file($_FILES['pic']['tmp_name'], $filename);
 	}
+	$Ajax->activate('details');
  /* EOF Add Image upload for New Item  - by Ori */
 }
 
@@ -152,7 +153,13 @@ if (isset($_POST['addupdate']))
 	
 	if ($input_error != 1)
 	{
-
+		if (check_value('del_image'))
+		{
+			$filename = $comp_path . "/$user_comp/images/".item_img_name($_POST['NewStockID']).".jpg";
+			if (file_exists($filename))
+				unlink($filename);
+		}
+		
 		if (!$new_item) 
 		{ /*so its an existing one */
 
@@ -174,8 +181,8 @@ if (isset($_POST['addupdate']))
 				$_POST['adjustment_account'], $_POST['assembly_account'], 
 				$_POST['dimension_id'], $_POST['dimension2_id']);
 
-		display_notification(_("A new item has been added."));
-		$_POST['stock_id'] = $_POST['NewStockID'] = '';
+			display_notification(_("A new item has been added."));
+			$_POST['stock_id'] = $_POST['NewStockID'] = '';
 		}
 		set_focus('stock_id');
 		$Ajax->activate('_page_body');
@@ -249,7 +256,7 @@ if (isset($_POST['delete']) && strlen($_POST['delete']) > 1)
 
 		$stock_id = $_POST['NewStockID'];
 		delete_item($stock_id);
-		$filename = $comp_path . "/$user_comp/images/$stock_id.jpg";
+		$filename = $comp_path . "/$user_comp/images/".item_img_name($stock_id).".jpg";
 		if (file_exists($filename))
 			unlink($filename);
 		display_notification(_("Selected item has been deleted."));
@@ -316,7 +323,7 @@ else
 		$_POST['assembly_account']	= $myrow['assembly_account'];
 		$_POST['dimension_id']	= $myrow['dimension_id'];
 		$_POST['dimension2_id']	= $myrow['dimension2_id'];
-	
+		$_POST['del_image'] = 0;	
 		label_row(_("Item Code:"),$_POST['NewStockID']);
 		hidden('NewStockID', $_POST['NewStockID']);
 		set_focus('description');
@@ -397,12 +404,15 @@ table_section_title(_("Picture"));
 label_row(_("Image File (.jpg)") . ":", "<input type='file' id='pic' name='pic'>");
 // Add Image upload for New Item  - by Joe
 $stock_img_link = "";
-if (isset($_POST['NewStockID']) && file_exists("$comp_path/$user_comp/images/".$_POST['NewStockID'].".jpg")) 
+$check_remove_image = false;
+if (isset($_POST['NewStockID']) && file_exists("$comp_path/$user_comp/images/"
+	.item_img_name($_POST['NewStockID']).".jpg")) 
 {
  // 31/08/08 - rand() call is necessary here to avoid caching problems. Thanks to Peter D.
 	$stock_img_link .= "<img id='item_img' alt = '[".$_POST['NewStockID'].".jpg".
-		"]' src='$comp_path/$user_comp/images/".$_POST['NewStockID'].".jpg?nocache=".rand()."'".
-		" width='$pic_width' height='$pic_height' border='0'>";
+		"]' src='$comp_path/$user_comp/images/".item_img_name($_POST['NewStockID']).".jpg?nocache=".rand()."'".
+		" height='$pic_height' border='0'>";
+	$check_remove_image = true;	
 } 
 else 
 {
@@ -410,7 +420,9 @@ else
 }
 
 label_row("&nbsp;", $stock_img_link);
-
+if ($check_remove_image)
+	check_row(_("Delete Image:"), 'del_image', $_POST['del_image']);
+	
 end_outer_table(1);
 div_end();
 div_start('controls');

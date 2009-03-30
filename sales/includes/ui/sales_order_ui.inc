@@ -154,16 +154,32 @@ function display_order_summary($title, &$order, $editable_items=false)
 	$k = 0;  //row colour counter
 
 	$id = find_submit('Edit');
+	$has_marked = false;
 	foreach ($order->line_items as $line_no=>$stock_item)
 	{
 
 		$line_total = round($stock_item->qty_dispatched * $stock_item->price * (1 - $stock_item->discount_percent),
 		   user_price_dec());
 
-
+		$qoh_msg = '';
 		if (!$editable_items || $id != $line_no)
 		{
-			alt_table_row_color($k);
+			if (!sys_prefs::allow_negative_stock() && is_inventory_item($stock_item->stock_id)) {
+				$qoh = get_qoh_on_date($stock_item->stock_id, 
+					$_POST['Location'], $_POST['OrderDate']);
+				if ($stock_item->qty_dispatched > $qoh) 
+				{
+					// oops, we don't have enough of one of the component items
+					start_row("class='stockmankobg'");
+					$qoh_msg .= $stock_item->stock_id . " - " . $stock_item->item_description . ": " .
+					_("Quantity On Hand") . " = " 
+					. number_format2($qoh, get_qty_dec($stock_item->stock_id)) . '<br>';
+					$has_marked = true;
+				 } else 
+					alt_table_row_color($k);
+			} else {
+				alt_table_row_color($k);
+			}
 
 			view_stock_status_cell($stock_item->stock_id);
 
@@ -205,6 +221,12 @@ function display_order_summary($title, &$order, $editable_items=false)
 		"nowrap align=right", 2);
 
 	end_table();
+	if ($has_marked) {
+		display_note(_("Marked items have insufficient quantities in stock as on day of delivery."), 0, 1, "class='stockmankofg'");
+		if ($order->trans_type!=30 && !sys_prefs::allow_negative_stock())
+			display_error(_("The delivery cannot be processed because there is an insufficient quantity for item:")
+				. '<br>'. $qoh_msg);
+	}
     div_end();
 }
 
@@ -325,11 +347,9 @@ function display_order_header(&$order, $editable, $date_text, $display_tax_group
 	{
 	    table_section(2);
 
-	    div_start('currency');
 		label_row(_("Customer Currency:"), $order->customer_currency);
 		exchange_rate_display($order->customer_currency, get_company_currency(),
 			($editable ? $_POST['OrderDate'] : $order->document_date));
-	    div_end();
 	}
 	table_section(3);
 
@@ -346,7 +366,7 @@ function display_order_header(&$order, $editable, $date_text, $display_tax_group
 				$_POST['Location'] = $order->Location = $paym['pos_location'];
 				$order->location_name = $paym['location_name'];
 			}
-			check_qoh($order);
+			$Ajax->activate('items_table');
 			$Ajax->activate('delivery');
 			set_focus($order->pos == -1 ? 'delivery_date' : 'account');
 		}
@@ -382,11 +402,12 @@ function display_order_header(&$order, $editable, $date_text, $display_tax_group
 				&& (get_base_sales_type()>0)) {
 					$change_prices = 1;
 			}
-			$Ajax->activate('currency');
+			$Ajax->activate('_ex_rate');
 			if ($order->trans_type == 10) {
 				$_POST['delivery_date'] = get_invoice_duedate(get_post('customer_id'), get_post('OrderDate'));
 			} else 
 				$_POST['delivery_date'] = add_days(get_post('OrderDate'), sys_prefs::default_delivery_required_by());
+			$Ajax->activate('items_table');
 			$Ajax->activate('delivery_date');
 		}
 		if ($order->trans_type != 30)
@@ -520,6 +541,7 @@ function display_delivery_details(&$order)
 	div_start('delivery');	
 
 	if (get_post('cash', 0)) {	// Direct payment sale
+		$Ajax->activate('items_table');
 		display_heading(_('Cash payment'));
 		start_table("$table_style2 width=60%");
 		label_row(_("Deliver from Location:"), $order->location_name);
@@ -552,8 +574,9 @@ function display_delivery_details(&$order)
 		locations_list_row(_("Deliver from Location:"), 'Location', null, 
 			false, true);
 		if (list_updated('Location'))
-			check_qoh($order);
-//		$_POST['delivery_date'] = get_post('delivery_date', $order->due_date);
+			$Ajax->activate('items_table');
+
+
 		date_row($delname, 'delivery_date',
 			$order->trans_type==30 ?  _('Enter requested day of delivery') : '');
 		text_row(_("Deliver To:"), 'deliver_to', $order->deliver_to, 40, 40,
@@ -580,23 +603,4 @@ function display_delivery_details(&$order)
 	div_end();
 }
 
-function check_qoh($order) 
-{
-	$msg = '';
-	foreach($order->line_items as $line_no => $line) {
-		if (!is_inventory_item($line['stock_id'])) continue;
-		$qoh = get_qoh_on_date($line->stock_id, $_POST['Location'], $_POST['OrderDate']);
-		if ($line->qty_dispatched > $qoh)	{
-			$msg .= $line->stock_id . " - " . $line->item_description . ": " .
-				_("Quantity On Hand") . " = " 
-				. number_format2($qoh, get_qty_dec($line->stock_id)) . '<br>';
-		}
-	}
-	if (strlen($msg)) {
-		display_error(_("The delivery cannot be processed because there is an insufficient quantity for item:")
-			. '<br>'. $msg);
-		return false;
-	}
-	return true;
-}
 ?>

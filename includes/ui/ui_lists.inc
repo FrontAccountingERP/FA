@@ -233,7 +233,7 @@ $opts = array(		// default options
 				$search_submit)."\n";
 		}
 	}
-	default_focus($name);
+	default_focus($search_box ? $search_box : $name);
 	$str = $selector;
 	if ($search_box && $opts['cells'])
 		echo ($edit_entry!='' ? "<td>$edit_entry</td>" : '')."<td>$selector</td>";
@@ -709,7 +709,7 @@ function sales_items_list($name, $selected_id=null, $all_option=false,
 		'spec_option' => $all_option===true ?  _("All Items") : $all_option,
 		'spec_id' => $all_items,
 		'search_box' => true,
-		'search' => array("i.item_code", "c.description"),
+		'search' => array("i.item_code", "i.description"),
 		'search_submit' => get_company_pref('no_item_list')!=0,
 		'size'=>15,
 		'select_submit'=> $submit_on_change,
