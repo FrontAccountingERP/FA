@@ -164,19 +164,19 @@ function display_order_summary($title, &$order, $editable_items=false)
 		$qoh_msg = '';
 		if (!$editable_items || $id != $line_no)
 		{
-			if (is_inventory_item($stock_item->stock_id)) {
+			if (!sys_prefs::allow_negative_stock() && is_inventory_item($stock_item->stock_id)) {
 				$qoh = get_qoh_on_date($stock_item->stock_id, 
 					$_POST['Location'], $_POST['OrderDate']);
-			 if ($stock_item->qty_dispatched > $qoh) 
-			 {
-				// oops, we don't have enough of one of the component items
-				start_row("class='stockmankobg'");
-				$qoh_msg .= $stock_item->stock_id . " - " . $stock_item->item_description . ": " .
-				_("Quantity On Hand") . " = " 
-				. number_format2($qoh, get_qty_dec($stock_item->stock_id)) . '<br>';
-				$has_marked = true;
-			 } else 
-				alt_table_row_color($k);
+				if ($stock_item->qty_dispatched > $qoh) 
+				{
+					// oops, we don't have enough of one of the component items
+					start_row("class='stockmankobg'");
+					$qoh_msg .= $stock_item->stock_id . " - " . $stock_item->item_description . ": " .
+					_("Quantity On Hand") . " = " 
+					. number_format2($qoh, get_qty_dec($stock_item->stock_id)) . '<br>';
+					$has_marked = true;
+				 } else 
+					alt_table_row_color($k);
 			} else {
 				alt_table_row_color($k);
 			}
