@@ -22,6 +22,11 @@ $ -> Affected files
 01-Apr-2009 Janusz Dobrowolski
 # Fixed document mailing.
 $ /reporting/includes/pdf_report.inc
+# Fixed focus javascript error on lists.
+$ /includes/ui/ui_lists.inc
+# Fixed report links hotkey selection
+$ /js/inserts.js
+
 ------------------------------- Release 2.1.1 ----------------------------------
 30-Mar-2009 Janusz Dobrowolski
 # Fixed display of unsufficient quantities in sales docs.
