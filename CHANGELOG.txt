@@ -19,6 +19,9 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+01-Apr-2009 Janusz Dobrowolski
+# Fixed document mailing.
+$ /reporting/includes/pdf_report.inc
 ------------------------------- Release 2.1.1 ----------------------------------
 30-Mar-2009 Janusz Dobrowolski
 # Fixed display of unsufficient quantities in sales docs.

@@ -419,7 +419,7 @@ class FrontReport extends Cpdf
 				{
 					include("doctext.inc");
 				}
-				require_once($path_to_root . "reporting/includes/class.mail.inc");
+				require_once($path_to_root . "/reporting/includes/class.mail.inc");
     			$mail = new email($this->company['coy_name'], $this->company['email']);
     			$from = $this->company['coy_name'] . " <" . $this->company['email'] . ">";
     			$to = $myrow['DebtorName'] . " <" . $myrow['email'] . ">";
@@ -457,14 +457,11 @@ class FrontReport extends Cpdf
     				$msg2 .= nl2br($sender) . "<br>";
     				$msg2 .= "<br>Filepath: " . $fname . "<br>Filename: " . $this->filename . "<br>";
     			}
-    			if ($ret)
-    				$str = "<br>" . $this->title . " " . $myrow['reference'] . " " . _("sent to") . " ";
-    			else
-    				$str = "<br>" . $this->title . " " . $myrow['reference'] . " " . _("NOT sent to") . " ";
-    			$msg2 .= $str . $myrow['DebtorName'] . " - " . $myrow['email'];
-    			echo "<html><body>";
-    			echo $msg2;
-    			echo "</body></html>";
+				if (!$ret)
+					display_error(_("Sending document by email failed"));
+				else
+					display_notification($this->title . " " . $myrow['reference'] . " " 
+						. _("has been sent by email."));
 			}
 			else
 			{
