@@ -355,14 +355,17 @@ function setHotKeys() {
 				_hotkeys.alt = false;
 				if (_hotkeys.focus>=0) {
 					var link = document.links[_hotkeys.focus];
-					if (link.target=='_blank') {
-//						window.open(link.href,'','toolbar=no,scrollbar=no,resizable=yes,menubar=no,width=900,height=500');
-						openWindow(link.href,'_blank');
-					} else
-						window.location = link.href;
+					if(link.onclick) 
+						link.onclick();
+					else
+						if (link.target=='_blank') {
+							window.open(link.href,'','toolbar=no,scrollbar=no,resizable=yes,menubar=no,width=900,height=500');
+							openWindow(link.href,'_blank');
+						} else
+							window.location = link.href;
 				}
-			} 
 			return stopEv(ev);
+			} 
 		}
 		return true;
 	}
