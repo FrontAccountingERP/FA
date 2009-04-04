@@ -19,6 +19,12 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+04-Apr-2009 Janusz Dobrowolski
+# Paper format defaults to A4 for unknown specifiers.
+$ /reporting/includes/pdf_report.inc
+# Sealing sql statements.
+$ /sales/manage/customers.php
+
 01-Apr-2009 Janusz Dobrowolski
 # Fixed document mailing.
 $ /reporting/includes/pdf_report.inc
