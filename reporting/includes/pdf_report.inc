@@ -54,7 +54,7 @@ class FrontReport extends Cpdf
 	{
 		switch ($size)
 		{
-
+			default:
 		  case 'A4':
 		  case 'a4':
 			  $this->pageWidth=595;
