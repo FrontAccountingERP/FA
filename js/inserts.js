@@ -352,13 +352,16 @@ function setHotKeys() {
 			ev.cancelBubble = true;
    			if(ev.stopPropagation) ev.stopPropagation();
 			// activate submit/escape form
-			var form = this.forms[0];
-			if(form) {
+			for(var j=0; j<this.forms.length; j++) {
+				var form = this.forms[j];
 				for (var i=0; i<form.elements.length; i++){
 					var el = form.elements[i];
 					var asp = el.getAttribute('aspect');
-					if ((asp=='default' && key==13)||(asp=='cancel' && key==27))
+					if ((asp=='default' && key==13)||(asp=='cancel' && key==27)) {
 						JsHttpRequest.request(el);
+						ev.returnValue = false;
+						return false;
+					}
 				}
 			}
 			ev.returnValue = false;
