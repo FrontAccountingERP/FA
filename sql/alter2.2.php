@@ -45,7 +45,7 @@ class fa2_2 {
 		if (check_table($pref, 'company', 'default_delivery_required')) return false;
 		if (check_table($pref, 'stock_category', 'dflt_dim2')) return false;
 		if (check_table($pref, 'users', 'sticky_doc_date')) return false;
-		return true;
+			return true;
 	}
 };
 

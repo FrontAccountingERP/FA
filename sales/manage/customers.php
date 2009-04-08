@@ -240,7 +240,7 @@ else
 
 table_section_title(_("Name and Address"));
 
-text_row(_("Customer Name:"), 'CustName', $_POST['CustName'], 40, 40);
+text_row(_("Customer Name:"), 'CustName', $_POST['CustName'], 40, 80);
 textarea_row(_("Address:"), 'address', $_POST['address'], 35, 5);
 
 email_row(_("E-mail:"), 'email', null, 40, 40);
