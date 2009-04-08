@@ -19,6 +19,16 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+08-Apr-2009 Janusz Dobrowolski
+# Fix for hotkeys on multi form pages.
+$ /js/inserts.js
+! Customer name max. length 80
+$ /sales/manage/customers.php
+  /sql/alter2.2.php
+  /sql/alter2.2.sql
+  /sql/en_US-demo.sql
+  /sql/en_US-new.sql
+
 30-Mar-2009 Janusz Dobrowolski
 ! Merged changes from main trunk for versions 2.1RC-2.1.1 (see below)
 $ /admin/db/v_banktrans.inc (removed)
