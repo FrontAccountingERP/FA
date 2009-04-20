@@ -82,11 +82,14 @@ function end_outer_table($breaks=0, $close_table=true)
 	echo "</td></tr>\n";
 	end_table($breaks);
 }
-
-function vertical_space()
+//
+//  outer table spacer
+//
+function vertical_space($params='')
 {
-	echo "</td></tr><tr><td valign=center>"; // outer table
+	echo "</td></tr><tr><td valign=center $params>";
 }
+
 function meta_forward($forward_to, $params="")
 {
     global $Ajax;
