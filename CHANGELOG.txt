@@ -40,6 +40,7 @@ $ /includes/current_user.inc
   /includes/page/footer.inc
   /includes/page/header.inc
   /includes/ui/ui_view.inc
+  /access/login.php
   /js/inserts.js
   /js/utils.js
   /themes/aqua/images/progressbar.gif

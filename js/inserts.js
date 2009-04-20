@@ -219,7 +219,7 @@ var inserts = {
 	},
 	'button': function(e) {
 		if (e.name) {
-			var func = eval("_validate."+e.name);
+			var func = _validate[e.name];
 			var old = e.onclick;
 			if(func) {
 				if (typeof old != 'function') {
