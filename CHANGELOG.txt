@@ -52,6 +52,8 @@ $ /includes/current_user.inc
   /themes/aqua/images/warning.png (new)
   /themes/cool/images/ajax-loader2.gif (new)
   /themes/cool/images/warning.png (new)
+# Fixed supplier uom retrieval.
+$ /purchasing/includes/db/po_db.inc
 
 04-Apr-2009 Janusz Dobrowolski
 # Paper format defaults to A4 for unknown specifiers.
