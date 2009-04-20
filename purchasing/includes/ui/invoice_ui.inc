@@ -385,8 +385,11 @@ function display_grn_items_for_selection(&$supp_trans, $k)
         		submit_cells('grn_item_id'.$n, _("Add"), '', _("Add to Invoice"), true);
         	else	
         		submit_cells('grn_item_id'.$n, _("Add"), '', _("Add to Credit Note"), true);
-    		if ($supp_trans->is_invoice && $_SESSION["wa_current_user"]->access == 2)	// Added 2008-10-18 by Joe Hunt. Only admins can remove GRNs
+    		if ($supp_trans->is_invoice && $_SESSION["wa_current_user"]->access == 2) {	// Added 2008-10-18 by Joe Hunt. Only admins can remove GRNs
         		submit_cells('void_item_id'.$n, _("Remove"), '', _("WARNING! Be careful with removal. The operation is executed immediately and cannot be undone !!!"), true);
+				submit_js_confirm('void_item_id'.$n,
+					sprintf(_('You are about to remove all yet non-invoiced items from delivery line #%d. This operation also irreversibly changes related order line. Do you want to continue ?'), $n));
+			}
 			end_row();
     	}
     }
