@@ -318,14 +318,13 @@ function add_user_js_data() {
 	$ts = $thoseps[user_tho_sep()];
 	$ds = $decseps[user_dec_sep()];
 
-    $js = "\n<script type=\"text/javascript\">\n"
-	  . "<!--\n"
+    $js = "\n"
 	  . "var user = {\n"
-	  . "theme: '". $path_to_root . '/themes/'. 'default' /*user_theme()*/.'/'."',\n"
+	  . "theme: '". $path_to_root . '/themes/'. user_theme().'/'."',\n"
 	  . "loadtxt: '"._('Requesting data...')."',\n"
 	  . "ts: '$ts',\n"
 	  . "ds: '$ds',\n"
-	  . "pdec : " . user_price_dec() . "}\n--></script>";
+	  . "pdec : " . user_price_dec() . "}\n";
 
   add_js_source($js);
 }

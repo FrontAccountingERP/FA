@@ -650,16 +650,12 @@ function display_quick_entries(&$cart, $id, $base, $type, $descr='')
 
 function get_js_open_window($width, $height)
 {
-	$js = "\n<script type=\"text/javascript\">\n"
-	 	. "<!--\n"
-		. "function openWindow(url, title)\n"
+	$js ="function openWindow(url, title)\n"
 		. "{\n"
 		. " var left = (screen.width - $width) / 2;\n"
 		. " var top = (screen.height - $height) / 2;\n"
 		. " return window.open(url, title, 'width=$width,height=$height,left='+left+',top='+top+',screenX='+left+',screenY='+top+',status=no,scrollbars=yes');\n"
-		. "}\n"
-		. "-->\n"
-		. "</script>\n";
+		. "}\n";
 	return $js;
 }
 
@@ -683,8 +679,7 @@ function default_focus($name, $form_no=0) {
 
 function get_js_png_fix()
 {
-	$js = "<script type=\"text/javascript\">\n"
-		. "function fixPNG(myImage)\n"
+	$js = "function fixPNG(myImage)\n"
 		. "{\n"
 		. " var arVersion = navigator.appVersion.split(\"MSIE\")\n"
 		. " var version = parseFloat(arVersion[1])\n"
@@ -703,8 +698,7 @@ function get_js_png_fix()
         . "    + \"(src=\'\" + myImage.src + \"\', sizingMethod='scale');\\\"></span>\"\n"
 	   	. "  myImage.outerHTML = strNewHTML\n"
     	. " }\n"
-		. "}\n"
-		. "</script>\n";
+		. "}\n";
 	return $js;
 }
 

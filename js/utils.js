@@ -8,6 +8,12 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
+function set_mark(img) {
+	var box = document.getElementById('ajaxmark');
+	if(img) box.src = user.theme+'images/'+ img;
+	box.style.visibility = img ? 'visible' : 'hidden'
+}
+
 //
 //	JsHttpRequest class extensions.
 //
@@ -18,9 +24,14 @@
 //		if form parameter exists also form values are submited, otherwise
 //		request is directed to current location 
 // 
-    JsHttpRequest.request= function(trigger, form) {
-		var mark = document.getElementById('ajaxmark');
-		if(mark) mark.style.visibility = 'visible';
+JsHttpRequest.request= function(trigger, form, tout) {
+	tout = tout | 3000;	// default timeout value
+	set_mark(tout>5000 ? 'progressbar.gif' : 'ajax-loader.gif');
+	JsHttpRequest._request(trigger, form, tout, 2);
+}
+
+JsHttpRequest._request = function(trigger, form, tout, retry) {
+
 		if (trigger.tagName=='A') {
 			var content = {};
 			var upload = 0;
@@ -41,12 +52,29 @@
 
 		if (!form) url = url.substring(0, url.indexOf('?'));
 		
-		if (!submitObj) 
+		if (!submitObj) {
 			content[trigger] = 1;
-			
+			}
 		}
 			// this is to avoid caching problems
 		content['_random'] = Math.random()*1234567;
+	
+		var tcheck = setTimeout(
+			function() {
+				for(var id in JsHttpRequest.PENDING)  {
+					var call = JsHttpRequest.PENDING[id];
+				 	if (call != false) {
+					if (call._ldObj.xr) // needed for gecko
+						call._ldObj.xr.onreadystatechange = function(){};
+					call.abort(); // why this doesn't kill request in firebug?
+//						call._ldObj.xr.abort();
+						delete JsHttpRequest.PENDING[id];
+					}
+				}
+				set_mark(retry ? 'ajax-loader2.gif':'warning.png' );
+				if(retry)
+					JsHttpRequest._request(trigger, form, tout, retry-1);
+			}, tout );
 
         JsHttpRequest.query(
             (upload ? "form." : "")+"POST "+url, // force form loader
@@ -91,11 +119,11 @@
 				  errors = errors+'<br>Unknown ajax function: '+cmd;
 			}
 		  }
-
+		 if(tcheck)
+		   JsHttpRequest.clearTimeout(tcheck);
         // Write errors to the debug div.
 		  document.getElementById('msgbox').innerHTML = errors;
-		  var mark = document.getElementById('ajaxmark');
-		  if(mark) mark.style.visibility = 'hidden';
+		  set_mark();
 
 		  Behaviour.apply();
 
@@ -108,9 +136,9 @@
 			}
 		}
             },
-            false  // do not disable caching
+	        false  // do not disable caching
         );
-    }
+	}
 	// collect all form input values plus inp trigger value
 	JsHttpRequest.formInputs = function(inp, objForm, upload)
 	{

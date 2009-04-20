@@ -13,20 +13,11 @@ var _hotkeys = {
 	'alt': false,	// whether is the Alt key pressed
 	'focus': -1	// currently selected indeks of document.links
 };
+var _validate = {}; // validation functions
 
 function debug(msg) {
     box = document.getElementById('msgbox')
 	box.innerHTML= box.innerHTML+'<br>'+msg
-}
-
-function progbar() {
-	box = document.getElementById('msgbox');
-    box.innerHTML= "<center><table width='98%' border='1' cellpadding=3 "
-	+"bordercolor='#007700' style='border-collapse: collapse'>"
-	+"<tr><td align='center' bgcolor='#ccffcc' >"
-		+"<img src='"+user.theme+"images/progressbar.gif' alt='"
-		+user.loadtxt+"' /></td></tr></table></center><br>";
-	box.style.display = 'block';
 }
 
 function save_focus(e) {
@@ -215,15 +206,34 @@ var inserts = {
 	    e.style.display = 'block';
 	},
 //	'.ajaxsubmit,.editbutton,.navibutton': // much slower on IE7
-	'button.ajaxsubmit,input.ajaxsubmit,input.editbutton,button.navibutton': 
+	'button.ajaxsubmit,input.ajaxsubmit,input.editbutton,button.editbutton,button.navibutton': 
 	function(e) {
-	    e.onclick = function() {
-			if (this.getAttribute('aspect') == 'process')
-				progbar();
-		    save_focus(this);
-			JsHttpRequest.request(this);
-			return false;
-	    }
+		    e.onclick = function() {
+			    save_focus(e);
+				if (e.getAttribute('aspect') == 'process')
+					JsHttpRequest.request(this, null, 30000);
+				else
+					JsHttpRequest.request(this);
+				return false;
+		    }
+	},
+	'button': function(e) {
+		if (e.name) {
+			var func = eval("_validate."+e.name);
+			var old = e.onclick;
+			if(func) {
+				if (typeof old != 'function') {
+					e.onclick = func;
+				} else {
+					e.onclick = function() {
+						if(func()) 
+							{ old(); return true;}
+						else
+							return false;
+					}
+				}
+			}
+		}
 	},
     '.amount': function(e) {
 		if(e.onblur==undefined) {

@@ -41,8 +41,6 @@ function send_scripts()
     global $js_lib, $js_static, $js_path, $js_userlib, $comp_path,
 	$path_to_root, $go_debug;
 
-   	add_user_js_data();
-
 	$js ='';
 	foreach($js_static as $jsfile)
 	{
@@ -60,10 +58,6 @@ function send_scripts()
 	    	$jsfile . '"></script>';
 	}
 
-	foreach($js_lib as $text)
-	{
-	  	$js .= $text;
-	}
     echo $js;
 }
 
@@ -74,6 +68,11 @@ function page_header($title, $no_menu=false, $is_index=false, $onload="", $js=""
 
 	if (in_ajax())
 		return; // just for speed up
+
+//	$jsext = substr_replace($_SERVER['PHP_SELF'], '.js', -4);
+
+//	if (file_exists($_SERVER['DOCUMENT_ROOT'].$jsext))
+//		add_js_ufile($jsext);
 
 	$theme = user_theme();
 	$local_path_to_root = $path_to_root;
