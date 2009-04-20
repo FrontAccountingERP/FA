@@ -3,7 +3,7 @@
  *
  * @license LGPL
  * @author Dmitry Koterov, http://en.dklab.ru/lib/JsHttpRequest/
- * @version 5.x $Id$
+ * @version 5.x
  */
 
 // {{{
@@ -192,6 +192,9 @@ function JsHttpRequest() {
             status = 200;
             statusText = "OK";
         } else {
+             // The special value "null" from a backend means Fatal error.
+             // User cannot assign null to $_RESULT manually, it is 
+             // translated to false to avoid 500 error collisions.
             status = 500;
             statusText = "Internal Server Error";
         }
@@ -507,8 +510,10 @@ JsHttpRequest.LOADERS.xml = { loader: function(req) {
             } catch (e) {}
             if (!req.status) return;
             try {
+                 // Damned Opera returned empty responseText when Status is not 200.
+                 var rtext = req.responseText || '{ js: null, text: null }';
                 // Prepare generator function & catch syntax errors on this stage.
-                eval('JsHttpRequest._tmp = function(id) { var d = ' + req.responseText + '; d.id = id; JsHttpRequest.dataReady(d); }');
+                eval('JsHttpRequest._tmp = function(id) { var d = ' + rtext + '; d.id = id; JsHttpRequest.dataReady(d); }');
             } catch (e) {
                 // Note that FF 2.0 does not throw any error from onreadystatechange handler.
                 return req._error('js_invalid', req.responseText)
