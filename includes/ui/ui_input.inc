@@ -103,17 +103,23 @@ function hidden($name, $value=null, $echo=true)
 	else
 		return $ret;
 }
-
-function submit($name, $value, $echo=true, $title=false, $async=false, $icon=false)
+/*
+	Various types of submit button selected by $type:
+	null	- button visible only in fallback mode
+	false	- normal submit button
+	true	- ajax driven submit
+	'process' - ajax button with long timeout 
+*/
+function submit($name, $value, $echo=true, $title=false, $type=false, $icon=false)
 {
 	global $path_to_root;
-	
+
 	default_focus($name);
 	$submit_str = "<button class=\""
-	    .($async ? 'ajaxsubmit' : 'inputsubmit')
+	    .($type ? 'ajaxsubmit' : 'inputsubmit')
 		."\" type=\"submit\""
-		.($async === null ? (fallback_mode() ? ' aspect="fallback"' : " style='display:none;'" ): 
-			($async === 'process' ? 'aspect="process"' : '') )
+		.($type === null ? (fallback_mode() ? ' aspect="fallback"' : " style='display:none;'" ): 
+			($type === 'process' ? 'aspect="process"' : '') )
 	    ." name=\"$name\"  id=\"$name\" value=\"$value\""
 	    .($title ? " title='$title'" : '')
 	    ."><span>$value</span>"
@@ -203,6 +209,11 @@ function submit_return($name, $value, $title=false, $async=false)
 		submit($name, $value, true, $title, $async);
 	}
 }
+
+function submit_js_confirm($name, $msg) {
+	add_js_source(
+		"_validate.$name=function(){ return confirm('$msg');};");
+};
 //-----------------------------------------------------------------------------------
 
 function set_icon($icon, $title=false)
