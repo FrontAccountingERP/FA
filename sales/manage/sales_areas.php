@@ -78,16 +78,28 @@ if ($Mode == 'Delete')
 if ($Mode == 'RESET')
 {
 	$selected_id = -1;
+	$sav = get_post('show_inactive');
 	unset($_POST);
+	if ($sav) $_POST['show_inactive'] = 1;
 }
+
 //-------------------------------------------------------------------------------------------------
 
 $sql = "SELECT * FROM ".TB_PREF."areas";
+if (!check_value('show_inactive')) $sql .= " WHERE !inactive";
 $result = db_query($sql,"could not get areas");
 
 start_form();
 start_table("$table_style width=30%");
+
 $th = array(_("Area Name"), "", "");
+
+if (check_value('show_inactive')) 
+	array_insert($th, 1 , _("Inactive"));
+if (get_post('_show_inactive_update')) {
+	$Ajax->activate('_page_body');
+}
+
 table_header($th);
 $k = 0; 
 
@@ -97,19 +109,22 @@ while ($myrow = db_fetch($result))
 	alt_table_row_color($k);
 		
 	label_cell($myrow["description"]);
+	
+	inactive_status_cell($myrow["area_code"], $myrow["inactive"], 'areas', 'area_code');
+
  	edit_button_cell("Edit".$myrow["area_code"], _("Edit"));
  	delete_button_cell("Delete".$myrow["area_code"], _("Delete"));
 	end_row();
 }
-
-
+	
+show_inactive_row($th);
 end_table();
-end_form();
+//end_form();
 echo '<br>';
 
 //-------------------------------------------------------------------------------------------------
 
-start_form();
+//start_form();
 
 start_table($table_style2);
 

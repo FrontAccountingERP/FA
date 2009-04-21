@@ -87,6 +87,11 @@ function handle_submit()
             WHERE debtor_no = '". $_POST['customer_id'] . "'";
 
 		db_query($sql,"The customer could not be updated");
+
+		update_record_status($_POST['customer_id'], $_POST['inactive'],
+			'debtors_master', 'debtor_no');
+
+		$Ajax->activate('customer_id'); // in case of status change
 		display_notification(_("Customer has been updated."));
 	} 
 	else 
@@ -189,18 +194,19 @@ start_form();
 if (db_has_customers()) 
 {
 	start_table("class = 'tablestyle_noborder'");
-	customer_list_row(_("Select a customer: "), 'customer_id', null,
-	  _('New customer'), true);
+	start_row();
+	check_cells(_("Show inactive:"), 'show_inactive', null, true);
+	customer_list_cells(_("Select a customer: "), 'customer_id', null,
+		_('New customer'), true, check_value('show_inactive'));
+	end_row();
 	end_table();
+	if (get_post('_show_inactive_update'))
+		$Ajax->activate('customer_id');
 } 
 else 
 {
 	hidden('customer_id');
 }
-
-start_outer_table($table_style2, 5);
-
-table_section(1);
 
 if ($new_customer) 
 {
@@ -214,6 +220,7 @@ if ($new_customer)
 	$_POST['payment_terms']  = '';
 	$_POST['discount']  = $_POST['pymt_discount'] = percent_format(0);
 	$_POST['credit_limit']	= price_format(sys_prefs::default_credit_limit());
+	$_POST['inactive'] = 0;
 } 
 else 
 {
@@ -236,8 +243,11 @@ else
 	$_POST['discount']  = percent_format($myrow["discount"] * 100);
 	$_POST['pymt_discount']  = percent_format($myrow["pymt_discount"] * 100);
 	$_POST['credit_limit']	= price_format($myrow["credit_limit"]);
+	$_POST['inactive'] = $myrow["inactive"];
 }
 
+start_outer_table($table_style2, 5);
+table_section(1);
 table_section_title(_("Name and Address"));
 
 text_row(_("Customer Name:"), 'CustName', $_POST['CustName'], 40, 80);
@@ -256,12 +266,12 @@ else
 	label_row(_("Customer's Currency:"), $_POST['curr_code']);
 	hidden('curr_code', $_POST['curr_code']);				
 }	
+sales_types_list_row(_("Sales Type/Price List:"), 'sales_type', $_POST['sales_type']);
 
 table_section(2);
 
 table_section_title(_("Sales"));
 
-sales_types_list_row(_("Sales Type/Price List:"), 'sales_type', $_POST['sales_type']);
 percent_row(_("Discount Percent:"), 'discount', $_POST['discount']);
 percent_row(_("Prompt Payment Discount Percent:"), 'pymt_discount', $_POST['pymt_discount']);
 amount_row(_("Credit Limit:"), 'credit_limit', $_POST['credit_limit']);
@@ -285,8 +295,10 @@ if (!$new_customer)  {
 		'<b>'. (count($_SESSION['Context']) ?  _("Select or &Add") : _("&Add or Edit ")).'</b>', 
 		"debtor_no=".$_POST['customer_id']);
 	end_row();
+
 }
 
+record_status_list_row(_("Customer status:"), 'inactive');
 end_outer_table(1);
 
 div_start('controls');
