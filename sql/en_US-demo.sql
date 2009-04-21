@@ -470,6 +470,7 @@ CREATE TABLE `0_cust_branch` (
   `disable_trans` tinyint(4) NOT NULL default '0',
   `br_post_address` tinytext NOT NULL,
   `group_no` int(11) NOT NULL default '0',
+  `inactive` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`branch_code`,`debtor_no`),
   KEY `branch_code` (`branch_code`),
   KEY `br_name` (`br_name`)
@@ -478,12 +479,12 @@ CREATE TABLE `0_cust_branch` (
 
 ### Data of table `0_cust_branch` ###
 
-INSERT INTO `0_cust_branch` VALUES ('1', '1', 'Main', '', '1', '1', '', '', 'Lucky Luke Inc.', 'lucky@luke.com', 'DEF', '1', '3000', '3000', '1500', '3200', '1', '0', 'The Road', '0');
-INSERT INTO `0_cust_branch` VALUES ('2', '1', 'Service divison', '', '4', '1', '', '', '', '', 'DEF', '2', '3000', '3000', '1500', '3200', '1', '0', 'Another Road', '0');
-INSERT INTO `0_cust_branch` VALUES ('3', '2', 'Main', '', '4', '2', '', '', 'Money Makers Ltd.', '', 'DEF', '2', '3000', '3000', '1500', '3200', '1', '0', '', '0');
-INSERT INTO `0_cust_branch` VALUES ('5', '3', 'Main', '', '4', '1', '', '', 'Junk Beer ApS', '', 'CWA', '2', '3000', '3000', '1500', '3200', '1', '0', '', '0');
-INSERT INTO `0_cust_branch` VALUES ('6', '4', 'Johny Bravo', 'Never Mind 13', '1', '1', '123', '', 'Johny Bravo', '', 'DEF', '1', '3000', '3000', '1500', '3200', '1', '0', 'Never Mind 13', '0');
-INSERT INTO `0_cust_branch` VALUES ('7', '3', 'Junk Beer ApS', 'N/A', '1', '1', '1223123', '', 'junk@junkbeer.dk', '', 'DEF', '5', '3000', '3000', '1500', '3200', '1', '0', 'N/A', '0');
+INSERT INTO `0_cust_branch` VALUES ('1', '1', 'Main', '', '1', '1', '', '', 'Lucky Luke Inc.', 'lucky@luke.com', 'DEF', '1', '3000', '3000', '1500', '3200', '1', '0', 'The Road', '0', '0');
+INSERT INTO `0_cust_branch` VALUES ('2', '1', 'Service divison', '', '4', '1', '', '', '', '', 'DEF', '2', '3000', '3000', '1500', '3200', '1', '0', 'Another Road', '0', '0');
+INSERT INTO `0_cust_branch` VALUES ('3', '2', 'Main', '', '4', '2', '', '', 'Money Makers Ltd.', '', 'DEF', '2', '3000', '3000', '1500', '3200', '1', '0', '', '0', '0');
+INSERT INTO `0_cust_branch` VALUES ('5', '3', 'Main', '', '4', '1', '', '', 'Junk Beer ApS', '', 'CWA', '2', '3000', '3000', '1500', '3200', '1', '0', '', '0', '0');
+INSERT INTO `0_cust_branch` VALUES ('6', '4', 'Johny Bravo', 'Never Mind 13', '1', '1', '123', '', 'Johny Bravo', '', 'DEF', '1', '3000', '3000', '1500', '3200', '1', '0', 'Never Mind 13', '0', '0');
+INSERT INTO `0_cust_branch` VALUES ('7', '3', 'Junk Beer ApS', 'N/A', '1', '1', '1223123', '', 'junk@junkbeer.dk', '', 'DEF', '5', '3000', '3000', '1500', '3200', '1', '0', 'N/A', '0', '0');
 
 
 ### Structure of table `0_debtor_trans` ###

@@ -26,3 +26,4 @@ ALTER TABLE `0_stock_category` ADD COLUMN `dflt_dim2` int(11) default NULL;
 ALTER TABLE `0_users` ADD `sticky_doc_date` TINYINT(1) DEFAULT '0';
 
 ALTER TABLE `0_debtors_master` MODIFY COLUMN `name` varchar(100) NOT NULL default '';
+ALTER TABLE `0_cust_branch` ADD `inactive` tinyint(1) NOT NULL default '0';
