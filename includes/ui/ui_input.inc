@@ -199,14 +199,6 @@ function submit_add_or_update_center($add=true, $title=false, $async=false)
 	echo "</center>";
 }
 
-/*
-function submit_add_or_update_row($add=true)
-{
-	echo "<tr><td colspan=99 align=center>";
-	submit_add_or_update($add);
-	echo "</td></tr>\n";
-}
-*/
 function submit_add_or_update_row($add=true, $right=true, $extra="", $title=false, $async=false)
 {
 	echo "<tr>";
@@ -327,7 +319,7 @@ function check_cells($label, $name, $value, $submit_on_change=false, $title=fals
 {
 	if ($label != null)
 		echo "<td>$label</td>\n";
-	echo "<td>";
+	echo "<td align='center'>";
 	echo check(null, $name, $value, $submit_on_change, $title);
 	echo "</td>";
 }
@@ -757,6 +749,37 @@ function text_row_with_submit($label, $name, $value, $size, $max, $input_name, $
 }
 */
 //-----------------------------------------------------------------------------------
+//
+//	When show_inactive page option is set 
+//  displays value of inactive field as checkbox cell.
+//  Also updates database record after status change.
+//
+function inactive_status_cell($id, $value, $table, $key)
+{
+	global	$Ajax;
 
+	$name = "Inactive". $id;
+	$value = $value ? 1:0;
+
+	if (check_value('show_inactive')) {
+		if (isset($_POST['LInact'][$id]) && (get_post('_Inactive'.$id.'_update') || 
+			get_post('Update')) && (check_value('Inactive'.$id) != $value)) {
+			update_record_status($id, !$value, $table, $key);
+		}
+		echo '<td align="center">'. checkbox(null, $name, $value, true, '')
+ 			. hidden("LInact[$id]", $value, false) . '</td>';	
+	}
+}
+//
+//	Displays controls for optional display of inactive records
+//
+function show_inactive_row($th) {
+	echo  "<tr><td colspan=".(count($th)).">"
+		."<div style='float:left;'>"
+		. checkbox(null, 'show_inactive', null, true). _("Show also Inactive")
+		."</div><div style='float:right;'>"
+		. submit('Update', _('Update'), false, '', null)
+		."</div></td></tr>";
+}
 
 ?>

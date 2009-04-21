@@ -46,6 +46,11 @@ select {
     max-width: 200px;
 }
 
+option.inactive {
+	text-decoration: line-through;
+	color: gray;
+}
+
 input.big {
 	width: 100px;
 }
