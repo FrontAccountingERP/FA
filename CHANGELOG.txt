@@ -18,7 +18,23 @@ Legend:
 - -> Removed
 ! -> Note
 $ -> Affected files
-
+	
+21-Apr-2009 Janusz Dobrowolski
++ Support for inactive records.
+  /includes/ui/ui_lists.inc
+  /includes/ui/ui_input.inc
+  /includes/db/sql_functions.inc
+  /themes/aqua/default.css
+  /themes/cool/default.css
+  /themes/default/default.css
++ Added inactive field in cust_branches
+  /sql/alter2.2.sql
+  /sql/en_US-demo.sql
+  /sql/en_US-new.sql
++ Added inactive records edition.
+  /sales/manage/customers.php
+  /sales/manage/sales_areas.php
+  
 08-Apr-2009 Janusz Dobrowolski
 # Fix for hotkeys on multi form pages.
 $ /js/inserts.js
@@ -143,7 +159,7 @@ $ All form entry files.
 $ /reporting/includes/header2.inc
 
 17-Mar-2009 Janusz Dobrowolski
-+ Added default delivery required by parameter, removed custom company fileds/names.
++ Added default delivery_required_by parameter, removed custom company fields/names.
 $ /admin/company_preferences.php
   /admin/gl_setup.php
   /admin/db/company_db.inc
@@ -239,7 +255,6 @@ $ /.htaccess
   /sales/inquiry/sales_deliveries_view.php
   /sales/inquiry/sales_orders_view.php
 
-=======
 ------------------------------- Release 2.1.1 ----------------------------------
 30-Mar-2009 Janusz Dobrowolski
 # Fixed display of unsufficient quantities in sales docs.
