@@ -100,16 +100,19 @@ if ($Mode == 'Delete')
 if ($Mode == 'RESET')
 {
 	$selected_id = -1;
+	$sav = get_post('show_inactive');
 	unset($_POST);
+	$_POST['show_inactive'] = $sav;
 }
 //----------------------------------------------------------------------------------------------------
 
-$result = get_all_sales_types();
+$result = get_all_sales_types(check_value('show_inactive'));
 
 start_form();
 start_table("$table_style width=30%");
 
 $th = array (_('Type Name'), _('Factor'), _('Tax Incl'), '','');
+inactive_control_column($th);
 table_header($th);
 $k = 0;
 $base_sales = get_base_sales_type();
@@ -125,18 +128,18 @@ while ($myrow = db_fetch($result))
 	if($myrow["id"] == $base_sales) $f = "<I>"._('Base')."</I>";
 	label_cell($f);
 	label_cell($myrow["tax_included"] ? _('Yes'):_('No'), 'align=center');
+	inactive_control_cell($myrow["id"], $myrow["inactive"], 'sales_types', 'id');
  	edit_button_cell("Edit".$myrow['id'], _("Edit"));
  	delete_button_cell("Delete".$myrow['id'], _("Delete"));
 	end_row();
 }
-
+inactive_control_row($th);
 end_table();
-end_form();
+
 display_note(_("Marked sales type is the company base pricelist for prices calculations."), 0, 0, "class='overduefg'");
 
 //----------------------------------------------------------------------------------------------------
 
-start_form();
  if (!isset($_POST['tax_included']))
 	$_POST['tax_included'] = 0;
  if (!isset($_POST['base']))

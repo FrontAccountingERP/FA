@@ -24,9 +24,11 @@ function update_sales_type($id, $name, $tax_included, $factor)
 	db_query($sql, "could not update sales type");			
 }
 
-function get_all_sales_types()
+function get_all_sales_types($all=false)
 {
 	$sql = "SELECT * FROM ".TB_PREF."sales_types";
+	if (!$all)
+		$sql .= " WHERE !inactive";
 	
 	return db_query($sql, "could not get all sales types");
 } 

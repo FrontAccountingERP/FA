@@ -168,7 +168,9 @@ if ($Mode == 'RESET' || get_post('_customer_id_update'))
 {
 	$selected_id = -1;
 	$cust_id = $_POST['customer_id'];
+	$inact = get_post('show_inactive');
 	unset($_POST);
+	$_POST['show_inactive'] = $inact;
 	$_POST['customer_id'] = $cust_id;
 	$Ajax->activate('_page_body');
 }
@@ -176,7 +178,7 @@ start_form();
 
 echo "<center>" . _("Select a customer: ") . "&nbsp;&nbsp;";
 customer_list('customer_id', null, false, true);
-echo "</center><br><br>";
+echo "</center><br>";
 
 $num_branches = db_customer_has_branches($_POST['customer_id']);
 
@@ -191,13 +193,17 @@ if ($num_branches)
 		AND ".TB_PREF."cust_branch.salesman=".TB_PREF."salesman.salesman_code
 		AND ".TB_PREF."cust_branch.debtor_no = '" . $_POST['customer_id']. "'";
 
+	if (!check_value('show_inactive')) $sql .= " AND !".TB_PREF."cust_branch.inactive";
+
 	$result = db_query($sql,"could not get customer branches");
 
 	start_table("$table_style width=60%");
 
 	$th = array(_("Name"), _("Contact"), _("Sales Person"), _("Area"),
 		_("Phone No"), _("Fax No"), _("E-mail"), _("Tax Group"), "", "");
+	inactive_control_column($th);
 	if (count($_SESSION['Context'])) $th[] = '';
+
 	table_header($th);
 
 	while ($myrow = db_fetch($result))
@@ -211,13 +217,16 @@ if ($num_branches)
 		label_cell($myrow["fax"]);
 		email_cell($myrow["email"]);
 		label_cell($myrow["tax_group_name"]);
+		inactive_control_cell($myrow["branch_code"], $myrow["inactive"],
+			'cust_branch', 'branch_code');
 		if (count($_SESSION['Context']))
  			edit_button_cell("Select".$myrow["branch_code"], _("Select"));
  		edit_button_cell("Edit".$myrow["branch_code"], _("Edit"));
  		delete_button_cell("Delete".$myrow["branch_code"], _("Delete"));
 		end_row();
 	}
-	end_table();
+	inactive_control_row($th);
+	end_table(1);
 	//END WHILE LIST LOOP
 }
 else

@@ -78,16 +78,22 @@ if ($Mode == 'Delete')
 if ($Mode == 'RESET')
 {
 	$selected_id = -1;
+	$sav = get_post('show_inactive');
 	unset($_POST);
+	if ($sav) $_POST['show_inactive'] = 1;
 }
 //-------------------------------------------------------------------------------------------------
 
-$sql = "SELECT * FROM ".TB_PREF."groups ORDER BY description";
+$sql = "SELECT * FROM ".TB_PREF."groups";
+if (!check_value('show_inactive')) $sql .= " WHERE !inactive";
+$sql .= " ORDER BY description";
 $result = db_query($sql,"could not get groups");
 
 start_form();
 start_table("$table_style width=30%");
 $th = array(_("Group Name"), "", "");
+inactive_control_column($th);
+
 table_header($th);
 $k = 0; 
 
@@ -97,19 +103,18 @@ while ($myrow = db_fetch($result))
 	alt_table_row_color($k);
 		
 	label_cell($myrow["description"]);
+	inactive_control_cell($myrow["id"], $myrow["inactive"], 'groups', 'id');
  	edit_button_cell("Edit".$myrow["id"], _("Edit"));
  	delete_button_cell("Delete".$myrow["id"], _("Delete"));
 	end_row();
 }
 
-
+inactive_control_row($th);
 end_table();
-end_form();
+
 echo '<br>';
 
 //-------------------------------------------------------------------------------------------------
-
-start_form();
 
 start_table($table_style2);
 

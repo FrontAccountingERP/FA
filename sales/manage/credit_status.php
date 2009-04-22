@@ -88,15 +88,18 @@ if ($Mode == 'Delete')
 if ($Mode == 'RESET')
 {
 	$selected_id = -1;
+	$sav = get_post('show_inactive');
 	unset($_POST);
+	$_POST['show_inactive'] = $sav;
 }
 //-----------------------------------------------------------------------------------
 
-$result = get_all_credit_status();
+$result = get_all_credit_status(check_value('show_inactive'));
 
 start_form();
 start_table("$table_style width=40%");
 $th = array(_("Description"), _("Dissallow Invoices"),'','');
+inactive_control_column($th);
 table_header($th);
 
 $k = 0;
@@ -116,18 +119,17 @@ while ($myrow = db_fetch($result))
 	
 	label_cell($myrow["reason_description"]);
 	label_cell($disallow_text);
+	inactive_control_cell($myrow["id"], $myrow["inactive"], 'credit_status', 'id');
  	edit_button_cell("Edit".$myrow['id'], _("Edit"));
  	delete_button_cell("Delete".$myrow['id'], _("Delete"));
 	end_row();
 }
 
+inactive_control_row($th);
 end_table();
-end_form();
 echo '<br>';
 
 //-----------------------------------------------------------------------------------
-
-start_form();
 
 start_table($table_style2);
 
