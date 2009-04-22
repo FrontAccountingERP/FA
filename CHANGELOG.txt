@@ -19,6 +19,29 @@ Legend:
 ! -> Note
 $ -> Affected files
 	
+22-Apr-2009 Janusz Dobrowolski
++ Added inactive records support.
+$ /sales/includes/db/credit_status_db.inc
+  /sales/includes/db/sales_types_db.inc
+  /sales/manage/credit_status.php
+  /sales/manage/customer_branches.php
+  /includes/data_checks.inc
+  /sales/manage/sales_groups.php
+  /sales/manage/sales_people.php
+  /sales/manage/sales_types.php
+# Slightly changed inactive record support
+$ /includes/ui/ui_input.inc
+  /includes/ui/ui_lists.inc
+  /sales/manage/customers.php
+  /sales/manage/sales_areas.php
+! Display all db_query errors in debug mode
+$ /includes/db/connect_db.inc
+# Hide empty/disabled tabs
+$ /frontaccounting.php
+  /applications/dimensions.php
+# Small typo fixed
+$ /applications/application.php
+
 21-Apr-2009 Janusz Dobrowolski
 + Support for inactive records.
   /includes/ui/ui_lists.inc
