@@ -100,7 +100,7 @@
 		{
 			$this->id = $id;
 			$this->name = $name;
-			$this->enables = $enabled;
+			$this->enabled = $enabled;
 			$this->modules = array();
 		}
 		

@@ -44,8 +44,9 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 			//$this->renderer =& new renderer();
 		}
 		function add_application(&$app)
-				{
-							$this->applications[$app->id] = &$app;
+				{	
+					if ($app->enabled) // skip inactive modules
+						$this->applications[$app->id] = &$app;
 				}
 		function get_application($id)
 				{
