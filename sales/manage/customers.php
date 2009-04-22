@@ -195,13 +195,15 @@ if (db_has_customers())
 {
 	start_table("class = 'tablestyle_noborder'");
 	start_row();
-	check_cells(_("Show inactive:"), 'show_inactive', null, true);
 	customer_list_cells(_("Select a customer: "), 'customer_id', null,
 		_('New customer'), true, check_value('show_inactive'));
+	check_cells(_("Show inactive:"), 'show_inactive', null, true);
 	end_row();
 	end_table();
-	if (get_post('_show_inactive_update'))
+	if (get_post('_show_inactive_update')) {
 		$Ajax->activate('customer_id');
+		set_focus('customer_id');
+	}
 } 
 else 
 {

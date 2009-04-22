@@ -80,7 +80,7 @@ if ($Mode == 'RESET')
 	$selected_id = -1;
 	$sav = get_post('show_inactive');
 	unset($_POST);
-	if ($sav) $_POST['show_inactive'] = 1;
+	$_POST['show_inactive'] = $sav;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -93,12 +93,7 @@ start_form();
 start_table("$table_style width=30%");
 
 $th = array(_("Area Name"), "", "");
-
-if (check_value('show_inactive')) 
-	array_insert($th, 1 , _("Inactive"));
-if (get_post('_show_inactive_update')) {
-	$Ajax->activate('_page_body');
-}
+inactive_control_column($th);
 
 table_header($th);
 $k = 0; 
@@ -110,21 +105,18 @@ while ($myrow = db_fetch($result))
 		
 	label_cell($myrow["description"]);
 	
-	inactive_status_cell($myrow["area_code"], $myrow["inactive"], 'areas', 'area_code');
+	inactive_control_cell($myrow["area_code"], $myrow["inactive"], 'areas', 'area_code');
 
  	edit_button_cell("Edit".$myrow["area_code"], _("Edit"));
  	delete_button_cell("Delete".$myrow["area_code"], _("Delete"));
 	end_row();
 }
 	
-show_inactive_row($th);
+inactive_control_row($th);
 end_table();
-//end_form();
 echo '<br>';
 
 //-------------------------------------------------------------------------------------------------
-
-//start_form();
 
 start_table($table_style2);
 
