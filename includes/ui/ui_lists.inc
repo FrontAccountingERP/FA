@@ -652,7 +652,7 @@ function stock_items_list($name, $selected_id=null, $all_option=false, $submit_o
 {
 	global $all_items;
 
-	$sql = "SELECT stock_id, s.description, c.description, inactive
+	$sql = "SELECT stock_id, s.description, c.description, s.inactive
 			FROM ".TB_PREF."stock_master s,".TB_PREF."stock_category c WHERE s.category_id=c.category_id";
 
 	return combo_input($name, $selected_id, $sql, 'stock_id', 's.description',
@@ -703,7 +703,7 @@ function sales_items_list($name, $selected_id=null, $all_option=false,
 	global $all_items;
 	// all sales codes
 	$sql = "SELECT i.item_code, i.description, c.description, count(*)>1 as kit,
-			 inactive
+			 i.inactive
 			FROM
 			".TB_PREF."item_codes i
 			LEFT JOIN
@@ -768,7 +768,7 @@ function base_stock_items_list($where, $name, $selected_id=null,
 {
 	global $all_items;
 
-	$sql = "SELECT stock_id, s.description, c.description, inactive
+	$sql = "SELECT stock_id, s.description, c.description, s.inactive
 		FROM ".TB_PREF."stock_master s,".TB_PREF."stock_category c WHERE
 		s.category_id=c.category_id";
 
@@ -1559,14 +1559,14 @@ function gl_all_accounts_list($name, $selected_id=null, $skip_bank_accounts=fals
 	$cells=false, $all_option=false, $submit_on_change=false)
 {
 	if ($skip_bank_accounts)
-		$sql = "SELECT chart.account_code, chart.account_name, type.name, inactive
+		$sql = "SELECT chart.account_code, chart.account_name, type.name, chart.inactive
 			FROM (".TB_PREF."chart_master chart,".TB_PREF."chart_types type) "
 			."LEFT JOIN ".TB_PREF."bank_accounts acc "
 			."ON chart.account_code=acc.account_code
 				WHERE acc.account_code  IS NULL
 			AND chart.account_type=type.id";
 	else
-		$sql = "SELECT chart.account_code, chart.account_name, type.name, inactive
+		$sql = "SELECT chart.account_code, chart.account_name, type.name, chart.inactive
 			FROM ".TB_PREF."chart_master chart,".TB_PREF."chart_types type
 			WHERE chart.account_type=type.id";
 

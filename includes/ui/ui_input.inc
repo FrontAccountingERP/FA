@@ -754,7 +754,7 @@ function text_row_with_submit($label, $name, $value, $size, $max, $input_name, $
 //  displays value of inactive field as checkbox cell.
 //  Also updates database record after status change.
 //
-function inactive_status_cell($id, $value, $table, $key)
+function inactive_control_cell($id, $value, $table, $key)
 {
 	global	$Ajax;
 
@@ -773,7 +773,7 @@ function inactive_status_cell($id, $value, $table, $key)
 //
 //	Displays controls for optional display of inactive records
 //
-function show_inactive_row($th) {
+function inactive_control_row($th) {
 	echo  "<tr><td colspan=".(count($th)).">"
 		."<div style='float:left;'>"
 		. checkbox(null, 'show_inactive', null, true). _("Show also Inactive")
@@ -781,5 +781,16 @@ function show_inactive_row($th) {
 		. submit('Update', _('Update'), false, '', null)
 		."</div></td></tr>";
 }
-
+//
+//	Inserts additional column header when display of inactive records is on.
+//
+function inactive_control_column(&$th) {
+	global $Ajax;
+	
+	if (check_value('show_inactive')) 
+		array_insert($th, count($th)-2 , _("Inactive"));
+	if (get_post('_show_inactive_update')) {
+		$Ajax->activate('_page_body');
+	}
+}
 ?>
