@@ -26,8 +26,10 @@ $db_duplicate_error_code = 1062;
 
 function db_query($sql, $err_msg=null)
 {
-	global $db, $show_sql, $sql_trail, $select_trail;
-
+	global $db, $show_sql, $sql_trail, $select_trail, $go_debug;
+	
+	if (!$err_msg && $go_debug) 
+		$err_msg = "Debug mode error";
 	//echo "<br>$sql<br>";
 	if ($show_sql)
 	{
