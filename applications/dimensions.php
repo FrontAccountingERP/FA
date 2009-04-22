@@ -15,7 +15,7 @@
 		{
 			global $installed_modules;
 			$dim = get_company_pref('use_dimension');
-			$this->application("proj",_("&Dimensions"));
+			$this->application("proj",_("&Dimensions"), $dim);
 
 			if ($dim > 0)
 			{
