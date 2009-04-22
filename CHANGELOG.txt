@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+22-Apr-2009 Joe Hunt
+! Changed the text 'Supplier Account No' to 'Our Customer No' in Supplier form
+$ /purchasing/manage/suppliers.php
+
 20-Apr-2009 Janusz Dobrowolski
 # Rewritten backup manager, fixed progressbar bug.
 $ /admin/backups.php

@@ -232,7 +232,7 @@ text_row(_("Fax Number:"), 'fax', null, 42, 40);
 
 email_row(_("E-mail:"), 'email', null, 35, 55);
 link_row(_("Website:"), 'website', null, 35, 55);
-text_row(_("Supplier Account No.:"), 'supp_account_no', null, 42, 40);
+text_row(_("Our Customer No:"), 'supp_account_no', null, 42, 40);
 
 table_section_title(_("Addresses"));
 textarea_row(_("Mailing Address:"), 'address', null, 35, 5);
