@@ -118,9 +118,7 @@
 		var q = {};
 
 		if (typeof(inp) == "string")
-			submitObj = document.getElementsByName(inp)[0];
-		else
-			submitObj = inp;
+			submitObj = document.getElementsByName(inp)[0]||inp;
 		
 		objForm = objForm || (submitObj && submitObj.form);
 
