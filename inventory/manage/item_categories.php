@@ -84,7 +84,9 @@ if ($Mode == 'Delete')
 if ($Mode == 'RESET')
 {
 	$selected_id = -1;
+	$sav = get_post('show_inactive');
 	unset($_POST);
+	$_POST['show_inactive'] = $sav;
 }
 if (list_updated('mb_flag')) {
 	$Ajax->activate('details');
@@ -93,6 +95,7 @@ if (list_updated('mb_flag')) {
 
 $sql = "SELECT c.*, t.name as tax_name FROM ".TB_PREF."stock_category c, "
 	.TB_PREF."item_tax_types t WHERE c.dflt_tax_type=t.id";
+if (!check_value('show_inactive')) $sql .= " AND !inactive";
 
 $result = db_query($sql, "could not get stock categories");
 
@@ -101,6 +104,8 @@ start_table("$table_style width=80%");
 $th = array(_("Name"), _("Tax type"), _("Units"), _("Type"), _("Sales Act"),
 _("COGS Account"), _("Inventory Account"), _("Adjustment Account"),
 _("Assembly Account"), "", "");
+inactive_control_column($th);
+
 table_header($th);
 $k = 0; //row colour counter
 
@@ -118,17 +123,16 @@ while ($myrow = db_fetch($result))
 	label_cell($myrow["dflt_inventory_act"], "align=center");
 	label_cell($myrow["dflt_adjustment_act"], "align=center");
 	label_cell($myrow["dflt_assembly_act"], "align=center");
- 	edit_button_cell("Edit".$myrow[0], _("Edit"));
- 	delete_button_cell("Delete".$myrow[0], _("Delete"));
+	inactive_control_cell($myrow["category_id"], $myrow["inactive"], 'stock_category', 'category_id');
+ 	edit_button_cell("Edit".$myrow["category_id"], _("Edit"));
+ 	delete_button_cell("Delete".$myrow["category_id"], _("Delete"));
 	end_row();
 }
 
+inactive_control_row($th);
 end_table();
-end_form();
 echo '<br>';
 //----------------------------------------------------------------------------------
-
-start_form();
 
 div_start('details');
 start_table($table_style2);

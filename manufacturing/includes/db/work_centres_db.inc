@@ -25,9 +25,10 @@ function update_work_centre($type_id, $name, $description)
 	db_query($sql, "could not update work centre");
 }
 
-function get_all_work_centres()
+function get_all_work_centres($all=false)
 {
 	$sql = "SELECT * FROM ".TB_PREF."workcentres";
+	if (!$all) $sql .= " WHERE !inactive";
 
 	return db_query($sql, "could not get all work centres");
 }

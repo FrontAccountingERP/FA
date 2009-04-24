@@ -30,12 +30,13 @@ function update_sales_point($id, $name, $location, $account, $cash, $credit)
 	db_query($sql, "could not update sales type");			
 }
 
-function get_all_sales_points()
+function get_all_sales_points($all=false)
 {
 	$sql = "SELECT pos.*, loc.location_name, acc.bank_account_name FROM "
 		.TB_PREF."sales_pos as pos
 		LEFT JOIN ".TB_PREF."locations as loc on pos.pos_location=loc.loc_code
 		LEFT JOIN ".TB_PREF."bank_accounts as acc on pos.pos_account=acc.id";
+	if (!$all) $sql .= " WHERE !pos.inactive";
 	
 	return db_query($sql, "could not get all POS definitions");
 } 

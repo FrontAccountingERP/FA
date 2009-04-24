@@ -121,10 +121,12 @@ if ($Mode == 'RESET')
 }
 //-----------------------------------------------------------------------------------
 
-$result = get_account_types();
+$result = get_account_types(check_value('show_inactive'));
+
 start_form();
 start_table($table_style);
 $th = array(_("ID"), _("Name"), _("Subgroup Of"), _("Class Type"), "", "");
+inactive_control_column($th);
 table_header($th);
 
 $k = 0;
@@ -148,17 +150,15 @@ while ($myrow = db_fetch($result))
 	label_cell($myrow["name"]);
 	label_cell($parent_text);
 	label_cell($bs_text);
+	inactive_control_cell($myrow["id"], $myrow["inactive"], 'chart_types', 'id');
 	edit_button_cell("Edit".$myrow["id"], _("Edit"));
 	delete_button_cell("Delete".$myrow["id"], _("Delete"));
 	end_row();
 }
 
-end_table();
-end_form();
-echo '<br>';
+inactive_control_row($th);
+end_table(1);
 //-----------------------------------------------------------------------------------
-
-start_form();
 
 start_table($table_style2);
 

@@ -23,9 +23,17 @@ ALTER TABLE `0_stock_category` ADD COLUMN `dflt_assembly_act` varchar(11) NOT NU
 ALTER TABLE `0_stock_category` ADD COLUMN `dflt_dim1` int(11) default NULL;
 ALTER TABLE `0_stock_category` ADD COLUMN `dflt_dim2` int(11) default NULL;
 
-ALTER TABLE `0_users` ADD `sticky_doc_date` TINYINT(1) DEFAULT '0';
+ALTER TABLE `0_users` ADD COLUMN `sticky_doc_date` TINYINT(1) DEFAULT '0';
 
 ALTER TABLE `0_debtors_master` MODIFY COLUMN `name` varchar(100) NOT NULL default '';
-ALTER TABLE `0_cust_branch` ADD `inactive` tinyint(1) NOT NULL default '0';
-ALTER TABLE `0_chart_class` ADD `sign_convert` tinyint(1) NOT NULL default '0';
-UPDATE `0_chart_class` SET sign_convert=1 WHERE cid=3 OR cid=4 OR cid=5;
+ALTER TABLE `0_cust_branch` ADD COLUMN `inactive` tinyint(1) NOT NULL default '0';
+
+ALTER TABLE `0_chart_class` ADD COLUMN `sign_convert` tinyint(1) NOT NULL default '0';
+UPDATE `0_chart_class` SET `sign_convert`=1 WHERE `cid`=3 OR `cid`=4 OR `cid`=5;
+
+ALTER TABLE `0_chart_class` ADD COLUMN `inactive` tinyint(1) NOT NULL default '0';
+ALTER TABLE `0_chart_types` ADD COLUMN `inactive` tinyint(1) NOT NULL default '0';
+ALTER TABLE `0_movement_types` ADD COLUMN `inactive` tinyint(1) NOT NULL default '0';
+ALTER TABLE `0_item_tax_types` ADD COLUMN `inactive` tinyint(1) NOT NULL default '0';
+ALTER TABLE `0_tax_types` ADD COLUMN `inactive` tinyint(1) NOT NULL default '0';
+ALTER TABLE `0_tax_groups` ADD COLUMN `inactive` tinyint(1) NOT NULL default '0';

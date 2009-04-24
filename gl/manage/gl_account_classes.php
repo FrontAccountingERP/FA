@@ -103,10 +103,12 @@ if ($Mode == 'RESET')
 }
 //-----------------------------------------------------------------------------------
 
-$result = get_account_classes();
+$result = get_account_classes(check_value('show_inactive'));
+
 start_form();
 start_table($table_style);
 $th = array(_("Class ID"), _("Class Name"), _("Balance Sheet"), _("Sign Convert"), "", "");
+inactive_control_column($th);
 table_header($th);
 
 $k = 0;
@@ -135,17 +137,14 @@ while ($myrow = db_fetch($result))
 	label_cell($myrow['class_name']);
 	label_cell($bs_text);
 	label_cell($sc_text);
+	inactive_control_cell($myrow["cid"], $myrow["inactive"], 'chart_class', 'cid');
 	edit_button_cell("Edit".$myrow["cid"], _("Edit"));
 	delete_button_cell("Delete".$myrow["cid"], _("Delete"));
 	end_row();
 }
-
-end_table();
-end_form();
-echo '<br>';
+inactive_control_row($th);
+end_table(1);
 //-----------------------------------------------------------------------------------
-
-start_form();
 
 start_table($table_style2);
 

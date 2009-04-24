@@ -135,15 +135,18 @@ if ($Mode == 'Delete')
 if ($Mode == 'RESET')
 {
 	$selected_id = -1;
+	$sav = get_post('show_inactive');
 	unset($_POST);
+	$_POST['show_inactive'] = $sav;
 }
 //-----------------------------------------------------------------------------------
 
-$result = get_all_tax_groups();
+$result = get_all_tax_groups(check_value('show_inactive'));
 
 start_form();
 start_table($table_style);
 $th = array(_("Description"), _("Tax Shipping"), "", "");
+inactive_control_column($th);
 table_header($th);
 
 $k = 0;
@@ -162,18 +165,15 @@ while ($myrow = db_fetch($result))
 		if ($myrow["type" . $i] != reserved_words::get_all_numeric())
 			echo "<td>" . $myrow["type" . $i] . "</td>";*/
 
+	inactive_control_cell($myrow["id"], $myrow["inactive"], 'tax_groups', 'id');
  	edit_button_cell("Edit".$myrow["id"], _("Edit"));
  	delete_button_cell("Delete".$myrow["id"], _("Delete"));
 	end_row();;
 }
 
-end_table();
-end_form();
-echo '<br>';
-
+inactive_control_row($th);
+end_table(1);
 //-----------------------------------------------------------------------------------
-
-start_form();
 
 start_table($table_style2);
 

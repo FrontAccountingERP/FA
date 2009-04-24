@@ -100,8 +100,9 @@ if ($Mode == 'RESET')
 
 $sql = "SELECT account.*, gl_account.account_name 
 	FROM ".TB_PREF."bank_accounts account, ".TB_PREF."chart_master gl_account 
-	WHERE account.account_code = gl_account.account_code"
-	." ORDER BY account_code, bank_curr_code";
+	WHERE account.account_code = gl_account.account_code";
+if (!check_value('show_inactive')) $sql .= " AND !account.inactive";
+$sql .= " ORDER BY account_code, bank_curr_code";
 
 $result = db_query($sql,"could not get bank accounts");
 
@@ -112,6 +113,7 @@ start_table("$table_style width='80%'");
 
 $th = array(_("Account Name"), _("Type"), _("Currency"), _("GL Account"), 
 	_("Bank"), _("Number"), _("Bank Address"),'','');
+inactive_control_column($th);
 table_header($th);	
 
 $k = 0; 
@@ -127,15 +129,14 @@ while ($myrow = db_fetch($result))
     label_cell($myrow["bank_name"], "nowrap");
     label_cell($myrow["bank_account_number"], "nowrap");
     label_cell($myrow["bank_address"]);
+	inactive_control_cell($myrow["id"], $myrow["inactive"], 'bank_accounts', 'id');
  	edit_button_cell("Edit".$myrow["id"], _("Edit"));
  	delete_button_cell("Delete".$myrow["id"], _("Delete"));
     end_row(); 
 }
 
-end_table();
-end_form();
-echo '<br>';
-start_form();
+inactive_control_row($th);
+end_table(1);
 
 $is_editing = $selected_id != -1; 
 

@@ -71,12 +71,17 @@ if (isset($_POST['add']) || isset($_POST['update']))
 			$_POST['account_code'] = strtoupper($_POST['account_code']);
     	if ($selected_account) 
 		{
-    		update_gl_account($_POST['account_code'], $_POST['account_name'], $_POST['account_type'], $_POST['account_code2']);
+    		update_gl_account($_POST['account_code'], $_POST['account_name'], 
+				$_POST['account_type'], $_POST['account_code2']);
+			update_record_status($_POST['account_code'], $_POST['inactive'],
+				'chart_master', 'account_code');
+			$Ajax->activate('account_code'); // in case of status change
 			display_notification(_("Account data has been updated."));
 		}
     	else 
 		{
-    		add_gl_account($_POST['account_code'], $_POST['account_name'], $_POST['account_type'], $_POST['account_code2']);
+    		add_gl_account($_POST['account_code'], $_POST['account_name'], 
+				$_POST['account_type'], $_POST['account_code2']);
 			$selected_account = $_POST['AccountList'] = $_POST['account_code'];
 			display_notification(_("New account has been added."));
 		}
@@ -205,11 +210,17 @@ start_form();
 
 if (db_has_gl_accounts()) 
 {
-	echo "<center>";
-    echo _("Select an Account:") . "&nbsp;";
-    gl_all_accounts_list('AccountList', null, false, false,
-		_('New account'), true);
-    echo "</center>";
+	start_table("class = 'tablestyle_noborder'");
+	start_row();
+    gl_all_accounts_list_cells(null, 'AccountList', null, false, false,
+		_('New account'), true, check_value('show_inactive'));
+	check_cells(_("Show inactive:"), 'show_inactive', null, true);
+	end_row();
+	end_table();
+	if (get_post('_show_inactive_update')) {
+		$Ajax->activate('AccountList');
+		set_focus('AccountList');
+	}
 }
 	
 br(1);
@@ -224,6 +235,7 @@ if ($selected_account != "")
 	$_POST['account_code2'] = $myrow["account_code2"];
 	$_POST['account_name']	= $myrow["account_name"];
 	$_POST['account_type'] = $myrow["account_type"];
+ 	$_POST['inactive'] = $myrow["inactive"];
 
 	hidden('account_code', $_POST['account_code']);
 	hidden('selected_account', $selected_account);
@@ -234,6 +246,7 @@ else
 {
 	$_POST['account_code'] = $_POST['account_code2'] = '';
 	$_POST['account_name']	= $_POST['account_type'] = '';
+ 	$_POST['inactive'] = 0;
 	text_row_ex(_("Account Code:"), 'account_code', 11);
 }
 
@@ -243,6 +256,7 @@ text_row_ex(_("Account Name:"), 'account_name', 60);
 
 gl_account_types_list_row(_("Account Group:"), 'account_type', null);
 
+record_status_list_row(_("Account status:"), 'inactive');
 end_table(1);
 
 if ($selected_account == "") 

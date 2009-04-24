@@ -74,6 +74,10 @@ if (isset($_POST['submit']))
 				tax_group_id=".db_escape($_POST['tax_group_id']) . " WHERE supplier_id = '" . $_POST['supplier_id'] . "'";
 
 			db_query($sql,"The supplier could not be updated");
+			update_record_status($_POST['supplier_id'], $_POST['inactive'],
+				'suppliers', 'supplier_id');
+
+			$Ajax->activate('supplier_id'); // in case of status change
 			display_notification(_("Supplier has been updated."));
 		} 
 		else 
@@ -163,9 +167,16 @@ if (db_has_suppliers())
 {
 	start_table("", 3);
 //	start_table("class = 'tablestyle_noborder'");
-	supplier_list_row(_("Select a supplier: "), 'supplier_id', null,
-		  _('New supplier'), true);
+	start_row();
+	supplier_list_cells(_("Select a supplier: "), 'supplier_id', null,
+		  _('New supplier'), true, check_value('show_inactive'));
+	check_cells(_("Show inactive:"), 'show_inactive', null, true);
+	end_row();
 	end_table();
+	if (get_post('_show_inactive_update')) {
+		$Ajax->activate('supplier_id');
+		set_focus('supplier_id');
+	}
 } 
 else 
 {
@@ -202,7 +213,7 @@ if (!$new_supplier)
 	$_POST['purchase_account']  = $myrow["purchase_account"];
 	$_POST['payment_discount_account'] = $myrow["payment_discount_account"];
 	$_POST['notes']  = $myrow["notes"];
-
+ 	$_POST['inactive'] = $myrow["inactive"];
 } 
 else 
 {
@@ -220,6 +231,7 @@ else
 	$_POST['payable_account'] = $company_record["creditors_act"];
 	$_POST['purchase_account'] = $company_record["default_cogs_act"];
 	$_POST['payment_discount_account'] = $company_record['pyt_discount_act'];
+ 	$_POST['inactive'] = 0;
 }
 
 table_section_title(_("Name and Contact"));
@@ -281,6 +293,7 @@ if ($dim < 2)
 	hidden('dimension2_id', 0);
 table_section_title(_("General"));
 textarea_row(_("General Notes:"), 'notes', null, 35, 5);
+record_status_list_row(_("Supplier status:"), 'inactive');
 
 end_outer_table(1);
 

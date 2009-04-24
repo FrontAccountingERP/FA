@@ -161,16 +161,18 @@ CREATE TABLE `0_chart_class` (
   `cid` int(11) NOT NULL default '0',
   `class_name` varchar(60) NOT NULL default '',
   `balance_sheet` tinyint(1) NOT NULL default '0',
+  `sign_convert` tinyint(1) NOT NULL default '0',
+  `inactive` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`cid`)
 ) TYPE=MyISAM  ;
 
 
 ### Data of table `0_chart_class` ###
 
-INSERT INTO `0_chart_class` VALUES ('1', 'Assets', '1');
-INSERT INTO `0_chart_class` VALUES ('2', 'Liabilities', '1');
-INSERT INTO `0_chart_class` VALUES ('3', 'Income', '0');
-INSERT INTO `0_chart_class` VALUES ('4', 'Costs', '0');
+INSERT INTO `0_chart_class` VALUES ('1', 'Assets', '1', '0', '0');
+INSERT INTO `0_chart_class` VALUES ('2', 'Liabilities', '1', '1', '0');
+INSERT INTO `0_chart_class` VALUES ('3', 'Income', '0', '1', '0');
+INSERT INTO `0_chart_class` VALUES ('4', 'Costs', '0', '1', '0');
 
 
 ### Structure of table `0_chart_master` ###
@@ -247,6 +249,7 @@ CREATE TABLE `0_chart_types` (
   `name` varchar(60) NOT NULL default '',
   `class_id` tinyint(1) NOT NULL default '0',
   `parent` int(11) NOT NULL default '-1',
+  `inactive` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`id`),
   KEY `name` (`name`)
 ) TYPE=MyISAM AUTO_INCREMENT=53  AUTO_INCREMENT=53 ;
@@ -254,17 +257,17 @@ CREATE TABLE `0_chart_types` (
 
 ### Data of table `0_chart_types` ###
 
-INSERT INTO `0_chart_types` VALUES ('1', 'Sales', '3', '-1');
-INSERT INTO `0_chart_types` VALUES ('2', 'Cost of Sales', '4', '-1');
-INSERT INTO `0_chart_types` VALUES ('5', 'Expenses', '4', '-1');
-INSERT INTO `0_chart_types` VALUES ('10', 'Cash/Bank', '1', '-1');
-INSERT INTO `0_chart_types` VALUES ('20', 'Accounts Receivable', '1', '-1');
-INSERT INTO `0_chart_types` VALUES ('30', 'Accounts Payable', '2', '-1');
-INSERT INTO `0_chart_types` VALUES ('40', 'Fixed Assets', '1', '-1');
-INSERT INTO `0_chart_types` VALUES ('45', 'Inventory', '1', '-1');
-INSERT INTO `0_chart_types` VALUES ('50', 'Equity', '2', '-1');
-INSERT INTO `0_chart_types` VALUES ('51', 'Depreciations', '4', '-1');
-INSERT INTO `0_chart_types` VALUES ('52', 'Financials', '4', '-1');
+INSERT INTO `0_chart_types` VALUES ('1', 'Sales', '3', '-1', '0');
+INSERT INTO `0_chart_types` VALUES ('2', 'Cost of Sales', '4', '-1', '0');
+INSERT INTO `0_chart_types` VALUES ('5', 'Expenses', '4', '-1', '0');
+INSERT INTO `0_chart_types` VALUES ('10', 'Cash/Bank', '1', '-1', '0');
+INSERT INTO `0_chart_types` VALUES ('20', 'Accounts Receivable', '1', '-1', '0');
+INSERT INTO `0_chart_types` VALUES ('30', 'Accounts Payable', '2', '-1', '0');
+INSERT INTO `0_chart_types` VALUES ('40', 'Fixed Assets', '1', '-1', '0');
+INSERT INTO `0_chart_types` VALUES ('45', 'Inventory', '1', '-1', '0');
+INSERT INTO `0_chart_types` VALUES ('50', 'Equity', '2', '-1', '0');
+INSERT INTO `0_chart_types` VALUES ('51', 'Depreciations', '4', '-1', '0');
+INSERT INTO `0_chart_types` VALUES ('52', 'Financials', '4', '-1', '0');
 
 
 ### Structure of table `0_comments` ###
@@ -718,6 +721,7 @@ CREATE TABLE `0_item_tax_types` (
   `id` int(11) NOT NULL auto_increment,
   `name` varchar(60) NOT NULL default '',
   `exempt` tinyint(1) NOT NULL default '0',
+  `inactive` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `name` (`name`)
 ) TYPE=InnoDB  AUTO_INCREMENT=1 ;
@@ -792,6 +796,7 @@ DROP TABLE IF EXISTS `0_movement_types`;
 CREATE TABLE `0_movement_types` (
   `id` int(11) NOT NULL auto_increment,
   `name` varchar(60) NOT NULL default '',
+  `inactive` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `name` (`name`)
 ) TYPE=MyISAM AUTO_INCREMENT=2  AUTO_INCREMENT=2 ;
@@ -799,7 +804,7 @@ CREATE TABLE `0_movement_types` (
 
 ### Data of table `0_movement_types` ###
 
-INSERT INTO `0_movement_types` VALUES ('1', 'Adjustment');
+INSERT INTO `0_movement_types` VALUES ('1', 'Adjustment', '0');
 
 
 ### Structure of table `0_payment_terms` ###
@@ -1463,6 +1468,7 @@ CREATE TABLE `0_tax_groups` (
   `id` int(11) NOT NULL auto_increment,
   `name` varchar(60) NOT NULL default '',
   `tax_shipping` tinyint(1) NOT NULL default '0',
+  `inactive` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `name` (`name`)
 ) TYPE=InnoDB  AUTO_INCREMENT=1 ;
@@ -1482,6 +1488,7 @@ CREATE TABLE `0_tax_types` (
   `sales_gl_code` varchar(11) NOT NULL default '',
   `purchasing_gl_code` varchar(11) NOT NULL default '',
   `name` varchar(60) NOT NULL default '',
+  `inactive` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `name` (`name`,`rate`)
 ) TYPE=InnoDB  AUTO_INCREMENT=1 ;

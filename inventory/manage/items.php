@@ -168,7 +168,11 @@ if (isset($_POST['addupdate']))
 				$_POST['sales_account'], $_POST['inventory_account'], $_POST['cogs_account'],
 				$_POST['adjustment_account'], $_POST['assembly_account'], 
 				$_POST['dimension_id'], $_POST['dimension2_id']);
-
+			update_record_status($_POST['NewStockID'], $_POST['inactive'],
+				'stock_master', 'stock_id');
+			update_record_status($_POST['NewStockID'], $_POST['inactive'],
+				'item_codes', 'item_code');
+			$Ajax->activate('stock_id'); // in case of status change
 			display_notification(_("Item has been updated."));
 		} 
 		else 
@@ -284,10 +288,16 @@ if (db_has_stock_items())
 	start_table("class='tablestyle_noborder'");
 	start_row();
     stock_items_list_cells(_("Select an item:"), 'stock_id', null,
-	  _('New item'), true);
+	  _('New item'), true, check_value('show_inactive'));
 	$new_item = get_post('stock_id')==''; 
+	check_cells(_("Show inactive:"), 'show_inactive', null, true);
 	end_row();
 	end_table();
+
+	if (get_post('_show_inactive_update')) {
+		$Ajax->activate('stock_id');
+		set_focus('stock_id');
+	}
 }
 
 div_start('details');
@@ -302,6 +312,7 @@ table_section_title(_("Item"));
 if ($new_item) 
 {
 	text_row(_("Item Code:"), 'NewStockID', null, 21, 20);
+ 	$_POST['inactive'] = 0;
 } 
 else 
 { // Must be modifying an existing item
@@ -324,6 +335,7 @@ else
 		$_POST['dimension_id']	= $myrow['dimension_id'];
 		$_POST['dimension2_id']	= $myrow['dimension2_id'];
 		$_POST['del_image'] = 0;	
+	 	$_POST['inactive'] = $myrow["inactive"];
 		label_row(_("Item Code:"),$_POST['NewStockID']);
 		hidden('NewStockID', $_POST['NewStockID']);
 		set_focus('description');
@@ -423,6 +435,7 @@ label_row("&nbsp;", $stock_img_link);
 if ($check_remove_image)
 	check_row(_("Delete Image:"), 'del_image', $_POST['del_image']);
 	
+record_status_list_row(_("Item status:"), 'inactive');
 end_outer_table(1);
 div_end();
 div_start('controls');

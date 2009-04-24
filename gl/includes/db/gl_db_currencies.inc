@@ -53,9 +53,10 @@ function get_currency($curr_code)
 
 //---------------------------------------------------------------------------------------------
 
-function get_currencies()
+function get_currencies($all=false)
 {
 	$sql = "SELECT * FROM ".TB_PREF."currencies";
+	if (!$all) $sql .= " WHERE !inactive";
 	return db_query($sql, "could not get currencies");
 }
 

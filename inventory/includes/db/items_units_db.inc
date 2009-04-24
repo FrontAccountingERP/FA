@@ -58,8 +58,10 @@ function item_unit_used($unit) {
 	return ($myrow[0] > 0);
 }
 
-function get_all_item_units() {
-    $sql = "SELECT * FROM ".TB_PREF."item_units ORDER BY name";
+function get_all_item_units($all=false) {
+    $sql = "SELECT * FROM ".TB_PREF."item_units";
+	if (!$all) $sql .= " WHERE !inactive";
+	$sql .= " ORDER BY name";
     return  db_query($sql, "could not get stock categories");
 }
 // 2008-06-15. Added Joe Hunt to get a measure of unit by given stock_id

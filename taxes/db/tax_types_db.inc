@@ -29,7 +29,7 @@ function update_tax_type($type_id, $name, $sales_gl_code, $purchasing_gl_code, $
 	db_query($sql, "could not update tax type");
 }
 
-function get_all_tax_types()
+function get_all_tax_types($all=false)
 {
 	$sql = "SELECT ".TB_PREF."tax_types.*,
 		Chart1.account_name AS SalesAccountName,
@@ -39,6 +39,7 @@ function get_all_tax_types()
 		WHERE ".TB_PREF."tax_types.sales_gl_code = Chart1.account_code
 		AND ".TB_PREF."tax_types.purchasing_gl_code = Chart2.account_code";
 
+	if (!$all) $sql .= " AND !".TB_PREF."tax_types.inactive";
 	return db_query($sql, "could not get all tax types");
 }
 

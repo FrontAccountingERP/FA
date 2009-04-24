@@ -146,13 +146,13 @@ function display_currencies()
 {
 	global $table_style;
 
-	$company_currency = get_company_currency();	
+	$company_currency = get_company_currency();
 	
-    $result = get_currencies();
-	start_form();    
+    $result = get_currencies(check_value('show_inactive'));
     start_table($table_style);
     $th = array(_("Abbreviation"), _("Symbol"), _("Currency Name"),
     	_("Hundredths name"), _("Country"), "", "");
+	inactive_control_column($th);
     table_header($th);	
     
     $k = 0; //row colour counter
@@ -172,6 +172,7 @@ function display_currencies()
 		label_cell($myrow["currency"]);
 		label_cell($myrow["hundreds_name"]);
 		label_cell($myrow["country"]);
+		inactive_control_cell($myrow["curr_abrev"], $myrow["inactive"], 'currencies', 'curr_abrev');
  		edit_button_cell("Edit".$myrow["curr_abrev"], _("Edit"));
 		if ($myrow["curr_abrev"] != $company_currency)
  			delete_button_cell("Delete".$myrow["curr_abrev"], _("Delete"));
@@ -181,8 +182,8 @@ function display_currencies()
 		
     } //END WHILE LIST LOOP
     
+	inactive_control_row($th);
     end_table();
-	end_form();    
     display_note(_("The marked currency is the home currency which cannot be deleted."), 0, 0, "class='currentfg'");
 }
 
@@ -192,7 +193,6 @@ function display_currency_edit($selected_id)
 {
 	global $table_style2, $Mode;
 	
-	start_form();
 	start_table($table_style2);
 
 	if ($selected_id != '') 
@@ -224,8 +224,6 @@ function display_currency_edit($selected_id)
 	end_table(1);
 
 	submit_add_or_update_center($selected_id == '', '', 'both');
-
-	end_form();
 }
 
 //---------------------------------------------------------------------------------------------
@@ -247,10 +245,11 @@ if ($Mode == 'RESET')
 		$_POST['hundreds_name']  = '';
 }
 
+start_form();
 display_currencies();
 
 display_currency_edit($selected_id);
-
+end_form();
 //---------------------------------------------------------------------------------------------
 
 end_page();

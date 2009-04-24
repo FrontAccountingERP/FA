@@ -25,9 +25,12 @@ function update_account_type($id, $name, $class_id, $parent)
 	db_query($sql, "could not update account type");
 }
 
-function get_account_types()
+function get_account_types($all=false)
 {
-	$sql = "SELECT * FROM ".TB_PREF."chart_types ORDER BY class_id, id";
+	$sql = "SELECT * FROM ".TB_PREF."chart_types";
+
+	if (!$all) $sql .= " WHERE !inactive";
+	$sql .= " ORDER BY class_id, id";
 
 	return db_query($sql, "could not get account types");
 }
@@ -75,9 +78,11 @@ function update_account_class($id, $name, $balance, $sign_conv)
 	db_query($sql, "could not update account type");
 }
 
-function get_account_classes()
+function get_account_classes($all=false)
 {
-	$sql = "SELECT * FROM ".TB_PREF."chart_class ORDER BY cid";
+	$sql = "SELECT * FROM ".TB_PREF."chart_class";
+	if (!$all) $sql .= " WHERE !inactive";
+	$sql .= " ORDER BY cid";
 
 	return db_query($sql, "could not get account types");
 }

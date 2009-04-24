@@ -74,15 +74,19 @@ if ($Mode == 'Delete')
 if ($Mode == 'RESET')
 {
 	$selected_id = '';
+	$sav = get_post('show_inactive');
 	unset($_POST);
+	$_POST['show_inactive'] = $sav;
 }
 
 //----------------------------------------------------------------------------------
 
-$result = get_all_item_units();
+$result = get_all_item_units(check_value('show_inactive'));
+
 start_form();
 start_table("$table_style width=40%");
 $th = array(_('Unit'), _('Description'), _('Decimals'), "", "");
+inactive_control_column($th);
 
 table_header($th);
 $k = 0; //row colour counter
@@ -96,18 +100,16 @@ while ($myrow = db_fetch($result))
 	label_cell($myrow["name"]);
 	label_cell(($myrow["decimals"]==-1?_("User Quantity Decimals"):$myrow["decimals"]));
 
- 	edit_button_cell("Edit".$myrow[0], _("Edit"));
- 	delete_button_cell("Delete".$myrow[0], _("Delete"));
+	inactive_control_cell($myrow["abbr"], $myrow["inactive"], 'item_units', 'abbr');
+ 	edit_button_cell("Edit".$myrow["abbr"], _("Edit"));
+ 	delete_button_cell("Delete".$myrow["abbr"], _("Delete"));
 	end_row();
 }
 
-end_table();
-end_form();
-echo '<br>';
+inactive_control_row($th);
+end_table(1);
 
 //----------------------------------------------------------------------------------
-
-start_form();
 
 start_table($table_style2);
 

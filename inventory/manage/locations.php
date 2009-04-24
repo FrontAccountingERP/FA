@@ -117,38 +117,40 @@ if ($Mode == 'Delete')
 if ($Mode == 'RESET')
 {
 	$selected_id = -1;
+	$sav = get_post('show_inactive');
 	unset($_POST);
+	$_POST['show_inactive'] = $sav;
 }
 
 $sql = "SELECT * FROM ".TB_PREF."locations";
+if (!check_value('show_inactive')) $sql .= " WHERE !inactive";
 $result = db_query($sql, "could not query locations");;
 
 start_form();
 start_table("$table_style width=30%");
-$th = array(_("Location Code"), _("Location Name"), "", "");
+$th = array(_("Location Code"), _("Location Name"), _("Address"), _("Phone"), "", "");
+inactive_control_column($th);
 table_header($th);
 $k = 0; //row colour counter
-while ($myrow = db_fetch_row($result)) 
+while ($myrow = db_fetch($result)) 
 {
 
 	alt_table_row_color($k);
 	
-	label_cell($myrow[0]);
-	label_cell($myrow[1]);
- 	edit_button_cell("Edit".$myrow[0], _("Edit"));
- 	delete_button_cell("Delete".$myrow[0], _("Delete"));
+	label_cell($myrow["loc_code"]);
+	label_cell($myrow["location_name"]);
+	label_cell($myrow["delivery_address"]);
+	label_cell($myrow["phone"]);
+	inactive_control_cell($myrow["loc_code"], $myrow["inactive"], 'locations', 'loc_code');
+ 	edit_button_cell("Edit".$myrow["loc_code"], _("Edit"));
+ 	delete_button_cell("Delete".$myrow["loc_code"], _("Delete"));
 	end_row();
 }
 	//END WHILE LIST LOOP
-
-//end of ifs and buts!
-
+inactive_control_row($th);
 end_table();
 
-end_form();
 echo '<br>';
-
-start_form();
 
 start_table($table_style2);
 

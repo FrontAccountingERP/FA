@@ -364,7 +364,8 @@ function _format_add_curr($row)
 		'' : ("&nbsp;-&nbsp;" . $row[2]));
 }
 
-function supplier_list($name, $selected_id=null, $spec_option=false, $submit_on_change=false)
+function supplier_list($name, $selected_id=null, $spec_option=false, $submit_on_change=false,
+	$all=false)
 {
 	global $all_items;
 
@@ -383,15 +384,17 @@ function supplier_list($name, $selected_id=null, $spec_option=false, $submit_on_
 		'select_submit'=> $submit_on_change,
 		'async' => false,
 		'sel_hint' => $mode ? _('Press Space tab to filter by name fragment') :
-		_('Select supplier')
+		_('Select supplier'),
+		'show_inactive'=>$all
 		));
 }
 
-function supplier_list_cells($label, $name, $selected_id=null, $all_option=false, $submit_on_change=false)
+function supplier_list_cells($label, $name, $selected_id=null, $all_option=false, 
+	$submit_on_change=false, $all=false)
 {
 	if ($label != null)
 		echo "<td>$label</td><td>\n";
-	$str = supplier_list($name, $selected_id, $all_option, $submit_on_change);
+	$str = supplier_list($name, $selected_id, $all_option, $submit_on_change, $all);
 		echo "</td>\n";
 	return $str;
 }
@@ -648,7 +651,8 @@ function dimensions_list_row($label, $name, $selected_id=null, $no_option=false,
 
 //---------------------------------------------------------------------------------------------------
 
-function stock_items_list($name, $selected_id=null, $all_option=false, $submit_on_change=false, $opts=array())
+function stock_items_list($name, $selected_id=null, $all_option=false, 
+	$submit_on_change=false, $opts=array())
 {
 	global $all_items;
 
@@ -676,12 +680,13 @@ function _format_stock_items($row)
 	return (user_show_codes() ?  ($row[0] . "&nbsp;-&nbsp;") : "") . $row[1];
 }
 
-function stock_items_list_cells($label, $name, $selected_id=null, $all_option=false, $submit_on_change=false)
+function stock_items_list_cells($label, $name, $selected_id=null, $all_option=false, 
+	$submit_on_change=false, $all=false)
 {
 	if ($label != null)
 		echo "<td>$label</td>\n";
 	$str = stock_items_list($name, $selected_id, $all_option, $submit_on_change,
-		array('cells'=>true));
+		array('cells'=>true, 'show_inactive'=>$all));
 	return $str;
 }
 /*
@@ -715,7 +720,7 @@ function sales_items_list($name, $selected_id=null, $all_option=false,
 	} elseif ($type == 'kits') { // sales kits
 		$sql .=	" WHERE !i.is_foreign AND i.item_code!=i.stock_id";
 	}
-				
+	$sql .= " AND !i.inactive";
 	$sql .= " GROUP BY i.item_code";
 
 	return combo_input($name, $selected_id, $sql, 'i.item_code', 'c.description',
@@ -879,16 +884,17 @@ function stock_costable_items_list_cells($label, $name, $selected_id=null,
 
 //------------------------------------------------------------------------------------
 function stock_purchasable_items_list($name, $selected_id=null,	
-	$all_option=false, $submit_on_change=false)
+	$all_option=false, $submit_on_change=false, $all=false)
 {
 	$str = stock_items_list($name, $selected_id, $all_option, $submit_on_change,
 		array('where'=>array("mb_flag!= 'M'"), 
-			'edit_submit' => true));
+			'edit_submit' => true,
+			'show_inactive'=>$all));
 	return $str;
 }
 
 function stock_purchasable_items_list_cells($label, $name, $selected_id=null,
-			$all_option=false, $submit_on_change=false)
+			$all_option=false, $submit_on_change=false, $all=false)
 {
 	if ($label != null)
 		echo "<td>$label</td>\n";
@@ -1556,7 +1562,7 @@ function gl_account_types_list_row($label, $name, $selected_id=null, $all_option
 
 //-----------------------------------------------------------------------------------------------
 function gl_all_accounts_list($name, $selected_id=null, $skip_bank_accounts=false,
-	$cells=false, $all_option=false, $submit_on_change=false)
+	$cells=false, $all_option=false, $submit_on_change=false, $all=false)
 {
 	if ($skip_bank_accounts)
 		$sql = "SELECT chart.account_code, chart.account_name, type.name, chart.inactive
@@ -1583,7 +1589,8 @@ function gl_all_accounts_list($name, $selected_id=null, $skip_bank_accounts=fals
 			'cells' => true,
 		'select_submit'=> $submit_on_change,
 		'async' => false,
-		'category' => 2
+		'category' => 2,
+		'show_inactive' => $all
 	) );
 
 }
@@ -1594,13 +1601,14 @@ function _format_account($row)
 }
 
 function gl_all_accounts_list_cells($label, $name, $selected_id=null, 
-	$skip_bank_accounts=false, $cells=false, $all_option=false)
+	$skip_bank_accounts=false, $cells=false, $all_option=false, 
+	$submit_on_change=false, $all=false)
 {
 	if ($label != null)
 		echo "<td>$label</td>\n";
 	echo "<td>";
 	gl_all_accounts_list($name, $selected_id, 
-		$skip_bank_accounts, $cells, $all_option);
+		$skip_bank_accounts, $cells, $all_option, $submit_on_change, $all);
 	echo "</td>\n";
 }
 
