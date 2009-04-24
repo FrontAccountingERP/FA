@@ -19,6 +19,43 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+24-Apr-2009 Janusz Dobrowolski
++ Added inactive records support.
+$ /admin/payment_terms.php
+  /admin/shipping_companies.php
+  /gl/includes/db/gl_db_account_types.inc
+  /gl/includes/db/gl_db_currencies.inc
+  /gl/manage/bank_accounts.php
+  /gl/manage/currencies.php
+  /gl/manage/gl_account_classes.php
+  /gl/manage/gl_account_types.php
+  /gl/manage/gl_accounts.php
+  /includes/ui/ui_lists.inc
+  /inventory/includes/db/items_units_db.inc
+  /inventory/includes/db/movement_types_db.inc
+  /inventory/manage/item_categories.php
+  /inventory/manage/item_units.php
+  /inventory/manage/items.php
+  /inventory/manage/locations.php
+  /inventory/manage/movement_types.php
+  /manufacturing/includes/db/work_centres_db.inc
+  /manufacturing/manage/work_centres.php
+  /purchasing/manage/suppliers.php
+  /sales/includes/db/sales_points_db.inc
+  /sales/manage/sales_points.php
+  /sql/alter2.2.sql
+  /sql/en_US-demo.sql
+  /sql/en_US-new.sql
+  /taxes/item_tax_types.php
+  /taxes/tax_groups.php
+  /taxes/tax_types.php
+  /taxes/db/tax_groups_db.inc
+  /taxes/db/tax_types_db.inc
+# Edit buttons center alignment.
+$ /includes/ui/ui_input.inc
+# Fixed ajax request using element name on multi-part forms.
+$ /js/utils.js
+
 24-Apr-2009 Joe Hunt
 ! Added option to select how to present Balance Sheet and P&L Statement
 $ /gl/manage/gl_account_classes.php
@@ -26,7 +63,7 @@ $ /gl/manage/gl_account_classes.php
   /reporting/rep706.php
   /reporting/rep707.php
   /sql/alter2.2.sql
-  
+
 22-Apr-2009 Janusz Dobrowolski
 + Added inactive records support.
 $ /sales/includes/db/credit_status_db.inc
@@ -52,18 +89,18 @@ $ /applications/application.php
 
 21-Apr-2009 Janusz Dobrowolski
 + Support for inactive records.
-  /includes/ui/ui_lists.inc
+$ /includes/ui/ui_lists.inc
   /includes/ui/ui_input.inc
   /includes/db/sql_functions.inc
   /themes/aqua/default.css
   /themes/cool/default.css
   /themes/default/default.css
 + Added inactive field in cust_branches
-  /sql/alter2.2.sql
+$ /sql/alter2.2.sql
   /sql/en_US-demo.sql
   /sql/en_US-new.sql
 + Added inactive records edition.
-  /sales/manage/customers.php
+$ /sales/manage/customers.php
   /sales/manage/sales_areas.php
   
 08-Apr-2009 Janusz Dobrowolski
