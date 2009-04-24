@@ -50,12 +50,12 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 
     	if ($selected_id != -1) 
     	{
-    		update_account_class($selected_id, $_POST['name'], $_POST['Balance']);
+    		update_account_class($selected_id, $_POST['name'], $_POST['Balance'], $_POST['convert']);
 			display_notification(_('Selected account class settings has been updated'));
     	} 
     	else 
     	{
-    		add_account_class($_POST['id'], $_POST['name'], $_POST['Balance']);
+    		add_account_class($_POST['id'], $_POST['name'], $_POST['Balance'], $_POST['convert']);
 			display_notification(_('New account class has been added'));
     	}
 		$Mode = 'RESET';
@@ -99,14 +99,14 @@ if ($Mode == 'Delete')
 if ($Mode == 'RESET')
 {
 	$selected_id = -1;
-	$_POST['id']  = $_POST['name']  = $_POST['Balance'] = '';
+	$_POST['id']  = $_POST['name']  = $_POST['Balance'] = $_POST['sign_convert'] = '';
 }
 //-----------------------------------------------------------------------------------
 
 $result = get_account_classes();
 start_form();
 start_table($table_style);
-$th = array(_("Class ID"), _("Class Name"), _("Balance Sheet"), "", "");
+$th = array(_("Class ID"), _("Class Name"), _("Balance Sheet"), _("Sign Convert"), "", "");
 table_header($th);
 
 $k = 0;
@@ -123,9 +123,18 @@ while ($myrow = db_fetch($result))
 	{
 		$bs_text = _("Yes");
 	}
+	if ($myrow["sign_convert"] == 0) 
+	{
+		$sc_text = _("No");
+	} 
+	else 
+	{
+		$sc_text = _("Yes");
+	}
 	label_cell($myrow["cid"]);
 	label_cell($myrow['class_name']);
 	label_cell($bs_text);
+	label_cell($sc_text);
 	edit_button_cell("Edit".$myrow["cid"], _("Edit"));
 	delete_button_cell("Delete".$myrow["cid"], _("Delete"));
 	end_row();
@@ -149,6 +158,7 @@ if ($selected_id != -1)
 	$_POST['id']  = $myrow["cid"];
 	$_POST['name']  = $myrow["class_name"];
 	$_POST['Balance']  = $myrow["balance_sheet"];
+	$_POST['convert']  = $myrow["sign_convert"];
 	hidden('selected_id', $selected_id);
  }
 	hidden('id');
@@ -164,6 +174,8 @@ else
 text_row_ex(_("Class Name:"), 'name', 50, 60);
 
 yesno_list_row(_("Balance Sheet:"), 'Balance', null, "", "", false);
+
+yesno_list_row(_("Sign Convert (Balance Sheet/PL statement):"), 'convert', null, "", "", false);
 
 end_table(1);
 

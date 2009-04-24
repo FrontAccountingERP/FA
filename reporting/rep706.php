@@ -117,6 +117,7 @@ function print_balance_sheet()
 	$assetsperiod = 0.0;
 	$assetsclose = 0.0;
 	$closeclass = false;
+	$convert = 1;
 	$rep->NewLine();
 
 	$accounts = get_gl_accounts_all(1);
@@ -129,7 +130,6 @@ function print_balance_sheet()
 
 		if (!$prev_balance && !$curr_balance)
 			continue;
-
 		if ($account['AccountClassName'] != $classname)
 		{
 			if ($classname != '')
@@ -146,9 +146,9 @@ function print_balance_sheet()
 				$rep->Line($rep->row);
 				$rep->NewLine();
 				$rep->TextCol(0, 2,	_('Total') . " " . $group);
-				$rep->AmountCol(2, 3, $totalopen, $dec);
-				$rep->AmountCol(3, 4, $totalperiod, $dec);
-				$rep->AmountCol(4, 5, $totalclose, $dec);
+				$rep->AmountCol(2, 3, $totalopen * $convert, $dec);
+				$rep->AmountCol(3, 4, $totalperiod * $convert, $dec);
+				$rep->AmountCol(4, 5, $totalclose * $convert, $dec);
 				if ($graphics)
 				{
 					$pg->x[] = $group;
@@ -163,9 +163,9 @@ function print_balance_sheet()
 					$rep->NewLine();
 					$rep->Font('bold');
 		 			$rep->TextCol(0, 2,	_('Total') . " " . $classname);
-					$rep->AmountCol(2, 3, $classopen, $dec);
-					$rep->AmountCol(3, 4, $classperiod, $dec);
-					$rep->AmountCol(4, 5, $classclose, $dec);
+					$rep->AmountCol(2, 3, $classopen * $convert, $dec);
+					$rep->AmountCol(3, 4, $classperiod * $convert, $dec);
+					$rep->AmountCol(4, 5, $classclose * $convert, $dec);
 					$rep->Font();
 					$assetsopen += $classopen;
 					$assetsperiod += $classperiod;
@@ -183,6 +183,10 @@ function print_balance_sheet()
 				$rep->NewLine();
 			}
 			$group = $account['AccountTypeName'];
+			if (get_sign_convert($account['account_type']))
+				$convert = -1;
+			else
+				$convert = 1;
 			$rep->row -= 4;
 			$rep->TextCol(0, 5, $account['AccountTypeName']);
 			$rep->row -= 4;
@@ -190,7 +194,6 @@ function print_balance_sheet()
 			$rep->NewLine();
 		}
 		$classname = $account['AccountClassName'];
-
 		$totalopen += $prev_balance;
 		$totalperiod += $curr_balance;
 		$totalclose = $totalopen + $totalperiod;
@@ -200,9 +203,9 @@ function print_balance_sheet()
 		$rep->TextCol(0, 1,	$account['account_code']);
 		$rep->TextCol(1, 2,	$account['account_name']);
 
-		$rep->AmountCol(2, 3, $prev_balance, $dec);
-		$rep->AmountCol(3, 4, $curr_balance, $dec);
-		$rep->AmountCol(4, 5, $curr_balance + $prev_balance, $dec);
+		$rep->AmountCol(2, 3, $prev_balance * $convert, $dec);
+		$rep->AmountCol(3, 4, $curr_balance * $convert, $dec);
+		$rep->AmountCol(4, 5, ($curr_balance + $prev_balance) * $convert, $dec);
 
 		$rep->NewLine();
 
@@ -227,9 +230,9 @@ function print_balance_sheet()
 			$rep->Line($rep->row);
 			$rep->NewLine();
 			$rep->TextCol(0, 2,	_('Total') . " " . $group);
-			$rep->AmountCol(2, 3, $totalopen, $dec);
-			$rep->AmountCol(3, 4, $totalperiod, $dec);
-			$rep->AmountCol(4, 5, $totalclose, $dec);
+			$rep->AmountCol(2, 3, $totalopen * $convert, $dec);
+			$rep->AmountCol(3, 4, $totalperiod * $convert, $dec);
+			$rep->AmountCol(4, 5, $totalclose * $convert, $dec);
 			if ($graphics)
 			{
 				$pg->x[] = $group;
@@ -245,9 +248,9 @@ function print_balance_sheet()
 				$rep->Line($rep->row);
 				$rep->NewLine();
 				$rep->TextCol(0, 2,	_('Calculated Return'));
-				$rep->AmountCol(2, 3, $calculateopen, $dec);
-				$rep->AmountCol(3, 4, $calculateperiod, $dec);
-				$rep->AmountCol(4, 5, $calculateclose, $dec);
+				$rep->AmountCol(2, 3, $calculateopen * $convert, $dec);
+				$rep->AmountCol(3, 4, $calculateperiod * $convert, $dec);
+				$rep->AmountCol(4, 5, $calculateclose * $convert, $dec);
 				if ($graphics)
 				{
 					$pg->x[] = _('Calculated Return');
@@ -256,9 +259,9 @@ function print_balance_sheet()
 				$rep->NewLine(2);
 				$rep->Font('bold');
 				$rep->TextCol(0, 2,	_('Total') . " " . $classname);
-				$rep->AmountCol(2, 3, -$assetsopen, $dec);
-				$rep->AmountCol(3, 4, -$assetsperiod, $dec);
-				$rep->AmountCol(4, 5, -$assetsclose, $dec);
+				$rep->AmountCol(2, 3, -$assetsopen * $convert, $dec);
+				$rep->AmountCol(3, 4, -$assetsperiod * $convert, $dec);
+				$rep->AmountCol(4, 5, -$assetsclose * $convert, $dec);
 				$rep->Font();
 				$rep->NewLine();
 			}

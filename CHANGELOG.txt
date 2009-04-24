@@ -18,7 +18,15 @@ Legend:
 - -> Removed
 ! -> Note
 $ -> Affected files
-	
+
+24-Apr-2009 Joe Hunt
+! Added option to select how to present Balance Sheet and P&L Statement
+$ /gl/manage/gl_account_classes.php
+  /gl/includes/db/gl_db_account_types.inc
+  /reporting/rep706.php
+  /reporting/rep707.php
+  /sql/alter2.2.sql
+  
 22-Apr-2009 Janusz Dobrowolski
 + Added inactive records support.
 $ /sales/includes/db/credit_status_db.inc
