@@ -260,7 +260,7 @@ function button($name, $value, $title=false, $icon=false)
 
 function button_cell($name, $value, $title=false, $icon=false)
 {
-	echo "<td>";
+	echo "<td align='center'>";
 	echo button($name, $value, $title, $icon);
 	echo "</td>";
 }
@@ -315,11 +315,12 @@ function check($label, $name, $value=null, $submit_on_change=false, $title=false
 	echo checkbox($label, $name, $value, $submit_on_change, $title);
 }
 
-function check_cells($label, $name, $value, $submit_on_change=false, $title=false)
+function check_cells($label, $name, $value, $submit_on_change=false, $title=false,
+	$params='')
 {
 	if ($label != null)
 		echo "<td>$label</td>\n";
-	echo "<td align='center'>";
+	echo "<td $params>";
 	echo check(null, $name, $value, $submit_on_change, $title);
 	echo "</td>";
 }
@@ -766,7 +767,7 @@ function inactive_control_cell($id, $value, $table, $key)
 			get_post('Update')) && (check_value('Inactive'.$id) != $value)) {
 			update_record_status($id, !$value, $table, $key);
 		}
-		echo '<td align="center">'. checkbox(null, $name, $value, true, '')
+		echo '<td align="center">'. checkbox(null, $name, $value, true, '', "align='center'")
  			. hidden("LInact[$id]", $value, false) . '</td>';	
 	}
 }
