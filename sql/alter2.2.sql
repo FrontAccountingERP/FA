@@ -37,3 +37,4 @@ ALTER TABLE `0_movement_types` ADD COLUMN `inactive` tinyint(1) NOT NULL default
 ALTER TABLE `0_item_tax_types` ADD COLUMN `inactive` tinyint(1) NOT NULL default '0';
 ALTER TABLE `0_tax_types` ADD COLUMN `inactive` tinyint(1) NOT NULL default '0';
 ALTER TABLE `0_tax_groups` ADD COLUMN `inactive` tinyint(1) NOT NULL default '0';
+ALTER TABLE `0_tax_group_items` DROP COLUMN `included_in_price`;

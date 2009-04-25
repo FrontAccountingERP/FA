@@ -2103,7 +2103,6 @@ CREATE TABLE `0_tax_group_items` (
   `tax_group_id` int(11) NOT NULL default '0',
   `tax_type_id` int(11) NOT NULL default '0',
   `rate` double NOT NULL default '0',
-  `included_in_price` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`tax_group_id`,`tax_type_id`)
 ) TYPE=InnoDB  ;
 

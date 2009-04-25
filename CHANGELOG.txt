@@ -19,6 +19,11 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+25_Apr-2009 Joe Hunt
+! Removed obsolete field 'included_in_price' from table 'Tax_group_items' in en_US-demo.sql.
+$ /sql/en_US-demo.sql
+  /sql/alter2.2.sql
+
 24-Apr-2009 Janusz Dobrowolski
 + Added inactive records support.
 $ /admin/payment_terms.php
