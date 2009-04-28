@@ -56,13 +56,45 @@ function check_data()
 	return true;
 }
 //---------------------------------------------------------------------------------------------
+function close_year($year)
+{
+	$myrow = get_fiscalyear($year);
+	$to = $myrow['end'];
+	// retrieve total balances from balance sheet accounts
+    $sql = "SELECT SUM(amount) FROM ".TB_PREF."gl_trans INNER JOIN ".TB_PREF."chart_master ON account=account_code
+    	INNER JOIN ".TB_PREF."chart_types ON account_type=id INNER JOIN ".TB_PREF."chart_class ON class_id=cid 
+		WHERE balance_sheet=1 AND tran_date <= '$to'";
+	$result = db_query($sql, "The total balance could not be calculated");
 
+	$row = db_fetch_row($result);
+	$balance = round2($row[0], user_price_dec());
+	if ($balance != 0.0)
+	{
+		$co = get_company_prefs();
+		$to = sql2date($to);
+
+		begin_transaction();
+
+		$trans_type = systypes::journal_entry();
+		$trans_id = get_next_trans_no($trans_type);
+
+		add_gl_trans($trans_type, $trans_id, $to, $co['retained_earnings_act'],
+			0, 0, _("Closing Year"), -$balance);
+		add_gl_trans($trans_type, $trans_id, $to, $co['profit_loss_year_act'],
+			0, 0, _("Closing Year"), $balance);
+
+		commit_transaction();
+	}	
+}
+	
 function handle_submit()
 {
 	global $selected_id, $Mode;
 
 	if ($selected_id != -1)
 	{
+		if ($_POST['closed'] == 1)
+			close_year($selected_id);	
    		update_fiscalyear($selected_id, $_POST['closed']);
 		display_notification(_('Selected fiscal year has been updated'));
 	}

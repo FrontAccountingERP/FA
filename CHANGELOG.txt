@@ -19,6 +19,15 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+28-Apr-2009 Joe Hunt
+! Changed so the close of fiscal years also closes the balances and brings forward retained earnings.
+$ /admin/gl_setup.ph
+  /admin/fiscalyears.php
+  /admin/db/company_db.inc
+  /sql/en_US-new.sql
+  /sql/en_US-demo.sql
+  /sql/alter2.2.sql
+  
 25_Apr-2009 Janusz Dobrowolski
 # Fixed ambigous sql
 $ /inventory/manage/item_categories.php

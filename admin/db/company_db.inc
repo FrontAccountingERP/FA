@@ -10,7 +10,7 @@
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
 
-function update_company_gl_setup($debtors_act, $pyt_discount_act, $creditors_act,
+function update_company_gl_setup($retained_act, $profit_loss_act, $debtors_act, $pyt_discount_act, $creditors_act,
 		$freight_act,
 		$exchange_diff_act,
 		$default_sales_act,
@@ -33,6 +33,7 @@ function update_company_gl_setup($debtors_act, $pyt_discount_act, $creditors_act
 		$default_delivery_required)
 {
 	$sql = "UPDATE ".TB_PREF."company SET
+		retained_earnings_act=".db_escape($retained_act).", profit_loss_year_act=".db_escape($profit_loss_act).",
 		debtors_act=".db_escape($debtors_act).", pyt_discount_act=".db_escape($pyt_discount_act).",
 		creditors_act=".db_escape($creditors_act).",
 		freight_act=".db_escape($freight_act).",

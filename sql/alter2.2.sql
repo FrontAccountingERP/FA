@@ -6,6 +6,10 @@ ALTER TABLE `0_company` DROP COLUMN `custom2_value`;
 ALTER TABLE `0_company` DROP COLUMN `custom3_value`;
 
 ALTER TABLE `0_company` ADD COLUMN `default_delivery_required` SMALLINT(6) NULL DEFAULT '1';
+ALTER TABLE `0_company` ADD COLUMN `version_id` VARCHAR(11) NOT NULL DEFAULT '';
+ALTER TABLE `0_company` CHANGE `purch_exchange_diff_act` `profit_loss_year_act` VARCHAR(11) NOT NULL DEFAULT '';
+INSERT INTO `0_chart_master` VALUES ('8900', '', 'Profit and Loss this year', '52', '0');
+UPDATE `0_company` SET `profit_loss_year_act`='8900' WHERE `coy_code`=1; 
 
 ALTER TABLE `0_stock_category` DROP COLUMN `stock_act`;
 ALTER TABLE `0_stock_category` DROP COLUMN `cogs_act`;

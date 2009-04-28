@@ -233,6 +233,7 @@ INSERT INTO `0_chart_master` VALUES ('6810', '', 'Legal Expenses', '5', '0');
 INSERT INTO `0_chart_master` VALUES ('6600', '', 'Repairs and Maintenance Office', '5', '0');
 INSERT INTO `0_chart_master` VALUES ('6730', '', 'phone', '5', '0');
 INSERT INTO `0_chart_master` VALUES ('8200', '', 'Bank Interest', '52', '0');
+INSERT INTO `0_chart_master` VALUES ('8900', '', 'Profit and Loss this year', '52', '0');
 INSERT INTO `0_chart_master` VALUES ('6840', '', 'Credit Control', '5', '0');
 INSERT INTO `0_chart_master` VALUES ('7040', '', 'Depreciation Office Equipment', '51', '0');
 INSERT INTO `0_chart_master` VALUES ('3800', '', 'Freight Outwards', '5', '0');
@@ -338,7 +339,7 @@ CREATE TABLE `0_company` (
   `creditors_act` varchar(11) NOT NULL default '',
   `grn_act` varchar(11) NOT NULL default '',
   `exchange_diff_act` varchar(11) NOT NULL default '',
-  `purch_exchange_diff_act` varchar(11) NOT NULL default '',
+  `profit_loss_year_act` varchar(11) NOT NULL default '',
   `retained_earnings_act` varchar(11) NOT NULL default '',
   `freight_act` varchar(11) NOT NULL default '',
   `default_sales_act` varchar(11) NOT NULL default '',
@@ -367,6 +368,7 @@ CREATE TABLE `0_company` (
   `accumulate_shipping` tinyint(1) NOT NULL default '0',
   `legal_text` tinytext NOT NULL,
   `default_delivery_required` smallint(6) NOT NULL default '1',
+  `version_id` varchar(11) NOT NULL default '',
   PRIMARY KEY  (`coy_code`)
 ) TYPE=MyISAM  ;
 

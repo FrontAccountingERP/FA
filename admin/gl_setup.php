@@ -52,7 +52,8 @@ function can_process()
 
 if (isset($_POST['submit']) && can_process())
 {
-	update_company_gl_setup($_POST['debtors_act'], $_POST['pyt_discount_act'],
+	update_company_gl_setup($_POST['retained_earnings_act'], $_POST['profit_loss_year_act'],
+		$_POST['debtors_act'], $_POST['pyt_discount_act'],
 		$_POST['creditors_act'], $_POST['freight_act'],
 		$_POST['exchange_diff_act'],
 		$_POST['default_sales_act'],
@@ -89,6 +90,8 @@ table_section(1);
 
 $myrow = get_company_prefs();
 
+$_POST['retained_earnings_act']  = $myrow["retained_earnings_act"];
+$_POST['profit_loss_year_act']  = $myrow["profit_loss_year_act"];
 $_POST['debtors_act']  = $myrow["debtors_act"];
 $_POST['creditors_act']  = $myrow["creditors_act"];
 $_POST['freight_act'] = $myrow["freight_act"];
@@ -131,6 +134,10 @@ table_section_title(_("General GL"));
 
 text_row(_("Past Due Days Interval:"), 'past_due_days', $_POST['past_due_days'], 6, 6, '', "", _("days"));
 
+gl_all_accounts_list_row(_("Retained Earnings:"), 'retained_earnings_act', $_POST['retained_earnings_act']);
+
+gl_all_accounts_list_row(_("Profit/Loss Year:"), 'profit_loss_year_act', $_POST['profit_loss_year_act']);
+
 gl_all_accounts_list_row(_("Exchange Variances Account:"), 'exchange_diff_act', $_POST['exchange_diff_act']);
 
 //---------------
@@ -162,12 +169,12 @@ text_row(_("Delivery Required By:"), 'default_delivery_required', $_POST['defaul
 
 //----------------
 
+table_section(2);
+
 table_section_title(_("Dimension Defaults"));
 
 text_row(_("Dimension Required By After:"), 'default_dim_required', $_POST['default_dim_required'], 6, 6, '', "", _("days"));
 //---------------
-
-table_section(2);
 
 table_section_title(_("Suppliers and Purchasing"));
 
