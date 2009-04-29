@@ -19,6 +19,13 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+29-Apr-2009 Janusz Dobrowolski
+! Messages styles moved default.css
+$ /includes/errors.inc
+  /themes/aqua/default.css
+  /themes/cool/default.css
+  /themes/default/default.css
+
 28-Apr-2009 Joe Hunt
 ! Changed so the close of fiscal years also closes the balances and brings forward retained earnings.
 $ /admin/gl_setup.ph
@@ -28,11 +35,11 @@ $ /admin/gl_setup.ph
   /sql/en_US-demo.sql
   /sql/alter2.2.sql
   
-25_Apr-2009 Janusz Dobrowolski
+25-Apr-2009 Janusz Dobrowolski
 # Fixed ambigous sql
 $ /inventory/manage/item_categories.php
 
-25_Apr-2009 Joe Hunt
+25-Apr-2009 Joe Hunt
 ! Removed obsolete field 'included_in_price' from table 'Tax_group_items' in en_US-demo.sql.
 $ /sql/en_US-demo.sql
   /sql/alter2.2.sql

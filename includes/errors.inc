@@ -12,11 +12,6 @@
 $messages = array(); // container for system messages
 $before_box = ''; // temporary container for output html data before error box
 
-$msg_colors = array( 
-	E_USER_ERROR => array('bg'=>'#ffcccc', 'txt'=>'#dd2200', 'bd'=>'#cc3300'),
-    E_USER_WARNING => array('bg'=>'#ffff00', 'txt'=>'#ff5500', 'bd'=>'#ff9900'),
-    E_USER_NOTICE => array('bg'=>'#ccffcc', 'txt'=>'#007700', 'bd'=>'#33cc00'));
-
 //-----------------------------------------------------------------------------
 //    Error handler - collects all php/user messages for
 //    display in message box.
@@ -33,13 +28,17 @@ function error_handler($errno, $errstr, $file, $line) {
 //------------------------------------------------------------------------------
 //	Formats system messages before insert them into message <div>
 // FIX center is unused now
-function fmt_errors($center=true) {
-    global $messages, $msg_colors;
+function fmt_errors($center=false) {
+    global $messages;
   
+  $msg_class = array(
+  	E_USER_ERROR => 'err_msg',
+  	E_USER_WARNING =>'warn_msg', 
+	E_USER_NOTICE => 'note_msg');
+
   $type = E_USER_NOTICE;
-  
+  $content = '';
   if (count($messages)) {
-	$content = '';
 	foreach($messages as $msg) {
 		if ($msg[0]>$type) continue;
 
@@ -54,23 +53,13 @@ function fmt_errors($center=true) {
 			}
 		}
 	    $str = $msg[1];
-		$c = $msg_colors[$type];
+		$class = $msg_class[$type];
 		if ($msg[0] < E_USER_ERROR && $msg[2] != null)
 		  $str .= ' '._('in file').': '.$msg[2].' '._('at line ').$msg[3];
-
-		$content .= "<tr><td  " . ($center?"align='center' ":"").
-		  " width='100%' bgcolor='{$c['bg']}'><font color='{$c['txt']}'>"
-		  .$str."</font></td></tr>";
-	}
-
-  	$str = "<center><table border='1' cellpadding='3' cellspacing='0' style='border-collapse: collapse' bordercolor='{$c['bd']}' width='98%'>"
-	  . $content . "</table></center><br>\n";	
-		
+		$content .= "<div class='$class'>$str</div><br>";
+	}		
   }
-     else
-        $str = '';
-	
-    return $str;
+  return $content;
 }
 //-----------------------------------------------------------------------------
 // Error box <div> element.

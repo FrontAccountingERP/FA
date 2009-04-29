@@ -568,3 +568,31 @@ ul.ajaxtabs li input.current, ul.ajaxtabs li input.current:hover{
 	background-color: #ddd;
 	border: 1px solid #FFF;
 }
+
+div.err_msg {
+	padding: 3px;
+	border: 1px solid #cc3300;
+	background-color: #ffcccc;
+	color: #dd2200;
+	text-align: center;
+}
+
+div.warn_msg {
+	padding: 3px;
+	border: 1px solid #ff9900;
+	background-color: #ffff00;
+	color: #ff5500;
+	text-align: center;
+}
+
+div.note_msg {
+	padding: 3px;
+	border: 1px solid #33cc00;
+	background-color: #ccffcc;
+	color: #007700;
+	text-align: center;
+}
+
+#msgbox {
+	margin: 10px;
+}
