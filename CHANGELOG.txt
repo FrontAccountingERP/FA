@@ -19,6 +19,11 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+------------------------------- Release 2.1.1 ----------------------------------
+30-Apr-2009 Joe Hunt
+! Release 2.1.2
+$ config.php
+
 22-Apr-2009 Joe Hunt
 ! Changed the text 'Supplier Account No' to 'Our Customer No' in Supplier form
 $ /purchasing/manage/suppliers.php
