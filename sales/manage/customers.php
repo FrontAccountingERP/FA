@@ -142,8 +142,8 @@ if (isset($_POST['delete']))
 	$cancel_delete = 0;
 
 	// PREVENT DELETES IF DEPENDENT RECORDS IN 'debtor_trans'
-
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."debtor_trans WHERE debtor_no='" . $_POST['customer_id'] . "'";
+	$sel_id = db_escape($_POST['customer_id']);
+	$sql= "SELECT COUNT(*) FROM ".TB_PREF."debtor_trans WHERE debtor_no=$sel_id";
 	$result = db_query($sql,"check failed");
 	$myrow = db_fetch_row($result);
 	if ($myrow[0] > 0) 
@@ -153,7 +153,7 @@ if (isset($_POST['delete']))
 	} 
 	else 
 	{
-		$sql= "SELECT COUNT(*) FROM ".TB_PREF."sales_orders WHERE debtor_no='" . $_POST['customer_id'] . "'";
+		$sql= "SELECT COUNT(*) FROM ".TB_PREF."sales_orders WHERE debtor_no=$sel_id";
 		$result = db_query($sql,"check failed");
 		$myrow = db_fetch_row($result);
 		if ($myrow[0] > 0) 
@@ -163,7 +163,7 @@ if (isset($_POST['delete']))
 		} 
 		else 
 		{
-			$sql = "SELECT COUNT(*) FROM ".TB_PREF."cust_branch WHERE debtor_no='" . $_POST['customer_id'] . "'";
+			$sql = "SELECT COUNT(*) FROM ".TB_PREF."cust_branch WHERE debtor_no=$sel_id";
 			$result = db_query($sql,"check failed");
 			$myrow = db_fetch_row($result);
 			if ($myrow[0] > 0) 
@@ -177,7 +177,7 @@ if (isset($_POST['delete']))
 	
 	if ($cancel_delete == 0) 
 	{ 	//ie not cancelled the delete as a result of above tests
-		$sql = "DELETE FROM ".TB_PREF."debtors_master WHERE debtor_no='" . $_POST['customer_id'] . "'";
+		$sql = "DELETE FROM ".TB_PREF."debtors_master WHERE debtor_no=$sel_id";
 		db_query($sql,"cannot delete customer");
 
 		display_notification(_("Selected customer has been deleted."));
@@ -227,7 +227,7 @@ if ($new_customer)
 else 
 {
 
-	$sql = "SELECT * FROM ".TB_PREF."debtors_master WHERE debtor_no = '" . $_POST['customer_id'] . "'";
+	$sql = "SELECT * FROM ".TB_PREF."debtors_master WHERE debtor_no = ".db_escape($_POST['customer_id']);
 	$result = db_query($sql,"check failed");
 
 	$myrow = db_fetch($result);

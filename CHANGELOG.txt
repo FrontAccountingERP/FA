@@ -20,6 +20,9 @@ Legend:
 $ -> Affected files
 
 30-Apr-2009 Janusz Dobrowolski
+! Merged changes from main trunk  2.1.1-2.1.2 (see below)
+
+30-Apr-2009 Janusz Dobrowolski
 # Small layout fixes 
 $ /includes/errors.inc
   /themes/aqua/renderer.php
@@ -354,6 +357,65 @@ $ /.htaccess
   /sales/inquiry/customer_allocation_inquiry.php
   /sales/inquiry/sales_deliveries_view.php
   /sales/inquiry/sales_orders_view.php
+
+------------------------------- Release 2.1.2 ----------------------------------
+30-Apr-2009 Joe Hunt
+! Release 2.1.2
+$ config.php
+
+22-Apr-2009 Joe Hunt
+! Changed the text 'Supplier Account No' to 'Our Customer No' in Supplier form
+$ /purchasing/manage/suppliers.php
+
+20-Apr-2009 Janusz Dobrowolski
+# Rewritten backup manager, fixed progressbar bug.
+$ /admin/backups.php
+# Fixed bug in zipped sql file restore.
+$ /admin/db/maintenance_db.inc
+! JsHttpRequest class updated to latest version.
+$ /includes/JsHttpRequest.php
+  /js/JsHttpRequest.js
+! Added optional parameter in vertical_space()
+$ /includes/ui/ui_controls.inc
++ Helper for javascript confirm dialogs added.
+$ /includes/ui/ui_input.inc
+! Client side confirm dialog added for destructive submits.
+$ /purchasing/supplier_invoice.php
+  /purchasing/includes/ui/invoice_ui.inc
+  /sales/sales_order_entry.php
++ Added retry after timeout on unreliable ajax connections. Preparation for client-side javascript checks.
+$ /includes/current_user.inc
+  /includes/page/footer.inc
+  /includes/page/header.inc
+  /includes/ui/ui_view.inc
+  /access/login.php
+  /js/inserts.js
+  /js/utils.js
+  /themes/aqua/images/progressbar.gif
+  /themes/cool/images/progressbar.gif
+  /themes/default/images/progressbar.gif
+  /themes/default/images/ajax-loader2.gif (new)
+  /themes/default/images/warning.png (new)
+  /themes/aqua/images/ajax-loader2.gif (new)
+  /themes/aqua/images/warning.png (new)
+  /themes/cool/images/ajax-loader2.gif (new)
+  /themes/cool/images/warning.png (new)
+# Fixed supplier uom retrieval.
+$ /purchasing/includes/db/po_db.inc
+
+04-Apr-2009 Janusz Dobrowolski
+# Paper format defaults to A4 for unknown specifiers.
+$ /reporting/includes/pdf_report.inc
+# Sealing sql statements.
+$ /sales/manage/customers.php
+
+01-Apr-2009 Janusz Dobrowolski
+# Fixed document mailing.
+$ /reporting/includes/pdf_report.inc
+# Fixed focus javascript error on lists.
+$ /includes/ui/ui_lists.inc
+# Fixed report links hotkey selection
+$ /js/inserts.js
 
 ------------------------------- Release 2.1.1 ----------------------------------
 30-Mar-2009 Janusz Dobrowolski

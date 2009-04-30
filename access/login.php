@@ -28,7 +28,7 @@
 ?>
 <html>
 <head>
-<?php echo get_js_png_fix(); ?>
+<?php echo '<script>'.get_js_png_fix().'</script>'; ?>
 <script type="text/javascript">
 function defaultCompany()
 {

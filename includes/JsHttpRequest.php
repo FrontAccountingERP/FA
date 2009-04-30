@@ -15,7 +15,7 @@
  * This backend library also supports POST requests additionally to GET.
  *
  * @author Dmitry Koterov 
- * @version 5.x $Id$
+ * @version 5.x
  */
 
 class JsHttpRequest
@@ -95,6 +95,7 @@ class JsHttpRequest
             ini_set('display_errors', $this->_magic); //
             ini_set('error_prepend_string', $this->_uniqHash . ini_get('error_prepend_string'));
             ini_set('error_append_string',  ini_get('error_append_string') . $this->_uniqHash);
+            if (function_exists('xdebug_disable')) xdebug_disable(); // else Fatal errors are not catched
 
             // Start OB handling early.
             ob_start(array(&$this, "_obHandler"));
@@ -293,36 +294,49 @@ class JsHttpRequest
         unset($GLOBALS['JsHttpRequest_Active']);
         
         // Check for error & fetch a resulting data.
-        if (preg_match("/{$this->_uniqHash}(.*?){$this->_uniqHash}/sx", $text, $m)) {
-            if (!ini_get('display_errors') || (!$this->_prevDisplayErrors && ini_get('display_errors') == $this->_magic)) {
-                // Display_errors:
-                // 1. disabled manually after the library initialization, or
-                // 2. was initially disabled and is not changed
-                $text = str_replace($m[0], '', $text); // strip whole error message
-            } else {
-                $text = str_replace($this->_uniqHash, '', $text);
+        $wasFatalError = false;
+        if (preg_match_all("/{$this->_uniqHash}(.*?){$this->_uniqHash}/sx", $text, $m)) {
+            // Display_errors:
+            // 1. disabled manually after the library initialization, or
+            // 2. was initially disabled and is not changed
+            $needRemoveErrorMessages = !ini_get('display_errors') || (!$this->_prevDisplayErrors && ini_get('display_errors') == $this->_magic);
+            foreach ($m[0] as $error) {
+                if (preg_match('/\bFatal error(<.*?>)?:/i', $error)) {
+                    $wasFatalError = true;
+                }
+                if ($needRemoveErrorMessages) {
+                    $text = str_replace($error, '', $text); // strip the whole error message
+                } else {
+                    $text = str_replace($this->_uniqHash, '', $text);
+                }
             }
         }
-        if ($m && preg_match('/\bFatal error(<.*?>)?:/i', $m[1])) {
-            // On fatal errors - force null result (generate 500 error).
+        if ($wasFatalError) {
+            // On fatal errors - force "null" result. This is needed, because $_RESULT
+            // may not be fully completed at the moment of the error.
             $this->RESULT = null;
         } else {
-            // Make a resulting hash.
+            // Read the result from globals if not set directly.
             if (!isset($this->RESULT)) {
                 global $_RESULT;
                 $this->RESULT = $_RESULT;
             }
+            // Avoid manual NULLs in the result (very important!).
+            if ($this->RESULT === null) {
+                $this->RESULT = false;
+            }
         }
         
+        // Note that 500 error is generated when a PHP error occurred.
+        $status = $this->RESULT === null? 500 : 200;
         $result = array(
             'id'   => $this->ID,
-            'js'   => $this->RESULT,
-            'text' => $text,
+            'js'   => $this->RESULT,  // null always means a fatal error...
+            'text' => $text,          // ...independent on $text!!!
         );
-        $text = null;
         $encoding = $this->SCRIPT_ENCODING;
-        $status = $this->RESULT !== null? 200 : 500;
-
+        $text = null; // to be on a safe side
+        
         // Try to use very fast json_encode: 3-4 times faster than a manual encoding.
         if (function_exists('array_walk_recursive') && function_exists('json_encode') && $this->_unicodeConvMethod) {
             $this->_nonAsciiChars = join("", array_map('chr', range(128, 255)));
@@ -458,7 +472,7 @@ class JsHttpRequest
 
 
     /**
-     * If there is no ICONV, try to decode 1-byte characters manually
+     * If there is no ICONV, try to decode 1-byte characters and UTF-8 manually
      * (for most popular charsets only).
      */
      
@@ -467,12 +481,25 @@ class JsHttpRequest
      */
     function _decUcs2Decode($code, $toEnc)
     {
+        // Little speedup by using array_flip($this->_encTables) and later hash access.
+        static $flippedTable = null;
         if ($code < 128) return chr($code);
+        
         if (isset($this->_encTables[$toEnc])) {
-            // TODO: possible speedup by using array_flip($this->_encTables) and later hash access in the constructor.
-            $p = array_search($code, $this->_encTables[$toEnc]);
-            if ($p !== false) return chr(128 + $p);
+            if (!$flippedTable) $flippedTable = array_flip($this->_encTables[$toEnc]);
+            if (isset($flippedTable[$code])) return chr(128 + $flippedTable[$code]);
+        } else if ($toEnc == 'utf-8' || $toEnc == 'utf8') {
+            // UTF-8 conversion rules: http://www.cl.cam.ac.uk/~mgk25/unicode.html
+            if ($code < 0x800) {
+                return chr(0xC0 + ($code >> 6)) . 
+                       chr(0x80 + ($code & 0x3F));
+            } else { // if ($code <= 0xFFFF) -- it is almost always so for UCS2-BE
+                return chr(0xE0 + ($code >> 12)) .
+                       chr(0x80 + (0x3F & ($code >> 6))) .
+                       chr(0x80 + ($code & 0x3F));
+            }
         }
+        
         return "";
     }
     

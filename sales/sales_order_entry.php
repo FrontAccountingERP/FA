@@ -146,7 +146,6 @@ if (isset($_GET['AddedID'])) {
 	display_footer_exit();
 } else
 	check_edit_conflicts();
-
 //-----------------------------------------------------------------------------
 
 function copy_to_cart()
@@ -234,8 +233,8 @@ function line_start_focus() {
   $Ajax->activate('items_table');
   set_focus('_stock_id_edit');
 }
-//--------------------------------------------------------------------------------
 
+//--------------------------------------------------------------------------------
 function can_process() {
 	if (!is_date($_POST['OrderDate'])) {
 		display_error(_("The entered date is invalid."));
@@ -361,8 +360,6 @@ function check_item_data()
 function handle_update_item()
 {
 	if ($_POST['UpdateItem'] != '' && check_item_data()) {
-		//alert("description=".$_POST['item_description']);
-		//$_SESSION['items']->line_items[$_POST['LineNo']]->item_description = $_POST['item_description'];
 		$_SESSION['Items']->update_cart_item($_POST['LineNo'],
 		 input_num('qty'), input_num('price'),
 		 input_num('Disc') / 100, $_POST['item_description'] );
@@ -435,7 +432,7 @@ function  handle_cancel_order()
 //--------------------------------------------------------------------------------
 
 function create_cart($type, $trans_no)
-{
+{ 
 	processing_start();
 	$doc_type = $type;
 
@@ -513,6 +510,7 @@ if ($_SESSION['Items']->trans_type == 10) {
 	$corder = _("Commit Order Changes");
 }
 start_form();
+
 hidden('cart_id');
 
 $customer_error = display_order_header($_SESSION['Items'],
@@ -532,6 +530,7 @@ if ($customer_error == "") {
 
 		submit_center_first('ProcessOrder', $porder,
 		    _('Check entered data and save document'), 'default');
+		submit_js_confirm('CancelOrder', _('You are about to void this Sales Order.\nDo you want to continue?'));
 	} else {
 		submit_center_first('ProcessOrder', $corder,
 		    _('Validate changes and update document'), 'default');

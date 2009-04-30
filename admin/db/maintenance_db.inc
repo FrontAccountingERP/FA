@@ -141,7 +141,7 @@ function db_import($filename, $connection, $force=true)
 	db_query("SET foreign_key_checks=0");
 
 	// uncrompress gziped backup files
-	if (strpos($filename, ".gzip") || strpos($filename, ".GZIP"))
+	if (strpos($filename, ".gz") || strpos($filename, ".GZ"))
 		$lines = db_ungzip("lines", $filename);
 	elseif (strpos($filename, ".zip") || strpos($filename, ".ZIP"))
 		$lines = db_unzip("lines", $filename);
@@ -266,26 +266,24 @@ function db_unzip($mode, $path)
     $filename = substr($filename, 0, strlen($filename) - 4);
 
     // compare filname in zip and filename from $_GET
-    if (substr($all, 30, strlen($filename)) != $filename)
-    {
-		return '';
-        // exit if names differ
-        //echo F_WRONG_FILE.".";
-        //exit;
+    if (substr($all, 30, strlen($filename)-4) . substr($all, 30+strlen($filename)+9, 4)
+	  != $filename) {
+		return '';     // exit if names differ
     }
     else
     {
     	// get the suffix of the filename in hex
-        $crc_bugfix = substr(substr($filename, 0, strlen($filename) - 4), strlen($filename) - 12 - 4);
+		$crc_bugfix = substr($all, 30, strlen($filename)+13);
+        $crc_bugfix = substr(substr($crc_bugfix, 0, strlen($crc_bugfix) - 4), 
+				strlen($crc_bugfix) - 12 - 4);
         $suffix = false;
-
         // convert hex to ascii
         for ($i=0; $i < 12; )
         	$suffix .= chr($crc_bugfix[$i++] . $crc_bugfix[$i++] . $crc_bugfix[$i++]);
 
         // remove central directory information (we have always just one ziped file)
-        $comp = substr($all, -(strlen($all) - 30 - strlen($filename)));
-        $comp = substr($comp, 0, (strlen($comp) - 80 - strlen($filename)));
+        $comp = substr($all, -(strlen($all) - 30 - strlen($filename)-13));
+        $comp = substr($comp, 0, (strlen($comp) - 80 - strlen($filename)-13));
 
         // fix the crc bugfix (see function save_to_file)
         $comp = "xœ" . $comp . $suffix;
@@ -567,13 +565,14 @@ function save_to_file($backupfile, $zip, $fileData)
         $crc = crc32($fileData);
         $zdata = gzcompress($fileData);
 
-        // string needed for decoding (because of crc bug)
-        //$name_suffix = substr($zdata, -4, 4);
-        //$name_suffix2 = "_";
-        //for ($i = 0; $i < 4; $i++)
-        //	$name_suffix2 .= sprintf("%03d", ord($name_suffix[$i]));
-        //$backupfile = substr($backupfile, 0, strlen($backupfile) - 8) . $name_suffix2 . ".sql.zip";
-        $name = substr($backupfile, 0, strlen($backupfile) -4);
+		// extend stored file name with suffix
+        // needed for decoding (because of crc bug)
+        $name_suffix = substr($zdata, -4, 4);
+        $name_suffix2 = "_";
+        for ($i = 0; $i < 4; $i++)
+        	$name_suffix2 .= sprintf("%03d", ord($name_suffix[$i]));
+
+      	$name = substr($backupfile, 0, strlen($backupfile) - 8) . $name_suffix2 . ".sql";
 
         // fix crc bug
         $zdata = substr(substr($zdata, 0, strlen($zdata) - 4), 2);

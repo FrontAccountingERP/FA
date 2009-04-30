@@ -231,6 +231,11 @@ function submit_return($name, $value, $title=false, $async=false)
 		submit($name, $value, true, $title, $async);
 	}
 }
+
+function submit_js_confirm($name, $msg) {
+	add_js_source(
+		"_validate.$name=function(){ return confirm('$msg');};");
+};
 //-----------------------------------------------------------------------------------
 
 function set_icon($icon, $title=false)

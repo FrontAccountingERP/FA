@@ -337,18 +337,8 @@ if ($id4 != -1)
 $id2 = -1;
 if ($_SESSION["wa_current_user"]->access == 2)
 {
-	$id3 = find_submit('void_item_id');
-	if ($id3 != -1) 
-	{
-		$js = "if(confirm(\""
-		.sprintf(_('You are about to remove all yet non-invoiced items from delivery line #%d. This operation also irreversibly changes related order line. Do you want to continue ?'), $id3)
-		."\")) {
-			JsHttpRequest.request(\"void_confirm".$id3."\");
-		}";
-		$Ajax->addScript(true,$js);
-	}
-	$id2 = find_submit('void_confirm');
-	if ($id2 != -1) // Added section 2008-10-18 Joe Hunt for voiding delivery lines
+	$id2 = find_submit('void_item_id');
+	if ($id2 != -1) 
 	{
 		begin_transaction();
 		
