@@ -29,7 +29,7 @@ function error_handler($errno, $errstr, $file, $line) {
 //	Formats system messages before insert them into message <div>
 // FIX center is unused now
 function fmt_errors($center=false) {
-    global $messages;
+    global $messages, $path_to_root;
   
   $msg_class = array(
   	E_USER_ERROR => 'err_msg',
@@ -38,8 +38,9 @@ function fmt_errors($center=false) {
 
   $type = E_USER_NOTICE;
   $content = '';
+  $class = 'no_msg';
   if (count($messages)) {
-	foreach($messages as $msg) {
+	foreach($messages as $cnt=>$msg) {
 		if ($msg[0]>$type) continue;
 
 		if ($msg[0]<$type) { 
@@ -53,12 +54,16 @@ function fmt_errors($center=false) {
 			}
 		}
 	    $str = $msg[1];
-		$class = $msg_class[$type];
 		if ($msg[0] < E_USER_ERROR && $msg[2] != null)
 		  $str .= ' '._('in file').': '.$msg[2].' '._('at line ').$msg[3];
-		$content .= "<div class='$class'>$str</div><br>";
+		$content .= ($cnt ? '<hr>' : '').$str;
 	}		
-  }
+	$class = $msg_class[$type];
+  } else
+   if ($path_to_root=='.')
+    return '';
+  
+  $content = "<div class='$class'>$content</div>";
   return $content;
 }
 //-----------------------------------------------------------------------------

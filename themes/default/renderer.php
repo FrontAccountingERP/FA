@@ -84,9 +84,6 @@
 				."</tr></table></center>";
 			}
 
-			if (!$is_index)
-				echo "<br>";
-
 		}
 
 		function menu_footer($no_menu, $is_index)

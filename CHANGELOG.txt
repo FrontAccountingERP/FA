@@ -19,6 +19,13 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+30-Apr-2009 Janusz Dobrowolski
+# Small layout fixes 
+$ /includes/errors.inc
+  /themes/aqua/renderer.php
+  /themes/cool/renderer.php
+  /themes/default/renderer.php
+
 29-Apr-2009 Janusz Dobrowolski
 ! Messages styles moved default.css
 $ /includes/errors.inc
