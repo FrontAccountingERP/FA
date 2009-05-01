@@ -28,7 +28,8 @@ $dim = get_company_pref('use_dimension');
 
 $reports->addReportClass(_('Customer'));
 $reports->addReport(_('Customer'),101,_('Customer &Balances'),
-	array(	new ReportParam(_('End Date'),'DATE'),
+	array(	new ReportParam(_('Start Date'),'DATEBEGIN'),
+			new ReportParam(_('End Date'),'DATEENDM'),
 			new ReportParam(_('Customer'),'CUSTOMERS_NO_FILTER'),
 			new ReportParam(_('Currency Filter'),'CURRENCY'),
 			new ReportParam(_('Comments'),'TEXTBOX'),
@@ -101,7 +102,8 @@ $reports->addReport(_('Customer'),109,_('&Print Sales Orders'),
 
 $reports->addReportClass(_('Supplier'));
 $reports->addReport(_('Supplier'),201,_('Supplier &Balances'),
-	array(	new ReportParam(_('End Date'),'DATE'),
+	array(	new ReportParam(_('Start Date'),'DATEBEGIN'),
+			new ReportParam(_('End Date'),'DATEENDM'),
 			new ReportParam(_('Supplier'),'SUPPLIERS_NO_FILTER'),
 			new ReportParam(_('Currency Filter'),'CURRENCY'),
 			new ReportParam(_('Comments'),'TEXTBOX'),

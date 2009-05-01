@@ -27,17 +27,38 @@ include_once($path_to_root . "/gl/includes/gl_db.inc");
 
 print_supplier_balances();
 
-function getTransactions($supplier_id, $date)
+function get_open_balance($supplier_id, $to)
 {
-	$date = date2sql($date);
+	$to = date2sql($to);
+
+    $sql = "SELECT SUM(IF(".TB_PREF."supp_trans.type = 20, (".TB_PREF."supp_trans.ov_amount + ".TB_PREF."supp_trans.ov_gst + 
+    	".TB_PREF."supp_trans.ov_discount) * rate, 0)) AS charges,
+    	SUM(IF(".TB_PREF."supp_trans.type <> 20, (".TB_PREF."supp_trans.ov_amount + ".TB_PREF."supp_trans.ov_gst + 
+    	".TB_PREF."supp_trans.ov_discount) * rate, 0)) AS credits,
+		SUM(".TB_PREF."supp_trans.alloc * rate) AS Allocated,
+		SUM((".TB_PREF."supp_trans.ov_amount + ".TB_PREF."supp_trans.ov_gst + 
+    	".TB_PREF."supp_trans.ov_discount - ".TB_PREF."supp_trans.alloc) * rate) AS OutStanding
+		FROM ".TB_PREF."supp_trans
+    	WHERE ".TB_PREF."supp_trans.tran_date < '$to'
+		AND ".TB_PREF."supp_trans.supplier_id = '$supplier_id' GROUP BY supplier_id";
+
+    $result = db_query($sql,"No transactions were returned");
+    return db_fetch($result);
+}
+
+function getTransactions($supplier_id, $from, $to)
+{
+	$from = date2sql($from);
+	$to = date2sql($to);
 
     $sql = "SELECT ".TB_PREF."supp_trans.*, ".TB_PREF."sys_types.type_name,
 				(".TB_PREF."supp_trans.ov_amount + ".TB_PREF."supp_trans.ov_gst + ".TB_PREF."supp_trans.ov_discount)
 				AS TotalAmount, ".TB_PREF."supp_trans.alloc AS Allocated,
 				((".TB_PREF."supp_trans.type = 20)
-					AND ".TB_PREF."supp_trans.due_date < '$date') AS OverDue
+					AND ".TB_PREF."supp_trans.due_date < '$to') AS OverDue
     			FROM ".TB_PREF."supp_trans, ".TB_PREF."sys_types
-    			WHERE ".TB_PREF."supp_trans.tran_date <= '$date' AND ".TB_PREF."supp_trans.supplier_id = '$supplier_id'
+    			WHERE ".TB_PREF."supp_trans.tran_date >= '$from' AND ".TB_PREF."supp_trans.tran_date <= '$to' 
+    			AND ".TB_PREF."supp_trans.supplier_id = '$supplier_id'
     				AND ".TB_PREF."supp_trans.type = ".TB_PREF."sys_types.type_id
     				ORDER BY ".TB_PREF."supp_trans.tran_date";
 
@@ -52,20 +73,21 @@ function print_supplier_balances()
 {
     global $path_to_root;
 
-    $to = $_POST['PARAM_0'];
-    $fromsupp = $_POST['PARAM_1'];
-    $currency = $_POST['PARAM_2'];
-    $comments = $_POST['PARAM_3'];
-	$destination = $_POST['PARAM_4'];
+    $from = $_POST['PARAM_0'];
+    $to = $_POST['PARAM_1'];
+    $fromsupp = $_POST['PARAM_2'];
+    $currency = $_POST['PARAM_3'];
+    $comments = $_POST['PARAM_4'];
+	$destination = $_POST['PARAM_5'];
 	if ($destination)
 		include_once($path_to_root . "/reporting/includes/excel_report.inc");
 	else
 		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 
 	if ($fromsupp == reserved_words::get_all_numeric())
-		$from = _('All');
+		$supp = _('All');
 	else
-		$from = get_supplier_name($fromsupp);
+		$supp = get_supplier_name($fromsupp);
     $dec = user_price_dec();
 
 	if ($currency == reserved_words::get_all())
@@ -84,8 +106,8 @@ function print_supplier_balances()
 	$aligns = array('left',	'left',	'left',	'left',	'right', 'right', 'right', 'right');
 
     $params =   array( 	0 => $comments,
-    				    1 => array('text' => _('End Date'), 'from' => $to, 'to' => ''),
-    				    2 => array('text' => _('Supplier'), 'from' => $from, 'to' => ''),
+    				    1 => array('text' => _('Period'), 'from' => $from, 'to' => $to),
+    				    2 => array('text' => _('Supplier'), 'from' => $supp, 'to' => ''),
     				    3 => array(  'text' => _('Currency'),'from' => $currency, 'to' => ''));
 
     $rep = new FrontReport(_('Supplier Balances'), "SupplierBalances", user_pagesize());
@@ -108,16 +130,32 @@ function print_supplier_balances()
 		if (!$convert && $currency != $myrow['curr_code'])
 			continue;
 		$rep->fontSize += 2;
-		$rep->TextCol(0, 3, $myrow['name']);
+		$rep->TextCol(0, 2, $myrow['name']);
 		if ($convert)
-			$rep->TextCol(3, 4,	$myrow['curr_code']);
+			$rep->TextCol(2, 3,	$myrow['curr_code']);
 		$rep->fontSize -= 2;
+		$bal = get_open_balance($myrow['supplier_id'], $from);
+		$init[0] = $init[1] = 0.0;
+		$rep->TextCol(3, 4,	_("Open Balance"));
+		$init[0] = round2(abs($bal['charges']), $dec);
+		$rep->AmountCol(4, 5, $init[0], $dec);
+		$init[1] = round2(Abs($bal['credits']), $dec);
+		$rep->AmountCol(5, 6, $init[1], $dec);
+		$init[2] = round2($bal['Allocated'], $dec);
+		$rep->AmountCol(6, 7, $init[2], $dec);
+		$init[3] = round2($bal['OutStanding'], $dec);;
+		$rep->AmountCol(7, 8, $init[3], $dec);
+		$total = array(0,0,0,0);
+		for ($i = 0; $i < 4; $i++)
+		{
+			$total[$i] += $init[$i];
+			$grandtotal[$i] += $init[$i];
+		}
 		$rep->NewLine(1, 2);
-		$res = getTransactions($myrow['supplier_id'], $to);
+		$res = getTransactions($myrow['supplier_id'], $from, $to);
 		if (db_num_rows($res)==0)
 			continue;
 		$rep->Line($rep->row + 4);
-		$total[0] = $total[1] = $total[2] = $total[3] = 0.0;
 		while ($trans=db_fetch($res))
 		{
 			$rep->NewLine(1, 2);

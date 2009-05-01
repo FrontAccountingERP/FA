@@ -19,6 +19,12 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+01-May-2009 Joe Hunt
+! Changed Customer Balance and Supplier Balance to period select with Open Balance
+$ /reporting/reports_main.php
+  /reporting/rep101.php
+  /reporting/rep201.php
+  
 30-Apr-2009 Janusz Dobrowolski
 ! Merged changes from main trunk  2.1.1-2.1.2 (see below)
 
