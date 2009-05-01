@@ -29,23 +29,38 @@ include_once($path_to_root . "/gl/includes/gl_db.inc");
 // trial_inquiry_controls();
 print_customer_balances();
 
-function get_open_balance($debtorno, $to)
+function get_open_balance($debtorno, $to, $convert)
 {
 	$to = date2sql($to);
 
     $sql = "SELECT SUM(IF(".TB_PREF."debtor_trans.type = 10, (".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + 
-    	".TB_PREF."debtor_trans.ov_freight + ".TB_PREF."debtor_trans.ov_discount) * rate, 0)) AS charges,
+    	".TB_PREF."debtor_trans.ov_freight + ".TB_PREF."debtor_trans.ov_discount)";
+    if ($convert)
+    	$sql .= " * rate";
+    $sql .= ", 0)) AS charges,
     	SUM(IF(".TB_PREF."debtor_trans.type <> 10, (".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + 
-    	".TB_PREF."debtor_trans.ov_freight + ".TB_PREF."debtor_trans.ov_discount) * rate * -1, 0)) AS credits,
-		SUM(".TB_PREF."debtor_trans.alloc * rate) AS Allocated,
+    	".TB_PREF."debtor_trans.ov_freight + ".TB_PREF."debtor_trans.ov_discount)";
+    if ($convert)
+    	$sql .= " * rate";
+    $sql .= " * -1, 0)) AS credits,
+		SUM(".TB_PREF."debtor_trans.alloc";
+	if ($convert)
+		$sql .= " * rate";
+	$sql .= ") AS Allocated,
 		SUM(IF(".TB_PREF."debtor_trans.type = 10, (".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + 
-    	".TB_PREF."debtor_trans.ov_freight + ".TB_PREF."debtor_trans.ov_discount - ".TB_PREF."debtor_trans.alloc) * rate, 
+    	".TB_PREF."debtor_trans.ov_freight + ".TB_PREF."debtor_trans.ov_discount - ".TB_PREF."debtor_trans.alloc)";
+    if ($convert)
+    	$sql .= " * rate";
+    $sql .= ", 
     	((".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + ".TB_PREF."debtor_trans.ov_freight + 
-    	".TB_PREF."debtor_trans.ov_discount) * -1 + ".TB_PREF."debtor_trans.alloc) * rate)) AS OutStanding
+    	".TB_PREF."debtor_trans.ov_discount) * -1 + ".TB_PREF."debtor_trans.alloc)";
+    if ($convert)
+    	$sql .= " * rate";
+    $sql .= ")) AS OutStanding
 		FROM ".TB_PREF."debtor_trans
     	WHERE ".TB_PREF."debtor_trans.tran_date < '$to'
 		AND ".TB_PREF."debtor_trans.debtor_no = '$debtorno'
-		AND ".TB_PREF."debtor_trans.type <> 13 GROUP BY '$debtorno'";
+		AND ".TB_PREF."debtor_trans.type <> 13 GROUP BY debtor_no";
 
     $result = db_query($sql,"No transactions were returned");
     return db_fetch($result);
@@ -138,7 +153,7 @@ function print_customer_balances()
 		if ($convert)
 			$rep->TextCol(2, 3,	$myrow['curr_code']);
 		$rep->fontSize -= 2;
-		$bal = get_open_balance($myrow['debtor_no'], $from);
+		$bal = get_open_balance($myrow['debtor_no'], $from, $convert);
 		$init[0] = $init[1] = 0.0;
 		$rep->TextCol(3, 4,	_("Open Balance"));
 		$init[0] = round2(abs($bal['charges']), $dec);

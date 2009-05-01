@@ -27,17 +27,29 @@ include_once($path_to_root . "/gl/includes/gl_db.inc");
 
 print_supplier_balances();
 
-function get_open_balance($supplier_id, $to)
+function get_open_balance($supplier_id, $to, $convert)
 {
 	$to = date2sql($to);
 
     $sql = "SELECT SUM(IF(".TB_PREF."supp_trans.type = 20, (".TB_PREF."supp_trans.ov_amount + ".TB_PREF."supp_trans.ov_gst + 
-    	".TB_PREF."supp_trans.ov_discount) * rate, 0)) AS charges,
+    	".TB_PREF."supp_trans.ov_discount)";
+    if ($convert)
+    	$sql .= " * rate";
+    $sql .= ", 0)) AS charges,
     	SUM(IF(".TB_PREF."supp_trans.type <> 20, (".TB_PREF."supp_trans.ov_amount + ".TB_PREF."supp_trans.ov_gst + 
-    	".TB_PREF."supp_trans.ov_discount) * rate, 0)) AS credits,
-		SUM(".TB_PREF."supp_trans.alloc * rate) AS Allocated,
+    	".TB_PREF."supp_trans.ov_discount)";
+    if ($convert)
+    	$sql .= "* rate";
+    $sql .= ", 0)) AS credits,
+		SUM(".TB_PREF."supp_trans.alloc";
+	if ($convert)
+		$sql .= " * rate";
+	$sql .= ") AS Allocated,
 		SUM((".TB_PREF."supp_trans.ov_amount + ".TB_PREF."supp_trans.ov_gst + 
-    	".TB_PREF."supp_trans.ov_discount - ".TB_PREF."supp_trans.alloc) * rate) AS OutStanding
+    	".TB_PREF."supp_trans.ov_discount - ".TB_PREF."supp_trans.alloc)";
+    if ($convert)
+    	$sql .= " * rate";
+    $sql .= ") AS OutStanding
 		FROM ".TB_PREF."supp_trans
     	WHERE ".TB_PREF."supp_trans.tran_date < '$to'
 		AND ".TB_PREF."supp_trans.supplier_id = '$supplier_id' GROUP BY supplier_id";
@@ -134,7 +146,7 @@ function print_supplier_balances()
 		if ($convert)
 			$rep->TextCol(2, 3,	$myrow['curr_code']);
 		$rep->fontSize -= 2;
-		$bal = get_open_balance($myrow['supplier_id'], $from);
+		$bal = get_open_balance($myrow['supplier_id'], $from, $convert);
 		$init[0] = $init[1] = 0.0;
 		$rep->TextCol(3, 4,	_("Open Balance"));
 		$init[0] = round2(abs($bal['charges']), $dec);
