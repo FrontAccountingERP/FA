@@ -19,6 +19,16 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+02-May-2009 Joe Hunt
+! Company setup option for printing server Time Zone on Reports Print-Out.
+! Company setup version_id for stamping the version id. Can be used for check for update.
+$ /admin/company_preferences.php
+  /admin/db/company_db.inc
+  /reporting/includes/pdf_report.inc
+  /sql/alter2.2.sql
+  /sql/en_US-demo.sql
+  /sql/en_US-new.sql
+  
 01-May-2009 Joe Hunt
 ! Changed Customer Balance and Supplier Balance to period select with Open Balance
 $ /reporting/reports_main.php

@@ -203,6 +203,8 @@ class FrontReport extends Cpdf
 		$str = _("Print Out Date") . ':';
 		$this->Text($this->leftMargin, $str, $this->titleCol);
 		$str = Today() . '   ' . Now();
+		if ($this->company['time_zone'])
+			$str .= ' ' . date('O') . ' GMT';
 		$this->Text($this->titleCol, $str, $this->companyCol);
 		$this->Text($this->companyCol, $this->host);
 

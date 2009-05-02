@@ -369,13 +369,14 @@ CREATE TABLE `0_company` (
   `legal_text` tinytext NOT NULL,
   `default_delivery_required` smallint(6) NOT NULL default '1',
   `version_id` varchar(11) NOT NULL default '',
+  `time_zone` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`coy_code`)
 ) TYPE=MyISAM  ;
 
 
 ### Data of table `0_company` ###
 
-INSERT INTO `0_company` VALUES ('1', 'Training Co.', '987654321', '123123123', '1', '1', 'N/A', '202-122320', '202-18889123', 'delta@delta.com', 'logo_frontaccounting.jpg', 'DownTown', 'USD', '1500', '4250', '2630', '1430', '4260', '4220', '2050', '3800', '3000', '3000', '3200', '1420', '4010', '4210', '3000', '1410', '5000', '0', '10', '10', '1000', '20', '20', '30', '1', '7', '0', '0', '0', '0', '0', '0', '', '1');
+INSERT INTO `0_company` VALUES ('1', 'Training Co.', '987654321', '123123123', '1', '1', 'N/A', '202-122320', '202-18889123', 'delta@delta.com', 'logo_frontaccounting.jpg', 'DownTown', 'USD', '1500', '4250', '2630', '1430', '4260', '4220', '2050', '3800', '3000', '3000', '3200', '1420', '4010', '4210', '3000', '1410', '5000', '0', '10', '10', '1000', '20', '20', '30', '1', '7', '0', '0', '0', '0', '0', '0', '', '1', '2.2', '0');
 
 
 ### Structure of table `0_credit_status` ###
