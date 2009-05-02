@@ -20,6 +20,10 @@ Legend:
 $ -> Affected files
 
 02-May-2009 Joe Hunt
+# Minor bug Prifit & Loss Statement
+$ /reporting/rep707.php
+
+02-May-2009 Joe Hunt
 ! Company setup option for printing server Time Zone on Reports Print-Out.
 ! Company setup version_id for stamping the version id. Can be used for check for update.
 $ /admin/company_preferences.php

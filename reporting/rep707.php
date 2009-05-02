@@ -234,7 +234,7 @@ function print_profit_and_loss_statement()
 		$totalacc += $acc_balance;
 		$classper += $per_balance;
 		$classacc += $acc_balance;
-		$rep->TextCol(0, 1,	$account['account_code'].$convert);
+		$rep->TextCol(0, 1,	$account['account_code']);
 		$rep->TextCol(1, 2,	$account['account_name']);
 
 		$rep->AmountCol(2, 3, $per_balance * $convert, $dec);
