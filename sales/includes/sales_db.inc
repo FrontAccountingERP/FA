@@ -289,15 +289,7 @@ function read_sales_trans($doc_type, $trans_no, &$cart)
 		$cart->dimension2_id = $myrow['dimension2_id'];
 		$cart->Comments = '';
 		foreach ( $trans_no as $trans ) {
-			$coms =  get_comments($doc_type,$trans);
-			while($row=db_fetch($coms)) {
-				$text = $row['memo_'];
-				if ($text!='') {
-					if ($cart->Comments!='')
-						$cart->Comments .= "\n";
-					$cart->Comments .= $text;
-				}
-			}
+			$cart->Comments .= get_comments_string($doc_type,$trans);
 		}
 
 		// FIX this should be calculated sum() for multiply parents
