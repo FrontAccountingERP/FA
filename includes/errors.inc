@@ -83,9 +83,15 @@ function error_box() {
 function display_db_error($msg, $sql_statement=null, $exit=true)
 {
 	global $db, $debug;
+
+	$warning = $msg==null;
 	$db_error = db_error_no();
 	
-	$str = "<span class='errortext'><b>" . _("DATABASE ERROR :") . "</b> $msg</span><br>";
+//	$str = "<span class='errortext'><b>" . _("DATABASE ERROR :") . "</b> $msg</span><br>";
+	if($warning)
+		$str = "<b>" . _("Debug mode database warning:") . "</b><br>";
+	else
+		$str = "<b>" . _("DATABASE ERROR :") . "</b> $msg<br>";
 	
 	if ($db_error != 0) 
 	{
@@ -99,9 +105,10 @@ function display_db_error($msg, $sql_statement=null, $exit=true)
 	}
 	
 	$str .= "<br><br>";
-
-	trigger_error($str, E_USER_ERROR);
-
+	if($msg)
+		trigger_error($str, E_USER_ERROR);
+	else	// $msg can be null here only in debug mode, otherwise the error is ignored
+		trigger_error($str, E_USER_WARNING);
 	if ($exit)
 		exit;
 }
@@ -127,8 +134,9 @@ function check_db_error($msg, $sql_statement, $exit_if_error=true, $rollback_if_
 	if ($db_error != 0) 
 	{
 		
-		if (!frindly_db_error($db_error))
-			display_db_error($msg, $sql_statement, false);
+		if (!frindly_db_error($db_error)) {
+				display_db_error($msg, $sql_statement, false);
+		}
 		
 		if ($rollback_if_error) 
 		{
