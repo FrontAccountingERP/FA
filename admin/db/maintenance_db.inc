@@ -117,7 +117,8 @@ function db_drop_db($connection)
 
 function db_import($filename, $connection, $force=true)
 {
-	global $db;
+	global $db, $go_debug;
+	
 	$allowed_commands = array(
 		"create"  => 'table_queries', 
 		"alter table" => 'table_queries', 
@@ -191,13 +192,13 @@ function db_import($filename, $connection, $force=true)
 	}
 */
 	// execute drop tables if exists queries
-	if ($force && is_array($drop_queries))
+	if (is_array($drop_queries))
 	{
 		foreach($drop_queries as $drop_query)
 		{
 			if (!db_query($drop_query[0]))
 			{
-				if (!in_array(db_error_no(), $ignored_mysql_errors))
+				if (!in_array(db_error_no(), $ignored_mysql_errors) || !$force)
 					$sql_errors[] = array(db_error_msg($db), $drop_query[1]);
 			}
 		}
