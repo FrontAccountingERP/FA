@@ -25,17 +25,17 @@ function add_user($user_id, $real_name, $password, $phone, $email, $full_access,
 
 //-----------------------------------------------------------------------------------------------
 
-function update_user_password($user_id, $password)
+function update_user_password($id, $user_id, $password)
 {
-	$sql = "UPDATE ".TB_PREF."users SET password=".db_escape($password) . "
-		WHERE user_id = ".db_escape($user_id);
+	$sql = "UPDATE ".TB_PREF."users SET password=".db_escape($password) . ",
+		user_id = ".db_escape($user_id). " WHERE id=".db_escape($id);
 
 	db_query($sql, "could not update user password for $user_id");
 }
 
 //-----------------------------------------------------------------------------------------------
 
-function update_user($user_id, $real_name, $phone, $email, $full_access, 
+function update_user($id, $user_id, $real_name, $phone, $email, $full_access, 
 	$language, $profile, $rep_popup, $pos)
 {
 	$sql = "UPDATE ".TB_PREF."users SET real_name=".db_escape($real_name).
@@ -45,14 +45,15 @@ function update_user($user_id, $real_name, $phone, $email, $full_access,
 		language=".db_escape($language).",
 		print_profile=".db_escape($profile).",
 		rep_popup=$rep_popup,
-		pos=$pos
-		WHERE user_id = ".db_escape($user_id);
+		pos=$pos,
+		user_id = " . db_escape($user_id)
+		. " WHERE id=" . db_escape($id);
 	db_query($sql, "could not update user for $user_id");
 }
 
 //-----------------------------------------------------------------------------------------------
 
-function update_user_display_prefs($user_id, $price_dec, $qty_dec, $exrate_dec, 
+function update_user_display_prefs($id, $price_dec, $qty_dec, $exrate_dec, 
 	$percent_dec, $showgl, $showcodes, $date_format, $date_sep, $tho_sep, 
 	$dec_sep, $theme, $pagesize, $show_hints, $profile, $rep_popup, $query_size, 
 	$graphic_links,	$lang, $stickydate)
@@ -77,39 +78,52 @@ function update_user_display_prefs($user_id, $price_dec, $qty_dec, $exrate_dec,
 		graphic_links=$graphic_links,
 		language=".db_escape($lang).",
 		sticky_doc_date=".db_escape($stickydate)."
-		WHERE user_id = ".db_escape($user_id);
+		WHERE id = ".db_escape($id);
 
-	db_query($sql, "could not update user display prefs for $user_id");
+	db_query($sql, "could not update user display prefs for $id");
 }
 
 //-----------------------------------------------------------------------------------------------
 
 
-function get_users()
+function get_users($all=false)
 {
 	$sql = "SELECT * FROM ".TB_PREF."users";
+	if (!$all) $sql .= " WHERE !inactive";
 
 	return db_query($sql, "could not get users");
 }
 
 //-----------------------------------------------------------------------------------------------
 
-function get_user($user_id)
+function get_user($id)
 {
-	$sql = "SELECT * FROM ".TB_PREF."users WHERE user_id = '$user_id'";
+	$sql = "SELECT * FROM ".TB_PREF."users WHERE id=".db_escape($id);
 
-	$result = db_query($sql, "could not get user for $user_id");
+	$result = db_query($sql, "could not get user $id");
+
+	return db_fetch($result);
+}
+
+//-----------------------------------------------------------------------------------------------
+//	This function is necessary for admin prefs update after upgrade from 2.1
+//
+function get_user_by_login($user_id)
+{
+	$sql = "SELECT * FROM ".TB_PREF."users WHERE user_id=".db_escape($user_id);
+
+	$result = db_query($sql, "could not get user $user_id");
 
 	return db_fetch($result);
 }
 
 //-----------------------------------------------------------------------------------------------
 
-function delete_user($user_id)
+function delete_user($id)
 {
-	$sql="DELETE FROM ".TB_PREF."users WHERE user_id='$user_id'";
+	$sql="DELETE FROM ".TB_PREF."users WHERE id=".db_escape($id);
 
-	db_query($sql, "could not delete user $user_id");
+	db_query($sql, "could not delete user $id");
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -118,7 +132,10 @@ function get_user_for_login($user_id, $password)
 {
 	set_global_connection();
 
-	$sql = "SELECT * FROM ".TB_PREF."users WHERE user_id = '$user_id' AND password='$password'";
+// do not exclude inactive records or you lost access after source upgrade
+// on sites using pre 2.2 database
+	$sql = "SELECT * FROM ".TB_PREF."users WHERE user_id = '$user_id' AND"
+		." password='$password'";
 
 	return db_query($sql, "could not get validate user login for $user_id");
 }
@@ -134,5 +151,13 @@ function update_user_visitdate($user_id)
 }
 
 //-----------------------------------------------------------------------------------------------
+function check_user_activity($id) 
+{
+	$sql = "SELECT COUNT(*) FROM ".TB_PREF."audit_trail WHERE audit_trail.user="
+		. db_escape($id);
+	$result = db_query($sql,"Cant check user activity");
+	$ret = db_fetch($result);
 
+	return $ret[0];
+}
 ?>

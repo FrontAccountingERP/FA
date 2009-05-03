@@ -15,10 +15,10 @@ include_once($path_to_root . "/includes/prefs/userprefs.inc");
 
 class current_user
 {
-
+	var $user;
 	var $loginname;
 	var $username;
-	var	$name;
+	var $name;
 	var $company;
 	var $pos;
 	var $access;
@@ -49,27 +49,24 @@ class current_user
 	function login($company, $loginname, $password)
 	{
 		$this->set_company($company);
+	    $this->logged = false;
 
 		$Auth_Result = get_user_for_login($loginname, $password);
 
 		if (db_num_rows($Auth_Result) > 0)
 		{
-            $myrow = db_fetch($Auth_Result);
-
+			$myrow = db_fetch($Auth_Result);
+			if (! @$myrow["inactive"]) {
         	    $this->access = $myrow["full_access"];
         	    $this->name = $myrow["real_name"];
         	    $this->pos = $myrow["pos"];
         	    $this->loginname = $loginname;
         	    $this->username = $this->loginname;
         	    $this->prefs = new user_prefs($myrow);
-
-		    update_user_visitdate($loginname);
-		    $this->logged = true;
-
-		}
-		else
-		{
-			$this->logged = false;
+        	    $this->user = @$myrow["id"];
+		    	update_user_visitdate($this->username);
+		    	$this->logged = true;
+			}
 		}
 
 		return $this->logged;
@@ -111,13 +108,13 @@ class current_user
 		$showgl, $showcodes, $date_format, $date_sep, $tho_sep, $dec_sep, 
 		$theme, $pagesize, $show_hints, $profile, $rep_popup, $query_size, 
 		$graphic_links, $lang, $stickydate) {
-		update_user_display_prefs($this->username, $price_dec, 
+		update_user_display_prefs($this->user, $price_dec, 
 			$qty_dec, $exrate_dec, $percent_dec, $showgl, $showcodes, 
 			$date_format, $date_sep, $tho_sep, $dec_sep, $theme, $pagesize, 
 			$show_hints, $profile, $rep_popup, $query_size, $graphic_links, $lang, $stickydate);
 
 		// re-read the prefs
-		$user = get_user($this->username);
+		$user = get_user($this->user);
 		$this->prefs = new user_prefs($user);
 	}
 }
