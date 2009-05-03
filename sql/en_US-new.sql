@@ -24,7 +24,6 @@ CREATE TABLE `0_areas` (
 
 INSERT INTO `0_areas` VALUES ('1', 'USA', '0');
 
-
 ### Structure of table `0_attachments` ###
 
 DROP TABLE IF EXISTS `0_attachments`;
@@ -45,6 +44,26 @@ CREATE TABLE `0_attachments` (
 
 
 ### Data of table `0_attachments` ###
+
+### Structure of table `0_audit_trail` ###
+
+DROP TABLE IF EXISTS `0_audit_trail`;
+
+CREATE TABLE `0_audit_trail` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `type` smallint(6) unsigned NOT NULL default '0',
+  `trans_no` int(11) unsigned NOT NULL default '0',
+  `user` smallint(6) unsigned NOT NULL default '0',
+  `stamp` timestamp NOT NULL default CURRENT_TIMESTAMP,
+  `description` varchar(60) default NULL,
+  `fiscal_year` int(11) NOT NULL,
+  `gl_date` date NOT NULL default '0000-00-00',
+  `gl_seq` int(11) unsigned default NULL,
+   PRIMARY KEY (`id`),
+  KEY (`fiscal_year`, `gl_seq`)
+) TYPE=InnoDB  ;
+
+### Data of table `0_audit_trail` ###
 
 
 
@@ -347,7 +366,7 @@ CREATE TABLE `0_company` (
 
 ### Data of table `0_company` ###
 
-INSERT INTO `0_company` VALUES ('1', 'Company name', '', '', '1', '1', 'N/A', '', '', '', '', '', 'USD', '1500', '4250', '2630', '1430', '4260', '4220', '2050', '3800', '3000', '3000', '3200', '1420', '4010', '4210', '3000', '1410', '5000', '0', '10', '10', '1000', '20', '20', '30', '1', '1', '0', '0', '0', '-1', '0', '0', '', '1'. '2.2', '0');
+INSERT INTO `0_company` VALUES ('1', 'Company name', '', '', '1', '1', 'N/A', '', '', '', '', '', 'USD', '1500', '4250', '2630', '1430', '4260', '4220', '2050', '3800', '3000', '3000', '3200', '1420', '4010', '4210', '3000', '1410', '5000', '0', '10', '10', '1000', '20', '20', '30', '1', '1', '0', '0', '0', '-1', '0', '0', '', '1', '2.2', '0');
 
 
 ### Structure of table `0_credit_status` ###
@@ -1518,7 +1537,7 @@ CREATE TABLE `0_trans_tax_details` (
   `amount` double NOT NULL default '0',
   `memo` tinytext,
   PRIMARY KEY  (`id`)
-) TYPE=InnoDB  AUTO_INCREMENT=1 ;
+) TYPE=InnoDB AUTO_INCREMENT=1 ;
 
 
 ### Data of table `0_trans_tax_details` ###
@@ -1530,6 +1549,7 @@ CREATE TABLE `0_trans_tax_details` (
 DROP TABLE IF EXISTS `0_users`;
 
 CREATE TABLE `0_users` (
+  `id` SMALLINT(6) AUTO_INCREMENT,
   `user_id` varchar(60) NOT NULL default '',
   `password` varchar(100) NOT NULL default '',
   `real_name` varchar(100) NOT NULL default '',
@@ -1557,13 +1577,15 @@ CREATE TABLE `0_users` (
   `print_profile` varchar(30) NOT NULL default '1',
   `rep_popup` tinyint(1) default '1',
   `sticky_doc_date` tinyint(1) default '0',
-  PRIMARY KEY  (`user_id`)
-) TYPE=MyISAM  ;
+  `inactive` tinyint(1) NOT NULL default '0',
+  PRIMARY KEY  (`id`),
+  UNIQUE KEY  (`user_id`)
+) TYPE=MyISAM  AUTO_INCREMENT=2;
 
 
 ### Data of table `0_users` ###
 
-INSERT INTO `0_users` VALUES ('admin', '5f4dcc3b5aa765d61d8327deb882cf99', 'Administrator', '2', '', 'adm@adm.com', 'en_US', '0', '0', '0', '0', 'default', 'Letter', '2', '2', '4', '1', '1', '0', '0', '2008-04-04 12:34:29', '10', '1', '1', '1', '1', '0');
+INSERT INTO `0_users` VALUES ('1', 'admin', '5f4dcc3b5aa765d61d8327deb882cf99', 'Administrator', '2', '', 'adm@adm.com', 'en_US', '0', '0', '0', '0', 'default', 'Letter', '2', '2', '4', '1', '1', '0', '0', '2008-04-04 12:34:29', '10', '1', '1', '1', '1', '0', '0');
 
 
 ### Structure of table `0_voided` ###

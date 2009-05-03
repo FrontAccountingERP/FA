@@ -28,8 +28,20 @@ class fa2_2 {
 			."dflt_inventory_act = '" . $prefs['default_inventory_act'] . "',"
 			."dflt_adjustment_act = '" . $prefs['default_adj_act'] . "',"
 			."dflt_assembly_act = '" . $prefs['default_assembly_act']."'";
-		$ret = db_query($sql, "Cannot update category default GL accounts");
-		return $ret;
+		if (db_query($sql)==false) {
+			display_error("Cannot update category default GL accounts"
+			.':<br>'. db_error_msg($db));
+			return false;
+		}
+/*	FIX
+		// add audit_trail data for all transactions
+		$datatbl = array ("gl_trans", "purch_orders", "sales_orders",
+			"workorders");
+		$sql = "INSERT INTO ".$pref."audit_trail"
+		." (type, trans_no, user, fiscal_year, gl_date) VALUES ("
+		. "$type,$trans_no,$user,$year,$date)";
+*/
+		return true;
 	}
 	//
 	//	Checking before install
@@ -45,6 +57,7 @@ class fa2_2 {
 		if (check_table($pref, 'company', 'default_delivery_required')) return false;
 		if (check_table($pref, 'stock_category', 'dflt_dim2')) return false;
 		if (check_table($pref, 'users', 'sticky_doc_date')) return false;
+		if (check_table($pref, 'audit_trail')) return false;
 			return true;
 	}
 };

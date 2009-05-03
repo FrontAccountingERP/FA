@@ -91,18 +91,18 @@ function write_customer_trans($trans_type, $trans_no, $debtor_no, $BranchNo,
 	$sales_type=0, $order_no=0, $trans_link=0, $ship_via=0, $due_date="",
 	$AllocAmt=0, $rate=0, $dimension_id=0, $dimension2_id=0)
 {
-
+	$new = $trans_no==0;
 	$curr = get_customer_currency($debtor_no);
 	if ($rate == 0)
 		$rate = get_exchange_rate_from_home_currency($curr, $date_);
 
 	$SQLDate = date2sql($date_);
 	if ($due_date == "")
-		$SQLDueDate = "000-00-00";
+		$SQLDueDate = "0000-00-00";
 	else
 		$SQLDueDate = date2sql($due_date);
 
-	if ($trans_no==0) {
+	if ($new) {
 	$trans_no = get_next_trans_no($trans_type);
 
 	$sql = "INSERT INTO ".TB_PREF."debtor_trans (
@@ -133,6 +133,8 @@ function write_customer_trans($trans_type, $trans_no, $debtor_no, $BranchNo,
 		WHERE trans_no=$trans_no AND type=$trans_type";
 	}
 	db_query($sql, "The debtor transaction record could not be inserted");
+
+	add_audit_trail($trans_type, $trans_no, $date_, $new ? '': _("Updated."));
 
 	return $trans_no;
 }

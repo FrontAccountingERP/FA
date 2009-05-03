@@ -99,6 +99,7 @@ function add_bank_transfer($from_account, $to_account, $date_,
 	add_comments($trans_type, $trans_no, $date_, $memo_);
 
 	references::save_last($ref, $trans_type);
+	add_audit_trail($trans_type, $trans_no, $date_);
 
 	commit_transaction();
 
@@ -218,6 +219,7 @@ function add_bank_transaction($trans_type, $from_account, $items, $date_,
 	add_comments($trans_type, $trans_no, $date_, $memo_);
 
 	references::save_last($ref, $trans_type);
+	add_audit_trail($trans_type, $trans_no, $date_);
 
 	commit_transaction();
 

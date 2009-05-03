@@ -60,6 +60,7 @@ function add_work_order($wo_ref, $loc_code, $units_reqd, $stock_id,
 	add_comments(systypes::work_order(), $woid, $required_by, $memo_);
 
 	references::save_last($wo_ref, systypes::work_order());
+	add_audit_trail(systypes::work_order(), $woid, $date_);
 
 	commit_transaction();
 
@@ -88,6 +89,7 @@ function update_work_order($woid, $loc_code, $units_reqd, $stock_id,
 	db_query($sql, "could not update work order");
 
 	update_comments(systypes::work_order(), $woid, null, $memo_);
+	add_audit_trail(systypes::work_order(), $woid, $date_, _("Updated."));
 
 	commit_transaction();
 }
@@ -106,6 +108,7 @@ function delete_work_order($woid)
 	db_query($sql,"The work order could not be deleted");
 
 	delete_comments(systypes::work_order(), $woid);
+	add_audit_trail(systypes::work_order(), $woid, $_POST['date_'], _("Canceled."));
 
 	commit_transaction();
 }
@@ -181,6 +184,7 @@ function release_work_order($woid, $releaseDate, $memo_)
 	create_wo_requirements($woid, $stock_id);
 
 	add_comments(systypes::work_order(), $woid, $releaseDate, $memo_);
+	add_audit_trail(systypes::work_order(), $woid, $releaseDate,_("Released."));
 
 	commit_transaction();
 }

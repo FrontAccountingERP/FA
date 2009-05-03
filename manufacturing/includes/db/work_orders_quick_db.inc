@@ -73,7 +73,7 @@ function add_work_order_quick($wo_ref, $loc_code, $units_reqd, $stock_id, $type,
 	add_comments(systypes::work_order(), $woid, $date_, $memo_);
 
 	references::save_last($wo_ref, systypes::work_order());
-
+	add_audit_trail(systypes::work_order(), $woid, $date_,_("Quick production."));
 	commit_transaction();
 	return $woid;
 }

@@ -128,6 +128,7 @@ function add_sales_order(&$order)
 
 	} /* inserted line items into sales order details */
 
+	add_audit_trail(30, $order_no, $order->document_date);
 	commit_transaction();
 
 	if ($loc_notification == 1 && count($st_ids) > 0)
@@ -163,6 +164,7 @@ function delete_sales_order($order_no)
 	$sql = "DELETE FROM ".TB_PREF."sales_order_details WHERE order_no =" . $order_no;
 	db_query($sql, "order Detail Delete");
 
+	add_audit_trail(30, $order_no, Today(), _("Deleted."));
 	commit_transaction();
 }
 
@@ -268,6 +270,7 @@ function update_sales_order($order)
 
 	} /* inserted line items into sales order details */
 
+	add_audit_trail(30, $order_no, $order->document_date, _("Updated."));
 	commit_transaction();
 	if ($loc_notification == 1 && count($st_ids) > 0)
 	{

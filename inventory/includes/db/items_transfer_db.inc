@@ -26,6 +26,7 @@ function add_stock_transfer($Items, $location_from, $location_to, $date_, $type,
 	add_comments(systypes::location_transfer(), $transfer_id, $date_, $memo_);
 
 	references::save_last($reference, systypes::location_transfer());
+	add_audit_trail(systypes::location_transfer(), $transfer_id, $date_);
 
 	commit_transaction();
 

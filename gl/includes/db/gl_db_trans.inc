@@ -338,6 +338,7 @@ function add_journal_entries($items, $date_, $ref, $reverse, $memo_=null)
 	add_comments($trans_type, $trans_id, $date_, $memo_);
 
 	references::save($trans_type, $trans_id, $ref);
+	add_audit_trail($trans_type, $trans_id, $date_);
 
 	if ($reverse)
 	{
@@ -364,12 +365,13 @@ function add_journal_entries($items, $date_, $ref, $reverse, $memo_=null)
     		}
 			// store tax details if the gl account is a tax account
 			add_gl_tax_details($journal_item->code_id, 
-				$trans_type, $trans_id, $journal_item->amount, 1, $date, $memo_);
+				$trans_type, $trans_id, $journal_item->amount, 1, $reversingDate, $memo_);
     	}
 
     	add_comments($trans_type, $trans_id_reverse, $reversingDate, $memo_);
 
     	references::save($trans_type, $trans_id_reverse, $ref);
+		add_audit_trail($trans_type, $trans_id_reverse, $reversingDate);
 	}
 
 	commit_transaction();

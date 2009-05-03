@@ -50,6 +50,28 @@ CREATE TABLE `0_attachments` (
 
 ### Data of table `0_attachments` ###
 
+### Structure of table `0_audit_trail` ###
+
+DROP TABLE IF EXISTS `0_audit_trail`;
+
+CREATE TABLE `0_audit_trail` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `type` smallint(6) unsigned NOT NULL default '0',
+  `trans_no` int(11) unsigned NOT NULL default '0',
+  `user` smallint(6) unsigned NOT NULL default '0',
+  `stamp` timestamp NOT NULL default CURRENT_TIMESTAMP,
+  `description` varchar(60) default NULL,
+  `fiscal_year` int(11) NOT NULL,
+  `gl_date` date NOT NULL default '0000-00-00',
+  `gl_seq` int(11) unsigned default NULL,
+   PRIMARY KEY (`id`),
+  KEY (`fiscal_year`, `gl_seq`)
+) TYPE=InnoDB  ;
+
+### Data of table `0_audit_trail` ###
+
+
+
 
 
 ### Structure of table `0_bank_accounts` ###
@@ -2245,12 +2267,12 @@ INSERT INTO `0_trans_tax_details` VALUES ('57', '1', '8', '2009-01-29', '3', '25
 INSERT INTO `0_trans_tax_details` VALUES ('58', '20', '13', '2009-01-29', '3', '25', '1', '0', '40', '10', 'gg');
 INSERT INTO `0_trans_tax_details` VALUES ('59', '2', '6', '2009-01-29', '3', '25', '1', '0', '40', '10', '');
 
-
 ### Structure of table `0_users` ###
 
 DROP TABLE IF EXISTS `0_users`;
 
 CREATE TABLE `0_users` (
+  `id` SMALLINT(6) AUTO_INCREMENT,
   `user_id` varchar(60) NOT NULL default '',
   `password` varchar(100) NOT NULL default '',
   `real_name` varchar(100) NOT NULL default '',
@@ -2278,15 +2300,16 @@ CREATE TABLE `0_users` (
   `print_profile` varchar(30) NOT NULL default '1',
   `rep_popup` tinyint(1) default '1',
   `sticky_doc_date` tinyint(1) default '0',
-  PRIMARY KEY  (`user_id`)
-) TYPE=MyISAM  ;
+  `inactive` tinyint(1) NOT NULL default '0',
+  PRIMARY KEY  (`id`),
+  UNIQUE KEY  (`user_id`)
+) TYPE=MyISAM  AUTO_INCREMENT=2;
 
 
 ### Data of table `0_users` ###
 
-INSERT INTO `0_users` VALUES ('demouser', '5f4dcc3b5aa765d61d8327deb882cf99', 'Demo User', '1', '999-999-999', 'demo@demo.nu', 'en_US', '0', '0', '0', '0', 'default', 'Letter', '2', '2', '3', '1', '1', '0', '0', '2008-02-06 19:02:35', '10', '1', '1', '1', '1', '0');
-INSERT INTO `0_users` VALUES ('admin', '5f4dcc3b5aa765d61d8327deb882cf99', 'Administrator', '2', '', 'adm@adm.com', 'en_US', '0', '0', '0', '0', 'default', 'Letter', '2', '2', '4', '1', '1', '0', '0', '2009-01-30 09:39:03', '10', '1', '1', '', '1', '0');
-
+INSERT INTO `0_users` VALUES ('1', 'admin', '5f4dcc3b5aa765d61d8327deb882cf99', 'Administrator', '2', '', 'adm@adm.com', 'en_US', '0', '0', '0', '0', 'default', 'Letter', '2', '2', '4', '1', '1', '0', '0', '2009-01-30 09:39:03', '10', '1', '1', '1', '1', '0', '0');
+INSERT INTO `0_users` VALUES ('2', 'demouser', '5f4dcc3b5aa765d61d8327deb882cf99', 'Demo User', '1', '999-999-999', 'demo@demo.nu', 'en_US', '0', '0', '0', '0', 'default', 'Letter', '2', '2', '3', '1', '1', '0', '0', '2008-02-06 19:02:35', '10', '1', '1', '1', '1', '0', '0');
 
 ### Structure of table `0_voided` ###
 

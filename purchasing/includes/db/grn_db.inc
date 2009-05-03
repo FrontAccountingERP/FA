@@ -97,6 +97,8 @@ function add_grn(&$po, $date_, $reference, $location)
 
 	references::save_last($reference, 25);
 
+	add_audit_trail(25, $grn, $date_);
+
 	commit_transaction();
 
 	return $grn;

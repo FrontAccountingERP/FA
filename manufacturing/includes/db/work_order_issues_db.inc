@@ -59,6 +59,7 @@ function add_work_order_issue($woid, $ref, $to_work_order, $items, $location, $w
 		add_comments(28, $number, $date_, $memo_);
 
 	references::save_last($ref, 28);
+	add_audit_trail(28, $number, $date_);
 
 	commit_transaction();
 }
