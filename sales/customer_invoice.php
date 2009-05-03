@@ -298,7 +298,7 @@ if (isset($_POST['process_invoice']) && check_data()) {
 
 	$newinvoice=  $_SESSION['Items']->trans_no == 0;
 	copy_to_cart();
-	if ($new_invoice) new_doc_date($_SESSION['Items']->document_date);
+	if ($newinvoice) new_doc_date($_SESSION['Items']->document_date);
 	$invoice_no = $_SESSION['Items']->write();
 
 	processing_end();
