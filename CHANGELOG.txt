@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+05-May-2009 Janusz Dobrowolski
+# Fixed check if code for new sales kit is not used.
+$ /inventory/manage/sales_kits.php
+
 04-May-2009 Joe Hunt
 # Purchase Order document shows wrong purch data conversion if purch data
 $ /reporting/rep209.php

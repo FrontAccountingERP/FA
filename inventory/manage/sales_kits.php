@@ -84,7 +84,7 @@ function update_component($kit_code, $selected_item)
 	elseif ($selected_item == -1)	// adding new item or new alias/kit
 	{
 		if (get_post('item_code') == '') { // New kit/alias definition
-			$kit = get_item_kit($_POST['item_code']);
+			$kit = get_item_kit($_POST['kit_code']);
     		if (db_num_rows($kit)) {
 			  	$input_error = 1;
     	  		display_error( _("This item code is already assigned to stock item or sale kit."));
