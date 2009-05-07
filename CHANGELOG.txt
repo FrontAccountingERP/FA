@@ -22,6 +22,10 @@ $ -> Affected files
 07-May-2009 Joe Hunt
 # Layout bug in exchange rate display
 $ /includes/ui/ui_view.inc
+# Layout bug in sales_order_view. Column Comments renamed to Cust Order Ref
+$ /sales/inquiry/sales_orders_view.php
+# Layout bug in sales_order_ui. Bad presentation of customer if not editable
+$ /sales/includessales_order_ui.inc
 
 05-May-2009 Janusz Dobrowolski
 # Fixed check if code for new sales kit is not used.

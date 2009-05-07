@@ -261,7 +261,7 @@ $cols = array(
 	_("Order #") => array('fun'=>'view_link'),
 	_("Customer"),
 	_("Branch"), 
-	_("Comments"),
+	_("Cust Order Ref"),
 	_("Order Date") => 'date',
 	_("Required By") =>array('type'=>'date', 'ord'=>''),
 	_("Delivery To"), 
@@ -271,7 +271,7 @@ $cols = array(
 );
 
 if ($_POST['order_view_mode'] == 'OutstandingOnly') {
-	array_replace($cols, 3, 1, _("Cust Order Ref"));
+	//array_replace($cols, 3, 1, _("Cust Order Ref"));
 	array_append($cols, array(array('insert'=>true, 'fun'=>'dispatch_link')));
 
 } elseif ($_POST['order_view_mode'] == 'InvoiceTemplates') {
