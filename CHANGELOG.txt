@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+07-May-2009 Joe Hunt
+# Layout bug in exchange rate display
+$ /includes/ui/ui_view.inc
+
 05-May-2009 Janusz Dobrowolski
 # Fixed check if code for new sales kit is not used.
 $ /inventory/manage/sales_kits.php
