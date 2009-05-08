@@ -135,8 +135,7 @@ function write_sales_delivery(&$delivery,$bo_policy)
 	add_comments(13, $delivery_no, $delivery->document_date, $delivery->Comments);
 
 	if ($trans_no == 0) {
-		if ($delivery->reference!='auto')
-			references::save_last($delivery->reference, 13);
+			references::save(13, $delivery_no, $delivery->reference);
 	}
 
 	commit_transaction();

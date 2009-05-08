@@ -68,7 +68,7 @@ function add_supp_payment($supplier_id, $date_, $bank_account,
 
 	add_comments($trans_type, $payment_id, $date_, $memo_);
 
-	references::save_last($ref, $trans_type);
+	references::save($trans_type, $payment_id, $ref);
 
 	commit_transaction();
 

@@ -71,7 +71,7 @@ function write_customer_payment($trans_no, $customer_id, $branch_id, $bank_accou
 
 	add_comments(12, $payment_no, $date_, $memo_);
 
-	references::save_last($ref, 12);
+	references::save(12, $payment_no, $ref);
 
 	commit_transaction();
 

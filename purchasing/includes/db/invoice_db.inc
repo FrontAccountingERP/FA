@@ -286,7 +286,7 @@ function add_supp_invoice($supp_trans, $invoice_no=0) // do not receive as ref b
 
 	add_comments($trans_type, $invoice_id, $date_, $supp_trans->Comments);
 
-	references::save_last($supp_trans->reference, $trans_type);
+	references::save($trans_type, $invoice_id, $supp_trans->reference);
 
 	if ($invoice_no != 0)
 	{

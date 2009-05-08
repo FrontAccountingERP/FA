@@ -95,7 +95,7 @@ function add_grn(&$po, $date_, $reference, $location)
 		} /*quantity received is != 0 */
 	} /*end of order_line loop */
 
-	references::save_last($reference, 25);
+	references::save(25, $grn, $reference);
 
 	add_audit_trail(25, $grn, $date_);
 

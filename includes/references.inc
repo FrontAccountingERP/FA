@@ -17,8 +17,8 @@ class references
 	function save($type, $id, $reference) 
 	{
 		add_reference($type, $id, $reference);
-		
-		references::save_last($reference, $type);
+		if ($reference != 'auto')
+			references::save_last($reference, $type);
 	}
 	
 	function get($type, $id) 

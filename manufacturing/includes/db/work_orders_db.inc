@@ -59,7 +59,7 @@ function add_work_order($wo_ref, $loc_code, $units_reqd, $stock_id,
 
 	add_comments(systypes::work_order(), $woid, $required_by, $memo_);
 
-	references::save_last($wo_ref, systypes::work_order());
+	references::save(systypes::work_order(), $woid, $wo_ref);
 	add_audit_trail(systypes::work_order(), $woid, $date_);
 
 	commit_transaction();

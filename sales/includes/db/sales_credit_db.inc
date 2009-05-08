@@ -171,7 +171,7 @@ function write_credit_note($credit_note, $write_off_acc)
 	add_comments(11, $credit_no, $credit_date, $credit_note->Comments);
 
 	if ($trans_no == 0) {
-		references::save_last($credit_note->reference, 11);
+		references::save(11, $credit_no, $credit_note->reference);
 	}
 
 	commit_transaction();

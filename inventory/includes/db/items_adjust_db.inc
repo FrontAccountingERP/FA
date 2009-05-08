@@ -29,7 +29,7 @@ function add_stock_adjustment($items, $location, $date_, $type, $increase, $refe
 
 	add_comments(systypes::inventory_adjustment(), $adj_id, $date_, $memo_);
 
-	references::save_last($reference, systypes::inventory_adjustment());
+	references::save(systypes::inventory_adjustment(), $adj_id, $reference);
 	add_audit_trail(systypes::inventory_adjustment(), $adj_id, $date_);
 
 	commit_transaction();

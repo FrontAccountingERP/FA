@@ -24,7 +24,7 @@ function add_dimension($reference, $name, $type_, $date_, $due_date, $memo_)
 
 	add_comments(systypes::dimension(), $id, $date_, $memo_);
 
-	references::save_last($reference, systypes::dimension());
+	references::save(systypes::dimension(), $id, $reference);
 
 	commit_transaction();
 

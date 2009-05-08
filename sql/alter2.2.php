@@ -19,7 +19,7 @@ class fa2_2 {
 	//
 	function install($pref, $force) 
 	{
-		global $db;
+		global $db, $systypes_array;
 		// set item category dflt accounts to values from company GL setup
 		$prefs = get_company_prefs();
 		$sql = "UPDATE {$pref}stock_category SET "
@@ -32,6 +32,27 @@ class fa2_2 {
 			display_error("Cannot update category default GL accounts"
 			.':<br>'. db_error_msg($db));
 			return false;
+		}
+		// add all references to refs table for easy searching via journal interface
+		foreach($systypes_array as $typeno => $typename) {
+			$info = get_systype_db_info($typeno);
+			if ($info == null || $info[3] == null) continue;
+			$tbl = str_replace(TB_PREF, $pref, $info[0]);
+			$sql = "SELECT {$info[2]} as id,{$info[3]} as ref FROM $tbl";
+			if ($info[1])
+				$sql .= " WHERE {$info[1]}=$typeno";
+			$result = db_query($sql);
+			if(db_num_rows($result)) {
+				while($row = db_fetch($result)) {
+					$res2 = db_query("INSERT INTO {$pref}refs VALUES("
+						. $row['id'].",".$typeno.",'".$row['ref']."')");
+					if (!$res2) {
+						display_error(_("Cannot copy references from $tbl")
+							.':<br>'. db_error_msg($db));
+						return false;
+					}
+				}
+			}
 		}
 /*	FIX
 		// add audit_trail data for all transactions

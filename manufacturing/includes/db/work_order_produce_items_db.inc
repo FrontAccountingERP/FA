@@ -53,7 +53,7 @@ function work_order_produce($woid, $ref, $quantity, $date_, $memo_, $close_wo)
 	if ($memo_)
 		add_comments(29, $id, $date_, $memo_);
 
-	references::save_last($ref, 29);
+	references::save(29, $id, $ref);
 	add_audit_trail(29, $id, $date_, _("Production."));
 
 	commit_transaction();

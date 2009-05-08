@@ -56,11 +56,11 @@ function add_po(&$po_obj)
     	}
      }
 
-	references::save_last($po_obj->reference, systypes::po());
+	references::save(systypes::po(), $po_obj->order_no, $po_obj->reference);
 
 	//add_comments(systypes::po(), $po_obj->order_no, $po_obj->orig_order_date, $po_obj->Comments);
 
-	add_audit_trail(systypes::po(), systypes::po(), $po_obj->orig_order_date);
+	add_audit_trail(systypes::po(), $po_obj->order_no, $po_obj->orig_order_date);
 	commit_transaction();
 
 	return $po_obj->order_no;
