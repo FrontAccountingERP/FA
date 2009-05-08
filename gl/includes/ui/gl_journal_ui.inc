@@ -19,23 +19,24 @@ function display_order_header(&$Order)
 	global $table_style2, $Ajax;
 
 	$qes = has_quick_entries(QE_JOURNAL);
-
+	$new = $Order->order_id==0;
 	start_outer_table("$table_style2 width=90%");
 	table_section(1);
 
 	start_row();
-    date_cells(_("Date:"), 'date_', '', true);
-	ref_cells(_("Reference:"), 'ref', '', references::get_next(0));
-	end_row();
+    date_cells(_("Date:"), 'date_', '', $new);
 
 	if ($qes)
 		table_section(2, "20%");
 	else	
 		table_section(2, "50%");
 
-	start_row();
-	check_cells(_("Reverse Transaction:"), 'Reverse', null);
+	if ($new)
+		ref_cells(_("Reference:"), 'ref', '');
+	else
+		label_cells(_("Reference:"), $Order->reference);
 	end_row();
+
 	if ($qes !== false)
 	{
 		table_section(3, "50%");

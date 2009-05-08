@@ -307,15 +307,29 @@ function get_tax_summary($from, $to)
 //display_error($sql);
     return db_query($sql,"Cannot retrieve tax summary");
 }
+
 //--------------------------------------------------------------------------------
-function add_journal_entries($items, $date_, $ref, $reverse, $memo_=null)
+// Write/update journal entries.
+//
+function write_journal_entries(&$cart)
 {
+	$date_ = $cart->tran_date;
+	$ref   = $cart->reference;
+	$memo_ = $cart->memo_;
+	$new = $cart->order_id == 0;
+	$trans_type = $cart->trans_type;
+	$trans_id = $new ? get_next_trans_no($trans_type) : $cart->order_id;
+
 	begin_transaction();
+	
+	if($new) {
+		$cart->order_id = $trans_id;
+	} else {
+		void_journal_trans($trans_type, $trans_id, true);
+		delete_comments($trans_type, $trans_id);
+	}
 
-	$trans_type = systypes::journal_entry();
-	$trans_id = get_next_trans_no($trans_type);
-
-	foreach ($items as $journal_item)
+	foreach ($cart->gl_items as $journal_item)
 	{
 		// post to first found bank account using given gl acount code.
 		$is_bank_to = is_bank_account($journal_item->code_id);
@@ -326,8 +340,7 @@ function add_journal_entries($items, $date_, $ref, $reverse, $memo_=null)
     	if ($is_bank_to)
     	{
     		add_bank_trans($trans_type, $trans_id, $is_bank_to, $ref,
-    			$date_, $journal_item->amount,
-    			0, "", get_company_currency(),
+    			$date_, $journal_item->amount,	0, "", get_company_currency(),
     			"Cannot insert a destination bank transaction");
     	}
 		// store tax details if the gl account is a tax account
@@ -335,44 +348,13 @@ function add_journal_entries($items, $date_, $ref, $reverse, $memo_=null)
 			$trans_type, $trans_id, -$journal_item->amount, 1, $date_, $memo_);
 	}
 	
-	add_comments($trans_type, $trans_id, $date_, $memo_);
+	if ($new) {
+		add_comments($trans_type, $trans_id, $date_, $memo_);
+		references::save($trans_type, $trans_id, $ref);
+	} else
+		update_comments($trans_type, $trans_id, null, $memo_);
 
-	references::save($trans_type, $trans_id, $ref);
 	add_audit_trail($trans_type, $trans_id, $date_);
-
-	if ($reverse)
-	{
-
-    	//$reversingDate = date(user_date_display(),
-    	//	Mktime(0,0,0,get_month($date_)+1,1,get_year($date_)));
-    	$reversingDate = begin_month(add_months($date_, 1));
-
-    	$trans_id_reverse = get_next_trans_no($trans_type);
-
-    	foreach ($items as $journal_item)
-    	{
-			$is_bank_to = is_bank_account($journal_item->code_id);
-
-    		add_gl_trans($trans_type, $trans_id_reverse, $reversingDate,
-    			$journal_item->code_id, $journal_item->dimension_id, $journal_item->dimension2_id,
-    			$journal_item->reference, -$journal_item->amount);
-    		if ($is_bank_to)
-    		{
-    			add_bank_trans($trans_type, $trans_id_reverse, $is_bank_to, $ref,
-    				$reversingDate, $journal_item->amount,
-    				0, "", get_company_currency(),
-    				"Cannot insert a destination bank transaction");
-    		}
-			// store tax details if the gl account is a tax account
-			add_gl_tax_details($journal_item->code_id, 
-				$trans_type, $trans_id, $journal_item->amount, 1, $reversingDate, $memo_);
-    	}
-
-    	add_comments($trans_type, $trans_id_reverse, $reversingDate, $memo_);
-
-    	references::save($trans_type, $trans_id_reverse, $ref);
-		add_audit_trail($trans_type, $trans_id_reverse, $reversingDate);
-	}
 
 	commit_transaction();
 
@@ -410,9 +392,9 @@ function void_journal_trans($type, $type_no)
 {
 	begin_transaction();
 
-	void_gl_trans($type, $type_no, true);
-	void_bank_trans($type, $type_no,true);
-	void_trans_tax_details($type, $type_no);
+	void_bank_trans($type, $type_no, true);
+//	void_gl_trans($type, $type_no, true);	 // this is done above
+//	void_trans_tax_details($type, $type_no); // ditto
 
 	commit_transaction();
 }
