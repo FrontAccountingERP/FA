@@ -1872,6 +1872,32 @@ function systypes_list_cells($label, $name, $value=null, $submit_on_change=false
 	return $str;
 }
 
+function journal_types_list_cells($label, $name, $value=null, $submit_on_change=false)
+{
+	global $systypes_array;
+
+	if ($label != null)
+		echo "<td>$label</td>\n";
+	echo "<td>";
+
+	$items = array();
+	foreach ($systypes_array as $key=>$type)
+		// exclude orders and dimensions
+		if (!in_array($key, array(18,26,30,40)))
+			$items[$key] = $type['name'];
+	
+	$str = array_selector($name, $value, $items, 
+		array( 
+			'spec_option'=> _("All"),
+			'spec_id' => -1,
+			'select_submit'=> $submit_on_change,
+			'async' => false
+			)
+	);
+	echo "</td>\n";
+	return $str;
+}
+
 function systypes_list_row($label, $name, $value=null, $submit_on_change=false)
 {
 	echo "<tr>\n";
