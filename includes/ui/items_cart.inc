@@ -30,7 +30,8 @@ class items_cart
 	var $memo_;
 	var $person_id;
 	var $branch_id;
-
+	var $reference;
+	
 	function items_cart($type)
 	{
 		$this->trans_type = $type;
