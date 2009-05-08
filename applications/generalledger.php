@@ -24,11 +24,12 @@
 			$this->add_rapp_function(0, _("&Budget Entry"),"gl/gl_budget.php?");
             $this->add_rapp_function(0, _("&Reconcile Bank Account"),"gl/bank_account_reconcile.php?");
 			$this->add_module(_("Inquiries and Reports"));
-			$this->add_lapp_function(1, _("Bank Account &Inquiry"),"gl/inquiry/bank_inquiry.php?");
+			$this->add_lapp_function(1, _("&Journal Inquiry"),"gl/inquiry/journal_inquiry.php?");
 			$this->add_lapp_function(1, _("GL Account &Inquiry"),"gl/inquiry/gl_account_inquiry.php?");
-			$this->add_lapp_function(1, _("Trial &Balance"),"gl/inquiry/gl_trial_balance.php?");
+			$this->add_lapp_function(1, _("Bank Account &Inquiry"),"gl/inquiry/bank_inquiry.php?");
 			$this->add_lapp_function(1, _("Ta&x Inquiry"),"gl/inquiry/tax_inquiry.php?");
 
+			$this->add_rapp_function(1, _("Trial &Balance"),"gl/inquiry/gl_trial_balance.php?");
 			$this->add_rapp_function(1, _("Banking &Reports"),"reporting/reports_main.php?Class=5");
 			$this->add_rapp_function(1, _("General Ledger &Reports"),"reporting/reports_main.php?Class=6");
 
