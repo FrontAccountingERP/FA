@@ -28,9 +28,16 @@ if ($use_popup_windows)
 if ($use_date_picker)
 	$js .= get_js_date_picker();
 
-page(_("Journal Entry"), false, false,'', $js);
+if (isset($_GET['ModifyGL'])) {
+	$_SESSION['page_title'] = sprintf(_("Modifying Journal Transaction # %d."), 
+		$_GET['trans_no']);
+	$help_page_title =_("Modifying Journal Transaction");
+} else
+	$_SESSION['page_title'] = _("Journal Entry");
 
+page($_SESSION['page_title'], false, false,'', $js);
 //--------------------------------------------------------------------------------------------------
+
 function line_start_focus() {
   global 	$Ajax;
 
@@ -51,25 +58,71 @@ if (isset($_GET['AddedID']))
    	hyperlink_no_params($_SERVER['PHP_SELF'], _("Enter &Another Journal Entry"));
 
 	display_footer_exit();
+} elseif (isset($_GET['UpdatedID'])) 
+{
+	$trans_no = $_GET['UpdatedID'];
+	$trans_type = systypes::journal_entry();
+
+   	display_notification_centered( _("Journal entry has been updated") . " #$trans_no");
+
+    display_note(get_gl_view_str($trans_type, $trans_no, _("&View this Journal Entry")));
+
+   	hyperlink_no_params($path_to_root."/gl/inquiry/journal_inquiry.php", _("Return to Journal &Inquiry"));
+
+	display_footer_exit();
 }
 //--------------------------------------------------------------------------------------------------
 
-function handle_new_order()
+if (isset($_GET['NewJournal']))
+{
+	create_cart(0,0);
+} 
+elseif (isset($_GET['ModifyGL']))
+{
+	if (!isset($_GET['trans_type']) || $_GET['trans_type']!= 0) {
+		display_error(_("You can edit directly only journal entries created via Journal Entry page."));
+		hyperlink_params("$path_to_root/gl/gl_journal.php", _("Entry &New Journal Entry"), "NewJournal=Yes");
+		display_footer_exit();
+	}
+	create_cart($_GET['trans_type'], $_GET['trans_no']);
+}
+
+function create_cart($type=0, $trans_no=0)
 {
 	if (isset($_SESSION['journal_items']))
 	{
-		$_SESSION['journal_items']->clear_items();
 		unset ($_SESSION['journal_items']);
 	}
 
-    session_register("journal_items");
+	$cart = new items_cart($type);
+    $cart->order_id = $trans_no;
 
-    $_SESSION['journal_items'] = new items_cart(systypes::journal_entry());
+	if ($trans_no) {
+		$result = get_gl_trans($type, $trans_no);
 
-	$_POST['date_'] = new_doc_date();
-	if (!is_date_in_fiscalyear($_POST['date_']))
-		$_POST['date_'] = end_fiscalyear();
-	$_SESSION['journal_items']->tran_date = $_POST['date_'];	
+		if ($result) {
+			while ($row = db_fetch($result)) {
+				if ($row['amount'] == 0) continue;
+				$date = $row['tran_date'];
+				$cart->add_gl_item($row['account'], $row['dimension_id'], 
+					$row['dimension2_id'], $row['amount'], $row['memo_']);
+			}
+		}
+		$cart->memo_ = get_comments_string($type, $trans_no);
+		$cart->tran_date = sql2date($date);
+		$cart->reference = references::get($type, $trans_no);
+	} else {
+		$cart->reference = references::get_next(0);
+		$cart->tran_date = new_doc_date();
+	}
+	if (!is_date_in_fiscalyear($cart->tran_date))
+		$cart->tran_date = end_fiscalyear();
+
+	$_POST['memo_'] = $cart->memo_;
+	$_POST['ref'] = $cart->reference;	
+	$_POST['date_'] = $cart->tran_date;
+
+	$_SESSION['journal_items'] = &$cart;
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -91,7 +144,6 @@ if (isset($_POST['Process']))
 		$input_error = 1;
 	}
 
-
 	if (!is_date($_POST['date_'])) 
 	{
 		display_error(_("The entered date is invalid."));
@@ -104,35 +156,44 @@ if (isset($_POST['Process']))
 		set_focus('date_');
 		$input_error = 1;
 	} 
-	if (!references::is_valid($_POST['ref'])) 
-	{
-		display_error( _("You must enter a reference."));
-		set_focus('ref');
-		$input_error = 1;
-	} 
-	elseif (references::exists(systypes::journal_entry(), $_POST['ref'])) 
-	{
-		display_error( _("The entered reference is already in use."));
-		set_focus('ref');
-		$input_error = 1;
+  	if ($_SESSION['journal_items']->order_id == 0) {
+		if (!references::is_valid($_POST['ref'])) 
+		{
+			display_error( _("You must enter a reference."));
+			set_focus('ref');
+			$input_error = 1;
+		} 
+		elseif (references::exists(systypes::journal_entry(), $_POST['ref'])) 
+		{
+			display_error( _("The entered reference is already in use."));
+			set_focus('ref');
+			$input_error = 1;
+		}
 	}
-
 	if ($input_error == 1)
 		unset($_POST['Process']);
 }
 
 if (isset($_POST['Process']))
 {
+	$cart = &$_SESSION['journal_items'];
+	$new = $cart->order_id == 0;
 
-	$trans_no = add_journal_entries($_SESSION['journal_items']->gl_items,
-		$_POST['date_'], $_POST['ref'], check_value('Reverse'), $_POST['memo_']);
+	if ($new) 
+		$cart->reference = $_POST['ref'];
+	$cart->memo_ = $_POST['memo_'];
+	$cart->tran_date = $_POST['date_'];
 
-	$_SESSION['journal_items']->clear_items();
+	$trans_no = write_journal_entries($cart);
+
+	$cart->clear_items();
 	new_doc_date($_POST['date_']);
 	unset($_SESSION['journal_items']);
-
-	meta_forward($_SERVER['PHP_SELF'], "AddedID=$trans_no");
-} /*end of process credit note */
+	if($new)
+		meta_forward($_SERVER['PHP_SELF'], "AddedID=$trans_no");
+	else
+		meta_forward($_SERVER['PHP_SELF'], "UpdatedID=$trans_no");
+}
 
 //-----------------------------------------------------------------------------------------------
 
@@ -244,13 +305,6 @@ if (isset($_POST['go']))
 	$_POST['totamount'] = price_format(0); $Ajax->activate('totamount');
 	line_start_focus();
 }	
-//-----------------------------------------------------------------------------------------------
-
-if (isset($_GET['NewJournal']) || !isset($_SESSION['journal_items']))
-{
-	handle_new_order();
-}
-
 //-----------------------------------------------------------------------------------------------
 
 start_form();
