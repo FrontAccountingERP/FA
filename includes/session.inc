@@ -128,7 +128,11 @@ language::set_language($_SESSION['language']->code);
 include_once($path_to_root . "/config.php");
 include_once($path_to_root . "/includes/main.inc");
 
+// Ajax communication object
 $Ajax =& new Ajax();
+
+// js/php validation rules container
+$Validate = array();
 
 // intercept all output to destroy it in case of ajax call
 register_shutdown_function('ob_end_flush');

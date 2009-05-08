@@ -315,7 +315,7 @@ function set_user_prefs($price_dec, $qty_dec, $exrate_dec, $percent_dec, $showgl
 }
 
 function add_user_js_data() {
-	global $path_to_root, $thoseps, $decseps;
+	global $path_to_root, $thoseps, $decseps, $date_system, $dateseps;
 
 	$ts = $thoseps[user_tho_sep()];
 	$ds = $decseps[user_dec_sep()];
@@ -324,7 +324,10 @@ function add_user_js_data() {
 	  . "var user = {\n"
 	  . "theme: '". $path_to_root . '/themes/'. user_theme().'/'."',\n"
 	  . "loadtxt: '"._('Requesting data...')."',\n"
-	  . "date: '".Today()."',\n"
+	  . "date: '".Today()."',\n"	// server date
+	  . "datesys: ".$date_system.",\n"
+	  . "datefmt: ".user_date_format().",\n"
+	  . "datesep: '".$dateseps[user_date_sep()]."',\n"
 	  . "ts: '$ts',\n"
 	  . "ds: '$ds',\n"
 	  . "pdec : " . user_price_dec() . "}\n";

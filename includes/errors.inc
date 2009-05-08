@@ -38,7 +38,7 @@ function fmt_errors($center=false) {
 
   $type = E_USER_NOTICE;
   $content = '';
-  $class = 'no_msg';
+//  $class = 'no_msg';
   if (count($messages)) {
 	foreach($messages as $cnt=>$msg) {
 		if ($msg[0]>$type) continue;
@@ -59,11 +59,10 @@ function fmt_errors($center=false) {
 		$content .= ($cnt ? '<hr>' : '').$str;
 	}		
 	$class = $msg_class[$type];
+    $content = "<div class='$class'>$content</div>";
   } else
-   if ($path_to_root=='.')
-    return '';
-  
-  $content = "<div class='$class'>$content</div>";
+  if ($path_to_root=='.')
+	return '';
   return $content;
 }
 //-----------------------------------------------------------------------------

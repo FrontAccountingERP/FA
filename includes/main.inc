@@ -20,6 +20,7 @@ include_once($path_to_root . "/includes/prefs/sysprefs.inc");
 include_once($path_to_root . "/includes/db/comments_db.inc");
 include_once($path_to_root . "/includes/db/sql_functions.inc");
 include_once($path_to_root . "/includes/db/audit_trail_db.inc");
+include_once($path_to_root . "/includes/validation.inc");
 
 include_once($path_to_root . "/admin/db/users_db.inc");
 include_once($path_to_root . "/includes/ui/ui_view.inc");
@@ -36,7 +37,7 @@ function page($title, $no_menu=false, $is_index=false, $onload="", $js="", $scri
    	include($path_to_root . "/includes/page/header.inc");
 
    	page_header($title, $no_menu, $is_index, $onload, $js);
-	error_box();
+//	error_box();
 	if($script_only) {		
 		echo '<noscript>';
 		echo display_heading(_('This page is usable only with javascript enabled browsers.'));

@@ -124,6 +124,7 @@ function page_header($title, $no_menu=false, $is_index=false, $onload="", $js=""
 	include_once($local_path_to_root."/themes/".user_theme()."/renderer.php");
 	$rend = new renderer();
 	$rend->menu_header($title, $no_menu, $is_index);
+	error_box();
 }
 
 ?>
