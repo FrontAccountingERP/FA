@@ -117,8 +117,6 @@ function get_banking_trans_view_str($type, $trans_no, $label="",
 		$viewer = "gl_payment_view.php";
 	elseif ($type == 2)
 		$viewer = "gl_deposit_view.php";
-	elseif ($type == 0)
-		return $label;
 	else
 		return null;
 
@@ -186,6 +184,22 @@ function get_dimensions_trans_view_str($type, $trans_no, $label="", $icon=false,
 
 	return viewer_link($label, $viewer, $class, $id,  $icon);
 }
+/*
+	Journal entry or cost update postings link
+*/
+function get_journal_trans_view_str($type, $trans_no, $label="", $icon=false, 
+	$class='', $id='')
+{
+	if ($type == 0 || $type == 35)
+		$viewer = "gl/view/gl_trans_view.php?type_id=$type&trans_no=$trans_no";
+	else
+		return null;
+
+	if ($label == "")
+		$label = $trans_no;
+
+	return viewer_link($label, $viewer, $class, $id,  $icon);
+}
 
 //--------------------------------------------------------------------------------------
 
@@ -213,6 +227,10 @@ function get_trans_view_str($type, $trans_no, $label="", $icon=false,
 		return $view_str;
 
 	$view_str = get_dimensions_trans_view_str($type, $trans_no, $label, $icon, $class, $id);
+	if ($view_str != null)
+		return $view_str;
+
+	$view_str = get_journal_trans_view_str($type, $trans_no, $label, $icon, $class, $id);
 	if ($view_str != null)
 		return $view_str;
 
