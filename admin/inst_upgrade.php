@@ -29,7 +29,7 @@ include_once($path_to_root . "/includes/ui.inc");
 //
 function check_table($pref, $table, $field=null, $properties=null)
 {
-	$fields = db_query("SHOW COLUMNS FROM ".$pref.$table);
+	$fields = @db_query("SHOW COLUMNS FROM ".$pref.$table);
 	if (!$fields)
 		return 1;		// no such table or error
 
