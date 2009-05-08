@@ -166,7 +166,7 @@ function write_sales_invoice(&$invoice)
 	add_comments(10, $invoice_no, $date_, $invoice->Comments);
 
 	if ($trans_no == 0) {
-		references::save_last($invoice->reference, 10);
+		references::save(10, $invoice_no, $invoice->reference);
 		if ($invoice->cash) {
 			$amount = $items_total + $items_added_tax + $invoice->freight_cost 
 				+ $freight_added_tax;
@@ -178,7 +178,7 @@ function write_sales_invoice(&$invoice)
 			$pmtno = write_customer_payment(0, $invoice->customer_id, 
 				$invoice->Branch, $invoice->cash_account, $date_,
 				references::get_next(12), $amount-$discount, $discount,
-				_('Cash invoice').' '.$invoice->trans_no);
+				_('Cash invoice').' '.$invoice_no);
 			add_cust_allocation($amount, 12, $pmtno, 10, $invoice_no);
 
 			update_debtor_trans_allocation(10, $invoice_no, $amount);
