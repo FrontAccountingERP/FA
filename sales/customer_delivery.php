@@ -293,7 +293,7 @@ if (isset($_POST['process_delivery']) && check_data() && check_qoh()) {
 	$newdelivery = ($dn->trans_no == 0);
 
 	copy_to_cart();
-	if ($new_delivery) new_doc_date($dn->document_date);
+	if ($newdelivery) new_doc_date($dn->document_date);
 	$delivery_no = $dn->write($bo_policy);
 
 	processing_end();
