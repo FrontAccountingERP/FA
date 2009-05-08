@@ -71,19 +71,21 @@
 					echo "$himg<a target = '_blank' onclick=" .'"'."javascript:openWindow(this.href,this.target); return false;".'" '. "href='". help_url($title, $sel_app)."'>" . _("Help") . "</a>&nbsp;&nbsp;&nbsp;";
 				}
 				echo "$img<a href='$local_path_to_root/access/logout.php?'>" . _("Logout") . "</a>&nbsp;&nbsp;&nbsp;";
+				echo "</td></tr><tr><td colspan=3>";
 				echo "</td></tr></table>";
 			}
 			echo "</td></tr></table>";
 
-			if ($title && !$no_menu && !$is_index)
+			if ($no_menu)
+				echo "<br>";
+			elseif ($title && !$is_index)
 			{
-				echo "<center><table width='100%'><tr><td width='100%' class='titletext'>$title</td>"
+				echo "<center><table id='title'><tr><td width='100%' class='titletext'>$title</td>"
 				."<td align=right>"
 				.(user_hints() ? "<span id='hints'></span>" : '')
 				."</td>"
 				."</tr></table></center>";
 			}
-
 		}
 
 		function menu_footer($no_menu, $is_index)

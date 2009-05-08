@@ -14,6 +14,13 @@ function set_mark(img) {
 	box.style.visibility = img ? 'visible' : 'hidden'
 }
 
+function disp_msg(msg, cl) {
+	var box = document.getElementById('msgbox')
+	box.innerHTML= "<div class='"+(cl || 'err_msg')+"'>"+ msg+'</div>';
+//	box.style.display = msg=='' ? 'none':'block';
+    if (msg!='') window.scrollTo(0,element_pos(box).y-10);
+}
+
 //
 //	JsHttpRequest class extensions.
 //
@@ -25,13 +32,13 @@ function set_mark(img) {
 //		request is directed to current location 
 // 
 JsHttpRequest.request= function(trigger, form, tout) {
+//	if (trigger.type=='submit' && !validate(trigger)) return false;
 	tout = tout | 3000;	// default timeout value
 	set_mark(tout>5000 ? 'progressbar.gif' : 'ajax-loader.gif');
 	JsHttpRequest._request(trigger, form, tout, 2);
 }
 
 JsHttpRequest._request = function(trigger, form, tout, retry) {
-
 		if (trigger.tagName=='A') {
 			var content = {};
 			var upload = 0;
@@ -223,9 +230,11 @@ function price_format(post, num, dec, label, color) {
 
 function get_amount(doc, label) {
 	    if(label)
-		var val = document.getElementById(doc).innerHTML;
+			var val = document.getElementById(doc).innerHTML;
 	    else
-		var val = document.getElementsByName(doc)[0].value;
+			var val = typeof(doc) == "string" ? 
+			document.getElementsByName(doc)[0].value : doc.value;
+		
 		val = val.replace(new RegExp('\\'+user.ts, 'g'),'');
 		val = +val.replace(new RegExp('\\'+user.ds, 'g'),'.');
 		return isNaN(val) ? 0 : val;

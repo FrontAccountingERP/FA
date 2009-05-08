@@ -568,7 +568,17 @@ ul.ajaxtabs li input.current, ul.ajaxtabs li input.current:hover{
 	border: 1px solid #FFF;
 }
 
+div.err_msg {
+	margin: 10px;
+	padding: 3px;
+	border: 1px solid #cc3300;
+	background-color: #ffcccc;
+	color: #dd2200;
+	text-align: center;
+}
+
 div.warn_msg {
+	margin: 10px;
 	padding: 3px;
 	border: 1px solid #ff9900;
 	background-color: #ffff00;
@@ -577,6 +587,7 @@ div.warn_msg {
 }
 
 div.note_msg {
+	margin: 10px;
 	padding: 3px;
 	border: 1px solid #33cc00;
 	background-color: #ccffcc;
@@ -584,6 +595,7 @@ div.note_msg {
 	text-align: center;
 }
 
-#msgbox {
-	margin: 10px;
+#title {
+	margin-bottom: 10px; 
+	width: 100%;
 }

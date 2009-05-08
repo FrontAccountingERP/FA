@@ -13,12 +13,6 @@ var _hotkeys = {
 	'alt': false,	// whether is the Alt key pressed
 	'focus': -1		// currently selected indeks of document.links
 };
-var _validate = {}; // validation functions
-
-function debug(msg) {
-    box = document.getElementById('msgbox')
-	box.innerHTML= box.innerHTML+'<br>'+msg
-}
 
 function save_focus(e) {
   _focus = e.name||e.id;
@@ -195,14 +189,14 @@ var inserts = {
 	function(e) {
 		    e.onclick = function() {
 			    save_focus(e);
-				if (e.getAttribute('aspect') == 'process')
-					JsHttpRequest.request(this, null, 30000);
-				else
-					JsHttpRequest.request(this);
+					if (e.getAttribute('aspect') == 'process')
+						JsHttpRequest.request(this, null, 30000);
+					else
+						JsHttpRequest.request(this);
 				return false;
 		    }
 	},
-	'button': function(e) {
+/*	'button': function(e) {
 		if (e.name) {
 			var func = _validate[e.name];
 			var old = e.onclick;
@@ -220,7 +214,7 @@ var inserts = {
 			}
 		}
 	},
-    '.amount': function(e) {
+*/    '.amount': function(e) {
 		if(e.onblur==undefined) {
   		  e.onblur = function() {
 			var dec = this.getAttribute("dec");
@@ -306,11 +300,11 @@ var inserts = {
 		}
 
 	},
-*/	'#msgbox': function(e) {
+*//*	'#msgbox': function(e) {
 	// this is to avoid changing div height after ajax update in IE7
 	  e.style.display = e.innerHTML.length ? 'block' : 'none';
 	}
-/* TODO
+*//* TODO
 	'a.date_picker':  function(e) {
 	    // this un-hides data picker for js enabled browsers
 	    e.href = date_picker(this.getAttribute('rel'));

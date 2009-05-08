@@ -73,15 +73,17 @@
 				echo "</td></tr></table>";
 			}
 			echo "</td></tr></table>";
-
-			if ($title && !$no_menu && !$is_index)
+			if ($no_menu)
+				echo "<br>";
+			elseif ($title && !$is_index)
 			{
-				echo "<center><table width='100%'><tr><td width='100%' class='titletext'>$title</td>"
+					echo "<center><table id='title'><tr><td width='100%' class='titletext'>$title</td>"
 				."<td align=right>"
 				.(user_hints() ? "<span id='hints'></span>" : '')
 				."</td>"
 				."</tr></table></center>";
 			}
+
 
 		}
 
