@@ -15,7 +15,9 @@ function get_reference($type, $id)
 {
 	$sql = "SELECT * FROM ".TB_PREF."refs WHERE type=$type AND id=$id";
 
-	return db_query($sql, "could not query reference table");
+	$result = db_query($sql, "could not query reference table");
+    $row = db_fetch($result);
+    return $row['reference'];
 }
 
 //--------------------------------------------------------------------------------------------------
