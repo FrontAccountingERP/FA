@@ -19,6 +19,11 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+10-May-2009 Joe Hunt
+# Period presentation bug in tax report/inquiry
+$ /gl/inquiry/tax_inquiry.php
+  /reporting/includes/reports_classes.inc
+  
 07-May-2009 Joe Hunt
 # Layout bug in exchange rate display
 $ /includes/ui/ui_view.inc

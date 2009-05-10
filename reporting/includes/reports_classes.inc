@@ -160,8 +160,9 @@ class Report
 							$date = $edate;
 						else
 						{
-							$bdate = add_months($edate, -$row['tax_prd'] + 1);
-							$date = begin_month($bdate);
+							$bdate = begin_month($edate);
+							$bdate = add_months($bdate, -$row['tax_prd'] + 1);
+							$date = $bdate;
 						}
 					}
 					$name = "PARAM_$index";

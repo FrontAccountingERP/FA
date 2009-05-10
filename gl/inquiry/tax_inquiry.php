@@ -43,8 +43,9 @@ if (get_post('TransFromDate') == "" && get_post('TransToDate') == "")
 	$row = get_company_prefs();
 	$edate = add_months($date, -$row['tax_last']);
 	$edate = end_month($edate);
-	$bdate = add_months($edate, -$row['tax_prd'] + 1);
-	$_POST["TransFromDate"] = begin_month($bdate);
+	$bdate = begin_month($edate);
+	$bdate = add_months($bdate, -$row['tax_prd'] + 1);
+	$_POST["TransFromDate"] = $bdate;
 	$_POST["TransToDate"] = $edate;
 }	
 
