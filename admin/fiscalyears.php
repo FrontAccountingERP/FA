@@ -33,9 +33,32 @@ function is_date_in_fiscalyears($date)
 	return db_fetch($result) !== false;
 }
 
+function is_bad_begin_date($date)
+{
+	$bdate = date2sql($date);
+	$sql = "SELECT MAX(end) FROM ".TB_PREF."fiscal_year WHERE begin < '$bdate'";
+
+	$result = db_query($sql, "could not retrieve last fiscal years");
+	$row = db_fetch_row($result);
+	if ($row[0] === null)
+		return false;
+	$max = add_days(sql2date($row[0]), 1);
+	return ($max !== $date);
+}
+
+function check_open_before($date)
+{
+	$date = date2sql($date);
+	$sql = "SELECT COUNT(*) FROM ".TB_PREF."fiscal_year WHERE begin < '$date' AND closed=0";
+
+	$result = db_query($sql, "could not check open fiscal years");
+	$row = db_fetch_row($result);
+	return ($row[0] > 0);
+}
+
 function check_data()
 {
-	if (!is_date($_POST['from_date']) || is_date_in_fiscalyears($_POST['from_date']))
+	if (!is_date($_POST['from_date']) || is_date_in_fiscalyears($_POST['from_date']) || is_bad_begin_date($_POST['from_date']))
 	{
 		display_error( _("Invalid BEGIN date in fiscal year."));
 		set_focus('from_date');
@@ -106,7 +129,15 @@ function handle_submit()
 	if ($selected_id != -1)
 	{
 		if ($_POST['closed'] == 1)
+		{
+			if (check_open_before($_POST['from_date']))
+			{
+				display_error( _("Cannot CLOSE this year because there are open fiscal years before"));
+				set_focus('closed');
+				return false;
+			}	
 			close_year($selected_id);
+		}	
 		else
 			open_year($selected_id);
    		update_fiscalyear($selected_id, $_POST['closed']);
