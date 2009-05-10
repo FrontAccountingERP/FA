@@ -44,9 +44,11 @@ start_row();
 
 ref_cells(_("Reference:"), 'Ref', '',null, _('Enter reference fragment or leave empty'));
 
-journal_types_list_cells(_("Transaction Type:"), "filterType");
+journal_types_list_cells(_("Type:"), "filterType");
 date_cells(_("From:"), 'FromDate', '', null, 0, 0, -1);
 date_cells(_("To:"), 'ToDate');
+
+check_cells( _("Show closed:"), 'AlsoClosed', null);
 
 submit_cells('Search', _("Search"), '', '', 'default');
 
@@ -54,6 +56,11 @@ end_row();
 end_table();
 
 end_form();
+
+function journal_pos($row)
+{
+	return $row['gl_seq'] ? $row['gl_seq'] : '-';
+}
 
 function systype_name($dummy, $type)
 {
@@ -68,11 +75,6 @@ function view_link($row)
 function gl_link($row) 
 {
 	return get_gl_view_str($row["type"], $row["type_no"]);
-}
-
-function is_closed($row)
-{
-	return $row['gl_seq'] ? _('Yes') : _('No');
 }
 
 $editors = array(
@@ -109,20 +111,23 @@ function edit_link($row)
 			ICON_EDIT) : '';
 }
 
-$sql = "SELECT	gl.tran_date,
+$sql = "SELECT	a.gl_seq,
+				gl.tran_date,
 				gl.type,
 				gl.type_no,
 				refs.reference,
 				SUM(IF(gl.amount>0, gl.amount,0)) as amount,"
 				."com.memo_"
 		." FROM ". TB_PREF."gl_trans as gl"
+		." LEFT JOIN ". TB_PREF."audit_trail as a ON 
+			(gl.type=a.type AND gl.type_no=a.trans_no)"
 		." LEFT JOIN ". TB_PREF."comments as com ON 
 			(gl.type=com.type AND gl.type_no=com.id)"
 		." LEFT JOIN ". TB_PREF."refs as refs ON 
 			(gl.type=refs.type AND gl.type_no=refs.id)
 		WHERE gl.tran_date >= '" . date2sql($_POST['FromDate']) . "'
 	AND gl.tran_date <= '" . date2sql($_POST['ToDate']) . "'
-	AND gl.amount!=0";
+	AND gl.amount!=0 AND !ISNULL(a.gl_seq)";
 
 if (isset($_POST['Ref']) && $_POST['Ref'] != "") {
 	$sql .= " AND reference LIKE '%". $_POST['Ref'] . "%'";
@@ -134,6 +139,7 @@ if (get_post('filterType') != -1) {
 $sql .= " GROUP BY gl.type, gl.type_no";
 
 $cols = array(
+	_("#") => array('fun'=>'journal_pos', 'align'=>'center'), 
 	_("Date") =>array('name'=>'tran_date','type'=>'date','ord'=>'desc'),
 	_("Type") => array('fun'=>'systype_name'), 
 	_("Trans #") => array('fun'=>'view_link'), 
@@ -143,6 +149,10 @@ $cols = array(
 	_("View") => array('insert'=>true, 'fun'=>'gl_link'),
 	array('insert'=>true, 'fun'=>'edit_link')
 );
+
+if (!check_value('AlsoClosed')) {
+	$cols[_("#")] = 'skip';
+}
 
 $table =& new_db_pager('journal_tbl', $sql, $cols);
 

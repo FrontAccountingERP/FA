@@ -309,9 +309,80 @@ function get_tax_summary($from, $to)
 }
 
 //--------------------------------------------------------------------------------
+function add_journal_entries($items, $date_, $ref, $reverse, $memo_=null)
+{
+	begin_transaction();
+
+	$trans_type = systypes::journal_entry();
+	$trans_id = get_next_trans_no($trans_type);
+
+	foreach ($items as $journal_item)
+	{
+		// post to first found bank account using given gl acount code.
+		$is_bank_to = is_bank_account($journal_item->code_id);
+
+		add_gl_trans($trans_type, $trans_id, $date_, $journal_item->code_id,
+			$journal_item->dimension_id, $journal_item->dimension2_id,
+			$journal_item->reference, $journal_item->amount);
+    	if ($is_bank_to)
+    	{
+    		add_bank_trans($trans_type, $trans_id, $is_bank_to, $ref,
+    			$date_, $journal_item->amount,
+    			0, "", get_company_currency(),
+    			"Cannot insert a destination bank transaction");
+    	}
+		// store tax details if the gl account is a tax account
+		add_gl_tax_details($journal_item->code_id, 
+			$trans_type, $trans_id, -$journal_item->amount, 1, $date_, $memo_);
+	}
+	
+	add_comments($trans_type, $trans_id, $date_, $memo_);
+
+	references::save($trans_type, $trans_id, $ref);
+	add_audit_trail($trans_type, $trans_id, $date_);
+
+	if ($reverse)
+	{
+
+    	//$reversingDate = date(user_date_display(),
+    	//	Mktime(0,0,0,get_month($date_)+1,1,get_year($date_)));
+    	$reversingDate = begin_month(add_months($date_, 1));
+
+    	$trans_id_reverse = get_next_trans_no($trans_type);
+
+    	foreach ($items as $journal_item)
+    	{
+			$is_bank_to = is_bank_account($journal_item->code_id);
+
+    		add_gl_trans($trans_type, $trans_id_reverse, $reversingDate,
+    			$journal_item->code_id, $journal_item->dimension_id, $journal_item->dimension2_id,
+    			$journal_item->reference, -$journal_item->amount);
+    		if ($is_bank_to)
+    		{
+    			add_bank_trans($trans_type, $trans_id_reverse, $is_bank_to, $ref,
+    				$reversingDate, $journal_item->amount,
+    				0, "", get_company_currency(),
+    				"Cannot insert a destination bank transaction");
+    		}
+			// store tax details if the gl account is a tax account
+			add_gl_tax_details($journal_item->code_id, 
+				$trans_type, $trans_id, $journal_item->amount, 1, $reversingDate, $memo_);
+    	}
+
+    	add_comments($trans_type, $trans_id_reverse, $reversingDate, $memo_);
+
+    	references::save($trans_type, $trans_id_reverse, $ref);
+		add_audit_trail($trans_type, $trans_id_reverse, $reversingDate);
+	}
+
+	commit_transaction();
+
+	return $trans_id;
+}
+//--------------------------------------------------------------------------------
 // Write/update journal entries.
 //
-function write_journal_entries(&$cart)
+function write_journal_entries(&$cart, $reverse)
 {
 	$date_ = $cart->tran_date;
 	$ref   = $cart->reference;
@@ -357,6 +428,39 @@ function write_journal_entries(&$cart)
 	add_audit_trail($trans_type, $trans_id, $date_);
 
 	commit_transaction();
+
+	if ($reverse)
+	{
+    	//$reversingDate = date(user_date_display(),
+    	//	Mktime(0,0,0,get_month($date_)+1,1,get_year($date_)));
+    	$reversingDate = begin_month(add_months($date_, 1));
+
+    	$trans_id_reverse = get_next_trans_no($trans_type);
+
+    	foreach ($cart->gl_items as $journal_item)
+    	{
+			$is_bank_to = is_bank_account($journal_item->code_id);
+
+    		add_gl_trans($trans_type, $trans_id_reverse, $reversingDate,
+    			$journal_item->code_id, $journal_item->dimension_id, $journal_item->dimension2_id,
+    			$journal_item->reference, -$journal_item->amount);
+    		if ($is_bank_to)
+    		{
+    			add_bank_trans($trans_type, $trans_id_reverse, $is_bank_to, $ref,
+    				$reversingDate, $journal_item->amount,
+    				0, "", get_company_currency(),
+    				"Cannot insert a destination bank transaction");
+    		}
+			// store tax details if the gl account is a tax account
+			add_gl_tax_details($journal_item->code_id, 
+				$trans_type, $trans_id, $journal_item->amount, 1, $reversingDate, $memo_);
+    	}
+
+    	add_comments($trans_type, $trans_id_reverse, $reversingDate, $memo_);
+
+    	references::save($trans_type, $trans_id_reverse, $ref);
+		add_audit_trail($trans_type, $trans_id_reverse, $reversingDate);
+	}
 
 	return $trans_id;
 }

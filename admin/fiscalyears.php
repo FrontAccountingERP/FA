@@ -68,12 +68,13 @@ function close_year($year)
 
 	$row = db_fetch_row($result);
 	$balance = round2($row[0], user_price_dec());
+
+	begin_transaction();
+	$to = sql2date($to);
+
 	if ($balance != 0.0)
 	{
 		$co = get_company_prefs();
-		$to = sql2date($to);
-
-		begin_transaction();
 
 		$trans_type = systypes::journal_entry();
 		$trans_id = get_next_trans_no($trans_type);
@@ -83,10 +84,21 @@ function close_year($year)
 		add_gl_trans($trans_type, $trans_id, $to, $co['profit_loss_year_act'],
 			0, 0, _("Closing Year"), $balance);
 
-		commit_transaction();
 	}	
+		close_transactions($to);
+		commit_transaction();
 }
-	
+
+function open_year($year)
+{
+	$myrow = get_fiscalyear($year);
+	$from = sql2date($myrow['begin']);
+
+	begin_transaction();
+	open_transactions($from);
+	commit_transaction();
+}
+
 function handle_submit()
 {
 	global $selected_id, $Mode;
@@ -94,7 +106,9 @@ function handle_submit()
 	if ($selected_id != -1)
 	{
 		if ($_POST['closed'] == 1)
-			close_year($selected_id);	
+			close_year($selected_id);
+		else
+			open_year($selected_id);
    		update_fiscalyear($selected_id, $_POST['closed']);
 		display_notification(_('Selected fiscal year has been updated'));
 	}
