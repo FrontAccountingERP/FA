@@ -135,6 +135,9 @@ if (isset($_POST['Ref']) && $_POST['Ref'] != "") {
 if (get_post('filterType') != -1) {
 	$sql .= " AND gl.type=".get_post('filterType');
 }
+if (!check_value('AlsoClosed')) {
+	$sql .= " AND a.gl_seq=0";
+}
 
 $sql .= " GROUP BY gl.type, gl.type_no";
 
