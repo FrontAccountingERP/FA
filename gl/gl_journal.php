@@ -184,7 +184,7 @@ if (isset($_POST['Process']))
 	$cart->memo_ = $_POST['memo_'];
 	$cart->tran_date = $_POST['date_'];
 
-	$trans_no = write_journal_entries($cart);
+	$trans_no = write_journal_entries($cart, check_value('Reverse'));
 
 	$cart->clear_items();
 	new_doc_date($_POST['date_']);

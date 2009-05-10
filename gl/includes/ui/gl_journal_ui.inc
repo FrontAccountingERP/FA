@@ -26,16 +26,20 @@ function display_order_header(&$Order)
 	start_row();
     date_cells(_("Date:"), 'date_', '', $new);
 
-	if ($qes)
-		table_section(2, "20%");
-	else	
-		table_section(2, "50%");
-
+	table_section(2, $qes ? "20%" : "50%");
 	if ($new)
 		ref_cells(_("Reference:"), 'ref', '');
 	else
 		label_cells(_("Reference:"), $Order->reference);
 	end_row();
+
+
+ 	if ($new) {
+		table_section(3, "20%");
+ 		start_row();
+ 		check_cells(_("Reverse Transaction:"), 'Reverse', null);
+ 		end_row();
+ 	}
 
 	if ($qes !== false)
 	{
