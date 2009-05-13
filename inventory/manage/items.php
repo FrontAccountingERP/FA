@@ -162,16 +162,18 @@ if (isset($_POST['addupdate']))
 		
 		if (!$new_item) 
 		{ /*so its an existing one */
-
 			update_item($_POST['NewStockID'], $_POST['description'],
-				$_POST['long_description'], $_POST['category_id'], $_POST['tax_type_id'],
-				$_POST['sales_account'], $_POST['inventory_account'], $_POST['cogs_account'],
+				$_POST['long_description'], $_POST['category_id'], 
+				$_POST['tax_type_id'], get_post('units'),
+				get_post('mb_flag'), $_POST['sales_account'],
+				$_POST['inventory_account'], $_POST['cogs_account'],
 				$_POST['adjustment_account'], $_POST['assembly_account'], 
 				$_POST['dimension_id'], $_POST['dimension2_id']);
 			update_record_status($_POST['NewStockID'], $_POST['inactive'],
 				'stock_master', 'stock_id');
 			update_record_status($_POST['NewStockID'], $_POST['inactive'],
 				'item_codes', 'item_code');
+			set_focus('stock_id');
 			$Ajax->activate('stock_id'); // in case of status change
 			display_notification(_("Item has been updated."));
 		} 
@@ -186,66 +188,64 @@ if (isset($_POST['addupdate']))
 				$_POST['dimension_id'], $_POST['dimension2_id']);
 
 			display_notification(_("A new item has been added."));
-			$_POST['stock_id'] = $_POST['NewStockID'] = '';
+			$_POST['stock_id'] = $_POST['NewStockID'] = 
+			$_POST['description'] = $_POST['long_description'] = '';
+			set_focus('NewStockID');
 		}
-		set_focus('stock_id');
 		$Ajax->activate('_page_body');
 	}
 }
 
 //------------------------------------------------------------------------------------
 
-function can_delete($stock_id)
+function check_usage($stock_id, $dispmsg=true)
 {
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."stock_moves WHERE stock_id='$stock_id'";
-	$result = db_query($sql, "could not query stock moves");
-	$myrow = db_fetch_row($result);
-	if ($myrow[0] > 0) 
-{
-		display_error(_('Cannot delete this item because there are stock movements that refer to this item.'));
-		return false;
-	}
+	$sqls=  array(
+	"SELECT COUNT(*) FROM "
+		.TB_PREF."stock_moves WHERE stock_id='$stock_id'" =>
+	 _('Cannot delete this item because there are stock movements that refer to this item.'),
+	"SELECT COUNT(*) FROM "
+		.TB_PREF."bom WHERE component='$stock_id'"=>
+	 _('Cannot delete this item record because there are bills of material that require this part as a component.'),
+	"SELECT COUNT(*) FROM "
+		.TB_PREF."sales_order_details WHERE stk_code='$stock_id'" =>
+	 _('Cannot delete this item because there are existing purchase order items for it.'),
+	"SELECT COUNT(*) FROM "
+		.TB_PREF."purch_order_details WHERE item_code='$stock_id'"=>
+	 _('Cannot delete this item because there are existing purchase order items for it.')
+	);
 
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."bom WHERE component='$stock_id'";
-	$result = db_query($sql, "could not query boms");
-	$myrow = db_fetch_row($result);
-	if ($myrow[0] > 0) 
-	{
-		display_error(_('Cannot delete this item record because there are bills of material that require this part as a component.'));
-		return false;
-	}
+	$msg = '';
 
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."sales_order_details WHERE stk_code='$stock_id'";
-	$result = db_query($sql, "could not query sales orders");
-	$myrow = db_fetch_row($result);
-	if ($myrow[0] > 0) 
-	{
-		display_error(_('Cannot delete this item record because there are existing sales orders for this part.'));
-		return false;
-	}
-
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."purch_order_details WHERE item_code='$stock_id'";
-	$result = db_query($sql, "could not query purchase orders");
-	$myrow = db_fetch_row($result);
-	if ($myrow[0] > 0) 
-	{
-		display_error(_('Cannot delete this item because there are existing purchase order items for it.'));
-		return false;
-	}
-	$kits = get_where_used($stock_id);
-	$num_kits = db_num_rows($kits);
-	if ($num_kits) {
-		$msg = _("This item cannot be deleted because some code aliases 
-			or foreign codes was entered for it, or there are kits defined 
-			using this item as component")
-			.':<br>';
-
-		while($num_kits--) {
-			$kit = db_fetch($kits);
-			$msg .= "'".$kit[0]."'";
-			if ($num_kits) $msg .= ',';
+	foreach($sqls as $sql=>$err) {
+		$result = db_query($sql, "could not query stock usage");
+		$myrow = db_fetch_row($result);
+		if ($myrow[0] > 0) 
+		{
+			$msg = $err; break;
 		}
-		display_error($msg);
+	}
+
+	if ($msg == '') {	
+
+		$kits = get_where_used($stock_id);
+		$num_kits = db_num_rows($kits);
+		if ($num_kits) {
+			$msg = _("This item cannot be deleted because some code aliases 
+				or foreign codes was entered for it, or there are kits defined 
+				using this item as component")
+				.':<br>';
+
+			while($num_kits--) {
+				$kit = db_fetch($kits);
+				$msg .= "'".$kit[0]."'";
+				if ($num_kits) $msg .= ',';
+			}
+
+		}
+	}
+	if ($msg != '')	{
+		if($dispmsg) display_error($msg);
 		return false;
 	}
 	return true;
@@ -256,7 +256,7 @@ function can_delete($stock_id)
 if (isset($_POST['delete']) && strlen($_POST['delete']) > 1) 
 {
 
-	if (can_delete($_POST['NewStockID'])) {
+	if (check_usage($_POST['NewStockID'])) {
 
 		$stock_id = $_POST['NewStockID'];
 		delete_item($stock_id);
@@ -362,14 +362,14 @@ if ($new_item && (list_updated('category_id') || !isset($_POST['units']))) {
 	$_POST['dimension_id'] = $category_record["dflt_dim1"];
 	$_POST['dimension2_id'] = $category_record["dflt_dim2"];
 }
+$fresh_item = !isset($_POST['NewStockID']) || $new_item 
+	|| check_usage($_POST['stock_id'],false);
 
 item_tax_types_list_row(_("Item Tax Type:"), 'tax_type_id', null);
 
-stock_item_types_list_row(_("Item Type:"), 'mb_flag', null,
-	(!isset($_POST['NewStockID']) || $new_item));
+stock_item_types_list_row(_("Item Type:"), 'mb_flag', null, $fresh_item);
 
-stock_units_list_row(_('Units of Measure:'), 'units', null,
-	(!isset($_POST['NewStockID']) || $new_item));
+stock_units_list_row(_('Units of Measure:'), 'units', null, $fresh_item);
 
 $dim = get_company_pref('use_dimension');
 if ($dim >= 1)
