@@ -19,6 +19,19 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+
+13-May-2009 Janusz Dobrowolski
+# Excluding closed transactions from edition/voiding.
+$ /includes/db/audit_trail_db.inc  
+  /admin/void_transaction.php
+  /sales/inquiry/customer_inquiry.php
+  /gl/inquiry/journal_inquiry.php
+# Fixed error during category adding.
+$ /inventory/includes/db/items_category_db.inc
++ Units and item type is editable until item not used.
+$ /inventory/includes/db/items_db.inc
+  /inventory/manage/items.php
+
 11-May-2009 Joe Hunt
 ! Changed creating of fiscal year so gap is not allowed. Cannot close year if open years before.
 $ /admin/fiscalyers.php
