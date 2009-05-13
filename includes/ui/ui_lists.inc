@@ -602,7 +602,7 @@ $options = array(
 	'async' => false,
 	);
 
-	if ($showclosed)
+	if (!$showclosed)
 		$options['where'][] = "closed=0";
 	if($showtype)
 		$options['where'][] = "type_=$showtype";

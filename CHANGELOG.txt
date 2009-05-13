@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+13-May-2009 Joe Hunt
+# Bug in demensions_list. If dimensions are closed they shall NOT show up in the lists.
+$ /includes/ui/ui_lists.inc
+
 10-May-2009 Joe Hunt
 # Period presentation bug in tax report/inquiry
 $ /gl/inquiry/tax_inquiry.php
