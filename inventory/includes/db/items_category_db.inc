@@ -16,7 +16,7 @@ function add_item_category($description, $tax_type_id, $sales_account,
 	$sql = "INSERT INTO ".TB_PREF."stock_category (description, dflt_tax_type,
 			dflt_units, dflt_mb_flag, dflt_sales_act, dflt_cogs_act, 
 			dflt_inventory_act, dflt_adjustment_act, dflt_assembly_act, 
-			dflt_dim1, flt_dim2)
+			dflt_dim1, dflt_dim2)
 		VALUES ("
 		.db_escape($description).","
 		.db_escape($tax_type_id).","

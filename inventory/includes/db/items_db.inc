@@ -9,9 +9,10 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-function update_item($stock_id, $description, $long_description, $category_id, $tax_type_id,
-	$sales_account, $inventory_account, $cogs_account, $adjustment_account,
-	$assembly_account, $dimension_id, $dimension2_id)
+function update_item($stock_id, $description, $long_description, $category_id, 
+	$tax_type_id, $units='', $mb_flag='', $sales_account, $inventory_account, 
+	$cogs_account, 	$adjustment_account, $assembly_account, $dimension_id, 
+	$dimension2_id)
 {
 	$sql = "UPDATE ".TB_PREF."stock_master SET long_description=".db_escape($long_description).",
 		description=".db_escape($description).",
@@ -23,17 +24,25 @@ function update_item($stock_id, $description, $long_description, $category_id, $
 		assembly_account='$assembly_account',
 		dimension_id=$dimension_id,
 		dimension2_id=$dimension2_id,
-		tax_type_id=$tax_type_id
-		WHERE stock_id='$stock_id'";
+		tax_type_id=$tax_type_id";
+
+	if ($units != '')
+		$sql .= ", units=$units";
+
+	if ($mb_flag != '')
+		$sql .= ", mb_flag=$mb_flag";
+
+	$sql .= " WHERE stock_id='$stock_id'";
 
 	db_query($sql, "The item could not be updated");
 
 	update_item_code(-1, $stock_id, $stock_id, $description, $category_id, 1, 0);
 }
 
-function add_item($stock_id, $description, $long_description, $category_id, $tax_type_id, $units, $mb_flag,
-	$sales_account, $inventory_account, $cogs_account, $adjustment_account,
-	$assembly_account, $dimension_id, $dimension2_id)
+function add_item($stock_id, $description, $long_description, $category_id, 
+	$tax_type_id, $units, $mb_flag,	$sales_account, $inventory_account, 
+	$cogs_account, $adjustment_account,	$assembly_account, $dimension_id, 
+	$dimension2_id)
 {
 	$sql = "INSERT INTO ".TB_PREF."stock_master (stock_id, description, long_description, category_id,
 		tax_type_id, units, mb_flag, sales_account, inventory_account, cogs_account,
