@@ -27,10 +27,10 @@ function update_item($stock_id, $description, $long_description, $category_id,
 		tax_type_id=$tax_type_id";
 
 	if ($units != '')
-		$sql .= ", units=$units";
+		$sql .= ", units='$units'";
 
 	if ($mb_flag != '')
-		$sql .= ", mb_flag=$mb_flag";
+		$sql .= ", mb_flag='$mb_flag'";
 
 	$sql .= " WHERE stock_id='$stock_id'";
 
