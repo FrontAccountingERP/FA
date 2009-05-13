@@ -184,7 +184,7 @@ function edit_link($row)
    			$str = "/sales/customer_delivery.php?ModifyDelivery=".$row['trans_no'];
 		break;
 	}
-	if ($str != "")
+	if ($str != "" && !is_closed_trans($row['type'], $row["trans_no"]))
 		return pager_link(_('Edit'), $str, ICON_EDIT);
 	return '';	
 }
