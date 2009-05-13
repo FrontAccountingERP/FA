@@ -149,6 +149,12 @@ function voiding_controls()
 
 function check_valid_entries()
 {
+	if (is_closed_trans($_POST['filterType'],$_POST['trans_no']))
+	{
+		display_error(_("The selected transaction was closed for edition and cannot be voided."));
+		set_focus('trans_no');
+		return;
+	}
 	if (!is_date($_POST['date_']))
 	{
 		display_error(_("The entered date is invalid."));
@@ -178,7 +184,6 @@ function handle_void_transaction()
 {
 	if (check_valid_entries()==true) 
 	{
-
 		$void_entry = get_voided_entry($_POST['filterType'], $_POST['trans_no']);
 		if ($void_entry != null) 
 		{
