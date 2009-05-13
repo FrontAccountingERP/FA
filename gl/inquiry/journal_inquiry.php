@@ -105,7 +105,7 @@ function edit_link($row)
 {
 	global $editors;
 
-	return isset($editors[$row["type"]]) ? 
+	return isset($editors[$row["type"]]) && !is_closed_trans($row["type"]], $row["type_no"]) ? 
 		pager_link(_("Edit"), 
 			sprintf($editors[$row["type"]], $row["type_no"], $row["type"]),
 			ICON_EDIT) : '';
