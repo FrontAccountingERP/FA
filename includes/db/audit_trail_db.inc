@@ -120,5 +120,16 @@ function open_transactions($fromdate) {
 		}
 	}
 }
+/*
+	Closed transactions have gl_seq number assigned.
+*/
+function is_closed_trans($type, $trans_no) {
+	$sql = "SELECT	gl_seq  FROM ".TB_PREF."audit_trail"
+		. " WHERE type=$type AND trans_no=$trans_no AND gl_seq>0";
+
+	$res = db_query($sql, "Cannot check transaction");
+
+	return db_num_rows($res);
+}
 
 ?>
