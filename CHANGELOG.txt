@@ -19,6 +19,9 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+14-May-2009 Joe Hunt
++ Added user_id to Journal Inquiry
+$ /gl/inquiry/journal_inquiry.php
 
 13-May-2009 Janusz Dobrowolski
 # Excluding closed transactions from edition/voiding.

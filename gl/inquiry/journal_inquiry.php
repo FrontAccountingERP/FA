@@ -117,14 +117,17 @@ $sql = "SELECT	a.gl_seq,
 				gl.type_no,
 				refs.reference,
 				SUM(IF(gl.amount>0, gl.amount,0)) as amount,"
-				."com.memo_"
+				."com.memo_,"
+				."u.user_id"
 		." FROM ". TB_PREF."gl_trans as gl"
 		." LEFT JOIN ". TB_PREF."audit_trail as a ON 
 			(gl.type=a.type AND gl.type_no=a.trans_no)"
 		." LEFT JOIN ". TB_PREF."comments as com ON 
 			(gl.type=com.type AND gl.type_no=com.id)"
 		." LEFT JOIN ". TB_PREF."refs as refs ON 
-			(gl.type=refs.type AND gl.type_no=refs.id)
+			(gl.type=refs.type AND gl.type_no=refs.id)"
+		." LEFT JOIN ". TB_PREF."users as u ON 
+			a.user=u.id
 		WHERE gl.tran_date >= '" . date2sql($_POST['FromDate']) . "'
 	AND gl.tran_date <= '" . date2sql($_POST['ToDate']) . "'
 	AND gl.amount!=0 AND !ISNULL(a.gl_seq)";
@@ -149,6 +152,7 @@ $cols = array(
 	_("Reference"), 
 	_("Amount") => array('type'=>'amount'),
 	_("Memo"),
+	_("User"),
 	_("View") => array('insert'=>true, 'fun'=>'gl_link'),
 	array('insert'=>true, 'fun'=>'edit_link')
 );
