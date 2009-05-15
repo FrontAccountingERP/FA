@@ -175,7 +175,7 @@ function get_dimensions_trans_view_str($type, $trans_no, $label="", $icon=false,
 	$class='', $id='')
 {
 	if ($type == 40)
-		$viewer = "dimensions/view_dimension.php?trans_no=$trans_no";
+		$viewer = "dimensions/view/view_dimension.php?trans_no=$trans_no";
 	else
 		return null;
 

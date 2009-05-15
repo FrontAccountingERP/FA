@@ -20,7 +20,7 @@ page(_("Logout"), true, false, "", get_js_png_fix());
 
 <table width="100%" border="0">
   <tr>
-	<td align="center"><img src="<?php echo "$path_to_root/themes/default/images/logo_frontaccounting.png";?>" alt="FrontAccounting" width="250" height="50" onload="fixPNG(this)"></td>
+	<td align="center"><img src="<?php echo "$path_to_root/themes/default/images/logo_frontaccounting.png";?>" alt="FrontAccounting" width="250" height="50" onload="fixPNG(this)" /></td>
   </tr>
   <tr>
     <td>&nbsp;</td>
