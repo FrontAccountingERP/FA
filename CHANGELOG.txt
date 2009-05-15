@@ -22,6 +22,8 @@ $ -> Affected files
 15-May-2009 Joe Hunt
 # Bad link to view dimension
 $ /includes/ui/ui_view.inc
+! Improved layout.
+$ /purchasing/includes/ui/invoice_ud.inc
 
 14-May-2009 Joe Hunt
 + Added user_id to Journal Inquiry
