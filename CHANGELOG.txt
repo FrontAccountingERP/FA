@@ -19,6 +19,13 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+16-May-2009 Joe Hunt
+# [0000133] Removed buggy & obsolete hotkey support in pager_link()
+$ /includes/ui/db_pager_view.inc
+! Removed obsolete 'K' mb_flag checks.
+$ /includes/data_checks.inc
+  /includes/ui/ui_lists.inc
+
 13-May-2009 Joe Hunt
 # Bug in demensions_list. If dimensions are closed they shall NOT show up in the lists.
 $ /includes/ui/ui_lists.inc
