@@ -770,7 +770,7 @@ function base_stock_items_list($where, $name, $selected_id=null,
 function stock_bom_items_list($name, $selected_id=null, $all_option=false, $submit_on_change=false)
 {
 
-	return base_stock_items_list("(s.mb_flag='M' OR s.mb_flag='K')",
+	return base_stock_items_list("s.mb_flag='M'",
 		$name, $selected_id, $all_option, $submit_on_change);
 }
 /*

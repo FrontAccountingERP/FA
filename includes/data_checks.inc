@@ -267,7 +267,7 @@ function check_db_has_stock_items($msg)
 
 function db_has_bom_stock_items()
 {
-	return check_empty_result("SELECT COUNT(*) FROM ".TB_PREF."stock_master WHERE (mb_flag='M' OR mb_flag='K')");
+	return check_empty_result("SELECT COUNT(*) FROM ".TB_PREF."stock_master WHERE mb_flag='M'");
 }
 
 function check_db_has_bom_stock_items($msg)
@@ -299,7 +299,7 @@ function check_db_has_manufacturable_items($msg)
 
 function db_has_purchasable_items()
 {
-	return check_empty_result("SELECT COUNT(*) FROM ".TB_PREF."stock_master WHERE (mb_flag!='M' AND mb_flag!='K')");
+	return check_empty_result("SELECT COUNT(*) FROM ".TB_PREF."stock_master WHERE mb_flag!='M'");
 }
 
 function check_db_has_purchasable_items($msg)
@@ -315,7 +315,7 @@ function check_db_has_purchasable_items($msg)
 
 function db_has_costable_items()
 {
-	return check_empty_result("SELECT COUNT(*) FROM ".TB_PREF."stock_master WHERE (mb_flag!='D' AND mb_flag!='K')");
+	return check_empty_result("SELECT COUNT(*) FROM ".TB_PREF."stock_master WHERE mb_flag!='D'");
 }
 
 function check_db_has_costable_items($msg)
