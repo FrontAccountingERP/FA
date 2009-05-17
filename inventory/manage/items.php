@@ -39,6 +39,9 @@ if (list_updated('stock_id')) {
 	$Ajax->activate('details');
 	$Ajax->activate('controls');
 }
+if (list_updated('category_id') || list_updated('mb_flag')) {
+	$Ajax->activate('details');
+}
 $upload_file = "";
 if (isset($_FILES['pic']) && $_FILES['pic']['name'] != '') 
 {
@@ -297,7 +300,7 @@ if ($new_item)
 	$company_record = get_company_prefs();
 
     if (!isset($_POST['inventory_account']) || $_POST['inventory_account'] == "")
-    	$_POST['inventory_account'] = $company_record["default_inventory_act"];
+   		$_POST['inventory_account'] = $company_record["default_inventory_act"];
 
     if (!isset($_POST['cogs_account']) || $_POST['cogs_account'] == "")
     	$_POST['cogs_account'] = $company_record["default_cogs_act"];
@@ -311,6 +314,8 @@ if ($new_item)
 	if (!isset($_POST['assembly_account']) || $_POST['assembly_account'] == "")
 		$_POST['assembly_account'] = $company_record["default_assembly_act"];
 
+	if (list_updated('mb_flag') && is_service($_POST['mb_flag']))
+		$_POST['inventory_account'] = $company_record["default_cogs_act"];
 } 
 else 
 { // Must be modifying an existing item
@@ -372,15 +377,15 @@ table_section_title(_("GL Accounts"));
 
 gl_all_accounts_list_row(_("Sales Account:"), 'sales_account', $_POST['sales_account']);
 
-gl_all_accounts_list_row(_("Inventory Account:"), 'inventory_account', $_POST['inventory_account']);
-
 if (!is_service($_POST['mb_flag'])) 
 {
+	gl_all_accounts_list_row(_("Inventory Account:"), 'inventory_account', $_POST['inventory_account']);
 	gl_all_accounts_list_row(_("C.O.G.S. Account:"), 'cogs_account', $_POST['cogs_account']);
 	gl_all_accounts_list_row(_("Inventory Adjustments Account:"), 'adjustment_account', $_POST['adjustment_account']);
 }
 else 
 {
+	gl_all_accounts_list_row(_("C.O.G.S. Account:"), 'inventory_account', $_POST['inventory_account']);
 	hidden('cogs_account', $_POST['cogs_account']);
 	hidden('adjustment_account', $_POST['adjustment_account']);
 }
