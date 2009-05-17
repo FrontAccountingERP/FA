@@ -168,7 +168,8 @@ if (isset($_POST['addupdate']))
 				get_post('mb_flag'), $_POST['sales_account'],
 				$_POST['inventory_account'], $_POST['cogs_account'],
 				$_POST['adjustment_account'], $_POST['assembly_account'], 
-				$_POST['dimension_id'], $_POST['dimension2_id']);
+				$_POST['dimension_id'], $_POST['dimension2_id'],
+				check_value('no_sale'));
 			update_record_status($_POST['NewStockID'], $_POST['inactive'],
 				'stock_master', 'stock_id');
 			update_record_status($_POST['NewStockID'], $_POST['inactive'],
@@ -185,7 +186,8 @@ if (isset($_POST['addupdate']))
 				$_POST['units'], $_POST['mb_flag'], $_POST['sales_account'],
 				$_POST['inventory_account'], $_POST['cogs_account'],
 				$_POST['adjustment_account'], $_POST['assembly_account'], 
-				$_POST['dimension_id'], $_POST['dimension2_id']);
+				$_POST['dimension_id'], $_POST['dimension2_id'],
+				check_value('no_sale'));
 
 			display_notification(_("A new item has been added."));
 			$_POST['stock_id'] = $_POST['NewStockID'] = 
@@ -334,6 +336,7 @@ else
 		$_POST['assembly_account']	= $myrow['assembly_account'];
 		$_POST['dimension_id']	= $myrow['dimension_id'];
 		$_POST['dimension2_id']	= $myrow['dimension2_id'];
+		$_POST['no_sale']	= $myrow['no_sale'];
 		$_POST['del_image'] = 0;	
 	 	$_POST['inactive'] = $myrow["inactive"];
 		label_row(_("Item Code:"),$_POST['NewStockID']);
@@ -361,6 +364,7 @@ if ($new_item && (list_updated('category_id') || !isset($_POST['units']))) {
 	$_POST['assembly_account'] = $category_record["dflt_assembly_act"];
 	$_POST['dimension_id'] = $category_record["dflt_dim1"];
 	$_POST['dimension2_id'] = $category_record["dflt_dim2"];
+	$_POST['no_sale'] = $category_record["dflt_no_sale"];
 }
 $fresh_item = !isset($_POST['NewStockID']) || $new_item 
 	|| check_usage($_POST['stock_id'],false);
@@ -410,7 +414,7 @@ if (is_manufactured($_POST['mb_flag']))
 else
 	hidden('assembly_account', $_POST['assembly_account']);
 
-table_section_title(_("Picture"));
+table_section_title(_("Other"));
 
 // Add image upload for New Item  - by Joe
 label_row(_("Image File (.jpg)") . ":", "<input type='file' id='pic' name='pic'>");
@@ -435,6 +439,8 @@ label_row("&nbsp;", $stock_img_link);
 if ($check_remove_image)
 	check_row(_("Delete Image:"), 'del_image', $_POST['del_image']);
 	
+check_row(_("Exclude from sales:"), 'no_sale', $_POST['no_sale']);
+
 record_status_list_row(_("Item status:"), 'inactive');
 end_outer_table(1);
 div_end();

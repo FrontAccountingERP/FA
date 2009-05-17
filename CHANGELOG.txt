@@ -19,11 +19,21 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+17-May-2009 Janusz Dobrowolski
++ Added excluding item/category from sales.
+$ /includes/ui/ui_lists.inc
+  /inventory/includes/db/items_category_db.inc
+  /inventory/includes/db/items_db.inc
+  /inventory/manage/item_categories.php
+  /inventory/manage/items.php
+  /sql/alter2.2.sql
+  /sql/alter2.2.php
+
 15-May-2009 Joe Hunt
 # Bad link to view dimension
 $ /includes/ui/ui_view.inc
 ! Improved layout.
-$ /purchasing/includes/ui/invoice_ud.inc
+$ /purchasing/includes/ui/invoice_ui.inc
 
 14-May-2009 Joe Hunt
 + Added user_id to Journal Inquiry

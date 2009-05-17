@@ -28,6 +28,7 @@ ALTER TABLE `0_stock_category` ADD COLUMN `dflt_adjustment_act` varchar(11) NOT 
 ALTER TABLE `0_stock_category` ADD COLUMN `dflt_assembly_act` varchar(11) NOT NULL default '';
 ALTER TABLE `0_stock_category` ADD COLUMN `dflt_dim1` int(11) default NULL;
 ALTER TABLE `0_stock_category` ADD COLUMN `dflt_dim2` int(11) default NULL;
+ALTER TABLE `0_stock_category` ADD COLUMN `dflt_no_sale` tinyint(1) NOT NULL default '0';
 
 ALTER TABLE `0_users` ADD COLUMN `sticky_doc_date` TINYINT(1) DEFAULT '0';
 
@@ -66,3 +67,4 @@ CREATE TABLE `0_audit_trail` (
   KEY (`fiscal_year`, `gl_seq`)
 ) TYPE=InnoDB  ;
 
+ALTER TABLE `0_stock_master` ADD COLUMN  `no_sale` tinyint(1) NOT NULL default '0';

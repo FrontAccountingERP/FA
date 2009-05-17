@@ -42,8 +42,8 @@ class fa2_2 {
 			if ($info[1])
 				$sql .= " WHERE {$info[1]}=$typeno";
 			$result = db_query($sql);
-			if(db_num_rows($result)) {
-				while($row = db_fetch($result)) {
+			if (db_num_rows($result)) {
+				while ($row = db_fetch($result)) {
 					$res2 = db_query("INSERT INTO {$pref}refs VALUES("
 						. $row['id'].",".$typeno.",'".$row['ref']."')");
 					if (!$res2) {
@@ -54,14 +54,33 @@ class fa2_2 {
 				}
 			}
 		}
-/*	FIX
-		// add audit_trail data for all transactions
-		$datatbl = array ("gl_trans", "purch_orders", "sales_orders",
-			"workorders");
-		$sql = "INSERT INTO ".$pref."audit_trail"
-		." (type, trans_no, user, fiscal_year, gl_date) VALUES ("
-		. "$type,$trans_no,$user,$year,$date)";
-*/
+/* FIX		// restore/init audit_trail data 
+		$datatbl = array (
+			"gl_trans"=> array("type", "type_no","tran_date"),
+			"purch_orders" => array("order_no", "'18'", "ord_date"), 
+			"sales_orders" => array("order_no", "'30'", "ord_date"),
+			"workorders" => array("id", "'26'", "date_") );
+		foreach ( $datatbl as $tblname => $tbl) {
+		  $sql = "SELECT {$tbl[0]} as type, {$tbl[1]} as trans, {$tbl[2]} as dat"
+		  	. " FROM {$pref}{$tblname}";
+		  $result = db_query($sql);
+		  if (db_num_rows($result)) {
+		  	$user = ;
+			$year = ;
+			while ($row = db_fetch($result)) {
+				$sql2 = "INSERT INTO ".$pref."audit_trail"
+				." (type, trans_no, user, fiscal_year, gl_date, gl_seq) VALUES ("
+				. "{$row['type']},{$row['trans']},$user,$year,{$row['dat']},0)";
+				$res2 = db_query($sql2);
+				if (!$res2) {
+					display_error(_("Cannot init audit_trail data")
+						.':<br>'. db_error_msg($db));
+					return false;
+				}
+			}
+		  }
+		}
+*/		
 		return true;
 	}
 	//
@@ -79,6 +98,7 @@ class fa2_2 {
 		if (check_table($pref, 'stock_category', 'dflt_dim2')) return false;
 		if (check_table($pref, 'users', 'sticky_doc_date')) return false;
 		if (check_table($pref, 'audit_trail')) return false;
+		if (check_table($pref, 'stock_master','no_sale')) return false;
 			return true;
 	}
 };

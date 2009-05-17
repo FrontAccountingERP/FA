@@ -710,17 +710,20 @@ function sales_items_list($name, $selected_id=null, $all_option=false,
 	$sql = "SELECT i.item_code, i.description, c.description, count(*)>1 as kit,
 			 i.inactive
 			FROM
+			".TB_PREF."stock_master s,
 			".TB_PREF."item_codes i
 			LEFT JOIN
 			".TB_PREF."stock_category c
-			ON i.category_id=c.category_id";
+			ON i.category_id=c.category_id
+			WHERE i.stock_id=s.stock_id";
 
+	
 	if ($type == 'local')	{ // exclude foreign codes
-		$sql .=	" WHERE !i.is_foreign"; 
+		$sql .=	" AND !i.is_foreign"; 
 	} elseif ($type == 'kits') { // sales kits
-		$sql .=	" WHERE !i.is_foreign AND i.item_code!=i.stock_id";
+		$sql .=	" AND !i.is_foreign AND i.item_code!=i.stock_id";
 	}
-	$sql .= " AND !i.inactive";
+	$sql .= " AND !i.inactive AND !s.inactive AND !s.no_sale";
 	$sql .= " GROUP BY i.item_code";
 
 	return combo_input($name, $selected_id, $sql, 'i.item_code', 'c.description',

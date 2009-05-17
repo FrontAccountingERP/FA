@@ -12,7 +12,7 @@
 function update_item($stock_id, $description, $long_description, $category_id, 
 	$tax_type_id, $units='', $mb_flag='', $sales_account, $inventory_account, 
 	$cogs_account, 	$adjustment_account, $assembly_account, $dimension_id, 
-	$dimension2_id)
+	$dimension2_id, $no_sale)
 {
 	$sql = "UPDATE ".TB_PREF."stock_master SET long_description=".db_escape($long_description).",
 		description=".db_escape($description).",
@@ -24,7 +24,8 @@ function update_item($stock_id, $description, $long_description, $category_id,
 		assembly_account='$assembly_account',
 		dimension_id=$dimension_id,
 		dimension2_id=$dimension2_id,
-		tax_type_id=$tax_type_id";
+		tax_type_id=$tax_type_id,
+		no_sale='$no_sale'";
 
 	if ($units != '')
 		$sql .= ", units='$units'";
@@ -42,15 +43,16 @@ function update_item($stock_id, $description, $long_description, $category_id,
 function add_item($stock_id, $description, $long_description, $category_id, 
 	$tax_type_id, $units, $mb_flag,	$sales_account, $inventory_account, 
 	$cogs_account, $adjustment_account,	$assembly_account, $dimension_id, 
-	$dimension2_id)
+	$dimension2_id, $no_sale)
 {
 	$sql = "INSERT INTO ".TB_PREF."stock_master (stock_id, description, long_description, category_id,
 		tax_type_id, units, mb_flag, sales_account, inventory_account, cogs_account,
-		adjustment_account, assembly_account, dimension_id, dimension2_id)
+		adjustment_account, assembly_account, dimension_id, dimension2_id, no_sale)
 		VALUES (".db_escape($stock_id).", ".db_escape($description).", ".db_escape($long_description).",
 		'$category_id', $tax_type_id, '$units', '$mb_flag',
 		'$sales_account', '$inventory_account', '$cogs_account',
-		'$adjustment_account', '$assembly_account', $dimension_id, $dimension2_id)";
+		'$adjustment_account', '$assembly_account', $dimension_id, $dimension2_id,
+		'$no_sale')";
 
 	db_query($sql, "The item could not be added");
 
