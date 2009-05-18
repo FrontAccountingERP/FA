@@ -86,7 +86,7 @@ function getDemandAsmQty($stockid, $location)
 	$sql .= TB_PREF."sales_order_details.quantity-".TB_PREF."sales_order_details.qty_sent > 0 AND
 				   ".TB_PREF."bom.component='$stockid' AND
 				   ".TB_PREF."stock_master.stock_id=".TB_PREF."bom.parent AND
-				   ".TB_PREF."stock_master.mb_flag='A'";
+				   (".TB_PREF."stock_master.mb_flag='M' OR ".TB_PREF."stock_master.mb_flag='A')";
 
     $TransResult = db_query($sql,"No transactions were returned");
 	if (db_num_rows($TransResult)==1)

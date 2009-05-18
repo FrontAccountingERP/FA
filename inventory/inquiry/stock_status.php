@@ -98,6 +98,26 @@ while ($myrow = db_fetch($loc_details))
 	  $demand_qty =0;
 	}
 
+	$sql = "SELECT SUM((".TB_PREF."sales_order_details.quantity-".TB_PREF."sales_order_details.qty_sent)*".TB_PREF."bom.quantity)
+				   AS DemAsm
+				   FROM ".TB_PREF."sales_order_details,
+						".TB_PREF."sales_orders,
+						".TB_PREF."bom,
+						".TB_PREF."stock_master
+				   WHERE ".TB_PREF."sales_order_details.stk_code=".TB_PREF."bom.parent 
+				   		AND ".TB_PREF."sales_orders.order_no = ".TB_PREF."sales_order_details.order_no 
+				   		AND ".TB_PREF."sales_orders.from_stk_loc ='" . $myrow["loc_code"] . "' 
+				   		AND ".TB_PREF."sales_order_details.quantity-".TB_PREF."sales_order_details.qty_sent > 0 
+				   		AND ".TB_PREF."bom.component='" . $_POST['stock_id'] . "' 
+				   		AND ".TB_PREF."stock_master.stock_id=".TB_PREF."bom.parent 
+				   		AND (".TB_PREF."stock_master.mb_flag='M' OR ".TB_PREF."stock_master.mb_flag='A')";
+
+    $result = db_query($sql,"No transactions were returned");
+	if (db_num_rows($result)==1)
+	{
+		$demand_row = db_fetch_row($result);
+		$demand_qty += $demand_row[0];
+	}
 
 	$qoh = get_qoh_on_date($_POST['stock_id'], $myrow["loc_code"]);
 
@@ -118,7 +138,18 @@ while ($myrow = db_fetch($loc_details))
 		{
 			$qoo = 0;
 		}
-
+		$sql = "SELECT Sum(".TB_PREF."workorders.units_reqd * ".TB_PREF."wo_requirements.units_req) AS qoo
+			FROM ".TB_PREF."wo_requirements INNER JOIN ".TB_PREF."workorders 
+				ON ".TB_PREF."wo_requirements.workorder_id=".TB_PREF."workorders.id
+			WHERE ".TB_PREF."wo_requirements.loc_code='" . $myrow["loc_code"] . "'
+				AND ".TB_PREF."wo_requirements.stock_id='" . $_POST['stock_id'] . "'
+				AND ".TB_PREF."workorders.closed=0";
+		$qoo_result = db_query($sql,"could not receive quantity on order for item");
+		if (db_num_rows($qoo_result) == 1)
+		{
+    		$qoo_row = db_fetch_row($qoo_result);
+    		$qoo +=  $qoo_row[0];
+		}
 		label_cell($myrow["location_name"]);
 		qty_cell($qoh, false, $dec);
         qty_cell($myrow["reorder_level"], false, $dec);

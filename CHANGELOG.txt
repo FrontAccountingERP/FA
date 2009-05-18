@@ -22,6 +22,13 @@ $ -> Affected files
 18-May-2009 Joe Hunt
 ! Reinserted the link to GL in Work Order Inquiry.
 $ /manufacturing/search_work_orders.php
+# Added non closed work order requirements on On Order in Inventory Items Status
+$ /inventory/inquiry/stock_status.php
+! Added mb_flag 'M' in demand checks
+$ /sales/includes/db/sales_order_db.inc
+  /reporting/rep302.php
+  /reporting/rep303.php
+  
 
 17-May-2009 Joe Hunt
 ! Changed service items to use cogs account instead of inventory account.
