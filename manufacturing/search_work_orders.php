@@ -136,6 +136,13 @@ function costs_link($row)
 			.payment_person_types::WorkOrder(). "&PayPerson=" .$row["id"]);
 }
 
+function view_gl_link($row)
+{
+	if ($row['closed'] == 0)
+		return '';
+	return get_gl_view_str(systypes::work_order(), $row['id']);
+}
+
 function dec_amount($row, $amount)
 {
 	return number_format2($amount, $row['decimals']);
@@ -204,7 +211,8 @@ $cols = array(
 	array('insert'=>true, 'fun'=> 'edit_link'),
 	array('insert'=>true, 'fun'=> 'release_link'),
 	array('insert'=>true, 'fun'=> 'produce_link'),
-	array('insert'=>true, 'fun'=> 'costs_link')
+	array('insert'=>true, 'fun'=> 'costs_link'),
+	array('insert'=>true, 'fun'=> 'view_gl_link')
 );
 
 $table =& new_db_pager('orders_tbl', $sql, $cols);
