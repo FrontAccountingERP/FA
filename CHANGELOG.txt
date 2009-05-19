@@ -20,6 +20,8 @@ Legend:
 $ -> Affected files
 
 18-May-2009 Joe Hunt
+# html header shown in backup downloads.
+$ /admin/backups.php
 ! Reinserted the link to GL in Work Order Inquiry.
 $ /manufacturing/search_work_orders.php
 # Added non closed work order requirements on On Order in Inventory Items Status

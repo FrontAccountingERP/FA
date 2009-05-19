@@ -16,6 +16,24 @@ include_once($path_to_root . "/includes/session.inc");
 include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/admin/db/maintenance_db.inc");
 
+if (get_post('view')) {
+	$filename = BACKUP_PATH . get_post('cmb_backups');
+	if (in_ajax()) 
+		$Ajax->popup( $filename );
+	else {
+	    header('Content-type: application/octet-stream');
+    	header('Content-Length: '.filesize($filename));
+		header("Content-Disposition: inline; filename=$filename");
+    	readfile($filename);
+		exit();
+	}
+};
+
+if (get_post('download')) {
+	download_file(BACKUP_PATH . get_post('cmb_backups'));
+	exit;
+}
+
 page(_("Backup and Restore Database"), false, false, '', '');
 
 check_paths();
@@ -114,24 +132,6 @@ if (get_post('creat')) {
 if (get_post('restore')) {
 	if (db_import(BACKUP_PATH . get_post('cmb_backups'), $conn))
 		display_notification(_("Restore backup completed."));
-}
-
-if (get_post('view')) {
-	$filename = BACKUP_PATH . get_post('cmb_backups');
-	if (in_ajax()) 
-		$Ajax->popup( $filename );
-	else {
-	    header('Content-type: application/octet-stream');
-    	header('Content-Length: '.filesize($filename));
-		header("Content-Disposition: inline; filename=$filename");
-    	readfile($filename);
-		exit();
-	}
-};
-
-if (get_post('download')) {
-	download_file(BACKUP_PATH . get_post('cmb_backups'));
-	exit;
 }
 
 if (get_post('delete')) {
