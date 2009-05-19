@@ -93,24 +93,6 @@ class language
 	}
 
 }
-/*
-	Test if named function is defined in locale.inc file.
-*/
-function has_locale($fun=null)
-{
-	global $path_to_root;
-	
-	if ($_SESSION['language']->is_locale_file)
-	{
-		global $path_to_root;
-		include_once($path_to_root . "/lang/" . 
-			$_SESSION['language']->code . "/locale.inc");
-
-		if (!isset($fun) || function_exists($fun))
-			return true;
-	}
-	return false;
-}
 
 function _set($key,$value) 
 {
