@@ -54,7 +54,7 @@ CREATE TABLE `0_audit_trail` (
   `type` smallint(6) unsigned NOT NULL default '0',
   `trans_no` int(11) unsigned NOT NULL default '0',
   `user` smallint(6) unsigned NOT NULL default '0',
-  `stamp` timestamp NOT NULL default CURRENT_TIMESTAMP,
+  `stamp` timestamp NOT NULL,
   `description` varchar(60) default NULL,
   `fiscal_year` int(11) NOT NULL,
   `gl_date` date NOT NULL default '0000-00-00',
@@ -400,6 +400,7 @@ CREATE TABLE `0_currencies` (
   `curr_symbol` varchar(10) NOT NULL default '',
   `country` varchar(100) NOT NULL default '',
   `hundreds_name` varchar(15) NOT NULL default '',
+  `auto_update` tinyint(1) NOT NULL default '1',
   `inactive` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`curr_abrev`)
 ) TYPE=MyISAM  ;
@@ -407,9 +408,9 @@ CREATE TABLE `0_currencies` (
 
 ### Data of table `0_currencies` ###
 
-INSERT INTO `0_currencies` VALUES ('Euro', 'EUR', '?', 'Europe', 'Cents', '0');
-INSERT INTO `0_currencies` VALUES ('Pounds', 'GBP', '?', 'England', 'Pence', '0');
-INSERT INTO `0_currencies` VALUES ('US Dollars', 'USD', '$', 'United States', 'Cents', '0');
+INSERT INTO `0_currencies` VALUES ('Euro', 'EUR', '?', 'Europe', 'Cents', '1', '0');
+INSERT INTO `0_currencies` VALUES ('Pounds', 'GBP', '?', 'England', 'Pence', '1', '0');
+INSERT INTO `0_currencies` VALUES ('US Dollars', 'USD', '$', 'United States', 'Cents', '1', '0');
 
 
 ### Structure of table `0_cust_allocations` ###

@@ -11,20 +11,26 @@
 ***********************************************************************/
 //---------------------------------------------------------------------------------------------
 
-function update_currency($curr_abrev, $symbol, $currency, $country, $hundreds_name)
+function update_currency($curr_abrev, $symbol, $currency, $country, 
+	$hundreds_name, $auto_update)
 {
 	$sql = "UPDATE ".TB_PREF."currencies SET currency=".db_escape($currency).", curr_symbol='$symbol',
-		country=".db_escape($country).", hundreds_name=".db_escape($hundreds_name)." WHERE curr_abrev = '$curr_abrev'";
+		country=".db_escape($country).", hundreds_name=".db_escape($hundreds_name)
+		.",auto_update = '$auto_update'"." WHERE curr_abrev = '$curr_abrev'";
 
 	db_query($sql, "could not update currency for $curr_abrev");
 }
 
 //---------------------------------------------------------------------------------------------
 
-function add_currency($curr_abrev, $symbol, $currency, $country, $hundreds_name)
+function add_currency($curr_abrev, $symbol, $currency, $country, 
+	$hundreds_name, $auto_update)
 {
-	$sql = "INSERT INTO ".TB_PREF."currencies (curr_abrev, curr_symbol, currency, country, hundreds_name)
-		VALUES (".db_escape($curr_abrev).", '$symbol', ".db_escape($currency).", ".db_escape($country).", ".db_escape($hundreds_name).")";
+	$sql = "INSERT INTO ".TB_PREF."currencies (curr_abrev, curr_symbol, currency, country, 
+		hundreds_name, auto_update)
+		VALUES (".db_escape($curr_abrev).", '$symbol', ".db_escape($currency)
+		.", ".db_escape($country).", ".db_escape($hundreds_name)
+		.",".db_escape($auto_update).")";
 
 	db_query($sql, "could not add currency for $curr_abrev");
 }

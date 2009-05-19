@@ -65,14 +65,14 @@ function handle_submit()
 	{
 
 		update_currency($_POST['Abbreviation'], $_POST['Symbol'], $_POST['CurrencyName'], 
-			$_POST['country'], $_POST['hundreds_name']);
+			$_POST['country'], $_POST['hundreds_name'], check_value('auto_update'));
 		display_notification(_('Selected currency settings has been updated'));
 	} 
 	else 
 	{
 
 		add_currency($_POST['Abbreviation'], $_POST['Symbol'], $_POST['CurrencyName'], 
-			$_POST['country'], $_POST['hundreds_name']);
+			$_POST['country'], $_POST['hundreds_name'], check_value('auto_update'));
 		display_notification(_('New currency has been added'));
 	}	
 	$Mode = 'RESET';
@@ -151,7 +151,7 @@ function display_currencies()
     $result = get_currencies(check_value('show_inactive'));
     start_table($table_style);
     $th = array(_("Abbreviation"), _("Symbol"), _("Currency Name"),
-    	_("Hundredths name"), _("Country"), "", "");
+    	_("Hundredths name"), _("Country"), _("Auto update"), "", "");
 	inactive_control_column($th);
     table_header($th);	
     
@@ -172,6 +172,8 @@ function display_currencies()
 		label_cell($myrow["currency"]);
 		label_cell($myrow["hundreds_name"]);
 		label_cell($myrow["country"]);
+		label_cell(	$myrow[1] == $company_currency ? '-' : 
+			($myrow["auto_update"] ? _('Yes') :_('No')), "align='center'");
 		inactive_control_cell($myrow["curr_abrev"], $myrow["inactive"], 'currencies', 'curr_abrev');
  		edit_button_cell("Edit".$myrow["curr_abrev"], _("Edit"));
 		if ($myrow["curr_abrev"] != $company_currency)
@@ -206,6 +208,7 @@ function display_currency_edit($selected_id)
 			$_POST['CurrencyName']  = $myrow["currency"];
 			$_POST['country']  = $myrow["country"];
 			$_POST['hundreds_name']  = $myrow["hundreds_name"];
+			$_POST['auto_update']  = $myrow["auto_update"];
 		}
 		hidden('Abbreviation');
 		hidden('selected_id', $selected_id);
@@ -213,14 +216,15 @@ function display_currency_edit($selected_id)
 	} 
 	else 
 	{ 
-		text_row_ex(_("Currency Abbreviation:"), 'Abbreviation', 4, 3);		
+		$_POST['auto_update']  = 1;
+		text_row_ex(_("Currency Abbreviation:"), 'Abbreviation', 4, 3);
 	}
 
 	text_row_ex(_("Currency Symbol:"), 'Symbol', 10);
 	text_row_ex(_("Currency Name:"), 'CurrencyName', 20);
 	text_row_ex(_("Hundredths Name:"), 'hundreds_name', 15);	
 	text_row_ex(_("Country:"), 'country', 40);	
-
+	check_row(_("Automatic exchange rate update:"), 'auto_update', get_post('auto_update'));
 	end_table(1);
 
 	submit_add_or_update_center($selected_id == '', '', 'both');

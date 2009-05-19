@@ -67,4 +67,5 @@ CREATE TABLE `0_audit_trail` (
   KEY (`fiscal_year`, `gl_seq`)
 ) TYPE=InnoDB  ;
 
-ALTER TABLE `0_stock_master` ADD COLUMN  `no_sale` tinyint(1) NOT NULL default '0';
+ALTER TABLE `0_stock_master` ADD COLUMN `no_sale` tinyint(1) NOT NULL default '0';
+ALTER TABLE `0_currencies` ADD COLUMN `auto_update` tinyint(1) NOT NULL default '1';

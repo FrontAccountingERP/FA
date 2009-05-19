@@ -257,9 +257,12 @@ function exchange_rate_display($from_currency, $to_currency, $date_, $edit_rate=
 		if ($date_ == Today()) {
 			$rate = get_date_exchange_rate($currency, $date_);
 			if (!$rate) {
-				$rate = get_ecb_rate($currency);
-				if ($rate) 
-					add_exchange_rate($currency, $date_, $rate, $rate);
+				$row = get_currency($currency);
+				if ($row['auto_update']) {
+					$rate = retrieve_exrate($currency, $date_);
+					if ($rate) 
+						add_exchange_rate($currency, $date_, $rate, $rate);
+				}
 			}
 		}
 		if (!$rate)
