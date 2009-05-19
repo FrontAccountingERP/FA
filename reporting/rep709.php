@@ -193,15 +193,9 @@ function print_tax_report()
 	$rep->Font();
 	$rep->NewLine();
 
-	$locale = $path_to_root . "/lang/" . $_SESSION['language']->code . "/locale.inc";
-	if (file_exists($locale))
+	if (method_exists($Hooks, 'TaxFunction'))
 	{
-		$taxinclude = true;
-		include($locale);
-		
-//		if (function_exists("TaxFunction"))
-//			TaxFunction();
-		
+		$Hooks->TaxFunction();
 	}
 
 	$rep->End();
