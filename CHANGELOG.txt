@@ -19,6 +19,23 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+19-May-2009 Janusz Dobrowolski
++ Automatic update currency option added.
+$ /gl/includes/db/gl_db_currencies.inc
+  /includes/ui/ui_view.inc
+  /gl/manage/currencies.php
+  /sql/alter2.2.sql
+  /sql/en_US-demo.sql
+  /sql/en_US-new.sql
++ Added hook support for localized functions
+$ /gl/includes/db/gl_db_rates.inc
+  /gl/manage/exchange_rates.php
+  /includes/session.inc
+! Fixed hook for optional TaxFunction
+$ /reporting/rep709.php
+! Removed obsolete has_locale helper.
+$ /includes/lang/language.php
+
 17-May-2009 Janusz Dobrowolski
 + Added excluding item/category from sales.
 $ /includes/ui/ui_lists.inc
