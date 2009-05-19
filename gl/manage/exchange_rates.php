@@ -128,7 +128,8 @@ function display_rate_edit()
 	}
 	if (isset($_POST['get_rate']))
 	{
-		$_POST['BuyRate'] = exrate_format(get_ecb_rate($_POST['curr_abrev']));
+		$_POST['BuyRate'] = 
+			exrate_format(retrieve_exrate($_POST['curr_abrev'], $_POST['date_']));
 		$Ajax->activate('BuyRate');
 	}
 	small_amount_row(_("Exchange Rate:"), 'BuyRate', null, '',

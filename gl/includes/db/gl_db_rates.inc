@@ -69,7 +69,19 @@ function delete_exchange_rate($rate_id)
 	db_query($sql, "could not delete exchange rate $rate_id");		
 }
 
-//---------------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+//	Retrieve exchange rate as of date $date from external source (usually inet)
+//
+function retrieve_exrate($curr_b, $date)
+{
+	global $Hooks;
+
+	if (method_exists($Hooks, 'retrieve_exrate'))
+		return $Hooks->retrieve_exrate($curr_b, $date);
+	else
+		return get_ecb_rate($curr_b);
+}
+//-----------------------------------------------------------------------------
 
 function get_ecb_rate($curr_b) 
 {
