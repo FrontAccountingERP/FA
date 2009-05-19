@@ -23,6 +23,7 @@ include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
 include_once($path_to_root . "/gl/includes/gl_db.inc");
 include_once($path_to_root . "/inventory/includes/inventory_db.inc");
+include_once($path_to_root . "/includes/db/manufacturing_db.inc");
 
 //----------------------------------------------------------------------------------------------------
 
@@ -54,50 +55,6 @@ function getTransactions($category, $location)
 		".TB_PREF."stock_master.stock_id";
 
     return db_query($sql,"No transactions were returned");
-}
-
-function getDemandQty($stockid, $location)
-{
-	$sql = "SELECT SUM(".TB_PREF."sales_order_details.quantity - ".TB_PREF."sales_order_details.qty_sent) AS QtyDemand
-				FROM ".TB_PREF."sales_order_details,
-					".TB_PREF."sales_orders
-				WHERE ".TB_PREF."sales_order_details.order_no=".TB_PREF."sales_orders.order_no AND ";
-	if ($location != "")
-		$sql .= TB_PREF."sales_orders.from_stk_loc ='$location' AND ";
-	$sql .= TB_PREF."sales_order_details.stk_code = '$stockid'";
-
-    $TransResult = db_query($sql,"No transactions were returned");
-	$DemandRow = db_fetch($TransResult);
-	return $DemandRow['QtyDemand'];
-}
-
-function getDemandAsmQty($stockid, $location)
-{
-	$sql = "SELECT SUM((".TB_PREF."sales_order_details.quantity-".TB_PREF."sales_order_details.qty_sent)*".TB_PREF."bom.quantity)
-				   AS Dem
-				   FROM ".TB_PREF."sales_order_details,
-						".TB_PREF."sales_orders,
-						".TB_PREF."bom,
-						".TB_PREF."stock_master
-				   WHERE ".TB_PREF."sales_order_details.stk_code=".TB_PREF."bom.parent AND
-				   ".TB_PREF."sales_orders.order_no = ".TB_PREF."sales_order_details.order_no AND ";
-	if ($location != "")
-		$sql .= TB_PREF."sales_orders.from_stk_loc ='$location' AND ";
-	$sql .= TB_PREF."sales_order_details.quantity-".TB_PREF."sales_order_details.qty_sent > 0 AND
-				   ".TB_PREF."bom.component='$stockid' AND
-				   ".TB_PREF."stock_master.stock_id=".TB_PREF."bom.parent AND
-				   (".TB_PREF."stock_master.mb_flag='M' OR ".TB_PREF."stock_master.mb_flag='A')";
-
-    $TransResult = db_query($sql,"No transactions were returned");
-	if (db_num_rows($TransResult)==1)
-	{
-		$DemandRow = db_fetch_row($TransResult);
-		$DemandQty = $DemandRow[0];
-	}
-	else
-		$DemandQty = 0.0;
-
-    return $DemandQty;
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -180,8 +137,8 @@ function print_stock_check()
 			$loc_code = "";
 		else
 			$loc_code = $trans['loc_code'];
-		$demandqty = getDemandQty($trans['stock_id'], $loc_code);
-		$demandqty += getDemandAsmQty($trans['stock_id'], $loc_code);
+		$demandqty = get_demand_qty($trans['stock_id'], $loc_code);
+		$demandqty += get_demand_asm_qty($trans['stock_id'], $loc_code);
 		$rep->NewLine();
 		$dec = get_qty_dec($trans['stock_id']);
 		$rep->TextCol(0, 1, $trans['stock_id']);

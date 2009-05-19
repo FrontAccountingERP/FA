@@ -19,6 +19,14 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+20-May-2009 Joe Hunt
+# Fixed and optimized On Order in Inventory Items Status and reports
+$ /includes/db/manufacturing_db.inc
+  /inventory/inquiry/stock_status.php
+  /reporting/rep302.php
+  /reporting/rep303.php
+  /sales/includes/db/sales_order_db.inc
+  
 18-May-2009 Joe Hunt
 # html header shown in backup downloads.
 $ /admin/backups.php

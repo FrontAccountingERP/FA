@@ -10,48 +10,6 @@
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
 //----------------------------------------------------------------------------------------
-function get_demand_qty($stockid, $location)
-{
-	$sql = "SELECT SUM(".TB_PREF."sales_order_details.quantity - ".TB_PREF."sales_order_details.qty_sent) AS QtyDemand
-				FROM ".TB_PREF."sales_order_details,
-					".TB_PREF."sales_orders
-				WHERE ".TB_PREF."sales_order_details.order_no=".TB_PREF."sales_orders.order_no AND
-					".TB_PREF."sales_orders.from_stk_loc ='$location' AND
-					".TB_PREF."sales_order_details.stk_code = '$stockid'";
-
-	$TransResult = db_query($sql,"No transactions were returned");
-	$DemandRow = db_fetch($TransResult);
-	return $DemandRow['QtyDemand'];
-}
-
-function get_demand_asm_qty($stockid, $location)
-{
-	$sql = "SELECT SUM((".TB_PREF."sales_order_details.quantity-".TB_PREF."sales_order_details.qty_sent)*".TB_PREF."bom.quantity)
-				AS Dem
-				FROM ".TB_PREF."sales_order_details,
-						".TB_PREF."sales_orders,
-						".TB_PREF."bom,
-						".TB_PREF."stock_master
-				WHERE ".TB_PREF."sales_order_details.stk_code=".TB_PREF."bom.parent AND
-				".TB_PREF."sales_orders.order_no = ".TB_PREF."sales_order_details.order_no AND
-				".TB_PREF."sales_orders.from_stk_loc='$location' AND
-				".TB_PREF."sales_order_details.quantity-".TB_PREF."sales_order_details.qty_sent > 0 AND
-				".TB_PREF."bom.component='$stockid' AND
-				".TB_PREF."stock_master.stock_id=".TB_PREF."bom.parent AND
-				(".TB_PREF."stock_master.mb_flag='M' OR ".TB_PREF."stock_master.mb_flag='A')";
-
-	$TransResult = db_query($sql,"No transactions were returned");
-	if (db_num_rows($TransResult)==1)
-	{
-		$DemandRow = db_fetch_row($TransResult);
-		$DemandQty = $DemandRow[0];
-	}
-	else
-		$DemandQty = 0.0;
-
-	return $DemandQty;
-}
-
 function add_sales_order(&$order)
 {
 	global $loc_notification, $path_to_root;
