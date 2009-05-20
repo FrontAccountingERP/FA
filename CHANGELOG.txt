@@ -19,6 +19,12 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+20-May-2009 Janusz Dobrowolski
+# Small cleanup
+$ /inventory/prices.php
+# Fixed select buttons icon.
+$ /sales/manage/customer_branches.php
+
 20-May-2009 Joe Hunt
 # Fixed and optimized On Order in Inventory Items Status and reports
 $ /includes/db/manufacturing_db.inc
@@ -39,7 +45,6 @@ $ /sales/includes/db/sales_order_db.inc
   /reporting/rep302.php
   /reporting/rep303.php
   
-
 17-May-2009 Joe Hunt
 ! Changed service items to use cogs account instead of inventory account.
 $ /inventory/manage/items.php
