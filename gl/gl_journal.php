@@ -55,7 +55,8 @@ if (isset($_GET['AddedID']))
 
     display_note(get_gl_view_str($trans_type, $trans_no, _("&View this Journal Entry")));
 
-   	hyperlink_no_params($_SERVER['PHP_SELF'], _("Enter &Another Journal Entry"));
+	reset_focus();
+	hyperlink_params($_SERVER['PHP_SELF'], _("Entry &New Journal Entry"), "NewJournal=Yes");
 
 	display_footer_exit();
 } elseif (isset($_GET['UpdatedID'])) 
