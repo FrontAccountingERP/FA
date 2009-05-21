@@ -25,11 +25,11 @@ function get_demand_qty($stock_id, $location)
 	return $row['QtyDemand'];
 }
 
-// recursion fixed by Tom Moulton
+// recursion fixed by Tom Moulton. Max 10 recursion levels.
 function stock_demand_manufacture($stock_id, $qty, $demand_id, $level=0) 
 {
 	$demand = 0.0;
-	if ($level > 4) {
+	if ($level > 10) {
 		display_notification("BOM Too many Manufacturing levels deep $level");
 		return $demand;
 	}
