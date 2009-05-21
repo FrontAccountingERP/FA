@@ -19,6 +19,12 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+21-May-2009 Janusz Dobrowolski
++ Added reset_focus helper function.
+$ /includes/ui/ui_view.inc
+# Fixed link on and focus on final page.
+$ /gl/gl_journal.php
+
 19-May-2009 Janusz Dobrowolski
 + Automatic update currency option added.
 $ /gl/includes/db/gl_db_currencies.inc
