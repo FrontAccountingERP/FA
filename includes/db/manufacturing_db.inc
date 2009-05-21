@@ -25,31 +25,54 @@ function get_demand_qty($stock_id, $location)
 	return $row['QtyDemand'];
 }
 
-function get_demand_asm_qty($stock_id, $location)
+// recursion fixed by Tom Moulton
+function stock_demand_manufacture($stock_id, $qty, $demand_id, $level=0) 
 {
-	$sql = "SELECT SUM((".TB_PREF."sales_order_details.quantity-".TB_PREF."sales_order_details.qty_sent)*".TB_PREF."bom.quantity)
-				   AS Dem
+	$demand = 0.0;
+	if ($level > 4) {
+		display_notification("BOM Too many Manufacturing levels deep $level");
+		return $demand;
+	}
+	$sql = "SELECT parent, component, quantity FROM ".TB_PREF."bom WHERE parent = '$stock_id'";
+	$result = db_query($sql, "Could not search bom");
+	$bom = array();
+	while ($row = db_fetch_row($result)) {
+		$bom[] = array($row[0], $row[1], $row[2]);
+	}
+	db_free_result($result);
+	$len = count($bom);
+	$i = 0;
+	while ($i < $len) {
+		$row = $bom[$i];
+		$i++;
+		$q = $qty * $row[2];
+		if ($row[1] == $demand_id) 
+			$demand += $q;
+		$demand += stock_demand_manufacture($row[1], $q, $demand_id, $level+1);
+	}
+	return $demand;
+}
+
+// recursion fixed by Tom Moulton
+function get_demand_asm_qty($stock_id, $location) 
+{
+	$demand_qty = 0.0;
+	$sql = "SELECT ".TB_PREF."sales_order_details.stk_code, SUM(".TB_PREF."sales_order_details.quantity-".TB_PREF."sales_order_details.qty_sent)
+				   AS Demmand
 				   FROM ".TB_PREF."sales_order_details,
 						".TB_PREF."sales_orders,
-						".TB_PREF."bom,
 						".TB_PREF."stock_master
-				   WHERE ".TB_PREF."sales_order_details.stk_code=".TB_PREF."bom.parent AND
-				   ".TB_PREF."sales_orders.order_no = ".TB_PREF."sales_order_details.order_no AND ";
+				   WHERE ".TB_PREF."sales_orders.order_no = ".TB_PREF."sales_order_details.order_no AND ";
 	if ($location != "")
 		$sql .= TB_PREF."sales_orders.from_stk_loc ='$location' AND ";
 	$sql .= TB_PREF."sales_order_details.quantity-".TB_PREF."sales_order_details.qty_sent > 0 AND
-				   ".TB_PREF."bom.component='$stock_id' AND
-				   ".TB_PREF."stock_master.stock_id=".TB_PREF."bom.parent AND
-				   (".TB_PREF."stock_master.mb_flag='M' OR ".TB_PREF."stock_master.mb_flag='A')";
-
-    $result = db_query($sql,"No transactions were returned");
-	if (db_num_rows($result)==1)
-	{
-		$row = db_fetch_row($result);
-		$demand_qty = $row[0];
+				   ".TB_PREF."stock_master.stock_id=".TB_PREF."sales_order_details.stk_code AND
+				   (".TB_PREF."stock_master.mb_flag='M' OR ".TB_PREF."stock_master.mb_flag='A')
+				   GROUP BY ".TB_PREF."sales_order_details.stk_code";
+    	$result = db_query($sql, "No transactions were returned");
+	while ($row = db_fetch_row($result)) {
+		$demand_qty += stock_demand_manufacture($row[0], $row[1], $stock_id);
 	}
-	else
-		$demand_qty = 0.0;
 	return $demand_qty;
 }
 
