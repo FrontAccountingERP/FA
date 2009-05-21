@@ -638,6 +638,13 @@ function default_focus($name=null, $form_no=0) {
     }
 	return $name;
 }
+/*
+	Reset focus to next control element (e.g. link).
+*/
+function reset_focus()
+{
+	unset($_POST['_focus']);
+}
 
 function get_js_png_fix()
 {
