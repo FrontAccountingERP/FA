@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+22-May-2009 Janusz Dobrowolski
+# Defualt hyperlink href set to PHP_SELF
+$ /includes/ui/ui_controls.inc
+
 21-May-2009 Janusz Dobrowolski
 + Added reset_focus helper function.
 $ /includes/ui/ui_view.inc

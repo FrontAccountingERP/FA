@@ -138,6 +138,8 @@ function hyperlink_no_params($target, $label, $center=true)
 {
 	$id = default_focus();
 	$pars = access_string($label);
+	if ($target == '')
+		$target = $_SERVER['PHP_SELF'];
 	if ($center)
 		echo "<br><center>";
 	echo "<a href='$target' $id='$id' $pars[1]>$pars[0]</a>\n";
@@ -208,6 +210,8 @@ function hyperlink_params($target, $label, $params, $center=true)
 	$id = default_focus();
 	
 	$pars = access_string($label);
+	if ($target == '')
+		$target = $_SERVER['PHP_SELF'];
 	if ($center)
 		echo "<br><center>";
 	echo "<a id='$id' href='$target?$params'$pars[1]>$pars[0]</a>\n";
