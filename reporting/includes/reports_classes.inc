@@ -215,27 +215,27 @@ class Report
 					$st .= dup_simple_codeandname_list($sql, "PARAM_$index", $dummy);
 					break;
 				case 'DIMENSION':
-					$sql = "SELECT reference, concat(reference, ' - ', name) AS DimName FROM ".TB_PREF."dimensions ORDER BY reference";
+					$sql = "SELECT id, concat(reference, ' - ', name) AS DimName FROM ".TB_PREF."dimensions ORDER BY reference";
 					$st .= dup_simple_codeandname_list($sql, "PARAM_$index", $dummy);
 					break;
 				case 'DIMENSIONS':
-					$sql = "SELECT reference, concat(reference, ' - ', name) as DimName FROM ".TB_PREF."dimensions ORDER BY reference";
+					$sql = "SELECT id, concat(reference, ' - ', name) as DimName FROM ".TB_PREF."dimensions ORDER BY reference";
 					$st .= dup_simple_codeandname_list($sql, "PARAM_$index", $dummy, true, _("No Dimension Filter"), true);
 					break;
 				case 'DIMENSION1':
-					$sql = "SELECT reference, concat(reference, ' - ', name) AS DimName FROM ".TB_PREF."dimensions WHERE type_=1 ORDER BY reference";
+					$sql = "SELECT id, concat(reference, ' - ', name) AS DimName FROM ".TB_PREF."dimensions WHERE type_=1 ORDER BY reference";
 					$st .= dup_simple_codeandname_list($sql, "PARAM_$index". "_$index", $dummy);
 					break;
 				case 'DIMENSIONS1':
-					$sql = "SELECT reference, concat(reference, ' - ', name) as DimName FROM ".TB_PREF."dimensions WHERE type_=1 ORDER BY reference";
+					$sql = "SELECT id, concat(reference, ' - ', name) as DimName FROM ".TB_PREF."dimensions WHERE type_=1 ORDER BY reference";
 					$st .= dup_simple_codeandname_list($sql, "PARAM_$index", $dummy, true, _("No Dimension Filter"), true);
 					break;
 				case 'DIMENSION2':
-					$sql = "SELECT reference, concat(reference, ' - ', name) AS DimName FROM ".TB_PREF."dimensions WHERE type_=2 ORDER BY reference";
+					$sql = "SELECT id, concat(reference, ' - ', name) AS DimName FROM ".TB_PREF."dimensions WHERE type_=2 ORDER BY reference";
 					$st .= dup_simple_codeandname_list($sql, "PARAM_$index", $dummy);
 					break;
 				case 'DIMENSIONS2':
-					$sql = "SELECT reference, concat(reference, ' - ', name) as DimName FROM ".TB_PREF."dimensions WHERE type_=2 ORDER BY reference";
+					$sql = "SELECT id, concat(reference, ' - ', name) as DimName FROM ".TB_PREF."dimensions WHERE type_=2 ORDER BY reference";
 					$st .= dup_simple_codeandname_list($sql, "PARAM_$index", $dummy, true, _("No Dimension Filter"), true);
 					break;
 				case 'CUSTOMERS_NO_FILTER':
