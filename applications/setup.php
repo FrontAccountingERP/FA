@@ -35,7 +35,7 @@
 			$this->add_rapp_function(1, _("&Points of Sale"),"sales/manage/sales_points.php?");
 			$this->add_rapp_function(1, _("&Printers"),"admin/printers.php?");
 
-			$this->add_module(_("Maintanance"));
+			$this->add_module(_("Maintenance"));
 			$this->add_lapp_function(2, _("&Void a Transaction"),"admin/void_transaction.php?");
 			$this->add_lapp_function(2, _("View or &Print Transactions"),"admin/view_print_transaction.php?");
 			$this->add_lapp_function(2, _("&Attach Documents"),"admin/attachments.php?filterType=20");

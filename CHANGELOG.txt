@@ -22,6 +22,8 @@ $ -> Affected files
 22-May-2009 Janusz Dobrowolski
 # Fixed buggy reference instead of id in report dimension selectors.
 $ /reporting/includes/reports_classes.inc
+# Fixed typo in setup menu
+$ /applications/setup.php
 
 21-May-2009 Joe Hunt/Tom Moulton
 # Recursion fix in manufacturing_db.inc by Tom Moulton
