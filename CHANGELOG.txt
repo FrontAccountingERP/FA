@@ -19,6 +19,12 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+23-May-2009 Janusz Dobrowolski
+# Fixed transaction table search update.
+$ /admin/view_print_transaction.php
+# Fixed initial select for array_selector()
+$ /includes/ui/ui_lists.inc
+
 22-May-2009 Janusz Dobrowolski
 # Fixed buggy reference instead of id in report dimension selectors.
 $ /reporting/includes/reports_classes.inc
