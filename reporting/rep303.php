@@ -91,13 +91,13 @@ function print_stock_check()
 	if ($check)
 	{
 		$cols = array(0, 100, 250, 295, 345, 390, 445,	515);
-		$headers = array(_('Category'), _('Description'), _('Quantity'), _('Check'), _('Demand'), _('Shortage'), _('On Order'));
+		$headers = array(_('Stock ID'), _('Description'), _('Quantity'), _('Check'), _('Demand'), _('Shortage'), _('On Order'));
 		$aligns = array('left',	'left',	'right', 'right', 'right', 'right', 'right');
 	}
 	else
 	{
 		$cols = array(0, 100, 250, 315, 380, 445,	515);
-		$headers = array(_('Category'), _('Description'), _('Quantity'), _('Demand'), _('Shortage'), _('On Order'));
+		$headers = array(_('Stock ID'), _('Description'), _('Quantity'), _('Demand'), _('Shortage'), _('On Order'));
 		$aligns = array('left',	'left',	'right', 'right', 'right', 'right');
 	}
 
