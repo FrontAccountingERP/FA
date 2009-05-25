@@ -67,8 +67,9 @@ function print_stock_check()
     $location = $_POST['PARAM_1'];
     $pictures = $_POST['PARAM_2'];
     $check    = $_POST['PARAM_3'];
-    $comments = $_POST['PARAM_4'];
-	$destination = $_POST['PARAM_5'];
+    $shortage = $_POST['PARAM_4'];
+    $comments = $_POST['PARAM_5'];
+	$destination = $_POST['PARAM_6'];
 	if ($destination)
 		include_once($path_to_root . "/reporting/includes/excel_report.inc");
 	else
@@ -87,24 +88,28 @@ function print_stock_check()
 		$loc = _('All');
 	else
 		$loc = $location;
-
+	if ($shortage)
+		$short = _('Yes');
+	else	
+		$short = _('No');
 	if ($check)
 	{
 		$cols = array(0, 100, 250, 295, 345, 390, 445,	515);
-		$headers = array(_('Stock ID'), _('Description'), _('Quantity'), _('Check'), _('Demand'), _('Shortage'), _('On Order'));
+		$headers = array(_('Stock ID'), _('Description'), _('Quantity'), _('Check'), _('Demand'), _('Available'), _('On Order'));
 		$aligns = array('left',	'left',	'right', 'right', 'right', 'right', 'right');
 	}
 	else
 	{
 		$cols = array(0, 100, 250, 315, 380, 445,	515);
-		$headers = array(_('Stock ID'), _('Description'), _('Quantity'), _('Demand'), _('Shortage'), _('On Order'));
+		$headers = array(_('Stock ID'), _('Description'), _('Quantity'), _('Demand'), _('Available'), _('On Order'));
 		$aligns = array('left',	'left',	'right', 'right', 'right', 'right');
 	}
 
 
     $params =   array( 	0 => $comments,
     				    1 => array('text' => _('Category'), 'from' => $cat, 'to' => ''),
-    				    2 => array('text' => _('Location'), 'from' => $loc, 'to' => ''));
+    				    2 => array('text' => _('Location'), 'from' => $loc, 'to' => ''),
+    				    3 => array('text' => _('Only Shortage'), 'from' => $short, 'to' => ''));
 
 	if ($pictures)
 		$user_comp = user_company();
@@ -121,6 +126,12 @@ function print_stock_check()
 	$catt = '';
 	while ($trans=db_fetch($res))
 	{
+		$demandqty = get_demand_qty($trans['stock_id'], $loc_code);
+		$demandqty += get_demand_asm_qty($trans['stock_id'], $loc_code);
+		$onorder = get_on_porder_qty($trans['stock_id'], $loc_code);
+		$onorder += get_on_worder_qty($trans['stock_id'], $loc_code);
+		if ($shortage && $trans['QtyOnHand'] - $demandqty >= 0)
+			continue;
 		if ($catt != $trans['cat_description'])
 		{
 			if ($catt != '')
@@ -137,10 +148,6 @@ function print_stock_check()
 			$loc_code = "";
 		else
 			$loc_code = $trans['loc_code'];
-		$demandqty = get_demand_qty($trans['stock_id'], $loc_code);
-		$demandqty += get_demand_asm_qty($trans['stock_id'], $loc_code);
-		$onorder = get_on_porder_qty($trans['stock_id'], $loc_code);
-		$onorder += get_on_worder_qty($trans['stock_id'], $loc_code);
 		$rep->NewLine();
 		$dec = get_qty_dec($trans['stock_id']);
 		$rep->TextCol(0, 1, $trans['stock_id']);
