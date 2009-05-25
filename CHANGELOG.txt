@@ -26,6 +26,8 @@ $ /purchasing/includes/db/grn_db.inc
 $ /gl/includes/db/gl_db_accounts.inc
 $ /reporting/rep706.php
 $ /reporting/rep707.php
+! Extra column in Stock Check Sheet, On Order
+$ /reporting/rep303.php
 
 23-May-2009 Janusz Dobrowolski
 # Fixed transaction table search update.

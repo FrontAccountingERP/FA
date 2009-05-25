@@ -14,7 +14,7 @@ $page_security = 2;
 // $ Revision:	2.0 $
 // Creator:	Joe Hunt
 // date_:	2005-05-19
-// Title:	Stock Check
+// Title:	Stock Check Sheet
 // ----------------------------------------------------------------
 $path_to_root="..";
 
@@ -90,15 +90,15 @@ function print_stock_check()
 
 	if ($check)
 	{
-		$cols = array(0, 100, 250, 305, 375, 445,	515);
-		$headers = array(_('Category'), _('Description'), _('Quantity'), _('Check'), _('Demand'), _('Difference'));
-		$aligns = array('left',	'left',	'right', 'right', 'right', 'right');
+		$cols = array(0, 100, 250, 295, 345, 390, 445,	515);
+		$headers = array(_('Category'), _('Description'), _('Quantity'), _('Check'), _('Demand'), _('Shortage'), _('On Order'));
+		$aligns = array('left',	'left',	'right', 'right', 'right', 'right', 'right');
 	}
 	else
 	{
-		$cols = array(0, 100, 305, 375, 445,	515);
-		$headers = array(_('Category'), _('Description'), _('Quantity'), _('Demand'), _('Difference'));
-		$aligns = array('left',	'left',	'right', 'right', 'right');
+		$cols = array(0, 100, 250, 315, 380, 445,	515);
+		$headers = array(_('Category'), _('Description'), _('Quantity'), _('Demand'), _('Shortage'), _('On Order'));
+		$aligns = array('left',	'left',	'right', 'right', 'right', 'right');
 	}
 
 
@@ -139,6 +139,8 @@ function print_stock_check()
 			$loc_code = $trans['loc_code'];
 		$demandqty = get_demand_qty($trans['stock_id'], $loc_code);
 		$demandqty += get_demand_asm_qty($trans['stock_id'], $loc_code);
+		$onorder = get_on_porder_qty($trans['stock_id'], $loc_code);
+		$onorder += get_on_worder_qty($trans['stock_id'], $loc_code);
 		$rep->NewLine();
 		$dec = get_qty_dec($trans['stock_id']);
 		$rep->TextCol(0, 1, $trans['stock_id']);
@@ -149,11 +151,13 @@ function print_stock_check()
 			$rep->TextCol(3, 4, "_________");
 			$rep->AmountCol(4, 5, $demandqty, $dec);
 			$rep->AmountCol(5, 6, $trans['QtyOnHand'] - $demandqty, $dec);
+			$rep->AmountCol(6, 7, $onorder, $dec);
 		}
 		else
 		{
 			$rep->AmountCol(3, 4, $demandqty, $dec);
 			$rep->AmountCol(4, 5, $trans['QtyOnHand'] - $demandqty, $dec);
+			$rep->AmountCol(5, 6, $onorder, $dec);
 		}
 		if ($pictures)
 		{
