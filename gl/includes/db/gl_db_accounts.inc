@@ -51,7 +51,8 @@ function get_gl_accounts($from=null, $to=null)
 
 function get_gl_accounts_all($balance=-1)
 {
-	$sql = "SELECT ".TB_PREF."chart_master.*,".TB_PREF."chart_types.name AS AccountTypeName,".TB_PREF."chart_class.class_name AS AccountClassName
+	$sql = "SELECT ".TB_PREF."chart_master.*,".TB_PREF."chart_types.name AS AccountTypeName,".TB_PREF."chart_types.parent,
+		".TB_PREF."chart_class.class_name AS AccountClassName
 		FROM ".TB_PREF."chart_master,".TB_PREF."chart_types, ".TB_PREF."chart_class
 		WHERE ".TB_PREF."chart_master.account_type=".TB_PREF."chart_types.id AND
 		".TB_PREF."chart_types.class_id=".TB_PREF."chart_class.cid";

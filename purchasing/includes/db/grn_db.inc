@@ -169,6 +169,8 @@ function set_grn_item_credited(&$entered_grn, $supplier, $transno, $date)
 
 	$sql = "UPDATE ".TB_PREF."purch_order_details
         SET quantity_received = quantity_received + $entered_grn->this_quantity_inv,
+        quantity_ordered = quantity_ordered + $entered_grn->this_quantity_inv,
+        qty_invoiced = qty_invoiced + $entered_grn->this_quantity_inv,
         std_cost_unit=$mcost,
         act_price=$entered_grn->chg_price
         WHERE po_detail_item = ".$myrow["po_detail_item"];

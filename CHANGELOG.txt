@@ -19,6 +19,14 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+25-May-2009 Joe Hunt
+# Fixed Supplier Credit so Purchase Order Outstanding is decreased too.
+$ /purchasing/includes/db/grn_db.inc
+# Fixed so nested subtypes in account types are nested correctly in Balance Sheet and P&L Statement
+$ /gl/includes/db/gl_db_accounts.inc
+$ /reporting/rep706.php
+$ /reporting/rep707.php
+
 23-May-2009 Janusz Dobrowolski
 # Fixed transaction table search update.
 $ /admin/view_print_transaction.php
