@@ -84,7 +84,7 @@ function get_backup_file_combo()
 		if (preg_match("/.sql(.zip|.gz)?$/", $file))
     		$opt_files .= "<option value='$file'>$file</option>";
 
-	$selector = "<select name='cmb_backups' size=2 style='height:160px;width:230px'>$opt_files</select>";
+	$selector = "<select name='cmb_backups' size=2 style='height:160px;min-width:230px'>$opt_files</select>";
 
 	$Ajax->addUpdate('cmd_backups', "_cmd_backups_sel", $selector);
 	$selector = "<span id='_cmd_backups_sel'>".$selector."</span>\n";

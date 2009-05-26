@@ -179,24 +179,32 @@ function print_annual_expense_breakdown()
 	$rep->Header();
 
 	$classname = '';
-	$group = '';
-	$total = Array(1 => 0,0,0,0,0,0,0,0,0,0,0,0);
+	$total = Array(
+		0 => Array(1 => 0,0,0,0,0,0,0,0,0,0,0,0),
+			Array(1 => 0,0,0,0,0,0,0,0,0,0,0,0),
+			Array(1 => 0,0,0,0,0,0,0,0,0,0,0,0),
+			Array(1 => 0,0,0,0,0,0,0,0,0,0,0,0),
+			Array(1 => 0,0,0,0,0,0,0,0,0,0,0,0),
+			Array(1 => 0,0,0,0,0,0,0,0,0,0,0,0),
+			Array(1 => 0,0,0,0,0,0,0,0,0,0,0,0),
+			Array(1 => 0,0,0,0,0,0,0,0,0,0,0,0),
+			Array(1 => 0,0,0,0,0,0,0,0,0,0,0,0),
+			Array(1 => 0,0,0,0,0,0,0,0,0,0,0,0));
 	$total2 = Array(1 => 0,0,0,0,0,0,0,0,0,0,0,0);
 	$sales = Array(1 => 0,0,0,0,0,0,0,0,0,0,0,0);
 	$calc = Array(1 => 0,0,0,0,0,0,0,0,0,0,0,0);
-	$accounts = get_gl_accounts_all(0);
+	$typename = array('','','','','','','','','','');
+	$closing = array(-1,-1,-1,-1,-1,-1,-1,-1,-1,-1);
+	$level = 0;
+	$last = -1;
 
-	while ($account = db_fetch($accounts))
+	$types = get_account_types_all(0);
+
+	while ($type = db_fetch($types))
 	{
-		$bal = getPeriods($year, $account["account_code"], $dimension, $dimension2);
-		if (!$bal['per01'] && !$bal['per02'] && !$bal['per03'] && !$bal['per04'] &&
-			!$bal['per05'] && !$bal['per06'] && !$bal['per07'] && !$bal['per08'] &&
-			!$bal['per09'] && !$bal['per10'] && !$bal['per11'] && !$bal['per12'])
+		if (!num_accounts_in_type($type['AccountType'], $type['parent']))
 			continue;
-		$balance = array(1 => $bal['per01'], $bal['per02'], $bal['per03'], $bal['per04'],
-			$bal['per05'], $bal['per06'], $bal['per07'], $bal['per08'],
-			$bal['per09'], $bal['per10'], $bal['per11'], $bal['per12']);
-		if ($account['AccountClassName'] != $classname)
+		if ($type['AccountClassName'] != $classname)
 		{
 			if ($classname != '')
 			{
@@ -204,18 +212,28 @@ function print_annual_expense_breakdown()
 			}
 		}
 
-		if ($account['AccountTypeName'] != $group)
+		if ($type['AccountTypeName'] != $typename[$level])
 		{
-			if ($group != '')
+			if ($typename[$level] != '')
 			{
-				$rep->row += 6;
-				$rep->Line($rep->row);
-				$rep->NewLine();
-				$rep->TextCol(0, 2,	_('Total') . " " . $group);
-				for ($i = 1; $i <= 12; $i++)
-					$rep->AmountCol($i + 1, $i + 2, $total[$i], $dec);
-				$total = Array(1 => 0,0,0,0,0,0,0,0,0,0,0,0);
-				$rep->NewLine();
+				for ( ; $level >= 0, $typename[$level] != ''; $level--) 
+				{
+					if ($type['parent'] == $closing[$level] || $type['parent'] == $last || $type['parent'] <= 0)
+					{
+						$rep->row += 6;
+						$rep->Line($rep->row);
+						$rep->NewLine();
+						$rep->TextCol(0, 2,	_('Total') . " " . $typename[$level]);
+						for ($i = 1; $i <= 12; $i++)
+						{
+							$rep->AmountCol($i + 1, $i + 2, $total[$level][$i], $dec);
+							$total[$level][$i] = 0.0;
+						}
+					}
+					else
+						break;
+					$rep->NewLine();
+				}	
 				if ($closeclass)
 				{
 					$rep->row += 6;
@@ -234,56 +252,88 @@ function print_annual_expense_breakdown()
 					$closeclass = false;
 				}
 			}
-			if ($account['AccountClassName'] != $classname)
+			if ($type['AccountClassName'] != $classname)
 			{
 				$rep->Font('bold');
-				$rep->TextCol(0, 5, $account['AccountClassName']);
+				$rep->TextCol(0, 5, $type['AccountClassName']);
 				$rep->Font();
 				$rep->NewLine();
 			}
-			$group = $account['AccountTypeName'];
+			$level++;
+			if ($type['parent'] != $last)
+				$last = $type['parent'];
+			$typename[$level] = $type['AccountTypeName'];
+			$closing[$level] = $type['parent'];
 			$rep->row -= 4;
-			$rep->TextCol(0, 5, $account['AccountTypeName']);
+			$rep->TextCol(0, 5, $type['AccountTypeName']);
 			$rep->row -= 4;
 			$rep->Line($rep->row);
 			$rep->NewLine();
 		}
-		$classname = $account['AccountClassName'];
-		$rep->TextCol(0, 1,	$account['account_code']);
-		$rep->TextCol(1, 2,	$account['account_name']);
-		for ($i = 1; $i <= 12; $i++)
-		{
-			$rep->AmountCol($i + 1, $i + 2, $balance[$i], $dec);
-			$total[$i] += $balance[$i];
-			$total2[$i] += $balance[$i];
-		}
+		$classname = $type['AccountClassName'];
 
-		$rep->NewLine();
-
-		if ($rep->row < $rep->bottomMargin + 3 * $rep->lineHeight)
+		$accounts = get_gl_accounts_in_type($type['AccountType']);
+		while ($account=db_fetch($accounts))
 		{
-			$rep->Line($rep->row - 2);
-			$rep->Header();
-		}
+			$bal = getPeriods($year, $account["account_code"], $dimension, $dimension2);
+			if (!$bal['per01'] && !$bal['per02'] && !$bal['per03'] && !$bal['per04'] &&
+				!$bal['per05'] && !$bal['per06'] && !$bal['per07'] && !$bal['per08'] &&
+				!$bal['per09'] && !$bal['per10'] && !$bal['per11'] && !$bal['per12'])
+				continue;
+			$balance = array(1 => $bal['per01'], $bal['per02'], $bal['per03'], $bal['per04'],
+				$bal['per05'], $bal['per06'], $bal['per07'], $bal['per08'],
+				$bal['per09'], $bal['per10'], $bal['per11'], $bal['per12']);
+			$rep->TextCol(0, 1,	$account['account_code']);
+			$rep->TextCol(1, 2,	$account['account_name']);
+
+			for ($i = 1; $i <= 12; $i++)
+			{
+				$rep->AmountCol($i + 1, $i + 2, $balance[$i], $dec);
+				$total2[$i] += $balance[$i];
+			}
+			for ($j = 0; $j <= $level; $j++)
+			{
+				for ($i = 1; $i <= 12; $i++)
+					$total[$j][$i] += $balance[$i];
+			}
+			$rep->NewLine();
+
+			if ($rep->row < $rep->bottomMargin + 3 * $rep->lineHeight)
+			{
+				$rep->Line($rep->row - 2);
+				$rep->Header();
+			}
+		}	
 	}
-	if ($account['AccountClassName'] != $classname)
+	if ($type['AccountClassName'] != $classname)
 	{
 		if ($classname != '')
 		{
 			$closeclass = true;
 		}
 	}
-	if ($account['AccountTypeName'] != $group)
+	if ($type['AccountTypeName'] != $typename[$level])
 	{
-		if ($group != '')
+		if ($typename[$level] != '')
 		{
-			$rep->row += 6;
-			$rep->Line($rep->row);
-			$rep->NewLine();
-			$rep->TextCol(0, 2,	_('Total') . " " . $group);
-			for ($i = 1; $i <= 12; $i++)
-				$rep->AmountCol($i + 1, $i + 2, $total[$i], $dec);
-			$rep->NewLine();
+			for ( ; $level >= 0, $typename[$level] != ''; $level--) 
+			{
+				if ($type['parent'] == $closing[$level] || $type['parent'] == $last || $type['parent'] <= 0)
+				{
+					$rep->row += 6;
+					$rep->Line($rep->row);
+					$rep->NewLine();
+					$rep->TextCol(0, 2,	_('Total') . " " . $typename[$level]);
+					for ($i = 1; $i <= 12; $i++)
+					{
+						$rep->AmountCol($i + 1, $i + 2, $total[$level][$i], $dec);
+						$total[$level][$i] = 0.0;
+					}
+				}
+				else
+					break;
+				$rep->NewLine();
+			}	
 			if ($closeclass)
 			{
 				$rep->row += 6;

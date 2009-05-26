@@ -117,24 +117,20 @@ function print_balance_sheet()
 	$typeperiod = array(0,0,0,0,0,0,0,0,0,0);
 	$typeclose = array(0,0,0,0,0,0,0,0,0,0);
 	$typename = array('','','','','','','','','','');
-	$parent = array(-1,-1,-1,-1,-1,-1,-1,-1,-1,-1);
+	$closing = array(-1,-1,-1,-1,-1,-1,-1,-1,-1,-1);
 	$level = 0;
+	$last = -1;
 	
 	$closeclass = false;
 	$rep->NewLine();
 
-	$accounts = get_gl_accounts_all(1);
+	$types = get_account_types_all(1);
 
-	while ($account=db_fetch($accounts))
+	while ($type=db_fetch($types))
 	{
-		$prev_balance = get_gl_balance_from_to("", $from, $account["account_code"], $dimension, $dimension2);
-
-		$curr_balance = get_gl_trans_from_to($from, $to, $account["account_code"], $dimension, $dimension2);
-
-		if (!$prev_balance && !$curr_balance)
+		if (!num_accounts_in_type($type['AccountType'], $type['parent']))
 			continue;
-
-		if ($account['AccountClassName'] != $classname)
+		if ($type['AccountClassName'] != $classname)
 		{
 			if ($classname != '')
 			{
@@ -142,30 +138,36 @@ function print_balance_sheet()
 			}
 		}
 
-		if ($account['AccountTypeName'] != $typename[$level])
+		if ($type['AccountTypeName'] != $typename[$level])
 		{
-			if ($typename[$level] != '' && $account['parent'] == -1)
+			//$rep->NewLine();
+			//$rep->TextCol(0, 5,	"level = $level, closing[level] = ".$closing[$level].", type[parent] = ".$type['parent']." last = ".$last);
+			//$rep->NewLine();
+			if ($typename[$level] != '')
 			{
-				for ( ; $level >= 0; $level--)
+				for ( ; $level >= 0, $typename[$level] != ''; $level--) 
 				{
-					$rep->row += 6;
-					$rep->Line($rep->row);
-					$rep->NewLine();
-					$rep->TextCol(0, 2,	_('Total') . " " . $typename[$level]);
-					$rep->AmountCol(2, 3, $typeopen[$level], $dec);
-					$rep->AmountCol(3, 4, $typeperiod[$level], $dec);
-					$rep->AmountCol(4, 5, $typeclose[$level], $dec);
-					$typeopen[$level] = $typeperiod[$level] = $typeclose[$level] = 0.0;
-					if ($parent[$level] == -1)
+					if ($type['parent'] == $closing[$level] || $type['parent'] == $last || $type['parent'] <= 0)
+					{
+						$rep->row += 6;
+						$rep->Line($rep->row);
+						$rep->NewLine();
+						$rep->TextCol(0, 2,	_('Total') . " " . $typename[$level]);
+						$rep->AmountCol(2, 3, $typeopen[$level], $dec);
+						$rep->AmountCol(3, 4, $typeperiod[$level], $dec);
+						$rep->AmountCol(4, 5, $typeclose[$level], $dec);
+						if ($graphics)
+						{
+							$pg->x[] = $$typename[$level];
+							$pg->y[] = abs($typeclose[$level]);
+						}
+						$typeopen[$level] = $typeperiod[$level] = $typeclose[$level] = 0.0;
+					}	
+					else
 						break;
 					$rep->NewLine();
 				}
-				if ($graphics)
-				{
-					$pg->x[] = $$typename[$level];
-					$pg->y[] = abs($typeclose[$level]);
-				}
-				$rep->NewLine();
+				//$rep->NewLine();
 				if ($closeclass)
 				{
 					$rep->row += 6;
@@ -185,80 +187,95 @@ function print_balance_sheet()
 					$closeclass = false;
 				}
 			}
-			if ($account['AccountClassName'] != $classname)
+			if ($type['AccountClassName'] != $classname)
 			{
 				$rep->Font('bold');
-				$rep->TextCol(0, 5, $account['AccountClassName']);
+				$rep->TextCol(0, 5, $type['AccountClassName']);
 				$rep->Font();
 				$rep->NewLine();
 			}
-			if ($account['parent'] != -1 && $account['parent'] != $parent[$level])
-				$level++;
-			$typename[$level] = $account['AccountTypeName'];
+			$level++;
+			if ($type['parent'] != $last)
+				$last = $type['parent'];
+			$typename[$level] = $type['AccountTypeName'];
+			$closing[$level] = $type['parent'];
 			$rep->row -= 4;
-			$rep->TextCol(0, 5, $account['AccountTypeName']);
+			$rep->TextCol(0, 5, $type['AccountTypeName']);
 			$rep->row -= 4;
 			$rep->Line($rep->row);
 			$rep->NewLine();
 		}
-		$classname = $account['AccountClassName'];
-		$parent[$level] = $account['parent'];	
+		$classname = $type['AccountClassName'];
 
-		for ($i = 0; $i <= $level; $i++)
+		$accounts = get_gl_accounts_in_type($type['AccountType']);
+		while ($account=db_fetch($accounts))
 		{
-			$typeopen[$i] += $prev_balance;
-			$typeperiod[$i] += $curr_balance;
-			$typeclose[$i] = $typeopen[$i] + $typeperiod[$i];
-		}
-		$classopen += $prev_balance;
-		$classperiod += $curr_balance;
-		$classclose = $classopen + $classperiod;
-		$rep->TextCol(0, 1,	$account['account_code']);
-		$rep->TextCol(1, 2,	$account['account_name']);
+			$prev_balance = get_gl_balance_from_to("", $from, $account["account_code"], $dimension, $dimension2);
 
-		$rep->AmountCol(2, 3, $prev_balance, $dec);
-		$rep->AmountCol(3, 4, $curr_balance, $dec);
-		$rep->AmountCol(4, 5, $curr_balance + $prev_balance, $dec);
+			$curr_balance = get_gl_trans_from_to($from, $to, $account["account_code"], $dimension, $dimension2);
 
-		$rep->NewLine();
+			if (!$prev_balance && !$curr_balance)
+				continue;
 
-		if ($rep->row < $rep->bottomMargin + 3 * $rep->lineHeight)
-		{
-			$rep->Line($rep->row - 2);
-			$rep->Header();
-		}
+			for ($i = 0; $i <= $level; $i++)
+			{
+				$typeopen[$i] += $prev_balance;
+				$typeperiod[$i] += $curr_balance;
+				$typeclose[$i] = $typeopen[$i] + $typeperiod[$i];
+			}
+			$classopen += $prev_balance;
+			$classperiod += $curr_balance;
+			$classclose = $classopen + $classperiod;
+			$rep->TextCol(0, 1,	$account['account_code']);
+			$rep->TextCol(1, 2,	$account['account_name']);
+
+			$rep->AmountCol(2, 3, $prev_balance, $dec);
+			$rep->AmountCol(3, 4, $curr_balance, $dec);
+			$rep->AmountCol(4, 5, $curr_balance + $prev_balance, $dec);
+
+			$rep->NewLine();
+
+			if ($rep->row < $rep->bottomMargin + 3 * $rep->lineHeight)
+			{
+				$rep->Line($rep->row - 2);
+				$rep->Header();
+			}
+		}	
 	}
-	if ($account['AccountClassName'] != $classname)
+	if ($type['AccountClassName'] != $classname)
 	{
 		if ($classname != '')
 		{
 			$closeclass = true;
 		}
 	}
-	if ($account['AccountTypeName'] != $typename[$level])
+	if ($type['AccountTypeName'] != $typename[$level])
 	{
 		if ($typename[$level] != '')
 		{
-			for ( ; $level >= 0; $level--)
+			for ( ; $level >= 0, $typename[$level] != ''; $level--) 
 			{
-				$rep->row += 6;
-				$rep->Line($rep->row);
-				$rep->NewLine();
-				$rep->TextCol(0, 2,	_('Total') . " " . $typename[$level]);
-				$rep->AmountCol(2, 3, $typeopen[$level], $dec);
-				$rep->AmountCol(3, 4, $typeperiod[$level], $dec);
-				$rep->AmountCol(4, 5, $typeclose[$level], $dec);
-				$typeopen[$level] = $typeperiod[$level] = $typeclose[$level] = 0.0;
-				if ($parent[$level] == -1)
+				if ($type['parent'] == $closing[$level] || $type['parent'] == $last || $type['parent'] <= 0)
+				{
+					$rep->row += 6;
+					$rep->Line($rep->row);
+					$rep->NewLine();
+					$rep->TextCol(0, 2,	_('Total') . " " . $typename[$level]);
+					$rep->AmountCol(2, 3, $typeopen[$level], $dec);
+					$rep->AmountCol(3, 4, $typeperiod[$level], $dec);
+					$rep->AmountCol(4, 5, $typeclose[$level], $dec);
+					if ($graphics)
+					{
+						$pg->x[] = $$typename[$level];
+						$pg->y[] = abs($typeclose[$level]);
+					}
+					$typeopen[$level] = $typeperiod[$level] = $typeclose[$level] = 0.0;
+				}
+				else
 					break;
 				$rep->NewLine();
 			}
-			if ($graphics)
-			{
-				$pg->x[] = $$typename[$level];
-				$pg->y[] = abs($typeclose[$level]);
-			}
-			$rep->NewLine();
+			//$rep->NewLine();
 			if ($closeclass)
 			{
 				$calculateopen = -$assetsopen - $classopen;

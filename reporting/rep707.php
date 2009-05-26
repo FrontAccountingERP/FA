@@ -145,28 +145,23 @@ function print_profit_and_loss_statement()
 	$typeper = array(0,0,0,0,0,0,0,0,0,0);
 	$typeacc = array(0,0,0,0,0,0,0,0,0,0);
 	$typename = array('','','','','','','','','','');
-	$parent = array(-1,-1,-1,-1,-1,-1,-1,-1,-1,-1);
+	$closing = array(-1,-1,-1,-1,-1,-1,-1,-1,-1,-1);
 	$level = 0;
 
 	$classper = 0.0;
 	$classacc = 0.0;
 	$salesper = 0.0;
 	$salesacc = 0.0;
+	$last = -1;
 
-	$accounts = get_gl_accounts_all(0);
+	$types = get_account_types_all(0);
 
-	while ($account=db_fetch($accounts))
+	while ($type=db_fetch($types))
 	{
-		$per_balance = get_gl_trans_from_to($from, $to, $account["account_code"], $dimension, $dimension2);
-
-		if ($compare == 2)
-			$acc_balance = get_budget_trans_from_to($begin, $end, $account["account_code"], $dimension, $dimension2);
-		else
-			$acc_balance = get_gl_trans_from_to($begin, $end, $account["account_code"], $dimension, $dimension2);
-		if (!$per_balance && !$acc_balance)
+		if (!num_accounts_in_type($type['AccountType'], $type['parent']))
 			continue;
 
-		if ($account['AccountClassName'] != $classname)
+		if ($type['AccountClassName'] != $classname)
 		{
 			if ($classname != '')
 			{
@@ -174,31 +169,34 @@ function print_profit_and_loss_statement()
 			}
 		}
 
-		if ($account['AccountTypeName'] != $typename[$level])
+		if ($type['AccountTypeName'] != $typename[$level])
 		{
-			if ($typename[$level] != '' && $account['parent'] == -1)
+			if ($typename[$level] != '')
 			{
-				for ( ; $level >= 0; $level--)
+				for ( ; $level >= 0, $typename[$level] != ''; $level--) 
 				{
-					$rep->row += 6;
-					$rep->Line($rep->row);
-					$rep->NewLine();
-					$rep->TextCol(0, 2,	_('Total') . " " . $typename[$level]);
-					$rep->AmountCol(2, 3, $typeper[$level], $dec);
-					$rep->AmountCol(3, 4, $typeacc[$level], $dec);
-					$rep->AmountCol(4, 5, Achieve($typeper[$level], $typeacc[$level]), $pdec);
-					$typeper[$level] = $typeacc[$level] = 0.0;
-					if ($parent[$level] == -1)
+					if ($type['parent'] == $closing[$level] || $type['parent'] == $last || $type['parent'] <= 0)
+					{
+						$rep->row += 6;
+						$rep->Line($rep->row);
+						$rep->NewLine();
+						$rep->TextCol(0, 2,	_('Total') . " " . $typename[$level]);
+						$rep->AmountCol(2, 3, $typeper[$level], $dec);
+						$rep->AmountCol(3, 4, $typeacc[$level], $dec);
+						$rep->AmountCol(4, 5, Achieve($typeper[$level], $typeacc[$level]), $pdec);
+						if ($graphics)
+						{
+							$pg->x[] = $typename[$level];
+							$pg->y[] = abs($typeper[$level]);
+							$pg->z[] = abs($typeacc[$level]);
+						}
+						$typeper[$level] = $typeacc[$level] = 0.0;
+					}
+					else
 						break;
 					$rep->NewLine();
 				}
-				if ($graphics)
-				{
-					$pg->x[] = $typename[$level];
-					$pg->y[] = abs($typeper[$level]);
-					$pg->z[] = abs($typeacc[$level]);
-				}
-				$rep->NewLine();
+				//$rep->NewLine();
 				if ($closeclass)
 				{
 					$rep->row += 6;
@@ -217,82 +215,98 @@ function print_profit_and_loss_statement()
 					$closeclass = false;
 				}
 			}
-			if ($account['AccountClassName'] != $classname)
+			if ($type['AccountClassName'] != $classname)
 			{
 				$rep->Font('bold');
-				$rep->TextCol(0, 5, $account['AccountClassName']);
+				$rep->TextCol(0, 5, $type['AccountClassName']);
 				$rep->Font();
 				$rep->NewLine();
 			}
-			if ($account['parent'] != -1 && $account['parent'] != $parent[$level])
-				$level++;
-			$typename[$level] = $account['AccountTypeName'];
+			$level++;
+			if ($type['parent'] != $last)
+				$last = $type['parent'];
+			$typename[$level] = $type['AccountTypeName'];
+			$closing[$level] = $type['parent'];
 			$rep->row -= 4;
-			$rep->TextCol(0, 5, $account['AccountTypeName']);
+			$rep->TextCol(0, 5, $type['AccountTypeName']);
 			$rep->row -= 4;
 			$rep->Line($rep->row);
 			$rep->NewLine();
 		}
-		$classname = $account['AccountClassName'];
-		$parent[$level] = $account['parent'];	
+		$classname = $type['AccountClassName'];
 
-		$per_balance *= -1;
-		$acc_balance *= -1;
+		$accounts = get_gl_accounts_in_type($type['AccountType']);
+		while ($account=db_fetch($accounts))
+		{
+			$per_balance = get_gl_trans_from_to($from, $to, $account["account_code"], $dimension, $dimension2);
+
+			if ($compare == 2)
+				$acc_balance = get_budget_trans_from_to($begin, $end, $account["account_code"], $dimension, $dimension2);
+			else
+				$acc_balance = get_gl_trans_from_to($begin, $end, $account["account_code"], $dimension, $dimension2);
+			if (!$per_balance && !$acc_balance)
+				continue;
+			$per_balance *= -1;
+			$acc_balance *= -1;
 		
-		for ($i = 0; $i <= $level; $i++)
-		{
-			$typeper[$i] += $per_balance;
-			$typeacc[$i] += $acc_balance;
-		}
-		$classper += $per_balance;
-		$classacc += $acc_balance;
-		$rep->TextCol(0, 1,	$account['account_code']);
-		$rep->TextCol(1, 2,	$account['account_name']);
+			for ($i = 0; $i <= $level; $i++)
+			{
+				$typeper[$i] += $per_balance;
+				$typeacc[$i] += $acc_balance;
+			}
+			$classper += $per_balance;
+			$classacc += $acc_balance;
+			$rep->TextCol(0, 1,	$account['account_code']);
+			$rep->TextCol(1, 2,	$account['account_name']);
 
-		$rep->AmountCol(2, 3, $per_balance, $dec);
-		$rep->AmountCol(3, 4, $acc_balance, $dec);
-		$rep->AmountCol(4, 5, Achieve($per_balance, $acc_balance), $pdec);
+			$rep->AmountCol(2, 3, $per_balance, $dec);
+			$rep->AmountCol(3, 4, $acc_balance, $dec);
+			$rep->AmountCol(4, 5, Achieve($per_balance, $acc_balance), $pdec);
 
-		$rep->NewLine();
+			$rep->NewLine();
 
-		if ($rep->row < $rep->bottomMargin + 3 * $rep->lineHeight)
-		{
-			$rep->Line($rep->row - 2);
-			$rep->Header();
-		}
+			if ($rep->row < $rep->bottomMargin + 3 * $rep->lineHeight)
+			{
+				$rep->Line($rep->row - 2);
+				$rep->Header();
+			}
+		}	
 	}
-	if ($account['AccountClassName'] != $classname)
+	if ($type['AccountClassName'] != $classname)
 	{
 		if ($classname != '')
 		{
 			$closeclass = true;
 		}
 	}
-	if ($account['AccountTypeName'] != $typename[$level])
+	if ($type['AccountTypeName'] != $typename[$level])
 	{
 		if ($typename[$level] != '')
 		{
-			for ( ; $level >= 0; $level--)
+			for ( ; $level >= 0, $typename[$level] != ''; $level--) 
 			{
-				$rep->row += 6;
-				$rep->Line($rep->row);
-				$rep->NewLine();
-				$rep->TextCol(0, 2,	_('Total') . " " . $typename[$level]);
-				$rep->AmountCol(2, 3, $typeper[$level], $dec);
-				$rep->AmountCol(3, 4, $typeacc[$level], $dec);
-				$rep->AmountCol(4, 5, Achieve($typeper[$level], $typeacc[$level]), $pdec);
-				$typeper[$level] = $typeacc[$level] = 0.0;
-				if ($parent[$level] == -1)
+				if ($type['parent'] == $closing[$level] || $type['parent'] == $last || $type['parent'] <= 0)
+				{
+					$rep->row += 6;
+					$rep->Line($rep->row);
+					$rep->NewLine();
+					$rep->TextCol(0, 2,	_('Total') . " " . $typename[$level]);
+					$rep->AmountCol(2, 3, $typeper[$level], $dec);
+					$rep->AmountCol(3, 4, $typeacc[$level], $dec);
+					$rep->AmountCol(4, 5, Achieve($typeper[$level], $typeacc[$level]), $pdec);
+					if ($graphics)
+					{
+						$pg->x[] = $typename[$level];
+						$pg->y[] = abs($typeper[$level]);
+						$pg->z[] = abs($typeacc[$level]);
+					}
+					$typeper[$level] = $typeacc[$level] = 0.0;
+				}
+				else
 					break;
 				$rep->NewLine();
 			}
-			if ($graphics)
-			{
-				$pg->x[] = $typename[$level];
-				$pg->y[] = abs($typeper[$level]);
-				$pg->z[] = abs($typeacc[$level]);
-			}
-			$rep->NewLine();
+			//$rep->NewLine();
 			if ($closeclass)
 			{
 				$rep->Line($rep->row + 6);

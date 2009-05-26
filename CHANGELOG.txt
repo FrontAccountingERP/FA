@@ -19,13 +19,24 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+26-May-2009 Joe Hunt
+# Again fixed nested subtypes in account types correctly in COA, Monthly Breakdown, Balance Sheet and P&L Statement
+$ /gl/includes/db/gl_db_accounts.inc
+  /gl/includes/db/gl_db_account_types.inc
+  /reporting/rep701.php
+  /reporting/rep705.php
+  /reporting/rep706.php
+  /reporting/rep707.php
+# fixed wider combobox for backup-files in company backup
+$ /admin/backups.php
+
 25-May-2009 Joe Hunt
 # Fixed Supplier Credit so Purchase Order Outstanding is decreased too.
 $ /purchasing/includes/db/grn_db.inc
 # Fixed so nested subtypes in account types are nested correctly in Balance Sheet and P&L Statement
 $ /gl/includes/db/gl_db_accounts.inc
-$ /reporting/rep706.php
-$ /reporting/rep707.php
+  /reporting/rep706.php
+  /reporting/rep707.php
 ! Extra column in Stock Check Sheet, On Order and option for selecting Only Shortage.
 $ /reporting/rep303.php
   /reporting/reports_main.php
