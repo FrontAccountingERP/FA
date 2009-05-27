@@ -154,14 +154,26 @@ function print_profit_and_loss_statement()
 	$salesacc = 0.0;
 	$last = -1;
 
-	$types = get_account_types_all(0);
+	$accounts = get_gl_accounts_all(0);
 
-	while ($type=db_fetch($types))
+	while ($account=db_fetch($accounts))
 	{
-		if (!num_accounts_in_type($type['AccountType'], $type['parent']))
+		if ($account['account_code'] == null && $account['parent'] > 0)
 			continue;
 
-		if ($type['AccountClassName'] != $classname)
+		if ($account['account_code'] != null)
+		{
+			$per_balance = get_gl_trans_from_to($from, $to, $account["account_code"], $dimension, $dimension2);
+
+			if ($compare == 2)
+				$acc_balance = get_budget_trans_from_to($begin, $end, $account["account_code"], $dimension, $dimension2);
+			else
+				$acc_balance = get_gl_trans_from_to($begin, $end, $account["account_code"], $dimension, $dimension2);
+			if (!$per_balance && !$acc_balance)
+				continue;
+		}
+
+		if ($account['AccountClassName'] != $classname)
 		{
 			if ($classname != '')
 			{
@@ -169,13 +181,13 @@ function print_profit_and_loss_statement()
 			}
 		}
 
-		if ($type['AccountTypeName'] != $typename[$level])
+		if ($account['AccountTypeName'] != $typename[$level])
 		{
 			if ($typename[$level] != '')
 			{
 				for ( ; $level >= 0, $typename[$level] != ''; $level--) 
 				{
-					if ($type['parent'] == $closing[$level] || $type['parent'] == $last || $type['parent'] <= 0)
+					if ($account['parent'] == $closing[$level] || $account['parent'] < $last)
 					{
 						$rep->row += 6;
 						$rep->Line($rep->row);
@@ -215,37 +227,28 @@ function print_profit_and_loss_statement()
 					$closeclass = false;
 				}
 			}
-			if ($type['AccountClassName'] != $classname)
+			if ($account['AccountClassName'] != $classname)
 			{
 				$rep->Font('bold');
-				$rep->TextCol(0, 5, $type['AccountClassName']);
+				$rep->TextCol(0, 5, $account['AccountClassName']);
 				$rep->Font();
 				$rep->NewLine();
 			}
 			$level++;
-			if ($type['parent'] != $last)
-				$last = $type['parent'];
-			$typename[$level] = $type['AccountTypeName'];
-			$closing[$level] = $type['parent'];
+			if ($account['parent'] != $last)
+				$last = $account['parent'];
+			$typename[$level] = $account['AccountTypeName'];
+			$closing[$level] = $account['parent'];
 			$rep->row -= 4;
-			$rep->TextCol(0, 5, $type['AccountTypeName']);
+			$rep->TextCol(0, 5, $account['AccountTypeName']);
 			$rep->row -= 4;
 			$rep->Line($rep->row);
 			$rep->NewLine();
 		}
-		$classname = $type['AccountClassName'];
+		$classname = $account['AccountClassName'];
 
-		$accounts = get_gl_accounts_in_type($type['AccountType']);
-		while ($account=db_fetch($accounts))
+		if ($account['account_code'] != null)
 		{
-			$per_balance = get_gl_trans_from_to($from, $to, $account["account_code"], $dimension, $dimension2);
-
-			if ($compare == 2)
-				$acc_balance = get_budget_trans_from_to($begin, $end, $account["account_code"], $dimension, $dimension2);
-			else
-				$acc_balance = get_gl_trans_from_to($begin, $end, $account["account_code"], $dimension, $dimension2);
-			if (!$per_balance && !$acc_balance)
-				continue;
 			$per_balance *= -1;
 			$acc_balance *= -1;
 		
@@ -272,20 +275,20 @@ function print_profit_and_loss_statement()
 			}
 		}	
 	}
-	if ($type['AccountClassName'] != $classname)
+	if ($account['AccountClassName'] != $classname)
 	{
 		if ($classname != '')
 		{
 			$closeclass = true;
 		}
 	}
-	if ($type['AccountTypeName'] != $typename[$level])
+	if ($account['AccountTypeName'] != $typename[$level])
 	{
 		if ($typename[$level] != '')
 		{
 			for ( ; $level >= 0, $typename[$level] != ''; $level--) 
 			{
-				if ($type['parent'] == $closing[$level] || $type['parent'] == $last || $type['parent'] <= 0)
+				if ($account['parent'] == $closing[$level] || $account['parent'] < $last)
 				{
 					$rep->row += 6;
 					$rep->Line($rep->row);

@@ -60,34 +60,31 @@ function print_Chart_of_Accounts()
 	$classname = '';
 	$group = '';
 
-	$types = get_account_types_all();
+	$accounts = get_gl_accounts_all();
 
-	while ($type=db_fetch($types))
+	while ($account=db_fetch($accounts))
 	{
-		if (!num_accounts_in_type($type['AccountType'], $type['parent']))
-			continue;
-		if ($type['AccountTypeName'] != $group)
+		if ($account['AccountTypeName'] != $group)
 		{
 			if ($classname != '')
 				$rep->row -= 4;
-			if ($type['AccountClassName'] != $classname)
+			if ($account['AccountClassName'] != $classname)
 			{
 				$rep->Font('bold');
-				$rep->TextCol(0, 4, $type['AccountClassName']);
+				$rep->TextCol(0, 4, $account['AccountClassName']);
 				$rep->Font();
 				//$rep->row -= ($rep->lineHeight + 4);
 				$rep->NewLine();
 			}
-			$group = $type['AccountTypeName'];
-			$rep->TextCol(0, 4, $type['AccountTypeName']);
+			$group = $account['AccountTypeName'];
+			$rep->TextCol(0, 4, $account['AccountTypeName']);
 			//$rep->Line($rep->row - 4);
 			//$rep->row -= ($rep->lineHeight + 4);
 			$rep->NewLine();
 		}
-		$classname = $type['AccountClassName'];
+		$classname = $account['AccountClassName'];
 		
-		$accounts = get_gl_accounts_in_type($type['AccountType']);
-		while ($account=db_fetch($accounts))
+		if ($account['account_code'] != null)
 		{
 			if ($showbalance == 1)
 			{

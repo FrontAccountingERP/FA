@@ -51,20 +51,6 @@ function get_account_type_name($id)
 	return $row[0];
 }
 
-
-function get_account_types_all($balance=-1)
-{
-	$sql = "SELECT ".TB_PREF."chart_types.name AS AccountTypeName,".TB_PREF."chart_types.parent,".TB_PREF."chart_types.id AS AccountType,
-		".TB_PREF."chart_class.class_name AS AccountClassName
-		FROM ".TB_PREF."chart_types, ".TB_PREF."chart_class
-		WHERE ".TB_PREF."chart_types.class_id=".TB_PREF."chart_class.cid";
-	if ($balance != -1)
-		$sql .= " AND ".TB_PREF."chart_class.balance_sheet=$balance";
-	$sql .= " ORDER BY ".TB_PREF."chart_class.cid, IF(parent > -1,parent,".TB_PREF."chart_types.id), parent";
-
-	return db_query($sql, "could not get gl types");
-}
-
 function delete_account_type($id)
 {
 	$sql = "DELETE FROM ".TB_PREF."chart_types WHERE id = $id";

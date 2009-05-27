@@ -19,6 +19,15 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+27-May-2009 Joe Hunt
+# After heavy testing a new set of nested subtypes in COA, Monthly Breakdown, Balance Sheet and P&L Statement.
+$ /gl/includes/db/gl_db_accounts.inc
+  /gl/includes/db/gl_db_account_types.inc
+  /reporting/rep701.php
+  /reporting/rep705.php
+  /reporting/rep706.php
+  /reporting/rep707.php
+
 26-May-2009 Joe Hunt
 # Again fixed nested subtypes in account types correctly in COA, Monthly Breakdown, Balance Sheet and P&L Statement
 $ /gl/includes/db/gl_db_accounts.inc

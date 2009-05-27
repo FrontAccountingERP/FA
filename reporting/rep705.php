@@ -198,13 +198,22 @@ function print_annual_expense_breakdown()
 	$level = 0;
 	$last = -1;
 
-	$types = get_account_types_all(0);
+	$accounts = get_gl_accounts_all(0);
 
-	while ($type = db_fetch($types))
+	while ($account=db_fetch($accounts))
 	{
-		if (!num_accounts_in_type($type['AccountType'], $type['parent']))
+		if ($account['account_code'] == null && $account['parent'] > 0)
 			continue;
-		if ($type['AccountClassName'] != $classname)
+
+		if ($account['account_code'] != null)
+		{
+			$bal = getPeriods($year, $account["account_code"], $dimension, $dimension2);
+			if (!$bal['per01'] && !$bal['per02'] && !$bal['per03'] && !$bal['per04'] &&
+				!$bal['per05'] && !$bal['per06'] && !$bal['per07'] && !$bal['per08'] &&
+				!$bal['per09'] && !$bal['per10'] && !$bal['per11'] && !$bal['per12'])
+				continue;
+		}
+		if ($account['AccountClassName'] != $classname)
 		{
 			if ($classname != '')
 			{
@@ -212,13 +221,13 @@ function print_annual_expense_breakdown()
 			}
 		}
 
-		if ($type['AccountTypeName'] != $typename[$level])
+		if ($account['AccountTypeName'] != $typename[$level])
 		{
 			if ($typename[$level] != '')
 			{
 				for ( ; $level >= 0, $typename[$level] != ''; $level--) 
 				{
-					if ($type['parent'] == $closing[$level] || $type['parent'] == $last || $type['parent'] <= 0)
+					if ($account['parent'] == $closing[$level] || $account['parent'] < $last)
 					{
 						$rep->row += 6;
 						$rep->Line($rep->row);
@@ -252,34 +261,28 @@ function print_annual_expense_breakdown()
 					$closeclass = false;
 				}
 			}
-			if ($type['AccountClassName'] != $classname)
+			if ($account['AccountClassName'] != $classname)
 			{
 				$rep->Font('bold');
-				$rep->TextCol(0, 5, $type['AccountClassName']);
+				$rep->TextCol(0, 5, $account['AccountClassName']);
 				$rep->Font();
 				$rep->NewLine();
 			}
 			$level++;
-			if ($type['parent'] != $last)
-				$last = $type['parent'];
-			$typename[$level] = $type['AccountTypeName'];
-			$closing[$level] = $type['parent'];
+			if ($account['parent'] != $last)
+				$last = $account['parent'];
+			$typename[$level] = $account['AccountTypeName'];
+			$closing[$level] = $account['parent'];
 			$rep->row -= 4;
-			$rep->TextCol(0, 5, $type['AccountTypeName']);
+			$rep->TextCol(0, 5, $account['AccountTypeName']);
 			$rep->row -= 4;
 			$rep->Line($rep->row);
 			$rep->NewLine();
 		}
-		$classname = $type['AccountClassName'];
+		$classname = $account['AccountClassName'];
 
-		$accounts = get_gl_accounts_in_type($type['AccountType']);
-		while ($account=db_fetch($accounts))
+		if ($account['account_code'] != null)
 		{
-			$bal = getPeriods($year, $account["account_code"], $dimension, $dimension2);
-			if (!$bal['per01'] && !$bal['per02'] && !$bal['per03'] && !$bal['per04'] &&
-				!$bal['per05'] && !$bal['per06'] && !$bal['per07'] && !$bal['per08'] &&
-				!$bal['per09'] && !$bal['per10'] && !$bal['per11'] && !$bal['per12'])
-				continue;
 			$balance = array(1 => $bal['per01'], $bal['per02'], $bal['per03'], $bal['per04'],
 				$bal['per05'], $bal['per06'], $bal['per07'], $bal['per08'],
 				$bal['per09'], $bal['per10'], $bal['per11'], $bal['per12']);
@@ -305,20 +308,20 @@ function print_annual_expense_breakdown()
 			}
 		}	
 	}
-	if ($type['AccountClassName'] != $classname)
+	if ($account['AccountClassName'] != $classname)
 	{
 		if ($classname != '')
 		{
 			$closeclass = true;
 		}
 	}
-	if ($type['AccountTypeName'] != $typename[$level])
+	if ($account['AccountTypeName'] != $typename[$level])
 	{
 		if ($typename[$level] != '')
 		{
 			for ( ; $level >= 0, $typename[$level] != ''; $level--) 
 			{
-				if ($type['parent'] == $closing[$level] || $type['parent'] == $last || $type['parent'] <= 0)
+				if ($account['parent'] == $closing[$level] || $account['parent'] < $last)
 				{
 					$rep->row += 6;
 					$rep->Line($rep->row);

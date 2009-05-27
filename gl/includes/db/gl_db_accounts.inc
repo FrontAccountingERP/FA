@@ -49,20 +49,18 @@ function get_gl_accounts($from=null, $to=null)
 	return db_query($sql, "could not get gl accounts");
 }
 
-function get_gl_accounts_in_type($type)
+function get_gl_accounts_all($balance=-1)
 {
-	$sql = "SELECT * FROM ".TB_PREF."chart_master WHERE account_type=$type ORDER BY account_code";
+	 $sql = "SELECT ".TB_PREF."chart_master.account_code, ".TB_PREF."chart_master.account_name, ".TB_PREF."chart_types.name AS AccountTypeName,".TB_PREF."chart_types.id AS AccountType,
+	 	".TB_PREF."chart_types.parent, ".TB_PREF."chart_class.class_name AS AccountClassName
+	 	FROM ".TB_PREF."chart_types INNER JOIN ".TB_PREF."chart_class ON ".TB_PREF."chart_types.class_id=".TB_PREF."chart_class.cid
+	 	LEFT JOIN ".TB_PREF."chart_master ON ".TB_PREF."chart_master.account_type=".TB_PREF."chart_types.id ";
+	if ($balance != -1)
+		$sql .= "WHERE ".TB_PREF."chart_class.balance_sheet=$balance "; 	 	 		
+	 $sql .= "ORDER BY ".TB_PREF."chart_class.cid, IF(parent > 0,parent,".TB_PREF."chart_types.id), 
+	 	IF(parent > 0,".TB_PREF."chart_types.id, parent), ".TB_PREF."chart_master.account_code";
 
 	return db_query($sql, "could not get gl accounts");
-}
-
-function num_accounts_in_type($type, $parent)
-{
-	$sql = "SELECT COUNT(*) FROM ".TB_PREF."chart_master WHERE account_type=$type OR account_type=$parent";
-
-	$result = db_query($sql, "could not get gl accounts");
-	$row = db_fetch_row($result);
-	return $row[0];
 }
 
 function get_gl_account($code)
