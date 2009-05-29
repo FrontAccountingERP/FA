@@ -318,8 +318,9 @@ $opts = array(		// default options
 	}
 
 	if ($found === false) {
-		$_POST[$name] = $first_id;
+		$selected_id = $first_id;
 	}
+	$_POST[$name] = $selected_id;
 
 	$aspect = $opts['edit_submit'] ? " aspect='editable'" : '';
 	$selector = "<select $disabled name='$name' class='combo' title='"
@@ -1601,8 +1602,8 @@ function gl_all_accounts_list_row($label, $name, $selected_id=null,
 function yesno_list($name, $selected_id=null, $name_yes="", $name_no="", $submit_on_change=false)
 {
 	$items = array();
-	$items['1'] = strlen($name_yes) ? $name_yes : _("Yes");
 	$items['0'] = strlen($name_no) ? $name_no : _("No");
+	$items['1'] = strlen($name_yes) ? $name_yes : _("Yes");
 
 	return array_selector($name, $selected_id, $items, 
 		array( 
