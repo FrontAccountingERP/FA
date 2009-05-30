@@ -168,7 +168,7 @@ function print_balance_sheet()
 						$rep->AmountCol(4, 5, $typeclose[$level], $dec);
 						if ($graphics)
 						{
-							$pg->x[] = $$typename[$level];
+							$pg->x[] = $typename[$level];
 							$pg->y[] = abs($typeclose[$level]);
 						}
 						$typeopen[$level] = $typeperiod[$level] = $typeclose[$level] = 0.0;
@@ -268,7 +268,7 @@ function print_balance_sheet()
 					$rep->AmountCol(4, 5, $typeclose[$level], $dec);
 					if ($graphics)
 					{
-						$pg->x[] = $$typename[$level];
+						$pg->x[] = $typename[$level];
 						$pg->y[] = abs($typeclose[$level]);
 					}
 					$typeopen[$level] = $typeperiod[$level] = $typeclose[$level] = 0.0;

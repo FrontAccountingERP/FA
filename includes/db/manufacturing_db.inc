@@ -25,29 +25,39 @@ function get_demand_qty($stock_id, $location)
 	return $row['QtyDemand'];
 }
 
+$bom_list = array(); 
+
 // recursion fixed by Tom Moulton. Max 10 recursion levels.
 function stock_demand_manufacture($stock_id, $qty, $demand_id, $level=0) 
 {
+	global $bom_list;
 	$demand = 0.0;
 	if ($level > 10) {
-		display_notification("BOM Too many Manufacturing levels deep $level");
+		display_warning("BOM Too many Manufacturing levels deep $level");
 		return $demand;
 	}
-	$sql = "SELECT parent, component, quantity FROM ".TB_PREF."bom WHERE parent = '$stock_id'";
-	$result = db_query($sql, "Could not search bom");
-	$bom = array();
-	while ($row = db_fetch_row($result)) {
-		$bom[] = array($row[0], $row[1], $row[2]);
-	}
-	db_free_result($result);
+	$bom = $bom_list[$stock_id];
+	if ($bom == NULL) {
+		$sql = "SELECT parent, component, quantity FROM ".TB_PREF."bom WHERE parent = '$stock_id'";
+		$result = db_query($sql, "Could not search bom");
+		$bom = array();
+		// Even if we get no results, remember that fact 
+		$bom[] = array($stock_id, '', 0); 
+		while ($row = db_fetch_row($result)) {
+			$bom[] = array($row[0], $row[1], $row[2]);
+		}
+		db_free_result($result);
+		$bom_list[$stock_id] = $bom;
+	}	
 	$len = count($bom);
 	$i = 0;
 	while ($i < $len) {
 		$row = $bom[$i];
-		$i++;
+		$i++; 
+		// Ignore the dummy entry
+		if ($row[1] == '') continue;
 		$q = $qty * $row[2];
-		if ($row[1] == $demand_id) 
-			$demand += $q;
+		if ($row[1] == $demand_id) $demand += $q;
 		$demand += stock_demand_manufacture($row[1], $q, $demand_id, $level+1);
 	}
 	return $demand;
@@ -69,7 +79,7 @@ function get_demand_asm_qty($stock_id, $location)
 				   ".TB_PREF."stock_master.stock_id=".TB_PREF."sales_order_details.stk_code AND
 				   (".TB_PREF."stock_master.mb_flag='M' OR ".TB_PREF."stock_master.mb_flag='A')
 				   GROUP BY ".TB_PREF."sales_order_details.stk_code";
-    	$result = db_query($sql, "No transactions were returned");
+    $result = db_query($sql, "No transactions were returned");
 	while ($row = db_fetch_row($result)) {
 		$demand_qty += stock_demand_manufacture($row[0], $row[1], $stock_id);
 	}
@@ -78,7 +88,7 @@ function get_demand_asm_qty($stock_id, $location)
 
 function get_on_porder_qty($stock_id, $location)
 {
-	$sql = "SELECT Sum(".TB_PREF."purch_order_details.quantity_ordered - ".TB_PREF."purch_order_details.quantity_received) AS qoo
+	$sql = "SELECT SUM(".TB_PREF."purch_order_details.quantity_ordered - ".TB_PREF."purch_order_details.quantity_received) AS qoo
 		FROM ".TB_PREF."purch_order_details INNER JOIN ".TB_PREF."purch_orders ON ".TB_PREF."purch_order_details.order_no=".TB_PREF."purch_orders.order_no
 		WHERE ".TB_PREF."purch_order_details.item_code='$stock_id' ";
 	if ($location != "")
@@ -100,7 +110,7 @@ function get_on_porder_qty($stock_id, $location)
 
 function get_on_worder_qty($stock_id, $location)
 {
-	$sql = "SELECT Sum((".TB_PREF."workorders.units_reqd-".TB_PREF."workorders.units_issued) * 
+	$sql = "SELECT SUM((".TB_PREF."workorders.units_reqd-".TB_PREF."workorders.units_issued) * 
 		(".TB_PREF."wo_requirements.units_req-".TB_PREF."wo_requirements.units_issued)) AS qoo
 		FROM ".TB_PREF."wo_requirements INNER JOIN ".TB_PREF."workorders 
 			ON ".TB_PREF."wo_requirements.workorder_id=".TB_PREF."workorders.id
@@ -119,7 +129,7 @@ function get_on_worder_qty($stock_id, $location)
 	$flag = get_mb_flag($stock_id);
 	if ($flag == 'A' || $flag == 'M')
 	{
-		$sql = "SELECT Sum((".TB_PREF."workorders.units_reqd-".TB_PREF."workorders.units_issued)) AS qoo
+		$sql = "SELECT SUM((".TB_PREF."workorders.units_reqd-".TB_PREF."workorders.units_issued)) AS qoo
 			FROM ".TB_PREF."workorders 
 			WHERE ".TB_PREF."workorders.stock_id='$stock_id' ";
 		if ($location != "")	
