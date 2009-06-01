@@ -134,13 +134,8 @@ if (get_post('Upgrade'))
 				." '".$conn['name']."'");
 			continue;
 		}
-	// create security backup		
-	 	if ($conn['tbpref'] != "")
-			$filename = $conn['dbname'] . "_" . $conn['tbpref'] . date("Ymd_Hi") . ".sql";
-		else
-			$filename = $conn['dbname'] . "_" . date("Ymd_Hi") . ".sql";
-
-		db_export($conn, $filename, 'no', 'Security backup before upgrade', $conn['tbpref']);
+	// create security backup	
+		db_backup($conn, 'no', 'Security backup before upgrade', $conn['tbpref']);
 	// apply all upgrade data
 		foreach ($installers as $i => $inst) 
 		{

@@ -19,6 +19,14 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+02-Jun-2009 Joe Hunt
+! Fiscal Year delete . now removes all transactions and convert into relevant open balances.
+$ /admin/fiscalyear.php
+! Created a function db_backup in /admin/db/maintenence_db.inc
+$ /admin/db/maintenance_db.inc
+  /admin/backups.php
+  /admin/inst_upgrade.php
+  
 22-May-2009 Janusz Dobrowolski
 # Defualt hyperlink href set to PHP_SELF
 $ /includes/ui/ui_controls.inc

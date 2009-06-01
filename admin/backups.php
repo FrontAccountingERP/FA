@@ -33,12 +33,7 @@ function check_paths()
 
 function generate_backup($conn, $ext='no', $comm='')
 {
-	if ($conn['tbpref'] != "")
-		$filename = $conn['dbname'] . "_" . $conn['tbpref'] . date("Ymd_Hi") . ".sql";
-	else
-		$filename = $conn['dbname'] . "_" . date("Ymd_Hi") . ".sql";
-
-	$filename = db_export($conn, $filename, $ext, $comm);
+	$filename = db_backup($conn, $ext, $comm);
 	if ($filename)
 		display_notification(_("Backup successfully generated."). ' '
 			. _("Filename") . ": " . $filename);

@@ -298,6 +298,16 @@ function db_unzip($mode, $path)
     	return explode("\n", $file_data);
 }
 
+function db_backup($conn, $ext='no', $comm='', $tbpref = TB_PREF)
+{
+	if ($conn['tbpref'] != "")
+		$filename = $conn['dbname'] . "_" . $conn['tbpref'] . date("Ymd_Hi") . ".sql";
+	else
+		$filename = $conn['dbname'] . "_" . date("Ymd_Hi") . ".sql";
+
+	return db_export($conn, $filename, $ext, $comm, $tbpref);
+}
+
 // generates a dump of $db database
 // $drop and $zip tell if to include the drop table statement or dry to pack
 function db_export($conn, $filename, $zip='no', $comment='', $tbpref = TB_PREF)

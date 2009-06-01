@@ -16,6 +16,7 @@ include_once($path_to_root . "/includes/session.inc");
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/admin/db/company_db.inc");
 include_once($path_to_root . "/includes/ui.inc");
+include_once($path_to_root . "/admin/db/maintenance_db.inc");
 $js = "";
 if ($use_date_picker)
 	$js .= get_js_date_picker();
@@ -46,12 +47,14 @@ function is_bad_begin_date($date)
 	return ($max !== $date);
 }
 
-function check_open_before($date)
+function check_years_before($date, $closed=false)
 {
 	$date = date2sql($date);
-	$sql = "SELECT COUNT(*) FROM ".TB_PREF."fiscal_year WHERE begin < '$date' AND closed=0";
+	$sql = "SELECT COUNT(*) FROM ".TB_PREF."fiscal_year WHERE begin < '$date'";
+	if (!$closed)
+		$sql .= " AND closed=0";
 
-	$result = db_query($sql, "could not check open fiscal years");
+	$result = db_query($sql, "could not check fiscal years before");
 	$row = db_fetch_row($result);
 	return ($row[0] > 0);
 }
@@ -130,7 +133,7 @@ function handle_submit()
 	{
 		if ($_POST['closed'] == 1)
 		{
-			if (check_open_before($_POST['from_date']))
+			if (check_years_before($_POST['from_date'], false))
 			{
 				display_error( _("Cannot CLOSE this year because there are open fiscal years before"));
 				set_focus('closed');
@@ -159,21 +162,186 @@ function check_can_delete($selected_id)
 {
 	$myrow = get_fiscalyear($selected_id);
 	// PREVENT DELETES IF DEPENDENT RECORDS IN gl_trans
-	$from = $myrow['begin'];
-	$to = $myrow['end'];
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."gl_trans WHERE tran_date >= '$from' AND tran_date <= '$to'";
-	$result = db_query($sql, "could not query gl_trans master");
-	$myrow = db_fetch_row($result);
-	if ($myrow[0] > 0)
+	if (check_years_before(sql2date($myrow['begin']), true))
 	{
-		display_error(_("Cannot delete this fiscal year because items have been created referring to it."));
+		display_error(_("Cannot delete this fiscal year because thera are fiscal years before."));
 		return false;
 	}
-
+	if ($myrow['closed'] == 0)
+	{
+		display_error(_("Cannot delete this fiscal year because the fiscal year is not closed."));
+		return false;
+	}
 	return true;
 }
 
 //---------------------------------------------------------------------------------------------
+function delete_attachments_and_comments($type_no, $trans_no)
+{
+	global $comp_path;
+	
+	$sql = "SELECT * FROM ".TB_PREF."attachments WHERE type_no = $type_no AND trans_no = $trans_no";
+	$result = db_query($sql, "Could not retrieve attachments");
+	while ($row = db_fetch($result))
+	{
+		$dir =  $comp_path."/".user_company(). "/attachments";
+		if (file_exists($dir."/".$row['unique_name']))
+			unlink($dir."/".$row['unique_name']);
+		$sql = "DELETE FROM ".TB_PREF."attachments WHERE  type_no = $type_no AND trans_no = $trans_no";
+		db_query($sql, "Could not delete attachment");
+	}	
+	$sql = "DELETE FROM ".TB_PREF."comments WHERE  type = $type_no AND id = $trans_no";
+	db_query($sql, "Could not delete comments");
+}	
+
+function delete_this_fiscalyear($selected_id)
+{
+	global $db_connections;
+	
+	db_backup($db_connections[$_SESSION["wa_current_user"]->company], 'Security backup before Fiscal Year Removal');
+	begin_transaction();
+	$ref = _("Open Balance");
+	$myrow = get_fiscalyear($selected_id);
+	$to = $myrow['end'];
+	$sql = "SELECT order_no FROM ".TB_PREF."sales_orders WHERE ord_date <= '$to'";
+	$result = db_query($sql, "Could not retrieve sales orders");
+	while ($row = db_fetch($result))
+	{
+		$sql = "SELECT SUM(qty_sent), SUM(quantity) FROM ".TB_PREF."sales_order_details WHERE order_no = {$row['order_no']}";
+		$res = db_query($sql, "Could not retrieve sales order details");
+		$row2 = db_fetch_row($res);
+		if ($row2[0] == $row2[1])
+		{
+			$sql = "DELETE FROM ".TB_PREF."sales_order_details WHERE order_no = {$row['order_no']}";
+			db_query($sql, "Could not delete sales order details");
+			$sql = "DELETE FROM ".TB_PREF."sales_orders WHERE order_no = {$row['order_no']}";
+			db_query($sql, "Could not delete sales order");
+			delete_attachments_and_comments(systypes::sales_order(), $row['order_no']);
+		}
+	}
+	$sql = "SELECT order_no FROM ".TB_PREF."purch_orders WHERE ord_date <= '$to'";
+	$result = db_query($sql, "Could not retrieve purchase orders");
+	while ($row = db_fetch($result))
+	{
+		$sql = "SELECT SUM(quantity_ordered), SUM(quantity_received) FROM ".TB_PREF."purch_order_details WHERE order_no = {$row['order_no']}";
+		$res = db_query($sql, "Could not retrieve purchase order details");
+		$row2 = db_fetch_row($res);
+		if ($row2[0] == $row2[1])
+		{
+			$sql = "DELETE FROM ".TB_PREF."purch_order_details WHERE order_no = {$row['order_no']}";
+			db_query($sql, "Could not delete purchase order details");
+			$sql = "DELETE FROM ".TB_PREF."purch_orders WHERE order_no = {$row['order_no']}";
+			db_query($sql, "Could not delete purchase order");
+			delete_attachments_and_comments(systypes::po(), $row['order_no']);
+		}
+	}
+	$sql = "SELECT id FROM ".TB_PREF."grn_batch WHERE delivery_date <= '$to'";
+	$result = db_query($sql, "Could not retrieve grn batch");
+	while ($row = db_fetch($result))
+	{
+		$sql = "DELETE FROM ".TB_PREF."grn_items WHERE grn_batch_id = {$row['id']}";
+		db_query($sql, "Could not delete grn items");
+		$sql = "DELETE FROM ".TB_PREF."grn_batch WHERE id = {$row['id']}";
+		db_query($sql, "Could not delete grn batch");
+		delete_attachments_and_comments(25, $row['id']);
+	}
+	$sql = "SELECT trans_no, type FROM ".TB_PREF."debtor_trans WHERE tran_date <= '$to' AND 
+		(ov_amount + ov_gst + ov_freight + ov_freight_tax + ov_discount) = alloc";
+	$result = db_query($sql, "Could not retrieve debtor trans");
+	while ($row = db_fetch($result))
+	{
+		$sql = "DELETE FROM ".TB_PREF."cust_allocations WHERE trans_no_from = {$row['trans_no']} AND type_no_from = {$row['type']}";
+		db_query($sql, "Could not delete cust allocations");
+		$sql = "DELETE FROM ".TB_PREF."debtor_trans_details WHERE debtor_trans_no = {$row['trans_no']} AND debtor_trans_type = {$row['type']}";
+		db_query($sql, "Could not delete debtor trans details");
+		$sql = "DELETE FROM ".TB_PREF."debtor_trans WHERE trans_no = {$row['trans_no']} AND type = {$row['type']}";
+		db_query($sql, "Could not delete debtor trans");
+		delete_attachments_and_comments($row['type'], $row['trans_no']);
+	}
+	$sql = "SELECT trans_no, type FROM ".TB_PREF."supp_trans WHERE tran_date <= '$to' AND 
+		ABS(ov_amount + ov_gst + ov_discount) = alloc";
+	$result = db_query($sql, "Could not retrieve supp trans");
+	while ($row = db_fetch($result))
+	{
+		$sql = "DELETE FROM ".TB_PREF."supp_allocations WHERE trans_no_from = {$row['trans_no']} AND type_no_from = {$row['type']}";
+		db_query($sql, "Could not delete supp allocations");
+		$sql = "DELETE FROM ".TB_PREF."supp_invoice_items WHERE supp_trans_no = {$row['trans_no']} AND supp_trans_type = {$row['type']}";
+		db_query($sql, "Could not delete supp invoice items");
+		$sql = "DELETE FROM ".TB_PREF."supp_trans WHERE trans_no = {$row['trans_no']} AND type = {$row['type']}";
+		db_query($sql, "Could not delete supp trans");
+		delete_attachments_and_comments($row['type'], $row['trans_no']);
+	}
+	$sql = "SELECT id FROM ".TB_PREF."workorders WHERE released_date <= '$to' AND closed=1";
+	$result = db_query($sql, "Could not retrieve supp trans");
+	while ($row = db_fetch($result))
+	{
+		$sql = "SELECT issue_no FROM ".TB_PREF."wo_issues WHERE workorder_id = {$row['id']}"; 
+		$res = db_query($sql, "Could not retrieve wo issues");
+		while ($row2 = db_fetch_row($res))
+		{
+			$sql = "DELETE FROM ".TB_PREF."wo_issue_items WHERE issue_id = {$row2[0]}";
+			db_query($sql, "Could not delete wo issue items");
+		}	
+		delete_attachments_and_comments(28, $row['id']);
+		$sql = "DELETE FROM ".TB_PREF."wo_issues WHERE workorder_id = {$row['id']}";
+		db_query($sql, "Could not delete wo issues");
+		$sql = "DELETE FROM ".TB_PREF."wo_manufacture WHERE workorder_id = {$row['id']}";
+		db_query($sql, "Could not delete wo manufacture");
+		$sql = "DELETE FROM ".TB_PREF."wo_requirements WHERE workorder_id = {$row['id']}";
+		db_query($sql, "Could not delete wo requirements");
+		$sql = "DELETE FROM ".TB_PREF."workorders WHERE id = {$row['id']}";
+		db_query($sql, "Could not delete workorders");
+		delete_attachments_and_comments(26, $row['id']);
+	}
+	$sql = "SELECT loc_code, stock_id, SUM(qty) AS qty, SUM(qty*standard_cost) AS std_cost FROM ".TB_PREF."stock_moves WHERE tran_date <= '$to' GROUP by 
+		loc_code, stock_id";
+	$result = db_query($sql, "Could not retrieve supp trans");
+	while ($row = db_fetch($result))
+	{
+		$sql = "DELETE FROM ".TB_PREF."stock_moves WHERE tran_date <= '$to' AND loc_code = '{$row['loc_code']}' AND stock_id = '{$row['stock_id']}'";
+		db_query($sql, "Could not delete stock moves");
+		$qty = $row['qty'];
+		$std_cost = ($qty == 0 ? 0 : round2($row['std_cost'] / $qty, user_price_dec()));
+		$sql = "INSERT INTO ".TB_PREF."stock_moves (stock_id, loc_code, tran_date, reference, qty, standard_cost) VALUES
+			('{$row['stock_id']}', '{$row['loc_code']}', '$to', '$ref', $qty, $std_cost)";   
+		db_query($sql, "Could not insert stock move");
+	}		
+	$sql = "DELETE FROM ".TB_PREF."voided WHERE date_ <= '$to'";
+	db_query($sql, "Could not delete voided items");
+	$sql = "DELETE FROM ".TB_PREF."trans_tax_details WHERE tran_date <= '$to'";
+	db_query($sql, "Could not delete trans tax details");
+	$sql = "DELETE FROM ".TB_PREF."exchange_rates WHERE date_ <= '$to'";
+	db_query($sql, "Could not delete exchange rates");
+	$sql = "DELETE FROM ".TB_PREF."budget_trans WHERE tran_date <= '$to'";
+	db_query($sql, "Could not delete exchange rates");
+	$sql = "SELECT account, SUM(amount) AS amount FROM ".TB_PREF."gl_trans WHERE tran_date <= '$to' GROUP by account";
+	$result = db_query($sql, "Could not retrieve gl trans");
+	while ($row = db_fetch($result))
+	{
+		$sql = "DELETE FROM ".TB_PREF."gl_trans WHERE tran_date <= '$to' AND account = '{$row['account']}'";
+		db_query($sql, "Could not delete gl trans");
+		if (is_account_balancesheet($row['account']))
+		{
+			$trans_no = get_next_trans_no(0);
+			if (is_bank_account($row['account']))
+			{
+				$sql = "SELECT SUM(amount) FROM ".TB_PREF."bank_trans WHERE trans_date <= '$to' AND bank_act = '{$row['account']}'";
+				$res = db_query($sql, "Could not retrieve bank trans");
+				$row2 = db_fetch_row($res);
+				$sql = "DELETE FROM ".TB_PREF."bank_trans WHERE trans_date <= '$to' AND bank_act = '{$row['account']}'";
+				db_query($sql, "Could not delete bank trans");
+				$sql = "INSERT INTO ".TB_PREF."bank_trans (type, trans_no, trans_date, bank_act, ref, amount) VALUES
+					(0, $trans_no, '$to', '{$row['account']}', '$ref', {$row2[0]})";
+				db_query($sql, "Could not insert bank trans");
+			}	
+			$sql = "INSERT INTO ".TB_PREF."gl_trans (type, type_no, tran_date, account, memo_, amount) VALUES
+				(0, $trans_no, '$to', '{$row['account']}', '$ref', {$row['amount']})";
+			db_query($sql, "Could not insert gl trans");
+		}
+	}
+	delete_fiscalyear($selected_id);
+	commit_transaction();	
+}
 
 function handle_delete()
 {
@@ -181,7 +349,7 @@ function handle_delete()
 
 	if (check_can_delete($selected_id)) {
 	//only delete if used in neither customer or supplier, comp prefs, bank trans accounts
-		delete_fiscalyear($selected_id);
+		delete_this_fiscalyear($selected_id);
 		display_notification(_('Selected fiscal year has been deleted'));
 	}
 	$Mode = 'RESET';
@@ -228,7 +396,7 @@ function display_fiscalyears()
 	 	edit_button_cell("Edit".$myrow['id'], _("Edit"));
 		if ($myrow["id"] != $company_year)
  			delete_button_cell("Delete".$myrow['id'], _("Delete"));
-		else
+ 		else
 			label_cell('');
 		end_row();
 	}
