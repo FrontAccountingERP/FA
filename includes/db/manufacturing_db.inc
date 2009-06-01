@@ -26,19 +26,43 @@ function get_demand_qty($stock_id, $location)
 }
 
 $bom_list = array(); 
+$qoh_stock = NULL;
+
+function load_stock_levels($location)
+{
+	global $qoh_stock;
+	$date = date2sql(Today());
+
+	$sql = "SELECT stock_id, SUM(qty) FROM ".TB_PREF."stock_moves WHERE tran_date <= '$date'";
+	if ($location != null) $sql .= " AND loc_code = '$location'";
+	$sql .= " GROUP BY stock_id";
+	$result = db_query($sql, "QOH calulcation failed");
+	while ($row = db_fetch($result)) {
+		$qoh_stock[$row[0]] = $row[1];
+	}
+}
 
 // recursion fixed by Tom Moulton. Max 10 recursion levels.
-function stock_demand_manufacture($stock_id, $qty, $demand_id, $level=0) 
+function stock_demand_manufacture($stock_id, $qty, $demand_id, $location, $level=0) 
 {
-	global $bom_list;
+	global $bom_list, $qoh_stock;
 	$demand = 0.0;
 	if ($level > 10) {
 		display_warning("BOM Too many Manufacturing levels deep $level");
 		return $demand;
 	}
+	// Load all stock levels (stock moves) into $qoh_stock
+	if ($qoh_stock == NULL) {
+		$qoh_stock = array();
+		load_stock_levels($location);
+	}
+	$stock_qty = $qoh_stock[$stock_id];
+	if ($stock_qty == NULL) $stock_qty = 0;
+	if ($qty < $stock_qty) return $demand;
 	$bom = $bom_list[$stock_id];
 	if ($bom == NULL) {
 		$sql = "SELECT parent, component, quantity FROM ".TB_PREF."bom WHERE parent = '$stock_id'";
+		if ($location != '') $sql .= " AND loc_code = '$location'";
 		$result = db_query($sql, "Could not search bom");
 		$bom = array();
 		// Even if we get no results, remember that fact 
@@ -58,7 +82,7 @@ function stock_demand_manufacture($stock_id, $qty, $demand_id, $level=0)
 		if ($row[1] == '') continue;
 		$q = $qty * $row[2];
 		if ($row[1] == $demand_id) $demand += $q;
-		$demand += stock_demand_manufacture($row[1], $q, $demand_id, $level+1);
+		$demand += stock_demand_manufacture($row[1], $q, $demand_id, $location, $level+1);
 	}
 	return $demand;
 }
@@ -81,7 +105,7 @@ function get_demand_asm_qty($stock_id, $location)
 				   GROUP BY ".TB_PREF."sales_order_details.stk_code";
     $result = db_query($sql, "No transactions were returned");
 	while ($row = db_fetch_row($result)) {
-		$demand_qty += stock_demand_manufacture($row[0], $row[1], $stock_id);
+		$demand_qty += stock_demand_manufacture($row[0], $row[1], $stock_id, $location);
 	}
 	return $demand_qty;
 }
