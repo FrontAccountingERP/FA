@@ -204,7 +204,7 @@ function delete_this_fiscalyear($selected_id)
 	$ref = _("Open Balance");
 	$myrow = get_fiscalyear($selected_id);
 	$to = $myrow['end'];
-	$sql = "SELECT order_no FROM ".TB_PREF."sales_orders WHERE ord_date <= '$to'";
+	$sql = "SELECT order_no FROM ".TB_PREF."sales_orders WHERE ord_date <= '$to' AND type <> 1"; // don't take the templates
 	$result = db_query($sql, "Could not retrieve sales orders");
 	while ($row = db_fetch($result))
 	{
