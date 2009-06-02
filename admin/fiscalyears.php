@@ -16,6 +16,7 @@ include_once($path_to_root . "/includes/session.inc");
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/admin/db/company_db.inc");
 include_once($path_to_root . "/includes/ui.inc");
+include_once($path_to_root . "/sales/includes/db/cust_trans_db.inc");
 include_once($path_to_root . "/admin/db/maintenance_db.inc");
 $js = "";
 if ($use_date_picker)
@@ -250,6 +251,17 @@ function delete_this_fiscalyear($selected_id)
 	$result = db_query($sql, "Could not retrieve debtor trans");
 	while ($row = db_fetch($result))
 	{
+		if ($row['type'] == 10)
+		{
+			$deliveries = get_parent_trans(10,$row['trans_no']);
+			foreach ($deliveries as $delivery)
+			{
+				$sql = "DELETE FROM ".TB_PREF."debtor_trans_details WHERE debtor_trans_no = $delivery AND debtor_trans_type = 13";
+				db_query($sql, "Could not delete debtor trans details");
+				$sql = "DELETE FROM ".TB_PREF."debtor_trans WHERE trans_no = $delivery AND type = 13";
+				db_query($sql, "Could not delete debtor trans");
+			}		
+		}	
 		$sql = "DELETE FROM ".TB_PREF."cust_allocations WHERE trans_no_from = {$row['trans_no']} AND type_no_from = {$row['type']}";
 		db_query($sql, "Could not delete cust allocations");
 		$sql = "DELETE FROM ".TB_PREF."debtor_trans_details WHERE debtor_trans_no = {$row['trans_no']} AND debtor_trans_type = {$row['type']}";
