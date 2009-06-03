@@ -36,7 +36,7 @@ function getTransactions($category, $location)
 			".TB_PREF."stock_master.stock_id,
 			".TB_PREF."stock_master.description,
 			IF(".TB_PREF."stock_moves.stock_id IS NULL, '', ".TB_PREF."stock_moves.loc_code) AS loc_code,
-			SUM(IF(".TB_PREF."stock_moves.stock_id IS NULL,0,".TB_PREF."stock_moves.qty)) AS qty_on_hand
+			SUM(IF(".TB_PREF."stock_moves.stock_id IS NULL,0,".TB_PREF."stock_moves.qty)) AS QtyOnHand
 		FROM (".TB_PREF."stock_master,
 			".TB_PREF."stock_category)
 		LEFT JOIN ".TB_PREF."stock_moves ON
