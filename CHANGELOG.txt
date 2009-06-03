@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+03-Jun-2009 Janusz Dobrowolski
+! Delete buttons prepared for js confirmation.
+$ /admin/fiscalyears.php
+
 02-Jun-2009 Joe Hunt
 ! Fiscal Year delete . now removes all transactions and convert into relevant open balances.
 $ /admin/fiscalyear.php

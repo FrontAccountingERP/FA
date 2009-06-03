@@ -377,6 +377,9 @@ function display_fiscalyears()
 
 	$result = get_all_fiscalyears();
 	start_form();
+	display_note(_("Warning: During fiscal year removal all transactions 
+		are removed and converted into relevant balances. This process is irreversible!"), 
+		0, 0, "class='currentfg'");
 	start_table($table_style);
 
 	$th = array(_("Fiscal Year Begin"), _("Fiscal Year End"), _("Closed"), "", "");
@@ -406,9 +409,13 @@ function display_fiscalyears()
 		label_cell($to);
 		label_cell($closed_text);
 	 	edit_button_cell("Edit".$myrow['id'], _("Edit"));
-		if ($myrow["id"] != $company_year)
+		if ($myrow["id"] != $company_year) {
  			delete_button_cell("Delete".$myrow['id'], _("Delete"));
- 		else
+			submit_js_confirm("Delete".$myrow['id'],
+				sprintf(_("Are you sure you want to remove fiscal year
+				'%s'-'%s'? All transactions are removed and converted into relevant
+				balances. Do you want to continue ?"), $from, $to));
+		} else
 			label_cell('');
 		end_row();
 	}
