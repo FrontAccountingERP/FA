@@ -36,7 +36,7 @@ function getTransactions($category, $location)
 			".TB_PREF."stock_master.stock_id,
 			".TB_PREF."stock_master.description,
 			IF(".TB_PREF."stock_moves.stock_id IS NULL, '', ".TB_PREF."stock_moves.loc_code) AS loc_code,
-			SUM(IF(".TB_PREF."stock_moves.stock_id IS NULL,0,".TB_PREF."stock_moves.qty)) AS QtyOnHand
+			SUM(IF(".TB_PREF."stock_moves.stock_id IS NULL,0,".TB_PREF."stock_moves.qty)) AS qty_on_hand
 		FROM (".TB_PREF."stock_master,
 			".TB_PREF."stock_category)
 		LEFT JOIN ".TB_PREF."stock_moves ON
@@ -46,7 +46,7 @@ function getTransactions($category, $location)
 	if ($category != 0)
 		$sql .= " AND ".TB_PREF."stock_master.category_id = '$category'";
 	if ($location != 'all')
-		$sql .= " AND ".TB_PREF."stock_moves.loc_code = '$location'";
+		$sql .= " AND IF(".TB_PREF."stock_moves.stock_id IS NULL, '1=1',".TB_PREF."stock_moves.loc_code = '$location')";
 	$sql .= " GROUP BY ".TB_PREF."stock_master.category_id,
 		".TB_PREF."stock_category.description,
 		".TB_PREF."stock_master.stock_id,
@@ -132,6 +132,10 @@ function print_stock_check()
 	$catt = '';
 	while ($trans=db_fetch($res))
 	{
+		if ($location == 'all')
+			$loc_code = "";
+		else
+			$loc_code = $location;
 		$demandqty = get_demand_qty($trans['stock_id'], $loc_code);
 		$demandqty += get_demand_asm_qty($trans['stock_id'], $loc_code);
 		$onorder = get_on_porder_qty($trans['stock_id'], $loc_code);
@@ -150,10 +154,6 @@ function print_stock_check()
 			$catt = $trans['cat_description'];
 			$rep->NewLine();
 		}
-		if ($location == 'all')
-			$loc_code = "";
-		else
-			$loc_code = $trans['loc_code'];
 		$rep->NewLine();
 		$dec = get_qty_dec($trans['stock_id']);
 		$rep->TextCol(0, 1, $trans['stock_id']);

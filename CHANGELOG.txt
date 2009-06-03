@@ -19,6 +19,19 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+03-Jun-2009 Joe Hunt
+! Changed to present reference number in Print Invoices/Credit Notes if global $print_invoice_no = 0
+$ /reporting/includes/reports_classes.inc
+# Deleting of Locations was too easy. Implemented much more checks
+$ /inventory/manage/locations.php
+! Report Stock Check Sheet and 'Inventory Item Status' was wrong when Locations were selected.
+$ /reporting/rep302.php
+  /reporting/rep303.php
+  /includes/db/manufacturing_db.inc
+# When producing advanced manufacture there should be errors when insuffient qoh in items (if 'Allow Negative Stock' is not marked).
+$ /manufacturing/work_order_issue.php
+  /manufacturing/work_order_add_finished.php
+  
 27-May-2009 Joe Hunt
 # After heavy testing a new set of nested subtypes in COA, Monthly Breakdown, Balance Sheet and P&L Statement.
 $ /gl/includes/db/gl_db_accounts.inc

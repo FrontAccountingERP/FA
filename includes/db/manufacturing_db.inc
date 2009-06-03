@@ -22,6 +22,8 @@ function get_demand_qty($stock_id, $location)
 
     $result = db_query($sql,"No transactions were returned");
 	$row = db_fetch($result);
+	if ($row === false)
+		return 0;
 	return $row['QtyDemand'];
 }
 
@@ -34,7 +36,7 @@ function load_stock_levels($location)
 	$date = date2sql(Today());
 
 	$sql = "SELECT stock_id, SUM(qty) FROM ".TB_PREF."stock_moves WHERE tran_date <= '$date'";
-	if ($location != null) $sql .= " AND loc_code = '$location'";
+	if ($location != '') $sql .= " AND loc_code = '$location'";
 	$sql .= " GROUP BY stock_id";
 	$result = db_query($sql, "QOH calulcation failed");
 	while ($row = db_fetch($result)) {
@@ -62,7 +64,7 @@ function stock_demand_manufacture($stock_id, $qty, $demand_id, $location, $level
 	$bom = $bom_list[$stock_id];
 	if ($bom == NULL) {
 		$sql = "SELECT parent, component, quantity FROM ".TB_PREF."bom WHERE parent = '$stock_id'";
-		if ($location != '') $sql .= " AND loc_code = '$location'";
+		if ($location != "") $sql .= " AND loc_code = '$location'";
 		$result = db_query($sql, "Could not search bom");
 		$bom = array();
 		// Even if we get no results, remember that fact 

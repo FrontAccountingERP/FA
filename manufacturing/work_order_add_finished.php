@@ -115,18 +115,38 @@ function can_process()
 		}
 	}
 
+	// if production we need to check the qoh of the wo requirements
+	if (($_POST['ProductionType'] == 1) && !sys_prefs::allow_negative_stock())
+	{
+    	$err = false;
+    	$result = get_wo_requirements($_POST['selected_id']);
+		while ($row = db_fetch($result))
+		{
+			if ($row['mb_flag'] == 'D') // service, non stock
+				continue;
+			$qoh = get_qoh_on_date($row["stock_id"], $row["loc_code"], $date_);
+			if ($qoh - $row['units_req'] * $_POST['quantity'] < 0)
+			{
+    			display_error( _("The production cannot be processed because a required item would cause a negative inventory balance :") .
+    				" " . $row['stock_id'] . " - " .  $row['description']);
+    			$err = true;	
+			}	
+		}
+		if ($err)
+		{
+			set_focus('quantity');
+			return false;
+		}	
+	}
 	return true;
 }
 
 //--------------------------------------------------------------------------------------------------
 
-if (isset($_POST['Process']) || (isset($_POST['ProcessAndClose']) && can_process() == true))
+if (isset($_POST['ProcessAndClose']) && can_process() == true)
 {
 
-	$close_wo = 0;
-	if (isset($_POST['ProcessAndClose']) && ($_POST['ProcessAndClose']!=""))
-		$close_wo = 1;
-
+	$close_wo = 1;
 	// if unassembling, negate quantity
 	if ($_POST['ProductionType'] == 0)
 		$_POST['quantity'] = -$_POST['quantity'];
@@ -171,8 +191,7 @@ textarea_row(_("Memo:"), 'memo_', null, 40, 3);
 
 end_table(1);
 
-submit_center_first('Process', _("Process"), '', true);
-submit_center_last('ProcessAndClose', _("Process And Close Order"), '', true);
+submit_center('ProcessAndClose', _("Process And Close Order"), true, '', true);
 
 end_form();
 

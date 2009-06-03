@@ -46,7 +46,7 @@ function getTransactions($category, $location)
 	if ($category != 0)
 		$sql .= " AND ".TB_PREF."stock_master.category_id = '$category'";
 	if ($location != 'all')
-		$sql .= " AND ".TB_PREF."stock_moves.loc_code = '$location'";
+		$sql .= " AND IF(".TB_PREF."stock_moves.stock_id IS NULL, '1=1',".TB_PREF."stock_moves.loc_code = '$location')";
 	$sql .= " GROUP BY ".TB_PREF."stock_master.category_id,
 		".TB_PREF."stock_category.description,
 		".TB_PREF."stock_master.stock_id,
@@ -154,7 +154,7 @@ function print_inventory_planning()
 		if ($location == 'all')
 			$loc_code = "";
 		else
-			$loc_code = $trans['loc_code'];
+			$loc_code = $location;
 		$custqty = get_demand_qty($trans['stock_id'], $loc_code);
 		$custqty += get_demand_asm_qty($trans['stock_id'], $loc_code);
 		$suppqty = get_on_porder_qty($trans['stock_id'], $loc_code);

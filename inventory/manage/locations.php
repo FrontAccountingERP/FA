@@ -98,6 +98,46 @@ function can_delete($selected_id)
 		return false;
 	}
 	
+	$sql= "SELECT COUNT(*) FROM ".TB_PREF."bom WHERE loc_code='$selected_id'";
+	$result = db_query($sql, "could not query bom");
+	$myrow = db_fetch_row($result);
+	if ($myrow[0] > 0) 
+	{
+		display_error(_("Cannot delete this location because it is used by some related records in other tables."));
+		return false;
+	}
+	$sql= "SELECT COUNT(*) FROM ".TB_PREF."grn_batch WHERE loc_code='$selected_id'";
+	$result = db_query($sql, "could not query grn batch");
+	$myrow = db_fetch_row($result);
+	if ($myrow[0] > 0) 
+	{
+		display_error(_("Cannot delete this location because it is used by some related records in other tables."));
+		return false;
+	}
+	$sql= "SELECT COUNT(*) FROM ".TB_PREF."purch_orders WHERE into_stock_location='$selected_id'";
+	$result = db_query($sql, "could not query purch orders");
+	$myrow = db_fetch_row($result);
+	if ($myrow[0] > 0) 
+	{
+		display_error(_("Cannot delete this location because it is used by some related records in other tables."));
+		return false;
+	}
+	$sql= "SELECT COUNT(*) FROM ".TB_PREF."sales_orders WHERE from_stk_loc='$selected_id'";
+	$result = db_query($sql, "could not query sales orders");
+	$myrow = db_fetch_row($result);
+	if ($myrow[0] > 0) 
+	{
+		display_error(_("Cannot delete this location because it is used by some related records in other tables."));
+		return false;
+	}
+	$sql= "SELECT COUNT(*) FROM ".TB_PREF."sales_pos WHERE pos_location='$selected_id'";
+	$result = db_query($sql, "could not query sales pos");
+	$myrow = db_fetch_row($result);
+	if ($myrow[0] > 0) 
+	{
+		display_error(_("Cannot delete this location because it is used by some related records in other tables."));
+		return false;
+	}
 	return true;
 }
 
