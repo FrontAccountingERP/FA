@@ -431,7 +431,17 @@ function void_supp_invoice($type, $type_no)
 				
 				$batch = get_grn_batch_from_item($details_row["grn_item_id"]);	
 				$grn = get_grn_batch($batch);
-				
+         		if ($type == 21) // credit note 2009-06-14 Joe Hunt Must restore the po and grn
+         		{
+					$sql = "UPDATE ".TB_PREF."purch_order_details
+        				SET quantity_ordered = quantity_ordered + ".-$details_row["quantity"].",
+    				    quantity_received = quantity_received + ".-$details_row["quantity"]."
+    				    WHERE po_detail_item = ".$details_row["po_detail_item_id"];
+					db_query($sql, "a purchase order details record could not be updated. This receipt of goods has not been processed ");
+					$sql = "UPDATE ".TB_PREF."grn_items SET qty_recd=qty_recd+".-$details_row["quantity"]."
+						WHERE id=".$details_row["grn_item_id"];
+					db_query($sql);
+    			}     		
 				$diff = get_diff_in_home_currency($grn["supplier_id"], $old_date, $date_, $old[2], 
 					$details_row["FullUnitPrice"]);
 				// Only adjust the avg for the diff
@@ -457,11 +467,12 @@ function void_supp_invoice($type, $type_no)
 					update_stock_move_pid(13, $details_row["stock_id"], $old_date, $date_, 0, $mat_cost);
 				}
 				update_stock_move_pid(25, $details_row["stock_id"], $old_date, $old_date, $grn['supplier_id'], $mat_cost);
-
          	}
         }
 	}
 
+	if ($type == 21) // void the credits in stock moves
+		void_stock_move(21, $type_no); 
 	void_supp_invoice_items($type, $type_no);
 	void_trans_tax_details($type, $type_no);
 

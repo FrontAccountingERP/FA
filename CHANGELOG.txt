@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+04-Jun-2009 Joe Hunt
+# [0000134] Voiding a supplier credit note didn't activate the PO Receivals and void the stock moves.
+$ /purchasing/includes/db/invoice_db.inc
+
 03-Jun-2009 Joe Hunt
 ! Changed to present reference number in Print Invoices/Credit Notes if global $print_invoice_no = 0
 $ /reporting/includes/reports_classes.inc
@@ -31,6 +35,10 @@ $ /reporting/rep302.php
 # When producing advanced manufacture there should be errors when insuffient qoh in items (if 'Allow Negative Stock' is not marked).
 $ /manufacturing/work_order_issue.php
   /manufacturing/work_order_add_finished.php
+# Missing decimal calculation in BOM edit.
+$ /manufacturing/manage/bom_edit.php
+# Wrong toottip text on Process button in Purchase Order, Receive Items.
+$ /purchase/po_receive_items.php
   
 27-May-2009 Joe Hunt
 # After heavy testing a new set of nested subtypes in COA, Monthly Breakdown, Balance Sheet and P&L Statement.
