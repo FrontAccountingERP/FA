@@ -22,6 +22,8 @@ $ -> Affected files
 05-Jun-2009 Joe Hunt
 # Missing underscore in gettext string
 $ /sales/create_recurrent_invoices.php
+# Broken gettext string over 2 lines
+$ /sales/customer_delivery.php
 
 04-Jun-2009 Joe Hunt
 # [0000134] Voiding a supplier credit note didn't activate the PO Receivals and void the stock moves.

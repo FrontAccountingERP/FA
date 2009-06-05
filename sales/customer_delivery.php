@@ -128,8 +128,7 @@ if (isset($_GET['OrderNumber']) && $_GET['OrderNumber'] > 0) {
 	check_edit_conflicts();
 
 	if (!check_quantities()) {
-		display_error(_("Selected quantity cannot be less than quantity invoiced nor more than quantity
-			not dispatched on sales order."));
+		display_error(_("Selected quantity cannot be less than quantity invoiced nor more than quantity	not dispatched on sales order."));
 
 	} elseif(!check_num('ChargeFreightCost', 0))
 		display_error(_("Freight cost cannot be less than zero"));
