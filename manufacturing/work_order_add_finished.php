@@ -14,6 +14,7 @@ $path_to_root="..";
 include_once($path_to_root . "/includes/session.inc");
 
 include_once($path_to_root . "/includes/date_functions.inc");
+include_once($path_to_root . "/gl/includes/db/gl_db_bank_trans.inc");
 include_once($path_to_root . "/includes/db/inventory_db.inc");
 include_once($path_to_root . "/includes/manufacturing.inc");
 
@@ -37,7 +38,7 @@ if (isset($_GET['trans_no']) && $_GET['trans_no'] != "")
 if (isset($_GET['AddedID']))
 {
 
-	display_note(_("The manufacturing process has been entered."));
+	display_notification(_("The manufacturing process has been entered."));
 
 	hyperlink_no_params("search_work_orders.php", _("Select another &Work Order to Process"));
 
@@ -106,7 +107,7 @@ function can_process()
 	{
 		$wo_details = get_work_order($_POST['selected_id']);
 
-		$qoh = get_qoh_on_date($wo_details["stock_id"], $wo_details["loc_code"], $date_);
+		$qoh = get_qoh_on_date($wo_details["stock_id"], $wo_details["loc_code"], $_POST['date_']);
 		if (-$_POST['quantity'] + $qoh < 0)
 		{
 			display_error(_("The unassembling cannot be processed because there is insufficient stock."));
@@ -124,7 +125,7 @@ function can_process()
 		{
 			if ($row['mb_flag'] == 'D') // service, non stock
 				continue;
-			$qoh = get_qoh_on_date($row["stock_id"], $row["loc_code"], $date_);
+			$qoh = get_qoh_on_date($row["stock_id"], $row["loc_code"], $_POST['date_']);
 			if ($qoh - $row['units_req'] * $_POST['quantity'] < 0)
 			{
     			display_error( _("The production cannot be processed because a required item would cause a negative inventory balance :") .
@@ -143,10 +144,13 @@ function can_process()
 
 //--------------------------------------------------------------------------------------------------
 
-if (isset($_POST['ProcessAndClose']) && can_process() == true)
+if ((isset($_POST['Process']) || isset($_POST['ProcessAndClose'])) && can_process() == true)
 {
 
-	$close_wo = 1;
+	$close_wo = 0;
+	if (isset($_POST['ProcessAndClose']) && ($_POST['ProcessAndClose']!=""))
+		$close_wo = 1;
+
 	// if unassembling, negate quantity
 	if ($_POST['ProductionType'] == 0)
 		$_POST['quantity'] = -$_POST['quantity'];
@@ -191,7 +195,8 @@ textarea_row(_("Memo:"), 'memo_', null, 40, 3);
 
 end_table(1);
 
-submit_center('ProcessAndClose', _("Process And Close Order"), true, '', true);
+submit_center_first('Process', _("Process"), '', 'default');
+submit_center_last('ProcessAndClose', _("Process And Close Order"), '', true);
 
 end_form();
 

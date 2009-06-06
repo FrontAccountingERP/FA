@@ -24,7 +24,9 @@ function add_work_order_quick($wo_ref, $loc_code, $units_reqd, $stock_id, $type,
 	$date = date2sql($date_);
 	if (!isset($additional_costs) || ($additional_costs == ""))
 		$additional_costs = 0;
-
+	if ($additional_costs != 0)
+		add_additional_cost($stock_id, $units_reqd, $date_, $additional_costs);
+		
 	$sql = "INSERT INTO ".TB_PREF."workorders (wo_ref, loc_code, units_reqd, units_issued, stock_id,
 		type, additional_costs, date_, released_date, required_by, released, closed)
     	VALUES (".db_escape($wo_ref).", ".db_escape($loc_code).", $units_reqd, $units_reqd, '$stock_id',
@@ -108,6 +110,7 @@ function work_order_quick_costs($woid, $stock_id, $units_reqd, $date_, $addition
 	{
 		// also take the additional issues
 		$res = get_additional_issues($woid);
+		$issue_total = 0;
 		while ($item = db_fetch($res))
 		{
 			$standard_cost = get_standard_cost($item['stock_id']);
@@ -115,8 +118,16 @@ function work_order_quick_costs($woid, $stock_id, $units_reqd, $date_, $addition
 			$issue = get_stock_gl_code($item['stock_id']);
 			add_gl_trans_std_cost(systypes::work_order(), $woid, $date_, $issue["inventory_account"], 0, 0,
 				null, -$issue_cost);
-			$total_cost += $issue_cost;
+			$issue_total += $issue_cost;
 		}
+		add_issue_cost($stock_id, $units_reqd, $date_, $issue_total);
+		$total_cost += $issue_total;
+		$pcost = 0; // fix bank payments as additional cost.
+		$result = get_bank_trans(null, null, payment_person_types::WorkOrder(), $woid);
+		while ($row = db_fetch($result))
+			$pcost += -$row['amount'];
+		if ($pcost != 0)	
+			add_additional_cost($stock_id, $units_reqd, $date_, $pcost);
 	}
 	// credit additional costs
 	$item_accounts = get_stock_gl_code($stock_id);

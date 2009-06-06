@@ -19,6 +19,14 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+06-Jun-2009
+# Overhead costs in Manufacturing/Assembling wasn't added to stock overhead cost
+$ /manufacturing/work_order_add_finished.php
+  /manufacturing/work_order_issue.php
+  /manufacturing/work_order_release.php
+  /manufacturing/includes/db/work_orders_db.inc
+  /manufacturing/includes/db/work_orders_quick_db.inc
+  
 05-Jun-2009 Joe Hunt
 # Missing underscore in gettext string
 $ /sales/create_recurrent_invoices.php

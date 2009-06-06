@@ -17,10 +17,8 @@ function add_material_cost($stock_id, $qty, $date_)
     $result = get_bom($stock_id);
 	while ($bom_item = db_fetch($result))
 	{
-		$sql = "SELECT material_cost FROM ".TB_PREF."stock_master WHERE stock_id = '".$bom_item['component']."'";
-		$res = db_query($sql);
-		$myrow = db_fetch($res);
-		$m_cost += ($bom_item['quantity'] * $myrow['material_cost']);
+		$standard_cost = get_standard_cost($bom_item['component']);
+		$m_cost += ($bom_item['quantity'] * $standard_cost);
 	}
 	$sql = "SELECT material_cost FROM ".TB_PREF."stock_master WHERE stock_id = '$stock_id'";
 	$result = db_query($sql);
@@ -31,6 +29,42 @@ function add_material_cost($stock_id, $qty, $date_)
 		$material_cost = 0;
 	else
 		$material_cost = ($qoh * $material_cost + $qty * $m_cost) /	($qoh + $qty);
+	$sql = "UPDATE ".TB_PREF."stock_master SET material_cost=$material_cost
+		WHERE stock_id='$stock_id'";
+	db_query($sql,"The cost details for the inventory item could not be updated");
+}
+
+function add_additional_cost($stock_id, $qty, $date_, $costs)
+{
+	if ($qty != 0)
+		$costs /= $qty;
+	$sql = "SELECT overhead_cost FROM ".TB_PREF."stock_master WHERE stock_id = '$stock_id'";
+	$result = db_query($sql);
+	$myrow = db_fetch($result);
+	$overhead_cost =  $myrow['overhead_cost'];
+	$qoh = get_qoh_on_date($stock_id, null, $date_);
+	if ($qoh + $qty <= 0)
+		$overhead_cost = 0;
+	else
+		$overhead_cost = ($qoh * $overhead_cost + $qty * $costs) /	($qoh + $qty);
+	$sql = "UPDATE ".TB_PREF."stock_master SET overhead_cost=$overhead_cost
+		WHERE stock_id='$stock_id'";
+	db_query($sql,"The cost details for the inventory item could not be updated");
+}
+
+function add_issue_cost($stock_id, $qty, $date_, $costs)
+{
+	if ($qty != 0)
+		$costs /= $qty;
+	$sql = "SELECT material_cost FROM ".TB_PREF."stock_master WHERE stock_id = '$stock_id'";
+	$result = db_query($sql);
+	$myrow = db_fetch($result);
+	$material_cost =  $myrow['material_cost'];
+	$qoh = get_qoh_on_date($stock_id, null, $date_);
+	if ($qoh <= 0)
+		$material_cost = 0;
+	else
+		$material_cost = ($qoh * $material_cost + $qty * $costs) /	$qoh;
 	$sql = "UPDATE ".TB_PREF."stock_master SET material_cost=$material_cost
 		WHERE stock_id='$stock_id'";
 	db_query($sql,"The cost details for the inventory item could not be updated");

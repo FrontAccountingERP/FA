@@ -32,10 +32,10 @@ page(_("Issue Items to Work Order"), false, false, "", $js);
 
 if (isset($_GET['AddedID'])) 
 {
-   	echo "<center>" . _("The work order issue has been entered.");
-   	echo "<br>";
+   	display_notification(_("The work order issue has been entered."));
+
    	hyperlink_no_params("search_work_orders.php", _("Select another &Work Order to Process"));
-   	echo "<br><br>";
+
 	display_footer_exit();
 }
 //--------------------------------------------------------------------------------------------------
