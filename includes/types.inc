@@ -216,8 +216,8 @@ class payment_person_types
     			$qe = get_quick_entry($person_id);
     			return ($full?payment_person_types::type_name($type) . " ":"") . $qe["description"];
     		case payment_person_types::WorkOrder() :
-    			$wo = get_work_order($person_id);
-    			return ($full?payment_person_types::type_name($type) . " ":"") . $wo["wo_ref"];
+    			global $wo_cost_types;
+    			return $wo_cost_types[$person_id];
     		case payment_person_types::customer() :
     			return ($full?payment_person_types::type_name($type) . " ":"") . get_customer_name($person_id);
     		case payment_person_types::supplier() :
@@ -309,6 +309,14 @@ class wo_types
 	}
 }
 
+define('WO_LABOUR', 0);
+define('WO_OVERHEAD', 1);
+
+$wo_cost_types = array(
+		WO_LABOUR => _("Labour Cost"),
+		WO_OVERHEAD => _("Overhead Cost"),
+);
+
 $quick_actions = array(
 	'=' => _('Remainder'), // post current base amount to GL account
 	'a' => _('Amount'), // post amount to GL account
@@ -336,7 +344,5 @@ $quick_entry_types = array(
 		QE_JOURNAL => _("Journal Entry"),
 		QE_SUPPINV => _("Supplier Invoice/Credit")
 );
-
-
 
 ?>

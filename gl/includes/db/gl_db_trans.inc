@@ -138,6 +138,19 @@ function get_gl_trans($type, $trans_id)
 
 //--------------------------------------------------------------------------------
 
+function get_gl_wo_cost_trans($trans_id, $person_id=-1)
+{
+	$sql = "SELECT ".TB_PREF."gl_trans.*, ".TB_PREF."chart_master.account_name FROM ".TB_PREF."gl_trans, ".TB_PREF."chart_master
+		WHERE ".TB_PREF."chart_master.account_code=".TB_PREF."gl_trans.account
+		AND ".TB_PREF."gl_trans.type=".systypes::work_order()." AND ".TB_PREF."gl_trans.type_no=$trans_id
+		AND ".TB_PREF."gl_trans.person_type_id=".payment_person_types::WorkOrder();
+	if ($person_id != -1)
+		$sql .= " AND ".TB_PREF."gl_trans.person_id=$person_id";
+	$sql .= " AND amount < 0";	
+
+	return db_query($sql, "The gl transactions could not be retrieved");
+}
+
 function get_gl_balance_from_to($from_date, $to_date, $account, $dimension=0, $dimension2=0)
 {
 	$from = date2sql($from_date);

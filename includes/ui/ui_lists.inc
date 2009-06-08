@@ -1699,7 +1699,8 @@ function payment_person_types_list($name, $selected_id=null, $submit_on_change=f
 	{
 		if (payment_person_types::has_items($type['id']))
 		{
-			$items[$type['id']] = $type['name'];
+			if ($type['id'] != payment_person_types::WorkOrder())
+				$items[$type['id']] = $type['name'];
 		}
 	}
 	

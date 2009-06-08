@@ -34,7 +34,7 @@ function add_material_cost($stock_id, $qty, $date_)
 	db_query($sql,"The cost details for the inventory item could not be updated");
 }
 
-function add_additional_cost($stock_id, $qty, $date_, $costs)
+function add_overhead_cost($stock_id, $qty, $date_, $costs)
 {
 	if ($qty != 0)
 		$costs /= $qty;
@@ -48,6 +48,24 @@ function add_additional_cost($stock_id, $qty, $date_, $costs)
 	else
 		$overhead_cost = ($qoh * $overhead_cost + $qty * $costs) /	($qoh + $qty);
 	$sql = "UPDATE ".TB_PREF."stock_master SET overhead_cost=$overhead_cost
+		WHERE stock_id='$stock_id'";
+	db_query($sql,"The cost details for the inventory item could not be updated");
+}
+
+function add_labour_cost($stock_id, $qty, $date_, $costs)
+{
+	if ($qty != 0)
+		$costs /= $qty;
+	$sql = "SELECT labour_cost FROM ".TB_PREF."stock_master WHERE stock_id = '$stock_id'";
+	$result = db_query($sql);
+	$myrow = db_fetch($result);
+	$labour_cost =  $myrow['labour_cost'];
+	$qoh = get_qoh_on_date($stock_id, null, $date_);
+	if ($qoh + $qty <= 0)
+		$labour_cost = 0;
+	else
+		$labour_cost = ($qoh * $labour_cost + $qty * $costs) /	($qoh + $qty);
+	$sql = "UPDATE ".TB_PREF."stock_master SET labour_cost=$labour_cost
 		WHERE stock_id='$stock_id'";
 	db_query($sql,"The cost details for the inventory item could not be updated");
 }
@@ -71,10 +89,10 @@ function add_issue_cost($stock_id, $qty, $date_, $costs)
 }
 
 function add_work_order($wo_ref, $loc_code, $units_reqd, $stock_id,
-	$type, $date_, $required_by, $costs, $memo_)
+	$type, $date_, $required_by, $memo_, $costs, $cr_acc, $labour, $cr_lab_acc)
 {
 	if (!($type == wo_types::advanced()))
-		return add_work_order_quick($wo_ref, $loc_code, $units_reqd, $stock_id, $type, $date_, $costs, $memo_);
+		return add_work_order_quick($wo_ref, $loc_code, $units_reqd, $stock_id, $type, $date_, $memo_, $costs, $cr_acc, $labour, $cr_lab_acc);
 
 	begin_transaction();
 
@@ -191,7 +209,7 @@ function work_order_has_issues($woid)
 
 function work_order_has_payments($woid)
 {
-    $result = get_bank_trans(null, null, payment_person_types::WorkOrder(), $woid);
+	$result = get_gl_wo_cost_trans($woid);
 
     return (db_num_rows($result) != 0);
 }

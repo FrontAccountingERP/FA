@@ -130,10 +130,15 @@ function produce_link($row)
 
 function costs_link($row)
 {
+/*
 	return $row["closed"] || !$row["released"] ? '' :
 		pager_link(_('Costs'),
 			"/gl/gl_bank.php?NewPayment=1&PayType=" 
 			.payment_person_types::WorkOrder(). "&PayPerson=" .$row["id"]);
+*/			
+	return $row["closed"] || !$row["released"] ? '' :
+		pager_link(_('Costs'),
+			"/manufacturing/work_order_costs.php?trans_no=" .$row["id"]);
 }
 
 function view_gl_link($row)

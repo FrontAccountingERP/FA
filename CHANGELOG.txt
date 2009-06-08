@@ -19,13 +19,24 @@ Legend:
 ! -> Note
 $ -> Affected files
 
-06-Jun-2009
+
+08-Jun-2009
+! Changed Advanced Manufacturing payments to be more flexible and simpler. Removed from Payment.
+$ /gl/includes/db/gl_db_trans.inc
+  /gl/includes/ui/gl_bank_ui.inc
+  /includes/types.inc
+  /includes/ui/ui_lists.inc
+  /manufacturing/search_work_orders.php
+  /manufacturing/work_order_costs.php (new file)
+  /manufacturing/work_order_entry.php
 # Overhead costs in Manufacturing/Assembling wasn't added to stock overhead cost
 $ /manufacturing/work_order_add_finished.php
   /manufacturing/work_order_issue.php
   /manufacturing/work_order_release.php
+  /manufacturing/includes/manufacturing_ui.inc
   /manufacturing/includes/db/work_orders_db.inc
   /manufacturing/includes/db/work_orders_quick_db.inc
+  /manufacturing/view/work_order_view.php
   
 05-Jun-2009 Joe Hunt
 # Missing underscore in gettext string

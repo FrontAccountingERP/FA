@@ -20,6 +20,8 @@ include_once($path_to_root . "/manufacturing/includes/manufacturing_db.inc");
 include_once($path_to_root . "/manufacturing/includes/manufacturing_ui.inc");
 
 $js = "";
+if ($use_popup_windows)
+	$js .= get_js_open_window(800, 500);
 if ($use_date_picker)
 	$js .= get_js_date_picker();
 page(_("Work Order Release to Manufacturing"), false, false, "", $js);
@@ -66,6 +68,8 @@ if (isset($_POST['release']))
 	release_work_order($selected_id, $_POST['released_date'], $_POST['memo_']);
 
 	display_notification(_("The work order has been released to manufacturing."));
+
+    display_note(get_trans_view_str(systypes::work_order(), $selected_id, _("View this Work Order")));
 
 	hyperlink_no_params("search_work_orders.php", _("Select another &work order"));
 

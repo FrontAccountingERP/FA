@@ -34,6 +34,8 @@ if (isset($_GET['AddedID']))
 {
    	display_notification(_("The work order issue has been entered."));
 
+    display_note(get_trans_view_str(systypes::work_order(), $_GET['AddedID'], _("View this Work Order")));
+
    	hyperlink_no_params("search_work_orders.php", _("Select another &Work Order to Process"));
 
 	display_footer_exit();
@@ -120,7 +122,7 @@ if (isset($_POST['Process']) && can_process())
 	} 
 	else 
 	{
-		meta_forward($_SERVER['PHP_SELF'], "AddedID=1");
+		meta_forward($_SERVER['PHP_SELF'], "AddedID=".$_SESSION['issue_items']->order_id);
 	}
 
 } /*end of process credit note */

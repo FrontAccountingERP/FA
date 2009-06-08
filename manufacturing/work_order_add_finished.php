@@ -37,8 +37,17 @@ if (isset($_GET['trans_no']) && $_GET['trans_no'] != "")
 
 if (isset($_GET['AddedID']))
 {
+	include_once($path_to_root . "/reporting/includes/reporting.inc");
+	$id = $_GET['AddedID'];
+	$stype = systypes::work_order();
 
 	display_notification(_("The manufacturing process has been entered."));
+	
+    display_note(get_trans_view_str($stype, $id, _("View this Work Order")));
+
+   	display_note(get_gl_view_str($stype, $id, _("View the GL Journal Entries for this Work Order")), 1);
+   	$ar = array('PARAM_0' => $_GET['date'], 'PARAM_1' => $_GET['date'], 'PARAM_2' => $stype); 
+   	display_note(print_link(_("Print the GL Journal Entries for this Work Order"), 702, $ar), 1);
 
 	hyperlink_no_params("search_work_orders.php", _("Select another &Work Order to Process"));
 
@@ -158,7 +167,7 @@ if ((isset($_POST['Process']) || isset($_POST['ProcessAndClose'])) && can_proces
 	 $id = work_order_produce($_POST['selected_id'], $_POST['ref'], $_POST['quantity'],
 			$_POST['date_'], $_POST['memo_'], $close_wo);
 
-	meta_forward($_SERVER['PHP_SELF'], "AddedID=$id");
+	meta_forward($_SERVER['PHP_SELF'], "AddedID=".$_POST['selected_id']."&date=".$_POST['date_']);
 }
 
 //-------------------------------------------------------------------------------------
@@ -177,7 +186,8 @@ if (!isset($_POST['quantity']) || $_POST['quantity'] == '')
 	$_POST['quantity'] = max($wo_details["units_reqd"] - $wo_details["units_issued"], 0);
 }
 
-start_table();
+start_table($table_style2);
+br();
 
 ref_row(_("Reference:"), 'ref', '', references::get_next(29));
 

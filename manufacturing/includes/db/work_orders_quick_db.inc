@@ -11,7 +11,7 @@
 ***********************************************************************/
 //--------------------------------------------------------------------------------------
 
-function add_work_order_quick($wo_ref, $loc_code, $units_reqd, $stock_id, $type, $date_, $additional_costs, $memo_)
+function add_work_order_quick($wo_ref, $loc_code, $units_reqd, $stock_id, $type, $date_, $memo_, $costs, $cr_acc, $labour, $cr_lab_acc)
 {
 	begin_transaction();
 
@@ -22,15 +22,19 @@ function add_work_order_quick($wo_ref, $loc_code, $units_reqd, $stock_id, $type,
 	add_material_cost($stock_id, $units_reqd, $date_);
 
 	$date = date2sql($date_);
-	if (!isset($additional_costs) || ($additional_costs == ""))
-		$additional_costs = 0;
-	if ($additional_costs != 0)
-		add_additional_cost($stock_id, $units_reqd, $date_, $additional_costs);
+	if (!isset($costs) || ($costs == ""))
+		$costs = 0;
+	if ($costs != 0)
+		add_overhead_cost($stock_id, $units_reqd, $date_, $costs);
+	if (!isset($labour) || ($labour == ""))
+		$labour = 0;
+	if ($labour != 0)
+		add_labour_cost($stock_id, $units_reqd, $date_, $labour);
 		
 	$sql = "INSERT INTO ".TB_PREF."workorders (wo_ref, loc_code, units_reqd, units_issued, stock_id,
 		type, additional_costs, date_, released_date, required_by, released, closed)
     	VALUES (".db_escape($wo_ref).", ".db_escape($loc_code).", $units_reqd, $units_reqd, '$stock_id',
-		$type, $additional_costs, '$date', '$date', '$date', 1, 1)";
+		$type, $costs, '$date', '$date', '$date', 1, 1)";
 	db_query($sql, "could not add work order");
 
 	$woid = db_insert_id();
@@ -68,7 +72,7 @@ function add_work_order_quick($wo_ref, $loc_code, $units_reqd, $stock_id, $type,
 
 	// -------------------------------------------------------------------------
 
-	work_order_quick_costs($woid, $stock_id, $units_reqd, $date_, $additional_costs);
+	work_order_quick_costs($woid, $stock_id, $units_reqd, $date_, false, $costs, $cr_acc, $labour, $cr_lab_acc);
 
 	// -------------------------------------------------------------------------
 
@@ -82,8 +86,9 @@ function add_work_order_quick($wo_ref, $loc_code, $units_reqd, $stock_id, $type,
 
 //--------------------------------------------------------------------------------------
 
-function work_order_quick_costs($woid, $stock_id, $units_reqd, $date_, $additional_costs, $advanced=false)
+function work_order_quick_costs($woid, $stock_id, $units_reqd, $date_, $advanced=false, $costs=0, $cr_acc="", $labour=0, $cr_lab_acc="")
 {
+	global $wo_cost_types;
 	$result = get_bom($stock_id);
 
 	// credit all the components
@@ -93,7 +98,7 @@ function work_order_quick_costs($woid, $stock_id, $units_reqd, $date_, $addition
 
 		$bom_accounts = get_stock_gl_code($bom_item["component"]);
 
-		$bom_cost = $bom_item["standard_cost"] * $bom_item["quantity"] * $units_reqd;
+		$bom_cost = $bom_item["ComponentCost"] * $units_reqd;
 
 		if ($advanced)
 		{
@@ -110,11 +115,12 @@ function work_order_quick_costs($woid, $stock_id, $units_reqd, $date_, $addition
 	{
 		// also take the additional issues
 		$res = get_additional_issues($woid);
+		$wo = get_work_order($woid);
 		$issue_total = 0;
 		while ($item = db_fetch($res))
 		{
 			$standard_cost = get_standard_cost($item['stock_id']);
-			$issue_cost = $standard_cost * $item['qty_issued'];
+			$issue_cost = $standard_cost * $item['qty_issued'] * $units_reqd / $wo['units_reqd'];
 			$issue = get_stock_gl_code($item['stock_id']);
 			add_gl_trans_std_cost(systypes::work_order(), $woid, $date_, $issue["inventory_account"], 0, 0,
 				null, -$issue_cost);
@@ -122,20 +128,55 @@ function work_order_quick_costs($woid, $stock_id, $units_reqd, $date_, $addition
 		}
 		add_issue_cost($stock_id, $units_reqd, $date_, $issue_total);
 		$total_cost += $issue_total;
-		$pcost = 0; // fix bank payments as additional cost.
-		$result = get_bank_trans(null, null, payment_person_types::WorkOrder(), $woid);
-		while ($row = db_fetch($result))
-			$pcost += -$row['amount'];
-		if ($pcost != 0)	
-			add_additional_cost($stock_id, $units_reqd, $date_, $pcost);
+		$result = get_gl_wo_cost_trans($woid, WO_LABOUR);
+		$lcost = 0;
+		while ($row = db_fetch_row($result))
+			$lcost += -$row['amount'];
+		if ($lcost != 0)	
+			add_labour_cost($stock_id, $units_reqd, $date_, $lcost * $units_reqd / $wo['units_reqd']);
+		$result = get_gl_wo_cost_trans($woid, WO_OVERHEAD);
+		$ocost = 0;
+		while ($row = db_fetch_row($result))
+			$ocost += -$row['amount'];
+		if ($ocost != 0)	
+			add_overhead_cost($stock_id, $units_reqd, $date_, $ocost * $units_reqd / $wo['units_reqd']);
 	}
 	// credit additional costs
 	$item_accounts = get_stock_gl_code($stock_id);
-	add_gl_trans_std_cost(systypes::work_order(), $woid, $date_, $item_accounts["assembly_account"],
-		$item_accounts["dimension_id"], $item_accounts["dimension2_id"], null, -$additional_costs);
-
-	// debit total components + additional
-	$total_cost += $additional_costs;
+	if ($costs != 0.0)
+	{
+		add_gl_trans_std_cost(systypes::work_order(), $woid, $date_, $cr_acc,
+			0, 0, $wo_cost_types[WO_OVERHEAD], -$costs, payment_person_types::WorkOrder(), WO_OVERHEAD);
+		$is_bank_to = is_bank_account($cr_acc);
+    	if ($is_bank_to)
+    	{
+    		add_bank_trans(systypes::work_order(), $woid, $is_bank_to, "",
+    			$date_, -$costs, payment_person_types::WorkOrder(), WO_OVERHEAD, get_company_currency(),
+    			"Cannot insert a destination bank transaction");
+    	}
+			
+		add_gl_trans_std_cost(systypes::work_order(), $woid, $date_, $item_accounts["assembly_account"],
+			$item_accounts["dimension_id"], $item_accounts["dimension2_id"], $wo_cost_types[WO_OVERHEAD], $costs, 
+			payment_person_types::WorkOrder(), WO_OVERHEAD);
+	}
+	if ($labour != 0.0)
+	{
+		add_gl_trans_std_cost(systypes::work_order(), $woid, $date_, $cr_lab_acc,
+			0, 0, $wo_cost_types[WO_LABOUR], -$labour, payment_person_types::WorkOrder(), WO_LABOUR);
+		$is_bank_to = is_bank_account($cr_lab_acc);
+    	if ($is_bank_to)
+    	{
+    		add_bank_trans(systypes::work_order(), $woid, $is_bank_to, "",
+    			$date_, -$labour, payment_person_types::WorkOrder(), WO_LABOUR, get_company_currency(),
+    			"Cannot insert a destination bank transaction");
+    	}
+			
+		add_gl_trans_std_cost(systypes::work_order(), $woid, $date_, $item_accounts["assembly_account"],
+			$item_accounts["dimension_id"], $item_accounts["dimension2_id"], $wo_cost_types[WO_LABOUR], $labour, 
+			payment_person_types::WorkOrder(), WO_LABOUR);
+	}
+	// debit total components
+	//$total_cost += $additional_costs;
 	add_gl_trans_std_cost(systypes::work_order(), $woid, $date_, $item_accounts["inventory_account"],
 		0, 0, null, $total_cost);
 }
