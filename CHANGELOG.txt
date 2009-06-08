@@ -19,8 +19,11 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+09-Jun-2009 Joe Hunt
+# Bad format in due date column in search dimensions
+$ /dimensions/inquiry/search_dimensions.php
 
-08-Jun-2009
+08-Jun-2009 Joe Hunt
 ! Changed Advanced Manufacturing payments to be more flexible and simpler. Removed from Payment.
 $ /gl/includes/db/gl_db_trans.inc
   /gl/includes/ui/gl_bank_ui.inc
@@ -36,6 +39,7 @@ $ /manufacturing/work_order_add_finished.php
   /manufacturing/includes/manufacturing_ui.inc
   /manufacturing/includes/db/work_orders_db.inc
   /manufacturing/includes/db/work_orders_quick_db.inc
+  /manufacturing/includes/db/work_orders_produce_items_db.inc
   /manufacturing/view/work_order_view.php
   
 05-Jun-2009 Joe Hunt
