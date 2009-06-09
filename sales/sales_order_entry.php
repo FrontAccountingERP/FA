@@ -108,9 +108,11 @@ if (isset($_GET['AddedID'])) {
 
 	display_notification_centered(sprintf(_("Delivery # %d has been entered."),$delivery));
 
-	display_note(get_trans_view_str(13, $delivery, _("&View This Delivery")));
-	echo '<br>';
+	display_note(get_trans_view_str(13, $delivery, _("&View This Delivery")), 0, 1);
+
 	display_note(print_document_link($delivery, _("&Print Delivery Note"), true, 13));
+
+	display_note(get_gl_view_str(13, $delivery, _("View the GL Journal Entries for this Dispatch")),1);
 
 	hyperlink_params($path_to_root . "/sales/customer_invoice.php",
 	_("Make &Invoice Against This Delivery"), "DeliveryNumber=$delivery");
@@ -131,6 +133,8 @@ if (isset($_GET['AddedID'])) {
 	display_note(get_trans_view_str(10, $invoice, _("&View This Invoice")));
 	echo '<br>';
 	display_note(print_document_link($invoice, _("&Print Sales Invoice"), true, 10));
+
+	display_note(get_gl_view_str(10, $invoice, _("View the GL &Journal Entries for this Invoice")),1);
 
 	if ((isset($_GET['Type']) && $_GET['Type'] == 1))
 	hyperlink_params("inquiry/sales_orders_view.php",
