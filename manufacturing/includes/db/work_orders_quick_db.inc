@@ -106,10 +106,9 @@ function work_order_quick_costs($woid, $stock_id, $units_reqd, $date_, $advanced
 			add_stock_move(systypes::work_order(), $bom_item["component"], $woid,
 				$bom_item["loc_code"], $date_, "", -$bom_item["quantity"] * $units_reqd, 0);
 		}
-		add_gl_trans_std_cost(systypes::work_order(), $woid, $date_, $bom_accounts["inventory_account"], 0, 0,
+		$total_cost += add_gl_trans_std_cost(systypes::work_order(), $woid, $date_, $bom_accounts["inventory_account"], 0, 0,
 			null, -$bom_cost);
 
-		$total_cost += $bom_cost;
 	}
 	if ($advanced)
 	{
@@ -122,12 +121,11 @@ function work_order_quick_costs($woid, $stock_id, $units_reqd, $date_, $advanced
 			$standard_cost = get_standard_cost($item['stock_id']);
 			$issue_cost = $standard_cost * $item['qty_issued'] * $units_reqd / $wo['units_reqd'];
 			$issue = get_stock_gl_code($item['stock_id']);
-			add_gl_trans_std_cost(systypes::work_order(), $woid, $date_, $issue["inventory_account"], 0, 0,
+			$total_cost += add_gl_trans_std_cost(systypes::work_order(), $woid, $date_, $issue["inventory_account"], 0, 0,
 				null, -$issue_cost);
 			$issue_total += $issue_cost;
 		}
 		add_issue_cost($stock_id, $units_reqd, $date_, $issue_total);
-		$total_cost += $issue_total;
 		$result = get_gl_wo_cost_trans($woid, WO_LABOUR);
 		$lcost = 0;
 		while ($row = db_fetch_row($result))
@@ -175,10 +173,9 @@ function work_order_quick_costs($woid, $stock_id, $units_reqd, $date_, $advanced
 			$item_accounts["dimension_id"], $item_accounts["dimension2_id"], $wo_cost_types[WO_LABOUR], $labour, 
 			payment_person_types::WorkOrder(), WO_LABOUR);
 	}
-	// debit total components
-	//$total_cost += $additional_costs;
+	// debit total components $total_cost
 	add_gl_trans_std_cost(systypes::work_order(), $woid, $date_, $item_accounts["inventory_account"],
-		0, 0, null, $total_cost);
+		0, 0, null, -$total_cost);
 }
 
 //--------------------------------------------------------------------------------------
