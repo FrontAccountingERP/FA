@@ -128,13 +128,13 @@ function work_order_quick_costs($woid, $stock_id, $units_reqd, $date_, $advanced
 		add_issue_cost($stock_id, $units_reqd, $date_, $issue_total);
 		$result = get_gl_wo_cost_trans($woid, WO_LABOUR);
 		$lcost = 0;
-		while ($row = db_fetch_row($result))
+		while ($row = db_fetch($result))
 			$lcost += -$row['amount'];
 		if ($lcost != 0)	
 			add_labour_cost($stock_id, $units_reqd, $date_, $lcost * $units_reqd / $wo['units_reqd']);
 		$result = get_gl_wo_cost_trans($woid, WO_OVERHEAD);
 		$ocost = 0;
-		while ($row = db_fetch_row($result))
+		while ($row = db_fetch($result))
 			$ocost += -$row['amount'];
 		if ($ocost != 0)	
 			add_overhead_cost($stock_id, $units_reqd, $date_, $ocost * $units_reqd / $wo['units_reqd']);

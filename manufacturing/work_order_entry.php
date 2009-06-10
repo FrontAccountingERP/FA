@@ -254,7 +254,10 @@ function can_process()
 
 if (isset($_POST['ADD_ITEM']) && can_process())
 {
-
+	if (!isset($_POST['cr_acc']))
+		$_POST['cr_acc'] = "";
+	if (!isset($_POST['cr_lab_acc']))
+		$_POST['cr_lab_acc'] = "";
 	$id = add_work_order($_POST['wo_ref'], $_POST['StockLocation'], input_num('quantity'),
 		$_POST['stock_id'],  $_POST['type'], $_POST['date_'],
 		$_POST['RequDate'], $_POST['memo_'], input_num('Costs'), $_POST['cr_acc'], input_num('Labour'), $_POST['cr_lab_acc']);
