@@ -37,19 +37,19 @@ function work_order_produce($woid, $ref, $quantity, $date_, $memo_, $close_wo)
 
 	$id = db_insert_id();
 
-	// insert a +ve stock move for the item being manufactured
-	// negative means "unproduce" or unassemble
-	add_stock_move(29, $details["stock_id"], $id,
-		$details["loc_code"], $date_, $memo_, $quantity, 0);
-
-	// update wo quantity and close wo if requested
-	work_order_update_finished_quantity($woid, $quantity, $close_wo);
-
 	// -------------------------------------------------------------------------
 
 	work_order_quick_costs($woid, $details["stock_id"], $quantity, $date_, true);
 
 	// -------------------------------------------------------------------------
+	// insert a +ve stock move for the item being manufactured
+	// negative means "unproduce" or unassemble
+	add_stock_move(29, $details["stock_id"], $id,
+		$details["loc_code"], $date_, $memo_, $quantity, 0);
+	// update wo quantity and close wo if requested
+	work_order_update_finished_quantity($woid, $quantity, $close_wo);
+
+
 	if ($memo_)
 		add_comments(29, $id, $date_, $memo_);
 

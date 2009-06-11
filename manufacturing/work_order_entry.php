@@ -380,7 +380,7 @@ else
 	wo_types_list_row(_("Type:"), 'type', null);
 }
 
-if ($_POST['released'] == true)
+if (get_post('released'))
 {
 	hidden('stock_id', $_POST['stock_id']);
 	hidden('StockLocation', $_POST['StockLocation']);
@@ -433,7 +433,7 @@ else
 	
 }
 
-if ($_POST['released'])
+if (get_post('released'))
 	label_row(_("Released On:"),$_POST['released_date']);
 
 textarea_row(_("Memo:"), 'memo_', null, 40, 5);
@@ -445,7 +445,7 @@ if (isset($selected_id))
 	echo "<table align=center><tr>";
 
 	submit_cells('UPDATE_ITEM', _("Update"), '', _('Save changes to work order'), true);
-	if (isset($_POST['released']))
+	if (get_post('released'))
 	{
 		submit_cells('close', _("Close This Work Order"),'','',true);
 	}

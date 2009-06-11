@@ -79,11 +79,11 @@ function add_issue_cost($stock_id, $qty, $date_, $costs)
 	$myrow = db_fetch($result);
 	$material_cost =  $myrow['material_cost'];
 	$qoh = get_qoh_on_date($stock_id, null, $date_);
-	if ($qoh <= 0)
+	if ($qoh + $qty  <= 0)
 		$material_cost = 0;
 	else
-		$material_cost = ($qoh * $material_cost + $qty * $costs) /	$qoh;
-	$sql = "UPDATE ".TB_PREF."stock_master SET material_cost=$material_cost
+		$material_cost = ($qty * $costs) /	($qoh + $qty);
+	$sql = "UPDATE ".TB_PREF."stock_master SET material_cost=material_cost+$material_cost
 		WHERE stock_id='$stock_id'";
 	db_query($sql,"The cost details for the inventory item could not be updated");
 }

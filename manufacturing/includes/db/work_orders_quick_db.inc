@@ -125,7 +125,8 @@ function work_order_quick_costs($woid, $stock_id, $units_reqd, $date_, $advanced
 				null, -$issue_cost);
 			$issue_total += $issue_cost;
 		}
-		add_issue_cost($stock_id, $units_reqd, $date_, $issue_total);
+		if ($issue_total != 0)
+			add_issue_cost($stock_id, $units_reqd, $date_, $issue_total);
 		$result = get_gl_wo_cost_trans($woid, WO_LABOUR);
 		$lcost = 0;
 		while ($row = db_fetch($result))

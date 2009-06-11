@@ -103,6 +103,7 @@ function can_process()
 
 if (isset($_POST['process']) && can_process() == true)
 {
+	begin_transaction();
 	add_gl_trans_std_cost(systypes::work_order(), $_POST['selected_id'], $_POST['date_'], $_POST['cr_acc'],
 		0, 0, $wo_cost_types[$_POST['PaymentType']], -input_num('costs'), payment_person_types::WorkOrder(), $_POST['PaymentType']);
 	$is_bank_to = is_bank_account($_POST['cr_acc']);
@@ -116,7 +117,7 @@ if (isset($_POST['process']) && can_process() == true)
 	add_gl_trans_std_cost(systypes::work_order(), $_POST['selected_id'], $_POST['date_'], $_POST['db_acc'],
 		$_POST['dim1'], $_POST['dim2'], $wo_cost_types[$_POST['PaymentType']], input_num('costs'), payment_person_types::WorkOrder(), 
 			$_POST['PaymentType']);
-	
+	commit_transaction();	
 
 	meta_forward($_SERVER['PHP_SELF'], "AddedID=".$_POST['selected_id']);
 }
