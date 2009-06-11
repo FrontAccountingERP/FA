@@ -19,6 +19,18 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+11-Jun-2009 Joe Hunt
+! Changed balance_sheet operation in class table to class type for sign convert in Balance Sheet, Profit and Loss Statement and Monthly Breakdown
+$ /gl/manage/gl_account_classes.php
+  /gl/includes/db/gl_db_account_types.inc
+  /gl/includes/db/gl_db_accounts.inc
+  /gl/inquiry/gl_trial_balance.php
+  /includes/types.inc
+  /reporting/rep705.php
+  /reporting/rep706.php
+  /reporting/rep707.php
+  /reporting/rep708.php
+  
 09-Jun-2009 Joe Hunt
 # Bad format in due date column in search dimensions
 $ /dimensions/inquiry/search_dimensions.php

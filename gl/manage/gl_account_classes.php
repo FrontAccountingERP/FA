@@ -106,7 +106,7 @@ if ($Mode == 'RESET')
 $result = get_account_classes();
 start_form();
 start_table($table_style);
-$th = array(_("Class ID"), _("Class Name"), _("Balance Sheet"), "", "");
+$th = array(_("Class ID"), _("Class Name"), _("Class Type"), "", "");
 table_header($th);
 
 $k = 0;
@@ -115,17 +115,9 @@ while ($myrow = db_fetch($result))
 
 	alt_table_row_color($k);
 
-	if ($myrow["balance_sheet"] == 0) 
-	{
-		$bs_text = _("No");
-	} 
-	else 
-	{
-		$bs_text = _("Yes");
-	}
 	label_cell($myrow["cid"]);
 	label_cell($myrow['class_name']);
-	label_cell($bs_text);
+	label_cell($class_types[$myrow["balance_sheet"]]);
 	edit_button_cell("Edit".$myrow["cid"], _("Edit"));
 	delete_button_cell("Delete".$myrow["cid"], _("Delete"));
 	end_row();
@@ -163,7 +155,7 @@ else
 
 text_row_ex(_("Class Name:"), 'name', 50, 60);
 
-yesno_list_row(_("Balance Sheet:"), 'Balance', null, "", "", false);
+class_types_list_row(_("Class Type:"), 'Balance', null);
 
 end_table(1);
 

@@ -100,6 +100,16 @@ function get_account_class_name($id)
 	return $row[0];
 }
 
+function get_account_class_convert($id)
+{
+	global $class_types;
+	$sql = "SELECT balance_sheet FROM ".TB_PREF."chart_class WHERE cid = $id";
+
+	$result = db_query($sql, "could not get class type");
+
+	$row = db_fetch_row($result);
+	return (($row[0] == CL_LIABILITIES || $row[0] == CL_EQUITY || $row[0] == CL_INCOME || $row[0] == 0) ? -1 : 1); // backwards compatibility
+}
 
 function delete_account_class($id)
 {

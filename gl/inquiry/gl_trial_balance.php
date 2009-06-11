@@ -66,7 +66,7 @@ function get_balance($account, $from, $to, $from_incl=true, $to_incl=true)
 	if ($from_incl)
 		$sql .= " tran_date >= '$from_date'  AND";
 	else
-		$sql .= " tran_date > IF(".TB_PREF."chart_class.balance_sheet=1, '0000-00-00', '$from_date') AND";
+		$sql .= " tran_date > IF(balance_sheet>0 AND balance_sheet<".CL_INCOME.", '0000-00-00', '$from_date') AND";
 	$to_date = date2sql($to);
 	if ($to_incl)
 		$sql .= " tran_date <= '$to_date' ";

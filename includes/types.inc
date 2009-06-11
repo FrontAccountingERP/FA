@@ -309,6 +309,22 @@ class wo_types
 	}
 }
 
+define('CL_ASSETS', 1);
+define('CL_LIABILITIES', 2);
+define('CL_EQUITY', 3);
+define('CL_INCOME', 4);
+define('CL_COGS', 5);
+define('CL_EXPENSE', 6);
+
+$class_types = array(
+		CL_ASSETS => _("Assets"),
+		CL_LIABILITIES => _("Liabilities"),
+		CL_EQUITY => _("Equity"),
+		CL_INCOME => _("Income"),
+		CL_COGS => _("Cost of Goods Sold"),
+		CL_EXPENSE => _("Expense"),
+);
+
 define('WO_LABOUR', 0);
 define('WO_OVERHEAD', 1);
 

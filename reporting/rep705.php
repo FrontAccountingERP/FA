@@ -47,18 +47,18 @@ function getPeriods($year, $account, $dimension, $dimension2)
 	$date02 = date('Y-m-d',mktime(0,0,0,$mo-10,1,$yr));
 	$date01 = date('Y-m-d',mktime(0,0,0,$mo-11,1,$yr));
 
-    $sql = "SELECT SUM(CASE WHEN tran_date >= '$date01' AND tran_date < '$date02' THEN -amount / 1000 ELSE 0 END) AS per01,
-		   		SUM(CASE WHEN tran_date >= '$date02' AND tran_date < '$date03' THEN -amount / 1000 ELSE 0 END) AS per02,
-		   		SUM(CASE WHEN tran_date >= '$date03' AND tran_date < '$date04' THEN -amount / 1000 ELSE 0 END) AS per03,
-		   		SUM(CASE WHEN tran_date >= '$date04' AND tran_date < '$date05' THEN -amount / 1000 ELSE 0 END) AS per04,
-		   		SUM(CASE WHEN tran_date >= '$date05' AND tran_date < '$date06' THEN -amount / 1000 ELSE 0 END) AS per05,
-		   		SUM(CASE WHEN tran_date >= '$date06' AND tran_date < '$date07' THEN -amount / 1000 ELSE 0 END) AS per06,
-		   		SUM(CASE WHEN tran_date >= '$date07' AND tran_date < '$date08' THEN -amount / 1000 ELSE 0 END) AS per07,
-		   		SUM(CASE WHEN tran_date >= '$date08' AND tran_date < '$date09' THEN -amount / 1000 ELSE 0 END) AS per08,
-		   		SUM(CASE WHEN tran_date >= '$date09' AND tran_date < '$date10' THEN -amount / 1000 ELSE 0 END) AS per09,
-		   		SUM(CASE WHEN tran_date >= '$date10' AND tran_date < '$date11' THEN -amount / 1000 ELSE 0 END) AS per10,
-		   		SUM(CASE WHEN tran_date >= '$date11' AND tran_date < '$date12' THEN -amount / 1000 ELSE 0 END) AS per11,
-		   		SUM(CASE WHEN tran_date >= '$date12' AND tran_date < '$date13' THEN -amount / 1000 ELSE 0 END) AS per12
+    $sql = "SELECT SUM(CASE WHEN tran_date >= '$date01' AND tran_date < '$date02' THEN amount / 1000 ELSE 0 END) AS per01,
+		   		SUM(CASE WHEN tran_date >= '$date02' AND tran_date < '$date03' THEN amount / 1000 ELSE 0 END) AS per02,
+		   		SUM(CASE WHEN tran_date >= '$date03' AND tran_date < '$date04' THEN amount / 1000 ELSE 0 END) AS per03,
+		   		SUM(CASE WHEN tran_date >= '$date04' AND tran_date < '$date05' THEN amount / 1000 ELSE 0 END) AS per04,
+		   		SUM(CASE WHEN tran_date >= '$date05' AND tran_date < '$date06' THEN amount / 1000 ELSE 0 END) AS per05,
+		   		SUM(CASE WHEN tran_date >= '$date06' AND tran_date < '$date07' THEN amount / 1000 ELSE 0 END) AS per06,
+		   		SUM(CASE WHEN tran_date >= '$date07' AND tran_date < '$date08' THEN amount / 1000 ELSE 0 END) AS per07,
+		   		SUM(CASE WHEN tran_date >= '$date08' AND tran_date < '$date09' THEN amount / 1000 ELSE 0 END) AS per08,
+		   		SUM(CASE WHEN tran_date >= '$date09' AND tran_date < '$date10' THEN amount / 1000 ELSE 0 END) AS per09,
+		   		SUM(CASE WHEN tran_date >= '$date10' AND tran_date < '$date11' THEN amount / 1000 ELSE 0 END) AS per10,
+		   		SUM(CASE WHEN tran_date >= '$date11' AND tran_date < '$date12' THEN amount / 1000 ELSE 0 END) AS per11,
+		   		SUM(CASE WHEN tran_date >= '$date12' AND tran_date < '$date13' THEN amount / 1000 ELSE 0 END) AS per12
     			FROM ".TB_PREF."gl_trans
 				WHERE account='$account'";
 	if ($dimension > 0)
@@ -198,6 +198,9 @@ function print_annual_expense_breakdown()
 	$level = 0;
 	$last = -1;
 
+	$closeclass = false;
+	$convert = 1;
+
 	$accounts = get_gl_accounts_all(0);
 
 	while ($account=db_fetch($accounts))
@@ -235,7 +238,7 @@ function print_annual_expense_breakdown()
 						$rep->TextCol(0, 2,	_('Total') . " " . $typename[$level]);
 						for ($i = 1; $i <= 12; $i++)
 						{
-							$rep->AmountCol($i + 1, $i + 2, $total[$level][$i], $dec);
+							$rep->AmountCol($i + 1, $i + 2, $total[$level][$i] * $convert, $dec);
 							$total[$level][$i] = 0.0;
 						}
 					}
@@ -252,7 +255,7 @@ function print_annual_expense_breakdown()
 					$rep->TextCol(0, 2,	_('Total') . " " . $classname);
 					for ($i = 1; $i <= 12; $i++)
 					{
-						$rep->AmountCol($i + 1, $i + 2, $total2[$i], $dec);
+						$rep->AmountCol($i + 1, $i + 2, $total2[$i] * $convert, $dec);
 						$sales[$i] += $total2[$i];
 					}
 					$rep->Font();
@@ -279,6 +282,7 @@ function print_annual_expense_breakdown()
 			$rep->Line($rep->row);
 			$rep->NewLine();
 		}
+		$convert = get_account_class_convert($account['ClassID']);
 		$classname = $account['AccountClassName'];
 
 		if ($account['account_code'] != null)
@@ -291,7 +295,7 @@ function print_annual_expense_breakdown()
 
 			for ($i = 1; $i <= 12; $i++)
 			{
-				$rep->AmountCol($i + 1, $i + 2, $balance[$i], $dec);
+				$rep->AmountCol($i + 1, $i + 2, $balance[$i] * $convert, $dec);
 				$total2[$i] += $balance[$i];
 			}
 			for ($j = 0; $j <= $level; $j++)
@@ -329,7 +333,7 @@ function print_annual_expense_breakdown()
 					$rep->TextCol(0, 2,	_('Total') . " " . $typename[$level]);
 					for ($i = 1; $i <= 12; $i++)
 					{
-						$rep->AmountCol($i + 1, $i + 2, $total[$level][$i], $dec);
+						$rep->AmountCol($i + 1, $i + 2, $total[$level][$i] * $convert, $dec);
 						$total[$level][$i] = 0.0;
 					}
 				}
@@ -347,14 +351,14 @@ function print_annual_expense_breakdown()
 				$rep->TextCol(0, 2,	_('Total') . " " . $classname);
 				for ($i = 1; $i <= 12; $i++)
 				{
-					$rep->AmountCol($i + 1, $i + 2, $total2[$i], $dec);
+					$rep->AmountCol($i + 1, $i + 2, $total2[$i] * $convert, $dec);
 					$calc[$i] = $sales[$i] + $total2[$i];
 				}
 
 				$rep->NewLine(2);
 				$rep->TextCol(0, 2,	_('Calculated Return'));
 				for ($i = 1; $i <= 12; $i++)
-					$rep->AmountCol($i + 1, $i + 2, $calc[$i], $dec);
+					$rep->AmountCol($i + 1, $i + 2, $calc[$i] * -1, $dec); // always convert
 				$rep->Font();
 
 				$rep->NewLine();

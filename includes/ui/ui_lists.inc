@@ -2067,4 +2067,17 @@ function quick_entry_types_list_row($label, $name, $selected_id=null, $submit_on
 }
 
 
+function class_types_list_row($label, $name, $selected_id=null, $submit_on_change=false)
+{
+	global $class_types;
+	
+	echo "<tr><td>$label</td><td>";
+	array_selector($name, $selected_id, $class_types, 
+		array( 
+			'select_submit'=> $submit_on_change
+		) );
+	echo "</td></tr>\n";
+}
+
+
 ?>

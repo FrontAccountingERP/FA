@@ -154,6 +154,9 @@ function print_profit_and_loss_statement()
 	$salesacc = 0.0;
 	$last = -1;
 
+	$closeclass = false;
+	$convert = 1;
+
 	$accounts = get_gl_accounts_all(0);
 
 	while ($account=db_fetch($accounts))
@@ -193,8 +196,8 @@ function print_profit_and_loss_statement()
 						$rep->Line($rep->row);
 						$rep->NewLine();
 						$rep->TextCol(0, 2,	_('Total') . " " . $typename[$level]);
-						$rep->AmountCol(2, 3, $typeper[$level], $dec);
-						$rep->AmountCol(3, 4, $typeacc[$level], $dec);
+						$rep->AmountCol(2, 3, $typeper[$level] * $convert, $dec);
+						$rep->AmountCol(3, 4, $typeacc[$level] * $convert, $dec);
 						$rep->AmountCol(4, 5, Achieve($typeper[$level], $typeacc[$level]), $pdec);
 						if ($graphics)
 						{
@@ -216,8 +219,8 @@ function print_profit_and_loss_statement()
 					$rep->NewLine();
 					$rep->Font('bold');
 					$rep->TextCol(0, 2,	_('Total') . " " . $classname);
-					$rep->AmountCol(2, 3, $classper, $dec);
-					$rep->AmountCol(3, 4, $classacc, $dec);
+					$rep->AmountCol(2, 3, $classper * $convert, $dec);
+					$rep->AmountCol(3, 4, $classacc * $convert, $dec);
 					$rep->AmountCol(4, 5, Achieve($classper, $classacc), $pdec);
 					$rep->Font();
 					$salesper += $classper;
@@ -245,12 +248,13 @@ function print_profit_and_loss_statement()
 			$rep->Line($rep->row);
 			$rep->NewLine();
 		}
+		$convert = get_account_class_convert($account['ClassID']);
 		$classname = $account['AccountClassName'];
 
 		if ($account['account_code'] != null)
 		{
-			$per_balance *= -1;
-			$acc_balance *= -1;
+			//$per_balance *= -1;
+			//$acc_balance *= -1;
 		
 			for ($i = 0; $i <= $level; $i++)
 			{
@@ -262,8 +266,8 @@ function print_profit_and_loss_statement()
 			$rep->TextCol(0, 1,	$account['account_code']);
 			$rep->TextCol(1, 2,	$account['account_name']);
 
-			$rep->AmountCol(2, 3, $per_balance, $dec);
-			$rep->AmountCol(3, 4, $acc_balance, $dec);
+			$rep->AmountCol(2, 3, $per_balance * $convert, $dec);
+			$rep->AmountCol(3, 4, $acc_balance * $convert, $dec);
 			$rep->AmountCol(4, 5, Achieve($per_balance, $acc_balance), $pdec);
 
 			$rep->NewLine();
@@ -294,8 +298,8 @@ function print_profit_and_loss_statement()
 					$rep->Line($rep->row);
 					$rep->NewLine();
 					$rep->TextCol(0, 2,	_('Total') . " " . $typename[$level]);
-					$rep->AmountCol(2, 3, $typeper[$level], $dec);
-					$rep->AmountCol(3, 4, $typeacc[$level], $dec);
+					$rep->AmountCol(2, 3, $typeper[$level] * $convert, $dec);
+					$rep->AmountCol(3, 4, $typeacc[$level] * $convert, $dec);
 					$rep->AmountCol(4, 5, Achieve($typeper[$level], $typeacc[$level]), $pdec);
 					if ($graphics)
 					{
@@ -321,14 +325,14 @@ function print_profit_and_loss_statement()
 
 				$rep->Font('bold');
 				$rep->TextCol(0, 2,	_('Total') . " " . $classname);
-				$rep->AmountCol(2, 3, $classper, $dec);
-				$rep->AmountCol(3, 4, $classacc, $dec);
+				$rep->AmountCol(2, 3, $classper * $convert, $dec);
+				$rep->AmountCol(3, 4, $classacc * $convert, $dec);
 				$rep->AmountCol(4, 5, Achieve($classper, $classacc), $pdec);
 
 				$rep->NewLine(2);
 				$rep->TextCol(0, 2,	_('Calculated Return'));
-				$rep->AmountCol(2, 3, $calculateper, $dec);
-				$rep->AmountCol(3, 4, $calculateacc, $dec);
+				$rep->AmountCol(2, 3, $calculateper *-1, $dec); // always convert
+				$rep->AmountCol(3, 4, $calculateacc * -1, $dec);
 				$rep->AmountCol(4, 5, Achieve($calculateper, $calculateacc), $pdec);
 				if ($graphics)
 				{
