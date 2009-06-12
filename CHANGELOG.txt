@@ -19,6 +19,13 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+12-Jun-2009 Joe Hunt
+! Code clean-up
+$ /gl/includes/db/gl_db_trans.inc
+  /gl/inquiry/gl_trial_balance.php
+  /includes/ui/ui_view.inc
+  /reporting/rep708.php
+  
 11-Jun-2009 Joe Hunt
 ! Changed balance_sheet operation in class table to class type for sign convert in Balance Sheet, Profit and Loss Statement and Monthly Breakdown
 $ /gl/manage/gl_account_classes.php
@@ -26,6 +33,7 @@ $ /gl/manage/gl_account_classes.php
   /gl/includes/db/gl_db_accounts.inc
   /gl/inquiry/gl_trial_balance.php
   /includes/types.inc
+  /includes/ui/ui_lists.inc
   /reporting/rep705.php
   /reporting/rep706.php
   /reporting/rep707.php

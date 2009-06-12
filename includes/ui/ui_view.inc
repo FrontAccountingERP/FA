@@ -401,7 +401,7 @@ function view_stock_status_cell($stock_id, $description=null)
 
 function display_debit_or_credit_cells($value)
 {
-	if ($value > 0)
+	if ($value >= 0)
 	{
 		amount_cell($value);
 		label_cell("");
@@ -410,12 +410,6 @@ function display_debit_or_credit_cells($value)
 	{
 		label_cell("");
 		amount_cell(abs($value));
-	}
-	else
-	{
-		//label_cell("");
-		amount_cell(0);
-		label_cell("");
 	}
 }
 

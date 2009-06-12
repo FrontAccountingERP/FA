@@ -28,36 +28,6 @@ include_once($path_to_root . "/gl/includes/gl_db.inc");
 print_trial_balance();
 
 //----------------------------------------------------------------------------------------------------
-function get_balance($account, $dimension, $dimension2, $from, $to, $from_incl=true, $to_incl=true) 
-{
-	$sql = "SELECT SUM(IF(amount >= 0, amount, 0)) as debit, SUM(IF(amount < 0, -amount, 0)) as credit, SUM(amount) as balance 
-		FROM ".TB_PREF."gl_trans,".TB_PREF."chart_master,".TB_PREF."chart_types, ".TB_PREF."chart_class 
-		WHERE ".TB_PREF."gl_trans.account=".TB_PREF."chart_master.account_code AND ".TB_PREF."chart_master.account_type=".TB_PREF."chart_types.id 
-		AND ".TB_PREF."chart_types.class_id=".TB_PREF."chart_class.cid AND";
-		
-	if ($account != null)
-		$sql .= " account='$account' AND";
-	if ($dimension > 0)
-		$sql .= " dimension_id=$dimension AND";
-	if ($dimension2 > 0)
-		$sql .= " dimension2_id=$dimension2 AND";
-	$from_date = date2sql($from);
-	if ($from_incl)
-		$sql .= " tran_date >= '$from_date'  AND";
-	else
-		$sql .= " tran_date > IF(balance_sheet>0 AND balance_sheet<".CL_INCOME.", '0000-00-00', '$from_date') AND";
-	$to_date = date2sql($to);
-	if ($to_incl)
-		$sql .= " tran_date <= '$to_date' ";
-	else
-		$sql .= " tran_date < '$to_date' ";
-
-	$result = db_query($sql,"No general ledger accounts were returned");
-
-	return db_fetch($result);
-}
-
-//----------------------------------------------------------------------------------------------------
 
 function print_trial_balance()
 {

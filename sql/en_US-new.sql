@@ -168,9 +168,9 @@ CREATE TABLE `0_chart_class` (
 ### Data of table `0_chart_class` ###
 
 INSERT INTO `0_chart_class` VALUES ('1', 'Assets', '1');
-INSERT INTO `0_chart_class` VALUES ('2', 'Liabilities', '1');
-INSERT INTO `0_chart_class` VALUES ('3', 'Income', '0');
-INSERT INTO `0_chart_class` VALUES ('4', 'Costs', '0');
+INSERT INTO `0_chart_class` VALUES ('2', 'Liabilities', '2');
+INSERT INTO `0_chart_class` VALUES ('3', 'Income', '4');
+INSERT INTO `0_chart_class` VALUES ('4', 'Costs', '6');
 
 
 ### Structure of table `0_chart_master` ###
