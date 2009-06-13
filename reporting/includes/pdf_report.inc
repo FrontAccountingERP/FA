@@ -422,8 +422,9 @@ class FrontReport extends Cpdf
 				require_once($path_to_root . "/reporting/includes/class.mail.inc");
     			$mail = new email($this->company['coy_name'], $this->company['email']);
     			$from = $this->company['coy_name'] . " <" . $this->company['email'] . ">";
+				if ($myrow['email'] == '') $myrow['email'] = $myrow['contact_email'];
     			$to = $myrow['DebtorName'] . " <" . $myrow['email'] . ">";
-    			$msg = $doc_Dear_Sirs . ",\n\n" . $doc_AttachedFile . " " . $subject .
+    			$msg = $doc_Dear_Sirs . " " . $myrow['DebtorName'] . ",\n\n" . $doc_AttachedFile . " " . $subject .
     				"\n\n";
 				if ($myrow['dimension_id'] > 0 && $doctype == 10) // helper for payment links
 				{
@@ -438,7 +439,7 @@ class FrontReport extends Cpdf
 					}
 				}
     			$msg .= $doc_Kindest_regards . "\n\n";
-    			$sender = $this->user . "\n" . $this->company['coy_name'];
+    			$sender = $this->user . "\n" . $this->company['coy_name'] . "\n" . $this->company['postal_address'] . "\n" . $this->company['email'] . "\n" . $this->company['phone'];
     			$mail->to($to);
     			$mail->subject($subject);
     			$mail->text($msg . $sender);
