@@ -285,7 +285,7 @@ function print_annual_expense_breakdown()
 		}
 		$classname = $account['AccountClassName'];
 		$ctype = $account['ClassType'];
-		$convert = (($ctype == CL_INCOME || $ctype == 0) ? -1 : 1); // backwards compatibility
+		$convert = get_class_type_convert($ctype); 
 
 		if ($account['account_code'] != null)
 		{

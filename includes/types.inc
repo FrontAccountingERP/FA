@@ -309,6 +309,7 @@ class wo_types
 	}
 }
 
+define('CL_NONE', 0); // for backward compatibility
 define('CL_ASSETS', 1);
 define('CL_LIABILITIES', 2);
 define('CL_EQUITY', 3);
@@ -325,6 +326,14 @@ $class_types = array(
 		CL_EXPENSE => _("Expense"),
 );
 
+function get_class_type_convert($ctype)
+{
+	global $use_oldstyle_convert;
+	if (isset($use_oldstyle_convert) && $use_oldstyle_convert == 1)
+		return (($ctype >= CL_INCOME || $ctype == CL_NONE) ? -1 : 1);
+	else	
+		return ((($ctype >= CL_LIABILITIES && $ctype <= CL_INCOME) || $ctype == CL_NONE) ? -1 : 1);
+}
 define('WO_LABOUR', 0);
 define('WO_OVERHEAD', 1);
 

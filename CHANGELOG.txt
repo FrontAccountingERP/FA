@@ -23,9 +23,12 @@ $ -> Affected files
 ! Much better presentation of new Balance Sheet, P&L Statement and Monthly Breakdown.
 $ /gl/includes/db/gl_db_account_types.inc
   /gl/includes/db/gl_db_accounts.inc
+  /includes/types.inc
   /reporting/rep705.php
   /reporting/rep706.php
   /reporting/rep707.php
+! New variable in config.php, $use_oldstyle_convert, if set to 1, same convert as in old versions.  
+$ config.php
   
 13-Jun-2009 Joe Hunt/Pete/Tom Moulton
 ! Changed next reference method to also include partly alpha characters in front, fi. WA036 increments to WA037

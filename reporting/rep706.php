@@ -236,7 +236,7 @@ function print_balance_sheet()
 		}
 		$classname = $account['AccountClassName'];
 		$ctype = $account['ClassType'];
-		$convert = (($ctype == CL_LIABILITIES || $ctype == CL_EQUITY || $ctype == 0) ? -1 : 1); // backwards compatibility
+		$convert = get_class_type_convert($ctype); 
 
 		if ($account['account_code'] != null)
 		{
