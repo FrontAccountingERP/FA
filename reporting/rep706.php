@@ -331,11 +331,13 @@ function print_balance_sheet()
 				$rep->AmountCol(2, 3, -$assetsopen * $convert, $dec);
 				$rep->AmountCol(3, 4, -$assetsperiod * $convert, $dec);
 				$rep->AmountCol(4, 5, -$assetsclose * $convert, $dec);
+				$rep->Font();
 				$rep->NewLine();
 				if ($equityopen != 0.0 || $equityperiod != 0.0 || $equityclose != 0.0 ||
 					$lopen != 0.0 || $lperiod != 0.0 || $lclose != 0.0)
 				{
 					$rep->NewLine();
+					$rep->Font('bold');
 					$rep->TextCol(0, 2,	_('Total') . " " . _('Liabilities') . _(' and ') . _('Equities'));
 					$rep->AmountCol(2, 3, ($lopen + $equityopen + $calculateopen) * -1, $dec);
 					$rep->AmountCol(3, 4, ($lperiod + $equityperiod + $calculateperiod) * -1, $dec);
@@ -343,7 +345,6 @@ function print_balance_sheet()
 					$rep->Font();
 					$rep->NewLine();
 				}
-				$rep->Font();
 			}
 		}
 	}
