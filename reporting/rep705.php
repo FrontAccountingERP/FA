@@ -200,6 +200,7 @@ function print_annual_expense_breakdown()
 
 	$closeclass = false;
 	$convert = 1;
+	$ctype = 0;
 
 	$accounts = get_gl_accounts_all(0);
 
@@ -230,7 +231,7 @@ function print_annual_expense_breakdown()
 			{
 				for ( ; $level >= 0, $typename[$level] != ''; $level--) 
 				{
-					if ($account['parent'] == $closing[$level] || $account['parent'] < $last)
+					if ($account['parent'] == $closing[$level] || $account['parent'] < $last || $account['parent'] <= 0)
 					{
 						$rep->row += 6;
 						$rep->Line($rep->row);
@@ -282,8 +283,9 @@ function print_annual_expense_breakdown()
 			$rep->Line($rep->row);
 			$rep->NewLine();
 		}
-		$convert = get_account_class_convert($account['ClassID']);
 		$classname = $account['AccountClassName'];
+		$ctype = $account['ClassType'];
+		$convert = (($ctype == CL_INCOME || $ctype == 0) ? -1 : 1); // backwards compatibility
 
 		if ($account['account_code'] != null)
 		{
@@ -325,7 +327,7 @@ function print_annual_expense_breakdown()
 		{
 			for ( ; $level >= 0, $typename[$level] != ''; $level--) 
 			{
-				if ($account['parent'] == $closing[$level] || $account['parent'] < $last)
+				if ($account['parent'] == $closing[$level] || $account['parent'] < $last || $account['parent'] <= 0)
 				{
 					$rep->row += 6;
 					$rep->Line($rep->row);
