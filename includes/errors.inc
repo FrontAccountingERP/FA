@@ -22,7 +22,7 @@ $msg_colors = array(
 //    display in message box.
 
 function error_handler($errno, $errstr, $file, $line) {
-    global $messages;
+    global $messages, $go_debug;
 
 	// error_reporting==0 when messages are set off with @ 
 	if ($errno) {
