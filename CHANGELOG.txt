@@ -19,6 +19,11 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+16-Jun-2009 Janusz Dobrowolski
+! Added error logging to file or syslog.
+$ /config.php
+  /includes/errors.inc
+
 15-Jun-2009 Joe Hunt
 ! Added Item Code Entry in Work Order Entry and quantity decimals now follows the item
 ! Clean-up in ui_list codes.

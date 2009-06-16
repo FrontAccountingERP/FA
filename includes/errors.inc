@@ -25,8 +25,18 @@ function error_handler($errno, $errstr, $file, $line) {
     global $messages;
 
 	// error_reporting==0 when messages are set off with @ 
-	if ($errno & error_reporting()) {
-		$messages[] = array($errno, $errstr, $file, $line);
+	if ($errno) {
+		if(error_reporting())
+			$messages[] = array($errno, $errstr, $file, $line);
+
+		$ignored = E_USER_WARNING|E_USER_ERROR|E_USER_NOTICE;
+		 // don't log notices hidden with @ unless in debug mode
+		if (!$go_debug) $ignored |= E_NOTICE;
+		
+		if (!($errno & $ignored))
+			 error_log(
+			 user_company().':'.$_SESSION["wa_current_user"]->loginname.':'.
+			 basename($file).":$line: $errstr");
 	}
     return true;
 }
