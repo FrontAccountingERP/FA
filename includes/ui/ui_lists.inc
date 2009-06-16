@@ -818,8 +818,15 @@ function stock_manufactured_items_list_row($label, $name, $selected_id=null,
 		$all_option=false, $submit_on_change=false)
 {
 	echo "<tr>\n";
-	$str = stock_manufactured_items_list_cells($label, $name, $selected_id,
-			$all_option, $submit_on_change);
+	if ($label != null)
+		echo "<td>$label</td>\n";
+	echo "<td>";
+	$str = stock_items_list($name, $selected_id, $all_option, $submit_on_change,
+		array('where'=>array("mb_flag = 'M'"), 
+			'edit_submit' => true));
+	//$str = stock_manufactured_items_list_cells($label, $name, $selected_id,
+	//		$all_option, $submit_on_change);
+	echo "</td>\n";
 	echo "</tr>\n";
 	return $str;
 }

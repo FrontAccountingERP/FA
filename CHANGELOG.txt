@@ -19,6 +19,11 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+15-Jun-2009 Joe Hunt
+! Added Item Code Entry in Work Order Entry and quantity decimals now follows the item
+$ /includes/ui/ui_lists.inc
+  /manufacturing/work_order_entry.php
+  
 14-Jun-2009 Joe Hunt
 ! Much better presentation of new Balance Sheet, P&L Statement and Monthly Breakdown.
 $ /gl/includes/db/gl_db_account_types.inc

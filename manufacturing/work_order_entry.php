@@ -391,13 +391,18 @@ if (get_post('released'))
 }
 else
 {
-	stock_manufactured_items_list_row(_("Item:"), 'stock_id', null);
+	stock_manufactured_items_list_row(_("Item:"), 'stock_id', null, false, true);
+	if (list_updated('stock_id'))
+		$Ajax->activate('quantity');
 
 	locations_list_row(_("Destination Location:"), 'StockLocation', null);
 }
 
 if (!isset($_POST['quantity']))
 	$_POST['quantity'] = qty_format(1, $_POST['stock_id'], $dec);
+else
+	$_POST['quantity'] = qty_format($_POST['quantity'], $_POST['stock_id'], $dec);
+	
 
 if (get_post('type') == wo_types::advanced())
 {
