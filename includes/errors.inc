@@ -25,19 +25,12 @@ function error_handler($errno, $errstr, $file, $line) {
     global $messages, $go_debug;
 
 	// error_reporting==0 when messages are set off with @ 
-	if ($errno) {
-		if(error_reporting())
+	if ($errno & error_reporting())
 			$messages[] = array($errno, $errstr, $file, $line);
-
-		$ignored = E_USER_WARNING|E_USER_ERROR|E_USER_NOTICE;
-		 // don't log notices hidden with @ unless in debug mode
-		if (!$go_debug) $ignored |= E_NOTICE;
-		
-		if (!($errno & $ignored))
-			 error_log(
-			 user_company().':'.$_SESSION["wa_current_user"]->loginname.':'.
-			 basename($file).":$line: $errstr");
-	}
+	else // log all not displayed messages 
+		error_log(user_company() . ':' . $_SESSION["wa_current_user"]->loginname.':'
+			 . basename($file) .":$line: $errstr");
+	
     return true;
 }
 //------------------------------------------------------------------------------
@@ -89,11 +82,17 @@ function error_box() {
     global $before_box;
     
     echo "<div id='msgbox'>";
-    $before_box = ob_get_clean(); // save html content before error box 
+	$before_box = ob_get_clean(); // save html content before error box 
 // Necessary restart instead of get_contents/clean calls due to a bug in php 4.3.2
-	register_shutdown_function('ob_end_flush');
+	register_shutdown_function('end_flush');
     ob_start('output_html');
     echo "</div>";
+}
+/*
+	Helper to avoid sparse log notices.
+*/
+function end_flush () {
+		if (ob_get_level()) ob_end_flush();
 }
 
 function display_db_error($msg, $sql_statement=null, $exit=true)

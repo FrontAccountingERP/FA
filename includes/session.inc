@@ -131,7 +131,7 @@ include_once($path_to_root . "/includes/main.inc");
 $Ajax =& new Ajax();
 
 // intercept all output to destroy it in case of ajax call
-register_shutdown_function('ob_end_flush');
+register_shutdown_function('end_flush');
 ob_start('output_html',0);
 
 // colect all error msgs
