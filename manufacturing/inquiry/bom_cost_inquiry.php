@@ -31,17 +31,12 @@ if (list_updated('stock_id'))
 		$Ajax->activate('_page_body');
 
 start_form(false, true);
-    start_table("class='tablestyle_noborder'");
-	start_row();
-	echo '<td>';
-	stock_bom_items_list('stock_id', null, false, true);
-	echo '</td>';
-	end_table();
-	
-	echo "<hr>";
-
-	display_heading(_("All Costs Are In:") . " " . get_company_currency());
-	display_bom($_POST['stock_id']);
+start_table("class='tablestyle_noborder'");
+stock_manufactured_items_list_row(_("Select a manufacturable item:"), 'stock_id', null, false, true);
+end_table();
+br();
+display_heading(_("All Costs Are In:") . " " . get_company_currency());
+display_bom($_POST['stock_id']);
 
 end_form();
 

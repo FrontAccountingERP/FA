@@ -21,8 +21,12 @@ $ -> Affected files
 
 15-Jun-2009 Joe Hunt
 ! Added Item Code Entry in Work Order Entry and quantity decimals now follows the item
+! Clean-up in ui_list codes.
 $ /includes/ui/ui_lists.inc
   /manufacturing/work_order_entry.php
+  /manufacturing/search_work_orders.php
+  /manufacturing/manage/bom_edit.php
+  /manufacturing/inquiry/bom_cost_inquiry.php
   
 14-Jun-2009 Joe Hunt
 ! Much better presentation of new Balance Sheet, P&L Statement and Monthly Breakdown.
