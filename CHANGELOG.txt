@@ -23,6 +23,9 @@ $ -> Affected files
 ! Added error logging to file or syslog.
 $ /config.php
   /includes/errors.inc
+# Cleaned output buffering notices.
+$ /includes/errors.inc
+  /includes/session.inc
 
 15-Jun-2009 Joe Hunt
 ! Added Item Code Entry in Work Order Entry and quantity decimals now follows the item
