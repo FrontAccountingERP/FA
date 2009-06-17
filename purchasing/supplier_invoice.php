@@ -189,7 +189,11 @@ function check_data()
 		return false;
 	}
 
-	$sql = "SELECT Count(*) FROM ".TB_PREF."supp_trans WHERE supplier_id='" . $_SESSION['supp_trans']->supplier_id . "' AND supp_reference='" . $_POST['supp_reference'] . "'";
+	$sql = "SELECT Count(*) FROM ".TB_PREF."supp_trans WHERE supplier_id='" 
+		. $_SESSION['supp_trans']->supplier_id . "' AND supp_reference='" 
+		. $_POST['supp_reference'] 
+		. "' AND ov_amount!=0"; // ignore voided invoice references
+
 	$result=db_query($sql,"The sql to check for the previous entry of the same invoice failed");
 
 	$myrow = db_fetch_row($result);
