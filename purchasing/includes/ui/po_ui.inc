@@ -76,6 +76,7 @@ function display_po_header(&$order)
 		foreach ($order->line_items as $line_no=>$item) {
 			$line = &$order->line_items[$line_no];
 			$line->price =  get_purchase_price ($order->supplier_id, $_POST['stock_id']);
+			$line->quantity =  get_purchase_conversion_factor ($order->supplier_id, $_POST['stock_id']);
 		}
 	    $Ajax->activate('items_table');
 	}
@@ -310,7 +311,7 @@ function po_item_controls(&$order, $stock_id=null)
 		$_POST['units'] = $item_info["units"];
 
    		$dec = $item_info["decimals"];
-   		$_POST['qty'] =	number_format2(1, $dec);
+   		$_POST['qty'] =	number_format2(get_purchase_conversion_factor ($order->supplier_id, $_POST['stock_id']), $dec);
 		$_POST['price'] = price_format(get_purchase_price ($order->supplier_id, $_POST['stock_id']));
 		$_POST['req_del_date'] = add_days(Today(), 10);
 	}
