@@ -880,10 +880,7 @@ function stock_units_list_row($label, $name, $value=null, $enabled=true)
 	while($unit = db_fetch($result))
 		$units[$unit['abbr']] = $unit['name'];
 
-	array_selector($name, $value, $units, 
-		array( 
-			'select_submit'=> true, 
-			'disabled' => !$enabled) );
+	array_selector($name, $value, $units, array( 'disabled' => !$enabled) );
 
 	echo "</td></tr>\n";
 }

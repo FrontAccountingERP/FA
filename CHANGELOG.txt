@@ -22,6 +22,8 @@ $ -> Affected files
 17-Jun-2009 Janusz Dobrowolski
 # Fixed form reset after error, allowed png logo files.
 $ /admin/company_preferences.php
+! Removed unneeded submit_on_change in uom selector.
+$ /includes/ui/ui_lists.inc
 
 17-Jun-2009 Joe Hunt/Tu Nguyen
 # [0000136] view_po on invoices and credits shows transactions from other suppliers
