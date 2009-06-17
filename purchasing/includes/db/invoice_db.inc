@@ -330,9 +330,10 @@ function get_po_invoices_credits($po_number)
 	$sql = "SELECT DISTINCT ".TB_PREF."supp_trans.trans_no, ".TB_PREF."supp_trans.type,
 		ov_amount+ov_discount+ov_gst AS Total,
 		".TB_PREF."supp_trans.tran_date
-		FROM ".TB_PREF."supp_trans, ".TB_PREF."supp_invoice_items, ".TB_PREF."purch_order_details
+		FROM ".TB_PREF."supp_trans, ".TB_PREF."supp_invoice_items, ".TB_PREF."purch_order_details, ".TB_PREF."purch_orders
 		WHERE ".TB_PREF."supp_invoice_items.supp_trans_no = ".TB_PREF."supp_trans.trans_no
 		AND ".TB_PREF."supp_invoice_items.po_detail_item_id = ".TB_PREF."purch_order_details.po_detail_item
+		AND ".TB_PREF."purch_orders.supplier_id = ".TB_PREF."supp_trans.supplier_id
 		AND ".TB_PREF."purch_order_details.order_no = $po_number";
 
 	return db_query($sql, "The invoices/credits for the po $po_number could not be retreived");

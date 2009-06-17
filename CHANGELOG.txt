@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+17-Jun-2009 Joe Hunt/Tu Nguyen
+# [0000136] view_po on invoices and credits shows transactions from other suppliers
+$ /purchasing/includes/db/invoice_db.inc
+
 16-Jun-2009 Janusz Dobrowolski
 ! Added error logging to file or syslog.
 $ /config.php

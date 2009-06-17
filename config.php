@@ -23,7 +23,8 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 	// Log file for error/warning messages. Should be set to any location
 	// writable by www server. When set to empty string logging is switched off. 
 	// Special value 'syslog' can be used for system logger usage (see php manual).
-	$error_logfile = dirname(__FILE__).'/tmp/errors.log';
+	$error_logfile = '';
+	//$error_logfile = dirname(__FILE__).'/tmp/errors.log';
 	$debug 			= 1;
 	$show_sql 		= 0;
 	$go_debug 		= 0;
