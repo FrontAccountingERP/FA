@@ -175,7 +175,8 @@ function check_overdue($row)
     	FROM ".TB_PREF."supp_trans as trans, ".TB_PREF."suppliers as supplier
     	WHERE supplier.supplier_id = trans.supplier_id
      	AND trans.tran_date >= '$date_after'
-    	AND trans.tran_date <= '$date_to'";
+    	AND trans.tran_date <= '$date_to'
+		AND trans.ov_amount != 0";	// exclude voided transactions
    	if ($_POST['supplier_id'] != reserved_words::get_all())
    		$sql .= " AND trans.supplier_id = '" . $_POST['supplier_id'] . "'";
    	if (isset($_POST['filterType']) && $_POST['filterType'] != reserved_words::get_all())
