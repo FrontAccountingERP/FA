@@ -24,6 +24,12 @@ $ -> Affected files
 $ /admin/company_preferences.php
 ! Removed unneeded submit_on_change in uom selector.
 $ /includes/ui/ui_lists.inc
+# Allowed reuse of supplier references from voided invoices.
+$ /purchasing/supplier_invoice.php
+# Total payment/credit sign fix.  
+$ /purchasing/allocations/supplier_allocation_main.php
+# Voided documents should not be displayed.
+$ /purchasing/inquiry/supplier_inquiry.php
 
 17-Jun-2009 Joe Hunt/Tu Nguyen
 # [0000136] view_po on invoices and credits shows transactions from other suppliers
