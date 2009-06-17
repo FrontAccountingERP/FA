@@ -25,7 +25,7 @@ function get_supplier_trans_view_str($type, $trans_no, $label="", $icon=false,
 	elseif ($type == 21)
 		$viewer .= "view_supp_credit.php";
 	elseif ($type == 22)
-		$viewer = "view_supp_payment.php";
+		$viewer .= "view_supp_payment.php";
 	elseif ($type == 25)
 		$viewer .= "view_grn.php";
 	else
