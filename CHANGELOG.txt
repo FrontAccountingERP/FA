@@ -23,6 +23,7 @@ $ -> Affected files
 ! Better support for conversion_factor in Purchasing Pricing. Instruction on Sticky Inventory Forum.
 $ /inventory/purchasing_data.php
   /purchasing/includes/purchasing_db.inc
+  /purchasing/includes/db/po_db.inc
   /purchasing/includes/ui/po_ui.inc
   
 17-Jun-2009 Janusz Dobrowolski
