@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+20-Jun-2009 Joe Hunt/Tu Nguyen
+# [0000137] Material Cost Averaging Problem when voiding Supp Inv and qoh reaches 0.
+$ /purchasing/includes/db/grn_db.inc
+
 18-Jun-2009 Joe Hunt
 ! Better support for conversion_factor in Purchasing Pricing. Instruction on Sticky Inventory Forum.
 $ /inventory/purchasing_data.php
