@@ -608,6 +608,11 @@ function display_quick_entries(&$cart, $id, $base, $type, $descr='')
 						$gl_code = ($type == QE_DEPOSIT || ($type == QE_JOURNAL && $base < 0)) 
 							? $item_tax['sales_gl_code'] : $item_tax['purchasing_gl_code'];
 						$tax_total += $tax;
+						if ($tax==0) continue;
+						if (!is_tax_gl_unique($gl_code)) {
+		   					display_error(_("Cannot post to GL account used by more than one tax type."));
+							break 3;
+						}
 						if ($type != QE_SUPPINV)
 							$cart->add_gl_item($gl_code, 
 								$qe_line['dimension_id'], $qe_line['dimension2_id'], 

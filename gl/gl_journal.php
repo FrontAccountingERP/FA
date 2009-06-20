@@ -91,7 +91,6 @@ if (isset($_POST['Process']))
 		$input_error = 1;
 	}
 
-
 	if (!is_date($_POST['date_'])) 
 	{
 		display_error(_("The entered date is invalid."));
@@ -169,7 +168,12 @@ function check_item_data()
 		set_focus('AmountCredit');
     		return false;
   	}
-
+	
+	if (!is_tax_gl_unique(get_post('code_id'))) {
+   		display_error(_("Cannot post to GL account used by more than one tax type."));
+		set_focus('code_id');
+   		return false;
+	}
 
 	if ($_SESSION["wa_current_user"]->access != 2 && is_bank_account($_POST['code_id'])) 
 	{
