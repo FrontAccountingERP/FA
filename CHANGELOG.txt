@@ -19,6 +19,17 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+20-Jun-2009 Janusz Dobrowolski
+! Php notices removed from logging to avoid flood from @ constructs.
+$ /includes/errors.inc
+# [0000135] Direct posting to gl accounts with more than one related tax type forbidden.
+$ /gl/gl_journal.php
+  /includes/ui/ui_view.inc
+  /purchasing/supplier_credit.php
+  /purchasing/supplier_invoice.php
+  /taxes/tax_types.php
+  /taxes/db/tax_types_db.inc
+
 20-Jun-2009 Joe Hunt/Tu Nguyen
 # [0000137] Material Cost Averaging Problem when voiding Supp Inv and qoh reaches 0.
 $ /purchasing/includes/db/grn_db.inc
