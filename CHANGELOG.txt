@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+21-Jun-2009 Joe Hunt
+# If no additional costs (overhead/labour) it should reduce the average additional costs.
+$ /manufacturing/includes/db/work_orders_quick_db.inc
+
 20-Jun-2009 Janusz Dobrowolski
 ! Php notices removed from logging to avoid flood from @ constructs.
 $ /includes/errors.inc

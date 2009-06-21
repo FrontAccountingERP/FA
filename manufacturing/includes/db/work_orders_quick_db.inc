@@ -24,12 +24,10 @@ function add_work_order_quick($wo_ref, $loc_code, $units_reqd, $stock_id, $type,
 	$date = date2sql($date_);
 	if (!isset($costs) || ($costs == ""))
 		$costs = 0;
-	if ($costs != 0)
-		add_overhead_cost($stock_id, $units_reqd, $date_, $costs);
+	add_overhead_cost($stock_id, $units_reqd, $date_, $costs);
 	if (!isset($labour) || ($labour == ""))
 		$labour = 0;
-	if ($labour != 0)
-		add_labour_cost($stock_id, $units_reqd, $date_, $labour);
+	add_labour_cost($stock_id, $units_reqd, $date_, $labour);
 		
 	$sql = "INSERT INTO ".TB_PREF."workorders (wo_ref, loc_code, units_reqd, units_issued, stock_id,
 		type, additional_costs, date_, released_date, required_by, released, closed)
@@ -131,14 +129,12 @@ function work_order_quick_costs($woid, $stock_id, $units_reqd, $date_, $advanced
 		$lcost = 0;
 		while ($row = db_fetch($result))
 			$lcost += -$row['amount'];
-		if ($lcost != 0)	
-			add_labour_cost($stock_id, $units_reqd, $date_, $lcost * $units_reqd / $wo['units_reqd']);
+		add_labour_cost($stock_id, $units_reqd, $date_, $lcost * $units_reqd / $wo['units_reqd']);
 		$result = get_gl_wo_cost_trans($woid, WO_OVERHEAD);
 		$ocost = 0;
 		while ($row = db_fetch($result))
 			$ocost += -$row['amount'];
-		if ($ocost != 0)	
-			add_overhead_cost($stock_id, $units_reqd, $date_, $ocost * $units_reqd / $wo['units_reqd']);
+		add_overhead_cost($stock_id, $units_reqd, $date_, $ocost * $units_reqd / $wo['units_reqd']);
 	}
 	// credit additional costs
 	$item_accounts = get_stock_gl_code($stock_id);
