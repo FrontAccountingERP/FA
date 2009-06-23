@@ -447,24 +447,11 @@ function void_supp_invoice($type, $type_no)
 					$details_row["FullUnitPrice"]);
 				// Only adjust the avg for the diff
 				$mat_cost = update_average_material_cost(null, $details_row["stock_id"],
-					$diff, -$details_row["quantity"], $date_, true);
+					$diff, -$details_row["quantity"], $old_date, true);
 
 				$deliveries = get_deliveries_between($details_row["stock_id"], $old_date, $date_);
 				if ($deliveries[0] != 0) // have deliveries been done during the period?
 				{
-					$deliveries[1] /= $deliveries[0];
-					$amt = ($mat_cost - $deliveries[1]) * $deliveries[0]; // $amt in home currency
-					if ($amt != 0.0)
-					{
-						$stock_gl_code = get_stock_gl_code($details_row["stock_id"]);
-						add_gl_trans($type, $type_no, $date_,	$stock_gl_code["cogs_account"],
-							$stock_gl_code['dimension_id'], $stock_gl_code['dimension2_id'], _("Cost diff."),
-							-$amt, null, null, null,
-							"The general ledger transaction could not be added for the price variance of the inventory item");
-						add_gl_trans($type, $type_no, $date_, $stock_gl_code["inventory_account"],
-							0, 0, _("Cost diff."), $amt, null, null, null,
-							"The general ledger transaction could not be added for the price variance of the inventory item");
-					}		
 					update_stock_move_pid(13, $details_row["stock_id"], $old_date, $date_, 0, $mat_cost);
 				}
 				update_stock_move_pid(25, $details_row["stock_id"], $old_date, $old_date, $grn['supplier_id'], $mat_cost);
