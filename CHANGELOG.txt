@@ -19,6 +19,11 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+23-Jun-2009 Janusz Dobrowolski
+! Added edition link in Purchase Order Inquiry
+$ /purchasing/includes/ui/po_ui.inc
+  /purchasing/inquiry/po_search_completed.php
+
 23-Jun-2009 Joe Hunt
 # [0000137] Material Cost Averaging Problem (again) when voiding.
 $ /purchasing/includes/db/invoice_db.inc

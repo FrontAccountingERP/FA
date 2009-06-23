@@ -165,7 +165,8 @@ function display_po_items(&$order, $editable=true)
     div_start('items_table');
     start_table("$table_style width=80%");
 
-   	$th = array(_("Item Code"), _("Item Description"), _("Quantity"), _("Unit"),
+   	$th = array(_("Item Code"), _("Item Description"), _("Quantity"),
+		_("Received"), _("Unit"),
    		_("Required Delivery Date"), _("Price"), _("Line Total"), "");
 
 	if (count($order->line_items)) $th[] = '';
@@ -186,6 +187,7 @@ function display_po_items(&$order, $editable=true)
         		label_cell($po_line->stock_id);
     			label_cell($po_line->item_description);
                 qty_cell($po_line->quantity, false, get_qty_dec($po_line->stock_id));
+                qty_cell($po_line->qty_received, false, get_qty_dec($po_line->stock_id));
     			label_cell($po_line->units);
                 label_cell($po_line->req_del_date);
     			amount_cell($po_line->price);

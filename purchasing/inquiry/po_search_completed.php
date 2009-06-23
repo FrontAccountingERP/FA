@@ -92,6 +92,13 @@ function trans_view($trans)
 	return get_trans_view_str(systypes::po(), $trans["order_no"]);
 }
 
+function edit_link($row) 
+{
+  return pager_link( _("Edit"),
+	"/purchasing/po_entry_items.php?" . SID 
+	. "ModifyOrderNumber=" . $row["order_no"], ICON_EDIT);
+}
+
 function prt_link($row)
 {
 	return print_document_link($row['order_no'], _("Print"), true, 18, ICON_PRINT);
@@ -152,6 +159,7 @@ $cols = array(
 		_("Order Date") => array('name'=>'ord_date', 'type'=>'date', 'ord'=>'desc'),
 		_("Currency") => array('align'=>'center'), 
 		_("Order Total") => 'amount',
+		array('insert'=>true, 'fun'=>'edit_link'),
 		array('insert'=>true, 'fun'=>'prt_link'),
 );
 
