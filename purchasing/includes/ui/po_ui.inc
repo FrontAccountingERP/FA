@@ -296,6 +296,7 @@ function po_item_controls(&$order, $stock_id=null)
 		label_cell($_POST['stock_id']);
 		label_cell($order->line_items[$id]->item_description);
 	    $Ajax->activate('items_table');
+		$qty_rcvd = $order->line_items[$id]->qty_received;
 	}
 	else
 	{
@@ -316,9 +317,11 @@ function po_item_controls(&$order, $stock_id=null)
    		$_POST['qty'] =	number_format2(get_purchase_conversion_factor ($order->supplier_id, $_POST['stock_id']), $dec);
 		$_POST['price'] = price_format(get_purchase_price ($order->supplier_id, $_POST['stock_id']));
 		$_POST['req_del_date'] = add_days(Today(), 10);
+		$qty_rcvd = '';
 	}
 
 	qty_cells(null, 'qty', null, null, null, $dec);
+	qty_cell($qty_rcvd, false, $dec);
 
 	label_cell($_POST['units'], '', 'units');
 	date_cells(null, 'req_del_date', '', null, 0, 0, 0);
