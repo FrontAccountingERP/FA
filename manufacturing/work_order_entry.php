@@ -22,6 +22,8 @@ include_once($path_to_root . "/manufacturing/includes/manufacturing_db.inc");
 include_once($path_to_root . "/manufacturing/includes/manufacturing_ui.inc");
 
 $js = "";
+if ($use_popup_windows)
+	$js .= get_js_open_window(900, 500);
 if ($use_date_picker)
 	$js .= get_js_date_picker();
 page(_("Work Order Entry"), false, false, "", $js);
@@ -47,9 +49,20 @@ elseif(isset($_POST['selected_id']))
 if (isset($_GET['AddedID']))
 {
 	$id = $_GET['AddedID'];
+	$stype = systypes::work_order();
 
 	display_notification_centered(_("The work order been added."));
 
+    display_note(get_trans_view_str($stype, $id, _("View this Work Order")));
+
+	if ($_GET['type'] != wo_types::advanced())
+	{
+		include_once($path_to_root . "/reporting/includes/reporting.inc");
+    	display_note(get_gl_view_str($stype, $id, _("View the GL Journal Entries for this Work Order")), 1);
+    	$ar = array('PARAM_0' => $_GET['date'], 'PARAM_1' => $_GET['date'], 'PARAM_2' => $stype); 
+    	display_note(print_link(_("Print the GL Journal Entries for this Work Order"), 702, $ar), 1);
+	}
+	
 	safe_exit();
 }
 
@@ -91,10 +104,8 @@ function safe_exit()
 
 	hyperlink_no_params("", _("Enter a new work order"));
 	hyperlink_no_params("search_work_orders.php", _("Select an existing work order"));
-	echo "<br>";
-	end_form();
-	end_page();
-	exit;
+	
+	display_footer_exit();
 }
 
 //-------------------------------------------------------------------------------------
@@ -114,14 +125,14 @@ function can_process()
     	if (!references::is_valid($_POST['wo_ref']))
     	{
     		display_error(_("You must enter a reference."));
-		set_focus('wo_ref');
+			set_focus('wo_ref');
     		return false;
     	}
 
     	if (!is_new_reference($_POST['wo_ref'], systypes::work_order()))
     	{
     		display_error(_("The entered reference is already in use."));
-		set_focus('wo_ref');
+			set_focus('wo_ref');
     		return false;
     	}
 	}
@@ -151,16 +162,24 @@ function can_process()
         if (!has_bom($_POST['stock_id']))
         {
         	display_error(_("The selected item to manufacture does not have a bom."));
-		set_focus('stock_id');
+			set_focus('stock_id');
         	return false;
         }
 
+		if ($_POST['Labour'] == "")
+			$_POST['Labour'] = price_format(0);
+    	if (!check_num('Labour', 0))
+    	{
+    		display_error( _("The labour cost entered is invalid or less than zero."));
+			set_focus('Labour');
+    		return false;
+    	}
 		if ($_POST['Costs'] == "")
 			$_POST['Costs'] = price_format(0);
     	if (!check_num('Costs', 0))
     	{
     		display_error( _("The cost entered is invalid or less than zero."));
-		set_focus('Costs');
+			set_focus('Costs');
     		return false;
     	}
 
@@ -184,7 +203,7 @@ function can_process()
                 		{
                 			display_error(_("The work order cannot be processed because there is an insufficient quantity for component:") .
                 				" " . $bom_item["component"] . " - " .  $bom_item["description"] . ".  " . _("Location:") . " " . $bom_item["location_name"]);
-						set_focus('quantity');
+							set_focus('quantity');
         					return false;
                 		}
             		}
@@ -206,7 +225,7 @@ function can_process()
      {
     	if (!is_date($_POST['RequDate']))
     	{
-		set_focus('RequDate');
+			set_focus('RequDate');
     		display_error( _("The date entered is in an invalid format."));
     		return false;
 		}
@@ -221,7 +240,7 @@ function can_process()
 
     		if ($_POST['units_issued'] > input_num('quantity'))
     		{
-			set_focus('quantity');
+				set_focus('quantity');
     			display_error(_("The quantity cannot be changed to be less than the quantity already manufactured for this order."));
         		return false;
     		}
@@ -235,12 +254,16 @@ function can_process()
 
 if (isset($_POST['ADD_ITEM']) && can_process())
 {
-
+	if (!isset($_POST['cr_acc']))
+		$_POST['cr_acc'] = "";
+	if (!isset($_POST['cr_lab_acc']))
+		$_POST['cr_lab_acc'] = "";
 	$id = add_work_order($_POST['wo_ref'], $_POST['StockLocation'], input_num('quantity'),
 		$_POST['stock_id'],  $_POST['type'], $_POST['date_'],
-		$_POST['RequDate'], input_num('Costs'), $_POST['memo_']);
+		$_POST['RequDate'], $_POST['memo_'], input_num('Costs'), $_POST['cr_acc'], input_num('Labour'), $_POST['cr_lab_acc']);
+
 	new_doc_date($_POST['date_']);
-	meta_forward($_SERVER['PHP_SELF'], "AddedID=$id");
+	meta_forward($_SERVER['PHP_SELF'], "AddedID=$id&type=".$_POST['type']."&date=".$_POST['date_']);
 }
 
 //-------------------------------------------------------------------------------------
@@ -358,7 +381,7 @@ else
 	wo_types_list_row(_("Type:"), 'type', null);
 }
 
-if ($_POST['released'] == true)
+if (get_post('released'))
 {
 	hidden('stock_id', $_POST['stock_id']);
 	hidden('StockLocation', $_POST['StockLocation']);
@@ -369,13 +392,18 @@ if ($_POST['released'] == true)
 }
 else
 {
-	stock_manufactured_items_list_row(_("Item:"), 'stock_id', null);
+	stock_manufactured_items_list_row(_("Item:"), 'stock_id', null, false, true);
+	if (list_updated('stock_id'))
+		$Ajax->activate('quantity');
 
 	locations_list_row(_("Destination Location:"), 'StockLocation', null);
 }
 
 if (!isset($_POST['quantity']))
 	$_POST['quantity'] = qty_format(1, $_POST['stock_id'], $dec);
+else
+	$_POST['quantity'] = qty_format($_POST['quantity'], $_POST['stock_id'], $dec);
+	
 
 if (get_post('type') == wo_types::advanced())
 {
@@ -391,13 +419,27 @@ else
     date_row(_("Date") . ":", 'date_', '', true);
 	hidden('RequDate', '');
 
+	$sql = "SELECT DISTINCT account_code FROM ".TB_PREF."bank_accounts";
+	$rs = db_query($sql,"could not get bank accounts");
+	$r = db_fetch_row($rs);
+	if (!isset($_POST['Labour']))
+	{
+		$_POST['Labour'] = price_format(0);
+		$_POST['cr_lab_acc'] = $r[0];
+	}
+	amount_row($wo_cost_types[WO_LABOUR], 'Labour');
+	gl_all_accounts_list_row(_("Credit Labour Account"), 'cr_lab_acc', null);
 	if (!isset($_POST['Costs']))
+	{
 		$_POST['Costs'] = price_format(0);
-
-	amount_row(_("Total Additional Costs:"), 'Costs');
+		$_POST['cr_acc'] = $r[0];
+	}
+	amount_row($wo_cost_types[WO_OVERHEAD], 'Costs');
+	gl_all_accounts_list_row(_("Credit Overhead Account"), 'cr_acc', null);
+	
 }
 
-if ($_POST['released'])
+if (get_post('released'))
 	label_row(_("Released On:"),$_POST['released_date']);
 
 textarea_row(_("Memo:"), 'memo_', null, 40, 5);
@@ -409,7 +451,7 @@ if (isset($selected_id))
 	echo "<table align=center><tr>";
 
 	submit_cells('UPDATE_ITEM', _("Update"), '', _('Save changes to work order'), 'default');
-	if (isset($_POST['released']))
+	if (get_post('released'))
 	{
 		submit_cells('close', _("Close This Work Order"),'','',true);
 	}

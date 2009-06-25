@@ -16,6 +16,24 @@ include_once($path_to_root . "/includes/session.inc");
 include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/admin/db/maintenance_db.inc");
 
+if (get_post('view')) {
+	$filename = BACKUP_PATH . get_post('cmb_backups');
+	if (in_ajax()) 
+		$Ajax->popup( $filename );
+	else {
+	    header('Content-type: application/octet-stream');
+    	header('Content-Length: '.filesize($filename));
+		header("Content-Disposition: inline; filename=$filename");
+    	readfile($filename);
+		exit();
+	}
+};
+
+if (get_post('download')) {
+	download_file(BACKUP_PATH . get_post('cmb_backups'));
+	exit;
+}
+
 page(_("Backup and Restore Database"), false, false, '', '');
 
 check_paths();
@@ -61,7 +79,7 @@ function get_backup_file_combo()
 		if (preg_match("/.sql(.zip|.gz)?$/", $file))
     		$opt_files .= "<option value='$file'>$file</option>";
 
-	$selector = "<select name='cmb_backups' size=2 style='height:160px;width:230px'>$opt_files</select>";
+	$selector = "<select name='cmb_backups' size=2 style='height:160px;min-width:230px'>$opt_files</select>";
 
 	$Ajax->addUpdate('cmd_backups', "_cmd_backups_sel", $selector);
 	$selector = "<span id='_cmd_backups_sel'>".$selector."</span>\n";
@@ -109,24 +127,6 @@ if (get_post('creat')) {
 if (get_post('restore')) {
 	if (db_import(BACKUP_PATH . get_post('cmb_backups'), $conn))
 		display_notification(_("Restore backup completed."));
-}
-
-if (get_post('view')) {
-	$filename = BACKUP_PATH . get_post('cmb_backups');
-	if (in_ajax()) 
-		$Ajax->popup( $filename );
-	else {
-	    header('Content-type: application/octet-stream');
-    	header('Content-Length: '.filesize($filename));
-		header("Content-Disposition: inline; filename=$filename");
-    	readfile($filename);
-		exit();
-	}
-};
-
-if (get_post('download')) {
-	download_file(BACKUP_PATH . get_post('cmb_backups'));
-	exit;
 }
 
 if (get_post('delete')) {

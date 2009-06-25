@@ -76,6 +76,7 @@ function display_po_header(&$order)
 		foreach ($order->line_items as $line_no=>$item) {
 			$line = &$order->line_items[$line_no];
 			$line->price =  get_purchase_price ($order->supplier_id, $_POST['stock_id']);
+			$line->quantity =  get_purchase_conversion_factor ($order->supplier_id, $_POST['stock_id']);
 		}
 	    $Ajax->activate('items_table');
 	}
@@ -164,7 +165,8 @@ function display_po_items(&$order, $editable=true)
     div_start('items_table');
     start_table("$table_style width=80%");
 
-   	$th = array(_("Item Code"), _("Item Description"), _("Quantity"), _("Unit"),
+   	$th = array(_("Item Code"), _("Item Description"), _("Quantity"),
+		_("Received"), _("Unit"),
    		_("Required Delivery Date"), _("Price"), _("Line Total"), "");
 
 	if (count($order->line_items)) $th[] = '';
@@ -185,6 +187,7 @@ function display_po_items(&$order, $editable=true)
         		label_cell($po_line->stock_id);
     			label_cell($po_line->item_description);
                 qty_cell($po_line->quantity, false, get_qty_dec($po_line->stock_id));
+                qty_cell($po_line->qty_received, false, get_qty_dec($po_line->stock_id));
     			label_cell($po_line->units);
                 label_cell($po_line->req_del_date);
     			amount_cell($po_line->price);
@@ -293,6 +296,7 @@ function po_item_controls(&$order, $stock_id=null)
 		label_cell($_POST['stock_id']);
 		label_cell($order->line_items[$id]->item_description);
 	    $Ajax->activate('items_table');
+		$qty_rcvd = $order->line_items[$id]->qty_received;
 	}
 	else
 	{
@@ -310,12 +314,14 @@ function po_item_controls(&$order, $stock_id=null)
 		$_POST['units'] = $item_info["units"];
 
    		$dec = $item_info["decimals"];
-   		$_POST['qty'] =	number_format2(1, $dec);
+   		$_POST['qty'] =	number_format2(get_purchase_conversion_factor ($order->supplier_id, $_POST['stock_id']), $dec);
 		$_POST['price'] = price_format(get_purchase_price ($order->supplier_id, $_POST['stock_id']));
 		$_POST['req_del_date'] = add_days(Today(), 10);
+		$qty_rcvd = '';
 	}
 
 	qty_cells(null, 'qty', null, null, null, $dec);
+	qty_cell($qty_rcvd, false, $dec);
 
 	label_cell($_POST['units'], '', 'units');
 	date_cells(null, 'req_del_date', '', null, 0, 0, 0);

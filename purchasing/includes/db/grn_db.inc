@@ -31,20 +31,18 @@ function update_average_material_cost($supplier, $stock_id, $price, $qty, $date,
 		$exclude = 0;
 	$qoh = get_qoh_on_date($stock_id, null, $date, $exclude);
 
-	if ($qoh + $qty <= 0)
+	if ($adj_only)
+	{
+		if ($qoh <= 0)
+			$material_cost = 0;
+		else
+			$material_cost = ($qoh * $material_cost + $qty * $price_in_home_currency) /	$qoh;
+	}
+	elseif ($qoh + $qty <= 0)
 		$material_cost = 0;
 	else
-	{
-		if ($adj_only)
-		{
-			if ($qoh <= 0)
-				$material_cost = 0;
-			else
-				$material_cost = ($qoh * $material_cost + $qty * $price_in_home_currency) /	$qoh;
-		}
-		else
-			$material_cost = ($qoh * $material_cost + $qty * $price_in_home_currency) /	($qoh + $qty);
-	}
+		$material_cost = ($qoh * $material_cost + $qty * $price_in_home_currency) /	($qoh + $qty);
+
 	$sql = "UPDATE ".TB_PREF."stock_master SET material_cost=".db_escape($material_cost)."
 		WHERE stock_id='$stock_id'";
 	db_query($sql,"The cost details for the inventory item could not be updated");
@@ -171,6 +169,8 @@ function set_grn_item_credited(&$entered_grn, $supplier, $transno, $date)
 
 	$sql = "UPDATE ".TB_PREF."purch_order_details
         SET quantity_received = quantity_received + $entered_grn->this_quantity_inv,
+        quantity_ordered = quantity_ordered + $entered_grn->this_quantity_inv,
+        qty_invoiced = qty_invoiced + $entered_grn->this_quantity_inv,
         std_cost_unit=$mcost,
         act_price=$entered_grn->chg_price
         WHERE po_detail_item = ".$myrow["po_detail_item"];

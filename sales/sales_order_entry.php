@@ -114,6 +114,8 @@ if (isset($_GET['AddedID'])) {
 	submenu_print(_("&Print Delivery Note"), 13, $delivery, 'prtopt');
 	set_focus('prtopt');
 
+	display_note(get_gl_view_str(13, $delivery, _("View the GL Journal Entries for this Dispatch")),1);
+
 	submenu_option(_("Make &Invoice Against This Delivery"),
 		"/sales/customer_invoice.php?DeliveryNumber=$delivery");
 
@@ -135,6 +137,8 @@ if (isset($_GET['AddedID'])) {
 
 	submenu_print(_("&Print Sales Invoice"), 10, $invoice, 'prtopt');
 	set_focus('prtopt');
+
+	display_note(get_gl_view_str(10, $invoice, _("View the GL &Journal Entries for this Invoice")),1);
 
 	if ((isset($_GET['Type']) && $_GET['Type'] == 1))
 		submenu_option(_("Enter a &New Template Invoice"), 

@@ -189,8 +189,8 @@ function read_po_items($order_no, &$order, $open_items_only=false)
         	{
         		if ($data['supplier_description'] != "")
         			$myrow['description'] = $data['supplier_description'];
-        		if ($data['suppliers_uom'] != "")
-        			$myrow['units'] = $data['suppliers_uom'];
+        		//if ($data['suppliers_uom'] != "")
+        		//	$myrow['units'] = $data['suppliers_uom'];
         	}		
             if (is_null($myrow["units"]))
             {

@@ -61,7 +61,11 @@ function check_page_security($page_security)
 
 	if (!$_SESSION["wa_current_user"]->can_access_page($page_security))
 	{
-		page(_("Access denied"));
+		// no_menu parameter guess here is ugly hack, but works for now.
+		// Better solution is to use global switch for menu, set before 
+		// session.inc inclusion.
+		page(_("Access denied"), strpos($_SERVER['PHP_SELF'], '/view/'));
+
 		echo "<center><br><br><br><b>";
 		echo _("The security settings on your account do not permit you to access this function");
 		echo "</b>";
@@ -141,7 +145,7 @@ $Ajax =& new Ajax();
 $Validate = array();
 
 // intercept all output to destroy it in case of ajax call
-register_shutdown_function('ob_end_flush');
+register_shutdown_function('end_flush');
 ob_start('output_html',0);
 
 // colect all error msgs

@@ -44,9 +44,10 @@ if (isset($_POST['update']) && $_POST['update'] != "")
 		$filename .= "/".$_FILES['pic']['name'];
 
 		 //But check for the worst
-		if (strtoupper(substr(trim($_FILES['pic']['name']), strlen($_FILES['pic']['name']) - 3)) != 'JPG')
+		if (!in_array((substr(trim($_FILES['pic']['name']),-3)), 
+			array('jpg','JPG','png','PNG')))
 		{
-			display_error(_('Only jpg files are supported - a file extension of .jpg is expected'));
+			display_error(_('Only jpg and png files are supported - a file extension of .jpg or .png is expected'));
 			$input_error = 1;
 		}
 		elseif ( $_FILES['pic']['size'] > ($max_image_size * 1024))
@@ -113,29 +114,30 @@ if (isset($_POST['update']) && $_POST['update'] != "")
 
 
 start_form(true);
+if (!isset($_POST['coy_name'])) {
+	$myrow = get_company_prefs();
 
-$myrow = get_company_prefs();
-
-$_POST['coy_name'] = $myrow["coy_name"];
-$_POST['gst_no'] = $myrow["gst_no"];
-$_POST['tax_prd'] = $myrow["tax_prd"];
-$_POST['tax_last'] = $myrow["tax_last"];
-$_POST['coy_no']  = $myrow["coy_no"];
-$_POST['postal_address']  = $myrow["postal_address"];
-$_POST['phone']  = $myrow["phone"];
-$_POST['fax']  = $myrow["fax"];
-$_POST['email']  = $myrow["email"];
-$_POST['coy_logo']  = $myrow["coy_logo"];
-$_POST['domicile']  = $myrow["domicile"];
-$_POST['use_dimension']  = $myrow["use_dimension"];
-$_POST['base_sales']  = $myrow["base_sales"];
-$_POST['no_item_list']  = $myrow["no_item_list"];
-$_POST['no_customer_list']  = $myrow["no_customer_list"];
-$_POST['no_supplier_list']  = $myrow["no_supplier_list"];
-$_POST['curr_default']  = $myrow["curr_default"];
-$_POST['f_year']  = $myrow["f_year"];
-$_POST['time_zone']  = $myrow["time_zone"];
-$_POST['version_id']  = $myrow["version_id"];
+	$_POST['coy_name'] = $myrow["coy_name"];
+	$_POST['gst_no'] = $myrow["gst_no"];
+	$_POST['tax_prd'] = $myrow["tax_prd"];
+	$_POST['tax_last'] = $myrow["tax_last"];
+	$_POST['coy_no']  = $myrow["coy_no"];
+	$_POST['postal_address']  = $myrow["postal_address"];
+	$_POST['phone']  = $myrow["phone"];
+	$_POST['fax']  = $myrow["fax"];
+	$_POST['email']  = $myrow["email"];
+	$_POST['coy_logo']  = $myrow["coy_logo"];
+	$_POST['domicile']  = $myrow["domicile"];
+	$_POST['use_dimension']  = $myrow["use_dimension"];
+	$_POST['base_sales']  = $myrow["base_sales"];
+	$_POST['no_item_list']  = $myrow["no_item_list"];
+	$_POST['no_customer_list']  = $myrow["no_customer_list"];
+	$_POST['no_supplier_list']  = $myrow["no_supplier_list"];
+	$_POST['curr_default']  = $myrow["curr_default"];
+	$_POST['f_year']  = $myrow["f_year"];
+	$_POST['time_zone']  = $myrow["time_zone"];
+	$_POST['version_id']  = $myrow["version_id"];
+}
 $_POST['del_coy_logo']  = 0;
 
 start_outer_table($table_style2);

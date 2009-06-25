@@ -220,7 +220,7 @@ if ($num_branches)
 		inactive_control_cell($myrow["branch_code"], $myrow["inactive"],
 			'cust_branch', 'branch_code');
 		if (count($_SESSION['Context']))
- 			edit_button_cell("Select".$myrow["branch_code"], _("Select"));
+ 			button_cell("Select".$myrow["branch_code"], _("Select"), '', ICON_ADD);
  		edit_button_cell("Edit".$myrow["branch_code"], _("Edit"));
  		delete_button_cell("Delete".$myrow["branch_code"], _("Delete"));
 		end_row();

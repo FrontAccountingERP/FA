@@ -53,33 +53,6 @@ function gl_inquiry_controls()
 
 //----------------------------------------------------------------------------------------------------
 
-function get_balance($account, $from, $to, $from_incl=true, $to_incl=true) 
-{
-	$sql = "SELECT SUM(IF(amount >= 0, amount, 0)) AS debit, SUM(IF(amount < 0, -amount, 0)) AS credit, SUM(amount) AS balance 
-		FROM ".TB_PREF."gl_trans,".TB_PREF."chart_master,".TB_PREF."chart_types, ".TB_PREF."chart_class 
-		WHERE ".TB_PREF."gl_trans.account=".TB_PREF."chart_master.account_code AND ".TB_PREF."chart_master.account_type=".TB_PREF."chart_types.id 
-		AND ".TB_PREF."chart_types.class_id=".TB_PREF."chart_class.cid AND";
-		
-	if ($account != null)
-		$sql .= " account='$account' AND";
-	$from_date = date2sql($from);
-	if ($from_incl)
-		$sql .= " tran_date >= '$from_date'  AND";
-	else
-		$sql .= " tran_date > IF(".TB_PREF."chart_class.balance_sheet=1, '0000-00-00', '$from_date') AND";
-	$to_date = date2sql($to);
-	if ($to_incl)
-		$sql .= " tran_date <= '$to_date' ";
-	else
-		$sql .= " tran_date < '$to_date' ";
-
-	$result = db_query($sql,"No general ledger accounts were returned");
-
-	return db_fetch($result);
-}
-
-//----------------------------------------------------------------------------------------------------
-
 function display_trial_balance()
 {
 	global $table_style, $path_to_root;
@@ -114,9 +87,9 @@ function display_trial_balance()
 	
 	while ($account = db_fetch($accounts))
 	{
-		$prev = get_balance($account["account_code"], $begin, $_POST['TransFromDate'], false, false);
-		$curr = get_balance($account["account_code"], $_POST['TransFromDate'], $_POST['TransToDate'], true, true);
-		$tot = get_balance($account["account_code"], $begin, $_POST['TransToDate'], false, true);
+		$prev = get_balance($account["account_code"], 0, 0, $begin, $_POST['TransFromDate'], false, false);
+		$curr = get_balance($account["account_code"], 0, 0, $_POST['TransFromDate'], $_POST['TransToDate'], true, true);
+		$tot = get_balance($account["account_code"], 0, 0, $begin, $_POST['TransToDate'], false, true);
 		if (check_value("NoZero") && !$prev['balance'] && !$curr['balance'] && !$tot['balance'])
 			continue;
 		alt_table_row_color($k);

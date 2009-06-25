@@ -93,7 +93,7 @@ function amount_left($row)
 
 function amount_total($row)
 {
-	return -$row["Total"];
+	return price_format(-$row["Total"]);
 }
 
 function check_settled($row)
@@ -111,7 +111,7 @@ $cols = array(
 	_("Date") => array('name'=>'tran_date', 'type'=>'date', 'ord'=>'asc'),
 	_("Supplier") => array('ord'=>''),
 	_("Currency") => array('align'=>'center'),
-	_("Total") => 'amount', 
+	_("Total") => array('align'=>'right', 'fun'=>'amount_total'), 
 	_("Left to Allocate") => array('align'=>'right','insert'=>true, 'fun'=>'amount_left'), 
 	array('insert'=>true, 'fun'=>'alloc_link')
 	);

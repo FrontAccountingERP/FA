@@ -216,8 +216,8 @@ class payment_person_types
     			$qe = get_quick_entry($person_id);
     			return ($full?payment_person_types::type_name($type) . " ":"") . $qe["description"];
     		case payment_person_types::WorkOrder() :
-    			$wo = get_work_order($person_id);
-    			return ($full?payment_person_types::type_name($type) . " ":"") . $wo["wo_ref"];
+    			global $wo_cost_types;
+    			return $wo_cost_types[$person_id];
     		case payment_person_types::customer() :
     			return ($full?payment_person_types::type_name($type) . " ":"") . get_customer_name($person_id);
     		case payment_person_types::supplier() :
@@ -309,6 +309,39 @@ class wo_types
 	}
 }
 
+define('CL_NONE', 0); // for backward compatibility
+define('CL_ASSETS', 1);
+define('CL_LIABILITIES', 2);
+define('CL_EQUITY', 3);
+define('CL_INCOME', 4);
+define('CL_COGS', 5);
+define('CL_EXPENSE', 6);
+
+$class_types = array(
+		CL_ASSETS => _("Assets"),
+		CL_LIABILITIES => _("Liabilities"),
+		CL_EQUITY => _("Equity"),
+		CL_INCOME => _("Income"),
+		CL_COGS => _("Cost of Goods Sold"),
+		CL_EXPENSE => _("Expense"),
+);
+
+function get_class_type_convert($ctype)
+{
+	global $use_oldstyle_convert;
+	if (isset($use_oldstyle_convert) && $use_oldstyle_convert == 1)
+		return (($ctype >= CL_INCOME || $ctype == CL_NONE) ? -1 : 1);
+	else	
+		return ((($ctype >= CL_LIABILITIES && $ctype <= CL_INCOME) || $ctype == CL_NONE) ? -1 : 1);
+}
+define('WO_LABOUR', 0);
+define('WO_OVERHEAD', 1);
+
+$wo_cost_types = array(
+		WO_LABOUR => _("Labour Cost"),
+		WO_OVERHEAD => _("Overhead Cost"),
+);
+
 $quick_actions = array(
 	'=' => _('Remainder'), // post current base amount to GL account
 	'a' => _('Amount'), // post amount to GL account
@@ -343,5 +376,4 @@ $stock_types = array(
 		'B' => _("Purchased"),
 		'D' => _("Service")
 );
-
 ?>

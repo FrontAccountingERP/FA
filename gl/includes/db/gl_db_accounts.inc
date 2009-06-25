@@ -51,13 +51,19 @@ function get_gl_accounts($from=null, $to=null)
 
 function get_gl_accounts_all($balance=-1)
 {
-	$sql = "SELECT ".TB_PREF."chart_master.*,".TB_PREF."chart_types.name AS AccountTypeName,".TB_PREF."chart_class.class_name AS AccountClassName
-		FROM ".TB_PREF."chart_master,".TB_PREF."chart_types, ".TB_PREF."chart_class
-		WHERE ".TB_PREF."chart_master.account_type=".TB_PREF."chart_types.id AND
-		".TB_PREF."chart_types.class_id=".TB_PREF."chart_class.cid";
+	if ($balance == 1)
+		$where ="WHERE balance_sheet>0 AND balance_sheet<".CL_INCOME;
+	elseif ($balance == 0)	
+		$where ="WHERE balance_sheet>".CL_EQUITY." OR balance_sheet=0"; // backwards compatibility
+ 	$sql = "SELECT ".TB_PREF."chart_master.account_code, ".TB_PREF."chart_master.account_name, ".TB_PREF."chart_types.name AS AccountTypeName,".TB_PREF."chart_types.id AS AccountType,
+	 	".TB_PREF."chart_types.parent, ".TB_PREF."chart_class.class_name AS AccountClassName, ".TB_PREF."chart_class.cid AS ClassID, 
+	 	".TB_PREF."chart_class.balance_sheet AS ClassType
+	 	FROM ".TB_PREF."chart_types INNER JOIN ".TB_PREF."chart_class ON ".TB_PREF."chart_types.class_id=".TB_PREF."chart_class.cid
+	 	LEFT JOIN ".TB_PREF."chart_master ON ".TB_PREF."chart_master.account_type=".TB_PREF."chart_types.id ";
 	if ($balance != -1)
-		$sql .= " AND ".TB_PREF."chart_class.balance_sheet=$balance";
-	$sql .= " ORDER BY ".TB_PREF."chart_class.cid, ".TB_PREF."chart_types.id, ".TB_PREF."chart_master.account_code";
+		$sql .= $where; 	 	 		
+	 $sql .= " ORDER BY ".TB_PREF."chart_class.cid, IF(parent > 0,parent,".TB_PREF."chart_types.id), 
+	 	IF(parent > 0,".TB_PREF."chart_types.id, parent), ".TB_PREF."chart_master.account_code";
 
 	return db_query($sql, "could not get gl accounts");
 }
@@ -79,7 +85,7 @@ function is_account_balancesheet($code)
 
 	$result = db_query($sql,"could not retreive the account class for $code");
 	$row = db_fetch_row($result);
-	return $row[0];
+	return $row[0] > 0 && $row[0] < CL_INCOME;
 }
 
 function get_gl_account_name($code)

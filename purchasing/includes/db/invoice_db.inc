@@ -330,9 +330,10 @@ function get_po_invoices_credits($po_number)
 	$sql = "SELECT DISTINCT ".TB_PREF."supp_trans.trans_no, ".TB_PREF."supp_trans.type,
 		ov_amount+ov_discount+ov_gst AS Total,
 		".TB_PREF."supp_trans.tran_date
-		FROM ".TB_PREF."supp_trans, ".TB_PREF."supp_invoice_items, ".TB_PREF."purch_order_details
+		FROM ".TB_PREF."supp_trans, ".TB_PREF."supp_invoice_items, ".TB_PREF."purch_order_details, ".TB_PREF."purch_orders
 		WHERE ".TB_PREF."supp_invoice_items.supp_trans_no = ".TB_PREF."supp_trans.trans_no
 		AND ".TB_PREF."supp_invoice_items.po_detail_item_id = ".TB_PREF."purch_order_details.po_detail_item
+		AND ".TB_PREF."purch_orders.supplier_id = ".TB_PREF."supp_trans.supplier_id
 		AND ".TB_PREF."purch_order_details.order_no = $po_number";
 
 	return db_query($sql, "The invoices/credits for the po $po_number could not be retreived");
@@ -431,37 +432,35 @@ function void_supp_invoice($type, $type_no)
 				
 				$batch = get_grn_batch_from_item($details_row["grn_item_id"]);	
 				$grn = get_grn_batch($batch);
-				
+         		if ($type == 21) // credit note 2009-06-14 Joe Hunt Must restore the po and grn
+         		{
+					$sql = "UPDATE ".TB_PREF."purch_order_details
+        				SET quantity_ordered = quantity_ordered + ".-$details_row["quantity"].",
+    				    quantity_received = quantity_received + ".-$details_row["quantity"]."
+    				    WHERE po_detail_item = ".$details_row["po_detail_item_id"];
+					db_query($sql, "a purchase order details record could not be updated. This receipt of goods has not been processed ");
+					$sql = "UPDATE ".TB_PREF."grn_items SET qty_recd=qty_recd+".-$details_row["quantity"]."
+						WHERE id=".$details_row["grn_item_id"];
+					db_query($sql);
+    			}     		
 				$diff = get_diff_in_home_currency($grn["supplier_id"], $old_date, $date_, $old[2], 
 					$details_row["FullUnitPrice"]);
 				// Only adjust the avg for the diff
 				$mat_cost = update_average_material_cost(null, $details_row["stock_id"],
-					$diff, -$details_row["quantity"], $date_, true);
+					$diff, -$details_row["quantity"], $old_date, true);
 
 				$deliveries = get_deliveries_between($details_row["stock_id"], $old_date, $date_);
 				if ($deliveries[0] != 0) // have deliveries been done during the period?
 				{
-					$deliveries[1] /= $deliveries[0];
-					$amt = ($mat_cost - $deliveries[1]) * $deliveries[0]; // $amt in home currency
-					if ($amt != 0.0)
-					{
-						$stock_gl_code = get_stock_gl_code($details_row["stock_id"]);
-						add_gl_trans($type, $type_no, $date_,	$stock_gl_code["cogs_account"],
-							$stock_gl_code['dimension_id'], $stock_gl_code['dimension2_id'], _("Cost diff."),
-							-$amt, null, null, null,
-							"The general ledger transaction could not be added for the price variance of the inventory item");
-						add_gl_trans($type, $type_no, $date_, $stock_gl_code["inventory_account"],
-							0, 0, _("Cost diff."), $amt, null, null, null,
-							"The general ledger transaction could not be added for the price variance of the inventory item");
-					}		
 					update_stock_move_pid(13, $details_row["stock_id"], $old_date, $date_, 0, $mat_cost);
 				}
 				update_stock_move_pid(25, $details_row["stock_id"], $old_date, $old_date, $grn['supplier_id'], $mat_cost);
-
          	}
         }
 	}
 
+	if ($type == 21) // void the credits in stock moves
+		void_stock_move(21, $type_no); 
 	void_supp_invoice_items($type, $type_no);
 	void_trans_tax_details($type, $type_no);
 

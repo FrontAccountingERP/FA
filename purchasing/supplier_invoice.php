@@ -130,6 +130,12 @@ if (isset($_POST['AddGLCodeToTrans'])){
 		}
 	}
 
+	if (!is_tax_gl_unique(get_post('gl_code'))) {
+   		display_error(_("Cannot post to GL account used by more than one tax type."));
+		set_focus('gl_code');
+   		$input_error = true;
+	}
+
 	if ($input_error == false)
 	{
 		$_SESSION['supp_trans']->add_gl_codes_to_trans($_POST['gl_code'], $gl_act_name,
@@ -189,7 +195,11 @@ function check_data()
 		return false;
 	}
 
-	$sql = "SELECT Count(*) FROM ".TB_PREF."supp_trans WHERE supplier_id='" . $_SESSION['supp_trans']->supplier_id . "' AND supp_reference='" . $_POST['supp_reference'] . "'";
+	$sql = "SELECT Count(*) FROM ".TB_PREF."supp_trans WHERE supplier_id='" 
+		. $_SESSION['supp_trans']->supplier_id . "' AND supp_reference='" 
+		. $_POST['supp_reference'] 
+		. "' AND ov_amount!=0"; // ignore voided invoice references
+
 	$result=db_query($sql,"The sql to check for the previous entry of the same invoice failed");
 
 	$myrow = db_fetch_row($result);

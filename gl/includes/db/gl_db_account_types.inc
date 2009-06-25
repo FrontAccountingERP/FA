@@ -54,7 +54,6 @@ function get_account_type_name($id)
 	return $row[0];
 }
 
-
 function delete_account_type($id)
 {
 	$sql = "DELETE FROM ".TB_PREF."chart_types WHERE id = $id";
@@ -106,22 +105,11 @@ function get_account_class_name($id)
 	return $row[0];
 }
 
-function get_sign_convert($account_type)
-{
-	$sql = "SELECT sign_convert FROM ".TB_PREF."chart_class INNER JOIN ".TB_PREF."chart_types ON 
-		".TB_PREF."chart_class.cid = ".TB_PREF."chart_types.class_id WHERE ".TB_PREF."chart_types.id=$account_type";
-	$result = db_query($sql, "could not get sign convert");
-
-	$row = db_fetch_row($result);
-	return ($row[0]==1);
-}
-		
 function delete_account_class($id)
 {
 	$sql = "DELETE FROM ".TB_PREF."chart_class WHERE cid = $id";
 
 	db_query($sql, "could not delete account type");
 }
-
 
 ?>

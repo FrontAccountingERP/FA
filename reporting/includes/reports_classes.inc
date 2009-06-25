@@ -122,7 +122,7 @@ class Report
 	
 	function getDisplay()
 	{
-		global $path_to_root, $use_date_picker, $pdf_debug;
+		global $path_to_root, $use_date_picker, $pdf_debug, $print_invoice_no;
 
 		$st = '';
 		$dummy = "";
@@ -163,8 +163,9 @@ class Report
 							$date = $edate;
 						else
 						{
-							$bdate = add_months($edate, -$row['tax_prd'] + 1);
-							$date = begin_month($bdate);
+							$bdate = begin_month($edate);
+							$bdate = add_months($bdate, -$row['tax_prd'] + 1);
+							$date = $bdate;
 						}
 					}
 					$name = "PARAM_$index";
@@ -217,27 +218,27 @@ class Report
 					$st .= dup_simple_codeandname_list($sql, "PARAM_$index", $dummy);
 					break;
 				case 'DIMENSION':
-					$sql = "SELECT reference, concat(reference, ' - ', name) AS DimName FROM ".TB_PREF."dimensions ORDER BY reference";
+					$sql = "SELECT id, concat(reference, ' - ', name) AS DimName FROM ".TB_PREF."dimensions ORDER BY reference";
 					$st .= dup_simple_codeandname_list($sql, "PARAM_$index", $dummy);
 					break;
 				case 'DIMENSIONS':
-					$sql = "SELECT reference, concat(reference, ' - ', name) as DimName FROM ".TB_PREF."dimensions ORDER BY reference";
+					$sql = "SELECT id, concat(reference, ' - ', name) as DimName FROM ".TB_PREF."dimensions ORDER BY reference";
 					$st .= dup_simple_codeandname_list($sql, "PARAM_$index", $dummy, true, _("No Dimension Filter"), true);
 					break;
 				case 'DIMENSION1':
-					$sql = "SELECT reference, concat(reference, ' - ', name) AS DimName FROM ".TB_PREF."dimensions WHERE type_=1 ORDER BY reference";
+					$sql = "SELECT id, concat(reference, ' - ', name) AS DimName FROM ".TB_PREF."dimensions WHERE type_=1 ORDER BY reference";
 					$st .= dup_simple_codeandname_list($sql, "PARAM_$index". "_$index", $dummy);
 					break;
 				case 'DIMENSIONS1':
-					$sql = "SELECT reference, concat(reference, ' - ', name) as DimName FROM ".TB_PREF."dimensions WHERE type_=1 ORDER BY reference";
+					$sql = "SELECT id, concat(reference, ' - ', name) as DimName FROM ".TB_PREF."dimensions WHERE type_=1 ORDER BY reference";
 					$st .= dup_simple_codeandname_list($sql, "PARAM_$index", $dummy, true, _("No Dimension Filter"), true);
 					break;
 				case 'DIMENSION2':
-					$sql = "SELECT reference, concat(reference, ' - ', name) AS DimName FROM ".TB_PREF."dimensions WHERE type_=2 ORDER BY reference";
+					$sql = "SELECT id, concat(reference, ' - ', name) AS DimName FROM ".TB_PREF."dimensions WHERE type_=2 ORDER BY reference";
 					$st .= dup_simple_codeandname_list($sql, "PARAM_$index", $dummy);
 					break;
 				case 'DIMENSIONS2':
-					$sql = "SELECT reference, concat(reference, ' - ', name) as DimName FROM ".TB_PREF."dimensions WHERE type_=2 ORDER BY reference";
+					$sql = "SELECT id, concat(reference, ' - ', name) as DimName FROM ".TB_PREF."dimensions WHERE type_=2 ORDER BY reference";
 					$st .= dup_simple_codeandname_list($sql, "PARAM_$index", $dummy, true, _("No Dimension Filter"), true);
 					break;
 				case 'CUSTOMERS_NO_FILTER':
@@ -259,9 +260,14 @@ class Report
 				case 'INVOICE':
 					$IV = _("IV");
 					$CN = _("CN");
-					$sql = "SELECT concat(".TB_PREF."debtor_trans.trans_no, '-',
-						".TB_PREF."debtor_trans.type) AS TNO, concat(".TB_PREF."debtor_trans.trans_no, if (type=10, ' $IV ', ' $CN '), ".TB_PREF."debtors_master.name) as IName
-						FROM ".TB_PREF."debtors_master, ".TB_PREF."debtor_trans WHERE (type=10 OR type=11) AND ".TB_PREF."debtors_master.debtor_no=".TB_PREF."debtor_trans.debtor_no ORDER BY ".TB_PREF."debtor_trans.trans_no DESC";
+					if ($print_invoice_no == 1)
+						$sql = "SELECT concat(".TB_PREF."debtor_trans.trans_no, '-',
+							".TB_PREF."debtor_trans.type) AS TNO, concat(".TB_PREF."debtor_trans.trans_no, if (type=10, ' $IV ', ' $CN '), ".TB_PREF."debtors_master.name) as IName
+							FROM ".TB_PREF."debtors_master, ".TB_PREF."debtor_trans WHERE (type=10 OR type=11) AND ".TB_PREF."debtors_master.debtor_no=".TB_PREF."debtor_trans.debtor_no ORDER BY ".TB_PREF."debtor_trans.trans_no DESC";
+					else		
+						$sql = "SELECT concat(".TB_PREF."debtor_trans.trans_no, '-',
+							".TB_PREF."debtor_trans.type) AS TNO, concat(".TB_PREF."debtor_trans.reference, if (type=10, ' $IV ', ' $CN '), ".TB_PREF."debtors_master.name) as IName
+							FROM ".TB_PREF."debtors_master, ".TB_PREF."debtor_trans WHERE (type=10 OR type=11) AND ".TB_PREF."debtors_master.debtor_no=".TB_PREF."debtor_trans.debtor_no ORDER BY ".TB_PREF."debtor_trans.trans_no DESC";
 					$st .= dup_simple_codeandname_list($sql, "PARAM_$index", $dummy);
 					break;
 				case 'DELIVERY':

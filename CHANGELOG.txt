@@ -19,6 +19,89 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+25-Jun-2009 Janusz Dobrowolski
+! Merged changes from main trunk  2.1.2-2.1.3 (see below)
+$ /admin/backups.php
+  /admin/company_preferences.php
+  /admin/view_print_transaction.php
+  /applications/setup.php
+  /config.php
+  /dimensions/inquiry/search_dimensions.php
+  /gl/gl_journal.php
+  /gl/includes/db/gl_db_accounts.inc
+  /gl/includes/db/gl_db_account_types.inc
+  /gl/includes/db/gl_db_trans.inc
+  /gl/includes/ui/gl_bank_ui.inc
+  /gl/inquiry/gl_trial_balance.php
+  /gl/inquiry/tax_inquiry.php
+  /gl/manage/gl_account_classes.php
+  /includes/data_checks.inc
+  /includes/db/manufacturing_db.inc
+  /includes/errors.inc
+  /includes/main.inc
+  /includes/references.inc
+  /includes/session.inc
+  /includes/types.inc
+  /includes/ui/db_pager_view.inc
+  /includes/ui/ui_lists.inc
+  /includes/ui/ui_view.inc
+  /inventory/inquiry/stock_status.php
+  /inventory/manage/items.php
+  /inventory/manage/locations.php
+  /inventory/manage/sales_kits.php
+  /inventory/prices.php
+  /inventory/purchasing_data.php
+  /lang/new_language_template/LC_MESSAGES/empty.po
+  /manufacturing/includes/db/work_orders_db.inc
+  /manufacturing/includes/db/work_orders_produce_items_db.inc
+  /manufacturing/includes/db/work_orders_quick_db.inc
+  /manufacturing/includes/manufacturing_ui.inc
+  /manufacturing/inquiry/bom_cost_inquiry.php
+  /manufacturing/manage/bom_edit.php
+  /manufacturing/search_work_orders.php
+  /manufacturing/view/work_order_view.php
+  /manufacturing/work_order_add_finished.php
+  /manufacturing/work_order_costs.php (new file)
+  /manufacturing/work_order_entry.php
+  /manufacturing/work_order_issue.php
+  /manufacturing/work_order_release.php
+  /purchase/po_receive_items.php
+  /purchasing/allocations/supplier_allocation_main.php
+  /purchasing/includes/db/grn_db.inc
+  /purchasing/includes/db/invoice_db.inc
+  /purchasing/includes/db/po_db.inc
+  /purchasing/includes/purchasing_db.inc
+  /purchasing/includes/ui/po_ui.inc
+  /purchasing/inquiry/po_search_completed.php
+  /purchasing/inquiry/supplier_inquiry.php
+  /purchasing/supplier_credit.php
+  /purchasing/supplier_invoice.php
+  /reporting/includes/class.mail.inc
+  /reporting/includes/pdf.report.inc
+  /reporting/includes/reports_classes.inc
+  /reporting/rep109.php
+  /reporting/rep209.php
+  /reporting/rep302.php
+  /reporting/rep302.php
+  /reporting/rep303.php
+  /reporting/rep303.php
+  /reporting/rep701.php
+  /reporting/rep705.php
+  /reporting/rep706.php
+  /reporting/rep707.php
+  /reporting/rep708.php
+  /reporting/reports_main.php
+  /sales/create_recurrent_invoices.php
+  /sales/customer_delivery.php
+  /sales/includes/db/sales_order_db.inc
+  /sales/includessales_order_ui.inc
+  /sales/inquiry/sales_orders_view.php
+  /sales/manage/customer_branches.php
+  /sql/en_US-demo.sql
+  /sql/en_US-new.sql
+  /taxes/db/tax_types_db.inc
+  /taxes/tax_types.php
+
 17-Jun-2009 Janusz Dobrowolski
 # Fixed supplier payment view link
 $ /includes/ui/ui_view.inc
@@ -562,6 +645,286 @@ $ /.htaccess
   /sales/inquiry/customer_allocation_inquiry.php
   /sales/inquiry/sales_deliveries_view.php
   /sales/inquiry/sales_orders_view.php
+
+------------------------------- Release 2.1.3 ----------------------------------
+25-Jun-2009 Joe Hunt
+! Release 2.1.3
+$ config.php
+  /sql/en_US-new.sql
+  /sql/en_US-demo.sql
+! Suppressed menu on access denied in view popup windows.
+$ /includes/session.inc
+  /includes/main.inc
+! New empty.po file
+  /lang/new_language_template/LC_MESSAGES/empty.po
+
+23-Jun-2009 Janusz Dobrowolski
+! Added edition link in Purchase Order Inquiry
+$ /purchasing/includes/ui/po_ui.inc
+  /purchasing/inquiry/po_search_completed.php
+
+23-Jun-2009 Joe Hunt
+# [0000137] Material Cost Averaging Problem (again) when voiding.
+$ /purchasing/includes/db/invoice_db.inc
+
+21-Jun-2009 Joe Hunt
+# If no additional costs (overhead/labour) it should reduce the average additional costs.
+$ /manufacturing/includes/db/work_orders_quick_db.inc
+
+20-Jun-2009 Janusz Dobrowolski
+! Php notices removed from logging to avoid flood from @ constructs.
+$ /includes/errors.inc
+# [0000135] Direct posting to gl accounts with more than one related tax type forbidden.
+$ /gl/gl_journal.php
+  /includes/ui/ui_view.inc
+  /purchasing/supplier_credit.php
+  /purchasing/supplier_invoice.php
+  /taxes/tax_types.php
+  /taxes/db/tax_types_db.inc
+
+20-Jun-2009 Joe Hunt/Tu Nguyen
+# [0000137] Material Cost Averaging Problem when voiding Supp Inv and qoh reaches 0.
+$ /purchasing/includes/db/grn_db.inc
+
+18-Jun-2009 Joe Hunt
+! Better support for conversion_factor in Purchasing Pricing. Instruction on Sticky Inventory Forum.
+$ /inventory/purchasing_data.php
+  /purchasing/includes/purchasing_db.inc
+  /purchasing/includes/db/po_db.inc
+  /purchasing/includes/ui/po_ui.inc
+  
+17-Jun-2009 Janusz Dobrowolski
+# Fixed form reset after error, allowed png logo files.
+$ /admin/company_preferences.php
+! Removed unneeded submit_on_change in uom selector.
+$ /includes/ui/ui_lists.inc
+# Allowed reuse of supplier references from voided invoices.
+$ /purchasing/supplier_invoice.php
+# Total payment/credit sign fix.  
+$ /purchasing/allocations/supplier_allocation_main.php
+# Voided documents should not be displayed.
+$ /purchasing/inquiry/supplier_inquiry.php
+
+17-Jun-2009 Joe Hunt/Tu Nguyen
+# [0000136] view_po on invoices and credits shows transactions from other suppliers
+$ /purchasing/includes/db/invoice_db.inc
+
+16-Jun-2009 Janusz Dobrowolski
+! Added error logging to file or syslog.
+$ /config.php
+  /includes/errors.inc
+# Cleaned output buffering notices.
+$ /includes/errors.inc
+  /includes/session.inc
+
+15-Jun-2009 Joe Hunt
+! Added Item Code Entry in Work Order Entry and quantity decimals now follows the item
+! Clean-up in ui_list codes.
+$ /includes/ui/ui_lists.inc
+  /manufacturing/work_order_entry.php
+  /manufacturing/search_work_orders.php
+  /manufacturing/manage/bom_edit.php
+  /manufacturing/inquiry/bom_cost_inquiry.php
+  
+14-Jun-2009 Joe Hunt
+! Much better presentation of new Balance Sheet, P&L Statement and Monthly Breakdown.
+$ /gl/includes/db/gl_db_account_types.inc
+  /gl/includes/db/gl_db_accounts.inc
+  /includes/types.inc
+  /reporting/rep705.php
+  /reporting/rep706.php
+  /reporting/rep707.php
+! New variable in config.php, $use_oldstyle_convert, if set to 1, same convert as in old versions.  
+$ config.php
+  
+13-Jun-2009 Joe Hunt/Pete/Tom Moulton
+! Changed next reference method to also include partly alpha characters in front, fi. WA036 increments to WA037
+$ /includes/references.inc
+! Improved email sending of documents. With help of Tom Moulton
+$ /reporting/rep109.php
+  /reporting/rep209.php
+  /reporting/includes/class.mail.inc
+  /reporting/includes/pdf.report.inc
+  
+12-Jun-2009 Joe Hunt
+! Code clean-up
+$ /gl/includes/db/gl_db_trans.inc
+  /gl/inquiry/gl_trial_balance.php
+  /includes/ui/ui_view.inc
+  /reporting/rep708.php
+  
+11-Jun-2009 Joe Hunt
+! Changed balance_sheet operation in class table to class type for sign convert in Balance Sheet, Profit and Loss Statement and Monthly Breakdown
+$ /gl/manage/gl_account_classes.php
+  /gl/includes/db/gl_db_account_types.inc
+  /gl/includes/db/gl_db_accounts.inc
+  /gl/inquiry/gl_trial_balance.php
+  /includes/types.inc
+  /includes/ui/ui_lists.inc
+  /reporting/rep705.php
+  /reporting/rep706.php
+  /reporting/rep707.php
+  /reporting/rep708.php
+  
+09-Jun-2009 Joe Hunt
+# Bad format in due date column in search dimensions
+$ /dimensions/inquiry/search_dimensions.php
+
+08-Jun-2009 Joe Hunt
+! Changed Advanced Manufacturing payments to be more flexible and simpler. Removed from Payment.
+$ /gl/includes/db/gl_db_trans.inc
+  /gl/includes/ui/gl_bank_ui.inc
+  /includes/types.inc
+  /includes/ui/ui_lists.inc
+  /manufacturing/search_work_orders.php
+  /manufacturing/work_order_costs.php (new file)
+  /manufacturing/work_order_entry.php
+# Overhead costs in Manufacturing/Assembling wasn't added to stock overhead cost
+$ /manufacturing/work_order_add_finished.php
+  /manufacturing/work_order_issue.php
+  /manufacturing/work_order_release.php
+  /manufacturing/includes/manufacturing_ui.inc
+  /manufacturing/includes/db/work_orders_db.inc
+  /manufacturing/includes/db/work_orders_quick_db.inc
+  /manufacturing/includes/db/work_orders_produce_items_db.inc
+  /manufacturing/view/work_order_view.php
+  
+05-Jun-2009 Joe Hunt
+# Missing underscore in gettext string
+$ /sales/create_recurrent_invoices.php
+# Broken gettext string over 2 lines
+$ /sales/customer_delivery.php
+
+04-Jun-2009 Joe Hunt
+# [0000134] Voiding a supplier credit note didn't activate the PO Receivals and void the stock moves.
+$ /purchasing/includes/db/invoice_db.inc
+
+03-Jun-2009 Joe Hunt
+! Changed to present reference number in Print Invoices/Credit Notes if global $print_invoice_no = 0
+$ /reporting/includes/reports_classes.inc
+# Deleting of Locations was too easy. Implemented much more checks
+$ /inventory/manage/locations.php
+! Report Stock Check Sheet and 'Inventory Item Status' was wrong when Locations were selected.
+$ /reporting/rep302.php
+  /reporting/rep303.php
+  /includes/db/manufacturing_db.inc
+# When producing advanced manufacture there should be errors when insuffient qoh in items (if 'Allow Negative Stock' is not marked).
+$ /manufacturing/work_order_issue.php
+  /manufacturing/work_order_add_finished.php
+# Missing decimal calculation in BOM edit.
+$ /manufacturing/manage/bom_edit.php
+# Wrong toottip text on Process button in Purchase Order, Receive Items.
+$ /purchase/po_receive_items.php
+  
+27-May-2009 Joe Hunt
+# After heavy testing a new set of nested subtypes in COA, Monthly Breakdown, Balance Sheet and P&L Statement.
+$ /gl/includes/db/gl_db_accounts.inc
+  /gl/includes/db/gl_db_account_types.inc
+  /reporting/rep701.php
+  /reporting/rep705.php
+  /reporting/rep706.php
+  /reporting/rep707.php
+
+26-May-2009 Joe Hunt
+# Again fixed nested subtypes in account types correctly in COA, Monthly Breakdown, Balance Sheet and P&L Statement
+$ /gl/includes/db/gl_db_accounts.inc
+  /gl/includes/db/gl_db_account_types.inc
+  /reporting/rep701.php
+  /reporting/rep705.php
+  /reporting/rep706.php
+  /reporting/rep707.php
+# fixed wider combobox for backup-files in company backup
+$ /admin/backups.php
+
+25-May-2009 Joe Hunt
+# Fixed Supplier Credit so Purchase Order Outstanding is decreased too.
+$ /purchasing/includes/db/grn_db.inc
+# Fixed so nested subtypes in account types are nested correctly in Balance Sheet and P&L Statement
+$ /gl/includes/db/gl_db_accounts.inc
+  /reporting/rep706.php
+  /reporting/rep707.php
+! Extra column in Stock Check Sheet, On Order and option for selecting Only Shortage.
+$ /reporting/rep303.php
+  /reporting/reports_main.php
+
+23-May-2009 Janusz Dobrowolski
+# Fixed transaction table search update.
+$ /admin/view_print_transaction.php
+# Fixed initial select for array_selector()
+$ /includes/ui/ui_lists.inc
+
+22-May-2009 Janusz Dobrowolski
+# Fixed buggy reference instead of id in report dimension selectors.
+$ /reporting/includes/reports_classes.inc
+# Fixed typo in setup menu
+$ /applications/setup.php
+
+21-May-2009 Joe Hunt/Tom Moulton
+# Recursion fix in manufacturing_db.inc by Tom Moulton
+$ /includes/db/manufacturing_db.inc
+
+20-May-2009 Janusz Dobrowolski
+# Small cleanup
+$ /inventory/prices.php
+# Fixed select buttons icon.
+$ /sales/manage/customer_branches.php
+
+20-May-2009 Joe Hunt
+# Fixed and optimized On Order in Inventory Items Status and reports
+$ /includes/db/manufacturing_db.inc
+  /inventory/inquiry/stock_status.php
+  /reporting/rep302.php
+  /reporting/rep303.php
+  /sales/includes/db/sales_order_db.inc
+  
+18-May-2009 Joe Hunt
+# html header shown in backup downloads.
+$ /admin/backups.php
+! Reinserted the link to GL in Work Order Inquiry.
+$ /manufacturing/search_work_orders.php
+# Added non closed work order requirements on On Order in Inventory Items Status
+$ /inventory/inquiry/stock_status.php
+! Added mb_flag 'M' in demand checks
+$ /sales/includes/db/sales_order_db.inc
+  /reporting/rep302.php
+  /reporting/rep303.php
+  
+17-May-2009 Joe Hunt
+! Changed service items to use cogs account instead of inventory account.
+$ /inventory/manage/items.php
+
+16-May-2009 Joe Hunt
+# [0000133] Removed buggy & obsolete hotkey support in pager_link()
+$ /includes/ui/db_pager_view.inc
+! Removed obsolete 'K' mb_flag checks.
+$ /includes/data_checks.inc
+  /includes/ui/ui_lists.inc
+
+13-May-2009 Joe Hunt
+# Bug in demensions_list. If dimensions are closed they shall NOT show up in the lists.
+$ /includes/ui/ui_lists.inc
+
+10-May-2009 Joe Hunt
+# Period presentation bug in tax report/inquiry
+$ /gl/inquiry/tax_inquiry.php
+  /reporting/includes/reports_classes.inc
+  
+07-May-2009 Joe Hunt
+# Layout bug in exchange rate display
+$ /includes/ui/ui_view.inc
+# Layout bug in sales_order_view. Column Comments renamed to Cust Order Ref
+$ /sales/inquiry/sales_orders_view.php
+# Layout bug in sales_order_ui. Bad presentation of customer if not editable
+$ /sales/includessales_order_ui.inc
+
+05-May-2009 Janusz Dobrowolski
+# Fixed check if code for new sales kit is not used.
+$ /inventory/manage/sales_kits.php
+
+04-May-2009 Joe Hunt
+# Purchase Order document shows wrong purch data conversion if purch data
+$ /reporting/rep209.php
+
 
 ------------------------------- Release 2.1.2 ----------------------------------
 30-Apr-2009 Joe Hunt

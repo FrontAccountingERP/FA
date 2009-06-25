@@ -125,8 +125,6 @@ if (list_updated('stock_id') || isset($_POST['_curr_abrev_update']) ) {
 
 //---------------------------------------------------------------------------------------------------
 
-$mb_flag = get_mb_flag($_POST['stock_id']);
-
 $prices_list = get_prices($_POST['stock_id']);
 
 div_start('price_table');

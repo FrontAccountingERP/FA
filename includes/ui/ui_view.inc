@@ -274,7 +274,7 @@ function exchange_rate_display($from_currency, $to_currency, $date_, $edit_rate=
 		if ($edit_rate)
 			text_row(_("Exchange Rate:"), '_ex_rate', $rate, 8, 8, null, "", " $from_currency = 1 $to_currency"); 
 		else
-    		label_row(_("Exchange Rate:"),"<span id='_ex_rate'>$rate</span> $from_currency = 1 $to_currency" );
+    		label_row(_("Exchange Rate:"),"<span style='vertical-align:top;' id='_ex_rate'>$rate</span> $from_currency = 1 $to_currency" );
 	  	$Ajax->addUpdate('_ex_rate','_ex_rate', $rate);
 	}
 }
@@ -358,7 +358,7 @@ function view_stock_status_cell($stock_id, $description=null)
 
 function display_debit_or_credit_cells($value)
 {
-	if ($value > 0)
+	if ($value >= 0)
 	{
 		amount_cell($value);
 		label_cell("");
@@ -367,12 +367,6 @@ function display_debit_or_credit_cells($value)
 	{
 		label_cell("");
 		amount_cell(abs($value));
-	}
-	else
-	{
-		//label_cell("");
-		amount_cell(0);
-		label_cell("");
 	}
 }
 
@@ -571,6 +565,11 @@ function display_quick_entries(&$cart, $id, $base, $type, $descr='')
 						$gl_code = ($type == QE_DEPOSIT || ($type == QE_JOURNAL && $base < 0)) 
 							? $item_tax['sales_gl_code'] : $item_tax['purchasing_gl_code'];
 						$tax_total += $tax;
+						if ($tax==0) continue;
+						if (!is_tax_gl_unique($gl_code)) {
+		   					display_error(_("Cannot post to GL account used by more than one tax type."));
+							break 3;
+						}
 						if ($type != QE_SUPPINV)
 							$cart->add_gl_item($gl_code, 
 								$qe_line['dimension_id'], $qe_line['dimension2_id'], 

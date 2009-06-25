@@ -23,6 +23,8 @@ simple_page_mode(true);
 
 function can_process()
 {
+	global $selected_id;
+	
 	if (strlen($_POST['name']) == 0)
 	{
 		display_error(_("The tax type name cannot be empty."));
@@ -36,6 +38,11 @@ function can_process()
 		return false;
 	}
 
+	if (!is_tax_gl_unique(get_post('sales_gl_code', 'purchasing_gl_code', $selected_id))) {
+		display_error( _("Selected GL Accounts cannot be used by another tax type."));
+		set_focus('sales_gl_code');
+		return false;
+	}
 	return true;
 }
 
@@ -104,6 +111,8 @@ if ($Mode == 'RESET')
 $result = get_all_tax_types(check_value('show_inactive'));
 
 start_form();
+
+display_note(_("To avoid problems with manual journal entry all tax types should have unique Sales/Purchasing GL accounts."));
 start_table($table_style);
 
 $th = array(_("Description"), _("Default Rate (%)"),

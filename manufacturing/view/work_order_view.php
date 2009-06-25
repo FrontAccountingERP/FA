@@ -64,7 +64,14 @@ else
     	display_heading2(_("Productions"));
     	display_wo_productions($woid);
     	echo "</td><td>";
-    	display_heading2(_("Payments"));
+    	display_heading2(_("Additional Costs"));
+    	display_wo_payments($woid);
+    	echo "</td></tr></table>";
+	}
+	else
+	{
+    	echo "<br><table cellspacing=7><tr valign=top><td>";
+    	display_heading2(_("Additional Costs"));
     	display_wo_payments($woid);
     	echo "</td></tr></table>";
 	}

@@ -31,7 +31,7 @@ function get_po($order_no)
 {
    	$sql = "SELECT ".TB_PREF."purch_orders.*, ".TB_PREF."suppliers.supp_name,  ".TB_PREF."suppliers.supp_account_no,
    		".TB_PREF."suppliers.curr_code, ".TB_PREF."suppliers.payment_terms, ".TB_PREF."locations.location_name,
-   		".TB_PREF."suppliers.email, ".TB_PREF."suppliers.address
+   		".TB_PREF."suppliers.email, ".TB_PREF."suppliers.address, ".TB_PREF."suppliers.contact
 		FROM ".TB_PREF."purch_orders, ".TB_PREF."suppliers, ".TB_PREF."locations
 		WHERE ".TB_PREF."purch_orders.supplier_id = ".TB_PREF."suppliers.supplier_id
 		AND ".TB_PREF."locations.loc_code = into_stock_location
@@ -119,12 +119,11 @@ function print_po()
 					$myrow2['units'] = $data['suppliers_uom'];
 				if ($data['conversion_factor'] != 1)
 				{
-					$myrow2['unit_price'] = round($myrow2['unit_price'] / $data['conversion_factor'], user_price_dec());
-					$myrow2['quantiry_ordered'] = round($myrow2['quantiry_ordered'] / $data['conversion_factor'], user_qty_dec());
+					$myrow2['unit_price'] = round2($myrow2['unit_price'] * $data['conversion_factor'], user_price_dec());
+					$myrow2['quantity_ordered'] = round2($myrow2['quantity_ordered'] / $data['conversion_factor'], user_qty_dec());
 				}
 			}	
-			$Net = round2(($myrow2["unit_price"] * $myrow2["quantity_ordered"]),
-			  user_price_dec());
+			$Net = round2(($myrow2["unit_price"] * $myrow2["quantity_ordered"]), user_price_dec());
 			$SubTotal += $Net;
 			$DisplayPrice = number_format2($myrow2["unit_price"],$dec);
 			$DisplayQty = number_format2($myrow2["quantity_ordered"],get_qty_dec($myrow2['item_code']));
@@ -171,6 +170,7 @@ function print_po()
 		{
 			$myrow['contact_email'] = $myrow['email'];
 			$myrow['DebtorName'] = $myrow['supp_name'];
+			if ($myrow['contact'] != '') $myrow['DebtorName'] = $myrow['contact'];
 			$myrow['reference'] = $myrow['order_no'];
 			$rep->End($email, $doc_Order_no . " " . $myrow['reference'], $myrow);
 		}

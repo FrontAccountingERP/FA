@@ -107,7 +107,7 @@ $result = get_account_classes(check_value('show_inactive'));
 
 start_form();
 start_table($table_style);
-$th = array(_("Class ID"), _("Class Name"), _("Balance Sheet"), _("Sign Convert"), "", "");
+$th = array(_("Class ID"), _("Class Name"), _("Class Type"), "", "");
 inactive_control_column($th);
 table_header($th);
 
@@ -117,26 +117,9 @@ while ($myrow = db_fetch($result))
 
 	alt_table_row_color($k);
 
-	if ($myrow["balance_sheet"] == 0) 
-	{
-		$bs_text = _("No");
-	} 
-	else 
-	{
-		$bs_text = _("Yes");
-	}
-	if ($myrow["sign_convert"] == 0) 
-	{
-		$sc_text = _("No");
-	} 
-	else 
-	{
-		$sc_text = _("Yes");
-	}
 	label_cell($myrow["cid"]);
 	label_cell($myrow['class_name']);
-	label_cell($bs_text);
-	label_cell($sc_text);
+	label_cell($class_types[$myrow["balance_sheet"]]);
 	inactive_control_cell($myrow["cid"], $myrow["inactive"], 'chart_class', 'cid');
 	edit_button_cell("Edit".$myrow["cid"], _("Edit"));
 	delete_button_cell("Delete".$myrow["cid"], _("Delete"));
@@ -172,7 +155,7 @@ else
 
 text_row_ex(_("Class Name:"), 'name', 50, 60);
 
-yesno_list_row(_("Balance Sheet:"), 'Balance', null, "", "", false);
+class_types_list_row(_("Class Type:"), 'Balance', null);
 
 yesno_list_row(_("Sign Convert (Balance Sheet/PL statement):"), 'convert', null, "", "", false);
 

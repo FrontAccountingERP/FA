@@ -62,6 +62,23 @@ function get_purchase_price($supplier_id, $stock_id)
 	}	
 }
 
+function get_purchase_conversion_factor($supplier_id, $stock_id)
+{
+	$sql = "SELECT conversion_factor FROM ".TB_PREF."purch_data 
+		WHERE supplier_id = '" . $supplier_id . "' 
+		AND stock_id = '". $stock_id . "'";
+	$result = db_query($sql, "The supplier pricing details for " . $stock_id . " could not be retrieved");    
+
+	if (db_num_rows($result) == 1)
+	{
+		$myrow = db_fetch($result);
+		return $myrow['conversion_factor'];
+	} 
+	else 
+	{
+		return 1;
+	}	
+}
 //----------------------------------------------------------------------------------------
 
 function get_purchase_data($supplier_id, $stock_id)

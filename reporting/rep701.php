@@ -64,13 +64,6 @@ function print_Chart_of_Accounts()
 
 	while ($account=db_fetch($accounts))
 	{
-		if ($showbalance == 1)
-		{
-			$begin = begin_fiscalyear();
-			if (is_account_balancesheet($account["account_code"]))
-				$begin = "";
-			$balance = get_gl_trans_from_to($begin, ToDay(), $account["account_code"], 0);
-		}
 		if ($account['AccountTypeName'] != $group)
 		{
 			if ($classname != '')
@@ -90,19 +83,29 @@ function print_Chart_of_Accounts()
 			$rep->NewLine();
 		}
 		$classname = $account['AccountClassName'];
-
-		$rep->TextCol(0, 1,	$account['account_code']);
-		$rep->TextCol(1, 2,	$account['account_name']);
-		$rep->TextCol(2, 3,	$account['account_code2']);
-		if ($showbalance == 1)	
-			$rep->AmountCol(3, 4, $balance, $dec);
-
-		$rep->NewLine();
-		if ($rep->row < $rep->bottomMargin + 3 * $rep->lineHeight)
+		
+		if ($account['account_code'] != null)
 		{
-			$rep->Line($rep->row - 2);
-			$rep->Header();
-		}
+			if ($showbalance == 1)
+			{
+				$begin = begin_fiscalyear();
+				if (is_account_balancesheet($account["account_code"]))
+					$begin = "";
+				$balance = get_gl_trans_from_to($begin, ToDay(), $account["account_code"], 0);
+			}
+			$rep->TextCol(0, 1,	$account['account_code']);
+			$rep->TextCol(1, 2,	$account['account_name']);
+			$rep->TextCol(2, 3,	$account['account_code2']);
+			if ($showbalance == 1)	
+				$rep->AmountCol(3, 4, $balance, $dec);
+
+			$rep->NewLine();
+			if ($rep->row < $rep->bottomMargin + 3 * $rep->lineHeight)
+			{
+				$rep->Line($rep->row - 2);
+				$rep->Header();
+			}
+		}	
 	}
 	$rep->Line($rep->row);
 	$rep->End();

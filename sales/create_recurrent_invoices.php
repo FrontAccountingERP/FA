@@ -158,7 +158,7 @@ end_table();
 if ($due)
 	display_note(_("Marked items are due."), 1, 0, "class='overduefg'");
 else
-	display_note(("No recurrent invoices are due."), 1, 0);
+	display_note(_("No recurrent invoices are due."), 1, 0);
 
 echo '<br>';
 

@@ -151,10 +151,10 @@ else
     }
     else
     {
-        start_table("$table_style width=60%");
+        start_table("$table_style width=65%");
 
 		$th = array(_("Supplier"), _("Price"), _("Currency"),
-			_("Supplier's Unit"), _("Supplier's Description"), "", "");
+			_("Supplier's Unit"), _("Conversion Factor"), _("Supplier's Description"), "", "");
 
         table_header($th);
 
@@ -168,6 +168,7 @@ else
             amount_cell($myrow["price"]);
             label_cell($myrow["curr_code"]);
             label_cell($myrow["suppliers_uom"]);
+            qty_cell($myrow['conversion_factor'], false, user_exrate_dec());
             label_cell($myrow["supplier_description"]);
 		 	edit_button_cell("Edit".$myrow['supplier_id'], _("Edit"));
 		 	delete_button_cell("Delete".$myrow['supplier_id'], _("Delete"));
@@ -207,7 +208,7 @@ if ($Mode =='Edit')
     $_POST['conversion_factor'] = exrate_format($myrow["conversion_factor"]);
 }
 
-echo "<br>";
+br();
 hidden('selected_id', $selected_id);
 start_table($table_style2);
 
@@ -219,6 +220,7 @@ if ($Mode == 'Edit')
 else
 {
 	supplier_list_row(_("Supplier:"), 'supplier_id', null, false, true);
+	$_POST['price'] = $_POST['suppliers_uom'] = $_POST['conversion_factor'] = $_POST['supplier_description'] = "";
 }
 amount_row(_("Price:"), 'price', null,'', get_supplier_currency($selected_id));
 text_row(_("Suppliers Unit of Measure:"), 'suppliers_uom', null, 50, 51);

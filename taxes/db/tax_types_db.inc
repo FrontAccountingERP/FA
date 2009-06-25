@@ -61,7 +61,6 @@ function get_tax_type($type_id)
 		AND ".TB_PREF."tax_types.purchasing_gl_code = Chart2.account_code AND id=$type_id";
 
 	$result = db_query($sql, "could not get tax type");
-
 	return db_fetch($result);
 }
 
@@ -91,4 +90,27 @@ function delete_tax_type($type_id)
 	commit_transaction();
 }
 
+/*
+	Check if gl_code is used by more than 2 tax types,
+	or check if the two gl codes are not used by any other 
+	than selected tax type.
+	Necessary for pre-2.2 installations.
+*/
+function is_tax_gl_unique($gl_code, $gl_code2=-1, $selected_id=-1) {
+
+	$purch_code = $gl_code2== -1 ? $gl_code : $gl_code2;
+
+	$sql = "SELECT count(*) FROM "
+		.TB_PREF."tax_types	
+		WHERE (sales_gl_code=" .db_escape($gl_code)
+		." OR purchasing_gl_code=" .db_escape($purch_code). ")";
+
+	if ($selected_id != -1)
+		$sql .= " AND id!=".db_escape($selected_id);
+
+	$res = db_query($sql, "could not query gl account uniqueness");
+	$row = db_fetch($res);
+
+	return $gl_code2 == -1 ? ($row[0] <= 1) : ($row[0] == 0);
+}
 ?>

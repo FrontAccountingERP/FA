@@ -138,6 +138,19 @@ function get_gl_trans($type, $trans_id)
 
 //--------------------------------------------------------------------------------
 
+function get_gl_wo_cost_trans($trans_id, $person_id=-1)
+{
+	$sql = "SELECT ".TB_PREF."gl_trans.*, ".TB_PREF."chart_master.account_name FROM ".TB_PREF."gl_trans, ".TB_PREF."chart_master
+		WHERE ".TB_PREF."chart_master.account_code=".TB_PREF."gl_trans.account
+		AND ".TB_PREF."gl_trans.type=".systypes::work_order()." AND ".TB_PREF."gl_trans.type_no=$trans_id
+		AND ".TB_PREF."gl_trans.person_type_id=".payment_person_types::WorkOrder();
+	if ($person_id != -1)
+		$sql .= " AND ".TB_PREF."gl_trans.person_id=$person_id";
+	$sql .= " AND amount < 0";	
+
+	return db_query($sql, "The gl transactions could not be retrieved");
+}
+
 function get_gl_balance_from_to($from_date, $to_date, $account, $dimension=0, $dimension2=0)
 {
 	$from = date2sql($from_date);
@@ -182,6 +195,36 @@ function get_gl_trans_from_to($from_date, $to_date, $account, $dimension=0, $dim
 
 	$row = db_fetch_row($result);
 	return $row[0];
+}
+
+//----------------------------------------------------------------------------------------------------
+function get_balance($account, $dimension, $dimension2, $from, $to, $from_incl=true, $to_incl=true) 
+{
+	$sql = "SELECT SUM(IF(amount >= 0, amount, 0)) as debit, SUM(IF(amount < 0, -amount, 0)) as credit, SUM(amount) as balance 
+		FROM ".TB_PREF."gl_trans,".TB_PREF."chart_master,".TB_PREF."chart_types, ".TB_PREF."chart_class 
+		WHERE ".TB_PREF."gl_trans.account=".TB_PREF."chart_master.account_code AND ".TB_PREF."chart_master.account_type=".TB_PREF."chart_types.id 
+		AND ".TB_PREF."chart_types.class_id=".TB_PREF."chart_class.cid AND";
+		
+	if ($account != null)
+		$sql .= " account='$account' AND";
+	if ($dimension > 0)
+		$sql .= " dimension_id=$dimension AND";
+	if ($dimension2 > 0)
+		$sql .= " dimension2_id=$dimension2 AND";
+	$from_date = date2sql($from);
+	if ($from_incl)
+		$sql .= " tran_date >= '$from_date'  AND";
+	else
+		$sql .= " tran_date > IF(balance_sheet>0 AND balance_sheet<".CL_INCOME.", '0000-00-00', '$from_date') AND";
+	$to_date = date2sql($to);
+	if ($to_incl)
+		$sql .= " tran_date <= '$to_date' ";
+	else
+		$sql .= " tran_date < '$to_date' ";
+
+	$result = db_query($sql,"No general ledger accounts were returned");
+
+	return db_fetch($result);
 }
 
 //--------------------------------------------------------------------------------

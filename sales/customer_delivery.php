@@ -47,11 +47,11 @@ page($_SESSION['page_title'], false, false, "", $js);
 if (isset($_GET['AddedID'])) {
 	$dispatch_no = $_GET['AddedID'];
 
-	display_notification(_("Dispatch processed:") . ' '.$_GET['AddedID'], true);
+	display_notification_centered(sprintf(_("Delivery # %d has been entered."),$dispatch_no));
 
-	display_note(get_customer_trans_view_str(13, $dispatch_no, _("View this dispatch")), 0, 1);
+	display_note(get_customer_trans_view_str(13, $dispatch_no, _("&View This Delivery")), 0, 1);
 
-	display_note(print_document_link($dispatch_no, _("Print this delivery"), true, 13));
+	display_note(print_document_link($dispatch_no, _("&Print Delivery Note"), true, 13));
 
 	display_note(get_gl_view_str(13, $dispatch_no, _("View the GL Journal Entries for this Dispatch")),1);
 
@@ -128,8 +128,7 @@ if (isset($_GET['OrderNumber']) && $_GET['OrderNumber'] > 0) {
 	check_edit_conflicts();
 
 	if (!check_quantities()) {
-		display_error(_("Selected quantity cannot be less than quantity invoiced nor more than quantity
-			not dispatched on sales order."));
+		display_error(_("Selected quantity cannot be less than quantity invoiced nor more than quantity	not dispatched on sales order."));
 
 	} elseif(!check_num('ChargeFreightCost', 0))
 		display_error(_("Freight cost cannot be less than zero"));

@@ -68,7 +68,7 @@ $opts = array(		// default options
 	if (!is_array($opts['where']))  $opts['where'] = array($opts['where']);
 
 	$search_box = $opts['search_box']===true ? '_'.$name.'_edit' : $opts['search_box'];
-	$search_submit = $opts['search_submit']===true ? '_'.$name.'_button' : $opts['search_submit'];
+	$search_submit = $opts['search_submit']]===true ? '_'.$name.'_button' : $opts['search_submit'];
 	$select_submit =  $opts['select_submit']===true ? '_'.$name.'_update' : $opts['select_submit'];
 	$spec_id = $opts['spec_id'];
 	$spec_option = $opts['spec_option'];
@@ -307,7 +307,7 @@ $opts = array(		// default options
 //if($name=='SelectStockFromList') display_error($sql);
 		foreach($items as $value=>$descr) {
 			$sel = '';
-			if ($selected_id == $value) {
+			if ((string)$selected_id === (string)$value) {
 				$sel = 'selected';
 				$found = $value;
 			}
@@ -328,8 +328,9 @@ $opts = array(		// default options
 	}
 
 	if ($found === false) {
-		$_POST[$name] = $first_id;
+		$selected_id = $first_id;
 	}
+	$_POST[$name] = $selected_id;
 
 	$aspect = $opts['edit_submit'] ? " aspect='editable'" : '';
 	$selector = "<select $disabled name='$name' class='combo' title='"
@@ -620,7 +621,7 @@ $options = array(
 	'async' => false,
 	);
 
-	if ($showclosed)
+	if (!$showclosed)
 		$options['where'][] = "closed=0";
 	if($showtype)
 		$options['where'][] = "type_=$showtype";
@@ -771,58 +772,13 @@ function sales_local_items_list_row($label, $name, $selected_id=null, $all_optio
 }
 //------------------------------------------------------------------------------------
 
-function base_stock_items_list($where, $name, $selected_id=null,
-	$all_option=false, $submit_on_change=false)
-{
-	global $all_items;
-
-	$sql = "SELECT stock_id, s.description, c.description, s.inactive
-		FROM ".TB_PREF."stock_master s,".TB_PREF."stock_category c WHERE
-		s.category_id=c.category_id";
-
-	return combo_input($name, $selected_id, $sql, 'stock_id', 's.description',
-	array(
-		'format' => '_format_stock_items',
-		'spec_option' => $all_option==true ?  _("All Items") : $all_option,
-		'spec_id' => $all_items,
-		'select_submit'=> $submit_on_change,
-		'where' => $where,
-		'category' => 2	) );
-}
-//------------------------------------------------------------------------------------
-
-function stock_bom_items_list($name, $selected_id=null, $all_option=false, $submit_on_change=false)
-{
-
-	return base_stock_items_list("(s.mb_flag='M' OR s.mb_flag='K')",
-		$name, $selected_id, $all_option, $submit_on_change);
-}
-/*
-function stock_bom_items_list_cells($label, $name, $selected_id=null, $all_option=false, $submit_on_change=false)
-{
-	if ($label != null)
-		echo "<td>$label</td>\n";
-	echo "<td>";
-	$str = stock_bom_items_list($name, $selected_id, $all_option, $submit_on_change);
-	echo "</td>\n";
-	return $str;
-}
-
-function stock_bom_items_list_row($label, $name, $selected_id=null, $all_option=false, $submit_on_change=false)
-{
-	echo "<tr>\n";
-	$str = stock_bom_items_list_cells($label, $name, $selected_id, $all_option, $submit_on_change);
-	echo "</tr>\n";
-	return $str;
-}
-*/
-//------------------------------------------------------------------------------------
-
 function stock_manufactured_items_list($name, $selected_id=null,
 	$all_option=false, $submit_on_change=false)
 {
-	return base_stock_items_list("s.mb_flag='M'",
-		$name, $selected_id, $all_option, $submit_on_change);
+	$str = stock_items_list($name, $selected_id, $all_option, $submit_on_change,
+		array('where'=>array("mb_flag= 'M'"), 
+			'edit_submit' => true));
+	return $str;		
 }
 
 function stock_manufactured_items_list_cells($label, $name, $selected_id=null,
@@ -831,8 +787,7 @@ function stock_manufactured_items_list_cells($label, $name, $selected_id=null,
 	if ($label != null)
 		echo "<td>$label</td>\n";
 	echo "<td>";
-	$str = stock_manufactured_items_list($name, $selected_id, $all_option,
-				$submit_on_change);
+	$str = stock_manufactured_items_list($name, $selected_id, $all_option, $submit_on_change);
 	echo "</td>\n";
 	return $str;
 }
@@ -841,8 +796,7 @@ function stock_manufactured_items_list_row($label, $name, $selected_id=null,
 		$all_option=false, $submit_on_change=false)
 {
 	echo "<tr>\n";
-	$str = stock_manufactured_items_list_cells($label, $name, $selected_id,
-			$all_option, $submit_on_change);
+	$str = stock_manufactured_items_list_cells($label, $name, $selected_id, $all_option, $submit_on_change);
 	echo "</tr>\n";
 	return $str;
 }
@@ -947,10 +901,7 @@ function stock_units_list_row($label, $name, $value=null, $enabled=true)
 	while($unit = db_fetch($result))
 		$units[$unit['abbr']] = $unit['name'];
 
-	array_selector($name, $value, $units, 
-		array( 
-			'select_submit'=> true, 
-			'disabled' => !$enabled) );
+	array_selector($name, $value, $units, array( 'disabled' => !$enabled) );
 
 	echo "</td></tr>\n";
 }
@@ -1627,8 +1578,8 @@ function gl_all_accounts_list_row($label, $name, $selected_id=null,
 function yesno_list($name, $selected_id=null, $name_yes="", $name_no="", $submit_on_change=false)
 {
 	$items = array();
-	$items['1'] = strlen($name_yes) ? $name_yes : _("Yes");
 	$items['0'] = strlen($name_no) ? $name_no : _("No");
+	$items['1'] = strlen($name_yes) ? $name_yes : _("Yes");
 
 	return array_selector($name, $selected_id, $items, 
 		array( 
@@ -1724,7 +1675,8 @@ function payment_person_types_list($name, $selected_id=null, $submit_on_change=f
 	{
 		if (payment_person_types::has_items($type['id']))
 		{
-			$items[$type['id']] = $type['name'];
+			if ($type['id'] != payment_person_types::WorkOrder())
+				$items[$type['id']] = $type['name'];
 		}
 	}
 	
@@ -2119,5 +2071,18 @@ function quick_entry_types_list_row($label, $name, $selected_id=null, $submit_on
 function record_status_list_row($label, $name) {
 	return yesno_list_row($label, $name, null, 	_('Inactive'), _('Active'));
 }
+
+function class_types_list_row($label, $name, $selected_id=null, $submit_on_change=false)
+{
+	global $class_types;
+	
+	echo "<tr><td>$label</td><td>";
+	array_selector($name, $selected_id, $class_types, 
+		array( 
+			'select_submit'=> $submit_on_change
+		) );
+	echo "</td></tr>\n";
+}
+
 
 ?>

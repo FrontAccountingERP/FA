@@ -106,17 +106,30 @@ function print_balance_sheet()
 	$rep->Info($params, $cols, $headers, $aligns);
 	$rep->Header();
 	$classname = '';
-	$group = '';
-	$totalopen = 0.0;
-	$totalperiod = 0.0;
-	$totalclose = 0.0;
 	$classopen = 0.0;
 	$classperiod = 0.0;
 	$classclose = 0.0;
 	$assetsopen = 0.0;
 	$assetsperiod = 0.0;
 	$assetsclose = 0.0;
+	$equityopen = 0.0;
+	$equityperiod = 0.0;
+	$equityclose = 0.0;
+	$lopen = 0.0;
+	$lperiod = 0.0;
+	$lclose = 0.0;
+	
+	$typeopen = array(0,0,0,0,0,0,0,0,0,0);
+	$typeperiod = array(0,0,0,0,0,0,0,0,0,0);
+	$typeclose = array(0,0,0,0,0,0,0,0,0,0);
+	$typename = array('','','','','','','','','','');
+	$closing = array(-1,-1,-1,-1,-1,-1,-1,-1,-1,-1);
+	//$parent = array(-1,-1,-1,-1,-1,-1,-1,-1,-1,-1);
+	$level = 0;
+	$last = -1;
+	
 	$closeclass = false;
+	$ctype = 0;
 	$convert = 1;
 	$rep->NewLine();
 
@@ -124,12 +137,17 @@ function print_balance_sheet()
 
 	while ($account=db_fetch($accounts))
 	{
-		$prev_balance = get_gl_balance_from_to("", $from, $account["account_code"], $dimension, $dimension2);
-
-		$curr_balance = get_gl_trans_from_to($from, $to, $account["account_code"], $dimension, $dimension2);
-
-		if (!$prev_balance && !$curr_balance)
+		if ($account['account_code'] == null && $account['parent'] > 0)
 			continue;
+		if ($account['account_code'] != null)
+		{
+			$prev_balance = get_gl_balance_from_to("", $from, $account["account_code"], $dimension, $dimension2);
+
+			$curr_balance = get_gl_trans_from_to($from, $to, $account["account_code"], $dimension, $dimension2);
+
+			if (!$prev_balance && !$curr_balance)
+				continue;
+		}
 		if ($account['AccountClassName'] != $classname)
 		{
 			if ($classname != '')
@@ -137,25 +155,36 @@ function print_balance_sheet()
 				$closeclass = true;
 			}
 		}
-
-		if ($account['AccountTypeName'] != $group)
+		if ($account['AccountTypeName'] != $typename[$level])
 		{
-			if ($group != '')
+			//$rep->NewLine();
+			//$rep->TextCol(0, 5,	"type = ".$account['AccountType'].", level = $level, closing[0]-[1]-[2]-[3] = ".$closing[0]." ".$closing[1]." ".$closing[2]." ".$closing[3]." type[parent] = ".$account['parent']." last = ".$last);
+			//$rep->NewLine();
+			if ($typename[$level] != '')
 			{
-				$rep->row += 6;
-				$rep->Line($rep->row);
-				$rep->NewLine();
-				$rep->TextCol(0, 2,	_('Total') . " " . $group);
-				$rep->AmountCol(2, 3, $totalopen * $convert, $dec);
-				$rep->AmountCol(3, 4, $totalperiod * $convert, $dec);
-				$rep->AmountCol(4, 5, $totalclose * $convert, $dec);
-				if ($graphics)
+				for ( ; $level >= 0, $typename[$level] != ''; $level--) 
 				{
-					$pg->x[] = $group;
-					$pg->y[] = abs($totalclose);
+					if ($account['parent'] == $closing[$level] || $account['parent'] < $last || $account['parent'] <= 0)
+					{
+						$rep->row += 6;
+						$rep->Line($rep->row);
+						$rep->NewLine();
+						$rep->TextCol(0, 2,	_('Total') . " " . $typename[$level]);
+						$rep->AmountCol(2, 3, $typeopen[$level] * $convert, $dec);
+						$rep->AmountCol(3, 4, $typeperiod[$level] * $convert, $dec);
+						$rep->AmountCol(4, 5, $typeclose[$level] * $convert, $dec);
+						if ($graphics)
+						{
+							$pg->x[] = $typename[$level];
+							$pg->y[] = abs($typeclose[$level]);
+						}
+						$typeopen[$level] = $typeperiod[$level] = $typeclose[$level] = 0.0;
+					}	
+					else
+						break;
+					$rep->NewLine();
 				}
-				$totalopen = $totalperiod = $totalclose = 0.0;
-				$rep->NewLine();
+				//$rep->NewLine();
 				if ($closeclass)
 				{
 					$rep->row += 6;
@@ -167,6 +196,18 @@ function print_balance_sheet()
 					$rep->AmountCol(3, 4, $classperiod * $convert, $dec);
 					$rep->AmountCol(4, 5, $classclose * $convert, $dec);
 					$rep->Font();
+					if ($ctype == CL_EQUITY)
+					{
+						$equityopen += $classopen;
+						$equityperiod += $classperiod;
+						$equityclose += $classclose;
+					}
+					if ($ctype == CL_LIABILITIES)
+					{
+						$lopen += $classopen;
+						$lperiod += $classperiod;
+						$lclose += $classclose;
+					}
 					$assetsopen += $classopen;
 					$assetsperiod += $classperiod;
 					$assetsclose += $classclose;
@@ -182,11 +223,11 @@ function print_balance_sheet()
 				$rep->Font();
 				$rep->NewLine();
 			}
-			$group = $account['AccountTypeName'];
-			if (get_sign_convert($account['account_type']))
-				$convert = -1;
-			else
-				$convert = 1;
+			$level++;
+			if ($account['parent'] != $last)
+				$last = $account['parent'];
+			$typename[$level] = $account['AccountTypeName'];
+			$closing[$level] = $account['parent'];
 			$rep->row -= 4;
 			$rep->TextCol(0, 5, $account['AccountTypeName']);
 			$rep->row -= 4;
@@ -194,26 +235,35 @@ function print_balance_sheet()
 			$rep->NewLine();
 		}
 		$classname = $account['AccountClassName'];
-		$totalopen += $prev_balance;
-		$totalperiod += $curr_balance;
-		$totalclose = $totalopen + $totalperiod;
-		$classopen += $prev_balance;
-		$classperiod += $curr_balance;
-		$classclose = $classopen + $classperiod;
-		$rep->TextCol(0, 1,	$account['account_code']);
-		$rep->TextCol(1, 2,	$account['account_name']);
+		$ctype = $account['ClassType'];
+		$convert = get_class_type_convert($ctype); 
 
-		$rep->AmountCol(2, 3, $prev_balance * $convert, $dec);
-		$rep->AmountCol(3, 4, $curr_balance * $convert, $dec);
-		$rep->AmountCol(4, 5, ($curr_balance + $prev_balance) * $convert, $dec);
-
-		$rep->NewLine();
-
-		if ($rep->row < $rep->bottomMargin + 3 * $rep->lineHeight)
+		if ($account['account_code'] != null)
 		{
-			$rep->Line($rep->row - 2);
-			$rep->Header();
-		}
+			for ($i = 0; $i <= $level; $i++)
+			{
+				$typeopen[$i] += $prev_balance;
+				$typeperiod[$i] += $curr_balance;
+				$typeclose[$i] = $typeopen[$i] + $typeperiod[$i];
+			}
+			$classopen += $prev_balance;
+			$classperiod += $curr_balance;
+			$classclose = $classopen + $classperiod;
+			$rep->TextCol(0, 1,	$account['account_code']);
+			$rep->TextCol(1, 2,	$account['account_name']);
+
+			$rep->AmountCol(2, 3, $prev_balance * $convert, $dec);
+			$rep->AmountCol(3, 4, $curr_balance * $convert, $dec);
+			$rep->AmountCol(4, 5, ($curr_balance + $prev_balance) * $convert, $dec);
+
+			$rep->NewLine();
+
+			if ($rep->row < $rep->bottomMargin + 3 * $rep->lineHeight)
+			{
+				$rep->Line($rep->row - 2);
+				$rep->Header();
+			}
+		}	
 	}
 	if ($account['AccountClassName'] != $classname)
 	{
@@ -222,28 +272,47 @@ function print_balance_sheet()
 			$closeclass = true;
 		}
 	}
-	if ($account['AccountTypeName'] != $group)
+	if ($account['AccountTypeName'] != $typename[$level])
 	{
-		if ($group != '')
+		//$rep->NewLine();
+		//$rep->TextCol(0, 5,	"type = ".$account['AccountType'].", level = $level, closing[0]-[1]-[2]-[3] = ".$closing[0]." ".$closing[1]." ".$closing[2]." ".$closing[3]." type[parent] = ".$account['parent']." last = ".$last);
+		//$rep->NewLine();
+		if ($typename[$level] != '')
 		{
-			$rep->row += 6;
-			$rep->Line($rep->row);
-			$rep->NewLine();
-			$rep->TextCol(0, 2,	_('Total') . " " . $group);
-			$rep->AmountCol(2, 3, $totalopen * $convert, $dec);
-			$rep->AmountCol(3, 4, $totalperiod * $convert, $dec);
-			$rep->AmountCol(4, 5, $totalclose * $convert, $dec);
-			if ($graphics)
+			for ( ; $level >= 0, $typename[$level] != ''; $level--) 
 			{
-				$pg->x[] = $group;
-				$pg->y[] = abs($totalclose);
+				if ($account['parent'] == $closing[$level] || $account['parent'] < $last || $account['parent'] <= 0)
+				{
+					$rep->row += 6;
+					$rep->Line($rep->row);
+					$rep->NewLine();
+					$rep->TextCol(0, 2,	_('Total') . " " . $typename[$level]);
+					$rep->AmountCol(2, 3, $typeopen[$level] * $convert, $dec);
+					$rep->AmountCol(3, 4, $typeperiod[$level] * $convert, $dec);
+					$rep->AmountCol(4, 5, $typeclose[$level] * $convert, $dec);
+					if ($graphics)
+					{
+						$pg->x[] = $typename[$level];
+						$pg->y[] = abs($typeclose[$level]);
+					}
+					$typeopen[$level] = $typeperiod[$level] = $typeclose[$level] = 0.0;
+				}
+				else
+					break;
+				$rep->NewLine();
 			}
-			$rep->NewLine();
+			//$rep->NewLine();
 			if ($closeclass)
 			{
 				$calculateopen = -$assetsopen - $classopen;
 				$calculateperiod = -$assetsperiod - $classperiod;
 				$calculateclose = -$assetsclose  - $classclose;
+				if ($ctype == CL_EQUITY)
+				{
+					$equityopen += $classopen;
+					$equityperiod += $classperiod;
+					$equityclose += $classclose;
+				}
 				$rep->row += 6;
 				$rep->Line($rep->row);
 				$rep->NewLine();
@@ -264,6 +333,18 @@ function print_balance_sheet()
 				$rep->AmountCol(4, 5, -$assetsclose * $convert, $dec);
 				$rep->Font();
 				$rep->NewLine();
+				if ($equityopen != 0.0 || $equityperiod != 0.0 || $equityclose != 0.0 ||
+					$lopen != 0.0 || $lperiod != 0.0 || $lclose != 0.0)
+				{
+					$rep->NewLine();
+					$rep->Font('bold');
+					$rep->TextCol(0, 2,	_('Total') . " " . _('Liabilities') . _(' and ') . _('Equities'));
+					$rep->AmountCol(2, 3, ($lopen + $equityopen + $calculateopen) * -1, $dec);
+					$rep->AmountCol(3, 4, ($lperiod + $equityperiod + $calculateperiod) * -1, $dec);
+					$rep->AmountCol(4, 5, ($lclose + $equityclose + $calculateclose) * -1, $dec);
+					$rep->Font();
+					$rep->NewLine();
+				}
 			}
 		}
 	}

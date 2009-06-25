@@ -224,33 +224,34 @@ function display_wo_issues($woid)
 
 function display_wo_payments($woid)
 {
-	global $path_to_root, $table_style;
+	global $path_to_root, $table_style, $wo_cost_types;
 
-    $result = get_bank_trans(null, null, payment_person_types::WorkOrder(), $woid);
+    //$result = get_bank_trans(null, null, payment_person_types::WorkOrder(), $woid);
+    $result = get_gl_wo_cost_trans($woid);
 
     if (db_num_rows($result) == 0)
     {
-    	display_note(_("There are no Payments for this Order."), 0, 1);
+    	display_note(_("There are no additional costs for this Order."), 0, 1);
     }
     else
     {
         start_table($table_style);
-        $th = array(_("#"), _("Reference"), _("Date"), _("Amount"));
+        $th = array(_("#"), _("Type"), _("Date"), _("Amount"));
 
         table_header($th);
 
         $k = 0; //row colour counter
-
+		
         while ($myrow = db_fetch($result))
         {
 
 			alt_table_row_color($k);
 
-        	label_cell(get_trans_view_str(1, $myrow["trans_no"]));
-			label_cell($myrow['ref']);
-			label_cell(sql2date($myrow["trans_date"]));
+        	label_cell(get_gl_view_str(systypes::work_order(), $myrow["type_no"], $myrow["type_no"]));
+        	label_cell($wo_cost_types[$myrow['person_id']]);
+        	$date = sql2date($myrow["tran_date"]);
+        	label_cell($date);
 			amount_cell(-($myrow['amount']));
-			label_cell($myrow['bank_curr_code']);
 			end_row();
 		}
 

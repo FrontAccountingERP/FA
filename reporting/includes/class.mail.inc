@@ -67,6 +67,25 @@ class email
 	    $this->body .= "<html><body>\n".$html."\n</body></html>\n";
     }
 
+	function mime_type($filename)
+	{
+		$file = basename($filename, '.zip');
+		if ($filename == $file . '.zip') return 'application/x-zip-compressed';
+		$file = basename($filename, '.pdf');
+		if ($filename == $file . '.pdf') return 'application/pdf';
+		$file = basename($filename, '.csv');
+		if ($filename == $file . '.csv') return 'application/vnd.ms-excel';
+		$file = basename($filename, '.tar');
+		if ($filename == $file . '.tar') return 'application/x-tar';
+		$file = basename($filename, '.tar.gz');
+		if ($filename == $file . '.tar.gz') return 'application/x-tar-gz';
+		$file = basename($filename, '.tgz');
+		if ($filename == $file . '.tgz') return 'application/x-tar-gz';
+		$file = basename($filename, '.gz');
+		if ($filename == $file . '.gz') return 'application/x-gzip';
+		return 'application/unknown';
+	}
+
 	function send()
     {
         // CC Empfänger hinzufügen
@@ -105,7 +124,7 @@ class email
             {
                 $file = fread(fopen($this->attachment[$i], "r"), filesize($this->attachment[$i]));
                 $this->header .= "--".$this->boundary."\n";
-                $this->header .= "Content-Type: application/x-zip-compressed; name=".basename($this->attachment[$i])."\n";
+                $this->header .= "Content-Type: " .$this->mime_type(basename($this->attachment[$i])). "; name=".basename($this->attachment[$i])."\n";
                 $this->header .= "Content-Transfer-Encoding: base64\n";
                 $this->header .= "Content-Disposition: attachment; filename=".basename($this->attachment[$i])."\n\n";
                 $this->header .= chunk_split(base64_encode($file))."\n";

@@ -215,13 +215,15 @@ if ($Mode == 'RESET')
 
 start_form();
 
-echo "<center>" . _("Select a manufacturable item:") . "&nbsp;";
-stock_bom_items_list('stock_id', null, false, true);
-echo "</center><br>";
+start_form(false, true);
+start_table("class='tablestyle_noborder'");
+stock_manufactured_items_list_row(_("Select a manufacturable item:"), 'stock_id', null, false, true);
+if (list_updated('stock_id'))
+	$Ajax->activate('_page_body');
+end_table();
+br();
 
 end_form();
-if (isset($_POST['_stock_id_update']))
-	$Ajax->activate('_page_body');
 //--------------------------------------------------------------------------------------------------
 
 if (get_post('stock_id') != '')
@@ -250,6 +252,7 @@ start_form();
 			$myrow = db_fetch($result);
 
 			$_POST['loc_code'] = $myrow["loc_code"];
+			$_POST['component'] = $myrow["component"]; // by Tom Moulton
 			$_POST['workcentre_added']  = $myrow["workcentre_added"];
 			$_POST['quantity'] = number_format2($myrow["quantity"], get_qty_dec($myrow["component"]));
 		label_row(_("Component:"), $myrow["component"] . " - " . $myrow["description"]);

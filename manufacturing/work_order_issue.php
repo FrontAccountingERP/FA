@@ -32,10 +32,12 @@ page(_("Issue Items to Work Order"), false, false, "", $js);
 
 if (isset($_GET['AddedID'])) 
 {
-   	echo "<center>" . _("The work order issue has been entered.");
-   	echo "<br>";
+   	display_notification(_("The work order issue has been entered."));
+
+    display_note(get_trans_view_str(systypes::work_order(), $_GET['AddedID'], _("View this Work Order")));
+
    	hyperlink_no_params("search_work_orders.php", _("Select another &Work Order to Process"));
-   	echo "<br><br>";
+
 	display_footer_exit();
 }
 //--------------------------------------------------------------------------------------------------
@@ -94,7 +96,7 @@ function can_process()
 	}
 
 	$failed_item = $_SESSION['issue_items']->check_qoh($_POST['Location'], $_POST['date_'], !$_POST['IssueType']);
-	if ($failed_item >= 0) 
+	if ($failed_item != -1) 
 	{
     	display_error( _("The issue cannot be processed because an entered item would cause a negative inventory balance :") .
     		" " . $failed_item->stock_id . " - " .  $failed_item->item_description);
@@ -120,7 +122,7 @@ if (isset($_POST['Process']) && can_process())
 	} 
 	else 
 	{
-		meta_forward($_SERVER['PHP_SELF'], "AddedID=1");
+		meta_forward($_SERVER['PHP_SELF'], "AddedID=".$_SESSION['issue_items']->order_id);
 	}
 
 } /*end of process credit note */

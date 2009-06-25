@@ -14,6 +14,7 @@ $path_to_root="..";
 include_once($path_to_root . "/includes/session.inc");
 
 include_once($path_to_root . "/includes/date_functions.inc");
+include_once($path_to_root . "/gl/includes/db/gl_db_bank_trans.inc");
 include_once($path_to_root . "/includes/db/inventory_db.inc");
 include_once($path_to_root . "/includes/manufacturing.inc");
 
@@ -36,8 +37,17 @@ if (isset($_GET['trans_no']) && $_GET['trans_no'] != "")
 
 if (isset($_GET['AddedID']))
 {
+	include_once($path_to_root . "/reporting/includes/reporting.inc");
+	$id = $_GET['AddedID'];
+	$stype = systypes::work_order();
 
-	display_note(_("The manufacturing process has been entered."));
+	display_notification(_("The manufacturing process has been entered."));
+	
+    display_note(get_trans_view_str($stype, $id, _("View this Work Order")));
+
+   	display_note(get_gl_view_str($stype, $id, _("View the GL Journal Entries for this Work Order")), 1);
+   	$ar = array('PARAM_0' => $_GET['date'], 'PARAM_1' => $_GET['date'], 'PARAM_2' => $stype); 
+   	display_note(print_link(_("Print the GL Journal Entries for this Work Order"), 702, $ar), 1);
 
 	hyperlink_no_params("search_work_orders.php", _("Select another &Work Order to Process"));
 
@@ -106,7 +116,7 @@ function can_process()
 	{
 		$wo_details = get_work_order($_POST['selected_id']);
 
-		$qoh = get_qoh_on_date($wo_details["stock_id"], $wo_details["loc_code"], $date_);
+		$qoh = get_qoh_on_date($wo_details["stock_id"], $wo_details["loc_code"], $_POST['date_']);
 		if (-$_POST['quantity'] + $qoh < 0)
 		{
 			display_error(_("The unassembling cannot be processed because there is insufficient stock."));
@@ -115,12 +125,35 @@ function can_process()
 		}
 	}
 
+	// if production we need to check the qoh of the wo requirements
+	if (($_POST['ProductionType'] == 1) && !sys_prefs::allow_negative_stock())
+	{
+    	$err = false;
+    	$result = get_wo_requirements($_POST['selected_id']);
+		while ($row = db_fetch($result))
+		{
+			if ($row['mb_flag'] == 'D') // service, non stock
+				continue;
+			$qoh = get_qoh_on_date($row["stock_id"], $row["loc_code"], $_POST['date_']);
+			if ($qoh - $row['units_req'] * $_POST['quantity'] < 0)
+			{
+    			display_error( _("The production cannot be processed because a required item would cause a negative inventory balance :") .
+    				" " . $row['stock_id'] . " - " .  $row['description']);
+    			$err = true;	
+			}	
+		}
+		if ($err)
+		{
+			set_focus('quantity');
+			return false;
+		}	
+	}
 	return true;
 }
 
 //--------------------------------------------------------------------------------------------------
 
-if (isset($_POST['Process']) || (isset($_POST['ProcessAndClose']) && can_process() == true))
+if ((isset($_POST['Process']) || isset($_POST['ProcessAndClose'])) && can_process() == true)
 {
 
 	$close_wo = 0;
@@ -134,7 +167,7 @@ if (isset($_POST['Process']) || (isset($_POST['ProcessAndClose']) && can_process
 	 $id = work_order_produce($_POST['selected_id'], $_POST['ref'], $_POST['quantity'],
 			$_POST['date_'], $_POST['memo_'], $close_wo);
 
-	meta_forward($_SERVER['PHP_SELF'], "AddedID=$id");
+	meta_forward($_SERVER['PHP_SELF'], "AddedID=".$_POST['selected_id']."&date=".$_POST['date_']);
 }
 
 //-------------------------------------------------------------------------------------
@@ -153,7 +186,8 @@ if (!isset($_POST['quantity']) || $_POST['quantity'] == '')
 	$_POST['quantity'] = max($wo_details["units_reqd"] - $wo_details["units_issued"], 0);
 }
 
-start_table();
+start_table($table_style2);
+br();
 
 ref_row(_("Reference:"), 'ref', '', references::get_next(29));
 

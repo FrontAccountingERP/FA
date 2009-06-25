@@ -130,10 +130,22 @@ function produce_link($row)
 
 function costs_link($row)
 {
+/*
 	return $row["closed"] || !$row["released"] ? '' :
 		pager_link(_('Costs'),
 			"/gl/gl_bank.php?NewPayment=1&PayType=" 
 			.payment_person_types::WorkOrder(). "&PayPerson=" .$row["id"]);
+*/			
+	return $row["closed"] || !$row["released"] ? '' :
+		pager_link(_('Costs'),
+			"/manufacturing/work_order_costs.php?trans_no=" .$row["id"]);
+}
+
+function view_gl_link($row)
+{
+	if ($row['closed'] == 0)
+		return '';
+	return get_gl_view_str(systypes::work_order(), $row['id']);
 }
 
 function dec_amount($row, $amount)
@@ -204,7 +216,8 @@ $cols = array(
 	array('insert'=>true, 'fun'=> 'edit_link'),
 	array('insert'=>true, 'fun'=> 'release_link'),
 	array('insert'=>true, 'fun'=> 'produce_link'),
-	array('insert'=>true, 'fun'=> 'costs_link')
+	array('insert'=>true, 'fun'=> 'costs_link'),
+	array('insert'=>true, 'fun'=> 'view_gl_link')
 );
 
 $table =& new_db_pager('orders_tbl', $sql, $cols);

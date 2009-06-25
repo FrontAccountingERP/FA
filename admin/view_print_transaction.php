@@ -82,8 +82,6 @@ function check_valid_entries()
 		display_error(_("The ending transaction number is expected to be numeric and greater than zero."));
 		return false;
 	}
-	if (!isset($_POST['filterType']) || $_POST['filterType'] == "")
-		return false;
 
 	return true;
 }
@@ -139,7 +137,7 @@ function handle_search()
 		}
 
 		$table =& new_db_pager('transactions', $sql, $cols);
-		if (list_updated('filterType')) {
+		if (list_updated('filterType') || get_post('ProcessSearch')) {
 			$table->set_sql($sql);
 			$table->set_columns($cols);
 		}
