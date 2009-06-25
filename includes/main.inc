@@ -28,33 +28,11 @@ include_once($path_to_root . "/installed_extensions.php");
 function page($title, $no_menu=false, $is_index=false, $onload="", $js="", $script_only=false)
 {
 
-   	global $path_to_root, $page_security;
+   	global $path_to_root;
 
    	$hide_menu = $no_menu;
 
    	include($path_to_root . "/includes/page/header.inc");
-
-	if (!$_SESSION["wa_current_user"]->check_user_access())
-	{
-		echo "<br><br><br><center>";
-		echo "<b>" . _("Security settings have not been defined for your user account.");
-		echo "<br>" . _("Please contact your system administrator.") . "</b>";
-
-		kill_login();
-		exit;
-	}
-
-	if (!$_SESSION["wa_current_user"]->can_access_page($page_security))
-	{
-		page_header(_("Access denied"), $no_menu);
-		echo "<center><br><br><br><b>";
-		echo _("The security settings on your account do not permit you to access this function");
-		echo "</b>";
-		echo "<br><br><br><br></center>";
-		end_page();
-		//kill_login();
-		exit;
-	}
 
    	page_header($title, $no_menu, $is_index, $onload, $js);
 	error_box();

@@ -25,7 +25,7 @@ $ -> Affected files
 $ config.php
   /sql/en_US-new.sql
   /sql/en_US-demo.sql
-! Moved check page security from session.inc to main.inc. There should be no menus on popup windows.
+! Suppressed menu on access denied in view popup windows.
 $ /includes/session.inc
   /includes/main.inc
 
