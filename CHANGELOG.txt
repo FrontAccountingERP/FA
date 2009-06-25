@@ -19,6 +19,16 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+------------------------------- Release 2.1.3 ----------------------------------
+25-Jun-2009 Joe Hunt
+! Release 2.1.3
+$ config.php
+  /sql/en_US-new.sql
+  /sql/en_US-demo.sql
+! Moved check page security from session.inc to main.inc. There should be no menus on popup windows.
+$ /includes/session.inc
+  /includes/main.inc
+
 23-Jun-2009 Janusz Dobrowolski
 ! Added edition link in Purchase Order Inquiry
 $ /purchasing/includes/ui/po_ui.inc

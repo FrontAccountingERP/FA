@@ -45,33 +45,6 @@ function login_fail()
 	die();
 }
 
-//----------------------------------------------------------------------------------------
-
-function check_page_security($page_security)
-{
-	if (!$_SESSION["wa_current_user"]->check_user_access())
-	{
-		echo "<br><br><br><center>";
-		echo "<b>" . _("Security settings have not been defined for your user account.");
-		echo "<br>" . _("Please contact your system administrator.") . "</b>";
-
-		kill_login();
-		exit;
-	}
-
-	if (!$_SESSION["wa_current_user"]->can_access_page($page_security))
-	{
-		page(_("Access denied"));
-		echo "<center><br><br><br><b>";
-		echo _("The security settings on your account do not permit you to access this function");
-		echo "</b>";
-		echo "<br><br><br><br></center>";
-		end_page();
-		//kill_login();
-		exit;
-	}
-}
-
 //-----------------------------------------------------------------------------
 //	Removing magic quotes from nested arrays/variables
 //
@@ -178,8 +151,6 @@ if (!isset($_SESSION["App"])) {
 }*/
 
 //----------------------------------------------------------------------------------------
-
-check_page_security($page_security);
 
 // POST vars cleanup needed for direct reuse.
 // We quote all values later with db_escape() before db update.
