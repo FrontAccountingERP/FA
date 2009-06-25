@@ -178,8 +178,7 @@ DROP TABLE IF EXISTS `0_chart_class`;
 CREATE TABLE `0_chart_class` (
   `cid` int(11) NOT NULL default '0',
   `class_name` varchar(60) NOT NULL default '',
-  `balance_sheet` tinyint(1) NOT NULL default '0',
-  `sign_convert` tinyint(1) NOT NULL default '0',
+  `ctype` tinyint(1) NOT NULL default '0',
   `inactive` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`cid`)
 ) TYPE=MyISAM  ;
@@ -187,10 +186,10 @@ CREATE TABLE `0_chart_class` (
 
 ### Data of table `0_chart_class` ###
 
-INSERT INTO `0_chart_class` VALUES ('1', 'Assets', '1', '0', '0');
-INSERT INTO `0_chart_class` VALUES ('2', 'Liabilities', '2', '1', '0');
-INSERT INTO `0_chart_class` VALUES ('3', 'Income', '4', '1', '0');
-INSERT INTO `0_chart_class` VALUES ('4', 'Costs', '6', '1', '0');
+INSERT INTO `0_chart_class` VALUES ('1', 'Assets', '1', '0');
+INSERT INTO `0_chart_class` VALUES ('2', 'Liabilities', '2', '0');
+INSERT INTO `0_chart_class` VALUES ('3', 'Income', '4', '0');
+INSERT INTO `0_chart_class` VALUES ('4', 'Costs', '6', '0');
 
 ### Structure of table `0_chart_master` ###
 
@@ -318,7 +317,7 @@ INSERT INTO `0_chart_types` VALUES ('8', 'Sales Revenue', '3', '-1', '0');
 INSERT INTO `0_chart_types` VALUES ('9', 'Other Revenue', '3', '-1', '0');
 INSERT INTO `0_chart_types` VALUES ('10', 'Cost of Goods Sold', '4', '-1', '0');
 INSERT INTO `0_chart_types` VALUES ('11', 'Payroll Expenses', '4', '-1', '0');
-INSERT INTO `0_chart_types` VALUES ('12', 'General &amp; Administrative expenses', '4', '0');
+INSERT INTO `0_chart_types` VALUES ('12', 'General &amp; Administrative expenses', '4', -1, '0');
 
 
 ### Structure of table `0_comments` ###
@@ -397,7 +396,7 @@ CREATE TABLE `0_company` (
 
 ### Data of table `0_company` ###
 
-INSERT INTO `0_company` VALUES ('1', 'Company name', '', '', '1', '1', 'N/A', '', '', '', '', '', 'USD', '1200', '5060', '2100', '1430', '4450', '4220', '2050', '4430', '4010', '4510', '4500', '1510', '5010', '5040', '4010', '1530', '5000', '', '', '', '', '', '', '0', '10', '10', '1000', '20', '20', '30', '1', '1', '0', '0', '0', '1', '0', '0', '', '1', '2.2', '0');
+INSERT INTO `0_company` VALUES ('1', 'Company name', '', '', '1', '1', 'N/A', '', '', '', '', '', 'USD', '1200', '5060', '2100', '1430', '4450', '9990', '3590', '4430', '4010', '4510', '4500', '1510', '5010', '5040', '4010', '1530', '5000', '0', '10', '10', '1000', '20', '20', '30', '1', '1', '0', '0', '0', '1', '0', '0', '', '1', '2.2', '0');
 
 ### Structure of table `0_credit_status` ###
 
@@ -782,7 +781,7 @@ CREATE TABLE `0_item_tax_types` (
 
 ### Data of table `0_item_tax_types` ###
 
-INSERT INTO `0_item_tax_types` VALUES ('1', 'Regular', '0');
+INSERT INTO `0_item_tax_types` VALUES ('1', 'Regular', '0', '0');
 
 
 ### Structure of table `0_item_units` ###
@@ -1288,10 +1287,10 @@ CREATE TABLE `0_stock_category` (
 
 ### Data of table `0_stock_category` ###
 
-INSERT INTO `0_stock_category` VALUES ('1', 'Components', '0');
-INSERT INTO `0_stock_category` VALUES ('2', 'Charges', '0');
-INSERT INTO `0_stock_category` VALUES ('3', 'Systems', '0');
-INSERT INTO `0_stock_category` VALUES ('4', 'Services', '0');
+INSERT INTO `0_stock_category` VALUES ('1', 'Components', '1', 'each', 'B', '4010', '1510', '5010', '5040', '1530', '0', '0', '0');
+INSERT INTO `0_stock_category` VALUES ('2', 'Charges', '1', 'each', 'D', '4010', '1510', '5010', '5040', '1530', '0', '0', '0');
+INSERT INTO `0_stock_category` VALUES ('3', 'Systems', '1', 'each', 'M', '4010', '1510', '5010', '5040', '1530', '0', '0', '0');
+INSERT INTO `0_stock_category` VALUES ('4', 'Services', '1', 'hrs', 'D', '4010', '1510', '5010', '5040', '1530', '0', '0', '0');
 
 
 ### Structure of table `0_stock_master` ###
@@ -1534,8 +1533,8 @@ CREATE TABLE `0_tax_groups` (
 
 ### Data of table `0_tax_groups` ###
 
-INSERT INTO `0_tax_groups` VALUES ('1', 'Tax', '0');
-INSERT INTO `0_tax_groups` VALUES ('2', 'Tax Exempt', '0');
+INSERT INTO `0_tax_groups` VALUES ('1', 'Tax', '0', '0');
+INSERT INTO `0_tax_groups` VALUES ('2', 'Tax Exempt', '0', '0');
 
 
 ### Structure of table `0_tax_types` ###
@@ -1556,7 +1555,7 @@ CREATE TABLE `0_tax_types` (
 
 ### Data of table `0_tax_types` ###
 
-INSERT INTO `0_tax_types` VALUES ('1', '5', '2150', '2150', 'Tax');
+INSERT INTO `0_tax_types` VALUES ('1', '5', '2150', '2150', 'Tax', '0');
 
 
 ### Structure of table `0_trans_tax_details` ###

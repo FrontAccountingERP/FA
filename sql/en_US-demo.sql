@@ -412,7 +412,7 @@ CREATE TABLE `0_company` (
 
 ### Data of table `0_company` ###
 
-INSERT INTO `0_company` VALUES ('1', 'Training Co.', '9876543', '123456789', '1', '1', 'Address 1\r\nAddress 2\r\nAddress 3', '(222) 111.222.333', '', 'delta@delta.com', 'logo_frontaccounting.jpg', '', 'USD', '1200', '5060', '2100', '1430', '4450', '4220', '2050', '4430', '4010', '4510', '4500', '1510', '5010', '5040', '4010', '1530', '5000', '', '', '', '', '', '', '0', '10', '10', '1000', '20', '20', '30', '1', '2', '0', '0', '0', '1', '0', '0', '', '1', '2.2', '0');
+INSERT INTO `0_company` VALUES ('1', 'Training Co.', '9876543', '123456789', '1', '1', 'Address 1\r\nAddress 2\r\nAddress 3', '(222) 111.222.333', '', 'delta@delta.com', 'logo_frontaccounting.jpg', '', 'USD', '1200', '5060', '2100', '1430', '4450', '9990', '3590', '4430', '4010', '4510', '4500', '1510', '5010', '5040', '4010', '1530', '5000', '0', '10', '10', '1000', '20', '20', '30', '1', '2', '0', '0', '0', '1', '0', '0', '', '1', '2.2', '0');
 
 ### Structure of table `0_credit_status` ###
 
@@ -909,7 +909,7 @@ DROP TABLE IF EXISTS `0_item_tax_types`;
 
 CREATE TABLE `0_item_tax_types` (
   `id` int(11) NOT NULL auto_increment,
-  `name` varchar(60) [BNOT NULL default '',
+  `name` varchar(60) NOT NULL default '',
   `exempt` tinyint(1) NOT NULL default '0',
   `inactive` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`id`),
@@ -1455,10 +1455,10 @@ CREATE TABLE `0_stock_category` (
 
 ### Data of table `0_stock_category` ###
 
-INSERT INTO `0_stock_category` VALUES ('1', 'Components', '1', 'each', 'B', '3000', '4010', '1420', '4210', '1410', '1', '1', '0');
-INSERT INTO `0_stock_category` VALUES ('2', 'Charges', '1', 'each', 'D', '3000', '4010', '1420', '4210', '1410', '1', '1', '0');
-INSERT INTO `0_stock_category` VALUES ('3', 'Systems', '1', 'each', 'M', '3000', '4010', '1420', '4210', '1410', '1', '1', '0');
-INSERT INTO `0_stock_category` VALUES ('4', 'Services', '1', 'hrs', 'D', '3000', '4010', '1420', '4210', '1410', '1', '1', '0');
+INSERT INTO `0_stock_category` VALUES ('1', 'Components', '1', 'each', 'B', '4010', '1510', '5010', '5040', '1530', '0', '0', '0');
+INSERT INTO `0_stock_category` VALUES ('2', 'Charges', '1', 'each', 'D', '4010', '1510', '5010', '5040', '1530', '0', '0', '0');
+INSERT INTO `0_stock_category` VALUES ('3', 'Systems', '1', 'each', 'M', '4010', '1510', '5010', '5040', '1530', '0', '0', '0');
+INSERT INTO `0_stock_category` VALUES ('4', 'Services', '1', 'hrs', 'D', '4010', '1510', '5010', '5040', '1530', '0', '0', '0');
 
 
 ### Structure of table `0_stock_master` ###

@@ -30,6 +30,7 @@ $ /admin/fiscalyears.php
   /includes/main.inc
   /includes/ui/ui_lists.inc
   /sql/en_US-demo.sql
+  /sql/en_US-new.sql
   /sql/alter2.2.sql
   
 25-Jun-2009 Janusz Dobrowolski
