@@ -50,12 +50,12 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 
     	if ($selected_id != -1) 
     	{
-    		update_account_class($selected_id, $_POST['name'], $_POST['Balance'], $_POST['convert']);
+    		update_account_class($selected_id, $_POST['name'], $_POST['ctype']);
 			display_notification(_('Selected account class settings has been updated'));
     	} 
     	else 
     	{
-    		add_account_class($_POST['id'], $_POST['name'], $_POST['Balance'], $_POST['convert']);
+    		add_account_class($_POST['id'], $_POST['name'], $_POST['ctype']);
 			display_notification(_('New account class has been added'));
     	}
 		$Mode = 'RESET';
@@ -99,7 +99,7 @@ if ($Mode == 'Delete')
 if ($Mode == 'RESET')
 {
 	$selected_id = -1;
-	$_POST['id']  = $_POST['name']  = $_POST['Balance'] = $_POST['sign_convert'] = '';
+	$_POST['id']  = $_POST['name']  = $_POST['ctype'] =  '';
 }
 //-----------------------------------------------------------------------------------
 
@@ -119,7 +119,7 @@ while ($myrow = db_fetch($result))
 
 	label_cell($myrow["cid"]);
 	label_cell($myrow['class_name']);
-	label_cell($class_types[$myrow["balance_sheet"]]);
+	label_cell($class_types[$myrow["ctype"]]);
 	inactive_control_cell($myrow["cid"], $myrow["inactive"], 'chart_class', 'cid');
 	edit_button_cell("Edit".$myrow["cid"], _("Edit"));
 	delete_button_cell("Delete".$myrow["cid"], _("Delete"));
@@ -139,8 +139,7 @@ if ($selected_id != -1)
 
 	$_POST['id']  = $myrow["cid"];
 	$_POST['name']  = $myrow["class_name"];
-	$_POST['Balance']  = $myrow["balance_sheet"];
-	$_POST['convert']  = $myrow["sign_convert"];
+	$_POST['ctype']  = $myrow["ctype"];
 	hidden('selected_id', $selected_id);
  }
 	hidden('id');
@@ -155,9 +154,7 @@ else
 
 text_row_ex(_("Class Name:"), 'name', 50, 60);
 
-class_types_list_row(_("Class Type:"), 'Balance', null);
-
-yesno_list_row(_("Sign Convert (Balance Sheet/PL statement):"), 'convert', null, "", "", false);
+class_types_list_row(_("Class Type:"), 'ctype', null);
 
 end_table(1);
 

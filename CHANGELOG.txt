@@ -19,6 +19,19 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+25-Jun-2009 Joe Hunt
+! Changed balance_sheet field in account class to ctype and fixed class editing.
+# Parse error in ui_lists.inc. Masked include_once(/validation.inc) in main.inc.
+$ /admin/fiscalyears.php
+  /gl/includes/db/gl_db_accounts.inc
+  /gl/includes/db/gl_db_account_types.inc
+  /gl/includes/db/gl_db_trans.inc
+  /gl/manage/gl_account_classes.php
+  /includes/main.inc
+  /includes/ui/ui_lists.inc
+  /sql/en_US-demo.sql
+  /sql/alter2.2.sql
+  
 25-Jun-2009 Janusz Dobrowolski
 ! Merged changes from main trunk  2.1.2-2.1.3 (see below)
 $ /admin/backups.php

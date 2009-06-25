@@ -90,7 +90,7 @@ function close_year($year)
 	// retrieve total balances from balance sheet accounts
     $sql = "SELECT SUM(amount) FROM ".TB_PREF."gl_trans INNER JOIN ".TB_PREF."chart_master ON account=account_code
     	INNER JOIN ".TB_PREF."chart_types ON account_type=id INNER JOIN ".TB_PREF."chart_class ON class_id=cid 
-		WHERE balance_sheet=1 AND tran_date <= '$to'";
+		WHERE ctype>=".CL_ASSETS." AND ctype <=".CL_EQUITY." AND tran_date <= '$to'";
 	$result = db_query($sql, "The total balance could not be calculated");
 
 	$row = db_fetch_row($result);

@@ -68,7 +68,7 @@ $opts = array(		// default options
 	if (!is_array($opts['where']))  $opts['where'] = array($opts['where']);
 
 	$search_box = $opts['search_box']===true ? '_'.$name.'_edit' : $opts['search_box'];
-	$search_submit = $opts['search_submit']]===true ? '_'.$name.'_button' : $opts['search_submit'];
+	$search_submit = $opts['search_submit']===true ? '_'.$name.'_button' : $opts['search_submit'];
 	$select_submit =  $opts['select_submit']===true ? '_'.$name.'_update' : $opts['select_submit'];
 	$spec_id = $opts['spec_id'];
 	$spec_option = $opts['spec_option'];

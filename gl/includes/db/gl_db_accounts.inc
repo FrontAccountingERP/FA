@@ -52,12 +52,12 @@ function get_gl_accounts($from=null, $to=null)
 function get_gl_accounts_all($balance=-1)
 {
 	if ($balance == 1)
-		$where ="WHERE balance_sheet>0 AND balance_sheet<".CL_INCOME;
+		$where ="WHERE ctype>0 AND ctype<".CL_INCOME;
 	elseif ($balance == 0)	
-		$where ="WHERE balance_sheet>".CL_EQUITY." OR balance_sheet=0"; // backwards compatibility
+		$where ="WHERE ctype>".CL_EQUITY." OR ctype=0"; // backwards compatibility
  	$sql = "SELECT ".TB_PREF."chart_master.account_code, ".TB_PREF."chart_master.account_name, ".TB_PREF."chart_types.name AS AccountTypeName,".TB_PREF."chart_types.id AS AccountType,
 	 	".TB_PREF."chart_types.parent, ".TB_PREF."chart_class.class_name AS AccountClassName, ".TB_PREF."chart_class.cid AS ClassID, 
-	 	".TB_PREF."chart_class.balance_sheet AS ClassType
+	 	".TB_PREF."chart_class.ctype AS ClassType
 	 	FROM ".TB_PREF."chart_types INNER JOIN ".TB_PREF."chart_class ON ".TB_PREF."chart_types.class_id=".TB_PREF."chart_class.cid
 	 	LEFT JOIN ".TB_PREF."chart_master ON ".TB_PREF."chart_master.account_type=".TB_PREF."chart_types.id ";
 	if ($balance != -1)
@@ -78,7 +78,7 @@ function get_gl_account($code)
 
 function is_account_balancesheet($code)
 {
-	$sql = "SELECT ".TB_PREF."chart_class.balance_sheet FROM ".TB_PREF."chart_class, ".TB_PREF."chart_types, ".TB_PREF."chart_master
+	$sql = "SELECT ".TB_PREF."chart_class.ctype FROM ".TB_PREF."chart_class, ".TB_PREF."chart_types, ".TB_PREF."chart_master
 		WHERE ".TB_PREF."chart_master.account_type=".TB_PREF."chart_types.id AND
 		".TB_PREF."chart_types.class_id=".TB_PREF."chart_class.cid
 		AND ".TB_PREF."chart_master.account_code='$code'";

@@ -195,8 +195,7 @@ DROP TABLE IF EXISTS `0_chart_class`;
 CREATE TABLE `0_chart_class` (
   `cid` int(11) NOT NULL default '0',
   `class_name` varchar(60) NOT NULL default '',
-  `balance_sheet` tinyint(1) NOT NULL default '0',
-  `sign_convert` tinyint(1) NOT NULL default '0',
+  `ctype` tinyint(1) NOT NULL default '0',
   `inactive` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`cid`)
 ) TYPE=MyISAM  ;
@@ -204,10 +203,10 @@ CREATE TABLE `0_chart_class` (
 
 ### Data of table `0_chart_class` ###
 
-INSERT INTO `0_chart_class` VALUES ('1', 'Assets', '1', '0', '0');
-INSERT INTO `0_chart_class` VALUES ('2', 'Liabilities', '1', '0', '0');
-INSERT INTO `0_chart_class` VALUES ('3', 'Income', '0', '1', '0');
-INSERT INTO `0_chart_class` VALUES ('4', 'Costs', '0', '1', '0');
+INSERT INTO `0_chart_class` VALUES ('1', 'Assets', '1', '0');
+INSERT INTO `0_chart_class` VALUES ('2', 'Liabilities', '2', '0');
+INSERT INTO `0_chart_class` VALUES ('3', 'Income', '4', '0');
+INSERT INTO `0_chart_class` VALUES ('4', 'Costs', '6', '0');
 
 
 ### Structure of table `0_chart_master` ###

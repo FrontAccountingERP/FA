@@ -61,18 +61,18 @@ function delete_account_type($id)
 	db_query($sql, "could not delete account type");
 }
 
-function add_account_class($id, $name, $balance, $sign_conv)
+function add_account_class($id, $name, $ctype)
 {
-	$sql = "INSERT INTO ".TB_PREF."chart_class (cid, class_name, balance_sheet, sign_convert)
-		VALUES ($id, ".db_escape($name).", $balance, $sign_conv)";
+	$sql = "INSERT INTO ".TB_PREF."chart_class (cid, class_name, ctype)
+		VALUES ($id, ".db_escape($name).", $ctype)";
 
 	db_query($sql, "could not add account type");
 }
 
-function update_account_class($id, $name, $balance, $sign_conv)
+function update_account_class($id, $name, $ctype)
 {
     $sql = "UPDATE ".TB_PREF."chart_class SET class_name=".db_escape($name).",
-		balance_sheet=$balance, sign_convert=$sign_conv WHERE cid = $id";
+		ctype=$ctype WHERE cid = $id";
 
 	db_query($sql, "could not update account type");
 }
