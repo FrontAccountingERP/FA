@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+26-Jun-2009 Joe Hunt
+# [0000137] Material Cost Averaging Problem (again again) when voiding.
+$ /purchasing/includes/db/invoice_db.inc
+
 ------------------------------- Release 2.1.3 ----------------------------------
 25-Jun-2009 Joe Hunt
 ! Release 2.1.3

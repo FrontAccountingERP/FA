@@ -442,13 +442,17 @@ function void_supp_invoice($type, $type_no)
 					$sql = "UPDATE ".TB_PREF."grn_items SET qty_recd=qty_recd+".-$details_row["quantity"]."
 						WHERE id=".$details_row["grn_item_id"];
 					db_query($sql);
-    			}     		
-				$diff = get_diff_in_home_currency($grn["supplier_id"], $old_date, $date_, $old[2], 
-					$details_row["FullUnitPrice"]);
-				// Only adjust the avg for the diff
-				$mat_cost = update_average_material_cost(null, $details_row["stock_id"],
-					$diff, -$details_row["quantity"], $old_date, true);
-
+					$mat_cost = update_average_material_cost($grn["supplier_id"], $details_row["stock_id"],  
+						$details_row["FullUnitPrice"], -$details_row["quantity"], $date_);
+    			}
+    			else
+    			{
+					$diff = get_diff_in_home_currency($grn["supplier_id"], $old_date, $date_, $old[2], 
+						$details_row["FullUnitPrice"]);
+					// Only adjust the avg for the diff
+					$mat_cost = update_average_material_cost(null, $details_row["stock_id"],
+						$diff, -$details_row["quantity"], $old_date, true);
+				}
 				$deliveries = get_deliveries_between($details_row["stock_id"], $old_date, $date_);
 				if ($deliveries[0] != 0) // have deliveries been done during the period?
 				{
