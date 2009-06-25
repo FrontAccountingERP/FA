@@ -28,6 +28,8 @@ $ config.php
 ! Suppressed menu on access denied in view popup windows.
 $ /includes/session.inc
   /includes/main.inc
+! New empty.po file
+  /lang/new_language_template/LC_MESSAGES/empty.po
 
 23-Jun-2009 Janusz Dobrowolski
 ! Added edition link in Purchase Order Inquiry
