@@ -162,6 +162,11 @@ $reports->addReport(_('Inventory'),304,_('Inventory &Sales Report'),
 			new ReportParam(_('Detailed Report'),'YES_NO'),
 			new ReportParam(_('Comments'),'TEXTBOX'),
 			new ReportParam(_('Destination'),'DESTINATION')));
+$reports->addReport(_('Inventory'),305,_('&GRN Valuation Report'),
+	array(	new ReportParam(_('Start Date'),'DATEBEGINM'),
+			new ReportParam(_('End Date'),'DATEENDM'),
+			new ReportParam(_('Comments'),'TEXTBOX'),
+			new ReportParam(_('Destination'),'DESTINATION')));
 
 $reports->addReportClass(_('Manufactoring'));
 $reports->addReport(_('Manufactoring'),401,_('&Bill of Material Listing'),

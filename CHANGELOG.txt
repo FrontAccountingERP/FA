@@ -20,9 +20,10 @@ Legend:
 $ -> Affected files
 
 26-Jun-2009 Joe Hunt
-+ Added Print of Work Order
++ Added Print of Work Order and GRN Valuation Report
 $ /manufacturing/includes/db/work_orders_db.inc
   /manufacturing/work_order_entry.php
+  /reporting/rep305.php (new file)
   /reporting/rep409.php (new file)
   /reporting/reports_main.php
   /reporting/includes/doctext.inc
