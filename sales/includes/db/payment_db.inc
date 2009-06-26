@@ -13,7 +13,7 @@
   Write/update customer payment.
 */
 function write_customer_payment($trans_no, $customer_id, $branch_id, $bank_account,
-	$date_, $ref, $amount, $discount, $memo_, $rate=0)
+	$date_, $ref, $amount, $discount, $memo_, $rate=0, $charge=0)
 {
 	begin_transaction();
 
@@ -33,7 +33,7 @@ function write_customer_payment($trans_no, $customer_id, $branch_id, $bank_accou
 	$total = 0;
 	/* Bank account entry first */
 	$total += add_gl_trans_customer(12, $payment_no, $date_,
-		$bank_gl_account, 0, 0, $amount,  $customer_id,
+		$bank_gl_account, 0, 0, $amount - $charge,  $customer_id,
 		"Cannot insert a GL transaction for the bank account debit", $rate);
 
 	if ($branch_id != reserved_words::get_any_numeric()) {
@@ -61,6 +61,13 @@ function write_customer_payment($trans_no, $customer_id, $branch_id, $bank_accou
 			"Cannot insert a GL transaction for the payment discount debit", $rate);
 	}
 
+	if ($charge != 0)	{
+		/* Now Debit bank charge account with charges */
+		$charge_act = get_company_pref('bank_charge_act');
+		$total += add_gl_trans_customer(12, $payment_no, $date_,
+			$charge_act, 0, 0, $charge, $customer_id,
+			"Cannot insert a GL transaction for the payment bank charge debit", $rate);
+	}
 	/*Post a balance post if $total != 0 */
 	add_gl_balance(12, $payment_no, $date_, -$total, payment_person_types::customer(), $customer_id);	
 

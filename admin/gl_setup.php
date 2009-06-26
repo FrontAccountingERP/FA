@@ -55,7 +55,7 @@ if (isset($_POST['submit']) && can_process())
 	update_company_gl_setup($_POST['retained_earnings_act'], $_POST['profit_loss_year_act'],
 		$_POST['debtors_act'], $_POST['pyt_discount_act'],
 		$_POST['creditors_act'], $_POST['freight_act'],
-		$_POST['exchange_diff_act'],
+		$_POST['exchange_diff_act'], $_POST['bank_charge_act'],
 		$_POST['default_sales_act'],
 		$_POST['default_sales_discount_act'],
 		$_POST['default_prompt_payment_act'],
@@ -98,6 +98,7 @@ $_POST['freight_act'] = $myrow["freight_act"];
 $_POST['pyt_discount_act']  = $myrow["pyt_discount_act"];
 
 $_POST['exchange_diff_act'] = $myrow["exchange_diff_act"];
+$_POST['bank_charge_act'] = $myrow["bank_charge_act"];
 $_POST['default_sales_act'] = $myrow["default_sales_act"];
 $_POST['default_sales_discount_act']  = $myrow["default_sales_discount_act"];
 $_POST['default_prompt_payment_act']  = $myrow["default_prompt_payment_act"];
@@ -140,6 +141,8 @@ gl_all_accounts_list_row(_("Profit/Loss Year:"), 'profit_loss_year_act', $_POST[
 
 gl_all_accounts_list_row(_("Exchange Variances Account:"), 'exchange_diff_act', $_POST['exchange_diff_act']);
 
+gl_all_accounts_list_row(_("Bank Charges Account:"), 'bank_charge_act', $_POST['bank_charge_act']);
+
 //---------------
 
 table_section_title(_("Customers and Sales"));
@@ -181,11 +184,6 @@ table_section_title(_("Suppliers and Purchasing"));
 percent_row(_("Delivery Over-Receive Allowance:"), 'po_over_receive');
 
 percent_row(_("Invoice Over-Charge Allowance:"), 'po_over_charge');
-
-// Not used in FA2.0.
-//gl_all_accounts_list_row(_("Purchases Exchange Variances Account:"), 'purch_exchange_diff_act', $_POST['purch_exchange_diff_act']);
-// Not used in FA2.0.
-//gl_all_accounts_list_row(_("Goods Received Clearing Account:"), 'grn_act', $_POST['grn_act']);
 
 table_section_title(_("Suppliers and Purchasing Defaults"));
 

@@ -93,6 +93,12 @@ function can_process()
 		return false;
 	}
 
+	if (isset($_POST['charge']) && !check_num('charge', 0)) {
+		display_error(_("The entered amount is invalid or negative and cannot be processed."));
+		set_focus('charge');
+		return false;
+	}
+
 	if (isset($_POST['_ex_rate']) && !check_num('_ex_rate', 0.000001))
 	{
 		display_error(_("The exchange rate must be numeric and greater than zero."));
@@ -152,7 +158,7 @@ if (isset($_POST['AddPaymentItem'])) {
 
 	$payment_no = write_customer_payment(0, $_POST['customer_id'], $_POST['BranchID'],
 		$_POST['bank_account'], $_POST['DateBanked'], $_POST['ref'],
-		input_num('amount'), input_num('discount'), $_POST['memo_'], $rate);
+		input_num('amount'), input_num('discount'), $_POST['memo_'], $rate, input_num('charge'));
 	meta_forward($_SERVER['PHP_SELF'], "AddedID=$payment_no");
 }
 
@@ -214,9 +220,11 @@ function display_item_form()
 
 		label_row(_("Customer prompt payment discount :"), $display_discount_percent);
 
-		date_row(_("Date of Deposit:"), 'DateBanked', '', true, 0, 0, 0, null, true);
+		amount_row(_("Bank Charge:"), 'charge');
 
 		table_section(2);
+
+		date_row(_("Date of Deposit:"), 'DateBanked', '', true, 0, 0, 0, null, true);
 
 		bank_accounts_list_row(_("Into Bank Account:"), 'bank_account', null, true);
 
@@ -236,12 +244,12 @@ function display_item_form()
 		if ($cust_currency != $bank_currency)
 			display_note(_("Amount and discount are in customer's currency."));
 
-		echo"<br>";
+		br();
 
 		submit_center('AddPaymentItem', _("Add Payment"), true, '', 'default');
 	}
 
-	echo "<br>";
+	br();
 }
 
 //----------------------------------------------------------------------------------------------

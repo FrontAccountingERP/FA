@@ -94,13 +94,11 @@ function display_controls()
 
 	amount_row(_("Amount of Payment:"), 'amount');
 	amount_row(_("Amount of Discount:"), 'discount');
+	amount_row(_("Bank Charge:"), 'charge');
 
     date_row(_("Date Paid") . ":", 'DatePaid', '', true, 0, 0, 0, null, true);
 
 	table_section(2);
-	//echo "</table>";
-	//echo "</td><td valign=top class='tableseparator'>"; // outer table
-	//echo "<table>";
 
     supplier_list_row(_("Payment To:"), 'supplier_id', null, false, true);
 
@@ -115,11 +113,8 @@ function display_controls()
 
     ref_row(_("Reference:"), 'ref', '', references::get_next(22));
 
-    text_row(_("Memo:"), 'memo_', null, 52,50);
+	textarea_row(_("Memo:"), 'memo_', null, 22, 4);
 
-	//echo "</table>";
-
-	//echo "</td></tr>";
 	end_outer_table(1); // outer table
 
 	submit_center('ProcessSuppPayment',_("Enter Payment"), true, '', 'default');
@@ -145,6 +140,12 @@ function check_inputs()
 	{
 		display_error(_("The entered amount is invalid or less than zero."));
 		set_focus('amount');
+		return false;
+	}
+
+	if (isset($_POST['charge']) && !check_num('charge', 0)) {
+		display_error(_("The entered amount is invalid or less than zero."));
+		set_focus('charge');
 		return false;
 	}
 
@@ -217,7 +218,7 @@ function handle_add_payment()
 
 	$payment_id = add_supp_payment($_POST['supplier_id'], $_POST['DatePaid'],
 		$_POST['bank_account'],	input_num('amount'), input_num('discount'), 
-		$_POST['ref'], $_POST['memo_'], $rate);
+		$_POST['ref'], $_POST['memo_'], $rate, input_num('charge'));
 	new_doc_date($_POST['DatePaid']);
 	//unset($_POST['supplier_id']);
    	unset($_POST['bank_account']);

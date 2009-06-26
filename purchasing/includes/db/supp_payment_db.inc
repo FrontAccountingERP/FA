@@ -10,7 +10,7 @@
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
 function add_supp_payment($supplier_id, $date_, $bank_account,
-	$amount, $discount, $ref, $memo_, $rate=0)
+	$amount, $discount, $ref, $memo_, $rate=0, $charge=0)
 {
 	begin_transaction();
 
@@ -22,11 +22,13 @@ function add_supp_payment($supplier_id, $date_, $bank_account,
 	{
 		$supp_amount = exchange_from_to($amount, $bank_account_currency, $supplier_currency, $date_);
 		$supp_discount = exchange_from_to($discount, $bank_account_currency, $supplier_currency, $date_);
+		$supp_charge = exchange_from_to($charge, $bank_account_currency, $supplier_currency, $date_);
 	}
 	else
 	{
 		$supp_amount = round($amount / $rate, user_price_dec());
 		$supp_discount = round($discount / $rate, user_price_dec());
+		$supp_charge = round($charge / $rate, user_price_dec());
 	}
 	
 
@@ -51,10 +53,17 @@ function add_supp_payment($supplier_id, $date_, $bank_account,
 			-$supp_discount, $supplier_id, "", $rate);
 	}
 
+	if ($supp_charge != 0)
+	{
+		$charge_act = get_company_pref('bank_charge_act');
+		$total += add_gl_trans_supplier($trans_type, $payment_id, $date_, $charge_act, 0, 0,
+			$supp_charge, $supplier_id, "", $rate);
+	}
+
 	if ($supp_amount != 0)
 	{
 		$total += add_gl_trans_supplier($trans_type, $payment_id, $date_, $bank_gl_account, 0, 0,
-			-$supp_amount, $supplier_id, "", $rate);
+			-($supp_amount + $supp_charge), $supplier_id, "", $rate);
 	}
 
 	/*Post a balance post if $total != 0 */

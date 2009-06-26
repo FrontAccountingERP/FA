@@ -19,6 +19,18 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+26-Jun-2009 Joe Hunt
++ Added Bank Charge field to Customer Payment and Supplier Payment and a new default bank charge account in gl_setup.
+$ /admin/gl_setup.php
+  /admin/db/company_db.inc
+  /purchasing/supplier_payment.php
+  /purchasing/includes/db/supp_payment_db.inc
+  /sales/customer_payment.php
+  /sales/includes/db/payment_db.inc
+  /sql/alter2.2.sql
+  /sql/en_US-demo.sql
+  /sql/en_US-new.sql
+  
 25-Jun-2009 Joe Hunt
 ! Changed balance_sheet field in account class to ctype and fixed class editing.
 # Parse error in ui_lists.inc. Masked include_once(/validation.inc) in main.inc.
