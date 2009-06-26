@@ -56,7 +56,7 @@ function add_exchange_variation_all()
 //	
 
 function add_bank_transfer($from_account, $to_account, $date_,
-	$amount, $ref, $memo_)
+	$amount, $ref, $memo_, $charge=0)
 {
 	begin_transaction();
 
@@ -72,16 +72,23 @@ function add_bank_transfer($from_account, $to_account, $date_,
 	$total = 0;
 	// do the source account postings
     $total += add_gl_trans($trans_type, $trans_no, $date_, $from_gl_account, 0, 0, "",
-		-$amount, $currency);
+		-($amount + $charge), $currency);
 
     add_bank_trans($trans_type, $trans_no, $from_account, $ref,
-		$date_, -$amount,
+		$date_, -($amount + $charge),
 		payment_person_types::misc(), "", $currency,
 		"Cannot insert a source bank transaction");
 
 	add_exchange_variation($trans_type, $trans_no, $date_, $from_account, $from_gl_account, 
 		$currency, payment_person_types::misc(), "");
 
+	if ($charge != 0)
+	{
+		/* Now Debit bank charge account with charges */
+		$charge_act = get_company_pref('bank_charge_act');
+		$total += add_gl_trans($trans_type, $trans_no, $date_,
+			$charge_act, 0, 0, "", $charge, $currency);
+	}
 	// do the destination account postings
 	$total += add_gl_trans($trans_type, $trans_no, $date_, $to_gl_account, 0, 0, "",
 		$amount, $currency);

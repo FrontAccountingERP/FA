@@ -58,10 +58,10 @@ function gl_payment_controls()
 
 	start_form();
 
-	start_table($table_style2, 5, 7);
-	echo "<tr><td valign=top>"; // outer table
+	start_outer_table($table_style2, 5);
 
-	echo "<table>";
+	table_section(1);
+
 	bank_accounts_list_row(_("From Account:"), 'FromBankAccount', null, true);
 
     bank_accounts_list_row(_("To Account:"), 'ToBankAccount', null, true);
@@ -73,26 +73,23 @@ function gl_payment_controls()
 	if ($from_currency != "" && $to_currency != "" && $from_currency != $to_currency) 
 	{
 		amount_row(_("Amount:"), 'amount', null, null, $from_currency);
+		amount_row(_("Bank Charge:"), 'charge', null, null, $from_currency);
 
 		exchange_rate_display($from_currency, $to_currency, $_POST['DatePaid']);
 	} 
 	else 
 	{
 		amount_row(_("Amount:"), 'amount');
+		amount_row(_("Bank Charge:"), 'charge');
 	}
 
-	echo "</table>";
-	echo "</td><td valign=top class='tableseparator'>"; // outer table
-	echo "<table>";
+	table_section(2);
 
     ref_row(_("Reference:"), 'ref', '', references::get_next(systypes::bank_transfer()));
 
     textarea_row(_("Memo:"), 'memo_', null, 40,4);
 
-	end_table(1);
-
-	echo "</td></tr>";
-	end_table(1); // outer table
+	end_outer_table(1); // outer table
 
     submit_center('AddPayment',_("Enter Transfer"), true, '', 'default');
 
@@ -123,6 +120,12 @@ function check_valid_entries()
 		return false;
 	}
 
+	if (isset($_POST['charge']) && !check_num('charge', 0)) 
+	{
+		display_error(_("The entered amount is invalid or less than zero."));
+		set_focus('charge');
+		return false;
+	}
 	if (!references::is_valid($_POST['ref'])) 
 	{
 		display_error(_("You must enter a reference."));
@@ -152,7 +155,7 @@ function check_valid_entries()
 function handle_add_deposit()
 {
 	$trans_no = add_bank_transfer($_POST['FromBankAccount'], $_POST['ToBankAccount'],
-		$_POST['DatePaid'], input_num('amount'), $_POST['ref'], $_POST['memo_']);
+		$_POST['DatePaid'], input_num('amount'), $_POST['ref'], $_POST['memo_'], input_num('charge'));
 
 	meta_forward($_SERVER['PHP_SELF'], "AddedID=$trans_no");
 }

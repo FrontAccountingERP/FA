@@ -20,9 +20,11 @@ Legend:
 $ -> Affected files
 
 26-Jun-2009 Joe Hunt
-+ Added Bank Charge field to Customer Payment and Supplier Payment and a new default bank charge account in gl_setup.
++ Added Bank Charge field to Customer Payment, Supplier Payment and Bank Transfer and a new default bank charge account in gl_setup.
 $ /admin/gl_setup.php
   /admin/db/company_db.inc
+  /gl/bank_transfer.php
+  /gl/includes/db/gl_db_banking.inc
   /purchasing/supplier_payment.php
   /purchasing/includes/db/supp_payment_db.inc
   /sales/customer_payment.php
