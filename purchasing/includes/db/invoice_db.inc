@@ -447,7 +447,7 @@ function void_supp_invoice($type, $type_no)
     			}
     			else
     			{
-					$diff = get_diff_in_home_currency($grn["supplier_id"], $old_date, $date_, $old[2], 
+					$diff = get_diff_in_home_currency($grn["supplier_id"], $old_date, $old_date_, $old[2], 
 						$details_row["FullUnitPrice"]);
 					// Only adjust the avg for the diff
 					$mat_cost = update_average_material_cost(null, $details_row["stock_id"],
