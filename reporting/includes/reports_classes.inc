@@ -296,6 +296,12 @@ class Report
 					$sql = "SELECT stock_id, concat(stock_id, '-', description) as name FROM ".TB_PREF."stock_master WHERE (mb_flag='A' OR mb_flag='M') ORDER BY stock_id";
 					$st .= dup_simple_codeandname_list($sql, "PARAM_$index", $dummy);
 					break;
+				case 'WORKORDER':
+					$sql = "SELECT ".TB_PREF."workorders.id, concat(".TB_PREF."workorders.id, '-',
+						".TB_PREF."stock_master.description) as IName
+						FROM ".TB_PREF."stock_master, ".TB_PREF."workorders WHERE ".TB_PREF."stock_master.stock_id=".TB_PREF."workorders.stock_id ORDER BY ".TB_PREF."workorders.id DESC";
+					$st .= dup_simple_codeandname_list($sql, "PARAM_$index", $dummy);
+					break;
 				case 'LOCATIONS':
 					$sql = "SELECT loc_code, location_name FROM ".TB_PREF."locations ORDER BY location_name";
 					$st .= dup_simple_codeandname_list($sql, "PARAM_$index", $dummy, true, _("No Location Filter"), false);

@@ -58,6 +58,8 @@ if (isset($_GET['AddedID']))
 	if ($_GET['type'] != wo_types::advanced())
 	{
 		include_once($path_to_root . "/reporting/includes/reporting.inc");
+    	$ar = array('PARAM_0' => $id, 'PARAM_1' => $id); 
+    	display_note(print_link(_("Print this Work Order"), 409, $ar), 1);
     	display_note(get_gl_view_str($stype, $id, _("View the GL Journal Entries for this Work Order")), 1);
     	$ar = array('PARAM_0' => $_GET['date'], 'PARAM_1' => $_GET['date'], 'PARAM_2' => $stype); 
     	display_note(print_link(_("Print the GL Journal Entries for this Work Order"), 702, $ar), 1);

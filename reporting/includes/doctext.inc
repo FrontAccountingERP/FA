@@ -18,15 +18,27 @@ if (isset($header2type))
 	$doc_Shipping_Company = _("Shipping Company");
 	if ($doctype == 9)
 		$doc_Due_Date = _("Delivery Date");
-  else
+  	else
 		$doc_Due_Date = _("Due Date");
 	$doc_Your_Ref = _("Your Ref");
-	$doc_Our_Ref = _("Our Ref.");
-	$doc_Your_VAT_no = _("Your VAT no.");
+	if ($doctype == 26)
+	{
+		$doc_Our_Ref = _("Type");
+		$doc_Your_VAT_no = _("Manufactured Item");
+		$doc_Payment_Terms = _("Required By");
+		$doc_Customers_Ref = _("Reference");
+		$doc_Our_Order_No = _("Into Location");
+		$doc_Due_Date = _("Quantity");
+	}	
+	else
+	{
+		$doc_Our_Ref = _("Our Ref.");
+		$doc_Your_VAT_no = _("Your VAT no.");
+		$doc_Payment_Terms = _("Payment Terms");
+		$doc_Customers_Ref = _("Customers Reference");
+		$doc_Our_Order_No = _("Our Order No");
+	}
 	$doc_Our_VAT_no = _("Our VAT No.");
-	$doc_Payment_Terms = _("Payment Terms");
-	$doc_Customers_Ref = _("Customers Reference");
-	$doc_Our_Order_No = _("Our Order No");
 	$doc_Domicile = _("Domicile");
 	if($doctype == 13 || $doctype == 8 || $doctype == 9) {
 	 $doc_Bank_Account = '';
@@ -42,21 +54,26 @@ if (isset($header2type))
 	$doc_Bank = _("Bank");
 	$doc_Bank_Account = _("Bank Account");
 	$doc_Payment_Link = _("You can pay through");
-	if ($doctype == 8 || $doctype == 9 || $doctype == 10 || $doctype == 11 || $doctype == 13)
+	if ($doctype == 8 || $doctype == 9 || $doctype == 10 || $doctype == 11 || $doctype == 13 || $doctype == 26)
 	{
 		if ($doctype == 8)
 			$this->title = _("PURCHASE ORDER");
-		else if ($doctype == 13)
+		elseif ($doctype == 13)
 			$this->title = _("DELIVERY NOTE");
-		else if ($doctype == 9)
+		elseif ($doctype == 9)
 			$this->title = ($print_as_quote==1 ? _("QUOTE") : _("SALES ORDER"));
-		else if ($doctype == 10)
+		elseif ($doctype == 10)
 			$this->title = _("INVOICE");
+		elseif ($doctype == 26)
+			$this->title = _("WORK ORDER");
 		else
 			$this->title = _("CREDIT NOTE");
 		if ($doctype == 8)
 			$this->headers = array(_("Item Code"), _("Item Description"),
 				_("Delivery Date"), _("Quantity"), 	_("Unit"), _("Price"), _("Total"));
+		elseif ($doctype == 26)
+			$this->headers = array(_("Item Code"), _("Item Description"),
+				_("From Location"), _("Work Centre"), 	_("Unit Quantity"), _("Total Quantity"), _("Units Issued"));
 		else
 			$this->headers = array(_("Item Code"), _("Item Description"),	_("Quantity"),
 				_("Unit"), _("Price"), _("Discount %"), _("Total"));
@@ -78,7 +95,7 @@ if (isset($emailtype))
 if (isset($header2type) || isset($linetype))
 {
 	$doc_Invoice_no = ($doctype==13 ? _("Delivery Note No.") : (($doctype==8 || $doctype==9) ? _("Order no.") : 
-		($doctype==10 ? _("Invoice No.") : _("Credit No."))));
+		($doctype==10 ? _("Invoice No.") : ($doctype==26 ? _("Word Order No") : _("Credit No.")))));
 	$doc_Delivery_no = _("Delivery Note No.");
 	$doc_Order_no = _("Order no.");
 }

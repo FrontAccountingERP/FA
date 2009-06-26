@@ -266,7 +266,7 @@ class FrontReport extends Cpdf
 		if ($this->pageNumber > 1)
 			$this->newPage();
 		$header2type = true;
-		if ($this->currency != $myrow['curr_code'])
+		if (isset($myrow['curr_code']) && $this->currency != $myrow['curr_code'])
 		{
 			include($path_to_root . "/reporting/includes/doctext2.inc");
 		}

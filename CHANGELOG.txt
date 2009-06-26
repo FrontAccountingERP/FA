@@ -20,6 +20,18 @@ Legend:
 $ -> Affected files
 
 26-Jun-2009 Joe Hunt
++ Added Print of Work Order
+$ /manufacturing/includes/db/work_orders_db.inc
+  /manufacturing/work_order_entry.php
+  /reporting/rep409.php (new file)
+  /reporting/reports_main.php
+  /reporting/includes/doctext.inc
+  /reporting/includes/doctext2.inc
+  /reporting/includes/header2.inc
+  /reporting/includes/pdf_report.inc
+  /reporting/includes/reports_classes.inc
+  
+26-Jun-2009 Joe Hunt
 + Added Bank Charge field to Customer Payment, Supplier Payment and Bank Transfer and a new default bank charge account in gl_setup.
 $ /admin/gl_setup.php
   /admin/db/company_db.inc

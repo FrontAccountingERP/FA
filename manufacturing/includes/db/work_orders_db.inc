@@ -170,7 +170,7 @@ function delete_work_order($woid)
 function get_work_order($woid, $allow_null=false)
 {
     $sql = "SELECT ".TB_PREF."workorders.*, ".TB_PREF."stock_master.description As StockItemName,
-		".TB_PREF."locations.location_name
+		".TB_PREF."locations.location_name, ".TB_PREF."locations.delivery_address 
 		FROM ".TB_PREF."workorders, ".TB_PREF."stock_master, ".TB_PREF."locations
 		WHERE ".TB_PREF."stock_master.stock_id=".TB_PREF."workorders.stock_id
 		AND	".TB_PREF."locations.loc_code=".TB_PREF."workorders.loc_code
