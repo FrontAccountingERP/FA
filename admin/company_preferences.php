@@ -114,30 +114,28 @@ if (isset($_POST['update']) && $_POST['update'] != "")
 
 
 start_form(true);
-if (!isset($_POST['coy_name'])) {
-	$myrow = get_company_prefs();
+$myrow = get_company_prefs();
 
-	$_POST['coy_name'] = $myrow["coy_name"];
-	$_POST['gst_no'] = $myrow["gst_no"];
-	$_POST['tax_prd'] = $myrow["tax_prd"];
-	$_POST['tax_last'] = $myrow["tax_last"];
-	$_POST['coy_no']  = $myrow["coy_no"];
-	$_POST['postal_address']  = $myrow["postal_address"];
-	$_POST['phone']  = $myrow["phone"];
-	$_POST['fax']  = $myrow["fax"];
-	$_POST['email']  = $myrow["email"];
-	$_POST['coy_logo']  = $myrow["coy_logo"];
-	$_POST['domicile']  = $myrow["domicile"];
-	$_POST['use_dimension']  = $myrow["use_dimension"];
-	$_POST['base_sales']  = $myrow["base_sales"];
-	$_POST['no_item_list']  = $myrow["no_item_list"];
-	$_POST['no_customer_list']  = $myrow["no_customer_list"];
-	$_POST['no_supplier_list']  = $myrow["no_supplier_list"];
-	$_POST['curr_default']  = $myrow["curr_default"];
-	$_POST['f_year']  = $myrow["f_year"];
-	$_POST['time_zone']  = $myrow["time_zone"];
-	$_POST['version_id']  = $myrow["version_id"];
-}
+$_POST['coy_name'] = $myrow["coy_name"];
+$_POST['gst_no'] = $myrow["gst_no"];
+$_POST['tax_prd'] = $myrow["tax_prd"];
+$_POST['tax_last'] = $myrow["tax_last"];
+$_POST['coy_no']  = $myrow["coy_no"];
+$_POST['postal_address']  = $myrow["postal_address"];
+$_POST['phone']  = $myrow["phone"];
+$_POST['fax']  = $myrow["fax"];
+$_POST['email']  = $myrow["email"];
+$_POST['coy_logo']  = $myrow["coy_logo"];
+$_POST['domicile']  = $myrow["domicile"];
+$_POST['use_dimension']  = $myrow["use_dimension"];
+$_POST['base_sales']  = $myrow["base_sales"];
+$_POST['no_item_list']  = $myrow["no_item_list"];
+$_POST['no_customer_list']  = $myrow["no_customer_list"];
+$_POST['no_supplier_list']  = $myrow["no_supplier_list"];
+$_POST['curr_default']  = $myrow["curr_default"];
+$_POST['f_year']  = $myrow["f_year"];
+$_POST['time_zone']  = $myrow["time_zone"];
+$_POST['version_id']  = $myrow["version_id"];
 $_POST['del_coy_logo']  = 0;
 
 start_outer_table($table_style2);
@@ -171,9 +169,9 @@ number_list_row(_("Use Dimensions:"), 'use_dimension', null, 0, 2);
 sales_types_list_row(_("Base for auto price calculations:"), 'base_sales', $_POST['base_sales'], false,
     _('No base price list') );
 
-check_row(_("Search Item List"), 'no_item_list', $_POST['no_item_list']);
-check_row(_("Search Customer List"), 'no_customer_list', $_POST['no_customer_list']);
-check_row(_("Search Supplier List"), 'no_supplier_list', $_POST['no_supplier_list']);
+check_row(_("Search Item List"), 'no_item_list', null);
+check_row(_("Search Customer List"), 'no_customer_list', null);
+check_row(_("Search Supplier List"), 'no_supplier_list', null);
 label_row("", "&nbsp;");
 check_row(_("Time Zone on Reports"), 'time_zone', $_POST['time_zone']);
 label_row(_("Version Id"), $_POST['version_id']);
