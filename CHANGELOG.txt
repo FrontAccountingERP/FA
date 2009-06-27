@@ -19,6 +19,12 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+27-Jun-2009 Joe Hunt
+# Corrections to default COAs.
+$ /sql/alter2.2.sql
+  /sql/en_US-new.sql
+  /sql/en_US-demo.sql
+  
 26-Jun-2009 Joe Hunt
 + Added Print of Work Order and GRN Valuation Report
 # Small bug in company preferences

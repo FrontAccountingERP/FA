@@ -1280,6 +1280,7 @@ CREATE TABLE `0_stock_category` (
   `dflt_dim1` int(11) default NULL,
   `dflt_dim2` int(11) default NULL,
   `inactive` tinyint(1) NOT NULL default '0',
+  `dflt_no_sale` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`category_id`),
   UNIQUE KEY `description` (`description`)
 ) TYPE=MyISAM AUTO_INCREMENT=5 ;
@@ -1287,10 +1288,10 @@ CREATE TABLE `0_stock_category` (
 
 ### Data of table `0_stock_category` ###
 
-INSERT INTO `0_stock_category` VALUES ('1', 'Components', '1', 'each', 'B', '4010', '1510', '5010', '5040', '1530', '0', '0', '0');
-INSERT INTO `0_stock_category` VALUES ('2', 'Charges', '1', 'each', 'D', '4010', '1510', '5010', '5040', '1530', '0', '0', '0');
-INSERT INTO `0_stock_category` VALUES ('3', 'Systems', '1', 'each', 'M', '4010', '1510', '5010', '5040', '1530', '0', '0', '0');
-INSERT INTO `0_stock_category` VALUES ('4', 'Services', '1', 'hrs', 'D', '4010', '1510', '5010', '5040', '1530', '0', '0', '0');
+INSERT INTO `0_stock_category` VALUES ('1', 'Components', '1', 'each', 'B', '4010', '1510', '5010', '5040', '1530', '0', '0', '0', '0');
+INSERT INTO `0_stock_category` VALUES ('2', 'Charges', '1', 'each', 'D', '4010', '1510', '5010', '5040', '1530', '0', '0', '0', '0');
+INSERT INTO `0_stock_category` VALUES ('3', 'Systems', '1', 'each', 'M', '4010', '1510', '5010', '5040', '1530', '0', '0', '0', '0');
+INSERT INTO `0_stock_category` VALUES ('4', 'Services', '1', 'hrs', 'D', '4010', '1510', '5010', '5040', '1530', '0', '0', '0', '0');
 
 
 ### Structure of table `0_stock_master` ###
@@ -1318,6 +1319,7 @@ CREATE TABLE `0_stock_master` (
   `labour_cost` double NOT NULL default '0',
   `overhead_cost` double NOT NULL default '0',
   `inactive` tinyint(1) NOT NULL default '0',
+  `no_sale` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`stock_id`)
 ) TYPE=InnoDB  ;
 
