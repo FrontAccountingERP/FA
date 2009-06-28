@@ -82,7 +82,7 @@ if (isset($_GET['AddedID'])) {
 	submenu_option(_("Make &Delivery Against This Order"),
 		"/sales/customer_delivery.php?OrderNumber=$order_no");
 
-	submenu_option(_("Enter a &New Order"),	$_SERVER['PHP_SELF']."?NewOrder=0");
+	submenu_option(_("Enter a &New Order"),	"/sales/sales_order_entry.php?NewOrder=0");
 
 	display_footer_exit();
 
@@ -114,17 +114,17 @@ if (isset($_GET['AddedID'])) {
 	submenu_print(_("&Print Delivery Note"), 13, $delivery, 'prtopt');
 	set_focus('prtopt');
 
-	display_note(get_gl_view_str(13, $delivery, _("View the GL Journal Entries for this Dispatch")),1);
+	display_note(get_gl_view_str(13, $delivery, _("View the GL Journal Entries for this Dispatch")),0, 1);
 
 	submenu_option(_("Make &Invoice Against This Delivery"),
 		"/sales/customer_invoice.php?DeliveryNumber=$delivery");
 
 	if ((isset($_GET['Type']) && $_GET['Type'] == 1))
 		submenu_option(_("Enter a New Template &Delivery"),
-			"inquiry/sales_orders_view.php?DeliveryTemplates=Yes");
+			"/sales/inquiry/sales_orders_view.php?DeliveryTemplates=Yes");
 	else
 		submenu_option(_("Enter a &New Delivery"), 
-			$_SERVER['PHP_SELF']."?NewDelivery=0");
+			"/sales/sales_order_entry.php?NewDelivery=0");
 
 	display_footer_exit();
 
@@ -138,14 +138,14 @@ if (isset($_GET['AddedID'])) {
 	submenu_print(_("&Print Sales Invoice"), 10, $invoice, 'prtopt');
 	set_focus('prtopt');
 
-	display_note(get_gl_view_str(10, $invoice, _("View the GL &Journal Entries for this Invoice")),1);
+	display_note(get_gl_view_str(10, $invoice, _("View the GL &Journal Entries for this Invoice")),0, 1);
 
 	if ((isset($_GET['Type']) && $_GET['Type'] == 1))
 		submenu_option(_("Enter a &New Template Invoice"), 
-			"inquiry/sales_orders_view.php?InvoiceTemplates=Yes");
+			"/sales/inquiry/sales_orders_view.php?InvoiceTemplates=Yes");
 	else
 		submenu_option(_("Enter a &New Direct Invoice"),
-			$_SERVER['PHP_SELF']."?NewInvoice=0");
+			"/sales/sales_order_entry.php?NewInvoice=0");
 
 	display_footer_exit();
 } else

@@ -19,6 +19,11 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+28-Jun-2009 Joe Hunt
+# Fixed link bugs in sales order entry and optimized a couple of functions in ui_controls.inc
+$ /includes/ui/ui_controls.inc
+  /sales/sales_order_entry.php
+  
 27-Jun-2009 Joe Hunt
 # Corrections to default COAs.
 $ /sql/alter2.2.sql

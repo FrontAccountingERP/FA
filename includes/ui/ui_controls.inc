@@ -188,20 +188,17 @@ function menu_link($url, $label, $id=null)
 function submenu_option($title, $url, $id=null)
 {
 	global $path_to_root;
-	display_note(menu_link($path_to_root . $url, $title, $id));
-	echo '<br>';
+	display_note(menu_link($path_to_root . $url, $title, $id), 0, 1);
 }
 
 function submenu_view($title, $type, $number, $id=null)
 {
-	display_note(get_trans_view_str($type, $number, $title, false, 'menu_option', $id));
-	echo '<br>';
+	display_note(get_trans_view_str($type, $number, $title, false, 'menu_option', $id), 0, 1);
 }
 
 function submenu_print($title, $type, $number, $id=null)
 {
-	display_note(print_document_link($number, $title, true, $type, false, 'menu_option', $id));
-	echo '<br>';
+	display_note(print_document_link($number, $title, true, $type, false, 'menu_option', $id), 0, 1);
 }
 //-----------------------------------------------------------------------------------
 
