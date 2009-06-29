@@ -224,8 +224,6 @@ function display_item_form()
 
 		table_section(2);
 
-		date_row(_("Date of Deposit:"), 'DateBanked', '', true, 0, 0, 0, null, true);
-
 		bank_accounts_list_row(_("Into Bank Account:"), 'bank_account', null, true);
 
 		$cust_currency = get_customer_currency($_POST['customer_id']);
@@ -234,6 +232,8 @@ function display_item_form()
 		if ($cust_currency != $bank_currency) {
 			exchange_rate_display($bank_currency, $cust_currency, $_POST['DateBanked'], true);
 		}
+
+		date_row(_("Date of Deposit:"), 'DateBanked', '', true, 0, 0, 0, null, true);
 
 		text_row(_("Reference:"), 'ref', null, 20, 40);
 

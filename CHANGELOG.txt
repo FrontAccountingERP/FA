@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+29-Jun-2009 Joe Hunt
+! Small layout improments in Customer Payments
+$ /sales/customer_payments.php
+
 28-Jun-2009 Joe Hunt
 # Fixed link bugs in sales order entry and optimized a couple of functions in ui_controls.inc
 $ /includes/ui/ui_controls.inc
