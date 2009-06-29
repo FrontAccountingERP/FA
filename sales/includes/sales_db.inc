@@ -57,6 +57,31 @@ function add_gl_trans_customer($type, $type_no, $date_, $account, $dimension, $d
 
 //----------------------------------------------------------------------------------------
 
+function get_calculated_price($stock_id, $add_pct)
+{
+	$avg = get_standard_cost($stock_id);
+	if ($avg == 0)
+		return 0;
+	return round2($avg * (1 + $add_pct / 100), user_price_dec());
+}
+
+function round_to_nearest($price, $round_to)
+{
+	if ($price == 0)
+		return 0;
+	$pow = pow(10, user_price_dec());
+	if ($pow >= $round_to)
+		$mod = ($pow % $round_to);
+	else
+		$mod = ($round_to % $pow);
+	if ($mod != 0)
+		$price = ceil($price) - ($pow - $round_to) / $pow;
+	else	
+    	$price = ceil($price * ($pow / $round_to)) / ($pow / $round_to);
+    return $price;
+
+}
+
 function get_price ($stock_id, $currency, $sales_type_id, $factor=null, $date=null)
 {
 	if ($date == null)
@@ -77,18 +102,26 @@ function get_price ($stock_id, $currency, $sales_type_id, $factor=null, $date=nu
 	$msg = "There was a problem retrieving the pricing information for the part $stock_id for customer";
 	$result = db_query($sql, $msg);
 
+	$add_pct = get_company_pref('add_pct');
+	$round_to = get_company_pref('round_to');
+    $home_curr = get_company_currency();
+
 	if (db_num_rows($result) != 0) 
 	{
 		$myrow = db_fetch_row($result);
 		return $myrow[0];
 	}
+	elseif ($add_pct != -1)
+	{
+		$price = get_calculated_price($stock_id, $add_pct);
+		if ($currency == $home_curr)
+			return round_to_nearest($price, $round_to);
+	}		
 	if ($factor == 0) return false; // auto price calculations off
 
 	$base_id = get_base_sales_type();
 	if ($base_id <= 0) return 0; // auto price calculations off
 	
-    $home_curr = get_company_currency();
-
     // get all prices which we can use to guess the price.
     // alternative is make up to 2 additional sql queries
 	$sql = "SELECT price, curr_abrev, sales_type_id
@@ -106,11 +139,18 @@ function get_price ($stock_id, $currency, $sales_type_id, $factor=null, $date=nu
 	{
 	    $prices[$myrow['sales_type_id']][$myrow['curr_abrev']] = $myrow['price'];
 	}
-	
 	$rate = round(get_exchange_rate_from_home_currency($currency, $date),
 	    user_exrate_dec());
-	$price = false;
+	if (db_num_rows($result) == 0 && $add_pct != -1)
+	{
+		if ($factor != 0)
+	    	$price = $price * $factor / $rate;
+	    else
+	    	$price /= $rate;
+		return round_to_nearest($price, $round_to);
+	}
 	
+	$price = false;
 	if (isset($prices[$sales_type_id][$home_curr])) 
 	{
 	    $price = $prices[$sales_type_id][$home_curr] / $rate;
@@ -123,8 +163,12 @@ function get_price ($stock_id, $currency, $sales_type_id, $factor=null, $date=nu
 	{
 	    $price = $prices[$base_id][$home_curr] * $factor / $rate;
 	}
-	
-	return $price === false ? false : round($price, user_price_dec());
+	if ($price === false)
+		return false;
+	else if ($round_to != 1)	
+		return round_to_nearest($price, $round_to);
+	else
+		return round2($price, user_price_dec());
 }
 //----------------------------------------------------------------------------------------
 //

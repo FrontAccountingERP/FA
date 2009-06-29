@@ -10,6 +10,8 @@ ALTER TABLE `0_company` ADD COLUMN `version_id` VARCHAR(11) NOT NULL DEFAULT '';
 ALTER TABLE `0_company` DROP COLUMN `purch_exchange_diff_act`;
 ALTER TABLE `0_company` ADD COLUMN`profit_loss_year_act` VARCHAR(11) NOT NULL DEFAULT '' AFTER `exchange_diff_act`;
 ALTER TABLE `0_company` ADD COLUMN `time_zone` TINYINT(1) NOT NULL DEFAULT '0';
+ALTER TABLE `0_company` ADD COLUMN `add_pct` INT(5) NOT NULL DEFAULT '-1';
+ALTER TABLE `0_company` ADD COLUMN `round_to` INT(5) NOT NULL DEFAULT '1';
 ALTER TABLE `0_company` CHANGE `grn_act` `bank_charge_act` VARCHAR(11) NOT NULL DEFAULT '';
 #INSERT INTO `0_chart_master` VALUES ('9990', '', 'Profit and Loss this year', '52', '0');
 UPDATE `0_company` SET `profit_loss_year_act`='9990', `version_id`='2.2' WHERE `coy_code`=1; 

@@ -19,6 +19,14 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+30-Jun-2009 Joe Hunt
++ Implemented automatic price calculation of items from std. cost.
+$ /admin/company_preferences.php
+  /admin/db/company_db.inc
+  /doc/calculate_price.txt (new file)
+  /sales/includes/sales_db.inc
+  /sql/alter2.2.sql
+  
 29-Jun-2009 Joe Hunt
 ! Small layout improments in Customer Payments
 $ /sales/customer_payments.php
