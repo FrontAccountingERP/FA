@@ -26,6 +26,8 @@ $ /admin/company_preferences.php
   /doc/calculate_price.txt (new file)
   /sales/includes/sales_db.inc
   /sql/alter2.2.sql
+  /sql/en_US-demo.sql
+  /sql/en_US-new.sql
   
 29-Jun-2009 Joe Hunt
 ! Small layout improments in Customer Payments
