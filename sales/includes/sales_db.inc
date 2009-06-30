@@ -115,7 +115,11 @@ function get_price ($stock_id, $currency, $sales_type_id, $factor=null, $date=nu
 	{
 		$price = get_calculated_price($stock_id, $add_pct);
 		if ($currency == $home_curr)
+		{
+			if ($factor != 0)
+				$price *= $factor;
 			return round_to_nearest($price, $round_to);
+		}	
 	}		
 	if ($factor == 0) return false; // auto price calculations off
 
