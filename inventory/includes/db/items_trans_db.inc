@@ -34,11 +34,11 @@ function stock_cost_update($stock_id, $material_cost, $labour_cost, $overhead_co
 
 	$qoh = get_qoh_on_date($_POST['stock_id']);
 	
+   	$date_ = Today();
 	if ($qoh > 0)
 	{
     
 	   	$update_no = get_next_trans_no(systypes::cost_update());
-	   	$date_ = Today();
 		if (!is_date_in_fiscalyear($date_))
 			$date_ = end_fiscalyear();
 	   

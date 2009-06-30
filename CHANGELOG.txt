@@ -20,6 +20,11 @@ Legend:
 $ -> Affected files
 
 30-Jun-2009 Joe Hunt
+# Small annoying bug-fixes in items.php and items_trans_db.inc
+$ /inventory/manage/items.php
+  /inventory/includes/db/items_trans_db.inc
+  
+30-Jun-2009 Joe Hunt
 + Implemented automatic price calculation of items from std. cost.
 $ /admin/company_preferences.php
   /admin/db/company_db.inc

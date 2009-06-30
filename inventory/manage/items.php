@@ -113,6 +113,7 @@ function clear_data()
 	unset($_POST['NewStockID']);
 	unset($_POST['dimension_id']);
 	unset($_POST['dimension2_id']);
+	unset($_POST['no_sale']);
 }
 
 //------------------------------------------------------------------------------------
@@ -192,6 +193,7 @@ if (isset($_POST['addupdate']))
 			display_notification(_("A new item has been added."));
 			$_POST['stock_id'] = $_POST['NewStockID'] = 
 			$_POST['description'] = $_POST['long_description'] = '';
+			$_POST['no_sale'] = 0;
 			set_focus('NewStockID');
 		}
 		$Ajax->activate('_page_body');
