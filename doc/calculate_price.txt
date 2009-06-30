@@ -2,13 +2,14 @@ Calculate sales price from standard cost
 ----------------------------------------
 
 You can have automatic sales price calculation for items that do not have any prices in Sales Prices entered. This works
-independently from Base Price factor, but if Base Price is set it works together with it.
+independently from the Base Price List setting, but if the factor is set in the other Sales Type Lists it works together with them.
 
 Preparing and operation
 -----------------------
 
 Go into Setup tab - Company Setup.
 
+In the field, Base for auto price calculation, set a Base Price List.
 In the field, Add Price from Std cost, enter the % that you want to increase from the average standard costs for the items not
 listed in the Item Price List. If this value is empty there are no automatic price calculations. BE aware that an increase value of 0 will 
 calculate the price to be the same as the Std cost. So to remove the calculation, just empty the field. It will then get an internal value of -1.
