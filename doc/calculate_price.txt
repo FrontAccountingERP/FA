@@ -1,7 +1,7 @@
 Calculate sales price from standard cost
 ----------------------------------------
 
-You can have automatic sales price calculation from items that do not have any prices in Sales Prices entered. This works
+You can have automatic sales price calculation for items that do not have any prices in Sales Prices entered. This works
 independently from Base Price factor, but if Base Price is set it works together with it.
 
 Preparing and operation
@@ -9,13 +9,13 @@ Preparing and operation
 
 Go into Setup tab - Company Setup.
 
-In the field, Add Price from Std cost, enter the % that you want to increase from the average standard costs for the items not.
+In the field, Add Price from Std cost, enter the % that you want to increase from the average standard costs for the items not
 listed in the Item Price List. If this value is empty there are no automatic price calculations. BE aware that an increase value of 0 will 
 calculate the price to be the same as the Std cost. So to remove the calculation, just empty the field. It will then get an internal value of -1.
 If the average standard costs is 0, the calculation would result in 0 as well.
 
 The field, Round to nearest xxx Cents, will round the calculated result to the nearest Cent entered. If you have 2 decimals in the amounts
-the value 100 would be divided by the xxx value. If you have 3 dicimans in the amounts the value 1000 will be divided by the xxx value.
+the value 100 would be divided by the xxx value. If you have 3 decimals in the amounts the value 1000 will be divided by the xxx value.
 If there is no fraction, the value will be rounded up to the nearest xxx value. If there is a fraction, the value xxx will be subtracted from
 the value (100-xxx) or (1000-xxx).
 
