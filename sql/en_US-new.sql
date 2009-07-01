@@ -1290,10 +1290,10 @@ CREATE TABLE `0_stock_category` (
 
 ### Data of table `0_stock_category` ###
 
-INSERT INTO `0_stock_category` VALUES ('1', 'Components', '1', 'each', 'B', '4010', '1510', '5010', '5040', '1530', '0', '0', '0', '0');
-INSERT INTO `0_stock_category` VALUES ('2', 'Charges', '1', 'each', 'D', '4010', '1510', '5010', '5040', '1530', '0', '0', '0', '0');
-INSERT INTO `0_stock_category` VALUES ('3', 'Systems', '1', 'each', 'M', '4010', '1510', '5010', '5040', '1530', '0', '0', '0', '0');
-INSERT INTO `0_stock_category` VALUES ('4', 'Services', '1', 'hrs', 'D', '4010', '1510', '5010', '5040', '1530', '0', '0', '0', '0');
+INSERT INTO `0_stock_category` VALUES ('1', 'Components', '1', 'each', 'B', '4010', '5010', '1510', '5040', '1530', '0', '0', '0', '0');
+INSERT INTO `0_stock_category` VALUES ('2', 'Charges', '1', 'each', 'D', '4010', '5010', '1510', '5040', '1530', '0', '0', '0', '0');
+INSERT INTO `0_stock_category` VALUES ('3', 'Systems', '1', 'each', 'M', '4010', '5010', '1510', '5040', '1530', '0', '0', '0', '0');
+INSERT INTO `0_stock_category` VALUES ('4', 'Services', '1', 'hrs', 'D', '4010', '5010', '1510', '5040', '1530', '0', '0', '0', '0');
 
 
 ### Structure of table `0_stock_master` ###

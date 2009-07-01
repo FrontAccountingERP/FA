@@ -103,7 +103,7 @@ $result = db_query($sql, "could not get stock categories");
 start_form();
 start_table("$table_style width=80%");
 $th = array(_("Name"), _("Tax type"), _("Units"), _("Type"), _("Sales Act"),
-_("COGS Account"), _("Inventory Account"), _("Adjustment Account"),
+_("Inventory Account"), _("COGS Account"), _("Adjustment Account"),
 _("Assembly Account"), "", "");
 inactive_control_column($th);
 
@@ -120,8 +120,8 @@ while ($myrow = db_fetch($result))
 	label_cell($myrow["dflt_units"], "align=center");
 	label_cell($stock_types[$myrow["dflt_mb_flag"]]);
 	label_cell($myrow["dflt_sales_act"], "align=center");
-	label_cell($myrow["dflt_cogs_act"], "align=center");
 	label_cell($myrow["dflt_inventory_act"], "align=center");
+	label_cell($myrow["dflt_cogs_act"], "align=center");
 	label_cell($myrow["dflt_adjustment_act"], "align=center");
 	label_cell($myrow["dflt_assembly_act"], "align=center");
 	inactive_control_cell($myrow["category_id"], $myrow["inactive"], 'stock_category', 'category_id');
@@ -198,17 +198,18 @@ check_row(_("Exclude from sales:"), 'no_sale', $_POST['no_sale']);
 
 gl_all_accounts_list_row(_("Sales Account:"), 'sales_account', $_POST['sales_account']);
 
-gl_all_accounts_list_row(_("Inventory Account:"), 'inventory_account', $_POST['inventory_account']);
-
-if (!is_service($_POST['mb_flag'])) 
+if (is_service($_POST['mb_flag']))
 {
 	gl_all_accounts_list_row(_("C.O.G.S. Account:"), 'cogs_account', $_POST['cogs_account']);
-	gl_all_accounts_list_row(_("Inventory Adjustments Account:"), 'adjustment_account', $_POST['adjustment_account']);
-}
-else 
-{
-	hidden('cogs_account', $_POST['cogs_account']);
+	hidden('inventory_account', $_POST['inventory_account']);
 	hidden('adjustment_account', $_POST['adjustment_account']);
+}
+else
+{
+	gl_all_accounts_list_row(_("Inventory Account:"), 'inventory_account', $_POST['inventory_account']);
+
+	gl_all_accounts_list_row(_("C.O.G.S. Account:"), 'cogs_account', $_POST['cogs_account']);
+	gl_all_accounts_list_row(_("Inventory Adjustments Account:"), 'adjustment_account', $_POST['adjustment_account']);
 }
 
 if (is_manufactured($_POST['mb_flag']))

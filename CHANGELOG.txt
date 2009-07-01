@@ -19,8 +19,14 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+01-Jul-2009 Joe Hunt
 ! Small adjustment in /inventory/prices.php to see the calculated prices if they are set.
 $ /inventory/prices.php
+# Small bug/layout fixes
+$ /inventory/manage/item_categories.php
+  /inventory/manage/locations.php
+  /sql/en_US-demo.sql
+  /sql/en_US-new.sql
 
 30-Jun-2009 Joe Hunt
 # Small annoying bug-fixes in items.php and items_trans_db.inc

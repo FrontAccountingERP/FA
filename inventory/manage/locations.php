@@ -167,7 +167,7 @@ if (!check_value('show_inactive')) $sql .= " WHERE !inactive";
 $result = db_query($sql, "could not query locations");;
 
 start_form();
-start_table("$table_style width=30%");
+start_table($table_style);
 $th = array(_("Location Code"), _("Location Name"), _("Address"), _("Phone"), "", "");
 inactive_control_column($th);
 table_header($th);
