@@ -115,7 +115,7 @@ if (list_updated('stock_id')) {
 	$Ajax->activate('price_table');
 	$Ajax->activate('price_details');
 }
-if (list_updated('stock_id') || isset($_POST['_curr_abrev_update']) ) {
+if (list_updated('stock_id') || isset($_POST['_curr_abrev_update']) || isset($_POST['_sales_type_id_update'])) {
 	// after change of stock, currency or salestype selector
 	// display default calculated price for new settings. 
 	// If we have this price already in db it is overwritten later.
@@ -133,7 +133,7 @@ start_table("$table_style width=30%");
 $th = array(_("Currency"), _("Sales Type"), _("Price"), "", "");
 table_header($th);
 $k = 0; //row colour counter
-
+$calculated = false;
 while ($myrow = db_fetch($prices_list))
 {
 
@@ -150,6 +150,7 @@ while ($myrow = db_fetch($prices_list))
 end_table();
 if (db_num_rows($prices_list) == 0)
 {
+	$calculated = true;
 	display_note(_("There are no prices set up for this part."), 1);
 }
 div_end();
@@ -172,6 +173,7 @@ start_table($table_style2);
 currencies_list_row(_("Currency:"), 'curr_abrev', null, true);
 
 sales_types_list_row(_("Sales Type:"), 'sales_type_id', null, true);
+
 if (!isset($_POST['price'])) {
 	$_POST['price'] = price_format(get_kit_price(get_post('stock_id'), 
 		get_post('curr_abrev'),	get_post('sales_type_id')));
@@ -181,6 +183,8 @@ $kit = get_item_code_dflts($_POST['stock_id']);
 small_amount_row(_("Price:"), 'price', null, '', _('per') .' '.$kit["units"]);
 
 end_table(1);
+if ($calculated)
+	display_note(_("The price is calculated."), 0, 1);
 
 submit_add_or_update_center($selected_id == -1, '', 'both');
 div_end();
