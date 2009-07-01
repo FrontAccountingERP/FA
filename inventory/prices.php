@@ -150,7 +150,8 @@ while ($myrow = db_fetch($prices_list))
 end_table();
 if (db_num_rows($prices_list) == 0)
 {
-	$calculated = true;
+	if (get_company_pref('add_pct') != -1)
+		$calculated = true;
 	display_note(_("There are no prices set up for this part."), 1);
 }
 div_end();
