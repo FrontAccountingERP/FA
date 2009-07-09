@@ -156,14 +156,21 @@ if ($is_editing)
   }
 	hidden('selected_id', $selected_id);
 	hidden('account_code');
+	hidden('account_type');
 	hidden('BankAccountCurrency', $_POST['BankAccountCurrency']);	
 	set_focus('bank_account_name');
 } 
 
 text_row(_("Bank Account Name:"), 'bank_account_name', null, 50, 100);
 
-bank_account_types_list_row(_("Account Type:"), 'account_type', null); 
-
+if ($is_editing) 
+{
+	label_row(_("Account Type:"), bank_account_types::name($_POST['account_type']));
+} 
+else 
+{
+	bank_account_types_list_row(_("Account Type:"), 'account_type', null); 
+}
 if ($is_editing) 
 {
 	label_row(_("Bank Account Currency:"), $_POST['BankAccountCurrency']);

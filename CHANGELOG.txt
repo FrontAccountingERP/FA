@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+09-Jul-2009 Jkanusz Dobrowolski
+# [0000139] Change of bank account type after creation should not be allowed.
+$ /gl/manage/bank_accounts.php
+
 01-Jul-2009 Joe Hunt
 # Guess what :) [0000137] Material Cost Averaging Problem (again again again) when voiding.
 $ /purchasing/includes/db/invoice_db.inc
