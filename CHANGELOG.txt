@@ -19,7 +19,15 @@ Legend:
 ! -> Note
 $ -> Affected files
 
-09-Jul-2009 Jkanusz Dobrowolski
+10-Jul-2009 Janusz Dobrowolski
+# [0000141] Attachment view/download bug.
+$ /admin/attachments.php
+# [0000140] Numeric format bug in credit limit input.
+$ /purchasing/manage/suppliers.php
+# [0000143] Bad format of PO popup window (jackel7007).
+$ /purchasing/view/view_grn.php
+
+09-Jul-2009 Janusz Dobrowolski
 # [0000139] Change of bank account type after creation should not be allowed.
 $ /gl/manage/bank_accounts.php
 
