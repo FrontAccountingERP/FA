@@ -80,7 +80,7 @@ if (isset($_POST['Process']))
 {
 	if (check_allocations())
 	{
-		handle_allocate();
+		$_SESSION['alloc']->write();
 		clear_allocations();
 		$_POST['Cancel'] = 1;
 	}
@@ -98,15 +98,12 @@ if (isset($_POST['Cancel']))
 
 if (isset($_GET['trans_no']) && isset($_GET['trans_type']))
 {
-	clear_allocations();
-	get_allocations_for_transaction($_GET['trans_type'], $_GET['trans_no']);
+	$_SESSION['alloc'] = new allocation($_GET['trans_type'], $_GET['trans_no']);
 }
-if(get_post('UpdateDisplay'))
+
+if (get_post('UpdateDisplay'))
 {
-	$trans_no = $_SESSION['alloc']->trans_no;
-	$type = $_SESSION['alloc']->type;
-	clear_allocations();
-	get_allocations_for_transaction($type, $trans_no);
+	$_SESSION['alloc']->read();
 	$Ajax->activate('alloc_tbl');
 }
 

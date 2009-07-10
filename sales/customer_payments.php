@@ -157,7 +157,7 @@ if (isset($_POST['_DateBanked_changed'])) {
   $Ajax->activate('_ex_rate');
 }
 if (list_updated('customer_id') || list_updated('bank_account')) {
-  get_allocations_for_transaction(12, 0);
+  $_SESSION['alloc']->read();
   $Ajax->activate('alloc_tbl');
 }
 //----------------------------------------------------------------------------------------------
@@ -179,7 +179,7 @@ if (isset($_POST['AddPaymentItem'])) {
 		input_num('amount'), input_num('discount'), $_POST['memo_'], $rate, input_num('charge'));
 
 	$_SESSION['alloc']->trans_no = $payment_no;
-	handle_allocate();
+	$_SESSION['alloc']->write();
 
 	meta_forward($_SERVER['PHP_SELF'], "AddedID=$payment_no");
 }
@@ -212,7 +212,8 @@ start_form();
 
 	customer_list_row(_("From Customer:"), 'customer_id', null, false, true);
 	if (!isset($_POST['bank_account'])) // first page call
-		  get_allocations_for_transaction(12, 0);
+		  $_SESSION['alloc'] = new allocation(12,0);
+
 	if (db_customer_has_branches($_POST['customer_id'])) {
 		customer_branches_list_row(_("Branch:"), $_POST['customer_id'], 'BranchID', null, false, true, true);
 	} else {

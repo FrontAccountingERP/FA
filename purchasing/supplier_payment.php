@@ -67,7 +67,7 @@ if (isset($_POST['_DatePaid_changed'])) {
 }
 
 if (list_updated('supplier_id') || list_updated('bank_account')) {
-  get_allocations_for_transaction(22, 0);
+  $_SESSION['alloc']->read();
   $Ajax->activate('alloc_tbl');
 }
 //----------------------------------------------------------------------------------------
@@ -183,7 +183,7 @@ function handle_add_payment()
 	new_doc_date($_POST['DatePaid']);
 
 	$_SESSION['alloc']->trans_no = $payment_id;
-	handle_allocate();
+	$_SESSION['alloc']->write();
 	//unset($_POST['supplier_id']);
    	unset($_POST['bank_account']);
    	unset($_POST['DatePaid']);
@@ -223,7 +223,7 @@ start_form();
     supplier_list_row(_("Payment To:"), 'supplier_id', null, false, true);
 
 	if (!isset($_POST['bank_account'])) // first page call
-		  get_allocations_for_transaction(22, 0);
+		  $_SESSION['alloc'] = new allocation(22, 0);
 
 	set_global_supplier($_POST['supplier_id']);
 	

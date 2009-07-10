@@ -9,8 +9,10 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-/* definition of the Debtor Receipt/Credit note allocation class */
-
+/*
+	Class for supplier/customer payment/credit allocations edition
+	and related helpers.
+*/
 //-----------------------------------------------------------------------------------
 
 class allocation 
@@ -18,23 +20,20 @@ class allocation
 
 	var $trans_no; 
 	var $type;
-	var $person_id;
-	var $person_name;
+	var $person_id = '';
+	var $person_name = '';
 	var $date_;
-	var $amount; /*Total amount of the transaction in FX */
+	var $amount = 0; /*Total amount of the transaction in FX */
 	
 	var $allocs; /*array of transactions allocated to */	
 
-	function allocation($trans_no, $type, $person_id, $person_name,	$amount, $date_)
+	function allocation($type, $trans_no)
 	{
 		$this->allocs = array();
 		
 		$this->trans_no = $trans_no;
 		$this->type = $type;
-		$this->person_id = $person_id;
-		$this->person_name = $person_name;
-		$this->amount = $amount;
-		$this->date_ = $date_;
+		$this->read(); // read payment or credit
 	}
 
 	function add_item($type, $type_no, $date_, $due_date, $amount, $amount_allocated, 
@@ -80,8 +79,136 @@ class allocation
 			}  
 		}
         return $this->add_item($type, $type_no, $date_, $due_date, 
-        	$amount, $amount_allocated, $current_allocated);				
+        	$amount, $amount_allocated, $current_allocated);
 	}						
+
+	//
+	//	Read payment or credit current/available allocations to cart.
+	//
+	function read($type = null, $trans_no = 0) 
+	{
+		if ($type == null) {	// re-read
+			$type = $this->type;
+			$trans_no = $this->trans_no;
+		}
+		
+		$sup = $type == 21 || $type == 22;
+		$this->allocs = array();
+
+		if ($trans_no) {
+			$trans = $sup ? get_supp_trans($trans_no, $type) 
+				: get_customer_trans($trans_no, $type);
+
+			$this->person_id = $trans[$sup ? 'supplier_id':'debtor_no'];
+			$this->person_name = $trans[$sup ? "supplier_name":"DebtorName"];
+			$this->amount = $trans["Total"];
+			$this->date_ = sql2date($trans["tran_date"]);
+		} 
+		else {
+			$this->person_id = get_post($sup ? 'supplier_id':'customer_id');
+			$this->date_ = get_post($sup ? 'DatePaid':'DateBanked', Today());
+		}
+
+	/* Now populate the array of possible (and previous actual) allocations 
+		for this customer/supplier. First get the transactions that have 
+		outstanding balances ie Total-alloc >0 */
+
+		if ($sup)
+			$trans_items = get_allocatable_to_supp_transactions($this->person_id);
+		else
+		 	$trans_items = get_allocatable_to_cust_transactions($this->person_id);
+
+		while ($myrow = db_fetch($trans_items))
+		{
+			$this->add_item($myrow["type"], $myrow["trans_no"],
+				sql2date($myrow["tran_date"]),
+				sql2date($myrow["due_date"]),
+				$myrow["Total"], // trans total
+				$myrow["alloc"], // trans total allocated
+				0); // this allocation
+		}
+
+		if ($trans_no == 0) return; // this is new payment
+
+	/* Now get trans that might have previously been allocated to by this trans
+	NB existing entries where still some of the trans outstanding entered from
+	above logic will be overwritten with the prev alloc detail below */
+
+		if ($sup)
+			$trans_items = get_allocatable_to_supp_transactions($this->person_id, 
+				$trans_no, $type);
+		else
+		 	$trans_items = get_allocatable_to_cust_transactions($this->person_id, 
+				$trans_no, $type);
+	
+		while ($myrow = db_fetch($trans_items))
+		{
+			$this->add_or_update_item ($myrow["type"], $myrow["trans_no"],
+				sql2date($myrow["tran_date"]),
+				sql2date($myrow["due_date"]),
+				$myrow["Total"],
+				$myrow["alloc"] - $myrow["amt"], $myrow["amt"]);
+		}
+	}
+	//
+	//	Update allocations in database.
+	//
+	function write()
+	{
+		$sup = $this->type == 21 || $this->type == 22;
+
+		begin_transaction();
+
+		if ($sup)
+			clear_supp_alloctions($this->type, $this->trans_no, $this->date_);
+		else
+		 	clear_cust_alloctions($this->type, $this->trans_no, $this->date_);
+
+		// now add the new allocations
+		$total_allocated = 0;
+		foreach ($this->allocs as $alloc_item)
+		{
+			if ($alloc_item->current_allocated > 0)
+			{
+				if ($sup) {
+					add_supp_allocation($alloc_item->current_allocated,
+						$this->type, $this->trans_no,
+			    	 	$alloc_item->type, $alloc_item->type_no, $this->date_);
+
+					update_supp_trans_allocation($alloc_item->type, 
+						$alloc_item->type_no, $alloc_item->current_allocated);
+				} else {
+	 				add_cust_allocation($alloc_item->current_allocated,
+						$this->type, $this->trans_no,
+ 			     		$alloc_item->type, $alloc_item->type_no, $this->date_);
+			
+	 				update_debtor_trans_allocation($alloc_item->type, 
+						$alloc_item->type_no, $alloc_item->current_allocated);
+				}
+				// Exchange Variations Joe Hunt 2008-09-20 ////////////////////
+
+				exchange_variation($this->type, $this->trans_no,
+					$alloc_item->type, $alloc_item->type_no, $this->date_,
+					$alloc_item->current_allocated,
+					$sup ? payment_person_types::supplier() 
+						: payment_person_types::customer());
+				
+
+				//////////////////////////////////////////////////////////////
+				$total_allocated += $alloc_item->current_allocated;
+			}
+
+		}  /*end of the loop through the array of allocations made */
+		if ($sup)
+			update_supp_trans_allocation($this->type, $this->trans_no, 
+				$total_allocated);
+		else
+		 	update_debtor_trans_allocation($this->type,	$this->trans_no, 
+				$total_allocated);
+	
+		commit_transaction();
+
+	}
 
 } 
 
@@ -118,64 +245,6 @@ class allocation_item
 }
 
 //--------------------------------------------------------------------------------
-function get_allocations_for_transaction($type, $trans_no)
-{
-	$sup = $type == 21 || $type == 22;
-
-	if ($trans_no) {
-		$trans = $sup ? get_supp_trans($trans_no, $type) 
-			: get_customer_trans($trans_no, $type);
-
-		$_SESSION['alloc'] = new allocation($trans_no, $type,
-			$trans[$sup ? 'supplier_id':'debtor_no'], 
-			$trans[$sup ? "supplier_name":"DebtorName"],
-			$trans["Total"], sql2date($trans["tran_date"]));
-	} else {
-		$_SESSION['alloc'] = new allocation($trans_no, $type,
-			$_POST[$sup ? 'supplier_id':'customer_id'], '', 0, 
-			$_POST[$sup ? 'DatePaid':'DateBanked'] );
-	}
-
-	/* Now populate the array of possible (and previous actual) allocations for this customer/supplier */
-	/*First get the transactions that have outstanding balances ie Total-alloc >0 */
-
-	if ($sup)
-		$trans_items = get_allocatable_to_supp_transactions($_SESSION['alloc']->person_id);
-	else
-	 	$trans_items = get_allocatable_to_cust_transactions($_SESSION['alloc']->person_id);
-
-	while ($myrow = db_fetch($trans_items))
-	{
-		$_SESSION['alloc']->add_item($myrow["type"], $myrow["trans_no"],
-			sql2date($myrow["tran_date"]),
-			sql2date($myrow["due_date"]),
-			$myrow["Total"], // trans total
-			$myrow["alloc"], // trans total allocated
-			0); // this allocation
-	}
-
-	if ($trans_no == 0) return; // this is new payment
-
-	/* Now get trans that might have previously been allocated to by this trans
-	NB existing entries where still some of the trans outstanding entered from
-	above logic will be overwritten with the prev alloc detail below */
-
-	if ($sup)
-		$trans_items = get_allocatable_to_supp_transactions($_SESSION['alloc']->person_id, $trans_no, $type);
-	else
-	 	$trans_items = get_allocatable_to_cust_transactions($_SESSION['alloc']->person_id, $trans_no, $type);
-	
-	while ($myrow = db_fetch($trans_items))
-	{
-		$_SESSION['alloc']->add_or_update_item ($myrow["type"], $myrow["trans_no"],
-			sql2date($myrow["tran_date"]),
-			sql2date($myrow["due_date"]),
-			$myrow["Total"],
-			$myrow["alloc"] - $myrow["amt"], $myrow["amt"]);
-	}
-}
-
-//---------------------------------------------------------------------------------------------------
 
 function show_allocatable($show_totals) {
 
@@ -278,61 +347,5 @@ function check_allocations()
 
 	return true;
 }
-//-----------------------------------------------------------------------------------
 
-function handle_allocate()
-{
-	$sup = $_SESSION['alloc']->type == 21 || $_SESSION['alloc']->type == 22;
-
-	begin_transaction();
-
-	if ($sup)
-		clear_supp_alloctions($_SESSION['alloc']->type,	$_SESSION['alloc']->trans_no, $_SESSION['alloc']->date_);
-	else
-	 	clear_cust_alloctions($_SESSION['alloc']->type,	$_SESSION['alloc']->trans_no, $_SESSION['alloc']->date_);
-
-	// now add the new allocations
-	$total_allocated = 0;
-	foreach ($_SESSION['alloc']->allocs as $alloc_item)
-	{
-		if ($alloc_item->current_allocated > 0)
-		{
-			if ($sup) {
-				add_supp_allocation($alloc_item->current_allocated,
-					$_SESSION['alloc']->type, $_SESSION['alloc']->trans_no,
-			     	$alloc_item->type, $alloc_item->type_no, $_SESSION['alloc']->date_);
-
-				update_supp_trans_allocation($alloc_item->type, $alloc_item->type_no,
-					$alloc_item->current_allocated);
-			} else {
-	 			add_cust_allocation($alloc_item->current_allocated,
-					$_SESSION['alloc']->type, $_SESSION['alloc']->trans_no,
- 			     	$alloc_item->type, $alloc_item->type_no, $_SESSION['alloc']->date_);
-			
- 				update_debtor_trans_allocation($alloc_item->type, $alloc_item->type_no,
- 					$alloc_item->current_allocated);
-			}
-			// Exchange Variations Joe Hunt 2008-09-20 ////////////////////////////////////////
-
-			exchange_variation($_SESSION['alloc']->type, $_SESSION['alloc']->trans_no,
-				$alloc_item->type, $alloc_item->type_no, $_SESSION['alloc']->date_,
-				$alloc_item->current_allocated,
-				$sup ? payment_person_types::supplier() :payment_person_types::customer());
-				
-
-			///////////////////////////////////////////////////////////////////////////
-			$total_allocated += $alloc_item->current_allocated;
-		}
-
-	}  /*end of the loop through the array of allocations made */
-	if ($sup)
-		update_supp_trans_allocation($_SESSION['alloc']->type,
-			$_SESSION['alloc']->trans_no, $total_allocated);
-	else
-	 	update_debtor_trans_allocation($_SESSION['alloc']->type,
-			$_SESSION['alloc']->trans_no, $total_allocated);
-	
-	commit_transaction();
-
-}
 ?>
