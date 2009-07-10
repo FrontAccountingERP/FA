@@ -19,6 +19,13 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+10-Jul-2009 Joe Hunt
+# [0000142] Purchase Order use the same header as Sales Order
+$ /reporting/includes/doctext.inc
+  /reporting/includes/doctext2.inc
+# Bug in demand qty
+$ /includes/db/manufacturing.inc
+
 10-Jul-2009 Janusz Dobrowolski
 # [0000141] Attachment view/download bug.
 $ /admin/attachments.php

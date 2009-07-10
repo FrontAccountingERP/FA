@@ -13,8 +13,16 @@ if (isset($header2type))
 {
 	$doc_Cust_no = "Cust no";
 	$doc_Date = "Date";
-	$doc_Charge_To = "Charge To";
-	$doc_Delivered_To = "Delivered To";
+	if ($doctype == 8) // Purchase Order
+	{
+		$doc_Charge_To = "Order To";
+		$doc_Delivered_To = "Charge To";
+	}
+	else
+	{
+		$doc_Charge_To = "Charge To";
+		$doc_Delivered_To = "Delivered To";
+	}	
 	$doc_Shipping_Company = "Shipping Company";
 	if ($doctype == 9)
 		$doc_Due_Date = "Delivery Date";
