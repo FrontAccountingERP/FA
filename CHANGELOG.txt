@@ -19,6 +19,15 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+10-Jul-2009 Janusz Dobrowolski
++ Added direct allocations in payments.
+$ /purchasing/supplier_payment.php
+  /sales/customer_payments.php
+! Allocations related code reuse.
+$ /includes/ui/allocation_cart.inc
+  /purchasing/allocations/supplier_allocate.php
+  /sales/allocations/customer_allocate.php
+
 02-Jul-2009 Joe Hunt
 ! Always show 0.00 in debit column when using display_debit_or_credit
 $ /includes/ui/ui_view.inc
