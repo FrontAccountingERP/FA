@@ -18,36 +18,50 @@ include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
 
+if (isset($_GET['vw']))
+	$view_id = $_GET['vw'];
+else
 $view_id = find_submit('view');
 if ($view_id != -1)
 {
 	$row = get_attachment($view_id);
 	if ($row['filename'] != "")
 	{
-		$type = ($row['filetype']) ? $row['filetype'] : 'application/octet-stream';	
-    	header("Content-type: ".$type);
-    	header('Content-Length: '.$row['filesize']);
-    	if ($type == 'application/octet-stream')
-    		header('Content-Disposition: attachment; filename='.$row['filename']);
-    	else
-	 		header("Content-Disposition: inline");
-    	echo file_get_contents($comp_path."/".user_company(). "/attachments/".$row['unique_name']);
-    	exit();
+		if(in_ajax()) {
+			$Ajax->popup($_SERVER['PHP_SELF'].'?vw='.$view_id);
+		} else {
+			$type = ($row['filetype']) ? $row['filetype'] : 'application/octet-stream';	
+    		header("Content-type: ".$type);
+    		header('Content-Length: '.$row['filesize']);
+	    	if ($type == 'application/octet-stream')
+    			header('Content-Disposition: attachment; filename='.$row['filename']);
+    		else
+	 			header("Content-Disposition: inline");
+	    	echo file_get_contents($comp_path."/".user_company(). "/attachments/".$row['unique_name']);
+    		exit();
+		}
 	}	
 }
+if (isset($_GET['dl']))
+	$download_id = $_GET['dl'];
+else
+	$download_id = find_submit('download');
 
-$download_id = find_submit('download');
 if ($download_id != -1)
 {
 	$row = get_attachment($download_id);
 	if ($row['filename'] != "")
 	{
-		$type = ($row['filetype']) ? $row['filetype'] : 'application/octet-stream';	
-    	header("Content-type: ".$type);
-    	header('Content-Length: '.$row['filesize']);
-    	header('Content-Disposition: attachment; filename='.$row['filename']);
-    	echo file_get_contents($comp_path."/".user_company(). "/attachments/".$row['unique_name']);
-    	exit();
+		if(in_ajax()) {
+			$Ajax->redirect($_SERVER['PHP_SELF'].'?dl='.$download_id);
+		} else {
+			$type = ($row['filetype']) ? $row['filetype'] : 'application/octet-stream';	
+    		header("Content-type: ".$type);
+	    	header('Content-Length: '.$row['filesize']);
+    		header('Content-Disposition: attachment; filename='.$row['filename']);
+    		echo file_get_contents($comp_path."/".user_company(). "/attachments/".$row['unique_name']);
+	    	exit();
+		}
 	}	
 }
 
