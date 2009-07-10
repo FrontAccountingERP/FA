@@ -11,12 +11,14 @@
 ***********************************************************************/
 $path_to_root="..";
 $page_security = 3;
+include_once($path_to_root . "/includes/ui/allocation_cart.inc");
 include_once($path_to_root . "/includes/session.inc");
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/includes/banking.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
 include_once($path_to_root . "/sales/includes/sales_db.inc");
+//include_once($path_to_root . "/sales/includes/ui/cust_alloc_ui.inc");
 
 $js = "";
 if ($use_popup_windows) {
@@ -25,6 +27,8 @@ if ($use_popup_windows) {
 if ($use_date_picker) {
 	$js .= get_js_date_picker();
 }
+add_js_file('payalloc.js');
+
 page(_("Customer Payment Entry"), false, false, "", $js);
 
 //----------------------------------------------------------------------------------------------
@@ -46,6 +50,15 @@ if (isset($_POST['_customer_id_editor'])) {
 			'ref', 'amount', 'discount', 'memo_') );
 }
 
+if (!isset($_POST['customer_id']))
+	$_POST['customer_id'] = get_global_customer(false);
+if (!isset($_POST['DateBanked'])) {
+	$_POST['DateBanked'] = new_doc_date();
+	if (!is_date_in_fiscalyear($_POST['DateBanked'])) {
+		$_POST['DateBanked'] = end_fiscalyear();
+	}
+}
+
 if (isset($_GET['AddedID'])) {
 	$payment_no = $_GET['AddedID'];
 
@@ -53,7 +66,7 @@ if (isset($_GET['AddedID'])) {
 
 	display_note(get_gl_view_str(12, $payment_no, _("&View the GL Journal Entries for this Customer Payment")));
 
-	hyperlink_params($path_to_root . "/sales/allocations/customer_allocate.php", _("&Allocate this Customer Payment"), "trans_no=$payment_no&trans_type=12");
+//	hyperlink_params($path_to_root . "/sales/allocations/customer_allocate.php", _("&Allocate this Customer Payment"), "trans_no=$payment_no&trans_type=12");
 
 	hyperlink_no_params($path_to_root . "/sales/customer_payments.php", _("Enter Another &Customer Payment"));
 	br(1);
@@ -123,7 +136,8 @@ function can_process()
 		return false;
 	}
 
-	return true;
+	$_SESSION['alloc']->amount = input_num('amount');
+	return check_allocations();
 }
 
 //----------------------------------------------------------------------------------------------
@@ -142,6 +156,10 @@ if (isset($_POST['_customer_id_button'])) {
 if (isset($_POST['_DateBanked_changed'])) {
   $Ajax->activate('_ex_rate');
 }
+if (list_updated('customer_id') || list_updated('bank_account')) {
+  get_allocations_for_transaction(12, 0);
+  $Ajax->activate('alloc_tbl');
+}
 //----------------------------------------------------------------------------------------------
 
 if (isset($_POST['AddPaymentItem'])) {
@@ -159,6 +177,10 @@ if (isset($_POST['AddPaymentItem'])) {
 	$payment_no = write_customer_payment(0, $_POST['customer_id'], $_POST['BranchID'],
 		$_POST['bank_account'], $_POST['DateBanked'], $_POST['ref'],
 		input_num('amount'), input_num('discount'), $_POST['memo_'], $rate, input_num('charge'));
+
+	$_SESSION['alloc']->trans_no = $payment_no;
+	handle_allocate();
+
 	meta_forward($_SERVER['PHP_SELF'], "AddedID=$payment_no");
 }
 
@@ -181,24 +203,16 @@ function read_customer_data()
 	$_POST['ref'] = references::get_next(12);
 }
 
-//-------------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------
 
-function display_item_form()
-{
-	global $table_style2;
+start_form();
 
 	start_outer_table($table_style2, 5);
 	table_section(1);
 
-	if (!isset($_POST['customer_id']))
-		$_POST['customer_id'] = get_global_customer(false);
-	if (!isset($_POST['DateBanked'])) {
-		$_POST['DateBanked'] = new_doc_date();
-		if (!is_date_in_fiscalyear($_POST['DateBanked'])) {
-			$_POST['DateBanked'] = end_fiscalyear();
-		}
-	}
 	customer_list_row(_("From Customer:"), 'customer_id', null, false, true);
+	if (!isset($_POST['bank_account'])) // first page call
+		  get_allocations_for_transaction(12, 0);
 	if (db_customer_has_branches($_POST['customer_id'])) {
 		customer_branches_list_row(_("Branch:"), $_POST['customer_id'], 'BranchID', null, false, true, true);
 	} else {
@@ -214,17 +228,18 @@ function display_item_form()
 	} else {
 		$display_discount_percent = percent_format($_POST['pymt_discount']*100) . "%";
 
-		amount_row(_("Amount:"), 'amount');
-
-		amount_row(_("Amount of Discount:"), 'discount');
-
-		label_row(_("Customer prompt payment discount :"), $display_discount_percent);
-
-		amount_row(_("Bank Charge:"), 'charge');
-
 		table_section(2);
 
 		bank_accounts_list_row(_("Into Bank Account:"), 'bank_account', null, true);
+
+
+		text_row(_("Reference:"), 'ref', null, 20, 40);
+
+		table_section(3);
+
+		date_row(_("Date of Deposit:"), 'DateBanked', '', true, 0, 0, 0, null, true);
+
+
 
 		$cust_currency = get_customer_currency($_POST['customer_id']);
 		$bank_currency = get_bank_account_currency($_POST['bank_account']);
@@ -233,13 +248,25 @@ function display_item_form()
 			exchange_rate_display($bank_currency, $cust_currency, $_POST['DateBanked'], true);
 		}
 
-		date_row(_("Date of Deposit:"), 'DateBanked', '', true, 0, 0, 0, null, true);
-
-		text_row(_("Reference:"), 'ref', null, 20, 40);
-
-		textarea_row(_("Memo:"), 'memo_', null, 22, 4);
+		amount_row(_("Bank Charge:"), 'charge');
 
 		end_outer_table(1);
+
+		if ($cust_currency == $bank_currency) {
+	  		div_start('alloc_tbl');
+			show_allocatable(false);
+			div_end();
+		}
+
+		start_table("$table_style width=60%");
+
+		label_row(_("Customer prompt payment discount :"), $display_discount_percent);
+		amount_row(_("Amount of Discount:"), 'discount');
+
+		amount_row(_("Amount:"), 'amount');
+
+		textarea_row(_("Memo:"), 'memo_', null, 22, 4);
+		end_table(1);
 
 		if ($cust_currency != $bank_currency)
 			display_note(_("Amount and discount are in customer's currency."));
@@ -250,13 +277,6 @@ function display_item_form()
 	}
 
 	br();
-}
-
-//----------------------------------------------------------------------------------------------
-
-start_form();
-
-display_item_form();
 
 end_form();
 end_page();
