@@ -254,7 +254,7 @@ function show_allocatable($show_totals) {
 
 	if (count($_SESSION['alloc']->allocs)) 
 	{
-		start_table($table_style);
+		start_table("$table_style width=60%");
    		$th = array(_("Transaction Type"), _("#"), _("Date"), _("Due Date"), _("Amount"),
    			_("Other Allocations"), _("This Allocation"), _("Left to Allocate"),'','');
 	   	table_header($th);

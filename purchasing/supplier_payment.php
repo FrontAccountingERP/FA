@@ -213,11 +213,8 @@ if (isset($_POST['ProcessSuppPayment']))
 
 start_form();
 
-	//start_table($table_style2, 5, 7);
-	//echo "<tr><td valign=top>"; // outer table
-	start_outer_table("$table_style2 width=90%", 5);
+	start_outer_table("$table_style2 width=60%", 5);
 
-	//echo "<table>";
 	table_section(1);
 
     supplier_list_row(_("Payment To:"), 'supplier_id', null, false, true);
@@ -263,7 +260,7 @@ start_form();
 	
 	if ($bank_currency != $supplier_currency) 
 	{
-		display_note(_("The amount and discount are in the bank account's currency."), 2, 0);
+		display_note(_("The amount and discount are in the bank account's currency."), 0, 1);
 	}
 
 	submit_center('ProcessSuppPayment',_("Enter Payment"), true, '', 'default');

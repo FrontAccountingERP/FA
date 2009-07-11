@@ -207,7 +207,7 @@ function read_customer_data()
 
 start_form();
 
-	start_outer_table($table_style2, 5);
+	start_outer_table("$table_style2 width=60%", 5);
 	table_section(1);
 
 	customer_list_row(_("From Customer:"), 'customer_id', null, false, true);
