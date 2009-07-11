@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+11-Jul-2009 Joe Hunt
+! Improved Inventory Sales Report. Now by Customer and quantities as well.
+$ /reporting/rep304.php
+
 10-Jul-2009 Joe Hunt
 # [0000142] Purchase Order use the same header as Sales Order
 $ /reporting/includes/doctext.inc
