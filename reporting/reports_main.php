@@ -157,7 +157,7 @@ $reports->addReport(_('Inventory'),304,_('Inventory &Sales Report'),
 			new ReportParam(_('End Date'),'DATEENDM'),
 			new ReportParam(_('Inventory Category'),'CATEGORIES'),
 			new ReportParam(_('Location'),'LOCATIONS'),
-			new ReportParam(_('Detailed Report'),'YES_NO'),
+			new ReportParam(_('Customer'),'CUSTOMERS_NO_FILTER'),
 			new ReportParam(_('Comments'),'TEXTBOX'),
 			new ReportParam(_('Destination'),'DESTINATION')));
 
