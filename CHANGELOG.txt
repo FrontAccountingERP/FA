@@ -19,6 +19,11 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+12-Jul-2009 Joe Hunt
+# Wrong presentation of left to allocate if discount was given
+$ /sales/view/view_receipt.php
+  /purchasing/view/view_supp_payment.php
+  
 11-Jul-2009 Joe Hunt
 ! Improved Inventory Sales Report. Now by Customer and quantities as well.
 $ /reporting/rep304.php
