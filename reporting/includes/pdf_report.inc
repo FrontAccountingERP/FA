@@ -51,6 +51,13 @@ class FrontReport extends Cpdf
 
 	function FrontReport($title, $filename, $size = 'A4', $fontsize = 9)
 	{
+		global $page_security;
+		if (!$_SESSION["wa_current_user"]->can_access_page($page_security))
+		{
+			display_error(_("The security settings on your account do not permit you to access this function"));
+			end_page();
+			exit;
+		}
 		switch ($size)
 		{
 			default:
@@ -492,6 +499,7 @@ class FrontReport extends Cpdf
         	        header('Expires: 0');
             	    header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
                 	header('Pragma: public');
+
 	                $this->Stream();
 					}
 				} else { // send report to network printer

@@ -326,6 +326,10 @@ class Report
 					$sql = "SELECT DISTINCT YEAR(tran_date), YEAR(tran_date) FROM ".TB_PREF."gl_trans";
 					$st .= dup_simple_codeandname_list($sql, "PARAM_$index", $dummy);
 					break;
+				case 'USERS':
+					$sql = "SELECT id, user_id FROM ".TB_PREF."users ORDER BY user_id";
+					$st .= dup_simple_codeandname_list($sql, "PARAM_$index", $dummy, true, _("No Users Filter"), true);
+					break;
 				case 'ACCOUNTS_NO_FILTER':
 					$sql = "SELECT id, name FROM ".TB_PREF."chart_types ORDER BY name";
 					$st .= dup_simple_codeandname_list($sql, "PARAM_$index", $dummy);

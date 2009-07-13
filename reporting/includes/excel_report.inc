@@ -56,8 +56,13 @@ class FrontReport extends Spreadsheet_Excel_Writer_Workbook
 
 	function FrontReport($title, $filename, $size = 'A4', $fontsize = 9)
 	{
-		global $comp_path, $dateseps;
-		
+		global $comp_path, $dateseps, $page_security;
+		if (!$_SESSION["wa_current_user"]->can_access_page($page_security))
+		{
+			display_error(_("The security settings on your account do not permit you to access this function"));
+			end_page();
+			exit;
+		}
 		$this->size = $size;
 		$this->title = $title;
 		$this->lineHeight = 12;

@@ -19,6 +19,14 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+13-Jul-2009 Joe Hunt
++ Added Audit Trail Report
+$ /reporting/rep710.php
+$ /reporting/reports_main.php
+! Changed so $page_security works with reports (displays an error message on top)
+$ /reporting/includes/pdf_report.inc
+  /reporting/includes/excel_report.inc
+  
 10-Jul-2009 Janusz Dobrowolski
 + Added direct allocations in payments.
 $ /purchasing/supplier_payment.php

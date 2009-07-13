@@ -336,6 +336,13 @@ $reports->addReport(_('General Ledger'),709,_('Ta&x Report'),
 			new ReportParam(_('End Date'),'DATEENDTAX'),
 			new ReportParam(_('Summary Only'),'YES_NO'),
 			new ReportParam(_('Comments'),'TEXTBOX')));
+$reports->addReport(_('General Ledger'),710,_('Audit Trail'),
+	array(	new ReportParam(_('Start Date'),'DATEBEGINM'),
+			new ReportParam(_('End Date'),'DATEENDM'),
+			new ReportParam(_('Type'),'SYS_TYPES'),
+			new ReportParam(_('User'),'USERS'),
+			new ReportParam(_('Comments'),'TEXTBOX'),
+			new ReportParam(_('Destination'),'DESTINATION')));
 
 echo "<script language='javascript'>
 		function onWindowLoad() {
