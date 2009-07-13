@@ -21,7 +21,7 @@ $ -> Affected files
 
 13-Jul-2009 Joe Hunt
 + Added Audit Trail Report
-$ /reporting/rep710.php
+$ /reporting/rep710.php (new file)
 $ /reporting/reports_main.php
 ! Changed so $page_security works with reports (displays an error message on top)
 $ /reporting/includes/pdf_report.inc
