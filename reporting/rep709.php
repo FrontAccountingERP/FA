@@ -119,7 +119,7 @@ function print_tax_report()
 
 	while ($trans=db_fetch($transactions))
 	{
-		if (in_array($trans['trans_type'], array(11,20,1))) {
+		if (in_array($trans['trans_type'], array(11,20))) {
 			$trans['net_amount'] *= -1;
 			$trans['amount'] *= -1;
 		}
@@ -144,7 +144,7 @@ function print_tax_report()
 				$rep->Header();
 			}
 		}
-		if (in_array($trans['trans_type'], array(0,2,10,11))) {
+		if (in_array($trans['trans_type'], array(2,10,11))) {
 			$taxes[$trans['tax_type_id']]['taxout'] += $trans['amount'];
 			$taxes[$trans['tax_type_id']]['out'] += $trans['net_amount'];
 		} else {
