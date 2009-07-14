@@ -35,7 +35,6 @@ function getTaxTransactions($from, $to)
 
 	$sql = "SELECT taxrec.*, taxrec.amount*ex_rate AS amount,
 	            taxrec.net_amount*ex_rate AS net_amount,
-				stype.type_name,
 				IF(ISNULL(supp.supp_name), debt.name, supp.supp_name) as name,
 				branch.br_name
 		FROM ".TB_PREF."trans_tax_details taxrec
@@ -45,10 +44,8 @@ function getTaxTransactions($from, $to)
 		LEFT JOIN ".TB_PREF."debtor_trans dtrans
 			ON taxrec.trans_no=dtrans.trans_no AND taxrec.trans_type=dtrans.type
 		LEFT JOIN ".TB_PREF."debtors_master as debt ON dtrans.debtor_no=debt.debtor_no
-		LEFT JOIN ".TB_PREF."cust_branch as branch ON dtrans.branch_code=branch.branch_code,
-		".TB_PREF."sys_types stype
-		WHERE taxrec.trans_type=stype.type_id
-			AND (taxrec.amount != 0 OR taxrec.net_amount != 0)
+		LEFT JOIN ".TB_PREF."cust_branch as branch ON dtrans.branch_code=branch.branch_code
+		WHERE (taxrec.amount != 0 OR taxrec.net_amount != 0)
 			AND taxrec.trans_type != 13
 			AND taxrec.tran_date >= '$fromdate'
 			AND taxrec.tran_date <= '$todate'
@@ -101,7 +98,7 @@ function print_tax_report()
 						1 => array('text' => _('Period'), 'from' => $from, 'to' => $to),
 						2 => array('text' => _('Type'), 'from' => $summary, 'to' => ''));
 
-	$cols = array(0, 80, 130, 180, 290, 370, 455, 505, 555);
+	$cols = array(0, 100, 130, 180, 290, 370, 455, 505, 555);
 
 	$headers = array(_('Trans Type'), _('Ref'), _('Date'), _('Name'), _('Branch Name'),
 		_('Net'), _('Rate'), _('Tax'));
@@ -126,7 +123,7 @@ function print_tax_report()
 		
 		if (!$summaryOnly)
 		{
-			$rep->TextCol(0, 1,	$trans['type_name']);
+			$rep->TextCol(0, 1,	systypes::name($trans['trans_type']));
 			$rep->TextCol(1, 2,	$trans['memo']);
 			$rep->DateCol(2, 3,	$trans['tran_date'], true);
 			$rep->TextCol(3, 4,	$trans['name']);

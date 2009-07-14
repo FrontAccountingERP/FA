@@ -63,15 +63,14 @@ function getTransactions($supplier_id, $from, $to)
 	$from = date2sql($from);
 	$to = date2sql($to);
 
-    $sql = "SELECT ".TB_PREF."supp_trans.*, ".TB_PREF."sys_types.type_name,
+    $sql = "SELECT ".TB_PREF."supp_trans.*,
 				(".TB_PREF."supp_trans.ov_amount + ".TB_PREF."supp_trans.ov_gst + ".TB_PREF."supp_trans.ov_discount)
 				AS TotalAmount, ".TB_PREF."supp_trans.alloc AS Allocated,
 				((".TB_PREF."supp_trans.type = 20)
 					AND ".TB_PREF."supp_trans.due_date < '$to') AS OverDue
-    			FROM ".TB_PREF."supp_trans, ".TB_PREF."sys_types
+    			FROM ".TB_PREF."supp_trans
     			WHERE ".TB_PREF."supp_trans.tran_date >= '$from' AND ".TB_PREF."supp_trans.tran_date <= '$to' 
     			AND ".TB_PREF."supp_trans.supplier_id = '$supplier_id'
-    				AND ".TB_PREF."supp_trans.type = ".TB_PREF."sys_types.type_id
     				ORDER BY ".TB_PREF."supp_trans.tran_date";
 
     $TransResult = db_query($sql,"No transactions were returned");
@@ -171,7 +170,7 @@ function print_supplier_balances()
 		while ($trans=db_fetch($res))
 		{
 			$rep->NewLine(1, 2);
-			$rep->TextCol(0, 1,	$trans['type_name']);
+			$rep->TextCol(0, 1,	systypes::name($trans['type']));
 			$rep->TextCol(1, 2,	$trans['reference']);
 			$rep->DateCol(2, 3,	$trans['tran_date'], true);
 			if ($trans['type'] == 20)

@@ -38,7 +38,7 @@ function get_invoices($costomer_id, $to)
 		.TB_PREF."debtor_trans.ov_freight + ".TB_PREF."debtor_trans.ov_freight_tax + "
 		.TB_PREF."debtor_trans.ov_discount)";
 	$due = "IF (".TB_PREF."debtor_trans.type=10,".TB_PREF."debtor_trans.due_date,".TB_PREF."debtor_trans.tran_date)";
-	$sql = "SELECT ".TB_PREF."sys_types.type_name, ".TB_PREF."debtor_trans.type, ".TB_PREF."debtor_trans.reference,
+	$sql = "SELECT ".TB_PREF."debtor_trans.type, ".TB_PREF."debtor_trans.reference,
 		".TB_PREF."debtor_trans.tran_date,
 		$value as Balance,
 		IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= 0,$value,0) AS Due,
@@ -47,11 +47,9 @@ function get_invoices($costomer_id, $to)
 
 		FROM ".TB_PREF."debtors_master,
 			".TB_PREF."payment_terms,
-			".TB_PREF."debtor_trans,
-			".TB_PREF."sys_types
+			".TB_PREF."debtor_trans
 
-		WHERE ".TB_PREF."sys_types.type_id = ".TB_PREF."debtor_trans.type
-		    AND ".TB_PREF."debtor_trans.type <> 13
+		WHERE ".TB_PREF."debtor_trans.type <> 13
 			AND ".TB_PREF."debtors_master.payment_terms = ".TB_PREF."payment_terms.terms_indicator
 			AND ".TB_PREF."debtors_master.debtor_no = ".TB_PREF."debtor_trans.debtor_no
 			AND ".TB_PREF."debtor_trans.debtor_no = $costomer_id
@@ -176,7 +174,7 @@ function print_aged_customer_analysis()
 			while ($trans=db_fetch($res))
 			{
 				$rep->NewLine(1, 2);
-        		$rep->TextCol(0, 1,	$trans['type_name'], -2);
+        		$rep->TextCol(0, 1,	systypes::name($trans['type']), -2);
 				$rep->TextCol(1, 2,	$trans['reference'], -2);
 				$rep->DateCol(2, 3, $trans['tran_date'], true, -2);
 				if ($trans['type'] == 11 || $trans['type'] == 12 || $trans['type'] == 2)

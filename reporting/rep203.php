@@ -31,8 +31,7 @@ function getTransactions($supplier, $date)
 {
 	$date = date2sql($date);
 
-	$sql = "SELECT ".TB_PREF."sys_types.type_name,
-			".TB_PREF."supp_trans.supp_reference,
+	$sql = "SELECT ".TB_PREF."supp_trans.supp_reference,
 			".TB_PREF."supp_trans.tran_date,
 			".TB_PREF."supp_trans.due_date,
 			".TB_PREF."supp_trans.trans_no,
@@ -40,10 +39,8 @@ function getTransactions($supplier, $date)
 			".TB_PREF."supp_trans.rate,
 			(ABS(".TB_PREF."supp_trans.ov_amount) + ABS(".TB_PREF."supp_trans.ov_gst) - ".TB_PREF."supp_trans.alloc) AS Balance,
 			(ABS(".TB_PREF."supp_trans.ov_amount) + ABS(".TB_PREF."supp_trans.ov_gst) ) AS TranTotal
-		FROM ".TB_PREF."supp_trans,
-			".TB_PREF."sys_types
-		WHERE ".TB_PREF."sys_types.type_id = ".TB_PREF."supp_trans.type
-		AND ".TB_PREF."supp_trans.supplier_id = '" . $supplier . "'
+		FROM ".TB_PREF."supp_trans
+		WHERE ".TB_PREF."supp_trans.supplier_id = '" . $supplier . "'
 		AND ABS(".TB_PREF."supp_trans.ov_amount) + ABS(".TB_PREF."supp_trans.ov_gst) - ".TB_PREF."supp_trans.alloc != 0
 		AND ".TB_PREF."supp_trans.tran_date <='" . $date . "'
 		ORDER BY ".TB_PREF."supp_trans.type,
@@ -134,7 +131,7 @@ function print_payment_report()
 			else
 				$rate = 1.0;
 			$rep->NewLine(1, 2);
-			$rep->TextCol(0, 1,	$trans['type_name']);
+			$rep->TextCol(0, 1,	systypes::name($trans['type']));
 			$rep->TextCol(1, 2,	$trans['supp_reference']);
 			if ($trans['type'] == 20)
 				$rep->DateCol(2, 3,	$trans['due_date'], true);

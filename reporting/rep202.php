@@ -38,7 +38,7 @@ function get_invoices($supplier_id, $to)
 	// Revomed allocated from sql
     $value = "(".TB_PREF."supp_trans.ov_amount + ".TB_PREF."supp_trans.ov_gst + ".TB_PREF."supp_trans.ov_discount)";
 	$due = "IF (".TB_PREF."supp_trans.type=20 OR ".TB_PREF."supp_trans.type=21,".TB_PREF."supp_trans.due_date,".TB_PREF."supp_trans.tran_date)";
-	$sql = "SELECT ".TB_PREF."sys_types.type_name,
+	$sql = "SELECT ".TB_PREF."supp_trans.type,
 		".TB_PREF."supp_trans.reference,
 		".TB_PREF."supp_trans.tran_date,
 		$value as Balance,
@@ -48,11 +48,9 @@ function get_invoices($supplier_id, $to)
 
 		FROM ".TB_PREF."suppliers,
 			".TB_PREF."payment_terms,
-			".TB_PREF."supp_trans,
-			".TB_PREF."sys_types
+			".TB_PREF."supp_trans
 
-	   	WHERE ".TB_PREF."sys_types.type_id = ".TB_PREF."supp_trans.type
-			AND ".TB_PREF."suppliers.payment_terms = ".TB_PREF."payment_terms.terms_indicator
+	   	WHERE ".TB_PREF."suppliers.payment_terms = ".TB_PREF."payment_terms.terms_indicator
 			AND ".TB_PREF."suppliers.supplier_id = ".TB_PREF."supp_trans.supplier_id
 			AND ".TB_PREF."supp_trans.supplier_id = $supplier_id
 			AND ".TB_PREF."supp_trans.tran_date <= '$todate'
@@ -184,7 +182,7 @@ function print_aged_supplier_analysis()
 			while ($trans=db_fetch($res))
 			{
 				$rep->NewLine(1, 2);
-        		$rep->TextCol(0, 1,	$trans['type_name'], -2);
+        		$rep->TextCol(0, 1,	systypes::name($trans['type']), -2);
 				$rep->TextCol(1, 2,	$trans['reference'], -2);
 				$rep->TextCol(2, 3,	sql2date($trans['tran_date']), -2);
 				foreach ($trans as $i => $value)

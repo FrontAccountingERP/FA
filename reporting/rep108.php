@@ -31,14 +31,13 @@ print_statements();
 
 function getTransactions($debtorno, $date)
 {
-    $sql = "SELECT ".TB_PREF."debtor_trans.*, ".TB_PREF."sys_types.type_name,
+    $sql = "SELECT ".TB_PREF."debtor_trans.*,
 				(".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + ".TB_PREF."debtor_trans.ov_freight + ".TB_PREF."debtor_trans.ov_discount)
 				AS TotalAmount, ".TB_PREF."debtor_trans.alloc AS Allocated,
 				((".TB_PREF."debtor_trans.type = 10)
 					AND ".TB_PREF."debtor_trans.due_date < '$date') AS OverDue
-    			FROM ".TB_PREF."debtor_trans, ".TB_PREF."sys_types
+    			FROM ".TB_PREF."debtor_trans
     			WHERE ".TB_PREF."debtor_trans.tran_date <= '$date' AND ".TB_PREF."debtor_trans.debtor_no = '$debtorno'
-    				AND ".TB_PREF."debtor_trans.type = ".TB_PREF."sys_types.type_id
     				AND ".TB_PREF."debtor_trans.type <> 13
     				ORDER BY ".TB_PREF."debtor_trans.tran_date";
 
@@ -131,7 +130,7 @@ function print_statements()
 			$DisplayAlloc = number_format2($myrow2["Allocated"],$dec);
 			$DisplayNet = number_format2($myrow2["TotalAmount"] - $myrow2["Allocated"],$dec);
 
-			$rep->TextCol(0, 1,	$myrow2['type_name'], -2);
+			$rep->TextCol(0, 1,	systypes::name($myrow2['type']), -2);
 			$rep->TextCol(1, 2,	$myrow2['reference'], -2);
 			$rep->TextCol(2, 3,	sql2date($myrow2['tran_date']), -2);
 			if ($myrow2['type'] == 10)

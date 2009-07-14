@@ -19,6 +19,17 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+15-Jul-2009 Joe Hunt
+! Replaced sys_types names from table to systypes::name in reports
+  Now the English names in table are never used in inquiries or reports
+$ /reporting/rep101.php
+  /reporting/rep102.php
+  /reporting/rep108.php
+  /reporting/rep201.php
+  /reporting/rep202.php
+  /reporting/rep203.php
+  /reporting/rep709.php
+  
 13-Jul-2009 Joe Hunt
 + Added Audit Trail Report
 $ /reporting/rep710.php (new file)
