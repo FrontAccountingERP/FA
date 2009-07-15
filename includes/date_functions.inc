@@ -360,6 +360,8 @@ and converts to a yyyy/mm/dd format */
 			$year = substr($date_,0,4);
 		}
 	}
+	else
+		$year = $month = $day = 0;
 
 //to modify assumption in 2030
 	if ($date_system == 0)

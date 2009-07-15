@@ -30,8 +30,8 @@ print_audit_trail();
 
 function getTransactions($from, $to, $type, $user)
 {
-	$fromdate = date2sql($from);
-	$todate = date2sql($to);
+	$fromdate = date2sql($from) . " 00:00:00";
+	$todate = date2sql($to). " 23:59.59";
 
 	$sql = "SELECT a.*, 
 		SUM(IF(ISNULL(g.amount), NULL, IF(g.amount > 0, g.amount, 0))) AS amount,
@@ -45,8 +45,8 @@ function getTransactions($from, $to, $type, $user)
 		$sql .= "AND a.type=$type ";
 	if ($user != -1)	
 		$sql .= "AND a.user='$user' ";
-	$sql .= "AND DATE(a.stamp) >= '$fromdate'
-			AND DATE(a.stamp) <= '$todate'
+	$sql .= "AND a.stamp >= '$fromdate'
+			AND a.stamp <= '$todate'
 		GROUP BY a.trans_no,a.gl_seq,a.stamp	
 		ORDER BY a.stamp,a.gl_seq";
     return db_query($sql,"No transactions were returned");
