@@ -71,7 +71,7 @@ function getTaxInfo($id)
 
 function print_tax_report()
 {
-	global $path_to_root, $trans_dir;
+	global $path_to_root, $trans_dir, $Hooks;
 	
 	$from = $_POST['PARAM_0'];
 	$to = $_POST['PARAM_1'];
