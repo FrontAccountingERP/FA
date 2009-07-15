@@ -33,22 +33,22 @@ function getTransactions($from, $to, $type, $user)
 	$fromdate = date2sql($from);
 	$todate = date2sql($to);
 
-	$sql = "SELECT ".TB_PREF."audit_trail.*, ".TB_PREF."gl_trans.tran_date, 
-		SUM(IF(".TB_PREF."gl_trans.amount > 0, ".TB_PREF."gl_trans.amount, 0)) AS amount,
-		".TB_PREF."users.user_id,
-		UNIX_TIMESTAMP(".TB_PREF."audit_trail.stamp) as unix_stamp
-		FROM ".TB_PREF."audit_trail, ".TB_PREF."gl_trans, ".TB_PREF."users
-		WHERE ".TB_PREF."audit_trail.type = ".TB_PREF."gl_trans.type
-			AND ".TB_PREF."audit_trail.trans_no = ".TB_PREF."gl_trans.type_no 
-			AND ".TB_PREF."audit_trail.user = ".TB_PREF."users.id ";
+	$sql = "SELECT a.*, 
+		SUM(IF(ISNULL(g.amount), NULL, IF(g.amount > 0, g.amount, 0))) AS amount,
+		u.user_id,
+		UNIX_TIMESTAMP(a.stamp) as unix_stamp
+		FROM ".TB_PREF."audit_trail AS a JOIN ".TB_PREF."users AS u
+		LEFT JOIN ".TB_PREF."gl_trans AS g ON (g.type_no=a.trans_no
+			AND g.type=a.type)
+		WHERE a.user = u.id ";
 	if ($type != -1)
-		$sql .= "AND ".TB_PREF."gl_trans.type=$type ";
+		$sql .= "AND a.type=$type ";
 	if ($user != -1)	
-		$sql .= "AND ".TB_PREF."audit_trail.user='$user' ";
-	$sql .= "AND DATE(".TB_PREF."audit_trail.stamp) >= '$fromdate'
-			AND DATE(".TB_PREF."audit_trail.stamp) <= '$todate'
-		GROUP BY ".TB_PREF."gl_trans.type_no,".TB_PREF."audit_trail.gl_seq,".TB_PREF."audit_trail.stamp	
-		ORDER BY ".TB_PREF."audit_trail.stamp,".TB_PREF."audit_trail.gl_seq";
+		$sql .= "AND a.user='$user' ";
+	$sql .= "AND DATE(a.stamp) >= '$fromdate'
+			AND DATE(a.stamp) <= '$todate'
+		GROUP BY a.trans_no,a.gl_seq,a.stamp	
+		ORDER BY a.stamp,a.gl_seq";
     return db_query($sql,"No transactions were returned");
 }
 //----------------------------------------------------------------------------------------------------
@@ -100,7 +100,7 @@ function print_audit_trail()
         else	
         	$rep->TextCol(1, 2, date("H:i:s", $myrow['unix_stamp']));
         $rep->TextCol(2, 3, $myrow['user_id']);
-        $rep->TextCol(3, 4, sql2date($myrow['tran_date']));
+        $rep->TextCol(3, 4, sql2date($myrow['gl_date']));
         $rep->TextCol(4, 5, systypes::name($myrow['type']));
         $rep->TextCol(5, 6, $myrow['trans_no']);
         if ($myrow['gl_seq'] == null)
@@ -108,7 +108,8 @@ function print_audit_trail()
         else
         	$action = _('Closed');
         $rep->TextCol(6, 7, $action);
-        $rep->AmountCol(7, 8, $myrow['amount'], $dec);
+        if ($myrow['amount'] != null)
+        	$rep->AmountCol(7, 8, $myrow['amount'], $dec);
         $rep->NewLine(1, 2);
     }
     $rep->Line($rep->row  + 4);

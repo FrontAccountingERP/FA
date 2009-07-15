@@ -197,7 +197,8 @@ class Report
 					$st .= dup_simple_name_list("PARAM_$index", $sel);
 					break;
 				case 'SYS_TYPES':
-					$st .= dup_systypes_list("PARAM_$index", $dummy, true, _("No Type Filter"), true);
+				case 'SYS_TYPES_ALL':
+					$st .= dup_systypes_list("PARAM_$index", $dummy, true, _("No Type Filter"), ($param->param_type=='SYS_TYPES_ALL'));
 					break;
 				case 'TEXT':
 					$st .= "<input type='text' name='PARAM_$index'>";
@@ -421,7 +422,7 @@ function dup_simple_name_list($name, $selections)
 
 //------------------------------------------------------------------------------------------------
 
-function dup_systypes_list($name, &$selected_id, $all_option=false, $all_option_name=null)
+function dup_systypes_list($name, &$selected_id, $all_option=false, $all_option_name=null, $all_types=false)
 {
 	global $systypes_array;
 
@@ -439,7 +440,7 @@ function dup_systypes_list($name, &$selected_id, $all_option=false, $all_option_
 
 	foreach ($systypes_array as $i => $value)
 	{
-		if ($i == 16 || $i == 18 || $i == 25 || ($i >= 28 && $i <= 30) || $i >= 40)
+		if (!$all_types && ($i == 16 || $i == 18 || $i == 25 || ($i >= 28 && $i <= 30) || $i >= 40))
 			continue;
     	$st .= "<option" . ($selected_id == $i ? " selected" : "") . " value='$i'>" . $value['name'] . "</option>\n";
 	}

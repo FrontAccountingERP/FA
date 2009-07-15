@@ -29,6 +29,14 @@ $ /reporting/rep101.php
   /reporting/rep202.php
   /reporting/rep203.php
   /reporting/rep709.php
+  /sql/alter2.2.sql
+! Audit-Trail report (systypes selector should include all systypes, extra parameter to function dup_systypes_list.
+$ /reporting/rep710.php
+  /reporting/reports_main.php
+  /reporting/includes/reports_classes.inc
+# Removed warning from COA report
+$ /gl/includes/db/gl_db_accounts.inc 
+  /reporting/rep701.php
   
 13-Jul-2009 Joe Hunt
 + Added Audit Trail Report

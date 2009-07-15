@@ -38,6 +38,7 @@ ALTER TABLE `0_users` ADD COLUMN `sticky_doc_date` TINYINT(1) DEFAULT '0';
 ALTER TABLE `0_debtors_master` MODIFY COLUMN `name` varchar(100) NOT NULL default '';
 ALTER TABLE `0_cust_branch` ADD COLUMN `inactive` tinyint(1) NOT NULL default '0';
 
+ALTER TABLE `0_sys_types` DROP COLUMN `type_name`;
 ALTER TABLE `0_chart_class` DROP COLUMN `sign_convert`;
 ALTER TABLE `0_chart_class` CHANGE `balance_sheet` `ctype` TINYINT(1) NOT NULL DEFAULT '0';
 
