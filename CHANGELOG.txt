@@ -19,6 +19,13 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+18-Jul-2009 Joe Hunt
+# When saving a Payment to a Customer in Bank Payments (normally payment to suppliers) it was saved with wrong sign in debtor_trans (very rare).
+$ /sales/includes/db/cust_trans_db.inc
+# Wrong presentation in customer/supplier balance if using bank payments for customers and bank deposits for suppliers (very rare)
+$ /reporting/rep101.php
+  /reporting/rep201.php
+  
 13-Jul-2009 Joe Hunt
 # Bug in Tax Inquiry and Tax Report when entering in Journal Entry
 $ /gl/includes/db/gl_db_banking.inc

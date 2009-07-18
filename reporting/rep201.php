@@ -149,7 +149,7 @@ function print_supplier_balances()
 			else
 				$item[3] = ($trans['TotalAmount'] + $trans['Allocated']) * $rate;
 			*/	
-			if ($trans['type'] == 20)
+			if ($trans['type'] == 20 || $trans['type'] == 2)
 				$item[3] = $item[0] + $item[1] - $item[2];
 			else	
 				$item[3] = $item[0] - $item[1] + $item[2];
