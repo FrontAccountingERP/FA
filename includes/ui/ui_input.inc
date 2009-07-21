@@ -108,6 +108,7 @@ function hidden($name, $value=null, $echo=true)
 		true	  - standard button; optional icon
 		'process' - displays progress bar during call; optional icon
 		'default' - default form submit on Ctrl-Enter press; dflt ICON_OK icon
+		'selector' - ditto with closing current popup editor window
 		'cancel'  - cancel form entry on Escape press; dflt ICON_CANCEL
 */
 function submit($name, $value, $echo=true, $title=false, $atype=false, $icon=false)
@@ -119,6 +120,10 @@ function submit($name, $value, $echo=true, $title=false, $atype=false, $icon=fal
 	  switch($atype) {
 		case 'process':
 			$aspect = " aspect='process'"; break;
+		case 'selector':
+			$aspect = " aspect='selector' rel = '$value'"; 
+			$value = _("Select");
+			if ($icon===false) $icon=ICON_SUBMIT; break;
 		case 'default':
 			$aspect = " aspect='default'"; 
 			if ($icon===false) $icon=ICON_SUBMIT; break;
@@ -225,10 +230,10 @@ function submit_row($name, $value, $right=true, $extra="", $title=false, $async=
 	echo "</tr>\n";
 }
 
-function submit_return($name, $value, $title=false, $async=false)
+function submit_return($name, $value, $title=false)
 {
-	if (count($_SESSION['Context'])) {
-		submit($name, $value, true, $title, $async);
+	if (@$_REQUEST['popup']) {
+		submit($name, $value, true, $title, 'selector');
 	}
 }
 
@@ -244,29 +249,40 @@ function set_icon($icon, $title=false)
 	return "<img src='$path_to_root/themes/".user_theme()."/images/$icon' width='14' height='14' border='0'".($title ? " title='$title'" : "")." />\n";	
 }
 
-function button($name, $value, $title=false, $icon=false)
+function button($name, $value, $title=false, $icon=false,  $aspect='')
 {
 	// php silently changes dots,spaces,'[' and characters 128-159
 	// to underscore in POST names, to maintain compatibility with register_globals
+	$rel = '';
+	if ($aspect == 'selector') {
+		$rel = " rel='$value'";
+		$value = _("Select");
+	}
 	if (user_graphic_links() && $icon)
 	{
 		if ($value == _("Delete")) // Helper during implementation
 			$icon = ICON_DELETE;
 		return "<button type='submit' class='editbutton' name='".
 			htmlentities(strtr($name, array('.'=>'=2E',' '=>'=20','='=>'=3D','['=>'=5B'))).
-			"' value='1'" . ($title ? " title='$title'":" title='$value'")." />".set_icon($icon)."\n";
+			"' value='1'" . ($title ? " title='$title'":" title='$value'")
+			. ($aspect ? " aspect='$aspect'" : '')
+			. $rel
+			." />".set_icon($icon)."\n";
 	}
 	else
 		return "<input type='submit' class='editbutton' name='"
 			.htmlentities(strtr($name, array('.'=>'=2E',' '=>'=20','='=>'=3D','['=>'=5B')))
 			."' value='$value'"
-			.($title ? " title='$title'":'')." />\n";
+			.($title ? " title='$title'":'')
+			. ($aspect ? " aspect='$aspect'" : '')
+			. $rel
+			." />\n";
 }
 
-function button_cell($name, $value, $title=false, $icon=false)
+function button_cell($name, $value, $title=false, $icon=false, $aspect='')
 {
 	echo "<td align='center'>";
-	echo button($name, $value, $title, $icon);
+	echo button($name, $value, $title, $icon, $aspect);
 	echo "</td>";
 }
 
@@ -278,6 +294,11 @@ function delete_button_cell($name, $value, $title=false)
 function edit_button_cell($name, $value, $title=false)
 {
 	button_cell($name, $value, $title, ICON_EDIT);
+}
+
+function select_button_cell($name, $value, $title=false)
+{
+	button_cell($name, $value, $title, ICON_ADD, 'selector');
 }
 //-----------------------------------------------------------------------------------
 

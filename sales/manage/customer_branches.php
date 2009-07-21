@@ -13,7 +13,7 @@ $page_security = 3;
 $path_to_root="../..";
 include($path_to_root . "/includes/session.inc");
 
-page(_("Customer Branches"));
+page(_("Customer Branches"), @$_REQUEST['popup']);
 
 include($path_to_root . "/includes/ui.inc");
 
@@ -40,17 +40,10 @@ $_POST['branch_code'] = $selected_id;
 
 if (isset($_GET['SelectedBranch']))
 {
-	$_POST['branch_code'] = strtoupper($_GET['SelectedBranch']);
-	$selected_id = $_GET['SelectedBranch'];
+	$br = get_branch($_GET['SelectedBranch']);
+	$_POST['customer_id'] = $br['debtor_no'];
+	$selected_id = $_POST['branch_code'] = $br['branch_code'];
 }
-
-$id = find_submit('Select');
-if ($id != -1)
-{
-	context_return(array('customer_id' => $_POST['customer_id'],
-		'branch_id' => $id)); // return to sales document
-}
-
 //-----------------------------------------------------------------------------------------------
 
 if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
@@ -219,8 +212,8 @@ if ($num_branches)
 		label_cell($myrow["tax_group_name"]);
 		inactive_control_cell($myrow["branch_code"], $myrow["inactive"],
 			'cust_branch', 'branch_code');
-		if (count($_SESSION['Context']))
- 			button_cell("Select".$myrow["branch_code"], _("Select"), '', ICON_ADD);
+		if (@$_REQUEST['popup'])
+ 			select_button_cell("Select".$myrow["branch_code"], $myrow["branch_code"], '');
  		edit_button_cell("Edit".$myrow["branch_code"], _("Edit"));
  		delete_button_cell("Delete".$myrow["branch_code"], _("Delete"));
 		end_row();
@@ -298,6 +291,7 @@ elseif ($Mode != 'ADD_ITEM')
 }
 hidden('selected_id', $selected_id);
 hidden('branch_code');
+hidden('popup', @$_REQUEST['popup']);
 
 table_section_title(_("Name and Contact"));
 

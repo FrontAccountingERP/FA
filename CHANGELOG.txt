@@ -19,6 +19,32 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+21-Jul-2009 Janusz Dobrowolski
+! Asynchronous customer/supplier/item selection now use popup window.
+$ /index.php
+  /gl/gl_bank.php
+  /includes/session.inc
+  /includes/page/footer.inc
+  /includes/ui/ui_controls.inc
+  /includes/ui/ui_input.inc
+  /includes/ui/ui_lists.inc
+  /inventory/purchasing_data.php
+  /inventory/manage/items.php
+  /js/inserts.js
+  /js/utils.js
+  /purchasing/po_entry_items.php
+  /purchasing/supplier_credit.php
+  /purchasing/supplier_invoice.php
+  /purchasing/supplier_payment.php
+  /purchasing/allocations/supplier_allocation_main.php
+  /purchasing/manage/suppliers.php
+  /sales/credit_note_entry.php
+  /sales/customer_payments.php
+  /sales/sales_order_entry.php
+  /sales/allocations/customer_allocation_main.php
+  /sales/manage/customer_branches.php
+  /sales/manage/customers.php
+
 15-Jul-2009 Joe Hunt
 ! Replaced sys_types names from table to systypes::name in reports
   Now the English names in table are never used in inquiries or reports

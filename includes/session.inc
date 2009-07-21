@@ -143,6 +143,8 @@ $Ajax =& new Ajax();
 
 // js/php validation rules container
 $Validate = array();
+// bindings for editors
+$Editors = array();
 
 // intercept all output to destroy it in case of ajax call
 register_shutdown_function('end_flush');

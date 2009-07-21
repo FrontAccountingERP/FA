@@ -11,7 +11,7 @@
 ***********************************************************************/
 function page_footer($no_menu=false, $is_index=false)
 {
-	global $path_to_root, $js_lib, $Validate;
+	global $path_to_root, $js_lib, $Validate, $Editors;
 
   	if (in_ajax())
   		return;// just for speed up
@@ -21,9 +21,11 @@ function page_footer($no_menu=false, $is_index=false)
 	include_once($path_to_root."/themes/".user_theme()."/renderer.php");
 	$rend = new renderer();
 	$rend->menu_footer($no_menu, $is_index);
+
 	echo "<script>
 		_focus = '" . get_post('_focus') . "';
 		_validate = " . JsHttpRequest::php2js($Validate).";
+		var editors = ".JsHttpRequest::php2js($Editors).";
 	</script>";
 
    	add_user_js_data();
@@ -31,7 +33,6 @@ function page_footer($no_menu=false, $is_index=false)
 
 	foreach($js_lib as $text)
 	  	echo $text;
-
 	echo "\n--></script>\n";
     echo "</body></html>\n";
 }

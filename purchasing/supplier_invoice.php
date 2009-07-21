@@ -27,22 +27,10 @@ if ($use_date_picker)
 	$js .= get_js_date_picker();
 page(_("Enter Supplier Invoice"), false, false, "", $js);
 
-
+set_editor('supplier', 'supplier_id' , 'reference');
 //----------------------------------------------------------------------------------------
 
 check_db_has_suppliers(_("There are no suppliers defined in the system."));
-
-//---------------------------------------------------------------------------------------------------------------
-if ($ret = context_restore()) {
- // return from supplier editor
-	copy_from_trans($_SESSION['supp_trans']);
-	if(isset($ret['supplier_id']))
-		$_POST['supplier_id'] = $ret['supplier_id'];
-}
-if (isset($_POST['_supplier_id_editor'])) {
-	copy_to_trans($_SESSION['supp_trans']);
-	context_call($path_to_root.'/purchasing/manage/suppliers.php?supplier_id='.$_POST['supplier_id'], 'supp_trans');
-}
 
 //---------------------------------------------------------------------------------------------------------------
 

@@ -323,6 +323,44 @@ function div_end()
 }
 
 /*
+	Bind editors for various selectors.
+	$type - type of editor
+	$input - array org_input => editor_input
+	$focus - focus after selection
+*/
+function set_editor($type, $input, $focus=null) 
+{
+	global $path_to_root, $Editors;
+	// table of table editor interfaces.
+	// key is editor type, values contain:
+	// 0 => url of editor page
+	// 1 => array of names of parameters returned back from editor interface
+	// 2 => hotkey code
+
+	if($focus === null) {
+		$focus = $caller;
+	}
+	$urls = array(
+		'customer' => array('/sales/manage/customers.php?debtor_no=', 
+			113,	_("F2 - Customers")),
+		'branch' => array('/sales/manage/customer_branches.php?SelectedBranch=', 
+			114, _("F3 - Branches")),
+		'supplier' => array('/purchasing/manage/suppliers.php?supplier_id=', 
+			113, _("F2 - Suppliers")),
+		'item' => array('/inventory/manage/items.php?stock_id=', 
+			115, _("F4 - Items"))
+	);
+	$back = array();
+	$caller = $urls[$type][1];
+	$Editors[$caller] = array( $path_to_root . $urls[$type][0], $input, $focus);
+
+// FIX status comments
+
+}
+//------------------------------------------------------------------------------
+// Procedures below are now obsolete. Preserved for eventual future use.
+
+/*
 	External page call with saving current context.
 	$call - url of external page
 	$ctx - optional. name of SESSION context object or array of names of POST 
@@ -388,7 +426,6 @@ function context_reset()
 {
 	$_SESSION['Context'] = array();
 }
-
 /*
 	Context stack initialization
 */

@@ -38,16 +38,14 @@ check_db_has_customers(_("There are no customers defined in the system."));
 check_db_has_bank_accounts(_("There are no bank accounts defined in the system."));
 
 //----------------------------------------------------------------------------------------
-if ($ret = context_restore()) {
-	if(isset($ret['customer_id']))
-		$_POST['customer_id'] = $ret['customer_id'];
-	if(isset($ret['branch_id']))
-		$_POST['BranchID'] = $ret['branch_id'];
-}
-if (isset($_POST['_customer_id_editor'])) {
-	context_call($path_to_root.'/sales/manage/customers.php?debtor_no='.$_POST['customer_id'], 
-		array( 'customer_id', 'BranchID', 'bank_account', 'DateBanked', 
-			'ref', 'amount', 'discount', 'memo_') );
+set_editor('customer', 'customer_id' , 'sales_type');
+set_editor('branch', 'BranchID' , 'bank_account');
+
+if (list_updated('BranchID')) {
+	// when branch is selected via external editor also customer can change
+	$br = get_branch(get_post('BranchID'));
+	$_POST['customer_id'] = $br['debtor_no'];
+	$Ajax->activate('customer_id');
 }
 
 if (!isset($_POST['customer_id']))

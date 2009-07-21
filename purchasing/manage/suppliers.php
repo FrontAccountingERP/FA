@@ -13,7 +13,7 @@ $page_security=5;
 $path_to_root="../..";
 include($path_to_root . "/includes/session.inc");
 
-page(_("Suppliers"));
+page(_("Suppliers"), @$_REQUEST['popup']);
 
 //include($path_to_root . "/includes/date_functions.inc");
 
@@ -156,10 +156,6 @@ elseif (isset($_POST['delete']) && $_POST['delete'] != "")
 		$Ajax->activate('_page_body');
 	} //end if Delete supplier
 }
-elseif (isset($_POST['select']))
-{
-	context_return(array('supplier_id' => $_POST['supplier_id']));
-}
 
 start_form();
 
@@ -301,8 +297,8 @@ div_start('controls');
 if (!$new_supplier) 
 {
 	submit_center_first('submit', _("Update Supplier"), 
-	  _('Update supplier data'), 'default');
-	submit_return('select', _("Return"), _("Select this supplier and return to document entry."), 'cancel');
+	  _('Update supplier data'), true);
+	submit_return('select', get_post('supplier_id'), _("Select this supplier and return to document entry."));
 	submit_center_last('delete', _("Delete Supplier"), 
 	  _('Delete supplier data if have been never used'), true);
 }
@@ -311,6 +307,7 @@ else
 	submit_center('submit', _("Add New Supplier Details"), true, '', 'default');
 }
 div_end();
+hidden('popup', @$_REQUEST['popup']);
 end_form();
 
 end_page();

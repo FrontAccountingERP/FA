@@ -28,15 +28,6 @@ include_once($path_to_root . "/sales/includes/db/sales_types_db.inc");
 include_once($path_to_root . "/reporting/includes/reporting.inc");
 $js = '';
 
-editor_redirect( array(
-	'customer_id' => $path_to_root.'/sales/manage/customers.php?debtor_no='.get_post('customer_id'),
-	'branch_id' => $path_to_root.'/sales/manage/customer_branches.php?branch_id='.get_post('branch_id'),
-	));
-
-editor_return( array(
-	'customer_id'=>'customer_id',
-	'branch_id'=>'branch_id'));
-
 if ($use_popup_windows) {
 	$js .= get_js_open_window(900, 500);
 }
@@ -69,6 +60,15 @@ if (isset($_GET['NewDelivery']) && is_numeric($_GET['NewDelivery'])) {
 
 page($_SESSION['page_title'], false, false, "", $js);
 //-----------------------------------------------------------------------------
+set_editor('customer', 'customer_id', 'sales_type');
+set_editor('branch', 'branch_id', 'sales_type');
+
+if (list_updated('branch_id')) {
+	// when branch is selected via external editor also customer can change
+	$br = get_branch(get_post('branch_id'));
+	$_POST['customer_id'] = $br['debtor_no'];
+	$Ajax->activate('customer_id');
+}
 
 if (isset($_GET['AddedID'])) {
 	$order_no = $_GET['AddedID'];

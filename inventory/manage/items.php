@@ -13,7 +13,7 @@ $page_security = 11;
 $path_to_root="../..";
 include($path_to_root . "/includes/session.inc");
 
-page(_("Items"));
+page(_("Items"), @$_REQUEST['popup']);
 
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");
@@ -277,14 +277,6 @@ if (isset($_POST['delete']) && strlen($_POST['delete']) > 1)
 }
 //-------------------------------------------------------------------------------------------- 
 
-if (isset($_POST['select']))
-{
-	context_return(array('stock_id' => $_POST['stock_id']));
-}
-
-
-//------------------------------------------------------------------------------------
-
 start_form(true);
 
 if (db_has_stock_items()) 
@@ -455,13 +447,15 @@ if (!isset($_POST['NewStockID']) || $new_item)
 else 
 {
 	submit_center_first('addupdate', _("Update Item"), '', 
-	count($_SESSION['Context']) ? true : 'default');
-	submit_return('select', _("Return"), _("Select this items and return to document entry."), 'default');
+		@$_REQUEST['popup'] ? true : 'default');
+	submit_return('select', get_post('stock_id'), 
+		_("Select this items and return to document entry."), 'default');
 	submit('delete', _("Delete This Item"), true, '', true);
 	submit_center_last('cancel', _("Cancel"), _("Cancel Edition"), 'cancel');
 }
 
 div_end();
+hidden('popup', @$_REQUEST['popup']);
 end_form();
 
 //------------------------------------------------------------------------------------

@@ -38,26 +38,8 @@ check_db_has_suppliers(_("There are no suppliers defined in the system."));
 check_db_has_purchasable_items(_("There are no purchasable inventory items defined in the system."));
 
 //---------------------------------------------------------------------------------------------------------------
-if ($ret = context_restore()) {
- // return from supplier/items editors
-	copy_from_cart();
-	if(isset($ret['supplier_id']))
-		$_POST['supplier_id'] = $ret['supplier_id'];
-	if(isset($ret['stock_id'])) {
-		$_POST['stock_id'] = $_POST['_stock_id_edit'] = $ret['stock_id'];
-		set_focus('qty');
-	}
-}
-if (isset($_POST['_supplier_id_editor'])) {
-	copy_to_cart();
-	context_call($path_to_root.'/purchasing/manage/suppliers.php?supplier_id='.$_POST['supplier_id'], 'PO');
-}
-
-if (isset($_POST['_stock_id_editor'])) {
-	copy_to_cart();
-	context_call($path_to_root.'/inventory/manage/items.php?stock_id='.$_POST['stock_id'], 'PO');
-}
-//------------------------------------------------------------------------------
+set_editor('supplier', 'supplier_id' , 'ref');
+set_editor('item', 'stock_id' , 'qty');
 
 if (isset($_GET['AddedID'])) 
 {

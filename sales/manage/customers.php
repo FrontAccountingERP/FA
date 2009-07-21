@@ -13,7 +13,7 @@ $page_security = 3;
 $path_to_root="../..";
 
 include_once($path_to_root . "/includes/session.inc");
-page(_("Customers")); 
+page(_("Customers"), @$_REQUEST['popup']); 
 
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/banking.inc");
@@ -124,13 +124,6 @@ function handle_submit()
 if (isset($_POST['submit'])) 
 {
 	handle_submit();
-}
-//-------------------------------------------------------------------------------------------- 
-
-if (isset($_POST['select']))
-{
-	context_return(array('customer_id' => $_POST['customer_id'], 
-		'branch_id' => '')); // this fires customer history checks
 }
 //-------------------------------------------------------------------------------------------- 
 
@@ -294,8 +287,8 @@ if (!$new_customer)  {
 	start_row();
 	echo '<td>'._('Customer branches').':</td>';
   	hyperlink_params_td($path_to_root . "/sales/manage/customer_branches.php",
-		'<b>'. (count($_SESSION['Context']) ?  _("Select or &Add") : _("&Add or Edit ")).'</b>', 
-		"debtor_no=".$_POST['customer_id']);
+		'<b>'. (@$_REQUEST['popup'] ?  _("Select or &Add") : _("&Add or Edit ")).'</b>', 
+		"debtor_no=".$_POST['customer_id'].(@$_REQUEST['popup'] ? '&popup=1':''));
 	end_row();
 
 }
@@ -312,11 +305,12 @@ else
 {
 	submit_center_first('submit', _("Update Customer"), 
 	  _('Update customer data'), true);
-	submit_return('select', _("Return"), _("Select this customer and return to document entry."), 'default');
+	submit_return('select', get_post('customer_id'), _("Select this customer and return to document entry."));
 	submit_center_last('delete', _("Delete Customer"), 
 	  _('Delete customer data if have been never used'), true);
 }
 div_end();
+hidden('popup', @$_REQUEST['popup']);
 end_form();
 end_page();
 

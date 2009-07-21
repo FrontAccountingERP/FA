@@ -137,14 +137,35 @@ function _set_combo_select(e) {
 				setFocus(box);
 			    return false;
 			 }
-			if (this.getAttribute('aspect') == 'editable' && key==115) {
-				// F4: call related database editor - not available in non-js fallback mode
-				JsHttpRequest.request('_'+this.name+'_editor', this.form);
-				return false; // prevent default binding
-				// TODO: stopPropagation when needed
-			}
 		}
 }		
+
+function callEditor(key) {
+  var el = document.getElementsByName(editors[key][1])[0]; 
+  w = open(editors[key][0]+el.value+'&popup=1',
+	  "edit","Scrollbars=0,resizable=0,width=800,height=600");
+  if (w.opener == null)
+	  w.opener = self;
+  editors._call = key; // store call point for passBack 
+  w.focus();
+}
+
+function passBack(value) {
+	var o = opener;
+	if(value != false) {
+		var back = o.editors[o.editors._call]; // form input bindings
+		var to = o.document.getElementsByName(back[1])[0];
+		if (to) {
+			if (to[0] != undefined)	
+				to[0].value = value; // ugly hack to set selector to any value
+			to.value = value;
+			// update page after item selection
+			o.JsHttpRequest.request('_'+to.name+'_update');
+		}
+		o.setFocus(back[2]);
+	}
+	close();
+}
 
 /*
  Behaviour definitions
@@ -233,7 +254,13 @@ var inserts = {
 					JsHttpRequest.request('_'+this.name+'_changed', this.form);
 				}
 			}
-		},
+	},
+	'button[aspect=selector], input[aspect=selector]': function(e) {
+		e.onclick = function() {
+			passBack(this.getAttribute('rel'));
+			return false;
+		}
+	},
 	'select': function(e) {
 		if(e.onfocus==undefined) {
 			e.onfocus = function() {
@@ -314,9 +341,14 @@ var inserts = {
 */
 };
 function stopEv(ev) {
-			ev.returnValue = false;
-			ev.cancelBubble = true;
-			if(ev.preventDefault) ev.preventDefault();
+			if(ev.preventDefault) {
+				ev.preventDefault();
+				ev.stopPropagation();
+			} else {
+				ev.returnValue = false;
+				ev.cancelBubble = true;
+				window.keycode = 0;
+			}
 			return false;
 }
 /*
@@ -361,6 +393,11 @@ function setHotKeys() {
 				for (var i=0; i<form.elements.length; i++){
 					var el = form.elements[i];
 					var asp = el.getAttribute('aspect');
+					if ((asp=='selector') && (key==13 || key==27)) {
+						passBack(key==13 ? el.getAttribute('rel') : false);
+						ev.returnValue = false;
+						return false;
+					}
 					if ((asp=='default' && key==13)||(asp=='cancel' && key==27)) {
 						JsHttpRequest.request(el);
 						ev.returnValue = false;
@@ -370,14 +407,18 @@ function setHotKeys() {
 			}
 			ev.returnValue = false;
 			return false;
+		}
+		if (editors && editors[key]) {
+			callEditor(key);
+			return stopEv(ev); // prevent default binding
 		} 
 		return true;
 	};
 	document.onkeyup = function(ev) {
-		if (_hotkeys.alt==true) {
-			ev = ev||window.event;
-			key = ev.keyCode||ev.which;
+		ev = ev||window.event;
+		key = ev.keyCode||ev.which;
 
+		if (_hotkeys.alt==true) {
 			if (key == 18) {
 				_hotkeys.alt = false;
 				if (_hotkeys.focus>=0) {

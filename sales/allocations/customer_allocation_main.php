@@ -22,13 +22,7 @@ if ($use_popup_windows)
 page(_("Customer Allocations"), false, false, "", $js);
 
 //--------------------------------------------------------------------------------
-if ($ret = context_restore()) {
-	if(isset($ret['customer_id']))
-		$_POST['customer_id'] = $ret['customer_id'];
-}
-if (isset($_POST['_customer_id_editor'])) {
-	context_call($path_to_root.'/sales/manage/customers.php?debtor_no='.$_POST['customer_id'] );
-}
+set_editor('customer', 'customer_id' , 'ShowSettled');
 
 start_form();
 	/* show all outstanding receipts and credits to be allocated */

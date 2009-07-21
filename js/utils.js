@@ -10,8 +10,10 @@
 ***********************************************************************/
 function set_mark(img) {
 	var box = document.getElementById('ajaxmark');
-	if(img) box.src = user.theme+'images/'+ img;
-	box.style.visibility = img ? 'visible' : 'hidden'
+	if(box) {
+		if(img) box.src = user.theme+'images/'+ img;
+		box.style.visibility = img ? 'visible' : 'hidden'
+	}
 }
 
 function disp_msg(msg, cl) {
