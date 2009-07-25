@@ -322,40 +322,39 @@ function div_end()
     }
 }
 
+/* Table editor interfaces. Key is editor type
+	0 => url of editor page
+	1 => hotkey code
+	2 => context help
+*/
+$popup_editors = array(
+	'customer' => array('/sales/manage/customers.php?debtor_no=', 
+		113,	_("Customers")),
+	'branch' => array('/sales/manage/customer_branches.php?SelectedBranch=', 
+		114, _("Branches")),
+	'supplier' => array('/purchasing/manage/suppliers.php?supplier_id=', 
+		113, _("Suppliers")),
+	'item' => array('/inventory/manage/items.php?stock_id=', 
+		115, _("Items"))
+);
 /*
 	Bind editors for various selectors.
 	$type - type of editor
-	$input - array org_input => editor_input
-	$focus - focus after selection
+	$input - name of related input field
+	$caller - optional function key code (available values F1-F12: 112-123,
+		true: default)
 */
-function set_editor($type, $input, $focus=null) 
+function set_editor($type, $input, $caller=true)
 {
-	global $path_to_root, $Editors;
-	// table of table editor interfaces.
-	// key is editor type, values contain:
-	// 0 => url of editor page
-	// 1 => array of names of parameters returned back from editor interface
-	// 2 => hotkey code
+	global $path_to_root, $Editors, $popup_editors, $Pagehelp;
 
-	if($focus === null) {
-		$focus = $caller;
-	}
-	$urls = array(
-		'customer' => array('/sales/manage/customers.php?debtor_no=', 
-			113,	_("F2 - Customers")),
-		'branch' => array('/sales/manage/customer_branches.php?SelectedBranch=', 
-			114, _("F3 - Branches")),
-		'supplier' => array('/purchasing/manage/suppliers.php?supplier_id=', 
-			113, _("F2 - Suppliers")),
-		'item' => array('/inventory/manage/items.php?stock_id=', 
-			115, _("F4 - Items"))
-	);
-	$back = array();
-	$caller = $urls[$type][1];
-	$Editors[$caller] = array( $path_to_root . $urls[$type][0], $input, $focus);
+	$key = $caller===true ? $popup_editors[$type][1] : $caller;
 
-// FIX status comments
-
+	$Editors[$key] = array( $path_to_root . $popup_editors[$type][0], $input);
+	
+	$help = 'F' . ($key - 111) . ' - ';
+	$help .= $popup_editors[$type][2];
+	$Pagehelp[] = $help;
 }
 //------------------------------------------------------------------------------
 // Procedures below are now obsolete. Preserved for eventual future use.

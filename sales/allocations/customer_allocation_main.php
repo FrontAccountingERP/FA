@@ -22,7 +22,6 @@ if ($use_popup_windows)
 page(_("Customer Allocations"), false, false, "", $js);
 
 //--------------------------------------------------------------------------------
-set_editor('customer', 'customer_id' , 'ShowSettled');
 
 start_form();
 	/* show all outstanding receipts and credits to be allocated */

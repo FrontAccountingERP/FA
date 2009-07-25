@@ -38,8 +38,6 @@ check_db_has_customers(_("There are no customers defined in the system."));
 check_db_has_bank_accounts(_("There are no bank accounts defined in the system."));
 
 //----------------------------------------------------------------------------------------
-set_editor('customer', 'customer_id' , 'sales_type');
-set_editor('branch', 'BranchID' , 'bank_account');
 
 if (list_updated('BranchID')) {
 	// when branch is selected via external editor also customer can change

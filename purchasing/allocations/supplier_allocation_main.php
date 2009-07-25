@@ -26,7 +26,6 @@ if ($use_popup_windows)
 page(_("Supplier Allocations"), false, false, "", $js);
 
 //--------------------------------------------------------------------------------
-set_editor('supplier', 'supplier_id' , 'ShowSettled');
 
 start_form();
 

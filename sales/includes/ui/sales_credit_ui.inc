@@ -26,7 +26,7 @@ function display_credit_header(&$order)
     if (!isset($_POST['customer_id']) && (get_global_customer() != reserved_words::get_all()))
     	$_POST['customer_id'] = get_global_customer();
 
-	customer_list_row(_("Customer:"), 'customer_id', null, false, true);
+	customer_list_row(_("Customer:"), 'customer_id', null, false, true, false, true);
 
 	if ($order->customer_id != $_POST['customer_id'] /*|| $order->sales_type != $_POST['sales_type_id']*/)
 	{
@@ -35,7 +35,7 @@ function display_credit_header(&$order)
 	}
 
 	customer_branches_list_row(_("Branch:"), $_POST['customer_id'], 
-	  'branch_id', null, false, true, true);
+	  'branch_id', null, false, true, true, true);
 
 	//if (($_SESSION['credit_items']->order_no == 0) ||
 	//	($order->customer_id != $_POST['customer_id']) ||

@@ -229,6 +229,11 @@ div.tabs a:hover {
 	border: 1px solid #8cacbb;
 }
 
+#hotkeyshelp {
+	text-align: right;
+	font-weight: bolder;
+}
+
 #footer {
 	position: relative;
 	bottom: -3px;

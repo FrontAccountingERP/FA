@@ -33,7 +33,6 @@ page(_("Supplier Credit Note"), false, false, "", $js);
 check_db_has_suppliers(_("There are no suppliers defined in the system."));
 
 //---------------------------------------------------------------------------------------------------------------
-set_editor('supplier', 'supplier_id' , 'reference');
 
 if (isset($_GET['AddedID'])) 
 {

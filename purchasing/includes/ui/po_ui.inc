@@ -62,7 +62,7 @@ function display_po_header(&$order)
         if (!isset($_POST['supplier_id']) && (get_global_supplier() != reserved_words::get_all()))
         	$_POST['supplier_id'] = get_global_supplier();
 
-    	supplier_list_row(_("Supplier:"), 'supplier_id', null, false, true);
+    	supplier_list_row(_("Supplier:"), 'supplier_id', null, false, true, false, true);
 	}
 	else
 	{
@@ -302,7 +302,7 @@ function po_item_controls(&$order, $stock_id=null)
 	{
 		hidden('line_no', ($_SESSION['PO']->lines_on_order + 1));
 
-		stock_purchasable_items_list_cells(null, 'stock_id', null, false, true);
+		stock_purchasable_items_list_cells(null, 'stock_id', null, false, false, true);
 		if (list_updated('stock_id')) {
 			    $Ajax->activate('price');
 			    $Ajax->activate('units');

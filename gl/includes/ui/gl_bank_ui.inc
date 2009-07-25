@@ -44,6 +44,8 @@ function display_bank_header(&$order)
 		$_POST['person_id'] = '';
 		$Ajax->activate('pmt_header');
 		$Ajax->activate('code_id');
+		$Ajax->activate('pagehelp');
+		$Ajax->activate('editors');
 	}
     payment_person_types_list_row( $payment ? _("Pay To:"):_("From:"),
 		 'PayType', $_POST['PayType'], true);
@@ -57,14 +59,15 @@ function display_bank_header(&$order)
     	//	workorders_list_row(_("Work Order:"), 'person_id', null);
     	//	break;
 		case payment_person_types::supplier() :
-    		supplier_list_row(_("Supplier:"), 'person_id', null, false, true);
+    		supplier_list_row(_("Supplier:"), 'person_id', null, false, true, false, true);
     		break;
 		case payment_person_types::customer() :
-    		customer_list_row(_("Customer:"), 'person_id', null, false, true);
+    		customer_list_row(_("Customer:"), 'person_id', null, false, true, false, true);
 
         	if (db_customer_has_branches($_POST['person_id']))
         	{
-        		customer_branches_list_row(_("Branch:"), $_POST['person_id'], 'PersonDetailID', null, false, true, true);
+        		customer_branches_list_row(_("Branch:"), $_POST['person_id'], 
+					'PersonDetailID', null, false, true, true, true);
         	}
         	else
         	{

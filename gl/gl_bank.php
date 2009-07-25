@@ -41,10 +41,6 @@ page($_SESSION['page_title'], false, false, '', $js);
 check_db_has_bank_accounts(_("There are no bank accounts defined in the system."));
 
 //----------------------------------------------------------------------------------------
-set_editor('supplier', 'person_id' , 'ref');
-set_editor('customer', 'person_id' , 'ref');
-set_editor('branch', 'PersonDetailID' , 'ref');
-
 if (list_updated('PersonDetailID')) {
 	$br = get_branch(get_post('PersonDetailID'));
 	$_POST['person_id'] = $br['debtor_no'];

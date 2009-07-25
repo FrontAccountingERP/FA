@@ -160,9 +160,9 @@ function passBack(value) {
 				to[0].value = value; // ugly hack to set selector to any value
 			to.value = value;
 			// update page after item selection
-			o.JsHttpRequest.request('_'+to.name+'_update');
+			o.JsHttpRequest.request('_'+to.name+'_update', to.form);
+			o.setFocus(to.name);
 		}
-		o.setFocus(back[2]);
 	}
 	close();
 }

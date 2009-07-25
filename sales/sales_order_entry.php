@@ -60,8 +60,6 @@ if (isset($_GET['NewDelivery']) && is_numeric($_GET['NewDelivery'])) {
 
 page($_SESSION['page_title'], false, false, "", $js);
 //-----------------------------------------------------------------------------
-set_editor('customer', 'customer_id', 'sales_type');
-set_editor('branch', 'branch_id', 'sales_type');
 
 if (list_updated('branch_id')) {
 	// when branch is selected via external editor also customer can change

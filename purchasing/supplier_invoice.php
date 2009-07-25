@@ -27,7 +27,6 @@ if ($use_date_picker)
 	$js .= get_js_date_picker();
 page(_("Enter Supplier Invoice"), false, false, "", $js);
 
-set_editor('supplier', 'supplier_id' , 'reference');
 //----------------------------------------------------------------------------------------
 
 check_db_has_suppliers(_("There are no suppliers defined in the system."));

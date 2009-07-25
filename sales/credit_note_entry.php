@@ -51,8 +51,6 @@ check_db_has_stock_items(_("There are no items defined in the system."));
 check_db_has_customer_branches(_("There are no customers, or there are no customers with branches. Please define customers and customer branches."));
 
 //-----------------------------------------------------------------------------
-set_editor('customer', 'customer_id' , 'branch_id');
-set_editor('branch', 'branch_id' , 'ref');
 
 if (list_updated('branch_id')) {
 	// when branch is selected via external editor also customer can change

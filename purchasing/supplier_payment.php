@@ -42,7 +42,6 @@ check_db_has_suppliers(_("There are no suppliers defined in the system."));
 check_db_has_bank_accounts(_("There are no bank accounts defined in the system."));
 
 //----------------------------------------------------------------------------------------
-set_editor('supplier', 'supplier_id' , 'bank_account');
 
 if (!isset($_POST['supplier_id']))
 	$_POST['supplier_id'] = get_global_supplier(false);

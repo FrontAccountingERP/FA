@@ -258,7 +258,7 @@ function display_order_header(&$order, $editable, $date_text, $display_tax_group
 	}
 	else
 	{
-		customer_list_row(_("Customer:"), 'customer_id', null, false, true);
+		customer_list_row(_("Customer:"), 'customer_id', null, false, true, false, true);
 
 		if ($order->customer_id != get_post('customer_id', -1))
 		{
@@ -266,7 +266,7 @@ function display_order_header(&$order, $editable, $date_text, $display_tax_group
 			$Ajax->activate('branch_id');
   		}
 		customer_branches_list_row(_("Branch:"),
-	  	  $_POST['customer_id'], 'branch_id', null, false, true, true);
+	  	  $_POST['customer_id'], 'branch_id', null, false, true, true, true);
 
 		if( ($order->customer_id != get_post('customer_id', -1)) ||
 			($order->Branch != get_post('branch_id', -1)) ||

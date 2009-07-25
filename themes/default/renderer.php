@@ -90,7 +90,8 @@
 
 		function menu_footer($no_menu, $is_index)
 		{
-			global $version, $allow_demo_mode, $app_title, $power_url, $power_by, $path_to_root;
+			global $version, $allow_demo_mode, $app_title, $power_url, 
+				$power_by, $path_to_root, $Pagehelp, $Ajax;
 			include_once($path_to_root . "/includes/date_functions.inc");
 
 			if ($no_menu == false)
@@ -100,8 +101,12 @@
 				else
 					echo "<table class=bottomBar2>\n";
 				echo "<tr>";
-				if (isset($_SESSION['wa_current_user']))
+				if (isset($_SESSION['wa_current_user'])) {
+					$phelp = implode('; ', $Pagehelp);
 					echo "<td class=bottomBarCell>" . Today() . " | " . Now() . "</td>\n";
+					$Ajax->addUpdate(true, 'hotkeyshelp', $phelp);
+					echo "<td id='hotkeyshelp'>".$phelp."</td>";
+				}
 				echo "</tr></table>\n";
 			}
 			echo "</td></tr></table></td>\n";

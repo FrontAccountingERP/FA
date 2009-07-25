@@ -24,9 +24,8 @@ check_db_has_purchasable_items(_("There are no purchasable inventory items defin
 check_db_has_suppliers(_("There are no suppliers defined in the system."));
 
 //----------------------------------------------------------------------------------------
-set_editor('supplier', 'supplier_id' , 'supplier_id');
-
 simple_page_mode(true);
+
 //--------------------------------------------------------------------------------------------------
 
 if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')

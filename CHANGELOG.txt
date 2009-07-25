@@ -19,6 +19,35 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+25-Jul-2009 Janusz Dobrowolski
+! Popup editor now available as option for some list selectors.
+$ /includes/ui/ui_lists.inc
+  /gl/gl_bank.php
+  /gl/includes/ui/gl_bank_ui.inc
+  /includes/session.inc
+  /includes/page/footer.inc
+  /includes/ui/ui_controls.inc
+  /inventory/purchasing_data.php
+  /js/inserts.js
+  /purchasing/po_entry_items.php
+  /purchasing/supplier_credit.php
+  /purchasing/supplier_invoice.php
+  /purchasing/supplier_payment.php
+  /purchasing/allocations/supplier_allocation_main.php
+  /purchasing/includes/ui/po_ui.inc
+  /sales/credit_note_entry.php
+  /sales/customer_payments.php
+  /sales/sales_order_entry.php
+  /sales/allocations/customer_allocation_main.php
+  /sales/includes/ui/sales_credit_ui.inc
+  /sales/includes/ui/sales_order_ui.inc
+  /themes/aqua/default.css
+  /themes/aqua/renderer.php
+  /themes/cool/default.css
+  /themes/cool/renderer.php
+  /themes/default/default.css
+  /themes/default/renderer.php
+
 21-Jul-2009 Janusz Dobrowolski
 ! Asynchronous customer/supplier/item selection now use popup window.
 $ /index.php

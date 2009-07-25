@@ -38,8 +38,6 @@ check_db_has_suppliers(_("There are no suppliers defined in the system."));
 check_db_has_purchasable_items(_("There are no purchasable inventory items defined in the system."));
 
 //---------------------------------------------------------------------------------------------------------------
-set_editor('supplier', 'supplier_id' , 'ref');
-set_editor('item', 'stock_id' , 'qty');
 
 if (isset($_GET['AddedID'])) 
 {
