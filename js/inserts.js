@@ -393,7 +393,7 @@ function setHotKeys() {
 				for (var i=0; i<form.elements.length; i++){
 					var el = form.elements[i];
 					var asp = el.getAttribute('aspect');
-					if ((asp=='selector') && (key==13 || key==27)) {
+					if (el.className!='editbutton' && asp=='selector' && (key==13 || key==27)) {
 						passBack(key==13 ? el.getAttribute('rel') : false);
 						ev.returnValue = false;
 						return false;
