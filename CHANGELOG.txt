@@ -25,6 +25,8 @@ $ -> Affected files
 $ /js/inserts.js
 # Fixed branch selection by url
 $ /sales/manage/customer_branches.php
+# Fixed print links's default class.
+$ /reporting/includes/reporting.inc
 
 25-Jul-2009 Janusz Dobrowolski
 ! Popup editor now available as option for some list selectors.
