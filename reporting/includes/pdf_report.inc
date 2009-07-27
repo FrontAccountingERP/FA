@@ -422,11 +422,11 @@ class FrontReport extends Cpdf
 				require_once($path_to_root . "/reporting/includes/class.mail.inc");
     			$mail = new email($this->company['coy_name'], $this->company['email']);
     			$from = $this->company['coy_name'] . " <" . $this->company['email'] . ">";
-				if ($myrow['email'] == '') $myrow['email'] = $myrow['contact_email'];
+				if (!isset($myrow['email']) || $myrow['email'] == '') $myrow['email'] = $myrow['contact_email'];
     			$to = $myrow['DebtorName'] . " <" . $myrow['email'] . ">";
     			$msg = $doc_Dear_Sirs . " " . $myrow['DebtorName'] . ",\n\n" . $doc_AttachedFile . " " . $subject .
     				"\n\n";
-				if ($myrow['dimension_id'] > 0 && $doctype == 10) // helper for payment links
+				if (isset($myrow['dimension_id']) && $myrow['dimension_id'] > 0 && $doctype == 10) // helper for payment links
 				{
 					if ($myrow['dimension_id'] == 1)
 					{
@@ -458,6 +458,7 @@ class FrontReport extends Cpdf
     				$msg2 .= nl2br($sender) . "<br>";
     				$msg2 .= "<br>Filepath: " . $fname . "<br>Filename: " . $this->filename . "<br>";
     			}
+    			if (!isset($myrow['reference'])) $myrow['reference'] = '';
 				if (!$ret)
 					display_error(_("Sending document by email failed"));
 				else
