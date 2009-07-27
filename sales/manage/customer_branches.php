@@ -196,7 +196,7 @@ if ($num_branches)
 	$th = array(_("Name"), _("Contact"), _("Sales Person"), _("Area"),
 		_("Phone No"), _("Fax No"), _("E-mail"), _("Tax Group"), "", "");
 	inactive_control_column($th);
-	if (count($_REQUEST['popup'])) $th[] = '';
+	if (@$_REQUEST['popup']) $th[] = '';
 
 	table_header($th);
 
