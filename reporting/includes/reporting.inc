@@ -15,7 +15,7 @@
 // You only need full parameter list for invoices/credit notes
 
 function print_document_link($doc_no, $link_text, $link=true, $type_no, 
-	$icon=false, $class='', $id='')
+	$icon=false, $class='printlink', $id='')
 {
 	global $path_to_root;
 	include_once($path_to_root . "/includes/types.inc");
@@ -79,7 +79,7 @@ function print_document_link($doc_no, $link_text, $link=true, $type_no,
 //	Universal link to any kind of report.
 //
 function print_link($link_text, $rep, $pars = array(), $dir = '', 
-	$icon=false, $class='', $id='')
+	$icon=false, $class='printlink', $id='')
 {
 	global $path_to_root, $pdf_debug;
 
