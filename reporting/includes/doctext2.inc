@@ -77,7 +77,7 @@ if (isset($header2type))
 }
 if (isset($emailtype))
 {
-	$doc_Dear_Sirs = "Dear Sirs";
+	$doc_Dear_Sirs = "Dear";
 	$doc_AttachedFile = "Attached you will find ";
 	$doc_Kindest_regards = "Kindest regards";
 	$doc_Payment_Link = "You can pay through";

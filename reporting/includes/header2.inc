@@ -281,7 +281,6 @@
 		if (($doctype == 10 || $doctype == 12) && $legal != "") 
 		{
 			$this->TextWrap($ccol, $this->row, $right - $ccol, $legal, 'C');
-			$this->NewLine();
 		}
 		$this->Font();
 		$temp = $iline6 - $this->lineHeight - 2;

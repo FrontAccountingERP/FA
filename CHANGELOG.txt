@@ -19,9 +19,13 @@ Legend:
 ! -> Note
 $ -> Affected files
 
-27-Jul-2009 Joe Hunt
-# Bugs in sending sales orders as email.
-$ /reporting/includes/pdf_report.inc
+28-Jul-2009 Joe Hunt
+# Bugs in sending documents as email. Seems to land in the spam filter due to bad text and scrambled name on attached documents
+$ /reporting/rep109.php
+  /reporting/includes/doctext.inc
+  /reporting/includes/doctext2.inc
+  /reporting/includes/header2.inc
+  /reporting/includes/pdf_report.inc
 
 18-Jul-2009 Joe Hunt
 # When saving a Payment to a Customer in Bank Payments (normally payment to suppliers) it was saved with wrong sign in debtor_trans (very rare).
