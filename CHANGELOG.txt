@@ -27,7 +27,7 @@ $ config.php
 $ /reporting/rep709.php
 # [0000146] Purch data description with a ' (apostrophe) fails
 $ /inventory/purchasing_data.php
-  /purchasing/includes/db/purchasing_db.inc
+  /purchasing/includes/purchasing_db.inc
 
 28-Jul-2009 Joe Hunt
 # Bugs in sending documents as email. Seems to land in the spam filter due to bad text and scrambled name on attached documents
