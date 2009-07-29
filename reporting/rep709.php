@@ -101,7 +101,7 @@ function print_tax_report()
 						1 => array('text' => _('Period'), 'from' => $from, 'to' => $to),
 						2 => array('text' => _('Type'), 'from' => $summary, 'to' => ''));
 
-	$cols = array(0, 80, 130, 180, 290, 370, 455, 505, 555);
+	$cols = array(0, 100, 130, 180, 290, 370, 420, 470, 520);
 
 	$headers = array(_('Trans Type'), _('Ref'), _('Date'), _('Name'), _('Branch Name'),
 		_('Net'), _('Rate'), _('Tax'));

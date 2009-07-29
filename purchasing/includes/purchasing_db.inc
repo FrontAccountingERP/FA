@@ -98,7 +98,7 @@ function add_or_update_purchase_data($supplier_id, $stock_id, $price, $descripti
 	{
 		$sql = "INSERT INTO ".TB_PREF."purch_data (supplier_id, stock_id, price, suppliers_uom,
 			conversion_factor, supplier_description) VALUES ('$supplier_id', '$stock_id', 
-			$price, '$uom', 1, '$description')";
+			$price, '$uom', 1, ".db_escape($description).")";
 		db_query($sql,"The supplier purchasing details could not be added");
 		return;
 	}	
@@ -107,7 +107,7 @@ function add_or_update_purchase_data($supplier_id, $stock_id, $price, $descripti
 	if ($uom != "")
 		$sql .= ",suppliers_uom='$uom'";
 	if ($description != "")	
-		$sql .= ",supplier_description='$description'";
+		$sql .= ",supplier_description=".db_escape($description);
 	$sql .= " WHERE stock_id='$stock_id' AND supplier_id='$supplier_id'";
 	db_query($sql,"The supplier purchasing details could not be updated");
 	return true;
