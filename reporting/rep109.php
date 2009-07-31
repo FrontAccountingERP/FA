@@ -163,6 +163,7 @@ function print_sales_orders()
 				$myrow['contact_email'] = $branch['email'];
 				$myrow['DebtorName'] = $branch['br_name'];
 			}
+			$myrow['reference'] = $i;
 			$rep->End($email, $doc_Invoice_no . " " . $i, $myrow);
 		}
 	}

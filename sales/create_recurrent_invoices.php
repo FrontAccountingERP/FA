@@ -42,7 +42,7 @@ function create_recurrent_invoices($customer_id, $branch_id, $order_no, $tmpl_no
 
 	$doc->due_date = get_invoice_duedate($doc->customer_id, $doc->document_date);
 	$doc->reference = references::get_next($doc->trans_type);
-	$doc->Comments='';
+	//$doc->Comments='';
 
 	foreach ($doc->line_items as $line_no=>$item) {
 		$line = &$doc->line_items[$line_no];

@@ -207,7 +207,7 @@ function print_customer_balances()
 			else
 				$item[3] = ($trans['TotalAmount'] + $trans['Allocated']) * $rate;
 			*/
-			if ($trans['type'] == 10)
+			if ($trans['type'] == 10 || $trans['type'] == 1)
 				$item[3] = $item[0] + $item[1] - $item[2];
 			else	
 				$item[3] = $item[0] - $item[1] + $item[2];

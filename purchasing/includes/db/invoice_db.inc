@@ -401,9 +401,20 @@ function read_supp_invoice($trans_no, $trans_type, &$supp_trans)
 
 //----------------------------------------------------------------------------------------
 
+function get_matching_invoice_item($stock_id, $po_item_id)
+{
+	$sql = "SELECT *, tran_date FROM ".TB_PREF."supp_invoice_items, ".TB_PREF."supp_trans
+		WHERE supp_trans_type = 20 AND stock_id = '$stock_id' AND po_detail_item_id = $po_item_id
+		AND supp_trans_no = trans_no";
+	$result = db_query($sql, "Cannot retreive supplier transaction detail records");
+	return db_fetch($result);  
+}
+
 function void_supp_invoice($type, $type_no)
 {
 	begin_transaction();
+
+	$trans = get_supp_trans($type_no, $type);
 
 	void_bank_trans($type, $type_no, true);
 
@@ -433,22 +444,33 @@ function void_supp_invoice($type, $type_no)
 				$batch = get_grn_batch_from_item($details_row["grn_item_id"]);	
 				$grn = get_grn_batch($batch);
          		if ($type == 21) // credit note 2009-06-14 Joe Hunt Must restore the po and grn
-         		{
+         		{	// We must get the corresponding invoice item to check for price chg.
+					$match = get_matching_invoice_item($details_row["stock_id"], $details_row["po_detail_item_id"]);
+					if ($match !== false)
+						$mat_cost = update_average_material_cost($grn["supplier_id"], $details_row["stock_id"],  
+							$match["unit_price"], -$details_row["quantity"], sql2date($match['tran_date']), $match['tran_date'] !== $trans['tran_date']);
+					else		
+						$mat_cost = update_average_material_cost($grn["supplier_id"], $details_row["stock_id"],  
+							$details_row["FullUnitPrice"], -$details_row["quantity"], $old_date, $old[1] !== $trans['tran_date']);
 					$sql = "UPDATE ".TB_PREF."purch_order_details
-        				SET quantity_ordered = quantity_ordered + ".-$details_row["quantity"].",
-    				    quantity_received = quantity_received + ".-$details_row["quantity"]."
+        				SET quantity_ordered = quantity_ordered + ".-$details_row["quantity"].", ";
+        			if ($match !== false)
+        				$sql .= "act_price=".$match['unit_price'].", ";
+    				$sql .= "quantity_received = quantity_received + ".-$details_row["quantity"]."
     				    WHERE po_detail_item = ".$details_row["po_detail_item_id"];
 					db_query($sql, "a purchase order details record could not be updated. This receipt of goods has not been processed ");
 					$sql = "UPDATE ".TB_PREF."grn_items SET qty_recd=qty_recd+".-$details_row["quantity"]."
 						WHERE id=".$details_row["grn_item_id"];
 					db_query($sql);
-    			}     		
-				$diff = get_diff_in_home_currency($grn["supplier_id"], $old_date, $date_, $old[2], 
-					$details_row["FullUnitPrice"]);
-				// Only adjust the avg for the diff
-				$mat_cost = update_average_material_cost(null, $details_row["stock_id"],
-					$diff, -$details_row["quantity"], $old_date, true);
-
+    			}
+    			else
+    			{
+					$diff = get_diff_in_home_currency($grn["supplier_id"], $old_date, sql2date($trans['tran_date']), $old[2], 
+						$details_row["FullUnitPrice"]);
+					// Only adjust the avg for the diff
+					$mat_cost = update_average_material_cost(null, $details_row["stock_id"],
+						$diff, -$details_row["quantity"], $old_date, true);
+				}
 				$deliveries = get_deliveries_between($details_row["stock_id"], $old_date, $date_);
 				if ($deliveries[0] != 0) // have deliveries been done during the period?
 				{

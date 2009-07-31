@@ -19,6 +19,33 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+31-Jul-2009 Janusz Dobrowolski
+! Merged changes from main trunk  2.1.3-2.1.4 (see below)
+$ /admin/attachments.php
+  /inventory/purchasing_data.php
+  /includes/db/manufacturing.inc
+  /gl/manage/bank_accounts.php
+  /gl/includes/db/gl_db_banking.inc
+  /gl/includes/db/gl_db_trans.inc
+  /purchasing/includes/purchasing_db.inc
+  /purchasing/manage/suppliers.php
+  /purchasing/view/view_grn.php
+  /purchasing/includes/db/invoice_db.inc
+  /purchasing/view/view_supp_payment.php
+  /reporting/reports_main.php
+  /reporting/includes/doctext.inc
+  /reporting/includes/doctext2.inc
+  /reporting/includes/header2.inc
+  /reporting/includes/pdf_report.inc
+  /reporting/rep101.php
+  /reporting/rep109.php
+  /reporting/rep201.php
+  /reporting/rep304.php
+  /reporting/rep709.php
+  /sales/includes/db/cust_trans_db.inc
+  /sales/create_recurrent_invoices.php
+  /sales/sales_order_entry.php
+  /sales/view/view_receipt.php
 
 27-Jul-2009 Janusz Dobrowolski
 # Fixed default selection in popup
@@ -832,6 +859,77 @@ $ /.htaccess
   /sales/inquiry/customer_allocation_inquiry.php
   /sales/inquiry/sales_deliveries_view.php
   /sales/inquiry/sales_orders_view.php
+
+------------------------------- Release 2.1.4 ----------------------------------
+30-Jul-2009 Joe Hunt
+! Release 2.1.4
+$ config.php
+# Bad right margin on Tax Report (papersize A4)
+$ /reporting/rep709.php
+# [0000146] Purch data description with a ' (apostrophe) fails
+$ /inventory/purchasing_data.php
+  /purchasing/includes/purchasing_db.inc
+
+28-Jul-2009 Joe Hunt
+# Bugs in sending documents as email. Seems to land in the spam filter due to bad text and scrambled name on attached documents
+$ /reporting/rep109.php
+  /reporting/includes/doctext.inc
+  /reporting/includes/doctext2.inc
+  /reporting/includes/header2.inc
+  /reporting/includes/pdf_report.inc
+
+18-Jul-2009 Joe Hunt
+# When saving a Payment to a Customer in Bank Payments (normally payment to suppliers) it was saved with wrong sign in debtor_trans (very rare).
+$ /sales/includes/db/cust_trans_db.inc
+# Wrong presentation in customer/supplier balance if using bank payments for customers and bank deposits for suppliers (very rare)
+$ /reporting/rep101.php
+  /reporting/rep201.php
+  
+13-Jul-2009 Joe Hunt
+# Bug in Tax Inquiry and Tax Report when entering in Journal Entry
+$ /gl/includes/db/gl_db_banking.inc
+  /gl/includes/db/gl_db_trans.inc
+  /reporting/rep709.php
+! Comments should follow templates and recurrent invoices.
+$ /sales/create_recurrent_invoices.php
+  /sales/sales_order_entry.php
+  
+12-Jul-2009 Joe Hunt
+# Wrong presentation of left to allocate if discount was given
+$ /sales/view/view_receipt.php
+  /purchasing/view/view_supp_payment.php
+  
+11-Jul-2009 Joe Hunt
+! Improved Inventory Sales Report. Now by Customer and quantities as well.
+$ /reporting/rep304.php
+  /reporting/reports_main.php
+
+10-Jul-2009 Joe Hunt
+# [0000142] Purchase Order use the same header as Sales Order
+$ /reporting/includes/doctext.inc
+  /reporting/includes/doctext2.inc
+# Bug in demand qty
+$ /includes/db/manufacturing.inc
+
+10-Jul-2009 Janusz Dobrowolski
+# [0000141] Attachment view/download bug.
+$ /admin/attachments.php
+# [0000140] Numeric format bug in credit limit input.
+$ /purchasing/manage/suppliers.php
+# [0000143] Bad format of PO popup window (jackel7007).
+$ /purchasing/view/view_grn.php
+
+09-Jul-2009 Janusz Dobrowolski
+# [0000139] Change of bank account type after creation should not be allowed.
+$ /gl/manage/bank_accounts.php
+
+01-Jul-2009 Joe Hunt
+# Guess what :) [0000137] Material Cost Averaging Problem (again again again) when voiding.
+$ /purchasing/includes/db/invoice_db.inc
+
+26-Jun-2009 Joe Hunt
+# [0000137] Material Cost Averaging Problem (again again) when voiding.
+$ /purchasing/includes/db/invoice_db.inc
 
 ------------------------------- Release 2.1.3 ----------------------------------
 25-Jun-2009 Joe Hunt

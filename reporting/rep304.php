@@ -29,7 +29,7 @@ include_once($path_to_root . "/inventory/includes/db/items_category_db.inc");
 
 print_inventory_sales();
 
-function getTransactions($category, $location, $from, $to)
+function getTransactions($category, $location, $fromcust, $from, $to)
 {
 	$from = date2sql($from);
 	$to = date2sql($to);
@@ -39,16 +39,19 @@ function getTransactions($category, $location, $from, $to)
 			".TB_PREF."stock_master.description,
 			".TB_PREF."stock_moves.loc_code,
 			".TB_PREF."debtor_trans.debtor_no,
+			".TB_PREF."debtors_master.name AS debtor_name,
 			".TB_PREF."stock_moves.tran_date,
-			-".TB_PREF."stock_moves.qty*".TB_PREF."stock_moves.price*(1-".TB_PREF."stock_moves.discount_percent) AS amt,
-			-".TB_PREF."stock_moves.qty *(".TB_PREF."stock_master.material_cost + ".TB_PREF."stock_master.labour_cost + ".TB_PREF."stock_master.overhead_cost) AS cost
+			SUM(-".TB_PREF."stock_moves.qty) AS qty,
+			SUM(-".TB_PREF."stock_moves.qty*".TB_PREF."stock_moves.price*(1-".TB_PREF."stock_moves.discount_percent)) AS amt,
+			SUM(-".TB_PREF."stock_moves.qty *(".TB_PREF."stock_master.material_cost + ".TB_PREF."stock_master.labour_cost + ".TB_PREF."stock_master.overhead_cost)) AS cost
 		FROM ".TB_PREF."stock_master,
 			".TB_PREF."stock_category,
 			".TB_PREF."debtor_trans,
+			".TB_PREF."debtors_master,
 			".TB_PREF."stock_moves
 		WHERE ".TB_PREF."stock_master.stock_id=".TB_PREF."stock_moves.stock_id
 		AND ".TB_PREF."stock_master.category_id=".TB_PREF."stock_category.category_id
-
+		AND ".TB_PREF."debtor_trans.debtor_no=".TB_PREF."debtors_master.debtor_no
 		AND ".TB_PREF."stock_moves.type=".TB_PREF."debtor_trans.type
 		AND ".TB_PREF."stock_moves.trans_no=".TB_PREF."debtor_trans.trans_no
 		AND ".TB_PREF."stock_moves.tran_date>='$from'
@@ -59,9 +62,10 @@ function getTransactions($category, $location, $from, $to)
 			$sql .= " AND ".TB_PREF."stock_master.category_id = '$category'";
 		if ($location != 'all')
 			$sql .= " AND ".TB_PREF."stock_moves.loc_code = '$location'";
-		//$sql .= " AND SUM(".TB_PREF."stock_moves.qty) != 0
-		$sql .= " ORDER BY ".TB_PREF."stock_master.category_id,
-			".TB_PREF."stock_master.stock_id";
+		if ($fromcust != -1)
+			$sql .= " AND ".TB_PREF."debtors_master.debtor_no = $fromcust";
+		$sql .= " GROUP BY ".TB_PREF."stock_master.stock_id, ".TB_PREF."debtors_master.name ORDER BY ".TB_PREF."stock_master.category_id,
+			".TB_PREF."stock_master.stock_id, ".TB_PREF."debtors_master.name";
     return db_query($sql,"No transactions were returned");
 
 }
@@ -76,7 +80,7 @@ function print_inventory_sales()
 	$to = $_POST['PARAM_1'];
     $category = $_POST['PARAM_2'];
     $location = $_POST['PARAM_3'];
-    $detail = $_POST['PARAM_4'];
+    $fromcust = $_POST['PARAM_4'];
 	$comments = $_POST['PARAM_5'];
 	$destination = $_POST['PARAM_6'];
 	if ($destination)
@@ -100,16 +104,24 @@ function print_inventory_sales()
 	else
 		$loc = get_location_name($location);
 
-	$cols = array(0, 100, 250, 350, 450,	515);
+	if ($fromcust == reserved_words::get_all_numeric())
+		$fromc = _('All');
+	else
+		$fromc = get_customer_name($fromcust);
 
-	$headers = array(_('Category'), '', _('Sales'), _('Cost'), _('Contribution'));
+	$cols = array(0, 75, 175, 250, 300, 375, 450,	515);
 
-	$aligns = array('left',	'left',	'right', 'right', 'right');
+	$headers = array(_('Category'), _('Description'), _('Customer'), _('Qty'), _('Sales'), _('Cost'), _('Contribution'));
+	if ($fromcust != reserved_words::get_all_numeric())
+		$headers[2] = '';	
+
+	$aligns = array('left',	'left',	'left', 'right', 'right', 'right', 'right');
 
     $params =   array( 	0 => $comments,
     				    1 => array('text' => _('Period'),'from' => $from, 'to' => $to),
     				    2 => array('text' => _('Category'), 'from' => $cat, 'to' => ''),
-    				    3 => array('text' => _('Location'), 'from' => $loc, 'to' => ''));
+    				    3 => array('text' => _('Location'), 'from' => $loc, 'to' => ''),
+    				    4 => array('text' => _('Customer'), 'from' => $fromc, 'to' => ''));
 
     $rep = new FrontReport(_('Inventory Sales Report'), "InventorySalesReport", user_pagesize());
 
@@ -117,101 +129,71 @@ function print_inventory_sales()
     $rep->Info($params, $cols, $headers, $aligns);
     $rep->Header();
 
-	$res = getTransactions($category, $location, $from, $to);
+	$res = getTransactions($category, $location, $fromcust, $from, $to);
 	$total = $grandtotal = 0.0;
 	$total1 = $grandtotal1 = 0.0;
 	$total2 = $grandtotal2 = 0.0;
-	$amt = $cost = $cb = 0;
-	$catt = $stock_id = $stock_desc = '';
+	$catt = '';
 	while ($trans=db_fetch($res))
 	{
 		if ($catt != $trans['cat_description'])
 		{
 			if ($catt != '')
 			{
-				if ($detail)
-				{
-					$rep->NewLine(2, 3);
-					$rep->TextCol(0, 2, _('Total'));
-				}
-				$rep->AmountCol(2, 3, $total, $dec);
-				$rep->AmountCol(3, 4, $total1, $dec);
-				$rep->AmountCol(4, 5, $total2, $dec);
-				if ($detail)
-				{
-					$rep->Line($rep->row - 2);
-					$rep->NewLine();
-				}
+				$rep->NewLine(2, 3);
+				$rep->TextCol(0, 4, _('Total'));
+				$rep->AmountCol(4, 5, $total, $dec);
+				$rep->AmountCol(5, 6, $total1, $dec);
+				$rep->AmountCol(6, 7, $total2, $dec);
+				$rep->Line($rep->row - 2);
+				$rep->NewLine();
 				$rep->NewLine();
 				$total = $total1 = $total2 = 0.0;
 			}
 			$rep->TextCol(0, 1, $trans['category_id']);
-			$rep->TextCol(1, 2, $trans['cat_description']);
+			$rep->TextCol(1, 6, $trans['cat_description']);
 			$catt = $trans['cat_description'];
-			if ($detail)
-				$rep->NewLine();
+			$rep->NewLine();
 		}
-		if ($stock_id != $trans['stock_id'])
-		{
-			if ($stock_id != '')
-			{
-				if ($detail)
-				{
-					$rep->NewLine();
-					$rep->fontsize -= 2;
-					$rep->TextCol(0, 1, $stock_id);
-					$rep->TextCol(1, 2, $stock_desc);
-					$rep->AmountCol(2, 3, $amt, $dec);
-					$rep->AmountCol(3, 4, $cost, $dec);
-					$rep->AmountCol(4, 5, $cb, $dec);
-					$rep->fontsize += 2;
-				}
-				$amt = $cost = $cb = 0;
-			}
-			$stock_id = $trans['stock_id'];
-			$stock_desc = $trans['description'];
-		}
+
 		$curr = get_customer_currency($trans['debtor_no']);
 		$rate = get_exchange_rate_from_home_currency($curr, sql2date($trans['tran_date']));
 		$trans['amt'] *= $rate;
-		$amt += $trans['amt'];
-		$cost += $trans['cost'];
-		$cb1 = $trans['amt'] - $trans['cost'];
-		$cb += $cb1;
-		$total += $trans['amt'];
-		$total1 += $trans['cost'];
-		$total2 += $cb1;
-		$grandtotal += $trans['amt'];
-		$grandtotal1 += $trans['cost'];
-		$grandtotal2 += $cb1;
-	}
-	if ($detail)
-	{
+		$cb = $trans['amt'] - $trans['cost'];
 		$rep->NewLine();
 		$rep->fontsize -= 2;
-		$rep->TextCol(0, 1, $stock_id);
-		$rep->TextCol(1, 2, $stock_desc);
-		$rep->AmountCol(2, 3, $amt, $dec);
-		$rep->AmountCol(3, 4, $cost, $dec);
-		$rep->AmountCol(4, 5, $cb, $dec);
+		$rep->TextCol(0, 1, $trans['stock_id']);
+		if ($fromcust == reserved_words::get_all_numeric())
+		{
+			$rep->TextCol(1, 2, $trans['description']);
+			$rep->TextCol(2, 3, $trans['debtor_name']);
+		}
+		else
+			$rep->TextCol(1, 3, $trans['description']);
+		$rep->AmountCol(3, 4, $trans['qty'], get_qty_dec($trans['stock_id']));
+		$rep->AmountCol(4, 5, $trans['amt'], $dec);
+		$rep->AmountCol(5, 6, $trans['cost'], $dec);
+		$rep->AmountCol(6, 7, $cb, $dec);
 		$rep->fontsize += 2;
-
-		$rep->NewLine(2, 3);
-		$rep->TextCol(0, 2, _('Total'));
+		$total += $trans['amt'];
+		$total1 += $trans['cost'];
+		$total2 += $cb;
+		$grandtotal += $trans['amt'];
+		$grandtotal1 += $trans['cost'];
+		$grandtotal2 += $cb;
 	}
-	$rep->AmountCol(2, 3, $total, $dec);
-	$rep->AmountCol(3, 4, $total1, $dec);
-	$rep->AmountCol(4, 5, $total2, $dec);
-	if ($detail)
-	{
-		$rep->Line($rep->row - 2);
-		$rep->NewLine();
-	}
+	$rep->NewLine(2, 3);
+	$rep->TextCol(0, 4, _('Total'));
+	$rep->AmountCol(4, 5, $total, $dec);
+	$rep->AmountCol(5, 6, $total1, $dec);
+	$rep->AmountCol(6, 7, $total2, $dec);
+	$rep->Line($rep->row - 2);
+	$rep->NewLine();
 	$rep->NewLine(2, 1);
-	$rep->TextCol(0, 2, _('Grand Total'));
-	$rep->AmountCol(2, 3, $grandtotal, $dec);
-	$rep->AmountCol(3, 4, $grandtotal1, $dec);
-	$rep->AmountCol(4, 5, $grandtotal2, $dec);
+	$rep->TextCol(0, 4, _('Grand Total'));
+	$rep->AmountCol(4, 5, $grandtotal, $dec);
+	$rep->AmountCol(5, 6, $grandtotal1, $dec);
+	$rep->AmountCol(6, 7, $grandtotal2, $dec);
 
 	$rep->Line($rep->row  - 4);
 	$rep->NewLine();

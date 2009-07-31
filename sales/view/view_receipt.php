@@ -41,7 +41,7 @@ label_cells(_("Date of Deposit"), sql2date($receipt['tran_date']), "class='table
 end_row();
 start_row();
 label_cells(_("Payment Currency"), $receipt['curr_code'], "class='tableheader2'");
-label_cells(_("Amount"), price_format($receipt['ov_amount']), "class='tableheader2'");
+label_cells(_("Amount"), price_format($receipt['Total'] - $receipt['ov_discount']), "class='tableheader2'");
 label_cells(_("Discount"), price_format($receipt['ov_discount']), "class='tableheader2'");
 end_row();
 start_row();

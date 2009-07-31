@@ -9,6 +9,7 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
+$page_security = 8;
 //include_once($path_to_root . "reporting/includes/class.pdf.inc");
 include_once(dirname(__FILE__)."/class.pdf.inc");
 include_once(dirname(__FILE__)."/printer_class.inc");
@@ -413,7 +414,10 @@ class FrontReport extends Cpdf
 			}
 			// do not use standard filenames or your sensitive company data 
 			// are world readable
-			$fname = $dir.'/'.uniqid('').'.pdf';
+			if ($email == 1)
+				$fname = $dir.'/'.$this->filename;
+			else	
+				$fname = $dir.'/'.uniqid('').'.pdf';
 			$this->Output($fname, 'F');
 			if ($email == 1)
 			{
@@ -428,12 +432,12 @@ class FrontReport extends Cpdf
 				}
 				require_once($path_to_root . "/reporting/includes/class.mail.inc");
     			$mail = new email($this->company['coy_name'], $this->company['email']);
-    			$from = $this->company['coy_name'] . " <" . $this->company['email'] . ">";
-				if ($myrow['email'] == '') $myrow['email'] = $myrow['contact_email'];
+				if (!isset($myrow['email']) || $myrow['email'] == '') 
+					$myrow['email'] = $myrow['contact_email'];
     			$to = $myrow['DebtorName'] . " <" . $myrow['email'] . ">";
     			$msg = $doc_Dear_Sirs . " " . $myrow['DebtorName'] . ",\n\n" . $doc_AttachedFile . " " . $subject .
     				"\n\n";
-				if ($myrow['dimension_id'] > 0 && $doctype == 10) // helper for payment links
+				if (isset($myrow['dimension_id']) && $myrow['dimension_id'] > 0 && $doctype == 10) // helper for payment links
 				{
 					if ($myrow['dimension_id'] == 1)
 					{
@@ -452,24 +456,12 @@ class FrontReport extends Cpdf
     			$mail->text($msg . $sender);
     			$mail->attachment($fname);
     			$ret = $mail->send();
-    			if (1 == 1) // just for fun and for debugging purposes!!
-    			{
-    				$from = str_replace("<", "(", $from);
-    				$from = str_replace(">", ")", $from);
-    				$to = str_replace("<", "(", $to);
-    				$to = str_replace(">", ")", $to);
-    				$msg2 = "<br>From: " . $from;
-    				$msg2 .= "<br>To: " . $to;
-    				$msg2 .= "<br>Subject: " . $subject;
-    				$msg2 .= "<br>Msg: " . nl2br($msg);
-    				$msg2 .= nl2br($sender) . "<br>";
-    				$msg2 .= "<br>Filepath: " . $fname . "<br>Filename: " . $this->filename . "<br>";
-    			}
 				if (!$ret)
 					display_error(_("Sending document by email failed"));
 				else
 					display_notification($this->title . " " . $myrow['reference'] . " " 
 						. _("has been sent by email."));
+				unlink($fname);		
 			}
 			else
 			{

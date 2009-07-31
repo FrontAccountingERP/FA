@@ -59,17 +59,17 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
     		$sql = "INSERT INTO ".TB_PREF."purch_data (supplier_id, stock_id, price, suppliers_uom,
     			conversion_factor, supplier_description) VALUES (";
     		$sql .= "'".$_POST['supplier_id']."', '" . $_POST['stock_id'] . "', " .
-		    input_num('price') . ", '" . $_POST['suppliers_uom'] . "', " .
-    			input_num('conversion_factor') . ", '" . $_POST['supplier_description'] . "')";
+		    input_num('price',0) . ", '" . $_POST['suppliers_uom'] . "', " .
+    			input_num('conversion_factor') . ", " . db_escape($_POST['supplier_description']) . ")";
 
     		db_query($sql,"The supplier purchasing details could not be added");
     		display_notification(_("This supplier purchasing data has been added."));
        	} else
        	{
-          	$sql = "UPDATE ".TB_PREF."purch_data SET price=" . input_num('price') . ",
+          	$sql = "UPDATE ".TB_PREF."purch_data SET price=" . input_num('price',0) . ",
 				suppliers_uom='" . $_POST['suppliers_uom'] . "',
 				conversion_factor=" . input_num('conversion_factor') . ",
-				supplier_description='" . $_POST['supplier_description'] . "'
+				supplier_description=" . db_escape($_POST['supplier_description']) . "
 				WHERE stock_id='" . $_POST['stock_id'] . "' AND
 				supplier_id='$selected_id'";
           	db_query($sql,"The supplier purchasing details could not be updated");

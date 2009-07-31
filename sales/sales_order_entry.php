@@ -457,7 +457,7 @@ function create_cart($type, $trans_no)
 		} else
 			$doc->due_date = $doc->document_date;
 		$doc->reference = references::get_next($doc->trans_type);
-		$doc->Comments='';
+		//$doc->Comments='';
 		foreach($doc->line_items as $line_no => $line) {
 			$doc->line_items[$line_no]->qty_done = 0;
 		}

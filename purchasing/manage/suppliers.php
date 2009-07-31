@@ -97,7 +97,7 @@ if (isset($_POST['submit']))
 				.db_escape($_POST['contact']). ", "
 				.db_escape($_POST['supp_account_no']). ", "
 				.db_escape($_POST['bank_account']). ", "
-				.db_escape($_POST['credit_limit']). ", "
+				.input_num('credit_limit',0). ", "
 				.db_escape($_POST['dimension_id']). ", "
 				.db_escape($_POST['dimension2_id']). ", "
 				.db_escape($_POST['curr_code']). ", "

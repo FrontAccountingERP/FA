@@ -260,8 +260,8 @@ function add_gl_tax_details($gl_code, $trans_type, $trans_no, $amount, $ex_rate,
 	if(!$tax_type) return;	// $gl_code is not tax account
 	
 	$tax = get_tax_type($tax_type);
-	if ($gl_code == $tax['sales_gl_code']) 
-		$amount = -$amount;
+	//if ($gl_code == $tax['sales_gl_code']) 
+	//	$amount = -$amount;
 	// we have to restore net amount as we cannot know the base amount
 	if ($tax['rate'] == 0) {
 //		display_warning(_("You should not post gl transactions  
@@ -329,14 +329,14 @@ function get_tax_summary($from, $to)
 	$todate = date2sql($to);
 
 	$sql = "SELECT 
-				SUM(IF( trans_type=1 || trans_type=11 || trans_type=20,-1,1)*
-				IF(trans_type=0 || trans_type=2 || trans_type=10 || trans_type=11, net_amount*ex_rate,0)) net_output,
-				SUM(IF( trans_type=1 || trans_type=11 || trans_type=20,-1,1)*
-				IF(trans_type=0 || trans_type=2 || trans_type=10 || trans_type=11, amount*ex_rate,0)) payable,
-				SUM(IF( trans_type=1 || trans_type=11 || trans_type=20,-1,1)*
-				IF(trans_type=0 || trans_type=2 || trans_type=10 || trans_type=11, 0, net_amount*ex_rate)) net_input,
-				SUM(IF( trans_type=1 || trans_type=11 || trans_type=20,-1,1)*
-				IF(trans_type=0 || trans_type=2 || trans_type=10 || trans_type=11, 0, amount*ex_rate)) collectible,
+				SUM(IF(trans_type=11 || trans_type=20,-1,1)*
+				IF(trans_type=2 || trans_type=10 || trans_type=11, net_amount*ex_rate,0)) net_output,
+				SUM(IF(trans_type=11 || trans_type=20,-1,1)*
+				IF(trans_type=2 || trans_type=10 || trans_type=11, amount*ex_rate,0)) payable,
+				SUM(IF(trans_type=11 || trans_type=20,-1,1)*
+				IF(trans_type=2 || trans_type=10 || trans_type=11, 0, net_amount*ex_rate)) net_input,
+				SUM(IF(trans_type=11 || trans_type=20,-1,1)*
+				IF(trans_type=2 || trans_type=10 || trans_type=11, 0, amount*ex_rate)) collectible,
 				taxrec.rate,
 				ttype.id,
 				ttype.name
@@ -388,7 +388,7 @@ function write_journal_entries(&$cart, $reverse)
     	}
 		// store tax details if the gl account is a tax account
 		add_gl_tax_details($journal_item->code_id, 
-			$trans_type, $trans_id, -$journal_item->amount, 1, $date_, $memo_);
+			($journal_item->amount < 0.0 ? 2 : 1), $trans_id, -$journal_item->amount, 1, $date_, $memo_);
 	}
 	
 	if ($new) {
@@ -419,13 +419,13 @@ function write_journal_entries(&$cart, $reverse)
     		if ($is_bank_to)
     		{
     			add_bank_trans($trans_type, $trans_id_reverse, $is_bank_to, $ref,
-    				$reversingDate, $journal_item->amount,
+    				$reversingDate, -$journal_item->amount,
     				0, "", get_company_currency(),
     				"Cannot insert a destination bank transaction");
     		}
 			// store tax details if the gl account is a tax account
 			add_gl_tax_details($journal_item->code_id, 
-				$trans_type, $trans_id, $journal_item->amount, 1, $reversingDate, $memo_);
+				($journal_item->amount < 0.0 ? 2 : 1), $trans_id, $journal_item->amount, 1, $date, $memo_);
     	}
 
     	add_comments($trans_type, $trans_id_reverse, $reversingDate, $memo_);

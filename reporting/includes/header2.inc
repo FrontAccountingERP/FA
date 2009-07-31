@@ -312,7 +312,7 @@
 		if (($doctype == 10 || $doctype == 12) && $this->company['legal_text'] != "") 
 		{
 			$this->TextWrap($ccol, $this->row, $right - $ccol, $this->company['legal_text'], 'C');
-			$this->NewLine();
+//			$this->NewLine();
 		}
 		$this->Font();
 		$temp = $iline6 - $this->lineHeight - 2;

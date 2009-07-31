@@ -101,6 +101,9 @@ function write_customer_trans($trans_type, $trans_no, $debtor_no, $BranchNo,
 		$SQLDueDate = "0000-00-00";
 	else
 		$SQLDueDate = date2sql($due_date);
+	
+	if ($trans_type == systypes::bank_payment())
+		$Total = -$Total;
 
 	if ($new) {
 	$trans_no = get_next_trans_no($trans_type);

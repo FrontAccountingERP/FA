@@ -13,8 +13,16 @@ if (isset($header2type))
 {
 	$doc_Cust_no = _("Cust no");
 	$doc_Date = _("Date");
-	$doc_Charge_To = _("Charge To");
-	$doc_Delivered_To = _("Delivered To");
+	if ($doctype == 8) // Purchase Order
+	{
+		$doc_Charge_To = _("Order To");
+		$doc_Delivered_To = _("Charge To");
+	}
+	else
+	{
+		$doc_Charge_To = _("Charge To");
+		$doc_Delivered_To = _("Delivered To");
+	}	
 	$doc_Shipping_Company = _("Shipping Company");
 	if ($doctype == 9)
 		$doc_Due_Date = _("Delivery Date");
@@ -87,7 +95,7 @@ if (isset($header2type))
 }
 if (isset($emailtype))
 {
-	$doc_Dear_Sirs = _("Dear Sirs");
+	$doc_Dear_Sirs = _("Dear");
 	$doc_AttachedFile = _("Attached you will find ");
 	$doc_Kindest_regards = _("Kindest regards");
 	$doc_Payment_Link = _("You can pay through");
