@@ -14,7 +14,7 @@ $page_security = 2;
 // $ Revision:	2.0 $
 // Creator:	Janusz Dobrwolski
 // date_:	2008-01-14
-// Title:	Print Delivery Notes
+// Title:	Print Workorders
 // draft version!
 // ----------------------------------------------------------------
 $path_to_root="..";

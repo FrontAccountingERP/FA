@@ -14,7 +14,7 @@ $page_security = 15;
 // $ Revision:	2.0 $
 // Creator:	Joe Hunt
 // date_:	2005-05-19
-// Title:	List of Journal Entries
+// Title:	Audit Trail
 // ----------------------------------------------------------------
 $path_to_root="..";
 

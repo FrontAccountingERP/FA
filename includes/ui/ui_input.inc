@@ -143,7 +143,7 @@ function submit($name, $value, $echo=true, $title=false, $atype=false, $icon=fal
 	    ." name=\"$name\"  id=\"$name\" value=\"$value\""
 	    .($title ? " title='$title'" : '')
 	    .">"
-		.($icon ? "<img src='$path_to_root/themes/".user_theme()."/images/$icon'>" : '')
+		.($icon ? "<img src='$path_to_root/themes/".user_theme()."/images/$icon' height='12'>" : '')
 		."<span>$value</span>"
 		."</button>\n";
 	if ($echo)
@@ -246,7 +246,7 @@ function submit_js_confirm($name, $msg) {
 function set_icon($icon, $title=false)
 {
 	global $path_to_root;
-	return "<img src='$path_to_root/themes/".user_theme()."/images/$icon' width='14' height='14' border='0'".($title ? " title='$title'" : "")." />\n";	
+	return "<img src='$path_to_root/themes/".user_theme()."/images/$icon' width='12' height='12' border='0'".($title ? " title='$title'" : "")." />\n";	
 }
 
 function button($name, $value, $title=false, $icon=false,  $aspect='')

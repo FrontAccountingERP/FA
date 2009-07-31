@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+01-Aug-2009 Joe Hunt
+! Reduced size of the icons to 12 pix.
+$ /includes/ui/ui_input.inc
+
 31-Jul-2009 Janusz Dobrowolski
 ! Merged changes from main trunk  2.1.3-2.1.4 (see below)
 $ /admin/attachments.php

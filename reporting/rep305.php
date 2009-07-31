@@ -14,7 +14,7 @@ $page_security = 2;
 // $ Revision:	2.0 $
 // Creator:	Joe Hunt
 // date_:	2005-05-19
-// Title:	Inventory Planning
+// Title:	GRN Valuation Report
 // ----------------------------------------------------------------
 $path_to_root="..";
 
