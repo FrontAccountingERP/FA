@@ -19,6 +19,27 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+03-Aug-2009 Janusz Dobrowolski
++ Clone record option added.
+$ /includes/ui/ui_input.inc
+  /inventory/manage/item_categories.php
+  /inventory/manage/items.php
+# Fixed default focus for some controls
+$ /includes/ui/ui_input.inc
+# Fixed popup top placement on FF2
+$ /js/inserts.js
+! Default submit changed
+$ /purchasing/po_receive_items.php
+
++ Customer/branch/supplier selectable by additional short name instead of full name.
+$ /purchasing/manage/suppliers.php
+  /sales/manage/customer_branches.php
+  /sales/manage/customers.php
+  /includes/ui/ui_lists.inc
+  /sql/alter2.2.sql
+  /sql/en_US-demo.sql
+  /sql/en_US-new.sql
+
 01-Aug-2009 Joe Hunt
 ! Reduced size of the icons to 12 pix.
 $ /includes/ui/ui_input.inc
