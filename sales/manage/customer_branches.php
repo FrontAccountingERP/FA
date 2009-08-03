@@ -62,6 +62,13 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 		set_focus('br_name');
 	}
 
+	if (strlen($_POST['br_ref']) == 0)
+	{
+		$input_error = 1;
+		display_error(_("The Branch short name cannot be empty."));
+		set_focus('br_ref');
+	}
+
 	if ($input_error != 1)
 	{
 
@@ -70,6 +77,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 			/*SelectedBranch could also exist if submit had not been clicked this code would not run in this case cos submit is false of course see the 	delete code below*/
 
 			$sql = "UPDATE ".TB_PREF."cust_branch SET br_name = " . db_escape($_POST['br_name']) . ",
+				branch_ref = " . db_escape($_POST['br_ref']) . ",
 				br_address = ".db_escape($_POST['br_address']). ",
     	        phone=".db_escape($_POST['phone']). ",
     	        fax=".db_escape($_POST['fax']).",
@@ -95,11 +103,12 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 		else
 		{
 			/*Selected branch is null cos no item selected on first time round so must be adding a	record must be submitting new entries in the new Customer Branches form */
-			$sql = "INSERT INTO ".TB_PREF."cust_branch (debtor_no, br_name, br_address,
+			$sql = "INSERT INTO ".TB_PREF."cust_branch (debtor_no, br_name, branch_ref, br_address,
 				salesman, phone, fax,
 				contact_name, area, email, tax_group_id, sales_account, receivables_account, payment_discount_account, sales_discount_account, default_location,
 				br_post_address, disable_trans, group_no, default_ship_via)
 				VALUES (".db_escape($_POST['customer_id']). ",".db_escape($_POST['br_name']) . ", "
+					.db_escape($_POST['br_ref']) . ", "
 					.db_escape($_POST['br_address']) . ", ".db_escape($_POST['salesman']) . ", "
 					.db_escape($_POST['phone']) . ", ".db_escape($_POST['fax']) . ","
 					.db_escape($_POST['contact_name']) . ", ".db_escape($_POST['area']) . ","
@@ -116,11 +125,14 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 
 			$note = _('New customer branch has been added');
 		}
-
 		//run the sql from either of the above possibilites
 		db_query($sql,"The branch record could not be inserted or updated");
 		display_notification($note);
 		$Mode = 'RESET';
+		if (@$_REQUEST['popup']) {
+			set_focus("Select".($_POST['branch_code'] == -1 
+				? db_insert_id(): $_POST['branch_code']));
+		}
 	}
 
 }
@@ -193,7 +205,7 @@ if ($num_branches)
 
 	start_table("$table_style width=60%");
 
-	$th = array(_("Name"), _("Contact"), _("Sales Person"), _("Area"),
+	$th = array(_("Short Name"), _("Name"), _("Contact"), _("Sales Person"), _("Area"),
 		_("Phone No"), _("Fax No"), _("E-mail"), _("Tax Group"), "", "");
 	inactive_control_column($th);
 	if (@$_REQUEST['popup']) $th[] = '';
@@ -203,6 +215,7 @@ if ($num_branches)
 	while ($myrow = db_fetch($result))
 	{
 		start_row();
+		label_cell($myrow["branch_ref"]);
 		label_cell($myrow["br_name"]);
 		label_cell($myrow["contact_name"]);
 		label_cell($myrow["salesman_name"]);
@@ -244,6 +257,7 @@ if ($selected_id != -1)
 		set_focus('br_name');
     	$_POST['branch_code'] = $myrow["branch_code"];
 	    $_POST['br_name']  = $myrow["br_name"];
+	    $_POST['br_ref']  = $myrow["branch_ref"];
 	    $_POST['br_address']  = $myrow["br_address"];
 	    $_POST['br_post_address']  = $myrow["br_post_address"];
 	    $_POST['contact_name'] = $myrow["contact_name"];
@@ -271,6 +285,7 @@ elseif ($Mode != 'ADD_ITEM')
 		$result = db_query($sql,"check failed");
 		$myrow = db_fetch($result);
 		$_POST['br_name'] = $myrow["name"];
+		$_POST['br_ref'] = $myrow["cust_ref"];
 		$_POST['contact_name'] = _('Main Branch');
 		$_POST['br_address'] = $_POST['br_post_address'] = $myrow["address"];
 		$_POST['email'] = $myrow['email'];
@@ -297,6 +312,7 @@ hidden('popup', @$_REQUEST['popup']);
 table_section_title(_("Name and Contact"));
 
 text_row(_("Branch Name:"), 'br_name', null, 35, 40);
+text_row(_("Branch Short Name:"), 'br_ref', null, 30, 30);
 text_row(_("Contact Person:"), 'contact_name', null, 35, 40);
 
 text_row(_("Phone Number:"), 'phone', null, 20, 20);

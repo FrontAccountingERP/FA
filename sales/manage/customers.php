@@ -34,6 +34,13 @@ function can_process()
 		set_focus('CustName');
 		return false;
 	} 
+
+	if (strlen($_POST['cust_ref']) == 0) 
+	{
+		display_error(_("The customer short name cannot be empty."));
+		set_focus('cust_ref');
+		return false;
+	} 
 	
 	if (!check_num('credit_limit', 0))
 	{
@@ -72,6 +79,7 @@ function handle_submit()
 	{
 
 		$sql = "UPDATE ".TB_PREF."debtors_master SET name=" . db_escape($_POST['CustName']) . ", 
+			debtor_ref=" . db_escape($_POST['cust_ref']) . ",
 			address=".db_escape($_POST['address']) . ", 
 			tax_id=".db_escape($_POST['tax_id']) . ", 
 			curr_code=".db_escape($_POST['curr_code']) . ", 
@@ -99,9 +107,9 @@ function handle_submit()
 
 		begin_transaction();
 
-		$sql = "INSERT INTO ".TB_PREF."debtors_master (name, address, tax_id, email, dimension_id, dimension2_id,  
+		$sql = "INSERT INTO ".TB_PREF."debtors_master (name, debtor_ref, address, tax_id, email, dimension_id, dimension2_id,  
 			curr_code, credit_status, payment_terms, discount, pymt_discount,credit_limit,  
-			sales_type) VALUES (".db_escape($_POST['CustName']) .", " 
+			sales_type) VALUES (".db_escape($_POST['CustName']) .", " .db_escape($_POST['cust_ref']) .", "
 			.db_escape($_POST['address']) . ", " . db_escape($_POST['tax_id']) . ","
 			.db_escape($_POST['email']) . ", ".db_escape($_POST['dimension_id']) . ", " 
 			.db_escape($_POST['dimension2_id']) . ", ".db_escape($_POST['curr_code']) . ", 
@@ -205,7 +213,7 @@ else
 
 if ($new_customer) 
 {
-	$_POST['CustName'] = $_POST['address'] = $_POST['tax_id']  = '';
+	$_POST['CustName'] = $_POST['cust_ref'] = $_POST['address'] = $_POST['tax_id']  = '';
 	$_POST['dimension_id'] = 0;
 	$_POST['dimension2_id'] = 0;
 	$_POST['sales_type'] = -1;
@@ -226,6 +234,7 @@ else
 	$myrow = db_fetch($result);
 
 	$_POST['CustName'] = $myrow["name"];
+	$_POST['cust_ref'] = $myrow["debtor_ref"];
 	$_POST['address']  = $myrow["address"];
 	$_POST['tax_id']  = $myrow["tax_id"];
 	$_POST['email']  = $myrow["email"];
@@ -246,6 +255,7 @@ table_section(1);
 table_section_title(_("Name and Address"));
 
 text_row(_("Customer Name:"), 'CustName', $_POST['CustName'], 40, 80);
+text_row(_("Customer Short Name:"), 'cust_ref', null, 30, 30);
 textarea_row(_("Address:"), 'address', $_POST['address'], 35, 5);
 
 email_row(_("E-mail:"), 'email', null, 40, 40);
@@ -304,7 +314,7 @@ if ($new_customer)
 else 
 {
 	submit_center_first('submit', _("Update Customer"), 
-	  _('Update customer data'), true);
+	  _('Update customer data'), @$_REQUEST['popup'] ? true : 'default');
 	submit_return('select', get_post('customer_id'), _("Select this customer and return to document entry."));
 	submit_center_last('delete', _("Delete Customer"), 
 	  _('Delete customer data if have been never used'), true);

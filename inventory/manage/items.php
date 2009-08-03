@@ -22,7 +22,7 @@ include_once($path_to_root . "/includes/data_checks.inc");
 include_once($path_to_root . "/inventory/includes/inventory_db.inc");
 
 $user_comp = user_company();
-$new_item = get_post('stock_id')=='' || get_post('cancel'); 
+$new_item = get_post('stock_id')=='' || get_post('cancel') || get_post('clone'); 
 //------------------------------------------------------------------------------------
 
 if (isset($_GET['stock_id']))
@@ -96,7 +96,6 @@ if (isset($_FILES['pic']) && $_FILES['pic']['name'] != '')
 	$Ajax->activate('details');
  /* EOF Add Image upload for New Item  - by Ori */
 }
-
 
 check_db_has_stock_categories(_("There are no item categories defined in the system. At least one item category is required to add a item."));
 
@@ -200,6 +199,13 @@ if (isset($_POST['addupdate']))
 	}
 }
 
+if (get_post('clone')) {
+	unset($_POST['stock_id']);
+	unset($_POST['inactive']);
+	set_focus('NewStockID');
+	$Ajax->activate('_page_body');
+}
+
 //------------------------------------------------------------------------------------
 
 function check_usage($stock_id, $dispmsg=true)
@@ -285,7 +291,7 @@ if (db_has_stock_items())
 	start_row();
     stock_items_list_cells(_("Select an item:"), 'stock_id', null,
 	  _('New item'), true, check_value('show_inactive'));
-	$new_item = get_post('stock_id')==''; 
+	$new_item = get_post('stock_id')=='';
 	check_cells(_("Show inactive:"), 'show_inactive', null, true);
 	end_row();
 	end_table();
@@ -304,7 +310,6 @@ table_section(1);
 table_section_title(_("Item"));
 
 //------------------------------------------------------------------------------------
-
 if ($new_item) 
 {
 	text_row(_("Item Code:"), 'NewStockID', null, 21, 20);
@@ -432,9 +437,9 @@ else
 
 label_row("&nbsp;", $stock_img_link);
 if ($check_remove_image)
-	check_row(_("Delete Image:"), 'del_image', $_POST['del_image']);
+	check_row(_("Delete Image:"), 'del_image');
 	
-check_row(_("Exclude from sales:"), 'no_sale', $_POST['no_sale']);
+check_row(_("Exclude from sales:"), 'no_sale');
 
 record_status_list_row(_("Item status:"), 'inactive');
 end_outer_table(1);
@@ -450,6 +455,7 @@ else
 		@$_REQUEST['popup'] ? true : 'default');
 	submit_return('select', get_post('stock_id'), 
 		_("Select this items and return to document entry."), 'default');
+	submit('clone', _("Clone This Item"), true, '', true);
 	submit('delete', _("Delete This Item"), true, '', true);
 	submit_center_last('cancel', _("Cancel"), _("Cancel Edition"), 'cancel');
 }

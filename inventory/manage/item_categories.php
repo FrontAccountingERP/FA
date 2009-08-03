@@ -160,7 +160,7 @@ if ($selected_id != -1)
 	} 
 	hidden('selected_id', $selected_id);
 	hidden('category_id');
-} else {
+} else if ($Mode != 'CLONE') {
 		$_POST['long_description'] = '';
 		$_POST['description'] = '';
 		$_POST['no_sale']  = 0;
@@ -194,7 +194,7 @@ stock_item_types_list_row(_("Item Type:"), 'mb_flag', null, true);
 
 stock_units_list_row(_("Units of Measure:"), 'units', null);
 
-check_row(_("Exclude from sales:"), 'no_sale', $_POST['no_sale']);
+check_row(_("Exclude from sales:"), 'no_sale');
 
 gl_all_accounts_list_row(_("Sales Account:"), 'sales_account', $_POST['sales_account']);
 
@@ -231,7 +231,7 @@ if ($dim < 2)
 
 end_table(1);
 div_end();
-submit_add_or_update_center($selected_id == -1, '', 'both');
+submit_add_or_update_center($selected_id == -1, '', 'both', true);
 
 end_form();
 
