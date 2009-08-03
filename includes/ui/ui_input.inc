@@ -47,11 +47,12 @@ function simple_page_mode($numeric_id = true)
 
 	$default = $numeric_id ? -1 : '';
 	$selected_id = get_post('selected_id', $default);
-	foreach (array('ADD_ITEM', 'UPDATE_ITEM', 'RESET') as $m) {
+	foreach (array('ADD_ITEM', 'UPDATE_ITEM', 'RESET', 'CLONE') as $m) {
 		if (isset($_POST[$m])) {
 			$Ajax->activate('_page_body');
-			if ($m == 'RESET') 
+			if ($m == 'RESET'  || $m == 'CLONE') 
 				$selected_id = $default;
+			unset($_POST['_focus']);
 			$Mode = $m; return;
 		}
 	}
@@ -135,7 +136,6 @@ function submit($name, $value, $echo=true, $title=false, $atype=false, $icon=fal
 				" aspect='fallback'" : " style='display:none;'"; break;
 	 }
 
-	default_focus($name);
 	$submit_str = "<button class=\""
 	    .($atype ? 'ajaxsubmit' : 'inputsubmit')
 		."\" type=\"submit\""
@@ -177,7 +177,7 @@ function submit_center_last($name, $value, $title=false, $async=false, $icon=fal
 	'both' - use both Ctrl-Enter and Escape hotkeys 
 	'cancel' - apply to 'RESET' button
 */
-function submit_add_or_update($add=true, $title=false, $async=false)
+function submit_add_or_update($add=true, $title=false, $async=false, $clone=false)
 {
 	$cancel = $async;
 
@@ -192,25 +192,27 @@ function submit_add_or_update($add=true, $title=false, $async=false)
 	if ($add)
 		submit('ADD_ITEM', _("Add new"), true, $title, $async);
 	else {
-		submit('UPDATE_ITEM', _("Update"), true, $title, $async);
-		submit('RESET', _("Cancel"), true, $title, $cancel);
+		submit('UPDATE_ITEM', _("Update"), true, _('Submit changes'), $async);
+		if ($clone) submit('CLONE', _("Clone"), true, 
+			_('Edit new record with current data'), $async);
+		submit('RESET', _("Cancel"), true, _('Cancel edition'), $cancel);
 	}
 }
 
-function submit_add_or_update_center($add=true, $title=false, $async=false)
+function submit_add_or_update_center($add=true, $title=false, $async=false, $clone=false)
 {
 	echo "<center>";
-	submit_add_or_update($add, $title, $async);
+	submit_add_or_update($add, $title, $async, $clone);
 	echo "</center>";
 }
 
-function submit_add_or_update_row($add=true, $right=true, $extra="", $title=false, $async=false)
+function submit_add_or_update_row($add=true, $right=true, $extra="", $title=false, $async=false, $clone = false)
 {
 	echo "<tr>";
 	if ($right)
 		echo "<td>&nbsp;</td>\n";
 	echo "<td $extra>";
-	submit_add_or_update($add, $title, $async);
+	submit_add_or_update($add, $title, $async, $clone);
 	echo "</td></tr>\n";
 }
 
@@ -314,7 +316,7 @@ function checkbox($label, $name, $value=null, $submit_on_change=false, $title=fa
   	global $Ajax;
 
 	$str = '';	
-	default_focus($name);
+
 	if ($label)
 		$str .= $label . "  ";
 	if ($submit_on_change !== false) {
@@ -341,7 +343,7 @@ function check($label, $name, $value=null, $submit_on_change=false, $title=false
 	echo checkbox($label, $name, $value, $submit_on_change, $title);
 }
 
-function check_cells($label, $name, $value, $submit_on_change=false, $title=false,
+function check_cells($label, $name, $value=null, $submit_on_change=false, $title=false,
 	$params='')
 {
 	if ($label != null)
@@ -351,7 +353,7 @@ function check_cells($label, $name, $value, $submit_on_change=false, $title=fals
 	echo "</td>";
 }
 
-function check_row($label, $name, $value, $submit_on_change=false, $title=false)
+function check_row($label, $name, $value=null, $submit_on_change=false, $title=false)
 {
 	echo "<tr>";
 	echo check_cells($label, $name, $value, $submit_on_change, $title);
@@ -582,6 +584,8 @@ function date_cells($label, $name, $title = null, $check=null, $inc_days=0,
 	$aspect = $check ? 'aspect="cdate"' : '';
 	if ($check && (get_post($name) != Today()))
 		$aspect .= ' style="color:#FF0000"';
+
+	default_focus($name);
 
 	echo "<input type=\"text\" name=\"$name\" $class $aspect size=\"9\" maxlength=\"12\" value=\"" 
 	 . $_POST[$name]. "\""
