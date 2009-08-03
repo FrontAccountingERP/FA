@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+04-Aug-2009 Joe Hunt
+# [0000150] Logo on printed papers is placed on top of the adress rule nr 1
+$ /reporting/includes/header2.inc
+
 ------------------------------- Release 2.1.4 ----------------------------------
 30-Jul-2009 Joe Hunt
 ! Release 2.1.4
@@ -75,7 +79,7 @@ $ /includes/db/manufacturing.inc
 $ /admin/attachments.php
 # [0000140] Numeric format bug in credit limit input.
 $ /purchasing/manage/suppliers.php
-# [0000143] Bad format of PO popup window (jackel7007).
+# [0000143] Bad format of PO popup window (Softechmatrix).
 $ /purchasing/view/view_grn.php
 
 09-Jul-2009 Janusz Dobrowolski
