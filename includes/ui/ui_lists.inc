@@ -366,7 +366,7 @@ function supplier_list($name, $selected_id=null, $spec_option=false, $submit_on_
 {
 	global $all_items;
 
-	$sql = "SELECT supplier_id, supp_name, curr_code, inactive FROM ".TB_PREF."suppliers ";
+	$sql = "SELECT supplier_id, supp_ref, curr_code, inactive FROM ".TB_PREF."suppliers ";
 
 	$mode = get_company_pref('no_supplier_list');
 
@@ -415,7 +415,7 @@ function customer_list($name, $selected_id=null, $spec_option=false, $submit_on_
 {
 	global $all_items;
 
-	$sql = "SELECT debtor_no, name, curr_code, inactive FROM ".TB_PREF."debtors_master ";
+	$sql = "SELECT debtor_no, debtor_ref, curr_code, inactive FROM ".TB_PREF."debtors_master ";
 
 	$mode = get_company_pref('no_customer_list');
 
@@ -467,7 +467,7 @@ function customer_branches_list($customer_id, $name, $selected_id=null,
 {
 	global $all_items;
 
-	$sql = "SELECT branch_code, br_name FROM ".TB_PREF."cust_branch
+	$sql = "SELECT branch_code, branch_ref FROM ".TB_PREF."cust_branch
 		WHERE debtor_no='" . $customer_id . "' ";
 
 	if ($editkey)

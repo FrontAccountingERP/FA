@@ -472,6 +472,7 @@ CREATE TABLE `0_cust_branch` (
   `branch_code` int(11) NOT NULL auto_increment,
   `debtor_no` int(11) NOT NULL default '0',
   `br_name` varchar(60) NOT NULL default '',
+  `branch_ref` 	varchar(30) NOT NULL default '',
   `br_address` tinytext NOT NULL,
   `area` int(11) default NULL,
   `salesman` int(11) NOT NULL default '0',
@@ -566,6 +567,7 @@ DROP TABLE IF EXISTS `0_debtors_master`;
 CREATE TABLE `0_debtors_master` (
   `debtor_no` int(11) NOT NULL auto_increment,
   `name` varchar(80) NOT NULL default '',
+  `debtor_ref` varchar(30) NOT NULL,
   `address` tinytext,
   `email` varchar(100) NOT NULL default '',
   `tax_id` varchar(55) NOT NULL default '',
@@ -1437,6 +1439,7 @@ DROP TABLE IF EXISTS `0_suppliers`;
 CREATE TABLE `0_suppliers` (
   `supplier_id` int(11) NOT NULL auto_increment,
   `supp_name` varchar(60) NOT NULL default '',
+  `supp_ref` varchar(30) NOT NULL default '',
   `address` tinytext NOT NULL,
   `supp_address` tinytext NOT NULL,
   `phone` varchar(30) NOT NULL default '',

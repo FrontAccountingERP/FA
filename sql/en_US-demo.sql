@@ -490,6 +490,7 @@ CREATE TABLE `0_cust_branch` (
   `branch_code` int(11) NOT NULL auto_increment,
   `debtor_no` int(11) NOT NULL default '0',
   `br_name` varchar(60) NOT NULL default '',
+  `branch_ref` 	varchar(30) NOT NULL default '',
   `br_address` tinytext NOT NULL,
   `area` int(11) default NULL,
   `salesman` int(11) NOT NULL default '0',
@@ -516,9 +517,9 @@ CREATE TABLE `0_cust_branch` (
 
 ### Data of table `0_cust_branch` ###
 
-INSERT INTO `0_cust_branch` VALUES ('1', '1', 'Beefeater Ltd.', '', '1', '1', '', '', 'Main Branch', '', 'DEF', '2', '', '4510', '1200', '4500', '1', '0', 'Address 1\r\nAddress 2\r\nAddress 3', '0', '0');
-INSERT INTO `0_cust_branch` VALUES ('2', '2', 'Ghostbusters Corp.', 'Address 1\r\nAddress 2\r\nAddress 3', '1', '1', '', '', 'Main Branch', '', 'DEF', '1', '', '4510', '1200', '4500', '1', '0', 'Address 1\r\nAddress 2\r\nAddress 3', '0', '0');
-INSERT INTO `0_cust_branch` VALUES ('3', '3', 'Brezan', 'Address 1\r\nAddress 2\r\nAddress 3', '1', '1', '', '', 'Main Branch', '', 'DEF', '1', '', '4510', '1200', '4500', '1', '0', 'Address 1\r\nAddress 2\r\nAddress 3', '0', '0');
+INSERT INTO `0_cust_branch` VALUES ('1', '1', 'Beefeater Ltd.', 'Beefeater', '', '1', '1', '', '', 'Main Branch', '', 'DEF', '2', '', '4510', '1200', '4500', '1', '0', 'Address 1\r\nAddress 2\r\nAddress 3', '0', '0');
+INSERT INTO `0_cust_branch` VALUES ('2', '2', 'Ghostbusters Corp.', 'Ghostbusters', 'Address 1\r\nAddress 2\r\nAddress 3', '1', '1', '', '', 'Main Branch', '', 'DEF', '1', '', '4510', '1200', '4500', '1', '0', 'Address 1\r\nAddress 2\r\nAddress 3', '0', '0');
+INSERT INTO `0_cust_branch` VALUES ('3', '3', 'Brezan', 'Brezan', 'Address 1\r\nAddress 2\r\nAddress 3', '1', '1', '', '', 'Main Branch', '', 'DEF', '1', '', '4510', '1200', '4500', '1', '0', 'Address 1\r\nAddress 2\r\nAddress 3', '0', '0');
 
 
 ### Structure of table `0_debtor_trans` ###
@@ -603,6 +604,7 @@ DROP TABLE IF EXISTS `0_debtors_master`;
 CREATE TABLE `0_debtors_master` (
   `debtor_no` int(11) NOT NULL auto_increment,
   `name` varchar(80) NOT NULL default '',
+  `debtor_ref` varchar(30) NOT NULL,
   `address` tinytext,
   `email` varchar(100) NOT NULL default '',
   `tax_id` varchar(55) NOT NULL default '',
@@ -623,9 +625,9 @@ CREATE TABLE `0_debtors_master` (
 
 ### Data of table `0_debtors_master` ###
 
-INSERT INTO `0_debtors_master` VALUES ('1', 'Beefeater Ltd.', 'Addr 1\r\nAddr 2\r\nAddr 3', '', '345678', 'GBP', '2', '0', '0', '1', '3', '0', '0', '1000', '0');
-INSERT INTO `0_debtors_master` VALUES ('2', 'Ghostbusters Corp.', 'Address 1\r\nAddress 2\r\nAddress 3', '', '2222222', 'USD', '1', '0', '0', '1', '4', '0', '0', '1000', '0');
-INSERT INTO `0_debtors_master` VALUES ('3', 'Brezan', 'Address 1\r\nAddress 2\r\nAddress 3', '', '7777777', 'EUR', '2', '0', '0', '1', '3', '0', '0', '1000', '0');
+INSERT INTO `0_debtors_master` VALUES ('1', 'Beefeater Ltd.', 'Beefeater', 'Addr 1\r\nAddr 2\r\nAddr 3', '', '345678', 'GBP', '2', '0', '0', '1', '3', '0', '0', '1000', '0');
+INSERT INTO `0_debtors_master` VALUES ('2', 'Ghostbusters Corp.', 'Ghostbusters', 'Address 1\r\nAddress 2\r\nAddress 3', '', '2222222', 'USD', '1', '0', '0', '1', '4', '0', '0', '1000', '0');
+INSERT INTO `0_debtors_master` VALUES ('3', 'Brezan', 'Brezan', 'Address 1\r\nAddress 2\r\nAddress 3', '', '7777777', 'EUR', '2', '0', '0', '1', '3', '0', '0', '1000', '0');
 
 
 ### Structure of table `0_dimensions` ###
@@ -1655,6 +1657,7 @@ DROP TABLE IF EXISTS `0_suppliers`;
 CREATE TABLE `0_suppliers` (
   `supplier_id` int(11) NOT NULL auto_increment,
   `supp_name` varchar(60) NOT NULL default '',
+  `supp_ref` varchar(30) NOT NULL default '',
   `address` tinytext NOT NULL,
   `supp_address` tinytext NOT NULL,
   `phone` varchar(30) NOT NULL default '',
@@ -1682,9 +1685,9 @@ CREATE TABLE `0_suppliers` (
 
 ### Data of table `0_suppliers` ###
 
-INSERT INTO `0_suppliers` VALUES ('1', 'Junk Beer ApS', 'Mailing 1\r\nMailing 2\r\nMailing 3', 'Address 1\r\nAddress 2\r\nAddress 3', '+45 55667788', '', '123456', 'Contact', '111', '', '', '', 'DKK', '3', '1', '0', '2', '1', '5010', '2100', '5060', 'A supplier with junk beers.', '0');
-INSERT INTO `0_suppliers` VALUES ('2', 'Lucky Luke Inc.', 'Mailing 1\r\nMailing 2\r\nMailing 3', 'Address 1\r\nAddress 2\r\nAddress 3', '(111) 222.333.444', '', '654321', 'Luke', '333', '', '', '', 'USD', '3', '0', '0', '1', '1', '5010', '2100', '5060', '', '0');
-INSERT INTO `0_suppliers` VALUES ('3', 'Money Makers Ltd.', 'Mailing 1\r\nMailing 2\r\nMailing 3', 'Address 1\r\nAddress 2\r\nAddress 3', '+44 444 555 666', '', '987654', 'Makers', '222', '', '', '', 'GBP', '3', '0', '0', '2', '1', '5010', '2100', '5060', '', '0');
+INSERT INTO `0_suppliers` VALUES ('1', 'Junk Beer ApS', 'Junk Beer', 'Mailing 1\r\nMailing 2\r\nMailing 3', 'Address 1\r\nAddress 2\r\nAddress 3', '+45 55667788', '', '123456', 'Contact', '111', '', '', '', 'DKK', '3', '1', '0', '2', '1', '5010', '2100', '5060', 'A supplier with junk beers.', '0');
+INSERT INTO `0_suppliers` VALUES ('2', 'Lucky Luke Inc.', 'Lucky Luke', 'Mailing 1\r\nMailing 2\r\nMailing 3', 'Address 1\r\nAddress 2\r\nAddress 3', '(111) 222.333.444', '', '654321', 'Luke', '333', '', '', '', 'USD', '3', '0', '0', '1', '1', '5010', '2100', '5060', '', '0');
+INSERT INTO `0_suppliers` VALUES ('3', 'Money Makers Ltd.', 'Money Makers', 'Mailing 1\r\nMailing 2\r\nMailing 3', 'Address 1\r\nAddress 2\r\nAddress 3', '+44 444 555 666', '', '987654', 'Makers', '222', '', '', '', 'GBP', '3', '0', '0', '2', '1', '5010', '2100', '5060', '', '0');
 
 
 ### Structure of table `0_sys_types` ###

@@ -36,6 +36,7 @@ ALTER TABLE `0_stock_category` ADD COLUMN `dflt_no_sale` tinyint(1) NOT NULL def
 ALTER TABLE `0_users` ADD COLUMN `sticky_doc_date` TINYINT(1) DEFAULT '0';
 
 ALTER TABLE `0_debtors_master` MODIFY COLUMN `name` varchar(100) NOT NULL default '';
+
 ALTER TABLE `0_cust_branch` ADD COLUMN `inactive` tinyint(1) NOT NULL default '0';
 
 ALTER TABLE `0_sys_types` DROP COLUMN `type_name`;
@@ -73,3 +74,10 @@ CREATE TABLE `0_audit_trail` (
 
 ALTER TABLE `0_stock_master` ADD COLUMN `no_sale` tinyint(1) NOT NULL default '0';
 ALTER TABLE `0_currencies` ADD COLUMN `auto_update` tinyint(1) NOT NULL default '1';
+
+ALTER TABLE `0_debtors_master` ADD COLUMN `debtor_ref` varchar(30) NOT NULL;
+UPDATE `0_debtors_master` SET `debtor_ref`=`name` WHERE 1; 
+ALTER TABLE `0_suppliers` ADD COLUMN `supp_ref` varchar(30) NOT NULL;
+UPDATE `0_suppliers` SET `supp_ref`=`supp_name` WHERE 1; 
+ALTER TABLE `0_cust_branch` ADD COLUMN `branch_ref`	varchar(30) NOT NULL;
+UPDATE `0_cust_branch` SET `branch_ref`=`br_name` WHERE 1; 
