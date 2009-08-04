@@ -161,6 +161,8 @@ function print_sales_orders()
 			if ($myrow['contact_email'] == '')
 			{
 				$myrow['contact_email'] = $branch['email'];
+				if ($myrow['contact_email'] == '')
+					$myrow['contact_email'] = $myrow['master_email'];
 				$myrow['DebtorName'] = $branch['br_name'];
 			}
 			$myrow['reference'] = $i;

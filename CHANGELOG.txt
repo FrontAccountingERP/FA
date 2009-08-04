@@ -22,6 +22,9 @@ $ -> Affected files
 04-Aug-2009 Joe Hunt
 # [0000150] Logo on printed papers is placed on top of the adress rule nr 1
 $ /reporting/includes/header2.inc
+# [0000145] Email sales order doesn't work if no email on branch but on customer
+$ /sales/includes/db/sales_order_db.inc
+  /reporting/rep109.php
 
 ------------------------------- Release 2.1.4 ----------------------------------
 30-Jul-2009 Joe Hunt
