@@ -31,6 +31,8 @@ $ /includes/ui/ui_controls.inc
   /sales/customer_delivery.php
   /sales/customer_invoice.php
   /sales/sales_order_entry.php
+! Added new access levels
+$ /includes/access_levels.inc (new file)
   
 03-Aug-2009 Janusz Dobrowolski
 + Clone record option added.
