@@ -15,7 +15,7 @@
 // You only need full parameter list for invoices/credit notes
 
 function print_document_link($doc_no, $link_text, $link=true, $type_no, 
-	$icon=false, $class='printlink', $id='')
+	$icon=false, $class='printlink', $id='', $email=0)
 {
 	global $path_to_root;
 	include_once($path_to_root . "/includes/types.inc");
@@ -32,7 +32,7 @@ function print_document_link($doc_no, $link_text, $link=true, $type_no,
 				'PARAM_1' => $doc_no, 
 				'PARAM_2' => "", 
 				'PARAM_3' => get_first_bank_account(), 
-				'PARAM_4' => 0, 
+				'PARAM_4' => $email, 
 				'PARAM_5' => 0, 
 				'PARAM_6' => "");
 			break;
@@ -42,7 +42,7 @@ function print_document_link($doc_no, $link_text, $link=true, $type_no,
 			$ar = array(
 				'PARAM_0' => $doc_no, 
 				'PARAM_1' => $doc_no, 
-				'PARAM_2' => 0, 
+				'PARAM_2' => $email, 
 				'PARAM_3' => "");
 			break;
 		case 10 : // Sales Invoice
@@ -54,7 +54,7 @@ function print_document_link($doc_no, $link_text, $link=true, $type_no,
 				'PARAM_1' => $doc_no, 
 				'PARAM_2' => "", 
 				'PARAM_3' => get_first_bank_account(), 
-				'PARAM_4' => 0, 
+				'PARAM_4' => $email, 
 				'PARAM_5' => "",
 				'PARAM_6' => "", 
 				'PARAM_7' => $type_no);
@@ -67,7 +67,7 @@ function print_document_link($doc_no, $link_text, $link=true, $type_no,
 				'PARAM_1' => $doc_no, 
 				'PARAM_2' => "", 
 				'PARAM_3' => get_first_bank_account(), 
-				'PARAM_4' => 0, 
+				'PARAM_4' => $email, 
 				'PARAM_5' => "");
 			break;
 //		default: $ar = array();

@@ -19,6 +19,19 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+04-Aug-2009 Joe Hunt
++ Added email links after creating documents
+$ /includes/ui/ui_controls.inc
+  /manufacturing/work_order_entry.php
+  /purchasing/po_entry_items.php
+  /reporting/reports_main.php
+  /reporting/includes/reporting.inc
+  /sales/create_recurrent_invoices.php
+  /sales/credit_note_entry.php
+  /sales/customer_delivery.php
+  /sales/customer_invoice.php
+  /sales/sales_order_entry.php
+  
 03-Aug-2009 Janusz Dobrowolski
 + Clone record option added.
 $ /includes/ui/ui_input.inc

@@ -75,6 +75,7 @@ if (isset($_GET['AddedID'])) {
 	submenu_view(_("&View This Order"), 30, $order_no);
 
 	submenu_print(_("&Print This Order"), 30, $order_no, 'prtopt');
+	submenu_print(_("&Email This Order"), 30, $order_no, null, 1);
 	set_focus('prtopt');
 	
 	submenu_option(_("Make &Delivery Against This Order"),
@@ -92,6 +93,7 @@ if (isset($_GET['AddedID'])) {
 	submenu_view(_("&View This Order"), 30, $order_no);
 
 	submenu_print(_("&Print This Order"), 30, $order_no, 'prtopt');
+	submenu_print(_("&Email This Order"), 30, $order_no, null, 1);
 	set_focus('prtopt');
 
 	submenu_option(_("Confirm Order Quantities and Make &Delivery"),
@@ -110,6 +112,7 @@ if (isset($_GET['AddedID'])) {
 	submenu_view(_("&View This Delivery"), 13, $delivery);
 
 	submenu_print(_("&Print Delivery Note"), 13, $delivery, 'prtopt');
+	submenu_print(_("&Email Delivery Note"), 13, $delivery, null, 1);
 	set_focus('prtopt');
 
 	display_note(get_gl_view_str(13, $delivery, _("View the GL Journal Entries for this Dispatch")),0, 1);
@@ -134,6 +137,7 @@ if (isset($_GET['AddedID'])) {
 	submenu_view(_("&View This Invoice"), 10, $invoice);
 
 	submenu_print(_("&Print Sales Invoice"), 10, $invoice, 'prtopt');
+	submenu_print(_("&Email Sales Invoice"), 10, $invoice, null, 1);
 	set_focus('prtopt');
 
 	display_note(get_gl_view_str(10, $invoice, _("View the GL &Journal Entries for this Invoice")),0, 1);

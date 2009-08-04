@@ -196,9 +196,9 @@ function submenu_view($title, $type, $number, $id=null)
 	display_note(get_trans_view_str($type, $number, $title, false, 'menu_option', $id), 0, 1);
 }
 
-function submenu_print($title, $type, $number, $id=null)
+function submenu_print($title, $type, $number, $id=null, $email=0)
 {
-	display_note(print_document_link($number, $title, true, $type, false, 'menu_option', $id), 0, 1);
+	display_note(print_document_link($number, $title, true, $type, false, 'menu_option', $id, $email), 0, 1);
 }
 //-----------------------------------------------------------------------------------
 

@@ -89,6 +89,8 @@ if (isset($_GET['recurrent']))
 		$ar = array('PARAM_0' => $min,	'PARAM_1' => $max, 'PARAM_2' => "", 'PARAM_3' => get_first_bank_account(), 
 			'PARAM_4' => 0,	'PARAM_5' => 0,	'PARAM_6' => "", 'PARAM_7' => 10);
 		display_note(print_link(_("&Print Recurrent Invoices # $min - # $max"), 107, $ar), 0, 1);
+		$ar['PARAM_4'] = 1; 
+		display_note(print_link(_("&Email Recurrent Invoices # $min - # $max"), 107, $ar), 0, 1);
 	}
 }	
 

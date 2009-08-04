@@ -177,7 +177,7 @@ $reports->addReport(_('Manufactoring'),401,_('&Bill of Material Listing'),
 $reports->addReport(_('Manufactoring'),409,_('Print &Work Orders'),
 	array(	new ReportParam(_('From'),'WORKORDER'),
 			new ReportParam(_('To'),'WORKORDER'),
-			new ReportParam(_('email Customers'),'YES_NO'),
+			new ReportParam(_('Email Locations'),'YES_NO'),
 			new ReportParam(_('Comments'),'TEXTBOX')));
 $reports->addReportClass(_('Dimensions'));
 if ($dim > 0)
