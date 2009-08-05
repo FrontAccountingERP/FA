@@ -25,6 +25,9 @@ $ /reporting/includes/header2.inc
 # [0000145] Email sales order doesn't work if no email on branch but on customer
 $ /sales/includes/db/sales_order_db.inc
   /reporting/rep109.php
+! Changed so $use_oldstyle_convert=1 variable in config.php (line 78) gives fully backwards compatibility in 
+  Balance Sheet, PL Statements and Monthly Bread Down reports.
+$ /gl/manage/gl_account_classes.php.  
 
 ------------------------------- Release 2.1.4 ----------------------------------
 30-Jul-2009 Joe Hunt

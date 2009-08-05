@@ -24,6 +24,7 @@ simple_page_mode(true);
 
 function can_process() 
 {
+	global $use_oldstyle_convert;
 	if (!is_numeric($_POST['id'])) 
 	{
 		display_error( _("The account class ID must be numeric."));
@@ -36,7 +37,8 @@ function can_process()
 		set_focus('name');
 		return false;
 	}
-
+	if (isset($use_oldstyle_convert) && $use_oldstyle_convert == 1)
+		$_POST['Balance'] = check_value($_POST['Balance']);
 	return true;
 }
 
@@ -107,6 +109,8 @@ $result = get_account_classes();
 start_form();
 start_table($table_style);
 $th = array(_("Class ID"), _("Class Name"), _("Class Type"), "", "");
+if (isset($use_oldstyle_convert) && $use_oldstyle_convert == 1)
+	$th[2] = _("Balance Sheet");
 table_header($th);
 
 $k = 0;
@@ -117,7 +121,13 @@ while ($myrow = db_fetch($result))
 
 	label_cell($myrow["cid"]);
 	label_cell($myrow['class_name']);
-	label_cell($class_types[$myrow["balance_sheet"]]);
+	if (isset($use_oldstyle_convert) && $use_oldstyle_convert == 1)
+	{
+		$myrow['balance_sheet'] = ($myrow["balance_sheet"] >= CL_ASSETS && $myrow["balance_sheet"] < CL_INCOME ? 1 : 0);
+		label_cell(($myrow['balance_sheet'] == 1 ? _("Yes") : _("No")));
+	}	
+	else	
+		label_cell($class_types[$myrow["balance_sheet"]]);
 	edit_button_cell("Edit".$myrow["cid"], _("Edit"));
 	delete_button_cell("Delete".$myrow["cid"], _("Delete"));
 	end_row();
@@ -140,7 +150,10 @@ if ($selected_id != -1)
 
 	$_POST['id']  = $myrow["cid"];
 	$_POST['name']  = $myrow["class_name"];
-	$_POST['Balance']  = $myrow["balance_sheet"];
+	if (isset($use_oldstyle_convert) && $use_oldstyle_convert == 1)
+		$_POST['Balance'] = ($myrow["balance_sheet"] >= CL_ASSETS && $myrow["balance_sheet"] < CL_INCOME ? 1 : 0);
+	else
+		$_POST['Balance']  = $myrow["balance_sheet"];
 	hidden('selected_id', $selected_id);
  }
 	hidden('id');
@@ -155,7 +168,10 @@ else
 
 text_row_ex(_("Class Name:"), 'name', 50, 60);
 
-class_types_list_row(_("Class Type:"), 'Balance', null);
+if (isset($use_oldstyle_convert) && $use_oldstyle_convert == 1)
+	check_row(_("Balance Sheet"), 'Balance', null);
+else
+	class_types_list_row(_("Class Type:"), 'Balance', null);
 
 end_table(1);
 
