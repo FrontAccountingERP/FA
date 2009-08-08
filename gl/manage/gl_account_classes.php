@@ -38,7 +38,7 @@ function can_process()
 		return false;
 	}
 	if (isset($use_oldstyle_convert) && $use_oldstyle_convert == 1)
-		$_POST['Balance'] = check_value($_POST['Balance']);
+		$_POST['Balance'] = check_value('Balance');
 	return true;
 }
 

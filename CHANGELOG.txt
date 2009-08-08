@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+08-Aut-2009 Jue Hunt
+# [0000153] not possible to make a new balance sheet GL account cl (old style)
+$ /gl/manage/gl_account_classes.php
+
 04-Aug-2009 Joe Hunt
 # [0000150] Logo on printed papers is placed on top of the adress rule nr 1
 $ /reporting/includes/header2.inc
