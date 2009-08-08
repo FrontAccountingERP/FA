@@ -19,7 +19,11 @@ Legend:
 ! -> Note
 $ -> Affected files
 
-08-Aut-2009 Jue Hunt
+08-Aug-2009 Janusz Dobrowolski
+# [0000152] Config_db.php changed after failed company database creation
+$ /install/save.php
+
+08-Aug-2009 Joe Hunt
 # [0000153] not possible to make a new balance sheet GL account cl (old style)
 $ /gl/manage/gl_account_classes.php
 
