@@ -20,6 +20,10 @@ Legend:
 $ -> Affected files
 
 08-Aug-2009 Janusz Dobrowolski
+# Fixed bug in calculation of taxes for quick entries using multiply tax rates
+$ /includes/ui/ui_view.inc
+
+08-Aug-2009 Janusz Dobrowolski
 # [0000152] Config_db.php changed after failed company database creation
 $ /install/save.php
 

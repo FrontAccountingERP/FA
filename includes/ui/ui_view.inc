@@ -598,13 +598,16 @@ function display_quick_entries(&$cart, $id, $base, $type, $descr='')
 				case "t-": // ditto & reduce base amount
 					$taxes = get_taxes_for_item_tax($qe_line['dest_id']);
 					$tax_total = 0;
+					$totrate = 0;
+					// find total tax 
+					if (substr($qe_line['action'],0,1) != 'T') {
+						foreach ($taxes as $index => $item_tax) {
+							$totrate += $item_tax['rate'];
+						}
+					}
+					$taxbase = $base/($totrate+100);
 					foreach ($taxes as $index => $item_tax) {
-						if(substr($qe_line['action'],0,1) != 'T')
-							$tax = round2($base * $item_tax['rate'] 
-						  		/ ($item_tax['rate'] + 100),  user_price_dec());
-						else
-							$tax = round2($base * $item_tax['rate'] / 100,  user_price_dec());
-
+						$tax = round2($taxbase * $item_tax['rate'],  user_price_dec());
 						$gl_code = ($type == QE_DEPOSIT || ($type == QE_JOURNAL && $base < 0)) 
 							? $item_tax['sales_gl_code'] : $item_tax['purchasing_gl_code'];
 						$tax_total += $tax;
