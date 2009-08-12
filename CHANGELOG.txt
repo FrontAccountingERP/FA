@@ -19,6 +19,11 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+12-Aug-2009 Joe Hunt
+# [0000159] Memo field's GL entries are not saved (gl_trans) in supplier invoice
+$ /purchasing/includes/purchasing_db.inc
+  /purchasing/includes/db/invoice_db.inc
+  
 08-Aug-2009 Janusz Dobrowolski
 # Fixed bug in calculation of taxes for quick entries using multiply tax rates
 $ /includes/ui/ui_view.inc

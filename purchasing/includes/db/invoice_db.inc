@@ -182,7 +182,7 @@ function add_supp_invoice($supp_trans, $invoice_no=0) // do not receive as ref b
 
 		$memo_ = $entered_gl_code->memo_;
 		$total += add_gl_trans_supplier($trans_type, $invoice_id, $date_, $entered_gl_code->gl_code,
-			$entered_gl_code->gl_dim, $entered_gl_code->gl_dim2, $entered_gl_code->amount, $supp_trans->supplier_id);
+			$entered_gl_code->gl_dim, $entered_gl_code->gl_dim2, $entered_gl_code->amount, $supp_trans->supplier_id, "", 0, $memo_);
 
 		add_supp_invoice_gl_item($trans_type, $invoice_id, $entered_gl_code->gl_code,
 			$entered_gl_code->amount, $memo_);
