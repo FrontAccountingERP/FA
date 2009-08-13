@@ -87,7 +87,12 @@ function print_list_of_journal_entries()
             $coms =  payment_person_types::person_name($myrow["person_type_id"],$myrow["person_id"]);
             $memo = get_comments_string($myrow['type'], $myrow['type_no']);
             if ($memo != '')
-            	$coms .= ($coms!= "")?"/":"" . $memo;
+            {
+            	if ($coms == "")
+            		$coms = $memo;
+            	else
+            		$coms .= " / ".$memo;
+            }		
             $rep->TextCol(3, 6, $coms);
             $rep->NewLine(2);
         }
