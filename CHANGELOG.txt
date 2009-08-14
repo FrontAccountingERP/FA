@@ -19,6 +19,12 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+14-Aug-2009 Janusz Dobrowolski
+# [0000161] Fixed reference edition on sales invoice/deliery/credit.
+$ /sales/customer_credit_invoice.php
+  /sales/customer_delivery.php
+  /sales/customer_invoice.php
+
 12-Aug-2009 Joe Hunt
 # [0000159] Memo field's GL entries are not saved (gl_trans) in supplier invoice
 $ /purchasing/includes/purchasing_db.inc

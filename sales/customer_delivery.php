@@ -219,6 +219,7 @@ function copy_from_cart()
 	$_POST['Location'] = $cart->Location;
 	$_POST['Comments'] = $cart->Comments;
 	$_POST['cart_id'] = $cart->cart_id;
+	$_POST['ref'] = $cart->reference;
 }
 //------------------------------------------------------------------------------
 
@@ -324,7 +325,7 @@ start_row();
 //	$_POST['ref'] = references::get_next(13);
 
 if ($_SESSION['Items']->trans_no==0) {
-	ref_cells(_("Reference"), 'ref', '', $_SESSION['Items']->reference, "class='tableheader2'");
+	ref_cells(_("Reference"), 'ref', '', null, "class='tableheader2'");
 } else {
 	label_cells(_("Reference"), $_SESSION['Items']->reference, "class='tableheader2'");
 }
