@@ -19,13 +19,17 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+17-Aug-2009 Janusz Dobrowolski
+# [0000158] Added missing check for POS usage before deletion.
+$ /sales/manage/sales_points.php
+
 17-Aug-2009 Joe Hunt
 # [0000160] Customer payments in different currencies (bank account exchange error). Fixed so diff bank_curr/home_curr and cust/supp curr is readonly.
 $ /gl/includes/db/gl_db_bank_trans.inc
   /purchasing/supplier_payment.php
   /sales/customer_payments.php
   /sales/includes/db/payments_db.inc
-  
+
 14-Aug-2009 Janusz Dobrowolski
 # [0000161] Fixed reference edition on sales invoice/deliery/credit.
 $ /sales/customer_credit_invoice.php
