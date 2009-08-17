@@ -83,11 +83,8 @@ function display_controls()
 		if (!is_date_in_fiscalyear($_POST['DatePaid']))
 			$_POST['DatePaid'] = end_fiscalyear();
 	}		
-	//start_table($table_style2, 5, 7);
-	//echo "<tr><td valign=top>"; // outer table
 	start_outer_table($table_style2, 5);
 
-	//echo "<table>";
 	table_section(1);
 	
     bank_accounts_list_row(_("From Bank Account:"), 'bank_account', null, true);
@@ -98,28 +95,23 @@ function display_controls()
     date_row(_("Date Paid") . ":", 'DatePaid', '', null, 0, 0, 0, null, true);
 
 	table_section(2);
-	//echo "</table>";
-	//echo "</td><td valign=top class='tableseparator'>"; // outer table
-	//echo "<table>";
 
     supplier_list_row(_("Payment To:"), 'supplier_id', null, false, true);
 
 	set_global_supplier($_POST['supplier_id']);
 
+	$comp_currency = get_company_currency();
 	$supplier_currency = get_supplier_currency($_POST['supplier_id']);
 	$bank_currency = get_bank_account_currency($_POST['bank_account']);
 	if ($bank_currency != $supplier_currency) 
 	{
-		exchange_rate_display($bank_currency, $supplier_currency, $_POST['DatePaid'], true);
+		exchange_rate_display($bank_currency, $supplier_currency, $_POST['DatePaid'], ($bank_currency == $comp_currency));
 	}
 
     ref_row(_("Reference:"), 'ref', '', references::get_next(22));
 
     text_row(_("Memo:"), 'memo_', null, 52,50);
 
-	//echo "</table>";
-
-	//echo "</td></tr>";
 	end_outer_table(1); // outer table
 
 	submit_center('ProcessSuppPayment',_("Enter Payment"), true, '', true);

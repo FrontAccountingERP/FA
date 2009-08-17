@@ -16,7 +16,7 @@
 // $date_ is display date (non-sql)
 
 function add_bank_trans($type, $trans_no, $bank_act, $ref, $date_,
-	$amount, $person_type_id, $person_id, $currency="", $err_msg="")
+	$amount, $person_type_id, $person_id, $currency="", $err_msg="", $rate=0)
 {
 	$sqlDate = date2sql($date_);
 
@@ -24,7 +24,10 @@ function add_bank_trans($type, $trans_no, $bank_act, $ref, $date_,
 	if ($currency != "")
 	{
     	$bank_account_currency = get_bank_account_currency($bank_act);
-    	$to_bank_currency = get_exchange_rate_from_to($currency, $bank_account_currency, $date_);
+    	if ($rate == 0)
+    		$to_bank_currency = get_exchange_rate_from_to($currency, $bank_account_currency, $date_);
+    	else
+    		$to_bank_currency = 1 / $rate;
     	$amount_bank = ($amount / $to_bank_currency);
 	}
 	else

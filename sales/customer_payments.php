@@ -218,11 +218,12 @@ function display_item_form()
 
 		bank_accounts_list_row(_("Into Bank Account:"), 'bank_account', null, true);
 
+		$comp_currency = get_company_currency();
 		$cust_currency = get_customer_currency($_POST['customer_id']);
 		$bank_currency = get_bank_account_currency($_POST['bank_account']);
 
 		if ($cust_currency != $bank_currency) {
-			exchange_rate_display($bank_currency, $cust_currency, $_POST['DateBanked'], true);
+			exchange_rate_display($bank_currency, $cust_currency, $_POST['DateBanked'], ($bank_currency == $comp_currency));
 		}
 
 		text_row(_("Reference:"), 'ref', null, 20, 40);
