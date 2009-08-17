@@ -20,7 +20,7 @@ Legend:
 $ -> Affected files
 
 17-Aug-2009 Joe Hunt
-# [0000160] Customer payments in different currencies (bank account exchange error). Fixed so diff bank_curr and cust/supp curr is readonly.
+# [0000160] Customer payments in different currencies (bank account exchange error). Fixed so diff bank_curr/home_curr and cust/supp curr is readonly.
 $ /gl/includes/db/gl_db_bank_trans.inc
   /purchasing/supplier_payment.php
   /sales/customer_payments.php
