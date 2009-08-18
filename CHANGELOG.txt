@@ -21,6 +21,7 @@ $ -> Affected files
 
 18-Aug-2009 Joe Hunt
 ! Quick Entries uses Tax Groups instead of Item Tax Types for calculating taxes (Please change the item lines for tax).
+  Quick Entry Lines of type Supplier Invoice. When using, the Supplier Tax Group Id overrides the The Tax Group set on the line.
 $ /gl/includes/db/gl_db_bank_accounts.inc
   /gl/manage/gl_quick_entries.php
   /includes/ui/ui_view.inc

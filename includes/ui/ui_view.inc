@@ -597,6 +597,8 @@ function display_quick_entries(&$cart, $id, $base, $type, $descr='')
 				case "t+": // ditto & increase base amount
 				case "t-": // ditto & reduce base amount
 					//$taxes = get_taxes_for_item_tax($qe_line['dest_id']);
+					if ($type == QE_SUPPINV)
+						$qe_line['dest_id'] = $cart->tax_group_id;
 					$taxes = array();
 					$res = get_tax_group_items($qe_line['dest_id']);
 					while ($row = db_fetch($res))
