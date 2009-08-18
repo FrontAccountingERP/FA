@@ -229,11 +229,11 @@ if ($selected_id != -1)
 	start_table($table_style2);
 	$dim = get_company_pref('use_dimension');
 	if ($dim == 2)
-		$th = array(_("Post"), _("Account/Tax Type"), _("Amount"), _("Dimension"), _("Dimension")." 2", "", "");
+		$th = array(_("Post"), _("Account") . "/" . _("Tax Group"), _("Amount"), _("Dimension"), _("Dimension")." 2", "", "");
 	else if ($dim == 1)	
-		$th = array(_("Post"), _("Account/Tax Type"), _("Amount"), _("Dimension"), "", "");
+		$th = array(_("Post"), _("Account") . "/" . _("Tax Group"), _("Amount"), _("Dimension"), "", "");
 	else	
-		$th = array(_("Post"), _("Account/Tax Type"), _("Amount"), "", "");
+		$th = array(_("Post"), _("Account") . "/" . _("Tax Group"), _("Amount"), "", "");
 
 	table_header($th);
 	$k = 0;
@@ -302,7 +302,8 @@ if ($selected_id != -1)
 
 	if ($actn == 't') 
 	{
-		item_tax_types_list_row(_("Item Tax Type").":",'dest_id', null);
+		//item_tax_types_list_row(_("Item Tax Type").":",'dest_id', null);
+		tax_groups_list_row(_("Tax Group").":", 'dest_id', null);
 	} 
 	else 
 	{

@@ -596,7 +596,11 @@ function display_quick_entries(&$cart, $id, $base, $type, $descr='')
 				case "t": // post taxes calculated on base amount
 				case "t+": // ditto & increase base amount
 				case "t-": // ditto & reduce base amount
-					$taxes = get_taxes_for_item_tax($qe_line['dest_id']);
+					//$taxes = get_taxes_for_item_tax($qe_line['dest_id']);
+					$taxes = array();
+					$res = get_tax_group_items($qe_line['dest_id']);
+					while ($row = db_fetch($res))
+						$taxes[] = $row;
 					$tax_total = 0;
 					$totrate = 0;
 					// find total tax 

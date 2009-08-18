@@ -19,6 +19,13 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+18-Aug-2009 Joe Hunt
+! Quick Entries uses Tax Groups instead of Item Tax Types for calculating taxes (Please change the item lines for tax).
+$ /gl/includes/db/gl_db_bank_accounts.inc
+  /gl/manage/gl_quick_entries.php
+  /includes/ui/ui_view.inc
+  /taxes/tax_calc.inc
+  
 17-Aug-2009 Janusz Dobrowolski
 # [0000158] Added missing check for POS usage before deletion.
 $ /sales/manage/sales_points.php

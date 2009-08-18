@@ -237,6 +237,8 @@ function get_tax_for_items($items, $prices, $shipping_cost, $tax_group, $tax_inc
 //	no tax group exemptions are active (local sales).
 //	To be used in quick entries.
 //
+// Redundant 18.08.2009 Joe Hunt (Tax Groups instead).
+/*
 function get_taxes_for_item_tax($tax_type_id)
 {
 	$item_tax_type = get_item_tax_type($tax_type_id);
@@ -283,7 +285,7 @@ function get_taxes_for_item_tax($tax_type_id)
 	
 	return $ret_tax_array;
 }
-
+*/
 function is_tax_account($account_code)
 {
 	$sql= "SELECT id FROM ".TB_PREF."tax_types WHERE 
