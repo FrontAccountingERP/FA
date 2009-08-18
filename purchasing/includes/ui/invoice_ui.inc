@@ -44,7 +44,9 @@ function copy_to_trans(&$supp_trans)
 	{
 		foreach ( $supp_trans->gl_codes as $gl_line)
 		{
-			$supp_trans->ov_amount += $gl_line->amount;
+			////////// 2009-08-18 Joe Hunt
+			if (!is_tax_account($gl_line->gl_code))
+				$supp_trans->ov_amount += $gl_line->amount;
 		}
 	}
 }
@@ -288,8 +290,9 @@ function display_gl_items(&$supp_trans, $mode=0)
 				label_cell("");
 			}	
 			end_row();
-
-			$total_gl_value += $entered_gl_code->amount;
+			/////////// 2009-08-18 Joe Hunt
+			if ($mode > 1 && !is_tax_account($entered_gl_code->gl_code))
+				$total_gl_value += $entered_gl_code->amount;
 
 			$i++;
 			if ($i > 15)

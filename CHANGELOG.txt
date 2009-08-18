@@ -20,6 +20,12 @@ Legend:
 $ -> Affected files
 
 18-Aug-2009 Joe Hunt
+! When using Quick Entries in Supplier Invoices/credit notes the tax sum now shows correctly.
+$ /purchasing/includes/db/invoice_db.inc
+  /purchasing/includes/ui/invoice_ui.inc
+  /purchasing/includes/supp_trans_class.inc
+  
+18-Aug-2009 Joe Hunt
 ! Quick Entries uses Tax Groups instead of Item Tax Types for calculating taxes (Please change the item lines for tax).
   Quick Entry Lines of type Supplier Invoice. When using, the Supplier Tax Group Id overrides the The Tax Group set on the line.
 $ /gl/includes/db/gl_db_bank_accounts.inc
