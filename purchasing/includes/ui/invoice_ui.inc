@@ -293,7 +293,8 @@ function display_gl_items(&$supp_trans, $mode=0)
 			/////////// 2009-08-18 Joe Hunt
 			if ($mode > 1 && !is_tax_account($entered_gl_code->gl_code))
 				$total_gl_value += $entered_gl_code->amount;
-
+			else	
+				$total_gl_value += $entered_gl_code->amount;
 			$i++;
 			if ($i > 15)
 			{
