@@ -81,3 +81,14 @@ ALTER TABLE `0_suppliers` ADD COLUMN `supp_ref` varchar(30) NOT NULL;
 UPDATE `0_suppliers` SET `supp_ref`=`supp_name` WHERE 1; 
 ALTER TABLE `0_cust_branch` ADD COLUMN `branch_ref`	varchar(30) NOT NULL;
 UPDATE `0_cust_branch` SET `branch_ref`=`br_name` WHERE 1; 
+
+CREATE TABLE `0_security_roles` (
+  `id` int(11) NOT NULL auto_increment,
+  `role` varchar(20) NOT NULL,
+  `description` varchar(50) default NULL,
+  `modules` text,
+  `areas` text,
+  `inactive` tinyint(1) NOT NULL default '0',
+  PRIMARY KEY  (`id`),
+  UNIQUE KEY `role` (`role`)
+) TYPE=MyISAM AUTO_INCREMENT=8 AUTO_INCREMENT=8 ;

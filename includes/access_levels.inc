@@ -10,6 +10,29 @@
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
 //
+/*
+	This table is introduced only for additional grouping of sales areas,
+	and should be consistent with convention used above.
+*/
+
+define('SM_SALES', 1<<8);
+define('SM_PURCH', 2<<8);
+define('SM_ITEMS', 3<<8);
+define('SM_MANUF', 4<<8);
+define('SM_DIM', 5<<8);
+define('SM_GL', 6<<8);
+define('SM_SETUP', 7<<8);
+
+$security_modules = array(
+ SM_SALES => _("Sales"),
+ SM_PURCH => _("Purchases"),
+ SM_ITEMS => _("Items and Inventory"),
+ SM_MANUF => _("Manufacturing"),
+ SM_DIM => _("Dimensions"),
+ SM_GL => _("Banking & General Ledger"),
+ SM_SETUP => _("Setup")
+);
+
 //	Access areas used in FrontAccounting. 
 // 	Constants defined below should be used wherever access rights for current
 //	user are checked. Set of allowed access areas is retrieved during login from
@@ -19,135 +42,135 @@
 //----------------------------------------------------------------------------------
 // Sales module
 //
-define('SA_CUSTOMER', 101);
-define('SA_SALESGROUP', 102);
-define('SA_PRICE', 103);
-define('SA_SALESMAN', 104);
-define('SA_SALESAREA', 105);
-define('SA_STATUS', 106);
-define('SA_STEMPLATE', 107);
-define('SA_SRECCURENT', 108);
+define('SA_CUSTOMER',	SM_SALES|1);
+define('SA_SALESGROUP',	SM_SALES|2);
+define('SA_PRICE',		SM_SALES|3);
+define('SA_SALESMAN', 	SM_SALES|4);
+define('SA_SALESAREA', 	SM_SALES|5);
+define('SA_STATUS', 	SM_SALES|6);
+define('SA_STEMPLATE', 	SM_SALES|7);
+define('SA_SRECURRENT', SM_SALES|8);
 
-define('SA_SALESORDER', 111);
-define('SA_SALESDELIVERY', 112);
-define('SA_SALESINVOICE', 113);
-define('SA_SALESCREDITINV', 114);
-define('SA_SALESCREDIT', 115);
-define('SA_SALESPAYMNT', 116);
+define('SA_SALESORDER', 	SM_SALES|11);
+define('SA_SALESDELIVERY', 	SM_SALES|12);
+define('SA_SALESINVOICE', 	SM_SALES|13);
+define('SA_SALESCREDITINV', SM_SALES|14);
+define('SA_SALESCREDIT', 	SM_SALES|15);
+define('SA_SALESPAYMNT', 	SM_SALES|16);
 
-define('SA_SALESALLOC', 121);
-define('SA_SALESANALYTIC', 122);
-define('SA_SALESMANREP', 123);
-define('SA_SALESVARREP', 124);
+define('SA_SALESALLOC', SM_SALES|21);
+define('SA_SALESANALYTIC', SM_SALES|22);
+define('SA_SALESMANREP', SM_SALES|23);
+define('SA_SALESVARREP', SM_SALES|24);
 
 //
 // Purchasing module 
 //
-define('SA_SUPPLIER', 201);
+define('SA_SUPPLIER', SM_PURCH|1);
 
-define('SA_PURCHASEORDER', 211);
-define('SA_GRN', 212);
-define('SA_SUPPLIERINVOICE', 213);
-define('SA_SUPPLIERCREDIT', 214);
-define('SA_SUPPLIERPAYMNT', 215);
+define('SA_PURCHASEORDER', SM_PURCH|11);
+define('SA_GRN', SM_PURCH|12);
+define('SA_SUPPLIERINVOICE', SM_PURCH|13);
+define('SA_SUPPLIERCREDIT', SM_PURCH|14);
+define('SA_SUPPLIERPAYMNT', SM_PURCH|15);
 
-define('SA_SUPPLIERALLOC', 221);
-define('SA_SUPPLIERANALYTIC', 222);
-define('SA_SUPPLIERMANREP', 223);
-define('SA_SUPPLIERVARREP', 224);
+define('SA_SUPPLIERALLOC', SM_PURCH|21);
+define('SA_SUPPLIERANALYTIC', SM_PURCH|22);
+define('SA_SUPPLIERMANREP', SM_PURCH|23);
+define('SA_SUPPLIERVARREP', SM_PURCH|24);
 
 //
 // Inventory module 
 //
-define('SA_ITEM', 301);
-define('SA_FORITEMCODE', 302);
-define('SA_SALESKIT', 303);
-define('SA_ITEMCATEGORY', 304);
-define('SA_INVENTORYLOCATION', 305);
-define('SA_INVENTORYMOVETYPE', 306);
-define('SA_ITEMTAXTYPE', 307);
-define('SA_UOM', 308);
-define('SA_REORDER', 309);
+define('SA_ITEM', SM_ITEMS|1);
+define('SA_FORITEMCODE', SM_ITEMS|2);
+define('SA_SALESKIT', SM_ITEMS|3);
+define('SA_ITEMCATEGORY', SM_ITEMS|4);
+define('SA_INVENTORYLOCATION', SM_ITEMS|5);
+define('SA_INVENTORYMOVETYPE', SM_ITEMS|6);
+define('SA_ITEMTAXTYPE', SM_ITEMS|7);
+define('SA_UOM', SM_ITEMS|8);
+define('SA_REORDER', SM_ITEMS|9);
 
-define('SA_LOCATIONTRANSFER', 311);
-define('SA_INVENTORYADJUSTMENT', 312);
+define('SA_LOCATIONTRANSFER', SM_ITEMS|11);
+define('SA_INVENTORYADJUSTMENT', SM_ITEMS|12);
 
-define('SA_ITEMSANALYTIC', 321);
-define('SA_ITEMSMANREP', 322);
-define('SA_ITEMSVARREP', 323);
+define('SA_ITEMSANALYTIC', SM_ITEMS|21);
+define('SA_ITEMSMANREP', SM_ITEMS|22);
+define('SA_ITEMSVARREP', SM_ITEMS|23);
 
-define('SA_SALESPRICING', 331);
-define('SA_PURCHASEPRICING', 332);
-define('SA_STANDARDCOST', 333);
+define('SA_SALESPRICING', SM_ITEMS|31);
+define('SA_PURCHASEPRICING', SM_ITEMS|32);
+define('SA_STANDARDCOST', SM_ITEMS|33);
 
 //
 // Manufacturing module 
 //
-define('SA_BOM', 401);
-define('SA_WORKCENTRE', 402);
+define('SA_BOM', SM_MANUF|1);
+define('SA_WORKCENTRE', SM_MANUF|2);
 
-define('SA_WORKORDERENTRY', 411);
-define('SA_WORKORDEROPERATION', 412);
+define('SA_WORKORDERENTRY', SM_MANUF|11);
+define('SA_WORKORDEROPERATION', SM_MANUF|12);
 
-define('SA_WORKORDERANALYTIC', 421);
-define('SA_WORKORDERMANREP', 422);
-define('SA_WORKORDERVARREP', 423);
+define('SA_WORKORDERANALYTIC', SM_MANUF|21);
+define('SA_WORKORDERMANREP', SM_MANUF|22);
+define('SA_WORKORDERVARREP', SM_MANUF|23);
 
 //
 // Dimension module 
 //
-define('SA_DIMENSION', 501);
+define('SA_DIMENSION', SM_DIM|1);
 
-define('SA_DIMENTIONOPERATION', 511);
+define('SA_DIMENSIONOPERATION', SM_DIM|11);
 
-define('SA_DIMENSIONANALYTIC', 521);
-define('SA_DIMENSIONMANREP', 522);
-define('SA_DIMENSIONVARREP', 523);
+define('SA_DIMENSIONANALYTIC', SM_DIM|21);
+define('SA_DIMENSIONMANREP', SM_DIM|22);
+define('SA_DIMENSIONVARREP', SM_DIM|23);
 
 //
 // Banking and General Ledger module 
 //
-define('SA_BANKACCOUNT', 601);
-define('SA_QUICKENTRY', 602);
-define('SA_CURRENCY', 603);
-define('SA_EXCHANGERATE', 604);
-define('SA_GLACCOUNT', 605);
-define('SA_GLACCOUNTGROUP', 606);
-define('SA_GLACCOUNTCLASS', 607);
+define('SA_BANKACCOUNT', SM_GL|1);
+define('SA_QUICKENTRY', SM_GL|2);
+define('SA_CURRENCY', SM_GL|3);
+define('SA_EXCHANGERATE', SM_GL|4);
+define('SA_GLACCOUNT', SM_GL|5);
+define('SA_GLACCOUNTGROUP', SM_GL|6);
+define('SA_GLACCOUNTCLASS', SM_GL|7);
 
-define('SA_PAYMENT', 611);
-define('SA_DEPOSIT', 612);
-define('SA_BANKACCOUNTTRANSFER', 613);
-define('SA_JOURNALENTRY', 614);
-define('SA_BUDGETENTRY', 615);
-define('SA_RECONCILE', 616);
+define('SA_PAYMENT', SM_GL|11);
+define('SA_DEPOSIT', SM_GL|12);
+define('SA_BANKACCOUNTTRANSFER', SM_GL|13);
+define('SA_JOURNALENTRY', SM_GL|14);
+define('SA_BUDGETENTRY', SM_GL|15);
+define('SA_RECONCILE', SM_GL|16);
 
-define('SA_GLANALYTIC', 621);
-define('SA_GLMANREP', 622);
-define('SA_GLVARREP', 623);
+define('SA_GLANALYTIC', SM_GL|21);
+define('SA_GLMANREP', SM_GL|22);
+define('SA_GLVARREP', SM_GL|23);
 
 //
 // Setup module 
 //
-define('SA_SETUPCOMPANY', 701);
-define('SA_SETUPUSER', 702);
-define('SA_SETUPFORM', 703);
-define('SA_SETUPTAX', 704);
-define('SA_SETUPFISCALYEAR', 705);
-define('SA_PRINTPROFILE', 706);
-define('SA_PAYMENTTERM', 707);
-define('SA_SHIPPING', 708);
-define('SA_SETUPPOS', 709);
-define('SA_SETUPPRINTER', 710);
+define('SA_SETUPCOMPANY', SM_SETUP|1);
+define('SA_SETUPUSER', SM_SETUP|2);
+define('SA_SETUPFORM', SM_SETUP|3);
+define('SA_SETUPTAX', SM_SETUP|4);
+define('SA_SETUPFISCALYEAR', SM_SETUP|5);
+define('SA_PRINTPROFILE', SM_SETUP|6);
+define('SA_PAYMENTTERM', SM_SETUP|7);
+define('SA_SHIPPING', SM_SETUP|8);
+define('SA_SETUPPOS', SM_SETUP|9);
+define('SA_SETUPPRINTER', SM_SETUP|10);
 
-define('SA_VOIDTRANSACTION', 711);
-define('SA_VIEWPRINTTRANSACTION', 712);
-define('SA_ATTACHDOCUMENT', 713);
-define('SA_BACKUP', 714);
-define('SA_CREATECOMPANY', 715);
-define('SA_CREATELANGUAGE', 716);
-define('SA_CREATEMODULES', 717);
-define('SA_SORTWAREUPGRADE', 718);
+define('SA_VOIDTRANSACTION', SM_SETUP|11);
+define('SA_VIEWPRINTTRANSACTION', SM_SETUP|12);
+define('SA_ATTACHDOCUMENT', SM_SETUP|13);
+define('SA_BACKUP', SM_SETUP|14);
+define('SA_CREATECOMPANY', SM_SETUP|15);
+define('SA_CREATELANGUAGE', SM_SETUP|16);
+define('SA_CREATEMODULES', SM_SETUP|17);
+define('SA_SOFTWAREUPGRADE', SM_SETUP|18);
 
 /*
 	This table stores security area ranges. It is used by security_role 
@@ -222,7 +245,7 @@ $security_areas = array(
 	// database table crud operations and administrative areas
 	SA_DIMENSION => _("Dimensions"),
 	// documents, transactions entry
-	SA_DIMENSiONOPERATION => _("Dimension Operations"),
+	SA_DIMENSIONOPERATION => _("Dimension Operations"),
 	// maintenance and analytics
 	SA_DIMENSIONANALYTIC => _("Dimension analytical reports and inquiries"),
 		_("Dimension Reports"),
@@ -265,6 +288,6 @@ $security_areas = array(
 		_("Install/Update Companies"),
 		_("Install/Update Languages"),
 		_("Install/Upgrade Modules"),
-		_("Software Upgrades"),
+		_("Software Upgrades")
 );
 ?>

@@ -2096,5 +2096,43 @@ function class_types_list_row($label, $name, $selected_id=null, $submit_on_chang
 	echo "</td></tr>\n";
 }
 
+//------------------------------------------------------------------------------------------------
+
+function security_roles_list($name, $selected_id=null, $new_item=false, $submit_on_change=false,
+	$show_inactive = false)
+{
+	global $all_items;
+
+	$sql = "SELECT id, role, inactive FROM ".TB_PREF."security_roles";
+
+return combo_input($name, $selected_id, $sql, 'id', 'description',
+	array(
+		'spec_option'=>$new_item ? _("New role") : false,
+		'spec_id' => '',
+		'select_submit'=> $submit_on_change,
+		'show_inactive' => $show_inactive
+	) );
+}
+
+function security_roles_list_cells($label, $name, $selected_id=null, $new_item=false, $submit_on_change=false,
+	$show_inactive = false)
+{
+	if ($label != null)
+		echo "<td>$label</td>\n";
+	echo "<td>";
+	$str = security_roles_list($name, $selected_id, $new_item, $submit_on_change, $show_inactive);
+	echo "</td>\n";
+	return $str;
+}
+
+function security_roles_list_row($label, $name, $selected_id=null, $new_item=false, $submit_on_change=false,
+	$show_inactive = false)
+{
+	echo "<tr>";
+	$str = security_roles_list_cells($label, $name, $selected_id, $new_item, $submit_on_change, $show_inactive);
+	echo "</tr>\n";
+	return $str;
+}
+
 
 ?>
