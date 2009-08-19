@@ -19,6 +19,18 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+20-Aug-2009 Janusz Dobrowolski
+! Tax Item Types moved to Setup module
+$ /applications/inventory.php
+  /applications/setup.php
++ Partial changes for new access control.
+$ /admin/security_roles.php (new)
+  /admin/db/security_db.inc (new)
+  /includes/access_levels.inc
+  /includes/ui/ui_lists.inc
+  /sql/alter2.2.sql
+  /sql/en_US-demo.sql
+
 04-Aug-2009 Joe Hunt
 + Added email links after creating documents
 $ /includes/ui/ui_controls.inc
