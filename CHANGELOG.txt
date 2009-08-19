@@ -19,6 +19,13 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+19-Aug-2009 Joe Hunt
+! Change of Quick Entries to use the Tax Types instead, due to complexity using the Tax Groups in EU.
+  If you for need more than one Tax Type row in a Quick Entry, please keep the rows together and use the same action type.
+$ /gl/includes/db/gl_db_bank_accounts.inc
+  /gl/manage/gl_quick_entries.php
+  /includes/ui/ui_view.inc
+  
 18-Aug-2009 Joe Hunt
 ! When using Quick Entries in Supplier Invoices/credit notes the tax sum now shows correctly.
 $ /purchasing/includes/db/invoice_db.inc
