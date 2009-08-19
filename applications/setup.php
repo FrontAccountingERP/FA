@@ -19,12 +19,12 @@
 			$this->add_module(_("Company Setup"));
 			$this->add_lapp_function(0, _("&Company Setup"),"admin/company_preferences.php?");
 			$this->add_lapp_function(0, _("&User Accounts Setup"),"admin/users.php?", 15);
-			$this->add_lapp_function(0, "","");
+			$this->add_lapp_function(0, _("&Access Setup"),"admin/security_roles.php?", 20);
 			$this->add_lapp_function(0, _("&Display Setup"),"admin/display_prefs.php?");
 			$this->add_lapp_function(0, _("&Forms Setup"),"admin/forms_setup.php?");
 			$this->add_rapp_function(0, _("&Taxes"),"taxes/tax_types.php?");
 			$this->add_rapp_function(0, _("Tax &Groups"),"taxes/tax_groups.php?");
-			$this->add_rapp_function(0, "","");
+			$this->add_rapp_function(0, _("Item Ta&x Types"),"taxes/item_tax_types.php?");
 			$this->add_rapp_function(0, _("System and &General GL Setup"),"admin/gl_setup.php?");
 			$this->add_rapp_function(0, _("&Fiscal Years"),"admin/fiscalyears.php?");
 			$this->add_rapp_function(0, _("&Print Profiles"),"admin/print_profiles.php?");

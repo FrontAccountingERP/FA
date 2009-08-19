@@ -32,7 +32,6 @@
 			$this->add_lapp_function(2, _("Item &Categories"),"inventory/manage/item_categories.php?");
 			$this->add_lapp_function(2, _("Inventory &Locations"),"inventory/manage/locations.php?");
 			$this->add_rapp_function(2, _("Inventory &Movement Types"),"inventory/manage/movement_types.php?");
-			$this->add_rapp_function(2, _("Item Ta&x Types"),"taxes/item_tax_types.php?");
 			$this->add_rapp_function(2, _("&Units of Measure"),"inventory/manage/item_units.php?");
 			$this->add_rapp_function(2, _("&Reorder Levels"),"inventory/reorder_level.php?");
 
