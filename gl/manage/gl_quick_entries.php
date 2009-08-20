@@ -110,23 +110,6 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 
 if ($Mode2=='ADD_ITEM2' || $Mode2=='UPDATE_ITEM2') 
 {
-	if ($_POST['tax'] == 't')
-	{
-		$res = get_all_tax_types_simple();
-		$j = 1;
-		$i = 0;
-		while ($tt = db_fetch($res))
-		{
-			if (check_value('dest_id'.$tt['id']))
-			{
-				$i |= $j;
-				unset($_POST['dest_id'.$tt['id']]);
-			}	
-			$j <<= 1;
-		}
-		$_POST['dest_id'] = $i;
-		unset($_POST['tax']);
-	}
 	if ($selected_id2 != -1) 
 	{
 		update_quick_entry_line($selected_id2, $selected_id, $_POST['actn'], $_POST['dest_id'], input_num('amount', 0), 
@@ -264,23 +247,7 @@ if ($selected_id != -1)
 
 		if ($act_type == 't') 
 		{
-			//label_cells($myrow['tax_name'], '');
-			$res = get_all_tax_types_simple();
-			$i = 1;
-			$str = "";
-			$first = true;
-			while ($tt = db_fetch($res))
-			{
-				if ($myrow['dest_id'] & $i)
-				{
-					if (!$first)
-						$str .= ", ";
-					$str .= $tt['name'] . " " . $tt['rate'] . "%";
-					$first = false;
-				}	
-				$i <<= 1;
-			}
-			label_cells($str, '');
+			label_cells($myrow['tax_name'], '');
 		} 
 		else 
 		{
@@ -329,31 +296,14 @@ if ($selected_id != -1)
 
 	quick_actions_list_row(_("Posted").":",'actn', null, true);
 	if (list_updated('actn'))
-	{
 		$Ajax->activate('edit_line');
-		if (strtolower(substr($_POST['actn'],0,1)) == 't')
-			$_POST['dest_id'] = "";
-	}	
 
 	$actn = strtolower(substr($_POST['actn'],0,1));
 
 	if ($actn == 't') 
 	{
-		$res = get_all_tax_types_simple();
-		$i = 1;
-		if ($_POST['dest_id'] == '')
-			$_POST['dest_id'] = 1;
-		label_row(" ", "<b>" . _("Tax Types")."</b>");
-		while ($tt = db_fetch($res))
-		{
-			$str = $tt['name'] . " " . $tt['rate'] . "% ";
-			if ($_POST['dest_id'] & $i)
-				$_POST['dest_id'.$tt['id']] = 1;
-			check_row($str, 'dest_id'.$tt['id'], null);
-			$i <<= 1;
-		}
-		//label_cell($str);
-		
+		//item_tax_types_list_row(_("Item Tax Type").":",'dest_id', null);
+		tax_types_list_row(_("Tax Type").":", 'dest_id', null);
 	} 
 	else 
 	{
@@ -376,7 +326,6 @@ if ($selected_id != -1)
 		hidden('dimension2_id', 0);
 	if ($dim < 1)
 		hidden('dimension_id', 0);
-	hidden('tax', $actn);
 	div_end();
 
 	hidden('selected_id', $selected_id);
