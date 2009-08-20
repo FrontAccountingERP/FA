@@ -78,7 +78,7 @@ function display_po_receive_items()
 
     		$qty_outstanding = $ln_itm->quantity - $ln_itm->qty_received;
 
-    	  	if ($ln_itm->receive_qty == 0)
+ 			if (!isset($_POST['Update']) && !isset($_POST['ProcessGoodsReceived']) && $ln_itm->receive_qty == 0)
     	  	{   //If no quantites yet input default the balance to be received
     	    	$ln_itm->receive_qty = $qty_outstanding;
     		}
