@@ -20,8 +20,8 @@ Currently following type of operations are defined:
 
 a) Post constant amount to selected GL account.
 b) Post percent part of base amount to selected GL account
-c) Post taxes for selected tax type, using base amount as net value.
-d) Post taxes for selected tax type, using base amount as value with tax included.
+c) Post taxes for selected tax types, using base amount as net value.
+d) Post taxes for selected tax types, using base amount as value with tax included.
 e) Post remainder from previous calculations to selected GL acount.
 
 After most operations the base amount can be increased, decreased or not changed 
@@ -33,8 +33,7 @@ bill, gazolin or other kind of simple bills. Later on you can create
 more sophisticated entry lines.
 
 If tax should be includes in the base amount you can first select a line
-'Tax included, reduce base and select the correct tax type.
-If more lines with other Tax Types are needed, group them together and use the same action. 
+'Tax included, reduce base and select the correct tax types.
 And a line with 'Remainder' put on the account you want to put the rest on.
 That's it!
 
