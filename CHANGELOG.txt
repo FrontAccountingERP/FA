@@ -24,6 +24,9 @@ $ -> Affected files
 $ /gl/includes/gl_db_accounts.inc
 # If setting the delivered items in PO Receive Items to 0 the value is not updated 
 $ /purchasing/po_receive_items.php
+! Changed so you can choose all the tax types in Quick Entries you want in a single row.
+$ /gl/manage/gl_quick_entries.php
+  /includes/ui/ui_view.inc
 
 19-Aug-2009 Joe Hunt
 ! Change of Quick Entries to use the Tax Types instead, due to complexity using the Tax Groups in EU.
