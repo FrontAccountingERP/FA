@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+21-Aut-2009 Joe Hunt
+# [0000162] Deleting a GL account may cause problems with quick entries 
+$ /gl/manage/gl_accounts.php
+
 20-Aug-2009 Joe Hunt
 # If account code2 is used in the accounts the report Chart of Accounts gave a bad index and didn't print the code.
 $ /gl/includes/gl_db_accounts.inc

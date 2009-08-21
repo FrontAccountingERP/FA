@@ -182,6 +182,17 @@ function can_delete($selected_account)
 		return false;
 	}									
 	
+	$sql= "SELECT COUNT(*) FROM ".TB_PREF."quick_entry_lines WHERE 
+		dest_id='$selected_account' AND UPPER(LEFT(action, 1)) <> 'T'";
+	$result = db_query($sql,"Couldn't test for existing suppliers GL codes");
+
+	$myrow = db_fetch_row($result);
+	if ($myrow[0] > 0) 
+	{
+		display_error(_("Cannot delete this account because it is used by one or more Quick Entry Lines."));
+		return false;
+	}									
+
 	return true;
 }
 
