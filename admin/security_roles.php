@@ -157,39 +157,43 @@ start_table($table_style2);
 	record_status_list_row(_("Current status:"), 'inactive');
 end_table(1);
 
-	start_table("$table_style width=50%");
+	start_table("$table_style width=40%");
 
 	$k = $j = 0; //row colour counter
 	$m = 0;
-		foreach($security_areas as $area =>$descr ) {
-            if (($area&~0xff) != $m)
-            { // features set selection
-            	$m = $area & ~0xff;
-				label_row(sprintf(_("%s features:"), $security_modules[$m]), 
-					checkbox( null, 'Module'.$m, null, true, 
-						_("Set access to security features area")),
-				"class='tableheader2'", "class='tableheader'");
-            }
-      		if (check_value('Module'.$m)) {
+	asort($security_areas); // in the case installed external modules has added some lines
+	foreach($security_areas as $area =>$parms ) {
+		if (($parms[0]&~0xff) != $m)
+		{ // features set selection
+			$m = $parms[0] & ~0xff;
+			label_row($security_sections[$m].':', 
+				checkbox( null, 'Module'.$m, null, true, 
+					_("On/off set of features")),
+			"class='tableheader2'", "class='tableheader'");
+		}
+		if (check_value('Module'.$m)) {
 				alt_table_row_color($k);
-				check_cells($descr, 'Area'.$area, null, 
+				check_cells($parms[1], 'Area'.$parms[0], null, 
 					false, '', "align='center'");
-      			end_row();
-      		} else {
-      			hidden('Area'.$area);
-      		}
-        }
+			end_row();
+		} else {
+			hidden('Area'.$parms[0]);
+		}
+	}
 	end_table(1);
 div_end();
 
 div_start('controls');
+
 if ($new_role) 
 {
-	submit_center('addupdate', _("Insert New Role"), true, '', 'default');
+	submit_center_first('Update', _("Update view"), '', null);
+	submit_center_last('addupdate', _("Insert New Role"), '', 'default');
 } 
 else 
 {
-	submit_center_first('addupdate', _("Update Role"), '', 'default');
+	submit_center_first('addupdate', _("Save Role"), '', 'default');
+	submit('Update', _("Update view"), true, '', null);
 	submit('clone', _("Clone This Role"), true, '', true);
 	submit('delete', _("Delete This Role"), true, '', true);
 	submit_center_last('cancel', _("Cancel"), _("Cancel Edition"), 'cancel');
