@@ -19,6 +19,23 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+23-Aug-2009 Janusz Dobrowolski
++ Implemented customizable authentication timeout.
+$ /access/timeout.php (new)
+  /access/login.php
+  /admin/company_preferences.php
+  /admin/db/company_db.inc
+  /includes/current_user.inc
+  /includes/session.inc
+  /includes/ui/ui_input.inc
+  /sql/alter2.2.php
+  /sql/alter2.2.sql
+  /sql/en_US-demo.sql
+  /sql/en_US-new.sql
+! Reorganized access control structures for easier customizing.
+$ /includes/access_levels.inc
+  /admin/security_roles.php
+
 20-Aug-2009 Janusz Dobrowolski
 ! Tax Item Types moved to Setup module
 $ /applications/inventory.php
