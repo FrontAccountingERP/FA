@@ -66,7 +66,7 @@ function update_company_gl_setup($retained_act, $profit_loss_act, $debtors_act, 
 function update_company_setup($coy_name, $coy_no, $gst_no, $tax_prd, $tax_last, 
 	$postal_address, $phone, $fax, $email, $coy_logo, $domicile, $Dimension, 
 	$curr_default, $f_year, $no_item_list, $no_customer_list, $no_supplier_list, 
-	$base_sales, $time_zone, $add_pct, $round_to)
+	$base_sales, $time_zone, $add_pct, $round_to, $login_tout)
 {
 	if ($f_year == null)
 		$f_year = 0;
@@ -89,7 +89,8 @@ function update_company_setup($coy_name, $coy_no, $gst_no, $tax_prd, $tax_last,
 		base_sales=$base_sales,
 		time_zone=$time_zone,
 		add_pct=$add_pct,
-		round_to=$round_to
+		round_to=$round_to,
+		login_tout = ".db_escape($login_tout)."
 		WHERE coy_code=1";
 
 	db_query($sql, "The company setup could not be updated ");

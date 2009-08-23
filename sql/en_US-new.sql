@@ -392,13 +392,14 @@ CREATE TABLE `0_company` (
   `time_zone` tinyint(1) NOT NULL default '0',
   `add_pct` int(5) NOT NULL default '-1',
   `round_to` int(5) NOT NULL default '1',
+  `login_tout` SMALLINT(6) NOT NULL DEFAULT '600',
   PRIMARY KEY  (`coy_code`)
 ) TYPE=MyISAM  ;
 
 
 ### Data of table `0_company` ###
 
-INSERT INTO `0_company` VALUES ('1', 'Company name', '', '', '1', '1', 'N/A', '', '', '', '', '', 'USD', '1200', '5060', '2100', '5690', '4450', '9990', '3590', '4430', '4010', '4510', '4500', '1510', '5010', '5040', '4010', '1530', '5000', '0', '10', '10', '1000', '20', '20', '30', '1', '1', '0', '0', '0', '1', '0', '0', '', '1', '2.2', '0', '-1', '1');
+INSERT INTO `0_company` VALUES ('1', 'Company name', '', '', '1', '1', 'N/A', '', '', '', '', '', 'USD', '1200', '5060', '2100', '5690', '4450', '9990', '3590', '4430', '4010', '4510', '4500', '1510', '5010', '5040', '4010', '1530', '5000', '0', '10', '10', '1000', '20', '20', '30', '1', '1', '0', '0', '0', '1', '0', '0', '', '1', '2.2', '0', '-1', '1', '600');
 
 ### Structure of table `0_credit_status` ###
 

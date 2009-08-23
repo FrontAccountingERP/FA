@@ -94,7 +94,7 @@ class fa2_2 {
 	//	Test if patch was applied before.
 	//
 	function installed($pref) {
-		if (check_table($pref, 'company', 'default_delivery_required')) return false;
+		if (check_table($pref, 'company', 'login_tout')) return false;
 		if (check_table($pref, 'stock_category', 'dflt_dim2')) return false;
 		if (check_table($pref, 'users', 'sticky_doc_date')) return false;
 		if (check_table($pref, 'audit_trail')) return false;

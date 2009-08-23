@@ -22,6 +22,8 @@ class current_user
 	var $company;
 	var $pos;
 	var $access;
+	var $timeout;
+	var $last_act;
 
 	var $logged;
 	var $ui_mode = 0;
@@ -30,7 +32,10 @@ class current_user
 
 	function current_user()
 	{
-		$this->loginname = $this->username = $this->name = $this->company = "";
+		global $def_coy;
+		
+		$this->loginname = $this->username = $this->name = "";
+		$this->company = isset($def_coy)? $def_coy : 0;
 		$this->logged = false;
 
 		$this->prefs = new user_prefs();
@@ -66,6 +71,8 @@ class current_user
         	    $this->user = @$myrow["id"];
 		    	update_user_visitdate($this->username);
 		    	$this->logged = true;
+				$this->last_act = time();
+				$this->timeout = session_timeout();
 			}
 		}
 
@@ -147,6 +154,7 @@ function price_format($number) {
     return number_format2($number,
 	$_SESSION["wa_current_user"]->prefs->price_dec());
 }
+
 // 2008-06-15. Added extra parameter $stock_id and reference for $dec
 //--------------------------------------------------------------------
 function qty_format($number, $stock_id=null, &$dec) {
@@ -337,4 +345,8 @@ function add_user_js_data() {
 
 //--------------------------------------------------------------------------
 
+function session_timeout()
+{
+	return get_company_pref('login_tout');
+}
 ?>

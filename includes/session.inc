@@ -93,6 +93,20 @@ function strip_quotes($data)
 }
 
 //============================================================================
+//
+//
+function login_timeout()
+{
+	if ($_SESSION["wa_current_user"]->logged) {
+		$tout = $_SESSION["wa_current_user"]->timeout;
+		if ($tout && (time() > $_SESSION["wa_current_user"]->last_act + $tout))
+		{
+			$_SESSION["wa_current_user"]->logged = false;
+		}
+		$_SESSION["wa_current_user"]->last_act = time();
+	}
+}
+//============================================================================
 if (!isset($path_to_root))
 {
 	$path_to_root = ".";
@@ -110,9 +124,13 @@ include_once($path_to_root . "/includes/ajax.inc");
 include_once($path_to_root . "/includes/ui/ui_msgs.inc");
 
 /*
+	Uncomment the setting below when using FA on shared hosting
+	to avoid unexpeced session timeouts.
 	Make sure this directory exists and is writable!
-//	$session_save_path = dirname(__FILE__).'/../tmp/';
 */
+//ini_set('session.save_path', dirname(__FILE__).'/../tmp/');
+
+ini_set('session.gc_maxlifetime', 36000); // 10hrs
 
 session_name('FrontAccounting');
 session_start();
@@ -157,15 +175,27 @@ set_error_handler('error_handler' /*, errtypes */);
 
 if (!isset($_SESSION["wa_current_user"]))
 	$_SESSION["wa_current_user"] = new current_user();
+
 set_global_connection();
+
+login_timeout();
 
 if (!$_SESSION["wa_current_user"]->logged_in())
 {
 	// Show login screen
 	if (!isset($_POST["user_name_entry_field"]) or $_POST["user_name_entry_field"] == "")
 	{
-		include($path_to_root . "/access/login.php");
-		$Ajax->redirect($path_to_root . "/access/login.php");
+		if (strstr($_SERVER['PHP_SELF'], 'timeout.php') == false) 
+			$_SESSION['timeout'] = array( 'uri'=> $_SERVER['REQUEST_URI'],
+				'post' => $_POST);
+
+		if (!in_ajax()) {
+			include($path_to_root . "/access/login.php");
+		} else {
+			// ajax update of current page elements - open login window in popup
+			// to not interfere with ajaxified page.
+			$Ajax->popup($path_to_root . "/access/timeout.php");
+		}
 		exit;
 	} else {
 		$succeed = $_SESSION["wa_current_user"]->login($_POST["company_login_name"],

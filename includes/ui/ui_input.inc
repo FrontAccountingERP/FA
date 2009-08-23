@@ -394,6 +394,16 @@ function amount_cell($label, $bold=false, $params="", $id=null)
 		label_cell(price_format($label), "nowrap align=right ".$params, $id);
 }
 
+//JAM  Allow entered unit prices to be fractional
+function unit_amount_cell($label, $bold=false, $params="", $id=null)
+{
+	if ($bold)
+		label_cell("<b>".unit_price_format($label)."</b>", "nowrap align=right ".$params, $id);
+	else
+		label_cell(unit_price_format($label), "nowrap align=right ".$params, $id);
+}
+
+
 function percent_cell($label, $bold=false, $id=null)
 {
 	if ($bold)
@@ -673,6 +683,15 @@ function amount_cells_ex($label, $name, $size, $max=null, $init=null, $params=nu
 function amount_cells($label, $name, $init=null, $params=null, $post_label=null, $dec=null)
 {
 	amount_cells_ex($label, $name, 15, 15, $init, $params, $post_label, $dec);
+}
+
+//JAM  Allow entered unit prices to be fractional
+function unit_amount_cells($label, $name, $init=null, $params=null, $post_label=null, $dec=null)
+{
+	if (!isset($dec))
+	  	$dec = user_price_dec()+2;
+
+	amount_cells_ex($label, $name, 15, 15, $init, $params, $post_label, $dec+2);
 }
 
 function amount_row($label, $name, $init=null, $params=null, $post_label=null, $dec=null)

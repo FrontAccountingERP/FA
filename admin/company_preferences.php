@@ -26,6 +26,12 @@ if (isset($_POST['update']) && $_POST['update'] != "")
 
 	$input_error = 0;
 
+	if (!check_num('login_tout', 10))
+	{
+		display_error(_("Login timeout must be positive number not less than 10."));
+		set_focus('login_tout');
+		$input_error = 1;
+	}
 	if (strlen($_POST['coy_name'])==0)
 	{
 		$input_error = 1;
@@ -104,8 +110,10 @@ if (isset($_POST['update']) && $_POST['update'] != "")
 			$_POST['email'], $_POST['coy_logo'], $_POST['domicile'],
 			$_POST['use_dimension'], $_POST['curr_default'], $_POST['f_year'], 
 			check_value('no_item_list'), check_value('no_customer_list'), 
-			check_value('no_supplier_list'), $_POST['base_sales'], check_value('time_zone'), $_POST['add_pct'], $_POST['round_to']);
-
+			check_value('no_supplier_list'), $_POST['base_sales'], 
+			check_value('time_zone'), $_POST['add_pct'], $_POST['round_to'],
+			$_POST['login_tout']);
+		$_SESSION['wa_current_user']->timeout = $_POST['login_tout'];
 		display_notification_centered(_("Company setup has been updated."));
 	}
 	set_focus('coy_name');
@@ -139,6 +147,7 @@ $_POST['f_year']  = $myrow["f_year"];
 $_POST['time_zone']  = $myrow["time_zone"];
 $_POST['version_id']  = $myrow["version_id"];
 $_POST['add_pct'] = $myrow['add_pct'];
+$_POST['login_tout'] = $myrow['login_tout'];
 if ($_POST['add_pct'] == -1)
 	$_POST['add_pct'] = "";
 $_POST['round_to'] = $myrow['round_to'];	
@@ -183,6 +192,7 @@ check_row(_("Search Customer List"), 'no_customer_list', null);
 check_row(_("Search Supplier List"), 'no_supplier_list', null);
 label_row("", "&nbsp;");
 check_row(_("Time Zone on Reports"), 'time_zone', $_POST['time_zone']);
+text_row_ex(_("Login Timeout:"), 'login_tout', 10, 10, '', null, null, _('seconds'));
 label_row(_("Version Id"), $_POST['version_id']);
 
 end_outer_table(1);
