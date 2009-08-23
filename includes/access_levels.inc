@@ -9,285 +9,208 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-//
 /*
-	This table is introduced only for additional grouping of sales areas,
-	and should be consistent with convention used above.
+	Security sections groups various areas on both functionality and privilige levels.
+	Often analyti inquires are available only for management, and configuration
+	for administration or management staff. This is why we have those three
+	sections related to near every FA module.
+	
+	Every security section can contain up to 256 different areas.
+	Section codes 0-99 are reserved for core FA functionalities.
+	External modules can extend security roles system by adding rows to security sections and
+	security areas using section code >=100.
 */
+define('SS_SADMIN',	1<<8);	// site admin
+define('SS_SETUP',	2<<8);	// company level setup
+define('SS_SPEC',	3<<8);	// special administration
 
-define('SM_SALES', 1<<8);
-define('SM_PURCH', 2<<8);
-define('SM_ITEMS', 3<<8);
-define('SM_MANUF', 4<<8);
-define('SM_DIM', 5<<8);
-define('SM_GL', 6<<8);
-define('SM_SETUP', 7<<8);
+define('SS_SALES_C',11<<8); // configuration
+define('SS_SALES',	12<<8);	// transactions
+define('SS_SALES_A',13<<8); // analytic functions/reports/inquires
 
-$security_modules = array(
- SM_SALES => _("Sales"),
- SM_PURCH => _("Purchases"),
- SM_ITEMS => _("Items and Inventory"),
- SM_MANUF => _("Manufacturing"),
- SM_DIM => _("Dimensions"),
- SM_GL => _("Banking & General Ledger"),
- SM_SETUP => _("Setup")
+define('SS_PURCH_C',21<<8);
+define('SS_PURCH',	22<<8);
+define('SS_PURCH_A',23<<8);
+
+define('SS_ITEMS_C',31<<8);
+define('SS_ITEMS',	32<<8);
+define('SS_ITEMS_A',33<<8);
+
+define('SS_MANUF_C',41<<8);
+define('SS_MANUF',	42<<8);
+define('SS_MANUF_A',43<<8);
+
+define('SS_DIM_C',	51<<8);
+define('SS_DIM',	52<<8);
+define('SS_DIM_A',	53<<8);
+
+define('SS_GL_C',	61<<8);
+define('SS_GL',		62<<8);
+define('SS_GL_A',	63<<8);
+
+$security_sections = array(
+ SS_SADMIN => _("System administration"),
+ SS_SETUP => _("Company setup"),
+ SS_SPEC => _("Special maintenance"),
+ SS_SALES_C => _("Sales configuration"),
+ SS_SALES => _("Sales transactions"),
+ SS_SALES_A => _("Sales analytics"),
+ SS_PURCH_C => _("Purchase configuration"),
+ SS_PURCH => _("Purchase transactions"),
+ SS_PURCH_A => _("Purchase analytics"),
+ SS_ITEMS_C => _("Inventory configuration"),
+ SS_ITEMS => _("Inventory operations"),
+ SS_ITEMS_A => _("Inventory analytics"),
+ SS_MANUF_C => _("Manufacturing configuration"),
+ SS_MANUF => _("Manufacturing transations"),
+ SS_MANUF_A => _("Manufacturing analytics"),
+ SS_DIM => _("Dimensions"),
+ SS_GL_C => _("Banking & GL configuration"),
+ SS_GL => _("Banking & GL transactions"),
+ SS_GL_A => _("Banking & GL analytics")
 );
 
-//	Access areas used in FrontAccounting. 
-// 	Constants defined below should be used wherever access rights for current
-//	user are checked. Set of allowed access areas is retrieved during login from
-//	security_roles table using role granted to user as a key, and stored 
-//	in user profile for use during login session.
-//	
-//----------------------------------------------------------------------------------
-// Sales module
+/*
+	This table stores security areas available in FA. 
+	Key is area identifier used to check user rights, values are
+	code stored for each role in security_roles table and description used
+	in roles editor.
+
+	Set of allowed access areas codes is retrieved during user login from
+	security_roles table, and stored in user profile for direct during the session.
+
+*/
+$security_areas =array(
 //
-define('SA_CUSTOMER',	SM_SALES|1);
-define('SA_SALESGROUP',	SM_SALES|2);
-define('SA_PRICE',		SM_SALES|3);
-define('SA_SALESMAN', 	SM_SALES|4);
-define('SA_SALESAREA', 	SM_SALES|5);
-define('SA_STATUS', 	SM_SALES|6);
-define('SA_STEMPLATE', 	SM_SALES|7);
-define('SA_SRECURRENT', SM_SALES|8);
+//	Site administration
+//
+	'SA_CREATECOMPANY' =>array(SS_SADMIN|1, _("Install/update companies")),
+	'SA_CREATELANGUAGE' => array(SS_SADMIN|2, _("Install/update languages")),
+	'SA_CREATEMODULES' => array(SS_SADMIN|3, _("Install/upgrade modules")),
+	'SA_SOFTWAREUPGRADE' => array(SS_SADMIN|4, _("Software upgrades")),
+//
+//	Company setup
+//
+	'SA_CRSTATUS' => array(SS_SETUP|1, _("Credit status definitions changes")),
+	'SA_INVENTORYLOCATION' => array(SS_SETUP|2, _("Inventory locations changes")),
+	'SA_INVENTORYMOVETYPE'  => array(SS_SETUP|3, _("Inventory movement types")),
+	'SA_WORKCENTRE' => array(SS_SETUP|4, _("Manufacture work centres ")),
+	'SA_SETUPCOMPANY' => array(SS_SETUP|5, _("Company parameters")),
+	'SA_SETUPUSER' => array(SS_SETUP|6, _("Users setup")),
+	'SA_SETUPFORM' => array(SS_SETUP|7, _("Forms setup")),
+	'SA_PRINTPROFILE' => array(SS_SETUP|8, _("Print profiles")),
+	'SA_PAYMENTTERM' => array(SS_SETUP|9, _("Payment terms")),
+	'SA_SHIPPING' => array(SS_SETUP|10, _("Shipping ways")),
+	'SA_SETUPPOS' => array(SS_SETUP|11, _("Point of sales definitions")),
+	'SA_SETUPPRINTER' => array(SS_SETUP|12, _("Printers configuration")),
 
-define('SA_SALESORDER', 	SM_SALES|11);
-define('SA_SALESDELIVERY', 	SM_SALES|12);
-define('SA_SALESINVOICE', 	SM_SALES|13);
-define('SA_SALESCREDITINV', SM_SALES|14);
-define('SA_SALESCREDIT', 	SM_SALES|15);
-define('SA_SALESPAYMNT', 	SM_SALES|16);
+// special and common functions
+	'SA_VIEWPRINTTRANSACTION' => array(SS_SPEC|1, _("Common view/print transactions interface")),
+	'SA_ATTACHDOCUMENT' => array(SS_SPEC|2, _("Attaching documents")),
+	'SA_VOIDTRANSACTION' => array(SS_SPEC|3, _("Voiding transactions")),
+	'SA_BACKUP' => array(SS_SPEC|4, _("Database backup/restore")),
 
-define('SA_SALESALLOC', SM_SALES|21);
-define('SA_SALESANALYTIC', SM_SALES|22);
-define('SA_SALESMANREP', SM_SALES|23);
-define('SA_SALESVARREP', SM_SALES|24);
+// Sales related functionality
+//
+	'SA_STEMPLATE' => array(SS_SALES_C|1, _("Sales templates")),
+	'SA_SRECURRENT' => array(SS_SALES_C|2, _("Recurrent invoices definitions")),
+	'SA_SALESPRICE' => array(SS_SALES_C|3, _("Sales prices edition")),
+	'SA_SALESGROUP' => array(SS_SALES_C|4, _("Sales groups changes")),
+	'SA_SALESMAN' => array(SS_SALES_C|5, _("Sales staff maintenance")),
+	'SA_SALESAREA' => array(SS_SALES_C|6, _("Sales areas maintenance")),
+
+	'SA_CUSTOMER' => array(SS_SALES|1,  _("Sales customer and branches changes")),
+	'SA_SALESORDER' => array(SS_SALES|2, _("Sales orders edition")),
+	'SA_SALESDELIVERY' => array(SS_SALES|3, _("Sales deliveries edition")),
+	'SA_SALESINVOICE' => array(SS_SALES|4, _("Sales invoices edition")),
+	'SA_SALESCREDITINV' => array(SS_SALES|5, _("Sales credit notes against invoice")),
+	'SA_SALESCREDIT' => array(SS_SALES|6, _("Sales freehand credit notes")),
+	'SA_SALESPAYMNT' => array(SS_SALES|7, _("Customer payments entry")),
+	'SA_SALESALLOC' => array(SS_SALES|1, _("Customer payments allocation")),
+
+	'SA_SALESANALYTIC' => array(SS_SALES_A|2, _("Customer analytical reports and inquiries")),
+	'SA_SALESMANREP' => array(SS_SALES_A|3, _("Sales reports")),
+	'SA_SALESVARREP' => array(SS_SALES_A|4, _("Sales other reports and inquires")),
 
 //
-// Purchasing module 
+// Purchase related functions
 //
-define('SA_SUPPLIER', SM_PURCH|1);
+	'SA_PURCHASEPRICING' => array(SS_PURCH_C|1, _("Purchase price changes")),
 
-define('SA_PURCHASEORDER', SM_PURCH|11);
-define('SA_GRN', SM_PURCH|12);
-define('SA_SUPPLIERINVOICE', SM_PURCH|13);
-define('SA_SUPPLIERCREDIT', SM_PURCH|14);
-define('SA_SUPPLIERPAYMNT', SM_PURCH|15);
+	'SA_SUPPLIER' => array(SS_PURCH|1, _("Suppliers data changes")),
+	'SA_PURCHASEORDER' => array(SS_PURCH|2, _("Purchase order entry")),
+	'SA_GRN' => array(SS_PURCH|3, _("Purchase receive")),
+	'SA_SUPPLIERINVOICE' => array(SS_PURCH|4, _("Supplier invoices")),
+	'SA_SUPPLIERCREDIT' => array(SS_PURCH|5, _("Supplier credit notes")),
+	'SA_SUPPLIERPAYMNT' => array(SS_PURCH|6, _("Supplier payments")),
+	'SA_SUPPLIERALLOC' => array(SS_PURCH|7, _("Supplier payments allocations")),
 
-define('SA_SUPPLIERALLOC', SM_PURCH|21);
-define('SA_SUPPLIERANALYTIC', SM_PURCH|22);
-define('SA_SUPPLIERMANREP', SM_PURCH|23);
-define('SA_SUPPLIERVARREP', SM_PURCH|24);
-
+	'SA_SUPPLIERANALYTIC' => array(SS_PURCH_A|1, _("Supplier analytical reports and inquiries")),
+	'SA_SUPPLIERMANREP' => array(SS_PURCH_A|2, _("Supplier reports")),
+	'SA_SUPPLIERVARREP' => array(SS_PURCH_A|3, _("Supplier other reports and inquiries")),
 //
-// Inventory module 
+// Inventory 
 //
-define('SA_ITEM', SM_ITEMS|1);
-define('SA_FORITEMCODE', SM_ITEMS|2);
-define('SA_SALESKIT', SM_ITEMS|3);
-define('SA_ITEMCATEGORY', SM_ITEMS|4);
-define('SA_INVENTORYLOCATION', SM_ITEMS|5);
-define('SA_INVENTORYMOVETYPE', SM_ITEMS|6);
-define('SA_ITEMTAXTYPE', SM_ITEMS|7);
-define('SA_UOM', SM_ITEMS|8);
-define('SA_REORDER', SM_ITEMS|9);
+	'SA_ITEM' => array(SS_ITEMS_C|1, _("Stock items add/edit")),
+	'SA_SALESKIT' => array(SS_ITEMS_C|2, _("Sales kits")),
+	'SA_ITEMCATEGORY' => array(SS_ITEMS_C|3, _("Item categories")),
+	'SA_UOM' => array(SS_ITEMS_C|4, _("Units of measure")),
 
-define('SA_LOCATIONTRANSFER', SM_ITEMS|11);
-define('SA_INVENTORYADJUSTMENT', SM_ITEMS|12);
+	'SA_FORITEMCODE' => array(SS_ITEMS|1, _("Foreign item codes entry")),
+	'SA_LOCATIONTRANSFER' => array(SS_ITEMS|2, _("Inventory location transfers")),
+	'SA_INVENTORYADJUSTMENT' => array(SS_ITEMS|3, _("Inventory adjustments")),
 
-define('SA_ITEMSANALYTIC', SM_ITEMS|21);
-define('SA_ITEMSMANREP', SM_ITEMS|22);
-define('SA_ITEMSVARREP', SM_ITEMS|23);
-
-define('SA_SALESPRICING', SM_ITEMS|31);
-define('SA_PURCHASEPRICING', SM_ITEMS|32);
-define('SA_STANDARDCOST', SM_ITEMS|33);
+	'SA_REORDER' => array(SS_ITEMS_A|1, _("Reorder levels")),
+	'SA_ITEMSANALYTIC' => array(SS_ITEMS_A|2, _("Items analytical reports and inquiries")),
+	'SA_ITEMSMANREP' => array(SS_ITEMS_A|3, _("Inventory reports")),
+	'SA_ITEMSVARREP' => array(SS_ITEMS_A|4, _("Inventory other reports and inquiries")),
 
 //
 // Manufacturing module 
 //
-define('SA_BOM', SM_MANUF|1);
-define('SA_WORKCENTRE', SM_MANUF|2);
+	'SA_BOM' => array(SS_MANUF_C|1, _("Bill of Materials")),
 
-define('SA_WORKORDERENTRY', SM_MANUF|11);
-define('SA_WORKORDEROPERATION', SM_MANUF|12);
+	'SA_WORKORDERENTRY' => array(SS_MANUF|1, _("Work order entry")),
+	'SA_WORKORDEROPERATION' => array(SS_MANUF|2, _("Work order operations")),
 
-define('SA_WORKORDERANALYTIC', SM_MANUF|21);
-define('SA_WORKORDERMANREP', SM_MANUF|22);
-define('SA_WORKORDERVARREP', SM_MANUF|23);
-
-//
-// Dimension module 
-//
-define('SA_DIMENSION', SM_DIM|1);
-
-define('SA_DIMENSIONOPERATION', SM_DIM|11);
-
-define('SA_DIMENSIONANALYTIC', SM_DIM|21);
-define('SA_DIMENSIONMANREP', SM_DIM|22);
-define('SA_DIMENSIONVARREP', SM_DIM|23);
+	'SA_WORKORDERANALYTIC' => array(SS_MANUF_A|1, _("Work order analytical reports and inquiries")),
+	'SA_WORKORDERMANREP' => array(SS_MANUF_A|2, _("Work order reports")),
+	'SA_WORKORDERVARREP' => array(SS_MANUF_A|3, _("Work order other reports and inquiries")),
 
 //
-// Banking and General Ledger module 
+// Dimensions
 //
-define('SA_BANKACCOUNT', SM_GL|1);
-define('SA_QUICKENTRY', SM_GL|2);
-define('SA_CURRENCY', SM_GL|3);
-define('SA_EXCHANGERATE', SM_GL|4);
-define('SA_GLACCOUNT', SM_GL|5);
-define('SA_GLACCOUNTGROUP', SM_GL|6);
-define('SA_GLACCOUNTCLASS', SM_GL|7);
+	'SA_DIMENSION' => array(SS_DIM|1, _("Dimensions")),
 
-define('SA_PAYMENT', SM_GL|11);
-define('SA_DEPOSIT', SM_GL|12);
-define('SA_BANKACCOUNTTRANSFER', SM_GL|13);
-define('SA_JOURNALENTRY', SM_GL|14);
-define('SA_BUDGETENTRY', SM_GL|15);
-define('SA_RECONCILE', SM_GL|16);
+	'SA_DIMENSIONOPERATION' => array(SS_DIM|2, _("Dimension operations")),
 
-define('SA_GLANALYTIC', SM_GL|21);
-define('SA_GLMANREP', SM_GL|22);
-define('SA_GLVARREP', SM_GL|23);
-
+	'SA_DIMENSIONANALYTIC' => array(SS_DIM|3, _("Dimension analytical reports and inquiries")),
+	'SA_DIMENSIONMANREP' => array(SS_DIM|4, _("Dimension reports")),
+	'SA_DIMENSIONVARREP' => array(SS_DIM|5, _("Dimension other reports and inquiries")),
 //
-// Setup module 
+// Banking and General Ledger
 //
-define('SA_SETUPCOMPANY', SM_SETUP|1);
-define('SA_SETUPUSER', SM_SETUP|2);
-define('SA_SETUPFORM', SM_SETUP|3);
-define('SA_SETUPTAX', SM_SETUP|4);
-define('SA_SETUPFISCALYEAR', SM_SETUP|5);
-define('SA_PRINTPROFILE', SM_SETUP|6);
-define('SA_PAYMENTTERM', SM_SETUP|7);
-define('SA_SHIPPING', SM_SETUP|8);
-define('SA_SETUPPOS', SM_SETUP|9);
-define('SA_SETUPPRINTER', SM_SETUP|10);
+	'SA_ITEMTAXTYPE' => array(SS_GL_C|1, _("Item tax type definitions")),
+	'SA_GLACCOUNT' => array(SS_GL_C|2, _("GL accounts edition")),
+	'SA_GLACCOUNTGROUP' => array(SS_GL_C|3, _("GL account groups")),
+	'SA_GLACCOUNTCLASS' => array(SS_GL_C|4, _("GL account classes")),
+	'SA_QUICKENTRY' => array(SS_GL_C|5, _("Quick GL entry definitions")),
+	'SA_CURRENCY' => array(SS_GL_C|6, _("Currencies")),
+	'SA_BANKACCOUNT' => array(SS_GL_C|7, _("Bank accounts")),
+	'SA_SETUPTAX' => array(SS_GL_C|8, _("Tax rates")),
+	'SA_SETUPFISCALYEAR' => array(SS_GL_C|9, _("Fiscal years maintenance")),
 
-define('SA_VOIDTRANSACTION', SM_SETUP|11);
-define('SA_VIEWPRINTTRANSACTION', SM_SETUP|12);
-define('SA_ATTACHDOCUMENT', SM_SETUP|13);
-define('SA_BACKUP', SM_SETUP|14);
-define('SA_CREATECOMPANY', SM_SETUP|15);
-define('SA_CREATELANGUAGE', SM_SETUP|16);
-define('SA_CREATEMODULES', SM_SETUP|17);
-define('SA_SOFTWAREUPGRADE', SM_SETUP|18);
+	'SA_EXCHANGERATE' => array(SS_GL|1, _("Exchange rate table changes")),
+	'SA_PAYMENT' => array(SS_GL|2, _("Bank payments")),
+	'SA_DEPOSIT' => array(SS_GL|3, _("Bank deposits")),
+	'SA_BANKACCOUNTTRANSFER' => array(SS_GL|4, _("Bank account transfers")),
+	'SA_JOURNALENTRY' => array(SS_GL|5, _("Manual journal entries")),
+	'SA_BUDGETENTRY' => array(SS_GL|6, _("Budget edition")),
+	'SA_RECONCILE' => array(SS_GL|7, _("Bank reconciliation")),
+	'SA_STANDARDCOST' => array(SS_GL|8, _("Item standard costs")),
 
-/*
-	This table stores security area ranges. It is used by security_role 
-	table administration interface. Every extension module can add their
-	own security areas set by adding new entries here.
-*/
-$security_areas = array(
-	// database table crud operations and administrative areas
-	SA_CUSTOMER => _("Sales customer and branches"),
-		_("Sales groups"),
-		_("Sales prices"),
-		_("Sales staff"),
-		_("Sales areas"),
-		_("Credit status definitions"),
-		_("Sales templates"),
-		_("Recurrent invoices definitions"),
-	// documents, transactions entry
-	SA_SALESORDER => _("Sales order entry"),
-		_("Sales deliveries"),
-		_("Sales invoices"),
-		_("Sales credit notes against invoice"),
-		_("Sales freehand credit notes"),
-		_("Customer payments"),
-	// maintenance and analytics
-	SA_SALESALLOC => _("Customer allocations"),
-		_("Customer analytical reports and inquiries"),
-		_("Sales reports"),
-		_("Sales other reports and inquires"),
-	// database table crud operations and administrative areas
-	SA_SUPPLIER => _("Suppliers"),
-	// documents, transactions entry
-	SA_PURCHASEORDER => _("Purchase Order Entry"),
-		_("Outstanding Purchase Orders"),
-		_("Supplier Invoices"),
-		_("Supplier Credit Notes"),
-		_("Supplier Payments"),
-	// maintenance and analytics
-	SA_SUPPLIERALLOC => _("Supplier allocations"),
-		_("Supplier analytical reports and inquiries"),
-		_("Supplier reports"),
-		_("Supplier other reports and inquiries"),
-	// database table crud operations and administrative areas
-	SA_ITEM => _("Items"),
-		_("Foreign Item Codes"),
-		_("Sales Kits"),
-		_("Item Categories"),
-		_("Inventory Locations"),
-		_("Inventory Movement Types"),
-		_("Item Tax Types"),
-		_("Unit of Measures"),
-		_("Reorder Levels"),
-	// documents, transactions entry
-	SA_LOCATIONTRANSFER => _("Inventory Location Transfers"),
-		_("Inventory Adjustments"),
-	// maintenance and analytics
-	SA_ITEMSANALYTIC => _("Items analytical reports and inquiries"),
-		_("Inventory reports"),
-		_("Inventory other reports and inquiries"),
-	SA_SALESPRICING => _("Item Sales Pricing"),
-		_("Item Purchasing Pricing"),
-		_("Item Standard Costs"),
-	// database table crud operations and administrative areas
-	SA_BOM => _("Bill of Materials"),
-		_("Work Centres"),
-	// documents, transactions entry
-	SA_WORKORDERENTRY => _("Work Order Entries"),
-		_("Work Order Operations"),
-	// maintenance and analytics
-	SA_WORKORDERANALYTIC => _("Work Order analytical reports and inquiries"),
-		_("Work Order Reports"),
-		_("Work Order other reports and inquiries"),
-	// database table crud operations and administrative areas
-	SA_DIMENSION => _("Dimensions"),
-	// documents, transactions entry
-	SA_DIMENSIONOPERATION => _("Dimension Operations"),
-	// maintenance and analytics
-	SA_DIMENSIONANALYTIC => _("Dimension analytical reports and inquiries"),
-		_("Dimension Reports"),
-		_("Dimension other reports and inquiries"),
-	// database table crud operations and administrative areas
-	SA_BANKACCOUNT => _("Bank Accounts"),
-		_("Quick Entries"),
-		_("Currencies"),
-		_("Exchange Rates"),
-		_("GL Accounts"),
-		_("GL Account Groups"),
-		_("GL Account Classes"),
-	// documents, transactions entry
-	SA_PAYMENT => _("Bank Payments"),
-		_("Bank Deposits"),
-		_("Bank Account Transfers"),
-		_("Journal Entries"),
-		_("Budget Entries"),
-		_("Bank Reconcile"),
-	// maintenance and analytics
-	SA_GLANALYTIC => _("Bank and GL analytical reports and inquiries"),
-		_("Bank and GL Reports"),
-		_("Bank and GL other reports and inquiries"),
-	// database table crud operations and administrative areas
-	SA_SETUPCOMPANY => _("Company Setup"),
-		_("Users Setup"),
-		_("Forms Setup"),
-		_("Taxes"),
-		_("Fiscal Years"),
-		_("Print Profiles"),
-		_("Payment Terms"),
-		_("Shipping"),
-		_("Point of Sales"),
-		_("Printer Setup"),
-	// documents, transactions entry
-	SA_VOIDTRANSACTION => _("Voiding Transactions"),
-		_("Viev and Print Transactions"),
-		_("Attaching Documents"),
-		_("Backup and Restore"),
-		_("Install/Update Companies"),
-		_("Install/Update Languages"),
-		_("Install/Upgrade Modules"),
-		_("Software Upgrades")
+	'SA_GLANALYTIC' => array(SS_GL_A|1, _("Bank and GL analytical reports and inquiries")),
+	'SA_GLMANREP' => array(SS_GL_A|2, _("Bank and GL reports")),
+	'SA_GLVARREP' => array(SS_GL_A|3, _("Bank and GL other reports and inquiries"))
 );
 ?>
