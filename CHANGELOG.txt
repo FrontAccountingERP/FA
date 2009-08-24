@@ -28,6 +28,8 @@ $ /purchasing/po_entry_items.php
 + Additional links to next document on final pages.
 $ /purchasing/po_receive_items.php
   /purchasing/supplier_invoice.php
+# Fixed focus issues on hyperlinks
+$ /includes/ui/ui_controls.inc
 
 23-Aug-2009 Janusz Dobrowolski
 + Implemented customizable authentication timeout.
