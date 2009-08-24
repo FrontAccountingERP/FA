@@ -142,7 +142,7 @@ function hyperlink_no_params($target, $label, $center=true)
 		$target = $_SERVER['PHP_SELF'];
 	if ($center)
 		echo "<br><center>";
-	echo "<a href='$target' $id='$id' $pars[1]>$pars[0]</a>\n";
+	echo "<a href='$target' id='$id' $pars[1]>$pars[0]</a>\n";
 	if ($center)
 		echo "</center>";
 }
@@ -232,7 +232,7 @@ function hyperlink_params_separate($target, $label, $params, $center=false)
 	$pars = access_string($label);
 	if ($center)
 		echo "<br><center>";
-	echo "<a target='_blank' $id='$id' href='$target?$params' $pars[1]>$pars[0]</a>\n";
+	echo "<a target='_blank' id='$id' href='$target?$params' $pars[1]>$pars[0]</a>\n";
 	if ($center)
 		echo "</center>";
 }
