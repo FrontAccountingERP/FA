@@ -48,7 +48,7 @@ function print_list_of_journal_entries()
 
     $cols = array(0, 100, 240, 300, 400, 460, 520, 580);
 
-    $headers = array(_('Type/Account'), _('Account Name'), _('Date/Dim.'),
+    $headers = array(_('Type/Account'), _('Reference').'/'._('Account Name'), _('Date/Dim.'),
     	_('Person/Item/Memo'), _('Debit'), _('Credit'));
 
     $aligns = array('left', 'left', 'left', 'left', 'right', 'right');
@@ -82,7 +82,8 @@ function print_list_of_journal_entries()
             $typeno = $myrow['type_no'];
             $type = $myrow['type'];
             $TransName = systypes::name($myrow['type']);
-            $rep->TextCol(0, 2, $TransName . " # " . $myrow['type_no']);
+            $rep->TextCol(0, 1, $TransName . " # " . $myrow['type_no']);
+            $rep->TextCol(1, 2, get_reference($myrow['type'], $myrow['type_no']));
             $rep->DateCol(2, 3, $myrow['tran_date'], true);
             $coms =  payment_person_types::person_name($myrow["person_type_id"],$myrow["person_id"]);
             $memo = get_comments_string($myrow['type'], $myrow['type_no']);

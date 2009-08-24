@@ -19,6 +19,9 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+25-Aug-2009 Joe Hunt
++ Added reference number in report List of Journal Entries.
+$ /reporting/rep702.php
 
 24-Aug-2009 Janusz Dobrowolski
 # Fixed warning displayed before db upgrade.
