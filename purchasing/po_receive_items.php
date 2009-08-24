@@ -39,6 +39,8 @@ if (isset($_GET['AddedID']))
 	//echo get_gl_view_str(25, $grn, _("View the GL &Journal Entries for this Delivery"));
 
 //	echo "<br>";
+	hyperlink_params("$path_to_root/purchasing/supplier_invoice.php", _("Entry purchase &invoice for this receival"), "New=1");
+
 	hyperlink_no_params("$path_to_root/purchasing/inquiry/po_search.php", _("Select a different &purchase order for receiving items against"));
 
 	display_footer_exit();
