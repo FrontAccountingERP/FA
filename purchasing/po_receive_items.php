@@ -102,7 +102,7 @@ function display_po_receive_items()
 			else
 				label_cell(number_format2($ln_itm->receive_qty, $dec), "align=right");
 
-			amount_cell($ln_itm->price);
+			amount_decimal_cell($ln_itm->price);
 			amount_cell($line_total);
 			end_row();
        	}

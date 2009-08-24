@@ -150,6 +150,20 @@ function price_format($number) {
     return number_format2($number,
 	$_SESSION["wa_current_user"]->prefs->price_dec());
 }
+
+function price_decimal_format($number, &$dec)
+{
+	$dec = user_price_dec();
+	$str = strval($number);
+	$pos = strpos($str, '.');
+	if ($pos !== false)
+	{
+		$len = strlen(substr($str, $pos + 1));
+		if ($len > $dec)
+			$dec = $len;
+	}
+	return number_format2($number, $dec);
+}
 // 2008-06-15. Added extra parameter $stock_id and reference for $dec
 //--------------------------------------------------------------------
 function qty_format($number, $stock_id=null, &$dec) {

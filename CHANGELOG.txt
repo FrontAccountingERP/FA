@@ -19,6 +19,21 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+24-Aug-2009 Joe Hunt
+# A Purchasing Price of 12.34 with a conversion factor of 100,0000 caused a false internal rounding error of 12.00.
+! The Purchasing Price, price can now have up to 6 decimals (fractions of hundredth's) and are presented correctly.
+  If you need to increase the decimals in a current value, then you have to delete it and create it again with new values.
+  This is for safety reasons.
+$ /includes/current_user.inc
+  /includes/ui/ui_input.inc
+  /inventory/purchasing_data.php
+  /purchasing/po_receive_items.php
+  /purchasing/includes/ui/invoice_ui.inc
+  /purchasing/includes/ui/po_ui.inc
+  /purchasing/view/view_grn.php
+  /purchasing/view/view_po.php
+  /reporting/rep209.php
+  
 21-Aut-2009 Joe Hunt
 # [0000162] Deleting a GL account may cause problems with quick entries 
 $ /gl/manage/gl_accounts.php

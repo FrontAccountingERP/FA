@@ -380,7 +380,8 @@ function display_grn_items_for_selection(&$supp_trans, $k)
             else		
             	qty_cells(null, 'This_QuantityCredited'.$n, number_format2(max($myrow["quantity_inv"], 0), $dec), 
             		null, null, $dec);
-            amount_cells(null, 'ChgPrice'.$n, price_format($myrow["unit_price"]));
+            $dec2 = 0; 		
+            amount_cells(null, 'ChgPrice'.$n, price_decimal_format($myrow["unit_price"], $dec2), null, null, $dec2);
             if ($supp_trans->is_invoice)
             	amount_cell(round2($myrow["unit_price"] * ($myrow["qty_recd"] - $myrow["quantity_inv"]), user_price_dec()));
             else	
@@ -511,7 +512,7 @@ function display_grn_items(&$supp_trans, $mode=0)
 				qty_cell($entered_grn->prev_quantity_inv, false, $dec);
             }
 			qty_cell(abs($entered_grn->this_quantity_inv), true, $dec);
-			amount_cell($entered_grn->chg_price);
+			amount_decimal_cell($entered_grn->chg_price);
 			amount_cell( round2($entered_grn->chg_price * abs($entered_grn->this_quantity_inv), user_price_dec()), true);
 
 			if ($mode == 1)

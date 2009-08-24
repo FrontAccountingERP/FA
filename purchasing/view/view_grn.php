@@ -58,7 +58,7 @@ foreach ($purchase_order->line_items as $stock_item)
 	$dec = get_qty_dec($stock_item->stock_id);
 	qty_cell($stock_item->qty_received, false, $dec);
 	label_cell($stock_item->units);
-	amount_cell($stock_item->price);
+	amount_decimal_cell($stock_item->price);
 	amount_cell($line_total);
 	qty_cell($stock_item->qty_inv, false, $dec);
 	end_row();
