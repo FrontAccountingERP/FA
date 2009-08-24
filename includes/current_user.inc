@@ -347,6 +347,7 @@ function add_user_js_data() {
 
 function session_timeout()
 {
-	return get_company_pref('login_tout');
+	$tout = @get_company_pref('login_tout'); // mask warning for db ver. 2.2
+	return $tout ? $tout : ini_get('session.gc_maxlifetime');
 }
 ?>
