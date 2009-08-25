@@ -1851,6 +1851,7 @@ CREATE TABLE `0_users` (
   `print_profile` varchar(30) NOT NULL default '1',
   `rep_popup` tinyint(1) default '1',
   `sticky_doc_date` tinyint(1) default '0',
+  `startup_tab` varchar(20) NOT NULL default '',
   `inactive` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`id`),
   UNIQUE KEY  (`user_id`)
@@ -1859,8 +1860,8 @@ CREATE TABLE `0_users` (
 
 ### Data of table `0_users` ###
 
-INSERT INTO `0_users` VALUES ('1', 'admin', '5f4dcc3b5aa765d61d8327deb882cf99', 'Administrator', '2', '', 'adm@adm.com', 'en_US', '0', '0', '0', '0', 'default', 'Letter', '2', '2', '4', '1', '1', '0', '0', '2009-01-30 09:39:03', '10', '1', '1', '1', '1', '0', '0');
-INSERT INTO `0_users` VALUES ('2', 'demouser', '5f4dcc3b5aa765d61d8327deb882cf99', 'Demo User', '1', '999-999-999', 'demo@demo.nu', 'en_US', '0', '0', '0', '0', 'default', 'Letter', '2', '2', '3', '1', '1', '0', '0', '2008-02-06 19:02:35', '10', '1', '1', '1', '1', '0', '0');
+INSERT INTO `0_users` VALUES ('1', 'admin', '5f4dcc3b5aa765d61d8327deb882cf99', 'Administrator', '2', '', 'adm@adm.com', 'en_US', '0', '0', '0', '0', 'default', 'Letter', '2', '2', '4', '1', '1', '0', '0', '2009-01-30 09:39:03', '10', '1', '1', '1', '1', '0', 'orders', '0');
+INSERT INTO `0_users` VALUES ('2', 'demouser', '5f4dcc3b5aa765d61d8327deb882cf99', 'Demo User', '1', '999-999-999', 'demo@demo.nu', 'en_US', '0', '0', '0', '0', 'default', 'Letter', '2', '2', '3', '1', '1', '0', '0', '2008-02-06 19:02:35', '10', '1', '1', '1', '1', '0', 'orders', '0');
 
 ### Structure of table `0_voided` ###
 

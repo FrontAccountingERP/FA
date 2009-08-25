@@ -22,6 +22,21 @@ $ -> Affected files
 25-Aug-2009 Joe Hunt
 + Added reference number in report List of Journal Entries.
 $ /reporting/rep702.php
+! Changed default startup_up app to be in user preferences. Default 'Sales'.
+  Moved tab_list_row to ui_lists.inc and changed the global $tabs to be in types.inc
+$ config.php
+  /admin/display_prefs.php
+  /admin/inst_module.php
+  /admin/db/users_db.inc
+  /includes/current_user.inc
+  /includes/types.inc
+  /includes/page/header.inc
+  /includes/prefs/userprefs.inc
+  /includes/ui/ui_lists.inc
+  /sql/alter2.2.sql
+  /sql/en_US-demo.sql
+  /sql/en_US-new.sql
+  
 
 24-Aug-2009 Janusz Dobrowolski
 # Fixed warning displayed before db upgrade.

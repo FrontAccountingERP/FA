@@ -100,7 +100,7 @@ function page_header($title, $no_menu=false, $is_index=false, $onload="", $js=""
 	elseif (isset($_SESSION["sel_app"]) && $_SESSION["sel_app"] != "")
 		$sel_app = $_SESSION["sel_app"];
 	else
-		$sel_app = $def_app;
+		$sel_app = user_startup_tab();
 	$_SESSION["sel_app"] = $sel_app;
 	if (isset($_SESSION["App"]) && is_object($_SESSION["App"]))
 		$_SESSION["App"]->selected_application = $sel_app;

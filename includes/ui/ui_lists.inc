@@ -2134,5 +2134,18 @@ function security_roles_list_row($label, $name, $selected_id=null, $new_item=fal
 	return $str;
 }
 
+function tab_list_row($label, $name, $selected_id=null)
+{
+	global $tabs;
+	echo "<tr>\n";
+	echo "<td>$label</td><td>\n";
+
+	$items = array();
+
+	array_selector($name, $selected_id, $tabs);
+
+	echo "</td></tr>\n";
+}
+
 
 ?>

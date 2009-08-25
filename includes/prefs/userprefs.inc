@@ -34,6 +34,7 @@ class user_prefs
 	var $query_size; // table pager page length
 	var $graphic_links; // use graphic links
 	var $sticky_date;	// save date on subsequent document entry
+	var $startup_tab;  // default start-up menu tab
 	
 	function user_prefs($user=null)
 	{
@@ -67,6 +68,7 @@ class user_prefs
 			$this->query_size = $user["query_size"];
 			$this->graphic_links = $user["graphic_links"];
 			$this->sticky_date = $user["sticky_doc_date"];
+			$this->startup_tab = $user['startup_tab'];
 		}
 	}
 
@@ -177,6 +179,11 @@ class user_prefs
 		return $this->sticky_date;
 	}
 	
+	function start_up_tab()
+	{
+		return $this->startup_tab;
+	}
+
 	function set_dec($price_dec, $qty_dec, $exrate_dec, $percent_dec, $showgl, $showcodes) 
 	{
 		$this->price_dec = $price_dec;

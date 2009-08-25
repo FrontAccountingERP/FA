@@ -146,6 +146,11 @@ class bank_account_types
 		return $bank_account_types_array[$index]['ptype'];
 	}
 }
+
+/* Menu tabs */
+$tabs = array('orders'=>_("Sales"), 'AP'=>_("Purchases"), 'stock'=>_("Items and Inventory"), 'manuf'=>_("Manufacturing"), 
+	'proj'=>_("Dimensions"), 'GL'=>_("Banking and General Ledger"), 'system'=>_("Setup"));
+
 //----------------------------------------------------------------------------------
 
 include_once($path_to_root . "/manufacturing/includes/manufacturing_db.inc");

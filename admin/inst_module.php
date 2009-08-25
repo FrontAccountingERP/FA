@@ -21,10 +21,6 @@ include_once($path_to_root . "/admin/db/maintenance_db.inc");
 include_once($path_to_root . "/modules/installed_modules.php");
 include_once($path_to_root . "/includes/ui.inc");
 
-$tabs = array('orders', 'AP', 'stock', 'manuf', 'proj', 'GL', 'system');
-$names = array(_("Sales"), _("Purchases"), _("Items and Inventory"), _("Manufacturing"),
-	_("Dimensions"), _("Banking and General Ledger"), _("Setup"));
-
 //---------------------------------------------------------------------------------------------
 
 if (isset($_GET['selected_id']))
@@ -37,39 +33,6 @@ elseif (isset($_POST['selected_id']))
 }
 else
 	$selected_id = -1;
-
-//---------------------------------------------------------------------------------------------
-
-function get_tab_title($tab)
-{
-	global $tabs, $names;
-	for ($i = 0; $i < count($tabs); $i++)
-	{
-		if ($tabs[$i] == $tab)
-			return $names[$i];
-	}
-	return "";
-}
-
-function tab_list_row($label, $name, $selected)
-{
-	global $tabs, $names;
-	echo "<tr>\n";
-	if ($label != null)
-		echo "<td>$label</td>\n";
-	if ($selected == null)
-		$selected = (!isset($_POST[$name]) ? "orders" : $_POST[$name]);
-	echo "<td><select name='$name'>";
-	for ($i = 0; $i < count($tabs); $i++)
-	{
-		if ($selected == $tabs[$i])
-			echo "<option selected value='".$tabs[$i]."'>" . $names[$i]. "</option>\n";
-		else
-			echo "<option value='".$tabs[$i]."'>" . $names[$i]. "</option>\n";
-	}
-	echo "</select></td>\n";
-	echo "</tr>\n";
-}
 
 //---------------------------------------------------------------------------------------------
 
@@ -263,7 +226,7 @@ function handle_delete()
 
 function display_modules()
 {
-	global $table_style, $installed_modules;
+	global $table_style, $installed_modules, $tabs;
 
 	echo "
 		<script language='javascript'>
@@ -284,7 +247,7 @@ function display_modules()
 	{
    		alt_table_row_color($k);
 
-		label_cell(get_tab_title($mods[$i]['tab']));
+		label_cell($tabs[$mods[$i]['tab']]);
 		label_cell($mods[$i]['name']);
 		label_cell($mods[$i]['path']);
 		label_cell($mods[$i]['filename']);

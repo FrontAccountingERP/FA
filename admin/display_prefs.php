@@ -42,7 +42,7 @@ if (isset($_POST['setprefs']))
 			$_POST['theme'], $_POST['page_size'], check_value('show_hints'),
 			$_POST['profile'], check_value('rep_popup'), 
 			(int)($_POST['query_size']), check_value('graphic_links'), 
-			$_POST['language'], check_value('sticky_doc_date'));
+			$_POST['language'], check_value('sticky_doc_date'), $_POST['startup_tab']);
 
 		if ($chg_lang)
 			language::set_language($_POST['language']);
@@ -109,6 +109,8 @@ themes_list_row(_("Theme:"), "theme", user_theme());
 possible separators can be added by modifying the array definition by editing that file */
 
 pagesizes_list_row(_("Page Size:"), "page_size", user_pagesize());
+
+tab_list_row(_("Start-up Tab"), 'startup_tab', user_startup_tab());
 
 /* The array $pagesizes is set up in config.php for modifications
 possible separators can be added by modifying the array definition by editing that file */

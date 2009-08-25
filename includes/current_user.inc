@@ -114,11 +114,11 @@ class current_user
 	function update_prefs($price_dec, $qty_dec, $exrate_dec, $percent_dec, 
 		$showgl, $showcodes, $date_format, $date_sep, $tho_sep, $dec_sep, 
 		$theme, $pagesize, $show_hints, $profile, $rep_popup, $query_size, 
-		$graphic_links, $lang, $stickydate) {
+		$graphic_links, $lang, $stickydate, $startup_tab) {
 		update_user_display_prefs($this->user, $price_dec, 
 			$qty_dec, $exrate_dec, $percent_dec, $showgl, $showcodes, 
 			$date_format, $date_sep, $tho_sep, $dec_sep, $theme, $pagesize, 
-			$show_hints, $profile, $rep_popup, $query_size, $graphic_links, $lang, $stickydate);
+			$show_hints, $profile, $rep_popup, $query_size, $graphic_links, $lang, $stickydate, $startup_tab);
 
 		// re-read the prefs
 		$user = get_user($this->user);
@@ -312,14 +312,19 @@ function sticky_doc_date()
 	return $_SESSION["wa_current_user"]->prefs->sticky_date();
 }
 
+function user_startup_tab()
+{
+	return $_SESSION["wa_current_user"]->prefs->start_up_tab();
+}
+
 function set_user_prefs($price_dec, $qty_dec, $exrate_dec, $percent_dec, $showgl, $showcodes,
 	$date_format, $date_sep, $tho_sep, $dec_sep, $theme, $pagesize, $show_hints,
-	$print_profile, $rep_popup, $query_size, $graphic_links, $lang, $stickydate)
+	$print_profile, $rep_popup, $query_size, $graphic_links, $lang, $stickydate, $startup_tab)
 {
 
 	$_SESSION["wa_current_user"]->update_prefs($price_dec, $qty_dec, $exrate_dec, $percent_dec, $showgl, $showcodes,
 		$date_format, $date_sep, $tho_sep, $dec_sep, $theme, $pagesize, $show_hints,
-		$print_profile, $rep_popup, $query_size, $graphic_links, $lang, $stickydate);
+		$print_profile, $rep_popup, $query_size, $graphic_links, $lang, $stickydate, $startup_tab);
 }
 
 function add_user_js_data() {
