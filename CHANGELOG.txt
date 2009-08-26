@@ -1104,7 +1104,6 @@ $ /sales/includes/db/sales_order_db.inc
   Balance Sheet, PL Statements and Monthly Bread Down reports.
 $ /gl/manage/gl_account_classes.php.  
 
->>>>>>> 1.265
 ------------------------------- Release 2.1.4 ----------------------------------
 30-Jul-2009 Joe Hunt
 ! Release 2.1.4
