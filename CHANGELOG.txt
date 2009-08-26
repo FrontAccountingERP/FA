@@ -19,6 +19,15 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+------------------------------- Release 2.1.5 ----------------------------------
+26-Aug-2009 Joe Hung
+! Release 2.1.5
+$ config.php
+# If no dimensions in system, then there were 2 destination selectors in report Balance Sheet
+$ /reporting/reports_main.php
+! Code cleanup
+$ /taxes/tax_calc.inc
+
 24-Aug-2009 Joe Hunt
 # A Purchasing Price of 12.34 with a conversion factor of 100,0000 caused a false internal rounding error of 12.00.
 ! The Purchasing Price, price can now have up to 6 decimals (fractions of hundredth's) and are presented correctly.

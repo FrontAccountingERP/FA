@@ -15,32 +15,6 @@ include_once($path_to_root . "/taxes/db/item_tax_types_db.inc");
 
 //---------------------------------------------------------------------------------
 
-// returns the tax cost for a given item
-/*
-function get_tax_value_for_item($stock_id, $price, $tax_group)
-{
-	// if price is zero, then can't be taxed
-	if ($price == 0)
-		return 0;
-		
-	$ret_tax_array = get_tax_group_items_as_array($tax_group);			
-		
-	$tax_array = get_taxes_for_item($stock_id, $ret_tax_array);
-	if ($tax_array == null)
-		return 0;
-	
-	$tax_multiplier = 0;	
-
-	// loop for all items
-	foreach ($tax_array as $taxitem) {
-		$tax_multiplier += $taxitem["rate"];
-	}
-	
-	return $price * ($tax_multiplier / 100);	
-}
-*/
-//---------------------------------------------------------------------------------
-
 // returns the price of a given item minus any included taxes
 // for item $stock_id with line price $price,
 // with applicable tax rates $tax_group_array or group id $tax_group
@@ -232,60 +206,7 @@ function get_tax_for_items($items, $prices, $shipping_cost, $tax_group, $tax_inc
 
 	return $ret_tax_array;
 }
-//
-//	Get all taxes for given tax_type_id. This can be used when 
-//	no tax group exemptions are active (local sales).
-//	To be used in quick entries.
-//
-// Redundant 18.08.2009 Joe Hunt (Tax Groups instead).
-/*
-function get_taxes_for_item_tax($tax_type_id)
-{
-	$item_tax_type = get_item_tax_type($tax_type_id);
-	
-	// if the item is exempt from all taxes then return 0
-	if ($item_tax_type["exempt"])
-		return null;
-		
-	// get the exemptions for this item tax type
-	$item_tax_type_exemptions_db = get_item_tax_type_exemptions($tax_type_id);
-	
-	// read them all into an array to minimize db querying
-	$item_tax_type_exemptions = array();
-	while ($item_tax_type_exemp = db_fetch($item_tax_type_exemptions_db))
-	{
-		$item_tax_type_exemptions[] = $item_tax_type_exemp["tax_type_id"];
-	}
-	
-	$ret_tax_array = array();
 
-	$tax_rates = get_all_tax_types_simple();
-	// if any of the taxes are in the exemptions, then skip
-	while($tax_rate = db_fetch($tax_rates)) 
-	{ 
-		
-		$skip = false;			
-		
-		// if it's in the exemptions, skip
-		foreach ($item_tax_type_exemptions as $exemption) 
-		{
-			if (($tax_rate['id'] == $exemption)) 
-			{
-    			$skip = true;
-    			break;
-			}
-		}
-		
-		if (!$skip) 
-		{
-			$index = $tax_rate['id'];
-			$ret_tax_array[$index] = $tax_rate;
-		}
-	}
-	
-	return $ret_tax_array;
-}
-*/
 function is_tax_account($account_code)
 {
 	$sql= "SELECT id FROM ".TB_PREF."tax_types WHERE 
