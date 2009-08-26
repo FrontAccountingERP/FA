@@ -168,13 +168,13 @@ $reports->addReport(_('Inventory'),305,_('&GRN Valuation Report'),
 			new ReportParam(_('Comments'),'TEXTBOX'),
 			new ReportParam(_('Destination'),'DESTINATION')));
 
-$reports->addReportClass(_('Manufactoring'));
-$reports->addReport(_('Manufactoring'),401,_('&Bill of Material Listing'),
+$reports->addReportClass(_('Manufacturing'));
+$reports->addReport(_('Manufacturing'),401,_('&Bill of Material Listing'),
 	array(	new ReportParam(_('From component'),'ITEMS'),
 			new ReportParam(_('To component'),'ITEMS'),
 			new ReportParam(_('Comments'),'TEXTBOX'),
 			new ReportParam(_('Destination'),'DESTINATION')));
-$reports->addReport(_('Manufactoring'),409,_('Print &Work Orders'),
+$reports->addReport(_('Manufacturing'),409,_('Print &Work Orders'),
 	array(	new ReportParam(_('From'),'WORKORDER'),
 			new ReportParam(_('To'),'WORKORDER'),
 			new ReportParam(_('Email Locations'),'YES_NO'),
