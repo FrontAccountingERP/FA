@@ -27,7 +27,8 @@ $ config.php
 $ /reporting/reports_main.php
 ! Code cleanup
 $ /taxes/tax_calc.inc
-
+  /lang/new_language_template/LC_MESSAGES/empty.po (new extraction)
+  
 24-Aug-2009 Joe Hunt
 # A Purchasing Price of 12.34 with a conversion factor of 100,0000 caused a false internal rounding error of 12.00.
 ! The Purchasing Price, price can now have up to 6 decimals (fractions of hundredth's) and are presented correctly.

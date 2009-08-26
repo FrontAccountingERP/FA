@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FrontAccounting\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-06-25 11:58+0100\n"
-"PO-Revision-Date: 2009-06-25 11:59+0100\n"
+"POT-Creation-Date: 2009-08-26 09:15+0100\n"
+"PO-Revision-Date: 2009-08-26 09:15+0100\n"
 "Last-Translator: FrontAccounting <info@frontaccounting.com>\n"
 "Language-Team: Translators\n"
 "MIME-Version: 1.0\n"
@@ -82,79 +82,79 @@ msgstr ""
 msgid "Click here to Login Again."
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/admin/attachments.php:57
+#: c:\Apache2\htdocs\account21/admin/attachments.php:71
 msgid "Attach Documents"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/admin/attachments.php:104
+#: c:\Apache2\htdocs\account21/admin/attachments.php:118
 msgid "Attachment has been inserted."
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/admin/attachments.php:121
+#: c:\Apache2\htdocs\account21/admin/attachments.php:135
 msgid "Attachment has been updated."
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/admin/attachments.php:134
+#: c:\Apache2\htdocs\account21/admin/attachments.php:148
 msgid "Attachment has been deleted."
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/admin/attachments.php:151
+#: c:\Apache2\htdocs\account21/admin/attachments.php:165
 msgid "Type:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/admin/attachments.php:178
+#: c:\Apache2\htdocs\account21/admin/attachments.php:192
 msgid "#"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/admin/attachments.php:178
-#: c:\Apache2\htdocs\account21/admin/attachments.php:233
+#: c:\Apache2\htdocs\account21/admin/attachments.php:192
+#: c:\Apache2\htdocs\account21/admin/attachments.php:247
 msgid "Description"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/admin/attachments.php:178
+#: c:\Apache2\htdocs\account21/admin/attachments.php:192
 #: c:\Apache2\htdocs\account21/admin/backups.php:62
 #: c:\Apache2\htdocs\account21/admin/backups.php:140
 msgid "Filename"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/admin/attachments.php:178
+#: c:\Apache2\htdocs\account21/admin/attachments.php:192
 msgid "Size"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/admin/attachments.php:178
+#: c:\Apache2\htdocs\account21/admin/attachments.php:192
 msgid "Filetype"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/admin/attachments.php:178
+#: c:\Apache2\htdocs\account21/admin/attachments.php:192
 msgid "Date Uploaded"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/admin/attachments.php:195
+#: c:\Apache2\htdocs\account21/admin/attachments.php:209
 #: c:\Apache2\htdocs\account21/admin/create_coy.php:239
 #: c:\Apache2\htdocs\account21/admin/fiscalyears.php:151
 msgid "Edit"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/admin/attachments.php:196
+#: c:\Apache2\htdocs\account21/admin/attachments.php:210
 msgid "View"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/admin/attachments.php:197
+#: c:\Apache2\htdocs\account21/admin/attachments.php:211
 msgid "Download"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/admin/attachments.php:198
+#: c:\Apache2\htdocs\account21/admin/attachments.php:212
 #: c:\Apache2\htdocs\account21/admin/create_coy.php:240
 #: c:\Apache2\htdocs\account21/admin/fiscalyears.php:153
 msgid "Delete"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/admin/attachments.php:227
-#: c:\Apache2\htdocs\account21/admin/attachments.php:232
+#: c:\Apache2\htdocs\account21/admin/attachments.php:241
+#: c:\Apache2\htdocs\account21/admin/attachments.php:246
 msgid "Transaction #"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/admin/attachments.php:235
+#: c:\Apache2\htdocs\account21/admin/attachments.php:249
 msgid "Attached File"
 msgstr ""
 
@@ -2033,6 +2033,8 @@ msgid "The dimension reference must be entered."
 msgstr ""
 
 #: c:\Apache2\htdocs\account21/dimensions/dimension_entry.php:112
+#: c:\Apache2\htdocs\account21/gl/bank_transfer.php:135
+#: c:\Apache2\htdocs\account21/gl/gl_bank.php:151
 msgid "The entered reference is already in use."
 msgstr ""
 
@@ -2066,6 +2068,11 @@ msgid "Dimension Reference:"
 msgstr ""
 
 #: c:\Apache2\htdocs\account21/dimensions/dimension_entry.php:247
+#: c:\Apache2\htdocs\account21/dimensions/inquiry/search_dimensions.php:75
+#: c:\Apache2\htdocs\account21/dimensions/inquiry/search_dimensions.php:173
+#: c:\Apache2\htdocs\account21/dimensions/view/view_dimension.php:54
+#: c:\Apache2\htdocs\account21/doc/backup/gl_quick_entries.php:187
+#: c:\Apache2\htdocs\account21/gl/bank_account_reconcile.php:255
 msgid "Type"
 msgstr ""
 
@@ -2119,12 +2126,10 @@ msgid "All"
 msgstr ""
 
 #: c:\Apache2\htdocs\account21/dimensions/inquiry/search_dimensions.php:76
-#: c:\Apache2\htdocs\account21/gl/inquiry/bank_inquiry.php:46
 msgid "From:"
 msgstr ""
 
 #: c:\Apache2\htdocs\account21/dimensions/inquiry/search_dimensions.php:77
-#: c:\Apache2\htdocs\account21/gl/inquiry/bank_inquiry.php:47
 msgid "To:"
 msgstr ""
 
@@ -2139,10 +2144,6 @@ msgstr ""
 #: c:\Apache2\htdocs\account21/dimensions/inquiry/search_dimensions.php:174
 #: c:\Apache2\htdocs\account21/dimensions/view/view_dimension.php:54
 #: c:\Apache2\htdocs\account21/gl/bank_account_reconcile.php:258
-#: c:\Apache2\htdocs\account21/gl/inquiry/bank_inquiry.php:75
-#: c:\Apache2\htdocs\account21/gl/inquiry/gl_account_inquiry.php:107
-#: c:\Apache2\htdocs\account21/gl/inquiry/gl_account_inquiry.php:110
-#: c:\Apache2\htdocs\account21/gl/inquiry/gl_account_inquiry.php:113
 msgid "Date"
 msgstr ""
 
@@ -2152,10 +2153,6 @@ msgid "Due Date"
 msgstr ""
 
 #: c:\Apache2\htdocs\account21/dimensions/inquiry/search_dimensions.php:177
-#: c:\Apache2\htdocs\account21/gl/inquiry/bank_inquiry.php:76
-#: c:\Apache2\htdocs\account21/gl/inquiry/gl_account_inquiry.php:108
-#: c:\Apache2\htdocs\account21/gl/inquiry/gl_account_inquiry.php:111
-#: c:\Apache2\htdocs\account21/gl/inquiry/gl_account_inquiry.php:114
 msgid "Balance"
 msgstr ""
 
@@ -2176,19 +2173,122 @@ msgid "This dimension is closed."
 msgstr ""
 
 #: c:\Apache2\htdocs\account21/dimensions/view/view_dimension.php:84
-#: c:\Apache2\htdocs\account21/gl/inquiry/gl_account_inquiry.php:66
 msgid "from:"
 msgstr ""
 
 #: c:\Apache2\htdocs\account21/dimensions/view/view_dimension.php:85
-#: c:\Apache2\htdocs\account21/gl/inquiry/gl_account_inquiry.php:67
 msgid "to:"
 msgstr ""
 
 #: c:\Apache2\htdocs\account21/dimensions/view/view_dimension.php:86
-#: c:\Apache2\htdocs\account21/gl/inquiry/bank_inquiry.php:49
-#: c:\Apache2\htdocs\account21/gl/inquiry/gl_account_inquiry.php:68
 msgid "Show"
+msgstr ""
+
+#: c:\Apache2\htdocs\account21/doc/backup/gl_quick_entries.php:16
+msgid "Quick Entries"
+msgstr ""
+
+#: c:\Apache2\htdocs\account21/doc/backup/gl_quick_entries.php:58
+msgid "Add new"
+msgstr ""
+
+#: c:\Apache2\htdocs\account21/doc/backup/gl_quick_entries.php:73
+msgid "The Quick Entry description cannot be empty."
+msgstr ""
+
+#: c:\Apache2\htdocs\account21/doc/backup/gl_quick_entries.php:79
+msgid "The base amount description cannot be empty."
+msgstr ""
+
+#: c:\Apache2\htdocs\account21/doc/backup/gl_quick_entries.php:99
+msgid "Selected quick entry has been updated"
+msgstr ""
+
+#: c:\Apache2\htdocs\account21/doc/backup/gl_quick_entries.php:105
+msgid "New quick entry has been added"
+msgstr ""
+
+#: c:\Apache2\htdocs\account21/doc/backup/gl_quick_entries.php:134
+msgid "Selected quick entry line has been updated"
+msgstr ""
+
+#: c:\Apache2\htdocs\account21/doc/backup/gl_quick_entries.php:140
+msgid "New quick entry line has been added"
+msgstr ""
+
+#: c:\Apache2\htdocs\account21/doc/backup/gl_quick_entries.php:152
+msgid "Selected quick entry has been deleted"
+msgstr ""
+
+#: c:\Apache2\htdocs\account21/doc/backup/gl_quick_entries.php:157
+msgid "The Quick Entry has Quick Entry Lines. Cannot be deleted."
+msgstr ""
+
+#: c:\Apache2\htdocs\account21/doc/backup/gl_quick_entries.php:165
+msgid "Selected quick entry line has been deleted"
+msgstr ""
+
+#: c:\Apache2\htdocs\account21/doc/backup/gl_quick_entries.php:173
+#: c:\Apache2\htdocs\account21/doc/backup/gl_quick_entries.php:230
+msgid "Base Amount"
+msgstr ""
+
+#: c:\Apache2\htdocs\account21/doc/backup/gl_quick_entries.php:228
+msgid "Entry Type"
+msgstr ""
+
+#: c:\Apache2\htdocs\account21/doc/backup/gl_quick_entries.php:230
+msgid "Base Amount Description"
+msgstr ""
+
+#: c:\Apache2\htdocs\account21/doc/backup/gl_quick_entries.php:232
+msgid "Default Base Amount"
+msgstr ""
+
+#: c:\Apache2\htdocs\account21/doc/backup/gl_quick_entries.php:243
+msgid "Quick Entry Lines"
+msgstr ""
+
+#: c:\Apache2\htdocs\account21/doc/backup/gl_quick_entries.php:249
+#: c:\Apache2\htdocs\account21/doc/backup/gl_quick_entries.php:251
+#: c:\Apache2\htdocs\account21/doc/backup/gl_quick_entries.php:253
+msgid "Post"
+msgstr ""
+
+#: c:\Apache2\htdocs\account21/doc/backup/gl_quick_entries.php:249
+#: c:\Apache2\htdocs\account21/doc/backup/gl_quick_entries.php:251
+#: c:\Apache2\htdocs\account21/doc/backup/gl_quick_entries.php:253
+msgid "Account/Tax Type"
+msgstr ""
+
+#: c:\Apache2\htdocs\account21/doc/backup/gl_quick_entries.php:249
+#: c:\Apache2\htdocs\account21/doc/backup/gl_quick_entries.php:251
+#: c:\Apache2\htdocs\account21/doc/backup/gl_quick_entries.php:253
+#: c:\Apache2\htdocs\account21/doc/backup/gl_quick_entries.php:366
+msgid "Amount"
+msgstr ""
+
+#: c:\Apache2\htdocs\account21/doc/backup/gl_quick_entries.php:249
+#: c:\Apache2\htdocs\account21/doc/backup/gl_quick_entries.php:251
+#: c:\Apache2\htdocs\account21/doc/backup/gl_quick_entries.php:370
+#: c:\Apache2\htdocs\account21/doc/backup/gl_quick_entries.php:372
+msgid "Dimension"
+msgstr ""
+
+#: c:\Apache2\htdocs\account21/doc/backup/gl_quick_entries.php:330
+msgid "Posted"
+msgstr ""
+
+#: c:\Apache2\htdocs\account21/doc/backup/gl_quick_entries.php:346
+msgid "Tax Types"
+msgstr ""
+
+#: c:\Apache2\htdocs\account21/doc/backup/gl_quick_entries.php:360
+msgid "Account"
+msgstr ""
+
+#: c:\Apache2\htdocs\account21/doc/backup/gl_quick_entries.php:364
+msgid "Part"
 msgstr ""
 
 #: c:\Apache2\htdocs\account21/gl/bank_account_reconcile.php:33
@@ -2198,7 +2298,6 @@ msgstr ""
 #: c:\Apache2\htdocs\account21/gl/bank_account_reconcile.php:35
 #: c:\Apache2\htdocs\account21/gl/bank_transfer.php:30
 #: c:\Apache2\htdocs\account21/gl/gl_bank.php:41
-#: c:\Apache2\htdocs\account21/gl/inquiry/bank_inquiry.php:30
 msgid "There are no bank accounts defined in the system."
 msgstr ""
 
@@ -2211,8 +2310,6 @@ msgid "Reconcile this transaction"
 msgstr ""
 
 #: c:\Apache2\htdocs\account21/gl/bank_account_reconcile.php:169
-#: c:\Apache2\htdocs\account21/gl/inquiry/bank_inquiry.php:44
-#: c:\Apache2\htdocs\account21/gl/inquiry/gl_account_inquiry.php:64
 msgid "Account:"
 msgstr ""
 
@@ -2253,26 +2350,14 @@ msgid "Date of bank statement to reconcile"
 msgstr ""
 
 #: c:\Apache2\htdocs\account21/gl/bank_account_reconcile.php:259
-#: c:\Apache2\htdocs\account21/gl/inquiry/bank_inquiry.php:76
-#: c:\Apache2\htdocs\account21/gl/inquiry/gl_account_inquiry.php:108
-#: c:\Apache2\htdocs\account21/gl/inquiry/gl_account_inquiry.php:111
-#: c:\Apache2\htdocs\account21/gl/inquiry/gl_account_inquiry.php:114
 msgid "Debit"
 msgstr ""
 
 #: c:\Apache2\htdocs\account21/gl/bank_account_reconcile.php:260
-#: c:\Apache2\htdocs\account21/gl/inquiry/bank_inquiry.php:76
-#: c:\Apache2\htdocs\account21/gl/inquiry/gl_account_inquiry.php:108
-#: c:\Apache2\htdocs\account21/gl/inquiry/gl_account_inquiry.php:111
-#: c:\Apache2\htdocs\account21/gl/inquiry/gl_account_inquiry.php:114
 msgid "Credit"
 msgstr ""
 
 #: c:\Apache2\htdocs\account21/gl/bank_account_reconcile.php:261
-#: c:\Apache2\htdocs\account21/gl/inquiry/bank_inquiry.php:76
-#: c:\Apache2\htdocs\account21/gl/inquiry/gl_account_inquiry.php:108
-#: c:\Apache2\htdocs\account21/gl/inquiry/gl_account_inquiry.php:111
-#: c:\Apache2\htdocs\account21/gl/inquiry/gl_account_inquiry.php:114
 msgid "Person/Item"
 msgstr ""
 
@@ -2323,7 +2408,6 @@ msgstr ""
 
 #: c:\Apache2\htdocs\account21/gl/bank_transfer.php:128
 #: c:\Apache2\htdocs\account21/gl/gl_bank.php:145
-#: c:\Apache2\htdocs\account21/gl/gl_journal.php:108
 msgid "You must enter a reference."
 msgstr ""
 
@@ -2404,6 +2488,7 @@ msgid "Budget Entry"
 msgstr ""
 
 #: c:\Apache2\htdocs\account21/gl/gl_budget.php:24
+#: c:\Apache2\htdocs\account21/gl/manage/gl_accounts.php:22
 msgid "There are no account groups defined. Please define at least one account group before entering accounts."
 msgstr ""
 
@@ -2416,31 +2501,19 @@ msgid "The Budget has been deleted."
 msgstr ""
 
 #: c:\Apache2\htdocs\account21/gl/gl_budget.php:112
+#: c:\Apache2\htdocs\account21/gl/manage/gl_accounts.php:242
+#: c:\Apache2\htdocs\account21/gl/manage/gl_accounts.php:248
 msgid "Account Code:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/gl/gl_budget.php:119
-#: c:\Apache2\htdocs\account21/gl/gl_budget.php:120
-#: c:\Apache2\htdocs\account21/gl/gl_budget.php:124
-#: c:\Apache2\htdocs\account21/gl/inquiry/gl_account_inquiry.php:73
-#: c:\Apache2\htdocs\account21/gl/inquiry/gl_account_inquiry.php:75
-#: c:\Apache2\htdocs\account21/gl/inquiry/gl_account_inquiry.php:107
-#: c:\Apache2\htdocs\account21/gl/inquiry/gl_account_inquiry.php:110
-msgid "Dimension"
-msgstr ""
-
 #: c:\Apache2\htdocs\account21/gl/gl_budget.php:132
+#: c:\Apache2\htdocs\account21/gl/manage/exchange_rates.php:135
 msgid "Get"
 msgstr ""
 
 #: c:\Apache2\htdocs\account21/gl/gl_budget.php:139
 #: c:\Apache2\htdocs\account21/gl/gl_budget.php:141
 msgid "Period"
-msgstr ""
-
-#: c:\Apache2\htdocs\account21/gl/gl_budget.php:139
-#: c:\Apache2\htdocs\account21/gl/gl_budget.php:141
-msgid "Amount"
 msgstr ""
 
 #: c:\Apache2\htdocs\account21/gl/gl_budget.php:139
@@ -2453,6 +2526,7 @@ msgid "Last Year"
 msgstr ""
 
 #: c:\Apache2\htdocs\account21/gl/gl_budget.php:179
+#: c:\Apache2\htdocs\account21/gl/inquiry/gl_trial_balance.php:135
 msgid "Total"
 msgstr ""
 
@@ -2528,6 +2602,7 @@ msgstr ""
 
 #: c:\Apache2\htdocs\account21/gl/inquiry/bank_inquiry.php:123
 #: c:\Apache2\htdocs\account21/gl/inquiry/gl_account_inquiry.php:171
+#: c:\Apache2\htdocs\account21/gl/inquiry/gl_trial_balance.php:145
 msgid "Ending Balance"
 msgstr ""
 
@@ -2557,16 +2632,8 @@ msgstr ""
 msgid "Only balances"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/gl/inquiry/gl_trial_balance.php:63
-#: c:\Apache2\htdocs\account21/gl/manage/gl_quick_entries.php:309
-msgid "Account"
-msgstr ""
-
 #: c:\Apache2\htdocs\account21/gl/inquiry/gl_trial_balance.php:64
 #: c:\Apache2\htdocs\account21/gl/manage/bank_accounts.php:113
-#: c:\Apache2\htdocs\account21/gl/view/gl_trans_view.php:65
-#: c:\Apache2\htdocs\account21/gl/view/gl_trans_view.php:68
-#: c:\Apache2\htdocs\account21/gl/view/gl_trans_view.php:71
 msgid "Account Name"
 msgstr ""
 
@@ -2643,10 +2710,6 @@ msgid "Selected bank account has been deleted"
 msgstr ""
 
 #: c:\Apache2\htdocs\account21/gl/manage/bank_accounts.php:113
-#: c:\Apache2\htdocs\account21/gl/view/bank_transfer_view.php:69
-#: c:\Apache2\htdocs\account21/gl/view/bank_transfer_view.php:78
-#: c:\Apache2\htdocs\account21/gl/view/gl_deposit_view.php:66
-#: c:\Apache2\htdocs\account21/gl/view/gl_payment_view.php:64
 msgid "Currency"
 msgstr ""
 
@@ -2666,33 +2729,34 @@ msgstr ""
 msgid "Bank Address"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/gl/manage/bank_accounts.php:163
+#: c:\Apache2\htdocs\account21/gl/manage/bank_accounts.php:164
 msgid "Bank Account Name:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/gl/manage/bank_accounts.php:165
+#: c:\Apache2\htdocs\account21/gl/manage/bank_accounts.php:168
+#: c:\Apache2\htdocs\account21/gl/manage/bank_accounts.php:172
 msgid "Account Type:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/gl/manage/bank_accounts.php:169
-#: c:\Apache2\htdocs\account21/gl/manage/bank_accounts.php:173
+#: c:\Apache2\htdocs\account21/gl/manage/bank_accounts.php:176
+#: c:\Apache2\htdocs\account21/gl/manage/bank_accounts.php:180
 msgid "Bank Account Currency:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/gl/manage/bank_accounts.php:177
-#: c:\Apache2\htdocs\account21/gl/manage/bank_accounts.php:179
+#: c:\Apache2\htdocs\account21/gl/manage/bank_accounts.php:184
+#: c:\Apache2\htdocs\account21/gl/manage/bank_accounts.php:186
 msgid "Bank Account GL Code:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/gl/manage/bank_accounts.php:181
+#: c:\Apache2\htdocs\account21/gl/manage/bank_accounts.php:188
 msgid "Bank Name:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/gl/manage/bank_accounts.php:182
+#: c:\Apache2\htdocs\account21/gl/manage/bank_accounts.php:189
 msgid "Bank Account Number:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/gl/manage/bank_accounts.php:183
+#: c:\Apache2\htdocs\account21/gl/manage/bank_accounts.php:190
 msgid "Bank Address:"
 msgstr ""
 
@@ -2741,7 +2805,6 @@ msgid "Cannot delete this currency, because thre are bank accounts that use this
 msgstr ""
 
 #: c:\Apache2\htdocs\account21/gl/manage/currencies.php:138
-#: c:\Apache2\htdocs\account21/gl/manage/gl_account_types.php:111
 msgid "Selected currency has been deleted"
 msgstr ""
 
@@ -2887,39 +2950,43 @@ msgstr ""
 msgid "Cannot delete this account because it is used by one or more suppliers."
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/gl/manage/gl_accounts.php:197
+#: c:\Apache2\htdocs\account21/gl/manage/gl_accounts.php:192
+msgid "Cannot delete this account because it is used by one or more Quick Entry Lines."
+msgstr ""
+
+#: c:\Apache2\htdocs\account21/gl/manage/gl_accounts.php:208
 msgid "Selected account has been deleted"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/gl/manage/gl_accounts.php:209
+#: c:\Apache2\htdocs\account21/gl/manage/gl_accounts.php:220
 msgid "Select an Account:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/gl/manage/gl_accounts.php:211
+#: c:\Apache2\htdocs\account21/gl/manage/gl_accounts.php:222
 msgid "New account"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/gl/manage/gl_accounts.php:240
+#: c:\Apache2\htdocs\account21/gl/manage/gl_accounts.php:251
 msgid "Account Code 2:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/gl/manage/gl_accounts.php:242
+#: c:\Apache2\htdocs\account21/gl/manage/gl_accounts.php:253
 msgid "Account Name:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/gl/manage/gl_accounts.php:244
+#: c:\Apache2\htdocs\account21/gl/manage/gl_accounts.php:255
 msgid "Account Group:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/gl/manage/gl_accounts.php:250
+#: c:\Apache2\htdocs\account21/gl/manage/gl_accounts.php:261
 msgid "Add Account"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/gl/manage/gl_accounts.php:254
+#: c:\Apache2\htdocs\account21/gl/manage/gl_accounts.php:265
 msgid "Update Account"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/gl/manage/gl_accounts.php:255
+#: c:\Apache2\htdocs\account21/gl/manage/gl_accounts.php:266
 msgid "Delete account"
 msgstr ""
 
@@ -2927,54 +2994,57 @@ msgstr ""
 msgid "GL Account Classes"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/gl/manage/gl_account_classes.php:29
+#: c:\Apache2\htdocs\account21/gl/manage/gl_account_classes.php:30
 msgid "The account class ID must be numeric."
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/gl/manage/gl_account_classes.php:35
+#: c:\Apache2\htdocs\account21/gl/manage/gl_account_classes.php:36
 msgid "The account class name cannot be empty."
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/gl/manage/gl_account_classes.php:54
+#: c:\Apache2\htdocs\account21/gl/manage/gl_account_classes.php:56
 msgid "Selected account class settings has been updated"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/gl/manage/gl_account_classes.php:59
+#: c:\Apache2\htdocs\account21/gl/manage/gl_account_classes.php:61
 msgid "New account class has been added"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/gl/manage/gl_account_classes.php:77
+#: c:\Apache2\htdocs\account21/gl/manage/gl_account_classes.php:79
 msgid "Cannot delete this account class because GL account types have been created referring to it."
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/gl/manage/gl_account_classes.php:93
+#: c:\Apache2\htdocs\account21/gl/manage/gl_account_classes.php:95
 msgid "Selected account class has been deleted"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/gl/manage/gl_account_classes.php:109
+#: c:\Apache2\htdocs\account21/gl/manage/gl_account_classes.php:111
 msgid "Class ID"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/gl/manage/gl_account_classes.php:109
+#: c:\Apache2\htdocs\account21/gl/manage/gl_account_classes.php:111
 msgid "Class Name"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/gl/manage/gl_account_classes.php:109
-#: c:\Apache2\htdocs\account21/gl/manage/gl_account_types.php:127
+#: c:\Apache2\htdocs\account21/gl/manage/gl_account_classes.php:111
 msgid "Class Type"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/gl/manage/gl_account_classes.php:147
-#: c:\Apache2\htdocs\account21/gl/manage/gl_account_classes.php:153
+#: c:\Apache2\htdocs\account21/gl/manage/gl_account_classes.php:113
+#: c:\Apache2\htdocs\account21/gl/manage/gl_account_classes.php:172
+msgid "Balance Sheet"
+msgstr ""
+
+#: c:\Apache2\htdocs\account21/gl/manage/gl_account_classes.php:160
+#: c:\Apache2\htdocs\account21/gl/manage/gl_account_classes.php:166
 msgid "Class ID:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/gl/manage/gl_account_classes.php:156
+#: c:\Apache2\htdocs\account21/gl/manage/gl_account_classes.php:169
 msgid "Class Name:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/gl/manage/gl_account_classes.php:158
-#: c:\Apache2\htdocs\account21/gl/manage/gl_account_types.php:187
+#: c:\Apache2\htdocs\account21/gl/manage/gl_account_classes.php:174
 msgid "Class Type:"
 msgstr ""
 
@@ -3027,93 +3097,8 @@ msgstr ""
 msgid "Subgroup Of:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/gl/manage/gl_quick_entries.php:16
-msgid "Quick Entries"
-msgstr ""
-
-#: c:\Apache2\htdocs\account21/gl/manage/gl_quick_entries.php:58
-msgid "Add new"
-msgstr ""
-
-#: c:\Apache2\htdocs\account21/gl/manage/gl_quick_entries.php:73
-msgid "The Quick Entry description cannot be empty."
-msgstr ""
-
-#: c:\Apache2\htdocs\account21/gl/manage/gl_quick_entries.php:79
-msgid "The base amount description cannot be empty."
-msgstr ""
-
-#: c:\Apache2\htdocs\account21/gl/manage/gl_quick_entries.php:99
-msgid "Selected quick entry has been updated"
-msgstr ""
-
-#: c:\Apache2\htdocs\account21/gl/manage/gl_quick_entries.php:105
-msgid "New quick entry has been added"
-msgstr ""
-
-#: c:\Apache2\htdocs\account21/gl/manage/gl_quick_entries.php:117
-msgid "Selected quick entry line has been updated"
-msgstr ""
-
-#: c:\Apache2\htdocs\account21/gl/manage/gl_quick_entries.php:123
-msgid "New quick entry line has been added"
-msgstr ""
-
-#: c:\Apache2\htdocs\account21/gl/manage/gl_quick_entries.php:135
-msgid "Selected quick entry has been deleted"
-msgstr ""
-
-#: c:\Apache2\htdocs\account21/gl/manage/gl_quick_entries.php:140
-msgid "The Quick Entry has Quick Entry Lines. Cannot be deleted."
-msgstr ""
-
-#: c:\Apache2\htdocs\account21/gl/manage/gl_quick_entries.php:148
-msgid "Selected quick entry line has been deleted"
-msgstr ""
-
-#: c:\Apache2\htdocs\account21/gl/manage/gl_quick_entries.php:156
-#: c:\Apache2\htdocs\account21/gl/manage/gl_quick_entries.php:213
-msgid "Base Amount"
-msgstr ""
-
-#: c:\Apache2\htdocs\account21/gl/manage/gl_quick_entries.php:211
-msgid "Entry Type"
-msgstr ""
-
-#: c:\Apache2\htdocs\account21/gl/manage/gl_quick_entries.php:213
-msgid "Base Amount Description"
-msgstr ""
-
-#: c:\Apache2\htdocs\account21/gl/manage/gl_quick_entries.php:215
-msgid "Default Base Amount"
-msgstr ""
-
-#: c:\Apache2\htdocs\account21/gl/manage/gl_quick_entries.php:226
-msgid "Quick Entry Lines"
-msgstr ""
-
-#: c:\Apache2\htdocs\account21/gl/manage/gl_quick_entries.php:232
-#: c:\Apache2\htdocs\account21/gl/manage/gl_quick_entries.php:234
-#: c:\Apache2\htdocs\account21/gl/manage/gl_quick_entries.php:236
-msgid "Post"
-msgstr ""
-
-#: c:\Apache2\htdocs\account21/gl/manage/gl_quick_entries.php:232
-#: c:\Apache2\htdocs\account21/gl/manage/gl_quick_entries.php:234
-#: c:\Apache2\htdocs\account21/gl/manage/gl_quick_entries.php:236
-msgid "Account/Tax Type"
-msgstr ""
-
-#: c:\Apache2\htdocs\account21/gl/manage/gl_quick_entries.php:297
-msgid "Posted"
-msgstr ""
-
-#: c:\Apache2\htdocs\account21/gl/manage/gl_quick_entries.php:305
-msgid "Item Tax Type"
-msgstr ""
-
-#: c:\Apache2\htdocs\account21/gl/manage/gl_quick_entries.php:313
-msgid "Part"
+#: c:\Apache2\htdocs\account21/gl/manage/gl_quick_entries.php:306
+msgid "Tax Type"
 msgstr ""
 
 #: c:\Apache2\htdocs\account21/gl/view/bank_transfer_view.php:17
@@ -3233,6 +3218,10 @@ msgstr ""
 msgid "This transaction has been voided."
 msgstr ""
 
+#: c:\Apache2\htdocs\account21/install/save.php:360
+msgid "Cannot create database"
+msgstr ""
+
 #: c:\Apache2\htdocs\account21/inventory/adjustments.php:28
 msgid "Item Adjustments Note"
 msgstr ""
@@ -3242,6 +3231,7 @@ msgid "There are no inventory items defined in the system which can be adjusted 
 msgstr ""
 
 #: c:\Apache2\htdocs\account21/inventory/adjustments.php:34
+#: c:\Apache2\htdocs\account21/inventory/transfers.php:34
 msgid "There are no inventory movement types defined in the system. Please define at least one inventory adjustment type."
 msgstr ""
 
@@ -3262,10 +3252,12 @@ msgid "Enter &Another Adjustment"
 msgstr ""
 
 #: c:\Apache2\htdocs\account21/inventory/adjustments.php:86
+#: c:\Apache2\htdocs\account21/inventory/transfers.php:86
 msgid "You must enter at least one non empty item line."
 msgstr ""
 
 #: c:\Apache2\htdocs\account21/inventory/adjustments.php:106
+#: c:\Apache2\htdocs\account21/inventory/transfers.php:104
 msgid "The entered date for the adjustment is invalid."
 msgstr ""
 
@@ -3316,6 +3308,9 @@ msgstr ""
 #: c:\Apache2\htdocs\account21/inventory/cost_update.php:85
 #: c:\Apache2\htdocs\account21/inventory/prices.php:56
 #: c:\Apache2\htdocs\account21/inventory/purchasing_data.php:124
+#: c:\Apache2\htdocs\account21/inventory/reorder_level.php:43
+#: c:\Apache2\htdocs\account21/inventory/inquiry/stock_movements.php:49
+#: c:\Apache2\htdocs\account21/inventory/inquiry/stock_status.php:41
 msgid "Item:"
 msgstr ""
 
@@ -3336,6 +3331,8 @@ msgid "Inventory Item Sales prices"
 msgstr ""
 
 #: c:\Apache2\htdocs\account21/inventory/prices.php:27
+#: c:\Apache2\htdocs\account21/inventory/inquiry/stock_movements.php:30
+#: c:\Apache2\htdocs\account21/inventory/inquiry/stock_status.php:34
 msgid "There are no items defined in the system."
 msgstr ""
 
@@ -3381,7 +3378,7 @@ msgid "Sales Type:"
 msgstr ""
 
 #: c:\Apache2\htdocs\account21/inventory/prices.php:181
-#: c:\Apache2\htdocs\account21/inventory/purchasing_data.php:225
+#: c:\Apache2\htdocs\account21/inventory/purchasing_data.php:226
 msgid "Price:"
 msgstr ""
 
@@ -3449,20 +3446,20 @@ msgstr ""
 msgid "Supplier's Description"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/inventory/purchasing_data.php:218
-#: c:\Apache2\htdocs\account21/inventory/purchasing_data.php:222
+#: c:\Apache2\htdocs\account21/inventory/purchasing_data.php:219
+#: c:\Apache2\htdocs\account21/inventory/purchasing_data.php:223
 msgid "Supplier:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/inventory/purchasing_data.php:226
+#: c:\Apache2\htdocs\account21/inventory/purchasing_data.php:227
 msgid "Suppliers Unit of Measure:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/inventory/purchasing_data.php:232
+#: c:\Apache2\htdocs\account21/inventory/purchasing_data.php:233
 msgid "Conversion Factor (to our UOM):"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/inventory/purchasing_data.php:234
+#: c:\Apache2\htdocs\account21/inventory/purchasing_data.php:235
 msgid "Supplier's Code or Description:"
 msgstr ""
 
@@ -3521,7 +3518,6 @@ msgid "The quantity entered must be a positive number."
 msgstr ""
 
 #: c:\Apache2\htdocs\account21/inventory/transfers.php:229
-#: c:\Apache2\htdocs\account21/inventory/manage/items.php:16
 msgid "Items"
 msgstr ""
 
@@ -3661,6 +3657,9 @@ msgid "New item"
 msgstr ""
 
 #: c:\Apache2\htdocs\account21/inventory/manage/items.php:289
+#: c:\Apache2\htdocs\account21/inventory/view/view_adjustment.php:56
+#: c:\Apache2\htdocs\account21/inventory/view/view_transfer.php:39
+#: c:\Apache2\htdocs\account21/inventory/view/view_transfer.php:57
 msgid "Item"
 msgstr ""
 
@@ -3795,11 +3794,15 @@ msgstr ""
 
 #: c:\Apache2\htdocs\account21/inventory/manage/item_codes.php:122
 #: c:\Apache2\htdocs\account21/inventory/manage/sales_kits.php:42
+#: c:\Apache2\htdocs\account21/inventory/view/view_adjustment.php:56
+#: c:\Apache2\htdocs\account21/inventory/view/view_transfer.php:57
 msgid "Quantity"
 msgstr ""
 
 #: c:\Apache2\htdocs\account21/inventory/manage/item_codes.php:122
 #: c:\Apache2\htdocs\account21/inventory/manage/sales_kits.php:42
+#: c:\Apache2\htdocs\account21/inventory/view/view_adjustment.php:57
+#: c:\Apache2\htdocs\account21/inventory/view/view_transfer.php:57
 msgid "Units"
 msgstr ""
 
@@ -4983,43 +4986,43 @@ msgstr ""
 msgid "Enter another supplier &payment"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/purchasing/supplier_payment.php:93
+#: c:\Apache2\htdocs\account21/purchasing/supplier_payment.php:90
 msgid "From Bank Account:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/purchasing/supplier_payment.php:95
+#: c:\Apache2\htdocs\account21/purchasing/supplier_payment.php:92
 msgid "Amount of Payment:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/purchasing/supplier_payment.php:96
+#: c:\Apache2\htdocs\account21/purchasing/supplier_payment.php:93
 msgid "Amount of Discount:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/purchasing/supplier_payment.php:98
+#: c:\Apache2\htdocs\account21/purchasing/supplier_payment.php:95
 msgid "Date Paid"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/purchasing/supplier_payment.php:105
+#: c:\Apache2\htdocs\account21/purchasing/supplier_payment.php:99
 msgid "Payment To:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/purchasing/supplier_payment.php:125
+#: c:\Apache2\htdocs\account21/purchasing/supplier_payment.php:117
 msgid "Enter Payment"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/purchasing/supplier_payment.php:129
+#: c:\Apache2\htdocs\account21/purchasing/supplier_payment.php:121
 msgid "The amount and discount are in the bank account's currency."
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/purchasing/supplier_payment.php:153
+#: c:\Apache2\htdocs\account21/purchasing/supplier_payment.php:145
 msgid "The exchange rate must be numeric and greater than zero."
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/purchasing/supplier_payment.php:165
+#: c:\Apache2\htdocs\account21/purchasing/supplier_payment.php:157
 msgid "The entered discount is invalid or less than zero."
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/purchasing/supplier_payment.php:172
+#: c:\Apache2\htdocs\account21/purchasing/supplier_payment.php:164
 msgid "The total of the amount and the discount is zero or negative. Please enter positive values."
 msgstr ""
 
@@ -5128,6 +5131,8 @@ msgstr ""
 #: c:\Apache2\htdocs\account21/purchasing/inquiry/po_search.php:176
 #: c:\Apache2\htdocs\account21/purchasing/inquiry/po_search_completed.php:158
 #: c:\Apache2\htdocs\account21/purchasing/inquiry/supplier_inquiry.php:213
+#: c:\Apache2\htdocs\account21/purchasing/view/view_supp_credit.php:45
+#: c:\Apache2\htdocs\account21/purchasing/view/view_supp_invoice.php:48
 msgid "Supplier's Reference"
 msgstr ""
 
@@ -5175,11 +5180,13 @@ msgid "Supp Reference"
 msgstr ""
 
 #: c:\Apache2\htdocs\account21/purchasing/inquiry/supplier_allocation_inquiry.php:183
+#: c:\Apache2\htdocs\account21/reporting/rep101.php:84
 msgid "Allocated"
 msgstr ""
 
 #: c:\Apache2\htdocs\account21/purchasing/inquiry/supplier_allocation_inquiry.php:195
 #: c:\Apache2\htdocs\account21/purchasing/inquiry/supplier_inquiry.php:233
+#: c:\Apache2\htdocs\account21/purchasing/view/view_po.php:90
 msgid "Marked items are overdue."
 msgstr ""
 
@@ -5194,10 +5201,15 @@ msgstr ""
 #: c:\Apache2\htdocs\account21/purchasing/inquiry/supplier_inquiry.php:68
 #: c:\Apache2\htdocs\account21/purchasing/inquiry/supplier_inquiry.php:69
 #: c:\Apache2\htdocs\account21/purchasing/inquiry/supplier_inquiry.php:70
+#: c:\Apache2\htdocs\account21/reporting/rep102.php:108
+#: c:\Apache2\htdocs\account21/reporting/rep102.php:109
+#: c:\Apache2\htdocs\account21/reporting/rep102.php:110
+#: c:\Apache2\htdocs\account21/reporting/rep102.php:225
 msgid "Days"
 msgstr ""
 
 #: c:\Apache2\htdocs\account21/purchasing/inquiry/supplier_inquiry.php:70
+#: c:\Apache2\htdocs\account21/reporting/rep102.php:110
 msgid "Over"
 msgstr ""
 
@@ -5206,10 +5218,13 @@ msgid "Terms"
 msgstr ""
 
 #: c:\Apache2\htdocs\account21/purchasing/inquiry/supplier_inquiry.php:74
+#: c:\Apache2\htdocs\account21/reporting/rep102.php:113
+#: c:\Apache2\htdocs\account21/reporting/rep102.php:223
 msgid "Current"
 msgstr ""
 
 #: c:\Apache2\htdocs\account21/purchasing/inquiry/supplier_inquiry.php:75
+#: c:\Apache2\htdocs\account21/reporting/rep102.php:114
 msgid "Total Balance"
 msgstr ""
 
@@ -5346,43 +5361,48 @@ msgstr ""
 msgid "Add New Supplier Details"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/purchasing/view/view_grn.php:17
+#: c:\Apache2\htdocs\account21/purchasing/view/view_grn.php:21
 msgid "View Purchase Order Delivery"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/purchasing/view/view_grn.php:23
+#: c:\Apache2\htdocs\account21/purchasing/view/view_grn.php:27
 msgid "This page must be called with a Purchase Order Delivery number to review."
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/purchasing/view/view_grn.php:29
+#: c:\Apache2\htdocs\account21/purchasing/view/view_grn.php:33
 msgid "Purchase Order Delivery"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/purchasing/view/view_grn.php:33
+#: c:\Apache2\htdocs\account21/purchasing/view/view_grn.php:37
+#: c:\Apache2\htdocs\account21/purchasing/view/view_po.php:41
 msgid "Line Details"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/purchasing/view/view_grn.php:36
+#: c:\Apache2\htdocs\account21/purchasing/view/view_grn.php:40
+#: c:\Apache2\htdocs\account21/purchasing/view/view_po.php:45
 msgid "Item Description"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/purchasing/view/view_grn.php:36
+#: c:\Apache2\htdocs\account21/purchasing/view/view_grn.php:40
 msgid "Delivery Date"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/purchasing/view/view_grn.php:37
+#: c:\Apache2\htdocs\account21/purchasing/view/view_grn.php:41
+#: c:\Apache2\htdocs\account21/purchasing/view/view_po.php:46
 msgid "Line Total"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/purchasing/view/view_grn.php:37
+#: c:\Apache2\htdocs\account21/purchasing/view/view_grn.php:41
+#: c:\Apache2\htdocs\account21/purchasing/view/view_po.php:46
 msgid "Quantity Invoiced"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/purchasing/view/view_grn.php:66
+#: c:\Apache2\htdocs\account21/purchasing/view/view_grn.php:70
+#: c:\Apache2\htdocs\account21/purchasing/view/view_po.php:84
 msgid "Total Excluding Tax/Shipping"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/purchasing/view/view_grn.php:71
+#: c:\Apache2\htdocs\account21/purchasing/view/view_grn.php:75
 msgid "This delivery has been voided."
 msgstr ""
 
@@ -5505,8 +5525,6 @@ msgstr ""
 #: c:\Apache2\htdocs\account21/reporting/rep101.php:90
 #: c:\Apache2\htdocs\account21/reporting/rep102.php:113
 #: c:\Apache2\htdocs\account21/reporting/rep102.php:120
-#: c:\Apache2\htdocs\account21/reporting/rep105.php:105
-#: c:\Apache2\htdocs\account21/reporting/rep106.php:81
 msgid "Customer"
 msgstr ""
 
@@ -5516,12 +5534,10 @@ msgstr ""
 
 #: c:\Apache2\htdocs\account21/reporting/rep101.php:175
 #: c:\Apache2\htdocs\account21/reporting/rep102.php:209
-#: c:\Apache2\htdocs\account21/reporting/rep106.php:177
 msgid "Grand Total"
 msgstr ""
 
 #: c:\Apache2\htdocs\account21/reporting/rep102.php:95
-#: c:\Apache2\htdocs\account21/reporting/rep106.php:91
 msgid "Summary Only"
 msgstr ""
 
@@ -5634,6 +5650,7 @@ msgid "Back Orders Only"
 msgstr ""
 
 #: c:\Apache2\htdocs\account21/reporting/rep105.php:105
+#: c:\Apache2\htdocs\account21/reporting/rep204.php:81
 msgid "Order"
 msgstr ""
 
@@ -5834,15 +5851,19 @@ msgstr ""
 msgid "Stock Check Sheets"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/reporting/rep304.php:105
-msgid "Cost"
-msgstr ""
-
-#: c:\Apache2\htdocs\account21/reporting/rep304.php:105
-msgid "Contribution"
+#: c:\Apache2\htdocs\account21/reporting/rep304.php:114
+msgid "Qty"
 msgstr ""
 
 #: c:\Apache2\htdocs\account21/reporting/rep304.php:114
+msgid "Cost"
+msgstr ""
+
+#: c:\Apache2\htdocs\account21/reporting/rep304.php:114
+msgid "Contribution"
+msgstr ""
+
+#: c:\Apache2\htdocs\account21/reporting/rep304.php:126
 msgid "Inventory Sales Report"
 msgstr ""
 
@@ -5863,6 +5884,10 @@ msgid "Dimension Summary"
 msgstr ""
 
 #: c:\Apache2\htdocs\account21/reporting/rep601.php:83
+#: c:\Apache2\htdocs\account21/reporting/reports_main.php:78
+#: c:\Apache2\htdocs\account21/reporting/reports_main.php:90
+#: c:\Apache2\htdocs\account21/reporting/reports_main.php:97
+#: c:\Apache2\htdocs\account21/reporting/reports_main.php:131
 msgid "Bank Account"
 msgstr ""
 
@@ -5889,26 +5914,46 @@ msgstr ""
 #: c:\Apache2\htdocs\account21/reporting/rep705.php:147
 #: c:\Apache2\htdocs\account21/reporting/rep705.php:159
 #: c:\Apache2\htdocs\account21/reporting/rep705.php:169
+#: c:\Apache2\htdocs\account21/reporting/reports_main.php:216
+#: c:\Apache2\htdocs\account21/reporting/reports_main.php:259
+#: c:\Apache2\htdocs\account21/reporting/reports_main.php:297
+#: c:\Apache2\htdocs\account21/reporting/backup/rep705.php:147
+#: c:\Apache2\htdocs\account21/reporting/backup/rep705.php:159
+#: c:\Apache2\htdocs\account21/reporting/backup/rep705.php:169
 msgid "Year"
 msgstr ""
 
 #: c:\Apache2\htdocs\account21/reporting/rep705.php:153
 #: c:\Apache2\htdocs\account21/reporting/rep705.php:163
 #: c:\Apache2\htdocs\account21/reporting/rep705.php:171
+#: c:\Apache2\htdocs\account21/reporting/backup/rep705.php:153
+#: c:\Apache2\htdocs\account21/reporting/backup/rep705.php:163
+#: c:\Apache2\htdocs\account21/reporting/backup/rep705.php:171
 msgid "Info"
 msgstr ""
 
 #: c:\Apache2\htdocs\account21/reporting/rep705.php:153
 #: c:\Apache2\htdocs\account21/reporting/rep705.php:163
 #: c:\Apache2\htdocs\account21/reporting/rep705.php:171
+#: c:\Apache2\htdocs\account21/reporting/backup/rep705.php:153
+#: c:\Apache2\htdocs\account21/reporting/backup/rep705.php:163
+#: c:\Apache2\htdocs\account21/reporting/backup/rep705.php:171
 msgid "Amounts in thousands"
 msgstr ""
 
 #: c:\Apache2\htdocs\account21/reporting/rep705.php:175
+#: c:\Apache2\htdocs\account21/reporting/backup/rep705.php:175
 msgid "Annual Expense Breakdown"
 msgstr ""
 
 #: c:\Apache2\htdocs\account21/reporting/rep705.php:361
+#: c:\Apache2\htdocs\account21/reporting/rep706.php:319
+#: c:\Apache2\htdocs\account21/reporting/rep706.php:325
+#: c:\Apache2\htdocs\account21/reporting/rep707.php:335
+#: c:\Apache2\htdocs\account21/reporting/rep707.php:341
+#: c:\Apache2\htdocs\account21/reporting/backup/rep705.php:355
+#: c:\Apache2\htdocs\account21/reporting/backup/rep706.php:289
+#: c:\Apache2\htdocs\account21/reporting/backup/rep706.php:295
 msgid "Calculated Return"
 msgstr ""
 
@@ -5920,11 +5965,6 @@ msgstr ""
 #: c:\Apache2\htdocs\account21/reporting/rep706.php:78
 #: c:\Apache2\htdocs\account21/reporting/backup/rep706.php:78
 msgid "Close Balance"
-msgstr ""
-
-#: c:\Apache2\htdocs\account21/reporting/rep706.php:104
-#: c:\Apache2\htdocs\account21/reporting/backup/rep706.php:104
-msgid "Balance Sheet"
 msgstr ""
 
 #: c:\Apache2\htdocs\account21/reporting/rep706.php:341
@@ -5942,37 +5982,30 @@ msgstr ""
 #: c:\Apache2\htdocs\account21/reporting/rep706.php:356
 #: c:\Apache2\htdocs\account21/reporting/rep707.php:357
 #: c:\Apache2\htdocs\account21/reporting/backup/rep706.php:314
-#: c:\Apache2\htdocs\account21/reporting/backup/rep707.php:351
 msgid "Group"
 msgstr ""
 
 #: c:\Apache2\htdocs\account21/reporting/rep707.php:92
-#: c:\Apache2\htdocs\account21/reporting/backup/rep707.php:92
 msgid "Accumulated"
 msgstr ""
 
 #: c:\Apache2\htdocs\account21/reporting/rep707.php:92
-#: c:\Apache2\htdocs\account21/reporting/backup/rep707.php:92
 msgid "Achieved %"
 msgstr ""
 
 #: c:\Apache2\htdocs\account21/reporting/rep707.php:125
-#: c:\Apache2\htdocs\account21/reporting/backup/rep707.php:125
 msgid "Budget"
 msgstr ""
 
 #: c:\Apache2\htdocs\account21/reporting/rep707.php:134
-#: c:\Apache2\htdocs\account21/reporting/backup/rep707.php:134
 msgid "Period Y-1"
 msgstr ""
 
 #: c:\Apache2\htdocs\account21/reporting/rep707.php:137
-#: c:\Apache2\htdocs\account21/reporting/backup/rep707.php:137
 msgid "Profit and Loss Statement"
 msgstr ""
 
 #: c:\Apache2\htdocs\account21/reporting/rep709.php:88
-#: c:\Apache2\htdocs\account21/reporting/backup/rep709.php:240
 msgid "Tax Report"
 msgstr ""
 
@@ -5981,12 +6014,10 @@ msgid "Ref"
 msgstr ""
 
 #: c:\Apache2\htdocs\account21/reporting/rep709.php:106
-#: c:\Apache2\htdocs\account21/reporting/backup/rep709.php:271
 msgid "Branch Name"
 msgstr ""
 
 #: c:\Apache2\htdocs\account21/reporting/rep709.php:107
-#: c:\Apache2\htdocs\account21/reporting/backup/rep709.php:272
 msgid "Net"
 msgstr ""
 
@@ -5995,12 +6026,10 @@ msgid "Rate"
 msgstr ""
 
 #: c:\Apache2\htdocs\account21/reporting/rep709.php:107
-#: c:\Apache2\htdocs\account21/reporting/backup/rep709.php:272
 msgid "Tax"
 msgstr ""
 
 #: c:\Apache2\htdocs\account21/reporting/rep709.php:161
-#: c:\Apache2\htdocs\account21/reporting/backup/rep709.php:392
 msgid "Tax Rate"
 msgstr ""
 
@@ -6066,9 +6095,9 @@ msgstr ""
 #: c:\Apache2\htdocs\account21/reporting/reports_main.php:294
 #: c:\Apache2\htdocs\account21/reporting/reports_main.php:298
 #: c:\Apache2\htdocs\account21/reporting/reports_main.php:304
-#: c:\Apache2\htdocs\account21/reporting/reports_main.php:312
-#: c:\Apache2\htdocs\account21/reporting/reports_main.php:319
-#: c:\Apache2\htdocs\account21/reporting/reports_main.php:326
+#: c:\Apache2\htdocs\account21/reporting/reports_main.php:311
+#: c:\Apache2\htdocs\account21/reporting/reports_main.php:318
+#: c:\Apache2\htdocs\account21/reporting/reports_main.php:325
 msgid "Comments"
 msgstr ""
 
@@ -6104,9 +6133,8 @@ msgstr ""
 #: c:\Apache2\htdocs\account21/reporting/reports_main.php:295
 #: c:\Apache2\htdocs\account21/reporting/reports_main.php:299
 #: c:\Apache2\htdocs\account21/reporting/reports_main.php:305
-#: c:\Apache2\htdocs\account21/reporting/reports_main.php:306
-#: c:\Apache2\htdocs\account21/reporting/reports_main.php:313
-#: c:\Apache2\htdocs\account21/reporting/reports_main.php:320
+#: c:\Apache2\htdocs\account21/reporting/reports_main.php:312
+#: c:\Apache2\htdocs\account21/reporting/reports_main.php:319
 msgid "Destination"
 msgstr ""
 
@@ -6121,7 +6149,7 @@ msgstr ""
 #: c:\Apache2\htdocs\account21/reporting/reports_main.php:267
 #: c:\Apache2\htdocs\account21/reporting/reports_main.php:275
 #: c:\Apache2\htdocs\account21/reporting/reports_main.php:303
-#: c:\Apache2\htdocs\account21/reporting/reports_main.php:311
+#: c:\Apache2\htdocs\account21/reporting/reports_main.php:310
 msgid "Graphics"
 msgstr ""
 
@@ -6315,10 +6343,9 @@ msgstr ""
 #: c:\Apache2\htdocs\account21/reporting/reports_main.php:289
 #: c:\Apache2\htdocs\account21/reporting/reports_main.php:296
 #: c:\Apache2\htdocs\account21/reporting/reports_main.php:300
-#: c:\Apache2\htdocs\account21/reporting/reports_main.php:307
-#: c:\Apache2\htdocs\account21/reporting/reports_main.php:314
-#: c:\Apache2\htdocs\account21/reporting/reports_main.php:322
-#: c:\Apache2\htdocs\account21/reporting/backup/rep709.php:486
+#: c:\Apache2\htdocs\account21/reporting/reports_main.php:306
+#: c:\Apache2\htdocs\account21/reporting/reports_main.php:313
+#: c:\Apache2\htdocs\account21/reporting/reports_main.php:321
 msgid "General Ledger"
 msgstr ""
 
@@ -6366,23 +6393,23 @@ msgstr ""
 
 #: c:\Apache2\htdocs\account21/reporting/reports_main.php:229
 #: c:\Apache2\htdocs\account21/reporting/reports_main.php:270
-#: c:\Apache2\htdocs\account21/reporting/reports_main.php:307
+#: c:\Apache2\htdocs\account21/reporting/reports_main.php:306
 msgid "&Profit and Loss Statement"
 msgstr ""
 
 #: c:\Apache2\htdocs\account21/reporting/reports_main.php:232
 #: c:\Apache2\htdocs\account21/reporting/reports_main.php:273
-#: c:\Apache2\htdocs\account21/reporting/reports_main.php:310
+#: c:\Apache2\htdocs\account21/reporting/reports_main.php:309
 msgid "Compare to"
 msgstr ""
 
 #: c:\Apache2\htdocs\account21/reporting/reports_main.php:241
 #: c:\Apache2\htdocs\account21/reporting/reports_main.php:281
-#: c:\Apache2\htdocs\account21/reporting/reports_main.php:317
+#: c:\Apache2\htdocs\account21/reporting/reports_main.php:316
 msgid "Zero values"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/reporting/reports_main.php:322
+#: c:\Apache2\htdocs\account21/reporting/reports_main.php:321
 msgid "Ta&x Report"
 msgstr ""
 
@@ -6464,6 +6491,7 @@ msgid "Modifying Customer Credit Note"
 msgstr ""
 
 #: c:\Apache2\htdocs\account21/sales/credit_note_entry.php:51
+#: c:\Apache2\htdocs\account21/sales/sales_order_entry.php:491
 msgid "There are no customers, or there are no customers with branches. Please define customers and customer branches."
 msgstr ""
 
@@ -6519,7 +6547,7 @@ msgid "Credit Note Items"
 msgstr ""
 
 #: c:\Apache2\htdocs\account21/sales/credit_note_entry.php:281
-#: c:\Apache2\htdocs\account21/sales/customer_credit_invoice.php:388
+#: c:\Apache2\htdocs\account21/sales/customer_credit_invoice.php:391
 msgid "Process Credit Note"
 msgstr ""
 
@@ -6567,53 +6595,53 @@ msgstr ""
 msgid "This page can only be opened if an invoice has been selected for crediting."
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/sales/customer_credit_invoice.php:255
+#: c:\Apache2\htdocs\account21/sales/customer_credit_invoice.php:258
 msgid "Crediting Invoice"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/sales/customer_credit_invoice.php:276
+#: c:\Apache2\htdocs\account21/sales/customer_credit_invoice.php:279
 msgid "Credit Note Date"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/sales/customer_credit_invoice.php:286
+#: c:\Apache2\htdocs\account21/sales/customer_credit_invoice.php:289
 msgid "Invoiced Quantity"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/sales/customer_credit_invoice.php:287
+#: c:\Apache2\htdocs\account21/sales/customer_credit_invoice.php:290
 msgid "Credit Quantity"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/sales/customer_credit_invoice.php:287
+#: c:\Apache2\htdocs\account21/sales/customer_credit_invoice.php:290
 msgid "Discount %"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/sales/customer_credit_invoice.php:321
+#: c:\Apache2\htdocs\account21/sales/customer_credit_invoice.php:324
 msgid "Credit Shipping Cost"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/sales/customer_credit_invoice.php:328
-#: c:\Apache2\htdocs\account21/sales/customer_delivery.php:447
-#: c:\Apache2\htdocs\account21/sales/customer_invoice.php:495
+#: c:\Apache2\htdocs\account21/sales/customer_credit_invoice.php:331
+#: c:\Apache2\htdocs\account21/sales/customer_delivery.php:448
+#: c:\Apache2\htdocs\account21/sales/customer_invoice.php:498
 msgid "Sub-total"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/sales/customer_credit_invoice.php:336
+#: c:\Apache2\htdocs\account21/sales/customer_credit_invoice.php:339
 msgid "Credit Note Total"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/sales/customer_credit_invoice.php:354
+#: c:\Apache2\htdocs\account21/sales/customer_credit_invoice.php:357
 msgid "Credit Note Type"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/sales/customer_credit_invoice.php:362
+#: c:\Apache2\htdocs\account21/sales/customer_credit_invoice.php:365
 msgid "Items Returned to Location"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/sales/customer_credit_invoice.php:367
+#: c:\Apache2\htdocs\account21/sales/customer_credit_invoice.php:370
 msgid "Write off the cost of the items to"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/sales/customer_credit_invoice.php:386
+#: c:\Apache2\htdocs\account21/sales/customer_credit_invoice.php:389
 msgid "Update credit value for quantities entered"
 msgstr ""
 
@@ -6631,19 +6659,23 @@ msgid "Deliver Items for a Sales Order"
 msgstr ""
 
 #: c:\Apache2\htdocs\account21/sales/customer_delivery.php:50
+#: c:\Apache2\htdocs\account21/sales/sales_order_entry.php:109
 #, php-format
 msgid "Delivery # %d has been entered."
 msgstr ""
 
 #: c:\Apache2\htdocs\account21/sales/customer_delivery.php:52
+#: c:\Apache2\htdocs\account21/sales/sales_order_entry.php:111
 msgid "&View This Delivery"
 msgstr ""
 
 #: c:\Apache2\htdocs\account21/sales/customer_delivery.php:54
+#: c:\Apache2\htdocs\account21/sales/sales_order_entry.php:113
 msgid "&Print Delivery Note"
 msgstr ""
 
 #: c:\Apache2\htdocs\account21/sales/customer_delivery.php:56
+#: c:\Apache2\htdocs\account21/sales/sales_order_entry.php:115
 msgid "View the GL Journal Entries for this Dispatch"
 msgstr ""
 
@@ -6721,7 +6753,7 @@ msgid "The entered dead-line for invoice is invalid."
 msgstr ""
 
 #: c:\Apache2\htdocs\account21/sales/customer_delivery.php:178
-#: c:\Apache2\htdocs\account21/sales/customer_invoice.php:278
+#: c:\Apache2\htdocs\account21/sales/customer_invoice.php:281
 msgid "The entered shipping value is not numeric."
 msgstr ""
 
@@ -6735,74 +6767,71 @@ msgid ""
 "\t\tnot dispatched on sales order."
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/sales/customer_delivery.php:272
+#: c:\Apache2\htdocs\account21/sales/customer_delivery.php:273
+#: c:\Apache2\htdocs\account21/sales/sales_order_entry.php:347
 msgid "The delivery cannot be processed because there is an insufficient quantity for item:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/sales/customer_delivery.php:332
+#: c:\Apache2\htdocs\account21/sales/customer_delivery.php:333
 msgid "For Sales Order"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/sales/customer_delivery.php:341
+#: c:\Apache2\htdocs\account21/sales/customer_delivery.php:342
 msgid "Delivery From"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/sales/customer_delivery.php:369
+#: c:\Apache2\htdocs\account21/sales/customer_delivery.php:370
 msgid "Invoice Dead-line"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/sales/customer_delivery.php:378
-#: c:\Apache2\htdocs\account21/sales/customer_invoice.php:390
+#: c:\Apache2\htdocs\account21/sales/customer_delivery.php:379
+#: c:\Apache2\htdocs\account21/sales/customer_invoice.php:393
 msgid "The selected customer account is currently on hold. Please contact the credit control personnel to discuss."
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/sales/customer_delivery.php:383
+#: c:\Apache2\htdocs\account21/sales/customer_delivery.php:384
 msgid "Delivery Items"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/sales/customer_delivery.php:386
-#: c:\Apache2\htdocs\account21/sales/customer_invoice.php:400
+#: c:\Apache2\htdocs\account21/sales/customer_delivery.php:387
+#: c:\Apache2\htdocs\account21/sales/customer_invoice.php:403
 msgid "Delivered"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/sales/customer_delivery.php:387
-#: c:\Apache2\htdocs\account21/sales/customer_invoice.php:401
-msgid "Tax Type"
-msgstr ""
-
-#: c:\Apache2\htdocs\account21/sales/customer_delivery.php:387
-#: c:\Apache2\htdocs\account21/sales/customer_invoice.php:401
+#: c:\Apache2\htdocs\account21/sales/customer_delivery.php:388
+#: c:\Apache2\htdocs\account21/sales/customer_invoice.php:404
 msgid "Discount"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/sales/customer_delivery.php:441
-#: c:\Apache2\htdocs\account21/sales/customer_invoice.php:485
+#: c:\Apache2\htdocs\account21/sales/customer_delivery.php:442
+#: c:\Apache2\htdocs\account21/sales/customer_invoice.php:488
 msgid "Shipping Cost"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/sales/customer_delivery.php:454
+#: c:\Apache2\htdocs\account21/sales/customer_delivery.php:455
 msgid "Amount Total"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/sales/customer_delivery.php:459
+#: c:\Apache2\htdocs\account21/sales/customer_delivery.php:460
 msgid "Marked items have insufficient quantities in stock as on day of delivery."
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/sales/customer_delivery.php:463
+#: c:\Apache2\htdocs\account21/sales/customer_delivery.php:464
 msgid "Action For Balance"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/sales/customer_delivery.php:470
-#: c:\Apache2\htdocs\account21/sales/customer_invoice.php:513
+#: c:\Apache2\htdocs\account21/sales/customer_delivery.php:471
+#: c:\Apache2\htdocs\account21/sales/customer_invoice.php:516
 msgid "Refresh document page"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/sales/customer_delivery.php:471
+#: c:\Apache2\htdocs\account21/sales/customer_delivery.php:472
 msgid "Process Dispatch"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/sales/customer_delivery.php:472
-#: c:\Apache2\htdocs\account21/sales/customer_invoice.php:515
+#: c:\Apache2\htdocs\account21/sales/customer_delivery.php:473
+#: c:\Apache2\htdocs\account21/sales/customer_invoice.php:518
+#: c:\Apache2\htdocs\account21/sales/sales_order_entry.php:533
 msgid "Check entered data and save document"
 msgstr ""
 
@@ -6829,6 +6858,7 @@ msgstr ""
 
 #: c:\Apache2\htdocs\account21/sales/customer_invoice.php:57
 #: c:\Apache2\htdocs\account21/sales/customer_invoice.php:73
+#: c:\Apache2\htdocs\account21/sales/sales_order_entry.php:133
 msgid "&View This Invoice"
 msgstr ""
 
@@ -6838,6 +6868,7 @@ msgid "&Print This Invoice"
 msgstr ""
 
 #: c:\Apache2\htdocs\account21/sales/customer_invoice.php:61
+#: c:\Apache2\htdocs\account21/sales/sales_order_entry.php:137
 msgid "View the GL &Journal Entries for this Invoice"
 msgstr ""
 
@@ -6882,55 +6913,55 @@ msgid "Select Delivery to Invoice"
 msgstr ""
 
 #: c:\Apache2\htdocs\account21/sales/customer_invoice.php:153
-#: c:\Apache2\htdocs\account21/sales/customer_invoice.php:289
+#: c:\Apache2\htdocs\account21/sales/customer_invoice.php:292
 msgid "Selected quantity cannot be less than quantity credited nor more than quantity not invoiced yet."
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/sales/customer_invoice.php:242
+#: c:\Apache2\htdocs\account21/sales/customer_invoice.php:245
 msgid "The entered invoice date is invalid."
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/sales/customer_invoice.php:248
+#: c:\Apache2\htdocs\account21/sales/customer_invoice.php:251
 msgid "The entered invoice date is not in fiscal year."
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/sales/customer_invoice.php:254
+#: c:\Apache2\htdocs\account21/sales/customer_invoice.php:257
 msgid "The entered invoice due date is invalid."
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/sales/customer_invoice.php:284
+#: c:\Apache2\htdocs\account21/sales/customer_invoice.php:287
 msgid "There are no item quantities on this invoice."
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/sales/customer_invoice.php:355
+#: c:\Apache2\htdocs\account21/sales/customer_invoice.php:358
 msgid "Delivery Notes:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/sales/customer_invoice.php:396
+#: c:\Apache2\htdocs\account21/sales/customer_invoice.php:399
 msgid "Invoice Items"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/sales/customer_invoice.php:401
+#: c:\Apache2\htdocs\account21/sales/customer_invoice.php:404
 msgid "This Invoice"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/sales/customer_invoice.php:404
+#: c:\Apache2\htdocs\account21/sales/customer_invoice.php:407
 msgid "DN"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/sales/customer_invoice.php:409
+#: c:\Apache2\htdocs\account21/sales/customer_invoice.php:412
 msgid "Credited"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/sales/customer_invoice.php:455
+#: c:\Apache2\htdocs\account21/sales/customer_invoice.php:458
 msgid "Remove"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/sales/customer_invoice.php:502
+#: c:\Apache2\htdocs\account21/sales/customer_invoice.php:505
 msgid "Invoice Total"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/sales/customer_invoice.php:514
+#: c:\Apache2\htdocs\account21/sales/customer_invoice.php:517
 msgid "Process Invoice"
 msgstr ""
 
@@ -6998,11 +7029,11 @@ msgstr ""
 msgid "Into Bank Account:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/sales/customer_payments.php:235
+#: c:\Apache2\htdocs\account21/sales/customer_payments.php:236
 msgid "Amount and discount are in customer's currency."
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/sales/customer_payments.php:239
+#: c:\Apache2\htdocs\account21/sales/customer_payments.php:240
 msgid "Add Payment"
 msgstr ""
 
@@ -7240,10 +7271,6 @@ msgid "Customer Allocations"
 msgstr ""
 
 #: c:\Apache2\htdocs\account21/sales/allocations/customer_allocation_main.php:44
-#: c:\Apache2\htdocs\account21/sales/inquiry/customer_allocation_inquiry.php:42
-#: c:\Apache2\htdocs\account21/sales/inquiry/customer_inquiry.php:44
-#: c:\Apache2\htdocs\account21/sales/manage/customers.php:192
-#: c:\Apache2\htdocs\account21/sales/manage/customer_branches.php:177
 msgid "Select a customer: "
 msgstr ""
 
@@ -7597,6 +7624,7 @@ msgid "Sales Area:"
 msgstr ""
 
 #: c:\Apache2\htdocs\account21/sales/manage/customer_branches.php:309
+#: c:\Apache2\htdocs\account21/sales/manage/recurrent_invoices.php:179
 msgid "Sales Group:"
 msgstr ""
 
@@ -7782,47 +7810,51 @@ msgstr ""
 msgid "Selected point of sale has been updated"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/sales/manage/sales_points.php:68
+#: c:\Apache2\htdocs\account21/sales/manage/sales_points.php:70
+msgid "Cannot delete this POS because it is used in users setup."
+msgstr ""
+
+#: c:\Apache2\htdocs\account21/sales/manage/sales_points.php:73
 msgid "Selected point of sale has been deleted"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/sales/manage/sales_points.php:84
+#: c:\Apache2\htdocs\account21/sales/manage/sales_points.php:90
 msgid "POS Name"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/sales/manage/sales_points.php:84
+#: c:\Apache2\htdocs\account21/sales/manage/sales_points.php:90
 msgid "Credit sale"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/sales/manage/sales_points.php:84
+#: c:\Apache2\htdocs\account21/sales/manage/sales_points.php:90
 msgid "Cash sale"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/sales/manage/sales_points.php:84
+#: c:\Apache2\htdocs\account21/sales/manage/sales_points.php:90
 msgid "Default account"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/sales/manage/sales_points.php:111
+#: c:\Apache2\htdocs\account21/sales/manage/sales_points.php:117
 msgid "To have cash POS first define at least one cash bank account."
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/sales/manage/sales_points.php:130
+#: c:\Apache2\htdocs\account21/sales/manage/sales_points.php:136
 msgid "Point of Sale Name"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/sales/manage/sales_points.php:132
+#: c:\Apache2\htdocs\account21/sales/manage/sales_points.php:138
 msgid "Allowed credit sale"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/sales/manage/sales_points.php:133
+#: c:\Apache2\htdocs\account21/sales/manage/sales_points.php:139
 msgid "Allowed cash sale"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/sales/manage/sales_points.php:134
+#: c:\Apache2\htdocs\account21/sales/manage/sales_points.php:140
 msgid "Default cash account"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/sales/manage/sales_points.php:141
+#: c:\Apache2\htdocs\account21/sales/manage/sales_points.php:147
 msgid "POS location"
 msgstr ""
 
@@ -8133,8 +8165,6 @@ msgid "Is exempt"
 msgstr ""
 
 #: c:\Apache2\htdocs\account21/taxes/tax_groups.php:17
-#: c:\Apache2\htdocs\account21/themes/elegant/renderer.php:127
-#: c:\Apache2\htdocs\account21/themes/modern/renderer.php:120
 msgid "Tax Groups"
 msgstr ""
 
@@ -8191,10 +8221,6 @@ msgstr ""
 msgid "Rate (%)"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/taxes/tax_types.php:16
-msgid "Tax Types"
-msgstr ""
-
 #: c:\Apache2\htdocs\account21/taxes/tax_types.php:30
 msgid "The tax type name cannot be empty."
 msgstr ""
@@ -8249,11 +8275,6 @@ msgstr ""
 
 #: c:\Apache2\htdocs\account21/themes/aqua/renderer.php:16
 #: c:\Apache2\htdocs\account21/themes/cool/renderer.php:16
-#: c:\Apache2\htdocs\account21/themes/default/renderer.php:16
-#: c:\Apache2\htdocs\account21/themes/elegant/renderer.php:17
-#: c:\Apache2\htdocs\account21/themes/fancy/renderer.php:17
-#: c:\Apache2\htdocs\account21/themes/modern/renderer.php:17
-#: c:\Apache2\htdocs\account21/themes/newwave/renderer.php:6
 msgid "Main Menu"
 msgstr ""
 
@@ -8261,24 +8282,11 @@ msgstr ""
 #: c:\Apache2\htdocs\account21/themes/aqua/renderer.php:70
 #: c:\Apache2\htdocs\account21/themes/cool/renderer.php:46
 #: c:\Apache2\htdocs\account21/themes/cool/renderer.php:70
-#: c:\Apache2\htdocs\account21/themes/default/renderer.php:47
-#: c:\Apache2\htdocs\account21/themes/default/renderer.php:70
-#: c:\Apache2\htdocs\account21/themes/elegant/renderer.php:40
-#: c:\Apache2\htdocs\account21/themes/elegant/renderer.php:47
-#: c:\Apache2\htdocs\account21/themes/fancy/renderer.php:43
-#: c:\Apache2\htdocs\account21/themes/modern/renderer.php:40
-#: c:\Apache2\htdocs\account21/themes/modern/renderer.php:47
-#: c:\Apache2\htdocs\account21/themes/newwave/renderer.php:37
 msgid "Help"
 msgstr ""
 
 #: c:\Apache2\htdocs\account21/themes/aqua/renderer.php:65
 #: c:\Apache2\htdocs\account21/themes/cool/renderer.php:65
-#: c:\Apache2\htdocs\account21/themes/default/renderer.php:65
-#: c:\Apache2\htdocs\account21/themes/elegant/renderer.php:43
-#: c:\Apache2\htdocs\account21/themes/fancy/renderer.php:40
-#: c:\Apache2\htdocs\account21/themes/modern/renderer.php:43
-#: c:\Apache2\htdocs\account21/themes/newwave/renderer.php:48
 msgid "Preferences"
 msgstr ""
 
@@ -8386,6 +8394,116 @@ msgstr ""
 msgid "Balance for this Dimension"
 msgstr ""
 
+#: c:\Apache2\htdocs\account21/doc/backup/ui_view.inc:337
+msgid "Date Voided:"
+msgstr ""
+
+#: c:\Apache2\htdocs\account21/doc/backup/ui_view.inc:424
+#: c:\Apache2\htdocs\account21/doc/backup/ui_view.inc:440
+#: c:\Apache2\htdocs\account21/doc/backup/ui_view.inc:458
+msgid "Included"
+msgstr ""
+
+#: c:\Apache2\htdocs\account21/doc/backup/ui_view.inc:494
+msgid "Total Amount"
+msgstr ""
+
+#: c:\Apache2\htdocs\account21/doc/backup/ui_view.inc:518
+msgid "Total Allocated:"
+msgstr ""
+
+#: c:\Apache2\htdocs\account21/doc/backup/ui_view.inc:522
+msgid "Left to Allocate:"
+msgstr ""
+
+#: c:\Apache2\htdocs\account21/doc/backup/ui_view.inc:558
+msgid "No Quick Entries are defined."
+msgstr ""
+
+#: c:\Apache2\htdocs\account21/doc/backup/ui_view.inc:743
+msgid "January"
+msgstr ""
+
+#: c:\Apache2\htdocs\account21/doc/backup/ui_view.inc:743
+msgid "February"
+msgstr ""
+
+#: c:\Apache2\htdocs\account21/doc/backup/ui_view.inc:743
+msgid "March"
+msgstr ""
+
+#: c:\Apache2\htdocs\account21/doc/backup/ui_view.inc:743
+msgid "April"
+msgstr ""
+
+#: c:\Apache2\htdocs\account21/doc/backup/ui_view.inc:743
+msgid "May"
+msgstr ""
+
+#: c:\Apache2\htdocs\account21/doc/backup/ui_view.inc:743
+msgid "June"
+msgstr ""
+
+#: c:\Apache2\htdocs\account21/doc/backup/ui_view.inc:743
+msgid "July"
+msgstr ""
+
+#: c:\Apache2\htdocs\account21/doc/backup/ui_view.inc:743
+msgid "August"
+msgstr ""
+
+#: c:\Apache2\htdocs\account21/doc/backup/ui_view.inc:743
+msgid "September"
+msgstr ""
+
+#: c:\Apache2\htdocs\account21/doc/backup/ui_view.inc:743
+msgid "October"
+msgstr ""
+
+#: c:\Apache2\htdocs\account21/doc/backup/ui_view.inc:743
+msgid "November"
+msgstr ""
+
+#: c:\Apache2\htdocs\account21/doc/backup/ui_view.inc:743
+msgid "December"
+msgstr ""
+
+#: c:\Apache2\htdocs\account21/doc/backup/ui_view.inc:744
+msgid "Su"
+msgstr ""
+
+#: c:\Apache2\htdocs\account21/doc/backup/ui_view.inc:744
+msgid "Mo"
+msgstr ""
+
+#: c:\Apache2\htdocs\account21/doc/backup/ui_view.inc:744
+msgid "Tu"
+msgstr ""
+
+#: c:\Apache2\htdocs\account21/doc/backup/ui_view.inc:744
+msgid "We"
+msgstr ""
+
+#: c:\Apache2\htdocs\account21/doc/backup/ui_view.inc:744
+msgid "Th"
+msgstr ""
+
+#: c:\Apache2\htdocs\account21/doc/backup/ui_view.inc:744
+msgid "Fr"
+msgstr ""
+
+#: c:\Apache2\htdocs\account21/doc/backup/ui_view.inc:744
+msgid "Sa"
+msgstr ""
+
+#: c:\Apache2\htdocs\account21/doc/backup/ui_view.inc:745
+msgid "W"
+msgstr ""
+
+#: c:\Apache2\htdocs\account21/doc/backup/ui_view.inc:746
+msgid "Back"
+msgstr ""
+
 #: c:\Apache2\htdocs\account21/gl/includes/db/gl_db_banking.inc:35
 #: c:\Apache2\htdocs\account21/gl/includes/db/gl_db_banking.inc:38
 msgid "Exchange Variance"
@@ -8460,7 +8578,7 @@ msgstr ""
 msgid "Cannot retrieve exchange rate for currency %s as of %s. Please add exchange rate manually on Exchange Rates page."
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/includes/current_user.inc:324
+#: c:\Apache2\htdocs\account21/includes/current_user.inc:338
 msgid "Requesting data..."
 msgstr ""
 
@@ -8481,6 +8599,7 @@ msgid "The entered information is a duplicate. Please go back and enter differen
 msgstr ""
 
 #: c:\Apache2\htdocs\account21/includes/main.inc:41
+#: c:\Apache2\htdocs\account21/includes/backup/main.inc:41
 msgid "This page is usable only with javascript enabled browsers."
 msgstr ""
 
@@ -8497,11 +8616,6 @@ msgstr ""
 #: c:\Apache2\htdocs\account21/includes/session.inc:40
 #: c:\Apache2\htdocs\account21/includes/backup/session.inc:40
 msgid "If you are not an authorized user, please contact your system administrator to obtain an account to enable you to use the system."
-msgstr ""
-
-#: c:\Apache2\htdocs\account21/includes/session.inc:41
-#: c:\Apache2\htdocs\account21/includes/backup/session.inc:41
-msgid "Back"
 msgstr ""
 
 #: c:\Apache2\htdocs\account21/includes/session.inc:55
@@ -8736,7 +8850,7 @@ msgstr ""
 msgid "to continue"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/includes/ui/ui_input.inc:525
+#: c:\Apache2\htdocs\account21/includes/ui/ui_input.inc:531
 msgid "Click Here to Pick up the date"
 msgstr ""
 
@@ -8858,112 +8972,6 @@ msgstr ""
 
 #: c:\Apache2\htdocs\account21/includes/ui/ui_msgs.inc:63
 msgid "in units of : "
-msgstr ""
-
-#: c:\Apache2\htdocs\account21/includes/ui/ui_view.inc:337
-msgid "Date Voided:"
-msgstr ""
-
-#: c:\Apache2\htdocs\account21/includes/ui/ui_view.inc:424
-#: c:\Apache2\htdocs\account21/includes/ui/ui_view.inc:440
-#: c:\Apache2\htdocs\account21/includes/ui/ui_view.inc:458
-msgid "Included"
-msgstr ""
-
-#: c:\Apache2\htdocs\account21/includes/ui/ui_view.inc:494
-msgid "Total Amount"
-msgstr ""
-
-#: c:\Apache2\htdocs\account21/includes/ui/ui_view.inc:518
-msgid "Total Allocated:"
-msgstr ""
-
-#: c:\Apache2\htdocs\account21/includes/ui/ui_view.inc:522
-msgid "Left to Allocate:"
-msgstr ""
-
-#: c:\Apache2\htdocs\account21/includes/ui/ui_view.inc:558
-msgid "No Quick Entries are defined."
-msgstr ""
-
-#: c:\Apache2\htdocs\account21/includes/ui/ui_view.inc:716
-msgid "January"
-msgstr ""
-
-#: c:\Apache2\htdocs\account21/includes/ui/ui_view.inc:716
-msgid "February"
-msgstr ""
-
-#: c:\Apache2\htdocs\account21/includes/ui/ui_view.inc:716
-msgid "March"
-msgstr ""
-
-#: c:\Apache2\htdocs\account21/includes/ui/ui_view.inc:716
-msgid "April"
-msgstr ""
-
-#: c:\Apache2\htdocs\account21/includes/ui/ui_view.inc:716
-msgid "May"
-msgstr ""
-
-#: c:\Apache2\htdocs\account21/includes/ui/ui_view.inc:716
-msgid "June"
-msgstr ""
-
-#: c:\Apache2\htdocs\account21/includes/ui/ui_view.inc:716
-msgid "July"
-msgstr ""
-
-#: c:\Apache2\htdocs\account21/includes/ui/ui_view.inc:716
-msgid "August"
-msgstr ""
-
-#: c:\Apache2\htdocs\account21/includes/ui/ui_view.inc:716
-msgid "September"
-msgstr ""
-
-#: c:\Apache2\htdocs\account21/includes/ui/ui_view.inc:716
-msgid "October"
-msgstr ""
-
-#: c:\Apache2\htdocs\account21/includes/ui/ui_view.inc:716
-msgid "November"
-msgstr ""
-
-#: c:\Apache2\htdocs\account21/includes/ui/ui_view.inc:716
-msgid "December"
-msgstr ""
-
-#: c:\Apache2\htdocs\account21/includes/ui/ui_view.inc:717
-msgid "Su"
-msgstr ""
-
-#: c:\Apache2\htdocs\account21/includes/ui/ui_view.inc:717
-msgid "Mo"
-msgstr ""
-
-#: c:\Apache2\htdocs\account21/includes/ui/ui_view.inc:717
-msgid "Tu"
-msgstr ""
-
-#: c:\Apache2\htdocs\account21/includes/ui/ui_view.inc:717
-msgid "We"
-msgstr ""
-
-#: c:\Apache2\htdocs\account21/includes/ui/ui_view.inc:717
-msgid "Th"
-msgstr ""
-
-#: c:\Apache2\htdocs\account21/includes/ui/ui_view.inc:717
-msgid "Fr"
-msgstr ""
-
-#: c:\Apache2\htdocs\account21/includes/ui/ui_view.inc:717
-msgid "Sa"
-msgstr ""
-
-#: c:\Apache2\htdocs\account21/includes/ui/ui_view.inc:718
-msgid "W"
 msgstr ""
 
 #: c:\Apache2\htdocs\account21/inventory/includes/item_adjustments_ui.inc:20
@@ -9099,130 +9107,130 @@ msgstr ""
 msgid "Order Comments"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/purchasing/includes/ui/invoice_ui.inc:97
-#: c:\Apache2\htdocs\account21/purchasing/includes/ui/invoice_ui.inc:100
+#: c:\Apache2\htdocs\account21/purchasing/includes/ui/invoice_ui.inc:99
+#: c:\Apache2\htdocs\account21/purchasing/includes/ui/invoice_ui.inc:102
 msgid "Supplier's Ref.:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/purchasing/includes/ui/invoice_ui.inc:115
+#: c:\Apache2\htdocs\account21/purchasing/includes/ui/invoice_ui.inc:117
 msgid "Terms:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/purchasing/includes/ui/invoice_ui.inc:143
+#: c:\Apache2\htdocs\account21/purchasing/includes/ui/invoice_ui.inc:145
 msgid "Sub-total:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/purchasing/includes/ui/invoice_ui.inc:151
+#: c:\Apache2\htdocs\account21/purchasing/includes/ui/invoice_ui.inc:153
 msgid "Invoice Total:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/purchasing/includes/ui/invoice_ui.inc:185
+#: c:\Apache2\htdocs\account21/purchasing/includes/ui/invoice_ui.inc:187
 msgid "Add GL Line"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/purchasing/includes/ui/invoice_ui.inc:186
+#: c:\Apache2\htdocs\account21/purchasing/includes/ui/invoice_ui.inc:188
 msgid "Reset"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/purchasing/includes/ui/invoice_ui.inc:187
+#: c:\Apache2\htdocs\account21/purchasing/includes/ui/invoice_ui.inc:189
 msgid "Clear all GL entry fields"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/purchasing/includes/ui/invoice_ui.inc:207
+#: c:\Apache2\htdocs\account21/purchasing/includes/ui/invoice_ui.inc:209
 msgid "GL Items for this Invoice"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/purchasing/includes/ui/invoice_ui.inc:209
+#: c:\Apache2\htdocs\account21/purchasing/includes/ui/invoice_ui.inc:211
 msgid "GL Items for this Credit Note"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/purchasing/includes/ui/invoice_ui.inc:219
+#: c:\Apache2\htdocs\account21/purchasing/includes/ui/invoice_ui.inc:221
 msgid "Quick Entry:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/purchasing/includes/ui/invoice_ui.inc:385
+#: c:\Apache2\htdocs\account21/purchasing/includes/ui/invoice_ui.inc:390
 msgid "Add to Invoice"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/purchasing/includes/ui/invoice_ui.inc:387
+#: c:\Apache2\htdocs\account21/purchasing/includes/ui/invoice_ui.inc:392
 msgid "Add to Credit Note"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/purchasing/includes/ui/invoice_ui.inc:389
-#: c:\Apache2\htdocs\account21/purchasing/includes/ui/invoice_ui.inc:424
+#: c:\Apache2\htdocs\account21/purchasing/includes/ui/invoice_ui.inc:394
+#: c:\Apache2\htdocs\account21/purchasing/includes/ui/invoice_ui.inc:429
 msgid "WARNING! Be careful with removal. The operation is executed immediately and cannot be undone !!!"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/purchasing/includes/ui/invoice_ui.inc:391
+#: c:\Apache2\htdocs\account21/purchasing/includes/ui/invoice_ui.inc:396
 #, php-format
 msgid "You are about to remove all yet non-invoiced items from delivery line #%d. This operation also irreversibly changes related order line. Do you want to continue ?"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/purchasing/includes/ui/invoice_ui.inc:422
+#: c:\Apache2\htdocs\account21/purchasing/includes/ui/invoice_ui.inc:427
 msgid "Items Received Yet to be Invoiced"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/purchasing/includes/ui/invoice_ui.inc:427
+#: c:\Apache2\htdocs\account21/purchasing/includes/ui/invoice_ui.inc:432
 msgid "Delivery Item Selected For Adding To A Supplier Credit Note"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/purchasing/includes/ui/invoice_ui.inc:432
+#: c:\Apache2\htdocs\account21/purchasing/includes/ui/invoice_ui.inc:437
 msgid "Received Items Charged on this Invoice"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/purchasing/includes/ui/invoice_ui.inc:434
+#: c:\Apache2\htdocs\account21/purchasing/includes/ui/invoice_ui.inc:439
 msgid "Received Items Credited on this Note"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/purchasing/includes/ui/invoice_ui.inc:446
+#: c:\Apache2\htdocs\account21/purchasing/includes/ui/invoice_ui.inc:451
 msgid "Received between"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/purchasing/includes/ui/invoice_ui.inc:447
+#: c:\Apache2\htdocs\account21/purchasing/includes/ui/invoice_ui.inc:452
 msgid "and"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/purchasing/includes/ui/invoice_ui.inc:458
+#: c:\Apache2\htdocs\account21/purchasing/includes/ui/invoice_ui.inc:463
 msgid "Add All Items"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/purchasing/includes/ui/invoice_ui.inc:467
+#: c:\Apache2\htdocs\account21/purchasing/includes/ui/invoice_ui.inc:472
 msgid "Sequence #"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/purchasing/includes/ui/invoice_ui.inc:467
+#: c:\Apache2\htdocs\account21/purchasing/includes/ui/invoice_ui.inc:472
 msgid "P.O."
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/purchasing/includes/ui/invoice_ui.inc:468
+#: c:\Apache2\htdocs\account21/purchasing/includes/ui/invoice_ui.inc:473
 msgid "Received On"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/purchasing/includes/ui/invoice_ui.inc:469
+#: c:\Apache2\htdocs\account21/purchasing/includes/ui/invoice_ui.inc:474
 msgid "Qty Yet To Invoice"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/purchasing/includes/ui/invoice_ui.inc:469
+#: c:\Apache2\htdocs\account21/purchasing/includes/ui/invoice_ui.inc:474
 msgid "Order Price"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/purchasing/includes/ui/invoice_ui.inc:474
+#: c:\Apache2\htdocs\account21/purchasing/includes/ui/invoice_ui.inc:479
 msgid "Qty Yet To Credit"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/purchasing/includes/ui/invoice_ui.inc:479
+#: c:\Apache2\htdocs\account21/purchasing/includes/ui/invoice_ui.inc:484
 msgid "Line Value"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/purchasing/includes/ui/invoice_ui.inc:545
+#: c:\Apache2\htdocs\account21/purchasing/includes/ui/invoice_ui.inc:550
 msgid "There are no outstanding items received from this supplier that have not been invoiced by them."
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/purchasing/includes/ui/invoice_ui.inc:548
+#: c:\Apache2\htdocs\account21/purchasing/includes/ui/invoice_ui.inc:553
 msgid "There are no received items for the selected supplier that have been invoiced."
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/purchasing/includes/ui/invoice_ui.inc:549
+#: c:\Apache2\htdocs\account21/purchasing/includes/ui/invoice_ui.inc:554
 msgid "Credits can only be applied to invoiced items."
 msgstr ""
 
@@ -9259,14 +9267,10 @@ msgid "Total Excluding Shipping/Tax"
 msgstr ""
 
 #: c:\Apache2\htdocs\account21/reporting/backup/excel_report.inc:187
-#: c:\Apache2\htdocs\account21/reporting/includes/excel_report.inc:203
-#: c:\Apache2\htdocs\account21/reporting/includes/pdf_report.inc:204
 msgid "Print Out Date"
 msgstr ""
 
 #: c:\Apache2\htdocs\account21/reporting/backup/excel_report.inc:194
-#: c:\Apache2\htdocs\account21/reporting/includes/excel_report.inc:209
-#: c:\Apache2\htdocs\account21/reporting/includes/pdf_report.inc:211
 msgid "Fiscal Year"
 msgstr ""
 
@@ -9274,106 +9278,110 @@ msgstr ""
 msgid "Cust no"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/reporting/includes/doctext.inc:23
+#: c:\Apache2\htdocs\account21/reporting/includes/doctext.inc:18
+msgid "Order To"
+msgstr ""
+
+#: c:\Apache2\htdocs\account21/reporting/includes/doctext.inc:31
 msgid "Your Ref"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/reporting/includes/doctext.inc:24
+#: c:\Apache2\htdocs\account21/reporting/includes/doctext.inc:32
 msgid "Our Ref."
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/reporting/includes/doctext.inc:25
+#: c:\Apache2\htdocs\account21/reporting/includes/doctext.inc:33
 msgid "Your VAT no."
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/reporting/includes/doctext.inc:26
+#: c:\Apache2\htdocs\account21/reporting/includes/doctext.inc:34
 msgid "Our VAT No."
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/reporting/includes/doctext.inc:28
+#: c:\Apache2\htdocs\account21/reporting/includes/doctext.inc:36
 msgid "Customers Reference"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/reporting/includes/doctext.inc:30
+#: c:\Apache2\htdocs\account21/reporting/includes/doctext.inc:38
 msgid "Domicile"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/reporting/includes/doctext.inc:33
+#: c:\Apache2\htdocs\account21/reporting/includes/doctext.inc:41
 msgid "All amounts stated in"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/reporting/includes/doctext.inc:37
+#: c:\Apache2\htdocs\account21/reporting/includes/doctext.inc:45
 msgid "Please quote Invoice no. when paying. All amounts stated in"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/reporting/includes/doctext.inc:38
+#: c:\Apache2\htdocs\account21/reporting/includes/doctext.inc:46
 msgid "Please quote Credit no. when paying. All amounts stated in"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/reporting/includes/doctext.inc:41
+#: c:\Apache2\htdocs\account21/reporting/includes/doctext.inc:49
 msgid "Phone/Fax/Email"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/reporting/includes/doctext.inc:44
-#: c:\Apache2\htdocs\account21/reporting/includes/doctext.inc:76
+#: c:\Apache2\htdocs\account21/reporting/includes/doctext.inc:52
+#: c:\Apache2\htdocs\account21/reporting/includes/doctext.inc:84
 msgid "You can pay through"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/reporting/includes/doctext.inc:67
+#: c:\Apache2\htdocs\account21/reporting/includes/doctext.inc:75
 msgid "DueDate"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/reporting/includes/doctext.inc:73
-msgid "Dear Sirs"
+#: c:\Apache2\htdocs\account21/reporting/includes/doctext.inc:81
+msgid "Dear"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/reporting/includes/doctext.inc:74
+#: c:\Apache2\htdocs\account21/reporting/includes/doctext.inc:82
 msgid "Attached you will find "
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/reporting/includes/doctext.inc:75
+#: c:\Apache2\htdocs\account21/reporting/includes/doctext.inc:83
 msgid "Kindest regards"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/reporting/includes/doctext.inc:80
-#: c:\Apache2\htdocs\account21/reporting/includes/doctext.inc:82
+#: c:\Apache2\htdocs\account21/reporting/includes/doctext.inc:88
+#: c:\Apache2\htdocs\account21/reporting/includes/doctext.inc:90
 msgid "Delivery Note No."
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/reporting/includes/doctext.inc:80
-#: c:\Apache2\htdocs\account21/reporting/includes/doctext.inc:83
+#: c:\Apache2\htdocs\account21/reporting/includes/doctext.inc:88
+#: c:\Apache2\htdocs\account21/reporting/includes/doctext.inc:91
 msgid "Order no."
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/reporting/includes/doctext.inc:81
+#: c:\Apache2\htdocs\account21/reporting/includes/doctext.inc:89
 msgid "Invoice No."
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/reporting/includes/doctext.inc:81
+#: c:\Apache2\htdocs\account21/reporting/includes/doctext.inc:89
 msgid "Credit No."
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/reporting/includes/doctext.inc:94
+#: c:\Apache2\htdocs\account21/reporting/includes/doctext.inc:102
 msgid "TOTAL ORDER EX VAT"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/reporting/includes/doctext.inc:95
+#: c:\Apache2\htdocs\account21/reporting/includes/doctext.inc:103
 msgid "TOTAL PO EX VAT"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/reporting/includes/doctext.inc:96
+#: c:\Apache2\htdocs\account21/reporting/includes/doctext.inc:104
 msgid "TOTAL DELIVERY INCL. VAT"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/reporting/includes/doctext.inc:100
+#: c:\Apache2\htdocs\account21/reporting/includes/doctext.inc:108
 msgid "Outstanding Transactions"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/reporting/includes/doctext.inc:103
+#: c:\Apache2\htdocs\account21/reporting/includes/doctext.inc:111
 msgid "Statement"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/reporting/includes/doctext.inc:104
+#: c:\Apache2\htdocs\account21/reporting/includes/doctext.inc:112
 msgid "as of"
 msgstr ""
 
@@ -9382,15 +9390,15 @@ msgstr ""
 msgid "Page"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/reporting/includes/pdf_report.inc:462
+#: c:\Apache2\htdocs\account21/reporting/includes/pdf_report.inc:452
 msgid "Sending document by email failed"
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/reporting/includes/pdf_report.inc:465
+#: c:\Apache2\htdocs\account21/reporting/includes/pdf_report.inc:455
 msgid "has been sent by email."
 msgstr ""
 
-#: c:\Apache2\htdocs\account21/reporting/includes/pdf_report.inc:503
+#: c:\Apache2\htdocs\account21/reporting/includes/pdf_report.inc:494
 msgid "Report has been sent to network printer "
 msgstr ""
 
