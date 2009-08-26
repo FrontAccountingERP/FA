@@ -90,7 +90,7 @@ class supp_trans
 		$this->gl_codes = array();		
 	}
 	
-    function get_taxes($tax_group_id=null, $shipping_cost=0)
+    function get_taxes($tax_group_id=null, $shipping_cost=0, $gl_codes=true)
     {
     	$items = array();
     	$prices = array();
@@ -107,12 +107,26 @@ class supp_trans
         	$prices[] =round( ($ln_itm->this_quantity_inv * $ln_itm->taxfree_charge_price($tax_group_id, $tax_group)),
 			 user_price_dec());
         }
-        
+
         if ($tax_group_id == null)
         	$tax_group_id = $this->tax_group_id;        	
         
         $taxes = get_tax_for_items($items, $prices, $shipping_cost, $tax_group_id);
-        
+
+///////////////// Joe Hunt 2009.08.18
+
+		if ($gl_codes)
+		{
+			foreach ($this->gl_codes as $gl_code)
+			{
+				$index = is_tax_account($gl_code->gl_code);
+				if ($index !== false)
+				{
+					$taxes[$index]['Value'] += $gl_code->amount;
+				}	
+			}
+		}	
+////////////////		
         return $taxes;
     }		
     
@@ -131,8 +145,10 @@ class supp_trans
 			 user_price_dec());
 
    		foreach ($this->gl_codes as $gl_line)
-   			$total += $gl_line->amount;
-   			
+   		{	//////// 2009-08-18 Joe Hunt
+   			if (!is_tax_account($gl_line->gl_code))
+   				$total += $gl_line->amount;
+   		}	
    		return $total;
     }
 

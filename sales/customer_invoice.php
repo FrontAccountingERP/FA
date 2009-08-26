@@ -221,6 +221,8 @@ function copy_to_cart()
 	$cart->document_date =  $_POST['InvoiceDate'];
 	$cart->due_date =  $_POST['due_date'];
 	$cart->Comments = $_POST['Comments'];
+	if ($_SESSION['Items']->trans_no == 0)
+		$cart->reference = $_POST['ref'];
 }
 //-----------------------------------------------------------------------------
 
@@ -233,6 +235,7 @@ function copy_from_cart()
 	$_POST['due_date'] = $cart->due_date;
 	$_POST['Comments']= $cart->Comments;
 	$_POST['cart_id'] = $cart->cart_id;
+	$_POST['ref'] = $cart->reference;
 }
 
 //-----------------------------------------------------------------------------
@@ -349,7 +352,7 @@ end_row();
 start_row();
 
 if ($_SESSION['Items']->trans_no == 0) {
-	ref_cells(_("Reference"), 'ref', '', $_SESSION['Items']->reference, "class='tableheader2'");
+	ref_cells(_("Reference"), 'ref', '', null, "class='tableheader2'");
 } else {
 	label_cells(_("Reference"), $_SESSION['Items']->reference, "class='tableheader2'");
 }

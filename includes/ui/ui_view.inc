@@ -524,7 +524,109 @@ function display_quick_entries(&$cart, $id, $base, $type, $descr='')
 			$cart->clear_items();
 		$qe = get_quick_entry($id);
 		if ($descr != '') $qe['description'] .= ': '.$descr;
-		$qe_lines = get_quick_entry_lines($id);
+		$result = get_quick_entry_lines($id);
+		$totrate = 0;
+		while ($row = db_fetch($result))
+		{
+			$qe_lines[] = $row;
+
+			switch (strtolower($row['action'])) {
+				case "t": // post taxes calculated on base amount
+				case "t+": // ditto & increase base amount
+				case "t-": // ditto & reduce base amount
+					if (substr($qe_line['action'],0,1) != 'T') 
+						$totrate += get_tax_type_default_rate($row['dest_id']);
+			}
+		}
+		$first = true;
+		$taxbase = 0;
+		foreach($qe_lines as $qe_line)
+		{
+			switch (strtolower($qe_line['action'])) {
+				case "=": // post current base amount to GL account
+					$part = $base;
+					break;
+				case "a": // post amount to GL account and reduce base
+					$part = $qe_line['amount'];
+					break;
+				case "a+": // post amount to GL account and increase base
+					$part = $qe_line['amount']; $base += $part;
+					break;
+				case "a-": // post amount to GL account and reduce base
+					$part = $qe_line['amount']; $base -= $part;
+					break;
+				case "%":	// store acc*amount% to GL account
+					$part = round2($base * $qe_line['amount'] / 100, user_price_dec());
+					break;
+				case "%+":	// ditto & increase base amount
+					$part = round2($base * $qe_line['amount'] / 100, user_price_dec());
+					$base += $part;
+					break;
+				case "%-":	// ditto & reduce base amount
+					$part = round2($base * $qe_line['amount'] / 100, user_price_dec());
+					$base -= $part;
+					break;
+				case "t": // post taxes calculated on base amount
+				case "t+": // ditto & increase base amount
+				case "t-": // ditto & reduce base amount
+					if ($first)
+					{
+						$taxbase = $base/($totrate+100);
+						$first = false;
+					}
+
+					if (substr($qe_line['action'],0,1) != 'T') 
+						$part = $taxbase;
+					else
+						$part = $base;
+					$item_tax = get_tax_type($qe_line['dest_id']);
+					if ($type == QE_SUPPINV && substr($qe_line['action'],0,1) != 'T')
+					{
+						$taxgroup = $cart->tax_group_id;
+						$rates = 0;
+						$res = get_tax_group_items($cart->tax_group_id);
+						while ($row = db_fetch($res))
+							$rates += $row['rate'];
+						if ($rates == 0)
+							continue 2;
+					}
+					$tax = round2($part * $item_tax['rate'],  user_price_dec());
+					if ($tax==0) continue 2;
+					$gl_code = ($type == QE_DEPOSIT || ($type == QE_JOURNAL && $base < 0)) 
+						? $item_tax['sales_gl_code'] : $item_tax['purchasing_gl_code'];
+					if (!is_tax_gl_unique($gl_code)) {
+	   					display_error(_("Cannot post to GL account used by more than one tax type."));
+						break 2;
+					}
+					if ($type != QE_SUPPINV)
+						$cart->add_gl_item($gl_code, 
+							$qe_line['dimension_id'], $qe_line['dimension2_id'], 
+							$tax, $qe['description']);
+					else 
+					{
+						$acc_name = get_gl_account_name($gl_code);
+						$cart->add_gl_codes_to_trans($gl_code, 
+							$acc_name, $qe_line['dimension_id'], 
+							$qe_line['dimension2_id'], $tax, $qe['description']);
+					}
+					if (strpos($qe_line['action'], '+'))
+						$base += $tax;
+					elseif (strpos($qe_line['action'], '-'))
+						$base -= $tax;
+					continue 2;
+			}
+			if ($type != QE_SUPPINV)
+				$cart->add_gl_item($qe_line['dest_id'], $qe_line['dimension_id'],
+					$qe_line['dimension2_id'], $part, $qe['description']);
+			else 
+			{
+				$acc_name = get_gl_account_name($qe_line['dest_id']);
+				$cart->add_gl_codes_to_trans($qe_line['dest_id'], 
+					$acc_name, $qe_line['dimension_id'], 
+					$qe_line['dimension2_id'], $part, $qe['description']);
+			}
+		}
+/*		
 		while ($qe_line = db_fetch($qe_lines))
 		{
 			switch (strtolower($qe_line['action'])) {
@@ -554,15 +656,24 @@ function display_quick_entries(&$cart, $id, $base, $type, $descr='')
 				case "t": // post taxes calculated on base amount
 				case "t+": // ditto & increase base amount
 				case "t-": // ditto & reduce base amount
-					$taxes = get_taxes_for_item_tax($qe_line['dest_id']);
+					//$taxes = get_taxes_for_item_tax($qe_line['dest_id']);
+					if ($type == QE_SUPPINV)
+						$qe_line['dest_id'] = $cart->tax_group_id;
+					$taxes = array();
+					$res = get_tax_group_items($qe_line['dest_id']);
+					while ($row = db_fetch($res))
+						$taxes[] = $row;
 					$tax_total = 0;
+					$totrate = 0;
+					// find total tax 
+					if (substr($qe_line['action'],0,1) != 'T') {
+						foreach ($taxes as $index => $item_tax) {
+							$totrate += $item_tax['rate'];
+						}
+					}
+					$taxbase = $base/($totrate+100);
 					foreach ($taxes as $index => $item_tax) {
-						if(substr($qe_line['action'],0,1) != 'T')
-							$tax = round2($base * $item_tax['rate'] 
-						  		/ ($item_tax['rate'] + 100),  user_price_dec());
-						else
-							$tax = round2($base * $item_tax['rate'] / 100,  user_price_dec());
-
+						$tax = round2($taxbase * $item_tax['rate'],  user_price_dec());
 						$gl_code = ($type == QE_DEPOSIT || ($type == QE_JOURNAL && $base < 0)) 
 							? $item_tax['sales_gl_code'] : $item_tax['purchasing_gl_code'];
 						$tax_total += $tax;
@@ -600,6 +711,7 @@ function display_quick_entries(&$cart, $id, $base, $type, $descr='')
 					$qe_line['dimension2_id'], $part, $qe['description']);
 			}
 		}
+*/		
 	}	
 	return $bank_amount;
 }

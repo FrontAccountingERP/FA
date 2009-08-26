@@ -302,7 +302,8 @@ if ($selected_id != -1)
 
 	if ($actn == 't') 
 	{
-		item_tax_types_list_row(_("Item Tax Type").":",'dest_id', null);
+		//item_tax_types_list_row(_("Item Tax Type").":",'dest_id', null);
+		tax_types_list_row(_("Tax Type").":", 'dest_id', null);
 	} 
 	else 
 	{

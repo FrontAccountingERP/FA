@@ -44,7 +44,9 @@ function copy_to_trans(&$supp_trans)
 	{
 		foreach ( $supp_trans->gl_codes as $gl_line)
 		{
-			$supp_trans->ov_amount += $gl_line->amount;
+			////////// 2009-08-18 Joe Hunt
+			if (!is_tax_account($gl_line->gl_code))
+				$supp_trans->ov_amount += $gl_line->amount;
 		}
 	}
 }
@@ -288,9 +290,11 @@ function display_gl_items(&$supp_trans, $mode=0)
 				label_cell("");
 			}	
 			end_row();
-
-			$total_gl_value += $entered_gl_code->amount;
-
+			/////////// 2009-08-18 Joe Hunt
+			if ($mode > 1 && !is_tax_account($entered_gl_code->gl_code))
+				$total_gl_value += $entered_gl_code->amount;
+			else	
+				$total_gl_value += $entered_gl_code->amount;
 			$i++;
 			if ($i > 15)
 			{
@@ -376,7 +380,8 @@ function display_grn_items_for_selection(&$supp_trans, $k)
             else		
             	qty_cells(null, 'This_QuantityCredited'.$n, number_format2(max($myrow["quantity_inv"], 0), $dec), 
             		null, null, $dec);
-            amount_cells(null, 'ChgPrice'.$n, price_format($myrow["unit_price"]));
+            $dec2 = 0; 		
+            amount_cells(null, 'ChgPrice'.$n, price_decimal_format($myrow["unit_price"], $dec2), null, null, $dec2);
             if ($supp_trans->is_invoice)
             	amount_cell(round2($myrow["unit_price"] * ($myrow["qty_recd"] - $myrow["quantity_inv"]), user_price_dec()));
             else	
@@ -507,7 +512,7 @@ function display_grn_items(&$supp_trans, $mode=0)
 				qty_cell($entered_grn->prev_quantity_inv, false, $dec);
             }
 			qty_cell(abs($entered_grn->this_quantity_inv), true, $dec);
-			amount_cell($entered_grn->chg_price);
+			amount_decimal_cell($entered_grn->chg_price);
 			amount_cell( round2($entered_grn->chg_price * abs($entered_grn->this_quantity_inv), user_price_dec()), true);
 
 			if ($mode == 1)

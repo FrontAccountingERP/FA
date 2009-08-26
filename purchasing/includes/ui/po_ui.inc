@@ -190,7 +190,7 @@ function display_po_items(&$order, $editable=true)
                 qty_cell($po_line->qty_received, false, get_qty_dec($po_line->stock_id));
     			label_cell($po_line->units);
                 label_cell($po_line->req_del_date);
-    			amount_cell($po_line->price);
+    			amount_decimal_cell($po_line->price);
                 amount_cell($line_total);
 
                 if ($editable)
@@ -279,6 +279,7 @@ function po_item_controls(&$order, $stock_id=null)
    global $Ajax;
 	start_row();
 
+	$dec2 = 0;
 	$id = find_submit('Edit');
 	if (($id != -1) && $stock_id != null)
 	{
@@ -287,7 +288,8 @@ function po_item_controls(&$order, $stock_id=null)
 		$_POST['stock_id'] = $order->line_items[$id]->stock_id;
 			$dec = get_qty_dec($_POST['stock_id']);
 		$_POST['qty'] = qty_format($order->line_items[$id]->quantity, $_POST['stock_id'], $dec);
-		$_POST['price'] = price_format($order->line_items[$id]->price);
+		//$_POST['price'] = price_format($order->line_items[$id]->price);
+		$_POST['price'] = price_decimal_format($order->line_items[$id]->price, $dec2);
 		$_POST['req_del_date'] = $order->line_items[$id]->req_del_date;
 
 		$_POST['units'] = $order->line_items[$id]->units;
@@ -315,7 +317,8 @@ function po_item_controls(&$order, $stock_id=null)
 
    		$dec = $item_info["decimals"];
    		$_POST['qty'] =	number_format2(get_purchase_conversion_factor ($order->supplier_id, $_POST['stock_id']), $dec);
-		$_POST['price'] = price_format(get_purchase_price ($order->supplier_id, $_POST['stock_id']));
+		//$_POST['price'] = price_format(get_purchase_price ($order->supplier_id, $_POST['stock_id']));
+		$_POST['price'] = price_decimal_format(get_purchase_price ($order->supplier_id, $_POST['stock_id']), $dec2);
 		$_POST['req_del_date'] = add_days(Today(), 10);
 		$qty_rcvd = '';
 	}
@@ -325,7 +328,7 @@ function po_item_controls(&$order, $stock_id=null)
 
 	label_cell($_POST['units'], '', 'units');
 	date_cells(null, 'req_del_date', '', null, 0, 0, 0);
-	amount_cells(null, 'price', null);
+	amount_cells(null, 'price', null, null, null, $dec2);
 
 	//$line_total = $_POST['qty'] * $_POST['price'] * (1 - $_POST['Disc'] / 100);
 	$line_total = round(input_num('qty') * input_num('price'),  user_price_dec());

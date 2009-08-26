@@ -23,8 +23,8 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 	// Log file for error/warning messages. Should be set to any location
 	// writable by www server. When set to empty string logging is switched off. 
 	// Special value 'syslog' can be used for system logger usage (see php manual).
-	$error_logfile = '';
-	//$error_logfile = dirname(__FILE__).'/tmp/errors.log';
+	//$error_logfile = '';
+	$error_logfile = dirname(__FILE__).'/tmp/errors.log';
 	$debug 			= 1;
 	$show_sql 		= 0;
 	$go_debug 		= 1;
@@ -56,7 +56,7 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 	// Main Title
 	$app_title = "FrontAccounting";
 	// application version
-	$version 		= "2.2m4 CVS";
+	$version 		= "2.2m5 CVS";
 
 	// Build for development purposes
 	$build_version 	= date("d.m.Y", filemtime("$path_to_root/CHANGELOG.txt"));

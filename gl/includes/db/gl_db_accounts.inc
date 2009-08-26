@@ -56,6 +56,10 @@ function get_gl_accounts_all($balance=-1)
 	elseif ($balance == 0)	
 		$where ="WHERE ctype>".CL_EQUITY." OR ctype=0"; // backwards compatibility
  	$sql = "SELECT ".TB_PREF."chart_master.account_code, ".TB_PREF."chart_master.account_code2, ".TB_PREF."chart_master.account_name, 
+ 		".TB_PREF."chart_types.name AS AccountTypeName,".TB_PREF."chart_types.id AS AccountType
+		$where";
+
+ 	$sql = "SELECT ".TB_PREF."chart_master.account_code, ".TB_PREF."chart_master.account_name, ".TB_PREF."chart_master.account_code2,
  		".TB_PREF."chart_types.name AS AccountTypeName,".TB_PREF."chart_types.id AS AccountType,
 	 	".TB_PREF."chart_types.parent, ".TB_PREF."chart_class.class_name AS AccountClassName, ".TB_PREF."chart_class.cid AS ClassID, 
 	 	".TB_PREF."chart_class.ctype AS ClassType

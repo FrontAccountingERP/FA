@@ -314,7 +314,6 @@ else
 			new ReportParam(_('End Date'),'DATEENDM'),
 			new ReportParam(_('Graphics'),'GRAPHIC'),
 			new ReportParam(_('Comments'),'TEXTBOX'),
-			new ReportParam(_('Destination'),'DESTINATION'),
 			new ReportParam(_('Destination'),'DESTINATION')));
 	$reports->addReport(_('General Ledger'),707,_('&Profit and Loss Statement'),
 	array(	new ReportParam(_('Start Date'),'DATEBEGINM'),

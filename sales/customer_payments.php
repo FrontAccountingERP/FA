@@ -238,11 +238,12 @@ start_form();
 
 
 
+		$comp_currency = get_company_currency();
 		$cust_currency = get_customer_currency($_POST['customer_id']);
 		$bank_currency = get_bank_account_currency($_POST['bank_account']);
 
 		if ($cust_currency != $bank_currency) {
-			exchange_rate_display($bank_currency, $cust_currency, $_POST['DateBanked'], true);
+			exchange_rate_display($bank_currency, $cust_currency, $_POST['DateBanked'], ($bank_currency == $comp_currency));
 		}
 
 		amount_row(_("Bank Charge:"), 'charge');

@@ -178,24 +178,27 @@ function check_quantities()
 
 function copy_to_cart()
 {
-  $cart = &$_SESSION['Items'];
-  $cart->ship_via = $_POST['ShipperID'];
-  $cart->freight_cost = input_num('ChargeFreightCost');
-  $cart->document_date =  $_POST['CreditDate'];
-  $cart->Location = $_POST['Location'];
-  $cart->Comments = $_POST['CreditText'];
+	$cart = &$_SESSION['Items'];
+	$cart->ship_via = $_POST['ShipperID'];
+	$cart->freight_cost = input_num('ChargeFreightCost');
+	$cart->document_date =  $_POST['CreditDate'];
+	$cart->Location = $_POST['Location'];
+	$cart->Comments = $_POST['CreditText'];
+	if ($_SESSION['Items']->trans_no == 0)
+		$cart->reference = $_POST['ref'];
 }
 //-----------------------------------------------------------------------------
 
 function copy_from_cart()
 {
-  $cart = &$_SESSION['Items'];
-  $_POST['ShipperID'] = $cart->ship_via;
-  $_POST['ChargeFreightCost'] = price_format($cart->freight_cost);
-  $_POST['CreditDate']= $cart->document_date;
-  $_POST['Location']= $cart->Location;
-  $_POST['CreditText']= $cart->Comments;
-  $_POST['cart_id'] = $cart->cart_id;
+	$cart = &$_SESSION['Items'];
+	$_POST['ShipperID'] = $cart->ship_via;
+	$_POST['ChargeFreightCost'] = price_format($cart->freight_cost);
+	$_POST['CreditDate']= $cart->document_date;
+	$_POST['Location']= $cart->Location;
+	$_POST['CreditText']= $cart->Comments;
+	$_POST['cart_id'] = $cart->cart_id;
+	$_POST['ref'] = $cart->reference;
 }
 //-----------------------------------------------------------------------------
 
@@ -248,7 +251,7 @@ function display_credit_items()
 //		$_POST['ref'] = references::get_next(11);
 
     if ($_SESSION['Items']->trans_no==0) {
-		ref_cells(_("Reference"), 'ref', '', $_SESSION['Items']->reference, "class='tableheader2'");
+		ref_cells(_("Reference"), 'ref', '', null, "class='tableheader2'");
 	} else {
 		label_cells(_("Reference"), $_SESSION['Items']->reference, "class='tableheader2'");
 	}

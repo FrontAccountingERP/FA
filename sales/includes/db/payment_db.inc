@@ -74,7 +74,7 @@ function write_customer_payment($trans_no, $customer_id, $branch_id, $bank_accou
 	/*now enter the bank_trans entry */
 	add_bank_trans(12, $payment_no, $bank_account, $ref,
 		$date_, $amount - $charge, payment_person_types::customer(), $customer_id,
-		get_customer_currency($customer_id));
+		get_customer_currency($customer_id), "", $rate);
 
 	add_comments(12, $payment_no, $date_, $memo_);
 

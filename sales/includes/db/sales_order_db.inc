@@ -259,6 +259,7 @@ function get_sales_order_header($order_no)
 	$sql = "SELECT ".TB_PREF."sales_orders.*, "
 	  .TB_PREF."debtors_master.name, "
 	  .TB_PREF."debtors_master.curr_code, "
+	  .TB_PREF."debtors_master.email AS master_email, "
 	  .TB_PREF."locations.location_name, "
 	  .TB_PREF."debtors_master.payment_terms, "
 	  .TB_PREF."debtors_master.discount, "

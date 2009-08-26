@@ -157,7 +157,7 @@ else
 			alt_table_row_color($k);
 
             label_cell($myrow["supp_name"]);
-            amount_cell($myrow["price"]);
+            amount_decimal_cell($myrow["price"]);
             label_cell($myrow["curr_code"]);
             label_cell($myrow["suppliers_uom"]);
             qty_cell($myrow['conversion_factor'], false, user_exrate_dec());
@@ -181,6 +181,7 @@ else
 
 //-----------------------------------------------------------------------------------------------
 
+$dec2 = 6;
 if ($Mode =='Edit')
 {
 
@@ -194,7 +195,7 @@ if ($Mode =='Edit')
 	$myrow = db_fetch($result);
 
     $supp_name = $myrow["supp_name"];
-    $_POST['price'] = price_format($myrow["price"]);
+    $_POST['price'] = price_decimal_format($myrow["price"], $dec2);
     $_POST['suppliers_uom'] = $myrow["suppliers_uom"];
     $_POST['supplier_description'] = $myrow["supplier_description"];
     $_POST['conversion_factor'] = exrate_format($myrow["conversion_factor"]);
@@ -214,7 +215,7 @@ else
 	supplier_list_row(_("Supplier:"), 'supplier_id', null, false, true);
 	$_POST['price'] = $_POST['suppliers_uom'] = $_POST['conversion_factor'] = $_POST['supplier_description'] = "";
 }
-amount_row(_("Price:"), 'price', null,'', get_supplier_currency($selected_id));
+amount_row(_("Price:"), 'price', null,'', get_supplier_currency($selected_id), $dec2);
 text_row(_("Suppliers Unit of Measure:"), 'suppliers_uom', null, 50, 51);
 
 if (!isset($_POST['conversion_factor']) || $_POST['conversion_factor'] == "")

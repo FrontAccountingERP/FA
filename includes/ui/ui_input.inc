@@ -386,6 +386,12 @@ function email_cell($label, $params="", $id=null)
 	label_cell("<a href='mailto:$label'>$label</a>", $params, $id);
 }
 
+function amount_decimal_cell($label, $params="", $id=null)
+{
+	$dec = 0;
+	label_cell(price_decimal_format($label, $dec), "nowrap align=right ".$params, $id);
+}
+
 function amount_cell($label, $bold=false, $params="", $id=null)
 {
 	if ($bold)

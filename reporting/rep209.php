@@ -125,7 +125,8 @@ function print_po()
 			}	
 			$Net = round2(($myrow2["unit_price"] * $myrow2["quantity_ordered"]), user_price_dec());
 			$SubTotal += $Net;
-			$DisplayPrice = number_format2($myrow2["unit_price"],$dec);
+			$dec2 = 0;
+			$DisplayPrice = price_decimal_format($myrow2["unit_price"],$dec2);
 			$DisplayQty = number_format2($myrow2["quantity_ordered"],get_qty_dec($myrow2['item_code']));
 			$DisplayNet = number_format2($Net,$dec);
 			//$rep->TextCol(0, 1,	$myrow2['item_code'], -2);

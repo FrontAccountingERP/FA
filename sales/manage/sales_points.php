@@ -64,9 +64,15 @@ if ($Mode=='UPDATE_ITEM' && can_process())
 
 if ($Mode == 'Delete')
 {
-	delete_sales_point($selected_id);
-	display_notification(_('Selected point of sale has been deleted'));
-	$Mode = 'RESET';
+	$sql = "SELECT * FROM ".TB_PREF."users WHERE print_profile=".db_escape($selected_id);
+	$res = db_query($sql, "canot check pos usage");
+	if (db_num_rows($res)) {
+		display_error(_("Cannot delete this POS because it is used in users setup."));
+	} else {
+		delete_sales_point($selected_id);
+		display_notification(_('Selected point of sale has been deleted'));
+		$Mode = 'RESET';
+	}
 }
 
 if ($Mode == 'RESET')

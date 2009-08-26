@@ -349,36 +349,43 @@ $db = mysql_connect($database_host, $database_username, $database_password);
 if (!$db)
 {
 	display_error('Database host name, username and/or password incorrect. MySQL Error:<br />'.mysql_error());
-}
-
-$err = write_config_db($table_prefix != "");
-if ($err == -1)
-	display_error("Cannot open the configuration file ($config_filename)");
-else if ($err == -2)
-	display_error("Cannot write to the configuration file ($config_filename)");
-else if ($err == -3)
-	display_error("The configuration file $config_filename is not writable. Change its permissions so it is, then re-run step 4.");
-
-if($install_tables == true)
-{
-   	if (!mysql_select_db($database_name, $db))
-   	{
-
-		// Try to create the database
-		mysql_query('CREATE DATABASE '.$database_name);
-		mysql_select_db($database_name, $db);
+} else {
+	$result = true;
+	if($install_tables == true)
+	{
+   		if (!mysql_select_db($database_name, $db))
+   		{
+			// Try to create the database
+			if (!($result = mysql_query('CREATE DATABASE '.$database_name))) {
+				display_error(_("Cannot create database").
+					" '$database_name'");
+			} else
+				$result = mysql_select_db($database_name, $db);
+		}
+		if($result) {
+			$import_filename = $path_to_root."/sql/en_US-demo.sql";
+			db_import($import_filename, $db_connections[$id]);
+		}
 	}
-	$import_filename = $path_to_root."/sql/en_US-demo.sql";
-	db_import($import_filename, $db_connections[$id]);
+	else
+	{
+		$result = mysql_select_db($database_name, $db);
+	}
+	if ($result) {
+		$sql = "UPDATE ".$table_prefix."users SET password = '" . md5($admin_password) . "', email = ".db_escape($admin_email)." WHERE user_id = 'admin'";
+		db_query($sql, "could not update admin account");
+		$sql = "UPDATE ".$table_prefix."company SET coy_name = ".db_escape($company_name)." WHERE coy_code = 1";
+		db_query($sql, "could not update company name. Do it manually later in Setup");
+	
+		$err = write_config_db($table_prefix != "");
+		if ($err == -1)
+			display_error("Cannot open the configuration file ($config_filename)");
+		else if ($err == -2)
+			display_error("Cannot write to the configuration file ($config_filename)");
+		else if ($err == -3)
+			display_error("The configuration file $config_filename is not writable. Change its permissions so it is, then re-run step 4.");
+	}
 }
-else
-{
-	mysql_select_db($database_name, $db);
-}
-$sql = "UPDATE ".$table_prefix."users SET password = '" . md5($admin_password) . "', email = ".db_escape($admin_email)." WHERE user_id = 'admin'";
-db_query($sql, "could not update admin account");
-$sql = "UPDATE ".$table_prefix."company SET coy_name = ".db_escape($company_name)." WHERE coy_code = 1";
-db_query($sql, "could not update company name. Do it manually later in Setup");
 
 session_unset();
 session_destroy();

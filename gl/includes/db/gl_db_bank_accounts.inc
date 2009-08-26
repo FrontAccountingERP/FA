@@ -166,12 +166,12 @@ function get_quick_entry($selected_id)
 function get_quick_entry_lines($qid)
 {
 	$sql = "SELECT ".TB_PREF."quick_entry_lines.*, ".TB_PREF."chart_master.account_name,
-			".TB_PREF."item_tax_types.name as tax_name
+			".TB_PREF."tax_types.name as tax_name
 		FROM ".TB_PREF."quick_entry_lines
 		LEFT JOIN ".TB_PREF."chart_master ON
 			".TB_PREF."quick_entry_lines.dest_id = ".TB_PREF."chart_master.account_code
-		LEFT JOIN ".TB_PREF."item_tax_types ON
-			".TB_PREF."quick_entry_lines.dest_id = ".TB_PREF."item_tax_types.id
+		LEFT JOIN ".TB_PREF."tax_types ON
+			".TB_PREF."quick_entry_lines.dest_id = ".TB_PREF."tax_types.id
 		WHERE 
 			qid=$qid
 		ORDER by id";

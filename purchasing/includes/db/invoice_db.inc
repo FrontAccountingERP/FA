@@ -182,7 +182,7 @@ function add_supp_invoice($supp_trans, $invoice_no=0) // do not receive as ref b
 
 		$memo_ = $entered_gl_code->memo_;
 		$total += add_gl_trans_supplier($trans_type, $invoice_id, $date_, $entered_gl_code->gl_code,
-			$entered_gl_code->gl_dim, $entered_gl_code->gl_dim2, $entered_gl_code->amount, $supp_trans->supplier_id);
+			$entered_gl_code->gl_dim, $entered_gl_code->gl_dim2, $entered_gl_code->amount, $supp_trans->supplier_id, "", 0, $memo_);
 
 		add_supp_invoice_gl_item($trans_type, $invoice_id, $entered_gl_code->gl_code,
 			$entered_gl_code->amount, $memo_);
@@ -262,6 +262,7 @@ function add_supp_invoice($supp_trans, $invoice_no=0) // do not receive as ref b
 			$entered_grn->this_quantity_inv, $entered_grn->id, $entered_grn->po_detail_item, "");
     } /* end of GRN postings */
     /* Now the TAX account */
+    $taxes = $supp_trans->get_taxes($supp_trans->tax_group_id, 0, false); // 2009.08-18 Joe Hunt. We have already got the gl lines
     foreach ($taxes as $taxitem)
     {
     	if ($taxitem['Net'] != 0)
