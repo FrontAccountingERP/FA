@@ -104,7 +104,6 @@ CREATE TABLE `0_bank_trans` (
   `bank_act` varchar(11) default NULL,
   `ref` varchar(40) default NULL,
   `trans_date` date NOT NULL default '0000-00-00',
-  `bank_trans_type_id` int(10) unsigned default NULL,
   `amount` double default NULL,
   `dimension_id` int(11) NOT NULL default '0',
   `dimension2_id` int(11) NOT NULL default '0',

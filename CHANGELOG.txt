@@ -19,6 +19,11 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+27-Aug-2009 Joe Hunt
+# bank_trans_type_id removed from bank_trans in en_US-demo.sql and en_US-new.sql.
+$ /sql/en_US-demo.sql
+  /sql/en_US-new.sql
+  
 26-Aug-2009 Janusz Dobrowolski
 ! Merged changes from main trunk  2.1.4-2.1.5 (see below)
 
