@@ -534,7 +534,7 @@ function display_quick_entries(&$cart, $id, $base, $type, $descr='')
 				case "t": // post taxes calculated on base amount
 				case "t+": // ditto & increase base amount
 				case "t-": // ditto & reduce base amount
-					if (substr($qe_line['action'],0,1) != 'T') 
+					if (substr($row['action'],0,1) != 'T') 
 						$totrate += get_tax_type_default_rate($row['dest_id']);
 			}
 		}

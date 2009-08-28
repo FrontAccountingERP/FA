@@ -388,7 +388,7 @@ function write_journal_entries(&$cart, $reverse)
     	}
 		// store tax details if the gl account is a tax account
 		add_gl_tax_details($journal_item->code_id, 
-			($journal_item->amount < 0.0 ? 2 : 1), $trans_id, -$journal_item->amount, 1, $date_, $memo_);
+			($journal_item->amount < 0.0 ? 2 : 1), $trans_id, -$journal_item->amount, 1, $date_, $ref);
 	}
 	
 	if ($new) {
