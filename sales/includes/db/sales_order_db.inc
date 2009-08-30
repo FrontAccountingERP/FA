@@ -378,11 +378,9 @@ function sales_order_has_deliveries($order_no)
 
 function close_sales_order($order_no)
 {
-	// set the quantity of each item to the already sent quantity. this will mark item as closed.
+ 	// set the quantity of each item to the already sent quantity. this will mark item as closed.
 	$sql = "UPDATE ".TB_PREF."sales_order_details
-		SET quantity = qty_sent,
-			type = 0,
-			WHERE order_no = $order_no";
+		SET quantity = qty_sent	WHERE order_no = $order_no";
 
 	db_query($sql, "The sales order detail record could not be updated");
 }
