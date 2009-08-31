@@ -19,6 +19,64 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+31-Aug-2009 Janusz Dobrowolski
+! gl accounts selector ordered by account class id
+$ /includes/ui/ui_lists.inc
+! Changed security modules to sections
+$ /admin/security_roles.php
+  /admin/db/security_db.inc
+! Fine tuned security sections/areas.
+$ /includes/access_levels.inc
++ Optimized js compressor (up to 5 times faster)
+$ /includes/main.inc
+! Changed order of gl account selector, added security roles list.
+$ /includes/ui/ui_lists.inc
+! Switch to new access levels system
+$ /config.php
+  /index.php
+  /access/logout.php
+  /access/timeout.php
+  /admin/*.php
+  /admin/db/users_db.inc
+  /applications/application.php
+  /applications/setup.php
+  /dimensions/dimension_entry.php
+  /dimensions/inquiry/search_dimensions.php
+  /dimensions/view/view_dimension.php
+  /gl/*.php
+  /gl/inquiry/*.php
+  /gl/manage/*.php
+  /gl/view/*.php
+  /includes/current_user.inc
+  /includes/session.inc
+  /inventory/*.php
+  /inventory/inquiry/*.php
+  /inventory/manage/*.php
+  /inventory/view/*.php
+  /manufacturing/*.php
+  /manufacturing/inquiry/*.php
+  /manufacturing/manage/*.php
+  /manufacturing/view/*.php
+  /purchasing/*.php
+  /purchasing/allocations/*.php
+  /purchasing/inquiry/*.php
+  /purchasing/manage/suppliers.php
+  /purchasing/view/*.php
+  /reporting/prn_redirect.php
+  /reporting/rep*.php
+  /reporting/reports_main.php
+  /reporting/includes/pdf_report.inc
+  /sales/*.php
+  /sales/allocations/*.php
+  /sales/inquiry/*.php
+  /sales/manage/*.php
+  /sales/view/*.php
+  /sql/alter2.2.php
+  /sql/alter2.2.sql
+  /sql/en_US-demo.sql
+  /sql/en_US-new.sql
+  /taxes/*.php
+
 28-Aug-2009 Joe Hunt
 # The reference for deposits and payments didn't show up in Tax Report
 $ /reporting/rep709.php
