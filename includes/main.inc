@@ -141,10 +141,11 @@ function js_compress($sJS)
 		$inNormalComment = false;
 	
 		//loop through line's characters and take out any literal strings, replace them with ___i___ where i is the index of this string
-		for($j=0;$j<strlen($line);$j++)
+		$len = strlen($line);
+		for($j=0;$j<$len;$j++)
 		{
-			$c = substr($line,$j,1);
-			$d = substr($line,$j,2);
+			$c = $line[$j];		// this is _really_ faster than subst
+			$d = $c.$line[$j+1];
 	
 			//look for start of quote
 			if(!$inQuote && !$inComment)
