@@ -14,7 +14,7 @@
 //	Entry/Modify Credit Note for selected Sales Invoice
 //
 
-$page_security = 3;
+$page_security = 'SA_SALESCREDITINV';
 $path_to_root = "..";
 
 include_once($path_to_root . "/sales/includes/cart_class.inc");

@@ -51,10 +51,15 @@ function check_page_security($page_security)
 {
 	if (!$_SESSION["wa_current_user"]->check_user_access())
 	{
-		echo "<br><br><br><center>";
-		echo "<b>" . _("Security settings have not been defined for your user account.");
-		echo "<br>" . _("Please contact your system administrator.") . "</b>";
+		// notification after upgrade from pre-2.2 version
+		$msg = is_array($_SESSION["wa_current_user"]->role_set) ?
+			_("Please remove \$security_groups and \$security_headings arrays from config.php file!")
+			: _("Security settings have not been defined for your user account.")
+			. "<br>" . _("Please contact your system administrator.");
 
+		page(_("Access denied"), false);
+			display_error($msg);
+		end_page();
 		kill_login();
 		exit;
 	}
@@ -117,6 +122,7 @@ if (isset($_GET['path_to_root']) || isset($_POST['path_to_root']))
 	die("Restricted access");
 
 include_once($path_to_root . "/frontaccounting.php");
+include_once($path_to_root . "/admin/db/security_db.inc");
 include_once($path_to_root . "/includes/current_user.inc");
 include_once($path_to_root . "/includes/lang/language.php");
 include_once($path_to_root . "/config_db.php");
@@ -153,6 +159,7 @@ if(@include_once($path_to_root . "/lang/".$_SESSION['language']->code."/locale.i
 	$Hooks = new Hooks();
 }
 
+include_once($path_to_root . "/includes/access_levels.inc");
 include_once($path_to_root . "/config.php");
 include_once($path_to_root . "/includes/main.inc");
 
@@ -217,13 +224,6 @@ if (!isset($_SESSION["App"])) {
 	$_SESSION["App"] = new front_accounting();
 	$_SESSION["App"]->init();
 }
-
-// Run with debugging messages for the system administrator(s) but not anyone else
-/*if (in_array(15, $security_groups[$_SESSION["AccessLevel"]])) {
-	$debug = 1;
-} else {
-	$debug = 0;
-}*/
 
 //----------------------------------------------------------------------------------------
 

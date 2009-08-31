@@ -9,8 +9,8 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security = 9;
-$path_to_root="../..";
+$page_security = 'SA_BOM';
+$path_to_root = "../..";
 include_once($path_to_root . "/includes/session.inc");
 
 page(_("Bill Of Materials"));

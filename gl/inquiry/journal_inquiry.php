@@ -10,7 +10,7 @@
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
 
-$page_security = 8;
+$page_security = 'SA_GLANALYTIC';
 $path_to_root="../..";
 
 include($path_to_root . "/includes/db_pager.inc");

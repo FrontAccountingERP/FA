@@ -13,7 +13,7 @@
 	User authentication page popped up after login timeout during ajax call.
 */
 $path_to_root = '..';
-$page_security = 1;
+$page_security = 'SA_OPEN';
 include_once($path_to_root . "/includes/session.inc");
 
 include($path_to_root .'/access/login.php');

@@ -10,8 +10,8 @@
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
 /* Author Rob Mallon */
-$page_security = 8;
-$path_to_root="..";
+$page_security = 'SA_RECONCILE';
+$path_to_root = "..";
 include($path_to_root . "/includes/db_pager.inc");
 include_once($path_to_root . "/includes/session.inc");
 

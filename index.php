@@ -10,7 +10,7 @@
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
 	$path_to_root=".";
-	$page_security = 1;
+	$page_security = 'SA_OPEN';
 	ini_set('xdebug.auto_trace',1);
 	include_once("includes/session.inc");
 

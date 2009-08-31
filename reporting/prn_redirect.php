@@ -14,7 +14,7 @@
 	print button in reporting module. 
 */
 $path_to_root = "..";
-$page_security = 2;	// this level is later overriden in rep file
+$page_security = 'SA_OPEN';	// this level is later overriden in rep file
 include_once($path_to_root . "/includes/session.inc");
 
 if (isset($_GET['xls']))

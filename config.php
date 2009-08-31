@@ -140,25 +140,15 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 	/* skin for Business Graphics, 1, 2 or 3 */
 	$graph_skin 	= 1;
 
-	/*Security Group definitions - Depending on the AccessLevel of the user defined in the user set up
-	the areas of functionality accessible can be modified.
-	Each AccessLevel is associated with an array containing the security categories that the user is entitled to access
-	Each script has a particular security category associated with it.
-	If the security setting of the page is contained in the security group as determined by the access level then the user will be allowed access.
-	Each page has a $page_security = x; variable
-	This value is compared to contents of the array applicable which is based on the access level of the user.
-	Access authorisation is checked in session.inc. If you wish to add more security groups
-	with then you must add a new SecurityHeading to the security_headings array
-	and a new array of Security categories to the Security Groups _at_the_end_ of the array
-	This mechanism allows more fine grained control of access
-	security_groups is an array of arrays
-	The index is the order in which the array of allowed pages is defined new ones can be defined at will
-	or by changing the numbers in each array the security access can be tailored. These numbers need to read
-	in conjunction with the Page Security index
-	Special case is security level 20 which is reserved for admins of first
-	registered company (site admins). All potentially dangerous for whole FA
-	site operations like installing addon modules require access level 20.
-	*/
+/*	
+	Before upgrade from pre-2.2 FA you have to move here your customized
+	security roles definitions. If you have used standard roles, you
+	can simply uncomment following two arrays. After upgrade both arrays need 
+	to be deleted or commented out. You may wish to change user roles to
+	new better defined in Users Setup. Old not used roles can be set inactive 
+	or deleted.
+*/
+/* Standard FA2.1 Security Group definitions
 
 	$security_headings = array(
 			_("Inquiries"),
@@ -171,6 +161,7 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 			array(1,2,3,4,5,6,7,8,9,10,11,12,13,14,16),
 			array(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,20),
 	);
+*/
 
 	//MySQL Backup and Restore Settings
 

@@ -9,11 +9,10 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$path_to_root="..";
+$page_security = 'SA_SUPPLIERCREDIT';
+$path_to_root = "..";
 
 include_once($path_to_root . "/purchasing/includes/supp_trans_class.inc");
-
-$page_security=5;
 
 include_once($path_to_root . "/includes/session.inc");
 

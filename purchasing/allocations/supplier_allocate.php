@@ -9,8 +9,8 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$path_to_root="../..";
-$page_security = 3;
+$page_security = 'SA_SUPPLIERALLOC';
+$path_to_root = "../..";
 
 include($path_to_root . "/includes/ui/allocation_cart.inc");
 include_once($path_to_root . "/includes/session.inc");

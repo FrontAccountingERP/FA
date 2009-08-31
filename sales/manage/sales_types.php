@@ -9,8 +9,8 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security = 14;
-$path_to_root="../..";
+$page_security = 'SA_SALESTYPES';
+$path_to_root = "../..";
 include_once($path_to_root . "/includes/session.inc");
 
 page(_("Sales Types"));

@@ -9,12 +9,12 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security = 2;
+$page_security = 'SA_ITEMSVALREP';
 // ----------------------------------------------------------------
 // $ Revision:	2.0 $
 // Creator:	Joe Hunt
 // date_:	2005-05-19
-// Title:	Supplier Balances
+// Title:	Inventory Valuation
 // ----------------------------------------------------------------
 $path_to_root="..";
 

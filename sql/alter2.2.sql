@@ -34,14 +34,14 @@ ALTER TABLE `0_stock_category` ADD COLUMN `dflt_dim2` int(11) default NULL;
 ALTER TABLE `0_stock_category` ADD COLUMN `dflt_no_sale` tinyint(1) NOT NULL default '0';
 
 ALTER TABLE `0_users` ADD COLUMN `sticky_doc_date` TINYINT(1) DEFAULT '0';
-ALTER TABLE `0_users` ADD COLUMN `startup_tab` VARCHAR(20) NOT NULL default '' AFTER sticky_doc_date;
+ALTER TABLE `0_users` ADD COLUMN `startup_tab` VARCHAR(20) NOT NULL default 'orders' AFTER `sticky_doc_date`;
 
 ALTER TABLE `0_debtors_master` MODIFY COLUMN `name` varchar(100) NOT NULL default '';
 
 ALTER TABLE `0_cust_branch` ADD COLUMN `inactive` tinyint(1) NOT NULL default '0';
 
 ALTER TABLE `0_sys_types` DROP COLUMN `type_name`;
-ALTER TABLE `0_chart_class` DROP COLUMN `sign_convert`;
+
 ALTER TABLE `0_chart_class` CHANGE `balance_sheet` `ctype` TINYINT(1) NOT NULL DEFAULT '0';
 
 ALTER TABLE `0_chart_class` ADD COLUMN `inactive` tinyint(1) NOT NULL default '0';
@@ -50,7 +50,6 @@ ALTER TABLE `0_movement_types` ADD COLUMN `inactive` tinyint(1) NOT NULL default
 ALTER TABLE `0_item_tax_types` ADD COLUMN `inactive` tinyint(1) NOT NULL default '0';
 ALTER TABLE `0_tax_types` ADD COLUMN `inactive` tinyint(1) NOT NULL default '0';
 ALTER TABLE `0_tax_groups` ADD COLUMN `inactive` tinyint(1) NOT NULL default '0';
-ALTER TABLE `0_tax_group_items` DROP COLUMN `included_in_price`;
 
 ALTER TABLE `0_users` DROP PRIMARY KEY;
 ALTER TABLE `0_users` ADD `id` SMALLINT(6) AUTO_INCREMENT PRIMARY KEY FIRST;
@@ -83,11 +82,13 @@ UPDATE `0_suppliers` SET `supp_ref`=`supp_name` WHERE 1;
 ALTER TABLE `0_cust_branch` ADD COLUMN `branch_ref`	varchar(30) NOT NULL;
 UPDATE `0_cust_branch` SET `branch_ref`=`br_name` WHERE 1; 
 
+DROP TABLE IF EXISTS `0_security_roles`;
+
 CREATE TABLE `0_security_roles` (
   `id` int(11) NOT NULL auto_increment,
-  `role` varchar(20) NOT NULL,
+  `role` varchar(30) NOT NULL,
   `description` varchar(50) default NULL,
-  `modules` text,
+  `sections` text,
   `areas` text,
   `inactive` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`id`),
@@ -95,3 +96,5 @@ CREATE TABLE `0_security_roles` (
 ) TYPE=MyISAM AUTO_INCREMENT=8 AUTO_INCREMENT=8 ;
 
 ALTER TABLE `0_company` ADD COLUMN `login_tout` SMALLINT(6) NOT NULL DEFAULT '600';
+ALTER TABLE `0_users` CHANGE COLUMN `full_access` `role_id` int(11) NOT NULL default '1';
+

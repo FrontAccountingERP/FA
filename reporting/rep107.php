@@ -9,7 +9,8 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security = 2;
+$page_security = $_POST['PARAM_0'] == $_POST['PARAM_1'] ?
+	'SA_SALESTRANSVIEW' : 'SA_SALESBULKREP';
 // ----------------------------------------------------------------
 // $ Revision:	2.0 $
 // Creator:	Joe Hunt
@@ -32,7 +33,7 @@ print_invoices();
 function print_invoices()
 {
 	global $path_to_root;
-
+	
 	include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 
 	$from = $_POST['PARAM_0'];
@@ -49,7 +50,7 @@ function print_invoices()
 		$to = 0;
 	$dec = user_price_dec();
 
-	$fno = explode("-", $from);
+ 	$fno = explode("-", $from);
 	$tno = explode("-", $to);
 
 	$cols = array(4, 60, 225, 300, 325, 385, 450, 515);

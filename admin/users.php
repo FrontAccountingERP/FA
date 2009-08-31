@@ -9,8 +9,8 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security=15;
-$path_to_root="..";
+$page_security = 'SA_USERS';
+$path_to_root = "..";
 include_once($path_to_root . "/includes/session.inc");
 
 page(_("Users"));
@@ -141,7 +141,7 @@ while ($myrow = db_fetch($result))
 	label_cell($myrow["phone"]);
 	email_cell($myrow["email"]);
 	label_cell($last_visit_date, "nowrap");
-	label_cell($security_headings[$myrow["full_access"]]);
+	label_cell($myrow["role"]);
 	
     if ($not_me)
 		inactive_control_cell($myrow["id"], $myrow["inactive"], 'users', 'id');
@@ -174,7 +174,7 @@ if ($selected_id != -1)
 		$_POST['real_name'] = $myrow["real_name"];
 		$_POST['phone'] = $myrow["phone"];
 		$_POST['email'] = $myrow["email"];
-		$_POST['Access'] = $myrow["full_access"];
+		$_POST['Access'] = $myrow["role_id"];
 		$_POST['language'] = $myrow["language"];
 		$_POST['profile'] = $myrow["print_profile"];
 		$_POST['rep_popup'] = $myrow["rep_popup"];
@@ -211,7 +211,7 @@ text_row_ex(_("Telephone No.:"), 'phone', 30);
 
 email_row_ex(_("Email Address:"), 'email', 50);
 
-security_headings_list_row(_("Access Level:"), 'Access', null); 
+security_roles_list_row(_("Access Level:"), 'Access', null); 
 
 languages_list_row(_("Language:"), 'language', null);
 

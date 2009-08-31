@@ -13,8 +13,8 @@
 //
 //	Entry/Modify Delivery Note against Sales Order
 //
-$page_security = 2;
-$path_to_root="..";
+$page_security = 'SA_SALESDELIVERY';
+$path_to_root = "..";
 
 include_once($path_to_root . "/sales/includes/cart_class.inc");
 include_once($path_to_root . "/includes/session.inc");

@@ -1598,7 +1598,7 @@ CREATE TABLE `0_users` (
   `user_id` varchar(60) NOT NULL default '',
   `password` varchar(100) NOT NULL default '',
   `real_name` varchar(100) NOT NULL default '',
-  `full_access` int(11) NOT NULL default '1',
+  `role_id` int(11) NOT NULL default '1',
   `phone` varchar(30) NOT NULL default '',
   `email` varchar(100) default NULL,
   `language` varchar(20) default NULL,

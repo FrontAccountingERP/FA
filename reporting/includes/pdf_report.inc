@@ -9,7 +9,6 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security = 8;
 //include_once($path_to_root . "reporting/includes/class.pdf.inc");
 include_once(dirname(__FILE__)."/class.pdf.inc");
 include_once(dirname(__FILE__)."/printer_class.inc");

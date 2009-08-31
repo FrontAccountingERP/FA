@@ -10,14 +10,14 @@
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
 
-function add_user($user_id, $real_name, $password, $phone, $email, $full_access, 
+function add_user($user_id, $real_name, $password, $phone, $email, $role_id, 
 	$language, $profile, $rep_popup, $pos)
 {
 	$sql = "INSERT INTO ".TB_PREF."users (user_id, real_name, password"
-		.", phone, email, full_access, language, pos, print_profile, rep_popup)
+		.", phone, email, role_id, language, pos, print_profile, rep_popup)
 		VALUES (".db_escape($user_id).", 
 		".db_escape($real_name).", ".db_escape($password) .",".db_escape($phone).",
-		 ".db_escape($email).", $full_access, ".db_escape($language).",
+		 ".db_escape($email).", $role_id, ".db_escape($language).",
 		 $pos,".db_escape($profile).",$rep_popup)";
 
 	db_query($sql, "could not add user for $user_id");
@@ -35,13 +35,13 @@ function update_user_password($id, $user_id, $password)
 
 //-----------------------------------------------------------------------------------------------
 
-function update_user($id, $user_id, $real_name, $phone, $email, $full_access, 
+function update_user($id, $user_id, $real_name, $phone, $email, $role_id, 
 	$language, $profile, $rep_popup, $pos)
 {
 	$sql = "UPDATE ".TB_PREF."users SET real_name=".db_escape($real_name).
 	", phone=".db_escape($phone).",
 		email=".db_escape($email).",
-		full_access=$full_access,
+		role_id=$role_id,
 		language=".db_escape($language).",
 		print_profile=".db_escape($profile).",
 		rep_popup=$rep_popup,
@@ -89,9 +89,10 @@ function update_user_display_prefs($id, $price_dec, $qty_dec, $exrate_dec,
 
 function get_users($all=false)
 {
-	$sql = "SELECT * FROM ".TB_PREF."users";
-	if (!$all) $sql .= " WHERE !inactive";
-
+	$sql = "SELECT u.*, r.role FROM ".TB_PREF."users u, ".TB_PREF."security_roles r
+		WHERE u.role_id=r.id";
+	if (!$all) $sql .= " AND !u.inactive";
+	
 	return db_query($sql, "could not get users");
 }
 

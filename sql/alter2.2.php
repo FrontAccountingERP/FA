@@ -9,6 +9,7 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
+
 class fa2_2 {
 	var $version = '2.2';	// version installed
 	var $description = 'Version 2.2';
@@ -81,14 +82,15 @@ class fa2_2 {
 		  }
 		}
 */		
-		return true;
+	return convert_roles($pref);
 	}
 	//
 	//	Checking before install
 	//
 	function pre_check($pref)
 	{
-		return true; // true when ok, fail otherwise
+		global $security_groups;
+		return isset($security_groups); // true when ok, fail otherwise
 	}
 	//
 	//	Test if patch was applied before.
@@ -99,9 +101,93 @@ class fa2_2 {
 		if (check_table($pref, 'users', 'sticky_doc_date')) return false;
 		if (check_table($pref, 'audit_trail')) return false;
 		if (check_table($pref, 'stock_master','no_sale')) return false;
+		if (check_table($pref, 'users', 'role_id')) return false;
 			return true;
 	}
 };
 
+/*
+	Conversion of old security roles stored into $security_groups table
+*/
+function convert_roles($pref) 
+{
+		global $security_groups, $security_headings, $security_areas, $path_to_root;
+		include_once($path_to_root."/includes/access_levels.inc");
+
+	$trans_sec = array(
+		1 => array('SA_CHGPASSWD', 'SA_SETUPDISPLAY', 'SA_BANKTRANSVIEW',
+			'SA_ITEMSTRANSVIEW','SA_SUPPTRANSVIEW', 'SA_SALESORDER',
+			'SA_SALESALLOC', 'SA_SALESTRANSVIEW'),
+		2 => array('SA_DIMTRANSVIEW', 'SA_STANDARDCOST', 'SA_ITEMSTRANSVIEW',
+			'SA_ITEMSSTATVIEW', 'SA_SALESPRICE', 'SA_MANUFTRANSVIEW',
+			'SA_WORKORDERANALYTIC', 'SA_WORKORDERCOST', 'SA_SUPPTRANSVIEW',
+			'SA_SUPPLIERALLOC', 'SA_STEMPLATE', 'SA_SALESTRANSVIEW',
+			'SA_SALESINVOICE', 'SA_SALESDELIVERY', 'SA_CUSTPAYMREP',
+			'SA_CUSTBULKREP', 'SA_PRICEREP', 'SA_SALESBULKREP', 'SA_SALESMANREP',
+			'SA_SALESBULKREP', 'SA_CUSTSTATREP', 'SA_SUPPLIERANALYTIC',
+			'SA_SUPPPAYMREP', 'SA_SUPPBULKREP', 'SA_ITEMSVALREP', 'SA_ITEMSANALYTIC',
+			'SA_BOMREP', 'SA_MANUFBULKREP', 'SA_DIMENSIONREP', 'SA_BANKREP', 'SA_GLREP',
+			'SA_GLANALYTIC', 'SA_TAXREP', 'SA_SALESANALYTIC'),
+		3 => array('SA_GLACCOUNTGROUP', 'SA_GLACCOUNTCLASS','SA_PAYMENT', 
+			'SA_DEPOSIT', 'SA_JOURNALENTRY', 'SA_INVENTORYMOVETYPE',
+			'SA_LOCATIONTRANSFER', 'SA_INVENTORYADJUSTMENT', 'SA_WORKCENTRES',
+			'SA_MANUFISSUE', 'SA_SUPPLIERALLOC', 'SA_CUSTOMER', 'SA_CRSTATUS',
+			'SA_SALESMAN', 'SA_SALESAREA', 'SA_SALESALLOC', 'SA_SALESCREDITINV',
+			'SA_SALESPAYMNT', 'SA_SALESCREDIT', 'SA_SALESGROUP', 'SA_SRECURRENT',
+			'SA_TAXRATES', 'SA_ITEMTAXTYPE', 'SA_TAXGROUPS', 'SA_QUICKENTRY'),
+		4 => array('SA_REORDER', 'SA_PURCHASEPRICING', 'SA_PURCHASEORDER'),
+		5 => array('SA_VIEWPRINTTRANSACTION', 'SA_BANKTRANSFER', 'SA_SUPPLIER',
+			'SA_SUPPLIERINVOICE', 'SA_SUPPLIERPAYMNT', 'SA_SUPPLIERCREDIT'),
+		8 => array('SA_ATTACHDOCUMENT', 'SA_RECONCILE',	'SA_GLANALYTIC',
+			'SA_TAXREP', 'SA_BANKTRANSVIEW', 'SA_GLTRANSVIEW'),
+		9 => array('SA_FISCALYEARS', 'SA_CURRENCY', 'SA_EXCHANGERATE', 
+			'SA_BOM'),
+		10 => array('SA_PAYTERMS', 'SA_GLSETUP', 'SA_SETUPCOMPANY',
+			'SA_FORMSETUP', 'SA_DIMTRANSVIEW', 'SA_DIMENSION', 'SA_BANKACCOUNT',
+			'SA_GLACCOUNT', 'SA_BUDGETENTRY', 'SA_MANUFRECEIVE',
+			'SA_MANUFRELEASE', 'SA_WORKORDERENTRY', 'SA_MANUFTRANSVIEW',
+			'SA_WORKORDERCOST'),
+		11 => array('SA_ITEMCATEGORY', 'SA_ITEM', 'SA_UOM', 'SA_INVENTORYLOCATION',
+			 'SA_GRN', 'SA_FORITEMCODE', 'SA_SALESKIT'),
+		14 => array('SA_SHIPPING', 'SA_VOIDTRANSACTION', 'SA_SALESTYPES'),
+		15 => array('SA_PRINTERS', 'SA_PRINTPROFILE', 'SA_BACKUP', 'SA_USERS',
+			'SA_POSSETUP'),
+		20 => array('SA_CREATECOMPANY', 'SA_CREATELANGUAGE', 'SA_CREATEMODULES',
+			'SA_SOFTWAREUPGRADE', 'SA_SECROLES')
+		);
+		
+		foreach ($security_groups as $role_id => $areas) {
+			$area_set = array();
+			$sections = array();
+			foreach ($areas as $a) {
+			 if (isset($trans_sec[$a]))
+				foreach ($trans_sec[$a] as $id) {
+				 if ($security_areas[$id][0]==0)
+//				 	error_log('invalid area id: '.$a.':'.$id);
+					$area_set[] = $security_areas[$id][0];
+					$sections[$security_areas[$id][0]&~0xff] = 1;
+				}
+			}
+			$sections  = array_keys($sections);
+			sort($sections); sort($area_set);
+			import_security_role($pref, $security_headings[$role_id], $sections, $area_set);
+			$new = db_insert_id();
+			$sql = "UPDATE {$pref}users set role_id=$new WHERE role_id=$role_id";
+			$ret = db_query($sql, 'cannot update users roles');
+			if(!$ret) return false;
+		}
+		return true;
+}
+
+function import_security_role($pref, $name, $sections, $areas)
+{
+	$sql = "INSERT INTO {$pref}security_roles (role, description, sections, areas)
+	VALUES (".db_escape('FA 2.1 '.$name).",".db_escape($name).","
+	.db_escape(implode(';',$sections)).",".db_escape(implode(';',$areas)).")";
+
+	db_query($sql, "could not add new security role");
+}
+
 $install = new fa2_2;
+
 ?>
