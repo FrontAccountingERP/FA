@@ -1531,14 +1531,14 @@ function gl_all_accounts_list($name, $selected_id=null, $skip_bank_accounts=fals
 	$cells=false, $all_option=false, $submit_on_change=false, $all=false)
 {
 	if ($skip_bank_accounts)
-		$sql = "SELECT chart.account_code, chart.account_name, type.name, chart.inactive
+		$sql = "SELECT chart.account_code, chart.account_name, type.name, chart.inactive, type.id
 			FROM (".TB_PREF."chart_master chart,".TB_PREF."chart_types type) "
 			."LEFT JOIN ".TB_PREF."bank_accounts acc "
 			."ON chart.account_code=acc.account_code
 				WHERE acc.account_code  IS NULL
 			AND chart.account_type=type.id";
 	else
-		$sql = "SELECT chart.account_code, chart.account_name, type.name, chart.inactive
+		$sql = "SELECT chart.account_code, chart.account_name, type.name, chart.inactive, type.id
 			FROM ".TB_PREF."chart_master chart,".TB_PREF."chart_types type
 			WHERE chart.account_type=type.id";
 
@@ -1547,7 +1547,7 @@ function gl_all_accounts_list($name, $selected_id=null, $skip_bank_accounts=fals
 		'format' => '_format_account',
 		'spec_option' => $all_option===true ?  _("Use Item Sales Accounts") : $all_option,
 		'spec_id' => '',
-		'order' => array('name','account_code'),
+		'order' => array('type.id','account_code'),
 		'search_box' => $cells,
 			'search_submit' => false,
 			'size' => 12,
@@ -1805,15 +1805,6 @@ function pagesizes_list_row($label, $name, $value=null)
 
 	echo "<tr><td>$label</td>\n<td>";
 	array_selector( $name, $value, $items );
-	echo "</td></tr>\n";
-}
-
-function security_headings_list_row($label, $name, $value=null)
-{
-	global $security_headings;
-
-	echo "<tr><td>$label</td>\n<td>";
-	array_selector( $name, $value, $security_headings );
 	echo "</td></tr>\n";
 }
 
