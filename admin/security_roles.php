@@ -9,8 +9,8 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security = 20;
-$path_to_root="..";
+$page_security = 'SA_SECROLES';
+$path_to_root = "..";
 include_once($path_to_root . "/includes/session.inc");
 
 page(_("Access setup"));
@@ -49,24 +49,24 @@ if (get_post('addupdate'))
 	
 	if ($input_error == 0)
 	{
-		$modules = array();
+		$sections = array();
 		$areas = array();
 		foreach($_POST as $p =>$val) {
 			if (substr($p,0,4) == 'Area')
 				$areas[] = substr($p, 4);
-			if (substr($p,0,6) == 'Module')
-				$modules[] = substr($p, 6);
+			if (substr($p,0,6) == 'Section')
+				$sections[] = substr($p, 6);
 		}
 		sort($areas);
-		sort($modules);
+		sort($sections);
      	if ($new_role) 
        	{
-			add_security_role($_POST['name'], $_POST['description'], $modules, $areas); 
+			add_security_role($_POST['name'], $_POST['description'], $sections, $areas); 
 			display_notification(_("New security role has been added."));
        	} else
        	{
 			update_security_role($_POST['role'], $_POST['name'], $_POST['description'], 
-				$modules, $areas); 
+				$sections, $areas); 
 			update_record_status($_POST['role'], get_post('inactive'),
 				'security_roles', 'id');
 
@@ -101,7 +101,8 @@ if (get_post('cancel'))
 if (!isset($_POST['role']) || get_post('clone') || list_updated('role')) {
 	$id = get_post('role');
 	$clone = get_post('clone');
-	clear_data();
+//	clear_data();
+	unset($_POST);
 	if ($id) {
 		$row = get_security_role($id);
 		$_POST['description'] = $row['description'];
@@ -111,15 +112,15 @@ if (!isset($_POST['role']) || get_post('clone') || list_updated('role')) {
 	
 		$_POST['inactive'] = $row['inactive'];
 		$access = $row['areas'];
-		$modules = $row['modules'];
+		$sections = $row['sections'];
 	}
 	else {
 		$_POST['description'] = $_POST['name'] = '';
 		unset($_POST['inactive']);
-		$access = $modules = array();
+		$access = $sections = array();
 	}
 	foreach($access as $a) $_POST['Area'.$a] = 1;
-	foreach($modules as $m) $_POST['Module'.$m] = 1;
+	foreach($sections as $s) $_POST['Section'.$s] = 1;
 
 	if($clone) {
 		set_focus('name');
@@ -135,7 +136,7 @@ start_form();
 start_table("class='tablestyle_noborder'");
 start_row();
 security_roles_list_cells(_("Role:"). "&nbsp;", 'role', null, true, true, check_value('show_inactive'));
-//$new_role = get_post('role')=='';
+$new_role = get_post('role')=='';
 check_cells(_("Show inactive:"), 'show_inactive', null, true);
 end_row();
 end_table();
@@ -145,7 +146,7 @@ if (get_post('_show_inactive_update')) {
 	$Ajax->activate('role');
 	set_focus('role');
 }
-if (find_submit('_Module')) {
+if (find_submit('_Section')) {
 	$Ajax->activate('details');
 //	set_focus('');
 }
@@ -167,11 +168,11 @@ end_table(1);
 		{ // features set selection
 			$m = $parms[0] & ~0xff;
 			label_row($security_sections[$m].':', 
-				checkbox( null, 'Module'.$m, null, true, 
+				checkbox( null, 'Section'.$m, null, true, 
 					_("On/off set of features")),
 			"class='tableheader2'", "class='tableheader'");
 		}
-		if (check_value('Module'.$m)) {
+		if (check_value('Section'.$m)) {
 				alt_table_row_color($k);
 				check_cells($parms[1], 'Area'.$parms[0], null, 
 					false, '', "align='center'");

@@ -16,33 +16,35 @@ function get_security_role($id)
 	$sql = "SELECT * FROM ".TB_PREF."security_roles WHERE id='$id'";
 	$ret = db_query($sql, "could not retrieve security roles");
 	$row = db_fetch($ret);
-	$row['areas'] = explode(';', $row['areas']);
-	$row['modules'] = explode(';', $row['modules']);
+	if ($row != false) {
+		$row['areas'] = explode(';', $row['areas']);
+		$row['sections'] = explode(';', $row['sections']);
+	}
 	return $row;
 }
 
 //--------------------------------------------------------------------------------------------------
 
-function add_security_role($name, $description, $modules, $areas)
+function add_security_role($name, $description, $sections, $areas)
 {
-	$sql = "INSERT INTO ".TB_PREF."security_roles (role, description, modules, areas)
+	$sql = "INSERT INTO ".TB_PREF."security_roles (role, description, sections, areas)
 	VALUES ("
 	.db_escape($name).","
 	.db_escape($description).","
-	.db_escape(implode(';',$modules)).","
-	.db_escape(implode(';',$areas)).")";
+	.db_escape(implode(';', $sections)).","
+	.db_escape(implode(';', $areas)).")";
 
 	db_query($sql, "could not add new security role");
 }
 
 //--------------------------------------------------------------------------------------------------
 
-function update_security_role($id, $name, $description, $modules, $areas)
+function update_security_role($id, $name, $description, $sections, $areas)
 {
     	$sql = "UPDATE ".TB_PREF."security_roles SET role=".db_escape($name)
     	.",description=".db_escape($description)
-    	.",modules=".db_escape(implode(';',$modules))
-    	.",areas=".db_escape(implode(';',$areas))
+    	.",sections=".db_escape(implode(';', $sections))
+    	.",areas=".db_escape(implode(';', $areas))
     	." WHERE id=$id";
     	db_query($sql, "could not update role");
 }
@@ -57,7 +59,7 @@ function delete_security_role($id)
 //--------------------------------------------------------------------------------------------------
 
 function check_role_used($id) {
-	$sql = "SELECT count(*) FROM ".TB_PREF."users WHERE full_access=$id";
+	$sql = "SELECT count(*) FROM ".TB_PREF."users WHERE role_id=$id";
 	$ret = db_query($sql, 'cannot check role usage');
 	$row = db_fetch($ret);
 	return $row[0];
