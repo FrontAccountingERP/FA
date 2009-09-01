@@ -19,6 +19,20 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+01-Sep-2009 Janusz Dobrowolski
+# Fixed security sections db update.
+$ /admin/security_roles.php
+# Fixed ui behaviour during FA ugrade.
+$ /includes/current_user.inc
+  /includes/session.inc
+  /access/login.php
+# Company directory where not deleted during company removal.
+$ /admin/create_coy.php
+  /includes/main.inc
+# Fixed old security settings import.
+  /sql/alter2.2.php
+  /sql/alter2.2.sql
+
 31-Aug-2009 Janusz Dobrowolski
 ! gl accounts selector ordered by account class id
 $ /includes/ui/ui_lists.inc
