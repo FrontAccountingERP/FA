@@ -64,8 +64,9 @@ class current_user
 		if (db_num_rows($Auth_Result) > 0)
 		{
 			$myrow = db_fetch($Auth_Result);
+			$this->old_db = isset($myrow["full_access"]);
 			if (! @$myrow["inactive"]) {
-				if (isset($myrow["full_access"])) { 
+				if ($this->old_db) { 
 					// Transition code:
 					// db was not yet upgraded after source update to v.2.2
 					// give enough access for admin user to continue upgrade
@@ -115,12 +116,11 @@ class current_user
 	function check_user_access()
 	{
 		global $security_groups;
-		if (isset($security_groups)) {
+		if ($this->old_db) {
 			// notification after upgrade from pre-2.2 version
-//			display_notification(_("After database upgrade don't forget to remove \$security_groups and \$security_headings from config.php file!"));
-			return is_array(@$security_groups[$this->access]);
+			return isset($security_groups) && is_array(@$security_groups[$this->access]);
 		} else
-			return is_array($this->role_set);
+			return !isset($security_groups) && is_array($this->role_set);
 	}
 
 	function can_access_page($page_level)

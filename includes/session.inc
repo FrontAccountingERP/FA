@@ -52,10 +52,10 @@ function check_page_security($page_security)
 	if (!$_SESSION["wa_current_user"]->check_user_access())
 	{
 		// notification after upgrade from pre-2.2 version
-		$msg = is_array($_SESSION["wa_current_user"]->role_set) ?
-			_("Please remove \$security_groups and \$security_headings arrays from config.php file!")
-			: _("Security settings have not been defined for your user account.")
-			. "<br>" . _("Please contact your system administrator.");
+		$msg = $_SESSION["wa_current_user"]->old_db ?
+			 _("Security settings have not been defined for your user account.")
+				. "<br>" . _("Please contact your system administrator.")	
+			: _("Please remove \$security_groups and \$security_headings arrays from config.php file!");
 
 		page(_("Access denied"), false);
 			display_error($msg);
@@ -102,7 +102,9 @@ function strip_quotes($data)
 //
 function login_timeout()
 {
-	if ($_SESSION["wa_current_user"]->logged) {
+	// skip timeout on logout page
+	if ($_SESSION["wa_current_user"]->logged 
+			&& !strpos($_SERVER['PHP_SELF'], 'logout.php')) {
 		$tout = $_SESSION["wa_current_user"]->timeout;
 		if ($tout && (time() > $_SESSION["wa_current_user"]->last_act + $tout))
 		{
