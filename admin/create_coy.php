@@ -163,7 +163,7 @@ function handle_delete()
 	$id = $_GET['id'];
 
 	$cdir = $comp_path.'/'.$id;
-	@flush_dir($cdir);
+	@flush_dir($cdir, true);
 	if (!rmdir($cdir))
 	{
 		display_error(_("Cannot remove company data directory ") . $cdir);
