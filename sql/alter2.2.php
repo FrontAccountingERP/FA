@@ -155,14 +155,14 @@ function convert_roles($pref)
 		20 => array('SA_CREATECOMPANY', 'SA_CREATELANGUAGE', 'SA_CREATEMODULES',
 			'SA_SOFTWAREUPGRADE', 'SA_SECROLES')
 		);
-		
+		$new_ids = array();
 		foreach ($security_groups as $role_id => $areas) {
 			$area_set = array();
 			$sections = array();
 			foreach ($areas as $a) {
 			 if (isset($trans_sec[$a]))
 				foreach ($trans_sec[$a] as $id) {
-				 if ($security_areas[$id][0]==0)
+				 if ($security_areas[$id][0] != 0)
 //				 	error_log('invalid area id: '.$a.':'.$id);
 					$area_set[] = $security_areas[$id][0];
 					$sections[$security_areas[$id][0]&~0xff] = 1;
@@ -171,11 +171,20 @@ function convert_roles($pref)
 			$sections  = array_keys($sections);
 			sort($sections); sort($area_set);
 			import_security_role($pref, $security_headings[$role_id], $sections, $area_set);
-			$new = db_insert_id();
-			$sql = "UPDATE {$pref}users set role_id=$new WHERE role_id=$role_id";
-			$ret = db_query($sql, 'cannot update users roles');
-			if(!$ret) return false;
+			$new_ids[$role_id] = db_insert_id();
 		}
+		$result = get_users(true);
+		$users = array();
+		while($row = db_fetch($result)) { // complete old user ids and roles
+			$users[$row['role_id']][] = $row['id'];
+		}
+		foreach($users as $old_id => $uids)
+			foreach( $uids as $id) {
+				$sql = "UPDATE {$pref}users set role_id=".$new_ids[$old_id].
+					" WHERE id=$id";
+				$ret = db_query($sql, 'cannot update users roles');
+				if(!$ret) return false;
+			}
 		return true;
 }
 

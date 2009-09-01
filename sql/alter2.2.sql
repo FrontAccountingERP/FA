@@ -93,7 +93,7 @@ CREATE TABLE `0_security_roles` (
   `inactive` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `role` (`role`)
-) TYPE=MyISAM AUTO_INCREMENT=8 AUTO_INCREMENT=8 ;
+) TYPE=MyISAM AUTO_INCREMENT=1;
 
 ALTER TABLE `0_company` ADD COLUMN `login_tout` SMALLINT(6) NOT NULL DEFAULT '600';
 ALTER TABLE `0_users` CHANGE COLUMN `full_access` `role_id` int(11) NOT NULL default '1';
