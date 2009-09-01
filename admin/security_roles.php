@@ -54,8 +54,8 @@ if (get_post('addupdate'))
 		foreach($_POST as $p =>$val) {
 			if (substr($p,0,4) == 'Area')
 				$areas[] = substr($p, 4);
-			if (substr($p,0,6) == 'Section')
-				$sections[] = substr($p, 6);
+			if (substr($p,0,7) == 'Section')
+				$sections[] = substr($p, 7);
 		}
 		sort($areas);
 		sort($sections);
