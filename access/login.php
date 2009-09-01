@@ -25,11 +25,11 @@
 		$def_coy = 0;
 	$def_theme = $path_to_root . '/themes/default';
 
-$ajax_timeout = strstr($_SERVER['PHP_SELF'], 'timeout.php');
+$login_timeout = $_SESSION["wa_current_user"]->last_act;
 
 	echo "<html>
 		<head>";
-if (!$ajax_timeout) { // page header
+if (!$login_timeout) { // page header
 	echo '<script>'.get_js_png_fix().'</script>'; ?>
 <script type="text/javascript">
 function defaultCompany()
@@ -50,25 +50,29 @@ function defaultCompany()
 <?php
 } else { // end page header
 ?>
-    <title><?php echo 'Timeout'?></title>
+    <title><?php echo _('Authorization timeout'); ?></title>
     <meta http-equiv="Content-type" content="text/html; charset=<?php echo $_SESSION['language']->encoding;?>" />
     <link rel="stylesheet" href="<?php echo $def_theme;?>/login.css" type="text/css" />
 <?php
 };?>
     <table width="100%" height="100%" border="0" cellpadding="0" cellspacing="0">
-<?php
-if (!$ajax_timeout) { // FA logo
-?>        <tr>
-            <td align="center" valign="bottom"><a target="_blank" href="<?php $power_url; ?>"><img src="<?php echo $def_theme;?>/images/logo_frontaccounting.png" alt="FrontAccounting" width="250" height="50" onload="fixPNG(this)" border="0" /></a></td>
-		</tr>
+        <tr>
+			<td align="center" valign="bottom">
+  <?php
+if (!$login_timeout) { // FA logo
+?>          <a target="_blank" href="<?php $power_url; ?>"><img src="<?php echo $def_theme;?>/images/logo_frontaccounting.png" alt="FrontAccounting" width="250" height="50" onload="fixPNG(this)" border="0" /></a>
+<?php } else { ?>
+			<font size=5><?php echo _('Authorization timeout'); ?></font>
 <?php }; ?>
+			</td>
+		</tr>
 
         <tr>
             <td align="center" valign="top">
 
 		    <table border="0" cellpadding="0" cellspacing="0">
 <?php
-if (!$ajax_timeout) { // FA version info
+if (!$login_timeout) { // FA version info
 ?>			<tr><td colspan=2 align="center"><font size=4><b><?php echo _("Version") . " " . $version . "   Build " . $build_version ?></b></font><br><br></td></tr>
 <?php
 }; // end of FA version info
@@ -76,7 +80,7 @@ if (!$ajax_timeout) { // FA version info
 		        <tr>
 		            <td colspan="2" rowspan="2">
 					<form action="<?php 
-						echo $ajax_timeout ? $_SERVER['PHP_SELF'] : $_SESSION['timeout']['uri'];
+						echo $login_timeout ? $_SERVER['PHP_SELF'] : $_SESSION['timeout']['uri'];
 					?>" name="loginform" method="post">
                     <table width="346" border="0" cellpadding="0" cellspacing="0">
 						<input type="hidden" id=ui_mode name="ui_mode" value="0">
@@ -97,30 +101,30 @@ if (!$ajax_timeout) { // FA version info
 
                                     <tr>
                                         <td width="90"></td><td class="loginText" width="283"><span><?php echo _("User name"); ?>:</span><br />
-                                         <input type="text" name="user_name_entry_field" value="<?php echo $allow_demo_mode ? "demouser":""; ?>"/><br />
+                                         <input type="text" name="user_name_entry_field" value="<?php echo $login_timeout ? $_SESSION['wa_current_user']->loginname : ($allow_demo_mode ? "demouser":""); ?>"/><br />
                                          <span><?php echo _("Password"); ?>:</span><br />
                                          <input type="password" name="password"  value="<?php echo $allow_demo_mode ? "password":""; ?>">
                                          <br />
 <?php
-	if ($ajax_timeout) {
-		echo "<input type = 'hidden'  name='company_login_name' value='".
+	if ($login_timeout) {
+		echo "<br><input type = 'hidden'  name='company_login_name' value='".
 		$_SESSION["wa_current_user"]->company."'>";
-		set_focus('user_name_entry_field');
 	} else {
 ?>
 			<span><?php echo _("Company"); ?>:</span><br />
 			<!--<select name="company_login_name" onchange="setCookie()">-->
-			<select name="company_login_name">
+			<select name="company_login_name" <?php if($login_timeout) echo 'disabled';?>>
 <?php
 			for ($i = 0; $i < count($db_connections); $i++)
-				echo "<option value=$i>" . $db_connections[$i]["name"] . "</option>";
+				echo "<option value=$i ".($i==$_SESSION['wa_current_user']->company ? 'selected':'') .">" . $db_connections[$i]["name"] . "</option>";
 ?>
 			</select>
 			<br /><br />
             <?php echo $demo_text;?>
 <?php
 }; // else in_ajax
-?>                                        </td>
+?>                                   </td>
+                                </td>
                                     </tr>
 
                                     <tr>
@@ -130,7 +134,7 @@ if (!$ajax_timeout) { // FA version info
 	                        </td>
                         </tr>
 <?php
- if (!$ajax_timeout) 
+ if (!$login_timeout) 
  	echo "<tr>
  <td colspan='5' bgcolor='#FFFFFF'><img src='$def_theme/images/spacer.png' width='346' height='1' alt='' /></td>
          </tr>";
@@ -157,7 +161,7 @@ if (!$ajax_timeout) { // FA version info
 		        </tr>
 <tr><td>&nbsp;</td></tr>
 <?php
-if (!$ajax_timeout) {
+if (!$login_timeout) {
 ?>
 <tr>
 		<td align="center" class="footer"><font size=1><a target='_blank' style="text-decoration: none" HREF='<?php echo $power_url; ?>'><font color="#FFFF00" valign="top">&nbsp;&nbsp;<?php echo $power_by; ?></font></a></font></td>
