@@ -124,7 +124,7 @@ if ($Mode == 'RESET')
 $result = get_account_types();
 start_form();
 start_table($table_style);
-$th = array(_("ID"), _("Name"), _("Subgroup Of"), _("Class Type"), "", "");
+$th = array(_("ID"), _("Name"), _("Subgroup Of"), _("Class Name"), "", "");
 table_header($th);
 
 $k = 0;
@@ -184,7 +184,7 @@ text_row_ex(_("Name:"), 'name', 50);
 
 gl_account_types_list_row(_("Subgroup Of:"), 'parent', null, _("None"), true);
 
-class_list_row(_("Class Type:"), 'class_id', null);
+class_list_row(_("Class Name:"), 'class_id', null);
 
 end_table(1);
 
