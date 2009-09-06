@@ -19,12 +19,16 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+05-Sep-2009 Joe Hunt
+# Changed Class Type to Class Name in GL Account groups
+$ /gl/manage/gl_account_types.php
+
 30-Aug-2009 Janusz Dobrowolski
 # Fixed sql error during sales order line update with line cancelation.
 $ /sales/includes/db/sales_order_db.inc
 
 ------------------------------- Release 2.1.5 ----------------------------------
-26-Aug-2009 Joe Hung
+26-Aug-2009 Joe Hunt
 ! Release 2.1.5
 $ config.php
 # If no dimensions in system, then there were 2 destination selectors in report Balance Sheet
