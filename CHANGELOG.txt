@@ -22,6 +22,8 @@ $ -> Affected files
 05-Sep-2009 Joe Hunt
 # Changed Class Type to Class Name in GL Account groups
 $ /gl/manage/gl_account_types.php
+# Changed so total in bank payments/deposits shows correctly if negative amount are entered.
+$ /gl/includes/ui/gl_bank_ui.inc
 
 30-Aug-2009 Janusz Dobrowolski
 # Fixed sql error during sales order line update with line cancelation.
