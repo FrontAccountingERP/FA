@@ -98,3 +98,11 @@ CREATE TABLE `0_security_roles` (
 ALTER TABLE `0_company` ADD COLUMN `login_tout` SMALLINT(6) NOT NULL DEFAULT '600';
 ALTER TABLE `0_users` CHANGE COLUMN `full_access` `role_id` int(11) NOT NULL default '1';
 
+ALTER TABLE `0_sales_order_details` ADD COLUMN `trans_type` SMALLINT(6) NOT NULL DEFAULT '30' AFTER `order_no`;
+ALTER TABLE `0_sales_orders` CHANGE COLUMN `order_no` `order_no` int(11) NOT NULL;
+ALTER TABLE `0_sales_orders` ADD COLUMN `trans_type` SMALLINT(6) NOT NULL DEFAULT '30' AFTER `order_no`;
+ALTER TABLE `0_sales_orders` ADD COLUMN `reference` varchar(100) NOT NULL DEFAULT '' AFTER `branch_code`;
+ALTER TABLE `0_sales_orders` DROP PRIMARY KEY;
+ALTER TABLE `0_sales_orders` ADD PRIMARY KEY ( `trans_type` , `order_no` ); 
+UPDATE `0_sys_types` SET `type_no`=(SELECT MAX(`order_no`) FROM `0_sales_orders`), `next_reference`=(SELECT MAX(`order_no`)+1 FROM `0_sales_orders`) WHERE `type_id`=30;
+INSERT INTO `0_sys_types` (`type_id`, `type_no`, `next_reference`) VALUES (32, 0, '1');

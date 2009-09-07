@@ -11,6 +11,7 @@
 ***********************************************************************/
 //-----------------------------------------------------------------------------
 //
+//	Entry/Modify Sales Quotations
 //	Entry/Modify Sales Order
 //	Entry Direct Delivery
 //	Entry Direct Invoice
@@ -52,10 +53,23 @@ if (isset($_GET['NewDelivery']) && is_numeric($_GET['NewDelivery'])) {
 	$_SESSION['page_title'] = sprintf( _("Modifying Sales Order # %d"), $_GET['ModifyOrderNumber']);
 	create_cart(30, $_GET['ModifyOrderNumber']);
 
+} elseif (isset($_GET['ModifyQuotationNumber']) && is_numeric($_GET['ModifyQuotationNumber'])) {
+
+	$help_page_title = _('Modifying Sales Quotation');
+	$_SESSION['page_title'] = sprintf( _("Modifying Sales Quotation # %d"), $_GET['ModifyQuotationNumber']);
+	create_cart(32, $_GET['ModifyQuotationNumber']);
+
 } elseif (isset($_GET['NewOrder'])) {
 
 	$_SESSION['page_title'] = _("New Sales Order Entry");
 	create_cart(30, 0);
+} elseif (isset($_GET['NewQuotation'])) {
+
+	$_SESSION['page_title'] = _("New Sales Quotation Entry");
+	create_cart(32, 0);
+} elseif (isset($_GET['NewQuoteToSalesOrder'])) {
+	$_SESSION['page_title'] = _("Sales Order Entry");
+	create_cart(32, $_GET['NewQuoteToSalesOrder']);
 }
 
 page($_SESSION['page_title'], false, false, "", $js);
@@ -104,6 +118,41 @@ if (isset($_GET['AddedID'])) {
 
 	display_footer_exit();
 
+} elseif (isset($_GET['AddedQU'])) {
+	$order_no = $_GET['AddedQU'];
+	display_notification_centered(sprintf( _("Quotation # %d has been entered."),$order_no));
+
+	submenu_view(_("&View This Quotation"), 32, $order_no);
+
+	submenu_print(_("&Print This Quotation"), 32, $order_no, 'prtopt');
+	submenu_print(_("&Email This Quotation"), 32, $order_no, null, 1);
+	set_focus('prtopt');
+	
+	submenu_option(_("Make &Sales Order Against This Quotation"),
+		"/sales/sales_order_entry.php?NewQuoteToSalesOrder=$order_no");
+
+	submenu_option(_("Enter a New &Quotation"),	"/sales/sales_order_entry.php?NewQuotation=0");
+
+	display_footer_exit();
+
+} elseif (isset($_GET['UpdatedQU'])) {
+	$order_no = $_GET['UpdatedQU'];
+
+	display_notification_centered(sprintf( _("Quotation # %d has been updated."),$order_no));
+
+	submenu_view(_("&View This Quotation"), 32, $order_no);
+
+	submenu_print(_("&Print This Quotation"), 32, $order_no, 'prtopt');
+	submenu_print(_("&Email This Quotation"), 32, $order_no, null, 1);
+	set_focus('prtopt');
+
+	submenu_option(_("Make &Sales Order Against This Quotation"),
+		"/sales/sales_order_entry.php?NewQuoteToSalesOrder=$order_no");
+
+	submenu_option(_("Select A Different &Quotation"),
+		"/sales/inquiry/sales_orders_view.php?type=32");
+
+	display_footer_exit();
 } elseif (isset($_GET['AddedDN'])) {
 	$delivery = $_GET['AddedDN'];
 
@@ -158,9 +207,8 @@ function copy_to_cart()
 {
 	$cart = &$_SESSION['Items'];
 
-	if ($cart->trans_type!=30) {
-		$cart->reference = $_POST['ref'];
-	} 
+	$cart->reference = $_POST['ref'];
+
 	$cart->Comments =  $_POST['Comments'];
 
 	$cart->document_date = $_POST['OrderDate'];
@@ -190,7 +238,7 @@ function copy_to_cart()
 	$cart->Branch = $_POST['branch_id'];
 	$cart->sales_type = $_POST['sales_type'];
 	// POS
-	if ($cart->trans_type!=30) { // 2008-11-12 Joe Hunt
+	if ($cart->trans_type!=30 && $cart->trans_type!=32) { // 2008-11-12 Joe Hunt
 		$cart->dimension_id = $_POST['dimension_id'];
 		$cart->dimension2_id = $_POST['dimension2_id'];
 	}	
@@ -201,9 +249,7 @@ function copy_to_cart()
 function copy_from_cart()
 {
 	$cart = &$_SESSION['Items'];
-	if ($cart->trans_type!=30) {
-		$_POST['ref'] = $cart->reference;
-	}
+	$_POST['ref'] = $cart->reference;
 	$_POST['Comments'] = $cart->Comments;
 
 	$_POST['OrderDate'] = $cart->document_date;
@@ -224,7 +270,7 @@ function copy_from_cart()
 	// POS 
 	if ($cart->trans_type == 10)
 		$_POST['cash'] = $cart->cash;
-	if ($cart->trans_type!=30) { // 2008-11-12 Joe Hunt
+	if ($cart->trans_type!=30 && $cart->trans_type!=32) { // 2008-11-12 Joe Hunt
 		$_POST['dimension_id'] = $cart->dimension_id;
 		$_POST['dimension2_id'] = $cart->dimension2_id;
 	}	
@@ -247,7 +293,7 @@ function can_process() {
 		set_focus('OrderDate');
 		return false;
 	}
-	if ($_SESSION['Items']->trans_type!=30 && !is_date_in_fiscalyear($_POST['OrderDate'])) {
+	if ($_SESSION['Items']->trans_type!=30 && $_SESSION['Items']->trans_type!=32 && !is_date_in_fiscalyear($_POST['OrderDate'])) {
 		display_error(_("The entered date is not in fiscal year"));
 		set_focus('OrderDate');
 		return false;
@@ -279,18 +325,24 @@ function can_process() {
 			return false;
 		}
 		if (!is_date($_POST['delivery_date'])) {
-			display_error(_("The delivery date is invalid."));
+			if ($_SESSION['Items']->trans_type==32)
+				display_error(_("The Valid date is invalid."));
+			else	
+				display_error(_("The delivery date is invalid."));
 			set_focus('delivery_date');
 			return false;
 		}
 		//if (date1_greater_date2($_SESSION['Items']->document_date, $_POST['delivery_date'])) {
 		if (date1_greater_date2($_POST['OrderDate'], $_POST['delivery_date'])) {
-			display_error(_("The requested delivery date is before the date of the order."));
+			if ($_SESSION['Items']->trans_type==32)
+				display_error(_("The requested valid date is before the date of the quotation."));
+			else	
+				display_error(_("The requested delivery date is before the date of the order."));
 			set_focus('delivery_date');
 			return false;
 		}
 	}
-	if ($_SESSION['Items']->trans_type != 30 && !references::is_valid($_POST['ref'])) {
+	if (!references::is_valid($_POST['ref'])) {
 		display_error(_("You must enter a reference."));
 		set_focus('ref');
 		return false;
@@ -315,9 +367,14 @@ if (isset($_POST['ProcessOrder']) && can_process()) {
 	new_doc_date($_SESSION['Items']->document_date);
 	processing_end();
 	if ($modified) {
-		meta_forward($_SERVER['PHP_SELF'], "UpdatedID=$trans_no");
+		if ($trans_type == 32)
+			meta_forward($_SERVER['PHP_SELF'], "UpdatedQU=$trans_no");
+		else	
+			meta_forward($_SERVER['PHP_SELF'], "UpdatedID=$trans_no");
 	} elseif ($trans_type == 30) {
 		meta_forward($_SERVER['PHP_SELF'], "AddedID=$trans_no");
+	} elseif ($trans_type == 32) {
+		meta_forward($_SERVER['PHP_SELF'], "AddedQU=$trans_no");
 	} elseif ($trans_type == 10) {
 		meta_forward($_SERVER['PHP_SELF'], "AddedDI=$trans_no&Type=$so_type");
 	} else {
@@ -344,7 +401,7 @@ function check_item_data()
 		display_error(_("You attempting to make the quantity ordered a quantity less than has already been delivered. The quantity delivered cannot be modified retrospectively."));
 		return false;
 	} // Joe Hunt added 2008-09-22 -------------------------
-	elseif ($_SESSION['Items']->trans_type!=30 && !sys_prefs::allow_negative_stock() &&
+	elseif ($_SESSION['Items']->trans_type!=30 && $_SESSION['Items']->trans_type!=32 && !sys_prefs::allow_negative_stock() &&
 		is_inventory_item($_POST['stock_id']))
 	{
 		$qoh = get_qoh_on_date($_POST['stock_id'], $_POST['Location'], $_POST['OrderDate']);
@@ -418,11 +475,18 @@ function  handle_cancel_order()
 			if (sales_order_has_deliveries(key($_SESSION['Items']->trans_no)))
 				display_error(_("This order cannot be cancelled because some of it has already been invoiced or dispatched. However, the line item quantities may be modified."));
 			else {
-				delete_sales_order(key($_SESSION['Items']->trans_no));
-
-			display_note(_("This sales order has been cancelled as requested."), 1);
-			submenu_option(_("Enter a New Sales Order"), $_SERVER['PHP_SELF']."?NewOrder=Yes");
-			}
+				delete_sales_order(key($_SESSION['Items']->trans_no), $_SESSION['Items']->trans_type);
+				if ($_SESSION['Items']->trans_type == 32)
+				{
+					display_note(_("This sales quotation has been cancelled as requested."), 1);
+					submenu_option(_("Enter a New Sales Quotation"), $_SERVER['PHP_SELF']."?NewQuotation=Yes");
+				}
+				else
+				{
+					display_note(_("This sales order has been cancelled as requested."), 1);
+					submenu_option(_("Enter a New Sales Order"), $_SERVER['PHP_SELF']."?NewOrder=Yes");
+				}
+			}	
 		} else {
 			processing_end();
 			meta_forward($path_to_root.'/index.php','application=orders');
@@ -442,7 +506,18 @@ function create_cart($type, $trans_no)
 	processing_start();
 	$doc_type = $type;
 
-	if($type != 30 && $trans_no != 0) { // this is template
+	if (isset($_GET['NewQuoteToSalesOrder']))
+	{
+		$trans_no = $_GET['NewQuoteToSalesOrder'];
+		$doc = new Cart(32, $trans_no);
+		$doc->trans_no = 0;
+		$doc->trans_type = 30;
+		$doc->reference = references::get_next($doc->trans_type);
+		$doc->document_date = $doc->due_date = new_doc_date();
+		$doc->Comments = _("Sales Quotation") . " # " . $trans_no;
+		$_SESSION['Items'] = $doc;
+	}	
+	elseif($type != 30 && $type != 32 && $trans_no != 0) { // this is template
 		$doc_type = 30;
 
 		$doc = new Cart(30, array($trans_no));
@@ -507,6 +582,13 @@ if ($_SESSION['Items']->trans_type == 10) {
 	$deliverydetails = _("Enter Delivery Details and Confirm Dispatch");
 	$cancelorder = _("Cancel Delivery");
 	$porder = _("Place Delivery");
+} elseif ($_SESSION['Items']->trans_type == 32) {
+	$idate = _("Quotation Date:");
+	$orderitems = _("Sales Quotation Items");
+	$deliverydetails = _("Enter Delivery Details and Confirm Quotation");
+	$cancelorder = _("Cancel Quotation");
+	$porder = _("Place Quotation");
+	$corder = _("Commit Quotations Changes");
 } else {
 	$idate = _("Order Date:");
 	$orderitems = _("Sales Order Items");
@@ -536,7 +618,7 @@ if ($customer_error == "") {
 
 		submit_center_first('ProcessOrder', $porder,
 		    _('Check entered data and save document'), 'default');
-		submit_js_confirm('CancelOrder', _('You are about to void this Sales Order.\nDo you want to continue?'));
+		submit_js_confirm('CancelOrder', _('You are about to void this Document.\nDo you want to continue?'));
 	} else {
 		submit_center_first('ProcessOrder', $corder,
 		    _('Validate changes and update document'), 'default');

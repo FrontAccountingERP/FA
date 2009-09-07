@@ -24,7 +24,9 @@ if (isset($header2type))
 		$doc_Delivered_To = _("Delivered To");
 	}	
 	$doc_Shipping_Company = _("Shipping Company");
-	if ($doctype == 9)
+	if ($doctype == 7)
+		$doc_Due_Date = _("Valid until");
+	elseif ($doctype == 9)
 		$doc_Due_Date = _("Delivery Date");
   	else
 		$doc_Due_Date = _("Due Date");
@@ -48,7 +50,7 @@ if (isset($header2type))
 	}
 	$doc_Our_VAT_no = _("Our VAT No.");
 	$doc_Domicile = _("Domicile");
-	if($doctype == 13 || $doctype == 8 || $doctype == 9) {
+	if($doctype == 13 || $doctype == 7 || $doctype == 8 || $doctype == 9) {
 	 $doc_Bank_Account = '';
 	 $doc_Please_Quote = _("All amounts stated in");
   } else {
@@ -62,9 +64,11 @@ if (isset($header2type))
 	$doc_Bank = _("Bank");
 	$doc_Bank_Account = _("Bank Account");
 	$doc_Payment_Link = _("You can pay through");
-	if ($doctype == 8 || $doctype == 9 || $doctype == 10 || $doctype == 11 || $doctype == 13 || $doctype == 26)
+	if ($doctype == 7 || $doctype == 8 || $doctype == 9 || $doctype == 10 || $doctype == 11 || $doctype == 13 || $doctype == 26)
 	{
-		if ($doctype == 8)
+		if ($doctype == 7)
+			$this->title = _("SALES QUOTATION");
+		elseif ($doctype == 8)
 			$this->title = _("PURCHASE ORDER");
 		elseif ($doctype == 13)
 			$this->title = _("DELIVERY NOTE");
@@ -102,14 +106,14 @@ if (isset($emailtype))
 }
 if (isset($header2type) || isset($linetype))
 {
-	$doc_Invoice_no = ($doctype==13 ? _("Delivery Note No.") : (($doctype==8 || $doctype==9) ? _("Order no.") : 
+	$doc_Invoice_no = ($doctype==13 ? _("Delivery Note No.") : (($doctype==7 || $doctype==8 || $doctype==9) ? _("Order no.") : 
 		($doctype==10 ? _("Invoice No.") : ($doctype==26 ? _("Word Order No") : _("Credit No.")))));
 	$doc_Delivery_no = _("Delivery Note No.");
 	$doc_Order_no = _("Order no.");
 }
 if (isset($linetype))
 {
-	if ($doctype == 8 || $doctype == 9 || $doctype == 10 || $doctype == 11 || $doctype == 13)
+	if ($doctype == 7 || $doctype == 8 || $doctype == 9 || $doctype == 10 || $doctype == 11 || $doctype == 13)
 	{
 		$doc_Sub_total = _("Sub-total");
 		$doc_Shipping = _("Shipping");

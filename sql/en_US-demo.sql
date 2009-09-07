@@ -1276,6 +1276,7 @@ DROP TABLE IF EXISTS `0_sales_order_details`;
 CREATE TABLE `0_sales_order_details` (
   `id` int(11) NOT NULL auto_increment,
   `order_no` int(11) NOT NULL default '0',
+  `trans_type` smallint(6) NOT NULL default '30',
   `stk_code` varchar(20) NOT NULL default '',
   `description` tinytext,
   `qty_sent` double NOT NULL default '0',
@@ -1288,11 +1289,11 @@ CREATE TABLE `0_sales_order_details` (
 
 ### Data of table `0_sales_order_details` ###
 
-INSERT INTO `0_sales_order_details` VALUES ('1', '1', '102', '17inch VGA Monitor', '2', '30.4', '2', '0');
-INSERT INTO `0_sales_order_details` VALUES ('2', '2', '102', '17inch VGA Monitor', '1', '50', '1', '0');
-INSERT INTO `0_sales_order_details` VALUES ('3', '3', '102', '17inch VGA Monitor', '1', '35.89', '1', '0');
-INSERT INTO `0_sales_order_details` VALUES ('4', '4', '102', '17inch VGA Monitor', '0', '21.28', '2', '0');
-INSERT INTO `0_sales_order_details` VALUES ('5', '5', '102', '17inch VGA Monitor', '1', '50', '1', '0');
+INSERT INTO `0_sales_order_details` VALUES ('1', '1', '30', '102', '17inch VGA Monitor', '2', '30.4', '2', '0');
+INSERT INTO `0_sales_order_details` VALUES ('2', '2', '30', '102', '17inch VGA Monitor', '1', '50', '1', '0');
+INSERT INTO `0_sales_order_details` VALUES ('3', '3', '30', '102', '17inch VGA Monitor', '1', '35.89', '1', '0');
+INSERT INTO `0_sales_order_details` VALUES ('4', '4', '30', '102', '17inch VGA Monitor', '0', '21.28', '2', '0');
+INSERT INTO `0_sales_order_details` VALUES ('5', '5', '30', '102', '17inch VGA Monitor', '1', '50', '1', '0');
 
 
 ### Structure of table `0_sales_orders` ###
@@ -1301,10 +1302,12 @@ DROP TABLE IF EXISTS `0_sales_orders`;
 
 CREATE TABLE `0_sales_orders` (
   `order_no` int(11) NOT NULL auto_increment,
+  `trans_type` smallint(6) NOT NULL default '30',
   `version` tinyint(1) unsigned NOT NULL default '0',
   `type` tinyint(1) NOT NULL default '0',
   `debtor_no` int(11) NOT NULL default '0',
   `branch_code` int(11) NOT NULL default '0',
+  `reference` varchar(100) NOT NULL default '',
   `customer_ref` tinytext NOT NULL,
   `comments` tinytext,
   `ord_date` date NOT NULL default '0000-00-00',
@@ -1317,17 +1320,16 @@ CREATE TABLE `0_sales_orders` (
   `freight_cost` double NOT NULL default '0',
   `from_stk_loc` varchar(5) NOT NULL default '',
   `delivery_date` date NOT NULL default '0000-00-00',
-  PRIMARY KEY  (`order_no`)
-) TYPE=InnoDB AUTO_INCREMENT=6 ;
-
+  PRIMARY KEY  (`trans_type`, `order_no`)
+) TYPE=InnoDB;
 
 ### Data of table `0_sales_orders` ###
 
-INSERT INTO `0_sales_orders` VALUES ('1', '1', '0', '1', '1', '', '', '2009-06-21', '2', '1', 'Address 1\r\nAddress 2\r\nAddress 3', '', '', 'Beefeater Ltd.', '10', 'DEF', '2009-06-22');
-INSERT INTO `0_sales_orders` VALUES ('2', '1', '0', '2', '2', '', '', '2009-06-21', '1', '1', 'Address 1\r\nAddress 2\r\nAddress 3', '', '', 'Ghostbusters Corp.', '0', 'DEF', '2009-06-22');
-INSERT INTO `0_sales_orders` VALUES ('3', '1', '0', '3', '3', '', '', '2009-06-21', '2', '1', 'Address 1\r\nAddress 2\r\nAddress 3', '', '', 'Brezan', '0', 'DEF', '2009-07-01');
-INSERT INTO `0_sales_orders` VALUES ('4', '0', '0', '1', '1', '', '', '2009-06-21', '2', '1', 'Address 1\r\nAddress 2\r\nAddress 3', '', '', 'Beefeater Ltd.', '0', 'DEF', '2009-06-22');
-INSERT INTO `0_sales_orders` VALUES ('5', '1', '0', '2', '2', '', '', '2009-06-21', '1', '1', 'Address 1\r\nAddress 2\r\nAddress 3', '', '', 'Ghostbusters Corp.', '5', 'DEF', '2009-06-22');
+INSERT INTO `0_sales_orders` VALUES ('1', '30', '1', '0', '1', '1', '1', '', '', '2009-06-21', '2', '1', 'Address 1\r\nAddress 2\r\nAddress 3', '', '', 'Beefeater Ltd.', '10', 'DEF', '2009-06-22');
+INSERT INTO `0_sales_orders` VALUES ('2', '30', '1', '0', '2', '2', '2', '', '', '2009-06-21', '1', '1', 'Address 1\r\nAddress 2\r\nAddress 3', '', '', 'Ghostbusters Corp.', '0', 'DEF', '2009-06-22');
+INSERT INTO `0_sales_orders` VALUES ('3', '30', '1', '0', '3', '3', '3', '', '', '2009-06-21', '2', '1', 'Address 1\r\nAddress 2\r\nAddress 3', '', '', 'Brezan', '0', 'DEF', '2009-07-01');
+INSERT INTO `0_sales_orders` VALUES ('4', '30', '0', '0', '1', '1', '4', '', '', '2009-06-21', '2', '1', 'Address 1\r\nAddress 2\r\nAddress 3', '', '', 'Beefeater Ltd.', '0', 'DEF', '2009-06-22');
+INSERT INTO `0_sales_orders` VALUES ('5', '30', '1', '0', '2', '2', '5', '', '', '2009-06-21', '1', '1', 'Address 1\r\nAddress 2\r\nAddress 3', '', '', 'Ghostbusters Corp.', '5', 'DEF', '2009-06-22');
 
 
 ### Structure of table `0_sales_pos` ###
@@ -1705,27 +1707,28 @@ CREATE TABLE `0_sys_types` (
 
 ### Data of table `0_sys_types` ###
 
-INSERT INTO `0_sys_types` VALUES ('0', 'Journal - GL', '19', '3');
-INSERT INTO `0_sys_types` VALUES ('1', 'Payment - GL', '8', '2');
-INSERT INTO `0_sys_types` VALUES ('2', 'Receipt - GL', '5', '2');
-INSERT INTO `0_sys_types` VALUES ('4', 'Funds Transfer', '3', '1');
-INSERT INTO `0_sys_types` VALUES ('10', 'Sales Invoice', '19', '4');
-INSERT INTO `0_sys_types` VALUES ('11', 'Credit Note', '3', '2');
-INSERT INTO `0_sys_types` VALUES ('12', 'Receipt', '6', '1');
-INSERT INTO `0_sys_types` VALUES ('13', 'Delivery', '5', '2');
-INSERT INTO `0_sys_types` VALUES ('16', 'Location Transfer', '2', '1');
-INSERT INTO `0_sys_types` VALUES ('17', 'Inventory Adjustment', '2', '1');
-INSERT INTO `0_sys_types` VALUES ('18', 'Purchase Order', '1', '3');
-INSERT INTO `0_sys_types` VALUES ('20', 'Supplier Invoice', '8', '3');
-INSERT INTO `0_sys_types` VALUES ('21', 'Supplier Credit Note', '1', '1');
-INSERT INTO `0_sys_types` VALUES ('22', 'Supplier Payment', '4', '2');
-INSERT INTO `0_sys_types` VALUES ('25', 'Purchase Order Delivery', '1', '2');
-INSERT INTO `0_sys_types` VALUES ('26', 'Work Order', '1', '8');
-INSERT INTO `0_sys_types` VALUES ('28', 'Work Order Issue', '1', '1');
-INSERT INTO `0_sys_types` VALUES ('29', 'Work Order Production', '1', '2');
-INSERT INTO `0_sys_types` VALUES ('30', 'Sales Order', '1', '1');
-INSERT INTO `0_sys_types` VALUES ('35', 'Cost Update', '1', '1');
-INSERT INTO `0_sys_types` VALUES ('40', 'Dimension', '1', '3');
+INSERT INTO `0_sys_types` VALUES ('0', '19', '3');
+INSERT INTO `0_sys_types` VALUES ('1', '8', '2');
+INSERT INTO `0_sys_types` VALUES ('2', '5', '2');
+INSERT INTO `0_sys_types` VALUES ('4', '3', '1');
+INSERT INTO `0_sys_types` VALUES ('10', '19', '4');
+INSERT INTO `0_sys_types` VALUES ('11', '3', '2');
+INSERT INTO `0_sys_types` VALUES ('12', '6', '1');
+INSERT INTO `0_sys_types` VALUES ('13', '5', '2');
+INSERT INTO `0_sys_types` VALUES ('16', '2', '1');
+INSERT INTO `0_sys_types` VALUES ('17', '2', '1');
+INSERT INTO `0_sys_types` VALUES ('18', '1', '3');
+INSERT INTO `0_sys_types` VALUES ('20', '8', '3');
+INSERT INTO `0_sys_types` VALUES ('21', '1', '1');
+INSERT INTO `0_sys_types` VALUES ('22', '4', '2');
+INSERT INTO `0_sys_types` VALUES ('25', '1', '2');
+INSERT INTO `0_sys_types` VALUES ('26', '1', '8');
+INSERT INTO `0_sys_types` VALUES ('28', '1', '1');
+INSERT INTO `0_sys_types` VALUES ('29', '1', '2');
+INSERT INTO `0_sys_types` VALUES ('30', '5', '6');
+INSERT INTO `0_sys_types` VALUES ('32', '0', '1');
+INSERT INTO `0_sys_types` VALUES ('35', '1', '1');
+INSERT INTO `0_sys_types` VALUES ('40', '1', '3');
 
 
 ### Structure of table `0_tax_group_items` ###

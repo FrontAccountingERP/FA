@@ -38,7 +38,7 @@ $myrow = get_customer_trans($trans_id, 13);
 
 $branch = get_branch($myrow["branch_code"]);
 
-$sales_order = get_sales_order_header($myrow["order_"]);
+$sales_order = get_sales_order_header($myrow["order_"], 30);
 
 display_heading(sprintf(_("DISPATCH NOTE #%d"),$trans_id));
 

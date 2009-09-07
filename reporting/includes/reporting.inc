@@ -24,6 +24,17 @@ function print_document_link($doc_no, $link_text, $link=true, $type_no,
 
 	switch ($type_no)
 	{
+		case systypes::sales_quotation() :
+			$rep = 111;
+			// from, to, currency, bank acc, email, quote, comments
+			$ar = array(
+				'PARAM_0' => $doc_no, 
+				'PARAM_1' => $doc_no, 
+				'PARAM_2' => "", 
+				'PARAM_3' => get_first_bank_account(), 
+				'PARAM_4' => $email, 
+				'PARAM_5' => "");
+			break;
 		case systypes::sales_order() :
 			$rep = 109;
 			// from, to, currency, bank acc, email, quote, comments

@@ -74,7 +74,7 @@ function print_deliveries()
 				continue;
 			$myrow = get_customer_trans($i, 13);
 			$branch = get_branch($myrow["branch_code"]);
-			$sales_order = get_sales_order_header($myrow["order_"]); // ?
+			$sales_order = get_sales_order_header($myrow["order_"], 30); // ?
 			if ($email == 1)
 			{
 				$rep = new FrontReport("", "", user_pagesize());

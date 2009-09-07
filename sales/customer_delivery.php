@@ -52,7 +52,7 @@ if (isset($_GET['AddedID'])) {
 	display_note(get_customer_trans_view_str(13, $dispatch_no, _("&View This Delivery")), 0, 1);
 
 	display_note(print_document_link($dispatch_no, _("&Print Delivery Note"), true, 13));
-	display_note(print_document_link($dispatch_no, _("&Email Delivery Note"), true, 13, false, "", "", 1),0, 1);
+	display_note(print_document_link($dispatch_no, _("&Email Delivery Note"), true, 13, false, "", "", 1), 1);
 
 	display_note(get_gl_view_str(13, $dispatch_no, _("View the GL Journal Entries for this Dispatch")),1);
 

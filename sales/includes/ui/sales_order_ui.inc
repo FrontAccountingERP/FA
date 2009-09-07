@@ -58,7 +58,7 @@ function add_to_order(&$order, $new_item, $new_item_qty, $price, $discount)
 			if (strcasecmp($order_item->stock_id, $item['stock_id']) == 0)
 			{
 				display_warning(_("For Part :").$item['stock_id']. " " 
-					. _("This item is already on this order. You have been warned."));
+					. _("This item is already on this document. You have been warned."));
 				break;
 			}
 		}
@@ -340,9 +340,7 @@ function display_order_header(&$order, $editable, $date_text, $display_tax_group
 		}
 	}
 
-	if ($order->trans_type != 30) {
-		ref_cells(_("Reference").':', 'ref', _('Reference number unique for this document type'), null, '');
-	}
+	ref_cells(_("Reference").':', 'ref', _('Reference number unique for this document type'), null, '');
 
 	if (!is_company_currency($order->customer_currency))
 	{
@@ -411,7 +409,7 @@ function display_order_header(&$order, $editable, $date_text, $display_tax_group
 			$Ajax->activate('items_table');
 			$Ajax->activate('delivery_date');
 		}
-		if ($order->trans_type != 30)
+		if ($order->trans_type != 30 && $order->trans_type != 32)
 		{	// 2008-11-12 Joe Hunt added dimensions
 			$dim = get_company_pref('use_dimension');
 			if ($dim > 0)
@@ -563,6 +561,11 @@ function display_delivery_details(&$order)
 			$title = _("Invoice Delivery Details");
 			$delname = _("Invoice before").':';
 		}
+		elseif ($order->trans_type==32)
+		{
+			$title = _("Quotation Delivery Details");
+			$delname = _("Valid until").':';
+		}
 		else
 		{
 			$title = _("Order Delivery Details");
@@ -579,7 +582,7 @@ function display_delivery_details(&$order)
 
 
 		date_row($delname, 'delivery_date',
-			$order->trans_type==30 ?  _('Enter requested day of delivery') : '');
+			$order->trans_type==30 ?  _('Enter requested day of delivery') : $order->trans_type==32 ? _('Enter Valid until Date') : '');
 		text_row(_("Deliver To:"), 'deliver_to', $order->deliver_to, 40, 40,
 			_('Additional identifier for delivery e.g. name of receiving person'));
 

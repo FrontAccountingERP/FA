@@ -24,6 +24,8 @@ if (isset($header2type))
 		$doc_Delivered_To = "Delivered To";
 	}	
 	$doc_Shipping_Company = "Shipping Company";
+	if ($doctype == 7)
+		$doc_Due_Date = "Valid until";
 	if ($doctype == 9)
 		$doc_Due_Date = "Delivery Date";
 	else
@@ -48,7 +50,7 @@ if (isset($header2type))
 	}
 	$doc_Our_VAT_no = "Our VAT No.";
 	$doc_Domicile = "Domicile";
-	if($doctype == 13 || $doctype == 8 || $doctype == 9) {
+	if($doctype == 13 || $doctype == 7 || $doctype == 8 || $doctype == 9) {
 	 $doc_Bank_Account = '';
 	 $doc_Please_Quote = "All amounts stated in";
   } else {
@@ -61,9 +63,11 @@ if (isset($header2type))
 	$doc_Bank = "Bank";
 	$doc_Bank_Account = "Bank Account";
 	$doc_Payment_Link = "You can pay through";
-	if ($doctype == 8 || $doctype == 9 || $doctype == 10 || $doctype == 11 || $doctype == 13 || $doctype == 26)
+	if ($doctype == 7 || $doctype == 8 || $doctype == 9 || $doctype == 10 || $doctype == 11 || $doctype == 13 || $doctype == 26)
 	{
-		if ($doctype == 8)
+		if ($doctype == 7)
+			$this->title = "SALES QUOTATION";
+		elseif ($doctype == 8)
 			$this->title = "PURCHASE ORDER";
 		elseif ($doctype == 9)
 			$this->title = ($print_as_quote==1 ? "QUOTE" : "SALES ORDER");
@@ -101,14 +105,14 @@ if (isset($emailtype))
 }
 if (isset($header2type) || isset($linetype))
 {
-	$doc_Invoice_no = ($doctype==13 ? "Delivery Note No." : (($doctype==8 || $doctype==9) ? "Order no." : 
+	$doc_Invoice_no = ($doctype==13 ? "Delivery Note No." : (($doctype == 7 || $doctype==8 || $doctype==9) ? "Order no." : 
 	($doctype==10 ? "Invoice No." : ($doctype == 26 ? "Work Order No" : "Credit No."))));
 	$doc_Delivery_no = "Delivery Note No.";
 	$doc_Order_no = "Order no.";
 }
 if (isset($linetype))
 {
-	if ($doctype == 8 || $doctype == 9 || $doctype == 10 || $doctype == 11 || $doctype == 13)
+	if ($doctype == 7 || $doctype == 8 || $doctype == 9 || $doctype == 10 || $doctype == 11 || $doctype == 13)
 	{
 		$doc_Sub_total = "Sub-total";
 		$doc_Shipping = "Shipping";

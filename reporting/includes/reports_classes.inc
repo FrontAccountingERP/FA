@@ -284,7 +284,15 @@ class Report
 				case 'ORDERS':
 					$sql = "SELECT ".TB_PREF."sales_orders.order_no, concat(".TB_PREF."sales_orders.order_no, '-',
 						".TB_PREF."debtors_master.name) as IName
-						FROM ".TB_PREF."debtors_master, ".TB_PREF."sales_orders WHERE ".TB_PREF."debtors_master.debtor_no=".TB_PREF."sales_orders.debtor_no ORDER BY ".TB_PREF."sales_orders.order_no DESC";
+						FROM ".TB_PREF."debtors_master, ".TB_PREF."sales_orders WHERE ".TB_PREF."debtors_master.debtor_no=".TB_PREF."sales_orders.debtor_no 
+						AND ".TB_PREF."sales_orders.trans_type=30 ORDER BY ".TB_PREF."sales_orders.order_no DESC";
+					$st .= dup_simple_codeandname_list($sql, "PARAM_$index", $dummy);
+					break;
+				case 'QUOTATIONS':
+					$sql = "SELECT ".TB_PREF."sales_orders.order_no, concat(".TB_PREF."sales_orders.order_no, '-',
+						".TB_PREF."debtors_master.name) as IName
+						FROM ".TB_PREF."debtors_master, ".TB_PREF."sales_orders WHERE ".TB_PREF."debtors_master.debtor_no=".TB_PREF."sales_orders.debtor_no 
+						AND ".TB_PREF."sales_orders.trans_type=32 ORDER BY ".TB_PREF."sales_orders.order_no DESC";
 					$st .= dup_simple_codeandname_list($sql, "PARAM_$index", $dummy);
 					break;
 				case 'PO':

@@ -23,7 +23,7 @@ include_once($path_to_root . "/taxes/tax_calc.inc");
 
 class cart
 {
-	var $trans_type; // invoice, order, delivery note ...
+	var $trans_type; // invoice, order, quotation, delivery note ...
 	var $trans_no = array();// array (num1=>ver1,..) or 0 for new
 	var $so_type = 0;		// for sales order: simple=0 template=1
 	var $cart_id;		// used to detect multi-tab edition conflits
@@ -82,7 +82,10 @@ class cart
 		/*Constructor function initialises a new shopping cart */
 		$this->line_items = array();
 		$this->sales_type = "";
-		$this->trans_type = 30;
+		if ($type == 32)
+			$this->trans_type = $type;
+		else	
+			$this->trans_type = 30;
 		$this->dimension_id = 0;
 		$this->dimension2_id = 0;
 		$this->read($type, $trans_no, $view );
@@ -96,8 +99,8 @@ class cart
 
 		if (!is_array($trans_no)) $trans_no = array($trans_no);
 		if ($trans_no[0]) {
-			if ($type == 30) { // sales order
-				read_sales_order($trans_no[0], $this);
+			if ($type == 30 || $type == 32) { // sales order || sales quotation
+				read_sales_order($trans_no[0], $this, $type);
 				if ($view) {	// prepare for DN/IV entry
 					for($line_no = 0; $line_no < count($this->line_items); $line_no++) {
 						$line = &$this->line_items[$line_no];
@@ -108,7 +111,7 @@ class cart
 			} else {	// derivative transaction
 					read_sales_trans($type, $trans_no, $this);
 					if ($this->order_no) { // free hand credit notes have no order_no
-						$sodata = get_sales_order_header($this->order_no);
+						$sodata = get_sales_order_header($this->order_no, 30);
 						$this->cust_ref = $sodata["customer_ref"];
 					// currently currency is hard linked to debtor account
 					//	$this->customer_currency = $sodata["curr_code"];
@@ -120,7 +123,7 @@ class cart
 						$src_details = 0;
 						if ($src_type == 30) { // get src data from sales_orders
 							$this->src_docs = array( $sodata['order_no']=>$sodata['version']);
-							$srcdetails = get_sales_order_details($this->order_no);
+							$srcdetails = get_sales_order_details($this->order_no, 30);
 						} else {	// get src_data from debtor_trans
 							$this->src_docs = get_customer_trans_version($src_type, get_parent_trans($type,$trans_no[0]));
 							$srcdetails = get_customer_trans_details($src_type,array_keys($this->src_docs));
@@ -155,7 +158,7 @@ class cart
 				if (!is_date_in_fiscalyear($this->document_date))
 					$this->document_date = end_fiscalyear();
 				$this->reference = references::get_next($this->trans_type);
-				if ($type != 30) // Added 2.1 Joe Hunt 2008-11-12
+				if ($type != 30 && $type != 32) // Added 2.1 Joe Hunt 2008-11-12
 				{
 					$dim = get_company_pref('use_dimension');
 					if ($dim > 0)
@@ -236,6 +239,7 @@ class cart
 			case 13:
 				return write_sales_delivery($this, $policy);
 			case 30:
+			case 32:
 				if ($this->trans_no==0)	// new document
 					return add_sales_order($this);
 				else

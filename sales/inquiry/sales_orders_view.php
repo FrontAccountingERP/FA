@@ -23,27 +23,40 @@ if ($use_popup_windows)
 if ($use_date_picker)
 	$js .= get_js_date_picker();
 
-if (isset($_GET['OutstandingOnly']) && ($_GET['OutstandingOnly'] == true))
+if (get_post('type'))
+	$trans_type = $_POST['type'];
+elseif (isset($_GET['type']) && $_GET['type'] == 32)
+	$trans_type = 32;
+else
+	$trans_type = 30;
+if ($trans_type == 30)
 {
-	$_POST['order_view_mode'] = 'OutstandingOnly';
-	$_SESSION['page_title'] = _("Search Outstanding Sales Orders");
+	if (isset($_GET['OutstandingOnly']) && ($_GET['OutstandingOnly'] == true))
+	{
+		$_POST['order_view_mode'] = 'OutstandingOnly';
+		$_SESSION['page_title'] = _("Search Outstanding Sales Orders");
+	}
+	elseif (isset($_GET['InvoiceTemplates']) && ($_GET['InvoiceTemplates'] == true))
+	{
+		$_POST['order_view_mode'] = 'InvoiceTemplates';
+		$_SESSION['page_title'] = _("Search Template for Invoicing");
+	}
+	elseif (isset($_GET['DeliveryTemplates']) && ($_GET['DeliveryTemplates'] == true))
+	{
+		$_POST['order_view_mode'] = 'DeliveryTemplates';
+		$_SESSION['page_title'] = _("Select Template for Delivery");
+	}
+	elseif (!isset($_POST['order_view_mode']))
+	{
+		$_POST['order_view_mode'] = false;
+		$_SESSION['page_title'] = _("Search All Sales Orders");
+	}
 }
-elseif (isset($_GET['InvoiceTemplates']) && ($_GET['InvoiceTemplates'] == true))
+else
 {
-	$_POST['order_view_mode'] = 'InvoiceTemplates';
-	$_SESSION['page_title'] = _("Search Template for Invoicing");
+	$_POST['order_view_mode'] = "Quotations";
+	$_SESSION['page_title'] = _("Search All Sales Quotations");
 }
-elseif (isset($_GET['DeliveryTemplates']) && ($_GET['DeliveryTemplates'] == true))
-{
-	$_POST['order_view_mode'] = 'DeliveryTemplates';
-	$_SESSION['page_title'] = _("Select Template for Delivery");
-}
-elseif (!isset($_POST['order_view_mode']))
-{
-	$_POST['order_view_mode'] = false;
-	$_SESSION['page_title'] = _("Search All Sales Orders");
-}
-
 page($_SESSION['page_title'], false, false, "", $js);
 
 if (isset($_GET['selected_customer']))
@@ -80,30 +93,43 @@ function check_overdue($row)
 
 function view_link($dummy, $order_no)
 {
-	return  get_customer_trans_view_str(systypes::sales_order(), $order_no);
+	global $trans_type;
+	return  get_customer_trans_view_str($trans_type, $order_no);
 }
 
 function prt_link($row)
 {
-	return print_document_link($row['order_no'], _("Print"), true, 30, ICON_PRINT);
+	global $trans_type;
+	return print_document_link($row['order_no'], _("Print"), true, $trans_type, ICON_PRINT);
 }
 
 function edit_link($row) 
 {
+	global $trans_type;
+	$modify = ($trans_type == 30 ? "ModifyOrderNumber" : "ModifyQuotationNumber");
   return pager_link( _("Edit"),
-    "/sales/sales_order_entry.php?ModifyOrderNumber=" . $row['order_no'], ICON_EDIT);
+    "/sales/sales_order_entry.php?$modify=" . $row['order_no'], ICON_EDIT);
 }
 
 function dispatch_link($row)
 {
-  return pager_link( _("Dispatch"),
-	"/sales/customer_delivery.php?OrderNumber=" .$row['order_no'], ICON_DOC);
+	global $trans_type;
+	if ($trans_type == 30)
+  		return pager_link( _("Dispatch"),
+			"/sales/customer_delivery.php?OrderNumber=" .$row['order_no'], ICON_DOC);
+	else		
+  		return pager_link( _("Sales Order"),
+			"/sales/sales_order_entry.php?OrderNumber=" .$row['order_no'], ICON_DOC);
 }
 
 function invoice_link($row)
 {
-  return pager_link( _("Invoice"),
-	"/sales/sales_order_entry.php?NewInvoice=" .$row["order_no"], ICON_DOC);
+	global $trans_type;
+	if ($trans_type == 30)
+  		return pager_link( _("Invoice"),
+			"/sales/sales_order_entry.php?NewInvoice=" .$row["order_no"], ICON_DOC);
+	else
+		return '';
 }
 
 function delivery_link($row)
@@ -112,8 +138,17 @@ function delivery_link($row)
 	"/sales/sales_order_entry.php?NewDelivery=" .$row['order_no'], ICON_DOC);
 }
 
+function order_link($row)
+{
+  return pager_link( _("Sales Order"),
+	"/sales/sales_order_entry.php?NewQuoteToSalesOrder=" .$row['order_no'], ICON_DOC);
+}
+
 function tmpl_checkbox($row)
 {
+	global $trans_type;
+	if ($trans_type == 32)
+		return '';
 	$name = "chgtpl" .$row['order_no'];
 	$value = $row['type'] ? 1:0;
 
@@ -187,6 +222,7 @@ stock_items_list_cells(_("Item:"), 'SelectStockFromList', null, true);
 submit_cells('SearchOrders', _("Search"),'',_('Select documents'), 'default');
 
 hidden('order_view_mode', $_POST['order_view_mode']);
+hidden('type', $trans_type);
 
 end_row();
 
@@ -197,6 +233,7 @@ end_form();
 //
 $sql = "SELECT 
 		sorder.order_no,
+		sorder.reference,
 		debtor.name,
 		branch.br_name,"
 		.($_POST['order_view_mode']=='InvoiceTemplates' 
@@ -215,6 +252,8 @@ $sql = "SELECT
 		.TB_PREF."debtors_master as debtor, "
 		.TB_PREF."cust_branch as branch
 		WHERE sorder.order_no = line.order_no
+		AND sorder.trans_type = line.trans_type
+		AND sorder.trans_type = $trans_type
 		AND sorder.debtor_no = debtor.debtor_no
 		AND sorder.branch_code = branch.branch_code
 		AND debtor.debtor_no = branch.debtor_no";
@@ -257,19 +296,34 @@ else	// ... or select inquiry constraints
 				sorder.deliver_to";
 }
 
-$cols = array(
-	_("Order #") => array('fun'=>'view_link'),
-	_("Customer"),
-	_("Branch"), 
-	_("Cust Order Ref"),
-	_("Order Date") => 'date',
-	_("Required By") =>array('type'=>'date', 'ord'=>''),
-	_("Delivery To"), 
-	_("Order Total") => array('type'=>'amount', 'ord'=>''),
-	'Type' => 'skip',
-	_("Currency") => array('align'=>'center')
-);
-
+if ($trans_type == 30)
+	$cols = array(
+		_("Order #") => array('fun'=>'view_link'),
+		_("Ref"),
+		_("Customer"),
+		_("Branch"), 
+		_("Cust Order Ref"),
+		_("Order Date") => 'date',
+		_("Required By") =>array('type'=>'date', 'ord'=>''),
+		_("Delivery To"), 
+		_("Order Total") => array('type'=>'amount', 'ord'=>''),
+		'Type' => 'skip',
+		_("Currency") => array('align'=>'center')
+	);
+else
+	$cols = array(
+		_("Quote #") => array('fun'=>'view_link'),
+		_("Ref"),
+		_("Customer"),
+		_("Branch"), 
+		_("Cust Order Ref"),
+		_("Quote Date") => 'date',
+		_("Valid until") =>array('type'=>'date', 'ord'=>''),
+		_("Delivery To"), 
+		_("Quote Total") => array('type'=>'amount', 'ord'=>''),
+		'Type' => 'skip',
+		_("Currency") => array('align'=>'center')
+	);
 if ($_POST['order_view_mode'] == 'OutstandingOnly') {
 	//array_replace($cols, 3, 1, _("Cust Order Ref"));
 	array_append($cols, array(array('insert'=>true, 'fun'=>'dispatch_link')));
@@ -284,7 +338,12 @@ if ($_POST['order_view_mode'] == 'OutstandingOnly') {
 			array('insert'=>true, 'fun'=>'delivery_link'))
 	);
 
-} else {
+} elseif ($trans_type == 32) {
+	 array_append($cols,array(
+					array('insert'=>true, 'fun'=>'edit_link'),
+					array('insert'=>true, 'fun'=>'order_link'),
+					array('insert'=>true, 'fun'=>'prt_link')));
+} elseif ($trans_type == 30) {
 	 array_append($cols,array(
 			_("Tmpl") => array('insert'=>true, 'fun'=>'tmpl_checkbox'),
 					array('insert'=>true, 'fun'=>'edit_link'),

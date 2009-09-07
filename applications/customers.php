@@ -17,6 +17,7 @@
 			$this->application("orders",_("&Sales"));
 		
 			$this->add_module(_("Transactions"));
+			$this->add_lapp_function(0, _("Sales &Quotation Entry"),"sales/sales_order_entry.php?NewQuotation=Yes");
 			$this->add_lapp_function(0, _("Sales &Order Entry"),"sales/sales_order_entry.php?NewOrder=Yes");
 			$this->add_lapp_function(0, _("Direct &Delivery"),"sales/sales_order_entry.php?NewDelivery=0");			
 			$this->add_lapp_function(0, _("Direct &Invoice"),"sales/sales_order_entry.php?NewInvoice=0");
@@ -33,7 +34,8 @@
 			$this->add_rapp_function(0, _("&Allocate Customer Payments or Credit Notes"),"sales/allocations/customer_allocation_main.php?");
 
 			$this->add_module(_("Inquiries and Reports"));
-			$this->add_lapp_function(1, _("Sales Order &Inquiry"),"sales/inquiry/sales_orders_view.php?");
+			$this->add_lapp_function(1, _("Sales Quotation I&nquiry"),"sales/inquiry/sales_orders_view.php?type=32");
+			$this->add_lapp_function(1, _("Sales Order &Inquiry"),"sales/inquiry/sales_orders_view.php?type=30");
 			$this->add_lapp_function(1, _("Customer Transaction &Inquiry"),"sales/inquiry/customer_inquiry.php?");
 			$this->add_lapp_function(1, "","");
 			$this->add_lapp_function(1, _("Customer Allocation &Inquiry"),"sales/inquiry/customer_allocation_inquiry.php?");

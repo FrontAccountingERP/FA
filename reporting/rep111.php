@@ -15,7 +15,7 @@ $page_security = $_POST['PARAM_0'] == $_POST['PARAM_1'] ?
 // $ Revision:	2.0 $
 // Creator:	Joe Hunt
 // date_:	2005-05-19
-// Title:	Print Sales Orders
+// Title:	Print Sales Quotations
 // ----------------------------------------------------------------
 $path_to_root="..";
 
@@ -26,11 +26,9 @@ include_once($path_to_root . "/sales/includes/sales_db.inc");
 
 //----------------------------------------------------------------------------------------------------
 
-print_sales_orders();
+print_sales_quotations();
 
-$print_as_quote = 0;
-
-function print_sales_orders()
+function print_sales_quotations()
 {
 	global $path_to_root, $print_as_quote;
 
@@ -41,8 +39,7 @@ function print_sales_orders()
 	$currency = $_POST['PARAM_2'];
 	$bankaccount = $_POST['PARAM_3'];
 	$email = $_POST['PARAM_4'];
-	$print_as_quote = $_POST['PARAM_5'];
-	$comments = $_POST['PARAM_6'];
+	$comments = $_POST['PARAM_5'];
 
 	if ($from == null)
 		$from = 0;
@@ -63,10 +60,7 @@ function print_sales_orders()
 
 	if ($email == 0)
 	{
-		if ($print_as_quote == 0)
-			$rep = new FrontReport(_("SALES ORDER"), "SalesOrderBulk", user_pagesize());
-		else
-			$rep = new FrontReport(_("QUOTE"), "QuoteBulk", user_pagesize());
+		$rep = new FrontReport(_("SALES QUOTATION"), "SalesQuotationBulk", user_pagesize());
 		$rep->currency = $cur;
 		$rep->Font();
 		$rep->Info($params, $cols, null, $aligns);
@@ -74,30 +68,20 @@ function print_sales_orders()
 
 	for ($i = $from; $i <= $to; $i++)
 	{
-		$myrow = get_sales_order_header($i, 30);
+		$myrow = get_sales_order_header($i, 32);
 		$branch = get_branch($myrow["branch_code"]);
 		if ($email == 1)
 		{
 			$rep = new FrontReport("", "", user_pagesize());
 			$rep->currency = $cur;
 			$rep->Font();
-			if ($print_as_quote == 1)
-			{
-				$rep->title = _('QUOTE');
-				$rep->filename = "Quote" . $i . ".pdf";
-			}
-			else
-			{
-				$rep->title = _("SALES ORDER");
-				$rep->filename = "SalesOrder" . $i . ".pdf";
-			}
+			$rep->filename = "SalesQuotation" . $i . ".pdf";
 			$rep->Info($params, $cols, null, $aligns);
 		}
-		else
-			$rep->title = ($print_as_quote==1 ? _("QUOTE") : _("SALES ORDER"));
-		$rep->Header2($myrow, $branch, $myrow, $baccount, 9);
+		$rep->title = _("SALES QUOTATION");
+		$rep->Header2($myrow, $branch, $myrow, $baccount, 7);
 
-		$result = get_sales_order_details($i, 30);
+		$result = get_sales_order_details($i, 32);
 		$SubTotal = 0;
 		while ($myrow2=db_fetch($result))
 		{

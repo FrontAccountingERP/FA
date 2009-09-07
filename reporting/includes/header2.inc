@@ -119,7 +119,7 @@
 		$this->row = $adrline;
 		$this->NewLine(3);
 		$this->Text($mcol + 100, $doc_Date.":");
-		if ($doctype == 8 || $doctype == 9)
+		if ($doctype == 7 || $doctype == 8 || $doctype == 9)
 			$this->Text($mcol + 180, sql2date($myrow['ord_date']));
 		elseif ($doctype == 26)	
 			$this->Text($mcol + 180, sql2date($myrow['date_']));
@@ -127,7 +127,7 @@
 			$this->Text($mcol + 180, sql2date($myrow['tran_date']));
 		$this->NewLine();
 		$this->Text($mcol + 100, $doc_Invoice_no);
-		if ($doctype == 8 || $doctype == 9) // PO or SO
+		if ($doctype == 7 || $doctype == 8 || $doctype == 9) // QUOTE, PO or SO
 			$this->Text($mcol + 180, $myrow['order_no']);
 		elseif ($doctype == 26)	
 			$this->Text($mcol + 180, $myrow['id']);
@@ -150,7 +150,7 @@
 		$this->row = $this->row - $this->lineHeight - 5;
 
 		$temp = $this->row;
-		if ($doctype == 9)
+		if ($doctype == 7 || $doctype == 9)
 		{
 			$this->Text($ccol, $myrow['name'], $icol);
 		}
@@ -258,7 +258,7 @@
 			$this->TextWrap($col, $this->row, $width, $row["terms"], 'C');
 		}	
 		$col += $width;	
-		if ($doctype == 9)
+		if ($doctype == 9 || $doctype == 7)
 			$this->TextWrap($col, $this->row, $width, sql2date($myrow['delivery_date']), 'C');
 		elseif ($doctype == 26)	
 			$this->TextWrap($col, $this->row, $width, $myrow["units_issued"], 'C');

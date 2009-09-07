@@ -85,7 +85,7 @@ function print_invoices()
 			$branch = get_branch($myrow["branch_code"]);
 			$branch['disable_branch'] = $paylink; // helper
 			if ($j == 10)
-				$sales_order = get_sales_order_header($myrow["order_"]);
+				$sales_order = get_sales_order_header($myrow["order_"], 30);
 			else
 				$sales_order = null;
 			if ($email == 1)

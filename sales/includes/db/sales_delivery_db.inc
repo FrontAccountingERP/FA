@@ -157,7 +157,7 @@ function void_sales_delivery($type, $type_no)
 	$order = get_customer_trans_order($type, $type_no);
 
 	if ($order) {
-		$order_items = get_sales_order_details($order);
+		$order_items = get_sales_order_details($order, 30);
 		while ($row = db_fetch($items_result)) {
 			$order_line = db_fetch($order_items);
 			update_parent_line(13, $order_line['id'], -$row['quantity']);

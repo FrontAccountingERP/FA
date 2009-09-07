@@ -31,6 +31,7 @@ $systypes_array = array (
                     28=> array ('name' => _("Work Order Issue")),
                     29=> array ('name' => _("Work Order Production")),
                     30=> array ('name' => _("Sales Order")),
+                    32=> array ('name' => _("Sales Quotations")),
                     35=> array ('name' => _("Cost Update")),
                     40=> array ('name' => _("Dimension"))
 		 			);
@@ -95,6 +96,11 @@ class systypes
 	function sales_order() 
 	{
 		return 30;
+	}
+
+	function sales_quotation() 
+	{
+		return 32;
 	}
 
 	function cost_update() 

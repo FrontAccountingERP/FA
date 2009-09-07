@@ -81,7 +81,7 @@ function get_customer_trans_view_str($type, $trans_no, $label="", $icon=false,
 		$viewer .= "view_receipt.php";
 	elseif ($type == 13)
 		$viewer .= "view_dispatch.php";
-	elseif ($type == 30)
+	elseif ($type == 30 || $type == 32)
 		$viewer .= "view_sales_order.php";
 	else
 		return null;
@@ -96,7 +96,7 @@ function get_customer_trans_view_str($type, $trans_no, $label="", $icon=false,
 		$lbl = $trans;
 	if($preview_str!='') $preview_str .= ',';
 
-	$preview_str .= viewer_link($lbl, $viewer."?trans_no=$trans", 
+	$preview_str .= viewer_link($lbl, $viewer."?trans_no=$trans&trans_type=$type", 
 		$class, $id, $icon);
 
   }
