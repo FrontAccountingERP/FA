@@ -19,6 +19,20 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+08-Sep-2009 Janusz Dobrowolski
++ Added detection of partial db upgrade.
+$ /admin/inst_upgrade.php
+  /sql/alter2.1.php
+  /sql/alter2.2.php
+# Small fixes to db upgrade for quotations
+$ /sql/alter2.2.php
+  /sql/alter2.2.sql
+# Added missing sys info for quotations, fixed reference for SO
+$ /includes/systypes.inc
+# Removed obsolete field in sys_types
+$ /sql/en_US-demo.sql
+  /sql/en_US-new.sql
+
 08-Sep-2009 Joe Hunt
 + Added Sales Quotations, inquiry and report
 $ /applications/customers.php
