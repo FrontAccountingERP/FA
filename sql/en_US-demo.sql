@@ -1698,7 +1698,6 @@ DROP TABLE IF EXISTS `0_sys_types`;
 
 CREATE TABLE `0_sys_types` (
   `type_id` smallint(6) NOT NULL default '0',
-  `type_name` varchar(60) NOT NULL default '',
   `type_no` int(11) NOT NULL default '1',
   `next_reference` varchar(100) NOT NULL default '',
   PRIMARY KEY  (`type_id`)
