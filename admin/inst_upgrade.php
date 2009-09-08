@@ -96,7 +96,8 @@ function upgrade_step($index, $conn)
 	$force = get_post('force_'.$index);
 	if ($force || get_post('install_'.$index)) 
 	{
-		if (!$inst->installed($pref) || $force) 
+		$state = $inst->installed($pref);
+		if (!$state || $force) 
 		{
 			if (!$inst->pre_check($pref)) return false;
 
@@ -104,7 +105,11 @@ function upgrade_step($index, $conn)
 				$ret &= db_import($path_to_root.'/sql/'.$sql, $conn, $force);
 
 			$ret &= $inst->install($pref, $force);
-		}
+		} else
+			if ($state!==true) {
+				display_error(_("Upgrade cannot be done because database has been already partially upgraded. Please downgrade database to clean previous version or try forced upgrade."));
+				$ret = false;
+			}
 	}
 	return $ret;
 }
@@ -168,6 +173,7 @@ $th = array(_("Version"), _("Description"), _("Sql file"), _("Install"),
 table_header($th);
 
 $k = 0; //row colour counter
+$partial = 0;
 foreach($installers as $i => $inst)
 {
 	alt_table_row_color($k);
@@ -178,14 +184,27 @@ foreach($installers as $i => $inst)
 // this is checked only for first (site admin) company, 
 // but in fact we should always upgrade all data sets after
 // source upgrade.
-	if ($inst->installed(TB_PREF))
+	$check = $inst->installed(TB_PREF);
+	if ($check === true)
 		label_cell(_("Installed"));
-	else
-		check_cells(null,'install_'.$i, 0);
+	else 
+		if (!$check)
+			check_cells(null,'install_'.$i, 0);
+		else {
+			label_cell("<span class=redfg>"
+				. sprintf(_("Partially installed (%s)"), $check) . "</span>");
+			$partial++;
+		}
+
 	check_cells(null,'force_'.$i, 0);
 	end_row();
 }
 end_table(1);
+if ($partial!=0)	{
+	display_note(_("Database upgrades marked as partially installed cannot be installed automatically.
+You have to clean database manually to enable them, or try to perform forced upgrade."));
+	br();
+}
 submit_center('Upgrade', _('Upgrade system'), true, _('Save database and perform upgrade'), 'process');
 end_form();
 
