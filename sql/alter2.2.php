@@ -81,7 +81,27 @@ class fa2_2 {
 			}
 		  }
 		}
-*/		
+*/
+	
+	if (!($ret = db_query("SELECT MAX(`order_no`) FROM `{$pref}sales_orders`")) ||
+		!db_num_rows($ret))
+	{
+		display_error(_('Cannot query max sales order number.'));
+		return false;
+	} 
+	$row = db_fetch($ret);
+	$max_order = $row[0];
+	$next_ref = $max_order+1;
+	$sql = "UPDATE `{$pref}sys_types` 
+		SET `type_no`='$max_order', 
+			`next_reference`='$next_ref'
+		WHERE `type_id`=30";
+	if(!db_query($sql))
+	{
+		display_error(_('Cannot store next sales order reference.'));
+		return false;
+	}
+
 	return convert_roles($pref);
 	}
 	//
@@ -96,13 +116,22 @@ class fa2_2 {
 	//	Test if patch was applied before.
 	//
 	function installed($pref) {
-		if (check_table($pref, 'company', 'login_tout')) return false;
-		if (check_table($pref, 'stock_category', 'dflt_dim2')) return false;
-		if (check_table($pref, 'users', 'sticky_doc_date')) return false;
-		if (check_table($pref, 'audit_trail')) return false;
-		if (check_table($pref, 'stock_master','no_sale')) return false;
-		if (check_table($pref, 'users', 'role_id')) return false;
-			return true;
+		$n = 14; // number of features to be installed
+		if (check_table($pref, 'company', 'custom1_name')) $n--;
+		if (!check_table($pref, 'company', 'profit_loss_year_act')) $n--;
+		if (!check_table($pref, 'company', 'login_tout')) $n--;
+		if (!check_table($pref, 'stock_category', 'dflt_no_sale')) $n--;
+		if (!check_table($pref, 'users', 'sticky_doc_date')) $n--;
+		if (!check_table($pref, 'users', 'startup_tab')) $n--;
+		if (!check_table($pref, 'cust_branch', 'inactive')) $n--;
+		if (!check_table($pref, 'chart_class', 'ctype')) $n--;
+		if (!check_table($pref, 'audit_trail')) $n--;
+		if (!check_table($pref, 'currencies', 'auto_update')) $n--;
+		if (!check_table($pref, 'stock_master','no_sale')) $n--;
+		if (!check_table($pref, 'suppliers', 'supp_ref')) $n--;
+		if (!check_table($pref, 'users', 'role_id')) $n--;
+		if (!check_table($pref, 'sales_orders', 'reference')) $n--;
+		return $n == 0 ? true : 14 - $n;
 	}
 };
 

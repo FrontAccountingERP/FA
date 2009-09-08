@@ -104,5 +104,5 @@ ALTER TABLE `0_sales_orders` ADD COLUMN `trans_type` SMALLINT(6) NOT NULL DEFAUL
 ALTER TABLE `0_sales_orders` ADD COLUMN `reference` varchar(100) NOT NULL DEFAULT '' AFTER `branch_code`;
 ALTER TABLE `0_sales_orders` DROP PRIMARY KEY;
 ALTER TABLE `0_sales_orders` ADD PRIMARY KEY ( `trans_type` , `order_no` ); 
-UPDATE `0_sys_types` SET `type_no`=(SELECT MAX(`order_no`) FROM `0_sales_orders`), `next_reference`=(SELECT MAX(`order_no`)+1 FROM `0_sales_orders`) WHERE `type_id`=30;
+UPDATE `0_sales_orders`	SET `reference`=`order_no` WHERE 1;
 INSERT INTO `0_sys_types` (`type_id`, `type_no`, `next_reference`) VALUES (32, 0, '1');
