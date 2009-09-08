@@ -123,8 +123,10 @@ function is_overdue($row)
 
 function edit_link($row)
 {
-	return $row["closed"] ?  '' :
-		pager_link(_("Edit"),
+	//return $row["closed"] ?  '' :
+	//	pager_link(_("Edit"),
+	//		"/dimensions/dimension_entry.php?trans_no=" . $row["id"], ICON_EDIT);
+	return pager_link(_("Edit"),
 			"/dimensions/dimension_entry.php?trans_no=" . $row["id"], ICON_EDIT);
 }
 

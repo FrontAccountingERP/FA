@@ -49,6 +49,10 @@ $ /applications/customers.php
   /sql/alter2.2.sql
   /sql/en_US-demo.sql
   /sql/en_US-new.sql
+! Allow re-opening of Dimensions
+$ /dimensions/dimension_entry.php
+  /dimensions/includes/dimensions_db.inc
+  /dimensions/inquiry/search_dimensions.php
   
 01-Sep-2009 Janusz Dobrowolski
 # Fixed security sections db update.

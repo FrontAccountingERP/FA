@@ -78,6 +78,16 @@ if (isset($_GET['ClosedID']))
 	safe_exit();
 }
 
+//---------------------------------------------------------------------------------------
+
+if (isset($_GET['ReopenedID'])) 
+{
+	$id = $_GET['ReopenedID'];
+
+	display_notification_centered(_("The dimension has been re-opened. ") . " #$id");
+	safe_exit();
+}
+
 //-------------------------------------------------------------------------------------------------
 
 function safe_exit()
@@ -198,6 +208,13 @@ if (isset($_POST['close']))
 	meta_forward($_SERVER['PHP_SELF'], "ClosedID=$selected_id");
 }
 
+if (isset($_POST['reopen'])) 
+{
+
+	// update the closed flag
+	reopen_dimension($selected_id);
+	meta_forward($_SERVER['PHP_SELF'], "ReopenedID=$selected_id");
+}
 //-------------------------------------------------------------------------------------
 
 start_form();
@@ -215,11 +232,11 @@ if ($selected_id != -1)
 	}
 
 	// if it's a closed dimension can't edit it
-	if ($myrow["closed"] == 1) 
-	{
-		display_error(_("This dimension is closed and cannot be edited."));
-		display_footer_exit();
-	}
+	//if ($myrow["closed"] == 1) 
+	//{
+	//	display_error(_("This dimension is closed and cannot be edited."));
+	//	display_footer_exit();
+	//}
 
 	$_POST['ref'] = $myrow["reference"];
 	$_POST['closed'] = $myrow["closed"];
@@ -254,11 +271,17 @@ textarea_row(_("Memo:"), 'memo_', null, 40, 5);
 
 end_table(1);
 
+if (isset($_POST['closed']) && $_POST['closed'] == 1)
+	display_note(_("This Dimension is closed."), 0, 0, "class='currentfg'");
+
 if ($selected_id != -1) 
 {
 	echo "<br>";
 	submit_center_first('UPDATE_ITEM', _("Update"), _('Save changes to dimension'), 'default');
-	submit('close', _("Close This Dimension"), true, _('Mark this dimension as closed'), true);
+	if ($_POST['closed'] == 1)
+		submit('reopen', _("Re-open This Dimension"), true, _('Mark this dimension as re-opened'), true);
+	else	
+		submit('close', _("Close This Dimension"), true, _('Mark this dimension as closed'), true);
 	submit_center_last('delete', _("Delete This Dimension"), _('Delete unused dimension'), true);
 }
 else

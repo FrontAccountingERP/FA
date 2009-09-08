@@ -142,4 +142,10 @@ function close_dimension($id)
 
 //--------------------------------------------------------------------------------------
 
+function reopen_dimension($id)
+{
+	$sql = "UPDATE ".TB_PREF."dimensions SET closed='0' WHERE id = $id";
+	db_query($sql, "could not close dimension");
+}
+
 ?>
