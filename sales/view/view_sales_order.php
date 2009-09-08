@@ -191,6 +191,8 @@ if ($_GET['trans_type'] != 32)
 	end_table();
 }
 echo "<center>";
+if ($_SESSION['View']->so_type == 1)
+	display_note(_("This Sales Order is used as a Template."), 0, 0, "class='currentfg'");
 display_heading2(_("Line Details"));
 
 start_table("colspan=9 width=95% $table_style");

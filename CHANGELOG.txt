@@ -19,6 +19,14 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+08-Sep-2009 Joe Hunt
+! Changed so voiding and view/print is working with the new Sales Order/Sales Quotation
+$ /admin/view_print_transaction.php
+  /admin/void_transaction.php
+  /admin/db/voiding_db.inc
+  /sales/includes/db/sales_order_db.inc
+  /sales/view/view_sales_order.php
+  
 08-Sep-2009 Janusz Dobrowolski
 + Added detection of partial db upgrade.
 $ /admin/inst_upgrade.php

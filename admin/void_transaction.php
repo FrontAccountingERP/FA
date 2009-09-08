@@ -66,6 +66,7 @@ function exist_transaction($type, $type_no)
 				return false;
 			break;
 
+		case 18 : // it's a PO
 		case 25 : // it's a GRN
 			return false;
 		case 20 : // it's a suppler invoice
@@ -90,6 +91,9 @@ function exist_transaction($type, $type_no)
 				return false;
 			break;
 
+		case 30: // it's a sales order
+		case 32: // it's a sales quotation
+			return false;
 		case systypes::cost_update() : // it's a stock cost update
 			return false;
 			break;
