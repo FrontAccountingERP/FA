@@ -56,8 +56,9 @@ function get_systype_db_info($type)
         case     26 : return array("".TB_PREF."workorders", null, "id", "wo_ref", "released_date");
         case     28 : return array("".TB_PREF."wo_issues", null, "issue_no", "reference", "issue_date");
         case     29 : return array("".TB_PREF."wo_manufacture", null, "id", "reference", "date_");
-        case     30 : return array("".TB_PREF."sales_orders", null, "order_no", "customer_ref", "ord_date");
+        case     30 : return array("".TB_PREF."sales_orders", "trans_type", "order_no", "reference", "ord_date");
         case     31 : return array("".TB_PREF."service_orders", null, "order_no", "cust_ref", "date");
+        case     32 : return array("".TB_PREF."sales_orders", "trans_type", "order_no", "reference", "ord_date");
         case	 40 : return array("".TB_PREF."dimensions", null, "id", "reference", "date_");
         case     35 : return null;
 	}
