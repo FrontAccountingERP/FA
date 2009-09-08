@@ -85,7 +85,7 @@ end_form();
 function check_overdue($row)
 {
 	return (!$row["closed"] 
-		&& date_diff(Today(), sql2date($row["required_by"]), "d") > 0);
+		&& date_diff2(Today(), sql2date($row["required_by"]), "d") > 0);
 }
 
 function view_link($dummy, $order_no)

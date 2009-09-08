@@ -40,6 +40,15 @@ $ /includes/systypes.inc
 # Removed obsolete field in sys_types
 $ /sql/en_US-demo.sql
   /sql/en_US-new.sql
+# date_diff function name changed to date_diff2 for php5.3 compatibility 
+$ /dimensions/inquiry/search_dimensions.php
+  /includes/date_functions.inc
+  /manufacturing/search_work_orders.php
+  /manufacturing/work_order_add_finished.php
+  /manufacturing/work_order_costs.php
+  /sales/sales_order_entry.php
+  /sales/includes/cart_class.inc
+  /sales/includes/ui/sales_order_ui.inc
 
 08-Sep-2009 Joe Hunt
 + Added Sales Quotations, inquiry and report

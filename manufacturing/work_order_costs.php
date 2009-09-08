@@ -89,7 +89,7 @@ function can_process()
 		set_focus('date_');
 		return false;
 	}
-	if (date_diff(sql2date($wo_details["released_date"]), $_POST['date_'], "d") > 0)
+	if (date_diff2(sql2date($wo_details["released_date"]), $_POST['date_'], "d") > 0)
 	{
 		display_error(_("The additional cost date cannot be before the release date of the work order."));
 		set_focus('date_');

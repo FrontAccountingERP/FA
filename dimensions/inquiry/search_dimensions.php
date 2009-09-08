@@ -118,7 +118,7 @@ function sum_dimension($row)
 
 function is_overdue($row)
 {
-	return date_diff(Today(), sql2date($row["due_date"]), "d") > 0;
+	return date_diff2(Today(), sql2date($row["due_date"]), "d") > 0;
 }
 
 function edit_link($row)

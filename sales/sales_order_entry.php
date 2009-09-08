@@ -532,7 +532,7 @@ function create_cart($type, $trans_no)
 			if (!$pos['cash_sale'] || !$pos['credit_sale']) 
 				$doc->pos = -1; // mark not editable payment type
 			else
-				$doc->cash = date_diff($doc->due_date, Today(), 'd')<2;
+				$doc->cash = date_diff2($doc->due_date, Today(), 'd')<2;
 		} else
 			$doc->due_date = $doc->document_date;
 		$doc->reference = references::get_next($doc->trans_type);

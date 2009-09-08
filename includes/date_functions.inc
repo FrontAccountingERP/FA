@@ -418,7 +418,7 @@ function date1_greater_date2 ($date1, $date2)
 }
 
 
-function date_diff ($date1, $date2, $period) 
+function date_diff2 ($date1, $date2, $period) 
 {
 
 /* expects dates in the format specified in $DefaultDateFormat - period can be one of 'd','w','y','m'

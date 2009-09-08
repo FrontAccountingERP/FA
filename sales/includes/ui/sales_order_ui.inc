@@ -114,7 +114,7 @@ function get_customer_details_to_order(&$order, $customer_id, $branch_id)
 	if ($order->trans_type == 10) {
 		$order->due_date = get_invoice_duedate($customer_id, $order->document_date);
 		if ($order->pos != -1)
-			$order->cash = date_diff($order->due_date, Today(), 'd')<2;
+			$order->cash = date_diff2($order->due_date, Today(), 'd')<2;
 	}
 	if($order->cash ) {
 		if($order->pos != -1) {
