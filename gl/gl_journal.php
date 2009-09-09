@@ -239,7 +239,7 @@ function check_item_data()
    		return false;
 	}
 
-	if ($_SESSION["wa_current_user"]->access != 2 && is_bank_account($_POST['code_id'])) 
+	if (!$_SESSION["wa_current_user"]->can_access('SA_BANKJOURNAL') && is_bank_account($_POST['code_id'])) 
 	{
 		display_error(_("You cannot make a journal entry for a bank account. Please use one of the banking functions for bank transactions."));
 		set_focus('code_id');

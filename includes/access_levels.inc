@@ -154,6 +154,7 @@ $security_areas =array(
 	'SA_PURCHASEORDER' => array(SS_PURCH|3, _("Purchase order entry")),
 	'SA_GRN' => array(SS_PURCH|4, _("Purchase receive")),
 	'SA_SUPPLIERINVOICE' => array(SS_PURCH|5, _("Supplier invoices")),
+	'SA_GRNDELETE' => array(SS_PURCH|9, _("Deleting GRN items during invoice entry")),
 	'SA_SUPPLIERCREDIT' => array(SS_PURCH|6, _("Supplier credit notes")),
 	'SA_SUPPLIERPAYMNT' => array(SS_PURCH|7, _("Supplier payments")),
 	'SA_SUPPLIERALLOC' => array(SS_PURCH|8, _("Supplier payments allocations")),
@@ -225,6 +226,7 @@ $security_areas =array(
 	'SA_BANKTRANSFER' => array(SS_GL|6, _("Bank account transfers")),
 	'SA_RECONCILE' => array(SS_GL|7, _("Bank reconciliation")),
 	'SA_JOURNALENTRY' => array(SS_GL|8, _("Manual journal entries")),
+	'SA_BANKJOURNAL' => array(SS_GL|11, _("Journal entries to bank related accounts")),
 	'SA_BUDGETENTRY' => array(SS_GL|9, _("Budget edition")),
 	'SA_STANDARDCOST' => array(SS_GL|10, _("Item standard costs")),
 
