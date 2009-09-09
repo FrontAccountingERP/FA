@@ -172,13 +172,10 @@ table_section_title(_("Backup scripts maintenance"));
 	submit_row('view',_("View Backup"), false, '', '', true);
 	submit_row('download',_("Download Backup"), false, '', '', false);
 	submit_row('restore',_("Restore Backup"), false, '','', 'process');
+	submit_js_confirm('restore',_("You are about to restore database from backup file.\nDo you want to continue?"));
 
-	$js = "if(confirm(\""
-		.sprintf(_('You are about to remove %s backup file.<br> Do you want to continue ?'),
-			get_post('cmb_backups'))
-		."\")) { JsHttpRequest.request(\"delete\"); }";
-
-	submit_row('delete', _("Delete Backup"), false, '','', 'dialog');
+	submit_row('delete', _("Delete Backup"), false, '','', true);
+	submit_js_confirm('delete', sprintf(_("You are about to remove selected backup file.\nDo you want to continue ?")));
 	end_table();
 	echo "</td>";
 	end_row();
