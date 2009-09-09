@@ -123,7 +123,7 @@ class current_user
 			return !isset($security_groups) && is_array($this->role_set);
 	}
 
-	function can_access_page($page_level)
+	function can_access($page_level)
 	{
 		global $security_groups, $security_areas;
 
@@ -138,6 +138,11 @@ class current_user
 		// only first registered company has site admin privileges
 		return $code && in_array($code, $this->role_set)
 			&& ($this->company == 0 || ($code&~0xff != SS_SADMIN));
+	}
+
+	function can_access_page($page_level)
+	{
+		return $this->can_access($page_level);
 	}
 
 	function get_db_connection()
