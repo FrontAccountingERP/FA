@@ -339,7 +339,7 @@ function check_allocations()
 	if ($_SESSION['alloc']->type == 21 || $_SESSION['alloc']->type == 22) 
 		$amount = -$amount;
 
-	if ($total_allocated - $amount  > sys_prefs::allocation_settled_allowance())
+	if ($total_allocated - ($amount + input_num('discount'))  > sys_prefs::allocation_settled_allowance())
 	{
 		display_error(_("These allocations cannot be processed because the amount allocated is more than the total amount left to allocate."));
 		return false;

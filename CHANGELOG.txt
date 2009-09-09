@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+10-Swp-2009 Joe Hunt
+! By changing a simple sentence in allocation_cart.inc, the customer/supplier payments works with prompt payment discounts
+$ /includes/ui/allocation_cart.inc
+
 09-Sep-2009 Janusz Dobrowolski
 # Added two special access areas for bank gl postings and grn removal.
 $ /gl/gl_journal.php
