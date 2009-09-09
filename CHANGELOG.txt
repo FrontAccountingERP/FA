@@ -33,6 +33,10 @@ $ /includes/current_user.inc
 $ /admin/users.php
 # Activated javascript confirm dialogs
 $ /js/inserts.js
+# Fixed dialogs containing newlines.
+$ /includes/ui/ui_input.inc
++ Added js confirm dialogs for deleting and restoring backup files.
+$ /admin/backups.php
 
 08-Sep-2009 Joe Hunt
 ! Changed so voiding and view/print is working with the new Sales Order/Sales Quotation
