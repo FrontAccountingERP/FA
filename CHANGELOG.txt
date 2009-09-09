@@ -19,6 +19,21 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+09-Sep-2009 Janusz Dobrowolski
+# Added two special access areas for bank gl postings and grn removal.
+$ /gl/gl_journal.php
+  /gl/includes/ui/gl_journal_ui.inc
+  /includes/access_levels.inc
+  /purchasing/supplier_invoice.php
+  /purchasing/includes/ui/invoice_ui.inc
+  /sql/alter2.2.php
+! Added generic access level checking function can_access().
+$ /includes/current_user.inc
+! Code cleanup
+$ /admin/users.php
+# Activated javascript confirm dialogs
+$ /js/inserts.js
+
 08-Sep-2009 Joe Hunt
 ! Changed so voiding and view/print is working with the new Sales Order/Sales Quotation
 $ /admin/view_print_transaction.php
