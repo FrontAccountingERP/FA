@@ -113,12 +113,8 @@ $result = get_users(check_value('show_inactive'));
 start_form();
 start_table($table_style);
 
-//if ($_SESSION["wa_current_user"]->access == 2)
-	$th = array(_("User login"), _("Full Name"), _("Phone"),
-		_("E-mail"), _("Last Visit"), _("Access Level"), "", "");
-//else		
-//	$th = array(_("User login"), _("Full Name"), _("Phone"),
-//		_("E-mail"), _("Last Visit"), _("Access Level"), "");
+$th = array(_("User login"), _("Full Name"), _("Phone"),
+	_("E-mail"), _("Last Visit"), _("Access Level"), "", "");
 
 inactive_control_column($th);
 table_header($th);	
@@ -133,8 +129,7 @@ while ($myrow = db_fetch($result))
 	$last_visit_date = sql2date($myrow["last_visit_date"]);
 
 	/*The security_headings array is defined in config.php */
-	$not_me = strcasecmp($myrow["user_id"], $_SESSION["wa_current_user"]->username) &&
-    	$_SESSION["wa_current_user"]->access == 2;
+	$not_me = strcasecmp($myrow["user_id"], $_SESSION["wa_current_user"]->username;
 
 	label_cell($myrow["user_id"]);
 	label_cell($myrow["real_name"]);
