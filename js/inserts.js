@@ -220,12 +220,12 @@ var inserts = {
 				return false;
 		    }
 	},
-/*	'button': function(e) {
+	'button': function(e) {
 		if (e.name) {
 			var func = _validate[e.name];
 			var old = e.onclick;
-			if(func) {
-				if (typeof old != 'function') {
+			if(func) { 
+				if (typeof old != 'function' || old == func) { // prevent multiply binding on ajax update
 					e.onclick = func;
 				} else {
 					e.onclick = function() {
@@ -238,7 +238,7 @@ var inserts = {
 			}
 		}
 	},
-*/    '.amount': function(e) {
+    '.amount': function(e) {
 		if(e.onblur==undefined) {
   		  e.onblur = function() {
 			var dec = this.getAttribute("dec");
