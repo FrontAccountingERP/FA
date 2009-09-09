@@ -129,7 +129,7 @@ while ($myrow = db_fetch($result))
 	$last_visit_date = sql2date($myrow["last_visit_date"]);
 
 	/*The security_headings array is defined in config.php */
-	$not_me = strcasecmp($myrow["user_id"], $_SESSION["wa_current_user"]->username;
+	$not_me = strcasecmp($myrow["user_id"], $_SESSION["wa_current_user"]->username);
 
 	label_cell($myrow["user_id"]);
 	label_cell($myrow["real_name"]);
