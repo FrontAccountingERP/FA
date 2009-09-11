@@ -19,7 +19,11 @@ Legend:
 ! -> Note
 $ -> Affected files
 
-10-Swp-2009 Joe Hunt
+11-Sep-2009 Joe Hunt
+! Changed so deleting of fiscal year also handles sales quotations
+$ /admin/fiscalyears.php
+
+10-Sep-2009 Joe Hunt
 ! By changing a simple sentence in allocation_cart.inc, the customer/supplier payments works with prompt payment discounts
 $ /includes/ui/allocation_cart.inc
 # Small typo error in types.inc

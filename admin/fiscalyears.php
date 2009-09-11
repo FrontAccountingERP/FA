@@ -204,20 +204,20 @@ function delete_this_fiscalyear($selected_id)
 	$ref = _("Open Balance");
 	$myrow = get_fiscalyear($selected_id);
 	$to = $myrow['end'];
-	$sql = "SELECT order_no FROM ".TB_PREF."sales_orders WHERE ord_date <= '$to' AND type <> 1"; // don't take the templates
+	$sql = "SELECT order_no, trans_type FROM ".TB_PREF."sales_orders WHERE ord_date <= '$to' AND type <> 1"; // don't take the templates
 	$result = db_query($sql, "Could not retrieve sales orders");
 	while ($row = db_fetch($result))
 	{
-		$sql = "SELECT SUM(qty_sent), SUM(quantity) FROM ".TB_PREF."sales_order_details WHERE order_no = {$row['order_no']}";
+		$sql = "SELECT SUM(qty_sent), SUM(quantity) FROM ".TB_PREF."sales_order_details WHERE order_no = {$row['order_no']} AND trans_type = {$row['trans_type']}";
 		$res = db_query($sql, "Could not retrieve sales order details");
 		$row2 = db_fetch_row($res);
 		if ($row2[0] == $row2[1])
 		{
-			$sql = "DELETE FROM ".TB_PREF."sales_order_details WHERE order_no = {$row['order_no']}";
+			$sql = "DELETE FROM ".TB_PREF."sales_order_details WHERE order_no = {$row['order_no']} AND trans_type = {$row['trans_type']}";
 			db_query($sql, "Could not delete sales order details");
-			$sql = "DELETE FROM ".TB_PREF."sales_orders WHERE order_no = {$row['order_no']}";
+			$sql = "DELETE FROM ".TB_PREF."sales_orders WHERE order_no = {$row['order_no']} AND trans_type = {$row['trans_type']}";
 			db_query($sql, "Could not delete sales order");
-			delete_attachments_and_comments(systypes::sales_order(), $row['order_no']);
+			delete_attachments_and_comments($row['trans_type'], $row['order_no']);
 		}
 	}
 	$sql = "SELECT order_no FROM ".TB_PREF."purch_orders WHERE ord_date <= '$to'";
