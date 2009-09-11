@@ -85,6 +85,14 @@ function check_data()
 //---------------------------------------------------------------------------------------------
 function close_year($year)
 {
+	$co = get_company_prefs();
+	if ($co['retained_earnings_act'] == '' || $co['profit_loss_year_act'] == '')
+	{
+		display_error(_("The Retained Earnings Account or the Profit and Loss Year Account has not been set in System and General GL Setup"));
+		return false;
+	}
+	begin_transaction();
+
 	$myrow = get_fiscalyear($year);
 	$to = $myrow['end'];
 	// retrieve total balances from balance sheet accounts
@@ -96,13 +104,10 @@ function close_year($year)
 	$row = db_fetch_row($result);
 	$balance = round2($row[0], user_price_dec());
 
-	begin_transaction();
 	$to = sql2date($to);
 
 	if ($balance != 0.0)
 	{
-		$co = get_company_prefs();
-
 		$trans_type = systypes::journal_entry();
 		$trans_id = get_next_trans_no($trans_type);
 
@@ -112,8 +117,10 @@ function close_year($year)
 			0, 0, _("Closing Year"), $balance);
 
 	}	
-		close_transactions($to);
-		commit_transaction();
+	close_transactions($to);
+
+	commit_transaction();
+	return true;
 }
 
 function open_year($year)
@@ -130,6 +137,7 @@ function handle_submit()
 {
 	global $selected_id, $Mode;
 
+	$ok = true;
 	if ($selected_id != -1)
 	{
 		if ($_POST['closed'] == 1)
@@ -140,12 +148,15 @@ function handle_submit()
 				set_focus('closed');
 				return false;
 			}	
-			close_year($selected_id);
+			$ok = close_year($selected_id);
 		}	
 		else
 			open_year($selected_id);
-   		update_fiscalyear($selected_id, $_POST['closed']);
-		display_notification(_('Selected fiscal year has been updated'));
+		if ($ok)
+		{
+   			update_fiscalyear($selected_id, $_POST['closed']);
+			display_notification(_('Selected fiscal year has been updated'));
+		}	
 	}
 	else
 	{

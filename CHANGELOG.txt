@@ -21,7 +21,11 @@ $ -> Affected files
 
 11-Sep-2009 Joe Hunt
 ! Changed so deleting of fiscal year also handles sales quotations
+! Check that new closing accounts have been set before closure.
 $ /admin/fiscalyears.php
+! Check that new bank charge account have been set before adding bank charge.
+$ /sales/customer_payments.php
+  /purchasing/supplier_payment.php
 
 10-Sep-2009 Joe Hunt
 ! By changing a simple sentence in allocation_cart.inc, the customer/supplier payments works with prompt payment discounts
