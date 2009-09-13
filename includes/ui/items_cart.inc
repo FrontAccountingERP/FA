@@ -218,7 +218,9 @@ class line_item
 
 	function check_qoh($location, $date_, $reverse)
 	{
-    	if (!sys_prefs::allow_negative_stock())
+		global $SysPrefs;
+		
+    	if (!$SysPrefs->allow_negative_stock())
     	{
 			if (has_stock_holding($this->mb_flag))
 			{

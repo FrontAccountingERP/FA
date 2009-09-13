@@ -18,7 +18,7 @@ class references
 	{
 		add_reference($type, $id, $reference);
 		if ($reference != 'auto')
-			references::save_last($reference, $type);
+			$this->save_last($reference, $type);
 	}
 	
 	function get($type, $id) 
@@ -38,7 +38,7 @@ class references
 	
 	function save_last($reference, $type) 
 	{
-		$next = references::increment($reference);
+		$next = $this->increment($reference);
 		save_next_reference($type, $next);
 	}
 	

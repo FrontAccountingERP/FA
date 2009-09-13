@@ -145,15 +145,15 @@ session_start();
 // this is to fix the "back-do-you-want-to-refresh" issue - thanx PHPFreaks
 header("Cache-control: private");
 
-get_text::init();
+get_text_init();
 
 // Page Initialisation
 if (!isset($_SESSION['languages'])) 
 {
-	language::load_languages(); // sets also default $_SESSION['language']
+	load_languages(); // sets also default $_SESSION['language']
 }
 
-language::set_language($_SESSION['language']->code);
+$_SESSION['language']->set_language($_SESSION['language']->code);
 
 // include $Hooks object if locale file exists
 if(@include_once($path_to_root . "/lang/".$_SESSION['language']->code."/locale.inc")) 
@@ -174,6 +174,10 @@ $Validate = array();
 $Editors = array();
 // page help. Currently help for function keys.
 $Pagehelp = array();
+
+$SysPrefs = new sys_prefs();
+
+$Refs = new references();
 
 // intercept all output to destroy it in case of ajax call
 register_shutdown_function('end_flush');
@@ -217,8 +221,8 @@ if (!$_SESSION["wa_current_user"]->logged_in())
 			// Incorrect password
 			login_fail();
 		}
-		$lang = $_SESSION['language'];
-		language::set_language($_SESSION['language']->code);
+		$lang = &$_SESSION['language'];
+		$lang->set_language($_SESSION['language']->code);
 	}
 }
 

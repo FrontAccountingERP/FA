@@ -19,6 +19,15 @@ $before_box = ''; // temporary container for output html data before error box
 function error_handler($errno, $errstr, $file, $line) {
     global $messages, $go_debug;
 
+	// skip well known warnings we don't care about.
+	// Please use restrainedly to not risk loss of important messages
+	$excluded_warnings = array('html_entity_decode', 'htmlspecialchars');
+	foreach($excluded_warnings as $ref) {
+		if (strpos($errstr, $ref) !== false) {
+			return true;
+		}
+	}
+
 	// error_reporting==0 when messages are set off with @ 
 	if ($errno & error_reporting())
 			$messages[] = array($errno, $errstr, $file, $line);

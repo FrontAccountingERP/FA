@@ -51,7 +51,6 @@ class sys_prefs
 	function default_delivery_required_by() 
 	{
 		return get_company_pref('default_delivery_required');
-		return 1;
 	}
 
 	function default_dimension_required_by() 

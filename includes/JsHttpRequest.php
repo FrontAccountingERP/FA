@@ -230,12 +230,12 @@ class JsHttpRequest
         $result = array();
         if ($isList) {
             foreach ($a as $v) {
-                $result[] = JsHttpRequest::php2js($v);
+                $result[] = $this->php2js($v);
             }
             return '[ ' . join(', ', $result) . ' ]';
         } else {
             foreach ($a as $k => $v) {
-                $result[] = JsHttpRequest::php2js($k) . ': ' . JsHttpRequest::php2js($v);
+                $result[] = $this->php2js($k) . ': ' . $this->php2js($v);
             }
             return '{ ' . join(', ', $result) . ' }';
         }

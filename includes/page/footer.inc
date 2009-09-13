@@ -19,12 +19,12 @@ function page_footer($no_menu=false, $is_index=false)
 	$rend = new renderer();
 	$rend->menu_footer($no_menu, $is_index);
 
-	$edits = "editors = ".JsHttpRequest::php2js($Editors).";";
+	$edits = "editors = ".$Ajax->php2js($Editors).";";
 	$Ajax->addScript('editors', $edits);
 
 	echo "<script>
 		_focus = '" . get_post('_focus') . "';
-		_validate = " . JsHttpRequest::php2js($Validate).";
+		_validate = " . $Ajax->php2js($Validate).";
 		var $edits
 	</script>";
 

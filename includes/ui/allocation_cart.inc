@@ -190,8 +190,8 @@ class allocation
 				exchange_variation($this->type, $this->trans_no,
 					$alloc_item->type, $alloc_item->type_no, $this->date_,
 					$alloc_item->current_allocated,
-					$sup ? payment_person_types::supplier() 
-						: payment_person_types::customer());
+					$sup ? PT_SUPPLIER 
+						: PT_CUSTOMER);
 				
 
 				//////////////////////////////////////////////////////////////
@@ -248,7 +248,7 @@ class allocation_item
 
 function show_allocatable($show_totals) {
 
-	global $table_style;
+	global $table_style, $systypes_array;
 	
     $k = $counter = $total_allocated = 0;
 
@@ -262,7 +262,7 @@ function show_allocatable($show_totals) {
 		foreach ($_SESSION['alloc']->allocs as $alloc_item)
 	    {
 			alt_table_row_color($k);
-    		label_cell(systypes::name($alloc_item->type));
+    		label_cell($systypes_array[$alloc_item->type]);
 	   		label_cell(get_trans_view_str($alloc_item->type, $alloc_item->type_no));
     		label_cell($alloc_item->date_, "align=right");
     		label_cell($alloc_item->due_date, "align=right");
@@ -312,6 +312,8 @@ function show_allocatable($show_totals) {
 
 function check_allocations()
 {
+	global $SysPrefs;
+
 	$total_allocated = 0;
 
 	for ($counter = 0; $counter < $_POST["TotalNumberOfAllocs"]; $counter++)
@@ -339,7 +341,7 @@ function check_allocations()
 	if ($_SESSION['alloc']->type == 21 || $_SESSION['alloc']->type == 22) 
 		$amount = -$amount;
 
-	if ($total_allocated - ($amount + input_num('discount'))  > sys_prefs::allocation_settled_allowance())
+	if ($total_allocated - ($amount + input_num('discount'))  > $SysPrefs->allocation_settled_allowance())
 	{
 		display_error(_("These allocations cannot be processed because the amount allocated is more than the total amount left to allocate."));
 		return false;

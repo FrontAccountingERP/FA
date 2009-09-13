@@ -10,149 +10,80 @@
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
 //----------------------------------------------------------------------------------
+define('ST_JOURNAL', 0);
+
+define('ST_BANKPAYMENT', 1);
+define('ST_BANKDEPOSIT', 2);
+define('ST_BANKTRANSFER', 4);
+
+define('ST_SALESINVOICE', 10);
+define('ST_CUSTCREDIT', 11);
+define('ST_CUSTPAYMENT', 12);
+define('ST_CUSTDELIVERY', 13);
+define('ST_LOCTRANSFER', 16);
+define('ST_INVADJUST', 17);
+define('ST_PURCHORDER', 18);
+define('ST_SUPPINVOICE', 20);
+define('ST_SUPPCREDIT', 21);
+define('ST_SUPPAYMENT', 22);
+define('ST_SUPPRECEIVE', 25);
+
+define('ST_WORKORDER', 26);
+
+define('ST_SALESORDER', 30);
+define('ST_SALESQUOTE', 32);
+define('ST_COSTUPDATE', 35);
+define('ST_DIMENSION', 40);
+
+define('ST_MANUISSUE', 28);
+define('ST_MANURECEIVE', 29);
 
 $systypes_array = array (
-					0=> array ('name' => _("Journal Entry")),
-					1=> array ('name' => _("Bank Payment")),
-					2=> array ('name' => _("Bank Deposit")),
-					4=> array ('name' => _("Funds Transfer")),
-                    10=> array ('name' => _("Sales Invoice")),
-                    11=> array ('name' => _("Customer Credit Note")),
-                    12=> array ('name' => _("Customer Payment")),
-                    13=> array ('name' => _("Delivery Note")),
-                    16=> array ('name' => _("Location Transfer")),
-                    17=> array ('name' => _("Inventory Adjustment")),
-                    18=> array ('name' => _("Purchase Order")),
-                    20=> array ('name' => _("Supplier Invoice")),
-                    21=> array ('name' => _("Supplier Credit Note")),
-                    22=> array ('name' => _("Supplier Payment")),
-                    25=> array ('name' => _("Purchase Order Delivery")),
-                    26=> array ('name' => _("Work Order")),
-                    28=> array ('name' => _("Work Order Issue")),
-                    29=> array ('name' => _("Work Order Production")),
-                    30=> array ('name' => _("Sales Order")),
-                    32=> array ('name' => _("Sales Quotation")),
-                    35=> array ('name' => _("Cost Update")),
-                    40=> array ('name' => _("Dimension"))
-		 			);
-class systypes 
-{
-
-	function journal_entry() 
-	{
-		return 0;
-	}
-
-	function bank_payment() 
-	{
-		return 1;
-	}
-
-	function bank_deposit() 
-	{
-		return 2;
-	}
-
-	function bank_transfer() 
-	{
-		return 4;
-	}
-
-	function cust_payment() 
-	{
-		return 12;
-	}
-
-	function cust_dispatch() 
-	{
-		return 13;
-	}
-
-	function location_transfer() 
-	{
-		return 16;
-	}
-
-	function inventory_adjustment() 
-	{
-		return 17;
-	}
-
-	function po() 
-	{
-		return 18;
-	}
-
-	function supp_payment() 
-	{
-		return 22;
-	}
-
-	function work_order() 
-	{
-		return 26;
-	}
-
-	function sales_order() 
-	{
-		return 30;
-	}
-
-	function sales_quotation() 
-	{
-		return 32;
-	}
-
-	function cost_update() 
-	{
-		return 35;
-	}
-
-	function dimension() 
-	{
-		return 40;
-	}
-
-	function name($index) 
-	{
-		global $systypes_array;
-		if ($index < 0)
-			return '';
-		return $systypes_array[$index]['name'];
-	}
-}
-
-//----------------------------------------------------------------------------------
-
-$bank_account_types_array = array (
-	0=> array ('id' => 0, 'name' => _("Savings Account"), 'ptype' => _("Transfer")),
-	1=> array ('id' => 1, 'name' => _("Chequing Account"),'ptype' => _("Cheque")),
-	2=> array ('id' => 2, 'name' => _("Credit Account"), 'ptype' => _("Credit")),
-	3=> array ('id' => 3, 'name' => _("Cash Account"), 'ptype' => _("Cash"))
+	ST_JOURNAL => _("Journal Entry"),
+	ST_BANKPAYMENT => _("Bank Payment"),
+	ST_BANKDEPOSIT => _("Bank Deposit"),
+	ST_BANKTRANSFER => _("Funds Transfer"),
+	ST_SALESINVOICE => _("Sales Invoice"),
+	ST_CUSTCREDIT => _("Customer Credit Note"),
+	ST_CUSTPAYMENT => _("Customer Payment"),
+	ST_CUSTDELIVERY => _("Delivery Note"),
+	ST_LOCTRANSFER => _("Location Transfer"),
+	ST_INVADJUST => _("Inventory Adjustment"),
+	ST_PURCHORDER => _("Purchase Order"),
+	ST_SUPPINVOICE => _("Supplier Invoice"),
+	ST_SUPPCREDIT => _("Supplier Credit Note"),
+	ST_SUPPAYMENT => _("Supplier Payment"),
+	ST_SUPPRECEIVE => _("Purchase Order Delivery"),
+	ST_WORKORDER => _("Work Order"),
+	ST_MANUISSUE => _("Work Order Issue"),
+	ST_MANURECEIVE => _("Work Order Production"),
+	ST_SALESORDER => _("Sales Order"),
+	ST_SALESQUOTE => _("Sales Quotation"),
+	ST_COSTUPDATE => _("Cost Update"),
+	ST_DIMENSION => _("Dimension")
 	);
 
-class bank_account_types 
-{
+//----------------------------------------------------------------------------------
+define('BT_TRANSFER', 0);
+define('BT_CHEQUE', 1);
+define('BT_CREDIT', 2);
+define('BT_CASH', 3);
 
-	function get_all() 
-	{
-		global $bank_account_types_array;
-		return $bank_account_types_array;;
-	}
+$bank_account_types = array (
+	BT_TRANSFER => _("Savings Account"),
+		_("Chequing Account"),
+		_("Credit Account"),
+		_("Cash Account")
+	);
 
-	function name($index) 
-	{
-		global $bank_account_types_array;
-		return $bank_account_types_array[$index]['name'];
-	}
-	
-	function transfer_type($index) 
-	{
-		global $bank_account_types_array;
-		return $bank_account_types_array[$index]['ptype'];
-	}
-}
+$bank_transfer_types = array(
+	BT_TRANSFER => _("Transfer"),
+			_("Cheque"),
+			_("Credit"),
+			_("Cash")
+	);
 
+//----------------------------------------------------------------------------------
 /* Menu tabs */
 $tabs = array('orders'=>_("Sales"), 'AP'=>_("Purchases"), 'stock'=>_("Items and Inventory"), 'manuf'=>_("Manufacturing"), 
 	'proj'=>_("Dimensions"), 'GL'=>_("Banking and General Ledger"), 'system'=>_("Setup"));
@@ -164,161 +95,97 @@ include_once($path_to_root . "/purchasing/includes/purchasing_db.inc");
 include_once($path_to_root . "/sales/includes/sales_db.inc");
 include_once($path_to_root . "/dimensions/includes/dimensions_db.inc");
 
-$payment_person_types_array = array (
-							0=> array ('id' => 0, 'name' => _("Miscellaneous")),
-							1=> array ('id' => 1, 'name' => _("Work Order")),
-							2=> array ('id' => 2, 'name' => _("Customer")),
-							3=> array ('id' => 3, 'name' => _("Supplier")),
-							4=> array ('id' => 4, 'name' => _("Quick Entry"))
-							);
+define('PT_MISC', 0);
+define('PT_WORKORDER', 1);
+define('PT_CUSTOMER', 2);
+define('PT_SUPPLIER', 3);
+define('PT_QUICKENTRY', 4);
+define('PT_DIMESION', 5);
 
-class payment_person_types 
-{
+$payment_person_types = array (
+	PT_MISC => _("Miscellaneous"),
+				_("Work Order"),
+				_("Customer"),
+				_("Supplier"),
+				_("Quick Entry")
+	);
 
-	function get_all() 
+
+function payment_person_currency($type, $person_id)  {
+	switch ($type)
 	{
-		global $payment_person_types_array;
-		return $payment_person_types_array;
+		case PT_MISC :
+		case PT_QUICKENTRY :
+		case PT_WORKORDER :
+			return get_company_currency();
+
+		case PT_CUSTOMER :
+			return get_customer_currency($person_id);
+
+		case PT_SUPPLIER :
+			return get_supplier_currency($person_id);
+
+		default :
+			return get_company_currency();
 	}
+}
 
-    function misc()  
-    { 
-    	return 0; 
-    }
+function payment_person_name($type, $person_id, $full=true) {
+	global $payment_person_types;
 
-    function WorkOrder()  
-    { 
-    	return 1; 
-    }
+	switch ($type)
+	{
+		case PT_MISC :
+			return $person_id;
+		case PT_QUICKENTRY :
+			$qe = get_quick_entry($person_id);
+			return ($full ? $payment_person_types[$type] . " ":"") . $qe["description"];
+		case PT_WORKORDER :
+			global $wo_cost_types;
+			return $wo_cost_types[$person_id];
+		case PT_CUSTOMER :
+			return ($full ?$payment_person_types[$type] . " ":"") . get_customer_name($person_id);
+		case PT_SUPPLIER :
+			return ($full ? $payment_person_types[$type] . " ":"") . get_supplier_name($person_id);
+		default :
+			//DisplayDBerror("Invalid type sent to person_name");
+			//return;
+			return '';
+	}
+}
 
-    function customer()  
-    { 
-    	return 2; 
-    }
-
-    function supplier()  
-    { 
-    	return 3; 
-    }
-
-    function QuickEntry()  
-    { 
-    	return 4; 
-    }
-
-    function dimension()  
-    { 
-    	return 5; 
-    }
-
-    function type_name($type)
-    {
-    	global $payment_person_types_array;
-    	return $payment_person_types_array[$type]['name'];
-    }
-
-    function person_name($type, $person_id, $full=true)
-    {
-    	switch ($type)
-    	{
-    		case payment_person_types::misc() :
-    			return $person_id;
-    		case payment_person_types::QuickEntry() :
-    			$qe = get_quick_entry($person_id);
-    			return ($full?payment_person_types::type_name($type) . " ":"") . $qe["description"];
-    		case payment_person_types::WorkOrder() :
-    			global $wo_cost_types;
-    			return $wo_cost_types[$person_id];
-    		case payment_person_types::customer() :
-    			return ($full?payment_person_types::type_name($type) . " ":"") . get_customer_name($person_id);
-    		case payment_person_types::supplier() :
-    			return ($full?payment_person_types::type_name($type) . " ":"") . get_supplier_name($person_id);
-    		default :
-    			//DisplayDBerror("Invalid type sent to person_name");
-    			//return;
-    			return '';
-    	}
-    }
-
-    function person_currency($type, $person_id)
-    {
-    	switch ($type)
-    	{
-    		case payment_person_types::misc() :
-    		case payment_person_types::QuickEntry() :
-    		case payment_person_types::WorkOrder() :
-    			return get_company_currency();
-
-    		case payment_person_types::customer() :
-    			return get_customer_currency($person_id);
-
-    		case payment_person_types::supplier() :
-    			return get_supplier_currency($person_id);
-
-    		default :
-    			return get_company_currency();
-    	}
-    }
-
-    function has_items($type)
-    {
-    	switch ($type)
-    	{
-    		case payment_person_types::misc() :
-    			return true;
-    		case payment_person_types::QuickEntry() :
-    			return db_has_quick_entries();
-    		case payment_person_types::WorkOrder() : // 070305 changed to open workorders JH
-    			return db_has_open_workorders();
-    		case payment_person_types::customer() :
-    			return db_has_customers();
-    		case payment_person_types::supplier() :
-    			return db_has_suppliers();
-    		default :
-    			display_db_error("Invalid type sent to has_items", "");
-    			return false;
-    	}
-    }
+function payment_person_has_items($type) {
+	switch ($type)
+	{
+		case PT_MISC :
+			return true;
+		case PT_QUICKENTRY :
+			return db_has_quick_entries();
+		case PT_WORKORDER : // 070305 changed to open workorders JH
+			return db_has_open_workorders();
+		case PT_CUSTOMER :
+			return db_has_customers();
+		case PT_SUPPLIER :
+			return db_has_suppliers();
+		default :
+			display_db_error("Invalid type sent to has_items", "");
+			return false;
+	}
 }
 
 //----------------------------------------------------------------------------------
 
+define('WO_ASSEMBLY', 0);
+define('WO_UNASSEMBLY', 1);
+define('WO_ADVANCED', 2);
+
 $wo_types_array = array (
-						0=> array ('id' => 0, 'name' => _("Assemble")),
-						1=> array ('id' => 1, 'name' => _("Unassemble")),
-						2=> array ('id' => 2, 'name' => _("Advanced Manufacture"))
-			 			);
+	WO_ASSEMBLY => _("Assemble"),
+	WO_UNASSEMBLY => _("Unassemble"),
+	WO_ADVANCED => _("Advanced Manufacture")
+	);
 
-class wo_types 
-{
-
-	function assemble() 
-	{ 
-		return 0; 
-	}
-
-	function unassemble() 
-	{ 
-		return 1; 
-	}
-
-	function advanced() 
-	{ 
-		return 2; 
-	}
-
-	function get_all() 
-	{
-		global $wo_types_array;
-		return $wo_types_array;;
-	}
-
-	function name($index) 
-	{
-		global $wo_types_array;
-		return $wo_types_array[$index]['name'];
-	}
-}
+//----------------------------------------------------------------------------------
 
 define('CL_NONE', 0); // for backward compatibility
 define('CL_ASSETS', 1);
@@ -387,4 +254,13 @@ $stock_types = array(
 		'B' => _("Purchased"),
 		'D' => _("Service")
 );
+
+/*
+	Special option values for various list selectors.
+*/
+define('ANY_TEXT', '');
+define('ANY_NUMERIC', -1);
+define('ALL_TEXT', '');
+define('ALL_NUMERIC', -1);
+
 ?>

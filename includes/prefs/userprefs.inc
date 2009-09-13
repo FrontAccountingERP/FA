@@ -47,7 +47,7 @@ class user_prefs
 			
 		} else {
 			$this->language = $user["language"];
-			language::set_language($this->language);
+			$_SESSION['language']->set_language($this->language);
 
 			$this->qty_dec = $user["qty_dec"];
 			$this->price_dec = $user["prices_dec"];

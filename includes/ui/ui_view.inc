@@ -18,7 +18,7 @@ function get_supplier_trans_view_str($type, $trans_no, $label="", $icon=false,
 	$class='', $id='')
 {
 	$viewer = "purchasing/view/";
-	if ($type == systypes::po())
+	if ($type == ST_PURCHORDER)
 		$viewer .= "view_po.php";
 	elseif ($type == 20)
 		$viewer .= "view_supp_invoice.php";
@@ -131,9 +131,9 @@ function get_inventory_trans_view_str($type, $trans_no, $label="",
 {
 	$viewer = "inventory/view/";
 
-	if ($type == systypes::inventory_adjustment())
+	if ($type == ST_INVADJUST)
 		$viewer .= "view_adjustment.php";
-	elseif ($type == systypes::location_transfer())
+	elseif ($type == ST_LOCTRANSFER)
 		$viewer .= "view_transfer.php";
 	else
 		return null;
@@ -156,7 +156,7 @@ function get_manufacturing_trans_view_str($type, $trans_no, $label="",
 		$viewer .= "wo_issue_view.php";
 	elseif ($type == 29)
 		$viewer .= "wo_production_view.php";
-	elseif ($type == systypes::work_order())
+	elseif ($type == ST_WORKORDER)
 		$viewer .= "work_order_view.php";
 	else
 		return null;
@@ -440,7 +440,7 @@ function display_footer_exit()
 
 function display_allocations($alloc_result, $total)
 {
-	global $table_style;
+	global $table_style, $systypes_array;
 
 	if (!$alloc_result || db_num_rows($alloc_result) == 0)
 		return;
@@ -459,7 +459,7 @@ function display_allocations($alloc_result, $total)
 
     	alt_table_row_color($k);
 
-    	label_cell(systypes::name($alloc_row['type']));
+    	label_cell($systypes_array[$alloc_row['type']]);
     	label_cell(get_trans_view_str($alloc_row['type'],$alloc_row['trans_no']));
     	label_cell(sql2date($alloc_row['tran_date']));
     	$alloc_row['Total'] = round2($alloc_row['Total'], user_price_dec());
@@ -491,11 +491,11 @@ function display_allocations_from($person_type, $person_id, $type, $type_no, $to
 {
 	switch ($person_type)
 	{
-		case payment_person_types::customer() :
+		case PT_CUSTOMER :
 			$alloc_result = get_allocatable_to_cust_transactions($person_id, $type_no, $type);
 			display_allocations($alloc_result, $total);
 			return;
-		case payment_person_types::supplier() :
+		case PT_SUPPLIER :
 			$alloc_result = get_allocatable_to_supp_transactions($person_id, $type_no, $type);
 			display_allocations($alloc_result, $total);
 			return;

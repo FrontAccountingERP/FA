@@ -10,7 +10,6 @@
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
 include_once($path_to_root . "/includes/banking.inc");
-include_once($path_to_root . "/includes/reserved.inc");
 include_once($path_to_root . "/includes/types.inc");
 include_once($path_to_root . "/includes/current_user.inc");
 
@@ -20,7 +19,7 @@ $_search_button = "<input %s type='submit' class='combo_submit' style='border:0;
 $_select_button = "<input %s type='submit' class='combo_select' style='border:0;background:url($path_to_root/themes/"
 	."%s/images/button_ok.png) no-repeat;%s' aspect='fallback' name='%s' value=' ' title='"._("Select")."'> ";
 
-$all_items = reserved_words::get_all();
+$all_items = ALL_TEXT;
 
 //----------------------------------------------------------------------------
 //	Universal sql combo generator
@@ -376,6 +375,7 @@ function supplier_list($name, $selected_id=null, $spec_option=false, $submit_on_
 	return combo_input($name, $selected_id, $sql, 'supplier_id', 'supp_name',
 	array(
 		'format' => '_format_add_curr',
+	    'order' => array('supp_ref'),
 		'search_box' => $mode!=0,
 		'type' => 1,
 		'spec_option' => $spec_option === true ? _("All Suppliers") : $spec_option,
@@ -425,6 +425,7 @@ function customer_list($name, $selected_id=null, $spec_option=false, $submit_on_
 return combo_input($name, $selected_id, $sql, 'debtor_no', 'name',
 	array(
 	    'format' => '_format_add_curr',
+	    'order' => array('debtor_ref'),
 		'search_box' => $mode!=0,
 		'type' => 1,
 		'size' => 20,
@@ -477,6 +478,7 @@ function customer_branches_list($customer_id, $name, $selected_id=null,
 return  combo_input($name, $selected_id, $sql, 'branch_code', 'br_name',
 	array(
 		'where' => $where,
+		'order' => array('branch_ref'),
 		'spec_option' => $spec_option === true ? _('All branches') : $spec_option,
 		'spec_id' => $all_items,
 		'select_submit'=> $submit_on_change,
@@ -927,7 +929,7 @@ function tax_types_list($name, $selected_id=null, $none_option=false, $submit_on
 	return combo_input($name, $selected_id, $sql, 'id', 'name',
 	array(
 		'spec_option' => $none_option,
-		'spec_id' => reserved_words::get_all_numeric(),
+		'spec_id' => ALL_NUMERIC,
 		'select_submit'=> $submit_on_change,
 		'async' => false,
 	) );
@@ -964,7 +966,7 @@ function tax_groups_list($name, $selected_id=null,
 	array(
 		'order' => 'id',
 		'spec_option' => $none_option,
-		'spec_id' => reserved_words::get_all_numeric(),
+		'spec_id' => ALL_NUMERIC,
 		'select_submit'=> $submit_on_change,
 		'async' => false,
 	) );
@@ -1017,7 +1019,8 @@ function item_tax_types_list_row($label, $name, $selected_id=null)
 function shippers_list($name, $selected_id=null)
 {
 	$sql = "SELECT shipper_id, shipper_name, inactive FROM ".TB_PREF."shippers";
-	combo_input($name, $selected_id, $sql, 'shipper_id', 'shipper_name', array());
+	combo_input($name, $selected_id, $sql, 'shipper_id', 'shipper_name', 
+		array('order'=>array('shipper_name')));
 }
 
 function shippers_list_cells($label, $name, $selected_id=null)
@@ -1041,7 +1044,8 @@ function shippers_list_row($label, $name, $selected_id=null)
 function sales_persons_list($name, $selected_id=null)
 {
 	$sql = "SELECT salesman_code, salesman_name, inactive FROM ".TB_PREF."salesman";
-	combo_input($name, $selected_id, $sql, 'salesman_code', 'salesman_name', array());
+	combo_input($name, $selected_id, $sql, 'salesman_code', 'salesman_name', 
+		array('order'=>array('salesman_name')));
 }
 
 function sales_persons_list_cells($label, $name, $selected_id=null)
@@ -1415,6 +1419,7 @@ function pos_list_row($label, $name, $selected_id=null, $spec_option=false, $sub
 		'async' => true,
 		'spec_option' =>$spec_option,
 		'spec_id' => -1,
+		'order'=> array('pos_name')
 	) );
 	echo "</td></tr>\n";
 
@@ -1650,15 +1655,9 @@ function languages_list_row($label, $name, $selected_id=null)
 
 function bank_account_types_list($name, $selected_id=null)
 {
-	$types = bank_account_types::get_all();
+	global $bank_account_types;
 
-	$items = array();
-	foreach ($types as $type)
-	{
-			$items[$type['id']] = $type['name'];
-	}
-	
-	return array_selector($name, $selected_id, $items );
+	return array_selector($name, $selected_id, $bank_account_types);
 }
 
 function bank_account_types_list_cells($label, $name, $selected_id=null)
@@ -1680,19 +1679,9 @@ function bank_account_types_list_row($label, $name, $selected_id=null)
 //------------------------------------------------------------------------------------------------
 function payment_person_types_list($name, $selected_id=null, $submit_on_change=false)
 {
-	$types = payment_person_types::get_all();
+	global $payment_person_types;
 
-	$items = array();
-	foreach ($types as $type)
-	{
-		if (payment_person_types::has_items($type['id']))
-		{
-			if ($type['id'] != payment_person_types::WorkOrder())
-				$items[$type['id']] = $type['name'];
-		}
-	}
-	
-	return array_selector($name, $selected_id, $items, 
+	return array_selector($name, $selected_id, $payment_person_types, 
 		array( 'select_submit'=> $submit_on_change ) );
 }
 
@@ -1718,13 +1707,9 @@ function payment_person_types_list_row($label, $name, $selected_id=null, $relate
 
 function wo_types_list($name, $selected_id=null)
 {
-	$types = wo_types::get_all();
-
-	$items = array();
-	foreach ($types as $type)
-		$items[$type['id']] = $type['name'];
+	global $wo_types_array;
 	
-	return array_selector($name, $selected_id, $items, 
+	return array_selector($name, $selected_id, $wo_types_array, 
 		array( 'select_submit'=> true, 'async' => true ) );
 }
 
@@ -1950,7 +1935,7 @@ function number_list($name, $selected, $from, $to, $no_option=false)
 
 	return array_selector($name, $selected, $items,
 				array(	'spec_option' => $no_option,
-						'spec_id' => reserved_words::get_all_numeric()) );
+						'spec_id' => ALL_NUMERIC) );
 }
 
 function number_list_cells($label, $name, $selected, $from, $to, $no_option=false)

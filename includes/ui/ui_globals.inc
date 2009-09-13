@@ -9,7 +9,7 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-include_once($path_to_root . "/includes/reserved.inc");
+//include_once($path_to_root . "/includes/reserved.inc");
 
 function set_global_supplier($supplier_id) 
 {
@@ -19,7 +19,7 @@ function set_global_supplier($supplier_id)
 function get_global_supplier($return_all=true) 
 {
 	if (!isset($_SESSION['wa_global_supplier_id']) || 
-		($return_all == false && $_SESSION['wa_global_supplier_id'] == reserved_words::get_all()))
+		($return_all == false && $_SESSION['wa_global_supplier_id'] == ALL_TEXT))
 		return "";	
 	return $_SESSION['wa_global_supplier_id'];
 }
@@ -32,7 +32,7 @@ function set_global_stock_item($stock_id)
 function get_global_stock_item($return_all=true) 
 {
 	if (!isset($_SESSION['wa_global_stock_id']) || 
-		($return_all == false && $_SESSION['wa_global_stock_id'] == reserved_words::get_all()))
+		($return_all == false && $_SESSION['wa_global_stock_id'] == ALL_TEXT))
 		return "";		
 	return $_SESSION['wa_global_stock_id'];
 }
@@ -45,7 +45,7 @@ function set_global_customer($customer_id)
 function get_global_customer($return_all=true) 
 {
 	if (!isset($_SESSION['wa_global_customer_id']) || 
-		($return_all == false && $_SESSION['wa_global_customer_id'] == reserved_words::get_all()))
+		($return_all == false && $_SESSION['wa_global_customer_id'] == ALL_TEXT))
 		return "";
 	return $_SESSION['wa_global_customer_id'];
 }

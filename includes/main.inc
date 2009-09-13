@@ -11,7 +11,6 @@
 ***********************************************************************/
 include_once($path_to_root . "/includes/db/connect_db.inc");
 
-include_once($path_to_root . "/includes/reserved.inc");
 include_once($path_to_root . "/includes/errors.inc");
 include_once($path_to_root . "/includes/types.inc");
 include_once($path_to_root . "/includes/systypes.inc");

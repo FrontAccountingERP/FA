@@ -164,7 +164,9 @@ function exchange_from_to($amount, $from_curr_code, $to_curr_code, $date_)
 
 function exchange_variation($pyt_type, $pyt_no, $type, $trans_no, $pyt_date, $amount, $person_type, $neg=false)
 {
-	if ($person_type == payment_person_types::customer())
+	global $systypes_array;
+	
+	if ($person_type == PT_CUSTOMER)
 	{
 		$trans = get_customer_trans($trans_no, $type);
 		$pyt_trans = get_customer_trans($pyt_no, $pyt_type);
@@ -190,20 +192,20 @@ function exchange_variation($pyt_type, $pyt_no, $type, $trans_no, $pyt_date, $am
 	if ($inv_amt != $pay_amt)
 	{
 		$diff = $inv_amt - $pay_amt;
-		if ($person_type == payment_person_types::supplier())
+		if ($person_type == PT_SUPPLIER)
 			$diff = -$diff;
 		if ($neg)
 			$diff = -$diff;
 		$exc_var_act = get_company_pref('exchange_diff_act');
 		if (date1_greater_date2($date, $pyt_date))
 		{
-			$memo = systypes::name($pyt_type)." ".$pyt_no;
+			$memo = $systypes_array[$pyt_type]." ".$pyt_no;
 			add_gl_trans($type, $trans_no, $date, $ar_ap_act, 0, 0, $memo, -$diff, null, $person_type, $person_id);
 			add_gl_trans($type, $trans_no, $date, $exc_var_act, 0, 0, $memo, $diff, null, $person_type, $person_id);
 		}
 		else
 		{
-			$memo = systypes::name($type)." ".$trans_no;
+			$memo = $systypes_array[$type]." ".$trans_no;
 			add_gl_trans($pyt_type, $pyt_no, $pyt_date, $ar_ap_act, 0, 0, $memo, -$diff, null, $person_type, $person_id);
 			add_gl_trans($pyt_type, $pyt_no, $pyt_date, $exc_var_act, 0, 0, $memo, $diff, null, $person_type, $person_id);
 		}
