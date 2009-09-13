@@ -105,19 +105,19 @@ function safe_exit()
 
 function can_process()
 {
-	global $selected_id;
+	global $selected_id, $Refs;
 
 	if ($selected_id == -1) 
 	{
 
-    	if (!references::is_valid($_POST['ref'])) 
+    	if (!$Refs->is_valid($_POST['ref'])) 
     	{
     		display_error( _("The dimension reference must be entered."));
 			set_focus('ref');
     		return false;
     	}
 
-    	if (!is_new_reference($_POST['ref'], systypes::dimension())) 
+    	if (!is_new_reference($_POST['ref'], ST_DIMENSION)) 
     	{
     		display_error(_("The entered reference is already in use."));
 			set_focus('ref');
@@ -244,7 +244,7 @@ if ($selected_id != -1)
 	$_POST['type_'] = $myrow["type_"];
 	$_POST['date_'] = sql2date($myrow["date_"]);
 	$_POST['due_date'] = sql2date($myrow["due_date"]);
-	$_POST['memo_'] = get_comments_string(systypes::dimension(), $selected_id);
+	$_POST['memo_'] = get_comments_string(ST_DIMENSION, $selected_id);
 
 	hidden('ref', $_POST['ref']);
 
@@ -254,7 +254,7 @@ if ($selected_id != -1)
 } 
 else 
 {
-	ref_row(_("Dimension Reference:"), 'ref', '', references::get_next(systypes::dimension()));
+	ref_row(_("Dimension Reference:"), 'ref', '', $Refs->get_next(ST_DIMENSION));
 }
 
 text_row_ex(_("Name") . ":", 'name', 50, 75);
@@ -265,7 +265,7 @@ number_list_row(_("Type"), 'type_', null, 1, $dim);
 
 date_row(_("Start Date") . ":", 'date_');
 
-date_row(_("Date Required By") . ":", 'due_date', '', null, sys_prefs::default_dimension_required_by());
+date_row(_("Date Required By") . ":", 'due_date', '', null, $SysPrefs->default_dimension_required_by());
 
 textarea_row(_("Memo:"), 'memo_', null, 40, 5);
 

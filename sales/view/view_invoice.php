@@ -85,7 +85,7 @@ start_row();
 label_cells(_("Reference"), $myrow["reference"], "class='tableheader2'");
 label_cells(_("Currency"), $sales_order["curr_code"], "class='tableheader2'");
 label_cells(_("Our Order No"),
-	get_customer_trans_view_str(systypes::sales_order(),$sales_order["order_no"]), "class='tableheader2'");
+	get_customer_trans_view_str(ST_SALESORDER,$sales_order["order_no"]), "class='tableheader2'");
 end_row();
 start_row();
 label_cells(_("Customer Order Ref."), $sales_order["customer_ref"], "class='tableheader2'");
@@ -95,7 +95,7 @@ end_row();
 start_row();
 label_cells(_("Invoice Date"), sql2date($myrow["tran_date"]), "class='tableheader2'", "nowrap");
 label_cells(_("Due Date"), sql2date($myrow["due_date"]), "class='tableheader2'", "nowrap");
-label_cells(_("Deliveries"), get_customer_trans_view_str(systypes::cust_dispatch(), 
+label_cells(_("Deliveries"), get_customer_trans_view_str(ST_CUSTDELIVERY, 
 	get_parent_trans(10,$trans_id)), "class='tableheader2'");
 end_row();
 comments_display_row(10, $trans_id);

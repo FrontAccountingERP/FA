@@ -90,7 +90,7 @@ function get_transactions($debtorno, $from, $to)
 
 function print_customer_balances()
 {
-    global $path_to_root;
+    global $path_to_root, $systypes_array;
 
     $from = $_POST['PARAM_0'];
     $to = $_POST['PARAM_1'];
@@ -103,13 +103,13 @@ function print_customer_balances()
 	else
 		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 
-	if ($fromcust == reserved_words::get_all_numeric())
+	if ($fromcust == ALL_NUMERIC)
 		$cust = _('All');
 	else
 		$cust = get_customer_name($fromcust);
     $dec = user_price_dec();
 
-	if ($currency == reserved_words::get_all())
+	if ($currency == ALL_TEXT)
 	{
 		$convert = true;
 		$currency = _('Balances in Home Currency');
@@ -138,7 +138,7 @@ function print_customer_balances()
 	$grandtotal = array(0,0,0,0);
 
 	$sql = "SELECT debtor_no, name, curr_code FROM ".TB_PREF."debtors_master ";
-	if ($fromcust != reserved_words::get_all_numeric())
+	if ($fromcust != ALL_NUMERIC)
 		$sql .= "WHERE debtor_no=$fromcust ";
 	$sql .= "ORDER BY name";
 	$result = db_query($sql, "The customers could not be retrieved");
@@ -177,7 +177,7 @@ function print_customer_balances()
 		while ($trans = db_fetch($res))
 		{
 			$rep->NewLine(1, 2);
-			$rep->TextCol(0, 1, systypes::name($trans['type']));
+			$rep->TextCol(0, 1, $systypes_array[$trans['type']]);
 			$rep->TextCol(1, 2,	$trans['reference']);
 			$rep->DateCol(2, 3,	$trans['tran_date'], true);
 			if ($trans['type'] == 10)

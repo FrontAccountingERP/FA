@@ -119,8 +119,8 @@ function handle_search()
 
 
 		$print_type = $_POST['filterType'];
-		$print_out = ($print_type == 10 || $print_type == 11 || $print_type == systypes::cust_dispatch() ||
-			$print_type == systypes::po() || $print_type == systypes::sales_order() || $print_type == systypes::sales_quotation());
+		$print_out = ($print_type == 10 || $print_type == 11 || $print_type == ST_CUSTDELIVERY ||
+			$print_type == ST_PURCHORDER || $print_type == ST_SALESORDER || $print_type == ST_SALESQUOTE);
 
 		$cols = array(
 			_("#"), 

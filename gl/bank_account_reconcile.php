@@ -59,7 +59,9 @@ function rec_checkbox($row)
 
 function systype_name($dummy, $type)
 {
-	return systypes::name($type);
+	global $systypes_array;
+	
+	return $systypes_array[$type];
 }
 
 function trans_view($trans)
@@ -86,7 +88,7 @@ function fmt_credit($row)
 
 function fmt_person($row)
 {
-	return payment_person_types::person_name($row["person_type_id"],$row["person_id"]);
+	return payment_person_name($row["person_type_id"],$row["person_id"]);
 }
 
 $update_pager = false;

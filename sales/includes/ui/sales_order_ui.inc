@@ -131,7 +131,7 @@ function get_customer_details_to_order(&$order, $customer_id, $branch_id)
 
 function display_order_summary($title, &$order, $editable_items=false)
 {
-	global $table_style, $path_to_root;
+	global $table_style, $path_to_root, $SysPrefs;
 
 	display_heading($title);
 
@@ -164,7 +164,7 @@ function display_order_summary($title, &$order, $editable_items=false)
 		$qoh_msg = '';
 		if (!$editable_items || $id != $line_no)
 		{
-			if (!sys_prefs::allow_negative_stock() && is_inventory_item($stock_item->stock_id)) {
+			if (!$SysPrefs->allow_negative_stock() && is_inventory_item($stock_item->stock_id)) {
 				$qoh = get_qoh_on_date($stock_item->stock_id, 
 					$_POST['Location'], $_POST['OrderDate']);
 				if ($stock_item->qty_dispatched > $qoh) 
@@ -223,7 +223,7 @@ function display_order_summary($title, &$order, $editable_items=false)
 	end_table();
 	if ($has_marked) {
 		display_note(_("Marked items have insufficient quantities in stock as on day of delivery."), 0, 1, "class='stockmankofg'");
-		if ($order->trans_type!=30 && !sys_prefs::allow_negative_stock())
+		if ($order->trans_type!=30 && !$SysPrefs->allow_negative_stock())
 			display_error(_("The delivery cannot be processed because there is an insufficient quantity for item:")
 				. '<br>'. $qoh_msg);
 	}
@@ -234,7 +234,7 @@ function display_order_summary($title, &$order, $editable_items=false)
 
 function display_order_header(&$order, $editable, $date_text, $display_tax_group=false)
 {
-	global $table_style, $Ajax;
+	global $table_style, $Ajax, $SysPrefs;
 
 	start_outer_table("width=80% $table_style");
 
@@ -405,7 +405,7 @@ function display_order_header(&$order, $editable, $date_text, $display_tax_group
 			if ($order->trans_type == 10) {
 				$_POST['delivery_date'] = get_invoice_duedate(get_post('customer_id'), get_post('OrderDate'));
 			} else 
-				$_POST['delivery_date'] = add_days(get_post('OrderDate'), sys_prefs::default_delivery_required_by());
+				$_POST['delivery_date'] = add_days(get_post('OrderDate'), $SysPrefs->default_delivery_required_by());
 			$Ajax->activate('items_table');
 			$Ajax->activate('delivery_date');
 		}

@@ -91,7 +91,9 @@ function add_issue_cost($stock_id, $qty, $date_, $costs)
 function add_work_order($wo_ref, $loc_code, $units_reqd, $stock_id,
 	$type, $date_, $required_by, $memo_, $costs, $cr_acc, $labour, $cr_lab_acc)
 {
-	if (!($type == wo_types::advanced()))
+	global $Refs;
+
+	if (!($type == WO_ADVANCED))
 		return add_work_order_quick($wo_ref, $loc_code, $units_reqd, $stock_id, $type, $date_, $memo_, $costs, $cr_acc, $labour, $cr_lab_acc);
 
 	begin_transaction();
@@ -109,10 +111,10 @@ function add_work_order($wo_ref, $loc_code, $units_reqd, $stock_id,
 
 	$woid = db_insert_id();
 
-	add_comments(systypes::work_order(), $woid, $required_by, $memo_);
+	add_comments(ST_WORKORDER, $woid, $required_by, $memo_);
 
-	references::save(systypes::work_order(), $woid, $wo_ref);
-	add_audit_trail(systypes::work_order(), $woid, $date_);
+	$Refs->save(ST_WORKORDER, $woid, $wo_ref);
+	add_audit_trail(ST_WORKORDER, $woid, $date_);
 
 	commit_transaction();
 
@@ -140,8 +142,8 @@ function update_work_order($woid, $loc_code, $units_reqd, $stock_id,
 
 	db_query($sql, "could not update work order");
 
-	update_comments(systypes::work_order(), $woid, null, $memo_);
-	add_audit_trail(systypes::work_order(), $woid, $date_, _("Updated."));
+	update_comments(ST_WORKORDER, $woid, null, $memo_);
+	add_audit_trail(ST_WORKORDER, $woid, $date_, _("Updated."));
 
 	commit_transaction();
 }
@@ -159,8 +161,8 @@ function delete_work_order($woid)
 	$sql = "DELETE FROM ".TB_PREF."workorders WHERE id=$woid";
 	db_query($sql,"The work order could not be deleted");
 
-	delete_comments(systypes::work_order(), $woid);
-	add_audit_trail(systypes::work_order(), $woid, $_POST['date_'], _("Canceled."));
+	delete_comments(ST_WORKORDER, $woid);
+	add_audit_trail(ST_WORKORDER, $woid, $_POST['date_'], _("Canceled."));
 
 	commit_transaction();
 }
@@ -235,8 +237,8 @@ function release_work_order($woid, $releaseDate, $memo_)
 	// create Work Order Requirements based on the bom
 	create_wo_requirements($woid, $stock_id);
 
-	add_comments(systypes::work_order(), $woid, $releaseDate, $memo_);
-	add_audit_trail(systypes::work_order(), $woid, $releaseDate,_("Released."));
+	add_comments(ST_WORKORDER, $woid, $releaseDate, $memo_);
+	add_audit_trail(ST_WORKORDER, $woid, $releaseDate,_("Released."));
 
 	commit_transaction();
 }
@@ -276,7 +278,7 @@ function void_work_order($woid)
 {
 	$work_order = get_work_order($woid);
 
-	if (!($work_order["type"] == wo_types::advanced()))
+	if (!($work_order["type"] == WO_ADVANCED))
 	{
 		begin_transaction();
 
@@ -284,10 +286,10 @@ function void_work_order($woid)
 		db_query($sql, "The work order couldn't be voided");
 
 		// void all related stock moves
-		void_stock_move(systypes::work_order(), $woid);
+		void_stock_move(ST_WORKORDER, $woid);
 
 		// void any related gl trans
-		void_gl_trans(systypes::work_order(), $woid, true);
+		void_gl_trans(ST_WORKORDER, $woid, true);
 
 		// clear the requirements units received
 		void_wo_requirements($woid);

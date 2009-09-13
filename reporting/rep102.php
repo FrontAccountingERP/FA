@@ -64,7 +64,7 @@ function get_invoices($costomer_id, $to)
 
 function print_aged_customer_analysis()
 {
-    global $comp_path, $path_to_root;
+    global $comp_path, $path_to_root, $systypes_array;
 
     $to = $_POST['PARAM_0'];
     $fromcust = $_POST['PARAM_1'];
@@ -83,7 +83,7 @@ function print_aged_customer_analysis()
 		$pg = new graph();
 	}
 
-	if ($fromcust == reserved_words::get_all_numeric())
+	if ($fromcust == ALL_NUMERIC)
 		$from = _('All');
 	else
 		$from = get_customer_name($fromcust);
@@ -93,7 +93,7 @@ function print_aged_customer_analysis()
 		$summary = _('Summary Only');
 	else
 		$summary = _('Detailed Report');
-	if ($currency == reserved_words::get_all())
+	if ($currency == ALL_TEXT)
 	{
 		$convert = true;
 		$currency = _('Balances in Home Currency');
@@ -130,7 +130,7 @@ function print_aged_customer_analysis()
 	$total = array(0,0,0,0, 0);
 
 	$sql = "SELECT debtor_no, name, curr_code FROM ".TB_PREF."debtors_master ";
-	if ($fromcust != reserved_words::get_all_numeric())
+	if ($fromcust != ALL_NUMERIC)
 		$sql .= "WHERE debtor_no=$fromcust ";
 	$sql .= "ORDER BY name";
 	$result = db_query($sql, "The customers could not be retrieved");
@@ -174,7 +174,7 @@ function print_aged_customer_analysis()
 			while ($trans=db_fetch($res))
 			{
 				$rep->NewLine(1, 2);
-        		$rep->TextCol(0, 1,	systypes::name($trans['type']), -2);
+        		$rep->TextCol(0, 1, $systypes_array[$trans['type']], -2);
 				$rep->TextCol(1, 2,	$trans['reference'], -2);
 				$rep->DateCol(2, 3, $trans['tran_date'], true, -2);
 				if ($trans['type'] == 11 || $trans['type'] == 12 || $trans['type'] == 2)

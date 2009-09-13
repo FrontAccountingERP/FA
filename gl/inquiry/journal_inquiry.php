@@ -64,7 +64,9 @@ function journal_pos($row)
 
 function systype_name($dummy, $type)
 {
-	return systypes::name($type);
+	global $systypes_array;
+	
+	return $systypes_array[$type];
 }
 
 function view_link($row) 

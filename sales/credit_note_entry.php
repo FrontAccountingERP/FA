@@ -132,13 +132,14 @@ function handle_new_credit($trans_no)
 
 function can_process()
 {
+	global $Refs;
 
 	$input_error = 0;
 
 	if ($_SESSION['Items']->count_items() == 0 && (!check_num('ChargeFreightCost',0)))
 		return false;
 	if($_SESSION['Items']->trans_no == 0) {
-	    if (!references::is_valid($_POST['ref'])) {
+	    if (!$Refs->is_valid($_POST['ref'])) {
 		display_error( _("You must enter a reference."));
 		set_focus('ref');
 		$input_error = 1;

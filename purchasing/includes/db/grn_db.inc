@@ -53,6 +53,8 @@ function update_average_material_cost($supplier, $stock_id, $price, $qty, $date,
 
 function add_grn(&$po, $date_, $reference, $location)
 {
+	global $Refs;
+
 	begin_transaction();
 
 	$grn = add_grn_batch($po->order_no, $po->supplier_id, $reference, $location, $date_);
@@ -93,7 +95,7 @@ function add_grn(&$po, $date_, $reference, $location)
 		} /*quantity received is != 0 */
 	} /*end of order_line loop */
 
-	references::save(25, $grn, $reference);
+	$Refs->save(25, $grn, $reference);
 
 	add_audit_trail(25, $grn, $date_);
 

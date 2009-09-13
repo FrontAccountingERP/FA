@@ -77,7 +77,7 @@ if (isset($_POST['order_number']))
 }
 
 if (isset($_POST['SelectStockFromList']) &&	($_POST['SelectStockFromList'] != "") &&
-	($_POST['SelectStockFromList'] != reserved_words::get_all()))
+	($_POST['SelectStockFromList'] != ALL_TEXT))
 {
  	$selected_stock_item = $_POST['SelectStockFromList'];
 }
@@ -89,7 +89,7 @@ else
 //---------------------------------------------------------------------------------------------
 function trans_view($trans)
 {
-	return get_trans_view_str(systypes::po(), $trans["order_no"]);
+	return get_trans_view_str(ST_PURCHORDER, $trans["order_no"]);
 }
 
 function edit_link($row) 
@@ -137,7 +137,7 @@ else
 	$sql .= " AND porder.ord_date >= '$data_after'";
 	$sql .= " AND porder.ord_date <= '$date_before'";
 
-	if (isset($_POST['StockLocation']) && $_POST['StockLocation'] != reserved_words::get_all())
+	if (isset($_POST['StockLocation']) && $_POST['StockLocation'] != ALL_TEXT)
 	{
 		$sql .= " AND porder.into_stock_location = '". $_POST['StockLocation'] . "' ";
 	}

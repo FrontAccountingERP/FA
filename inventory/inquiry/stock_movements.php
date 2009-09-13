@@ -112,7 +112,7 @@ while ($myrow = db_fetch($result))
 
 	$trandate = sql2date($myrow["tran_date"]);
 
-	$type_name = systypes::name($myrow["type"]);
+	$type_name = $systypes_array[$myrow["type"]];
 
 	if ($myrow["qty"] > 0)
 	{
@@ -155,13 +155,13 @@ while ($myrow = db_fetch($result))
 		if (strlen($supp_row['supp_name']) > 0)
 			$person = $supp_row['supp_name'];
 	}
-	elseif ($myrow["type"] == systypes::location_transfer() || $myrow["type"] == systypes::inventory_adjustment())
+	elseif ($myrow["type"] == ST_LOCTRANSFER || $myrow["type"] == ST_INVADJUST)
 	{
 		// get the adjustment type
 		$movement_type = get_movement_type($myrow["person_id"]);
 		$person = $movement_type["name"];
 	}
-	elseif ($myrow["type"]==systypes::work_order() || $myrow["type"] == 28  ||
+	elseif ($myrow["type"]==ST_WORKORDER || $myrow["type"] == 28  ||
 		$myrow["type"] == 29)
 	{
 		$person = "";

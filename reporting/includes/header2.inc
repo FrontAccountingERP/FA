@@ -11,6 +11,8 @@
 ***********************************************************************/
 		// New version (without vertical lines)
 
+	global $wo_types_array;
+	
 		$this->row = $this->pageHeight - $this->topMargin;
 
 		$upper = $this->row - 2 * $this->lineHeight;
@@ -222,7 +224,7 @@
 			$this->TextWrap($col, $this->row, $width, $row['salesman_name'], 'C');
 		}		
 		elseif ($doctype == 26)
-			$this->TextWrap($col, $this->row, $width, wo_types::name($myrow["type"]), 'C');
+			$this->TextWrap($col, $this->row, $width, $wo_types_array[$myrow["type"]], 'C');
 		$col += $width;	
 		if ($doctype == 26)
 			$this->TextWrap($col, $this->row, $width, $myrow["StockItemName"], 'C');

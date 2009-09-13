@@ -49,13 +49,13 @@ elseif(isset($_POST['selected_id']))
 if (isset($_GET['AddedID']))
 {
 	$id = $_GET['AddedID'];
-	$stype = systypes::work_order();
+	$stype = ST_WORKORDER;
 
 	display_notification_centered(_("The work order been added."));
 
     display_note(get_trans_view_str($stype, $id, _("View this Work Order")));
 
-	if ($_GET['type'] != wo_types::advanced())
+	if ($_GET['type'] != WO_ADVANCED)
 	{
 		include_once($path_to_root . "/reporting/includes/reporting.inc");
     	$ar = array('PARAM_0' => $id, 'PARAM_1' => $id, 'PARAM_2' => 0); 
@@ -122,18 +122,18 @@ if (!isset($_POST['date_']))
 
 function can_process()
 {
-	global $selected_id;
+	global $selected_id, $SysPrefs, $Refs;
 
 	if (!isset($selected_id))
 	{
-    	if (!references::is_valid($_POST['wo_ref']))
+    	if (!$Refs->is_valid($_POST['wo_ref']))
     	{
     		display_error(_("You must enter a reference."));
 			set_focus('wo_ref');
     		return false;
     	}
 
-    	if (!is_new_reference($_POST['wo_ref'], systypes::work_order()))
+    	if (!is_new_reference($_POST['wo_ref'], ST_WORKORDER))
     	{
     		display_error(_("The entered reference is already in use."));
 			set_focus('wo_ref');
@@ -161,7 +161,7 @@ function can_process()
 		return false;
 	}
 	// only check bom and quantites if quick assembly
-	if (!($_POST['type'] == wo_types::advanced()))
+	if (!($_POST['type'] == WO_ADVANCED))
 	{
         if (!has_bom($_POST['stock_id']))
         {
@@ -187,9 +187,9 @@ function can_process()
     		return false;
     	}
 
-        if (!sys_prefs::allow_negative_stock())
+        if (!$SysPrefs->allow_negative_stock())
         {
-        	if ($_POST['type'] == wo_types::assemble())
+        	if ($_POST['type'] == WO_ASSEMBLY)
         	{
         		// check bom if assembling
                 $result = get_bom($_POST['stock_id']);
@@ -213,7 +213,7 @@ function can_process()
             		}
             	}
         	}
-        	elseif ($_POST['type'] == wo_types::unassemble())
+        	elseif ($_POST['type'] == WO_UNASSEMBLY)
         	{
         		// if unassembling, check item to unassemble
 				$qoh = get_qoh_on_date($_POST['stock_id'], $_POST['StockLocation'], $_POST['date_']);
@@ -363,7 +363,7 @@ if (isset($selected_id))
 	$_POST['units_issued'] = $myrow["units_issued"];
 	$_POST['Costs'] = price_format($myrow["additional_costs"]);
 
-	$_POST['memo_'] = get_comments_string(systypes::work_order(), $selected_id);
+	$_POST['memo_'] = get_comments_string(ST_WORKORDER, $selected_id);
 
 	hidden('wo_ref', $_POST['wo_ref']);
 	hidden('units_issued', $_POST['units_issued']);
@@ -374,13 +374,13 @@ if (isset($selected_id))
 	hidden('old_stk_id', $myrow["stock_id"]);
 
 	label_row(_("Reference:"), $_POST['wo_ref']);
-	label_row(_("Type:"), wo_types::name($_POST['type']));
+	label_row(_("Type:"), $wo_types_array[$_POST['type']]);
 	hidden('type', $myrow["type"]);
 }
 else
 {
 	$_POST['units_issued'] = $_POST['released'] = 0;
-	ref_row(_("Reference:"), 'wo_ref', '', references::get_next(systypes::work_order()));
+	ref_row(_("Reference:"), 'wo_ref', '', $Refs->get_next(ST_WORKORDER));
 
 	wo_types_list_row(_("Type:"), 'type', null);
 }
@@ -409,13 +409,13 @@ else
 	$_POST['quantity'] = qty_format($_POST['quantity'], $_POST['stock_id'], $dec);
 	
 
-if (get_post('type') == wo_types::advanced())
+if (get_post('type') == WO_ADVANCED)
 {
     qty_row(_("Quantity Required:"), 'quantity', null, null, null, $dec);
     if ($_POST['released'])
     	label_row(_("Quantity Manufactured:"), number_format($_POST['units_issued'], get_qty_dec($_POST['stock_id'])));
     date_row(_("Date") . ":", 'date_', '', true);
-	date_row(_("Date Required By") . ":", 'RequDate', '', null, sys_prefs::default_wo_required_by());
+	date_row(_("Date Required By") . ":", 'RequDate', '', null, $SysPrefs->default_wo_required_by());
 }
 else
 {

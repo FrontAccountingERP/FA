@@ -94,7 +94,7 @@ function display_customer_summary($customer_record)
 //------------------------------------------------------------------------------------------------
 
 div_start('totals_tbl');
-if ($_POST['customer_id'] != "" && $_POST['customer_id'] != reserved_words::get_all())
+if ($_POST['customer_id'] != "" && $_POST['customer_id'] != ALL_TEXT)
 {
 	$customer_record = get_customer_details($_POST['customer_id'], $_POST['TransToDate']);
     display_customer_summary($customer_record);
@@ -110,13 +110,15 @@ if(get_post('RefreshInquiry'))
 
 function systype_name($dummy, $type)
 {
-	return systypes::name($type);
+	global $systypes_array;
+
+	return $systypes_array[$type];
 }
 
 function order_view($row)
 {
 	return $row['order_']>0 ?
-		get_customer_trans_view_str(systypes::sales_order(), $row['order_'])
+		get_customer_trans_view_str(ST_SALESORDER, $row['order_'])
 		: "";
 }
 
@@ -228,10 +230,10 @@ function check_overdue($row)
 			AND trans.tran_date <= '$date_to'
 			AND trans.branch_code = branch.branch_code";
 
-   	if ($_POST['customer_id'] != reserved_words::get_all())
+   	if ($_POST['customer_id'] != ALL_TEXT)
    		$sql .= " AND trans.debtor_no = '" . $_POST['customer_id'] . "'";
 
-   	if ($_POST['filterType'] != reserved_words::get_all())
+   	if ($_POST['filterType'] != ALL_TEXT)
    	{
    		if ($_POST['filterType'] == '1')
    		{
@@ -243,7 +245,7 @@ function check_overdue($row)
    		}
    		elseif ($_POST['filterType'] == '3')
    		{
-			$sql .= " AND (trans.type = " . systypes::cust_payment() 
+			$sql .= " AND (trans.type = " . ST_CUSTPAYMENT 
 					." OR trans.type = 2) ";
    		}
    		elseif ($_POST['filterType'] == '4')
@@ -284,7 +286,7 @@ $cols = array(
 		array('insert'=>true, 'fun'=>'prt_link')
 	);
 
-if ($_POST['customer_id'] != reserved_words::get_all()) {
+if ($_POST['customer_id'] != ALL_TEXT) {
 	$cols[_("Customer")] = 'skip';
 	$cols[_("Currency")] = 'skip';
 }

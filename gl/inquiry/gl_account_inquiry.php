@@ -82,7 +82,7 @@ function gl_inquiry_controls()
 
 function show_results()
 {
-	global $path_to_root, $table_style;
+	global $path_to_root, $table_style, $systypes_array;
 
 	if (!isset($_POST["account"]) || $_POST["account"] == "")
 		return;
@@ -145,14 +145,14 @@ function show_results()
 
     	$trandate = sql2date($myrow["tran_date"]);
 
-    	label_cell(systypes::name($myrow["type"]));
+    	label_cell($systypes_array[$myrow["type"]]);
 		label_cell(get_gl_view_str($myrow["type"], $myrow["type_no"], $myrow["type_no"], true));
     	label_cell($trandate);
 		if ($dim >= 1)
 			label_cell(get_dimension_string($myrow['dimension_id'], true));
 		if ($dim > 1)
 			label_cell(get_dimension_string($myrow['dimension2_id'], true));
-		label_cell(payment_person_types::person_name($myrow["person_type_id"],$myrow["person_id"]));
+		label_cell(payment_person_name($myrow["person_type_id"],$myrow["person_id"]));
 		display_debit_or_credit_cells($myrow["amount"]);
 		amount_cell($running_total);
     	label_cell($myrow['memo_']);

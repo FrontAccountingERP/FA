@@ -24,7 +24,7 @@ function print_document_link($doc_no, $link_text, $link=true, $type_no,
 
 	switch ($type_no)
 	{
-		case systypes::sales_quotation() :
+		case ST_SALESQUOTE :
 			$rep = 111;
 			// from, to, currency, bank acc, email, quote, comments
 			$ar = array(
@@ -35,7 +35,7 @@ function print_document_link($doc_no, $link_text, $link=true, $type_no,
 				'PARAM_4' => $email, 
 				'PARAM_5' => "");
 			break;
-		case systypes::sales_order() :
+		case ST_SALESORDER :
 			$rep = 109;
 			// from, to, currency, bank acc, email, quote, comments
 			$ar = array(
@@ -47,7 +47,7 @@ function print_document_link($doc_no, $link_text, $link=true, $type_no,
 				'PARAM_5' => 0, 
 				'PARAM_6' => "");
 			break;
-		case systypes::cust_dispatch() :
+		case ST_CUSTDELIVERY :
 			$rep = 110;
 			// from, to, email, comments
 			$ar = array(
@@ -70,7 +70,7 @@ function print_document_link($doc_no, $link_text, $link=true, $type_no,
 				'PARAM_6' => "", 
 				'PARAM_7' => $type_no);
 			break;
-		case systypes::po() :
+		case ST_PURCHORDER :
 			$rep = 209;
 			// from, to, currency, bank acc, email, comments
 			$ar = array(

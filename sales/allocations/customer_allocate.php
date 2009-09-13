@@ -62,8 +62,10 @@ if (isset($_POST['Cancel']))
 
 function edit_allocations_for_transaction($type, $trans_no)
 {
+	global $systypes_array;
 
-    display_heading(sprintf(_("Allocation of %s # %d"), systypes::name($_SESSION['alloc']->type),$_SESSION['alloc']->trans_no));
+    display_heading(sprintf(_("Allocation of %s # %d"), $systypes_array[$_SESSION['alloc']->type],
+    	$_SESSION['alloc']->trans_no));
 
     display_heading($_SESSION['alloc']->person_name);
 

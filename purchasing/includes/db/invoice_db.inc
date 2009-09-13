@@ -118,6 +118,8 @@ function get_diff_in_home_currency($supplier, $old_date, $date, $amount1, $amoun
 
 function add_supp_invoice($supp_trans, $invoice_no=0) // do not receive as ref because we change locally
 {
+	global $Refs;
+
 	//$company_currency = get_company_currency();
 	/*Start an sql transaction */
 	begin_transaction();
@@ -283,11 +285,11 @@ function add_supp_invoice($supp_trans, $invoice_no=0) // do not receive as ref b
     }
 	
 	/*Post a balance post if $total != 0 */
-	add_gl_balance($trans_type, $invoice_id, $date_, -$total, payment_person_types::supplier(), $supp_trans->supplier_id);	
+	add_gl_balance($trans_type, $invoice_id, $date_, -$total, PT_SUPPLIER, $supp_trans->supplier_id);	
 
 	add_comments($trans_type, $invoice_id, $date_, $supp_trans->Comments);
 
-	references::save($trans_type, $invoice_id, $supp_trans->reference);
+	$Refs->save($trans_type, $invoice_id, $supp_trans->reference);
 
 	if ($invoice_no != 0)
 	{
@@ -309,7 +311,7 @@ function add_supp_invoice($supp_trans, $invoice_no=0) // do not receive as ref b
 				// Exchange Variations Joe Hunt 2008-09-20 ////////////////////////////////////////
 
 				exchange_variation(21, $invoice_id, 20, $invoice_no, $date_,
-					$allocate_amount, payment_person_types::supplier());
+					$allocate_amount, PT_SUPPLIER);
 
 				///////////////////////////////////////////////////////////////////////////
 			}

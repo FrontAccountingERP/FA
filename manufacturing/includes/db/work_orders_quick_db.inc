@@ -13,10 +13,12 @@
 
 function add_work_order_quick($wo_ref, $loc_code, $units_reqd, $stock_id, $type, $date_, $memo_, $costs, $cr_acc, $labour, $cr_lab_acc)
 {
+	global $Refs;
+
 	begin_transaction();
 
 	// if unassembling, reverse the stock movements
-	if ($type == wo_types::unassemble())
+	if ($type == WO_UNASSEMBLY)
 		$units_reqd = -$units_reqd;
 
 	add_material_cost($stock_id, $units_reqd, $date_);
@@ -57,7 +59,7 @@ function add_work_order_quick($wo_ref, $loc_code, $units_reqd, $stock_id, $type,
         db_query($sql, "The work order requirements could not be added");
 
 		// insert a -ve stock move for each item
-		add_stock_move(systypes::work_order(), $bom_item["component"], $woid,
+		add_stock_move(ST_WORKORDER, $bom_item["component"], $woid,
 			$bom_item["loc_code"], $date_, $wo_ref, -$item_quantity, 0);
 	}
 
@@ -65,7 +67,7 @@ function add_work_order_quick($wo_ref, $loc_code, $units_reqd, $stock_id, $type,
 	// -------------------------------------------------------------------------
 
 	// insert a +ve stock move for the item being manufactured
-	add_stock_move(systypes::work_order(), $stock_id, $woid,	$loc_code, $date_,
+	add_stock_move(ST_WORKORDER, $stock_id, $woid,	$loc_code, $date_,
 		$wo_ref, $units_reqd, 0);
 
 	// -------------------------------------------------------------------------
@@ -74,10 +76,10 @@ function add_work_order_quick($wo_ref, $loc_code, $units_reqd, $stock_id, $type,
 
 	// -------------------------------------------------------------------------
 
-	add_comments(systypes::work_order(), $woid, $date_, $memo_);
+	add_comments(ST_WORKORDER, $woid, $date_, $memo_);
 
-	references::save(systypes::work_order(), $woid, $wo_ref);
-	add_audit_trail(systypes::work_order(), $woid, $date_,_("Quick production."));
+	$Refs->save(ST_WORKORDER, $woid, $wo_ref);
+	add_audit_trail(ST_WORKORDER, $woid, $date_,_("Quick production."));
 	commit_transaction();
 	return $woid;
 }
@@ -101,10 +103,10 @@ function work_order_quick_costs($woid, $stock_id, $units_reqd, $date_, $advanced
 		if ($advanced)
 		{
 			// insert a -ve stock move for each item
-			add_stock_move(systypes::work_order(), $bom_item["component"], $woid,
+			add_stock_move(ST_WORKORDER, $bom_item["component"], $woid,
 				$bom_item["loc_code"], $date_, "", -$bom_item["quantity"] * $units_reqd, 0);
 		}
-		$total_cost += add_gl_trans_std_cost(systypes::work_order(), $woid, $date_, $bom_accounts["inventory_account"], 0, 0,
+		$total_cost += add_gl_trans_std_cost(ST_WORKORDER, $woid, $date_, $bom_accounts["inventory_account"], 0, 0,
 			null, -$bom_cost);
 
 	}
@@ -119,7 +121,7 @@ function work_order_quick_costs($woid, $stock_id, $units_reqd, $date_, $advanced
 			$standard_cost = get_standard_cost($item['stock_id']);
 			$issue_cost = $standard_cost * $item['qty_issued'] * $units_reqd / $wo['units_reqd'];
 			$issue = get_stock_gl_code($item['stock_id']);
-			$total_cost += add_gl_trans_std_cost(systypes::work_order(), $woid, $date_, $issue["inventory_account"], 0, 0,
+			$total_cost += add_gl_trans_std_cost(ST_WORKORDER, $woid, $date_, $issue["inventory_account"], 0, 0,
 				null, -$issue_cost);
 			$issue_total += $issue_cost;
 		}
@@ -140,38 +142,38 @@ function work_order_quick_costs($woid, $stock_id, $units_reqd, $date_, $advanced
 	$item_accounts = get_stock_gl_code($stock_id);
 	if ($costs != 0.0)
 	{
-		add_gl_trans_std_cost(systypes::work_order(), $woid, $date_, $cr_acc,
-			0, 0, $wo_cost_types[WO_OVERHEAD], -$costs, payment_person_types::WorkOrder(), WO_OVERHEAD);
+		add_gl_trans_std_cost(ST_WORKORDER, $woid, $date_, $cr_acc,
+			0, 0, $wo_cost_types[WO_OVERHEAD], -$costs, PT_WORKORDER, WO_OVERHEAD);
 		$is_bank_to = is_bank_account($cr_acc);
     	if ($is_bank_to)
     	{
-    		add_bank_trans(systypes::work_order(), $woid, $is_bank_to, "",
-    			$date_, -$costs, payment_person_types::WorkOrder(), WO_OVERHEAD, get_company_currency(),
+    		add_bank_trans(ST_WORKORDER, $woid, $is_bank_to, "",
+    			$date_, -$costs, PT_WORKORDER, WO_OVERHEAD, get_company_currency(),
     			"Cannot insert a destination bank transaction");
     	}
 			
-		add_gl_trans_std_cost(systypes::work_order(), $woid, $date_, $item_accounts["assembly_account"],
+		add_gl_trans_std_cost(ST_WORKORDER, $woid, $date_, $item_accounts["assembly_account"],
 			$item_accounts["dimension_id"], $item_accounts["dimension2_id"], $wo_cost_types[WO_OVERHEAD], $costs, 
-			payment_person_types::WorkOrder(), WO_OVERHEAD);
+			PT_WORKORDER, WO_OVERHEAD);
 	}
 	if ($labour != 0.0)
 	{
-		add_gl_trans_std_cost(systypes::work_order(), $woid, $date_, $cr_lab_acc,
-			0, 0, $wo_cost_types[WO_LABOUR], -$labour, payment_person_types::WorkOrder(), WO_LABOUR);
+		add_gl_trans_std_cost(ST_WORKORDER, $woid, $date_, $cr_lab_acc,
+			0, 0, $wo_cost_types[WO_LABOUR], -$labour, PT_WORKORDER, WO_LABOUR);
 		$is_bank_to = is_bank_account($cr_lab_acc);
     	if ($is_bank_to)
     	{
-    		add_bank_trans(systypes::work_order(), $woid, $is_bank_to, "",
-    			$date_, -$labour, payment_person_types::WorkOrder(), WO_LABOUR, get_company_currency(),
+    		add_bank_trans(ST_WORKORDER, $woid, $is_bank_to, "",
+    			$date_, -$labour, PT_WORKORDER, WO_LABOUR, get_company_currency(),
     			"Cannot insert a destination bank transaction");
     	}
 			
-		add_gl_trans_std_cost(systypes::work_order(), $woid, $date_, $item_accounts["assembly_account"],
+		add_gl_trans_std_cost(ST_WORKORDER, $woid, $date_, $item_accounts["assembly_account"],
 			$item_accounts["dimension_id"], $item_accounts["dimension2_id"], $wo_cost_types[WO_LABOUR], $labour, 
-			payment_person_types::WorkOrder(), WO_LABOUR);
+			PT_WORKORDER, WO_LABOUR);
 	}
 	// debit total components $total_cost
-	add_gl_trans_std_cost(systypes::work_order(), $woid, $date_, $item_accounts["inventory_account"],
+	add_gl_trans_std_cost(ST_WORKORDER, $woid, $date_, $item_accounts["inventory_account"],
 		0, 0, null, -$total_cost);
 }
 

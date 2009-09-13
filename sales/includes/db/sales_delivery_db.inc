@@ -14,6 +14,7 @@
 //
 function write_sales_delivery(&$delivery,$bo_policy)
 {
+	global $Refs;
 
 	$trans_no = $delivery->trans_no;
 	if (is_array($trans_no)) $trans_no = key($trans_no);
@@ -100,7 +101,7 @@ function write_sales_delivery(&$delivery,$bo_policy)
 				add_gl_trans_std_cost(13, $delivery_no,
 					$delivery->document_date, $stock_gl_code["cogs_account"], $dim, $dim2, "",
 					$delivery_line->standard_cost * $delivery_line->qty_dispatched,
-					payment_person_types::customer(), $delivery->customer_id,
+					PT_CUSTOMER, $delivery->customer_id,
 					"The cost of sales GL posting could not be inserted");
 
 				/*now the stock entry*/
@@ -109,7 +110,7 @@ function write_sales_delivery(&$delivery,$bo_policy)
 				add_gl_trans_std_cost(13, $delivery_no, $delivery->document_date,
 					$stock_gl_code["inventory_account"], 0, 0, "",
 					(-$delivery_line->standard_cost * $delivery_line->qty_dispatched),
-					payment_person_types::customer(), $delivery->customer_id,
+					PT_CUSTOMER, $delivery->customer_id,
 					"The stock side of the cost of sales GL posting could not be inserted");
 
 			} /* end of if GL and stock integrated and standard cost !=0 */
@@ -135,7 +136,7 @@ function write_sales_delivery(&$delivery,$bo_policy)
 	add_comments(13, $delivery_no, $delivery->document_date, $delivery->Comments);
 
 	if ($trans_no == 0) {
-			references::save(13, $delivery_no, $delivery->reference);
+			$Refs->save(13, $delivery_no, $delivery->reference);
 	}
 
 	commit_transaction();

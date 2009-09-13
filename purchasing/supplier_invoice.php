@@ -138,13 +138,15 @@ if (isset($_POST['AddGLCodeToTrans'])){
 
 function check_data()
 {
-	If (!$_SESSION['supp_trans']->is_valid_trans_to_post())
+	global $Refs;
+
+	if (!$_SESSION['supp_trans']->is_valid_trans_to_post())
 	{
 		display_error(_("The invoice cannot be processed because the there are no items or values on the invoice.  Invoices are expected to have a charge."));
 		return false;
 	}
 
-	if (!references::is_valid($_SESSION['supp_trans']->reference)) 
+	if (!$Refs->is_valid($_SESSION['supp_trans']->reference)) 
 	{
 		display_error(_("You must enter an invoice reference."));
 		set_focus('reference');
@@ -158,7 +160,7 @@ function check_data()
 		return false;
 	}
 
-	if (!references::is_valid($_SESSION['supp_trans']->supp_reference)) 
+	if (!$Refs->is_valid($_SESSION['supp_trans']->supp_reference)) 
 	{
 		display_error(_("You must enter a supplier's invoice reference."));
 		set_focus('supp_reference');
@@ -228,7 +230,7 @@ if (isset($_POST['PostInvoice']))
 function check_item_data($n)
 {
 	global $check_price_charged_vs_order_price,
-		$check_qty_charged_vs_del_qty;
+		$check_qty_charged_vs_del_qty, $SysPrefs;
 	if (!check_num('this_quantity_inv'.$n, 0) || input_num('this_quantity_inv'.$n)==0)
 	{
 		display_error( _("The quantity to invoice must be numeric and greater than zero."));
@@ -243,15 +245,16 @@ function check_item_data($n)
 		return false;
 	}
 
+	$margin = $SysPrefs->over_charge_allowance();
 	if ($check_price_charged_vs_order_price == True)
 	{
 		if ($_POST['order_price'.$n]!=input_num('ChgPrice'.$n)) {
 		     if ($_POST['order_price'.$n]==0 ||
 				input_num('ChgPrice'.$n)/$_POST['order_price'.$n] >
-			    (1 + (sys_prefs::over_charge_allowance() / 100)))
+			    (1 + ($margin/ 100)))
 		    {
 			display_error(_("The price being invoiced is more than the purchase order price by more than the allowed over-charge percentage. The system is set up to prohibit this. See the system administrator to modify the set up parameters if necessary.") .
-			_("The over-charge percentage allowance is :") . sys_prefs::over_charge_allowance() . "%");
+			_("The over-charge percentage allowance is :") . $margin . "%");
 			set_focus('ChgPrice'.$n);
 			return false;
 		    }
@@ -261,10 +264,10 @@ function check_item_data($n)
 	if ($check_qty_charged_vs_del_qty == True)
 	{
 		if (input_num('this_quantity_inv'.$n) / ($_POST['qty_recd'.$n] - $_POST['prev_quantity_inv'.$n]) >
-			(1+ (sys_prefs::over_charge_allowance() / 100)))
+			(1+ ($margin / 100)))
 		{
 			display_error( _("The quantity being invoiced is more than the outstanding quantity by more than the allowed over-charge percentage. The system is set up to prohibit this. See the system administrator to modify the set up parameters if necessary.")
-			. _("The over-charge percentage allowance is :") . sys_prefs::over_charge_allowance() . "%");
+			. _("The over-charge percentage allowance is :") . $margin . "%");
 			set_focus('this_quantity_inv'.$n);
 			return false;
 		}

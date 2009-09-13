@@ -58,7 +58,7 @@ start_row();
 if ($show_currencies)
 	label_cells(_("Payment Currency"), $receipt['bank_curr_code'], "class='tableheader2'");
 label_cells(_("Amount"), number_format2(-$receipt['BankAmount'], user_price_dec()), "class='tableheader2'");
-label_cells(_("Payment Type"), bank_account_types::transfer_type($receipt['BankTransType']), "class='tableheader2'");
+label_cells(_("Payment Type"), $bank_transfer_typea[$receipt['BankTransType']], "class='tableheader2'");
 end_row();
 start_row();
 if ($show_currencies) 
@@ -78,7 +78,7 @@ $voided = is_voided_display(22, $trans_no, _("This payment has been voided."));
 // now display the allocations for this payment
 if (!$voided) 
 {
-	display_allocations_from(payment_person_types::supplier(), $receipt['supplier_id'], 22, $trans_no, -$receipt['Total']);
+	display_allocations_from(PT_SUPPLIER, $receipt['supplier_id'], 22, $trans_no, -$receipt['Total']);
 }
 
 end_page(true);

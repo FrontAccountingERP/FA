@@ -79,7 +79,7 @@ function clear_cust_alloctions($type, $type_no, $date="")
 		// 2008-09-20 Joe Hunt
 		if ($date != "")
 			exchange_variation($type, $type_no, $row['trans_type_to'], $row['trans_no_to'], $date,
-				$row['amt'], payment_person_types::customer(), true);
+				$row['amt'], PT_CUSTOMER, true);
 		//////////////////////
 	}
 
@@ -160,8 +160,8 @@ function get_allocatable_to_cust_transactions($customer_id, $trans_no=null, $typ
 	else
 	{
 		$sql = get_alloc_trans_sql(null, "round(ov_amount+ov_gst+ov_freight+ov_freight_tax+ov_discount-alloc,6) > 0
-			AND trans.type != " . systypes::cust_payment() . "
-			AND trans.type != " . systypes::bank_deposit() . "
+			AND trans.type != " . ST_CUSTPAYMENT . "
+			AND trans.type != " . ST_BANKDEPOSIT . "
 			AND trans.type != 11
 			AND trans.type != 13
 			AND trans.debtor_no=$customer_id");

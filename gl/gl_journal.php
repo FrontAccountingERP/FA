@@ -49,7 +49,7 @@ function line_start_focus() {
 if (isset($_GET['AddedID'])) 
 {
 	$trans_no = $_GET['AddedID'];
-	$trans_type = systypes::journal_entry();
+	$trans_type = ST_JOURNAL;
 
    	display_notification_centered( _("Journal entry has been entered") . " #$trans_no");
 
@@ -62,7 +62,7 @@ if (isset($_GET['AddedID']))
 } elseif (isset($_GET['UpdatedID'])) 
 {
 	$trans_no = $_GET['UpdatedID'];
-	$trans_type = systypes::journal_entry();
+	$trans_type = ST_JOURNAL;
 
    	display_notification_centered( _("Journal entry has been updated") . " #$trans_no");
 
@@ -90,6 +90,8 @@ elseif (isset($_GET['ModifyGL']))
 
 function create_cart($type=0, $trans_no=0)
 {
+	global $Refs;
+
 	if (isset($_SESSION['journal_items']))
 	{
 		unset ($_SESSION['journal_items']);
@@ -111,9 +113,9 @@ function create_cart($type=0, $trans_no=0)
 		}
 		$cart->memo_ = get_comments_string($type, $trans_no);
 		$cart->tran_date = sql2date($date);
-		$cart->reference = references::get($type, $trans_no);
+		$cart->reference = $Refs->get($type, $trans_no);
 	} else {
-		$cart->reference = references::get_next(0);
+		$cart->reference = $Refs->get_next(0);
 		$cart->tran_date = new_doc_date();
 	}
 	if (!is_date_in_fiscalyear($cart->tran_date))
@@ -158,13 +160,13 @@ if (isset($_POST['Process']))
 		$input_error = 1;
 	} 
   	if ($_SESSION['journal_items']->order_id == 0) {
-		if (!references::is_valid($_POST['ref'])) 
+		if (!$Refs->is_valid($_POST['ref'])) 
 		{
 			display_error( _("You must enter a reference."));
 			set_focus('ref');
 			$input_error = 1;
 		} 
-		elseif (references::exists(systypes::journal_entry(), $_POST['ref'])) 
+		elseif ($Refs->exists(ST_JOURNAL, $_POST['ref'])) 
 		{
 			display_error( _("The entered reference is already in use."));
 			set_focus('ref');

@@ -65,7 +65,7 @@ function get_invoices($supplier_id, $to)
 
 function print_aged_supplier_analysis()
 {
-    global $comp_path, $path_to_root;
+    global $comp_path, $path_to_root, $systypes_array;
 
     $to = $_POST['PARAM_0'];
     $fromsupp = $_POST['PARAM_1'];
@@ -84,7 +84,7 @@ function print_aged_supplier_analysis()
 		$pg = new graph();
 	}
 
-	if ($fromsupp == reserved_words::get_all_numeric())
+	if ($fromsupp == ALL_NUMERIC)
 		$from = _('All');
 	else
 		$from = get_supplier_name($fromsupp);
@@ -94,7 +94,7 @@ function print_aged_supplier_analysis()
 		$summary = _('Summary Only');
 	else
 		$summary = _('Detailed Report');
-	if ($currency == reserved_words::get_all())
+	if ($currency == ALL_TEXT)
 	{
 		$convert = true;
 		$currency = _('Balances in Home Currency');
@@ -138,7 +138,7 @@ function print_aged_supplier_analysis()
 	$pastdue2 = _('Over') . " " . $PastDueDays2 . " " . _('Days');
 
 	$sql = "SELECT supplier_id, supp_name AS name, curr_code FROM ".TB_PREF."suppliers ";
-	if ($fromsupp != reserved_words::get_all_numeric())
+	if ($fromsupp != ALL_NUMERIC)
 		$sql .= "WHERE supplier_id=$fromsupp ";
 	$sql .= "ORDER BY supp_name";
 	$result = db_query($sql, "The suppliers could not be retrieved");
@@ -182,7 +182,7 @@ function print_aged_supplier_analysis()
 			while ($trans=db_fetch($res))
 			{
 				$rep->NewLine(1, 2);
-        		$rep->TextCol(0, 1,	systypes::name($trans['type']), -2);
+        		$rep->TextCol(0, 1, $systypes_array[$trans['type']], -2);
 				$rep->TextCol(1, 2,	$trans['reference'], -2);
 				$rep->TextCol(2, 3,	sql2date($trans['tran_date']), -2);
 				foreach ($trans as $i => $value)

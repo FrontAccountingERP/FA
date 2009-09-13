@@ -26,7 +26,7 @@ function add_to_order(&$order, $new_item, $new_item_qty, $standard_cost)
 
 function display_order_header(&$order)
 {
-	global $table_style;
+	global $table_style, $Refs;
 
 	start_outer_table("width=70% $table_style");
 
@@ -37,7 +37,7 @@ function display_order_header(&$order)
 
 	table_section(2, "33%");
 
-	ref_row(_("Reference:"), 'ref', '', references::get_next(systypes::location_transfer()));
+	ref_row(_("Reference:"), 'ref', '', $Refs->get_next(ST_LOCTRANSFER));
 
     date_row(_("Date:"), 'AdjDate', '', true);
 

@@ -288,6 +288,8 @@ function line_start_focus() {
 
 //--------------------------------------------------------------------------------
 function can_process() {
+	global $Refs;
+
 	if (!is_date($_POST['OrderDate'])) {
 		display_error(_("The entered date is invalid."));
 		set_focus('OrderDate');
@@ -342,7 +344,7 @@ function can_process() {
 			return false;
 		}
 	}
-	if (!references::is_valid($_POST['ref'])) {
+	if (!$Refs->is_valid($_POST['ref'])) {
 		display_error(_("You must enter a reference."));
 		set_focus('ref');
 		return false;
@@ -386,6 +388,8 @@ if (isset($_POST['ProcessOrder']) && can_process()) {
 
 function check_item_data()
 {
+	global $SysPrefs;
+
 	if (!check_num('qty', 0) || !check_num('Disc', 0, 100)) {
 		display_error( _("The item could not be updated because you are attempting to set the quantity ordered to less than 0, or the discount percent to more than 100."));
 		set_focus('qty');
@@ -401,7 +405,7 @@ function check_item_data()
 		display_error(_("You attempting to make the quantity ordered a quantity less than has already been delivered. The quantity delivered cannot be modified retrospectively."));
 		return false;
 	} // Joe Hunt added 2008-09-22 -------------------------
-	elseif ($_SESSION['Items']->trans_type!=30 && $_SESSION['Items']->trans_type!=32 && !sys_prefs::allow_negative_stock() &&
+	elseif ($_SESSION['Items']->trans_type!=30 && $_SESSION['Items']->trans_type!=32 && !$SysPrefs->allow_negative_stock() &&
 		is_inventory_item($_POST['stock_id']))
 	{
 		$qoh = get_qoh_on_date($_POST['stock_id'], $_POST['Location'], $_POST['OrderDate']);
@@ -503,6 +507,8 @@ function  handle_cancel_order()
 
 function create_cart($type, $trans_no)
 { 
+	global $Refs;
+
 	processing_start();
 	$doc_type = $type;
 
@@ -512,7 +518,7 @@ function create_cart($type, $trans_no)
 		$doc = new Cart(32, $trans_no);
 		$doc->trans_no = 0;
 		$doc->trans_type = 30;
-		$doc->reference = references::get_next($doc->trans_type);
+		$doc->reference = $Refs->get_next($doc->trans_type);
 		$doc->document_date = $doc->due_date = new_doc_date();
 		$doc->Comments = _("Sales Quotation") . " # " . $trans_no;
 		$_SESSION['Items'] = $doc;
@@ -535,7 +541,7 @@ function create_cart($type, $trans_no)
 				$doc->cash = date_diff2($doc->due_date, Today(), 'd')<2;
 		} else
 			$doc->due_date = $doc->document_date;
-		$doc->reference = references::get_next($doc->trans_type);
+		$doc->reference = $Refs->get_next($doc->trans_type);
 		//$doc->Comments='';
 		foreach($doc->line_items as $line_no => $line) {
 			$doc->line_items[$line_no]->qty_done = 0;

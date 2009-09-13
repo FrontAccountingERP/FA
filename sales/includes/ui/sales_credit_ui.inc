@@ -15,7 +15,7 @@ include_once($path_to_root . "/includes/ui.inc");
 
 function display_credit_header(&$order)
 {
-	global $table_style, $Ajax;
+	global $table_style, $Ajax, $Refs;
 
 	start_outer_table("width=80% $table_style");
 	table_section(1);
@@ -23,7 +23,7 @@ function display_credit_header(&$order)
 	$customer_error = "";
 	$change_prices = 0;
 
-    if (!isset($_POST['customer_id']) && (get_global_customer() != reserved_words::get_all()))
+    if (!isset($_POST['customer_id']) && (get_global_customer() != ALL_TEXT))
     	$_POST['customer_id'] = get_global_customer();
 
 	customer_list_row(_("Customer:"), 'customer_id', null, false, true, false, true);
@@ -80,7 +80,7 @@ function display_credit_header(&$order)
 	set_global_customer($_POST['customer_id']);
 
 	if (!isset($_POST['ref']))
-		$_POST['ref'] = references::get_next(11);
+		$_POST['ref'] = $Refs->get_next(11);
 	if ($order->trans_no==0)
 	    ref_row(_("Reference").':', 'ref');
 	else

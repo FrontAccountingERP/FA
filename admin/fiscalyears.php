@@ -108,7 +108,7 @@ function close_year($year)
 
 	if ($balance != 0.0)
 	{
-		$trans_type = systypes::journal_entry();
+		$trans_type = ST_JOURNAL;
 		$trans_id = get_next_trans_no($trans_type);
 
 		add_gl_trans($trans_type, $trans_id, $to, $co['retained_earnings_act'],
@@ -244,7 +244,7 @@ function delete_this_fiscalyear($selected_id)
 			db_query($sql, "Could not delete purchase order details");
 			$sql = "DELETE FROM ".TB_PREF."purch_orders WHERE order_no = {$row['order_no']}";
 			db_query($sql, "Could not delete purchase order");
-			delete_attachments_and_comments(systypes::po(), $row['order_no']);
+			delete_attachments_and_comments(ST_PURCHORDER, $row['order_no']);
 		}
 	}
 	$sql = "SELECT id FROM ".TB_PREF."grn_batch WHERE delivery_date <= '$to'";

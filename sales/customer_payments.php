@@ -74,6 +74,8 @@ if (isset($_GET['AddedID'])) {
 
 function can_process()
 {
+	global $Refs;
+
 	if (!isset($_POST['DateBanked']) || !is_date($_POST['DateBanked'])) {
 		display_error(_("The entered date is invalid. Please enter a valid date for the payment."));
 		set_focus('DateBanked');
@@ -84,7 +86,7 @@ function can_process()
 		return false;
 	}
 
-	if (!references::is_valid($_POST['ref'])) {
+	if (!$Refs->is_valid($_POST['ref'])) {
 		display_error(_("You must enter a reference."));
 		set_focus('ref');
 		return false;
@@ -190,6 +192,8 @@ if (isset($_POST['AddPaymentItem'])) {
 
 function read_customer_data()
 {
+	global $Refs;
+
 	$sql = "SELECT ".TB_PREF."debtors_master.pymt_discount,
 		".TB_PREF."credit_status.dissallow_invoices
 		FROM ".TB_PREF."debtors_master, ".TB_PREF."credit_status
@@ -202,7 +206,7 @@ function read_customer_data()
 
 	$_POST['HoldAccount'] = $myrow["dissallow_invoices"];
 	$_POST['pymt_discount'] = $myrow["pymt_discount"];
-	$_POST['ref'] = references::get_next(12);
+	$_POST['ref'] = $Refs->get_next(12);
 }
 
 //----------------------------------------------------------------------------------------------
@@ -219,7 +223,7 @@ start_form();
 	if (db_customer_has_branches($_POST['customer_id'])) {
 		customer_branches_list_row(_("Branch:"), $_POST['customer_id'], 'BranchID', null, false, true, true);
 	} else {
-		hidden('BranchID', reserved_words::get_any_numeric());
+		hidden('BranchID', ANY_NUMERIC);
 	}
 
 	read_customer_data();

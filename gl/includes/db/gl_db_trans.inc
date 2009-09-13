@@ -142,8 +142,8 @@ function get_gl_wo_cost_trans($trans_id, $person_id=-1)
 {
 	$sql = "SELECT ".TB_PREF."gl_trans.*, ".TB_PREF."chart_master.account_name FROM ".TB_PREF."gl_trans, ".TB_PREF."chart_master
 		WHERE ".TB_PREF."chart_master.account_code=".TB_PREF."gl_trans.account
-		AND ".TB_PREF."gl_trans.type=".systypes::work_order()." AND ".TB_PREF."gl_trans.type_no=$trans_id
-		AND ".TB_PREF."gl_trans.person_type_id=".payment_person_types::WorkOrder();
+		AND ".TB_PREF."gl_trans.type=".ST_WORKORDER." AND ".TB_PREF."gl_trans.type_no=$trans_id
+		AND ".TB_PREF."gl_trans.person_type_id=".PT_WORKORDER;
 	if ($person_id != -1)
 		$sql .= " AND ".TB_PREF."gl_trans.person_id=$person_id";
 	$sql .= " AND amount < 0";	
@@ -356,6 +356,8 @@ function get_tax_summary($from, $to)
 //
 function write_journal_entries(&$cart, $reverse)
 {
+	global $Refs;
+
 	$date_ = $cart->tran_date;
 	$ref   = $cart->reference;
 	$memo_ = $cart->memo_;
@@ -393,7 +395,7 @@ function write_journal_entries(&$cart, $reverse)
 	
 	if ($new) {
 		add_comments($trans_type, $trans_id, $date_, $memo_);
-		references::save($trans_type, $trans_id, $ref);
+		$Refs->save($trans_type, $trans_id, $ref);
 	} else
 		update_comments($trans_type, $trans_id, null, $memo_);
 
@@ -430,7 +432,7 @@ function write_journal_entries(&$cart, $reverse)
 
     	add_comments($trans_type, $trans_id_reverse, $reversingDate, $memo_);
 
-    	references::save($trans_type, $trans_id_reverse, $ref);
+    	$Refs->save($trans_type, $trans_id_reverse, $ref);
 		add_audit_trail($trans_type, $trans_id_reverse, $reversingDate);
 	}
 

@@ -97,6 +97,8 @@ class cart
 	//
 	function read($type, $trans_no = 0, $view=false ) {
 
+		global $SysPrefs, $Refs;
+
 		if (!is_array($trans_no)) $trans_no = array($trans_no);
 		if ($trans_no[0]) {
 			if ($type == 30 || $type == 32) { // sales order || sales quotation
@@ -150,14 +152,14 @@ class cart
 				$this->trans_type = $type;
 				$this->trans_no = 0;
 				// set new sales document defaults here
-				if (get_global_customer() != reserved_words::get_all())
+				if (get_global_customer() != ALL_TEXT)
 				  $this->customer_id = get_global_customer();
 				else
 				  $this->customer_id = '';
 				$this->document_date = 	new_doc_date();
 				if (!is_date_in_fiscalyear($this->document_date))
 					$this->document_date = end_fiscalyear();
-				$this->reference = references::get_next($this->trans_type);
+				$this->reference = $Refs->get_next($this->trans_type);
 				if ($type != 30 && $type != 32) // Added 2.1 Joe Hunt 2008-11-12
 				{
 					$dim = get_company_pref('use_dimension');
@@ -197,7 +199,7 @@ class cart
 				}
 				} else
 				  $this->due_date =
-					add_days($this->document_date, sys_prefs::default_delivery_required_by());
+					add_days($this->document_date, $SysPrefs->default_delivery_required_by());
 			}
 	}
 

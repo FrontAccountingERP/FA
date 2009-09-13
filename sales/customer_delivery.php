@@ -96,7 +96,7 @@ if (isset($_GET['OrderNumber']) && $_GET['OrderNumber'] > 0) {
 	$ord->src_docs = $ord->trans_no;
 	$ord->order_no = key($ord->trans_no);
 	$ord->trans_no = 0;
-	$ord->reference = references::get_next(13);
+	$ord->reference = $Refs->get_next(13);
 	$ord->document_date = new_doc_date();
 	$_SESSION['Items'] = $ord;
 	copy_from_cart();
@@ -140,6 +140,8 @@ if (isset($_GET['OrderNumber']) && $_GET['OrderNumber'] > 0) {
 
 function check_data()
 {
+	global $Refs;
+
 	if (!isset($_POST['DispatchDate']) || !is_date($_POST['DispatchDate']))	{
 		display_error(_("The entered date of delivery is invalid."));
 		set_focus('DispatchDate');
@@ -159,7 +161,7 @@ function check_data()
 	}
 
 	if ($_SESSION['Items']->trans_no==0) {
-		if (!references::is_valid($_POST['ref'])) {
+		if (!$Refs->is_valid($_POST['ref'])) {
 			display_error(_("You must enter a reference."));
 			set_focus('ref');
 			return false;
@@ -264,7 +266,9 @@ function check_quantities()
 
 function check_qoh()
 {
-	if (!sys_prefs::allow_negative_stock())	{
+	global $SysPrefs;
+
+	if (!$SysPrefs->allow_negative_stock())	{
 		foreach ($_SESSION['Items']->line_items as $itm) {
 
 			if ($itm->qty_dispatched && has_stock_holding($itm->mb_flag)) {
@@ -324,7 +328,7 @@ end_row();
 start_row();
 
 //if (!isset($_POST['ref']))
-//	$_POST['ref'] = references::get_next(13);
+//	$_POST['ref'] = $Refs->get_next(13);
 
 if ($_SESSION['Items']->trans_no==0) {
 	ref_cells(_("Reference"), 'ref', '', null, "class='tableheader2'");
@@ -332,7 +336,7 @@ if ($_SESSION['Items']->trans_no==0) {
 	label_cells(_("Reference"), $_SESSION['Items']->reference, "class='tableheader2'");
 }
 
-label_cells(_("For Sales Order"), get_customer_trans_view_str(systypes::sales_order(), $_SESSION['Items']->order_no), "class='tableheader2'");
+label_cells(_("For Sales Order"), get_customer_trans_view_str(ST_SALESORDER, $_SESSION['Items']->order_no), "class='tableheader2'");
 
 label_cells(_("Sales Type"), $_SESSION['Items']->sales_type_name, "class='tableheader2'");
 end_row();
@@ -398,7 +402,7 @@ foreach ($_SESSION['Items']->line_items as $line=>$ln_itm) {
 	}
 	// if it's a non-stock item (eg. service) don't show qoh
 	$show_qoh = true;
-	if (sys_prefs::allow_negative_stock() || !has_stock_holding($ln_itm->mb_flag) ||
+	if ($SysPrefs->allow_negative_stock() || !has_stock_holding($ln_itm->mb_flag) ||
 		$ln_itm->qty_dispatched == 0) {
 		$show_qoh = false;
 	}

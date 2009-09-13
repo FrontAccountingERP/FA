@@ -83,13 +83,13 @@ function print_price_listing()
     $dec = user_price_dec();
 
 	$home_curr = get_company_pref('curr_default');
-	if ($currency == reserved_words::get_all())
+	if ($currency == ALL_TEXT)
 		$currency = $home_curr;
 	$curr = get_currency($currency);
 	$curr_sel = $currency . " - " . $curr['currency'];
-	if ($category == reserved_words::get_all_numeric())
+	if ($category == ALL_NUMERIC)
 		$category = 0;
-	if ($salestype == reserved_words::get_all_numeric())
+	if ($salestype == ALL_NUMERIC)
 		$salestype = 0;
 	if ($category == 0)
 		$cat = _('All');

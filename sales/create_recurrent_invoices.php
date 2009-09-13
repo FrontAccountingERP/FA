@@ -29,9 +29,11 @@ function set_last_sent($id, $date)
 	$sql = "UPDATE ".TB_PREF."recurrent_invoices SET last_sent='$date' WHERE id=$id";
    	db_query($sql,"The recurrent invoice could not be updated or added");
 }	
- 	
+
 function create_recurrent_invoices($customer_id, $branch_id, $order_no, $tmpl_no)
 {
+	global $Refs;
+
 	$doc = new Cart(30, array($order_no));
 
 	get_customer_details_to_order($doc, $customer_id, $branch_id);
@@ -41,7 +43,7 @@ function create_recurrent_invoices($customer_id, $branch_id, $order_no, $tmpl_no
 	$doc->document_date = Today(); // 2006-06-15. Added so Invoices and Deliveries get current day
 
 	$doc->due_date = get_invoice_duedate($doc->customer_id, $doc->document_date);
-	$doc->reference = references::get_next($doc->trans_type);
+	$doc->reference = $Refs->get_next($doc->trans_type);
 	//$doc->Comments='';
 
 	foreach ($doc->line_items as $line_no=>$item) {
@@ -51,7 +53,7 @@ function create_recurrent_invoices($customer_id, $branch_id, $order_no, $tmpl_no
 	}	
 	$cart = $doc;
 	$cart->trans_type = 10;
-	$cart->reference = references::get_next($cart->trans_type);
+	$cart->reference = $Refs->get_next($cart->trans_type);
 	$invno = $cart->write(1);
 	set_last_sent($tmpl_no, $cart->document_date);
 	return $invno;

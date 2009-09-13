@@ -46,7 +46,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
     	for ($i = 0; $i < 5; $i++) 
     	{
     		if (isset($_POST['tax_type_id' . $i]) && 
-    			$_POST['tax_type_id' . $i] != reserved_words::get_all_numeric()	&& 
+    			$_POST['tax_type_id' . $i] != ALL_NUMERIC	&& 
     			!check_num('rate' . $i, 0))
     		{
 			display_error( _("An entered tax rate is invalid or less than zero."));
@@ -67,7 +67,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
     	for ($i = 0; $i < 5; $i++) 
     	{
     		if (isset($_POST['tax_type_id' . $i]) &&
-   				$_POST['tax_type_id' . $i] != reserved_words::get_any_numeric()) 
+   				$_POST['tax_type_id' . $i] != ANY_NUMERIC) 
    			{
         		$taxes[] = $_POST['tax_type_id' . $i];
         		$rates[] = input_num('rate' . $i);
@@ -162,7 +162,7 @@ while ($myrow = db_fetch($result))
 		label_cell(_("No"));
 
 	/*for ($i=0; $i< 5; $i++)
-		if ($myrow["type" . $i] != reserved_words::get_all_numeric())
+		if ($myrow["type" . $i] != ALL_NUMERIC)
 			echo "<td>" . $myrow["type" . $i] . "</td>";*/
 
 	inactive_control_cell($myrow["id"], $myrow["inactive"], 'tax_groups', 'id');
@@ -217,7 +217,7 @@ for ($i = 0; $i < 5; $i++)
 		$_POST['tax_type_id' . $i] = 0;
 	tax_types_list_cells(null, 'tax_type_id' . $i, $_POST['tax_type_id' . $i], _("None"), true);
 
-	if ($_POST['tax_type_id' . $i] != 0 && $_POST['tax_type_id' . $i] != reserved_words::get_all_numeric()) 
+	if ($_POST['tax_type_id' . $i] != 0 && $_POST['tax_type_id' . $i] != ALL_NUMERIC) 
 	{
 
 		$default_rate = get_tax_type_default_rate($_POST['tax_type_id' . $i]);

@@ -32,12 +32,12 @@ if ($_GET['trans_no'] != "")
 	$woid = $_GET['trans_no'];
 }
 
-display_heading(systypes::name(systypes::work_order()) . " # " . $woid);
+display_heading($systypes_array[ST_WORKORDER] . " # " . $woid);
 
 br(1);
 $myrow = get_work_order($woid);
 
-if ($myrow["type"]  == wo_types::advanced())
+if ($myrow["type"]  == WO_ADVANCED)
 	display_wo_details($woid, true);
 else
 	display_wo_details_quick($woid, true);
@@ -55,7 +55,7 @@ else
 {
 	display_heading2(_("Work Order Requirements"));
 	display_wo_requirements($woid, $myrow["units_reqd"]);
-	if ($myrow["type"] == wo_types::advanced())
+	if ($myrow["type"] == WO_ADVANCED)
 	{
     	echo "<br><table cellspacing=7><tr valign=top><td>";
     	display_heading2(_("Issues"));
@@ -79,7 +79,7 @@ else
 
 echo "<br></center>";
 
-is_voided_display(systypes::work_order(), $woid, _("This work order has been voided."));
+is_voided_display(ST_WORKORDER, $woid, _("This work order has been voided."));
 
 end_page(true);
 

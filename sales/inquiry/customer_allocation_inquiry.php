@@ -65,13 +65,15 @@ function check_overdue($row)
 function order_link($row)
 {
 	return $row['order_']>0 ?
-		get_customer_trans_view_str(systypes::sales_order(), $row['order_'])
+		get_customer_trans_view_str(ST_SALESORDER, $row['order_'])
 		: "";
 }
 
 function systype_name($dummy, $type)
 {
-	return systypes::name($type);
+	global $systypes_array;
+
+	return $systypes_array[$type];
 }
 
 function view_link($trans)
@@ -101,13 +103,13 @@ function alloc_link($row)
 		/*its a credit note which could have an allocation */
 		return $link;
 	}
-	elseif (($row["type"] == systypes::cust_payment() || $row["type"] == systypes::bank_deposit()) &&
+	elseif (($row["type"] == ST_CUSTPAYMENT || $row["type"] == ST_BANKDEPOSIT) &&
 		($row['TotalAmount'] - $row['Allocated']) > 0)
 	{
 		/*its a receipt  which could have an allocation*/
 		return $link;
 	}
-	elseif ($row["type"] == systypes::cust_payment() && $row['TotalAmount'] < 0)
+	elseif ($row["type"] == ST_CUSTPAYMENT && $row['TotalAmount'] < 0)
 	{
 		/*its a negative receipt */
 		return '';
@@ -158,10 +160,10 @@ function fmt_credit($row)
     		AND trans.tran_date >= '$data_after'
     		AND trans.tran_date <= '$date_to'";
 
-   	if ($_POST['customer_id'] != reserved_words::get_all())
+   	if ($_POST['customer_id'] != ALL_TEXT)
    		$sql .= " AND trans.debtor_no = '" . $_POST['customer_id'] . "'";
 
-   	if (isset($_POST['filterType']) && $_POST['filterType'] != reserved_words::get_all())
+   	if (isset($_POST['filterType']) && $_POST['filterType'] != ALL_TEXT)
    	{
    		if ($_POST['filterType'] == '1' || $_POST['filterType'] == '2')
    		{
@@ -169,7 +171,7 @@ function fmt_credit($row)
    		}
    		elseif ($_POST['filterType'] == '3')
    		{
-			$sql .= " AND trans.type = " . systypes::cust_payment();
+			$sql .= " AND trans.type = " . ST_CUSTPAYMENT;
    		}
    		elseif ($_POST['filterType'] == '4')
    		{
@@ -214,7 +216,7 @@ $cols = array(
 	array('insert'=>true, 'fun'=>'alloc_link')
 	);
 
-if ($_POST['customer_id'] != reserved_words::get_all()) {
+if ($_POST['customer_id'] != ALL_TEXT) {
 	$cols[_("Customer")] = 'skip';
 	$cols[_("Currency")] = 'skip';
 }

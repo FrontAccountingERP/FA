@@ -28,7 +28,7 @@ if (isset($_GET["trans_no"]))
 	$trans_id = $_GET["trans_no"];
 }
 
-$receipt = get_customer_trans($trans_id, systypes::cust_payment());
+$receipt = get_customer_trans($trans_id, ST_CUSTPAYMENT);
 
 display_heading(sprintf(_("Customer Payment #%d"),$trans_id));
 
@@ -46,18 +46,18 @@ label_cells(_("Discount"), price_format($receipt['ov_discount']), "class='tableh
 end_row();
 start_row();
 label_cells(_("Payment Type"), 
-	bank_account_types::transfer_type($receipt['BankTransType']), "class='tableheader2'");
+	$bank_transfer_types[$receipt['BankTransType']], "class='tableheader2'");
 label_cells(_("Reference"), $receipt['reference'], "class='tableheader2'", "colspan=4");
 end_row();
-comments_display_row(systypes::cust_payment(), $trans_id);
+comments_display_row(ST_CUSTPAYMENT, $trans_id);
 
 end_table(1);
 
-$voided = is_voided_display(systypes::cust_payment(), $trans_id, _("This customer payment has been voided."));
+$voided = is_voided_display(ST_CUSTPAYMENT, $trans_id, _("This customer payment has been voided."));
 
 if (!$voided)
 {
-	display_allocations_from(payment_person_types::customer(), $receipt['debtor_no'], systypes::cust_payment(), $trans_id, $receipt['Total']);
+	display_allocations_from(PT_CUSTOMER, $receipt['debtor_no'], ST_CUSTPAYMENT, $trans_id, $receipt['Total']);
 }
 
 end_page(true);

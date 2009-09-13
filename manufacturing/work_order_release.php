@@ -69,7 +69,7 @@ if (isset($_POST['release']))
 
 	display_notification(_("The work order has been released to manufacturing."));
 
-    display_note(get_trans_view_str(systypes::work_order(), $selected_id, _("View this Work Order")));
+    display_note(get_trans_view_str(ST_WORKORDER, $selected_id, _("View this Work Order")));
 
 	hyperlink_no_params("search_work_orders.php", _("Select another &work order"));
 

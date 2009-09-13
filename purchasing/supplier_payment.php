@@ -82,6 +82,8 @@ if (isset($_GET['AddedID']))
 
 function check_inputs()
 {
+	global $Refs;
+
 	if ($_POST['amount'] == "") 
 	{
 		$_POST['amount'] = price_format(0);
@@ -144,7 +146,7 @@ function check_inputs()
 		set_focus('DatePaid');
 		return false;
 	}
-    if (!references::is_valid($_POST['ref'])) 
+    if (!$Refs->is_valid($_POST['ref'])) 
     {
 		display_error(_("You must enter a reference."));
 		set_focus('ref');
@@ -225,7 +227,7 @@ start_form();
 
 	table_section(2);
 
-    ref_row(_("Reference:"), 'ref', '', references::get_next(22));
+    ref_row(_("Reference:"), 'ref', '', $Refs->get_next(22));
 
     date_row(_("Date Paid") . ":", 'DatePaid', '', true, 0, 0, 0, null, true);
 

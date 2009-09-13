@@ -24,6 +24,8 @@ function delete_po($po)
 
 function add_po(&$po_obj)
 {
+	global $Refs;
+
 	begin_transaction();
 
      /*Insert to purchase order header record */
@@ -56,11 +58,11 @@ function add_po(&$po_obj)
     	}
      }
 
-	references::save(systypes::po(), $po_obj->order_no, $po_obj->reference);
+	$Refs->save(ST_PURCHORDER, $po_obj->order_no, $po_obj->reference);
 
-	//add_comments(systypes::po(), $po_obj->order_no, $po_obj->orig_order_date, $po_obj->Comments);
+	//add_comments(ST_PURCHORDER, $po_obj->order_no, $po_obj->orig_order_date, $po_obj->Comments);
 
-	add_audit_trail(systypes::po(), $po_obj->order_no, $po_obj->orig_order_date);
+	add_audit_trail(ST_PURCHORDER, $po_obj->order_no, $po_obj->orig_order_date);
 	commit_transaction();
 
 	return $po_obj->order_no;
@@ -116,7 +118,7 @@ function update_po(&$po_obj)
 		db_query($sql, "One of the purchase order detail records could not be updated");
     }
 
-	//add_comments(systypes::po(), $po_obj->order_no, $po_obj->orig_order_date, $po_obj->Comments);
+	//add_comments(ST_PURCHORDER, $po_obj->order_no, $po_obj->orig_order_date, $po_obj->Comments);
 
 	commit_transaction();
 

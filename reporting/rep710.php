@@ -55,7 +55,7 @@ function getTransactions($from, $to, $type, $user)
 
 function print_audit_trail()
 {
-    global $path_to_root;
+    global $path_to_root, $systypes_array;
 
     $from = $_POST['PARAM_0'];
     $to = $_POST['PARAM_1'];
@@ -81,7 +81,7 @@ function print_audit_trail()
 	$user_id = $usr['user_id'];
     $params =   array( 	0 => $comments,
     				    1 => array('text' => _('Period'), 'from' => $from,'to' => $to),
-                    	2 => array('text' => _('Type'), 'from' => ($systype != -1 ? systypes::name($systype) : _('All')), 'to' => ''),
+                    	2 => array('text' => _('Type'), 'from' => ($systype != -1 ? $systypes_array[$systype] : _('All')), 'to' => ''),
                     	3 => array('text' => _('User'), 'from' => ($user != -1 ? $user_id : _('All')), 'to' => ''));
 
     $rep = new FrontReport(_('Audit Trail'), "AuditTrail", user_pagesize());
@@ -101,7 +101,7 @@ function print_audit_trail()
         	$rep->TextCol(1, 2, date("H:i:s", $myrow['unix_stamp']));
         $rep->TextCol(2, 3, $myrow['user_id']);
         $rep->TextCol(3, 4, sql2date($myrow['gl_date']));
-        $rep->TextCol(4, 5, systypes::name($myrow['type']));
+        $rep->TextCol(4, 5, $systypes_array[$myrow['type']]);
         $rep->TextCol(5, 6, $myrow['trans_no']);
         if ($myrow['gl_seq'] == null)
         	$action = _('Changed');

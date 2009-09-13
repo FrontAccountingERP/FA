@@ -73,7 +73,7 @@ else
 //---------------------------------------------------------------------------------------------
 
 if (isset($_POST['SelectStockFromList']) && ($_POST['SelectStockFromList'] != "") &&
-	($_POST['SelectStockFromList'] != reserved_words::get_all()))
+	($_POST['SelectStockFromList'] != ALL_TEXT))
 {
  	$selected_stock_item = $_POST['SelectStockFromList'];
 }
@@ -288,7 +288,7 @@ else	// ... or select inquiry constraints
 	if (isset($selected_stock_item))
 		$sql .= " AND line.stk_code='". $selected_stock_item ."'";
 
-	if (isset($_POST['StockLocation']) && $_POST['StockLocation'] != reserved_words::get_all())
+	if (isset($_POST['StockLocation']) && $_POST['StockLocation'] != ALL_TEXT)
 		$sql .= " AND sorder.from_stk_loc = '". $_POST['StockLocation'] . "' ";
 
 	if ($_POST['order_view_mode']=='OutstandingOnly')

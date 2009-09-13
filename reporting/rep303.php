@@ -75,14 +75,14 @@ function print_stock_check()
 	else
 		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 
-	if ($category == reserved_words::get_all_numeric())
+	if ($category == ALL_NUMERIC)
 		$category = 0;
 	if ($category == 0)
 		$cat = _('All');
 	else
 		$cat = get_category_name($category);
 
-	if ($location == reserved_words::get_all())
+	if ($location == ALL_TEXT)
 		$location = 'all';
 	if ($location == 'all')
 		$loc = _('All');

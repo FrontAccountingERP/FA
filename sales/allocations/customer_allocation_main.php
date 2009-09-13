@@ -42,7 +42,7 @@ start_form();
 
 	set_global_customer($_POST['customer_id']);
 
-	if (isset($_POST['customer_id']) && ($_POST['customer_id'] == reserved_words::get_all()))
+	if (isset($_POST['customer_id']) && ($_POST['customer_id'] == ALL_TEXT))
 	{
 		unset($_POST['customer_id']);
 	}
@@ -64,7 +64,9 @@ start_form();
 //--------------------------------------------------------------------------------
 function systype_name($dummy, $type)
 {
-	return systypes::name($type);
+	global $systypes_array;
+
+	return $systypes_array[$type];
 }
 
 function trans_view($trans)

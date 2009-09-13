@@ -34,7 +34,7 @@ if (isset($_GET['AddedID']))
 {
    	display_notification(_("The work order issue has been entered."));
 
-    display_note(get_trans_view_str(systypes::work_order(), $_GET['AddedID'], _("View this Work Order")));
+    display_note(get_trans_view_str(ST_WORKORDER, $_GET['AddedID'], _("View this Work Order")));
 
    	hyperlink_no_params("search_work_orders.php", _("Select another &Work Order to Process"));
 
@@ -69,6 +69,8 @@ function handle_new_order()
 
 function can_process()
 {
+	global $Refs;
+
 	if (!is_date($_POST['date_'])) 
 	{
 		display_error(_("The entered date for the issue is invalid."));
@@ -81,7 +83,7 @@ function can_process()
 		set_focus('date_');
 		return false;
 	}
-	if (!references::is_valid($_POST['ref'])) 
+	if (!$Refs->is_valid($_POST['ref'])) 
 	{
 		display_error(_("You must enter a reference."));
 		set_focus('ref');

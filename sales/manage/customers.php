@@ -222,7 +222,7 @@ if ($new_customer)
 	$_POST['credit_status']  = -1;
 	$_POST['payment_terms']  = '';
 	$_POST['discount']  = $_POST['pymt_discount'] = percent_format(0);
-	$_POST['credit_limit']	= price_format(sys_prefs::default_credit_limit());
+	$_POST['credit_limit']	= price_format($SysPrefs->default_credit_limit());
 	$_POST['inactive'] = 0;
 } 
 else 

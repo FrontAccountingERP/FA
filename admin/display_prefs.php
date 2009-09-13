@@ -45,7 +45,7 @@ if (isset($_POST['setprefs']))
 			$_POST['language'], check_value('sticky_doc_date'), $_POST['startup_tab']);
 
 		if ($chg_lang)
-			language::set_language($_POST['language']);
+			$_SESSION['language']->set_language($_POST['language']);
 			// refresh main menu
 
 		flush_dir($comp_path.'/'.user_company().'/js_cache');	

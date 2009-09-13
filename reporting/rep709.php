@@ -71,7 +71,7 @@ function getTaxInfo($id)
 
 function print_tax_report()
 {
-	global $path_to_root, $trans_dir, $Hooks;
+	global $path_to_root, $trans_dir, $Hooks, $systypes_array;
 	
 	$from = $_POST['PARAM_0'];
 	$to = $_POST['PARAM_1'];
@@ -123,7 +123,7 @@ function print_tax_report()
 		
 		if (!$summaryOnly)
 		{
-			$rep->TextCol(0, 1,	systypes::name($trans['trans_type']));
+			$rep->TextCol(0, 1, $systypes_array[$trans['trans_type']]);
 			if ($trans['memo'] == '')
 				$trans['memo'] = get_reference($trans['trans_type'], $trans['trans_no']);
 			$rep->TextCol(1, 2,	$trans['memo']);

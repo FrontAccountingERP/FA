@@ -91,11 +91,11 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 			{
 				foreach ($installed_extensions as $ext)
 				{
-					get_text::add_domain($_SESSION['language']->code, 
+					$_SESSION['get_text']->add_domain($_SESSION['language']->code, 
 						$ext['folder']."/lang");
 					$class = $ext['name']."_app";
 					$this->add_application(new $class());
-					get_text::add_domain($_SESSION['language']->code, 
+					$_SESSION['get_text']->add_domain($_SESSION['language']->code, 
 						$path_to_root."/lang");
 				}
 			}	

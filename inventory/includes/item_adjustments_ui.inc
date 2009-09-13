@@ -26,13 +26,13 @@ function add_to_order(&$order, $new_item, $new_item_qty, $standard_cost)
 
 function display_order_header(&$order)
 {
-	global $table_style2;
+	global $table_style2, $Refs;
 
 	start_outer_table("width=70% $table_style2"); // outer table
 	table_section(1);
 
 	locations_list_row(_("Location:"), 'StockLocation', null);
-	ref_row(_("Reference:"), 'ref', '', references::get_next(systypes::inventory_adjustment()));
+	ref_row(_("Reference:"), 'ref', '', $Refs->get_next(ST_INVADJUST));
 
 	table_section(2, "33%");
 

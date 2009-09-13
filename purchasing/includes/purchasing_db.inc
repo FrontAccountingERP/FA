@@ -39,7 +39,7 @@ function add_gl_trans_supplier($type, $type_no, $date_, $account, $dimension, $d
 		
 	return add_gl_trans($type, $type_no, $date_, $account, $dimension, $dimension2, $memo, 
 		$amount, get_supplier_currency($supplier_id), 
-		payment_person_types::supplier(), $supplier_id, $err_msg, $rate);
+		PT_SUPPLIER, $supplier_id, $err_msg, $rate);
 }
 
 //----------------------------------------------------------------------------------------

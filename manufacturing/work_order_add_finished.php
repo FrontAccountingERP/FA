@@ -39,7 +39,7 @@ if (isset($_GET['AddedID']))
 {
 	include_once($path_to_root . "/reporting/includes/reporting.inc");
 	$id = $_GET['AddedID'];
-	$stype = systypes::work_order();
+	$stype = ST_WORKORDER;
 
 	display_notification(_("The manufacturing process has been entered."));
 	
@@ -69,9 +69,9 @@ if (strlen($wo_details[0]) == 0)
 
 function can_process()
 {
-	global $wo_details;
+	global $wo_details, $SysPrefs, $Refs;
 
-	if (!references::is_valid($_POST['ref']))
+	if (!$Refs->is_valid($_POST['ref']))
 	{
 		display_error(_("You must enter a reference."));
 		set_focus('ref');
@@ -112,7 +112,7 @@ function can_process()
 	}
 
 	// if unassembling we need to check the qoh
-	if (($_POST['ProductionType'] == 0) && !sys_prefs::allow_negative_stock())
+	if (($_POST['ProductionType'] == 0) && !$SysPrefs->allow_negative_stock())
 	{
 		$wo_details = get_work_order($_POST['selected_id']);
 
@@ -126,7 +126,7 @@ function can_process()
 	}
 
 	// if production we need to check the qoh of the wo requirements
-	if (($_POST['ProductionType'] == 1) && !sys_prefs::allow_negative_stock())
+	if (($_POST['ProductionType'] == 1) && !$SysPrefs->allow_negative_stock())
 	{
     	$err = false;
     	$result = get_wo_requirements($_POST['selected_id']);
@@ -189,7 +189,7 @@ if (!isset($_POST['quantity']) || $_POST['quantity'] == '')
 start_table($table_style2);
 br();
 
-ref_row(_("Reference:"), 'ref', '', references::get_next(29));
+ref_row(_("Reference:"), 'ref', '', $Refs->get_next(29));
 
 if (!isset($_POST['ProductionType']))
 	$_POST['ProductionType'] = 1;

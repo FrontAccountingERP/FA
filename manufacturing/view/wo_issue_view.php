@@ -49,7 +49,7 @@ function display_wo_issue($issue_no)
 	start_row();
 	label_cell($myrow["issue_no"]);
 	label_cell($myrow["reference"]);
-	label_cell(get_trans_view_str(systypes::work_order(),$myrow["workorder_id"]));
+	label_cell(get_trans_view_str(ST_WORKORDER,$myrow["workorder_id"]));
 	label_cell($myrow["stock_id"] . " - " . $myrow["description"]);
 	label_cell($myrow["location_name"]);
 	label_cell($myrow["WorkCentreName"]);
@@ -111,7 +111,7 @@ function display_wo_issue_details($issue_no)
 
 //-------------------------------------------------------------------------------------------------
 
-display_heading(systypes::name(28) . " # " . $wo_issue_no);
+display_heading($systypes_array[ST_MANUISSUE] . " # " . $wo_issue_no);
 
 display_wo_issue($wo_issue_no);
 

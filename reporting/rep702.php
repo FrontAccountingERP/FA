@@ -32,7 +32,7 @@ print_list_of_journal_entries();
 
 function print_list_of_journal_entries()
 {
-    global $path_to_root;
+    global $path_to_root, $systypes_array;
 
     $from = $_POST['PARAM_0'];
     $to = $_POST['PARAM_1'];
@@ -55,7 +55,7 @@ function print_list_of_journal_entries()
 
     $params =   array( 	0 => $comments,
     				    1 => array('text' => _('Period'), 'from' => $from,'to' => $to),
-                    	2 => array('text' => _('Type'), 'from' => systypes::name($systype),
+                    	2 => array('text' => _('Type'), 'from' => $systypes_array[$systype],
                             'to' => ''));
 
     $rep = new FrontReport(_('List of Journal Entries'), "JournalEntries", user_pagesize());
@@ -81,11 +81,11 @@ function print_list_of_journal_entries()
             }
             $typeno = $myrow['type_no'];
             $type = $myrow['type'];
-            $TransName = systypes::name($myrow['type']);
+            $TransName = $systypes_array[$myrow['type']];
             $rep->TextCol(0, 1, $TransName . " # " . $myrow['type_no']);
             $rep->TextCol(1, 2, get_reference($myrow['type'], $myrow['type_no']));
             $rep->DateCol(2, 3, $myrow['tran_date'], true);
-            $coms =  payment_person_types::person_name($myrow["person_type_id"],$myrow["person_id"]);
+            $coms =  payment_person_name($myrow["person_type_id"],$myrow["person_id"]);
             $memo = get_comments_string($myrow['type'], $myrow['type_no']);
             if ($memo != '')
             {

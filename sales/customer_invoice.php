@@ -120,7 +120,7 @@ if ( (isset($_GET['DeliveryNumber']) && ($_GET['DeliveryNumber'] > 0) )
 	$dn->trans_type = 10;
 	$dn->src_docs = $dn->trans_no;
 	$dn->trans_no = 0;
-	$dn->reference = references::get_next(10);
+	$dn->reference = $Refs->get_next(10);
 	$dn->due_date = get_invoice_duedate($dn->customer_id, $dn->document_date);
 
 	$_SESSION['Items'] = $dn;
@@ -242,6 +242,8 @@ function copy_from_cart()
 
 function check_data()
 {
+	global $Refs;
+
 	if (!isset($_POST['InvoiceDate']) || !is_date($_POST['InvoiceDate'])) {
 		display_error(_("The entered invoice date is invalid."));
 		set_focus('InvoiceDate');
@@ -261,7 +263,7 @@ function check_data()
 	}
 
 	if ($_SESSION['Items']->trans_no == 0) {
-		if (!references::is_valid($_POST['ref'])) {
+		if (!$Refs->is_valid($_POST['ref'])) {
 			display_error(_("You must enter a reference."));
 			set_focus('ref');
 			return false;
@@ -358,7 +360,7 @@ if ($_SESSION['Items']->trans_no == 0) {
 }
 
 label_cells(_("Delivery Notes:"),
-get_customer_trans_view_str(systypes::cust_dispatch(), array_keys($_SESSION['Items']->src_docs)), "class='tableheader2'");
+get_customer_trans_view_str(ST_CUSTDELIVERY, array_keys($_SESSION['Items']->src_docs)), "class='tableheader2'");
 
 label_cells(_("Sales Type"), $_SESSION['Items']->sales_type_name, "class='tableheader2'");
 

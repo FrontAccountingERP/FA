@@ -38,7 +38,7 @@ if (isset($_GET['trans_no']) && $_GET['trans_no'] != "")
 if (isset($_GET['AddedID']))
 {
 	$id = $_GET['AddedID'];
-	$stype = systypes::work_order();
+	$stype = ST_WORKORDER;
 
 	display_notification(_("The additional cost has been entered."));
 
@@ -104,18 +104,18 @@ function can_process()
 if (isset($_POST['process']) && can_process() == true)
 {
 	begin_transaction();
-	add_gl_trans_std_cost(systypes::work_order(), $_POST['selected_id'], $_POST['date_'], $_POST['cr_acc'],
-		0, 0, $wo_cost_types[$_POST['PaymentType']], -input_num('costs'), payment_person_types::WorkOrder(), $_POST['PaymentType']);
+	add_gl_trans_std_cost(ST_WORKORDER, $_POST['selected_id'], $_POST['date_'], $_POST['cr_acc'],
+		0, 0, $wo_cost_types[$_POST['PaymentType']], -input_num('costs'), PT_WORKORDER, $_POST['PaymentType']);
 	$is_bank_to = is_bank_account($_POST['cr_acc']);
 	if ($is_bank_to)
 	{
-		add_bank_trans(systypes::work_order(), $_POST['selected_id'], $is_bank_to, "",
-			$_POST['date_'], -input_num('costs'), payment_person_types::WorkOrder(), $_POST['PaymentType'], get_company_currency(),
+		add_bank_trans(ST_WORKORDER, $_POST['selected_id'], $is_bank_to, "",
+			$_POST['date_'], -input_num('costs'), PT_WORKORDER, $_POST['PaymentType'], get_company_currency(),
 			"Cannot insert a destination bank transaction");
 	}
 
-	add_gl_trans_std_cost(systypes::work_order(), $_POST['selected_id'], $_POST['date_'], $_POST['db_acc'],
-		$_POST['dim1'], $_POST['dim2'], $wo_cost_types[$_POST['PaymentType']], input_num('costs'), payment_person_types::WorkOrder(), 
+	add_gl_trans_std_cost(ST_WORKORDER, $_POST['selected_id'], $_POST['date_'], $_POST['db_acc'],
+		$_POST['dim1'], $_POST['dim2'], $wo_cost_types[$_POST['PaymentType']], input_num('costs'), PT_WORKORDER, 
 			$_POST['PaymentType']);
 	commit_transaction();	
 

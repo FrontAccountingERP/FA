@@ -123,7 +123,7 @@ while ($myrow = db_fetch($result))
 	alt_table_row_color($k);
 
     label_cell($myrow["bank_account_name"], "nowrap");
-	label_cell(bank_account_types::name($myrow["account_type"]), "nowrap");
+	label_cell($bank_account_types[$myrow["account_type"]], "nowrap");
     label_cell($myrow["bank_curr_code"], "nowrap");
     label_cell($myrow["account_code"] . " " . $myrow["account_name"], "nowrap");
     label_cell($myrow["bank_name"], "nowrap");
@@ -166,7 +166,7 @@ text_row(_("Bank Account Name:"), 'bank_account_name', null, 50, 100);
 
 if ($is_editing) 
 {
-	label_row(_("Account Type:"), bank_account_types::name($_POST['account_type']));
+	label_row(_("Account Type:"), $bank_account_types[$_POST['account_type']]);
 } 
 else 
 {

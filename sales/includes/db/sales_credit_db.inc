@@ -15,6 +15,8 @@
 //
 function write_credit_note($credit_note, $write_off_acc)
 {
+	global $Refs;
+
 	$credit_invoice = 	is_array($credit_note->src_docs) ?
 		 reset(array_keys($credit_note->src_docs)) : $credit_note->src_docs;
 
@@ -100,7 +102,7 @@ function write_credit_note($credit_note, $write_off_acc)
 				// Exchange Variations Joe Hunt 2008-09-20 ////////////////////////////////////////
 
 				exchange_variation(11, $credit_no, 10, $credit_invoice, $credit_date,
-					$allocate_amount, payment_person_types::customer());
+					$allocate_amount, PT_CUSTOMER);
 
 				///////////////////////////////////////////////////////////////////////////
 
@@ -166,12 +168,12 @@ function write_credit_note($credit_note, $write_off_acc)
 		}
 	}
 	/*Post a balance post if $total != 0 */
-	add_gl_balance(11, $credit_no, $credit_date, -$total, payment_person_types::customer(), $credit_note->customer_id);	
+	add_gl_balance(11, $credit_no, $credit_date, -$total, PT_CUSTOMER, $credit_note->customer_id);	
 
 	add_comments(11, $credit_no, $credit_date, $credit_note->Comments);
 
 	if ($trans_no == 0) {
-		references::save(11, $credit_no, $credit_note->reference);
+		$Refs->save(11, $credit_no, $credit_note->reference);
 	}
 
 	commit_transaction();
@@ -237,7 +239,7 @@ function add_gl_trans_credit_costs($order, $order_line, $credit_no, $date_,
 
 		$total += add_gl_trans_std_cost(11, $credit_no, $date_, $stock_gl_codes["cogs_account"],
 			$dim, $dim2, "", -($standard_cost * $order_line->qty_dispatched),
-			payment_person_types::customer(), $order->customer_id,
+			PT_CUSTOMER, $order->customer_id,
 			"The cost of sales GL posting could not be inserted");
 
 		/*now the stock entry*/
@@ -250,7 +252,7 @@ function add_gl_trans_credit_costs($order, $order_line, $credit_no, $date_,
 
 		$total += add_gl_trans_std_cost(11, $credit_no, $date_, $stock_entry_account, 0, 0,
 			"", ($standard_cost * $order_line->qty_dispatched),
-			payment_person_types::customer(), $order->customer_id,
+			PT_CUSTOMER, $order->customer_id,
 			"The stock side (or write off) of the cost of sales GL posting could not be inserted");
 
 	} /* end of if GL and stock integrated and standard cost !=0 */

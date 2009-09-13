@@ -25,7 +25,7 @@ if (isset($_GET["trans_no"])){
 	$trans_no = $_GET["trans_no"];
 }
 
-$result = get_bank_trans(systypes::bank_transfer(), $trans_no);
+$result = get_bank_trans(ST_BANKTRANSFER, $trans_no);
 
 if (db_num_rows($result) != 2)
 	display_db_error("Bank transfer does not contain two records", $sql);
@@ -58,7 +58,7 @@ if ($from_trans['bank_curr_code'] != $to_trans['bank_curr_code'])
 	$show_both_amounts = true;
 }
 
-display_heading(systypes::name(systypes::bank_transfer()) . " #$trans_no");
+display_heading($systypes_array[ST_BANKTRANSFER] . " #$trans_no");
 
 echo "<br>";
 start_table("$table_style width=80%");
@@ -81,14 +81,15 @@ if ($show_both_amounts)
 end_row();
 start_row();
 label_cells(_("Date"), sql2date($from_trans['trans_date']), "class='tableheader2'");
-label_cells(_("Transfer Type"), bank_account_types::transfer_type($from_trans['account_type']), "class='tableheader2'");
+label_cells(_("Transfer Type"), $bank_transfer_types[$from_trans['account_type']],
+	 "class='tableheader2'");
 label_cells(_("Reference"), $from_trans['ref'], "class='tableheader2'");
 end_row();
-comments_display_row(systypes::bank_transfer(), $trans_no);
+comments_display_row(ST_BANKTRANSFER, $trans_no);
 
 end_table(1);
 
-is_voided_display(systypes::bank_transfer(), $trans_no, _("This transfer has been voided."));
+is_voided_display(ST_BANKTRANSFER, $trans_no, _("This transfer has been voided."));
 
 end_page(true);
 ?>

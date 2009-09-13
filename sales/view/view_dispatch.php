@@ -85,7 +85,7 @@ start_row();
 label_cells(_("Reference"), $myrow["reference"], "class='tableheader2'");
 label_cells(_("Currency"), $sales_order["curr_code"], "class='tableheader2'");
 label_cells(_("Our Order No"),
-	get_customer_trans_view_str(systypes::sales_order(),$sales_order["order_no"]), "class='tableheader2'");
+	get_customer_trans_view_str(ST_SALESORDER,$sales_order["order_no"]), "class='tableheader2'");
 end_row();
 start_row();
 label_cells(_("Customer Order Ref."), $sales_order["customer_ref"], "class='tableheader2'");

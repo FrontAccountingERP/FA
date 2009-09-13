@@ -50,7 +50,7 @@ function create_new_po()
 
 function display_po_header(&$order)
 {
-	global $table_style2, $Ajax;
+	global $table_style2, $Ajax, $Refs;
 
 	$editable = ($order->order_no == 0);
 
@@ -59,7 +59,7 @@ function display_po_header(&$order)
 	table_section(1);
     if ($editable)
     {
-        if (!isset($_POST['supplier_id']) && (get_global_supplier() != reserved_words::get_all()))
+        if (!isset($_POST['supplier_id']) && (get_global_supplier() != ALL_TEXT))
         	$_POST['supplier_id'] = get_global_supplier();
 
     	supplier_list_row(_("Supplier:"), 'supplier_id', null, false, true, false, true);
@@ -91,7 +91,7 @@ function display_po_header(&$order)
 
     if ($editable)
     {
-    	ref_row(_("Reference:"), 'ref', '', references::get_next(systypes::po()));
+    	ref_row(_("Reference:"), 'ref', '', $Refs->get_next(ST_PURCHORDER));
     }
     else
     {
@@ -238,7 +238,7 @@ function display_po_summary(&$po, $is_self=false, $editable=false)
 
     if (!$is_self)
     {
-    	label_cells(_("Purchase Order"), get_trans_view_str(systypes::po(), $po->order_no),
+    	label_cells(_("Purchase Order"), get_trans_view_str(ST_PURCHORDER, $po->order_no),
     		"class='tableheader2'");
     }
 	end_row();

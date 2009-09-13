@@ -137,7 +137,7 @@ if (isset($_POST['AddGLCodeToTrans'])){
 
 function check_data()
 {
-	global $total_grn_value, $total_gl_value;
+	global $total_grn_value, $total_gl_value, $Refs;
 	
 	if (!$_SESSION['supp_trans']->is_valid_trans_to_post())
 	{
@@ -146,7 +146,7 @@ function check_data()
 		return false;
 	}
 
-	if (!references::is_valid($_SESSION['supp_trans']->reference)) 
+	if (!$Refs->is_valid($_SESSION['supp_trans']->reference)) 
 	{
 		display_error(_("You must enter an credit note reference."));
 		set_focus('reference');
@@ -160,7 +160,7 @@ function check_data()
 		return false;
 	}
 
-	if (!references::is_valid($_SESSION['supp_trans']->supp_reference)) 
+	if (!$Refs->is_valid($_SESSION['supp_trans']->supp_reference)) 
 	{
 		display_error(_("You must enter a supplier's credit note reference."));
 		set_focus('supp_reference');

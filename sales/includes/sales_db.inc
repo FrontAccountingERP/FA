@@ -52,7 +52,7 @@ function add_gl_trans_customer($type, $type_no, $date_, $account, $dimension, $d
 
 	return add_gl_trans($type, $type_no, $date_, $account, $dimension, $dimension2, "", $amount,
 		get_customer_currency($customer_id),
-		payment_person_types::customer(), $customer_id, $err_msg, $rate);
+		PT_CUSTOMER, $customer_id, $err_msg, $rate);
 }
 
 //----------------------------------------------------------------------------------------

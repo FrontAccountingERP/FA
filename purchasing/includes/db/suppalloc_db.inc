@@ -81,7 +81,7 @@ function clear_supp_alloctions($type, $type_no, $date="")
 		// 2008-09-20 Joe Hunt
 		if ($date != "")
 			exchange_variation($type, $type_no, $row['trans_type_to'], $row['trans_no_to'], $date,
-				$row['amt'], payment_person_types::supplier(), true);
+				$row['amt'], PT_SUPPLIER, true);
 		//////////////////////
 	}
 

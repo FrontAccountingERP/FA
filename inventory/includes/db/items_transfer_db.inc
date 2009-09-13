@@ -13,9 +13,11 @@
 
 function add_stock_transfer($Items, $location_from, $location_to, $date_, $type, $reference, $memo_)
 {
+	global $Refs;
+
 	begin_transaction();
 
-	$transfer_id = get_next_trans_no(systypes::location_transfer());
+	$transfer_id = get_next_trans_no(ST_LOCTRANSFER);
 
 	foreach ($Items as $line_item)
 	{
@@ -23,10 +25,10 @@ function add_stock_transfer($Items, $location_from, $location_to, $date_, $type,
 			$location_to, $date_, $type, $reference, $line_item->quantity);
 	}
 
-	add_comments(systypes::location_transfer(), $transfer_id, $date_, $memo_);
+	add_comments(ST_LOCTRANSFER, $transfer_id, $date_, $memo_);
 
-	references::save(systypes::location_transfer(), $transfer_id, $reference);
-	add_audit_trail(systypes::location_transfer(), $transfer_id, $date_);
+	$Refs->save(ST_LOCTRANSFER, $transfer_id, $reference);
+	add_audit_trail(ST_LOCTRANSFER, $transfer_id, $date_);
 
 	commit_transaction();
 
@@ -43,10 +45,10 @@ function add_stock_transfer($Items, $location_from, $location_to, $date_, $type,
 function add_stock_transfer_item($transfer_id, $stock_id, $location_from, $location_to,
 	$date_, $type, $reference, $quantity)
 {
-	add_stock_move(systypes::location_transfer(), $stock_id, $transfer_id, $location_from,
+	add_stock_move(ST_LOCTRANSFER, $stock_id, $transfer_id, $location_from,
        	$date_, $reference, -$quantity, 0, $type);
 
-	add_stock_move(systypes::location_transfer(), $stock_id, $transfer_id, $location_to,
+	add_stock_move(ST_LOCTRANSFER, $stock_id, $transfer_id, $location_to,
 	   	$date_, $reference, $quantity, 0, $type);
 
 }
@@ -78,7 +80,7 @@ function get_stock_transfer($trans_no)
 
 function get_stock_transfer_items($trans_no)
 {
-	$result = get_stock_moves(systypes::location_transfer(), $trans_no);
+	$result = get_stock_moves(ST_LOCTRANSFER, $trans_no);
 
 	if (db_num_rows($result) == 0)
 	{
@@ -92,7 +94,7 @@ function get_stock_transfer_items($trans_no)
 
 function void_stock_transfer($type_no)
 {
-	void_stock_move(systypes::location_transfer(), $type_no);
+	void_stock_move(ST_LOCTRANSFER, $type_no);
 }
 
 ?>

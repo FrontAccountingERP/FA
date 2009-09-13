@@ -27,7 +27,7 @@ if (isset($_GET["trans_no"]))
 }
 
 // get the pay-from bank payment info
-$result = get_bank_trans(systypes::bank_payment(), $trans_no);
+$result = get_bank_trans(ST_BANKPAYMENT, $trans_no);
 
 if (db_num_rows($result) != 1)
 	display_db_error("duplicate payment bank transaction found", "");
@@ -66,19 +66,19 @@ label_cells(_("Amount"), number_format2(-$from_trans['amount'], user_price_dec()
 label_cells(_("Date"), sql2date($from_trans['trans_date']), "class='tableheader2'");
 end_row();
 start_row();
-label_cells(_("Pay To"), payment_person_types::person_name($from_trans['person_type_id'], $from_trans['person_id']), "class='tableheader2'", "colspan=$colspan1");
-label_cells(_("Payment Type"),bank_account_types::transfer_type($from_trans['account_type']), "class='tableheader2'");
+label_cells(_("Pay To"), payment_person_name($from_trans['person_type_id'], $from_trans['person_id']), "class='tableheader2'", "colspan=$colspan1");
+label_cells(_("Payment Type"), $bank_transfer_types[$from_trans['account_type']], "class='tableheader2'");
 end_row();
 start_row();
 label_cells(_("Reference"), $from_trans['ref'], "class='tableheader2'", "colspan=$colspan2");
 end_row();
-comments_display_row(systypes::bank_payment(), $trans_no);
+comments_display_row(ST_BANKPAYMENT, $trans_no);
 
 end_table(1);
 
-$voided = is_voided_display(systypes::bank_payment(), $trans_no, _("This payment has been voided."));
+$voided = is_voided_display(ST_BANKPAYMENT, $trans_no, _("This payment has been voided."));
 
-$items = get_gl_trans(systypes::bank_payment(), $trans_no);
+$items = get_gl_trans(ST_BANKPAYMENT, $trans_no);
 
 if (db_num_rows($items)==0)
 {

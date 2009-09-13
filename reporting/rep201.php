@@ -82,7 +82,7 @@ function getTransactions($supplier_id, $from, $to)
 
 function print_supplier_balances()
 {
-    global $path_to_root;
+    global $path_to_root, $systypes_array;
 
     $from = $_POST['PARAM_0'];
     $to = $_POST['PARAM_1'];
@@ -95,13 +95,13 @@ function print_supplier_balances()
 	else
 		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 
-	if ($fromsupp == reserved_words::get_all_numeric())
+	if ($fromsupp == ALL_NUMERIC)
 		$supp = _('All');
 	else
 		$supp = get_supplier_name($fromsupp);
     $dec = user_price_dec();
 
-	if ($currency == reserved_words::get_all())
+	if ($currency == ALL_TEXT)
 	{
 		$convert = true;
 		$currency = _('Balances in Home currency');
@@ -131,7 +131,7 @@ function print_supplier_balances()
 	$grandtotal = array(0,0,0,0);
 
 	$sql = "SELECT supplier_id, supp_name AS name, curr_code FROM ".TB_PREF."suppliers ";
-	if ($fromsupp != reserved_words::get_all_numeric())
+	if ($fromsupp != ALL_NUMERIC)
 		$sql .= "WHERE supplier_id=$fromsupp ";
 	$sql .= "ORDER BY supp_name";
 	$result = db_query($sql, "The customers could not be retrieved");
@@ -170,7 +170,7 @@ function print_supplier_balances()
 		while ($trans=db_fetch($res))
 		{
 			$rep->NewLine(1, 2);
-			$rep->TextCol(0, 1,	systypes::name($trans['type']));
+			$rep->TextCol(0, 1, $systypes_array[$trans['type']]);
 			$rep->TextCol(1, 2,	$trans['reference']);
 			$rep->DateCol(2, 3,	$trans['tran_date'], true);
 			if ($trans['type'] == 20)

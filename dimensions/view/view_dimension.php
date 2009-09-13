@@ -38,7 +38,7 @@ if (isset($_POST['Show']))
 }
 
 
-display_heading(systypes::name(systypes::dimension()) . " # " . $id);
+display_heading($systypes_array[ST_DIMENSION] . " # " . $id);
 
 br(1);
 $myrow = get_dimension($id);
@@ -63,7 +63,7 @@ label_cell(sql2date($myrow["date_"]));
 label_cell(sql2date($myrow["due_date"]));
 end_row();
 
-comments_display_row(systypes::dimension(), $id);
+comments_display_row(ST_DIMENSION, $id);
 
 end_table();
 

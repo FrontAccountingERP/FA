@@ -56,12 +56,12 @@ function exist_transaction($type, $type_no)
 				return false;
 			break;
 
-		case systypes::location_transfer() : // it's a stock transfer
+		case ST_LOCTRANSFER : // it's a stock transfer
 			if (get_stock_transfer_items($type_no) == null)
 				return false;
 			break;
 
-		case systypes::inventory_adjustment() : // it's a stock adjustment
+		case ST_INVADJUST : // it's a stock adjustment
 			if (get_stock_adjustment_items($type_no) == null)
 				return false;
 			break;
@@ -76,7 +76,7 @@ function exist_transaction($type, $type_no)
 				return false;
 			break;
 
-		case systypes::work_order() : // it's a work order
+		case ST_WORKORDER : // it's a work order
 			if (!get_work_order($type_no, true))
 				return false;
 			break;
@@ -94,7 +94,7 @@ function exist_transaction($type, $type_no)
 		case 30: // it's a sales order
 		case 32: // it's a sales quotation
 			return false;
-		case systypes::cost_update() : // it's a stock cost update
+		case ST_COSTUPDATE : // it's a stock cost update
 			return false;
 			break;
 	}

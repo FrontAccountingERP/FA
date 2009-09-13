@@ -38,7 +38,7 @@ check_db_has_movement_types(_("There are no inventory movement types defined in 
 if (isset($_GET['AddedID'])) 
 {
 	$trans_no = $_GET['AddedID'];
-	$trans_type = systypes::inventory_adjustment();
+	$trans_type = ST_INVADJUST;
 
 	display_notification_centered(_("Items adjustment has been processed"));
 	display_note(get_trans_view_str($trans_type, $trans_no, _("&View this adjustment")));
@@ -69,7 +69,7 @@ function handle_new_order()
 
     session_register("adj_items");
 
-    $_SESSION['adj_items'] = new items_cart(systypes::inventory_adjustment());
+    $_SESSION['adj_items'] = new items_cart(ST_INVADJUST);
 	$_POST['AdjDate'] = new_doc_date();
 	if (!is_date_in_fiscalyear($_POST['AdjDate']))
 		$_POST['AdjDate'] = end_fiscalyear();
@@ -80,6 +80,8 @@ function handle_new_order()
 
 function can_process()
 {
+	global $Refs;
+
 	$adj = &$_SESSION['adj_items'];
 
 	if (count($adj->line_items) == 0)	{
@@ -87,14 +89,14 @@ function can_process()
 		set_focus('stock_id');
 		return false;
 	}
-	if (!references::is_valid($_POST['ref'])) 
+	if (!$Refs->is_valid($_POST['ref'])) 
 	{
 		display_error( _("You must enter a reference."));
 		set_focus('ref');
 		return false;
 	}
 
-	if (!is_new_reference($_POST['ref'], systypes::inventory_adjustment())) 
+	if (!is_new_reference($_POST['ref'], ST_INVADJUST)) 
 	{
 		display_error( _("The entered reference is already in use."));
 		set_focus('ref');

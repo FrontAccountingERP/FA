@@ -89,7 +89,7 @@ function display_supplier_summary($supplier_record)
 //------------------------------------------------------------------------------------------------
 
 div_start('totals_tbl');
-if (($_POST['supplier_id'] != "") && ($_POST['supplier_id'] != reserved_words::get_all()))
+if (($_POST['supplier_id'] != "") && ($_POST['supplier_id'] != ALL_TEXT))
 {
 	$supplier_record = get_supplier_details($_POST['supplier_id']);
     display_supplier_summary($supplier_record);
@@ -104,7 +104,8 @@ if(get_post('RefreshInquiry'))
 //------------------------------------------------------------------------------------------------
 function systype_name($dummy, $type)
 {
-	return systypes::name($type);
+	global $systypes_array;
+	return $systypes_array[$type];
 }
 
 function trans_view($trans)
@@ -177,9 +178,9 @@ function check_overdue($row)
      	AND trans.tran_date >= '$date_after'
     	AND trans.tran_date <= '$date_to'
 		AND trans.ov_amount != 0";	// exclude voided transactions
-   	if ($_POST['supplier_id'] != reserved_words::get_all())
+   	if ($_POST['supplier_id'] != ALL_TEXT)
    		$sql .= " AND trans.supplier_id = '" . $_POST['supplier_id'] . "'";
-   	if (isset($_POST['filterType']) && $_POST['filterType'] != reserved_words::get_all())
+   	if (isset($_POST['filterType']) && $_POST['filterType'] != ALL_TEXT)
    	{
    		if (($_POST['filterType'] == '1')) 
    		{
@@ -220,7 +221,7 @@ $cols = array(
 			array('insert'=>true, 'fun'=>'credit_link')
 			);
 
-if ($_POST['supplier_id'] != reserved_words::get_all())
+if ($_POST['supplier_id'] != ALL_TEXT)
 {
 	$cols[_("Supplier")] = 'skip';
 	$cols[_("Currency")] = 'skip';

@@ -85,9 +85,9 @@ function print_order_status_list()
 	else
 		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 
-	if ($category == reserved_words::get_all_numeric())
+	if ($category == ALL_NUMERIC)
 		$category = 0;
-	if ($location == reserved_words::get_all())
+	if ($location == ALL_TEXT)
 		$location = null;
 	if ($category == 0)
 		$cat = _('All');

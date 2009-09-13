@@ -90,7 +90,7 @@ function check_overdue($row)
 
 function view_link($dummy, $order_no)
 {
-	return get_trans_view_str(systypes::work_order(), $order_no);
+	return get_trans_view_str(ST_WORKORDER, $order_no);
 }
 
 function view_stock($row)
@@ -100,7 +100,9 @@ function view_stock($row)
 
 function wo_type_name($dummy, $type)
 {
-	return wo_types::name($type);
+	global $wo_types_array;
+	
+	return $wo_types_array[$type];
 }
 
 function edit_link($row)
@@ -134,7 +136,7 @@ function costs_link($row)
 	return $row["closed"] || !$row["released"] ? '' :
 		pager_link(_('Costs'),
 			"/gl/gl_bank.php?NewPayment=1&PayType=" 
-			.payment_person_types::WorkOrder(). "&PayPerson=" .$row["id"]);
+			.PT_WORKORDER. "&PayPerson=" .$row["id"]);
 */			
 	return $row["closed"] || !$row["released"] ? '' :
 		pager_link(_('Costs'),
@@ -145,7 +147,7 @@ function view_gl_link($row)
 {
 	if ($row['closed'] == 0)
 		return '';
-	return get_gl_view_str(systypes::work_order(), $row['id']);
+	return get_gl_view_str(ST_WORKORDER, $row['id']);
 }
 
 function dec_amount($row, $amount)

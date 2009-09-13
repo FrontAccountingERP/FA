@@ -147,7 +147,7 @@ end_table(1);
 $voided = is_voided_display(11, $trans_id, _("This credit note has been voided."));
 
 if (!$voided)
-	display_allocations_from(payment_person_types::customer(),
+	display_allocations_from(PT_CUSTOMER,
 		$myrow['debtor_no'], 11, $trans_id, $credit_total);
 
 /* end of check to see that there was an invoice record to print */

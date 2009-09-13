@@ -70,7 +70,9 @@ function check_overdue($row)
 
 function systype_name($dummy, $type)
 {
-	return systypes::name($type);
+	global $systypes_array;
+	
+	return $systypes_array[$type];
 }
 
 function view_link($trans)
@@ -140,9 +142,9 @@ function fmt_credit($row)
     	WHERE supplier.supplier_id = trans.supplier_id
      	AND trans.tran_date >= '$date_after'
     	AND trans.tran_date <= '$date_to'";
-   	if ($_POST['supplier_id'] != reserved_words::get_all())
+   	if ($_POST['supplier_id'] != ALL_TEXT)
    		$sql .= " AND trans.supplier_id = '" . $_POST['supplier_id'] . "'";
-   	if (isset($_POST['filterType']) && $_POST['filterType'] != reserved_words::get_all())
+   	if (isset($_POST['filterType']) && $_POST['filterType'] != ALL_TEXT)
    	{
    		if (($_POST['filterType'] == '1') || ($_POST['filterType'] == '2'))
    		{
@@ -185,7 +187,7 @@ $cols = array(
 	array('insert'=>true, 'fun'=>'alloc_link')
 	);
 
-if ($_POST['supplier_id'] != reserved_words::get_all()) {
+if ($_POST['supplier_id'] != ALL_TEXT) {
 	$cols[_("Supplier")] = 'skip';
 	$cols[_("Currency")] = 'skip';
 }

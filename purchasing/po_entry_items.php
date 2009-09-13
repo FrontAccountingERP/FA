@@ -42,7 +42,7 @@ check_db_has_purchasable_items(_("There are no purchasable inventory items defin
 if (isset($_GET['AddedID'])) 
 {
 	$order_no = $_GET['AddedID'];
-	$trans_type = systypes::po();	
+	$trans_type = ST_PURCHORDER;	
 
 	if (!isset($_GET['Updated']))
 		display_notification_centered(_("Purchase Order has been entered"));
@@ -261,6 +261,8 @@ function handle_add_new_item()
 
 function can_commit()
 {
+	global $Refs;
+
 	if (!is_date($_POST['OrderDate'])) 
 	{
 		display_error(_("The entered order date is invalid."));
@@ -270,14 +272,14 @@ function can_commit()
 	
 	if (!$_SESSION['PO']->order_no) 
 	{
-    	if (!references::is_valid(get_post('ref'))) 
+    	if (!$Refs->is_valid(get_post('ref'))) 
     	{
     		display_error(_("There is no reference entered for this purchase order."));
 			set_focus('ref');
     		return false;
     	} 
     	
-    	if (!is_new_reference(get_post('ref'), systypes::po())) 
+    	if (!is_new_reference(get_post('ref'), ST_PURCHORDER)) 
     	{
     		display_error(_("The entered reference is already in use."));
 			set_focus('ref');

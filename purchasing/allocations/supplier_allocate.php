@@ -45,7 +45,7 @@ function edit_allocations_for_transaction($type, $trans_no)
 {
 	start_form();
 
-    display_heading(_("Allocation of") . " " . systypes::name($_SESSION['alloc']->type) . " # " . $_SESSION['alloc']->trans_no);
+    display_heading(_("Allocation of") . " " . $systypes_array[$_SESSION['alloc']->type] . " # " . $_SESSION['alloc']->trans_no);
 
 	display_heading($_SESSION['alloc']->person_name);
 

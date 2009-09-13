@@ -81,6 +81,8 @@ if (isset($_GET['AddedID'])) {
 
 function can_process()
 {
+	global $Refs;
+
 	if (!is_date($_POST['CreditDate'])) {
 		display_error(_("The entered date is invalid."));;
 		set_focus('CreditDate');
@@ -92,7 +94,7 @@ function can_process()
 	}
 
     if ($_SESSION['Items']->trans_no==0) {
-		if (!references::is_valid($_POST['ref'])) {
+		if (!$Refs->is_valid($_POST['ref'])) {
 			display_error(_("You must enter a reference."));;
 			set_focus('ref');
 			return false;
@@ -127,7 +129,7 @@ if (isset($_GET['InvoiceNumber']) && $_GET['InvoiceNumber'] > 0) {
     $ci->src_date = $ci->document_date;
     $ci->trans_no = 0;
     $ci->document_date = new_doc_date();
-    $ci->reference = references::get_next(11);
+    $ci->reference = $Refs->get_next(11);
 
     for ($line_no=0; $line_no<count($ci->line_items); $line_no++) {
 	$ci->line_items[$line_no]->qty_dispatched = '0';
@@ -248,7 +250,7 @@ function display_credit_items()
     start_row();
 
 //	if (!isset($_POST['ref']))
-//		$_POST['ref'] = references::get_next(11);
+//		$_POST['ref'] = $Refs->get_next(11);
 
     if ($_SESSION['Items']->trans_no==0) {
 		ref_cells(_("Reference"), 'ref', '', null, "class='tableheader2'");

@@ -119,7 +119,7 @@ end_form();
 //---------------------------------------------------------------------------------------------
 
 if (isset($_POST['SelectStockFromList']) && ($_POST['SelectStockFromList'] != "") &&
-	($_POST['SelectStockFromList'] != reserved_words::get_all()))
+	($_POST['SelectStockFromList'] != ALL_TEXT))
 {
  	$selected_stock_item = $_POST['SelectStockFromList'];
 }
@@ -218,7 +218,7 @@ else
 	if (isset($selected_stock_item))
 		$sql .= " AND line.stock_id='". $selected_stock_item ."' ";
 
-	if (isset($_POST['StockLocation']) && $_POST['StockLocation'] != reserved_words::get_all())
+	if (isset($_POST['StockLocation']) && $_POST['StockLocation'] != ALL_TEXT)
 		$sql .= " AND sorder.from_stk_loc = '". $_POST['StockLocation'] . "' ";
 
 	$sql .= " GROUP BY trans.trans_no ";

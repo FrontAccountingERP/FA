@@ -12,6 +12,8 @@
 function add_supp_payment($supplier_id, $date_, $bank_account,
 	$amount, $discount, $ref, $memo_, $rate=0, $charge=0)
 {
+	global $Refs;
+
 	begin_transaction();
 
    	$supplier_currency = get_supplier_currency($supplier_id);
@@ -67,17 +69,17 @@ function add_supp_payment($supplier_id, $date_, $bank_account,
 	}
 
 	/*Post a balance post if $total != 0 */
-	add_gl_balance($trans_type, $payment_id, $date_, -$total, payment_person_types::supplier(), $supplier_id);	
+	add_gl_balance($trans_type, $payment_id, $date_, -$total, PT_SUPPLIER, $supplier_id);	
 
    /*now enter the bank_trans entry */
 	add_bank_trans($trans_type, $payment_id, $bank_account, $ref,
-		$date_, -($amount + $supp_charge), payment_person_types::supplier(),
+		$date_, -($amount + $supp_charge), PT_SUPPLIER,
 		$supplier_id, $bank_account_currency,
 		"Could not add the supplier payment bank transaction");
 
 	add_comments($trans_type, $payment_id, $date_, $memo_);
 
-	references::save($trans_type, $payment_id, $ref);
+	$Refs->save($trans_type, $payment_id, $ref);
 
 	commit_transaction();
 

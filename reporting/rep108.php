@@ -48,7 +48,7 @@ function getTransactions($debtorno, $date)
 
 function print_statements()
 {
-	global $path_to_root;
+	global $path_to_root, $systypes_array;
 
 	include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 
@@ -84,7 +84,7 @@ function print_statements()
 	}
 
 	$sql = "SELECT debtor_no, name AS DebtorName, address, tax_id, email, curr_code, curdate() AS tran_date, payment_terms FROM ".TB_PREF."debtors_master";
-	if ($customer != reserved_words::get_all_numeric())
+	if ($customer != ALL_NUMERIC)
 		$sql .= " WHERE debtor_no = $customer";
 	else
 		$sql .= " ORDER by name";
@@ -130,7 +130,7 @@ function print_statements()
 			$DisplayAlloc = number_format2($myrow2["Allocated"],$dec);
 			$DisplayNet = number_format2($myrow2["TotalAmount"] - $myrow2["Allocated"],$dec);
 
-			$rep->TextCol(0, 1,	systypes::name($myrow2['type']), -2);
+			$rep->TextCol(0, 1, $systypes_array[$myrow2['type']], -2);
 			$rep->TextCol(1, 2,	$myrow2['reference'], -2);
 			$rep->TextCol(2, 3,	sql2date($myrow2['tran_date']), -2);
 			if ($myrow2['type'] == 10)

@@ -109,9 +109,9 @@ function print_customer_details_listing()
     
     $dec = 0;
 
-	if ($area == reserved_words::get_all_numeric())
+	if ($area == ALL_NUMERIC)
 		$area = 0;
-	if ($folk == reserved_words::get_all_numeric())
+	if ($folk == ALL_NUMERIC)
 		$folk = 0;
 
 	if ($area == 0)

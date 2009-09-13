@@ -55,7 +55,7 @@ function copy_to_trans(&$supp_trans)
 
 function invoice_header(&$supp_trans)
 {
-	global $Ajax, $table_style;
+	global $Ajax, $table_style, $Refs;
 	
 	// if vars have been lost, recopy
 	if (!isset($_POST['tran_date']))
@@ -74,7 +74,7 @@ function invoice_header(&$supp_trans)
 	}	
 	else
 	{
-    	if (!isset($_POST['supplier_id']) && (get_global_supplier() != reserved_words::get_all()))
+    	if (!isset($_POST['supplier_id']) && (get_global_supplier() != ALL_TEXT))
     		$_POST['supplier_id'] = get_global_supplier();
 
 		supplier_list_row(_("Supplier:"), 'supplier_id', $_POST['supplier_id'], false, true);
@@ -90,9 +90,9 @@ function invoice_header(&$supp_trans)
 	}
 
 	if ($supp_trans->is_invoice)
-    	ref_row(_("Reference:"), 'reference', '', references::get_next(20));
+    	ref_row(_("Reference:"), 'reference', '', $Refs->get_next(20));
     else
-    	ref_row(_("Reference:"), 'reference', '', references::get_next(21));
+    	ref_row(_("Reference:"), 'reference', '', $Refs->get_next(21));
 
 	if (isset($_POST['invoice_no']))
 	{
@@ -367,7 +367,7 @@ function display_grn_items_for_selection(&$supp_trans, $k)
             	hidden('order_price'.$n, $myrow['unit_price'], false).
             	hidden('std_cost_unit'.$n, $myrow['std_cost_unit'], false).
             	hidden('po_detail_item'.$n, $myrow['po_detail_item'], false));
-        	label_cell(get_trans_view_str(systypes::po(), $myrow["purch_order_no"]));
+        	label_cell(get_trans_view_str(ST_PURCHORDER, $myrow["purch_order_no"]));
             label_cell($myrow["item_code"]);
             label_cell($myrow["description"]);
             label_cell(sql2date($myrow["delivery_date"]));

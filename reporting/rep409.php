@@ -33,7 +33,7 @@ print_workorders();
 
 function print_workorders()
 {
-	global $path_to_root;
+	global $path_to_root, $SysPrefs;
 
 	include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 
@@ -103,7 +103,7 @@ function print_workorders()
 				$qoh = get_qoh_on_date($myrow2["stock_id"], $myrow2["loc_code"], $date_);
 
 			if ($show_qoh && ($myrow2["units_req"] * $myrow["units_issued"] > $qoh) &&
-				!sys_prefs::allow_negative_stock())
+				!$SysPrefs->allow_negative_stock())
 			{
 				// oops, we don't have enough of one of the component items
 				$has_marked = true;

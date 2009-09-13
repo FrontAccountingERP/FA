@@ -137,7 +137,7 @@ while ($myrow = db_fetch($result))
 
 	$bs_text = get_account_class_name($myrow["class_id"]);
 
-	if ($myrow["parent"] == reserved_words::get_any_numeric()) 
+	if ($myrow["parent"] == ANY_NUMERIC) 
 	{
 		$parent_text = "";
 	} 

@@ -47,7 +47,7 @@ start_form();
 	end_form();
 	set_global_supplier($_POST['supplier_id']);
 
-	if (isset($_POST['supplier_id']) && ($_POST['supplier_id'] == reserved_words::get_all())) 
+	if (isset($_POST['supplier_id']) && ($_POST['supplier_id'] == ALL_TEXT)) 
 	{
 		unset($_POST['supplier_id']);
 	}
@@ -62,7 +62,9 @@ start_form();
 //--------------------------------------------------------------------------------
 function systype_name($dummy, $type)
 {
-	return systypes::name($type);
+	global $systypes_array;
+
+	return $systypes_array[$type;
 }
 
 function trans_view($trans)

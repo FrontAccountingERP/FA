@@ -75,7 +75,7 @@ end_form();
 //---------------------------------------------------------------------------------------------
 function trans_view($trans)
 {
-	return get_trans_view_str(systypes::po(), $trans["order_no"]);
+	return get_trans_view_str(ST_PURCHORDER, $trans["order_no"]);
 }
 
 function edit_link($row) 

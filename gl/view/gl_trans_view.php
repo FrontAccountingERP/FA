@@ -29,8 +29,8 @@ if (!isset($_GET['type_id']) || !isset($_GET['trans_no']))
 
 function display_gl_heading($myrow)
 {
-	global $table_style;
-	$trans_name = systypes::name($_GET['type_id']);
+	global $table_style, $systypes_array;
+	$trans_name = $systypes_array[$_GET['type_id']];
     start_table("$table_style width=95%");
     $th = array(_("General Ledger Transaction Details"),
     	_("Date"), _("Person/Item"));
@@ -38,7 +38,7 @@ function display_gl_heading($myrow)
     start_row();	
     label_cell("$trans_name #" . $_GET['trans_no']);
 	label_cell(sql2date($myrow["tran_date"]));
-	label_cell(payment_person_types::person_name($myrow["person_type_id"],$myrow["person_id"]));
+	label_cell(payment_person_name($myrow["person_type_id"],$myrow["person_id"]));
 	
 	end_row();
 
@@ -53,7 +53,7 @@ $result = db_query($sql,"could not get transactions");
 
 if (db_num_rows($result) == 0)
 {
-    echo "<p><center>" . _("No general ledger transactions have been created for") . " " .systypes::name($_GET['type_id'])." " . _("number") . " " . $_GET['trans_no'] . "</center></p><br><br>";
+    echo "<p><center>" . _("No general ledger transactions have been created for") . " " .$systypes_array$_GET['type_id']]." " . _("number") . " " . $_GET['trans_no'] . "</center></p><br><br>";
 	end_page(true);
 	exit;
 }

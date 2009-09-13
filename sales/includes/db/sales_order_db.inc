@@ -12,7 +12,7 @@
 //----------------------------------------------------------------------------------------
 function add_sales_order(&$order)
 {
-	global $loc_notification, $path_to_root;
+	global $loc_notification, $path_to_root, $Refs;
 
 	begin_transaction();
 
@@ -88,7 +88,7 @@ function add_sales_order(&$order)
 	} /* inserted line items into sales order details */
 
 	add_audit_trail($order->trans_type, $order_no, $order->document_date);
-	references::save($order->trans_type, $order_no, $order->reference);
+	$Refs->save($order->trans_type, $order_no, $order->reference);
 	commit_transaction();
 
 	if ($loc_notification == 1 && count($st_ids) > 0)
@@ -144,7 +144,7 @@ function update_sales_order_version($order)
 
 function update_sales_order($order)
 {
-	global $loc_notification, $path_to_root;
+	global $loc_notification, $path_to_root, $Refs;
 
 	$del_date = date2sql($order->due_date);
 	$ord_date = date2sql($order->document_date);
@@ -232,8 +232,8 @@ function update_sales_order($order)
 	} /* inserted line items into sales order details */
 
 	add_audit_trail($order->trans_type, $order_no, $order->document_date, _("Updated."));
-	references::delete($order->trans_type, $order_no);
-	references::save($order->trans_type, $order_no, $order->reference);
+	$Refs->delete($order->trans_type, $order_no);
+	$Refs->save($order->trans_type, $order_no, $order->reference);
 	commit_transaction();
 	if ($loc_notification == 1 && count($st_ids) > 0)
 	{

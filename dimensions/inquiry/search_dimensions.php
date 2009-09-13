@@ -96,7 +96,7 @@ $dim = get_company_pref('use_dimension');
 
 function view_link($row) 
 {
-	return get_dimensions_trans_view_str(systypes::dimension(), $row["id"]);
+	return get_dimensions_trans_view_str(ST_DIMENSION, $row["id"]);
 }
 
 function is_closed($row)

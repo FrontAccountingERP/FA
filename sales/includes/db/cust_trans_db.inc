@@ -102,7 +102,7 @@ function write_customer_trans($trans_type, $trans_no, $debtor_no, $BranchNo,
 	else
 		$SQLDueDate = date2sql($due_date);
 	
-	if ($trans_type == systypes::bank_payment())
+	if ($trans_type == ST_BANKPAYMENT)
 		$Total = -$Total;
 
 	if ($new) {
@@ -151,7 +151,7 @@ function get_customer_trans($trans_id, $trans_type)
 		".TB_PREF."debtors_master.name AS DebtorName, ".TB_PREF."debtors_master.address, ".TB_PREF."debtors_master.email AS email2,
 		".TB_PREF."debtors_master.curr_code, ".TB_PREF."debtors_master.tax_id, ".TB_PREF."debtors_master.payment_terms ";
 
-	if ($trans_type == systypes::cust_payment()) {
+	if ($trans_type == ST_CUSTPAYMENT) {
 		// it's a payment so also get the bank account
 		$sql .= ", ".TB_PREF."bank_accounts.bank_name, ".TB_PREF."bank_accounts.bank_account_name,
 			".TB_PREF."bank_accounts.account_type AS BankTransType ";
@@ -171,7 +171,7 @@ function get_customer_trans($trans_id, $trans_type)
 
 	$sql .= " FROM ".TB_PREF."debtor_trans, ".TB_PREF."debtors_master ";
 
-	if ($trans_type == systypes::cust_payment()) {
+	if ($trans_type == ST_CUSTPAYMENT) {
 		// it's a payment so also get the bank account
 		$sql .= ", ".TB_PREF."bank_trans, ".TB_PREF."bank_accounts";
 	}
@@ -185,7 +185,7 @@ function get_customer_trans($trans_id, $trans_type)
 		AND ".TB_PREF."debtor_trans.type=$trans_type
 		AND ".TB_PREF."debtor_trans.debtor_no=".TB_PREF."debtors_master.debtor_no";
 
-	if ($trans_type == systypes::cust_payment()) {
+	if ($trans_type == ST_CUSTPAYMENT) {
 		// it's a payment so also get the bank account
 		$sql .= " AND ".TB_PREF."bank_trans.trans_no =$trans_id
 			AND ".TB_PREF."bank_trans.type=$trans_type

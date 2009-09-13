@@ -34,7 +34,7 @@ check_db_has_bank_accounts(_("There are no bank accounts defined in the system."
 if (isset($_GET['AddedID'])) 
 {
 	$trans_no = $_GET['AddedID'];
-	$trans_type = systypes::bank_transfer();
+	$trans_type = ST_BANKTRANSFER;
 
    	display_notification_centered( _("Transfer has been entered"));
 
@@ -53,7 +53,8 @@ if (isset($_POST['_DatePaid_changed'])) {
 
 function gl_payment_controls()
 {
-	global $table_style2;
+	global $table_style2, $Refs;
+	
 	$home_currency = get_company_currency();
 
 	start_form();
@@ -85,7 +86,7 @@ function gl_payment_controls()
 
 	table_section(2);
 
-    ref_row(_("Reference:"), 'ref', '', references::get_next(systypes::bank_transfer()));
+    ref_row(_("Reference:"), 'ref', '', $Refs->get_next(ST_BANKTRANSFER));
 
     textarea_row(_("Memo:"), 'memo_', null, 40,4);
 
@@ -100,6 +101,8 @@ function gl_payment_controls()
 
 function check_valid_entries()
 {
+	global $Refs;
+	
 	if (!is_date($_POST['DatePaid'])) 
 	{
 		display_error(_("The entered date is invalid."));
@@ -126,14 +129,14 @@ function check_valid_entries()
 		set_focus('charge');
 		return false;
 	}
-	if (!references::is_valid($_POST['ref'])) 
+	if (!$Refs->is_valid($_POST['ref'])) 
 	{
 		display_error(_("You must enter a reference."));
 		set_focus('ref');
 		return false;
 	}
 
-	if (!is_new_reference($_POST['ref'], systypes::bank_transfer())) 
+	if (!is_new_reference($_POST['ref'], ST_BANKTRANSFER)) 
 	{
 		display_error(_("The entered reference is already in use."));
 		set_focus('ref');

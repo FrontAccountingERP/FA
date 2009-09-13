@@ -15,6 +15,8 @@
 function write_customer_payment($trans_no, $customer_id, $branch_id, $bank_account,
 	$date_, $ref, $amount, $discount, $memo_, $rate=0, $charge=0)
 {
+	global $Refs;
+
 	begin_transaction();
 
 	$company_record = get_company_prefs();
@@ -36,7 +38,7 @@ function write_customer_payment($trans_no, $customer_id, $branch_id, $bank_accou
 		$bank_gl_account, 0, 0, $amount - $charge,  $customer_id,
 		"Cannot insert a GL transaction for the bank account debit", $rate);
 
-	if ($branch_id != reserved_words::get_any_numeric()) {
+	if ($branch_id != ANY_NUMERIC) {
 
 		$branch_data = get_branch_accounts($branch_id);
 
@@ -69,16 +71,16 @@ function write_customer_payment($trans_no, $customer_id, $branch_id, $bank_accou
 			"Cannot insert a GL transaction for the payment bank charge debit", $rate);
 	}
 	/*Post a balance post if $total != 0 */
-	add_gl_balance(12, $payment_no, $date_, -$total, payment_person_types::customer(), $customer_id);	
+	add_gl_balance(12, $payment_no, $date_, -$total, PT_CUSTOMER, $customer_id);	
 
 	/*now enter the bank_trans entry */
 	add_bank_trans(12, $payment_no, $bank_account, $ref,
-		$date_, $amount - $charge, payment_person_types::customer(), $customer_id,
+		$date_, $amount - $charge, PT_CUSTOMER, $customer_id,
 		get_customer_currency($customer_id), "", $rate);
 
 	add_comments(12, $payment_no, $date_, $memo_);
 
-	references::save(12, $payment_no, $ref);
+	$Refs->save(12, $payment_no, $ref);
 
 	commit_transaction();
 

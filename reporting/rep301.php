@@ -79,14 +79,14 @@ function print_inventory_valuation_report()
 
     $dec = user_price_dec();
 
-	if ($category == reserved_words::get_all_numeric())
+	if ($category == ALL_NUMERIC)
 		$category = 0;
 	if ($category == 0)
 		$cat = _('All');
 	else
 		$cat = get_category_name($category);
 
-	if ($location == reserved_words::get_all())
+	if ($location == ALL_TEXT)
 		$location = 'all';
 	if ($location == 'all')
 		$loc = _('All');

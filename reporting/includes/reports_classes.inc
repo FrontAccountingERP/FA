@@ -375,9 +375,9 @@ function dup_simple_codeandname_list($sql, $name, &$selected_id,
 	if ($all_option == true)
 	{
 		if ($all_option_numeric)
-			$reserved_word = reserved_words::get_all_numeric();
+			$reserved_word = ALL_NUMERIC;
 		else
-			$reserved_word = reserved_words::get_all();
+			$reserved_word = ALL_TEXT;
 
     	if ($reserved_word == $selected_id)
     	{
@@ -437,7 +437,7 @@ function dup_systypes_list($name, &$selected_id, $all_option=false, $all_option_
    	$st = "<select name='$name'>";
 	if ($all_option == true)
 	{
-		$reserved_word = reserved_words::get_all_numeric();
+		$reserved_word = ALL_NUMERIC;
     	if ($reserved_word == $selected_id)
     	     $st .= "<option selected value='" . $reserved_word . "'>" . $all_option_name . "</option>\n";
     	else

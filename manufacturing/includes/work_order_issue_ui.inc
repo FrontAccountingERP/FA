@@ -145,9 +145,11 @@ function issue_edit_item_controls(&$order, $line_no=-1)
 
 function issue_options_controls()
 {
+	global $Refs;
+
 	echo "<br>";
 	start_table();
-    ref_row(_("Reference:"), 'ref', '', references::get_next(28));
+    ref_row(_("Reference:"), 'ref', '', $Refs->get_next(28));
  
  	if (!isset($_POST['IssueType']))
  		$_POST['IssueType'] = 0;

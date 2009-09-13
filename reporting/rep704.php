@@ -31,7 +31,7 @@ print_GL_transactions();
 
 function print_GL_transactions()
 {
-	global $path_to_root;
+	global $path_to_root, $systypes_array;
 
 	$dim = get_company_pref('use_dimension');
 	$dimension = $dimension2 = 0;
@@ -147,14 +147,14 @@ function print_GL_transactions()
 			{
 				$total += $myrow['amount'];
 
-				$rep->TextCol(0, 1,	systypes::name($myrow["type"]));
+				$rep->TextCol(0, 1, $systypes_array[$myrow["type"]]);
 				$rep->TextCol(1, 2,	$myrow['type_no']);
 				$rep->DateCol(2, 3,	$myrow["tran_date"], true);
 				if ($dim >= 1)
 					$rep->TextCol(3, 4,	get_dimension_string($myrow['dimension_id']));
 				if ($dim > 1)
 					$rep->TextCol(4, 5,	get_dimension_string($myrow['dimension2_id']));
-				$rep->TextCol(5, 6,	payment_person_types::person_name($myrow["person_type_id"],$myrow["person_id"], false));
+				$rep->TextCol(5, 6,	payment_person_name($myrow["person_type_id"],$myrow["person_id"], false));
 				if ($myrow['amount'] > 0.0)
 					$rep->AmountCol(6, 7, abs($myrow['amount']), $dec);
 				else

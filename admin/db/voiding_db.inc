@@ -54,13 +54,13 @@ function void_transaction($type, $type_no, $date_, $memo_)
 			post_void_customer_trans($type, $type_no);
 			break;
 
-		case systypes::location_transfer() : // it's a stock transfer
+		case ST_LOCTRANSFER : // it's a stock transfer
 			if (get_stock_transfer_items($type_no) == null)
 				return false;
 			void_stock_transfer($type_no);
 			break;
 
-		case systypes::inventory_adjustment() : // it's a stock adjustment
+		case ST_INVADJUST : // it's a stock adjustment
 			if (get_stock_adjustment_items($type_no) == null)
 				return false;
 			void_stock_adjustment($type_no);
@@ -78,7 +78,7 @@ function void_transaction($type, $type_no, $date_, $memo_)
 				return false;
 			break;
 
-		case systypes::work_order() : // it's a work order
+		case ST_WORKORDER : // it's a work order
 			if (!get_work_order($type_no, true))
 				return false;
 			void_work_order($type_no);
@@ -100,7 +100,7 @@ function void_transaction($type, $type_no, $date_, $memo_)
 		case 32: // it's a sales quotation
 			return false;
 
-		case systypes::cost_update() : // it's a stock cost update
+		case ST_COSTUPDATE : // it's a stock cost update
 			return false;
 			break;
 	}

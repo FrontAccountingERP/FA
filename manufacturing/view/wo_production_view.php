@@ -50,7 +50,7 @@ function display_wo_production($prod_id)
 	start_row();
 	label_cell($myrow["id"]);
 	label_cell($myrow["reference"]);
-	label_cell(get_trans_view_str(systypes::work_order(),$myrow["workorder_id"]));
+	label_cell(get_trans_view_str(ST_WORKORDER,$myrow["workorder_id"]));
 	label_cell($myrow["stock_id"] . " - " . $myrow["StockDescription"]);
 	qty_cell($myrow["quantity"], false, get_qty_dec($myrow["stock_id"]));
 	label_cell(sql2date($myrow["date_"]));
@@ -65,7 +65,7 @@ function display_wo_production($prod_id)
 
 //-------------------------------------------------------------------------------------------------
 
-display_heading(systypes::name(29) . " # " . $wo_production);
+display_heading($systypes_array[ST_MANURECEIVE] . " # " . $wo_production);
 
 display_wo_production($wo_production);
 

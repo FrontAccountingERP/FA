@@ -14,6 +14,7 @@
 //
 function write_sales_invoice(&$invoice)
 {
+	global $Refs;
 
 	$trans_no = $invoice->trans_no;
 	if (is_array($trans_no))
@@ -161,12 +162,12 @@ function write_sales_invoice(&$invoice)
 	}
 
 	/*Post a balance post if $total != 0 */
-	add_gl_balance(10, $invoice_no, $date_, -$total, payment_person_types::customer(), $invoice->customer_id);	
+	add_gl_balance(10, $invoice_no, $date_, -$total, PT_CUSTOMER, $invoice->customer_id);	
 
 	add_comments(10, $invoice_no, $date_, $invoice->Comments);
 
 	if ($trans_no == 0) {
-		references::save(10, $invoice_no, $invoice->reference);
+		$Refs->save(10, $invoice_no, $invoice->reference);
 		if ($invoice->cash) {
 			$amount = $items_total + $items_added_tax + $invoice->freight_cost 
 				+ $freight_added_tax;
@@ -177,7 +178,7 @@ function write_sales_invoice(&$invoice)
 			$discount = 0; // $invoice->cash_discount*$amount;
 			$pmtno = write_customer_payment(0, $invoice->customer_id, 
 				$invoice->Branch, $invoice->cash_account, $date_,
-				references::get_next(12), $amount-$discount, $discount,
+				$Refs->get_next(12), $amount-$discount, $discount,
 				_('Cash invoice').' '.$invoice_no);
 			add_cust_allocation($amount, 12, $pmtno, 10, $invoice_no);
 
