@@ -188,6 +188,8 @@ function add_supp_invoice($supp_trans, $invoice_no=0) // do not receive as ref b
 			$entered_gl_code->amount, $memo_);
 
 		// store tax details if the gl account is a tax account
+		if (!$supp_trans->is_invoice)
+			$entered_gl_code->amount = -$entered_gl_code->amount;
 		add_gl_tax_details($entered_gl_code->gl_code, 
 			$trans_type, $invoice_id, $entered_gl_code->amount,
 			$ex_rate, $date_, $supp_trans->supp_reference);
@@ -269,12 +271,17 @@ function add_supp_invoice($supp_trans, $invoice_no=0) // do not receive as ref b
     	{
 
     		if (!$supp_trans->is_invoice)
+    		{
+    			$taxitem['Net'] = -$taxitem['Net'];
     			$taxitem['Value'] = -$taxitem['Value'];
+    		}	
     		// here we suppose that tax is never included in price (we are company customer).
 			add_trans_tax_details($trans_type, $invoice_id, 
 				$taxitem['tax_type_id'], $taxitem['rate'], 0, $taxitem['Value'],
 				$taxitem['Net'], $ex_rate, $date_, $supp_trans->supp_reference);
 
+    		if (!$supp_trans->is_invoice)
+    			$taxitem['Value'] = -$taxitem['Value'];
     		$total += add_gl_trans_supplier($trans_type, $invoice_id, $date_,
     			$taxitem['purchasing_gl_code'], 0, 0, $taxitem['Value'],
     			$supp_trans->supplier_id,

@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+14-Sep-2009 Joe Hunt
+# A couple of minor bugs in tax report when displaying supplier credit notes
+$ /purchasing/includes/db/invoice_db.inc
+
 05-Sep-2009 Joe Hunt
 # Changed Class Type to Class Name in GL Account groups
 $ /gl/manage/gl_account_types.php
