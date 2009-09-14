@@ -53,7 +53,7 @@ $result = db_query($sql,"could not get transactions");
 
 if (db_num_rows($result) == 0)
 {
-    echo "<p><center>" . _("No general ledger transactions have been created for") . " " .$systypes_array$_GET['type_id']]." " . _("number") . " " . $_GET['trans_no'] . "</center></p><br><br>";
+    echo "<p><center>" . _("No general ledger transactions have been created for") . " " .$systypes_array[$_GET['type_id']]." " . _("number") . " " . $_GET['trans_no'] . "</center></p><br><br>";
 	end_page(true);
 	exit;
 }
