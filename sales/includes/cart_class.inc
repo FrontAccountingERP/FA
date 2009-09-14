@@ -100,7 +100,8 @@ class cart
 		global $SysPrefs, $Refs;
 
 		if (!is_array($trans_no)) $trans_no = array($trans_no);
-		if ($trans_no[0]) {
+		if ($trans_no[0]) 
+		{
 			if ($type == ST_SALESORDER || $type == ST_SALESQUOTE) { // sales order || sales quotation
 				read_sales_order($trans_no[0], $this, $type);
 				if ($view) {	// prepare for DN/IV entry
@@ -120,7 +121,7 @@ class cart
 						$this->delivery_to = $sodata["deliver_to"];
 						$this->delivery_address = $sodata["delivery_address"];
 					}
-					if (!$view && ($type!=11 || $this->trans_link!=0)) {
+					if (!$view && ($type!=ST_CUSTDELIVERY || $this->trans_link!=0)) {
 						$src_type = get_parent_type($type);
 						$src_details = 0;
 						if ($src_type == ST_SALESORDER) { // get src data from sales_orders
