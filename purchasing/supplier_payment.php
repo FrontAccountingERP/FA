@@ -153,7 +153,7 @@ function check_inputs()
 		return false;
 	}
 
-	if (!is_new_reference($_POST['ref'], 22)) 
+	if (!is_new_reference($_POST['ref'], ST_SUPPAYMENT)) 
 	{
 		display_error(_("The entered reference is already in use."));
 		set_focus('ref');
@@ -219,7 +219,7 @@ start_form();
     supplier_list_row(_("Payment To:"), 'supplier_id', null, false, true);
 
 	if (!isset($_POST['bank_account'])) // first page call
-		  $_SESSION['alloc'] = new allocation(22, 0);
+		  $_SESSION['alloc'] = new allocation(ST_SUPPAYMENT, 0);
 
 	set_global_supplier($_POST['supplier_id']);
 	
@@ -227,7 +227,7 @@ start_form();
 
 	table_section(2);
 
-    ref_row(_("Reference:"), 'ref', '', $Refs->get_next(22));
+    ref_row(_("Reference:"), 'ref', '', $Refs->get_next(ST_SUPPAYMENT));
 
     date_row(_("Date Paid") . ":", 'DatePaid', '', true, 0, 0, 0, null, true);
 

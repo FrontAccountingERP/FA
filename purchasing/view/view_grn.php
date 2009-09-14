@@ -72,7 +72,7 @@ label_row(_("Total Excluding Tax/Shipping"),  $display_total,
 
 end_table(1);
 
-is_voided_display(25, $_GET['trans_no'], _("This delivery has been voided."));
+is_voided_display(ST_SUPPRECEIVE, $_GET['trans_no'], _("This delivery has been voided."));
 
 end_page(true);
 

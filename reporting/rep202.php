@@ -37,7 +37,7 @@ function get_invoices($supplier_id, $to)
 
 	// Revomed allocated from sql
     $value = "(".TB_PREF."supp_trans.ov_amount + ".TB_PREF."supp_trans.ov_gst + ".TB_PREF."supp_trans.ov_discount)";
-	$due = "IF (".TB_PREF."supp_trans.type=20 OR ".TB_PREF."supp_trans.type=21,".TB_PREF."supp_trans.due_date,".TB_PREF."supp_trans.tran_date)";
+	$due = "IF (".TB_PREF."supp_trans.type=".ST_SUPPINVOICE." OR ".TB_PREF."supp_trans.type=".ST_SUPPCREDIT.",".TB_PREF."supp_trans.due_date,".TB_PREF."supp_trans.tran_date)";
 	$sql = "SELECT ".TB_PREF."supp_trans.type,
 		".TB_PREF."supp_trans.reference,
 		".TB_PREF."supp_trans.tran_date,

@@ -82,13 +82,13 @@ function view_link($trans)
 
 function due_date($row)
 {
-	return (($row["type"] == 20) || ($row["type"]== 21))
+	return (($row["type"] == ST_SUPPINVOICE) || ($row["type"]== ST_SUPPCREDIT))
 		? $row["due_date"] : "";
 }
 
 function fmt_balance($row)
 {
-	$value = ($row["type"] == 1 || $row["type"] == 21 || $row["type"] == 22)
+	$value = ($row["type"] == ST_BANKPAYMENT || $row["type"] == ST_SUPPCREDIT || $row["type"] == ST_SUPPAYMENT)
 		? -$row["TotalAmount"] - $row["Allocated"]
 		: $row["TotalAmount"] - $row["Allocated"];
 	return $value;
@@ -101,7 +101,7 @@ function alloc_link($row)
 		"/purchasing/allocations/supplier_allocate.php?trans_no=" .
 			$row["trans_no"]. "&trans_type=" . $row["type"], ICON_MONEY );
 
-	return (($row["type"] == 1 || $row["type"] == 21 || $row["type"] == 22) 
+	return (($row["type"] == ST_BANKPAYMENT || $row["type"] == ST_SUPPCREDIT || $row["type"] == ST_SUPPAYMENT) 
 		&& (-$row["TotalAmount"] - $row["Allocated"]) > 0)
 		? $link : '';
 }
@@ -135,7 +135,7 @@ function fmt_credit($row)
 		supplier.curr_code, 
     	(trans.ov_amount + trans.ov_gst  + trans.ov_discount) AS TotalAmount, 
 		trans.alloc AS Allocated,
-		((trans.type = 20 OR trans.type = 21) AND trans.due_date < '" . date2sql(Today()) . "') AS OverDue
+		((trans.type = ".ST_SUPPINVOICE." OR trans.type = ".ST_SUPPCREDIT.") AND trans.due_date < '" . date2sql(Today()) . "') AS OverDue
     	FROM "
 			.TB_PREF."supp_trans as trans, "
 			.TB_PREF."suppliers as supplier
@@ -148,15 +148,15 @@ function fmt_credit($row)
    	{
    		if (($_POST['filterType'] == '1') || ($_POST['filterType'] == '2'))
    		{
-   			$sql .= " AND trans.type = 20 ";
+   			$sql .= " AND trans.type = ".ST_SUPPINVOICE." ";
    		}
    		elseif ($_POST['filterType'] == '3')
    		{
-			$sql .= " AND trans.type = 22 ";
+			$sql .= " AND trans.type = ".ST_SUPPAYMENT." ";
    		}
    		elseif (($_POST['filterType'] == '4') || ($_POST['filterType'] == '5'))
    		{
-			$sql .= " AND trans.type = 21 ";
+			$sql .= " AND trans.type = ".ST_SUPPCREDIT." ";
    		}
 
    		if (($_POST['filterType'] == '2') || ($_POST['filterType'] == '5'))

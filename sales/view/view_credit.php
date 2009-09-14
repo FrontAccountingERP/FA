@@ -32,7 +32,7 @@ elseif (isset($_POST["trans_no"]))
 	$trans_id = $_POST["trans_no"];
 }
 
-$myrow = get_customer_trans($trans_id, 11);
+$myrow = get_customer_trans($trans_id, ST_CUSTCREDIT);
 
 $branch = get_branch($myrow["branch_code"]);
 
@@ -73,7 +73,7 @@ start_row();
 label_cells(_("Sales Type"), $myrow["sales_type"], "class='tableheader2'");
 label_cells(_("Shipping Company"), $myrow["shipper_name"], "class='tableheader2'");
 end_row();
-comments_display_row(11, $trans_id);
+comments_display_row(ST_CUSTCREDIT, $trans_id);
 end_table();
 
 echo "</td></tr>";
@@ -81,7 +81,7 @@ end_table(1); // outer table
 
 $sub_total = 0;
 
-$result = get_customer_trans_details(11, $trans_id);
+$result = get_customer_trans_details(ST_CUSTCREDIT, $trans_id);
 
 start_table("$table_style width=95%");
 
@@ -137,18 +137,18 @@ if ($sub_total != 0)
 		"nowrap align=right width=15%");
 label_row(_("Shipping"), $display_freight, "colspan=6 align=right", "nowrap align=right");
 
-$tax_items = get_trans_tax_details(11, $trans_id);
+$tax_items = get_trans_tax_details(ST_CUSTCREDIT, $trans_id);
 display_customer_trans_tax_details($tax_items, 6);
 
 label_row("<font color=red>" . _("TOTAL CREDIT") . "</font",
 	"<font color=red>$display_total</font>", "colspan=6 align=right", "nowrap align=right");
 end_table(1);
 
-$voided = is_voided_display(11, $trans_id, _("This credit note has been voided."));
+$voided = is_voided_display(ST_CUSTCREDIT, $trans_id, _("This credit note has been voided."));
 
 if (!$voided)
 	display_allocations_from(PT_CUSTOMER,
-		$myrow['debtor_no'], 11, $trans_id, $credit_total);
+		$myrow['debtor_no'], ST_CUSTCREDIT, $trans_id, $credit_total);
 
 /* end of check to see that there was an invoice record to print */
 

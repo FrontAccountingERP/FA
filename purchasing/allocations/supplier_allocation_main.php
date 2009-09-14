@@ -64,7 +64,7 @@ function systype_name($dummy, $type)
 {
 	global $systypes_array;
 
-	return $systypes_array[$type;
+	return $systypes_array[$type];
 }
 
 function trans_view($trans)

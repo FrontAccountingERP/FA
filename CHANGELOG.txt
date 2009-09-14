@@ -19,6 +19,87 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+14-Sep-2009 Joe Hunt
+! Changed all numeric constants to the new defined constants. A huge task.
+$ /admin/fiscalyears.php
+  /admin/forms_setup.php
+  /admin/view_print_transaction.php
+  /admin/void_transaction.php
+  /gl/includes/db/gl_db_banking.inc
+  /gl_includes/db/gl_db_trans.inc
+  /gl/inquiry/journal_inquiry.php
+  /includes/systypes.inc
+  /includes/ui/allocation_cart.inc
+  /includes/ui/ui_view.inc
+  /inventory/inquiry/stock_movements.php
+  /manufacturing/includes/db/work_order_issues_db.inc
+  /manufacturing/includes/db/work_order_produce_items.inc
+  /manufacturing/view/wo_production_view.php
+  /purchasing/po_receive_items.php
+  /purchasing/supplier_credit.php
+  /purchasing/supplier_invoice.php
+  /purchasing/supplier_payment.php
+  /purchasing/allocations/supplier_allocation_main.php
+  /purchasing/includes/db/grn_db.inc
+  /purchasing/includes/db/invoice_db.inc
+  /purchasing/includes/db/suballoc_db.inc
+  /purchasing/includes/db/suppliers_db.inc
+  /purchasing/includes/db/supp_payment_db.inc
+  /purchasing/includes/db/supp_trans_db.inc
+  /purchasing/includes/ui/grn_ui.inc
+  /purchasing/includes/ui/invoice_ui.inc
+  /purchasing/inquiry/supplier_allocation_inquiry.php
+  /purchasing/inquiry/supplier_inquiry.php
+  /purchasing/view/view_grn.php
+  /purchasing/view/view_po.php
+  /purchasing/view/view_supp_credit.php
+  /purchasing/view/view_supp_invoice.php
+  /purchasing/view/view_supp_payment.php
+  /reporting/rep101.php
+  /reporting/rep102.php
+  /reporting/rep103.php
+  /reporting/rep105.php
+  /reporting/rep106.php
+  /reporting/rep107.php
+  /reporting/rep108.php
+  /reporting/rep109.php
+  /reporting/rep110.php
+  /reporting/rep111.php
+  /reporting/rep201.php
+  /reporting/rep202.php
+  /reporting/rep203.php
+  /reporting/rep304.php
+  /reporting/rep409.php
+  /reporting/rep709.php
+  /reporting/includes/reporting.inc
+  /reporting/includes/reports_classes.inc
+  /sales/create_recurrent_invoices.php
+  /sales/credit_note_entry.php
+  /sales/customer_credit_invoice.php
+  /sales/customer_delivery.php
+  /sales/customer_invoice.php
+  /sales/customer_payments.php
+  /sales/sales_order_entry.php
+  /sales/includes/cart_class.inc
+  /sales/includes/sales_db.inc
+  /sales/includes/db/custalloc_db.inc
+  /sales/includes/db/cust_trans_db.inc
+  /sales/includes/db/payment_db.inc
+  /sales/includes/db/sales_credit_db.inc
+  /sales/includes/db/sales_delivery_db.inc
+  /sales/includes/db/sales_invoice_db.inc
+  /sales/includes/db/sales_order_db.inc
+  /sales/includes/ui/sales_order_ui.inc
+  /sales/inquiry/customer_allocation_inquiry.php
+  /sales/inquiry/customer_inquiry.php
+  /sales/inquiry/sales_deliveries_view.php
+  /sales/inquiry/sales_orders_view.php
+  /sales/manage/recurrent_invoices.php
+  /sales/view/view_credit.php
+  /sales/view/view_dispatch.php
+  /sales/view/view_invoice.php
+  /sales/view/view_sales_order.php
+  
 13-Sep-2009 Janusz Dobrowolski
 ! Eliminated non-static method calls and some more fixes to avoid log warnings on both php 4 and 5:
  Classes systypes, bank_account_types, payment_person_types, wo_types, reserved replaced by

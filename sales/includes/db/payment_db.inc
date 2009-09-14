@@ -21,20 +21,20 @@ function write_customer_payment($trans_no, $customer_id, $branch_id, $bank_accou
 
 	$company_record = get_company_prefs();
 
-	$payment_no = write_customer_trans(12, $trans_no, $customer_id, $branch_id, 
+	$payment_no = write_customer_trans(ST_CUSTPAYMENT, $trans_no, $customer_id, $branch_id, 
 		$date_, $ref, $amount, $discount, 0, 0, 0, 0, 0, 0, 0, "", 0, $rate);
 
 	$bank_gl_account = get_bank_gl_account($bank_account);
 
 	if ($trans_no != 0) {
-	  delete_comments(12, $trans_no);
-	  void_bank_trans(12, $trans_no, true);
-	  void_gl_trans(12, $trans_no, true);
-	  void_cust_allocations(12, $trans_no, $date_);
+	  delete_comments(ST_CUSTPAYMENT, $trans_no);
+	  void_bank_trans(ST_CUSTPAYMENT, $trans_no, true);
+	  void_gl_trans(ST_CUSTPAYMENT, $trans_no, true);
+	  void_cust_allocations(ST_CUSTPAYMENT, $trans_no, $date_);
 	}
 	$total = 0;
 	/* Bank account entry first */
-	$total += add_gl_trans_customer(12, $payment_no, $date_,
+	$total += add_gl_trans_customer(ST_CUSTPAYMENT, $payment_no, $date_,
 		$bank_gl_account, 0, 0, $amount - $charge,  $customer_id,
 		"Cannot insert a GL transaction for the bank account debit", $rate);
 
@@ -52,13 +52,13 @@ function write_customer_payment($trans_no, $customer_id, $branch_id, $bank_accou
 
 	if (($discount + $amount) != 0)	{
 	/* Now Credit Debtors account with receipts + discounts */
-	$total += add_gl_trans_customer(12, $payment_no, $date_,
+	$total += add_gl_trans_customer(ST_CUSTPAYMENT, $payment_no, $date_,
 		$debtors_account, 0, 0, -($discount + $amount), $customer_id,
 		"Cannot insert a GL transaction for the debtors account credit", $rate);
 	}
 	if ($discount != 0)	{
 		/* Now Debit discount account with discounts allowed*/
-		$total += add_gl_trans_customer(12, $payment_no, $date_,
+		$total += add_gl_trans_customer(ST_CUSTPAYMENT, $payment_no, $date_,
 			$discount_account, 0, 0, $discount, $customer_id,
 			"Cannot insert a GL transaction for the payment discount debit", $rate);
 	}
@@ -66,21 +66,21 @@ function write_customer_payment($trans_no, $customer_id, $branch_id, $bank_accou
 	if ($charge != 0)	{
 		/* Now Debit bank charge account with charges */
 		$charge_act = get_company_pref('bank_charge_act');
-		$total += add_gl_trans_customer(12, $payment_no, $date_,
+		$total += add_gl_trans_customer(ST_CUSTPAYMENT, $payment_no, $date_,
 			$charge_act, 0, 0, $charge, $customer_id,
 			"Cannot insert a GL transaction for the payment bank charge debit", $rate);
 	}
 	/*Post a balance post if $total != 0 */
-	add_gl_balance(12, $payment_no, $date_, -$total, PT_CUSTOMER, $customer_id);	
+	add_gl_balance(ST_CUSTPAYMENT, $payment_no, $date_, -$total, PT_CUSTOMER, $customer_id);	
 
 	/*now enter the bank_trans entry */
-	add_bank_trans(12, $payment_no, $bank_account, $ref,
+	add_bank_trans(ST_CUSTPAYMENT, $payment_no, $bank_account, $ref,
 		$date_, $amount - $charge, PT_CUSTOMER, $customer_id,
 		get_customer_currency($customer_id), "", $rate);
 
-	add_comments(12, $payment_no, $date_, $memo_);
+	add_comments(ST_CUSTPAYMENT, $payment_no, $date_, $memo_);
 
-	$Refs->save(12, $payment_no, $ref);
+	$Refs->save(ST_CUSTPAYMENT, $payment_no, $ref);
 
 	commit_transaction();
 

@@ -84,14 +84,14 @@ $editors = array(
 //	1=> Bank Payment,
 //	2=> Bank Deposit,
 //	4=> Funds Transfer,
-   10=> "/sales/customer_invoice.php?ModifyInvoice=%d",
+   ST_SALESINVOICE => "/sales/customer_invoice.php?ModifyInvoice=%d",
 //   11=>
 // free hand (debtors_trans.order_==0)
 //	"/sales/credit_note_entry.php?ModifyCredit=%d"
 // credit invoice
 //	"/sales/customer_credit_invoice.php?ModifyCredit=%d"
 //	 12=> Customer Payment,
-   13=> "/sales/customer_delivery.php?ModifyDelivery=%d",
+   ST_CUSTDELIVERY => "/sales/customer_delivery.php?ModifyDelivery=%d",
 //   16=> Location Transfer,
 //   17=> Inventory Adjustment,
 //   20=> Supplier Invoice,

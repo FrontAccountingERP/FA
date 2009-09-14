@@ -50,14 +50,14 @@ check_edit_conflicts();
 if (isset($_GET['AddedID'])) {
 
 	$invoice_no = $_GET['AddedID'];
-	$trans_type = 10;
+	$trans_type = ST_SALESINVOICE;
 
 	display_notification(_("Selected deliveries has been processed"), true);
 
 	display_note(get_customer_trans_view_str($trans_type, $invoice_no, _("&View This Invoice")), 0, 1);
 
-	display_note(print_document_link($invoice_no, _("&Print This Invoice"), true, 10));
-	display_note(print_document_link($invoice_no, _("&Email This Invoice"), true, 10, false, "", "", 1),1);
+	display_note(print_document_link($invoice_no, _("&Print This Invoice"), true, ST_SALESINVOICE));
+	display_note(print_document_link($invoice_no, _("&Email This Invoice"), true, ST_SALESINVOICE, false, "", "", 1),1);
 
 	display_note(get_gl_view_str($trans_type, $invoice_no, _("View the GL &Journal Entries for this Invoice")),1);
 
@@ -71,9 +71,9 @@ if (isset($_GET['AddedID'])) {
 
 	display_notification_centered(sprintf(_('Sales Invoice # %d has been updated.'),$invoice_no));
 
-	display_note(get_trans_view_str(10, $invoice_no, _("&View This Invoice")));
+	display_note(get_trans_view_str(ST_SALESINVOICE, $invoice_no, _("&View This Invoice")));
 	echo '<br>';
-	display_note(print_document_link($invoice_no, _("&Print This Invoice"), true, 10));
+	display_note(print_document_link($invoice_no, _("&Print This Invoice"), true, ST_SALESINVOICE));
 
 	hyperlink_no_params($path_to_root . "/sales/inquiry/customer_inquiry.php", _("Select A Different &Invoice to Modify"));
 
@@ -109,7 +109,7 @@ if ( (isset($_GET['DeliveryNumber']) && ($_GET['DeliveryNumber'] > 0) )
 		$src = array($_GET['DeliveryNumber']);
 	}
 	/*read in all the selected deliveries into the Items cart  */
-	$dn = new Cart(13, $src, true);
+	$dn = new Cart(ST_CUSTDELIVERY, $src, true);
 
 	if ($dn->count_items() == 0) {
 		hyperlink_params($path_to_root . "/sales/inquiry/sales_deliveries_view.php",
@@ -117,10 +117,10 @@ if ( (isset($_GET['DeliveryNumber']) && ($_GET['DeliveryNumber'] > 0) )
 		die ("<br><b>" . _("There are no delivered items with a quantity left to invoice. There is nothing left to invoice.") . "</b>");
 	}
 
-	$dn->trans_type = 10;
+	$dn->trans_type = ST_SALESINVOICE;
 	$dn->src_docs = $dn->trans_no;
 	$dn->trans_no = 0;
-	$dn->reference = $Refs->get_next(10);
+	$dn->reference = $Refs->get_next(ST_SALESINVOICE);
 	$dn->due_date = get_invoice_duedate($dn->customer_id, $dn->document_date);
 
 	$_SESSION['Items'] = $dn;
@@ -128,14 +128,14 @@ if ( (isset($_GET['DeliveryNumber']) && ($_GET['DeliveryNumber'] > 0) )
 
 } elseif (isset($_GET['ModifyInvoice']) && $_GET['ModifyInvoice'] > 0) {
 
-	if ( get_parent_trans(10, $_GET['ModifyInvoice']) == 0) { // 1.xx compatibility hack
+	if ( get_parent_trans(ST_SALESINVOICE, $_GET['ModifyInvoice']) == 0) { // 1.xx compatibility hack
 		echo"<center><br><b>" . _("There are no delivery notes for this invoice.<br>
 		Most likely this invoice was created in Front Accounting version prior to 2.0
 		and therefore can not be modified.") . "</b></center>";
 		display_footer_exit();
 	}
 	processing_start();
-	$_SESSION['Items'] = new Cart(10, $_GET['ModifyInvoice']);
+	$_SESSION['Items'] = new Cart(ST_SALESINVOICE, $_GET['ModifyInvoice']);
 
 	if ($_SESSION['Items']->count_items() == 0) {
 		echo"<center><br><b>" . _("All quantities on this invoice has been credited. There is nothing to modify on this invoice") . "</b></center>";
@@ -340,7 +340,7 @@ $dspans[] = $spanlen;
 
 $is_batch_invoice = count($_SESSION['Items']->src_docs) > 1;
 
-$is_edition = $_SESSION['Items']->trans_type == 10 && $_SESSION['Items']->trans_no != 0;
+$is_edition = $_SESSION['Items']->trans_type == ST_SALESINVOICE && $_SESSION['Items']->trans_no != 0;
 start_form();
 hidden('cart_id');
 

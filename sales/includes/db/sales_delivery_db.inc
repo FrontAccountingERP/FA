@@ -36,7 +36,7 @@ function write_sales_delivery(&$delivery,$bo_policy)
 		$tax_total +=  $taxitem['Value'];
 	}
 	/* Insert/update the debtor_trans */
-	$delivery_no = write_customer_trans(13, $trans_no, $delivery->customer_id,
+	$delivery_no = write_customer_trans(ST_CUSTDELIVERY, $trans_no, $delivery->customer_id,
 		$delivery->Branch, $delivery->document_date, $delivery->reference,
 		$delivery_items_total, 0,
 		$delivery->tax_included ? 0 : $tax_total-$freight_tax,
@@ -48,10 +48,10 @@ function write_sales_delivery(&$delivery,$bo_policy)
 	if ($trans_no == 0) {
 		$delivery->trans_no = array($delivery_no=>0);
 	} else {
-		void_gl_trans(13, $delivery_no, true);
-		void_stock_move(13, $delivery_no);
-		void_trans_tax_details(13, $delivery_no);
-		delete_comments(13, $delivery_no);
+		void_gl_trans(ST_CUSTDELIVERY, $delivery_no, true);
+		void_stock_move(ST_CUSTDELIVERY, $delivery_no);
+		void_trans_tax_details(ST_CUSTDELIVERY, $delivery_no);
+		delete_comments(ST_CUSTDELIVERY, $delivery_no);
 	}
 
 	foreach ($delivery->line_items as $delivery_line) {
@@ -67,7 +67,7 @@ function write_sales_delivery(&$delivery,$bo_policy)
 			$delivery_line->standard_cost = get_standard_cost($delivery_line->stock_id);
 
 		/* add delivery details for all lines */
-		write_customer_trans_detail_item(13, $delivery_no, $delivery_line->stock_id,
+		write_customer_trans_detail_item(ST_CUSTDELIVERY, $delivery_no, $delivery_line->stock_id,
 			$delivery_line->item_description, $delivery_line->qty_dispatched,
 			$delivery_line->line_price(), $line_tax,
 			$delivery_line->discount_percent, $delivery_line->standard_cost,
@@ -75,11 +75,11 @@ function write_sales_delivery(&$delivery,$bo_policy)
 
 	// Now update sales_order_details for the quantity delivered
 		if ($delivery_line->qty_old != $delivery_line->qty_dispatched)
-			update_parent_line(13, $delivery_line->src_id,
+			update_parent_line(ST_CUSTDELIVERY, $delivery_line->src_id,
 				$delivery_line->qty_dispatched-$delivery_line->qty_old);
 
 		if ($delivery_line->qty_dispatched != 0) {
-			add_stock_move_customer(13, $delivery_line->stock_id, $delivery_no,
+			add_stock_move_customer(ST_CUSTDELIVERY, $delivery_line->stock_id, $delivery_no,
 				$delivery->Location, $delivery->document_date, $delivery->reference,
 				-$delivery_line->qty_dispatched, $delivery_line->standard_cost,1,
 				$line_price, $delivery_line->discount_percent);
@@ -98,7 +98,7 @@ function write_sales_delivery(&$delivery,$bo_policy)
 				$dim2 = ($delivery->dimension2_id != $customer['dimension2_id'] ? $delivery->dimension2_id : 
 					($customer['dimension2_id'] != 0 ? $customer["dimension2_id"] : $stock_gl_code["dimension2_id"]));
 
-				add_gl_trans_std_cost(13, $delivery_no,
+				add_gl_trans_std_cost(ST_CUSTDELIVERY, $delivery_no,
 					$delivery->document_date, $stock_gl_code["cogs_account"], $dim, $dim2, "",
 					$delivery_line->standard_cost * $delivery_line->qty_dispatched,
 					PT_CUSTOMER, $delivery->customer_id,
@@ -107,7 +107,7 @@ function write_sales_delivery(&$delivery,$bo_policy)
 				/*now the stock entry*/
 				//$stock_gl_code = get_stock_gl_code($order_line->stock_id);
 
-				add_gl_trans_std_cost(13, $delivery_no, $delivery->document_date,
+				add_gl_trans_std_cost(ST_CUSTDELIVERY, $delivery_no, $delivery->document_date,
 					$stock_gl_code["inventory_account"], 0, 0, "",
 					(-$delivery_line->standard_cost * $delivery_line->qty_dispatched),
 					PT_CUSTOMER, $delivery->customer_id,
@@ -127,16 +127,16 @@ function write_sales_delivery(&$delivery,$bo_policy)
 	foreach ($taxes as $taxitem) {
 		if ($taxitem['Net'] != 0) {
 				$ex_rate = get_exchange_rate_from_home_currency(get_customer_currency($delivery->customer_id), $delivery->document_date);
-    		    add_trans_tax_details(13, $delivery_no, $taxitem['tax_type_id'],
+    		    add_trans_tax_details(ST_CUSTDELIVERY, $delivery_no, $taxitem['tax_type_id'],
 				$taxitem['rate'], $delivery->tax_included, $taxitem['Value'],
 				$taxitem['Net'], $ex_rate, $delivery->document_date, $delivery->reference );
 		}
 	}
 
-	add_comments(13, $delivery_no, $delivery->document_date, $delivery->Comments);
+	add_comments(ST_CUSTDELIVERY, $delivery_no, $delivery->document_date, $delivery->Comments);
 
 	if ($trans_no == 0) {
-			$Refs->save(13, $delivery_no, $delivery->reference);
+			$Refs->save(ST_CUSTDELIVERY, $delivery_no, $delivery->reference);
 	}
 
 	commit_transaction();
@@ -158,10 +158,10 @@ function void_sales_delivery($type, $type_no)
 	$order = get_customer_trans_order($type, $type_no);
 
 	if ($order) {
-		$order_items = get_sales_order_details($order, 30);
+		$order_items = get_sales_order_details($order, ST_SALESORDER);
 		while ($row = db_fetch($items_result)) {
 			$order_line = db_fetch($order_items);
-			update_parent_line(13, $order_line['id'], -$row['quantity']);
+			update_parent_line(ST_CUSTDELIVERY, $order_line['id'], -$row['quantity']);
 		}
 	}
 

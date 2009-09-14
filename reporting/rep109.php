@@ -74,7 +74,7 @@ function print_sales_orders()
 
 	for ($i = $from; $i <= $to; $i++)
 	{
-		$myrow = get_sales_order_header($i, 30);
+		$myrow = get_sales_order_header($i, ST_SALESORDER);
 		$branch = get_branch($myrow["branch_code"]);
 		if ($email == 1)
 		{
@@ -97,7 +97,7 @@ function print_sales_orders()
 			$rep->title = ($print_as_quote==1 ? _("QUOTE") : _("SALES ORDER"));
 		$rep->Header2($myrow, $branch, $myrow, $baccount, 9);
 
-		$result = get_sales_order_details($i, 30);
+		$result = get_sales_order_details($i, ST_SALESORDER);
 		$SubTotal = 0;
 		while ($myrow2=db_fetch($result))
 		{

@@ -129,7 +129,7 @@ function trans_view($trans)
 
 function due_date($row)
 {
-	return	$row["type"] == 10	? $row["due_date"] : '';
+	return	$row["type"] == ST_SALESINVOICE	? $row["due_date"] : '';
 }
 
 function gl_view($row)
@@ -140,7 +140,7 @@ function gl_view($row)
 function fmt_debit($row)
 {
 	$value =
-	    $row['type']==11 || $row['type']==12 || $row['type']==2 ?
+	    $row['type']==ST_CUSTCREDIT || $row['type']==ST_CUSTPAYMENT || $row['type']==ST_BANKDEPOSIT ?
 		-$row["TotalAmount"] : $row["TotalAmount"];
 	return $value>=0 ? price_format($value) : '';
 
@@ -149,14 +149,14 @@ function fmt_debit($row)
 function fmt_credit($row)
 {
 	$value =
-	    !($row['type']==11 || $row['type']==12 || $row['type']==2) ?
+	    !($row['type']==ST_CUSTCREDIT || $row['type']==ST_CUSTPAYMENT || $row['type']==ST_BANKDEPOSIT) ?
 		-$row["TotalAmount"] : $row["TotalAmount"];
 	return $value>0 ? price_format($value) : '';
 }
 
 function credit_link($row)
 {
-	return $row['type'] == 10 && $row["TotalAmount"] - $row["Allocated"] > 0 ?
+	return $row['type'] == ST_SALESINVOICE && $row["TotalAmount"] - $row["Allocated"] > 0 ?
 		pager_link(_("Credit This"),
 			"/sales/customer_credit_invoice.php?InvoiceNumber=".
 			$row['trans_no'], ICON_CREDIT)
@@ -168,12 +168,12 @@ function edit_link($row)
 	$str = '';
 
 	switch($row['type']) {
-	case 10:
-		if (get_voided_entry(10, $row["trans_no"]) === false && $row['Allocated'] == 0)
+	case ST_SALESINVOICE:
+		if (get_voided_entry(ST_SALESINVOICE, $row["trans_no"]) === false && $row['Allocated'] == 0)
 			$str = "/sales/customer_invoice.php?ModifyInvoice=".$row['trans_no'];
 		break;
-	case 11:
-  		if (get_voided_entry(11, $row["trans_no"]) === false && $row['Allocated'] == 0) // 2008-11-19 Joe Hunt
+	case ST_CUSTCREDIT:
+  		if (get_voided_entry(ST_CUSTCREDIT, $row["trans_no"]) === false && $row['Allocated'] == 0) // 2008-11-19 Joe Hunt
 		{	 
 			if ($row['order_']==0) // free-hand credit note
 			    $str = "/sales/credit_note_entry.php?ModifyCredit=".$row['trans_no'];
@@ -181,8 +181,8 @@ function edit_link($row)
 			    $str = "/sales/customer_credit_invoice.php?ModifyCredit=".$row['trans_no'];
 		}	    
 		break;
-	 case 13:
-  		if (get_voided_entry(13, $row["trans_no"]) === false)
+	 case ST_CUSTDELIVERY:
+  		if (get_voided_entry(ST_CUSTDELIVERY, $row["trans_no"]) === false)
    			$str = "/sales/customer_delivery.php?ModifyDelivery=".$row['trans_no'];
 		break;
 	}
@@ -193,7 +193,7 @@ function edit_link($row)
 
 function prt_link($row)
 {
-  	if ($row['type'] != 12 && $row['type'] != 2) // customer payment or bank deposit printout not defined yet.
+  	if ($row['type'] != ST_CUSTPAYMENT && $row['type'] != ST_BANKDEPOSIT) // customer payment or bank deposit printout not defined yet.
  		return print_document_link($row['trans_no'], _("Print"), true, $row['type'], ICON_PRINT);
 }
 
@@ -219,7 +219,7 @@ function check_overdue($row)
 		(trans.ov_amount + trans.ov_gst + trans.ov_freight 
 			+ trans.ov_freight_tax + trans.ov_discount)	AS TotalAmount, 
 		trans.alloc AS Allocated,
-		((trans.type = 10)
+		((trans.type = ".ST_SALESINVOICE.")
 			AND trans.due_date < '" . date2sql(Today()) . "') AS OverDue
 		FROM "
 			.TB_PREF."debtor_trans as trans, "
@@ -237,24 +237,24 @@ function check_overdue($row)
    	{
    		if ($_POST['filterType'] == '1')
    		{
-   			$sql .= " AND (trans.type = 10 OR trans.type = 1) ";
+   			$sql .= " AND (trans.type = ".ST_SALESINVOICE." OR trans.type = ST_BANKPAYMENT) ";
    		}
    		elseif ($_POST['filterType'] == '2')
    		{
-   			$sql .= " AND (trans.type = 10) ";
+   			$sql .= " AND (trans.type = ".ST_SALESINVOICE.") ";
    		}
    		elseif ($_POST['filterType'] == '3')
    		{
 			$sql .= " AND (trans.type = " . ST_CUSTPAYMENT 
-					." OR trans.type = 2) ";
+					." OR trans.type = ".ST_BANKDEPOSIT.") ";
    		}
    		elseif ($_POST['filterType'] == '4')
    		{
-			$sql .= " AND trans.type = 11 ";
+			$sql .= " AND trans.type = ".ST_CUSTCREDIT." ";
    		}
    		elseif ($_POST['filterType'] == '5')
    		{
-			$sql .= " AND trans.type = 13 ";
+			$sql .= " AND trans.type = ".ST_CUSTDELIVERY." ";
    		}
 
     	if ($_POST['filterType'] == '2')

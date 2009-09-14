@@ -74,18 +74,18 @@ function print_invoices()
 
 	for ($i = $fno[0]; $i <= $tno[0]; $i++)
 	{
-		for ($j = 10; $j <= 11; $j++)
+		for ($j = ST_SALESINVOICE; $j <= ST_CUSTCREDIT; $j++)
 		{
 			if (isset($_POST['PARAM_7']) && $_POST['PARAM_7'] != $j)
 				continue;
 			if (!exists_customer_trans($j, $i))
 				continue;
-			$sign = $j==10 ? 1 : -1;
+			$sign = $j==ST_SALESINVOICE ? 1 : -1;
 			$myrow = get_customer_trans($i, $j);
 			$branch = get_branch($myrow["branch_code"]);
 			$branch['disable_branch'] = $paylink; // helper
-			if ($j == 10)
-				$sales_order = get_sales_order_header($myrow["order_"], 30);
+			if ($j == ST_SALESINVOICE)
+				$sales_order = get_sales_order_header($myrow["order_"], ST_SALESORDER);
 			else
 				$sales_order = null;
 			if ($email == 1)
@@ -93,7 +93,7 @@ function print_invoices()
 				$rep = new FrontReport("", "", user_pagesize());
 				$rep->currency = $cur;
 				$rep->Font();
-				if ($j == 10)
+				if ($j == ST_SALESINVOICE)
 				{
 					$rep->title = _('INVOICE');
 					$rep->filename = "Invoice" . $myrow['reference'] . ".pdf";
@@ -106,7 +106,7 @@ function print_invoices()
 				$rep->Info($params, $cols, null, $aligns);
 			}
 			else
-				$rep->title = ($j == 10) ? _('INVOICE') : _('CREDIT NOTE');
+				$rep->title = ($j == ST_SALESINVOICE) ? _('INVOICE') : _('CREDIT NOTE');
 			$rep->Header2($myrow, $branch, $sales_order, $baccount, $j);
 
    			$result = get_customer_trans_details($j, $i);

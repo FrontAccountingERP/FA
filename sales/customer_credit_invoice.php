@@ -48,13 +48,13 @@ page($_SESSION['page_title'], false, false, "", $js);
 
 if (isset($_GET['AddedID'])) {
 	$credit_no = $_GET['AddedID'];
-	$trans_type = 11;
+	$trans_type = ST_CUSTCREDIT;
 
 	display_notification_centered(_("Credit Note has been processed"));
 
 	display_note(get_customer_trans_view_str($trans_type, $credit_no, _("&View This Credit Note")), 0, 0);
 
-	display_note(print_document_link($credit_no, _("&Print This Credit Note"), true, 11),1);
+	display_note(print_document_link($credit_no, _("&Print This Credit Note"), true, $trans_type),1);
 
  	display_note(get_gl_view_str($trans_type, $credit_no, _("View the GL &Journal Entries for this Credit Note")),1);
 
@@ -62,13 +62,13 @@ if (isset($_GET['AddedID'])) {
 
 } elseif (isset($_GET['UpdatedID'])) {
 	$credit_no = $_GET['UpdatedID'];
-	$trans_type = 11;
+	$trans_type = ST_CUSTCREDIT;
 
 	display_notification_centered(_("Credit Note has been updated"));
 
 	display_note(get_customer_trans_view_str($trans_type, $credit_no, _("&View This Credit Note")), 0, 0);
 
-	display_note(print_document_link($credit_no, _("&Print This Credit Note"), true, 11),1);
+	display_note(print_document_link($credit_no, _("&Print This Credit Note"), true, $trans_type),1);
 
  	display_note(get_gl_view_str($trans_type, $credit_no, _("View the GL &Journal Entries for this Credit Note")),1);
 
@@ -100,7 +100,7 @@ function can_process()
 			return false;
 		}
 
-		if (!is_new_reference($_POST['ref'], 11)) {
+		if (!is_new_reference($_POST['ref'], ST_CUSTCREDIT)) {
 			display_error(_("The entered reference is already in use."));;
 			set_focus('ref');
 			return false;
@@ -122,14 +122,14 @@ function can_process()
 
 if (isset($_GET['InvoiceNumber']) && $_GET['InvoiceNumber'] > 0) {
 
-    $ci = new Cart(10, $_GET['InvoiceNumber'], true);
+    $ci = new Cart(ST_SALESINVOICE, $_GET['InvoiceNumber'], true);
 
-    $ci->trans_type = 11;
+    $ci->trans_type = ST_CUSTCREDIT;
     $ci->src_docs = $ci->trans_no;
     $ci->src_date = $ci->document_date;
     $ci->trans_no = 0;
     $ci->document_date = new_doc_date();
-    $ci->reference = $Refs->get_next(11);
+    $ci->reference = $Refs->get_next(ST_CUSTCREDIT);
 
     for ($line_no=0; $line_no<count($ci->line_items); $line_no++) {
 	$ci->line_items[$line_no]->qty_dispatched = '0';
@@ -140,7 +140,7 @@ if (isset($_GET['InvoiceNumber']) && $_GET['InvoiceNumber'] > 0) {
 
 } elseif ( isset($_GET['ModifyCredit']) && $_GET['ModifyCredit']>0) {
 
-	$_SESSION['Items'] = new Cart(11,$_GET['ModifyCredit']);
+	$_SESSION['Items'] = new Cart(ST_CUSTCREDIT,$_GET['ModifyCredit']);
 	copy_from_cart();
 
 } elseif (!processing_active()) {
@@ -257,8 +257,7 @@ function display_credit_items()
 	} else {
 		label_cells(_("Reference"), $_SESSION['Items']->reference, "class='tableheader2'");
 	}
-//    label_cells(_("Crediting Invoice"), get_customer_trans_view_str(10, $_SESSION['InvoiceToCredit']), "class='tableheader2'");
-    label_cells(_("Crediting Invoice"), get_customer_trans_view_str(10, array_keys($_SESSION['Items']->src_docs)), "class='tableheader2'");
+    label_cells(_("Crediting Invoice"), get_customer_trans_view_str(ST_SALESINVOICE, array_keys($_SESSION['Items']->src_docs)), "class='tableheader2'");
 
 	if (!isset($_POST['ShipperID'])) {
 		$_POST['ShipperID'] = $_SESSION['Items']->ship_via;

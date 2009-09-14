@@ -131,7 +131,7 @@ function print_workorders()
 		$rep->NewLine(1);
 		$rep->TextCol(0, 5," *** = "._("Insufficient stock"), -2);
 
-		$comments = get_comments(26, $i);
+		$comments = get_comments(ST_WORKORDER, $i);
 		if ($comments && db_num_rows($comments))
 		{
 			$rep->NewLine();

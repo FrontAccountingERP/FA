@@ -375,7 +375,7 @@ function read_sales_order($order_no, &$order, $trans_type)
 function sales_order_has_deliveries($order_no)
 {
 	$sql = "SELECT SUM(qty_sent) FROM ".TB_PREF.
-	"sales_order_details WHERE order_no=$order_no AND trans_type=30";
+	"sales_order_details WHERE order_no=$order_no AND trans_type=".ST_SALESORDER."";
 
 	$result = db_query($sql, "could not query for sales order usage");
 
@@ -392,7 +392,7 @@ function close_sales_order($order_no)
 	$sql = "UPDATE ".TB_PREF."sales_order_details
 		SET quantity = qty_sent,
 			type = 0,
-			WHERE order_no = $order_no AND trans_type=30";
+			WHERE order_no = $order_no AND trans_type=".ST_SALESORDER."";
 
 	db_query($sql, "The sales order detail record could not be updated");
 }

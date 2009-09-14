@@ -36,7 +36,7 @@ check_db_has_suppliers(_("There are no suppliers defined in the system."));
 if (isset($_GET['AddedID'])) 
 {
 	$invoice_no = $_GET['AddedID'];
-	$trans_type = 20;
+	$trans_type = ST_SUPPINVOICE;
 
 
     echo "<center>";
@@ -153,7 +153,7 @@ function check_data()
 		return false;
 	}
 
-	if (!is_new_reference($_SESSION['supp_trans']->reference, 20)) 
+	if (!is_new_reference($_SESSION['supp_trans']->reference, ST_SUPPINVOICE)) 
 	{
 		display_error(_("The entered reference is already in use."));
 		set_focus('reference');
@@ -359,7 +359,7 @@ if ($_SESSION["wa_current_user"]->can_access('SA_GRNDELETE'))
 		update_average_material_cost($grn["supplier_id"], $myrow["item_code"],
 			$myrow["unit_price"], -$myrow["QtyOstdg"], Today());
 
-	   	add_stock_move(25, $myrow["item_code"], $myrow['grn_batch_id'], $grn['loc_code'], sql2date($grn["delivery_date"]), "",
+	   	add_stock_move(ST_SUPPRECEIVE, $myrow["item_code"], $myrow['grn_batch_id'], $grn['loc_code'], sql2date($grn["delivery_date"]), "",
 	   		-$myrow["QtyOstdg"], $myrow['std_cost_unit'], $grn["supplier_id"], 1, $myrow['unit_price']);
 	   		
 	   	commit_transaction();

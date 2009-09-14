@@ -25,11 +25,11 @@ if ($use_date_picker)
 
 if (get_post('type'))
 	$trans_type = $_POST['type'];
-elseif (isset($_GET['type']) && $_GET['type'] == 32)
-	$trans_type = 32;
+elseif (isset($_GET['type']) && $_GET['type'] == ST_SALESQUOTE)
+	$trans_type = ST_SALESQUOTE;
 else
-	$trans_type = 30;
-if ($trans_type == 30)
+	$trans_type = ST_SALESORDER;
+if ($trans_type == ST_SALESORDER)
 {
 	if (isset($_GET['OutstandingOnly']) && ($_GET['OutstandingOnly'] == true))
 	{
@@ -87,7 +87,7 @@ else
 function check_overdue($row)
 {
 	global $trans_type;
-	if ($trans_type == 32)
+	if ($trans_type == ST_SALESQUOTE)
 		return (date1_greater_date2(Today(), sql2date($row['delivery_date'])));
 	else
 		return ($row['type'] == 0
@@ -110,7 +110,7 @@ function prt_link($row)
 function edit_link($row) 
 {
 	global $trans_type;
-	$modify = ($trans_type == 30 ? "ModifyOrderNumber" : "ModifyQuotationNumber");
+	$modify = ($trans_type == ST_SALESORDER ? "ModifyOrderNumber" : "ModifyQuotationNumber");
   return pager_link( _("Edit"),
     "/sales/sales_order_entry.php?$modify=" . $row['order_no'], ICON_EDIT);
 }
@@ -118,7 +118,7 @@ function edit_link($row)
 function dispatch_link($row)
 {
 	global $trans_type;
-	if ($trans_type == 30)
+	if ($trans_type == ST_SALESORDER)
   		return pager_link( _("Dispatch"),
 			"/sales/customer_delivery.php?OrderNumber=" .$row['order_no'], ICON_DOC);
 	else		
@@ -129,7 +129,7 @@ function dispatch_link($row)
 function invoice_link($row)
 {
 	global $trans_type;
-	if ($trans_type == 30)
+	if ($trans_type == ST_SALESORDER)
   		return pager_link( _("Invoice"),
 			"/sales/sales_order_entry.php?NewInvoice=" .$row["order_no"], ICON_DOC);
 	else
@@ -151,7 +151,7 @@ function order_link($row)
 function tmpl_checkbox($row)
 {
 	global $trans_type;
-	if ($trans_type == 32)
+	if ($trans_type == ST_SALESQUOTE)
 		return '';
 	$name = "chgtpl" .$row['order_no'];
 	$value = $row['type'] ? 1:0;
@@ -223,7 +223,7 @@ locations_list_cells(_("Location:"), 'StockLocation', null, true);
 
 stock_items_list_cells(_("Item:"), 'SelectStockFromList', null, true);
 
-if ($trans_type == 32)
+if ($trans_type == ST_SALESQUOTE)
 	check_cells(_("Show All:"), 'show_all');
 submit_cells('SearchOrders', _("Search"),'',_('Select documents'), 'default');
 
@@ -304,7 +304,7 @@ else	// ... or select inquiry constraints
 				sorder.deliver_to";
 }
 
-if ($trans_type == 30)
+if ($trans_type == ST_SALESORDER)
 	$cols = array(
 		_("Order #") => array('fun'=>'view_link'),
 		_("Ref"),
@@ -346,12 +346,12 @@ if ($_POST['order_view_mode'] == 'OutstandingOnly') {
 			array('insert'=>true, 'fun'=>'delivery_link'))
 	);
 
-} elseif ($trans_type == 32) {
+} elseif ($trans_type == ST_SALESQUOTE) {
 	 array_append($cols,array(
 					array('insert'=>true, 'fun'=>'edit_link'),
 					array('insert'=>true, 'fun'=>'order_link'),
 					array('insert'=>true, 'fun'=>'prt_link')));
-} elseif ($trans_type == 30) {
+} elseif ($trans_type == ST_SALESORDER) {
 	 array_append($cols,array(
 			_("Tmpl") => array('insert'=>true, 'fun'=>'tmpl_checkbox'),
 					array('insert'=>true, 'fun'=>'edit_link'),

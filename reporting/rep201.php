@@ -31,12 +31,12 @@ function get_open_balance($supplier_id, $to, $convert)
 {
 	$to = date2sql($to);
 
-    $sql = "SELECT SUM(IF(".TB_PREF."supp_trans.type = 20, (".TB_PREF."supp_trans.ov_amount + ".TB_PREF."supp_trans.ov_gst + 
+    $sql = "SELECT SUM(IF(".TB_PREF."supp_trans.type = ".ST_SUPPINVOICE.", (".TB_PREF."supp_trans.ov_amount + ".TB_PREF."supp_trans.ov_gst + 
     	".TB_PREF."supp_trans.ov_discount)";
     if ($convert)
     	$sql .= " * rate";
     $sql .= ", 0)) AS charges,
-    	SUM(IF(".TB_PREF."supp_trans.type <> 20, (".TB_PREF."supp_trans.ov_amount + ".TB_PREF."supp_trans.ov_gst + 
+    	SUM(IF(".TB_PREF."supp_trans.type <> ".ST_SUPPINVOICE.", (".TB_PREF."supp_trans.ov_amount + ".TB_PREF."supp_trans.ov_gst + 
     	".TB_PREF."supp_trans.ov_discount)";
     if ($convert)
     	$sql .= "* rate";
@@ -66,7 +66,7 @@ function getTransactions($supplier_id, $from, $to)
     $sql = "SELECT ".TB_PREF."supp_trans.*,
 				(".TB_PREF."supp_trans.ov_amount + ".TB_PREF."supp_trans.ov_gst + ".TB_PREF."supp_trans.ov_discount)
 				AS TotalAmount, ".TB_PREF."supp_trans.alloc AS Allocated,
-				((".TB_PREF."supp_trans.type = 20)
+				((".TB_PREF."supp_trans.type = ".ST_SUPPINVOICE.")
 					AND ".TB_PREF."supp_trans.due_date < '$to') AS OverDue
     			FROM ".TB_PREF."supp_trans
     			WHERE ".TB_PREF."supp_trans.tran_date >= '$from' AND ".TB_PREF."supp_trans.tran_date <= '$to' 
@@ -173,7 +173,7 @@ function print_supplier_balances()
 			$rep->TextCol(0, 1, $systypes_array[$trans['type']]);
 			$rep->TextCol(1, 2,	$trans['reference']);
 			$rep->DateCol(2, 3,	$trans['tran_date'], true);
-			if ($trans['type'] == 20)
+			if ($trans['type'] == ST_SUPPINVOICE)
 				$rep->DateCol(3, 4,	$trans['due_date'], true);
 			$item[0] = $item[1] = 0.0;
 			if ($convert)
@@ -198,7 +198,7 @@ function print_supplier_balances()
 			else
 				$item[3] = ($trans['TotalAmount'] + $trans['Allocated']) * $rate;
 			*/	
-			if ($trans['type'] == 20 || $trans['type'] == 2)
+			if ($trans['type'] == ST_SUPPINVOICE || $trans['type'] == ST_BANKDEPOSIT)
 				$item[3] = $item[0] + $item[1] - $item[2];
 			else	
 				$item[3] = $item[0] - $item[1] + $item[2];

@@ -70,11 +70,11 @@ function print_deliveries()
 
 	for ($i = $fno[0]; $i <= $tno[0]; $i++)
 	{
-			if (!exists_customer_trans(13, $i))
+			if (!exists_customer_trans(ST_CUSTDELIVERY, $i))
 				continue;
-			$myrow = get_customer_trans($i, 13);
+			$myrow = get_customer_trans($i, ST_CUSTDELIVERY);
 			$branch = get_branch($myrow["branch_code"]);
-			$sales_order = get_sales_order_header($myrow["order_"], 30); // ?
+			$sales_order = get_sales_order_header($myrow["order_"], ST_SALESORDER); // ?
 			if ($email == 1)
 			{
 				$rep = new FrontReport("", "", user_pagesize());
@@ -118,7 +118,7 @@ function print_deliveries()
 					$rep->Header2($myrow, $branch, $sales_order,'',13);
 			}
 
-			$comments = get_comments(13, $i);
+			$comments = get_comments(ST_CUSTDELIVERY, $i);
 			if ($comments && db_num_rows($comments))
 			{
 				$rep->NewLine();

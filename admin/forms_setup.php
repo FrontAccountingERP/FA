@@ -48,7 +48,7 @@ table_header($th);
 $i = 0;
 while ($type = db_fetch($systypes)) 
 {
-	if ($i++ == 11)
+	if ($i++ == ST_CUSTCREDIT)
 	{
 		table_section(2);
 		table_header($th);

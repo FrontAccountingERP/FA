@@ -192,7 +192,7 @@ function set_document_parent($cart)
 	db_query($sql, 'Child document link cannot be updated');
 
 	}
-	if ($cart->trans_type != 10)
+	if ($cart->trans_type != ST_SALESINVOICE)
 		return 0;
 
 	// the rest is batch invoice specific
@@ -220,7 +220,7 @@ function set_document_parent($cart)
 //--------------------------------------------------------------------------------------------------
 function get_parent_type($type)
 {
-	$parent_types = array( 11=>10, 10=>13, 13=>30 );
+	$parent_types = array( ST_CUSTCREDIT => ST_SALESINVOICE, ST_SALESINVOICE => ST_CUSTDELIVERY, ST_CUSTDELIVERY => ST_SALESORDER );
 	return isset($parent_types[$type]) ?  $parent_types[$type] : 0;
 }
 
@@ -233,7 +233,7 @@ function update_parent_line($doc_type, $line_id, $qty_dispatched)
 	if ($doc_type==0)
 		return false;
 	else {
-		if ($doc_type==30)
+		if ($doc_type==ST_SALESORDER)
 			$sql = "UPDATE ".TB_PREF."sales_order_details
 				SET qty_sent = qty_sent + $qty_dispatched
 				WHERE id=$line_id";

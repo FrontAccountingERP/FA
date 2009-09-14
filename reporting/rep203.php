@@ -133,11 +133,11 @@ function print_payment_report()
 			$rep->NewLine(1, 2);
 			$rep->TextCol(0, 1, $systypes_array[$trans['type']]);
 			$rep->TextCol(1, 2,	$trans['supp_reference']);
-			if ($trans['type'] == 20)
+			if ($trans['type'] == ST_SUPPINVOICE)
 				$rep->DateCol(2, 3,	$trans['due_date'], true);
 			else	
 				$rep->DateCol(2, 3,	$trans['tran_date'], true);
-			if ($trans['type'] != 20)
+			if ($trans['type'] != ST_SUPPINVOICE)
 			{
 				$trans['TranTotal'] = -$trans['TranTotal'];
 				$trans['Balance'] = -$trans['Balance'];

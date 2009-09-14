@@ -33,7 +33,7 @@ function display_grn_summary(&$po, $editable=false)
     if ($editable) 
     {
     	if (!isset($_POST['ref']))
-    	    $_POST['ref'] = $Refs->get_next(25);
+    	    $_POST['ref'] = $Refs->get_next(ST_SUPPRECEIVE);
     	ref_cells(_("Reference"), 'ref', '', null, "class='tableheader2'");
     	    	
         if (!isset($_POST['Location']))

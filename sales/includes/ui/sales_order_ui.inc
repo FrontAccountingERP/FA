@@ -89,7 +89,7 @@ function get_customer_details_to_order(&$order, $customer_id, $branch_id)
 	$order->set_sales_type($myrow['salestype'], $myrow['sales_type'], $myrow['tax_included'],
 	    $myrow['factor']);
 
-	if ($order->trans_type != 30)
+	if ($order->trans_type != ST_SALESORDER && $order->trans_type != ST_SALESQUOTE)
 	{
 		$order->dimension_id = $myrow['dimension_id'];
 		$order->dimension2_id = $myrow['dimension2_id'];
@@ -111,7 +111,7 @@ function get_customer_details_to_order(&$order, $customer_id, $branch_id)
 
 	$order->set_delivery($myrow["default_ship_via"], $myrow["br_name"],
 		$address);
-	if ($order->trans_type == 10) {
+	if ($order->trans_type == ST_SALESINVOICE) {
 		$order->due_date = get_invoice_duedate($customer_id, $order->document_date);
 		if ($order->pos != -1)
 			$order->cash = date_diff2($order->due_date, Today(), 'd')<2;
@@ -251,7 +251,7 @@ function display_order_header(&$order, $editable, $date_text, $display_tax_group
 		hidden('customer_id', $order->customer_id);
 		hidden('branch_id', $order->Branch);
 		hidden('sales_type', $order->sales_type);
-		if ($order->trans_type != 30) {
+		if ($order->trans_type != ST_SALESORDER  && $order->trans_type != ST_SALESQUOTE) {
 			hidden('dimension_id', $order->dimension_id); // 2008-11-12 Joe Hunt
 			hidden('dimension2_id', $order->dimension2_id);
 		}	
@@ -298,7 +298,7 @@ function display_order_header(&$order, $editable, $date_text, $display_tax_group
 					$Ajax->activate('delivery');
 					$Ajax->activate('cash');
 				} else {
-					if ($order->trans_type == 10)
+					if ($order->trans_type == ST_SALESINVOICE)
 					{
 						$_POST['delivery_date'] = $order->due_date;
 						$Ajax->activate('delivery_date');
@@ -352,7 +352,7 @@ function display_order_header(&$order, $editable, $date_text, $display_tax_group
 	}
 	table_section(3);
 
-	if ($order->trans_type == 10 && $order->pos != -1) {
+	if ($order->trans_type == ST_SALESINVOICE && $order->pos != -1) {
 		sale_payment_list_cells(_('Payment:'), 'cash', null, true);
 		$cash_payment = get_post('cash', 0);
 		// current user can issue both credit and cash invoices
@@ -402,14 +402,14 @@ function display_order_header(&$order, $editable, $date_text, $display_tax_group
 					$change_prices = 1;
 			}
 			$Ajax->activate('_ex_rate');
-			if ($order->trans_type == 10) {
+			if ($order->trans_type == ST_SALESINVOICE) {
 				$_POST['delivery_date'] = get_invoice_duedate(get_post('customer_id'), get_post('OrderDate'));
 			} else 
 				$_POST['delivery_date'] = add_days(get_post('OrderDate'), $SysPrefs->default_delivery_required_by());
 			$Ajax->activate('items_table');
 			$Ajax->activate('delivery_date');
 		}
-		if ($order->trans_type != 30 && $order->trans_type != 32)
+		if ($order->trans_type != ST_SALESORDER && $order->trans_type != ST_SALESQUOTE)
 		{	// 2008-11-12 Joe Hunt added dimensions
 			$dim = get_company_pref('use_dimension');
 			if ($dim > 0)
@@ -551,17 +551,17 @@ function display_delivery_details(&$order)
 		end_table();
 	} else {
 
-		if ($order->trans_type==10)
+		if ($order->trans_type==ST_SALESINVOICE)
 		{
 			$title = _("Delivery Details");
 			$delname = _("Due Date").':';
 		}
-		elseif ($order->trans_type==13)
+		elseif ($order->trans_type==ST_CUSTDELIVERY)
 		{
 			$title = _("Invoice Delivery Details");
 			$delname = _("Invoice before").':';
 		}
-		elseif ($order->trans_type==32)
+		elseif ($order->trans_type==ST_SALESQUOTE)
 		{
 			$title = _("Quotation Delivery Details");
 			$delname = _("Valid until").':';
@@ -582,7 +582,7 @@ function display_delivery_details(&$order)
 
 
 		date_row($delname, 'delivery_date',
-			$order->trans_type==30 ?  _('Enter requested day of delivery') : $order->trans_type==32 ? _('Enter Valid until Date') : '');
+			$order->trans_type==ST_SALESORDER ?  _('Enter requested day of delivery') : $order->trans_type==ST_SALESQUOTE ? _('Enter Valid until Date') : '');
 		text_row(_("Deliver To:"), 'deliver_to', $order->deliver_to, 40, 40,
 			_('Additional identifier for delivery e.g. name of receiving person'));
 

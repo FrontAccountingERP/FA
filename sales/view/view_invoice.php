@@ -34,11 +34,11 @@ elseif (isset($_POST["trans_no"]))
 
 // 3 different queries to get the information - what a JOKE !!!!
 
-$myrow = get_customer_trans($trans_id, 10);
+$myrow = get_customer_trans($trans_id, ST_SALESINVOICE);
 
 $branch = get_branch($myrow["branch_code"]);
 
-$sales_order = get_sales_order_header($myrow["order_"], 30);
+$sales_order = get_sales_order_header($myrow["order_"], ST_SALESORDER);
 
 display_heading(sprintf(_("SALES INVOICE #%d"),$trans_id));
 
@@ -96,16 +96,16 @@ start_row();
 label_cells(_("Invoice Date"), sql2date($myrow["tran_date"]), "class='tableheader2'", "nowrap");
 label_cells(_("Due Date"), sql2date($myrow["due_date"]), "class='tableheader2'", "nowrap");
 label_cells(_("Deliveries"), get_customer_trans_view_str(ST_CUSTDELIVERY, 
-	get_parent_trans(10,$trans_id)), "class='tableheader2'");
+	get_parent_trans(ST_SALESINVOICE,$trans_id)), "class='tableheader2'");
 end_row();
-comments_display_row(10, $trans_id);
+comments_display_row(ST_SALESINVOICE, $trans_id);
 end_table();
 
 echo "</td></tr>";
 end_table(1); // outer table
 
 
-$result = get_customer_trans_details(10, $trans_id);
+$result = get_customer_trans_details(ST_SALESINVOICE, $trans_id);
 
 start_table("$table_style width=95%");
 
@@ -157,7 +157,7 @@ label_row(_("Sub-total"), $display_sub_tot, "colspan=6 align=right",
 	"nowrap align=right width=15%");
 label_row(_("Shipping"), $display_freight, "colspan=6 align=right", "nowrap align=right");
 
-$tax_items = get_trans_tax_details(10, $trans_id);
+$tax_items = get_trans_tax_details(ST_SALESINVOICE, $trans_id);
 display_customer_trans_tax_details($tax_items, 6);
 
 $display_total = price_format($myrow["ov_freight"]+$myrow["ov_gst"]+$myrow["ov_amount"]+$myrow["ov_freight_tax"]);
@@ -166,7 +166,7 @@ label_row(_("TOTAL INVOICE"), $display_total, "colspan=6 align=right",
 	"nowrap align=right");
 end_table(1);
 
-is_voided_display(10, $trans_id, _("This invoice has been voided."));
+is_voided_display(ST_SALESINVOICE, $trans_id, _("This invoice has been voided."));
 
 end_page(true);
 

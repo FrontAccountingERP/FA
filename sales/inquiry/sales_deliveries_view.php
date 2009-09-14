@@ -131,7 +131,7 @@ else
 //---------------------------------------------------------------------------------------------
 function trans_view($trans, $trans_no)
 {
-	return get_customer_trans_view_str(13, $trans['trans_no']);
+	return get_customer_trans_view_str(ST_CUSTDELIVERY, $trans['trans_no']);
 }
 
 function batch_checkbox($row)
@@ -153,7 +153,7 @@ function edit_link($row)
 
 function prt_link($row)
 {
-	return print_document_link($row['trans_no'], _("Print"), true, 13, ICON_PRINT);
+	return print_document_link($row['trans_no'], _("Print"), true, ST_CUSTDELIVERY, ICON_PRINT);
 }
 
 function invoice_link($row)
@@ -191,7 +191,7 @@ $sql = "SELECT trans.trans_no,
 		WHERE
 		sorder.order_no = trans.order_ AND
 		trans.debtor_no = debtor.debtor_no
-			AND trans.type = 13
+			AND trans.type = ".ST_CUSTDELIVERY."
 			AND line.debtor_trans_no = trans.trans_no
 			AND line.debtor_trans_type = trans.type
 			AND trans.branch_code = branch.branch_code

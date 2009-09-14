@@ -68,7 +68,7 @@ function print_sales_quotations()
 
 	for ($i = $from; $i <= $to; $i++)
 	{
-		$myrow = get_sales_order_header($i, 32);
+		$myrow = get_sales_order_header($i, ST_SALESQUOTE);
 		$branch = get_branch($myrow["branch_code"]);
 		if ($email == 1)
 		{
@@ -81,7 +81,7 @@ function print_sales_quotations()
 		$rep->title = _("SALES QUOTATION");
 		$rep->Header2($myrow, $branch, $myrow, $baccount, 7);
 
-		$result = get_sales_order_details($i, 32);
+		$result = get_sales_order_details($i, ST_SALESQUOTE);
 		$SubTotal = 0;
 		while ($myrow2=db_fetch($result))
 		{

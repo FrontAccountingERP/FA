@@ -329,21 +329,21 @@ function get_tax_summary($from, $to)
 	$todate = date2sql($to);
 
 	$sql = "SELECT 
-				SUM(IF(trans_type=11 || trans_type=20,-1,1)*
-				IF(trans_type=2 || trans_type=10 || trans_type=11, net_amount*ex_rate,0)) net_output,
-				SUM(IF(trans_type=11 || trans_type=20,-1,1)*
-				IF(trans_type=2 || trans_type=10 || trans_type=11, amount*ex_rate,0)) payable,
-				SUM(IF(trans_type=11 || trans_type=20,-1,1)*
-				IF(trans_type=2 || trans_type=10 || trans_type=11, 0, net_amount*ex_rate)) net_input,
-				SUM(IF(trans_type=11 || trans_type=20,-1,1)*
-				IF(trans_type=2 || trans_type=10 || trans_type=11, 0, amount*ex_rate)) collectible,
+				SUM(IF(trans_type=".ST_CUSTCREDIT." || trans_type=".ST_SUPPINVOICE.",-1,1)*
+				IF(trans_type=".ST_BANKDEPOSIT." || trans_type=".ST_SALESINVOICE." || trans_type=".ST_CUSTCREDIT.", net_amount*ex_rate,0)) net_output,
+				SUM(IF(trans_type=".ST_CUSTCREDIT." || trans_type=".ST_SUPPINVOICE.",-1,1)*
+				IF(trans_type=".ST_BANKDEPOSIT." || trans_type=".ST_SALESINVOICE." || trans_type=".ST_CUSTCREDIT.", amount*ex_rate,0)) payable,
+				SUM(IF(trans_type=".ST_CUSTCREDIT." || trans_type=".ST_SUPPINVOICE.",-1,1)*
+				IF(trans_type=".ST_BANKDEPOSIT." || trans_type=".ST_SALESINVOICE." || trans_type=".ST_CUSTCREDIT.", 0, net_amount*ex_rate)) net_input,
+				SUM(IF(trans_type=".ST_CUSTCREDIT." || trans_type=".ST_SUPPINVOICE.",-1,1)*
+				IF(trans_type=".ST_BANKDEPOSIT." || trans_type=".ST_SALESINVOICE." || trans_type=".ST_CUSTCREDIT.", 0, amount*ex_rate)) collectible,
 				taxrec.rate,
 				ttype.id,
 				ttype.name
 		FROM ".TB_PREF."tax_types ttype,
 			 ".TB_PREF."trans_tax_details taxrec
 		WHERE taxrec.tax_type_id=ttype.id
-			AND taxrec.trans_type != 13
+			AND taxrec.trans_type != ".ST_CUSTDELIVERY."
 			AND taxrec.tran_date >= '$fromdate'
 			AND taxrec.tran_date <= '$todate'
 		GROUP BY ttype.id";
@@ -390,7 +390,7 @@ function write_journal_entries(&$cart, $reverse)
     	}
 		// store tax details if the gl account is a tax account
 		add_gl_tax_details($journal_item->code_id, 
-			($journal_item->amount < 0.0 ? 2 : 1), $trans_id, -$journal_item->amount, 1, $date_, $memo_);
+			($journal_item->amount < 0.0 ? ST_BANKDEPOSIT : ST_BANKPAYMENT), $trans_id, -$journal_item->amount, 1, $date_, $memo_);
 	}
 	
 	if ($new) {
@@ -427,7 +427,7 @@ function write_journal_entries(&$cart, $reverse)
     		}
 			// store tax details if the gl account is a tax account
 			add_gl_tax_details($journal_item->code_id, 
-				($journal_item->amount < 0.0 ? 2 : 1), $trans_id, $journal_item->amount, 1, $date, $memo_);
+				($journal_item->amount < 0.0 ? ST_BANKDEPOSIT : ST_BANKPAYMENT), $trans_id, $journal_item->amount, 1, $date, $memo_);
     	}
 
     	add_comments($trans_type, $trans_id_reverse, $reversingDate, $memo_);

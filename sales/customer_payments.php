@@ -60,7 +60,7 @@ if (isset($_GET['AddedID'])) {
 
 	display_notification_centered(_("The customer payment has been successfully entered."));
 
-	display_note(get_gl_view_str(12, $payment_no, _("&View the GL Journal Entries for this Customer Payment")));
+	display_note(get_gl_view_str(ST_CUSTPAYMENT, $payment_no, _("&View the GL Journal Entries for this Customer Payment")));
 
 //	hyperlink_params($path_to_root . "/sales/allocations/customer_allocate.php", _("&Allocate this Customer Payment"), "trans_no=$payment_no&trans_type=12");
 
@@ -92,7 +92,7 @@ function can_process()
 		return false;
 	}
 
-	if (!is_new_reference($_POST['ref'], 12)) {
+	if (!is_new_reference($_POST['ref'], ST_CUSTPAYMENT)) {
 		display_error(_("The entered reference is already in use."));
 		set_focus('ref');
 		return false;
@@ -218,7 +218,7 @@ start_form();
 
 	customer_list_row(_("From Customer:"), 'customer_id', null, false, true);
 	if (!isset($_POST['bank_account'])) // first page call
-		  $_SESSION['alloc'] = new allocation(12,0);
+		  $_SESSION['alloc'] = new allocation(ST_CUSTPAYMENT,0);
 
 	if (db_customer_has_branches($_POST['customer_id'])) {
 		customer_branches_list_row(_("Branch:"), $_POST['customer_id'], 'BranchID', null, false, true, true);

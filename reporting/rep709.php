@@ -45,8 +45,8 @@ function getTaxTransactions($from, $to)
 			ON taxrec.trans_no=dtrans.trans_no AND taxrec.trans_type=dtrans.type
 		LEFT JOIN ".TB_PREF."debtors_master as debt ON dtrans.debtor_no=debt.debtor_no
 		LEFT JOIN ".TB_PREF."cust_branch as branch ON dtrans.branch_code=branch.branch_code
-		WHERE (taxrec.amount != 0 OR taxrec.net_amount != 0)
-			AND taxrec.trans_type != 13
+		WHERE (taxrec.amount <> 0 OR taxrec.net_amount <> 0)
+			AND taxrec.trans_type <> ".ST_CUSTDELIVERY."
 			AND taxrec.tran_date >= '$fromdate'
 			AND taxrec.tran_date <= '$todate'
 		ORDER BY taxrec.tran_date";
@@ -116,7 +116,7 @@ function print_tax_report()
 
 	while ($trans=db_fetch($transactions))
 	{
-		if (in_array($trans['trans_type'], array(11,20))) {
+		if (in_array($trans['trans_type'], array(ST_CUSTCREDIT,ST_SUPPINVOICE))) {
 			$trans['net_amount'] *= -1;
 			$trans['amount'] *= -1;
 		}
@@ -143,7 +143,7 @@ function print_tax_report()
 				$rep->Header();
 			}
 		}
-		if (in_array($trans['trans_type'], array(2,10,11))) {
+		if (in_array($trans['trans_type'], array(ST_BANKDEPOSIT,ST_SALESINVOICE,ST_CUSTCREDIT))) {
 			$taxes[$trans['tax_type_id']]['taxout'] += $trans['amount'];
 			$taxes[$trans['tax_type_id']]['out'] += $trans['net_amount'];
 		} else {

@@ -29,16 +29,12 @@ page(_("Receive Purchase Order Items"), false, false, "", $js);
 if (isset($_GET['AddedID']))
 {
 	$grn = $_GET['AddedID'];
-	$trans_type = 25;
+	$trans_type = ST_SUPPRECEIVE;
 
 	display_notification_centered(_("Purchase Order Delivery has been processed"));
 
 	display_note(get_trans_view_str($trans_type, $grn, _("&View this Delivery")));
 
-	//echo "<BR>";
-	//echo get_gl_view_str(25, $grn, _("View the GL &Journal Entries for this Delivery"));
-
-//	echo "<br>";
 	hyperlink_params("$path_to_root/purchasing/supplier_invoice.php", _("Entry purchase &invoice for this receival"), "New=1");
 
 	hyperlink_no_params("$path_to_root/purchasing/inquiry/po_search.php", _("Select a different &purchase order for receiving items against"));
@@ -49,7 +45,6 @@ if (isset($_GET['AddedID']))
 //--------------------------------------------------------------------------------------------------
 
 if ((!isset($_GET['PONumber']) || $_GET['PONumber'] == 0) && !isset($_SESSION['PO']))
-//if (isset($_GET['PONumber']) && !$_GET['PONumber'] > 0 && !isset($_SESSION['PO']))
 {
 	die (_("This page can only be opened if a purchase order has been selected. Please select a purchase order first."));
 }
@@ -180,7 +175,7 @@ function can_process()
 		return false;
 	}
 
-	if (!is_new_reference($_POST['ref'], 25))
+	if (!is_new_reference($_POST['ref'], ST_SUPPRECEIVE))
 	{
 		display_error(_("The entered reference is already in use."));
 		set_focus('ref');

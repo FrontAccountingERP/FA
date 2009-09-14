@@ -24,7 +24,7 @@ function get_parent_trans($trans_type, $trans_no) {
 		$link = db_fetch($result);
 		return array($link['trans_link']);
 	}
-	if ($trans_type!=10) return 0;	// this is credit note with no parent invoice
+	if ($trans_type!=ST_SALESINVOICE) return 0;	// this is credit note with no parent invoice
 	// invoice: find batch invoice parent trans.
 	$sql = 'SELECT trans_no FROM
 			'.TB_PREF.'debtor_trans WHERE
@@ -157,7 +157,7 @@ function get_customer_trans($trans_id, $trans_type)
 			".TB_PREF."bank_accounts.account_type AS BankTransType ";
 	}
 
-	if ($trans_type == 10 OR $trans_type == 11 OR $trans_type == 13) {
+	if ($trans_type == ST_SALESINVOICE || $trans_type == ST_CUSTCREDIT || $trans_type == ST_CUSTDELIVERY) {
 		// it's an invoice so also get the shipper and salestype
 		$sql .= ", ".TB_PREF."shippers.shipper_name, "
 		.TB_PREF."sales_types.sales_type, "
@@ -176,7 +176,7 @@ function get_customer_trans($trans_id, $trans_type)
 		$sql .= ", ".TB_PREF."bank_trans, ".TB_PREF."bank_accounts";
 	}
 
-	if ($trans_type == 10 OR $trans_type == 11 OR $trans_type == 13) {
+	if ($trans_type == ST_SALESINVOICE || $trans_type == ST_CUSTCREDIT || $trans_type == ST_CUSTDELIVERY) {
 		// it's an invoice so also get the shipper, salestypes
 		$sql .= ", ".TB_PREF."shippers, ".TB_PREF."sales_types, ".TB_PREF."cust_branch, ".TB_PREF."tax_groups ";
 	}
@@ -191,7 +191,7 @@ function get_customer_trans($trans_id, $trans_type)
 			AND ".TB_PREF."bank_trans.type=$trans_type
 			AND ".TB_PREF."bank_accounts.id=".TB_PREF."bank_trans.bank_act ";
 	}
-	if ($trans_type == 10 OR $trans_type == 11 OR $trans_type == 13) {
+	if ($trans_type == ST_SALESINVOICE || $trans_type == ST_CUSTCREDIT || $trans_type == ST_CUSTDELIVERY) {
 		// it's an invoice so also get the shipper
 		$sql .= " AND ".TB_PREF."shippers.shipper_id=".TB_PREF."debtor_trans.ship_via
 			AND ".TB_PREF."sales_types.id = ".TB_PREF."debtor_trans.tpe
@@ -276,14 +276,14 @@ function void_customer_trans($type, $type_no)
 function post_void_customer_trans($type, $type_no)
 {
 	switch ($type) {
-		case 10 :
-		case 11 :
+		case ST_SALESINVOICE :
+		case ST_CUSTCREDIT   :
 			void_sales_invoice($type, $type_no);
 			break;
-		case 13 :
+		case ST_CUSTDELIVERY :
 			void_sales_delivery($type, $type_no);
 			break;
-		case 12 :
+		case ST_CUSTPAYMENT :
 			void_customer_payment($type, $type_no);
 			break;
 	}

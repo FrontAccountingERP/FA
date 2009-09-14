@@ -56,8 +56,8 @@ function print_document_link($doc_no, $link_text, $link=true, $type_no,
 				'PARAM_2' => $email, 
 				'PARAM_3' => "");
 			break;
-		case 10 : // Sales Invoice
-		case 11 : // Customer Credit Note
+		case ST_SALESINVOICE : // Sales Invoice
+		case ST_CUSTCREDIT : // Customer Credit Note
 			$rep = 107;
 			// from, to, currency, bank acc, email, paylink, comments, type
 			$ar = array(

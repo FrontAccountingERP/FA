@@ -101,7 +101,7 @@ function get_deliveries_between($stock_id, $from, $to)
 	$from = date2sql($from);
 	$to = date2sql($to);
 	$sql = "SELECT SUM(-qty), SUM(-qty*standard_cost) FROM ".TB_PREF."stock_moves
-		WHERE type=13 AND stock_id='$stock_id' AND
+		WHERE type=".ST_CUSTDELIVERY." AND stock_id='$stock_id' AND
 			tran_date>='$from' AND tran_date<='$to' GROUP BY stock_id";
 	$result = db_query($sql, "The deliveries could not be updated");
 	return db_fetch_row($result);
@@ -136,10 +136,10 @@ function add_supp_invoice($supp_trans, $invoice_no=0) // do not receive as ref b
     $invoice_items_total = $supp_trans->get_total_charged($supp_trans->tax_group_id);
 
 	if ($supp_trans->is_invoice)
-		$trans_type = 20;
+		$trans_type = ST_SUPPINVOICE;
 	else
 	{
-		$trans_type = 21;
+		$trans_type = ST_SUPPCREDIT;
 		// let's negate everything because it's a credit note
 		$invoice_items_total = -$invoice_items_total;
 		$tax_total = -$tax_total;
@@ -190,6 +190,8 @@ function add_supp_invoice($supp_trans, $invoice_no=0) // do not receive as ref b
 			$entered_gl_code->amount, $memo_);
 
 		// store tax details if the gl account is a tax account
+		if (!$supp_trans->is_invoice)
+			$entered_gl_code->amount = -$entered_gl_code->amount;
 		add_gl_tax_details($entered_gl_code->gl_code, 
 			$trans_type, $invoice_id, $entered_gl_code->amount,
 			$ex_rate, $date_, $supp_trans->supp_reference);
@@ -252,9 +254,9 @@ function add_supp_invoice($supp_trans, $invoice_no=0) // do not receive as ref b
 						0, 0, _("Cost diff."), -$amt, null, null, null,
 						"The general ledger transaction could not be added for the price variance of the inventory item");
 				}		
-				update_stock_move_pid(13, $entered_grn->item_code, $old_date, $date_, 0, $mat_cost);
+				update_stock_move_pid(ST_CUSTDELIVERY, $entered_grn->item_code, $old_date, $date_, 0, $mat_cost);
 			}
-			update_stock_move_pid(25, $entered_grn->item_code, $old_date, $old_date, $supp_trans->supplier_id, $mat_cost);
+			update_stock_move_pid(ST_SUPPRECEIVE, $entered_grn->item_code, $old_date, $old_date, $supp_trans->supplier_id, $mat_cost);
 		//}
 		}
     	// ----------------------------------------------------------------------
@@ -271,12 +273,17 @@ function add_supp_invoice($supp_trans, $invoice_no=0) // do not receive as ref b
     	{
 
     		if (!$supp_trans->is_invoice)
+    		{
+    			$taxitem['Net'] = -$taxitem['Net'];
     			$taxitem['Value'] = -$taxitem['Value'];
+    		}	
     		// here we suppose that tax is never included in price (we are company customer).
 			add_trans_tax_details($trans_type, $invoice_id, 
 				$taxitem['tax_type_id'], $taxitem['rate'], 0, $taxitem['Value'],
 				$taxitem['Net'], $ex_rate, $date_, $supp_trans->supp_reference);
 
+    		if (!$supp_trans->is_invoice)
+    			$taxitem['Value'] = -$taxitem['Value'];
     		$total += add_gl_trans_supplier($trans_type, $invoice_id, $date_,
     			$taxitem['purchasing_gl_code'], 0, 0, $taxitem['Value'],
     			$supp_trans->supplier_id,
@@ -293,24 +300,24 @@ function add_supp_invoice($supp_trans, $invoice_no=0) // do not receive as ref b
 
 	if ($invoice_no != 0)
 	{
-		$invoice_alloc_balance = get_supp_trans_allocation_balance(20, $invoice_no);
+		$invoice_alloc_balance = get_supp_trans_allocation_balance(ST_SUPPINVOICE, $invoice_no);
 		if ($invoice_alloc_balance > 0) 
 		{ 	//the invoice is not already fully allocated 
 
-			$trans = get_supp_trans($invoice_no, 20);
+			$trans = get_supp_trans($invoice_no, ST_SUPPINVOICE);
 			$total = $trans['Total'];
 
 			$allocate_amount = ($invoice_alloc_balance > $total) ? $total : $invoice_alloc_balance;
 			/*Now insert the allocation record if > 0 */
 			if ($allocate_amount != 0) 
 			{
-				update_supp_trans_allocation(20, $invoice_no, $allocate_amount);
-				update_supp_trans_allocation(21, $invoice_id, $allocate_amount); // ***
-				add_supp_allocation($allocate_amount, 21, $invoice_id, 20, $invoice_no,
+				update_supp_trans_allocation(ST_SUPPINVOICE, $invoice_no, $allocate_amount);
+				update_supp_trans_allocation(ST_SUPPCREDIT, $invoice_id, $allocate_amount); // ***
+				add_supp_allocation($allocate_amount, ST_SUPPCREDIT, $invoice_id, ST_SUPPINVOICE, $invoice_no,
 					$date_);
 				// Exchange Variations Joe Hunt 2008-09-20 ////////////////////////////////////////
 
-				exchange_variation(21, $invoice_id, 20, $invoice_no, $date_,
+				exchange_variation(ST_SUPPCREDIT, $invoice_id, ST_SUPPINVOICE, $invoice_no, $date_,
 					$allocate_amount, PT_SUPPLIER);
 
 				///////////////////////////////////////////////////////////////////////////
@@ -407,7 +414,7 @@ function read_supp_invoice($trans_no, $trans_type, &$supp_trans)
 function get_matching_invoice_item($stock_id, $po_item_id)
 {
 	$sql = "SELECT *, tran_date FROM ".TB_PREF."supp_invoice_items, ".TB_PREF."supp_trans
-		WHERE supp_trans_type = 20 AND stock_id = '$stock_id' AND po_detail_item_id = $po_item_id
+		WHERE supp_trans_type = ".ST_SUPPINVOICE." AND stock_id = '$stock_id' AND po_detail_item_id = $po_item_id
 		AND supp_trans_no = trans_no";
 	$result = db_query($sql, "Cannot retreive supplier transaction detail records");
 	return db_fetch($result);  
@@ -446,7 +453,7 @@ function void_supp_invoice($type, $type_no)
 				
 				$batch = get_grn_batch_from_item($details_row["grn_item_id"]);	
 				$grn = get_grn_batch($batch);
-         		if ($type == 21) // credit note 2009-06-14 Joe Hunt Must restore the po and grn
+         		if ($type == ST_SUPPCREDIT) // credit note 2009-06-14 Joe Hunt Must restore the po and grn
          		{	// We must get the corresponding invoice item to check for price chg.
 					$match = get_matching_invoice_item($details_row["stock_id"], $details_row["po_detail_item_id"]);
 					if ($match !== false)
@@ -477,15 +484,15 @@ function void_supp_invoice($type, $type_no)
 				$deliveries = get_deliveries_between($details_row["stock_id"], $old_date, $date_);
 				if ($deliveries[0] != 0) // have deliveries been done during the period?
 				{
-					update_stock_move_pid(13, $details_row["stock_id"], $old_date, $date_, 0, $mat_cost);
+					update_stock_move_pid(ST_CUSTDELIVERY, $details_row["stock_id"], $old_date, $date_, 0, $mat_cost);
 				}
-				update_stock_move_pid(25, $details_row["stock_id"], $old_date, $old_date, $grn['supplier_id'], $mat_cost);
+				update_stock_move_pid(ST_SUPPRECEIVE, $details_row["stock_id"], $old_date, $old_date, $grn['supplier_id'], $mat_cost);
          	}
         }
 	}
 
-	if ($type == 21) // void the credits in stock moves
-		void_stock_move(21, $type_no); 
+	if ($type == ST_SUPPCREDIT) // void the credits in stock moves
+		void_stock_move($type, $type_no); 
 	void_supp_invoice_items($type, $type_no);
 	void_trans_tax_details($type, $type_no);
 

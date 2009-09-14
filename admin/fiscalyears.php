@@ -262,14 +262,14 @@ function delete_this_fiscalyear($selected_id)
 	$result = db_query($sql, "Could not retrieve debtor trans");
 	while ($row = db_fetch($result))
 	{
-		if ($row['type'] == 10)
+		if ($row['type'] == ST_SALESINVOICE)
 		{
-			$deliveries = get_parent_trans(10,$row['trans_no']);
+			$deliveries = get_parent_trans(ST_SALESINVOICE,$row['trans_no']);
 			foreach ($deliveries as $delivery)
 			{
-				$sql = "DELETE FROM ".TB_PREF."debtor_trans_details WHERE debtor_trans_no = $delivery AND debtor_trans_type = 13";
+				$sql = "DELETE FROM ".TB_PREF."debtor_trans_details WHERE debtor_trans_no = $delivery AND debtor_trans_type = ".ST_CUSTDELIVERY;
 				db_query($sql, "Could not delete debtor trans details");
-				$sql = "DELETE FROM ".TB_PREF."debtor_trans WHERE trans_no = $delivery AND type = 13";
+				$sql = "DELETE FROM ".TB_PREF."debtor_trans WHERE trans_no = $delivery AND type = ".ST_CUSTDELIVERY;
 				db_query($sql, "Could not delete debtor trans");
 			}		
 		}	

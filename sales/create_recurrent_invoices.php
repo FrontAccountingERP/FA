@@ -34,11 +34,11 @@ function create_recurrent_invoices($customer_id, $branch_id, $order_no, $tmpl_no
 {
 	global $Refs;
 
-	$doc = new Cart(30, array($order_no));
+	$doc = new Cart(ST_SALESORDER, array($order_no));
 
 	get_customer_details_to_order($doc, $customer_id, $branch_id);
 
-	$doc->trans_type = 30;
+	$doc->trans_type = ST_SALESORDER;
 	$doc->trans_no = 0;
 	$doc->document_date = Today(); // 2006-06-15. Added so Invoices and Deliveries get current day
 
@@ -52,7 +52,7 @@ function create_recurrent_invoices($customer_id, $branch_id, $order_no, $tmpl_no
 			$doc->sales_type, $doc->price_factor, $doc->document_date);
 	}	
 	$cart = $doc;
-	$cart->trans_type = 10;
+	$cart->trans_type = ST_SALESINVOICE;
 	$cart->reference = $Refs->get_next($cart->trans_type);
 	$invno = $cart->write(1);
 	set_last_sent($tmpl_no, $cart->document_date);
@@ -89,7 +89,7 @@ if (isset($_GET['recurrent']))
 	if (count($invs) > 0)
 	{
 		$ar = array('PARAM_0' => $min,	'PARAM_1' => $max, 'PARAM_2' => "", 'PARAM_3' => get_first_bank_account(), 
-			'PARAM_4' => 0,	'PARAM_5' => 0,	'PARAM_6' => "", 'PARAM_7' => 10);
+			'PARAM_4' => 0,	'PARAM_5' => 0,	'PARAM_6' => "", 'PARAM_7' => ST_SALESINVOICE);
 		display_note(print_link(_("&Print Recurrent Invoices # $min - # $max"), 107, $ar), 0, 1);
 		$ar['PARAM_4'] = 1; 
 		display_note(print_link(_("&Email Recurrent Invoices # $min - # $max"), 107, $ar), 0, 1);

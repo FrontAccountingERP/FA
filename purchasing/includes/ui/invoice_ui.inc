@@ -67,7 +67,7 @@ function invoice_header(&$supp_trans)
 
 	if (isset($_POST['invoice_no']))
 	{
-		$trans = get_supp_trans($_POST['invoice_no'], 20);
+		$trans = get_supp_trans($_POST['invoice_no'], ST_SUPPINVOICE);
 		$_POST['supplier_id'] = $trans['supplier_id'];
 		$supp = $trans['supplier_name'] . " - " . $trans['SupplierCurrCode'];
 		label_row(_("Supplier:"), $supp.hidden('supplier_id', $_POST['supplier_id'], false));
@@ -90,9 +90,9 @@ function invoice_header(&$supp_trans)
 	}
 
 	if ($supp_trans->is_invoice)
-    	ref_row(_("Reference:"), 'reference', '', $Refs->get_next(20));
+    	ref_row(_("Reference:"), 'reference', '', $Refs->get_next(ST_SUPPINVOICE));
     else
-    	ref_row(_("Reference:"), 'reference', '', $Refs->get_next(21));
+    	ref_row(_("Reference:"), 'reference', '', $Refs->get_next(ST_SUPPCREDIT));
 
 	if (isset($_POST['invoice_no']))
 	{
@@ -496,7 +496,7 @@ function display_grn_items(&$supp_trans, $mode=0)
     		alt_table_row_color($k);
 
 			$grn_batch = get_grn_batch_from_item($entered_grn->id);
-    		label_cell(get_trans_view_str(25,$grn_batch));
+    		label_cell(get_trans_view_str(ST_SUPPRECEIVE,$grn_batch));
     		if ($mode == 1)
     		{
 				label_cell($entered_grn->id);

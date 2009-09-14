@@ -20,13 +20,13 @@ function get_supplier_trans_view_str($type, $trans_no, $label="", $icon=false,
 	$viewer = "purchasing/view/";
 	if ($type == ST_PURCHORDER)
 		$viewer .= "view_po.php";
-	elseif ($type == 20)
+	elseif ($type == ST_SUPPINVOICE)
 		$viewer .= "view_supp_invoice.php";
-	elseif ($type == 21)
+	elseif ($type == ST_SUPPCREDIT)
 		$viewer .= "view_supp_credit.php";
-	elseif ($type == 22)
+	elseif ($type == ST_SUPPAYMENT)
 		$viewer .= "view_supp_payment.php";
-	elseif ($type == 25)
+	elseif ($type == ST_SUPPRECEIVE)
 		$viewer .= "view_grn.php";
 	else
 		return null;
@@ -73,15 +73,15 @@ function get_customer_trans_view_str($type, $trans_no, $label="", $icon=false,
 {
 	$viewer = "sales/view/";
 
-	if ($type == 10)
+	if ($type == ST_SALESINVOICE)
 		$viewer .= "view_invoice.php";
-	elseif ($type == 11)
+	elseif ($type == ST_CUSTCREDIT)
 		$viewer .= "view_credit.php";
-	elseif ($type == 12)
+	elseif ($type == ST_CUSTPAYMENT)
 		$viewer .= "view_receipt.php";
-	elseif ($type == 13)
+	elseif ($type == ST_CUSTDELIVERY)
 		$viewer .= "view_dispatch.php";
-	elseif ($type == 30 || $type == 32)
+	elseif ($type == ST_SALESORDER || $type == ST_SALESQUOTE)
 		$viewer .= "view_sales_order.php";
 	else
 		return null;
@@ -111,11 +111,11 @@ function get_banking_trans_view_str($type, $trans_no, $label="",
 	if ($label == "")
 		$label = $trans_no;
 
-	if ($type == 4)
+	if ($type == ST_BANKTRANSFER)
 		$viewer = "bank_transfer_view.php";
-	elseif ($type == 1)
+	elseif ($type == ST_BANKPAYMENT)
 		$viewer = "gl_payment_view.php";
-	elseif ($type == 2)
+	elseif ($type == ST_BANKDEPOSIT)
 		$viewer = "gl_deposit_view.php";
 	else
 		return null;
@@ -152,9 +152,9 @@ function get_manufacturing_trans_view_str($type, $trans_no, $label="",
 {
 	$viewer = "manufacturing/view/";
 
-	if ($type == 28)
+	if ($type == ST_MANUISSUE)
 		$viewer .= "wo_issue_view.php";
-	elseif ($type == 29)
+	elseif ($type == ST_MANURECEIVE)
 		$viewer .= "wo_production_view.php";
 	elseif ($type == ST_WORKORDER)
 		$viewer .= "work_order_view.php";
@@ -174,7 +174,7 @@ function get_manufacturing_trans_view_str($type, $trans_no, $label="",
 function get_dimensions_trans_view_str($type, $trans_no, $label="", $icon=false, 
 	$class='', $id='')
 {
-	if ($type == 40)
+	if ($type == ST_DIMENSION)
 		$viewer = "dimensions/view/view_dimension.php?trans_no=$trans_no";
 	else
 		return null;
@@ -190,7 +190,7 @@ function get_dimensions_trans_view_str($type, $trans_no, $label="", $icon=false,
 function get_journal_trans_view_str($type, $trans_no, $label="", $icon=false, 
 	$class='', $id='')
 {
-	if ($type == 0 || $type == 35)
+	if ($type == ST_JOURNAL || $type == ST_COSTUPDATE)
 		$viewer = "gl/view/gl_trans_view.php?type_id=$type&trans_no=$trans_no";
 	else
 		return null;

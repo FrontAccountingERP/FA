@@ -263,12 +263,12 @@ class Report
 					$CN = _("CN");
 					if ($print_invoice_no == 1)
 						$sql = "SELECT concat(".TB_PREF."debtor_trans.trans_no, '-',
-							".TB_PREF."debtor_trans.type) AS TNO, concat(".TB_PREF."debtor_trans.trans_no, if (type=10, ' $IV ', ' $CN '), ".TB_PREF."debtors_master.name) as IName
-							FROM ".TB_PREF."debtors_master, ".TB_PREF."debtor_trans WHERE (type=10 OR type=11) AND ".TB_PREF."debtors_master.debtor_no=".TB_PREF."debtor_trans.debtor_no ORDER BY ".TB_PREF."debtor_trans.trans_no DESC";
+							".TB_PREF."debtor_trans.type) AS TNO, concat(".TB_PREF."debtor_trans.trans_no, if (type=".ST_SALESINVOICE.", ' $IV ', ' $CN '), ".TB_PREF."debtors_master.name) as IName
+							FROM ".TB_PREF."debtors_master, ".TB_PREF."debtor_trans WHERE (type=".ST_SALESINVOICE." OR type=".ST_CUSTCREDIT.") AND ".TB_PREF."debtors_master.debtor_no=".TB_PREF."debtor_trans.debtor_no ORDER BY ".TB_PREF."debtor_trans.trans_no DESC";
 					else		
 						$sql = "SELECT concat(".TB_PREF."debtor_trans.trans_no, '-',
-							".TB_PREF."debtor_trans.type) AS TNO, concat(".TB_PREF."debtor_trans.reference, if (type=10, ' $IV ', ' $CN '), ".TB_PREF."debtors_master.name) as IName
-							FROM ".TB_PREF."debtors_master, ".TB_PREF."debtor_trans WHERE (type=10 OR type=11) AND ".TB_PREF."debtors_master.debtor_no=".TB_PREF."debtor_trans.debtor_no ORDER BY ".TB_PREF."debtor_trans.trans_no DESC";
+							".TB_PREF."debtor_trans.type) AS TNO, concat(".TB_PREF."debtor_trans.reference, if (type=".ST_SALESINVOICE.", ' $IV ', ' $CN '), ".TB_PREF."debtors_master.name) as IName
+							FROM ".TB_PREF."debtors_master, ".TB_PREF."debtor_trans WHERE (type=".ST_SALESINVOICE." OR type=".ST_CUSTCREDIT.") AND ".TB_PREF."debtors_master.debtor_no=".TB_PREF."debtor_trans.debtor_no ORDER BY ".TB_PREF."debtor_trans.trans_no DESC";
 					$st .= dup_simple_codeandname_list($sql, "PARAM_$index", $dummy);
 					break;
 				case 'DELIVERY':
@@ -277,7 +277,7 @@ class Report
 					concat(".TB_PREF."debtor_trans.trans_no, '-', ".TB_PREF."debtor_trans.type) AS TNO, concat(".TB_PREF."debtor_trans.trans_no, ' $DN ',
 					 ".TB_PREF."debtors_master.name) as IName
 						FROM ".TB_PREF."debtors_master, ".TB_PREF."debtor_trans
-						WHERE type=13 AND ".TB_PREF."debtors_master.debtor_no=".
+						WHERE type=".ST_CUSTDELIVERY." AND ".TB_PREF."debtors_master.debtor_no=".
 						TB_PREF."debtor_trans.debtor_no ORDER BY ".TB_PREF."debtor_trans.trans_no DESC";
 					$st .= dup_simple_codeandname_list($sql, "PARAM_$index", $dummy);
 					break;
@@ -285,14 +285,14 @@ class Report
 					$sql = "SELECT ".TB_PREF."sales_orders.order_no, concat(".TB_PREF."sales_orders.order_no, '-',
 						".TB_PREF."debtors_master.name) as IName
 						FROM ".TB_PREF."debtors_master, ".TB_PREF."sales_orders WHERE ".TB_PREF."debtors_master.debtor_no=".TB_PREF."sales_orders.debtor_no 
-						AND ".TB_PREF."sales_orders.trans_type=30 ORDER BY ".TB_PREF."sales_orders.order_no DESC";
+						AND ".TB_PREF."sales_orders.trans_type=".ST_SALESORDER." ORDER BY ".TB_PREF."sales_orders.order_no DESC";
 					$st .= dup_simple_codeandname_list($sql, "PARAM_$index", $dummy);
 					break;
 				case 'QUOTATIONS':
 					$sql = "SELECT ".TB_PREF."sales_orders.order_no, concat(".TB_PREF."sales_orders.order_no, '-',
 						".TB_PREF."debtors_master.name) as IName
 						FROM ".TB_PREF."debtors_master, ".TB_PREF."sales_orders WHERE ".TB_PREF."debtors_master.debtor_no=".TB_PREF."sales_orders.debtor_no 
-						AND ".TB_PREF."sales_orders.trans_type=32 ORDER BY ".TB_PREF."sales_orders.order_no DESC";
+						AND ".TB_PREF."sales_orders.trans_type=".ST_SALESQUOTE." ORDER BY ".TB_PREF."sales_orders.order_no DESC";
 					$st .= dup_simple_codeandname_list($sql, "PARAM_$index", $dummy);
 					break;
 				case 'PO':

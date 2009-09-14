@@ -51,7 +51,7 @@ function GetSalesOrders($from, $to, $category=0, $location=null, $backorder=0)
             	INNER JOIN ".TB_PREF."sales_order_details
             	    ON (".TB_PREF."sales_orders.order_no = ".TB_PREF."sales_order_details.order_no
             	    AND ".TB_PREF."sales_orders.trans_type = ".TB_PREF."sales_order_details.trans_type
-            	    AND ".TB_PREF."sales_orders.trans_type = 30)
+            	    AND ".TB_PREF."sales_orders.trans_type = ".ST_SALESORDER.")
             	INNER JOIN ".TB_PREF."stock_master
             	    ON ".TB_PREF."sales_order_details.stk_code = ".TB_PREF."stock_master.stock_id
             WHERE ".TB_PREF."sales_orders.ord_date >='$fromdate'

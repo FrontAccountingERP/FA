@@ -145,7 +145,7 @@ function get_allocatable_from_supp_sql($supplier_id, $settled)
 		$supp_sql = " AND trans.supplier_id = $supplier_id";
 
 	$sql = get_alloc_supp_sql("round(ABS(ov_amount+ov_gst+ov_discount)-alloc,6) <= 0 AS settled",
-		"(type=22 OR type=21 OR type=1) AND (ov_amount < 0) " . $settled_sql . $supp_sql);
+		"(type=".ST_SUPPAYMENT." OR type=".ST_SUPPCREDIT." OR type=".ST_BANKPAYMENT.") AND (ov_amount < 0) " . $settled_sql . $supp_sql);
 
 	return $sql;
 }
@@ -166,7 +166,7 @@ function get_allocatable_to_supp_transactions($supplier_id, $trans_no=null, $typ
 	else
 	{
 		$sql = get_alloc_supp_sql(null, "round(ABS(ov_amount+ov_gst+ov_discount)-alloc,6) > 0
-			AND trans.type != 22
+			AND trans.type != ".ST_SUPPAYMENT."
 			AND trans.supplier_id=$supplier_id");
 	}
 

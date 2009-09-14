@@ -49,10 +49,10 @@ if (isset($_GET['AddedID'])) {
 
 	display_notification_centered(sprintf(_("Delivery # %d has been entered."),$dispatch_no));
 
-	display_note(get_customer_trans_view_str(13, $dispatch_no, _("&View This Delivery")), 0, 1);
+	display_note(get_customer_trans_view_str(ST_CUSTDELIVERY, $dispatch_no, _("&View This Delivery")), 0, 1);
 
-	display_note(print_document_link($dispatch_no, _("&Print Delivery Note"), true, 13));
-	display_note(print_document_link($dispatch_no, _("&Email Delivery Note"), true, 13, false, "", "", 1), 1);
+	display_note(print_document_link($dispatch_no, _("&Print Delivery Note"), true, ST_CUSTDELIVERY));
+	display_note(print_document_link($dispatch_no, _("&Email Delivery Note"), true, ST_CUSTDELIVERY, false, "", "", 1), 1);
 
 	display_note(get_gl_view_str(13, $dispatch_no, _("View the GL Journal Entries for this Dispatch")),1);
 
@@ -68,9 +68,9 @@ if (isset($_GET['AddedID'])) {
 
 	display_notification_centered(sprintf(_('Delivery Note # %d has been updated.'),$delivery_no));
 
-	display_note(get_trans_view_str(13, $delivery_no, _("View this delivery")));
+	display_note(get_trans_view_str(ST_CUSTDELIVERY, $delivery_no, _("View this delivery")));
 	echo '<br>';
-	display_note(print_document_link($delivery_no, _("Print this delivery"), true, 13));
+	display_note(print_document_link($delivery_no, _("Print this delivery"), true, ST_CUSTDELIVERY));
 
 	hyperlink_params($path_to_root . "/sales/customer_invoice.php", _("Confirm Delivery and Invoice"), "DeliveryNumber=$delivery_no");
 
@@ -82,7 +82,7 @@ if (isset($_GET['AddedID'])) {
 
 if (isset($_GET['OrderNumber']) && $_GET['OrderNumber'] > 0) {
 
-	$ord = new Cart(30, $_GET['OrderNumber'], true);
+	$ord = new Cart(ST_SALESORDER, $_GET['OrderNumber'], true);
 
 	/*read in all the selected order into the Items cart  */
 
@@ -92,18 +92,18 @@ if (isset($_GET['OrderNumber']) && $_GET['OrderNumber'] > 0) {
 		die ("<br><b>" . _("This order has no items. There is nothing to delivery.") . "</b>");
 	}
 
-	$ord->trans_type = 13;
+	$ord->trans_type = ST_CUSTDELIVERY;
 	$ord->src_docs = $ord->trans_no;
 	$ord->order_no = key($ord->trans_no);
 	$ord->trans_no = 0;
-	$ord->reference = $Refs->get_next(13);
+	$ord->reference = $Refs->get_next(ST_CUSTDELIVERY);
 	$ord->document_date = new_doc_date();
 	$_SESSION['Items'] = $ord;
 	copy_from_cart();
 
 } elseif (isset($_GET['ModifyDelivery']) && $_GET['ModifyDelivery'] > 0) {
 
-	$_SESSION['Items'] = new Cart(13,$_GET['ModifyDelivery']);
+	$_SESSION['Items'] = new Cart(ST_CUSTDELIVERY,$_GET['ModifyDelivery']);
 
 	if ($_SESSION['Items']->count_items() == 0) {
 		hyperlink_params($path_to_root . "/sales/inquiry/sales_orders_view.php",
@@ -167,7 +167,7 @@ function check_data()
 			return false;
 		}
 
-		if ($_SESSION['Items']->trans_no==0 && !is_new_reference($_POST['ref'], 13)) {
+		if ($_SESSION['Items']->trans_no==0 && !is_new_reference($_POST['ref'], ST_CUSTDELIVERY)) {
 			display_error(_("The entered reference is already in use."));
 			set_focus('ref');
 			return false;
@@ -328,7 +328,7 @@ end_row();
 start_row();
 
 //if (!isset($_POST['ref']))
-//	$_POST['ref'] = $Refs->get_next(13);
+//	$_POST['ref'] = $Refs->get_next(ST_CUSTDELIVERY);
 
 if ($_SESSION['Items']->trans_no==0) {
 	ref_cells(_("Reference"), 'ref', '', null, "class='tableheader2'");

@@ -23,7 +23,7 @@ $js = "";
 if ($use_popup_windows)
 	$js .= get_js_open_window(900, 600);
 
-if ($_GET['trans_type'] == 32)
+if ($_GET['trans_type'] == ST_SALESQUOTE)
 {
 	page(_("View Sales Quotation"), true, false, "", $js);
 	display_heading(sprintf(_("Sales Quotation #%d"),$_GET['trans_no']));
@@ -44,7 +44,7 @@ $_SESSION['View'] = new Cart($_GET['trans_type'], $_GET['trans_no'], true);
 start_table("$table_style2 width=95%", 5);
 echo "<tr valign=top><td>";
 display_heading2(_("Order Information"));
-if ($_GET['trans_type'] != 32)
+if ($_GET['trans_type'] != ST_SALESQUOTE)
 {
 	echo "</td><td>";
 	display_heading2(_("Deliveries"));
@@ -64,7 +64,7 @@ label_cells(_("Deliver To Branch"), $_SESSION['View']->deliver_to, "class='table
 end_row();
 start_row();
 label_cells(_("Ordered On"), $_SESSION['View']->document_date, "class='tableheader2'");
-if ($_GET['trans_type'] == 32)
+if ($_GET['trans_type'] == ST_SALESQUOTE)
 	label_cells(_("Valid until"), $_SESSION['View']->due_date, "class='tableheader2'");
 else
 	label_cells(_("Requested Delivery"), $_SESSION['View']->due_date, "class='tableheader2'");
@@ -83,7 +83,7 @@ label_row(_("E-mail"), "<a href='mailto:" . $_SESSION['View']->email . "'>" . $_
 label_row(_("Comments"), $_SESSION['View']->Comments, "class='tableheader2'", "colspan=3");
 end_table();
 
-if ($_GET['trans_type'] != 32)
+if ($_GET['trans_type'] != ST_SALESQUOTE)
 {
 	echo "</td><td valign='top'>";
 
@@ -93,7 +93,7 @@ if ($_GET['trans_type'] != 32)
 	$th = array(_("#"), _("Ref"), _("Date"), _("Total"));
 	table_header($th);
 
-	$sql = "SELECT * FROM ".TB_PREF."debtor_trans WHERE type=13 AND order_=" . $_GET['trans_no'];
+	$sql = "SELECT * FROM ".TB_PREF."debtor_trans WHERE type=".ST_CUSTDELIVERY." AND order_=" . $_GET['trans_no'];
 	$result = db_query($sql,"The related delivery notes could not be retreived");
 
 	$delivery_total = 0;
@@ -126,7 +126,7 @@ if ($_GET['trans_type'] != 32)
 	$th = array(_("#"), _("Ref"), _("Date"), _("Total"));
 	table_header($th);
 
-	$sql = "SELECT * FROM ".TB_PREF."debtor_trans WHERE type=10 AND order_=" . $_GET['trans_no'];
+	$sql = "SELECT * FROM ".TB_PREF."debtor_trans WHERE type=".ST_SALESINVOICE." AND order_=" . $_GET['trans_no'];
 	$result = db_query($sql,"The related invoices could not be retreived");
 
 	$invoices_total = 0;
@@ -158,7 +158,7 @@ if ($_GET['trans_type'] != 32)
 	$th = array(_("#"), _("Ref"), _("Date"), _("Total"));
 	table_header($th);
 
-	$sql = "SELECT * FROM ".TB_PREF."debtor_trans WHERE type=11 AND order_=" . $_GET['trans_no'];
+	$sql = "SELECT * FROM ".TB_PREF."debtor_trans WHERE type=".ST_CUSTCREDIT." AND order_=" . $_GET['trans_no'];
 	$result = db_query($sql,"The related credit notes could not be retreived");
 
 	$credits_total = 0;

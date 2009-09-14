@@ -92,7 +92,7 @@ class allocation
 			$trans_no = $this->trans_no;
 		}
 		
-		$sup = $type == 21 || $type == 22;
+		$sup = $type == ST_SUPPCREDIT || $type == ST_SUPPAYMENT;
 		$this->allocs = array();
 
 		if ($trans_no) {
@@ -155,7 +155,7 @@ class allocation
 	//
 	function write()
 	{
-		$sup = $this->type == 21 || $this->type == 22;
+		$sup = $this->type == ST_SUPPCREDIT || $this->type == ST_SUPPAYMENT;
 
 		begin_transaction();
 

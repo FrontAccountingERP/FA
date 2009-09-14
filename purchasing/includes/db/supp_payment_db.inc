@@ -35,7 +35,7 @@ function add_supp_payment($supplier_id, $date_, $bank_account,
 	
 
 	// it's a supplier payment
-	$trans_type = 22;
+	$trans_type = ST_SUPPAYMENT;
 
 	/* Create a supp_trans entry for the supplier payment */
 	$payment_id = add_supp_trans($trans_type, $supplier_id, $date_, $date_,

@@ -98,7 +98,7 @@ function alloc_link($row)
 		"/sales/allocations/customer_allocate.php?trans_no=" . $row["trans_no"] 
 		."&trans_type=" . $row["type"], ICON_MONEY);
 
-	if ($row["type"] == 11 && $row['TotalAmount'] > 0)
+	if ($row["type"] == ST_CUSTCREDIT && $row['TotalAmount'] > 0)
 	{
 		/*its a credit note which could have an allocation */
 		return $link;
@@ -119,7 +119,7 @@ function alloc_link($row)
 function fmt_debit($row)
 {
 	$value =
-	    $row['type']==11 || $row['type']==12 || $row['type']==2 ?
+	    $row['type']==ST_CUSTCREDIT || $row['type']==ST_CUSTPAYMENT || $row['type']==ST_BANKDEPOSIT ?
 		-$row["TotalAmount"] : $row["TotalAmount"];
 	return $value>=0 ? price_format($value) : '';
 
@@ -128,7 +128,7 @@ function fmt_debit($row)
 function fmt_credit($row)
 {
 	$value =
-	    !($row['type']==11 || $row['type']==12 || $row['type']==2) ?
+	    !($row['type']==ST_CUSTCREDIT || $row['type']==ST_CUSTPAYMENT || $row['type']==ST_BANKDEPOSIT) ?
 		-$row["TotalAmount"] : $row["TotalAmount"];
 	return $value>0 ? price_format($value) : '';
 }
@@ -149,7 +149,7 @@ function fmt_credit($row)
     	(trans.ov_amount + trans.ov_gst + trans.ov_freight 
 			+ trans.ov_freight_tax + trans.ov_discount)	AS TotalAmount,
 		trans.alloc AS Allocated,
-		((trans.type = 10)
+		((trans.type = ".ST_SALESINVOICE.")
 			AND trans.due_date < '" . date2sql(Today()) . "') AS OverDue
     	FROM "
 			.TB_PREF."debtor_trans as trans, "
@@ -167,7 +167,7 @@ function fmt_credit($row)
    	{
    		if ($_POST['filterType'] == '1' || $_POST['filterType'] == '2')
    		{
-   			$sql .= " AND trans.type = 10 ";
+   			$sql .= " AND trans.type = ".ST_SALESINVOICE." ";
    		}
    		elseif ($_POST['filterType'] == '3')
    		{
@@ -175,7 +175,7 @@ function fmt_credit($row)
    		}
    		elseif ($_POST['filterType'] == '4')
    		{
-			$sql .= " AND trans.type = 11 ";
+			$sql .= " AND trans.type = ".ST_CUSTCREDIT." ";
    		}
 
     	if ($_POST['filterType'] == '2')
@@ -188,7 +188,7 @@ function fmt_credit($row)
     	}
    	}else
    	{
-	    $sql .= " AND trans.type != 13 ";
+	    $sql .= " AND trans.type <> ".ST_CUSTDELIVERY." ";
    	}
 
 

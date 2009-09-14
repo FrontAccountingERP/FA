@@ -33,7 +33,7 @@ function view_link($trans)
 
 function prt_link($row)
 {
-  	if ($row['type'] != 12 && $row['type'] != 2) // customer payment or bank deposit printout not defined yet.
+  	if ($row['type'] != ST_CUSTPAYMENT && $row['type'] != ST_BANKDEPOSIT) // customer payment or bank deposit printout not defined yet.
  		return print_document_link($row['trans_no'], _("Print"), true, $row['type'], ICON_PRINT);
 }
 
@@ -119,7 +119,7 @@ function handle_search()
 
 
 		$print_type = $_POST['filterType'];
-		$print_out = ($print_type == 10 || $print_type == 11 || $print_type == ST_CUSTDELIVERY ||
+		$print_out = ($print_type == ST_SALESINVOICE || $print_type == ST_CUSTCREDIT || $print_type == ST_CUSTDELIVERY ||
 			$print_type == ST_PURCHORDER || $print_type == ST_SALESORDER || $print_type == ST_SALESQUOTE);
 
 		$cols = array(

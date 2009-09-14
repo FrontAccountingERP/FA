@@ -34,11 +34,11 @@ function getTransactions($debtorno, $date)
     $sql = "SELECT ".TB_PREF."debtor_trans.*,
 				(".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + ".TB_PREF."debtor_trans.ov_freight + ".TB_PREF."debtor_trans.ov_discount)
 				AS TotalAmount, ".TB_PREF."debtor_trans.alloc AS Allocated,
-				((".TB_PREF."debtor_trans.type = 10)
+				((".TB_PREF."debtor_trans.type = ".ST_SALESINVOICE.")
 					AND ".TB_PREF."debtor_trans.due_date < '$date') AS OverDue
     			FROM ".TB_PREF."debtor_trans
     			WHERE ".TB_PREF."debtor_trans.tran_date <= '$date' AND ".TB_PREF."debtor_trans.debtor_no = '$debtorno'
-    				AND ".TB_PREF."debtor_trans.type <> 13
+    				AND ".TB_PREF."debtor_trans.type <> ".ST_CUSTDELIVERY."
     				ORDER BY ".TB_PREF."debtor_trans.tran_date";
 
     return db_query($sql,"No transactions were returned");
@@ -133,9 +133,9 @@ function print_statements()
 			$rep->TextCol(0, 1, $systypes_array[$myrow2['type']], -2);
 			$rep->TextCol(1, 2,	$myrow2['reference'], -2);
 			$rep->TextCol(2, 3,	sql2date($myrow2['tran_date']), -2);
-			if ($myrow2['type'] == 10)
+			if ($myrow2['type'] == ST_SALESINVOICE)
 				$rep->TextCol(3, 4,	sql2date($myrow2['due_date']), -2);
-			if ($myrow2['type'] == 10)
+			if ($myrow2['type'] == ST_SALESINVOICE)
 				$rep->TextCol(4, 5,	$DisplayTotal, -2);
 			else
 				$rep->TextCol(5, 6,	$DisplayTotal, -2);

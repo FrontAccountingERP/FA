@@ -49,7 +49,7 @@ function add_work_order_issue($woid, $ref, $to_work_order, $items, $location, $w
 			$item->quantity = -$item->quantity;
 
 		// insert a -ve stock move for each item
-		add_stock_move(28, $item->stock_id, $number,
+		add_stock_move(ST_MANUISSUE, $item->stock_id, $number,
 			$location, $date_, $memo_, -$item->quantity, 0);
 
 		$sql = "INSERT INTO ".TB_PREF."wo_issue_items (issue_id, stock_id, qty_issued)
@@ -58,10 +58,10 @@ function add_work_order_issue($woid, $ref, $to_work_order, $items, $location, $w
 	}
 
 	if ($memo_)
-		add_comments(28, $number, $date_, $memo_);
+		add_comments(ST_MANUISSUE, $number, $date_, $memo_);
 
-	$Refs->save(28, $number, $ref);
-	add_audit_trail(28, $number, $date_);
+	$Refs->save(ST_MANUISSUE, $number, $ref);
+	add_audit_trail(ST_MANUISSUE, $number, $date_);
 
 	commit_transaction();
 }
@@ -132,10 +132,10 @@ function void_work_order_issue($type_no)
 	db_query($sql,"A work order issue item could not be voided");
 
 	// void all related stock moves
-	void_stock_move(28, $type_no);
+	void_stock_move(ST_MANUISSUE, $type_no);
 
 	// void any related gl trans
-	void_gl_trans(28, $type_no, true);
+	void_gl_trans(ST_MANUISSUE, $type_no, true);
 
 	commit_transaction();
 }

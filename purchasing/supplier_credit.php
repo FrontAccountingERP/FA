@@ -36,7 +36,7 @@ check_db_has_suppliers(_("There are no suppliers defined in the system."));
 if (isset($_GET['AddedID'])) 
 {
 	$invoice_no = $_GET['AddedID'];
-	$trans_type = 21;
+	$trans_type = ST_SUPPCREDIT;
 
 
     echo "<center>";
@@ -153,7 +153,7 @@ function check_data()
 		return false;
 	}
 
-	if (!is_new_reference($_SESSION['supp_trans']->reference, 21)) 
+	if (!is_new_reference($_SESSION['supp_trans']->reference, ST_SUPPCREDIT)) 
 	{
 		display_error(_("The entered reference is already in use."));
 		set_focus('reference');

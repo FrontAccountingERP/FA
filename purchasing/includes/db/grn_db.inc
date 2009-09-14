@@ -26,7 +26,7 @@ function update_average_material_cost($supplier, $stock_id, $price, $qty, $date,
 	$myrow = db_fetch($result);
 	$material_cost = $myrow['material_cost'];
 	if ($adj_only)
-		$exclude = 13;
+		$exclude = ST_CUSTDELIVERY;
 	else
 		$exclude = 0;
 	$qoh = get_qoh_on_date($stock_id, null, $date, $exclude);
@@ -88,16 +88,16 @@ function add_grn(&$po, $date_, $reference, $location)
 				$order_line->standard_cost,	$order_line->receive_qty, $order_line->price);
 
 			/* Update location stock records - NB  a po cannot be entered for a service/kit parts */
-            add_stock_move(25, $order_line->stock_id, $grn, $location, $date_, "",
+            add_stock_move(ST_SUPPRECEIVE, $order_line->stock_id, $grn, $location, $date_, "",
             	$order_line->receive_qty, $order_line->standard_cost,
             	$po->supplier_id, 1, $order_line->price);
 
 		} /*quantity received is != 0 */
 	} /*end of order_line loop */
 
-	$Refs->save(25, $grn, $reference);
+	$Refs->save(ST_SUPPRECEIVE, $grn, $reference);
 
-	add_audit_trail(25, $grn, $date_);
+	add_audit_trail(ST_SUPPRECEIVE, $grn, $date_);
 
 	commit_transaction();
 
@@ -183,7 +183,7 @@ function set_grn_item_credited(&$entered_grn, $supplier, $transno, $date)
 		quantity_inv=quantity_inv+$entered_grn->this_quantity_inv WHERE id=$entered_grn->id";
 	db_query($sql);
 
-    add_stock_move(21, $entered_grn->item_code, $transno, $myrow['loc_code'], $date, "",
+    add_stock_move(ST_SUPPCREDIT, $entered_grn->item_code, $transno, $myrow['loc_code'], $date, "",
        	$entered_grn->this_quantity_inv, $mcost, $supplier, 1, $entered_grn->chg_price);
 }
 
@@ -198,7 +198,7 @@ function get_grn_items($grn_batch_id=0, $supplier_id="", $outstanding_only=false
     $sql .= " WHERE ".TB_PREF."grn_items.grn_batch_id=".TB_PREF."grn_batch.id
 		AND ".TB_PREF."grn_items.po_detail_item=".TB_PREF."purch_order_details.po_detail_item";
 	if ($invoice_no != 0)
-		$sql .= " AND ".TB_PREF."supp_invoice_items.supp_trans_type=20 AND 
+		$sql .= " AND ".TB_PREF."supp_invoice_items.supp_trans_type=".ST_SUPPINVOICE." AND 
 			".TB_PREF."supp_invoice_items.supp_trans_no=$invoice_no AND
 			".TB_PREF."grn_items.id=".TB_PREF."supp_invoice_items.grn_item_id";
 	$sql .= " AND ".TB_PREF."stock_master.stock_id=".TB_PREF."grn_items.item_code ";
@@ -344,8 +344,8 @@ function void_grn($grn_batch)
 
 	begin_transaction();
 
-	void_bank_trans(25, $grn_batch, true);
-	void_gl_trans(25, $grn_batch, true);
+	void_bank_trans(ST_SUPPRECEIVE, $grn_batch, true);
+	void_gl_trans(ST_SUPPRECEIVE, $grn_batch, true);
 
 	// clear the quantities of the grn items in the POs and invoices
 	$result = get_grn_items($grn_batch);
@@ -371,7 +371,7 @@ function void_grn($grn_batch)
 	db_query($sql, "A grn detail item could not be voided.");
 
     // clear the stock move items
-    void_stock_move(25, $grn_batch);
+    void_stock_move(ST_SUPPRECEIVE, $grn_batch);
 
 	commit_transaction();
 

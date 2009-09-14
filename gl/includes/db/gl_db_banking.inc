@@ -41,11 +41,11 @@ function add_exchange_variation($trans_type, $trans_no, $date_, $acc_id, $accoun
 
 function add_exchange_variation_all()
 {
-	$trans_no = get_next_trans_no(0);
+	$trans_no = get_next_trans_no(ST_JOURNAL);
 	$sql = "SELECT * FROM ".TB_PREF."bank_accounts";
 	$result = db_query($sql, "could not retreive bank accounts");
 	while ($myrow = db_fetch($result))
-		add_exchange_variation(0, $trans_no, null, $myrow['id'], $myrow['account_code'],
+		add_exchange_variation(ST_JOURNAL, $trans_no, null, $myrow['id'], $myrow['account_code'],
 			$myrow['currency_code']);
 }
 //----------------------------------------------------------------------------------
@@ -189,7 +189,7 @@ function add_bank_transaction($trans_type, $from_account, $items, $date_,
 	{
 		$is_bank_to = is_bank_account($gl_item->code_id);
 
-		if ($trans_type == 1 AND $is_bank_to)
+		if ($trans_type == ST_BANKPAYMENT AND $is_bank_to)
 		{
 			// we don't allow payments to go to a bank account. use transfer for this !
 			display_db_error("invalid payment entered. Cannot pay to another bank account", "");

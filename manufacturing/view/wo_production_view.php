@@ -56,11 +56,11 @@ function display_wo_production($prod_id)
 	label_cell(sql2date($myrow["date_"]));
 	end_row();
 
-    comments_display_row(29, $prod_id);
+    comments_display_row(ST_MANURECEIVE, $prod_id);
 
 	end_table(1);
 
-	is_voided_display(29, $prod_id, _("This production has been voided."));
+	is_voided_display(ST_MANURECEIVE, $prod_id, _("This production has been voided."));
 }
 
 //-------------------------------------------------------------------------------------------------

@@ -108,7 +108,7 @@ if (db_num_rows($grns_result) > 0)
     {
 		alt_table_row_color($k);
 
-    	label_cell(get_trans_view_str(25,$myrow["id"]));
+    	label_cell(get_trans_view_str(ST_SUPPRECEIVE,$myrow["id"]));
     	label_cell($myrow["reference"]);
     	label_cell(sql2date($myrow["delivery_date"]));
     	end_row();

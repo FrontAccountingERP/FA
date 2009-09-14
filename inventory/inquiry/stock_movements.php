@@ -136,7 +136,7 @@ while ($myrow = db_fetch($result))
 	$person = $myrow["person_id"];
 	$gl_posting = "";
 
-	if (($myrow["type"] == 13) || ($myrow["type"] == 11))
+	if (($myrow["type"] == ST_CUSTDELIVERY) || ($myrow["type"] == ST_CUSTCREDIT))
 	{
 		$cust_row = get_customer_details_from_trans($myrow["type"], $myrow["trans_no"]);
 
@@ -144,7 +144,7 @@ while ($myrow = db_fetch($result))
 			$person = $cust_row['name'] . " (" . $cust_row['br_name'] . ")";
 
 	}
-	elseif ($myrow["type"] == 25 || $myrow['type'] == 21)
+	elseif ($myrow["type"] == ST_SUPPRECEIVE || $myrow['type'] == ST_SUPPCREDIT)
 	{
 		// get the supplier name
 		$sql = "SELECT supp_name FROM ".TB_PREF."suppliers WHERE supplier_id = '" . $myrow["person_id"] . "'";
@@ -161,8 +161,8 @@ while ($myrow = db_fetch($result))
 		$movement_type = get_movement_type($myrow["person_id"]);
 		$person = $movement_type["name"];
 	}
-	elseif ($myrow["type"]==ST_WORKORDER || $myrow["type"] == 28  ||
-		$myrow["type"] == 29)
+	elseif ($myrow["type"]==ST_WORKORDER || $myrow["type"] == ST_MANUISSUE  ||
+		$myrow["type"] == ST_MANURECEIVE)
 	{
 		$person = "";
 	}

@@ -61,14 +61,14 @@ if (list_updated('branch_id')) {
 
 if (isset($_GET['AddedID'])) {
 	$credit_no = $_GET['AddedID'];
-	$trans_type = 11;
+	$trans_type = ST_CUSTCREDIT;
 
 	display_notification_centered(sprintf(_("Credit Note # %d has been processed"),$credit_no));
 
 	display_note(get_customer_trans_view_str($trans_type, $credit_no, _("&View this credit note")), 0, 1);
 
-	display_note(print_document_link($credit_no, _("&Print This Credit Invoice"), true, 11),0, 1);
-	display_note(print_document_link($credit_no, _("&Email This Credit Invoice"), true, 11, false, "", "", 1),0, 1);
+	display_note(print_document_link($credit_no, _("&Print This Credit Invoice"), true, ST_CUSTCREDIT),0, 1);
+	display_note(print_document_link($credit_no, _("&Email This Credit Invoice"), true, ST_CUSTCREDIT, false, "", "", 1),0, 1);
 
 	display_note(get_gl_view_str($trans_type, $credit_no, _("View the GL &Journal Entries for this Credit Note")));
 
@@ -143,7 +143,7 @@ function can_process()
 		display_error( _("You must enter a reference."));
 		set_focus('ref');
 		$input_error = 1;
-	    } elseif (!is_new_reference($_POST['ref'], 11))	{
+	    } elseif (!is_new_reference($_POST['ref'], ST_CUSTCREDIT))	{
 		display_error( _("The entered reference is already in use."));
 		set_focus('ref');
 		$input_error = 1;
