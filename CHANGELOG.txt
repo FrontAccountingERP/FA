@@ -26,6 +26,9 @@ $ /includes/types.inc
 ! Cleanup
 $ /includes/ui/ui_lists.inc
   /reporting/includes/reports_classes.inc
+! Changed security roles in default COAs.
+$ /sql/en_US-demo.sql
+  /sql/en_US-new.sql
 
 14-Sep-2009 Joe Hunt
 ! Changed all numeric constants to the new defined constants. A huge task.
