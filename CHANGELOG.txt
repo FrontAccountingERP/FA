@@ -19,12 +19,12 @@ Legend:
 ! -> Note
 $ -> Affected files
 
-
-15-Sep-2009 Janusz Dobrowolski
+15-Sep-2009 Janusz Dobrowolski/Joe Hunt
 # Fixed journal entry type and systype selectors
 $ /includes/types.inc
-! Clenaup
+! Cleanup
 $ /includes/ui/ui_lists.inc
+  /reporting/includes/reports_classes.inc
 
 14-Sep-2009 Joe Hunt
 ! Changed all numeric constants to the new defined constants. A huge task.

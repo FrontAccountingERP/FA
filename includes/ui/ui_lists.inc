@@ -1796,6 +1796,10 @@ function pagesizes_list_row($label, $name, $value=null)
 function systypes_list_cells($label, $name, $value=null, $submit_on_change=false)
 {
 	global $systypes_array;
+
+	if ($label != null)
+		echo "<td>$label</td>\n";
+	echo "<td>";
 	
 	$str = array_selector($name, $value, $systypes_array, 
 		array( 

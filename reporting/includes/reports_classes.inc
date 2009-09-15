@@ -448,9 +448,10 @@ function dup_systypes_list($name, &$selected_id, $all_option=false, $all_option_
 
 	foreach ($systypes_array as $i => $value)
 	{
-		if (!$all_types && ($i == 16 || $i == 18 || $i == 25 || ($i >= 28 && $i <= 30) || $i >= 40))
+		if (!$all_types && ($i == ST_LOCTRANSFER || $i == ST_PURCHORDER || $i == ST_SUPPRECEIVE || ($i >= ST_MANUISSUE && $i <= ST_SALESQUOTE) || 
+			$i >= ST_DIMENSION))
 			continue;
-    	$st .= "<option" . ($selected_id == $i ? " selected" : "") . " value='$i'>" . $value['name'] . "</option>\n";
+    	$st .= "<option" . ($selected_id == $i ? " selected" : "") . " value='$i'>" . $value . "</option>\n";
 	}
     $st .= "</select>";
 	return $st;
