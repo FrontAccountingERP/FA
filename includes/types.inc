@@ -100,6 +100,10 @@ $tabs = array('orders'=>_("Sales"),
 			'GL'=>_("Banking and General Ledger"),
 			'system'=>_("Setup"));
 
+include_once($path_to_root . "/manufacturing/includes/manufacturing_db.inc");
+include_once($path_to_root . "/purchasing/includes/purchasing_db.inc");
+include_once($path_to_root . "/sales/includes/sales_db.inc");
+include_once($path_to_root . "/dimensions/includes/dimensions_db.inc");
 //----------------------------------------------------------------------------------
 //	Payment types
 //

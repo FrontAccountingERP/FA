@@ -21,6 +21,7 @@ $ -> Affected files
 
 15-Sep-2009 Janusz Dobrowolski/Joe Hunt
 # Fixed journal entry type and systype selectors
+# Restore of the 4 include files in types.inc
 $ /includes/types.inc
 ! Cleanup
 $ /includes/ui/ui_lists.inc
