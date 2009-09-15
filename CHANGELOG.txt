@@ -19,6 +19,13 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+
+15-Sep-2009 Janusz Dobrowolski
+# Fixed journal entry type and systype selectors
+$ /includes/types.inc
+! Clenaup
+$ /includes/ui/ui_lists.inc
+
 14-Sep-2009 Joe Hunt
 ! Changed all numeric constants to the new defined constants. A huge task.
 $ /admin/fiscalyears.php

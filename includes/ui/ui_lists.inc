@@ -1796,16 +1796,8 @@ function pagesizes_list_row($label, $name, $value=null)
 function systypes_list_cells($label, $name, $value=null, $submit_on_change=false)
 {
 	global $systypes_array;
-
-	if ($label != null)
-		echo "<td>$label</td>\n";
-	echo "<td>";
-
-	$items = array();
-	foreach ($systypes_array as $key=>$type)
-			$items[$key] = $type['name'];
 	
-	$str = array_selector($name, $value, $items, 
+	$str = array_selector($name, $value, $systypes_array, 
 		array( 
 			'select_submit'=> $submit_on_change,
 			'async' => false
@@ -1823,11 +1815,12 @@ function journal_types_list_cells($label, $name, $value=null, $submit_on_change=
 		echo "<td>$label</td>\n";
 	echo "<td>";
 
-	$items = array();
-	foreach ($systypes_array as $key=>$type)
-		// exclude orders and dimensions
-		if (!in_array($key, array(18,26,30,40)))
-			$items[$key] = $type['name'];
+	$items = $systypes_array;
+
+	// exclude quotes, orders and dimensions
+	foreach (array(ST_PURCHORDER, ST_WORKORDER, ST_SALESORDER, ST_DIMENSION, 
+				ST_SALESQUOTE) as $excl)
+			unset($items[$excl]);
 	
 	$str = array_selector($name, $value, $items, 
 		array( 

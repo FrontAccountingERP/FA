@@ -10,6 +10,8 @@
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
 //----------------------------------------------------------------------------------
+//	FrontAccounting system transaction types
+//
 define('ST_JOURNAL', 0);
 
 define('ST_BANKPAYMENT', 1);
@@ -20,8 +22,10 @@ define('ST_SALESINVOICE', 10);
 define('ST_CUSTCREDIT', 11);
 define('ST_CUSTPAYMENT', 12);
 define('ST_CUSTDELIVERY', 13);
+
 define('ST_LOCTRANSFER', 16);
 define('ST_INVADJUST', 17);
+
 define('ST_PURCHORDER', 18);
 define('ST_SUPPINVOICE', 20);
 define('ST_SUPPCREDIT', 21);
@@ -29,14 +33,14 @@ define('ST_SUPPAYMENT', 22);
 define('ST_SUPPRECEIVE', 25);
 
 define('ST_WORKORDER', 26);
+define('ST_MANUISSUE', 28);
+define('ST_MANURECEIVE', 29);
+
 
 define('ST_SALESORDER', 30);
 define('ST_SALESQUOTE', 32);
 define('ST_COSTUPDATE', 35);
 define('ST_DIMENSION', 40);
-
-define('ST_MANUISSUE', 28);
-define('ST_MANURECEIVE', 29);
 
 $systypes_array = array (
 	ST_JOURNAL => _("Journal Entry"),
@@ -64,6 +68,8 @@ $systypes_array = array (
 	);
 
 //----------------------------------------------------------------------------------
+//		Bank transaction types
+//
 define('BT_TRANSFER', 0);
 define('BT_CHEQUE', 1);
 define('BT_CREDIT', 2);
@@ -84,17 +90,19 @@ $bank_transfer_types = array(
 	);
 
 //----------------------------------------------------------------------------------
-/* Menu tabs */
-$tabs = array('orders'=>_("Sales"), 'AP'=>_("Purchases"), 'stock'=>_("Items and Inventory"), 'manuf'=>_("Manufacturing"), 
-	'proj'=>_("Dimensions"), 'GL'=>_("Banking and General Ledger"), 'system'=>_("Setup"));
+// Core FA menu tabs (modules)
+//
+$tabs = array('orders'=>_("Sales"), 
+			'AP'=>_("Purchases"),
+			'stock'=>_("Items and Inventory"),
+			'manuf'=>_("Manufacturing"), 
+			'proj'=>_("Dimensions"),
+			'GL'=>_("Banking and General Ledger"),
+			'system'=>_("Setup"));
 
 //----------------------------------------------------------------------------------
-
-include_once($path_to_root . "/manufacturing/includes/manufacturing_db.inc");
-include_once($path_to_root . "/purchasing/includes/purchasing_db.inc");
-include_once($path_to_root . "/sales/includes/sales_db.inc");
-include_once($path_to_root . "/dimensions/includes/dimensions_db.inc");
-
+//	Payment types
+//
 define('PT_MISC', 0);
 define('PT_WORKORDER', 1);
 define('PT_CUSTOMER', 2);
@@ -109,7 +117,6 @@ $payment_person_types = array (
 				_("Supplier"),
 				_("Quick Entry")
 	);
-
 
 function payment_person_currency($type, $person_id)  {
 	switch ($type)
@@ -174,7 +181,8 @@ function payment_person_has_items($type) {
 }
 
 //----------------------------------------------------------------------------------
-
+//	Manufacturing types
+//
 define('WO_ASSEMBLY', 0);
 define('WO_UNASSEMBLY', 1);
 define('WO_ADVANCED', 2);
@@ -185,8 +193,17 @@ $wo_types_array = array (
 	WO_ADVANCED => _("Advanced Manufacture")
 	);
 
-//----------------------------------------------------------------------------------
+define('WO_LABOUR', 0);
+define('WO_OVERHEAD', 1);
 
+$wo_cost_types = array(
+		WO_LABOUR => _("Labour Cost"),
+		WO_OVERHEAD => _("Overhead Cost"),
+);
+
+//----------------------------------------------------------------------------------
+//	GL account classes
+//
 define('CL_NONE', 0); // for backward compatibility
 define('CL_ASSETS', 1);
 define('CL_LIABILITIES', 2);
@@ -212,14 +229,9 @@ function get_class_type_convert($ctype)
 	else	
 		return ((($ctype >= CL_LIABILITIES && $ctype <= CL_INCOME) || $ctype == CL_NONE) ? -1 : 1);
 }
-define('WO_LABOUR', 0);
-define('WO_OVERHEAD', 1);
-
-$wo_cost_types = array(
-		WO_LABOUR => _("Labour Cost"),
-		WO_OVERHEAD => _("Overhead Cost"),
-);
-
+//----------------------------------------------------------------------------------
+//	Quick entry types
+//
 $quick_actions = array(
 	'=' => _('Remainder'), // post current base amount to GL account
 	'a' => _('Amount'), // post amount to GL account
@@ -248,19 +260,21 @@ $quick_entry_types = array(
 		QE_SUPPINV => _("Supplier Invoice/Credit")
 );
 
+//----------------------------------------------------------------------------------
+//	Special option values for various list selectors.
+//
+define('ANY_TEXT', '');
+define('ANY_NUMERIC', -1);
+define('ALL_TEXT', '');
+define('ALL_NUMERIC', -1);
+
+
+//----------------------------------------------------------------------------------
 // Types of stock items
 $stock_types = array(
 		'M' => _("Manufactured"),
 		'B' => _("Purchased"),
 		'D' => _("Service")
 );
-
-/*
-	Special option values for various list selectors.
-*/
-define('ANY_TEXT', '');
-define('ANY_NUMERIC', -1);
-define('ALL_TEXT', '');
-define('ALL_NUMERIC', -1);
 
 ?>
