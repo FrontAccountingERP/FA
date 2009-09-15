@@ -42,6 +42,9 @@ class user_prefs
 			// set default values, used before login
 			global $dflt_lang;
 			
+			$this->date_sep = 0;
+			$this->tho_sep = 0;
+			$this->dec_sep = 0;
 			$this->language = $dflt_lang;
 			$this->theme = 'default';
 			

@@ -103,8 +103,7 @@ function strip_quotes($data)
 function login_timeout()
 {
 	// skip timeout on logout page
-	if ($_SESSION["wa_current_user"]->logged 
-			&& !strpos($_SERVER['PHP_SELF'], 'logout.php')) {
+	if ($_SESSION["wa_current_user"]->logged) {
 		$tout = $_SESSION["wa_current_user"]->timeout;
 		if ($tout && (time() > $_SESSION["wa_current_user"]->last_act + $tout))
 		{
@@ -191,50 +190,52 @@ if (!isset($_SESSION["wa_current_user"]))
 
 set_global_connection();
 
-login_timeout();
+// logout.php is the only page we should have always 
+// accessable regardless of access level and current login status.
+if (strstr($_SERVER['PHP_SELF'], 'logout.php') == false){
 
-if (!$_SESSION["wa_current_user"]->logged_in())
-{
-	// Show login screen
-	if (!isset($_POST["user_name_entry_field"]) or $_POST["user_name_entry_field"] == "")
+	login_timeout();
+
+	if (!$_SESSION["wa_current_user"]->logged_in())
 	{
-		if (strstr($_SERVER['PHP_SELF'], 'timeout.php') == false) 
+		// Show login screen
+		if (!isset($_POST["user_name_entry_field"]) or $_POST["user_name_entry_field"] == "")
+		{
 			$_SESSION['timeout'] = array( 'uri'=> $_SERVER['REQUEST_URI'],
 				'post' => $_POST);
 
-		if (!in_ajax()) {
-			include($path_to_root . "/access/login.php");
+			if (!in_ajax()) {
+				include($path_to_root . "/access/login.php");
+			} else {
+				// ajax update of current page elements - open login window in popup
+				// to not interfere with ajaxified page.
+				$Ajax->popup($path_to_root . "/access/timeout.php");
+			}
+			exit;
 		} else {
-			// ajax update of current page elements - open login window in popup
-			// to not interfere with ajaxified page.
-			$Ajax->popup($path_to_root . "/access/timeout.php");
-		}
-		exit;
-	} else {
-		$succeed = $_SESSION["wa_current_user"]->login($_POST["company_login_name"],
-			$_POST["user_name_entry_field"],
-			md5($_POST["password"]));
-		// select full vs fallback ui mode on login
-		$_SESSION["wa_current_user"]->ui_mode = $_POST['ui_mode'];
-		if (!$succeed)
-		{
+			$succeed = $_SESSION["wa_current_user"]->login($_POST["company_login_name"],
+				$_POST["user_name_entry_field"], md5($_POST["password"]));
+			// select full vs fallback ui mode on login
+			$_SESSION["wa_current_user"]->ui_mode = $_POST['ui_mode'];
+			if (!$succeed)
+			{
 			// Incorrect password
-			login_fail();
+				login_fail();
+			}
+			$lang = &$_SESSION['language'];
+			$lang->set_language($_SESSION['language']->code);
 		}
-		$lang = &$_SESSION['language'];
-		$lang->set_language($_SESSION['language']->code);
 	}
-}
 
-if (!isset($_SESSION["App"])) {
-	$_SESSION["App"] = new front_accounting();
-	$_SESSION["App"]->init();
-}
+	if (!isset($_SESSION["App"])) {
+		$_SESSION["App"] = new front_accounting();
+		$_SESSION["App"]->init();
+	}
 
 //----------------------------------------------------------------------------------------
 
-check_page_security($page_security);
-
+	check_page_security($page_security);
+}
 // POST vars cleanup needed for direct reuse.
 // We quote all values later with db_escape() before db update.
 	$_POST = strip_quotes($_POST);

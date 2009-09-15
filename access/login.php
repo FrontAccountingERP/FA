@@ -79,9 +79,7 @@ if (!$login_timeout) { // FA version info
 ?>
 		        <tr>
 		            <td colspan="2" rowspan="2">
-					<form action="<?php 
-						echo $login_timeout ? $_SERVER['PHP_SELF'] : $_SESSION['timeout']['uri'];
-					?>" name="loginform" method="post">
+					<form action="<?php echo $_SESSION['timeout']['uri']; ?> " name="loginform" method="post">
                     <table width="346" border="0" cellpadding="0" cellspacing="0">
 						<input type="hidden" id=ui_mode name="ui_mode" value="0">
                         <tr>
