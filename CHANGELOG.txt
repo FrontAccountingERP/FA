@@ -26,6 +26,8 @@ $ config.php
   /themes/default/default.css
   /themes/aqua/default.css
   /themes/cool/default.css
+# Removing php5 date warnings
+$ /includes/date_functions.inc
   
 15-Sep-2009 Janusz Dobrowolski/Joe Hunt
 # Fixed journal entry type and systype selectors
