@@ -19,6 +19,13 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+16-Sep-2009 Joe Hunt
+! Clean ups in default themes.
+$ config.php
+  /themes/default/default.css
+  /themes/aqua/default.css
+  /themes/cool/default.css
+  
 15-Sep-2009 Janusz Dobrowolski/Joe Hunt
 # Fixed journal entry type and systype selectors
 # Restore of the 4 include files in types.inc

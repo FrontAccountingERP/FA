@@ -34,12 +34,12 @@ function get_open_balance($debtorno, $to, $convert)
 	$to = date2sql($to);
 
     $sql = "SELECT SUM(IF(".TB_PREF."debtor_trans.type = ".ST_SALESINVOICE.", (".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + 
-    	".TB_PREF."debtor_trans.ov_freight + ".TB_PREF."debtor_trans.ov_discount)";
+    	".TB_PREF."debtor_trans.ov_freight + ".TB_PREF."debtor_trans.ov_freight_tax + ".TB_PREF."debtor_trans.ov_discount)";
     if ($convert)
     	$sql .= " * rate";
     $sql .= ", 0)) AS charges,
     	SUM(IF(".TB_PREF."debtor_trans.type <> ".ST_SALESINVOICE.", (".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + 
-    	".TB_PREF."debtor_trans.ov_freight + ".TB_PREF."debtor_trans.ov_discount)";
+    	".TB_PREF."debtor_trans.ov_freight + ".TB_PREF."debtor_trans.ov_freight_tax + ".TB_PREF."debtor_trans.ov_discount)";
     if ($convert)
     	$sql .= " * rate";
     $sql .= " * -1, 0)) AS credits,
@@ -48,12 +48,12 @@ function get_open_balance($debtorno, $to, $convert)
 		$sql .= " * rate";
 	$sql .= ") AS Allocated,
 		SUM(IF(".TB_PREF."debtor_trans.type = ".ST_SALESINVOICE.", (".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + 
-    	".TB_PREF."debtor_trans.ov_freight + ".TB_PREF."debtor_trans.ov_discount - ".TB_PREF."debtor_trans.alloc)";
+    	".TB_PREF."debtor_trans.ov_freight + ".TB_PREF."debtor_trans.ov_freight_tax + ".TB_PREF."debtor_trans.ov_discount - ".TB_PREF."debtor_trans.alloc)";
     if ($convert)
     	$sql .= " * rate";
     $sql .= ", 
     	((".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + ".TB_PREF."debtor_trans.ov_freight + 
-    	".TB_PREF."debtor_trans.ov_discount) * -1 + ".TB_PREF."debtor_trans.alloc)";
+    	".TB_PREF."debtor_trans.ov_freight_tax + ".TB_PREF."debtor_trans.ov_discount) * -1 + ".TB_PREF."debtor_trans.alloc)";
     if ($convert)
     	$sql .= " * rate";
     $sql .= ")) AS OutStanding
@@ -72,7 +72,8 @@ function get_transactions($debtorno, $from, $to)
 	$to = date2sql($to);
 
     $sql = "SELECT ".TB_PREF."debtor_trans.*,
-		(".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + ".TB_PREF."debtor_trans.ov_freight + ".TB_PREF."debtor_trans.ov_discount)
+		(".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + ".TB_PREF."debtor_trans.ov_freight + 
+		".TB_PREF."debtor_trans.ov_freight_tax + ".TB_PREF."debtor_trans.ov_discount)
 		AS TotalAmount, ".TB_PREF."debtor_trans.alloc AS Allocated,
 		((".TB_PREF."debtor_trans.type = ".ST_SALESINVOICE.")
 		AND ".TB_PREF."debtor_trans.due_date < '$to') AS OverDue

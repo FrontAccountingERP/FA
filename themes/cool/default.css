@@ -361,14 +361,10 @@ div.tabs a:hover {
 }
 
 .tablestyle {
-	padding: 3px;
-	border: 1px solid #cccccc;
 	border-collapse: collapse;
 }
 
 .tablestyle2 {
-	padding: 0 3px;
-	border: 1px solid #ccc;
 	border-collapse: collapse;
 }
 .tablestyle_noborder {

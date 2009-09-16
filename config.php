@@ -107,8 +107,8 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 	/* Default border and spacing for tables */
 	/* Should be moved to CSS */
 
-	$table_style 	= "cellpadding=3 border=1 bordercolor='#8cacbb' style='border-collapse: collapse'";
-	$table_style2 	= "cellpadding=3 border=1 bordercolor='#cccccc' style='border-collapse: collapse'";
+	$table_style 	= "cellpadding=3 border=1 bordercolor='#8cacbb' class='tablestyle'";
+	$table_style2 	= "cellpadding=3 border=1 bordercolor='#cccccc' class='tablestyle2'";
 
 	/* Accounts Payable */
 	/* System check to see if quantity charged on purchase invoices exceeds the quantity received.
