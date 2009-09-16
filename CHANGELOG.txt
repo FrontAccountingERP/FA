@@ -22,6 +22,7 @@ $ -> Affected files
 16-Sep-2009 Joe Hunt
 ! Clean ups in default themes.
 $ config.php
+  /admin/display_prefs.php
   /themes/default/default.css
   /themes/aqua/default.css
   /themes/cool/default.css
