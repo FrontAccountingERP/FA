@@ -10,27 +10,42 @@
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
 //---------------------------------------------------------------------------------------------
+function clear_dflt_curr_account($curr_code) {
+	  $sql = "UPDATE ".TB_PREF."bank_accounts SET dflt_curr_act=0 WHERE bank_curr_code="
+	  .db_escape($curr_code);
+	  db_query($sql, "could not update default currency account");
+}
 
-function add_bank_account($account_code, $account_type, $bank_account_name, $bank_name, $bank_account_number,
-	$bank_address, $bank_curr_code)
+function add_bank_account($account_code, $account_type, $bank_account_name,
+	$bank_name, $bank_account_number, $bank_address, $bank_curr_code, 
+	$dflt_curr_act)
 {
-	$sql = "INSERT INTO ".TB_PREF."bank_accounts (account_code, account_type, bank_account_name, bank_name, bank_account_number, bank_address, bank_curr_code)
+	if($dflt_curr_act) 	// only one default account for any currency
+	  clear_dflt_curr_account($bank_curr_code);
+
+	$sql = "INSERT INTO ".TB_PREF."bank_accounts (account_code, account_type, 
+		bank_account_name, bank_name, bank_account_number, bank_address, 
+		bank_curr_code, dflt_curr_act)
 		VALUES (".db_escape($account_code).", $account_type, ".db_escape($bank_account_name).", ".db_escape($bank_name).", ".db_escape($bank_account_number).",
-		".db_escape($bank_address).", '$bank_curr_code')";
+		".db_escape($bank_address).", '$bank_curr_code', '$dflt_curr_act')";
 
 	db_query($sql, "could not add a bank account for $account_code");
 }
 
 //---------------------------------------------------------------------------------------------
 
-function update_bank_account($id, $account_code, $account_type, $bank_account_name, $bank_name, $bank_account_number,
-	$bank_address, $bank_curr_code)
+function update_bank_account($id, $account_code, $account_type, $bank_account_name, 
+	$bank_name, $bank_account_number, $bank_address, $bank_curr_code, $dflt_curr_act)
 {
+	if($dflt_curr_act) 	// only one default account for any currency
+	  clear_dflt_curr_account($bank_curr_code);
+
 	$sql = "UPDATE ".TB_PREF."bank_accounts	SET account_type = $account_type,
 		account_code=".db_escape($account_code).",
 		bank_account_name=".db_escape($bank_account_name).", bank_name=".db_escape($bank_name).",
 		bank_account_number=".db_escape($bank_account_number).", bank_curr_code='$bank_curr_code',
-		bank_address=".db_escape($bank_address)." WHERE id = '$id'";
+		bank_address=".db_escape($bank_address).","
+		."dflt_curr_act='$dflt_curr_act' WHERE id = '$id'";
 
 	db_query($sql, "could not update bank account for $account_code");
 }
@@ -200,4 +215,24 @@ function get_quick_entry_line($selected_id)
 
 //---------------------------------------------------------------------------------------------
 
+function get_default_bank_account($curr)
+{
+	/* default bank account is selected as first found account from:
+		. default account in $curr if any
+		. first defined account in $curr if any
+		. default account in home currency
+		. first defined account in home currency
+	*/
+	$home_curr = get_company_pref('curr_default');
+
+	$sql = "SELECT b.*, b.bank_curr_code='$home_curr' as fall_back FROM "
+		.TB_PREF."bank_accounts b"
+		." WHERE b.bank_curr_code=".db_escape($curr)
+		." OR b.bank_curr_code='$home_curr'
+		ORDER BY fall_back, dflt_curr_act desc";
+
+	$result = db_query($sql, "could not retreive default bank account");
+
+	return db_fetch($result);
+}
 ?>

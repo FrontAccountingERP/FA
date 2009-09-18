@@ -62,9 +62,8 @@ function print_po()
 	$from = $_POST['PARAM_0'];
 	$to = $_POST['PARAM_1'];
 	$currency = $_POST['PARAM_2'];
-	$bankaccount = $_POST['PARAM_3'];
-	$email = $_POST['PARAM_4'];
-	$comments = $_POST['PARAM_5'];
+	$email = $_POST['PARAM_3'];
+	$comments = $_POST['PARAM_4'];
 
 	if ($from == null)
 		$from = 0;
@@ -77,10 +76,8 @@ function print_po()
 	// $headers in doctext.inc
 	$aligns = array('left',	'left',	'left', 'right', 'left', 'right', 'right');
 
-	$params = array('comments' => $comments,
-					'bankaccount' => $bankaccount);
+	$params = array('comments' => $comments);
 
-	$baccount = get_bank_account($params['bankaccount']);
 	$cur = get_company_Pref('curr_default');
 
 	if ($email == 0)
@@ -94,6 +91,8 @@ function print_po()
 	for ($i = $from; $i <= $to; $i++)
 	{
 		$myrow = get_po($i);
+		$baccount = get_default_bank_account($myrow['curr_code']);
+		$params['bankaccount'] = $baccount['id'];
 
 		if ($email == 1)
 		{

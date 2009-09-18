@@ -30,10 +30,9 @@ function print_document_link($doc_no, $link_text, $link=true, $type_no,
 			$ar = array(
 				'PARAM_0' => $doc_no, 
 				'PARAM_1' => $doc_no, 
-				'PARAM_2' => "", 
-				'PARAM_3' => get_first_bank_account(), 
-				'PARAM_4' => $email, 
-				'PARAM_5' => "");
+				'PARAM_2' => '', 
+				'PARAM_3' => $email, 
+				'PARAM_4' => '');
 			break;
 		case ST_SALESORDER :
 			$rep = 109;
@@ -41,11 +40,10 @@ function print_document_link($doc_no, $link_text, $link=true, $type_no,
 			$ar = array(
 				'PARAM_0' => $doc_no, 
 				'PARAM_1' => $doc_no, 
-				'PARAM_2' => "", 
-				'PARAM_3' => get_first_bank_account(), 
-				'PARAM_4' => $email, 
-				'PARAM_5' => 0, 
-				'PARAM_6' => "");
+				'PARAM_2' => '', 
+				'PARAM_3' => $email, 
+				'PARAM_4' => 0, 
+				'PARAM_5' => '');
 			break;
 		case ST_CUSTDELIVERY :
 			$rep = 110;
@@ -53,8 +51,7 @@ function print_document_link($doc_no, $link_text, $link=true, $type_no,
 			$ar = array(
 				'PARAM_0' => $doc_no, 
 				'PARAM_1' => $doc_no, 
-				'PARAM_2' => $email, 
-				'PARAM_3' => "");
+				'PARAM_2' => $email);
 			break;
 		case ST_SALESINVOICE : // Sales Invoice
 		case ST_CUSTCREDIT : // Customer Credit Note
@@ -63,12 +60,11 @@ function print_document_link($doc_no, $link_text, $link=true, $type_no,
 			$ar = array(
 				'PARAM_0' => $doc_no, 
 				'PARAM_1' => $doc_no, 
-				'PARAM_2' => "", 
-				'PARAM_3' => get_first_bank_account(), 
-				'PARAM_4' => $email, 
-				'PARAM_5' => "",
-				'PARAM_6' => "", 
-				'PARAM_7' => $type_no);
+				'PARAM_2' => '', 
+				'PARAM_3' => $email, 
+				'PARAM_4' => '',
+				'PARAM_5' => '', 
+				'PARAM_6' => $type_no);
 			break;
 		case ST_PURCHORDER :
 			$rep = 209;
@@ -76,10 +72,9 @@ function print_document_link($doc_no, $link_text, $link=true, $type_no,
 			$ar = array(
 				'PARAM_0' => $doc_no, 
 				'PARAM_1' => $doc_no, 
-				'PARAM_2' => "", 
-				'PARAM_3' => get_first_bank_account(), 
-				'PARAM_4' => $email, 
-				'PARAM_5' => "");
+				'PARAM_2' => '', 
+				'PARAM_3' => $email, 
+				'PARAM_4' => '');
 			break;
 //		default: $ar = array();
 	}
@@ -113,12 +108,4 @@ function print_link($link_text, $rep, $pars = array(), $dir = '',
 	return "<a target='_blank' href='$url'$id$class $pars[1]>$pars[0]</a>";
 }
 
-function get_first_bank_account()
-{
-	$sql = "SELECT ".TB_PREF."bank_accounts.id FROM ".TB_PREF."bank_accounts, ".TB_PREF."company
-		WHERE bank_curr_code=curr_default LIMIT 0, 1";
-	$result = db_query($sql);
-	$row = db_fetch_row($result);
-	return $row[0];
-}
 ?>

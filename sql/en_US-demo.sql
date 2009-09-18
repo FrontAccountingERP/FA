@@ -80,6 +80,7 @@ CREATE TABLE `0_bank_accounts` (
   `bank_name` varchar(60) NOT NULL default '',
   `bank_address` tinytext,
   `bank_curr_code` char(3) NOT NULL default '',
+  `dflt_curr_act` TINYINT(1) NOT NULL default '0',
   `id` smallint(6) NOT NULL auto_increment,
   `last_reconciled_date` timestamp NOT NULL default '0000-00-00 00:00:00',
   `ending_reconcile_balance` double NOT NULL default '0',
@@ -92,8 +93,8 @@ CREATE TABLE `0_bank_accounts` (
 
 ### Data of table `0_bank_accounts` ###
 
-INSERT INTO `0_bank_accounts` VALUES ('1060', '0', 'Current account', '9999999999', 'Wachovia Bank', '', 'USD', '1', '0000-00-00 00:00:00', '0', '0');
-INSERT INTO `0_bank_accounts` VALUES ('1065', '3', 'Petty Cash account', 'N/A', 'N/A', '', 'USD', '2', '0000-00-00 00:00:00', '0', '0');
+INSERT INTO `0_bank_accounts` VALUES ('1060', '0', 'Current account', '9999999999', 'Wachovia Bank', '', 'USD', '1', '1', '0000-00-00 00:00:00', '0', '0');
+INSERT INTO `0_bank_accounts` VALUES ('1065', '3', 'Petty Cash account', 'N/A', 'N/A', '', 'USD', '0', '2', '0000-00-00 00:00:00', '0', '0');
 
 
 ### Structure of table `0_bank_trans` ###

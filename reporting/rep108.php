@@ -54,9 +54,8 @@ function print_statements()
 
 	$customer = $_POST['PARAM_0'];
 	$currency = $_POST['PARAM_1'];
-	$bankaccount = $_POST['PARAM_2'];
-	$email = $_POST['PARAM_3'];
-	$comments = $_POST['PARAM_4'];
+	$email = $_POST['PARAM_2'];
+	$comments = $_POST['PARAM_3'];
 
 	$dec = user_price_dec();
 
@@ -66,10 +65,7 @@ function print_statements()
 
 	$aligns = array('left',	'left',	'left',	'left',	'right', 'right', 'right', 'right');
 
-	$params = array('comments' => $comments,
-					'bankaccount' => $bankaccount);
-
-	$baccount = get_bank_account($params['bankaccount']);
+	$params = array('comments' => $comments);
 
 	$cur = get_company_pref('curr_default');
 	$PastDueDays1 = get_company_pref('past_due_days');
@@ -97,6 +93,8 @@ function print_statements()
 		$myrow['order_'] = "";
 
 		$TransResult = getTransactions($myrow['debtor_no'], $date);
+		$baccount = get_default_bank_account($myrow['curr_code']);
+		$params['bankaccount'] = $baccount['id'];
 		if (db_num_rows($TransResult) == 0)
 			continue;
 		if ($email == 1)

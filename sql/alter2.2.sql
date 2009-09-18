@@ -106,3 +106,5 @@ ALTER TABLE `0_sales_orders` DROP PRIMARY KEY;
 ALTER TABLE `0_sales_orders` ADD PRIMARY KEY ( `trans_type` , `order_no` ); 
 UPDATE `0_sales_orders`	SET `reference`=`order_no` WHERE 1;
 INSERT INTO `0_sys_types` (`type_id`, `type_no`, `next_reference`) VALUES (32, 0, '1');
+
+ALTER TABLE `0_bank_accounts` ADD COLUMN `dflt_curr_act` TINYINT(1) NOT NULL default '0' AFTER `bank_curr_code`;

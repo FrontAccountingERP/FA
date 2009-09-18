@@ -76,7 +76,6 @@ $reports->addReport(_('Customer'),107,_('Print &Invoices/Credit Notes'),
 	array(	new ReportParam(_('From'),'INVOICE'),
 			new ReportParam(_('To'),'INVOICE'),
 			new ReportParam(_('Currency Filter'),'CURRENCY'),
-			new ReportParam(_('Bank Account'),'BANK_ACCOUNTS'),
 			new ReportParam(_('email Customers'),'YES_NO'),
 			new ReportParam(_('Payment Link'),'PAYMENT_LINK'),
 			new ReportParam(_('Comments'),'TEXTBOX')));
@@ -88,14 +87,12 @@ $reports->addReport(_('Customer'),110,_('Print &Deliveries'),
 $reports->addReport(_('Customer'),108,_('Print &Statements'),
 	array(	new ReportParam(_('Customer'),'CUSTOMERS_NO_FILTER'),
 			new ReportParam(_('Currency Filter'),'CURRENCY'),
-			new ReportParam(_('Bank Account'),'BANK_ACCOUNTS'),
 			new ReportParam(_('Email Customers'),'YES_NO'),
 			new ReportParam(_('Comments'),'TEXTBOX')));
 $reports->addReport(_('Customer'),109,_('&Print Sales Orders'),
 	array(	new ReportParam(_('From'),'ORDERS'),
 			new ReportParam(_('To'),'ORDERS'),
 			new ReportParam(_('Currency Filter'),'CURRENCY'),
-			new ReportParam(_('Bank Account'),'BANK_ACCOUNTS'),
 			new ReportParam(_('Email Customers'),'YES_NO'),
 			new ReportParam(_('Print as Quote'),'YES_NO'),
 			new ReportParam(_('Comments'),'TEXTBOX')));
@@ -103,7 +100,6 @@ $reports->addReport(_('Customer'),111,_('&Print Sales Quotations'),
 	array(	new ReportParam(_('From'),'QUOTATIONS'),
 			new ReportParam(_('To'),'QUOTATIONS'),
 			new ReportParam(_('Currency Filter'),'CURRENCY'),
-			new ReportParam(_('Bank Account'),'BANK_ACCOUNTS'),
 			new ReportParam(_('Email Customers'),'YES_NO'),
 			new ReportParam(_('Comments'),'TEXTBOX')));
 
@@ -137,7 +133,6 @@ $reports->addReport(_('Supplier'),209,_('Print Purchase &Orders'),
 	array(	new ReportParam(_('From'),'PO'),
 			new ReportParam(_('To'),'PO'),
 			new ReportParam(_('Currency Filter'),'CURRENCY'),
-			new ReportParam(_('Bank Account'),'BANK_ACCOUNTS'),
 			new ReportParam(_('Email Customers'),'YES_NO'),
 			new ReportParam(_('Comments'),'TEXTBOX')));
 

@@ -42,7 +42,8 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
     		update_bank_account($selected_id, $_POST['account_code'],
 				$_POST['account_type'], $_POST['bank_account_name'], 
 				$_POST['bank_name'], $_POST['bank_account_number'], 
-    			$_POST['bank_address'], $_POST['BankAccountCurrency']);		
+    			$_POST['bank_address'], $_POST['BankAccountCurrency'],
+    			$_POST['dflt_curr_act']);
 			display_notification(_('Bank account has been updated'));
     	} 
     	else 
@@ -50,8 +51,8 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
     
     		add_bank_account($_POST['account_code'], $_POST['account_type'], 
 				$_POST['bank_account_name'], $_POST['bank_name'], 
-    			$_POST['bank_account_number'], 	$_POST['bank_address'], 
-				$_POST['BankAccountCurrency']);
+    			$_POST['bank_account_number'], $_POST['bank_address'], 
+				$_POST['BankAccountCurrency'], $_POST['dflt_curr_act']);
 			display_notification(_('New bank account has been added'));
     	}
  		$Mode = 'RESET';
@@ -112,7 +113,7 @@ start_form();
 start_table("$table_style width='80%'");
 
 $th = array(_("Account Name"), _("Type"), _("Currency"), _("GL Account"), 
-	_("Bank"), _("Number"), _("Bank Address"),'','');
+	_("Bank"), _("Number"), _("Bank Address"), _("Dflt"), '','');
 inactive_control_column($th);
 table_header($th);	
 
@@ -129,6 +130,11 @@ while ($myrow = db_fetch($result))
     label_cell($myrow["bank_name"], "nowrap");
     label_cell($myrow["bank_account_number"], "nowrap");
     label_cell($myrow["bank_address"]);
+    if ($myrow["dflt_curr_act"])
+		label_cell(_("Yes"));
+	else
+		label_cell(_("No"));
+
 	inactive_control_cell($myrow["id"], $myrow["inactive"], 'bank_accounts', 'id');
  	edit_button_cell("Edit".$myrow["id"], _("Edit"));
  	delete_button_cell("Delete".$myrow["id"], _("Delete"));
@@ -154,6 +160,7 @@ if ($is_editing)
 	$_POST['bank_account_number'] = $myrow["bank_account_number"];
 	$_POST['bank_address'] = $myrow["bank_address"];
 	$_POST['BankAccountCurrency'] = $myrow["bank_curr_code"];
+	$_POST['dflt_curr_act'] = $myrow["dflt_curr_act"];
   }
 	hidden('selected_id', $selected_id);
 	hidden('account_code');
@@ -180,6 +187,8 @@ else
 {
 	currencies_list_row(_("Bank Account Currency:"), 'BankAccountCurrency', null);
 }	
+
+yesno_list_row(_("Default currency account:"), 'dflt_curr_act');
 
 if($is_editing)
 	label_row(_("Bank Account GL Code:"), $_POST['account_code']);

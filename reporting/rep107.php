@@ -39,10 +39,9 @@ function print_invoices()
 	$from = $_POST['PARAM_0'];
 	$to = $_POST['PARAM_1'];
 	$currency = $_POST['PARAM_2'];
-	$bankaccount = $_POST['PARAM_3'];
-	$email = $_POST['PARAM_4'];
-	$paylink = $_POST['PARAM_5'];
-	$comments = $_POST['PARAM_6'];
+	$email = $_POST['PARAM_3'];
+	$paylink = $_POST['PARAM_4'];
+	$comments = $_POST['PARAM_5'];
 
 	if ($from == null)
 		$from = 0;
@@ -58,10 +57,8 @@ function print_invoices()
 	// $headers in doctext.inc
 	$aligns = array('left',	'left',	'right', 'left', 'right', 'right', 'right');
 
-	$params = array('comments' => $comments,
-					'bankaccount' => $bankaccount);
+	$params = array('comments' => $comments);
 
-	$baccount = get_bank_account($params['bankaccount']);
 	$cur = get_company_Pref('curr_default');
 
 	if ($email == 0)
@@ -82,6 +79,9 @@ function print_invoices()
 				continue;
 			$sign = $j==ST_SALESINVOICE ? 1 : -1;
 			$myrow = get_customer_trans($i, $j);
+			$baccount = get_default_bank_account($myrow['curr_code']);
+			$params['bankaccount'] = $baccount['id'];
+
 			$branch = get_branch($myrow["branch_code"]);
 			$branch['disable_branch'] = $paylink; // helper
 			if ($j == ST_SALESINVOICE)

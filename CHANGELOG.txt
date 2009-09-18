@@ -19,6 +19,21 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+18-Sep-2009 Janusz Dobrowolski
++ Added currency default bank accounts used in reporting instead of manual account selector.
+$ /gl/includes/db/gl_db_bank_accounts.inc
+  /gl/manage/bank_accounts.php
+  /reporting/rep107.php
+  /reporting/rep108.php
+  /reporting/rep109.php
+  /reporting/rep111.php
+  /reporting/rep209.php
+  /reporting/reports_main.php
+  /reporting/includes/reporting.inc
+  /sql/alter2.2.sql
+  /sql/en_US-demo.sql
+  /sql/en_US-new.sql
+
 17-Sep-2009 Joe Hunt
 + Added release note file for 2.2.
 $ /doc/2.2-Beta.txt
