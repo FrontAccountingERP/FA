@@ -19,6 +19,34 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+19-Sep-2009 Janusz Dobrowolski
++ Support for inactive record control added, optimizations.
+$ /includes/db_pager.inc
+  /includes/ui/db_pager_view.inc
+! db_pager instead of simple table used for table of branches
+$ /sales/manage/customer_branches.php
+! Cleanup after db_pager optimization
+$ /admin/view_print_transaction.php
+  /dimensions/inquiry/search_dimensions.php
+  /gl/bank_account_reconcile.php
+  /gl/inquiry/journal_inquiry.php
+  /gl/manage/exchange_rates.php
+  /manufacturing/search_work_orders.php
+  /manufacturing/inquiry/where_used_inquiry.php
+  /purchasing/allocations/supplier_allocation_main.php
+  /purchasing/inquiry/po_search.php
+  /purchasing/inquiry/po_search_completed.php
+  /purchasing/inquiry/supplier_allocation_inquiry.php
+  /purchasing/inquiry/supplier_inquiry.php
+  /sales/allocations/customer_allocation_main.php
+  /sales/inquiry/customer_allocation_inquiry.php
+  /sales/inquiry/customer_inquiry.php
+  /sales/inquiry/sales_deliveries_view.php
+  /sales/inquiry/sales_orders_view.php
+# Additional fix after removal of bank account report parameter
+$ /sales/create_recurrent_invoices.php
+  /reporting/rep107.php
+
 19-Sep-2009 Joe Hunt
 # Eliminate PT_WORKORDER from payment_person_types_list
 $ /includes/ui/ui_lists.inc
