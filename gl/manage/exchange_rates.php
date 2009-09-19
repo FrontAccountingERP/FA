@@ -207,10 +207,6 @@ else
 {
 
 	br(1);
-   	if (list_updated('curr_abrev')) {
-		$table->set_sql($sql);
-		$table->set_columns($cols);
-	}
 	$table->width = "40%";
 	display_db_pager($table);
    	br(1);

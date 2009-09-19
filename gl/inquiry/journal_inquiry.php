@@ -165,10 +165,6 @@ if (!check_value('AlsoClosed')) {
 
 $table =& new_db_pager('journal_tbl', $sql, $cols);
 
-if (get_post('Search')) {
-	$table->set_sql($sql);
-	$table->set_columns($cols);
-}
 $table->width = "80%";
 start_form();
 

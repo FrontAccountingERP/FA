@@ -187,10 +187,6 @@ if (get_post('StockLocation') != $all_items) {
 $table =& new_db_pager('orders_tbl', $sql, $cols);
 $table->set_marker('check_overdue', _("Marked orders have overdue items."));
 
-if (get_post('SearchOrders')) {
-	$table->set_sql($sql);
-	$table->set_columns($cols);
-}
 $table->width = "80%";
 start_form();
 

@@ -61,9 +61,6 @@ $sql = "SELECT
 
 $table =& new_db_pager('usage_table', $sql, $cols);
 
-if (get_post('_stock_id_update'))
-	$table->set_sql($sql);
-
 $table->width = "80%";
 display_db_pager($table);
 

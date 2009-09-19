@@ -255,10 +255,6 @@ if (isset($_SESSION['Batch']))
 $table =& new_db_pager('deliveries_tbl', $sql, $cols);
 $table->set_marker('check_overdue', _("Marked items are overdue."));
 
-if (get_post('SearchOrders')) {
-	$table->set_sql($sql);
-	$table->set_columns($cols);
-}
 //$table->width = "92%";
 
 start_form();

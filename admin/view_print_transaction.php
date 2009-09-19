@@ -137,10 +137,6 @@ function handle_search()
 		}
 
 		$table =& new_db_pager('transactions', $sql, $cols);
-		if (list_updated('filterType') || get_post('ProcessSearch')) {
-			$table->set_sql($sql);
-			$table->set_columns($cols);
-		}
 		$table->width = "40%";
 		display_db_pager($table);
 	}
