@@ -52,11 +52,14 @@ class db_pager {
 	
 	var $ready = false; // this var is false after change in sql before first
 						// and before first query.
-
+	var $inactive_ctrl = false;
+	var $main_tbl;		// table and key field name for inactive ctrl and edit/delete links
+	var $key;	// key field name
+	
 	//  db_pager constructor
 	//  accepts $sql like 'SELECT ...[FROM ...][WHERE ...][GROUP ...][ORDER ...]'
 	//	$name is base name for pager controls
-	function db_pager($sql, $name, $page_len=0) 
+	function db_pager($sql, $name, $table = null, $page_len=0) 
 	{
 		global $table_style;
 		$this->width = "95%";
@@ -157,14 +160,18 @@ class db_pager {
 			$c = 0;
 		  // add result field names to column defs for 
 		  // col value retrieve and sort purposes 
-			for ($c = $i = 0; $c < count($this->columns); $c++) {
-				if (!(isset($this->columns[$c]['insert']) && $this->columns[$c]['insert']))
-			 		$this->columns[$c]['name']= mysql_field_name($result, $i++);
+		   $cnt = min(mysql_num_fields($result), count($this->columns));
+			for ($c = $i = 0; $c < $cnt; $c++) {
+				if (!(isset($this->columns[$c]['insert']) && $this->columns[$c]['insert'])) {
+//					if (!@($this->columns[$c]['type']=='skip'))
+			 			$this->columns[$c]['name']= mysql_field_name($result, $i);
+					if (!@($this->columns[$c]['type']=='insert'))
+			 		$i++;
+			 		}
 		  	}
-		  
-		  	while ($row = db_fetch_assoc($result))
+		  	while ($row = db_fetch_assoc($result)) {
 				$this->data[] = $row;
-		  
+		  	}
 		} else 
 		  return false;
 		return true;
@@ -217,7 +224,7 @@ class db_pager {
 					$h = '';
 					$c = $coldef;
 				} else {
-			  		$h = $coldef;
+					$h = $coldef;
 					$c = 'text';
 				}
 			}
@@ -228,11 +235,13 @@ class db_pager {
 			  $c['type'] = 'text';
 
 			switch($c['type']) {
-			  case 'insert':
-			  default:
-				$c['head'] = $h; break;
-			  case 'skip':		// skip the column (no header)
-				unset($c['head']);	// paranoid code
+				case 'inactive': 
+					$this->inactive_ctrl = true;
+				case 'insert':
+				default:
+					$c['head'] = $h; break;
+				case 'skip':		// skip the column (no header)
+					unset($c['head']); break;
 	  		}
 			$this->columns[] = $c;	
 		}
@@ -247,7 +256,7 @@ class db_pager {
 		$select = $this->select;
 		$from = $this->from;
 		$where = $this->where;
-		$group = $this->group;		
+		$group = $this->group;
 		$order = $this->order;
 
 		if(count($this->extra_where)) {
@@ -372,6 +381,44 @@ class db_pager {
 		$this->footer_fun = $func;
 		$this->footer_class = $footercl;
 	}
+	//
+	//	Setter for table editors with inactive cell control.
+	//
+	function set_inactive_ctrl($table, $key) {
+		$this->inactive_ctrl = array('table'=>$table, 'key'=>$key);
+	}
+	//
+	//	Helper for display inactive control cells
+	//
+	function inactive_control_cell(&$row)
+	{
+		if ($this->inactive_ctrl) {
+//			return inactive_control_cell($row[$this->inactive_ctrl['key']],
+//				 $row['inactive'], $this->inactive_ctrl['table'], 
+//				 $this->inactive_ctrl['key']);
+				 
+			global	$Ajax;
+
+			$key = $this->key ?
+				$this->key : $this->columns[0]['name'];		// TODO - support for complex keys
+			$id = $row[$key];
+			$table = $this->main_tbl;
+			$name = "Inactive". $id;
+			$value = $row['inactive'] ? 1:0;
+
+			if (check_value('show_inactive')) {
+				if (isset($_POST['LInact'][$id]) && (get_post('_Inactive'.$id.'_update') || 
+					get_post('Update')) && (check_value('Inactive'.$id) != $value)) {
+					update_record_status($id, !$value, $table, $key);
+					$value = !$value;
+				}
+				echo '<td align="center">'. checkbox(null, $name, $value, true, '', "align='center'")
+ 				. hidden("LInact[$id]", $value, false) . '</td>';	
+			}
+		} else
+			return '';
+	}
+
 };
 //-----------------------------------------------------------------------------
 //	Creates new db_pager $_SESSION object on first page call.
@@ -399,20 +446,22 @@ class db_pager {
 //  during display, but can be used in format handlers for 'spec' and 'insert' 
 //	type columns.
 
-function &new_db_pager($name, $sql, $coldef, $page_len = 0)  {
+function &new_db_pager($name, $sql, $coldef, $table = null, $key = null, $page_len = 0)  {
 
-    if ($_SERVER['REQUEST_METHOD'] == 'GET')
-		unset($_SESSION[$name]); // kill old pager if any exists on first page call
-
+    if (isset($_SESSION[$name]) &&
+		 ($_SERVER['REQUEST_METHOD'] == 'GET' || $_SESSION[$name]->sql != $sql)) {
+		unset($_SESSION[$name]); // kill pager if sql has changed
+	}
 	if (!isset($_SESSION[$name])) {
-	    $_SESSION[$name] =& new db_pager($sql, $name, $page_len);
+	    $_SESSION[$name] =& new db_pager($sql, $name, $table, $page_len);
+		$_SESSION[$name]->main_tbl = $table;
+		$_SESSION[$name]->key = $key;
 		$_SESSION[$name]->set_sql($sql);
 		$_SESSION[$name]->set_columns($coldef);
 	}
 	
-	$ret = &$_SESSION[$name];
+	return  $_SESSION[$name];
 
-    return $ret;
 }
 //
 //	Force pager initialization.

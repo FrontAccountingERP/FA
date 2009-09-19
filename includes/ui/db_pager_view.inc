@@ -33,6 +33,8 @@ function navi_button($name, $value, $enabled=true, $icon = false) {
 function navi_button_cell($name, $value, $enabled=true, $align='left') {
 	label_cell(navi_button($name, $value, $enabled), "align='$align'");
 }
+
+
 //-----------------------------------------------------------------------------
 //
 //    Sql paged table view. Call this function inside form.
@@ -46,8 +48,9 @@ function display_db_pager(&$pager) {
     $headers = array();
 
 	foreach($pager->columns as $num_col=>$col) {
-    	if (isset($col['head'])) {
-			if (!isset($col['ord'])) 
+		// record status control column is displayed only when control checkbox is on
+    	if (isset($col['head']) && ($col['type']!='inactive' || get_post('show_inactive'))) {
+			if (!isset($col['ord']))
 				$headers[] = $col['head'];
 			else {
 	  			$icon = (($col['ord'] == 'desc') ? 'sort_desc.gif' : 
@@ -59,7 +62,7 @@ function display_db_pager(&$pager) {
 	}
     /* show a table of records returned by the sql */
     start_table("$table_style width=$pager->width");
-    table_header($headers, 'nowrap');
+    table_header($headers);
 
 	if($pager->header_fun) {	// if set header handler
 		start_row("class='{$pager->header_class}'");
@@ -98,7 +101,6 @@ function display_db_pager(&$pager) {
 			} else
 				$cell = '';
 		   }
-
 		   switch($coltype) { // format column
 		    case 'time':
 		  	  label_cell($cell, "width=40"); break;
@@ -121,8 +123,14 @@ function display_db_pager(&$pager) {
 			  	label_cell('');
 			  else
 		  	  	qty_cell($cell, false, isset($col['dec']) ? $col['dec'] : null); break;
+			case 'email':
+				email_cell($cell,isset( $col['align']) ? "align='" . $col['align'] . "'" : null);
+				break;
 		    case 'rate':
 				label_cell(number_format2($cell, user_exrate_dec()), "align=center"); break;
+			case 'inactive':
+				if(get_post('show_inactive'))
+					$pager->inactive_control_cell($row); break;
 		    default:
 //		    case 'text':
 			  if (isset( $col['align']))
@@ -154,12 +162,16 @@ function display_db_pager(&$pager) {
 
 	start_row("class='navibar'");
 	$colspan = count($pager->columns);
+		$inact = $pager->inactive_ctrl==true 
+			? ' '.checkbox(null, 'show_inactive', null, true). _("Show also Inactive") : '';
 	 if($pager->rec_count) {
 		echo "<td colspan=$colspan class='navibar' style='border:none;padding:3px;'>";
 		echo "<div style='float:right;'>";
 		$but_pref = $pager->name.'_page_';
 	    start_table();
 		start_row();
+		if ($pager->inactive_ctrl) 
+				submit('Update', _('Update'), true, '', null); // inactive update
 		echo navi_button_cell($but_pref.'first', _('First'), $pager->first_page, 'right');
 		echo navi_button_cell($but_pref.'prev', _('Prev'), $pager->prev_page,'right');
 		echo navi_button_cell($but_pref.'next', _('Next'), $pager->next_page,'right');
@@ -173,10 +185,12 @@ function display_db_pager(&$pager) {
 		  $to = $pager->rec_count;
 		$all = $pager->rec_count;
 		echo sprintf( _('Records %d-%d of %d'), $from, $to, $all);
+		echo $inact;
 		echo "</td>";
 	} else {
-	  label_cell( _('No records'), "colspan=$colspan class='navibar'");
+	  label_cell( _('No records') . $inact, "colspan=$colspan class='navibar'");
 	}
+
 	end_row();
 
 	end_table();
