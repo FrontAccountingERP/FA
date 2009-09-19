@@ -1302,7 +1302,7 @@ INSERT INTO `0_sales_order_details` VALUES ('5', '5', '30', '102', '17inch VGA M
 DROP TABLE IF EXISTS `0_sales_orders`;
 
 CREATE TABLE `0_sales_orders` (
-  `order_no` int(11) NOT NULL auto_increment,
+  `order_no` int(11) NOT NULL,
   `trans_type` smallint(6) NOT NULL default '30',
   `version` tinyint(1) unsigned NOT NULL default '0',
   `type` tinyint(1) NOT NULL default '0',
