@@ -10,7 +10,9 @@
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
 $page_security = 'SA_CUSTOMER';
-$path_to_root = "../..";
+//$page_security = 3;
+$path_to_root="../..";
+include($path_to_root . "/includes/db_pager.inc");
 include($path_to_root . "/includes/session.inc");
 
 page(_("Customer Branches"), @$_REQUEST['popup']);
@@ -120,7 +122,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 					.db_escape($_POST['default_location']) . ", "
 					.db_escape($_POST['br_post_address']) . ","
 					.db_escape($_POST['disable_trans']) . ", "
-					.db_escape($_POST['group_no']) . ", "					
+					.db_escape($_POST['group_no']) . ", "
 					.db_escape($_POST['default_ship_via']) . ")";
 
 			$note = _('New customer branch has been added');
@@ -180,6 +182,23 @@ if ($Mode == 'RESET' || get_post('_customer_id_update'))
 	$_POST['customer_id'] = $cust_id;
 	$Ajax->activate('_page_body');
 }
+
+function branch_email($row) {
+	return	'<a href = "mailto:'.$row["email"].'">'.$row["email"].'</a>';
+}
+
+function edit_link($row) {
+	return button("Edit".$row["branch_code"],_("Edit"), '', ICON_EDIT);
+}
+
+function del_link($row) {
+	return button("Delete".$row["branch_code"],_("Delete"), '', ICON_DELETE);
+}
+
+function select_link($row) {
+	return button("Select".$row["branch_code"],_("Select"), '', ICON_ADD, 'selector');
+}
+
 start_form();
 
 echo "<center>" . _("Select a customer: ") . "&nbsp;&nbsp;";
@@ -188,53 +207,60 @@ echo "</center><br>";
 
 $num_branches = db_customer_has_branches($_POST['customer_id']);
 
+	$sql = "SELECT "
+		."b.branch_code, "
+		."b.branch_ref, "
+		."b.br_name, "
+		."b.contact_name, "
+		."s.salesman_name, "
+		."a.description, "
+		."b.phone, "
+		."b.fax, "
+		."b.email, "
+		."t.name AS tax_group_name, "
+		."b.inactive
+		FROM ".TB_PREF."cust_branch b, "
+			.TB_PREF."debtors_master c, "
+			.TB_PREF."areas a, "
+			.TB_PREF."salesman s, "
+			.TB_PREF."tax_groups t
+		WHERE b.debtor_no=c.debtor_no
+		AND b.tax_group_id=t.id
+		AND b.area=a.area_code
+		AND b.salesman=s.salesman_code
+		AND b.debtor_no = '" . $_POST['customer_id']. "'";
+
+	if (!get_post('show_inactive')) $sql .= " AND !b.inactive";
+//------------------------------------------------------------------------------------------------
 if ($num_branches)
 {
-	$sql = "SELECT ".TB_PREF."debtors_master.name, ".TB_PREF."cust_branch.*, ".TB_PREF."salesman.salesman_name,
-		".TB_PREF."areas.description, ".TB_PREF."tax_groups.name AS tax_group_name
-		FROM ".TB_PREF."cust_branch, ".TB_PREF."debtors_master, ".TB_PREF."areas, ".TB_PREF."salesman, ".TB_PREF."tax_groups
-		WHERE ".TB_PREF."cust_branch.debtor_no=".TB_PREF."debtors_master.debtor_no
-		AND ".TB_PREF."cust_branch.tax_group_id=".TB_PREF."tax_groups.id
-		AND ".TB_PREF."cust_branch.area=".TB_PREF."areas.area_code
-		AND ".TB_PREF."cust_branch.salesman=".TB_PREF."salesman.salesman_code
-		AND ".TB_PREF."cust_branch.debtor_no = '" . $_POST['customer_id']. "'";
+$cols = array(
+	'branch_code' => 'skip',
+	_("Short Name"),
+	_("Name"),
+	_("Contact"),
+	_("Sales Person"),
+	_("Area"),
+	_("Phone No"),
+	_("Fax No"),
+	_("E-mail") => 'email',
+	_("Tax Group"),
+	_("Inactive") => 'inactive',
+//		array('fun'=>'inactive'),
+		' '=> array('insert'=>true, 'fun'=>'select_link'),
+		array('insert'=>true, 'fun'=>'edit_link'),
+		array('insert'=>true, 'fun'=>'del_link')
+	);
 
-	if (!check_value('show_inactive')) $sql .= " AND !".TB_PREF."cust_branch.inactive";
-
-	$result = db_query($sql,"could not get customer branches");
-
-	start_table("$table_style width=60%");
-
-	$th = array(_("Short Name"), _("Name"), _("Contact"), _("Sales Person"), _("Area"),
-		_("Phone No"), _("Fax No"), _("E-mail"), _("Tax Group"), "", "");
-	inactive_control_column($th);
-	if (@$_REQUEST['popup']) $th[] = '';
-
-	table_header($th);
-
-	while ($myrow = db_fetch($result))
-	{
-		start_row();
-		label_cell($myrow["branch_ref"]);
-		label_cell($myrow["br_name"]);
-		label_cell($myrow["contact_name"]);
-		label_cell($myrow["salesman_name"]);
-		label_cell($myrow["description"]);
-		label_cell($myrow["phone"]);
-		label_cell($myrow["fax"]);
-		email_cell($myrow["email"]);
-		label_cell($myrow["tax_group_name"]);
-		inactive_control_cell($myrow["branch_code"], $myrow["inactive"],
-			'cust_branch', 'branch_code');
-		if (@$_REQUEST['popup'])
- 			select_button_cell("Select".$myrow["branch_code"], $myrow["branch_code"], '');
- 		edit_button_cell("Edit".$myrow["branch_code"], _("Edit"));
- 		delete_button_cell("Delete".$myrow["branch_code"], _("Delete"));
-		end_row();
+	if (!@$_REQUEST['popup']) {
+		$cols[' '] = 'skip';
 	}
-	inactive_control_row($th);
-	end_table(1);
-	//END WHILE LIST LOOP
+
+$table =& new_db_pager('branch_tbl', $sql, $cols, 'cust_branch');
+$table->set_inactive_ctrl('cust_branch', 'branch_code');
+
+//$table->width = "85%";
+display_db_pager($table);
 }
 else
 	display_note(_("The selected customer does not have any branches. Please create at least one branch."));
@@ -280,12 +306,12 @@ if ($selected_id != -1)
 elseif ($Mode != 'ADD_ITEM')
 { //end of if $SelectedBranch only do the else when a new record is being entered
 	if(!$num_branches) {
-		$sql = "SELECT name, address, email
+		$sql = "SELECT name, address, email, debtor_ref
 			FROM ".TB_PREF."debtors_master WHERE debtor_no = '" . $_POST['customer_id']. "'";
 		$result = db_query($sql,"check failed");
 		$myrow = db_fetch($result);
 		$_POST['br_name'] = $myrow["name"];
-		$_POST['br_ref'] = $myrow["cust_ref"];
+		$_POST['br_ref'] = $myrow["debtor_ref"];
 		$_POST['contact_name'] = _('Main Branch');
 		$_POST['br_address'] = $_POST['br_post_address'] = $myrow["address"];
 		$_POST['email'] = $myrow['email'];
