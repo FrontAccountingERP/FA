@@ -88,10 +88,10 @@ if (isset($_GET['recurrent']))
 	display_notification(sprintf(_("%s recurrent invoice(s) created, # $min - # $max."), count($invs)));
 	if (count($invs) > 0)
 	{
-		$ar = array('PARAM_0' => $min,	'PARAM_1' => $max, 'PARAM_2' => "", 'PARAM_3' => get_first_bank_account(), 
-			'PARAM_4' => 0,	'PARAM_5' => 0,	'PARAM_6' => "", 'PARAM_7' => ST_SALESINVOICE);
+		$ar = array('PARAM_0' => $min,	'PARAM_1' => $max, 'PARAM_2' => "",
+			'PARAM_3' => 0,	'PARAM_4' => 0,	'PARAM_5' => "", 'PARAM_6' => ST_SALESINVOICE);
 		display_note(print_link(_("&Print Recurrent Invoices # $min - # $max"), 107, $ar), 0, 1);
-		$ar['PARAM_4'] = 1; 
+		$ar['PARAM_3'] = 1; 
 		display_note(print_link(_("&Email Recurrent Invoices # $min - # $max"), 107, $ar), 0, 1);
 	}
 }	

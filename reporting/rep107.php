@@ -73,7 +73,7 @@ function print_invoices()
 	{
 		for ($j = ST_SALESINVOICE; $j <= ST_CUSTCREDIT; $j++)
 		{
-			if (isset($_POST['PARAM_7']) && $_POST['PARAM_7'] != $j)
+			if (isset($_POST['PARAM_6']) && $_POST['PARAM_6'] != $j)
 				continue;
 			if (!exists_customer_trans($j, $i))
 				continue;
