@@ -22,6 +22,8 @@ $ -> Affected files
 19-Sep-2009 Joe Hunt
 # Eliminate PT_WORKORDER from payment_person_types_list
 $ /includes/ui/ui_lists.inc
+! Error msg in Bank Transfer if no Bank Charge Account set.
+$ /gl/bank_transfer.php
 
 18-Sep-2009 Janusz Dobrowolski
 + Added currency default bank accounts used in reporting instead of manual account selector.
