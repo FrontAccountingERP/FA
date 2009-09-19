@@ -1681,7 +1681,13 @@ function payment_person_types_list($name, $selected_id=null, $submit_on_change=f
 {
 	global $payment_person_types;
 
-	return array_selector($name, $selected_id, $payment_person_types, 
+	$items = array();
+	foreach ($payment_person_types as $key=>$type)
+	{
+		if ($key != PT_WORKORDER)
+			$items[$key] = $type;
+	}		
+	return array_selector($name, $selected_id, $items, 
 		array( 'select_submit'=> $submit_on_change ) );
 }
 

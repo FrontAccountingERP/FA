@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+19-Sep-2009 Joe Hunt
+# Eliminate PT_WORKORDER from payment_person_types_list
+$ /includes/ui/ui_lists.inc
+
 18-Sep-2009 Janusz Dobrowolski
 + Added currency default bank accounts used in reporting instead of manual account selector.
 $ /gl/includes/db/gl_db_bank_accounts.inc
