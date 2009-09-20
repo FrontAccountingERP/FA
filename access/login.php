@@ -38,7 +38,11 @@ function defaultCompany()
 //	 echo $def_coy; 
 	echo $_SESSION["wa_current_user"]->company;
 	 ?>].selected = true;
+}
+function set_fullmode() {
 	document.getElementById('ui_mode').value = 1;
+	this.form.submit();
+	return true;
 }
 </script>
     <title><?php echo $app_title . " " . $version;?></title>
@@ -81,7 +85,7 @@ if (!$login_timeout) { // FA version info
 		            <td colspan="2" rowspan="2">
 					<form action="<?php echo $_SESSION['timeout']['uri']; ?> " name="loginform" method="post">
                     <table width="346" border="0" cellpadding="0" cellspacing="0">
-						<input type="hidden" id=ui_mode name="ui_mode" value="0">
+						<input type="hidden" id=ui_mode name="ui_mode" value="<?php echo $_SESSION["wa_current_user"]->ui_mode; ?>">
                         <tr>
                             <td colspan="5" bgcolor="#FFFFFF"><img src="<?php echo $def_theme; ?>/images/spacer.png" width="346" height="1" alt="" /></td>
 						</tr>
@@ -126,7 +130,7 @@ if (!$login_timeout) { // FA version info
                                     </tr>
 
                                     <tr>
-                                        <td></td><td align="left"><input type="submit" value= "<?php echo _("Login -->");?> " name="SubmitUser" /></td>
+                                        <td></td><td align="left"><input type="submit" value= "<?php echo _("Login -->");?> " name="SubmitUser" onclick="set_fullmode();" /></td>
                                     </tr>
                                 </table>
 	                        </td>
