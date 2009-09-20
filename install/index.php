@@ -225,7 +225,7 @@ function change_os(type) {
 			<td colspan="5">Please enter your MySQL database server details below...</td>
 		</tr>
 		<tr>
-			<td width="120" style="color: #666666;">Host Name:</td>
+			<td width="150" style="color: #666666;">Host Name:</td>
 			<td width="230">
 				<input type="text" tabindex="7" name="database_host" style="width: 98%;" value="<?php if(isset($_SESSION['database_host'])) { echo $_SESSION['database_host']; } else { echo 'localhost'; } ?>" />
 			</td>
@@ -253,11 +253,19 @@ function change_os(type) {
 			</td>
 			<td>&nbsp;</td>
 			<td colspan="2">
-				<input type="checkbox" tabindex="12" name="install_tables" id="install_tables" value="true"<?php if(!isset($_SESSION['install_tables'])) { echo ' checked'; } elseif($_SESSION['install_tables'] == 'true') { echo ' checked'; } ?> />
+				<input type="checkbox" tabindex="12" name="install_tables" id="install_tables" value="true" onclick="document.getElementById('db_options').style.display = this.checked? 'block':'none';"<?php if(!isset($_SESSION['install_tables'])) { echo ' checked'; } elseif($_SESSION['install_tables'] == 'true') { echo ' checked'; } ?> />
 				<label for="install_tables" style="color: #666666;">Install Tables</label>
 				<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 				<span style="font-size: 10px; color: #666666;">(Please note: May remove existing tables and data)</span></td>
 			</td>
+		</tr>
+		<tr id="db_options">
+			<td style="color: #666666;">Fill database with demo data:</td>
+			<td>
+				<input type="checkbox" tabindex="6" name="demo_data" id="demo_data" value="true" <?php if(!isset($_SESSION['demo_data']) OR $_SESSION['demo_data'] == true) { echo 'checked'; } ?> />
+				<br />
+		</td>
+			<td colspan="2">&nbsp;</td>
 		</tr>
 		<tr>
 			<td colspan="5"><h1>Step 5</h1>Please enter the training company name below (you can create your own company later)...</td>

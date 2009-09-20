@@ -37,42 +37,15 @@ function display_error($message)
 		if(isset($_POST['company_name']))
 		{
 			$_SESSION['ba_url'] = $_POST['ba_url'];
-			if(!isset($_POST['operating_system']))
-			{
-				$_SESSION['operating_system'] = 'linux';
-			}
-			else
-			{
-				$_SESSION['operating_system'] = $_POST['operating_system'];
-			}
-			if(!isset($_POST['world_writeable']))
-			{
-				$_SESSION['world_writeable'] = false;
-			}
-			else
-			{
-				$_SESSION['world_writeable'] = true;
-			}
+			$_SESSION['operating_system'] = isset($_POST['operating_system']);
+			$_SESSION['world_writeable'] = isset($_POST['world_writeable']);
 			$_SESSION['database_host'] = $_POST['database_host'];
 			$_SESSION['database_username'] = $_POST['database_username'];
 			$_SESSION['database_password'] = $_POST['database_password'];
 			$_SESSION['database_name'] = $_POST['database_name'];
-			if(!isset($_POST['table_prefix']))
-			{
-				$_SESSION['table_prefix'] = false;
-			}
-			else
-			{
-				$_SESSION['table_prefix'] = true;
-			}
-			if(!isset($_POST['install_tables']))
-			{
-				$_SESSION['install_tables'] = false;
-			}
-			else
-			{
-				$_SESSION['install_tables'] = true;
-			}
+			$_SESSION['demo_data'] = isset($_POST['demo_data']);
+			$_SESSION['table_prefix'] = isset($_POST['table_prefix']);
+			$_SESSION['install_tables'] = isset($_POST['install_tables']);
 			$_SESSION['company_name'] = $_POST['company_name'];
 			$_SESSION['admin_email'] = $_POST['admin_email'];
 			$_SESSION['admin_password'] = $_POST['admin_password'];
@@ -281,7 +254,7 @@ else
 // End website company name
 
 // Check if the user has entered a correct path
-if (!file_exists($path_to_root.'/sql/en_US-demo.sql'))
+if (!file_exists($path_to_root.'/sql/en_US-'.(isset($_POST['demo_data']) ? 'demo':'new').'.sql'))
 {
 	display_error('It appears the Absolute path that you entered is incorrect');
 }
@@ -363,7 +336,7 @@ if (!$db)
 				$result = mysql_select_db($database_name, $db);
 		}
 		if($result) {
-			$import_filename = $path_to_root."/sql/en_US-demo.sql";
+			$import_filename = $path_to_root.'/sql/en_US-'.(isset($_POST['demo_data']) ? 'demo':'new').'.sql';
 			db_import($import_filename, $db_connections[$id]);
 		}
 	}

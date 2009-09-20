@@ -19,6 +19,11 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+20-Sep-2009 Janusz Dobrowolski
++ Optional demo data checkbox on install page.
+$ /install/index.php
+  /install/save.php
+
 19-Sep-2009 Janusz Dobrowolski
 + Support for inactive record control added, optimizations.
 $ /includes/db_pager.inc
