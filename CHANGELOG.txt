@@ -21,13 +21,25 @@ $ -> Affected files
 
 20-Sep-2009 Joe Hunt
 ! Removed editable rate field in tax_group_items.
-# A start_form and end_form was missing
 $ /taxes/tax_groups.php
+# Fixed report layout
+$ /reporting/rep701.php
 
 20-Sep-2009 Janusz Dobrowolski
 + Optional demo data checkbox on install page.
 $ /install/index.php
   /install/save.php
+# Fixed previous interface mode after timeout.
+$ /access/login.php
++ Optional additional security roles includable from modules/extensions
+$ /admin/inst_module.php
+  /admin/security_roles.php
+  /includes/access_levels.inc
+  /installed_extensions.php
+! Bug with rates display fixed in single form layout.
+$ /taxes/tax_groups.php
+# Fixed 'bad password' info screen to be usable also in non-js mode.
+$ /includes/session.inc
 
 19-Sep-2009 Janusz Dobrowolski
 + Support for inactive record control added, optimizations.
