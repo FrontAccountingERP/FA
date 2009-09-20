@@ -36,10 +36,20 @@ else
 
 //---------------------------------------------------------------------------------------------
 
-function check_data()
+function check_data($id)
 {
-	if ($_POST['name'] == "" || $_POST['path'] == "")
+	if ($_POST['name'] == "") {
+		display_error(_("Module name cannot be empty."));
 		return false;
+	}
+	if ($_POST['path'] == "") {
+		display_error(_("Module folder name cannot be empty."));
+		return false;
+	}
+	if ($id == -1 && !is_uploaded_file($_FILES['uploadfile']['tmp_name'])) {
+		display_error(_("You have to select module file to upload"));
+		return false; 
+	}
 	return true;
 }
 
@@ -113,7 +123,8 @@ function write_modules()
 		$msg .= "('tab' => '" . $installed_modules[$i]['tab'] . "', ";
 		$msg .= "'name' => '" . $installed_modules[$i]['name'] . "', ";
 		$msg .= "'path' => '" . $installed_modules[$i]['path'] . "', ";
-		$msg .= "'filename' => '" . $installed_modules[$i]['filename'] . "'";
+		$msg .= "'filename' => '" . $installed_modules[$i]['filename'] . "',";
+		$msg .= "'acc_file' => '" . $installed_modules[$i]['acc_file'] . "'";
 		$msg .= "),\n";
 	}
 	$msg .= "\t);\n?>";
@@ -151,9 +162,9 @@ function write_modules()
 
 function handle_submit()
 {
-	global $path_to_root, $installed_modules, $db_connections;
+	global $path_to_root, $installed_modules, $db_connections, $selected_id;
 
-	if (!check_data())
+	if (!check_data($selected_id))
 		return false;
 
 	$id = $_GET['id'];
@@ -176,7 +187,7 @@ function handle_submit()
 		move_uploaded_file($file1, $file2);
 	}
 	else
-		$installed_modules[$id]['filename'] = $_POST['filename'];
+		$installed_modules[$id]['filename'] = get_post('filename');
 	if (is_uploaded_file($_FILES['uploadfile2']['tmp_name']))
 	{
 		$file1 = $_FILES['uploadfile2']['tmp_name'];
@@ -187,6 +198,19 @@ function handle_submit()
 		$db_name = $_SESSION["wa_current_user"]->company;
 		db_import($file2, $db_connections[$db_name]);
 	}
+	
+	if (is_uploaded_file($_FILES['uploadfile3']['tmp_name']))
+	{
+		$installed_modules[$id]['acc_file'] = $_FILES['uploadfile3']['name'];
+		$file1 = $_FILES['uploadfile3']['tmp_name'];
+		$file2 = $directory . "/".$_FILES['uploadfile3']['name'];
+		if (file_exists($file2))
+			unlink($file2);
+		move_uploaded_file($file1, $file2);
+	}
+	else
+		$installed_modules[$id]['acc_file'] = get_post('acc_file');
+	
 	if (!write_modules())
 		return false;
 	return true;
@@ -237,7 +261,7 @@ function display_modules()
 		}
 		</script>";
 	start_table($table_style);
-	$th = array(_("Tab"), _("Name"), _("Folder"), _("Filename"), "", "");
+	$th = array(_("Tab"), _("Name"), _("Folder"), _("Filename"), _("Access extensions"),"", "");
 	table_header($th);
 
 	$k = 0;
@@ -251,6 +275,7 @@ function display_modules()
 		label_cell($mods[$i]['name']);
 		label_cell($mods[$i]['path']);
 		label_cell($mods[$i]['filename']);
+		label_cell(@$mods[$i]['acc_file']);
 		$edit = _("Edit");
 		$delete = _("Delete");
 		if (user_graphic_links())
@@ -296,14 +321,17 @@ function display_module_edit($selected_id)
 		$_POST['name'] = $mod['name'];
 		$_POST['path'] = $mod['path'];
 		$_POST['filename'] = $mod['filename'];
+		$_POST['acc_file'] = @$mod['acc_file'];
 		hidden('selected_id', $selected_id);
 		hidden('filename', $_POST['filename']);
+		hidden('acc_file', $_POST['acc_file']);
 	}
 	tab_list_row(_("Menu Tab"), 'tab', null);
 	text_row_ex(_("Name"), 'name', 30);
 	text_row_ex(_("Folder"), 'path', 20);
 
 	label_row(_("Module File"), "<input name='uploadfile' type='file'>");
+	label_row(_("Access Levels Extensions"), "<input name='uploadfile3' type='file'>");
 	label_row(_("SQL File"), "<input name='uploadfile2' type='file'>");
 
 	end_table(0);
@@ -313,7 +341,6 @@ function display_module_edit($selected_id)
 
 	end_form();
 }
-
 
 //---------------------------------------------------------------------------------------------
 
@@ -328,7 +355,10 @@ if (isset($_GET['c']))
 	{
 		if (handle_submit())
 		{
-			//meta_forward($_SERVER['PHP_SELF']);
+			if ($selected_id != -1)
+				display_notification(_("Module data has been updated."));
+			else
+				display_notification(_("Module has been installed."));
 		}
 	}
 }

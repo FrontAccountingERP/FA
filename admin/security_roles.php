@@ -13,6 +13,8 @@ $page_security = 'SA_SECROLES';
 $path_to_root = "..";
 include_once($path_to_root . "/includes/session.inc");
 
+add_access_extensions();
+
 page(_("Access setup"));
 
 include_once($path_to_root . "/includes/ui.inc");
