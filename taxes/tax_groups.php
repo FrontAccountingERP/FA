@@ -40,6 +40,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 		display_error(_("The tax group name cannot be empty."));
 		set_focus('name');
 	} 
+	/* Editable rate has been removed 090920 Joe Hunt
 	else 
 	{
 		// make sure any entered rates are valid
@@ -56,7 +57,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
     		}
     	}
 	}
-
+	*/
 	if ($input_error != 1) 
 	{
 
@@ -70,7 +71,9 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
    				$_POST['tax_type_id' . $i] != ANY_NUMERIC) 
    			{
         		$taxes[] = $_POST['tax_type_id' . $i];
-        		$rates[] = input_num('rate' . $i);
+				$rates[] = get_tax_type_default_rate($_POST['tax_type_id' . $i]);
+				//Editable rate has been removed 090920 Joe Hunt
+        		//$rates[] = input_num('rate' . $i);
     		}
     	}
 
@@ -173,8 +176,9 @@ while ($myrow = db_fetch($result))
 
 inactive_control_row($th);
 end_table(1);
+end_form(); // was missing
 //-----------------------------------------------------------------------------------
-
+start_form(); // was missing
 start_table($table_style2);
 
 if ($selected_id != -1) 
@@ -208,7 +212,9 @@ end_table();
 display_note(_("Select the taxes that are included in this group."), 1);
 
 start_table($table_style2);
-$th = array(_("Tax"), _("Default Rate (%)"), _("Rate (%)"));
+//$th = array(_("Tax"), _("Default Rate (%)"), _("Rate (%)"));
+//Editable rate has been removed 090920 Joe Hunt
+$th = array(_("Tax"), _("Rate (%)"));
 table_header($th);
 for ($i = 0; $i < 5; $i++) 
 {
@@ -219,14 +225,14 @@ for ($i = 0; $i < 5; $i++)
 
 	if ($_POST['tax_type_id' . $i] != 0 && $_POST['tax_type_id' . $i] != ALL_NUMERIC) 
 	{
-
 		$default_rate = get_tax_type_default_rate($_POST['tax_type_id' . $i]);
 		label_cell(percent_format($default_rate), "nowrap align=right");
 
-		if (!isset($_POST['rate' . $i]) || $_POST['rate' . $i] == "")
-			$_POST['rate' . $i] = percent_format($default_rate);
-		small_amount_cells(null, 'rate' . $i, $_POST['rate' . $i], null, null, 
-		  user_percent_dec());
+		//Editable rate has been removed 090920 Joe Hunt
+		//if (!isset($_POST['rate' . $i]) || $_POST['rate' . $i] == "")
+		//	$_POST['rate' . $i] = percent_format($default_rate);
+		//small_amount_cells(null, 'rate' . $i, $_POST['rate' . $i], null, null, 
+		//  user_percent_dec()); 
 	}
 	end_row();
 }

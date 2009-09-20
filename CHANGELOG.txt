@@ -19,6 +19,11 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+20-Sep-2009 Joe Hunt
+! Removed editable rate field in tax_group_items.
+# A start_form and end_form was missing
+$ /taxes/tax_groups.php
+
 20-Sep-2009 Janusz Dobrowolski
 + Optional demo data checkbox on install page.
 $ /install/index.php
