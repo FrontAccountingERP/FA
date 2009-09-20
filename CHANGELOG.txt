@@ -23,7 +23,7 @@ $ -> Affected files
 ! Removed editable rate field in tax_group_items.
 $ /taxes/tax_groups.php
 # Fixed report layout
-$ /reporting/rep701.php
+$ /reporting/rep704.php
 
 20-Sep-2009 Janusz Dobrowolski
 + Optional demo data checkbox on install page.
@@ -40,6 +40,9 @@ $ /admin/inst_module.php
 $ /taxes/tax_groups.php
 # Fixed 'bad password' info screen to be usable also in non-js mode.
 $ /includes/session.inc
+# Fixed debtors_master name size.
+$ /sql/en_US-new.sql
+  /sql/en_US-demow.sql
 
 19-Sep-2009 Janusz Dobrowolski
 + Support for inactive record control added, optimizations.

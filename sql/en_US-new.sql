@@ -567,7 +567,7 @@ DROP TABLE IF EXISTS `0_debtors_master`;
 
 CREATE TABLE `0_debtors_master` (
   `debtor_no` int(11) NOT NULL auto_increment,
-  `name` varchar(80) NOT NULL default '',
+  `name` varchar(100) NOT NULL default '',
   `debtor_ref` varchar(30) NOT NULL,
   `address` tinytext,
   `email` varchar(100) NOT NULL default '',
