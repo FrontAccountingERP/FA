@@ -176,9 +176,9 @@ while ($myrow = db_fetch($result))
 
 inactive_control_row($th);
 end_table(1);
-end_form(); // was missing
+
 //-----------------------------------------------------------------------------------
-start_form(); // was missing
+
 start_table($table_style2);
 
 if ($selected_id != -1) 
@@ -200,6 +200,7 @@ if ($selected_id != -1)
     		$_POST['rate' . $i]  = percent_format($tax_item["rate"]);
     		$i ++;
     	}
+    	while($i<5) unset($_POST['tax_type_id'.$i++]);
 	}
 
 	hidden('selected_id', $selected_id);
