@@ -33,12 +33,14 @@ function kill_login()
 
 function login_fail()
 {
+	global $path_to_root;
+	
 	header("HTTP/1.1 401 Authorization Required");
 	echo "<center><br><br><font size='5' color='red'><b>" . _("Incorrect Password") . "<b></font><br><br>";
 	echo "<b>" . _("The user and password combination is not valid for the system.") . "<b><br><br>";
 
 	echo _("If you are not an authorized user, please contact your system administrator to obtain an account to enable you to use the system.");
-	echo "<br><a href='javascript:history.go(-1)'>" . _("Back") . "</a>";
+	echo "<br><a href='".$path_to_root.'/index.php'.">" . _("Try again") . "</a>";
 	echo "</center>";
 
 	kill_login();
