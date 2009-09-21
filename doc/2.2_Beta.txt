@@ -13,14 +13,15 @@ Common
 - Bank Charge field in Customer/Supplier Payment.
 - New default fields in Company table for Bank Charge, Retained Earnings and Profit/Loss Year. 
 - Direct Allocations of Invoices in Customer/Supplier Payments
-- New Access Levels/Security Roles.
+- New Access Levels/Security Roles system enables fine tunning person access rights.
 - Item Tax Types moved to Setup module
 - Default Start-up Tab set by user.
+- Authorization timeout parameter set in Company preferences
 
 Sales
 -----
 - Customer/Supplier Balance Reports now with Open Balance from selected date
-- Added Sales Quotations, Inqury and Report
+- Added Sales Quotations, Inquiry and Report
 
 Purchasing
 ----------
@@ -46,12 +47,14 @@ Dimensions
 Banking and General Ledger
 --------------------------
 - Closing a fiscal year also closes the balances and brings forward retained earnings
-- Deling a fiscal year removes all transactions and convert into relevant Open Balances.
+- Deleting a fiscal year removes all transactions and convert into relevant Open Balances.
 - Journal Enquiry
 - Edition/view of Journal Entries.
 - Group Sorting by Id in Account Selectors
+- Default per currency bank accounts (used in reports)
 
 Bugs fixed in this release
 --------------------------
-All bugs up to release 2.1.5 are fixed in this release too.
+- Fixed php 5 warnings flood in error log.
+- All bugs up to release 2.1.5 are fixed in this release too.
 
