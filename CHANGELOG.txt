@@ -19,6 +19,14 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+21-Sep-2009 Janusz Dobrowolski/Tom Hallman
+! Added info on timeout and default bank accounts.
+$ /doc/2.2_Beta.txt
+! Tags support related changes in database
+$ /sql/alter2.2.sql
+  /sql/en_US-demo.sql
+  /sql/en_US-new.sql
+
 20-Sep-2009 Joe Hunt
 ! Removed editable rate field in tax_group_items.
 $ /taxes/tax_groups.php
