@@ -1800,3 +1800,35 @@ CREATE TABLE `0_workorders` (
 
 ### Data of table `0_workorders` ###
 
+
+
+### Structure of table `0_tags` ###
+
+DROP TABLE IF EXISTS `0_tags`;
+
+CREATE TABLE `0_tags` (
+  `id` int(11) NOT NULL auto_increment,
+  `type` smallint(6) NOT NULL,
+  `name` varchar(60) NOT NULL,
+  PRIMARY KEY  (`id`),
+  UNIQUE KEY(`type`,`name`)
+) TYPE=MyISAM AUTO_INCREMENT=1;
+
+
+### Data of table `0_chart_tags` ###
+
+
+
+### Structure of table `0_tag_associations` ###
+
+DROP TABLE IF EXISTS `0_tag_associations`;
+
+CREATE TABLE `0_tag_associations` (
+  `id` int(11) NOT NULL auto_increment,
+  `record_id` varchar(11) NOT NULL,
+  `tag_id` int(11) NOT NULL,
+  PRIMARY KEY  (`id`)
+) TYPE=MyISAM AUTO_INCREMENT=1;
+
+
+### Data of table `0_tag_associations` ###

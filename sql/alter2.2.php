@@ -116,7 +116,7 @@ class fa2_2 {
 	//	Test if patch was applied before.
 	//
 	function installed($pref) {
-		$n = 14; // number of features to be installed
+		$n = 15; // number of features to be installed
 		if (check_table($pref, 'company', 'custom1_name')) $n--;
 		if (!check_table($pref, 'company', 'profit_loss_year_act')) $n--;
 		if (!check_table($pref, 'company', 'login_tout')) $n--;
@@ -131,7 +131,8 @@ class fa2_2 {
 		if (!check_table($pref, 'suppliers', 'supp_ref')) $n--;
 		if (!check_table($pref, 'users', 'role_id')) $n--;
 		if (!check_table($pref, 'sales_orders', 'reference')) $n--;
-		return $n == 0 ? true : 14 - $n;
+		if (!check_table($pref, 'tags')) $n--;
+		return $n == 0 ? true : 15 - $n;
 	}
 };
 

@@ -108,3 +108,23 @@ UPDATE `0_sales_orders`	SET `reference`=`order_no` WHERE 1;
 INSERT INTO `0_sys_types` (`type_id`, `type_no`, `next_reference`) VALUES (32, 0, '1');
 
 ALTER TABLE `0_bank_accounts` ADD COLUMN `dflt_curr_act` TINYINT(1) NOT NULL default '0' AFTER `bank_curr_code`;
+
+DROP TABLE IF EXISTS `0_tags`;
+
+CREATE TABLE `0_tags` (
+  `id` int(11) NOT NULL auto_increment,
+  `type` smallint(6) NOT NULL,
+  `name` varchar(60) NOT NULL,
+  PRIMARY KEY  (`id`),
+  UNIQUE KEY(`type`,`name`)
+) TYPE=MyISAM AUTO_INCREMENT=1;
+
+DROP TABLE IF EXISTS `0_tag_associations`;
+
+CREATE TABLE `0_tag_associations` (
+  `id` int(11) NOT NULL auto_increment,
+  `record_id` varchar(11) NOT NULL,
+  `tag_id` int(11) NOT NULL,
+  PRIMARY KEY  (`id`)
+) TYPE=MyISAM AUTO_INCREMENT=1;
+

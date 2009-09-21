@@ -2059,3 +2059,34 @@ INSERT INTO `0_workorders` VALUES ('5', '5', 'DEF', '5', '3400', '2009-06-21', '
 INSERT INTO `0_workorders` VALUES ('6', '6', 'DEF', '-5', '3400', '2009-06-21', '1', '2009-06-21', '2009-06-21', '-5', '1', '1', '0');
 INSERT INTO `0_workorders` VALUES ('7', '7', 'DEF', '-2', '3400', '2009-06-21', '1', '2009-06-21', '2009-06-21', '-2', '1', '1', '10');
 
+
+### Structure of table `0_tags` ###
+
+DROP TABLE IF EXISTS `0_tags`;
+
+CREATE TABLE `0_tags` (
+  `id` int(11) NOT NULL auto_increment,
+  `type` smallint(6) NOT NULL,
+  `name` varchar(60) NOT NULL,
+  PRIMARY KEY  (`id`),
+  UNIQUE KEY(`type`,`name`)
+) TYPE=MyISAM AUTO_INCREMENT=1;
+
+
+### Data of table `0_chart_tags` ###
+
+
+
+### Structure of table `0_tag_associations` ###
+
+DROP TABLE IF EXISTS `0_tag_associations`;
+
+CREATE TABLE `0_tag_associations` (
+  `id` int(11) NOT NULL auto_increment,
+  `record_id` varchar(11) NOT NULL,
+  `tag_id` int(11) NOT NULL,
+  PRIMARY KEY  (`id`)
+) TYPE=MyISAM AUTO_INCREMENT=1;
+
+
+### Data of table `0_tag_associations` ###
