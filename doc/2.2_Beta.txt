@@ -12,7 +12,7 @@ Common
 - Audit Trail for all operations with Report
 - Bank Charge field in Customer/Supplier Payment.
 - New default fields in Company table for Bank Charge, Retained Earnings and Profit/Loss Year. 
-- Direct Allocations of Invoices in Customer/Supplier Payments
+- Direct Allocation of Invoices in Customer/Supplier Payments
 - New Access Levels/Security Roles system enables fine tunning person access rights.
 - Item Tax Types moved to Setup module
 - Default Start-up Tab set by user.
@@ -31,7 +31,7 @@ Purchasing
 Items and Inventory
 -------------------
 - Item Categories contains default parameters for new items.
-- Non Sale Items from Categories.
+- Excluded from Sale. Non Sales Items from Categories.
 - GRN Valuation Report
 - Automatic price-calculation of Items from Std. Cost (if no prices set on items)
 - Rounding of prices to nearest XX Cent after calculations.
@@ -51,7 +51,7 @@ Banking and General Ledger
 - Journal Enquiry
 - Edition/view of Journal Entries.
 - Group Sorting by Id in Account Selectors
-- Default per currency bank accounts (used in reports)
+- Default per currency bank accounts (used in reports). The Bank Account selection on documents has been replaced by this.
 
 Bugs fixed in this release
 --------------------------

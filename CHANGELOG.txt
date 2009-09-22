@@ -19,6 +19,15 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+22-Sep-2009 Joe Hunt
+! Changed copyright notice in installer files to credit the original copyrighter. GPLv3.
+$ /install/index.php
+  /install/save.php
+! Updated the install.html and created a doc txt file, about sales quotations.
+$ install.html
+  /doc/2.2_Beta.txt
+  /doc/sales_quotations.txt
+  
 21-Sep-2009 Janusz Dobrowolski/Tom Hallman
 ! Added info on timeout and default bank accounts.
 $ /doc/2.2_Beta.txt
