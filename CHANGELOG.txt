@@ -19,6 +19,11 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+23-Sep-2009 Joe Hunt
+# Cleaning from javascript errors.
+$ /access/login.php
+  /admin/fiscalyears.php
+  
 22-Sep-2009 Joe Hunt
 ! Changed copyright notice in installer files to credit the original copyrighter. GPLv3.
 $ /install/index.php
