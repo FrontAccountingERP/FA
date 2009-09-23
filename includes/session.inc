@@ -40,7 +40,7 @@ function login_fail()
 	echo "<b>" . _("The user and password combination is not valid for the system.") . "<b><br><br>";
 
 	echo _("If you are not an authorized user, please contact your system administrator to obtain an account to enable you to use the system.");
-	echo "<br><a href='".$path_to_root.'/index.php'.">" . _("Try again") . "</a>";
+	echo "<br><a href='$path_to_root/index.php'>" . _("Try again") . "</a>";
 	echo "</center>";
 
 	kill_login();

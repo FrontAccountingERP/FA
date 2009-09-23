@@ -27,6 +27,11 @@ $ /install/index.php
 $ install.html
   /doc/2.2_Beta.txt
   /doc/sales_quotations.txt
+! Changed login.php and logout.php to be neutral and tried to use our own api.
+$ /access/login.php
+  /access/logout.php
+# parse error in login_fail
+$ /includes/session.inc
   
 21-Sep-2009 Janusz Dobrowolski/Tom Hallman
 ! Added info on timeout and default bank accounts.

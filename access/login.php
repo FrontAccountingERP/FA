@@ -11,7 +11,22 @@
 ***********************************************************************/
 	if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_to_root']))
 		die(_("Restricted access"));
-	include_once($path_to_root . "/includes/ui/ui_view.inc");
+	include_once($path_to_root . "/includes/ui.inc");
+	
+	$js = "<script language='JavaScript' type='text/javascript'>
+function defaultCompany()
+{
+	document.forms[0].company_login_name.options[".$_SESSION["wa_current_user"]->company."].selected = true;
+}
+".get_js_png_fix()."</script>";
+	$js2 = "<script language='JavaScript' type='text/javascript'>
+function set_fullmode() {
+	document.getElementById('ui_mode').value = 1;
+	this.form.submit();
+	return true;
+}
+</script>";
+
 	// Display demo user name and password within login form if "$allow_demo_mode" is true
 	if ($allow_demo_mode == true)
 	{
@@ -23,123 +38,79 @@
 	}
 	if (!isset($def_coy))
 		$def_coy = 0;
-	$def_theme = $path_to_root . '/themes/default';
+	$def_theme = isset($_SESSION["wa_current_user"]) ? user_theme() : "default";
 
-$login_timeout = $_SESSION["wa_current_user"]->last_act;
+	$login_timeout = $_SESSION["wa_current_user"]->last_act;
 
-	echo "<html>
-		<head>";
-if (!$login_timeout) { // page header
-	echo '<script>'.get_js_png_fix().'</script>'; ?>
-<script type="text/javascript">
-function defaultCompany()
-{
-	document.forms[0].company_login_name.options[<?php
-//	 echo $def_coy; 
-	echo $_SESSION["wa_current_user"]->company;
-	 ?>].selected = true;
-}
-function set_fullmode() {
-	document.getElementById('ui_mode').value = 1;
-	this.form.submit();
-	return true;
-}
-</script>
-    <title><?php echo $app_title . " " . $version;?></title>
-    <meta http-equiv="Content-type" content="text/html; charset=<?php echo $_SESSION['language']->encoding;?>" />
-    <link rel="stylesheet" href="<?php echo $def_theme;?>/login.css" type="text/css" />
-</head>
+	$title = $login_timeout ? _('Authorization timeout') : $app_title." ".$version." - "._("Login");
+	$encoding = isset($_SESSION['language']->encoding) ? $_SESSION['language']->encoding : "iso-8859-1";
+	$rtl = isset($_SESSION['language']->dir) ? $_SESSION['language']->dir : "ltr";
+	$onload = !$login_timeout ? "onload='defaultCompany()'" : "";
 
- <body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onload="defaultCompany()">
-<?php
-} else { // end page header
-?>
-    <title><?php echo _('Authorization timeout'); ?></title>
-    <meta http-equiv="Content-type" content="text/html; charset=<?php echo $_SESSION['language']->encoding;?>" />
-    <link rel="stylesheet" href="<?php echo $def_theme;?>/login.css" type="text/css" />
-<?php
-};?>
-    <table width="100%" height="100%" border="0" cellpadding="0" cellspacing="0">
-        <tr>
-			<td align="center" valign="bottom">
-  <?php
-if (!$login_timeout) { // FA logo
-?>          <a target="_blank" href="<?php $power_url; ?>"><img src="<?php echo $def_theme;?>/images/logo_frontaccounting.png" alt="FrontAccounting" width="250" height="50" onload="fixPNG(this)" border="0" /></a>
-<?php } else { ?>
-			<font size=5><?php echo _('Authorization timeout'); ?></font>
-<?php }; ?>
-			</td>
-		</tr>
+	echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n";
+	echo "<html dir='$rtl' >\n";
+	echo "<head><title>$title</title>\n";
+   	echo "<meta http-equiv='Content-type' content='text/html; charset=$encoding' />\n";
+	echo "<link href='$path_to_root/themes/$def_theme/default.css' rel='stylesheet' type='text/css'> \n";
+	if (!$login_timeout)
+	{
+		echo $js2;
+		echo $js;
+	}	
+	echo "</head>\n";
 
-        <tr>
-            <td align="center" valign="top">
+	echo "<body style='background-color:#f9f9f9;' $onload>\n";
 
-		    <table border="0" cellpadding="0" cellspacing="0">
-<?php
-if (!$login_timeout) { // FA version info
-?>			<tr><td colspan=2 align="center"><font size=4><b><?php echo _("Version") . " " . $version . "   Build " . $build_version ?></b></font><br><br></td></tr>
-<?php
-}; // end of FA version info
-?>
-		        <tr>
-		            <td colspan="2" rowspan="2">
-					<form action="<?php echo $_SESSION['timeout']['uri']; ?> " name="loginform" method="post">
-                    <table width="346" border="0" cellpadding="0" cellspacing="0">
-						<input type="hidden" id=ui_mode name="ui_mode" value="<?php echo $_SESSION["wa_current_user"]->ui_mode; ?>">
-                        <tr>
-                            <td colspan="5" bgcolor="#FFFFFF"><img src="<?php echo $def_theme; ?>/images/spacer.png" width="346" height="1" alt="" /></td>
-						</tr>
-                        <tr>
-                            <td bgcolor="#367CB5"><img src="<?php echo $def_theme; ?>/images/spacer.png" width="12" height="200" alt="" /></td>
+	echo "<table id='title'><tr><td class='titletext'>$title</td></tr></table>\n";
+	
+	br();br();
+	start_table("$table_style2 width=400");
+	start_row();
+	echo "<td align='center' valign='bottom'>";
+	if (!$login_timeout) { // FA logo
+    	echo "<a target='_blank' href='$power_url'><img src='$path_to_root/themes/$def_theme/images/logo_frontaccounting.png' alt='FrontAccounting' height='50' onload='fixPNG(this)' border='0' /></a>";
+	} else { 
+		echo "<font size=5>"._('Authorization timeout')."</font>";
+	} 
+	echo "</td>\n";
+	end_row();
 
-                            <!--<td background="<?php echo $def_theme; ?>/images/outline/bg.png" width="233" height="200" colspan="3" valign="top">-->
-                            <td class="login" colspan="3" valign="top">
-                                <table border="0" cellpadding="3" cellspacing="0" width="100%">
-                                    <tr>
-								<td  align ='right'>
-                                    <!--<span class="loginText">Client login<input name="external_login" type="checkbox" value="1" class="loginText"></span>-->
-								<br /></td>
-                                    </tr>
+    start_row();
+	if (!$login_timeout) { // FA version info
+		echo "<td align='center' ><font size=2><b>"._("Version")." $version   Build $build_version</b></font></td>\n";
+	}; // end of FA version info
+	end_row();
+	br();
+	start_form(false, false, $_SESSION['timeout']['uri'], "loginform");
+	start_table("$table_style2 width=400 style='background-color:#eeeeee;'");
+	echo "<input type='hidden' id=ui_mode name='ui_mode' value='".$_SESSION["wa_current_user"]->ui_mode."' />\n";
 
-                                    <tr>
-                                        <td width="90"></td><td class="loginText" width="283"><span><?php echo _("User name"); ?>:</span><br />
-                                         <input type="text" name="user_name_entry_field" value="<?php echo $login_timeout ? $_SESSION['wa_current_user']->loginname : ($allow_demo_mode ? "demouser":""); ?>"/><br />
-                                         <span><?php echo _("Password"); ?>:</span><br />
-                                         <input type="password" name="password"  value="<?php echo $allow_demo_mode ? "password":""; ?>">
-                                         <br />
-<?php
+	$value = $login_timeout ? $_SESSION['wa_current_user']->loginname : ($allow_demo_mode ? "demouser":"");
+
+	text_row(_("User name"), "user_name_entry_field", $value, 20, 30);
+
+	$password = $allow_demo_mode ? "password":"";
+
+	echo "<tr><td>"._("Password")."</td><td><input type='password' name='password'  value='$password' /></td></tr>\n";
+
 	if ($login_timeout) {
-		echo "<br><input type = 'hidden'  name='company_login_name' value='".
-		$_SESSION["wa_current_user"]->company."'>";
+		hidden('company_login_name', $_SESSION["wa_current_user"]->company);
 	} else {
-?>
-			<span><?php echo _("Company"); ?>:</span><br />
-			<!--<select name="company_login_name" onchange="setCookie()">-->
-			<select name="company_login_name" <?php if($login_timeout) echo 'disabled';?>>
-<?php
-			for ($i = 0; $i < count($db_connections); $i++)
-				echo "<option value=$i ".($i==$_SESSION['wa_current_user']->company ? 'selected':'') .">" . $db_connections[$i]["name"] . "</option>";
-?>
-			</select>
-			<br /><br />
-            <?php echo $demo_text;?>
-<?php
-}; // else in_ajax
-?>                                   </td>
-                                </td>
-                                    </tr>
-
-                                    <tr>
-                                        <td></td><td align="left"><input type="submit" value= "<?php echo _("Login -->");?> " name="SubmitUser" onclick="set_fullmode();" /></td>
-                                    </tr>
-                                </table>
-	                        </td>
-                        </tr>
-<?php
- if (!$login_timeout) 
- 	echo "<tr>
- <td colspan='5' bgcolor='#FFFFFF'><img src='$def_theme/images/spacer.png' width='346' height='1' alt='' /></td>
-         </tr>";
+		if (isset($_SESSION['wa_current_user']->company))
+			$coy =  $_SESSION['wa_current_user']->company;
+		else
+			$coy = $def_coy;
+		echo "<tr><td>"._("Company")."</td><td><select name='company_login_name'>\n";
+		for ($i = 0; $i < count($db_connections); $i++)
+			echo "<option value=$i ".($i==$coy ? 'selected':'') .">" . $db_connections[$i]["name"] . "</option>";
+		echo "</select>\n";
+		start_row();
+		label_cell($demo_text, "colspan=2 align='center'");
+		end_row();
+	}; 
+	end_table(1);
+	echo "<center><input type='submit' value='"._("Login -->")."' name='SubmitUser' onclick='set_fullmode();' /></center>\n";
+	end_form(1);
 
 	foreach($_SESSION['timeout']['post'] as $p => $val) {
 		// add all request variables to be resend together with login data
@@ -147,53 +118,31 @@ if (!$login_timeout) { // FA version info
 			'password', 'SubmitUser', 'company_login_name'))) 
 			echo "<input type='hidden' name='$p' value='$val'>";
 	}
-?>
-                    </table>
-					</form>
-		            </td>
-		            <!--<td background="<?php echo $def_theme; ?>/images/outline/r.png" colspan="3" align="right" valign="top"><img src="<?php echo $def_theme; ?>/images/outline/tr.png" width="10" height="10" alt="" /></td>-->
-		        </tr>
-		        <tr>
-		            <!--<td background="<?php echo $def_theme; ?>/images/outline/r.png"><img src="<?php echo $def_theme; ?>/images/outline/r.png" width="10" height="10" alt=""></td>-->
-		        </tr>
-		        <tr>
-					<!--<td background="<?php echo $def_theme; ?>/images/outline/bm.png"><img src="<?php echo $def_theme; ?>/images/outline/bl.png" width="10" height="10" alt=""></td>-->
-		            <!--<td background="<?php echo $def_theme; ?>/images/outline/bm.png"><img src="<?php echo $def_theme; ?>/images/outline/bm.png" width="10" height="10" alt=""></td>-->
-		            <!--<td><img src="<?php echo $def_theme; ?>/images/outline/br.png" width="10" height="10" alt="" /></td>-->
-		        </tr>
-<tr><td>&nbsp;</td></tr>
-<?php
-if (!$login_timeout) {
-?>
-<tr>
-		<td align="center" class="footer"><font size=1><a target='_blank' style="text-decoration: none" HREF='<?php echo $power_url; ?>'><font color="#FFFF00" valign="top">&nbsp;&nbsp;<?php echo $power_by; ?></font></a></font></td>
-	</tr>
-<!--<tr><td>&nbsp;</td></tr><tr>
-	<td align="center" class="footer"><a target="_blank" HREF="http://frontaccounting.com/"><img src="<?php echo $def_theme; ?>/images/logo_frontaccounting.png"  height="60" width="60" border="0"/></a></td>
-</tr>-->
-<?php
- if ($allow_demo_mode == true)
- {
-    ?>
-      <tr>
-        <!--<td><br><div align="center"><a href="http://frontaccounting.com"><img src="<?php echo $def_theme; ?>/images/logo_frontaccounting.png"  border="0" align="middle" /></a></div></td>-->
-      </tr>
-    <?php
- }
-}
-?>
-		    </table>
-
-            </td>
-        </tr>
-    </table>
-    <script language="JavaScript" type="text/javascript">
+	end_table();
+    echo "<script language='JavaScript' type='text/javascript'>
     //<![CDATA[
             <!--
             document.forms[0].user_name_entry_field.select();
             document.forms[0].user_name_entry_field.focus();
             //-->
     //]]>
-    </script>
-</body>
-</html>
+    </script>";
+	echo "<table width=100%>\n";
+	echo "<tr>";
+	if (isset($_SESSION['wa_current_user'])) 
+		$date = Today() . " | " . Now();
+	else	
+		$date = date("m/d/Y") . " | " . date("h.i am");
+	echo "<td style='font-family:Verdana,Arial,Helvetica;font-size:9px;background:#dee7ec;color:black;border-bottom:1px solid #8cacbb;width:100%;'>$date</td>\n";
+	echo "</tr></table>\n";
+	echo "<table align='center' style='color:#cccccc;font-size:9px;margin-top:5px;'>\n";
+	echo "<tr>\n";
+	echo "<td align='center'><a target='_blank' href='$power_url' tabindex='-1'>$app_title $version - " . _("Theme:") . " " . $def_theme . "</a></td>\n";
+	echo "</tr>\n";
+	echo "<tr>\n";
+	echo "<td align='center'><a target='_blank' href='$power_url' tabindex='-1'>$power_by</a></td>\n";
+	echo "</tr>\n";
+	echo "</table><br><br>\n";
+	echo "</body></html>\n";
+
+?>
