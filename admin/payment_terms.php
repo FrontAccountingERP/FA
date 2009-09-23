@@ -206,6 +206,7 @@ if ($selected_id != -1)
 		$_POST['terms']  = $myrow["terms"];
 		$days_before_due  = $myrow["days_before_due"];
 		$day_in_following_month  = $myrow["day_in_following_month"];
+		unset($_POST['DayNumber']);
 	}
 	hidden('selected_id', $selected_id);
 }

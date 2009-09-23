@@ -23,6 +23,8 @@ $ -> Affected files
 # Cleaning from javascript errors.
 $ /access/login.php
   /admin/fiscalyears.php
+# missing unset of post variable (DayNumber).
+$ /admin/payment_terms.php
   
 22-Sep-2009 Joe Hunt
 ! Changed copyright notice in installer files to credit the original copyrighter. GPLv3.
