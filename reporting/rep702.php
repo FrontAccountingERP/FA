@@ -55,7 +55,8 @@ function print_list_of_journal_entries()
 
     $params =   array( 	0 => $comments,
     				    1 => array('text' => _('Period'), 'from' => $from,'to' => $to),
-                    	2 => array('text' => _('Type'), 'from' => $systypes_array[$systype],
+                    	2 => array('text' => _('Type'), 'from' => 
+						$systype == -1 ? _('All') : $systypes_array[$systype],
                             'to' => ''));
 
     $rep = new FrontReport(_('List of Journal Entries'), "JournalEntries", user_pagesize());
