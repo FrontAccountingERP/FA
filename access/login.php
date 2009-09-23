@@ -75,16 +75,12 @@ function set_fullmode() {
 	echo "</td>\n";
 	end_row();
 
-    start_row();
-	if (!$login_timeout) { // FA version info
-		echo "<td align='center' ><font size=2><b>"._("Version")." $version   Build $build_version</b></font></td>\n";
-	}; // end of FA version info
-	end_row();
 	br();
 	start_form(false, false, $_SESSION['timeout']['uri'], "loginform");
 	start_table("$table_style2 width=400 style='background-color:#eeeeee;'");
 	echo "<input type='hidden' id=ui_mode name='ui_mode' value='".$_SESSION["wa_current_user"]->ui_mode."' />\n";
-
+	if (!$login_timeout)
+		table_section_title(_("Version")." $version   Build $build_version - "._("Login"));
 	$value = $login_timeout ? $_SESSION['wa_current_user']->loginname : ($allow_demo_mode ? "demouser":"");
 
 	text_row(_("User name"), "user_name_entry_field", $value, 20, 30);
@@ -135,12 +131,12 @@ function set_fullmode() {
 		$date = date("m/d/Y") . " | " . date("h.i am");
 	echo "<td style='font-family:Verdana,Arial,Helvetica;font-size:9px;background:#dee7ec;color:black;border-bottom:1px solid #8cacbb;width:100%;'>$date</td>\n";
 	echo "</tr></table>\n";
-	echo "<table align='center' style='color:#cccccc;font-size:9px;margin-top:5px;'>\n";
+	echo "<table align='center' style='margin-top:5px;'>\n";
 	echo "<tr>\n";
-	echo "<td align='center'><a target='_blank' href='$power_url' tabindex='-1'>$app_title $version - " . _("Theme:") . " " . $def_theme . "</a></td>\n";
+	echo "<td align='center' ><a style='color:#666666;font-size:9px;' target='_blank' href='$power_url' tabindex='-1'>$app_title $version - " . _("Theme:") . " " . $def_theme . "</a></td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
-	echo "<td align='center'><a target='_blank' href='$power_url' tabindex='-1'>$power_by</a></td>\n";
+	echo "<td align='center'><a style='color:#666666;font-size:9px;' target='_blank' href='$power_url' tabindex='-1'>$power_by</a></td>\n";
 	echo "</tr>\n";
 	echo "</table><br><br>\n";
 	echo "</body></html>\n";
