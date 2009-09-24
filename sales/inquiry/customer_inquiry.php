@@ -237,7 +237,7 @@ function check_overdue($row)
    	{
    		if ($_POST['filterType'] == '1')
    		{
-   			$sql .= " AND (trans.type = ".ST_SALESINVOICE." OR trans.type = ST_BANKPAYMENT) ";
+   			$sql .= " AND (trans.type = ".ST_SALESINVOICE." OR trans.type = ".ST_BANKPAYMENT.") ";
    		}
    		elseif ($_POST['filterType'] == '2')
    		{
