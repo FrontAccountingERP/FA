@@ -19,6 +19,19 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+24-Sep-2009 Janusz Dobrowolski
++ Additional fields for secondary phone and/or general notes in customers, 
+ cust_branches, shippers, locations and suppliers tables.
+$ /admin/shipping_companies.php
+  /inventory/includes/db/items_locations_db.inc
+  /inventory/manage/locations.php
+  /purchasing/manage/suppliers.php
+  /sales/manage/customer_branches.php
+  /sales/manage/customers.php
+  /sql/alter2.2.sql
+  /sql/en_US-demo.sql
+  /sql/en_US-new.sql
+
 24-Sep-2009 Joe Hunt
 # Parse error
 $ /sales/inquiry/customer_inquiry.php

@@ -128,3 +128,9 @@ CREATE TABLE `0_tag_associations` (
   PRIMARY KEY  (`id`)
 ) TYPE=MyISAM AUTO_INCREMENT=1;
 
+ALTER TABLE `0_suppliers` ADD COLUMN `phone2` varchar(30) NOT NULL default '' AFTER `phone`;
+ALTER TABLE `0_cust_branch` ADD COLUMN `phone2` varchar(30) NOT NULL default '' AFTER `phone`;
+ALTER TABLE `0_shippers` ADD COLUMN `phone2` varchar(30) NOT NULL default '' AFTER `phone`;
+ALTER TABLE `0_locations` ADD COLUMN `phone2` varchar(30) NOT NULL default '' AFTER `phone`;
+ALTER TABLE `0_debtors_master` ADD COLUMN `notes` tinytext NULL default '' AFTER `credit_limit`;
+ALTER TABLE `0_cust_branch` ADD COLUMN `notes` tinytext NULL default '' AFTER `group_no`;

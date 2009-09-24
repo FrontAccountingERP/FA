@@ -63,6 +63,7 @@ if (isset($_POST['submit']))
                 address=".db_escape($_POST['address']) . ",
                 supp_address=".db_escape($_POST['supp_address']) . ",
                 phone=".db_escape($_POST['phone']) . ",
+                phone2=".db_escape($_POST['phone2']) . ",
                 fax=".db_escape($_POST['fax']) . ",
                 gst_no=".db_escape($_POST['gst_no']) . ",
                 email=".db_escape($_POST['email']) . ",
@@ -91,7 +92,7 @@ if (isset($_POST['submit']))
 		else 
 		{
 
-			$sql = "INSERT INTO ".TB_PREF."suppliers (supp_name, supp_ref, address, supp_address, phone, fax, gst_no, email, website,
+			$sql = "INSERT INTO ".TB_PREF."suppliers (supp_name, supp_ref, address, supp_address, phone, phone2, fax, gst_no, email, website,
 				contact, supp_account_no, bank_account, credit_limit, dimension_id, dimension2_id, curr_code,
 				payment_terms, payable_account, purchase_account, payment_discount_account, notes, tax_group_id)
 				VALUES (".db_escape($_POST['supp_name']). ", "
@@ -99,6 +100,7 @@ if (isset($_POST['submit']))
 				.db_escape($_POST['address']) . ", "
 				.db_escape($_POST['supp_address']) . ", "
 				.db_escape($_POST['phone']). ", "
+				.db_escape($_POST['phone2']). ", "
 				.db_escape($_POST['fax']). ", "
 				.db_escape($_POST['gst_no']). ", "
 				.db_escape($_POST['email']). ", "
@@ -202,6 +204,7 @@ if (!$new_supplier)
 	$_POST['address']  = $myrow["address"];
 	$_POST['supp_address']  = $myrow["supp_address"];
 	$_POST['phone']  = $myrow["phone"];
+	$_POST['phone2']  = $myrow["phone2"];
 	$_POST['fax']  = $myrow["fax"];
 	$_POST['gst_no']  = $myrow["gst_no"];
 	$_POST['email']  = $myrow["email"];
@@ -223,12 +226,13 @@ if (!$new_supplier)
 } 
 else 
 {
-	$_POST['supp_name'] = $_POST['supp_ref'] = $_POST['address'] = $_POST['supp_address'] = $_POST['tax_group_id']  = 
-		$_POST['website'] = $_POST['supp_account_no'] = $_POST['notes'] = '';
+	$_POST['supp_name'] = $_POST['supp_ref'] = $_POST['address'] = $_POST['supp_address'] = 
+		$_POST['tax_group_id'] = $_POST['website'] = $_POST['supp_account_no'] = $_POST['notes'] = '';
 	$_POST['dimension_id'] = 0;
 	$_POST['dimension2_id'] = 0;
 	$_POST['sales_type'] = -1;
-	$_POST['email'] = $_POST['phone'] = $_POST['fax'] = $_POST['gst_no'] = $_POST['contact'] = $_POST['bank_account'] = '';
+	$_POST['email'] = $_POST['phone'] = $_POST['phone2'] = $_POST['fax'] = 
+		$_POST['gst_no'] = $_POST['contact'] = $_POST['bank_account'] = '';
 	$_POST['payment_terms']  = '';
 	$_POST['credit_limit']	= price_format(0);
 
@@ -246,8 +250,9 @@ text_row(_("Supplier Name:"), 'supp_name', null, 42, 40);
 text_row(_("Supplier Short Name:"), 'supp_ref', null, 30, 30);
 text_row(_("Contact Person:"), 'contact', null, 42, 40);
 
-text_row(_("Phone Number:"), 'phone', null, 42, 40);
-text_row(_("Fax Number:"), 'fax', null, 42, 40);
+text_row(_("Phone Number:"), 'phone', null, 32, 30);
+text_row(_("Secondary Phone Number:"), 'phone2', null, 32, 30);
+text_row(_("Fax Number:"), 'fax', null, 32, 30);
 
 email_row(_("E-mail:"), 'email', null, 35, 55);
 link_row(_("Website:"), 'website', null, 35, 55);

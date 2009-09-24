@@ -91,7 +91,8 @@ function handle_submit()
             discount=" . input_num('discount') / 100 . ", 
             pymt_discount=" . input_num('pymt_discount') / 100 . ", 
             credit_limit=" . input_num('credit_limit') . ", 
-            sales_type = ".db_escape($_POST['sales_type']) . " 
+            sales_type = ".db_escape($_POST['sales_type']) . ", 
+            notes=".db_escape($_POST['notes']) . "
             WHERE debtor_no = '". $_POST['customer_id'] . "'";
 
 		db_query($sql,"The customer could not be updated");
@@ -109,12 +110,13 @@ function handle_submit()
 
 		$sql = "INSERT INTO ".TB_PREF."debtors_master (name, debtor_ref, address, tax_id, email, dimension_id, dimension2_id,  
 			curr_code, credit_status, payment_terms, discount, pymt_discount,credit_limit,  
-			sales_type) VALUES (".db_escape($_POST['CustName']) .", " .db_escape($_POST['cust_ref']) .", "
+			sales_type, notes) VALUES (".db_escape($_POST['CustName']) .", " .db_escape($_POST['cust_ref']) .", "
 			.db_escape($_POST['address']) . ", " . db_escape($_POST['tax_id']) . ","
 			.db_escape($_POST['email']) . ", ".db_escape($_POST['dimension_id']) . ", " 
 			.db_escape($_POST['dimension2_id']) . ", ".db_escape($_POST['curr_code']) . ", 
 			" . db_escape($_POST['credit_status']) . ", ".db_escape($_POST['payment_terms']) . ", " . input_num('discount')/100 . ", 
-			" . input_num('pymt_discount')/100 . ", " . input_num('credit_limit') . ", ".db_escape($_POST['sales_type']) . ")";
+			" . input_num('pymt_discount')/100 . ", " . input_num('credit_limit') 
+			 .", ".db_escape($_POST['sales_type']).", ".db_escape($_POST['notes']) . ")";
 
 		db_query($sql,"The customer could not be added");
 
@@ -220,7 +222,8 @@ if ($new_customer)
 	$_POST['email'] = '';
 	$_POST['curr_code']  = get_company_currency();
 	$_POST['credit_status']  = -1;
-	$_POST['payment_terms']  = '';
+	$_POST['payment_terms']  = $_POST['notes']  = '';
+
 	$_POST['discount']  = $_POST['pymt_discount'] = percent_format(0);
 	$_POST['credit_limit']	= price_format($SysPrefs->default_credit_limit());
 	$_POST['inactive'] = 0;
@@ -247,6 +250,7 @@ else
 	$_POST['discount']  = percent_format($myrow["discount"] * 100);
 	$_POST['pymt_discount']  = percent_format($myrow["pymt_discount"] * 100);
 	$_POST['credit_limit']	= price_format($myrow["credit_limit"]);
+	$_POST['notes']  = $myrow["notes"];
 	$_POST['inactive'] = $myrow["inactive"];
 }
 
@@ -303,6 +307,7 @@ if (!$new_customer)  {
 
 }
 
+textarea_row(_("General Notes:"), 'notes', null, 35, 5);
 record_status_list_row(_("Customer status:"), 'inactive');
 end_outer_table(1);
 

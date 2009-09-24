@@ -33,10 +33,11 @@ function can_process()
 if ($Mode=='ADD_ITEM' && can_process()) 
 {
 
-	$sql = "INSERT INTO ".TB_PREF."shippers (shipper_name, contact, phone, address)
+	$sql = "INSERT INTO ".TB_PREF."shippers (shipper_name, contact, phone, phone2, address)
 		VALUES (" . db_escape($_POST['shipper_name']) . ", " .
 		db_escape($_POST['contact']). ", " .
 		db_escape($_POST['phone']). ", " .
+		db_escape($_POST['phone2']). ", " .
 		db_escape($_POST['address']) . ")";
 
 	db_query($sql,"The Shipping Company could not be added");
@@ -52,6 +53,7 @@ if ($Mode=='UPDATE_ITEM' && can_process())
 	$sql = "UPDATE ".TB_PREF."shippers SET shipper_name=" . db_escape($_POST['shipper_name']). " ,
 		contact =" . db_escape($_POST['contact']). " ,
 		phone =" . db_escape($_POST['phone']). " ,
+		phone2 =" . db_escape($_POST['phone2']). " ,
 		address =" . db_escape($_POST['address']). "
 		WHERE shipper_id = $selected_id";
 
@@ -112,7 +114,7 @@ $result = db_query($sql,"could not get shippers");
 
 start_form();
 start_table($table_style);
-$th = array(_("Name"), _("Contact Person"), _("Phone Number"), _("Address"), "", "");
+$th = array(_("Name"), _("Contact Person"), _("Phone Number"), _("Secondary Phone"), _("Address"), "", "");
 inactive_control_column($th);
 table_header($th);
 
@@ -124,6 +126,7 @@ while ($myrow = db_fetch($result))
 	label_cell($myrow["shipper_name"]);
 	label_cell($myrow["contact"]);
 	label_cell($myrow["phone"]);
+	label_cell($myrow["phone2"]);
 	label_cell($myrow["address"]);
 	inactive_control_cell($myrow["shipper_id"], $myrow["inactive"], 'shippers', 'shipper_id');
  	edit_button_cell("Edit".$myrow["shipper_id"], _("Edit"));
@@ -151,6 +154,7 @@ if ($selected_id != -1)
 		$_POST['shipper_name']	= $myrow["shipper_name"];
 		$_POST['contact']	= $myrow["contact"];
 		$_POST['phone']	= $myrow["phone"];
+		$_POST['phone2']	= $myrow["phone2"];
 		$_POST['address'] = $myrow["address"];
 	}
 	hidden('selected_id', $selected_id);
@@ -160,7 +164,9 @@ text_row_ex(_("Name:"), 'shipper_name', 40);
 
 text_row_ex(_("Contact Person:"), 'contact', 30);
 
-text_row_ex(_("Phone Number:"), 'phone', 20);
+text_row_ex(_("Phone Number:"), 'phone', 32, 30);
+
+text_row_ex(_("Secondary Phone Number:"), 'phone2', 32, 30);
 
 text_row_ex(_("Address:"), 'address', 50);
 

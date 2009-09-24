@@ -478,6 +478,7 @@ CREATE TABLE `0_cust_branch` (
   `area` int(11) default NULL,
   `salesman` int(11) NOT NULL default '0',
   `phone` varchar(30) NOT NULL default '',
+  `phone2` varchar(30) NOT NULL default '',
   `fax` varchar(30) NOT NULL default '',
   `contact_name` varchar(60) NOT NULL default '',
   `email` varchar(100) NOT NULL default '',
@@ -491,6 +492,7 @@ CREATE TABLE `0_cust_branch` (
   `disable_trans` tinyint(4) NOT NULL default '0',
   `br_post_address` tinytext NOT NULL,
   `group_no` int(11) NOT NULL default '0',
+  `notes` tinytext NOT NULL,
   `inactive` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`branch_code`,`debtor_no`),
   KEY `branch_code` (`branch_code`),
@@ -581,6 +583,7 @@ CREATE TABLE `0_debtors_master` (
   `discount` double NOT NULL default '0',
   `pymt_discount` double NOT NULL default '0',
   `credit_limit` float NOT NULL default '1000',
+  `notes` tinytext NOT NULL,
   `inactive` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`debtor_no`),
   UNIQUE KEY `name` (`name`)
@@ -834,6 +837,7 @@ CREATE TABLE `0_locations` (
   `location_name` varchar(60) NOT NULL default '',
   `delivery_address` tinytext NOT NULL,
   `phone` varchar(30) NOT NULL default '',
+  `phone2` varchar(30) NOT NULL default '',
   `fax` varchar(30) NOT NULL default '',
   `email` varchar(100) NOT NULL default '',
   `contact` varchar(30) NOT NULL default '',
@@ -844,7 +848,7 @@ CREATE TABLE `0_locations` (
 
 ### Data of table `0_locations` ###
 
-INSERT INTO `0_locations` VALUES ('DEF', 'Default', 'N/A', '', '', '', '', '0');
+INSERT INTO `0_locations` VALUES ('DEF', 'Default', 'N/A', '', '', '', '', '', '0');
 
 
 ### Structure of table `0_movement_types` ###
@@ -1268,6 +1272,7 @@ CREATE TABLE `0_shippers` (
   `shipper_id` int(11) NOT NULL auto_increment,
   `shipper_name` varchar(60) NOT NULL default '',
   `phone` varchar(30) NOT NULL default '',
+  `phone2` varchar(30) NOT NULL default '',
   `contact` tinytext NOT NULL,
   `address` tinytext NOT NULL,
   `inactive` tinyint(1) NOT NULL default '0',
@@ -1278,7 +1283,7 @@ CREATE TABLE `0_shippers` (
 
 ### Data of table `0_shippers` ###
 
-INSERT INTO `0_shippers` VALUES ('1', 'Default', '', '', '', '0');
+INSERT INTO `0_shippers` VALUES ('1', 'Default', '', '', '', '', '0');
 
 
 ### Structure of table `0_sql_trail` ###
@@ -1475,6 +1480,7 @@ CREATE TABLE `0_suppliers` (
   `address` tinytext NOT NULL,
   `supp_address` tinytext NOT NULL,
   `phone` varchar(30) NOT NULL default '',
+  `phone2` varchar(30) NOT NULL default '',
   `fax` varchar(30) NOT NULL default '',
   `gst_no` varchar(25) NOT NULL default '',
   `contact` varchar(60) NOT NULL default '',

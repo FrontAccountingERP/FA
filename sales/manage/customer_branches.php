@@ -82,6 +82,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 				branch_ref = " . db_escape($_POST['br_ref']) . ",
 				br_address = ".db_escape($_POST['br_address']). ",
     	        phone=".db_escape($_POST['phone']). ",
+    	        phone2=".db_escape($_POST['phone2']). ",
     	        fax=".db_escape($_POST['fax']).",
     	        contact_name=".db_escape($_POST['contact_name']) . ",
     	        salesman= ".db_escape($_POST['salesman']) . ",
@@ -96,7 +97,8 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
     	        br_post_address =".db_escape($_POST['br_post_address']) . ",
     	        disable_trans=".db_escape($_POST['disable_trans']) . ",
 				group_no=".db_escape($_POST['group_no']) . ", 
-    	        default_ship_via=".db_escape($_POST['default_ship_via']) . "
+    	        default_ship_via=".db_escape($_POST['default_ship_via']) . ",
+                notes=".db_escape($_POST['notes']) . "
     	        WHERE branch_code =".db_escape($_POST['branch_code']) . "
     	        AND debtor_no=".db_escape($_POST['customer_id']);
 
@@ -106,13 +108,14 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 		{
 			/*Selected branch is null cos no item selected on first time round so must be adding a	record must be submitting new entries in the new Customer Branches form */
 			$sql = "INSERT INTO ".TB_PREF."cust_branch (debtor_no, br_name, branch_ref, br_address,
-				salesman, phone, fax,
+				salesman, phone, phone2, fax,
 				contact_name, area, email, tax_group_id, sales_account, receivables_account, payment_discount_account, sales_discount_account, default_location,
-				br_post_address, disable_trans, group_no, default_ship_via)
+				br_post_address, disable_trans, group_no, default_ship_via, notes)
 				VALUES (".db_escape($_POST['customer_id']). ",".db_escape($_POST['br_name']) . ", "
 					.db_escape($_POST['br_ref']) . ", "
 					.db_escape($_POST['br_address']) . ", ".db_escape($_POST['salesman']) . ", "
-					.db_escape($_POST['phone']) . ", ".db_escape($_POST['fax']) . ","
+					.db_escape($_POST['phone']) . ", ".db_escape($_POST['phone2']) . ", "
+					.db_escape($_POST['fax']) . ","
 					.db_escape($_POST['contact_name']) . ", ".db_escape($_POST['area']) . ","
 					.db_escape($_POST['email']) . ", ".db_escape($_POST['tax_group_id']) . ", "
 					.db_escape($_POST['sales_account']) . ", "
@@ -123,7 +126,8 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 					.db_escape($_POST['br_post_address']) . ","
 					.db_escape($_POST['disable_trans']) . ", "
 					.db_escape($_POST['group_no']) . ", "
-					.db_escape($_POST['default_ship_via']) . ")";
+					.db_escape($_POST['default_ship_via']). ", "
+					.db_escape($_POST['notes']) . ")";
 
 			$note = _('New customer branch has been added');
 		}
@@ -290,6 +294,7 @@ if ($selected_id != -1)
 	    $_POST['salesman'] =$myrow["salesman"];
 	    $_POST['area'] =$myrow["area"];
 	    $_POST['phone'] =$myrow["phone"];
+	    $_POST['phone2'] =$myrow["phone2"];
 	    $_POST['fax'] =$myrow["fax"];
 	    $_POST['email'] =$myrow["email"];
 	    $_POST['tax_group_id'] = $myrow["tax_group_id"];
@@ -301,6 +306,8 @@ if ($selected_id != -1)
 	    $_POST['receivables_account'] = $myrow['receivables_account'];
 	    $_POST['payment_discount_account'] = $myrow['payment_discount_account'];
 		$_POST['group_no']  = $myrow["group_no"];
+		$_POST['notes']  = $myrow["notes"];
+
 	}
 }
 elseif ($Mode != 'ADD_ITEM')
@@ -323,7 +330,7 @@ elseif ($Mode != 'ADD_ITEM')
 
 		// We use the Item Sales Account as default!
 	    // $_POST['sales_account'] = $company_record["default_sales_act"];
-	    $_POST['sales_account'] = "";
+	    $_POST['sales_account'] = $_POST['notes']  = '';
 	    $_POST['sales_discount_account'] = $company_record['default_sales_discount_act'];
 	    $_POST['receivables_account'] = $company_record['debtors_act'];
 	    $_POST['payment_discount_account'] = $company_record['default_prompt_payment_act'];
@@ -341,8 +348,9 @@ text_row(_("Branch Name:"), 'br_name', null, 35, 40);
 text_row(_("Branch Short Name:"), 'br_ref', null, 30, 30);
 text_row(_("Contact Person:"), 'contact_name', null, 35, 40);
 
-text_row(_("Phone Number:"), 'phone', null, 20, 20);
-text_row(_("Fax Number:"), 'fax', null, 20, 20);
+text_row(_("Phone Number:"), 'phone', null, 32, 30);
+text_row(_("Secondary Phone Number:"), 'phone2', null, 32, 30);
+text_row(_("Fax Number:"), 'fax', null, 32, 30);
 
 email_row(_("E-mail:"), 'email', null, 35, 55);
 
@@ -377,9 +385,11 @@ gl_all_accounts_list_row(_("Prompt Payment Discount Account:"), 'payment_discoun
 
 table_section_title(_("Addresses"));
 
-textarea_row(_("Mailing Address:"), 'br_post_address', null, 35, 5);
+textarea_row(_("Mailing Address:"), 'br_post_address', null, 35, 4);
 
-textarea_row(_("Billing Address:"), 'br_address', null, 35, 5);
+textarea_row(_("Billing Address:"), 'br_address', null, 35, 4);
+
+textarea_row(_("General Notes:"), 'notes', null, 35, 4);
 
 end_outer_table(1);
 
