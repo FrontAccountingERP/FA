@@ -185,10 +185,11 @@ function display_order_summary($title, &$order, $editable_items=false)
 
 			//label_cell($stock_item->item_description, "nowrap" );
 			label_cell($stock_item->item_description );
-			qty_cell($stock_item->qty_dispatched, false, get_qty_dec($stock_item->stock_id));
+			$dec = get_qty_dec($stock_item->stock_id);
+			qty_cell($stock_item->qty_dispatched, false, $dec);
 
 			if ($order->trans_no!=0)
-				amount_cell($stock_item->qty_done);
+				qty_cell($stock_item->qty_done, false, $dec);
 
 			label_cell($stock_item->units);
 			amount_cell($stock_item->price);

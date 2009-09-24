@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+25-Sep-2009 Joe Hunt
+# Wrong presentation of qty decimals when trans_no != 0 (delivered)
+$ /sales/includes/ui/sales_order_ui.inc
+
 24-Sep-2009 Janusz Dobrowolski
 + Additional fields for secondary phone and/or general notes in customers, 
  cust_branches, shippers, locations and suppliers tables.
