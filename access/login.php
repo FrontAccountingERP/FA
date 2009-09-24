@@ -38,7 +38,7 @@ function set_fullmode() {
 	}
 	if (!isset($def_coy))
 		$def_coy = 0;
-	$def_theme = isset($_SESSION["wa_current_user"]) ? user_theme() : "default";
+	$def_theme = "default";
 
 	$login_timeout = $_SESSION["wa_current_user"]->last_act;
 
@@ -51,7 +51,7 @@ function set_fullmode() {
 	echo "<html dir='$rtl' >\n";
 	echo "<head><title>$title</title>\n";
    	echo "<meta http-equiv='Content-type' content='text/html; charset=$encoding' />\n";
-	echo "<link href='$path_to_root/themes/$def_theme/default.css' rel='stylesheet' type='text/css'> \n";
+	echo "<link href='$path_to_root/themes/$def_theme/login.css' rel='stylesheet' type='text/css'> \n";
 	echo $js2;
 	if (!$login_timeout)
 	{
@@ -59,14 +59,14 @@ function set_fullmode() {
 	}	
 	echo "</head>\n";
 
-	echo "<body style='background-color:#f9f9f9;' $onload>\n";
+	echo "<body $onload>\n";
 
-	echo "<table id='title'><tr><td class='titletext'>$title</td></tr></table>\n";
+	echo "<table class='titletext'><tr><td>$title</td></tr></table>\n";
 	
 	br();br();
-	start_table("$table_style2 width=400");
+	start_table($table_style2);
 	start_row();
-	echo "<td align='center' valign='bottom'>";
+	echo "<td align='center'>";
 	if (!$login_timeout) { // FA logo
     	echo "<a target='_blank' href='$power_url'><img src='$path_to_root/themes/$def_theme/images/logo_frontaccounting.png' alt='FrontAccounting' height='50' onload='fixPNG(this)' border='0' /></a>";
 	} else { 
@@ -77,7 +77,7 @@ function set_fullmode() {
 
 	br();
 	start_form(false, false, $_SESSION['timeout']['uri'], "loginform");
-	start_table("$table_style2 width=400 style='background-color:#eeeeee;'");
+	start_table($table_style2);
 	echo "<input type='hidden' id=ui_mode name='ui_mode' value='".$_SESSION["wa_current_user"]->ui_mode."' />\n";
 	if (!$login_timeout)
 		table_section_title(_("Version")." $version   Build $build_version - "._("Login"));
@@ -105,7 +105,7 @@ function set_fullmode() {
 		end_row();
 	}; 
 	end_table(1);
-	echo "<center><input type='submit' value='"._("Login -->")."' name='SubmitUser' onclick='set_fullmode();' /></center>\n";
+	echo "<center><input type='submit' value='&nbsp;&nbsp;"._("Login -->")."&nbsp;&nbsp;' name='SubmitUser' onclick='set_fullmode();' /></center>\n";
 	end_form(1);
 
 	foreach($_SESSION['timeout']['post'] as $p => $val) {
@@ -123,20 +123,20 @@ function set_fullmode() {
             //-->
     //]]>
     </script>";
-	echo "<table width=100%>\n";
+	echo "<table class='bottomBar'>\n";
 	echo "<tr>";
 	if (isset($_SESSION['wa_current_user'])) 
 		$date = Today() . " | " . Now();
 	else	
 		$date = date("m/d/Y") . " | " . date("h.i am");
-	echo "<td style='font-family:Verdana,Arial,Helvetica;font-size:9px;background:#dee7ec;color:black;border-bottom:1px solid #8cacbb;width:100%;'>$date</td>\n";
+	echo "<td class='bottomBarCell'>$date</td>\n";
 	echo "</tr></table>\n";
-	echo "<table align='center' style='margin-top:5px;'>\n";
+	echo "<table class='footer'>\n";
 	echo "<tr>\n";
-	echo "<td align='center' ><a style='color:#666666;font-size:9px;' target='_blank' href='$power_url' tabindex='-1'>$app_title $version - " . _("Theme:") . " " . $def_theme . "</a></td>\n";
+	echo "<td><a target='_blank' href='$power_url' tabindex='-1'>$app_title $version - " . _("Theme:") . " " . $def_theme . "</a></td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
-	echo "<td align='center'><a style='color:#666666;font-size:9px;' target='_blank' href='$power_url' tabindex='-1'>$power_by</a></td>\n";
+	echo "<td><a target='_blank' href='$power_url' tabindex='-1'>$power_by</a></td>\n";
 	echo "</tr>\n";
 	echo "</table><br><br>\n";
 	echo "</body></html>\n";
