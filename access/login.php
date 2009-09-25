@@ -64,9 +64,10 @@ function set_fullmode() {
 	echo "<table class='titletext'><tr><td>$title</td></tr></table>\n";
 	
 	br();br();
+	start_form(false, false, $_SESSION['timeout']['uri'], "loginform");
 	start_table($table_style2);
 	start_row();
-	echo "<td align='center'>";
+	echo "<td align='center' colspan=2>";
 	if (!$login_timeout) { // FA logo
     	echo "<a target='_blank' href='$power_url'><img src='$path_to_root/themes/$def_theme/images/logo_frontaccounting.png' alt='FrontAccounting' height='50' onload='fixPNG(this)' border='0' /></a>";
 	} else { 
@@ -75,9 +76,6 @@ function set_fullmode() {
 	echo "</td>\n";
 	end_row();
 
-	br();
-	start_form(false, false, $_SESSION['timeout']['uri'], "loginform");
-	start_table($table_style2);
 	echo "<input type='hidden' id=ui_mode name='ui_mode' value='".$_SESSION["wa_current_user"]->ui_mode."' />\n";
 	if (!$login_timeout)
 		table_section_title(_("Version")." $version   Build $build_version - "._("Login"));
@@ -114,7 +112,6 @@ function set_fullmode() {
 			'password', 'SubmitUser', 'company_login_name'))) 
 			echo "<input type='hidden' name='$p' value='$val'>";
 	}
-	end_table();
     echo "<script language='JavaScript' type='text/javascript'>
     //<![CDATA[
             <!--
