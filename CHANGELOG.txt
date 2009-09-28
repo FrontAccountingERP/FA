@@ -19,6 +19,30 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+28-Sep-2009 Janusz Dobrowolski
++ Rewritten extensions system to enable per company module/plugin activation. 
+$ /frontaccounting.php
+  /installed_extensions.php
+  /admin/create_coy.php
+  /admin/inst_module.php
+  /admin/db/maintenance_db.inc
+  /applications/customers.php
+  /applications/dimensions.php
+  /applications/generalledger.php
+  /applications/inventory.php
+  /applications/manufacturing.php
+  /applications/setup.php
+  /applications/suppliers.php
+  /includes/access_levels.inc
+  /includes/current_user.inc
+  /includes/main.inc
+  /includes/session.inc
+  /includes/ui/ui_lists.inc
+  /sql/alter2.2.php
+
+# Prevented switching off access to security role editor for current role.
+$ /admin/security_roles.php
+
 25-Sep-2009 Joe Hunt
 # Wrong presentation of qty decimals when trans_no != 0 (delivered)
 $ /sales/includes/ui/sales_order_ui.inc
