@@ -39,7 +39,7 @@ $ /frontaccounting.php
   /includes/session.inc
   /includes/ui/ui_lists.inc
   /sql/alter2.2.php
-
+  /modules/installed_modules.php (Removed)
 # Prevented switching off access to security role editor for current role.
 $ /admin/security_roles.php
 

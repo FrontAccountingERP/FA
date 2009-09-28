@@ -81,7 +81,7 @@ function handle_submit()
 	global $path_to_root, $db_connections, $selected_id;
 
 	$extensions = get_company_extensions();
-	if (!check_data($selected_id), $extensions)
+	if (!check_data($selected_id, $extensions))
 		return false;
 
 	$id = $_GET['id'];
@@ -142,7 +142,7 @@ function handle_submit()
 
 function handle_delete()
 {
-	global  $path_to_root;
+	global  $path_to_root, $db_connections;
 	
 	$extensions = get_company_extensions();
 
@@ -167,15 +167,27 @@ function handle_delete()
 	}
 	rmdir($filename);
 
+	$ident = $extensions[$id]['name'];
 	unset($extensions[$id]);
 	$mods = array_values($extensions);
 	$extensions = $mods;
 
 	if (!write_extensions($extensions))
 		return;
-	
-	// should we also delete module form per company extension files?
-	
+
+	// update per company files
+	$cnt = count($db_connections);
+	for($i = 0; $i < $cnt; $i++) 
+	{
+		$exts = get_company_extensions($i);
+		foreach($exts as $key => $ext) {
+			if ($ext['name'] == $ident) {
+				unset($exts[$key]);
+				break;
+			}
+		}
+		write_extensions($exts, $i);
+	}
 	meta_forward($_SERVER['PHP_SELF']);
 }
 

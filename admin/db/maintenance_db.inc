@@ -134,7 +134,7 @@ function write_extensions($extensions=null, $company = null)
 	$n = count($exts);
 
 	$msg = "<?php\n\n";
-	if ($company != -1)
+	if ($company == -1)
 		$msg .=
 "/* List of installed additional modules and plugins. If adding extensions at the beginning 
 	of the list, make sure it's index is set to 0 (it has ' 0 => ');
