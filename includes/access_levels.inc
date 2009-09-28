@@ -246,10 +246,10 @@ function add_access_extensions()
 	global $path_to_root, $security_areas, $security_sections;
 	
 	// Add extension private access levels
-	include($path_to_root.'/installed_extensions.php');
+	include($path_to_root.'/company/'.user_company().'/installed_extensions.php');
 	foreach($installed_extensions as $ext) {
-		if (isset($ext['acc_file']))
-			include_once($path_to_root.($ext['type'] == 'plugin' ? '/modules/':'/').$ext['path'].'/'.$ext['acc_file']);
+		if (@$ext['active'] && isset($ext['acc_file']))
+			include($path_to_root.($ext['type'] == 'plugin' ? '/modules/':'/').$ext['path'].'/'.$ext['acc_file']);
 	}
 }
 ?>
