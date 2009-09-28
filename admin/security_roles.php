@@ -48,7 +48,17 @@ if (get_post('addupdate'))
       	display_error( _("Role name cannot be empty."));
 		set_focus('name');
    	}
-	
+		// prevent accidental editor lockup by removing SA_SECROLES
+	if (get_post('role') == $_SESSION['wa_current_user']->access) {
+		if (!isset($_POST['Area'.$security_areas['SA_SECROLES'][0]])
+			|| !isset($_POST['Section'.SS_SETUP])) {
+			display_error(_("Access level edition in Company setup section have to be enabled for your account."));
+	      	$input_error = 1;
+	      	set_focus(!isset($_POST['Section'.SS_SETUP]) 
+	      		? 'Section'.SS_SETUP : 'Area'.$security_areas['SA_SECROLES'][0]);
+		}
+	}
+
 	if ($input_error == 0)
 	{
 		$sections = array();
@@ -59,6 +69,7 @@ if (get_post('addupdate'))
 			if (substr($p,0,7) == 'Section')
 				$sections[] = substr($p, 7);
 		}
+		
 		sort($areas);
 		sort($sections);
      	if ($new_role) 
@@ -166,6 +177,10 @@ end_table(1);
 	$m = 0;
 	asort($security_areas); // in the case installed external modules has added some lines
 	foreach($security_areas as $area =>$parms ) {
+		// system setup areas are accessable only for site admins i.e. 
+		// admins of first registered company
+		if (user_company() && (($parms[0]&~0xff) == SS_SADMIN)) continue;
+
 		if (($parms[0]&~0xff) != $m)
 		{ // features set selection
 			$m = $parms[0] & ~0xff;
