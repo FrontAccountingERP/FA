@@ -13,7 +13,7 @@
 	{
 		function setup_app()
 		{
-			global $installed_modules;
+			global $installed_extensions;
 			$this->application("system",_("S&etup"));
 
 			$this->add_module(_("Company Setup"));
@@ -42,14 +42,14 @@
 			$this->add_rapp_function(2, _("&Backup and Restore"),"admin/backups.php?", 'SA_BACKUP');
 			$this->add_rapp_function(2, _("Create/Update &Companies"),"admin/create_coy.php?", 'SA_CREATECOMPANY');
 			$this->add_rapp_function(2, _("Install/Update &Languages"),"admin/inst_lang.php?", 'SA_CREATELANGUAGE');
-			$this->add_rapp_function(2, _("Install/Update &Modules"),"admin/inst_module.php?", 'SA_CREATEMODULES');
+			$this->add_rapp_function(2, _("Install/Activate &Extensions"),"admin/inst_module.php?", 'SA_CREATEMODULES');
 			$this->add_rapp_function(2, _("Software &Upgrade"),"admin/inst_upgrade.php?", 'SA_SOFTWAREUPGRADE');
-			if (count($installed_modules) > 0)
+			if (count($installed_extensions) > 0)
 			{
-				foreach ($installed_modules as $mod)
+				foreach ($installed_extensions as $mod)
 				{
-					if ($mod["tab"] == "system")
-						$this->add_rapp_function(2, $mod["name"], "modules/".$mod["path"]."/".$mod["filename"]."?");
+					if (@$mod['active'] && $mod['type'] == 'plugin' && $mod["tab"] == "system")
+						$this->add_rapp_function(2, $mod["title"], "modules/".$mod["path"]."/".$mod["filename"]."?");
 				}
 			}
 		}

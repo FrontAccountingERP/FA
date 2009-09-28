@@ -14,6 +14,12 @@ class fa2_2 {
 	var $version = '2.2';	// version installed
 	var $description = 'Version 2.2';
 	var $sql = 'alter2.2.sql';
+	var $preconf = true;
+	
+	function fa2_2() {
+		$this->preconf = fix_extensions();
+	}
+	
 	//
 	//	Install procedure. All additional changes 
 	//	not included in sql file should go here.
@@ -21,6 +27,10 @@ class fa2_2 {
 	function install($pref, $force) 
 	{
 		global $db, $systypes_array;
+		
+		if (!$preconf)
+			return false;
+		
 		// set item category dflt accounts to values from company GL setup
 		$prefs = get_company_prefs();
 		$sql = "UPDATE {$pref}stock_category SET "
@@ -225,6 +235,52 @@ function import_security_role($pref, $name, $sections, $areas)
 	.db_escape(implode(';',$sections)).",".db_escape(implode(';',$areas)).")";
 
 	db_query($sql, "could not add new security role");
+}
+
+/*
+	Changes in extensions system.
+	This function is executed once on first Upgrade System display.
+*/
+function fix_extensions() {
+	global $path_to_root, $db_connections;
+
+	if (!file_exists($path_to_root.'/modules/installed_modules.php'))
+		return true; // already converted
+	
+	if (!is_writable($path_to_root.'/modules/installed_modules.php')) {
+		display_error(_('Cannot upgrade extensions system: file /modules/installed_modules.php is no writeable'));
+		return false;
+	}
+	
+	$exts = array();
+	include($path_to_root.'/installed_extensions.php');
+	foreach($installed_extensions as $ext) {
+		$ext['filename'] = $ext['app_file']; unset($ext['app_file']);
+		$ext['tab'] = $ext['name'];
+		$ext['name'] = access_string($ext['title'], true); 
+		$ext['path'] = $ext['folder']; unset($ext['folder']);
+		$ext['type'] = 'module';
+		$ext['active'] = '1';
+		$exts[] = $ext;
+	}
+
+	include($path_to_root.'/modules/installed_modules.php');
+	foreach($installed_modules as $mod) {
+		$mod['title'] = $mod['name'];
+		$mod['name'] = access_string($mod['name'], true);
+		$mod['type'] = 'plugin';
+		$ext['active'] = '1';
+		$exts[] = $mod;
+	}
+	if (!write_extensions($exts))
+		return false;
+	
+	$cnt = count($db_connections);
+	for ($i = 0; $i < $cnt; $i++)
+		write_extensions($exts, $i);
+
+	unlink($path_to_root.'/modules/installed_modules.php');
+	return true;
 }
 
 $install = new fa2_2;

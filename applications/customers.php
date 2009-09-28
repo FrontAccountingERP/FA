@@ -13,7 +13,7 @@
 	{
 		function customers_app() 
 		{
-			global $installed_modules;
+			global $installed_extensions;
 			$this->application("orders",_("&Sales"));
 		
 			$this->add_module(_("Transactions"));
@@ -51,12 +51,12 @@
 			$this->add_rapp_function(2, _("Sales &Persons"),"sales/manage/sales_people.php?");
 			$this->add_rapp_function(2, _("Sales &Areas"),"sales/manage/sales_areas.php?");
 			$this->add_rapp_function(2, _("Credit &Status Setup"),"sales/manage/credit_status.php?");
-			if (count($installed_modules) > 0)
+			if (count($installed_extensions) > 0)
 			{
-				foreach ($installed_modules as $mod)
+				foreach ($installed_extensions as $mod)
 				{
-					if ($mod["tab"] == "orders")
-						$this->add_rapp_function(2, $mod["name"], "modules/".$mod["path"]."/".$mod["filename"]."?");
+					if (@$mod['active'] && $mod['type'] == 'plugin' && $mod["tab"] == "orders")
+						$this->add_rapp_function(2, $mod["title"], "modules/".$mod["path"]."/".$mod["filename"]."?");
 				}
 			}	
 		}

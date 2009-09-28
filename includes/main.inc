@@ -24,7 +24,6 @@ include_once($path_to_root . "/includes/db/audit_trail_db.inc");
 include_once($path_to_root . "/admin/db/users_db.inc");
 include_once($path_to_root . "/includes/ui/ui_view.inc");
 include_once($path_to_root . "/includes/ui/ui_controls.inc");
-include_once($path_to_root . "/installed_extensions.php");
 	
 function page($title, $no_menu=false, $is_index=false, $onload="", $js="", $script_only=false)
 {

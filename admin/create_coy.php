@@ -151,6 +151,8 @@ function handle_submit()
 	{
 		create_comp_dirs("$comp_path/$id", $comp_subdirs);
 	}
+	$exts = get_company_extensions();
+	write_extensions($exts, $id);
 	return true;
 }
 

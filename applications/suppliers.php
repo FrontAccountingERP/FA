@@ -13,7 +13,7 @@
 	{
 		function suppliers_app() 
 		{
-			global $installed_modules;
+			global $installed_extensions;
 			$this->application("AP",_("&Purchases"));
 			
 			$this->add_module(_("Transactions"));
@@ -35,12 +35,12 @@
 			
 			$this->add_module(_("Maintenance"));
 			$this->add_lapp_function(2, _("&Suppliers"),"purchasing/manage/suppliers.php?");
-			if (count($installed_modules) > 0)
+			if (count($installed_extensions) > 0)
 			{
-				foreach ($installed_modules as $mod)
+				foreach ($installed_extensions as $mod)
 				{
-					if ($mod["tab"] == "AP")
-						$this->add_rapp_function(2, $mod["name"], "modules/".$mod["path"]."/".$mod["filename"]."?");
+					if (@$mod['active'] && $mod['type'] == 'plugin' && $mod["tab"] == "AP")
+						$this->add_rapp_function(2, $mod["title"], "modules/".$mod["path"]."/".$mod["filename"]."?");
 				}
 			}	
 		}

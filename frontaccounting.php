@@ -24,11 +24,10 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 	{
 		foreach ($installed_extensions as $ext)
 		{
-			include_once($path_to_root."/".$ext['folder']."/".$ext['app_file']);
+			if ($ext['type'] == 'module')
+				@include_once($path_to_root."/".$ext['path']."/".$ext['filename']);
 		}
 	}	
-
-	include_once($path_to_root . '/modules/installed_modules.php');
 
 	class front_accounting
 		{
@@ -91,12 +90,15 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 			{
 				foreach ($installed_extensions as $ext)
 				{
-					$_SESSION['get_text']->add_domain($_SESSION['language']->code, 
-						$ext['folder']."/lang");
-					$class = $ext['name']."_app";
-					$this->add_application(new $class());
-					$_SESSION['get_text']->add_domain($_SESSION['language']->code, 
-						$path_to_root."/lang");
+					if (@($ext['active'] && $ext['type'] == 'module')) { // supressed warnings before 2.2 upgrade
+						$_SESSION['get_text']->add_domain($_SESSION['language']->code, 
+							$ext['path']."/lang");
+						$class = $ext['tab']."_app";
+						if (class_exists($class))
+							$this->add_application(new $class());
+						$_SESSION['get_text']->add_domain($_SESSION['language']->code, 
+							$path_to_root."/lang");
+					}
 				}
 			}	
 			

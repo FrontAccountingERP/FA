@@ -134,10 +134,11 @@ class current_user
 
 		if ($page_level === 'SA_OPEN') 
 			return true;
-		$code = $security_areas[$page_level][0];
+		$code = @$security_areas[$page_level][0];
+
 		// only first registered company has site admin privileges
 		return $code && in_array($code, $this->role_set)
-			&& ($this->company == 0 || ($code&~0xff != SS_SADMIN));
+			&& ($this->company == 0 || (($code&~0xff) != SS_SADMIN));
 	}
 
 	function can_access_page($page_level)

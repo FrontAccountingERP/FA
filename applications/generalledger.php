@@ -13,7 +13,7 @@
 	{
 		function general_ledger_app() 
 		{
-			global $installed_modules;
+			global $installed_extensions;
 			$this->application("GL",_("&Banking and General Ledger"));
 
 			$this->add_module(_("Transactions"));
@@ -43,12 +43,12 @@
 			$this->add_rapp_function(2, _("&GL Accounts"),"gl/manage/gl_accounts.php?");
 			$this->add_rapp_function(2, _("GL Account &Groups"),"gl/manage/gl_account_types.php?");
 			$this->add_rapp_function(2, _("GL Account &Classes"),"gl/manage/gl_account_classes.php?");
-			if (count($installed_modules) > 0)
+			if (count($installed_extensions) > 0)
 			{
-				foreach ($installed_modules as $mod)
+				foreach ($installed_extensions as $mod)
 				{
-					if ($mod["tab"] == "GL")
-						$this->add_rapp_function(2, $mod["name"], "modules/".$mod["path"]."/".$mod["filename"]."?");
+					if (@$mod['active'] && $mod['type'] == 'plugin' && $mod["tab"] == "GL")
+						$this->add_rapp_function(2, $mod["title"], "modules/".$mod["path"]."/".$mod["filename"]."?");
 				}
 			}	
 		}

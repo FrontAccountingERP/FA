@@ -2126,5 +2126,23 @@ function tab_list_row($label, $name, $selected_id=null)
 	echo "</td></tr>\n";
 }
 
+//---------------------------------------------------------------------------------------------
+//	List of sets of active extensions 
+//
+function extset_list($name, $value=null, $submit_on_change=false)
+{
+	global $db_connections;
+
+	$items = array();
+	foreach ($db_connections as $comp)
+		$items[] = sprintf(_("Activated for '%s'"), $comp['name']);
+	array_selector( $name, $value, $items,
+		array(
+			'spec_option'=> _("Installed on system"),
+			'spec_id' => -1,
+			'select_submit'=> $submit_on_change,
+			'async' => true
+		));
+}
 
 ?>

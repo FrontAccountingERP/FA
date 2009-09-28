@@ -13,7 +13,7 @@
 	{
 		function manufacturing_app()
 		{
-			global $installed_modules;
+			global $installed_extensions;
 			$this->application("manuf",_("&Manufacturing"));
 
 			$this->add_module(_("Transactions"));
@@ -29,12 +29,12 @@
 			$this->add_module(_("Maintenance"));
 			$this->add_lapp_function(2, _("&Bills Of Material"),"manufacturing/manage/bom_edit.php?");
 			$this->add_lapp_function(2, _("&Work Centres"),"manufacturing/manage/work_centres.php?");
-			if (count($installed_modules) > 0)
+			if (count($installed_extensions) > 0)
 			{
-				foreach ($installed_modules as $mod)
+				foreach ($installed_extensions as $mod)
 				{
-					if ($mod["tab"] == "manuf")
-						$this->add_rapp_function(2, $mod["name"], "modules/".$mod["path"]."/".$mod["filename"]."?");
+					if (@$mod['active'] && $mod['type'] == 'plugin' && $mod["tab"] == "manuf")
+						$this->add_rapp_function(2, $mod["title"], "modules/".$mod["path"]."/".$mod["filename"]."?");
 				}
 			}
 		}

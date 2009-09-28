@@ -249,13 +249,7 @@ function add_access_extensions()
 	include($path_to_root.'/installed_extensions.php');
 	foreach($installed_extensions as $ext) {
 		if (isset($ext['acc_file']))
-			include_once($path_to_root.'/'.$ext['folder'].'/'.$ext['acc_file']);
-	}
-	// Add modules private access levels
-	include($path_to_root.'/modules/installed_modules.php');
-	foreach($installed_modules as $mod) {
-		if (isset($mod['acc_file']) && $mod['acc_file'] != '')
-			include($path_to_root.'/modules/'.$mod['path'].'/'.$mod['acc_file']);
+			include_once($path_to_root.($ext['type'] == 'plugin' ? '/modules/':'/').$ext['path'].'/'.$ext['acc_file']);
 	}
 }
 ?>

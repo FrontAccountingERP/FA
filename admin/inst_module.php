@@ -13,12 +13,11 @@ $page_security = 'SA_CREATEMODULES';
 $path_to_root="..";
 include_once($path_to_root . "/includes/session.inc");
 
-page(_("Install/Update Modules"));
+page(_("Install/Activate extensions"));
 
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/admin/db/company_db.inc");
 include_once($path_to_root . "/admin/db/maintenance_db.inc");
-include_once($path_to_root . "/modules/installed_modules.php");
 include_once($path_to_root . "/includes/ui.inc");
 
 //---------------------------------------------------------------------------------------------
@@ -35,125 +34,42 @@ else
 	$selected_id = -1;
 
 //---------------------------------------------------------------------------------------------
+function get_company_extensions($id = -1) {
 
-function check_data($id)
+	global $path_to_root;
+
+	$file = $path_to_root.($id == -1 ? '' : '/company/'.$id).'/installed_extensions.php';
+	$installed_extensions = array();
+	if (is_file($file)) {
+		include($file);
+	}
+	return $installed_extensions;
+}
+
+function check_data($id, $exts)
 {
 	if ($_POST['name'] == "") {
-		display_error(_("Module name cannot be empty."));
+		display_error(_("Extension name cannot be empty."));
+		return false;
+	}
+	foreach($exts as $n =>$ext) {
+		if ($_POST['name'] == $ext['name'] && $id != $n) {
+			display_error(_("Extension name have to be unique."));
+			return false;
+		}
+	}
+
+	if ($_POST['title'] == "") {
+		display_error(_("Extension title cannot be empty."));
 		return false;
 	}
 	if ($_POST['path'] == "") {
-		display_error(_("Module folder name cannot be empty."));
+		display_error(_("Extension folder name cannot be empty."));
 		return false;
 	}
 	if ($id == -1 && !is_uploaded_file($_FILES['uploadfile']['tmp_name'])) {
-		display_error(_("You have to select module file to upload"));
+		display_error(_("You have to select plugin file to upload"));
 		return false; 
-	}
-	return true;
-}
-
-/**
- * @return Returns the array sorted as required
- * @param $aryData Array containing data to sort
- * @param $strIndex name of column to use as an index
- * @param $strSortBy Column to sort the array by
- * @param $strSortType String containing either asc or desc [default to asc]
- * @desc Naturally sorts an array using by the column $strSortBy
- */
-function array_natsort($aryData, $strIndex, $strSortBy, $strSortType=false)
-{
-   //    if the parameters are invalid
-   if (!is_array($aryData) || !$strIndex || !$strSortBy)
-       //    return the array
-       return $aryData;
-
-   //    create our temporary arrays
-   $arySort = $aryResult = array();
-
-   //    loop through the array
-   foreach ($aryData as $aryRow)
-       //    set up the value in the array
-       $arySort[$aryRow[$strIndex]] = $aryRow[$strSortBy];
-
-   //    apply the natural sort
-   natsort($arySort);
-
-   //    if the sort type is descending
-   if ($strSortType=="desc")
-       //    reverse the array
-       arsort($arySort);
-
-   //    loop through the sorted and original data
-   foreach ($arySort as $arySortKey => $arySorted)
-       foreach ($aryData as $aryOriginal)
-           //    if the key matches
-           if ($aryOriginal[$strIndex]==$arySortKey)
-               //    add it to the output array
-               array_push($aryResult, $aryOriginal);
-
-   //    return the return
-   return $aryResult;
-}
-
-function write_modules()
-{
-	global $path_to_root, $installed_modules;
-
-	$mods = array_natsort($installed_modules, 'tab', 'tab');
-	$installed_modules = $mods;
-	//reset($installed_languages);
-	$n = count($installed_modules);
-	$msg = "<?php\n\n";
-
-	$msg .= "/*****************************************************************\n";
-	$msg .= "External modules for FrontAccounting\n";
-	$msg .= "******************************************************************/\n";
-	$msg .= "\n\n";
-
-	$msg .= "\$installed_modules = array (\n";
-	if ($n > 0)
-	    $msg .= "\t0 => ";
-	for ($i = 0; $i < $n; $i++)
-	{
-		if ($i > 0)
-			$msg .= "\t\tarray ";
-		else
-			$msg .= "array ";
-		$msg .= "('tab' => '" . $installed_modules[$i]['tab'] . "', ";
-		$msg .= "'name' => '" . $installed_modules[$i]['name'] . "', ";
-		$msg .= "'path' => '" . $installed_modules[$i]['path'] . "', ";
-		$msg .= "'filename' => '" . $installed_modules[$i]['filename'] . "',";
-		$msg .= "'acc_file' => '" . $installed_modules[$i]['acc_file'] . "'";
-		$msg .= "),\n";
-	}
-	$msg .= "\t);\n?>";
-
-	$filename = $path_to_root . "/modules/installed_modules.php";
-	// Check if the file exists and is writable first.
-	if (file_exists($filename) && is_writable($filename))
-	{
-		if (!$zp = fopen($filename, 'w'))
-		{
-			display_error(_("Cannot open the modules file - ") . $filename);
-			return false;
-		}
-		else
-		{
-			if (!fwrite($zp, $msg))
-			{
-				display_error(_("Cannot write to the modules file - ") . $filename);
-				fclose($zp);
-				return false;
-			}
-			// Close file
-			fclose($zp);
-		}
-	}
-	else
-	{
-		display_error(_("The modules file ") . $filename . _(" is not writable. Change its permissions so it is, then re-run the operation."));
-		return false;
 	}
 	return true;
 }
@@ -162,16 +78,22 @@ function write_modules()
 
 function handle_submit()
 {
-	global $path_to_root, $installed_modules, $db_connections, $selected_id;
+	global $path_to_root, $db_connections, $selected_id;
 
-	if (!check_data($selected_id))
+	$extensions = get_company_extensions();
+	if (!check_data($selected_id), $extensions)
 		return false;
 
 	$id = $_GET['id'];
 
-	$installed_modules[$id]['tab'] = $_POST['tab'];
-	$installed_modules[$id]['name'] = $_POST['name'];
-	$installed_modules[$id]['path'] = $_POST['path'];
+	$extensions[$id]['tab'] = $_POST['tab'];
+	$extensions[$id]['name'] = $_POST['name'];
+	$extensions[$id]['path'] = $_POST['path'];
+	$extensions[$id]['title'] = $_POST['title'];
+	$extensions[$id]['active'] = $_POST['active'];
+
+	// Currently we support only plugin extensions here.
+	$extensions[$id]['type'] = 'plugin';
 	$directory = $path_to_root . "/modules/" . $_POST['path'];
 	if (!file_exists($directory))
 	{
@@ -179,7 +101,7 @@ function handle_submit()
 	}
 	if (is_uploaded_file($_FILES['uploadfile']['tmp_name']))
 	{
-		$installed_modules[$id]['filename'] = $_FILES['uploadfile']['name'];
+		$extensions[$id]['filename'] = $_FILES['uploadfile']['name'];
 		$file1 = $_FILES['uploadfile']['tmp_name'];
 		$file2 = $directory . "/".$_FILES['uploadfile']['name'];
 		if (file_exists($file2))
@@ -187,7 +109,7 @@ function handle_submit()
 		move_uploaded_file($file1, $file2);
 	}
 	else
-		$installed_modules[$id]['filename'] = get_post('filename');
+		$extensions[$id]['filename'] = get_post('filename');
 	if (is_uploaded_file($_FILES['uploadfile2']['tmp_name']))
 	{
 		$file1 = $_FILES['uploadfile2']['tmp_name'];
@@ -201,7 +123,7 @@ function handle_submit()
 	
 	if (is_uploaded_file($_FILES['uploadfile3']['tmp_name']))
 	{
-		$installed_modules[$id]['acc_file'] = $_FILES['uploadfile3']['name'];
+		$extensions[$id]['acc_file'] = $_FILES['uploadfile3']['name'];
 		$file1 = $_FILES['uploadfile3']['tmp_name'];
 		$file2 = $directory . "/".$_FILES['uploadfile3']['name'];
 		if (file_exists($file2))
@@ -209,9 +131,9 @@ function handle_submit()
 		move_uploaded_file($file1, $file2);
 	}
 	else
-		$installed_modules[$id]['acc_file'] = get_post('acc_file');
+		$extensions[$id]['acc_file'] = get_post('acc_file');
 	
-	if (!write_modules())
+	if (!write_extensions($extensions))
 		return false;
 	return true;
 }
@@ -220,11 +142,19 @@ function handle_submit()
 
 function handle_delete()
 {
-	global  $path_to_root, $installed_modules;
+	global  $path_to_root;
+	
+	$extensions = get_company_extensions();
 
 	$id = $_GET['id'];
 
-	$path = $installed_modules[$id]['path'];
+	$path = $extensions[$id]['path'];
+
+	if ($extensions[$id]['type'] != 'plugin') {
+		display_error(_('Module installation support is not implemented yet. You have to do it manually.'));
+		return;
+	}
+	
 	$filename = "$path_to_root/modules/$path";
 	if ($h = opendir($filename))
 	{
@@ -237,72 +167,126 @@ function handle_delete()
 	}
 	rmdir($filename);
 
-	unset($installed_modules[$id]);
-	$mods = array_values($installed_modules);
-	$installed_modules = $mods;
+	unset($extensions[$id]);
+	$mods = array_values($extensions);
+	$extensions = $mods;
 
-	if (!write_modules())
+	if (!write_extensions($extensions))
 		return;
+	
+	// should we also delete module form per company extension files?
+	
 	meta_forward($_SERVER['PHP_SELF']);
 }
 
 //---------------------------------------------------------------------------------------------
 
-function display_modules()
+function display_extensions()
 {
-	global $table_style, $installed_modules, $tabs;
+	global $table_style, $tabs;
 
 	echo "
 		<script language='javascript'>
-		function deleteModule(id, name) {
-			if (!confirm('" . _("Are you sure you want to delete module: ") . "'+name))
+		function deleteExtension(id, name) {
+			if (!confirm('" . _("Are you sure you want to delete extension: ") . "'+name))
 				return
 			document.location.replace('inst_module.php?c=df&id='+id)
 		}
 		</script>";
 	start_table($table_style);
-	$th = array(_("Tab"), _("Name"), _("Folder"), _("Filename"), _("Access extensions"),"", "");
+	$th = array(_("Name"),_("Tab"), _("Link text"), _("Folder"), _("Filename"), 
+		_("Access extensions"),"", "");
 	table_header($th);
 
 	$k = 0;
-	$mods = $installed_modules;
+	$mods = get_company_extensions();
 	$n = count($mods);
 	for ($i = 0; $i < $n; $i++)
 	{
+		$is_mod = $mods[$i]['type'] == 'module';
    		alt_table_row_color($k);
-
-		label_cell($tabs[$mods[$i]['tab']]);
 		label_cell($mods[$i]['name']);
+		label_cell( $is_mod ? $mods[$i]['title'] : $tabs[$mods[$i]['tab']]);
+		$ttl = access_string($mods[$i]['title']);
+		label_cell($ttl[0]);
 		label_cell($mods[$i]['path']);
 		label_cell($mods[$i]['filename']);
 		label_cell(@$mods[$i]['acc_file']);
 		$edit = _("Edit");
 		$delete = _("Delete");
-		if (user_graphic_links())
+		if ($is_mod)
 		{
-			$edit = set_icon(ICON_EDIT, $edit);
-			$delete = set_icon(ICON_DELETE, $delete);
+			label_cell(''); // not implemented (yet)
+			label_cell('');
 		}
-    	label_cell("<a href='" . $_SERVER['PHP_SELF']. "?selected_id=$i'>$edit</a>");
-		label_cell("<a href='javascript:deleteModule(".$i.", \"" . $mods[$i]['name'] . "\")'>$delete</a>");
+		else
+		{
+			if (user_graphic_links())
+			{
+				$edit = set_icon(ICON_EDIT, $edit);
+				$delete = set_icon(ICON_DELETE, $delete);
+			}
+	    	label_cell("<a href='" . $_SERVER['PHP_SELF']. "?selected_id=$i'>$edit</a>");
+			label_cell("<a href='javascript:deleteExtension(".$i.", \"" . $mods[$i]['name'] . "\")'>$delete</a>");
+		}
 		end_row();
 	}
 
 	end_table();
 }
 
+function company_extensions($id)
+{
+	global $table_style, $tabs;
+
+	start_table($table_style);
+	
+	$th = array(_("Name"),_("Tab"), _("Link text"), _("Active"));
+	
+	// get all available extensions and display
+	// with current status stored in company directory.
+
+	$mods = get_company_extensions();
+	$exts = get_company_extensions($id);
+	foreach($mods as $key => $ins) {
+		foreach($exts as $ext)
+			if ($ext['name'] == $ins['name']) {
+				$mods[$key]['active'] = @$ext['active'];
+				continue 2;
+			}
+	}
+	
+	table_header($th);
+	$k = 0;
+	$n = count($mods);
+	for ($i = 0; $i < $n; $i++)
+	{
+   		alt_table_row_color($k);
+		label_cell($mods[$i]['name']);
+		label_cell($mods[$i]['type'] == 'module' ? $mods[$i]['title'] : $tabs[$mods[$i]['tab']]);
+		$ttl = access_string($mods[$i]['title']);
+		label_cell($ttl[0]);
+		check_cells(null, 'Active'.$i, @$mods[$i]['active'] ? 1:0, 
+			false, false, "align='center'");
+		end_row();
+	}
+
+	end_table(1);
+	submit_center('Update', _('Update'), true, false, 'default');
+}
+
 //---------------------------------------------------------------------------------------------
 
-function display_module_edit($selected_id)
+function display_ext_edit($selected_id)
 {
-	global $installed_modules, $table_style2;
+	global $table_style2;
 
+	$extensions = get_company_extensions();
 	if ($selected_id != -1)
 		$n = $selected_id;
 	else
-		$n = count($installed_modules);
+		$n = count($extensions);
 
-	start_form(true);
 
 	echo "
 		<script language='javascript'>
@@ -314,11 +298,12 @@ function display_module_edit($selected_id)
 
 	start_table($table_style2);
 
-	if ($selected_id != -1)
+	if ($selected_id != -1 && $extensions[$selected_id]['type'] == 'plugin')
 	{
-		$mod = $installed_modules[$selected_id];
+		$mod = $extensions[$selected_id];
 		$_POST['tab']  = $mod['tab'];
 		$_POST['name'] = $mod['name'];
+		$_POST['title'] = $mod['title'];
 		$_POST['path'] = $mod['path'];
 		$_POST['filename'] = $mod['filename'];
 		$_POST['acc_file'] = @$mod['acc_file'];
@@ -326,9 +311,12 @@ function display_module_edit($selected_id)
 		hidden('filename', $_POST['filename']);
 		hidden('acc_file', $_POST['acc_file']);
 	}
-	tab_list_row(_("Menu Tab"), 'tab', null);
 	text_row_ex(_("Name"), 'name', 30);
 	text_row_ex(_("Folder"), 'path', 20);
+
+	tab_list_row(_("Menu Tab"), 'tab', null);
+	text_row_ex(_("Menu Link Text"), 'title', 30);
+	record_status_list_row(_("Default status"), 'active');
 
 	label_row(_("Module File"), "<input name='uploadfile' type='file'>");
 	label_row(_("Access Levels Extensions"), "<input name='uploadfile3' type='file'>");
@@ -336,15 +324,23 @@ function display_module_edit($selected_id)
 
 	end_table(0);
 	display_note(_("Select your module PHP file from your local harddisk."), 0, 1);
+
 	echo "<center><input onclick='javascript:updateModule()' type='button' style='width:150px' value='". _("Save"). "'></center>";
 
-
-	end_form();
 }
 
 //---------------------------------------------------------------------------------------------
-
-if (isset($_GET['c']))
+if (get_post('Update')) {
+	$exts = get_company_extensions();
+	for($i = 0; $i < count($exts); $i++) {
+		$exts[$i]['active'] = check_value('Active'.$i);
+	}
+	write_extensions($exts, get_post('extset'));
+	if (get_post('extset') == user_company())
+		$installed_extensions = $exts;
+	display_notification(_('Current active extensions set has been saved.'));
+}
+elseif (isset($_GET['c']))
 {
 	if ($_GET['c'] == 'df')
 	{
@@ -356,22 +352,35 @@ if (isset($_GET['c']))
 		if (handle_submit())
 		{
 			if ($selected_id != -1)
-				display_notification(_("Module data has been updated."));
+				display_notification(_("Extension data has been updated."));
 			else
-				display_notification(_("Module has been installed."));
+				display_notification(_("Extension has been installed."));
 		}
 	}
 }
 
 //---------------------------------------------------------------------------------------------
+start_form(true);
+if (list_updated('extset'))
+	$Ajax->activate('_page_body');
 
-display_modules();
+echo "<center>" . _('Extensions:') . "&nbsp;&nbsp;";
+extset_list('extset', null, true);
+echo "</center><br>";
 
-hyperlink_no_params($_SERVER['PHP_SELF'], _("Create a new module"));
+$set = get_post('extset');
 
-display_module_edit($selected_id);
+if ($set == -1) {
+	display_extensions();
 
+	hyperlink_no_params($_SERVER['PHP_SELF'], _("Add new extension"));
+
+	display_ext_edit($selected_id);
+} else {
+	company_extensions($set);
+}
 //---------------------------------------------------------------------------------------------
+end_form();
 
 end_page();
 
