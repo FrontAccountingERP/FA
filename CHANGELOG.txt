@@ -25,6 +25,7 @@ $ /frontaccounting.php
   /installed_extensions.php
   /admin/create_coy.php
   /admin/inst_module.php
+  /admin/inst_lang.php
   /admin/db/maintenance_db.inc
   /applications/customers.php
   /applications/dimensions.php

@@ -44,49 +44,6 @@ function check_data()
 	return true;
 }
 
-/**
- * @return Returns the array sorted as required
- * @param $aryData Array containing data to sort
- * @param $strIndex name of column to use as an index
- * @param $strSortBy Column to sort the array by
- * @param $strSortType String containing either asc or desc [default to asc]
- * @desc Naturally sorts an array using by the column $strSortBy
- */
-function array_natsort($aryData, $strIndex, $strSortBy, $strSortType=false)
-{
-   //    if the parameters are invalid
-   if (!is_array($aryData) || !$strIndex || !$strSortBy)
-       //    return the array
-       return $aryData;
-
-   //    create our temporary arrays
-   $arySort = $aryResult = array();
-
-   //    loop through the array
-   foreach ($aryData as $aryRow)
-       //    set up the value in the array
-       $arySort[$aryRow[$strIndex]] = $aryRow[$strSortBy];
-
-   //    apply the natural sort
-   natsort($arySort);
-
-   //    if the sort type is descending
-   if ($strSortType=="desc")
-       //    reverse the array
-       arsort($arySort);
-
-   //    loop through the sorted and original data
-   foreach ($arySort as $arySortKey => $arySorted)
-       foreach ($aryData as $aryOriginal)
-           //    if the key matches
-           if ($aryOriginal[$strIndex]==$arySortKey)
-               //    add it to the output array
-               array_push($aryResult, $aryOriginal);
-
-   //    return the return
-   return $aryResult;
-}
-
 function write_lang()
 {
 	global $path_to_root, $installed_languages, $dflt_lang;
