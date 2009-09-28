@@ -235,21 +235,15 @@ $security_areas =array(
 	'SA_BANKREP' => array(SS_GL_A|3, _("Bank reports and inquiries")),
 	'SA_GLREP' => array(SS_GL_A|4, _("GL reports and inquiries")),
 );
-/*
-	This function should be called whenever we want to extend core access level system
-	with new security areas and/or sections i.e.: 
-	. on any page with non-standard security areas
-	. in security roles editor
-*/
+
 function add_access_extensions()
 {
-	global $path_to_root, $security_areas, $security_sections;
-	
-	// Add extension private access levels
-	include($path_to_root.'/company/'.user_company().'/installed_extensions.php');
+	global $path_to_root, $security_areas, $security_sections, $installed_extensions;
+
 	foreach($installed_extensions as $ext) {
 		if (@$ext['active'] && isset($ext['acc_file']))
 			include($path_to_root.($ext['type'] == 'plugin' ? '/modules/':'/').$ext['path'].'/'.$ext['acc_file']);
 	}
 }
+
 ?>

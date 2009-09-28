@@ -236,7 +236,13 @@ if (strstr($_SERVER['PHP_SELF'], 'logout.php') == false){
 		$_SESSION["App"]->init();
 	}
 
-//----------------------------------------------------------------------------------------
+	/*
+	This call is necessary only at:
+	. on any page with non-standard security areas
+	. in security roles editor
+	To be optmized  after.
+	*/
+	add_access_extensions();
 
 	check_page_security($page_security);
 }
