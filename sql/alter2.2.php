@@ -193,7 +193,7 @@ function convert_roles($pref)
 		15 => array('SA_PRINTERS', 'SA_PRINTPROFILE', 'SA_BACKUP', 'SA_USERS',
 			'SA_POSSETUP'),
 		20 => array('SA_CREATECOMPANY', 'SA_CREATELANGUAGE', 'SA_CREATEMODULES',
-			'SA_SOFTWAREUPGRADE', 'SA_SECROLES')
+			'SA_SOFTWAREUPGRADE', 'SA_SECROLES', 'SA_DIMTAGS', 'SA_GLACCOUNTTAGS')
 		);
 		$new_ids = array();
 		foreach ($security_groups as $role_id => $areas) {

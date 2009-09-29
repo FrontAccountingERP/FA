@@ -2073,7 +2073,9 @@ DROP TABLE IF EXISTS `0_tags`;
 CREATE TABLE `0_tags` (
   `id` int(11) NOT NULL auto_increment,
   `type` smallint(6) NOT NULL,
-  `name` varchar(60) NOT NULL,
+  `name` varchar(30) NOT NULL,
+  `description` varchar(60) default NULL,
+  `inactive` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`id`),
   UNIQUE KEY(`type`,`name`)
 ) TYPE=MyISAM AUTO_INCREMENT=1;

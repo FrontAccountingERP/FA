@@ -19,6 +19,15 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+29-Sep-2009 Tom Hallman
+! Changes in tags table structure, tags related security areas
+$ /includes/access_levels.inc
+  /includes/types.inc
+  /sql/alter2.2.php
+  /sql/alter2.2.sql
+  /sql/en_US-demo.sql
+  /sql/en_US-new.sql
+
 29-Sep-2009 Janusz Dobrowolski
 # Fixed sql error during sales order line update with line cancelation.
 $ /sales/includes/db/sales_order_db.inc

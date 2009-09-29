@@ -198,6 +198,8 @@ $security_areas =array(
 //
 // Dimensions
 //
+	'SA_DIMTAGS' => array(SS_DIM_C|1, _("Dimension tags")),
+
 	'SA_DIMTRANSVIEW' => array(SS_DIM|1, _("Dimension view")),
 
 	'SA_DIMENSION' => array(SS_DIM|2, _("Dimension entry")),
@@ -217,6 +219,7 @@ $security_areas =array(
 	'SA_TAXGROUPS' => array(SS_GL_C|8, _("Tax groups")),
 	'SA_FISCALYEARS' => array(SS_GL_C|9, _("Fiscal years maintenance")),
 	'SA_GLSETUP' => array(SS_GL_C|10, _("Company GL setup")),
+	'SA_GLACCOUNTTAGS' => array(SS_GL_C|11, _("GL Account tags")),
 
 	'SA_BANKTRANSVIEW' => array(SS_GL|1, _("Bank transactions view")),
 	'SA_GLTRANSVIEW' => array(SS_GL|2, _("GL postings view")),

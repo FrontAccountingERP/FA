@@ -281,4 +281,14 @@ $stock_types = array(
 		'D' => _("Service")
 );
 
+//----------------------------------------------------------------------------------
+
+define('TAG_ACCOUNT',   1);
+define('TAG_DIMENSION', 2);
+
+$tag_types_array = array (
+		TAG_ACCOUNT   => _("Account"),
+		TAG_DIMENSION => _("Dimension")
+);
+
 ?>
