@@ -56,7 +56,7 @@ class fa2_2 {
 			if (db_num_rows($result)) {
 				while ($row = db_fetch($result)) {
 					$res2 = db_query("INSERT INTO {$pref}refs VALUES("
-						. $row['id'].",".$typeno.",'".$row['ref']."')");
+						. $row['id'].",".$typeno.",'".addslashes($row['ref'])."')");
 					if (!$res2) {
 						display_error(_("Cannot copy references from $tbl")
 							.':<br>'. db_error_msg($db));
