@@ -16,7 +16,8 @@ Common
 
 Sales
 -----
-- Sales documents. Line descriptions can be edited and printing of documents handles multiple line of descriptions. 
+- Sales documents. Line descriptions can be edited and printing of documents handles 
+  multiple line of descriptions. 
 - Point of Sales definitions for better handling of cash sales
 - Sales Groups for grouping customers.
 - Recurrent Invoices
@@ -40,7 +41,8 @@ Banking and General Ledger
 --------------------------
 - Bank accounts reconciliation
 - Dimension view now shows balances instead of transactions
-- Quick Entries (preset GL transactions) in Bank Deposit/Payment, Journal Entry and Supplier invoice/credit
+- Quick Entries (preset GL transactions) in Bank Deposit/Payment, Journal Entry
+  and Supplier invoice/credit
 - Rewritten tax report and tax inquiry.
 
 Bugs fixed in this release

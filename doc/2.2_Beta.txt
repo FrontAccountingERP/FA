@@ -11,7 +11,8 @@ Common
 - Time Zone on Reports
 - Audit Trail for all operations with Report
 - Bank Charge field in Customer/Supplier Payment.
-- New default fields in Company table for Bank Charge, Retained Earnings and Profit/Loss Year. 
+- New default fields in Company table for Bank Charge, Retained Earnings and 
+  Profit/Loss Year. 
 - Direct Allocation of Invoices in Customer/Supplier Payments
 - New Access Levels/Security Roles system enables fine tunning person access rights.
 - Item Tax Types moved to Setup module
@@ -26,7 +27,8 @@ Sales
 Purchasing
 ----------
 - Better support for conversion factor in Purchasing Prices.
-- Purchasing price can have up to 6 decimals allowing fractions of hundredths in prices.
+- Purchasing price can have up to 6 decimals allowing fractions of hundredths in 
+  prices.
 
 Items and Inventory
 -------------------
@@ -47,11 +49,13 @@ Dimensions
 Banking and General Ledger
 --------------------------
 - Closing a fiscal year also closes the balances and brings forward retained earnings
-- Deleting a fiscal year removes all transactions and convert into relevant Open Balances.
+- Deleting a fiscal year removes all transactions and convert into relevant Open 
+  Balances.
 - Journal Enquiry
 - Edition/view of Journal Entries.
 - Group Sorting by Id in Account Selectors
-- Default per currency bank accounts (used in reports). The Bank Account selection on documents has been replaced by this.
+- Default per currency bank accounts (used in reports). The Bank Account selection on 
+  documents has been replaced by this.
 
 Bugs fixed in this release
 --------------------------

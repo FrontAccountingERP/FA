@@ -19,6 +19,12 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+29-Sep-2009 Joe Hunt
+! Improved layout on documents etc and new empty language file.
+$ /doc/*.txt
+  update.html
+  /lang/new_language_template/LC_MESSAGES/empty.po
+  
 28-Sep-2009 Janusz Dobrowolski
 + Rewritten extensions system to enable per company module/plugin activation. 
 $ /frontaccounting.php
