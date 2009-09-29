@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+------------------------------- Release 2.1.5 ----------------------------------
+! Final Final release of the 2.1. series.
+$ config.php
+
 16-Sep-2009 Joe Hunt
 # Missing freight tax in Customer Balances Report
 $ /reporting/rep101.php
