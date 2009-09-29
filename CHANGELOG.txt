@@ -19,6 +19,130 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+------------------------------- Release 2.1.5 ----------------------------------
+! Final Final release of the 2.1. series.
+$ config.php
+
+16-Sep-2009 Joe Hunt
+# Missing freight tax in Customer Balances Report
+$ /reporting/rep101.php
+
+14-Sep-2009 Joe Hunt
+# A couple of minor bugs in tax report when displaying supplier credit notes
+$ /purchasing/includes/db/invoice_db.inc
+
+05-Sep-2009 Joe Hunt
+# Changed Class Type to Class Name in GL Account groups
+$ /gl/manage/gl_account_types.php
+# Changed so total in bank payments/deposits shows correctly if negative amount are entered.
+$ /gl/includes/ui/gl_bank_ui.inc
+
+30-Aug-2009 Janusz Dobrowolski
+# Fixed sql error during sales order line update with line cancelation.
+$ /sales/includes/db/sales_order_db.inc
+
+------------------------------- Release 2.1.5 ----------------------------------
+26-Aug-2009 Joe Hunt
+! Release 2.1.5
+$ config.php
+# If no dimensions in system, then there were 2 destination selectors in report Balance Sheet
+$ /reporting/reports_main.php
+! Code cleanup
+$ /taxes/tax_calc.inc
+  /lang/new_language_template/LC_MESSAGES/empty.po (new extraction)
+  
+24-Aug-2009 Joe Hunt
+# A Purchasing Price of 12.34 with a conversion factor of 100,0000 caused a false internal rounding error of 12.00.
+! The Purchasing Price, price can now have up to 6 decimals (fractions of hundredth's) and are presented correctly.
+  If you need to increase the decimals in a current value, then you have to delete it and create it again with new values.
+  This is for safety reasons.
+$ /includes/current_user.inc
+  /includes/ui/ui_input.inc
+  /inventory/purchasing_data.php
+  /purchasing/po_receive_items.php
+  /purchasing/includes/ui/invoice_ui.inc
+  /purchasing/includes/ui/po_ui.inc
+  /purchasing/view/view_grn.php
+  /purchasing/view/view_po.php
+  /reporting/rep209.php
+  
+21-Aut-2009 Joe Hunt
+# [0000162] Deleting a GL account may cause problems with quick entries 
+$ /gl/manage/gl_accounts.php
+
+20-Aug-2009 Joe Hunt
+# If account code2 is used in the accounts the report Chart of Accounts gave a bad index and didn't print the code.
+$ /gl/includes/gl_db_accounts.inc
+# If setting the delivered items in PO Receive Items to 0 the value is not updated 
+$ /purchasing/po_receive_items.php
+
+19-Aug-2009 Joe Hunt
+! Change of Quick Entries to use the Tax Types instead, due to complexity using the Tax Groups in EU.
+  If you for need more than one Tax Type row in a Quick Entry, please keep the rows together and use the same action type.
+$ /gl/includes/db/gl_db_bank_accounts.inc
+  /gl/manage/gl_quick_entries.php
+  /includes/ui/ui_view.inc
+  
+18-Aug-2009 Joe Hunt
+! When using Quick Entries in Supplier Invoices/credit notes the tax sum now shows correctly.
+$ /purchasing/includes/db/invoice_db.inc
+  /purchasing/includes/ui/invoice_ui.inc
+  /purchasing/includes/supp_trans_class.inc
+  
+18-Aug-2009 Joe Hunt
+! Quick Entries uses Tax Groups instead of Item Tax Types for calculating taxes (Please change the item lines for tax).
+  Quick Entry Lines of type Supplier Invoice. When using, the Supplier Tax Group Id overrides the The Tax Group set on the line.
+$ /gl/includes/db/gl_db_bank_accounts.inc
+  /gl/manage/gl_quick_entries.php
+  /includes/ui/ui_view.inc
+  /taxes/tax_calc.inc
+  
+17-Aug-2009 Janusz Dobrowolski
+# [0000158] Added missing check for POS usage before deletion.
+$ /sales/manage/sales_points.php
+
+17-Aug-2009 Joe Hunt
+# [0000160] Customer payments in different currencies (bank account exchange error). Fixed so diff bank_curr/home_curr and cust/supp curr is readonly.
+$ /gl/includes/db/gl_db_bank_trans.inc
+  /purchasing/supplier_payment.php
+  /sales/customer_payments.php
+  /sales/includes/db/payments_db.inc
+
+14-Aug-2009 Janusz Dobrowolski
+# [0000161] Fixed reference edition on sales invoice/deliery/credit.
+$ /sales/customer_credit_invoice.php
+  /sales/customer_delivery.php
+  /sales/customer_invoice.php
+
+12-Aug-2009 Joe Hunt
+# [0000159] Memo field's GL entries are not saved (gl_trans) in supplier invoice
+$ /purchasing/includes/purchasing_db.inc
+  /purchasing/includes/db/invoice_db.inc
+# memo field was not written in list of journal entries.
+$ /reporting/rep702.php
+  
+08-Aug-2009 Janusz Dobrowolski
+# Fixed bug in calculation of taxes for quick entries using multiply tax rates
+$ /includes/ui/ui_view.inc
+
+08-Aug-2009 Janusz Dobrowolski
+# [0000152] Config_db.php changed after failed company database creation
+$ /install/save.php
+
+08-Aug-2009 Joe Hunt
+# [0000153] not possible to make a new balance sheet GL account cl (old style)
+$ /gl/manage/gl_account_classes.php
+
+04-Aug-2009 Joe Hunt
+# [0000150] Logo on printed papers is placed on top of the adress rule nr 1
+$ /reporting/includes/header2.inc
+# [0000145] Email sales order doesn't work if no email on branch but on customer
+$ /sales/includes/db/sales_order_db.inc
+  /reporting/rep109.php
+! Changed so $use_oldstyle_convert=1 variable in config.php (line 78) gives fully backwards compatibility in 
+  Balance Sheet, PL Statements and Monthly Bread Down reports.
+$ /gl/manage/gl_account_classes.php.  
+
 ------------------------------- Release 2.1.4 ----------------------------------
 30-Jul-2009 Joe Hunt
 ! Release 2.1.4
@@ -27,7 +151,7 @@ $ config.php
 $ /reporting/rep709.php
 # [0000146] Purch data description with a ' (apostrophe) fails
 $ /inventory/purchasing_data.php
-  /purchasing/includes/db/purchasing_db.inc
+  /purchasing/includes/purchasing_db.inc
 
 28-Jul-2009 Joe Hunt
 # Bugs in sending documents as email. Seems to land in the spam filter due to bad text and scrambled name on attached documents
@@ -75,7 +199,7 @@ $ /includes/db/manufacturing.inc
 $ /admin/attachments.php
 # [0000140] Numeric format bug in credit limit input.
 $ /purchasing/manage/suppliers.php
-# [0000143] Bad format of PO popup window (jackel7007).
+# [0000143] Bad format of PO popup window (Softechmatrix).
 $ /purchasing/view/view_grn.php
 
 09-Jul-2009 Janusz Dobrowolski
