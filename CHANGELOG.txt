@@ -19,7 +19,7 @@ Legend:
 ! -> Note
 $ -> Affected files
 
-------------------------------- Release 2.1.5 ----------------------------------
+------------------------------- Release 2.1.6 ----------------------------------
 ! Final Final release of the 2.1. series.
 $ config.php
 
