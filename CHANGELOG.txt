@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+29-Sep-2009 Janusz Dobrowolski
+# Fixed sql error during sales order line update with line cancelation.
+$ /sales/includes/db/sales_order_db.inc
+
 29-Sep-2009 Joe Hunt
 ! Improved layout on documents etc and new empty language file.
 $ /doc/*.txt
