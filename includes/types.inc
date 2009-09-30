@@ -286,7 +286,7 @@ $stock_types = array(
 define('TAG_ACCOUNT',   1);
 define('TAG_DIMENSION', 2);
 
-$tag_types_array = array (
+$tag_types = array (
 		TAG_ACCOUNT   => _("Account"),
 		TAG_DIMENSION => _("Dimension")
 );
