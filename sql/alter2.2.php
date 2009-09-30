@@ -248,7 +248,7 @@ function fix_extensions() {
 		return true; // already converted
 	
 	if (!is_writable($path_to_root.'/modules/installed_modules.php')) {
-		display_error(_('Cannot upgrade extensions system: file /modules/installed_modules.php is no writeable'));
+		display_error(_('Cannot upgrade extensions system: file /modules/installed_modules.php is not writeable'));
 		return false;
 	}
 	
