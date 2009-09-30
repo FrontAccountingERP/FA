@@ -54,7 +54,7 @@ class current_user
 
 	function login($company, $loginname, $password)
 	{
-		global $security_areas, $security_groups, $security_headings;
+		global $security_areas, $security_groups, $security_headings, $path_to_root;
 		
 		$this->set_company($company);
 	    $this->logged = false;
@@ -73,6 +73,7 @@ class current_user
 					if (!isset($security_groups) || !isset($security_headings)) {
 						echo "<center><br><br><font size='5' color='red'><b>";
 						echo _('Before software upgrade you have to include old $security_groups and $security_headings arrays from old config.php file to the new one.');
+						echo '<br>'."<a href=$path_to_root/index.php>"._("Back")."</a>";
 						echo "</b></font><br><br></center>";
 						exit;
 					}
