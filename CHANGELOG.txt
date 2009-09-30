@@ -37,6 +37,12 @@ $ /admin/db/maintenance_db.inc
   /includes/db/connect_db.inc
   /reporting/includes/tcpdf.php
   /sales/includes/cart_class.inc
+# Included missing dimension configuration section.
+$ /includes/access_levels.inc
+! Changed tag types array name
+$ /includes/types.inc
+# Message typo
+$ /sql/alter2.2.php
 
 29-Sep-2009 Tom Hallman
 ! Changes in tags table structure, tags related security areas
