@@ -31,6 +31,8 @@ $ /includes/prefs/userprefs.inc
 $ /admin/fiscalyears.php
   /purchasing/supplier_payment.php
   /sales/customer_payments.php
+# Parse error in view_supp_payment.php
+$ /purchasing/view/view_supp_payment.php
 
 30-Sep-2009 Janusz Dobrowolski
 ! Single quotes also encoded before database data insert

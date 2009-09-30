@@ -58,7 +58,7 @@ start_row();
 if ($show_currencies)
 	label_cells(_("Payment Currency"), $receipt['bank_curr_code'], "class='tableheader2'");
 label_cells(_("Amount"), number_format2(-$receipt['BankAmount'], user_price_dec()), "class='tableheader2'");
-label_cells(_("Payment Type"), $bank_transfer_typea[$receipt['BankTransType']], "class='tableheader2'");
+label_cells(_("Payment Type"), $bank_transfer_types[$receipt['BankTransType']], "class='tableheader2'");
 end_row();
 start_row();
 if ($show_currencies) 
