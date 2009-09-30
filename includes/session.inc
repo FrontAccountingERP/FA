@@ -59,8 +59,7 @@ function check_page_security($page_security)
 				. "<br>" . _("Please contact your system administrator.")	
 			: _("Please remove \$security_groups and \$security_headings arrays from config.php file!");
 
-		page(_("Access denied"), false);
-			display_error($msg);
+		display_error($msg);
 		end_page();
 		kill_login();
 		exit;
@@ -68,17 +67,12 @@ function check_page_security($page_security)
 
 	if (!$_SESSION["wa_current_user"]->can_access_page($page_security))
 	{
-		// no_menu parameter guess here is ugly hack, but works for now.
-		// Better solution is to use global switch for menu, set before 
-		// session.inc inclusion.
-		page(_("Access denied"), strpos($_SERVER['PHP_SELF'], '/view/'));
 
 		echo "<center><br><br><br><b>";
 		echo _("The security settings on your account do not permit you to access this function");
 		echo "</b>";
 		echo "<br><br><br><br></center>";
 		end_page();
-		//kill_login();
 		exit;
 	}
 }
@@ -244,7 +238,6 @@ if (strstr($_SERVER['PHP_SELF'], 'logout.php') == false){
 	*/
 	add_access_extensions();
 
-	check_page_security($page_security);
 }
 // POST vars cleanup needed for direct reuse.
 // We quote all values later with db_escape() before db update.
