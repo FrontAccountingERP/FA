@@ -28,7 +28,7 @@ class fa2_2 {
 	{
 		global $db, $systypes_array;
 		
-		if (!$preconf)
+		if (!$this->preconf)
 			return false;
 		
 		// set item category dflt accounts to values from company GL setup

@@ -70,8 +70,16 @@ class user_prefs
 			$this->rep_popup = $user["rep_popup"];
 			$this->query_size = $user["query_size"];
 			$this->graphic_links = $user["graphic_links"];
-			$this->sticky_date = $user["sticky_doc_date"];
-			$this->startup_tab = $user['startup_tab'];
+			if (isset($user["sticky_doc_date"]))
+			{
+				$this->sticky_date = $user["sticky_doc_date"];
+				$this->startup_tab = $user['startup_tab'];
+			}
+			else
+			{
+				$this->sticky_date = 0;
+				$this->startup_tab = "orders";
+			}
 		}
 	}
 
