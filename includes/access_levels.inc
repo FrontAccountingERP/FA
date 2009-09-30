@@ -64,6 +64,7 @@ $security_sections = array(
  SS_MANUF_C => _("Manufacturing configuration"),
  SS_MANUF => _("Manufacturing transations"),
  SS_MANUF_A => _("Manufacturing analytics"),
+ SS_DIM_C => _("Dimensions configuration"),
  SS_DIM => _("Dimensions"),
  SS_GL_C => _("Banking & GL configuration"),
  SS_GL => _("Banking & GL transactions"),
