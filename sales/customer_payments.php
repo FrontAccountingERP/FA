@@ -109,11 +109,13 @@ function can_process()
 		set_focus('charge');
 		return false;
 	}
-
-	if (isset($_POST['charge']) && input_num('charge') > 0 && get_company_pref('bank_charge_act') == '') {
-		display_error(_("The Bank Charge Account has not been set in System and General GL Setup."));
-		set_focus('charge');
-		return false;
+	if (isset($_POST['charge']) && input_num('charge') > 0) {
+		$charge_acct = get_company_pref('bank_charge_act');
+		if (get_gl_account($charge_acct) == false) {
+			display_error(_("The Bank Charge Account has not been set in System and General GL Setup."));
+			set_focus('charge');
+			return false;
+		}	
 	}
 
 	if (isset($_POST['_ex_rate']) && !check_num('_ex_rate', 0.000001))

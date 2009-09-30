@@ -23,6 +23,13 @@ $ -> Affected files
 30-Sep-2009 Joe Hunt
 ! Release 2.2 Beta
 $ config.php
+# Errors in the 2 last user variables in userprefs and parse error in alter2.2.php 
+$ /includes/prefs/userprefs.inc
+  /sql/alter2.2.php
+# Trivial errors in not set bank charge account, retained earnings or profit/loss year account
+$ /admin/fiscalyears.php
+  /purchasing/supplier_payment.php
+  /sales/customer_payments.php
 
 30-Sep-2009 Janusz Dobrowolski
 ! Single quotes also encoded before database data insert

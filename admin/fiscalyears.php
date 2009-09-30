@@ -86,7 +86,7 @@ function check_data()
 function close_year($year)
 {
 	$co = get_company_prefs();
-	if ($co['retained_earnings_act'] == '' || $co['profit_loss_year_act'] == '')
+	if (get_gl_account($co['retained_earnings_act']) == false || get_gl_account($co['profit_loss_year_act']) == false)
 	{
 		display_error(_("The Retained Earnings Account or the Profit and Loss Year Account has not been set in System and General GL Setup"));
 		return false;
