@@ -23,6 +23,7 @@ $ -> Affected files
 30-Sep-2009 Joe Hunt
 ! Release 2.2 Beta
 $ config.php
+  update.html
 # Errors in the 2 last user variables in userprefs and parse error in alter2.2.php 
 $ /includes/prefs/userprefs.inc
   /sql/alter2.2.php

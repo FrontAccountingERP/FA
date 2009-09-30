@@ -47,7 +47,7 @@ process earlier). </li>
   </li><li><strong>When
 updating release&nbsp;2.1.X to release 2.2.X, you should first restore
 your $security_headers and $security_groups from your old config.php
-file, alternative unmark them in the new config.php. There is a new
+file, alternative unmark them in the new config.php. The reason is a new
 access_level system in 2.2.</strong></li><li><strong>Then you must immediately
 login on company 0, the first company you created, as&nbsp;admin
 (called the superadmin). If you use a theme other than the standard 3,
@@ -56,7 +56,7 @@ can download a new one of the new themes on the download page.&nbsp; Go
 to the 'Setup' tab and run 'Software
 Upgrade'.
 Mark the checkbox 'Install' and press 'Upgrade System'. &nbsp;This will
-upgrade ALL your companies.</strong></li><li style="font-weight: bold;">If something goes wrong during upgrade, you can enter here again and try 'Force Upgrade', and press 'Upgrade System' again.</li><li style="font-weight: bold;">Now you should comment your old $securityheaders and $security_groups.</li><li><strong style="font-weight: bold;"></strong><strong>There are no database changes during a major and minor release. Like from 2.2 to 2.2.1 - 2.2.X .</strong></li><li style="font-weight: bold;">Enter
+upgrade ALL your companies.</strong></li><li style="font-weight: bold;">If something goes wrong during upgrade, you can enter here again and try 'Force Upgrade', and press 'Upgrade System' again.</li><li style="font-weight: bold;">Now you should comment your old $securityheaders and $security_groups.</li><li><strong style="font-weight: bold;"></strong><strong>There are no database changes during a major and minor release. Like from 2.2 to 2.2.1 - 2.2.X .</strong></li><li><span style="font-weight: bold;">If you get a blank screen after login, this might be caused of a bad configuration of the database connection in config_db.php.</span></li><li style="font-weight: bold;">Enter
 'Setup' tab, 'System and Generel GL Setup'. &nbsp;Set the correct
 Accounts for Retained Earnings, Profit/Loss Year and Bank Charge.</li><li style="font-weight: bold;">Enter
 'Setup' tab, 'Access Setup'. Check all the roles and change as you
