@@ -143,7 +143,11 @@ function can_process()
 	}
 
 	$_SESSION['alloc']->amount = input_num('amount');
-	return check_allocations();
+
+	if (isset($_POST["TotalNumberOfAllocs"]))
+		return check_allocations();
+	else
+		return true;
 }
 
 //----------------------------------------------------------------------------------------------

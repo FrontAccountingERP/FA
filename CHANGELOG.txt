@@ -46,6 +46,9 @@ $ /includes/access_levels.inc
 $ /includes/types.inc
 # Message typo
 $ /sql/alter2.2.php
+# Fixed false error on payment without allocation.
+$ /purchasing/supplier_payment.php
+  /sales/customer_payments.php
 
 29-Sep-2009 Tom Hallman
 ! Changes in tags table structure, tags related security areas
