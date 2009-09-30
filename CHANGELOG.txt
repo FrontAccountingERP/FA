@@ -19,6 +19,11 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+------------------------------- Release 2.2 Beta ----------------------------------
+30-Sep-2009 Joe Hunt
+! Release 2.2 Beta
+$ config.php
+
 29-Sep-2009 Tom Hallman
 ! Changes in tags table structure, tags related security areas
 $ /includes/access_levels.inc

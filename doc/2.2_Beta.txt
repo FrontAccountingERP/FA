@@ -60,5 +60,5 @@ Banking and General Ledger
 Bugs fixed in this release
 --------------------------
 - Fixed php 5 warnings flood in error log.
-- All bugs up to release 2.1.5 are fixed in this release too.
+- All bugs up to release 2.1.6 are fixed in this release too.
 
