@@ -24,6 +24,13 @@ $ -> Affected files
 ! Release 2.2 Beta
 $ config.php
 
+30-Sep-2009 Janusz Dobrowolski
+! Single quotes also encoded before database data insert
+$ /admin/db/maintenance_db.inc
+  /includes/db/connect_db.inc
+  /reporting/includes/tcpdf.php
+  /sales/includes/cart_class.inc
+
 29-Sep-2009 Tom Hallman
 ! Changes in tags table structure, tags related security areas
 $ /includes/access_levels.inc

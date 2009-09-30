@@ -228,11 +228,11 @@ class cart
 			$this->trans_no = 0;
 			$this->order_no= $this->trans_type==ST_CUSTDELIVERY ? key($src->trans_no) : $src->order_no;
 		}
-		$this->reference = @html_entity_decode($this->reference);
-		$this->Comments = @html_entity_decode($this->Comments);
+		$this->reference = @html_entity_decode($this->reference, ENT_QUOTES);
+		$this->Comments = @html_entity_decode($this->Comments, ENT_QUOTES);
 		foreach($this->line_items as $lineno => $line) {
-			$this->line_items[$lineno]->stock_id = @html_entity_decode($line->stock_id);
-			$this->line_items[$lineno]->item_description = @html_entity_decode($line->item_description);
+			$this->line_items[$lineno]->stock_id = @html_entity_decode($line->stock_id, ENT_QUOTES);
+			$this->line_items[$lineno]->item_description = @html_entity_decode($line->item_description, ENT_QUOTES);
 		}
 		switch($this->trans_type) {
 			case ST_SALESINVOICE:
