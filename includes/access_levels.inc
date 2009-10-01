@@ -239,7 +239,13 @@ $security_areas =array(
 	'SA_BANKREP' => array(SS_GL_A|3, _("Bank reports and inquiries")),
 	'SA_GLREP' => array(SS_GL_A|4, _("GL reports and inquiries")),
 );
-
+/*
+	This function should be called whenever we want to extend core access level system
+	with new security areas and/or sections i.e.: 
+	. on any page with non-standard security areas
+	. in security roles editor
+	The call should be placed between session.inc inclusion and page() call.
+*/
 function add_access_extensions()
 {
 	global $path_to_root, $security_areas, $security_sections, $installed_extensions;
