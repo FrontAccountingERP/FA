@@ -149,12 +149,17 @@
 
 				foreach ($module->lappfunctions as $appfunction)
 				{
-					if ($_SESSION["wa_current_user"]->can_access_page($appfunction->access)) 
+					if ($appfunction->label == "")
+						echo "&nbsp;<br>";
+					elseif ($_SESSION["wa_current_user"]->can_access_page($appfunction->access)) 
 					{
-						if ($appfunction->label == "")
-							echo "&nbsp;<br>";
-						else
 							echo $img.menu_link($appfunction->link, $appfunction->label)."<br>\n";
+					}
+					else 
+					{
+							echo $img.'<span class="inactive">'
+								.access_string($appfunction->label, true)
+								."</span><br>\n";
 					}
 				}
 				echo "</td>";
@@ -163,12 +168,17 @@
 					echo "<td width='50%' class='menu_group_items'>";
 					foreach ($module->rappfunctions as $appfunction)
 					{
-						if ($_SESSION["wa_current_user"]->can_access_page($appfunction->access)) 
+						if ($appfunction->label == "")
+							echo "&nbsp;<br>";
+						elseif ($_SESSION["wa_current_user"]->can_access_page($appfunction->access)) 
 						{
-							if ($appfunction->label == "")
-								echo "&nbsp;<br>";
-							else
 								echo $img.menu_link($appfunction->link, $appfunction->label)."<br>\n";
+						}
+						else 
+						{
+								echo $img.'<span class="inactive">'
+									.access_string($appfunction->label, true)
+									."</span><br>\n";
 						}
 					}
 					echo "</td>";

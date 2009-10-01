@@ -80,6 +80,10 @@ a:hover, a:focus {
 	text-decoration: underline;
 }
 
+.inactive {
+	color: gray;
+}
+
 button {
 	font-size: 11px;
 	border: 1px #0066cc solid;
