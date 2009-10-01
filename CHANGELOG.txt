@@ -19,6 +19,21 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+01-Oct-2009 Janusz Dobrowolski
+! Added comment on add_access_extensions usage.
+$ /includes/access_levels.inc
+# Removed sparse add_access_extensions() call.
+$ /includes/session.inc
++ Added support for multiply select options in combo_input.
+$ /includes/ui/ui_lists.inc
+! Unaccesable menu options are now displayed as grey text.
+$ /themes/aqua/default.css
+  /themes/aqua/renderer.php
+  /themes/cool/default.css
+  /themes/cool/renderer.php
+  /themes/default/default.css
+  /themes/default/renderer.php
+
 ------------------------------- Release 2.2 Beta ----------------------------------
 30-Sep-2009 Joe Hunt
 ! Release 2.2 Beta
