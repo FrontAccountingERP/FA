@@ -52,6 +52,7 @@ $opts = array(		// default options
 	'search_submit' => true, //search submit button: true/false
 	'size' => 8,	// size and max of box tag
 	'max' => 50,
+	'height' => false,	// number of lines in select box
 	'cells' => false,	// combo displayed as 2 <td></td> cells
 	'search' => array(), // sql field names to search
 	'format' => null, 	 // format functions for regular options
@@ -207,7 +208,9 @@ $opts = array(		// default options
  		$txt = $found;
 		$Ajax->addUpdate($name, $search_box, $txt ? $txt : '');
 	}
-	$selector = "<select $disabled name='$name' class='$class' title='"
+	$selector = "<select ".(strpos($name,'[]')!==false ? "multiple" : '')
+		. ($opts['height']!==false ? ' size="'.$opts['height'].'"' : '')
+		. "$disabled name='$name' class='$class' title='"
 		. $opts['sel_hint']."' $rel>".$selector."</select>\n";
 
 	$Ajax->addUpdate($name, "_{$name}_sel", $selector);
