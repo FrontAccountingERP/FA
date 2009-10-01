@@ -277,6 +277,7 @@ $opts = array(		// default options
 	'async' => true,	// select update via ajax (true) vs _page_body reload
 	'default' => '', // default value when $_POST is not set
 		// search box parameters
+	'height' => false,	// number of lines in select box
 	'sel_hint' => null,
 	'disabled' => false
 );
@@ -331,7 +332,9 @@ $opts = array(		// default options
 	}
 	$_POST[$name] = $selected_id;
 
-	$selector = "<select $disabled name='$name' class='combo' title='"
+	$selector = "<select ".(strpos($name,'[]')!==false ? "multiple" : '')
+		. ($opts['height']!==false ? ' size="'.$opts['height'].'"' : '')
+		. "$disabled name='$name' class='combo' title='"
 		. $opts['sel_hint']."'>".$selector."</select>\n";
 
 	$Ajax->addUpdate($name, "_{$name}_sel", $selector);
