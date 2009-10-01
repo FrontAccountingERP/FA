@@ -229,15 +229,6 @@ if (strstr($_SERVER['PHP_SELF'], 'logout.php') == false){
 		$_SESSION["App"] = new front_accounting();
 		$_SESSION["App"]->init();
 	}
-
-	/*
-	This call is necessary only at:
-	. on any page with non-standard security areas
-	. in security roles editor
-	To be optmized  after.
-	*/
-	add_access_extensions();
-
 }
 // POST vars cleanup needed for direct reuse.
 // We quote all values later with db_escape() before db update.
