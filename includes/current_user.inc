@@ -25,7 +25,7 @@ class current_user
 	var $timeout;
 	var $last_act;
 	var $role_set = false;
-	
+	var $old_db;	
 	var $logged;
 	var $ui_mode = 0;
 	
