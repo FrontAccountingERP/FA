@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FrontAccounting\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-09-27 09:25+0100\n"
-"PO-Revision-Date: 2009-09-27 09:25+0100\n"
+"POT-Creation-Date: 2009-10-01 09:43+0100\n"
+"PO-Revision-Date: 2009-10-01 09:44+0100\n"
 "Last-Translator: FrontAccounting <info@frontaccounting.com>\n"
 "Language-Team: Translators\n"
 "MIME-Version: 1.0\n"
@@ -18,12 +18,12 @@ msgstr ""
 "X-Poedit-Basepath: c:\\Apache2\\htdocs\\account22\n"
 "X-Poedit-SearchPath-0: c:\\Apache2\\htdocs\\account22\n"
 
+#: c:\Apache2\htdocs\account22/frontaccounting.php:79
 #: c:\Apache2\htdocs\account22/frontaccounting.php:80
-#: c:\Apache2\htdocs\account22/frontaccounting.php:81
 msgid "Main  Menu"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/frontaccounting.php:82
+#: c:\Apache2\htdocs\account22/frontaccounting.php:81
 #: c:\Apache2\htdocs\account22/access/logout.php:17
 #: c:\Apache2\htdocs\account22/access/backup/logout1.php:17
 msgid "Logout"
@@ -479,6 +479,7 @@ msgstr ""
 #: c:\Apache2\htdocs\account22/admin/display_prefs.php:140
 #: c:\Apache2\htdocs\account22/admin/forms_setup.php:61
 #: c:\Apache2\htdocs\account22/admin/gl_setup.php:220
+#: c:\Apache2\htdocs\account22/admin/inst_module.php:275
 msgid "Update"
 msgstr ""
 
@@ -507,118 +508,117 @@ msgid "Error uploading Database Script, please upload it manually"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/admin/create_coy.php:140
-#: c:\Apache2\htdocs\account22/admin/create_coy.php:186
+#: c:\Apache2\htdocs\account22/admin/create_coy.php:188
 msgid "Cannot open the configuration file - "
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/admin/create_coy.php:142
-#: c:\Apache2\htdocs\account22/admin/create_coy.php:188
+#: c:\Apache2\htdocs\account22/admin/create_coy.php:190
 msgid "Cannot write to the configuration file - "
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/admin/create_coy.php:144
-#: c:\Apache2\htdocs\account22/admin/create_coy.php:190
+#: c:\Apache2\htdocs\account22/admin/create_coy.php:192
 msgid "The configuration file "
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/admin/create_coy.php:144
-#: c:\Apache2\htdocs\account22/admin/create_coy.php:190
-#: c:\Apache2\htdocs\account22/admin/inst_lang.php:152
-#: c:\Apache2\htdocs\account22/admin/inst_module.php:155
+#: c:\Apache2\htdocs\account22/admin/create_coy.php:192
+#: c:\Apache2\htdocs\account22/admin/inst_lang.php:109
 msgid " is not writable. Change its permissions so it is, then re-run the operation."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/create_coy.php:169
+#: c:\Apache2\htdocs\account22/admin/create_coy.php:171
 msgid "Cannot remove company data directory "
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/create_coy.php:174
+#: c:\Apache2\htdocs\account22/admin/create_coy.php:176
 msgid "Cannot rename company subdirectory"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/create_coy.php:180
+#: c:\Apache2\htdocs\account22/admin/create_coy.php:182
 msgid "Error removing Database: "
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/create_coy.php:180
+#: c:\Apache2\htdocs\account22/admin/create_coy.php:182
 msgid ", please remove it manually"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/create_coy.php:208
+#: c:\Apache2\htdocs\account22/admin/create_coy.php:210
 msgid "Are you sure you want to delete company no. "
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/create_coy.php:215
+#: c:\Apache2\htdocs\account22/admin/create_coy.php:217
 msgid "Database Host"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/create_coy.php:215
-#: c:\Apache2\htdocs\account22/admin/create_coy.php:306
+#: c:\Apache2\htdocs\account22/admin/create_coy.php:217
+#: c:\Apache2\htdocs\account22/admin/create_coy.php:308
 msgid "Database User"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/create_coy.php:216
-#: c:\Apache2\htdocs\account22/admin/create_coy.php:309
+#: c:\Apache2\htdocs\account22/admin/create_coy.php:218
+#: c:\Apache2\htdocs\account22/admin/create_coy.php:311
 msgid "Database Name"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/create_coy.php:216
-#: c:\Apache2\htdocs\account22/admin/create_coy.php:311
+#: c:\Apache2\htdocs\account22/admin/create_coy.php:218
 #: c:\Apache2\htdocs\account22/admin/create_coy.php:313
+#: c:\Apache2\htdocs\account22/admin/create_coy.php:315
 msgid "Table Pref"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/create_coy.php:216
-#: c:\Apache2\htdocs\account22/admin/create_coy.php:314
-#: c:\Apache2\htdocs\account22/admin/inst_lang.php:250
+#: c:\Apache2\htdocs\account22/admin/create_coy.php:218
+#: c:\Apache2\htdocs\account22/admin/create_coy.php:316
+#: c:\Apache2\htdocs\account22/admin/inst_lang.php:207
 #: c:\Apache2\htdocs\account22/admin/print_profiles.php:164
 msgid "Default"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/create_coy.php:225
+#: c:\Apache2\htdocs\account22/admin/create_coy.php:227
 #: c:\Apache2\htdocs\account22/admin/fiscalyears.php:417
-#: c:\Apache2\htdocs\account22/admin/inst_lang.php:267
-#: c:\Apache2\htdocs\account22/admin/inst_lang.php:271
+#: c:\Apache2\htdocs\account22/admin/inst_lang.php:224
+#: c:\Apache2\htdocs\account22/admin/inst_lang.php:228
 msgid "Yes"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/create_coy.php:253
+#: c:\Apache2\htdocs\account22/admin/create_coy.php:255
 msgid "The marked company is the current company which cannot be deleted."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/create_coy.php:305
+#: c:\Apache2\htdocs\account22/admin/create_coy.php:307
 #: c:\Apache2\htdocs\account22/admin/printers.php:88
 msgid "Host"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/create_coy.php:308
+#: c:\Apache2\htdocs\account22/admin/create_coy.php:310
 msgid "Database Password"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/create_coy.php:311
+#: c:\Apache2\htdocs\account22/admin/create_coy.php:313
 #: c:\Apache2\htdocs\account22/admin/inst_upgrade.php:183
 msgid "None"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/create_coy.php:317
+#: c:\Apache2\htdocs\account22/admin/create_coy.php:319
 msgid "Database Script"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/create_coy.php:321
+#: c:\Apache2\htdocs\account22/admin/create_coy.php:323
 msgid "New script Admin Password"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/create_coy.php:324
+#: c:\Apache2\htdocs\account22/admin/create_coy.php:326
 msgid "Choose from Database scripts in SQL folder. No Database is created without a script."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/create_coy.php:325
-#: c:\Apache2\htdocs\account22/admin/inst_lang.php:337
-#: c:\Apache2\htdocs\account22/admin/inst_module.php:339
+#: c:\Apache2\htdocs\account22/admin/create_coy.php:327
+#: c:\Apache2\htdocs\account22/admin/inst_lang.php:294
+#: c:\Apache2\htdocs\account22/admin/inst_module.php:328
 msgid "Save"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/create_coy.php:353
+#: c:\Apache2\htdocs\account22/admin/create_coy.php:355
 msgid "Create a new company"
 msgstr ""
 
@@ -675,7 +675,7 @@ msgid "Decimal Separator:"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/admin/display_prefs.php:96
-#: c:\Apache2\htdocs\account22/admin/inst_lang.php:250
+#: c:\Apache2\htdocs\account22/admin/inst_lang.php:207
 msgid "Language"
 msgstr ""
 
@@ -1030,144 +1030,171 @@ msgstr ""
 msgid "Language name, code nor encoding cannot be empty"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/inst_lang.php:135
+#: c:\Apache2\htdocs\account22/admin/inst_lang.php:92
 msgid "Cannot open the languages file - "
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/inst_lang.php:142
+#: c:\Apache2\htdocs\account22/admin/inst_lang.php:99
 msgid "Cannot write to the language file - "
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/inst_lang.php:152
+#: c:\Apache2\htdocs\account22/admin/inst_lang.php:109
 msgid "The language file "
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/inst_lang.php:244
+#: c:\Apache2\htdocs\account22/admin/inst_lang.php:201
 msgid "Are you sure you want to delete language no. "
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/inst_lang.php:250
-#: c:\Apache2\htdocs\account22/admin/inst_module.php:264
-#: c:\Apache2\htdocs\account22/admin/inst_module.php:330
+#: c:\Apache2\htdocs\account22/admin/inst_lang.php:207
+#: c:\Apache2\htdocs\account22/admin/inst_module.php:197
+#: c:\Apache2\htdocs\account22/admin/inst_module.php:244
+#: c:\Apache2\htdocs\account22/admin/inst_module.php:314
 #: c:\Apache2\htdocs\account22/admin/printers.php:88
 #: c:\Apache2\htdocs\account22/admin/shipping_companies.php:117
 msgid "Name"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/inst_lang.php:250
-#: c:\Apache2\htdocs\account22/admin/inst_lang.php:327
+#: c:\Apache2\htdocs\account22/admin/inst_lang.php:207
+#: c:\Apache2\htdocs\account22/admin/inst_lang.php:284
 msgid "Encoding"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/inst_lang.php:250
-#: c:\Apache2\htdocs\account22/admin/inst_lang.php:329
+#: c:\Apache2\htdocs\account22/admin/inst_lang.php:207
+#: c:\Apache2\htdocs\account22/admin/inst_lang.php:286
 msgid "Right To Left"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/inst_lang.php:286
+#: c:\Apache2\htdocs\account22/admin/inst_lang.php:243
 msgid "The marked language is the current language which cannot be deleted."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/inst_lang.php:325
+#: c:\Apache2\htdocs\account22/admin/inst_lang.php:282
 msgid "Language Code"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/inst_lang.php:326
+#: c:\Apache2\htdocs\account22/admin/inst_lang.php:283
 msgid "Language Name"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/inst_lang.php:330
+#: c:\Apache2\htdocs\account22/admin/inst_lang.php:287
 msgid "Default Language"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/inst_lang.php:332
-#: c:\Apache2\htdocs\account22/admin/inst_lang.php:333
+#: c:\Apache2\htdocs\account22/admin/inst_lang.php:289
+#: c:\Apache2\htdocs\account22/admin/inst_lang.php:290
 msgid "Language File"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/inst_lang.php:336
+#: c:\Apache2\htdocs\account22/admin/inst_lang.php:293
 msgid "Select your language files from your local harddisk."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/inst_lang.php:366
+#: c:\Apache2\htdocs\account22/admin/inst_lang.php:323
 msgid "Create a new language"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/admin/inst_module.php:16
-msgid "Install/Update Modules"
+msgid "Install/Activate extensions"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/inst_module.php:42
-msgid "Module name cannot be empty."
+#: c:\Apache2\htdocs\account22/admin/inst_module.php:40
+msgid "Extension name cannot be empty."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/inst_module.php:46
-msgid "Module folder name cannot be empty."
+#: c:\Apache2\htdocs\account22/admin/inst_module.php:45
+msgid "Extension name have to be unique."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/inst_module.php:50
-msgid "You have to select module file to upload"
+#: c:\Apache2\htdocs\account22/admin/inst_module.php:51
+msgid "Extension title cannot be empty."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/inst_module.php:138
-msgid "Cannot open the modules file - "
+#: c:\Apache2\htdocs\account22/admin/inst_module.php:55
+msgid "Extension folder name cannot be empty."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/inst_module.php:145
-msgid "Cannot write to the modules file - "
+#: c:\Apache2\htdocs\account22/admin/inst_module.php:59
+msgid "You have to select plugin file to upload"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/inst_module.php:155
-msgid "The modules file "
+#: c:\Apache2\htdocs\account22/admin/inst_module.php:142
+msgid "Module installation support is not implemented yet. You have to do it manually."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/inst_module.php:258
-msgid "Are you sure you want to delete module: "
+#: c:\Apache2\htdocs\account22/admin/inst_module.php:191
+msgid "Are you sure you want to delete extension: "
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/inst_module.php:264
+#: c:\Apache2\htdocs\account22/admin/inst_module.php:197
+#: c:\Apache2\htdocs\account22/admin/inst_module.php:244
 msgid "Tab"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/inst_module.php:264
-#: c:\Apache2\htdocs\account22/admin/inst_module.php:331
+#: c:\Apache2\htdocs\account22/admin/inst_module.php:197
+#: c:\Apache2\htdocs\account22/admin/inst_module.php:244
+msgid "Link text"
+msgstr ""
+
+#: c:\Apache2\htdocs\account22/admin/inst_module.php:197
+#: c:\Apache2\htdocs\account22/admin/inst_module.php:315
 msgid "Folder"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/inst_module.php:264
+#: c:\Apache2\htdocs\account22/admin/inst_module.php:198
 msgid "Access extensions"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/inst_module.php:329
+#: c:\Apache2\htdocs\account22/admin/inst_module.php:244
+msgid "Active"
+msgstr ""
+
+#: c:\Apache2\htdocs\account22/admin/inst_module.php:317
 msgid "Menu Tab"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/inst_module.php:333
+#: c:\Apache2\htdocs\account22/admin/inst_module.php:318
+msgid "Menu Link Text"
+msgstr ""
+
+#: c:\Apache2\htdocs\account22/admin/inst_module.php:319
+msgid "Default status"
+msgstr ""
+
+#: c:\Apache2\htdocs\account22/admin/inst_module.php:321
 msgid "Module File"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/inst_module.php:334
+#: c:\Apache2\htdocs\account22/admin/inst_module.php:322
 msgid "Access Levels Extensions"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/inst_module.php:335
+#: c:\Apache2\htdocs\account22/admin/inst_module.php:323
 msgid "SQL File"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/inst_module.php:338
+#: c:\Apache2\htdocs\account22/admin/inst_module.php:326
 msgid "Select your module PHP file from your local harddisk."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/inst_module.php:359
-msgid "Module data has been updated."
+#: c:\Apache2\htdocs\account22/admin/inst_module.php:341
+msgid "Current active extensions set has been saved."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/inst_module.php:361
-msgid "Module has been installed."
+#: c:\Apache2\htdocs\account22/admin/inst_module.php:355
+msgid "Extension data has been updated."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/inst_module.php:370
-msgid "Create a new module"
+#: c:\Apache2\htdocs\account22/admin/inst_module.php:357
+msgid "Extension has been installed."
+msgstr ""
+
+#: c:\Apache2\htdocs\account22/admin/inst_module.php:367
+msgid "Extensions:"
+msgstr ""
+
+#: c:\Apache2\htdocs\account22/admin/inst_module.php:376
+msgid "Add new extension"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/admin/inst_upgrade.php:16
@@ -1437,72 +1464,76 @@ msgstr ""
 msgid "Role name cannot be empty."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/security_roles.php:67
+#: c:\Apache2\htdocs\account22/admin/security_roles.php:55
+msgid "Access level edition in Company setup section have to be enabled for your account."
+msgstr ""
+
+#: c:\Apache2\htdocs\account22/admin/security_roles.php:78
 msgid "New security role has been added."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/security_roles.php:75
+#: c:\Apache2\htdocs\account22/admin/security_roles.php:86
 msgid "Security role has been updated."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/security_roles.php:88
+#: c:\Apache2\htdocs\account22/admin/security_roles.php:99
 msgid "This role is currently assigned to some users and cannot be deleted"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/security_roles.php:91
+#: c:\Apache2\htdocs\account22/admin/security_roles.php:102
 msgid "Security role has been sucessfully deleted."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/security_roles.php:140
+#: c:\Apache2\htdocs\account22/admin/security_roles.php:151
 msgid "Role:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/security_roles.php:142
+#: c:\Apache2\htdocs\account22/admin/security_roles.php:153
 msgid "Show inactive:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/security_roles.php:158
+#: c:\Apache2\htdocs\account22/admin/security_roles.php:169
 msgid "Role name:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/security_roles.php:159
+#: c:\Apache2\htdocs\account22/admin/security_roles.php:170
 msgid "Role description:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/security_roles.php:160
+#: c:\Apache2\htdocs\account22/admin/security_roles.php:171
 msgid "Current status:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/security_roles.php:174
+#: c:\Apache2\htdocs\account22/admin/security_roles.php:189
 msgid "On/off set of features"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/security_roles.php:193
-#: c:\Apache2\htdocs\account22/admin/security_roles.php:199
+#: c:\Apache2\htdocs\account22/admin/security_roles.php:208
+#: c:\Apache2\htdocs\account22/admin/security_roles.php:214
 msgid "Update view"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/security_roles.php:194
+#: c:\Apache2\htdocs\account22/admin/security_roles.php:209
 msgid "Insert New Role"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/security_roles.php:198
+#: c:\Apache2\htdocs\account22/admin/security_roles.php:213
 msgid "Save Role"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/security_roles.php:200
+#: c:\Apache2\htdocs\account22/admin/security_roles.php:215
 msgid "Clone This Role"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/security_roles.php:201
+#: c:\Apache2\htdocs\account22/admin/security_roles.php:216
 msgid "Delete This Role"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/security_roles.php:202
+#: c:\Apache2\htdocs\account22/admin/security_roles.php:217
 msgid "Cancel"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/security_roles.php:202
+#: c:\Apache2\htdocs\account22/admin/security_roles.php:217
 msgid "Cancel Edition"
 msgstr ""
 
@@ -2172,7 +2203,7 @@ msgid "Install/Update &Languages"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/applications/setup.php:45
-msgid "Install/Update &Modules"
+msgid "Install/Activate &Extensions"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/applications/setup.php:46
@@ -2265,8 +2296,7 @@ msgstr ""
 
 #: c:\Apache2\htdocs\account22/dimensions/dimension_entry.php:122
 #: c:\Apache2\htdocs\account22/gl/bank_transfer.php:146
-#: c:\Apache2\htdocs\account22/gl/gl_bank.php:134
-#: c:\Apache2\htdocs\account22/gl/gl_journal.php:171
+#: c:\Apache2\htdocs\account22/gl/gl_bank.php:136
 msgid "The entered reference is already in use."
 msgstr ""
 
@@ -2429,7 +2459,7 @@ msgstr ""
 
 #: c:\Apache2\htdocs\account22/gl/bank_account_reconcile.php:35
 #: c:\Apache2\htdocs\account22/gl/bank_transfer.php:30
-#: c:\Apache2\htdocs\account22/gl/gl_bank.php:41
+#: c:\Apache2\htdocs\account22/gl/gl_bank.php:43
 msgid "There are no bank accounts defined in the system."
 msgstr ""
 
@@ -2549,8 +2579,7 @@ msgid "The Bank Charge Account has not been set in System and General GL Setup."
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/gl/bank_transfer.php:139
-#: c:\Apache2\htdocs\account22/gl/gl_bank.php:128
-#: c:\Apache2\htdocs\account22/gl/gl_journal.php:165
+#: c:\Apache2\htdocs\account22/gl/gl_bank.php:130
 msgid "You must enter a reference."
 msgstr ""
 
@@ -2558,71 +2587,71 @@ msgstr ""
 msgid "The source and destination bank accouts cannot be the same."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/gl/gl_bank.php:31
+#: c:\Apache2\htdocs\account22/gl/gl_bank.php:33
 msgid "Bank Account Payment Entry"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/gl/gl_bank.php:35
+#: c:\Apache2\htdocs\account22/gl/gl_bank.php:37
 msgid "Bank Account Deposit Entry"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/gl/gl_bank.php:65
+#: c:\Apache2\htdocs\account22/gl/gl_bank.php:67
 msgid "Payment has been entered"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/gl/gl_bank.php:67
+#: c:\Apache2\htdocs\account22/gl/gl_bank.php:69
 msgid "&View the GL Postings for this Payment"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/gl/gl_bank.php:69
+#: c:\Apache2\htdocs\account22/gl/gl_bank.php:71
 msgid "Enter Another &Payment"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/gl/gl_bank.php:71
+#: c:\Apache2\htdocs\account22/gl/gl_bank.php:73
 msgid "Enter A &Deposit"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/gl/gl_bank.php:81
+#: c:\Apache2\htdocs\account22/gl/gl_bank.php:83
 msgid "Deposit has been entered"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/gl/gl_bank.php:83
+#: c:\Apache2\htdocs\account22/gl/gl_bank.php:85
 msgid "View the GL Postings for this Deposit"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/gl/gl_bank.php:85
+#: c:\Apache2\htdocs\account22/gl/gl_bank.php:87
 msgid "Enter Another Deposit"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/gl/gl_bank.php:87
+#: c:\Apache2\htdocs\account22/gl/gl_bank.php:89
 msgid "Enter A Payment"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/gl/gl_bank.php:121
+#: c:\Apache2\htdocs\account22/gl/gl_bank.php:123
 msgid "You must enter at least one payment line."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/gl/gl_bank.php:140
+#: c:\Apache2\htdocs\account22/gl/gl_bank.php:142
 msgid "The entered date for the payment is invalid."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/gl/gl_bank.php:189
+#: c:\Apache2\htdocs\account22/gl/gl_bank.php:191
 msgid "The source and destination accouts cannot be the same."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/gl/gl_bank.php:271
+#: c:\Apache2\htdocs\account22/gl/gl_bank.php:273
 msgid "Payment Items"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/gl/gl_bank.php:271
+#: c:\Apache2\htdocs\account22/gl/gl_bank.php:273
 msgid "Deposit Items"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/gl/gl_bank.php:279
+#: c:\Apache2\htdocs\account22/gl/gl_bank.php:281
 msgid "Process Payment"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/gl/gl_bank.php:279
+#: c:\Apache2\htdocs\account22/gl/gl_bank.php:281
 msgid "Process Deposit"
 msgstr ""
 
@@ -3010,7 +3039,6 @@ msgid "Cannot delete this currency, because thre are bank accounts that use this
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/gl/manage/currencies.php:138
-#: c:\Apache2\htdocs\account22/gl/manage/gl_account_types.php:111
 msgid "Selected currency has been deleted"
 msgstr ""
 
@@ -3241,7 +3269,6 @@ msgid "Class Name"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/gl/manage/gl_account_classes.php:112
-#: c:\Apache2\htdocs\account22/gl/manage/gl_account_types.php:128
 msgid "Class Type"
 msgstr ""
 
@@ -3260,7 +3287,6 @@ msgid "Class Name:"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/gl/manage/gl_account_classes.php:173
-#: c:\Apache2\htdocs\account22/gl/manage/gl_account_types.php:187
 msgid "Class Type:"
 msgstr ""
 
@@ -3823,7 +3849,6 @@ msgid "The quantity entered must be a positive number."
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/inventory/transfers.php:230
-#: c:\Apache2\htdocs\account22/inventory/manage/items.php:16
 msgid "Items"
 msgstr ""
 
@@ -3914,6 +3939,8 @@ msgid "The item code cannot contain any of the following characters -  & + OR a 
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/inventory/manage/items.php:150
+#: c:\Apache2\htdocs\account22/inventory/manage/item_codes.php:55
+#: c:\Apache2\htdocs\account22/inventory/manage/sales_kits.php:90
 msgid "This item code is already assigned to stock item or sale kit."
 msgstr ""
 
@@ -3958,6 +3985,9 @@ msgid "New item"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/inventory/manage/items.php:310
+#: c:\Apache2\htdocs\account22/inventory/view/view_adjustment.php:56
+#: c:\Apache2\htdocs\account22/inventory/view/view_transfer.php:39
+#: c:\Apache2\htdocs\account22/inventory/view/view_transfer.php:57
 msgid "Item"
 msgstr ""
 
@@ -3967,22 +3997,32 @@ msgid "Item Code:"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/inventory/manage/items.php:349
+#: c:\Apache2\htdocs\account22/inventory/manage/item_codes.php:177
+#: c:\Apache2\htdocs\account22/inventory/manage/movement_types.php:133
+#: c:\Apache2\htdocs\account22/inventory/manage/sales_kits.php:207
+#: c:\Apache2\htdocs\account22/inventory/manage/sales_kits.php:231
 msgid "Description:"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/inventory/manage/items.php:351
+#: c:\Apache2\htdocs\account22/inventory/manage/item_codes.php:178
+#: c:\Apache2\htdocs\account22/inventory/manage/sales_kits.php:208
+#: c:\Apache2\htdocs\account22/inventory/manage/sales_kits.php:232
 msgid "Category:"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/inventory/manage/items.php:372
+#: c:\Apache2\htdocs\account22/inventory/manage/item_categories.php:191
 msgid "Item Tax Type:"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/inventory/manage/items.php:374
+#: c:\Apache2\htdocs\account22/inventory/manage/item_categories.php:193
 msgid "Item Type:"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/inventory/manage/items.php:376
+#: c:\Apache2\htdocs\account22/inventory/manage/item_categories.php:195
 msgid "Units of Measure:"
 msgstr ""
 
@@ -4011,6 +4051,7 @@ msgid "Delete Image:"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/inventory/manage/items.php:442
+#: c:\Apache2\htdocs\account22/inventory/manage/item_categories.php:197
 msgid "Exclude from sales:"
 msgstr ""
 
@@ -4773,10 +4814,12 @@ msgid "Release Work Order"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/manufacturing/inquiry/bom_cost_inquiry.php:24
+#: c:\Apache2\htdocs\account22/manufacturing/manage/bom_edit.php:24
 msgid "There are no manufactured or kit items defined in the system."
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/manufacturing/inquiry/bom_cost_inquiry.php:35
+#: c:\Apache2\htdocs\account22/manufacturing/manage/bom_edit.php:220
 msgid "Select a manufacturable item:"
 msgstr ""
 
@@ -5319,43 +5362,43 @@ msgstr ""
 msgid "Enter another supplier &payment"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/purchasing/supplier_payment.php:113
+#: c:\Apache2\htdocs\account22/purchasing/supplier_payment.php:116
 msgid "The exchange rate must be numeric and greater than zero."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/purchasing/supplier_payment.php:125
+#: c:\Apache2\htdocs\account22/purchasing/supplier_payment.php:128
 msgid "The entered discount is invalid or less than zero."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/purchasing/supplier_payment.php:132
+#: c:\Apache2\htdocs\account22/purchasing/supplier_payment.php:135
 msgid "The total of the amount and the discount is zero or negative. Please enter positive values."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/purchasing/supplier_payment.php:219
+#: c:\Apache2\htdocs\account22/purchasing/supplier_payment.php:226
 msgid "Payment To:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/purchasing/supplier_payment.php:226
+#: c:\Apache2\htdocs\account22/purchasing/supplier_payment.php:233
 msgid "From Bank Account:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/purchasing/supplier_payment.php:232
+#: c:\Apache2\htdocs\account22/purchasing/supplier_payment.php:239
 msgid "Date Paid"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/purchasing/supplier_payment.php:255
+#: c:\Apache2\htdocs\account22/purchasing/supplier_payment.php:262
 msgid "Amount of Discount:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/purchasing/supplier_payment.php:256
+#: c:\Apache2\htdocs\account22/purchasing/supplier_payment.php:263
 msgid "Amount of Payment:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/purchasing/supplier_payment.php:262
+#: c:\Apache2\htdocs\account22/purchasing/supplier_payment.php:269
 msgid "The amount and discount are in the bank account's currency."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/purchasing/supplier_payment.php:265
+#: c:\Apache2\htdocs\account22/purchasing/supplier_payment.php:272
 msgid "Enter Payment"
 msgstr ""
 
@@ -7351,43 +7394,43 @@ msgstr ""
 msgid "The entered amount is invalid or negative and cannot be processed."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/sales/customer_payments.php:132
+#: c:\Apache2\htdocs\account22/sales/customer_payments.php:134
 msgid "The entered discount is not a valid number."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/sales/customer_payments.php:138
+#: c:\Apache2\htdocs\account22/sales/customer_payments.php:140
 msgid "The balance of the amount and discout is zero or negative. Please enter valid amounts."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/sales/customer_payments.php:219
+#: c:\Apache2\htdocs\account22/sales/customer_payments.php:225
 msgid "From Customer:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/sales/customer_payments.php:224
+#: c:\Apache2\htdocs\account22/sales/customer_payments.php:230
 msgid "Branch:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/sales/customer_payments.php:234
+#: c:\Apache2\htdocs\account22/sales/customer_payments.php:240
 msgid "This customer account is on hold."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/sales/customer_payments.php:240
+#: c:\Apache2\htdocs\account22/sales/customer_payments.php:246
 msgid "Into Bank Account:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/sales/customer_payments.php:247
+#: c:\Apache2\htdocs\account22/sales/customer_payments.php:253
 msgid "Date of Deposit:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/sales/customer_payments.php:271
+#: c:\Apache2\htdocs\account22/sales/customer_payments.php:277
 msgid "Customer prompt payment discount :"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/sales/customer_payments.php:280
+#: c:\Apache2\htdocs\account22/sales/customer_payments.php:286
 msgid "Amount and discount are in customer's currency."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/sales/customer_payments.php:284
+#: c:\Apache2\htdocs\account22/sales/customer_payments.php:290
 msgid "Add Payment"
 msgstr ""
 
@@ -8648,12 +8691,16 @@ msgid ""
 "\t\t\tdatabase restore from last backup file first."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/sql/alter2.2.php:89
+#: c:\Apache2\htdocs\account22/sql/alter2.2.php:99
 msgid "Cannot query max sales order number."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/sql/alter2.2.php:101
+#: c:\Apache2\htdocs\account22/sql/alter2.2.php:111
 msgid "Cannot store next sales order reference."
+msgstr ""
+
+#: c:\Apache2\htdocs\account22/sql/alter2.2.php:251
+msgid "Cannot upgrade extensions system: file /modules/installed_modules.php is not writeable"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/taxes/item_tax_types.php:17
@@ -8942,7 +8989,17 @@ msgstr ""
 msgid "Inventory Item Movements"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/db/maintenance_db.inc:239
+#: c:\Apache2\htdocs\account22/admin/db/maintenance_db.inc:182
+#, php-format
+msgid "Cannot open the extension setup file '%s' for writing."
+msgstr ""
+
+#: c:\Apache2\htdocs\account22/admin/db/maintenance_db.inc:190
+#, php-format
+msgid "Cannot write to the extensions setup file '%s'."
+msgstr ""
+
+#: c:\Apache2\htdocs\account22/admin/db/maintenance_db.inc:362
 #, php-format
 msgid "SQL script execution failed in line %d: %s"
 msgstr ""
@@ -9088,451 +9145,463 @@ msgstr ""
 msgid "Manufacturing analytics"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:68
-msgid "Banking & GL configuration"
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:67
+msgid "Dimensions configuration"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/includes/access_levels.inc:69
-msgid "Banking & GL transactions"
+msgid "Banking & GL configuration"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/includes/access_levels.inc:70
+msgid "Banking & GL transactions"
+msgstr ""
+
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:71
 msgid "Banking & GL analytics"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:88
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:89
 msgid "Install/update companies"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:89
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:90
 msgid "Install/update languages"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:90
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:91
 msgid "Install/upgrade modules"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:91
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:92
 msgid "Software upgrades"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:95
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:96
 msgid "Company parameters"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:96
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:97
 msgid "Access levels edition"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:97
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:98
 msgid "Users setup"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:98
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:99
 msgid "Point of sales definitions"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:99
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:100
 msgid "Printers configuration"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:100
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:101
 msgid "Print profiles"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:101
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:102
 msgid "Payment terms"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:102
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:103
 msgid "Shipping ways"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:103
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:104
 msgid "Credit status definitions changes"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:104
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:105
 msgid "Inventory locations changes"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:105
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:106
 msgid "Inventory movement types"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:106
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:107
 msgid "Manufacture work centres"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:107
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:108
 msgid "Forms setup"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:111
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:112
 msgid "Voiding transactions"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:112
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:113
 msgid "Database backup/restore"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:113
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:114
 msgid "Common view/print transactions interface"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:114
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:115
 msgid "Attaching documents"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:115
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:116
 msgid "Display preferences"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:116
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:117
 msgid "Password changes"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:121
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:122
 msgid "Sales types"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:122
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:123
 msgid "Sales prices edition"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:123
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:124
 msgid "Sales staff maintenance"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:124
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:125
 msgid "Sales areas maintenance"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:125
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:126
 msgid "Sales groups changes"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:126
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:127
 msgid "Sales templates"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:127
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:128
 msgid "Recurrent invoices definitions"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:129
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:130
 msgid "Sales transactions view"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:130
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:131
 msgid "Sales customer and branches changes"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:131
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:132
 msgid "Sales orders edition"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:132
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:133
 msgid "Sales deliveries edition"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:133
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:134
 msgid "Sales invoices edition"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:134
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:135
 msgid "Sales credit notes against invoice"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:135
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:136
 msgid "Sales freehand credit notes"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:136
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:137
 msgid "Customer payments entry"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:137
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:138
 msgid "Customer payments allocation"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:139
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:140
 msgid "Sales analytical reports"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:140
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:141
 msgid "Sales document bulk reports"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:141
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:142
 msgid "Sales prices listing"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:142
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:143
 msgid "Sales staff listing"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:143
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:144
 msgid "Customer bulk listing"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:144
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:145
 msgid "Customer status report"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:145
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:146
 msgid "Customer payments report"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:150
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:151
 msgid "Purchase price changes"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:152
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:153
 msgid "Supplier transactions view"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:153
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:154
 msgid "Suppliers changes"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:154
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:155
 msgid "Purchase order entry"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:155
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:156
 msgid "Purchase receive"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:156
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:157
 msgid "Supplier invoices"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:157
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:158
 msgid "Deleting GRN items during invoice entry"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:158
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:159
 msgid "Supplier credit notes"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:159
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:160
 msgid "Supplier payments"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:160
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:161
 msgid "Supplier payments allocations"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:162
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:163
 msgid "Supplier analytical reports"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:163
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:164
 msgid "Supplier document bulk reports"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:164
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:165
 msgid "Supplier payments report"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:168
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:169
 msgid "Stock items add/edit"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:169
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:170
 msgid "Sales kits"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:170
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:171
 msgid "Item categories"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:171
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:172
 msgid "Units of measure"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:173
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:174
 msgid "Stock status view"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:174
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:175
 msgid "Stock transactions view"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:175
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:176
 msgid "Foreign item codes entry"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:176
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:177
 msgid "Inventory location transfers"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:177
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:178
 msgid "Inventory adjustments"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:179
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:180
 msgid "Reorder levels"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:180
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:181
 msgid "Items analytical reports and inquiries"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:181
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:182
 msgid "Inventory valuation report"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:186
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:187
 msgid "Bill of Materials"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:188
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:189
 msgid "Manufacturing operations view"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:189
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:190
 msgid "Work order entry"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:190
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:191
 msgid "Material issues entry"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:191
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:192
 msgid "Final product receive"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:192
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:193
 msgid "Work order releases"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:194
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:195
 msgid "Work order analytical reports and inquiries"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:195
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:196
 msgid "Manufacturing cost inquiry"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:196
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:197
 msgid "Work order bulk reports"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:197
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:198
 msgid "Bill of materials reports"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:201
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:202
+msgid "Dimension tags"
+msgstr ""
+
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:204
 msgid "Dimension view"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:203
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:206
 msgid "Dimension entry"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:205
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:208
 msgid "Dimension reports"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:209
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:212
 msgid "Item tax type definitions"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:210
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:213
 msgid "GL accounts edition"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:211
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:214
 msgid "GL account groups"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:212
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:215
 msgid "GL account classes"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:213
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:216
 msgid "Quick GL entry definitions"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:215
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:218
 msgid "Bank accounts"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:216
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:219
 msgid "Tax rates"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:217
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:220
 msgid "Tax groups"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:218
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:221
 msgid "Fiscal years maintenance"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:219
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:222
 msgid "Company GL setup"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:221
-msgid "Bank transactions view"
-msgstr ""
-
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:222
-msgid "GL postings view"
-msgstr ""
-
 #: c:\Apache2\htdocs\account22/includes/access_levels.inc:223
-msgid "Exchange rate table changes"
-msgstr ""
-
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:224
-msgid "Bank payments"
+msgid "GL Account tags"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/includes/access_levels.inc:225
-msgid "Bank deposits"
+msgid "Bank transactions view"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/includes/access_levels.inc:226
-msgid "Bank account transfers"
+msgid "GL postings view"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/includes/access_levels.inc:227
-msgid "Bank reconciliation"
+msgid "Exchange rate table changes"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/includes/access_levels.inc:228
-msgid "Manual journal entries"
+msgid "Bank payments"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/includes/access_levels.inc:229
-msgid "Journal entries to bank related accounts"
+msgid "Bank deposits"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/includes/access_levels.inc:230
-msgid "Budget edition"
+msgid "Bank account transfers"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/includes/access_levels.inc:231
-msgid "Item standard costs"
+msgid "Bank reconciliation"
+msgstr ""
+
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:232
+msgid "Manual journal entries"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/includes/access_levels.inc:233
-msgid "GL analytical reports and inquiries"
+msgid "Journal entries to bank related accounts"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/includes/access_levels.inc:234
-msgid "Tax reports and inquiries"
+msgid "Budget edition"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/includes/access_levels.inc:235
+msgid "Item standard costs"
+msgstr ""
+
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:237
+msgid "GL analytical reports and inquiries"
+msgstr ""
+
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:238
+msgid "Tax reports and inquiries"
+msgstr ""
+
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:239
 msgid "Bank reports and inquiries"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/access_levels.inc:236
+#: c:\Apache2\htdocs\account22/includes/access_levels.inc:240
 msgid "GL reports and inquiries"
 msgstr ""
 
@@ -9545,11 +9614,15 @@ msgstr ""
 msgid "Before software upgrade you have to include old $security_groups and $security_headings arrays from old config.php file to the new one."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/current_user.inc:85
+#: c:\Apache2\htdocs\account22/includes/current_user.inc:76
+msgid "Back"
+msgstr ""
+
+#: c:\Apache2\htdocs\account22/includes/current_user.inc:86
 msgid "System is available for site admin only until full database upgrade"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/current_user.inc:404
+#: c:\Apache2\htdocs\account22/includes/current_user.inc:406
 msgid "Requesting data..."
 msgstr ""
 
@@ -9573,7 +9646,7 @@ msgstr ""
 msgid "The entered information is a duplicate. Please go back and enter different values."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/main.inc:42
+#: c:\Apache2\htdocs\account22/includes/main.inc:43
 msgid "This page is usable only with javascript enabled browsers."
 msgstr ""
 
@@ -9605,12 +9678,7 @@ msgstr ""
 msgid "Please remove $security_groups and $security_headings arrays from config.php file!"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/session.inc:62
-#: c:\Apache2\htdocs\account22/includes/session.inc:74
-msgid "Access denied"
-msgstr ""
-
-#: c:\Apache2\htdocs\account22/includes/session.inc:77
+#: c:\Apache2\htdocs\account22/includes/session.inc:72
 msgid "The security settings on your account do not permit you to access this function"
 msgstr ""
 
@@ -9878,11 +9946,6 @@ msgstr ""
 msgid "to continue"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/ui/ui_controls.inc:131
-#: c:\Apache2\htdocs\account22/includes/ui/ui_view.inc:801
-msgid "Back"
-msgstr ""
-
 #: c:\Apache2\htdocs\account22/includes/ui/ui_controls.inc:334
 msgid "Branches"
 msgstr ""
@@ -9960,11 +10023,6 @@ msgstr ""
 msgid "All Locations"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/ui/ui_lists.inc:602
-#: c:\Apache2\htdocs\account22/includes/ui/ui_lists.inc:2063
-msgid "Active"
-msgstr ""
-
 #: c:\Apache2\htdocs\account22/includes/ui/ui_lists.inc:683
 #: c:\Apache2\htdocs\account22/includes/ui/ui_lists.inc:750
 msgid "All Items"
@@ -10018,6 +10076,15 @@ msgstr ""
 
 #: c:\Apache2\htdocs\account22/includes/ui/ui_lists.inc:2089
 msgid "New role"
+msgstr ""
+
+#: c:\Apache2\htdocs\account22/includes/ui/ui_lists.inc:2138
+#, php-format
+msgid "Activated for '%s'"
+msgstr ""
+
+#: c:\Apache2\htdocs\account22/includes/ui/ui_lists.inc:2141
+msgid "Installed on system"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/includes/ui/ui_msgs.inc:63
