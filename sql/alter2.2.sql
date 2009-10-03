@@ -124,11 +124,10 @@ CREATE TABLE `0_tags` (
 DROP TABLE IF EXISTS `0_tag_associations`;
 
 CREATE TABLE `0_tag_associations` (
-  `id` int(11) NOT NULL auto_increment,
   `record_id` varchar(11) NOT NULL,
   `tag_id` int(11) NOT NULL,
-  PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=1;
+  UNIQUE KEY(`record_id`,`tag_id`)
+) TYPE=MyISAM;
 
 ALTER TABLE `0_suppliers` ADD COLUMN `phone2` varchar(30) NOT NULL default '' AFTER `phone`;
 ALTER TABLE `0_cust_branch` ADD COLUMN `phone2` varchar(30) NOT NULL default '' AFTER `phone`;
