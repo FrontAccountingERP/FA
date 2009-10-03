@@ -12,9 +12,9 @@
 $page_security = 'SA_OPEN';
 $path_to_root="..";
 include($path_to_root . "/includes/session.inc");
-include_once($path_to_root . "/includes/ui/ui_view.inc");
 
-page(_("Logout"), true, false, "", get_js_png_fix());
+include($path_to_root . "/includes/page/header.inc");
+page_header(_("Logout"), true, false, '', get_js_png_fix());
 
 echo "<table width='100%' border='0'>
   <tr>
