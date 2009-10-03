@@ -39,6 +39,7 @@ $opts = array(		// default options
 	'spec_id' => 0,		// option id
 		// submit on select parameters
 	'default' => '', // default value when $_POST is not set
+	'multi' => false,	// multiple select
 	'select_submit' => false, //submit on select: true/false
 	'async' => true,	// select update via ajax (true) vs _page_body reload
 		// search box parameters
@@ -74,7 +75,8 @@ $opts = array(		// default options
 	$by_id = ($opts['type'] == 0);
 	$class = $by_id ? 'combo':'combo2';
 	$disabled = $opts['disabled'] ? "disabled" : '';
-
+	$multi = $opts['multi'];
+	
 	if(!count($opts['search'])) {
 		$opts['search'] = array($by_id ? $valfield : $namefield);
 	}
@@ -90,6 +92,9 @@ $opts = array(		// default options
 	if ($selected_id == null) {
 		$selected_id = get_post($name, $opts['default']);
 	}
+	if(!is_array($selected_id))
+		$selected_id = array($selected_id); // code is generalized for multiple selection support
+
 	$txt = get_post($search_box);
 	$rel = '';
 	$limit = '';
@@ -108,14 +113,14 @@ $opts = array(		// default options
 	$rel = "rel='$search_box'"; // set relation to list
    if ($opts['search_submit']) {
 	if (isset($_POST[$search_submit])) {
-		$selected_id = ''; // ignore selected_id while search
+		$selected_id = array(); // ignore selected_id while search
 		if (!$opts['async'])
 			$Ajax->activate('_page_body');
 		else
 			$Ajax->activate($name);
 	}
 	if ($txt == '') {
-		if ($spec_option === false && $selected_id==null)
+		if ($spec_option === false && $selected_id == array())
 		  $limit = ' LIMIT 1';
 		else
 		  $opts['where'][] = $valfield . "='". get_post($name, $spec_id)."'";
@@ -158,12 +163,12 @@ $opts = array(		// default options
 		while ($contact_row = db_fetch($result)) {
 			$value = $contact_row[0];
 			$descr = $opts['format']==null ?  $contact_row[1] :
-			call_user_func($opts['format'], $contact_row);
+				call_user_func($opts['format'], $contact_row);
 			$sel = '';
  		 	if (get_post($search_submit) && ($txt === $value)) {
- 		 		$selected_id = $value;
+ 		 		$selected_id[] = $value;
  		 	}
- 		 	if	((string)($selected_id) === $value) {
+ 		 	if (in_array($value, $selected_id)) {
 				$sel = 'selected';
 				$found = $value;
 			}
@@ -199,18 +204,18 @@ $opts = array(		// default options
 			. $selector;
 	}
 
-	if ($found === false) {
-		$selected_id = $first_id;
+	if ($found===false) {
+		$selected_id = array($first_id);
 	}
-	$_POST[$name] = $selected_id;
+	$_POST[$name] = $multi ? $selected_id : $selected_id[0];
 
 	if ($by_id && $search_box != false) {
  		$txt = $found;
 		$Ajax->addUpdate($name, $search_box, $txt ? $txt : '');
 	}
-	$selector = "<select ".(strpos($name,'[]')!==false ? "multiple" : '')
+	$selector = "<select ".($multi ? "multiple" : '')
 		. ($opts['height']!==false ? ' size="'.$opts['height'].'"' : '')
-		. "$disabled name='$name' class='$class' title='"
+		. "$disabled name='$name".($multi ? '[]':'')."' class='$class' title='"
 		. $opts['sel_hint']."' $rel>".$selector."</select>\n";
 
 	$Ajax->addUpdate($name, "_{$name}_sel", $selector);
@@ -249,7 +254,6 @@ $opts = array(		// default options
 		echo ($edit_entry!='' ? "<td>$edit_entry</td>" : '')."<td>$selector</td>";
 	else
 		echo $edit_entry.$selector;
-
 	return $str;
 }
 
@@ -276,6 +280,7 @@ $opts = array(		// default options
 	'select_submit' => false, //submit on select: true/false
 	'async' => true,	// select update via ajax (true) vs _page_body reload
 	'default' => '', // default value when $_POST is not set
+	'multi'=>false,	// multiple select
 		// search box parameters
 	'height' => false,	// number of lines in select box
 	'sel_hint' => null,
@@ -288,10 +293,13 @@ $opts = array(		// default options
 	$spec_id = $opts['spec_id'];
 	$spec_option = $opts['spec_option'];
 	$disabled = $opts['disabled'] ? "disabled" : '';
+	$multi = $opts['multi'];
 
 	if ($selected_id == null) {
 		$selected_id = get_post($name, $opts['default']);
 	}
+	if(!is_array($selected_id))
+		$selected_id = array($selected_id); // code is generalized for multiple selection support
 
 	if (isset($_POST[ '_'.$name.'_update'])) {
 		if (!$opts['async'])
@@ -307,7 +315,7 @@ $opts = array(		// default options
 //if($name=='SelectStockFromList') display_error($sql);
 		foreach($items as $value=>$descr) {
 			$sel = '';
-			if ((string)$selected_id === (string)$value) {
+			if (in_array((string)$value, $selected_id)) {
 				$sel = 'selected';
 				$found = $value;
 			}
@@ -322,19 +330,18 @@ $opts = array(		// default options
 	if ($spec_option !== false) { // if special option used - add it
 		$first_id = $spec_id;
 		$first_opt = $spec_option;
-		$sel = $found===false ? 'selected' : '';
+		$sel = $found!==false ? 'selected' : '';
 		$selector = "<option $sel value='$spec_id'>$spec_option</option>\n"
 			. $selector;
 	}
 
 	if ($found === false) {
-		$selected_id = $first_id;
+		$selected_id[] = $first_id;
 	}
-	$_POST[$name] = $selected_id;
-
-	$selector = "<select ".(strpos($name,'[]')!==false ? "multiple" : '')
+	$_POST[$name] = $multi ? $selected_id : $selected_id[0];
+	$selector = "<select ".($multi  ? "multiple" : '')
 		. ($opts['height']!==false ? ' size="'.$opts['height'].'"' : '')
-		. "$disabled name='$name' class='combo' title='"
+		. "$disabled name='$name".($multi ? '[]' : '')."' class='combo' title='"
 		. $opts['sel_hint']."'>".$selector."</select>\n";
 
 	$Ajax->addUpdate($name, "_{$name}_sel", $selector);
@@ -1638,7 +1645,7 @@ function languages_list($name, $selected_id=null)
 	foreach ($installed_languages as $lang)
 			$items[$lang['code']] = $lang['name'];
 	
-	return array_selector($name, $selected_id, $items );
+	return array_selector($name, $selected_id, $items);
 }
 
 function languages_list_cells($label, $name, $selected_id=null)
