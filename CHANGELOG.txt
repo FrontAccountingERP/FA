@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+06-Oct-2009 Tom Hallman
+# moved commit_transaction and added a default use_transaction param in write_journal_entries
+$ /gl/include/db/gl_db_trans.inc
+
 03-Oct-2009 Joe Hunt
 # Bad conversion of timestamp value in report audit trail.
 $ /reporting/rep710.php

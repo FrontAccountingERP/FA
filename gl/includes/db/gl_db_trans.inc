@@ -354,7 +354,7 @@ function get_tax_summary($from, $to)
 //--------------------------------------------------------------------------------
 // Write/update journal entries.
 //
-function write_journal_entries(&$cart, $reverse)
+function write_journal_entries(&$cart, $reverse, $use_transaction=true)
 {
 	global $Refs;
 
@@ -365,7 +365,8 @@ function write_journal_entries(&$cart, $reverse)
 	$trans_type = $cart->trans_type;
 	$trans_id = $new ? get_next_trans_no($trans_type) : $cart->order_id;
 
-	begin_transaction();
+	if ($use_transaction)
+		begin_transaction();
 	
 	if($new) {
 		$cart->order_id = $trans_id;
@@ -401,8 +402,6 @@ function write_journal_entries(&$cart, $reverse)
 
 	add_audit_trail($trans_type, $trans_id, $date_);
 
-	commit_transaction();
-
 	if ($reverse)
 	{
     	//$reversingDate = date(user_date_display(),
@@ -435,6 +434,9 @@ function write_journal_entries(&$cart, $reverse)
     	$Refs->save($trans_type, $trans_id_reverse, $ref);
 		add_audit_trail($trans_type, $trans_id_reverse, $reversingDate);
 	}
+
+	if ($use_transaction)
+		commit_transaction();
 
 	return $trans_id;
 }
