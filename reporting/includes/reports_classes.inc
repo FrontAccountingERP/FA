@@ -134,8 +134,8 @@ class Report
 			switch ($param->param_type)
 			{
 				case 'CURRENCY':
-					$sql = "SELECT curr_abrev, concat(curr_abrev,' - ', currency) FROM ".TB_PREF."currencies";
-					$st .= dup_simple_codeandname_list($sql, "PARAM_$index", $dummy, true, _("No Currency Filter"));
+					$sql = "SELECT curr_abrev, concat(curr_abrev,' - ', currency) AS name FROM ".TB_PREF."currencies";
+					$st .= combo_input("PARAM_$index", '', $sql, 'curr_abrev', 'name',array('spec_option'=>_("No Currency Filter"),'spec_id'=>ALL_TEXT,'order'=>false));
 					break;
 				case 'DATE':
 				case 'DATEBEGIN':
