@@ -140,7 +140,7 @@ $reports->addReportClass(_('Inventory'));
 $reports->addReport(_('Inventory'),301,_('Inventory &Valuation Report'),
 	array(	new ReportParam(_('Inventory Category'),'CATEGORIES'),
 			new ReportParam(_('Location'),'LOCATIONS'),
-			new ReportParam(_('Detailed Report'),'YES_NO'),
+			new ReportParam(_('Summary Only'),'YES_NO'),
 			new ReportParam(_('Comments'),'TEXTBOX'),
 			new ReportParam(_('Destination'),'DESTINATION')));
 $reports->addReport(_('Inventory'),302,_('Inventory &Planning Report'),

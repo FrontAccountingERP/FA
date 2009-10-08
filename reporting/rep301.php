@@ -76,7 +76,7 @@ function print_inventory_valuation_report()
 		include_once($path_to_root . "/reporting/includes/excel_report.inc");
 	else
 		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
-
+	$detail = !$detail;
     $dec = user_price_dec();
 
 	if ($category == ALL_NUMERIC)

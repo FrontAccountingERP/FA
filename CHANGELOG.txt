@@ -19,6 +19,15 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+08-Oct-2009 Joe Hunt
++ Prepared the Report Engine for Tags handling.
+! Changed report::getDisplay() to use combo_input from ui_lists.inc insted of local function
+  dup_simple_codeandname_list().
+$ /reporting/includes/reports_classes.inc
+! Changed a parameter in report 301.php to be Summary Only instead of Detailed report.
+$ /reporting/reports_main.php
+  /reporting/rep301.php
+
 06-Oct-2009 Tom Hallman
 # moved commit_transaction and added a default use_transaction param in write_journal_entries
 $ /gl/includes/db/gl_db_trans.inc

@@ -207,56 +207,56 @@ class Report
 					$st .= "<textarea rows=4 cols=30 name='PARAM_$index'></textarea>";
 					break;
 				case 'ACCOUNTS':
-					$sql = "SELECT id, name FROM ".TB_PREF."chart_types ORDER BY name";
-					$st .= dup_simple_codeandname_list($sql, "PARAM_$index", $dummy, true, _("No Account Group Filter"), true);
+					$sql = "SELECT id, name FROM ".TB_PREF."chart_types";
+					$st .= combo_input("PARAM_$index", '', $sql, 'id', 'name',array('spec_option'=>_("No Account Group Filter"),'spec_id'=>ALL_NUMERIC));
 					break;
 				case 'GL_ACCOUNTS':
-					$sql = "SELECT account_code, concat(account_code, ' - ', account_name) as account_name FROM ".TB_PREF."chart_master ORDER BY account_code";
-					$st .= dup_simple_codeandname_list($sql, "PARAM_$index", $dummy);
+					$sql = "SELECT account_code, concat(account_code, ' - ', account_name) as account_name FROM ".TB_PREF."chart_master";
+					$st .= combo_input("PARAM_$index", '', $sql, 'account_code', 'account_name',array('order'=>array('account_code')));
 					break;
 				case 'BANK_ACCOUNTS':
-					$sql = "SELECT ".TB_PREF."bank_accounts.id, concat(bank_account_name, if (bank_curr_code=curr_default,'', concat(' - ', bank_curr_code))) FROM ".TB_PREF."bank_accounts, ".TB_PREF."company";
-					$st .= dup_simple_codeandname_list($sql, "PARAM_$index", $dummy);
+					$sql = "SELECT ".TB_PREF."bank_accounts.id, concat(bank_account_name, if (bank_curr_code=curr_default,'', concat(' - ', bank_curr_code))) AS name FROM ".TB_PREF."bank_accounts, ".TB_PREF."company";
+					$st .= combo_input("PARAM_$index", '', $sql, 'id', 'name',array('order'=>array('id')));
 					break;
 				case 'DIMENSION':
-					$sql = "SELECT id, concat(reference, ' - ', name) AS DimName FROM ".TB_PREF."dimensions ORDER BY reference";
-					$st .= dup_simple_codeandname_list($sql, "PARAM_$index", $dummy);
+					$sql = "SELECT id, concat(reference, ' - ', name) AS DimName FROM ".TB_PREF."dimensions";
+					$st .= combo_input("PARAM_$index", '', $sql, 'id', 'DimName',array('order'=>array('reference')));
 					break;
 				case 'DIMENSIONS':
-					$sql = "SELECT id, concat(reference, ' - ', name) as DimName FROM ".TB_PREF."dimensions ORDER BY reference";
-					$st .= dup_simple_codeandname_list($sql, "PARAM_$index", $dummy, true, _("No Dimension Filter"), true);
+					$sql = "SELECT id, concat(reference, ' - ', name) as DimName FROM ".TB_PREF."dimensions";
+					$st .= combo_input("PARAM_$index", '', $sql, 'id', 'DimName',array('spec_option'=>_("No Dimension Filter"),'spec_id'=>ALL_NUMERIC,'order'=>array('reference')));
 					break;
 				case 'DIMENSION1':
-					$sql = "SELECT id, concat(reference, ' - ', name) AS DimName FROM ".TB_PREF."dimensions WHERE type_=1 ORDER BY reference";
-					$st .= dup_simple_codeandname_list($sql, "PARAM_$index". "_$index", $dummy);
+					$sql = "SELECT id, concat(reference, ' - ', name) AS DimName FROM ".TB_PREF."dimensions WHERE type_=1";
+					$st .= combo_input("PARAM_$index", '', $sql, 'id', 'DimName',array('order'=>array('reference')));
 					break;
 				case 'DIMENSIONS1':
-					$sql = "SELECT id, concat(reference, ' - ', name) as DimName FROM ".TB_PREF."dimensions WHERE type_=1 ORDER BY reference";
-					$st .= dup_simple_codeandname_list($sql, "PARAM_$index", $dummy, true, _("No Dimension Filter"), true);
+					$sql = "SELECT id, concat(reference, ' - ', name) as DimName FROM ".TB_PREF."dimensions WHERE type_=1";
+					$st .= combo_input("PARAM_$index", '', $sql, 'id', 'DimName',array('spec_option'=>_("No Dimension Filter"),'spec_id'=>ALL_NUMERIC,'order'=>array('reference')));
 					break;
 				case 'DIMENSION2':
-					$sql = "SELECT id, concat(reference, ' - ', name) AS DimName FROM ".TB_PREF."dimensions WHERE type_=2 ORDER BY reference";
-					$st .= dup_simple_codeandname_list($sql, "PARAM_$index", $dummy);
+					$sql = "SELECT id, concat(reference, ' - ', name) AS DimName FROM ".TB_PREF."dimensions WHERE type_=2";
+					$st .= combo_input("PARAM_$index", '', $sql, 'id', 'DimName',array('order'=>array('reference')));
 					break;
 				case 'DIMENSIONS2':
-					$sql = "SELECT id, concat(reference, ' - ', name) as DimName FROM ".TB_PREF."dimensions WHERE type_=2 ORDER BY reference";
-					$st .= dup_simple_codeandname_list($sql, "PARAM_$index", $dummy, true, _("No Dimension Filter"), true);
+					$sql = "SELECT id, concat(reference, ' - ', name) as DimName FROM ".TB_PREF."dimensions WHERE type_=2";
+					$st .= combo_input("PARAM_$index", '', $sql, 'id', 'DimName',array('spec_option'=>_("No Dimension Filter"),'spec_id'=>ALL_NUMERIC,'order'=>array('reference')));
 					break;
 				case 'CUSTOMERS_NO_FILTER':
 				case 'CUSTOMERS':
-					$sql = "SELECT debtor_no, name FROM ".TB_PREF."debtors_master ORDER BY name";
+					$sql = "SELECT debtor_no, name FROM ".TB_PREF."debtors_master";
 					if ($param->param_type == 'CUSTOMERS_NO_FILTER')
-						$st .= dup_simple_codeandname_list($sql, "PARAM_$index", $dummy, true, _("No Customer Filter"), true);
+						$st .= combo_input("PARAM_$index", '', $sql, 'debtor_no', 'name',array('spec_option'=>_("No Customer Filter"),'spec_id'=>ALL_NUMERIC));
 					else
-						$st .= dup_simple_codeandname_list($sql, "PARAM_$index", $dummy);
+						$st .= combo_input("PARAM_$index", '', $sql, 'debtor_no', 'name', null);
 					break;
 				case 'SUPPLIERS_NO_FILTER':
 				case 'SUPPLIERS':
-					$sql = "SELECT supplier_id, supp_name FROM ".TB_PREF."suppliers ORDER BY supp_name";
+					$sql = "SELECT supplier_id, supp_name FROM ".TB_PREF."suppliers";
 					if ($param->param_type == 'SUPPLIERS_NO_FILTER')
-						$st .= dup_simple_codeandname_list($sql, "PARAM_$index", $dummy, true, _("No Supplier Filter"), true);
+						$st .= combo_input("PARAM_$index", '', $sql, 'supplier_id', 'supp_name',array('spec_option'=>_("No Supplier Filter"),'spec_id'=>ALL_NUMERIC));
 					else
-						$st .= dup_simple_codeandname_list($sql, "PARAM_$index", $dummy);
+						$st .= combo_input("PARAM_$index", '', $sql, 'supplier_id', 'supp_name', null);
 					break;
 				case 'INVOICE':
 					$IV = _("IV");
@@ -269,7 +269,7 @@ class Report
 						$sql = "SELECT concat(".TB_PREF."debtor_trans.trans_no, '-',
 							".TB_PREF."debtor_trans.type) AS TNO, concat(".TB_PREF."debtor_trans.reference, if (type=".ST_SALESINVOICE.", ' $IV ', ' $CN '), ".TB_PREF."debtors_master.name) as IName
 							FROM ".TB_PREF."debtors_master, ".TB_PREF."debtor_trans WHERE (type=".ST_SALESINVOICE." OR type=".ST_CUSTCREDIT.") AND ".TB_PREF."debtors_master.debtor_no=".TB_PREF."debtor_trans.debtor_no ORDER BY ".TB_PREF."debtor_trans.trans_no DESC";
-					$st .= dup_simple_codeandname_list($sql, "PARAM_$index", $dummy);
+					$st .= combo_input("PARAM_$index", '', $sql, 'TNO', 'IName',array('order'=>false));
 					break;
 				case 'DELIVERY':
 					$DN = _("DN");
@@ -279,69 +279,78 @@ class Report
 						FROM ".TB_PREF."debtors_master, ".TB_PREF."debtor_trans
 						WHERE type=".ST_CUSTDELIVERY." AND ".TB_PREF."debtors_master.debtor_no=".
 						TB_PREF."debtor_trans.debtor_no ORDER BY ".TB_PREF."debtor_trans.trans_no DESC";
-					$st .= dup_simple_codeandname_list($sql, "PARAM_$index", $dummy);
+					$st .= combo_input("PARAM_$index", '', $sql, 'TNO', 'IName',array('order'=>false));
 					break;
 				case 'ORDERS':
 					$sql = "SELECT ".TB_PREF."sales_orders.order_no, concat(".TB_PREF."sales_orders.order_no, '-',
 						".TB_PREF."debtors_master.name) as IName
 						FROM ".TB_PREF."debtors_master, ".TB_PREF."sales_orders WHERE ".TB_PREF."debtors_master.debtor_no=".TB_PREF."sales_orders.debtor_no 
 						AND ".TB_PREF."sales_orders.trans_type=".ST_SALESORDER." ORDER BY ".TB_PREF."sales_orders.order_no DESC";
-					$st .= dup_simple_codeandname_list($sql, "PARAM_$index", $dummy);
+					$st .= combo_input("PARAM_$index", '', $sql, 'order_no', 'IName',array('order'=>false));
 					break;
 				case 'QUOTATIONS':
 					$sql = "SELECT ".TB_PREF."sales_orders.order_no, concat(".TB_PREF."sales_orders.order_no, '-',
 						".TB_PREF."debtors_master.name) as IName
 						FROM ".TB_PREF."debtors_master, ".TB_PREF."sales_orders WHERE ".TB_PREF."debtors_master.debtor_no=".TB_PREF."sales_orders.debtor_no 
 						AND ".TB_PREF."sales_orders.trans_type=".ST_SALESQUOTE." ORDER BY ".TB_PREF."sales_orders.order_no DESC";
-					$st .= dup_simple_codeandname_list($sql, "PARAM_$index", $dummy);
+					$st .= combo_input("PARAM_$index", '', $sql, 'order_no', 'IName',array('order'=>false));
 					break;
 				case 'PO':
 					$sql = "SELECT ".TB_PREF."purch_orders.order_no, concat(".TB_PREF."purch_orders.order_no, '-',
 						".TB_PREF."suppliers.supp_name) as IName
 						FROM ".TB_PREF."suppliers, ".TB_PREF."purch_orders WHERE ".TB_PREF."suppliers.supplier_id=".TB_PREF."purch_orders.supplier_id ORDER BY ".TB_PREF."purch_orders.order_no DESC";
-					$st .= dup_simple_codeandname_list($sql, "PARAM_$index", $dummy);
+					$st .= combo_input("PARAM_$index", '', $sql, 'order_no', 'IName',array('order'=>false));
 					break;
 				case 'ITEMS':
-					$sql = "SELECT stock_id, concat(stock_id, '-', description) as name FROM ".TB_PREF."stock_master WHERE (mb_flag='A' OR mb_flag='M') ORDER BY stock_id";
-					$st .= dup_simple_codeandname_list($sql, "PARAM_$index", $dummy);
+					$sql = "SELECT stock_id, concat(stock_id, '-', description) as name FROM ".TB_PREF."stock_master WHERE (mb_flag='A' OR mb_flag='M')";
+					$st .= combo_input("PARAM_$index", '', $sql, 'stock_id', 'name',array('order'=>array('stock_id')));
 					break;
 				case 'WORKORDER':
 					$sql = "SELECT ".TB_PREF."workorders.id, concat(".TB_PREF."workorders.id, '-',
 						".TB_PREF."stock_master.description) as IName
 						FROM ".TB_PREF."stock_master, ".TB_PREF."workorders WHERE ".TB_PREF."stock_master.stock_id=".TB_PREF."workorders.stock_id ORDER BY ".TB_PREF."workorders.id DESC";
-					$st .= dup_simple_codeandname_list($sql, "PARAM_$index", $dummy);
+					$st .= combo_input("PARAM_$index", '', $sql, 'id', 'IName',array('order'=>false));
 					break;
 				case 'LOCATIONS':
-					$sql = "SELECT loc_code, location_name FROM ".TB_PREF."locations ORDER BY location_name";
-					$st .= dup_simple_codeandname_list($sql, "PARAM_$index", $dummy, true, _("No Location Filter"), false);
+					$sql = "SELECT loc_code, location_name FROM ".TB_PREF."locations";
+					$st .= combo_input("PARAM_$index", '', $sql, 'loc_code', 'location_name',array('spec_option'=>_("No Location Filter"),'spec_id'=>ALL_TEXT));
 					break;
 				case 'CATEGORIES':
-					$sql = "SELECT category_id, description FROM ".TB_PREF."stock_category ORDER BY description";
-					$st .= dup_simple_codeandname_list($sql, "PARAM_$index", $dummy, true, _("No Category Filter"), true);
+					$sql = "SELECT category_id, description FROM ".TB_PREF."stock_category";
+					$st .= combo_input("PARAM_$index", '', $sql, 'category_id', 'description',array('spec_option'=>_("No Category Filter"),'spec_id'=>ALL_NUMERIC));
 					break;
 				case 'SALESTYPES':
-					$sql = "SELECT id, sales_type FROM ".TB_PREF."sales_types ORDER BY sales_type";
-					$st .= dup_simple_codeandname_list($sql, "PARAM_$index", $dummy);
+					$sql = "SELECT id, sales_type FROM ".TB_PREF."sales_types";
+					$st .= combo_input("PARAM_$index", '', $sql, 'id', 'sales_type', null);
 					break;
 				case 'AREAS':
-					$sql = "SELECT area_code, description FROM ".TB_PREF."areas ORDER BY description";
-					$st .= dup_simple_codeandname_list($sql, "PARAM_$index", $dummy, true, _("No Area Filter"), true);
+					$sql = "SELECT area_code, description FROM ".TB_PREF."areas";
+					$st .= combo_input("PARAM_$index", '', $sql, 'area_code', 'description',array('spec_option'=>_("No Area Filter"),'spec_id'=>ALL_NUMERIC));
 					break;
 				case 'SALESMEN':
-					$sql = "SELECT salesman_code, salesman_name FROM ".TB_PREF."salesman ORDER BY salesman_name";
-					$st .= dup_simple_codeandname_list($sql, "PARAM_$index", $dummy, true, _("No Sales Folk Filter"), true);
+					$sql = "SELECT salesman_code, salesman_name FROM ".TB_PREF."salesman";
+					$st .= combo_input("PARAM_$index", '', $sql, 'salesman_code', 'salesman_name',array('spec_option'=>_("No Sales Folk Filter"),'spec_id'=>ALL_NUMERIC));
 					break;
 				case 'TRANS_YEARS':
-					$sql = "SELECT DISTINCT YEAR(tran_date), YEAR(tran_date) FROM ".TB_PREF."gl_trans";
-					$st .= dup_simple_codeandname_list($sql, "PARAM_$index", $dummy);
+					$sql = "SELECT DISTINCT YEAR(tran_date) AS tran_date, YEAR(tran_date) AS tran_date2 FROM ".TB_PREF."gl_trans";
+					$st .= combo_input("PARAM_$index", '', $sql, 'tran_date', 'tran_date2',array('order'=>array('tran_date')));
 					break;
 				case 'USERS':
-					$sql = "SELECT id, user_id FROM ".TB_PREF."users ORDER BY user_id";
-					$st .= dup_simple_codeandname_list($sql, "PARAM_$index", $dummy, true, _("No Users Filter"), true);
+					$sql = "SELECT id, user_id FROM ".TB_PREF."users";
+					$st .= combo_input("PARAM_$index", '', $sql, 'id', 'user_id',array('spec_option'=>_("No Users Filter"),'spec_id'=>ALL_NUMERIC));
 					break;
 				case 'ACCOUNTS_NO_FILTER':
-					$sql = "SELECT id, name FROM ".TB_PREF."chart_types ORDER BY name";
-					$st .= dup_simple_codeandname_list($sql, "PARAM_$index", $dummy);
+					$sql = "SELECT id, name FROM ".TB_PREF."chart_types";
+					$st .= combo_input("PARAM_$index", '', $sql, 'id', 'name', null);
+					break;
+				case 'ACCOUNTTAGS':
+				case 'DIMENSIONTAGS':
+					if ($param->param_type == 'ACCOUNTTAGS')
+						$type = 0;
+					else
+						$type = 1;
+					$sql = "SELECT id, name FROM ".TB_PREF."tags WHERE type=$type"; 
+					$st .= combo_input("PARAM_$index", '', $sql, 'id', 'name',array('spec_option'=>_("No tags"),'spec_id' => ALL_NUMERIC,'multi'=>true,'height'=>4));
 					break;
 
 			}
@@ -361,62 +370,6 @@ class ReportParam
 		$this->param_name = $param_name;
 		$this->param_type = $param_type;
 	}
-}
-
-function dup_simple_codeandname_list($sql, $name, &$selected_id,
-	$all_option=false, $all_option_name=null, $all_option_numeric=false,
-	$submit_on_change=false)
-{
-	if ($submit_on_change == true)
-		$st = "<select name='$name' onchange='this.form.submit();'>";
-	else
-		$st = "<select name='$name'>";
-
-	if ($all_option == true)
-	{
-		if ($all_option_numeric)
-			$reserved_word = ALL_NUMERIC;
-		else
-			$reserved_word = ALL_TEXT;
-
-    	if ($reserved_word == $selected_id)
-    	{
-    	     $st .= "<option selected value='" . $reserved_word . "'>" . $all_option_name . "</option>\n";
-    	}
-    	else
-    	{
-    	     $st .= "<option value='" . $reserved_word . "'>" . $all_option_name . "</option>\n";
-    	}
-		if ($selected_id == "")
-		{
-			$selected_id =  $reserved_word;
-		}
-	}
-
-	$result = db_query($sql);
-
-	while ($row = db_fetch_row($result))
-	{
-		if ($selected_id == $row[0])
-		{
-			$st .= "<option selected value='" . $row[0] . "'>";
-		}
-		else
-		{
-			$st .= "<option value='" . $row[0] . "'>";
-		}
-		$st .= $row[1] . "</option>\n";
-
-		if ($selected_id == "")
-		{
-			$selected_id = $row[0];
-		}
-	}
-
-	$st .= "</select>";
-	db_free_result($result);
-
-	return $st;
 }
 
 function dup_simple_name_list($name, $selections)
