@@ -210,9 +210,15 @@ class Report
 					$sql = "SELECT id, name FROM ".TB_PREF."chart_types";
 					$st .= combo_input("PARAM_$index", '', $sql, 'id', 'name',array('spec_option'=>_("No Account Group Filter"),'spec_id'=>ALL_NUMERIC));
 					break;
+				case 'ACCOUNTS_NO_FILTER':
+					$sql = "SELECT id, name FROM ".TB_PREF."chart_types";
+					$st .= combo_input("PARAM_$index", '', $sql, 'id', 'name', null);
+					break;
 				case 'GL_ACCOUNTS':
-					$sql = "SELECT account_code, concat(account_code, ' - ', account_name) as account_name FROM ".TB_PREF."chart_master";
-					$st .= combo_input("PARAM_$index", '', $sql, 'account_code', 'account_name',array('order'=>array('account_code')));
+					$sql = "SELECT chart.account_code, chart.account_name, type.name, chart.inactive, type.id
+						FROM ".TB_PREF."chart_master chart,".TB_PREF."chart_types type WHERE chart.account_type=type.id";
+					$st .= combo_input("PARAM_$index", '', $sql, 'chart.account_code', 'chart.account_name',
+						array('format' => '_format_account','order' => array('type.id','account_code'),'async' => false,'category' => 2));
 					break;
 				case 'BANK_ACCOUNTS':
 					$sql = "SELECT ".TB_PREF."bank_accounts.id, concat(bank_account_name, if (bank_curr_code=curr_default,'', concat(' - ', bank_curr_code))) AS name FROM ".TB_PREF."bank_accounts, ".TB_PREF."company";
@@ -338,10 +344,6 @@ class Report
 				case 'USERS':
 					$sql = "SELECT id, user_id FROM ".TB_PREF."users";
 					$st .= combo_input("PARAM_$index", '', $sql, 'id', 'user_id',array('spec_option'=>_("No Users Filter"),'spec_id'=>ALL_NUMERIC));
-					break;
-				case 'ACCOUNTS_NO_FILTER':
-					$sql = "SELECT id, name FROM ".TB_PREF."chart_types";
-					$st .= combo_input("PARAM_$index", '', $sql, 'id', 'name', null);
 					break;
 				case 'ACCOUNTTAGS':
 				case 'DIMENSIONTAGS':
