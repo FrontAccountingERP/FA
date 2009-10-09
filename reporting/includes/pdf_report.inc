@@ -266,7 +266,7 @@ class FrontReport extends Cpdf
 
 	function Header2($myrow, $branch, $sales_order, $bankaccount, $doctype)
 	{
-		global $comp_path, $path_to_root, $print_as_quote, $print_invoice_no;
+		global $comp_path, $path_to_root, $print_as_quote, $print_invoice_no, $packing_slip;
 
 		$this->pageNumber++;
 		if ($this->pageNumber > 1)

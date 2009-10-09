@@ -74,7 +74,7 @@ if (isset($header2type))
 		elseif ($doctype == 10)
 			$this->title = "INVOICE";
 		elseif ($doctype == 13)
-			$this->title = "DELIVERY NOTE";
+			$this->title = ($packing_slip==1 ? "PACKING SLIP" : "DELIVERY NOTE");
 		elseif ($doctype == 26)
 			$this->title = "WORK ORDER";
 		else

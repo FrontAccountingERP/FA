@@ -15,7 +15,7 @@
 // You only need full parameter list for invoices/credit notes
 
 function print_document_link($doc_no, $link_text, $link=true, $type_no, 
-	$icon=false, $class='printlink', $id='', $email=0)
+	$icon=false, $class='printlink', $id='', $email=0, $extra=0)
 {
 	global $path_to_root;
 	include_once($path_to_root . "/includes/types.inc");
@@ -51,7 +51,8 @@ function print_document_link($doc_no, $link_text, $link=true, $type_no,
 			$ar = array(
 				'PARAM_0' => $doc_no, 
 				'PARAM_1' => $doc_no, 
-				'PARAM_2' => $email);
+				'PARAM_2' => $email,
+				'PARAM_3' => $extra);
 			break;
 		case ST_SALESINVOICE : // Sales Invoice
 		case ST_CUSTCREDIT : // Customer Credit Note

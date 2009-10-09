@@ -71,7 +71,7 @@ if (isset($header2type))
 		elseif ($doctype == 8)
 			$this->title = _("PURCHASE ORDER");
 		elseif ($doctype == 13)
-			$this->title = _("DELIVERY NOTE");
+			$this->title = ($packing_slip==1 ? _("PACKING SLIP") : _("DELIVERY NOTE"));
 		elseif ($doctype == 9)
 			$this->title = ($print_as_quote==1 ? _("QUOTE") : _("SALES ORDER"));
 		elseif ($doctype == 10)

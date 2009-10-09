@@ -251,7 +251,7 @@
 		$col += $width;
 		if ($doctype == 26)
 			$this->TextWrap($col, $this->row, $width, sql2date($myrow["required_by"]), 'C');
-		else
+		elseif (!isset($packing_slip) || $packing_slip == 0)
 		{
 			$id = $myrow['payment_terms'];
 			$sql = "SELECT terms FROM ".TB_PREF."payment_terms WHERE terms_indicator='$id'";
