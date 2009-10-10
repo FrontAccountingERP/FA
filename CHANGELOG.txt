@@ -19,6 +19,35 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+10-Oct-2009 Janusz Dobrowolski
+! Changed access control extensions support for modules/plugins to use unique extension ids
+$ /admin/inst_module.php
+  /admin/security_roles.php
+  /admin/db/maintenance_db.inc
+  /includes/access_levels.inc
+  /includes/current_user.inc
+  /installed_extensions.php
+  /index.php
+# Enabled error handling for extensions
+$ /frontaccounting.php
+# Page code rewrite
+$ /admin/inst_module.php
+# Fixed missing parameters in update_user_display_prefs call
+$ /admin/users.php
+! Non-accesable menu options displayed as text instead of link
+$ /applications/customers.php
+  /applications/dimensions.php
+  /applications/generalledger.php
+  /applications/inventory.php
+  /applications/manufacturing.php
+  /applications/setup.php
+  /applications/suppliers.php
+# Fixed error handling for duplicate table records
+$ /includes/errors.inc
+# Fixed php 5.3 function name conflict
+$ /includes/main.inc
+  /sales/inquiry/sales_orders_view.php
+
 09-Oct-2009 Joe Hunt
 + Added option to print delivery notes as packing slip in reports and links.
 $ /includes/ui/ui_controls.inc 
@@ -46,6 +75,18 @@ $ /reporting/reports_main.php
 $ /gl/includes/db/gl_db_trans.inc
 # Show Journal Entries from 2.1 as closed in Journal Inquiries.
 $ /gl/inquiry/journal_inquiry.php
+
+03-Oct-2009 Janusz Dobrowolski
+# Fixed false upgrade related error displayed in some situations on logout.
+$ /access/logout.php
+# Missing old_db declaration fixed.
+$ /includes/current_user.inc
+# Fixed combo_input and array_selector to accept array of selected items from POST.
+$ /includes/ui/ui_lists.inc
+!  Changed structure of tag_associations table.
+$ /sql/alter2.sql
+  /sql/en_US-new.sql
+  /sql/en_US-demo.sql
 
 03-Oct-2009 Joe Hunt
 # Bad conversion of timestamp value in report audit trail.
