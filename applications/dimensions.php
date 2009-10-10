@@ -36,7 +36,9 @@
 						{
 							if ($i++ == 0)
 								$this->add_module(_("Maintenance"));
-							$this->add_rapp_function(2, $mod["title"], "modules/".$mod["path"]."/".$mod["filename"]."?");
+							$this->add_rapp_function(2, $mod["title"], 
+								"modules/".$mod["path"]."/".$mod["filename"]."?",
+								isset($mod["access"]) ? $mod["access"] : 'SA_OPEN' );
 						}
 					}
 				}

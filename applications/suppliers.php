@@ -40,7 +40,9 @@
 				foreach ($installed_extensions as $mod)
 				{
 					if (@$mod['active'] && $mod['type'] == 'plugin' && $mod["tab"] == "AP")
-						$this->add_rapp_function(2, $mod["title"], "modules/".$mod["path"]."/".$mod["filename"]."?");
+						$this->add_rapp_function(2, $mod["title"], 
+							"modules/".$mod["path"]."/".$mod["filename"]."?",
+							isset($mod["access"]) ? $mod["access"] : 'SA_OPEN' );
 				}
 			}	
 		}
