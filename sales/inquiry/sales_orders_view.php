@@ -333,15 +333,15 @@ else
 		_("Currency") => array('align'=>'center')
 	);
 if ($_POST['order_view_mode'] == 'OutstandingOnly') {
-	//array_replace($cols, 3, 1, _("Cust Order Ref"));
+	//array_substitute($cols, 3, 1, _("Cust Order Ref"));
 	array_append($cols, array(array('insert'=>true, 'fun'=>'dispatch_link')));
 
 } elseif ($_POST['order_view_mode'] == 'InvoiceTemplates') {
-	array_replace($cols, 3, 1, _("Description"));
+	array_substitute($cols, 3, 1, _("Description"));
 	array_append($cols, array( array('insert'=>true, 'fun'=>'invoice_link')));
 
 } else if ($_POST['order_view_mode'] == 'DeliveryTemplates') {
-	array_replace($cols, 3, 1, _("Description"));
+	array_substitute($cols, 3, 1, _("Description"));
 	array_append($cols, array(
 			array('insert'=>true, 'fun'=>'delivery_link'))
 	);

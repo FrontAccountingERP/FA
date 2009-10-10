@@ -276,7 +276,7 @@ function array_remove(&$array, $index, $len=1)
 	array_splice($array, $index, $len);
 }
 
-function array_replace(&$array, $index, $len, $elements)
+function array_substitute(&$array, $index, $len, $elements)
 {
 	array_splice($array, $index, $len);
 	array_insert($array, $index, $elements);
