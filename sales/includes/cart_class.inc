@@ -121,7 +121,7 @@ class cart
 						$this->delivery_to = $sodata["deliver_to"];
 						$this->delivery_address = $sodata["delivery_address"];
 					}
-					if (!$view && ($type!=ST_CUSTDELIVERY || $this->trans_link!=0)) {
+					if (!$view && ($type!=ST_CUSTCREDIT || $this->trans_link!=0)) {
 						$src_type = get_parent_type($type);
 						$src_details = 0;
 						if ($src_type == ST_SALESORDER) { // get src data from sales_orders
@@ -149,7 +149,7 @@ class cart
 						}
 					}
 				}
-			} else {
+		} else {
 				$this->trans_type = $type;
 				$this->trans_no = 0;
 				// set new sales document defaults here
