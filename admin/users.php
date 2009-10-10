@@ -83,7 +83,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 				user_date_format(), user_date_sep(), user_tho_sep(), 
 				user_dec_sep(), user_theme(), user_pagesize(), user_hints(), 
 				$_POST['profile'], check_value('rep_popup'), user_query_size(), 
-				user_graphic_links(), $_POST['language']);
+				user_graphic_links(), $_POST['language'], sticky_doc_date(), user_startup_tab());
 
 			display_notification_centered(_("A new user has been added."));
     	}
