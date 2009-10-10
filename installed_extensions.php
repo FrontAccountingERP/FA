@@ -1,7 +1,8 @@
 <?php
 
-/* List of installed additional modules and plugins. If adding extensions at the beginning 
-	of the list, make sure it's index is set to 0 (it has ' 0 => ');
+/* List of installed additional modules and plugins. If adding extensions manually 
+	to the list make sure they have unique, so far not used extension_ids as a keys,
+	and $next_extension_id is also updated.
 	
 	'name' - name for identification purposes;
 	'type' - type of extension: 'module' or 'plugin'
@@ -11,8 +12,11 @@
 	'title' - is the menu text (for plugin) or new tab name
 	'active' - current status of extension
 	'acc_file' - (optional) file name with $security_areas/$security_sections extensions; 
-		related to 'path'.
+		related to 'path'
+	'access' - security area code in string form
 */
+
+$next_extension_id = 1; // unique id for next installed extension
 
 $installed_extensions = array (
 	);

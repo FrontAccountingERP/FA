@@ -19,6 +19,10 @@
 	Every security section can contain up to 256 different areas.
 	External modules can extend security roles system by adding rows to 
 	$security_sections and $security_areas using section codes >=100.
+	Security areas and sections created by extension modules/plugins
+	have dynamically assigned 3-byte integer codes. The highest byte is zero
+	for sections/areas defined in this file, and extid+1 for those defined 
+	by extensions 
 */
 define('SS_SADMIN',	1<<8);	// site admin
 define('SS_SETUP',	2<<8);	// company level setup
@@ -245,15 +249,57 @@ $security_areas =array(
 	. on any page with non-standard security areas
 	. in security roles editor
 	The call should be placed between session.inc inclusion and page() call.
+	Up to 155 security sections and 155 security areas for any extension can be installed.
 */
 function add_access_extensions()
 {
-	global $path_to_root, $security_areas, $security_sections, $installed_extensions;
+	global $security_areas, $security_sections, $installed_extensions;
 
-	foreach($installed_extensions as $ext) {
-		if (@$ext['active'] && isset($ext['acc_file']))
-			include($path_to_root.($ext['type'] == 'plugin' ? '/modules/':'/').$ext['path'].'/'.$ext['acc_file']);
+	foreach($installed_extensions as $extid => $ext) {
+		$scode = 100;
+		$acode = 100;
+		$accext = get_access_extensions($extid);
+		$extsections = $accext[1];
+		$extareas = $accext[0];
+		$extcode = $extid<<16;
+		
+		$trans = array();
+		foreach($extsections as $code =>$name) {
+			$trans[$code] = $scode<<8;
+			// reassign section codes
+			$security_sections[$trans[$code]|$extcode] = $name;
+			$scode++;
+		}
+		foreach($extareas as $code => $area) {
+			$section = $area[0]&0xff00;
+			// extension modules:
+			// if area belongs to nonstandard section
+			// use translated section codes and
+			// preserve lower part of area code
+			if (isset($trans[$section])) {
+				$section = $trans[$section];
+			} 
+				// otherwise assign next available
+				// area code >99
+			$area[0] = $extcode | $section | ($acode++);
+			$security_areas[$code] = $area;
+		}
 	}
+}
+/*
+	Helper function to retrieve extension access definitions in isolated environment.
+*/
+function get_access_extensions($id) {
+	global $path_to_root, $installed_extensions;
+	
+	$ext = $installed_extensions[$id];
+	
+	$security_sections = $security_areas = array();
+	
+	if (isset($ext['acc_file']))
+		include($path_to_root.($ext['type'] == 'plugin' ? '/modules/':'/').$ext['path'].'/'.$ext['acc_file']);
+
+	return array($security_areas, $security_sections);
 }
 
 ?>

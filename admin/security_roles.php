@@ -23,6 +23,17 @@ include_once($path_to_root . "/admin/db/security_db.inc");
 
 $new_role = get_post('role')=='' || get_post('cancel') || get_post('clone'); 
 //--------------------------------------------------------------------------------------------------
+// Following compare function is used for sorting areas 
+// in such a way that security areas defined by module/plugin
+// is properly placed under related section regardless of 
+// unique extension number
+//
+function comp_areas($area1, $area2) 
+{
+	return ($area1[0]&0xffff)-($area2[0]&0xffff);
+}
+
+//--------------------------------------------------------------------------------------------------
 if (list_updated('role')) {
 	$Ajax->activate('details');
 	$Ajax->activate('controls');
@@ -64,14 +75,20 @@ if (get_post('addupdate'))
 		$sections = array();
 		$areas = array();
 		foreach($_POST as $p =>$val) {
-			if (substr($p,0,4) == 'Area')
-				$areas[] = substr($p, 4);
+			if (substr($p,0,4) == 'Area') {
+				$a = substr($p, 4);
+				if (($a&~0xffff) && (($a&0xff00)<(99<<8))) {
+					$sections[] = $a&~0xff;	// add extended section for plugins
+				}
+				$areas[] = $a;
+			}
 			if (substr($p,0,7) == 'Section')
 				$sections[] = substr($p, 7);
 		}
-		
-		sort($areas);
-		sort($sections);
+		uasort($areas, 'comp_areas');
+
+		$sections = array_values($sections);
+		_vd($sections);
      	if ($new_role) 
        	{
 			add_security_role($_POST['name'], $_POST['description'], $sections, $areas); 
@@ -114,7 +131,7 @@ if (get_post('cancel'))
 if (!isset($_POST['role']) || get_post('clone') || list_updated('role')) {
 	$id = get_post('role');
 	$clone = get_post('clone');
-//	clear_data();
+
 	unset($_POST);
 	if ($id) {
 		$row = get_security_role($id);
@@ -161,7 +178,6 @@ if (get_post('_show_inactive_update')) {
 }
 if (find_submit('_Section')) {
 	$Ajax->activate('details');
-//	set_focus('');
 }
 //-----------------------------------------------------------------------------------------------
 div_start('details');
@@ -174,16 +190,22 @@ end_table(1);
 	start_table("$table_style width=40%");
 
 	$k = $j = 0; //row colour counter
-	$m = 0;
-	asort($security_areas); // in the case installed external modules has added some lines
+	$ext = $sec = $m = -1;
+	uasort($security_areas,'comp_areas');
 	foreach($security_areas as $area =>$parms ) {
 		// system setup areas are accessable only for site admins i.e. 
 		// admins of first registered company
-		if (user_company() && (($parms[0]&~0xff) == SS_SADMIN)) continue;
-
-		if (($parms[0]&~0xff) != $m)
+		if (user_company() && (($parms[0]&0xff00) == SS_SADMIN)) continue;
+		
+		$newsec = ($parms[0]>>8)&0xff;
+		$newext  = $parms[0]>>16;
+		if ($newsec != $sec || (($newext != $ext) && ($newsec>99)))
 		{ // features set selection
+			$ext = $newext; 
+			$sec = $newsec;
 			$m = $parms[0] & ~0xff;
+//			if(!isset($security_sections[$m]))
+//			 display_error(sprintf("Bad section %X:", $m));
 			label_row($security_sections[$m].':', 
 				checkbox( null, 'Section'.$m, null, true, 
 					_("On/off set of features")),

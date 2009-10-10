@@ -127,7 +127,6 @@ class current_user
 	function can_access($page_level)
 	{
 		global $security_groups, $security_areas;
-
 		if (isset($security_groups)) {
 			return $this->company == 0 &&
 				in_array(20, $security_groups[$this->access]);
@@ -135,7 +134,7 @@ class current_user
 
 		if ($page_level === 'SA_OPEN') 
 			return true;
-		$code = @$security_areas[$page_level][0];
+		$code = $security_areas[$page_level][0];
 
 		// only first registered company has site admin privileges
 		return $code && in_array($code, $this->role_set)
@@ -147,11 +146,11 @@ class current_user
 		return $this->can_access($page_level);
 	}
 
-	function get_db_connection()
+	function get_db_connection($id=-1)
 	{
     	global $db_connections;
 
-    	$connection = $db_connections[$this->company];
+    	$connection = $db_connections[$id == -1 ? $this->company : $id];
 
     	//print_r($connection);
 

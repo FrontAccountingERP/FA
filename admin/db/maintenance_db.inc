@@ -21,7 +21,7 @@
 function array_natsort($aryData, $strIndex, $strSortBy, $strSortType=false)
 {
    //    if the parameters are invalid
-   if (!is_array($aryData) || !$strIndex || !$strSortBy)
+   if (!is_array($aryData) || !$strSortBy)
        //    return the array
        return $aryData;
 
@@ -29,9 +29,9 @@ function array_natsort($aryData, $strIndex, $strSortBy, $strSortType=false)
    $arySort = $aryResult = array();
 
    //    loop through the array
-   foreach ($aryData as $aryRow)
+   foreach ($aryData as $key => $aryRow)
        //    set up the value in the array
-       $arySort[$aryRow[$strIndex]] = $aryRow[$strSortBy];
+       $arySort[$strIndex ? $aryRow[$strIndex] : $key] = $aryRow[$strSortBy];
 
    //    apply the natural sort
    natsort($arySort);
@@ -42,13 +42,16 @@ function array_natsort($aryData, $strIndex, $strSortBy, $strSortType=false)
        arsort($arySort);
 
    //    loop through the sorted and original data
-   foreach ($arySort as $arySortKey => $arySorted)
-       foreach ($aryData as $aryOriginal)
-           //    if the key matches
-           if ($aryOriginal[$strIndex]==$arySortKey)
-               //    add it to the output array
-               array_push($aryResult, $aryOriginal);
-
+		foreach ($arySort as $arySortKey => $arySorted)
+			if($strIndex) 
+			{
+				foreach ($aryData as $aryOriginal)
+				// if the key matches
+					if ($aryOriginal[$strIndex]==$arySortKey)
+						// add it to the output array
+						array_push($aryResult, $aryOriginal);
+			} else
+				$aryResult[$arySortKey] = $aryData[$arySortKey];
    //    return the return
    return $aryResult;
 }
@@ -120,24 +123,23 @@ function write_config_db($new = false)
 	return 0;
 }
 
-function write_extensions($extensions=null, $company = null)
+function write_extensions($extensions=null, $company = -1)
 {
-	global $path_to_root, $installed_extensions;
+	global $path_to_root, $installed_extensions, $next_extension_id;
 
 	if (!isset($extensions)) {
 		$extensions = $installed_extensions;
 	}
-	
-	$exts = array_natsort($extensions, 'name', 'name');
-	$extensions = $exts;
 
-	$n = count($exts);
+//	$exts = array_natsort($extensions, 'name', 'name');
+//	$extensions = $exts;
 
 	$msg = "<?php\n\n";
 	if ($company == -1)
 		$msg .=
-"/* List of installed additional modules and plugins. If adding extensions at the beginning 
-	of the list, make sure it's index is set to 0 (it has ' 0 => ');
+"/* List of installed additional modules and plugins. If adding extensions manually 
+	to the list make sure they have unique, so far not used extension_ids as a keys,
+	and \$next_extension_id is also updated.
 	
 	'name' - name for identification purposes;
 	'type' - type of extension: 'module' or 'plugin'
@@ -147,8 +149,10 @@ function write_extensions($extensions=null, $company = null)
 	'title' - is the menu text (for plugin) or new tab name
 	'active' - current status of extension
 	'acc_file' - (optional) file name with \$security_areas/\$security_sections extensions; 
-		related to 'path'.
-*/\n\n";
+		related to 'path'
+	'access' - security area code in string form
+*/
+\n\$next_extension_id = $next_extension_id; // unique id for next installed extension\n\n";
 	else 
 		$msg .=
 "/*
@@ -157,15 +161,12 @@ function write_extensions($extensions=null, $company = null)
 */\n\n";
 
 	$msg .= "\$installed_extensions = array (\n";
-	if ($n > 0)
-	    $msg .= "\t0 => ";
-	for ($i = 0; $i < $n; $i++)
+	foreach($extensions as $i => $ext) 
 	{
-		if ($i > 0)
-			$msg .= "\t\t";
+		$msg .= "\t$i => ";
 		$msg .= "array ( ";
 		$t = '';
-		foreach($extensions[$i] as $key => $val) {
+		foreach($ext as $key => $val) {
 			$msg .= $t."'$key' => '$val',\n";
 			$t = "\t\t\t";
 		}
@@ -173,7 +174,7 @@ function write_extensions($extensions=null, $company = null)
 	}
 	$msg .= "\t);\n?>";
 
-	$filename = $path_to_root . (isset($company) ? '/company/'.$company : '')
+	$filename = $path_to_root . ($company==-1 ? '' : '/company/'.$company)
 		.'/installed_extensions.php';
 
 	// Check if the file is writable first.

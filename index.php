@@ -14,6 +14,7 @@
 	ini_set('xdebug.auto_trace',1);
 	include_once("includes/session.inc");
 
+	add_access_extensions();
 	$app = &$_SESSION["App"];
 	if (isset($_GET['application']))
 		$app->selected_application = $_GET['application'];
