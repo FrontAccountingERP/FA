@@ -25,7 +25,7 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 		foreach ($installed_extensions as $ext)
 		{
 			if ($ext['type'] == 'module')
-				@include_once($path_to_root."/".$ext['path']."/".$ext['filename']);
+				include_once($path_to_root."/".$ext['path']."/".$ext['filename']);
 		}
 	}	
 
