@@ -47,6 +47,8 @@ $ /includes/errors.inc
 # Fixed php 5.3 function name conflict
 $ /includes/main.inc
   /sales/inquiry/sales_orders_view.php
+# Fixed delivery note edition bug (introduced during systypes rewrite)
+$ /sales/includes/cart_class.inc
 
 09-Oct-2009 Joe Hunt
 + Added option to print delivery notes as packing slip in reports and links.
