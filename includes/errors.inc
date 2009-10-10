@@ -162,8 +162,7 @@ function check_db_error($msg, $sql_statement, $exit_if_error=true, $rollback_if_
 		
 		if ($exit_if_error) 
 		{
-			echo "<br><br>";
-			exit;
+			end_page(); exit;
 		}
 	}
 	return $db_error;		
