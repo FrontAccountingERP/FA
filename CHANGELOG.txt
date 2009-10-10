@@ -49,6 +49,8 @@ $ /includes/main.inc
   /sales/inquiry/sales_orders_view.php
 # Fixed delivery note edition bug (introduced during systypes rewrite)
 $ /sales/includes/cart_class.inc
+! Changed page_security to SASALESINVOICE
+$ /sales/inquiry/sales_deliveries_view.php
 
 09-Oct-2009 Joe Hunt
 + Added option to print delivery notes as packing slip in reports and links.
