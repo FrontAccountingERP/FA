@@ -9,13 +9,21 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security = 'SA_STEMPLATE';
 $path_to_root = "../..";
 
 include($path_to_root . "/includes/db_pager.inc");
 include($path_to_root . "/includes/session.inc");
 include($path_to_root . "/sales/includes/sales_ui.inc");
 include_once($path_to_root . "/reporting/includes/reporting.inc");
+
+$page_security = 'SA_TRANSVIEW';
+
+set_page_security( @$_POST['order_view_mode'],
+	array(	'OutstandingOnly' => 'SA_SALESDELIVERY',
+			'InvoiceTemplates' => 'SA_SALESINVOICE'),
+	array(	'OutstandingOnly' => 'SA_SALESDELIVERY',
+			'InvoiceTemplates' => 'SA_SALESINVOICE')
+);
 
 $js = "";
 if ($use_popup_windows)
@@ -27,8 +35,11 @@ if (get_post('type'))
 	$trans_type = $_POST['type'];
 elseif (isset($_GET['type']) && $_GET['type'] == ST_SALESQUOTE)
 	$trans_type = ST_SALESQUOTE;
-else
+elseif (isset($_GET['type']) && $_GET['type'] == ST_SALESORDER)
 	$trans_type = ST_SALESORDER;
+else
+	$page_security = 'SA_DENIED';
+
 if ($trans_type == ST_SALESORDER)
 {
 	if (isset($_GET['OutstandingOnly']) && ($_GET['OutstandingOnly'] == true))

@@ -17,8 +17,8 @@
 //	Entry Direct Invoice
 //
 
-$page_security = 'SA_SALESORDER';
 $path_to_root = "..";
+$page_security = 'SA_SALESORDER';
 
 include_once($path_to_root . "/sales/includes/cart_class.inc");
 include_once($path_to_root . "/includes/session.inc");
@@ -27,6 +27,20 @@ include_once($path_to_root . "/sales/includes/ui/sales_order_ui.inc");
 include_once($path_to_root . "/sales/includes/sales_db.inc");
 include_once($path_to_root . "/sales/includes/db/sales_types_db.inc");
 include_once($path_to_root . "/reporting/includes/reporting.inc");
+
+set_page_security( @$_SESSION['Items']->trans_type,
+	array(	ST_SALESORDER=>'SA_SALESORDER',
+			ST_SALESQUOTE => 'SA_SALESQUOTE',
+			ST_CUSTDELIVERY => 'SA_SALESDELIVERY',
+			ST_SALESINVOICE => 'SA_SALESINVOICE'),
+	array(	'NewOrder' => 'SA_SALESORDER',
+			'ModifySalesOrder' => 'SA_SALESORDER',
+			'NewQuotation' => 'SA_SALESQUOTE',
+			'ModifyQuotationNumber' => 'SA_SALESQUOTE',
+			'NewDelivery' => 'SA_SALESDELIVERY',
+			'NewInvoice' => 'SA_SALESINVOICE')
+);
+
 $js = '';
 
 if ($use_popup_windows) {
