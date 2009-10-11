@@ -432,7 +432,7 @@ class FrontReport extends Cpdf
 				require_once($path_to_root . "/reporting/includes/class.mail.inc");
     			$mail = new email($this->company['coy_name'], $this->company['email']);
 				if (!isset($myrow['email']) || $myrow['email'] == '') 
-					$myrow['email'] = $myrow['contact_email'];
+					$myrow['email'] = isset($myrow['contact_email']) ? $myrow['contact_email'] : '';
     			$to = $myrow['DebtorName'] . " <" . $myrow['email'] . ">";
     			$msg = $doc_Dear_Sirs . " " . $myrow['DebtorName'] . ",\n\n" . $doc_AttachedFile . " " . $subject .
     				"\n\n";

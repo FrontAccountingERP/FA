@@ -191,7 +191,6 @@ function print_deliveries()
 			}	
 			if ($email == 1)
 			{
-				$myrow['dimension_id'] = $paylink; // helper for pmt link
 				if ($myrow['email'] == '')
 				{
 					$myrow['email'] = $branch['email'];

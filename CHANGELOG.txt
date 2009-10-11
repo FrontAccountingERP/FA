@@ -19,6 +19,11 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+11-Oct-2000 Joe Hunt
+# [0000168] Undefined variable: paylink in file rep110.php
+$ /reporting/rep110.php
+  /reporting/includes/pdf_report.inc
+  
 11-Oct-2009 Janusz Dobrowolski
 + Added security area for sales quotes entry
 $ /applications/customers.php
