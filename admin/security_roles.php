@@ -26,13 +26,23 @@ $new_role = get_post('role')=='' || get_post('cancel') || get_post('clone');
 // Following compare function is used for sorting areas 
 // in such a way that security areas defined by module/plugin
 // is properly placed under related section regardless of 
-// unique extension number
+// unique extension number, with order inside sections preserved.
 //
 function comp_areas($area1, $area2) 
 {
-	return ($area1[0]&0xffff)-($area2[0]&0xffff);
+	$sec_comp = ($area1[0]&0xff00)-($area2[0]&0xff00);
+	return $sec_comp == 0 ? ($area1[2]-$area2[2]) : $sec_comp;
 }
 
+function sort_areas($areas)
+{
+	$old_order = 0;
+	foreach($areas as $key => $area) {
+		$areas[$key][] = $old_order++;
+	}
+	uasort($areas,'comp_areas');
+	return $areas;
+}
 //--------------------------------------------------------------------------------------------------
 if (list_updated('role')) {
 	$Ajax->activate('details');
@@ -85,10 +95,10 @@ if (get_post('addupdate'))
 			if (substr($p,0,7) == 'Section')
 				$sections[] = substr($p, 7);
 		}
-		uasort($areas, 'comp_areas');
+//		$areas = sort_areas($areas);
 
 		$sections = array_values($sections);
-		_vd($sections);
+
      	if ($new_role) 
        	{
 			add_security_role($_POST['name'], $_POST['description'], $sections, $areas); 
@@ -191,8 +201,8 @@ end_table(1);
 
 	$k = $j = 0; //row colour counter
 	$ext = $sec = $m = -1;
-	uasort($security_areas,'comp_areas');
-	foreach($security_areas as $area =>$parms ) {
+
+	foreach(sort_areas($security_areas) as $area =>$parms ) {
 		// system setup areas are accessable only for site admins i.e. 
 		// admins of first registered company
 		if (user_company() && (($parms[0]&0xff00) == SS_SADMIN)) continue;
