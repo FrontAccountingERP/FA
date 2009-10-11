@@ -18,7 +18,7 @@ class customers_app extends application
 	
 		$this->add_module(_("Transactions"));
 		$this->add_lapp_function(0, _("Sales &Quotation Entry"),
-			"sales/sales_order_entry.php?NewQuotation=Yes", 'SA_SALESORDER');
+			"sales/sales_order_entry.php?NewQuotation=Yes", 'SA_SALESQUOTE');
 		$this->add_lapp_function(0, _("Sales &Order Entry"),
 			"sales/sales_order_entry.php?NewOrder=Yes", 'SA_SALESORDER');
 		$this->add_lapp_function(0, _("Direct &Delivery"),
@@ -32,9 +32,9 @@ class customers_app extends application
 			"sales/inquiry/sales_deliveries_view.php?OutstandingOnly=1", 'SA_SALESINVOICE');
 
 		$this->add_rapp_function(0, _("&Template Delivery"),
-			"sales/inquiry/sales_orders_view.php?DeliveryTemplates=Yes", 'SA_SALESINVOICE');
+			"sales/inquiry/sales_orders_view.php?DeliveryTemplates=Yes", 'SA_SALESDELIVERY');
 		$this->add_rapp_function(0, _("&Template Invoice"),
-			"sales/inquiry/sales_orders_view.php?InvoiceTemplates=Yes", 'SA_SALESDELIVERY');
+			"sales/inquiry/sales_orders_view.php?InvoiceTemplates=Yes", 'SA_SALESINVOICE');
 		$this->add_rapp_function(0, _("&Create and Print Recurrent Invoices"),
 			"sales/create_recurrent_invoices.php?", 'SA_SALESINVOICE');
 		$this->add_rapp_function(0, "","");
@@ -88,6 +88,6 @@ class customers_app extends application
 		}
 	}
 }
-	
+
 
 ?>

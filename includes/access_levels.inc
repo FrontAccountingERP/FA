@@ -133,6 +133,7 @@ $security_areas =array(
 
 	'SA_SALESTRANSVIEW' => array(SS_SALES|1,  _("Sales transactions view")),
 	'SA_CUSTOMER' => array(SS_SALES|2,  _("Sales customer and branches changes")),
+	'SA_SALESQUOTE' => array(SS_SALES|10, _("Sales quotations")),
 	'SA_SALESORDER' => array(SS_SALES|3, _("Sales orders edition")),
 	'SA_SALESDELIVERY' => array(SS_SALES|4, _("Sales deliveries edition")),
 	'SA_SALESINVOICE' => array(SS_SALES|5, _("Sales invoices edition")),
