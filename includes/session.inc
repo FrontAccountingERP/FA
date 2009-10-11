@@ -76,6 +76,28 @@ function check_page_security($page_security)
 		exit;
 	}
 }
+/*
+	Helper function for setting page security level depeding on 
+	GET start variable and/or some value stored in session variable.
+	Before the call $page_security should be set to default page_security value.
+*/
+function set_page_security($value=null, $trans = array(), $gtrans = array())
+{
+	global $page_security;
+
+	// first check is this is not start page call
+	foreach($gtrans as $key => $area)
+		if (isset($_GET[$key])) {
+			$page_security = $area;
+			return;
+		}
+
+	// then check session value
+	if (isset($trans[$value])) {
+		$page_security = $trans[$value];
+		return;
+	}
+}
 
 //-----------------------------------------------------------------------------
 //	Removing magic quotes from nested arrays/variables
