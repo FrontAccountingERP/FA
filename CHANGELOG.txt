@@ -19,6 +19,23 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+11-Oct-2009 Janusz Dobrowolski
++ Added security area for sales quotes entry
+$ /applications/customers.php
+  /includes/access_levels.inc
+  /sql/alter2.2.php
+  /sql/en_US-demo.sql
+  /sql/en_US-new.sql
++ Standard SA_DENIED access level added.
+$ /includes/current_user.inc
++ Added helper function for setting page_security level depending on GET content and/or expression value
+$ /includes/session.inc
+# Fixed security areas sort order
+$ /admin/security_roles.php
+# Fixed page_security for various usage types.
+$ /sales/sales_order_entry.php
+  /sales/inquiry/sales_orders_view.php
+
 10-Oct-2009 Janusz Dobrowolski
 ! Changed access control extensions support for modules/plugins to use unique extension ids
 $ /admin/inst_module.php
