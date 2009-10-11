@@ -134,6 +134,9 @@ class current_user
 
 		if ($page_level === 'SA_OPEN') 
 			return true;
+		if ($page_level === 'SA_DENIED' || $page_level === '') 
+			return false;
+
 		$code = $security_areas[$page_level][0];
 
 		// only first registered company has site admin privileges
