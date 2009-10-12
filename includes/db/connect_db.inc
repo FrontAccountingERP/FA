@@ -99,7 +99,7 @@ function db_num_fields ($result)
 
 function db_escape($value = "", $nullify = false)
 {
-	$value = @htmlspecialchars($value, ENT_COMPAT, $_SESSION['language']->encoding);
+	$value = @htmlspecialchars($value, ENT_QUOTES, $_SESSION['language']->encoding);
 
   	//reset default if second parameter is skipped
 	$nullify = ($nullify === null) ? (false) : ($nullify);

@@ -19,6 +19,15 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+12-Oct-2009 Janusz Dobrowolski
+# Fixed sql injection vulnerability on some php/mysql configurations
+$ /admin/db/users_db.inc
+! Single quotes also encoded before database data insert
+$ /admin/db/maintenance_db.inc
+  /includes/db/connect_db.inc
+  /reporting/includes/tcpdf.php
+  /sales/includes/cart_class.inc
+
 ------------------------------- Release 2.1.6 ----------------------------------
 ! Final Final release of the 2.1. series.
 $ config.php

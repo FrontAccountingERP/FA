@@ -5729,7 +5729,7 @@ if (!class_exists('TCPDF')) {
 		 */
 		function unhtmlentities($text_to_convert) {
 			if (!$this->isunicode) {
-				return html_entity_decode($text_to_convert);
+				return html_entity_decode($text_to_convert, ENT_QUOTES);
 			}
 			return html_entity_decode_php4($text_to_convert);
 		}
