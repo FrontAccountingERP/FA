@@ -26,6 +26,7 @@ check_db_has_gl_account_groups(_("There are no account groups defined. Please de
 if (isset($_POST['_AccountList_update'])) 
 {
 	$_POST['selected_account'] = $_POST['AccountList'];
+	unset($_POST['account_code']);
 }
 
 if (isset($_POST['selected_account']))
@@ -71,19 +72,22 @@ if (isset($_POST['add']) || isset($_POST['update']))
 			$_POST['account_code'] = strtoupper($_POST['account_code']);
     	if ($selected_account) 
 		{
-    		update_gl_account($_POST['account_code'], $_POST['account_name'], 
-				$_POST['account_type'], $_POST['account_code2']);
-			update_record_status($_POST['account_code'], $_POST['inactive'],
-				'chart_master', 'account_code');
-			$Ajax->activate('account_code'); // in case of status change
-			display_notification(_("Account data has been updated."));
+    		if (update_gl_account($_POST['account_code'], $_POST['account_name'], 
+				$_POST['account_type'], $_POST['account_code2'])) {
+				update_record_status($_POST['account_code'], $_POST['inactive'],
+					'chart_master', 'account_code');
+				$Ajax->activate('account_code'); // in case of status change
+				display_notification(_("Account data has been updated."));
+			}
 		}
     	else 
 		{
-    		add_gl_account($_POST['account_code'], $_POST['account_name'], 
-				$_POST['account_type'], $_POST['account_code2']);
-			$selected_account = $_POST['AccountList'] = $_POST['account_code'];
-			display_notification(_("New account has been added."));
+    		if (add_gl_account($_POST['account_code'], $_POST['account_name'], 
+				$_POST['account_type'], $_POST['account_code2']))
+				{
+					display_notification(_("New account has been added."));
+					$selected_account = $_POST['AccountList'] = $_POST['account_code'];
+				}
 		}
 		$Ajax->activate('_page_body');
 	}
@@ -209,8 +213,9 @@ if (isset($_POST['delete']))
 	if (can_delete($selected_account))
 	{
 		delete_gl_account($selected_account);
-		$selected_account = $_POST['account_code'] = $_POST['AccountList'] = '';
+		$selected_account = $_POST['AccountList'] = '';
 		display_notification(_("Selected account has been deleted"));
+		unset($_POST['account_code']);
 		$Ajax->activate('_page_body');
 	}
 } 
@@ -253,11 +258,13 @@ if ($selected_account != "")
 		
 	label_row(_("Account Code:"), $_POST['account_code']);
 } 
-else 
+else
 {
-	$_POST['account_code'] = $_POST['account_code2'] = '';
-	$_POST['account_name']	= $_POST['account_type'] = '';
- 	$_POST['inactive'] = 0;
+	if (!isset($_POST['account_code'])) {
+		$_POST['account_code'] = $_POST['account_code2'] = '';
+		$_POST['account_name']	= $_POST['account_type'] = '';
+ 		$_POST['inactive'] = 0;
+	}
 	text_row_ex(_("Account Code:"), 'account_code', 11);
 }
 

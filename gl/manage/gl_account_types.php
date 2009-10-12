@@ -58,15 +58,16 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 
     	if ($selected_id != -1) 
     	{
-    		update_account_type($selected_id, $_POST['name'], $_POST['class_id'], $_POST['parent']);
-			display_notification(_('Selected account type has been updated'));
+    		if (update_account_type($selected_id, $_POST['name'], $_POST['class_id'], $_POST['parent']))
+				display_notification(_('Selected account type has been updated'));
     	} 
     	else 
     	{
-    		add_account_type($_POST['id'], $_POST['name'], $_POST['class_id'], $_POST['parent']);
-			display_notification(_('New account type has been added'));
+    		if (add_account_type($_POST['id'], $_POST['name'], $_POST['class_id'], $_POST['parent'])) {
+				display_notification(_('New account type has been added'));
+				$Mode = 'RESET';
+			}
     	}
-		$Mode = 'RESET';
 	}
 }
 

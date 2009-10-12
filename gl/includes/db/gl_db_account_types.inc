@@ -14,7 +14,7 @@ function add_account_type($id, $name, $class_id, $parent)
 	$sql = "INSERT INTO ".TB_PREF."chart_types (id, name, class_id, parent)
 		VALUES ($id, ".db_escape($name).", $class_id, $parent)";
 
-	db_query($sql, "could not add account type");
+	return db_query($sql);
 }
 
 function update_account_type($id, $name, $class_id, $parent)
@@ -22,7 +22,7 @@ function update_account_type($id, $name, $class_id, $parent)
     $sql = "UPDATE ".TB_PREF."chart_types SET name=".db_escape($name).",
 		class_id=$class_id,	parent=$parent WHERE id = $id";
 
-	db_query($sql, "could not update account type");
+	return db_query($sql, "could not update account type");
 }
 
 function get_account_types($all=false)
@@ -66,7 +66,7 @@ function add_account_class($id, $name, $ctype)
 	$sql = "INSERT INTO ".TB_PREF."chart_class (cid, class_name, ctype)
 		VALUES ($id, ".db_escape($name).", $ctype)";
 
-	db_query($sql, "could not add account type");
+	return db_query($sql);
 }
 
 function update_account_class($id, $name, $ctype)
@@ -74,7 +74,7 @@ function update_account_class($id, $name, $ctype)
     $sql = "UPDATE ".TB_PREF."chart_class SET class_name=".db_escape($name).",
 		ctype=$ctype WHERE cid = $id";
 
-	db_query($sql, "could not update account type");
+	return db_query($sql);
 }
 
 function get_account_classes($all=false)
