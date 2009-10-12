@@ -129,6 +129,17 @@ CREATE TABLE `0_tag_associations` (
   UNIQUE KEY(`record_id`,`tag_id`)
 ) TYPE=MyISAM;
 
+DROP TABLE IF EXISTS `0_usersonline`;
+
+CREATE TABLE `0_useronline` (
+	`timestamp` int(15) NOT NULL default '0',
+	`ip` varchar(40) NOT NULL default '',
+	`file` varchar(100) NOT NULL default '',
+	PRIMARY KEY (`timestamp`),
+	KEY `ip` (`ip`),
+	KEY `file` (`file`) 
+) TYPE=MyISAM;
+
 ALTER TABLE `0_suppliers` ADD COLUMN `phone2` varchar(30) NOT NULL default '' AFTER `phone`;
 ALTER TABLE `0_cust_branch` ADD COLUMN `phone2` varchar(30) NOT NULL default '' AFTER `phone`;
 ALTER TABLE `0_shippers` ADD COLUMN `phone2` varchar(30) NOT NULL default '' AFTER `phone`;

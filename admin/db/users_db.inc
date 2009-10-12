@@ -163,4 +163,31 @@ function check_user_activity($id)
 
 	return $ret[0];
 }
+
+//-----------------------------------------------------------------------------------------------
+function show_users_online()
+{
+	$timeoutseconds = 120;
+
+	$timestamp=time();
+	$timeout=$timestamp-$timeoutseconds;
+	$ip = substr($_SERVER['REMOTE_ADDR'], 0, strrpos($_SERVER['REMOTE_ADDR'],"."));
+
+	// Add user to database
+	$loopcap = 0;
+	while($loopcap<3 && db_query("INSERT INTO ".TB_PREF."useronline VALUES('". $timestamp ."','". $ip ."','". $_SERVER['PHP_SELF'] ."')"))
+	{     // In geval van error
+	    $timestamp = $timestamp+$ip{0}; 
+	    $loopcap++;
+	}
+
+	//Remove users that were not online within $timeoutseconds.
+	db_query("DELETE FROM ".TB_PREF."useronline WHERE timestamp<". $timeout);
+
+	// Select online users
+	$result = db_query("SELECT DISTINCT ip FROM ".TB_PREF."useronline");
+	$users = db_num_rows($result);
+	return "$users ".($users == 1 ? _("user online") : _(" users online"));
+
+}
 ?>

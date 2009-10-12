@@ -19,6 +19,14 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+13-Oct-2009 Joe Hunt
++ Added discrete users online in footer (from Wish List Forum)
+$ /admin/db/users_db.inc
+  /sql/alter2.2.sql
+  /themes/aqua/renderer.php
+  /themes/cool/renderer.php
+  /themes/default/renderer.php
+  
 12-Oct-2009 Janusz Dobrowolski
 # Fixed sql injection vulnerability on some php/mysql configurations
 $ /admin/db/users_db.inc
