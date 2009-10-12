@@ -25,13 +25,8 @@ page(_("Customer Allocations"), false, false, "", $js);
 
 start_form();
 	/* show all outstanding receipts and credits to be allocated */
-	/*Clear any previous allocation records */
-	if (isset($_SESSION['alloc']))
-	{
-		unset($_SESSION['alloc']->allocs);
-		unset($_SESSION['alloc']);
-	}
-    if (!isset($_POST['customer_id']))
+
+	if (!isset($_POST['customer_id']))
     	$_POST['customer_id'] = get_global_customer();
 
     echo "<center>" . _("Select a customer: ") . "&nbsp;&nbsp;";

@@ -30,12 +30,6 @@ page(_("Supplier Allocations"), false, false, "", $js);
 start_form();
 
 	/* show all outstanding receipts and credits to be allocated */
-	/*Clear any previous allocation records */
-	if (isset($_SESSION['alloc']))
-	{
-		unset($_SESSION['alloc']->allocs);
-		unset($_SESSION['alloc']);
-	}
     if (!isset($_POST['supplier_id']))
     	$_POST['supplier_id'] = get_global_supplier();
 
