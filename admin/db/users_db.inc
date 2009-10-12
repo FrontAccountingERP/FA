@@ -16,9 +16,10 @@ function add_user($user_id, $real_name, $password, $phone, $email, $role_id,
 	$sql = "INSERT INTO ".TB_PREF."users (user_id, real_name, password"
 		.", phone, email, role_id, language, pos, print_profile, rep_popup)
 		VALUES (".db_escape($user_id).", 
-		".db_escape($real_name).", ".db_escape($password) .",".db_escape($phone).",
-		 ".db_escape($email).", $role_id, ".db_escape($language).",
-		 $pos,".db_escape($profile).",$rep_popup)";
+		".db_escape($real_name).", ".db_escape($password) .",".db_escape($phone)
+		.",".db_escape($email).", ".db_escape($role_id).", ".db_escape($language)
+		.", ".db_escape($pos).",".db_escape($profile).",".db_escape($rep_popup)
+		." )";
 
 	db_query($sql, "could not add user for $user_id");
 }
@@ -41,11 +42,11 @@ function update_user($id, $user_id, $real_name, $phone, $email, $role_id,
 	$sql = "UPDATE ".TB_PREF."users SET real_name=".db_escape($real_name).
 	", phone=".db_escape($phone).",
 		email=".db_escape($email).",
-		role_id=$role_id,
+		role_id=".db_escape($role_id).",
 		language=".db_escape($language).",
 		print_profile=".db_escape($profile).",
-		rep_popup=$rep_popup,
-		pos=$pos,
+		rep_popup=".db_escape($rep_popup).",
+		pos=".db_escape($pos).",
 		user_id = " . db_escape($user_id)
 		. " WHERE id=" . db_escape($id);
 	db_query($sql, "could not update user for $user_id");
@@ -71,11 +72,11 @@ function update_user_display_prefs($id, $price_dec, $qty_dec, $exrate_dec,
 		dec_sep=".db_escape($dec_sep).",
 		theme=".db_escape($theme).",
 		page_size=".db_escape($pagesize).",
-		show_hints=$show_hints,
+		show_hints=".db_escape($show_hints).",
 		print_profile=".db_escape($profile).",
-		rep_popup=$rep_popup,
-		query_size=$query_size,
-		graphic_links=$graphic_links,
+		rep_popup=".db_escape($rep_popup).",
+		query_size=".db_escape($query_size).",
+		graphic_links=".db_escape($graphic_links).",
 		language=".db_escape($lang).",
 		sticky_doc_date=".db_escape($stickydate).",
 		startup_tab=".db_escape($startup_tab)."
@@ -136,8 +137,8 @@ function get_user_for_login($user_id, $password)
 
 // do not exclude inactive records or you lost access after source upgrade
 // on sites using pre 2.2 database
-	$sql = "SELECT * FROM ".TB_PREF."users WHERE user_id = '$user_id' AND"
-		." password='$password'";
+	$sql = "SELECT * FROM ".TB_PREF."users WHERE user_id = ".db_escape($user_id)." AND"
+		." password=".db_escape($password);
 
 	return db_query($sql, "could not get validate user login for $user_id");
 }
