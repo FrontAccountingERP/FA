@@ -22,6 +22,15 @@ $ -> Affected files
 12-Oct-2009 Janusz Dobrowolski
 # Fixed sql injection vulnerability on some php/mysql configurations
 $ /admin/db/users_db.inc
+# Fixed broken table editor page layout on duplicate record.
+$ /gl/includes/db/gl_db_account_types.inc
+  /gl/includes/db/gl_db_accounts.inc
+  /gl/manage/gl_account_classes.php
+  /gl/manage/gl_account_types.php
+  /gl/manage/gl_accounts.php
+# [0000169] Removed sparse session var unset firing error.
+  /sales/allocations/customer_allocation_main.php
+  /purchasing/allocations/supplier_allocation_main.php
 
 11-Oct-2000 Joe Hunt
 # [0000168] Undefined variable: paylink in file rep110.php
