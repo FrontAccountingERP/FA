@@ -23,6 +23,8 @@ $ -> Affected files
 + Added discrete users online in footer (from Wish List Forum)
 $ /admin/db/users_db.inc
   /sql/alter2.2.sql
+  /sql/en_US-new.sql
+  /sql/en_US-demo.sql
   /themes/aqua/renderer.php
   /themes/cool/renderer.php
   /themes/default/renderer.php

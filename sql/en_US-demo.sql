@@ -2097,3 +2097,15 @@ CREATE TABLE `0_tag_associations` (
 
 
 ### Data of table `0_tag_associations` ###
+
+DROP TABLE IF EXISTS `0_usersonline`;
+
+CREATE TABLE `0_useronline` (
+	`timestamp` int(15) NOT NULL default '0',
+	`ip` varchar(40) NOT NULL default '',
+	`file` varchar(100) NOT NULL default '',
+	PRIMARY KEY (`timestamp`),
+	KEY `ip` (`ip`),
+	KEY `file` (`file`) 
+) TYPE=MyISAM;
+
