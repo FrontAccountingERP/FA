@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+12-Oct-2009 Janusz Dobrowolski
+# Fixed sql injection vulnerability on some php/mysql configurations
+$ /admin/db/users_db.inc
+
 11-Oct-2000 Joe Hunt
 # [0000168] Undefined variable: paylink in file rep110.php
 $ /reporting/rep110.php
