@@ -171,16 +171,34 @@ function show_users_online()
 
 	$timestamp=time();
 	$timeout=$timestamp-$timeoutseconds;
-	$ip = substr($_SERVER['REMOTE_ADDR'], 0, strrpos($_SERVER['REMOTE_ADDR'],"."));
-
-	// Add user to database
-	$loopcap = 0;
-	while($loopcap<3 && db_query("INSERT INTO ".TB_PREF."useronline VALUES('". $timestamp ."','". $ip ."','". $_SERVER['PHP_SELF'] ."')"))
-	{     // In geval van error
-	    $timestamp = $timestamp+$ip{0}; 
-	    $loopcap++;
+	/*
+	This will try to find out if user is coming behind proxy server. Why is this important?
+	If you have high traffic web site, it might happen that you receive lot of traffic
+	from the same proxy server (like AOL). In that case, the script would count them all as 1 user.
+	This function tryes to get real IP address.
+	Note that getenv() function doesn't work when PHP is running as ISAPI module
+	*/
+	if (getenv('HTTP_CLIENT_IP')) {
+		$ip = getenv('HTTP_CLIENT_IP');
 	}
-
+	elseif (getenv('HTTP_X_FORWARDED_FOR')) {
+		$ip = getenv('HTTP_X_FORWARDED_FOR');
+	}
+	elseif (getenv('HTTP_X_FORWARDED')) {
+		$ip = getenv('HTTP_X_FORWARDED');
+	}
+	elseif (getenv('HTTP_FORWARDED_FOR')) {
+		$ip = getenv('HTTP_FORWARDED_FOR');
+	}
+	elseif (getenv('HTTP_FORWARDED')) {
+		$ip = getenv('HTTP_FORWARDED');
+	}
+	else {
+		$ip = $_SERVER['REMOTE_ADDR'];
+	}
+	
+	// Add user to database
+	db_query("INSERT INTO ".TB_PREF."useronline (timestamp, ip, file) VALUES ('". $timestamp ."','". $ip ."','". $_SERVER['PHP_SELF'] ."')");
 	//Remove users that were not online within $timeoutseconds.
 	db_query("DELETE FROM ".TB_PREF."useronline WHERE timestamp<". $timeout);
 

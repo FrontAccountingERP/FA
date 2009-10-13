@@ -24,7 +24,7 @@ $ -> Affected files
 $ /sales/inquiry/sales_orders_view.php
 
 13-Oct-2009 Joe Hunt
-+ Added discrete users online in footer (from Wish List Forum)
++ Added discrete users online in footer (from Wish List Forum) (New rerun)
 $ /admin/db/users_db.inc
   /sql/alter2.2.sql
   /sql/en_US-new.sql
