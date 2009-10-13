@@ -16,7 +16,7 @@ include($path_to_root . "/includes/session.inc");
 include($path_to_root . "/sales/includes/sales_ui.inc");
 include_once($path_to_root . "/reporting/includes/reporting.inc");
 
-$page_security = 'SA_TRANSVIEW';
+$page_security = 'SA_SALESTRANSVIEW';
 
 set_page_security( @$_POST['order_view_mode'],
 	array(	'OutstandingOnly' => 'SA_SALESDELIVERY',
