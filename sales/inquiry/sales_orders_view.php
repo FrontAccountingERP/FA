@@ -35,10 +35,8 @@ if (get_post('type'))
 	$trans_type = $_POST['type'];
 elseif (isset($_GET['type']) && $_GET['type'] == ST_SALESQUOTE)
 	$trans_type = ST_SALESQUOTE;
-elseif (isset($_GET['type']) && $_GET['type'] == ST_SALESORDER)
-	$trans_type = ST_SALESORDER;
 else
-	$page_security = 'SA_DENIED';
+	$trans_type = ST_SALESORDER;
 
 if ($trans_type == ST_SALESORDER)
 {
