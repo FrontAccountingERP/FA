@@ -348,11 +348,11 @@ class Report
 				case 'ACCOUNTTAGS':
 				case 'DIMENSIONTAGS':
 					if ($param->param_type == 'ACCOUNTTAGS')
-						$type = 0;
+						$type = TAG_ACCOUNT;
 					else
-						$type = 1;
+						$type = TAG_DIMENSION;
 					$sql = "SELECT id, name FROM ".TB_PREF."tags WHERE type=$type"; 
-					$st .= combo_input("PARAM_$index", '', $sql, 'id', 'name',array('spec_option'=>_("No tags"),'spec_id' => ALL_NUMERIC,'multi'=>true,'height'=>4));
+					$st .= combo_input("PARAM_$index", '', $sql, 'id', 'name',array('spec_option'=>_("No tags"),'spec_id' => ALL_NUMERIC,'multi'=>true,'height'=>5));
 					break;
 
 			}
