@@ -34,6 +34,8 @@ $ /admin/db/users_db.inc
   /themes/default/renderer.php
 ! Changed Tag types in reports_classes to be the same as defined in types.inc. Suitable height=5
 $ /reporting/includes/reports_classes.inc
+! Code cleanup (old code removed)
+$ /includes/ui_view.inc
   
 12-Oct-2009 Janusz Dobrowolski
 # Fixed sql injection vulnerability on some php/mysql configurations
