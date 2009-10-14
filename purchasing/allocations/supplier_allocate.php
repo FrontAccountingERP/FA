@@ -43,6 +43,8 @@ function clear_allocations()
 
 function edit_allocations_for_transaction($type, $trans_no)
 {
+	global $systypes_array;
+
 	start_form();
 
     display_heading(_("Allocation of") . " " . $systypes_array[$_SESSION['alloc']->type] . " # " . $_SESSION['alloc']->trans_no);

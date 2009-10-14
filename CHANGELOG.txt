@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+14-Oct-2009 Janusz Dobrowolski
+# [0000173] Missing global systypes_array declaration.
+$ /purchasing/allocations/supplier_allocate.php
+
 14-Oct-2009 Joe Hunt
 # [0000172] Difference between Customer Balances and Print Statements
 $ /reporting/rep108.pp
@@ -50,7 +54,7 @@ $ /gl/includes/db/gl_db_account_types.inc
   /gl/manage/gl_account_classes.php
   /gl/manage/gl_account_types.php
   /gl/manage/gl_accounts.php
-# [0000169] Removed sparse session var unset firing error.
+# [0000169],[0000174] Removed sparse session var unset firing error.
   /sales/allocations/customer_allocation_main.php
   /purchasing/allocations/supplier_allocation_main.php
 
