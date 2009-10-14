@@ -32,7 +32,8 @@ print_statements();
 function getTransactions($debtorno, $date)
 {
     $sql = "SELECT ".TB_PREF."debtor_trans.*,
-				(".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + ".TB_PREF."debtor_trans.ov_freight + ".TB_PREF."debtor_trans.ov_discount)
+				(".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + ".TB_PREF."debtor_trans.ov_freight + 
+				".TB_PREF."debtor_trans.ov_freight_tax + ".TB_PREF."debtor_trans.ov_discount)
 				AS TotalAmount, ".TB_PREF."debtor_trans.alloc AS Allocated,
 				((".TB_PREF."debtor_trans.type = ".ST_SALESINVOICE.")
 					AND ".TB_PREF."debtor_trans.due_date < '$date') AS OverDue
