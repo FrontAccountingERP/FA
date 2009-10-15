@@ -221,8 +221,9 @@ $sql = "SELECT
 
 if (isset($_POST['OrderNumber']) && $_POST['OrderNumber'] != "")
 {
-	// search orders with number like ...
-	$sql .= " AND sorder.order_no LIKE '%". $_POST['OrderNumber'] ."'"
+	// search orders with number like 
+	$number_like = "%".$_POST['OrderNumber'];
+	$sql .= " AND sorder.order_no LIKE ".db_escape($number_like)
  			." GROUP BY sorder.order_no";
 }
 else	// ... or select inquiry constraints
@@ -236,13 +237,13 @@ else	// ... or select inquiry constraints
 				." AND sorder.ord_date <= '$date_before'";
   	}
 	if ($selected_customer != -1)
-		$sql .= " AND sorder.debtor_no='" . $selected_customer . "'";
+		$sql .= " AND sorder.debtor_no=".db_escape($selected_customer);
 
 	if (isset($selected_stock_item))
-		$sql .= " AND line.stk_code='". $selected_stock_item ."'";
+		$sql .= " AND line.stk_code=".db_escape($selected_stock_item);
 
 	if (isset($_POST['StockLocation']) && $_POST['StockLocation'] != reserved_words::get_all())
-		$sql .= " AND sorder.from_stk_loc = '". $_POST['StockLocation'] . "' ";
+		$sql .= " AND sorder.from_stk_loc = ".db_escape($_POST['StockLocation'])." ";
 
 	if ($_POST['order_view_mode']=='OutstandingOnly')
 		$sql .= " AND line.qty_sent < line.quantity";

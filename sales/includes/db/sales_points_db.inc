@@ -25,7 +25,7 @@ function update_sales_point($id, $name, $location, $account, $cash, $credit)
 				.",pos_account=".db_escape($account)
 				.",cash_sale =$cash"
 				.",credit_sale =$credit"
-		 		." WHERE id = $id";
+		 		." WHERE id = ".db_escape($id);
 	
 	db_query($sql, "could not update sales type");			
 }
@@ -46,7 +46,7 @@ function get_sales_point($id)
 		.TB_PREF."sales_pos as pos
 		LEFT JOIN ".TB_PREF."locations as loc on pos.pos_location=loc.loc_code
 		LEFT JOIN ".TB_PREF."bank_accounts as acc on pos.pos_account=acc.id
-		WHERE pos.id='$id'";
+		WHERE pos.id=".db_escape($id);
 	
 	$result = db_query($sql, "could not get POS definition");
 	
@@ -55,7 +55,7 @@ function get_sales_point($id)
 
 function get_sales_point_name($id)
 {
-	$sql = "SELECT pos_name FROM ".TB_PREF."sales_pos WHERE id=$id";
+	$sql = "SELECT pos_name FROM ".TB_PREF."sales_pos WHERE id=".db_escape($id);
 	
 	$result = db_query($sql, "could not get POS name");
 	
@@ -65,7 +65,7 @@ function get_sales_point_name($id)
 
 function delete_sales_point($id)
 {
-	$sql="DELETE FROM ".TB_PREF."sales_pos WHERE id=$id";
+	$sql="DELETE FROM ".TB_PREF."sales_pos WHERE id=".db_escape($id);
 	db_query($sql,"The point of sale record could not be deleted");
 }
 

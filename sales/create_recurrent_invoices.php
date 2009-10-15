@@ -26,7 +26,7 @@ page(_("Create and Print Recurrent Invoices"), false, false, "", $js);
 function set_last_sent($id, $date)
 {
 	$date = date2sql($date);
-	$sql = "UPDATE ".TB_PREF."recurrent_invoices SET last_sent='$date' WHERE id=$id";
+	$sql = "UPDATE ".TB_PREF."recurrent_invoices SET last_sent='$date' WHERE id=".db_escape($id);
    	db_query($sql,"The recurrent invoice could not be updated or added");
 }	
  	
@@ -60,7 +60,7 @@ function create_recurrent_invoices($customer_id, $branch_id, $order_no, $tmpl_no
 if (isset($_GET['recurrent']))
 {
 	$invs = array();
-	$sql = "SELECT * FROM ".TB_PREF."recurrent_invoices WHERE id=".$_GET['recurrent'];
+	$sql = "SELECT * FROM ".TB_PREF."recurrent_invoices WHERE id=".db_escape($_GET['recurrent']);
 
 	$result = db_query($sql,"could not get recurrent invoice");
 	$myrow = db_fetch($result);
@@ -95,7 +95,7 @@ if (isset($_GET['recurrent']))
 //-------------------------------------------------------------------------------------------------
 function get_sales_group_name($group_no)
 {
-	$sql = "SELECT description FROM ".TB_PREF."groups WHERE id = $group_no";
+	$sql = "SELECT description FROM ".TB_PREF."groups WHERE id = ".db_escape($group_no);
 	$result = db_query($sql, "could not get group");
 	$row = db_fetch($result);
 	return $row[0];

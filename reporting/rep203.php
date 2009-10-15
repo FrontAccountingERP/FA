@@ -107,7 +107,7 @@ function print_payment_report()
 	$sql = "SELECT supplier_id, supp_name AS name, curr_code, ".TB_PREF."payment_terms.terms FROM ".TB_PREF."suppliers, ".TB_PREF."payment_terms
 		WHERE ";
 	if ($fromsupp != reserved_words::get_all_numeric())
-		$sql .= "supplier_id=$fromsupp AND ";
+		$sql .= "supplier_id=".db_escape($fromsupp)." AND ";
 	$sql .= "".TB_PREF."suppliers.payment_terms = ".TB_PREF."payment_terms.terms_indicator
 		ORDER BY supp_name";
 	$result = db_query($sql, "The customers could not be retrieved");

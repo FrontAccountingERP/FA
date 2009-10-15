@@ -43,7 +43,7 @@ function get_customer_details($customer_id, $to=null)
 		WHERE
 			 ".TB_PREF."debtors_master.payment_terms = ".TB_PREF."payment_terms.terms_indicator
 			 AND ".TB_PREF."debtors_master.credit_status = ".TB_PREF."credit_status.id
-			 AND ".TB_PREF."debtors_master.debtor_no = $customer_id
+			 AND ".TB_PREF."debtors_master.debtor_no = ".db_escape($customer_id)."
 			 AND ".TB_PREF."debtor_trans.tran_date <= '$todate'
 			 AND ".TB_PREF."debtor_trans.type <> 13
 			 AND ".TB_PREF."debtors_master.debtor_no = ".TB_PREF."debtor_trans.debtor_no
@@ -74,7 +74,7 @@ function get_customer_details($customer_id, $to=null)
     		WHERE
     		     ".TB_PREF."debtors_master.payment_terms = ".TB_PREF."payment_terms.terms_indicator
     		     AND ".TB_PREF."debtors_master.credit_status = ".TB_PREF."credit_status.id
-    		     AND ".TB_PREF."debtors_master.debtor_no = '$customer_id'";
+    		     AND ".TB_PREF."debtors_master.debtor_no = ".db_escape($customer_id);
 
     	$result = db_query($sql,"The customer details could not be retrieved");
 
@@ -100,7 +100,7 @@ function get_customer_details($customer_id, $to=null)
 
 function get_customer($customer_id)
 {
-	$sql = "SELECT * FROM ".TB_PREF."debtors_master WHERE debtor_no=$customer_id";
+	$sql = "SELECT * FROM ".TB_PREF."debtors_master WHERE debtor_no=".db_escape($customer_id);
 
 	$result = db_query($sql, "could not get customer");
 
@@ -109,7 +109,7 @@ function get_customer($customer_id)
 
 function get_customer_name($customer_id)
 {
-	$sql = "SELECT name FROM ".TB_PREF."debtors_master WHERE debtor_no=$customer_id";
+	$sql = "SELECT name FROM ".TB_PREF."debtors_master WHERE debtor_no=".db_escape($customer_id);
 
 	$result = db_query($sql, "could not get customer");
 
@@ -120,7 +120,7 @@ function get_customer_name($customer_id)
 
 function get_area_name($id)
 {
-	$sql = "SELECT description FROM ".TB_PREF."areas WHERE area_code=$id";
+	$sql = "SELECT description FROM ".TB_PREF."areas WHERE area_code=".db_escape($id);
 
 	$result = db_query($sql, "could not get sales type");
 
@@ -130,7 +130,7 @@ function get_area_name($id)
 
 function get_salesman_name($id)
 {
-	$sql = "SELECT salesman_name FROM ".TB_PREF."salesman WHERE salesman_code=$id";
+	$sql = "SELECT salesman_name FROM ".TB_PREF."salesman WHERE salesman_code=".db_escape($id);
 
 	$result = db_query($sql, "could not get sales type");
 

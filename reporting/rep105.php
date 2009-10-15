@@ -55,11 +55,11 @@ function GetSalesOrders($from, $to, $category=0, $location=null, $backorder=0)
             WHERE ".TB_PREF."sales_orders.ord_date >='$fromdate'
                 AND ".TB_PREF."sales_orders.ord_date <='$todate'";
 	if ($category > 0)
-		$sql .= " AND ".TB_PREF."stock_master.category_id=$category";
+		$sql .= " AND ".TB_PREF."stock_master.category_id=".db_escape($category);
 	if ($location != null)
-		$sql .= " AND ".TB_PREF."sales_orders.from_stk_loc='$location'";
+		$sql .= " AND ".TB_PREF."sales_orders.from_stk_loc=".db_escape($location);
 	if ($backorder)
-		$sql .= "AND ".TB_PREF."sales_order_details.quantity - ".TB_PREF."sales_order_details.qty_sent > 0";
+		$sql .= " AND ".TB_PREF."sales_order_details.quantity - ".TB_PREF."sales_order_details.qty_sent > 0";
 	$sql .= " ORDER BY ".TB_PREF."sales_orders.order_no";
 
 	return db_query($sql, "Error getting order details");

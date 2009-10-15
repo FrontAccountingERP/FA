@@ -99,7 +99,7 @@ function print_supplier_balances()
 
 	$sql = "SELECT supplier_id, supp_name AS name, curr_code FROM ".TB_PREF."suppliers ";
 	if ($fromsupp != reserved_words::get_all_numeric())
-		$sql .= "WHERE supplier_id=$fromsupp ";
+		$sql .= "WHERE supplier_id=".db_escape($fromsupp)." ";
 	$sql .= "ORDER BY supp_name";
 	$result = db_query($sql, "The customers could not be retrieved");
 

@@ -37,7 +37,7 @@ function getTransactions($debtorno, $date)
 				((".TB_PREF."debtor_trans.type = 10)
 					AND ".TB_PREF."debtor_trans.due_date < '$date') AS OverDue
     			FROM ".TB_PREF."debtor_trans, ".TB_PREF."sys_types
-    			WHERE ".TB_PREF."debtor_trans.tran_date <= '$date' AND ".TB_PREF."debtor_trans.debtor_no = '$debtorno'
+    			WHERE ".TB_PREF."debtor_trans.tran_date <= '$date' AND ".TB_PREF."debtor_trans.debtor_no = $debtorno
     				AND ".TB_PREF."debtor_trans.type = ".TB_PREF."sys_types.type_id
     				AND ".TB_PREF."debtor_trans.type <> 13
     				ORDER BY ".TB_PREF."debtor_trans.tran_date";
@@ -86,7 +86,7 @@ function print_statements()
 
 	$sql = "SELECT debtor_no, name AS DebtorName, address, tax_id, email, curr_code, curdate() AS tran_date, payment_terms FROM ".TB_PREF."debtors_master";
 	if ($customer != reserved_words::get_all_numeric())
-		$sql .= " WHERE debtor_no = $customer";
+		$sql .= " WHERE debtor_no = ".db_escape($customer);
 	else
 		$sql .= " ORDER by name";
 	$result = db_query($sql, "The customers could not be retrieved");

@@ -84,7 +84,7 @@ function handle_submit()
             pymt_discount=" . input_num('pymt_discount') / 100 . ", 
             credit_limit=" . input_num('credit_limit') . ", 
             sales_type = ".db_escape($_POST['sales_type']) . " 
-            WHERE debtor_no = '". $_POST['customer_id'] . "'";
+            WHERE debtor_no = ".db_escape($_POST['customer_id']);
 
 		db_query($sql,"The customer could not be updated");
 		display_notification(_("Customer has been updated."));

@@ -44,9 +44,9 @@ function getTransactions($category, $location)
 		WHERE ".TB_PREF."stock_master.category_id=".TB_PREF."stock_category.category_id
 		AND (".TB_PREF."stock_master.mb_flag='B' OR ".TB_PREF."stock_master.mb_flag='M')";
 	if ($category != 0)
-		$sql .= " AND ".TB_PREF."stock_master.category_id = '$category'";
+		$sql .= " AND ".TB_PREF."stock_master.category_id = ".db_escape($category);
 	if ($location != 'all')
-		$sql .= " AND IF(".TB_PREF."stock_moves.stock_id IS NULL, '1=1',".TB_PREF."stock_moves.loc_code = '$location')";
+		$sql .= " AND IF(".TB_PREF."stock_moves.stock_id IS NULL, '1=1',".TB_PREF."stock_moves.loc_code = ".db_escape($location).")";
 	$sql .= " GROUP BY ".TB_PREF."stock_master.category_id,
 		".TB_PREF."stock_category.description,
 		".TB_PREF."stock_master.stock_id,

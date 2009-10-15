@@ -136,7 +136,7 @@ elseif ($Mode == 'Delete')
 
 	// PREVENT DELETES IF DEPENDENT RECORDS IN 'debtor_trans'
 
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."debtor_trans WHERE branch_code='" . $_POST['branch_code']. "' AND debtor_no = '" . $_POST['customer_id']. "'";
+	$sql= "SELECT COUNT(*) FROM ".TB_PREF."debtor_trans WHERE branch_code=".db_escape($_POST['branch_code'])." AND debtor_no = ".db_escape($_POST['customer_id']);
 	$result = db_query($sql,"could not query debtortrans");
 	$myrow = db_fetch_row($result);
 	if ($myrow[0] > 0)
@@ -146,7 +146,7 @@ elseif ($Mode == 'Delete')
 	}
 	else
 	{
-		$sql= "SELECT COUNT(*) FROM ".TB_PREF."sales_orders WHERE branch_code='" . $_POST['branch_code']. "' AND debtor_no = '" . $_POST['customer_id']. "'";
+		$sql= "SELECT COUNT(*) FROM ".TB_PREF."sales_orders WHERE branch_code=".db_escape($_POST['branch_code'])." AND debtor_no = ".db_escape($_POST['customer_id']);
 		$result = db_query($sql,"could not query sales orders");
 
 		$myrow = db_fetch_row($result);
@@ -156,7 +156,7 @@ elseif ($Mode == 'Delete')
 		}
 		else
 		{
-			$sql="DELETE FROM ".TB_PREF."cust_branch WHERE branch_code='" . $_POST['branch_code']. "' AND debtor_no='" . $_POST['customer_id']. "'";
+			$sql="DELETE FROM ".TB_PREF."cust_branch WHERE branch_code=".db_escape($_POST['branch_code'])." AND debtor_no=".db_escape($_POST['customer_id']);
 			db_query($sql,"could not delete branch");
 			display_notification(_('Selected customer branch has been deleted'));
 		}
@@ -189,7 +189,7 @@ if ($num_branches)
 		AND ".TB_PREF."cust_branch.tax_group_id=".TB_PREF."tax_groups.id
 		AND ".TB_PREF."cust_branch.area=".TB_PREF."areas.area_code
 		AND ".TB_PREF."cust_branch.salesman=".TB_PREF."salesman.salesman_code
-		AND ".TB_PREF."cust_branch.debtor_no = '" . $_POST['customer_id']. "'";
+		AND ".TB_PREF."cust_branch.debtor_no = ".db_escape($_POST['customer_id']);
 
 	$result = db_query($sql,"could not get customer branches");
 
@@ -234,8 +234,8 @@ if ($selected_id != -1)
 
 		//editing an existing branch
     	$sql = "SELECT * FROM ".TB_PREF."cust_branch
-			WHERE branch_code='" . $_POST['branch_code'] . "'
-			AND debtor_no='" . $_POST['customer_id'] . "'";
+			WHERE branch_code=".db_escape($_POST['branch_code'])."
+			AND debtor_no=".db_escape($_POST['customer_id']);
 		$result = db_query($sql,"check failed");
 	    $myrow = db_fetch($result);
 		set_focus('br_name');
@@ -264,7 +264,7 @@ elseif ($Mode != 'ADD_ITEM')
 { //end of if $SelectedBranch only do the else when a new record is being entered
 	if(!$num_branches) {
 		$sql = "SELECT name, address, email
-			FROM ".TB_PREF."debtors_master WHERE debtor_no = '" . $_POST['customer_id']. "'";
+			FROM ".TB_PREF."debtors_master WHERE debtor_no = ".db_escape($_POST['customer_id']);
 		$result = db_query($sql,"check failed");
 		$myrow = db_fetch($result);
 		$_POST['br_name'] = $myrow["name"];

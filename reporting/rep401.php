@@ -40,8 +40,8 @@ function getTransactions($from, $to)
 			".TB_PREF."stock_master,
 			".TB_PREF."bom
 		WHERE ".TB_PREF."stock_master.stock_id=".TB_PREF."bom.component
-		AND ".TB_PREF."bom.parent >= '$from'
-		AND ".TB_PREF."bom.parent <= '$to'
+		AND ".TB_PREF."bom.parent >= ".db_escape($from)."
+		AND ".TB_PREF."bom.parent <= ".db_escape($to)."
 		ORDER BY
 			".TB_PREF."bom.parent,
 			".TB_PREF."bom.component";

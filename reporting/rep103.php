@@ -56,13 +56,13 @@ function get_customer_details_for_report($area=0, $salesid=0)
 	if ($area != 0)
 	{
 		if ($salesid != 0)
-			$sql .= " WHERE ".TB_PREF."salesman.salesman_code='$salesid' 
-				AND ".TB_PREF."areas.area_code='$area'";
+			$sql .= " WHERE ".TB_PREF."salesman.salesman_code=".db_escape($salesid)." 
+				AND ".TB_PREF."areas.area_code=".db_escape($area);
 		else		
-			$sql .= " WHERE ".TB_PREF."areas.area_code='$area'";
+			$sql .= " WHERE ".TB_PREF."areas.area_code=".db_escape($area);
 	}
 	elseif ($salesid != 0)
-		$sql .= " WHERE ".TB_PREF."salesman.salesman_code='$salesid'";
+		$sql .= " WHERE ".TB_PREF."salesman.salesman_code=".db_escape($salesid);
 	$sql .= " ORDER BY description,
 			".TB_PREF."salesman.salesman_name,
 			".TB_PREF."debtors_master.debtor_no,
@@ -81,7 +81,7 @@ function getTransactions($debtorno, $branchcode, $date)
 		WHERE debtor_no='$debtorno'
 		AND branch_code='$branchcode'
 		AND (type=10 or type=11)
-		AND trandate >='$date'";
+		AND tran_date >='$date'";
 		
     $result = db_query($sql,"No transactions were returned");
 

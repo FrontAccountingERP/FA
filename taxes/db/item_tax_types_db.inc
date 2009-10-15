@@ -14,7 +14,7 @@ function add_item_tax_type($name, $exempt, $exempt_from)
 	begin_transaction();
 	
 	$sql = "INSERT INTO ".TB_PREF."item_tax_types (name, exempt) 
-		VALUES (".db_escape($name).",$exempt)";
+		VALUES (".db_escape($name).",".db_escape($exempt).")";
 		
 	db_query($sql, "could not add item tax type");	
 	
@@ -31,7 +31,7 @@ function update_item_tax_type($id, $name, $exempt, $exempt_from)
 	begin_transaction();
 	
 	$sql = "UPDATE ".TB_PREF."item_tax_types SET name=".db_escape($name).
-	",	exempt=$exempt WHERE id=$id";
+	",	exempt=".db_escape($exempt)." WHERE id=".db_escape($id);
 	
 	db_query($sql, "could not update item tax type");	
 	
@@ -51,7 +51,7 @@ function get_all_item_tax_types()
 
 function get_item_tax_type($id)
 {
-	$sql = "SELECT * FROM ".TB_PREF."item_tax_types WHERE id=$id";
+	$sql = "SELECT * FROM ".TB_PREF."item_tax_types WHERE id=".db_escape($id);
 	
 	$result = db_query($sql, "could not get item tax type");
 	
@@ -60,7 +60,8 @@ function get_item_tax_type($id)
 
 function get_item_tax_type_for_item($stock_id)
 {
-	$sql = "SELECT ".TB_PREF."item_tax_types.* FROM ".TB_PREF."item_tax_types,".TB_PREF."stock_master WHERE ".TB_PREF."stock_master.stock_id='$stock_id'
+	$sql = "SELECT ".TB_PREF."item_tax_types.* FROM ".TB_PREF."item_tax_types,".TB_PREF."stock_master WHERE 
+		".TB_PREF."stock_master.stock_id=".db_escape($stock_id)."
 		AND ".TB_PREF."item_tax_types.id=".TB_PREF."stock_master.tax_type_id";
 	
 	$result = db_query($sql, "could not get item tax type");
@@ -72,7 +73,7 @@ function delete_item_tax_type($id)
 {
 	begin_transaction();
 		
-	$sql = "DELETE FROM ".TB_PREF."item_tax_types WHERE id=$id";
+	$sql = "DELETE FROM ".TB_PREF."item_tax_types WHERE id=".db_escape($id);
 		
 	db_query($sql, "could not delete item tax type");
 	// also delete all exemptions
@@ -86,21 +87,21 @@ function add_item_tax_type_exemptions($id, $exemptions)
 	for ($i = 0; $i < count($exemptions); $i++) 
 	{
 		$sql = "INSERT INTO ".TB_PREF."item_tax_type_exemptions (item_tax_type_id, tax_type_id)
-			VALUES ($id,  " . $exemptions[$i] . ")";
+			VALUES (".db_escape($id).",  ".db_escape($exemptions[$i]).")";
 		db_query($sql, "could not add item tax type exemptions");					
 	}		
 }
 
 function delete_item_tax_type_exemptions($id)
 {
-	$sql = "DELETE FROM ".TB_PREF."item_tax_type_exemptions WHERE item_tax_type_id=$id";
+	$sql = "DELETE FROM ".TB_PREF."item_tax_type_exemptions WHERE item_tax_type_id=".db_escape($id);
 	
 	db_query($sql, "could not delete item tax type exemptions");					
 }
 
 function get_item_tax_type_exemptions($id)
 {
-	$sql = "SELECT * FROM ".TB_PREF."item_tax_type_exemptions WHERE item_tax_type_id=$id";
+	$sql = "SELECT * FROM ".TB_PREF."item_tax_type_exemptions WHERE item_tax_type_id=".db_escape($id);
 	
 	return db_query($sql, "could not get item tax type exemptions");
 }

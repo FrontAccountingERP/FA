@@ -59,11 +59,11 @@ function getTransactions($category, $location, $fromcust, $from, $to)
 		AND ((".TB_PREF."debtor_trans.type=13 AND ".TB_PREF."debtor_trans.version=1) OR ".TB_PREF."stock_moves.type=11)
 		AND (".TB_PREF."stock_master.mb_flag='B' OR ".TB_PREF."stock_master.mb_flag='M')";
 		if ($category != 0)
-			$sql .= " AND ".TB_PREF."stock_master.category_id = '$category'";
+			$sql .= " AND ".TB_PREF."stock_master.category_id = ".db_escape($category);
 		if ($location != 'all')
-			$sql .= " AND ".TB_PREF."stock_moves.loc_code = '$location'";
+			$sql .= " AND ".TB_PREF."stock_moves.loc_code = ".db_escape($location);
 		if ($fromcust != -1)
-			$sql .= " AND ".TB_PREF."debtors_master.debtor_no = $fromcust";
+			$sql .= " AND ".TB_PREF."debtors_master.debtor_no = ".db_escape($fromcust);
 		$sql .= " GROUP BY ".TB_PREF."stock_master.stock_id, ".TB_PREF."debtors_master.name ORDER BY ".TB_PREF."stock_master.category_id,
 			".TB_PREF."stock_master.stock_id, ".TB_PREF."debtors_master.name";
     return db_query($sql,"No transactions were returned");

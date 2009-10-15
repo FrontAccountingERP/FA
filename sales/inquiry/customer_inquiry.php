@@ -230,7 +230,7 @@ function check_overdue($row)
 			AND trans.branch_code = branch.branch_code";
 
    	if ($_POST['customer_id'] != reserved_words::get_all())
-   		$sql .= " AND trans.debtor_no = '" . $_POST['customer_id'] . "'";
+   		$sql .= " AND trans.debtor_no = ".db_escape($_POST['customer_id']);
 
    	if ($_POST['filterType'] != reserved_words::get_all())
    	{

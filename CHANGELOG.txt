@@ -19,6 +19,59 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+15-Oct-2009 Joe Hunt
+# Security sql statements update against sql injection attacks.
+$ /reporting/rep101.php
+  /reporting/rep102.php
+  /reporting/rep103.php
+  /reporting/rep104.php
+  /reporting/rep105.php
+  /reporting/rep106.php
+  /reporting/rep201.php
+  /reporting/rep202.php
+  /reporting/rep203.php
+  /reporting/rep204.php
+  /reporting/rep209.php
+  /reporting/rep301.php
+  /reporting/rep302.php
+  /reporting/rep303.php
+  /reporting/rep304.php
+  /reporting/rep401.php
+  /reporting/rep501.php
+  /reporting/rep705.php
+  /sales/create_recurrent_invoices.php
+  /sales/customer_payments.php
+  /sales/includes/sales_db.inc
+  /sales/includes/db/branches_db.inc
+  /sales/includes/db/credit_status_db.inc
+  /sales/includes/db/custalloc_db.inc
+  /sales/includes/db/customers_db.inc
+  /sales/includes/db/cust_trans_db.inc
+  /sales/includes/db/cust_trans_details_db.inc
+  /sales/includes/db/sales_order_db.inc
+  /sales/includes/db/sales_points_db.inc
+  /sales/includes/db/sales_types_db.inc
+  /sales/inquiry/customer_allocation_inquiry.php
+  /sales/inquiry/customer_inquiry.php
+  /sales/inquiry/sales_deliveries_view.php
+  /sales/inquiry/sales_orders_view.php
+  /sales/manage/credit_status.php
+  /sales/manage/customers.php
+  /sales/manage/customer_branches.php
+  /sales/manage/recurrent_invoices.php
+  /sales/manage/sales_areas.php
+  /sales/manage/sales_groups.php
+  /sales/manage/sales_people.php
+  /sales/manage/sales_types.php
+  /sales/view/view_sales_order.php
+  /taxes/item_tax_types.php
+  /taxes/tax_groups.php
+  /taxes/tax_types.php
+  /taxes/tax_calc.php
+  /taxes/db/item_tax_types_db.inc
+  /taxes/db/tax_groups_db.inc
+  /taxes/db/tax_types_db.inc
+
 15-Oct-2009 Janusz Dobrowolski
 ! Added html_entity_decode() in db_escape() for correct INSERT>SELECT>INSERT sequences.
 $ /includes/db/connect_db.inc

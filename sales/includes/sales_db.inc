@@ -70,9 +70,9 @@ function get_price ($stock_id, $currency, $sales_type_id, $factor=null, $date=nu
 	    
 	$sql = "SELECT price
 		FROM ".TB_PREF."prices
-		WHERE stock_id = '" . $stock_id . "' "
-		." AND sales_type_id = " . $sales_type_id
-		." AND curr_abrev = '$currency'";
+		WHERE stock_id = ".db_escape($stock_id)
+		." AND sales_type_id = ".db_escape($sales_type_id)
+		." AND curr_abrev = ".db_escape($currency);
 
 	$msg = "There was a problem retrieving the pricing information for the part $stock_id for customer";
 	$result = db_query($sql, $msg);
@@ -93,11 +93,11 @@ function get_price ($stock_id, $currency, $sales_type_id, $factor=null, $date=nu
     // alternative is make up to 2 additional sql queries
 	$sql = "SELECT price, curr_abrev, sales_type_id
 		FROM ".TB_PREF."prices
-		WHERE stock_id = '" . $stock_id . "' "
-		." AND (sales_type_id = " . $sales_type_id
-		." OR sales_type_id = " . $base_id.")"
-		." AND (curr_abrev = '$currency'"
-		." OR curr_abrev = '$home_curr')";
+		WHERE stock_id = ".db_escape($stock_id)
+		." AND (sales_type_id = ".db_escape($sales_type_id)
+		." OR sales_type_id = ".db_escape($base_id).")"
+		." AND (curr_abrev = ".db_escape($currency)
+		." OR curr_abrev = ".db_escape($home_curr).")";
 
 	$result = db_query($sql, $msg);
 
@@ -174,7 +174,7 @@ function set_document_parent($cart)
 	$del_no = reset(array_keys($cart->src_docs));
 
 	$sql = 'UPDATE '.TB_PREF.'debtor_trans SET trans_link = ' . $del_no .
-		' WHERE type='.$cart->trans_type.' AND trans_no='. $inv_no ;
+		' WHERE type=".db_escape($cart->trans_type)." AND trans_no='. $inv_no ;
 	db_query($sql, 'Child document link cannot be updated');
 
 	}
@@ -222,11 +222,11 @@ function update_parent_line($doc_type, $line_id, $qty_dispatched)
 		if ($doc_type==30)
 			$sql = "UPDATE ".TB_PREF."sales_order_details
 				SET qty_sent = qty_sent + $qty_dispatched
-				WHERE id=$line_id";
+				WHERE id=".db_escape($line_id);
 		else
 			$sql = "UPDATE ".TB_PREF."debtor_trans_details
 				SET qty_done = qty_done + $qty_dispatched
-				WHERE id=$line_id";
+				WHERE id=".db_escape($line_id);
 	}
 	db_query($sql, "The parent document detail record could not be updated");
 	return true;
@@ -239,7 +239,7 @@ function get_location(&$cart)
 {
 	$sql = "SELECT ".TB_PREF."locations.* FROM ".TB_PREF."stock_moves,"
 		.TB_PREF."locations".
-		" WHERE type=".$cart->trans_type.
+		" WHERE type=".db_escape($cart->trans_type).
 		" AND trans_no=".key($cart->trans_no).
 		" AND qty!=0 ".
 		" AND ".TB_PREF."locations.loc_code=".TB_PREF."stock_moves.loc_code";

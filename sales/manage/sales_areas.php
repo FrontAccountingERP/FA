@@ -35,7 +35,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 	{
     	if ($selected_id != -1) 
     	{
-    		$sql = "UPDATE ".TB_PREF."areas SET description=".db_escape($_POST['description'])." WHERE area_code = '$selected_id'";
+    		$sql = "UPDATE ".TB_PREF."areas SET description=".db_escape($_POST['description'])." WHERE area_code = ".db_escape($selected_id);
 			$note = _('Selected sales area has been updated');
     	} 
     	else 
@@ -57,7 +57,7 @@ if ($Mode == 'Delete')
 
 	// PREVENT DELETES IF DEPENDENT RECORDS IN 'debtors_master'
 
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."cust_branch WHERE area='$selected_id'";
+	$sql= "SELECT COUNT(*) FROM ".TB_PREF."cust_branch WHERE area=".db_escape($selected_id);
 	$result = db_query($sql,"check failed");
 	$myrow = db_fetch_row($result);
 	if ($myrow[0] > 0) 
@@ -67,7 +67,7 @@ if ($Mode == 'Delete')
 	} 
 	if ($cancel_delete == 0) 
 	{
-		$sql="DELETE FROM ".TB_PREF."areas WHERE area_code='" . $selected_id . "'";
+		$sql="DELETE FROM ".TB_PREF."areas WHERE area_code=".db_escape($selected_id);
 		db_query($sql,"could not delete sales area");
 
 		display_notification(_('Selected sales area has been deleted'));
@@ -117,7 +117,7 @@ if ($selected_id != -1)
 {
  	if ($Mode == 'Edit') {
 		//editing an existing area
-		$sql = "SELECT * FROM ".TB_PREF."areas WHERE area_code='$selected_id'";
+		$sql = "SELECT * FROM ".TB_PREF."areas WHERE area_code=".db_escape($selected_id);
 
 		$result = db_query($sql,"could not get area");
 		$myrow = db_fetch($result);

@@ -27,7 +27,7 @@ include_once($path_to_root . "/gl/includes/gl_db.inc");
 
 print_aged_customer_analysis();
 
-function get_invoices($costomer_id, $to)
+function get_invoices($customer_id, $to)
 {
 	$todate = date2sql($to);
 	$PastDueDays1 = get_company_pref('past_due_days');
@@ -54,7 +54,7 @@ function get_invoices($costomer_id, $to)
 		    AND ".TB_PREF."debtor_trans.type <> 13
 			AND ".TB_PREF."debtors_master.payment_terms = ".TB_PREF."payment_terms.terms_indicator
 			AND ".TB_PREF."debtors_master.debtor_no = ".TB_PREF."debtor_trans.debtor_no
-			AND ".TB_PREF."debtor_trans.debtor_no = $costomer_id
+			AND ".TB_PREF."debtor_trans.debtor_no = $customer_id 
 			AND ".TB_PREF."debtor_trans.tran_date <= '$todate'
 			AND ABS(".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + ".TB_PREF."debtor_trans.ov_freight + ".TB_PREF."debtor_trans.ov_freight_tax + ".TB_PREF."debtor_trans.ov_discount) > 0.004
 			ORDER BY ".TB_PREF."debtor_trans.tran_date";
@@ -133,7 +133,7 @@ function print_aged_customer_analysis()
 
 	$sql = "SELECT debtor_no, name, curr_code FROM ".TB_PREF."debtors_master ";
 	if ($fromcust != reserved_words::get_all_numeric())
-		$sql .= "WHERE debtor_no=$fromcust ";
+		$sql .= "WHERE debtor_no=".db_escape($fromcust)." ";
 	$sql .= "ORDER BY name";
 	$result = db_query($sql, "The customers could not be retrieved");
 

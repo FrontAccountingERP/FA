@@ -159,7 +159,7 @@ function fmt_credit($row)
     		AND trans.tran_date <= '$date_to'";
 
    	if ($_POST['customer_id'] != reserved_words::get_all())
-   		$sql .= " AND trans.debtor_no = '" . $_POST['customer_id'] . "'";
+   		$sql .= " AND trans.debtor_no = ".db_escape($_POST['customer_id']);
 
    	if (isset($_POST['filterType']) && $_POST['filterType'] != reserved_words::get_all())
    	{

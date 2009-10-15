@@ -30,7 +30,7 @@ if (!is_array($debtor_trans_no))
 	$sql .= implode(' OR ', $tr);
 
 
-	$sql.=	") AND debtor_trans_type=$debtor_trans_type
+	$sql.=	") AND debtor_trans_type=".db_escape($debtor_trans_type)."
 		AND ".TB_PREF."stock_master.stock_id=".TB_PREF."debtor_trans_details.stock_id
 		ORDER BY id";
 	return db_query($sql, "The debtor transaction detail could not be queried");
@@ -42,8 +42,8 @@ function void_customer_trans_details($type, $type_no)
 {
 	$sql = "UPDATE ".TB_PREF."debtor_trans_details SET quantity=0, unit_price=0,
 		unit_tax=0, discount_percent=0, standard_cost=0
-		WHERE debtor_trans_no=$type_no
-		AND debtor_trans_type=$type";
+		WHERE debtor_trans_no=".db_escape($type_no)."
+		AND debtor_trans_type=".db_escape($type);
 
 	db_query($sql, "The debtor transaction details could not be voided");
 
@@ -64,12 +64,12 @@ function write_customer_trans_detail_item($debtor_trans_type, $debtor_trans_no, 
 			unit_tax=$unit_tax,
 			discount_percent=$discount_percent,
 			standard_cost=$std_cost WHERE
-			id=$line_id";
+			id=".db_escape($line_id);
 	else
 			$sql = "INSERT INTO ".TB_PREF."debtor_trans_details (debtor_trans_no,
 				debtor_trans_type, stock_id, description, quantity, unit_price,
 				unit_tax, discount_percent, standard_cost)
-			VALUES ($debtor_trans_no, $debtor_trans_type, ".db_escape($stock_id).
+			VALUES (".db_escape($debtor_trans_no).", ".db_escape($debtor_trans_type).", ".db_escape($stock_id).
 			", ".db_escape($description).",
 				$quantity, $unit_price, $unit_tax, $discount_percent, $std_cost)";
 
