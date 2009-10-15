@@ -108,7 +108,7 @@ if ($Mode == 'Delete')
 	if (can_delete($selected_id))
 	{
 		delete_account_type($selected_id);
-		display_notification(_('Selected currency has been deleted'));
+		display_notification(_('Selected account group has been deleted'));
 	}
 	$Mode = 'RESET';
 }
