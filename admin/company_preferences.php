@@ -174,9 +174,9 @@ number_list_row(_("Use Dimensions:"), 'use_dimension', null, 0, 2);
 sales_types_list_row(_("Base for auto price calculations:"), 'base_sales', $_POST['base_sales'], false,
     _('No base price list') );
 
-check_row(_("Search Item List"), 'no_item_list', $_POST['no_item_list']);
-check_row(_("Search Customer List"), 'no_customer_list', $_POST['no_customer_list']);
-check_row(_("Search Supplier List"), 'no_supplier_list', $_POST['no_supplier_list']);
+check_row(_("Search Item List"), 'no_item_list', get_post('no_item_list'));
+check_row(_("Search Customer List"), 'no_customer_list', get_post('no_customer_list'));
+check_row(_("Search Supplier List"), 'no_supplier_list', get_post('no_supplier_list'));
 
 start_row();
 end_row();
