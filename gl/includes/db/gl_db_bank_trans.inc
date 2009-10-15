@@ -41,7 +41,8 @@ function add_bank_trans($type, $trans_no, $bank_act, $ref, $date_,
 		trans_date, amount, person_type_id, person_id) ";
 
 	$sql .= "VALUES ($type, $trans_no, '$bank_act', ".db_escape($ref).", '$sqlDate',
-		$amount_bank, $person_type_id, ". db_escape($person_id).")";
+		".db_escape($amount_bank).", ".db_escape($person_type_id)
+		.", ". db_escape($person_id).")";
 
 	if ($err_msg == "")
 		$err_msg = "The bank transaction could not be inserted";
@@ -53,8 +54,8 @@ function add_bank_trans($type, $trans_no, $bank_act, $ref, $date_,
 
 function exists_bank_trans($type, $type_no)
 {
-	$sql = "SELECT trans_no FROM ".TB_PREF."bank_trans WHERE type=$type
-		AND trans_no=$type_no";
+	$sql = "SELECT trans_no FROM ".TB_PREF."bank_trans WHERE type=".db_escape($type)
+		." AND trans_no=".db_escape($type_no);
 	$result = db_query($sql, "Cannot retreive a bank transaction");
 
     return (db_num_rows($result) > 0);
@@ -68,13 +69,13 @@ function get_bank_trans($type, $trans_no=null, $person_type_id=null, $person_id=
 		FROM ".TB_PREF."bank_trans, ".TB_PREF."bank_accounts
 		WHERE ".TB_PREF."bank_accounts.id=".TB_PREF."bank_trans.bank_act ";
 	if ($type != null)
-		$sql .= " AND type=$type ";
+		$sql .= " AND type=".db_escape($type);
 	if ($trans_no != null)
-		$sql .= " AND ".TB_PREF."bank_trans.trans_no = $trans_no ";
+		$sql .= " AND ".TB_PREF."bank_trans.trans_no = ".db_escape($trans_no);
 	if ($person_type_id != null)
-		$sql .= " AND ".TB_PREF."bank_trans.person_type_id = $person_type_id ";
+		$sql .= " AND ".TB_PREF."bank_trans.person_type_id = ".db_escape($person_type_id);
 	if ($person_id != null)
-		$sql .= " AND ".TB_PREF."bank_trans.person_id = '$person_id'";
+		$sql .= " AND ".TB_PREF."bank_trans.person_id = ".db_escape($person_id);
 	$sql .= " ORDER BY trans_date, ".TB_PREF."bank_trans.id";
 
 	return db_query($sql, "query for bank transaction");
@@ -84,7 +85,9 @@ function get_bank_trans($type, $trans_no=null, $person_type_id=null, $person_id=
 
 function get_gl_trans_value($account, $type, $trans_no)
 {
-	$sql = "SELECT SUM(amount) FROM ".TB_PREF."gl_trans WHERE account='$account' AND type=$type AND type_no=$trans_no";
+	$sql = "SELECT SUM(amount) FROM ".TB_PREF."gl_trans WHERE account="
+	.db_escape($account)." AND type=".db_escape($type)
+	." AND type_no=".db_escape($trans_no);
 
 	$result = db_query($sql, "query for gl trans value");
 
@@ -100,7 +103,7 @@ function void_bank_trans($type, $type_no, $nested=false)
 		begin_transaction();
 
 	$sql = "UPDATE ".TB_PREF."bank_trans SET amount=0
-		WHERE type=$type AND trans_no=$type_no";
+		WHERE type=".db_escape($type)." AND trans_no=".db_escape($type_no);
 
 	$result = db_query($sql, "could not void bank transactions for type=$type and trans_no=$type_no");
 

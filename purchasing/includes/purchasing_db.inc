@@ -47,8 +47,8 @@ function add_gl_trans_supplier($type, $type_no, $date_, $account, $dimension, $d
 function get_purchase_price($supplier_id, $stock_id)
 {
 	$sql = "SELECT price, conversion_factor FROM ".TB_PREF."purch_data 
-		WHERE supplier_id = '" . $supplier_id . "' 
-		AND stock_id = '". $stock_id . "'";
+		WHERE supplier_id = ".db_escape($supplier_id) . " 
+		AND stock_id = ".db_escape($stock_id);
 	$result = db_query($sql, "The supplier pricing details for " . $stock_id . " could not be retrieved");    
 
 	if (db_num_rows($result) == 1)
@@ -65,8 +65,8 @@ function get_purchase_price($supplier_id, $stock_id)
 function get_purchase_conversion_factor($supplier_id, $stock_id)
 {
 	$sql = "SELECT conversion_factor FROM ".TB_PREF."purch_data 
-		WHERE supplier_id = '" . $supplier_id . "' 
-		AND stock_id = '". $stock_id . "'";
+		WHERE supplier_id = ".db_escape($supplier_id)." 
+		AND stock_id = ".db_escape($stock_id);
 	$result = db_query($sql, "The supplier pricing details for " . $stock_id . " could not be retrieved");    
 
 	if (db_num_rows($result) == 1)
@@ -84,8 +84,8 @@ function get_purchase_conversion_factor($supplier_id, $stock_id)
 function get_purchase_data($supplier_id, $stock_id)
 {
 	$sql = "SELECT * FROM ".TB_PREF."purch_data 
-		WHERE supplier_id = '" . $supplier_id . "' 
-		AND stock_id = '". $stock_id . "'";
+		WHERE supplier_id = ".db_escape($supplier_id) . "
+		AND stock_id = ".db_escape($stock_id);
 	$result = db_query($sql, "The supplier pricing details for " . $stock_id . " could not be retrieved");    
 
 	return db_fetch($result);
@@ -97,18 +97,19 @@ function add_or_update_purchase_data($supplier_id, $stock_id, $price, $descripti
 	if ($data === false)
 	{
 		$sql = "INSERT INTO ".TB_PREF."purch_data (supplier_id, stock_id, price, suppliers_uom,
-			conversion_factor, supplier_description) VALUES ('$supplier_id', '$stock_id', 
-			$price, '$uom', 1, ".db_escape($description).")";
+			conversion_factor, supplier_description) VALUES (".db_escape($supplier_id)
+			.", ".db_escape($stock_id).", ".db_escape($price).", "
+			.db_escape($uom).", 1, ".db_escape($description).")";
 		db_query($sql,"The supplier purchasing details could not be added");
 		return;
 	}	
-	$price = round($price * $data['conversion_factor'], user_price_dec());	
-	$sql = "UPDATE ".TB_PREF."purch_data SET price=$price";
+	$price = round($price * $data['conversion_factor'], user_price_dec());
+	$sql = "UPDATE ".TB_PREF."purch_data SET price=".db_escape($price);
 	if ($uom != "")
-		$sql .= ",suppliers_uom='$uom'";
+		$sql .= ",suppliers_uom=".db_escape($uom);
 	if ($description != "")	
 		$sql .= ",supplier_description=".db_escape($description);
-	$sql .= " WHERE stock_id='$stock_id' AND supplier_id='$supplier_id'";
+	$sql .= " WHERE stock_id=".db_escape($stock_id)." AND supplier_id=".db_escape($supplier_id);
 	db_query($sql,"The supplier purchasing details could not be updated");
 	return true;
 }

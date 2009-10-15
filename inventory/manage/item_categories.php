@@ -57,7 +57,7 @@ if ($Mode == 'Delete')
 {
 
 	// PREVENT DELETES IF DEPENDENT RECORDS IN 'stock_master'
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."stock_master WHERE category_id='$selected_id'";
+	$sql= "SELECT COUNT(*) FROM ".TB_PREF."stock_master WHERE category_id=".db_escape($selected_id);
 	$result = db_query($sql, "could not query stock master");
 	$myrow = db_fetch_row($result);
 	if ($myrow[0] > 0) 

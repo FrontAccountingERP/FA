@@ -47,7 +47,11 @@ function display_gl_heading($myrow)
     end_table(1);
 }
 
-$sql = "SELECT ".TB_PREF."gl_trans.*, account_name FROM ".TB_PREF."gl_trans, ".TB_PREF."chart_master WHERE ".TB_PREF."gl_trans.account = ".TB_PREF."chart_master.account_code AND type= " . $_GET['type_id'] . " AND type_no = " . $_GET['trans_no'] . " ORDER BY counter";
+$sql = "SELECT ".TB_PREF."gl_trans.*, account_name FROM "
+	.TB_PREF."gl_trans, ".TB_PREF."chart_master WHERE "
+	.TB_PREF."gl_trans.account = ".TB_PREF."chart_master.account_code AND type= " 
+	.db_escape($_GET['type_id']) . " AND type_no = ".db_escape($_GET['trans_no']) 
+	. " ORDER BY counter";
 $result = db_query($sql,"could not get transactions");
 //alert("sql = ".$sql);
 

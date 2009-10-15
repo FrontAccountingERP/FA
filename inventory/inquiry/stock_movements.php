@@ -64,10 +64,10 @@ $after_date = date2sql($_POST['AfterDate']);
 
 $sql = "SELECT type, trans_no, tran_date, person_id, qty, reference
 	FROM ".TB_PREF."stock_moves
-	WHERE loc_code='" . $_POST['StockLocation'] . "'
+	WHERE loc_code=".db_escape($_POST['StockLocation'])."
 	AND tran_date >= '". $after_date . "'
 	AND tran_date <= '" . $before_date . "'
-	AND stock_id = '" . $_POST['stock_id'] . "' ORDER BY tran_date,trans_id";
+	AND stock_id = ".db_escape($_POST['stock_id']) . " ORDER BY tran_date,trans_id";
 $result = db_query($sql, "could not query stock moves");
 
 check_db_error("The stock movements for the selected criteria could not be retrieved",$sql);
@@ -79,8 +79,8 @@ $th = array(_("Type"), _("#"), _("Reference"), _("Date"), _("Detail"),
 
 table_header($th);
 
-$sql = "SELECT SUM(qty) FROM ".TB_PREF."stock_moves WHERE stock_id='" . $_POST['stock_id'] . "'
-	AND loc_code='" . $_POST['StockLocation'] . "'
+$sql = "SELECT SUM(qty) FROM ".TB_PREF."stock_moves WHERE stock_id=".db_escape($_POST['stock_id']) . "
+	AND loc_code=".db_escape( $_POST['StockLocation']) . "
 	AND tran_date < '" . $after_date . "'";
 $before_qty = db_query($sql, "The starting quantity on hand could not be calculated");
 

@@ -110,7 +110,7 @@ if (isset($_POST['AddGLCodeToTrans'])){
 	$Ajax->activate('gl_items');
 	$input_error = false;
 
-	$sql = "SELECT account_code, account_name FROM ".TB_PREF."chart_master WHERE account_code='" . $_POST['gl_code'] . "'";
+	$sql = "SELECT account_code, account_name FROM ".TB_PREF."chart_master WHERE account_code=".db_escape($_POST['gl_code']);
 	$result = db_query($sql,"get account information");
 	if (db_num_rows($result) == 0)
 	{
@@ -195,10 +195,10 @@ function check_data()
 		return false;
 	}
 
-	$sql = "SELECT Count(*) FROM ".TB_PREF."supp_trans WHERE supplier_id='" 
-		. $_SESSION['supp_trans']->supplier_id . "' AND supp_reference='" 
-		. $_POST['supp_reference'] 
-		. "' AND ov_amount!=0"; // ignore voided invoice references
+	$sql = "SELECT Count(*) FROM ".TB_PREF."supp_trans WHERE supplier_id="
+		.db_escape($_SESSION['supp_trans']->supplier_id) . " AND supp_reference=" 
+		.db_escape( $_POST['supp_reference']) 
+		. " AND ov_amount!=0"; // ignore voided invoice references
 
 	$result=db_query($sql,"The sql to check for the previous entry of the same invoice failed");
 

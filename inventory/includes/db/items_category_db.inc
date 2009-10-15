@@ -22,21 +22,21 @@ function update_item_category($ItemCategory, $description)
 
 {
 	$sql = "UPDATE ".TB_PREF."stock_category SET description = ".db_escape($description)."
-        WHERE category_id = '$ItemCategory'";
+        WHERE category_id = ".db_escape($ItemCategory);
 
 	db_query($sql,"an item category could not be updated");
 }
 
 function delete_item_category($ItemCategory)
 {
-	$sql="DELETE FROM ".TB_PREF."stock_category WHERE category_id='$ItemCategory'";
+	$sql="DELETE FROM ".TB_PREF."stock_category WHERE category_id=".db_escape($ItemCategory);
 
 	db_query($sql,"an item category could not be deleted");
 }
 
 function get_item_category($ItemCategory)
 {
-	$sql="SELECT * FROM ".TB_PREF."stock_category WHERE category_id='$ItemCategory'";
+	$sql="SELECT * FROM ".TB_PREF."stock_category WHERE category_id=".db_escape($ItemCategory);
 
 	$result = db_query($sql,"an item category could not be retrieved");
 
@@ -45,7 +45,7 @@ function get_item_category($ItemCategory)
 
 function get_category_name($id)
 {
-	$sql = "SELECT description FROM ".TB_PREF."stock_category WHERE category_id=$id";
+	$sql = "SELECT description FROM ".TB_PREF."stock_category WHERE category_id=".db_escape($id);
 
 	$result = db_query($sql, "could not get sales type");
 

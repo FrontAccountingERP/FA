@@ -71,7 +71,7 @@ if (isset($_POST['submit']))
 				purchase_account=".db_escape($_POST['purchase_account']) . ",
 				payment_discount_account=".db_escape($_POST['payment_discount_account']) . ",
                 notes=".db_escape($_POST['notes']) . ",
-				tax_group_id=".db_escape($_POST['tax_group_id']) . " WHERE supplier_id = '" . $_POST['supplier_id'] . "'";
+				tax_group_id=".db_escape($_POST['tax_group_id']) . " WHERE supplier_id = ".db_escape($_POST['supplier_id']);
 
 			db_query($sql,"The supplier could not be updated");
 			display_notification(_("Supplier has been updated."));
@@ -121,7 +121,7 @@ elseif (isset($_POST['delete']) && $_POST['delete'] != "")
 
 	// PREVENT DELETES IF DEPENDENT RECORDS IN 'supp_trans' , purch_orders
 
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."supp_trans WHERE supplier_id='" . $_POST['supplier_id'] . "'";
+	$sql= "SELECT COUNT(*) FROM ".TB_PREF."supp_trans WHERE supplier_id=".db_escape($_POST['supplier_id']);
 	$result = db_query($sql,"check failed");
 	$myrow = db_fetch_row($result);
 	if ($myrow[0] > 0) 
@@ -132,7 +132,7 @@ elseif (isset($_POST['delete']) && $_POST['delete'] != "")
 	} 
 	else 
 	{
-		$sql= "SELECT COUNT(*) FROM ".TB_PREF."purch_orders WHERE supplier_id='" . $_POST['supplier_id'] . "'";
+		$sql= "SELECT COUNT(*) FROM ".TB_PREF."purch_orders WHERE supplier_id=".db_escape($_POST['supplier_id']);
 		$result = db_query($sql,"check failed");
 		$myrow = db_fetch_row($result);
 		if ($myrow[0] > 0) 
@@ -144,7 +144,7 @@ elseif (isset($_POST['delete']) && $_POST['delete'] != "")
 	}
 	if ($cancel_delete == 0) 
 	{
-		$sql="DELETE FROM ".TB_PREF."suppliers WHERE supplier_id='" . $_POST['supplier_id']. "'";
+		$sql="DELETE FROM ".TB_PREF."suppliers WHERE supplier_id=".db_escape($_POST['supplier_id']);
 		db_query($sql,"check failed");
 
 		unset($_SESSION['supplier_id']);

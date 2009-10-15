@@ -50,7 +50,7 @@ $sql = "SELECT
 		WHERE bom.parent = parent.stock_id 
 			AND bom.workcentre_added = workcentre.id
 			AND bom.loc_code = location.loc_code
-			AND bom.component='" . $_POST['stock_id'] . "'";
+			AND bom.component=".db_escape($_POST['stock_id']);
 
    $cols = array(
    	_("Parent Item") => array('fun'=>'select_link'), 

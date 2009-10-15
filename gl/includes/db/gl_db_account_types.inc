@@ -12,7 +12,7 @@
 function add_account_type($id, $name, $class_id, $parent)
 {
 	$sql = "INSERT INTO ".TB_PREF."chart_types (id, name, class_id, parent)
-		VALUES ($id, ".db_escape($name).", $class_id, $parent)";
+		VALUES ($id, ".db_escape($name).", ".db_escape($class_id).", ".db_escape($parent).")";
 
 	db_query($sql, "could not add account type");
 }
@@ -20,7 +20,8 @@ function add_account_type($id, $name, $class_id, $parent)
 function update_account_type($id, $name, $class_id, $parent)
 {
     $sql = "UPDATE ".TB_PREF."chart_types SET name=".db_escape($name).",
-		class_id=$class_id,	parent=$parent WHERE id = $id";
+		class_id=".db_escape($class_id).", parent=".db_escape($parent)
+		." WHERE id = ".db_escape($id);
 
 	db_query($sql, "could not update account type");
 }
@@ -34,7 +35,7 @@ function get_account_types()
 
 function get_account_type($id)
 {
-	$sql = "SELECT * FROM ".TB_PREF."chart_types WHERE id = $id";
+	$sql = "SELECT * FROM ".TB_PREF."chart_types WHERE id = ".db_escape($id);
 
 	$result = db_query($sql, "could not get account type");
 
@@ -43,7 +44,7 @@ function get_account_type($id)
 
 function get_account_type_name($id)
 {
-	$sql = "SELECT name FROM ".TB_PREF."chart_types WHERE id = $id";
+	$sql = "SELECT name FROM ".TB_PREF."chart_types WHERE id = ".db_escape($id);
 
 	$result = db_query($sql, "could not get account type");
 
@@ -53,7 +54,7 @@ function get_account_type_name($id)
 
 function delete_account_type($id)
 {
-	$sql = "DELETE FROM ".TB_PREF."chart_types WHERE id = $id";
+	$sql = "DELETE FROM ".TB_PREF."chart_types WHERE id = ".db_escape($id);
 
 	db_query($sql, "could not delete account type");
 }
@@ -61,7 +62,7 @@ function delete_account_type($id)
 function add_account_class($id, $name, $balance)
 {
 	$sql = "INSERT INTO ".TB_PREF."chart_class (cid, class_name, balance_sheet)
-		VALUES ($id, ".db_escape($name).", $balance)";
+		VALUES (".db_escape($id).", ".db_escape($name).", ".db_escape($balance).")";
 
 	db_query($sql, "could not add account type");
 }
@@ -69,7 +70,7 @@ function add_account_class($id, $name, $balance)
 function update_account_class($id, $name, $balance)
 {
     $sql = "UPDATE ".TB_PREF."chart_class SET class_name=".db_escape($name).",
-		balance_sheet=$balance WHERE cid = $id";
+		balance_sheet=".db_escape($balance)." WHERE cid = ".db_escape($id);
 
 	db_query($sql, "could not update account type");
 }
@@ -83,7 +84,7 @@ function get_account_classes()
 
 function get_account_class($id)
 {
-	$sql = "SELECT * FROM ".TB_PREF."chart_class WHERE cid = $id";
+	$sql = "SELECT * FROM ".TB_PREF."chart_class WHERE cid = ".db_escape($id);
 
 	$result = db_query($sql, "could not get account type");
 
@@ -92,7 +93,7 @@ function get_account_class($id)
 
 function get_account_class_name($id)
 {
-	$sql = "SELECT class_name FROM ".TB_PREF."chart_class WHERE cid = $id";
+	$sql = "SELECT class_name FROM ".TB_PREF."chart_class WHERE cid =".db_escape($id);
 
 	$result = db_query($sql, "could not get account type");
 
@@ -102,7 +103,7 @@ function get_account_class_name($id)
 
 function delete_account_class($id)
 {
-	$sql = "DELETE FROM ".TB_PREF."chart_class WHERE cid = $id";
+	$sql = "DELETE FROM ".TB_PREF."chart_class WHERE cid = ".db_escape($id);
 
 	db_query($sql, "could not delete account type");
 }

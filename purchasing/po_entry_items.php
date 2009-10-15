@@ -243,7 +243,7 @@ function handle_add_new_item()
 		if ($allow_update == true)
 		{
 		   	$sql = "SELECT description, units, mb_flag
-				FROM ".TB_PREF."stock_master WHERE stock_id = '". $_POST['stock_id'] . "'";
+				FROM ".TB_PREF."stock_master WHERE stock_id = ".db_escape($_POST['stock_id']);
 
 		    $result = db_query($sql,"The stock details for " . $_POST['stock_id'] . " could not be retrieved");
 

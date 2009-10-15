@@ -30,8 +30,10 @@ function add_supp_trans($type, $supplier_id, $date_, $due_date, $reference, $sup
 
 	$sql = "INSERT INTO ".TB_PREF."supp_trans (trans_no, type, supplier_id, tran_date, due_date,
 		reference, supp_reference, ov_amount, ov_gst, rate, ov_discount) ";
-	$sql .= "VALUES ($trans_no, $type, $supplier_id, '$date', '$due_date',
-		".db_escape($reference).", ".db_escape($supp_reference).", $amount, $amount_tax, $rate, $discount)";
+	$sql .= "VALUES (".db_escape($trans_no).", ".db_escape($type)
+	.", ".db_escape($supplier_id).", '$date', '$due_date',
+		".db_escape($reference).", ".db_escape($supp_reference).", ".db_escape($amount)
+		.", ".db_escape($amount_tax).", ".db_escape($rate).", ".db_escape($discount).")";
 
 	if ($err_msg == "")
 		$err_msg = "Cannot insert a supplier transaction record";
@@ -64,17 +66,17 @@ function get_supp_trans($trans_no, $trans_type=-1)
 		$sql .= ", ".TB_PREF."bank_trans, ".TB_PREF."bank_accounts";
 	}
 
-	$sql .= " WHERE ".TB_PREF."supp_trans.trans_no=$trans_no
+	$sql .= " WHERE ".TB_PREF."supp_trans.trans_no=".db_escape($trans_no)."
 		AND ".TB_PREF."supp_trans.supplier_id=".TB_PREF."suppliers.supplier_id";
 
 	if ($trans_type > 0)
-		$sql .= " AND ".TB_PREF."supp_trans.type=$trans_type ";
+		$sql .= " AND ".TB_PREF."supp_trans.type=".db_escape($trans_type);
 
 	if ($trans_type == 22)
 	{
 		// it's a payment so also get the bank account
-		$sql .= " AND ".TB_PREF."bank_trans.trans_no =$trans_no
-			AND ".TB_PREF."bank_trans.type=$trans_type
+		$sql .= " AND ".TB_PREF."bank_trans.trans_no =".db_escape($trans_no)."
+			AND ".TB_PREF."bank_trans.type=".db_escape($trans_type)."
 			AND ".TB_PREF."bank_accounts.id=".TB_PREF."bank_trans.bank_act ";
 	}
 
@@ -104,8 +106,8 @@ function exists_supp_trans($type, $type_no)
 	if ($type == 25)
 		return exists_grn($type_no);
 
-	$sql = "SELECT trans_no FROM ".TB_PREF."supp_trans WHERE type=$type
-		AND trans_no=$type_no";
+	$sql = "SELECT trans_no FROM ".TB_PREF."supp_trans WHERE type=".db_escape($type)."
+		AND trans_no=".db_escape($type_no);
 	$result = db_query($sql, "Cannot retreive a supplier transaction");
 
     return (db_num_rows($result) > 0);
@@ -116,7 +118,7 @@ function exists_supp_trans($type, $type_no)
 function void_supp_trans($type, $type_no)
 {
 	$sql = "UPDATE ".TB_PREF."supp_trans SET ov_amount=0, ov_discount=0, ov_gst=0,
-		alloc=0 WHERE type=$type AND trans_no=$type_no";
+		alloc=0 WHERE type=".db_escape($type)." AND trans_no=".db_escape($type_no);
 
 	db_query($sql, "could not void supp transactions for type=$type and trans_no=$type_no");
 }

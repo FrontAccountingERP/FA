@@ -185,7 +185,7 @@ if (isset($_POST['addupdate']))
 
 function can_delete($stock_id)
 {
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."stock_moves WHERE stock_id='$stock_id'";
+	$sql= "SELECT COUNT(*) FROM ".TB_PREF."stock_moves WHERE stock_id=".db_escape($stock_id);
 	$result = db_query($sql, "could not query stock moves");
 	$myrow = db_fetch_row($result);
 	if ($myrow[0] > 0) 
@@ -194,7 +194,7 @@ function can_delete($stock_id)
 		return false;
 	}
 
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."bom WHERE component='$stock_id'";
+	$sql= "SELECT COUNT(*) FROM ".TB_PREF."bom WHERE component=".db_escape($stock_id);
 	$result = db_query($sql, "could not query boms");
 	$myrow = db_fetch_row($result);
 	if ($myrow[0] > 0) 
@@ -203,7 +203,7 @@ function can_delete($stock_id)
 		return false;
 	}
 
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."sales_order_details WHERE stk_code='$stock_id'";
+	$sql= "SELECT COUNT(*) FROM ".TB_PREF."sales_order_details WHERE stk_code=".db_escape($stock_id);
 	$result = db_query($sql, "could not query sales orders");
 	$myrow = db_fetch_row($result);
 	if ($myrow[0] > 0) 
@@ -212,7 +212,7 @@ function can_delete($stock_id)
 		return false;
 	}
 
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."purch_order_details WHERE item_code='$stock_id'";
+	$sql= "SELECT COUNT(*) FROM ".TB_PREF."purch_order_details WHERE item_code=".db_escape($stock_id);
 	$result = db_query($sql, "could not query purchase orders");
 	$myrow = db_fetch_row($result);
 	if ($myrow[0] > 0) 

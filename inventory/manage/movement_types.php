@@ -57,7 +57,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 function can_delete($selected_id)
 {
 	$sql= "SELECT COUNT(*) FROM ".TB_PREF."stock_moves 
-		WHERE type=" . systypes::inventory_adjustment(). " AND person_id=$selected_id";
+		WHERE type=" . systypes::inventory_adjustment(). " AND person_id=".db_escape($selected_id);
 	$result = db_query($sql, "could not query stock moves");
 	$myrow = db_fetch_row($result);
 	if ($myrow[0] > 0) 

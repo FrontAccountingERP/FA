@@ -25,11 +25,11 @@ function stock_cost_update($stock_id, $material_cost, $labour_cost, $overhead_co
 	
 	begin_transaction();
 	
-	$sql = "UPDATE ".TB_PREF."stock_master SET material_cost=$material_cost, 
-		labour_cost=$labour_cost, 
-		overhead_cost=$overhead_cost, 
-		last_cost=$last_cost 
-		WHERE stock_id='$stock_id'";
+	$sql = "UPDATE ".TB_PREF."stock_master SET material_cost=".db_escape($material_cost).", 
+		labour_cost=".db_escape($labour_cost).", 
+		overhead_cost=".db_escape($overhead_cost).", 
+		last_cost=".db_escape($last_cost)." 
+		WHERE stock_id=".db_escape($stock_id);
 	db_query($sql,"The cost details for the inventory item could not be updated");
 
 	$qoh = get_qoh_on_date($_POST['stock_id']);
@@ -53,12 +53,12 @@ function stock_cost_update($stock_id, $material_cost, $labour_cost, $overhead_co
 			$stock_gl_code["dimension_id"], $stock_gl_code["dimension2_id"], $memo_, (-$value_of_change));	   
 
 		add_gl_trans_std_cost(systypes::cost_update(), $update_no, $date_, $stock_gl_code["inventory_account"], 0, 0, $memo_, 
-			$value_of_change);	   
-   	}	   		   	
+			$value_of_change);
+   	}
 
 	commit_transaction();
 	
-	return $update_no;		
+	return $update_no;
 }
 
 //-------------------------------------------------------------------------------------------------------------

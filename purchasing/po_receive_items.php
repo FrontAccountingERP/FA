@@ -124,7 +124,7 @@ function check_po_changed()
 	// Otherwise if you try to fullfill item quantities separately will give error.
 	$sql = "SELECT item_code, quantity_ordered, quantity_received, qty_invoiced
 		FROM ".TB_PREF."purch_order_details
-		WHERE order_no=" . $_SESSION['PO']->order_no 
+		WHERE order_no=".db_escape($_SESSION['PO']->order_no)
 		." ORDER BY po_detail_item";
 
 	$result = db_query($sql, "could not query purch order details");

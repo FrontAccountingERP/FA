@@ -60,7 +60,7 @@ function get_supplier_details($supplier_id, $to=null)
 				 ".TB_PREF."payment_terms
 			WHERE
 				 ".TB_PREF."suppliers.payment_terms = ".TB_PREF."payment_terms.terms_indicator
-				 AND ".TB_PREF."suppliers.supplier_id = '$supplier_id'";
+				 AND ".TB_PREF."suppliers.supplier_id = ".db_escape($supplier_id);
 
     	$result = db_query($sql,"The customer details could not be retrieved");
 
@@ -86,7 +86,7 @@ function get_supplier_details($supplier_id, $to=null)
 
 function get_supplier($supplier_id)
 {
-	$sql = "SELECT * FROM ".TB_PREF."suppliers WHERE supplier_id=$supplier_id";
+	$sql = "SELECT * FROM ".TB_PREF."suppliers WHERE supplier_id=".db_escape($supplier_id);
 
 	$result = db_query($sql, "could not get supplier");
 
@@ -95,7 +95,7 @@ function get_supplier($supplier_id)
 
 function get_supplier_name($supplier_id)
 {
-	$sql = "SELECT supp_name AS name FROM ".TB_PREF."suppliers WHERE supplier_id=$supplier_id";
+	$sql = "SELECT supp_name AS name FROM ".TB_PREF."suppliers WHERE supplier_id=".db_escape($supplier_id);
 
 	$result = db_query($sql, "could not get supplier");
 
@@ -106,7 +106,7 @@ function get_supplier_name($supplier_id)
 
 function get_supplier_accounts($supplier_id)
 {
-	$sql = "SELECT payable_account,purchase_account,payment_discount_account FROM ".TB_PREF."suppliers WHERE supplier_id=$supplier_id";
+	$sql = "SELECT payable_account,purchase_account,payment_discount_account FROM ".TB_PREF."suppliers WHERE supplier_id=".db_escape($supplier_id);
 
 	$result = db_query($sql, "could not get supplier");
 

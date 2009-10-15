@@ -178,7 +178,7 @@ function check_overdue($row)
     	AND trans.tran_date <= '$date_to'
 		AND trans.ov_amount != 0";	// exclude voided transactions
    	if ($_POST['supplier_id'] != reserved_words::get_all())
-   		$sql .= " AND trans.supplier_id = '" . $_POST['supplier_id'] . "'";
+   		$sql .= " AND trans.supplier_id = ".db_escape($_POST['supplier_id']);
    	if (isset($_POST['filterType']) && $_POST['filterType'] != reserved_words::get_all())
    	{
    		if (($_POST['filterType'] == '1')) 

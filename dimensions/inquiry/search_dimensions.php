@@ -139,7 +139,7 @@ $sql = "SELECT dim.id,
 
 if (isset($_POST['OrderNumber']) && $_POST['OrderNumber'] != "")
 {
-	$sql .= " AND reference LIKE '%". $_POST['OrderNumber'] . "%'";
+	$sql .= " AND reference LIKE ".db_escape("%". $_POST['OrderNumber'] . "%");
 } else {
 
 	if ($dim == 1)
@@ -152,14 +152,14 @@ if (isset($_POST['OrderNumber']) && $_POST['OrderNumber'] != "")
 
 	if (isset($_POST['type_']) && ($_POST['type_'] > 0))
 	{
-   		$sql .= " AND type_=" . $_POST['type_'];
+   		$sql .= " AND type_=".db_escape($_POST['type_']);
 	}
 
 	if (isset($_POST['OverdueOnly']))
 	{
 		$today = date2sql(Today());
 
-	   	$sql .= " AND due_date < '$today' ";
+	   	$sql .= " AND due_date < '$today'";
 	}
 
 	$sql .= " AND date_ >= '" . date2sql($_POST['FromDate']) . "'

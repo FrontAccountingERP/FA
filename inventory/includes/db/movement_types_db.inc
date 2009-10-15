@@ -20,7 +20,7 @@ function add_movement_type($name)
 function update_movement_type($type_id, $name)
 {
 	$sql = "UPDATE ".TB_PREF."movement_types SET name=".db_escape($name)."
-			WHERE id=$type_id";
+			WHERE id=".db_escape($type_id);
 
 	db_query($sql, "could not update item movement type");
 }
@@ -34,7 +34,7 @@ function get_all_movement_type()
 
 function get_movement_type($type_id)
 {
-	$sql = "SELECT * FROM ".TB_PREF."movement_types WHERE id=$type_id";
+	$sql = "SELECT * FROM ".TB_PREF."movement_types WHERE id=".db_escape($type_id);
 
 	$result = db_query($sql, "could not get item movement type");
 
@@ -43,7 +43,7 @@ function get_movement_type($type_id)
 
 function delete_movement_type($type_id)
 {
-	$sql="DELETE FROM ".TB_PREF."movement_types WHERE id=$type_id";
+	$sql="DELETE FROM ".TB_PREF."movement_types WHERE id=".db_escape($type_id);
 
 	db_query($sql, "could not delete item movement type");
 }

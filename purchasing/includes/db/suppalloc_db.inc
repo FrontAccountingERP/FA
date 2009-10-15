@@ -18,7 +18,9 @@ function add_supp_allocation($amount, $trans_type_from, $trans_no_from,
 	$sql = "INSERT INTO ".TB_PREF."supp_allocations (
 		amt, date_alloc,
 		trans_type_from, trans_no_from, trans_no_to, trans_type_to)
-		VALUES ($amount, '$date', $trans_type_from, $trans_no_from, $trans_no_to, $trans_type_to)";
+		VALUES (".db_escape($amount).", '$date', "
+		.db_escape($trans_type_from).", ".db_escape($trans_no_from).", "
+		.db_escape($trans_no_to).", ".db_escape($trans_type_to).")";
 
 	db_query($sql, "A supplier allocation could not be added to the database");
 }
@@ -28,7 +30,7 @@ function add_supp_allocation($amount, $trans_type_from, $trans_no_from,
 
 function delete_supp_allocation($trans_id)
 {
-	$sql = "DELETE FROM ".TB_PREF."supp_allocations WHERE id = " . $trans_id;
+	$sql = "DELETE FROM ".TB_PREF."supp_allocations WHERE id = ".db_escape($trans_id);
 	db_query($sql, "The existing allocation $trans_id could not be deleted");
 }
 
@@ -37,7 +39,8 @@ function delete_supp_allocation($trans_id)
 function get_supp_trans_allocation_balance($trans_type, $trans_no)
 {
 	$sql = "SELECT (ov_amount+ov_gst-ov_discount-alloc) AS BalToAllocate
-		FROM ".TB_PREF."supp_trans WHERE trans_no=$trans_no AND type=$trans_type";
+		FROM ".TB_PREF."supp_trans WHERE trans_no="
+		.db_escape($trans_no)." AND type=".db_escape($trans_type);
 	$result = db_query($sql,"calculate the allocation");
 	$myrow = db_fetch_row($result);
 
@@ -48,8 +51,8 @@ function get_supp_trans_allocation_balance($trans_type, $trans_no)
 
 function update_supp_trans_allocation($trans_type, $trans_no, $alloc)
 {
-	$sql = "UPDATE ".TB_PREF."supp_trans SET alloc = alloc + $alloc
-		WHERE type=$trans_type AND trans_no = $trans_no";
+	$sql = "UPDATE ".TB_PREF."supp_trans SET alloc = alloc + ".db_escape($alloc)."
+		WHERE type=".db_escape($trans_type)." AND trans_no = ".db_escape($trans_no);
 	db_query($sql, "The supp transaction record could not be modified for the allocation against it");
 }
 
@@ -67,7 +70,7 @@ function clear_supp_alloctions($type, $type_no, $date="")
 	// clear any allocations for this transaction
 	$sql = "SELECT * FROM ".TB_PREF."supp_allocations
 		WHERE (trans_type_from=$type AND trans_no_from=$type_no)
-		OR (trans_type_to=$type AND trans_no_to=$type_no)";
+		OR (trans_type_to=".db_escape($type)." AND trans_no_to=".db_escape($type_no).")";
 	$result = db_query($sql, "could not void supp transactions for type=$type and trans_no=$type_no");
 
 	while ($row = db_fetch($result))
@@ -88,8 +91,8 @@ function clear_supp_alloctions($type, $type_no, $date="")
 
 	// remove any allocations for this transaction
 	$sql = "DELETE FROM ".TB_PREF."supp_allocations
-		WHERE (trans_type_from=$type AND trans_no_from=$type_no)
-		OR (trans_type_to=$type AND trans_no_to=$type_no)";
+		WHERE (trans_type_from=".db_escape($type)." AND trans_no_from=".db_escape($type_no).")
+		OR (trans_type_to=".db_escape($type)." AND trans_no_to=".db_escape($type_no).")";
 
 	db_query($sql, "could not void supp transactions for type=$type and trans_no=$type_no");
 }
@@ -124,7 +127,7 @@ function get_alloc_supp_sql($extra_fields=null, $extra_conditions=null, $extra_t
 	$sql .= " WHERE trans.supplier_id=supplier.supplier_id";
 
 	if ($extra_conditions)
-		$sql .= " AND $extra_conditions ";
+		$sql .= " AND $extra_conditions";
 
 	return $sql;
 }
@@ -142,7 +145,7 @@ function get_allocatable_from_supp_sql($supplier_id, $settled)
 
 	$supp_sql = "";
 	if ($supplier_id != null)
-		$supp_sql = " AND trans.supplier_id = $supplier_id";
+		$supp_sql = " AND trans.supplier_id = ".db_escape($supplier_id);
 
 	$sql = get_alloc_supp_sql("round(ABS(ov_amount+ov_gst+ov_discount)-alloc,6) <= 0 AS settled",
 		"(type=22 OR type=21 OR type=1) AND (ov_amount < 0) " . $settled_sql . $supp_sql);
@@ -158,10 +161,10 @@ function get_allocatable_to_supp_transactions($supplier_id, $trans_no=null, $typ
 	{
 		$sql = get_alloc_supp_sql("amt, supp_reference", "trans.trans_no = alloc.trans_no_to
 			AND trans.type = alloc.trans_type_to
-			AND alloc.trans_no_from=$trans_no
-			AND alloc.trans_type_from=$type
-			AND trans.supplier_id=$supplier_id",
-			"".TB_PREF."supp_allocations as alloc");
+			AND alloc.trans_no_from=".db_escape($trans_no)."
+			AND alloc.trans_type_from=".db_escape($type)."
+			AND trans.supplier_id=".db_escape($supplier_id),
+			TB_PREF."supp_allocations as alloc");
 	}
 	else
 	{

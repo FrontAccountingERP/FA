@@ -66,20 +66,21 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 
     		$sql = "INSERT INTO ".TB_PREF."purch_data (supplier_id, stock_id, price, suppliers_uom,
     			conversion_factor, supplier_description) VALUES (";
-    		$sql .= "'".$_POST['supplier_id']."', '" . $_POST['stock_id'] . "', " .
-		    input_num('price',0) . ", '" . $_POST['suppliers_uom'] . "', " .
-    			input_num('conversion_factor') . ", " . db_escape($_POST['supplier_description']) . ")";
+    		$sql .= db_escape($_POST['supplier_id']).", ".db_escape($_POST['stock_id']). ", "
+		    	.input_num('price',0) . ", ".db_escape( $_POST['suppliers_uom'] ). ", "
+    			.input_num('conversion_factor') . ", "
+    			.db_escape($_POST['supplier_description']) . ")";
 
     		db_query($sql,"The supplier purchasing details could not be added");
     		display_notification(_("This supplier purchasing data has been added."));
        	} else
        	{
           	$sql = "UPDATE ".TB_PREF."purch_data SET price=" . input_num('price',0) . ",
-				suppliers_uom='" . $_POST['suppliers_uom'] . "',
+				suppliers_uom=".db_escape($_POST['suppliers_uom']) . ",
 				conversion_factor=" . input_num('conversion_factor') . ",
 				supplier_description=" . db_escape($_POST['supplier_description']) . "
-				WHERE stock_id='" . $_POST['stock_id'] . "' AND
-				supplier_id='$selected_id'";
+				WHERE stock_id=".db_escape($_POST['stock_id']) . " AND
+				supplier_id=".db_escape($selected_id);
           	db_query($sql,"The supplier purchasing details could not be updated");
 
     	  	display_notification(_("Supplier purchasing data has been updated."));
@@ -93,8 +94,8 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 if ($Mode == 'Delete')
 {
 
-	$sql = "DELETE FROM ".TB_PREF."purch_data WHERE supplier_id='$selected_id'
-		AND stock_id='" . $_POST['stock_id'] . "'";
+	$sql = "DELETE FROM ".TB_PREF."purch_data WHERE supplier_id=".db_escape($selected_id)."
+		AND stock_id=".db_escape($_POST['stock_id']);
 	db_query($sql,"could not delete purchasing data");
 
 	display_notification(_("The purchasing data item has been sucessfully deleted."));
@@ -138,10 +139,11 @@ if ($mb_flag == -1)
 else
 {
 
-    $sql = "SELECT ".TB_PREF."purch_data.*,".TB_PREF."suppliers.supp_name,".TB_PREF."suppliers.curr_code
+    $sql = "SELECT ".TB_PREF."purch_data.*,".TB_PREF."suppliers.supp_name,"
+    	.TB_PREF."suppliers.curr_code
 		FROM ".TB_PREF."purch_data INNER JOIN ".TB_PREF."suppliers
 		ON ".TB_PREF."purch_data.supplier_id=".TB_PREF."suppliers.supplier_id
-		WHERE stock_id = '" . $_POST['stock_id'] . "'";
+		WHERE stock_id = ".db_escape($_POST['stock_id']);
 
     $result = db_query($sql, "The supplier purchasing details for the selected part could not be retrieved");
   div_start('price_table');
@@ -195,8 +197,8 @@ if ($Mode =='Edit')
 
 	$sql = "SELECT ".TB_PREF."purch_data.*,".TB_PREF."suppliers.supp_name FROM ".TB_PREF."purch_data
 		INNER JOIN ".TB_PREF."suppliers ON ".TB_PREF."purch_data.supplier_id=".TB_PREF."suppliers.supplier_id
-		WHERE ".TB_PREF."purch_data.supplier_id='$selected_id'
-		AND ".TB_PREF."purch_data.stock_id='" . $_POST['stock_id'] . "'";
+		WHERE ".TB_PREF."purch_data.supplier_id=".db_escape($selected_id)."
+		AND ".TB_PREF."purch_data.stock_id=".db_escape($_POST['stock_id']);
 
 	$result = db_query($sql, "The supplier purchasing details for the selected supplier and item could not be retrieved");
 

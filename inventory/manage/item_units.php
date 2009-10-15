@@ -34,6 +34,12 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 		display_error(_("The unit of measure code cannot be empty."));
 		set_focus('abbr');
 	}
+	if (strlen(db_escape($_POST['abbr']))>(20+2))
+	{
+		$input_error = 1;
+		display_error(_("The unit of measure code is too long."));
+		set_focus('abbr');
+	}
 	if (strlen($_POST['description']) == 0)
 	{
 		$input_error = 1;

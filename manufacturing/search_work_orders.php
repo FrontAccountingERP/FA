@@ -183,17 +183,17 @@ if (check_value('OpenOnly') || $outstanding_only != 0)
 
 if (isset($_POST['StockLocation']) && $_POST['StockLocation'] != $all_items)
 {
-	$sql .= " AND workorder.loc_code='" . $_POST['StockLocation'] . "' ";
+	$sql .= " AND workorder.loc_code=".db_escape($_POST['StockLocation']);
 }
 
 if (isset($_POST['OrderNumber']) && $_POST['OrderNumber'] != "")
 {
-	$sql .= " AND workorder.wo_ref LIKE '%". $_POST['OrderNumber'] . "%'";
+	$sql .= " AND workorder.wo_ref LIKE ".db_escape('%'.$_POST['OrderNumber'].'%');
 }
 
 if (isset($_POST['SelectedStockItem']) && $_POST['SelectedStockItem'] != $all_items)
 {
-	$sql .= " AND workorder.stock_id='". $_POST['SelectedStockItem'] . "'";
+	$sql .= " AND workorder.stock_id=".db_escape($_POST['SelectedStockItem']);
 }
 
 if (check_value('OverdueOnly'))

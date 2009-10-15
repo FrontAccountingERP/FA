@@ -28,7 +28,7 @@ if (isset($_GET["trans_no"])){
 $result = get_bank_trans(systypes::bank_transfer(), $trans_no);
 
 if (db_num_rows($result) != 2)
-	display_db_error("Bank transfer does not contain two records", $sql);
+	display_db_error("Bank transfer does not contain two records");
 
 $trans1 = db_fetch($result);
 $trans2 = db_fetch($result);
