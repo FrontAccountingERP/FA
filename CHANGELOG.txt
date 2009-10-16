@@ -19,6 +19,11 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+------------------------------- Release 2.1.7 ----------------------------------
+! Seccurity release 2.1.7. We strongly encourage to update to this release.
+16-ock-2009 Joe Hunt
+$ config.php
+
 15-Oct-2009 Joe Hunt
 # Security sql statements update against sql injection attacks.
 $ /reporting/rep101.php
