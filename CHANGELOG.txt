@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+16-Oct-2009 Janusz Dobrowolski
++ Access control system description.
+$ /doc/access_levels.txt (new)
+
 14-Oct-2009 Janusz Dobrowolski
 # [0000173] Missing global systypes_array declaration.
 $ /purchasing/allocations/supplier_allocate.php
