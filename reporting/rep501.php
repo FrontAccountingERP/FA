@@ -32,8 +32,8 @@ function getTransactions($from, $to)
 	$sql = "SELECT *
 		FROM
 			".TB_PREF."dimensions
-		WHERE reference >= '$from'
-		AND reference <= '$to'
+		WHERE reference >= ".db_escape($from)."
+		AND reference <= ".db_escape($to)."
 		ORDER BY
 			reference";
 

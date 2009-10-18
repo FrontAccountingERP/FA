@@ -15,26 +15,26 @@ function write_item_unit($selected, $abbr, $description, $decimals)
 		$sql = "UPDATE ".TB_PREF."item_units SET
 	 	abbr = ".db_escape($abbr).",
 	 	name = ".db_escape($description).",
-	 	decimals = $decimals
-        	WHERE 	 abbr = '$selected'";
+	 	decimals = ".db_escape($decimals)."
+        	WHERE abbr = ".db_escape($selected);
     else
 		$sql = "INSERT INTO ".TB_PREF."item_units
 			(abbr, name, decimals) VALUES( ".db_escape($abbr).",
-	  		".db_escape($description).", $decimals)";
+	  		".db_escape($description).", ".db_escape($decimals).")";
 
 	db_query($sql,"an item unit could not be updated");
 }
 
 function delete_item_unit($unit)
 {
-	$sql="DELETE FROM ".TB_PREF."item_units WHERE abbr='$unit'";
+	$sql="DELETE FROM ".TB_PREF."item_units WHERE abbr=".db_escape($unit);
 
 	db_query($sql,"an unit of measure could not be deleted");
 }
 
 function get_item_unit($unit)
 {
-	$sql="SELECT * FROM ".TB_PREF."item_units WHERE abbr='$unit'";
+	$sql="SELECT * FROM ".TB_PREF."item_units WHERE abbr=".db_escape($unit);
 
 	$result = db_query($sql,"an unit of measure could not be retrieved");
 
@@ -43,7 +43,7 @@ function get_item_unit($unit)
 
 function get_unit_descr($unit)
 {
-	$sql = "SELECT description FROM ".TB_PREF."item_units WHERE abbr='$unit'";
+	$sql = "SELECT description FROM ".TB_PREF."item_units WHERE abbr=".db_escape($unit);
 
 	$result = db_query($sql, "could not unit description");
 
@@ -52,7 +52,7 @@ function get_unit_descr($unit)
 }
 
 function item_unit_used($unit) {
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."stock_master WHERE units='$unit'";
+	$sql= "SELECT COUNT(*) FROM ".TB_PREF."stock_master WHERE units=".db_escape($unit);
 	$result = db_query($sql, "could not query stock master");
 	$myrow = db_fetch_row($result);
 	return ($myrow[0] > 0);
@@ -68,7 +68,7 @@ function get_all_item_units($all=false) {
 function get_unit_dec($stock_id)
 {
 	$sql = "SELECT decimals FROM ".TB_PREF."item_units,	".TB_PREF."stock_master
-		WHERE abbr=units AND stock_id='$stock_id' LIMIT 1";
+		WHERE abbr=units AND stock_id=".db_escape($stock_id)." LIMIT 1";
 	$result = db_query($sql, "could not get unit decimals");
 
 	$row = db_fetch_row($result);

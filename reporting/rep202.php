@@ -137,10 +137,10 @@ function print_aged_supplier_analysis()
 	$pastdue1 = $PastDueDays1 + 1 . "-" . $PastDueDays2 . " " . _('Days');
 	$pastdue2 = _('Over') . " " . $PastDueDays2 . " " . _('Days');
 
-	$sql = "SELECT supplier_id, supp_name AS name, curr_code FROM ".TB_PREF."suppliers ";
+	$sql = "SELECT supplier_id, supp_name AS name, curr_code FROM ".TB_PREF."suppliers";
 	if ($fromsupp != ALL_NUMERIC)
-		$sql .= "WHERE supplier_id=$fromsupp ";
-	$sql .= "ORDER BY supp_name";
+		$sql .= " WHERE supplier_id=".db_escape($fromsupp);
+	$sql .= " ORDER BY supp_name";
 	$result = db_query($sql, "The suppliers could not be retrieved");
 
 	while ($myrow=db_fetch($result))

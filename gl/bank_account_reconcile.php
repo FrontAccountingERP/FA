@@ -117,14 +117,15 @@ function change_tpl_flag($reconcile_id)
 	$_POST['bank_date'] = date2sql(get_post('reconcile_date'));
 	$reconcile_value = check_value("rec_".$reconcile_id) 
 						? ("'".$_POST['bank_date'] ."'") : 'NULL';
-	$sql = "UPDATE ".TB_PREF."bank_trans SET reconciled=$reconcile_value WHERE id=$reconcile_id";
+	$sql = "UPDATE ".TB_PREF."bank_trans SET reconciled=".db_escape($reconcile_value)
+	." WHERE id=".db_escape($reconcile_id);
 
   	db_query($sql, "Can't change reconciliation status");
 	// save last reconcilation status (date, end balance)
     $sql2="UPDATE ".TB_PREF."bank_accounts SET last_reconciled_date='"
 			.date2sql($_POST["reconcile_date"])."',
     	    ending_reconcile_balance=".input_num("end_balance")
-			." WHERE id=".$_POST["bank_account"];
+			." WHERE id=".db_escape($_POST["bank_account"]);
 
 	$result = db_query($sql2,"Error updating reconciliation information");
 	$Ajax->activate('reconciled');
@@ -182,7 +183,7 @@ $sql = "SELECT MAX(reconciled) as last_date,
 		 SUM(IF(reconciled<'$date', amount, 0)) as beg_balance,
 		 SUM(amount) as total
 	FROM ".TB_PREF."bank_trans trans
-	WHERE bank_act=".$_POST['bank_account'];
+	WHERE bank_act=".db_escape($_POST['bank_account']);
 //	." AND trans.reconciled IS NOT NULL";
 
 $result = db_query($sql,"Cannot retrieve reconciliation data");
@@ -197,8 +198,8 @@ if ($row = db_fetch($result)) {
 		if (get_post('bank_date')) {
 			// if it is the last updated bank statement retrieve ending balance
 			$sql = "SELECT ending_reconcile_balance
-				FROM ".TB_PREF."bank_accounts WHERE id=".$_POST['bank_account']
-				. " AND last_reconciled_date='".$_POST['bank_date']."'";
+				FROM ".TB_PREF."bank_accounts WHERE id=".db_escape($_POST['bank_account'])
+				. " AND last_reconciled_date=".db_escape($_POST['bank_date']);
 			$result = db_query($sql,"Cannot retrieve last reconciliation");
 			$row = db_fetch($result);
 			if($row) {
@@ -244,7 +245,7 @@ if (!isset($_POST['bank_account']))
 $sql = "SELECT	type, trans_no, ref, trans_date, 
 				amount,	person_id, person_type_id, reconciled, id
 		FROM ".TB_PREF."bank_trans
-		WHERE ".TB_PREF."bank_trans.bank_act = '" . $_POST['bank_account'] . "'
+		WHERE ".TB_PREF."bank_trans.bank_act = ".db_escape($_POST['bank_account']) . "
 			AND (reconciled IS NULL OR reconciled='". $date ."')
 		ORDER BY trans_date,".TB_PREF."bank_trans.id";
 // or	ORDER BY reconciled desc, trans_date,".TB_PREF."bank_trans.id";

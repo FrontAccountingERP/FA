@@ -93,7 +93,7 @@ function handle_submit()
             credit_limit=" . input_num('credit_limit') . ", 
             sales_type = ".db_escape($_POST['sales_type']) . ", 
             notes=".db_escape($_POST['notes']) . "
-            WHERE debtor_no = '". $_POST['customer_id'] . "'";
+            WHERE debtor_no = ".db_escape($_POST['customer_id']);
 
 		db_query($sql,"The customer could not be updated");
 

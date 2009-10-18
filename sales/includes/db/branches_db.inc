@@ -14,7 +14,7 @@ function get_branch($branch_id)
 	$sql = "SELECT ".TB_PREF."cust_branch.*,".TB_PREF."salesman.salesman_name 
 		FROM ".TB_PREF."cust_branch, ".TB_PREF."salesman 
 		WHERE ".TB_PREF."cust_branch.salesman=".TB_PREF."salesman.salesman_code 
-		AND branch_code=$branch_id";
+		AND branch_code=".db_escape($branch_id);
 	
 	$result = db_query($sql, "Cannot retreive a customer branch");
 	
@@ -24,7 +24,7 @@ function get_branch($branch_id)
 function get_branch_accounts($branch_id)
 {
 	$sql = "SELECT receivables_account,sales_account, sales_discount_account, payment_discount_account 
-		FROM ".TB_PREF."cust_branch WHERE branch_code=$branch_id";
+		FROM ".TB_PREF."cust_branch WHERE branch_code=".db_escape($branch_id);
 	
 	$result = db_query($sql, "Cannot retreive a customer branch");
 	
@@ -34,7 +34,7 @@ function get_branch_accounts($branch_id)
 function get_branch_name($branch_id)
 {
 	$sql = "SELECT br_name FROM ".TB_PREF."cust_branch 
-		WHERE branch_code = '$branch_id'";
+		WHERE branch_code = ".db_escape($branch_id);
 
 	$result = db_query($sql,"could not retreive name for branch" . $branch_id);
 
@@ -45,7 +45,7 @@ function get_branch_name($branch_id)
 function get_cust_branches_from_group($group_no)
 {
 	$sql = "SELECT branch_code, debtor_no FROM ".TB_PREF."cust_branch 
-		WHERE group_no = '$group_no'";
+		WHERE group_no = ".db_escape($group_no);
 
 	return db_query($sql,"could not retreive branches for group " . $group_no);
 }

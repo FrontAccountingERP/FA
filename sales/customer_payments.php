@@ -204,7 +204,7 @@ function read_customer_data()
 		".TB_PREF."credit_status.dissallow_invoices
 		FROM ".TB_PREF."debtors_master, ".TB_PREF."credit_status
 		WHERE ".TB_PREF."debtors_master.credit_status = ".TB_PREF."credit_status.id
-			AND ".TB_PREF."debtors_master.debtor_no = '" . $_POST['customer_id'] . "'";
+			AND ".TB_PREF."debtors_master.debtor_no = ".db_escape($_POST['customer_id']);
 
 	$result = db_query($sql, "could not query customers");
 

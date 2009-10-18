@@ -49,7 +49,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
     			monthly=".input_num('monthly', 0).", 
     			begin='".date2sql($_POST['begin'])."', 
     			end='".date2sql($_POST['end'])."' 
-    			WHERE id = '$selected_id'";
+    			WHERE id = ".db_escape($selected_id);
 			$note = _('Selected recurrent invoice has been updated');
     	} 
     	else 
@@ -75,7 +75,7 @@ if ($Mode == 'Delete')
 
 	if ($cancel_delete == 0) 
 	{
-		$sql="DELETE FROM ".TB_PREF."recurrent_invoices WHERE id='" . $selected_id . "'";
+		$sql="DELETE FROM ".TB_PREF."recurrent_invoices WHERE id=".db_escape($selected_id);
 		db_query($sql,"could not delete recurrent invoice");
 
 		display_notification(_('Selected recurrent invoice has been deleted'));
@@ -91,7 +91,7 @@ if ($Mode == 'RESET')
 //-------------------------------------------------------------------------------------------------
 function get_sales_group_name($group_no)
 {
-	$sql = "SELECT description FROM ".TB_PREF."groups WHERE id = $group_no";
+	$sql = "SELECT description FROM ".TB_PREF."groups WHERE id = ".db_escape($group_no);
 	$result = db_query($sql, "could not get group");
 	$row = db_fetch($result);
 	return $row[0];
@@ -149,7 +149,7 @@ if ($selected_id != -1)
 {
  	if ($Mode == 'Edit') {
 		//editing an existing area
-		$sql = "SELECT * FROM ".TB_PREF."recurrent_invoices WHERE id='$selected_id'";
+		$sql = "SELECT * FROM ".TB_PREF."recurrent_invoices WHERE id=".db_escape($selected_id);
 
 		$result = db_query($sql,"could not get recurrent invoice");
 		$myrow = db_fetch($result);

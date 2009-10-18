@@ -24,7 +24,7 @@ function update_tax_type($type_id, $name, $sales_gl_code, $purchasing_gl_code, $
 		sales_gl_code=".db_escape($sales_gl_code).",
 		purchasing_gl_code=".db_escape($purchasing_gl_code).",
 		rate=$rate
-		WHERE id=$type_id";
+		WHERE id=".db_escape($type_id);
 
 	db_query($sql, "could not update tax type");
 }
@@ -58,7 +58,7 @@ function get_tax_type($type_id)
 		FROM ".TB_PREF."tax_types, ".TB_PREF."chart_master AS Chart1,
 		".TB_PREF."chart_master AS Chart2
 		WHERE ".TB_PREF."tax_types.sales_gl_code = Chart1.account_code
-		AND ".TB_PREF."tax_types.purchasing_gl_code = Chart2.account_code AND id=$type_id";
+		AND ".TB_PREF."tax_types.purchasing_gl_code = Chart2.account_code AND id=".db_escape($type_id);
 
 	$result = db_query($sql, "could not get tax type");
 	return db_fetch($result);
@@ -66,7 +66,7 @@ function get_tax_type($type_id)
 
 function get_tax_type_default_rate($type_id)
 {
-	$sql = "SELECT rate FROM ".TB_PREF."tax_types WHERE id=$type_id";
+	$sql = "SELECT rate FROM ".TB_PREF."tax_types WHERE id=".db_escape($type_id);
 
 	$result = db_query($sql, "could not get tax type rate");
 
@@ -78,7 +78,7 @@ function delete_tax_type($type_id)
 {
 	begin_transaction();
 
-	$sql = "DELETE FROM ".TB_PREF."tax_types WHERE id=$type_id";
+	$sql = "DELETE FROM ".TB_PREF."tax_types WHERE id=".db_escape($type_id);
 
 	db_query($sql, "could not delete tax type");
 

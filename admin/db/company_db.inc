@@ -121,14 +121,14 @@ function add_fiscalyear($from_date, $to_date, $closed)
 	$to = date2sql($to_date);
 
 	$sql = "INSERT INTO ".TB_PREF."fiscal_year (begin, end, closed)
-		VALUES (".db_escape($from).",".db_escape($to).", $closed)";
+		VALUES (".db_escape($from).",".db_escape($to).", ".db_escape($closed).")";
 
 	db_query($sql, "could not add fiscal year");
 }
 
 function update_fiscalyear($id, $closed)
 {
-	$sql = "UPDATE ".TB_PREF."fiscal_year SET closed=$closed
+	$sql = "UPDATE ".TB_PREF."fiscal_year SET closed=".db_escape($closed)."
 		WHERE id=".db_escape($id);
 
 	db_query($sql, "could not update fiscal year");
@@ -154,7 +154,7 @@ function get_current_fiscalyear()
 {
 	$year = get_company_pref('f_year');
 
-	$sql = "SELECT * FROM ".TB_PREF."fiscal_year WHERE id=$year";
+	$sql = "SELECT * FROM ".TB_PREF."fiscal_year WHERE id=".db_escape($year);
 
 	$result = db_query($sql, "could not get current fiscal year");
 

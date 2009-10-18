@@ -59,7 +59,7 @@ function get_open_balance($debtorno, $to, $convert)
     $sql .= ")) AS OutStanding
 		FROM ".TB_PREF."debtor_trans
     	WHERE ".TB_PREF."debtor_trans.tran_date < '$to'
-		AND ".TB_PREF."debtor_trans.debtor_no = '$debtorno'
+		AND ".TB_PREF."debtor_trans.debtor_no = ".db_escape($debtorno)."
 		AND ".TB_PREF."debtor_trans.type <> ".ST_CUSTDELIVERY." GROUP BY debtor_no";
 
     $result = db_query($sql,"No transactions were returned");
@@ -80,7 +80,7 @@ function get_transactions($debtorno, $from, $to)
     	FROM ".TB_PREF."debtor_trans
     	WHERE ".TB_PREF."debtor_trans.tran_date >= '$from'
 		AND ".TB_PREF."debtor_trans.tran_date <= '$to'
-		AND ".TB_PREF."debtor_trans.debtor_no = '$debtorno'
+		AND ".TB_PREF."debtor_trans.debtor_no = ".db_escape($debtorno)."
 		AND ".TB_PREF."debtor_trans.type <> ".ST_CUSTDELIVERY."
     	ORDER BY ".TB_PREF."debtor_trans.tran_date";
 
@@ -140,8 +140,8 @@ function print_customer_balances()
 
 	$sql = "SELECT debtor_no, name, curr_code FROM ".TB_PREF."debtors_master ";
 	if ($fromcust != ALL_NUMERIC)
-		$sql .= "WHERE debtor_no=$fromcust ";
-	$sql .= "ORDER BY name";
+		$sql .= "WHERE debtor_no=".db_escape($fromcust);
+	$sql .= " ORDER BY name";
 	$result = db_query($sql, "The customers could not be retrieved");
 
 	while ($myrow = db_fetch($result))

@@ -40,7 +40,7 @@ function fetch_items($category=0)
 				".TB_PREF."stock_category
 			WHERE ".TB_PREF."stock_master.category_id=".TB_PREF."stock_category.category_id";
 		if ($category != 0)
-			$sql .= " AND ".TB_PREF."stock_category.category_id = '$category'";
+			$sql .= " AND ".TB_PREF."stock_category.category_id = ".db_escape($category);
 		$sql .= " ORDER BY ".TB_PREF."stock_master.category_id,
 				".TB_PREF."stock_master.stock_id";
 
@@ -57,7 +57,7 @@ function get_kits($category=0)
 			ON i.category_id=c.category_id";
 	$sql .=	" WHERE !i.is_foreign AND i.item_code!=i.stock_id";
 	if ($category != 0)
-		$sql .= " AND c.category_id = '$category'";
+		$sql .= " AND c.category_id = ".db_escape($category);
 	$sql .= " GROUP BY i.item_code";
     return db_query($sql,"No kits were returned");
 }

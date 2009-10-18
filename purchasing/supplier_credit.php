@@ -97,7 +97,7 @@ if (isset($_POST['AddGLCodeToTrans'])){
 	$Ajax->activate('gl_items');
 	$input_error = false;
 
-	$sql = "SELECT account_code, account_name FROM ".TB_PREF."chart_master WHERE account_code='" . $_POST['gl_code'] . "'";
+	$sql = "SELECT account_code, account_name FROM ".TB_PREF."chart_master WHERE account_code=".db_escape($_POST['gl_code']);
 	$result = db_query($sql,"get account information");
 	if (db_num_rows($result) == 0)
 	{

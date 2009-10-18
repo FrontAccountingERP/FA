@@ -118,10 +118,13 @@ function delete_sales_order($order_no, $trans_type)
 {
 	begin_transaction();
 
-	$sql = "DELETE FROM ".TB_PREF."sales_orders WHERE order_no=" . $order_no . " AND trans_type=".$trans_type;
+	$sql = "DELETE FROM ".TB_PREF."sales_orders WHERE order_no=" . db_escape($order_no) 
+		. " AND trans_type=".db_escape($trans_type);
+
 	db_query($sql, "order Header Delete");
 
-	$sql = "DELETE FROM ".TB_PREF."sales_order_details WHERE order_no =" . $order_no . " AND trans_type=".$trans_type;
+	$sql = "DELETE FROM ".TB_PREF."sales_order_details WHERE order_no =" 
+		.db_escape($order_no) . " AND trans_type=".db_escape($trans_type);
 	db_query($sql, "order Detail Delete");
 
 	add_audit_trail($trans_type, $order_no, Today(), _("Deleted."));
@@ -153,7 +156,7 @@ function update_sales_order($order)
 
 	begin_transaction();
 
-	$sql = "UPDATE ".TB_PREF."sales_orders SET type =".$order->so_type." ,
+	$sql = "UPDATE ".TB_PREF."sales_orders SET type =".db_escape($order->so_type)." ,
 		debtor_no = " . db_escape($order->customer_id) . ",
 		branch_code = " . db_escape($order->Branch) . ",
 		customer_ref = ". db_escape($order->cust_ref) .",
@@ -196,8 +199,8 @@ function update_sales_order($order)
 				FROM ".TB_PREF."loc_stock, "
 				  .TB_PREF."locations
 				WHERE ".TB_PREF."loc_stock.loc_code=".TB_PREF."locations.loc_code
-				 AND ".TB_PREF."loc_stock.stock_id = '" . $line->stock_id . "'
-				 AND ".TB_PREF."loc_stock.loc_code = '" . $order->Location . "'";
+				 AND ".TB_PREF."loc_stock.stock_id = ".db_escape($line->stock_id)."
+				 AND ".TB_PREF."loc_stock.loc_code = ".db_escape($order->Location);
 			$res = db_query($sql,"a location could not be retreived");
 			$loc = db_fetch($res);
 			if ($loc['email'] != "")
@@ -287,8 +290,9 @@ function get_sales_order_header($order_no, $trans_type)
 		AND ".TB_PREF."sales_orders.debtor_no = ".TB_PREF."debtors_master.debtor_no
 		AND ".TB_PREF."locations.loc_code = ".TB_PREF."sales_orders.from_stk_loc
 		AND ".TB_PREF."shippers.shipper_id = ".TB_PREF."sales_orders.ship_via
-		AND ".TB_PREF."sales_orders.trans_type = " . $trans_type ."
-		AND ".TB_PREF."sales_orders.order_no = " . $order_no ;
+		AND ".TB_PREF."sales_orders.trans_type = " . db_escape($trans_type) ."
+		AND ".TB_PREF."sales_orders.order_no = " . db_escape($order_no );
+
 	$result = db_query($sql, "order Retreival");
 
 	$num = db_num_rows($result);
@@ -319,7 +323,8 @@ function get_sales_order_details($order_no, $trans_type) {
 			.TB_PREF."stock_master.overhead_cost AS standard_cost
 	FROM ".TB_PREF."sales_order_details, ".TB_PREF."stock_master
 	WHERE ".TB_PREF."sales_order_details.stk_code = ".TB_PREF."stock_master.stock_id
-	AND order_no =" . $order_no . " AND trans_type = " . $trans_type . " ORDER BY id";
+	AND order_no =" . db_escape($order_no) 
+		." AND trans_type = " . db_escape($trans_type) . " ORDER BY id";
 
 	return db_query($sql, "Retreive order Line Items");
 }
@@ -375,7 +380,8 @@ function read_sales_order($order_no, &$order, $trans_type)
 function sales_order_has_deliveries($order_no)
 {
 	$sql = "SELECT SUM(qty_sent) FROM ".TB_PREF.
-	"sales_order_details WHERE order_no=$order_no AND trans_type=".ST_SALESORDER."";
+	"sales_order_details WHERE order_no=".db_escape($order_no)
+	." AND trans_type=".ST_SALESORDER."";
 
 	$result = db_query($sql, "could not query for sales order usage");
 
@@ -390,7 +396,8 @@ function close_sales_order($order_no)
 {
 	// set the quantity of each item to the already sent quantity. this will mark item as closed.
 	$sql = "UPDATE ".TB_PREF."sales_order_details
-		SET quantity = qty_sent WHERE order_no = $order_no AND trans_type=".ST_SALESORDER."";
+		SET quantity = qty_sent WHERE order_no = ".db_escape($order_no)
+		." AND trans_type=".ST_SALESORDER."";
 
 	db_query($sql, "The sales order detail record could not be updated");
 }
@@ -405,7 +412,7 @@ function get_invoice_duedate($debtorno, $invdate)
 	}
 	$sql = "SELECT ".TB_PREF."debtors_master.debtor_no, ".TB_PREF."debtors_master.payment_terms, ".TB_PREF."payment_terms.* FROM ".TB_PREF."debtors_master,
 		".TB_PREF."payment_terms WHERE ".TB_PREF."debtors_master.payment_terms = ".TB_PREF."payment_terms.terms_indicator AND
-		".TB_PREF."debtors_master.debtor_no = '$debtorno'";
+		".TB_PREF."debtors_master.debtor_no = ".db_escape($debtorno);
 
 	$result = db_query($sql,"The customer details could not be retrieved");
 	$myrow = db_fetch($result);
@@ -440,7 +447,7 @@ function get_customer_to_order($customer_id) {
 		WHERE ".TB_PREF."debtors_master.sales_type="
 		  .TB_PREF."sales_types.id
 		AND ".TB_PREF."debtors_master.credit_status=".TB_PREF."credit_status.id
-		AND ".TB_PREF."debtors_master.debtor_no = '" . $customer_id . "'";
+		AND ".TB_PREF."debtors_master.debtor_no = ".db_escape($customer_id);
 
 	$result =db_query($sql,"Customer Record Retreive");
 	return 	db_fetch($result);
@@ -462,8 +469,8 @@ function get_branch_to_order($customer_id, $branch_id) {
 			  .TB_PREF."locations
 			WHERE ".TB_PREF."cust_branch.tax_group_id = ".TB_PREF."tax_groups.id
 				AND ".TB_PREF."locations.loc_code=default_location
-				AND ".TB_PREF."cust_branch.branch_code='" . $branch_id . "'
-				AND ".TB_PREF."cust_branch.debtor_no = '" . $customer_id . "'";
+				AND ".TB_PREF."cust_branch.branch_code=".db_escape($branch_id)."
+				AND ".TB_PREF."cust_branch.debtor_no = ".db_escape($customer_id);
 
   	    return db_query($sql,"Customer Branch Record Retreive");
 }

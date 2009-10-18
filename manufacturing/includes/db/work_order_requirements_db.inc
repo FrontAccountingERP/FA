@@ -15,9 +15,10 @@ function get_wo_requirements($woid)
 		".TB_PREF."stock_master.mb_flag, 
 		".TB_PREF."locations.location_name, 
 		".TB_PREF."workcentres.name AS WorkCentreDescription FROM 
-		(".TB_PREF."wo_requirements, ".TB_PREF."locations, ".TB_PREF."workcentres) INNER JOIN ".TB_PREF."stock_master ON 
+		(".TB_PREF."wo_requirements, ".TB_PREF."locations, "
+		.TB_PREF."workcentres) INNER JOIN ".TB_PREF."stock_master ON 
 		".TB_PREF."wo_requirements.stock_id = ".TB_PREF."stock_master.stock_id 
-		WHERE workorder_id=$woid
+		WHERE workorder_id=".db_escape($woid)."
 		AND ".TB_PREF."locations.loc_code = ".TB_PREF."wo_requirements.loc_code
 		AND ".TB_PREF."workcentres.id=workcentre";
 
@@ -35,7 +36,7 @@ function create_wo_requirements($woid, $stock_id)
 	{
 		
 		$sql = "INSERT INTO ".TB_PREF."wo_requirements (workorder_id, stock_id, workcentre, units_req, loc_code)
-			VALUES ($woid, '" .
+			VALUES (".db_escape($woid).", '" .
 			$myrow["component"] . "', '"	.
 			$myrow["workcentre_added"] . "', '"	.
 			$myrow["quantity"] . "', '"	.
@@ -49,7 +50,7 @@ function create_wo_requirements($woid, $stock_id)
 
 function delete_wo_requirements($woid)
 {
-	$sql="DELETE FROM ".TB_PREF."wo_requirements WHERE workorder_id=$woid";
+	$sql="DELETE FROM ".TB_PREF."wo_requirements WHERE workorder_id=".db_escape($woid);
 	db_query($sql,"The work order requirements could not be deleted");	
 }
 
@@ -58,8 +59,8 @@ function delete_wo_requirements($woid)
 
 function update_wo_requirement_issued($woReqID, $quantity)
 {
-	$sql = "UPDATE ".TB_PREF."wo_requirements SET units_issued = units_issued + $quantity
-		WHERE id = '$woReqID'";
+	$sql = "UPDATE ".TB_PREF."wo_requirements SET units_issued = units_issued + ".db_escape($quantity)."
+		WHERE id = ".db_escape($woReqID);
 				
 	db_query($sql, "The work requirements issued quantity couldn't be updated");
 }
@@ -68,8 +69,9 @@ function update_wo_requirement_issued($woReqID, $quantity)
 
 function void_wo_requirements($woid)
 {
-	$sql = "UPDATE ".TB_PREF."wo_requirements SET units_issued = 0 WHERE workorder_id = $woid";
-				
+	$sql = "UPDATE ".TB_PREF."wo_requirements SET units_issued = 0 WHERE workorder_id = "
+	.db_escape($woid);
+
 	db_query($sql, "The work requirements issued quantity couldn't be voided");	
 }
 

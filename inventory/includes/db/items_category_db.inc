@@ -51,22 +51,22 @@ function update_item_category($id, $description, $tax_type_id,
 		."dflt_assembly_act = ".db_escape($assembly_account).","
 		."dflt_dim1 = ".db_escape($dim1).","
 		."dflt_dim2 = ".db_escape($dim2).","
-		."dflt_no_sale = '$no_sale'"
-        ." WHERE category_id = '$id'";
+		."dflt_no_sale = ".db_escape($no_sale)
+        ."WHERE category_id = ".db_escape($id);
 
 	db_query($sql,"an item category could not be updated");
 }
 
 function delete_item_category($id)
 {
-	$sql="DELETE FROM ".TB_PREF."stock_category WHERE category_id='$id'";
+	$sql="DELETE FROM ".TB_PREF."stock_category WHERE category_id=".db_escape($id);
 
 	db_query($sql,"an item category could not be deleted");
 }
 
 function get_item_category($id)
 {
-	$sql="SELECT * FROM ".TB_PREF."stock_category WHERE category_id='$id'";
+	$sql="SELECT * FROM ".TB_PREF."stock_category WHERE category_id=".db_escape($id);
 
 	$result = db_query($sql,"an item category could not be retrieved");
 
@@ -75,7 +75,7 @@ function get_item_category($id)
 
 function get_category_name($id)
 {
-	$sql = "SELECT description FROM ".TB_PREF."stock_category WHERE category_id=$id";
+	$sql = "SELECT description FROM ".TB_PREF."stock_category WHERE category_id=".db_escape($id);
 
 	$result = db_query($sql, "could not get sales type");
 

@@ -33,10 +33,10 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 	//first off validate inputs sensible
 	$_POST['loc_code'] = strtoupper($_POST['loc_code']);
 
-	if (strlen($_POST['loc_code']) > 5) 
+	if (strlen(db_escape($_POST['loc_code'])) > 7) //check length after conversion
 	{
 		$input_error = 1;
-		display_error( _("The location code must be five characters or less long."));
+		display_error( _("The location code must be five characters or less long (including converted special chars)."));
 		set_focus('loc_code');
 	} 
 	elseif (strlen($_POST['location_name']) == 0) 
@@ -71,7 +71,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 
 function can_delete($selected_id)
 {
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."stock_moves WHERE loc_code='$selected_id'";
+	$sql= "SELECT COUNT(*) FROM ".TB_PREF."stock_moves WHERE loc_code=".db_escape($selected_id);
 	$result = db_query($sql, "could not query stock moves");
 	$myrow = db_fetch_row($result);
 	if ($myrow[0] > 0) 
@@ -80,7 +80,7 @@ function can_delete($selected_id)
 		return false;
 	}
 
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."workorders WHERE loc_code='$selected_id'";
+	$sql= "SELECT COUNT(*) FROM ".TB_PREF."workorders WHERE loc_code=".db_escape($selected_id);
 	$result = db_query($sql, "could not query work orders");
 	$myrow = db_fetch_row($result);
 	if ($myrow[0] > 0) 
@@ -98,7 +98,7 @@ function can_delete($selected_id)
 		return false;
 	}
 	
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."bom WHERE loc_code='$selected_id'";
+	$sql= "SELECT COUNT(*) FROM ".TB_PREF."bom WHERE loc_code=".db_escape($selected_id);
 	$result = db_query($sql, "could not query bom");
 	$myrow = db_fetch_row($result);
 	if ($myrow[0] > 0) 
@@ -106,7 +106,7 @@ function can_delete($selected_id)
 		display_error(_("Cannot delete this location because it is used by some related records in other tables."));
 		return false;
 	}
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."grn_batch WHERE loc_code='$selected_id'";
+	$sql= "SELECT COUNT(*) FROM ".TB_PREF."grn_batch WHERE loc_code=".db_escape($selected_id);
 	$result = db_query($sql, "could not query grn batch");
 	$myrow = db_fetch_row($result);
 	if ($myrow[0] > 0) 
@@ -114,7 +114,7 @@ function can_delete($selected_id)
 		display_error(_("Cannot delete this location because it is used by some related records in other tables."));
 		return false;
 	}
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."purch_orders WHERE into_stock_location='$selected_id'";
+	$sql= "SELECT COUNT(*) FROM ".TB_PREF."purch_orders WHERE into_stock_location=".db_escape($selected_id);
 	$result = db_query($sql, "could not query purch orders");
 	$myrow = db_fetch_row($result);
 	if ($myrow[0] > 0) 
@@ -122,7 +122,7 @@ function can_delete($selected_id)
 		display_error(_("Cannot delete this location because it is used by some related records in other tables."));
 		return false;
 	}
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."sales_orders WHERE from_stk_loc='$selected_id'";
+	$sql= "SELECT COUNT(*) FROM ".TB_PREF."sales_orders WHERE from_stk_loc=".db_escape($selected_id);
 	$result = db_query($sql, "could not query sales orders");
 	$myrow = db_fetch_row($result);
 	if ($myrow[0] > 0) 
@@ -130,7 +130,7 @@ function can_delete($selected_id)
 		display_error(_("Cannot delete this location because it is used by some related records in other tables."));
 		return false;
 	}
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."sales_pos WHERE pos_location='$selected_id'";
+	$sql= "SELECT COUNT(*) FROM ".TB_PREF."sales_pos WHERE pos_location=".db_escape($selected_id);
 	$result = db_query($sql, "could not query sales pos");
 	$myrow = db_fetch_row($result);
 	if ($myrow[0] > 0) 

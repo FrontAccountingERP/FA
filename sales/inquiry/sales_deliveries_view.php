@@ -204,7 +204,8 @@ if ($_POST['OutstandingOnly'] == true) {
 //figure out the sql required from the inputs available
 if (isset($_POST['DeliveryNumber']) && $_POST['DeliveryNumber'] != "")
 {
-	$sql .= " AND trans.trans_no LIKE '%". $_POST['DeliveryNumber'] ."'";
+	$delivery = "%".$_POST['DeliveryNumber'];
+	$sql .= " AND trans.trans_no LIKE ".db_escape($delivery);
  	$sql .= " GROUP BY trans.trans_no";
 }
 else
@@ -213,13 +214,13 @@ else
 	$sql .= " AND trans.tran_date <= '".date2sql($_POST['DeliveryToDate'])."'";
 
 	if ($selected_customer != -1)
-		$sql .= " AND trans.debtor_no='" . $selected_customer . "' ";
+		$sql .= " AND trans.debtor_no=".db_escape($selected_customer)." ";
 
 	if (isset($selected_stock_item))
-		$sql .= " AND line.stock_id='". $selected_stock_item ."' ";
+		$sql .= " AND line.stock_id=".db_escape($selected_stock_item)." ";
 
 	if (isset($_POST['StockLocation']) && $_POST['StockLocation'] != ALL_TEXT)
-		$sql .= " AND sorder.from_stk_loc = '". $_POST['StockLocation'] . "' ";
+		$sql .= " AND sorder.from_stk_loc = ".db_escape($_POST['StockLocation'])." ";
 
 	$sql .= " GROUP BY trans.trans_no ";
 

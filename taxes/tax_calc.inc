@@ -210,7 +210,7 @@ function get_tax_for_items($items, $prices, $shipping_cost, $tax_group, $tax_inc
 function is_tax_account($account_code)
 {
 	$sql= "SELECT id FROM ".TB_PREF."tax_types WHERE 
-		sales_gl_code='$account_code' OR purchasing_gl_code='$account_code'";
+		sales_gl_code=".db_escape($account_code)." OR purchasing_gl_code=".db_escape($account_code);
 	$result = db_query($sql, "checking account is tax account");
 	if (db_num_rows($result) > 0) {
 		$acct = db_fetch($result);

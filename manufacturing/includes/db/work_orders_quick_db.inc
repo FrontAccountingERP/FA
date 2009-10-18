@@ -33,8 +33,9 @@ function add_work_order_quick($wo_ref, $loc_code, $units_reqd, $stock_id, $type,
 		
 	$sql = "INSERT INTO ".TB_PREF."workorders (wo_ref, loc_code, units_reqd, units_issued, stock_id,
 		type, additional_costs, date_, released_date, required_by, released, closed)
-    	VALUES (".db_escape($wo_ref).", ".db_escape($loc_code).", $units_reqd, $units_reqd, '$stock_id',
-		$type, $costs, '$date', '$date', '$date', 1, 1)";
+    	VALUES (".db_escape($wo_ref).", ".db_escape($loc_code).", ".db_escape($units_reqd)
+    	.", ".db_escape($units_reqd).", ".db_escape($stock_id).",
+		".db_escape($type).", ".db_escape($costs).", '$date', '$date', '$date', 1, 1)";
 	db_query($sql, "could not add work order");
 
 	$woid = db_insert_id();

@@ -126,7 +126,7 @@ $sql = "SELECT
 
 if (isset($order_number) && $order_number != "")
 {
-	$sql .= "AND porder.reference LIKE '%". $order_number . "%'";
+	$sql .= "AND porder.reference LIKE ".db_escape('%'. $order_number . '%');
 }
 else
 {
@@ -139,11 +139,11 @@ else
 
 	if (isset($_POST['StockLocation']) && $_POST['StockLocation'] != ALL_TEXT)
 	{
-		$sql .= " AND porder.into_stock_location = '". $_POST['StockLocation'] . "' ";
+		$sql .= " AND porder.into_stock_location = ".db_escape($_POST['StockLocation']);
 	}
 	if (isset($selected_stock_item))
 	{
-		$sql .= " AND line.item_code='". $selected_stock_item ."' ";
+		$sql .= " AND line.item_code=".db_escape($selected_stock_item);
 	}
 
 } //end not order number selected

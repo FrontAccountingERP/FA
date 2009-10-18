@@ -55,7 +55,7 @@ if ($Mode=='UPDATE_ITEM' && can_process())
 		phone =" . db_escape($_POST['phone']). " ,
 		phone2 =" . db_escape($_POST['phone2']). " ,
 		address =" . db_escape($_POST['address']). "
-		WHERE shipper_id = $selected_id";
+		WHERE shipper_id = ".db_escape($selected_id);
 
 	db_query($sql,"The shipping company could not be updated");
 	display_notification(_('Selected shipping company has been updated'));
@@ -68,7 +68,7 @@ if ($Mode == 'Delete')
 {
 // PREVENT DELETES IF DEPENDENT RECORDS IN 'sales_orders'
 
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."sales_orders WHERE ship_via='$selected_id'";
+	$sql= "SELECT COUNT(*) FROM ".TB_PREF."sales_orders WHERE ship_via=".db_escape($selected_id);
 	$result = db_query($sql,"check failed");
 	$myrow = db_fetch_row($result);
 	if ($myrow[0] > 0) 
@@ -80,7 +80,7 @@ if ($Mode == 'Delete')
 	{
 		// PREVENT DELETES IF DEPENDENT RECORDS IN 'debtor_trans'
 
-		$sql= "SELECT COUNT(*) FROM ".TB_PREF."debtor_trans WHERE ship_via='$selected_id'";
+		$sql= "SELECT COUNT(*) FROM ".TB_PREF."debtor_trans WHERE ship_via=".db_escape($selected_id);
 		$result = db_query($sql,"check failed");
 		$myrow = db_fetch_row($result);
 		if ($myrow[0] > 0) 
@@ -90,7 +90,7 @@ if ($Mode == 'Delete')
 		} 
 		else 
 		{
-			$sql="DELETE FROM ".TB_PREF."shippers WHERE shipper_id=$selected_id";
+			$sql="DELETE FROM ".TB_PREF."shippers WHERE shipper_id=".db_escape($selected_id);
 			db_query($sql,"could not delete shipper");
 			display_notification(_('Selected shipping company has been deleted'));
 		}
@@ -146,7 +146,7 @@ if ($selected_id != -1)
  	if ($Mode == 'Edit') {
 		//editing an existing Shipper
 
-		$sql = "SELECT * FROM ".TB_PREF."shippers WHERE shipper_id=$selected_id";
+		$sql = "SELECT * FROM ".TB_PREF."shippers WHERE shipper_id=".db_escape($selected_id);
 
 		$result = db_query($sql, "could not get shipper");
 		$myrow = db_fetch($result);

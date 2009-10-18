@@ -56,7 +56,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
     			provision=".input_num('provision').",
     			break_pt=".input_num('break_pt').",
     			provision2=".input_num('provision2')."
-    			WHERE salesman_code = '$selected_id'";
+    			WHERE salesman_code = ".db_escape($selected_id);
     	}
     	else
     	{
@@ -86,7 +86,7 @@ if ($Mode == 'Delete')
 
 	// PREVENT DELETES IF DEPENDENT RECORDS IN 'debtors_master'
 
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."cust_branch WHERE salesman='$selected_id'";
+	$sql= "SELECT COUNT(*) FROM ".TB_PREF."cust_branch WHERE salesman=".db_escape($selected_id);
 	$result = db_query($sql,"check failed");
 	$myrow = db_fetch_row($result);
 	if ($myrow[0] > 0)
@@ -95,7 +95,7 @@ if ($Mode == 'Delete')
 	}
 	else
 	{
-		$sql="DELETE FROM ".TB_PREF."salesman WHERE salesman_code='$selected_id'";
+		$sql="DELETE FROM ".TB_PREF."salesman WHERE salesman_code=".db_escape($selected_id);
 		db_query($sql,"The sales-person could not be deleted");
 		display_notification(_('Selected sales person data have been deleted'));
 	}
@@ -154,7 +154,7 @@ if ($selected_id != -1)
 {
  	if ($Mode == 'Edit') {
 		//editing an existing Sales-person
-		$sql = "SELECT *  FROM ".TB_PREF."salesman WHERE salesman_code='$selected_id'";
+		$sql = "SELECT *  FROM ".TB_PREF."salesman WHERE salesman_code=".db_escape($selected_id);
 
 		$result = db_query($sql,"could not get sales person");
 		$myrow = db_fetch($result);

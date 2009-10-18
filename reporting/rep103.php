@@ -56,18 +56,18 @@ function get_customer_details_for_report($area=0, $salesid=0)
 	if ($area != 0)
 	{
 		if ($salesid != 0)
-			$sql .= " WHERE ".TB_PREF."salesman.salesman_code='$salesid' 
-				AND ".TB_PREF."areas.area_code='$area'";
+			$sql .= " WHERE ".TB_PREF."salesman.salesman_code=".db_escape($salesid)." 
+				AND ".TB_PREF."areas.area_code=".db_escape($area);
 		else		
-			$sql .= " WHERE ".TB_PREF."areas.area_code='$area'";
+			$sql .= " WHERE ".TB_PREF."areas.area_code=".db_escape($area);
 	}
 	elseif ($salesid != 0)
-		$sql .= " WHERE ".TB_PREF."salesman.salesman_code='$salesid'";
+		$sql .= " WHERE ".TB_PREF."salesman.salesman_code=".db_escape($salesid);
 	$sql .= " ORDER BY description,
 			".TB_PREF."salesman.salesman_name,
 			".TB_PREF."debtors_master.debtor_no,
 			".TB_PREF."cust_branch.branch_code";
-					
+
     return db_query($sql,"No transactions were returned");
 }
 
@@ -78,11 +78,11 @@ function getTransactions($debtorno, $branchcode, $date)
 
 	$sql = "SELECT SUM((ov_amount+ov_freight+ov_discount)*rate) AS Turnover
 		FROM ".TB_PREF."debtor_trans
-		WHERE debtor_no='$debtorno'
-		AND branch_code='$branchcode'
+		WHERE debtor_no=".db_escape($debtorno)."
+		AND branch_code=".db_escape($branchcode)."
 		AND (type=".ST_SALESINVOICE." OR type=".ST_CUSTCREDIT.")
 		AND trandate >='$date'";
-		
+
     $result = db_query($sql,"No transactions were returned");
 
 	$row = db_fetch_row($result);

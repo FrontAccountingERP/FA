@@ -16,7 +16,7 @@ function get_parent_trans($trans_type, $trans_no) {
 
 	$sql = 'SELECT trans_link FROM
 			'.TB_PREF.'debtor_trans WHERE
-			(trans_no=' .$trans_no. ' AND type='.$trans_type.' AND trans_link!=0)';
+			(trans_no='.db_escape($trans_no).' AND type='.db_escape($trans_type).' AND trans_link!=0)';
 
 	$result = db_query($sql, 'Parent document numbers cannot be retrieved');
 
@@ -28,7 +28,7 @@ function get_parent_trans($trans_type, $trans_no) {
 	// invoice: find batch invoice parent trans.
 	$sql = 'SELECT trans_no FROM
 			'.TB_PREF.'debtor_trans WHERE
-			(trans_link='.$trans_no.' AND type='. get_parent_type($trans_type) .')';
+			(trans_link='.db_escape($trans_no).' AND type='. get_parent_type($trans_type) .')';
 
 	$result = db_query($sql, 'Delivery links cannot be retrieved');
 
@@ -47,11 +47,10 @@ function get_parent_trans($trans_type, $trans_no) {
 function update_customer_trans_version($type, $versions) {
 
 	$sql= 'UPDATE '.TB_PREF. 'debtor_trans SET version=version+1
-			WHERE type='.$type. ' AND (';
+			WHERE type='.db_escape($type).' AND (';
 
 	foreach ($versions as $trans_no=>$version)
-		$where[] = 	'(trans_no='.$trans_no.
-			' AND version='.$version.')';
+		$where[] = 	'(trans_no='.db_escape($trans_no).' AND version='.$version.')';
 
 		$sql .= implode(' OR ', $where) .')';
 
@@ -68,7 +67,7 @@ function get_customer_trans_version($type, $trans_no) {
 		$trans_no = array( $trans_no );
 
 	$sql= 'SELECT trans_no, version FROM '.TB_PREF. 'debtor_trans
-			WHERE type='.$type.' AND (';
+			WHERE type='.db_escape($type).' AND (';
 
 	foreach ($trans_no as $key=>$trans)
 		$trans_no[$key] = 	'trans_no='.$trans_no[$key];
@@ -117,23 +116,23 @@ function write_customer_trans($trans_type, $trans_no, $debtor_no, $BranchNo,
 		ov_gst, ov_freight, ov_freight_tax,
 		rate, ship_via, alloc, trans_link,
 		dimension_id, dimension2_id
-		) VALUES ($trans_no, $trans_type,
+		) VALUES ($trans_no, ".db_escape($trans_type).",
 		".db_escape($debtor_no).", ".db_escape($BranchNo).",
 		'$SQLDate', '$SQLDueDate', ".db_escape($reference).",
-		".db_escape($sales_type).", $order_no, $Total, ".db_escape($discount).", $Tax,
+		".db_escape($sales_type).", ".db_escape($order_no).", $Total, ".db_escape($discount).", $Tax,
 		".db_escape($Freight).",
 		$FreightTax, $rate, ".db_escape($ship_via).", $AllocAmt, ".db_escape($trans_link).",
-		$dimension_id, $dimension2_id)";
+		".db_escape($dimension_id).", ".db_escape($dimension2_id).")";
 	} else {	// may be optional argument should stay unchanged ?
 	$sql = "UPDATE ".TB_PREF."debtor_trans SET
 		debtor_no=".db_escape($debtor_no)." , branch_code=".db_escape($BranchNo).",
 		tran_date='$SQLDate', due_date='$SQLDueDate',
-		reference=".db_escape($reference).", tpe=".db_escape($sales_type).", order_=$order_no,
+		reference=".db_escape($reference).", tpe=".db_escape($sales_type).", order_=".db_escape($order_no).",
 		ov_amount=$Total, ov_discount=".db_escape($discount).", ov_gst=$Tax,
 		ov_freight=".db_escape($Freight).", ov_freight_tax=$FreightTax, rate=$rate,
 		ship_via=".db_escape($ship_via).", alloc=$AllocAmt, trans_link=$trans_link,
-		dimension_id=$dimension_id, dimension2_id=$dimension2_id
-		WHERE trans_no=$trans_no AND type=$trans_type";
+		dimension_id=".db_escape($dimension_id).", dimension2_id=".db_escape($dimension2_id)."
+		WHERE trans_no=$trans_no AND type=".db_escape($trans_type);
 	}
 	db_query($sql, "The debtor transaction record could not be inserted");
 
@@ -181,8 +180,8 @@ function get_customer_trans($trans_id, $trans_type)
 		$sql .= ", ".TB_PREF."shippers, ".TB_PREF."sales_types, ".TB_PREF."cust_branch, ".TB_PREF."tax_groups ";
 	}
 
-	$sql .= " WHERE ".TB_PREF."debtor_trans.trans_no=$trans_id
-		AND ".TB_PREF."debtor_trans.type=$trans_type
+	$sql .= " WHERE ".TB_PREF."debtor_trans.trans_no=".db_escape($trans_id)."
+		AND ".TB_PREF."debtor_trans.type=".db_escape($trans_type)."
 		AND ".TB_PREF."debtor_trans.debtor_no=".TB_PREF."debtors_master.debtor_no";
 
 	if ($trans_type == ST_CUSTPAYMENT) {
@@ -223,8 +222,8 @@ function get_customer_trans($trans_id, $trans_type)
 
 function exists_customer_trans($type, $type_no)
 {
-	$sql = "SELECT trans_no FROM ".TB_PREF."debtor_trans WHERE type=$type
-		AND trans_no=$type_no";
+	$sql = "SELECT trans_no FROM ".TB_PREF."debtor_trans WHERE type=".db_escape($type)."
+		AND trans_no=".db_escape($type_no);
 
 	$result = db_query($sql, "Cannot retreive a debtor transaction");
 
@@ -237,7 +236,7 @@ function exists_customer_trans($type, $type_no)
 
 function get_customer_trans_order($type, $type_no)
 {
-	$sql = "SELECT order_ FROM ".TB_PREF."debtor_trans WHERE type=$type AND trans_no=$type_no";
+	$sql = "SELECT order_ FROM ".TB_PREF."debtor_trans WHERE type=".db_escape($type)." AND trans_no=".db_escape($type_no);
 
 	$result = db_query($sql, "The debtor transaction could not be queried");
 
@@ -252,7 +251,7 @@ function get_customer_details_from_trans($type, $type_no)
 {
 	$sql = "SELECT ".TB_PREF."debtors_master.name, ".TB_PREF."debtors_master.curr_code, ".TB_PREF."cust_branch.br_name
 		FROM ".TB_PREF."debtors_master,".TB_PREF."cust_branch,".TB_PREF."debtor_trans
-		WHERE ".TB_PREF."debtor_trans.type=$type AND ".TB_PREF."debtor_trans.trans_no=$type_no
+		WHERE ".TB_PREF."debtor_trans.type=".db_escape($type)." AND ".TB_PREF."debtor_trans.trans_no=".db_escape($type_no)."
 		AND ".TB_PREF."debtors_master.debtor_no = ".TB_PREF."debtor_trans.debtor_no
 		AND	".TB_PREF."cust_branch.branch_code = ".TB_PREF."debtor_trans.branch_code";
 
@@ -266,7 +265,7 @@ function void_customer_trans($type, $type_no)
 {
 	// clear all values and mark as void
 	$sql = "UPDATE ".TB_PREF."debtor_trans SET ov_amount=0, ov_discount=0, ov_gst=0, ov_freight=0,
-		ov_freight_tax=0, alloc=0, version=version+1 WHERE type=$type AND trans_no=$type_no";
+		ov_freight_tax=0, alloc=0, version=version+1 WHERE type=".db_escape($type)." AND trans_no=".db_escape($type_no);
 
 	db_query($sql, "could not void debtor transactions for type=$type and trans_no=$type_no");
 }
@@ -294,7 +293,7 @@ function post_void_customer_trans($type, $type_no)
 function get_customer_trans_link($type, $type_no)
 {
 	$row = db_query("SELECT trans_link from ".TB_PREF."debtor_trans
-		WHERE type=$type AND trans_no=$type_no",
+		WHERE type=".db_escape($type)." AND trans_no=".db_escape($type_no),
 		"could not get transaction link for type=$type and trans_no=$type_no");
 	return $row[0];
 }

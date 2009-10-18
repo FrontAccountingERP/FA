@@ -103,7 +103,7 @@ if ($Mode == 'Delete')
 {
 	// PREVENT DELETES IF DEPENDENT RECORDS IN debtors_master
 
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."debtors_master WHERE payment_terms = '$selected_id'";
+	$sql= "SELECT COUNT(*) FROM ".TB_PREF."debtors_master WHERE payment_terms = ".db_escape($selected_id);
 	$result = db_query($sql,"check failed");
 	$myrow = db_fetch_row($result);
 	if ($myrow[0] > 0) 
@@ -112,7 +112,7 @@ if ($Mode == 'Delete')
 	} 
 	else 
 	{
-		$sql= "SELECT COUNT(*) FROM ".TB_PREF."suppliers WHERE payment_terms = '$selected_id'";
+		$sql= "SELECT COUNT(*) FROM ".TB_PREF."suppliers WHERE payment_terms = ".db_escape($selected_id);
 		$result = db_query($sql,"check failed");
 		$myrow = db_fetch_row($result);
 		if ($myrow[0] > 0) 
@@ -123,7 +123,7 @@ if ($Mode == 'Delete')
 		{
 			//only delete if used in neither customer or supplier accounts
 
-			$sql="DELETE FROM ".TB_PREF."payment_terms WHERE terms_indicator='$selected_id'";
+			$sql="DELETE FROM ".TB_PREF."payment_terms WHERE terms_indicator=".db_escape($selected_id);
 			db_query($sql,"could not delete a payment terms");
 			display_notification(_('Selected payment terms have been deleted'));
 		}
@@ -198,7 +198,7 @@ if ($selected_id != -1)
 	if ($Mode == 'Edit') {
 		//editing an existing payment terms
 		$sql = "SELECT * FROM ".TB_PREF."payment_terms
-			WHERE terms_indicator='$selected_id'";
+			WHERE terms_indicator=".db_escape($selected_id);
 
 		$result = db_query($sql,"could not get payment term");
 		$myrow = db_fetch($result);

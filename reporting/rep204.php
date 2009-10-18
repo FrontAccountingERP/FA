@@ -48,8 +48,9 @@ function getTransactions($fromsupp)
 		AND ".TB_PREF."grn_batch.id = ".TB_PREF."grn_items.grn_batch_id
 		AND ".TB_PREF."grn_items.po_detail_item = ".TB_PREF."purch_order_details.po_detail_item
 		AND qty_recd-quantity_inv <>0 ";
+
 	if ($fromsupp != ALL_NUMERIC)
-		$sql .= "AND ".TB_PREF."grn_batch.supplier_id ='" . $fromsupp . "' ";
+		$sql .= "AND ".TB_PREF."grn_batch.supplier_id =".db_escape($fromsupp)." ";
 	$sql .= "ORDER BY ".TB_PREF."grn_batch.supplier_id,
 			".TB_PREF."grn_batch.id";
 

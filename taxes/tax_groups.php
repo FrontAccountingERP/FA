@@ -99,7 +99,7 @@ function can_delete($selected_id)
 {
 	if ($selected_id == -1)
 		return false;
-	$sql = "SELECT COUNT(*) FROM ".TB_PREF."cust_branch WHERE tax_group_id=$selected_id";
+	$sql = "SELECT COUNT(*) FROM ".TB_PREF."cust_branch WHERE tax_group_id=".db_escape($selected_id);
 	$result = db_query($sql, "could not query customers");
 	$myrow = db_fetch_row($result);
 	if ($myrow[0] > 0) 
@@ -108,7 +108,7 @@ function can_delete($selected_id)
 		return false;
 	}
 
-	$sql = "SELECT COUNT(*) FROM ".TB_PREF."suppliers WHERE tax_group_id=$selected_id";
+	$sql = "SELECT COUNT(*) FROM ".TB_PREF."suppliers WHERE tax_group_id=".db_escape($selected_id);
 	$result = db_query($sql, "could not query suppliers");
 	$myrow = db_fetch_row($result);
 	if ($myrow[0] > 0) 

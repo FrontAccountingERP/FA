@@ -90,10 +90,11 @@ if ($_GET['trans_type'] != ST_SALESQUOTE)
 	start_table($table_style);
 	display_heading2(_("Delivery Notes"));
 
+
 	$th = array(_("#"), _("Ref"), _("Date"), _("Total"));
 	table_header($th);
 
-	$sql = "SELECT * FROM ".TB_PREF."debtor_trans WHERE type=".ST_CUSTDELIVERY." AND order_=" . $_GET['trans_no'];
+	$sql = "SELECT * FROM ".TB_PREF."debtor_trans WHERE type=".ST_CUSTDELIVERY." AND order_=".db_escape($_GET['trans_no']);
 	$result = db_query($sql,"The related delivery notes could not be retreived");
 
 	$delivery_total = 0;
@@ -126,7 +127,7 @@ if ($_GET['trans_type'] != ST_SALESQUOTE)
 	$th = array(_("#"), _("Ref"), _("Date"), _("Total"));
 	table_header($th);
 
-	$sql = "SELECT * FROM ".TB_PREF."debtor_trans WHERE type=".ST_SALESINVOICE." AND order_=" . $_GET['trans_no'];
+	$sql = "SELECT * FROM ".TB_PREF."debtor_trans WHERE type=".ST_SALESINVOICE." AND order_=".db_escape($_GET['trans_no']);
 	$result = db_query($sql,"The related invoices could not be retreived");
 
 	$invoices_total = 0;
@@ -158,7 +159,7 @@ if ($_GET['trans_type'] != ST_SALESQUOTE)
 	$th = array(_("#"), _("Ref"), _("Date"), _("Total"));
 	table_header($th);
 
-	$sql = "SELECT * FROM ".TB_PREF."debtor_trans WHERE type=".ST_CUSTCREDIT." AND order_=" . $_GET['trans_no'];
+	$sql = "SELECT * FROM ".TB_PREF."debtor_trans WHERE type=".ST_CUSTCREDIT." AND order_=".db_escape($_GET['trans_no']);
 	$result = db_query($sql,"The related credit notes could not be retreived");
 
 	$credits_total = 0;

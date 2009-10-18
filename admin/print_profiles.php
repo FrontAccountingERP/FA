@@ -77,7 +77,7 @@ function check_delete($name)
 {
 // check if selected profile is used by any user
 	if ($name=='') return 0; // cannot delete system default profile
-	$sql = "SELECT * FROM ".TB_PREF."users WHERE print_profile='$name'";
+	$sql = "SELECT * FROM ".TB_PREF."users WHERE print_profile=".db_escape($name);
 	$res = db_query($sql,'cannot check printing profile usage');
 	return db_num_rows($res);
 }

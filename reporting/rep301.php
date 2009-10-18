@@ -52,9 +52,9 @@ function getTransactions($category, $location)
 			".TB_PREF."stock_master.description
 		HAVING SUM(".TB_PREF."stock_moves.qty) != 0";
 		if ($category != 0)
-			$sql .= " AND ".TB_PREF."stock_master.category_id = '$category'";
+			$sql .= " AND ".TB_PREF."stock_master.category_id = ".db_escape($category);
 		if ($location != 'all')
-			$sql .= " AND ".TB_PREF."stock_moves.loc_code = '$location'";
+			$sql .= " AND ".TB_PREF."stock_moves.loc_code = ".db_escape($location);
 		$sql .= " ORDER BY ".TB_PREF."stock_master.category_id,
 			".TB_PREF."stock_master.stock_id";
 

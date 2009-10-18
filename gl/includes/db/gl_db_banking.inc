@@ -18,7 +18,7 @@ function add_exchange_variation($trans_type, $trans_no, $date_, $acc_id, $accoun
 		$date_ = Today();
 	$rate = get_exchange_rate_from_home_currency($currency, $date_);
 	$result = db_query("SELECT SUM(amount) FROM ".TB_PREF."bank_trans WHERE 
-		bank_act='$acc_id' AND trans_date<='".date2sql($date_)."'", 
+		bank_act=".db_escape($acc_id)." AND trans_date<='".date2sql($date_)."'", 
 		"Transactions for account $account could not be calculated");
 	$row = db_fetch_row($result);
 	$foreign_amount = $row[0];

@@ -35,7 +35,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 	{
     	if ($selected_id != -1) 
     	{
-    		$sql = "UPDATE ".TB_PREF."groups SET description=".db_escape($_POST['description'])." WHERE id = '$selected_id'";
+    		$sql = "UPDATE ".TB_PREF."groups SET description=".db_escape($_POST['description'])." WHERE id = ".db_escape($selected_id);
 			$note = _('Selected sales group has been updated');
     	} 
     	else 
@@ -57,7 +57,7 @@ if ($Mode == 'Delete')
 
 	// PREVENT DELETES IF DEPENDENT RECORDS IN 'debtors_master'
 
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."cust_branch WHERE group_no='$selected_id'";
+	$sql= "SELECT COUNT(*) FROM ".TB_PREF."cust_branch WHERE group_no=".db_escape($selected_id);
 	$result = db_query($sql,"check failed");
 	$myrow = db_fetch_row($result);
 	if ($myrow[0] > 0) 
@@ -67,7 +67,7 @@ if ($Mode == 'Delete')
 	} 
 	if ($cancel_delete == 0) 
 	{
-		$sql="DELETE FROM ".TB_PREF."groups WHERE id='" . $selected_id . "'";
+		$sql="DELETE FROM ".TB_PREF."groups WHERE id=".db_escape($selected_id);
 		db_query($sql,"could not delete sales group");
 
 		display_notification(_('Selected sales group has been deleted'));
@@ -122,7 +122,7 @@ if ($selected_id != -1)
 {
  	if ($Mode == 'Edit') {
 		//editing an existing area
-		$sql = "SELECT * FROM ".TB_PREF."groups WHERE id='$selected_id'";
+		$sql = "SELECT * FROM ".TB_PREF."groups WHERE id=".db_escape($selected_id);
 
 		$result = db_query($sql,"could not get group");
 		$myrow = db_fetch($result);

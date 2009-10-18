@@ -216,6 +216,7 @@ function check_overdue($row)
 		debtor.name, 
 		branch.br_name,
 		debtor.curr_code,
+		@bal := @bal+trans.ov_amount,
 		(trans.ov_amount + trans.ov_gst + trans.ov_freight 
 			+ trans.ov_freight_tax + trans.ov_discount)	AS TotalAmount, 
 		trans.alloc AS Allocated,
@@ -231,7 +232,7 @@ function check_overdue($row)
 			AND trans.branch_code = branch.branch_code";
 
    	if ($_POST['customer_id'] != ALL_TEXT)
-   		$sql .= " AND trans.debtor_no = '" . $_POST['customer_id'] . "'";
+   		$sql .= " AND trans.debtor_no = ".db_escape($_POST['customer_id']);
 
    	if ($_POST['filterType'] != ALL_TEXT)
    	{
@@ -267,6 +268,7 @@ function check_overdue($row)
    	}
 
 //------------------------------------------------------------------------------------------------
+db_query("set @bal:=0");
 
 $cols = array(
 	_("Type") => array('fun'=>'systype_name', 'ord'=>''),
@@ -278,6 +280,7 @@ $cols = array(
 	_("Customer") => array('ord'=>''), 
 	_("Branch") => array('ord'=>''), 
 	_("Currency") => array('align'=>'center'),
+	_("RB"),
 	_("Debit") => array('align'=>'right', 'fun'=>'fmt_debit'), 
 	_("Credit") => array('align'=>'right','insert'=>true, 'fun'=>'fmt_credit'), 
 		array('insert'=>true, 'fun'=>'gl_view'),

@@ -13,10 +13,10 @@
 
 function delete_po($po)
 {
-	$sql = "DELETE FROM ".TB_PREF."purch_orders WHERE order_no=" . $po;
+	$sql = "DELETE FROM ".TB_PREF."purch_orders WHERE order_no=".db_escape($po);
 	db_query($sql, "The order header could not be deleted");
 
-	$sql = "DELETE FROM ".TB_PREF."purch_order_details WHERE order_no =" . $po;
+	$sql = "DELETE FROM ".TB_PREF."purch_order_details WHERE order_no =".db_escape($po);
 	db_query($sql, "The order detail lines could not be deleted");
 }
 
@@ -32,8 +32,8 @@ function add_po(&$po_obj)
      $sql = "INSERT INTO ".TB_PREF."purch_orders (supplier_id, Comments, ord_date, reference, requisition_no, into_stock_location, delivery_address) VALUES(";
      $sql .= db_escape($po_obj->supplier_id) . "," .
          db_escape($po_obj->Comments) . ",'" .
-         date2sql($po_obj->orig_order_date) . "', '" .
-		 $po_obj->reference . "', " .
+         date2sql($po_obj->orig_order_date) . "', " .
+		 db_escape($po_obj->reference) . ", " .
          db_escape($po_obj->requisition_no) . ", " .
          db_escape($po_obj->Location) . ", " .
          db_escape($po_obj->delivery_address) . ")";
@@ -52,8 +52,8 @@ function add_po(&$po_obj)
     		$sql .= $po_obj->order_no . ", " . db_escape($po_line->stock_id). "," .
     			db_escape($po_line->item_description). ",'" .
     			date2sql($po_line->req_del_date) . "'," .
-    			$po_line->price . ", " .
-    			$po_line->quantity . ")";
+    			db_escape($po_line->price) . ", " .
+    			db_escape($po_line->quantity). ")";
 			db_query($sql, "One of the purchase order detail records could not be inserted");
     	}
      }
@@ -92,7 +92,7 @@ function update_po(&$po_obj)
 			// Sherifoz 21.06.03 Handle deleting existing lines
 			if ($po_line->po_detail_rec!='')
 			{
-				$sql = "DELETE FROM ".TB_PREF."purch_order_details WHERE po_detail_item='" . $po_line->po_detail_rec . "'";
+				$sql = "DELETE FROM ".TB_PREF."purch_order_details WHERE po_detail_item=".db_escape($po_line->po_detail_rec);
 				db_query($sql, "could not query purch order details");
 			}
 		}
@@ -104,16 +104,16 @@ function update_po(&$po_obj)
 				db_escape($po_line->stock_id). "," .
 				db_escape($po_line->item_description). ",'" .
 				date2sql($po_line->req_del_date) . "'," .
-				$po_line->price . ", " . $po_line->quantity . ")";
+				db_escape($po_line->price) . ", ".db_escape($po_line->quantity) . ")";
 		}
 		else
 		{
-			$sql = "UPDATE ".TB_PREF."purch_order_details SET item_code='" . $po_line->stock_id . "',
+			$sql = "UPDATE ".TB_PREF."purch_order_details SET item_code=".db_escape($po_line->stock_id).",
 				description =" . db_escape($po_line->item_description). ",
 				delivery_date ='" . date2sql($po_line->req_del_date) . "',
-				unit_price=" . $po_line->price . ",
-				quantity_ordered=" . $po_line->quantity . "
-				WHERE po_detail_item=" . $po_line->po_detail_rec;
+				unit_price=".db_escape($po_line->price).",
+				quantity_ordered=".db_escape($po_line->quantity) . "
+				WHERE po_detail_item=".db_escape($po_line->po_detail_rec);
 		}
 		db_query($sql, "One of the purchase order detail records could not be updated");
     }
@@ -134,7 +134,7 @@ function read_po_header($order_no, &$order)
 		FROM ".TB_PREF."purch_orders, ".TB_PREF."suppliers, ".TB_PREF."locations
 		WHERE ".TB_PREF."purch_orders.supplier_id = ".TB_PREF."suppliers.supplier_id
 		AND ".TB_PREF."locations.loc_code = into_stock_location
-		AND ".TB_PREF."purch_orders.order_no = " . $order_no;
+		AND ".TB_PREF."purch_orders.order_no = ".db_escape($order_no);
 
    	$result = db_query($sql, "The order cannot be retrieved");
 
@@ -172,7 +172,7 @@ function read_po_items($order_no, &$order, $open_items_only=false)
 		FROM ".TB_PREF."purch_order_details
 		LEFT JOIN ".TB_PREF."stock_master
 		ON ".TB_PREF."purch_order_details.item_code=".TB_PREF."stock_master.stock_id
-		WHERE order_no =$order_no ";
+		WHERE order_no =".db_escape($order_no);
 
     if ($open_items_only)
  		$sql .= " AND (".TB_PREF."purch_order_details.quantity_ordered > ".TB_PREF."purch_order_details.quantity_received) ";
@@ -186,6 +186,7 @@ function read_po_items($order_no, &$order, $open_items_only=false)
 
 		while ($myrow = db_fetch($result))
         {
+
         	$data = get_purchase_data($order->supplier_id, $myrow['item_code']);
         	if ($data !== false)
         	{
@@ -203,13 +204,13 @@ function read_po_items($order_no, &$order, $open_items_only=false)
                 $units = $myrow["units"];
             }
 
-            $order->add_to_order($order->lines_on_order+1, $myrow["item_code"],
+            if ($order->add_to_order($order->lines_on_order+1, $myrow["item_code"],
             	$myrow["quantity_ordered"],$myrow["description"],
             	$myrow["unit_price"],$units, sql2date($myrow["delivery_date"]),
-            	$myrow["qty_invoiced"], $myrow["quantity_received"]);
-
-            $order->line_items[$order->lines_on_order]->po_detail_rec = $myrow["po_detail_item"];
-            $order->line_items[$order->lines_on_order]->standard_cost = $myrow["std_cost_unit"];  /*Needed for receiving goods and GL interface */
+            	$myrow["qty_invoiced"], $myrow["quantity_received"])) {
+					$order->line_items[$order->lines_on_order]->po_detail_rec = $myrow["po_detail_item"];
+					$order->line_items[$order->lines_on_order]->standard_cost = $myrow["std_cost_unit"];  /*Needed for receiving goods and GL interface */
+			}
         } /* line po from purchase order details */
     } //end of checks on returned data set
 }

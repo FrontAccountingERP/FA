@@ -62,9 +62,9 @@ function getPeriods($year, $account, $dimension, $dimension2)
     			FROM ".TB_PREF."gl_trans
 				WHERE account='$account'";
 	if ($dimension > 0)
-		$sql .= " AND dimension_id = $dimension";
+		$sql .= " AND dimension_id = ".db_escape($dimension);
 	if ($dimension2 > 0)
-		$sql .= " AND dimension2_id = $dimension2";
+		$sql .= " AND dimension2_id = ".db_escape($dimension2);
 
 	$result = db_query($sql, "Transactions for account $account could not be calculated");
 

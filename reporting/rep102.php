@@ -27,7 +27,7 @@ include_once($path_to_root . "/gl/includes/gl_db.inc");
 
 print_aged_customer_analysis();
 
-function get_invoices($costomer_id, $to)
+function get_invoices($customer_id, $to)
 {
 	$todate = date2sql($to);
 	$PastDueDays1 = get_company_pref('past_due_days');
@@ -52,7 +52,7 @@ function get_invoices($costomer_id, $to)
 		WHERE ".TB_PREF."debtor_trans.type <> ".ST_CUSTDELIVERY."
 			AND ".TB_PREF."debtors_master.payment_terms = ".TB_PREF."payment_terms.terms_indicator
 			AND ".TB_PREF."debtors_master.debtor_no = ".TB_PREF."debtor_trans.debtor_no
-			AND ".TB_PREF."debtor_trans.debtor_no = $costomer_id
+			AND ".TB_PREF."debtor_trans.debtor_no = $customer_id 
 			AND ".TB_PREF."debtor_trans.tran_date <= '$todate'
 			AND ABS(".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + ".TB_PREF."debtor_trans.ov_freight + ".TB_PREF."debtor_trans.ov_freight_tax + ".TB_PREF."debtor_trans.ov_discount) > 0.004
 			ORDER BY ".TB_PREF."debtor_trans.tran_date";
@@ -129,10 +129,10 @@ function print_aged_customer_analysis()
 
 	$total = array(0,0,0,0, 0);
 
-	$sql = "SELECT debtor_no, name, curr_code FROM ".TB_PREF."debtors_master ";
+	$sql = "SELECT debtor_no, name, curr_code FROM ".TB_PREF."debtors_master";
 	if ($fromcust != ALL_NUMERIC)
-		$sql .= "WHERE debtor_no=$fromcust ";
-	$sql .= "ORDER BY name";
+		$sql .= " WHERE debtor_no=".db_escape($fromcust);
+	$sql .= " ORDER BY name";
 	$result = db_query($sql, "The customers could not be retrieved");
 
 	while ($myrow=db_fetch($result))

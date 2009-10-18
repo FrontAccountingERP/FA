@@ -19,6 +19,92 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+18-Oct-2009 Janusz Dobrowolski (merged changes for 2.1.7 from main branch)
+! Added html_entity_decode() in db_escape() for correct INSERT>SELECT>INSERT sequences.
+$ /includes/db/connect_db.inc
+# Fixed warnings on first page display
+$ /admin/company_preferences.php
+# Fixed erroneous message
+$ /gl/manage/gl_account_types.php
+# Security sql statements update against sql injection attacks.
+$ /admin/attachments.php
+  /admin/payment_terms.php
+  /admin/print_profiles.php
+  /admin/printers.php
+  /admin/shipping_companies.php
+  /admin/view_print_transaction.php
+  /admin/db/company_db.inc
+  /admin/db/printers_db.inc
+  /admin/db/voiding_db.inc
+  /admin/db/users_db.inc
+  /dimensions/includes/dimensions_db.inc
+  /dimensions/inquiry/search_dimensions.php
+  /gl/bank_account_reconcile.php
+  /gl/gl_budget.php
+  /gl/includes/db/gl_db_account_types.inc
+  /gl/includes/db/gl_db_accounts.inc
+  /gl/includes/db/gl_db_bank_accounts.inc
+  /gl/includes/db/gl_db_bank_trans.inc
+  /gl/includes/db/gl_db_banking.inc
+  /gl/includes/db/gl_db_currencies.inc
+  /gl/includes/db/gl_db_rates.inc
+  /gl/includes/db/gl_db_trans.inc
+  /gl/inquiry/bank_inquiry.php
+  /gl/view/bank_transfer_view.php
+  /gl/view/gl_trans_view.php
+  /inventory/cost_update.php
+  /inventory/purchasing_data.php
+  /inventory/includes/db/items_category_db.inc
+  /inventory/includes/db/items_codes_db.inc
+  /inventory/includes/db/items_db.inc
+  /inventory/includes/db/items_locations_db.inc
+  /inventory/includes/db/items_prices_db.inc
+  /inventory/includes/db/items_trans_db.inc
+  /inventory/includes/db/items_units_db.inc
+  /inventory/includes/db/movement_types_db.inc
+  /inventory/inquiry/stock_movements.php
+  /inventory/manage/item_categories.php
+  /inventory/manage/item_units.php
+  /inventory/manage/items.php
+  /inventory/manage/locations.php
+  /inventory/manage/movement_types.php
+  /manufacturing/search_work_orders.php
+  /manufacturing/includes/db/work_centres_db.inc
+  /manufacturing/includes/db/work_order_issues_db.inc
+  /manufacturing/includes/db/work_order_produce_items_db.inc
+  /manufacturing/includes/db/work_order_requirements_db.inc
+  /manufacturing/includes/db/work_orders_db.inc
+  /manufacturing/includes/db/work_orders_quick_db.inc
+  /manufacturing/inquiry/where_used_inquiry.php
+  /manufacturing/manage/bom_edit.php
+  /manufacturing/manage/work_centres.php
+  /purchasing/po_entry_items.php
+  /purchasing/po_receive_items.php
+  /purchasing/supplier_credit.php
+  /purchasing/supplier_invoice.php
+  /purchasing/includes/purchasing_db.inc
+  /purchasing/includes/db/grn_db.inc
+  /purchasing/includes/db/invoice_db.inc
+  /purchasing/includes/db/invoice_items_db.inc
+  /purchasing/includes/db/po_db.inc
+  /purchasing/includes/db/supp_trans_db.inc
+  /purchasing/includes/db/suppalloc_db.inc
+  /purchasing/includes/db/suppliers_db.inc
+  /purchasing/inquiry/po_search.php
+  /purchasing/inquiry/po_search_completed.php
+  /purchasing/inquiry/supplier_allocation_inquiry.php
+  /purchasing/inquiry/supplier_inquiry.php
+  /purchasing/manage/suppliers.php
+
+12-Oct-2009 Janusz Dobrowolski (merged)
+# Fixed sql injection vulnerability on some php/mysql configurations
+$ /admin/db/users_db.inc
+! Single quotes also encoded before database data insert
+$ /admin/db/maintenance_db.inc
+  /includes/db/connect_db.inc
+  /reporting/includes/tcpdf.php
+  /sales/includes/cart_class.inc
+
 16-Oct-2009 Janusz Dobrowolski
 + Access control system description.
 $ /doc/access_levels.txt (new)

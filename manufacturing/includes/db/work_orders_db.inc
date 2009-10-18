@@ -20,7 +20,8 @@ function add_material_cost($stock_id, $qty, $date_)
 		$standard_cost = get_standard_cost($bom_item['component']);
 		$m_cost += ($bom_item['quantity'] * $standard_cost);
 	}
-	$sql = "SELECT material_cost FROM ".TB_PREF."stock_master WHERE stock_id = '$stock_id'";
+	$sql = "SELECT material_cost FROM ".TB_PREF."stock_master WHERE stock_id = "
+		.db_escape($stock_id);
 	$result = db_query($sql);
 	$myrow = db_fetch($result);
 	$material_cost =  $myrow['material_cost'];
@@ -30,7 +31,7 @@ function add_material_cost($stock_id, $qty, $date_)
 	else
 		$material_cost = ($qoh * $material_cost + $qty * $m_cost) /	($qoh + $qty);
 	$sql = "UPDATE ".TB_PREF."stock_master SET material_cost=$material_cost
-		WHERE stock_id='$stock_id'";
+		WHERE stock_id=".db_escape($stock_id);
 	db_query($sql,"The cost details for the inventory item could not be updated");
 }
 
@@ -38,7 +39,8 @@ function add_overhead_cost($stock_id, $qty, $date_, $costs)
 {
 	if ($qty != 0)
 		$costs /= $qty;
-	$sql = "SELECT overhead_cost FROM ".TB_PREF."stock_master WHERE stock_id = '$stock_id'";
+	$sql = "SELECT overhead_cost FROM ".TB_PREF."stock_master WHERE stock_id = "
+		.db_escape($stock_id);
 	$result = db_query($sql);
 	$myrow = db_fetch($result);
 	$overhead_cost =  $myrow['overhead_cost'];
@@ -47,8 +49,8 @@ function add_overhead_cost($stock_id, $qty, $date_, $costs)
 		$overhead_cost = 0;
 	else
 		$overhead_cost = ($qoh * $overhead_cost + $qty * $costs) /	($qoh + $qty);
-	$sql = "UPDATE ".TB_PREF."stock_master SET overhead_cost=$overhead_cost
-		WHERE stock_id='$stock_id'";
+	$sql = "UPDATE ".TB_PREF."stock_master SET overhead_cost=".db_escape($overhead_cost)."
+		WHERE stock_id=".db_escape($stock_id);
 	db_query($sql,"The cost details for the inventory item could not be updated");
 }
 
@@ -56,7 +58,8 @@ function add_labour_cost($stock_id, $qty, $date_, $costs)
 {
 	if ($qty != 0)
 		$costs /= $qty;
-	$sql = "SELECT labour_cost FROM ".TB_PREF."stock_master WHERE stock_id = '$stock_id'";
+	$sql = "SELECT labour_cost FROM ".TB_PREF."stock_master WHERE stock_id = "
+		.db_escape($stock_id);
 	$result = db_query($sql);
 	$myrow = db_fetch($result);
 	$labour_cost =  $myrow['labour_cost'];
@@ -65,8 +68,8 @@ function add_labour_cost($stock_id, $qty, $date_, $costs)
 		$labour_cost = 0;
 	else
 		$labour_cost = ($qoh * $labour_cost + $qty * $costs) /	($qoh + $qty);
-	$sql = "UPDATE ".TB_PREF."stock_master SET labour_cost=$labour_cost
-		WHERE stock_id='$stock_id'";
+	$sql = "UPDATE ".TB_PREF."stock_master SET labour_cost=".db_escape($labour_cost)."
+		WHERE stock_id=".db_escape($stock_id);
 	db_query($sql,"The cost details for the inventory item could not be updated");
 }
 
@@ -74,7 +77,8 @@ function add_issue_cost($stock_id, $qty, $date_, $costs)
 {
 	if ($qty != 0)
 		$costs /= $qty;
-	$sql = "SELECT material_cost FROM ".TB_PREF."stock_master WHERE stock_id = '$stock_id'";
+	$sql = "SELECT material_cost FROM ".TB_PREF."stock_master WHERE stock_id = "
+		.db_escape($stock_id);
 	$result = db_query($sql);
 	$myrow = db_fetch($result);
 	$material_cost =  $myrow['material_cost'];
@@ -83,8 +87,9 @@ function add_issue_cost($stock_id, $qty, $date_, $costs)
 		$material_cost = 0;
 	else
 		$material_cost = ($qty * $costs) /	($qoh + $qty);
-	$sql = "UPDATE ".TB_PREF."stock_master SET material_cost=material_cost+$material_cost
-		WHERE stock_id='$stock_id'";
+	$sql = "UPDATE ".TB_PREF."stock_master SET material_cost=material_cost+"
+		.db_escape($material_cost)
+		." WHERE stock_id=".db_escape($stock_id);
 	db_query($sql,"The cost details for the inventory item could not be updated");
 }
 
@@ -105,8 +110,9 @@ function add_work_order($wo_ref, $loc_code, $units_reqd, $stock_id,
 
 	$sql = "INSERT INTO ".TB_PREF."workorders (wo_ref, loc_code, units_reqd, stock_id,
 		type, date_, required_by)
-    	VALUES (".db_escape($wo_ref).", ".db_escape($loc_code).", $units_reqd, '$stock_id',
-		$type, '$date', '$required')";
+    	VALUES (".db_escape($wo_ref).", ".db_escape($loc_code).", "
+    	.db_escape($units_reqd).", ".db_escape($stock_id).",
+		".db_escape($type).", '$date', ".db_escape($required).")";
 	db_query($sql, "could not add work order");
 
 	$woid = db_insert_id();
@@ -135,10 +141,10 @@ function update_work_order($woid, $loc_code, $units_reqd, $stock_id,
 	$required = date2sql($required_by);
 
 	$sql = "UPDATE ".TB_PREF."workorders SET loc_code=".db_escape($loc_code).",
-		units_reqd=$units_reqd, stock_id='$stock_id',
-		required_by='$required',
+		units_reqd=".db_escape($units_reqd).", stock_id=".db_escape($stock_id).",
+		required_by=".db_escape($required).",
 		date_='$date'
-		WHERE id = $woid";
+		WHERE id = ".db_escape($woid);
 
 	db_query($sql, "could not update work order");
 
@@ -158,7 +164,7 @@ function delete_work_order($woid)
 	delete_wo_requirements($woid);
 
 	// delete the actual work order
-	$sql = "DELETE FROM ".TB_PREF."workorders WHERE id=$woid";
+	$sql = "DELETE FROM ".TB_PREF."workorders WHERE id=".db_escape($woid);
 	db_query($sql,"The work order could not be deleted");
 
 	delete_comments(ST_WORKORDER, $woid);
@@ -176,7 +182,7 @@ function get_work_order($woid, $allow_null=false)
 		FROM ".TB_PREF."workorders, ".TB_PREF."stock_master, ".TB_PREF."locations
 		WHERE ".TB_PREF."stock_master.stock_id=".TB_PREF."workorders.stock_id
 		AND	".TB_PREF."locations.loc_code=".TB_PREF."workorders.loc_code
-		AND ".TB_PREF."workorders.id=$woid
+		AND ".TB_PREF."workorders.id=".db_escape($woid)."
 		GROUP BY ".TB_PREF."workorders.id";
 
 	$result = db_query($sql, "The work order issues could not be retrieved");
@@ -191,7 +197,7 @@ function get_work_order($woid, $allow_null=false)
 
 function work_order_has_productions($woid)
 {
-	$sql = "SELECT COUNT(*) FROM ".TB_PREF."wo_manufacture WHERE workorder_id=$woid";
+	$sql = "SELECT COUNT(*) FROM ".TB_PREF."wo_manufacture WHERE workorder_id=".db_escape($woid);
 	$result = db_query($sql, "query work order for productions");
 
 	$myrow = db_fetch_row($result);
@@ -203,7 +209,7 @@ function work_order_has_productions($woid)
 
 function work_order_has_issues($woid)
 {
-	$sql = "SELECT COUNT(*) FROM ".TB_PREF."wo_issues WHERE workorder_id=$woid";
+	$sql = "SELECT COUNT(*) FROM ".TB_PREF."wo_issues WHERE workorder_id=".db_escape($woid);
 	$result = db_query($sql, "query work order for issues");
 
 	$myrow = db_fetch_row($result);
@@ -231,7 +237,7 @@ function release_work_order($woid, $releaseDate, $memo_)
 	$date = date2sql($releaseDate);
 
 	$sql = "UPDATE ".TB_PREF."workorders SET released_date='$date',
-		released=1 WHERE id = $woid";
+		released=1 WHERE id = ".db_escape($woid);
 	db_query($sql, "could not release work order");
 
 	// create Work Order Requirements based on the bom
@@ -247,7 +253,7 @@ function release_work_order($woid, $releaseDate, $memo_)
 
 function close_work_order($woid)
 {
-	$sql = "UPDATE ".TB_PREF."workorders SET closed=1 WHERE id = $woid";
+	$sql = "UPDATE ".TB_PREF."workorders SET closed=1 WHERE id = ".db_escape($woid);
 	db_query($sql, "could not close work order");
 }
 
@@ -255,7 +261,7 @@ function close_work_order($woid)
 
 function work_order_is_closed($woid)
 {
-	$sql = "SELECT closed FROM ".TB_PREF."workorders WHERE id = $woid";
+	$sql = "SELECT closed FROM ".TB_PREF."workorders WHERE id = ".db_escape($woid);
 	$result = db_query($sql, "could not query work order");
 	$row = db_fetch_row($result);
 	return ($row[0] > 0);
@@ -265,9 +271,9 @@ function work_order_is_closed($woid)
 
 function work_order_update_finished_quantity($woid, $quantity, $force_close=0)
 {
-	$sql = "UPDATE ".TB_PREF."workorders SET units_issued = units_issued + $quantity,
-		closed = ((units_issued >= units_reqd) OR $force_close)
-		WHERE id = $woid";
+	$sql = "UPDATE ".TB_PREF."workorders SET units_issued = units_issued + ".db_escape($quantity).",
+		closed = ((units_issued >= units_reqd) OR ".db_escape($force_close).")
+		WHERE id = ".db_escape($woid);
 
 	db_query($sql, "The work order issued quantity couldn't be updated");
 }
@@ -282,7 +288,8 @@ function void_work_order($woid)
 	{
 		begin_transaction();
 
-		$sql = "UPDATE ".TB_PREF."workorders SET closed=1,units_issued=0 WHERE id = $woid";
+		$sql = "UPDATE ".TB_PREF."workorders SET closed=1,units_issued=0 WHERE id = "
+			.db_escape($woid);
 		db_query($sql, "The work order couldn't be voided");
 
 		// void all related stock moves

@@ -50,11 +50,13 @@ function add_gl_trans($type, $trans_id, $date_, $account, $dimension, $dimension
 
 	$sql .= ") ";
 
-	$sql .= "VALUES ($type, $trans_id, '$date',
-		'$account', $dimension, $dimension2, ".db_escape($memo_).", $amount_in_home_currency";
+	$sql .= "VALUES (".db_escape($type).", ".db_escape($trans_id).", '$date',
+		".db_escape($account).", ".db_escape($dimension).", "
+		.db_escape($dimension2).", ".db_escape($memo_).", "
+		.db_escape($amount_in_home_currency);
 
 	if ($person_type_id != null)
-		$sql .= ", $person_type_id, ". db_escape($person_id);
+		$sql .= ", ".db_escape($person_type_id).", ". db_escape($person_id);
 
 	$sql .= ") ";
 
@@ -100,24 +102,26 @@ function get_gl_transactions($from_date, $to_date, $trans_no=0,
 	$from = date2sql($from_date);
 	$to = date2sql($to_date);
 
-	$sql = "SELECT ".TB_PREF."gl_trans.*, ".TB_PREF."chart_master.account_name FROM ".TB_PREF."gl_trans, ".TB_PREF."chart_master
+	$sql = "SELECT ".TB_PREF."gl_trans.*, "
+		.TB_PREF."chart_master.account_name FROM ".TB_PREF."gl_trans, "
+		.TB_PREF."chart_master
 		WHERE ".TB_PREF."chart_master.account_code=".TB_PREF."gl_trans.account
 		AND tran_date >= '$from'
 		AND tran_date <= '$to'";
 	if ($trans_no > 0)
-		$sql .= " AND ".TB_PREF."gl_trans.type_no LIKE '%$trans_no'";
+		$sql .= " AND ".TB_PREF."gl_trans.type_no LIKE ".db_escape('%'.$trans_no);
 
 	if ($account != null)
-		$sql .= " AND ".TB_PREF."gl_trans.account = '$account'";
+		$sql .= " AND ".TB_PREF."gl_trans.account = ".db_escape($account);
 
 	if ($dimension > 0)
-		$sql .= " AND ".TB_PREF."gl_trans.dimension_id = $dimension";
+		$sql .= " AND ".TB_PREF."gl_trans.dimension_id = ".db_escape($dimension);
 
 	if ($dimension2 > 0)
-		$sql .= " AND ".TB_PREF."gl_trans.dimension2_id = $dimension2";
+		$sql .= " AND ".TB_PREF."gl_trans.dimension2_id = ".db_escape($dimension2);
 
 	if ($filter_type != null AND is_numeric($filter_type))
-		$sql .= " AND ".TB_PREF."gl_trans.type= $filter_type";
+		$sql .= " AND ".TB_PREF."gl_trans.type= ".db_escape($filter_type);
 
 	$sql .= " ORDER BY tran_date";
 
@@ -129,9 +133,12 @@ function get_gl_transactions($from_date, $to_date, $trans_no=0,
 
 function get_gl_trans($type, $trans_id)
 {
-	$sql = "SELECT ".TB_PREF."gl_trans.*, ".TB_PREF."chart_master.account_name FROM ".TB_PREF."gl_trans, ".TB_PREF."chart_master
+	$sql = "SELECT ".TB_PREF."gl_trans.*, "
+		.TB_PREF."chart_master.account_name FROM "
+			.TB_PREF."gl_trans, ".TB_PREF."chart_master
 		WHERE ".TB_PREF."chart_master.account_code=".TB_PREF."gl_trans.account
-		AND ".TB_PREF."gl_trans.type=$type AND ".TB_PREF."gl_trans.type_no=$trans_id";
+		AND ".TB_PREF."gl_trans.type=".db_escape($type)
+		." AND ".TB_PREF."gl_trans.type_no=".db_escape($trans_id);
 
 	return db_query($sql, "The gl transactions could not be retrieved");
 }
@@ -140,12 +147,14 @@ function get_gl_trans($type, $trans_id)
 
 function get_gl_wo_cost_trans($trans_id, $person_id=-1)
 {
-	$sql = "SELECT ".TB_PREF."gl_trans.*, ".TB_PREF."chart_master.account_name FROM ".TB_PREF."gl_trans, ".TB_PREF."chart_master
+	$sql = "SELECT ".TB_PREF."gl_trans.*, ".TB_PREF."chart_master.account_name FROM "
+		.TB_PREF."gl_trans, ".TB_PREF."chart_master
 		WHERE ".TB_PREF."chart_master.account_code=".TB_PREF."gl_trans.account
-		AND ".TB_PREF."gl_trans.type=".ST_WORKORDER." AND ".TB_PREF."gl_trans.type_no=$trans_id
+		AND ".TB_PREF."gl_trans.type=".ST_WORKORDER
+		." AND ".TB_PREF."gl_trans.type_no=".db_escape($trans_id)."
 		AND ".TB_PREF."gl_trans.person_type_id=".PT_WORKORDER;
 	if ($person_id != -1)
-		$sql .= " AND ".TB_PREF."gl_trans.person_id=$person_id";
+		$sql .= " AND ".TB_PREF."gl_trans.person_id=".db_escape($person_id);
 	$sql .= " AND amount < 0";	
 
 	return db_query($sql, "The gl transactions could not be retrieved");
@@ -163,9 +172,9 @@ function get_gl_balance_from_to($from_date, $to_date, $account, $dimension=0, $d
 	if ($to_date != "")
 		$sql .= "  AND tran_date < '$to'";
 	if ($dimension > 0)
-		$sql .= " AND dimension_id = $dimension";
+		$sql .= " AND dimension_id = ".db_escape($dimension);
 	if ($dimension2 > 0)
-		$sql .= " AND dimension2_id = $dimension2";
+		$sql .= " AND dimension2_id = ".db_escape($dimension2);
 
 	$result = db_query($sql, "The starting balance for account $account could not be calculated");
 
@@ -187,9 +196,9 @@ function get_gl_trans_from_to($from_date, $to_date, $account, $dimension=0, $dim
 	if ($to_date != "")
 		$sql .= " AND tran_date <= '$to'";
 	if ($dimension > 0)
-		$sql .= " AND dimension_id = $dimension";
+		$sql .= " AND dimension_id = ".db_escape($dimension);
 	if ($dimension2 > 0)
-		$sql .= " AND dimension2_id = $dimension2";
+		$sql .= " AND dimension2_id = ".db_escape($dimension2);
 
 	$result = db_query($sql, "Transactions for account $account could not be calculated");
 
@@ -200,17 +209,20 @@ function get_gl_trans_from_to($from_date, $to_date, $account, $dimension=0, $dim
 //----------------------------------------------------------------------------------------------------
 function get_balance($account, $dimension, $dimension2, $from, $to, $from_incl=true, $to_incl=true) 
 {
-	$sql = "SELECT SUM(IF(amount >= 0, amount, 0)) as debit, SUM(IF(amount < 0, -amount, 0)) as credit, SUM(amount) as balance 
-		FROM ".TB_PREF."gl_trans,".TB_PREF."chart_master,".TB_PREF."chart_types, ".TB_PREF."chart_class 
-		WHERE ".TB_PREF."gl_trans.account=".TB_PREF."chart_master.account_code AND ".TB_PREF."chart_master.account_type=".TB_PREF."chart_types.id 
+	$sql = "SELECT SUM(IF(amount >= 0, amount, 0)) as debit, 
+		SUM(IF(amount < 0, -amount, 0)) as credit, SUM(amount) as balance 
+		FROM ".TB_PREF."gl_trans,".TB_PREF."chart_master,"
+			.TB_PREF."chart_types, ".TB_PREF."chart_class 
+		WHERE ".TB_PREF."gl_trans.account=".TB_PREF."chart_master.account_code AND "
+		.TB_PREF."chart_master.account_type=".TB_PREF."chart_types.id 
 		AND ".TB_PREF."chart_types.class_id=".TB_PREF."chart_class.cid AND";
 		
 	if ($account != null)
-		$sql .= " account='$account' AND";
+		$sql .= " account=".db_escape($account)." AND";
 	if ($dimension > 0)
-		$sql .= " dimension_id=$dimension AND";
+		$sql .= " dimension_id=".db_escape($dimension)." AND";
 	if ($dimension2 > 0)
-		$sql .= " dimension2_id=$dimension2 AND";
+		$sql .= " dimension2_id=".db_escape($dimension2)." AND";
 	$from_date = date2sql($from);
 	if ($from_incl)
 		$sql .= " tran_date >= '$from_date'  AND";
@@ -236,15 +248,15 @@ function get_budget_trans_from_to($from_date, $to_date, $account, $dimension=0, 
 	$to = date2sql($to_date);
 
 	$sql = "SELECT SUM(amount) FROM ".TB_PREF."budget_trans
-		WHERE account='$account' ";
+		WHERE account=".db_escape($account);
 	if ($from_date != "")
 		$sql .= " AND tran_date >= '$from' ";
 	if ($to_date != "")
 		$sql .= " AND tran_date <= '$to' ";
 	if ($dimension > 0)
-		$sql .= " AND dimension_id = $dimension";
+		$sql .= " AND dimension_id = ".db_escape($dimension);
 	if ($dimension2 > 0)
-		$sql .= " AND dimension2_id = $dimension2";
+		$sql .= " AND dimension2_id = ".db_escape($dimension2);
 	$result = db_query($sql,"No budget accounts were returned");
 
 	$row = db_fetch_row($result);
@@ -291,7 +303,7 @@ function add_trans_tax_details($trans_type, $trans_no, $tax_id, $rate, $included
 			included_in_price, net_amount, amount, memo)
 		VALUES (".db_escape($trans_type)."," . db_escape($trans_no).",'"
 				.date2sql($tran_date)."',".db_escape($tax_id).","
-				.$rate.",".$ex_rate.",".($included ? 1:0).","
+				.db_escape($rate).",".db_escape($ex_rate).",".($included ? 1:0).","
 				.db_escape($net_amount).","
 				.db_escape($amount).",".db_escape($memo).")";
 
@@ -302,10 +314,11 @@ function add_trans_tax_details($trans_type, $trans_no, $tax_id, $rate, $included
 
 function get_trans_tax_details($trans_type, $trans_no)
 {
-	$sql = "SELECT ".TB_PREF."trans_tax_details.*, ".TB_PREF."tax_types.name AS tax_type_name
+	$sql = "SELECT ".TB_PREF."trans_tax_details.*, "
+		.TB_PREF."tax_types.name AS tax_type_name
 		FROM ".TB_PREF."trans_tax_details,".TB_PREF."tax_types
-		WHERE trans_type = $trans_type
-		AND trans_no = $trans_no
+		WHERE trans_type = ".db_escape($trans_type)."
+		AND trans_no = ".db_escape($trans_no)."
 		AND (net_amount != 0 OR amount != 0)
 		AND ".TB_PREF."tax_types.id = ".TB_PREF."trans_tax_details.tax_type_id";
 
@@ -317,8 +330,8 @@ function get_trans_tax_details($trans_type, $trans_no)
 function void_trans_tax_details($type, $type_no)
 {
 	$sql = "UPDATE ".TB_PREF."trans_tax_details SET amount=0, net_amount=0
-		WHERE trans_no=$type_no
-		AND trans_type=$type";
+		WHERE trans_no=".db_escape($type_no)
+		." AND trans_type=".db_escape($type);
 
 	db_query($sql, "The transaction tax details could not be voided");
 }
@@ -445,7 +458,8 @@ function write_journal_entries(&$cart, $reverse, $use_transaction=true)
 
 function exists_gl_trans($type, $trans_id)
 {
-	$sql = "SELECT type_no FROM ".TB_PREF."gl_trans WHERE type=$type AND type_no=$trans_id";
+	$sql = "SELECT type_no FROM ".TB_PREF."gl_trans WHERE type=".db_escape($type)
+		." AND type_no=".db_escape($trans_id);
 	$result = db_query($sql, "Cannot retreive a gl transaction");
 
     return (db_num_rows($result) > 0);
@@ -458,7 +472,8 @@ function void_gl_trans($type, $trans_id, $nested=false)
 	if (!$nested)
 		begin_transaction();
 
-	$sql = "UPDATE ".TB_PREF."gl_trans SET amount=0	WHERE type=$type AND type_no=$trans_id";
+	$sql = "UPDATE ".TB_PREF."gl_trans SET amount=0 WHERE type=".db_escape($type)
+	." AND type_no=".db_escape($trans_id);
 
 	db_query($sql, "could not void gl transactions for type=$type and trans_no=$trans_id");
 
