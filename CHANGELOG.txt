@@ -19,9 +19,13 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+18-Oct-2009 Joe Hunt
+# Fixed double escaping gl account name on add/update.
+$ /gl/includes/db/gl_db_accounts.inc
+
 ------------------------------- Release 2.1.7 ----------------------------------
 ! Seccurity release 2.1.7. We strongly encourage to update to this release.
-16-ock-2009 Joe Hunt
+16-Oct-2009 Joe Hunt
 $ config.php
 
 15-Oct-2009 Joe Hunt
