@@ -65,7 +65,11 @@ function simple_page_mode($numeric_id = true)
 			if (strpos($p, $m) === 0) {
 //				$selected_id = strtr(substr($p, strlen($m)), array('%2E'=>'.'));
 				unset($_POST['_focus']); // focus on first form entry
-				$selected_id = quoted_printable_decode(substr($p, strlen($m)));
+
+//				$selected_id = strtr(html_entity_decode(substr($p, strlen($m)), ENT_QUOTES), 
+				$selected_id = strtr(substr($p, strlen($m)), 
+					array('=2E'=>'.','=20'=>' ','=3D'=>'=','=5B'=>'['));
+//				$selected_id = quoted_printable_decode(substr($p, strlen($m)));
 				$Ajax->activate('_page_body');
 				$Mode = $m;
 				return;
@@ -232,7 +236,7 @@ function button($name, $value, $title=false, $icon=false)
 			$icon = ICON_DELETE;
 		return "<button type='submit' class='editbutton' name='".
 			htmlentities(strtr($name, array('.'=>'=2E',' '=>'=20','='=>'=3D','['=>'=5B'))).
-			"' value='1'" . ($title ? " title='$title'":" title='$value'")." />".set_icon($icon)."\n";
+			"' value='1'" . ($title ? " title='$title'":" title='$value'")." />".set_icon($icon)."</button>\n";
 	}
 	else
 		return "<input type='submit' class='editbutton' name='"

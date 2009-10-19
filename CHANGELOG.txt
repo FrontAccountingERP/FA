@@ -19,9 +19,11 @@ Legend:
 ! -> Note
 $ -> Affected files
 
-18-Oct-2009 Joe Hunt
-# Fixed double escaping gl account name on add/update.
+18-Oct-2009 Janusz Dobrowolski
+# [0000175] Fixed double escaping gl account name on add/update.
 $ /gl/includes/db/gl_db_accounts.inc
+# [0000176] Missing closing tag in button helper 
+$ /includes/ui/ui_input.inc
 
 ------------------------------- Release 2.1.7 ----------------------------------
 ! Seccurity release 2.1.7. We strongly encourage to update to this release.
