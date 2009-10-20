@@ -295,9 +295,33 @@ if ($admin_password != $admin_repassword)
 }
 // End admin user details code
 
+if (!file_exists($path_to_root . "/config.php")) {
+	copy($path_to_root. "/config.default.php", $path_to_root. "/config.php");
+}
+
 include_once($path_to_root . "/includes/db/connect_db.inc");
 include_once($path_to_root . "/admin/db/maintenance_db.inc");
-include_once($path_to_root . "/config_db.php");
+
+if (!file_exists($path_to_root . "/installed_extensions.php")) {
+	$next_extension_id = 1;
+	write_extensions(array());
+	write_extensions(array(),0);
+}
+if (!file_exists($path_to_root . "/lang/installed_languages.inc")) {
+	$installed_languages = array (
+		0 => array ('code' => 'en_GB', 'name' => 'English', 'encoding' => 'iso-8859-1'));
+	$dflt_lang = 'en_GB';
+	write_lang();
+}
+
+if (file_exists($path_to_root . "/config_db.php"))
+	include_once($path_to_root . "/config_db.php");
+ else
+{
+	$def_coy = 0;
+	$tb_pref_counter = 0;
+	$db_connections = array ();
+}
 
 $id = count($db_connections);
 if ($table_prefix != "" && $id > 0)
@@ -360,7 +384,6 @@ if (!$db)
 session_unset();
 session_destroy();
 $_SESSION = array();
-
 header("Location: ".$path_to_root."/index.php");
 exit();
 

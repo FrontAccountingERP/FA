@@ -21,6 +21,7 @@ if(!isset($_GET['sessions_checked']) || $_GET['sessions_checked'] != 'true')
 {
 	// Set session variable
 	$_SESSION['session_support'] = '<font class="good">Enabled</font>';
+	$_SESSION['message'] = '';
 	// Reload page
 	header('Location: index.php?sessions_checked=true');
 	exit(0);
@@ -87,8 +88,15 @@ function change_os(type) {
 		<center>
 			<img src="<?php echo $path_to_root; ?>/themes/default/images/logo_frontaccounting.png" width="250" height="50" alt="Logo" />
 		</center>
-
-
+<?php
+ if(file_exists($path_to_root.'/config.php')) { 
+?><div style="width: 700px; padding: 10px; margin-bottom: 5px; border: 1px solid #FF0000; background-color: #FFDBDB;"><b>Error:</b> Seems you have FrontAccounting application already installed.<BR>
+After logging as an admin to first installed company you can:
+<ul>
+<li> Add more companies using Add/Update Companies under Setup tab;</li>
+<li> Upgrade FA version using Upgrade Software under Setup tab.</li>
+</ul></div>
+<?php exit; } ?>
 		<?php
 		if(isset($_SESSION['message']) AND $_SESSION['message'] != '') {
 			?><div style="width: 700px; padding: 10px; margin-bottom: 5px; border: 1px solid #FF0000; background-color: #FFDBDB;"><b>Error:</b> <?php echo $_SESSION['message']; ?></div><?php
@@ -159,9 +167,9 @@ function change_os(type) {
 		</tr>
 		<tr>
 			<td style="color: #666666;">config_db.php</td>
-			<td><?php if(is_writable($path_to_root.'/config_db.php')) { echo '<font class="good">Writeable</font>'; } elseif(!file_exists($path_to_root.'/config_db.php')) { echo '<font class="bad">File Not Found</font>'; } else { echo '<font class="bad">Unwriteable</font>'; } ?></td>
+			<td><?php if(is_writable($path_to_root)) { echo '<font class="good">Writeable</font>'; } elseif(file_exists($path_to_root.'/config_db.php')) { echo '<font class="bad">File Exists</font>'; } else { echo '<font class="bad">Unwriteable</font>'; } ?></td>
 			<td style="color: #666666;">modules/</td>
-			<td><?php if(is_writable($path_to_root.'/modules/')) { echo '<font class="good">Writeable</font>'; } elseif(!file_exists($path_to_root.'/lang/')) { echo '<font class="bad">Directory Not Found</font>'; } else { echo '<font class="bad">Unwriteable</font>'; } ?></td>
+			<td><?php if(is_writable($path_to_root.'/modules/')) { echo '<font class="good">Writeable</font>'; } elseif(!file_exists($path_to_root.'/modules/')) { echo '<font class="bad">Directory Not Found</font>'; } else { echo '<font class="bad">Unwriteable</font>'; } ?></td>
 		</tr>
 		<tr>
 			<td style="color: #666666;">lang/</td>

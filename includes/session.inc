@@ -165,7 +165,7 @@ header("Cache-control: private");
 get_text_init();
 
 // Page Initialisation
-if (!isset($_SESSION['languages'])) 
+if (!isset($_SESSION['language'])) 
 {
 	load_languages(); // sets also default $_SESSION['language']
 }

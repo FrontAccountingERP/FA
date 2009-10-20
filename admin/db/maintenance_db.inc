@@ -60,7 +60,6 @@ function array_natsort($aryData, $strIndex, $strSortBy, $strSortType=false)
 function write_config_db($new = false)
 {
 	global $path_to_root, $def_coy, $db_connections, $tb_pref_counter;
-	include_once($path_to_root . "/config_db.php");
 
 	if ($new)
 		$tb_pref_counter++;
@@ -99,7 +98,7 @@ function write_config_db($new = false)
 
 	$filename = $path_to_root . "/config_db.php";
 	// Check if the file exists and is writable first.
-	if (file_exists($filename) && is_writable($filename))
+	if (!file_exists($filename) || (is_writable($path_to_root) && is_writable($filename)))
 	{
 		if (!$zp = fopen($filename, 'w'))
 		{
@@ -199,6 +198,73 @@ function write_extensions($extensions=null, $company = -1)
 	return true;
 }
 
+function write_lang()
+{
+	global $path_to_root, $installed_languages, $dflt_lang;
+
+	$conn = array_natsort($installed_languages, 'code', 'code');
+	$installed_languages = $conn;
+	//reset($installed_languages);
+	$n = count($installed_languages);
+	$msg = "<?php\n\n";
+
+	$msg .= "/* How to make new entries here\n\n";
+	$msg .= "-- if adding languages at the beginning of the list, make sure it's index is set to 0 (it has ' 0 => ')\n";
+	$msg .= "-- 'code' should match the name of the directory for the language under \\lang\n";
+	$msg .= "-- 'name' is the name that will be displayed in the language selection list (in Users and Display Setup)\n";
+	$msg .= "-- 'rtl' only needs to be set for right-to-left languages like Arabic and Hebrew\n\n";
+	$msg .= "*/\n\n\n";
+
+	$msg .= "\$installed_languages = array (\n";
+	if ($n > 0)
+	    $msg .= "\t0 => ";
+	for ($i = 0; $i < $n; $i++)
+	{
+		if ($i > 0)
+			$msg .= "\t\tarray ";
+		else
+			$msg .= "array ";
+		$msg .= "('code' => '" . $installed_languages[$i]['code'] . "', ";
+		$msg .= "'name' => '" . $installed_languages[$i]['name'] . "', ";
+		$msg .= "'encoding' => '" . $installed_languages[$i]['encoding'] . "'";
+		if (isset($installed_languages[$i]['rtl']) && $installed_languages[$i]['rtl'])
+			$msg .= ", 'rtl' => true),\n";
+		else
+			$msg .= "),\n";
+	}
+
+	$msg .= "\t);\n";
+	$msg .= "\n\$dflt_lang = '$dflt_lang';\n?>\n";
+
+	$path = $path_to_root . "/lang";
+	$filename = $path.'/installed_languages.inc';
+	// Check if directory exists and is writable first.
+	if (file_exists($path) && is_writable($path))
+	{
+		if (!$zp = fopen($filename, 'w'))
+		{
+			display_error(_("Cannot open the languages file - ") . $filename);
+			return false;
+		}
+		else
+		{
+			if (!fwrite($zp, $msg))
+			{
+				display_error(_("Cannot write to the language file - ") . $filename);
+				fclose($zp);
+				return false;
+			}
+			// Close file
+			fclose($zp);
+		}
+	}
+	else
+	{
+		display_error(_("The language files folder ") . $path . _(" is not writable. Change its permissions so it is, then re-run the operation."));
+		return false;
+	}
+	return true;
+}
 
 function db_create_db($connection)
 {
