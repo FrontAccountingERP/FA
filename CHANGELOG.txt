@@ -33,8 +33,10 @@ $ /config.php (removed)
   /install/index.php
   /install/save.php
   /lang/installed_languages.inc (removed initial version)
-$ Moving control to install wizard when config file does not exists.
+! Moving control to install wizard when config file does not exists.
 $ /index.php
+# Fixed db error message
+$ /dimesion/includes/db/dimension_db.inc
 
 18-Oct-2009 Janusz Dobrowolski (merged changes for 2.1.7 from main branch)
 ! Added html_entity_decode() in db_escape() for correct INSERT>SELECT>INSERT sequences.
