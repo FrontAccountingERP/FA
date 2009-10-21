@@ -12,13 +12,15 @@
 
 class fa2_2 {
 	var $version = '2.2';	// version installed
-	var $description = _('Upgrade from version 2.1/2.2beta to 2.2');
+	var $description;
 	var $sql = 'alter2.2.sql';
 	var $preconf = true;
 	var $beta = false; // upgrade from 2.1 or 2.2beta; set in pre_check
 	
 	function fa2_2() {
-
+		global $security_groups;
+		$this->beta = !isset($security_groups);
+		$this->description = _('Upgrade from version 2.1/2.2beta to 2.2');
 		$this->preconf = fix_extensions();
 	}
 	
@@ -99,7 +101,6 @@ class fa2_2 {
 	{	
 		global $security_groups;
 		
-		$this->beta = !isset($security_groups);
 		if ($this->beta && !$force)
 			$this->sql = 'alter2.2rc.sql';
 		return $this->beta || !check_table($pref, 'usersonline');

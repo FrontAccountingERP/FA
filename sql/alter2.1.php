@@ -11,8 +11,12 @@
 ***********************************************************************/
 class fa2_1 {
 	var $version = '2.1';	// version installed
-	var $description = _('Upgrade from version 2.0 to 2.1');
+	var $description;
 	var $sql = 'alter2.1.sql';
+
+	function fa2_1() {
+		$this->description = _('Upgrade from version 2.0 to 2.1');
+	}
 	//
 	//	Install procedure. All additional changes 
 	//	not included in sql file should go here.

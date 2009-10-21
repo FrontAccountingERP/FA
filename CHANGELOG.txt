@@ -32,6 +32,7 @@ $ install.html
 $ /sql/alter2.1.php
   /sql/alter2.2.php
   /sql/alter2.2rc.sql (new)
+  /admin/inst_upgrade.php
 
 20-Oct-2009 Janusz Dobrowolski
 ! Conditional config files generation - prevents overwrite during upgrade.

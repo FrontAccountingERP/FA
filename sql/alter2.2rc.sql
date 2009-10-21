@@ -1,8 +1,7 @@
 # Patch for upgrade from 2.2beta to 2.2RC/final
 
-ALTER TABLE `0_tag_associations` DROP PRIMARY KEY;
 ALTER TABLE `0_tag_associations` DROP COLUMN `id`;
-ALTER TABLE `0_tag_associations` ADD UNIQUE KEY (`type`,`name`);
+ALTER TABLE `0_tag_associations` ADD  UNIQUE KEY(`record_id`,`tag_id`);
 
 DROP TABLE IF EXISTS `0_useronline` ;
 

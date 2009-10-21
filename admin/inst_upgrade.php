@@ -89,7 +89,6 @@ function upgrade_step($index, $conn)
 	global $path_to_root, $installers;
 
 	$inst = $installers[$index];
-	$sql = $inst->sql;
 	$pref = $conn['tbpref'];
 	$ret = true;
 
@@ -100,6 +99,7 @@ function upgrade_step($index, $conn)
 		if (!$state || $force) 
 		{
 			if (!$inst->pre_check($pref)) return false;
+			$sql = $inst->sql;
 
 			if ($sql != '')
 				$ret &= db_import($path_to_root.'/sql/'.$sql, $conn, $force);
