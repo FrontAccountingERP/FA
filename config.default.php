@@ -77,6 +77,9 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 	/* use old style convert (income and expense in BS, PL) */
 	$use_oldstyle_convert = 0;
 
+	/* show users online discretely in the footer */
+	$show_users_online = 0;
+
  	/* Integrated base Wiki Help URL or null if not used */
 	//$help_base_url = $path_to_root.'/modules/wiki/index.php?n='._('Help').'.';
 	$help_base_url = null;

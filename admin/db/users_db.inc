@@ -167,43 +167,52 @@ function check_user_activity($id)
 //-----------------------------------------------------------------------------------------------
 function show_users_online()
 {
-	$timeoutseconds = 120;
+	global $show_users_online;
+	
+	if (!isset($show_users_online) || $show_users_online == 0)
+		return "";
+	if (db_num_rows(db_query("SHOW TABLES LIKE '".TB_PREF."useronline'")) == 1)
+	{
+		$timeoutseconds = 120;
 
-	$timestamp=time();
-	$timeout=$timestamp-$timeoutseconds;
-	/*
-	This will find out if user is from behind proxy server. 
-	In that case, the script would count them all as 1 user.
-	This function tryes to get real IP address.
-	*/
-	if (isset($_SERVER['HTTP_CLIENT_IP'])) {
-		$ip = $_SERVER['HTTP_CLIENT_IP'];
-	}
-	elseif (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-		$ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
-	}
-	elseif (isset($_SERVER['HTTP_X_FORWARDED'])) {
-		$ip = $_SERVER['HTTP_X_FORWARDED'];
-	}
-	elseif (isset($_SERVER['HTTP_FORWARDED_FOR'])) {
-		$ip = $_SERVER['HTTP_FORWARDED_FOR'];
-	}
-	elseif (isset($_SERVER['HTTP_FORWARDED'])) {
-		$ip = $_SERVER['HTTP_FORWARDED'];
-	}
-	else {
-		$ip = $_SERVER['REMOTE_ADDR'];
-	}
+		$timestamp=time();
+		$timeout=$timestamp-$timeoutseconds;
+		/*
+		This will find out if user is from behind proxy server. 
+		In that case, the script would count them all as 1 user.
+		This function tryes to get real IP address.
+		*/
+		if (isset($_SERVER['HTTP_CLIENT_IP'])) {
+			$ip = $_SERVER['HTTP_CLIENT_IP'];
+		}
+		elseif (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+			$ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+		}
+		elseif (isset($_SERVER['HTTP_X_FORWARDED'])) {
+			$ip = $_SERVER['HTTP_X_FORWARDED'];
+		}
+		elseif (isset($_SERVER['HTTP_FORWARDED_FOR'])) {
+			$ip = $_SERVER['HTTP_FORWARDED_FOR'];
+		}
+		elseif (isset($_SERVER['HTTP_FORWARDED'])) {
+			$ip = $_SERVER['HTTP_FORWARDED'];
+		}
+		else {
+			$ip = $_SERVER['REMOTE_ADDR'];
+		}
 
-	// Add user to database
-	db_query("INSERT INTO ".TB_PREF."useronline (timestamp, ip, file) VALUES ('". $timestamp ."','". $ip ."','". $_SERVER['PHP_SELF'] ."')");
-	//Remove users that were not online within $timeoutseconds.
-	db_query("DELETE FROM ".TB_PREF."useronline WHERE timestamp<". $timeout);
+		// Add user to database
+		db_query("INSERT INTO ".TB_PREF."useronline (timestamp, ip, file) VALUES ('". $timestamp ."','". $ip ."','". $_SERVER['PHP_SELF'] ."')");
+		//Remove users that were not online within $timeoutseconds.
+		db_query("DELETE FROM ".TB_PREF."useronline WHERE timestamp<". $timeout);
 
-	// Select online users
-	$result = db_query("SELECT DISTINCT ip FROM ".TB_PREF."useronline");
-	$users = db_num_rows($result);
-	return "$users ".($users == 1 ? _("user online") : _(" users online"));
+		// Select online users
+		$result = db_query("SELECT DISTINCT ip FROM ".TB_PREF."useronline");
+		$users = db_num_rows($result);
+	}
+	else
+		$users = 1;
+	return "$users ".($users == 1 ? _("user online") : _("users online"));
 
 }
 ?>

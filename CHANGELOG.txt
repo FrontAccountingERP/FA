@@ -26,6 +26,10 @@ $ -> Affected files
 $ install.html
   update.html
   /lang/new_language_template/LC_MESSAGES/empty.po
+! Enabled a global flag in config.default.php (config.php), $show_users_online = 0.
+  If this flag is set to 1 FA will show discretely the users online in the footer.
+$ config.default.php
+  /admin/db/users_db.inc
 
 21-Oct-2009 Janusz Dobrowolski
 ! Upgrade scripts modified to be used with 2.1 or 2.2beta
