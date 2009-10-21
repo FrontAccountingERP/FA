@@ -98,7 +98,7 @@ function upgrade_step($index, $conn)
 		$state = $inst->installed($pref);
 		if (!$state || $force) 
 		{
-			if (!$inst->pre_check($pref)) return false;
+			if (!$inst->pre_check($pref, $force)) return false;
 			$sql = $inst->sql;
 
 			if ($sql != '')
