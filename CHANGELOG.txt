@@ -27,6 +27,12 @@ $ install.html
   update.html
   /lang/new_language_template/LC_MESSAGES/empty.po
 
+21-Oct-2009 Janusz Dobrowolski
+! Upgrade scripts modified to be used with 2.1 or 2.2beta
+$ /sql/alter2.1.php
+  /sql/alter2.2.php
+  /sql/alter2.2rc.sql (new)
+
 20-Oct-2009 Janusz Dobrowolski
 ! Conditional config files generation - prevents overwrite during upgrade.
 $ /config.php (removed)

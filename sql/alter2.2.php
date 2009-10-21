@@ -12,11 +12,13 @@
 
 class fa2_2 {
 	var $version = '2.2';	// version installed
-	var $description = 'Version 2.2';
+	var $description = _('Upgrade from version 2.1/2.2beta to 2.2');
 	var $sql = 'alter2.2.sql';
 	var $preconf = true;
+	var $beta = false; // upgrade from 2.1 or 2.2beta; set in pre_check
 	
 	function fa2_2() {
+
 		$this->preconf = fix_extensions();
 	}
 	
@@ -30,7 +32,10 @@ class fa2_2 {
 		
 		if (!$this->preconf)
 			return false;
-		
+
+		if ($this->beta)	// nothing special to be done on upgrade form 2.2beta
+			return true;
+
 		// set item category dflt accounts to values from company GL setup
 		$prefs = get_company_prefs();
 		$sql = "UPDATE {$pref}stock_category SET "
@@ -65,34 +70,7 @@ class fa2_2 {
 				}
 			}
 		}
-/* FIX		// restore/init audit_trail data 
-		$datatbl = array (
-			"gl_trans"=> array("type", "type_no","tran_date"),
-			"purch_orders" => array("order_no", "'18'", "ord_date"), 
-			"sales_orders" => array("order_no", "'30'", "ord_date"),
-			"workorders" => array("id", "'26'", "date_") );
-		foreach ( $datatbl as $tblname => $tbl) {
-		  $sql = "SELECT {$tbl[0]} as type, {$tbl[1]} as trans, {$tbl[2]} as dat"
-		  	. " FROM {$pref}{$tblname}";
-		  $result = db_query($sql);
-		  if (db_num_rows($result)) {
-		  	$user = ;
-			$year = ;
-			while ($row = db_fetch($result)) {
-				$sql2 = "INSERT INTO ".$pref."audit_trail"
-				." (type, trans_no, user, fiscal_year, gl_date, gl_seq) VALUES ("
-				. "{$row['type']},{$row['trans']},$user,$year,{$row['dat']},0)";
-				$res2 = db_query($sql2);
-				if (!$res2) {
-					display_error(_("Cannot init audit_trail data")
-						.':<br>'. db_error_msg($db));
-					return false;
-				}
-			}
-		  }
-		}
-*/
-	
+
 	if (!($ret = db_query("SELECT MAX(`order_no`) FROM `{$pref}sales_orders`")) ||
 		!db_num_rows($ret))
 	{
@@ -117,32 +95,43 @@ class fa2_2 {
 	//
 	//	Checking before install
 	//
-	function pre_check($pref)
-	{
+	function pre_check($pref, $force)
+	{	
 		global $security_groups;
-		return isset($security_groups); // true when ok, fail otherwise
+		
+		$this->beta = !isset($security_groups);
+		if ($this->beta && !$force)
+			$this->sql = 'alter2.2rc.sql';
+		return $this->beta || !check_table($pref, 'usersonline');
 	}
 	//
 	//	Test if patch was applied before.
 	//
 	function installed($pref) {
-		$n = 15; // number of features to be installed
-		if (check_table($pref, 'company', 'custom1_name')) $n--;
-		if (!check_table($pref, 'company', 'profit_loss_year_act')) $n--;
-		if (!check_table($pref, 'company', 'login_tout')) $n--;
-		if (!check_table($pref, 'stock_category', 'dflt_no_sale')) $n--;
-		if (!check_table($pref, 'users', 'sticky_doc_date')) $n--;
-		if (!check_table($pref, 'users', 'startup_tab')) $n--;
-		if (!check_table($pref, 'cust_branch', 'inactive')) $n--;
-		if (!check_table($pref, 'chart_class', 'ctype')) $n--;
-		if (!check_table($pref, 'audit_trail')) $n--;
-		if (!check_table($pref, 'currencies', 'auto_update')) $n--;
-		if (!check_table($pref, 'stock_master','no_sale')) $n--;
-		if (!check_table($pref, 'suppliers', 'supp_ref')) $n--;
-		if (!check_table($pref, 'users', 'role_id')) $n--;
-		if (!check_table($pref, 'sales_orders', 'reference')) $n--;
-		if (!check_table($pref, 'tags')) $n--;
-		return $n == 0 ? true : 15 - $n;
+		$n = 1; // number of patches to be installed
+		$patchcnt = 0;
+		if (!$this->beta) {
+			$n = 16;
+			if (check_table($pref, 'company', 'custom1_name')) $patchcnt++;
+			if (!check_table($pref, 'company', 'profit_loss_year_act')) $patchcnt++;
+			if (!check_table($pref, 'company', 'login_tout')) $patchcnt++;
+			if (!check_table($pref, 'stock_category', 'dflt_no_sale')) $patchcnt++;
+			if (!check_table($pref, 'users', 'sticky_doc_date')) $patchcnt++;
+			if (!check_table($pref, 'users', 'startup_tab')) $patchcnt++;
+			if (!check_table($pref, 'cust_branch', 'inactive')) $patchcnt++;
+			if (!check_table($pref, 'chart_class', 'ctype')) $patchcnt++;
+			if (!check_table($pref, 'audit_trail')) $patchcnt++;
+			if (!check_table($pref, 'currencies', 'auto_update')) $patchcnt++;
+			if (!check_table($pref, 'stock_master','no_sale')) $patchcnt++;
+			if (!check_table($pref, 'suppliers', 'supp_ref')) $patchcnt++;
+			if (!check_table($pref, 'users', 'role_id')) $patchcnt++;
+			if (!check_table($pref, 'sales_orders', 'reference')) $patchcnt++;
+			if (!check_table($pref, 'tags')) $patchcnt++;
+		} 
+		if (!check_table($pref, 'useronline')) $patchcnt++;
+
+		$n -= $patchcnt;
+		return $n == 0 ? true : $patchcnt;
 	}
 };
 
