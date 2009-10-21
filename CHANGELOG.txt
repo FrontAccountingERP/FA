@@ -37,6 +37,10 @@ $ /sql/alter2.1.php
   /sql/alter2.2.php
   /sql/alter2.2rc.sql (new)
   /admin/inst_upgrade.php
+# Fixed help link.
+$ /includes/page/header.inc
+# Fixed upgrade of reference table to avoid duplicate record error.
+$ /sql/alter2.2.php
 
 20-Oct-2009 Janusz Dobrowolski
 ! Conditional config files generation - prevents overwrite during upgrade.
