@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FrontAccounting\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-10-20 16:22+0100\n"
-"PO-Revision-Date: 2009-10-20 16:24+0100\n"
+"POT-Creation-Date: 2009-10-21 16:04+0100\n"
+"PO-Revision-Date: 2009-10-21 16:04+0100\n"
 "Last-Translator: FrontAccounting <info@frontaccounting.com>\n"
 "Language-Team: Translators\n"
 "MIME-Version: 1.0\n"
@@ -379,7 +379,6 @@ msgid "Fax Number:"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/admin/company_preferences.php:166
-#: c:\Apache2\htdocs\account22/admin/users.php:207
 msgid "Email Address:"
 msgstr ""
 
@@ -524,7 +523,6 @@ msgstr ""
 
 #: c:\Apache2\htdocs\account22/admin/create_coy.php:144
 #: c:\Apache2\htdocs\account22/admin/create_coy.php:192
-#: c:\Apache2\htdocs\account22/admin/inst_lang.php:109
 msgid " is not writable. Change its permissions so it is, then re-run the operation."
 msgstr ""
 
@@ -570,15 +568,15 @@ msgstr ""
 
 #: c:\Apache2\htdocs\account22/admin/create_coy.php:218
 #: c:\Apache2\htdocs\account22/admin/create_coy.php:316
-#: c:\Apache2\htdocs\account22/admin/inst_lang.php:207
+#: c:\Apache2\htdocs\account22/admin/inst_lang.php:139
 #: c:\Apache2\htdocs\account22/admin/print_profiles.php:164
 msgid "Default"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/admin/create_coy.php:227
 #: c:\Apache2\htdocs\account22/admin/fiscalyears.php:417
-#: c:\Apache2\htdocs\account22/admin/inst_lang.php:224
-#: c:\Apache2\htdocs\account22/admin/inst_lang.php:228
+#: c:\Apache2\htdocs\account22/admin/inst_lang.php:156
+#: c:\Apache2\htdocs\account22/admin/inst_lang.php:160
 msgid "Yes"
 msgstr ""
 
@@ -613,7 +611,7 @@ msgid "Choose from Database scripts in SQL folder. No Database is created withou
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/admin/create_coy.php:327
-#: c:\Apache2\htdocs\account22/admin/inst_lang.php:294
+#: c:\Apache2\htdocs\account22/admin/inst_lang.php:226
 msgid "Save"
 msgstr ""
 
@@ -674,12 +672,11 @@ msgid "Decimal Separator:"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/admin/display_prefs.php:96
-#: c:\Apache2\htdocs\account22/admin/inst_lang.php:207
+#: c:\Apache2\htdocs\account22/admin/inst_lang.php:139
 msgid "Language"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/admin/display_prefs.php:98
-#: c:\Apache2\htdocs\account22/admin/users.php:211
 msgid "Language:"
 msgstr ""
 
@@ -708,12 +705,10 @@ msgid "Start-up Tab"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/admin/display_prefs.php:124
-#: c:\Apache2\htdocs\account22/admin/users.php:215
 msgid "Printing profile"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/admin/display_prefs.php:125
-#: c:\Apache2\htdocs\account22/admin/users.php:216
 msgid "Browser printing support"
 msgstr ""
 
@@ -722,7 +717,6 @@ msgid "Use popup window to display reports:"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/admin/display_prefs.php:128
-#: c:\Apache2\htdocs\account22/admin/users.php:219
 msgid "Set this option to on if your browser directly supports pdf files"
 msgstr ""
 
@@ -1029,23 +1023,11 @@ msgstr ""
 msgid "Language name, code nor encoding cannot be empty"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/inst_lang.php:92
-msgid "Cannot open the languages file - "
-msgstr ""
-
-#: c:\Apache2\htdocs\account22/admin/inst_lang.php:99
-msgid "Cannot write to the language file - "
-msgstr ""
-
-#: c:\Apache2\htdocs\account22/admin/inst_lang.php:109
-msgid "The language file "
-msgstr ""
-
-#: c:\Apache2\htdocs\account22/admin/inst_lang.php:201
+#: c:\Apache2\htdocs\account22/admin/inst_lang.php:133
 msgid "Are you sure you want to delete language no. "
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/inst_lang.php:207
+#: c:\Apache2\htdocs\account22/admin/inst_lang.php:139
 #: c:\Apache2\htdocs\account22/admin/inst_module.php:210
 #: c:\Apache2\htdocs\account22/admin/inst_module.php:251
 #: c:\Apache2\htdocs\account22/admin/inst_module.php:310
@@ -1054,42 +1036,42 @@ msgstr ""
 msgid "Name"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/inst_lang.php:207
-#: c:\Apache2\htdocs\account22/admin/inst_lang.php:284
+#: c:\Apache2\htdocs\account22/admin/inst_lang.php:139
+#: c:\Apache2\htdocs\account22/admin/inst_lang.php:216
 msgid "Encoding"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/inst_lang.php:207
-#: c:\Apache2\htdocs\account22/admin/inst_lang.php:286
+#: c:\Apache2\htdocs\account22/admin/inst_lang.php:139
+#: c:\Apache2\htdocs\account22/admin/inst_lang.php:218
 msgid "Right To Left"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/inst_lang.php:243
+#: c:\Apache2\htdocs\account22/admin/inst_lang.php:175
 msgid "The marked language is the current language which cannot be deleted."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/inst_lang.php:282
+#: c:\Apache2\htdocs\account22/admin/inst_lang.php:214
 msgid "Language Code"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/inst_lang.php:283
+#: c:\Apache2\htdocs\account22/admin/inst_lang.php:215
 msgid "Language Name"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/inst_lang.php:287
+#: c:\Apache2\htdocs\account22/admin/inst_lang.php:219
 msgid "Default Language"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/inst_lang.php:289
-#: c:\Apache2\htdocs\account22/admin/inst_lang.php:290
+#: c:\Apache2\htdocs\account22/admin/inst_lang.php:221
+#: c:\Apache2\htdocs\account22/admin/inst_lang.php:222
 msgid "Language File"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/inst_lang.php:293
+#: c:\Apache2\htdocs\account22/admin/inst_lang.php:225
 msgid "Select your language files from your local harddisk."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/inst_lang.php:323
+#: c:\Apache2\htdocs\account22/admin/inst_lang.php:255
 msgid "Create a new language"
 msgstr ""
 
@@ -2670,6 +2652,7 @@ msgid "Budget Entry"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/gl/gl_budget.php:24
+#: c:\Apache2\htdocs\account22/gl/manage/gl_accounts.php:22
 msgid "There are no account groups defined. Please define at least one account group before entering accounts."
 msgstr ""
 
@@ -2682,16 +2665,23 @@ msgid "The Budget has been deleted."
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/gl/gl_budget.php:121
+#: c:\Apache2\htdocs\account22/gl/manage/gl_accounts.php:259
+#: c:\Apache2\htdocs\account22/gl/manage/gl_accounts.php:268
 msgid "Account Code:"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/gl/gl_budget.php:128
 #: c:\Apache2\htdocs\account22/gl/gl_budget.php:129
 #: c:\Apache2\htdocs\account22/gl/gl_budget.php:133
+#: c:\Apache2\htdocs\account22/gl/inquiry/gl_account_inquiry.php:73
+#: c:\Apache2\htdocs\account22/gl/inquiry/gl_account_inquiry.php:75
+#: c:\Apache2\htdocs\account22/gl/inquiry/gl_account_inquiry.php:107
+#: c:\Apache2\htdocs\account22/gl/inquiry/gl_account_inquiry.php:110
 msgid "Dimension"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/gl/gl_budget.php:141
+#: c:\Apache2\htdocs\account22/gl/manage/exchange_rates.php:136
 msgid "Get"
 msgstr ""
 
@@ -2702,6 +2692,8 @@ msgstr ""
 
 #: c:\Apache2\htdocs\account22/gl/gl_budget.php:148
 #: c:\Apache2\htdocs\account22/gl/gl_budget.php:150
+#: c:\Apache2\htdocs\account22/gl/inquiry/journal_inquiry.php:151
+#: c:\Apache2\htdocs\account22/gl/inquiry/tax_inquiry.php:85
 msgid "Amount"
 msgstr ""
 
@@ -2715,6 +2707,7 @@ msgid "Last Year"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/gl/gl_budget.php:188
+#: c:\Apache2\htdocs\account22/gl/inquiry/gl_trial_balance.php:135
 msgid "Total"
 msgstr ""
 
@@ -3279,6 +3272,7 @@ msgid "Class Name"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/gl/manage/gl_account_classes.php:113
+#: c:\Apache2\htdocs\account22/gl/manage/gl_account_types.php:129
 msgid "Class Type"
 msgstr ""
 
@@ -3297,6 +3291,7 @@ msgid "Class Name:"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/gl/manage/gl_account_classes.php:174
+#: c:\Apache2\htdocs\account22/gl/manage/gl_account_types.php:188
 msgid "Class Type:"
 msgstr ""
 
@@ -3559,7 +3554,7 @@ msgstr ""
 msgid "This transaction has been voided."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/install/save.php:330
+#: c:\Apache2\htdocs\account22/install/save.php:354
 msgid "Cannot create database"
 msgstr ""
 
@@ -5239,17 +5234,14 @@ msgid "Enter Another Credit Note"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/purchasing/supplier_credit.php:49
-#: c:\Apache2\htdocs\account22/purchasing/supplier_invoice.php:52
 msgid "Add an Attachment"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/purchasing/supplier_credit.php:104
-#: c:\Apache2\htdocs\account22/purchasing/supplier_invoice.php:106
 msgid "The account code entered is not a valid code, this line cannot be added to the transaction."
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/purchasing/supplier_credit.php:114
-#: c:\Apache2\htdocs\account22/purchasing/supplier_invoice.php:116
 msgid "The amount entered is not numeric. This line cannot be added to the transaction."
 msgstr ""
 
@@ -5270,7 +5262,6 @@ msgid "The credit note as entered cannot be processed because the date entered i
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/purchasing/supplier_credit.php:184
-#: c:\Apache2\htdocs\account22/purchasing/supplier_invoice.php:184
 msgid "The invoice as entered cannot be processed because the due date is in an incorrect format."
 msgstr ""
 
@@ -5745,10 +5736,12 @@ msgid "Purchase Order Delivery"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/purchasing/view/view_grn.php:37
+#: c:\Apache2\htdocs\account22/purchasing/view/view_po.php:41
 msgid "Line Details"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/purchasing/view/view_grn.php:40
+#: c:\Apache2\htdocs\account22/purchasing/view/view_po.php:45
 msgid "Item Description"
 msgstr ""
 
@@ -5757,14 +5750,17 @@ msgid "Delivery Date"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/purchasing/view/view_grn.php:41
+#: c:\Apache2\htdocs\account22/purchasing/view/view_po.php:46
 msgid "Line Total"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/purchasing/view/view_grn.php:41
+#: c:\Apache2\htdocs\account22/purchasing/view/view_po.php:46
 msgid "Quantity Invoiced"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/purchasing/view/view_grn.php:70
+#: c:\Apache2\htdocs\account22/purchasing/view/view_po.php:84
 msgid "Total Excluding Tax/Shipping"
 msgstr ""
 
@@ -8708,23 +8704,27 @@ msgstr ""
 msgid "Total Order Value"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/sql/alter2.1.php:31
+#: c:\Apache2\htdocs\account22/sql/alter2.1.php:18
+msgid "Upgrade from version 2.0 to 2.1"
+msgstr ""
+
+#: c:\Apache2\htdocs\account22/sql/alter2.1.php:35
 msgid "Cannot retrieve bank accounts codes"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/sql/alter2.1.php:39
+#: c:\Apache2\htdocs\account22/sql/alter2.1.php:43
 msgid "Cannot update bank transactions"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/sql/alter2.1.php:48
+#: c:\Apache2\htdocs\account22/sql/alter2.1.php:52
 msgid "Cannot select stock identificators"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/sql/alter2.1.php:59
+#: c:\Apache2\htdocs\account22/sql/alter2.1.php:63
 msgid "Cannot insert stock id into item_codes"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/sql/alter2.1.php:135
+#: c:\Apache2\htdocs\account22/sql/alter2.1.php:139
 msgid ""
 "Seems that system upgrade to version 2.1 has \n"
 "\t\t\tbeen performed for this company already.<br> If something has gone \n"
@@ -8732,15 +8732,19 @@ msgid ""
 "\t\t\tdatabase restore from last backup file first."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/sql/alter2.2.php:99
+#: c:\Apache2\htdocs\account22/sql/alter2.2.php:23
+msgid "Upgrade from version 2.1/2.2beta to 2.2"
+msgstr ""
+
+#: c:\Apache2\htdocs\account22/sql/alter2.2.php:79
 msgid "Cannot query max sales order number."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/sql/alter2.2.php:111
+#: c:\Apache2\htdocs\account22/sql/alter2.2.php:91
 msgid "Cannot store next sales order reference."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/sql/alter2.2.php:251
+#: c:\Apache2\htdocs\account22/sql/alter2.2.php:241
 msgid "Cannot upgrade extensions system: file /modules/installed_modules.php is not writeable"
 msgstr ""
 
@@ -8897,15 +8901,51 @@ msgid "Purchasing GL Account:"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/themes/aqua/renderer.php:16
+#: c:\Apache2\htdocs\account22/themes/cool/renderer.php:16
+#: c:\Apache2\htdocs\account22/themes/default/renderer.php:17
+#: c:\Apache2\htdocs\account22/themes/elegant/renderer.php:17
+#: c:\Apache2\htdocs\account22/themes/fancy/renderer.php:17
+#: c:\Apache2\htdocs\account22/themes/go/themes/elegant/renderer.php:17
+#: c:\Apache2\htdocs\account22/themes/go/themes/fancy/renderer.php:17
+#: c:\Apache2\htdocs\account22/themes/go/themes/modern/renderer.php:17
+#: c:\Apache2\htdocs\account22/themes/go/themes/newwave/renderer.php:6
+#: c:\Apache2\htdocs\account22/themes/modern/renderer.php:17
+#: c:\Apache2\htdocs\account22/themes/newwave/renderer.php:6
 msgid "Main Menu"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/themes/aqua/renderer.php:46
 #: c:\Apache2\htdocs\account22/themes/aqua/renderer.php:70
+#: c:\Apache2\htdocs\account22/themes/cool/renderer.php:46
+#: c:\Apache2\htdocs\account22/themes/cool/renderer.php:70
+#: c:\Apache2\htdocs\account22/themes/default/renderer.php:47
+#: c:\Apache2\htdocs\account22/themes/default/renderer.php:71
+#: c:\Apache2\htdocs\account22/themes/elegant/renderer.php:45
+#: c:\Apache2\htdocs\account22/themes/elegant/renderer.php:52
+#: c:\Apache2\htdocs\account22/themes/fancy/renderer.php:43
+#: c:\Apache2\htdocs\account22/themes/go/themes/elegant/renderer.php:45
+#: c:\Apache2\htdocs\account22/themes/go/themes/elegant/renderer.php:52
+#: c:\Apache2\htdocs\account22/themes/go/themes/fancy/renderer.php:43
+#: c:\Apache2\htdocs\account22/themes/go/themes/modern/renderer.php:40
+#: c:\Apache2\htdocs\account22/themes/go/themes/modern/renderer.php:47
+#: c:\Apache2\htdocs\account22/themes/go/themes/newwave/renderer.php:37
+#: c:\Apache2\htdocs\account22/themes/modern/renderer.php:40
+#: c:\Apache2\htdocs\account22/themes/modern/renderer.php:47
+#: c:\Apache2\htdocs\account22/themes/newwave/renderer.php:37
 msgid "Help"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/themes/aqua/renderer.php:65
+#: c:\Apache2\htdocs\account22/themes/cool/renderer.php:65
+#: c:\Apache2\htdocs\account22/themes/default/renderer.php:66
+#: c:\Apache2\htdocs\account22/themes/elegant/renderer.php:48
+#: c:\Apache2\htdocs\account22/themes/fancy/renderer.php:40
+#: c:\Apache2\htdocs\account22/themes/go/themes/elegant/renderer.php:48
+#: c:\Apache2\htdocs\account22/themes/go/themes/fancy/renderer.php:40
+#: c:\Apache2\htdocs\account22/themes/go/themes/modern/renderer.php:43
+#: c:\Apache2\htdocs\account22/themes/go/themes/newwave/renderer.php:48
+#: c:\Apache2\htdocs\account22/themes/modern/renderer.php:43
+#: c:\Apache2\htdocs\account22/themes/newwave/renderer.php:48
 msgid "Preferences"
 msgstr ""
 
@@ -9030,27 +9070,39 @@ msgstr ""
 msgid "Inventory Item Movements"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/db/maintenance_db.inc:183
+#: c:\Apache2\htdocs\account22/admin/db/maintenance_db.inc:182
 #, php-format
 msgid "Cannot open the extension setup file '%s' for writing."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/db/maintenance_db.inc:191
+#: c:\Apache2\htdocs\account22/admin/db/maintenance_db.inc:190
 #, php-format
 msgid "Cannot write to the extensions setup file '%s'."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/db/maintenance_db.inc:363
+#: c:\Apache2\htdocs\account22/admin/db/maintenance_db.inc:246
+msgid "Cannot open the languages file - "
+msgstr ""
+
+#: c:\Apache2\htdocs\account22/admin/db/maintenance_db.inc:253
+msgid "Cannot write to the language file - "
+msgstr ""
+
+#: c:\Apache2\htdocs\account22/admin/db/maintenance_db.inc:263
+msgid "The language files folder "
+msgstr ""
+
+#: c:\Apache2\htdocs\account22/admin/db/maintenance_db.inc:429
 #, php-format
 msgid "SQL script execution failed in line %d: %s"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/db/users_db.inc:206
+#: c:\Apache2\htdocs\account22/admin/db/users_db.inc:215
 msgid "user online"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/db/users_db.inc:206
-msgid " users online"
+#: c:\Apache2\htdocs\account22/admin/db/users_db.inc:215
+msgid "users online"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/admin/db/voiding_db.inc:109
@@ -10389,8 +10441,6 @@ msgstr ""
 
 #: c:\Apache2\htdocs\account22/purchasing/includes/ui/grn_ui.inc:41
 #: c:\Apache2\htdocs\account22/purchasing/includes/ui/grn_ui.inc:53
-#: c:\Apache2\htdocs\account22/purchasing/includes/ui/po_ui.inc:252
-#: c:\Apache2\htdocs\account22/purchasing/includes/ui/po_ui.inc:257
 msgid "Deliver Into Location"
 msgstr ""
 
@@ -10399,7 +10449,6 @@ msgid "Date Items Received"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/purchasing/includes/ui/grn_ui.inc:63
-#: c:\Apache2\htdocs\account22/purchasing/includes/ui/po_ui.inc:270
 msgid "Order Comments"
 msgstr ""
 
