@@ -20,6 +20,13 @@ Legend:
 $ -> Affected files
 
 
+------------------------------- Release 2.2 RC ----------------------------------
+21-Oct-2009 Joe Hunt
+! Changed install.html, update.html and empty.po files
+$ install.html
+  update.html
+  /lang/new_language_template/LC_MESSAGES/empty.po
+
 20-Oct-2009 Janusz Dobrowolski
 ! Conditional config files generation - prevents overwrite during upgrade.
 $ /config.php (removed)
@@ -27,7 +34,6 @@ $ /config.php (removed)
   /company/0/installed_extensions.php (removed)
   /config.default.php  (new initial default)
   /config_db.php (removed initial version)
-  /admin/inst_lang.php (removed initial version)
   /admin/db/maintenance_db.inc
   /includes/session.inc
   /install/index.php
@@ -36,7 +42,7 @@ $ /config.php (removed)
 ! Moving control to install wizard when config file does not exists.
 $ /index.php
 # Fixed db error message
-$ /dimesion/includes/db/dimension_db.inc
+$ /dimensions/includes/db/dimension_db.inc
 
 18-Oct-2009 Janusz Dobrowolski (merged changes for 2.1.7 from main branch)
 ! Added html_entity_decode() in db_escape() for correct INSERT>SELECT>INSERT sequences.

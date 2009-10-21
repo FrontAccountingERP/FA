@@ -13,33 +13,16 @@
 
 <ul>
   <li>You can easily upload all the files to your installation folder on the
-server overwriting the existing files, <strong><em>if you take these important
-steps</em></strong>:
-    <ol>
+server overwriting the existing files. From 2.2 RC, your existing configuration files, - <span style="font-weight: bold;">config_db.php, config.php, /land/installed_languages.inc and installed_extensions.php</span> - will nolonger be installed. They are created the first time you install FrontAccounting and don't need further updates.<ol>
       <li>Backup&nbsp; (download) the following files to another folder:
-        <ol>
-          <li><strong>config_db.php</strong> (contains information about the&nbsp;companies and
-connection info).
-          </li>
-          <li><strong>config.php</strong> (contains various settings. You only need to
-backup this file if you have done manually changes to it.
-          </li>
-          <li><strong>/lang/installed_languages.inc</strong> (contains information about the
-installed languages)
-          </li>
-          <li><strong>/modules/installed_modules.php</strong> (contains information about
-installed modules<strong></strong>)</li><li><span style="font-weight: bold;">installed_extensions.php</span> (contains information about installed extensions to the menu system)</li>
-          <li>if you have made <em>changes to other files</em>, like themes or so, backup
-these files too. </li>
+        <ol><li>if you have made <em>changes to other files</em>, like themes or so, backup
+these files. </li>
         </ol>
 
       </li>
       <li>Upload all the new files.
       </li>
-      <li>Restore the files mentioned in #1. Be <strong>careful</strong> with
-        <strong>config.php</strong>. Look into variances. There might be new variables in
-the new version. It might be easier to <em>manually change your former values in
-the new file</em>.
+      <li>Look into the file, <span style="font-weight: bold; font-style: italic;">config.default.php and compare with your own config.php</span> file. You should update the $version in your config.php file. If there are other differences, please correct them too.
       </li>
       <li>Rename or remove the /install folder (you have already performed the install
 process earlier). </li>
