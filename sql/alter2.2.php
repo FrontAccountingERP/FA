@@ -56,7 +56,7 @@ class fa2_2 {
 			$info = get_systype_db_info($typeno);
 			if ($info == null || $info[3] == null) continue;
 			$tbl = str_replace(TB_PREF, $pref, $info[0]);
-			$sql = "SELECT {$info[2]} as id,{$info[3]} as ref FROM $tbl";
+			$sql = "SELECT DISTINCT {$info[2]} as id,{$info[3]} as ref FROM $tbl";
 			if ($info[1])
 				$sql .= " WHERE {$info[1]}=$typeno";
 			$result = db_query($sql);
