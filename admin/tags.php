@@ -10,8 +10,6 @@
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
 $path_to_root = "..";
-include_once($path_to_root . "/includes/types.inc"); // For tag constants
-
 // Set up page security based on what type of tags we're working with
 if ($_GET['type'] == "account" || $_POST['type'] == TAG_ACCOUNT) {
 	$page_security = 'SA_GLACCOUNTTAGS';
@@ -20,6 +18,7 @@ if ($_GET['type'] == "account" || $_POST['type'] == TAG_ACCOUNT) {
 }
 
 include($path_to_root . "/includes/session.inc");  // Define session before using $_SESSION
+include_once($path_to_root . "/includes/types.inc"); // For tag constants
 
 if (!isset($page_security)) {
   // If GET & POST don't have the info, try getting it from the session.
