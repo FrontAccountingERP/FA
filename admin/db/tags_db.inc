@@ -105,7 +105,6 @@ function delete_tag($id)
 
 function add_tag_associations($recordid, $tagids)
 {
-	_vd($tagids);
 	foreach($tagids as $tagid) {
 		if (!$tagid) continue;
 		$sql = "INSERT INTO ".TB_PREF."tag_associations (record_id, tag_id)
