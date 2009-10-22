@@ -1823,7 +1823,8 @@ function systypes_list_cells($label, $name, $value=null, $submit_on_change=false
 	$str = array_selector($name, $value, $systypes_array, 
 		array( 
 			'select_submit'=> $submit_on_change,
-			'async' => false
+			'async' => false,
+			'default' => 0
 			)
 	);
 	echo "</td>\n";
