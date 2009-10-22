@@ -20,9 +20,8 @@ function add_dimension($reference, $name, $type_, $date_, $due_date, $memo_)
 
 	$sql = "INSERT INTO ".TB_PREF."dimensions (reference, name, type_, date_, due_date)
 		VALUES (".db_escape($reference).", ".db_escape($name).", ".db_escape($type_)
-		.", '$date_', '$due_date')";
+		.", '$date', '$duedate')";
 	db_query($sql, "could not add dimension");
-
 	$id = db_insert_id();
 
 	add_comments(ST_DIMENSION, $id, $date_, $memo_);
@@ -43,8 +42,8 @@ function update_dimension($id, $name, $type_, $date_, $due_date, $memo_)
 
 	$sql = "UPDATE ".TB_PREF."dimensions SET name=".db_escape($name).",
 		type_ = ".db_escape($type_).",
-		date_='$date_',
-		due_date='$due_date'
+		date_='$date',
+		due_date='$duedate'
 		WHERE id = ".db_escape($id);
 
 	db_query($sql, "could not update dimension");
