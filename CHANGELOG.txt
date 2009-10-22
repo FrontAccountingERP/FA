@@ -21,6 +21,21 @@ $ -> Affected files
 
 
 ------------------------------- Release 2.2 RC ----------------------------------
+22-Oct-2009 Tom Hallman
++ Added generic tags support and tags for dimensions/gl accounts.
+$ /applications/dimensions.php
+  /applications/generalledger.php
+  /dimensions/dimension_entry.php
+  /gl/manage/gl_accounts.php
+  /includes/data_checks.inc
+  /includes/ui/ui_lists.inc
+  /admin/tags.php (new)
+  /admin/db/tags_db.inc (new)
+
+22-Oct-2009 Janusz Dobrowolski
+# Fixed bug in setting default value in array_selector.
+$ /includes/ui/ui_lists.inc
+
 21-Oct-2009 Joe Hunt
 ! Changed install.html, update.html and empty.po files
 $ install.html
@@ -41,6 +56,8 @@ $ /sql/alter2.1.php
 $ /includes/page/header.inc
 # Fixed upgrade of reference table to avoid duplicate record error.
 $ /sql/alter2.2.php
+# Fixed bug in array_selector 
+$ /includes/ui/ui_lists.inc
 
 20-Oct-2009 Janusz Dobrowolski
 ! Conditional config files generation - prevents overwrite during upgrade.
