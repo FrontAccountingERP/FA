@@ -154,16 +154,16 @@ function can_process()
 
 if (isset($_POST['ADD_ITEM']) || isset($_POST['UPDATE_ITEM'])) 
 {
-
+	if (!isset($_POST['dimension_tags']))
+		$_POST['dimension_tags'] = array();
+		
 	if (can_process()) 
 	{
 
 		if ($selected_id == -1) 
 		{
-
 			$id = add_dimension($_POST['ref'], $_POST['name'], $_POST['type_'], $_POST['date_'], $_POST['due_date'], $_POST['memo_']);
 			add_tag_associations($id, $_POST['dimension_tags']);
-
 			meta_forward($_SERVER['PHP_SELF'], "AddedID=$id");
 		} 
 		else 

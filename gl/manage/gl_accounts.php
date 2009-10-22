@@ -71,6 +71,9 @@ if (isset($_POST['add']) || isset($_POST['update']))
 		if ($accounts_alpha == 2)
 			$_POST['account_code'] = strtoupper($_POST['account_code']);
 
+		if (!isset($_POST['account_tags']))
+			$_POST['account_tags'] = array();
+
     	if ($selected_account) 
 		{
     		if (update_gl_account($_POST['account_code'], $_POST['account_name'], 
