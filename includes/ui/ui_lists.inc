@@ -330,7 +330,7 @@ $opts = array(		// default options
 	if ($spec_option !== false) { // if special option used - add it
 		$first_id = $spec_id;
 		$first_opt = $spec_option;
-		$sel = $found!==false ? 'selected' : '';
+		$sel = $found===false ? 'selected' : '';
 		$selector = "<option $sel value='$spec_id'>$spec_option</option>\n"
 			. $selector;
 	}
@@ -2137,6 +2137,45 @@ function tab_list_row($label, $name, $selected_id=null)
 	array_selector($name, $selected_id, $tabs);
 
 	echo "</td></tr>\n";
+}
+
+//-----------------------------------------------------------------------------------------------
+
+function tag_list($name, $height, $type, $multi=false, $all=false)
+{
+	// Get tags
+	global $path_to_root;
+	include_once($path_to_root . "/admin/db/tags_db.inc");
+	$results = get_tags($type,$all);
+
+	while ($tag = db_fetch($results))
+		$tags[$tag['id']] = $tag['name'];
+	
+	if (!isset($tags)) {
+		$tags[''] = _("No ".($all?"":"active ")."tags defined.");
+	}
+	return array_selector($name, null, $tags,
+		array(
+			'multi' => $multi,
+			'height' => $height,
+		) );
+}
+
+function tag_list_cells($label, $name, $height, $type, $mult=false, $all=false)
+{
+	if ($label != null)
+		echo "<td>$label</td>\n";
+	echo "<td>\n";
+	tag_list($name, $height, $type, $mult, $all);
+	echo "</td>\n";
+	
+}
+
+function tag_list_row($label, $name, $height, $type, $mult=false, $all=false)
+{
+	echo "<tr>\n";
+	tag_list_cells($label, $name, $height, $type, $mult, $all);
+	echo "</tr>\n";	
 }
 
 //---------------------------------------------------------------------------------------------
