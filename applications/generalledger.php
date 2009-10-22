@@ -52,6 +52,8 @@ class general_ledger_app extends application
 			"gl/manage/bank_accounts.php?", 'SA_BANKACCOUNT');
 		$this->add_lapp_function(2, _("&Quick Entries"),
 			"gl/manage/gl_quick_entries.php?", 'SA_QUICKENTRY');
+		$this->add_lapp_function(2, _("Account &Tags"),
+			"admin/tags.php?type=account", 'SA_GLACCOUNTTAGS');
 		$this->add_lapp_function(2, "","");
 		$this->add_lapp_function(2, _("&Currencies"),
 			"gl/manage/currencies.php?", 'SA_CURRENCY');

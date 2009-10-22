@@ -31,15 +31,17 @@ class dimensions_app extends application
 
 			$this->add_rapp_function(1, _("Dimension &Reports"),
 				"reporting/reports_main.php?Class=4", 'SA_DIMENSIONREP');
+			
+			$this->add_module(_("Maintenance"));
+			$this->add_lapp_function(2, _("Dimension &Tags"),
+				"admin/tags.php?type=dimension", 'SA_DIMTAGS');
+				
 			if (count($installed_extensions) > 0)
 			{
-				$i = 0;
 				foreach ($installed_extensions as $mod)
 				{
 					if (@$mod['active'] && $mod['type'] == 'plugin' && $mod["tab"] == "proj")
 					{
-						if ($i++ == 0)
-							$this->add_module(_("Maintenance"));
 						$this->add_rapp_function(2, $mod["title"], 
 							"modules/".$mod["path"]."/".$mod["filename"]."?",
 							isset($mod["access"]) ? $mod["access"] : 'SA_OPEN' );

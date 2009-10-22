@@ -17,6 +17,7 @@ page(_("Chart of Accounts"));
 
 include($path_to_root . "/includes/ui.inc");
 include($path_to_root . "/gl/includes/gl_db.inc");
+include($path_to_root . "/admin/db/tags_db.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
 
 check_db_has_gl_account_groups(_("There are no account groups defined. Please define at least one account group before entering accounts."));
@@ -39,7 +40,6 @@ elseif (isset($_GET['selected_account']))
 }
 else
 	$selected_account = "";
-
 //-------------------------------------------------------------------------------------
 
 if (isset($_POST['add']) || isset($_POST['update'])) 
@@ -70,12 +70,15 @@ if (isset($_POST['add']) || isset($_POST['update']))
 	{
 		if ($accounts_alpha == 2)
 			$_POST['account_code'] = strtoupper($_POST['account_code']);
+
     	if ($selected_account) 
 		{
     		if (update_gl_account($_POST['account_code'], $_POST['account_name'], 
 				$_POST['account_type'], $_POST['account_code2'])) {
 				update_record_status($_POST['account_code'], $_POST['inactive'],
 					'chart_master', 'account_code');
+				update_tag_associations(TAG_ACCOUNT, $_POST['account_code'], 
+					$_POST['account_tags']);
 				$Ajax->activate('account_code'); // in case of status change
 				display_notification(_("Account data has been updated."));
 			}
@@ -85,6 +88,7 @@ if (isset($_POST['add']) || isset($_POST['update']))
     		if (add_gl_account($_POST['account_code'], $_POST['account_name'], 
 				$_POST['account_type'], $_POST['account_code2']))
 				{
+					add_tag_associations($_POST['account_code'], $_POST['account_tags']);
 					display_notification(_("New account has been added."));
 					$selected_account = $_POST['AccountList'] = $_POST['account_code'];
 				}
@@ -214,6 +218,8 @@ if (isset($_POST['delete']))
 	{
 		delete_gl_account($selected_account);
 		$selected_account = $_POST['AccountList'] = '';
+		delete_tag_associations(TAG_ACCOUNT,$selected_account, true);
+		$selected_account = $_POST['AccountList'] = '';
 		display_notification(_("Selected account has been deleted"));
 		unset($_POST['account_code']);
 		$Ajax->activate('_page_body');
@@ -252,6 +258,12 @@ if ($selected_account != "")
 	$_POST['account_name']	= $myrow["account_name"];
 	$_POST['account_type'] = $myrow["account_type"];
  	$_POST['inactive'] = $myrow["inactive"];
+ 	
+ 	$tags_result = get_tags_associated_with_record(TAG_ACCOUNT, $selected_account);
+ 	$tagids = array();
+ 	while ($tag = db_fetch($tags_result)) 
+ 	 	$tagids[] = $tag['id'];
+ 	$_POST['account_tags'] = $tagids;
 
 	hidden('account_code', $_POST['account_code']);
 	hidden('selected_account', $selected_account);
@@ -261,6 +273,7 @@ if ($selected_account != "")
 else
 {
 	if (!isset($_POST['account_code'])) {
+		$_POST['account_tags'] = array();
 		$_POST['account_code'] = $_POST['account_code2'] = '';
 		$_POST['account_name']	= $_POST['account_type'] = '';
  		$_POST['inactive'] = 0;
@@ -274,16 +287,18 @@ text_row_ex(_("Account Name:"), 'account_name', 60);
 
 gl_account_types_list_row(_("Account Group:"), 'account_type', null);
 
+tag_list_row(_("Account Tags:"), 'account_tags', 5, TAG_ACCOUNT, true);
+
 record_status_list_row(_("Account status:"), 'inactive');
 end_table(1);
 
 if ($selected_account == "") 
 {
-	submit_center('add', _("Add Account"), true, '', 'default');
+	submit_center('add', _("Add Account"), true, '', false);
 } 
 else 
 {
-    submit_center_first('update', _("Update Account"), '', 'default');
+    submit_center_first('update', _("Update Account"), '', false);
     submit_center_last('delete', _("Delete account"), '',true);
 }
 end_form();

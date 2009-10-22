@@ -428,6 +428,22 @@ function db_has_quick_entries()
 	return check_empty_result("SELECT COUNT(*) FROM ".TB_PREF."quick_entries");
 }
 
+function db_has_tags($type)
+{
+	return check_empty_result("SELECT COUNT(*) FROM ".TB_PREF."tags WHERE type=$type");
+}
+
+function check_db_has_tags($type, $msg)
+{
+	global $path_to_root;
+    if (!db_has_tags($type)) 
+    {
+    	display_error($msg, true);
+    	end_page();
+    	exit;	
+    }	
+}
+
 function check_empty_result($sql)
 {
 	$result = db_query($sql, "could not do check empty query");	
