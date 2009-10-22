@@ -129,7 +129,9 @@ function write_extensions($extensions=null, $company = -1)
 	if (!isset($extensions)) {
 		$extensions = $installed_extensions;
 	}
-
+	if (!isset($next_extension_id)) {
+		$next_extension_id = 1;
+	}
 //	$exts = array_natsort($extensions, 'name', 'name');
 //	$extensions = $exts;
 
