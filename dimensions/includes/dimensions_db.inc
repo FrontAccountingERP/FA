@@ -15,9 +15,6 @@ function add_dimension($reference, $name, $type_, $date_, $due_date, $memo_)
 
 	begin_transaction();
 
-	$date = date2sql($date_);
-	$duedate = date2sql($due_date);
-
 	$sql = "INSERT INTO ".TB_PREF."dimensions (reference, name, type_, date_, due_date)
 		VALUES (".db_escape($reference).", ".db_escape($name).", ".db_escape($type_)
 		.", ".db_escape($date_).", ".db_escape($due_date).")";
@@ -37,9 +34,6 @@ function add_dimension($reference, $name, $type_, $date_, $due_date, $memo_)
 function update_dimension($id, $name, $type_, $date_, $due_date, $memo_)
 {
 	begin_transaction();
-
-	$date = date2sql($date_);
-	$duedate = date2sql($due_date);
 
 	$sql = "UPDATE ".TB_PREF."dimensions SET name=".db_escape($name).",
 		type_ = ".db_escape($type_).",
