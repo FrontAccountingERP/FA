@@ -13,7 +13,8 @@
 
 function get_comments($type, $type_no)
 {
-	$sql = "SELECT * FROM ".TB_PREF."comments WHERE type=$type AND id=$type_no";
+	$sql = "SELECT * FROM ".TB_PREF."comments WHERE type="
+		.db_escape($type)." AND id=".db_escape($type_no);
 
 	return db_query($sql, "could not query comments transaction table");
 }
@@ -26,7 +27,8 @@ function add_comments($type, $type_no, $date_, $memo_)
 	{
     	$date = date2sql($date_);
     	$sql = "INSERT INTO ".TB_PREF."comments (type, id, date_, memo_)
-    		VALUES ($type, $type_no, '$date', ".db_escape($memo_).")";
+    		VALUES (".db_escape($type).", ".db_escape($type_no)
+			.", '$date', ".db_escape($memo_).")";
 
     	db_query($sql, "could not add comments transaction entry");
 	}
@@ -44,7 +46,9 @@ function update_comments($type, $id, $date_, $memo_)
 	else
 	{
 		$date = date2sql($date_);
-    	$sql = "UPDATE ".TB_PREF."comments SET memo_=".db_escape($memo_)." WHERE type=$type AND id=$id AND date_='$date'";
+    	$sql = "UPDATE ".TB_PREF."comments SET memo_=".db_escape($memo_)
+			." WHERE type=".db_escape($type)." AND id=".db_escape($id)
+			." AND date_='$date'";
     	db_query($sql, "could not update comments");
 	}
 }
@@ -53,7 +57,8 @@ function update_comments($type, $id, $date_, $memo_)
 
 function delete_comments($type, $type_no)
 {
-	$sql = "DELETE FROM ".TB_PREF."comments WHERE type=$type AND id=$type_no";
+	$sql = "DELETE FROM ".TB_PREF."comments WHERE type=".db_escape($type)
+		." AND id=".db_escape($type_no);
 
 	db_query($sql, "could not delete from comments transaction table");
 }

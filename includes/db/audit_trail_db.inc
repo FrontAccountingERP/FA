@@ -14,7 +14,7 @@ function add_audit_trail($trans_type, $trans_no, $trans_date, $descr='')
 {
 	$sql = "INSERT INTO ".TB_PREF."audit_trail"
 		. " (type, trans_no, user, fiscal_year, gl_date, description, gl_seq)
-			VALUES($trans_type, $trans_no,"
+			VALUES(".db_escape($trans_type).", ".db_escape($trans_no).","
 			. $_SESSION["wa_current_user"]->user. ","
 			. get_company_pref('f_year') .","
 			. "'". date2sql($trans_date) ."',"
@@ -25,7 +25,8 @@ function add_audit_trail($trans_type, $trans_no, $trans_date, $descr='')
 	// all audit records beside latest one should have gl_seq set to NULL
 	// to avoid need for subqueries (not existing in MySQL 3) all over the code
 	$sql = "UPDATE ".TB_PREF."audit_trail SET gl_seq = NULL"
-		. " WHERE type=$trans_type AND trans_no=$trans_no AND id!=".db_insert_id();
+		. " WHERE type=".db_escape($trans_type)." AND trans_no="
+		.db_escape($trans_no)." AND id!=".db_insert_id();
 
 	db_query($sql, "Cannot update audit gl_seq");
 }
@@ -33,7 +34,8 @@ function add_audit_trail($trans_type, $trans_no, $trans_date, $descr='')
 function get_audit_trail_all($trans_type, $trans_no)
 {
 	$sql = "SELECT * FROM ".TB_PREF."audit_trail"
-		." WHERE type=$trans_type AND trans_no=$trans_no";
+		." WHERE type=".db_escape($trans_type)." AND trans_no="
+		.db_escape($trans_no);
 
 	return db_query($sql, "Cannot get all audit info for transaction");
 }
@@ -41,7 +43,8 @@ function get_audit_trail_all($trans_type, $trans_no)
 function get_audit_trail_last($trans_type, $trans_no)
 {
 	$sql = "SELECT * FROM ".TB_PREF."audit_trail"
-		." WHERE type=$trans_type AND trans_no=$trans_no AND NOT ISNULL(gl_seq)";
+		." WHERE type=".db_escape($trans_type).
+			" AND trans_no=".db_escape($trans_no)." AND NOT ISNULL(gl_seq)";
 
 	$res = db_query($sql, "Cannot get last audit info for transaction");
 	if ($res)
@@ -125,7 +128,9 @@ function open_transactions($fromdate) {
 */
 function is_closed_trans($type, $trans_no) {
 	$sql = "SELECT	gl_seq  FROM ".TB_PREF."audit_trail"
-		. " WHERE type=$type AND trans_no=$trans_no AND gl_seq>0";
+		. " WHERE type=".db_escape($type)
+		." AND trans_no=".db_escape($trans_no)
+		." AND gl_seq>0";
 
 	$res = db_query($sql, "Cannot check transaction");
 

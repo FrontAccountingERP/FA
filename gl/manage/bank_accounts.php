@@ -63,10 +63,10 @@ elseif( $Mode == 'Delete')
 	//the link to delete a selected record was clicked instead of the submit button
 
 	$cancel_delete = 0;
-
+	$acc = db_escape($selected_id);
 	// PREVENT DELETES IF DEPENDENT RECORDS IN 'bank_trans'
 
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."bank_trans WHERE bank_act='$selected_id'";
+	$sql= "SELECT COUNT(*) FROM ".TB_PREF."bank_trans WHERE bank_act=$acc";
 	$result = db_query($sql,"check failed");
 	$myrow = db_fetch_row($result);
 	if ($myrow[0] > 0) 
@@ -74,7 +74,7 @@ elseif( $Mode == 'Delete')
 		$cancel_delete = 1;
 		display_error(_("Cannot delete this bank account because transactions have been created using this account."));
 	}
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."sales_pos WHERE pos_account='$selected_id'";
+	$sql= "SELECT COUNT(*) FROM ".TB_PREF."sales_pos WHERE pos_account=$acc";
 	$result = db_query($sql,"check failed");
 	$myrow = db_fetch_row($result);
 	if ($myrow[0] > 0) 

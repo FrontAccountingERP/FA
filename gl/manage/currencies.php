@@ -86,8 +86,10 @@ function check_can_delete()
 		
 	if ($selected_id == "")
 		return false;
+	$curr = db_escape($selected_id);
+
 	// PREVENT DELETES IF DEPENDENT RECORDS IN debtors_master
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."debtors_master WHERE curr_code = '$selected_id'";
+	$sql= "SELECT COUNT(*) FROM ".TB_PREF."debtors_master WHERE curr_code = $curr";
 	$result = db_query($sql);
 	$myrow = db_fetch_row($result);
 	if ($myrow[0] > 0) 
@@ -96,7 +98,7 @@ function check_can_delete()
 		return false;
 	}
 
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."suppliers WHERE curr_code = '$selected_id'";
+	$sql= "SELECT COUNT(*) FROM ".TB_PREF."suppliers WHERE curr_code = $curr";
 	$result = db_query($sql);
 	$myrow = db_fetch_row($result);
 	if ($myrow[0] > 0) 
@@ -105,7 +107,7 @@ function check_can_delete()
 		return false;
 	}
 		
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."company WHERE curr_default = '$selected_id'";
+	$sql= "SELECT COUNT(*) FROM ".TB_PREF."company WHERE curr_default = $curr";
 	$result = db_query($sql);
 	$myrow = db_fetch_row($result);
 	if ($myrow[0] > 0) 
@@ -115,7 +117,7 @@ function check_can_delete()
 	}
 	
 	// see if there are any bank accounts that use this currency
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."bank_accounts WHERE bank_curr_code = '$selected_id'";
+	$sql= "SELECT COUNT(*) FROM ".TB_PREF."bank_accounts WHERE bank_curr_code = $curr";
 	$result = db_query($sql);
 	$myrow = db_fetch_row($result);
 	if ($myrow[0] > 0) 

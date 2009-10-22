@@ -106,7 +106,9 @@ function can_delete($selected_account)
 {
 	if ($selected_account == "")
 		return false;
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."gl_trans WHERE account='$selected_account'";
+	$acc = db_escape($selected_account);
+
+	$sql= "SELECT COUNT(*) FROM ".TB_PREF."gl_trans WHERE account=$acc";
 	$result = db_query($sql,"Couldn't test for existing transactions");
 
 	$myrow = db_fetch_row($result);
@@ -116,18 +118,18 @@ function can_delete($selected_account)
 		return false;
 	}
 
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."company WHERE debtors_act='$selected_account' 
-		OR pyt_discount_act='$selected_account' 
-		OR creditors_act='$selected_account' 
-		OR freight_act='$selected_account'
-		OR default_sales_act='$selected_account' 
-		OR default_sales_discount_act='$selected_account'
-		OR default_prompt_payment_act='$selected_account'
-		OR default_inventory_act='$selected_account'
-		OR default_cogs_act='$selected_account'
-		OR default_adj_act='$selected_account'
-		OR default_inv_sales_act='$selected_account'
-		OR default_assembly_act='$selected_account'";
+	$sql= "SELECT COUNT(*) FROM ".TB_PREF."company WHERE debtors_act=$acc 
+		OR pyt_discount_act=$acc
+		OR creditors_act=$acc 
+		OR freight_act=$acc
+		OR default_sales_act=$acc 
+		OR default_sales_discount_act=$acc
+		OR default_prompt_payment_act=$acc
+		OR default_inventory_act=$acc
+		OR default_cogs_act=$acc
+		OR default_adj_act=$acc
+		OR default_inv_sales_act=$acc
+		OR default_assembly_act=$acc";
 	$result = db_query($sql,"Couldn't test for default company GL codes");
 
 	$myrow = db_fetch_row($result);
@@ -137,7 +139,7 @@ function can_delete($selected_account)
 		return false;
 	}
 	
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."bank_accounts WHERE account_code='$selected_account'";
+	$sql= "SELECT COUNT(*) FROM ".TB_PREF."bank_accounts WHERE account_code=$acc";
 	$result = db_query($sql,"Couldn't test for bank accounts");
 
 	$myrow = db_fetch_row($result);
@@ -148,10 +150,10 @@ function can_delete($selected_account)
 	}	
 
 	$sql= "SELECT COUNT(*) FROM ".TB_PREF."stock_master WHERE 
-		inventory_account='$selected_account' 
-		OR cogs_account='$selected_account'
-		OR adjustment_account='$selected_account' 
-		OR sales_account='$selected_account'";
+		inventory_account=$acc 
+		OR cogs_account=$acc
+		OR adjustment_account=$acc 
+		OR sales_account=$acc";
 	$result = db_query($sql,"Couldn't test for existing stock GL codes");
 
 	$myrow = db_fetch_row($result);
@@ -161,7 +163,7 @@ function can_delete($selected_account)
 		return false;
 	}	
 	
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."tax_types WHERE sales_gl_code='$selected_account' OR purchasing_gl_code='$selected_account'";
+	$sql= "SELECT COUNT(*) FROM ".TB_PREF."tax_types WHERE sales_gl_code=$acc OR purchasing_gl_code=$acc";
 	$result = db_query($sql,"Couldn't test for existing tax GL codes");
 
 	$myrow = db_fetch_row($result);
@@ -172,10 +174,10 @@ function can_delete($selected_account)
 	}	
 	
 	$sql= "SELECT COUNT(*) FROM ".TB_PREF."cust_branch WHERE 
-		sales_account='$selected_account' 
-		OR sales_discount_account='$selected_account'
-		OR receivables_account='$selected_account'
-		OR payment_discount_account='$selected_account'";
+		sales_account=$acc 
+		OR sales_discount_account=$acc
+		OR receivables_account=$acc
+		OR payment_discount_account=$acc";
 	$result = db_query($sql,"Couldn't test for existing cust branch GL codes");
 
 	$myrow = db_fetch_row($result);
@@ -186,9 +188,9 @@ function can_delete($selected_account)
 	}		
 	
 	$sql= "SELECT COUNT(*) FROM ".TB_PREF."suppliers WHERE 
-		purchase_account='$selected_account' 
-		OR payment_discount_account='$selected_account' 
-		OR payable_account='$selected_account'";
+		purchase_account=$acc
+		OR payment_discount_account=$acc
+		OR payable_account=$acc";
 	$result = db_query($sql,"Couldn't test for existing suppliers GL codes");
 
 	$myrow = db_fetch_row($result);
@@ -199,7 +201,7 @@ function can_delete($selected_account)
 	}									
 	
 	$sql= "SELECT COUNT(*) FROM ".TB_PREF."quick_entry_lines WHERE 
-		dest_id='$selected_account' AND UPPER(LEFT(action, 1)) <> 'T'";
+		dest_id=$acc AND UPPER(LEFT(action, 1)) <> 'T'";
 	$result = db_query($sql,"Couldn't test for existing suppliers GL codes");
 
 	$myrow = db_fetch_row($result);
