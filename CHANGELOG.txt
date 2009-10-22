@@ -33,8 +33,25 @@ $ /applications/dimensions.php
   /admin/db/tags_db.inc (new)
 
 22-Oct-2009 Janusz Dobrowolski
-# Fixed bug in setting default value in array_selector.
+# Fixed bug in setting default value in array_selector, fixed default fo systypes selector.
 $ /includes/ui/ui_lists.inc
+# Fixed double escaping during add/update.
+$ /dimensions/includes/dimensions_db.inc
+# More security fixes in sql statements.
+$ /gl/manage/bank_accounts.php
+  /gl/manage/currencies.php
+  /gl/manage/exchange_rates.php
+  /gl/manage/gl_account_types.php
+  /gl/manage/gl_accounts.php
+  /includes/db/audit_trail_db.inc
+  /includes/db/comments_db.inc
+  /includes/db/inventory_db.inc
+  /includes/db/manufacturing_db.inc
+  /includes/db/references_db.inc
+# Initial value for $next_extension_id added.
+$ /admin/db/maintenance_db.inc
+# Added fixing special chars in refs table during upgrade
+$ /sql/alter2.2.php
 
 21-Oct-2009 Joe Hunt
 ! Changed install.html, update.html and empty.po files
