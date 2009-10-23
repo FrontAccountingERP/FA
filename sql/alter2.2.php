@@ -35,7 +35,12 @@ class fa2_2 {
 		if (!$this->preconf)
 			return false;
 
-		if ($this->beta)	// nothing special to be done on upgrade form 2.2beta
+		// Until 2.2 sanitizing text input with db_escape was not
+		// consequent enough. To avoid comparision problems we have to 
+		// fix this now.
+		sanitize_database($pref);
+
+		if ($this->beta)	// nothing more to be done on upgrade from 2.2beta
 			return true;
 
 		// set item category dflt accounts to values from company GL setup
@@ -63,7 +68,7 @@ class fa2_2 {
 			if (db_num_rows($result)) {
 				while ($row = db_fetch($result)) {
 					$res2 = db_query("INSERT INTO {$pref}refs VALUES("
-						. $row['id'].",".$typeno.",".db_escape($row['ref']).")");
+						. $row['id'].",".$typeno.",'".$row['ref']."')");
 					if (!$res2) {
 						display_error(_("Cannot copy references from $tbl")
 							.':<br>'. db_error_msg($db));
@@ -73,26 +78,24 @@ class fa2_2 {
 			}
 		}
 
-	if (!($ret = db_query("SELECT MAX(`order_no`) FROM `{$pref}sales_orders`")) ||
-		!db_num_rows($ret))
-	{
-		display_error(_('Cannot query max sales order number.'));
-		return false;
-	} 
-	$row = db_fetch($ret);
-	$max_order = $row[0];
-	$next_ref = $max_order+1;
-	$sql = "UPDATE `{$pref}sys_types` 
-		SET `type_no`='$max_order', 
-			`next_reference`='$next_ref'
-		WHERE `type_id`=30";
-	if(!db_query($sql))
-	{
-		display_error(_('Cannot store next sales order reference.'));
-		return false;
-	}
-
-	return convert_roles($pref);
+		if (!($ret = db_query("SELECT MAX(`order_no`) FROM `{$pref}sales_orders`")) ||
+			!db_num_rows($ret))
+		{
+				display_error(_('Cannot query max sales order number.'));
+				return false;
+		} 
+		$row = db_fetch($ret);
+		$max_order = $row[0];
+		$next_ref = $max_order+1;
+		$sql = "UPDATE `{$pref}sys_types` 
+			SET `type_no`='$max_order',`next_reference`='$next_ref'
+			WHERE `type_id`=30";
+		if(!db_query($sql))
+		{
+			display_error(_('Cannot store next sales order reference.'));
+			return false;
+		}
+		return convert_roles($pref);
 	}
 	//
 	//	Checking before install
@@ -275,6 +278,63 @@ function fix_extensions() {
 	return true;
 }
 
-$install = new fa2_2;
+/*
+	Find and update all database records with special chars in text fields 
+	to ensure all of them are changed to html entites.
+*/
+function sanitize_database($pref, $test = false) {
 
+ 	 if ($test)
+ 	 	error_log('Sanitizing database ...');
+
+	 $tsql = "SHOW TABLES LIKE '{$pref}%'";
+	 $tresult = db_query($tsql, "Cannot select all tables with prefix '$pref'");
+	 while($tbl = db_fetch($tresult)) {
+		$table = $tbl[0];
+		$csql = "SHOW COLUMNS FROM $table";
+		$cresult = db_query($csql, "Cannot select column names for table '$table'");
+		$textcols = $keys = array();
+		while($col = db_fetch($cresult)) {
+			if (strpos($col['Type'], 'char')!==false 
+					|| strpos($col['Type'], 'text')!==false)
+				$textcols[] = '`'.$col['Field'].'`';
+			if ($col['Key'] == 'PRI') {
+				$keys[] = '`'.$col['Field'].'`';
+			}
+		}
+
+	 	if ($test)
+		 	error_log("Table $table (".implode(',',$keys)."):(".implode(',',$textcols)."):");
+
+		if (!count($textcols)) continue;
+
+		// fetch all records containing special characters in text fields
+		$sql = "SELECT ".implode(',', array_unique(array_merge($keys,$textcols)))
+			." FROM {$table} WHERE 
+			CONCAT(".implode(',', $textcols).") REGEXP '[\\'\"><&]'";
+		$result = db_query($sql, "Cannot select all suspicious fields in $table");
+
+		// and fix them
+		while($rec= db_fetch($result)) {
+			$sql = "UPDATE {$table} SET ";
+			$val = $key = array();
+			foreach ($textcols as $f) {
+				$val[] = $f.'='.db_escape($rec[substr($f,1,-1)]);
+			}
+			$sql .= implode(',', $val). ' WHERE ';
+			foreach ($keys as $k) {
+				$key[] = $k.'=\''.$rec[substr($k,1,-1)].'\'';
+			}
+			$sql .= implode( ' AND ', $key);
+		 	if ($test)
+				error_log("\t(".implode(',',$val).") updated");
+			else
+				db_query($sql, 'cannot update record');
+		}
+	}
+ 	 if ($test)
+ 	 	error_log('Sanitizing done.');
+}
+
+$install = new fa2_2;
 ?>

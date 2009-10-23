@@ -24,10 +24,14 @@ $ -> Affected files
 24-Oct-2009 Joe Hunt
 ! Changed so -1 as parameters to dimensions in get_transactions db routines only 
   fetches NO dimensions. 
-$ /gl/includes/db/g_db_trans.inc
+$ /gl/includes/db/gl_db_trans.inc
   /reporting/rep705.php
   /reporting/includes/reports_classes.inc
-  
+
+24-Oct-2009 Janusz Dobrowolski
+# Added text fields sanitiozation on upgrade to 2.2.
+$ /sql/alter2.2.php
+
 23-Oct-2009 Janusz Dobrowolski
 # Fixed 2.2 upgrade pre_check
 $ /sql/alter2.2.php
