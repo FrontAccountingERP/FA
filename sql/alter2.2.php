@@ -103,7 +103,9 @@ class fa2_2 {
 		
 		if ($this->beta && !$force)
 			$this->sql = 'alter2.2rc.sql';
-		return $this->beta || !check_table($pref, 'usersonline');
+		// return ok when security groups still defined (upgrade from 2.1)
+		// or usersonline not defined (upgrade from 2.2 beta)
+		return isset($security_groups) || (check_table($pref, 'usersonline')!=0);
 	}
 	//
 	//	Test if patch was applied before.
