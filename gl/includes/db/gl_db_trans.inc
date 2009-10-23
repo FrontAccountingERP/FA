@@ -114,11 +114,11 @@ function get_gl_transactions($from_date, $to_date, $trans_no=0,
 	if ($account != null)
 		$sql .= " AND ".TB_PREF."gl_trans.account = ".db_escape($account);
 
-	if ($dimension > 0)
-		$sql .= " AND ".TB_PREF."gl_trans.dimension_id = ".db_escape($dimension);
+	if ($dimension != 0)
+  		$sql .= " AND ".TB_PREF."gl_trans.dimension_id = ".($dimension<0?0:db_escape($dimension));
 
-	if ($dimension2 > 0)
-		$sql .= " AND ".TB_PREF."gl_trans.dimension2_id = ".db_escape($dimension2);
+	if ($dimension2 != 0)
+  		$sql .= " AND ".TB_PREF."gl_trans.dimension2_id = ".($dimension2<0?0:db_escape($dimension2));
 
 	if ($filter_type != null AND is_numeric($filter_type))
 		$sql .= " AND ".TB_PREF."gl_trans.type= ".db_escape($filter_type);
@@ -171,10 +171,10 @@ function get_gl_balance_from_to($from_date, $to_date, $account, $dimension=0, $d
 		$sql .= "  AND tran_date > '$from'";
 	if ($to_date != "")
 		$sql .= "  AND tran_date < '$to'";
-	if ($dimension > 0)
-		$sql .= " AND dimension_id = ".db_escape($dimension);
-	if ($dimension2 > 0)
-		$sql .= " AND dimension2_id = ".db_escape($dimension2);
+	if ($dimension != 0)
+  		$sql .= " AND dimension_id = ".($dimension<0?0:db_escape($dimension));
+	if ($dimension2 != 0)
+  		$sql .= " AND dimension2_id = ".($dimension2<0?0:db_escape($dimension2));
 
 	$result = db_query($sql, "The starting balance for account $account could not be calculated");
 
@@ -195,10 +195,10 @@ function get_gl_trans_from_to($from_date, $to_date, $account, $dimension=0, $dim
 		$sql .= " AND tran_date >= '$from'";
 	if ($to_date != "")
 		$sql .= " AND tran_date <= '$to'";
-	if ($dimension > 0)
-		$sql .= " AND dimension_id = ".db_escape($dimension);
-	if ($dimension2 > 0)
-		$sql .= " AND dimension2_id = ".db_escape($dimension2);
+	if ($dimension != 0)
+  		$sql .= " AND dimension_id = ".($dimension<0?0:db_escape($dimension));
+	if ($dimension2 != 0)
+  		$sql .= " AND dimension2_id = ".($dimension2<0?0:db_escape($dimension2));
 
 	$result = db_query($sql, "Transactions for account $account could not be calculated");
 
@@ -219,10 +219,10 @@ function get_balance($account, $dimension, $dimension2, $from, $to, $from_incl=t
 		
 	if ($account != null)
 		$sql .= " account=".db_escape($account)." AND";
-	if ($dimension > 0)
-		$sql .= " dimension_id=".db_escape($dimension)." AND";
-	if ($dimension2 > 0)
-		$sql .= " dimension2_id=".db_escape($dimension2)." AND";
+	if ($dimension != 0)
+  		$sql .= " dimension_id = ".($dimension<0?0:db_escape($dimension))." AND";
+	if ($dimension2 != 0)
+  		$sql .= " dimension2_id = ".($dimension2<0?0:db_escape($dimension2))." AND";
 	$from_date = date2sql($from);
 	if ($from_incl)
 		$sql .= " tran_date >= '$from_date'  AND";
@@ -253,10 +253,10 @@ function get_budget_trans_from_to($from_date, $to_date, $account, $dimension=0, 
 		$sql .= " AND tran_date >= '$from' ";
 	if ($to_date != "")
 		$sql .= " AND tran_date <= '$to' ";
-	if ($dimension > 0)
-		$sql .= " AND dimension_id = ".db_escape($dimension);
-	if ($dimension2 > 0)
-		$sql .= " AND dimension2_id = ".db_escape($dimension2);
+	if ($dimension != 0)
+  		$sql .= " AND dimension_id = ".($dimension<0?0:db_escape($dimension));
+	if ($dimension2 != 0)
+  		$sql .= " AND dimension2_id = ".($dimension2<0?0:db_escape($dimension2));
 	$result = db_query($sql,"No budget accounts were returned");
 
 	$row = db_fetch_row($result);

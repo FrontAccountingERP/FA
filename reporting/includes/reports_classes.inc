@@ -230,7 +230,7 @@ class Report
 					break;
 				case 'DIMENSIONS':
 					$sql = "SELECT id, concat(reference, ' - ', name) as DimName FROM ".TB_PREF."dimensions";
-					$st .= combo_input("PARAM_$index", '', $sql, 'id', 'DimName',array('spec_option'=>_("No Dimension Filter"),'spec_id'=>ALL_NUMERIC,'order'=>array('reference')));
+					$st .= combo_input("PARAM_$index", '', $sql, 'id', 'DimName',array('spec_option'=>_("No Dimension Filter"),'spec_id'=>0,'order'=>array('reference')));
 					break;
 				case 'DIMENSION1':
 					$sql = "SELECT id, concat(reference, ' - ', name) AS DimName FROM ".TB_PREF."dimensions WHERE type_=1";
@@ -238,7 +238,7 @@ class Report
 					break;
 				case 'DIMENSIONS1':
 					$sql = "SELECT id, concat(reference, ' - ', name) as DimName FROM ".TB_PREF."dimensions WHERE type_=1";
-					$st .= combo_input("PARAM_$index", '', $sql, 'id', 'DimName',array('spec_option'=>_("No Dimension Filter"),'spec_id'=>ALL_NUMERIC,'order'=>array('reference')));
+					$st .= combo_input("PARAM_$index", '', $sql, 'id', 'DimName',array('spec_option'=>_("No Dimension Filter"),'spec_id'=>0,'order'=>array('reference')));
 					break;
 				case 'DIMENSION2':
 					$sql = "SELECT id, concat(reference, ' - ', name) AS DimName FROM ".TB_PREF."dimensions WHERE type_=2";
@@ -246,7 +246,7 @@ class Report
 					break;
 				case 'DIMENSIONS2':
 					$sql = "SELECT id, concat(reference, ' - ', name) as DimName FROM ".TB_PREF."dimensions WHERE type_=2";
-					$st .= combo_input("PARAM_$index", '', $sql, 'id', 'DimName',array('spec_option'=>_("No Dimension Filter"),'spec_id'=>ALL_NUMERIC,'order'=>array('reference')));
+					$st .= combo_input("PARAM_$index", '', $sql, 'id', 'DimName',array('spec_option'=>_("No Dimension Filter"),'spec_id'=>0,'order'=>array('reference')));
 					break;
 				case 'CUSTOMERS_NO_FILTER':
 				case 'CUSTOMERS':

@@ -61,10 +61,10 @@ function getPeriods($year, $account, $dimension, $dimension2)
 		   		SUM(CASE WHEN tran_date >= '$date12' AND tran_date < '$date13' THEN amount / 1000 ELSE 0 END) AS per12
     			FROM ".TB_PREF."gl_trans
 				WHERE account='$account'";
-	if ($dimension > 0)
-		$sql .= " AND dimension_id = ".db_escape($dimension);
-	if ($dimension2 > 0)
-		$sql .= " AND dimension2_id = ".db_escape($dimension2);
+	if ($dimension != 0)
+  		$sql .= " AND dimension_id = ".($dimension<0?0:db_escape($dimension));
+	if ($dimension2 != 0)
+  		$sql .= " AND dimension2_id = ".($dimension2<0?0:db_escape($dimension2));
 
 	$result = db_query($sql, "Transactions for account $account could not be calculated");
 
