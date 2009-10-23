@@ -21,6 +21,14 @@ $ -> Affected files
 
 
 ------------------------------- Release 2.2 RC ----------------------------------
+23-Oct-2009 Janusz Dobrowolski
+# Fixed 2.2 upgrade pre_check
+$ /sql/alter2.2.php
+# Fixed check_table() to avoid sparse messages in error log
+$ /admin/inst_update.php
+# Fixed module update and deletion.
+$ /admin/inst_module.php
+
 22-Oct-2009 Tom Hallman
 + Added generic tags support and tags for dimensions/gl accounts.
 $ /applications/dimensions.php

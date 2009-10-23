@@ -92,7 +92,7 @@ function handle_submit()
 		return false;
 	$id = $selected_id==-1 ? $next_extension_id : $selected_id;
 
-	if ($extensions[$id]['type'] != 'plugin') {
+	if ($selected_id != -1 && $extensions[$id]['type'] != 'plugin') {
 		display_error(_('Module installation support is not implemented yet. You have to do it manually.'));
 		return;
 	}
@@ -101,7 +101,7 @@ function handle_submit()
 	$extensions[$id]['name'] = $_POST['name'];
 	$extensions[$id]['path'] = $_POST['path'];
 	$extensions[$id]['title'] = $_POST['title'];
-	$extensions[$id]['active'] = $_POST['active'];
+	$extensions[$id]['active'] = check_value('active');
 
 	// Currently we support only plugin extensions here.
 	$extensions[$id]['type'] = 'plugin';
@@ -171,32 +171,16 @@ function handle_delete()
 	$extensions = get_company_extensions();
 
 	$id = $selected_id;
-	$removed_ext = $extensions[$id];
-
-	unset($extensions[$id]);
-	$mods = array_values($extensions);
-	$extensions = $mods;
-
-	unset($extensions[$id]);
-
-	update_extensions($extensions);
 
 	$filename = $path_to_root
 		. ($extensions[$id]['type']=='plugin' ? "/modules/": '/')
 		. $extensions[$id]['path'];
 
-	if ($h = opendir($filename))
-	{
-		while (($file = readdir($h)) !== false)
-		{
-			if (is_file("$filename/$file"))
-				unlink("$filename/$file");
-		}
-		closedir($h);
-	}
+	flush_dir($filename);
 	rmdir($filename);
-
-	display_notification(_("Selected extension has been successfully deleted"));
+	unset($extensions[$id]);
+	if (update_extensions($extensions))
+		display_notification(_("Selected extension has been successfully deleted"));
 	return true;
 }
 
