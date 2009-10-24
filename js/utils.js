@@ -184,10 +184,13 @@ JsHttpRequest._request = function(trigger, form, tout, retry) {
 				{
 					if(el.type=='select-multiple')
 					{
+						name = name.substr(0,name.length-2);
+						q[name] = new Array;
 						for (var j = 0; j < el.length; j++)
 						{
+							s = name.substring(0, name.length-2);
 							if (el.options[j].selected == true)
-								q[name] = el.options[j].value;
+								q[name].push(el.options[j].value);
 						}
 					}
 					else
