@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FrontAccounting\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-10-21 16:04+0100\n"
-"PO-Revision-Date: 2009-10-21 16:04+0100\n"
+"POT-Creation-Date: 2009-10-24 11:02+0100\n"
+"PO-Revision-Date: 2009-10-24 11:02+0100\n"
 "Last-Translator: FrontAccounting <info@frontaccounting.com>\n"
 "Language-Team: Translators\n"
 "MIME-Version: 1.0\n"
@@ -478,7 +478,7 @@ msgstr ""
 #: c:\Apache2\htdocs\account22/admin/display_prefs.php:140
 #: c:\Apache2\htdocs\account22/admin/forms_setup.php:61
 #: c:\Apache2\htdocs\account22/admin/gl_setup.php:220
-#: c:\Apache2\htdocs\account22/admin/inst_module.php:281
+#: c:\Apache2\htdocs\account22/admin/inst_module.php:265
 msgid "Update"
 msgstr ""
 
@@ -594,7 +594,7 @@ msgid "Database Password"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/admin/create_coy.php:313
-#: c:\Apache2\htdocs\account22/admin/inst_upgrade.php:183
+#: c:\Apache2\htdocs\account22/admin/inst_upgrade.php:184
 msgid "None"
 msgstr ""
 
@@ -1028,9 +1028,9 @@ msgid "Are you sure you want to delete language no. "
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/admin/inst_lang.php:139
-#: c:\Apache2\htdocs\account22/admin/inst_module.php:210
-#: c:\Apache2\htdocs\account22/admin/inst_module.php:251
-#: c:\Apache2\htdocs\account22/admin/inst_module.php:310
+#: c:\Apache2\htdocs\account22/admin/inst_module.php:194
+#: c:\Apache2\htdocs\account22/admin/inst_module.php:235
+#: c:\Apache2\htdocs\account22/admin/inst_module.php:294
 #: c:\Apache2\htdocs\account22/admin/printers.php:88
 #: c:\Apache2\htdocs\account22/admin/shipping_companies.php:117
 msgid "Name"
@@ -1112,80 +1112,80 @@ msgstr ""
 msgid "Module installation support is not implemented yet. You have to do it manually."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/inst_module.php:199
+#: c:\Apache2\htdocs\account22/admin/inst_module.php:183
 msgid "Selected extension has been successfully deleted"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/inst_module.php:210
-#: c:\Apache2\htdocs\account22/admin/inst_module.php:251
+#: c:\Apache2\htdocs\account22/admin/inst_module.php:194
+#: c:\Apache2\htdocs\account22/admin/inst_module.php:235
 msgid "Tab"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/inst_module.php:210
-#: c:\Apache2\htdocs\account22/admin/inst_module.php:251
+#: c:\Apache2\htdocs\account22/admin/inst_module.php:194
+#: c:\Apache2\htdocs\account22/admin/inst_module.php:235
 msgid "Link text"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/inst_module.php:210
-#: c:\Apache2\htdocs\account22/admin/inst_module.php:311
+#: c:\Apache2\htdocs\account22/admin/inst_module.php:194
+#: c:\Apache2\htdocs\account22/admin/inst_module.php:295
 msgid "Folder"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/inst_module.php:211
+#: c:\Apache2\htdocs\account22/admin/inst_module.php:195
 msgid "Access extensions"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/inst_module.php:238
+#: c:\Apache2\htdocs\account22/admin/inst_module.php:222
 msgid ""
 "You are about to delete this extension\\n"
 "Do you want to continue?"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/inst_module.php:251
+#: c:\Apache2\htdocs\account22/admin/inst_module.php:235
 msgid "Active"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/inst_module.php:313
+#: c:\Apache2\htdocs\account22/admin/inst_module.php:297
 msgid "Menu Tab"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/inst_module.php:314
+#: c:\Apache2\htdocs\account22/admin/inst_module.php:298
 msgid "Menu Link Text"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/inst_module.php:316
+#: c:\Apache2\htdocs\account22/admin/inst_module.php:300
 msgid "Default status"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/inst_module.php:318
+#: c:\Apache2\htdocs\account22/admin/inst_module.php:302
 msgid "Module File"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/inst_module.php:319
+#: c:\Apache2\htdocs\account22/admin/inst_module.php:303
 msgid "Access Levels Extensions"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/inst_module.php:320
+#: c:\Apache2\htdocs\account22/admin/inst_module.php:304
 msgid "SQL File"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/inst_module.php:323
+#: c:\Apache2\htdocs\account22/admin/inst_module.php:307
 msgid "Select your module PHP file from your local harddisk."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/inst_module.php:331
+#: c:\Apache2\htdocs\account22/admin/inst_module.php:315
 msgid "Extension data has been updated."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/inst_module.php:333
+#: c:\Apache2\htdocs\account22/admin/inst_module.php:317
 msgid "Extension has been installed."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/inst_module.php:350
+#: c:\Apache2\htdocs\account22/admin/inst_module.php:334
 msgid "Current active extensions set has been saved."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/inst_module.php:364
+#: c:\Apache2\htdocs\account22/admin/inst_module.php:348
 msgid "Extensions:"
 msgstr ""
 
@@ -1193,59 +1193,59 @@ msgstr ""
 msgid "Software Upgrade"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/inst_upgrade.php:110
+#: c:\Apache2\htdocs\account22/admin/inst_upgrade.php:111
 msgid "Upgrade cannot be done because database has been already partially upgraded. Please downgrade database to clean previous version or try forced upgrade."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/inst_upgrade.php:138
+#: c:\Apache2\htdocs\account22/admin/inst_upgrade.php:139
 msgid "Cannot connect to database for company"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/inst_upgrade.php:150
+#: c:\Apache2\htdocs\account22/admin/inst_upgrade.php:151
 #, php-format
 msgid "Database upgrade to version %s failed for company '%s'."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/inst_upgrade.php:153
+#: c:\Apache2\htdocs\account22/admin/inst_upgrade.php:154
 msgid "You should restore company database from latest backup file"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/inst_upgrade.php:164
+#: c:\Apache2\htdocs\account22/admin/inst_upgrade.php:165
 msgid "All companies data has been successfully updated"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/inst_upgrade.php:171
+#: c:\Apache2\htdocs\account22/admin/inst_upgrade.php:172
 msgid "Sql file"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/inst_upgrade.php:171
+#: c:\Apache2\htdocs\account22/admin/inst_upgrade.php:172
 msgid "Install"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/inst_upgrade.php:172
+#: c:\Apache2\htdocs\account22/admin/inst_upgrade.php:173
 msgid "Force upgrade"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/inst_upgrade.php:189
+#: c:\Apache2\htdocs\account22/admin/inst_upgrade.php:190
 msgid "Installed"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/inst_upgrade.php:195
+#: c:\Apache2\htdocs\account22/admin/inst_upgrade.php:196
 #, php-format
 msgid "Partially installed (%s)"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/inst_upgrade.php:204
+#: c:\Apache2\htdocs\account22/admin/inst_upgrade.php:205
 msgid ""
 "Database upgrades marked as partially installed cannot be installed automatically.\n"
 "You have to clean database manually to enable them, or try to perform forced upgrade."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/inst_upgrade.php:208
+#: c:\Apache2\htdocs\account22/admin/inst_upgrade.php:209
 msgid "Upgrade system"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/inst_upgrade.php:208
+#: c:\Apache2\htdocs\account22/admin/inst_upgrade.php:209
 msgid "Save database and perform upgrade"
 msgstr ""
 
@@ -1585,6 +1585,54 @@ msgstr ""
 msgid "Secondary Phone Number:"
 msgstr ""
 
+#: c:\Apache2\htdocs\account22/admin/tags.php:37
+msgid "Unspecified tag type"
+msgstr ""
+
+#: c:\Apache2\htdocs\account22/admin/tags.php:45
+msgid "Account Tags"
+msgstr ""
+
+#: c:\Apache2\htdocs\account22/admin/tags.php:49
+msgid "Dimension Tags"
+msgstr ""
+
+#: c:\Apache2\htdocs\account22/admin/tags.php:65
+msgid "The tag name cannot be empty."
+msgstr ""
+
+#: c:\Apache2\htdocs\account22/admin/tags.php:81
+msgid "Selected tag settings have been updated"
+msgstr ""
+
+#: c:\Apache2\htdocs\account22/admin/tags.php:86
+msgid "New tag has been added"
+msgstr ""
+
+#: c:\Apache2\htdocs\account22/admin/tags.php:102
+msgid "Cannot delete this tag because records have been created referring to it."
+msgstr ""
+
+#: c:\Apache2\htdocs\account22/admin/tags.php:117
+msgid "Selected tag has been deleted"
+msgstr ""
+
+#: c:\Apache2\htdocs\account22/admin/tags.php:136
+msgid "Tag Name"
+msgstr ""
+
+#: c:\Apache2\htdocs\account22/admin/tags.php:136
+msgid "Tag Description"
+msgstr ""
+
+#: c:\Apache2\htdocs\account22/admin/tags.php:173
+msgid "Tag Name:"
+msgstr ""
+
+#: c:\Apache2\htdocs\account22/admin/tags.php:174
+msgid "Tag Description:"
+msgstr ""
+
 #: c:\Apache2\htdocs\account22/admin/users.php:16
 msgid "Users"
 msgstr ""
@@ -1853,7 +1901,7 @@ msgid "Customer and Sales &Reports"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/applications/customers.php:62
-#: c:\Apache2\htdocs\account22/applications/dimensions.php:42
+#: c:\Apache2\htdocs\account22/applications/dimensions.php:35
 #: c:\Apache2\htdocs\account22/applications/generalledger.php:50
 #: c:\Apache2\htdocs\account22/applications/inventory.php:33
 #: c:\Apache2\htdocs\account22/applications/manufacturing.php:35
@@ -1912,6 +1960,10 @@ msgstr ""
 
 #: c:\Apache2\htdocs\account22/applications/dimensions.php:32
 msgid "Dimension &Reports"
+msgstr ""
+
+#: c:\Apache2\htdocs\account22/applications/dimensions.php:36
+msgid "Dimension &Tags"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/applications/generalledger.php:17
@@ -1978,23 +2030,27 @@ msgstr ""
 msgid "&Quick Entries"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/applications/generalledger.php:56
-msgid "&Currencies"
+#: c:\Apache2\htdocs\account22/applications/generalledger.php:55
+msgid "Account &Tags"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/applications/generalledger.php:58
+msgid "&Currencies"
+msgstr ""
+
+#: c:\Apache2\htdocs\account22/applications/generalledger.php:60
 msgid "&Exchange Rates"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/applications/generalledger.php:61
+#: c:\Apache2\htdocs\account22/applications/generalledger.php:63
 msgid "&GL Accounts"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/applications/generalledger.php:63
+#: c:\Apache2\htdocs\account22/applications/generalledger.php:65
 msgid "GL Account &Groups"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/applications/generalledger.php:65
+#: c:\Apache2\htdocs\account22/applications/generalledger.php:67
 msgid "GL Account &Classes"
 msgstr ""
 
@@ -2250,74 +2306,73 @@ msgstr ""
 msgid "&Suppliers"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/dimensions/dimension_entry.php:26
+#: c:\Apache2\htdocs\account22/dimensions/dimension_entry.php:27
 msgid "Dimension Entry"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/dimensions/dimension_entry.php:46
+#: c:\Apache2\htdocs\account22/dimensions/dimension_entry.php:47
 msgid "The dimension has been entered."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/dimensions/dimension_entry.php:57
+#: c:\Apache2\htdocs\account22/dimensions/dimension_entry.php:58
 msgid "The dimension has been updated."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/dimensions/dimension_entry.php:67
+#: c:\Apache2\htdocs\account22/dimensions/dimension_entry.php:68
 msgid "The dimension has been deleted."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/dimensions/dimension_entry.php:77
+#: c:\Apache2\htdocs\account22/dimensions/dimension_entry.php:78
 msgid "The dimension has been closed. There can be no more changes to it."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/dimensions/dimension_entry.php:87
+#: c:\Apache2\htdocs\account22/dimensions/dimension_entry.php:88
 msgid "The dimension has been re-opened. "
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/dimensions/dimension_entry.php:97
+#: c:\Apache2\htdocs\account22/dimensions/dimension_entry.php:98
 msgid "Enter a &new dimension"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/dimensions/dimension_entry.php:99
+#: c:\Apache2\htdocs\account22/dimensions/dimension_entry.php:100
 msgid "&Select an existing dimension"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/dimensions/dimension_entry.php:115
+#: c:\Apache2\htdocs\account22/dimensions/dimension_entry.php:116
 msgid "The dimension reference must be entered."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/dimensions/dimension_entry.php:122
+#: c:\Apache2\htdocs\account22/dimensions/dimension_entry.php:123
 #: c:\Apache2\htdocs\account22/gl/bank_transfer.php:146
-#: c:\Apache2\htdocs\account22/gl/gl_bank.php:136
 msgid "The entered reference is already in use."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/dimensions/dimension_entry.php:130
+#: c:\Apache2\htdocs\account22/dimensions/dimension_entry.php:131
 msgid "The dimension name must be entered."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/dimensions/dimension_entry.php:137
+#: c:\Apache2\htdocs\account22/dimensions/dimension_entry.php:138
 msgid "The date entered is in an invalid format."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/dimensions/dimension_entry.php:144
+#: c:\Apache2\htdocs\account22/dimensions/dimension_entry.php:145
 msgid "The required by date entered is in an invalid format."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/dimensions/dimension_entry.php:187
+#: c:\Apache2\htdocs\account22/dimensions/dimension_entry.php:190
 msgid "This dimension cannot be deleted because it has already been processed."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/dimensions/dimension_entry.php:230
+#: c:\Apache2\htdocs\account22/dimensions/dimension_entry.php:234
 msgid "The dimension sent is not valid."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/dimensions/dimension_entry.php:251
-#: c:\Apache2\htdocs\account22/dimensions/dimension_entry.php:257
+#: c:\Apache2\htdocs\account22/dimensions/dimension_entry.php:261
+#: c:\Apache2\htdocs\account22/dimensions/dimension_entry.php:268
 msgid "Dimension Reference:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/dimensions/dimension_entry.php:264
+#: c:\Apache2\htdocs\account22/dimensions/dimension_entry.php:275
 #: c:\Apache2\htdocs\account22/dimensions/inquiry/search_dimensions.php:75
 #: c:\Apache2\htdocs\account22/dimensions/inquiry/search_dimensions.php:175
 #: c:\Apache2\htdocs\account22/dimensions/view/view_dimension.php:54
@@ -2325,47 +2380,51 @@ msgstr ""
 msgid "Type"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/dimensions/dimension_entry.php:266
+#: c:\Apache2\htdocs\account22/dimensions/dimension_entry.php:277
 msgid "Start Date"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/dimensions/dimension_entry.php:268
+#: c:\Apache2\htdocs\account22/dimensions/dimension_entry.php:279
 msgid "Date Required By"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/dimensions/dimension_entry.php:275
+#: c:\Apache2\htdocs\account22/dimensions/dimension_entry.php:281
+msgid "Tags:"
+msgstr ""
+
+#: c:\Apache2\htdocs\account22/dimensions/dimension_entry.php:288
 msgid "This Dimension is closed."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/dimensions/dimension_entry.php:280
+#: c:\Apache2\htdocs\account22/dimensions/dimension_entry.php:293
 msgid "Save changes to dimension"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/dimensions/dimension_entry.php:282
+#: c:\Apache2\htdocs\account22/dimensions/dimension_entry.php:295
 msgid "Re-open This Dimension"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/dimensions/dimension_entry.php:282
+#: c:\Apache2\htdocs\account22/dimensions/dimension_entry.php:295
 msgid "Mark this dimension as re-opened"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/dimensions/dimension_entry.php:284
+#: c:\Apache2\htdocs\account22/dimensions/dimension_entry.php:297
 msgid "Close This Dimension"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/dimensions/dimension_entry.php:284
+#: c:\Apache2\htdocs\account22/dimensions/dimension_entry.php:297
 msgid "Mark this dimension as closed"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/dimensions/dimension_entry.php:285
+#: c:\Apache2\htdocs\account22/dimensions/dimension_entry.php:298
 msgid "Delete This Dimension"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/dimensions/dimension_entry.php:285
+#: c:\Apache2\htdocs\account22/dimensions/dimension_entry.php:298
 msgid "Delete unused dimension"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/dimensions/dimension_entry.php:289
+#: c:\Apache2\htdocs\account22/dimensions/dimension_entry.php:302
 msgid "Add"
 msgstr ""
 
@@ -2451,7 +2510,6 @@ msgstr ""
 
 #: c:\Apache2\htdocs\account22/gl/bank_account_reconcile.php:35
 #: c:\Apache2\htdocs\account22/gl/bank_transfer.php:30
-#: c:\Apache2\htdocs\account22/gl/gl_bank.php:43
 msgid "There are no bank accounts defined in the system."
 msgstr ""
 
@@ -2571,7 +2629,6 @@ msgid "The Bank Charge Account has not been set in System and General GL Setup."
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/gl/bank_transfer.php:139
-#: c:\Apache2\htdocs\account22/gl/gl_bank.php:130
 msgid "You must enter a reference."
 msgstr ""
 
@@ -2652,7 +2709,6 @@ msgid "Budget Entry"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/gl/gl_budget.php:24
-#: c:\Apache2\htdocs\account22/gl/manage/gl_accounts.php:22
 msgid "There are no account groups defined. Please define at least one account group before entering accounts."
 msgstr ""
 
@@ -2665,8 +2721,6 @@ msgid "The Budget has been deleted."
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/gl/gl_budget.php:121
-#: c:\Apache2\htdocs\account22/gl/manage/gl_accounts.php:259
-#: c:\Apache2\htdocs\account22/gl/manage/gl_accounts.php:268
 msgid "Account Code:"
 msgstr ""
 
@@ -3025,76 +3079,76 @@ msgstr ""
 msgid "New currency has been added"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/gl/manage/currencies.php:95
+#: c:\Apache2\htdocs\account22/gl/manage/currencies.php:97
 msgid "Cannot delete this currency, because customer accounts have been created referring to this currency."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/gl/manage/currencies.php:104
+#: c:\Apache2\htdocs\account22/gl/manage/currencies.php:106
 msgid "Cannot delete this currency, because supplier accounts have been created referring to this currency."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/gl/manage/currencies.php:113
+#: c:\Apache2\htdocs\account22/gl/manage/currencies.php:115
 msgid "Cannot delete this currency, because the company preferences uses this currency."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/gl/manage/currencies.php:123
+#: c:\Apache2\htdocs\account22/gl/manage/currencies.php:125
 msgid "Cannot delete this currency, because thre are bank accounts that use this currency."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/gl/manage/currencies.php:138
+#: c:\Apache2\htdocs\account22/gl/manage/currencies.php:140
 msgid "Selected currency has been deleted"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/gl/manage/currencies.php:153
+#: c:\Apache2\htdocs\account22/gl/manage/currencies.php:155
 msgid "Abbreviation"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/gl/manage/currencies.php:153
+#: c:\Apache2\htdocs\account22/gl/manage/currencies.php:155
 msgid "Symbol"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/gl/manage/currencies.php:153
+#: c:\Apache2\htdocs\account22/gl/manage/currencies.php:155
 msgid "Currency Name"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/gl/manage/currencies.php:154
+#: c:\Apache2\htdocs\account22/gl/manage/currencies.php:156
 msgid "Hundredths name"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/gl/manage/currencies.php:154
+#: c:\Apache2\htdocs\account22/gl/manage/currencies.php:156
 msgid "Country"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/gl/manage/currencies.php:154
+#: c:\Apache2\htdocs\account22/gl/manage/currencies.php:156
 msgid "Auto update"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/gl/manage/currencies.php:189
+#: c:\Apache2\htdocs\account22/gl/manage/currencies.php:191
 msgid "The marked currency is the home currency which cannot be deleted."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/gl/manage/currencies.php:215
-#: c:\Apache2\htdocs\account22/gl/manage/currencies.php:220
+#: c:\Apache2\htdocs\account22/gl/manage/currencies.php:217
+#: c:\Apache2\htdocs\account22/gl/manage/currencies.php:222
 msgid "Currency Abbreviation:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/gl/manage/currencies.php:223
+#: c:\Apache2\htdocs\account22/gl/manage/currencies.php:225
 msgid "Currency Symbol:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/gl/manage/currencies.php:224
+#: c:\Apache2\htdocs\account22/gl/manage/currencies.php:226
 msgid "Currency Name:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/gl/manage/currencies.php:225
+#: c:\Apache2\htdocs\account22/gl/manage/currencies.php:227
 msgid "Hundredths Name:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/gl/manage/currencies.php:226
+#: c:\Apache2\htdocs\account22/gl/manage/currencies.php:228
 msgid "Country:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/gl/manage/currencies.php:227
+#: c:\Apache2\htdocs\account22/gl/manage/currencies.php:229
 msgid "Automatic exchange rate update:"
 msgstr ""
 
@@ -3159,79 +3213,83 @@ msgstr ""
 msgid "The account code must be numeric."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/gl/manage/gl_accounts.php:80
+#: c:\Apache2\htdocs\account22/gl/manage/gl_accounts.php:86
 msgid "Account data has been updated."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/gl/manage/gl_accounts.php:88
+#: c:\Apache2\htdocs\account22/gl/manage/gl_accounts.php:95
 msgid "New account has been added."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/gl/manage/gl_accounts.php:108
+#: c:\Apache2\htdocs\account22/gl/manage/gl_accounts.php:117
 msgid "Cannot delete this account because transactions have been created using this account."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/gl/manage/gl_accounts.php:129
+#: c:\Apache2\htdocs\account22/gl/manage/gl_accounts.php:138
 msgid "Cannot delete this account because it is used as one of the company default GL accounts."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/gl/manage/gl_accounts.php:139
+#: c:\Apache2\htdocs\account22/gl/manage/gl_accounts.php:148
 msgid "Cannot delete this account because it is used by a bank account."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/gl/manage/gl_accounts.php:153
+#: c:\Apache2\htdocs\account22/gl/manage/gl_accounts.php:162
 msgid "Cannot delete this account because it is used by one or more Items."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/gl/manage/gl_accounts.php:163
+#: c:\Apache2\htdocs\account22/gl/manage/gl_accounts.php:172
 msgid "Cannot delete this account because it is used by one or more Taxes."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/gl/manage/gl_accounts.php:177
+#: c:\Apache2\htdocs\account22/gl/manage/gl_accounts.php:186
 msgid "Cannot delete this account because it is used by one or more Customer Branches."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/gl/manage/gl_accounts.php:190
+#: c:\Apache2\htdocs\account22/gl/manage/gl_accounts.php:199
 msgid "Cannot delete this account because it is used by one or more suppliers."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/gl/manage/gl_accounts.php:201
+#: c:\Apache2\htdocs\account22/gl/manage/gl_accounts.php:210
 msgid "Cannot delete this account because it is used by one or more Quick Entry Lines."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/gl/manage/gl_accounts.php:217
+#: c:\Apache2\htdocs\account22/gl/manage/gl_accounts.php:228
 msgid "Selected account has been deleted"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/gl/manage/gl_accounts.php:232
+#: c:\Apache2\htdocs\account22/gl/manage/gl_accounts.php:243
 msgid "New account"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/gl/manage/gl_accounts.php:271
+#: c:\Apache2\htdocs\account22/gl/manage/gl_accounts.php:289
 msgid "Account Code 2:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/gl/manage/gl_accounts.php:273
+#: c:\Apache2\htdocs\account22/gl/manage/gl_accounts.php:291
 msgid "Account Name:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/gl/manage/gl_accounts.php:275
+#: c:\Apache2\htdocs\account22/gl/manage/gl_accounts.php:293
 msgid "Account Group:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/gl/manage/gl_accounts.php:277
+#: c:\Apache2\htdocs\account22/gl/manage/gl_accounts.php:295
+msgid "Account Tags:"
+msgstr ""
+
+#: c:\Apache2\htdocs\account22/gl/manage/gl_accounts.php:297
 msgid "Account status:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/gl/manage/gl_accounts.php:282
+#: c:\Apache2\htdocs\account22/gl/manage/gl_accounts.php:302
 msgid "Add Account"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/gl/manage/gl_accounts.php:286
+#: c:\Apache2\htdocs\account22/gl/manage/gl_accounts.php:306
 msgid "Update Account"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/gl/manage/gl_accounts.php:287
+#: c:\Apache2\htdocs\account22/gl/manage/gl_accounts.php:307
 msgid "Delete account"
 msgstr ""
 
@@ -3272,7 +3330,7 @@ msgid "Class Name"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/gl/manage/gl_account_classes.php:113
-#: c:\Apache2\htdocs\account22/gl/manage/gl_account_types.php:129
+#: c:\Apache2\htdocs\account22/gl/manage/gl_account_types.php:131
 msgid "Class Type"
 msgstr ""
 
@@ -3291,7 +3349,7 @@ msgid "Class Name:"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/gl/manage/gl_account_classes.php:174
-#: c:\Apache2\htdocs\account22/gl/manage/gl_account_types.php:188
+#: c:\Apache2\htdocs\account22/gl/manage/gl_account_types.php:190
 msgid "Class Type:"
 msgstr ""
 
@@ -3319,32 +3377,32 @@ msgstr ""
 msgid "New account type has been added"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/gl/manage/gl_account_types.php:86
+#: c:\Apache2\htdocs\account22/gl/manage/gl_account_types.php:88
 msgid "Cannot delete this account group because GL accounts have been created referring to it."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/gl/manage/gl_account_types.php:96
+#: c:\Apache2\htdocs\account22/gl/manage/gl_account_types.php:98
 msgid "Cannot delete this account group because GL account groups have been created referring to it."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/gl/manage/gl_account_types.php:112
+#: c:\Apache2\htdocs\account22/gl/manage/gl_account_types.php:114
 msgid "Selected account group has been deleted"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/gl/manage/gl_account_types.php:129
+#: c:\Apache2\htdocs\account22/gl/manage/gl_account_types.php:131
 msgid "ID"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/gl/manage/gl_account_types.php:129
+#: c:\Apache2\htdocs\account22/gl/manage/gl_account_types.php:131
 msgid "Subgroup Of"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/gl/manage/gl_account_types.php:180
-#: c:\Apache2\htdocs\account22/gl/manage/gl_account_types.php:183
+#: c:\Apache2\htdocs\account22/gl/manage/gl_account_types.php:182
+#: c:\Apache2\htdocs\account22/gl/manage/gl_account_types.php:185
 msgid "ID:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/gl/manage/gl_account_types.php:186
+#: c:\Apache2\htdocs\account22/gl/manage/gl_account_types.php:188
 msgid "Subgroup Of:"
 msgstr ""
 
@@ -3646,7 +3704,6 @@ msgstr ""
 #: c:\Apache2\htdocs\account22/inventory/purchasing_data.php:117
 #: c:\Apache2\htdocs\account22/inventory/reorder_level.php:43
 #: c:\Apache2\htdocs\account22/inventory/inquiry/stock_movements.php:49
-#: c:\Apache2\htdocs\account22/inventory/inquiry/stock_status.php:41
 msgid "Item:"
 msgstr ""
 
@@ -3668,7 +3725,6 @@ msgstr ""
 
 #: c:\Apache2\htdocs\account22/inventory/prices.php:27
 #: c:\Apache2\htdocs\account22/inventory/inquiry/stock_movements.php:30
-#: c:\Apache2\htdocs\account22/inventory/inquiry/stock_status.php:34
 msgid "There are no items defined in the system."
 msgstr ""
 
@@ -3813,19 +3869,15 @@ msgid "There are no inventory items defined in the system (Purchased or manufact
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/inventory/reorder_level.php:57
-#: c:\Apache2\htdocs\account22/inventory/inquiry/stock_status.php:65
-#: c:\Apache2\htdocs\account22/inventory/inquiry/stock_status.php:69
 msgid "Location"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/inventory/reorder_level.php:57
 #: c:\Apache2\htdocs\account22/inventory/inquiry/stock_movements.php:78
-#: c:\Apache2\htdocs\account22/inventory/inquiry/stock_status.php:69
 msgid "Quantity On Hand"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/inventory/reorder_level.php:57
-#: c:\Apache2\htdocs\account22/inventory/inquiry/stock_status.php:69
 msgid "Re-Order Level"
 msgstr ""
 
@@ -5234,14 +5286,17 @@ msgid "Enter Another Credit Note"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/purchasing/supplier_credit.php:49
+#: c:\Apache2\htdocs\account22/purchasing/supplier_invoice.php:52
 msgid "Add an Attachment"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/purchasing/supplier_credit.php:104
+#: c:\Apache2\htdocs\account22/purchasing/supplier_invoice.php:106
 msgid "The account code entered is not a valid code, this line cannot be added to the transaction."
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/purchasing/supplier_credit.php:114
+#: c:\Apache2\htdocs\account22/purchasing/supplier_invoice.php:116
 msgid "The amount entered is not numeric. This line cannot be added to the transaction."
 msgstr ""
 
@@ -5262,6 +5317,7 @@ msgid "The credit note as entered cannot be processed because the date entered i
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/purchasing/supplier_credit.php:184
+#: c:\Apache2\htdocs\account22/purchasing/supplier_invoice.php:184
 msgid "The invoice as entered cannot be processed because the due date is in an incorrect format."
 msgstr ""
 
@@ -8736,15 +8792,15 @@ msgstr ""
 msgid "Upgrade from version 2.1/2.2beta to 2.2"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/sql/alter2.2.php:79
+#: c:\Apache2\htdocs\account22/sql/alter2.2.php:84
 msgid "Cannot query max sales order number."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/sql/alter2.2.php:91
+#: c:\Apache2\htdocs\account22/sql/alter2.2.php:95
 msgid "Cannot store next sales order reference."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/sql/alter2.2.php:241
+#: c:\Apache2\htdocs\account22/sql/alter2.2.php:246
 msgid "Cannot upgrade extensions system: file /modules/installed_modules.php is not writeable"
 msgstr ""
 
@@ -9070,29 +9126,29 @@ msgstr ""
 msgid "Inventory Item Movements"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/db/maintenance_db.inc:182
+#: c:\Apache2\htdocs\account22/admin/db/maintenance_db.inc:184
 #, php-format
 msgid "Cannot open the extension setup file '%s' for writing."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/db/maintenance_db.inc:190
+#: c:\Apache2\htdocs\account22/admin/db/maintenance_db.inc:192
 #, php-format
 msgid "Cannot write to the extensions setup file '%s'."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/db/maintenance_db.inc:246
+#: c:\Apache2\htdocs\account22/admin/db/maintenance_db.inc:248
 msgid "Cannot open the languages file - "
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/db/maintenance_db.inc:253
+#: c:\Apache2\htdocs\account22/admin/db/maintenance_db.inc:255
 msgid "Cannot write to the language file - "
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/db/maintenance_db.inc:263
+#: c:\Apache2\htdocs\account22/admin/db/maintenance_db.inc:265
 msgid "The language files folder "
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/db/maintenance_db.inc:429
+#: c:\Apache2\htdocs\account22/admin/db/maintenance_db.inc:431
 #, php-format
 msgid "SQL script execution failed in line %d: %s"
 msgstr ""
@@ -9982,7 +10038,7 @@ msgstr ""
 msgid "Service"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/db/audit_trail_db.inc:90
+#: c:\Apache2\htdocs\account22/includes/db/audit_trail_db.inc:93
 msgid "Some transactions journal GL postings were not indexed due to lack of audit trail record."
 msgstr ""
 
@@ -9991,6 +10047,7 @@ msgid "Other Allocations"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/includes/ui/allocation_cart.inc:259
+#: c:\Apache2\htdocs\account22/includes/ui/ui_view.inc:453
 msgid "This Allocation"
 msgstr ""
 
@@ -10007,6 +10064,7 @@ msgid "These allocations cannot be processed because the amount allocated is mor
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/includes/ui/db_pager_view.inc:166
+#: c:\Apache2\htdocs\account22/includes/ui/ui_input.inc:836
 msgid "Show also Inactive"
 msgstr ""
 
@@ -10145,50 +10203,54 @@ msgstr ""
 msgid "Use Item Sales Accounts"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/ui/ui_lists.inc:1876
-#: c:\Apache2\htdocs\account22/includes/ui/ui_lists.inc:1894
+#: c:\Apache2\htdocs\account22/includes/ui/ui_lists.inc:1877
+#: c:\Apache2\htdocs\account22/includes/ui/ui_lists.inc:1895
 msgid "All Types"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/ui/ui_lists.inc:1878
-#: c:\Apache2\htdocs\account22/includes/ui/ui_lists.inc:1896
+#: c:\Apache2\htdocs\account22/includes/ui/ui_lists.inc:1879
+#: c:\Apache2\htdocs\account22/includes/ui/ui_lists.inc:1897
 msgid "Overdue Invoices"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/ui/ui_lists.inc:1895
+#: c:\Apache2\htdocs\account22/includes/ui/ui_lists.inc:1896
 msgid "Invoices"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/ui/ui_lists.inc:1899
+#: c:\Apache2\htdocs\account22/includes/ui/ui_lists.inc:1900
 msgid "Overdue Credit Notes"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/ui/ui_lists.inc:1912
+#: c:\Apache2\htdocs\account22/includes/ui/ui_lists.inc:1913
 msgid "Automatically put balance on back order"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/ui/ui_lists.inc:1913
+#: c:\Apache2\htdocs\account22/includes/ui/ui_lists.inc:1914
 msgid "Cancel any quantites not delivered"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/ui/ui_lists.inc:1931
+#: c:\Apache2\htdocs\account22/includes/ui/ui_lists.inc:1932
 msgid "Items Returned to Inventory Location"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/ui/ui_lists.inc:1932
+#: c:\Apache2\htdocs\account22/includes/ui/ui_lists.inc:1933
 msgid "Items Written Off"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/ui/ui_lists.inc:2102
+#: c:\Apache2\htdocs\account22/includes/ui/ui_lists.inc:2103
 msgid "New role"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/ui/ui_lists.inc:2151
+#: c:\Apache2\htdocs\account22/includes/ui/ui_lists.inc:2156
+msgid "No "
+msgstr ""
+
+#: c:\Apache2\htdocs\account22/includes/ui/ui_lists.inc:2191
 #, php-format
 msgid "Activated for '%s'"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/ui/ui_lists.inc:2154
+#: c:\Apache2\htdocs\account22/includes/ui/ui_lists.inc:2194
 msgid "Installed on system"
 msgstr ""
 
@@ -10441,6 +10503,8 @@ msgstr ""
 
 #: c:\Apache2\htdocs\account22/purchasing/includes/ui/grn_ui.inc:41
 #: c:\Apache2\htdocs\account22/purchasing/includes/ui/grn_ui.inc:53
+#: c:\Apache2\htdocs\account22/purchasing/includes/ui/po_ui.inc:252
+#: c:\Apache2\htdocs\account22/purchasing/includes/ui/po_ui.inc:257
 msgid "Deliver Into Location"
 msgstr ""
 
@@ -10449,6 +10513,7 @@ msgid "Date Items Received"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/purchasing/includes/ui/grn_ui.inc:63
+#: c:\Apache2\htdocs\account22/purchasing/includes/ui/po_ui.inc:270
 msgid "Order Comments"
 msgstr ""
 
