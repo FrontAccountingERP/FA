@@ -19,6 +19,19 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+24-Oct-2009 Janusz Dobrowolski
++ Default add/update button, ajax update.
+$ /dimensions/dimension_entry.php
+  /gl/manage/gl_accounts.php
+! Removed obsolete $tabs global array (tab ids retrieved from $_SESSION['App'])
+$ /includes/types.inc
+  /includes/ui/ui_lists.inc
+  /admin/inst_module.php
+  /includes/page/header.inc
+# Fixed ajax support for multiply selects.
+$ /js/utils.js
+# Fixed buggy php behaviour when foreach is used on global array.
+$ /frontaccounting.php
 
 ------------------------------- Release 2.2 RC ----------------------------------
 24-Oct-2009 Joe Hunt
