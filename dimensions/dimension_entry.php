@@ -290,7 +290,7 @@ if (isset($_POST['closed']) && $_POST['closed'] == 1)
 if ($selected_id != -1) 
 {
 	echo "<br>";
-	submit_center_first('UPDATE_ITEM', _("Update"), _('Save changes to dimension'), false);
+	submit_center_first('UPDATE_ITEM', _("Update"), _('Save changes to dimension'), 'default');
 	if ($_POST['closed'] == 1)
 		submit('reopen', _("Re-open This Dimension"), true, _('Mark this dimension as re-opened'), true);
 	else	
@@ -299,7 +299,7 @@ if ($selected_id != -1)
 }
 else
 {
-	submit_center('ADD_ITEM', _("Add"), true, '', false);
+	submit_center('ADD_ITEM', _("Add"), true, '', 'default');
 }
 end_form();
 
