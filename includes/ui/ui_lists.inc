@@ -2127,16 +2127,23 @@ function security_roles_list_row($label, $name, $selected_id=null, $new_item=fal
 	return $str;
 }
 
-function tab_list_row($label, $name, $selected_id=null)
+function tab_list_row($label, $name, $selected_id=null, $all = false)
 {
-	global $tabs;
+	global $installed_extensions;
+	
+	$tabs = array();
+	foreach ($_SESSION['App']->applications as $app) {
+		$tabs[$app->id] = access_string($app->name, true);
+	}
+	if ($all) {	// add also not active ext. modules
+		foreach ($installed_extensions as $ext) {
+			if ($ext['type'] == 'module' && !$ext['active'])
+				$tabs[$ext['tab']] = access_string($ext['title'], true);
+		}
+	}
 	echo "<tr>\n";
 	echo "<td>$label</td><td>\n";
-
-	$items = array();
-
 	array_selector($name, $selected_id, $tabs);
-
 	echo "</td></tr>\n";
 }
 

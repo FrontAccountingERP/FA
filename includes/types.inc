@@ -89,17 +89,6 @@ $bank_transfer_types = array(
 			_("Cash")
 	);
 
-//----------------------------------------------------------------------------------
-// Core FA menu tabs (modules)
-//
-$tabs = array('orders'=>_("Sales"), 
-			'AP'=>_("Purchases"),
-			'stock'=>_("Items and Inventory"),
-			'manuf'=>_("Manufacturing"), 
-			'proj'=>_("Dimensions"),
-			'GL'=>_("Banking and General Ledger"),
-			'system'=>_("Setup"));
-
 include_once($path_to_root . "/manufacturing/includes/manufacturing_db.inc");
 include_once($path_to_root . "/purchasing/includes/purchasing_db.inc");
 include_once($path_to_root . "/sales/includes/sales_db.inc");

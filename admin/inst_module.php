@@ -188,7 +188,7 @@ function handle_delete()
 
 function display_extensions()
 {
-	global $table_style, $tabs;
+	global $table_style;
 
 	start_table($table_style);
 	$th = array(_("Name"),_("Tab"), _("Link text"), _("Folder"), _("Filename"), 
@@ -204,7 +204,8 @@ function display_extensions()
 		$is_mod = $mod['type'] == 'module';
    		alt_table_row_color($k);
 		label_cell($mod['name']);
-		label_cell( $is_mod ? $mod['title'] : $tabs[$mod['tab']]);
+		label_cell( $is_mod ? 
+			$mod['title'] : access_string($_SESSION['App']->applications[$mod['tab']]->name, true));
 		$ttl = access_string($mod['title']);
 		label_cell($ttl[0]);
 		label_cell($mod['path']);
@@ -228,7 +229,7 @@ function display_extensions()
 
 function company_extensions($id)
 {
-	global $table_style, $tabs;
+	global $table_style;
 
 	start_table($table_style);
 	
@@ -253,7 +254,8 @@ function company_extensions($id)
 	{
    		alt_table_row_color($k);
 		label_cell($mod['name']);
-		label_cell($mod['type'] == 'module' ? $mod['title'] : $tabs[$mod['tab']]);
+		label_cell( $mod['type'] == 'module' ? 
+			$mod['title'] : access_string($_SESSION['App']->applications[$mod['tab']]->name, true));
 		$ttl = access_string($mod['title']);
 		label_cell($ttl[0]);
 		check_cells(null, 'Active'.$i, @$mod['active'] ? 1:0, 
@@ -294,7 +296,7 @@ function display_ext_edit($selected_id)
 	text_row_ex(_("Name"), 'name', 30);
 	text_row_ex(_("Folder"), 'path', 20);
 
-	tab_list_row(_("Menu Tab"), 'tab', null);
+	tab_list_row(_("Menu Tab"), 'tab', null, true);
 	text_row_ex(_("Menu Link Text"), 'title', 30);
 
 	record_status_list_row(_("Default status"), 'active');

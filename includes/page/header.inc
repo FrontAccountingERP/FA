@@ -102,8 +102,13 @@ function page_header($title, $no_menu=false, $is_index=false, $onload="", $js=""
 	else
 		$sel_app = user_startup_tab();
 	$_SESSION["sel_app"] = $sel_app;
+
+	// When startup tab for current user was set to already 
+	// removed/inactivated extension module select Sales tab as default.
 	if (isset($_SESSION["App"]) && is_object($_SESSION["App"]))
-		$_SESSION["App"]->selected_application = $sel_app;
+		$_SESSION["App"]->selected_application = 
+			isset($_SESSION["App"]->applications[$sel_app]) ? $sel_app : 'orders';
+			
 	$encoding = $_SESSION['language']->encoding;
 
 	if (!headers_sent()){
