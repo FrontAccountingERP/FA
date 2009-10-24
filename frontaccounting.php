@@ -76,6 +76,7 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 		function init()
 		{
 			global $installed_extensions, $path_to_root;
+
 			$this->menu = new menu(_("Main  Menu"));
 			$this->menu->add_item(_("Main  Menu"), "index.php");
 			$this->menu->add_item(_("Logout"), "/account/access/logout.php");
@@ -88,9 +89,14 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 			$this->add_application(new general_ledger_app());
 			if (count($installed_extensions) > 0)
 			{
-				foreach ($installed_extensions as $ext)
+				// Do not use global array directly here, or you suffer 
+				// from buggy php behaviour (unexpected loop break 
+				// because of same var usage in class constructor).
+				$extensions = $installed_extensions;
+				foreach ($extensions as $ext)
 				{
-					if (@($ext['active'] && $ext['type'] == 'module')) { // supressed warnings before 2.2 upgrade
+					if (@($ext['active'] && $ext['type'] == 'module')) // supressed warnings before 2.2 upgrade
+					{ 
 						$_SESSION['get_text']->add_domain($_SESSION['language']->code, 
 							$ext['path']."/lang");
 						$class = $ext['tab']."_app";
@@ -103,6 +109,6 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 			}	
 			
 			$this->add_application(new setup_app());
-			}
+		}
 }
 ?>
