@@ -287,7 +287,7 @@ function sanitize_database($pref, $test = false) {
  	 if ($test)
  	 	error_log('Sanitizing database ...');
 
-	 $tsql = "SHOW TABLES LIKE '{$pref}%'";
+	 $tsql = "SHOW TABLES LIKE '".($pref=='' ? '' : substr($pref,0,-1).'\\_')."%'";
 	 $tresult = db_query($tsql, "Cannot select all tables with prefix '$pref'");
 	 while($tbl = db_fetch($tresult)) {
 		$table = $tbl[0];
