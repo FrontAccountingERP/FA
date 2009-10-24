@@ -245,7 +245,8 @@ if (strstr($_SERVER['PHP_SELF'], 'logout.php') == false){
 		}
 	}
 
-	include_once($path_to_root . '/company/'.user_company().'/installed_extensions.php');
+	if (!$_SESSION["wa_current_user"]->old_db)
+		include_once($path_to_root . '/company/'.user_company().'/installed_extensions.php');
 
 	if (!isset($_SESSION["App"])) {
 		$_SESSION["App"] = new front_accounting();
