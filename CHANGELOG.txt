@@ -20,6 +20,10 @@ Legend:
 $ -> Affected files
 
 24-Oct-2009 Janusz Dobrowolski
+# Fixed compatibility issue with MySQL 3.xx
+$ /admin/db/tags_db.inc
+
+24-Oct-2009 Janusz Dobrowolski
 + Default add/update button, ajax update.
 $ /dimensions/dimension_entry.php
   /gl/manage/gl_accounts.php

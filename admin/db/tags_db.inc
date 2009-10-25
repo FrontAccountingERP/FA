@@ -125,19 +125,29 @@ function update_tag_associations($type, $recordid, $tagids)
 }
 
 //--------------------------------------------------------------------------------------
-
 // To delete tag associations, we need to specify the tag type.
 // Otherwise we may inadvertantly delete records for another type of tag
+//
 function delete_tag_associations($type, $recordid, $all=false)
 {
-	$sql = "DELETE ta FROM ".TB_PREF."tag_associations AS ta 
-				INNER JOIN ".TB_PREF."tags AS tags ON tags.id = ta.tag_id 
+/* multiply table DELETE syntax available since MySQL 4.0.0:
+	$sql = "DELETE ta FROM ".TB_PREF."tag_associations ta 
+				INNER JOIN ".TB_PREF."tags tags ON tags.id = ta.tag_id 
 				WHERE tags.type = ".db_escape($type)." AND ta.record_id = ".db_escape($recordid);
-	
+*/
+	// To support MySQL 3.xx we have to use multiply queries
+	$sql = "SELECT * FROM ".TB_PREF."tag_associations ta 
+			INNER JOIN ".TB_PREF."tags tags ON tags.id = ta.tag_id 
+			WHERE tags.type = ".db_escape($type)." AND ta.record_id = ".db_escape($recordid);
 	if (!$all)
 		$sql .= " AND tags.inactive = 0";
+	$result = db_query($sql, "could not select tag associations");
 
-	db_query($sql, "could not delete tag associations");
+	while($ta = db_fetch($result)) {
+		$sql2 = "DELETE FROM ".TB_PREF."tag_associations WHERE 
+			record_id = '".$ta['record_id']."' AND tag_id=".$ta['tag_id'];
+		db_query($sql2, "could not delete tag associations");
+	}
 }
 
 //--------------------------------------------------------------------------------------
