@@ -36,7 +36,6 @@ function getTransactions($from, $to, $type, $user)
 	$sql = "SELECT a.*, 
 		SUM(IF(ISNULL(g.amount), NULL, IF(g.amount > 0, g.amount, 0))) AS amount,
 		u.user_id,
-		DATE(a.stamp) as stamp,
 		UNIX_TIMESTAMP(a.stamp) as unix_stamp
 		FROM ".TB_PREF."audit_trail AS a JOIN ".TB_PREF."users AS u
 		LEFT JOIN ".TB_PREF."gl_trans AS g ON (g.type_no=a.trans_no
@@ -95,7 +94,7 @@ function print_audit_trail()
 
     while ($myrow=db_fetch($trans))
     {
-        $rep->TextCol(0, 1, sql2date($myrow['stamp']));
+        $rep->TextCol(0, 1, sql2date(date("Y-m-d", $myrow['unix_stamp'])));
         if (user_date_format() == 0)
         	$rep->TextCol(1, 2, date("h:i:s a", $myrow['unix_stamp']));
         else	

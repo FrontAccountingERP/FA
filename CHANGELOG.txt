@@ -19,6 +19,13 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+26-Oct-2009 Joe Hunt
+# Fixed another compatibility issue with MySQL 3.xx (DATE)
+$ /reporting/rep710.php
+! Late changes in empty.po and en_US.mo
+$ /lang/new_language_template/LC_MESSAGES/empty.po
+  /lang/en_US/LC_MESSAGES/en_US.mo
+
 24-Oct-2009 Janusz Dobrowolski
 # Fixed compatibility issue with MySQL 3.xx
 $ /admin/db/tags_db.inc

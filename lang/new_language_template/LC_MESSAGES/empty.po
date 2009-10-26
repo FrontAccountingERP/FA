@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FrontAccounting\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-10-24 11:02+0100\n"
-"PO-Revision-Date: 2009-10-24 11:02+0100\n"
+"POT-Creation-Date: 2009-10-25 09:27+0100\n"
+"PO-Revision-Date: 2009-10-25 09:28+0100\n"
 "Last-Translator: FrontAccounting <info@frontaccounting.com>\n"
 "Language-Team: Translators\n"
 "MIME-Version: 1.0\n"
@@ -18,12 +18,12 @@ msgstr ""
 "X-Poedit-Basepath: c:\\Apache2\\htdocs\\account22\n"
 "X-Poedit-SearchPath-0: c:\\Apache2\\htdocs\\account22\n"
 
-#: c:\Apache2\htdocs\account22/frontaccounting.php:79
 #: c:\Apache2\htdocs\account22/frontaccounting.php:80
+#: c:\Apache2\htdocs\account22/frontaccounting.php:81
 msgid "Main  Menu"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/frontaccounting.php:81
+#: c:\Apache2\htdocs\account22/frontaccounting.php:82
 #: c:\Apache2\htdocs\account22/access/logout.php:17
 #: c:\Apache2\htdocs\account22/access/backup/logout1.php:17
 msgid "Logout"
@@ -478,7 +478,7 @@ msgstr ""
 #: c:\Apache2\htdocs\account22/admin/display_prefs.php:140
 #: c:\Apache2\htdocs\account22/admin/forms_setup.php:61
 #: c:\Apache2\htdocs\account22/admin/gl_setup.php:220
-#: c:\Apache2\htdocs\account22/admin/inst_module.php:265
+#: c:\Apache2\htdocs\account22/admin/inst_module.php:267
 msgid "Update"
 msgstr ""
 
@@ -1029,8 +1029,8 @@ msgstr ""
 
 #: c:\Apache2\htdocs\account22/admin/inst_lang.php:139
 #: c:\Apache2\htdocs\account22/admin/inst_module.php:194
-#: c:\Apache2\htdocs\account22/admin/inst_module.php:235
-#: c:\Apache2\htdocs\account22/admin/inst_module.php:294
+#: c:\Apache2\htdocs\account22/admin/inst_module.php:236
+#: c:\Apache2\htdocs\account22/admin/inst_module.php:296
 #: c:\Apache2\htdocs\account22/admin/printers.php:88
 #: c:\Apache2\htdocs\account22/admin/shipping_companies.php:117
 msgid "Name"
@@ -1117,17 +1117,17 @@ msgid "Selected extension has been successfully deleted"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/admin/inst_module.php:194
-#: c:\Apache2\htdocs\account22/admin/inst_module.php:235
+#: c:\Apache2\htdocs\account22/admin/inst_module.php:236
 msgid "Tab"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/admin/inst_module.php:194
-#: c:\Apache2\htdocs\account22/admin/inst_module.php:235
+#: c:\Apache2\htdocs\account22/admin/inst_module.php:236
 msgid "Link text"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/admin/inst_module.php:194
-#: c:\Apache2\htdocs\account22/admin/inst_module.php:295
+#: c:\Apache2\htdocs\account22/admin/inst_module.php:297
 msgid "Folder"
 msgstr ""
 
@@ -1135,57 +1135,57 @@ msgstr ""
 msgid "Access extensions"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/inst_module.php:222
+#: c:\Apache2\htdocs\account22/admin/inst_module.php:223
 msgid ""
 "You are about to delete this extension\\n"
 "Do you want to continue?"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/inst_module.php:235
+#: c:\Apache2\htdocs\account22/admin/inst_module.php:236
 msgid "Active"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/inst_module.php:297
+#: c:\Apache2\htdocs\account22/admin/inst_module.php:299
 msgid "Menu Tab"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/inst_module.php:298
+#: c:\Apache2\htdocs\account22/admin/inst_module.php:300
 msgid "Menu Link Text"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/inst_module.php:300
+#: c:\Apache2\htdocs\account22/admin/inst_module.php:302
 msgid "Default status"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/inst_module.php:302
+#: c:\Apache2\htdocs\account22/admin/inst_module.php:304
 msgid "Module File"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/inst_module.php:303
+#: c:\Apache2\htdocs\account22/admin/inst_module.php:305
 msgid "Access Levels Extensions"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/inst_module.php:304
+#: c:\Apache2\htdocs\account22/admin/inst_module.php:306
 msgid "SQL File"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/inst_module.php:307
+#: c:\Apache2\htdocs\account22/admin/inst_module.php:309
 msgid "Select your module PHP file from your local harddisk."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/inst_module.php:315
+#: c:\Apache2\htdocs\account22/admin/inst_module.php:317
 msgid "Extension data has been updated."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/inst_module.php:317
+#: c:\Apache2\htdocs\account22/admin/inst_module.php:319
 msgid "Extension has been installed."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/inst_module.php:334
+#: c:\Apache2\htdocs\account22/admin/inst_module.php:336
 msgid "Current active extensions set has been saved."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/inst_module.php:348
+#: c:\Apache2\htdocs\account22/admin/inst_module.php:350
 msgid "Extensions:"
 msgstr ""
 
@@ -9844,12 +9844,12 @@ msgid "The security settings on your account do not permit you to access this fu
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/includes/types.inc:47
-#: c:\Apache2\htdocs\account22/includes/types.inc:262
+#: c:\Apache2\htdocs\account22/includes/types.inc:251
 msgid "Bank Payment"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/includes/types.inc:48
-#: c:\Apache2\htdocs\account22/includes/types.inc:261
+#: c:\Apache2\htdocs\account22/includes/types.inc:250
 msgid "Bank Deposit"
 msgstr ""
 
@@ -9882,7 +9882,7 @@ msgid "Supplier Payment"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/includes/types.inc:61
-#: c:\Apache2\htdocs\account22/includes/types.inc:119
+#: c:\Apache2\htdocs\account22/includes/types.inc:108
 msgid "Work Order"
 msgstr ""
 
@@ -9922,119 +9922,103 @@ msgstr ""
 msgid "Cash"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/types.inc:96
-msgid "Purchases"
-msgstr ""
-
-#: c:\Apache2\htdocs\account22/includes/types.inc:97
-msgid "Items and Inventory"
-msgstr ""
-
-#: c:\Apache2\htdocs\account22/includes/types.inc:100
-msgid "Banking and General Ledger"
-msgstr ""
-
-#: c:\Apache2\htdocs\account22/includes/types.inc:101
-msgid "Setup"
-msgstr ""
-
-#: c:\Apache2\htdocs\account22/includes/types.inc:195
+#: c:\Apache2\htdocs\account22/includes/types.inc:184
 msgid "Assemble"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/types.inc:196
+#: c:\Apache2\htdocs\account22/includes/types.inc:185
 msgid "Unassemble"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/types.inc:197
+#: c:\Apache2\htdocs\account22/includes/types.inc:186
 msgid "Advanced Manufacture"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/types.inc:204
+#: c:\Apache2\htdocs\account22/includes/types.inc:193
 msgid "Labour Cost"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/types.inc:205
+#: c:\Apache2\htdocs\account22/includes/types.inc:194
 msgid "Overhead Cost"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/types.inc:220
+#: c:\Apache2\htdocs\account22/includes/types.inc:209
 msgid "Assets"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/types.inc:222
+#: c:\Apache2\htdocs\account22/includes/types.inc:211
 msgid "Equity"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/types.inc:223
+#: c:\Apache2\htdocs\account22/includes/types.inc:212
 msgid "Income"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/types.inc:224
+#: c:\Apache2\htdocs\account22/includes/types.inc:213
 msgid "Cost of Goods Sold"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/types.inc:225
+#: c:\Apache2\htdocs\account22/includes/types.inc:214
 msgid "Expense"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/types.inc:240
+#: c:\Apache2\htdocs\account22/includes/types.inc:229
 msgid "Remainder"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/types.inc:242
+#: c:\Apache2\htdocs\account22/includes/types.inc:231
 msgid "Amount, increase base"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/types.inc:243
+#: c:\Apache2\htdocs\account22/includes/types.inc:232
 msgid "Amount, reduce base"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/types.inc:244
+#: c:\Apache2\htdocs\account22/includes/types.inc:233
 msgid "% amount of base"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/types.inc:245
+#: c:\Apache2\htdocs\account22/includes/types.inc:234
 msgid "% amount of base, increase base"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/types.inc:246
+#: c:\Apache2\htdocs\account22/includes/types.inc:235
 msgid "% amount of base, reduce base"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/types.inc:247
+#: c:\Apache2\htdocs\account22/includes/types.inc:236
 msgid "Taxes added"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/types.inc:248
+#: c:\Apache2\htdocs\account22/includes/types.inc:237
 msgid "Taxes added, increase base"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/types.inc:249
+#: c:\Apache2\htdocs\account22/includes/types.inc:238
 msgid "Taxes added, reduce base"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/types.inc:250
+#: c:\Apache2\htdocs\account22/includes/types.inc:239
 msgid "Taxes included"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/types.inc:251
+#: c:\Apache2\htdocs\account22/includes/types.inc:240
 msgid "Taxes included, increase base"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/types.inc:252
+#: c:\Apache2\htdocs\account22/includes/types.inc:241
 msgid "Taxes included, reduce base"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/types.inc:264
+#: c:\Apache2\htdocs\account22/includes/types.inc:253
 msgid "Supplier Invoice/Credit"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/types.inc:280
+#: c:\Apache2\htdocs\account22/includes/types.inc:269
 msgid "Purchased"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/types.inc:281
+#: c:\Apache2\htdocs\account22/includes/types.inc:270
 msgid "Service"
 msgstr ""
 
@@ -10241,16 +10225,16 @@ msgstr ""
 msgid "New role"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/ui/ui_lists.inc:2156
+#: c:\Apache2\htdocs\account22/includes/ui/ui_lists.inc:2163
 msgid "No "
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/ui/ui_lists.inc:2191
+#: c:\Apache2\htdocs\account22/includes/ui/ui_lists.inc:2198
 #, php-format
 msgid "Activated for '%s'"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/ui/ui_lists.inc:2194
+#: c:\Apache2\htdocs\account22/includes/ui/ui_lists.inc:2201
 msgid "Installed on system"
 msgstr ""
 
