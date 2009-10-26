@@ -73,7 +73,7 @@ function add_account_class($id, $name, $ctype)
 function update_account_class($id, $name, $ctype)
 {
     $sql = "UPDATE ".TB_PREF."chart_class SET class_name=".db_escape($name).",
-		ctype=".db_escape($balance)." WHERE cid = ".db_escape($id);
+		ctype=".db_escape($ctype)." WHERE cid = ".db_escape($id);
 
 	return db_query($sql);
 }

@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+26-Oct-2009 Janusz Dobrowolski
+# [0000177] Fixed error during gl class update.
+$ /gl/includes/db/gl_db_account_types.inc
+
 26-Oct-2009 Joe Hunt
 # Fixed another compatibility issue with MySQL 3.xx (DATE)
 $ /reporting/rep710.php
