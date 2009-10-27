@@ -20,6 +20,8 @@ Legend:
 $ -> Affected files
 
 27-Oct-2009 Joe Hunt
+# Database error when updating item.
+$ /inventory/includes/db/items_db.inc
 # Removed unneeded double forms in scripts with db_pager. Missing $_POST variables.
 $ /dimensions/inquiry/search_dimensions.php
   /manufacturing/search_work_orders.php

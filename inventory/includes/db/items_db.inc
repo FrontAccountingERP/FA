@@ -24,7 +24,7 @@ function update_item($stock_id, $description, $long_description, $category_id,
 		assembly_account=".db_escape($assembly_account).",
 		dimension_id=".db_escape($dimension_id).",
 		dimension2_id=".db_escape($dimension2_id).",
-		tax_type_id=".db_escape($tax_type_id)."
+		tax_type_id=".db_escape($tax_type_id).",
 		no_sale=".db_escape($no_sale);
 
 	if ($units != '')
