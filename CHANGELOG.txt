@@ -19,6 +19,20 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+27-Oct-2009 Joe Hunt
+# Removed unneeded double forms in scripts with db_pager. Missing $_POST variables.
+$ /dimensions/inquiry/search_dimensions.php
+  /manufacturing/search_work_orders.php
+  /purchasing/allocations/supplier_allocation_main.php
+  /purchasing/inquiry/po_search_completed.php
+  /purchasing/inquiry/po_search.php
+  /purchasing/inquiry/supplier_inquiry.php
+  /purchasing/inquiry/supplier_allocation_inquiry.php
+  /sales/inquiry/customer_allocation_inquiry.php
+  /sales/inquiry/sales_deliveries_view.php
+  /sales/inquiry/sales_orders_view.php
+  /sales/inquiry/customer_inquiry.php
+  
 26-Oct-2009 Janusz Dobrowolski
 # [0000177] Fixed error during gl class update.
 $ /gl/includes/db/gl_db_account_types.inc

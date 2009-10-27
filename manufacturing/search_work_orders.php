@@ -79,8 +79,6 @@ submit_cells('SearchOrders', _("Search"),'',_('Select documents'),  'default');
 end_row();
 end_table();
 
-end_form();
-
 //-----------------------------------------------------------------------------
 function check_overdue($row)
 {
@@ -226,7 +224,6 @@ $table =& new_db_pager('orders_tbl', $sql, $cols);
 $table->set_marker('check_overdue', _("Marked orders are overdue."));
 
 $table->width = "90%";
-start_form();
 
 display_db_pager($table);
 

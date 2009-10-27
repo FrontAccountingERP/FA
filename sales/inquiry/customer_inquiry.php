@@ -54,7 +54,7 @@ cust_allocations_list_cells(null, 'filterType', $_POST['filterType'], true);
 submit_cells('RefreshInquiry', _("Search"),'',_('Refresh Inquiry'), 'default');
 end_row();
 end_table();
-end_form();
+
 set_global_customer($_POST['customer_id']);
 
 //------------------------------------------------------------------------------------------------
@@ -300,7 +300,6 @@ $table->set_marker('check_overdue', _("Marked items are overdue."));
 
 $table->width = "85%";
 
-start_form();
 display_db_pager($table);
 
 end_form();

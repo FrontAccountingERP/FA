@@ -38,7 +38,6 @@ start_form();
     echo "<br>";
     check(_("Show Settled Items:"), 'ShowSettled', null, true);
 	echo "</center><br><br>";
-	end_form();
 	set_global_supplier($_POST['supplier_id']);
 
 	if (isset($_POST['supplier_id']) && ($_POST['supplier_id'] == ALL_TEXT)) 
@@ -112,7 +111,6 @@ $table =& new_db_pager('alloc_tbl', $sql, $cols);
 $table->set_marker('check_settled', _("Marked items are settled."), 'settledbg', 'settledfg');
 
 $table->width = "80%";
-start_form();
 
 display_db_pager($table);
 

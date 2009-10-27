@@ -71,7 +71,6 @@ stock_items_list_cells(_("Item:"), 'SelectStockFromList', null, true);
 submit_cells('SearchOrders', _("Search"),'',_('Select documents'), 'default');
 end_row();
 end_table();
-end_form();
 //---------------------------------------------------------------------------------------------
 function trans_view($trans)
 {
@@ -188,7 +187,6 @@ $table =& new_db_pager('orders_tbl', $sql, $cols);
 $table->set_marker('check_overdue', _("Marked orders have overdue items."));
 
 $table->width = "80%";
-start_form();
 
 display_db_pager($table);
 

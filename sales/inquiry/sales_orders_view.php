@@ -242,7 +242,6 @@ hidden('type', $trans_type);
 end_row();
 
 end_table(1);
-end_form();
 //---------------------------------------------------------------------------------------------
 //	Orders inquiry table
 //
@@ -373,7 +372,6 @@ $table =& new_db_pager('orders_tbl', $sql, $cols);
 $table->set_marker('check_overdue', _("Marked items are overdue."));
 
 $table->width = "80%";
-start_form();
 
 display_db_pager($table);
 submit_center('Update', _("Update"), true, '', null);

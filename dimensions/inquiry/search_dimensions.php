@@ -90,8 +90,6 @@ submit_cells('SearchOrders', _("Search"), '', '', 'default');
 end_row();
 end_table();
 
-end_form();
-
 $dim = get_company_pref('use_dimension');
 
 function view_link($row) 
@@ -188,7 +186,6 @@ $table =& new_db_pager('dim_tbl', $sql, $cols);
 $table->set_marker('is_overdue', _("Marked dimensions are overdue."));
 
 $table->width = "80%";
-start_form();
 
 display_db_pager($table);
 

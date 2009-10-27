@@ -69,7 +69,6 @@ stock_items_list_cells(_("for item:"), 'SelectStockFromList', null, true);
 submit_cells('SearchOrders', _("Search"),'',_('Select documents'), 'default');
 end_row();
 end_table();
-end_form();
 //---------------------------------------------------------------------------------------------
 if (isset($_POST['order_number']))
 {
@@ -171,7 +170,6 @@ if (get_post('StockLocation') != $all_items) {
 $table =& new_db_pager('orders_tbl', $sql, $cols);
 
 $table->width = "80%";
-start_form();
 
 display_db_pager($table);
 

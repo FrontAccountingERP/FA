@@ -54,7 +54,6 @@ set_global_customer($_POST['customer_id']);
 
 end_row();
 end_table();
-end_form();
 //------------------------------------------------------------------------------------------------
 function check_overdue($row)
 {
@@ -225,7 +224,6 @@ $table =& new_db_pager('doc_tbl', $sql, $cols);
 $table->set_marker('check_overdue', _("Marked items are overdue."));
 
 $table->width = "80%";
-start_form();
 
 display_db_pager($table);
 
