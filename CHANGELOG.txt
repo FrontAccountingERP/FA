@@ -19,6 +19,12 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+28-Oct-2009 Joe Hunt
+! Changed report Annual Expense Breakdown to follow the fiscal year instead of 
+  calendar year. The year selector selects the start of the fiscal year.
+  Only the last 12 months are shown.
+$ /reporting/rep705.php
+
 27-Oct-2009 Joe Hunt
 # Database error when updating item.
 $ /inventory/includes/db/items_db.inc

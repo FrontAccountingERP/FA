@@ -29,10 +29,10 @@ print_annual_expense_breakdown();
 
 //----------------------------------------------------------------------------------------------------
 
-function getPeriods($year, $account, $dimension, $dimension2)
+function getPeriods($row, $account, $dimension, $dimension2)
 {
-	$yr = $year;
-	$mo = 12;
+	$yr = $row['yr'];
+	$mo = $row['mo'];
 	$date13 = date('Y-m-d',mktime(0,0,0,$mo+1,1,$yr));
 	$date12 = date('Y-m-d',mktime(0,0,0,$mo,1,$yr));
 	$date11 = date('Y-m-d',mktime(0,0,0,$mo-1,1,$yr));
@@ -115,8 +115,12 @@ function print_annual_expense_breakdown()
 	//$yr = date('Y');
 	//$mo = date('m'):
 	// from now
-	$yr = $year;
-	$mo = 12;
+	$sql = "SELECT YEAR(end) AS yr, MONTH(end) AS mo FROM ".TB_PREF."fiscal_year WHERE YEAR(begin)=".db_escape($year);
+	$result = db_query($sql, "could not get fiscal year");
+	$row = db_fetch($result);
+	
+	$yr = $row['yr'];
+	$mo = $row['mo'];
 	$da = 1;
 	if ($date_system == 1)
 		list($yr, $mo, $da) = jalali_to_gregorian($yr, $mo, $da);
@@ -211,7 +215,7 @@ function print_annual_expense_breakdown()
 
 		if ($account['account_code'] != null)
 		{
-			$bal = getPeriods($year, $account["account_code"], $dimension, $dimension2);
+			$bal = getPeriods($row, $account["account_code"], $dimension, $dimension2);
 			if (!$bal['per01'] && !$bal['per02'] && !$bal['per03'] && !$bal['per04'] &&
 				!$bal['per05'] && !$bal['per06'] && !$bal['per07'] && !$bal['per08'] &&
 				!$bal['per09'] && !$bal['per10'] && !$bal['per11'] && !$bal['per12'])
