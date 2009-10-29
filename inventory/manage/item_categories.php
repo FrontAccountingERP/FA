@@ -13,7 +13,7 @@ $page_security = 'SA_ITEMCATEGORY';
 $path_to_root = "../..";
 include($path_to_root . "/includes/session.inc");
 
-page(_("Item Categories"));
+page(_($help_context = "Item Categories"));
 
 include_once($path_to_root . "/includes/ui.inc");
 

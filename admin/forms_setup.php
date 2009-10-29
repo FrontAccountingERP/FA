@@ -13,7 +13,7 @@ $page_security = 'SA_FORMSETUP';
 $path_to_root = "..";
 include($path_to_root . "/includes/session.inc");
 
-page(_("Forms Setup"));
+page(_($help_context = "Forms Setup"));
 
 include($path_to_root . "/includes/ui.inc");
 

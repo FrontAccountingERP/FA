@@ -36,10 +36,10 @@ if ($use_date_picker) {
 
 if (isset($_GET['ModifyCredit'])) {
 	$_SESSION['page_title'] = sprintf(_("Modifying Credit Invoice # %d."), $_GET['ModifyCredit']);
-	$help_page_title =_("Modifying Credit Invoice");
+	$help_context = "Modifying Credit Invoice";
 	processing_start();
 } elseif (isset($_GET['InvoiceNumber'])) {
-	$_SESSION['page_title'] = _("Credit all or part of an Invoice");
+	$_SESSION['page_title'] = _($help_context = "Credit all or part of an Invoice");
 	processing_start();
 }
 page($_SESSION['page_title'], false, false, "", $js);

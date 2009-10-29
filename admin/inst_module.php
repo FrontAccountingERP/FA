@@ -13,7 +13,7 @@ $page_security = 'SA_CREATEMODULES';
 $path_to_root="..";
 include_once($path_to_root . "/includes/session.inc");
 
-page(_("Install/Activate extensions"));
+page(_($help_context = "Install/Activate extensions"));
 
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/admin/db/company_db.inc");

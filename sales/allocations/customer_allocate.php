@@ -25,7 +25,7 @@ if ($use_popup_windows)
 
 add_js_file('allocate.js');
 
-page(_("Allocate Customer Payment or Credit Note"), false, false, "", $js);
+page(_($help_context = "Allocate Customer Payment or Credit Note"), false, false, "", $js);
 
 //--------------------------------------------------------------------------------
 

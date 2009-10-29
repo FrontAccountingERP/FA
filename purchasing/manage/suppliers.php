@@ -13,7 +13,7 @@ $page_security = 'SA_SUPPLIER';
 $path_to_root = "../..";
 include($path_to_root . "/includes/session.inc");
 
-page(_("Suppliers"), @$_REQUEST['popup']);
+page(_($help_context = "Suppliers"), @$_REQUEST['popup']);
 
 //include($path_to_root . "/includes/date_functions.inc");
 

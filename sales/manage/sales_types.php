@@ -13,7 +13,7 @@ $page_security = 'SA_SALESTYPES';
 $path_to_root = "../..";
 include_once($path_to_root . "/includes/session.inc");
 
-page(_("Sales Types"));
+page(_($help_context = "Sales Types"));
 
 include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/sales/includes/db/sales_types_db.inc");

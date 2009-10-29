@@ -26,12 +26,12 @@ if ($use_date_picker)
 if (isset($_GET['OutstandingOnly']) && ($_GET['OutstandingOnly'] == true))
 {
 	$_POST['OutstandingOnly'] = true;
-	page(_("Search Not Invoiced Deliveries"), false, false, "", $js);
+	page(_($help_context = "Search Not Invoiced Deliveries"), false, false, "", $js);
 }
 else
 {
 	$_POST['OutstandingOnly'] = false;
-	page(_("Search All Deliveries"), false, false, "", $js);
+	page(_($help_context = "Search All Deliveries"), false, false, "", $js);
 }
 
 if (isset($_GET['selected_customer']))

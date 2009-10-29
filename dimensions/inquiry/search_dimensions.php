@@ -26,12 +26,12 @@ if ($use_date_picker)
 if (isset($_GET['outstanding_only']) && $_GET['outstanding_only'])
 {
 	$outstanding_only = 1;
-	page(_("Search Outstanding Dimensions"), false, false, "", $js);
+	page(_($help_context = "Search Outstanding Dimensions"), false, false, "", $js);
 }
 else
 {
 	$outstanding_only = 0;
-	page(_("Search Dimensions"), false, false, "", $js);
+	page(_($help_context = "Search Dimensions"), false, false, "", $js);
 }
 //-----------------------------------------------------------------------------------
 // Ajax updates

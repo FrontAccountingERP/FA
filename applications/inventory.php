@@ -14,7 +14,7 @@ class inventory_app extends application
 	function inventory_app() 
 	{
 		global $installed_extensions;
-		$this->application("stock",_("&Items and Inventory"));
+		$this->application("stock", _($this->help_context = "&Items and Inventory"));
 
 		$this->add_module(_("Transactions"));
 		$this->add_lapp_function(0, _("Inventory Location &Transfers"),

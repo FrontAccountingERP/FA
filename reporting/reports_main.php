@@ -20,7 +20,7 @@ include_once($path_to_root . "/reporting/includes/reports_classes.inc");
 $js = "";
 if ($use_date_picker)
 	$js .= get_js_date_picker();
-page(_("Reports and Analysis"), false, false, "", $js);
+page(_($help_context = "Reports and Analysis"), false, false, "", $js);
 
 $reports = new BoxReports;
 

@@ -35,11 +35,11 @@ if ($use_date_picker) {
 
 if (isset($_GET['ModifyInvoice'])) {
 	$_SESSION['page_title'] = sprintf(_("Modifying Sales Invoice # %d.") ,$_GET['ModifyInvoice']);
-	$help_page_title = _("Modifying Sales Invoice");
+	$help_context = "Modifying Sales Invoice";
 } elseif (isset($_GET['DeliveryNumber'])) {
-	$_SESSION['page_title'] = _("Issue an Invoice for Delivery Note");
+	$_SESSION['page_title'] = _($help_context = "Issue an Invoice for Delivery Note");
 } elseif (isset($_GET['BatchInvoice'])) {
-	$_SESSION['page_title'] = _("Issue Batch Invoice for Delivery Notes");
+	$_SESSION['page_title'] = _($help_context = "Issue Batch Invoice for Delivery Notes");
 }
 
 page($_SESSION['page_title'], false, false, "", $js);

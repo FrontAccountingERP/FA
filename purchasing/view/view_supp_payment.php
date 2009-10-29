@@ -19,7 +19,7 @@ include_once($path_to_root . "/purchasing/includes/purchasing_db.inc");
 $js = "";
 if ($use_popup_windows)
 	$js .= get_js_open_window(900, 500);
-page(_("View Payment to Supplier"), true, false, "", $js);
+page(_($help_context = "View Payment to Supplier"), true, false, "", $js);
 
 if (isset($_GET["trans_no"]))
 {

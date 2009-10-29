@@ -26,7 +26,7 @@ if ($use_popup_windows)
 	$js .= get_js_open_window(800, 500);
 if ($use_date_picker)
 	$js .= get_js_date_picker();
-page(_("Issue Items to Work Order"), false, false, "", $js);
+page(_($help_context = "Issue Items to Work Order"), false, false, "", $js);
 
 //-----------------------------------------------------------------------------------------------
 

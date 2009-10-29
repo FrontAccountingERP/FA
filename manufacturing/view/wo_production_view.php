@@ -17,7 +17,7 @@ include_once($path_to_root . "/includes/session.inc");
 $js = "";
 if ($use_popup_windows)
 	$js .= get_js_open_window(900, 500);
-page(_("View Work Order Production"), true, false, "", $js);
+page(_($help_context = "View Work Order Production"), true, false, "", $js);
 
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/manufacturing.inc");

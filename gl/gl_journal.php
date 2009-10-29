@@ -31,9 +31,9 @@ if ($use_date_picker)
 if (isset($_GET['ModifyGL'])) {
 	$_SESSION['page_title'] = sprintf(_("Modifying Journal Transaction # %d."), 
 		$_GET['trans_no']);
-	$help_page_title =_("Modifying Journal Transaction");
+	$help_context = "Modifying Journal Transaction";
 } else
-	$_SESSION['page_title'] = _("Journal Entry");
+	$_SESSION['page_title'] = _($help_context = "Journal Entry");
 
 page($_SESSION['page_title'], false, false,'', $js);
 //--------------------------------------------------------------------------------------------------

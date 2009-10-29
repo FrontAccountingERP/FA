@@ -23,7 +23,7 @@ include_once($path_to_root . "/reporting/includes/reporting.inc");
 $js = "";
 if ($use_popup_windows)
 	$js .= get_js_open_window(800, 500);
-page(_("View or Print Transactions"), false, false, "", $js);
+page(_($help_context = "View or Print Transactions"), false, false, "", $js);
 
 //----------------------------------------------------------------------------------------
 function view_link($trans)

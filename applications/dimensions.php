@@ -15,7 +15,7 @@ class dimensions_app extends application
 	{
 		global $installed_extensions;
 		$dim = get_company_pref('use_dimension');
-		$this->application("proj",_("&Dimensions"), $dim);
+		$this->application("proj", _($this->help_context = "&Dimensions"), $dim);
 
 		if ($dim > 0)
 		{

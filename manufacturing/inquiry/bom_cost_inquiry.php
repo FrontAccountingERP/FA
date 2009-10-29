@@ -13,7 +13,7 @@ $page_security = 'SA_WORKORDERCOST';
 $path_to_root = "../..";
 include_once($path_to_root . "/includes/session.inc");
 
-page(_("Costed Bill Of Material Inquiry"));
+page(_($help_context = "Costed Bill Of Material Inquiry"));
 
 include_once($path_to_root . "/manufacturing/includes/manufacturing_ui.inc");
 include_once($path_to_root . "/includes/manufacturing.inc");

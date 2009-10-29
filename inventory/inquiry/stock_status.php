@@ -15,9 +15,9 @@ include_once($path_to_root . "/includes/session.inc");
 
 if (isset($_GET['stock_id'])){
 	$_POST['stock_id'] = $_GET['stock_id'];
-	page(_("Inventory Item Status"), true);
+	page(_($help_context = "Inventory Item Status"), true);
 } else {
-	page(_("Inventory Item Status"));
+	page(_($help_context = "Inventory Item Status"));
 }
 
 include_once($path_to_root . "/includes/date_functions.inc");

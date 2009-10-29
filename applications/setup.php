@@ -14,7 +14,7 @@ class setup_app extends application
 	function setup_app()
 	{
 		global $installed_extensions;
-		$this->application("system",_("S&etup"));
+		$this->application("system", _($this->help_context = "S&etup"));
 
 		$this->add_module(_("Company Setup"));
 		$this->add_lapp_function(0, _("&Company Setup"),

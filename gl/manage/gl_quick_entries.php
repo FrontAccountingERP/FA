@@ -13,7 +13,7 @@ $page_security = 'SA_QUICKENTRY';
 $path_to_root = "../..";
 include($path_to_root . "/includes/session.inc");
 
-page(_("Quick Entries"));
+page(_($help_context = "Quick Entries"));
 
 include($path_to_root . "/gl/includes/gl_db.inc");
 

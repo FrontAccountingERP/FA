@@ -15,7 +15,7 @@ $path_to_root="../..";
 include($path_to_root . "/includes/db_pager.inc");
 include($path_to_root . "/includes/session.inc");
 
-page(_("Customer Branches"), @$_REQUEST['popup']);
+page(_($help_context = "Customer Branches"), @$_REQUEST['popup']);
 
 include($path_to_root . "/includes/ui.inc");
 

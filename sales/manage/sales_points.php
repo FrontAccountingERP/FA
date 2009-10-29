@@ -13,7 +13,7 @@ $page_security = 'SA_POSSETUP';
 $path_to_root = "../..";
 include_once($path_to_root . "/includes/session.inc");
 
-page(_("POS settings"));
+page(_($help_context = "POS settings"));
 
 include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/sales/includes/db/sales_points_db.inc");

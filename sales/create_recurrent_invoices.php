@@ -21,7 +21,7 @@ $js = "";
 if ($use_popup_windows)
 	$js .= get_js_open_window(900, 600);
 
-page(_("Create and Print Recurrent Invoices"), false, false, "", $js);
+page(_($help_context = "Create and Print Recurrent Invoices"), false, false, "", $js);
 
 function set_last_sent($id, $date)
 {

@@ -17,7 +17,7 @@ include_once($path_to_root . "/includes/session.inc");
 $js = "";
 if ($use_date_picker)
 	$js .= get_js_date_picker();
-page(_("View Dimension"), true, false, "", $js);
+page(_($help_context = "View Dimension"), true, false, "", $js);
 
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/data_checks.inc");

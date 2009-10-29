@@ -24,11 +24,11 @@ if ($use_date_picker)
 
 if (isset($_GET['ModifyOrderNumber'])) 
 {
-	page(_("Modify Purchase Order #") . $_GET['ModifyOrderNumber'], false, false, "", $js);
+	page(_($help_context = "Modify Purchase Order #") . $_GET['ModifyOrderNumber'], false, false, "", $js);
 } 
 else 
 {
-	page(_("Purchase Order Entry"), false, false, "", $js);
+	page(_($help_context = "Purchase Order Entry"), false, false, "", $js);
 }
 
 //---------------------------------------------------------------------------------------------------

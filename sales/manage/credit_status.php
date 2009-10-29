@@ -13,7 +13,7 @@ $page_security = 'SA_CRSTATUS';
 $path_to_root = "../..";
 include($path_to_root . "/includes/session.inc");
 
-page(_("Credit Status")); 
+page(_($help_context = "Credit Status")); 
 
 include($path_to_root . "/sales/includes/db/credit_status_db.inc");
 

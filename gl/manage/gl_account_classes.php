@@ -13,7 +13,7 @@ $page_security = 'SA_GLACCOUNTCLASS';
 $path_to_root = "../..";
 include($path_to_root . "/includes/session.inc");
 
-page(_("GL Account Classes"));
+page(_($help_context = "GL Account Classes"));
 
 include($path_to_root . "/gl/includes/gl_db.inc");
 

@@ -13,7 +13,7 @@ $page_security = 'SA_CUSTOMER';
 $path_to_root = "../..";
 
 include_once($path_to_root . "/includes/session.inc");
-page(_("Customers"), @$_REQUEST['popup']); 
+page(_($help_context = "Customers"), @$_REQUEST['popup']); 
 
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/banking.inc");

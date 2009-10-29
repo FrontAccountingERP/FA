@@ -23,7 +23,7 @@ include_once($path_to_root . "/inventory/includes/inventory_db.inc");
 $js = "";
 if ($use_popup_windows)
 	$js .= get_js_open_window(900, 500);
-page(_("Inventory Item Cost Update"), false, false, "", $js);
+page(_($help_context = "Inventory Item Cost Update"), false, false, "", $js);
 
 //--------------------------------------------------------------------------------------
 

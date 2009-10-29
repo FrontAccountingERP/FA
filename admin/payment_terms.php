@@ -13,7 +13,7 @@ $page_security = 'SA_PAYTERMS';
 $path_to_root="..";
 include($path_to_root . "/includes/session.inc");
 
-page(_("Payment Terms"));
+page(_($help_context = "Payment Terms"));
 
 include($path_to_root . "/includes/ui.inc");
 

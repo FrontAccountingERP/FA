@@ -13,7 +13,7 @@ $page_security = 'SA_REORDER';
 $path_to_root = "..";
 include_once($path_to_root . "/includes/session.inc");
 
-page(_("Reorder Levels"));
+page(_($help_context = "Reorder Levels"));
 
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");

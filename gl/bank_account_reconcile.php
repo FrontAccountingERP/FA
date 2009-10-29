@@ -30,7 +30,7 @@ if ($use_date_picker)
 
 add_js_file('reconcile.js');
 
-page(_("Reconcile Bank Account"), false, false, "", $js);
+page(_($help_context = "Reconcile Bank Account"), false, false, "", $js);
 
 check_db_has_bank_accounts(_("There are no bank accounts defined in the system."));
 

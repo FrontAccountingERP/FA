@@ -23,12 +23,12 @@ if (isset($_GET['outstanding_only']) && ($_GET['outstanding_only'] == true))
 {
 // curently outstanding simply means not closed
 	$outstanding_only = 1;
-	page(_("Search Outstanding Work Orders"), false, false, "", $js);
+	page(_($help_context = "Search Outstanding Work Orders"), false, false, "", $js);
 }
 else
 {
 	$outstanding_only = 0;
-	page(_("Search Work Orders"), false, false, "", $js);
+	page(_($help_context = "Search Work Orders"), false, false, "", $js);
 }
 //-----------------------------------------------------------------------------------
 // Ajax updates

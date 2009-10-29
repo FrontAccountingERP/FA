@@ -18,7 +18,7 @@ include_once($path_to_root . "/admin/db/company_db.inc");
 include_once($path_to_root . "/admin/db/maintenance_db.inc");
 include_once($path_to_root . "/includes/ui.inc");
 
-page(_("Create/Update Company"));
+page(_($help_context = "Create/Update Company"));
 
 $comp_subdirs = array('images', 'pdf_files', 'backup','js_cache', 'reporting', 'attachments');
 

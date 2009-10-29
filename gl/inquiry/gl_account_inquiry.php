@@ -27,7 +27,7 @@ if ($use_popup_windows)
 if ($use_date_picker)
 	$js .= get_js_date_picker();
 
-page(_("General Ledger Account Inquiry"), false, false, '', $js);
+page(_($help_context = "General Ledger Account Inquiry"), false, false, '', $js);
 
 //----------------------------------------------------------------------------------------------------
 // Ajax updates

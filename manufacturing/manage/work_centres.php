@@ -13,7 +13,7 @@ $page_security = 'SA_WORKCENTRES';
 $path_to_root = "../..";
 include($path_to_root . "/includes/session.inc");
 
-page(_("Work Centres"));
+page(_($help_context = "Work Centres"));
 
 include($path_to_root . "/manufacturing/includes/manufacturing_db.inc");
 

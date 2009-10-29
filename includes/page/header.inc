@@ -9,31 +9,38 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-function help_url($title, $app)
+/*
+	If no context is set current page/menu screen is selected.
+*/
+function help_url($context=null)
 {
 
-	global $help_page_url, $help_base_url, $applications, $help_page_title;
+	global $help_base_url, $help_context, $old_style_help;
 
-	if (isset($help_page_url))
+	$country = $_SESSION['language']->code;
+	$clean = 0;
+	
+	if ($context!=null)
 	{
-		return $help_base_url.$help_page_url;
+		$help_page_url = $context;
 	}
-
-	$help_page_url = '';
-	if (isset($help_page_title))
+	elseif (isset($help_context))
 	{
-		$help_page_url = $help_page_title;
-	}
-	elseif ($title==_("Main Menu"))
+		$help_page_url = $help_context;
+	} else // main menu
 	{
-		$help_page_url = access_string($_SESSION['App']->applications[$app]->name, true);
-	}
-	else
-	{
-		$help_page_url = $title;
+		$app = $_SESSION['sel_app'];
+		$help_page_url = $_SESSION['App']->applications[$app]->help_context;
+		$clean = 1;
 	}
 
-	return $help_base_url.urlencode(str_replace(' ', '', ucwords($help_page_url)));
+	if (@$old_style_help)
+		$help_page_url = _($help_page_url);
+
+	if ($clean)
+		$help_page_url = access_string($help_page_url, true);
+
+	return $help_base_url.urlencode(str_replace(' ', '', ucwords($help_page_url))).'&lang='.$country;
 }
 
 function send_scripts()

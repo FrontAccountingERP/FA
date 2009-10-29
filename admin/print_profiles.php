@@ -15,7 +15,7 @@ include($path_to_root . "/includes/session.inc");
 include($path_to_root . "/admin/db/printers_db.inc");
 include($path_to_root . "/includes/ui.inc");
 
-page(_("Printing Profiles"));
+page(_($help_context = "Printing Profiles"));
 
 $selected_id = get_post('profile_id','');
 

@@ -14,7 +14,7 @@ $path_to_root = "..";
 
 include($path_to_root . "/includes/session.inc");
 
-page(_("Tax Groups"));
+page(_($help_context = "Tax Groups"));
 
 include_once($path_to_root . "/includes/data_checks.inc");
 include_once($path_to_root . "/includes/ui.inc");

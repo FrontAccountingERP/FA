@@ -13,7 +13,7 @@ $page_security = 'SA_INVENTORYMOVETYPE';
 $path_to_root = "../..";
 include($path_to_root . "/includes/session.inc");
 
-page(_("Inventory Movement Types"));
+page(_($help_context = "Inventory Movement Types"));
 
 include_once($path_to_root . "/inventory/includes/inventory_db.inc");
 

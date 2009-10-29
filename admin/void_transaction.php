@@ -24,7 +24,7 @@ if ($use_date_picker)
 if ($use_popup_windows)
 	$js .= get_js_open_window(800, 500);
 	
-page(_("Void a Transaction"), false, false, "", $js);
+page(_($help_context = "Void a Transaction"), false, false, "", $js);
 
 //----------------------------------------------------------------------------------------
 function exist_transaction($type, $type_no)

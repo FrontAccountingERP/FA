@@ -15,7 +15,7 @@ include_once($path_to_root . "/includes/session.inc");
 
 add_access_extensions();
 
-page(_("Access setup"));
+page(_($help_context = "Access setup"));
 
 include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/includes/access_levels.inc");

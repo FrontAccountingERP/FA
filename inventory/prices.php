@@ -13,7 +13,7 @@ $page_security = 'SA_SALESPRICE';
 $path_to_root = "..";
 include_once($path_to_root . "/includes/session.inc");
 
-page(_("Inventory Item Sales prices"));
+page(_($help_context = "Inventory Item Sales prices"));
 
 include_once($path_to_root . "/sales/includes/sales_db.inc");
 include_once($path_to_root . "/sales/includes/db/sales_types_db.inc");

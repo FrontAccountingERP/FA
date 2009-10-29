@@ -30,11 +30,11 @@ if ($use_date_picker)
 	$js .= get_js_date_picker();
 
 if (isset($_GET['NewPayment'])) {
-	$_SESSION['page_title'] = _("Bank Account Payment Entry");
+	$_SESSION['page_title'] = _($help_context = "Bank Account Payment Entry");
 	handle_new_order(ST_BANKPAYMENT);
 
 } else if(isset($_GET['NewDeposit'])) {
-	$_SESSION['page_title'] = _("Bank Account Deposit Entry");
+	$_SESSION['page_title'] = _($help_context = "Bank Account Deposit Entry");
 	handle_new_order(ST_BANKDEPOSIT);
 }
 page($_SESSION['page_title'], false, false, '', $js);

@@ -13,7 +13,7 @@ $page_security = 'SA_SALESGROUP';
 $path_to_root = "../..";
 include($path_to_root . "/includes/session.inc");
 
-page(_("Sales Groups"));
+page(_($help_context = "Sales Groups"));
 
 include($path_to_root . "/includes/ui.inc");
 

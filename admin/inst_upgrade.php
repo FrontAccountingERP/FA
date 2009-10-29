@@ -13,7 +13,7 @@ $page_security = 'SA_SOFTWAREUPGRADE';
 $path_to_root="..";
 include_once($path_to_root . "/includes/session.inc");
 
-page(_("Software Upgrade"));
+page(_($help_context = "Software Upgrade"));
 
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/admin/db/company_db.inc");

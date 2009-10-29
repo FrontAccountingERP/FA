@@ -29,7 +29,7 @@ if ($use_date_picker) {
 }
 add_js_file('payalloc.js');
 
-page(_("Customer Payment Entry"), false, false, "", $js);
+page(_($help_context = "Customer Payment Entry"), false, false, "", $js);
 
 //----------------------------------------------------------------------------------------------
 

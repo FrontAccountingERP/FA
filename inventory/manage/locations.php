@@ -13,7 +13,7 @@ $page_security = 'SA_INVENTORYLOCATION';
 $path_to_root = "../..";
 include($path_to_root . "/includes/session.inc");
 
-page(_("Inventory Locations"));
+page(_($help_context = "Inventory Locations"));
 
 include_once($path_to_root . "/includes/ui.inc");
 

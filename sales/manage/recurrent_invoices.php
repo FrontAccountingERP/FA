@@ -20,7 +20,7 @@ if ($use_popup_windows)
 if ($use_date_picker)
 	$js .= get_js_date_picker();
 
-page(_("Recurrent Invoices"), false, false, "", $js);
+page(_($help_context = "Recurrent Invoices"), false, false, "", $js);
 
 simple_page_mode(true);
 

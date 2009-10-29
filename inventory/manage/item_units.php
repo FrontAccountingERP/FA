@@ -13,7 +13,7 @@ $page_security = 'SA_UOM';
 $path_to_root = "../..";
 include($path_to_root . "/includes/session.inc");
 
-page(_("Units of Measure"));
+page(_($help_context = "Units of Measure"));
 
 include_once($path_to_root . "/includes/ui.inc");
 

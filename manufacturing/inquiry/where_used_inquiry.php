@@ -14,7 +14,7 @@ $path_to_root = "../..";
 include($path_to_root . "/includes/db_pager.inc");
 include($path_to_root . "/includes/session.inc");
 
-page(_("Inventory Item Where Used Inquiry"));
+page(_($help_context = "Inventory Item Where Used Inquiry"));
 
 include($path_to_root . "/includes/ui.inc");
 

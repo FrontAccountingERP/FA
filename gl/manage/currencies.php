@@ -13,7 +13,7 @@ $page_security = 'SA_CURRENCY';
 $path_to_root = "../..";
 include_once($path_to_root . "/includes/session.inc");
 
-page(_("Currencies"));
+page(_($help_context = "Currencies"));
 
 include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/includes/banking.inc");

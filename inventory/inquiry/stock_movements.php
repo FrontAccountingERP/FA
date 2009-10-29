@@ -24,7 +24,7 @@ if ($use_popup_windows)
 if ($use_date_picker)
 	$js .= get_js_date_picker();
 
-page(_("Inventory Item Movement"), false, false, "", $js);
+page(_($help_context = "Inventory Item Movement"), false, false, "", $js);
 //------------------------------------------------------------------------------------------------
 
 check_db_has_stock_items(_("There are no items defined in the system."));

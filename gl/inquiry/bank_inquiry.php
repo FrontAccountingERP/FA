@@ -25,7 +25,7 @@ if ($use_popup_windows)
 	$js .= get_js_open_window(800, 500);
 if ($use_date_picker)
 	$js .= get_js_date_picker();
-page(_("Bank Statement"), false, false, "", $js);
+page(_($help_context = "Bank Statement"), false, false, "", $js);
 
 check_db_has_bank_accounts(_("There are no bank accounts defined in the system."));
 

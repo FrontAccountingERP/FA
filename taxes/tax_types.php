@@ -13,7 +13,7 @@ $page_security = 'SA_TAXRATES';
 $path_to_root = "..";
 
 include($path_to_root . "/includes/session.inc");
-page(_("Tax Types"));
+page(_($help_context = "Tax Types"));
 
 include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/taxes/db/tax_types_db.inc");

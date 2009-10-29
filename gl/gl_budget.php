@@ -15,7 +15,7 @@ include($path_to_root . "/includes/session.inc");
 
 add_js_file('budget.js');
 
-page(_("Budget Entry"));
+page(_($help_context = "Budget Entry"));
 
 include($path_to_root . "/includes/ui.inc");
 include($path_to_root . "/gl/includes/gl_db.inc");

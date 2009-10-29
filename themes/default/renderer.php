@@ -14,7 +14,7 @@
 		function wa_header()
 		{
 //			add_js_ufile("themes/default/renderer.js");
-			page(_("Main Menu"), false, true);
+			page(_($help_context = "Main Menu"), false, true);
 		}
 
 		function wa_footer()
@@ -68,7 +68,7 @@
 
 				if ($help_base_url != null)
 				{
-					echo "$himg<a target = '_blank' onclick=" .'"'."javascript:openWindow(this.href,this.target); return false;".'" '. "href='". help_url($title, $sel_app)."'>" . _("Help") . "</a>&nbsp;&nbsp;&nbsp;";
+					echo "$himg<a target = '_blank' onclick=" .'"'."javascript:openWindow(this.href,this.target); return false;".'" '. "href='". help_url()."'>" . _("Help") . "</a>&nbsp;&nbsp;&nbsp;";
 				}
 				echo "$img<a href='$local_path_to_root/access/logout.php?'>" . _("Logout") . "</a>&nbsp;&nbsp;&nbsp;";
 				echo "</td></tr><tr><td colspan=3>";

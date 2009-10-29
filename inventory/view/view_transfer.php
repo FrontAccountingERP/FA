@@ -14,7 +14,7 @@ $path_to_root = "../..";
 
 include($path_to_root . "/includes/session.inc");
 
-page(_("View Inventory Transfer"), true);
+page(_($help_context = "View Inventory Transfer"), true);
 
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");

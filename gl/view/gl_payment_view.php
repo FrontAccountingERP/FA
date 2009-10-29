@@ -14,7 +14,7 @@ $path_to_root = "../..";
 
 include($path_to_root . "/includes/session.inc");
 
-page(_("View Bank Payment"), true);
+page(_($help_context = "View Bank Payment"), true);
 
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");

@@ -42,11 +42,11 @@ if (!isset($_POST['type'])) {
 switch ($_POST['type']) {
 	case TAG_ACCOUNT:
 		// Account tags
-		$_SESSION['page_title'] = _("Account Tags");
+		$_SESSION['page_title'] = _($help_context = "Account Tags");
 		break;
 	case TAG_DIMENSION:
 		// Dimension tags
-		$_SESSION['page_title'] = _("Dimension Tags");
+		$_SESSION['page_title'] = _($help_context = "Dimension Tags");
 }
 
 page($_SESSION['page_title']);

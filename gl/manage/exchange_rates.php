@@ -21,7 +21,7 @@ include_once($path_to_root . "/includes/banking.inc");
 $js = "";
 if ($use_date_picker)
 	$js .= get_js_date_picker();
-page(_("Exchange Rates"), false, false, "", $js);
+page(_($help_context = "Exchange Rates"), false, false, "", $js);
 
 simple_page_mode(false);
 

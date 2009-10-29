@@ -24,7 +24,7 @@ if ($use_popup_windows)
 	$js .= get_js_open_window(800, 500);
 if ($use_date_picker)
 	$js .= get_js_date_picker();
-page(_("Work Order Release to Manufacturing"), false, false, "", $js);
+page(_($help_context = "Work Order Release to Manufacturing"), false, false, "", $js);
 
 if (isset($_GET["trans_no"]))
 {

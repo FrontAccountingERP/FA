@@ -93,6 +93,7 @@
 	{
 		var $id;
 		var $name;
+		var $help_context;
 		var $modules;
 		var $enabled;
 		

@@ -13,7 +13,7 @@ $page_security = 'SA_BANKACCOUNT';
 $path_to_root = "../..";
 include($path_to_root . "/includes/session.inc");
 
-page(_("Bank Accounts"));
+page(_($help_context = "Bank Accounts"));
 
 include($path_to_root . "/includes/ui.inc");
 

@@ -53,36 +53,36 @@ if ($use_date_picker) {
 
 if (isset($_GET['NewDelivery']) && is_numeric($_GET['NewDelivery'])) {
 
-	$_SESSION['page_title'] = _("Direct Sales Delivery");
+	$_SESSION['page_title'] = _($help_context = "Direct Sales Delivery");
 	create_cart(ST_CUSTDELIVERY, $_GET['NewDelivery']);
 
 } elseif (isset($_GET['NewInvoice']) && is_numeric($_GET['NewInvoice'])) {
 
-	$_SESSION['page_title'] = _("Direct Sales Invoice");
+	$_SESSION['page_title'] = _($help_context = "Direct Sales Invoice");
 	create_cart(ST_SALESINVOICE, $_GET['NewInvoice']);
 
 } elseif (isset($_GET['ModifyOrderNumber']) && is_numeric($_GET['ModifyOrderNumber'])) {
 
-	$help_page_title = _('Modifying Sales Order');
+	$help_context = 'Modifying Sales Order';
 	$_SESSION['page_title'] = sprintf( _("Modifying Sales Order # %d"), $_GET['ModifyOrderNumber']);
 	create_cart(ST_SALESORDER, $_GET['ModifyOrderNumber']);
 
 } elseif (isset($_GET['ModifyQuotationNumber']) && is_numeric($_GET['ModifyQuotationNumber'])) {
 
-	$help_page_title = _('Modifying Sales Quotation');
+	$help_context = 'Modifying Sales Quotation';
 	$_SESSION['page_title'] = sprintf( _("Modifying Sales Quotation # %d"), $_GET['ModifyQuotationNumber']);
 	create_cart(ST_SALESQUOTE, $_GET['ModifyQuotationNumber']);
 
 } elseif (isset($_GET['NewOrder'])) {
 
-	$_SESSION['page_title'] = _("New Sales Order Entry");
+	$_SESSION['page_title'] = _($help_context = "New Sales Order Entry");
 	create_cart(ST_SALESORDER, 0);
 } elseif (isset($_GET['NewQuotation'])) {
 
-	$_SESSION['page_title'] = _("New Sales Quotation Entry");
+	$_SESSION['page_title'] = _($help_context = "New Sales Quotation Entry");
 	create_cart(ST_SALESQUOTE, 0);
 } elseif (isset($_GET['NewQuoteToSalesOrder'])) {
-	$_SESSION['page_title'] = _("Sales Order Entry");
+	$_SESSION['page_title'] = _($help_context = "Sales Order Entry");
 	create_cart(ST_SALESQUOTE, $_GET['NewQuoteToSalesOrder']);
 }
 

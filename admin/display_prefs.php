@@ -13,7 +13,7 @@ $page_security = 'SA_SETUPDISPLAY';
 $path_to_root="..";
 include($path_to_root . "/includes/session.inc");
 
-page(_("Display Setup"));
+page(_($help_context = "Display Setup"));
 
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");

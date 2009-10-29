@@ -34,7 +34,7 @@ if (get_post('download')) {
 	exit;
 }
 
-page(_("Backup and Restore Database"), false, false, '', '');
+page(_($help_context = "Backup and Restore Database"), false, false, '', '');
 
 check_paths();
 

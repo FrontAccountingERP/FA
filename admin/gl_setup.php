@@ -13,7 +13,7 @@ $page_security = 'SA_GLSETUP';
 $path_to_root="..";
 include($path_to_root . "/includes/session.inc");
 
-page(_("System and General GL Setup"));
+page(_($help_context = "System and General GL Setup"));
 
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");

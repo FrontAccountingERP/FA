@@ -14,7 +14,7 @@ class manufacturing_app extends application
 	function manufacturing_app()
 	{
 		global $installed_extensions;
-		$this->application("manuf",_("&Manufacturing"));
+		$this->application("manuf", _($this->help_context = "&Manufacturing"));
 
 		$this->add_module(_("Transactions"));
 		$this->add_lapp_function(0, _("Work &Order Entry"),

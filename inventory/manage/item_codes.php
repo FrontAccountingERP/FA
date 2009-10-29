@@ -13,7 +13,7 @@ $page_security = 'SA_FORITEMCODE';
 $path_to_root = "../..";
 include_once($path_to_root . "/includes/session.inc");
 
-page(_("Foreign Item Codes"));
+page(_($help_context = "Foreign Item Codes"));
 
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");

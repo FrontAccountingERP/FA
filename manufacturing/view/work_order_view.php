@@ -23,7 +23,7 @@ include_once($path_to_root . "/manufacturing/includes/manufacturing_ui.inc");
 $js = "";
 if ($use_popup_windows)
 	$js .= get_js_open_window(800, 500);
-page(_("View Work Order"), true, false, "", $js);
+page(_($help_context = "View Work Order"), true, false, "", $js);
 
 //-------------------------------------------------------------------------------------------------
 $woid = 0;
