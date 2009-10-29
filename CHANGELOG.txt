@@ -19,6 +19,45 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+29-Oct-2009 Janusz Dobrowolski
+! Changed context help organization to enable use of central multilanguage wiki.
+$ /config.default.php
+  /admin/*.php
+  /applications/*.php
+  /dimensions/dimension_entry.php
+  /dimensions/inquiry/search_dimensions.php
+  /dimensions/view/view_dimension.php
+  /gl/*.php
+  /gl/inquiry/*.php
+  /gl/manage/*.php
+  /gl/view/*.php
+  /includes/page/header.inc
+  /inventory/*.php
+  /inventory/inquiry/*.php
+  /inventory/manage/*.php
+  /inventory/view/*.php
+  /manufacturing/*.php
+  /manufacturing/inquiry/*.php
+  /manufacturing/manage/*.php
+  /manufacturing/view/*.php
+  /purchasing/*.php
+  /purchasing/allocations/*.php
+  /purchasing/inquiry/*.php
+  /purchasing/manage/suppliers.php
+  /purchasing/view/*.php
+  /reporting/reports_main.php
+  /sales/*.php
+  /sales/allocations/*.php
+  /sales/inquiry/*.php
+  /sales/manage/*.php
+  /sales/view/*.php
+  /taxes/item_tax_types.php
+  /taxes/tax_groups.php
+  /taxes/tax_types.php
+  /themes/aqua/renderer.php
+  /themes/cool/renderer.php
+  /themes/default/renderer.php
+
 28-Oct-2009 Joe Hunt
 ! Changed report Annual Expense Breakdown to follow the fiscal year instead of 
   calendar year. The year selector selects the start of the fiscal year.

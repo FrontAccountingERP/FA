@@ -80,8 +80,14 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 	/* show users online discretely in the footer */
 	$show_users_online = 0;
 
- 	/* Integrated base Wiki Help URL or null if not used */
-	//$help_base_url = $path_to_root.'/modules/wiki/index.php?n='._('Help').'.';
+ 	// Wiki context help configuration
+ 	// If your help wiki use translated page titles uncomment next line
+ 	// $old_style_help = 1; // this setting is depreciated and subject to removal in next FA versions
+	// 	locally installed wiki module
+	// $help_base_url = $path_to_root.'/modules/wiki/index.php?n='._('Help').'.';
+	// 	context help feed from frontaccounting.net
+	// $help_base_url = 'http://frontaccounting.net/pmwiki/index.php?n=Help.';
+	// 	not used
 	$help_base_url = null;
 
 	/* per user data/cache directory */
