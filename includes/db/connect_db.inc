@@ -14,10 +14,7 @@ function set_global_connection()
 {
 	global $db;
 
-    if (isset($_SESSION["wa_current_user"]) && $_SESSION["wa_current_user"]->company !='')
-    	$db = $_SESSION["wa_current_user"]->get_db_connection();
-    else
-    	$db = null;
+   	$db = $_SESSION["wa_current_user"]->get_db_connection();
 }
 
 $db_duplicate_error_code = 1062;
@@ -28,7 +25,6 @@ function db_query($sql, $err_msg=null)
 {
 	global $db, $show_sql, $sql_trail, $select_trail, $go_debug;
 	
-	//echo "<br>$sql<br>";
 	if ($show_sql)
 	{
 		echo "<font face=arial size=2 color=000099><b>SQL..</b></font>";
