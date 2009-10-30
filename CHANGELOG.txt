@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+30-Oct-2009 Joe Hunt
+! Changed name on folder for global help url to fawiki.
+$ config.default.php
+
 29-Oct-2009 Janusz Dobrowolski
 ! Changed context help organization to enable use of central multilanguage wiki.
 $ /config.default.php

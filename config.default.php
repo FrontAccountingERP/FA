@@ -86,7 +86,7 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 	// 	locally installed wiki module
 	// $help_base_url = $path_to_root.'/modules/wiki/index.php?n='._('Help').'.';
 	// 	context help feed from frontaccounting.net
-	// $help_base_url = 'http://frontaccounting.net/pmwiki/index.php?n=Help.';
+	// $help_base_url = 'http://frontaccounting.net/fawiki/index.php?n=Help.';
 	// 	not used
 	$help_base_url = null;
 
