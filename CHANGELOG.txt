@@ -19,6 +19,12 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+30-Oct-2009 Janusz Dobrowolski
+# Fixed non-default company selection bug on login.
+$ /includes/session.inc
+! Code cleanup.
+$ /includes/db/connect_db.inc
+
 30-Oct-2009 Joe Hunt
 ! Changed name on folder for global help url to fawiki.
 $ config.default.php

@@ -206,8 +206,6 @@ set_error_handler('error_handler' /*, errtypes */);
 if (!isset($_SESSION["wa_current_user"]))
 	$_SESSION["wa_current_user"] = new current_user();
 
-set_global_connection();
-
 // logout.php is the only page we should have always 
 // accessable regardless of access level and current login status.
 if (strstr($_SERVER['PHP_SELF'], 'logout.php') == false){
@@ -243,7 +241,8 @@ if (strstr($_SERVER['PHP_SELF'], 'logout.php') == false){
 			$lang = &$_SESSION['language'];
 			$lang->set_language($_SESSION['language']->code);
 		}
-	}
+	} else
+		set_global_connection();
 
 	if (!$_SESSION["wa_current_user"]->old_db)
 		include_once($path_to_root . '/company/'.user_company().'/installed_extensions.php');
@@ -253,6 +252,8 @@ if (strstr($_SERVER['PHP_SELF'], 'logout.php') == false){
 		$_SESSION["App"]->init();
 	}
 }
+
+
 // POST vars cleanup needed for direct reuse.
 // We quote all values later with db_escape() before db update.
 	$_POST = strip_quotes($_POST);
