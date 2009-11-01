@@ -169,9 +169,10 @@ function show_users_online()
 {
 	global $show_users_online;
 	
-	if (!isset($show_users_online) || $show_users_online == 0)
+	if (!isset($show_users_online) || $show_users_online == 0 || !defined('TB_PREF') || !isset($_SESSION['get_text']))
 		return "";
-	if (db_num_rows(db_query("SHOW TABLES LIKE '".TB_PREF."useronline'")) == 1)
+	$result = db_query("SHOW TABLES LIKE '".TB_PREF."useronline'");	
+	if (db_num_rows($result) == 1)
 	{
 		$timeoutseconds = 120;
 

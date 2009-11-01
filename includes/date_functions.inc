@@ -13,12 +13,12 @@
 date validation and parsing functions
 
 These functions refer to the global variable defining the date format
-The date format is defined in config.php called DefaultDateFormat
+The date format is defined in config.php called dateformats
 this can be a string either "d/m/Y" for UK/Australia/New Zealand dates or
-"m/d/Y" for US/Canada format dates
+"m/d/Y" for US/Canada format dates depending on setting in preferences.
 
 */
-if(function_exists("date_default_timezone_set") and function_exists("date_default_timezone_get"))
+if(function_exists("date_default_timezone_set") && function_exists("date_default_timezone_get"))
 	@date_default_timezone_set(@date_default_timezone_get());
 
 function __date($year, $month, $day)
@@ -366,7 +366,7 @@ and converts to a yyyy/mm/dd format */
 		$year = $month = $day = 0;
 
 //to modify assumption in 2030
-	if ($date_system == 0)
+	if ($date_system == 0 || $date_system == 3)
 	{
 		if ((int)$year < 60)
 		{
