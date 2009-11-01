@@ -110,6 +110,9 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 	$dateseps 		= array("/", ".", "-", " ");
 	$thoseps 		= array(",", ".", " ");
 	$decseps 		= array(".", ",");
+	// defalt dateformats and dateseps indexes used before user login
+	$dflt_date_fmt = 0;
+	$dflt_date_sep = 0;
 
 	$pagesizes 		= array("Letter", "A4"); // default PDF pagesize
 

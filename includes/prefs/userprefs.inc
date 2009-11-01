@@ -40,9 +40,10 @@ class user_prefs
 	{
 		if ($user == null) { 
 			// set default values, used before login
-			global $dflt_lang;
+			global $dflt_lang, $dflt_date_sep, $dflt_date_fmt;
 			
-			$this->date_sep = 0;
+			$this->date_sep = $dflt_date_sep;
+			$this->date_format = $dflt_date_fmt;
 			$this->tho_sep = 0;
 			$this->dec_sep = 0;
 			$this->language = $dflt_lang;

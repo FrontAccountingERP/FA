@@ -27,7 +27,12 @@ $ config.default.php
   /includes/ui/ui_view.inc
 # Bugs in function show_users_online in users_db.inc
 $ /admin/db/users_db.inc
-  
+
+01-Nov-2009 Janusz Dobrowolski
++ Added default date format and date separator used before login.
+$ /config.default.php
+  /includes/prefs/userprefs.inc
+
 30-Oct-2009 Janusz Dobrowolski
 # Fixed non-default company selection bug on login.
 $ /includes/session.inc
