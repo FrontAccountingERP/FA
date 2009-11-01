@@ -19,6 +19,12 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+01-Nov-2009 Joe Hunt
+! Changed $date_system value of 3 to be traditional, but non-workday is Friday 
+  and start of week is Saturday. For DatePicker.
+$ config.default.php
+  /includes/ui/ui_view.inc
+  
 30-Oct-2009 Janusz Dobrowolski
 # Fixed non-default company selection bug on login.
 $ /includes/session.inc

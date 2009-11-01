@@ -708,7 +708,7 @@ function get_js_date_picker()
 
 	$how = user_date_format();				// 0 = us/ca, 1 = eu, au, nz, 2 = jp, sw
 	$sep = $dateseps[user_date_sep()];		// date separator
-	$wstart = (($date_system == 1 || $date_system == 2) ? 6 : ($how == 0 ? 0 : 1));			// weekstart (sun = 0, mon = 1)
+	$wstart = (($date_system == 1 || $date_system == 2 || $date_system == 3) ? 6 : ($how == 0 ? 0 : 1));	// weekstart (sun = 0, mon = 1)
 	$months = array(_("January"),_("February"),_("March"),_("April"),_("May"),_("June"),_("July"),_("August"),_("September"),_("October"),_("November"),_("December"));
 	$wdays = array(_("Su"),_("Mo"),_("Tu"),_("We"),_("Th"),_("Fr"),_("Sa"));
 	$wno = _("W"); // week no
@@ -1005,7 +1005,7 @@ function CC() {
           if (dayOfMonth == selectedDay && currentYear == selectedYear && currentMonth == selectedMonth) {
             css_class = 'current';
 ";
-	if ($date_system == 1 || $date_system == 2)
+	if ($date_system == 1 || $date_system == 2 || $date_system == 3)
 		$js .= "
           } else if (dayOfWeek == 5) {
 ";

@@ -97,7 +97,7 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 	$accounts_alpha = 0;
 
 	/* Date systems. 0 = traditional, 1 = Jalali used by Iran, nabour countries, Afghanistan and some other Central Asian nations,
-	2 = Islamic used by other arabic nations */
+	2 = Islamic used by other arabic nations. 3 = traditional, but where non-workday is Friday and start of week is Saturday */
 	$date_system = 0;
 
 	/* email stock location if order below reorder-level */
