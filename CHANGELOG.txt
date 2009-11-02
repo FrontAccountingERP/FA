@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+02-Nov-2009 Janusz Dobrowolski
+# Bad default value retrieved for service COGS account.
+$ /inventory/manage/items.php
+
 01-Nov-2009 Joe Hunt
 ! Changed $date_system value of 3 to be traditional, but non-workday is Friday 
   and start of week is Saturday. For DatePicker.

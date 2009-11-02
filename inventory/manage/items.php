@@ -403,8 +403,8 @@ if (!is_service($_POST['mb_flag']))
 }
 else 
 {
-	gl_all_accounts_list_row(_("C.O.G.S. Account:"), 'inventory_account', $_POST['inventory_account']);
-	hidden('cogs_account', $_POST['cogs_account']);
+	gl_all_accounts_list_row(_("C.O.G.S. Account:"), 'cogs_account', $_POST['cogs_account']);
+	hidden('inventory_account', $_POST['inventory_account']);
 	hidden('adjustment_account', $_POST['adjustment_account']);
 }
 
