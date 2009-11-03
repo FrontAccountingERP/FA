@@ -84,7 +84,7 @@ function db_free_result ($result)
 		mysql_free_result($result);
 }
 
-function db_num_rows (&$result)
+function db_num_rows ($result)
 {
 	return mysql_num_rows($result);
 }

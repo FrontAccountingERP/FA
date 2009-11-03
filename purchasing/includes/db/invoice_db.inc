@@ -211,8 +211,8 @@ function add_supp_invoice($supp_trans, $invoice_no=0) // do not receive as ref b
 		$line_taxfree = $entered_grn->taxfree_charge_price($supp_trans->tax_group_id);
 		$line_tax = $entered_grn->full_charge_price($supp_trans->tax_group_id) - $line_taxfree;
 		$stock_gl_code = get_stock_gl_code($entered_grn->item_code);
-
-		$total += add_gl_trans_supplier($trans_type, $invoice_id, $date_, $stock_gl_code["inventory_account"],
+		$iv_act = (is_inventory_item($entered_grn->item_code) ? $stock_gl_code["inventory_account"] : $stock_gl_code["cogs_account"]);
+		$total += add_gl_trans_supplier($trans_type, $invoice_id, $date_, $iv_act,
 			$stock_gl_code['dimension_id'], $stock_gl_code['dimension2_id'],
 			$entered_grn->this_quantity_inv * $line_taxfree, $supp_trans->supplier_id);
     	// -------------- if price changed since po received. 16 Aug 2008 Joe Hunt
@@ -253,7 +253,7 @@ function add_supp_invoice($supp_trans, $invoice_no=0) // do not receive as ref b
 						$stock_gl_code['dimension_id'], $stock_gl_code['dimension2_id'], _("Cost diff."),
 						$amt, null, null, null,
 						"The general ledger transaction could not be added for the price variance of the inventory item");
-					add_gl_trans($trans_type, $invoice_id, $date_,	$stock_gl_code["inventory_account"],
+					add_gl_trans($trans_type, $invoice_id, $date_,	$iv_act,
 						0, 0, _("Cost diff."), -$amt, null, null, null,
 						"The general ledger transaction could not be added for the price variance of the inventory item");
 				}		

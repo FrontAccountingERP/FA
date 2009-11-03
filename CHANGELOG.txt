@@ -19,6 +19,12 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+03-Nov-2009 Joe Hunt
+# Bad debit account when debiting service items.
+$ /purchasing/includes/db/invoice_db.inc
+# Removed unneeded reference to $result in db_num_rows. Gave warnings.
+$ /includes/db/connect_db.inc
+
 02-Nov-2009 Janusz Dobrowolski
 # Bad default value retrieved for service COGS account.
 $ /inventory/manage/items.php

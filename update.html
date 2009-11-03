@@ -7,24 +7,22 @@
 <body>
 <div><strong><span style="font-size: 20pt;"><span style="color: rgb(204, 102, 0); font-style: italic;">Front</span>Accounting&nbsp;Update</span></strong></div>
 <br />
-<br />
-
-<h2>Important Notes</h2>
+<br /><h2>Important Notes</h2>
 
 <ul>
   <li>You can easily upload all the files to your installation folder on the
-server overwriting the existing files. From 2.2 RC, your existing configuration files, - <span style="font-weight: bold;">config_db.php, config.php, /lang/installed_languages.inc and installed_extensions.php</span> - will nolonger be installed. They are created the first time you install FrontAccounting and don't need further updates.<ol>
-      <li>Backup&nbsp; (download) the following files to another folder:
-        <ol><li>if you have made <em>changes to other files</em>, like themes or so, backup
-these files. </li>
+server overwriting the existing files. From 2.2 RC, your existing configuration files, - <span style="font-weight: bold;">config_db.php, config.php, /lang/installed_languages.inc and installed_extensions.php</span> - will nolonger be installed. They are created the first time you install FrontAccounting and don't need further updates.<br /><ol>
+      </ol><ul><li>Backup&nbsp; (download) the following files to another folder:
+        <ul><li>if you have made <em>changes to other files</em>, like themes or so, backup
+these files. </li></ul><ol>
         </ol>
 
-      </li>
-      <li>Upload all the new files.
-      </li>
-      <li>Look into the file, <span style="font-weight: bold; font-style: italic;">config.default.php and compare with your own config.php</span> file. You should update the the following in your config.php:<br /></li><ol style="font-family: Courier New,Courier,monospace;"><li><small>Change the $version in your <span style="font-weight: bold;">config.php</span> file, about line 59, from "2.2.X" to "2.2 RC".</small></li><li><small>Copy these 2 lines from <span style="font-weight: bold;">config.default.php</span> about line 80-82 into <span style="font-weight: bold;">config.php</span> about line 80:</small></li><ol><li><small>/* Show users online discretetely in the footer */<br />$show_users_online = 0;</small></li><li><small>Change this to 1 if you want to show users online.</small></li></ol><li><small>Replace the 2 lines about line 110-111 in <span style="font-weight: bold;">config.php</span>:</small></li><ol><li><small>$table_style &nbsp;&nbsp;&nbsp; = "cellpadding=3 border=1 bordercolor='#8cacbb' style='border-collapse: collapse'";<br />$table_style2 &nbsp;&nbsp; &nbsp;= "cellpadding=3 border=1 bordercolor='#cccccc' style='border-collapse: collapse'";</small></li></ol><li><small>With these 4 lines from <span style="font-weight: bold;">config.default.php</span>:</small></li><ol><li><small>if (!isset($_SESSION['bordercolor']))<br />&nbsp; &nbsp; $_SESSION['bordercolor'] = "#8cacbb";<br />$table_style &nbsp;&nbsp;&nbsp; = "cellpadding=3 border=1 bordercolor='".$_SESSION['bordercolor']."' class='tablestyle'";<br />$table_style2 &nbsp;&nbsp;&nbsp; = "cellpadding=3 border=1 bordercolor='#cccccc' class='tablestyle2'";</small></li></ol><li><small>Remove these 2 lines from <span style="font-weight: bold;">config.php</span> about line 176-176:</small></li><ol><li><small>/* default start-up tab (orders/AP/stock/manuf/proj/GL/system) */<br />$def_app = "orders";</small></li></ol><li><small>Copy these 2 lines from <span style="font-weight: bold;">config.default.php</span> about line 202-203:</small></li><ol><li><small>define("ICON_SUBMIT", "ok.gif");&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; // new in 2.2<br />define("ICON_ESCAPE", "escape.png");&nbsp;&nbsp;&nbsp; // new in 2.2</small></li></ol><li><small>And paste them into <span style="font-weight: bold;">config.php</span> about line 209<br /></small></li></ol>
-      <li>Rename or remove the /install folder (you have already performed the install
-process earlier). </li>
+      </li><li>Upload all the new files.
+      </li><li>Look into the file, <span style="font-weight: bold; font-style: italic;">config.default.php and compare with your own config.php</span> file. You should update the the following in your config.php:<br /><br /></li><ul><li><small>Change the $version in your <span style="font-weight: bold;">config.php</span> file, about line 59, from "2.1.X" to "2.2".</small></li><li><small>Copy these 2 lines from <span style="font-weight: bold;">config.default.php</span> about line 80-82 into <span style="font-weight: bold;">config.php</span> about line 80:<br /><br /><span style="font-family: monospace;">/* Show users online discretetely in the footer */</span><br style="font-family: monospace;" /><span style="font-family: monospace;">$show_users_online = 0;</span><br style="font-family: monospace;" /><span style="font-family: monospace;">Change this to 1 if you want to show users online.</span><br style="font-family: monospace;" /></small></li><li><small>Replace the 2 lines about line 110-111 in <span style="font-weight: bold;">config.php</span>:<br /><br /><span style="font-family: monospace;">$table_style &nbsp;&nbsp;&nbsp; = "cellpadding=3 border=1 bordercolor='#8cacbb' style='border-collapse: collapse'";</span><br style="font-family: monospace;" /><span style="font-family: monospace;">$table_style2 &nbsp;&nbsp; &nbsp;= "cellpadding=3 border=1 bordercolor='#cccccc' style='border-collapse: collapse'";</span><br style="font-family: monospace;" /></small></li><li><small>With these 4 lines from <span style="font-weight: bold;">config.default.php</span>:<br /><br /><span style="font-family: monospace;">if (!isset($_SESSION['bordercolor']))</span><br style="font-family: monospace;" /><span style="font-family: monospace;">&nbsp; &nbsp; $_SESSION['bordercolor'] = "#8cacbb";</span><br style="font-family: monospace;" /><span style="font-family: monospace;">$table_style &nbsp;&nbsp;&nbsp; = "cellpadding=3 border=1 bordercolor='".$_SESSION['bordercolor']."' class='tablestyle'";</span><br style="font-family: monospace;" /><span style="font-family: monospace;">$table_style2 &nbsp;&nbsp;&nbsp; = "cellpadding=3 border=1 bordercolor='#cccccc' class='tablestyle2'";</span><br style="font-family: monospace;" /></small></li><li><small>Remove these 2 lines from <span style="font-weight: bold;">config.php</span> about line 176-177:<br /><br /><span style="font-family: monospace;">/* default start-up tab (orders/AP/stock/manuf/proj/GL/system) */</span><br style="font-family: monospace;" /><span style="font-family: monospace;">$def_app = "orders";</span><br style="font-family: monospace;" /></small></li><li><small>Copy these 3 lines from config.default.php about line 113-115<br /><br /><span style="font-family: monospace;">// defalt dateformats and dateseps indexes used before user login</span></small><br style="font-family: monospace;" /><small style="font-family: monospace;">$dflt_date_fmt = 0;</small><br style="font-family: monospace;" /><small><span style="font-family: monospace;">$dflt_date_sep = 0;</span><br style="font-family: monospace;" /></small></li><li><small>Copy these 2 lines from <span style="font-weight: bold;">config.default.php</span> about line 211-212:<br /><br /><span style="font-family: monospace;">define("ICON_SUBMIT", "ok.gif");&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; // new in 2.2</span><br style="font-family: monospace;" /><span style="font-family: monospace;">define("ICON_ESCAPE", "escape.png");&nbsp;&nbsp;&nbsp; // new in 2.2</span><br style="font-family: monospace;" /></small></li><li><small>And paste them into <span style="font-weight: bold;">config.php</span> about line 209<br /><br /></small></li></ul><li>Rename or remove the /install folder (you have already performed the install
+process earlier).<br /> </li></ul><ol>
+      
+      
+      
     </ol>
   </li><li><strong>You
 must immediately
@@ -37,13 +35,13 @@ to the 'Setup' tab and run 'Software
 Upgrade'.
 Mark the checkbox 'Install' and press 'Upgrade System'. &nbsp;You must
 also do this if you upgrade from 2.2 Beta to 2.2 RC. This will
-upgrade ALL your companies.</strong></li><li style="font-weight: bold;">If something goes wrong during upgrade, you can enter here again and try 'Force Upgrade', and press 'Upgrade System' again.</li><li><strong>There are no database changes during a major and minor release. Like from 2.2 to 2.2.1 - 2.2.X .</strong></li><li style="font-weight: bold;">Enter
+upgrade ALL your companies.<br /></strong></li><li style="font-weight: bold;">If something goes wrong during upgrade, you can enter here again and try 'Force Upgrade', and press 'Upgrade System' again.<br /></li><li><strong>There are no database changes during a major and minor release. Like from 2.2 to 2.2.1 - 2.2.X .<br /></strong></li><li style="font-weight: bold;">Enter
 'Setup' tab, 'System and Generel GL Setup'. &nbsp;Set the correct
-Accounts for Retained Earnings, Profit/Loss Year and Bank Charge.</li><li style="font-weight: bold;">Enter
+Accounts for Retained Earnings, Profit/Loss Year and Bank Charge.<br /></li><li style="font-weight: bold;">Enter
 'Setup' tab, 'Access Setup'. Check all the roles and change as you
 please. The roles have been converted from the former Access Roles and
-may need some changes.</li><li style="font-weight: bold;">Enter
+may need some changes.<br /></li><li style="font-weight: bold;">Enter
 'Setup' tab, 'Company Setup'. If you want Automatic Item Price
 Calculations from Standard&nbsp;Cost, add a percent to add and
 eventually round to the nearest XX Cent. Also check that Base for Auto
-Price calculations is set. </li></ul></body></html>
+Price calculations is set.<br /> </li></ul></body></html>
