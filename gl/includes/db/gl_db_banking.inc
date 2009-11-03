@@ -127,7 +127,7 @@ function add_bank_transfer($from_account, $to_account, $date_,
 // returns an array of (inserted trans type, trans no)
 
 function add_bank_transaction($trans_type, $from_account, $items, $date_,
-	$person_type_id, $person_id, $person_detail_id,	$ref, $memo_)
+	$person_type_id, $person_id, $person_detail_id,	$ref, $memo_, $use_transaction=true)
 {
 	global $Refs;
 
@@ -137,7 +137,8 @@ function add_bank_transaction($trans_type, $from_account, $items, $date_,
 
 	$do_exchange_variance = false;
 	
-	begin_transaction();
+	if ($use_transaction)
+		begin_transaction();
 
 	$currency = get_bank_account_currency($from_account);
 	$bank_gl_account = get_bank_gl_account($from_account);
@@ -232,7 +233,8 @@ function add_bank_transaction($trans_type, $from_account, $items, $date_,
 	$Refs->save($trans_type, $trans_no, $ref);
 	add_audit_trail($trans_type, $trans_no, $date_);
 
-	commit_transaction();
+	if ($use_transaction)
+		commit_transaction();
 
 	return array($trans_type, $trans_no);
 }
