@@ -46,6 +46,7 @@ class user_prefs
 			$this->date_format = $dflt_date_fmt;
 			$this->tho_sep = 0;
 			$this->dec_sep = 0;
+			$this->price_dec = 2;
 			$this->language = $dflt_lang;
 			$this->theme = 'default';
 			
