@@ -19,6 +19,12 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+03-Nov-2009 Janusz Dobrowolski
+! Added optional parameter to add_bank_transaction
+$ /gl/includes/db/gl_db_banking.inc
+# Fixed missing default price_dec.
+$ /includes/prefs/userprefs.inc
+
 03-Nov-2009 Joe Hunt
 # Bad debit account when debiting service items.
 $ /purchasing/includes/db/invoice_db.inc
