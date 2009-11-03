@@ -130,7 +130,12 @@
 		$this->NewLine();
 		$this->Text($mcol + 100, $doc_Invoice_no);
 		if ($doctype == 7 || $doctype == 8 || $doctype == 9) // QUOTE, PO or SO
-			$this->Text($mcol + 180, $myrow['order_no']);
+		{
+			if ($print_invoice_no == 1)
+				$this->Text($mcol + 180, $myrow['order_no']);
+			else	
+				$this->Text($mcol + 180, $myrow['reference']);
+		}		
 		elseif ($doctype == 26)	
 			$this->Text($mcol + 180, $myrow['id']);
 		else if (isset($myrow['trans_no']) && isset($myrow['reference'])) // INV/CRE/STA

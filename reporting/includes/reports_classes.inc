@@ -267,14 +267,10 @@ class Report
 				case 'INVOICE':
 					$IV = _("IV");
 					$CN = _("CN");
-					if ($print_invoice_no == 1)
-						$sql = "SELECT concat(".TB_PREF."debtor_trans.trans_no, '-',
-							".TB_PREF."debtor_trans.type) AS TNO, concat(".TB_PREF."debtor_trans.trans_no, if (type=".ST_SALESINVOICE.", ' $IV ', ' $CN '), ".TB_PREF."debtors_master.name) as IName
-							FROM ".TB_PREF."debtors_master, ".TB_PREF."debtor_trans WHERE (type=".ST_SALESINVOICE." OR type=".ST_CUSTCREDIT.") AND ".TB_PREF."debtors_master.debtor_no=".TB_PREF."debtor_trans.debtor_no ORDER BY ".TB_PREF."debtor_trans.trans_no DESC";
-					else		
-						$sql = "SELECT concat(".TB_PREF."debtor_trans.trans_no, '-',
-							".TB_PREF."debtor_trans.type) AS TNO, concat(".TB_PREF."debtor_trans.reference, if (type=".ST_SALESINVOICE.", ' $IV ', ' $CN '), ".TB_PREF."debtors_master.name) as IName
-							FROM ".TB_PREF."debtors_master, ".TB_PREF."debtor_trans WHERE (type=".ST_SALESINVOICE." OR type=".ST_CUSTCREDIT.") AND ".TB_PREF."debtors_master.debtor_no=".TB_PREF."debtor_trans.debtor_no ORDER BY ".TB_PREF."debtor_trans.trans_no DESC";
+					$ref = ($print_invoice_no == 1 ? "trans_no" : "reference");
+					$sql = "SELECT concat(".TB_PREF."debtor_trans.trans_no, '-',
+						".TB_PREF."debtor_trans.type) AS TNO, concat(".TB_PREF."debtor_trans.$ref, if (type=".ST_SALESINVOICE.", ' $IV ', ' $CN '), ".TB_PREF."debtors_master.name) as IName
+						FROM ".TB_PREF."debtors_master, ".TB_PREF."debtor_trans WHERE (type=".ST_SALESINVOICE." OR type=".ST_CUSTCREDIT.") AND ".TB_PREF."debtors_master.debtor_no=".TB_PREF."debtor_trans.debtor_no ORDER BY ".TB_PREF."debtor_trans.trans_no DESC";
 					$st .= combo_input("PARAM_$index", '', $sql, 'TNO', 'IName',array('order'=>false));
 					break;
 				case 'DELIVERY':
@@ -288,21 +284,24 @@ class Report
 					$st .= combo_input("PARAM_$index", '', $sql, 'TNO', 'IName',array('order'=>false));
 					break;
 				case 'ORDERS':
-					$sql = "SELECT ".TB_PREF."sales_orders.order_no, concat(".TB_PREF."sales_orders.order_no, '-',
+					$ref = ($print_invoice_no == 1 ? "order_no" : "reference");
+					$sql = "SELECT ".TB_PREF."sales_orders.order_no, concat(".TB_PREF."sales_orders.$ref, '-',
 						".TB_PREF."debtors_master.name) as IName
 						FROM ".TB_PREF."debtors_master, ".TB_PREF."sales_orders WHERE ".TB_PREF."debtors_master.debtor_no=".TB_PREF."sales_orders.debtor_no 
 						AND ".TB_PREF."sales_orders.trans_type=".ST_SALESORDER." ORDER BY ".TB_PREF."sales_orders.order_no DESC";
 					$st .= combo_input("PARAM_$index", '', $sql, 'order_no', 'IName',array('order'=>false));
 					break;
 				case 'QUOTATIONS':
-					$sql = "SELECT ".TB_PREF."sales_orders.order_no, concat(".TB_PREF."sales_orders.order_no, '-',
+					$ref = ($print_invoice_no == 1 ? "order_no" : "reference");
+					$sql = "SELECT ".TB_PREF."sales_orders.order_no, concat(".TB_PREF."sales_orders.$ref, '-',
 						".TB_PREF."debtors_master.name) as IName
 						FROM ".TB_PREF."debtors_master, ".TB_PREF."sales_orders WHERE ".TB_PREF."debtors_master.debtor_no=".TB_PREF."sales_orders.debtor_no 
 						AND ".TB_PREF."sales_orders.trans_type=".ST_SALESQUOTE." ORDER BY ".TB_PREF."sales_orders.order_no DESC";
 					$st .= combo_input("PARAM_$index", '', $sql, 'order_no', 'IName',array('order'=>false));
 					break;
 				case 'PO':
-					$sql = "SELECT ".TB_PREF."purch_orders.order_no, concat(".TB_PREF."purch_orders.order_no, '-',
+					$ref = ($print_invoice_no == 1 ? "order_no" : "reference");
+					$sql = "SELECT ".TB_PREF."purch_orders.order_no, concat(".TB_PREF."purch_orders.$ref, '-',
 						".TB_PREF."suppliers.supp_name) as IName
 						FROM ".TB_PREF."suppliers, ".TB_PREF."purch_orders WHERE ".TB_PREF."suppliers.supplier_id=".TB_PREF."purch_orders.supplier_id ORDER BY ".TB_PREF."purch_orders.order_no DESC";
 					$st .= combo_input("PARAM_$index", '', $sql, 'order_no', 'IName',array('order'=>false));

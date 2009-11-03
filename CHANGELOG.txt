@@ -34,7 +34,11 @@ $ /includes/db/connect_db.inc
 $ update.html
 # Wrong presentation on reference and order in Customer Allocation Inquiry
 $ /sales/inquiry/customer_allocation_inquiry.php
-
+! Changed so reference no in QUOTE/SO/INV/CRE/PO is printed instead of trans_no 
+  if global variable in config.php, $print_invoice_no = 0 (default).
+$ /reporting/includes/header2.inc
+  /reporting/includes/reports_classes.inc
+  
 02-Nov-2009 Janusz Dobrowolski
 # Bad default value retrieved for service COGS account.
 $ /inventory/manage/items.php
