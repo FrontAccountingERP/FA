@@ -24,6 +24,10 @@ $ -> Affected files
 $ /purchasing/includes/db/invoice_db.inc
 # Removed unneeded reference to $result in db_num_rows. Gave warnings.
 $ /includes/db/connect_db.inc
+! Better formatting of update.html
+$ update.html
+# Wrong presentation on reference and order in Customer Allocation Inquiry
+$ /sales/inquiry/customer_allocation_inquiry.php
 
 02-Nov-2009 Janusz Dobrowolski
 # Bad default value retrieved for service COGS account.

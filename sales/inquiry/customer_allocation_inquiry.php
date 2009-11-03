@@ -138,9 +138,9 @@ function fmt_credit($row)
 
   $sql = "SELECT 
   		trans.type,
-		trans.order_,
 		trans.trans_no,
 		trans.reference,
+		trans.order_,
 		trans.tran_date,
 		trans.due_date,
 		debtor.name,
