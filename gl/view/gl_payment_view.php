@@ -62,7 +62,7 @@ start_row();
 label_cells(_("From Bank Account"), $from_trans['bank_account_name'], "class='tableheader2'");
 if ($show_currencies)
 	label_cells(_("Currency"), $from_trans['bank_curr_code'], "class='tableheader2'");
-label_cells(_("Amount"), number_format2(-$from_trans['amount'], user_price_dec()), "class='tableheader2'", "align=right");
+label_cells(_("Amount"), number_format2($from_trans['amount'], user_price_dec()), "class='tableheader2'", "align=right");
 label_cells(_("Date"), sql2date($from_trans['trans_date']), "class='tableheader2'");
 end_row();
 start_row();
@@ -93,12 +93,20 @@ else
 
     echo "<br>";
     start_table("$table_style width=80%");
-    $th = array(_("Account Code"), _("Account Description"),
-    	_("Amount"), _("Memo"));
+    $dim = get_company_pref('use_dimension');
+    if ($dim == 2)
+        $th = array(_("Account Code"), _("Account Description"), _("Dimension")." 1", _("Dimension")." 2",
+            _("Amount"), _("Memo"));
+    else if ($dim == 1)
+        $th = array(_("Account Code"), _("Account Description"), _("Dimension"),
+            _("Amount"), _("Memo"));
+    else
+        $th = array(_("Account Code"), _("Account Description"),
+            _("Amount"), _("Memo"));
 	table_header($th);
 
     $k = 0; //row colour counter
-	$totalAmount = 0;
+	$total_amount = 0;
 
     while ($item = db_fetch($items))
     {
@@ -109,14 +117,18 @@ else
 
         	label_cell($item["account"]);
     		label_cell($item["account_name"]);
+            if ($dim >= 1)
+                label_cell(get_dimension_string($item['dimension_id'], true));
+            if ($dim > 1)
+                label_cell(get_dimension_string($item['dimension2_id'], true));
     		amount_cell($item["amount"]);
     		label_cell($item["memo_"]);
     		end_row();
-    		$totalAmount += $item["amount"];
+    		$total_amount += $item["amount"];
 		}
 	}
 
-	label_row(_("Total"), number_format2($totalAmount, user_price_dec()),"colspan=2 align=right", "align=right");
+	label_row(_("Total"), number_format2($total_amount, user_price_dec()),"colspan=".(2+$dim)." align=right", "align=right");
 
 	end_table(1);
 

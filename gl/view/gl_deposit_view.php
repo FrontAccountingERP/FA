@@ -94,8 +94,16 @@ else
 		display_heading2(_("Item Amounts are Shown in :") . " " . $company_currency);
 
     start_table("$table_style width=80%");
-    $th = array(_("Account Code"), _("Account Description"),
-    	_("Amount"), _("Memo"));
+    $dim = get_company_pref('use_dimension');
+    if ($dim == 2)
+        $th = array(_("Account Code"), _("Account Description"), _("Dimension")." 1", _("Dimension")." 2",
+            _("Amount"), _("Memo"));
+    else if ($dim == 1)
+        $th = array(_("Account Code"), _("Account Description"), _("Dimension"),
+            _("Amount"), _("Memo"));
+    else
+        $th = array(_("Account Code"), _("Account Description"),
+            _("Amount"), _("Memo"));
     table_header($th);
 
     $k = 0; //row colour counter
@@ -110,14 +118,18 @@ else
 
         	label_cell($item["account"]);
     		label_cell($item["account_name"]);
-            amount_cell(abs($item["amount"]));
+            if ($dim >= 1)
+                label_cell(get_dimension_string($item['dimension_id'], true));
+            if ($dim > 1)
+                label_cell(get_dimension_string($item['dimension2_id'], true));
+            amount_cell($item["amount"]);
     		label_cell($item["memo_"]);
     		end_row();
-    		$total_amount += abs($item["amount"]);
+    		$total_amount += $item["amount"];
 		}
 	}
 
-	label_row(_("Total"), number_format2($total_amount, user_price_dec()),"colspan=2 align=right", "align=right");
+	label_row(_("Total"), number_format2($total_amount, user_price_dec()),"colspan=".(2+$dim)." align=right", "align=right");
 
 	end_table(1);
 

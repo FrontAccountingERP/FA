@@ -19,6 +19,11 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+04-Nov-2009 Tom Hallman/Joe Hunt
+! Included dimension(s) in Bank Deposit/Payment View and correct signs.
+$ /gl/view/gl_deposit_view.php
+  /gl/view/gl_payment_view.php
+  
 04-Nov-2009 Janusz Dobrowolski
 # Fixed bug introduced during security update and merged from main trunk.
 $ /admin/db/printers_db.inc
