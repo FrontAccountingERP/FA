@@ -212,7 +212,7 @@ function copy_to_cart()
 	$cart->Location = $_POST['Location'];
 	$cart->Comments = $_POST['Comments'];
 	if ($cart->trans_no == 0)
-		$dn->ref = $_POST['ref'];
+		$cart->reference = $_POST['ref'];
 
 }
 //------------------------------------------------------------------------------

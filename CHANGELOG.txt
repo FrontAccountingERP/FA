@@ -25,6 +25,8 @@ $ /sales/includes/ui/sales_order_ui.inc
   /sales/sales_order_entry.php
 ! Include freight_cost in Sales Quotations, Orders in inquiries.
 $ /sales/inquiry/sales_orders_view.php
+# Bug on line 215 in /sales/customer_delivery.php
+$ /sales/customer_delivery.php
 
 04-Nov-2009 Tom Hallman/Joe Hunt
 ! Included dimension(s) in Bank Deposit/Payment View and correct signs.
