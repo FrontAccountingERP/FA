@@ -22,6 +22,8 @@ $ -> Affected files
 05-Nov-2009 Joe Hunt
 ! Display tax info in Sales Quotation, Order, Direct Delivery and Invoice.
 $ /sales/includes/ui/sales_order_ui.inc
+! Include freight_cost in Sales Quotations, Orders in inquiries.
+$ /sales/inquiry/sales_orders_view.php
 
 04-Nov-2009 Tom Hallman/Joe Hunt
 ! Included dimension(s) in Bank Deposit/Payment View and correct signs.
