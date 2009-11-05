@@ -218,6 +218,8 @@ function display_order_summary($title, &$order, $editable_items=false)
 		sales_order_item_controls($order, $k);
 
 	$colspan = 6;
+	if ($order->trans_no!=0)
+		++$colspan;
 	small_amount_row(_("Shipping Charge"), 'freight_cost', price_format(get_post('freight_cost',0)), "colspan=$colspan align=right");
 	$display_sub_total = price_format($total + input_num('freight_cost'));
 
