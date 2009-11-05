@@ -217,9 +217,23 @@ function display_order_summary($title, &$order, $editable_items=false)
 	if ($id==-1 && $editable_items)
 		sales_order_item_controls($order, $k);
 
+/*
 	$display_total = price_format($total);
 	label_row(_("Total Excluding Shipping"), $display_total, "colspan=6 align=right",
 		"nowrap align=right", 2);
+*/
+	$colspan = 6;
+	small_amount_row(_("Shipping Charge"), 'freight_cost', price_format(get_post('freight_cost',0)), "colspan=$colspan align=right");
+	$display_sub_total = price_format($total + input_num('freight_cost'));
+
+	label_row(_("Sub-total"), $display_sub_total, "colspan=$colspan align=right","align=right");
+
+	$taxes = $order->get_taxes(input_num('freight_cost'));
+	$tax_total = display_edit_tax_items($taxes, $colspan, $order->tax_included);
+
+	$display_total = price_format(($total + input_num('freight_cost') + $tax_total));
+
+	label_row(_("Amount Total"), $display_total, "colspan=$colspan align=right","align=right");
 
 	end_table();
 	if ($has_marked) {
@@ -589,17 +603,14 @@ function display_delivery_details(&$order)
 
 		textarea_row(_("Address:"), 'delivery_address', $order->delivery_address, 35, 5,
 			_('Delivery address. Default is address of customer branch'));
-		text_row(_("Contact Phone Number:"), 'phone', $order->phone, 25, 25,
-		    _('Phone number of ordering person. Defaults to branch phone number'));
 
 		table_section(2);
 
+		text_row(_("Contact Phone Number:"), 'phone', $order->phone, 25, 25,
+		    _('Phone number of ordering person. Defaults to branch phone number'));
 		text_row(_("Customer Reference:"), 'cust_ref', $order->cust_ref, 25, 25,
 		  _('Customer reference number for this order (if any)'));
 		textarea_row(_("Comments:"), "Comments", $order->Comments, 31, 5);
-
-		small_amount_row(_("Shipping Charge:"), 'freight_cost',
-	    	price_format(get_post('freight_cost',0)));
 
 		shippers_list_row(_("Shipping Company:"), 'ship_via', $order->ship_via);
 
