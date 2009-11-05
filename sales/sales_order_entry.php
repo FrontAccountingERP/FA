@@ -400,6 +400,10 @@ if (isset($_POST['ProcessOrder']) && can_process()) {
 	}
 }
 
+if (isset($_POST['update'])) {
+	$Ajax->activate('items_table');
+}
+
 //--------------------------------------------------------------------------------
 
 function check_item_data()

@@ -217,11 +217,6 @@ function display_order_summary($title, &$order, $editable_items=false)
 	if ($id==-1 && $editable_items)
 		sales_order_item_controls($order, $k);
 
-/*
-	$display_total = price_format($total);
-	label_row(_("Total Excluding Shipping"), $display_total, "colspan=6 align=right",
-		"nowrap align=right", 2);
-*/
 	$colspan = 6;
 	small_amount_row(_("Shipping Charge"), 'freight_cost', price_format(get_post('freight_cost',0)), "colspan=$colspan align=right");
 	$display_sub_total = price_format($total + input_num('freight_cost'));
@@ -233,7 +228,10 @@ function display_order_summary($title, &$order, $editable_items=false)
 
 	$display_total = price_format(($total + input_num('freight_cost') + $tax_total));
 
-	label_row(_("Amount Total"), $display_total, "colspan=$colspan align=right","align=right");
+	start_row();
+	label_cells(_("Amount Total"), $display_total, "colspan=$colspan align=right","align=right");
+	submit_cells('update', _("Update"), "colspan=2", _("Refresh"), true);
+	end_row();
 
 	end_table();
 	if ($has_marked) {

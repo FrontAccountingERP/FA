@@ -22,6 +22,7 @@ $ -> Affected files
 05-Nov-2009 Joe Hunt
 ! Display tax info in Sales Quotation, Order, Direct Delivery and Invoice.
 $ /sales/includes/ui/sales_order_ui.inc
+  /sales/sales_order_entry.php
 ! Include freight_cost in Sales Quotations, Orders in inquiries.
 $ /sales/inquiry/sales_orders_view.php
 
