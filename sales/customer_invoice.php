@@ -488,9 +488,10 @@ $accumulate_shipping = get_company_pref('accumulate_shipping');
 if ($is_batch_invoice && $accumulate_shipping)
 	set_delivery_shipping_sum(array_keys($_SESSION['Items']->src_docs));
 
+$colspan = 9;
 start_row();
-
-small_amount_cells(_("Shipping Cost"), 'ChargeFreightCost', null, "colspan=9 align=right");
+label_cell(_("Shipping Cost"), "colspan=$colspan align=right");
+small_amount_cells(null, 'ChargeFreightCost', null);
 if ($is_batch_invoice) {
 label_cell('', 'colspan=2');
 }
@@ -500,14 +501,14 @@ $inv_items_total = $_SESSION['Items']->get_items_total_dispatch();
 
 $display_sub_total = price_format($inv_items_total + input_num('ChargeFreightCost'));
 
-label_row(_("Sub-total"), $display_sub_total, "colspan=9 align=right","align=right", $is_batch_invoice ? 2 : 0);
+label_row(_("Sub-total"), $display_sub_total, "colspan=$colspan align=right","align=right", $is_batch_invoice ? 2 : 0);
 
 $taxes = $_SESSION['Items']->get_taxes(input_num('ChargeFreightCost'));
-$tax_total = display_edit_tax_items($taxes, 9, $_SESSION['Items']->tax_included, $is_batch_invoice ? 2:0);
+$tax_total = display_edit_tax_items($taxes, $colspan, $_SESSION['Items']->tax_included, $is_batch_invoice ? 2:0);
 
 $display_total = price_format(($inv_items_total + input_num('ChargeFreightCost') + $tax_total));
 
-label_row(_("Invoice Total"), $display_total, "colspan=9 align=right","align=right", $is_batch_invoice ? 2 : 0);
+label_row(_("Invoice Total"), $display_total, "colspan=$colspan align=right","align=right", $is_batch_invoice ? 2 : 0);
 
 end_table(1);
 div_end();

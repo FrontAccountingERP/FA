@@ -448,22 +448,25 @@ foreach ($_SESSION['Items']->line_items as $line=>$ln_itm) {
 $_POST['ChargeFreightCost'] =  get_post('ChargeFreightCost', 
 	price_format($_SESSION['Items']->freight_cost));
 
-start_row();
+$colspan = 9;
 
-small_amount_cells(_("Shipping Cost"), 'ChargeFreightCost', $_SESSION['Items']->freight_cost, "colspan=9 align=right");
+start_row();
+label_cell(_("Shipping Cost"), "colspan=$colspan align=right");
+small_amount_cells(null, 'ChargeFreightCost', $_SESSION['Items']->freight_cost);
+end_row();
 
 $inv_items_total = $_SESSION['Items']->get_items_total_dispatch();
 
 $display_sub_total = price_format($inv_items_total + input_num('ChargeFreightCost'));
 
-label_row(_("Sub-total"), $display_sub_total, "colspan=9 align=right","align=right");
+label_row(_("Sub-total"), $display_sub_total, "colspan=$colspan align=right","align=right");
 
 $taxes = $_SESSION['Items']->get_taxes(input_num('ChargeFreightCost'));
-$tax_total = display_edit_tax_items($taxes, 9, $_SESSION['Items']->tax_included);
+$tax_total = display_edit_tax_items($taxes, $colspan, $_SESSION['Items']->tax_included);
 
 $display_total = price_format(($inv_items_total + input_num('ChargeFreightCost') + $tax_total));
 
-label_row(_("Amount Total"), $display_total, "colspan=9 align=right","align=right");
+label_row(_("Amount Total"), $display_total, "colspan=$colspan align=right","align=right");
 
 end_table(1);
 

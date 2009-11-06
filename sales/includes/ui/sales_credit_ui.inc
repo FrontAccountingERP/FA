@@ -212,22 +212,25 @@ function display_credit_items($title, &$order)
     if ($id==-1)
         credit_edit_item_controls($order, $k);
 
+	$colspan = 6;
     $display_sub_total = price_format($subtotal);
-    label_row(_("Sub-total"), $display_sub_total, "colspan=6 align=right", "align=right", 2);
+    label_row(_("Sub-total"), $display_sub_total, "colspan=$colspan align=right", "align=right", 2);
 
     if (!isset($_POST['ChargeFreightCost']) OR ($_POST['ChargeFreightCost'] == ""))
-	$_POST['ChargeFreightCost'] = price_format(0);
-
-    amount_cells_ex(_("Shipping"), 'ChargeFreightCost', 8, 8, $_POST['ChargeFreightCost'], "colspan=6 align=right");
+		$_POST['ChargeFreightCost'] = 0;
+	start_row();
+	label_cell(_("Shipping"), "colspan=$colspan align=right");
+	small_amount_cells(null, 'ChargeFreightCost', price_format(get_post('ChargeFreightCost',0)));
     label_cell('', 'colspan=2');
+	end_row();
 
     $taxes = $order->get_taxes($_POST['ChargeFreightCost']);
 
-    $tax_total = display_edit_tax_items($taxes, 6, $order->tax_included);
+    $tax_total = display_edit_tax_items($taxes, $colspan, $order->tax_included, 2);
 
     $display_total = price_format(($subtotal + $_POST['ChargeFreightCost'] + $tax_total));
 
-    label_row(_("Credit Note Total"), $display_total, "colspan=6 align=right","class='amount'", 2);
+    label_row(_("Credit Note Total"), $display_total, "colspan=$colspan align=right","class='amount'", 2);
 
     end_table();
     div_end();

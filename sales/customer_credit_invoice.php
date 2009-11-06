@@ -321,24 +321,24 @@ function display_credit_items()
     if (!check_num('ChargeFreightCost')) {
     	$_POST['ChargeFreightCost'] = price_format($_SESSION['Items']->freight_cost);
     }
-
+	$colspan = 7;
 	start_row();
-	label_cell(_("Credit Shipping Cost"), "colspan=7 align=right");
-	amount_cells_ex(null, "ChargeFreightCost", 6, 8, $_POST['ChargeFreightCost']);
+	label_cell(_("Credit Shipping Cost"), "colspan=$colspan align=right");
+	small_amount_cells(null, "ChargeFreightCost", price_format(get_post('ChargeFreightCost',0)));
 	end_row();
 
     $inv_items_total = $_SESSION['Items']->get_items_total_dispatch();
 
     $display_sub_total = price_format($inv_items_total + input_num($_POST['ChargeFreightCost']));
-    label_row(_("Sub-total"), $display_sub_total, "colspan=7 align=right", "align=right");
+    label_row(_("Sub-total"), $display_sub_total, "colspan=$colspan align=right", "align=right");
 
     $taxes = $_SESSION['Items']->get_taxes(input_num($_POST['ChargeFreightCost']));
 
-    $tax_total = display_edit_tax_items($taxes, 7, $_SESSION['Items']->tax_included);
+    $tax_total = display_edit_tax_items($taxes, $colspan, $_SESSION['Items']->tax_included);
 
     $display_total = price_format(($inv_items_total + input_num('ChargeFreightCost') + $tax_total));
 
-    label_row(_("Credit Note Total"), $display_total, "colspan=7 align=right", "align=right");
+    label_row(_("Credit Note Total"), $display_total, "colspan=$colspan align=right", "align=right");
 
     end_table();
 	div_end();
