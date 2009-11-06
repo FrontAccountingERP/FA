@@ -10,21 +10,17 @@
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
 $path_to_root = "..";
+include($path_to_root . "/includes/session.inc");
+include_once($path_to_root . "/includes/types.inc"); // For tag constants
+include_once($path_to_root . "/admin/db/tags_db.inc");
+include($path_to_root . "/includes/ui.inc");
+
 // Set up page security based on what type of tags we're working with
-if ($_GET['type'] == "account" || $_POST['type'] == TAG_ACCOUNT) {
+if (@$_GET['type'] == "account" || $_POST['type'] == TAG_ACCOUNT) {
 	$page_security = 'SA_GLACCOUNTTAGS';
-} else if($_GET['type'] == "dimension" || $_POST['type'] == TAG_DIMENSION) {
+} else if(@$_GET['type'] == "dimension" || $_POST['type'] == TAG_DIMENSION) {
 	$page_security = 'SA_DIMTAGS';
 }
-
-include($path_to_root . "/includes/session.inc");  // Define session before using $_SESSION
-include_once($path_to_root . "/includes/types.inc"); // For tag constants
-
-if (!isset($page_security)) {
-  // If GET & POST don't have the info, try getting it from the session.
-  $page_security = $_SESSION['tags_page_security'];
-}
-$_SESSION['tags_page_security'] = $page_security;
 
 // We use $_POST['type'] throughout this script, so convert $_GET vars
 // if $_POST['type'] is not set.
@@ -38,7 +34,6 @@ if (!isset($_POST['type'])) {
 }
 
 // Set up page based on what type of tags we're working with
-// TODO: Set $_SESSION['sel_app'] to be relevant app (see /includes/page/header.inc::page_header()
 switch ($_POST['type']) {
 	case TAG_ACCOUNT:
 		// Account tags
@@ -50,9 +45,6 @@ switch ($_POST['type']) {
 }
 
 page($_SESSION['page_title']);
-include_once($path_to_root . "/admin/db/tags_db.inc");
-
-include($path_to_root . "/includes/ui.inc");
 
 simple_page_mode(true);
 
