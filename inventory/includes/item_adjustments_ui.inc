@@ -99,7 +99,7 @@ function display_adjustment_items($title, &$order)
 	if ($id == -1)
 		adjustment_edit_item_controls($order);
 
-	label_row(_("Total"), number_format2($total,user_price_dec()), "colspan=5", "align=right");
+	label_row(_("Total"), number_format2($total,user_price_dec()), "align=right colspan=5", "align=right", 2);
 
     end_table();
 	div_end();

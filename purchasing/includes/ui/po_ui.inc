@@ -214,8 +214,8 @@ function display_po_items(&$order, $editable=true)
 		po_item_controls($order);
 
     $display_total = price_format($total);
-    label_row(_("Total Excluding Shipping/Tax"), $display_total, "colspan=6 align=right",
-    	"nowrap align=right");
+    label_row(_("Total Excluding Shipping/Tax"), $display_total, "colspan=7 align=right",
+    	"nowrap align=right", 2);
 
 	end_table(1);
 	div_end();

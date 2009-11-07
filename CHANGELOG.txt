@@ -19,6 +19,11 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+07-Nov-2009 Joe Hunt
+! More improvements on layout display.
+$ /purchases/includes/ui/po_ui.inc
+  /inventory/includes/item_adjustments_ui.inc
+  
 06-Nov-2009 Joe Hunt
 ! Improved layout in the new tax info display. Also old ones.
 $ /sales/credit_invoice.php
