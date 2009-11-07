@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+07-Nov-2009 Janusz Dobrowolski
+# Added missing help_context
+$ /sales/inquiry/sales_orders_view.php
+
 07-Nov-2009 Joe Hunt
 ! More improvements on layout display.
 $ /purchases/includes/ui/po_ui.inc
@@ -96,7 +100,7 @@ $ /includes/db/connect_db.inc
 
 30-Oct-2009 Joe Hunt
 ! Changed name on folder for global help url to fawiki.
-$ config.default.php
+$ /config.default.php
 
 29-Oct-2009 Janusz Dobrowolski
 ! Changed context help organization to enable use of central multilanguage wiki.
