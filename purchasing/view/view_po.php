@@ -82,7 +82,7 @@ foreach ($purchase_order->line_items as $stock_item)
 
 $display_total = number_format2($total,user_price_dec());
 label_row(_("Total Excluding Tax/Shipping"), $display_total,
-	"align=right colspan=5", "nowrap align=right");
+	"align=right colspan=5", "nowrap align=right", 3);
 
 end_table();
 

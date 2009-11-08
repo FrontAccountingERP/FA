@@ -19,6 +19,14 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+08-Nov-2009 Joe Hunt
+# Bug in adding freight cost to sales order/quotation
+$ /sales/inquiry/sales_orders_view.php
+! Additional improvements on layout display
+$ /purchasing/includes/ui/invoice_ui.inc
+  /purchasing/view/view_po.php
+  /sales/view/view_sales_order.php
+
 07-Nov-2009 Janusz Dobrowolski
 # Added missing help_context
 $ /sales/inquiry/sales_orders_view.php

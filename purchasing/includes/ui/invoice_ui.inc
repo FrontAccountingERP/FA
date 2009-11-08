@@ -308,7 +308,7 @@ function display_gl_items(&$supp_trans, $mode=0)
 		display_gl_controls($supp_trans, $k);
 	$colspan = ($dim == 2 ? 4 : ($dim == 1 ? 3 : 2));
 	label_row(_("Total"), price_format($total_gl_value),
-		"colspan=".$colspan." align=right", "nowrap align=right");
+		"colspan=".$colspan." align=right", "nowrap align=right", ($mode==1?3:1));
 
 	end_table();
 	div_end();

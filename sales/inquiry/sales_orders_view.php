@@ -256,7 +256,7 @@ $sql = "SELECT
 		."sorder.ord_date,
 		sorder.delivery_date,
 		sorder.deliver_to,
-		Sum(line.unit_price*line.quantity*(1-line.discount_percent)+freight_cost) AS OrderValue,
+		Sum(line.unit_price*line.quantity*(1-line.discount_percent))+freight_cost AS OrderValue,
 		sorder.type,
 		debtor.curr_code,
 		Sum(line.qty_sent) AS TotDelivered,

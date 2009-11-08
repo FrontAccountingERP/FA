@@ -228,9 +228,9 @@ $items_total = $_SESSION['View']->get_items_total();
 $display_total = price_format($items_total + $_SESSION['View']->freight_cost);
 
 label_row(_("Shipping"), price_format($_SESSION['View']->freight_cost),
-	"align=right colspan=6", "nowrap align=right");
+	"align=right colspan=6", "nowrap align=right", 1);
 label_row(_("Total Order Value"), $display_total, "align=right colspan=6",
-	"nowrap align=right");
+	"nowrap align=right", 1);
 
 end_table(2);
 
