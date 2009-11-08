@@ -26,6 +26,10 @@ $ /sales/inquiry/sales_orders_view.php
 $ /purchasing/includes/ui/invoice_ui.inc
   /purchasing/view/view_po.php
   /sales/view/view_sales_order.php
+! Changed the Running Balance column in Customer Transaction
+  to only show when the type is selected. The order is not
+  good before sorting in date order
+$ /sales/inquiry/customer_inquiry.php  
 
 07-Nov-2009 Janusz Dobrowolski
 # Added missing help_context
