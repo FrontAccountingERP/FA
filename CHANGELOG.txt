@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+09-Nov-2009 Janusz Dobrowolski
+! Fixed help link to provide ctxhelp switch and clean the page context string.
+$ /includes/page/header.inc
+
 08-Nov-2009 Joe Hunt
 # Bug in adding freight cost to sales order/quotation
 $ /sales/inquiry/sales_orders_view.php
@@ -39,6 +43,10 @@ $ /sales/inquiry/sales_orders_view.php
 ! More improvements on layout display.
 $ /purchases/includes/ui/po_ui.inc
   /inventory/includes/item_adjustments_ui.inc
+
+06-Nov-2009 Janusz Dobrowolski
+# Include sequence fixed.
+$ /admin/tags.php
   
 06-Nov-2009 Joe Hunt
 ! Improved layout in the new tax info display. Also old ones.
@@ -48,6 +56,7 @@ $ /sales/credit_invoice.php
   /sales/includes/ui/sales_credit_ui.inc
   /sales/includes/ui/sales_order_ui.inc
 
+>>>>>>> 1.39.2.516
 05-Nov-2009 Joe Hunt
 ! Display tax info in Sales Quotation, Order, Direct Delivery and Invoice.
 $ /sales/includes/ui/sales_order_ui.inc

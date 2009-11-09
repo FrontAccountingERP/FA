@@ -40,7 +40,9 @@ function help_url($context=null)
 	if ($clean)
 		$help_page_url = access_string($help_page_url, true);
 
-	return $help_base_url.urlencode(str_replace(' ', '', ucwords($help_page_url))).'&lang='.$country;
+	return $help_base_url
+		.urlencode(strtr(ucwords($help_page_url), array(' '=>'', '/'=>'', '&'=>'And')))
+		.'&ctxhelp=1&lang='.$country;
 }
 
 function send_scripts()
