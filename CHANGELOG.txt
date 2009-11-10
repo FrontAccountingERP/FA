@@ -32,6 +32,8 @@ $ /gl/includes/ui/gl_bank_ui.inc
 # disallow bank accounts in accounts list when type is Bank Deposits
   or Payments. See above.
 $ /gl/manage/gl_quick_entries.php
+# type warning in dimension tags
+$ /admin/tags.php
 
 09-Nov-2009 Janusz Dobrowolski
 ! Fixed help link to provide ctxhelp switch and clean the page context string.

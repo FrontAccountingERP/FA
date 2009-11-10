@@ -16,9 +16,9 @@ include_once($path_to_root . "/admin/db/tags_db.inc");
 include($path_to_root . "/includes/ui.inc");
 
 // Set up page security based on what type of tags we're working with
-if (@$_GET['type'] == "account" || $_POST['type'] == TAG_ACCOUNT) {
+if (@$_GET['type'] == "account" || get_post('type') == TAG_ACCOUNT) {
 	$page_security = 'SA_GLACCOUNTTAGS';
-} else if(@$_GET['type'] == "dimension" || $_POST['type'] == TAG_DIMENSION) {
+} else if(@$_GET['type'] == "dimension" || get_post('type') == TAG_DIMENSION) {
 	$page_security = 'SA_DIMTAGS';
 }
 
