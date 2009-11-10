@@ -19,6 +19,12 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+10-Nov-2009 Janusz Dobrowolski
+# Fixed value for SA_SUPPBULKREP access area.
+$ /includes/access_levels.inc
+  /sql/en_US-demo.sql
+  /sql/en_US-new.sql
+
 10-Nov-2009 Joe Hunt
 # disallow bank accounts in accounts list in Bank Deposits/Payments.
   It produces double records in bank inquiry otherwise..

@@ -166,7 +166,7 @@ $security_areas =array(
 	'SA_SUPPLIERALLOC' => array(SS_PURCH|8, _("Supplier payments allocations")),
 
 	'SA_SUPPLIERANALYTIC' => array(SS_PURCH_A|1, _("Supplier analytical reports")),
-	'SA_SUPPBULKREP' => array(SS_SALES_A|2, _("Supplier document bulk reports")),
+	'SA_SUPPBULKREP' => array(SS_PURCH_A|2, _("Supplier document bulk reports")),
 	'SA_SUPPPAYMREP' => array(SS_PURCH_A|3, _("Supplier payments report")),
 //
 // Inventory 
