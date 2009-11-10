@@ -307,7 +307,7 @@ if ($selected_id != -1)
 	} 
 	else 
 	{
-		gl_all_accounts_list_row(_("Account").":", 'dest_id', null);
+		gl_all_accounts_list_row(_("Account").":", 'dest_id', null, $_POST['type'] == QE_DEPOSIT || $_POST['type'] == QE_PAYMENT);
 		if ($actn != '=') 
 		{
 			if ($actn == '%') 

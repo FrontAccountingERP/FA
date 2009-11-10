@@ -19,6 +19,14 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+10-Nov-2009 Joe Hunt
+# disallow bank accounts in accounts list in Bank Deposits/Payments.
+  It produces double records in bank inquiry otherwise..
+$ /gl/includes/ui/gl_bank_ui.inc
+# disallow bank accounts in accounts list when type is Bank Deposits
+  or Payments. See above.
+$ /gl/manage/gl_quick_entries.php
+
 09-Nov-2009 Janusz Dobrowolski
 ! Fixed help link to provide ctxhelp switch and clean the page context string.
 $ /includes/page/header.inc
