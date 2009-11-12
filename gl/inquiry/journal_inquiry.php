@@ -111,12 +111,19 @@ function edit_link($row)
 			ICON_EDIT) : '';
 }
 
+// Tom Hallman 11 Nov 2009
+// IF(gl.type = 1... statement is for deposits/payments that may not actually result
+// in a deposit, such as when a fix is made.  Without that statement (and the
+// joining of the bank_trans table), the fix deposit/payment amount would show up 
+// incorrectly as only the positive side of the fix.    
 $sql = "SELECT	IF(ISNULL(a.gl_seq),0,a.gl_seq) as gl_seq,
 	gl.tran_date,
 	gl.type,
 	gl.type_no,
 	refs.reference,
-	SUM(IF(gl.amount>0, gl.amount,0)) as amount,
+	IF(gl.type = 1 OR gl.type = 2,
+	  bank_trans.amount,
+	  SUM(IF(gl.amount>0, gl.amount,0))) as amount,
 	com.memo_,
 	IF(ISNULL(u.user_id),'',u.user_id) as user_id
 	FROM ".TB_PREF."gl_trans as gl
@@ -128,6 +135,8 @@ $sql = "SELECT	IF(ISNULL(a.gl_seq),0,a.gl_seq) as gl_seq,
 		(gl.type=refs.type AND gl.type_no=refs.id)
 	 LEFT JOIN ".TB_PREF."users as u ON 
 		a.user=u.id
+	 LEFT JOIN ".TB_PREF."bank_trans as bank_trans ON 
+		(gl.type=bank_trans.type AND gl.type_no=bank_trans.trans_no)		
 	WHERE gl.tran_date >= '" . date2sql($_POST['FromDate']) . "'
 	AND gl.tran_date <= '" . date2sql($_POST['ToDate']) . "'
 	AND gl.amount!=0";
