@@ -244,7 +244,7 @@ function gl_edit_item_controls(&$order, $dim, $Index=null)
 		hidden('dimension2_id', 0);
 
 	amount_cells(null, 'amount');
-	text_cells_ex(null, 'LineMemo', 35, 50);
+	text_cells_ex(null, 'LineMemo', 35, 255);
 
 	if ($id != -1)
 	{

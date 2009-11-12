@@ -206,7 +206,7 @@ function gl_edit_item_controls(&$order, $dim, $Index=null)
 
 	small_amount_cells(null, 'AmountDebit');
 	small_amount_cells(null, 'AmountCredit');
-	text_cells_ex(null, 'LineMemo', 35, 50);
+	text_cells_ex(null, 'LineMemo', 35, 255);
 
 	if ($id != -1)
 	{
