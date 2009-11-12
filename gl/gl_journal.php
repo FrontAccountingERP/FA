@@ -31,7 +31,7 @@ if ($use_date_picker)
 if (isset($_GET['ModifyGL'])) {
 	$_SESSION['page_title'] = sprintf(_("Modifying Journal Transaction # %d."), 
 		$_GET['trans_no']);
-	$help_context = "Modifying Journal Transaction";
+	$help_context = "Modifying Journal Entry";
 } else
 	$_SESSION['page_title'] = _($help_context = "Journal Entry");
 
@@ -56,7 +56,7 @@ if (isset($_GET['AddedID']))
     display_note(get_gl_view_str($trans_type, $trans_no, _("&View this Journal Entry")));
 
 	reset_focus();
-	hyperlink_params($_SERVER['PHP_SELF'], _("Entry &New Journal Entry"), "NewJournal=Yes");
+	hyperlink_params($_SERVER['PHP_SELF'], _("Enter &New Journal Entry"), "NewJournal=Yes");
 
 	display_footer_exit();
 } elseif (isset($_GET['UpdatedID'])) 
@@ -114,15 +114,17 @@ function create_cart($type=0, $trans_no=0)
 		$cart->memo_ = get_comments_string($type, $trans_no);
 		$cart->tran_date = sql2date($date);
 		$cart->reference = $Refs->get($type, $trans_no);
+		$_POST['ref_original'] = $cart->reference; // Store for comparison when updating
 	} else {
 		$cart->reference = $Refs->get_next(0);
 		$cart->tran_date = new_doc_date();
+		$_POST['ref_original'] = -1;
 	}
 	if (!is_date_in_fiscalyear($cart->tran_date))
 		$cart->tran_date = end_fiscalyear();
 
 	$_POST['memo_'] = $cart->memo_;
-	$_POST['ref'] = $cart->reference;	
+	$_POST['ref'] = $cart->reference;
 	$_POST['date_'] = $cart->tran_date;
 
 	$_SESSION['journal_items'] = &$cart;
@@ -159,19 +161,20 @@ if (isset($_POST['Process']))
 		set_focus('date_');
 		$input_error = 1;
 	} 
-  	if ($_SESSION['journal_items']->order_id == 0) {
-		if (!$Refs->is_valid($_POST['ref'])) 
-		{
-			display_error( _("You must enter a reference."));
-			set_focus('ref');
-			$input_error = 1;
-		} 
-		elseif ($Refs->exists(ST_JOURNAL, $_POST['ref'])) 
-		{
-			display_error( _("The entered reference is already in use."));
-			set_focus('ref');
-			$input_error = 1;
-		}
+	if (!$Refs->is_valid($_POST['ref'])) 
+	{
+		display_error( _("You must enter a reference."));
+		set_focus('ref');
+		$input_error = 1;
+	} 
+	elseif ($Refs->exists(ST_JOURNAL, $_POST['ref'])) 
+	{
+	    // The reference can exist already so long as it's the same as the original (when modifying) 
+	    if ($_POST['ref'] != $_POST['ref_original']) {
+    		display_error( _("The entered reference is already in use."));
+    		set_focus('ref');
+    		$input_error = 1;
+	    }
 	}
 	if ($input_error == 1)
 		unset($_POST['Process']);
@@ -182,8 +185,7 @@ if (isset($_POST['Process']))
 	$cart = &$_SESSION['journal_items'];
 	$new = $cart->order_id == 0;
 
-	if ($new) 
-		$cart->reference = $_POST['ref'];
+	$cart->reference = $_POST['ref'];
 	$cart->memo_ = $_POST['memo_'];
 	$cart->tran_date = $_POST['date_'];
 

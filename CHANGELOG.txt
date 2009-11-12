@@ -19,6 +19,15 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+12-Nov-2009 Tom Hallman/Joe Hunt
+! Changed to allow change of reference in GL modifying
+$ /gl/includes/db/gl_db_trans.inc
+  /gl/gl_journal.php
+  /gl/includes/ui/bl_journal_ui.inc
+  /gl/view/gl_trans_view.php
+  /includes/references.inc
+  /includes/db/references_db.inc
+  
 12-Nov-2009 Tom Hallman/Janusz Dobrowolski
 + Added amount range in gl inquires.
 $ /gl/includes/db/gl_db_trans.inc

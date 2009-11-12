@@ -31,6 +31,11 @@ class references
 		delete_reference($type, $id);
 	}	
 	
+	function update($type, $id, $reference) 
+	{
+	    update_reference($type, $id, $reference);
+	}
+	
 	function exists($type, $reference) 
 	{
 		return (find_reference($type, $reference) != null);

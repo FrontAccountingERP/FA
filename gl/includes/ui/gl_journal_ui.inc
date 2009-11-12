@@ -27,10 +27,8 @@ function display_order_header(&$Order)
     date_cells(_("Date:"), 'date_', '', $new);
 
 	table_section(2, $qes ? "20%" : "50%");
-	if ($new)
-		ref_cells(_("Reference:"), 'ref', '');
-	else
-		label_cells(_("Reference:"), $Order->reference);
+	ref_cells(_("Reference:"), 'ref', '');
+	hidden('ref_original');
 	end_row();
 
 

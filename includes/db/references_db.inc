@@ -32,6 +32,15 @@ function add_reference($type, $id, $reference)
 }
 
 //--------------------------------------------------------------------------------------------------
+ 
+function update_reference($type, $id, $reference)
+{
+    $sql = "UPDATE ".TB_PREF."refs SET reference=".db_escape($reference)
+			." WHERE type=".db_escape($type)." AND id=".db_escape($id);
+    db_query($sql, "could not update reference entry");
+}
+
+//--------------------------------------------------------------------------------------------------
 
 function delete_reference($type, $id)
 {

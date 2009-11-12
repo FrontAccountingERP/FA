@@ -32,11 +32,12 @@ function display_gl_heading($myrow)
 	global $table_style, $systypes_array;
 	$trans_name = $systypes_array[$_GET['type_id']];
     start_table("$table_style width=95%");
-    $th = array(_("General Ledger Transaction Details"),
+    $th = array(_("General Ledger Transaction Details"), _("Reference"),
     	_("Date"), _("Person/Item"));
     table_header($th);	
     start_row();	
     label_cell("$trans_name #" . $_GET['trans_no']);
+    label_cell($myrow["reference"]);
 	label_cell(sql2date($myrow["tran_date"]));
 	label_cell(payment_person_name($myrow["person_type_id"],$myrow["person_id"]));
 	
@@ -47,11 +48,13 @@ function display_gl_heading($myrow)
     end_table(1);
 }
 
-$sql = "SELECT ".TB_PREF."gl_trans.*, account_name FROM "
-	.TB_PREF."gl_trans, ".TB_PREF."chart_master WHERE "
-	.TB_PREF."gl_trans.account = ".TB_PREF."chart_master.account_code AND type= " 
-	.db_escape($_GET['type_id']) . " AND type_no = ".db_escape($_GET['trans_no']) 
-	. " ORDER BY counter";
+$sql = "SELECT gl.*, cm.account_name, refs.reference FROM "
+	.TB_PREF."gl_trans as gl, ".TB_PREF."chart_master as cm, ".TB_PREF."refs as refs"
+	." WHERE gl.account = cm.account_code"
+	." AND gl.type= ".db_escape($_GET['type_id']) 
+	." AND gl.type_no = ".db_escape($_GET['trans_no'])
+	." AND gl.type=refs.type AND gl.type_no=refs.id"
+	." ORDER BY counter";
 $result = db_query($sql,"could not get transactions");
 //alert("sql = ".$sql);
 

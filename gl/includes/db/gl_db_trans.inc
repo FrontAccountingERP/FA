@@ -381,19 +381,19 @@ function write_journal_entries(&$cart, $reverse, $use_transaction=true)
 	$date_ = $cart->tran_date;
 	$ref   = $cart->reference;
 	$memo_ = $cart->memo_;
-	$new = $cart->order_id == 0;
 	$trans_type = $cart->trans_type;
-	$trans_id = $new ? get_next_trans_no($trans_type) : $cart->order_id;
+	$new = $cart->order_id == 0;
+	
+	if ($new)
+	    $cart->order_id = get_next_trans_no($trans_type);
+
+    $trans_id = $cart->order_id;
 
 	if ($use_transaction)
 		begin_transaction();
 	
-	if($new) {
-		$cart->order_id = $trans_id;
-	} else {
+	if(!$new)
 		void_journal_trans($trans_type, $trans_id, true);
-		delete_comments($trans_type, $trans_id);
-	}
 
 	foreach ($cart->gl_items as $journal_item)
 	{
@@ -417,8 +417,10 @@ function write_journal_entries(&$cart, $reverse, $use_transaction=true)
 	if ($new) {
 		add_comments($trans_type, $trans_id, $date_, $memo_);
 		$Refs->save($trans_type, $trans_id, $ref);
-	} else
+	} else {
 		update_comments($trans_type, $trans_id, null, $memo_);
+		$Refs->update($trans_type, $trans_id, $ref);
+	}
 
 	add_audit_trail($trans_type, $trans_id, $date_);
 
@@ -446,7 +448,7 @@ function write_journal_entries(&$cart, $reverse, $use_transaction=true)
     		}
 			// store tax details if the gl account is a tax account
 			add_gl_tax_details($journal_item->code_id, 
-				($journal_item->amount < 0.0 ? ST_BANKDEPOSIT : ST_BANKPAYMENT), $trans_id, $journal_item->amount, 1, $date, $memo_);
+				($journal_item->amount < 0.0 ? ST_BANKDEPOSIT : ST_BANKPAYMENT), $trans_id, $journal_item->amount, 1, $reversingDate, $memo_);
     	}
 
     	add_comments($trans_type, $trans_id_reverse, $reversingDate, $memo_);
