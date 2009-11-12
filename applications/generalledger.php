@@ -33,7 +33,7 @@ class general_ledger_app extends application
 		$this->add_module(_("Inquiries and Reports"));
 		$this->add_lapp_function(1, _("&Journal Inquiry"),
 			"gl/inquiry/journal_inquiry.php?", 'SA_GLANALYTIC');
-		$this->add_lapp_function(1, _("GL Account &Inquiry"),
+		$this->add_lapp_function(1, _("GL &Inquiry"),
 			"gl/inquiry/gl_account_inquiry.php?", 'SA_GLTRANSVIEW');
 		$this->add_lapp_function(1, _("Bank Account &Inquiry"),
 			"gl/inquiry/bank_inquiry.php?", 'SA_BANKTRANSVIEW');
