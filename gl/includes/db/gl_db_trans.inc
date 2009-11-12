@@ -97,7 +97,8 @@ function add_gl_balance($type, $trans_id, $date_, $amount, $person_type_id=null,
 //--------------------------------------------------------------------------------
 
 function get_gl_transactions($from_date, $to_date, $trans_no=0,
-	$account=null, $dimension=0, $dimension2=0, $filter_type=null)
+	$account=null, $dimension=0, $dimension2=0, $filter_type=null,
+	$amount_min=null, $amount_max=null)
 {
 	$from = date2sql($from_date);
 	$to = date2sql($to_date);
@@ -122,6 +123,12 @@ function get_gl_transactions($from_date, $to_date, $trans_no=0,
 
 	if ($filter_type != null AND is_numeric($filter_type))
 		$sql .= " AND ".TB_PREF."gl_trans.type= ".db_escape($filter_type);
+		
+	if ($amount_min != null)
+		$sql .= " AND ABS(".TB_PREF."gl_trans.amount) >= ABS(".db_escape($amount_min).")";
+	
+	if ($amount_max != null)
+		$sql .= " AND ABS(".TB_PREF."gl_trans.amount) <= ABS(".db_escape($amount_max).")";
 
 	$sql .= " ORDER BY tran_date";
 
