@@ -34,6 +34,8 @@ class references
 	function update($type, $id, $reference) 
 	{
 	    update_reference($type, $id, $reference);
+		if ($reference != 'auto')
+			$this->save_last($reference, $type);
 	}
 	
 	function exists($type, $reference) 
