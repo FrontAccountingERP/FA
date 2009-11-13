@@ -393,7 +393,7 @@ function write_journal_entries(&$cart, $reverse, $use_transaction=true)
 		begin_transaction();
 	
 	if(!$new)
-		void_journal_trans($trans_type, $trans_id, true);
+		void_journal_trans($trans_type, $trans_id, false);
 
 	foreach ($cart->gl_items as $journal_item)
 	{
@@ -492,15 +492,17 @@ function void_gl_trans($type, $trans_id, $nested=false)
 
 //----------------------------------------------------------------------------------------
 
-function void_journal_trans($type, $type_no)
+function void_journal_trans($type, $type_no, $use_transaction=true)
 {
-	begin_transaction();
+	if ($use_transaction)
+		begin_transaction();
 
 	void_bank_trans($type, $type_no, true);
 //	void_gl_trans($type, $type_no, true);	 // this is done above
 //	void_trans_tax_details($type, $type_no); // ditto
 
-	commit_transaction();
+	if ($use_transaction)
+		commit_transaction();
 }
 
 ?>

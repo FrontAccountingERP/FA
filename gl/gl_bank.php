@@ -213,8 +213,8 @@ function handle_update_item()
 	$amount = ($_SESSION['pay_items']->trans_type==ST_BANKPAYMENT ? 1:-1) * input_num('amount');
     if($_POST['UpdateItem'] != "" && check_item_data())
     {
-    	$_SESSION['pay_items']->update_gl_item($_POST['Index'], $_POST['dimension_id'],
-    		$_POST['dimension2_id'], $amount , $_POST['LineMemo']);
+    	$_SESSION['pay_items']->update_gl_item($_POST['Index'], $_POST['code_id'], 
+    	    $_POST['dimension_id'], $_POST['dimension2_id'], $amount , $_POST['LineMemo']);
     }
 	line_start_focus();
 }

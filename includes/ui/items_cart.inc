@@ -113,13 +113,16 @@ class items_cart
 		return false;
 	}
 
-	function update_gl_item($index, $dimension_id, $dimension2_id, $amount, $reference, $description=null)
+	function update_gl_item($index, $code_id, $dimension_id, $dimension2_id, $amount, $reference, $description=null)
 	{
+	    $this->gl_items[$index]->code_id = $code_id;
 		$this->gl_items[$index]->dimension_id = $dimension_id;
 		$this->gl_items[$index]->dimension2_id = $dimension2_id;
 		$this->gl_items[$index]->amount = $amount;
 		$this->gl_items[$index]->reference = $reference;
-		if ($description != null)
+		if ($description == null)
+			$this->gl_items[$index]->description = get_gl_account_name($code_id);
+		else
 			$this->gl_items[$index]->description = $description;
 
 	}

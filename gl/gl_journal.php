@@ -264,8 +264,8 @@ function handle_update_item()
     	else
     		$amount = -input_num('AmountCredit');
 
-    	$_SESSION['journal_items']->update_gl_item($_POST['Index'], $_POST['dimension_id'],
-    		$_POST['dimension2_id'], $amount, $_POST['LineMemo']);
+    	$_SESSION['journal_items']->update_gl_item($_POST['Index'], $_POST['code_id'], 
+    	    $_POST['dimension_id'], $_POST['dimension2_id'], $amount, $_POST['LineMemo']);
     }
 	line_start_focus();
 }

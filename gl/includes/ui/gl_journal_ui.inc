@@ -150,6 +150,7 @@ function gl_edit_item_controls(&$order, $dim, $Index=null)
 	$id = find_submit('Edit');
 	if ($Index != -1 && $Index == $id)
 	{
+	    // Modifying an existing row
 		$item = $order->gl_items[$Index];
 		$_POST['code_id'] = $item->code_id;
 		$_POST['dimension_id'] = $item->dimension_id;
@@ -168,9 +169,8 @@ function gl_edit_item_controls(&$order, $dim, $Index=null)
 		$_POST['LineMemo'] = $item->reference;
 
 		hidden('Index', $id);
-		hidden('code_id', $item->code_id);
-		label_cell($_POST['code_id']);
-		label_cell($item->description);
+		$skip_bank = !$_SESSION["wa_current_user"]->can_access('SA_BANKJOURNAL');
+		gl_all_accounts_list('code_id', null, $skip_bank, true);
 		if ($dim >= 1) 
 			dimensions_list_cells(null, 'dimension_id', null, true, " ", false, 1);
 		if ($dim > 1) 
@@ -179,6 +179,7 @@ function gl_edit_item_controls(&$order, $dim, $Index=null)
 	}
 	else
 	{
+	    // Adding a new row
 		$_POST['AmountDebit'] = '';  //price_format(0);
 		$_POST['AmountCredit'] = ''; //price_format(0);
 		$_POST['dimension_id'] = 0;

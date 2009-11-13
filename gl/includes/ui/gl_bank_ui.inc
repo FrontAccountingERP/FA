@@ -197,9 +197,7 @@ function gl_edit_item_controls(&$order, $dim, $Index=null)
 		$_POST['LineMemo'] = $item->reference;
 
 		hidden('Index', $id);
-		hidden('code_id', $item->code_id);
-		label_cell($_POST['code_id']);
-		label_cell($item->description);
+		gl_all_accounts_list('code_id', null, true, true);
 		if ($dim >= 1)
 			dimensions_list_cells(null, 'dimension_id', null, true, " ", false, 1);
 		if ($dim > 1)
