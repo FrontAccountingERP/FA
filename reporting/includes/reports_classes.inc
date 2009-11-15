@@ -25,12 +25,14 @@ class BoxReports
 
 	function addReport($class_name, $id, $rep_name, $params=null)
 	{
-		$this->ar_classes[$class_name][] = new Report($id,$rep_name,$params);
+		unset($this->ar_classes[$class_name][$id]); // unset std report if any
+		$this->ar_classes[$class_name][$id] = new Report($id, $rep_name, $params);
 	}
 
 	function getDisplay($class=null)
 	{
 		global $table_style2, $comp_path, $path_to_root, $pdf_debug, $Ajax;
+
 
 		$temp = array_values($this->ar_classes);
 		$display_class = $class==null ? $temp[0] : $this->ar_classes[$class];
@@ -65,8 +67,8 @@ class BoxReports
 					$st_params .= submit('Rep'.$report->id,  
 						_("Display: ") . access_string($report->name, true),
 						false, '', $pdf_debug ? false : 'default') . '<br><br>';
-					$st_params .= $report->getDisplay() 
-						. "\n</form></td></tr></table>\n";
+					$st_params .= $this->getOptions($report->get_controls());
+					$st_params .= "\n</form></td></tr></table>\n";
 					set_focus('Rep'.$report->id);
 					$Ajax->addUpdate(true, 'rep_form', $st_params);
 				}
@@ -105,38 +107,56 @@ class BoxReports
 
 		return $st;
 	}
-}
 
-class Report
-{
-	var $id;
-	var $name;
-	var $ar_params;
-
-	function Report($id, $name, $ar_params)
+	function getOptions($controls)
 	{
-		$this->id 			= $id;
-		$this->name 		= $name;
-		$this->ar_params	= $ar_params;
+		$st = '';
+		if ($controls == null)
+			return "";
+
+		$cnt = 0;
+		foreach($controls as $title => $type)
+		{
+			$ctrl = '';
+			foreach($this->ctrl_handlers as $fun) { // first check for non-standard controls
+				$ctrl = $fun('PARAM_'.$cnt, $type);
+				if ($ctrl) break;
+			}
+			if ($ctrl == '') {
+				$ctrl = $this->get_ctrl('PARAM_'.$cnt, $type);
+			}
+			if ($ctrl != '')  {
+				$st .= $title . ':<br>';
+				$st .= $ctrl;
+				$st .= "<br><br>";
+			} else {
+				display_error(_('Unknown report parameter type:').$type);
+			}
+			$cnt++;
+		}
+		return $st;
 	}
-	
-	function getDisplay()
+
+	//
+	//	Register additional control handler
+	// $handle - name of global function f($name, $type) returning html code for control
+	function register_controls($handler) {
+		$this->ctrl_handlers[] = $handler;
+	}
+	//
+	//	Returns html code for input control $name of type $type 
+	//
+	function get_ctrl($name, $type)
 	{
 		global $path_to_root, $use_date_picker, $pdf_debug, $print_invoice_no;
 
 		$st = '';
-		$dummy = "";
-		if ($this->ar_params==null)
-			return "";
-		foreach($this->ar_params as $index=>$param)
-		{
-			$st .= $param->param_name . ':<br>';
-			switch ($param->param_type)
+			switch ($type)
 			{
 				case 'CURRENCY':
 					$sql = "SELECT curr_abrev, concat(curr_abrev,' - ', currency) AS name FROM ".TB_PREF."currencies";
-					$st .= combo_input("PARAM_$index", '', $sql, 'curr_abrev', 'name',array('spec_option'=>_("No Currency Filter"),'spec_id'=>ALL_TEXT,'order'=>false));
-					break;
+					return combo_input($name, '', $sql, 'curr_abrev', 'name',array('spec_option'=>_("No Currency Filter"),'spec_id'=>ALL_TEXT,'order'=>false));
+
 				case 'DATE':
 				case 'DATEBEGIN':
 				case 'DATEEND':
@@ -144,22 +164,22 @@ class Report
 				case 'DATEENDM':
 				case 'DATEBEGINTAX':
 				case 'DATEENDTAX':
-					if ($param->param_type == 'DATEBEGIN')
+					if ($type == 'DATEBEGIN')
 						$date = begin_fiscalyear();
-					elseif ($param->param_type == 'DATEEND')
+					elseif ($type == 'DATEEND')
 						$date = end_fiscalyear();
 					else
 						$date = Today();
-					if ($param->param_type == 'DATEBEGINM')
+					if ($type == 'DATEBEGINM')
 						$date = begin_month($date);
-					elseif ($param->param_type == 'DATEENDM')
+					elseif ($type == 'DATEENDM')
 						$date = end_month($date);
-					elseif ($param->param_type == 'DATEBEGINTAX' || $param->param_type == 'DATEENDTAX')
+					elseif ($type == 'DATEBEGINTAX' || $type == 'DATEENDTAX')
 					{
 						$row = get_company_prefs();
 						$edate = add_months($date, -$row['tax_last']);
 						$edate = end_month($edate);
-						if ($param->param_type == 'DATEENDTAX')
+						if ($type == 'DATEENDTAX')
 							$date = $edate;
 						else
 						{
@@ -168,102 +188,100 @@ class Report
 							$date = $bdate;
 						}
 					}
-					$name = "PARAM_$index";
 
-					$st .= "<input type='text' name='$name' value='$date'>";
+					$st = "<input type='text' name='$name' value='$date'>";
 					if ($use_date_picker)
 						$st .= "<a href=\"javascript:date_picker(document.forms[0].$name);\">"
 						. "	<img src='$path_to_root/themes/default/images/cal.gif' width='16' height='16' border='0' alt='"._('Click Here to Pick up the date')."'></a>\n";
+					return $st;
+					break;
 
-					break;
 				case 'YES_NO':
-					$sel = array(_('No'), _("Yes"));
-					$st .= dup_simple_name_list("PARAM_$index", $sel);
-					break;
+					return yesno_list($name);
+
 				case 'PAYMENT_LINK':
-					$sel = array(_("No Payment Link"), "PayPal");
-					$st .= dup_simple_name_list("PARAM_$index", $sel);
-					break;
+					$sel = array(_("No payment Link"), "PayPal");
+					return array_selector($name, null, $sel);
+
 				case 'DESTINATION':
 					$sel = array(_("PDF/Printer"), "Excel");
-					$st .= dup_simple_name_list("PARAM_$index", $sel);
-					break;
+					return array_selector($name, null, $sel);
+
 				case 'COMPARE':
 					$sel = array(_("Accumulated"), _("Period Y-1"), _("Budget"));
-					$st .= dup_simple_name_list("PARAM_$index", $sel);
-					break;
+					return array_selector($name, null, $sel);
+
 				case 'GRAPHIC':
-					$sel = array(_("No Graphics"), _("Vertical bars"), _("Horizontal bars"), _("Dots"), _("Lines"), _("Pie"), _("Donut"));
-					$st .= dup_simple_name_list("PARAM_$index", $sel);
-					break;
+					$sel = array(_("No Graphics"), _("Vertical bars"), _("Horizontal bars"), 
+								_("Dots"), _("Lines"), _("Pie"), _("Donut"));
+					return array_selector($name, null, $sel);
+
 				case 'SYS_TYPES':
+					return gl_systypes_list($name, null, _("No Type Filter"));
+
 				case 'SYS_TYPES_ALL':
-					$st .= dup_systypes_list("PARAM_$index", $dummy, true, _("No Type Filter"), ($param->param_type=='SYS_TYPES_ALL'));
-					break;
+					return systypes_list($name, null, _("No Type Filter"));
+
 				case 'TEXT':
-					$st .= "<input type='text' name='PARAM_$index'>";
-					break;
+					return "<input type='text' name='$name'>";
+
 				case 'TEXTBOX':
-					$st .= "<textarea rows=4 cols=30 name='PARAM_$index'></textarea>";
-					break;
-				case 'ACCOUNTS':
-					$sql = "SELECT id, name FROM ".TB_PREF."chart_types";
-					$st .= combo_input("PARAM_$index", '', $sql, 'id', 'name',array('spec_option'=>_("No Account Group Filter"),'spec_id'=>ALL_NUMERIC));
-					break;
-				case 'ACCOUNTS_NO_FILTER':
-					$sql = "SELECT id, name FROM ".TB_PREF."chart_types";
-					$st .= combo_input("PARAM_$index", '', $sql, 'id', 'name', null);
-					break;
+					return "<textarea rows=4 cols=30 name='$name'></textarea>";
+
+				case 'ACCOUNTS': // not used
+//					$sql = "SELECT id, name FROM ".TB_PREF."chart_types";
+//					return combo_input($name, '', $sql, 'id', 'name',array('spec_option'=>_("No Account Group Filter"),'spec_id'=>ALL_NUMERIC));
+					return gl_account_types_list($name, null, _("No Account Group Filter"), true);
+
+				case 'ACCOUNTS_NO_FILTER': // not used
+					return gl_account_types_list($name);
+
 				case 'GL_ACCOUNTS':
-					$sql = "SELECT chart.account_code, chart.account_name, type.name, chart.inactive, type.id
-						FROM ".TB_PREF."chart_master chart,".TB_PREF."chart_types type WHERE chart.account_type=type.id";
-					$st .= combo_input("PARAM_$index", '', $sql, 'chart.account_code', 'chart.account_name',
-						array('format' => '_format_account','order' => array('type.id','account_code'),'async' => false,'category' => 2));
-					break;
+					return gl_all_accounts_list($name);
+
 				case 'BANK_ACCOUNTS':
-					$sql = "SELECT ".TB_PREF."bank_accounts.id, concat(bank_account_name, if (bank_curr_code=curr_default,'', concat(' - ', bank_curr_code))) AS name FROM ".TB_PREF."bank_accounts, ".TB_PREF."company";
-					$st .= combo_input("PARAM_$index", '', $sql, 'id', 'name',array('order'=>array('id')));
-					break;
+					return bank_accounts_list($name);
+					
 				case 'DIMENSION':
-					$sql = "SELECT id, concat(reference, ' - ', name) AS DimName FROM ".TB_PREF."dimensions";
-					$st .= combo_input("PARAM_$index", '', $sql, 'id', 'DimName',array('order'=>array('reference')));
-					break;
+					return dimensions_list($name, null, false, ' ', false, true, 0);
+					
 				case 'DIMENSIONS':
-					$sql = "SELECT id, concat(reference, ' - ', name) as DimName FROM ".TB_PREF."dimensions";
-					$st .= combo_input("PARAM_$index", '', $sql, 'id', 'DimName',array('spec_option'=>_("No Dimension Filter"),'spec_id'=>0,'order'=>array('reference')));
-					break;
+					return dimensions_list($name, null, true, _("No Dimension Filter"), false, true, 0);
+
 				case 'DIMENSION1':
-					$sql = "SELECT id, concat(reference, ' - ', name) AS DimName FROM ".TB_PREF."dimensions WHERE type_=1";
-					$st .= combo_input("PARAM_$index", '', $sql, 'id', 'DimName',array('order'=>array('reference')));
-					break;
+					return dimensions_list($name, null, false, ' ', false, true, 1);
+
 				case 'DIMENSIONS1':
-					$sql = "SELECT id, concat(reference, ' - ', name) as DimName FROM ".TB_PREF."dimensions WHERE type_=1";
-					$st .= combo_input("PARAM_$index", '', $sql, 'id', 'DimName',array('spec_option'=>_("No Dimension Filter"),'spec_id'=>0,'order'=>array('reference')));
-					break;
+					return dimensions_list($name, null, true, _("No Dimension Filter"), false, true, 1);
+
 				case 'DIMENSION2':
-					$sql = "SELECT id, concat(reference, ' - ', name) AS DimName FROM ".TB_PREF."dimensions WHERE type_=2";
-					$st .= combo_input("PARAM_$index", '', $sql, 'id', 'DimName',array('order'=>array('reference')));
-					break;
+					return dimensions_list($name, null, false, ' ', false, true, 2);
+
 				case 'DIMENSIONS2':
-					$sql = "SELECT id, concat(reference, ' - ', name) as DimName FROM ".TB_PREF."dimensions WHERE type_=2";
-					$st .= combo_input("PARAM_$index", '', $sql, 'id', 'DimName',array('spec_option'=>_("No Dimension Filter"),'spec_id'=>0,'order'=>array('reference')));
-					break;
+					return dimensions_list($name, null, true, _("No Dimension Filter"), false, true, 2);
+
 				case 'CUSTOMERS_NO_FILTER':
 				case 'CUSTOMERS':
 					$sql = "SELECT debtor_no, name FROM ".TB_PREF."debtors_master";
-					if ($param->param_type == 'CUSTOMERS_NO_FILTER')
-						$st .= combo_input("PARAM_$index", '', $sql, 'debtor_no', 'name',array('spec_option'=>_("No Customer Filter"),'spec_id'=>ALL_NUMERIC));
+					if ($type == 'CUSTOMERS_NO_FILTER')
+						return combo_input($name, '', $sql, 'debtor_no', 'name',array('spec_option'=>_("No Customer Filter"),'spec_id'=>ALL_NUMERIC));
+// FIX allitems numeric!
+//						return customer_list($name, null, _("No Customer Filter"));
 					else
-						$st .= combo_input("PARAM_$index", '', $sql, 'debtor_no', 'name', null);
-					break;
+						return combo_input($name, '', $sql, 'debtor_no', 'name', null);
+//						return customer_list($name);
+
 				case 'SUPPLIERS_NO_FILTER':
 				case 'SUPPLIERS':
 					$sql = "SELECT supplier_id, supp_name FROM ".TB_PREF."suppliers";
-					if ($param->param_type == 'SUPPLIERS_NO_FILTER')
-						$st .= combo_input("PARAM_$index", '', $sql, 'supplier_id', 'supp_name',array('spec_option'=>_("No Supplier Filter"),'spec_id'=>ALL_NUMERIC));
+					if ($type == 'SUPPLIERS_NO_FILTER')
+						return combo_input($name, '', $sql, 'supplier_id', 'supp_name',array('spec_option'=>_("No Supplier Filter"),'spec_id'=>ALL_NUMERIC));
+// FIX allitems numeric!
+//						return supplier_list($name, null, _("No Supplier Filter"));
 					else
-						$st .= combo_input("PARAM_$index", '', $sql, 'supplier_id', 'supp_name', null);
-					break;
+						return combo_input($name, '', $sql, 'supplier_id', 'supp_name', null);
+//						return supplier_list($name);
+
 				case 'INVOICE':
 					$IV = _("IV");
 					$CN = _("CN");
@@ -271,8 +289,8 @@ class Report
 					$sql = "SELECT concat(".TB_PREF."debtor_trans.trans_no, '-',
 						".TB_PREF."debtor_trans.type) AS TNO, concat(".TB_PREF."debtor_trans.$ref, if (type=".ST_SALESINVOICE.", ' $IV ', ' $CN '), ".TB_PREF."debtors_master.name) as IName
 						FROM ".TB_PREF."debtors_master, ".TB_PREF."debtor_trans WHERE (type=".ST_SALESINVOICE." OR type=".ST_CUSTCREDIT.") AND ".TB_PREF."debtors_master.debtor_no=".TB_PREF."debtor_trans.debtor_no ORDER BY ".TB_PREF."debtor_trans.trans_no DESC";
-					$st .= combo_input("PARAM_$index", '', $sql, 'TNO', 'IName',array('order'=>false));
-					break;
+					return combo_input($name, '', $sql, 'TNO', 'IName',array('order'=>false));
+
 				case 'DELIVERY':
 					$DN = _("DN");
 					$sql = "SELECT
@@ -281,135 +299,141 @@ class Report
 						FROM ".TB_PREF."debtors_master, ".TB_PREF."debtor_trans
 						WHERE type=".ST_CUSTDELIVERY." AND ".TB_PREF."debtors_master.debtor_no=".
 						TB_PREF."debtor_trans.debtor_no ORDER BY ".TB_PREF."debtor_trans.trans_no DESC";
-					$st .= combo_input("PARAM_$index", '', $sql, 'TNO', 'IName',array('order'=>false));
-					break;
+					return combo_input($name, '', $sql, 'TNO', 'IName',array('order'=>false));
+
 				case 'ORDERS':
 					$ref = ($print_invoice_no == 1 ? "order_no" : "reference");
 					$sql = "SELECT ".TB_PREF."sales_orders.order_no, concat(".TB_PREF."sales_orders.$ref, '-',
 						".TB_PREF."debtors_master.name) as IName
 						FROM ".TB_PREF."debtors_master, ".TB_PREF."sales_orders WHERE ".TB_PREF."debtors_master.debtor_no=".TB_PREF."sales_orders.debtor_no 
 						AND ".TB_PREF."sales_orders.trans_type=".ST_SALESORDER." ORDER BY ".TB_PREF."sales_orders.order_no DESC";
-					$st .= combo_input("PARAM_$index", '', $sql, 'order_no', 'IName',array('order'=>false));
-					break;
+					return combo_input($name, '', $sql, 'order_no', 'IName',array('order'=>false));
+
 				case 'QUOTATIONS':
 					$ref = ($print_invoice_no == 1 ? "order_no" : "reference");
 					$sql = "SELECT ".TB_PREF."sales_orders.order_no, concat(".TB_PREF."sales_orders.$ref, '-',
 						".TB_PREF."debtors_master.name) as IName
 						FROM ".TB_PREF."debtors_master, ".TB_PREF."sales_orders WHERE ".TB_PREF."debtors_master.debtor_no=".TB_PREF."sales_orders.debtor_no 
 						AND ".TB_PREF."sales_orders.trans_type=".ST_SALESQUOTE." ORDER BY ".TB_PREF."sales_orders.order_no DESC";
-					$st .= combo_input("PARAM_$index", '', $sql, 'order_no', 'IName',array('order'=>false));
-					break;
+					return combo_input($name, '', $sql, 'order_no', 'IName',array('order'=>false));
+
 				case 'PO':
 					$ref = ($print_invoice_no == 1 ? "order_no" : "reference");
 					$sql = "SELECT ".TB_PREF."purch_orders.order_no, concat(".TB_PREF."purch_orders.$ref, '-',
 						".TB_PREF."suppliers.supp_name) as IName
 						FROM ".TB_PREF."suppliers, ".TB_PREF."purch_orders WHERE ".TB_PREF."suppliers.supplier_id=".TB_PREF."purch_orders.supplier_id ORDER BY ".TB_PREF."purch_orders.order_no DESC";
-					$st .= combo_input("PARAM_$index", '', $sql, 'order_no', 'IName',array('order'=>false));
-					break;
+					return combo_input($name, '', $sql, 'order_no', 'IName',array('order'=>false));
+
 				case 'ITEMS':
-					$sql = "SELECT stock_id, concat(stock_id, '-', description) as name FROM ".TB_PREF."stock_master WHERE (mb_flag='A' OR mb_flag='M')";
-					$st .= combo_input("PARAM_$index", '', $sql, 'stock_id', 'name',array('order'=>array('stock_id')));
-					break;
+					return stock_manufactured_items_list($name);
+
 				case 'WORKORDER':
 					$sql = "SELECT ".TB_PREF."workorders.id, concat(".TB_PREF."workorders.id, '-',
 						".TB_PREF."stock_master.description) as IName
 						FROM ".TB_PREF."stock_master, ".TB_PREF."workorders WHERE ".TB_PREF."stock_master.stock_id=".TB_PREF."workorders.stock_id ORDER BY ".TB_PREF."workorders.id DESC";
-					$st .= combo_input("PARAM_$index", '', $sql, 'id', 'IName',array('order'=>false));
-					break;
+					return combo_input($name, '', $sql, 'id', 'IName',array('order'=>false));
+
 				case 'LOCATIONS':
-					$sql = "SELECT loc_code, location_name FROM ".TB_PREF."locations";
-					$st .= combo_input("PARAM_$index", '', $sql, 'loc_code', 'location_name',array('spec_option'=>_("No Location Filter"),'spec_id'=>ALL_TEXT));
-					break;
+					return  locations_list($name, null, _("No Location Filter"));
+
 				case 'CATEGORIES':
-					$sql = "SELECT category_id, description FROM ".TB_PREF."stock_category";
-					$st .= combo_input("PARAM_$index", '', $sql, 'category_id', 'description',array('spec_option'=>_("No Category Filter"),'spec_id'=>ALL_NUMERIC));
-					break;
+					return stock_categories_list($name, null, _("No Category Filter"));
+
 				case 'SALESTYPES':
-					$sql = "SELECT id, sales_type FROM ".TB_PREF."sales_types";
-					$st .= combo_input("PARAM_$index", '', $sql, 'id', 'sales_type', null);
-					break;
+					return sales_types_list($name);
+
 				case 'AREAS':
-					$sql = "SELECT area_code, description FROM ".TB_PREF."areas";
-					$st .= combo_input("PARAM_$index", '', $sql, 'area_code', 'description',array('spec_option'=>_("No Area Filter"),'spec_id'=>ALL_NUMERIC));
-					break;
+					return sales_areas_list($name);
+
 				case 'SALESMEN':
-					$sql = "SELECT salesman_code, salesman_name FROM ".TB_PREF."salesman";
-					$st .= combo_input("PARAM_$index", '', $sql, 'salesman_code', 'salesman_name',array('spec_option'=>_("No Sales Folk Filter"),'spec_id'=>ALL_NUMERIC));
-					break;
+					return sales_persons_list($name, null, _("No Sales Folk Filter"));
+					
 				case 'TRANS_YEARS':
 					$sql = "SELECT DISTINCT YEAR(tran_date) AS tran_date, YEAR(tran_date) AS tran_date2 FROM ".TB_PREF."gl_trans";
-					$st .= combo_input("PARAM_$index", '', $sql, 'tran_date', 'tran_date2',array('order'=>array('tran_date')));
-					break;
+					return combo_input($name, '', $sql, 'tran_date', 'tran_date2',array('order'=>array('tran_date')));
+// FIX shouldn't it be fiscal year selector?
+//					return fiscalyears_list($name);
+
 				case 'USERS':
 					$sql = "SELECT id, user_id FROM ".TB_PREF."users";
-					$st .= combo_input("PARAM_$index", '', $sql, 'id', 'user_id',array('spec_option'=>_("No Users Filter"),'spec_id'=>ALL_NUMERIC));
-					break;
+					return combo_input($name, '', $sql, 'id', 'user_id',array('spec_option'=>_("No Users Filter"),'spec_id'=>ALL_NUMERIC));
+
 				case 'ACCOUNTTAGS':
 				case 'DIMENSIONTAGS':
-					if ($param->param_type == 'ACCOUNTTAGS')
-						$type = TAG_ACCOUNT;
+					if ($type == 'ACCOUNTTAGS')
+						$tag_type = TAG_ACCOUNT;
 					else
-						$type = TAG_DIMENSION;
-					$sql = "SELECT id, name FROM ".TB_PREF."tags WHERE type=$type"; 
-					$st .= combo_input("PARAM_$index", '', $sql, 'id', 'name',array('spec_option'=>_("No tags"),'spec_id' => ALL_NUMERIC,'multi'=>true,'height'=>5));
-					break;
+						$tag_type = TAG_DIMENSION;
+					return tag_list($name, 5, $tag_type, true, _("No tags"));
 
 			}
-			$st .= "<br><br>";
-		}
-		return $st;
+		return '';
 	}
 }
 
-class ReportParam
+class Report
 {
-	var $param_name;
-	var $param_type;
-
-	function ReportParam($param_name, $param_type)
+	var $id;
+	var $name;
+	var $ar_params;
+	var $controls;
+	var $ctrl_handlers = array();
+	
+	function Report($id, $name, $ar_params = null)
 	{
-		$this->param_name = $param_name;
-		$this->param_type = $param_type;
+		$this->id = $id;
+		$this->name = $name;
+		if ($ar_params) $this->set_controls($ar_params);
 	}
-}
-
-function dup_simple_name_list($name, $selections)
-{
-	$st = "<select name='$name'>";
-	for ($i = 0; $i < count($selections); $i++)
-		$st .= "<option value='" . $i . "'>" . $selections[$i] . "</option>\n";
-	$st .= "</select>";
-	return $st;
+	
+	function set_controls($ar_params) {
+		$this->controls = $ar_params;
+	}
+	
+	function get_controls() {
+		return $this->controls;
+	}
+	
 }
 
 //------------------------------------------------------------------------------------------------
-
-function dup_systypes_list($name, &$selected_id, $all_option=false, $all_option_name=null, $all_types=false)
+function gl_systypes_list($name, $value=null, $spec_opt=false)
 {
 	global $systypes_array;
+	
+	$types = $systypes_array;
+	
+	foreach(array(ST_LOCTRANSFER, ST_PURCHORDER, ST_SUPPRECEIVE, ST_MANUISSUE,
+				ST_MANURECEIVE, ST_SALESORDER, ST_SALESQUOTE, ST_DIMENSION) as $type)
+		unset($types[$type]);
 
-   	$st = "<select name='$name'>";
-	if ($all_option == true)
-	{
-		$reserved_word = ALL_NUMERIC;
-    	if ($reserved_word == $selected_id)
-    	     $st .= "<option selected value='" . $reserved_word . "'>" . $all_option_name . "</option>\n";
-    	else
-    	     $st .= "<option value='" . $reserved_word . "'>" . $all_option_name . "</option>\n";
-		if ($selected_id == "")
-			$selected_id = $reserved_word;
-	}
-
-	foreach ($systypes_array as $i => $value)
-	{
-		if (!$all_types && ($i == ST_LOCTRANSFER || $i == ST_PURCHORDER || $i == ST_SUPPRECEIVE || ($i >= ST_MANUISSUE && $i <= ST_SALESQUOTE) || 
-			$i >= ST_DIMENSION))
-			continue;
-    	$st .= "<option" . ($selected_id == $i ? " selected" : "") . " value='$i'>" . $value . "</option>\n";
-	}
-    $st .= "</select>";
-	return $st;
+	return array_selector($name, $value, $types, 
+		array( 
+			'spec_option'=> $spec_opt,
+			'spec_id' => ALL_NUMERIC,
+			'async' => false,
+			)
+	);
 }
 
+function add_custom_reports(&$reports)
+{
+	global $installed_extensions, $path_to_root, $comp_path;
+	
+	// include reports installed inside extension modules
+	if (count($installed_extensions) > 0)
+	{
+		$extensions = $installed_extensions;
+		foreach ($extensions as $ext)
+			if (($ext['active'] && $ext['type'] == 'module')) {
+				$file = $path_to_root.'/'.$ext['path']."/reporting/reports_custom.php";
+				if (file_exists($file))
+					include_once($file);
+			}
+	}
+	$file = $comp_path.'/'.user_company()."/reporting/reports_custom.php";
+	if (file_exists($file))
+		include_once($file);
+}
 
 ?>

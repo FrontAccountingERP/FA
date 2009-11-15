@@ -17,6 +17,37 @@ $path_to_root = "..";
 $page_security = 'SA_OPEN';	// this level is later overriden in rep file
 include_once($path_to_root . "/includes/session.inc");
 
+/*
+	Find report definition file.
+	Standard reports can be superseded by report with the same id
+	included in active extension, or company customized report.
+*/
+function find_report_file($rep) {
+	global $installed_extensions, $comp_path, $path_to_root;
+
+	// customized per company versions 
+	$rep_file = $comp_path.'/'.user_company()."/reporting/rep$rep.php";
+	if (file_exists($rep_file)) 
+		return $rep_file;
+	// reports added by active extension modules
+	if (count($installed_extensions) > 0)
+	{
+		$extensions = $installed_extensions;
+		foreach ($extensions as $ext)
+			if (($ext['active'] && $ext['type'] == 'module')) {
+				$rep_file = $path_to_root.'/'.$ext['path']."/reporting/rep$rep.php";
+				if (file_exists($rep_file))
+					return $rep_file;
+			}
+	}
+	// standard reports
+	$rep_file = $path_to_root ."/reporting/rep$rep.php";
+	if (file_exists($rep_file))
+		return $rep_file;
+
+	return null;
+}
+
 if (isset($_GET['xls']))
 {
 	$filename = $_GET['filename'];
@@ -53,10 +84,8 @@ if (!isset($_POST['REP_ID'])) {	// print link clicked
 	}
 }
 $rep = $_POST['REP_ID'];
-$rep_file = $comp_path.'/'.user_company()."/reporting/rep$rep.php";
-if (!file_exists($rep_file)) {
-    $rep_file = $path_to_root ."/reporting/rep$rep.php";
-}
+
+$rep_file = find_report_file($rep);
 require($rep_file);
 exit();
 
