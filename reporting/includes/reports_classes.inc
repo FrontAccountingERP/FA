@@ -12,6 +12,7 @@
 class BoxReports
 {
 	var $ar_classes;
+	var $ctrl_handlers = array();
 
 	function ReportClasses()
 	{
@@ -377,7 +378,6 @@ class Report
 	var $name;
 	var $ar_params;
 	var $controls;
-	var $ctrl_handlers = array();
 	
 	function Report($id, $name, $ar_params = null)
 	{
