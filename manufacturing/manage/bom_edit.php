@@ -266,7 +266,7 @@ start_form();
 		label_cell(_("Component:"));
 
 		echo "<td>";
-		stock_component_items_list('component', $selected_parent, null, false, true);
+		echo stock_component_items_list('component', $selected_parent, null, false, true);
 		if (get_post('_component_update')) 
 		{
 			$Ajax->activate('quantity');

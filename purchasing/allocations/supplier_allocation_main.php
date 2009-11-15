@@ -34,7 +34,7 @@ start_form();
     	$_POST['supplier_id'] = get_global_supplier();
 
     echo "<center>" . _("Select a Supplier: ") . "&nbsp;&nbsp;";
-	supplier_list('supplier_id', $_POST['supplier_id'], true, true);
+	echo supplier_list('supplier_id', $_POST['supplier_id'], true, true);
     echo "<br>";
     check(_("Show Settled Items:"), 'ShowSettled', null, true);
 	echo "</center><br><br>";

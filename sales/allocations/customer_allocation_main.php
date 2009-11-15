@@ -30,7 +30,7 @@ start_form();
     	$_POST['customer_id'] = get_global_customer();
 
     echo "<center>" . _("Select a customer: ") . "&nbsp;&nbsp;";
-	customer_list('customer_id', $_POST['customer_id'], true, true);
+	echo customer_list('customer_id', $_POST['customer_id'], true, true);
     echo "<br>";
     check(_("Show Settled Items:"), 'ShowSettled', null, true);
 	echo "</center><br><br>";

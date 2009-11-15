@@ -170,7 +170,7 @@ function display_gl_controls(&$supp_trans, $k)
 	$_POST['gl_code'] = $accs['purchase_account'];
 
 	alt_table_row_color($k);
-	gl_all_accounts_list('gl_code', null, true, true);
+	echo gl_all_accounts_list('gl_code', null, true, true);
 	$dim = get_company_pref('use_dimension');
 	if ($dim >= 1)
 		dimensions_list_cells(null, 'dimension_id', null, true, " ", false, 1);
@@ -219,7 +219,7 @@ function display_gl_items(&$supp_trans, $mode=0)
 		{
 			echo "<div style='float:right;'>";
 			echo _("Quick Entry:")."&nbsp;"; 
-			quick_entries_list('qid', null, QE_SUPPINV, true);
+			echo quick_entries_list('qid', null, QE_SUPPINV, true);
 			$qid = get_quick_entry(get_post('qid'));
 			if (list_updated('qid')) {
 				unset($_POST['totamount']); // enable default

@@ -39,7 +39,7 @@ if (!isset($_POST['stock_id']))
 	$_POST['stock_id'] = get_global_stock_item();
 
 echo "<center> " . _("Item:"). " ";
-stock_items_list('stock_id', $_POST['stock_id'], false, true);
+echo stock_items_list('stock_id', $_POST['stock_id'], false, true);
 echo "<br>";
 
 echo "<hr></center>";

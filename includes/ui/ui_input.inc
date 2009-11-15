@@ -154,9 +154,9 @@ function submit($name, $value, $echo=true, $title=false, $atype=false, $icon=fal
 
 function submit_center($name, $value, $echo=true, $title=false, $async=false, $icon=false)
 {
-	echo "<center>";
+	if ($echo) echo "<center>";
 	submit($name, $value, $echo, $title, $async, $icon);
-	echo "</center>";
+	if ($echo) echo "</center>";
 }
 
 function submit_center_first($name, $value, $title=false, $async=false, $icon=false)

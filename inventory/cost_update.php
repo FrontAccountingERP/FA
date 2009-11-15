@@ -83,7 +83,7 @@ if (!isset($_POST['stock_id']))
 	$_POST['stock_id'] = get_global_stock_item();
 
 echo "<center>" . _("Item:"). "&nbsp;";
-stock_costable_items_list('stock_id', $_POST['stock_id'], false, true);
+echo stock_costable_items_list('stock_id', $_POST['stock_id'], false, true);
 
 echo "</center><hr>";
 set_global_stock_item($_POST['stock_id']);

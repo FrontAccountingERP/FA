@@ -97,7 +97,7 @@ function compress_list_row($label, $name, $value=null)
     	$ar_comps['gzip'] = "gzip";
 
 	echo "<tr><td>$label</td><td>";
-	array_selector('comp', $value, $ar_comps);
+	echo array_selector('comp', $value, $ar_comps);
 	echo "</td></tr>";
 }
 

@@ -170,7 +170,7 @@ function gl_edit_item_controls(&$order, $dim, $Index=null)
 
 		hidden('Index', $id);
 		$skip_bank = !$_SESSION["wa_current_user"]->can_access('SA_BANKJOURNAL');
-		gl_all_accounts_list('code_id', null, $skip_bank, true);
+		echo gl_all_accounts_list('code_id', null, $skip_bank, true);
 		if ($dim >= 1) 
 			dimensions_list_cells(null, 'dimension_id', null, true, " ", false, 1);
 		if ($dim > 1) 
@@ -192,7 +192,7 @@ function gl_edit_item_controls(&$order, $dim, $Index=null)
 		}
 		
 		$skip_bank = !$_SESSION["wa_current_user"]->can_access('SA_BANKJOURNAL');
-		gl_all_accounts_list('code_id', null, $skip_bank, true);
+		echo gl_all_accounts_list('code_id', null, $skip_bank, true);
 		if ($dim >= 1)
 			dimensions_list_cells(null, 'dimension_id', null, true, " ", false, 1);
 		if ($dim > 1)

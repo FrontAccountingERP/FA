@@ -119,7 +119,7 @@ function display_po_header(&$order)
 
 	echo "<tr><td>" . _("Receive Into:") . "</td>";
 	echo "<td>";
-    locations_list('StkLocation', null, false, true);
+    echo locations_list('StkLocation', null, false, true);
 	echo "</td></tr>";
 
 	table_section(3);

@@ -183,7 +183,7 @@ if ($Mode == 'RESET')
 start_form();
 
 echo "<center>" . _("Select a sale kit:") . "&nbsp;";
-sales_kits_list('item_code', null, _('New kit'), true);
+echo sales_kits_list('item_code', null, _('New kit'), true);
 echo "</center><br>";
 $props = get_kit_props($_POST['item_code']);
 

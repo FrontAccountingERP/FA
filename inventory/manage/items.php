@@ -348,7 +348,7 @@ text_row(_("Name:"), 'description', null, 52, 50);
 
 textarea_row(_('Description:'), 'long_description', null, 42, 3);
 
-stock_categories_list_row(_("Category:"), 'category_id', null, $new_item);
+stock_categories_list_row(_("Category:"), 'category_id', null, false, $new_item);
 
 if ($new_item && (list_updated('category_id') || !isset($_POST['units']))) {
 

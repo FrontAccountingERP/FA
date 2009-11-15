@@ -206,7 +206,7 @@ function select_link($row) {
 start_form();
 
 echo "<center>" . _("Select a customer: ") . "&nbsp;&nbsp;";
-customer_list('customer_id', null, false, true);
+echo customer_list('customer_id', null, false, true);
 echo "</center><br>";
 
 $num_branches = db_customer_has_branches($_POST['customer_id']);

@@ -160,7 +160,7 @@ foreach(get_reports() as $rep => $descr)
     label_cell($descr == '' ? '???<sup>1)</sup>' : _($descr));
 	$_POST['Prn'.$rep] = isset($prints[$rep]) ? $prints[$rep] : '';
     echo '<td>';
-	printers_list('Prn'.$rep, null, 
+	echo printers_list('Prn'.$rep, null, 
 		$rep == '' ? _('Browser support') : _('Default'));
 	echo '</td>';
 	if ($descr == '') $unkn = 1;
