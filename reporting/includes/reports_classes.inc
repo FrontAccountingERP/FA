@@ -350,10 +350,7 @@ class BoxReports
 					return sales_persons_list($name, null, _("No Sales Folk Filter"));
 					
 				case 'TRANS_YEARS':
-					$sql = "SELECT DISTINCT YEAR(tran_date) AS tran_date, YEAR(tran_date) AS tran_date2 FROM ".TB_PREF."gl_trans";
-					return combo_input($name, '', $sql, 'tran_date', 'tran_date2',array('order'=>array('tran_date')));
-// FIX shouldn't it be fiscal year selector?
-//					return fiscalyears_list($name);
+					return fiscalyears_list($name);
 
 				case 'USERS':
 					$sql = "SELECT id, user_id FROM ".TB_PREF."users";

@@ -115,10 +115,11 @@ function print_annual_expense_breakdown()
 	//$yr = date('Y');
 	//$mo = date('m'):
 	// from now
-	$sql = "SELECT YEAR(end) AS yr, MONTH(end) AS mo FROM ".TB_PREF."fiscal_year WHERE YEAR(begin)=".db_escape($year);
+	$sql = "SELECT begin, end, YEAR(end) AS yr, MONTH(end) AS mo FROM ".TB_PREF."fiscal_year WHERE id=".db_escape($year);
 	$result = db_query($sql, "could not get fiscal year");
 	$row = db_fetch($result);
 	
+	$year = sql2date($row['begin'])." - ".sql2date($row['end']);
 	$yr = $row['yr'];
 	$mo = $row['mo'];
 	$da = 1;

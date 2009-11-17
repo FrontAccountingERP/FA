@@ -28,6 +28,9 @@ $ /reporting/includes/header2.inc
   Changed period in Journal Entries to one month instead of one year.
 $ /gl/includes/db/gl_db_trans.inc
   /gl/inquiry/journal_inquiry.php
+! Changed rep705 to show fiscal year instead of year
+$ /reporting/rep705.php
+  /reporting/includes/reports_classes.inc
   
 15-Nov-2009 Janusz Dobrowolski
 + Added integration of custom and extended reports into reporting module; optimizations.
