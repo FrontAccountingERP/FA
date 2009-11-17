@@ -359,7 +359,7 @@ class FrontReport extends Cpdf
 			do
 			{
 				$l = $this->TextWrap($c, $this->row , $width, $l, $align);
-				$this->NewLine();
+				$this->row -= $this->lineHeight;
 			}
 			while ($l != '');
 		}

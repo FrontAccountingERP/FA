@@ -130,7 +130,7 @@ function get_gl_transactions($from_date, $to_date, $trans_no=0,
 	if ($amount_max != null)
 		$sql .= " AND ABS(".TB_PREF."gl_trans.amount) <= ABS(".db_escape($amount_max).")";
 
-	$sql .= " ORDER BY tran_date";
+	$sql .= " ORDER BY tran_date, counter";
 
 	return db_query($sql, "The transactions for could not be retrieved");
 }

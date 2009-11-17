@@ -16,7 +16,7 @@
 		$this->row = $this->pageHeight - $this->topMargin;
 
 		$upper = $this->row - 2 * $this->lineHeight;
-		$lower = $this->bottomMargin + 6 * $this->lineHeight;
+		$lower = $this->bottomMargin + 8 * $this->lineHeight;
 		$iline1 = $upper - 7.5 * $this->lineHeight;
 		$iline2 = $iline1 - 8 * $this->lineHeight;
 		$iline3 = $iline2 - 1.5 * $this->lineHeight;
@@ -25,7 +25,7 @@
 		$iline6 = $iline5 - 1.5 * $this->lineHeight;
 		$iline7 = $lower;
 		$right = $this->pageWidth - $this->rightMargin;
-		$width = ($right - $this->leftMargin) / 6;
+		$width = ($right - $this->leftMargin) / 5;
 		$icol = $this->pageWidth / 2;
 		$ccol = $this->cols[0] + 4;
 		$c2col = $ccol + 60;
@@ -208,8 +208,6 @@
 		else
 			$this->TextWrap($col, $this->row, $width, $doc_Our_Order_No, 'C');
 		$col += $width;
-		$this->TextWrap($col, $this->row, $width, $doc_Payment_Terms, 'C');
-		$col += $width;
 		$this->TextWrap($col, $this->row, $width, $doc_Due_Date, 'C');
 		$this->row = $iline3 - $this->lineHeight - 1;
 		$col = $this->leftMargin;
@@ -253,25 +251,30 @@
 			$this->TextWrap($col, $this->row, $width, $myrow["location_name"], 'C');
 		elseif (isset($myrow['order_']))
 			$this->TextWrap($col, $this->row, $width, $myrow['order_'], 'C');
-		$col += $width;
-		if ($doctype == 26)
-			$this->TextWrap($col, $this->row, $width, sql2date($myrow["required_by"]), 'C');
-		elseif (!isset($packing_slip) || $packing_slip == 0)
-		{
-			$id = $myrow['payment_terms'];
-			$sql = "SELECT terms FROM ".TB_PREF."payment_terms WHERE terms_indicator='$id'";
-			$result = db_query($sql,"could not get paymentterms");
-			$row = db_fetch($result);
-			$this->TextWrap($col, $this->row, $width, $row["terms"], 'C');
-		}	
 		$col += $width;	
 		if ($doctype == 9 || $doctype == 7)
 			$this->TextWrap($col, $this->row, $width, sql2date($myrow['delivery_date']), 'C');
 		elseif ($doctype == 26)	
 			$this->TextWrap($col, $this->row, $width, $myrow["units_issued"], 'C');
-		else if ($doctype != 8 && $doctype != 11 && isset($myrow['due_date']))
+		elseif ($doctype != 8 && $doctype != 11 && isset($myrow['due_date']))
 			$this->TextWrap($col, $this->row, $width, sql2date($myrow['due_date']), 'C');
-		
+		if (!isset($packing_slip) || $packing_slip == 0)
+		{
+			$this->row -= (2 * $this->lineHeight);
+			if ($doctype == 26)
+				$str = sql2date($myrow["required_by"]);
+			else
+			{
+				$id = $myrow['payment_terms'];
+				$sql = "SELECT terms FROM ".TB_PREF."payment_terms WHERE terms_indicator='$id'";
+				$result = db_query($sql,"could not get paymentterms");
+				$row = db_fetch($result);
+				$str = $row["terms"];
+			}	
+			$this->Font('italic');
+			$this->TextWrap($ccol, $this->row, $right-$ccol, $doc_Payment_Terms . ":  " . $str);
+			$this->Font();
+		}
 		$this->row = $iline5 - $this->lineHeight - 1;
 		$this->Font('bold');
 		$count = count($this->headers);
@@ -283,13 +286,13 @@
 		$this->row = $iline7 - $this->lineHeight - 6;
 		if ($doctype != 26)
 			$this->TextWrap($ccol, $this->row, $right - $ccol, $doc_Please_Quote . " - " . $myrow['curr_code'], 'C');
-		$this->NewLine();
+		$this->row -= $this->lineHeight;
 
 		if (isset($bankaccount['bank_name']))
 		{
 			$txt = $doc_Bank . ": ".$bankaccount['bank_name']. ", " . $doc_Bank_Account . ": " . $bankaccount['bank_account_number'];
 			$this->TextWrap($ccol, $this->row, $right - $ccol, $txt, 'C');
-			$this->NewLine();
+			$this->row -= $this->lineHeight;
 		}	
 		if ($doctype == 10 && $branch['disable_branch'] > 0) // payment links
 		{
@@ -302,24 +305,23 @@
 					$name . "&amount=" . $amt . "&currency_code=" . $myrow['curr_code'];
 				$this->fontSize -= 2;
 				$this->TextWrap($ccol, $this->row, $right - $ccol, $txt, 'C');
-				$this->NewLine();
+				$this->row -= $this->lineHeight;
 				$this->SetTextColor(0, 0, 255);
 				$this->TextWrap($ccol, $this->row, $right - $ccol, $url, 'C');
 				$this->SetTextColor(0, 0, 0);
 				$this->addLink($url, $ccol, $this->row, $this->pageWidth - $this->rightMargin, $this->row + $this->lineHeight);
 				$this->fontSize += 2;
-				$this->NewLine();
+				$this->row -= $this->lineHeight;
 			}
 		}
 		if ($this->params['comments'] != '')
 		{
 			$this->TextWrap($ccol, $this->row, $right - $ccol, $this->params['comments'], 'C');
-			$this->NewLine();
+			$this->row -= $this->lineHeight;
 		}
 		if (($doctype == 10 || $doctype == 12) && $this->company['legal_text'] != "") 
 		{
-			$this->TextWrap($ccol, $this->row, $right - $ccol, $this->company['legal_text'], 'C');
-//			$this->NewLine();
+			$this->TextWrapLines($ccol, $right - $ccol, $this->company['legal_text'], 'C');
 		}
 		$this->Font();
 		$temp = $iline6 - $this->lineHeight - 2;
