@@ -23,6 +23,8 @@ $ -> Affected files
 18-Nov-2009
 ! Release 2.2
 $ config.default.php
+# Allow null references in trans to show up in gl_trans_view
+$ /gl/view/gl_trans_view.php
 
 17-Nov-2009 Joe Hunt/Tom Hallman
 ! Moved payment terms in documents for better view. Increased
