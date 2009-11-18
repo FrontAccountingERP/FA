@@ -108,7 +108,8 @@ function change_tpl_flag($reconcile_id)
 {
 	global	$Ajax;
 
-	if (!check_date()) 
+	if (!check_date() 
+		&& check_value("rec_".$reconcile_id)) // temporary fix
 		return false;
 
 	if (get_post('bank_date')=='')	// new reconciliation
@@ -117,8 +118,8 @@ function change_tpl_flag($reconcile_id)
 	$_POST['bank_date'] = date2sql(get_post('reconcile_date'));
 	$reconcile_value = check_value("rec_".$reconcile_id) 
 						? ("'".$_POST['bank_date'] ."'") : 'NULL';
-	$sql = "UPDATE ".TB_PREF."bank_trans SET reconciled=".db_escape($reconcile_value)
-	." WHERE id=".db_escape($reconcile_id);
+	$sql = "UPDATE ".TB_PREF."bank_trans SET reconciled=$reconcile_value"
+		." WHERE id=".db_escape($reconcile_id);
 
   	db_query($sql, "Can't change reconciliation status");
 	// save last reconcilation status (date, end balance)
@@ -177,6 +178,8 @@ end_row();
 end_table();
 
 $date = date2sql(get_post('reconcile_date'));
+ // temporary fix to enable fix of invalid entries made in 2.2RC
+if ($date == 0) $date = '0000-00-00';
 
 $sql = "SELECT MAX(reconciled) as last_date,
 		 SUM(IF(reconciled<='$date', amount, 0)) as end_balance,
@@ -267,7 +270,7 @@ display_heading($act['bank_account_name']." - ".$act['bank_curr_code']);
 	   );
 	$table =& new_db_pager('trans_tbl', $sql, $cols);
 
-	$table->width = "60%";
+	$table->width = "80%";
 	display_db_pager($table);
 
 br(1);
