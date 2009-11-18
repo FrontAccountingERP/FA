@@ -19,6 +19,11 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+------------------------------- Release 2.2 ----------------------------------
+18-Nov-2009
+! Release 2.2
+$ config.default.php
+
 17-Nov-2009 Joe Hunt/Tom Hallman
 ! Moved payment terms in documents for better view. Increased
   space for legal text.
@@ -31,6 +36,9 @@ $ /gl/includes/db/gl_db_trans.inc
 ! Changed rep705 to show fiscal year instead of year
 $ /reporting/rep705.php
   /reporting/includes/reports_classes.inc
+! updated fles
+$ update.html
+  /lang/new_language_template/LC_MESSAGES/empty.po
   
 15-Nov-2009 Janusz Dobrowolski
 + Added integration of custom and extended reports into reporting module; optimizations.
