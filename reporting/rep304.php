@@ -9,12 +9,12 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security = 2;
+$page_security = 'SA_SALESANALYTIC';
 // ----------------------------------------------------------------
 // $ Revision:	2.0 $
 // Creator:	Joe Hunt
 // date_:	2005-05-19
-// Title:	Inventory Planning
+// Title:	Inventory Sales Report
 // ----------------------------------------------------------------
 $path_to_root="..";
 
@@ -56,7 +56,7 @@ function getTransactions($category, $location, $fromcust, $from, $to)
 		AND ".TB_PREF."stock_moves.trans_no=".TB_PREF."debtor_trans.trans_no
 		AND ".TB_PREF."stock_moves.tran_date>='$from'
 		AND ".TB_PREF."stock_moves.tran_date<='$to'
-		AND ((".TB_PREF."debtor_trans.type=13 AND ".TB_PREF."debtor_trans.version=1) OR ".TB_PREF."stock_moves.type=11)
+		AND ((".TB_PREF."debtor_trans.type=".ST_CUSTDELIVERY." AND ".TB_PREF."debtor_trans.version=1) OR ".TB_PREF."stock_moves.type=".ST_CUSTCREDIT.")
 		AND (".TB_PREF."stock_master.mb_flag='B' OR ".TB_PREF."stock_master.mb_flag='M')";
 		if ($category != 0)
 			$sql .= " AND ".TB_PREF."stock_master.category_id = ".db_escape($category);
@@ -90,21 +90,21 @@ function print_inventory_sales()
 
     $dec = user_price_dec();
 
-	if ($category == reserved_words::get_all_numeric())
+	if ($category == ALL_NUMERIC)
 		$category = 0;
 	if ($category == 0)
 		$cat = _('All');
 	else
 		$cat = get_category_name($category);
 
-	if ($location == reserved_words::get_all())
+	if ($location == ALL_TEXT)
 		$location = 'all';
 	if ($location == 'all')
 		$loc = _('All');
 	else
 		$loc = get_location_name($location);
 
-	if ($fromcust == reserved_words::get_all_numeric())
+	if ($fromcust == ALL_NUMERIC)
 		$fromc = _('All');
 	else
 		$fromc = get_customer_name($fromcust);
@@ -112,7 +112,7 @@ function print_inventory_sales()
 	$cols = array(0, 75, 175, 250, 300, 375, 450,	515);
 
 	$headers = array(_('Category'), _('Description'), _('Customer'), _('Qty'), _('Sales'), _('Cost'), _('Contribution'));
-	if ($fromcust != reserved_words::get_all_numeric())
+	if ($fromcust != ALL_NUMERIC)
 		$headers[2] = '';	
 
 	$aligns = array('left',	'left',	'left', 'right', 'right', 'right', 'right');
@@ -163,7 +163,7 @@ function print_inventory_sales()
 		$rep->NewLine();
 		$rep->fontsize -= 2;
 		$rep->TextCol(0, 1, $trans['stock_id']);
-		if ($fromcust == reserved_words::get_all_numeric())
+		if ($fromcust == ALL_NUMERIC)
 		{
 			$rep->TextCol(1, 2, $trans['description']);
 			$rep->TextCol(2, 3, $trans['debtor_name']);

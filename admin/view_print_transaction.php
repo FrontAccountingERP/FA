@@ -9,8 +9,8 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$path_to_root="..";
-$page_security = 5;
+$page_security = 'SA_VIEWPRINTTRANSACTION';
+$path_to_root = "..";
 
 include($path_to_root . "/includes/db_pager.inc");
 include_once($path_to_root . "/includes/session.inc");
@@ -23,7 +23,7 @@ include_once($path_to_root . "/reporting/includes/reporting.inc");
 $js = "";
 if ($use_popup_windows)
 	$js .= get_js_open_window(800, 500);
-page(_("View or Print Transactions"), false, false, "", $js);
+page(_($help_context = "View or Print Transactions"), false, false, "", $js);
 
 //----------------------------------------------------------------------------------------
 function view_link($trans)
@@ -33,7 +33,7 @@ function view_link($trans)
 
 function prt_link($row)
 {
-  	if ($row['type'] != 12 && $row['type'] != 2) // customer payment or bank deposit printout not defined yet.
+  	if ($row['type'] != ST_CUSTPAYMENT && $row['type'] != ST_BANKDEPOSIT) // customer payment or bank deposit printout not defined yet.
  		return print_document_link($row['trans_no'], _("Print"), true, $row['type'], ICON_PRINT);
 }
 
@@ -119,8 +119,8 @@ function handle_search()
 
 
 		$print_type = $_POST['filterType'];
-		$print_out = ($print_type == 10 || $print_type == 11 || $print_type == systypes::cust_dispatch() ||
-			$print_type == systypes::po() || $print_type == systypes::sales_order());
+		$print_out = ($print_type == ST_SALESINVOICE || $print_type == ST_CUSTCREDIT || $print_type == ST_CUSTDELIVERY ||
+			$print_type == ST_PURCHORDER || $print_type == ST_SALESORDER || $print_type == ST_SALESQUOTE);
 
 		$cols = array(
 			_("#"), 
@@ -137,10 +137,6 @@ function handle_search()
 		}
 
 		$table =& new_db_pager('transactions', $sql, $cols);
-		if (list_updated('filterType') || get_post('ProcessSearch')) {
-			$table->set_sql($sql);
-			$table->set_columns($cols);
-		}
 		$table->width = "40%";
 		display_db_pager($table);
 	}

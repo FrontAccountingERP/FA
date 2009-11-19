@@ -24,7 +24,7 @@ function get_parent_trans($trans_type, $trans_no) {
 		$link = db_fetch($result);
 		return array($link['trans_link']);
 	}
-	if ($trans_type!=10) return 0;	// this is credit note with no parent invoice
+	if ($trans_type!=ST_SALESINVOICE) return 0;	// this is credit note with no parent invoice
 	// invoice: find batch invoice parent trans.
 	$sql = 'SELECT trans_no FROM
 			'.TB_PREF.'debtor_trans WHERE
@@ -90,20 +90,21 @@ function write_customer_trans($trans_type, $trans_no, $debtor_no, $BranchNo,
 	$sales_type=0, $order_no=0, $trans_link=0, $ship_via=0, $due_date="",
 	$AllocAmt=0, $rate=0, $dimension_id=0, $dimension2_id=0)
 {
-
+	$new = $trans_no==0;
 	$curr = get_customer_currency($debtor_no);
 	if ($rate == 0)
 		$rate = get_exchange_rate_from_home_currency($curr, $date_);
 
 	$SQLDate = date2sql($date_);
 	if ($due_date == "")
-		$SQLDueDate = "000-00-00";
+		$SQLDueDate = "0000-00-00";
 	else
 		$SQLDueDate = date2sql($due_date);
 	
-	if ($trans_type == systypes::bank_payment())
+	if ($trans_type == ST_BANKPAYMENT)
 		$Total = -$Total;
-	if ($trans_no==0) {
+
+	if ($new) {
 	$trans_no = get_next_trans_no($trans_type);
 
 	$sql = "INSERT INTO ".TB_PREF."debtor_trans (
@@ -135,6 +136,8 @@ function write_customer_trans($trans_type, $trans_no, $debtor_no, $BranchNo,
 	}
 	db_query($sql, "The debtor transaction record could not be inserted");
 
+	add_audit_trail($trans_type, $trans_no, $date_, $new ? '': _("Updated."));
+
 	return $trans_no;
 }
 
@@ -147,13 +150,13 @@ function get_customer_trans($trans_id, $trans_type)
 		".TB_PREF."debtors_master.name AS DebtorName, ".TB_PREF."debtors_master.address, ".TB_PREF."debtors_master.email AS email2,
 		".TB_PREF."debtors_master.curr_code, ".TB_PREF."debtors_master.tax_id, ".TB_PREF."debtors_master.payment_terms ";
 
-	if ($trans_type == systypes::cust_payment()) {
+	if ($trans_type == ST_CUSTPAYMENT) {
 		// it's a payment so also get the bank account
 		$sql .= ", ".TB_PREF."bank_accounts.bank_name, ".TB_PREF."bank_accounts.bank_account_name,
 			".TB_PREF."bank_accounts.account_type AS BankTransType ";
 	}
 
-	if ($trans_type == 10 OR $trans_type == 11 OR $trans_type == 13) {
+	if ($trans_type == ST_SALESINVOICE || $trans_type == ST_CUSTCREDIT || $trans_type == ST_CUSTDELIVERY) {
 		// it's an invoice so also get the shipper and salestype
 		$sql .= ", ".TB_PREF."shippers.shipper_name, "
 		.TB_PREF."sales_types.sales_type, "
@@ -167,12 +170,12 @@ function get_customer_trans($trans_id, $trans_type)
 
 	$sql .= " FROM ".TB_PREF."debtor_trans, ".TB_PREF."debtors_master ";
 
-	if ($trans_type == systypes::cust_payment()) {
+	if ($trans_type == ST_CUSTPAYMENT) {
 		// it's a payment so also get the bank account
 		$sql .= ", ".TB_PREF."bank_trans, ".TB_PREF."bank_accounts";
 	}
 
-	if ($trans_type == 10 OR $trans_type == 11 OR $trans_type == 13) {
+	if ($trans_type == ST_SALESINVOICE || $trans_type == ST_CUSTCREDIT || $trans_type == ST_CUSTDELIVERY) {
 		// it's an invoice so also get the shipper, salestypes
 		$sql .= ", ".TB_PREF."shippers, ".TB_PREF."sales_types, ".TB_PREF."cust_branch, ".TB_PREF."tax_groups ";
 	}
@@ -181,13 +184,13 @@ function get_customer_trans($trans_id, $trans_type)
 		AND ".TB_PREF."debtor_trans.type=".db_escape($trans_type)."
 		AND ".TB_PREF."debtor_trans.debtor_no=".TB_PREF."debtors_master.debtor_no";
 
-	if ($trans_type == systypes::cust_payment()) {
+	if ($trans_type == ST_CUSTPAYMENT) {
 		// it's a payment so also get the bank account
 		$sql .= " AND ".TB_PREF."bank_trans.trans_no =$trans_id
 			AND ".TB_PREF."bank_trans.type=$trans_type
 			AND ".TB_PREF."bank_accounts.id=".TB_PREF."bank_trans.bank_act ";
 	}
-	if ($trans_type == 10 OR $trans_type == 11 OR $trans_type == 13) {
+	if ($trans_type == ST_SALESINVOICE || $trans_type == ST_CUSTCREDIT || $trans_type == ST_CUSTDELIVERY) {
 		// it's an invoice so also get the shipper
 		$sql .= " AND ".TB_PREF."shippers.shipper_id=".TB_PREF."debtor_trans.ship_via
 			AND ".TB_PREF."sales_types.id = ".TB_PREF."debtor_trans.tpe
@@ -272,14 +275,14 @@ function void_customer_trans($type, $type_no)
 function post_void_customer_trans($type, $type_no)
 {
 	switch ($type) {
-		case 10 :
-		case 11 :
+		case ST_SALESINVOICE :
+		case ST_CUSTCREDIT   :
 			void_sales_invoice($type, $type_no);
 			break;
-		case 13 :
+		case ST_CUSTDELIVERY :
 			void_sales_delivery($type, $type_no);
 			break;
-		case 12 :
+		case ST_CUSTPAYMENT :
 			void_customer_payment($type, $type_no);
 			break;
 	}

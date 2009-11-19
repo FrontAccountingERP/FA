@@ -9,48 +9,41 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security = 1;
+$page_security = 'SA_OPEN';
 $path_to_root="..";
 include($path_to_root . "/includes/session.inc");
-include_once($path_to_root . "/includes/ui/ui_view.inc");
 
-page(_("Logout"), true, false, "", get_js_png_fix());
+include($path_to_root . "/includes/page/header.inc");
+page_header(_("Logout"), true, false, '', get_js_png_fix());
 
-?>
-
-<table width="100%" border="0">
+echo "<table width='100%' border='0'>
   <tr>
-	<td align="center"><img src="<?php echo "$path_to_root/themes/default/images/logo_frontaccounting.png";?>" alt="FrontAccounting" width="250" height="50" onload="fixPNG(this)"></td>
+	<td align='center'><img src='$path_to_root/themes/default/images/logo_frontaccounting.png' alt='FrontAccounting' width='250' height='50' onload='fixPNG(this)' /></td>
   </tr>
   <tr>
     <td>&nbsp;</td>
   </tr>
   <tr>
-    <td><div align="center"><font size=2>
-<?php
-    		echo _("Thank you for using") . " ";
+    <td><div align='center'><font size=2>";
+echo _("Thank you for using") . " ";
 
-			echo "<strong>$app_title $version</strong>";
-?>
-         </font></div></td>
+echo "<strong>$app_title $version</strong>";
+
+echo "</font></div></td>
   </tr>
   <tr>
     <td>&nbsp;</td>
   </tr>
   <tr>
-    <td><div align="center">
-        <?php
-     echo "<a href='$path_to_root/index.php?" . SID ."'><b>" . _("Click here to Login Again.") . "</b></a>";
-?>
-      </div></td>
+    <td><div align='center'>";
+echo "<a href='$path_to_root/index.php'><b>" . _("Click here to Login Again.") . "</b></a>";
+echo "</div></td>
   </tr>
 </table>
-<br>
-<?php
-
-	end_page(false, true);
-	session_unset();
-	session_destroy();
+<br>\n";
+end_page(false, true);
+session_unset();
+session_destroy();
 ?>
 
 

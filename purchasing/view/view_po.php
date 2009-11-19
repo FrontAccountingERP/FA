@@ -9,8 +9,8 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security = 2;
-$path_to_root="../..";
+$page_security = 'SA_SUPPTRANSVIEW';
+$path_to_root = "../..";
 include($path_to_root . "/purchasing/includes/po_class.inc");
 
 include($path_to_root . "/includes/session.inc");
@@ -19,7 +19,7 @@ include($path_to_root . "/purchasing/includes/purchasing_ui.inc");
 $js = "";
 if ($use_popup_windows)
 	$js .= get_js_open_window(900, 500);
-page(_("View Purchase Order"), true, false, "", $js);
+page(_($help_context = "View Purchase Order"), true, false, "", $js);
 
 
 if (!isset($_GET['trans_no']))
@@ -82,7 +82,7 @@ foreach ($purchase_order->line_items as $stock_item)
 
 $display_total = number_format2($total,user_price_dec());
 label_row(_("Total Excluding Tax/Shipping"), $display_total,
-	"align=right colspan=5", "nowrap align=right");
+	"align=right colspan=5", "nowrap align=right", 3);
 
 end_table();
 
@@ -108,7 +108,7 @@ if (db_num_rows($grns_result) > 0)
     {
 		alt_table_row_color($k);
 
-    	label_cell(get_trans_view_str(25,$myrow["id"]));
+    	label_cell(get_trans_view_str(ST_SUPPRECEIVE,$myrow["id"]));
     	label_cell($myrow["reference"]);
     	label_cell(sql2date($myrow["delivery_date"]));
     	end_row();

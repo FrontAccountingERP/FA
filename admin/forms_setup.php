@@ -9,11 +9,11 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security =10;
-$path_to_root="..";
+$page_security = 'SA_FORMSETUP';
+$path_to_root = "..";
 include($path_to_root . "/includes/session.inc");
 
-page(_("Forms Setup"));
+page(_($help_context = "Forms Setup"));
 
 include($path_to_root . "/includes/ui.inc");
 
@@ -48,17 +48,17 @@ table_header($th);
 $i = 0;
 while ($type = db_fetch($systypes)) 
 {
-	if ($i++ == 11)
+	if ($i++ == ST_CUSTCREDIT)
 	{
 		table_section(2);
 		table_header($th);
 	}	
-	ref_row(systypes::name($type["type_id"]), 'id' . $type["type_id"], '', $type["next_reference"]);
+	ref_row($systypes_array[$type["type_id"]], 'id' . $type["type_id"], '', $type["next_reference"]);
 }
 
 end_outer_table(1);
 
-submit_center('setprefs', _("Update"), true, '', true);
+submit_center('setprefs', _("Update"), true, '', 'default');
 
 end_form(2);
 

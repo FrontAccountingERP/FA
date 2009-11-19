@@ -9,15 +9,15 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security = 2;
-$path_to_root="../..";
+$page_security = 'SA_ITEMSSTATVIEW';
+$path_to_root = "../..";
 include_once($path_to_root . "/includes/session.inc");
 
 if (isset($_GET['stock_id'])){
 	$_POST['stock_id'] = $_GET['stock_id'];
-	page(_("Inventory Item Status"), true);
+	page(_($help_context = "Inventory Item Status"), true);
 } else {
-	page(_("Inventory Item Status"));
+	page(_($help_context = "Inventory Item Status"));
 }
 
 include_once($path_to_root . "/includes/date_functions.inc");
@@ -33,13 +33,13 @@ if (list_updated('stock_id'))
 
 check_db_has_stock_items(_("There are no items defined in the system."));
 
-start_form(false, true);
+start_form();
 
 if (!isset($_POST['stock_id']))
 	$_POST['stock_id'] = get_global_stock_item();
 
 echo "<center> " . _("Item:"). " ";
-stock_items_list('stock_id', $_POST['stock_id'], false, true);
+echo stock_items_list('stock_id', $_POST['stock_id'], false, true);
 echo "<br>";
 
 echo "<hr></center>";

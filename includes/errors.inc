@@ -12,17 +12,21 @@
 $messages = array(); // container for system messages
 $before_box = ''; // temporary container for output html data before error box
 
-$msg_colors = array( 
-	E_USER_ERROR => array('bg'=>'#ffcccc', 'txt'=>'#dd2200', 'bd'=>'#cc3300'),
-    E_USER_WARNING => array('bg'=>'#ffff00', 'txt'=>'#ff5500', 'bd'=>'#ff9900'),
-    E_USER_NOTICE => array('bg'=>'#ccffcc', 'txt'=>'#007700', 'bd'=>'#33cc00'));
-
 //-----------------------------------------------------------------------------
 //    Error handler - collects all php/user messages for
 //    display in message box.
 
 function error_handler($errno, $errstr, $file, $line) {
     global $messages, $go_debug;
+
+	// skip well known warnings we don't care about.
+	// Please use restrainedly to not risk loss of important messages
+	$excluded_warnings = array('html_entity_decode', 'htmlspecialchars');
+	foreach($excluded_warnings as $ref) {
+		if (strpos($errstr, $ref) !== false) {
+			return true;
+		}
+	}
 
 	// error_reporting==0 when messages are set off with @ 
 	if ($errno & error_reporting())
@@ -36,14 +40,19 @@ function error_handler($errno, $errstr, $file, $line) {
 //------------------------------------------------------------------------------
 //	Formats system messages before insert them into message <div>
 // FIX center is unused now
-function fmt_errors($center=true) {
-    global $messages, $msg_colors;
+function fmt_errors($center=false) {
+    global $messages, $path_to_root;
   
+  $msg_class = array(
+  	E_USER_ERROR => 'err_msg',
+  	E_USER_WARNING =>'warn_msg', 
+	E_USER_NOTICE => 'note_msg');
+
   $type = E_USER_NOTICE;
-  
+  $content = '';
+//  $class = 'no_msg';
   if (count($messages)) {
-	$content = '';
-	foreach($messages as $msg) {
+	foreach($messages as $cnt=>$msg) {
 		if ($msg[0]>$type) continue;
 
 		if ($msg[0]<$type) { 
@@ -57,23 +66,16 @@ function fmt_errors($center=true) {
 			}
 		}
 	    $str = $msg[1];
-		$c = $msg_colors[$type];
 		if ($msg[0] < E_USER_ERROR && $msg[2] != null)
 		  $str .= ' '._('in file').': '.$msg[2].' '._('at line ').$msg[3];
-
-		$content .= "<tr><td  " . ($center?"align='center' ":"").
-		  " width='100%' bgcolor='{$c['bg']}'><font color='{$c['txt']}'>"
-		  .$str."</font></td></tr>";
-	}
-
-  	$str = "<center><table border='1' cellpadding='3' cellspacing='0' style='border-collapse: collapse' bordercolor='{$c['bd']}' width='98%'>"
-	  . $content . "</table></center><br>\n";	
-		
-  }
-     else
-        $str = '';
-	
-    return $str;
+		$content .= ($cnt ? '<hr>' : '').$str;
+	}		
+	$class = $msg_class[$type];
+    $content = "<div class='$class'>$content</div>";
+  } else
+  if ($path_to_root=='.')
+	return '';
+  return $content;
 }
 //-----------------------------------------------------------------------------
 // Error box <div> element.
@@ -98,9 +100,15 @@ function end_flush () {
 function display_db_error($msg, $sql_statement=null, $exit=true)
 {
 	global $db, $debug;
+
+	$warning = $msg==null;
 	$db_error = db_error_no();
 	
-	$str = "<span class='errortext'><b>" . _("DATABASE ERROR :") . "</b> $msg</span><br>";
+//	$str = "<span class='errortext'><b>" . _("DATABASE ERROR :") . "</b> $msg</span><br>";
+	if($warning)
+		$str = "<b>" . _("Debug mode database warning:") . "</b><br>";
+	else
+		$str = "<b>" . _("DATABASE ERROR :") . "</b> $msg<br>";
 	
 	if ($db_error != 0) 
 	{
@@ -114,9 +122,10 @@ function display_db_error($msg, $sql_statement=null, $exit=true)
 	}
 	
 	$str .= "<br><br>";
-
-	trigger_error($str, E_USER_ERROR);
-
+	if($msg)
+		trigger_error($str, E_USER_ERROR);
+	else	// $msg can be null here only in debug mode, otherwise the error is ignored
+		trigger_error($str, E_USER_WARNING);
 	if ($exit)
 		exit;
 }
@@ -142,8 +151,9 @@ function check_db_error($msg, $sql_statement, $exit_if_error=true, $rollback_if_
 	if ($db_error != 0) 
 	{
 		
-		if (!frindly_db_error($db_error))
-			display_db_error($msg, $sql_statement, false);
+		if (!frindly_db_error($db_error)) {
+				display_db_error($msg, $sql_statement, false);
+		}
 		
 		if ($rollback_if_error) 
 		{
@@ -152,8 +162,7 @@ function check_db_error($msg, $sql_statement, $exit_if_error=true, $rollback_if_
 		
 		if ($exit_if_error) 
 		{
-			echo "<br><br>";
-			exit;
+			end_page(); exit;
 		}
 	}
 	return $db_error;		

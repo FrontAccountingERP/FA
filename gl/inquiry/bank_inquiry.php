@@ -9,7 +9,7 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security = 8;
+$page_security = 'SA_BANKTRANSVIEW';
 $path_to_root="../..";
 include_once($path_to_root . "/includes/session.inc");
 
@@ -25,7 +25,7 @@ if ($use_popup_windows)
 	$js .= get_js_open_window(800, 500);
 if ($use_date_picker)
 	$js .= get_js_date_picker();
-page(_("Bank Statement"), false, false, "", $js);
+page(_($help_context = "Bank Statement"), false, false, "", $js);
 
 check_db_has_bank_accounts(_("There are no bank accounts defined in the system."));
 
@@ -46,7 +46,7 @@ bank_accounts_list_cells(_("Account:"), 'bank_account', null);
 date_cells(_("From:"), 'TransAfterDate', '', null, -30);
 date_cells(_("To:"), 'TransToDate');
 
-submit_cells('Show',_("Show"),'','', true);
+submit_cells('Show',_("Show"),'','', 'default');
 end_row();
 end_table();
 end_form();
@@ -101,13 +101,13 @@ while ($myrow = db_fetch($result))
 	$running_total += $myrow["amount"];
 
 	$trandate = sql2date($myrow["trans_date"]);
-	label_cell(systypes::name($myrow["type"]));
+	label_cell($systypes_array[$myrow["type"]]);
 	label_cell(get_trans_view_str($myrow["type"],$myrow["trans_no"]));
 	label_cell(get_trans_view_str($myrow["type"],$myrow["trans_no"],$myrow['ref']));
 	label_cell($trandate);
 	display_debit_or_credit_cells($myrow["amount"]);
 	amount_cell($running_total);
-	label_cell(payment_person_types::person_name($myrow["person_type_id"],$myrow["person_id"]));
+	label_cell(payment_person_name($myrow["person_type_id"],$myrow["person_id"]));
 	label_cell(get_gl_view_str($myrow["type"], $myrow["trans_no"]));
 	end_row();
 

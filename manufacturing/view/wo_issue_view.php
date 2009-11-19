@@ -9,14 +9,14 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security = 10;
-$path_to_root="../..";
+$page_security = 'SA_MANUFTRANSVIEW';
+$path_to_root = "../..";
 include_once($path_to_root . "/includes/session.inc");
 
 $js = "";
 if ($use_popup_windows)
 	$js .= get_js_open_window(900, 500);
-page(_("View Work Order Issue"), true, false, "", $js);
+page(_($help_context = "View Work Order Issue"), true, false, "", $js);
 
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/manufacturing.inc");
@@ -49,7 +49,7 @@ function display_wo_issue($issue_no)
 	start_row();
 	label_cell($myrow["issue_no"]);
 	label_cell($myrow["reference"]);
-	label_cell(get_trans_view_str(systypes::work_order(),$myrow["workorder_id"]));
+	label_cell(get_trans_view_str(ST_WORKORDER,$myrow["workorder_id"]));
 	label_cell($myrow["stock_id"] . " - " . $myrow["description"]);
 	label_cell($myrow["location_name"]);
 	label_cell($myrow["WorkCentreName"]);
@@ -111,7 +111,7 @@ function display_wo_issue_details($issue_no)
 
 //-------------------------------------------------------------------------------------------------
 
-display_heading(systypes::name(28) . " # " . $wo_issue_no);
+display_heading($systypes_array[ST_MANUISSUE] . " # " . $wo_issue_no);
 
 display_wo_issue($wo_issue_no);
 

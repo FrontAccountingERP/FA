@@ -9,7 +9,7 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security = 2;
+$page_security = 'SA_TAXREP';
 // ----------------------------------------------------------------
 // $ Revision:	2.0 $
 // Creator:	Joe Hunt
@@ -35,7 +35,6 @@ function getTaxTransactions($from, $to)
 
 	$sql = "SELECT taxrec.*, taxrec.amount*ex_rate AS amount,
 	            taxrec.net_amount*ex_rate AS net_amount,
-				stype.type_name,
 				IF(ISNULL(supp.supp_name), debt.name, supp.supp_name) as name,
 				branch.br_name
 		FROM ".TB_PREF."trans_tax_details taxrec
@@ -45,11 +44,9 @@ function getTaxTransactions($from, $to)
 		LEFT JOIN ".TB_PREF."debtor_trans dtrans
 			ON taxrec.trans_no=dtrans.trans_no AND taxrec.trans_type=dtrans.type
 		LEFT JOIN ".TB_PREF."debtors_master as debt ON dtrans.debtor_no=debt.debtor_no
-		LEFT JOIN ".TB_PREF."cust_branch as branch ON dtrans.branch_code=branch.branch_code,
-		".TB_PREF."sys_types stype
-		WHERE taxrec.trans_type=stype.type_id
-			AND (taxrec.amount != 0 OR taxrec.net_amount != 0)
-			AND taxrec.trans_type != 13
+		LEFT JOIN ".TB_PREF."cust_branch as branch ON dtrans.branch_code=branch.branch_code
+		WHERE (taxrec.amount <> 0 OR taxrec.net_amount <> 0)
+			AND taxrec.trans_type <> ".ST_CUSTDELIVERY."
 			AND taxrec.tran_date >= '$fromdate'
 			AND taxrec.tran_date <= '$todate'
 		ORDER BY taxrec.tran_date";
@@ -74,7 +71,7 @@ function getTaxInfo($id)
 
 function print_tax_report()
 {
-	global $path_to_root, $trans_dir;
+	global $path_to_root, $trans_dir, $Hooks, $systypes_array;
 	
 	$from = $_POST['PARAM_0'];
 	$to = $_POST['PARAM_1'];
@@ -119,14 +116,16 @@ function print_tax_report()
 
 	while ($trans=db_fetch($transactions))
 	{
-		if (in_array($trans['trans_type'], array(11,20))) {
+		if (in_array($trans['trans_type'], array(ST_CUSTCREDIT,ST_SUPPINVOICE))) {
 			$trans['net_amount'] *= -1;
 			$trans['amount'] *= -1;
 		}
 		
 		if (!$summaryOnly)
 		{
-			$rep->TextCol(0, 1,	$trans['type_name']);
+			$rep->TextCol(0, 1, $systypes_array[$trans['trans_type']]);
+			if ($trans['memo'] == '')
+				$trans['memo'] = get_reference($trans['trans_type'], $trans['trans_no']);
 			$rep->TextCol(1, 2,	$trans['memo']);
 			$rep->DateCol(2, 3,	$trans['tran_date'], true);
 			$rep->TextCol(3, 4,	$trans['name']);
@@ -144,7 +143,7 @@ function print_tax_report()
 				$rep->Header();
 			}
 		}
-		if (in_array($trans['trans_type'], array(2,10,11))) {
+		if (in_array($trans['trans_type'], array(ST_BANKDEPOSIT,ST_SALESINVOICE,ST_CUSTCREDIT))) {
 			$taxes[$trans['tax_type_id']]['taxout'] += $trans['amount'];
 			$taxes[$trans['tax_type_id']]['out'] += $trans['net_amount'];
 		} else {
@@ -193,15 +192,9 @@ function print_tax_report()
 	$rep->Font();
 	$rep->NewLine();
 
-	$locale = $path_to_root . "/lang/" . $_SESSION['language']->code . "/locale.inc";
-	if (file_exists($locale))
+	if (method_exists($Hooks, 'TaxFunction'))
 	{
-		$taxinclude = true;
-		include($locale);
-		
-//		if (function_exists("TaxFunction"))
-//			TaxFunction();
-		
+		$Hooks->TaxFunction();
 	}
 
 	$rep->End();

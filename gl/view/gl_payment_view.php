@@ -9,12 +9,12 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security = 1;
-$path_to_root="../..";
+$page_security = 'SA_BANKTRANSVIEW';
+$path_to_root = "../..";
 
 include($path_to_root . "/includes/session.inc");
 
-page(_("View Bank Payment"), true);
+page(_($help_context = "View Bank Payment"), true);
 
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");
@@ -27,7 +27,7 @@ if (isset($_GET["trans_no"]))
 }
 
 // get the pay-from bank payment info
-$result = get_bank_trans(systypes::bank_payment(), $trans_no);
+$result = get_bank_trans(ST_BANKPAYMENT, $trans_no);
 
 if (db_num_rows($result) != 1)
 	display_db_error("duplicate payment bank transaction found", "");
@@ -62,23 +62,23 @@ start_row();
 label_cells(_("From Bank Account"), $from_trans['bank_account_name'], "class='tableheader2'");
 if ($show_currencies)
 	label_cells(_("Currency"), $from_trans['bank_curr_code'], "class='tableheader2'");
-label_cells(_("Amount"), number_format2(-$from_trans['amount'], user_price_dec()), "class='tableheader2'", "align=right");
+label_cells(_("Amount"), number_format2($from_trans['amount'], user_price_dec()), "class='tableheader2'", "align=right");
 label_cells(_("Date"), sql2date($from_trans['trans_date']), "class='tableheader2'");
 end_row();
 start_row();
-label_cells(_("Pay To"), payment_person_types::person_name($from_trans['person_type_id'], $from_trans['person_id']), "class='tableheader2'", "colspan=$colspan1");
-label_cells(_("Payment Type"),bank_account_types::transfer_type($from_trans['account_type']), "class='tableheader2'");
+label_cells(_("Pay To"), payment_person_name($from_trans['person_type_id'], $from_trans['person_id']), "class='tableheader2'", "colspan=$colspan1");
+label_cells(_("Payment Type"), $bank_transfer_types[$from_trans['account_type']], "class='tableheader2'");
 end_row();
 start_row();
 label_cells(_("Reference"), $from_trans['ref'], "class='tableheader2'", "colspan=$colspan2");
 end_row();
-comments_display_row(systypes::bank_payment(), $trans_no);
+comments_display_row(ST_BANKPAYMENT, $trans_no);
 
 end_table(1);
 
-$voided = is_voided_display(systypes::bank_payment(), $trans_no, _("This payment has been voided."));
+$voided = is_voided_display(ST_BANKPAYMENT, $trans_no, _("This payment has been voided."));
 
-$items = get_gl_trans(systypes::bank_payment(), $trans_no);
+$items = get_gl_trans(ST_BANKPAYMENT, $trans_no);
 
 if (db_num_rows($items)==0)
 {
@@ -93,12 +93,20 @@ else
 
     echo "<br>";
     start_table("$table_style width=80%");
-    $th = array(_("Account Code"), _("Account Description"),
-    	_("Amount"), _("Memo"));
+    $dim = get_company_pref('use_dimension');
+    if ($dim == 2)
+        $th = array(_("Account Code"), _("Account Description"), _("Dimension")." 1", _("Dimension")." 2",
+            _("Amount"), _("Memo"));
+    else if ($dim == 1)
+        $th = array(_("Account Code"), _("Account Description"), _("Dimension"),
+            _("Amount"), _("Memo"));
+    else
+        $th = array(_("Account Code"), _("Account Description"),
+            _("Amount"), _("Memo"));
 	table_header($th);
 
     $k = 0; //row colour counter
-	$totalAmount = 0;
+	$total_amount = 0;
 
     while ($item = db_fetch($items))
     {
@@ -109,14 +117,18 @@ else
 
         	label_cell($item["account"]);
     		label_cell($item["account_name"]);
+            if ($dim >= 1)
+                label_cell(get_dimension_string($item['dimension_id'], true));
+            if ($dim > 1)
+                label_cell(get_dimension_string($item['dimension2_id'], true));
     		amount_cell($item["amount"]);
     		label_cell($item["memo_"]);
     		end_row();
-    		$totalAmount += $item["amount"];
+    		$total_amount += $item["amount"];
 		}
 	}
 
-	label_row(_("Total"), number_format2($totalAmount, user_price_dec()),"colspan=2 align=right", "align=right");
+	label_row(_("Total"), number_format2($total_amount, user_price_dec()),"colspan=".(2+$dim)." align=right", "align=right");
 
 	end_table(1);
 

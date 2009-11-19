@@ -9,7 +9,7 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security = 8;
+$page_security = 'SA_TAXREP';
 $path_to_root="../..";
 include_once($path_to_root . "/includes/session.inc");
 
@@ -27,7 +27,7 @@ if ($use_popup_windows)
 if ($use_date_picker)
 	$js .= get_js_date_picker();
 
-page(_("Tax Inquiry"), false, false, '', $js);
+page(_($help_context = "Tax Inquiry"), false, false, '', $js);
 
 //----------------------------------------------------------------------------------------------------
 // Ajax updates
@@ -63,7 +63,7 @@ function tax_inquiry_controls()
 
 	date_cells(_("from:"), 'TransFromDate', '', null, -30);
 	date_cells(_("to:"), 'TransToDate');
-	submit_cells('Show',_("Show"),'','', true);
+	submit_cells('Show',_("Show"),'','', 'default');
 
     end_row();
 

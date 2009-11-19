@@ -9,11 +9,11 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security=5;
-$path_to_root="../..";
+$page_security = 'SA_SUPPLIER';
+$path_to_root = "../..";
 include($path_to_root . "/includes/session.inc");
 
-page(_("Suppliers"));
+page(_($help_context = "Suppliers"), @$_REQUEST['popup']);
 
 //include($path_to_root . "/includes/date_functions.inc");
 
@@ -45,6 +45,13 @@ if (isset($_POST['submit']))
 		set_focus('supp_name');
 	}
 
+	if (strlen($_POST['supp_ref']) == 0 || $_POST['supp_ref'] == "") 
+	{
+		$input_error = 1;
+		display_error(_("The supplier short name must be entered."));
+		set_focus('supp_ref');
+	}
+
 	if ($input_error !=1 )
 	{
 
@@ -52,9 +59,11 @@ if (isset($_POST['submit']))
 		{
 
 			$sql = "UPDATE ".TB_PREF."suppliers SET supp_name=".db_escape($_POST['supp_name']) . ",
+				supp_ref=".db_escape($_POST['supp_ref']) . ",
                 address=".db_escape($_POST['address']) . ",
                 supp_address=".db_escape($_POST['supp_address']) . ",
                 phone=".db_escape($_POST['phone']) . ",
+                phone2=".db_escape($_POST['phone2']) . ",
                 fax=".db_escape($_POST['fax']) . ",
                 gst_no=".db_escape($_POST['gst_no']) . ",
                 email=".db_escape($_POST['email']) . ",
@@ -74,18 +83,24 @@ if (isset($_POST['submit']))
 				tax_group_id=".db_escape($_POST['tax_group_id']) . " WHERE supplier_id = ".db_escape($_POST['supplier_id']);
 
 			db_query($sql,"The supplier could not be updated");
+			update_record_status($_POST['supplier_id'], $_POST['inactive'],
+				'suppliers', 'supplier_id');
+
+			$Ajax->activate('supplier_id'); // in case of status change
 			display_notification(_("Supplier has been updated."));
 		} 
 		else 
 		{
 
-			$sql = "INSERT INTO ".TB_PREF."suppliers (supp_name, address, supp_address, phone, fax, gst_no, email, website,
+			$sql = "INSERT INTO ".TB_PREF."suppliers (supp_name, supp_ref, address, supp_address, phone, phone2, fax, gst_no, email, website,
 				contact, supp_account_no, bank_account, credit_limit, dimension_id, dimension2_id, curr_code,
 				payment_terms, payable_account, purchase_account, payment_discount_account, notes, tax_group_id)
 				VALUES (".db_escape($_POST['supp_name']). ", "
+				.db_escape($_POST['supp_ref']). ", "
 				.db_escape($_POST['address']) . ", "
 				.db_escape($_POST['supp_address']) . ", "
 				.db_escape($_POST['phone']). ", "
+				.db_escape($_POST['phone2']). ", "
 				.db_escape($_POST['fax']). ", "
 				.db_escape($_POST['gst_no']). ", "
 				.db_escape($_POST['email']). ", "
@@ -152,10 +167,6 @@ elseif (isset($_POST['delete']) && $_POST['delete'] != "")
 		$Ajax->activate('_page_body');
 	} //end if Delete supplier
 }
-elseif (isset($_POST['select']))
-{
-	context_return(array('supplier_id' => $_POST['supplier_id']));
-}
 
 start_form();
 
@@ -163,9 +174,16 @@ if (db_has_suppliers())
 {
 	start_table("", 3);
 //	start_table("class = 'tablestyle_noborder'");
-	supplier_list_row(_("Select a supplier: "), 'supplier_id', null,
-		  _('New supplier'), true);
+	start_row();
+	supplier_list_cells(_("Select a supplier: "), 'supplier_id', null,
+		  _('New supplier'), true, check_value('show_inactive'));
+	check_cells(_("Show inactive:"), 'show_inactive', null, true);
+	end_row();
 	end_table();
+	if (get_post('_show_inactive_update')) {
+		$Ajax->activate('supplier_id');
+		set_focus('supplier_id');
+	}
 } 
 else 
 {
@@ -182,9 +200,11 @@ if (!$new_supplier)
 	$myrow = get_supplier($_POST['supplier_id']);
 
 	$_POST['supp_name'] = $myrow["supp_name"];
+	$_POST['supp_ref'] = $myrow["supp_ref"];
 	$_POST['address']  = $myrow["address"];
 	$_POST['supp_address']  = $myrow["supp_address"];
 	$_POST['phone']  = $myrow["phone"];
+	$_POST['phone2']  = $myrow["phone2"];
 	$_POST['fax']  = $myrow["fax"];
 	$_POST['gst_no']  = $myrow["gst_no"];
 	$_POST['email']  = $myrow["email"];
@@ -202,16 +222,17 @@ if (!$new_supplier)
 	$_POST['purchase_account']  = $myrow["purchase_account"];
 	$_POST['payment_discount_account'] = $myrow["payment_discount_account"];
 	$_POST['notes']  = $myrow["notes"];
-
+ 	$_POST['inactive'] = $myrow["inactive"];
 } 
 else 
 {
-	$_POST['supp_name'] = $_POST['address'] = $_POST['supp_address'] = $_POST['tax_group_id']  = 
-		$_POST['website'] = $_POST['supp_account_no'] = $_POST['notes'] = '';
+	$_POST['supp_name'] = $_POST['supp_ref'] = $_POST['address'] = $_POST['supp_address'] = 
+		$_POST['tax_group_id'] = $_POST['website'] = $_POST['supp_account_no'] = $_POST['notes'] = '';
 	$_POST['dimension_id'] = 0;
 	$_POST['dimension2_id'] = 0;
 	$_POST['sales_type'] = -1;
-	$_POST['email'] = $_POST['phone'] = $_POST['fax'] = $_POST['gst_no'] = $_POST['contact'] = $_POST['bank_account'] = '';
+	$_POST['email'] = $_POST['phone'] = $_POST['phone2'] = $_POST['fax'] = 
+		$_POST['gst_no'] = $_POST['contact'] = $_POST['bank_account'] = '';
 	$_POST['payment_terms']  = '';
 	$_POST['credit_limit']	= price_format(0);
 
@@ -220,15 +241,18 @@ else
 	$_POST['payable_account'] = $company_record["creditors_act"];
 	$_POST['purchase_account'] = $company_record["default_cogs_act"];
 	$_POST['payment_discount_account'] = $company_record['pyt_discount_act'];
+ 	$_POST['inactive'] = 0;
 }
 
 table_section_title(_("Name and Contact"));
 
 text_row(_("Supplier Name:"), 'supp_name', null, 42, 40);
+text_row(_("Supplier Short Name:"), 'supp_ref', null, 30, 30);
 text_row(_("Contact Person:"), 'contact', null, 42, 40);
 
-text_row(_("Phone Number:"), 'phone', null, 42, 40);
-text_row(_("Fax Number:"), 'fax', null, 42, 40);
+text_row(_("Phone Number:"), 'phone', null, 32, 30);
+text_row(_("Secondary Phone Number:"), 'phone2', null, 32, 30);
+text_row(_("Fax Number:"), 'fax', null, 32, 30);
 
 email_row(_("E-mail:"), 'email', null, 35, 55);
 link_row(_("Website:"), 'website', null, 35, 55);
@@ -281,6 +305,7 @@ if ($dim < 2)
 	hidden('dimension2_id', 0);
 table_section_title(_("General"));
 textarea_row(_("General Notes:"), 'notes', null, 35, 5);
+record_status_list_row(_("Supplier status:"), 'inactive');
 
 end_outer_table(1);
 
@@ -288,16 +313,17 @@ div_start('controls');
 if (!$new_supplier) 
 {
 	submit_center_first('submit', _("Update Supplier"), 
-	  _('Update supplier data'), true);
-	submit_return('select', _("Return"), _("Select this supplier and return to document entry."), true);
+	  _('Update supplier data'), @$_REQUEST['popup'] ? true : 'default');
+	submit_return('select', get_post('supplier_id'), _("Select this supplier and return to document entry."));
 	submit_center_last('delete', _("Delete Supplier"), 
 	  _('Delete supplier data if have been never used'), true);
 }
 else 
 {
-	submit_center('submit', _("Add New Supplier Details"), true, '', true);
+	submit_center('submit', _("Add New Supplier Details"), true, '', 'default');
 }
 div_end();
+hidden('popup', @$_REQUEST['popup']);
 end_form();
 
 end_page();

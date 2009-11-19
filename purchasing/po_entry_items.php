@@ -9,8 +9,8 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security = 4;
-$path_to_root="..";
+$page_security = 'SA_PURCHASEORDER';
+$path_to_root = "..";
 include_once($path_to_root . "/purchasing/includes/po_class.inc");
 include_once($path_to_root . "/includes/session.inc");
 include_once($path_to_root . "/purchasing/includes/purchasing_ui.inc");
@@ -24,11 +24,11 @@ if ($use_date_picker)
 
 if (isset($_GET['ModifyOrderNumber'])) 
 {
-	page(_("Modify Purchase Order #") . $_GET['ModifyOrderNumber'], false, false, "", $js);
+	page(_($help_context = "Modify Purchase Order #") . $_GET['ModifyOrderNumber'], false, false, "", $js);
 } 
 else 
 {
-	page(_("Purchase Order Entry"), false, false, "", $js);
+	page(_($help_context = "Purchase Order Entry"), false, false, "", $js);
 }
 
 //---------------------------------------------------------------------------------------------------
@@ -38,39 +38,21 @@ check_db_has_suppliers(_("There are no suppliers defined in the system."));
 check_db_has_purchasable_items(_("There are no purchasable inventory items defined in the system."));
 
 //---------------------------------------------------------------------------------------------------------------
-if ($ret = context_restore()) {
- // return from supplier/items editors
-	copy_from_cart();
-	if(isset($ret['supplier_id']))
-		$_POST['supplier_id'] = $ret['supplier_id'];
-	if(isset($ret['stock_id'])) {
-		$_POST['stock_id'] = $_POST['_stock_id_edit'] = $ret['stock_id'];
-		set_focus('qty');
-	}
-}
-if (isset($_POST['_supplier_id_editor'])) {
-	copy_to_cart();
-	context_call($path_to_root.'/purchasing/manage/suppliers.php?supplier_id='.$_POST['supplier_id'], 'PO');
-}
-
-if (isset($_POST['_stock_id_editor'])) {
-	copy_to_cart();
-	context_call($path_to_root.'/inventory/manage/items.php?stock_id='.$_POST['stock_id'], 'PO');
-}
-//------------------------------------------------------------------------------
 
 if (isset($_GET['AddedID'])) 
 {
 	$order_no = $_GET['AddedID'];
-	$trans_type = systypes::po();	
+	$trans_type = ST_PURCHORDER;	
 
 	if (!isset($_GET['Updated']))
 		display_notification_centered(_("Purchase Order has been entered"));
 	else
 		display_notification_centered(_("Purchase Order has been updated") . " #$order_no");
-	display_note(get_trans_view_str($trans_type, $order_no, _("&View this order")));
-	echo '<br>';
-	display_note(print_document_link($order_no, _("&Print This Order"), true, $trans_type));
+	display_note(get_trans_view_str($trans_type, $order_no, _("&View this order")), 0, 1);
+
+	display_note(print_document_link($order_no, _("&Print This Order"), true, $trans_type), 0, 1);
+
+	display_note(print_document_link($order_no, _("&Email This Order"), true, $trans_type, false, "", "", 1));
 
 	hyperlink_params($path_to_root . "/purchasing/po_receive_items.php", _("&Receive Items on this Purchase Order"), "PONumber=$order_no");
 
@@ -154,12 +136,15 @@ function handle_cancel_po()
 	if($_SESSION['PO']->order_no != 0)
 	{
 		delete_po($_SESSION['PO']->order_no);
-	}	
+	} else {
+		unset($_SESSION['PO']);
+		meta_forward($path_to_root.'/index.php','application=AP');
+	}
 
 	$_SESSION['PO']->clear_items();
 	$_SESSION['PO'] = new purch_order;
 
-	display_note(_("This purchase order has been cancelled."), 0, 1);
+	display_notification(_("This purchase order has been cancelled."));
 
 	hyperlink_params($path_to_root . "/purchasing/po_entry_items.php", _("Enter a new purchase order"), "NewOrder=Yes");
 	echo "<br>";
@@ -276,6 +261,8 @@ function handle_add_new_item()
 
 function can_commit()
 {
+	global $Refs;
+
 	if (!is_date($_POST['OrderDate'])) 
 	{
 		display_error(_("The entered order date is invalid."));
@@ -285,14 +272,14 @@ function can_commit()
 	
 	if (!$_SESSION['PO']->order_no) 
 	{
-    	if (!references::is_valid(get_post('ref'))) 
+    	if (!$Refs->is_valid(get_post('ref'))) 
     	{
     		display_error(_("There is no reference entered for this purchase order."));
 			set_focus('ref');
     		return false;
     	} 
     	
-    	if (!is_new_reference(get_post('ref'), systypes::po())) 
+    	if (!is_new_reference(get_post('ref'), ST_PURCHORDER)) 
     	{
     		display_error(_("The entered reference is already in use."));
 			set_focus('ref');
@@ -337,7 +324,7 @@ function handle_commit_order()
 			
 			/*its a new order to be inserted */
 			$order_no = add_po($_SESSION['PO']);
-			 
+			new_doc_date($_SESSION['PO']->orig_order_date); 
 			unset($_SESSION['PO']);
 			 
         	meta_forward($_SERVER['PHP_SELF'], "AddedID=$order_no");	
@@ -384,7 +371,7 @@ if (isset($_GET['ModifyOrderNumber']) && $_GET['ModifyOrderNumber'] != "")
 
 	/*read in all the selected order into the Items cart  */
 	read_po($_SESSION['PO']->order_no, $_SESSION['PO']);
-
+	
 	copy_from_cart();
 }
 
@@ -397,7 +384,7 @@ if (isset($_GET['NewOrder']))
 
 //---------------------------------------------------------------------------------------------------
 
-start_form(false, true);
+start_form();
 
 display_po_header($_SESSION['PO']);
 echo "<br>";
@@ -413,13 +400,13 @@ div_start('controls', 'items_table');
 if ($_SESSION['PO']->order_has_items()) 
 {
 	if ($_SESSION['PO']->order_no)
-		submit_center_first('Commit', _("Update Order"), '', true);
+		submit_center_first('Commit', _("Update Order"), '', 'default');
 	else
-		submit_center_first('Commit', _("Place Order"), '', true);
+		submit_center_first('Commit', _("Place Order"), '', 'default');
 	submit_center_last('CancelOrder', _("Cancel Order")); 	
 }
 else
-	submit_center('CancelOrder', _("Cancel Order")); 	
+	submit_center('CancelOrder', _("Cancel Order"), true, false, 'cancel');
 div_end();
 //---------------------------------------------------------------------------------------------------
 

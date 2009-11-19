@@ -27,11 +27,11 @@ function add_exchange_variation($trans_type, $trans_no, $date_, $acc_id, $accoun
 	if ($diff != 0)
 	{
 		if ($trans_type == null)
-			$trans_type = systypes::journal_entry();
+			$trans_type = ST_JOURNAL;
 		if ($trans_no == null)
 			$trans_no = get_next_trans_no($trans_type);
 		if ($person_type_id == null)
-			$person_type_id = payment_person_types::misc();
+			$person_type_id = PT_MISC;
 		add_gl_trans($trans_type, $trans_no, $date_, $account, 0, 0, _("Exchange Variance"),
     		-$diff, null, $person_type_id, $person_id);
     	add_gl_trans($trans_type, $trans_no, $date_, get_company_pref('exchange_diff_act'), 0, 0, 
@@ -41,11 +41,11 @@ function add_exchange_variation($trans_type, $trans_no, $date_, $acc_id, $accoun
 
 function add_exchange_variation_all()
 {
-	$trans_no = get_next_trans_no(0);
+	$trans_no = get_next_trans_no(ST_JOURNAL);
 	$sql = "SELECT * FROM ".TB_PREF."bank_accounts";
 	$result = db_query($sql, "could not retreive bank accounts");
 	while ($myrow = db_fetch($result))
-		add_exchange_variation(0, $trans_no, null, $myrow['id'], $myrow['account_code'],
+		add_exchange_variation(ST_JOURNAL, $trans_no, null, $myrow['id'], $myrow['account_code'],
 			$myrow['currency_code']);
 }
 //----------------------------------------------------------------------------------
@@ -56,11 +56,13 @@ function add_exchange_variation_all()
 //	
 
 function add_bank_transfer($from_account, $to_account, $date_,
-	$amount, $ref, $memo_)
+	$amount, $ref, $memo_, $charge=0)
 {
+	global $Refs;
+	
 	begin_transaction();
 
-	$trans_type = systypes::bank_transfer();
+	$trans_type = ST_BANKTRANSFER;
 
 	$currency = get_bank_account_currency($from_account);
 
@@ -72,16 +74,23 @@ function add_bank_transfer($from_account, $to_account, $date_,
 	$total = 0;
 	// do the source account postings
     $total += add_gl_trans($trans_type, $trans_no, $date_, $from_gl_account, 0, 0, "",
-		-$amount, $currency);
+		-($amount + $charge), $currency);
 
     add_bank_trans($trans_type, $trans_no, $from_account, $ref,
-		$date_, -$amount,
-		payment_person_types::misc(), "", $currency,
+		$date_, -($amount + $charge),
+		PT_MISC, "", $currency,
 		"Cannot insert a source bank transaction");
 
 	add_exchange_variation($trans_type, $trans_no, $date_, $from_account, $from_gl_account, 
-		$currency, payment_person_types::misc(), "");
+		$currency, PT_MISC, "");
 
+	if ($charge != 0)
+	{
+		/* Now Debit bank charge account with charges */
+		$charge_act = get_company_pref('bank_charge_act');
+		$total += add_gl_trans($trans_type, $trans_no, $date_,
+			$charge_act, 0, 0, "", $charge, $currency);
+	}
 	// do the destination account postings
 	$total += add_gl_trans($trans_type, $trans_no, $date_, $to_gl_account, 0, 0, "",
 		$amount, $currency);
@@ -90,15 +99,16 @@ function add_bank_transfer($from_account, $to_account, $date_,
 	add_gl_balance($trans_type, $trans_no, $date_, -$total);	
 	
 	add_bank_trans($trans_type, $trans_no, $to_account, $ref,
-		$date_, $amount, payment_person_types::misc(), "",
+		$date_, $amount, PT_MISC, "",
 		$currency, "Cannot insert a destination bank transaction");
 
 	add_exchange_variation($trans_type, $trans_no, $date_, $from_account, $from_gl_account, 
-		$currency, payment_person_types::misc(), "");
+		$currency, PT_MISC, "");
 	
 	add_comments($trans_type, $trans_no, $date_, $memo_);
 
-	references::save_last($ref, $trans_type);
+	$Refs->save($trans_type, $trans_no, $ref);
+	add_audit_trail($trans_type, $trans_no, $date_);
 
 	commit_transaction();
 
@@ -117,15 +127,18 @@ function add_bank_transfer($from_account, $to_account, $date_,
 // returns an array of (inserted trans type, trans no)
 
 function add_bank_transaction($trans_type, $from_account, $items, $date_,
-	$person_type_id, $person_id, $person_detail_id,	$ref, $memo_)
+	$person_type_id, $person_id, $person_detail_id,	$ref, $memo_, $use_transaction=true)
 {
+	global $Refs;
+
 	// we can only handle type 1 (payment)and type 2 (deposit)
-	if ($trans_type != systypes::bank_payment() && $trans_type != systypes::bank_deposit())
+	if ($trans_type != ST_BANKPAYMENT && $trans_type != ST_BANKDEPOSIT)
 		display_db_error("Invalid type ($trans_type) sent to add_bank_transaction");
 
 	$do_exchange_variance = false;
 	
-	begin_transaction();
+	if ($use_transaction)
+		begin_transaction();
 
 	$currency = get_bank_account_currency($from_account);
 	$bank_gl_account = get_bank_gl_account($from_account);
@@ -133,7 +146,7 @@ function add_bank_transaction($trans_type, $from_account, $items, $date_,
 	// the gl items are already inversed/negated for type 2 (deposit)
 	$total_amount = $items->gl_items_total();
 
-    if ($person_type_id == payment_person_types::customer())
+    if ($person_type_id == PT_CUSTOMER)
     {
     	// we need to add a customer transaction record
 
@@ -146,7 +159,7 @@ function add_bank_transaction($trans_type, $from_account, $items, $date_,
         	$ref, $cust_amount);
 
     }
-    elseif ($person_type_id == payment_person_types::supplier())
+    elseif ($person_type_id == PT_SUPPLIER)
     {
     	// we need to add a supplier transaction record
 		// convert to supp currency
@@ -177,7 +190,7 @@ function add_bank_transaction($trans_type, $from_account, $items, $date_,
 	{
 		$is_bank_to = is_bank_account($gl_item->code_id);
 
-		if ($trans_type == 1 AND $is_bank_to)
+		if ($trans_type == ST_BANKPAYMENT AND $is_bank_to)
 		{
 			// we don't allow payments to go to a bank account. use transfer for this !
 			display_db_error("invalid payment entered. Cannot pay to another bank account", "");
@@ -217,9 +230,11 @@ function add_bank_transaction($trans_type, $from_account, $items, $date_,
 
 	add_comments($trans_type, $trans_no, $date_, $memo_);
 
-	references::save_last($ref, $trans_type);
+	$Refs->save($trans_type, $trans_no, $ref);
+	add_audit_trail($trans_type, $trans_no, $date_);
 
-	commit_transaction();
+	if ($use_transaction)
+		commit_transaction();
 
 	return array($trans_type, $trans_no);
 }

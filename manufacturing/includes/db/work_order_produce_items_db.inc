@@ -11,6 +11,8 @@
 ***********************************************************************/
 function work_order_produce($woid, $ref, $quantity, $date_, $memo_, $close_wo)
 {
+	global $Refs;
+
 	begin_transaction();
 
 	$details = get_work_order($woid);
@@ -45,16 +47,17 @@ function work_order_produce($woid, $ref, $quantity, $date_, $memo_, $close_wo)
 	// -------------------------------------------------------------------------
 	// insert a +ve stock move for the item being manufactured
 	// negative means "unproduce" or unassemble
-	add_stock_move(29, $details["stock_id"], $id,
+	add_stock_move(ST_MANURECEIVE, $details["stock_id"], $id,
 		$details["loc_code"], $date_, $memo_, $quantity, 0);
 	// update wo quantity and close wo if requested
 	work_order_update_finished_quantity($woid, $quantity, $close_wo);
 
 
 	if ($memo_)
-		add_comments(29, $id, $date_, $memo_);
+		add_comments(ST_MANURECEIVE, $id, $date_, $memo_);
 
-	references::save_last($ref, 29);
+	$Refs->save(ST_MANURECEIVE, $id, $ref);
+	add_audit_trail(ST_MANURECEIVE, $id, $date_, _("Production."));
 
 	commit_transaction();
 }
@@ -109,10 +112,10 @@ function void_work_order_produce($type_no)
 	db_query($sql, "Cannot void a wo production");
 
 	// void all related stock moves
-	void_stock_move(29, $type_no);
+	void_stock_move(ST_MANURECEIVE, $type_no);
 
 	// void any related gl trans
-	void_gl_trans(29, $type_no, true);
+	void_gl_trans(ST_MANURECEIVE, $type_no, true);
 
 	commit_transaction();
 }

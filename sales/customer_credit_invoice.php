@@ -14,7 +14,7 @@
 //	Entry/Modify Credit Note for selected Sales Invoice
 //
 
-$page_security = 3;
+$page_security = 'SA_SALESCREDITINV';
 $path_to_root = "..";
 
 include_once($path_to_root . "/sales/includes/cart_class.inc");
@@ -36,10 +36,10 @@ if ($use_date_picker) {
 
 if (isset($_GET['ModifyCredit'])) {
 	$_SESSION['page_title'] = sprintf(_("Modifying Credit Invoice # %d."), $_GET['ModifyCredit']);
-	$help_page_title =_("Modifying Credit Invoice");
+	$help_context = "Modifying Credit Invoice";
 	processing_start();
 } elseif (isset($_GET['InvoiceNumber'])) {
-	$_SESSION['page_title'] = _("Credit all or part of an Invoice");
+	$_SESSION['page_title'] = _($help_context = "Credit all or part of an Invoice");
 	processing_start();
 }
 page($_SESSION['page_title'], false, false, "", $js);
@@ -48,13 +48,13 @@ page($_SESSION['page_title'], false, false, "", $js);
 
 if (isset($_GET['AddedID'])) {
 	$credit_no = $_GET['AddedID'];
-	$trans_type = 11;
+	$trans_type = ST_CUSTCREDIT;
 
 	display_notification_centered(_("Credit Note has been processed"));
 
 	display_note(get_customer_trans_view_str($trans_type, $credit_no, _("&View This Credit Note")), 0, 0);
 
-	display_note(print_document_link($credit_no, _("&Print This Credit Note"), true, 11),1);
+	display_note(print_document_link($credit_no, _("&Print This Credit Note"), true, $trans_type),1);
 
  	display_note(get_gl_view_str($trans_type, $credit_no, _("View the GL &Journal Entries for this Credit Note")),1);
 
@@ -62,13 +62,13 @@ if (isset($_GET['AddedID'])) {
 
 } elseif (isset($_GET['UpdatedID'])) {
 	$credit_no = $_GET['UpdatedID'];
-	$trans_type = 11;
+	$trans_type = ST_CUSTCREDIT;
 
 	display_notification_centered(_("Credit Note has been updated"));
 
 	display_note(get_customer_trans_view_str($trans_type, $credit_no, _("&View This Credit Note")), 0, 0);
 
-	display_note(print_document_link($credit_no, _("&Print This Credit Note"), true, 11),1);
+	display_note(print_document_link($credit_no, _("&Print This Credit Note"), true, $trans_type),1);
 
  	display_note(get_gl_view_str($trans_type, $credit_no, _("View the GL &Journal Entries for this Credit Note")),1);
 
@@ -81,6 +81,8 @@ if (isset($_GET['AddedID'])) {
 
 function can_process()
 {
+	global $Refs;
+
 	if (!is_date($_POST['CreditDate'])) {
 		display_error(_("The entered date is invalid."));;
 		set_focus('CreditDate');
@@ -92,13 +94,13 @@ function can_process()
 	}
 
     if ($_SESSION['Items']->trans_no==0) {
-		if (!references::is_valid($_POST['ref'])) {
+		if (!$Refs->is_valid($_POST['ref'])) {
 			display_error(_("You must enter a reference."));;
 			set_focus('ref');
 			return false;
 		}
 
-		if (!is_new_reference($_POST['ref'], 11)) {
+		if (!is_new_reference($_POST['ref'], ST_CUSTCREDIT)) {
 			display_error(_("The entered reference is already in use."));;
 			set_focus('ref');
 			return false;
@@ -120,14 +122,14 @@ function can_process()
 
 if (isset($_GET['InvoiceNumber']) && $_GET['InvoiceNumber'] > 0) {
 
-    $ci = new Cart(10, $_GET['InvoiceNumber'], true);
+    $ci = new Cart(ST_SALESINVOICE, $_GET['InvoiceNumber'], true);
 
-    $ci->trans_type = 11;
+    $ci->trans_type = ST_CUSTCREDIT;
     $ci->src_docs = $ci->trans_no;
     $ci->src_date = $ci->document_date;
     $ci->trans_no = 0;
-    $ci->document_date = Today();
-    $ci->reference = references::get_next(11);
+    $ci->document_date = new_doc_date();
+    $ci->reference = $Refs->get_next(ST_CUSTCREDIT);
 
     for ($line_no=0; $line_no<count($ci->line_items); $line_no++) {
 	$ci->line_items[$line_no]->qty_dispatched = '0';
@@ -138,7 +140,7 @@ if (isset($_GET['InvoiceNumber']) && $_GET['InvoiceNumber'] > 0) {
 
 } elseif ( isset($_GET['ModifyCredit']) && $_GET['ModifyCredit']>0) {
 
-	$_SESSION['Items'] = new Cart(11,$_GET['ModifyCredit']);
+	$_SESSION['Items'] = new Cart(ST_CUSTCREDIT,$_GET['ModifyCredit']);
 	copy_from_cart();
 
 } elseif (!processing_active()) {
@@ -210,6 +212,7 @@ if (isset($_POST['ProcessCredit']) && can_process()) {
 		$_POST['WriteOffGLCode'] = 0;
 
 	copy_to_cart();
+	if ($new_credit) new_doc_date($_SESSION['Items']->document_date);
     $credit_no = $_SESSION['Items']->write($_POST['WriteOffGLCode']);
 
 	processing_end();
@@ -232,7 +235,7 @@ function display_credit_items()
 {
 	global $table_style, $table_style2;
 
-    start_form(false, true);
+    start_form();
 	hidden('cart_id');
 
 	start_table("$table_style2 width=80%", 5);
@@ -247,15 +250,14 @@ function display_credit_items()
     start_row();
 
 //	if (!isset($_POST['ref']))
-//		$_POST['ref'] = references::get_next(11);
+//		$_POST['ref'] = $Refs->get_next(11);
 
     if ($_SESSION['Items']->trans_no==0) {
 		ref_cells(_("Reference"), 'ref', '', null, "class='tableheader2'");
 	} else {
 		label_cells(_("Reference"), $_SESSION['Items']->reference, "class='tableheader2'");
 	}
-//    label_cells(_("Crediting Invoice"), get_customer_trans_view_str(10, $_SESSION['InvoiceToCredit']), "class='tableheader2'");
-    label_cells(_("Crediting Invoice"), get_customer_trans_view_str(10, array_keys($_SESSION['Items']->src_docs)), "class='tableheader2'");
+    label_cells(_("Crediting Invoice"), get_customer_trans_view_str(ST_SALESINVOICE, array_keys($_SESSION['Items']->src_docs)), "class='tableheader2'");
 
 	if (!isset($_POST['ShipperID'])) {
 		$_POST['ShipperID'] = $_SESSION['Items']->ship_via;
@@ -276,7 +278,7 @@ function display_credit_items()
 
     label_row(_("Invoice Date"), $_SESSION['Items']->src_date, "class='tableheader2'");
 
-    date_row(_("Credit Note Date"), 'CreditDate', '', null, 0, 0, 0, "class='tableheader2'");
+    date_row(_("Credit Note Date"), 'CreditDate', '', $_SESSION['Items']->trans_no==0, 0, 0, 0, "class='tableheader2'");
 
     end_table();
 
@@ -319,24 +321,24 @@ function display_credit_items()
     if (!check_num('ChargeFreightCost')) {
     	$_POST['ChargeFreightCost'] = price_format($_SESSION['Items']->freight_cost);
     }
-
+	$colspan = 7;
 	start_row();
-	label_cell(_("Credit Shipping Cost"), "colspan=7 align=right");
-	amount_cells_ex(null, "ChargeFreightCost", 6, 8, $_POST['ChargeFreightCost']);
+	label_cell(_("Credit Shipping Cost"), "colspan=$colspan align=right");
+	small_amount_cells(null, "ChargeFreightCost", price_format(get_post('ChargeFreightCost',0)));
 	end_row();
 
     $inv_items_total = $_SESSION['Items']->get_items_total_dispatch();
 
     $display_sub_total = price_format($inv_items_total + input_num($_POST['ChargeFreightCost']));
-    label_row(_("Sub-total"), $display_sub_total, "colspan=7 align=right", "align=right");
+    label_row(_("Sub-total"), $display_sub_total, "colspan=$colspan align=right", "align=right");
 
     $taxes = $_SESSION['Items']->get_taxes(input_num($_POST['ChargeFreightCost']));
 
-    $tax_total = display_edit_tax_items($taxes, 7, $_SESSION['Items']->tax_included);
+    $tax_total = display_edit_tax_items($taxes, $colspan, $_SESSION['Items']->tax_included);
 
     $display_total = price_format(($inv_items_total + input_num('ChargeFreightCost') + $tax_total));
 
-    label_row(_("Credit Note Total"), $display_total, "colspan=7 align=right", "align=right");
+    label_row(_("Credit Note Total"), $display_total, "colspan=$colspan align=right", "align=right");
 
     end_table();
 	div_end();
@@ -388,7 +390,7 @@ display_credit_options();
 echo "<br><center>";
 submit('Update', _("Update"), true, _('Update credit value for quantities entered'), true);
 echo "&nbsp";
-submit('ProcessCredit', _("Process Credit Note"), true, '', true);
+submit('ProcessCredit', _("Process Credit Note"), true, '', 'default');
 echo "</center>";
 
 end_form();

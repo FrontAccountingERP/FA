@@ -97,7 +97,8 @@ function add_gl_balance($type, $trans_id, $date_, $amount, $person_type_id=null,
 //--------------------------------------------------------------------------------
 
 function get_gl_transactions($from_date, $to_date, $trans_no=0,
-	$account=null, $dimension=0, $dimension2=0, $filter_type=null)
+	$account=null, $dimension=0, $dimension2=0, $filter_type=null,
+	$amount_min=null, $amount_max=null)
 {
 	$from = date2sql($from_date);
 	$to = date2sql($to_date);
@@ -114,16 +115,22 @@ function get_gl_transactions($from_date, $to_date, $trans_no=0,
 	if ($account != null)
 		$sql .= " AND ".TB_PREF."gl_trans.account = ".db_escape($account);
 
-	if ($dimension > 0)
-		$sql .= " AND ".TB_PREF."gl_trans.dimension_id = ".db_escape($dimension);
+	if ($dimension != 0)
+  		$sql .= " AND ".TB_PREF."gl_trans.dimension_id = ".($dimension<0?0:db_escape($dimension));
 
-	if ($dimension2 > 0)
-		$sql .= " AND ".TB_PREF."gl_trans.dimension2_id = ".db_escape($dimension2);
+	if ($dimension2 != 0)
+  		$sql .= " AND ".TB_PREF."gl_trans.dimension2_id = ".($dimension2<0?0:db_escape($dimension2));
 
 	if ($filter_type != null AND is_numeric($filter_type))
 		$sql .= " AND ".TB_PREF."gl_trans.type= ".db_escape($filter_type);
+		
+	if ($amount_min != null)
+		$sql .= " AND ABS(".TB_PREF."gl_trans.amount) >= ABS(".db_escape($amount_min).")";
+	
+	if ($amount_max != null)
+		$sql .= " AND ABS(".TB_PREF."gl_trans.amount) <= ABS(".db_escape($amount_max).")";
 
-	$sql .= " ORDER BY tran_date";
+	$sql .= " ORDER BY tran_date, counter";
 
 	return db_query($sql, "The transactions for could not be retrieved");
 }
@@ -150,9 +157,9 @@ function get_gl_wo_cost_trans($trans_id, $person_id=-1)
 	$sql = "SELECT ".TB_PREF."gl_trans.*, ".TB_PREF."chart_master.account_name FROM "
 		.TB_PREF."gl_trans, ".TB_PREF."chart_master
 		WHERE ".TB_PREF."chart_master.account_code=".TB_PREF."gl_trans.account
-		AND ".TB_PREF."gl_trans.type=".systypes::work_order()." AND "
-		.TB_PREF."gl_trans.type_no=".db_escape($trans_id)."
-		AND ".TB_PREF."gl_trans.person_type_id=".payment_person_types::WorkOrder();
+		AND ".TB_PREF."gl_trans.type=".ST_WORKORDER
+		." AND ".TB_PREF."gl_trans.type_no=".db_escape($trans_id)."
+		AND ".TB_PREF."gl_trans.person_type_id=".PT_WORKORDER;
 	if ($person_id != -1)
 		$sql .= " AND ".TB_PREF."gl_trans.person_id=".db_escape($person_id);
 	$sql .= " AND amount < 0";	
@@ -171,10 +178,10 @@ function get_gl_balance_from_to($from_date, $to_date, $account, $dimension=0, $d
 		$sql .= "  AND tran_date > '$from'";
 	if ($to_date != "")
 		$sql .= "  AND tran_date < '$to'";
-	if ($dimension > 0)
-		$sql .= " AND dimension_id = ".db_escape($dimension);
-	if ($dimension2 > 0)
-		$sql .= " AND dimension2_id = ".db_escape($dimension2);
+	if ($dimension != 0)
+  		$sql .= " AND dimension_id = ".($dimension<0?0:db_escape($dimension));
+	if ($dimension2 != 0)
+  		$sql .= " AND dimension2_id = ".($dimension2<0?0:db_escape($dimension2));
 
 	$result = db_query($sql, "The starting balance for account $account could not be calculated");
 
@@ -195,10 +202,10 @@ function get_gl_trans_from_to($from_date, $to_date, $account, $dimension=0, $dim
 		$sql .= " AND tran_date >= '$from'";
 	if ($to_date != "")
 		$sql .= " AND tran_date <= '$to'";
-	if ($dimension > 0)
-		$sql .= " AND dimension_id = ".db_escape($dimension);
-	if ($dimension2 > 0)
-		$sql .= " AND dimension2_id = ".db_escape($dimension2);
+	if ($dimension != 0)
+  		$sql .= " AND dimension_id = ".($dimension<0?0:db_escape($dimension));
+	if ($dimension2 != 0)
+  		$sql .= " AND dimension2_id = ".($dimension2<0?0:db_escape($dimension2));
 
 	$result = db_query($sql, "Transactions for account $account could not be calculated");
 
@@ -219,15 +226,15 @@ function get_balance($account, $dimension, $dimension2, $from, $to, $from_incl=t
 		
 	if ($account != null)
 		$sql .= " account=".db_escape($account)." AND";
-	if ($dimension > 0)
-		$sql .= " dimension_id=".db_escape($dimension)." AND";
-	if ($dimension2 > 0)
-		$sql .= " dimension2_id=".db_escape($dimension2)." AND";
+	if ($dimension != 0)
+  		$sql .= " dimension_id = ".($dimension<0?0:db_escape($dimension))." AND";
+	if ($dimension2 != 0)
+  		$sql .= " dimension2_id = ".($dimension2<0?0:db_escape($dimension2))." AND";
 	$from_date = date2sql($from);
 	if ($from_incl)
 		$sql .= " tran_date >= '$from_date'  AND";
 	else
-		$sql .= " tran_date > IF(balance_sheet>0 AND balance_sheet<".CL_INCOME.", '0000-00-00', '$from_date') AND";
+		$sql .= " tran_date > IF(ctype>0 AND ctype<".CL_INCOME.", '0000-00-00', '$from_date') AND";
 	$to_date = date2sql($to);
 	if ($to_incl)
 		$sql .= " tran_date <= '$to_date' ";
@@ -253,10 +260,10 @@ function get_budget_trans_from_to($from_date, $to_date, $account, $dimension=0, 
 		$sql .= " AND tran_date >= '$from' ";
 	if ($to_date != "")
 		$sql .= " AND tran_date <= '$to' ";
-	if ($dimension > 0)
-		$sql .= " AND dimension_id = ".db_escape($dimension);
-	if ($dimension2 > 0)
-		$sql .= " AND dimension2_id = ".db_escape($dimension2);
+	if ($dimension != 0)
+  		$sql .= " AND dimension_id = ".($dimension<0?0:db_escape($dimension));
+	if ($dimension2 != 0)
+  		$sql .= " AND dimension2_id = ".($dimension2<0?0:db_escape($dimension2));
 	$result = db_query($sql,"No budget accounts were returned");
 
 	$row = db_fetch_row($result);
@@ -342,36 +349,53 @@ function get_tax_summary($from, $to)
 	$todate = date2sql($to);
 
 	$sql = "SELECT 
-				SUM(IF(trans_type=11 || trans_type=20,-1,1)*
-				IF(trans_type=2 || trans_type=10 || trans_type=11, net_amount*ex_rate,0)) net_output,
-				SUM(IF(trans_type=11 || trans_type=20,-1,1)*
-				IF(trans_type=2 || trans_type=10 || trans_type=11, amount*ex_rate,0)) payable,
-				SUM(IF(trans_type=11 || trans_type=20,-1,1)*
-				IF(trans_type=2 || trans_type=10 || trans_type=11, 0, net_amount*ex_rate)) net_input,
-				SUM(IF(trans_type=11 || trans_type=20,-1,1)*
-				IF(trans_type=2 || trans_type=10 || trans_type=11, 0, amount*ex_rate)) collectible,
+				SUM(IF(trans_type=".ST_CUSTCREDIT." || trans_type=".ST_SUPPINVOICE.",-1,1)*
+				IF(trans_type=".ST_BANKDEPOSIT." || trans_type=".ST_SALESINVOICE." || trans_type=".ST_CUSTCREDIT.", net_amount*ex_rate,0)) net_output,
+				SUM(IF(trans_type=".ST_CUSTCREDIT." || trans_type=".ST_SUPPINVOICE.",-1,1)*
+				IF(trans_type=".ST_BANKDEPOSIT." || trans_type=".ST_SALESINVOICE." || trans_type=".ST_CUSTCREDIT.", amount*ex_rate,0)) payable,
+				SUM(IF(trans_type=".ST_CUSTCREDIT." || trans_type=".ST_SUPPINVOICE.",-1,1)*
+				IF(trans_type=".ST_BANKDEPOSIT." || trans_type=".ST_SALESINVOICE." || trans_type=".ST_CUSTCREDIT.", 0, net_amount*ex_rate)) net_input,
+				SUM(IF(trans_type=".ST_CUSTCREDIT." || trans_type=".ST_SUPPINVOICE.",-1,1)*
+				IF(trans_type=".ST_BANKDEPOSIT." || trans_type=".ST_SALESINVOICE." || trans_type=".ST_CUSTCREDIT.", 0, amount*ex_rate)) collectible,
 				taxrec.rate,
 				ttype.id,
 				ttype.name
 		FROM ".TB_PREF."tax_types ttype,
 			 ".TB_PREF."trans_tax_details taxrec
 		WHERE taxrec.tax_type_id=ttype.id
-			AND taxrec.trans_type != 13
+			AND taxrec.trans_type != ".ST_CUSTDELIVERY."
 			AND taxrec.tran_date >= '$fromdate'
 			AND taxrec.tran_date <= '$todate'
 		GROUP BY ttype.id";
 //display_error($sql);
     return db_query($sql,"Cannot retrieve tax summary");
 }
+
 //--------------------------------------------------------------------------------
-function add_journal_entries($items, $date_, $ref, $reverse, $memo_=null)
+// Write/update journal entries.
+//
+function write_journal_entries(&$cart, $reverse, $use_transaction=true)
 {
-	begin_transaction();
+	global $Refs;
 
-	$trans_type = systypes::journal_entry();
-	$trans_id = get_next_trans_no($trans_type);
+	$date_ = $cart->tran_date;
+	$ref   = $cart->reference;
+	$memo_ = $cart->memo_;
+	$trans_type = $cart->trans_type;
+	$new = $cart->order_id == 0;
+	
+	if ($new)
+	    $cart->order_id = get_next_trans_no($trans_type);
 
-	foreach ($items as $journal_item)
+    $trans_id = $cart->order_id;
+
+	if ($use_transaction)
+		begin_transaction();
+	
+	if(!$new)
+		void_journal_trans($trans_type, $trans_id, false);
+
+	foreach ($cart->gl_items as $journal_item)
 	{
 		// post to first found bank account using given gl acount code.
 		$is_bank_to = is_bank_account($journal_item->code_id);
@@ -382,29 +406,33 @@ function add_journal_entries($items, $date_, $ref, $reverse, $memo_=null)
     	if ($is_bank_to)
     	{
     		add_bank_trans($trans_type, $trans_id, $is_bank_to, $ref,
-    			$date_, $journal_item->amount,
-    			0, "", get_company_currency(),
+    			$date_, $journal_item->amount,	0, "", get_company_currency(),
     			"Cannot insert a destination bank transaction");
     	}
 		// store tax details if the gl account is a tax account
 		add_gl_tax_details($journal_item->code_id, 
-			($journal_item->amount < 0.0 ? 2 : 1), $trans_id, -$journal_item->amount, 1, $date_, $memo_);
+			($journal_item->amount < 0.0 ? ST_BANKDEPOSIT : ST_BANKPAYMENT), $trans_id, -$journal_item->amount, 1, $date_, $memo_);
 	}
 	
-	add_comments($trans_type, $trans_id, $date_, $memo_);
+	if ($new) {
+		add_comments($trans_type, $trans_id, $date_, $memo_);
+		$Refs->save($trans_type, $trans_id, $ref);
+	} else {
+		update_comments($trans_type, $trans_id, null, $memo_);
+		$Refs->update($trans_type, $trans_id, $ref);
+	}
 
-	references::save($trans_type, $trans_id, $ref);
+	add_audit_trail($trans_type, $trans_id, $date_);
 
 	if ($reverse)
 	{
-
     	//$reversingDate = date(user_date_display(),
     	//	Mktime(0,0,0,get_month($date_)+1,1,get_year($date_)));
     	$reversingDate = begin_month(add_months($date_, 1));
 
     	$trans_id_reverse = get_next_trans_no($trans_type);
 
-    	foreach ($items as $journal_item)
+    	foreach ($cart->gl_items as $journal_item)
     	{
 			$is_bank_to = is_bank_account($journal_item->code_id);
 
@@ -420,15 +448,17 @@ function add_journal_entries($items, $date_, $ref, $reverse, $memo_=null)
     		}
 			// store tax details if the gl account is a tax account
 			add_gl_tax_details($journal_item->code_id, 
-				($journal_item->amount < 0.0 ? 2 : 1), $trans_id, $journal_item->amount, 1, $date, $memo_);
+				($journal_item->amount < 0.0 ? ST_BANKDEPOSIT : ST_BANKPAYMENT), $trans_id, $journal_item->amount, 1, $reversingDate, $memo_);
     	}
 
     	add_comments($trans_type, $trans_id_reverse, $reversingDate, $memo_);
 
-    	references::save($trans_type, $trans_id_reverse, $ref);
+    	$Refs->save($trans_type, $trans_id_reverse, $ref);
+		add_audit_trail($trans_type, $trans_id_reverse, $reversingDate);
 	}
 
-	commit_transaction();
+	if ($use_transaction)
+		commit_transaction();
 
 	return $trans_id;
 }
@@ -462,15 +492,17 @@ function void_gl_trans($type, $trans_id, $nested=false)
 
 //----------------------------------------------------------------------------------------
 
-function void_journal_trans($type, $type_no)
+function void_journal_trans($type, $type_no, $use_transaction=true)
 {
-	begin_transaction();
+	if ($use_transaction)
+		begin_transaction();
 
-	void_gl_trans($type, $type_no, true);
-	void_bank_trans($type, $type_no,true);
-	void_trans_tax_details($type, $type_no);
+	void_bank_trans($type, $type_no, true);
+//	void_gl_trans($type, $type_no, true);	 // this is done above
+//	void_trans_tax_details($type, $type_no); // ditto
 
-	commit_transaction();
+	if ($use_transaction)
+		commit_transaction();
 }
 
 ?>

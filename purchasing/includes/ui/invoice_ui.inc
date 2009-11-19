@@ -55,7 +55,7 @@ function copy_to_trans(&$supp_trans)
 
 function invoice_header(&$supp_trans)
 {
-	global $Ajax, $table_style;
+	global $Ajax, $table_style, $Refs;
 	
 	// if vars have been lost, recopy
 	if (!isset($_POST['tran_date']))
@@ -67,14 +67,14 @@ function invoice_header(&$supp_trans)
 
 	if (isset($_POST['invoice_no']))
 	{
-		$trans = get_supp_trans($_POST['invoice_no'], 20);
+		$trans = get_supp_trans($_POST['invoice_no'], ST_SUPPINVOICE);
 		$_POST['supplier_id'] = $trans['supplier_id'];
 		$supp = $trans['supplier_name'] . " - " . $trans['SupplierCurrCode'];
 		label_row(_("Supplier:"), $supp.hidden('supplier_id', $_POST['supplier_id'], false));
 	}	
 	else
 	{
-    	if (!isset($_POST['supplier_id']) && (get_global_supplier() != reserved_words::get_all()))
+    	if (!isset($_POST['supplier_id']) && (get_global_supplier() != ALL_TEXT))
     		$_POST['supplier_id'] = get_global_supplier();
 
 		supplier_list_row(_("Supplier:"), 'supplier_id', $_POST['supplier_id'], false, true);
@@ -90,9 +90,9 @@ function invoice_header(&$supp_trans)
 	}
 
 	if ($supp_trans->is_invoice)
-    	ref_row(_("Reference:"), 'reference', '', references::get_next(20));
+    	ref_row(_("Reference:"), 'reference', '', $Refs->get_next(ST_SUPPINVOICE));
     else
-    	ref_row(_("Reference:"), 'reference', '', references::get_next(21));
+    	ref_row(_("Reference:"), 'reference', '', $Refs->get_next(ST_SUPPCREDIT));
 
 	if (isset($_POST['invoice_no']))
 	{
@@ -103,7 +103,7 @@ function invoice_header(&$supp_trans)
 
 	table_section(2, "33%");
 
-   	date_row(_("Date") . ":", 'tran_date', '', null, 0, 0, 0, "", true);
+   	date_row(_("Date") . ":", 'tran_date', '', true, 0, 0, 0, "", true);
 	if (isset($_POST['_tran_date_changed'])) {
 		$Ajax->activate('_ex_rate');
 		$supp_trans->tran_date = $_POST['tran_date'];
@@ -170,7 +170,7 @@ function display_gl_controls(&$supp_trans, $k)
 	$_POST['gl_code'] = $accs['purchase_account'];
 
 	alt_table_row_color($k);
-	gl_all_accounts_list('gl_code', null, true, true);
+	echo gl_all_accounts_list('gl_code', null, true, true);
 	$dim = get_company_pref('use_dimension');
 	if ($dim >= 1)
 		dimensions_list_cells(null, 'dimension_id', null, true, " ", false, 1);
@@ -219,7 +219,7 @@ function display_gl_items(&$supp_trans, $mode=0)
 		{
 			echo "<div style='float:right;'>";
 			echo _("Quick Entry:")."&nbsp;"; 
-			quick_entries_list('qid', null, QE_SUPPINV, true);
+			echo quick_entries_list('qid', null, QE_SUPPINV, true);
 			$qid = get_quick_entry(get_post('qid'));
 			if (list_updated('qid')) {
 				unset($_POST['totamount']); // enable default
@@ -308,7 +308,7 @@ function display_gl_items(&$supp_trans, $mode=0)
 		display_gl_controls($supp_trans, $k);
 	$colspan = ($dim == 2 ? 4 : ($dim == 1 ? 3 : 2));
 	label_row(_("Total"), price_format($total_gl_value),
-		"colspan=".$colspan." align=right", "nowrap align=right");
+		"colspan=".$colspan." align=right", "nowrap align=right", ($mode==1?3:1));
 
 	end_table();
 	div_end();
@@ -367,7 +367,7 @@ function display_grn_items_for_selection(&$supp_trans, $k)
             	hidden('order_price'.$n, $myrow['unit_price'], false).
             	hidden('std_cost_unit'.$n, $myrow['std_cost_unit'], false).
             	hidden('po_detail_item'.$n, $myrow['po_detail_item'], false));
-        	label_cell(get_trans_view_str(systypes::po(), $myrow["purch_order_no"]));
+        	label_cell(get_trans_view_str(ST_PURCHORDER, $myrow["purch_order_no"]));
             label_cell($myrow["item_code"]);
             label_cell($myrow["description"]);
             label_cell(sql2date($myrow["delivery_date"]));
@@ -390,7 +390,7 @@ function display_grn_items_for_selection(&$supp_trans, $k)
         		submit_cells('grn_item_id'.$n, _("Add"), '', _("Add to Invoice"), true);
         	else	
         		submit_cells('grn_item_id'.$n, _("Add"), '', _("Add to Credit Note"), true);
-    		if ($supp_trans->is_invoice && $_SESSION["wa_current_user"]->access == 2) {	// Added 2008-10-18 by Joe Hunt. Only admins can remove GRNs
+    		if ($supp_trans->is_invoice && $_SESSION["wa_current_user"]->can_access('SA_GRNDELETE')) {	// Added 2008-10-18 by Joe Hunt. Special access rights needed.
         		submit_cells('void_item_id'.$n, _("Remove"), '', _("WARNING! Be careful with removal. The operation is executed immediately and cannot be undone !!!"), true);
 				submit_js_confirm('void_item_id'.$n,
 					sprintf(_('You are about to remove all yet non-invoiced items from delivery line #%d. This operation also irreversibly changes related order line. Do you want to continue ?'), $n));
@@ -425,7 +425,7 @@ function display_grn_items(&$supp_trans, $mode=0)
 		if ($supp_trans->is_invoice)
 		{
 			$heading = _("Items Received Yet to be Invoiced");
-    		if ($_SESSION["wa_current_user"]->access == 2)	// Added 2008-10-18 by Joe Hunt. Only admins can remove GRNs
+    		if ($_SESSION["wa_current_user"]->can_access('SA_GRNDELETE'))	// Added 2008-10-18 by Joe Hunt. Only admins can remove GRNs
 				$heading2 = _("WARNING! Be careful with removal. The operation is executed immediately and cannot be undone !!!");
 		}
 		else
@@ -448,8 +448,8 @@ function display_grn_items(&$supp_trans, $mode=0)
 		if (!$supp_trans->is_invoice && !isset($_POST['invoice_no']))
 		{
 			echo "</td>";
-			date_cells(_("Received between"), 'receive_begin', "", null, -30);
-			date_cells(_("and"), 'receive_end', '', null, 1);
+			date_cells(_("Received between"), 'receive_begin', "", null, -30, 0, 0, "valign=middle");
+			date_cells(_("and"), 'receive_end', '', null, 1, 0, 0, "valign=middle");
 			submit_cells('RefreshInquiry', _("Search"),'',_('Refresh Inquiry'), true);
 			echo "<td>";
 		}	
@@ -472,7 +472,7 @@ function display_grn_items(&$supp_trans, $mode=0)
     	$th = array(_("Delivery"), _("Sequence #"), _("P.O."), _("Item"), _("Description"),
     		_("Received On"), _("Quantity Received"), _("Quantity Invoiced"),
     		_("Qty Yet To Invoice"), _("Order Price"), _("Total"), "");
-    	if ($supp_trans->is_invoice && $_SESSION["wa_current_user"]->access == 2)	// Added 2008-10-18 by Joe Hunt. Only admins can remove GRNs
+    	if ($supp_trans->is_invoice && $_SESSION["wa_current_user"]->can_access('SA_GRNDELETE'))	// Added 2008-10-18 by Joe Hunt. Only admins can remove GRNs
     		$th[] = "";
 		if (!$supp_trans->is_invoice)
 		{
@@ -496,7 +496,7 @@ function display_grn_items(&$supp_trans, $mode=0)
     		alt_table_row_color($k);
 
 			$grn_batch = get_grn_batch_from_item($entered_grn->id);
-    		label_cell(get_trans_view_str(25,$grn_batch));
+    		label_cell(get_trans_view_str(ST_SUPPRECEIVE,$grn_batch));
     		if ($mode == 1)
     		{
 				label_cell($entered_grn->id);
@@ -518,7 +518,7 @@ function display_grn_items(&$supp_trans, $mode=0)
 			if ($mode == 1)
 			{
 				delete_button_cell("Delete" . $entered_grn->id, _("Edit"), _('Edit document line'));
-				if ($supp_trans->is_invoice && $_SESSION["wa_current_user"]->access == 2)	  
+				if ($supp_trans->is_invoice && $_SESSION["wa_current_user"]->can_access('SA_GRNDELETE'))	  
 					label_cell("");
 			}	
 			end_row();

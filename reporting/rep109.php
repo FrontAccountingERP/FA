@@ -9,7 +9,8 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security = 2;
+$page_security = $_POST['PARAM_0'] == $_POST['PARAM_1'] ?
+	'SA_SALESTRANSVIEW' : 'SA_SALESBULKREP';
 // ----------------------------------------------------------------
 // $ Revision:	2.0 $
 // Creator:	Joe Hunt
@@ -38,10 +39,9 @@ function print_sales_orders()
 	$from = $_POST['PARAM_0'];
 	$to = $_POST['PARAM_1'];
 	$currency = $_POST['PARAM_2'];
-	$bankaccount = $_POST['PARAM_3'];
-	$email = $_POST['PARAM_4'];
-	$print_as_quote = $_POST['PARAM_5'];
-	$comments = $_POST['PARAM_6'];
+	$email = $_POST['PARAM_3'];
+	$print_as_quote = $_POST['PARAM_4'];
+	$comments = $_POST['PARAM_5'];
 
 	if ($from == null)
 		$from = 0;
@@ -54,10 +54,8 @@ function print_sales_orders()
 	// $headers in doctext.inc
 	$aligns = array('left',	'left',	'right', 'left', 'right', 'right', 'right');
 
-	$params = array('comments' => $comments,
-					'bankaccount' => $bankaccount);
+	$params = array('comments' => $comments);
 
-	$baccount = get_bank_account($params['bankaccount']);
 	$cur = get_company_Pref('curr_default');
 
 	if ($email == 0)
@@ -73,7 +71,9 @@ function print_sales_orders()
 
 	for ($i = $from; $i <= $to; $i++)
 	{
-		$myrow = get_sales_order_header($i);
+		$myrow = get_sales_order_header($i, ST_SALESORDER);
+		$baccount = get_default_bank_account($myrow['curr_code']);
+		$params['bankaccount'] = $baccount['id'];
 		$branch = get_branch($myrow["branch_code"]);
 		if ($email == 1)
 		{
@@ -96,7 +96,7 @@ function print_sales_orders()
 			$rep->title = ($print_as_quote==1 ? _("QUOTE") : _("SALES ORDER"));
 		$rep->Header2($myrow, $branch, $myrow, $baccount, 9);
 
-		$result = get_sales_order_details($i);
+		$result = get_sales_order_details($i, ST_SALESORDER);
 		$SubTotal = 0;
 		while ($myrow2=db_fetch($result))
 		{
@@ -165,7 +165,7 @@ function print_sales_orders()
 					$myrow['contact_email'] = $myrow['master_email'];
 				$myrow['DebtorName'] = $branch['br_name'];
 			}
-			$myrow['reference'] = $i;
+			//$myrow['reference'] = $i;
 			$rep->End($email, $doc_Invoice_no . " " . $i, $myrow);
 		}
 	}

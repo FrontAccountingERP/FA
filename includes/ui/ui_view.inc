@@ -14,46 +14,34 @@ include_once($path_to_root . "/includes/types.inc");
 
 //--------------------------------------------------------------------------------------
 
-function get_supplier_trans_view_str($type, $trans_no, $label="", $icon=false)
+function get_supplier_trans_view_str($type, $trans_no, $label="", $icon=false, 
+	$class='', $id='')
 {
-	global $path_to_root;
-
-	$viewer = "";
-	if ($type == systypes::po())
-		$viewer = "view_po.php";
-	elseif ($type == 20)
-		$viewer = "view_supp_invoice.php";
-	elseif ($type == 21)
-		$viewer = "view_supp_credit.php";
-	elseif ($type == 22)
-		$viewer = "view_supp_payment.php";
-	elseif ($type == 25)
-		$viewer = "view_grn.php";
+	$viewer = "purchasing/view/";
+	if ($type == ST_PURCHORDER)
+		$viewer .= "view_po.php";
+	elseif ($type == ST_SUPPINVOICE)
+		$viewer .= "view_supp_invoice.php";
+	elseif ($type == ST_SUPPCREDIT)
+		$viewer .= "view_supp_credit.php";
+	elseif ($type == ST_SUPPAYMENT)
+		$viewer .= "view_supp_payment.php";
+	elseif ($type == ST_SUPPRECEIVE)
+		$viewer .= "view_grn.php";
 	else
 		return null;
+	$viewer .= "?trans_no=$trans_no";
 
 	if ($label == "")
 		$label = $trans_no;
 
-	if ($viewer != "")
-	{
-		$pars = access_string($label);
-		if (user_graphic_links() && $icon)
-			$pars[0] = set_icon($icon, $pars[0]);
-		$preview_str = "<a target='_blank' href='$path_to_root/purchasing/view/$viewer?trans_no=$trans_no' onclick=\"javascript:openWindow(this.href,this.target); return false;\"$pars[1]>$pars[0]</a>";
-	}
-	else
-		$preview_str = $label;
-
-	return $preview_str;
+	return viewer_link($label, $viewer, $class, $id,  $icon);
 }
 
 //--------------------------------------------------------------------------------------
 
-function get_gl_view_str($type, $trans_no, $label="", $force=false)
+function get_gl_view_str($type, $trans_no, $label="", $force=false, $class='', $id='')
 {
-	global $path_to_root;
-
 	if (!$force && !user_show_gl_info())
 		return "";
 
@@ -63,12 +51,10 @@ function get_gl_view_str($type, $trans_no, $label="", $force=false)
 		$label = _("GL");
 		$icon = ICON_GL;
 	}	
-	$pars = access_string($label);
-	if (user_graphic_links() && $icon)
-		$pars[0] = set_icon($icon, $pars[0]);
-	$gl_view = "<a target='_blank' href='$path_to_root/gl/view/gl_trans_view.php?type_id=$type&trans_no=$trans_no' onclick=\"javascript:openWindow(this.href,this.target); return false;\"$pars[1]>$pars[0]</a>";
 
-	return $gl_view;
+	return viewer_link($label, 
+		"gl/view/gl_trans_view.php?type_id=$type&trans_no=$trans_no", 
+		$class, $id, $icon);
 }
 
 //--------------------------------------------------------------------------------------
@@ -82,21 +68,21 @@ function get_gl_view_str_cell($type, $trans_no, $label="")
 
 //--------------------------------------------------------------------------------------
 
-function get_customer_trans_view_str($type, $trans_no, $label="", $icon=false)
+function get_customer_trans_view_str($type, $trans_no, $label="", $icon=false, 
+	$class='', $id='')
 {
-	global $path_to_root;
+	$viewer = "sales/view/";
 
-	$viewer = "";
-	if ($type == 10)
-		$viewer = "view_invoice.php";
-	elseif ($type == 11)
-		$viewer = "view_credit.php";
-	elseif ($type == 12)
-		$viewer = "view_receipt.php";
-	elseif ($type == 13)
-		$viewer = "view_dispatch.php";
-	elseif ($type == 30)
-		$viewer = "view_sales_order.php";
+	if ($type == ST_SALESINVOICE)
+		$viewer .= "view_invoice.php";
+	elseif ($type == ST_CUSTCREDIT)
+		$viewer .= "view_credit.php";
+	elseif ($type == ST_CUSTPAYMENT)
+		$viewer .= "view_receipt.php";
+	elseif ($type == ST_CUSTDELIVERY)
+		$viewer .= "view_dispatch.php";
+	elseif ($type == ST_SALESORDER || $type == ST_SALESQUOTE)
+		$viewer .= "view_sales_order.php";
 	else
 		return null;
 
@@ -110,173 +96,141 @@ function get_customer_trans_view_str($type, $trans_no, $label="", $icon=false)
 		$lbl = $trans;
 	if($preview_str!='') $preview_str .= ',';
 
-	if ($viewer != "")
-	{
-		$pars = access_string($lbl);
-		if (user_graphic_links() && $icon)
-			$pars[0] = set_icon($icon, $pars[0]);
-		$preview_str .= "<a target='_blank' href='$path_to_root/sales/view/$viewer?trans_no=$trans' onclick=\"javascript:openWindow(this.href,this.target); return false;\" $pars[1]>$pars[0]</a>";
-	}
-	else
-		$preview_str .= $lbl;
+	$preview_str .= viewer_link($lbl, $viewer."?trans_no=$trans&trans_type=$type", 
+		$class, $id, $icon);
+
   }
-
-	return $preview_str;
+  return $preview_str;
 }
 
 //--------------------------------------------------------------------------------------
 
-function get_banking_trans_view_str($type, $trans_no, $label="", $icon=false)
+function get_banking_trans_view_str($type, $trans_no, $label="", 
+	$icon=false, $class='', $id='')
 {
-	global $path_to_root;
+	if ($label == "")
+		$label = $trans_no;
 
-	$viewer = "";
-
-	if ($type == 4)
+	if ($type == ST_BANKTRANSFER)
 		$viewer = "bank_transfer_view.php";
-	elseif ($type == 1)
+	elseif ($type == ST_BANKPAYMENT)
 		$viewer = "gl_payment_view.php";
-	elseif ($type == 2)
+	elseif ($type == ST_BANKDEPOSIT)
 		$viewer = "gl_deposit_view.php";
-	elseif ($type == 0)
-		$viewer = "";
+	else
+		return null;
+
+	return viewer_link($label, "gl/view/$viewer?trans_no=$trans_no", 
+		$class, $id,  $icon);
+}
+
+//--------------------------------------------------------------------------------------
+
+function get_inventory_trans_view_str($type, $trans_no, $label="", 
+	$icon=false, $class='', $id='')
+{
+	$viewer = "inventory/view/";
+
+	if ($type == ST_INVADJUST)
+		$viewer .= "view_adjustment.php";
+	elseif ($type == ST_LOCTRANSFER)
+		$viewer .= "view_transfer.php";
+	else
+		return null;
+	$viewer .= "?trans_no=$trans_no";
+
+	if ($label == "")
+		$label = $trans_no;
+
+	return viewer_link($label, $viewer, $class, $id,  $icon);
+}
+
+//--------------------------------------------------------------------------------------
+
+function get_manufacturing_trans_view_str($type, $trans_no, $label="", 
+	$icon=false, $class='', $id='')
+{
+	$viewer = "manufacturing/view/";
+
+	if ($type == ST_MANUISSUE)
+		$viewer .= "wo_issue_view.php";
+	elseif ($type == ST_MANURECEIVE)
+		$viewer .= "wo_production_view.php";
+	elseif ($type == ST_WORKORDER)
+		$viewer .= "work_order_view.php";
+	else
+		return null;
+
+	$viewer .= "?trans_no=$trans_no";
+
+	if ($label == "")
+		$label = $trans_no;
+
+	return viewer_link($label, $viewer, $class, $id,  $icon);
+}
+
+//--------------------------------------------------------------------------------------
+
+function get_dimensions_trans_view_str($type, $trans_no, $label="", $icon=false, 
+	$class='', $id='')
+{
+	if ($type == ST_DIMENSION)
+		$viewer = "dimensions/view/view_dimension.php?trans_no=$trans_no";
 	else
 		return null;
 
 	if ($label == "")
 		$label = $trans_no;
 
-	if ($viewer != "")
-	{
-		$pars = access_string($label);
-		if (user_graphic_links() && $icon)
-			$pars[0] = set_icon($icon, $pars[0]);
-		$preview_str = "<a target='_blank' href='$path_to_root/gl/view/$viewer?trans_no=$trans_no' onclick=\"javascript:openWindow(this.href,this.target); return false;\"$pars[1]>$pars[0]</a>";
-	}
-	else
-		$preview_str = $label;
-
-	return $preview_str;
+	return viewer_link($label, $viewer, $class, $id,  $icon);
 }
-
-//--------------------------------------------------------------------------------------
-
-function get_inventory_trans_view_str($type, $trans_no, $label="", $icon=false)
+/*
+	Journal entry or cost update postings link
+*/
+function get_journal_trans_view_str($type, $trans_no, $label="", $icon=false, 
+	$class='', $id='')
 {
-	global $path_to_root;
-
-	$viewer = "";
-
-	if ($type == systypes::inventory_adjustment())
-		$viewer = "view_adjustment.php";
-	elseif ($type == systypes::location_transfer())
-		$viewer = "view_transfer.php";
+	if ($type == ST_JOURNAL || $type == ST_COSTUPDATE)
+		$viewer = "gl/view/gl_trans_view.php?type_id=$type&trans_no=$trans_no";
 	else
 		return null;
 
 	if ($label == "")
 		$label = $trans_no;
 
-	if ($viewer != "")
-	{
-		$pars = access_string($label);
-		if (user_graphic_links() && $icon)
-			$pars[0] = set_icon($icon, $pars[0]);
-		$preview_str = "<a target='_blank' href='$path_to_root/inventory/view/$viewer?trans_no=$trans_no' onclick=\"javascript:openWindow(this.href,this.target); return false;\"$pars[1]>$pars[0]</a>";
-	}
-	else
-		$preview_str = $label;
-
-	return $preview_str;
+	return viewer_link($label, $viewer, $class, $id,  $icon);
 }
 
 //--------------------------------------------------------------------------------------
 
-function get_manufacturing_trans_view_str($type, $trans_no, $label="", $icon=false)
+function get_trans_view_str($type, $trans_no, $label="", $icon=false, 
+	$class='', $id='')
 {
-	global $path_to_root;
-
-	$viewer = "";
-
-	if ($type == 28)
-		$viewer = "wo_issue_view.php";
-	elseif ($type == 29)
-		$viewer = "wo_production_view.php";
-	elseif ($type == systypes::work_order())
-		$viewer = "work_order_view.php";
-	else
-		return null;
-
-	if ($label == "")
-		$label = $trans_no;
-
-	if ($viewer != "")
-	{
-		$pars = access_string($label);
-		if (user_graphic_links() && $icon)
-			$pars[0] = set_icon($icon, $pars[0]);
-		$preview_str = "<a target='_blank' href='$path_to_root/manufacturing/view/$viewer?trans_no=$trans_no' onclick=\"javascript:openWindow(this.href,this.target); return false;\"$pars[1]>$pars[0]</a>";
-	}
-	else
-		$preview_str = $label;
-
-	return $preview_str;
-}
-
-//--------------------------------------------------------------------------------------
-
-function get_dimensions_trans_view_str($type, $trans_no, $label="", $icon=false)
-{
-	global $path_to_root;
-
-	$viewer = "";
-
-	if ($type == 40)
-		$viewer = "view_dimension.php";
-	else
-		return null;
-
-	if ($label == "")
-		$label = $trans_no;
-
-	if ($viewer != "")
-	{
-		$pars = access_string($label);
-		if (user_graphic_links() && $icon)
-			$pars[0] = set_icon($icon, $pars[0]);
-		$preview_str = "<a target='_blank' href='$path_to_root/dimensions/view/$viewer?trans_no=$trans_no' onclick=\"javascript:openWindow(this.href,this.target); return false;\"$pars[1]>$pars[0]</a>";
-	}
-	else
-		$preview_str = $label;
-
-	return $preview_str;
-}
-
-//--------------------------------------------------------------------------------------
-
-function get_trans_view_str($type, $trans_no, $label="", $icon=false)
-{
-	$view_str = get_customer_trans_view_str($type, $trans_no, $label, $icon);
+	$view_str = get_customer_trans_view_str($type, $trans_no, $label, $icon, $class, $id);
 	if ($view_str != null)
 		return $view_str;
 
-	$view_str = get_supplier_trans_view_str($type, $trans_no, $label, $icon);
+	$view_str = get_supplier_trans_view_str($type, $trans_no, $label, $icon, $class, $id);
 	if ($view_str != null)
 		return $view_str;
 
-	$view_str = get_banking_trans_view_str($type, $trans_no, $label, $icon);
+	$view_str = get_banking_trans_view_str($type, $trans_no, $label, $icon, $class, $id);
 	if ($view_str != null)
 		return $view_str;
 
-	$view_str = get_inventory_trans_view_str($type, $trans_no, $label, $icon);
+	$view_str = get_inventory_trans_view_str($type, $trans_no, $label, $icon, $class, $id);
 	if ($view_str != null)
 		return $view_str;
 
-	$view_str = get_manufacturing_trans_view_str($type, $trans_no, $label, $icon);
+	$view_str = get_manufacturing_trans_view_str($type, $trans_no, $label, $icon, $class, $id);
 	if ($view_str != null)
 		return $view_str;
 
-	$view_str = get_dimensions_trans_view_str($type, $trans_no, $label, $icon);
+	$view_str = get_dimensions_trans_view_str($type, $trans_no, $label, $icon, $class, $id);
+	if ($view_str != null)
+		return $view_str;
+
+	$view_str = get_journal_trans_view_str($type, $trans_no, $label, $icon, $class, $id);
 	if ($view_str != null)
 		return $view_str;
 
@@ -303,9 +257,12 @@ function exchange_rate_display($from_currency, $to_currency, $date_, $edit_rate=
 		if ($date_ == Today()) {
 			$rate = get_date_exchange_rate($currency, $date_);
 			if (!$rate) {
-				$rate = get_ecb_rate($currency);
-				if ($rate) 
-					add_exchange_rate($currency, $date_, $rate, $rate);
+				$row = get_currency($currency);
+				if ($row['auto_update']) {
+					$rate = retrieve_exrate($currency, $date_);
+					if ($rate) 
+						add_exchange_rate($currency, $date_, $rate, $rate);
+				}
 			}
 		}
 		if (!$rate)
@@ -401,6 +358,7 @@ function view_stock_status_cell($stock_id, $description=null)
 
 function display_debit_or_credit_cells($value)
 {
+	$value = round2($value, user_price_dec());
 	if ($value >= 0)
 	{
 		amount_cell($value);
@@ -482,7 +440,7 @@ function display_footer_exit()
 
 function display_allocations($alloc_result, $total)
 {
-	global $table_style;
+	global $table_style, $systypes_array;
 
 	if (!$alloc_result || db_num_rows($alloc_result) == 0)
 		return;
@@ -501,7 +459,7 @@ function display_allocations($alloc_result, $total)
 
     	alt_table_row_color($k);
 
-    	label_cell(systypes::name($alloc_row['type']));
+    	label_cell($systypes_array[$alloc_row['type']]);
     	label_cell(get_trans_view_str($alloc_row['type'],$alloc_row['trans_no']));
     	label_cell(sql2date($alloc_row['tran_date']));
     	$alloc_row['Total'] = round2($alloc_row['Total'], user_price_dec());
@@ -533,11 +491,11 @@ function display_allocations_from($person_type, $person_id, $type, $type_no, $to
 {
 	switch ($person_type)
 	{
-		case payment_person_types::customer() :
+		case PT_CUSTOMER :
 			$alloc_result = get_allocatable_to_cust_transactions($person_id, $type_no, $type);
 			display_allocations($alloc_result, $total);
 			return;
-		case payment_person_types::supplier() :
+		case PT_SUPPLIER :
 			$alloc_result = get_allocatable_to_supp_transactions($person_id, $type_no, $type);
 			display_allocations($alloc_result, $total);
 			return;
@@ -576,7 +534,7 @@ function display_quick_entries(&$cart, $id, $base, $type, $descr='')
 				case "t": // post taxes calculated on base amount
 				case "t+": // ditto & increase base amount
 				case "t-": // ditto & reduce base amount
-					if (substr($qe_line['action'],0,1) != 'T') 
+					if (substr($row['action'],0,1) != 'T') 
 						$totrate += get_tax_type_default_rate($row['dest_id']);
 			}
 		}
@@ -668,92 +626,6 @@ function display_quick_entries(&$cart, $id, $base, $type, $descr='')
 					$qe_line['dimension2_id'], $part, $qe['description']);
 			}
 		}
-/*		
-		while ($qe_line = db_fetch($qe_lines))
-		{
-			switch (strtolower($qe_line['action'])) {
-				case "=": // post current base amount to GL account
-					$part = $base;
-					break;
-				case "a": // post amount to GL account and reduce base
-					$part = $qe_line['amount'];
-					break;
-				case "a+": // post amount to GL account and increase base
-					$part = $qe_line['amount']; $base += $part;
-					break;
-				case "a-": // post amount to GL account and reduce base
-					$part = $qe_line['amount']; $base -= $part;
-					break;
-				case "%":	// store acc*amount% to GL account
-					$part = round2($base * $qe_line['amount'] / 100, user_price_dec());
-					break;
-				case "%+":	// ditto & increase base amount
-					$part = round2($base * $qe_line['amount'] / 100, user_price_dec());
-					$base += $part;
-					break;
-				case "%-":	// ditto & reduce base amount
-					$part = round2($base * $qe_line['amount'] / 100, user_price_dec());
-					$base -= $part;
-					break;
-				case "t": // post taxes calculated on base amount
-				case "t+": // ditto & increase base amount
-				case "t-": // ditto & reduce base amount
-					//$taxes = get_taxes_for_item_tax($qe_line['dest_id']);
-					if ($type == QE_SUPPINV)
-						$qe_line['dest_id'] = $cart->tax_group_id;
-					$taxes = array();
-					$res = get_tax_group_items($qe_line['dest_id']);
-					while ($row = db_fetch($res))
-						$taxes[] = $row;
-					$tax_total = 0;
-					$totrate = 0;
-					// find total tax 
-					if (substr($qe_line['action'],0,1) != 'T') {
-						foreach ($taxes as $index => $item_tax) {
-							$totrate += $item_tax['rate'];
-						}
-					}
-					$taxbase = $base/($totrate+100);
-					foreach ($taxes as $index => $item_tax) {
-						$tax = round2($taxbase * $item_tax['rate'],  user_price_dec());
-						$gl_code = ($type == QE_DEPOSIT || ($type == QE_JOURNAL && $base < 0)) 
-							? $item_tax['sales_gl_code'] : $item_tax['purchasing_gl_code'];
-						$tax_total += $tax;
-						if ($tax==0) continue;
-						if (!is_tax_gl_unique($gl_code)) {
-		   					display_error(_("Cannot post to GL account used by more than one tax type."));
-							break 3;
-						}
-						if ($type != QE_SUPPINV)
-							$cart->add_gl_item($gl_code, 
-								$qe_line['dimension_id'], $qe_line['dimension2_id'], 
-								$tax, $qe['description']);
-						else 
-						{
-							$acc_name = get_gl_account_name($gl_code);
-							$cart->add_gl_codes_to_trans($gl_code, 
-								$acc_name, $qe_line['dimension_id'], 
-								$qe_line['dimension2_id'], $tax, $qe['description']);
-						}
-					}
-					if (strpos($qe_line['action'], '+'))
-						$base += $tax_total;
-					elseif (strpos($qe_line['action'], '-'))
-						$base -= $tax_total;
-					continue 2;
-			}
-			if ($type != QE_SUPPINV)
-				$cart->add_gl_item($qe_line['dest_id'], $qe_line['dimension_id'],
-					$qe_line['dimension2_id'], $part, $qe['description']);
-			else 
-			{
-				$acc_name = get_gl_account_name($qe_line['dest_id']);
-				$cart->add_gl_codes_to_trans($qe_line['dest_id'], 
-					$acc_name, $qe_line['dimension_id'], 
-					$qe_line['dimension2_id'], $part, $qe['description']);
-			}
-		}
-*/		
 	}	
 	return $bank_amount;
 }
@@ -781,11 +653,23 @@ function set_focus($name, $form_no=0) {
 }
 //
 //	Set default focus on first field $name if not set yet
-//
-function default_focus($name, $form_no=0) {
+//	Returns unique name if $name=null
+//	
+function default_focus($name=null, $form_no=0) {
+	static $next; 
+	if ($name==null) 
+		$name = uniqid('_el',true);
     if (!isset($_POST['_focus'])) {
 	  set_focus($name);
     }
+	return $name;
+}
+/*
+	Reset focus to next control element (e.g. link).
+*/
+function reset_focus()
+{
+	unset($_POST['_focus']);
 }
 
 function get_js_png_fix()
@@ -824,7 +708,7 @@ function get_js_date_picker()
 
 	$how = user_date_format();				// 0 = us/ca, 1 = eu, au, nz, 2 = jp, sw
 	$sep = $dateseps[user_date_sep()];		// date separator
-	$wstart = (($date_system == 1 || $date_system == 2) ? 6 : ($how == 0 ? 0 : 1));			// weekstart (sun = 0, mon = 1)
+	$wstart = (($date_system == 1 || $date_system == 2 || $date_system == 3) ? 6 : ($how == 0 ? 0 : 1));	// weekstart (sun = 0, mon = 1)
 	$months = array(_("January"),_("February"),_("March"),_("April"),_("May"),_("June"),_("July"),_("August"),_("September"),_("October"),_("November"),_("December"));
 	$wdays = array(_("Su"),_("Mo"),_("Tu"),_("We"),_("Th"),_("Fr"),_("Sa"));
 	$wno = _("W"); // week no
@@ -1042,6 +926,8 @@ function CC() {
 	$js .= "
       dateField.value = dateString;
 	  setFocus(dateField.name);
+	if(dateField.getAttribute('aspect')=='cdate')
+      setElementProperty('color', (dateField.value==user.date ? 'black':'red'), dateField);
 	  if (dateField.className=='searchbox')
 	  	dateField.onblur();
       hide();
@@ -1119,7 +1005,7 @@ function CC() {
           if (dayOfMonth == selectedDay && currentYear == selectedYear && currentMonth == selectedMonth) {
             css_class = 'current';
 ";
-	if ($date_system == 1 || $date_system == 2)
+	if ($date_system == 1 || $date_system == 2 || $date_system == 3)
 		$js .= "
           } else if (dayOfWeek == 5) {
 ";

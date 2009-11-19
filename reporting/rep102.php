@@ -9,7 +9,7 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security = 2;
+$page_security = 'SA_CUSTPAYMREP';
 // ----------------------------------------------------------------
 // $ Revision:	2.0 $
 // Creator:	Joe Hunt
@@ -37,8 +37,8 @@ function get_invoices($customer_id, $to)
     $value = "(".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + "
 		.TB_PREF."debtor_trans.ov_freight + ".TB_PREF."debtor_trans.ov_freight_tax + "
 		.TB_PREF."debtor_trans.ov_discount)";
-	$due = "IF (".TB_PREF."debtor_trans.type=10,".TB_PREF."debtor_trans.due_date,".TB_PREF."debtor_trans.tran_date)";
-	$sql = "SELECT ".TB_PREF."sys_types.type_name, ".TB_PREF."debtor_trans.type, ".TB_PREF."debtor_trans.reference,
+	$due = "IF (".TB_PREF."debtor_trans.type=".ST_SALESINVOICE.",".TB_PREF."debtor_trans.due_date,".TB_PREF."debtor_trans.tran_date)";
+	$sql = "SELECT ".TB_PREF."debtor_trans.type, ".TB_PREF."debtor_trans.reference,
 		".TB_PREF."debtor_trans.tran_date,
 		$value as Balance,
 		IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= 0,$value,0) AS Due,
@@ -47,11 +47,9 @@ function get_invoices($customer_id, $to)
 
 		FROM ".TB_PREF."debtors_master,
 			".TB_PREF."payment_terms,
-			".TB_PREF."debtor_trans,
-			".TB_PREF."sys_types
+			".TB_PREF."debtor_trans
 
-		WHERE ".TB_PREF."sys_types.type_id = ".TB_PREF."debtor_trans.type
-		    AND ".TB_PREF."debtor_trans.type <> 13
+		WHERE ".TB_PREF."debtor_trans.type <> ".ST_CUSTDELIVERY."
 			AND ".TB_PREF."debtors_master.payment_terms = ".TB_PREF."payment_terms.terms_indicator
 			AND ".TB_PREF."debtors_master.debtor_no = ".TB_PREF."debtor_trans.debtor_no
 			AND ".TB_PREF."debtor_trans.debtor_no = $customer_id 
@@ -66,7 +64,7 @@ function get_invoices($customer_id, $to)
 
 function print_aged_customer_analysis()
 {
-    global $comp_path, $path_to_root;
+    global $comp_path, $path_to_root, $systypes_array;
 
     $to = $_POST['PARAM_0'];
     $fromcust = $_POST['PARAM_1'];
@@ -85,7 +83,7 @@ function print_aged_customer_analysis()
 		$pg = new graph();
 	}
 
-	if ($fromcust == reserved_words::get_all_numeric())
+	if ($fromcust == ALL_NUMERIC)
 		$from = _('All');
 	else
 		$from = get_customer_name($fromcust);
@@ -95,7 +93,7 @@ function print_aged_customer_analysis()
 		$summary = _('Summary Only');
 	else
 		$summary = _('Detailed Report');
-	if ($currency == reserved_words::get_all())
+	if ($currency == ALL_TEXT)
 	{
 		$convert = true;
 		$currency = _('Balances in Home Currency');
@@ -131,10 +129,10 @@ function print_aged_customer_analysis()
 
 	$total = array(0,0,0,0, 0);
 
-	$sql = "SELECT debtor_no, name, curr_code FROM ".TB_PREF."debtors_master ";
-	if ($fromcust != reserved_words::get_all_numeric())
-		$sql .= "WHERE debtor_no=".db_escape($fromcust)." ";
-	$sql .= "ORDER BY name";
+	$sql = "SELECT debtor_no, name, curr_code FROM ".TB_PREF."debtors_master";
+	if ($fromcust != ALL_NUMERIC)
+		$sql .= " WHERE debtor_no=".db_escape($fromcust);
+	$sql .= " ORDER BY name";
 	$result = db_query($sql, "The customers could not be retrieved");
 
 	while ($myrow=db_fetch($result))
@@ -176,10 +174,10 @@ function print_aged_customer_analysis()
 			while ($trans=db_fetch($res))
 			{
 				$rep->NewLine(1, 2);
-        		$rep->TextCol(0, 1,	$trans['type_name'], -2);
+        		$rep->TextCol(0, 1, $systypes_array[$trans['type']], -2);
 				$rep->TextCol(1, 2,	$trans['reference'], -2);
 				$rep->DateCol(2, 3, $trans['tran_date'], true, -2);
-				if ($trans['type'] == 11 || $trans['type'] == 12 || $trans['type'] == 2)
+				if ($trans['type'] == ST_CUSTCREDIT || $trans['type'] == ST_CUSTPAYMENT || $trans['type'] == ST_BANKDEPOSIT)
 				{
 					$trans['Balance'] *= -1;
 					$trans['Due'] *= -1;

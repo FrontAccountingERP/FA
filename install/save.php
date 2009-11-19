@@ -1,13 +1,10 @@
 <?php
 /**********************************************************************
-    Copyright (C) FrontAccounting, LLC.
-	Released under the terms of the GNU General Public License, GPL, 
-	as published by the Free Software Foundation, either version 3 
-	of the License, or (at your option) any later version.
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
-    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+	This installer is based on code from the	
+ 	Website Baker Project <http://www.websitebaker.org/>
+ 	Copyright (C) 2004-2007, Ryan Djurovich.
+ 	The code is released under GPLv3
+ 	modified by FrontAcounting, LLC.
 ***********************************************************************/
 error_reporting(E_ALL);
 ini_set("display_errors", "On");
@@ -37,42 +34,15 @@ function display_error($message)
 		if(isset($_POST['company_name']))
 		{
 			$_SESSION['ba_url'] = $_POST['ba_url'];
-			if(!isset($_POST['operating_system']))
-			{
-				$_SESSION['operating_system'] = 'linux';
-			}
-			else
-			{
-				$_SESSION['operating_system'] = $_POST['operating_system'];
-			}
-			if(!isset($_POST['world_writeable']))
-			{
-				$_SESSION['world_writeable'] = false;
-			}
-			else
-			{
-				$_SESSION['world_writeable'] = true;
-			}
+			$_SESSION['operating_system'] = isset($_POST['operating_system']);
+			$_SESSION['world_writeable'] = isset($_POST['world_writeable']);
 			$_SESSION['database_host'] = $_POST['database_host'];
 			$_SESSION['database_username'] = $_POST['database_username'];
 			$_SESSION['database_password'] = $_POST['database_password'];
 			$_SESSION['database_name'] = $_POST['database_name'];
-			if(!isset($_POST['table_prefix']))
-			{
-				$_SESSION['table_prefix'] = false;
-			}
-			else
-			{
-				$_SESSION['table_prefix'] = true;
-			}
-			if(!isset($_POST['install_tables']))
-			{
-				$_SESSION['install_tables'] = false;
-			}
-			else
-			{
-				$_SESSION['install_tables'] = true;
-			}
+			$_SESSION['demo_data'] = isset($_POST['demo_data']);
+			$_SESSION['table_prefix'] = isset($_POST['table_prefix']);
+			$_SESSION['install_tables'] = isset($_POST['install_tables']);
 			$_SESSION['company_name'] = $_POST['company_name'];
 			$_SESSION['admin_email'] = $_POST['admin_email'];
 			$_SESSION['admin_password'] = $_POST['admin_password'];
@@ -281,7 +251,7 @@ else
 // End website company name
 
 // Check if the user has entered a correct path
-if (!file_exists($path_to_root.'/sql/en_US-demo.sql'))
+if (!file_exists($path_to_root.'/sql/en_US-'.(isset($_POST['demo_data']) ? 'demo':'new').'.sql'))
 {
 	display_error('It appears the Absolute path that you entered is incorrect');
 }
@@ -325,9 +295,33 @@ if ($admin_password != $admin_repassword)
 }
 // End admin user details code
 
+if (!file_exists($path_to_root . "/config.php")) {
+	copy($path_to_root. "/config.default.php", $path_to_root. "/config.php");
+}
+
 include_once($path_to_root . "/includes/db/connect_db.inc");
 include_once($path_to_root . "/admin/db/maintenance_db.inc");
-include_once($path_to_root . "/config_db.php");
+
+if (!file_exists($path_to_root . "/installed_extensions.php")) {
+	$next_extension_id = 1;
+	write_extensions(array());
+	write_extensions(array(),0);
+}
+if (!file_exists($path_to_root . "/lang/installed_languages.inc")) {
+	$installed_languages = array (
+		0 => array ('code' => 'en_GB', 'name' => 'English', 'encoding' => 'iso-8859-1'));
+	$dflt_lang = 'en_GB';
+	write_lang();
+}
+
+if (file_exists($path_to_root . "/config_db.php"))
+	include_once($path_to_root . "/config_db.php");
+ else
+{
+	$def_coy = 0;
+	$tb_pref_counter = 0;
+	$db_connections = array ();
+}
 
 $id = count($db_connections);
 if ($table_prefix != "" && $id > 0)
@@ -363,7 +357,7 @@ if (!$db)
 				$result = mysql_select_db($database_name, $db);
 		}
 		if($result) {
-			$import_filename = $path_to_root."/sql/en_US-demo.sql";
+			$import_filename = $path_to_root.'/sql/en_US-'.(isset($_POST['demo_data']) ? 'demo':'new').'.sql';
 			db_import($import_filename, $db_connections[$id]);
 		}
 	}
@@ -390,7 +384,6 @@ if (!$db)
 session_unset();
 session_destroy();
 $_SESSION = array();
-
 header("Location: ".$path_to_root."/index.php");
 exit();
 

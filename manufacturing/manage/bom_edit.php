@@ -9,11 +9,11 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security = 9;
-$path_to_root="../..";
+$page_security = 'SA_BOM';
+$path_to_root = "../..";
 include_once($path_to_root . "/includes/session.inc");
 
-page(_("Bill Of Materials"));
+page(_($help_context = "Bill Of Materials"));
 
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");
@@ -213,7 +213,7 @@ if ($Mode == 'RESET')
 
 //--------------------------------------------------------------------------------------------------
 
-start_form(false, true);
+start_form();
 
 start_form(false, true);
 start_table("class='tablestyle_noborder'");
@@ -235,10 +235,8 @@ if (get_post('stock_id') != '')
 
 start_form();
 	display_bom_items($selected_parent);
-//end_form();
 	//--------------------------------------------------------------------------------------
 	echo '<br>';
-//	start_form(false, true);
 
 	start_table($table_style2);
 
@@ -268,7 +266,7 @@ start_form();
 		label_cell(_("Component:"));
 
 		echo "<td>";
-		stock_component_items_list('component', $selected_parent, null, false, true);
+		echo stock_component_items_list('component', $selected_parent, null, false, true);
 		if (get_post('_component_update')) 
 		{
 			$Ajax->activate('quantity');
@@ -285,7 +283,7 @@ start_form();
 	qty_row(_("Quantity:"), 'quantity', null, null, null, $dec);
 
 	end_table(1);
-	submit_add_or_update_center($selected_id == -1, '', true);
+	submit_add_or_update_center($selected_id == -1, '', 'both');
 	end_form();
 }
 // ----------------------------------------------------------------------------------

@@ -9,8 +9,6 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-/* $Revision$ */
-$page_security = 8;
 //include_once($path_to_root . "reporting/includes/class.pdf.inc");
 include_once(dirname(__FILE__)."/class.pdf.inc");
 include_once(dirname(__FILE__)."/printer_class.inc");
@@ -52,6 +50,13 @@ class FrontReport extends Cpdf
 
 	function FrontReport($title, $filename, $size = 'A4', $fontsize = 9)
 	{
+		global $page_security;
+		if (!$_SESSION["wa_current_user"]->can_access_page($page_security))
+		{
+			display_error(_("The security settings on your account do not permit you to print this report"));
+			end_page();
+			exit;
+		}
 		switch ($size)
 		{
 			default:
@@ -204,6 +209,8 @@ class FrontReport extends Cpdf
 		$str = _("Print Out Date") . ':';
 		$this->Text($this->leftMargin, $str, $this->titleCol);
 		$str = Today() . '   ' . Now();
+		if ($this->company['time_zone'])
+			$str .= ' ' . date('O') . ' GMT';
 		$this->Text($this->titleCol, $str, $this->companyCol);
 		$this->Text($this->companyCol, $this->host);
 
@@ -259,13 +266,13 @@ class FrontReport extends Cpdf
 
 	function Header2($myrow, $branch, $sales_order, $bankaccount, $doctype)
 	{
-		global $comp_path, $path_to_root, $print_as_quote, $print_invoice_no;
+		global $comp_path, $path_to_root, $print_as_quote, $print_invoice_no, $packing_slip;
 
 		$this->pageNumber++;
 		if ($this->pageNumber > 1)
 			$this->newPage();
 		$header2type = true;
-		if ($this->currency != $myrow['curr_code'])
+		if (isset($myrow['curr_code']) && $this->currency != $myrow['curr_code'])
 		{
 			include($path_to_root . "/reporting/includes/doctext2.inc");
 		}
@@ -352,7 +359,7 @@ class FrontReport extends Cpdf
 			do
 			{
 				$l = $this->TextWrap($c, $this->row , $width, $l, $align);
-				$this->NewLine();
+				$this->row -= $this->lineHeight;
 			}
 			while ($l != '');
 		}
@@ -425,7 +432,7 @@ class FrontReport extends Cpdf
 				require_once($path_to_root . "/reporting/includes/class.mail.inc");
     			$mail = new email($this->company['coy_name'], $this->company['email']);
 				if (!isset($myrow['email']) || $myrow['email'] == '') 
-					$myrow['email'] = $myrow['contact_email'];
+					$myrow['email'] = isset($myrow['contact_email']) ? $myrow['contact_email'] : '';
     			$to = $myrow['DebtorName'] . " <" . $myrow['email'] . ">";
     			$msg = $doc_Dear_Sirs . " " . $myrow['DebtorName'] . ",\n\n" . $doc_AttachedFile . " " . $subject .
     				"\n\n";
@@ -482,6 +489,7 @@ class FrontReport extends Cpdf
         	        header('Expires: 0');
             	    header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
                 	header('Pragma: public');
+
 	                $this->Stream();
 					}
 				} else { // send report to network printer

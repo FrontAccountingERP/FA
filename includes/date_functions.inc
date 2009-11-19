@@ -13,11 +13,13 @@
 date validation and parsing functions
 
 These functions refer to the global variable defining the date format
-The date format is defined in config.php called DefaultDateFormat
+The date format is defined in config.php called dateformats
 this can be a string either "d/m/Y" for UK/Australia/New Zealand dates or
-"m/d/Y" for US/Canada format dates
+"m/d/Y" for US/Canada format dates depending on setting in preferences.
 
 */
+if(function_exists("date_default_timezone_set") && function_exists("date_default_timezone_get"))
+	@date_default_timezone_set(@date_default_timezone_get());
 
 function __date($year, $month, $day)
 {
@@ -140,6 +142,19 @@ function Now()
 		return date("h:i a");
 	else
 		return date("H:i");
+}
+//
+//	Retrieve and optionaly set default date for new document.
+//
+function new_doc_date($date=null)
+{
+	if (isset($date))
+		$_SESSION['_default_date'] = $date;
+
+	if (!isset($_SESSION['_default_date']) || !sticky_doc_date())
+		$_SESSION['_default_date'] = Today();
+
+	return $_SESSION['_default_date'];
 }
 
 function is_date_in_fiscalyear($date, $convert=false)
@@ -347,9 +362,11 @@ and converts to a yyyy/mm/dd format */
 			$year = substr($date_,0,4);
 		}
 	}
+	else
+		$year = $month = $day = 0;
 
 //to modify assumption in 2030
-	if ($date_system == 0)
+	if ($date_system == 0 || $date_system == 3)
 	{
 		if ((int)$year < 60)
 		{
@@ -403,7 +420,7 @@ function date1_greater_date2 ($date1, $date2)
 }
 
 
-function date_diff ($date1, $date2, $period) 
+function date_diff2 ($date1, $date2, $period) 
 {
 
 /* expects dates in the format specified in $DefaultDateFormat - period can be one of 'd','w','y','m'

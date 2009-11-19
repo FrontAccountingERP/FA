@@ -9,11 +9,11 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security = 10;
+$page_security = 'SA_PAYTERMS';
 $path_to_root="..";
 include($path_to_root . "/includes/session.inc");
 
-page(_("Payment Terms"));
+page(_($help_context = "Payment Terms"));
 
 include($path_to_root . "/includes/ui.inc");
 
@@ -135,15 +135,20 @@ if ($Mode == 'Delete')
 if ($Mode == 'RESET')
 {
 	$selected_id = -1;
+	$sav = get_post('show_inactive');
 	unset($_POST);
+	$_POST['show_inactive'] = $sav;
 }
 //-------------------------------------------------------------------------------------------------
 
 $sql = "SELECT * FROM ".TB_PREF."payment_terms";
+if (!check_value('show_inactive')) $sql .= " WHERE !inactive";
 $result = db_query($sql,"could not get payment terms");
+
 start_form();
 start_table($table_style);
 $th = array(_("Description"), _("Following Month On"), _("Due After (Days)"), "", "");
+inactive_control_column($th);
 table_header($th);
 
 $k = 0; //row colour counter
@@ -172,6 +177,7 @@ while ($myrow = db_fetch($result))
     label_cell($myrow["terms"]);
     label_cell($full_text);
     label_cell($after_text);
+	inactive_control_cell($myrow["terms_indicator"], $myrow["inactive"], 'payment_terms', "terms_indicator");
  	edit_button_cell("Edit".$myrow["terms_indicator"], _("Edit"));
  	delete_button_cell("Delete".$myrow["terms_indicator"], _("Delete"));
     end_row();
@@ -179,13 +185,10 @@ while ($myrow = db_fetch($result))
 
 } //END WHILE LIST LOOP
 
-end_table();
-end_form();
-echo '<br>';
+inactive_control_row($th);
+end_table(1);
 
 //-------------------------------------------------------------------------------------------------
-
-start_form();
 
 start_table($table_style2);
 
@@ -203,6 +206,7 @@ if ($selected_id != -1)
 		$_POST['terms']  = $myrow["terms"];
 		$days_before_due  = $myrow["days_before_due"];
 		$day_in_following_month  = $myrow["day_in_following_month"];
+		unset($_POST['DayNumber']);
 	}
 	hidden('selected_id', $selected_id);
 }
@@ -222,7 +226,7 @@ text_row_ex(_("Days (Or Day In Following Month):"), 'DayNumber', 3);
 
 end_table(1);
 
-submit_add_or_update_center($selected_id == -1, '', true);
+submit_add_or_update_center($selected_id == -1, '', 'both');
 
 end_form();
 

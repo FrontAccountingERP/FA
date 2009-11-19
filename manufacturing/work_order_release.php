@@ -9,8 +9,8 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security = 10;
-$path_to_root="..";
+$page_security = 'SA_MANUFRELEASE';
+$path_to_root = "..";
 include_once($path_to_root . "/includes/session.inc");
 
 include_once($path_to_root . "/includes/date_functions.inc");
@@ -24,7 +24,7 @@ if ($use_popup_windows)
 	$js .= get_js_open_window(800, 500);
 if ($use_date_picker)
 	$js .= get_js_date_picker();
-page(_("Work Order Release to Manufacturing"), false, false, "", $js);
+page(_($help_context = "Work Order Release to Manufacturing"), false, false, "", $js);
 
 if (isset($_GET["trans_no"]))
 {
@@ -69,7 +69,7 @@ if (isset($_POST['release']))
 
 	display_notification(_("The work order has been released to manufacturing."));
 
-    display_note(get_trans_view_str(systypes::work_order(), $selected_id, _("View this Work Order")));
+    display_note(get_trans_view_str(ST_WORKORDER, $selected_id, _("View this Work Order")));
 
 	hyperlink_no_params("search_work_orders.php", _("Select another &work order"));
 
@@ -100,7 +100,7 @@ if (can_process($myrow))
 
     end_table(1);
 
-    submit_center('release', _("Release Work Order"), true, '', true);
+    submit_center('release', _("Release Work Order"), true, '', 'default');
 
     hidden('selected_id', $selected_id);
     hidden('stock_id', $myrow['stock_id']);

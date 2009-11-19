@@ -9,11 +9,11 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security = 3;
-$path_to_root="../..";
+$page_security = 'SA_CUSTOMER';
+$path_to_root = "../..";
 
 include_once($path_to_root . "/includes/session.inc");
-page(_("Customers")); 
+page(_($help_context = "Customers"), @$_REQUEST['popup']); 
 
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/banking.inc");
@@ -32,6 +32,13 @@ function can_process()
 	{
 		display_error(_("The customer name cannot be empty."));
 		set_focus('CustName');
+		return false;
+	} 
+
+	if (strlen($_POST['cust_ref']) == 0) 
+	{
+		display_error(_("The customer short name cannot be empty."));
+		set_focus('cust_ref');
 		return false;
 	} 
 	
@@ -72,6 +79,7 @@ function handle_submit()
 	{
 
 		$sql = "UPDATE ".TB_PREF."debtors_master SET name=" . db_escape($_POST['CustName']) . ", 
+			debtor_ref=" . db_escape($_POST['cust_ref']) . ",
 			address=".db_escape($_POST['address']) . ", 
 			tax_id=".db_escape($_POST['tax_id']) . ", 
 			curr_code=".db_escape($_POST['curr_code']) . ", 
@@ -83,10 +91,16 @@ function handle_submit()
             discount=" . input_num('discount') / 100 . ", 
             pymt_discount=" . input_num('pymt_discount') / 100 . ", 
             credit_limit=" . input_num('credit_limit') . ", 
-            sales_type = ".db_escape($_POST['sales_type']) . " 
+            sales_type = ".db_escape($_POST['sales_type']) . ", 
+            notes=".db_escape($_POST['notes']) . "
             WHERE debtor_no = ".db_escape($_POST['customer_id']);
 
 		db_query($sql,"The customer could not be updated");
+
+		update_record_status($_POST['customer_id'], $_POST['inactive'],
+			'debtors_master', 'debtor_no');
+
+		$Ajax->activate('customer_id'); // in case of status change
 		display_notification(_("Customer has been updated."));
 	} 
 	else 
@@ -94,14 +108,15 @@ function handle_submit()
 
 		begin_transaction();
 
-		$sql = "INSERT INTO ".TB_PREF."debtors_master (name, address, tax_id, email, dimension_id, dimension2_id,  
+		$sql = "INSERT INTO ".TB_PREF."debtors_master (name, debtor_ref, address, tax_id, email, dimension_id, dimension2_id,  
 			curr_code, credit_status, payment_terms, discount, pymt_discount,credit_limit,  
-			sales_type) VALUES (".db_escape($_POST['CustName']) .", " 
+			sales_type, notes) VALUES (".db_escape($_POST['CustName']) .", " .db_escape($_POST['cust_ref']) .", "
 			.db_escape($_POST['address']) . ", " . db_escape($_POST['tax_id']) . ","
 			.db_escape($_POST['email']) . ", ".db_escape($_POST['dimension_id']) . ", " 
 			.db_escape($_POST['dimension2_id']) . ", ".db_escape($_POST['curr_code']) . ", 
 			" . db_escape($_POST['credit_status']) . ", ".db_escape($_POST['payment_terms']) . ", " . input_num('discount')/100 . ", 
-			" . input_num('pymt_discount')/100 . ", " . input_num('credit_limit') . ", ".db_escape($_POST['sales_type']) . ")";
+			" . input_num('pymt_discount')/100 . ", " . input_num('credit_limit') 
+			 .", ".db_escape($_POST['sales_type']).", ".db_escape($_POST['notes']) . ")";
 
 		db_query($sql,"The customer could not be added");
 
@@ -119,13 +134,6 @@ function handle_submit()
 if (isset($_POST['submit'])) 
 {
 	handle_submit();
-}
-//-------------------------------------------------------------------------------------------- 
-
-if (isset($_POST['select']))
-{
-	context_return(array('customer_id' => $_POST['customer_id'], 
-		'branch_id' => '')); // this fires customer history checks
 }
 //-------------------------------------------------------------------------------------------- 
 
@@ -189,31 +197,36 @@ start_form();
 if (db_has_customers()) 
 {
 	start_table("class = 'tablestyle_noborder'");
-	customer_list_row(_("Select a customer: "), 'customer_id', null,
-	  _('New customer'), true);
+	start_row();
+	customer_list_cells(_("Select a customer: "), 'customer_id', null,
+		_('New customer'), true, check_value('show_inactive'));
+	check_cells(_("Show inactive:"), 'show_inactive', null, true);
+	end_row();
 	end_table();
+	if (get_post('_show_inactive_update')) {
+		$Ajax->activate('customer_id');
+		set_focus('customer_id');
+	}
 } 
 else 
 {
 	hidden('customer_id');
 }
 
-start_outer_table($table_style2, 5);
-
-table_section(1);
-
 if ($new_customer) 
 {
-	$_POST['CustName'] = $_POST['address'] = $_POST['tax_id']  = '';
+	$_POST['CustName'] = $_POST['cust_ref'] = $_POST['address'] = $_POST['tax_id']  = '';
 	$_POST['dimension_id'] = 0;
 	$_POST['dimension2_id'] = 0;
 	$_POST['sales_type'] = -1;
 	$_POST['email'] = '';
 	$_POST['curr_code']  = get_company_currency();
 	$_POST['credit_status']  = -1;
-	$_POST['payment_terms']  = '';
+	$_POST['payment_terms']  = $_POST['notes']  = '';
+
 	$_POST['discount']  = $_POST['pymt_discount'] = percent_format(0);
-	$_POST['credit_limit']	= price_format(sys_prefs::default_credit_limit());
+	$_POST['credit_limit']	= price_format($SysPrefs->default_credit_limit());
+	$_POST['inactive'] = 0;
 } 
 else 
 {
@@ -224,6 +237,7 @@ else
 	$myrow = db_fetch($result);
 
 	$_POST['CustName'] = $myrow["name"];
+	$_POST['cust_ref'] = $myrow["debtor_ref"];
 	$_POST['address']  = $myrow["address"];
 	$_POST['tax_id']  = $myrow["tax_id"];
 	$_POST['email']  = $myrow["email"];
@@ -236,11 +250,16 @@ else
 	$_POST['discount']  = percent_format($myrow["discount"] * 100);
 	$_POST['pymt_discount']  = percent_format($myrow["pymt_discount"] * 100);
 	$_POST['credit_limit']	= price_format($myrow["credit_limit"]);
+	$_POST['notes']  = $myrow["notes"];
+	$_POST['inactive'] = $myrow["inactive"];
 }
 
+start_outer_table($table_style2, 5);
+table_section(1);
 table_section_title(_("Name and Address"));
 
-text_row(_("Customer Name:"), 'CustName', $_POST['CustName'], 40, 40);
+text_row(_("Customer Name:"), 'CustName', $_POST['CustName'], 40, 80);
+text_row(_("Customer Short Name:"), 'cust_ref', null, 30, 30);
 textarea_row(_("Address:"), 'address', $_POST['address'], 35, 5);
 
 email_row(_("E-mail:"), 'email', null, 40, 40);
@@ -256,12 +275,12 @@ else
 	label_row(_("Customer's Currency:"), $_POST['curr_code']);
 	hidden('curr_code', $_POST['curr_code']);				
 }	
+sales_types_list_row(_("Sales Type/Price List:"), 'sales_type', $_POST['sales_type']);
 
 table_section(2);
 
 table_section_title(_("Sales"));
 
-sales_types_list_row(_("Sales Type/Price List:"), 'sales_type', $_POST['sales_type']);
 percent_row(_("Discount Percent:"), 'discount', $_POST['discount']);
 percent_row(_("Prompt Payment Discount Percent:"), 'pymt_discount', $_POST['pymt_discount']);
 amount_row(_("Credit Limit:"), 'credit_limit', $_POST['credit_limit']);
@@ -282,27 +301,31 @@ if (!$new_customer)  {
 	start_row();
 	echo '<td>'._('Customer branches').':</td>';
   	hyperlink_params_td($path_to_root . "/sales/manage/customer_branches.php",
-		'<b>'. (count($_SESSION['Context']) ?  _("Select or &Add") : _("&Add or Edit ")).'</b>', 
-		"debtor_no=".$_POST['customer_id']);
+		'<b>'. (@$_REQUEST['popup'] ?  _("Select or &Add") : _("&Add or Edit ")).'</b>', 
+		"debtor_no=".$_POST['customer_id'].(@$_REQUEST['popup'] ? '&popup=1':''));
 	end_row();
+
 }
 
+textarea_row(_("General Notes:"), 'notes', null, 35, 5);
+record_status_list_row(_("Customer status:"), 'inactive');
 end_outer_table(1);
 
 div_start('controls');
 if ($new_customer)
 {
-	submit_center('submit', _("Add New Customer"), true, '', true);
+	submit_center('submit', _("Add New Customer"), true, '', 'default');
 } 
 else 
 {
 	submit_center_first('submit', _("Update Customer"), 
-	  _('Update customer data'), true);
-	submit_return('select', _("Return"), _("Select this customer and return to document entry."), true);
+	  _('Update customer data'), @$_REQUEST['popup'] ? true : 'default');
+	submit_return('select', get_post('customer_id'), _("Select this customer and return to document entry."));
 	submit_center_last('delete', _("Delete Customer"), 
 	  _('Delete customer data if have been never used'), true);
 }
 div_end();
+hidden('popup', @$_REQUEST['popup']);
 end_form();
 end_page();
 

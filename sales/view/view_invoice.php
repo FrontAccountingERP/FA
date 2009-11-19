@@ -9,8 +9,8 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security = 1;
-$path_to_root="../..";
+$page_security = 'SA_SALESTRANSVIEW';
+$path_to_root = "../..";
 include_once($path_to_root . "/includes/session.inc");
 
 include_once($path_to_root . "/sales/includes/sales_ui.inc");
@@ -20,7 +20,7 @@ include_once($path_to_root . "/sales/includes/sales_db.inc");
 $js = "";
 if ($use_popup_windows)
 	$js .= get_js_open_window(900, 600);
-page(_("View Sales Invoice"), true, false, "", $js);
+page(_($help_context = "View Sales Invoice"), true, false, "", $js);
 
 
 if (isset($_GET["trans_no"]))
@@ -34,11 +34,11 @@ elseif (isset($_POST["trans_no"]))
 
 // 3 different queries to get the information - what a JOKE !!!!
 
-$myrow = get_customer_trans($trans_id, 10);
+$myrow = get_customer_trans($trans_id, ST_SALESINVOICE);
 
 $branch = get_branch($myrow["branch_code"]);
 
-$sales_order = get_sales_order_header($myrow["order_"]);
+$sales_order = get_sales_order_header($myrow["order_"], ST_SALESORDER);
 
 display_heading(sprintf(_("SALES INVOICE #%d"),$trans_id));
 
@@ -85,7 +85,7 @@ start_row();
 label_cells(_("Reference"), $myrow["reference"], "class='tableheader2'");
 label_cells(_("Currency"), $sales_order["curr_code"], "class='tableheader2'");
 label_cells(_("Our Order No"),
-	get_customer_trans_view_str(systypes::sales_order(),$sales_order["order_no"]), "class='tableheader2'");
+	get_customer_trans_view_str(ST_SALESORDER,$sales_order["order_no"]), "class='tableheader2'");
 end_row();
 start_row();
 label_cells(_("Customer Order Ref."), $sales_order["customer_ref"], "class='tableheader2'");
@@ -95,17 +95,17 @@ end_row();
 start_row();
 label_cells(_("Invoice Date"), sql2date($myrow["tran_date"]), "class='tableheader2'", "nowrap");
 label_cells(_("Due Date"), sql2date($myrow["due_date"]), "class='tableheader2'", "nowrap");
-label_cells(_("Deliveries"), get_customer_trans_view_str(systypes::cust_dispatch(), 
-	get_parent_trans(10,$trans_id)), "class='tableheader2'");
+label_cells(_("Deliveries"), get_customer_trans_view_str(ST_CUSTDELIVERY, 
+	get_parent_trans(ST_SALESINVOICE,$trans_id)), "class='tableheader2'");
 end_row();
-comments_display_row(10, $trans_id);
+comments_display_row(ST_SALESINVOICE, $trans_id);
 end_table();
 
 echo "</td></tr>";
 end_table(1); // outer table
 
 
-$result = get_customer_trans_details(10, $trans_id);
+$result = get_customer_trans_details(ST_SALESINVOICE, $trans_id);
 
 start_table("$table_style width=95%");
 
@@ -157,7 +157,7 @@ label_row(_("Sub-total"), $display_sub_tot, "colspan=6 align=right",
 	"nowrap align=right width=15%");
 label_row(_("Shipping"), $display_freight, "colspan=6 align=right", "nowrap align=right");
 
-$tax_items = get_trans_tax_details(10, $trans_id);
+$tax_items = get_trans_tax_details(ST_SALESINVOICE, $trans_id);
 display_customer_trans_tax_details($tax_items, 6);
 
 $display_total = price_format($myrow["ov_freight"]+$myrow["ov_gst"]+$myrow["ov_amount"]+$myrow["ov_freight_tax"]);
@@ -166,7 +166,7 @@ label_row(_("TOTAL INVOICE"), $display_total, "colspan=6 align=right",
 	"nowrap align=right");
 end_table(1);
 
-is_voided_display(10, $trans_id, _("This invoice has been voided."));
+is_voided_display(ST_SALESINVOICE, $trans_id, _("This invoice has been voided."));
 
 end_page(true);
 

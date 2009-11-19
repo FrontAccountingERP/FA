@@ -14,8 +14,8 @@
 //	Entry/Modify Sales Invoice against single delivery
 //	Entry/Modify Batch Sales Invoice against batch of deliveries
 //
-$page_security = 2;
-$path_to_root="..";
+$page_security = 'SA_SALESINVOICE';
+$path_to_root = "..";
 include_once($path_to_root . "/sales/includes/cart_class.inc");
 include_once($path_to_root . "/includes/session.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
@@ -35,11 +35,11 @@ if ($use_date_picker) {
 
 if (isset($_GET['ModifyInvoice'])) {
 	$_SESSION['page_title'] = sprintf(_("Modifying Sales Invoice # %d.") ,$_GET['ModifyInvoice']);
-	$help_page_title = _("Modifying Sales Invoice");
+	$help_context = "Modifying Sales Invoice";
 } elseif (isset($_GET['DeliveryNumber'])) {
-	$_SESSION['page_title'] = _("Issue an Invoice for Delivery Note");
+	$_SESSION['page_title'] = _($help_context = "Issue an Invoice for Delivery Note");
 } elseif (isset($_GET['BatchInvoice'])) {
-	$_SESSION['page_title'] = _("Issue Batch Invoice for Delivery Notes");
+	$_SESSION['page_title'] = _($help_context = "Issue Batch Invoice for Delivery Notes");
 }
 
 page($_SESSION['page_title'], false, false, "", $js);
@@ -50,13 +50,14 @@ check_edit_conflicts();
 if (isset($_GET['AddedID'])) {
 
 	$invoice_no = $_GET['AddedID'];
-	$trans_type = 10;
+	$trans_type = ST_SALESINVOICE;
 
 	display_notification(_("Selected deliveries has been processed"), true);
 
 	display_note(get_customer_trans_view_str($trans_type, $invoice_no, _("&View This Invoice")), 0, 1);
 
-	display_note(print_document_link($invoice_no, _("&Print This Invoice"), true, 10));
+	display_note(print_document_link($invoice_no, _("&Print This Invoice"), true, ST_SALESINVOICE));
+	display_note(print_document_link($invoice_no, _("&Email This Invoice"), true, ST_SALESINVOICE, false, "", "", 1),1);
 
 	display_note(get_gl_view_str($trans_type, $invoice_no, _("View the GL &Journal Entries for this Invoice")),1);
 
@@ -70,9 +71,9 @@ if (isset($_GET['AddedID'])) {
 
 	display_notification_centered(sprintf(_('Sales Invoice # %d has been updated.'),$invoice_no));
 
-	display_note(get_trans_view_str(10, $invoice_no, _("&View This Invoice")));
+	display_note(get_trans_view_str(ST_SALESINVOICE, $invoice_no, _("&View This Invoice")));
 	echo '<br>';
-	display_note(print_document_link($invoice_no, _("&Print This Invoice"), true, 10));
+	display_note(print_document_link($invoice_no, _("&Print This Invoice"), true, ST_SALESINVOICE));
 
 	hyperlink_no_params($path_to_root . "/sales/inquiry/customer_inquiry.php", _("Select A Different &Invoice to Modify"));
 
@@ -108,7 +109,7 @@ if ( (isset($_GET['DeliveryNumber']) && ($_GET['DeliveryNumber'] > 0) )
 		$src = array($_GET['DeliveryNumber']);
 	}
 	/*read in all the selected deliveries into the Items cart  */
-	$dn = new Cart(13, $src, true);
+	$dn = new Cart(ST_CUSTDELIVERY, $src, true);
 
 	if ($dn->count_items() == 0) {
 		hyperlink_params($path_to_root . "/sales/inquiry/sales_deliveries_view.php",
@@ -116,10 +117,10 @@ if ( (isset($_GET['DeliveryNumber']) && ($_GET['DeliveryNumber'] > 0) )
 		die ("<br><b>" . _("There are no delivered items with a quantity left to invoice. There is nothing left to invoice.") . "</b>");
 	}
 
-	$dn->trans_type = 10;
+	$dn->trans_type = ST_SALESINVOICE;
 	$dn->src_docs = $dn->trans_no;
 	$dn->trans_no = 0;
-	$dn->reference = references::get_next(10);
+	$dn->reference = $Refs->get_next(ST_SALESINVOICE);
 	$dn->due_date = get_invoice_duedate($dn->customer_id, $dn->document_date);
 
 	$_SESSION['Items'] = $dn;
@@ -127,14 +128,14 @@ if ( (isset($_GET['DeliveryNumber']) && ($_GET['DeliveryNumber'] > 0) )
 
 } elseif (isset($_GET['ModifyInvoice']) && $_GET['ModifyInvoice'] > 0) {
 
-	if ( get_parent_trans(10, $_GET['ModifyInvoice']) == 0) { // 1.xx compatibility hack
+	if ( get_parent_trans(ST_SALESINVOICE, $_GET['ModifyInvoice']) == 0) { // 1.xx compatibility hack
 		echo"<center><br><b>" . _("There are no delivery notes for this invoice.<br>
 		Most likely this invoice was created in Front Accounting version prior to 2.0
 		and therefore can not be modified.") . "</b></center>";
 		display_footer_exit();
 	}
 	processing_start();
-	$_SESSION['Items'] = new Cart(10, $_GET['ModifyInvoice']);
+	$_SESSION['Items'] = new Cart(ST_SALESINVOICE, $_GET['ModifyInvoice']);
 
 	if ($_SESSION['Items']->count_items() == 0) {
 		echo"<center><br><b>" . _("All quantities on this invoice has been credited. There is nothing to modify on this invoice") . "</b></center>";
@@ -241,6 +242,8 @@ function copy_from_cart()
 
 function check_data()
 {
+	global $Refs;
+
 	if (!isset($_POST['InvoiceDate']) || !is_date($_POST['InvoiceDate'])) {
 		display_error(_("The entered invoice date is invalid."));
 		set_focus('InvoiceDate');
@@ -260,7 +263,7 @@ function check_data()
 	}
 
 	if ($_SESSION['Items']->trans_no == 0) {
-		if (!references::is_valid($_POST['ref'])) {
+		if (!$Refs->is_valid($_POST['ref'])) {
 			display_error(_("You must enter a reference."));
 			set_focus('ref');
 			return false;
@@ -301,6 +304,7 @@ if (isset($_POST['process_invoice']) && check_data()) {
 
 	$newinvoice=  $_SESSION['Items']->trans_no == 0;
 	copy_to_cart();
+	if ($newinvoice) new_doc_date($_SESSION['Items']->document_date);
 	$invoice_no = $_SESSION['Items']->write();
 
 	processing_end();
@@ -336,8 +340,8 @@ $dspans[] = $spanlen;
 
 $is_batch_invoice = count($_SESSION['Items']->src_docs) > 1;
 
-$is_edition = $_SESSION['Items']->trans_type == 10 && $_SESSION['Items']->trans_no != 0;
-start_form(false, true);
+$is_edition = $_SESSION['Items']->trans_type == ST_SALESINVOICE && $_SESSION['Items']->trans_no != 0;
+start_form();
 hidden('cart_id');
 
 start_table("$table_style2 width=80%", 5);
@@ -356,7 +360,7 @@ if ($_SESSION['Items']->trans_no == 0) {
 }
 
 label_cells(_("Delivery Notes:"),
-get_customer_trans_view_str(systypes::cust_dispatch(), array_keys($_SESSION['Items']->src_docs)), "class='tableheader2'");
+get_customer_trans_view_str(ST_CUSTDELIVERY, array_keys($_SESSION['Items']->src_docs)), "class='tableheader2'");
 
 label_cells(_("Sales Type"), $_SESSION['Items']->sales_type_name, "class='tableheader2'");
 
@@ -370,19 +374,20 @@ label_cell(_("Shipping Company"), "class='tableheader2'");
 shippers_list_cells(null, 'ship_via', $_POST['ship_via']);
 
 if (!isset($_POST['InvoiceDate']) || !is_date($_POST['InvoiceDate'])) {
-	$_POST['InvoiceDate'] = Today();
+	$_POST['InvoiceDate'] = new_doc_date();
 	if (!is_date_in_fiscalyear($_POST['InvoiceDate'])) {
 		$_POST['InvoiceDate'] = end_fiscalyear();
 	}
 }
 
-date_cells(_("Date"), 'InvoiceDate', '', $_POST['InvoiceDate'], 0, 0, 0, "class='tableheader2'", true);
+date_cells(_("Date"), 'InvoiceDate', '', $_SESSION['Items']->trans_no == 0, 
+	0, 0, 0, "class='tableheader2'", true);
 
 if (!isset($_POST['due_date']) || !is_date($_POST['due_date'])) {
 	$_POST['due_date'] = get_invoice_duedate($_SESSION['Items']->customer_id, $_POST['InvoiceDate']);
 }
 
-date_cells(_("Due Date"), 'due_date', '', $_POST['due_date'], 0, 0, 0, "class='tableheader2'");
+date_cells(_("Due Date"), 'due_date', '', null, 0, 0, 0, "class='tableheader2'");
 
 end_row();
 end_table();
@@ -483,9 +488,10 @@ $accumulate_shipping = get_company_pref('accumulate_shipping');
 if ($is_batch_invoice && $accumulate_shipping)
 	set_delivery_shipping_sum(array_keys($_SESSION['Items']->src_docs));
 
+$colspan = 9;
 start_row();
-
-small_amount_cells(_("Shipping Cost"), 'ChargeFreightCost', null, "colspan=9 align=right");
+label_cell(_("Shipping Cost"), "colspan=$colspan align=right");
+small_amount_cells(null, 'ChargeFreightCost', null);
 if ($is_batch_invoice) {
 label_cell('', 'colspan=2');
 }
@@ -495,14 +501,14 @@ $inv_items_total = $_SESSION['Items']->get_items_total_dispatch();
 
 $display_sub_total = price_format($inv_items_total + input_num('ChargeFreightCost'));
 
-label_row(_("Sub-total"), $display_sub_total, "colspan=9 align=right","align=right", $is_batch_invoice ? 2 : 0);
+label_row(_("Sub-total"), $display_sub_total, "colspan=$colspan align=right","align=right", $is_batch_invoice ? 2 : 0);
 
 $taxes = $_SESSION['Items']->get_taxes(input_num('ChargeFreightCost'));
-$tax_total = display_edit_tax_items($taxes, 9, $_SESSION['Items']->tax_included, $is_batch_invoice ? 2:0);
+$tax_total = display_edit_tax_items($taxes, $colspan, $_SESSION['Items']->tax_included, $is_batch_invoice ? 2:0);
 
 $display_total = price_format(($inv_items_total + input_num('ChargeFreightCost') + $tax_total));
 
-label_row(_("Invoice Total"), $display_total, "colspan=9 align=right","align=right", $is_batch_invoice ? 2 : 0);
+label_row(_("Invoice Total"), $display_total, "colspan=$colspan align=right","align=right", $is_batch_invoice ? 2 : 0);
 
 end_table(1);
 div_end();
@@ -515,7 +521,7 @@ end_table(1);
 submit_center_first('Update', _("Update"),
   _('Refresh document page'), true);
 submit_center_last('process_invoice', _("Process Invoice"),
-  _('Check entered data and save document'), true);
+  _('Check entered data and save document'), 'default');
 
 end_form();
 

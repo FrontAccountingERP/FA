@@ -11,7 +11,6 @@
 ***********************************************************************/
 include_once($path_to_root . "/includes/db/connect_db.inc");
 
-include_once($path_to_root . "/includes/reserved.inc");
 include_once($path_to_root . "/includes/errors.inc");
 include_once($path_to_root . "/includes/types.inc");
 include_once($path_to_root . "/includes/systypes.inc");
@@ -19,23 +18,26 @@ include_once($path_to_root . "/includes/references.inc");
 include_once($path_to_root . "/includes/prefs/sysprefs.inc");
 include_once($path_to_root . "/includes/db/comments_db.inc");
 include_once($path_to_root . "/includes/db/sql_functions.inc");
+include_once($path_to_root . "/includes/db/audit_trail_db.inc");
+//include_once($path_to_root . "/includes/validation.inc");
 
 include_once($path_to_root . "/admin/db/users_db.inc");
 include_once($path_to_root . "/includes/ui/ui_view.inc");
 include_once($path_to_root . "/includes/ui/ui_controls.inc");
-include_once($path_to_root . "/installed_extensions.php");
 	
 function page($title, $no_menu=false, $is_index=false, $onload="", $js="", $script_only=false)
 {
 
-   	global $path_to_root;
+   	global $path_to_root, $page_security;
+
 
    	$hide_menu = $no_menu;
 
    	include($path_to_root . "/includes/page/header.inc");
 
    	page_header($title, $no_menu, $is_index, $onload, $js);
-	error_box();
+	check_page_security($page_security);
+//	error_box();
 	if($script_only) {		
 		echo '<noscript>';
 		echo display_heading(_('This page is usable only with javascript enabled browsers.'));
@@ -55,17 +57,17 @@ function end_page($no_menu=false, $is_index=false)
     	page_footer($no_menu, $is_index);
 }
 
-function flush_dir($path) 
+function flush_dir($path, $wipe = false) 
 {
 	$dir = opendir($path);
 	while(false !== ($fname = readdir($dir))) {
-		if($fname=='.' || $fname=='..' || $fname=='index.php') continue;
+		if($fname=='.' || $fname=='..' || $fname=='CVS' || (!$wipe && $fname=='index.php')) continue;
   		if(is_dir($path.'/'.$fname)) {
-		    flush_dir($path.'/'.$fname);
-		    @rmdir($path.'/'.$fname);
+		    flush_dir($path.'/'.$fname, $wipe);
+		    if ($wipe) @rmdir($path.'/'.$fname);
 		} else
 		    @unlink($path.'/'.$fname);
-  	}
+	}
 }
 
 function cache_js_file($fpath, $text) 
@@ -139,10 +141,11 @@ function js_compress($sJS)
 		$inNormalComment = false;
 	
 		//loop through line's characters and take out any literal strings, replace them with ___i___ where i is the index of this string
-		for($j=0;$j<strlen($line);$j++)
+		$len = strlen($line);
+		for($j=0;$j<$len;$j++)
 		{
-			$c = substr($line,$j,1);
-			$d = substr($line,$j,2);
+			$c = $line[$j];		// this is _really_ faster than subst
+			$d = $c.$line[$j+1];
 	
 			//look for start of quote
 			if(!$inQuote && !$inComment)
@@ -273,7 +276,7 @@ function array_remove(&$array, $index, $len=1)
 	array_splice($array, $index, $len);
 }
 
-function array_replace(&$array, $index, $len, $elements)
+function array_substitute(&$array, $index, $len, $elements)
 {
 	array_splice($array, $index, $len);
 	array_insert($array, $index, $elements);

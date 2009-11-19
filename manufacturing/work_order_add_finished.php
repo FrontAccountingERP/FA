@@ -9,8 +9,8 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security = 10;
-$path_to_root="..";
+$page_security = 'SA_MANUFRECEIVE';
+$path_to_root = "..";
 include_once($path_to_root . "/includes/session.inc");
 
 include_once($path_to_root . "/includes/date_functions.inc");
@@ -26,7 +26,7 @@ if ($use_popup_windows)
 	$js .= get_js_open_window(900, 500);
 if ($use_date_picker)
 	$js .= get_js_date_picker();
-page(_("Produce or Unassemble Finished Items From Work Order"), false, false, "", $js);
+page(_($help_context = "Produce or Unassemble Finished Items From Work Order"), false, false, "", $js);
 
 if (isset($_GET['trans_no']) && $_GET['trans_no'] != "")
 {
@@ -39,7 +39,7 @@ if (isset($_GET['AddedID']))
 {
 	include_once($path_to_root . "/reporting/includes/reporting.inc");
 	$id = $_GET['AddedID'];
-	$stype = systypes::work_order();
+	$stype = ST_WORKORDER;
 
 	display_notification(_("The manufacturing process has been entered."));
 	
@@ -69,9 +69,9 @@ if (strlen($wo_details[0]) == 0)
 
 function can_process()
 {
-	global $wo_details;
+	global $wo_details, $SysPrefs, $Refs;
 
-	if (!references::is_valid($_POST['ref']))
+	if (!$Refs->is_valid($_POST['ref']))
 	{
 		display_error(_("You must enter a reference."));
 		set_focus('ref');
@@ -104,7 +104,7 @@ function can_process()
 		set_focus('date_');
 		return false;
 	}
-	if (date_diff(sql2date($wo_details["released_date"]), $_POST['date_'], "d") > 0)
+	if (date_diff2(sql2date($wo_details["released_date"]), $_POST['date_'], "d") > 0)
 	{
 		display_error(_("The production date cannot be before the release date of the work order."));
 		set_focus('date_');
@@ -112,7 +112,7 @@ function can_process()
 	}
 
 	// if unassembling we need to check the qoh
-	if (($_POST['ProductionType'] == 0) && !sys_prefs::allow_negative_stock())
+	if (($_POST['ProductionType'] == 0) && !$SysPrefs->allow_negative_stock())
 	{
 		$wo_details = get_work_order($_POST['selected_id']);
 
@@ -126,7 +126,7 @@ function can_process()
 	}
 
 	// if production we need to check the qoh of the wo requirements
-	if (($_POST['ProductionType'] == 1) && !sys_prefs::allow_negative_stock())
+	if (($_POST['ProductionType'] == 1) && !$SysPrefs->allow_negative_stock())
 	{
     	$err = false;
     	$result = get_wo_requirements($_POST['selected_id']);
@@ -189,7 +189,7 @@ if (!isset($_POST['quantity']) || $_POST['quantity'] == '')
 start_table($table_style2);
 br();
 
-ref_row(_("Reference:"), 'ref', '', references::get_next(29));
+ref_row(_("Reference:"), 'ref', '', $Refs->get_next(29));
 
 if (!isset($_POST['ProductionType']))
 	$_POST['ProductionType'] = 1;

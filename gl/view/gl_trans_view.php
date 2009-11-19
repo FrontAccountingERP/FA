@@ -9,11 +9,11 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security = 8;
-$path_to_root="../..";
+$page_security = 'SA_GLTRANSVIEW';
+$path_to_root = "../..";
 include_once($path_to_root . "/includes/session.inc");
 
-page(_("General Ledger Transaction Details"), true);
+page(_($help_context = "General Ledger Transaction Details"), true);
 
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");
@@ -29,16 +29,17 @@ if (!isset($_GET['type_id']) || !isset($_GET['trans_no']))
 
 function display_gl_heading($myrow)
 {
-	global $table_style;
-	$trans_name = systypes::name($_GET['type_id']);
+	global $table_style, $systypes_array;
+	$trans_name = $systypes_array[$_GET['type_id']];
     start_table("$table_style width=95%");
-    $th = array(_("General Ledger Transaction Details"),
+    $th = array(_("General Ledger Transaction Details"), _("Reference"),
     	_("Date"), _("Person/Item"));
     table_header($th);	
     start_row();	
     label_cell("$trans_name #" . $_GET['trans_no']);
+    label_cell($myrow["reference"]);
 	label_cell(sql2date($myrow["tran_date"]));
-	label_cell(payment_person_types::person_name($myrow["person_type_id"],$myrow["person_id"]));
+	label_cell(payment_person_name($myrow["person_type_id"],$myrow["person_id"]));
 	
 	end_row();
 
@@ -46,18 +47,19 @@ function display_gl_heading($myrow)
 
     end_table(1);
 }
-
-$sql = "SELECT ".TB_PREF."gl_trans.*, account_name FROM "
-	.TB_PREF."gl_trans, ".TB_PREF."chart_master WHERE "
-	.TB_PREF."gl_trans.account = ".TB_PREF."chart_master.account_code AND type= " 
-	.db_escape($_GET['type_id']) . " AND type_no = ".db_escape($_GET['trans_no']) 
-	. " ORDER BY counter";
+$sql = "SELECT gl.*, cm.account_name, IF(ISNULL(refs.reference), '', refs.reference) AS reference FROM "
+	.TB_PREF."gl_trans as gl
+	LEFT JOIN ".TB_PREF."chart_master as cm ON gl.account = cm.account_code
+	LEFT JOIN ".TB_PREF."refs as refs ON (gl.type=refs.type AND gl.type_no=refs.id)"
+	." WHERE gl.type= ".db_escape($_GET['type_id']) 
+	." AND gl.type_no = ".db_escape($_GET['trans_no'])
+	." ORDER BY counter";
 $result = db_query($sql,"could not get transactions");
 //alert("sql = ".$sql);
 
 if (db_num_rows($result) == 0)
 {
-    echo "<p><center>" . _("No general ledger transactions have been created for") . " " .systypes::name($_GET['type_id'])." " . _("number") . " " . $_GET['trans_no'] . "</center></p><br><br>";
+    echo "<p><center>" . _("No general ledger transactions have been created for") . " " .$systypes_array[$_GET['type_id']]." " . _("number") . " " . $_GET['trans_no'] . "</center></p><br><br>";
 	end_page(true);
 	exit;
 }

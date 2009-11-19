@@ -58,7 +58,7 @@ function add_to_order(&$order, $new_item, $new_item_qty, $price, $discount)
 			if (strcasecmp($order_item->stock_id, $item['stock_id']) == 0)
 			{
 				display_warning(_("For Part :").$item['stock_id']. " " 
-					. _("This item is already on this order. You have been warned."));
+					. _("This item is already on this document. You have been warned."));
 				break;
 			}
 		}
@@ -89,7 +89,7 @@ function get_customer_details_to_order(&$order, $customer_id, $branch_id)
 	$order->set_sales_type($myrow['salestype'], $myrow['sales_type'], $myrow['tax_included'],
 	    $myrow['factor']);
 
-	if ($order->trans_type != 30)
+	if ($order->trans_type != ST_SALESORDER && $order->trans_type != ST_SALESQUOTE)
 	{
 		$order->dimension_id = $myrow['dimension_id'];
 		$order->dimension2_id = $myrow['dimension2_id'];
@@ -111,10 +111,10 @@ function get_customer_details_to_order(&$order, $customer_id, $branch_id)
 
 	$order->set_delivery($myrow["default_ship_via"], $myrow["br_name"],
 		$address);
-	if ($order->trans_type == 10) {
+	if ($order->trans_type == ST_SALESINVOICE) {
 		$order->due_date = get_invoice_duedate($customer_id, $order->document_date);
 		if ($order->pos != -1)
-			$order->cash = date_diff($order->due_date, Today(), 'd')<2;
+			$order->cash = date_diff2($order->due_date, Today(), 'd')<2;
 	}
 	if($order->cash ) {
 		if($order->pos != -1) {
@@ -131,7 +131,7 @@ function get_customer_details_to_order(&$order, $customer_id, $branch_id)
 
 function display_order_summary($title, &$order, $editable_items=false)
 {
-	global $table_style, $path_to_root;
+	global $table_style, $path_to_root, $SysPrefs;
 
 	display_heading($title);
 
@@ -164,7 +164,7 @@ function display_order_summary($title, &$order, $editable_items=false)
 		$qoh_msg = '';
 		if (!$editable_items || $id != $line_no)
 		{
-			if (!sys_prefs::allow_negative_stock() && is_inventory_item($stock_item->stock_id)) {
+			if (!$SysPrefs->allow_negative_stock() && is_inventory_item($stock_item->stock_id)) {
 				$qoh = get_qoh_on_date($stock_item->stock_id, 
 					$_POST['Location'], $_POST['OrderDate']);
 				if ($stock_item->qty_dispatched > $qoh) 
@@ -185,10 +185,11 @@ function display_order_summary($title, &$order, $editable_items=false)
 
 			//label_cell($stock_item->item_description, "nowrap" );
 			label_cell($stock_item->item_description );
-			qty_cell($stock_item->qty_dispatched, false, get_qty_dec($stock_item->stock_id));
+			$dec = get_qty_dec($stock_item->stock_id);
+			qty_cell($stock_item->qty_dispatched, false, $dec);
 
 			if ($order->trans_no!=0)
-				amount_cell($stock_item->qty_done);
+				qty_cell($stock_item->qty_done, false, $dec);
 
 			label_cell($stock_item->units);
 			amount_cell($stock_item->price);
@@ -216,14 +217,32 @@ function display_order_summary($title, &$order, $editable_items=false)
 	if ($id==-1 && $editable_items)
 		sales_order_item_controls($order, $k);
 
-	$display_total = price_format($total);
-	label_row(_("Total Excluding Shipping"), $display_total, "colspan=6 align=right",
-		"nowrap align=right", 2);
+	$colspan = 6;
+	if ($order->trans_no!=0)
+		++$colspan;
+	start_row();
+	label_cell(_("Shipping Charge"), "colspan=$colspan align=right");
+	small_amount_cells(null, 'freight_cost', price_format(get_post('freight_cost',0)));
+	label_cell('', 'colspan=2');
+	end_row();
+	$display_sub_total = price_format($total + input_num('freight_cost'));
+
+	label_row(_("Sub-total"), $display_sub_total, "colspan=$colspan align=right","align=right", 2);
+
+	$taxes = $order->get_taxes(input_num('freight_cost'));
+	$tax_total = display_edit_tax_items($taxes, $colspan, $order->tax_included, 2);
+
+	$display_total = price_format(($total + input_num('freight_cost') + $tax_total));
+
+	start_row();
+	label_cells(_("Amount Total"), $display_total, "colspan=$colspan align=right","align=right");
+	submit_cells('update', _("Update"), "colspan=2", _("Refresh"), true);
+	end_row();
 
 	end_table();
 	if ($has_marked) {
 		display_note(_("Marked items have insufficient quantities in stock as on day of delivery."), 0, 1, "class='stockmankofg'");
-		if ($order->trans_type!=30 && !sys_prefs::allow_negative_stock())
+		if ($order->trans_type!=30 && !$SysPrefs->allow_negative_stock())
 			display_error(_("The delivery cannot be processed because there is an insufficient quantity for item:")
 				. '<br>'. $qoh_msg);
 	}
@@ -234,7 +253,7 @@ function display_order_summary($title, &$order, $editable_items=false)
 
 function display_order_header(&$order, $editable, $date_text, $display_tax_group=false)
 {
-	global $table_style, $Ajax;
+	global $table_style, $Ajax, $SysPrefs;
 
 	start_outer_table("width=80% $table_style");
 
@@ -251,14 +270,14 @@ function display_order_header(&$order, $editable, $date_text, $display_tax_group
 		hidden('customer_id', $order->customer_id);
 		hidden('branch_id', $order->Branch);
 		hidden('sales_type', $order->sales_type);
-		if ($order->trans_type != 30) {
+		if ($order->trans_type != ST_SALESORDER  && $order->trans_type != ST_SALESQUOTE) {
 			hidden('dimension_id', $order->dimension_id); // 2008-11-12 Joe Hunt
 			hidden('dimension2_id', $order->dimension2_id);
 		}	
 	}
 	else
 	{
-		customer_list_row(_("Customer:"), 'customer_id', null, false, true);
+		customer_list_row(_("Customer:"), 'customer_id', null, false, true, false, true);
 
 		if ($order->customer_id != get_post('customer_id', -1))
 		{
@@ -266,7 +285,7 @@ function display_order_header(&$order, $editable, $date_text, $display_tax_group
 			$Ajax->activate('branch_id');
   		}
 		customer_branches_list_row(_("Branch:"),
-	  	  $_POST['customer_id'], 'branch_id', null, false, true, true);
+	  	  $_POST['customer_id'], 'branch_id', null, false, true, true, true);
 
 		if( ($order->customer_id != get_post('customer_id', -1)) ||
 			($order->Branch != get_post('branch_id', -1)) ||
@@ -298,7 +317,7 @@ function display_order_header(&$order, $editable, $date_text, $display_tax_group
 					$Ajax->activate('delivery');
 					$Ajax->activate('cash');
 				} else {
-					if ($order->trans_type == 10)
+					if ($order->trans_type == ST_SALESINVOICE)
 					{
 						$_POST['delivery_date'] = $order->due_date;
 						$Ajax->activate('delivery_date');
@@ -340,9 +359,7 @@ function display_order_header(&$order, $editable, $date_text, $display_tax_group
 		}
 	}
 
-	if ($order->trans_type != 30) {
-		ref_cells(_("Reference").':', 'ref', _('Reference number unique for this document type'), null, '');
-	}
+	ref_cells(_("Reference").':', 'ref', _('Reference number unique for this document type'), null, '');
 
 	if (!is_company_currency($order->customer_currency))
 	{
@@ -354,7 +371,7 @@ function display_order_header(&$order, $editable, $date_text, $display_tax_group
 	}
 	table_section(3);
 
-	if ($order->trans_type == 10 && $order->pos != -1) {
+	if ($order->trans_type == ST_SALESINVOICE && $order->pos != -1) {
 		sale_payment_list_cells(_('Payment:'), 'cash', null, true);
 		$cash_payment = get_post('cash', 0);
 		// current user can issue both credit and cash invoices
@@ -396,22 +413,22 @@ function display_order_header(&$order, $editable, $date_text, $display_tax_group
 		if (!isset($_POST['OrderDate']) || $_POST['OrderDate'] == "")
 			$_POST['OrderDate'] = $order->document_date;
 
-		date_row($date_text, 'OrderDate',
-		  _('Date of order receive'), null, 0, 0, 0, null, true);
+		date_row($date_text, 'OrderDate', _('Date of order receive'),
+			$order->trans_no==0, 0, 0, 0, null, true);
 		if (isset($_POST['_OrderDate_changed'])) {
 			if (!is_company_currency($order->customer_currency) 
 				&& (get_base_sales_type()>0)) {
 					$change_prices = 1;
 			}
 			$Ajax->activate('_ex_rate');
-			if ($order->trans_type == 10) {
+			if ($order->trans_type == ST_SALESINVOICE) {
 				$_POST['delivery_date'] = get_invoice_duedate(get_post('customer_id'), get_post('OrderDate'));
 			} else 
-				$_POST['delivery_date'] = add_days(get_post('OrderDate'), sys_prefs::default_delivery_required_by());
+				$_POST['delivery_date'] = add_days(get_post('OrderDate'), $SysPrefs->default_delivery_required_by());
 			$Ajax->activate('items_table');
 			$Ajax->activate('delivery_date');
 		}
-		if ($order->trans_type != 30)
+		if ($order->trans_type != ST_SALESORDER && $order->trans_type != ST_SALESQUOTE)
 		{	// 2008-11-12 Joe Hunt added dimensions
 			$dim = get_company_pref('use_dimension');
 			if ($dim > 0)
@@ -553,15 +570,20 @@ function display_delivery_details(&$order)
 		end_table();
 	} else {
 
-		if ($order->trans_type==10)
+		if ($order->trans_type==ST_SALESINVOICE)
 		{
 			$title = _("Delivery Details");
 			$delname = _("Due Date").':';
 		}
-		elseif ($order->trans_type==13)
+		elseif ($order->trans_type==ST_CUSTDELIVERY)
 		{
 			$title = _("Invoice Delivery Details");
 			$delname = _("Invoice before").':';
+		}
+		elseif ($order->trans_type==ST_SALESQUOTE)
+		{
+			$title = _("Quotation Delivery Details");
+			$delname = _("Valid until").':';
 		}
 		else
 		{
@@ -577,25 +599,22 @@ function display_delivery_details(&$order)
 		if (list_updated('Location'))
 			$Ajax->activate('items_table');
 
+
 		date_row($delname, 'delivery_date',
-			$order->trans_type==30 ?  _('Enter requested day of delivery') : '', 
-			$order->due_date, 0, 0, 0);
+			$order->trans_type==ST_SALESORDER ?  _('Enter requested day of delivery') : $order->trans_type==ST_SALESQUOTE ? _('Enter Valid until Date') : '');
 		text_row(_("Deliver To:"), 'deliver_to', $order->deliver_to, 40, 40,
 			_('Additional identifier for delivery e.g. name of receiving person'));
 
 		textarea_row(_("Address:"), 'delivery_address', $order->delivery_address, 35, 5,
 			_('Delivery address. Default is address of customer branch'));
-		text_row(_("Contact Phone Number:"), 'phone', $order->phone, 25, 25,
-		    _('Phone number of ordering person. Defaults to branch phone number'));
 
 		table_section(2);
 
+		text_row(_("Contact Phone Number:"), 'phone', $order->phone, 25, 25,
+		    _('Phone number of ordering person. Defaults to branch phone number'));
 		text_row(_("Customer Reference:"), 'cust_ref', $order->cust_ref, 25, 25,
 		  _('Customer reference number for this order (if any)'));
 		textarea_row(_("Comments:"), "Comments", $order->Comments, 31, 5);
-
-		small_amount_row(_("Shipping Charge:"), 'freight_cost',
-	    	price_format(get_post('freight_cost',0)));
 
 		shippers_list_row(_("Shipping Company:"), 'ship_via', $order->ship_via);
 

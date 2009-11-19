@@ -9,8 +9,8 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$path_to_root="../..";
-$page_security = 3;
+$page_security = 'SA_SUPPLIERALLOC';
+$path_to_root = "../..";
 include($path_to_root . "/includes/db_pager.inc");
 include_once($path_to_root . "/includes/session.inc");
 
@@ -23,40 +23,24 @@ include_once($path_to_root . "/sales/includes/sales_db.inc");
 $js = "";
 if ($use_popup_windows)
 	$js .= get_js_open_window(900, 500);
-page(_("Supplier Allocations"), false, false, "", $js);
-
-//--------------------------------------------------------------------------------
-if ($ret = context_restore()) {
-	if(isset($ret['supplier_id']))
-		$_POST['supplier_id'] = $ret['supplier_id'];
-}
-if (isset($_POST['_supplier_id_editor'])) {
-	context_call($path_to_root.'/purchasing/manage/suppliers.php?supplier_id='.$_POST['supplier_id'] );
-}
+page(_($help_context = "Supplier Allocations"), false, false, "", $js);
 
 //--------------------------------------------------------------------------------
 
 start_form();
 
 	/* show all outstanding receipts and credits to be allocated */
-	/*Clear any previous allocation records */
-	if (isset($_SESSION['alloc']))
-	{
-		unset($_SESSION['alloc']->allocs);
-		unset($_SESSION['alloc']);
-	}
     if (!isset($_POST['supplier_id']))
     	$_POST['supplier_id'] = get_global_supplier();
 
     echo "<center>" . _("Select a Supplier: ") . "&nbsp;&nbsp;";
-	supplier_list('supplier_id', $_POST['supplier_id'], true, true);
+	echo supplier_list('supplier_id', $_POST['supplier_id'], true, true);
     echo "<br>";
     check(_("Show Settled Items:"), 'ShowSettled', null, true);
 	echo "</center><br><br>";
-	end_form();
 	set_global_supplier($_POST['supplier_id']);
 
-	if (isset($_POST['supplier_id']) && ($_POST['supplier_id'] == reserved_words::get_all())) 
+	if (isset($_POST['supplier_id']) && ($_POST['supplier_id'] == ALL_TEXT)) 
 	{
 		unset($_POST['supplier_id']);
 	}
@@ -71,7 +55,9 @@ start_form();
 //--------------------------------------------------------------------------------
 function systype_name($dummy, $type)
 {
-	return systypes::name($type);
+	global $systypes_array;
+
+	return $systypes_array[$type];
 }
 
 function trans_view($trans)
@@ -124,12 +110,7 @@ if (isset($_POST['customer_id'])) {
 $table =& new_db_pager('alloc_tbl', $sql, $cols);
 $table->set_marker('check_settled', _("Marked items are settled."), 'settledbg', 'settledfg');
 
-if (get_post('_ShowSettled_update') || get_post('_supplier_id_update') ) {
-	$table->set_sql($sql);
-	$table->set_columns($cols);
-}
 $table->width = "80%";
-start_form();
 
 display_db_pager($table);
 

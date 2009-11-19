@@ -15,7 +15,7 @@ function add_gl_account($account_code, $account_name, $account_type, $account_co
 		VALUES (".db_escape($account_code).", ".db_escape($account_code2).", "
 			.db_escape($account_name).", ".db_escape($account_type).")";
 
-	db_query($sql, "could not add gl account");
+	return db_query($sql);
 }
 
 function update_gl_account($account_code, $account_name, $account_type, $account_code2)
@@ -24,7 +24,7 @@ function update_gl_account($account_code, $account_name, $account_type, $account
     .",account_type=".db_escape($account_type).", account_code2=".db_escape($account_code2)
 		." WHERE account_code = ".db_escape($account_code);
 
-	db_query($sql, "could not update gl account");
+	return db_query($sql);
 }
 
 function delete_gl_account($code)
@@ -51,13 +51,13 @@ function get_gl_accounts($from=null, $to=null)
 function get_gl_accounts_all($balance=-1)
 {
 	if ($balance == 1)
-		$where ="WHERE balance_sheet>0 AND balance_sheet<".CL_INCOME;
+		$where ="WHERE ctype>0 AND ctype<".CL_INCOME;
 	elseif ($balance == 0)	
-		$where ="WHERE balance_sheet>".CL_EQUITY." OR balance_sheet=0"; // backwards compatibility
+		$where ="WHERE ctype>".CL_EQUITY." OR ctype=0"; // backwards compatibility
  	$sql = "SELECT ".TB_PREF."chart_master.account_code, ".TB_PREF."chart_master.account_name, ".TB_PREF."chart_master.account_code2,
  		".TB_PREF."chart_types.name AS AccountTypeName,".TB_PREF."chart_types.id AS AccountType,
 	 	".TB_PREF."chart_types.parent, ".TB_PREF."chart_class.class_name AS AccountClassName, ".TB_PREF."chart_class.cid AS ClassID, 
-	 	".TB_PREF."chart_class.balance_sheet AS ClassType
+	 	".TB_PREF."chart_class.ctype AS ClassType
 	 	FROM ".TB_PREF."chart_types INNER JOIN ".TB_PREF."chart_class ON ".TB_PREF."chart_types.class_id=".TB_PREF."chart_class.cid
 	 	LEFT JOIN ".TB_PREF."chart_master ON ".TB_PREF."chart_master.account_type=".TB_PREF."chart_types.id ";
 	if ($balance != -1)
@@ -78,7 +78,7 @@ function get_gl_account($code)
 
 function is_account_balancesheet($code)
 {
-	$sql = "SELECT ".TB_PREF."chart_class.balance_sheet FROM ".TB_PREF."chart_class, "
+	$sql = "SELECT ".TB_PREF."chart_class.ctype FROM ".TB_PREF."chart_class, "
 		.TB_PREF."chart_types, ".TB_PREF."chart_master
 		WHERE ".TB_PREF."chart_master.account_type=".TB_PREF."chart_types.id AND
 		".TB_PREF."chart_types.class_id=".TB_PREF."chart_class.cid

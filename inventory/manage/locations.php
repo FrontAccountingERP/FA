@@ -9,11 +9,11 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security = 11;
-$path_to_root="../..";
+$page_security = 'SA_INVENTORYLOCATION';
+$path_to_root = "../..";
 include($path_to_root . "/includes/session.inc");
 
-page(_("Inventory Locations"));
+page(_($help_context = "Inventory Locations"));
 
 include_once($path_to_root . "/includes/ui.inc");
 
@@ -52,7 +52,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
     	{
     
     		update_item_location($selected_id, $_POST['location_name'], $_POST['delivery_address'],
-    			$_POST['phone'], $_POST['fax'], $_POST['email'], $_POST['contact']);	
+    			$_POST['phone'], $_POST['phone2'], $_POST['fax'], $_POST['email'], $_POST['contact']);	
 			display_notification(_('Selected location has been updated'));
     	} 
     	else 
@@ -61,7 +61,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
     	/*selected_id is null cos no item selected on first time round so must be adding a	record must be submitting new entries in the new Location form */
     	
     		add_item_location($_POST['loc_code'], $_POST['location_name'], $_POST['delivery_address'], 
-    		 	$_POST['phone'], $_POST['fax'], $_POST['email'], $_POST['contact']);
+    		 	$_POST['phone'], $_POST['phone2'], $_POST['fax'], $_POST['email'], $_POST['contact']);
 			display_notification(_('New location has been added'));
     	}
 		
@@ -157,38 +157,41 @@ if ($Mode == 'Delete')
 if ($Mode == 'RESET')
 {
 	$selected_id = -1;
+	$sav = get_post('show_inactive');
 	unset($_POST);
+	$_POST['show_inactive'] = $sav;
 }
 
 $sql = "SELECT * FROM ".TB_PREF."locations";
+if (!check_value('show_inactive')) $sql .= " WHERE !inactive";
 $result = db_query($sql, "could not query locations");;
 
 start_form();
-start_table("$table_style width=30%");
-$th = array(_("Location Code"), _("Location Name"), "", "");
+start_table($table_style);
+$th = array(_("Location Code"), _("Location Name"), _("Address"), _("Phone"), _("Secondary Phone"), "", "");
+inactive_control_column($th);
 table_header($th);
 $k = 0; //row colour counter
-while ($myrow = db_fetch_row($result)) 
+while ($myrow = db_fetch($result)) 
 {
 
 	alt_table_row_color($k);
 	
-	label_cell($myrow[0]);
-	label_cell($myrow[1]);
- 	edit_button_cell("Edit".$myrow[0], _("Edit"));
- 	delete_button_cell("Delete".$myrow[0], _("Delete"));
+	label_cell($myrow["loc_code"]);
+	label_cell($myrow["location_name"]);
+	label_cell($myrow["delivery_address"]);
+	label_cell($myrow["phone"]);
+	label_cell($myrow["phone2"]);
+	inactive_control_cell($myrow["loc_code"], $myrow["inactive"], 'locations', 'loc_code');
+ 	edit_button_cell("Edit".$myrow["loc_code"], _("Edit"));
+ 	delete_button_cell("Delete".$myrow["loc_code"], _("Delete"));
 	end_row();
 }
 	//END WHILE LIST LOOP
-
-//end of ifs and buts!
-
+inactive_control_row($th);
 end_table();
 
-end_form();
 echo '<br>';
-
-start_form();
 
 start_table($table_style2);
 
@@ -205,6 +208,7 @@ if ($selected_id != -1)
 		$_POST['delivery_address'] = $myrow["delivery_address"];
 		$_POST['contact'] = $myrow["contact"];
 		$_POST['phone'] = $myrow["phone"];
+		$_POST['phone2'] = $myrow["phone2"];
 		$_POST['fax'] = $myrow["fax"];
 		$_POST['email'] = $myrow["email"];
 	}
@@ -222,12 +226,13 @@ text_row_ex(_("Contact for deliveries:"), 'contact', 30, 30);
 
 textarea_row(_("Address:"), 'delivery_address', null, 35, 5);	
 
-text_row_ex(_("Telephone No:"), 'phone', 30, 30);
-text_row_ex(_("Facsimile No:"), 'fax', 30, 30);
+text_row_ex(_("Telephone No:"), 'phone', 32, 30);
+text_row_ex(_("Secondary Phone Number:"), 'phone2', 32, 30);
+text_row_ex(_("Facsimile No:"), 'fax', 32, 30);
 email_row_ex(_("E-mail:"), 'email', 30);
 
 end_table(1);
-submit_add_or_update_center($selected_id == -1, '', true);
+submit_add_or_update_center($selected_id == -1, '', 'both');
 
 end_form();
 

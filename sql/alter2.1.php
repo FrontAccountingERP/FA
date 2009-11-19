@@ -11,8 +11,12 @@
 ***********************************************************************/
 class fa2_1 {
 	var $version = '2.1';	// version installed
-	var $description = 'Version 2.1';
+	var $description;
 	var $sql = 'alter2.1.sql';
+
+	function fa2_1() {
+		$this->description = _('Upgrade from version 2.0 to 2.1');
+	}
 	//
 	//	Install procedure. All additional changes 
 	//	not included in sql file should go here.
@@ -146,13 +150,14 @@ class fa2_1 {
 	//	Test if patch was applied before.
 	//
 	function installed($pref) {
-		if (check_table($pref, 'item_codes')) return false;
-		if (check_table($pref, 'company', 'foreign_codes')) return false;
-		if (check_table($pref, 'suppliers', 'credit_limit')) return false;
-		if (check_table($pref, 'bank_trans', 'reconciled', 
-			array('Type'=>'date'))) return false;
-		if (check_table($pref, 'trans_tax_details')) return false;
-		return true;
+		$n = 5; // number of features to be installed
+		if (!check_table($pref, 'item_codes')) $n--;
+		if (!check_table($pref, 'company', 'foreign_codes')) $n--;
+		if (!check_table($pref, 'suppliers', 'credit_limit')) $n--;
+		if (!check_table($pref, 'bank_trans', 'reconciled', 
+			array('Type'=>'date'))) $n--;
+		if (!check_table($pref, 'trans_tax_details')) $n--;
+		return $n == 0 ? true : 5 - $n;
 	}
 };
 

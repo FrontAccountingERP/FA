@@ -9,11 +9,10 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$path_to_root="..";
+$page_security = 'SA_SUPPLIERCREDIT';
+$path_to_root = "..";
 
 include_once($path_to_root . "/purchasing/includes/supp_trans_class.inc");
-
-$page_security=5;
 
 include_once($path_to_root . "/includes/session.inc");
 
@@ -26,30 +25,18 @@ if ($use_popup_windows)
 	$js .= get_js_open_window(900, 500);
 if ($use_date_picker)
 	$js .= get_js_date_picker();
-page(_("Supplier Credit Note"), false, false, "", $js);
+page(_($help_context = "Supplier Credit Note"), false, false, "", $js);
 
 //----------------------------------------------------------------------------------------
 
 check_db_has_suppliers(_("There are no suppliers defined in the system."));
 
 //---------------------------------------------------------------------------------------------------------------
-if ($ret = context_restore()) {
- // return from supplier editor
-	copy_from_trans($_SESSION['supp_trans']);
-	if(isset($ret['supplier_id']))
-		$_POST['supplier_id'] = $ret['supplier_id'];
-}
-if (isset($_POST['_supplier_id_editor'])) {
-	copy_to_trans($_SESSION['supp_trans']);
-	context_call($path_to_root.'/purchasing/manage/suppliers.php?supplier_id='.$_POST['supplier_id'], 'supp_trans');
-}
-
-//---------------------------------------------------------------------------------------------------------------
 
 if (isset($_GET['AddedID'])) 
 {
 	$invoice_no = $_GET['AddedID'];
-	$trans_type = 21;
+	$trans_type = ST_SUPPCREDIT;
 
 
     echo "<center>";
@@ -150,7 +137,7 @@ if (isset($_POST['AddGLCodeToTrans'])){
 
 function check_data()
 {
-	global $total_grn_value, $total_gl_value;
+	global $total_grn_value, $total_gl_value, $Refs;
 	
 	if (!$_SESSION['supp_trans']->is_valid_trans_to_post())
 	{
@@ -159,21 +146,21 @@ function check_data()
 		return false;
 	}
 
-	if (!references::is_valid($_SESSION['supp_trans']->reference)) 
+	if (!$Refs->is_valid($_SESSION['supp_trans']->reference)) 
 	{
 		display_error(_("You must enter an credit note reference."));
 		set_focus('reference');
 		return false;
 	}
 
-	if (!is_new_reference($_SESSION['supp_trans']->reference, 21)) 
+	if (!is_new_reference($_SESSION['supp_trans']->reference, ST_SUPPCREDIT)) 
 	{
 		display_error(_("The entered reference is already in use."));
 		set_focus('reference');
 		return false;
 	}
 
-	if (!references::is_valid($_SESSION['supp_trans']->supp_reference)) 
+	if (!$Refs->is_valid($_SESSION['supp_trans']->supp_reference)) 
 	{
 		display_error(_("You must enter a supplier's credit note reference."));
 		set_focus('supp_reference');
@@ -325,7 +312,7 @@ if (isset($_POST['go']))
 
 //--------------------------------------------------------------------------------------------------
 
-start_form(false, true);
+start_form();
 
 invoice_header($_SESSION['supp_trans']);
 if ($_POST['supplier_id']=='') 
@@ -354,7 +341,7 @@ if (get_post('AddGLCodeToTrans'))
 	$Ajax->activate('inv_tot');
 
 br();
-submit_center('PostCreditNote', _("Enter Credit Note"), true, '', true);
+submit_center('PostCreditNote', _("Enter Credit Note"), true, '', 'default');
 br();
 
 end_form();

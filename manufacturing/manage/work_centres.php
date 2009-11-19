@@ -9,11 +9,11 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security = 3;
-$path_to_root="../..";
+$page_security = 'SA_WORKCENTRES';
+$path_to_root = "../..";
 include($path_to_root . "/includes/session.inc");
 
-page(_("Work Centres"));
+page(_($help_context = "Work Centres"));
 
 include($path_to_root . "/manufacturing/includes/manufacturing_db.inc");
 
@@ -94,15 +94,18 @@ if ($Mode == 'Delete')
 if ($Mode == 'RESET')
 {
 	$selected_id = -1;
+	$sav = get_post('show_inactive');
 	unset($_POST);
+	$_POST['show_inactive'] = $sav;
 }
 //-----------------------------------------------------------------------------------
 
-$result = get_all_work_centres();
+$result = get_all_work_centres(check_value('show_inactive'));
 
 start_form();
 start_table("$table_style width=50%");
 $th = array(_("Name"), _("description"), "", "");
+inactive_control_column($th);
 table_header($th);
 
 $k = 0;
@@ -113,17 +116,15 @@ while ($myrow = db_fetch($result))
 
 	label_cell($myrow["name"]);
 	label_cell($myrow["description"]);
+	inactive_control_cell($myrow["id"], $myrow["inactive"], 'workcentres', 'id');
  	edit_button_cell("Edit".$myrow['id'], _("Edit"));
  	delete_button_cell("Delete".$myrow['id'], _("Delete"));
 	end_row();
 }
 
-end_table();
-end_form();
-echo '<br>';
+inactive_control_row($th);
+end_table(1);
 //-----------------------------------------------------------------------------------
-
-start_form();
 
 start_table($table_style2);
 
@@ -144,7 +145,7 @@ text_row_ex(_("Description:"), 'description', 50);
 
 end_table(1);
 
-submit_add_or_update_center($selected_id == -1, '', true);
+submit_add_or_update_center($selected_id == -1, '', 'both');
 
 end_form();
 

@@ -9,7 +9,7 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security = 2;
+$page_security = 'SA_CUSTSTATREP';
 // ----------------------------------------------------------------
 // $ Revision:	2.0 $
 // Creator:	Joe Hunt
@@ -31,15 +31,15 @@ print_statements();
 
 function getTransactions($debtorno, $date)
 {
-    $sql = "SELECT ".TB_PREF."debtor_trans.*, ".TB_PREF."sys_types.type_name,
-				(".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + ".TB_PREF."debtor_trans.ov_freight + ".TB_PREF."debtor_trans.ov_discount)
+    $sql = "SELECT ".TB_PREF."debtor_trans.*,
+				(".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + ".TB_PREF."debtor_trans.ov_freight + 
+				".TB_PREF."debtor_trans.ov_freight_tax + ".TB_PREF."debtor_trans.ov_discount)
 				AS TotalAmount, ".TB_PREF."debtor_trans.alloc AS Allocated,
-				((".TB_PREF."debtor_trans.type = 10)
+				((".TB_PREF."debtor_trans.type = ".ST_SALESINVOICE.")
 					AND ".TB_PREF."debtor_trans.due_date < '$date') AS OverDue
-    			FROM ".TB_PREF."debtor_trans, ".TB_PREF."sys_types
-    			WHERE ".TB_PREF."debtor_trans.tran_date <= '$date' AND ".TB_PREF."debtor_trans.debtor_no = $debtorno
-    				AND ".TB_PREF."debtor_trans.type = ".TB_PREF."sys_types.type_id
-    				AND ".TB_PREF."debtor_trans.type <> 13
+    			FROM ".TB_PREF."debtor_trans
+    			WHERE ".TB_PREF."debtor_trans.tran_date <= '$date' AND ".TB_PREF."debtor_trans.debtor_no = ".db_escape($debtorno)."
+    				AND ".TB_PREF."debtor_trans.type <> ".ST_CUSTDELIVERY."
     				ORDER BY ".TB_PREF."debtor_trans.tran_date";
 
     return db_query($sql,"No transactions were returned");
@@ -49,15 +49,14 @@ function getTransactions($debtorno, $date)
 
 function print_statements()
 {
-	global $path_to_root;
+	global $path_to_root, $systypes_array;
 
 	include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 
 	$customer = $_POST['PARAM_0'];
 	$currency = $_POST['PARAM_1'];
-	$bankaccount = $_POST['PARAM_2'];
-	$email = $_POST['PARAM_3'];
-	$comments = $_POST['PARAM_4'];
+	$email = $_POST['PARAM_2'];
+	$comments = $_POST['PARAM_3'];
 
 	$dec = user_price_dec();
 
@@ -67,10 +66,7 @@ function print_statements()
 
 	$aligns = array('left',	'left',	'left',	'left',	'right', 'right', 'right', 'right');
 
-	$params = array('comments' => $comments,
-					'bankaccount' => $bankaccount);
-
-	$baccount = get_bank_account($params['bankaccount']);
+	$params = array('comments' => $comments);
 
 	$cur = get_company_pref('curr_default');
 	$PastDueDays1 = get_company_pref('past_due_days');
@@ -85,7 +81,7 @@ function print_statements()
 	}
 
 	$sql = "SELECT debtor_no, name AS DebtorName, address, tax_id, email, curr_code, curdate() AS tran_date, payment_terms FROM ".TB_PREF."debtors_master";
-	if ($customer != reserved_words::get_all_numeric())
+	if ($customer != ALL_NUMERIC)
 		$sql .= " WHERE debtor_no = ".db_escape($customer);
 	else
 		$sql .= " ORDER by name";
@@ -98,6 +94,8 @@ function print_statements()
 		$myrow['order_'] = "";
 
 		$TransResult = getTransactions($myrow['debtor_no'], $date);
+		$baccount = get_default_bank_account($myrow['curr_code']);
+		$params['bankaccount'] = $baccount['id'];
 		if (db_num_rows($TransResult) == 0)
 			continue;
 		if ($email == 1)
@@ -131,12 +129,12 @@ function print_statements()
 			$DisplayAlloc = number_format2($myrow2["Allocated"],$dec);
 			$DisplayNet = number_format2($myrow2["TotalAmount"] - $myrow2["Allocated"],$dec);
 
-			$rep->TextCol(0, 1,	$myrow2['type_name'], -2);
+			$rep->TextCol(0, 1, $systypes_array[$myrow2['type']], -2);
 			$rep->TextCol(1, 2,	$myrow2['reference'], -2);
 			$rep->TextCol(2, 3,	sql2date($myrow2['tran_date']), -2);
-			if ($myrow2['type'] == 10)
+			if ($myrow2['type'] == ST_SALESINVOICE)
 				$rep->TextCol(3, 4,	sql2date($myrow2['due_date']), -2);
-			if ($myrow2['type'] == 10)
+			if ($myrow2['type'] == ST_SALESINVOICE)
 				$rep->TextCol(4, 5,	$DisplayTotal, -2);
 			else
 				$rep->TextCol(5, 6,	$DisplayTotal, -2);

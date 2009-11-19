@@ -9,12 +9,12 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
+$page_security = 'SA_ITEMTAXTYPE';
 $path_to_root = "..";
-$page_security = 3;
 
 include($path_to_root . "/includes/session.inc");
 
-page(_("Item Tax Types")); 
+page(_($help_context = "Item Tax Types")); 
 
 include_once($path_to_root . "/taxes/db/item_tax_types_db.inc");
 include_once($path_to_root . "/taxes/db/tax_types_db.inc");
@@ -101,16 +101,19 @@ if ($Mode == 'Delete')
 if ($Mode == 'RESET')
 {
 	$selected_id = -1;
+	$sav = get_post('show_inactive');
 	unset($_POST);
+	$_POST['show_inactive'] = $sav;
 }
 //-----------------------------------------------------------------------------------
 
 
-$result2 = $result = get_all_item_tax_types();
+$result2 = $result = get_all_item_tax_types(check_value('show_inactive'));
+
 start_form();
 start_table("$table_style width=30%");
 $th = array(_("Name"), _("Tax exempt"),'','');
-
+inactive_control_column($th);
 table_header($th);
 
 $k = 0;
@@ -130,18 +133,15 @@ while ($myrow = db_fetch($result2))
 	
 	label_cell($myrow["name"]);
 	label_cell($disallow_text);
+	inactive_control_cell($myrow["id"], $myrow["inactive"], 'item_tax_types', 'id');
  	edit_button_cell("Edit".$myrow["id"], _("Edit"));
  	delete_button_cell("Delete".$myrow["id"], _("Delete"));
 	end_row();
 }
 
-end_table();
-end_form();
-echo '<br>';
-
+inactive_control_row($th);
+end_table(1);
 //-----------------------------------------------------------------------------------
-
-start_form();
 
 start_table($table_style2);
 
@@ -199,7 +199,7 @@ if (!isset($_POST['exempt']) || $_POST['exempt'] == 0)
     end_table(1);
 }
 
-submit_add_or_update_center($selected_id == -1, '', true);
+submit_add_or_update_center($selected_id == -1, '', 'both');
 
 end_form();
 

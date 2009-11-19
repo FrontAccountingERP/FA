@@ -33,19 +33,26 @@ class user_prefs
 	var $show_hints;
 	var $query_size; // table pager page length
 	var $graphic_links; // use graphic links
-
+	var $sticky_date;	// save date on subsequent document entry
+	var $startup_tab;  // default start-up menu tab
+	
 	function user_prefs($user=null)
 	{
 		if ($user == null) { 
 			// set default values, used before login
-			global $dflt_lang;
+			global $dflt_lang, $dflt_date_sep, $dflt_date_fmt;
 			
+			$this->date_sep = $dflt_date_sep;
+			$this->date_format = $dflt_date_fmt;
+			$this->tho_sep = 0;
+			$this->dec_sep = 0;
+			$this->price_dec = 2;
 			$this->language = $dflt_lang;
 			$this->theme = 'default';
 			
 		} else {
 			$this->language = $user["language"];
-			language::set_language($this->language);
+			$_SESSION['language']->set_language($this->language);
 
 			$this->qty_dec = $user["qty_dec"];
 			$this->price_dec = $user["prices_dec"];
@@ -65,6 +72,16 @@ class user_prefs
 			$this->rep_popup = $user["rep_popup"];
 			$this->query_size = $user["query_size"];
 			$this->graphic_links = $user["graphic_links"];
+			if (isset($user["sticky_doc_date"]))
+			{
+				$this->sticky_date = $user["sticky_doc_date"];
+				$this->startup_tab = $user['startup_tab'];
+			}
+			else
+			{
+				$this->sticky_date = 0;
+				$this->startup_tab = "orders";
+			}
 		}
 	}
 
@@ -168,6 +185,16 @@ class user_prefs
 	function graphic_links() 
 	{
 		return $this->graphic_links;
+	}
+	
+	function sticky_date()
+	{
+		return $this->sticky_date;
+	}
+	
+	function start_up_tab()
+	{
+		return $this->startup_tab;
 	}
 
 	function set_dec($price_dec, $qty_dec, $exrate_dec, $percent_dec, $showgl, $showcodes) 

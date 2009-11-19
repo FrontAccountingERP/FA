@@ -9,8 +9,8 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security = 10;
-$path_to_root="..";
+$page_security = 'SA_WORKORDERCOST';
+$path_to_root = "..";
 include_once($path_to_root . "/includes/session.inc");
 
 include_once($path_to_root . "/includes/date_functions.inc");
@@ -26,7 +26,7 @@ if ($use_popup_windows)
 	$js .= get_js_open_window(900, 500);
 if ($use_date_picker)
 	$js .= get_js_date_picker();
-page(_("Work Order Additional Costs"), false, false, "", $js);
+page(_($help_context = "Work Order Additional Costs"), false, false, "", $js);
 
 if (isset($_GET['trans_no']) && $_GET['trans_no'] != "")
 {
@@ -38,7 +38,7 @@ if (isset($_GET['trans_no']) && $_GET['trans_no'] != "")
 if (isset($_GET['AddedID']))
 {
 	$id = $_GET['AddedID'];
-	$stype = systypes::work_order();
+	$stype = ST_WORKORDER;
 
 	display_notification(_("The additional cost has been entered."));
 
@@ -89,7 +89,7 @@ function can_process()
 		set_focus('date_');
 		return false;
 	}
-	if (date_diff(sql2date($wo_details["released_date"]), $_POST['date_'], "d") > 0)
+	if (date_diff2(sql2date($wo_details["released_date"]), $_POST['date_'], "d") > 0)
 	{
 		display_error(_("The additional cost date cannot be before the release date of the work order."));
 		set_focus('date_');
@@ -104,18 +104,18 @@ function can_process()
 if (isset($_POST['process']) && can_process() == true)
 {
 	begin_transaction();
-	add_gl_trans_std_cost(systypes::work_order(), $_POST['selected_id'], $_POST['date_'], $_POST['cr_acc'],
-		0, 0, $wo_cost_types[$_POST['PaymentType']], -input_num('costs'), payment_person_types::WorkOrder(), $_POST['PaymentType']);
+	add_gl_trans_std_cost(ST_WORKORDER, $_POST['selected_id'], $_POST['date_'], $_POST['cr_acc'],
+		0, 0, $wo_cost_types[$_POST['PaymentType']], -input_num('costs'), PT_WORKORDER, $_POST['PaymentType']);
 	$is_bank_to = is_bank_account($_POST['cr_acc']);
 	if ($is_bank_to)
 	{
-		add_bank_trans(systypes::work_order(), $_POST['selected_id'], $is_bank_to, "",
-			$_POST['date_'], -input_num('costs'), payment_person_types::WorkOrder(), $_POST['PaymentType'], get_company_currency(),
+		add_bank_trans(ST_WORKORDER, $_POST['selected_id'], $is_bank_to, "",
+			$_POST['date_'], -input_num('costs'), PT_WORKORDER, $_POST['PaymentType'], get_company_currency(),
 			"Cannot insert a destination bank transaction");
 	}
 
-	add_gl_trans_std_cost(systypes::work_order(), $_POST['selected_id'], $_POST['date_'], $_POST['db_acc'],
-		$_POST['dim1'], $_POST['dim2'], $wo_cost_types[$_POST['PaymentType']], input_num('costs'), payment_person_types::WorkOrder(), 
+	add_gl_trans_std_cost(ST_WORKORDER, $_POST['selected_id'], $_POST['date_'], $_POST['db_acc'],
+		$_POST['dim1'], $_POST['dim2'], $wo_cost_types[$_POST['PaymentType']], input_num('costs'), PT_WORKORDER, 
 			$_POST['PaymentType']);
 	commit_transaction();	
 

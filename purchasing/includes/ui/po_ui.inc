@@ -40,7 +40,7 @@ function create_new_po()
 	session_register("PO");
 
 	$_SESSION['PO'] = new purch_order;
-	$_POST['OrderDate'] = Today();
+	$_POST['OrderDate'] = new_doc_date();
 	if (!is_date_in_fiscalyear($_POST['OrderDate']))
 		$_POST['OrderDate'] = end_fiscalyear();
 	$_SESSION['PO']->orig_order_date = $_POST['OrderDate'];
@@ -50,7 +50,7 @@ function create_new_po()
 
 function display_po_header(&$order)
 {
-	global $table_style2, $Ajax;
+	global $table_style2, $Ajax, $Refs;
 
 	$editable = ($order->order_no == 0);
 
@@ -59,10 +59,10 @@ function display_po_header(&$order)
 	table_section(1);
     if ($editable)
     {
-        if (!isset($_POST['supplier_id']) && (get_global_supplier() != reserved_words::get_all()))
+        if (!isset($_POST['supplier_id']) && (get_global_supplier() != ALL_TEXT))
         	$_POST['supplier_id'] = get_global_supplier();
 
-    	supplier_list_row(_("Supplier:"), 'supplier_id', null, false, true);
+    	supplier_list_row(_("Supplier:"), 'supplier_id', null, false, true, false, true);
 	}
 	else
 	{
@@ -91,7 +91,7 @@ function display_po_header(&$order)
 
     if ($editable)
     {
-    	ref_row(_("Reference:"), 'ref', '', references::get_next(systypes::po()));
+    	ref_row(_("Reference:"), 'ref', '', $Refs->get_next(ST_PURCHORDER));
     }
     else
     {
@@ -110,7 +110,7 @@ function display_po_header(&$order)
 	//	if (!is_date_in_fiscalyear($_POST['OrderDate']))
 	//		$_POST['OrderDate'] = end_fiscalyear();
 	//}
-	date_row(_("Order Date:"), 'OrderDate', '', $_POST['OrderDate'], 0, 0, 0, null, true);
+	date_row(_("Order Date:"), 'OrderDate', '', true, 0, 0, 0, null, true);
 	if (isset($_POST['_OrderDate_changed'])) {
 		$Ajax->activate('_ex_rate');
 	}
@@ -119,7 +119,7 @@ function display_po_header(&$order)
 
 	echo "<tr><td>" . _("Receive Into:") . "</td>";
 	echo "<td>";
-    locations_list('StkLocation', null, false, true);
+    echo locations_list('StkLocation', null, false, true);
 	echo "</td></tr>";
 
 	table_section(3);
@@ -214,8 +214,8 @@ function display_po_items(&$order, $editable=true)
 		po_item_controls($order);
 
     $display_total = price_format($total);
-    label_row(_("Total Excluding Shipping/Tax"), $display_total, "colspan=6 align=right",
-    	"nowrap align=right");
+    label_row(_("Total Excluding Shipping/Tax"), $display_total, "colspan=7 align=right",
+    	"nowrap align=right", 2);
 
 	end_table(1);
 	div_end();
@@ -238,7 +238,7 @@ function display_po_summary(&$po, $is_self=false, $editable=false)
 
     if (!$is_self)
     {
-    	label_cells(_("Purchase Order"), get_trans_view_str(systypes::po(), $po->order_no),
+    	label_cells(_("Purchase Order"), get_trans_view_str(ST_PURCHORDER, $po->order_no),
     		"class='tableheader2'");
     }
 	end_row();
@@ -304,7 +304,7 @@ function po_item_controls(&$order, $stock_id=null)
 	{
 		hidden('line_no', ($_SESSION['PO']->lines_on_order + 1));
 
-		stock_purchasable_items_list_cells(null, 'stock_id', null, false, true);
+		stock_purchasable_items_list_cells(null, 'stock_id', null, false, false, true);
 		if (list_updated('stock_id')) {
 			    $Ajax->activate('price');
 			    $Ajax->activate('units');

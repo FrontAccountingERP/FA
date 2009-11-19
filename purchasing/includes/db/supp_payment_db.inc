@@ -10,8 +10,10 @@
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
 function add_supp_payment($supplier_id, $date_, $bank_account,
-	$amount, $discount, $ref, $memo_, $rate=0)
+	$amount, $discount, $ref, $memo_, $rate=0, $charge=0)
 {
+	global $Refs;
+
 	begin_transaction();
 
    	$supplier_currency = get_supplier_currency($supplier_id);
@@ -22,16 +24,18 @@ function add_supp_payment($supplier_id, $date_, $bank_account,
 	{
 		$supp_amount = exchange_from_to($amount, $bank_account_currency, $supplier_currency, $date_);
 		$supp_discount = exchange_from_to($discount, $bank_account_currency, $supplier_currency, $date_);
+		$supp_charge = exchange_from_to($charge, $bank_account_currency, $supplier_currency, $date_);
 	}
 	else
 	{
 		$supp_amount = round($amount / $rate, user_price_dec());
 		$supp_discount = round($discount / $rate, user_price_dec());
+		$supp_charge = round($charge / $rate, user_price_dec());
 	}
 	
 
 	// it's a supplier payment
-	$trans_type = 22;
+	$trans_type = ST_SUPPAYMENT;
 
 	/* Create a supp_trans entry for the supplier payment */
 	$payment_id = add_supp_trans($trans_type, $supplier_id, $date_, $date_,
@@ -51,24 +55,31 @@ function add_supp_payment($supplier_id, $date_, $bank_account,
 			-$supp_discount, $supplier_id, "", $rate);
 	}
 
+	if ($supp_charge != 0)
+	{
+		$charge_act = get_company_pref('bank_charge_act');
+		$total += add_gl_trans_supplier($trans_type, $payment_id, $date_, $charge_act, 0, 0,
+			$supp_charge, $supplier_id, "", $rate);
+	}
+
 	if ($supp_amount != 0)
 	{
 		$total += add_gl_trans_supplier($trans_type, $payment_id, $date_, $bank_gl_account, 0, 0,
-			-$supp_amount, $supplier_id, "", $rate);
+			-($supp_amount + $supp_charge), $supplier_id, "", $rate);
 	}
 
 	/*Post a balance post if $total != 0 */
-	add_gl_balance($trans_type, $payment_id, $date_, -$total, payment_person_types::supplier(), $supplier_id);	
+	add_gl_balance($trans_type, $payment_id, $date_, -$total, PT_SUPPLIER, $supplier_id);	
 
    /*now enter the bank_trans entry */
 	add_bank_trans($trans_type, $payment_id, $bank_account, $ref,
-		$date_, -($amount), payment_person_types::supplier(),
+		$date_, -($amount + $supp_charge), PT_SUPPLIER,
 		$supplier_id, $bank_account_currency,
 		"Could not add the supplier payment bank transaction");
 
 	add_comments($trans_type, $payment_id, $date_, $memo_);
 
-	references::save_last($ref, $trans_type);
+	$Refs->save($trans_type, $payment_id, $ref);
 
 	commit_transaction();
 

@@ -9,8 +9,8 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security = 2;
-$path_to_root="../..";
+$page_security = 'SA_SUPPTRANSVIEW';
+$path_to_root = "../..";
 include($path_to_root . "/includes/db_pager.inc");
 include($path_to_root . "/includes/session.inc");
 
@@ -22,7 +22,7 @@ if ($use_popup_windows)
 	$js .= get_js_open_window(900, 500);
 if ($use_date_picker)
 	$js .= get_js_date_picker();
-page(_("Search Outstanding Purchase Orders"), false, false, "", $js);
+page(_($help_context = "Search Outstanding Purchase Orders"), false, false, "", $js);
 
 if (isset($_GET['order_number']))
 {
@@ -55,7 +55,7 @@ if (get_post('SearchOrders'))
 
 //---------------------------------------------------------------------------------------------
 
-start_form(false, true);
+start_form();
 
 start_table("class='tablestyle_noborder'");
 start_row();
@@ -68,21 +68,19 @@ locations_list_cells(_("Location:"), 'StockLocation', null, true);
 
 stock_items_list_cells(_("Item:"), 'SelectStockFromList', null, true);
 
-submit_cells('SearchOrders', _("Search"),'',_('Select documents'), true);
+submit_cells('SearchOrders', _("Search"),'',_('Select documents'), 'default');
 end_row();
 end_table();
-end_form();
 //---------------------------------------------------------------------------------------------
 function trans_view($trans)
 {
-	return get_trans_view_str(systypes::po(), $trans["order_no"]);
+	return get_trans_view_str(ST_PURCHORDER, $trans["order_no"]);
 }
 
 function edit_link($row) 
 {
   return pager_link( _("Edit"),
-	"/purchasing/po_entry_items.php?" . SID 
-	. "ModifyOrderNumber=" . $row["order_no"], ICON_EDIT);
+	"/purchasing/po_entry_items.php?ModifyOrderNumber=" . $row["order_no"], ICON_EDIT);
 }
 
 function prt_link($row)
@@ -93,8 +91,7 @@ function prt_link($row)
 function receive_link($row) 
 {
   return pager_link( _("Receive"),
-	"/purchasing/po_receive_items.php?" . SID 
-	. "PONumber=" . $row["order_no"], ICON_RECEIVE);
+	"/purchasing/po_receive_items.php?PONumber=" . $row["order_no"], ICON_RECEIVE);
 }
 
 function check_overdue($row)
@@ -189,12 +186,7 @@ if (get_post('StockLocation') != $all_items) {
 $table =& new_db_pager('orders_tbl', $sql, $cols);
 $table->set_marker('check_overdue', _("Marked orders have overdue items."));
 
-if (get_post('SearchOrders')) {
-	$table->set_sql($sql);
-	$table->set_columns($cols);
-}
 $table->width = "80%";
-start_form();
 
 display_db_pager($table);
 

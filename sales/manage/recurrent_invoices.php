@@ -9,8 +9,8 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security = 3;
-$path_to_root="../..";
+$page_security = 'SA_SRECURRENT';
+$path_to_root = "../..";
 include($path_to_root . "/includes/session.inc");
 include($path_to_root . "/includes/ui.inc");
 
@@ -20,7 +20,7 @@ if ($use_popup_windows)
 if ($use_date_picker)
 	$js .= get_js_date_picker();
 
-page(_("Recurrent Invoices"), false, false, "", $js);
+page(_($help_context = "Recurrent Invoices"), false, false, "", $js);
 
 simple_page_mode(true);
 
@@ -114,7 +114,7 @@ while ($myrow = db_fetch($result))
 	alt_table_row_color($k);
 		
 	label_cell($myrow["description"]);
-	label_cell(get_customer_trans_view_str(30, $myrow["order_no"]));
+	label_cell(get_customer_trans_view_str(ST_SALESORDER, $myrow["order_no"]));
 	if ($myrow["debtor_no"] == 0)
 	{
 		label_cell("");
@@ -188,7 +188,7 @@ date_row(_("End:"), 'end', null, null, 0, 0, 5);
 
 end_table(1);
 
-submit_add_or_update_center($selected_id == -1, '', true);
+submit_add_or_update_center($selected_id == -1, '', 'both');
 
 end_form();
 

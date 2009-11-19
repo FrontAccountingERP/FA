@@ -9,7 +9,7 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security = 2;
+$page_security = 'SA_DIMTRANSVIEW';
 $path_to_root="../..";
 
 include($path_to_root . "/includes/db_pager.inc");
@@ -26,12 +26,12 @@ if ($use_date_picker)
 if (isset($_GET['outstanding_only']) && $_GET['outstanding_only'])
 {
 	$outstanding_only = 1;
-	page(_("Search Outstanding Dimensions"), false, false, "", $js);
+	page(_($help_context = "Search Outstanding Dimensions"), false, false, "", $js);
 }
 else
 {
 	$outstanding_only = 0;
-	page(_("Search Dimensions"), false, false, "", $js);
+	page(_($help_context = "Search Dimensions"), false, false, "", $js);
 }
 //-----------------------------------------------------------------------------------
 // Ajax updates
@@ -65,7 +65,7 @@ if (isset($_GET["stock_id"]))
 
 //--------------------------------------------------------------------------------------
 
-start_form(false, true, $_SERVER['PHP_SELF'] ."?outstanding_only=" . $outstanding_only . SID);
+start_form(false, false, $_SERVER['PHP_SELF'] ."?outstanding_only=$outstanding_only");
 
 start_table("class='tablestyle_noborder'");
 start_row();
@@ -85,18 +85,16 @@ if (!$outstanding_only)
 else
 	$_POST['OpenOnly'] = 1;
 
-submit_cells('SearchOrders', _("Search"), '', '', true);
+submit_cells('SearchOrders', _("Search"), '', '', 'default');
 
 end_row();
 end_table();
-
-end_form();
 
 $dim = get_company_pref('use_dimension');
 
 function view_link($row) 
 {
-	return get_dimensions_trans_view_str(systypes::dimension(), $row["id"]);
+	return get_dimensions_trans_view_str(ST_DIMENSION, $row["id"]);
 }
 
 function is_closed($row)
@@ -118,13 +116,15 @@ function sum_dimension($row)
 
 function is_overdue($row)
 {
-	return date_diff(Today(), sql2date($row["due_date"]), "d") > 0;
+	return date_diff2(Today(), sql2date($row["due_date"]), "d") > 0;
 }
 
 function edit_link($row)
 {
-	return $row["closed"] ?  '' :
-		pager_link(_("Edit"),
+	//return $row["closed"] ?  '' :
+	//	pager_link(_("Edit"),
+	//		"/dimensions/dimension_entry.php?trans_no=" . $row["id"], ICON_EDIT);
+	return pager_link(_("Edit"),
 			"/dimensions/dimension_entry.php?trans_no=" . $row["id"], ICON_EDIT);
 }
 
@@ -185,12 +185,7 @@ if ($outstanding_only) {
 $table =& new_db_pager('dim_tbl', $sql, $cols);
 $table->set_marker('is_overdue', _("Marked dimensions are overdue."));
 
-if (get_post('SearchOrders')) {
-	$table->set_sql($sql);
-	$table->set_columns($cols);
-}
 $table->width = "80%";
-start_form();
 
 display_db_pager($table);
 

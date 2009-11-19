@@ -10,8 +10,8 @@
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
 /* Author Rob Mallon */
-$page_security = 8;
-$path_to_root="..";
+$page_security = 'SA_RECONCILE';
+$path_to_root = "..";
 include($path_to_root . "/includes/db_pager.inc");
 include_once($path_to_root . "/includes/session.inc");
 
@@ -30,7 +30,7 @@ if ($use_date_picker)
 
 add_js_file('reconcile.js');
 
-page(_("Reconcile Bank Account"), false, false, "", $js);
+page(_($help_context = "Reconcile Bank Account"), false, false, "", $js);
 
 check_db_has_bank_accounts(_("There are no bank accounts defined in the system."));
 
@@ -59,7 +59,9 @@ function rec_checkbox($row)
 
 function systype_name($dummy, $type)
 {
-	return systypes::name($type);
+	global $systypes_array;
+	
+	return $systypes_array[$type];
 }
 
 function trans_view($trans)
@@ -86,7 +88,7 @@ function fmt_credit($row)
 
 function fmt_person($row)
 {
-	return payment_person_types::person_name($row["person_type_id"],$row["person_id"]);
+	return payment_person_name($row["person_type_id"],$row["person_id"]);
 }
 
 $update_pager = false;
@@ -106,7 +108,8 @@ function change_tpl_flag($reconcile_id)
 {
 	global	$Ajax;
 
-	if (!check_date()) 
+	if (!check_date() 
+		&& check_value("rec_".$reconcile_id)) // temporary fix
 		return false;
 
 	if (get_post('bank_date')=='')	// new reconciliation
@@ -115,8 +118,8 @@ function change_tpl_flag($reconcile_id)
 	$_POST['bank_date'] = date2sql(get_post('reconcile_date'));
 	$reconcile_value = check_value("rec_".$reconcile_id) 
 						? ("'".$_POST['bank_date'] ."'") : 'NULL';
-	$sql = "UPDATE ".TB_PREF."bank_trans SET reconciled=".db_escape($reconcile_value)
-	." WHERE id=".db_escape($reconcile_id);
+	$sql = "UPDATE ".TB_PREF."bank_trans SET reconciled=$reconcile_value"
+		." WHERE id=".db_escape($reconcile_id);
 
   	db_query($sql, "Can't change reconciliation status");
 	// save last reconcilation status (date, end balance)
@@ -132,7 +135,7 @@ function change_tpl_flag($reconcile_id)
 }
 
 if (!isset($_POST['reconcile_date'])) { // init page
-	$_POST['reconcile_date'] = Today();
+	$_POST['reconcile_date'] = new_doc_date();
 //	$_POST['bank_date'] = date2sql(Today());
 }
 
@@ -175,6 +178,8 @@ end_row();
 end_table();
 
 $date = date2sql(get_post('reconcile_date'));
+ // temporary fix to enable fix of invalid entries made in 2.2RC
+if ($date == 0) $date = '0000-00-00';
 
 $sql = "SELECT MAX(reconciled) as last_date,
 		 SUM(IF(reconciled<='$date', amount, 0)) as end_balance,
@@ -218,7 +223,7 @@ table_header($th);
 start_row();
 
 date_cells("", "reconcile_date", _('Date of bank statement to reconcile'), 
-	null, 0, 0, 0, null, true);
+	get_post('bank_date')=='', 0, 0, 0, null, true);
 
 amount_cells_ex("", "beg_balance", 15);
 
@@ -264,11 +269,8 @@ display_heading($act['bank_account_name']." - ".$act['bank_curr_code']);
 		"X"=>array('insert'=>true, 'fun'=>'rec_checkbox')
 	   );
 	$table =& new_db_pager('trans_tbl', $sql, $cols);
-	if ($update_pager) {
-		$table->set_sql($sql);
-		$table->set_columns($cols);
-	}
-	$table->width = "60%";
+
+	$table->width = "80%";
 	display_db_pager($table);
 
 br(1);

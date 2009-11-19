@@ -9,7 +9,7 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security = 2;
+$page_security = 'SA_BANKREP';
 // ----------------------------------------------------------------
 // $ Revision:	2.0 $
 // Creator:	Joe Hunt
@@ -54,7 +54,7 @@ function get_bank_transactions($from, $to, $account)
 
 function print_bank_transactions()
 {
-	global $path_to_root;
+	global $path_to_root, $systypes_array;
 
 	$acc = $_POST['PARAM_0'];
 	$from = $_POST['PARAM_1'];
@@ -110,11 +110,11 @@ function print_bank_transactions()
 			{
 				$total += $myrow['amount'];
 
-				$rep->TextCol(0, 1,	systypes::name($myrow["type"]));
+				$rep->TextCol(0, 1, $systypes_array[$myrow["type"]]);
 				$rep->TextCol(1, 2,	$myrow['trans_no']);
 				$rep->TextCol(2, 3,	$myrow['ref']);
 				$rep->DateCol(3, 4,	$myrow["trans_date"], true);
-				$rep->TextCol(4, 5,	payment_person_types::person_name($myrow["person_type_id"],$myrow["person_id"], false));
+				$rep->TextCol(4, 5,	payment_person_name($myrow["person_type_id"],$myrow["person_id"], false));
 				if ($myrow['amount'] > 0.0)
 					$rep->AmountCol(5, 6, abs($myrow['amount']), $dec);
 				else

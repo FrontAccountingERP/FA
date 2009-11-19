@@ -9,10 +9,10 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security = 14;
+$page_security = 'SA_SHIPPING';
 $path_to_root="..";
 include($path_to_root . "/includes/session.inc");
-page(_("Shipping Company"));
+page(_($help_context = "Shipping Company"));
 include($path_to_root . "/includes/ui.inc");
 
 simple_page_mode(true);
@@ -33,10 +33,11 @@ function can_process()
 if ($Mode=='ADD_ITEM' && can_process()) 
 {
 
-	$sql = "INSERT INTO ".TB_PREF."shippers (shipper_name, contact, phone, address)
+	$sql = "INSERT INTO ".TB_PREF."shippers (shipper_name, contact, phone, phone2, address)
 		VALUES (" . db_escape($_POST['shipper_name']) . ", " .
 		db_escape($_POST['contact']). ", " .
 		db_escape($_POST['phone']). ", " .
+		db_escape($_POST['phone2']). ", " .
 		db_escape($_POST['address']) . ")";
 
 	db_query($sql,"The Shipping Company could not be added");
@@ -52,6 +53,7 @@ if ($Mode=='UPDATE_ITEM' && can_process())
 	$sql = "UPDATE ".TB_PREF."shippers SET shipper_name=" . db_escape($_POST['shipper_name']). " ,
 		contact =" . db_escape($_POST['contact']). " ,
 		phone =" . db_escape($_POST['phone']). " ,
+		phone2 =" . db_escape($_POST['phone2']). " ,
 		address =" . db_escape($_POST['address']). "
 		WHERE shipper_id = ".db_escape($selected_id);
 
@@ -99,16 +101,21 @@ if ($Mode == 'Delete')
 if ($Mode == 'RESET')
 {
 	$selected_id = -1;
+	$sav = get_post('show_inactive');
 	unset($_POST);
+	$_POST['show_inactive'] = $sav;
 }
 //----------------------------------------------------------------------------------------------
 
-$sql = "SELECT * FROM ".TB_PREF."shippers ORDER BY shipper_id";
+$sql = "SELECT * FROM ".TB_PREF."shippers";
+if (!check_value('show_inactive')) $sql .= " WHERE !inactive";
+$sql .= " ORDER BY shipper_id";
 $result = db_query($sql,"could not get shippers");
 
 start_form();
 start_table($table_style);
-$th = array(_("Name"), _("Contact Person"), _("Phone Number"), _("Address"), "", "");
+$th = array(_("Name"), _("Contact Person"), _("Phone Number"), _("Secondary Phone"), _("Address"), "", "");
+inactive_control_column($th);
 table_header($th);
 
 $k = 0; //row colour counter
@@ -119,19 +126,18 @@ while ($myrow = db_fetch($result))
 	label_cell($myrow["shipper_name"]);
 	label_cell($myrow["contact"]);
 	label_cell($myrow["phone"]);
+	label_cell($myrow["phone2"]);
 	label_cell($myrow["address"]);
- 	edit_button_cell("Edit".$myrow[0], _("Edit"));
- 	delete_button_cell("Delete".$myrow[0], _("Delete"));
+	inactive_control_cell($myrow["shipper_id"], $myrow["inactive"], 'shippers', 'shipper_id');
+ 	edit_button_cell("Edit".$myrow["shipper_id"], _("Edit"));
+ 	delete_button_cell("Delete".$myrow["shipper_id"], _("Delete"));
 	end_row();
 }
 
-end_table();
-end_form();
-echo '<br>';
+inactive_control_row($th);
+end_table(1);
 
 //----------------------------------------------------------------------------------------------
-
-start_form();
 
 start_table($table_style2);
 
@@ -148,6 +154,7 @@ if ($selected_id != -1)
 		$_POST['shipper_name']	= $myrow["shipper_name"];
 		$_POST['contact']	= $myrow["contact"];
 		$_POST['phone']	= $myrow["phone"];
+		$_POST['phone2']	= $myrow["phone2"];
 		$_POST['address'] = $myrow["address"];
 	}
 	hidden('selected_id', $selected_id);
@@ -157,13 +164,15 @@ text_row_ex(_("Name:"), 'shipper_name', 40);
 
 text_row_ex(_("Contact Person:"), 'contact', 30);
 
-text_row_ex(_("Phone Number:"), 'phone', 20);
+text_row_ex(_("Phone Number:"), 'phone', 32, 30);
+
+text_row_ex(_("Secondary Phone Number:"), 'phone2', 32, 30);
 
 text_row_ex(_("Address:"), 'address', 50);
 
 end_table(1);
 
-submit_add_or_update_center($selected_id == -1, '', true);
+submit_add_or_update_center($selected_id == -1, '', 'both');
 
 end_form();
 end_page();

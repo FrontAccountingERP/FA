@@ -10,9 +10,10 @@
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
 
-function update_company_gl_setup($debtors_act, $pyt_discount_act, $creditors_act,
+function update_company_gl_setup($retained_act, $profit_loss_act, $debtors_act, $pyt_discount_act, $creditors_act,
 		$freight_act,
 		$exchange_diff_act,
+		$bank_charge_act,
 		$default_sales_act,
 		$default_sales_discount_act,
 		$default_prompt_payment_act,
@@ -29,13 +30,16 @@ function update_company_gl_setup($debtors_act, $pyt_discount_act, $creditors_act
 		$past_due_days,
 		$default_credit_limit,
 		$default_workorder_required,
-		$default_dim_required)
+		$default_dim_required,
+		$default_delivery_required)
 {
 	$sql = "UPDATE ".TB_PREF."company SET
+		retained_earnings_act=".db_escape($retained_act).", profit_loss_year_act=".db_escape($profit_loss_act).",
 		debtors_act=".db_escape($debtors_act).", pyt_discount_act=".db_escape($pyt_discount_act).",
 		creditors_act=".db_escape($creditors_act).",
 		freight_act=".db_escape($freight_act).",
 		exchange_diff_act=".db_escape($exchange_diff_act).",
+		bank_charge_act=".db_escape($bank_charge_act).",
 		default_sales_act=".db_escape($default_sales_act).",
 		default_sales_discount_act=".db_escape($default_sales_discount_act).",
 		default_prompt_payment_act=".db_escape($default_prompt_payment_act).",
@@ -52,16 +56,17 @@ function update_company_gl_setup($debtors_act, $pyt_discount_act, $creditors_act
 		past_due_days=$past_due_days,
 		default_credit_limit=$default_credit_limit,
 		default_workorder_required=$default_workorder_required,
-		default_dim_required=$default_dim_required
+		default_dim_required=$default_dim_required,
+		default_delivery_required=$default_delivery_required
 		WHERE coy_code=1";
 
 	db_query($sql, "The company gl setup could not be updated ");
 }
 
-function update_company_setup($coy_name, $coy_no, $gst_no, $tax_prd, $tax_last, $postal_address, $phone, $fax, $email,
-		$coy_logo, $domicile, $Dimension, $custom1_name, $custom2_name, $custom3_name,
-		$custom1_value, $custom2_value, $custom3_value, $curr_default, $f_year, $no_item_list, $no_customer_list,
-		$no_supplier_list, $base_sales)
+function update_company_setup($coy_name, $coy_no, $gst_no, $tax_prd, $tax_last, 
+	$postal_address, $phone, $fax, $email, $coy_logo, $domicile, $Dimension, 
+	$curr_default, $f_year, $no_item_list, $no_customer_list, $no_supplier_list, 
+	$base_sales, $time_zone, $add_pct, $round_to, $login_tout)
 {
 	if ($f_year == null)
 		$f_year = 0;
@@ -79,15 +84,13 @@ function update_company_setup($coy_name, $coy_no, $gst_no, $tax_prd, $tax_last, 
 		no_item_list=$no_item_list,
 		no_customer_list=$no_customer_list,
 		no_supplier_list=$no_supplier_list,
-        custom1_name=".db_escape($custom1_name).",
-        custom2_name=".db_escape($custom2_name).",
-        custom3_name=".db_escape($custom3_name).",
-        custom1_value=".db_escape($custom1_value).",
-        custom2_value=".db_escape($custom2_value).",
-        custom3_value=".db_escape($custom3_value).",
 		curr_default=".db_escape($curr_default).",
 		f_year=$f_year,
-		base_sales=$base_sales
+		base_sales=$base_sales,
+		time_zone=$time_zone,
+		add_pct=$add_pct,
+		round_to=$round_to,
+		login_tout = ".db_escape($login_tout)."
 		WHERE coy_code=1";
 
 	db_query($sql, "The company setup could not be updated ");
@@ -176,6 +179,17 @@ function get_base_sales_type()
 	$result = db_query($sql, "could not get base sales type");
 	$myrow = db_fetch($result);
 	return $myrow[0];
+}
+
+function get_company_extensions($id = -1) {
+	global $path_to_root;
+
+	$file = $path_to_root.($id == -1 ? '' : '/company/'.$id).'/installed_extensions.php';
+	$installed_extensions = array();
+	if (is_file($file)) {
+		include($file);
+	}
+	return $installed_extensions;
 }
 
 

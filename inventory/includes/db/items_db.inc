@@ -9,9 +9,10 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-function update_item($stock_id, $description, $long_description, $category_id, $tax_type_id,
-	$sales_account, $inventory_account, $cogs_account, $adjustment_account,
-	$assembly_account, $dimension_id, $dimension2_id)
+function update_item($stock_id, $description, $long_description, $category_id, 
+	$tax_type_id, $units='', $mb_flag='', $sales_account, $inventory_account, 
+	$cogs_account, 	$adjustment_account, $assembly_account, $dimension_id, 
+	$dimension2_id, $no_sale)
 {
 	$sql = "UPDATE ".TB_PREF."stock_master SET long_description=".db_escape($long_description).",
 		description=".db_escape($description).",
@@ -23,28 +24,38 @@ function update_item($stock_id, $description, $long_description, $category_id, $
 		assembly_account=".db_escape($assembly_account).",
 		dimension_id=".db_escape($dimension_id).",
 		dimension2_id=".db_escape($dimension2_id).",
-		tax_type_id=".db_escape($tax_type_id)."
-		WHERE stock_id=".db_escape($stock_id);
+		tax_type_id=".db_escape($tax_type_id).",
+		no_sale=".db_escape($no_sale);
+
+	if ($units != '')
+		$sql .= ", units='$units'";
+
+	if ($mb_flag != '')
+		$sql .= ", mb_flag='$mb_flag'";
+
+	$sql .= " WHERE stock_id=".db_escape($stock_id);
 
 	db_query($sql, "The item could not be updated");
 
 	update_item_code(-1, $stock_id, $stock_id, $description, $category_id, 1, 0);
 }
 
-function add_item($stock_id, $description, $long_description, $category_id, $tax_type_id, $units, $mb_flag,
-	$sales_account, $inventory_account, $cogs_account, $adjustment_account,
-	$assembly_account, $dimension_id, $dimension2_id)
+function add_item($stock_id, $description, $long_description, $category_id, 
+	$tax_type_id, $units, $mb_flag,	$sales_account, $inventory_account, 
+	$cogs_account, $adjustment_account,	$assembly_account, $dimension_id, 
+	$dimension2_id, $no_sale)
 {
 	$sql = "INSERT INTO ".TB_PREF."stock_master (stock_id, description, long_description, category_id,
 		tax_type_id, units, mb_flag, sales_account, inventory_account, cogs_account,
-		adjustment_account, assembly_account, dimension_id, dimension2_id)
+		adjustment_account, assembly_account, dimension_id, dimension2_id, no_sale)
 		VALUES (".db_escape($stock_id).", ".db_escape($description).", ".db_escape($long_description).",
 		".db_escape($category_id).", ".db_escape($tax_type_id).", "
 		.db_escape($units).", ".db_escape($mb_flag).",
 		".db_escape($sales_account).", ".db_escape($inventory_account)
 		.", ".db_escape($cogs_account).",".db_escape($adjustment_account)
 		.", ".db_escape($assembly_account).", "
-		.db_escape($dimension_id).", ".db_escape($dimension2_id).")";
+		.db_escape($dimension_id).", ".db_escape($dimension2_id).","
+		.db_escape($no_sale).")";
 
 	db_query($sql, "The item could not be added");
 

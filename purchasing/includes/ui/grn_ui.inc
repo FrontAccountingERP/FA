@@ -13,7 +13,7 @@
 
 function display_grn_summary(&$po, $editable=false)
 {
-	global $table_style2;
+	global $table_style2, $Refs;
     start_table("$table_style2 width=90%");
     
     start_row();
@@ -22,7 +22,7 @@ function display_grn_summary(&$po, $editable=false)
     if (!is_company_currency($po->curr_code))
     	label_cells(_("Order Currency"), $po->curr_code, "class='tableheader2'");
     
-    label_cells(_("For Purchase Order"), get_trans_view_str(systypes::po(), $po->order_no),
+    label_cells(_("For Purchase Order"), get_trans_view_str(ST_PURCHORDER, $po->order_no),
     	"class='tableheader2'");
     
 	label_cells(_("Ordered On"), $po->orig_order_date, "class='tableheader2'");
@@ -33,7 +33,7 @@ function display_grn_summary(&$po, $editable=false)
     if ($editable) 
     {
     	if (!isset($_POST['ref']))
-    	    $_POST['ref'] = references::get_next(25);
+    	    $_POST['ref'] = $Refs->get_next(ST_SUPPRECEIVE);
     	ref_cells(_("Reference"), 'ref', '', null, "class='tableheader2'");
     	    	
         if (!isset($_POST['Location']))
@@ -42,9 +42,9 @@ function display_grn_summary(&$po, $editable=false)
         locations_list_cells(null, "Location", $_POST['Location']);
         
     	if (!isset($_POST['DefaultReceivedDate']))
-     	  	$_POST['DefaultReceivedDate'] = Today();
+     	  	$_POST['DefaultReceivedDate'] = new_doc_date();
     	
-    	date_cells(_("Date Items Received"), 'DefaultReceivedDate', '', null, 0, 0, 0, "class='tableheader2'");    
+    	date_cells(_("Date Items Received"), 'DefaultReceivedDate', '', true, 0, 0, 0, "class='tableheader2'");    
         
     } 
     else 

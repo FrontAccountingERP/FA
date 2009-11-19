@@ -19,23 +19,26 @@ function display_order_header(&$Order)
 	global $table_style2, $Ajax;
 
 	$qes = has_quick_entries(QE_JOURNAL);
-
+	$new = $Order->order_id==0;
 	start_outer_table("$table_style2 width=90%");
 	table_section(1);
 
 	start_row();
-    date_cells(_("Date:"), 'date_');
-	ref_cells(_("Reference:"), 'ref', '', references::get_next(0));
+    date_cells(_("Date:"), 'date_', '', $new);
+
+	table_section(2, $qes ? "20%" : "50%");
+	ref_cells(_("Reference:"), 'ref', '');
+	hidden('ref_original');
 	end_row();
 
-	if ($qes)
-		table_section(2, "20%");
-	else	
-		table_section(2, "50%");
 
-	start_row();
-	check_cells(_("Reverse Transaction:"), 'Reverse', null);
-	end_row();
+ 	if ($new) {
+		table_section(3, "20%");
+ 		start_row();
+ 		check_cells(_("Reverse Transaction:"), 'Reverse', null);
+ 		end_row();
+ 	}
+
 	if ($qes !== false)
 	{
 		table_section(3, "50%");
@@ -147,6 +150,7 @@ function gl_edit_item_controls(&$order, $dim, $Index=null)
 	$id = find_submit('Edit');
 	if ($Index != -1 && $Index == $id)
 	{
+	    // Modifying an existing row
 		$item = $order->gl_items[$Index];
 		$_POST['code_id'] = $item->code_id;
 		$_POST['dimension_id'] = $item->dimension_id;
@@ -165,9 +169,8 @@ function gl_edit_item_controls(&$order, $dim, $Index=null)
 		$_POST['LineMemo'] = $item->reference;
 
 		hidden('Index', $id);
-		hidden('code_id', $item->code_id);
-		label_cell($_POST['code_id']);
-		label_cell($item->description);
+		$skip_bank = !$_SESSION["wa_current_user"]->can_access('SA_BANKJOURNAL');
+		echo gl_all_accounts_list('code_id', null, $skip_bank, true);
 		if ($dim >= 1) 
 			dimensions_list_cells(null, 'dimension_id', null, true, " ", false, 1);
 		if ($dim > 1) 
@@ -176,6 +179,7 @@ function gl_edit_item_controls(&$order, $dim, $Index=null)
 	}
 	else
 	{
+	    // Adding a new row
 		$_POST['AmountDebit'] = '';  //price_format(0);
 		$_POST['AmountCredit'] = ''; //price_format(0);
 		$_POST['dimension_id'] = 0;
@@ -187,8 +191,8 @@ function gl_edit_item_controls(&$order, $dim, $Index=null)
 			    $Ajax->activate('code_id');
 		}
 		
-		$skip_bank = ($_SESSION["wa_current_user"]->access != 2);
-		gl_all_accounts_list('code_id', null, $skip_bank, true);
+		$skip_bank = !$_SESSION["wa_current_user"]->can_access('SA_BANKJOURNAL');
+		echo gl_all_accounts_list('code_id', null, $skip_bank, true);
 		if ($dim >= 1)
 			dimensions_list_cells(null, 'dimension_id', null, true, " ", false, 1);
 		if ($dim > 1)
@@ -201,7 +205,7 @@ function gl_edit_item_controls(&$order, $dim, $Index=null)
 
 	small_amount_cells(null, 'AmountDebit');
 	small_amount_cells(null, 'AmountCredit');
-	text_cells_ex(null, 'LineMemo', 35, 50);
+	text_cells_ex(null, 'LineMemo', 35, 255);
 
 	if ($id != -1)
 	{

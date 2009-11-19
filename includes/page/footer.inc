@@ -11,10 +11,7 @@
 ***********************************************************************/
 function page_footer($no_menu=false, $is_index=false)
 {
-	global $path_to_root, $js_lib;
-
-  	if (in_ajax())
-  		return;// just for speed up
+	global $path_to_root, $js_lib, $Validate, $Editors, $Ajax;
 
   	if (!$is_index && function_exists('hyperlink_back'))
 		hyperlink_back();
@@ -22,12 +19,20 @@ function page_footer($no_menu=false, $is_index=false)
 	$rend = new renderer();
 	$rend->menu_footer($no_menu, $is_index);
 
+	$edits = "editors = ".$Ajax->php2js($Editors).";";
+	$Ajax->addScript('editors', $edits);
+
+	echo "<script>
+		_focus = '" . get_post('_focus') . "';
+		_validate = " . $Ajax->php2js($Validate).";
+		var $edits
+	</script>";
+
    	add_user_js_data();
 	echo "\n<script type=\"text/javascript\"><!--\n";
 
 	foreach($js_lib as $text)
 	  	echo $text;
-
 	echo "\n--></script>\n";
     echo "</body></html>\n";
 }

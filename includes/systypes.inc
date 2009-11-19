@@ -37,29 +37,30 @@ function get_systype_db_info($type)
 {
 	switch ($type)
 	{
-        case      0 : return array("".TB_PREF."gl_trans", "type", "type_no", null, "tran_date");
-        case      1 : return array("".TB_PREF."bank_trans", "type", "trans_no", "ref", "trans_date");
-        case      2 : return array("".TB_PREF."bank_trans", "type", "trans_no", "ref", "trans_date");
-        case      3 : return null;
-        case      4 : return array("".TB_PREF."bank_trans", "type", "trans_no", "ref", "trans_date");
-        case     10 : return array("".TB_PREF."debtor_trans", "type", "trans_no", "reference", "tran_date");
-        case     11 : return array("".TB_PREF."debtor_trans", "type", "trans_no", "reference", "tran_date");
-        case     12 : return array("".TB_PREF."debtor_trans", "type", "trans_no", "reference", "tran_date");
-        case     13 : return array("".TB_PREF."debtor_trans", "type", "trans_no", "reference", "tran_date");
-        case     16 : return array("".TB_PREF."stock_moves", "type", "trans_no", "reference", "tran_date");
-        case     17 : return array("".TB_PREF."stock_moves", "type", "trans_no", "reference", "tran_date");
-        case     18 : return array("".TB_PREF."purch_orders", null, "order_no", "reference", "tran_date");
-        case     20 : return array("".TB_PREF."supp_trans", "type", "trans_no", "reference", "tran_date");
-        case     21 : return array("".TB_PREF."supp_trans", "type", "trans_no", "reference", "tran_date");
-        case     22 : return array("".TB_PREF."supp_trans", "type", "trans_no", "reference", "tran_date");
-        case     25 : return array("".TB_PREF."grn_batch", null, "id", "reference", "delivery_date");
-        case     26 : return array("".TB_PREF."workorders", null, "id", "wo_ref", "released_date");
-        case     28 : return array("".TB_PREF."wo_issues", null, "issue_no", "reference", "issue_date");
-        case     29 : return array("".TB_PREF."wo_manufacture", null, "id", "reference", "date_");
-        case     30 : return array("".TB_PREF."sales_orders", null, "order_no", "customer_ref", "ord_date");
-        case     31 : return array("".TB_PREF."service_orders", null, "order_no", "cust_ref", "date");
-        case	 40 : return array("".TB_PREF."dimensions", null, "id", "reference", "date_");
-        case     35 : return null;
+        case     ST_JOURNAL      : return array("".TB_PREF."gl_trans", "type", "type_no", null, "tran_date");
+        case     ST_BANKPAYMENT  : return array("".TB_PREF."bank_trans", "type", "trans_no", "ref", "trans_date");
+        case     ST_BANKDEPOSIT  : return array("".TB_PREF."bank_trans", "type", "trans_no", "ref", "trans_date");
+        case     3               : return null;
+        case     ST_BANKTRANSFER : return array("".TB_PREF."bank_trans", "type", "trans_no", "ref", "trans_date");
+        case     ST_SALESINVOICE : return array("".TB_PREF."debtor_trans", "type", "trans_no", "reference", "tran_date");
+        case     ST_CUSTCREDIT   : return array("".TB_PREF."debtor_trans", "type", "trans_no", "reference", "tran_date");
+        case     ST_CUSTPAYMENT  : return array("".TB_PREF."debtor_trans", "type", "trans_no", "reference", "tran_date");
+        case     ST_CUSTDELIVERY : return array("".TB_PREF."debtor_trans", "type", "trans_no", "reference", "tran_date");
+        case     ST_LOCTRANSFER  : return array("".TB_PREF."stock_moves", "type", "trans_no", "reference", "tran_date");
+        case     ST_INVADJUST    : return array("".TB_PREF."stock_moves", "type", "trans_no", "reference", "tran_date");
+        case     ST_PURCHORDER   : return array("".TB_PREF."purch_orders", null, "order_no", "reference", "tran_date");
+        case     ST_SUPPINVOICE  : return array("".TB_PREF."supp_trans", "type", "trans_no", "reference", "tran_date");
+        case     ST_SUPPCREDIT   : return array("".TB_PREF."supp_trans", "type", "trans_no", "reference", "tran_date");
+        case     ST_SUPPAYMENT   : return array("".TB_PREF."supp_trans", "type", "trans_no", "reference", "tran_date");
+        case     ST_SUPPRECEIVE  : return array("".TB_PREF."grn_batch", null, "id", "reference", "delivery_date");
+        case     ST_WORKORDER    : return array("".TB_PREF."workorders", null, "id", "wo_ref", "released_date");
+        case     ST_MANUISSUE    : return array("".TB_PREF."wo_issues", null, "issue_no", "reference", "issue_date");
+        case     ST_MANURECEIVE  : return array("".TB_PREF."wo_manufacture", null, "id", "reference", "date_");
+        case     ST_SALESORDER   : return array("".TB_PREF."sales_orders", "trans_type", "order_no", "reference", "ord_date");
+        case     31              : return array("".TB_PREF."service_orders", null, "order_no", "cust_ref", "date");
+        case     ST_SALESQUOTE   : return array("".TB_PREF."sales_orders", "trans_type", "order_no", "reference", "ord_date");
+        case	 ST_DIMENSION    : return array("".TB_PREF."dimensions", null, "id", "reference", "date_");
+        case     ST_COSTUPDATE   : return null;
 	}
 
 	display_db_error("invalid type ($type) sent to get_systype_db_info", "", true);

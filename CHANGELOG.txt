@@ -19,71 +19,404 @@ Legend:
 ! -> Note
 $ -> Affected files
 
-18-Oct-2009 Janusz Dobrowolski
-# [0000175] Fixed double escaping gl account name on add/update.
-$ /gl/includes/db/gl_db_accounts.inc
-# [0000176] Missing closing tag in button helper 
-$ /includes/ui/ui_input.inc
+------------------------------- Release 2.2 ----------------------------------
+18-Nov-2009
+! Release 2.2
+$ config.default.php
+# Allow null references in trans to show up in gl_trans_view
+$ /gl/view/gl_trans_view.php
+# Fixed side bug after last sql update.
+$ /gl/bank_account_reconcile.php
 
-------------------------------- Release 2.1.7 ----------------------------------
-! Seccurity release 2.1.7. We strongly encourage to update to this release.
-16-Oct-2009 Joe Hunt
-$ config.php
-
-15-Oct-2009 Joe Hunt
-# Security sql statements update against sql injection attacks.
-$ /reporting/rep101.php
-  /reporting/rep102.php
-  /reporting/rep103.php
-  /reporting/rep104.php
-  /reporting/rep105.php
-  /reporting/rep106.php
-  /reporting/rep201.php
-  /reporting/rep202.php
-  /reporting/rep203.php
-  /reporting/rep204.php
-  /reporting/rep209.php
-  /reporting/rep301.php
-  /reporting/rep302.php
-  /reporting/rep303.php
-  /reporting/rep304.php
-  /reporting/rep401.php
-  /reporting/rep501.php
-  /reporting/rep705.php
-  /sales/create_recurrent_invoices.php
-  /sales/customer_payments.php
-  /sales/includes/sales_db.inc
-  /sales/includes/db/branches_db.inc
-  /sales/includes/db/credit_status_db.inc
-  /sales/includes/db/custalloc_db.inc
-  /sales/includes/db/customers_db.inc
-  /sales/includes/db/cust_trans_db.inc
-  /sales/includes/db/cust_trans_details_db.inc
-  /sales/includes/db/sales_order_db.inc
-  /sales/includes/db/sales_points_db.inc
-  /sales/includes/db/sales_types_db.inc
-  /sales/inquiry/customer_allocation_inquiry.php
-  /sales/inquiry/customer_inquiry.php
-  /sales/inquiry/sales_deliveries_view.php
-  /sales/inquiry/sales_orders_view.php
-  /sales/manage/credit_status.php
-  /sales/manage/customers.php
+17-Nov-2009 Joe Hunt/Tom Hallman
+! Moved payment terms in documents for better view. Increased
+  space for legal text.
+$ /reporting/includes/header2.inc
+  /reporting/includes/pdf_report.inc
+! Changed sorting in get_gl_transactions to sort by tran_date, counter
+  Changed period in Journal Entries to one month instead of one year.
+$ /gl/includes/db/gl_db_trans.inc
+  /gl/inquiry/journal_inquiry.php
+! Changed rep705 to show fiscal year instead of year
+$ /reporting/rep705.php
+  /reporting/includes/reports_classes.inc
+! updated fles
+$ update.html
+  /lang/new_language_template/LC_MESSAGES/empty.po
+  
+15-Nov-2009 Janusz Dobrowolski
++ Added integration of custom and extended reports into reporting module; optimizations.
+$ /reporting/prn_redirect.php
+  /reporting/reports_main.php
+  /reporting/includes/reports_classes.inc
+! All *_list() helper functions now return html code, while *_list_cells/*_list_row() display the controls directly.
+$ /includes/ui/ui_lists.inc
+  /admin/backups.php
+  /admin/inst_module.php
+  /admin/print_profiles.php
+  /gl/includes/ui/gl_bank_ui.inc
+  /gl/includes/ui/gl_journal_ui.inc
+  /gl/manage/exchange_rates.php
+  /includes/ui/ui_input.inc
+  /inventory/cost_update.php
+  /inventory/prices.php
+  /inventory/purchasing_data.php
+  /inventory/reorder_level.php
+  /inventory/inquiry/stock_status.php
+  /inventory/manage/item_codes.php
+  /inventory/manage/items.php
+  /inventory/manage/sales_kits.php
+  /manufacturing/inquiry/where_used_inquiry.php
+  /manufacturing/manage/bom_edit.php
+  /purchasing/allocations/supplier_allocation_main.php
+  /purchasing/includes/ui/invoice_ui.inc
+  /purchasing/includes/ui/po_ui.inc
+  /sales/allocations/customer_allocation_main.php
   /sales/manage/customer_branches.php
-  /sales/manage/recurrent_invoices.php
-  /sales/manage/sales_areas.php
-  /sales/manage/sales_groups.php
-  /sales/manage/sales_people.php
-  /sales/manage/sales_types.php
+
+13-Nov-2009 Tom Hallman/Joe Hunt
+! Allow editing account when editing a row in GL Bank and GL Journal Entry
+$ /gl/gl_bank.php
+  /gl/gl_journal.php
+  /gl/includes/ui/gl_bank_ui.inc
+  /gl/includes/ui/gl_journal_ui.inc
+  /includes/ui/items_cart.inc
+# Transaction bug in void_journal_trans()
+$ /gl/includes/db/gl_db_trans.inc
+
+12-Nov-2009 Tom Hallman/Joe Hunt
+! Cleaning the CHANGELOG.txt file
+! Changed to allow change of reference in GL modifying
+$ /gl/includes/db/gl_db_trans.inc
+  /gl/gl_journal.php
+  /gl/includes/ui/bl_journal_ui.inc
+  /gl/view/gl_trans_view.php
+  /includes/references.inc
+  /includes/db/references_db.inc
+  
+12-Nov-2009 Tom Hallman/Janusz Dobrowolski
++ Added amount range in gl inquires.
+$ /gl/includes/db/gl_db_trans.inc
+  /gl/inquiry/gl_account_inquiry.php
+! Changed menu option text for GL inquiry
+$ /applications/generalledger.php
+# Fixed typo
+$ /doc/access_levels.txt
+# Fixed maximal memo line length.
+$ /gl/includes/ui/gl_bank_ui.inc
+  /gl/includes/ui/gl_journal_ui.inc
+
+12-Nov-2009 Tom Hallman/Joe Hunt
+! Changed Journal Inquiries so it shows the Bank Deposit/Payment amount
+  instead of sum of positive transaction.
+$ /gl/inquiry/journal_inquiry.php
+
+10-Nov-2009 Janusz Dobrowolski
+# Fixed value for SA_SUPPBULKREP access area.
+$ /includes/access_levels.inc
+  /sql/en_US-demo.sql
+  /sql/en_US-new.sql
+
+10-Nov-2009 Joe Hunt
+# disallow bank accounts in accounts list in Bank Deposits/Payments.
+  It produces double records in bank inquiry otherwise..
+$ /gl/includes/ui/gl_bank_ui.inc
+# disallow bank accounts in accounts list when type is Bank Deposits
+  or Payments. See above.
+$ /gl/manage/gl_quick_entries.php
+# type warning in dimension tags
+$ /admin/tags.php
+
+09-Nov-2009 Janusz Dobrowolski
+! Fixed help link to provide ctxhelp switch and clean the page context string.
+$ /includes/page/header.inc
+
+08-Nov-2009 Joe Hunt
+# Bug in adding freight cost to sales order/quotation
+$ /sales/inquiry/sales_orders_view.php
+! Additional improvements on layout display
+$ /purchasing/includes/ui/invoice_ui.inc
+  /purchasing/view/view_po.php
   /sales/view/view_sales_order.php
+! Changed the Running Balance column in Customer Transaction
+  to only show when the type is selected. The order is not
+  good before sorting in date order
+$ /sales/inquiry/customer_inquiry.php  
+
+07-Nov-2009 Janusz Dobrowolski
+# Added missing help_context
+$ /sales/inquiry/sales_orders_view.php
+
+07-Nov-2009 Joe Hunt
+! More improvements on layout display.
+$ /purchases/includes/ui/po_ui.inc
+  /inventory/includes/item_adjustments_ui.inc
+
+06-Nov-2009 Janusz Dobrowolski
+# Include sequence fixed.
+$ /admin/tags.php
+  
+06-Nov-2009 Joe Hunt
+! Improved layout in the new tax info display. Also old ones.
+$ /sales/credit_invoice.php
+  /sales/customer_delivery.php
+  /sales/customer_invoice.php
+  /sales/includes/ui/sales_credit_ui.inc
+  /sales/includes/ui/sales_order_ui.inc
+
+05-Nov-2009 Joe Hunt
+! Display tax info in Sales Quotation, Order, Direct Delivery and Invoice.
+$ /sales/includes/ui/sales_order_ui.inc
+  /sales/sales_order_entry.php
+! Include freight_cost in Sales Quotations, Orders in inquiries.
+$ /sales/inquiry/sales_orders_view.php
+# Bug on line 215 in /sales/customer_delivery.php
+$ /sales/customer_delivery.php
+
+04-Nov-2009 Tom Hallman/Joe Hunt
+! Included dimension(s) in Bank Deposit/Payment View and correct signs.
+$ /gl/view/gl_deposit_view.php
+  /gl/view/gl_payment_view.php
+  
+04-Nov-2009 Janusz Dobrowolski
+# Fixed bug introduced during security update and merged from main trunk.
+$ /admin/db/printers_db.inc
+
+03-Nov-2009 Janusz Dobrowolski
+! Added optional parameter to add_bank_transaction
+$ /gl/includes/db/gl_db_banking.inc
+# Fixed missing default price_dec.
+$ /includes/prefs/userprefs.inc
+
+03-Nov-2009 Joe Hunt
+# Bad debit account when debiting service items.
+$ /purchasing/includes/db/invoice_db.inc
+# Removed unneeded reference to $result in db_num_rows. Gave warnings.
+$ /includes/db/connect_db.inc
+! Better formatting of update.html
+$ update.html
+# Wrong presentation on reference and order in Customer Allocation Inquiry
+$ /sales/inquiry/customer_allocation_inquiry.php
+! Changed so reference no in QUOTE/SO/INV/CRE/PO is printed instead of trans_no 
+  if global variable in config.php, $print_invoice_no = 0 (default).
+$ /reporting/includes/header2.inc
+  /reporting/includes/reports_classes.inc
+  
+02-Nov-2009 Janusz Dobrowolski
+# Bad default value retrieved for service COGS account.
+$ /inventory/manage/items.php
+
+01-Nov-2009 Joe Hunt
+! Changed $date_system value of 3 to be traditional, but non-workday is Friday 
+  and start of week is Saturday. For DatePicker.
+$ config.default.php
+  /includes/date_functions.inc
+  /includes/ui/ui_view.inc
+# Bugs in function show_users_online in users_db.inc
+$ /admin/db/users_db.inc
+
+01-Nov-2009 Janusz Dobrowolski
++ Added default date format and date separator used before login.
+$ /config.default.php
+  /includes/prefs/userprefs.inc
+
+30-Oct-2009 Janusz Dobrowolski
+# Fixed non-default company selection bug on login.
+$ /includes/session.inc
+! Code cleanup.
+$ /includes/db/connect_db.inc
+
+30-Oct-2009 Joe Hunt
+! Changed name on folder for global help url to fawiki.
+$ /config.default.php
+
+29-Oct-2009 Janusz Dobrowolski
+! Changed context help organization to enable use of central multilanguage wiki.
+$ /config.default.php
+  /admin/*.php
+  /applications/*.php
+  /dimensions/dimension_entry.php
+  /dimensions/inquiry/search_dimensions.php
+  /dimensions/view/view_dimension.php
+  /gl/*.php
+  /gl/inquiry/*.php
+  /gl/manage/*.php
+  /gl/view/*.php
+  /includes/page/header.inc
+  /inventory/*.php
+  /inventory/inquiry/*.php
+  /inventory/manage/*.php
+  /inventory/view/*.php
+  /manufacturing/*.php
+  /manufacturing/inquiry/*.php
+  /manufacturing/manage/*.php
+  /manufacturing/view/*.php
+  /purchasing/*.php
+  /purchasing/allocations/*.php
+  /purchasing/inquiry/*.php
+  /purchasing/manage/suppliers.php
+  /purchasing/view/*.php
+  /reporting/reports_main.php
+  /sales/*.php
+  /sales/allocations/*.php
+  /sales/inquiry/*.php
+  /sales/manage/*.php
+  /sales/view/*.php
   /taxes/item_tax_types.php
   /taxes/tax_groups.php
   /taxes/tax_types.php
-  /taxes/tax_calc.php
-  /taxes/db/item_tax_types_db.inc
-  /taxes/db/tax_groups_db.inc
-  /taxes/db/tax_types_db.inc
+  /themes/aqua/renderer.php
+  /themes/cool/renderer.php
+  /themes/default/renderer.php
 
-15-Oct-2009 Janusz Dobrowolski
+28-Oct-2009 Joe Hunt
+! Changed report Annual Expense Breakdown to follow the fiscal year instead of 
+  calendar year. The year selector selects the start of the fiscal year.
+  Only the last 12 months are shown.
+$ /reporting/rep705.php
+
+27-Oct-2009 Joe Hunt
+# Database error when updating item.
+$ /inventory/includes/db/items_db.inc
+# Removed unneeded double forms in scripts with db_pager. Missing $_POST variables.
+$ /dimensions/inquiry/search_dimensions.php
+  /manufacturing/search_work_orders.php
+  /purchasing/allocations/supplier_allocation_main.php
+  /purchasing/inquiry/po_search_completed.php
+  /purchasing/inquiry/po_search.php
+  /purchasing/inquiry/supplier_inquiry.php
+  /purchasing/inquiry/supplier_allocation_inquiry.php
+  /sales/inquiry/customer_allocation_inquiry.php
+  /sales/inquiry/sales_deliveries_view.php
+  /sales/inquiry/sales_orders_view.php
+  /sales/inquiry/customer_inquiry.php
+  
+26-Oct-2009 Janusz Dobrowolski
+# [0000177] Fixed error during gl class update.
+$ /gl/includes/db/gl_db_account_types.inc
+
+26-Oct-2009 Joe Hunt
+# Fixed another compatibility issue with MySQL 3.xx (DATE)
+$ /reporting/rep710.php
+! Late changes in empty.po and en_US.mo
+$ /lang/new_language_template/LC_MESSAGES/empty.po
+  /lang/en_US/LC_MESSAGES/en_US.mo
+
+24-Oct-2009 Janusz Dobrowolski
+# Fixed compatibility issue with MySQL 3.xx
+$ /admin/db/tags_db.inc
+
+24-Oct-2009 Janusz Dobrowolski
++ Default add/update button, ajax update.
+$ /dimensions/dimension_entry.php
+  /gl/manage/gl_accounts.php
+! Removed obsolete $tabs global array (tab ids retrieved from $_SESSION['App'])
+$ /includes/types.inc
+  /includes/ui/ui_lists.inc
+  /admin/inst_module.php
+  /includes/page/header.inc
+# Fixed ajax support for multiply selects.
+$ /js/utils.js
+# Fixed buggy php behaviour when foreach is used on global array.
+$ /frontaccounting.php
+
+------------------------------- Release 2.2 RC ----------------------------------
+24-Oct-2009 Joe Hunt
+! Changed so -1 as parameters to dimensions in get_transactions db routines only 
+  fetches NO dimensions. 
+$ /gl/includes/db/gl_db_trans.inc
+  /reporting/rep705.php
+  /reporting/includes/reports_classes.inc
+
+24-Oct-2009 Janusz Dobrowolski
+# Added text fields sanitiozation during upgrade to 2.2.
+$ /sql/alter2.2.php
+# Fixed error log warning (missing installed_extensions()) during upgrade .
+$ /includes/session.inc
+# CVS folders exluded from flush_dir to avoid unwanted warnings in error log on devel boxes.
+$ /includes/main.inc
+
+23-Oct-2009 Janusz Dobrowolski
+# Fixed 2.2 upgrade pre_check
+$ /sql/alter2.2.php
+# Fixed check_table() to avoid sparse messages in error log
+$ /admin/inst_update.php
+# Fixed module update and deletion.
+$ /admin/inst_module.php
+
+22-Oct-2009 Tom Hallman
++ Added generic tags support and tags for dimensions/gl accounts.
+$ /applications/dimensions.php
+  /applications/generalledger.php
+  /dimensions/dimension_entry.php
+  /gl/manage/gl_accounts.php
+  /includes/data_checks.inc
+  /includes/ui/ui_lists.inc
+  /admin/tags.php (new)
+  /admin/db/tags_db.inc (new)
+
+22-Oct-2009 Janusz Dobrowolski
+# Fixed bug in setting default value in array_selector, fixed default fo systypes selector.
+$ /includes/ui/ui_lists.inc
+# Fixed double escaping during add/update.
+$ /dimensions/includes/dimensions_db.inc
+# More security fixes in sql statements.
+$ /gl/manage/bank_accounts.php
+  /gl/manage/currencies.php
+  /gl/manage/exchange_rates.php
+  /gl/manage/gl_account_types.php
+  /gl/manage/gl_accounts.php
+  /includes/db/audit_trail_db.inc
+  /includes/db/comments_db.inc
+  /includes/db/inventory_db.inc
+  /includes/db/manufacturing_db.inc
+  /includes/db/references_db.inc
+# Initial value for $next_extension_id added.
+$ /admin/db/maintenance_db.inc
+# Added fixing special chars in refs table during upgrade
+$ /sql/alter2.2.php
+
+21-Oct-2009 Joe Hunt
+! Changed install.html, update.html and empty.po files
+$ install.html
+  update.html
+  /lang/new_language_template/LC_MESSAGES/empty.po
+! Enabled a global flag in config.default.php (config.php), $show_users_online = 0.
+  If this flag is set to 1 FA will show discretely the users online in the footer.
+$ config.default.php
+  /admin/db/users_db.inc
+
+21-Oct-2009 Janusz Dobrowolski
+! Upgrade scripts modified to be used with 2.1 or 2.2beta
+$ /sql/alter2.1.php
+  /sql/alter2.2.php
+  /sql/alter2.2rc.sql (new)
+  /admin/inst_upgrade.php
+# Fixed help link.
+$ /includes/page/header.inc
+# Fixed upgrade of reference table to avoid duplicate record error.
+$ /sql/alter2.2.php
+# Fixed bug in array_selector 
+$ /includes/ui/ui_lists.inc
+
+20-Oct-2009 Janusz Dobrowolski
+! Conditional config files generation - prevents overwrite during upgrade.
+$ /config.php (removed)
+  /installed_extensions.php (removed)
+  /company/0/installed_extensions.php (removed)
+  /config.default.php  (new initial default)
+  /config_db.php (removed initial version)
+  /admin/db/maintenance_db.inc
+  /includes/session.inc
+  /install/index.php
+  /install/save.php
+  /lang/installed_languages.inc (removed initial version)
+! Moving control to install wizard when config file does not exists.
+$ /index.php
+# Fixed db error message
+$ /dimensions/includes/db/dimension_db.inc
+
+18-Oct-2009 Janusz Dobrowolski (merged changes for 2.1.7 from main branch)
 ! Added html_entity_decode() in db_escape() for correct INSERT>SELECT>INSERT sequences.
 $ /includes/db/connect_db.inc
 # Fixed warnings on first page display
@@ -160,7 +493,7 @@ $ /admin/attachments.php
   /purchasing/inquiry/supplier_inquiry.php
   /purchasing/manage/suppliers.php
 
-12-Oct-2009 Janusz Dobrowolski
+12-Oct-2009 Janusz Dobrowolski (merged)
 # Fixed sql injection vulnerability on some php/mysql configurations
 $ /admin/db/users_db.inc
 ! Single quotes also encoded before database data insert
@@ -169,30 +502,1810 @@ $ /admin/db/maintenance_db.inc
   /reporting/includes/tcpdf.php
   /sales/includes/cart_class.inc
 
-------------------------------- Release 2.1.6 ----------------------------------
-! Final Final release of the 2.1. series.
+16-Oct-2009 Janusz Dobrowolski
++ Access control system description.
+$ /doc/access_levels.txt (new)
+
+14-Oct-2009 Janusz Dobrowolski
+# [0000173] Missing global systypes_array declaration.
+$ /purchasing/allocations/supplier_allocate.php
+
+14-Oct-2009 Joe Hunt
+# [0000172] Difference between Customer Balances and Print Statements
+$ /reporting/rep108.pp
+
+13-Oct-2009 Janusz Dobrowolski
+# Fixed default page access.
+$ /sales/inquiry/sales_orders_view.php
+
+13-Oct-2009 Joe Hunt
++ Added discrete users online in footer (from Wish List Forum) (New rerun)
+$ /admin/db/users_db.inc
+  /sql/alter2.2.sql
+  /sql/en_US-new.sql
+  /sql/en_US-demo.sql
+  /themes/aqua/renderer.php
+  /themes/cool/renderer.php
+  /themes/default/renderer.php
+! Changed Tag types in reports_classes to be the same as defined in types.inc. Suitable height=5
+$ /reporting/includes/reports_classes.inc
+! Code cleanup (old code removed)
+$ /includes/ui_view.inc
+  
+12-Oct-2009 Janusz Dobrowolski
+# Fixed sql injection vulnerability on some php/mysql configurations
+$ /admin/db/users_db.inc
+# Fixed broken table editor page layout on duplicate record.
+$ /gl/includes/db/gl_db_account_types.inc
+  /gl/includes/db/gl_db_accounts.inc
+  /gl/manage/gl_account_classes.php
+  /gl/manage/gl_account_types.php
+  /gl/manage/gl_accounts.php
+# [0000169],[0000174] Removed sparse session var unset firing error.
+  /sales/allocations/customer_allocation_main.php
+  /purchasing/allocations/supplier_allocation_main.php
+
+11-Oct-2000 Joe Hunt
+# [0000168] Undefined variable: paylink in file rep110.php
+$ /reporting/rep110.php
+  /reporting/includes/pdf_report.inc
+  
+11-Oct-2009 Janusz Dobrowolski
++ Added security area for sales quotes entry
+$ /applications/customers.php
+  /includes/access_levels.inc
+  /sql/alter2.2.php
+  /sql/en_US-demo.sql
+  /sql/en_US-new.sql
++ Standard SA_DENIED access level added.
+$ /includes/current_user.inc
++ Added helper function for setting page_security level depending on GET content and/or expression value
+$ /includes/session.inc
+# Fixed security areas sort order
+$ /admin/security_roles.php
+# Fixed page_security for various usage types.
+$ /sales/sales_order_entry.php
+  /sales/inquiry/sales_orders_view.php
+
+10-Oct-2009 Janusz Dobrowolski
+! Changed access control extensions support for modules/plugins to use unique extension ids
+$ /admin/inst_module.php
+  /admin/security_roles.php
+  /admin/db/maintenance_db.inc
+  /includes/access_levels.inc
+  /includes/current_user.inc
+  /installed_extensions.php
+  /index.php
+# Enabled error handling for extensions
+$ /frontaccounting.php
+# Page code rewrite
+$ /admin/inst_module.php
+# Fixed missing parameters in update_user_display_prefs call
+$ /admin/users.php
+! Non-accesable menu options displayed as text instead of link
+$ /applications/customers.php
+  /applications/dimensions.php
+  /applications/generalledger.php
+  /applications/inventory.php
+  /applications/manufacturing.php
+  /applications/setup.php
+  /applications/suppliers.php
+# Fixed error handling for duplicate table records
+$ /includes/errors.inc
+# Fixed php 5.3 function name conflict
+$ /includes/main.inc
+  /sales/inquiry/sales_orders_view.php
+# Fixed delivery note edition bug (introduced during systypes rewrite)
+$ /sales/includes/cart_class.inc
+! Changed page_security to SASALESINVOICE
+$ /sales/inquiry/sales_deliveries_view.php
+
+09-Oct-2009 Joe Hunt
++ Added option to print delivery notes as packing slip in reports and links.
+$ /includes/ui/ui_controls.inc 
+  /reporting/rep110.php
+  /reporting/reports_main.php
+  /reporting/includes/doctext.inc
+  /reporting/includes/doctext2.inc
+  /reporting/includes/header2.inc
+  /reporting/includes/pdf_report.inc
+  /reporting/includes/reporting.inc
+  /sales/customer_delivery.php
+  /sales/sales_order_entry.php
+  
+08-Oct-2009 Joe Hunt
++ Prepared the Report Engine for Tags handling.
+! Changed report::getDisplay() to use combo_input from ui_lists.inc insted of local function
+  dup_simple_codeandname_list().
+$ /reporting/includes/reports_classes.inc
+! Changed a parameter in report 301.php to be Summary Only instead of Detailed report.
+$ /reporting/reports_main.php
+  /reporting/rep301.php
+
+06-Oct-2009 Tom Hallman
+# moved commit_transaction and added a default use_transaction param in write_journal_entries
+$ /gl/includes/db/gl_db_trans.inc
+# Show Journal Entries from 2.1 as closed in Journal Inquiries.
+$ /gl/inquiry/journal_inquiry.php
+
+03-Oct-2009 Janusz Dobrowolski
+# Fixed false upgrade related error displayed in some situations on logout.
+$ /access/logout.php
+# Missing old_db declaration fixed.
+$ /includes/current_user.inc
+# Fixed combo_input and array_selector to accept array of selected items from POST.
+$ /includes/ui/ui_lists.inc
+!  Changed structure of tag_associations table.
+$ /sql/alter2.sql
+  /sql/en_US-new.sql
+  /sql/en_US-demo.sql
+
+03-Oct-2009 Joe Hunt
+# Bad conversion of timestamp value in report audit trail.
+$ /reporting/rep710.php
+
+01-Oct-2009 Janusz Dobrowolski
+! Added comment on add_access_extensions usage.
+$ /includes/access_levels.inc
+# Removed sparse add_access_extensions() call.
+$ /includes/session.inc
++ Added support for multiply select options in combo_input.
+$ /includes/ui/ui_lists.inc
+! Unaccesable menu options are now displayed as grey text.
+$ /themes/aqua/default.css
+  /themes/aqua/renderer.php
+  /themes/cool/default.css
+  /themes/cool/renderer.php
+  /themes/default/default.css
+  /themes/default/renderer.php
+
+------------------------------- Release 2.2 Beta ----------------------------------
+30-Sep-2009 Joe Hunt
+! Release 2.2 Beta
 $ config.php
+  update.html
+# Errors in the 2 last user variables in userprefs and parse error in alter2.2.php 
+$ /includes/prefs/userprefs.inc
+  /sql/alter2.2.php
+# Trivial errors in not set bank charge account, retained earnings or profit/loss year account
+$ /admin/fiscalyears.php
+  /purchasing/supplier_payment.php
+  /sales/customer_payments.php
+# Parse error in view_supp_payment.php
+$ /purchasing/view/view_supp_payment.php
 
-16-Sep-2009 Joe Hunt
-# Missing freight tax in Customer Balances Report
-$ /reporting/rep101.php
+30-Sep-2009 Janusz Dobrowolski
+! Single quotes also encoded before database data insert
+$ /admin/db/maintenance_db.inc
+  /includes/db/connect_db.inc
+  /reporting/includes/tcpdf.php
+  /sales/includes/cart_class.inc
+# Included missing dimension configuration section.
+$ /includes/access_levels.inc
+! Changed tag types array name
+$ /includes/types.inc
+# Message typo
+$ /sql/alter2.2.php
+# Fixed false error on payment without allocation.
+$ /purchasing/supplier_payment.php
+  /sales/customer_payments.php
+# Fixed access to payments when deposits are disabled.
+$ /gl/gl_bank.php
+! Access level checking moved to page() function to make session start 
+	and page access checks independent.
+$ /includes/main.inc
+  /includes/session.inc
+# Back link on upgrade help page
+  /includes/current_user.inc
 
-14-Sep-2009 Joe Hunt
-# A couple of minor bugs in tax report when displaying supplier credit notes
-$ /purchasing/includes/db/invoice_db.inc
+29-Sep-2009 Tom Hallman
+! Changes in tags table structure, tags related security areas
+$ /includes/access_levels.inc
+  /includes/types.inc
+  /sql/alter2.2.php
+  /sql/alter2.2.sql
+  /sql/en_US-demo.sql
+  /sql/en_US-new.sql
 
-05-Sep-2009 Joe Hunt
-# Changed Class Type to Class Name in GL Account groups
-$ /gl/manage/gl_account_types.php
-# Changed so total in bank payments/deposits shows correctly if negative amount are entered.
-$ /gl/includes/ui/gl_bank_ui.inc
-
-30-Aug-2009 Janusz Dobrowolski
+29-Sep-2009 Janusz Dobrowolski
 # Fixed sql error during sales order line update with line cancelation.
 $ /sales/includes/db/sales_order_db.inc
 
-------------------------------- Release 2.1.5 ----------------------------------
+29-Sep-2009 Joe Hunt
+! Improved layout on documents etc and new empty language file.
+$ /doc/*.txt
+  update.html
+  /lang/new_language_template/LC_MESSAGES/empty.po
+  
+28-Sep-2009 Janusz Dobrowolski
++ Rewritten extensions system to enable per company module/plugin activation. 
+$ /frontaccounting.php
+  /installed_extensions.php
+  /admin/create_coy.php
+  /admin/inst_module.php
+  /admin/inst_lang.php
+  /admin/db/maintenance_db.inc
+  /applications/customers.php
+  /applications/dimensions.php
+  /applications/generalledger.php
+  /applications/inventory.php
+  /applications/manufacturing.php
+  /applications/setup.php
+  /applications/suppliers.php
+  /includes/access_levels.inc
+  /includes/current_user.inc
+  /includes/main.inc
+  /includes/session.inc
+  /includes/ui/ui_lists.inc
+  /sql/alter2.2.php
+  /modules/installed_modules.php (Removed)
+# Prevented switching off access to security role editor for current role.
+$ /admin/security_roles.php
+
+25-Sep-2009 Joe Hunt
+# Wrong presentation of qty decimals when trans_no != 0 (delivered)
+$ /sales/includes/ui/sales_order_ui.inc
+! Improved layout of login screen
+$ /addess/login.php
+  /themes/default/login.css
+  
+24-Sep-2009 Janusz Dobrowolski
++ Additional fields for secondary phone and/or general notes in customers, 
+ cust_branches, shippers, locations and suppliers tables.
+$ /admin/shipping_companies.php
+  /inventory/includes/db/items_locations_db.inc
+  /inventory/manage/locations.php
+  /purchasing/manage/suppliers.php
+  /sales/manage/customer_branches.php
+  /sales/manage/customers.php
+  /sql/alter2.2.sql
+  /sql/en_US-demo.sql
+  /sql/en_US-new.sql
+
+24-Sep-2009 Joe Hunt
+# Parse error
+$ /sales/inquiry/customer_inquiry.php
+
+23-Sep-2009 Janusz Dobrowolski
+# Fixed crash for all transaction types report
+$ /reporting/rep702.php
+
+23-Sep-2009 Joe Hunt
+# Cleaning from javascript errors.
+$ /access/login.php
+  /admin/fiscalyears.php
+# missing unset of post variable (DayNumber).
+$ /admin/payment_terms.php
+! Changed login to be dependent only by login.css
+$ /themes/default/login.css
+  
+22-Sep-2009 Joe Hunt
+! Changed copyright notice in installer files to credit the original copyrighter. GPLv3.
+$ /install/index.php
+  /install/save.php
+! Updated the install.html and created a doc txt file, about sales quotations.
+$ install.html
+  /doc/2.2_Beta.txt
+  /doc/sales_quotations.txt
+! Changed login.php and logout.php to be neutral and tried to use our own api.
+$ /access/login.php
+  /access/logout.php
+# parse error in login_fail
+$ /includes/session.inc
+  
+21-Sep-2009 Janusz Dobrowolski/Tom Hallman
+! Added info on timeout and default bank accounts.
+$ /doc/2.2_Beta.txt
+! Tags support related changes in database
+$ /sql/alter2.2.sql
+  /sql/en_US-demo.sql
+  /sql/en_US-new.sql
+
+20-Sep-2009 Joe Hunt
+! Removed editable rate field in tax_group_items.
+$ /taxes/tax_groups.php
+# Fixed report layout
+$ /reporting/rep704.php
+
+20-Sep-2009 Janusz Dobrowolski
++ Optional demo data checkbox on install page.
+$ /install/index.php
+  /install/save.php
+# Fixed previous interface mode after timeout.
+$ /access/login.php
++ Optional additional security roles includable from modules/extensions
+$ /admin/inst_module.php
+  /admin/security_roles.php
+  /includes/access_levels.inc
+  /installed_extensions.php
+! Bug with rates display fixed in single form layout.
+$ /taxes/tax_groups.php
+# Fixed 'bad password' info screen to be usable also in non-js mode.
+$ /includes/session.inc
+# Fixed debtors_master name size.
+$ /sql/en_US-new.sql
+  /sql/en_US-demow.sql
+
+19-Sep-2009 Janusz Dobrowolski
++ Support for inactive record control added, optimizations.
+$ /includes/db_pager.inc
+  /includes/ui/db_pager_view.inc
+! db_pager instead of simple table used for table of branches
+$ /sales/manage/customer_branches.php
+! Cleanup after db_pager optimization
+$ /admin/view_print_transaction.php
+  /dimensions/inquiry/search_dimensions.php
+  /gl/bank_account_reconcile.php
+  /gl/inquiry/journal_inquiry.php
+  /gl/manage/exchange_rates.php
+  /manufacturing/search_work_orders.php
+  /manufacturing/inquiry/where_used_inquiry.php
+  /purchasing/allocations/supplier_allocation_main.php
+  /purchasing/inquiry/po_search.php
+  /purchasing/inquiry/po_search_completed.php
+  /purchasing/inquiry/supplier_allocation_inquiry.php
+  /purchasing/inquiry/supplier_inquiry.php
+  /sales/allocations/customer_allocation_main.php
+  /sales/inquiry/customer_allocation_inquiry.php
+  /sales/inquiry/customer_inquiry.php
+  /sales/inquiry/sales_deliveries_view.php
+  /sales/inquiry/sales_orders_view.php
+# Additional fix after removal of bank account report parameter
+$ /sales/create_recurrent_invoices.php
+  /reporting/rep107.php
+
+19-Sep-2009 Joe Hunt
+# Eliminate PT_WORKORDER from payment_person_types_list
+$ /includes/ui/ui_lists.inc
+! Error msg in Bank Transfer if no Bank Charge Account set.
+$ /gl/bank_transfer.php
+
+18-Sep-2009 Janusz Dobrowolski
++ Added currency default bank accounts used in reporting instead of manual account selector.
+$ /gl/includes/db/gl_db_bank_accounts.inc
+  /gl/manage/bank_accounts.php
+  /reporting/rep107.php
+  /reporting/rep108.php
+  /reporting/rep109.php
+  /reporting/rep111.php
+  /reporting/rep209.php
+  /reporting/reports_main.php
+  /reporting/includes/reporting.inc
+  /sql/alter2.2.sql
+  /sql/en_US-demo.sql
+  /sql/en_US-new.sql
+
+17-Sep-2009 Joe Hunt
++ Added release note file for 2.2.
+$ /doc/2.2-Beta.txt
+
+16-Sep-2009 Joe Hunt
+! Clean ups in default themes.
+$ config.php
+  /admin/display_prefs.php
+  /themes/default/default.css
+  /themes/aqua/default.css
+  /themes/cool/default.css
+# Removing php5 date warnings
+$ /includes/date_functions.inc
+  
+15-Sep-2009 Janusz Dobrowolski/Joe Hunt
+# Fixed journal entry type and systype selectors
+# Restore of the 4 include files in types.inc
+$ /includes/types.inc
+! Cleanup
+$ /includes/ui/ui_lists.inc
+  /reporting/includes/reports_classes.inc
+! Changed security roles in default COAs.
+$ /sql/en_US-demo.sql
+  /sql/en_US-new.sql
+# Fixed GET call continuation after timeout and logout page access without authorization
+$ /access/login.php
+  /includes/session.inc
+  /includes/prefs/userprefs.inc
+
+14-Sep-2009 Joe Hunt
+! Changed all numeric constants to the new defined constants. A huge task.
+$ /admin/fiscalyears.php
+  /admin/forms_setup.php
+  /admin/view_print_transaction.php
+  /admin/void_transaction.php
+  /gl/includes/db/gl_db_banking.inc
+  /gl_includes/db/gl_db_trans.inc
+  /gl/inquiry/journal_inquiry.php
+  /includes/systypes.inc
+  /includes/ui/allocation_cart.inc
+  /includes/ui/ui_view.inc
+  /inventory/inquiry/stock_movements.php
+  /manufacturing/includes/db/work_order_issues_db.inc
+  /manufacturing/includes/db/work_order_produce_items.inc
+  /manufacturing/view/wo_production_view.php
+  /purchasing/po_receive_items.php
+  /purchasing/supplier_credit.php
+  /purchasing/supplier_invoice.php
+  /purchasing/supplier_payment.php
+  /purchasing/allocations/supplier_allocation_main.php
+  /purchasing/includes/db/grn_db.inc
+  /purchasing/includes/db/invoice_db.inc
+  /purchasing/includes/db/suballoc_db.inc
+  /purchasing/includes/db/suppliers_db.inc
+  /purchasing/includes/db/supp_payment_db.inc
+  /purchasing/includes/db/supp_trans_db.inc
+  /purchasing/includes/ui/grn_ui.inc
+  /purchasing/includes/ui/invoice_ui.inc
+  /purchasing/inquiry/supplier_allocation_inquiry.php
+  /purchasing/inquiry/supplier_inquiry.php
+  /purchasing/view/view_grn.php
+  /purchasing/view/view_po.php
+  /purchasing/view/view_supp_credit.php
+  /purchasing/view/view_supp_invoice.php
+  /purchasing/view/view_supp_payment.php
+  /reporting/rep101.php
+  /reporting/rep102.php
+  /reporting/rep103.php
+  /reporting/rep105.php
+  /reporting/rep106.php
+  /reporting/rep107.php
+  /reporting/rep108.php
+  /reporting/rep109.php
+  /reporting/rep110.php
+  /reporting/rep111.php
+  /reporting/rep201.php
+  /reporting/rep202.php
+  /reporting/rep203.php
+  /reporting/rep304.php
+  /reporting/rep409.php
+  /reporting/rep709.php
+  /reporting/includes/reporting.inc
+  /reporting/includes/reports_classes.inc
+  /sales/create_recurrent_invoices.php
+  /sales/credit_note_entry.php
+  /sales/customer_credit_invoice.php
+  /sales/customer_delivery.php
+  /sales/customer_invoice.php
+  /sales/customer_payments.php
+  /sales/sales_order_entry.php
+  /sales/includes/cart_class.inc
+  /sales/includes/sales_db.inc
+  /sales/includes/db/custalloc_db.inc
+  /sales/includes/db/cust_trans_db.inc
+  /sales/includes/db/payment_db.inc
+  /sales/includes/db/sales_credit_db.inc
+  /sales/includes/db/sales_delivery_db.inc
+  /sales/includes/db/sales_invoice_db.inc
+  /sales/includes/db/sales_order_db.inc
+  /sales/includes/ui/sales_order_ui.inc
+  /sales/inquiry/customer_allocation_inquiry.php
+  /sales/inquiry/customer_inquiry.php
+  /sales/inquiry/sales_deliveries_view.php
+  /sales/inquiry/sales_orders_view.php
+  /sales/manage/recurrent_invoices.php
+  /sales/view/view_credit.php
+  /sales/view/view_dispatch.php
+  /sales/view/view_invoice.php
+  /sales/view/view_sales_order.php
+  
+13-Sep-2009 Janusz Dobrowolski
+! Eliminated non-static method calls and some more fixes to avoid log warnings on both php 4 and 5:
+ Classes systypes, bank_account_types, payment_person_types, wo_types, reserved replaced by
+simple arrays and defines, removed wrapper get_text class, static method calls replaced by
+calls to singleton variables or defines. Suppressed warnings generated by html_entity_decode()
+and htmlspecialchars() for unsupported encodings.
+$ /frontaccounting.php
+  /admin/display_prefs.php
+  /admin/fiscalyears.php
+  /admin/forms_setup.php
+  /admin/view_print_transaction.php
+  /admin/void_transaction.php
+  /admin/db/voiding_db.inc
+  /dimensions/dimension_entry.php
+  /dimensions/includes/dimensions_db.inc
+  /dimensions/inquiry/search_dimensions.php
+  /dimensions/view/view_dimension.php
+  /gl/bank_account_reconcile.php
+  /gl/bank_transfer.php
+  /gl/gl_bank.php
+  /gl/gl_journal.php
+  /gl/includes/db/gl_db_banking.inc
+  /gl/includes/db/gl_db_trans.inc
+  /gl/includes/ui/gl_bank_ui.inc
+  /gl/inquiry/bank_inquiry.php
+  /gl/inquiry/gl_account_inquiry.php
+  /gl/inquiry/journal_inquiry.php
+  /gl/manage/bank_accounts.php
+  /gl/manage/gl_account_types.php
+  /gl/view/bank_transfer_view.php
+  /gl/view/gl_deposit_view.php
+  /gl/view/gl_payment_view.php
+  /gl/view/gl_trans_view.php
+  /includes/reserved.inc (Removed)
+  /includes/JsHttpRequest.php
+  /includes/banking.inc
+  /includes/errors.inc
+  /includes/main.inc
+  /includes/references.inc
+  /includes/session.inc
+  /includes/types.inc
+  /includes/lang/gettext.php
+  /includes/lang/language.php
+  /includes/page/footer.inc
+  /includes/prefs/sysprefs.inc
+  /includes/prefs/userprefs.inc
+  /includes/ui/allocation_cart.inc
+  /includes/ui/items_cart.inc
+  /includes/ui/ui_globals.inc
+  /includes/ui/ui_lists.inc
+  /includes/ui/ui_view.inc
+  /inventory/adjustments.php
+  /inventory/cost_update.php
+  /inventory/transfers.php
+  /inventory/includes/item_adjustments_ui.inc
+  /inventory/includes/stock_transfers_ui.inc
+  /inventory/includes/db/items_adjust_db.inc
+  /inventory/includes/db/items_trans_db.inc
+  /inventory/includes/db/items_transfer_db.inc
+  /inventory/inquiry/stock_movements.php
+  /inventory/manage/movement_types.php
+  /inventory/view/view_adjustment.php
+  /inventory/view/view_transfer.php
+  /manufacturing/search_work_orders.php
+  /manufacturing/work_order_add_finished.php
+  /manufacturing/work_order_costs.php
+  /manufacturing/work_order_entry.php
+  /manufacturing/work_order_issue.php
+  /manufacturing/work_order_release.php
+  /manufacturing/includes/manufacturing_ui.inc
+  /manufacturing/includes/work_order_issue_ui.inc
+  /manufacturing/includes/db/work_order_issues_db.inc
+  /manufacturing/includes/db/work_order_produce_items_db.inc
+  /manufacturing/includes/db/work_orders_db.inc
+  /manufacturing/includes/db/work_orders_quick_db.inc
+  /manufacturing/view/wo_issue_view.php
+  /manufacturing/view/wo_production_view.php
+  /manufacturing/view/work_order_view.php
+  /purchasing/po_entry_items.php
+  /purchasing/po_receive_items.php
+  /purchasing/supplier_credit.php
+  /purchasing/supplier_invoice.php
+  /purchasing/supplier_payment.php
+  /purchasing/allocations/supplier_allocate.php
+  /purchasing/allocations/supplier_allocation_main.php
+  /purchasing/includes/purchasing_db.inc
+  /purchasing/includes/db/grn_db.inc
+  /purchasing/includes/db/invoice_db.inc
+  /purchasing/includes/db/po_db.inc
+  /purchasing/includes/db/supp_payment_db.inc
+  /purchasing/includes/db/suppalloc_db.inc
+  /purchasing/includes/ui/grn_ui.inc
+  /purchasing/includes/ui/invoice_ui.inc
+  /purchasing/includes/ui/po_ui.inc
+  /purchasing/inquiry/po_search.php
+  /purchasing/inquiry/po_search_completed.php
+  /purchasing/inquiry/supplier_allocation_inquiry.php
+  /purchasing/inquiry/supplier_inquiry.php
+  /purchasing/view/view_supp_credit.php
+  /purchasing/view/view_supp_payment.php
+  /reporting/rep101.php
+  /reporting/rep102.php
+  /reporting/rep103.php
+  /reporting/rep104.php
+  /reporting/rep105.php
+  /reporting/rep108.php
+  /reporting/rep201.php
+  /reporting/rep202.php
+  /reporting/rep203.php
+  /reporting/rep204.php
+  /reporting/rep301.php
+  /reporting/rep302.php
+  /reporting/rep303.php
+  /reporting/rep304.php
+  /reporting/rep409.php
+  /reporting/rep601.php
+  /reporting/rep702.php
+  /reporting/rep704.php
+  /reporting/rep709.php
+  /reporting/rep710.php
+  /reporting/includes/header2.inc
+  /reporting/includes/reporting.inc
+  /reporting/includes/reports_classes.inc
+  /sales/create_recurrent_invoices.php
+  /sales/credit_note_entry.php
+  /sales/customer_credit_invoice.php
+  /sales/customer_delivery.php
+  /sales/customer_invoice.php
+  /sales/customer_payments.php
+  /sales/sales_order_entry.php
+  /sales/allocations/customer_allocate.php
+  /sales/allocations/customer_allocation_main.php
+  /sales/includes/cart_class.inc
+  /sales/includes/sales_db.inc
+  /sales/includes/db/cust_trans_db.inc
+  /sales/includes/db/custalloc_db.inc
+  /sales/includes/db/payment_db.inc
+  /sales/includes/db/sales_credit_db.inc
+  /sales/includes/db/sales_delivery_db.inc
+  /sales/includes/db/sales_invoice_db.inc
+  /sales/includes/db/sales_order_db.inc
+  /sales/includes/ui/sales_credit_ui.inc
+  /sales/includes/ui/sales_order_ui.inc
+  /sales/inquiry/customer_allocation_inquiry.php
+  /sales/inquiry/customer_inquiry.php
+  /sales/inquiry/sales_deliveries_view.php
+  /sales/inquiry/sales_orders_view.php
+  /sales/manage/customers.php
+  /sales/view/view_credit.php
+  /sales/view/view_dispatch.php
+  /sales/view/view_invoice.php
+  /sales/view/view_receipt.php
+  /taxes/tax_groups.php
+
+11-Sep-2009 Joe Hunt
+! Changed so deleting of fiscal year also handles sales quotations
+! Check that new closing accounts have been set before closure.
+$ /admin/fiscalyears.php
+! Check that new bank charge account have been set before adding bank charge.
+$ /sales/customer_payments.php
+  /purchasing/supplier_payment.php
+
+10-Sep-2009 Joe Hunt
+! By changing a simple sentence in allocation_cart.inc, the customer/supplier payments works with prompt payment discounts
+$ /includes/ui/allocation_cart.inc
+# Small typo error in types.inc
+/includes/types.inc
+
+09-Sep-2009 Janusz Dobrowolski
+# Added two special access areas for bank gl postings and grn removal.
+$ /gl/gl_journal.php
+  /gl/includes/ui/gl_journal_ui.inc
+  /includes/access_levels.inc
+  /purchasing/supplier_invoice.php
+  /purchasing/includes/ui/invoice_ui.inc
+  /sql/alter2.2.php
+! Added generic access level checking function can_access().
+$ /includes/current_user.inc
+! Code cleanup
+$ /admin/users.php
+# Activated javascript confirm dialogs
+$ /js/inserts.js
+# Fixed dialogs containing newlines.
+$ /includes/ui/ui_input.inc
++ Added js confirm dialogs for deleting and restoring backup files.
+$ /admin/backups.php
+
+08-Sep-2009 Joe Hunt
+! Changed so voiding and view/print is working with the new Sales Order/Sales Quotation
+$ /admin/view_print_transaction.php
+  /admin/void_transaction.php
+  /admin/db/voiding_db.inc
+  /sales/includes/db/sales_order_db.inc
+  /sales/view/view_sales_order.php
+  
+08-Sep-2009 Janusz Dobrowolski
++ Added detection of partial db upgrade.
+$ /admin/inst_upgrade.php
+  /sql/alter2.1.php
+  /sql/alter2.2.php
+# Small fixes to db upgrade for quotations
+$ /sql/alter2.2.php
+  /sql/alter2.2.sql
+# Added missing sys info for quotations, fixed reference for SO
+$ /includes/systypes.inc
+# Removed obsolete field in sys_types
+$ /sql/en_US-demo.sql
+  /sql/en_US-new.sql
+# date_diff function name changed to date_diff2 for php5.3 compatibility 
+$ /dimensions/inquiry/search_dimensions.php
+  /includes/date_functions.inc
+  /manufacturing/search_work_orders.php
+  /manufacturing/work_order_add_finished.php
+  /manufacturing/work_order_costs.php
+  /sales/sales_order_entry.php
+  /sales/includes/cart_class.inc
+  /sales/includes/ui/sales_order_ui.inc
+
+08-Sep-2009 Joe Hunt
++ Added Sales Quotations, inquiry and report
+$ /applications/customers.php
+  /includes/types.inc
+  /includes/ui/ui_view.inc
+  /reporting/rep105.php
+  /reporting/rep107.php
+  /reporting/rep109.php
+  /reporting/rep110.php
+  /reporting/rep111.php (new file)
+  /reporting/reports_main.php
+  /reporting/includes/doctext.php
+  /reporting/includes/doctext2.php
+  /reporting/includes/header2.inc
+  /reporting/includes/reporting.inc
+  /reporting/includes/reports_classes.inc
+  /sales/customer_delivery.php
+  /sales/customer_invoice.php
+  /sales/sales_order_entry.php
+  /sales/includes/cart_class.inc
+  /sales/includes/db/sales_delivery_db.inc
+  /sales/includes/db/sales_order_db.inc
+  /sales/includes/ui/sales_order_ui.inc
+  /sales/inquiry/sales_orders_view.php
+  /sales/view/view_dispatch.php
+  /sales/view/view_invoice.php
+  /sales/view/view_sales_order.php
+  /sql/alter2.2.sql
+  /sql/en_US-demo.sql
+  /sql/en_US-new.sql
+! Allow re-opening of Dimensions
+$ /dimensions/dimension_entry.php
+  /dimensions/includes/dimensions_db.inc
+  /dimensions/inquiry/search_dimensions.php
+  
+01-Sep-2009 Janusz Dobrowolski
+# Fixed security sections db update.
+$ /admin/security_roles.php
+# Fixed ui behaviour during FA ugrade.
+$ /includes/current_user.inc
+  /includes/session.inc
+  /access/login.php
+# Company directory where not deleted during company removal.
+$ /admin/create_coy.php
+  /includes/main.inc
+# Fixed old security settings import.
+  /sql/alter2.2.php
+  /sql/alter2.2.sql
+
+31-Aug-2009 Janusz Dobrowolski
+! gl accounts selector ordered by account class id
+$ /includes/ui/ui_lists.inc
+! Changed security modules to sections
+$ /admin/security_roles.php
+  /admin/db/security_db.inc
+! Fine tuned security sections/areas.
+$ /includes/access_levels.inc
++ Optimized js compressor (up to 5 times faster)
+$ /includes/main.inc
+! Changed order of gl account selector, added security roles list.
+$ /includes/ui/ui_lists.inc
+! Switch to new access levels system
+$ /config.php
+  /index.php
+  /access/logout.php
+  /access/timeout.php
+  /admin/*.php
+  /admin/db/users_db.inc
+  /applications/application.php
+  /applications/setup.php
+  /dimensions/dimension_entry.php
+  /dimensions/inquiry/search_dimensions.php
+  /dimensions/view/view_dimension.php
+  /gl/*.php
+  /gl/inquiry/*.php
+  /gl/manage/*.php
+  /gl/view/*.php
+  /includes/current_user.inc
+  /includes/session.inc
+  /inventory/*.php
+  /inventory/inquiry/*.php
+  /inventory/manage/*.php
+  /inventory/view/*.php
+  /manufacturing/*.php
+  /manufacturing/inquiry/*.php
+  /manufacturing/manage/*.php
+  /manufacturing/view/*.php
+  /purchasing/*.php
+  /purchasing/allocations/*.php
+  /purchasing/inquiry/*.php
+  /purchasing/manage/suppliers.php
+  /purchasing/view/*.php
+  /reporting/prn_redirect.php
+  /reporting/rep*.php
+  /reporting/reports_main.php
+  /reporting/includes/pdf_report.inc
+  /sales/*.php
+  /sales/allocations/*.php
+  /sales/inquiry/*.php
+  /sales/manage/*.php
+  /sales/view/*.php
+  /sql/alter2.2.php
+  /sql/alter2.2.sql
+  /sql/en_US-demo.sql
+  /sql/en_US-new.sql
+  /taxes/*.php
+
+28-Aug-2009 Joe Hunt
+# The reference for deposits and payments didn't show up in Tax Report
+$ /reporting/rep709.php
+# Minor bug in Quick Entries display
+$ /includes/ui/ui_view.inc
+  
+27-Aug-2009 Joe Hunt
+# bank_trans_type_id removed from bank_trans in en_US-demo.sql and en_US-new.sql.
+$ /sql/en_US-demo.sql
+  /sql/en_US-new.sql
+  
+26-Aug-2009 Janusz Dobrowolski
+! Merged changes from main trunk  2.1.4-2.1.5 (see below)
+
+$ /config.php
+  /includes/ui/ui_view.inc
+  /includes/current_user.inc
+  /includes/ui/ui_input.inc
+  /inventory/purchasing_data.php
+  /install/save.php
+  /gl/manage/gl_accounts.php
+  /gl/includes/gl_db_accounts.inc
+  /gl/includes/db/gl_db_bank_accounts.inc
+  /gl/manage/gl_quick_entries.php
+  /gl/manage/gl_account_classes.php
+  /gl/includes/db/gl_db_bank_trans.inc
+  /purchasing/includes/db/invoice_db.inc
+  /purchasing/includes/ui/invoice_ui.inc
+  /purchasing/includes/ui/po_ui.inc
+  /purchasing/includes/supp_trans_class.inc
+  /purchasing/po_receive_items.php
+  /purchasing/view/view_grn.php
+  /purchasing/view/view_po.php
+  /purchasing/supplier_payment.php
+  /purchasing/includes/purchasing_db.inc
+  /purchasing/includes/db/invoice_db.inc
+  /reporting/reports_main.php
+  /reporting/includes/header2.inc
+  /reporting/rep209.php
+  /reporting/rep109.php
+  /reporting/rep702.php
+  /sales/customer_payments.php
+  /sales/customer_credit_invoice.php
+  /sales/customer_delivery.php
+  /sales/customer_invoice.php
+  /sales/includes/db/payments_db.inc
+  /sales/includes/db/sales_order_db.inc
+  /sales/manage/sales_points.php
+  /taxes/tax_calc.inc
+
 26-Aug-2009 Joe Hunt
+# Changed the text Manifactoring => Manifacturing
+$ /reporting/reports_main.php
+
+25-Aug-2009 Joe Hunt
++ Added reference number in report List of Journal Entries.
+$ /reporting/rep702.php
+! Changed default startup_up app to be in user preferences. Default 'Sales'.
+  Moved tab_list_row to ui_lists.inc and changed the global $tabs to be in types.inc
+$ config.php
+  /admin/display_prefs.php
+  /admin/inst_module.php
+  /admin/db/users_db.inc
+  /includes/current_user.inc
+  /includes/types.inc
+  /includes/page/header.inc
+  /includes/prefs/userprefs.inc
+  /includes/ui/ui_lists.inc
+  /sql/alter2.2.sql
+  /sql/en_US-demo.sql
+  /sql/en_US-new.sql
+  
+
+24-Aug-2009 Janusz Dobrowolski
+# Fixed warning displayed before db upgrade.
+$ /includes/current_user.inc
+# Small final page layout fix
+$ /purchasing/po_entry_items.php
++ Additional links to next document on final pages.
+$ /purchasing/po_receive_items.php
+  /purchasing/supplier_invoice.php
+# Fixed focus issues on hyperlinks
+$ /includes/ui/ui_controls.inc
+
+23-Aug-2009 Janusz Dobrowolski
++ Implemented customizable authentication timeout.
+$ /access/timeout.php (new)
+  /access/login.php
+  /admin/company_preferences.php
+  /admin/db/company_db.inc
+  /includes/current_user.inc
+  /includes/session.inc
+  /includes/ui/ui_input.inc
+  /sql/alter2.2.php
+  /sql/alter2.2.sql
+  /sql/en_US-demo.sql
+  /sql/en_US-new.sql
+! Reorganized access control structures for easier customizing.
+$ /includes/access_levels.inc
+  /admin/security_roles.php
+
+20-Aug-2009 Janusz Dobrowolski
+! Tax Item Types moved to Setup module
+$ /applications/inventory.php
+  /applications/setup.php
++ Partial changes for new access control.
+$ /admin/security_roles.php (new)
+  /admin/db/security_db.inc (new)
+  /includes/access_levels.inc
+  /includes/ui/ui_lists.inc
+  /sql/alter2.2.sql
+  /sql/en_US-demo.sql
+
+04-Aug-2009 Joe Hunt
++ Added email links after creating documents
+$ /includes/ui/ui_controls.inc
+  /manufacturing/work_order_entry.php
+  /purchasing/po_entry_items.php
+  /reporting/reports_main.php
+  /reporting/includes/reporting.inc
+  /sales/create_recurrent_invoices.php
+  /sales/credit_note_entry.php
+  /sales/customer_delivery.php
+  /sales/customer_invoice.php
+  /sales/sales_order_entry.php
+! Added new access levels
+$ /includes/access_levels.inc (new file)
+  
+03-Aug-2009 Janusz Dobrowolski
++ Clone record option added.
+$ /includes/ui/ui_input.inc
+  /inventory/manage/item_categories.php
+  /inventory/manage/items.php
+# Fixed default focus for some controls
+$ /includes/ui/ui_input.inc
+# Fixed popup top placement on FF2
+$ /js/inserts.js
+! Default submit changed
+$ /purchasing/po_receive_items.php
+
++ Customer/branch/supplier selectable by additional short name instead of full name.
+$ /purchasing/manage/suppliers.php
+  /sales/manage/customer_branches.php
+  /sales/manage/customers.php
+  /includes/ui/ui_lists.inc
+  /sql/alter2.2.sql
+  /sql/en_US-demo.sql
+  /sql/en_US-new.sql
+
+01-Aug-2009 Joe Hunt
+! Reduced size of the icons to 12 pix.
+$ /includes/ui/ui_input.inc
+
+31-Jul-2009 Janusz Dobrowolski
+! Merged changes from main trunk  2.1.3-2.1.4 (see below)
+$ /admin/attachments.php
+  /inventory/purchasing_data.php
+  /includes/db/manufacturing.inc
+  /gl/manage/bank_accounts.php
+  /gl/includes/db/gl_db_banking.inc
+  /gl/includes/db/gl_db_trans.inc
+  /purchasing/includes/purchasing_db.inc
+  /purchasing/manage/suppliers.php
+  /purchasing/view/view_grn.php
+  /purchasing/includes/db/invoice_db.inc
+  /purchasing/view/view_supp_payment.php
+  /reporting/reports_main.php
+  /reporting/includes/doctext.inc
+  /reporting/includes/doctext2.inc
+  /reporting/includes/header2.inc
+  /reporting/includes/pdf_report.inc
+  /reporting/rep101.php
+  /reporting/rep109.php
+  /reporting/rep201.php
+  /reporting/rep304.php
+  /reporting/rep709.php
+  /sales/includes/db/cust_trans_db.inc
+  /sales/create_recurrent_invoices.php
+  /sales/sales_order_entry.php
+  /sales/view/view_receipt.php
+
+27-Jul-2009 Janusz Dobrowolski
+# Fixed default selection in popup
+$ /js/inserts.js
+# Fixed branch selection by url
+$ /sales/manage/customer_branches.php
+# Fixed print links's default class.
+$ /reporting/includes/reporting.inc
+
+25-Jul-2009 Janusz Dobrowolski
+! Popup editor now available as option for some list selectors.
+$ /includes/ui/ui_lists.inc
+  /gl/gl_bank.php
+  /gl/includes/ui/gl_bank_ui.inc
+  /includes/session.inc
+  /includes/page/footer.inc
+  /includes/ui/ui_controls.inc
+  /inventory/purchasing_data.php
+  /js/inserts.js
+  /purchasing/po_entry_items.php
+  /purchasing/supplier_credit.php
+  /purchasing/supplier_invoice.php
+  /purchasing/supplier_payment.php
+  /purchasing/allocations/supplier_allocation_main.php
+  /purchasing/includes/ui/po_ui.inc
+  /sales/credit_note_entry.php
+  /sales/customer_payments.php
+  /sales/sales_order_entry.php
+  /sales/allocations/customer_allocation_main.php
+  /sales/includes/ui/sales_credit_ui.inc
+  /sales/includes/ui/sales_order_ui.inc
+  /themes/aqua/default.css
+  /themes/aqua/renderer.php
+  /themes/cool/default.css
+  /themes/cool/renderer.php
+  /themes/default/default.css
+  /themes/default/renderer.php
+
+21-Jul-2009 Janusz Dobrowolski
+! Asynchronous customer/supplier/item selection now use popup window.
+$ /index.php
+  /gl/gl_bank.php
+  /includes/session.inc
+  /includes/page/footer.inc
+  /includes/ui/ui_controls.inc
+  /includes/ui/ui_input.inc
+  /includes/ui/ui_lists.inc
+  /inventory/purchasing_data.php
+  /inventory/manage/items.php
+  /js/inserts.js
+  /js/utils.js
+  /purchasing/po_entry_items.php
+  /purchasing/supplier_credit.php
+  /purchasing/supplier_invoice.php
+  /purchasing/supplier_payment.php
+  /purchasing/allocations/supplier_allocation_main.php
+  /purchasing/manage/suppliers.php
+  /sales/credit_note_entry.php
+  /sales/customer_payments.php
+  /sales/sales_order_entry.php
+  /sales/allocations/customer_allocation_main.php
+  /sales/manage/customer_branches.php
+  /sales/manage/customers.php
+
+15-Jul-2009 Joe Hunt
+! Replaced sys_types names from table to systypes::name in reports
+  Now the English names in table are never used in inquiries or reports
+$ /reporting/rep101.php
+  /reporting/rep102.php
+  /reporting/rep108.php
+  /reporting/rep201.php
+  /reporting/rep202.php
+  /reporting/rep203.php
+  /reporting/rep709.php
+  /sql/alter2.2.sql
+! Audit-Trail report (systypes selector should include all systypes, extra parameter to function dup_systypes_list.
+$ /reporting/rep710.php
+  /reporting/reports_main.php
+  /reporting/includes/reports_classes.inc
+# Removed warning from COA report
+$ /gl/includes/db/gl_db_accounts.inc
+  /includes/date_functions.inc
+  /reporting/rep701.php
+  
+13-Jul-2009 Joe Hunt
++ Added Audit Trail Report
+$ /reporting/rep710.php (new file)
+$ /reporting/reports_main.php
+! Changed so $page_security works with reports (displays an error message on top)
+$ /reporting/includes/pdf_report.inc
+  /reporting/includes/excel_report.inc
+  
+10-Jul-2009 Janusz Dobrowolski
++ Added direct allocations in payments.
+$ /purchasing/supplier_payment.php
+  /sales/customer_payments.php
+! Allocations related code reuse.
+$ /includes/ui/allocation_cart.inc
+  /purchasing/allocations/supplier_allocate.php
+  /sales/allocations/customer_allocate.php
+
+02-Jul-2009 Joe Hunt
+! Always show 0.00 in debit column when using display_debit_or_credit
+$ /includes/ui/ui_view.inc
+
+01-Jul-2009 Joe Hunt
+! Small adjustment in /inventory/prices.php to see the calculated prices if they are set.
+$ /inventory/prices.php
+# Small bug/layout fixes
+$ /inventory/manage/item_categories.php
+  /inventory/manage/locations.php
+  /sql/en_US-demo.sql
+  /sql/en_US-new.sql
+
+30-Jun-2009 Joe Hunt
+# Small annoying bug-fixes in items.php and items_trans_db.inc
+$ /inventory/manage/items.php
+  /inventory/includes/db/items_trans_db.inc
+  
+30-Jun-2009 Joe Hunt
++ Implemented automatic price calculation of items from std. cost.
+$ /admin/company_preferences.php
+  /admin/db/company_db.inc
+  /doc/calculate_price.txt (new file)
+  /sales/includes/sales_db.inc
+  /sql/alter2.2.sql
+  /sql/en_US-demo.sql
+  /sql/en_US-new.sql
+  
+29-Jun-2009 Joe Hunt
+! Small layout improments in Customer Payments
+$ /sales/customer_payments.php
+
+28-Jun-2009 Joe Hunt
+# Fixed link bugs in sales order entry and optimized a couple of functions in ui_controls.inc
+$ /includes/ui/ui_controls.inc
+  /sales/sales_order_entry.php
+  
+27-Jun-2009 Joe Hunt
+# Corrections to default COAs.
+$ /sql/alter2.2.sql
+  /sql/en_US-new.sql
+  /sql/en_US-demo.sql
+  
+26-Jun-2009 Joe Hunt
++ Added Print of Work Order and GRN Valuation Report
+# Small bug in company preferences
+$ /admin/company_preferences.php
+  /manufacturing/includes/db/work_orders_db.inc
+  /manufacturing/work_order_entry.php
+  /reporting/rep305.php (new file)
+  /reporting/rep409.php (new file)
+  /reporting/reports_main.php
+  /reporting/includes/doctext.inc
+  /reporting/includes/doctext2.inc
+  /reporting/includes/header2.inc
+  /reporting/includes/pdf_report.inc
+  /reporting/includes/reports_classes.inc
+  
+26-Jun-2009 Joe Hunt
++ Added Bank Charge field to Customer Payment, Supplier Payment and Bank Transfer and a new default bank charge account in gl_setup.
+$ /admin/gl_setup.php
+  /admin/db/company_db.inc
+  /gl/bank_transfer.php
+  /gl/includes/db/gl_db_banking.inc
+  /purchasing/supplier_payment.php
+  /purchasing/includes/db/supp_payment_db.inc
+  /sales/customer_payment.php
+  /sales/includes/db/payment_db.inc
+  /sql/alter2.2.sql
+  /sql/en_US-demo.sql
+  /sql/en_US-new.sql
+  
+25-Jun-2009 Joe Hunt
+! Changed balance_sheet field in account class to ctype and fixed class editing.
+# Parse error in ui_lists.inc. Masked include_once(/validation.inc) in main.inc.
+$ /admin/fiscalyears.php
+  /gl/includes/db/gl_db_accounts.inc
+  /gl/includes/db/gl_db_account_types.inc
+  /gl/includes/db/gl_db_trans.inc
+  /gl/manage/gl_account_classes.php
+  /includes/main.inc
+  /includes/ui/ui_lists.inc
+  /sql/en_US-demo.sql
+  /sql/en_US-new.sql
+  /sql/alter2.2.sql
+  
+25-Jun-2009 Janusz Dobrowolski
+! Merged changes from main trunk  2.1.2-2.1.3 (see below)
+$ /admin/backups.php
+  /admin/company_preferences.php
+  /admin/view_print_transaction.php
+  /applications/setup.php
+  /config.php
+  /dimensions/inquiry/search_dimensions.php
+  /gl/gl_journal.php
+  /gl/includes/db/gl_db_accounts.inc
+  /gl/includes/db/gl_db_account_types.inc
+  /gl/includes/db/gl_db_trans.inc
+  /gl/includes/ui/gl_bank_ui.inc
+  /gl/inquiry/gl_trial_balance.php
+  /gl/inquiry/tax_inquiry.php
+  /gl/manage/gl_account_classes.php
+  /includes/data_checks.inc
+  /includes/db/manufacturing_db.inc
+  /includes/errors.inc
+  /includes/main.inc
+  /includes/references.inc
+  /includes/session.inc
+  /includes/types.inc
+  /includes/ui/db_pager_view.inc
+  /includes/ui/ui_lists.inc
+  /includes/ui/ui_view.inc
+  /inventory/inquiry/stock_status.php
+  /inventory/manage/items.php
+  /inventory/manage/locations.php
+  /inventory/manage/sales_kits.php
+  /inventory/prices.php
+  /inventory/purchasing_data.php
+  /lang/new_language_template/LC_MESSAGES/empty.po
+  /manufacturing/includes/db/work_orders_db.inc
+  /manufacturing/includes/db/work_orders_produce_items_db.inc
+  /manufacturing/includes/db/work_orders_quick_db.inc
+  /manufacturing/includes/manufacturing_ui.inc
+  /manufacturing/inquiry/bom_cost_inquiry.php
+  /manufacturing/manage/bom_edit.php
+  /manufacturing/search_work_orders.php
+  /manufacturing/view/work_order_view.php
+  /manufacturing/work_order_add_finished.php
+  /manufacturing/work_order_costs.php (new file)
+  /manufacturing/work_order_entry.php
+  /manufacturing/work_order_issue.php
+  /manufacturing/work_order_release.php
+  /purchase/po_receive_items.php
+  /purchasing/allocations/supplier_allocation_main.php
+  /purchasing/includes/db/grn_db.inc
+  /purchasing/includes/db/invoice_db.inc
+  /purchasing/includes/db/po_db.inc
+  /purchasing/includes/purchasing_db.inc
+  /purchasing/includes/ui/po_ui.inc
+  /purchasing/inquiry/po_search_completed.php
+  /purchasing/inquiry/supplier_inquiry.php
+  /purchasing/supplier_credit.php
+  /purchasing/supplier_invoice.php
+  /reporting/includes/class.mail.inc
+  /reporting/includes/pdf.report.inc
+  /reporting/includes/reports_classes.inc
+  /reporting/rep109.php
+  /reporting/rep209.php
+  /reporting/rep302.php
+  /reporting/rep302.php
+  /reporting/rep303.php
+  /reporting/rep303.php
+  /reporting/rep701.php
+  /reporting/rep705.php
+  /reporting/rep706.php
+  /reporting/rep707.php
+  /reporting/rep708.php
+  /reporting/reports_main.php
+  /sales/create_recurrent_invoices.php
+  /sales/customer_delivery.php
+  /sales/includes/db/sales_order_db.inc
+  /sales/includessales_order_ui.inc
+  /sales/inquiry/sales_orders_view.php
+  /sales/manage/customer_branches.php
+  /sql/en_US-demo.sql
+  /sql/en_US-new.sql
+  /taxes/db/tax_types_db.inc
+  /taxes/tax_types.php
+
+17-Jun-2009 Janusz Dobrowolski
+# Fixed supplier payment view link
+$ /includes/ui/ui_view.inc
+
+03-Jun-2009 Janusz Dobrowolski
+! Delete buttons prepared for js confirmation.
+$ /admin/fiscalyears.php
+
+02-Jun-2009 Joe Hunt
+! Fiscal Year delete . now removes all transactions and convert into relevant open balances.
+$ /admin/fiscalyear.php
+! Created a function db_backup in /admin/db/maintenence_db.inc
+$ /admin/db/maintenance_db.inc
+  /admin/backups.php
+  /admin/inst_upgrade.php
+  
+22-May-2009 Janusz Dobrowolski
+# Defualt hyperlink href set to PHP_SELF
+$ /includes/ui/ui_controls.inc
+
+21-May-2009 Janusz Dobrowolski
++ Added reset_focus helper function.
+$ /includes/ui/ui_view.inc
+# Fixed link on and focus on final page.
+$ /gl/gl_journal.php
+
+19-May-2009 Janusz Dobrowolski
++ Automatic update currency option added.
+$ /gl/includes/db/gl_db_currencies.inc
+  /includes/ui/ui_view.inc
+  /gl/manage/currencies.php
+  /sql/alter2.2.sql
+  /sql/en_US-demo.sql
+  /sql/en_US-new.sql
++ Added hook support for localized functions
+$ /gl/includes/db/gl_db_rates.inc
+  /gl/manage/exchange_rates.php
+  /includes/session.inc
+! Fixed hook for optional TaxFunction
+$ /reporting/rep709.php
+! Removed obsolete has_locale helper.
+$ /includes/lang/language.php
+
+17-May-2009 Janusz Dobrowolski
++ Added excluding item/category from sales.
+$ /includes/ui/ui_lists.inc
+  /inventory/includes/db/items_category_db.inc
+  /inventory/includes/db/items_db.inc
+  /inventory/manage/item_categories.php
+  /inventory/manage/items.php
+  /sql/alter2.2.sql
+  /sql/alter2.2.php
+
+15-May-2009 Joe Hunt
+# Bad link to view dimension
+$ /includes/ui/ui_view.inc
+! Improved layout.
+$ /purchasing/includes/ui/invoice_ui.inc
+
+14-May-2009 Joe Hunt
++ Added user_id to Journal Inquiry
+$ /gl/inquiry/journal_inquiry.php
+
+13-May-2009 Janusz Dobrowolski
+# Excluding closed transactions from edition/voiding.
+$ /includes/db/audit_trail_db.inc  
+  /admin/void_transaction.php
+  /sales/inquiry/customer_inquiry.php
+  /gl/inquiry/journal_inquiry.php
+# Fixed error during category adding.
+$ /inventory/includes/db/items_category_db.inc
++ Units and item type is editable until item not used.
+$ /inventory/includes/db/items_db.inc
+  /inventory/manage/items.php
+
+11-May-2009 Joe Hunt
+! Changed creating of fiscal year so gap is not allowed. Cannot close year if open years before.
+$ /admin/fiscalyers.php
+
+10-May-2009 Janusz Dobrowolski
+! Support for periodic journal trans closing/indexing
+$ /includes/db/audit_trail_db.inc
+  /admin/fiscalyears.php
+  /gl/includes/db/gl_db_trans.inc
+  /gl/inquiry/journal_inquiry.php
+
+! Restored support for reversed transactions
+$ /gl/gl_journal.php
+  /gl/includes/ui/gl_journal_ui.inc
+
+08-May-2009 Janusz Dobrowolski
++ Added journal entry edition, removed reverse transaction option.
+$ /gl/includes/ui/gl_journal_ui.inc
+  /gl/includes/db/gl_db_trans.inc
++ Added journal entry transaction edition/view
+$ /gl/gl_journal.php
+  /includes/ui/ui_view.inc
++ Added journal inquiry
+$ /gl/inquiry/journal_inquiry.php (new)
+  /includes/ui/ui_lists.inc
+  /applications/generalledger.php
+! Document references saved also in refs table for easy access.
+$ /dimensions/includes/dimensions_db.inc
+  /includes/references.inc
+  /gl/includes/db/gl_db_banking.inc
+  /inventory/includes/db/items_adjust_db.inc
+  /inventory/includes/db/items_transfer_db.inc
+  /manufacturing/includes/db/work_order_issues_db.inc
+  /manufacturing/includes/db/work_order_produce_items_db.inc
+  /manufacturing/includes/db/work_orders_db.inc
+  /manufacturing/includes/db/work_orders_quick_db.inc
+  /purchasing/includes/db/grn_db.inc
+  /purchasing/includes/db/invoice_db.inc
+  /purchasing/includes/db/po_db.inc
+  /purchasing/includes/db/supp_payment_db.inc
+  /sales/includes/db/payment_db.inc
+  /sales/includes/db/sales_credit_db.inc
+  /sales/includes/db/sales_delivery_db.inc
+  /sales/includes/db/sales_invoice_db.inc
+  /sql/alter2.2.php
+! Small fixes needed for pending client-side validation support
+$ /includes/current_user.inc
+  /includes/main.inc
+  /includes/session.inc
+  /includes/page/header.inc
+  /includes/page/footer.inc
+  /includes/errors.inc
+  /js/inserts.js
+  /js/utils.js
+  /themes/aqua/default.css
+  /themes/cool/default.css
+  /themes/default/default.css
+  /themes/aqua/renderer.php
+  /themes/cool/renderer.php
+  /themes/default/renderer.php
+! Function get_reference return string instead of mysql resource.
+$ /includes/db/references_db.inc
+! Added reference var
+$ /includes/ui/items_cart.inc
+# Small bugfix in invoice view
+$ /sales/includes/db/sales_invoice_db.inc
+# Last document date bug fixed
+$ /sales/customer_delivery.php
+# Fixed false warning during upgrade process in debug mode.
+$ /admin/inst_upgrade.php
+
+03-May-2009 Janusz Dobrowolski
++ Audit trail added.
+$ /includes/db/audit_trail_db.inc (new)
+  /admin/db/voiding_db.inc
+  /gl/includes/db/gl_db_banking.inc
+  /gl/includes/db/gl_db_trans.inc
+  /includes/main.inc
+  /inventory/includes/db/items_adjust_db.inc
+  /inventory/includes/db/items_trans_db.inc
+  /inventory/includes/db/items_transfer_db.inc
+  /manufacturing/includes/db/work_order_issues_db.inc
+  /manufacturing/includes/db/work_order_produce_items_db.inc
+  /manufacturing/includes/db/work_orders_db.inc
+  /manufacturing/includes/db/work_orders_quick_db.inc
+  /purchasing/includes/db/grn_db.inc
+  /purchasing/includes/db/po_db.inc
+  /purchasing/includes/db/supp_trans_db.inc
+  /sales/includes/db/cust_trans_db.inc
+  /sales/includes/db/sales_order_db.inc
+  /sql/alter2.2.php
+  /sql/alter2.2.sql
+  /sql/en_US-demo.sql
+  /sql/en_US-new.sql
+! Changed primary key in users table
+$ /admin/change_current_user_password.php
+  /admin/inst_upgrade.php
+  /admin/users.php
+  /admin/db/users_db.inc
+  /includes/current_user.inc
+! Enabled drop table queries during non-forced upgrade
+$ /admin/db/maintenance_db.inc
+# Small optimization
+  /sales/includes/sales_db.inc
+# Fixed default date handling.
+$ /sales/customer_invoice.php
+# Fixed error handling in debug mode
+$ /includes/errors.inc
+  /includes/db/connect_db.inc
+
+02-May-2009 Joe Hunt
+# Minor bug Profit & Loss Statement
+$ /reporting/rep707.php
+
+02-May-2009 Joe Hunt
+! Company setup option for printing server Time Zone on Reports Print-Out.
+! Company setup version_id for stamping the version id. Can be used for check for update.
+$ /admin/company_preferences.php
+  /admin/db/company_db.inc
+  /reporting/includes/pdf_report.inc
+  /sql/alter2.2.sql
+  /sql/en_US-demo.sql
+  /sql/en_US-new.sql
+  
+01-May-2009 Joe Hunt
+! Changed Customer Balance and Supplier Balance to period select with Open Balance
+$ /reporting/reports_main.php
+  /reporting/rep101.php
+  /reporting/rep201.php
+  
+30-Apr-2009 Janusz Dobrowolski
+! Merged changes from main trunk  2.1.1-2.1.2 (see below)
+
+30-Apr-2009 Janusz Dobrowolski
+# Small layout fixes 
+$ /includes/errors.inc
+  /themes/aqua/renderer.php
+  /themes/cool/renderer.php
+  /themes/default/renderer.php
+
+29-Apr-2009 Janusz Dobrowolski
+! Messages styles moved default.css
+$ /includes/errors.inc
+  /themes/aqua/default.css
+  /themes/cool/default.css
+  /themes/default/default.css
+
+28-Apr-2009 Joe Hunt
+! Changed so the close of fiscal years also closes the balances and brings forward retained earnings.
+$ /admin/gl_setup.ph
+  /admin/fiscalyears.php
+  /admin/db/company_db.inc
+  /sql/en_US-new.sql
+  /sql/en_US-demo.sql
+  /sql/alter2.2.sql
+  
+25-Apr-2009 Janusz Dobrowolski
+# Fixed ambigous sql
+$ /inventory/manage/item_categories.php
+
+25-Apr-2009 Joe Hunt
+! Removed obsolete field 'included_in_price' from table 'Tax_group_items' in en_US-demo.sql.
+$ /sql/en_US-demo.sql
+  /sql/alter2.2.sql
+
+24-Apr-2009 Janusz Dobrowolski
++ Added inactive records support.
+$ /admin/payment_terms.php
+  /admin/shipping_companies.php
+  /gl/includes/db/gl_db_account_types.inc
+  /gl/includes/db/gl_db_currencies.inc
+  /gl/manage/bank_accounts.php
+  /gl/manage/currencies.php
+  /gl/manage/gl_account_classes.php
+  /gl/manage/gl_account_types.php
+  /gl/manage/gl_accounts.php
+  /includes/ui/ui_lists.inc
+  /inventory/includes/db/items_units_db.inc
+  /inventory/includes/db/movement_types_db.inc
+  /inventory/manage/item_categories.php
+  /inventory/manage/item_units.php
+  /inventory/manage/items.php
+  /inventory/manage/locations.php
+  /inventory/manage/movement_types.php
+  /manufacturing/includes/db/work_centres_db.inc
+  /manufacturing/manage/work_centres.php
+  /purchasing/manage/suppliers.php
+  /sales/includes/db/sales_points_db.inc
+  /sales/manage/sales_points.php
+  /sql/alter2.2.sql
+  /sql/en_US-demo.sql
+  /sql/en_US-new.sql
+  /taxes/item_tax_types.php
+  /taxes/tax_groups.php
+  /taxes/tax_types.php
+  /taxes/db/tax_groups_db.inc
+  /taxes/db/tax_types_db.inc
+# Edit buttons center alignment.
+$ /includes/ui/ui_input.inc
+# Fixed ajax request using element name on multi-part forms.
+$ /js/utils.js
+
+24-Apr-2009 Joe Hunt
+! Added option to select how to present Balance Sheet and P&L Statement
+$ /gl/manage/gl_account_classes.php
+  /gl/includes/db/gl_db_account_types.inc
+  /reporting/rep706.php
+  /reporting/rep707.php
+  /sql/alter2.2.sql
+
+22-Apr-2009 Janusz Dobrowolski
++ Added inactive records support.
+$ /sales/includes/db/credit_status_db.inc
+  /sales/includes/db/sales_types_db.inc
+  /sales/manage/credit_status.php
+  /sales/manage/customer_branches.php
+  /includes/data_checks.inc
+  /sales/manage/sales_groups.php
+  /sales/manage/sales_people.php
+  /sales/manage/sales_types.php
+# Slightly changed inactive record support
+$ /includes/ui/ui_input.inc
+  /includes/ui/ui_lists.inc
+  /sales/manage/customers.php
+  /sales/manage/sales_areas.php
+! Display all db_query errors in debug mode
+$ /includes/db/connect_db.inc
+# Hide empty/disabled tabs
+$ /frontaccounting.php
+  /applications/dimensions.php
+# Small typo fixed
+$ /applications/application.php
+
+21-Apr-2009 Janusz Dobrowolski
++ Support for inactive records.
+$ /includes/ui/ui_lists.inc
+  /includes/ui/ui_input.inc
+  /includes/db/sql_functions.inc
+  /themes/aqua/default.css
+  /themes/cool/default.css
+  /themes/default/default.css
++ Added inactive field in cust_branches
+$ /sql/alter2.2.sql
+  /sql/en_US-demo.sql
+  /sql/en_US-new.sql
++ Added inactive records edition.
+$ /sales/manage/customers.php
+  /sales/manage/sales_areas.php
+  
+08-Apr-2009 Janusz Dobrowolski
+# Fix for hotkeys on multi form pages.
+$ /js/inserts.js
+! Customer name max. length 80
+$ /sales/manage/customers.php
+  /sql/alter2.2.php
+  /sql/alter2.2.sql
+  /sql/en_US-demo.sql
+  /sql/en_US-new.sql
+
+30-Mar-2009 Janusz Dobrowolski
+! Merged changes from main trunk for versions 2.1RC-2.1.1 (see below)
+$ /admin/db/v_banktrans.inc (removed)
+  /applications/manufacturing.php
+  /gl/include/db/gl_db_banking.inc
+  /gl/includes/ui/gl_bank_ui.inc
+  /gl/includes/ui/gl_journal_ui.inc
+  /gl/manage/exchange_rates.php
+  /.htaccess
+  /includes/banking.inc
+  /includes/data_checks.inc
+  /includes/ui/items_cart.inc
+  /includes/ui/ui_inputs.inc
+  /includes/ui/ui_lists.inc
+  /install.html
+  /install/index.php
+  /install/save.php
+  /inventory/includes/inventory_db.inc
+  /inventory/manage/items.php
+  /inventory/manage/sales_kits.php
+  /js/inserts.js
+  /lang/new_language_template/LC_MASSAGES/empty.po
+  /manufacturing/inquiry/bom_cost_inquiry.php
+  /purchasing/allocations/supplier_allocate.php
+  /purchasing/manage/suppliers.php
+  /reporting/includes/doctext2.inc
+  /reporting/includes/doctext.inc
+  /reporting/including/excel_report.inc
+  /reporting/rep104.php
+  /reporting/rep106.php
+  /reporting/rep303.php
+  /reporting/rep702.php
+  /sales/allocations/customer_allocate.php
+  /sales/includes/db/sales_credit_db.inc
+  /sales/includes/db/sales_points_db.inc
+  /sales/includes/ui/sales_credit_ui.inc
+  /sales/includes/ui/sales_order_ui.inc
+  /sales/manage/sales_points.php
+  /sales/sales_order_entry.php
+  /sql/alter2.1.sql
+  /taxes/tax_types.php
+  /themes/aqua/default.css
+  /themes/cool/default.css
+  /themes/default/default.css
+
+29-Mar-2009 Janusz Dobrowolski
+! Added cancel button
+$ /inventory/manage/items.php
+! Element id generation speedup
+$ /includes/ui/ui_view.inc
+# Fixed hotkeys behaviour in report module
+$ /js/inserts.js
+  /reporting/includes/reports_classes.inc
+
+21-Mar-2009 Janusz Dobrowolski
++ Option to use last document date on subsequent new documents.
+$ /admin/display_prefs.php
+  /admin/db/users_db.inc
+  /includes/current_user.inc
+  /includes/prefs/userprefs.inc
+  /sql/alter2.2.php
+  /sql/alter2.2.sql
+  /sql/en_US-demo.sql
+  /sql/en_US-new.sql
++ Optional check for current date in date_cells()/date_row()
+$ /includes/ui/ui_input.inc
+! Save/retrieve last document date.
+$ /gl/bank_account_reconcile.php
+  /gl/gl_bank.php
+  /gl/gl_journal.php
+  /gl/includes/ui/gl_bank_ui.inc
+  /gl/includes/ui/gl_journal_ui.inc
+  /includes/date_functions.inc
+  /includes/ui/ui_view.inc
+  /inventory/adjustments.php
+  /inventory/transfers.php
+  /inventory/includes/item_adjustments_ui.inc
+  /inventory/includes/stock_transfers_ui.inc
+  /manufacturing/work_order_entry.php
+  /purchasing/po_entry_items.php
+  /purchasing/po_receive_items.php
+  /purchasing/supplier_payment.php
+  /purchasing/includes/ui/grn_ui.inc
+  /purchasing/includes/ui/invoice_ui.inc
+  /purchasing/includes/ui/po_ui.inc
+  /sales/credit_note_entry.php
+  /sales/customer_credit_invoice.php
+  /sales/customer_delivery.php
+  /sales/customer_invoice.php
+  /sales/customer_payments.php
+  /sales/sales_order_entry.php
+  /sales/includes/cart_class.inc
+  /sales/includes/sales_db.inc
+  /sales/includes/db/sales_order_db.inc
+  /sales/includes/ui/sales_credit_ui.inc
+  /sales/includes/ui/sales_order_ui.inc
+
+18-Mar-2009 Janusz Dobrowolski
++ Additional option for submit_add_or_update_x() helpers
+$ /includes/ui/ui_input.inc
++ Icon for default escape button
+$ /themes/aqua/images/escape.png (new)
+  /themes/cool/images/escape.png (new)
++ Arrow navigation also in report menus
+$ /js/utils.js
+  /js/inserts.js
++ Added default keys for form submition/cancelling when apprioprate.
+$ All form entry files.
+
+17-Mar-2009 Joe Hunt
+! Changed so company domicile is printed on invoices and statements if filled out.
+$ /reporting/includes/header2.inc
+
+17-Mar-2009 Janusz Dobrowolski
++ Added default delivery_required_by parameter, removed custom company fields/names.
+$ /admin/company_preferences.php
+  /admin/gl_setup.php
+  /admin/db/company_db.inc
+  /includes/prefs/sysprefs.inc
+  /sql/alter2.2.php (new)
+  /sql/alter2.2.sql (new)
+  /sql/en_US-demo.sql
+  /sql/en_US-new.sql
++ Item category now contains default parameters for new items.
+$ /inventory/includes/db/items_category_db.inc
+  /inventory/manage/item_categories.php
+  /inventory/manage/items.php
+  /sql/alter2.2.php
+  /sql/alter2.2.sql
+  /sql/en_US-demo.sql
+  /sql/en_US-new.sql
+! Updated FA version string.
+$ /config.php
+! Stock item types moved to types.inc
+$ /includes/types.inc
+  /includes/ui/ui_lists.inc
+! Focus js code optimization
+$ /js/inserts.js
+  /js/utils.js
+ 
+16-Mar-2009 Janusz Dobrowolski
++ Support for default buttons with Ctrl-Enter/Escape hotkeys, 
+	arrow navigation in menus
+$ /includes/ui/ui_input.inc
+  /includes/ui/ui_controls.inc
+  /includes/ui/ui_view.inc
+  /includes/page/footer.inc
+  /config.php
+  /js/inserts.js
+  /js/utils.js
+  /reporting/includes/reporting.inc
+  /themes/default/images/escape.png
+  /themes/aqua/default.css
+  /themes/aqua/renderer.php
+  /themes/cool/default.css
+  /themes/cool/renderer.php
+  /themes/default/default.css
+  /themes/default/renderer.php
+  /themes/default/images/escape.png
+  /sales/sales_order_entry.php
+
+! SID & start_form() cleanup
+$ /.htaccess
+  /access/logout.php
+  /admin/attachments.php
+  /admin/backups.php
+  /admin/create_coy.php
+  /admin/inst_lang.php
+  /admin/inst_module.php
+  /admin/view_print_transaction.php
+  /admin/void_transaction.php
+  /dimensions/inquiry/search_dimensions.php
+  /gl/bank_transfer.php
+  /gl/gl_bank.php
+  /gl/inquiry/gl_trial_balance.php
+  /gl/manage/exchange_rates.php
+  /inventory/adjustments.php
+  /inventory/cost_update.php
+  /inventory/prices.php
+  /inventory/purchasing_data.php
+  /inventory/reorder_level.php
+  /inventory/transfers.php
+  /inventory/inquiry/stock_movements.php
+  /inventory/inquiry/stock_status.php
+  /inventory/manage/item_codes.php
+  /inventory/manage/sales_kits.php
+  /manufacturing/search_work_orders.php
+  /manufacturing/work_order_issue.php
+  /manufacturing/inquiry/bom_cost_inquiry.php
+  /manufacturing/manage/bom_edit.php
+  /purchasing/po_entry_items.php
+  /purchasing/po_receive_items.php
+  /purchasing/supplier_credit.php
+  /purchasing/supplier_invoice.php
+  /purchasing/supplier_payment.php
+  /purchasing/allocations/supplier_allocate.php
+  /purchasing/inquiry/po_search.php
+  /purchasing/inquiry/po_search_completed.php
+  /purchasing/inquiry/supplier_allocation_inquiry.php
+  /purchasing/inquiry/supplier_inquiry.php
+  /sales/credit_note_entry.php
+  /sales/customer_credit_invoice.php
+  /sales/customer_delivery.php
+  /sales/customer_invoice.php
+  /sales/allocations/customer_allocate.php
+  /sales/includes/ui/sales_credit_ui.inc
+  /sales/inquiry/customer_allocation_inquiry.php
+  /sales/inquiry/sales_deliveries_view.php
+  /sales/inquiry/sales_orders_view.php
+
+------------------------------- Release 2.1.5 ----------------------------------
+26-Aug-2009 Joe Hung
 ! Release 2.1.5
 $ config.php
 # If no dimensions in system, then there were 2 destination selectors in report Balance Sheet
@@ -642,6 +2755,7 @@ $ /inventory/manage/sales_kits.php
 04-May-2009 Joe Hunt
 # Purchase Order document shows wrong purch data conversion if purch data
 $ /reporting/rep209.php
+
 
 ------------------------------- Release 2.1.2 ----------------------------------
 30-Apr-2009 Joe Hunt
@@ -5078,8 +7192,3 @@ $  /admin/gl_setup.php
 -------------------- 1.0 Stable Released ----------------------
 10-Apr-2007 Joe Hunt
  ! Release 1.0 established on SourceForge.
-
-2. Copyright and disclaimer
----------------------------
-This application is opensource software released under the GPL.  Please
-see source code and the LICENSE file

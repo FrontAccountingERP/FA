@@ -9,19 +9,16 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security=1;
+$page_security = 'SA_CHGPASSWD';
 $path_to_root="..";
 include_once($path_to_root . "/includes/session.inc");
 
-page(_("Change password"));
+page(_($help_context = "Change password"));
 
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");
 
 include_once($path_to_root . "/admin/db/users_db.inc");
-
-$selected_id = $_SESSION["wa_current_user"]->username;
-
 
 function can_process()
 {
@@ -33,7 +30,7 @@ function can_process()
    		return false;
    	}
 
-   	if (strstr($_POST['password'], $_POST['user_id']) != false)
+   	if (strstr($_POST['password'], $_SESSION["wa_current_user"]->username) != false)
    	{
    		display_error( _("The password cannot contain the user login."));
 		set_focus('password');
@@ -58,7 +55,9 @@ if (isset($_POST['UPDATE_ITEM']))
 		if ($allow_demo_mode) {
 		    display_warning(_("Password cannot be changed in demo mode."));
 		} else {
-			update_user_password($_POST['user_id'], md5($_POST['password']));
+			update_user_password($_SESSION["wa_current_user"]->user, 
+				$_SESSION["wa_current_user"]->username,
+				md5($_POST['password']));
 		    display_notification(_("Your password has been updated."));
 		}
 		$Ajax->activate('_page_body');
@@ -69,13 +68,9 @@ start_form();
 
 start_table($table_style);
 
-$myrow = get_user($selected_id);
+$myrow = get_user($_SESSION["wa_current_user"]->user);
 
-$_POST['user_id'] = $myrow["user_id"];
-hidden('selected_id', $selected_id);
-hidden('user_id', $_POST['user_id']);
-
-label_row(_("User login:"), $_POST['user_id']);
+label_row(_("User login:"), $myrow['user_id']);
 
 $_POST['password'] = "";
 $_POST['passwordConfirm'] = "";
@@ -94,7 +89,7 @@ table_section_title(_("Enter your new password in the fields."));
 
 end_table(1);
 
-submit_center( 'UPDATE_ITEM', _('Change password'), true, '', true);
+submit_center( 'UPDATE_ITEM', _('Change password'), true, '',  'default');
 end_form();
 end_page();
 ?>

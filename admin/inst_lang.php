@@ -9,11 +9,11 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security = 20;
+$page_security = 'SA_CREATELANGUAGE';
 $path_to_root="..";
 include_once($path_to_root . "/includes/session.inc");
 
-page(_("Install/Update Languages"));
+page(_($help_context = "Install/Update Languages"));
 
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/admin/db/company_db.inc");
@@ -39,117 +39,6 @@ function check_data()
 {
 	if ($_POST['code'] == "" || $_POST['name'] == "" || $_POST['encoding'] == "") {
 		display_error(_("Language name, code nor encoding cannot be empty"));
-		return false;
-	}
-	return true;
-}
-
-/**
- * @return Returns the array sorted as required
- * @param $aryData Array containing data to sort
- * @param $strIndex name of column to use as an index
- * @param $strSortBy Column to sort the array by
- * @param $strSortType String containing either asc or desc [default to asc]
- * @desc Naturally sorts an array using by the column $strSortBy
- */
-function array_natsort($aryData, $strIndex, $strSortBy, $strSortType=false)
-{
-   //    if the parameters are invalid
-   if (!is_array($aryData) || !$strIndex || !$strSortBy)
-       //    return the array
-       return $aryData;
-
-   //    create our temporary arrays
-   $arySort = $aryResult = array();
-
-   //    loop through the array
-   foreach ($aryData as $aryRow)
-       //    set up the value in the array
-       $arySort[$aryRow[$strIndex]] = $aryRow[$strSortBy];
-
-   //    apply the natural sort
-   natsort($arySort);
-
-   //    if the sort type is descending
-   if ($strSortType=="desc")
-       //    reverse the array
-       arsort($arySort);
-
-   //    loop through the sorted and original data
-   foreach ($arySort as $arySortKey => $arySorted)
-       foreach ($aryData as $aryOriginal)
-           //    if the key matches
-           if ($aryOriginal[$strIndex]==$arySortKey)
-               //    add it to the output array
-               array_push($aryResult, $aryOriginal);
-
-   //    return the return
-   return $aryResult;
-}
-
-function write_lang()
-{
-	global $path_to_root, $installed_languages, $dflt_lang;
-	include_once($path_to_root . "/lang/installed_languages.inc");
-
-	$conn = array_natsort($installed_languages, 'code', 'code');
-	$installed_languages = $conn;
-	//reset($installed_languages);
-	$n = count($installed_languages);
-	$msg = "<?php\n\n";
-
-	$msg .= "/* How to make new entries here\n\n";
-	$msg .= "-- if adding languages at the beginning of the list, make sure it's index is set to 0 (it has ' 0 => ')\n";
-	$msg .= "-- 'code' should match the name of the directory for the language under \\lang\n";
-	$msg .= "-- 'name' is the name that will be displayed in the language selection list (in Users and Display Setup)\n";
-	$msg .= "-- 'rtl' only needs to be set for right-to-left languages like Arabic and Hebrew\n\n";
-	$msg .= "*/\n\n\n";
-
-	$msg .= "\$installed_languages = array (\n";
-	if ($n > 0)
-	    $msg .= "\t0 => ";
-	for ($i = 0; $i < $n; $i++)
-	{
-		if ($i > 0)
-			$msg .= "\t\tarray ";
-		else
-			$msg .= "array ";
-		$msg .= "('code' => '" . $installed_languages[$i]['code'] . "', ";
-		$msg .= "'name' => '" . $installed_languages[$i]['name'] . "', ";
-		$msg .= "'encoding' => '" . $installed_languages[$i]['encoding'] . "'";
-		if (isset($installed_languages[$i]['rtl']) && $installed_languages[$i]['rtl'])
-			$msg .= ", 'rtl' => true),\n";
-		else
-			$msg .= "),\n";
-	}
-
-	$msg .= "\t);\n";
-	$msg .= "\n\$dflt_lang = '$dflt_lang';\n?>\n";
-
-	$filename = $path_to_root . "/lang/installed_languages.inc";
-	// Check if the file exists and is writable first.
-	if (file_exists($filename) && is_writable($filename))
-	{
-		if (!$zp = fopen($filename, 'w'))
-		{
-			display_error(_("Cannot open the languages file - ") . $filename);
-			return false;
-		}
-		else
-		{
-			if (!fwrite($zp, $msg))
-			{
-				display_error(_("Cannot write to the language file - ") . $filename);
-				fclose($zp);
-				return false;
-			}
-			// Close file
-			fclose($zp);
-		}
-	}
-	else
-	{
-		display_error(_("The language file ") . $filename . _(" is not writable. Change its permissions so it is, then re-run the operation."));
 		return false;
 	}
 	return true;
@@ -297,7 +186,7 @@ function display_language_edit($selected_id)
 	else
 		$n = count($installed_languages);
 
-	start_form(true, true);
+	start_form(true);
 
 	echo "
 		<script language='javascript'>

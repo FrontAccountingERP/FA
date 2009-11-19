@@ -10,8 +10,17 @@
 ***********************************************************************/
 function set_mark(img) {
 	var box = document.getElementById('ajaxmark');
-	if(img) box.src = user.theme+'images/'+ img;
-	box.style.visibility = img ? 'visible' : 'hidden'
+	if(box) {
+		if(img) box.src = user.theme+'images/'+ img;
+		box.style.visibility = img ? 'visible' : 'hidden'
+	}
+}
+
+function disp_msg(msg, cl) {
+	var box = document.getElementById('msgbox')
+	box.innerHTML= "<div class='"+(cl || 'err_msg')+"'>"+ msg+'</div>';
+//	box.style.display = msg=='' ? 'none':'block';
+    if (msg!='') window.scrollTo(0,element_pos(box).y-10);
 }
 
 //
@@ -25,13 +34,13 @@ function set_mark(img) {
 //		request is directed to current location 
 // 
 JsHttpRequest.request= function(trigger, form, tout) {
+//	if (trigger.type=='submit' && !validate(trigger)) return false;
 	tout = tout | 3000;	// default timeout value
 	set_mark(tout>5000 ? 'progressbar.gif' : 'ajax-loader.gif');
 	JsHttpRequest._request(trigger, form, tout, 2);
 }
 
 JsHttpRequest._request = function(trigger, form, tout, retry) {
-
 		if (trigger.tagName=='A') {
 			var content = {};
 			var upload = 0;
@@ -146,9 +155,7 @@ JsHttpRequest._request = function(trigger, form, tout, retry) {
 		var q = {};
 
 		if (typeof(inp) == "string")
-			submitObj = document.getElementsByName(inp)[0];
-		else
-			submitObj = inp;
+			submitObj = document.getElementsByName(inp)[0]||inp;
 		
 		objForm = objForm || (submitObj && submitObj.form);
 
@@ -177,10 +184,13 @@ JsHttpRequest._request = function(trigger, form, tout, retry) {
 				{
 					if(el.type=='select-multiple')
 					{
+						name = name.substr(0,name.length-2);
+						q[name] = new Array;
 						for (var j = 0; j < el.length; j++)
 						{
+							s = name.substring(0, name.length-2);
 							if (el.options[j].selected == true)
-								q[name] = el.options[j].value;
+								q[name].push(el.options[j].value);
 						}
 					}
 					else
@@ -225,9 +235,11 @@ function price_format(post, num, dec, label, color) {
 
 function get_amount(doc, label) {
 	    if(label)
-		var val = document.getElementById(doc).innerHTML;
+			var val = document.getElementById(doc).innerHTML;
 	    else
-		var val = document.getElementsByName(doc)[0].value;
+			var val = typeof(doc) == "string" ? 
+			document.getElementsByName(doc)[0].value : doc.value;
+		
 		val = val.replace(new RegExp('\\'+user.ts, 'g'),'');
 		val = +val.replace(new RegExp('\\'+user.ds, 'g'),'.');
 		return isNaN(val) ? 0 : val;
@@ -241,25 +253,22 @@ function goBack() {
 }
 
 function setFocus(name, byId) {
-  if(document.location.pathname.indexOf('index.php') != -1) {
-  	// this is application menu page - set focus on first link
-	// var el = document.getElementById('msgbox');
-	// TODO find first link after msgbox and set focus
-  }
-  if(!name) {
-	if (_focus)	
-		name = _focus;	// last focus set in onfocus handlers
-	else 
-	 if (document.forms.length) {	// no current focus (first page display) -  set it from from last form
-	  var cur = document.getElementsByName('_focus')[document.forms.length-1];
-	  if(cur) name = cur.value;
-	}
-  }
-  if(byId)
-	el = document.getElementById(name);
-  else
-  	el = document.getElementsByName(name)[0];
 
+ if(typeof(name)=='object')
+ 	el = name;
+ else {
+	if(!name) { // page load/ajax update
+		if (_focus)	
+			name = _focus;	// last focus set in onfocus handlers
+		else 
+	 		if (document.forms.length) {	// no current focus (first page display) -  set it from from last form
+			  var cur = document.getElementsByName('_focus')[document.forms.length-1];
+			  if(cur) name = cur.value;
+			}
+	  }
+	  if(byId || !(el = document.getElementsByName(name)[0]))
+		el = document.getElementById(name);
+  }
   if(el && el.focus) {
     // The timeout is needed to prevent unpredictable behaviour on IE & Gecko.
     // Using tmp var prevents crash on IE5
@@ -267,4 +276,67 @@ function setFocus(name, byId) {
     var tmp = function() {el.focus(); if (el.select) el.select();};
 	setTimeout(tmp, 0);
   }
+}
+/*
+	Find closest element in neighbourhood and set focus.
+	dir is arrow keycode.
+*/
+function move_focus(dir, e0, neighbours)
+{
+	var p0 = element_pos(e0);
+	var t;
+	var l=0;
+	for(var i=0; i<neighbours.length; i++) {
+		var e = neighbours[i];
+		var p = element_pos(e);
+		if (p!=null && (e.className=='menu_option' || e.className=='printlink')) {
+			if (((dir==40) && (p.y>p0.y)) || (dir==38 && (p.y<p0.y)) 
+				|| ((dir==37) && (p.x<p0.x)) || ((dir==39 && (p.x>p0.x)))) {
+					var l1 = (p.y-p0.y)*(p.y-p0.y)+(p.x-p0.x)*(p.x-p0.x);
+					if ((l1<l) || (l==0)) {
+						l = l1; t = e;
+					}
+			}
+		}
+	}
+	if (t)
+		setFocus(t);
+	return t;
+}
+
+var __isFireFox = navigator.userAgent.match(/gecko/i);
+//returns the absolute position of some element within document
+function element_pos(e) {
+	var res = new Object();
+		res.x = 0; res.y = 0;
+	if (e !== null) {
+		res.x = e.offsetLeft;
+		res.y = e.offsetTop;
+		var offsetParent = e.offsetParent;
+		var parentNode = e.parentNode;
+
+		while (offsetParent !== null && offsetParent.style.display != 'none') {
+			res.x += offsetParent.offsetLeft;
+			res.y += offsetParent.offsetTop;
+			// the second case is for IE6/7 in some doctypes
+			if (offsetParent != document.body && offsetParent != document.documentElement) {
+				res.x -= offsetParent.scrollLeft;
+				res.y -= offsetParent.scrollTop;
+			}
+			      //next lines are necessary to support FireFox problem with offsetParent
+			if (__isFireFox) {
+				while (offsetParent != parentNode && parentNode !== null) {
+					res.x -= parentNode.scrollLeft;
+					res.y -= parentNode.scrollTop;
+
+					parentNode = parentNode.parentNode;
+				}
+			}
+			parentNode = offsetParent.parentNode;
+			offsetParent = offsetParent.offsetParent;
+		}
+	}
+	// parentNode has style.display set to none
+	if (parentNode != document.documentElement) return null;
+	return res;
 }

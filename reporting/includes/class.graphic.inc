@@ -223,7 +223,7 @@ class graph
         imagefill($this->img, 0, 0, $this->color['background']);
         //imagefilledrectangle($this->img, 0, 0, $this->width, $this->height, $this->color['background']);
         if ($border)
-        	imagerectangle($this->img, 0, 0, $this->width-1, $this->height-1, $this->color['bars']);
+        	imagerectangle($this->img, 0, 0, $this->width-1, $this->height-1, imagecolorallocate($this->img, 100, 150, 200));
 
         // Draw title
         if (!empty($this->title))

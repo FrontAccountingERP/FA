@@ -9,7 +9,8 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security = 2;
+$page_security = $_POST['PARAM_0'] == $_POST['PARAM_1'] ?
+	'SA_SALESTRANSVIEW' : 'SA_SALESBULKREP';
 // ----------------------------------------------------------------
 // $ Revision:	2.0 $
 // Creator:	Joe Hunt
@@ -32,16 +33,15 @@ print_invoices();
 function print_invoices()
 {
 	global $path_to_root;
-
+	
 	include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 
 	$from = $_POST['PARAM_0'];
 	$to = $_POST['PARAM_1'];
 	$currency = $_POST['PARAM_2'];
-	$bankaccount = $_POST['PARAM_3'];
-	$email = $_POST['PARAM_4'];
-	$paylink = $_POST['PARAM_5'];
-	$comments = $_POST['PARAM_6'];
+	$email = $_POST['PARAM_3'];
+	$paylink = $_POST['PARAM_4'];
+	$comments = $_POST['PARAM_5'];
 
 	if ($from == null)
 		$from = 0;
@@ -49,7 +49,7 @@ function print_invoices()
 		$to = 0;
 	$dec = user_price_dec();
 
-	$fno = explode("-", $from);
+ 	$fno = explode("-", $from);
 	$tno = explode("-", $to);
 
 	$cols = array(4, 60, 225, 300, 325, 385, 450, 515);
@@ -57,10 +57,8 @@ function print_invoices()
 	// $headers in doctext.inc
 	$aligns = array('left',	'left',	'right', 'left', 'right', 'right', 'right');
 
-	$params = array('comments' => $comments,
-					'bankaccount' => $bankaccount);
+	$params = array('comments' => $comments);
 
-	$baccount = get_bank_account($params['bankaccount']);
 	$cur = get_company_Pref('curr_default');
 
 	if ($email == 0)
@@ -73,18 +71,21 @@ function print_invoices()
 
 	for ($i = $fno[0]; $i <= $tno[0]; $i++)
 	{
-		for ($j = 10; $j <= 11; $j++)
+		for ($j = ST_SALESINVOICE; $j <= ST_CUSTCREDIT; $j++)
 		{
-			if (isset($_POST['PARAM_7']) && $_POST['PARAM_7'] != $j)
+			if (isset($_POST['PARAM_6']) && $_POST['PARAM_6'] != $j)
 				continue;
 			if (!exists_customer_trans($j, $i))
 				continue;
-			$sign = $j==10 ? 1 : -1;
+			$sign = $j==ST_SALESINVOICE ? 1 : -1;
 			$myrow = get_customer_trans($i, $j);
+			$baccount = get_default_bank_account($myrow['curr_code']);
+			$params['bankaccount'] = $baccount['id'];
+
 			$branch = get_branch($myrow["branch_code"]);
 			$branch['disable_branch'] = $paylink; // helper
-			if ($j == 10)
-				$sales_order = get_sales_order_header($myrow["order_"]);
+			if ($j == ST_SALESINVOICE)
+				$sales_order = get_sales_order_header($myrow["order_"], ST_SALESORDER);
 			else
 				$sales_order = null;
 			if ($email == 1)
@@ -92,7 +93,7 @@ function print_invoices()
 				$rep = new FrontReport("", "", user_pagesize());
 				$rep->currency = $cur;
 				$rep->Font();
-				if ($j == 10)
+				if ($j == ST_SALESINVOICE)
 				{
 					$rep->title = _('INVOICE');
 					$rep->filename = "Invoice" . $myrow['reference'] . ".pdf";
@@ -105,7 +106,7 @@ function print_invoices()
 				$rep->Info($params, $cols, null, $aligns);
 			}
 			else
-				$rep->title = ($j == 10) ? _('INVOICE') : _('CREDIT NOTE');
+				$rep->title = ($j == ST_SALESINVOICE) ? _('INVOICE') : _('CREDIT NOTE');
 			$rep->Header2($myrow, $branch, $sales_order, $baccount, $j);
 
    			$result = get_customer_trans_details($j, $i);

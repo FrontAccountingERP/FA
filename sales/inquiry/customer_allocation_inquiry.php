@@ -9,8 +9,8 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security = 1;
-$path_to_root="../..";
+$page_security = 'SA_SALESALLOC';
+$path_to_root = "../..";
 include($path_to_root . "/includes/db_pager.inc");
 include_once($path_to_root . "/includes/session.inc");
 
@@ -22,7 +22,7 @@ if ($use_popup_windows)
 	$js .= get_js_open_window(900, 500);
 if ($use_date_picker)
 	$js .= get_js_date_picker();
-page(_("Customer Allocation Inquiry"), false, false, "", $js);
+page(_($help_context = "Customer Allocation Inquiry"), false, false, "", $js);
 
 if (isset($_GET['customer_id']))
 {
@@ -34,7 +34,7 @@ if (isset($_GET['customer_id']))
 if (!isset($_POST['customer_id']))
 	$_POST['customer_id'] = get_global_customer();
 
-start_form(false, true);
+start_form();
 
 start_table("class='tablestyle_noborder'");
 start_row();
@@ -48,13 +48,12 @@ cust_allocations_list_cells(_("Type:"), 'filterType', null);
 
 check_cells(" " . _("show settled:"), 'showSettled', null);
 
-submit_cells('RefreshInquiry', _("Search"),'',_('Refresh Inquiry'), true);
+submit_cells('RefreshInquiry', _("Search"),'',_('Refresh Inquiry'), 'default');
 
 set_global_customer($_POST['customer_id']);
 
 end_row();
 end_table();
-end_form();
 //------------------------------------------------------------------------------------------------
 function check_overdue($row)
 {
@@ -65,13 +64,15 @@ function check_overdue($row)
 function order_link($row)
 {
 	return $row['order_']>0 ?
-		get_customer_trans_view_str(systypes::sales_order(), $row['order_'])
+		get_customer_trans_view_str(ST_SALESORDER, $row['order_'])
 		: "";
 }
 
 function systype_name($dummy, $type)
 {
-	return systypes::name($type);
+	global $systypes_array;
+
+	return $systypes_array[$type];
 }
 
 function view_link($trans)
@@ -96,18 +97,18 @@ function alloc_link($row)
 		"/sales/allocations/customer_allocate.php?trans_no=" . $row["trans_no"] 
 		."&trans_type=" . $row["type"], ICON_MONEY);
 
-	if ($row["type"] == 11 && $row['TotalAmount'] > 0)
+	if ($row["type"] == ST_CUSTCREDIT && $row['TotalAmount'] > 0)
 	{
 		/*its a credit note which could have an allocation */
 		return $link;
 	}
-	elseif (($row["type"] == systypes::cust_payment() || $row["type"] == systypes::bank_deposit()) &&
+	elseif (($row["type"] == ST_CUSTPAYMENT || $row["type"] == ST_BANKDEPOSIT) &&
 		($row['TotalAmount'] - $row['Allocated']) > 0)
 	{
 		/*its a receipt  which could have an allocation*/
 		return $link;
 	}
-	elseif ($row["type"] == systypes::cust_payment() && $row['TotalAmount'] < 0)
+	elseif ($row["type"] == ST_CUSTPAYMENT && $row['TotalAmount'] < 0)
 	{
 		/*its a negative receipt */
 		return '';
@@ -117,7 +118,7 @@ function alloc_link($row)
 function fmt_debit($row)
 {
 	$value =
-	    $row['type']==11 || $row['type']==12 || $row['type']==2 ?
+	    $row['type']==ST_CUSTCREDIT || $row['type']==ST_CUSTPAYMENT || $row['type']==ST_BANKDEPOSIT ?
 		-$row["TotalAmount"] : $row["TotalAmount"];
 	return $value>=0 ? price_format($value) : '';
 
@@ -126,7 +127,7 @@ function fmt_debit($row)
 function fmt_credit($row)
 {
 	$value =
-	    !($row['type']==11 || $row['type']==12 || $row['type']==2) ?
+	    !($row['type']==ST_CUSTCREDIT || $row['type']==ST_CUSTPAYMENT || $row['type']==ST_BANKDEPOSIT) ?
 		-$row["TotalAmount"] : $row["TotalAmount"];
 	return $value>0 ? price_format($value) : '';
 }
@@ -137,9 +138,9 @@ function fmt_credit($row)
 
   $sql = "SELECT 
   		trans.type,
-		trans.order_,
 		trans.trans_no,
 		trans.reference,
+		trans.order_,
 		trans.tran_date,
 		trans.due_date,
 		debtor.name,
@@ -147,7 +148,7 @@ function fmt_credit($row)
     	(trans.ov_amount + trans.ov_gst + trans.ov_freight 
 			+ trans.ov_freight_tax + trans.ov_discount)	AS TotalAmount,
 		trans.alloc AS Allocated,
-		((trans.type = 10)
+		((trans.type = ".ST_SALESINVOICE.")
 			AND trans.due_date < '" . date2sql(Today()) . "') AS OverDue
     	FROM "
 			.TB_PREF."debtor_trans as trans, "
@@ -158,22 +159,22 @@ function fmt_credit($row)
     		AND trans.tran_date >= '$data_after'
     		AND trans.tran_date <= '$date_to'";
 
-   	if ($_POST['customer_id'] != reserved_words::get_all())
+   	if ($_POST['customer_id'] != ALL_TEXT)
    		$sql .= " AND trans.debtor_no = ".db_escape($_POST['customer_id']);
 
-   	if (isset($_POST['filterType']) && $_POST['filterType'] != reserved_words::get_all())
+   	if (isset($_POST['filterType']) && $_POST['filterType'] != ALL_TEXT)
    	{
    		if ($_POST['filterType'] == '1' || $_POST['filterType'] == '2')
    		{
-   			$sql .= " AND trans.type = 10 ";
+   			$sql .= " AND trans.type = ".ST_SALESINVOICE." ";
    		}
    		elseif ($_POST['filterType'] == '3')
    		{
-			$sql .= " AND trans.type = " . systypes::cust_payment();
+			$sql .= " AND trans.type = " . ST_CUSTPAYMENT;
    		}
    		elseif ($_POST['filterType'] == '4')
    		{
-			$sql .= " AND trans.type = 11 ";
+			$sql .= " AND trans.type = ".ST_CUSTCREDIT." ";
    		}
 
     	if ($_POST['filterType'] == '2')
@@ -186,7 +187,7 @@ function fmt_credit($row)
     	}
    	}else
    	{
-	    $sql .= " AND trans.type != 13 ";
+	    $sql .= " AND trans.type <> ".ST_CUSTDELIVERY." ";
    	}
 
 
@@ -214,7 +215,7 @@ $cols = array(
 	array('insert'=>true, 'fun'=>'alloc_link')
 	);
 
-if ($_POST['customer_id'] != reserved_words::get_all()) {
+if ($_POST['customer_id'] != ALL_TEXT) {
 	$cols[_("Customer")] = 'skip';
 	$cols[_("Currency")] = 'skip';
 }
@@ -222,12 +223,7 @@ if ($_POST['customer_id'] != reserved_words::get_all()) {
 $table =& new_db_pager('doc_tbl', $sql, $cols);
 $table->set_marker('check_overdue', _("Marked items are overdue."));
 
-if (get_post('RefreshInquiry')) {
-	$table->set_sql($sql);
-	$table->set_columns($cols);
-}
 $table->width = "80%";
-start_form();
 
 display_db_pager($table);
 

@@ -1,13 +1,10 @@
 <?php
 /**********************************************************************
-    Copyright (C) FrontAccounting, LLC.
-	Released under the terms of the GNU General Public License, GPL, 
-	as published by the Free Software Foundation, either version 3 
-	of the License, or (at your option) any later version.
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
-    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+	This installer is based on code from the	
+ 	Website Baker Project <http://www.websitebaker.org/>
+ 	Copyright (C) 2004-2007, Ryan Djurovich.
+ 	The code is released under GPLv3
+ 	modified by FrontAcounting, LLC.
 ***********************************************************************/
 error_reporting(E_ALL);
 ini_set("display_errors", "On");
@@ -24,6 +21,7 @@ if(!isset($_GET['sessions_checked']) || $_GET['sessions_checked'] != 'true')
 {
 	// Set session variable
 	$_SESSION['session_support'] = '<font class="good">Enabled</font>';
+	$_SESSION['message'] = '';
 	// Reload page
 	header('Location: index.php?sessions_checked=true');
 	exit(0);
@@ -90,8 +88,15 @@ function change_os(type) {
 		<center>
 			<img src="<?php echo $path_to_root; ?>/themes/default/images/logo_frontaccounting.png" width="250" height="50" alt="Logo" />
 		</center>
-
-
+<?php
+ if(file_exists($path_to_root.'/config.php')) { 
+?><div style="width: 700px; padding: 10px; margin-bottom: 5px; border: 1px solid #FF0000; background-color: #FFDBDB;"><b>Error:</b> Seems you have FrontAccounting application already installed.<BR>
+After logging as an admin to first installed company you can:
+<ul>
+<li> Add more companies using Add/Update Companies under Setup tab;</li>
+<li> Upgrade FA version using Upgrade Software under Setup tab.</li>
+</ul></div>
+<?php exit; } ?>
 		<?php
 		if(isset($_SESSION['message']) AND $_SESSION['message'] != '') {
 			?><div style="width: 700px; padding: 10px; margin-bottom: 5px; border: 1px solid #FF0000; background-color: #FFDBDB;"><b>Error:</b> <?php echo $_SESSION['message']; ?></div><?php
@@ -162,9 +167,9 @@ function change_os(type) {
 		</tr>
 		<tr>
 			<td style="color: #666666;">config_db.php</td>
-			<td><?php if(is_writable($path_to_root.'/config_db.php')) { echo '<font class="good">Writeable</font>'; } elseif(!file_exists($path_to_root.'/config_db.php')) { echo '<font class="bad">File Not Found</font>'; } else { echo '<font class="bad">Unwriteable</font>'; } ?></td>
+			<td><?php if(is_writable($path_to_root)) { echo '<font class="good">Writeable</font>'; } elseif(file_exists($path_to_root.'/config_db.php')) { echo '<font class="bad">File Exists</font>'; } else { echo '<font class="bad">Unwriteable</font>'; } ?></td>
 			<td style="color: #666666;">modules/</td>
-			<td><?php if(is_writable($path_to_root.'/modules/')) { echo '<font class="good">Writeable</font>'; } elseif(!file_exists($path_to_root.'/lang/')) { echo '<font class="bad">Directory Not Found</font>'; } else { echo '<font class="bad">Unwriteable</font>'; } ?></td>
+			<td><?php if(is_writable($path_to_root.'/modules/')) { echo '<font class="good">Writeable</font>'; } elseif(!file_exists($path_to_root.'/modules/')) { echo '<font class="bad">Directory Not Found</font>'; } else { echo '<font class="bad">Unwriteable</font>'; } ?></td>
 		</tr>
 		<tr>
 			<td style="color: #666666;">lang/</td>
@@ -225,7 +230,7 @@ function change_os(type) {
 			<td colspan="5">Please enter your MySQL database server details below...</td>
 		</tr>
 		<tr>
-			<td width="120" style="color: #666666;">Host Name:</td>
+			<td width="150" style="color: #666666;">Host Name:</td>
 			<td width="230">
 				<input type="text" tabindex="7" name="database_host" style="width: 98%;" value="<?php if(isset($_SESSION['database_host'])) { echo $_SESSION['database_host']; } else { echo 'localhost'; } ?>" />
 			</td>
@@ -253,11 +258,19 @@ function change_os(type) {
 			</td>
 			<td>&nbsp;</td>
 			<td colspan="2">
-				<input type="checkbox" tabindex="12" name="install_tables" id="install_tables" value="true"<?php if(!isset($_SESSION['install_tables'])) { echo ' checked'; } elseif($_SESSION['install_tables'] == 'true') { echo ' checked'; } ?> />
+				<input type="checkbox" tabindex="12" name="install_tables" id="install_tables" value="true" onclick="document.getElementById('db_options').style.display = this.checked? 'block':'none';"<?php if(!isset($_SESSION['install_tables'])) { echo ' checked'; } elseif($_SESSION['install_tables'] == 'true') { echo ' checked'; } ?> />
 				<label for="install_tables" style="color: #666666;">Install Tables</label>
 				<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 				<span style="font-size: 10px; color: #666666;">(Please note: May remove existing tables and data)</span></td>
 			</td>
+		</tr>
+		<tr id="db_options">
+			<td style="color: #666666;">Fill database with demo data:</td>
+			<td>
+				<input type="checkbox" tabindex="6" name="demo_data" id="demo_data" value="true" <?php if(!isset($_SESSION['demo_data']) OR $_SESSION['demo_data'] == true) { echo 'checked'; } ?> />
+				<br />
+		</td>
+			<td colspan="2">&nbsp;</td>
 		</tr>
 		<tr>
 			<td colspan="5"><h1>Step 5</h1>Please enter the training company name below (you can create your own company later)...</td>

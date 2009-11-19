@@ -9,10 +9,12 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security = 3;
-$path_to_root="..";
+$path_to_root = "..";
 include_once($path_to_root . "/includes/ui/items_cart.inc");
 include_once($path_to_root . "/includes/session.inc");
+$page_security = isset($_GET['NewPayment']) || 
+	@($_SESSION['pay_items']->trans_type==ST_BANKPAYMENT)
+ ? 'SA_PAYMENT' : 'SA_DEPOSIT';
 
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
@@ -28,12 +30,12 @@ if ($use_date_picker)
 	$js .= get_js_date_picker();
 
 if (isset($_GET['NewPayment'])) {
-	$_SESSION['page_title'] = _("Bank Account Payment Entry");
-	handle_new_order(systypes::bank_payment());
+	$_SESSION['page_title'] = _($help_context = "Bank Account Payment Entry");
+	handle_new_order(ST_BANKPAYMENT);
 
 } else if(isset($_GET['NewDeposit'])) {
-	$_SESSION['page_title'] = _("Bank Account Deposit Entry");
-	handle_new_order(systypes::bank_deposit());
+	$_SESSION['page_title'] = _($help_context = "Bank Account Deposit Entry");
+	handle_new_order(ST_BANKDEPOSIT);
 }
 page($_SESSION['page_title'], false, false, '', $js);
 
@@ -41,29 +43,12 @@ page($_SESSION['page_title'], false, false, '', $js);
 check_db_has_bank_accounts(_("There are no bank accounts defined in the system."));
 
 //----------------------------------------------------------------------------------------
-if ($ret = context_restore()) {
-	if(isset($ret['supplier_id']))
-		$_POST['person_id'] = $ret['supplier_id'];
-	if(isset($ret['customer_id']))
-		$_POST['person_id'] = $ret['customer_id'];
-	set_focus('person_id');
-	if(isset($ret['branch_id'])) {
-		$_POST['PersonDetailID'] = $ret['branch_id'];
-		set_focus('PersonDetailID');
-	}
+if (list_updated('PersonDetailID')) {
+	$br = get_branch(get_post('PersonDetailID'));
+	$_POST['person_id'] = $br['debtor_no'];
+	$Ajax->activate('person_id');
 }
-if (isset($_POST['_person_id_editor'])) {
-	if ($_POST['PayType']==payment_person_types::supplier())
-		$editor = '/purchasing/manage/suppliers.php?supplier_id=';
-	else
-		$editor = '/sales/manage/customers.php?debtor_no=';
-		
-//	$_SESSION['pay_items'] should stay unchanged during call
-//
-context_call($path_to_root.$editor.$_POST['person_id'], 
-	array('bank_account', 'date_', 'PayType', 'person_id',
-		'PersonDetailID', 'ref', 'memo_') );
-}
+
 //--------------------------------------------------------------------------------------------------
 function line_start_focus() {
   global 	$Ajax;
@@ -77,7 +62,7 @@ function line_start_focus() {
 if (isset($_GET['AddedID']))
 {
 	$trans_no = $_GET['AddedID'];
-	$trans_type = systypes::bank_payment();
+	$trans_type = ST_BANKPAYMENT;
 
    	display_notification_centered(_("Payment has been entered"));
 
@@ -93,7 +78,7 @@ if (isset($_GET['AddedID']))
 if (isset($_GET['AddedDep']))
 {
 	$trans_no = $_GET['AddedDep'];
-	$trans_type = systypes::bank_deposit();
+	$trans_type = ST_BANKDEPOSIT;
 
    	display_notification_centered(_("Deposit has been entered"));
 
@@ -121,7 +106,7 @@ function handle_new_order($type)
 
 	$_SESSION['pay_items'] = new items_cart($type);
 
-	$_POST['date_'] = Today();
+	$_POST['date_'] = new_doc_date();
 	if (!is_date_in_fiscalyear($_POST['date_']))
 		$_POST['date_'] = end_fiscalyear();
 	$_SESSION['pay_items']->tran_date = $_POST['date_'];
@@ -140,7 +125,7 @@ if (isset($_POST['Process']))
 		$input_error = 1;
 	}
 
-	if (!references::is_valid($_POST['ref']))
+	if (!$Refs->is_valid($_POST['ref']))
 	{
 		display_error( _("You must enter a reference."));
 		set_focus('ref');
@@ -180,11 +165,12 @@ if (isset($_POST['Process']))
 
 	$trans_type = $trans[0];
    	$trans_no = $trans[1];
+	new_doc_date($_POST['date_']);
 
 	$_SESSION['pay_items']->clear_items();
 	unset($_SESSION['pay_items']);
 
-	meta_forward($_SERVER['PHP_SELF'], $trans_type==systypes::bank_payment() ?
+	meta_forward($_SERVER['PHP_SELF'], $trans_type==ST_BANKPAYMENT ?
 		"AddedID=$trans_no" : "AddedDep=$trans_no");
 
 } /*end of process credit note */
@@ -209,7 +195,7 @@ function check_item_data()
 
 	//if (is_bank_account($_POST['code_id']))
 	//{
-	//	if ($_SESSION['pay_items']->trans_type == systypes::bank_payment())
+	//	if ($_SESSION['pay_items']->trans_type == ST_BANKPAYMENT)
 	//		display_error( _("You cannot make a payment to a bank account. Please use the transfer funds facility for this."));
 	//	else
  	//		display_error( _("You cannot make a deposit from a bank account. Please use the transfer funds facility for this."));
@@ -224,11 +210,11 @@ function check_item_data()
 
 function handle_update_item()
 {
-	$amount = ($_SESSION['pay_items']->trans_type==systypes::bank_payment() ? 1:-1) * input_num('amount');
+	$amount = ($_SESSION['pay_items']->trans_type==ST_BANKPAYMENT ? 1:-1) * input_num('amount');
     if($_POST['UpdateItem'] != "" && check_item_data())
     {
-    	$_SESSION['pay_items']->update_gl_item($_POST['Index'], $_POST['dimension_id'],
-    		$_POST['dimension2_id'], $amount , $_POST['LineMemo']);
+    	$_SESSION['pay_items']->update_gl_item($_POST['Index'], $_POST['code_id'], 
+    	    $_POST['dimension_id'], $_POST['dimension2_id'], $amount , $_POST['LineMemo']);
     }
 	line_start_focus();
 }
@@ -247,7 +233,7 @@ function handle_new_item()
 {
 	if (!check_item_data())
 		return;
-	$amount = ($_SESSION['pay_items']->trans_type==systypes::bank_payment() ? 1:-1) * input_num('amount');
+	$amount = ($_SESSION['pay_items']->trans_type==ST_BANKPAYMENT ? 1:-1) * input_num('amount');
 
 	$_SESSION['pay_items']->add_gl_item($_POST['code_id'], $_POST['dimension_id'],
 		$_POST['dimension2_id'], $amount, $_POST['LineMemo']);
@@ -270,20 +256,20 @@ if (isset($_POST['CancelItemChanges']))
 if (isset($_POST['go']))
 {
 	display_quick_entries($_SESSION['pay_items'], $_POST['person_id'], input_num('totamount'), 
-		$_SESSION['pay_items']->trans_type==systypes::bank_payment() ? QE_PAYMENT : QE_DEPOSIT);
+		$_SESSION['pay_items']->trans_type==ST_BANKPAYMENT ? QE_PAYMENT : QE_DEPOSIT);
 	$_POST['totamount'] = price_format(0); $Ajax->activate('totamount');
 	line_start_focus();
 }
 //-----------------------------------------------------------------------------------------------
 
-start_form(false, true);
+start_form();
 
 display_bank_header($_SESSION['pay_items']);
 
 start_table("$table_style2 width=90%", 10);
 start_row();
 echo "<td>";
-display_gl_items($_SESSION['pay_items']->trans_type==systypes::bank_payment() ?
+display_gl_items($_SESSION['pay_items']->trans_type==ST_BANKPAYMENT ?
 	_("Payment Items"):_("Deposit Items"), $_SESSION['pay_items']);
 gl_options_controls();
 echo "</td>";
@@ -291,8 +277,8 @@ end_row();
 end_table(1);
 
 submit_center_first('Update', _("Update"), '', null);
-submit_center_last('Process', $_SESSION['pay_items']->trans_type==systypes::bank_payment() ?
-	_("Process Payment"):_("Process Deposit"), '', true);
+submit_center_last('Process', $_SESSION['pay_items']->trans_type==ST_BANKPAYMENT ?
+	_("Process Payment"):_("Process Deposit"), '', 'default');
 
 end_form();
 

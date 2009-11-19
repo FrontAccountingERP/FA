@@ -9,11 +9,11 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security = 11;
-$path_to_root="../..";
+$page_security = 'SA_FORITEMCODE';
+$path_to_root = "../..";
 include_once($path_to_root . "/includes/session.inc");
 
-page(_("Foreign Item Codes"));
+page(_($help_context = "Foreign Item Codes"));
 
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");
@@ -97,13 +97,13 @@ if (list_updated('stock_id'))
 
 //--------------------------------------------------------------------------------------------------
 
-start_form(false, true);
+start_form();
 
 if (!isset($_POST['stock_id']))
 	$_POST['stock_id'] = get_global_stock_item();
 
 echo "<center>" . _("Item:"). "&nbsp;";
-stock_purchasable_items_list('stock_id', $_POST['stock_id'], false, true);
+echo stock_purchasable_items_list('stock_id', $_POST['stock_id'], false, true);
 
 echo "<hr></center>";
 
@@ -179,7 +179,7 @@ stock_categories_list_row(_("Category:"), 'category_id', null);
 
 end_table(1);
 
-submit_add_or_update_center($selected_id == -1, '', true);
+submit_add_or_update_center($selected_id == -1, '', 'both');
 
 end_form();
 end_page();

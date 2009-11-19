@@ -9,8 +9,8 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security = 1;
-$path_to_root="../..";
+$page_security = 'SA_SUPPTRANSVIEW';
+$path_to_root = "../..";
 
 include($path_to_root . "/includes/session.inc");
 
@@ -19,14 +19,14 @@ include_once($path_to_root . "/purchasing/includes/purchasing_db.inc");
 $js = "";
 if ($use_popup_windows)
 	$js .= get_js_open_window(900, 500);
-page(_("View Payment to Supplier"), true, false, "", $js);
+page(_($help_context = "View Payment to Supplier"), true, false, "", $js);
 
 if (isset($_GET["trans_no"]))
 {
 	$trans_no = $_GET["trans_no"];
 }
 
-$receipt = get_supp_trans($trans_no, 22);
+$receipt = get_supp_trans($trans_no, ST_SUPPAYMENT);
 
 $company_currency = get_company_currency();
 
@@ -58,7 +58,7 @@ start_row();
 if ($show_currencies)
 	label_cells(_("Payment Currency"), $receipt['bank_curr_code'], "class='tableheader2'");
 label_cells(_("Amount"), number_format2(-$receipt['BankAmount'], user_price_dec()), "class='tableheader2'");
-label_cells(_("Payment Type"), bank_account_types::transfer_type($receipt['BankTransType']), "class='tableheader2'");
+label_cells(_("Payment Type"), $bank_transfer_types[$receipt['BankTransType']], "class='tableheader2'");
 end_row();
 start_row();
 if ($show_currencies) 
@@ -69,16 +69,16 @@ if ($show_both_amounts)
 	label_cells(_("Amount"), number_format2(-$receipt['Total'], user_price_dec()), "class='tableheader2'");
 label_cells(_("Reference"), $receipt['ref'], "class='tableheader2'");
 end_row();
-comments_display_row(22, $trans_no);
+comments_display_row(ST_SUPPAYMENT, $trans_no);
 
 end_table(1);
 
-$voided = is_voided_display(22, $trans_no, _("This payment has been voided."));
+$voided = is_voided_display(ST_SUPPAYMENT, $trans_no, _("This payment has been voided."));
 
 // now display the allocations for this payment
 if (!$voided) 
 {
-	display_allocations_from(payment_person_types::supplier(), $receipt['supplier_id'], 22, $trans_no, -$receipt['Total']);
+	display_allocations_from(PT_SUPPLIER, $receipt['supplier_id'], ST_SUPPAYMENT, $trans_no, -$receipt['Total']);
 }
 
 end_page(true);

@@ -9,8 +9,8 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security = 1;
-$path_to_root="../..";
+$page_security = 'SA_SUPPTRANSVIEW';
+$path_to_root = "../..";
 
 include_once($path_to_root . "/purchasing/includes/purchasing_db.inc");
 include_once($path_to_root . "/includes/session.inc");
@@ -20,7 +20,7 @@ include_once($path_to_root . "/purchasing/includes/purchasing_ui.inc");
 $js = "";
 if ($use_popup_windows)
 	$js .= get_js_open_window(900, 500);
-page(_("View Supplier Credit Note"), true, false, "", $js);
+page(_($help_context = "View Supplier Credit Note"), true, false, "", $js);
 
 if (isset($_GET["trans_no"]))
 {
@@ -34,7 +34,7 @@ elseif (isset($_POST["trans_no"]))
 $supp_trans = new supp_trans();
 $supp_trans->is_invoice = false;
 
-read_supp_invoice($trans_no, 21, $supp_trans);
+read_supp_invoice($trans_no, ST_SUPPCREDIT, $supp_trans);
 
 display_heading(_("SUPPLIER CREDIT NOTE") . " # " . $trans_no);
 echo "<br>";
@@ -49,7 +49,7 @@ label_cells(_("Invoice Date"), $supp_trans->tran_date, "class='tableheader2'");
 label_cells(_("Due Date"), $supp_trans->due_date, "class='tableheader2'");
 label_cells(_("Currency"), get_supplier_currency($supp_trans->supplier_id), "class='tableheader2'");
 end_row();
-comments_display_row(21, $trans_no);
+comments_display_row(ST_SUPPCREDIT, $trans_no);
 end_table(1);
 
 $total_gl = display_gl_items($supp_trans, 3);
@@ -60,7 +60,7 @@ $display_sub_tot = number_format2($total_gl+$total_grn,user_price_dec());
 start_table("$table_style width=95%");
 label_row(_("Sub Total"), $display_sub_tot, "align=right", "nowrap align=right width=17%");
 
-$tax_items = get_trans_tax_details(21, $trans_no);
+$tax_items = get_trans_tax_details(ST_SUPPCREDIT, $trans_no);
 display_supp_trans_tax_details($tax_items, 1);
 
 $display_total = number_format2(-($supp_trans->ov_amount + $supp_trans->ov_gst),user_price_dec());
@@ -68,11 +68,11 @@ label_row(_("TOTAL CREDIT NOTE"), $display_total, "colspan=1 align=right", "nowr
 
 end_table(1);
 
-$voided = is_voided_display(21, $trans_no, _("This credit note has been voided."));
+$voided = is_voided_display(ST_SUPPCREDIT, $trans_no, _("This credit note has been voided."));
 
 if (!$voided)
 {
-	display_allocations_from(payment_person_types::supplier(), $supp_trans->supplier_id, 21, $trans_no, -($supp_trans->ov_amount + $supp_trans->ov_gst));
+	display_allocations_from(PT_SUPPLIER, $supp_trans->supplier_id, ST_SUPPCREDIT, $trans_no, -($supp_trans->ov_amount + $supp_trans->ov_gst));
 }
 
 end_page(true);

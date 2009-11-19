@@ -34,30 +34,31 @@ function stock_cost_update($stock_id, $material_cost, $labour_cost, $overhead_co
 
 	$qoh = get_qoh_on_date($_POST['stock_id']);
 	
+   	$date_ = Today();
 	if ($qoh > 0)
 	{
     
-	   	$update_no = get_next_trans_no(systypes::cost_update());
-	   	$date_ = Today();
+	   	$update_no = get_next_trans_no(ST_COSTUPDATE);
 		if (!is_date_in_fiscalyear($date_))
 			$date_ = end_fiscalyear();
 	   
 		$stock_gl_code = get_stock_gl_code($stock_id);
-	 
+
 		$new_cost = $material_cost + $labour_cost + $overhead_cost;
-	  
+
 		$value_of_change = $qoh * ($new_cost - $last_cost);
-	   
+
 		$memo_ = "Cost was " . $last_cost . " changed to " . $new_cost . " x quantity on hand of $qoh";
-		add_gl_trans_std_cost(systypes::cost_update(), $update_no, $date_, $stock_gl_code["adjustment_account"], 
+		add_gl_trans_std_cost(ST_COSTUPDATE, $update_no, $date_, $stock_gl_code["adjustment_account"], 
 			$stock_gl_code["dimension_id"], $stock_gl_code["dimension2_id"], $memo_, (-$value_of_change));	   
 
-		add_gl_trans_std_cost(systypes::cost_update(), $update_no, $date_, $stock_gl_code["inventory_account"], 0, 0, $memo_, 
+		add_gl_trans_std_cost(ST_COSTUPDATE, $update_no, $date_, $stock_gl_code["inventory_account"], 0, 0, $memo_, 
 			$value_of_change);
    	}
 
+	add_audit_trail(ST_COSTUPDATE, $update_no, $date_);
 	commit_transaction();
-	
+
 	return $update_no;
 }
 

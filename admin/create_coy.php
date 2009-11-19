@@ -9,7 +9,7 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security = 20;
+$page_security = 'SA_CREATECOMPANY';
 $path_to_root="..";
 include_once($path_to_root . "/includes/session.inc");
 
@@ -18,7 +18,7 @@ include_once($path_to_root . "/admin/db/company_db.inc");
 include_once($path_to_root . "/admin/db/maintenance_db.inc");
 include_once($path_to_root . "/includes/ui.inc");
 
-page(_("Create/Update Company"));
+page(_($help_context = "Create/Update Company"));
 
 $comp_subdirs = array('images', 'pdf_files', 'backup','js_cache', 'reporting', 'attachments');
 
@@ -151,6 +151,8 @@ function handle_submit()
 	{
 		create_comp_dirs("$comp_path/$id", $comp_subdirs);
 	}
+	$exts = get_company_extensions();
+	write_extensions($exts, $id);
 	return true;
 }
 
@@ -163,7 +165,7 @@ function handle_delete()
 	$id = $_GET['id'];
 
 	$cdir = $comp_path.'/'.$id;
-	@flush_dir($cdir);
+	@flush_dir($cdir, true);
 	if (!rmdir($cdir))
 	{
 		display_error(_("Cannot remove company data directory ") . $cdir);
@@ -264,7 +266,7 @@ function display_company_edit($selected_id)
 	else
 		$n = count($db_connections);
 
-	start_form(true, true);
+	start_form(true);
 
 	echo "
 		<script language='javascript'>

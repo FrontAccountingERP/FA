@@ -9,8 +9,10 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-//-------------------------------------------------------------------
-
+//
+//	General database functions common for all modules.
+//
+//-------------------------------------------------------------------	
 function begin_transaction()
 {
 	db_query("BEGIN", "could not start a transaction");
@@ -25,5 +27,13 @@ function cancel_transaction()
 {
 	db_query("ROLLBACK", "could not cancel a transaction");	
 }
-
+//-----------------------------------------------------------------------------
+//	Update record activity status.
+//
+function update_record_status($id, $status, $table, $key) {
+	$sql = "UPDATE ".TB_PREF.$table." SET inactive = "
+		. db_escape($status)." WHERE $key=".db_escape($id);
+		
+  	db_query($sql, "Can't update record status");
+}
 ?>

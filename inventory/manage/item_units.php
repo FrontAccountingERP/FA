@@ -9,11 +9,11 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security = 11;
-$path_to_root="../..";
+$page_security = 'SA_UOM';
+$path_to_root = "../..";
 include($path_to_root . "/includes/session.inc");
 
-page(_("Units of Measure"));
+page(_($help_context = "Units of Measure"));
 
 include_once($path_to_root . "/includes/ui.inc");
 
@@ -80,15 +80,19 @@ if ($Mode == 'Delete')
 if ($Mode == 'RESET')
 {
 	$selected_id = '';
+	$sav = get_post('show_inactive');
 	unset($_POST);
+	$_POST['show_inactive'] = $sav;
 }
 
 //----------------------------------------------------------------------------------
 
-$result = get_all_item_units();
+$result = get_all_item_units(check_value('show_inactive'));
+
 start_form();
 start_table("$table_style width=40%");
 $th = array(_('Unit'), _('Description'), _('Decimals'), "", "");
+inactive_control_column($th);
 
 table_header($th);
 $k = 0; //row colour counter
@@ -102,18 +106,16 @@ while ($myrow = db_fetch($result))
 	label_cell($myrow["name"]);
 	label_cell(($myrow["decimals"]==-1?_("User Quantity Decimals"):$myrow["decimals"]));
 
- 	edit_button_cell("Edit".$myrow[0], _("Edit"));
- 	delete_button_cell("Delete".$myrow[0], _("Delete"));
+	inactive_control_cell($myrow["abbr"], $myrow["inactive"], 'item_units', 'abbr');
+ 	edit_button_cell("Edit".$myrow["abbr"], _("Edit"));
+ 	delete_button_cell("Delete".$myrow["abbr"], _("Delete"));
 	end_row();
 }
 
-end_table();
-end_form();
-echo '<br>';
+inactive_control_row($th);
+end_table(1);
 
 //----------------------------------------------------------------------------------
-
-start_form();
 
 start_table($table_style2);
 
@@ -141,7 +143,7 @@ number_list_row(_("Decimal Places:"), 'decimals', null, 0, 6, _("User Quantity D
 
 end_table(1);
 
-submit_add_or_update_center($selected_id == '', '', true);
+submit_add_or_update_center($selected_id == '', '', 'both');
 
 end_form();
 

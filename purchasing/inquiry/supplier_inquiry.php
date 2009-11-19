@@ -9,8 +9,8 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security=2;
-$path_to_root="../..";
+$page_security = 'SA_SUPPTRANSVIEW';
+$path_to_root = "../..";
 include($path_to_root . "/includes/db_pager.inc");
 include($path_to_root . "/includes/session.inc");
 
@@ -21,7 +21,7 @@ if ($use_popup_windows)
 	$js .= get_js_open_window(900, 500);
 if ($use_date_picker)
 	$js .= get_js_date_picker();
-page(_("Supplier Inquiry"), false, false, "", $js);
+page(_($help_context = "Supplier Inquiry"), false, false, "", $js);
 
 if (isset($_GET['supplier_id'])){
 	$_POST['supplier_id'] = $_GET['supplier_id'];
@@ -35,7 +35,7 @@ if (isset($_GET['ToDate'])){
 
 //------------------------------------------------------------------------------------------------
 
-start_form(false, true);
+start_form();
 
 if (!isset($_POST['supplier_id']))
 	$_POST['supplier_id'] = get_global_supplier();
@@ -50,11 +50,10 @@ date_cells(_("To:"), 'TransToDate');
 
 supp_allocations_list_cell("filterType", null);
 
-submit_cells('RefreshInquiry', _("Search"),'',_('Refresh Inquiry'), true);
+submit_cells('RefreshInquiry', _("Search"),'',_('Refresh Inquiry'), 'default');
 
 end_row();
 end_table();
-end_form();
 set_global_supplier($_POST['supplier_id']);
 
 //------------------------------------------------------------------------------------------------
@@ -89,7 +88,7 @@ function display_supplier_summary($supplier_record)
 //------------------------------------------------------------------------------------------------
 
 div_start('totals_tbl');
-if (($_POST['supplier_id'] != "") && ($_POST['supplier_id'] != reserved_words::get_all()))
+if (($_POST['supplier_id'] != "") && ($_POST['supplier_id'] != ALL_TEXT))
 {
 	$supplier_record = get_supplier_details($_POST['supplier_id']);
     display_supplier_summary($supplier_record);
@@ -104,7 +103,8 @@ if(get_post('RefreshInquiry'))
 //------------------------------------------------------------------------------------------------
 function systype_name($dummy, $type)
 {
-	return systypes::name($type);
+	global $systypes_array;
+	return $systypes_array[$type];
 }
 
 function trans_view($trans)
@@ -114,7 +114,7 @@ function trans_view($trans)
 
 function due_date($row)
 {
-	return ($row["type"]== 20) || ($row["type"]== 21) ? $row["due_date"] : '';
+	return ($row["type"]== ST_SUPPINVOICE) || ($row["type"]== ST_SUPPCREDIT) ? $row["due_date"] : '';
 }
 
 function gl_view($row)
@@ -124,7 +124,7 @@ function gl_view($row)
 
 function credit_link($row)
 {
-	return $row['type'] == 20 && $row["TotalAmount"] - $row["Allocated"] > 0 ?
+	return $row['type'] == ST_SUPPINVOICE && $row["TotalAmount"] - $row["Allocated"] > 0 ?
 		pager_link(_("Credit This"),
 			"/purchasing/supplier_credit.php?New=1&invoice_no=".
 			$row['trans_no'], ICON_CREDIT)
@@ -170,32 +170,32 @@ function check_overdue($row)
 		supplier.curr_code, 
     	(trans.ov_amount + trans.ov_gst  + trans.ov_discount) AS TotalAmount, 
 		trans.alloc AS Allocated,
-		((trans.type = 20 OR trans.type = 21) AND trans.due_date < '" . date2sql(Today()) . "') AS OverDue,
+		((trans.type = ".ST_SUPPINVOICE." OR trans.type = ".ST_SUPPCREDIT.") AND trans.due_date < '" . date2sql(Today()) . "') AS OverDue,
     	(ABS(trans.ov_amount + trans.ov_gst  + trans.ov_discount - trans.alloc) <= 0.005) AS Settled
     	FROM ".TB_PREF."supp_trans as trans, ".TB_PREF."suppliers as supplier
     	WHERE supplier.supplier_id = trans.supplier_id
      	AND trans.tran_date >= '$date_after'
     	AND trans.tran_date <= '$date_to'
 		AND trans.ov_amount != 0";	// exclude voided transactions
-   	if ($_POST['supplier_id'] != reserved_words::get_all())
+   	if ($_POST['supplier_id'] != ALL_TEXT)
    		$sql .= " AND trans.supplier_id = ".db_escape($_POST['supplier_id']);
-   	if (isset($_POST['filterType']) && $_POST['filterType'] != reserved_words::get_all())
+   	if (isset($_POST['filterType']) && $_POST['filterType'] != ALL_TEXT)
    	{
    		if (($_POST['filterType'] == '1')) 
    		{
-   			$sql .= " AND (trans.type = 20 OR trans.type = 2)";
+   			$sql .= " AND (trans.type = ".ST_SUPPINVOICE." OR trans.type = ".ST_BANKDEPOSIT.")";
    		} 
    		elseif (($_POST['filterType'] == '2')) 
    		{
-   			$sql .= " AND trans.type = 20 ";
+   			$sql .= " AND trans.type = ".ST_SUPPINVOICE." ";
    		} 
    		elseif ($_POST['filterType'] == '3') 
    		{
-			$sql .= " AND (trans.type = 22 OR trans.type = 1) ";
+			$sql .= " AND (trans.type = ".ST_SUPPAYMENT." OR trans.type = ".ST_BANKPAYMENT.") ";
    		} 
    		elseif (($_POST['filterType'] == '4') || ($_POST['filterType'] == '5')) 
    		{
-			$sql .= " AND trans.type = 21  ";
+			$sql .= " AND trans.type = ".ST_SUPPCREDIT."  ";
    		}
 
    		if (($_POST['filterType'] == '2') || ($_POST['filterType'] == '5')) 
@@ -220,7 +220,7 @@ $cols = array(
 			array('insert'=>true, 'fun'=>'credit_link')
 			);
 
-if ($_POST['supplier_id'] != reserved_words::get_all())
+if ($_POST['supplier_id'] != ALL_TEXT)
 {
 	$cols[_("Supplier")] = 'skip';
 	$cols[_("Currency")] = 'skip';
@@ -232,12 +232,7 @@ if ($_POST['supplier_id'] != reserved_words::get_all())
 $table =& new_db_pager('trans_tbl', $sql, $cols);
 $table->set_marker('check_overdue', _("Marked items are overdue."));
 
-if (get_post('RefreshInquiry')) {
-	$table->set_sql($sql);
-	$table->set_columns($cols);
-}
 $table->width = "85%";
-start_form();
 
 display_db_pager($table);
 

@@ -9,11 +9,11 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security = 4;
-$path_to_root="..";
+$page_security = 'SA_REORDER';
+$path_to_root = "..";
 include_once($path_to_root . "/includes/session.inc");
 
-page(_("Reorder Levels"));
+page(_($help_context = "Reorder Levels"));
 
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");
@@ -35,13 +35,13 @@ if (list_updated('stock_id'))
 }
 //------------------------------------------------------------------------------------
 
-start_form(false, true);
+start_form();
 
 if (!isset($_POST['stock_id']))
 	$_POST['stock_id'] = get_global_stock_item();
 
 echo "<center>" . _("Item:"). "&nbsp;";
-stock_costable_items_list('stock_id', $_POST['stock_id'], false, true);
+echo stock_costable_items_list('stock_id', $_POST['stock_id'], false, true);
 
 echo "<hr></center>";
 
@@ -93,7 +93,7 @@ while ($myrow = db_fetch($result))
 
 end_table(1);
 div_end();
-submit_center('UpdateData', _("Update"));
+submit_center('UpdateData', _("Update"), true, false, 'default');
 
 end_form();
 end_page();

@@ -9,7 +9,7 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security = 15;
+$page_security = 'SA_BACKUP';
 
 $path_to_root="..";
 include_once($path_to_root . "/includes/session.inc");
@@ -34,7 +34,7 @@ if (get_post('download')) {
 	exit;
 }
 
-page(_("Backup and Restore Database"), false, false, '', '');
+page(_($help_context = "Backup and Restore Database"), false, false, '', '');
 
 check_paths();
 
@@ -51,12 +51,7 @@ function check_paths()
 
 function generate_backup($conn, $ext='no', $comm='')
 {
-	if ($conn['tbpref'] != "")
-		$filename = $conn['dbname'] . "_" . $conn['tbpref'] . date("Ymd_Hi") . ".sql";
-	else
-		$filename = $conn['dbname'] . "_" . date("Ymd_Hi") . ".sql";
-
-	$filename = db_export($conn, $filename, $ext, $comm);
+	$filename = db_backup($conn, $ext, $comm);
 	if ($filename)
 		display_notification(_("Backup successfully generated."). ' '
 			. _("Filename") . ": " . $filename);
@@ -102,7 +97,7 @@ function compress_list_row($label, $name, $value=null)
     	$ar_comps['gzip'] = "gzip";
 
 	echo "<tr><td>$label</td><td>";
-	array_selector('comp', $value, $ar_comps);
+	echo array_selector('comp', $value, $ar_comps);
 	echo "</td></tr>";
 }
 
@@ -177,13 +172,10 @@ table_section_title(_("Backup scripts maintenance"));
 	submit_row('view',_("View Backup"), false, '', '', true);
 	submit_row('download',_("Download Backup"), false, '', '', false);
 	submit_row('restore',_("Restore Backup"), false, '','', 'process');
+	submit_js_confirm('restore',_("You are about to restore database from backup file.\nDo you want to continue?"));
 
-	$js = "if(confirm(\""
-		.sprintf(_('You are about to remove %s backup file.<br> Do you want to continue ?'),
-			get_post('cmb_backups'))
-		."\")) { JsHttpRequest.request(\"delete\"); }";
-
-	submit_row('delete', _("Delete Backup"), false, '','', 'dialog');
+	submit_row('delete', _("Delete Backup"), false, '','', true);
+	submit_js_confirm('delete', sprintf(_("You are about to remove selected backup file.\nDo you want to continue ?")));
 	end_table();
 	echo "</td>";
 	end_row();

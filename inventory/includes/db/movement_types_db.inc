@@ -25,9 +25,10 @@ function update_movement_type($type_id, $name)
 	db_query($sql, "could not update item movement type");
 }
 
-function get_all_movement_type()
+function get_all_movement_type($all=false)
 {
 	$sql = "SELECT * FROM ".TB_PREF."movement_types";
+	if (!$all) $sql .= " WHERE !inactive";
 
 	return db_query($sql, "could not get all item movement type");
 }

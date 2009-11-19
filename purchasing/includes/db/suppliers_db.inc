@@ -21,7 +21,7 @@ function get_supplier_details($supplier_id, $to=null)
 	// removed - supp_trans.alloc from all summations
 
     $value = "(".TB_PREF."supp_trans.ov_amount + ".TB_PREF."supp_trans.ov_gst + ".TB_PREF."supp_trans.ov_discount)";
-	$due = "IF (".TB_PREF."supp_trans.type=20 OR ".TB_PREF."supp_trans.type=21,".TB_PREF."supp_trans.due_date,".TB_PREF."supp_trans.tran_date)";
+	$due = "IF (".TB_PREF."supp_trans.type=".ST_SUPPINVOICE." OR ".TB_PREF."supp_trans.type=".ST_SUPPCREDIT.",".TB_PREF."supp_trans.due_date,".TB_PREF."supp_trans.tran_date)";
     $sql = "SELECT ".TB_PREF."suppliers.supp_name, ".TB_PREF."suppliers.curr_code, ".TB_PREF."payment_terms.terms,
 
 		Sum($value) AS Balance,

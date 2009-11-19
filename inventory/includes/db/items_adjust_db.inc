@@ -13,9 +13,11 @@
 
 function add_stock_adjustment($items, $location, $date_, $type, $increase, $reference, $memo_)
 {
+	global $Refs;
+
 	begin_transaction();
 
-	$adj_id = get_next_trans_no(systypes::inventory_adjustment());
+	$adj_id = get_next_trans_no(ST_INVADJUST);
 
 	foreach ($items as $line_item)
 	{
@@ -27,9 +29,10 @@ function add_stock_adjustment($items, $location, $date_, $type, $increase, $refe
 			$line_item->quantity, $line_item->standard_cost, $memo_);
 	}
 
-	add_comments(systypes::inventory_adjustment(), $adj_id, $date_, $memo_);
+	add_comments(ST_INVADJUST, $adj_id, $date_, $memo_);
 
-	references::save_last($reference, systypes::inventory_adjustment());
+	$Refs->save(ST_INVADJUST, $adj_id, $reference);
+	add_audit_trail(ST_INVADJUST, $adj_id, $date_);
 
 	commit_transaction();
 
@@ -40,15 +43,15 @@ function add_stock_adjustment($items, $location, $date_, $type, $increase, $refe
 
 function void_stock_adjustment($type_no)
 {
-	void_gl_trans(systypes::inventory_adjustment(), $type_no);
-	void_stock_move(systypes::inventory_adjustment(), $type_no);
+	void_gl_trans(ST_INVADJUST, $type_no);
+	void_stock_move(ST_INVADJUST, $type_no);
 }
 
 //-------------------------------------------------------------------------------------------------------------
 
 function get_stock_adjustment_items($trans_no)
 {
-	$result = get_stock_moves(systypes::inventory_adjustment(), $trans_no);
+	$result = get_stock_moves(ST_INVADJUST, $trans_no);
 
 	if (db_num_rows($result) == 0)
 	{
@@ -72,7 +75,7 @@ function add_stock_adjustment_item($adj_id, $stock_id, $location, $date_, $type,
 
 	update_average_material_cost(null, $stock_id, $standard_cost, $quantity, $date_);
 
-	add_stock_move(systypes::inventory_adjustment(), $stock_id, $adj_id, $location,
+	add_stock_move(ST_INVADJUST, $stock_id, $adj_id, $location,
         $date_, $reference, $quantity, $standard_cost, $type);
 
 	if ($standard_cost > 0)
@@ -80,10 +83,10 @@ function add_stock_adjustment_item($adj_id, $stock_id, $location, $date_, $type,
 
 		$stock_gl_codes = get_stock_gl_code($stock_id);
 
-		add_gl_trans_std_cost(systypes::inventory_adjustment(), $adj_id, $date_,
+		add_gl_trans_std_cost(ST_INVADJUST, $adj_id, $date_,
 			$stock_gl_codes['adjustment_account'], $stock_gl_codes['dimension_id'], $stock_gl_codes['dimension2_id'], $memo_, ($standard_cost * -($quantity)));
 
-		add_gl_trans_std_cost(systypes::inventory_adjustment(), $adj_id, $date_, $stock_gl_codes['inventory_account'], 0, 0, $memo_, ($standard_cost * $quantity));
+		add_gl_trans_std_cost(ST_INVADJUST, $adj_id, $date_, $stock_gl_codes['inventory_account'], 0, 0, $memo_, ($standard_cost * $quantity));
 	}
 }
 

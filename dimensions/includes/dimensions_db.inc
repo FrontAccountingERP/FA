@@ -11,6 +11,8 @@
 ***********************************************************************/
 function add_dimension($reference, $name, $type_, $date_, $due_date, $memo_)
 {
+	global $Refs;
+
 	begin_transaction();
 
 	$date = date2sql($date_);
@@ -20,12 +22,11 @@ function add_dimension($reference, $name, $type_, $date_, $due_date, $memo_)
 		VALUES (".db_escape($reference).", ".db_escape($name).", ".db_escape($type_)
 		.", '$date', '$duedate')";
 	db_query($sql, "could not add dimension");
-
 	$id = db_insert_id();
 
-	add_comments(systypes::dimension(), $id, $date_, $memo_);
+	add_comments(ST_DIMENSION, $id, $date_, $memo_);
 
-	references::save_last($reference, systypes::dimension());
+	$Refs->save(ST_DIMENSION, $id, $reference);
 
 	commit_transaction();
 
@@ -47,7 +48,7 @@ function update_dimension($id, $name, $type_, $date_, $due_date, $memo_)
 
 	db_query($sql, "could not update dimension");
 
-	update_comments(systypes::dimension(), $id, null, $memo_);
+	update_comments(ST_DIMENSION, $id, null, $memo_);
 
 	commit_transaction();
 
@@ -62,7 +63,7 @@ function delete_dimension($id)
 	$sql="DELETE FROM ".TB_PREF."dimensions WHERE id=".db_escape($id);
 	db_query($sql,"The dimension could not be deleted");
 
-	delete_comments(systypes::dimension(), $id);
+	delete_comments(ST_DIMENSION, $id);
 
 	commit_transaction();
 }
@@ -142,5 +143,11 @@ function close_dimension($id)
 }
 
 //--------------------------------------------------------------------------------------
+
+function reopen_dimension($id)
+{
+	$sql = "UPDATE ".TB_PREF."dimensions SET closed='0' WHERE id = $id";
+	db_query($sql, "could not reopen dimension");
+}
 
 ?>

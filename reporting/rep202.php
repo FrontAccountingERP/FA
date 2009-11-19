@@ -9,7 +9,7 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security = 2;
+$page_security = 'SA_SUPPLIERANALYTIC';
 // ----------------------------------------------------------------
 // $ Revision:	2.0 $
 // Creator:	Joe Hunt
@@ -37,8 +37,8 @@ function get_invoices($supplier_id, $to)
 
 	// Revomed allocated from sql
     $value = "(".TB_PREF."supp_trans.ov_amount + ".TB_PREF."supp_trans.ov_gst + ".TB_PREF."supp_trans.ov_discount)";
-	$due = "IF (".TB_PREF."supp_trans.type=20 OR ".TB_PREF."supp_trans.type=21,".TB_PREF."supp_trans.due_date,".TB_PREF."supp_trans.tran_date)";
-	$sql = "SELECT ".TB_PREF."sys_types.type_name,
+	$due = "IF (".TB_PREF."supp_trans.type=".ST_SUPPINVOICE." OR ".TB_PREF."supp_trans.type=".ST_SUPPCREDIT.",".TB_PREF."supp_trans.due_date,".TB_PREF."supp_trans.tran_date)";
+	$sql = "SELECT ".TB_PREF."supp_trans.type,
 		".TB_PREF."supp_trans.reference,
 		".TB_PREF."supp_trans.tran_date,
 		$value as Balance,
@@ -48,11 +48,9 @@ function get_invoices($supplier_id, $to)
 
 		FROM ".TB_PREF."suppliers,
 			".TB_PREF."payment_terms,
-			".TB_PREF."supp_trans,
-			".TB_PREF."sys_types
+			".TB_PREF."supp_trans
 
-	   	WHERE ".TB_PREF."sys_types.type_id = ".TB_PREF."supp_trans.type
-			AND ".TB_PREF."suppliers.payment_terms = ".TB_PREF."payment_terms.terms_indicator
+	   	WHERE ".TB_PREF."suppliers.payment_terms = ".TB_PREF."payment_terms.terms_indicator
 			AND ".TB_PREF."suppliers.supplier_id = ".TB_PREF."supp_trans.supplier_id
 			AND ".TB_PREF."supp_trans.supplier_id = $supplier_id
 			AND ".TB_PREF."supp_trans.tran_date <= '$todate'
@@ -67,7 +65,7 @@ function get_invoices($supplier_id, $to)
 
 function print_aged_supplier_analysis()
 {
-    global $comp_path, $path_to_root;
+    global $comp_path, $path_to_root, $systypes_array;
 
     $to = $_POST['PARAM_0'];
     $fromsupp = $_POST['PARAM_1'];
@@ -86,7 +84,7 @@ function print_aged_supplier_analysis()
 		$pg = new graph();
 	}
 
-	if ($fromsupp == reserved_words::get_all_numeric())
+	if ($fromsupp == ALL_NUMERIC)
 		$from = _('All');
 	else
 		$from = get_supplier_name($fromsupp);
@@ -96,7 +94,7 @@ function print_aged_supplier_analysis()
 		$summary = _('Summary Only');
 	else
 		$summary = _('Detailed Report');
-	if ($currency == reserved_words::get_all())
+	if ($currency == ALL_TEXT)
 	{
 		$convert = true;
 		$currency = _('Balances in Home Currency');
@@ -139,10 +137,10 @@ function print_aged_supplier_analysis()
 	$pastdue1 = $PastDueDays1 + 1 . "-" . $PastDueDays2 . " " . _('Days');
 	$pastdue2 = _('Over') . " " . $PastDueDays2 . " " . _('Days');
 
-	$sql = "SELECT supplier_id, supp_name AS name, curr_code FROM ".TB_PREF."suppliers ";
-	if ($fromsupp != reserved_words::get_all_numeric())
-		$sql .= "WHERE supplier_id=".db_escape($fromsupp)." ";
-	$sql .= "ORDER BY supp_name";
+	$sql = "SELECT supplier_id, supp_name AS name, curr_code FROM ".TB_PREF."suppliers";
+	if ($fromsupp != ALL_NUMERIC)
+		$sql .= " WHERE supplier_id=".db_escape($fromsupp);
+	$sql .= " ORDER BY supp_name";
 	$result = db_query($sql, "The suppliers could not be retrieved");
 
 	while ($myrow=db_fetch($result))
@@ -184,7 +182,7 @@ function print_aged_supplier_analysis()
 			while ($trans=db_fetch($res))
 			{
 				$rep->NewLine(1, 2);
-        		$rep->TextCol(0, 1,	$trans['type_name'], -2);
+        		$rep->TextCol(0, 1, $systypes_array[$trans['type']], -2);
 				$rep->TextCol(1, 2,	$trans['reference'], -2);
 				$rep->TextCol(2, 3,	sql2date($trans['tran_date']), -2);
 				foreach ($trans as $i => $value)

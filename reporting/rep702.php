@@ -9,7 +9,7 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security = 2;
+$page_security = 'SA_GLANALYTIC';
 // ----------------------------------------------------------------
 // $ Revision:	2.0 $
 // Creator:	Joe Hunt
@@ -32,7 +32,7 @@ print_list_of_journal_entries();
 
 function print_list_of_journal_entries()
 {
-    global $path_to_root;
+    global $path_to_root, $systypes_array;
 
     $from = $_POST['PARAM_0'];
     $to = $_POST['PARAM_1'];
@@ -48,14 +48,15 @@ function print_list_of_journal_entries()
 
     $cols = array(0, 100, 240, 300, 400, 460, 520, 580);
 
-    $headers = array(_('Type/Account'), _('Account Name'), _('Date/Dim.'),
+    $headers = array(_('Type/Account'), _('Reference').'/'._('Account Name'), _('Date/Dim.'),
     	_('Person/Item/Memo'), _('Debit'), _('Credit'));
 
     $aligns = array('left', 'left', 'left', 'left', 'right', 'right');
 
     $params =   array( 	0 => $comments,
     				    1 => array('text' => _('Period'), 'from' => $from,'to' => $to),
-                    	2 => array('text' => _('Type'), 'from' => systypes::name($systype),
+                    	2 => array('text' => _('Type'), 'from' => 
+						$systype == -1 ? _('All') : $systypes_array[$systype],
                             'to' => ''));
 
     $rep = new FrontReport(_('List of Journal Entries'), "JournalEntries", user_pagesize());
@@ -81,10 +82,11 @@ function print_list_of_journal_entries()
             }
             $typeno = $myrow['type_no'];
             $type = $myrow['type'];
-            $TransName = systypes::name($myrow['type']);
-            $rep->TextCol(0, 2, $TransName . " # " . $myrow['type_no']);
+            $TransName = $systypes_array[$myrow['type']];
+            $rep->TextCol(0, 1, $TransName . " # " . $myrow['type_no']);
+            $rep->TextCol(1, 2, get_reference($myrow['type'], $myrow['type_no']));
             $rep->DateCol(2, 3, $myrow['tran_date'], true);
-            $coms =  payment_person_types::person_name($myrow["person_type_id"],$myrow["person_id"]);
+            $coms =  payment_person_name($myrow["person_type_id"],$myrow["person_id"]);
             $memo = get_comments_string($myrow['type'], $myrow['type_no']);
             if ($memo != '')
             {

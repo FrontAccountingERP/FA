@@ -9,7 +9,7 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security = 2;
+$page_security = 'SA_CUSTBULKREP';
 // ----------------------------------------------------------------
 // $ Revision:	2.0 $
 // Creator:	Joe Hunt
@@ -67,7 +67,7 @@ function get_customer_details_for_report($area=0, $salesid=0)
 			".TB_PREF."salesman.salesman_name,
 			".TB_PREF."debtors_master.debtor_no,
 			".TB_PREF."cust_branch.branch_code";
-					
+
     return db_query($sql,"No transactions were returned");
 }
 
@@ -78,11 +78,11 @@ function getTransactions($debtorno, $branchcode, $date)
 
 	$sql = "SELECT SUM((ov_amount+ov_freight+ov_discount)*rate) AS Turnover
 		FROM ".TB_PREF."debtor_trans
-		WHERE debtor_no='$debtorno'
-		AND branch_code='$branchcode'
-		AND (type=10 or type=11)
-		AND tran_date >='$date'";
-		
+		WHERE debtor_no=".db_escape($debtorno)."
+		AND branch_code=".db_escape($branchcode)."
+		AND (type=".ST_SALESINVOICE." OR type=".ST_CUSTCREDIT.")
+		AND trandate >='$date'";
+
     $result = db_query($sql,"No transactions were returned");
 
 	$row = db_fetch_row($result);
@@ -109,9 +109,9 @@ function print_customer_details_listing()
     
     $dec = 0;
 
-	if ($area == reserved_words::get_all_numeric())
+	if ($area == ALL_NUMERIC)
 		$area = 0;
-	if ($folk == reserved_words::get_all_numeric())
+	if ($folk == ALL_NUMERIC)
 		$folk = 0;
 
 	if ($area == 0)

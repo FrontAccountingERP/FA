@@ -9,11 +9,11 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security = 11;
-$path_to_root="../..";
+$page_security = 'SA_ITEM';
+$path_to_root = "../..";
 include($path_to_root . "/includes/session.inc");
 
-page(_("Items"));
+page(_($help_context = "Items"), @$_REQUEST['popup']);
 
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");
@@ -22,7 +22,7 @@ include_once($path_to_root . "/includes/data_checks.inc");
 include_once($path_to_root . "/inventory/includes/inventory_db.inc");
 
 $user_comp = user_company();
-$new_item = get_post('stock_id')==''; 
+$new_item = get_post('stock_id')=='' || get_post('cancel') || get_post('clone'); 
 //------------------------------------------------------------------------------------
 
 if (isset($_GET['stock_id']))
@@ -39,6 +39,14 @@ if (list_updated('stock_id')) {
 	$Ajax->activate('details');
 	$Ajax->activate('controls');
 }
+
+if (get_post('cancel')) {
+	$_POST['NewStockID'] = $_POST['stock_id'] = '';
+    clear_data();
+	set_focus('stock_id');
+	$Ajax->activate('_page_body');
+}
+
 if (list_updated('category_id') || list_updated('mb_flag')) {
 	$Ajax->activate('details');
 }
@@ -89,7 +97,6 @@ if (isset($_FILES['pic']) && $_FILES['pic']['name'] != '')
  /* EOF Add Image upload for New Item  - by Ori */
 }
 
-
 check_db_has_stock_categories(_("There are no item categories defined in the system. At least one item category is required to add a item."));
 
 check_db_has_item_tax_types(_("There are no item tax types defined in the system. At least one item tax type is required to add a item."));
@@ -105,6 +112,7 @@ function clear_data()
 	unset($_POST['NewStockID']);
 	unset($_POST['dimension_id']);
 	unset($_POST['dimension2_id']);
+	unset($_POST['no_sale']);
 }
 
 //------------------------------------------------------------------------------------
@@ -154,13 +162,20 @@ if (isset($_POST['addupdate']))
 		
 		if (!$new_item) 
 		{ /*so its an existing one */
-
 			update_item($_POST['NewStockID'], $_POST['description'],
-				$_POST['long_description'], $_POST['category_id'], $_POST['tax_type_id'],
-				$_POST['sales_account'], $_POST['inventory_account'], $_POST['cogs_account'],
+				$_POST['long_description'], $_POST['category_id'], 
+				$_POST['tax_type_id'], get_post('units'),
+				get_post('mb_flag'), $_POST['sales_account'],
+				$_POST['inventory_account'], $_POST['cogs_account'],
 				$_POST['adjustment_account'], $_POST['assembly_account'], 
-				$_POST['dimension_id'], $_POST['dimension2_id']);
-
+				$_POST['dimension_id'], $_POST['dimension2_id'],
+				check_value('no_sale'));
+			update_record_status($_POST['NewStockID'], $_POST['inactive'],
+				'stock_master', 'stock_id');
+			update_record_status($_POST['NewStockID'], $_POST['inactive'],
+				'item_codes', 'item_code');
+			set_focus('stock_id');
+			$Ajax->activate('stock_id'); // in case of status change
 			display_notification(_("Item has been updated."));
 		} 
 		else 
@@ -171,69 +186,76 @@ if (isset($_POST['addupdate']))
 				$_POST['units'], $_POST['mb_flag'], $_POST['sales_account'],
 				$_POST['inventory_account'], $_POST['cogs_account'],
 				$_POST['adjustment_account'], $_POST['assembly_account'], 
-				$_POST['dimension_id'], $_POST['dimension2_id']);
+				$_POST['dimension_id'], $_POST['dimension2_id'],
+				check_value('no_sale'));
 
 			display_notification(_("A new item has been added."));
-			$_POST['stock_id'] = $_POST['NewStockID'];
+			$_POST['stock_id'] = $_POST['NewStockID'] = 
+			$_POST['description'] = $_POST['long_description'] = '';
+			$_POST['no_sale'] = 0;
+			set_focus('NewStockID');
 		}
-		set_focus('stock_id');
 		$Ajax->activate('_page_body');
 	}
 }
 
+if (get_post('clone')) {
+	unset($_POST['stock_id']);
+	unset($_POST['inactive']);
+	set_focus('NewStockID');
+	$Ajax->activate('_page_body');
+}
+
 //------------------------------------------------------------------------------------
 
-function can_delete($stock_id)
+function check_usage($stock_id, $dispmsg=true)
 {
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."stock_moves WHERE stock_id=".db_escape($stock_id);
-	$result = db_query($sql, "could not query stock moves");
-	$myrow = db_fetch_row($result);
-	if ($myrow[0] > 0) 
-	{
-		display_error(_('Cannot delete this item because there are stock movements that refer to this item.'));
-		return false;
-	}
+	$sqls=  array(
+	"SELECT COUNT(*) FROM "
+		.TB_PREF."stock_moves WHERE stock_id=".db_escape($stock_id) =>
+	 _('Cannot delete this item because there are stock movements that refer to this item.'),
+	"SELECT COUNT(*) FROM "
+		.TB_PREF."bom WHERE component=".db_escape($stock_id)=>
+	 _('Cannot delete this item record because there are bills of material that require this part as a component.'),
+	"SELECT COUNT(*) FROM "
+		.TB_PREF."sales_order_details WHERE stk_code=".db_escape($stock_id) =>
+	 _('Cannot delete this item because there are existing purchase order items for it.'),
+	"SELECT COUNT(*) FROM "
+		.TB_PREF."purch_order_details WHERE item_code=".db_escape($stock_id)=>
+	 _('Cannot delete this item because there are existing purchase order items for it.')
+	);
 
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."bom WHERE component=".db_escape($stock_id);
-	$result = db_query($sql, "could not query boms");
-	$myrow = db_fetch_row($result);
-	if ($myrow[0] > 0) 
-	{
-		display_error(_('Cannot delete this item record because there are bills of material that require this part as a component.'));
-		return false;
-	}
+	$msg = '';
 
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."sales_order_details WHERE stk_code=".db_escape($stock_id);
-	$result = db_query($sql, "could not query sales orders");
-	$myrow = db_fetch_row($result);
-	if ($myrow[0] > 0) 
-	{
-		display_error(_('Cannot delete this item record because there are existing sales orders for this part.'));
-		return false;
-	}
-
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."purch_order_details WHERE item_code=".db_escape($stock_id);
-	$result = db_query($sql, "could not query purchase orders");
-	$myrow = db_fetch_row($result);
-	if ($myrow[0] > 0) 
-	{
-		display_error(_('Cannot delete this item because there are existing purchase order items for it.'));
-		return false;
-	}
-	$kits = get_where_used($stock_id);
-	$num_kits = db_num_rows($kits);
-	if ($num_kits) {
-		$msg = _("This item cannot be deleted because some code aliases 
-			or foreign codes was entered for it, or there are kits defined 
-			using this item as component")
-			.':<br>';
-
-		while($num_kits--) {
-			$kit = db_fetch($kits);
-			$msg .= "'".$kit[0]."'";
-			if ($num_kits) $msg .= ',';
+	foreach($sqls as $sql=>$err) {
+		$result = db_query($sql, "could not query stock usage");
+		$myrow = db_fetch_row($result);
+		if ($myrow[0] > 0) 
+		{
+			$msg = $err; break;
 		}
-		display_error($msg);
+	}
+
+	if ($msg == '') {	
+
+		$kits = get_where_used($stock_id);
+		$num_kits = db_num_rows($kits);
+		if ($num_kits) {
+			$msg = _("This item cannot be deleted because some code aliases 
+				or foreign codes was entered for it, or there are kits defined 
+				using this item as component")
+				.':<br>';
+
+			while($num_kits--) {
+				$kit = db_fetch($kits);
+				$msg .= "'".$kit[0]."'";
+				if ($num_kits) $msg .= ',';
+			}
+
+		}
+	}
+	if ($msg != '')	{
+		if($dispmsg) display_error($msg);
 		return false;
 	}
 	return true;
@@ -244,7 +266,7 @@ function can_delete($stock_id)
 if (isset($_POST['delete']) && strlen($_POST['delete']) > 1) 
 {
 
-	if (can_delete($_POST['NewStockID'])) {
+	if (check_usage($_POST['NewStockID'])) {
 
 		$stock_id = $_POST['NewStockID'];
 		delete_item($stock_id);
@@ -261,13 +283,6 @@ if (isset($_POST['delete']) && strlen($_POST['delete']) > 1)
 }
 //-------------------------------------------------------------------------------------------- 
 
-if (isset($_POST['select']))
-{
-	context_return(array('stock_id' => $_POST['stock_id']));
-}
-
-//------------------------------------------------------------------------------------
-
 start_form(true);
 
 if (db_has_stock_items()) 
@@ -275,10 +290,16 @@ if (db_has_stock_items())
 	start_table("class='tablestyle_noborder'");
 	start_row();
     stock_items_list_cells(_("Select an item:"), 'stock_id', null,
-	  _('New item'), true);
-	$new_item = get_post('stock_id')==''; 
+	  _('New item'), true, check_value('show_inactive'));
+	$new_item = get_post('stock_id')=='';
+	check_cells(_("Show inactive:"), 'show_inactive', null, true);
 	end_row();
 	end_table();
+
+	if (get_post('_show_inactive_update')) {
+		$Ajax->activate('stock_id');
+		set_focus('stock_id');
+	}
 }
 
 div_start('details');
@@ -289,33 +310,11 @@ table_section(1);
 table_section_title(_("Item"));
 
 //------------------------------------------------------------------------------------
-
 if ($new_item) 
 {
-
-/*If the page was called without $_POST['NewStockID'] passed to page then assume a new item is to be entered show a form with a part Code field other wise the form showing the fields with the existing entries against the part will show for editing with only a hidden stock_id field. New is set to flag that the page may have called itself and still be entering a new part, in which case the page needs to know not to go looking up details for an existing part*/
-
 	text_row(_("Item Code:"), 'NewStockID', null, 21, 20);
 
-	$company_record = get_company_prefs();
-
-    if (!isset($_POST['inventory_account']) || $_POST['inventory_account'] == "")
-   		$_POST['inventory_account'] = $company_record["default_inventory_act"];
-
-    if (!isset($_POST['cogs_account']) || $_POST['cogs_account'] == "")
-    	$_POST['cogs_account'] = $company_record["default_cogs_act"];
-
-	if (!isset($_POST['sales_account']) || $_POST['sales_account'] == "")
-		$_POST['sales_account'] = $company_record["default_inv_sales_act"];
-
-	if (!isset($_POST['adjustment_account']) || $_POST['adjustment_account'] == "")
-		$_POST['adjustment_account'] = $company_record["default_adj_act"];
-
-	if (!isset($_POST['assembly_account']) || $_POST['assembly_account'] == "")
-		$_POST['assembly_account'] = $company_record["default_assembly_act"];
-
-	if (list_updated('mb_flag') && is_service($_POST['mb_flag']))
-		$_POST['inventory_account'] = $company_record["default_cogs_act"];
+ 	$_POST['inactive'] = 0;
 } 
 else 
 { // Must be modifying an existing item
@@ -337,7 +336,9 @@ else
 		$_POST['assembly_account']	= $myrow['assembly_account'];
 		$_POST['dimension_id']	= $myrow['dimension_id'];
 		$_POST['dimension2_id']	= $myrow['dimension2_id'];
+		$_POST['no_sale']	= $myrow['no_sale'];
 		$_POST['del_image'] = 0;	
+	 	$_POST['inactive'] = $myrow["inactive"];
 		label_row(_("Item Code:"),$_POST['NewStockID']);
 		hidden('NewStockID', $_POST['NewStockID']);
 		set_focus('description');
@@ -347,15 +348,32 @@ text_row(_("Name:"), 'description', null, 52, 50);
 
 textarea_row(_('Description:'), 'long_description', null, 42, 3);
 
-stock_categories_list_row(_("Category:"), 'category_id', null);
+stock_categories_list_row(_("Category:"), 'category_id', null, false, $new_item);
+
+if ($new_item && (list_updated('category_id') || !isset($_POST['units']))) {
+
+	$category_record = get_item_category($_POST['category_id']);
+
+	$_POST['tax_type_id'] = $category_record["dflt_tax_type"];
+	$_POST['units'] = $category_record["dflt_units"];
+	$_POST['mb_flag'] = $category_record["dflt_mb_flag"];
+   	$_POST['inventory_account'] = $category_record["dflt_inventory_act"];
+   	$_POST['cogs_account'] = $category_record["dflt_cogs_act"];
+	$_POST['sales_account'] = $category_record["dflt_sales_act"];
+	$_POST['adjustment_account'] = $category_record["dflt_adjustment_act"];
+	$_POST['assembly_account'] = $category_record["dflt_assembly_act"];
+	$_POST['dimension_id'] = $category_record["dflt_dim1"];
+	$_POST['dimension2_id'] = $category_record["dflt_dim2"];
+	$_POST['no_sale'] = $category_record["dflt_no_sale"];
+}
+$fresh_item = !isset($_POST['NewStockID']) || $new_item 
+	|| check_usage($_POST['stock_id'],false);
 
 item_tax_types_list_row(_("Item Tax Type:"), 'tax_type_id', null);
 
-stock_item_types_list_row(_("Item Type:"), 'mb_flag', null,
-	(!isset($_POST['NewStockID']) || $new_item));
+stock_item_types_list_row(_("Item Type:"), 'mb_flag', null, $fresh_item);
 
-stock_units_list_row(_('Units of Measure:'), 'units', null,
-	(!isset($_POST['NewStockID']) || $new_item));
+stock_units_list_row(_('Units of Measure:'), 'units', null, $fresh_item);
 
 $dim = get_company_pref('use_dimension');
 if ($dim >= 1)
@@ -385,8 +403,8 @@ if (!is_service($_POST['mb_flag']))
 }
 else 
 {
-	gl_all_accounts_list_row(_("C.O.G.S. Account:"), 'inventory_account', $_POST['inventory_account']);
-	hidden('cogs_account', $_POST['cogs_account']);
+	gl_all_accounts_list_row(_("C.O.G.S. Account:"), 'cogs_account', $_POST['cogs_account']);
+	hidden('inventory_account', $_POST['inventory_account']);
 	hidden('adjustment_account', $_POST['adjustment_account']);
 }
 
@@ -396,7 +414,7 @@ if (is_manufactured($_POST['mb_flag']))
 else
 	hidden('assembly_account', $_POST['assembly_account']);
 
-table_section_title(_("Picture"));
+table_section_title(_("Other"));
 
 // Add image upload for New Item  - by Joe
 label_row(_("Image File (.jpg)") . ":", "<input type='file' id='pic' name='pic'>");
@@ -419,23 +437,31 @@ else
 
 label_row("&nbsp;", $stock_img_link);
 if ($check_remove_image)
-	check_row(_("Delete Image:"), 'del_image', $_POST['del_image']);
+	check_row(_("Delete Image:"), 'del_image');
 	
+check_row(_("Exclude from sales:"), 'no_sale');
+
+record_status_list_row(_("Item status:"), 'inactive');
 end_outer_table(1);
 div_end();
 div_start('controls');
 if (!isset($_POST['NewStockID']) || $new_item) 
 {
-	submit_center('addupdate', _("Insert New Item"), true, '', true);
+	submit_center('addupdate', _("Insert New Item"), true, '', 'default');
 } 
 else 
 {
-	submit_center_first('addupdate', _("Update Item"), '', true);
-	submit_return('select', _("Return"), _("Select this items and return to document entry."), true);
-	submit_center_last('delete', _("Delete This Item"), '', true);
+	submit_center_first('addupdate', _("Update Item"), '', 
+		@$_REQUEST['popup'] ? true : 'default');
+	submit_return('select', get_post('stock_id'), 
+		_("Select this items and return to document entry."), 'default');
+	submit('clone', _("Clone This Item"), true, '', true);
+	submit('delete', _("Delete This Item"), true, '', true);
+	submit_center_last('cancel', _("Cancel"), _("Cancel Edition"), 'cancel');
 }
 
 div_end();
+hidden('popup', @$_REQUEST['popup']);
 end_form();
 
 //------------------------------------------------------------------------------------

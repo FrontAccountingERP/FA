@@ -9,11 +9,11 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security = 2;
-$path_to_root="..";
+$page_security = 'SA_SALESPRICE';
+$path_to_root = "..";
 include_once($path_to_root . "/includes/session.inc");
 
-page(_("Inventory Item Sales prices"));
+page(_($help_context = "Inventory Item Sales prices"));
 
 include_once($path_to_root . "/sales/includes/sales_db.inc");
 include_once($path_to_root . "/sales/includes/db/sales_types_db.inc");
@@ -48,13 +48,13 @@ if (!isset($_POST['curr_abrev']))
 
 //---------------------------------------------------------------------------------------------------
 
-start_form(false, true);
+start_form();
 
 if (!isset($_POST['stock_id']))
 	$_POST['stock_id'] = get_global_stock_item();
 
 echo "<center>" . _("Item:"). "&nbsp;";
-sales_items_list('stock_id', $_POST['stock_id'], false, true);
+echo sales_items_list('stock_id', $_POST['stock_id'], false, true);
 echo "<hr></center>";
 
 set_global_stock_item($_POST['stock_id']);
@@ -115,7 +115,7 @@ if (list_updated('stock_id')) {
 	$Ajax->activate('price_table');
 	$Ajax->activate('price_details');
 }
-if (list_updated('stock_id') || isset($_POST['_curr_abrev_update']) ) {
+if (list_updated('stock_id') || isset($_POST['_curr_abrev_update']) || isset($_POST['_sales_type_id_update'])) {
 	// after change of stock, currency or salestype selector
 	// display default calculated price for new settings. 
 	// If we have this price already in db it is overwritten later.
@@ -133,7 +133,7 @@ start_table("$table_style width=30%");
 $th = array(_("Currency"), _("Sales Type"), _("Price"), "", "");
 table_header($th);
 $k = 0; //row colour counter
-
+$calculated = false;
 while ($myrow = db_fetch($prices_list))
 {
 
@@ -150,6 +150,8 @@ while ($myrow = db_fetch($prices_list))
 end_table();
 if (db_num_rows($prices_list) == 0)
 {
+	if (get_company_pref('add_pct') != -1)
+		$calculated = true;
 	display_note(_("There are no prices set up for this part."), 1);
 }
 div_end();
@@ -172,6 +174,7 @@ start_table($table_style2);
 currencies_list_row(_("Currency:"), 'curr_abrev', null, true);
 
 sales_types_list_row(_("Sales Type:"), 'sales_type_id', null, true);
+
 if (!isset($_POST['price'])) {
 	$_POST['price'] = price_format(get_kit_price(get_post('stock_id'), 
 		get_post('curr_abrev'),	get_post('sales_type_id')));
@@ -181,8 +184,10 @@ $kit = get_item_code_dflts($_POST['stock_id']);
 small_amount_row(_("Price:"), 'price', null, '', _('per') .' '.$kit["units"]);
 
 end_table(1);
+if ($calculated)
+	display_note(_("The price is calculated."), 0, 1);
 
-submit_add_or_update_center($selected_id == -1, '', true);
+submit_add_or_update_center($selected_id == -1, '', 'both');
 div_end();
 
 end_form();

@@ -9,11 +9,11 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security = 20;
+$page_security = 'SA_SOFTWAREUPGRADE';
 $path_to_root="..";
 include_once($path_to_root . "/includes/session.inc");
 
-page(_("Software Upgrade"));
+page(_($help_context = "Software Upgrade"));
 
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/admin/db/company_db.inc");
@@ -29,10 +29,11 @@ include_once($path_to_root . "/includes/ui.inc");
 //
 function check_table($pref, $table, $field=null, $properties=null)
 {
-	$fields = db_query("SHOW COLUMNS FROM ".$pref.$table);
-	if (!$fields)
+	$tables = @db_query("SHOW TABLES LIKE '".$pref.$table."'");
+	if (!db_num_rows($tables))
 		return 1;		// no such table or error
 
+	$fields = @db_query("SHOW COLUMNS FROM ".$pref.$table);
 	if (!isset($field)) 
 		return 0;		// table exists
 
@@ -89,22 +90,27 @@ function upgrade_step($index, $conn)
 	global $path_to_root, $installers;
 
 	$inst = $installers[$index];
-	$sql = $inst->sql;
 	$pref = $conn['tbpref'];
 	$ret = true;
 
 	$force = get_post('force_'.$index);
 	if ($force || get_post('install_'.$index)) 
 	{
-		if (!$inst->installed($pref) || $force) 
+		$state = $inst->installed($pref);
+		if (!$state || $force) 
 		{
-			if (!$inst->pre_check($pref)) return false;
+			if (!$inst->pre_check($pref, $force)) return false;
+			$sql = $inst->sql;
 
 			if ($sql != '')
 				$ret &= db_import($path_to_root.'/sql/'.$sql, $conn, $force);
 
 			$ret &= $inst->install($pref, $force);
-		}
+		} else
+			if ($state!==true) {
+				display_error(_("Upgrade cannot be done because database has been already partially upgraded. Please downgrade database to clean previous version or try forced upgrade."));
+				$ret = false;
+			}
 	}
 	return $ret;
 }
@@ -134,13 +140,8 @@ if (get_post('Upgrade'))
 				." '".$conn['name']."'");
 			continue;
 		}
-	// create security backup		
-	 	if ($conn['tbpref'] != "")
-			$filename = $conn['dbname'] . "_" . $conn['tbpref'] . date("Ymd_Hi") . ".sql";
-		else
-			$filename = $conn['dbname'] . "_" . date("Ymd_Hi") . ".sql";
-
-		db_export($conn, $filename, 'no', 'Security backup before upgrade', $conn['tbpref']);
+	// create security backup	
+		db_backup($conn, 'no', 'Security backup before upgrade', $conn['tbpref']);
 	// apply all upgrade data
 		foreach ($installers as $i => $inst) 
 		{
@@ -159,7 +160,7 @@ if (get_post('Upgrade'))
 	{	// re-read the prefs
 		global $path_to_root;
 		include_once($path_to_root . "/admin/db/users_db.inc");
-		$user = get_user($_SESSION["wa_current_user"]->username);
+		$user = get_user_by_login($_SESSION["wa_current_user"]->username);
 		$_SESSION["wa_current_user"]->prefs = new user_prefs($user);
 		display_notification(_('All companies data has been successfully updated'));
 	}	
@@ -173,6 +174,7 @@ $th = array(_("Version"), _("Description"), _("Sql file"), _("Install"),
 table_header($th);
 
 $k = 0; //row colour counter
+$partial = 0;
 foreach($installers as $i => $inst)
 {
 	alt_table_row_color($k);
@@ -183,14 +185,27 @@ foreach($installers as $i => $inst)
 // this is checked only for first (site admin) company, 
 // but in fact we should always upgrade all data sets after
 // source upgrade.
-	if ($inst->installed(TB_PREF))
+	$check = $inst->installed(TB_PREF);
+	if ($check === true)
 		label_cell(_("Installed"));
-	else
-		check_cells(null,'install_'.$i, 0);
+	else 
+		if (!$check)
+			check_cells(null,'install_'.$i, 0);
+		else {
+			label_cell("<span class=redfg>"
+				. sprintf(_("Partially installed (%s)"), $check) . "</span>");
+			$partial++;
+		}
+
 	check_cells(null,'force_'.$i, 0);
 	end_row();
 }
 end_table(1);
+if ($partial!=0)	{
+	display_note(_("Database upgrades marked as partially installed cannot be installed automatically.
+You have to clean database manually to enable them, or try to perform forced upgrade."));
+	br();
+}
 submit_center('Upgrade', _('Upgrade system'), true, _('Save database and perform upgrade'), 'process');
 end_form();
 

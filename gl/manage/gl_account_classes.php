@@ -9,11 +9,11 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security = 3;
-$path_to_root="../..";
+$page_security = 'SA_GLACCOUNTCLASS';
+$path_to_root = "../..";
 include($path_to_root . "/includes/session.inc");
 
-page(_("GL Account Classes"));
+page(_($help_context = "GL Account Classes"));
 
 include($path_to_root . "/gl/includes/gl_db.inc");
 
@@ -52,15 +52,16 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 
     	if ($selected_id != -1) 
     	{
-    		update_account_class($selected_id, $_POST['name'], $_POST['Balance']);
-			display_notification(_('Selected account class settings has been updated'));
+    		if(update_account_class($selected_id, $_POST['name'], $_POST['ctype']))
+				display_notification(_('Selected account class settings has been updated'));
     	} 
     	else 
     	{
-    		add_account_class($_POST['id'], $_POST['name'], $_POST['Balance']);
-			display_notification(_('New account class has been added'));
+    		if(add_account_class($_POST['id'], $_POST['name'], $_POST['ctype'])) {
+				display_notification(_('New account class has been added'));
+				$Mode = 'RESET';
+			}
     	}
-		$Mode = 'RESET';
 	}
 }
 
@@ -101,16 +102,18 @@ if ($Mode == 'Delete')
 if ($Mode == 'RESET')
 {
 	$selected_id = -1;
-	$_POST['id']  = $_POST['name']  = $_POST['Balance'] = '';
+	$_POST['id']  = $_POST['name']  = $_POST['ctype'] =  '';
 }
 //-----------------------------------------------------------------------------------
 
-$result = get_account_classes();
+$result = get_account_classes(check_value('show_inactive'));
+
 start_form();
 start_table($table_style);
 $th = array(_("Class ID"), _("Class Name"), _("Class Type"), "", "");
 if (isset($use_oldstyle_convert) && $use_oldstyle_convert == 1)
 	$th[2] = _("Balance Sheet");
+inactive_control_column($th);
 table_header($th);
 
 $k = 0;
@@ -123,22 +126,19 @@ while ($myrow = db_fetch($result))
 	label_cell($myrow['class_name']);
 	if (isset($use_oldstyle_convert) && $use_oldstyle_convert == 1)
 	{
-		$myrow['balance_sheet'] = ($myrow["balance_sheet"] >= CL_ASSETS && $myrow["balance_sheet"] < CL_INCOME ? 1 : 0);
-		label_cell(($myrow['balance_sheet'] == 1 ? _("Yes") : _("No")));
+		$myrow['ctype'] = ($myrow["ctype"] >= CL_ASSETS && $myrow["ctype"] < CL_INCOME ? 1 : 0);
+		label_cell(($myrow['ctype'] == 1 ? _("Yes") : _("No")));
 	}	
 	else	
-		label_cell($class_types[$myrow["balance_sheet"]]);
+		label_cell($class_types[$myrow["ctype"]]);
+	inactive_control_cell($myrow["cid"], $myrow["inactive"], 'chart_class', 'cid');
 	edit_button_cell("Edit".$myrow["cid"], _("Edit"));
 	delete_button_cell("Delete".$myrow["cid"], _("Delete"));
 	end_row();
 }
-
-end_table();
-end_form();
-echo '<br>';
+inactive_control_row($th);
+end_table(1);
 //-----------------------------------------------------------------------------------
-
-start_form();
 
 start_table($table_style2);
 
@@ -151,9 +151,9 @@ if ($selected_id != -1)
 	$_POST['id']  = $myrow["cid"];
 	$_POST['name']  = $myrow["class_name"];
 	if (isset($use_oldstyle_convert) && $use_oldstyle_convert == 1)
-		$_POST['Balance'] = ($myrow["balance_sheet"] >= CL_ASSETS && $myrow["balance_sheet"] < CL_INCOME ? 1 : 0);
+		$_POST['ctype'] = ($myrow["ctype"] >= CL_ASSETS && $myrow["ctype"] < CL_INCOME ? 1 : 0);
 	else
-		$_POST['Balance']  = $myrow["balance_sheet"];
+		$_POST['ctype']  = $myrow["ctype"];
 	hidden('selected_id', $selected_id);
  }
 	hidden('id');
@@ -169,13 +169,13 @@ else
 text_row_ex(_("Class Name:"), 'name', 50, 60);
 
 if (isset($use_oldstyle_convert) && $use_oldstyle_convert == 1)
-	check_row(_("Balance Sheet"), 'Balance', null);
+	check_row(_("Balance Sheet"), 'ctype', null);
 else
-	class_types_list_row(_("Class Type:"), 'Balance', null);
+	class_types_list_row(_("Class Type:"), 'ctype', null);
 
 end_table(1);
 
-submit_add_or_update_center($selected_id == -1, '', true);
+submit_add_or_update_center($selected_id == -1, '', 'both');
 
 end_form();
 

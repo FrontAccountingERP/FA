@@ -71,7 +71,7 @@ function update_printer_profile($name, $dest)
 function get_report_printer($profile, $report)
 {
 	$sql = "SELECT printer FROM ".TB_PREF."print_profiles WHERE "
-		."profile=".db_escape($profile)." AND report=".db_escape($report);
+		."profile=".db_escape($profile)." AND report=";
 
 	$result = db_query($sql.db_escape($report), 'report printer lookup failed');
 

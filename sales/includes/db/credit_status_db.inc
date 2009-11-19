@@ -25,10 +25,11 @@ function update_credit_status($status_id, $description, $disallow_invoicing)
 	db_query($sql, "could not update credit status");			
 }
 
-function get_all_credit_status()
+function get_all_credit_status($all=false)
 {
 	$sql = "SELECT * FROM ".TB_PREF."credit_status";
-	
+	if (!$all) $sql .= " WHERE !inactive";
+
 	return db_query($sql, "could not get all credit status");
 } 
 

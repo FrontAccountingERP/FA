@@ -25,194 +25,21 @@
 define('GETTEXT_NATIVE', 1);
 define('GETTEXT_PHP', 2);
 
-/**
-* Generic gettext static class.
-*
-* This class allows gettext usage with php even if the gettext support is 
-* not compiled in php.
-*
-* The developper can choose between the GETTEXT_NATIVE support and the
-* GETTEXT_PHP support on initialisation. If native is not supported, the
-* system will fall back to PHP support.
-*
-* On both systems, this package add a variable interpolation system so you can
-* translate entire dynamic sentences in stead of peace of sentences.
-*
-* Small example without pear error lookup :
-* 
-* <?php
-* require_once "get_text.php";
-*
-* get_text::init();
-* get_text::set_language('fr_Fr');      // may throw GetText_Error
-* get_text::add_domain('myAppDomain');  // may throw GetText_Error
-* get_text::set_var('login', $login);   
-* get_text::set_var('name', $name);
-* 
-* // may throw GetText_Error
-* echo get_text::gettext('Welcome ${name}, you\'re connected with login ${login}');
-* 
-* // should echo something like :
-* //
-* // "Bienvenue Jean-Claude, vous êtes connecté en tant qu'utilisateur jcaccount"
-* // 
-* // or if fr_FR translation does not exists
-* //
-* // "Welcome Jean-Claude, you're connected with login jcaccount"
-* 
-* ?>
-*
-* A gettext mini-howto should be provided with this package, if you're new 
-* to gettext usage, please read it to learn how to build a gettext 
-* translation directory (locale).
-* 
-* @todo    Tools to manage gettext files in php.
-* 
-*          - non traducted domains / keys
-*          - modification of keys
-*          - domain creation, preparation, delete, ...
-*          - tool to extract required messages from TOF templates
-*
-* @version 0.5
-* @author  Laurent Bedubourg <laurent.bedubourg@free.fr>
-*/
-class get_text
-{
-    /**
-     * This method returns current gettext support class.
-     *
-     * @return GetText_Support
-     * @static 1
-     * @access private
-     */
-    function &_support($set=false)
-    { 
-        static $support_obj;
-        if ($set !== false) 
-        { 
-            $support_obj = $set; 
-        } 
-        elseif (!isset($support_obj)) 
-        {
-            trigger_error("get_text not initialized !". '\n'.
-            	"Please call get_text::init() before calling ".
-                "any get_text function !" . '\n' , E_USER_ERROR);
-        }
-        return $support_obj;
-    }
-    
-    /**
-     * Initialize gettext package.
-     *
-     * This method instantiate the gettext support depending on managerType
-     * value. 
-     *
-     * GETTEXT_NATIVE try to use gettext php support and fall back to PHP
-     * support if not installed.
-     *
-     * GETTEXT_PHP explicitely request the usage of PHP support.
-     *
-     * @param  int $managerType
-     *         Gettext support type.
-     *         
-     * @access public
-     * @static 1
-     */
-    function init($managerType = GETTEXT_NATIVE)
-    {
+function get_text_init($managerType = GETTEXT_NATIVE) {
+
+	if (!isset($_SESSION['get_text'])) {
+
         if ($managerType == GETTEXT_NATIVE) 
         {
             if (function_exists('gettext')) 
             {
-                return get_text::_support(new gettext_native_support());
+                $_SESSION['get_text'] = new gettext_native_support();
+                return;
             }
         }
         // fail back to php support 
-        return get_text::_support(new gettext_php_support());
-    }
-    
-    /**
-     * Set the language to use for traduction.
-     *
-     * @param string $lang_code
-     *        The language code usually defined as ll_CC, ll is the two letter
-     *        language code and CC is the two letter country code.
-     *
-     * @throws GetText_Error if language is not supported by your system.
-     */
-    function set_language($lang_code, $encoding)
-    {
-        $support = &get_text::_support();
-        return $support->set_language($lang_code, $encoding);
-    }
-    
-    /**
-     * Add a translation domain.
-     *
-     * The domain name is usually the name of the .po file you wish to use. 
-     * For example, if you created a file 'lang/ll_CC/LC_MESSAGES/myapp.po',
-     * you'll use 'myapp' as the domain name.
-     *
-     * @param string $domain
-     *        The domain name.
-     *
-     * @param string $path optional
-     *        The path to the locale directory (ie: /path/to/locale/) which
-     *        contains ll_CC directories.
-     */
-    function add_domain($domain, $path=false)
-    {
-        $support =& get_text::_support();
-        return $support->add_domain($domain, $path);
-    }
-    
-    /**
-     * Retrieve the translation for specified key.
-     *
-     * @param string $key
-     *        String to translate using gettext support.
-     */
-    function gettext($key)
-    { 
-        $support = &get_text::_support();
-        return $support->gettext($key);
-    }
-   
-    /**
-     * Add a variable to gettext interpolation system.
-     *
-     * @param string $key
-     *        The variable name.
-     *
-     * @param string $value
-     *        The variable value.
-     */
-    function set_var($key, $value)
-    {
-        $support =& get_text::_support();
-        return $support->set_var($key, $value);
-    }
-
-    /**
-     * Add an hashtable of variables.
-     *
-     * @param hashtable $hash 
-     *        PHP associative array of variables.
-     */
-    function set_vars($hash)
-    {
-        $support =& get_text::_support();
-        return $support->set_vars($hash);
-    }
-
-    /**
-     * Reset interpolation variables.
-     */
-    function reset()
-    {
-        $support =& get_text::_support();
-        return $support->reset();
-    }
+		$_SESSION['get_text'] = new gettext_php_support();
+	}
 }
 
 function raise_error($str) {
@@ -243,7 +70,7 @@ class gettext_native_support
         putenv("LANG=$lang_code");
         putenv("LC_ALL=$lang_code");
         putenv("LANGUAGE=$lang_code");
-        
+
         //$set = setlocale(LC_ALL, "$lang_code");
         //$set = setlocale(LC_ALL, "$encoding");
         $set = setlocale(LC_ALL, $lang_code.".".$encoding);

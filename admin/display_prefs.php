@@ -9,11 +9,11 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security = 1;
+$page_security = 'SA_SETUPDISPLAY';
 $path_to_root="..";
 include($path_to_root . "/includes/session.inc");
 
-page(_("Display Setup"));
+page(_($help_context = "Display Setup"));
 
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");
@@ -42,13 +42,16 @@ if (isset($_POST['setprefs']))
 			$_POST['theme'], $_POST['page_size'], check_value('show_hints'),
 			$_POST['profile'], check_value('rep_popup'), 
 			(int)($_POST['query_size']), check_value('graphic_links'), 
-			$_POST['language']);
+			$_POST['language'], check_value('sticky_doc_date'), $_POST['startup_tab']);
 
 		if ($chg_lang)
-			language::set_language($_POST['language']);
+			$_SESSION['language']->set_language($_POST['language']);
 			// refresh main menu
 
 		flush_dir($comp_path.'/'.user_company().'/js_cache');	
+
+		if ($chg_theme)
+			$_SESSION['bordercolor'] = "#8cacbb";
 
 		if ($chg_theme || $chg_lang)
 			meta_forward($_SERVER['PHP_SELF']);
@@ -110,6 +113,8 @@ possible separators can be added by modifying the array definition by editing th
 
 pagesizes_list_row(_("Page Size:"), "page_size", user_pagesize());
 
+tab_list_row(_("Start-up Tab"), 'startup_tab', user_startup_tab());
+
 /* The array $pagesizes is set up in config.php for modifications
 possible separators can be added by modifying the array definition by editing that file */
 
@@ -127,9 +132,12 @@ check_row(_("Use icons instead of text links:"), 'graphic_links', user_graphic_l
 
 text_row_ex(_("Query page size:"), 'query_size',  5, 5, '', user_query_size());
 
+check_row(_("Remember last document date:"), 'sticky_doc_date', sticky_doc_date(),
+	false, _('If set document date is remembered on subsequent documents, otherwise default is current date'));
+
 end_outer_table(1);
 
-submit_center('setprefs', _("Update"), true, '', true);
+submit_center('setprefs', _("Update"), true, '',  'default');
 
 end_form(2);
 

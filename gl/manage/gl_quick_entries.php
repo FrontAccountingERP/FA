@@ -9,11 +9,11 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security = 3;
-$path_to_root="../..";
+$page_security = 'SA_QUICKENTRY';
+$path_to_root = "../..";
 include($path_to_root . "/includes/session.inc");
 
-page(_("Quick Entries"));
+page(_($help_context = "Quick Entries"));
 
 include($path_to_root . "/gl/includes/gl_db.inc");
 
@@ -216,7 +216,7 @@ amount_row(_("Default Base Amount").':', 'base_amount', price_format(0));
 
 end_table(1);
 
-submit_add_or_update_center($selected_id == -1, '', true);
+submit_add_or_update_center($selected_id == -1, '', 'both');
 
 end_form();
 
@@ -307,7 +307,7 @@ if ($selected_id != -1)
 	} 
 	else 
 	{
-		gl_all_accounts_list_row(_("Account").":", 'dest_id', null);
+		gl_all_accounts_list_row(_("Account").":", 'dest_id', null, $_POST['type'] == QE_DEPOSIT || $_POST['type'] == QE_PAYMENT);
 		if ($actn != '=') 
 		{
 			if ($actn == '%') 

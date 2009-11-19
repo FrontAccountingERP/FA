@@ -9,11 +9,11 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security = 4;
-$path_to_root="..";
+$page_security = 'SA_PURCHASEPRICING';
+$path_to_root = "..";
 include_once($path_to_root . "/includes/session.inc");
 
-page(_("Supplier Purchasing Data"));
+page(_($help_context = "Supplier Purchasing Data"));
 
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");
@@ -24,16 +24,8 @@ check_db_has_purchasable_items(_("There are no purchasable inventory items defin
 check_db_has_suppliers(_("There are no suppliers defined in the system."));
 
 //----------------------------------------------------------------------------------------
-if ($ret = context_restore()) {
-	if(isset($ret['supplier_id']))
-		$_POST['supplier_id'] = $ret['supplier_id'];
-}
-if (isset($_POST['_supplier_id_editor'])) {
-	context_call($path_to_root.'/purchasing/manage/suppliers.php?supplier_id='.$_POST['supplier_id'], 
-		array( 'supplier_id', 'stock_id','_stock_id_edit', 'price', 
-			'suppliers_uom', 'supplier_description','conversion_factor'));
-}
 simple_page_mode(true);
+
 //--------------------------------------------------------------------------------------------------
 
 if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
@@ -117,13 +109,13 @@ if (list_updated('stock_id'))
 	$Ajax->activate('price_table');
 //--------------------------------------------------------------------------------------------------
 
-start_form(false, true);
+start_form();
 
 if (!isset($_POST['stock_id']))
 	$_POST['stock_id'] = get_global_stock_item();
 
 echo "<center>" . _("Item:"). "&nbsp;";
-stock_purchasable_items_list('stock_id', $_POST['stock_id'], false, true);
+echo stock_purchasable_items_list('stock_id', $_POST['stock_id'], false, true);
 
 echo "<hr></center>";
 
@@ -238,7 +230,7 @@ text_row(_("Supplier's Code or Description:"), 'supplier_description', null, 50,
 
 end_table(1);
 
-submit_add_or_update_center($selected_id == -1, '', true);
+submit_add_or_update_center($selected_id == -1, '', 'both');
 
 end_form();
 end_page();

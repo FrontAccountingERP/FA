@@ -9,8 +9,8 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security = 3;
-$path_to_root="..";
+$page_security = 'SA_MANUFISSUE';
+$path_to_root = "..";
 include_once($path_to_root . "/includes/ui/items_cart.inc");
 
 include_once($path_to_root . "/includes/session.inc");
@@ -26,7 +26,7 @@ if ($use_popup_windows)
 	$js .= get_js_open_window(800, 500);
 if ($use_date_picker)
 	$js .= get_js_date_picker();
-page(_("Issue Items to Work Order"), false, false, "", $js);
+page(_($help_context = "Issue Items to Work Order"), false, false, "", $js);
 
 //-----------------------------------------------------------------------------------------------
 
@@ -34,7 +34,7 @@ if (isset($_GET['AddedID']))
 {
    	display_notification(_("The work order issue has been entered."));
 
-    display_note(get_trans_view_str(systypes::work_order(), $_GET['AddedID'], _("View this Work Order")));
+    display_note(get_trans_view_str(ST_WORKORDER, $_GET['AddedID'], _("View this Work Order")));
 
    	hyperlink_no_params("search_work_orders.php", _("Select another &Work Order to Process"));
 
@@ -69,6 +69,8 @@ function handle_new_order()
 
 function can_process()
 {
+	global $Refs;
+
 	if (!is_date($_POST['date_'])) 
 	{
 		display_error(_("The entered date for the issue is invalid."));
@@ -81,7 +83,7 @@ function can_process()
 		set_focus('date_');
 		return false;
 	}
-	if (!references::is_valid($_POST['ref'])) 
+	if (!$Refs->is_valid($_POST['ref'])) 
 	{
 		display_error(_("You must enter a reference."));
 		set_focus('ref');
@@ -207,7 +209,7 @@ if (isset($_GET['trans_no']))
 display_wo_details($_SESSION['issue_items']->order_id);
 echo "<br>";
 
-start_form(false, true);
+start_form();
 
 start_table("$table_style width=90%", 10);
 echo "<tr><td>";
@@ -217,7 +219,7 @@ echo "</td></tr>";
 
 end_table();
 
-submit_center('Process', _("Process Issue"), true, '', true);
+submit_center('Process', _("Process Issue"), true, '', 'default');
 
 end_form();
 

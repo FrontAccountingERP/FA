@@ -9,8 +9,8 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security = 3;
-$path_to_root="..";
+$page_security = 'SA_INVENTORYADJUSTMENT';
+$path_to_root = "..";
 include_once($path_to_root . "/includes/ui/items_cart.inc");
 
 include_once($path_to_root . "/includes/session.inc");
@@ -25,7 +25,7 @@ if ($use_popup_windows)
 	$js .= get_js_open_window(800, 500);
 if ($use_date_picker)
 	$js .= get_js_date_picker();
-page(_("Item Adjustments Note"), false, false, "", $js);
+page(_($help_context = "Item Adjustments Note"), false, false, "", $js);
 
 //-----------------------------------------------------------------------------------------------
 
@@ -38,7 +38,7 @@ check_db_has_movement_types(_("There are no inventory movement types defined in 
 if (isset($_GET['AddedID'])) 
 {
 	$trans_no = $_GET['AddedID'];
-	$trans_type = systypes::inventory_adjustment();
+	$trans_type = ST_INVADJUST;
 
 	display_notification_centered(_("Items adjustment has been processed"));
 	display_note(get_trans_view_str($trans_type, $trans_no, _("&View this adjustment")));
@@ -69,8 +69,8 @@ function handle_new_order()
 
     session_register("adj_items");
 
-    $_SESSION['adj_items'] = new items_cart(systypes::inventory_adjustment());
-	$_POST['AdjDate'] = Today();
+    $_SESSION['adj_items'] = new items_cart(ST_INVADJUST);
+	$_POST['AdjDate'] = new_doc_date();
 	if (!is_date_in_fiscalyear($_POST['AdjDate']))
 		$_POST['AdjDate'] = end_fiscalyear();
 	$_SESSION['adj_items']->tran_date = $_POST['AdjDate'];	
@@ -80,6 +80,8 @@ function handle_new_order()
 
 function can_process()
 {
+	global $Refs;
+
 	$adj = &$_SESSION['adj_items'];
 
 	if (count($adj->line_items) == 0)	{
@@ -87,14 +89,14 @@ function can_process()
 		set_focus('stock_id');
 		return false;
 	}
-	if (!references::is_valid($_POST['ref'])) 
+	if (!$Refs->is_valid($_POST['ref'])) 
 	{
 		display_error( _("You must enter a reference."));
 		set_focus('ref');
 		return false;
 	}
 
-	if (!is_new_reference($_POST['ref'], systypes::inventory_adjustment())) 
+	if (!is_new_reference($_POST['ref'], ST_INVADJUST)) 
 	{
 		display_error( _("The entered reference is already in use."));
 		set_focus('ref');
@@ -134,7 +136,7 @@ if (isset($_POST['Process']) && can_process()){
 	$trans_no = add_stock_adjustment($_SESSION['adj_items']->line_items,
 		$_POST['StockLocation'], $_POST['AdjDate'],	$_POST['type'], $_POST['Increase'],
 		$_POST['ref'], $_POST['memo_']);
-
+	new_doc_date($_POST['AdjDate']);
 	$_SESSION['adj_items']->clear_items();
 	unset($_SESSION['adj_items']);
 
@@ -217,7 +219,7 @@ if (isset($_GET['NewAdjustment']) || !isset($_SESSION['adj_items']))
 }
 
 //-----------------------------------------------------------------------------------------------
-start_form(false, true);
+start_form();
 
 display_order_header($_SESSION['adj_items']);
 
@@ -229,7 +231,7 @@ adjustment_options_controls();
 end_outer_table(1, false);
 
 submit_center_first('Update', _("Update"), '', null);
-submit_center_last('Process', _("Process Adjustment"), '', true);
+submit_center_last('Process', _("Process Adjustment"), '', 'default');
 
 end_form();
 end_page();

@@ -9,23 +9,26 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$path_to_root="..";
-$page_security = 5;
+$page_security = 'SA_SUPPLIERPAYMNT';
+$path_to_root = "..";
+include_once($path_to_root . "/includes/ui/allocation_cart.inc");
 include_once($path_to_root . "/includes/session.inc");
-
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/includes/banking.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
-
+//include_once($path_to_root . "/purchasing/includes/ui/supp_alloc_ui.inc");
 include_once($path_to_root . "/purchasing/includes/purchasing_db.inc");
+
 $js = "";
 if ($use_popup_windows)
 	$js .= get_js_open_window(900, 500);
 if ($use_date_picker)
 	$js .= get_js_date_picker();
-page(_("Supplier Payment Entry"), false, false, "", $js);
 
+add_js_file('payalloc.js');
+
+page(_($help_context = "Supplier Payment Entry"), false, false, "", $js);
 
 if (isset($_GET['supplier_id']))
 {
@@ -39,17 +42,24 @@ check_db_has_suppliers(_("There are no suppliers defined in the system."));
 check_db_has_bank_accounts(_("There are no bank accounts defined in the system."));
 
 //----------------------------------------------------------------------------------------
-if ($ret = context_restore()) {
-	if(isset($ret['supplier_id']))
-		$_POST['supplier_id'] = $ret['supplier_id'];
+
+if (!isset($_POST['supplier_id']))
+	$_POST['supplier_id'] = get_global_supplier(false);
+
+if (!isset($_POST['DatePaid']))
+{
+	$_POST['DatePaid'] = new_doc_date();
+	if (!is_date_in_fiscalyear($_POST['DatePaid']))
+		$_POST['DatePaid'] = end_fiscalyear();
 }
-if (isset($_POST['_supplier_id_editor'])) {
-	context_call($path_to_root.'/purchasing/manage/suppliers.php?supplier_id='.$_POST['supplier_id'], 
-		array( 'supplier_id', 'bank_account', 'DatePaid', 'ref', 'amount', 
-			'discount', 'memo_') );
-}
+
 if (isset($_POST['_DatePaid_changed'])) {
   $Ajax->activate('_ex_rate');
+}
+
+if (list_updated('supplier_id') || list_updated('bank_account')) {
+  $_SESSION['alloc']->read();
+  $Ajax->activate('alloc_tbl');
 }
 //----------------------------------------------------------------------------------------
 
@@ -61,7 +71,7 @@ if (isset($_GET['AddedID']))
 
     display_note(get_gl_view_str(22, $payment_id, _("View the GL &Journal Entries for this Payment")));
 
-    hyperlink_params($path_to_root . "/purchasing/allocations/supplier_allocate.php", _("&Allocate this Payment"), "trans_no=$payment_id&trans_type=22");
+//    hyperlink_params($path_to_root . "/purchasing/allocations/supplier_allocate.php", _("&Allocate this Payment"), "trans_no=$payment_id&trans_type=22");
 
 	hyperlink_params($_SERVER['PHP_SELF'], _("Enter another supplier &payment"), "supplier_id=" . $_POST['supplier_id']);
 
@@ -70,64 +80,10 @@ if (isset($_GET['AddedID']))
 
 //----------------------------------------------------------------------------------------
 
-function display_controls()
-{
-	global $table_style2;
-	start_form(false, true);
-
-	if (!isset($_POST['supplier_id']))
-		$_POST['supplier_id'] = get_global_supplier(false);
-	if (!isset($_POST['DatePaid']))
-	{
-		$_POST['DatePaid'] = Today();
-		if (!is_date_in_fiscalyear($_POST['DatePaid']))
-			$_POST['DatePaid'] = end_fiscalyear();
-	}		
-	start_outer_table($table_style2, 5);
-
-	table_section(1);
-	
-    bank_accounts_list_row(_("From Bank Account:"), 'bank_account', null, true);
-
-	amount_row(_("Amount of Payment:"), 'amount');
-	amount_row(_("Amount of Discount:"), 'discount');
-
-    date_row(_("Date Paid") . ":", 'DatePaid', '', null, 0, 0, 0, null, true);
-
-	table_section(2);
-
-    supplier_list_row(_("Payment To:"), 'supplier_id', null, false, true);
-
-	set_global_supplier($_POST['supplier_id']);
-
-	$comp_currency = get_company_currency();
-	$supplier_currency = get_supplier_currency($_POST['supplier_id']);
-	$bank_currency = get_bank_account_currency($_POST['bank_account']);
-	if ($bank_currency != $supplier_currency) 
-	{
-		exchange_rate_display($bank_currency, $supplier_currency, $_POST['DatePaid'], ($bank_currency == $comp_currency));
-	}
-
-    ref_row(_("Reference:"), 'ref', '', references::get_next(22));
-
-    text_row(_("Memo:"), 'memo_', null, 52,50);
-
-	end_outer_table(1); // outer table
-
-	submit_center('ProcessSuppPayment',_("Enter Payment"), true, '', true);
-
-	if ($bank_currency != $supplier_currency) 
-	{
-		display_note(_("The amount and discount are in the bank account's currency."), 2, 0);
-	}
-
-	end_form();
-}
-
-//----------------------------------------------------------------------------------------
-
 function check_inputs()
 {
+	global $Refs;
+
 	if ($_POST['amount'] == "") 
 	{
 		$_POST['amount'] = price_format(0);
@@ -138,6 +94,21 @@ function check_inputs()
 		display_error(_("The entered amount is invalid or less than zero."));
 		set_focus('amount');
 		return false;
+	}
+
+	if (isset($_POST['charge']) && !check_num('charge', 0)) {
+		display_error(_("The entered amount is invalid or less than zero."));
+		set_focus('charge');
+		return false;
+	}
+
+	if (isset($_POST['charge']) && input_num('charge') > 0) {
+		$charge_acct = get_company_pref('bank_charge_act');
+		if (get_gl_account($charge_acct) == false) {
+			display_error(_("The Bank Charge Account has not been set in System and General GL Setup."));
+			set_focus('charge');
+			return false;
+		}	
 	}
 
 	if (isset($_POST['_ex_rate']) && !check_num('_ex_rate', 0.000001))
@@ -178,21 +149,26 @@ function check_inputs()
 		set_focus('DatePaid');
 		return false;
 	}
-    if (!references::is_valid($_POST['ref'])) 
+    if (!$Refs->is_valid($_POST['ref'])) 
     {
 		display_error(_("You must enter a reference."));
 		set_focus('ref');
 		return false;
 	}
 
-	if (!is_new_reference($_POST['ref'], 22)) 
+	if (!is_new_reference($_POST['ref'], ST_SUPPAYMENT)) 
 	{
 		display_error(_("The entered reference is already in use."));
 		set_focus('ref');
 		return false;
 	}
 
-	return true;
+	$_SESSION['alloc']->amount = -input_num('amount');
+
+	if (isset($_POST["TotalNumberOfAllocs"]))
+		return check_allocations();
+	else
+		return true;
 }
 
 //----------------------------------------------------------------------------------------
@@ -209,8 +185,11 @@ function handle_add_payment()
 
 	$payment_id = add_supp_payment($_POST['supplier_id'], $_POST['DatePaid'],
 		$_POST['bank_account'],	input_num('amount'), input_num('discount'), 
-		$_POST['ref'], $_POST['memo_'], $rate);
+		$_POST['ref'], $_POST['memo_'], $rate, input_num('charge'));
+	new_doc_date($_POST['DatePaid']);
 
+	$_SESSION['alloc']->trans_no = $payment_id;
+	$_SESSION['alloc']->write();
 	//unset($_POST['supplier_id']);
    	unset($_POST['bank_account']);
    	unset($_POST['DatePaid']);
@@ -236,7 +215,63 @@ if (isset($_POST['ProcessSuppPayment']))
     }
 }
 
-display_controls();
+//----------------------------------------------------------------------------------------
+
+start_form();
+
+	start_outer_table("$table_style2 width=60%", 5);
+
+	table_section(1);
+
+    supplier_list_row(_("Payment To:"), 'supplier_id', null, false, true);
+
+	if (!isset($_POST['bank_account'])) // first page call
+		  $_SESSION['alloc'] = new allocation(ST_SUPPAYMENT, 0);
+
+	set_global_supplier($_POST['supplier_id']);
+	
+    bank_accounts_list_row(_("From Bank Account:"), 'bank_account', null, true);
+
+	table_section(2);
+
+    ref_row(_("Reference:"), 'ref', '', $Refs->get_next(ST_SUPPAYMENT));
+
+    date_row(_("Date Paid") . ":", 'DatePaid', '', true, 0, 0, 0, null, true);
+
+	table_section(3);
+
+	$supplier_currency = get_supplier_currency($_POST['supplier_id']);
+	$bank_currency = get_bank_account_currency($_POST['bank_account']);
+	if ($bank_currency != $supplier_currency) 
+	{
+		exchange_rate_display($bank_currency, $supplier_currency, $_POST['DatePaid'], true);
+	}
+
+	amount_row(_("Bank Charge:"), 'charge');
+
+
+	end_outer_table(1); // outer table
+
+	if ($bank_currency == $supplier_currency) {
+  	div_start('alloc_tbl');
+		show_allocatable(false);
+	div_end();
+	}
+
+	start_table("$table_style width=60%");
+	amount_row(_("Amount of Discount:"), 'discount');
+	amount_row(_("Amount of Payment:"), 'amount');
+	textarea_row(_("Memo:"), 'memo_', null, 22, 4);
+	end_table(1);
+	
+	if ($bank_currency != $supplier_currency) 
+	{
+		display_note(_("The amount and discount are in the bank account's currency."), 0, 1);
+	}
+
+	submit_center('ProcessSuppPayment',_("Enter Payment"), true, '', 'default');
+
+end_form();
 
 end_page();
 ?>

@@ -9,8 +9,8 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security = 10;
-$path_to_root="..";
+$page_security = 'SA_WORKORDERENTRY';
+$path_to_root = "..";
 
 include_once($path_to_root . "/includes/session.inc");
 
@@ -26,7 +26,7 @@ if ($use_popup_windows)
 	$js .= get_js_open_window(900, 500);
 if ($use_date_picker)
 	$js .= get_js_date_picker();
-page(_("Work Order Entry"), false, false, "", $js);
+page(_($help_context = "Work Order Entry"), false, false, "", $js);
 
 
 check_db_has_manufacturable_items(_("There are no manufacturable items defined in the system."));
@@ -49,15 +49,19 @@ elseif(isset($_POST['selected_id']))
 if (isset($_GET['AddedID']))
 {
 	$id = $_GET['AddedID'];
-	$stype = systypes::work_order();
+	$stype = ST_WORKORDER;
 
 	display_notification_centered(_("The work order been added."));
 
     display_note(get_trans_view_str($stype, $id, _("View this Work Order")));
 
-	if ($_GET['type'] != wo_types::advanced())
+	if ($_GET['type'] != WO_ADVANCED)
 	{
 		include_once($path_to_root . "/reporting/includes/reporting.inc");
+    	$ar = array('PARAM_0' => $id, 'PARAM_1' => $id, 'PARAM_2' => 0); 
+    	display_note(print_link(_("Print this Work Order"), 409, $ar), 1);
+    	$ar['PARAM_2'] = 1;
+    	display_note(print_link(_("Email this Work Order"), 409, $ar), 1);
     	display_note(get_gl_view_str($stype, $id, _("View the GL Journal Entries for this Work Order")), 1);
     	$ar = array('PARAM_0' => $_GET['date'], 'PARAM_1' => $_GET['date'], 'PARAM_2' => $stype); 
     	display_note(print_link(_("Print the GL Journal Entries for this Work Order"), 702, $ar), 1);
@@ -111,25 +115,25 @@ function safe_exit()
 //-------------------------------------------------------------------------------------
 if (!isset($_POST['date_']))
 {
-	$_POST['date_'] = Today();
+	$_POST['date_'] = new_doc_date();
 	if (!is_date_in_fiscalyear($_POST['date_']))
 		$_POST['date_'] = end_fiscalyear();
 }
 
 function can_process()
 {
-	global $selected_id;
+	global $selected_id, $SysPrefs, $Refs;
 
 	if (!isset($selected_id))
 	{
-    	if (!references::is_valid($_POST['wo_ref']))
+    	if (!$Refs->is_valid($_POST['wo_ref']))
     	{
     		display_error(_("You must enter a reference."));
 			set_focus('wo_ref');
     		return false;
     	}
 
-    	if (!is_new_reference($_POST['wo_ref'], systypes::work_order()))
+    	if (!is_new_reference($_POST['wo_ref'], ST_WORKORDER))
     	{
     		display_error(_("The entered reference is already in use."));
 			set_focus('wo_ref');
@@ -157,7 +161,7 @@ function can_process()
 		return false;
 	}
 	// only check bom and quantites if quick assembly
-	if (!($_POST['type'] == wo_types::advanced()))
+	if (!($_POST['type'] == WO_ADVANCED))
 	{
         if (!has_bom($_POST['stock_id']))
         {
@@ -183,9 +187,9 @@ function can_process()
     		return false;
     	}
 
-        if (!sys_prefs::allow_negative_stock())
+        if (!$SysPrefs->allow_negative_stock())
         {
-        	if ($_POST['type'] == wo_types::assemble())
+        	if ($_POST['type'] == WO_ASSEMBLY)
         	{
         		// check bom if assembling
                 $result = get_bom($_POST['stock_id']);
@@ -209,7 +213,7 @@ function can_process()
             		}
             	}
         	}
-        	elseif ($_POST['type'] == wo_types::unassemble())
+        	elseif ($_POST['type'] == WO_UNASSEMBLY)
         	{
         		// if unassembling, check item to unassemble
 				$qoh = get_qoh_on_date($_POST['stock_id'], $_POST['StockLocation'], $_POST['date_']);
@@ -262,6 +266,7 @@ if (isset($_POST['ADD_ITEM']) && can_process())
 		$_POST['stock_id'],  $_POST['type'], $_POST['date_'],
 		$_POST['RequDate'], $_POST['memo_'], input_num('Costs'), $_POST['cr_acc'], input_num('Labour'), $_POST['cr_lab_acc']);
 
+	new_doc_date($_POST['date_']);
 	meta_forward($_SERVER['PHP_SELF'], "AddedID=$id&type=".$_POST['type']."&date=".$_POST['date_']);
 }
 
@@ -272,7 +277,7 @@ if (isset($_POST['UPDATE_ITEM']) && can_process())
 
 	update_work_order($selected_id, $_POST['StockLocation'], input_num('quantity'),
 		$_POST['stock_id'],  $_POST['date_'], $_POST['RequDate'], $_POST['memo_']);
-
+	new_doc_date($_POST['date_']);
 	meta_forward($_SERVER['PHP_SELF'], "UpdatedID=$selected_id");
 }
 
@@ -358,7 +363,7 @@ if (isset($selected_id))
 	$_POST['units_issued'] = $myrow["units_issued"];
 	$_POST['Costs'] = price_format($myrow["additional_costs"]);
 
-	$_POST['memo_'] = get_comments_string(systypes::work_order(), $selected_id);
+	$_POST['memo_'] = get_comments_string(ST_WORKORDER, $selected_id);
 
 	hidden('wo_ref', $_POST['wo_ref']);
 	hidden('units_issued', $_POST['units_issued']);
@@ -369,13 +374,13 @@ if (isset($selected_id))
 	hidden('old_stk_id', $myrow["stock_id"]);
 
 	label_row(_("Reference:"), $_POST['wo_ref']);
-	label_row(_("Type:"), wo_types::name($_POST['type']));
+	label_row(_("Type:"), $wo_types_array[$_POST['type']]);
 	hidden('type', $myrow["type"]);
 }
 else
 {
 	$_POST['units_issued'] = $_POST['released'] = 0;
-	ref_row(_("Reference:"), 'wo_ref', '', references::get_next(systypes::work_order()));
+	ref_row(_("Reference:"), 'wo_ref', '', $Refs->get_next(ST_WORKORDER));
 
 	wo_types_list_row(_("Type:"), 'type', null);
 }
@@ -404,18 +409,18 @@ else
 	$_POST['quantity'] = qty_format($_POST['quantity'], $_POST['stock_id'], $dec);
 	
 
-if (get_post('type') == wo_types::advanced())
+if (get_post('type') == WO_ADVANCED)
 {
     qty_row(_("Quantity Required:"), 'quantity', null, null, null, $dec);
     if ($_POST['released'])
     	label_row(_("Quantity Manufactured:"), number_format($_POST['units_issued'], get_qty_dec($_POST['stock_id'])));
-    date_row(_("Date") . ":", 'date_');
-	date_row(_("Date Required By") . ":", 'RequDate', '', null, sys_prefs::default_wo_required_by());
+    date_row(_("Date") . ":", 'date_', '', true);
+	date_row(_("Date Required By") . ":", 'RequDate', '', null, $SysPrefs->default_wo_required_by());
 }
 else
 {
     qty_row(_("Quantity:"), 'quantity', null, null, null, $dec);
-    date_row(_("Date") . ":", 'date_');
+    date_row(_("Date") . ":", 'date_', '', true);
 	hidden('RequDate', '');
 
 	$sql = "SELECT DISTINCT account_code FROM ".TB_PREF."bank_accounts";
@@ -449,7 +454,7 @@ if (isset($selected_id))
 {
 	echo "<table align=center><tr>";
 
-	submit_cells('UPDATE_ITEM', _("Update"), '', _('Save changes to work order'), true);
+	submit_cells('UPDATE_ITEM', _("Update"), '', _('Save changes to work order'), 'default');
 	if (get_post('released'))
 	{
 		submit_cells('close', _("Close This Work Order"),'','',true);
@@ -460,7 +465,7 @@ if (isset($selected_id))
 }
 else
 {
-	submit_center('ADD_ITEM', _("Add Workorder"), true, '', true);
+	submit_center('ADD_ITEM', _("Add Workorder"), true, '', 'default');
 }
 
 end_form();

@@ -10,14 +10,17 @@
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
 	$path_to_root=".";
-	$page_security = 1;
+	if (!file_exists($path_to_root.'/config.php'))
+		header("Location: ".$path_to_root."/install/index.php");
+
+	$page_security = 'SA_OPEN';
 	ini_set('xdebug.auto_trace',1);
 	include_once("includes/session.inc");
 
+	add_access_extensions();
 	$app = &$_SESSION["App"];
 	if (isset($_GET['application']))
 		$app->selected_application = $_GET['application'];
 
 	$app->display();
-	context_reset();
 ?>

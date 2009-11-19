@@ -9,21 +9,21 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
+function get_post($name, $dflt='')
+{
+	return ((!isset($_POST[$name]) || $_POST[$name] === '') ? $dflt : $_POST[$name]);
+}
 //---------------------------------------------------------------------------------
 
-function start_form($multi=false, $sid=false, $action="", $name="")
+function start_form($multi=false, $dummy=false, $action="", $name="")
 {
+	// $dummy - leaved for compatibility with 2.0 API
+
 	if ($name != "")
 		$name = "name='$name'";
 	if ($action == "")
 		$action = $_SERVER['PHP_SELF'];
-	if ($sid)
-	{
-		if (strpos($action, "?"))
-			$action .= "&" . SID;
-		else
-			$action .= "?" . SID;
-	}
+
 	if ($multi)
 		echo "<form enctype='multipart/form-data' method='post' action='$action' $name>\n";
 	else
@@ -128,7 +128,6 @@ function hyperlink_back($center=true)
 {
 	if ($center)
 		echo "<center>";
-	//echo "<a href='javascript:goBack();'>"._("Back")."</a>\n";
 	echo "<p><a href='javascript:goBack();'>"._("Back")."</a></p>\n";
 	if ($center)
 		echo "</center>";
@@ -137,10 +136,13 @@ function hyperlink_back($center=true)
 
 function hyperlink_no_params($target, $label, $center=true)
 {
+	$id = default_focus();
 	$pars = access_string($label);
+	if ($target == '')
+		$target = $_SERVER['PHP_SELF'];
 	if ($center)
 		echo "<br><center>";
-	echo "<a href='$target?=" . SID . "'$pars[1]>$pars[0]</a>\n";
+	echo "<a href='$target' id='$id' $pars[1]>$pars[0]</a>\n";
 	if ($center)
 		echo "</center>";
 }
@@ -152,14 +154,64 @@ function hyperlink_no_params_td($target, $label)
 	echo "</td>\n";
 }
 
+function viewer_link($label, $url='', $class='', $id='',  $icon=null)
+{
+	global $path_to_root;
+	
+	if ($class != '')
+		$class = " class='$class'";
+
+	if ($id != '')
+		$class = " id='$id'";
+
+	if ($url != "")
+	{
+		$pars = access_string($label);
+		if (user_graphic_links() && $icon)
+			$pars[0] = set_icon($icon, $pars[0]);
+		$preview_str = "<a target='_blank' $class $id href='$path_to_root/$url' onclick=\"javascript:openWindow(this.href,this.target); return false;\"$pars[1]>$pars[0]</a>";
+	}
+	else
+		$preview_str = $label;
+
+ return $preview_str;
+}
+
+function menu_link($url, $label, $id=null)
+{
+
+	$id = default_focus($id);
+	$pars = access_string($label);
+	return "<a href='$url' class='menu_option' id='$id' $pars[1]>$pars[0]</a>";
+}
+
+function submenu_option($title, $url, $id=null)
+{
+	global $path_to_root;
+	display_note(menu_link($path_to_root . $url, $title, $id), 0, 1);
+}
+
+function submenu_view($title, $type, $number, $id=null)
+{
+	display_note(get_trans_view_str($type, $number, $title, false, 'menu_option', $id), 0, 1);
+}
+
+function submenu_print($title, $type, $number, $id=null, $email=0, $extra=0)
+{
+	display_note(print_document_link($number, $title, true, $type, false, 'menu_option', $id, $email, $extra), 0, 1);
+}
 //-----------------------------------------------------------------------------------
 
 function hyperlink_params($target, $label, $params, $center=true)
 {
+	$id = default_focus();
+	
 	$pars = access_string($label);
+	if ($target == '')
+		$target = $_SERVER['PHP_SELF'];
 	if ($center)
 		echo "<br><center>";
-	echo "<a href='$target?$params'$pars[1]>$pars[0]</a>\n";
+	echo "<a id='$id' href='$target?$params'$pars[1]>$pars[0]</a>\n";
 	if ($center)
 		echo "</center>";
 }
@@ -175,10 +227,12 @@ function hyperlink_params_td($target, $label, $params)
 
 function hyperlink_params_separate($target, $label, $params, $center=false)
 {
+	$id = default_focus();
+
 	$pars = access_string($label);
 	if ($center)
 		echo "<br><center>";
-	echo "<a target='_blank' href='$target?$params" . SID . "'$pars[1]>$pars[0]</a>\n";
+	echo "<a target='_blank' id='$id' href='$target?$params' $pars[1]>$pars[0]</a>\n";
 	if ($center)
 		echo "</center>";
 }
@@ -268,6 +322,43 @@ function div_end()
     }
 }
 
+/* Table editor interfaces. Key is editor type
+	0 => url of editor page
+	1 => hotkey code
+	2 => context help
+*/
+$popup_editors = array(
+	'customer' => array('/sales/manage/customers.php?debtor_no=', 
+		113,	_("Customers")),
+	'branch' => array('/sales/manage/customer_branches.php?SelectedBranch=', 
+		114, _("Branches")),
+	'supplier' => array('/purchasing/manage/suppliers.php?supplier_id=', 
+		113, _("Suppliers")),
+	'item' => array('/inventory/manage/items.php?stock_id=', 
+		115, _("Items"))
+);
+/*
+	Bind editors for various selectors.
+	$type - type of editor
+	$input - name of related input field
+	$caller - optional function key code (available values F1-F12: 112-123,
+		true: default)
+*/
+function set_editor($type, $input, $caller=true)
+{
+	global $path_to_root, $Editors, $popup_editors, $Pagehelp;
+
+	$key = $caller===true ? $popup_editors[$type][1] : $caller;
+
+	$Editors[$key] = array( $path_to_root . $popup_editors[$type][0], $input);
+	
+	$help = 'F' . ($key - 111) . ' - ';
+	$help .= $popup_editors[$type][2];
+	$Pagehelp[] = $help;
+}
+//------------------------------------------------------------------------------
+// Procedures below are now obsolete. Preserved for eventual future use.
+
 /*
 	External page call with saving current context.
 	$call - url of external page
@@ -334,7 +425,6 @@ function context_reset()
 {
 	$_SESSION['Context'] = array();
 }
-
 /*
 	Context stack initialization
 */

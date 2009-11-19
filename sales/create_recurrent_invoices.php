@@ -9,8 +9,8 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security = 3;
-$path_to_root="..";
+$page_security = 'SA_SALESINVOICE';
+$path_to_root = "..";
 include_once($path_to_root . "/sales/includes/cart_class.inc");
 include_once($path_to_root . "/includes/session.inc");
 include_once($path_to_root . "/sales/includes/ui/sales_order_ui.inc");
@@ -21,7 +21,7 @@ $js = "";
 if ($use_popup_windows)
 	$js .= get_js_open_window(900, 600);
 
-page(_("Create and Print Recurrent Invoices"), false, false, "", $js);
+page(_($help_context = "Create and Print Recurrent Invoices"), false, false, "", $js);
 
 function set_last_sent($id, $date)
 {
@@ -29,19 +29,21 @@ function set_last_sent($id, $date)
 	$sql = "UPDATE ".TB_PREF."recurrent_invoices SET last_sent='$date' WHERE id=".db_escape($id);
    	db_query($sql,"The recurrent invoice could not be updated or added");
 }	
- 	
+
 function create_recurrent_invoices($customer_id, $branch_id, $order_no, $tmpl_no)
 {
-	$doc = new Cart(30, array($order_no));
+	global $Refs;
+
+	$doc = new Cart(ST_SALESORDER, array($order_no));
 
 	get_customer_details_to_order($doc, $customer_id, $branch_id);
 
-	$doc->trans_type = 30;
+	$doc->trans_type = ST_SALESORDER;
 	$doc->trans_no = 0;
 	$doc->document_date = Today(); // 2006-06-15. Added so Invoices and Deliveries get current day
 
 	$doc->due_date = get_invoice_duedate($doc->customer_id, $doc->document_date);
-	$doc->reference = references::get_next($doc->trans_type);
+	$doc->reference = $Refs->get_next($doc->trans_type);
 	//$doc->Comments='';
 
 	foreach ($doc->line_items as $line_no=>$item) {
@@ -50,8 +52,8 @@ function create_recurrent_invoices($customer_id, $branch_id, $order_no, $tmpl_no
 			$doc->sales_type, $doc->price_factor, $doc->document_date);
 	}	
 	$cart = $doc;
-	$cart->trans_type = 10;
-	$cart->reference = references::get_next($cart->trans_type);
+	$cart->trans_type = ST_SALESINVOICE;
+	$cart->reference = $Refs->get_next($cart->trans_type);
 	$invno = $cart->write(1);
 	set_last_sent($tmpl_no, $cart->document_date);
 	return $invno;
@@ -86,9 +88,11 @@ if (isset($_GET['recurrent']))
 	display_notification(sprintf(_("%s recurrent invoice(s) created, # $min - # $max."), count($invs)));
 	if (count($invs) > 0)
 	{
-		$ar = array('PARAM_0' => $min,	'PARAM_1' => $max, 'PARAM_2' => "", 'PARAM_3' => get_first_bank_account(), 
-			'PARAM_4' => 0,	'PARAM_5' => 0,	'PARAM_6' => "", 'PARAM_7' => 10);
+		$ar = array('PARAM_0' => $min,	'PARAM_1' => $max, 'PARAM_2' => "",
+			'PARAM_3' => 0,	'PARAM_4' => 0,	'PARAM_5' => "", 'PARAM_6' => ST_SALESINVOICE);
 		display_note(print_link(_("&Print Recurrent Invoices # $min - # $max"), 107, $ar), 0, 1);
+		$ar['PARAM_3'] = 1; 
+		display_note(print_link(_("&Email Recurrent Invoices # $min - # $max"), 107, $ar), 0, 1);
 	}
 }	
 

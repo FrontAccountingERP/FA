@@ -9,11 +9,11 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security = 3;
-$path_to_root="..";
+$page_security = 'SA_TAXRATES';
+$path_to_root = "..";
 
 include($path_to_root . "/includes/session.inc");
-page(_("Tax Types"));
+page(_($help_context = "Tax Types"));
 
 include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/taxes/db/tax_types_db.inc");
@@ -102,11 +102,13 @@ if ($Mode == 'Delete')
 if ($Mode == 'RESET')
 {
 	$selected_id = -1;
+	$sav = get_post('show_inactive');
 	unset($_POST);
+	$_POST['show_inactive'] = $sav;
 }
 //-----------------------------------------------------------------------------------
 
-$result = get_all_tax_types();
+$result = get_all_tax_types(check_value('show_inactive'));
 
 start_form();
 
@@ -115,6 +117,7 @@ start_table($table_style);
 
 $th = array(_("Description"), _("Default Rate (%)"),
 	_("Sales GL Account"), _("Purchasing GL Account"), "", "");
+inactive_control_column($th);
 table_header($th);
 
 $k = 0;
@@ -128,20 +131,16 @@ while ($myrow = db_fetch($result))
 	label_cell($myrow["sales_gl_code"] . "&nbsp;" . $myrow["SalesAccountName"]);
 	label_cell($myrow["purchasing_gl_code"] . "&nbsp;" . $myrow["PurchasingAccountName"]);
 
+	inactive_control_cell($myrow["id"], $myrow["inactive"], 'tax_types', 'id');
  	edit_button_cell("Edit".$myrow["id"], _("Edit"));
  	delete_button_cell("Delete".$myrow["id"], _("Delete"));
 
 	end_row();
 }
 
-end_table();
-
-end_form();
-echo '<br>';
-
+inactive_control_row($th);
+end_table(1);
 //-----------------------------------------------------------------------------------
-
-start_form();
 
 start_table($table_style2);
 
@@ -167,7 +166,7 @@ gl_all_accounts_list_row(_("Purchasing GL Account:"), 'purchasing_gl_code', null
 
 end_table(1);
 
-submit_add_or_update_center($selected_id == -1, '', true);
+submit_add_or_update_center($selected_id == -1, '', 'both');
 
 end_form();
 

@@ -9,7 +9,7 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security = 2;
+$page_security = 'SA_GLREP';
 // ----------------------------------------------------------------
 // $ Revision:	2.0 $
 // Creator:	Joe Hunt
@@ -31,7 +31,7 @@ print_GL_transactions();
 
 function print_GL_transactions()
 {
-	global $path_to_root;
+	global $path_to_root, $systypes_array;
 
 	$dim = get_company_pref('use_dimension');
 	$dimension = $dimension2 = 0;
@@ -66,7 +66,7 @@ function print_GL_transactions()
 	$rep = new FrontReport(_('GL Account Transactions'), "GLAccountTransactions", user_pagesize());
 	$dec = user_price_dec();
 
-	$cols = array(0, 70, 90, 140, 210, 280, 340, 400, 450, 510, 570);
+	$cols = array(0, 80, 100, 150, 210, 280, 340, 400, 450, 510, 570);
 	//------------0--1---2---3----4----5----6----7----8----9----10-------
 	//-----------------------dim1-dim2-----------------------------------
 	//-----------------------dim1----------------------------------------
@@ -147,14 +147,14 @@ function print_GL_transactions()
 			{
 				$total += $myrow['amount'];
 
-				$rep->TextCol(0, 1,	systypes::name($myrow["type"]));
+				$rep->TextCol(0, 1, $systypes_array[$myrow["type"]]);
 				$rep->TextCol(1, 2,	$myrow['type_no']);
 				$rep->DateCol(2, 3,	$myrow["tran_date"], true);
 				if ($dim >= 1)
 					$rep->TextCol(3, 4,	get_dimension_string($myrow['dimension_id']));
 				if ($dim > 1)
 					$rep->TextCol(4, 5,	get_dimension_string($myrow['dimension2_id']));
-				$rep->TextCol(5, 6,	payment_person_types::person_name($myrow["person_type_id"],$myrow["person_id"], false));
+				$rep->TextCol(5, 6,	payment_person_name($myrow["person_type_id"],$myrow["person_id"], false));
 				if ($myrow['amount'] > 0.0)
 					$rep->AmountCol(6, 7, abs($myrow['amount']), $dec);
 				else

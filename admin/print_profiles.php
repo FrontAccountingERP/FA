@@ -9,13 +9,13 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security = 15;
-$path_to_root="..";
+$page_security = 'SA_PRINTPROFILE';
+$path_to_root = "..";
 include($path_to_root . "/includes/session.inc");
 include($path_to_root . "/admin/db/printers_db.inc");
 include($path_to_root . "/includes/ui.inc");
 
-page(_("Printing Profiles"));
+page(_($help_context = "Printing Profiles"));
 
 $selected_id = get_post('profile_id','');
 
@@ -160,7 +160,7 @@ foreach(get_reports() as $rep => $descr)
     label_cell($descr == '' ? '???<sup>1)</sup>' : _($descr));
 	$_POST['Prn'.$rep] = isset($prints[$rep]) ? $prints[$rep] : '';
     echo '<td>';
-	printers_list('Prn'.$rep, null, 
+	echo printers_list('Prn'.$rep, null, 
 		$rep == '' ? _('Browser support') : _('Default'));
 	echo '</td>';
 	if ($descr == '') $unkn = 1;
@@ -174,10 +174,10 @@ else
 
 div_start('controls');
 if (get_post('profile_id') == '') {
-	submit_center('submit', _("Add New Profile"), true, '', true);
+	submit_center('submit', _("Add New Profile"), true, '', 'default');
 } else {
 	submit_center_first('submit', _("Update Profile"), 
-	  _('Update printer profile'), true);
+	  _('Update printer profile'), 'default');
 	submit_center_last('delete', _("Delete Profile"), 
 	  _('Delete printer profile (only if not used by any user)'), true);
 }

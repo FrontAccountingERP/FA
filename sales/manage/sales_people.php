@@ -9,11 +9,11 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security = 3;
-$path_to_root="../..";
+$page_security = 'SA_SALESMAN';
+$path_to_root = "../..";
 include($path_to_root . "/includes/session.inc");
 
-page(_("Sales Persons"));
+page(_($help_context = "Sales Persons"));
 
 include($path_to_root . "/includes/ui.inc");
 
@@ -105,16 +105,20 @@ if ($Mode == 'Delete')
 if ($Mode == 'RESET')
 {
 	$selected_id = -1;
+	$sav = get_post('show_inactive');
 	unset($_POST);
+	$_POST['show_inactive'] = $sav;
 }
 //------------------------------------------------------------------------------------------------
 
 $sql = "SELECT * FROM ".TB_PREF."salesman";
+if (!check_value('show_inactive')) $sql .= " WHERE !inactive";
 $result = db_query($sql,"could not get sales persons");
 
 start_form();
 start_table("$table_style width=60%");
 $th = array(_("Name"), _("Phone"), _("Fax"), _("Email"), _("Provision"), _("Break Pt."), _("Provision")." 2", "", "");
+inactive_control_column($th);
 table_header($th);
 
 $k = 0;
@@ -131,20 +135,19 @@ while ($myrow = db_fetch($result))
 	label_cell(percent_format($myrow["provision"])." %", "nowrap align=right");
    	amount_cell($myrow["break_pt"]);
 	label_cell(percent_format($myrow["provision2"])." %", "nowrap align=right");
+	inactive_control_cell($myrow["salesman_code"], $myrow["inactive"],
+		'salesman', 'salesman_code');
  	edit_button_cell("Edit".$myrow["salesman_code"], _("Edit"));
  	delete_button_cell("Delete".$myrow["salesman_code"], _("Delete"));
   	end_row();
 
 } //END WHILE LIST LOOP
 
+inactive_control_row($th);
 end_table();
-end_form();
 echo '<br>';
 
 //------------------------------------------------------------------------------------------------
-
-start_form();
-
 
 $_POST['salesman_email'] = "";
 if ($selected_id != -1) 
@@ -182,7 +185,7 @@ amount_row(_("Break Pt.:"), 'break_pt');
 percent_row(_("Provision")." 2:", 'provision2');
 end_table(1);
 
-submit_add_or_update_center($selected_id == -1, '', true);
+submit_add_or_update_center($selected_id == -1, '', 'both');
 
 end_form();
 

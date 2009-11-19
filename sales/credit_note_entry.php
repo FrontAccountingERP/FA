@@ -13,8 +13,8 @@
 //
 //	Entry/Modify free hand Credit Note
 //
-$page_security = 3;
-$path_to_root="..";
+$page_security = 'SA_SALESCREDIT';
+$path_to_root = "..";
 include_once($path_to_root . "/sales/includes/cart_class.inc");
 include_once($path_to_root . "/includes/session.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
@@ -34,12 +34,12 @@ if ($use_date_picker) {
 }
 
 if(isset($_GET['NewCredit'])) {
-	$_SESSION['page_title'] = _("Customer Credit Note");
+	$_SESSION['page_title'] = _($help_context = "Customer Credit Note");
 	handle_new_credit(0);
 } elseif (isset($_GET['ModifyCredit'])) {
 	$_SESSION['page_title'] = sprintf(_("Modifying Customer Credit Note #%d"), $_GET['ModifyCredit']);
 	handle_new_credit($_GET['ModifyCredit']);
-	$help_page_title = _("Modifying Customer Credit Note");
+	$help_context = "Modifying Customer Credit Note";
 }
 
 page($_SESSION['page_title'],false, false, "", $js);
@@ -51,28 +51,24 @@ check_db_has_stock_items(_("There are no items defined in the system."));
 check_db_has_customer_branches(_("There are no customers, or there are no customers with branches. Please define customers and customer branches."));
 
 //-----------------------------------------------------------------------------
-if ($ret = context_restore()) {
- // return from new customer add
-	copy_from_cn();
-	if(isset($ret['customer_id']))
-		$_POST['customer_id'] = $ret['customer_id'];
-	if(isset($ret['branch_id']))
-		$_POST['branch_id'] = $ret['branch_id'];
-}
-if (isset($_POST['_customer_id_editor'])) {
-	copy_to_cn(); //store context
-	context_call($path_to_root.'/sales/manage/customers.php?debtor_no='.$_POST['customer_id'], 'Items');
+
+if (list_updated('branch_id')) {
+	// when branch is selected via external editor also customer can change
+	$br = get_branch(get_post('branch_id'));
+	$_POST['customer_id'] = $br['debtor_no'];
+	$Ajax->activate('customer_id');
 }
 
 if (isset($_GET['AddedID'])) {
 	$credit_no = $_GET['AddedID'];
-	$trans_type = 11;
+	$trans_type = ST_CUSTCREDIT;
 
 	display_notification_centered(sprintf(_("Credit Note # %d has been processed"),$credit_no));
 
 	display_note(get_customer_trans_view_str($trans_type, $credit_no, _("&View this credit note")), 0, 1);
 
-	display_note(print_document_link($credit_no, _("&Print This Credit Invoice"), true, 11),0, 1);
+	display_note(print_document_link($credit_no, _("&Print This Credit Invoice"), true, ST_CUSTCREDIT),0, 1);
+	display_note(print_document_link($credit_no, _("&Email This Credit Invoice"), true, ST_CUSTCREDIT, false, "", "", 1),0, 1);
 
 	display_note(get_gl_view_str($trans_type, $credit_no, _("View the GL &Journal Entries for this Credit Note")));
 
@@ -136,17 +132,18 @@ function handle_new_credit($trans_no)
 
 function can_process()
 {
+	global $Refs;
 
 	$input_error = 0;
 
 	if ($_SESSION['Items']->count_items() == 0 && (!check_num('ChargeFreightCost',0)))
 		return false;
 	if($_SESSION['Items']->trans_no == 0) {
-	    if (!references::is_valid($_POST['ref'])) {
+	    if (!$Refs->is_valid($_POST['ref'])) {
 		display_error( _("You must enter a reference."));
 		set_focus('ref');
 		$input_error = 1;
-	    } elseif (!is_new_reference($_POST['ref'], 11))	{
+	    } elseif (!is_new_reference($_POST['ref'], ST_CUSTCREDIT))	{
 		display_error( _("The entered reference is already in use."));
 		set_focus('ref');
 		$input_error = 1;
@@ -180,6 +177,7 @@ if (isset($_POST['ProcessCredit']) && can_process()) {
 	}
 	copy_to_cn();
 	$credit_no = $_SESSION['Items']->write($_POST['WriteOffGLCode']);
+	new_doc_date($_SESSION['Items']->document_date);
 	processing_end();
 	meta_forward($_SERVER['PHP_SELF'], "AddedID=$credit_no");
 
@@ -260,7 +258,7 @@ if (!processing_active()) {
 
 //-----------------------------------------------------------------------------
 
-start_form(false, true);
+start_form();
 hidden('cart_id');
 
 $customer_error = display_credit_header($_SESSION['Items']);
@@ -278,7 +276,7 @@ if ($customer_error == "") {
 
 echo "<br><center><table><tr>";
 submit_cells('Update', _("Update"));
-submit_cells('ProcessCredit', _("Process Credit Note"));
+submit_cells('ProcessCredit', _("Process Credit Note"), '', false, 'default');
 echo "</tr></table></center>";
 
 end_form();

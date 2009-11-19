@@ -9,8 +9,8 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security = 1;
-$path_to_root="../..";
+$page_security = 'SA_SUPPTRANSVIEW';
+$path_to_root = "../..";
 
 include_once($path_to_root . "/purchasing/includes/purchasing_db.inc");
 include_once($path_to_root . "/includes/session.inc");
@@ -20,7 +20,7 @@ include_once($path_to_root . "/purchasing/includes/purchasing_ui.inc");
 $js = "";
 if ($use_popup_windows)
 	$js .= get_js_open_window(900, 500);
-page(_("View Supplier Invoice"), true, false, "", $js);
+page(_($help_context = "View Supplier Invoice"), true, false, "", $js);
 
 if (isset($_GET["trans_no"]))
 {
@@ -34,7 +34,7 @@ elseif (isset($_POST["trans_no"]))
 $supp_trans = new supp_trans();
 $supp_trans->is_invoice = true;
 
-read_supp_invoice($trans_no, 20, $supp_trans);
+read_supp_invoice($trans_no, ST_SUPPINVOICE, $supp_trans);
 
 $supplier_curr_code = get_supplier_currency($supp_trans->supplier_id);
 
@@ -53,7 +53,7 @@ label_cells(_("Due Date"), $supp_trans->due_date, "class='tableheader2'");
 if (!is_company_currency($supplier_curr_code))
 	label_cells(_("Currency"), $supplier_curr_code, "class='tableheader2'");
 end_row();
-comments_display_row(20, $trans_no);
+comments_display_row(ST_SUPPINVOICE, $trans_no);
 
 end_table(1);
 
@@ -65,7 +65,7 @@ $display_sub_tot = number_format2($total_gl+$total_grn,user_price_dec());
 start_table("width=95% $table_style");
 label_row(_("Sub Total"), $display_sub_tot, "align=right", "nowrap align=right width=15%");
 
-$tax_items = get_trans_tax_details(20, $trans_no);
+$tax_items = get_trans_tax_details(ST_SUPPINVOICE, $trans_no);
 display_supp_trans_tax_details($tax_items, 1);
 
 $display_total = number_format2($supp_trans->ov_amount + $supp_trans->ov_gst,user_price_dec());
@@ -74,7 +74,7 @@ label_row(_("TOTAL INVOICE"), $display_total, "colspan=1 align=right", "nowrap a
 
 end_table(1);
 
-is_voided_display(20, $trans_no, _("This invoice has been voided."));
+is_voided_display(ST_SUPPINVOICE, $trans_no, _("This invoice has been voided."));
 
 end_page(true);
 

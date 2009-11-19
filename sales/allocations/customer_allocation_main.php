@@ -9,8 +9,8 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$path_to_root="../..";
-$page_security = 3;
+$page_security = 'SA_SALESALLOC';
+$path_to_root = "../..";
 include($path_to_root . "/includes/db_pager.inc");
 include_once($path_to_root . "/includes/session.inc");
 
@@ -19,37 +19,25 @@ include_once($path_to_root . "/sales/includes/sales_db.inc");
 $js = "";
 if ($use_popup_windows)
 	$js .= get_js_open_window(900, 500);
-page(_("Customer Allocations"), false, false, "", $js);
+page(_($help_context = "Customer Allocations"), false, false, "", $js);
 
 //--------------------------------------------------------------------------------
-if ($ret = context_restore()) {
-	if(isset($ret['customer_id']))
-		$_POST['customer_id'] = $ret['customer_id'];
-}
-if (isset($_POST['_customer_id_editor'])) {
-	context_call($path_to_root.'/sales/manage/customers.php?debtor_no='.$_POST['customer_id'] );
-}
 
 start_form();
 	/* show all outstanding receipts and credits to be allocated */
-	/*Clear any previous allocation records */
-	if (isset($_SESSION['alloc']))
-	{
-		unset($_SESSION['alloc']->allocs);
-		unset($_SESSION['alloc']);
-	}
-    if (!isset($_POST['customer_id']))
+
+	if (!isset($_POST['customer_id']))
     	$_POST['customer_id'] = get_global_customer();
 
     echo "<center>" . _("Select a customer: ") . "&nbsp;&nbsp;";
-	customer_list('customer_id', $_POST['customer_id'], true, true);
+	echo customer_list('customer_id', $_POST['customer_id'], true, true);
     echo "<br>";
     check(_("Show Settled Items:"), 'ShowSettled', null, true);
 	echo "</center><br><br>";
 
 	set_global_customer($_POST['customer_id']);
 
-	if (isset($_POST['customer_id']) && ($_POST['customer_id'] == reserved_words::get_all()))
+	if (isset($_POST['customer_id']) && ($_POST['customer_id'] == ALL_TEXT))
 	{
 		unset($_POST['customer_id']);
 	}
@@ -71,7 +59,9 @@ start_form();
 //--------------------------------------------------------------------------------
 function systype_name($dummy, $type)
 {
-	return systypes::name($type);
+	global $systypes_array;
+
+	return $systypes_array[$type];
 }
 
 function trans_view($trans)
@@ -119,10 +109,6 @@ if (isset($_POST['customer_id'])) {
 $table =& new_db_pager('alloc_tbl', $sql, $cols);
 $table->set_marker('check_settled', _("Marked items are settled."), 'settledbg', 'settledfg');
 
-if (get_post('_ShowSettled_update') || get_post('_customer_id_update')) {
-	$table->set_sql($sql);
-	$table->set_columns($cols);
-}
 $table->width = "75%";
 
 display_db_pager($table);

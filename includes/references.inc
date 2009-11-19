@@ -17,8 +17,8 @@ class references
 	function save($type, $id, $reference) 
 	{
 		add_reference($type, $id, $reference);
-		
-		references::save_last($reference, $type);
+		if ($reference != 'auto')
+			$this->save_last($reference, $type);
 	}
 	
 	function get($type, $id) 
@@ -31,6 +31,13 @@ class references
 		delete_reference($type, $id);
 	}	
 	
+	function update($type, $id, $reference) 
+	{
+	    update_reference($type, $id, $reference);
+		if ($reference != 'auto')
+			$this->save_last($reference, $type);
+	}
+	
 	function exists($type, $reference) 
 	{
 		return (find_reference($type, $reference) != null);
@@ -38,7 +45,7 @@ class references
 	
 	function save_last($reference, $type) 
 	{
-		$next = references::increment($reference);
+		$next = $this->increment($reference);
 		save_next_reference($type, $next);
 	}
 	

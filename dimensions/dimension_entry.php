@@ -9,21 +9,22 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security = 10;
-$path_to_root="..";
+$page_security = 'SA_DIMENSION';
+$path_to_root = "..";
 include_once($path_to_root . "/includes/session.inc");
 
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/manufacturing.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
 
+include_once($path_to_root . "/admin/db/tags_db.inc");
 include_once($path_to_root . "/dimensions/includes/dimensions_db.inc");
 include_once($path_to_root . "/dimensions/includes/dimensions_ui.inc");
 
 $js = "";
 if ($use_date_picker)
 	$js .= get_js_date_picker();
-page(_("Dimension Entry"), false, false, "", $js);
+page(_($help_context = "Dimension Entry"), false, false, "", $js);
 
 //---------------------------------------------------------------------------------------
 
@@ -78,6 +79,16 @@ if (isset($_GET['ClosedID']))
 	safe_exit();
 }
 
+//---------------------------------------------------------------------------------------
+
+if (isset($_GET['ReopenedID'])) 
+{
+	$id = $_GET['ReopenedID'];
+
+	display_notification_centered(_("The dimension has been re-opened. ") . " #$id");
+	safe_exit();
+}
+
 //-------------------------------------------------------------------------------------------------
 
 function safe_exit()
@@ -95,19 +106,19 @@ function safe_exit()
 
 function can_process()
 {
-	global $selected_id;
+	global $selected_id, $Refs;
 
 	if ($selected_id == -1) 
 	{
 
-    	if (!references::is_valid($_POST['ref'])) 
+    	if (!$Refs->is_valid($_POST['ref'])) 
     	{
     		display_error( _("The dimension reference must be entered."));
 			set_focus('ref');
     		return false;
     	}
 
-    	if (!is_new_reference($_POST['ref'], systypes::dimension())) 
+    	if (!is_new_reference($_POST['ref'], ST_DIMENSION)) 
     	{
     		display_error(_("The entered reference is already in use."));
 			set_focus('ref');
@@ -143,21 +154,23 @@ function can_process()
 
 if (isset($_POST['ADD_ITEM']) || isset($_POST['UPDATE_ITEM'])) 
 {
-
+	if (!isset($_POST['dimension_tags']))
+		$_POST['dimension_tags'] = array();
+		
 	if (can_process()) 
 	{
 
 		if ($selected_id == -1) 
 		{
-
 			$id = add_dimension($_POST['ref'], $_POST['name'], $_POST['type_'], $_POST['date_'], $_POST['due_date'], $_POST['memo_']);
-
+			add_tag_associations($id, $_POST['dimension_tags']);
 			meta_forward($_SERVER['PHP_SELF'], "AddedID=$id");
 		} 
 		else 
 		{
 
 			update_dimension($selected_id, $_POST['name'], $_POST['type_'], $_POST['date_'], $_POST['due_date'], $_POST['memo_']);
+			update_tag_associations(TAG_DIMENSION, $selected_id, $_POST['dimension_tags']);
 
 			meta_forward($_SERVER['PHP_SELF'], "UpdatedID=$selected_id");
 		}
@@ -184,6 +197,7 @@ if (isset($_POST['delete']))
 
 		// delete
 		delete_dimension($selected_id);
+		delete_tag_associations(TAG_DIMENSION,$selected_id, true);
 		meta_forward($_SERVER['PHP_SELF'], "DeletedID=$selected_id");
 	}
 }
@@ -198,6 +212,13 @@ if (isset($_POST['close']))
 	meta_forward($_SERVER['PHP_SELF'], "ClosedID=$selected_id");
 }
 
+if (isset($_POST['reopen'])) 
+{
+
+	// update the closed flag
+	reopen_dimension($selected_id);
+	meta_forward($_SERVER['PHP_SELF'], "ReopenedID=$selected_id");
+}
 //-------------------------------------------------------------------------------------
 
 start_form();
@@ -215,11 +236,11 @@ if ($selected_id != -1)
 	}
 
 	// if it's a closed dimension can't edit it
-	if ($myrow["closed"] == 1) 
-	{
-		display_error(_("This dimension is closed and cannot be edited."));
-		display_footer_exit();
-	}
+	//if ($myrow["closed"] == 1) 
+	//{
+	//	display_error(_("This dimension is closed and cannot be edited."));
+	//	display_footer_exit();
+	//}
 
 	$_POST['ref'] = $myrow["reference"];
 	$_POST['closed'] = $myrow["closed"];
@@ -227,7 +248,13 @@ if ($selected_id != -1)
 	$_POST['type_'] = $myrow["type_"];
 	$_POST['date_'] = sql2date($myrow["date_"]);
 	$_POST['due_date'] = sql2date($myrow["due_date"]);
-	$_POST['memo_'] = get_comments_string(systypes::dimension(), $selected_id);
+	$_POST['memo_'] = get_comments_string(ST_DIMENSION, $selected_id);
+	
+ 	$tags_result = get_tags_associated_with_record(TAG_DIMENSION, $selected_id);
+ 	$tagids = array();
+ 	while ($tag = db_fetch($tags_result)) 
+ 	 	$tagids[] = $tag['id'];
+ 	$_POST['dimension_tags'] = $tagids;	
 
 	hidden('ref', $_POST['ref']);
 
@@ -237,7 +264,8 @@ if ($selected_id != -1)
 } 
 else 
 {
-	ref_row(_("Dimension Reference:"), 'ref', '', references::get_next(systypes::dimension()));
+	$_POST['dimension_tags'] = array();
+	ref_row(_("Dimension Reference:"), 'ref', '', $Refs->get_next(ST_DIMENSION));
 }
 
 text_row_ex(_("Name") . ":", 'name', 50, 75);
@@ -248,22 +276,30 @@ number_list_row(_("Type"), 'type_', null, 1, $dim);
 
 date_row(_("Start Date") . ":", 'date_');
 
-date_row(_("Date Required By") . ":", 'due_date', '', null, sys_prefs::default_dimension_required_by());
+date_row(_("Date Required By") . ":", 'due_date', '', null, $SysPrefs->default_dimension_required_by());
+
+tag_list_row(_("Tags:"), 'dimension_tags', 5, TAG_DIMENSION, true);
 
 textarea_row(_("Memo:"), 'memo_', null, 40, 5);
 
 end_table(1);
 
+if (isset($_POST['closed']) && $_POST['closed'] == 1)
+	display_note(_("This Dimension is closed."), 0, 0, "class='currentfg'");
+
 if ($selected_id != -1) 
 {
 	echo "<br>";
-	submit_center_first('UPDATE_ITEM', _("Update"), _('Save changes to dimension'), true);
-	submit('close', _("Close This Dimension"), true, _('Mark this dimension as closed'), true);
+	submit_center_first('UPDATE_ITEM', _("Update"), _('Save changes to dimension'), 'default');
+	if ($_POST['closed'] == 1)
+		submit('reopen', _("Re-open This Dimension"), true, _('Mark this dimension as re-opened'), true);
+	else	
+		submit('close', _("Close This Dimension"), true, _('Mark this dimension as closed'), true);
 	submit_center_last('delete', _("Delete This Dimension"), _('Delete unused dimension'), true);
 }
 else
 {
-	submit_center('ADD_ITEM', _("Add"), true, '', true);
+	submit_center('ADD_ITEM', _("Add"), true, '', 'default');
 }
 end_form();
 

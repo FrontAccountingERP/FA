@@ -9,7 +9,7 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security = 2;
+$page_security = 'SA_SUPPTRANSVIEW';
 $path_to_root="../..";
 include($path_to_root . "/includes/db_pager.inc");
 include($path_to_root . "/includes/session.inc");
@@ -21,7 +21,7 @@ if ($use_popup_windows)
 	$js .= get_js_open_window(900, 500);
 if ($use_date_picker)
 	$js .= get_js_date_picker();
-page(_("Search Purchase Orders"), false, false, "", $js);
+page(_($help_context = "Search Purchase Orders"), false, false, "", $js);
 
 if (isset($_GET['order_number']))
 {
@@ -53,7 +53,7 @@ if (get_post('SearchOrders'))
 }
 //---------------------------------------------------------------------------------------------
 
-start_form(false, true);
+start_form();
 
 start_table("class='tablestyle_noborder'");
 start_row();
@@ -66,10 +66,9 @@ locations_list_cells(_("into location:"), 'StockLocation', null, true);
 
 stock_items_list_cells(_("for item:"), 'SelectStockFromList', null, true);
 
-submit_cells('SearchOrders', _("Search"),'',_('Select documents'), true);
+submit_cells('SearchOrders', _("Search"),'',_('Select documents'), 'default');
 end_row();
 end_table();
-end_form();
 //---------------------------------------------------------------------------------------------
 if (isset($_POST['order_number']))
 {
@@ -77,7 +76,7 @@ if (isset($_POST['order_number']))
 }
 
 if (isset($_POST['SelectStockFromList']) &&	($_POST['SelectStockFromList'] != "") &&
-	($_POST['SelectStockFromList'] != reserved_words::get_all()))
+	($_POST['SelectStockFromList'] != ALL_TEXT))
 {
  	$selected_stock_item = $_POST['SelectStockFromList'];
 }
@@ -89,7 +88,7 @@ else
 //---------------------------------------------------------------------------------------------
 function trans_view($trans)
 {
-	return get_trans_view_str(systypes::po(), $trans["order_no"]);
+	return get_trans_view_str(ST_PURCHORDER, $trans["order_no"]);
 }
 
 function edit_link($row) 
@@ -137,7 +136,7 @@ else
 	$sql .= " AND porder.ord_date >= '$data_after'";
 	$sql .= " AND porder.ord_date <= '$date_before'";
 
-	if (isset($_POST['StockLocation']) && $_POST['StockLocation'] != reserved_words::get_all())
+	if (isset($_POST['StockLocation']) && $_POST['StockLocation'] != ALL_TEXT)
 	{
 		$sql .= " AND porder.into_stock_location = ".db_escape($_POST['StockLocation']);
 	}
@@ -170,12 +169,7 @@ if (get_post('StockLocation') != $all_items) {
 
 $table =& new_db_pager('orders_tbl', $sql, $cols);
 
-if (get_post('SearchOrders')) {
-	$table->set_sql($sql);
-	$table->set_columns($cols);
-}
 $table->width = "80%";
-start_form();
 
 display_db_pager($table);
 

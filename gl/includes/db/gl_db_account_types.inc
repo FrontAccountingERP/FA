@@ -14,7 +14,7 @@ function add_account_type($id, $name, $class_id, $parent)
 	$sql = "INSERT INTO ".TB_PREF."chart_types (id, name, class_id, parent)
 		VALUES ($id, ".db_escape($name).", ".db_escape($class_id).", ".db_escape($parent).")";
 
-	db_query($sql, "could not add account type");
+	return db_query($sql);
 }
 
 function update_account_type($id, $name, $class_id, $parent)
@@ -23,12 +23,15 @@ function update_account_type($id, $name, $class_id, $parent)
 		class_id=".db_escape($class_id).", parent=".db_escape($parent)
 		." WHERE id = ".db_escape($id);
 
-	db_query($sql, "could not update account type");
+	return db_query($sql, "could not update account type");
 }
 
-function get_account_types()
+function get_account_types($all=false)
 {
-	$sql = "SELECT * FROM ".TB_PREF."chart_types ORDER BY class_id, id";
+	$sql = "SELECT * FROM ".TB_PREF."chart_types";
+
+	if (!$all) $sql .= " WHERE !inactive";
+	$sql .= " ORDER BY class_id, id";
 
 	return db_query($sql, "could not get account types");
 }
@@ -59,25 +62,27 @@ function delete_account_type($id)
 	db_query($sql, "could not delete account type");
 }
 
-function add_account_class($id, $name, $balance)
+function add_account_class($id, $name, $ctype)
 {
-	$sql = "INSERT INTO ".TB_PREF."chart_class (cid, class_name, balance_sheet)
-		VALUES (".db_escape($id).", ".db_escape($name).", ".db_escape($balance).")";
+	$sql = "INSERT INTO ".TB_PREF."chart_class (cid, class_name, ctype)
+		VALUES (".db_escape($id).", ".db_escape($name).", ".db_escape($ctype).")";
 
-	db_query($sql, "could not add account type");
+	return db_query($sql);
 }
 
-function update_account_class($id, $name, $balance)
+function update_account_class($id, $name, $ctype)
 {
     $sql = "UPDATE ".TB_PREF."chart_class SET class_name=".db_escape($name).",
-		balance_sheet=".db_escape($balance)." WHERE cid = ".db_escape($id);
+		ctype=".db_escape($ctype)." WHERE cid = ".db_escape($id);
 
-	db_query($sql, "could not update account type");
+	return db_query($sql);
 }
 
-function get_account_classes()
+function get_account_classes($all=false)
 {
-	$sql = "SELECT * FROM ".TB_PREF."chart_class ORDER BY cid";
+	$sql = "SELECT * FROM ".TB_PREF."chart_class";
+	if (!$all) $sql .= " WHERE !inactive";
+	$sql .= " ORDER BY cid";
 
 	return db_query($sql, "could not get account types");
 }
@@ -107,6 +112,5 @@ function delete_account_class($id)
 
 	db_query($sql, "could not delete account type");
 }
-
 
 ?>

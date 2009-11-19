@@ -9,11 +9,6 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-
-function get_post($name, $dflt='')
-{
-	return ((!isset($_POST[$name]) || $_POST[$name] === '') ? $dflt : $_POST[$name]);
-}
 //
 // Sets local POST value and adds Value to ajax posting if needed
 //
@@ -52,11 +47,12 @@ function simple_page_mode($numeric_id = true)
 
 	$default = $numeric_id ? -1 : '';
 	$selected_id = get_post('selected_id', $default);
-	foreach (array('ADD_ITEM', 'UPDATE_ITEM', 'RESET') as $m) {
+	foreach (array('ADD_ITEM', 'UPDATE_ITEM', 'RESET', 'CLONE') as $m) {
 		if (isset($_POST[$m])) {
 			$Ajax->activate('_page_body');
-			if ($m == 'RESET') 
+			if ($m == 'RESET'  || $m == 'CLONE') 
 				$selected_id = $default;
+			unset($_POST['_focus']);
 			$Mode = $m; return;
 		}
 	}
@@ -65,11 +61,7 @@ function simple_page_mode($numeric_id = true)
 			if (strpos($p, $m) === 0) {
 //				$selected_id = strtr(substr($p, strlen($m)), array('%2E'=>'.'));
 				unset($_POST['_focus']); // focus on first form entry
-
-//				$selected_id = strtr(html_entity_decode(substr($p, strlen($m)), ENT_QUOTES), 
-				$selected_id = strtr(substr($p, strlen($m)), 
-					array('=2E'=>'.','=20'=>' ','=3D'=>'=','=5B'=>'['));
-//				$selected_id = quoted_printable_decode(substr($p, strlen($m)));
+				$selected_id = quoted_printable_decode(substr($p, strlen($m)));
 				$Ajax->activate('_page_body');
 				$Mode = $m;
 				return;
@@ -108,26 +100,51 @@ function hidden($name, $value=null, $echo=true)
 		return $ret;
 }
 /*
-	Various types of submit button selected by $type:
-	null	- button visible only in fallback mode
-	false	- normal submit button
-	true	- ajax driven submit
-	'process' - ajax button with long timeout 
+	Universal submit form button.
+	$atype - type of submit:
+	 Normal submit:
+		false - normal button; optional icon
+		null  - button visible only in fallback mode; optional icon
+	 Ajax submit:
+		true	  - standard button; optional icon
+		'process' - displays progress bar during call; optional icon
+		'default' - default form submit on Ctrl-Enter press; dflt ICON_OK icon
+		'selector' - ditto with closing current popup editor window
+		'cancel'  - cancel form entry on Escape press; dflt ICON_CANCEL
 */
-function submit($name, $value, $echo=true, $title=false, $type=false, $icon=false)
+function submit($name, $value, $echo=true, $title=false, $atype=false, $icon=false)
 {
 	global $path_to_root;
 
-	default_focus($name);
+	$aspect='';
+	if (!is_bool($atype)) // necessary: switch uses '=='
+	  switch($atype) {
+		case 'process':
+			$aspect = " aspect='process'"; break;
+		case 'selector':
+			$aspect = " aspect='selector' rel = '$value'"; 
+			$value = _("Select");
+			if ($icon===false) $icon=ICON_SUBMIT; break;
+		case 'default':
+			$aspect = " aspect='default'"; 
+			if ($icon===false) $icon=ICON_SUBMIT; break;
+		case 'cancel':
+			$aspect = " aspect='cancel'"; 
+			if ($icon===false) $icon=ICON_ESCAPE; break;
+		case null: 
+			$aspect = fallback_mode() ? 
+				" aspect='fallback'" : " style='display:none;'"; break;
+	 }
+
 	$submit_str = "<button class=\""
-	    .($type ? 'ajaxsubmit' : 'inputsubmit')
+	    .($atype ? 'ajaxsubmit' : 'inputsubmit')
 		."\" type=\"submit\""
-		.($type === null ? (fallback_mode() ? ' aspect="fallback"' : " style='display:none;'" ): 
-			($type === 'process' ? 'aspect="process"' : '') )
+		.$aspect
 	    ." name=\"$name\"  id=\"$name\" value=\"$value\""
 	    .($title ? " title='$title'" : '')
-	    ."><span>$value</span>"
-		.($icon ? "<img src='$path_to_root/themes/".user_theme()."/images/$icon'>" : '')
+	    .">"
+		.($icon ? "<img src='$path_to_root/themes/".user_theme()."/images/$icon' height='12'>" : '')
+		."<span>$value</span>"
 		."</button>\n";
 	if ($echo)
 		echo $submit_str;
@@ -137,9 +154,9 @@ function submit($name, $value, $echo=true, $title=false, $type=false, $icon=fals
 
 function submit_center($name, $value, $echo=true, $title=false, $async=false, $icon=false)
 {
-	echo "<center>";
+	if ($echo) echo "<center>";
 	submit($name, $value, $echo, $title, $async, $icon);
-	echo "</center>";
+	if ($echo) echo "</center>";
 }
 
 function submit_center_first($name, $value, $title=false, $async=false, $icon=false)
@@ -155,39 +172,47 @@ function submit_center_last($name, $value, $title=false, $async=false, $icon=fal
 	submit($name, $value, true, $title, $async, $icon);
 	echo "</center>";
 }
-
-function submit_add_or_update($add=true, $title=false, $async=false)
+/*
+	For following controls:
+	'both' - use both Ctrl-Enter and Escape hotkeys 
+	'cancel' - apply to 'RESET' button
+*/
+function submit_add_or_update($add=true, $title=false, $async=false, $clone=false)
 {
+	$cancel = $async;
+
+	if ($async === 'both') {
+		$async = 'default'; $cancel = 'cancel';
+	} 
+	else if ($async === 'default')
+		$cancel = true;
+	else if ($async === 'cancel')
+		$async = true;
+	
 	if ($add)
 		submit('ADD_ITEM', _("Add new"), true, $title, $async);
 	else {
-		submit('UPDATE_ITEM', _("Update"), true, $title, $async);
-		submit('RESET', _("Cancel"), true, $title, $async);
+		submit('UPDATE_ITEM', _("Update"), true, _('Submit changes'), $async);
+		if ($clone) submit('CLONE', _("Clone"), true, 
+			_('Edit new record with current data'), $async);
+		submit('RESET', _("Cancel"), true, _('Cancel edition'), $cancel);
 	}
 }
 
-function submit_add_or_update_center($add=true, $title=false, $async=false)
+function submit_add_or_update_center($add=true, $title=false, $async=false, $clone=false)
 {
 	echo "<center>";
-	submit_add_or_update($add, $title, $async);
+	submit_add_or_update($add, $title, $async, $clone);
 	echo "</center>";
 }
 
-/*
-function submit_add_or_update_row($add=true)
-{
-	echo "<tr><td colspan=99 align=center>";
-	submit_add_or_update($add);
-	echo "</td></tr>\n";
-}
-*/
-function submit_add_or_update_row($add=true, $right=true, $extra="", $title=false, $async=false)
+function submit_add_or_update_row($add=true, $right=true, $extra="", $title=false, $async=false, $clone = false)
 {
 	echo "<tr>";
 	if ($right)
 		echo "<td>&nbsp;</td>\n";
 	echo "<td $extra>";
-	submit_add_or_update($add, $title, $async);
+	submit_add_or_update($add, $title, $async, $clone);
 	echo "</td></tr>\n";
 }
 
@@ -207,48 +232,60 @@ function submit_row($name, $value, $right=true, $extra="", $title=false, $async=
 	echo "</tr>\n";
 }
 
-function submit_return($name, $value, $title=false, $async=false)
+function submit_return($name, $value, $title=false)
 {
-	if (count($_SESSION['Context'])) {
-		submit($name, $value, true, $title, $async);
+	if (@$_REQUEST['popup']) {
+		submit($name, $value, true, $title, 'selector');
 	}
 }
 
 function submit_js_confirm($name, $msg) {
 	add_js_source(
-		"_validate.$name=function(){ return confirm('$msg');};");
+		"_validate.$name=function(){ return confirm('"
+			. strtr($msg, array("\n"=>'\\n')) . "');};");
 };
 //-----------------------------------------------------------------------------------
 
 function set_icon($icon, $title=false)
 {
 	global $path_to_root;
-	return "<img src='$path_to_root/themes/".user_theme()."/images/$icon' width='14' height='14' border='0'".($title ? " title='$title'" : "")." />\n";	
+	return "<img src='$path_to_root/themes/".user_theme()."/images/$icon' width='12' height='12' border='0'".($title ? " title='$title'" : "")." />\n";	
 }
 
-function button($name, $value, $title=false, $icon=false)
+function button($name, $value, $title=false, $icon=false,  $aspect='')
 {
 	// php silently changes dots,spaces,'[' and characters 128-159
 	// to underscore in POST names, to maintain compatibility with register_globals
+	$rel = '';
+	if ($aspect == 'selector') {
+		$rel = " rel='$value'";
+		$value = _("Select");
+	}
 	if (user_graphic_links() && $icon)
 	{
 		if ($value == _("Delete")) // Helper during implementation
 			$icon = ICON_DELETE;
 		return "<button type='submit' class='editbutton' name='".
 			htmlentities(strtr($name, array('.'=>'=2E',' '=>'=20','='=>'=3D','['=>'=5B'))).
-			"' value='1'" . ($title ? " title='$title'":" title='$value'")." />".set_icon($icon)."</button>\n";
+			"' value='1'" . ($title ? " title='$title'":" title='$value'")
+			. ($aspect ? " aspect='$aspect'" : '')
+			. $rel
+			." />".set_icon($icon)."\n";
 	}
 	else
 		return "<input type='submit' class='editbutton' name='"
 			.htmlentities(strtr($name, array('.'=>'=2E',' '=>'=20','='=>'=3D','['=>'=5B')))
 			."' value='$value'"
-			.($title ? " title='$title'":'')." />\n";
+			.($title ? " title='$title'":'')
+			. ($aspect ? " aspect='$aspect'" : '')
+			. $rel
+			." />\n";
 }
 
-function button_cell($name, $value, $title=false, $icon=false)
+function button_cell($name, $value, $title=false, $icon=false, $aspect='')
 {
-	echo "<td>";
-	echo button($name, $value, $title, $icon);
+	echo "<td align='center'>";
+	echo button($name, $value, $title, $icon, $aspect);
 	echo "</td>";
 }
 
@@ -260,6 +297,11 @@ function delete_button_cell($name, $value, $title=false)
 function edit_button_cell($name, $value, $title=false)
 {
 	button_cell($name, $value, $title, ICON_EDIT);
+}
+
+function select_button_cell($name, $value, $title=false)
+{
+	button_cell($name, $value, $title, ICON_ADD, 'selector');
 }
 //-----------------------------------------------------------------------------------
 
@@ -275,7 +317,7 @@ function checkbox($label, $name, $value=null, $submit_on_change=false, $title=fa
   	global $Ajax;
 
 	$str = '';	
-	default_focus($name);
+
 	if ($label)
 		$str .= $label . "  ";
 	if ($submit_on_change !== false) {
@@ -302,16 +344,17 @@ function check($label, $name, $value=null, $submit_on_change=false, $title=false
 	echo checkbox($label, $name, $value, $submit_on_change, $title);
 }
 
-function check_cells($label, $name, $value, $submit_on_change=false, $title=false)
+function check_cells($label, $name, $value=null, $submit_on_change=false, $title=false,
+	$params='')
 {
 	if ($label != null)
 		echo "<td>$label</td>\n";
-	echo "<td>";
+	echo "<td $params>";
 	echo check(null, $name, $value, $submit_on_change, $title);
 	echo "</td>";
 }
 
-function check_row($label, $name, $value, $submit_on_change=false, $title=false)
+function check_row($label, $name, $value=null, $submit_on_change=false, $title=false)
 {
 	echo "<tr>";
 	echo check_cells($label, $name, $value, $submit_on_change, $title);
@@ -358,6 +401,16 @@ function amount_cell($label, $bold=false, $params="", $id=null)
 		label_cell(price_format($label), "nowrap align=right ".$params, $id);
 }
 
+//JAM  Allow entered unit prices to be fractional
+function unit_amount_cell($label, $bold=false, $params="", $id=null)
+{
+	if ($bold)
+		label_cell("<b>".unit_price_format($label)."</b>", "nowrap align=right ".$params, $id);
+	else
+		label_cell(unit_price_format($label), "nowrap align=right ".$params, $id);
+}
+
+
 function percent_cell($label, $bold=false, $id=null)
 {
 	if ($bold)
@@ -394,18 +447,19 @@ function label_row($label, $value, $params="", $params2="", $leftfill=0, $id='')
 
 //-----------------------------------------------------------------------------------
 
-function text_cells($label, $name, $value=null, $size="", $max="", $title=false, $params="", $post_label="", $disabled="")
+function text_cells($label, $name, $value=null, $size="", $max="", $title=false, 
+	$labparams="", $post_label="", $inparams="")
 {
   	global $Ajax;
 
 	default_focus($name);
 	if ($label != null)
-		label_cell($label, $params);
+		label_cell($label, $labparams);
 	echo "<td>";
 
 	if ($value === null)
 		$value = get_post($name);
-	echo "<input $disabled type=\"text\" name=\"$name\" size=\"$size\" maxlength=\"$max\" value=\"$value\""
+	echo "<input $inparams type=\"text\" name=\"$name\" size=\"$size\" maxlength=\"$max\" value=\"$value\""
 	    .($title ? " title='$title'" : '')
 	    .">";
 
@@ -416,7 +470,8 @@ function text_cells($label, $name, $value=null, $size="", $max="", $title=false,
 	$Ajax->addUpdate($name, $name, $value);
 }
 
-function text_cells_ex($label, $name, $size, $max=null, $init=null, $title=null, $params=null, $post_label=null, $submit_on_change=false)
+function text_cells_ex($label, $name, $size, $max=null, $init=null, $title=null,
+	$labparams=null, $post_label=null, $submit_on_change=false)
 {
   	global $Ajax;
 
@@ -429,7 +484,7 @@ function text_cells_ex($label, $name, $size, $max=null, $init=null, $title=null,
 			$_POST[$name] = "";
 	}
 	if ($label != null)
-		label_cell($label, $params);
+		label_cell($label, $labparams);
 
 	if (!isset($max))
 		$max = $size;
@@ -504,45 +559,63 @@ function link_row_ex($label, $name, $size, $max=null, $title=null, $value=null, 
 }
 
 //-----------------------------------------------------------------------------------
-
-function date_cells($label, $name, $title = null, $init=null, $inc_days=0, 
+//
+//	Since FA 2.2  $init parameter is superseded by $check. 
+//  When $check!=null current date is displayed in red when set to other 
+//	than current date.
+//	
+function date_cells($label, $name, $title = null, $check=null, $inc_days=0, 
 	$inc_months=0, $inc_years=0, $params=null, $submit_on_change=false)
 {
-	global $use_date_picker, $path_to_root;
+	global $use_date_picker, $path_to_root, $Ajax;
+
 	if (!isset($_POST[$name]) || $_POST[$name] == "")
 	{
-		if (!$init)
-		{
-			if ($inc_years == 1001)
-				$_POST[$name] = null;
-			else
-			{
-				$dd = Today();
-				if ($inc_days != 0)
-					$dd = add_days($dd, $inc_days);
-				if ($inc_months != 0)
-					$dd = add_months($dd, $inc_months);
-				if ($inc_years != 0)
-					$dd = add_years($dd, $inc_years);
-				$_POST[$name] = $dd;
-			}
-		}
+		if ($inc_years == 1001)
+			$_POST[$name] = null;
 		else
-			$_POST[$name] = $init;
+		{
+			$dd = Today();
+			if ($inc_days != 0)
+				$dd = add_days($dd, $inc_days);
+			if ($inc_months != 0)
+				$dd = add_months($dd, $inc_months);
+			if ($inc_years != 0)
+				$dd = add_years($dd, $inc_years);
+			$_POST[$name] = $dd;
+		}
 	}
 	if ($use_date_picker)
 		$post_label = "<a tabindex='-1' href=\"javascript:date_picker(document.getElementsByName('$name')[0]);\">"
 		. "	<img src='$path_to_root/themes/default/images/cal.gif' width='16' height='16' border='0' alt='"._('Click Here to Pick up the date')."'></a>\n";
 	else
 		$post_label = "";
-	text_cells_ex($label, $name, 9, 12, $_POST[$name], $title, $params, $post_label, $submit_on_change);
+
+	if ($label != null)
+		label_cell($label, $params);
+
+	echo "<td>";
+	
+	$class = $submit_on_change ? 'class="searchbox"' : '';
+
+	$aspect = $check ? 'aspect="cdate"' : '';
+	if ($check && (get_post($name) != Today()))
+		$aspect .= ' style="color:#FF0000"';
+
+	default_focus($name);
+
+	echo "<input type=\"text\" name=\"$name\" $class $aspect size=\"9\" maxlength=\"12\" value=\"" 
+	 . $_POST[$name]. "\""
+	 .($title ? " title='$title'": '')." > $post_label";
+	echo "</td>\n";
+	$Ajax->addUpdate($name, $name, $_POST[$name]);
 }
 
-function date_row($label, $name, $title=null, $init=null, $inc_days=0, $inc_months=0, 
+function date_row($label, $name, $title=null, $check=null, $inc_days=0, $inc_months=0, 
 	$inc_years=0, $params=null, $submit_on_change=false)
 {
 	echo "<tr>";
-	date_cells($label, $name, $title, $init, $inc_days, $inc_months, 
+	date_cells($label, $name, $title, $check, $inc_days, $inc_months, 
 		$inc_years, $params, $submit_on_change);
 	echo "</tr>\n";
 }
@@ -617,6 +690,15 @@ function amount_cells_ex($label, $name, $size, $max=null, $init=null, $params=nu
 function amount_cells($label, $name, $init=null, $params=null, $post_label=null, $dec=null)
 {
 	amount_cells_ex($label, $name, 15, 15, $init, $params, $post_label, $dec);
+}
+
+//JAM  Allow entered unit prices to be fractional
+function unit_amount_cells($label, $name, $init=null, $params=null, $post_label=null, $dec=null)
+{
+	if (!isset($dec))
+	  	$dec = user_price_dec()+2;
+
+	amount_cells_ex($label, $name, 15, 15, $init, $params, $post_label, $dec+2);
 }
 
 function amount_row($label, $name, $init=null, $params=null, $post_label=null, $dec=null)
@@ -724,6 +806,48 @@ function text_row_with_submit($label, $name, $value, $size, $max, $input_name, $
 }
 */
 //-----------------------------------------------------------------------------------
+//
+//	When show_inactive page option is set 
+//  displays value of inactive field as checkbox cell.
+//  Also updates database record after status change.
+//
+function inactive_control_cell($id, $value, $table, $key)
+{
+	global	$Ajax;
 
+	$name = "Inactive". $id;
+	$value = $value ? 1:0;
 
+	if (check_value('show_inactive')) {
+		if (isset($_POST['LInact'][$id]) && (get_post('_Inactive'.$id.'_update') || 
+			get_post('Update')) && (check_value('Inactive'.$id) != $value)) {
+			update_record_status($id, !$value, $table, $key);
+		}
+		echo '<td align="center">'. checkbox(null, $name, $value, true, '', "align='center'")
+ 			. hidden("LInact[$id]", $value, false) . '</td>';	
+	}
+}
+//
+//	Displays controls for optional display of inactive records
+//
+function inactive_control_row($th) {
+	echo  "<tr><td colspan=".(count($th)).">"
+		."<div style='float:left;'>"
+		. checkbox(null, 'show_inactive', null, true). _("Show also Inactive")
+		."</div><div style='float:right;'>"
+		. submit('Update', _('Update'), false, '', null)
+		."</div></td></tr>";
+}
+//
+//	Inserts additional column header when display of inactive records is on.
+//
+function inactive_control_column(&$th) {
+	global $Ajax;
+	
+	if (check_value('show_inactive')) 
+		array_insert($th, count($th)-2 , _("Inactive"));
+	if (get_post('_show_inactive_update')) {
+		$Ajax->activate('_page_body');
+	}
+}
 ?>

@@ -9,8 +9,8 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$path_to_root="..";
-$page_security = 5;
+$page_security = 'SA_BANKTRANSFER';
+$path_to_root = "..";
 
 include_once($path_to_root . "/includes/session.inc");
 
@@ -25,7 +25,7 @@ if ($use_popup_windows)
 	$js .= get_js_open_window(800, 500);
 if ($use_date_picker)
 	$js .= get_js_date_picker();
-page(_("Transfer between Bank Accounts"), false, false, "", $js);
+page(_($help_context = "Transfer between Bank Accounts"), false, false, "", $js);
 
 check_db_has_bank_accounts(_("There are no bank accounts defined in the system."));
 
@@ -34,7 +34,7 @@ check_db_has_bank_accounts(_("There are no bank accounts defined in the system."
 if (isset($_GET['AddedID'])) 
 {
 	$trans_no = $_GET['AddedID'];
-	$trans_type = systypes::bank_transfer();
+	$trans_type = ST_BANKTRANSFER;
 
    	display_notification_centered( _("Transfer has been entered"));
 
@@ -53,15 +53,16 @@ if (isset($_POST['_DatePaid_changed'])) {
 
 function gl_payment_controls()
 {
-	global $table_style2;
+	global $table_style2, $Refs;
+	
 	$home_currency = get_company_currency();
 
-	start_form(false, true);
+	start_form();
 
-	start_table($table_style2, 5, 7);
-	echo "<tr><td valign=top>"; // outer table
+	start_outer_table($table_style2, 5);
 
-	echo "<table>";
+	table_section(1);
+
 	bank_accounts_list_row(_("From Account:"), 'FromBankAccount', null, true);
 
     bank_accounts_list_row(_("To Account:"), 'ToBankAccount', null, true);
@@ -73,28 +74,25 @@ function gl_payment_controls()
 	if ($from_currency != "" && $to_currency != "" && $from_currency != $to_currency) 
 	{
 		amount_row(_("Amount:"), 'amount', null, null, $from_currency);
+		amount_row(_("Bank Charge:"), 'charge', null, null, $from_currency);
 
 		exchange_rate_display($from_currency, $to_currency, $_POST['DatePaid']);
 	} 
 	else 
 	{
 		amount_row(_("Amount:"), 'amount');
+		amount_row(_("Bank Charge:"), 'charge');
 	}
 
-	echo "</table>";
-	echo "</td><td valign=top class='tableseparator'>"; // outer table
-	echo "<table>";
+	table_section(2);
 
-    ref_row(_("Reference:"), 'ref', '', references::get_next(systypes::bank_transfer()));
+    ref_row(_("Reference:"), 'ref', '', $Refs->get_next(ST_BANKTRANSFER));
 
     textarea_row(_("Memo:"), 'memo_', null, 40,4);
 
-	end_table(1);
+	end_outer_table(1); // outer table
 
-	echo "</td></tr>";
-	end_table(1); // outer table
-
-    submit_center('AddPayment',_("Enter Transfer"), true, '', true);
+    submit_center('AddPayment',_("Enter Transfer"), true, '', 'default');
 
 	end_form();
 }
@@ -103,6 +101,8 @@ function gl_payment_controls()
 
 function check_valid_entries()
 {
+	global $Refs;
+	
 	if (!is_date($_POST['DatePaid'])) 
 	{
 		display_error(_("The entered date is invalid."));
@@ -123,14 +123,25 @@ function check_valid_entries()
 		return false;
 	}
 
-	if (!references::is_valid($_POST['ref'])) 
+	if (isset($_POST['charge']) && !check_num('charge', 0)) 
+	{
+		display_error(_("The entered amount is invalid or less than zero."));
+		set_focus('charge');
+		return false;
+	}
+	if (isset($_POST['charge']) && input_num('charge') > 0 && get_company_pref('bank_charge_act') == '') {
+		display_error(_("The Bank Charge Account has not been set in System and General GL Setup."));
+		set_focus('charge');
+		return false;
+	}
+	if (!$Refs->is_valid($_POST['ref'])) 
 	{
 		display_error(_("You must enter a reference."));
 		set_focus('ref');
 		return false;
 	}
 
-	if (!is_new_reference($_POST['ref'], systypes::bank_transfer())) 
+	if (!is_new_reference($_POST['ref'], ST_BANKTRANSFER)) 
 	{
 		display_error(_("The entered reference is already in use."));
 		set_focus('ref');
@@ -152,7 +163,7 @@ function check_valid_entries()
 function handle_add_deposit()
 {
 	$trans_no = add_bank_transfer($_POST['FromBankAccount'], $_POST['ToBankAccount'],
-		$_POST['DatePaid'], input_num('amount'), $_POST['ref'], $_POST['memo_']);
+		$_POST['DatePaid'], input_num('amount'), $_POST['ref'], $_POST['memo_'], input_num('charge'));
 
 	meta_forward($_SERVER['PHP_SELF'], "AddedID=$trans_no");
 }

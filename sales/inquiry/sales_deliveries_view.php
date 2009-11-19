@@ -9,8 +9,8 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security = 2;
-$path_to_root="../..";
+$page_security = 'SA_SALESINVOICE';
+$path_to_root = "../..";
 include($path_to_root . "/includes/db_pager.inc");
 include($path_to_root . "/includes/session.inc");
 
@@ -26,12 +26,12 @@ if ($use_date_picker)
 if (isset($_GET['OutstandingOnly']) && ($_GET['OutstandingOnly'] == true))
 {
 	$_POST['OutstandingOnly'] = true;
-	page(_("Search Not Invoiced Deliveries"), false, false, "", $js);
+	page(_($help_context = "Search Not Invoiced Deliveries"), false, false, "", $js);
 }
 else
 {
 	$_POST['OutstandingOnly'] = false;
-	page(_("Search All Deliveries"), false, false, "", $js);
+	page(_($help_context = "Search All Deliveries"), false, false, "", $js);
 }
 
 if (isset($_GET['selected_customer']))
@@ -96,7 +96,7 @@ if (get_post('_DeliveryNumber_changed'))
 
 //-----------------------------------------------------------------------------------
 
-start_form(false, false, $_SERVER['PHP_SELF'] ."?OutstandingOnly=" . $_POST['OutstandingOnly'] .SID);
+start_form(false, false, $_SERVER['PHP_SELF'] ."?OutstandingOnly=".$_POST['OutstandingOnly']);
 
 start_table("class='tablestyle_noborder'");
 start_row();
@@ -108,18 +108,17 @@ locations_list_cells(_("Location:"), 'StockLocation', null, true);
 
 stock_items_list_cells(_("Item:"), 'SelectStockFromList', null, true);
 
-submit_cells('SearchOrders', _("Search"),'',_('Select documents'), true);
+submit_cells('SearchOrders', _("Search"),'',_('Select documents'), 'default');
 
 hidden('OutstandingOnly', $_POST['OutstandingOnly']);
 
 end_row();
 
 end_table();
-end_form();
 //---------------------------------------------------------------------------------------------
 
 if (isset($_POST['SelectStockFromList']) && ($_POST['SelectStockFromList'] != "") &&
-	($_POST['SelectStockFromList'] != reserved_words::get_all()))
+	($_POST['SelectStockFromList'] != ALL_TEXT))
 {
  	$selected_stock_item = $_POST['SelectStockFromList'];
 }
@@ -131,7 +130,7 @@ else
 //---------------------------------------------------------------------------------------------
 function trans_view($trans, $trans_no)
 {
-	return get_customer_trans_view_str(13, $trans['trans_no']);
+	return get_customer_trans_view_str(ST_CUSTDELIVERY, $trans['trans_no']);
 }
 
 function batch_checkbox($row)
@@ -153,7 +152,7 @@ function edit_link($row)
 
 function prt_link($row)
 {
-	return print_document_link($row['trans_no'], _("Print"), true, 13, ICON_PRINT);
+	return print_document_link($row['trans_no'], _("Print"), true, ST_CUSTDELIVERY, ICON_PRINT);
 }
 
 function invoice_link($row)
@@ -191,7 +190,7 @@ $sql = "SELECT trans.trans_no,
 		WHERE
 		sorder.order_no = trans.order_ AND
 		trans.debtor_no = debtor.debtor_no
-			AND trans.type = 13
+			AND trans.type = ".ST_CUSTDELIVERY."
 			AND line.debtor_trans_no = trans.trans_no
 			AND line.debtor_trans_type = trans.type
 			AND trans.branch_code = branch.branch_code
@@ -219,7 +218,7 @@ else
 	if (isset($selected_stock_item))
 		$sql .= " AND line.stock_id=".db_escape($selected_stock_item)." ";
 
-	if (isset($_POST['StockLocation']) && $_POST['StockLocation'] != reserved_words::get_all())
+	if (isset($_POST['StockLocation']) && $_POST['StockLocation'] != ALL_TEXT)
 		$sql .= " AND sorder.from_stk_loc = ".db_escape($_POST['StockLocation'])." ";
 
 	$sql .= " GROUP BY trans.trans_no ";
@@ -256,13 +255,7 @@ if (isset($_SESSION['Batch']))
 $table =& new_db_pager('deliveries_tbl', $sql, $cols);
 $table->set_marker('check_overdue', _("Marked items are overdue."));
 
-if (get_post('SearchOrders')) {
-	$table->set_sql($sql);
-	$table->set_columns($cols);
-}
 //$table->width = "92%";
-
-start_form();
 
 display_db_pager($table);
 

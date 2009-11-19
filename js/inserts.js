@@ -11,14 +11,8 @@
 var _focus;
 var _hotkeys = {
 	'alt': false,	// whether is the Alt key pressed
-	'focus': -1	// currently selected indeks of document.links
+	'focus': -1		// currently selected indeks of document.links
 };
-var _validate = {}; // validation functions
-
-function debug(msg) {
-    box = document.getElementById('msgbox')
-	box.innerHTML= box.innerHTML+'<br>'+msg
-}
 
 function save_focus(e) {
   _focus = e.name||e.id;
@@ -64,7 +58,7 @@ function _set_combo_input(e) {
 		  } else if(this.className=='combo2') {
 				this.style.display = 'none';
 				select.style.display = 'inline';
-				setFocus(select.name);
+				setFocus(select);
 		  }
 		  return false;
 		};
@@ -140,37 +134,46 @@ function _set_combo_select(e) {
 			    this.style.display = 'none';
 			    box.style.display = 'inline';
 				box.value='';
-				setFocus(box.name);
+				setFocus(box);
 			    return false;
 			 }
-			if (this.getAttribute('aspect') == 'editable' && key==115) {
-				// F4: call related database editor - not available in non-js fallback mode
-				JsHttpRequest.request('_'+this.name+'_editor', this.form);
-				return false; // prevent default binding
-				// TODO: stopPropagation when needed
-			}
 		}
 }		
+
+var _w;
+
+function callEditor(key) {
+  var el = document.getElementsByName(editors[key][1])[0]; 
+  if(_w) _w.close(); // this is really necessary to have window on top in FF2 :/
+  _w = open(editors[key][0]+el.value+'&popup=1',
+	  "edit","Scrollbars=0,resizable=0,width=800,height=600");
+  if (_w.opener == null)
+	  _w.opener = self;
+  editors._call = key; // store call point for passBack 
+  _w.focus();
+}
+
+function passBack(value) {
+	var o = opener;
+	if(value != false) {
+		var back = o.editors[o.editors._call]; // form input bindings
+		var to = o.document.getElementsByName(back[1])[0];
+		if (to) {
+			if (to[0] != undefined)	
+				to[0].value = value; // ugly hack to set selector to any value
+			to.value = value;
+			// update page after item selection
+			o.JsHttpRequest.request('_'+to.name+'_update', to.form);
+			o.setFocus(to.name);
+		}
+	}
+	close();
+}
 
 /*
  Behaviour definitions
 */
 var inserts = {
-	'form': function(e) {
-  		e.onkeydown = function(ev) { 
-			ev = ev||window.event;
-			key = ev.keyCode||ev.which;
-			if((ev.ctrlKey && key == 13) || key == 27) {
-				_hotkeys.alt = false;
-				ev.cancelBubble = true;
-    			if(ev.stopPropagation) ev.stopPropagation();
-// here ctrl-enter/escape support
-				ev.returnValue = false;
-				return false;
-			} 
-			return true;
-	  	}
-	},
 	'input': function(e) {
 		if(e.onfocus==undefined) {
 			e.onfocus = function() {
@@ -210,10 +213,10 @@ var inserts = {
 	function(e) {
 		    e.onclick = function() {
 			    save_focus(e);
-				if (e.getAttribute('aspect') == 'process')
-					JsHttpRequest.request(this, null, 30000);
-				else
-					JsHttpRequest.request(this);
+					if (e.getAttribute('aspect') == 'process')
+						JsHttpRequest.request(this, null, 30000);
+					else
+						JsHttpRequest.request(this);
 				return false;
 		    }
 	},
@@ -221,8 +224,8 @@ var inserts = {
 		if (e.name) {
 			var func = _validate[e.name];
 			var old = e.onclick;
-			if(func) {
-				if (typeof old != 'function') {
+			if(func) { 
+				if (typeof old != 'function' || old == func) { // prevent multiply binding on ajax update
 					e.onclick = func;
 				} else {
 					e.onclick = function() {
@@ -254,15 +257,13 @@ var inserts = {
 					JsHttpRequest.request('_'+this.name+'_changed', this.form);
 				}
 			}
-/*    	  	e.onkeydown = function(ev) { 
-	  			ev = ev||window.event;
-	  			key = ev.keyCode||ev.which;
-	  			if (key == 13 && (this.value != this.getAttribute('_last_val'))) {
-			  		this.blur();
-  		 	  		return false;
-	  			}
-		  	}
-*/		},
+	},
+	'button[aspect=selector], input[aspect=selector]': function(e) {
+		e.onclick = function() {
+			passBack(this.getAttribute('rel'));
+			return false;
+		}
+	},
 	'select': function(e) {
 		if(e.onfocus==undefined) {
 			e.onfocus = function() {
@@ -273,18 +274,22 @@ var inserts = {
 			_set_combo_select(e);
 		}
 	},
-	'textarea,a': function(e) {
-		if(e.onfocus==undefined) {
-			e.onfocus = function() {
-			    save_focus(this);
-			};
-		}
-	},
 	'a.printlink': 	function(l) {
 		l.onclick = function() {
 		    save_focus(this);
 			JsHttpRequest.request(this);
 			return false;
+		}
+	},
+	'a': function(e) { // traverse menu
+  		e.onkeydown = function(ev) { 
+			ev = ev||window.event;
+			key = ev.keyCode||ev.which;
+			if(key==37 || key==38 || key==39 || key==40) {
+					move_focus(key, e, document.links);
+					ev.returnValue = false;
+					return false;
+			}
 		}
 	},
 	'ul.ajaxtabs':	function(ul) {
@@ -301,11 +306,24 @@ var inserts = {
 		}
 	    }
 	},
-	'#msgbox': function(e) {
+/*	'tr.editrow': function(e) {
+		  	e.onkeydown = function(ev) { 
+	  		ev = ev||window.event;
+	  		key = ev.keyCode||ev.which;
+	  		if(key == 13) {
+			  // Find & click additem/update button
+			  
+	  		} else	if(key == 27) {
+	  		  return false;
+			}
+		}
+
+	},
+*//*	'#msgbox': function(e) {
 	// this is to avoid changing div height after ajax update in IE7
 	  e.style.display = e.innerHTML.length ? 'block' : 'none';
 	}
-/* TODO
+*//* TODO
 	'a.date_picker':  function(e) {
 	    // this un-hides data picker for js enabled browsers
 	    e.href = date_picker(this.getAttribute('rel'));
@@ -315,9 +333,14 @@ var inserts = {
 */
 };
 function stopEv(ev) {
-			ev.returnValue = false;
-			ev.cancelBubble = true;
-			if(ev.preventDefault) ev.preventDefault();
+			if(ev.preventDefault) {
+				ev.preventDefault();
+				ev.stopPropagation();
+			} else {
+				ev.returnValue = false;
+				ev.cancelBubble = true;
+				window.keycode = 0;
+			}
 			return false;
 }
 /*
@@ -328,15 +351,12 @@ function setHotKeys() {
 	document.onkeydown = function(ev) {
 		ev = ev||window.event;
 		key = ev.keyCode||ev.which;
-
-		if (key == 27 && ev.altKey) { // cancel selection
-			_hotkeys.alt = false;
+		if (key == 18 && !ev.ctrlKey) {	// start selection, skip Win AltGr
+			_hotkeys.alt = true;
 			_hotkeys.focus = -1;
 			return stopEv(ev);
-		} 
-		else 
-		if (ev.altKey && !ev.ctrlKey && ((key>47 && key<58) || (key>64 && key<91))) {
-			_hotkeys.alt = true;
+		}
+		else if (_hotkeys.alt && ((key>47 && key<58) || (key>64 && key<91))) {
 			var n = _hotkeys.focus;
 			var l = document.links;
 			var cnt = l.length;
@@ -354,13 +374,43 @@ function setHotKeys() {
 			}
 			return stopEv(ev);
 		}
+		if((ev.ctrlKey && key == 13) || key == 27) {
+			_hotkeys.alt = false; // cancel link selection
+			_hotkeys.focus = -1;
+			ev.cancelBubble = true;
+   			if(ev.stopPropagation) ev.stopPropagation();
+			// activate submit/escape form
+			for(var j=0; j<this.forms.length; j++) {
+				var form = this.forms[j];
+				for (var i=0; i<form.elements.length; i++){
+					var el = form.elements[i];
+					var asp = el.getAttribute('aspect');
+					if (el.className!='editbutton' && asp=='selector' && (key==13 || key==27)) {
+						passBack(key==13 ? el.getAttribute('rel') : false);
+						ev.returnValue = false;
+						return false;
+					}
+					if ((asp=='default' && key==13)||(asp=='cancel' && key==27)) {
+						JsHttpRequest.request(el);
+						ev.returnValue = false;
+						return false;
+					}
+				}
+			}
+			ev.returnValue = false;
+			return false;
+		}
+		if (editors && editors[key]) {
+			callEditor(key);
+			return stopEv(ev); // prevent default binding
+		} 
 		return true;
 	};
 	document.onkeyup = function(ev) {
-		if (_hotkeys.alt==true) {
-			ev = ev||window.event;
-			key = ev.keyCode||ev.which;
+		ev = ev||window.event;
+		key = ev.keyCode||ev.which;
 
+		if (_hotkeys.alt==true) {
 			if (key == 18) {
 				_hotkeys.alt = false;
 				if (_hotkeys.focus>=0) {

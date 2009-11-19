@@ -9,8 +9,8 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security = 2;
-$path_to_root="..";
+$page_security = 'SA_MANUFTRANSVIEW';
+$path_to_root = "..";
 include($path_to_root . "/includes/db_pager.inc");
 include_once($path_to_root . "/includes/session.inc");
 
@@ -23,12 +23,12 @@ if (isset($_GET['outstanding_only']) && ($_GET['outstanding_only'] == true))
 {
 // curently outstanding simply means not closed
 	$outstanding_only = 1;
-	page(_("Search Outstanding Work Orders"), false, false, "", $js);
+	page(_($help_context = "Search Outstanding Work Orders"), false, false, "", $js);
 }
 else
 {
 	$outstanding_only = 0;
-	page(_("Search Work Orders"), false, false, "", $js);
+	page(_($help_context = "Search Work Orders"), false, false, "", $js);
 }
 //-----------------------------------------------------------------------------------
 // Ajax updates
@@ -60,7 +60,7 @@ if (isset($_GET["stock_id"]))
 
 //--------------------------------------------------------------------------------------
 
-start_form(false, false, $_SERVER['PHP_SELF'] ."?outstanding_only=" . $outstanding_only .SID);
+start_form(false, false, $_SERVER['PHP_SELF'] ."?outstanding_only=$outstanding_only");
 
 start_table("class='tablestyle_noborder'");
 start_row();
@@ -75,22 +75,20 @@ if ($outstanding_only==0)
 
 stock_manufactured_items_list_cells(_("for item:"), 'SelectedStockItem', null, true);
 
-submit_cells('SearchOrders', _("Search"),'',_('Select documents'), true);
+submit_cells('SearchOrders', _("Search"),'',_('Select documents'),  'default');
 end_row();
 end_table();
-
-end_form();
 
 //-----------------------------------------------------------------------------
 function check_overdue($row)
 {
 	return (!$row["closed"] 
-		&& date_diff(Today(), sql2date($row["required_by"]), "d") > 0);
+		&& date_diff2(Today(), sql2date($row["required_by"]), "d") > 0);
 }
 
 function view_link($dummy, $order_no)
 {
-	return get_trans_view_str(systypes::work_order(), $order_no);
+	return get_trans_view_str(ST_WORKORDER, $order_no);
 }
 
 function view_stock($row)
@@ -100,7 +98,9 @@ function view_stock($row)
 
 function wo_type_name($dummy, $type)
 {
-	return wo_types::name($type);
+	global $wo_types_array;
+	
+	return $wo_types_array[$type];
 }
 
 function edit_link($row)
@@ -134,7 +134,7 @@ function costs_link($row)
 	return $row["closed"] || !$row["released"] ? '' :
 		pager_link(_('Costs'),
 			"/gl/gl_bank.php?NewPayment=1&PayType=" 
-			.payment_person_types::WorkOrder(). "&PayPerson=" .$row["id"]);
+			.PT_WORKORDER. "&PayPerson=" .$row["id"]);
 */			
 	return $row["closed"] || !$row["released"] ? '' :
 		pager_link(_('Costs'),
@@ -145,7 +145,7 @@ function view_gl_link($row)
 {
 	if ($row['closed'] == 0)
 		return '';
-	return get_gl_view_str(systypes::work_order(), $row['id']);
+	return get_gl_view_str(ST_WORKORDER, $row['id']);
 }
 
 function dec_amount($row, $amount)
@@ -223,12 +223,7 @@ $cols = array(
 $table =& new_db_pager('orders_tbl', $sql, $cols);
 $table->set_marker('check_overdue', _("Marked orders are overdue."));
 
-if (get_post('SearchOrders')) {
-	$table->set_sql($sql);
-	$table->set_columns($cols);
-}
 $table->width = "90%";
-start_form();
 
 display_db_pager($table);
 

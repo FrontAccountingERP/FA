@@ -9,11 +9,11 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security = 11;
-$path_to_root="../..";
+$page_security = 'SA_ITEMCATEGORY';
+$path_to_root = "../..";
 include($path_to_root . "/includes/session.inc");
 
-page(_("Item Categories"));
+page(_($help_context = "Item Categories"));
 
 include_once($path_to_root . "/includes/ui.inc");
 
@@ -39,12 +39,22 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 	{
     	if ($selected_id != -1) 
     	{
-		    update_item_category($selected_id, $_POST['description']);    		
+		    update_item_category($selected_id, $_POST['description'],
+				$_POST['tax_type_id'],	$_POST['sales_account'], 
+				$_POST['cogs_account'], $_POST['inventory_account'], 
+				$_POST['adjustment_account'], $_POST['assembly_account'],
+				$_POST['units'], $_POST['mb_flag'],	$_POST['dim1'],	$_POST['dim2'],
+				check_value('no_sale'));
 			display_notification(_('Selected item category has been updated'));
     	} 
     	else 
     	{
-		    add_item_category($_POST['description']);
+		    add_item_category($_POST['description'],
+				$_POST['tax_type_id'],	$_POST['sales_account'], 
+				$_POST['cogs_account'], $_POST['inventory_account'], 
+				$_POST['adjustment_account'], $_POST['assembly_account'], 
+				$_POST['units'], $_POST['mb_flag'],	$_POST['dim1'],	
+				$_POST['dim2'],	check_value('no_sale'));
 			display_notification(_('New item category has been added'));
     	}
 		$Mode = 'RESET';
@@ -75,16 +85,28 @@ if ($Mode == 'Delete')
 if ($Mode == 'RESET')
 {
 	$selected_id = -1;
+	$sav = get_post('show_inactive');
 	unset($_POST);
+	$_POST['show_inactive'] = $sav;
+}
+if (list_updated('mb_flag')) {
+	$Ajax->activate('details');
 }
 //----------------------------------------------------------------------------------
 
-$sql = "SELECT * FROM ".TB_PREF."stock_category";
+$sql = "SELECT c.*, t.name as tax_name FROM ".TB_PREF."stock_category c, "
+	.TB_PREF."item_tax_types t WHERE c.dflt_tax_type=t.id";
+if (!check_value('show_inactive')) $sql .= " AND !c.inactive";
+
 $result = db_query($sql, "could not get stock categories");
 
 start_form();
-start_table("$table_style width=30%");
-$th = array(_("Name"), "", "");
+start_table("$table_style width=80%");
+$th = array(_("Name"), _("Tax type"), _("Units"), _("Type"), _("Sales Act"),
+_("Inventory Account"), _("COGS Account"), _("Adjustment Account"),
+_("Assembly Account"), "", "");
+inactive_control_column($th);
+
 table_header($th);
 $k = 0; //row colour counter
 
@@ -94,18 +116,26 @@ while ($myrow = db_fetch($result))
 	alt_table_row_color($k);
 
 	label_cell($myrow["description"]);
- 	edit_button_cell("Edit".$myrow[0], _("Edit"));
- 	delete_button_cell("Delete".$myrow[0], _("Delete"));
+	label_cell($myrow["tax_name"]);
+	label_cell($myrow["dflt_units"], "align=center");
+	label_cell($stock_types[$myrow["dflt_mb_flag"]]);
+	label_cell($myrow["dflt_sales_act"], "align=center");
+	label_cell($myrow["dflt_inventory_act"], "align=center");
+	label_cell($myrow["dflt_cogs_act"], "align=center");
+	label_cell($myrow["dflt_adjustment_act"], "align=center");
+	label_cell($myrow["dflt_assembly_act"], "align=center");
+	inactive_control_cell($myrow["category_id"], $myrow["inactive"], 'stock_category', 'category_id');
+ 	edit_button_cell("Edit".$myrow["category_id"], _("Edit"));
+ 	delete_button_cell("Delete".$myrow["category_id"], _("Delete"));
 	end_row();
 }
 
+inactive_control_row($th);
 end_table();
-end_form();
 echo '<br>';
 //----------------------------------------------------------------------------------
 
-start_form();
-
+div_start('details');
 start_table($table_style2);
 
 if ($selected_id != -1) 
@@ -116,16 +146,92 @@ if ($selected_id != -1)
 
 		$_POST['category_id'] = $myrow["category_id"];
 		$_POST['description']  = $myrow["description"];
-	}
+		$_POST['tax_type_id']  = $myrow["dflt_tax_type"];
+		$_POST['sales_account']  = $myrow["dflt_sales_act"];
+		$_POST['cogs_account']  = $myrow["dflt_cogs_act"];
+		$_POST['inventory_account']  = $myrow["dflt_inventory_act"];
+		$_POST['adjustment_account']  = $myrow["dflt_adjustment_act"];
+		$_POST['assembly_account']  = $myrow["dflt_assembly_act"];
+		$_POST['units']  = $myrow["dflt_units"];
+		$_POST['mb_flag']  = $myrow["dflt_mb_flag"];
+		$_POST['dim1']  = $myrow["dflt_dim1"];
+		$_POST['dim2']  = $myrow["dflt_dim2"];
+		$_POST['no_sale']  = $myrow["dflt_no_sale"];
+	} 
 	hidden('selected_id', $selected_id);
 	hidden('category_id');
+} else if ($Mode != 'CLONE') {
+		$_POST['long_description'] = '';
+		$_POST['description'] = '';
+		$_POST['no_sale']  = 0;
+
+		$company_record = get_company_prefs();
+
+    if (get_post('inventory_account') == "")
+    	$_POST['inventory_account'] = $company_record["default_inventory_act"];
+
+    if (get_post('cogs_account') == "")
+    	$_POST['cogs_account'] = $company_record["default_cogs_act"];
+
+	if (get_post('sales_account') == "")
+		$_POST['sales_account'] = $company_record["default_inv_sales_act"];
+
+	if (get_post('adjustment_account') == "")
+		$_POST['adjustment_account'] = $company_record["default_adj_act"];
+
+	if (get_post('assembly_account') == "")
+		$_POST['assembly_account'] = $company_record["default_assembly_act"];
+
 }
 
 text_row(_("Category Name:"), 'description', null, 30, 30);  
 
-end_table(1);
+table_section_title(_("Default values for new items"));
 
-submit_add_or_update_center($selected_id == -1, '', true);
+item_tax_types_list_row(_("Item Tax Type:"), 'tax_type_id', null);
+
+stock_item_types_list_row(_("Item Type:"), 'mb_flag', null, true);
+
+stock_units_list_row(_("Units of Measure:"), 'units', null);
+
+check_row(_("Exclude from sales:"), 'no_sale');
+
+gl_all_accounts_list_row(_("Sales Account:"), 'sales_account', $_POST['sales_account']);
+
+if (is_service($_POST['mb_flag']))
+{
+	gl_all_accounts_list_row(_("C.O.G.S. Account:"), 'cogs_account', $_POST['cogs_account']);
+	hidden('inventory_account', $_POST['inventory_account']);
+	hidden('adjustment_account', $_POST['adjustment_account']);
+}
+else
+{
+	gl_all_accounts_list_row(_("Inventory Account:"), 'inventory_account', $_POST['inventory_account']);
+
+	gl_all_accounts_list_row(_("C.O.G.S. Account:"), 'cogs_account', $_POST['cogs_account']);
+	gl_all_accounts_list_row(_("Inventory Adjustments Account:"), 'adjustment_account', $_POST['adjustment_account']);
+}
+
+if (is_manufactured($_POST['mb_flag']))
+	gl_all_accounts_list_row(_("Item Assembly Costs Account:"), 'assembly_account', $_POST['assembly_account']);
+else
+	hidden('assembly_account', $_POST['assembly_account']);
+
+$dim = get_company_pref('use_dimension');
+if ($dim >= 1)
+{
+	dimensions_list_row(_("Dimension")." 1", 'dim1', null, true, " ", false, 1);
+	if ($dim > 1)
+		dimensions_list_row(_("Dimension")." 2", 'dim2', null, true, " ", false, 2);
+}
+if ($dim < 1)
+	hidden('dim1', 0);
+if ($dim < 2)
+	hidden('dim2', 0);
+
+end_table(1);
+div_end();
+submit_add_or_update_center($selected_id == -1, '', 'both', true);
 
 end_form();
 

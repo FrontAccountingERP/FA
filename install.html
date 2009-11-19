@@ -54,98 +54,19 @@ directory under the web server root directory. </li>
 <li>For example, create a folder called <strong>/account</strong>,
 and extract the archive into this folder. </li>
 </ul>
-<h2>Installation Steps (automatic, recommended)</h2>
-<ol>
-<li>If you have the option to create multiple databases on your
+<h2>Installation Steps</h2><ol><li>If you have the option to create multiple databases on your
 host, create one, fi. <strong>frontacc</strong>, otherwise
 write down the database name for your account. At the same time look up
 the username and password for the database. You will need these
 informations during the wizard install. </li>
-<li>Enter <strong><em>your_url/account/install</em></strong>
-(or whatever directory you entered). This will run the install wizard,
-setup a drill company and populating with initial data. You can later
+<li>Enter <strong><em>your_url/account</em></strong>
+(or whatever directory you entered). This will run the install wizard if this is the first time you run FrontAccounting,
+setup a drill company and optional populating with initial demo data. You can later
 on create your own real company. It is a good idea to get familiar with
 the system before starting your own company.&nbsp; </li>
 <li>After successfully install, remove or rename your install
 directory for safety reasons. You don't need it any more.</li>
-</ol>
-<h2>Installation Steps (manuel, for advanced users, not
-recommended)</h2>
-<p><br />
-</p>
-<ol>
-<li>
-<h3>Creating the Database</h3>
-<ol>
-<li>NOTE : As FrontAccounting is still heavily under
-development, the database structure will ALWAYS change between
-releases, so if you have a database that you created for a previous
-release of FrontAccounting, it WILL NOT WORK after installing a new
-release.&nbsp;<br />Please look in the file <span style="font-weight: bold; font-style: italic;">Update.html</span> for how to handle this. </li>
-<li>We strongly suggest using a GUI to manage your
-database(s) and database users. If you don&#8217;t have any, download <a href="http://www.phpmyadmin.net/"><strong>phpMyAdmin</strong></a>.
-</li>
-<li>Create a database with a name of your choice. The
-default in config_db.php is &#8216;<strong><em>frontacc</em></strong>&#8217;,
-but of course you can select whatever name you desire. </li>
-<li>Populate the database you have created. There are two
-scripts
-are provided to populate the database (both inside the folder /sql) :
-<ol>
-<li><strong><em>en_US-demo.sql</em></strong>.
-This has a minimal amount of demonstration data set up so that
-transactions can be tried to see how the system works. </li>
-<li><strong><em>en_US-new.sql</em></strong>.
-This script has
-only the basic data necessary to start a new company system off. If you
-wish to set up your company on FrontAccounting then this is the script
-to use. </li>
-</ol>
-</li>
-<li>Now that the database is created you will need to set
-up a database user to access this database. DO NOT USE THE USER &#8216;ROOT&#8217;.
-Set up a new user and give that user full privileges over the database
-&#8216;frontacc&#8217;. </li>
-<li>After successfully install, remove or rename your
-install directory <strong><em>your_url/account/install</em></strong>
-(or
-whatever directory you entered) for safety reasons. You don't need it
-any more.</li>
-</ol>
-</li>
-<li>
-<h3>Editing config_db.php</h3>
-<ol>
-<li><strong><em>config_db.php</em></strong>
-contains connection information for the database. These must be set to
-your local settings or you will not be able to access FrontAccounting. </li>
-<li>FrontAccounting allows multiple connections, you can
-enter as many connections as you have separate entities (most people
-will use only one). </li>
-<li><strong>$db_connections</strong> is an
-array of connections &#8211; for each connection : </li>
-<li>&#8220;<strong>name</strong>&#8221; is the name of the
-connection, this is the name that will be displayed to the user </li>
-<li>&#8220;<strong>host</strong>&#8221; is the computer IP
-address or name where the database is. The default is localhost
-assuming that the web server is also the sql server. </li>
-<li>&#8220;<strong>dbuse</strong>r&#8221; is the user name
-under which the database should be accessed. NB, again, do not use the
-user ROOT. A user with appropriate privileges must be set up. </li>
-<li>&#8220;<strong>dbpassword</strong>&#8221; is the
-password for &#8220;dbuser&#8221;. You would have entered this when you created
-&#8220;dbuser&#8221;. </li>
-<li>&#8220;<strong>dbname</strong>&#8221; is the name of
-the database. The provided scripts use the name - frontaccount. </li>
-<li>&#8220;<strong>tbpref</strong>&#8221; is the table
-prefix for
-the tables. If you only have access to one database, you must use table
-prefix to separate the companies. Table prefix is set by a table prefix
-counter inside config_db.php, fi. 0_ for the first company.</li>
-</ol>
-</li>
-</ol>
-<h2>&nbsp;Logging In For the First Time</h2>
+</ol><h2>&nbsp;Logging In For the First Time</h2>
 <ol>
 <li>Pleae ensure that the folder <strong>/company/0</strong>
 on the server is <strong>writable</strong>. </li>
@@ -153,7 +74,7 @@ on the server is <strong>writable</strong>. </li>
 directory where FrontAccounting is installed. </li>
 <li>Enter the user name:&nbsp; '<strong>admin</strong>'
 </li>
-<li>Enter the password: '<strong>password</strong>'
+<li>Enter the password you created during install.
 </li>
 <li>(NB : enter without quotation marks). </li>
 <li>
@@ -170,11 +91,7 @@ with is to manually edit the SQL table "users" to insert a user.</div>
 <li>All the standing configuration data is defined from the
 Setup tab
 and each link should be reviewed to enter appropriate data for the
-business. Setup wizards that guide you through this process has been
-implemented and we strongly recommend you to use this approach, see <strong><em>Installation
-steps (automatic, recommended)</em></strong> . </li>
-</ol>
-<h2>Troubleshooting</h2>
+business. </li></ol><h2>Troubleshooting</h2>
 <ol>
 <li>If FrontAccounting is installed locally, you may have the <strong><em>session
 save path</em></strong> not set correctly. Normally this is

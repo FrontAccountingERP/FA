@@ -9,7 +9,7 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security = 2;
+$page_security = 'SA_SUPPPAYMREP';
 // ----------------------------------------------------------------
 // $ Revision:	2.0 $
 // Creator:	Joe Hunt
@@ -31,8 +31,7 @@ function getTransactions($supplier, $date)
 {
 	$date = date2sql($date);
 
-	$sql = "SELECT ".TB_PREF."sys_types.type_name,
-			".TB_PREF."supp_trans.supp_reference,
+	$sql = "SELECT ".TB_PREF."supp_trans.supp_reference,
 			".TB_PREF."supp_trans.tran_date,
 			".TB_PREF."supp_trans.due_date,
 			".TB_PREF."supp_trans.trans_no,
@@ -40,10 +39,8 @@ function getTransactions($supplier, $date)
 			".TB_PREF."supp_trans.rate,
 			(ABS(".TB_PREF."supp_trans.ov_amount) + ABS(".TB_PREF."supp_trans.ov_gst) - ".TB_PREF."supp_trans.alloc) AS Balance,
 			(ABS(".TB_PREF."supp_trans.ov_amount) + ABS(".TB_PREF."supp_trans.ov_gst) ) AS TranTotal
-		FROM ".TB_PREF."supp_trans,
-			".TB_PREF."sys_types
-		WHERE ".TB_PREF."sys_types.type_id = ".TB_PREF."supp_trans.type
-		AND ".TB_PREF."supp_trans.supplier_id = '" . $supplier . "'
+		FROM ".TB_PREF."supp_trans
+		WHERE ".TB_PREF."supp_trans.supplier_id = '" . $supplier . "'
 		AND ABS(".TB_PREF."supp_trans.ov_amount) + ABS(".TB_PREF."supp_trans.ov_gst) - ".TB_PREF."supp_trans.alloc != 0
 		AND ".TB_PREF."supp_trans.tran_date <='" . $date . "'
 		ORDER BY ".TB_PREF."supp_trans.type,
@@ -56,7 +53,7 @@ function getTransactions($supplier, $date)
 
 function print_payment_report()
 {
-    global $path_to_root;
+    global $path_to_root, $systypes_array;
 
     $to = $_POST['PARAM_0'];
     $fromsupp = $_POST['PARAM_1'];
@@ -68,14 +65,14 @@ function print_payment_report()
 	else
 		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 
-	if ($fromsupp == reserved_words::get_all_numeric())
+	if ($fromsupp == ALL_NUMERIC)
 		$from = _('All');
 	else
 		$from = get_supplier_name($fromsupp);
 
     $dec = user_price_dec();
 
-	if ($currency == reserved_words::get_all())
+	if ($currency == ALL_TEXT)
 	{
 		$convert = true;
 		$currency = _('Balances in Home Currency');
@@ -106,7 +103,7 @@ function print_payment_report()
 
 	$sql = "SELECT supplier_id, supp_name AS name, curr_code, ".TB_PREF."payment_terms.terms FROM ".TB_PREF."suppliers, ".TB_PREF."payment_terms
 		WHERE ";
-	if ($fromsupp != reserved_words::get_all_numeric())
+	if ($fromsupp != ALL_NUMERIC)
 		$sql .= "supplier_id=".db_escape($fromsupp)." AND ";
 	$sql .= "".TB_PREF."suppliers.payment_terms = ".TB_PREF."payment_terms.terms_indicator
 		ORDER BY supp_name";
@@ -134,13 +131,13 @@ function print_payment_report()
 			else
 				$rate = 1.0;
 			$rep->NewLine(1, 2);
-			$rep->TextCol(0, 1,	$trans['type_name']);
+			$rep->TextCol(0, 1, $systypes_array[$trans['type']]);
 			$rep->TextCol(1, 2,	$trans['supp_reference']);
-			if ($trans['type'] == 20)
+			if ($trans['type'] == ST_SUPPINVOICE)
 				$rep->DateCol(2, 3,	$trans['due_date'], true);
 			else	
 				$rep->DateCol(2, 3,	$trans['tran_date'], true);
-			if ($trans['type'] != 20)
+			if ($trans['type'] != ST_SUPPINVOICE)
 			{
 				$trans['TranTotal'] = -$trans['TranTotal'];
 				$trans['Balance'] = -$trans['Balance'];

@@ -9,12 +9,12 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security = 2;
-$path_to_root="../..";
+$page_security = 'SA_WORKORDERANALYTIC';
+$path_to_root = "../..";
 include($path_to_root . "/includes/db_pager.inc");
 include($path_to_root . "/includes/session.inc");
 
-page(_("Inventory Item Where Used Inquiry"));
+page(_($help_context = "Inventory Item Where Used Inquiry"));
 
 include($path_to_root . "/includes/ui.inc");
 
@@ -26,7 +26,7 @@ if (!isset($_POST['stock_id']))
 	$_POST['stock_id'] = get_global_stock_item();
 
 echo "<center>" . _("Select an item to display its parent item(s).") . "&nbsp;";
-stock_items_list('stock_id', $_POST['stock_id'], false, true);
+echo stock_items_list('stock_id', $_POST['stock_id'], false, true);
 echo "<hr></center>";
 
 set_global_stock_item($_POST['stock_id']);
@@ -60,9 +60,6 @@ $sql = "SELECT
 	);
 
 $table =& new_db_pager('usage_table', $sql, $cols);
-
-if (get_post('_stock_id_update'))
-	$table->set_sql($sql);
 
 $table->width = "80%";
 display_db_pager($table);

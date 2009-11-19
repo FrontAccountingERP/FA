@@ -10,7 +10,7 @@
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
 $path_to_root="..";
-$page_security = 8;
+$page_security = 'SA_ATTACHDOCUMENT';
 
 include_once($path_to_root . "/includes/session.inc");
 
@@ -68,7 +68,7 @@ if ($download_id != -1)
 $js = "";
 if ($use_popup_windows)
 	$js .= get_js_open_window(800, 500);
-page(_("Attach Documents"), false, false, "", $js);
+page(_($help_context = "Attach Documents"), false, false, "", $js);
 
 simple_page_mode(true);
 //----------------------------------------------------------------------------------------
@@ -160,7 +160,7 @@ if ($Mode == 'RESET')
 
 function viewing_controls()
 {
-    start_form(false, true);
+    start_form();
 
     start_table("class='tablestyle_noborder'");
 
@@ -256,7 +256,7 @@ end_table(1);
 if (isset($_POST['filterType']))
 	hidden('filterType', $_POST['filterType']);
 
-submit_add_or_update_center($selected_id == -1, '', true);
+submit_add_or_update_center($selected_id == -1, '', 'both');
 
 end_form();
 

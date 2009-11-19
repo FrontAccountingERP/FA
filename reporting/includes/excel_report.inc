@@ -9,8 +9,6 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-/* $Revision$ */
-$page_security = 8;
 include_once($path_to_root . "/reporting/includes/Workbook.php");
 include_once($path_to_root . "/admin/db/company_db.inc");
 include_once($path_to_root . "/config.php");
@@ -57,8 +55,13 @@ class FrontReport extends Spreadsheet_Excel_Writer_Workbook
 
 	function FrontReport($title, $filename, $size = 'A4', $fontsize = 9)
 	{
-		global $comp_path, $dateseps;
-		
+		global $comp_path, $dateseps, $page_security;
+		if (!$_SESSION["wa_current_user"]->can_access_page($page_security))
+		{
+			display_error(_("The security settings on your account do not permit you to print this report"));
+			end_page();
+			exit;
+		}
 		$this->size = $size;
 		$this->title = $title;
 		$this->lineHeight = 12;

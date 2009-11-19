@@ -9,7 +9,7 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security = 2;
+$page_security = 'SA_ITEMSANALYTIC';
 // ----------------------------------------------------------------
 // $ Revision:	2.0 $
 // Creator:	Joe Hunt
@@ -97,14 +97,14 @@ function print_inventory_planning()
 	else
 		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 
-	if ($category == reserved_words::get_all_numeric())
+	if ($category == ALL_NUMERIC)
 		$category = 0;
 	if ($category == 0)
 		$cat = _('All');
 	else
 		$cat = get_category_name($category);
 
-	if ($location == reserved_words::get_all())
+	if ($location == ALL_TEXT)
 		$location = 'all';
 	if ($location == 'all')
 		$loc = _('All');

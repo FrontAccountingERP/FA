@@ -9,7 +9,7 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security = 8;
+$page_security = 'SA_GLANALYTIC';
 $path_to_root="../..";
 
 include_once($path_to_root . "/includes/session.inc");
@@ -24,7 +24,7 @@ $js = "";
 if ($use_date_picker)
 	$js = get_js_date_picker();
 
-page(_("Trial Balance"), false, false, "", $js);
+page(_($help_context = "Trial Balance"), false, false, "", $js);
 
 //----------------------------------------------------------------------------------------------------
 // Ajax updates
@@ -46,7 +46,7 @@ function gl_inquiry_controls()
 	check_cells(_("No zero values"), 'NoZero', null);
 	check_cells(_("Only balances"), 'Balance', null);
 
-	submit_cells('Show',_("Show"),'','', true);
+	submit_cells('Show',_("Show"),'','', 'default');
     end_table();
     end_form();
 }
@@ -94,7 +94,7 @@ function display_trial_balance()
 			continue;
 		alt_table_row_color($k);
 
-		$url = "<a href='$path_to_root/gl/inquiry/gl_account_inquiry.php?" . SID . "TransFromDate=" . $_POST["TransFromDate"] . "&TransToDate=" . $_POST["TransToDate"] . "&account=" . $account["account_code"] . "'>" . $account["account_code"] . "</a>";
+		$url = "<a href='$path_to_root/gl/inquiry/gl_account_inquiry.php?TransFromDate=" . $_POST["TransFromDate"] . "&TransToDate=" . $_POST["TransToDate"] . "&account=" . $account["account_code"] . "'>" . $account["account_code"] . "</a>";
 
 		label_cell($url);
 		label_cell($account["account_name"]);

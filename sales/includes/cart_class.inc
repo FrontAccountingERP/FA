@@ -23,7 +23,7 @@ include_once($path_to_root . "/taxes/tax_calc.inc");
 
 class cart
 {
-	var $trans_type; // invoice, order, delivery note ...
+	var $trans_type; // invoice, order, quotation, delivery note ...
 	var $trans_no = array();// array (num1=>ver1,..) or 0 for new
 	var $so_type = 0;		// for sales order: simple=0 template=1
 	var $cart_id;		// used to detect multi-tab edition conflits
@@ -82,7 +82,10 @@ class cart
 		/*Constructor function initialises a new shopping cart */
 		$this->line_items = array();
 		$this->sales_type = "";
-		$this->trans_type = 30;
+		if ($type == ST_SALESQUOTE)
+			$this->trans_type = $type;
+		else	
+			$this->trans_type = ST_SALESORDER;
 		$this->dimension_id = 0;
 		$this->dimension2_id = 0;
 		$this->read($type, $trans_no, $view );
@@ -94,10 +97,13 @@ class cart
 	//
 	function read($type, $trans_no = 0, $view=false ) {
 
+		global $SysPrefs, $Refs;
+
 		if (!is_array($trans_no)) $trans_no = array($trans_no);
-		if ($trans_no[0]) {
-			if ($type == 30) { // sales order
-				read_sales_order($trans_no[0], $this);
+		if ($trans_no[0]) 
+		{
+			if ($type == ST_SALESORDER || $type == ST_SALESQUOTE) { // sales order || sales quotation
+				read_sales_order($trans_no[0], $this, $type);
 				if ($view) {	// prepare for DN/IV entry
 					for($line_no = 0; $line_no < count($this->line_items); $line_no++) {
 						$line = &$this->line_items[$line_no];
@@ -108,19 +114,19 @@ class cart
 			} else {	// derivative transaction
 					read_sales_trans($type, $trans_no, $this);
 					if ($this->order_no) { // free hand credit notes have no order_no
-						$sodata = get_sales_order_header($this->order_no);
+						$sodata = get_sales_order_header($this->order_no, ST_SALESORDER);
 						$this->cust_ref = $sodata["customer_ref"];
 					// currently currency is hard linked to debtor account
 					//	$this->customer_currency = $sodata["curr_code"];
 						$this->delivery_to = $sodata["deliver_to"];
 						$this->delivery_address = $sodata["delivery_address"];
 					}
-					if (!$view && ($type!=11 || $this->trans_link!=0)) {
+					if (!$view && ($type!=ST_CUSTCREDIT || $this->trans_link!=0)) {
 						$src_type = get_parent_type($type);
 						$src_details = 0;
-						if ($src_type == 30) { // get src data from sales_orders
+						if ($src_type == ST_SALESORDER) { // get src data from sales_orders
 							$this->src_docs = array( $sodata['order_no']=>$sodata['version']);
-							$srcdetails = get_sales_order_details($this->order_no);
+							$srcdetails = get_sales_order_details($this->order_no, ST_SALESORDER);
 						} else {	// get src_data from debtor_trans
 							$this->src_docs = get_customer_trans_version($src_type, get_parent_trans($type,$trans_no[0]));
 							$srcdetails = get_customer_trans_details($src_type,array_keys($this->src_docs));
@@ -143,19 +149,19 @@ class cart
 						}
 					}
 				}
-			} else {
+		} else {
 				$this->trans_type = $type;
 				$this->trans_no = 0;
 				// set new sales document defaults here
-				if (get_global_customer() != reserved_words::get_all())
+				if (get_global_customer() != ALL_TEXT)
 				  $this->customer_id = get_global_customer();
 				else
 				  $this->customer_id = '';
-				$this->document_date = Today();
+				$this->document_date = 	new_doc_date();
 				if (!is_date_in_fiscalyear($this->document_date))
 					$this->document_date = end_fiscalyear();
-				$this->reference = references::get_next($this->trans_type);
-				if ($type != 30) // Added 2.1 Joe Hunt 2008-11-12
+				$this->reference = $Refs->get_next($this->trans_type);
+				if ($type != ST_SALESORDER && $type != ST_SALESQUOTE) // Added 2.1 Joe Hunt 2008-11-12
 				{
 					$dim = get_company_pref('use_dimension');
 					if ($dim > 0)
@@ -176,7 +182,7 @@ class cart
 						}		
 					}		
 				}	
-				if ($type == 10) {
+				if ($type == ST_SALESINVOICE) {
 				  $this->due_date =
 					get_invoice_duedate($this->customer_id, $this->document_date);
 				  $this->pos = user_pos();
@@ -185,7 +191,7 @@ class cart
 				  if (!$pos['cash_sale'] || !$pos['credit_sale']) 
 				  	$this->pos = -1; // mark not editable payment type
 				  else
-					$this->cash = date_diff($this->due_date, Today(), 'd')<2;
+					$this->cash = date_diff2($this->due_date, Today(), 'd')<2;
 				if ($this->cash) {
 					$this->Location = $pos['pos_location'];
 					$this->location_name = $pos['location_name'];
@@ -194,7 +200,7 @@ class cart
 				}
 				} else
 				  $this->due_date =
-					add_days($this->document_date, sys_prefs::default_delivery_required_by());
+					add_days($this->document_date, $SysPrefs->default_delivery_required_by());
 			}
 	}
 
@@ -203,7 +209,7 @@ class cart
 	// Makes parent documents for direct delivery/invoice by recurent call.
 	// $policy - 0 or 1:  writeoff/return for IV, back order/cancel for DN
 	function write($policy=0) {
-		if (count($this->src_docs) == 0 && ($this->trans_type == 10 || $this->trans_type == 13)) {
+		if (count($this->src_docs) == 0 && ($this->trans_type == ST_SALESINVOICE || $this->trans_type == ST_CUSTDELIVERY)) {
 			// this is direct document - first add parent
 			$src = (PHP_VERSION<5) ? $this : clone( $this ); // make local copy of this cart
 			$src->trans_type = get_parent_type($src->trans_type);
@@ -220,7 +226,7 @@ class cart
 			$this->trans_type = $type;
 			$this->src_docs= $this->trans_no;
 			$this->trans_no = 0;
-			$this->order_no= $this->trans_type==13 ? key($src->trans_no) : $src->order_no;
+			$this->order_no= $this->trans_type==ST_CUSTDELIVERY ? key($src->trans_no) : $src->order_no;
 		}
 		$this->reference = @html_entity_decode($this->reference, ENT_QUOTES);
 		$this->Comments = @html_entity_decode($this->Comments, ENT_QUOTES);
@@ -229,13 +235,14 @@ class cart
 			$this->line_items[$lineno]->item_description = @html_entity_decode($line->item_description, ENT_QUOTES);
 		}
 		switch($this->trans_type) {
-			case 10:
+			case ST_SALESINVOICE:
 				return write_sales_invoice($this);
-			case 11:
+			case ST_CUSTCREDIT:
 				return write_credit_note($this, $policy);
-			case 13:
+			case ST_CUSTDELIVERY:
 				return write_sales_delivery($this, $policy);
-			case 30:
+			case ST_SALESORDER:
+			case ST_SALESQUOTE:
 				if ($this->trans_no==0)	// new document
 					return add_sales_order($this);
 				else

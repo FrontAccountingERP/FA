@@ -9,7 +9,7 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security = 2;
+$page_security = 'SA_GLANALYTIC';
 // ----------------------------------------------------------------
 // $ Revision:	2.0 $
 // Creator:	Joe Hunt
@@ -29,10 +29,10 @@ print_annual_expense_breakdown();
 
 //----------------------------------------------------------------------------------------------------
 
-function getPeriods($year, $account, $dimension, $dimension2)
+function getPeriods($row, $account, $dimension, $dimension2)
 {
-	$yr = $year;
-	$mo = 12;
+	$yr = $row['yr'];
+	$mo = $row['mo'];
 	$date13 = date('Y-m-d',mktime(0,0,0,$mo+1,1,$yr));
 	$date12 = date('Y-m-d',mktime(0,0,0,$mo,1,$yr));
 	$date11 = date('Y-m-d',mktime(0,0,0,$mo-1,1,$yr));
@@ -61,10 +61,10 @@ function getPeriods($year, $account, $dimension, $dimension2)
 		   		SUM(CASE WHEN tran_date >= '$date12' AND tran_date < '$date13' THEN amount / 1000 ELSE 0 END) AS per12
     			FROM ".TB_PREF."gl_trans
 				WHERE account='$account'";
-	if ($dimension > 0)
-		$sql .= " AND dimension_id = ".db_escape($dimension);
-	if ($dimension2 > 0)
-		$sql .= " AND dimension2_id = ".db_escape($dimension2);
+	if ($dimension != 0)
+  		$sql .= " AND dimension_id = ".($dimension<0?0:db_escape($dimension));
+	if ($dimension2 != 0)
+  		$sql .= " AND dimension2_id = ".($dimension2<0?0:db_escape($dimension2));
 
 	$result = db_query($sql, "Transactions for account $account could not be calculated");
 
@@ -115,8 +115,13 @@ function print_annual_expense_breakdown()
 	//$yr = date('Y');
 	//$mo = date('m'):
 	// from now
-	$yr = $year;
-	$mo = 12;
+	$sql = "SELECT begin, end, YEAR(end) AS yr, MONTH(end) AS mo FROM ".TB_PREF."fiscal_year WHERE id=".db_escape($year);
+	$result = db_query($sql, "could not get fiscal year");
+	$row = db_fetch($result);
+	
+	$year = sql2date($row['begin'])." - ".sql2date($row['end']);
+	$yr = $row['yr'];
+	$mo = $row['mo'];
 	$da = 1;
 	if ($date_system == 1)
 		list($yr, $mo, $da) = jalali_to_gregorian($yr, $mo, $da);
@@ -211,7 +216,7 @@ function print_annual_expense_breakdown()
 
 		if ($account['account_code'] != null)
 		{
-			$bal = getPeriods($year, $account["account_code"], $dimension, $dimension2);
+			$bal = getPeriods($row, $account["account_code"], $dimension, $dimension2);
 			if (!$bal['per01'] && !$bal['per02'] && !$bal['per03'] && !$bal['per04'] &&
 				!$bal['per05'] && !$bal['per06'] && !$bal['per07'] && !$bal['per08'] &&
 				!$bal['per09'] && !$bal['per10'] && !$bal['per11'] && !$bal['per12'])

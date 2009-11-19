@@ -13,7 +13,7 @@
 	{
 		function wa_header()
 		{
-			page(_("Main Menu"), false, true);
+			page(_($help_context = "Main Menu"), false, true);
 		}
 
 		function wa_footer()
@@ -51,8 +51,8 @@
 				{
 					$acc = access_string($app->name);
 					echo "<a ".($sel_app == $app->id ? "class='selected' " : "").
-					"href='$local_path_to_root/index.php?application=".$app->id.
-						SID ."'$acc[1]>" .$acc[0] . "</a>";
+					"href='$local_path_to_root/index.php?application=".$app->id
+						."'$acc[1]>" .$acc[0] . "</a>";
 				}
 				echo "</div>";
 
@@ -67,30 +67,30 @@
 
 				if ($help_base_url != null)
 				{
-					echo "$himg<a target = '_blank' onclick=" .'"'."javascript:openWindow(this.href,this.target); return false;".'" '. "href='". help_url($title, $sel_app)."'>" . _("Help") . "</a>&nbsp;&nbsp;&nbsp;";
+					echo "$himg<a target = '_blank' onclick=" .'"'."javascript:openWindow(this.href,this.target); return false;".'" '. "href='". help_url()."'>" . _("Help") . "</a>&nbsp;&nbsp;&nbsp;";
 				}
 				echo "$img<a href='$local_path_to_root/access/logout.php?'>" . _("Logout") . "</a>&nbsp;&nbsp;&nbsp;";
 				echo "</td></tr></table>";
 			}
 			echo "</td></tr></table>";
 
-			if ($title && !$no_menu && !$is_index)
+			if ($no_menu)
+				echo "<br>";
+			elseif ($title && !$is_index)
 			{
-				echo "<center><table width='100%'><tr><td width='100%' class='titletext'>$title</td>"
+				echo "<center><table id='title'><tr><td width='100%' class='titletext'>$title</td>"
 				."<td align=right>"
 				.(user_hints() ? "<span id='hints'></span>" : '')
 				."</td>"
 				."</tr></table></center>";
 			}
 
-			if (!$is_index)
-				echo "<br>";
-
 		}
 
 		function menu_footer($no_menu, $is_index)
 		{
-			global $version, $allow_demo_mode, $app_title, $power_url, $power_by, $path_to_root;
+			global $version, $allow_demo_mode, $app_title, $power_url, 
+				$power_by, $path_to_root, $Pagehelp, $Ajax;
 			include_once($path_to_root . "/includes/date_functions.inc");
 
 			if ($no_menu == false)
@@ -100,8 +100,12 @@
 				else
 					echo "<table class=bottomBar2>\n";
 				echo "<tr>";
-				if (isset($_SESSION['wa_current_user']))
+				if (isset($_SESSION['wa_current_user'])) {
+					$phelp = implode('; ', $Pagehelp);
 					echo "<td class=bottomBarCell>" . Today() . " | " . Now() . "</td>\n";
+					$Ajax->addUpdate(true, 'hotkeyshelp', $phelp);
+					echo "<td id='hotkeyshelp'>".$phelp."</td>";
+				}
 				echo "</tr></table>\n";
 			}
 			echo "</td></tr></table></td>\n";
@@ -110,7 +114,7 @@
 			{
 				echo "<table align='center' id='footer'>\n";
 				echo "<tr>\n";
-				echo "<td align='center' class='footer'><a target='_blank' href='$power_url'><font color='#ffffff'>$app_title $version - " . _("Theme:") . " " . user_theme() . "</font></a></td>\n";
+				echo "<td align='center' class='footer'><a target='_blank' href='$power_url'><font color='#ffffff'>$app_title $version - " . _("Theme:") . " " . user_theme() ." - ".show_users_online(). "</font></a></td>\n";
 				echo "</tr>\n";
 				echo "<tr>\n";
 				echo "<td align='center' class='footer'><a target='_blank' href='$power_url'><font color='#ffff00'>$power_by</font></a></td>\n";
@@ -145,15 +149,17 @@
 
 				foreach ($module->lappfunctions as $appfunction)
 				{
-					if ($_SESSION["wa_current_user"]->can_access_page($appfunction->access)) 
+					if ($appfunction->label == "")
+						echo "&nbsp;<br>";
+					elseif ($_SESSION["wa_current_user"]->can_access_page($appfunction->access)) 
 					{
-						if ($appfunction->label == "")
-							echo "&nbsp;<br>";
-						else
-						{
-							$lnk = access_string($appfunction->label);
-							echo "$img<a href='$appfunction->link'$lnk[1]>$lnk[0]</a><br>";
-						}	
+							echo $img.menu_link($appfunction->link, $appfunction->label)."<br>\n";
+					}
+					else 
+					{
+							echo $img.'<span class="inactive">'
+								.access_string($appfunction->label, true)
+								."</span><br>\n";
 					}
 				}
 				echo "</td>";
@@ -162,15 +168,17 @@
 					echo "<td width='50%' class='menu_group_items'>";
 					foreach ($module->rappfunctions as $appfunction)
 					{
-						if ($_SESSION["wa_current_user"]->can_access_page($appfunction->access)) 
+						if ($appfunction->label == "")
+							echo "&nbsp;<br>";
+						elseif ($_SESSION["wa_current_user"]->can_access_page($appfunction->access)) 
 						{
-							if ($appfunction->label == "")
-								echo "&nbsp;<br>";
-							else
-							{
-								$lnk = access_string($appfunction->label);
-								echo "$img<a href='$appfunction->link'$lnk[1]>$lnk[0]</a><br>";
-							}	
+								echo $img.menu_link($appfunction->link, $appfunction->label)."<br>\n";
+						}
+						else 
+						{
+								echo $img.'<span class="inactive">'
+									.access_string($appfunction->label, true)
+									."</span><br>\n";
 						}
 					}
 					echo "</td>";

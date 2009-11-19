@@ -39,6 +39,7 @@ function add_supp_trans($type, $supplier_id, $date_, $due_date, $reference, $sup
 		$err_msg = "Cannot insert a supplier transaction record";
 
 	db_query($sql, $err_msg);
+	add_audit_trail($type, $trans_no, $date_);
 
 	return $trans_no;
 }
@@ -50,7 +51,7 @@ function get_supp_trans($trans_no, $trans_type=-1)
 	$sql = "SELECT ".TB_PREF."supp_trans.*, (".TB_PREF."supp_trans.ov_amount+".TB_PREF."supp_trans.ov_gst+".TB_PREF."supp_trans.ov_discount) AS Total,
 		".TB_PREF."suppliers.supp_name AS supplier_name, ".TB_PREF."suppliers.curr_code AS SupplierCurrCode ";
 
-	if ($trans_type == 22)
+	if ($trans_type == ST_SUPPAYMENT)
 	{
 		// it's a payment so also get the bank account
 		$sql .= ", ".TB_PREF."bank_accounts.bank_name, ".TB_PREF."bank_accounts.bank_account_name, ".TB_PREF."bank_accounts.bank_curr_code,
@@ -60,7 +61,7 @@ function get_supp_trans($trans_no, $trans_type=-1)
 
 	$sql .= " FROM ".TB_PREF."supp_trans, ".TB_PREF."suppliers ";
 
-	if ($trans_type == 22)
+	if ($trans_type == ST_SUPPAYMENT)
 	{
 		// it's a payment so also get the bank account
 		$sql .= ", ".TB_PREF."bank_trans, ".TB_PREF."bank_accounts";
@@ -72,7 +73,7 @@ function get_supp_trans($trans_no, $trans_type=-1)
 	if ($trans_type > 0)
 		$sql .= " AND ".TB_PREF."supp_trans.type=".db_escape($trans_type);
 
-	if ($trans_type == 22)
+	if ($trans_type == ST_SUPPAYMENT)
 	{
 		// it's a payment so also get the bank account
 		$sql .= " AND ".TB_PREF."bank_trans.trans_no =".db_escape($trans_no)."
@@ -127,19 +128,19 @@ function void_supp_trans($type, $type_no)
 
 function post_void_supp_trans($type, $type_no)
 {
-	if ($type == 22)
+	if ($type == ST_SUPPAYMENT)
 	{
 		void_supp_payment($type, $type_no);
 		return true;
 	}
 
-	if ($type == 20 || $type == 21)
+	if ($type == ST_SUPPINVOICE || $type == ST_SUPPCREDIT)
 	{
 	 	void_supp_invoice($type, $type_no);
 		return true;
 	}
 
-	if ($type == 25)
+	if ($type == SUPPRECEIVE)
 	{
 	 	return void_grn($type_no);
 	}

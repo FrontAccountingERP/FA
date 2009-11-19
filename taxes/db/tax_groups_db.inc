@@ -47,9 +47,10 @@ function update_tax_group($id, $name, $tax_shipping, $taxes, $rates)
 	commit_transaction();			
 }
 
-function get_all_tax_groups()
+function get_all_tax_groups($all=false)
 {
 	$sql = "SELECT * FROM ".TB_PREF."tax_groups";
+	if (!$all) $sql .= " WHERE !inactive";
 	
 	return db_query($sql, "could not get all tax group");
 } 

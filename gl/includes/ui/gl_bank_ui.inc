@@ -11,8 +11,8 @@
 ***********************************************************************/
 function display_bank_header(&$order)
 {
-	global $table_style2, $Ajax;
-	$payment = $order->trans_type == systypes::bank_payment();
+	global $table_style2, $Ajax, $Refs;
+	$payment = $order->trans_type == ST_BANKPAYMENT;
 
 	div_start('pmt_header');
 
@@ -22,7 +22,7 @@ function display_bank_header(&$order)
 	
     bank_accounts_list_row( $payment ? _("From:") : _("To:"), 'bank_account', null, true);
 
-    date_row(_("Date:"), 'date_', '', null, 0, 0, 0, null, true);
+    date_row(_("Date:"), 'date_', '', true, 0, 0, 0, null, true);
 
 	table_section(2, "33%");
 
@@ -44,36 +44,39 @@ function display_bank_header(&$order)
 		$_POST['person_id'] = '';
 		$Ajax->activate('pmt_header');
 		$Ajax->activate('code_id');
+		$Ajax->activate('pagehelp');
+		$Ajax->activate('editors');
 	}
     payment_person_types_list_row( $payment ? _("Pay To:"):_("From:"),
 		 'PayType', $_POST['PayType'], true);
     switch ($_POST['PayType'])
     {
-		case payment_person_types::misc() :
+		case PT_MISC :
     		text_row_ex($payment ?_("To the Order of:"):_("Name:"),
 				 'person_id', 40, 50);
     		break;
-		//case payment_person_types::WorkOrder() :
+		//case PT_WORKORDER :
     	//	workorders_list_row(_("Work Order:"), 'person_id', null);
     	//	break;
-		case payment_person_types::supplier() :
-    		supplier_list_row(_("Supplier:"), 'person_id', null, false, true);
+		case PT_SUPPLIER :
+    		supplier_list_row(_("Supplier:"), 'person_id', null, false, true, false, true);
     		break;
-		case payment_person_types::customer() :
-    		customer_list_row(_("Customer:"), 'person_id', null, false, true);
+		case PT_CUSTOMER :
+    		customer_list_row(_("Customer:"), 'person_id', null, false, true, false, true);
 
         	if (db_customer_has_branches($_POST['person_id']))
         	{
-        		customer_branches_list_row(_("Branch:"), $_POST['person_id'], 'PersonDetailID', null, false, true, true);
+        		customer_branches_list_row(_("Branch:"), $_POST['person_id'], 
+					'PersonDetailID', null, false, true, true, true);
         	}
         	else
         	{
-				$_POST['PersonDetailID'] = reserved_words::get_any_numeric();
+				$_POST['PersonDetailID'] = ANY_NUMERIC;
         		hidden('PersonDetailID');
         	}
     		break;
 
-		case payment_person_types::QuickEntry() :
+		case PT_QUICKENTRY :
 			quick_entries_list_row(_("Type").":", 'person_id', null, ($payment ? QE_PAYMENT : QE_DEPOSIT), true);
 			$qid = get_quick_entry(get_post('person_id'));
 			if (list_updated('person_id')) {
@@ -88,7 +91,7 @@ function display_bank_header(&$order)
     	//	break;
     }
 
-	$person_currency = payment_person_types::person_currency($_POST['PayType'], $_POST['person_id']);
+	$person_currency = payment_person_currency($_POST['PayType'], $_POST['person_id']);
 	$bank_currency = get_bank_account_currency($_POST['bank_account']);
 
 	exchange_rate_display($bank_currency, $person_currency, $_POST['date_']);
@@ -96,9 +99,9 @@ function display_bank_header(&$order)
 	table_section(3, "33%");
 
 	if (isset($_GET['NewPayment']))
-    	ref_row(_("Reference:"), 'ref', '', references::get_next(systypes::bank_payment()));
+    	ref_row(_("Reference:"), 'ref', '', $Refs->get_next(ST_BANKPAYMENT));
     else
-    	ref_row(_("Reference:"), 'ref', '', references::get_next(systypes::bank_deposit()));
+    	ref_row(_("Reference:"), 'ref', '', $Refs->get_next(ST_BANKDEPOSIT));
 
 	end_outer_table(1); // outer table
 
@@ -146,7 +149,7 @@ function display_gl_items($title, &$order)
     		if ($dim > 1)
 				label_cell(get_dimension_string($item->dimension2_id, true));
 			//amount_cell(abs($item->amount));
-			if ($order->trans_type == systypes::bank_deposit())
+			if ($order->trans_type == ST_BANKDEPOSIT)
 				amount_cell(-$item->amount);
 			else		
 				amount_cell($item->amount);
@@ -168,12 +171,8 @@ function display_gl_items($title, &$order)
 		gl_edit_item_controls($order, $dim);
 
 	if ($order->count_gl_items())
-	{
-		$total = $order->gl_items_total();
-		if ($order->trans_type == systypes::bank_deposit())
-			$total *= -1;
-		label_row(_("Total"), number_format2($total, user_price_dec()),"colspan=" . $colspan . " align=right", "align=right",3);
-	}
+		label_row(_("Total"), number_format2(abs($order->gl_items_total()), user_price_dec()),"colspan=" . $colspan . " align=right", "align=right",3);
+
     end_table();
 	div_end();
 }
@@ -183,7 +182,7 @@ function display_gl_items($title, &$order)
 function gl_edit_item_controls(&$order, $dim, $Index=null)
 {
 	global $Ajax;
-	$payment = $order->trans_type == systypes::bank_payment();
+	$payment = $order->trans_type == ST_BANKPAYMENT;
 
 	start_row();
 	$id = find_submit('Edit');
@@ -198,9 +197,7 @@ function gl_edit_item_controls(&$order, $dim, $Index=null)
 		$_POST['LineMemo'] = $item->reference;
 
 		hidden('Index', $id);
-		hidden('code_id', $item->code_id);
-		label_cell($_POST['code_id']);
-		label_cell($item->description);
+		echo gl_all_accounts_list('code_id', null, true, true);
 		if ($dim >= 1)
 			dimensions_list_cells(null, 'dimension_id', null, true, " ", false, 1);
 		if ($dim > 1)
@@ -217,23 +214,23 @@ function gl_edit_item_controls(&$order, $dim, $Index=null)
 			    $Ajax->activate('code_id');
 		}
 
-		if ($_POST['PayType'] == payment_person_types::customer())
+		if ($_POST['PayType'] == PT_CUSTOMER)
 		{
 			$acc = get_branch_accounts($_POST['PersonDetailID']);
 			$_POST['code_id'] = $acc['receivables_account'];
 		}
-		elseif ($_POST['PayType'] == payment_person_types::supplier())
+		elseif ($_POST['PayType'] == PT_SUPPLIER)
 		{
 			$acc = get_supplier_accounts($_POST['person_id']);
 			$_POST['code_id'] = $acc['payable_account'];
 		}
-		//elseif ($_POST['PayType'] == payment_person_types::WorkOrder())
+		//elseif ($_POST['PayType'] == PT_WORKORDER)
 		//	$_POST['code_id'] = get_company_pref('default_assembly_act');
 		else {
 			$_POST['code_id'] =
 				get_company_pref($payment ? 'default_cogs_act':'default_inv_sales_act');
 		}
-		gl_all_accounts_list('code_id', null, false, true);
+		echo gl_all_accounts_list('code_id', null, true, true);
 		if ($dim >= 1)
 			dimensions_list_cells(null, 'dimension_id', null, true, " ", false, 1);
 		if ($dim > 1)
@@ -245,7 +242,7 @@ function gl_edit_item_controls(&$order, $dim, $Index=null)
 		hidden('dimension2_id', 0);
 
 	amount_cells(null, 'amount');
-	text_cells_ex(null, 'LineMemo', 35, 50);
+	text_cells_ex(null, 'LineMemo', 35, 255);
 
 	if ($id != -1)
 	{

@@ -9,11 +9,11 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security = 11;
-$path_to_root="../..";
+$page_security = 'SA_SALESKIT';
+$path_to_root = "../..";
 include_once($path_to_root . "/includes/session.inc");
 
-page(_("Sales Kits & Alias Codes"));
+page(_($help_context = "Sales Kits & Alias Codes"));
 
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");
@@ -180,10 +180,10 @@ if ($Mode == 'RESET')
 }
 //--------------------------------------------------------------------------------------------------
 
-start_form(false, true);
+start_form();
 
 echo "<center>" . _("Select a sale kit:") . "&nbsp;";
-sales_kits_list('item_code', null, _('New kit'), true);
+echo sales_kits_list('item_code', null, _('New kit'), true);
 echo "</center><br>";
 $props = get_kit_props($_POST['item_code']);
 
@@ -244,7 +244,7 @@ if (get_post('item_code') == '') {
 	qty_row(_("Quantity:"), 'quantity', number_format2(1, $dec), '', $units, $dec);
 
 	end_table(1);
-	submit_add_or_update_center($selected_id == -1, '', true);
+	submit_add_or_update_center($selected_id == -1, '', 'both');
 	end_form();
 //----------------------------------------------------------------------------------
 

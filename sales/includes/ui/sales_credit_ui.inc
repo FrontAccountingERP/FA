@@ -15,7 +15,7 @@ include_once($path_to_root . "/includes/ui.inc");
 
 function display_credit_header(&$order)
 {
-	global $table_style, $Ajax;
+	global $table_style, $Ajax, $Refs;
 
 	start_outer_table("width=80% $table_style");
 	table_section(1);
@@ -23,10 +23,10 @@ function display_credit_header(&$order)
 	$customer_error = "";
 	$change_prices = 0;
 
-    if (!isset($_POST['customer_id']) && (get_global_customer() != reserved_words::get_all()))
+    if (!isset($_POST['customer_id']) && (get_global_customer() != ALL_TEXT))
     	$_POST['customer_id'] = get_global_customer();
 
-	customer_list_row(_("Customer:"), 'customer_id', null, false, true);
+	customer_list_row(_("Customer:"), 'customer_id', null, false, true, false, true);
 
 	if ($order->customer_id != $_POST['customer_id'] /*|| $order->sales_type != $_POST['sales_type_id']*/)
 	{
@@ -35,7 +35,7 @@ function display_credit_header(&$order)
 	}
 
 	customer_branches_list_row(_("Branch:"), $_POST['customer_id'], 
-	  'branch_id', null, false, true, true);
+	  'branch_id', null, false, true, true, true);
 
 	//if (($_SESSION['credit_items']->order_no == 0) ||
 	//	($order->customer_id != $_POST['customer_id']) ||
@@ -80,7 +80,7 @@ function display_credit_header(&$order)
 	set_global_customer($_POST['customer_id']);
 
 	if (!isset($_POST['ref']))
-		$_POST['ref'] = references::get_next(11);
+		$_POST['ref'] = $Refs->get_next(11);
 	if ($order->trans_no==0)
 	    ref_row(_("Reference").':', 'ref');
 	else
@@ -118,7 +118,7 @@ function display_credit_header(&$order)
 	if (!isset($_POST['OrderDate']) || $_POST['OrderDate'] == "")
 		$_POST['OrderDate'] = $order->document_date;
 
-	date_row(_("Date:"), 'OrderDate', '', null, 0, 0, 0, null, true);
+	date_row(_("Date:"), 'OrderDate', '', $order->trans_no==0, 0, 0, 0, null, true);
 	if (isset($_POST['_OrderDate_changed'])) {
 		if (!is_company_currency($order->customer_currency) 
 			&& (get_base_sales_type()>0)) {
@@ -185,7 +185,7 @@ function display_credit_items($title, &$order)
 	{
 	    alt_table_row_color($k);
 
-    	    label_cell("<a target='_blank' href='$path_to_root/inventory/inquiry/stock_status.php?" . SID . "stock_id=" . $line->stock_id . "'>$line->stock_id</a>");
+    	    label_cell("<a target='_blank' href='$path_to_root/inventory/inquiry/stock_status.php?stock_id=" . $line->stock_id . "'>$line->stock_id</a>");
     	    label_cell($line->item_description, "nowrap");
     	    qty_cell($line->qty_dispatched, false, get_qty_dec($line->stock_id));
     	    label_cell($line->units);
@@ -212,22 +212,25 @@ function display_credit_items($title, &$order)
     if ($id==-1)
         credit_edit_item_controls($order, $k);
 
+	$colspan = 6;
     $display_sub_total = price_format($subtotal);
-    label_row(_("Sub-total"), $display_sub_total, "colspan=6 align=right", "align=right", 2);
+    label_row(_("Sub-total"), $display_sub_total, "colspan=$colspan align=right", "align=right", 2);
 
     if (!isset($_POST['ChargeFreightCost']) OR ($_POST['ChargeFreightCost'] == ""))
-	$_POST['ChargeFreightCost'] = price_format(0);
-
-    amount_cells_ex(_("Shipping"), 'ChargeFreightCost', 8, 8, $_POST['ChargeFreightCost'], "colspan=6 align=right");
+		$_POST['ChargeFreightCost'] = 0;
+	start_row();
+	label_cell(_("Shipping"), "colspan=$colspan align=right");
+	small_amount_cells(null, 'ChargeFreightCost', price_format(get_post('ChargeFreightCost',0)));
     label_cell('', 'colspan=2');
+	end_row();
 
     $taxes = $order->get_taxes($_POST['ChargeFreightCost']);
 
-    $tax_total = display_edit_tax_items($taxes, 6, $order->tax_included);
+    $tax_total = display_edit_tax_items($taxes, $colspan, $order->tax_included, 2);
 
     $display_total = price_format(($subtotal + $_POST['ChargeFreightCost'] + $tax_total));
 
-    label_row(_("Credit Note Total"), $display_total, "colspan=6 align=right","class='amount'", 2);
+    label_row(_("Credit Note Total"), $display_total, "colspan=$colspan align=right","class='amount'", 2);
 
     end_table();
     div_end();

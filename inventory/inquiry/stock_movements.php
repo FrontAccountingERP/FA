@@ -9,8 +9,8 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security = 2;
-$path_to_root="../..";
+$page_security = 'SA_ITEMSTRANSVIEW';
+$path_to_root = "../..";
 include_once($path_to_root . "/includes/session.inc");
 
 include_once($path_to_root . "/includes/date_functions.inc");
@@ -24,7 +24,7 @@ if ($use_popup_windows)
 if ($use_date_picker)
 	$js .= get_js_date_picker();
 
-page(_("Inventory Item Movement"), false, false, "", $js);
+page(_($help_context = "Inventory Item Movement"), false, false, "", $js);
 //------------------------------------------------------------------------------------------------
 
 check_db_has_stock_items(_("There are no items defined in the system."));
@@ -39,7 +39,7 @@ if (isset($_GET['stock_id']))
 	$_POST['stock_id'] = $_GET['stock_id'];
 }
 
-start_form(false, true);
+start_form();
 
 if (!isset($_POST['stock_id']))
 	$_POST['stock_id'] = get_global_stock_item();
@@ -53,7 +53,7 @@ locations_list_cells(_("From Location:"), 'StockLocation', null);
 date_cells(_("From:"), 'AfterDate', '', null, -30);
 date_cells(_("To:"), 'BeforeDate');
 
-submit_cells('ShowMoves',_("Show Movements"),'',_('Refresh Inquiry'), true);
+submit_cells('ShowMoves',_("Show Movements"),'',_('Refresh Inquiry'), 'default');
 end_table();
 end_form();
 
@@ -112,7 +112,7 @@ while ($myrow = db_fetch($result))
 
 	$trandate = sql2date($myrow["tran_date"]);
 
-	$type_name = systypes::name($myrow["type"]);
+	$type_name = $systypes_array[$myrow["type"]];
 
 	if ($myrow["qty"] > 0)
 	{
@@ -136,7 +136,7 @@ while ($myrow = db_fetch($result))
 	$person = $myrow["person_id"];
 	$gl_posting = "";
 
-	if (($myrow["type"] == 13) || ($myrow["type"] == 11))
+	if (($myrow["type"] == ST_CUSTDELIVERY) || ($myrow["type"] == ST_CUSTCREDIT))
 	{
 		$cust_row = get_customer_details_from_trans($myrow["type"], $myrow["trans_no"]);
 
@@ -144,7 +144,7 @@ while ($myrow = db_fetch($result))
 			$person = $cust_row['name'] . " (" . $cust_row['br_name'] . ")";
 
 	}
-	elseif ($myrow["type"] == 25 || $myrow['type'] == 21)
+	elseif ($myrow["type"] == ST_SUPPRECEIVE || $myrow['type'] == ST_SUPPCREDIT)
 	{
 		// get the supplier name
 		$sql = "SELECT supp_name FROM ".TB_PREF."suppliers WHERE supplier_id = '" . $myrow["person_id"] . "'";
@@ -155,14 +155,14 @@ while ($myrow = db_fetch($result))
 		if (strlen($supp_row['supp_name']) > 0)
 			$person = $supp_row['supp_name'];
 	}
-	elseif ($myrow["type"] == systypes::location_transfer() || $myrow["type"] == systypes::inventory_adjustment())
+	elseif ($myrow["type"] == ST_LOCTRANSFER || $myrow["type"] == ST_INVADJUST)
 	{
 		// get the adjustment type
 		$movement_type = get_movement_type($myrow["person_id"]);
 		$person = $movement_type["name"];
 	}
-	elseif ($myrow["type"]==systypes::work_order() || $myrow["type"] == 28  ||
-		$myrow["type"] == 29)
+	elseif ($myrow["type"]==ST_WORKORDER || $myrow["type"] == ST_MANUISSUE  ||
+		$myrow["type"] == ST_MANURECEIVE)
 	{
 		$person = "";
 	}

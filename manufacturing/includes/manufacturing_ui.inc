@@ -70,7 +70,7 @@ function display_bom($item_check)
 
 function display_wo_requirements($woid, $quantity, $show_qoh=false, $date=null)
 {
-	global $table_style;
+	global $table_style, $SysPrefs;
 
     $result = get_wo_requirements($woid);
 
@@ -106,7 +106,7 @@ function display_wo_requirements($woid, $quantity, $show_qoh=false, $date=null)
 				$qoh = get_qoh_on_date($myrow["stock_id"], $myrow["loc_code"], $date);
 
 			if ($show_qoh && ($myrow["units_req"] * $quantity > $qoh) &&
-				!sys_prefs::allow_negative_stock())
+				!$SysPrefs->allow_negative_stock())
 			{
 				// oops, we don't have enough of one of the component items
 				start_row("class='stockmankobg'");
@@ -226,7 +226,7 @@ function display_wo_payments($woid)
 {
 	global $path_to_root, $table_style, $wo_cost_types;
 
-    //$result = get_bank_trans(null, null, payment_person_types::WorkOrder(), $woid);
+    //$result = get_bank_trans(null, null, PT_WORKORDER, $woid);
     $result = get_gl_wo_cost_trans($woid);
 
     if (db_num_rows($result) == 0)
@@ -247,7 +247,7 @@ function display_wo_payments($woid)
 
 			alt_table_row_color($k);
 
-        	label_cell(get_gl_view_str(systypes::work_order(), $myrow["type_no"], $myrow["type_no"]));
+        	label_cell(get_gl_view_str(ST_WORKORDER, $myrow["type_no"], $myrow["type_no"]));
         	label_cell($wo_cost_types[$myrow['person_id']]);
         	$date = sql2date($myrow["tran_date"]);
         	label_cell($date);
@@ -263,7 +263,7 @@ function display_wo_payments($woid)
 
 function display_wo_details($woid, $suppress_view_link=false)
 {
-	global $table_style;
+	global $table_style, $wo_types_array;
 
 	$myrow = get_work_order($woid);
 
@@ -288,9 +288,9 @@ function display_wo_details($woid, $suppress_view_link=false)
 	if ($suppress_view_link)
 		label_cell($myrow["id"]);
 	else
-		label_cell(get_trans_view_str(systypes::work_order(), $myrow["id"]));
+		label_cell(get_trans_view_str(ST_WORKORDER, $myrow["id"]));
 	label_cell($myrow["wo_ref"]);
-	label_cell(wo_types::name($myrow["type"]));
+	label_cell($wo_types_array[$myrow["type"]]);
 	view_stock_status_cell($myrow["stock_id"], $myrow["StockItemName"]);
 	label_cell($myrow["location_name"]);
 	label_cell(sql2date($myrow["date_"]));
@@ -305,7 +305,7 @@ function display_wo_details($woid, $suppress_view_link=false)
 	}
 	end_row();
 
-	comments_display_row(systypes::work_order(), $woid);
+	comments_display_row(ST_WORKORDER, $woid);
 
 	end_table();
 
@@ -319,7 +319,7 @@ function display_wo_details($woid, $suppress_view_link=false)
 
 function display_wo_details_quick($woid, $suppress_view_link=false)
 {
-	global $table_style;
+	global $table_style, $wo_types_array;
 
 	$myrow = get_work_order($woid);
 
@@ -339,9 +339,9 @@ function display_wo_details_quick($woid, $suppress_view_link=false)
 	if ($suppress_view_link)
 		label_cell($myrow["id"]);
 	else
-		label_cell(get_trans_view_str(systypes::work_order(), $myrow["id"]));
+		label_cell(get_trans_view_str(ST_WORKORDER, $myrow["id"]));
 	label_cell($myrow["wo_ref"]);
-	label_cell(wo_types::name($myrow["type"]));
+	label_cell($wo_types_array[$myrow["type"]]);
 	view_stock_status_cell($myrow["stock_id"], $myrow["StockItemName"]);
 	label_cell($myrow["location_name"]);
 	label_cell(sql2date($myrow["date_"]));
@@ -350,7 +350,7 @@ function display_wo_details_quick($woid, $suppress_view_link=false)
 
 	end_row();
 
-	comments_display_row(systypes::work_order(), $woid);
+	comments_display_row(ST_WORKORDER, $woid);
 
 	end_table();
 

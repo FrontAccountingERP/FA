@@ -9,15 +9,15 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security = 10;
-$path_to_root="../..";
+$page_security = 'SA_DIMTRANSVIEW';
+$path_to_root = "../..";
 
 include_once($path_to_root . "/includes/session.inc");
 
 $js = "";
 if ($use_date_picker)
 	$js .= get_js_date_picker();
-page(_("View Dimension"), true, false, "", $js);
+page(_($help_context = "View Dimension"), true, false, "", $js);
 
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
@@ -38,7 +38,7 @@ if (isset($_POST['Show']))
 }
 
 
-display_heading(systypes::name(systypes::dimension()) . " # " . $id);
+display_heading($systypes_array[ST_DIMENSION] . " # " . $id);
 
 br(1);
 $myrow = get_dimension($id);
@@ -63,7 +63,7 @@ label_cell(sql2date($myrow["date_"]));
 label_cell(sql2date($myrow["due_date"]));
 end_row();
 
-comments_display_row(systypes::dimension(), $id);
+comments_display_row(ST_DIMENSION, $id);
 
 end_table();
 
@@ -83,7 +83,7 @@ if (!isset($_POST['TransToDate']))
 	$_POST['TransToDate'] = Today();
 date_cells(_("from:"), 'TransFromDate');
 date_cells(_("to:"), 'TransToDate');
-submit_cells('Show',_("Show"));
+submit_cells('Show',_("Show"), '', false, 'default');
 
 end_row();
 

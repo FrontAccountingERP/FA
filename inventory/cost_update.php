@@ -9,8 +9,8 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security = 2;
-$path_to_root="..";
+$page_security = 'SA_STANDARDCOST';
+$path_to_root = "..";
 include_once($path_to_root . "/includes/session.inc");
 
 include_once($path_to_root . "/includes/date_functions.inc");
@@ -23,7 +23,7 @@ include_once($path_to_root . "/inventory/includes/inventory_db.inc");
 $js = "";
 if ($use_popup_windows)
 	$js .= get_js_open_window(900, 500);
-page(_("Inventory Item Cost Update"), false, false, "", $js);
+page(_($help_context = "Inventory Item Cost Update"), false, false, "", $js);
 
 //--------------------------------------------------------------------------------------
 
@@ -68,7 +68,7 @@ if (isset($_POST['UpdateData']))
 
         if ($update_no > 0)
         {
-    		display_note(get_gl_view_str(systypes::cost_update(), $update_no, _("View the GL Journal Entries for this Cost Update")), 0, 1);
+    		display_note(get_gl_view_str(ST_COSTUPDATE, $update_no, _("View the GL Journal Entries for this Cost Update")), 0, 1);
         }
    	}
 }
@@ -77,13 +77,13 @@ if (list_updated('stock_id'))
 	$Ajax->activate('cost_table');
 //-----------------------------------------------------------------------------------------
 
-start_form(false, true);
+start_form();
 
 if (!isset($_POST['stock_id']))
 	$_POST['stock_id'] = get_global_stock_item();
 
 echo "<center>" . _("Item:"). "&nbsp;";
-stock_costable_items_list('stock_id', $_POST['stock_id'], false, true);
+echo stock_costable_items_list('stock_id', $_POST['stock_id'], false, true);
 
 echo "</center><hr>";
 set_global_stock_item($_POST['stock_id']);
@@ -126,7 +126,7 @@ else
 
 end_table(1);
 div_end();
-submit_center('UpdateData', _("Update"));
+submit_center('UpdateData', _("Update"), true, false, 'default');
 
 end_form();
 end_page();

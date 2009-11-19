@@ -9,8 +9,8 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security = 3;
-$path_to_root="..";
+$page_security = 'SA_LOCATIONTRANSFER';
+$path_to_root = "..";
 include_once($path_to_root . "/includes/ui/items_cart.inc");
 
 include_once($path_to_root . "/includes/session.inc");
@@ -25,7 +25,7 @@ if ($use_popup_windows)
 	$js .= get_js_open_window(800, 500);
 if ($use_date_picker)
 	$js .= get_js_date_picker();
-page(_("Inventory Location Transfers"), false, false, "", $js);
+page(_($help_context = "Inventory Location Transfers"), false, false, "", $js);
 
 //-----------------------------------------------------------------------------------------------
 
@@ -38,7 +38,7 @@ check_db_has_movement_types(_("There are no inventory movement types defined in 
 if (isset($_GET['AddedID'])) 
 {
 	$trans_no = $_GET['AddedID'];
-	$trans_type = systypes::location_transfer();
+	$trans_type = ST_LOCTRANSFER;
 
 	display_notification_centered(_("Inventory transfer has been processed"));
 	display_note(get_trans_view_str($trans_type, $trans_no, _("&View this transfer")));
@@ -67,8 +67,8 @@ function handle_new_order()
 
     session_register("transfer_items");
 
-	$_SESSION['transfer_items'] = new items_cart(systypes::location_transfer());
-	$_POST['AdjDate'] = Today();
+	$_SESSION['transfer_items'] = new items_cart(ST_LOCTRANSFER);
+	$_POST['AdjDate'] = new_doc_date();
 	if (!is_date_in_fiscalyear($_POST['AdjDate']))
 		$_POST['AdjDate'] = end_fiscalyear();
 	$_SESSION['transfer_items']->tran_date = $_POST['AdjDate'];	
@@ -78,6 +78,7 @@ function handle_new_order()
 
 if (isset($_POST['Process']))
 {
+	global $Refs;
 
 	$tr = &$_SESSION['transfer_items'];
 	$input_error = 0;
@@ -87,13 +88,13 @@ if (isset($_POST['Process']))
 		set_focus('stock_id');
 		return false;
 	}
-	if (!references::is_valid($_POST['ref'])) 
+	if (!$Refs->is_valid($_POST['ref'])) 
 	{
 		display_error(_("You must enter a reference."));
 		set_focus('ref');
 		$input_error = 1;
 	} 
-	elseif (!is_new_reference($_POST['ref'], systypes::location_transfer())) 
+	elseif (!is_new_reference($_POST['ref'], ST_LOCTRANSFER)) 
 	{
 		display_error(_("The entered reference is already in use."));
 		set_focus('ref');
@@ -143,7 +144,7 @@ if (isset($_POST['Process']))
 	$trans_no = add_stock_transfer($_SESSION['transfer_items']->line_items,
 		$_POST['FromStockLocation'], $_POST['ToStockLocation'],
 		$_POST['AdjDate'], $_POST['type'], $_POST['ref'], $_POST['memo_']);
-
+	new_doc_date($_POST['AdjDate']);
 	$_SESSION['transfer_items']->clear_items();
 	unset($_SESSION['transfer_items']);
 
@@ -219,7 +220,7 @@ if (isset($_GET['NewTransfer']) || !isset($_SESSION['transfer_items']))
 }
 
 //-----------------------------------------------------------------------------------------------
-start_form(false, true);
+start_form();
 
 display_order_header($_SESSION['transfer_items']);
 
@@ -233,7 +234,7 @@ end_row();
 end_table(1);
 
 submit_center_first('Update', _("Update"), '', null);
-submit_center_last('Process', _("Process Transfer"), '', true);
+submit_center_last('Process', _("Process Transfer"), '',  'default');
 
 end_form();
 end_page();

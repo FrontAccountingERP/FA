@@ -9,13 +9,13 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security = 10;
-$path_to_root="..";
+$page_security = 'SA_BUDGETENTRY';
+$path_to_root = "..";
 include($path_to_root . "/includes/session.inc");
 
 add_js_file('budget.js');
 
-page(_("Budget Entry"));
+page(_($help_context = "Budget Entry"));
 
 include($path_to_root . "/includes/ui.inc");
 include($path_to_root . "/gl/includes/gl_db.inc");
@@ -194,7 +194,7 @@ if (db_has_gl_accounts())
 	end_table(1);
 	div_end();
 	submit_center_first('update', _("Update"), '', null);
-	submit('add', _("Save"), true, '', true);
+	submit('add', _("Save"), true, '', 'default');
 	submit_center_last('delete', _("Delete"), '', true);
 }
 end_form();

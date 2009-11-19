@@ -9,7 +9,7 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security = 2;
+$page_security = 'SA_SUPPLIERANALYTIC';
 // ----------------------------------------------------------------
 // $ Revision:	2.0 $
 // Creator:	Joe Hunt
@@ -48,7 +48,8 @@ function getTransactions($fromsupp)
 		AND ".TB_PREF."grn_batch.id = ".TB_PREF."grn_items.grn_batch_id
 		AND ".TB_PREF."grn_items.po_detail_item = ".TB_PREF."purch_order_details.po_detail_item
 		AND qty_recd-quantity_inv <>0 ";
-	if ($fromsupp != reserved_words::get_all_numeric())
+
+	if ($fromsupp != ALL_NUMERIC)
 		$sql .= "AND ".TB_PREF."grn_batch.supplier_id =".db_escape($fromsupp)." ";
 	$sql .= "ORDER BY ".TB_PREF."grn_batch.supplier_id,
 			".TB_PREF."grn_batch.id";
@@ -70,7 +71,7 @@ function print_outstanding_GRN()
 	else
 		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 
-	if ($fromsupp == reserved_words::get_all_numeric())
+	if ($fromsupp == ALL_NUMERIC)
 		$from = _('All');
 	else
 		$from = get_supplier_name($fromsupp);

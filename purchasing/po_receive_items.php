@@ -9,8 +9,8 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security = 11;
-$path_to_root="..";
+$page_security = 'SA_GRN';
+$path_to_root = "..";
 include_once($path_to_root . "/purchasing/includes/po_class.inc");
 
 include_once($path_to_root . "/includes/session.inc");
@@ -22,23 +22,21 @@ if ($use_popup_windows)
 	$js .= get_js_open_window(900, 500);
 if ($use_date_picker)
 	$js .= get_js_date_picker();
-page(_("Receive Purchase Order Items"), false, false, "", $js);
+page(_($help_context = "Receive Purchase Order Items"), false, false, "", $js);
 
 //---------------------------------------------------------------------------------------------------------------
 
 if (isset($_GET['AddedID']))
 {
 	$grn = $_GET['AddedID'];
-	$trans_type = 25;
+	$trans_type = ST_SUPPRECEIVE;
 
 	display_notification_centered(_("Purchase Order Delivery has been processed"));
 
 	display_note(get_trans_view_str($trans_type, $grn, _("&View this Delivery")));
 
-	//echo "<BR>";
-	//echo get_gl_view_str(25, $grn, _("View the GL &Journal Entries for this Delivery"));
+	hyperlink_params("$path_to_root/purchasing/supplier_invoice.php", _("Entry purchase &invoice for this receival"), "New=1");
 
-//	echo "<br>";
 	hyperlink_no_params("$path_to_root/purchasing/inquiry/po_search.php", _("Select a different &purchase order for receiving items against"));
 
 	display_footer_exit();
@@ -47,7 +45,6 @@ if (isset($_GET['AddedID']))
 //--------------------------------------------------------------------------------------------------
 
 if ((!isset($_GET['PONumber']) || $_GET['PONumber'] == 0) && !isset($_SESSION['PO']))
-//if (isset($_GET['PONumber']) && !$_GET['PONumber'] > 0 && !isset($_SESSION['PO']))
 {
 	die (_("This page can only be opened if a purchase order has been selected. Please select a purchase order first."));
 }
@@ -156,6 +153,8 @@ function check_po_changed()
 
 function can_process()
 {
+	global $SysPrefs, $Refs;
+	
 	if (count($_SESSION['PO']->line_items) <= 0)
 	{
         display_error(_("There is nothing to process. Please enter valid quantities greater than zero."));
@@ -169,14 +168,14 @@ function can_process()
 		return false;
 	}
 
-    if (!references::is_valid($_POST['ref']))
+    if (!$Refs->is_valid($_POST['ref']))
     {
 		display_error(_("You must enter a reference."));
 		set_focus('ref');
 		return false;
 	}
 
-	if (!is_new_reference($_POST['ref'], 25))
+	if (!is_new_reference($_POST['ref'], ST_SUPPRECEIVE))
 	{
 		display_error(_("The entered reference is already in use."));
 		set_focus('ref');
@@ -198,7 +197,7 @@ function can_process()
 	foreach ($_SESSION['PO']->line_items as $order_line)
 	{
 	  	if ($order_line->receive_qty+$order_line->qty_received >
-	  		$order_line->quantity * (1+ (sys_prefs::over_receive_allowance() / 100)))
+	  		$order_line->quantity * (1+ ($SysPrefs->over_receive_allowance() / 100)))
 	  	{
 			$delivery_qty_too_large = 1;
 			break;
@@ -212,7 +211,7 @@ function can_process()
     }
     elseif ($delivery_qty_too_large == 1)
     {
-    	display_error(_("Entered quantities cannot be greater than the quantity entered on the purchase order including the allowed over-receive percentage") . " (" . sys_prefs::over_receive_allowance() ."%)."
+    	display_error(_("Entered quantities cannot be greater than the quantity entered on the purchase order including the allowed over-receive percentage") . " (" . $SysPrefs->over_receive_allowance() ."%)."
     		. "<br>" .
     	 	_("Modify the ordered items on the purchase order if you wish to increase the quantities."));
     	return false;
@@ -248,6 +247,7 @@ function process_receive_po()
 	$grn = add_grn($_SESSION['PO'], $_POST['DefaultReceivedDate'],
 		$_POST['ref'], $_POST['Location']);
 
+	new_doc_date($_POST['DefaultReceivedDate']);
 	unset($_SESSION['PO']->line_items);
 	unset($_SESSION['PO']);
 
@@ -280,7 +280,7 @@ if (isset($_POST['Update']) || isset($_POST['ProcessGoodsReceived']))
 			$_POST[$line->line_no] = number_format2(0, get_qty_dec($line->stock_id));
 
 		if (!isset($_POST['DefaultReceivedDate']) || $_POST['DefaultReceivedDate'] == "")
-			$_POST['DefaultReceivedDate'] = Today();
+			$_POST['DefaultReceivedDate'] = new_doc_date();
 
 		$_SESSION['PO']->line_items[$line->line_no]->receive_qty = input_num($line->line_no);
 
@@ -302,7 +302,7 @@ if (isset($_POST['ProcessGoodsReceived']))
 
 //--------------------------------------------------------------------------------------------------
 
-start_form(false, true);
+start_form();
 
 display_grn_summary($_SESSION['PO'], true);
 display_heading(_("Items to Receive"));
@@ -310,7 +310,7 @@ display_po_receive_items();
 
 echo '<br>';
 submit_center_first('Update', _("Update"), '', true);
-submit_center_last('ProcessGoodsReceived', _("Process Receive Items"), _("Process Receive Items"), true);
+submit_center_last('ProcessGoodsReceived', _("Process Receive Items"), _("Clear all GL entry fields"), 'default');
 
 end_form();
 

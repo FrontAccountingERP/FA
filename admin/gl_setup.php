@@ -9,11 +9,11 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security =10;
+$page_security = 'SA_GLSETUP';
 $path_to_root="..";
 include($path_to_root . "/includes/session.inc");
 
-page(_("System and General GL Setup"));
+page(_($help_context = "System and General GL Setup"));
 
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");
@@ -52,9 +52,10 @@ function can_process()
 
 if (isset($_POST['submit']) && can_process())
 {
-	update_company_gl_setup($_POST['debtors_act'], $_POST['pyt_discount_act'],
+	update_company_gl_setup($_POST['retained_earnings_act'], $_POST['profit_loss_year_act'],
+		$_POST['debtors_act'], $_POST['pyt_discount_act'],
 		$_POST['creditors_act'], $_POST['freight_act'],
-		$_POST['exchange_diff_act'],
+		$_POST['exchange_diff_act'], $_POST['bank_charge_act'],
 		$_POST['default_sales_act'],
 		$_POST['default_sales_discount_act'],
 		$_POST['default_prompt_payment_act'],
@@ -71,7 +72,8 @@ if (isset($_POST['submit']) && can_process())
 		$_POST['past_due_days'],
 		$_POST['default_credit_limit'],
 		$_POST['default_workorder_required'],
-		$_POST['default_dim_required']);
+		$_POST['default_dim_required'],
+		$_POST['default_delivery_required']);
 
 	display_notification(_("The general GL setup has been updated."));
 
@@ -88,12 +90,15 @@ table_section(1);
 
 $myrow = get_company_prefs();
 
+$_POST['retained_earnings_act']  = $myrow["retained_earnings_act"];
+$_POST['profit_loss_year_act']  = $myrow["profit_loss_year_act"];
 $_POST['debtors_act']  = $myrow["debtors_act"];
 $_POST['creditors_act']  = $myrow["creditors_act"];
 $_POST['freight_act'] = $myrow["freight_act"];
 $_POST['pyt_discount_act']  = $myrow["pyt_discount_act"];
 
 $_POST['exchange_diff_act'] = $myrow["exchange_diff_act"];
+$_POST['bank_charge_act'] = $myrow["bank_charge_act"];
 $_POST['default_sales_act'] = $myrow["default_sales_act"];
 $_POST['default_sales_discount_act']  = $myrow["default_sales_discount_act"];
 $_POST['default_prompt_payment_act']  = $myrow["default_prompt_payment_act"];
@@ -116,6 +121,7 @@ $_POST['accumulate_shipping'] = $myrow['accumulate_shipping'];
 
 $_POST['default_workorder_required'] = $myrow['default_workorder_required'];
 $_POST['default_dim_required'] = $myrow['default_dim_required'];
+$_POST['default_delivery_required'] = $myrow['default_delivery_required'];
 
 //---------------
 
@@ -129,7 +135,13 @@ table_section_title(_("General GL"));
 
 text_row(_("Past Due Days Interval:"), 'past_due_days', $_POST['past_due_days'], 6, 6, '', "", _("days"));
 
+gl_all_accounts_list_row(_("Retained Earnings:"), 'retained_earnings_act', $_POST['retained_earnings_act']);
+
+gl_all_accounts_list_row(_("Profit/Loss Year:"), 'profit_loss_year_act', $_POST['profit_loss_year_act']);
+
 gl_all_accounts_list_row(_("Exchange Variances Account:"), 'exchange_diff_act', $_POST['exchange_diff_act']);
+
+gl_all_accounts_list_row(_("Bank Charges Account:"), 'bank_charge_act', $_POST['bank_charge_act']);
 
 //---------------
 
@@ -156,25 +168,22 @@ gl_all_accounts_list_row(_("Sales Discount Account:"), 'default_sales_discount_a
 
 gl_all_accounts_list_row(_("Prompt Payment Discount Account:"), 'default_prompt_payment_act');
 
+text_row(_("Delivery Required By:"), 'default_delivery_required', $_POST['default_delivery_required'], 6, 6, '', "", _("days"));
+
 //----------------
+
+table_section(2);
 
 table_section_title(_("Dimension Defaults"));
 
 text_row(_("Dimension Required By After:"), 'default_dim_required', $_POST['default_dim_required'], 6, 6, '', "", _("days"));
 //---------------
 
-table_section(2);
-
 table_section_title(_("Suppliers and Purchasing"));
 
 percent_row(_("Delivery Over-Receive Allowance:"), 'po_over_receive');
 
 percent_row(_("Invoice Over-Charge Allowance:"), 'po_over_charge');
-
-// Not used in FA2.0.
-//gl_all_accounts_list_row(_("Purchases Exchange Variances Account:"), 'purch_exchange_diff_act', $_POST['purch_exchange_diff_act']);
-// Not used in FA2.0.
-//gl_all_accounts_list_row(_("Goods Received Clearing Account:"), 'grn_act', $_POST['grn_act']);
 
 table_section_title(_("Suppliers and Purchasing Defaults"));
 
@@ -208,7 +217,7 @@ text_row(_("Work Order Required By After:"), 'default_workorder_required', $_POS
 
 end_outer_table(1);
 
-submit_center('submit', _("Update"), true, '', true);
+submit_center('submit', _("Update"), true, '', 'default');
 
 end_form(2);
 

@@ -9,8 +9,8 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security = 9;
-$path_to_root="../..";
+$page_security = 'SA_EXCHANGERATE';
+$path_to_root = "../..";
 include($path_to_root . "/includes/db_pager.inc");
 include_once($path_to_root . "/includes/session.inc");
 
@@ -21,7 +21,7 @@ include_once($path_to_root . "/includes/banking.inc");
 $js = "";
 if ($use_date_picker)
 	$js .= get_js_date_picker();
-page(_("Exchange Rates"), false, false, "", $js);
+page(_($help_context = "Exchange Rates"), false, false, "", $js);
 
 simple_page_mode(false);
 
@@ -128,7 +128,8 @@ function display_rate_edit()
 	}
 	if (isset($_POST['get_rate']))
 	{
-		$_POST['BuyRate'] = exrate_format(get_ecb_rate($_POST['curr_abrev']));
+		$_POST['BuyRate'] = 
+			exrate_format(retrieve_exrate($_POST['curr_abrev'], $_POST['date_']));
 		$Ajax->activate('BuyRate');
 	}
 	small_amount_row(_("Exchange Rate:"), 'BuyRate', null, '',
@@ -137,7 +138,7 @@ function display_rate_edit()
 
 	end_table(1);
 
-	submit_add_or_update_center($selected_id == '', '', true);
+	submit_add_or_update_center($selected_id == '', '', 'both');
 
 	display_note(_("Exchange rates are entered against the company currency."), 1);
 }
@@ -164,14 +165,14 @@ if ($Mode == 'Delete')
 
 //---------------------------------------------------------------------------------------------
 
-start_form(false, true);
+start_form();
 
 if (!isset($_POST['curr_abrev']))
 	$_POST['curr_abrev'] = get_global_curr_code();
 
 echo "<center>";
 echo _("Select a currency :") . "  ";
-currencies_list('curr_abrev', null, true);
+echo currencies_list('curr_abrev', null, true);
 echo "</center>";
 
 // if currency sel has changed, clear the form
@@ -185,7 +186,7 @@ set_global_curr_code($_POST['curr_abrev']);
 
 $sql = "SELECT date_, rate_buy, id FROM "
 	.TB_PREF."exchange_rates "
-	."WHERE curr_code='".$_POST['curr_abrev']."'
+	."WHERE curr_code=".db_escape($_POST['curr_abrev'])."
 	 ORDER BY date_ DESC";
 
 $cols = array(
@@ -206,10 +207,6 @@ else
 {
 
 	br(1);
-   	if (list_updated('curr_abrev')) {
-		$table->set_sql($sql);
-		$table->set_columns($cols);
-	}
 	$table->width = "40%";
 	display_db_pager($table);
    	br(1);

@@ -57,10 +57,9 @@ class language
 			// check id file exists only once for session
 			$_SESSION['language']->is_locale_file = file_exists($locale);
 		}
-
 		$lang = $_SESSION['language'];
-		get_text::set_language($lang->code, $lang->encoding);
-		get_text::add_domain($lang->code, $path_to_root . "/lang");
+		$_SESSION['get_text']->set_language($lang->code, $lang->encoding);
+		$_SESSION['get_text']->add_domain($lang->code, $path_to_root . "/lang");
 		
 		// Necessary for ajax calls. Due to bug in php 4.3.10 for this 
 		// version set globally in php.ini
@@ -69,7 +68,7 @@ class language
 		if (isset($_SESSION['App']) && $changed)
 			$_SESSION['App']->init(); // refresh menu
 	}
-
+}
 	/**
 	 * This method loads an array of language objects into a session variable
      * called $_SESSIONS['languages']. Only supported languages are added.
@@ -92,36 +91,16 @@ class language
 			$_SESSION['language'] = $_SESSION['languages'][$dflt_lang];
 	}
 
-}
-/*
-	Test if named function is defined in locale.inc file.
-*/
-function has_locale($fun=null)
-{
-	global $path_to_root;
-	
-	if ($_SESSION['language']->is_locale_file)
-	{
-		global $path_to_root;
-		include_once($path_to_root . "/lang/" . 
-			$_SESSION['language']->code . "/locale.inc");
-
-		if (!isset($fun) || function_exists($fun))
-			return true;
-	}
-	return false;
-}
-
 function _set($key,$value) 
 {
-	get_text::set_var($key,$value);
+	$_SESSION['get_text']->set_var($key,$value);
 }
 
 if (!function_exists("_")) 
 {
 	function _($text) 
 	{
-		$retVal = get_text::gettext($text);
+		$retVal = $_SESSION['get_text']->gettext($text);
 		if ($retVal == "")
 			return $text;
 		return $retVal;

@@ -9,8 +9,8 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security = 2;
-$path_to_root="../..";
+$page_security = 'SA_SUPPTRANSVIEW';
+$path_to_root = "../..";
 include($path_to_root . "/purchasing/includes/po_class.inc");
 
 include($path_to_root . "/includes/session.inc");
@@ -18,7 +18,7 @@ include($path_to_root . "/includes/session.inc");
 $js = "";
 if ($use_popup_windows)
 	$js .= get_js_open_window(900, 500);
-page(_("View Purchase Order Delivery"), true, false, "", $js);
+page(_($help_context = "View Purchase Order Delivery"), true, false, "", $js);
 
 include($path_to_root . "/purchasing/includes/purchasing_ui.inc");
 
@@ -72,7 +72,7 @@ label_row(_("Total Excluding Tax/Shipping"),  $display_total,
 
 end_table(1);
 
-is_voided_display(25, $_GET['trans_no'], _("This delivery has been voided."));
+is_voided_display(ST_SUPPRECEIVE, $_GET['trans_no'], _("This delivery has been voided."));
 
 end_page(true);
 

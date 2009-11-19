@@ -9,8 +9,8 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security=5;
-$path_to_root="..";
+$page_security = 'SA_SUPPLIERINVOICE';
+$path_to_root = "..";
 
 include_once($path_to_root . "/purchasing/includes/purchasing_db.inc");
 
@@ -25,31 +25,18 @@ if ($use_popup_windows)
 	$js .= get_js_open_window(900, 500);
 if ($use_date_picker)
 	$js .= get_js_date_picker();
-page(_("Enter Supplier Invoice"), false, false, "", $js);
-
+page(_($help_context = "Enter Supplier Invoice"), false, false, "", $js);
 
 //----------------------------------------------------------------------------------------
 
 check_db_has_suppliers(_("There are no suppliers defined in the system."));
 
 //---------------------------------------------------------------------------------------------------------------
-if ($ret = context_restore()) {
- // return from supplier editor
-	copy_from_trans($_SESSION['supp_trans']);
-	if(isset($ret['supplier_id']))
-		$_POST['supplier_id'] = $ret['supplier_id'];
-}
-if (isset($_POST['_supplier_id_editor'])) {
-	copy_to_trans($_SESSION['supp_trans']);
-	context_call($path_to_root.'/purchasing/manage/suppliers.php?supplier_id='.$_POST['supplier_id'], 'supp_trans');
-}
-
-//---------------------------------------------------------------------------------------------------------------
 
 if (isset($_GET['AddedID'])) 
 {
 	$invoice_no = $_GET['AddedID'];
-	$trans_type = 20;
+	$trans_type = ST_SUPPINVOICE;
 
 
     echo "<center>";
@@ -57,6 +44,8 @@ if (isset($_GET['AddedID']))
     display_note(get_trans_view_str($trans_type, $invoice_no, _("View this Invoice")));
 
 	display_note(get_gl_view_str($trans_type, $invoice_no, _("View the GL Journal Entries for this Invoice")), 1);
+
+	hyperlink_no_params("$path_to_root/purchasing/supplier_payment.php", _("Entry supplier &payment for this invoice"));
 
 	hyperlink_params($_SERVER['PHP_SELF'], _("Enter Another Invoice"), "New=1");
 
@@ -149,27 +138,29 @@ if (isset($_POST['AddGLCodeToTrans'])){
 
 function check_data()
 {
-	If (!$_SESSION['supp_trans']->is_valid_trans_to_post())
+	global $Refs;
+
+	if (!$_SESSION['supp_trans']->is_valid_trans_to_post())
 	{
 		display_error(_("The invoice cannot be processed because the there are no items or values on the invoice.  Invoices are expected to have a charge."));
 		return false;
 	}
 
-	if (!references::is_valid($_SESSION['supp_trans']->reference)) 
+	if (!$Refs->is_valid($_SESSION['supp_trans']->reference)) 
 	{
 		display_error(_("You must enter an invoice reference."));
 		set_focus('reference');
 		return false;
 	}
 
-	if (!is_new_reference($_SESSION['supp_trans']->reference, 20)) 
+	if (!is_new_reference($_SESSION['supp_trans']->reference, ST_SUPPINVOICE)) 
 	{
 		display_error(_("The entered reference is already in use."));
 		set_focus('reference');
 		return false;
 	}
 
-	if (!references::is_valid($_SESSION['supp_trans']->supp_reference)) 
+	if (!$Refs->is_valid($_SESSION['supp_trans']->supp_reference)) 
 	{
 		display_error(_("You must enter a supplier's invoice reference."));
 		set_focus('supp_reference');
@@ -239,7 +230,7 @@ if (isset($_POST['PostInvoice']))
 function check_item_data($n)
 {
 	global $check_price_charged_vs_order_price,
-		$check_qty_charged_vs_del_qty;
+		$check_qty_charged_vs_del_qty, $SysPrefs;
 	if (!check_num('this_quantity_inv'.$n, 0) || input_num('this_quantity_inv'.$n)==0)
 	{
 		display_error( _("The quantity to invoice must be numeric and greater than zero."));
@@ -254,15 +245,16 @@ function check_item_data($n)
 		return false;
 	}
 
+	$margin = $SysPrefs->over_charge_allowance();
 	if ($check_price_charged_vs_order_price == True)
 	{
 		if ($_POST['order_price'.$n]!=input_num('ChgPrice'.$n)) {
 		     if ($_POST['order_price'.$n]==0 ||
 				input_num('ChgPrice'.$n)/$_POST['order_price'.$n] >
-			    (1 + (sys_prefs::over_charge_allowance() / 100)))
+			    (1 + ($margin/ 100)))
 		    {
 			display_error(_("The price being invoiced is more than the purchase order price by more than the allowed over-charge percentage. The system is set up to prohibit this. See the system administrator to modify the set up parameters if necessary.") .
-			_("The over-charge percentage allowance is :") . sys_prefs::over_charge_allowance() . "%");
+			_("The over-charge percentage allowance is :") . $margin . "%");
 			set_focus('ChgPrice'.$n);
 			return false;
 		    }
@@ -272,10 +264,10 @@ function check_item_data($n)
 	if ($check_qty_charged_vs_del_qty == True)
 	{
 		if (input_num('this_quantity_inv'.$n) / ($_POST['qty_recd'.$n] - $_POST['prev_quantity_inv'.$n]) >
-			(1+ (sys_prefs::over_charge_allowance() / 100)))
+			(1+ ($margin / 100)))
 		{
 			display_error( _("The quantity being invoiced is more than the outstanding quantity by more than the allowed over-charge percentage. The system is set up to prohibit this. See the system administrator to modify the set up parameters if necessary.")
-			. _("The over-charge percentage allowance is :") . sys_prefs::over_charge_allowance() . "%");
+			. _("The over-charge percentage allowance is :") . $margin . "%");
 			set_focus('this_quantity_inv'.$n);
 			return false;
 		}
@@ -345,7 +337,7 @@ if ($id4 != -1)
 }
 
 $id2 = -1;
-if ($_SESSION["wa_current_user"]->access == 2)
+if ($_SESSION["wa_current_user"]->can_access('SA_GRNDELETE'))
 {
 	$id2 = find_submit('void_item_id');
 	if ($id2 != -1) 
@@ -367,7 +359,7 @@ if ($_SESSION["wa_current_user"]->access == 2)
 		update_average_material_cost($grn["supplier_id"], $myrow["item_code"],
 			$myrow["unit_price"], -$myrow["QtyOstdg"], Today());
 
-	   	add_stock_move(25, $myrow["item_code"], $myrow['grn_batch_id'], $grn['loc_code'], sql2date($grn["delivery_date"]), "",
+	   	add_stock_move(ST_SUPPRECEIVE, $myrow["item_code"], $myrow['grn_batch_id'], $grn['loc_code'], sql2date($grn["delivery_date"]), "",
 	   		-$myrow["QtyOstdg"], $myrow['std_cost_unit'], $grn["supplier_id"], 1, $myrow['unit_price']);
 	   		
 	   	commit_transaction();
@@ -384,7 +376,7 @@ if (isset($_POST['go']))
 	$Ajax->activate('inv_tot');
 }
 
-start_form(false, true);
+start_form();
 
 invoice_header($_SESSION['supp_trans']);
 
@@ -416,7 +408,7 @@ if (get_post('AddGLCodeToTrans'))
 	$Ajax->activate('inv_tot');
 
 br();
-submit_center('PostInvoice', _("Enter Invoice"), true, '', true);
+submit_center('PostInvoice', _("Enter Invoice"), true, '', 'default');
 br();
 
 end_form();

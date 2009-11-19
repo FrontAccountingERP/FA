@@ -9,31 +9,40 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-function help_url($title, $app)
+/*
+	If no context is set current page/menu screen is selected.
+*/
+function help_url($context=null)
 {
 
-	global $help_page_url, $help_base_url, $applications, $help_page_title;
+	global $help_base_url, $help_context, $old_style_help;
 
-	if (isset($help_page_url))
+	$country = $_SESSION['language']->code;
+	$clean = 0;
+	
+	if ($context!=null)
 	{
-		return $help_base_url.$help_page_url;
+		$help_page_url = $context;
 	}
-
-	$help_page_url = '';
-	if (isset($help_page_title))
+	elseif (isset($help_context))
 	{
-		$help_page_url = $help_page_title;
-	}
-	elseif ($title==_("Main Menu"))
+		$help_page_url = $help_context;
+	} else // main menu
 	{
-		$help_page_url = access_string($applications[$app], true);
-	}
-	else
-	{
-		$help_page_url = $title;
+		$app = $_SESSION['sel_app'];
+		$help_page_url = $_SESSION['App']->applications[$app]->help_context;
+		$clean = 1;
 	}
 
-	return $help_base_url.urlencode(str_replace(' ', '', ucwords($help_page_url)));
+	if (@$old_style_help)
+		$help_page_url = _($help_page_url);
+
+	if ($clean)
+		$help_page_url = access_string($help_page_url, true);
+
+	return $help_base_url
+		.urlencode(strtr(ucwords($help_page_url), array(' '=>'', '/'=>'', '&'=>'And')))
+		.'&ctxhelp=1&lang='.$country;
 }
 
 function send_scripts()
@@ -100,10 +109,15 @@ function page_header($title, $no_menu=false, $is_index=false, $onload="", $js=""
 	elseif (isset($_SESSION["sel_app"]) && $_SESSION["sel_app"] != "")
 		$sel_app = $_SESSION["sel_app"];
 	else
-		$sel_app = $def_app;
+		$sel_app = user_startup_tab();
 	$_SESSION["sel_app"] = $sel_app;
+
+	// When startup tab for current user was set to already 
+	// removed/inactivated extension module select Sales tab as default.
 	if (isset($_SESSION["App"]) && is_object($_SESSION["App"]))
-		$_SESSION["App"]->selected_application = $sel_app;
+		$_SESSION["App"]->selected_application = 
+			isset($_SESSION["App"]->applications[$sel_app]) ? $sel_app : 'orders';
+			
 	$encoding = $_SESSION['language']->encoding;
 
 	if (!headers_sent()){
@@ -124,6 +138,7 @@ function page_header($title, $no_menu=false, $is_index=false, $onload="", $js=""
 	include_once($local_path_to_root."/themes/".user_theme()."/renderer.php");
 	$rend = new renderer();
 	$rend->menu_header($title, $no_menu, $is_index);
+	error_box();
 }
 
 ?>

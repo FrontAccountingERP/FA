@@ -9,11 +9,11 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security = 15;
+$page_security = 'SA_PRINTERS';
 $path_to_root="..";
 include($path_to_root . "/includes/session.inc");
 
-page(_("Printer Locations"));
+page(_($help_context = "Printer Locations"));
 
 include($path_to_root . "/admin/db/printers_db.inc");
 include($path_to_root . "/includes/ui.inc");
@@ -142,7 +142,7 @@ text_row(_("Timeout").':', 'tout', null, 5, 5);
 
 end_table(1);
 
-submit_add_or_update_center($selected_id == -1, '', true);
+submit_add_or_update_center($selected_id == -1, '', 'both');
 
 end_form();
 

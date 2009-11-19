@@ -9,7 +9,7 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-$page_security = 2;
+$page_security = 'SA_SALESBULKREP';
 // ----------------------------------------------------------------
 // $ Revision:	2.0 $
 // Creator:	Joe Hunt
@@ -49,7 +49,9 @@ function GetSalesOrders($from, $to, $category=0, $location=null, $backorder=0)
                 ".TB_PREF."sales_order_details.qty_sent
             FROM ".TB_PREF."sales_orders
             	INNER JOIN ".TB_PREF."sales_order_details
-            	    ON ".TB_PREF."sales_orders.order_no = ".TB_PREF."sales_order_details.order_no
+            	    ON (".TB_PREF."sales_orders.order_no = ".TB_PREF."sales_order_details.order_no
+            	    AND ".TB_PREF."sales_orders.trans_type = ".TB_PREF."sales_order_details.trans_type
+            	    AND ".TB_PREF."sales_orders.trans_type = ".ST_SALESORDER.")
             	INNER JOIN ".TB_PREF."stock_master
             	    ON ".TB_PREF."sales_order_details.stk_code = ".TB_PREF."stock_master.stock_id
             WHERE ".TB_PREF."sales_orders.ord_date >='$fromdate'
@@ -83,9 +85,9 @@ function print_order_status_list()
 	else
 		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 
-	if ($category == reserved_words::get_all_numeric())
+	if ($category == ALL_NUMERIC)
 		$category = 0;
-	if ($location == reserved_words::get_all())
+	if ($location == ALL_TEXT)
 		$location = null;
 	if ($category == 0)
 		$cat = _('All');

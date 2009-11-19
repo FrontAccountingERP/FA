@@ -46,6 +46,11 @@ select {
     max-width: 200px;
 }
 
+option.inactive {
+	text-decoration: line-through;
+	color: gray;
+}
+
 input.big {
 	width: 100px;
 }
@@ -70,9 +75,13 @@ a:active {
 	text-decoration: none;
 }
 
-a:hover {
+a:hover, a:focus {
 	color: #2d8628;
 	text-decoration: underline;
+}
+
+.inactive {
+	color: gray;
 }
 
 button {
@@ -228,6 +237,11 @@ div.tabs a:hover {
 	border: 1px solid #cccccc;
 }
 
+#hotkeyshelp {
+	text-align: right;
+	font-weight: bolder;
+}
+
 #footer {
 	position: relative;
 	bottom: -3px;
@@ -351,14 +365,10 @@ div.tabs a:hover {
 }
 
 .tablestyle {
-	padding: 3px;
-	border: 1px solid #cccccc;
 	border-collapse: collapse;
 }
 
 .tablestyle2 {
-	padding: 0 3px;
-	border: 1px solid #ccc;
 	border-collapse: collapse;
 }
 .tablestyle_noborder {
@@ -567,4 +577,36 @@ ul.ajaxtabs li input.current, ul.ajaxtabs li input.current:hover{
 #CC .empty {
 	background-color: #ddd;
 	border: 1px solid #FFF;
+}
+
+div.err_msg {
+	margin: 10px;
+	padding: 3px;
+	border: 1px solid #cc3300;
+	background-color: #ffcccc;
+	color: #dd2200;
+	text-align: center;
+}
+
+div.warn_msg {
+	margin: 10px;
+	padding: 3px;
+	border: 1px solid #ff9900;
+	background-color: #ffff00;
+	color: #ff5500;
+	text-align: center;
+}
+
+div.note_msg {
+	margin: 10px;
+	padding: 3px;
+	border: 1px solid #33cc00;
+	background-color: #ccffcc;
+	color: #007700;
+	text-align: center;
+}
+
+#title {
+	margin-bottom: 10px;
+	width: 100%;
 }
