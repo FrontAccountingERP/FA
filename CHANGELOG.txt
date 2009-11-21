@@ -19,6 +19,12 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+21-Nov-2009 Janusz Dobrowolski
+# Fixed bug [0000178] data error in supplier allocations
+$ /includes/ui/allocation_cart.inc
+! Fixed type constant usage.
+$ /purchasing/includes/db/supp_trans_db.inc
+
 ------------------------------- Release 2.2 ----------------------------------
 18-Nov-2009
 ! Release 2.2
