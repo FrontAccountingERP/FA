@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+25-Nov-2009 Joe Hunt/Tom Hallman
+# Fixed so total amount cannot be 0 in Bank Payments/Deposits
+$ /gl/gl_bank.php
+
 21-Nov-2009 Janusz Dobrowolski
 # Fixed bug [0000178] data error in supplier allocations
 $ /includes/ui/allocation_cart.inc
