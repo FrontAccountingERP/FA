@@ -255,7 +255,7 @@
 		}
 		elseif ($doctype == 13)
 		{
-			$ref = "";
+			$ref = $myrow['order_'];
 			if ($print_invoice_no == 0)
 			{
 				$ref = get_reference(ST_SALESORDER, $myrow['order_']);
