@@ -245,8 +245,6 @@
 					$ref = get_reference(ST_CUSTDELIVERY, $delivery);
 					if ($ref)
 						$delivery = $ref;
-					else
-						continue;
 				}		
 				if ($line == "")
 					$line .= "$delivery";
@@ -257,12 +255,12 @@
 		}
 		elseif ($doctype == 13)
 		{
-			$ref = $myrow['order_'];
+			$ref = "";
 			if ($print_invoice_no == 0)
 			{
 				$ref = get_reference(ST_SALESORDER, $myrow['order_']);
 				if (!$ref)
-					$ref = "";
+					$ref = $myrow['order_'];
 			}		
 			$this->TextWrap($col, $this->row, $width, $ref, 'C');
 		}
