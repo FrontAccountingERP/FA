@@ -236,16 +236,35 @@
 		$col += $width;	
 		if ($doctype == 10)
 		{
-			$deliveries = get_parent_trans(10,$myrow['trans_no']);
+			$deliveries = get_parent_trans(ST_SALESINVOICE, $myrow['trans_no']);
 			$line = "";
 			foreach ($deliveries as $delivery)
 			{
+				if ($print_invoice_no == 0)
+				{
+					$ref = get_reference(ST_CUSTDELIVERY, $delivery);
+					if ($ref)
+						$delivery = $ref;
+					else
+						continue;
+				}		
 				if ($line == "")
 					$line .= "$delivery";
 				else
 					$line .= ",$delivery";
 			}		
 			$this->TextWrap($col, $this->row, $width, $line, 'C');
+		}
+		elseif ($doctype == 13)
+		{
+			$ref = $myrow['order_'];
+			if ($print_invoice_no == 0)
+			{
+				$ref = get_reference(ST_SALESORDER, $myrow['order_']);
+				if (!$ref)
+					$ref = "";
+			}		
+			$this->TextWrap($col, $this->row, $width, $ref, 'C');
 		}
 		elseif ($doctype == 26)
 			$this->TextWrap($col, $this->row, $width, $myrow["location_name"], 'C');

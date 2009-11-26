@@ -19,6 +19,13 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+26-Nov-2009 Joe Hunt
+# Round to nearest value of 0 produced a division by zero error
+$ /admin/company_preferences.php
+# When printing reference numbers instead of internal numbers on documents
+  it should also refer to reference numbers in deliveries and orders.
+$ /reporting/includes/header2.inc
+
 25-Nov-2009 Joe Hunt/Tom Hallman
 # Fixed so total amount cannot be 0 in Bank Payments/Deposits
 $ /gl/gl_bank.php
