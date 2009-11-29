@@ -424,4 +424,59 @@ function session_timeout()
 	$tout = @get_company_pref('login_tout'); // mask warning for db ver. 2.2
 	return $tout ? $tout : ini_get('session.gc_maxlifetime');
 }
+
+//-----------------------------------------------------------------------------
+//	Inserts $elements into $array at position $index.
+//	$elements is list of any objects
+//
+function array_insert(&$array, $index, $elements)
+{
+	if (!is_array($elements)) $elements = array($elements);
+
+	$head  = array_splice($array, 0, $index);
+	$array = array_merge($head, $elements, $array);
+}
+
+function array_remove(&$array, $index, $len=1)
+{
+	array_splice($array, $index, $len);
+}
+
+function array_substitute(&$array, $index, $len, $elements)
+{
+	array_splice($array, $index, $len);
+	array_insert($array, $index, $elements);
+}
+
+function array_append(&$array, $elements)
+{
+	foreach($elements as $key => $el) {
+		if(is_int($key))
+			$array[] = $el;
+		else
+			$array[$key] = $el;
+	}
+}
+
+function array_search_value($needle, $haystack, $valuekey=null)
+{
+	foreach($haystack as $key => $value) {
+		$val = isset($valuekey) ? $value[$valuekey] : $value;
+		if ($needle == $val){
+			return $value;
+		}
+	}
+	return null;
+}
+
+function array_search_key($needle, $haystack, $valuekey=null)
+{
+	foreach($haystack as $key => $value) {
+		$val = isset($valuekey) ? $value[$valuekey] : $value;
+		if ($needle == $val){
+			return $key;
+		}
+	}
+	return null;
+}
 ?>
