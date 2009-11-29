@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+29-Nov-2009 Janusz Dobrowolski
+# Fixed change of language in display preferences.
+$ /includes/lang/language.php
+
 28-Nov-2009 Chaitanya/Joe Hunt
 # Missing ajax trigger in stock_purchasable_items_list_cells. Prices not updated instantly.
 $ /purchasing/includes/ui/po_ui.inc

@@ -46,7 +46,7 @@ class language
 	function set_language($code) 
 	{
 	    global $comp_path, $path_to_root;
-		
+
 		$changed = $_SESSION['language']->code != $code;
 		if (isset($_SESSION['languages'][$code]) && $changed)
 		{
@@ -57,7 +57,8 @@ class language
 			// check id file exists only once for session
 			$_SESSION['language']->is_locale_file = file_exists($locale);
 		}
-		$lang = $_SESSION['language'];
+		$lang = PHP_VERSION<5 ? $_SESSION['language'] : clone($_SESSION['language']);
+
 		$_SESSION['get_text']->set_language($lang->code, $lang->encoding);
 		$_SESSION['get_text']->add_domain($lang->code, $path_to_root . "/lang");
 		
