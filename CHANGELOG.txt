@@ -20,8 +20,12 @@ Legend:
 $ -> Affected files
 
 29-Nov-2009 Janusz Dobrowolski
-# Fixed change of language in display preferences.
+# Fixed change of language in display preferences. Removed sparse $_SESSION['languages'] variable
 $ /includes/lang/language.php
+  /includes/session.inc
+! Array helpers moved to current_user. Added array_search_key and array_search_key helpers.
+$ /includes/current_user.inc
+  /includes/main.inc
 
 28-Nov-2009 Chaitanya/Joe Hunt
 # Missing ajax trigger in stock_purchasable_items_list_cells. Prices not updated instantly.
