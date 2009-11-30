@@ -57,43 +57,15 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 	{
     	if ($selected_id != -1) 
     	{
-    		if (check_value('DaysOrFoll')) 
-    		{
-    			$sql = "UPDATE ".TB_PREF."payment_terms SET terms=" . db_escape($_POST['terms']) . ",
-					day_in_following_month=0,
-					days_before_due=" . db_escape($_POST['DayNumber']) . "
-					WHERE terms_indicator = " .db_escape($selected_id);
-    		} 
-    		else 
-    		{
-    			$sql = "UPDATE ".TB_PREF."payment_terms SET terms=" . db_escape($_POST['terms']) . ",
-					day_in_following_month=" . db_escape($_POST['DayNumber']) . ",
-					days_before_due=0
-					WHERE terms_indicator = " .db_escape( $selected_id );
-    		}
+    		update_payment_terms($selected_id, check_value('DaysOrFoll'), $_POST['terms'], $_POST['DayNumber']); 
  			$note = _('Selected payment terms have been updated');
     	} 
     	else 
     	{
-
-    		if (check_value('DaysOrFoll')) 
-    		{
-    			$sql = "INSERT INTO ".TB_PREF."payment_terms (terms,
-					days_before_due, day_in_following_month)
-					VALUES (" .
-					db_escape($_POST['terms']) . ", " . db_escape($_POST['DayNumber']) . ", 0)";
-    		} 
-    		else 
-    		{
-    			$sql = "INSERT INTO ".TB_PREF."payment_terms (terms,
-					days_before_due, day_in_following_month)
-					VALUES (" . db_escape($_POST['terms']) . ",
-					0, " . db_escape($_POST['DayNumber']) . ")";
-    		}
+			add_payment_terms(check_value('DaysOrFoll'), $_POST['terms'], $_POST['DayNumber']);
 			$note = _('New payment terms have been added');
     	}
     	//run the sql from either of the above possibilites
-    	db_query($sql,"The payment term could not be added or updated");
 		display_notification($note);
  		$Mode = 'RESET';
 	}
@@ -102,29 +74,20 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 if ($Mode == 'Delete')
 {
 	// PREVENT DELETES IF DEPENDENT RECORDS IN debtors_master
-
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."debtors_master WHERE payment_terms = ".db_escape($selected_id);
-	$result = db_query($sql,"check failed");
-	$myrow = db_fetch_row($result);
-	if ($myrow[0] > 0) 
+	if (customer_has_terms($selected_id))
 	{
 		display_error(_("Cannot delete this payment term, because customer accounts have been created referring to this term."));
 	} 
 	else 
 	{
-		$sql= "SELECT COUNT(*) FROM ".TB_PREF."suppliers WHERE payment_terms = ".db_escape($selected_id);
-		$result = db_query($sql,"check failed");
-		$myrow = db_fetch_row($result);
-		if ($myrow[0] > 0) 
+		if (supplier_has_terms($selected_id))
 		{
 			display_error(_("Cannot delete this payment term, because supplier accounts have been created referring to this term"));
 		} 
 		else 
 		{
 			//only delete if used in neither customer or supplier accounts
-
-			$sql="DELETE FROM ".TB_PREF."payment_terms WHERE terms_indicator=".db_escape($selected_id);
-			db_query($sql,"could not delete a payment terms");
+			delete_payment_terms($selected_id);
 			display_notification(_('Selected payment terms have been deleted'));
 		}
 	}
@@ -141,9 +104,7 @@ if ($Mode == 'RESET')
 }
 //-------------------------------------------------------------------------------------------------
 
-$sql = "SELECT * FROM ".TB_PREF."payment_terms";
-if (!check_value('show_inactive')) $sql .= " WHERE !inactive";
-$result = db_query($sql,"could not get payment terms");
+$result = get_payment_terms_all(check_value('show_inactive'));
 
 start_form();
 start_table($table_style);
@@ -197,11 +158,7 @@ if ($selected_id != -1)
 {
 	if ($Mode == 'Edit') {
 		//editing an existing payment terms
-		$sql = "SELECT * FROM ".TB_PREF."payment_terms
-			WHERE terms_indicator=".db_escape($selected_id);
-
-		$result = db_query($sql,"could not get payment term");
-		$myrow = db_fetch($result);
+		$myrow = get_payment_terms($selected_id);
 
 		$_POST['terms']  = $myrow["terms"];
 		$days_before_due  = $myrow["days_before_due"];

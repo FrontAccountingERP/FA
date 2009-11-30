@@ -13,6 +13,7 @@
 include_once(dirname(__FILE__)."/class.pdf.inc");
 include_once(dirname(__FILE__)."/printer_class.inc");
 include_once($path_to_root . "/admin/db/company_db.inc");
+include_once($path_to_root . "/admin/db/fiscalyears_db.inc");
 include_once($path_to_root . "/admin/db/printers_db.inc");
 include_once($path_to_root . "/config.php");
 class FrontReport extends Cpdf

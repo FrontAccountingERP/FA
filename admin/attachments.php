@@ -17,6 +17,7 @@ include_once($path_to_root . "/includes/session.inc");
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
+include_once($path_to_root . "/admin/db/attachments_db.inc");
 
 if (isset($_GET['vw']))
 	$view_id = $_GET['vw'];
@@ -108,32 +109,16 @@ if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM')
 		$unique_name = $filename = $filetype = "";
 		$filesize = 0;
 	}
-	$date = date2sql(Today());
 	if ($Mode == 'ADD_ITEM')
 	{
-		$sql = "INSERT INTO ".TB_PREF."attachments (type_no, trans_no, description, filename, unique_name,
-			filesize, filetype, tran_date) VALUES (".db_escape($_POST['filterType']).","
-			.db_escape($_POST['trans_no']).",".db_escape($_POST['description']).", "
-			.db_escape($filename).", ".db_escape($unique_name).", ".db_escape($filesize)
-			.", ".db_escape($filetype).", '$date')";
-		db_query($sql, "Attachment could not be inserted");		
+		add_attachment($_POST['filterType'], $_POST['trans_no'], $_POST['description'],
+			$filename, $unique_name, $filesize, $filetype);
 		display_notification(_("Attachment has been inserted.")); 
 	}
 	else
 	{
-		$sql = "UPDATE ".TB_PREF."attachments SET
-			type_no=".db_escape($_POST['filterType']).",
-			trans_no=".db_escape($_POST['trans_no']).",
-			description=".db_escape($_POST['description']).", ";
-		if ($filename != "")
-		{
-			$sql .= "filename=".db_escape($filename).",
-			unique_name=".db_escape($unique_name).",
-			filesize=".db_escape($filesize).",
-			filetype=".db_escape($filetype);
-		}	
-		$sql .= "tran_date='$date' WHERE id=".db_escape($selected_id);
-		db_query($sql, "Attachment could not be updated");		
+		update_attachment($selected_id, $_POST['filterType'], $_POST['trans_no'], $_POST['description'],
+			$filename, $unique_name, $filesize, $filetype); 
 		display_notification(_("Attachment has been updated.")); 
 	}
 	$Mode = 'RESET';
@@ -145,8 +130,7 @@ if ($Mode == 'Delete')
 	$dir =  $comp_path."/".user_company(). "/attachments";
 	if (file_exists($dir."/".$row['unique_name']))
 		unlink($dir."/".$row['unique_name']);
-	$sql = "DELETE FROM ".TB_PREF."attachments WHERE id = ".db_escape($selected_id);
-	db_query($sql, "Could not delete attachment");
+	delete_attachment($selected_id);	
 	display_notification(_("Attachment has been deleted.")); 
 	$Mode = 'RESET';
 }
@@ -169,22 +153,6 @@ function viewing_controls()
     end_table(1);
 
 	end_form();
-}
-
-//----------------------------------------------------------------------------------------
-
-function get_attached_documents($type)
-{
-	$sql = "SELECT * FROM ".TB_PREF."attachments WHERE type_no=".db_escape($type)
-	." ORDER BY trans_no";
-	return db_query($sql, "Could not retrieve attachments");
-}
-
-function get_attachment($id)
-{
-	$sql = "SELECT * FROM ".TB_PREF."attachments WHERE id=".db_escape($id);
-	$result = db_query($sql, "Could not retrieve attachments");
-	return db_fetch($result);
 }
 
 function display_rows($type)

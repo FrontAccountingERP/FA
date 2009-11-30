@@ -128,11 +128,6 @@ $_POST['default_delivery_required'] = $myrow['default_delivery_required'];
 
 table_section_title(_("General GL"));
 
-// Not used in FA2.0.
-//gl_all_accounts_list_row(_("Retained Earning Clearing Account:"), 'retained_earnings_act', $_POST['retained_earnings_act']);
-// Not used in FA2.0.
-//gl_all_accounts_list_row(_("Payroll Account:"), 'payroll_act', $_POST['payroll_act']);
-
 text_row(_("Past Due Days Interval:"), 'past_due_days', $_POST['past_due_days'], 6, 6, '', "", _("days"));
 
 gl_all_accounts_list_row(_("Retained Earnings:"), 'retained_earnings_act', $_POST['retained_earnings_act']);

@@ -41,6 +41,11 @@ function get_printer($id)
 		return  db_fetch($result);
 }
 
+function delete_printer($id)
+{
+	$sql="DELETE FROM ".TB_PREF."printers WHERE id=".db_escape($id);
+	db_query($sql,"could not delete printer definition");
+}
 //============================================================================
 // printer profiles functions
 //
@@ -99,6 +104,14 @@ function get_print_profile($name)
 {
 	$sql = "SELECT	* FROM ".TB_PREF."print_profiles WHERE profile=".db_escape($name);
 	return db_query($sql,"could not get printing profile");
+}
+
+function printer_has_profile($id)
+{
+	$sql= "SELECT COUNT(*) FROM ".TB_PREF."print_profiles WHERE printer = ".db_escape($id);
+	$result = db_query($sql,"check printers relations failed");
+	$myrow = db_fetch_row($result);
+	return ($myrow[0] > 0); 
 }
 
 ?>

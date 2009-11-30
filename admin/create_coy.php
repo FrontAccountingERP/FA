@@ -124,8 +124,8 @@ function handle_submit()
 		if (is_uploaded_file ($filename))
 		{
 			db_import($filename, $conn, $id);
-			if (isset($_POST['admpassword']) && $_POST['admpassword'] != "")
-				db_query("UPDATE ".$conn['tbpref']."users set password = '".md5($_POST['admpassword']). "' WHERE user_id = 'admin'");
+			if (isset($_POST['admpassword']) && $_POST['admpassword'] != "")	
+				update_admin_password($conn, md5($_POST['admpassword']));
 		}
 		else
 		{

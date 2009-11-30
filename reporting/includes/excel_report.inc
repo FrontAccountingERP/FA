@@ -11,6 +11,7 @@
 ***********************************************************************/
 include_once($path_to_root . "/reporting/includes/Workbook.php");
 include_once($path_to_root . "/admin/db/company_db.inc");
+include_once($path_to_root . "/admin/db/fiscalyears_db.inc");
 include_once($path_to_root . "/config.php");
 // xls version
 class FrontReport extends Spreadsheet_Excel_Writer_Workbook

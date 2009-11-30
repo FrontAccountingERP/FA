@@ -114,64 +114,6 @@ function get_company_pref($pref_name, $tbpref = TB_PREF)
 	return $prefs[$pref_name];
 }
 
-// fiscal year routines
-function add_fiscalyear($from_date, $to_date, $closed)
-{
-	$from = date2sql($from_date);
-	$to = date2sql($to_date);
-
-	$sql = "INSERT INTO ".TB_PREF."fiscal_year (begin, end, closed)
-		VALUES (".db_escape($from).",".db_escape($to).", ".db_escape($closed).")";
-
-	db_query($sql, "could not add fiscal year");
-}
-
-function update_fiscalyear($id, $closed)
-{
-	$sql = "UPDATE ".TB_PREF."fiscal_year SET closed=".db_escape($closed)."
-		WHERE id=".db_escape($id);
-
-	db_query($sql, "could not update fiscal year");
-}
-
-function get_all_fiscalyears()
-{
-	$sql = "SELECT * FROM ".TB_PREF."fiscal_year ORDER BY begin";
-
-	return db_query($sql, "could not get all fiscal years");
-}
-
-function get_fiscalyear($id)
-{
-	$sql = "SELECT * FROM ".TB_PREF."fiscal_year WHERE id=".db_escape($id);
-
-	$result = db_query($sql, "could not get fiscal year");
-
-	return db_fetch($result);
-}
-
-function get_current_fiscalyear()
-{
-	$year = get_company_pref('f_year');
-
-	$sql = "SELECT * FROM ".TB_PREF."fiscal_year WHERE id=".db_escape($year);
-
-	$result = db_query($sql, "could not get current fiscal year");
-
-	return db_fetch($result);
-}
-
-function delete_fiscalyear($id)
-{
-	begin_transaction();
-
-	$sql="DELETE FROM ".TB_PREF."fiscal_year WHERE id=".db_escape($id);
-
-	db_query($sql, "could not delete fiscal year");
-
-	commit_transaction();
-}
-
 function get_base_sales_type()
 {
 	$sql = "SELECT base_sales FROM ".TB_PREF."company WHERE coy_code=1";
@@ -192,5 +134,79 @@ function get_company_extensions($id = -1) {
 	return $installed_extensions;
 }
 
+function add_payment_terms($daysOrFoll, $terms, $dayNumber)
+{
+	if ($daysOrFoll) 
+	{
+		$sql = "INSERT INTO ".TB_PREF."payment_terms (terms,
+			days_before_due, day_in_following_month)
+			VALUES (" .
+			db_escape($terms) . ", " . db_escape($dayNumber) . ", 0)";
+	} 
+	else 
+	{
+		$sql = "INSERT INTO ".TB_PREF."payment_terms (terms,
+			days_before_due, day_in_following_month)
+			VALUES (" . db_escape($terms) . ",
+			0, " . db_escape($dayNumber) . ")";
+	}
+   	db_query($sql,"The payment term could not be added");
+}
+
+function update_payment_terms($selected_id, $daysOrFoll, $terms, $dayNumber)
+{
+	if ($daysOrFoll) 
+	{
+		$sql = "UPDATE ".TB_PREF."payment_terms SET terms=" . db_escape($terms) . ",
+			day_in_following_month=0,
+			days_before_due=" . db_escape($dayNumber) . "
+			WHERE terms_indicator = " .db_escape($selected_id);
+	} 
+	else 
+	{
+		$sql = "UPDATE ".TB_PREF."payment_terms SET terms=" . db_escape($terms) . ",
+			day_in_following_month=" . db_escape($dayNumber) . ",
+			days_before_due=0
+			WHERE terms_indicator = " .db_escape($selected_id);
+	}
+   	db_query($sql,"The payment term could not be updated");
+}
+
+function delete_payment_terms($selected_id)
+{
+	$sql="DELETE FROM ".TB_PREF."payment_terms WHERE terms_indicator=".db_escape($selected_id);
+	db_query($sql,"could not delete a payment terms");
+}
+
+function get_payment_terms($selected_id)
+{
+	$sql = "SELECT * FROM ".TB_PREF."payment_terms WHERE terms_indicator=".db_escape($selected_id);
+
+	$result = db_query($sql,"could not get payment term");
+	return db_fetch($result);
+}
+
+function get_payment_terms_all($show_inactive)
+{
+	$sql = "SELECT * FROM ".TB_PREF."payment_terms";
+	if (!$show_inactive) $sql .= " WHERE !inactive";
+	return db_query($sql,"could not get payment terms");
+}
+
+function customer_has_terms($selected_id)
+{
+	$sql= "SELECT COUNT(*) FROM ".TB_PREF."debtors_master WHERE payment_terms = ".db_escape($selected_id);
+	$result = db_query($sql,"check failed");
+	$myrow = db_fetch_row($result);
+	return ($myrow[0] > 0); 
+}
+
+function supplier_has_terms($selected_id)
+{
+	$sql= "SELECT COUNT(*) FROM ".TB_PREF."suppliers WHERE payment_terms = ".db_escape($selected_id);
+	$result = db_query($sql,"check failed");
+	$myrow = db_fetch_row($result);
+	return ($myrow[0] > 0); 
+}
 
 ?>

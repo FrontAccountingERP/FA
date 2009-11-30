@@ -18,6 +18,7 @@ include_once($path_to_root . "/includes/session.inc");
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
+include_once($path_to_root . "/admin/db/transactions_db.inc");
 
 include_once($path_to_root . "/reporting/includes/reporting.inc");
 $js = "";
@@ -93,30 +94,10 @@ function handle_search()
 	global $table_style;
 	if (check_valid_entries()==true)
 	{
-		$db_info = get_systype_db_info($_POST['filterType']);
-
-		if ($db_info == null)
+		$trans_ref = false;
+		$sql = get_sql_for_view_transactions($_POST['filterType'], $_POST['FromTransNo'], $_POST['ToTransNo'], $trans_ref);
+		if ($sql == "")
 			return;
-
-		$table_name = $db_info[0];
-		$type_name = $db_info[1];
-		$trans_no_name = $db_info[2];
-		$trans_ref = $db_info[3];
-
-		$sql = "SELECT DISTINCT $trans_no_name as trans_no";
-
-		if ($trans_ref)
-			$sql .= " ,$trans_ref ";
-
-		$sql .= ", ".$_POST['filterType']." as type FROM $table_name
-			WHERE $trans_no_name >= ".db_escape($_POST['FromTransNo']). "
-			AND  $trans_no_name <= ".db_escape($_POST['ToTransNo']);
-
-		if ($type_name != null)
-			$sql .= " AND `$type_name` = ".db_escape($_POST['filterType']);
-
-		$sql .= " ORDER BY $trans_no_name";
-
 
 		$print_type = $_POST['filterType'];
 		$print_out = ($print_type == ST_SALESINVOICE || $print_type == ST_CUSTCREDIT || $print_type == ST_CUSTDELIVERY ||
