@@ -27,7 +27,8 @@ if (!function_exists("_")) {
 //
 function display_error($message)
 {
-	global $_POST;
+	global $_POST, $path_to_root;
+
 	if(isset($message) AND $message != '')
 	{
 		// Copy values entered into session so user doesn't have to re-enter everything
