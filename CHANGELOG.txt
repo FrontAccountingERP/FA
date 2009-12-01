@@ -31,6 +31,9 @@ $ config.default.php
 $ /install/save.php
 ! Display sql in case of duplicate data error when go_debug=1.
 $ /includes/errors.inc
+! Next transaction numbers retrieved from transaction table instead of sys_types
+$ /includes/systypes.inc
+
 
 29-Nov-2009 Janusz Dobrowolski
 # Fixed change of language in display preferences. Removed sparse $_SESSION['languages'] variable
