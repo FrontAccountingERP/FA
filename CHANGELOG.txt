@@ -19,6 +19,12 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+01-Dec-2009 Janusz Dobrowolski
+# Removing config.php after error during install. Otherwise misleading message is displayed.
+$ /install/save.php
+! Display sql in case of duplicate data error when go_debug=1.
+$ /includes/errors.inc
+
 29-Nov-2009 Janusz Dobrowolski
 # Fixed change of language in display preferences. Removed sparse $_SESSION['languages'] variable
 $ /includes/lang/language.php
