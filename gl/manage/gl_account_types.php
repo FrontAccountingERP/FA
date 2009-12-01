@@ -79,21 +79,13 @@ function can_delete($selected_id)
 		return false;
 	$type = db_escape($selected_id);
 
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."chart_master
-		WHERE account_type=$type";
-	$result = db_query($sql, "could not query chart master");
-	$myrow = db_fetch_row($result);
-	if ($myrow[0] > 0) 
+	if (account_type_in_chart_master($type))
 	{
 		display_error(_("Cannot delete this account group because GL accounts have been created referring to it."));
 		return false;
 	}
 
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."chart_types
-		WHERE parent=$type";
-	$result = db_query($sql, "could not query chart types");
-	$myrow = db_fetch_row($result);
-	if ($myrow[0] > 0) 
+	if (account_type_in_parent($type))
 	{
 		display_error(_("Cannot delete this account group because GL account groups have been created referring to it."));
 		return false;

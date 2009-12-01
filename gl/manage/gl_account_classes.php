@@ -71,11 +71,7 @@ function can_delete($selected_id)
 {
 	if ($selected_id == -1)
 		return false;
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."chart_types
-		WHERE class_id=$selected_id";
-	$result = db_query($sql, "could not query chart master");
-	$myrow = db_fetch_row($result);
-	if ($myrow[0] > 0) 
+	if (account_class_in_account_types($selected_id))	
 	{
 		display_error(_("Cannot delete this account class because GL account types have been created referring to it."));
 		return false;

@@ -47,15 +47,7 @@ function display_gl_heading($myrow)
 
     end_table(1);
 }
-$sql = "SELECT gl.*, cm.account_name, IF(ISNULL(refs.reference), '', refs.reference) AS reference FROM "
-	.TB_PREF."gl_trans as gl
-	LEFT JOIN ".TB_PREF."chart_master as cm ON gl.account = cm.account_code
-	LEFT JOIN ".TB_PREF."refs as refs ON (gl.type=refs.type AND gl.type_no=refs.id)"
-	." WHERE gl.type= ".db_escape($_GET['type_id']) 
-	." AND gl.type_no = ".db_escape($_GET['trans_no'])
-	." ORDER BY counter";
-$result = db_query($sql,"could not get transactions");
-//alert("sql = ".$sql);
+$result = get_gl_trans($_GET['type_id'], $_GET['trans_no']);
 
 if (db_num_rows($result) == 0)
 {

@@ -83,6 +83,33 @@ function get_bank_trans($type, $trans_no=null, $person_type_id=null, $person_id=
 
 //----------------------------------------------------------------------------------------
 
+function get_bank_trans_for_bank_account($bank_account, $from, $to)
+{
+	$from = date2sql($from);
+	$to = date2sql($to);
+	$sql = "SELECT ".TB_PREF."bank_trans.* FROM ".TB_PREF."bank_trans
+		WHERE ".TB_PREF."bank_trans.bank_act = ".db_escape($bank_account) . "
+		AND trans_date >= '$from'
+		AND trans_date <= '$to'
+		ORDER BY trans_date,".TB_PREF."bank_trans.id";
+
+	return db_query($sql,"The transactions for '" . $bank_account . "' could not be retrieved");
+}
+
+//----------------------------------------------------------------------------------------
+
+function get_balance_before_for_bank_account($bank_account, $from)
+{
+	$from = date2sql($from);
+	$sql = "SELECT SUM(amount) FROM ".TB_PREF."bank_trans WHERE bank_act="
+		.db_escape($bank_account) . "
+		AND trans_date < '$from'";
+	$before_qty = db_query($sql, "The starting balance on hand could not be calculated");
+	$bfw_row = db_fetch_row($before_qty);
+	return $bfw_row[0];
+}
+//----------------------------------------------------------------------------------------
+
 function get_gl_trans_value($account, $type, $trans_no)
 {
 	$sql = "SELECT SUM(amount) FROM ".TB_PREF."gl_trans WHERE account="

@@ -140,13 +140,13 @@ function get_gl_transactions($from_date, $to_date, $trans_no=0,
 
 function get_gl_trans($type, $trans_id)
 {
-	$sql = "SELECT ".TB_PREF."gl_trans.*, "
-		.TB_PREF."chart_master.account_name FROM "
-			.TB_PREF."gl_trans, ".TB_PREF."chart_master
-		WHERE ".TB_PREF."chart_master.account_code=".TB_PREF."gl_trans.account
-		AND ".TB_PREF."gl_trans.type=".db_escape($type)
-		." AND ".TB_PREF."gl_trans.type_no=".db_escape($trans_id);
-
+	$sql = "SELECT gl.*, cm.account_name, IF(ISNULL(refs.reference), '', refs.reference) AS reference FROM "
+		.TB_PREF."gl_trans as gl
+		LEFT JOIN ".TB_PREF."chart_master as cm ON gl.account = cm.account_code
+		LEFT JOIN ".TB_PREF."refs as refs ON (gl.type=refs.type AND gl.type_no=refs.id)"
+		." WHERE gl.type= ".db_escape($type) 
+		." AND gl.type_no = ".db_escape($trans_id)
+		." ORDER BY counter";
 	return db_query($sql, "The gl transactions could not be retrieved");
 }
 
@@ -264,6 +264,64 @@ function get_budget_trans_from_to($from_date, $to_date, $account, $dimension=0, 
   		$sql .= " AND dimension_id = ".($dimension<0?0:db_escape($dimension));
 	if ($dimension2 != 0)
   		$sql .= " AND dimension2_id = ".($dimension2<0?0:db_escape($dimension2));
+	$result = db_query($sql,"No budget accounts were returned");
+
+	$row = db_fetch_row($result);
+	return $row[0];
+}
+//-------------------------------------------------------------------------------------
+
+function exists_gl_budget($date_, $account, $dimension, $dimension2)
+{
+	$sql = "SELECT account FROM ".TB_PREF."budget_trans WHERE account=".db_escape($account)
+	." AND tran_date='$date_' AND
+		dimension_id=".db_escape($dimension)." AND dimension2_id=".db_escape($dimension2);
+	$result = db_query($sql, "Cannot retreive a gl transaction");
+
+    return (db_num_rows($result) > 0);
+}
+
+function add_update_gl_budget_trans($date_, $account, $dimension, $dimension2, $amount)
+{
+	$date = date2sql($date_);
+
+	if (exists_gl_budget($date, $account, $dimension, $dimension2))
+		$sql = "UPDATE ".TB_PREF."budget_trans SET amount=".db_escape($amount)
+		." WHERE account=".db_escape($account)
+		." AND dimension_id=".db_escape($dimension)
+		." AND dimension2_id=".db_escape($dimension2)
+		." AND tran_date='$date'";
+	else
+		$sql = "INSERT INTO ".TB_PREF."budget_trans (tran_date,
+			account, dimension_id, dimension2_id, amount, memo_) VALUES ('$date',
+			".db_escape($account).", ".db_escape($dimension).", "
+			.db_escape($dimension2).", ".db_escape($amount).", '')";
+
+	db_query($sql, "The GL budget transaction could not be saved");
+}
+
+function delete_gl_budget_trans($date_, $account, $dimension, $dimension2)
+{
+	$date = date2sql($date_);
+
+	$sql = "DELETE FROM ".TB_PREF."budget_trans WHERE account=".db_escape($account)
+	." AND dimension_id=".db_escape($dimension)
+	." AND dimension2_id=".db_escape($dimension2)
+	." AND tran_date='$date'";
+	db_query($sql, "The GL budget transaction could not be deleted");
+}
+
+function get_only_budget_trans_from_to($from_date, $to_date, $account, $dimension=0, $dimension2=0)
+{
+
+	$from = date2sql($from_date);
+	$to = date2sql($to_date);
+
+	$sql = "SELECT SUM(amount) FROM ".TB_PREF."budget_trans
+		WHERE account=".db_escape($account)
+		." AND tran_date >= '$from' AND tran_date <= '$to'
+		 AND dimension_id = ".db_escape($dimension)
+		 ." AND dimension2_id = ".db_escape($dimension2);
 	$result = db_query($sql,"No budget accounts were returned");
 
 	$row = db_fetch_row($result);
@@ -505,4 +563,47 @@ function void_journal_trans($type, $type_no, $use_transaction=true)
 		commit_transaction();
 }
 
+function get_sql_for_journal_inquiry()
+{
+	// Tom Hallman 11 Nov 2009
+	// IF(gl.type = 1... statement is for deposits/payments that may not actually result
+	// in a deposit, such as when a fix is made.  Without that statement (and the
+	// joining of the bank_trans table), the fix deposit/payment amount would show up 
+	// incorrectly as only the positive side of the fix.    
+	$sql = "SELECT	IF(ISNULL(a.gl_seq),0,a.gl_seq) as gl_seq,
+		gl.tran_date,
+		gl.type,
+		gl.type_no,
+		refs.reference,
+		IF(gl.type = 1 OR gl.type = 2,
+		  bank_trans.amount,
+		  SUM(IF(gl.amount>0, gl.amount,0))) as amount,
+		com.memo_,
+		IF(ISNULL(u.user_id),'',u.user_id) as user_id
+		FROM ".TB_PREF."gl_trans as gl
+		 LEFT JOIN ".TB_PREF."audit_trail as a ON 
+			(gl.type=a.type AND gl.type_no=a.trans_no)
+		 LEFT JOIN ".TB_PREF."comments as com ON 
+			(gl.type=com.type AND gl.type_no=com.id)
+		 LEFT JOIN ".TB_PREF."refs as refs ON 
+			(gl.type=refs.type AND gl.type_no=refs.id)
+		 LEFT JOIN ".TB_PREF."users as u ON 
+			a.user=u.id
+		 LEFT JOIN ".TB_PREF."bank_trans as bank_trans ON 
+			(gl.type=bank_trans.type AND gl.type_no=bank_trans.trans_no)		
+		WHERE gl.tran_date >= '" . date2sql($_POST['FromDate']) . "'
+		AND gl.tran_date <= '" . date2sql($_POST['ToDate']) . "'
+		AND gl.amount!=0";
+	if (isset($_POST['Ref']) && $_POST['Ref'] != "") {
+		$sql .= " AND reference LIKE '%". $_POST['Ref'] . "%'";
+	}	
+	if (get_post('filterType') != -1) {
+		$sql .= " AND gl.type=".get_post('filterType');
+	}	
+	if (!check_value('AlsoClosed')) {
+		$sql .= " AND gl_seq=0";
+	}
+	$sql .= " GROUP BY gl.type, gl.type_no";
+	return $sql;
+}
 ?>

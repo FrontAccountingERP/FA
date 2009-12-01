@@ -17,14 +17,7 @@ function display_dimension_balance($id, $from, $to)
 {
 	global $path_to_root, $table_style;
 
-	$from = date2sql($from);
-	$to = date2sql($to);
-	$sql = "SELECT account, ".TB_PREF."chart_master.account_name, sum(amount) AS amt FROM
-		".TB_PREF."gl_trans,".TB_PREF."chart_master WHERE
-		".TB_PREF."gl_trans.account = ".TB_PREF."chart_master.account_code AND
-		(dimension_id = $id OR dimension2_id = $id) AND
-		tran_date >= '$from' AND tran_date <= '$to' GROUP BY account";
-	$result = db_query($sql, "Transactions could not be calculated");
+	$result = get_dimension_balance_all($id, $from, $to);
 
     if (db_num_rows($result) == 0)
     {

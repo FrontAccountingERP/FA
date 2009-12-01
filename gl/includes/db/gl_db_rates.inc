@@ -146,4 +146,14 @@ function get_ecb_rate($curr_b)
 	return $val;
 }  // end function get_ecb_rate
 
+//-----------------------------------------------------------------------------
+
+function get_sql_for_exchange_rates()
+{
+	$sql = "SELECT date_, rate_buy, id FROM "
+		.TB_PREF."exchange_rates "
+		."WHERE curr_code=".db_escape($_POST['curr_abrev'])."
+		 ORDER BY date_ DESC";
+	return $sql;	 
+}
 ?>

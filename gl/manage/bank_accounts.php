@@ -66,18 +66,13 @@ elseif( $Mode == 'Delete')
 	$acc = db_escape($selected_id);
 	// PREVENT DELETES IF DEPENDENT RECORDS IN 'bank_trans'
 
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."bank_trans WHERE bank_act=$acc";
-	$result = db_query($sql,"check failed");
-	$myrow = db_fetch_row($result);
-	if ($myrow[0] > 0) 
+	if (bank_account_in_transactions($acc))
 	{
 		$cancel_delete = 1;
 		display_error(_("Cannot delete this bank account because transactions have been created using this account."));
 	}
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."sales_pos WHERE pos_account=$acc";
-	$result = db_query($sql,"check failed");
-	$myrow = db_fetch_row($result);
-	if ($myrow[0] > 0) 
+
+	if (bank_account_in_sales_pos($acc))
 	{
 		$cancel_delete = 1;
 		display_error(_("Cannot delete this bank account because POS definitions have been created using this account."));
@@ -99,15 +94,7 @@ if ($Mode == 'RESET')
 
 /* Always show the list of accounts */
 
-$sql = "SELECT account.*, gl_account.account_name 
-	FROM ".TB_PREF."bank_accounts account, ".TB_PREF."chart_master gl_account 
-	WHERE account.account_code = gl_account.account_code";
-if (!check_value('show_inactive')) $sql .= " AND !account.inactive";
-$sql .= " ORDER BY account_code, bank_curr_code";
-
-$result = db_query($sql,"could not get bank accounts");
-
-check_db_error("The bank accounts set up could not be retreived", $sql);
+$result = get_bank_accounts(check_value('show_inactive'));
 
 start_form();
 start_table("$table_style width='80%'");

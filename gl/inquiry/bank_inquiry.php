@@ -53,18 +53,10 @@ end_form();
 
 //------------------------------------------------------------------------------------------------
 
-
-$date_after = date2sql($_POST['TransAfterDate']);
-$date_to = date2sql($_POST['TransToDate']);
 if (!isset($_POST['bank_account']))
 	$_POST['bank_account'] = "";
-$sql = "SELECT ".TB_PREF."bank_trans.* FROM ".TB_PREF."bank_trans
-	WHERE ".TB_PREF."bank_trans.bank_act = ".db_escape($_POST['bank_account']) . "
-	AND trans_date >= '$date_after'
-	AND trans_date <= '$date_to'
-	ORDER BY trans_date,".TB_PREF."bank_trans.id";
 
-$result = db_query($sql,"The transactions for '" . $_POST['bank_account'] . "' could not be retrieved");
+$result = get_bank_trans_for_bank_account($_POST['bank_account'], $_POST['TransAfterDate'], $_POST['TransToDate']);	
 
 div_start('trans_tbl');
 $act = get_bank_account($_POST["bank_account"]);
@@ -76,15 +68,10 @@ $th = array(_("Type"), _("#"), _("Reference"), _("Date"),
 	_("Debit"), _("Credit"), _("Balance"), _("Person/Item"), "");
 table_header($th);
 
-$sql = "SELECT SUM(amount) FROM ".TB_PREF."bank_trans WHERE bank_act="
-	.db_escape($_POST['bank_account']) . "
-	AND trans_date < '$date_after'";
-$before_qty = db_query($sql, "The starting balance on hand could not be calculated");
+$bfw = get_balance_before_for_bank_account($_POST['bank_account'], $_POST['TransAfterDate']);
 
 start_row("class='inquirybg'");
 label_cell("<b>"._("Opening Balance")." - ".$_POST['TransAfterDate']."</b>", "colspan=4");
-$bfw_row = db_fetch_row($before_qty);
-$bfw = $bfw_row[0];
 display_debit_or_credit_cells($bfw);
 label_cell("");
 label_cell("", "colspan=2");
