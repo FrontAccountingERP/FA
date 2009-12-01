@@ -19,6 +19,13 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+------------------------------- Release 2.2.1 ----------------------------------
+01-Dec-2009 Joe Hunt
+! Release 2.2.1
+$ config.default.php
+  /lang/new_language_template/LC_MESSAGES/empty.po
+  /lang/en_US/LC_MESSAGES/en_US.mo
+
 01-Dec-2009 Janusz Dobrowolski
 # Removing config.php after error during install. Otherwise misleading message is displayed.
 $ /install/save.php

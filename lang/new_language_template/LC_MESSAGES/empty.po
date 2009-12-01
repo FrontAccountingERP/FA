@@ -5,12 +5,12 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FrontAccounting\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-11-17 22:28+0100\n"
-"PO-Revision-Date: 2009-11-17 22:34+0100\n"
-"Last-Translator: FrontAccounting <info@frontaccounting.com>\n"
+"POT-Creation-Date: 2009-11-30 16:45+0100\n"
+"PO-Revision-Date: 2009-11-30 17:11+0100\n"
+"Last-Translator: Translation Team <info@frontaccounting.net>\n"
 "Language-Team: Translators\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=iso-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Language: English\n"
 "X-Poedit-Country: UNITED KINGDOM\n"
@@ -25,34 +25,23 @@ msgstr ""
 
 #: c:\Apache2\htdocs\account22/frontaccounting.php:82
 #: c:\Apache2\htdocs\account22/access/logout.php:17
-#: c:\Apache2\htdocs\account22/access/backup/logout1.php:17
 msgid "Logout"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/access/login.php:13
-#: c:\Apache2\htdocs\account22/access/backup/login1.php:13
-#: c:\Apache2\htdocs\account22/access/backup/login2.php:13
 msgid "Restricted access"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/access/login.php:33
-#: c:\Apache2\htdocs\account22/access/backup/login1.php:18
-#: c:\Apache2\htdocs\account22/access/backup/login2.php:32
 msgid "Login as user: demouser and password: password"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/access/login.php:37
-#: c:\Apache2\htdocs\account22/access/backup/login1.php:22
-#: c:\Apache2\htdocs\account22/access/backup/login2.php:36
 msgid "Please login here"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/access/login.php:45
 #: c:\Apache2\htdocs\account22/access/login.php:74
-#: c:\Apache2\htdocs\account22/access/backup/login1.php:57
-#: c:\Apache2\htdocs\account22/access/backup/login1.php:69
-#: c:\Apache2\htdocs\account22/access/backup/login2.php:44
-#: c:\Apache2\htdocs\account22/access/backup/login2.php:56
 msgid "Authorization timeout"
 msgstr ""
 
@@ -62,32 +51,24 @@ msgid "Login"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/access/login.php:81
-#: c:\Apache2\htdocs\account22/access/backup/login1.php:80
-#: c:\Apache2\htdocs\account22/access/backup/login2.php:63
 msgid "Version"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/access/login.php:84
-#: c:\Apache2\htdocs\account22/access/backup/login1.php:105
-#: c:\Apache2\htdocs\account22/access/backup/login2.php:73
 msgid "User name"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/access/login.php:88
-#: c:\Apache2\htdocs\account22/access/backup/login1.php:107
-#: c:\Apache2\htdocs\account22/access/backup/login2.php:77
 msgid "Password"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/access/login.php:97
-#: c:\Apache2\htdocs\account22/access/backup/login1.php:116
-#: c:\Apache2\htdocs\account22/access/backup/login2.php:86
+#: c:\Apache2\htdocs\account22/admin/create_coy.php:217
+#: c:\Apache2\htdocs\account22/admin/create_coy.php:306
 msgid "Company"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/access/login.php:106
-#: c:\Apache2\htdocs\account22/access/backup/login1.php:133
-#: c:\Apache2\htdocs\account22/access/backup/login2.php:95
 msgid "Login -->"
 msgstr ""
 
@@ -96,12 +77,10 @@ msgid "Theme:"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/access/logout.php:28
-#: c:\Apache2\htdocs\account22/access/backup/logout1.php:31
 msgid "Thank you for using"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/access/logout.php:39
-#: c:\Apache2\htdocs\account22/access/backup/logout1.php:43
 msgid "Click here to Login Again."
 msgstr ""
 
@@ -153,6 +132,7 @@ msgid "Date Uploaded"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/admin/attachments.php:212
+#: c:\Apache2\htdocs\account22/admin/create_coy.php:241
 msgid "Edit"
 msgstr ""
 
@@ -165,6 +145,7 @@ msgid "Download"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/admin/attachments.php:215
+#: c:\Apache2\htdocs\account22/admin/create_coy.php:242
 msgid "Delete"
 msgstr ""
 
@@ -202,6 +183,7 @@ msgid "Database backup failed."
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/admin/backups.php:92
+#: c:\Apache2\htdocs\account22/admin/create_coy.php:229
 msgid "No"
 msgstr ""
 
@@ -352,133 +334,127 @@ msgstr ""
 msgid "Error uploading logo file"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/company_preferences.php:117
+#: c:\Apache2\htdocs\account22/admin/company_preferences.php:119
 msgid "Company setup has been updated."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/company_preferences.php:160
+#: c:\Apache2\htdocs\account22/admin/company_preferences.php:162
 msgid "Name (to appear on reports):"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/company_preferences.php:161
-#: c:\Apache2\htdocs\account22/admin/shipping_companies.php:171
+#: c:\Apache2\htdocs\account22/admin/company_preferences.php:163
 msgid "Address:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/company_preferences.php:162
+#: c:\Apache2\htdocs\account22/admin/company_preferences.php:164
 msgid "Domicile:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/company_preferences.php:164
-#: c:\Apache2\htdocs\account22/admin/shipping_companies.php:167
+#: c:\Apache2\htdocs\account22/admin/company_preferences.php:166
 msgid "Phone Number:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/company_preferences.php:165
+#: c:\Apache2\htdocs\account22/admin/company_preferences.php:167
 msgid "Fax Number:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/company_preferences.php:166
+#: c:\Apache2\htdocs\account22/admin/company_preferences.php:168
 msgid "Email Address:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/company_preferences.php:168
+#: c:\Apache2\htdocs\account22/admin/company_preferences.php:170
 msgid "Official Company Number:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/company_preferences.php:169
+#: c:\Apache2\htdocs\account22/admin/company_preferences.php:171
 msgid "GSTNo:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/company_preferences.php:171
+#: c:\Apache2\htdocs\account22/admin/company_preferences.php:173
 msgid "Home Currency:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/company_preferences.php:172
+#: c:\Apache2\htdocs\account22/admin/company_preferences.php:174
 msgid "Fiscal Year:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/company_preferences.php:176
+#: c:\Apache2\htdocs\account22/admin/company_preferences.php:178
 msgid "Tax Periods:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/company_preferences.php:176
+#: c:\Apache2\htdocs\account22/admin/company_preferences.php:178
 msgid "Months."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/company_preferences.php:177
+#: c:\Apache2\htdocs\account22/admin/company_preferences.php:179
 msgid "Tax Last Period:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/company_preferences.php:177
+#: c:\Apache2\htdocs\account22/admin/company_preferences.php:179
 msgid "Months back."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/company_preferences.php:179
+#: c:\Apache2\htdocs\account22/admin/company_preferences.php:181
 msgid "Company Logo:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/company_preferences.php:180
+#: c:\Apache2\htdocs\account22/admin/company_preferences.php:182
 msgid "New Company Logo (.jpg)"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/company_preferences.php:181
+#: c:\Apache2\htdocs\account22/admin/company_preferences.php:183
 msgid "Delete Company Logo:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/company_preferences.php:183
+#: c:\Apache2\htdocs\account22/admin/company_preferences.php:185
 msgid "Use Dimensions:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/company_preferences.php:184
+#: c:\Apache2\htdocs\account22/admin/company_preferences.php:186
 msgid "Base for auto price calculations:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/company_preferences.php:185
+#: c:\Apache2\htdocs\account22/admin/company_preferences.php:187
 msgid "No base price list"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/company_preferences.php:186
+#: c:\Apache2\htdocs\account22/admin/company_preferences.php:188
 msgid "Add Price from Std Cost:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/company_preferences.php:188
+#: c:\Apache2\htdocs\account22/admin/company_preferences.php:190
 msgid "Round to nearest:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/company_preferences.php:190
+#: c:\Apache2\htdocs\account22/admin/company_preferences.php:192
 msgid "Search Item List"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/company_preferences.php:191
+#: c:\Apache2\htdocs\account22/admin/company_preferences.php:193
 msgid "Search Customer List"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/company_preferences.php:192
+#: c:\Apache2\htdocs\account22/admin/company_preferences.php:194
 msgid "Search Supplier List"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/company_preferences.php:194
+#: c:\Apache2\htdocs\account22/admin/company_preferences.php:196
 msgid "Time Zone on Reports"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/company_preferences.php:195
+#: c:\Apache2\htdocs\account22/admin/company_preferences.php:197
 msgid "Login Timeout:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/company_preferences.php:195
+#: c:\Apache2\htdocs\account22/admin/company_preferences.php:197
 msgid "seconds"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/company_preferences.php:196
+#: c:\Apache2\htdocs\account22/admin/company_preferences.php:198
 msgid "Version Id"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/admin/company_preferences.php:201
-#: c:\Apache2\htdocs\account22/admin/display_prefs.php:140
-#: c:\Apache2\htdocs\account22/admin/forms_setup.php:61
-#: c:\Apache2\htdocs\account22/admin/gl_setup.php:220
-#: c:\Apache2\htdocs\account22/admin/inst_module.php:267
+#: c:\Apache2\htdocs\account22/admin/company_preferences.php:203
 msgid "Update"
 msgstr ""
 
@@ -568,15 +544,10 @@ msgstr ""
 
 #: c:\Apache2\htdocs\account22/admin/create_coy.php:218
 #: c:\Apache2\htdocs\account22/admin/create_coy.php:316
-#: c:\Apache2\htdocs\account22/admin/inst_lang.php:139
-#: c:\Apache2\htdocs\account22/admin/print_profiles.php:164
 msgid "Default"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/admin/create_coy.php:227
-#: c:\Apache2\htdocs\account22/admin/fiscalyears.php:417
-#: c:\Apache2\htdocs\account22/admin/inst_lang.php:156
-#: c:\Apache2\htdocs\account22/admin/inst_lang.php:160
 msgid "Yes"
 msgstr ""
 
@@ -585,7 +556,6 @@ msgid "The marked company is the current company which cannot be deleted."
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/admin/create_coy.php:307
-#: c:\Apache2\htdocs\account22/admin/printers.php:88
 msgid "Host"
 msgstr ""
 
@@ -594,7 +564,6 @@ msgid "Database Password"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/admin/create_coy.php:313
-#: c:\Apache2\htdocs\account22/admin/inst_upgrade.php:184
 msgid "None"
 msgstr ""
 
@@ -611,7 +580,6 @@ msgid "Choose from Database scripts in SQL folder. No Database is created withou
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/admin/create_coy.php:327
-#: c:\Apache2\htdocs\account22/admin/inst_lang.php:226
 msgid "Save"
 msgstr ""
 
@@ -677,6 +645,7 @@ msgid "Language"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/admin/display_prefs.php:98
+#: c:\Apache2\htdocs\account22/admin/users.php:211
 msgid "Language:"
 msgstr ""
 
@@ -705,10 +674,12 @@ msgid "Start-up Tab"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/admin/display_prefs.php:124
+#: c:\Apache2\htdocs\account22/admin/users.php:215
 msgid "Printing profile"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/admin/display_prefs.php:125
+#: c:\Apache2\htdocs\account22/admin/users.php:216
 msgid "Browser printing support"
 msgstr ""
 
@@ -717,6 +688,7 @@ msgid "Use popup window to display reports:"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/admin/display_prefs.php:128
+#: c:\Apache2\htdocs\account22/admin/users.php:219
 msgid "Set this option to on if your browser directly supports pdf files"
 msgstr ""
 
@@ -2344,6 +2316,8 @@ msgstr ""
 
 #: c:\Apache2\htdocs\account22/dimensions/dimension_entry.php:123
 #: c:\Apache2\htdocs\account22/gl/bank_transfer.php:146
+#: c:\Apache2\htdocs\account22/gl/gl_bank.php:142
+#: c:\Apache2\htdocs\account22/gl/gl_journal.php:174
 msgid "The entered reference is already in use."
 msgstr ""
 
@@ -2376,7 +2350,7 @@ msgstr ""
 #: c:\Apache2\htdocs\account22/dimensions/inquiry/search_dimensions.php:75
 #: c:\Apache2\htdocs\account22/dimensions/inquiry/search_dimensions.php:173
 #: c:\Apache2\htdocs\account22/dimensions/view/view_dimension.php:54
-#: c:\Apache2\htdocs\account22/gl/bank_account_reconcile.php:258
+#: c:\Apache2\htdocs\account22/gl/bank_account_reconcile.php:261
 msgid "Type"
 msgstr ""
 
@@ -2463,7 +2437,7 @@ msgstr ""
 
 #: c:\Apache2\htdocs\account22/dimensions/inquiry/search_dimensions.php:174
 #: c:\Apache2\htdocs\account22/dimensions/view/view_dimension.php:54
-#: c:\Apache2\htdocs\account22/gl/bank_account_reconcile.php:261
+#: c:\Apache2\htdocs\account22/gl/bank_account_reconcile.php:264
 msgid "Date"
 msgstr ""
 
@@ -2510,6 +2484,7 @@ msgstr ""
 
 #: c:\Apache2\htdocs\account22/gl/bank_account_reconcile.php:35
 #: c:\Apache2\htdocs\account22/gl/bank_transfer.php:30
+#: c:\Apache2\htdocs\account22/gl/gl_bank.php:43
 msgid "There are no bank accounts defined in the system."
 msgstr ""
 
@@ -2521,59 +2496,59 @@ msgstr ""
 msgid "Reconcile this transaction"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/gl/bank_account_reconcile.php:172
+#: c:\Apache2\htdocs\account22/gl/bank_account_reconcile.php:173
 msgid "Account:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/gl/bank_account_reconcile.php:174
+#: c:\Apache2\htdocs\account22/gl/bank_account_reconcile.php:175
 msgid "Bank Statement:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/gl/bank_account_reconcile.php:175
+#: c:\Apache2\htdocs\account22/gl/bank_account_reconcile.php:176
 msgid "New"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/gl/bank_account_reconcile.php:217
+#: c:\Apache2\htdocs\account22/gl/bank_account_reconcile.php:220
 msgid "Reconcile Date"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/gl/bank_account_reconcile.php:217
+#: c:\Apache2\htdocs\account22/gl/bank_account_reconcile.php:220
 msgid "Beginning<br>Balance"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/gl/bank_account_reconcile.php:218
+#: c:\Apache2\htdocs\account22/gl/bank_account_reconcile.php:221
 msgid "Ending<br>Balance"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/gl/bank_account_reconcile.php:218
+#: c:\Apache2\htdocs\account22/gl/bank_account_reconcile.php:221
 msgid "Account<br>Total"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/gl/bank_account_reconcile.php:218
+#: c:\Apache2\htdocs\account22/gl/bank_account_reconcile.php:221
 msgid "Reconciled<br>Amount"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/gl/bank_account_reconcile.php:218
+#: c:\Apache2\htdocs\account22/gl/bank_account_reconcile.php:221
 msgid "Difference"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/gl/bank_account_reconcile.php:222
+#: c:\Apache2\htdocs\account22/gl/bank_account_reconcile.php:225
 msgid "Date of bank statement to reconcile"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/gl/bank_account_reconcile.php:262
+#: c:\Apache2\htdocs\account22/gl/bank_account_reconcile.php:265
 msgid "Debit"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/gl/bank_account_reconcile.php:263
+#: c:\Apache2\htdocs\account22/gl/bank_account_reconcile.php:266
 msgid "Credit"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/gl/bank_account_reconcile.php:264
+#: c:\Apache2\htdocs\account22/gl/bank_account_reconcile.php:267
 msgid "Person/Item"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/gl/bank_account_reconcile.php:274
+#: c:\Apache2\htdocs\account22/gl/bank_account_reconcile.php:277
 msgid "Reconcile"
 msgstr ""
 
@@ -2629,6 +2604,8 @@ msgid "The Bank Charge Account has not been set in System and General GL Setup."
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/gl/bank_transfer.php:139
+#: c:\Apache2\htdocs\account22/gl/gl_bank.php:136
+#: c:\Apache2\htdocs\account22/gl/gl_journal.php:166
 msgid "You must enter a reference."
 msgstr ""
 
@@ -2680,27 +2657,31 @@ msgstr ""
 msgid "You must enter at least one payment line."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/gl/gl_bank.php:142
+#: c:\Apache2\htdocs\account22/gl/gl_bank.php:129
+msgid "The total bank amount cannot be 0."
+msgstr ""
+
+#: c:\Apache2\htdocs\account22/gl/gl_bank.php:148
 msgid "The entered date for the payment is invalid."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/gl/gl_bank.php:191
+#: c:\Apache2\htdocs\account22/gl/gl_bank.php:197
 msgid "The source and destination accouts cannot be the same."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/gl/gl_bank.php:273
+#: c:\Apache2\htdocs\account22/gl/gl_bank.php:279
 msgid "Payment Items"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/gl/gl_bank.php:273
+#: c:\Apache2\htdocs\account22/gl/gl_bank.php:279
 msgid "Deposit Items"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/gl/gl_bank.php:281
+#: c:\Apache2\htdocs\account22/gl/gl_bank.php:287
 msgid "Process Payment"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/gl/gl_bank.php:281
+#: c:\Apache2\htdocs\account22/gl/gl_bank.php:287
 msgid "Process Deposit"
 msgstr ""
 
@@ -2727,15 +2708,10 @@ msgstr ""
 #: c:\Apache2\htdocs\account22/gl/gl_budget.php:128
 #: c:\Apache2\htdocs\account22/gl/gl_budget.php:129
 #: c:\Apache2\htdocs\account22/gl/gl_budget.php:133
-#: c:\Apache2\htdocs\account22/gl/inquiry/gl_account_inquiry.php:80
-#: c:\Apache2\htdocs\account22/gl/inquiry/gl_account_inquiry.php:82
-#: c:\Apache2\htdocs\account22/gl/inquiry/gl_account_inquiry.php:135
-#: c:\Apache2\htdocs\account22/gl/inquiry/gl_account_inquiry.php:137
 msgid "Dimension"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/gl/gl_budget.php:141
-#: c:\Apache2\htdocs\account22/gl/manage/exchange_rates.php:136
 msgid "Get"
 msgstr ""
 
@@ -2746,8 +2722,6 @@ msgstr ""
 
 #: c:\Apache2\htdocs\account22/gl/gl_budget.php:148
 #: c:\Apache2\htdocs\account22/gl/gl_budget.php:150
-#: c:\Apache2\htdocs\account22/gl/inquiry/journal_inquiry.php:160
-#: c:\Apache2\htdocs\account22/gl/inquiry/tax_inquiry.php:85
 msgid "Amount"
 msgstr ""
 
@@ -2761,7 +2735,6 @@ msgid "Last Year"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/gl/gl_budget.php:188
-#: c:\Apache2\htdocs\account22/gl/inquiry/gl_trial_balance.php:135
 msgid "Total"
 msgstr ""
 
@@ -3563,9 +3536,9 @@ msgstr ""
 #: c:\Apache2\htdocs\account22/gl/view/gl_payment_view.php:98
 #: c:\Apache2\htdocs\account22/gl/view/gl_payment_view.php:101
 #: c:\Apache2\htdocs\account22/gl/view/gl_payment_view.php:104
-#: c:\Apache2\htdocs\account22/gl/view/gl_trans_view.php:72
-#: c:\Apache2\htdocs\account22/gl/view/gl_trans_view.php:75
-#: c:\Apache2\htdocs\account22/gl/view/gl_trans_view.php:78
+#: c:\Apache2\htdocs\account22/gl/view/gl_trans_view.php:71
+#: c:\Apache2\htdocs\account22/gl/view/gl_trans_view.php:74
+#: c:\Apache2\htdocs\account22/gl/view/gl_trans_view.php:77
 msgid "Account Code"
 msgstr ""
 
@@ -3615,15 +3588,15 @@ msgstr ""
 msgid "The script must be called with a valid transaction type and transaction number to review the general ledger postings for."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/gl/view/gl_trans_view.php:63
+#: c:\Apache2\htdocs\account22/gl/view/gl_trans_view.php:62
 msgid "No general ledger transactions have been created for"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/gl/view/gl_trans_view.php:63
+#: c:\Apache2\htdocs\account22/gl/view/gl_trans_view.php:62
 msgid "number"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/gl/view/gl_trans_view.php:112
+#: c:\Apache2\htdocs\account22/gl/view/gl_trans_view.php:111
 msgid "This transaction has been voided."
 msgstr ""
 
@@ -3719,6 +3692,7 @@ msgstr ""
 #: c:\Apache2\htdocs\account22/inventory/purchasing_data.php:117
 #: c:\Apache2\htdocs\account22/inventory/reorder_level.php:43
 #: c:\Apache2\htdocs\account22/inventory/inquiry/stock_movements.php:49
+#: c:\Apache2\htdocs\account22/inventory/inquiry/stock_status.php:41
 msgid "Item:"
 msgstr ""
 
@@ -3740,6 +3714,7 @@ msgstr ""
 
 #: c:\Apache2\htdocs\account22/inventory/prices.php:27
 #: c:\Apache2\htdocs\account22/inventory/inquiry/stock_movements.php:30
+#: c:\Apache2\htdocs\account22/inventory/inquiry/stock_status.php:34
 msgid "There are no items defined in the system."
 msgstr ""
 
@@ -3884,15 +3859,19 @@ msgid "There are no inventory items defined in the system (Purchased or manufact
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/inventory/reorder_level.php:57
+#: c:\Apache2\htdocs\account22/inventory/inquiry/stock_status.php:65
+#: c:\Apache2\htdocs\account22/inventory/inquiry/stock_status.php:69
 msgid "Location"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/inventory/reorder_level.php:57
 #: c:\Apache2\htdocs\account22/inventory/inquiry/stock_movements.php:78
+#: c:\Apache2\htdocs\account22/inventory/inquiry/stock_status.php:69
 msgid "Quantity On Hand"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/inventory/reorder_level.php:57
+#: c:\Apache2\htdocs\account22/inventory/inquiry/stock_status.php:69
 msgid "Re-Order Level"
 msgstr ""
 
@@ -3925,6 +3904,7 @@ msgid "The quantity entered must be a positive number."
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/inventory/transfers.php:230
+#: c:\Apache2\htdocs\account22/inventory/manage/items.php:16
 msgid "Items"
 msgstr ""
 
@@ -4015,8 +3995,6 @@ msgid "The item code cannot contain any of the following characters -  & + OR a 
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/inventory/manage/items.php:150
-#: c:\Apache2\htdocs\account22/inventory/manage/item_codes.php:55
-#: c:\Apache2\htdocs\account22/inventory/manage/sales_kits.php:90
 msgid "This item code is already assigned to stock item or sale kit."
 msgstr ""
 
@@ -4061,9 +4039,6 @@ msgid "New item"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/inventory/manage/items.php:310
-#: c:\Apache2\htdocs\account22/inventory/view/view_adjustment.php:56
-#: c:\Apache2\htdocs\account22/inventory/view/view_transfer.php:39
-#: c:\Apache2\htdocs\account22/inventory/view/view_transfer.php:57
 msgid "Item"
 msgstr ""
 
@@ -4073,32 +4048,22 @@ msgid "Item Code:"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/inventory/manage/items.php:349
-#: c:\Apache2\htdocs\account22/inventory/manage/item_codes.php:177
-#: c:\Apache2\htdocs\account22/inventory/manage/movement_types.php:134
-#: c:\Apache2\htdocs\account22/inventory/manage/sales_kits.php:207
-#: c:\Apache2\htdocs\account22/inventory/manage/sales_kits.php:231
 msgid "Description:"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/inventory/manage/items.php:351
-#: c:\Apache2\htdocs\account22/inventory/manage/item_codes.php:178
-#: c:\Apache2\htdocs\account22/inventory/manage/sales_kits.php:208
-#: c:\Apache2\htdocs\account22/inventory/manage/sales_kits.php:232
 msgid "Category:"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/inventory/manage/items.php:372
-#: c:\Apache2\htdocs\account22/inventory/manage/item_categories.php:191
 msgid "Item Tax Type:"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/inventory/manage/items.php:374
-#: c:\Apache2\htdocs\account22/inventory/manage/item_categories.php:193
 msgid "Item Type:"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/inventory/manage/items.php:376
-#: c:\Apache2\htdocs\account22/inventory/manage/item_categories.php:195
 msgid "Units of Measure:"
 msgstr ""
 
@@ -4127,7 +4092,6 @@ msgid "Delete Image:"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/inventory/manage/items.php:442
-#: c:\Apache2\htdocs\account22/inventory/manage/item_categories.php:197
 msgid "Exclude from sales:"
 msgstr ""
 
@@ -4894,12 +4858,10 @@ msgid "Release Work Order"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/manufacturing/inquiry/bom_cost_inquiry.php:24
-#: c:\Apache2\htdocs\account22/manufacturing/manage/bom_edit.php:24
 msgid "There are no manufactured or kit items defined in the system."
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/manufacturing/inquiry/bom_cost_inquiry.php:35
-#: c:\Apache2\htdocs\account22/manufacturing/manage/bom_edit.php:220
 msgid "Select a manufacturable item:"
 msgstr ""
 
@@ -5564,6 +5526,7 @@ msgstr ""
 #: c:\Apache2\htdocs\account22/purchasing/inquiry/po_search.php:173
 #: c:\Apache2\htdocs\account22/purchasing/inquiry/po_search_completed.php:157
 #: c:\Apache2\htdocs\account22/purchasing/inquiry/supplier_inquiry.php:213
+#: c:\Apache2\htdocs\account22/purchasing/view/view_supp_credit.php:45
 msgid "Supplier's Reference"
 msgstr ""
 
@@ -5616,6 +5579,7 @@ msgstr ""
 
 #: c:\Apache2\htdocs\account22/purchasing/inquiry/supplier_allocation_inquiry.php:197
 #: c:\Apache2\htdocs\account22/purchasing/inquiry/supplier_inquiry.php:233
+#: c:\Apache2\htdocs\account22/purchasing/view/view_po.php:90
 msgid "Marked items are overdue."
 msgstr ""
 
@@ -5880,12 +5844,10 @@ msgid "SUPPLIER CREDIT NOTE"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/purchasing/view/view_supp_credit.php:48
-#: c:\Apache2\htdocs\account22/purchasing/view/view_supp_invoice.php:51
 msgid "Invoice Date"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/purchasing/view/view_supp_credit.php:61
-#: c:\Apache2\htdocs\account22/purchasing/view/view_supp_invoice.php:66
 msgid "Sub Total"
 msgstr ""
 
@@ -5939,14 +5901,17 @@ msgid "Balances in Home Currency"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/reporting/rep101.php:123
+#: c:\Apache2\htdocs\account22/reporting/rep201.php:114
 msgid "Trans Type"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/reporting/rep101.php:123
+#: c:\Apache2\htdocs\account22/reporting/rep201.php:114
 msgid "Charges"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/reporting/rep101.php:123
+#: c:\Apache2\htdocs\account22/reporting/rep201.php:115
 msgid "Credits"
 msgstr ""
 
@@ -5965,6 +5930,7 @@ msgstr ""
 #: c:\Apache2\htdocs\account22/reporting/rep101.php:231
 #: c:\Apache2\htdocs\account22/reporting/rep102.php:207
 #: c:\Apache2\htdocs\account22/reporting/rep106.php:177
+#: c:\Apache2\htdocs\account22/reporting/rep201.php:224
 msgid "Grand Total"
 msgstr ""
 
@@ -6387,32 +6353,32 @@ msgstr ""
 msgid "GL Account Transactions"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/reporting/rep705.php:151
-#: c:\Apache2\htdocs\account22/reporting/rep705.php:163
-#: c:\Apache2\htdocs\account22/reporting/rep705.php:173
+#: c:\Apache2\htdocs\account22/reporting/rep705.php:152
+#: c:\Apache2\htdocs\account22/reporting/rep705.php:164
+#: c:\Apache2\htdocs\account22/reporting/rep705.php:174
 #: c:\Apache2\htdocs\account22/reporting/reports_main.php:232
 #: c:\Apache2\htdocs\account22/reporting/reports_main.php:275
 #: c:\Apache2\htdocs\account22/reporting/reports_main.php:313
 msgid "Year"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/reporting/rep705.php:157
-#: c:\Apache2\htdocs\account22/reporting/rep705.php:167
-#: c:\Apache2\htdocs\account22/reporting/rep705.php:175
+#: c:\Apache2\htdocs\account22/reporting/rep705.php:158
+#: c:\Apache2\htdocs\account22/reporting/rep705.php:168
+#: c:\Apache2\htdocs\account22/reporting/rep705.php:176
 msgid "Info"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/reporting/rep705.php:157
-#: c:\Apache2\htdocs\account22/reporting/rep705.php:167
-#: c:\Apache2\htdocs\account22/reporting/rep705.php:175
+#: c:\Apache2\htdocs\account22/reporting/rep705.php:158
+#: c:\Apache2\htdocs\account22/reporting/rep705.php:168
+#: c:\Apache2\htdocs\account22/reporting/rep705.php:176
 msgid "Amounts in thousands"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/reporting/rep705.php:179
+#: c:\Apache2\htdocs\account22/reporting/rep705.php:180
 msgid "Annual Expense Breakdown"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/reporting/rep705.php:365
+#: c:\Apache2\htdocs\account22/reporting/rep705.php:366
 #: c:\Apache2\htdocs\account22/reporting/rep706.php:319
 #: c:\Apache2\htdocs\account22/reporting/rep706.php:325
 #: c:\Apache2\htdocs\account22/reporting/rep707.php:336
@@ -7850,6 +7816,7 @@ msgid "Customer Allocations"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/sales/allocations/customer_allocation_main.php:32
+#: c:\Apache2\htdocs\account22/sales/inquiry/customer_allocation_inquiry.php:42
 msgid "Select a customer: "
 msgstr ""
 
@@ -8575,9 +8542,6 @@ msgid "There are no line items on this credit note."
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/sales/view/view_credit.php:138
-#: c:\Apache2\htdocs\account22/sales/view/view_dispatch.php:156
-#: c:\Apache2\htdocs\account22/sales/view/view_invoice.php:158
-#: c:\Apache2\htdocs\account22/sales/view/view_sales_order.php:230
 msgid "Shipping"
 msgstr ""
 
@@ -8950,15 +8914,6 @@ msgstr ""
 
 #: c:\Apache2\htdocs\account22/themes/aqua/renderer.php:16
 #: c:\Apache2\htdocs\account22/themes/cool/renderer.php:16
-#: c:\Apache2\htdocs\account22/themes/default/renderer.php:17
-#: c:\Apache2\htdocs\account22/themes/elegant/renderer.php:17
-#: c:\Apache2\htdocs\account22/themes/fancy/renderer.php:17
-#: c:\Apache2\htdocs\account22/themes/go/themes/elegant/renderer.php:17
-#: c:\Apache2\htdocs\account22/themes/go/themes/fancy/renderer.php:17
-#: c:\Apache2\htdocs\account22/themes/go/themes/modern/renderer.php:17
-#: c:\Apache2\htdocs\account22/themes/go/themes/newwave/renderer.php:6
-#: c:\Apache2\htdocs\account22/themes/modern/renderer.php:17
-#: c:\Apache2\htdocs\account22/themes/newwave/renderer.php:6
 msgid "Main Menu"
 msgstr ""
 
@@ -8966,155 +8921,114 @@ msgstr ""
 #: c:\Apache2\htdocs\account22/themes/aqua/renderer.php:70
 #: c:\Apache2\htdocs\account22/themes/cool/renderer.php:46
 #: c:\Apache2\htdocs\account22/themes/cool/renderer.php:70
-#: c:\Apache2\htdocs\account22/themes/default/renderer.php:47
-#: c:\Apache2\htdocs\account22/themes/default/renderer.php:71
-#: c:\Apache2\htdocs\account22/themes/elegant/renderer.php:45
-#: c:\Apache2\htdocs\account22/themes/elegant/renderer.php:52
-#: c:\Apache2\htdocs\account22/themes/fancy/renderer.php:43
-#: c:\Apache2\htdocs\account22/themes/go/themes/elegant/renderer.php:45
-#: c:\Apache2\htdocs\account22/themes/go/themes/elegant/renderer.php:52
-#: c:\Apache2\htdocs\account22/themes/go/themes/fancy/renderer.php:43
-#: c:\Apache2\htdocs\account22/themes/go/themes/modern/renderer.php:40
-#: c:\Apache2\htdocs\account22/themes/go/themes/modern/renderer.php:47
-#: c:\Apache2\htdocs\account22/themes/go/themes/newwave/renderer.php:37
-#: c:\Apache2\htdocs\account22/themes/modern/renderer.php:40
-#: c:\Apache2\htdocs\account22/themes/modern/renderer.php:47
-#: c:\Apache2\htdocs\account22/themes/newwave/renderer.php:37
 msgid "Help"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/themes/aqua/renderer.php:65
 #: c:\Apache2\htdocs\account22/themes/cool/renderer.php:65
-#: c:\Apache2\htdocs\account22/themes/default/renderer.php:66
-#: c:\Apache2\htdocs\account22/themes/elegant/renderer.php:48
-#: c:\Apache2\htdocs\account22/themes/fancy/renderer.php:40
-#: c:\Apache2\htdocs\account22/themes/go/themes/elegant/renderer.php:48
-#: c:\Apache2\htdocs\account22/themes/go/themes/fancy/renderer.php:40
-#: c:\Apache2\htdocs\account22/themes/go/themes/modern/renderer.php:43
-#: c:\Apache2\htdocs\account22/themes/go/themes/newwave/renderer.php:48
-#: c:\Apache2\htdocs\account22/themes/modern/renderer.php:43
-#: c:\Apache2\htdocs\account22/themes/newwave/renderer.php:48
 msgid "Preferences"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/themes/elegant/renderer.php:76
-#: c:\Apache2\htdocs\account22/themes/go/themes/elegant/renderer.php:76
 msgid "Shortcuts"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/themes/elegant/renderer.php:81
-#: c:\Apache2\htdocs\account22/themes/go/themes/elegant/renderer.php:81
-#: c:\Apache2\htdocs\account22/themes/go/themes/modern/renderer.php:69
 #: c:\Apache2\htdocs\account22/themes/modern/renderer.php:69
+#: c:\Apache2\htdocs\account22/themes/studio/renderer.php:70
 msgid "Direct Invoice"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/themes/elegant/renderer.php:82
 #: c:\Apache2\htdocs\account22/themes/elegant/renderer.php:93
 #: c:\Apache2\htdocs\account22/themes/elegant/renderer.php:118
-#: c:\Apache2\htdocs\account22/themes/go/themes/elegant/renderer.php:82
-#: c:\Apache2\htdocs\account22/themes/go/themes/elegant/renderer.php:93
-#: c:\Apache2\htdocs\account22/themes/go/themes/elegant/renderer.php:118
-#: c:\Apache2\htdocs\account22/themes/go/themes/modern/renderer.php:70
-#: c:\Apache2\htdocs\account22/themes/go/themes/modern/renderer.php:81
-#: c:\Apache2\htdocs\account22/themes/go/themes/modern/renderer.php:106
 #: c:\Apache2\htdocs\account22/themes/modern/renderer.php:70
 #: c:\Apache2\htdocs\account22/themes/modern/renderer.php:81
 #: c:\Apache2\htdocs\account22/themes/modern/renderer.php:106
+#: c:\Apache2\htdocs\account22/themes/studio/renderer.php:71
+#: c:\Apache2\htdocs\account22/themes/studio/renderer.php:82
+#: c:\Apache2\htdocs\account22/themes/studio/renderer.php:107
 msgid "Payments"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/themes/elegant/renderer.php:83
-#: c:\Apache2\htdocs\account22/themes/go/themes/elegant/renderer.php:83
-#: c:\Apache2\htdocs\account22/themes/go/themes/modern/renderer.php:71
 #: c:\Apache2\htdocs\account22/themes/modern/renderer.php:71
+#: c:\Apache2\htdocs\account22/themes/studio/renderer.php:72
 msgid "Sales Order Inquiry"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/themes/elegant/renderer.php:92
-#: c:\Apache2\htdocs\account22/themes/go/themes/elegant/renderer.php:92
-#: c:\Apache2\htdocs\account22/themes/go/themes/modern/renderer.php:80
 #: c:\Apache2\htdocs\account22/themes/modern/renderer.php:80
+#: c:\Apache2\htdocs\account22/themes/studio/renderer.php:81
 msgid "Supplier Invoice"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/themes/elegant/renderer.php:99
-#: c:\Apache2\htdocs\account22/themes/go/themes/elegant/renderer.php:99
-#: c:\Apache2\htdocs\account22/themes/go/themes/modern/renderer.php:87
 #: c:\Apache2\htdocs\account22/themes/modern/renderer.php:87
+#: c:\Apache2\htdocs\account22/themes/studio/renderer.php:88
 msgid "Inventory Adjustments"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/themes/elegant/renderer.php:100
-#: c:\Apache2\htdocs\account22/themes/go/themes/elegant/renderer.php:100
 msgid "Inventory Movements"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/themes/elegant/renderer.php:102
-#: c:\Apache2\htdocs\account22/themes/go/themes/elegant/renderer.php:102
-#: c:\Apache2\htdocs\account22/themes/go/themes/modern/renderer.php:90
 #: c:\Apache2\htdocs\account22/themes/modern/renderer.php:90
+#: c:\Apache2\htdocs\account22/themes/studio/renderer.php:91
 msgid "Sales Pricing"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/themes/elegant/renderer.php:107
-#: c:\Apache2\htdocs\account22/themes/go/themes/elegant/renderer.php:107
-#: c:\Apache2\htdocs\account22/themes/go/themes/modern/renderer.php:95
 #: c:\Apache2\htdocs\account22/themes/modern/renderer.php:95
+#: c:\Apache2\htdocs\account22/themes/studio/renderer.php:96
 msgid "Ourstanding Work Orders"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/themes/elegant/renderer.php:108
-#: c:\Apache2\htdocs\account22/themes/go/themes/elegant/renderer.php:108
-#: c:\Apache2\htdocs\account22/themes/go/themes/modern/renderer.php:96
 #: c:\Apache2\htdocs\account22/themes/modern/renderer.php:96
+#: c:\Apache2\htdocs\account22/themes/studio/renderer.php:97
 msgid "Work Order Inquiry"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/themes/elegant/renderer.php:109
-#: c:\Apache2\htdocs\account22/themes/go/themes/elegant/renderer.php:109
-#: c:\Apache2\htdocs\account22/themes/go/themes/modern/renderer.php:97
 #: c:\Apache2\htdocs\account22/themes/modern/renderer.php:97
+#: c:\Apache2\htdocs\account22/themes/studio/renderer.php:98
 msgid "Bills Of Material"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/themes/elegant/renderer.php:114
-#: c:\Apache2\htdocs\account22/themes/go/themes/elegant/renderer.php:114
-#: c:\Apache2\htdocs\account22/themes/go/themes/modern/renderer.php:102
 #: c:\Apache2\htdocs\account22/themes/modern/renderer.php:102
+#: c:\Apache2\htdocs\account22/themes/studio/renderer.php:103
 msgid "Dimension Inquiry"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/themes/elegant/renderer.php:119
-#: c:\Apache2\htdocs\account22/themes/go/themes/elegant/renderer.php:119
-#: c:\Apache2\htdocs\account22/themes/go/themes/modern/renderer.php:107
 #: c:\Apache2\htdocs\account22/themes/modern/renderer.php:107
+#: c:\Apache2\htdocs\account22/themes/studio/renderer.php:108
 msgid "Deposits"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/themes/elegant/renderer.php:121
-#: c:\Apache2\htdocs\account22/themes/go/themes/elegant/renderer.php:121
-#: c:\Apache2\htdocs\account22/themes/go/themes/modern/renderer.php:109
 #: c:\Apache2\htdocs\account22/themes/modern/renderer.php:109
+#: c:\Apache2\htdocs\account22/themes/studio/renderer.php:110
 msgid "Bank Account Inquiry"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/themes/elegant/renderer.php:122
-#: c:\Apache2\htdocs\account22/themes/go/themes/elegant/renderer.php:122
-#: c:\Apache2\htdocs\account22/themes/go/themes/modern/renderer.php:110
 #: c:\Apache2\htdocs\account22/themes/modern/renderer.php:110
+#: c:\Apache2\htdocs\account22/themes/studio/renderer.php:111
 msgid "GL Account Inquiry"
 msgstr ""
 
 #: c:\Apache2\htdocs\account22/themes/elegant/renderer.php:131
-#: c:\Apache2\htdocs\account22/themes/go/themes/elegant/renderer.php:131
-#: c:\Apache2\htdocs\account22/themes/go/themes/modern/renderer.php:119
 #: c:\Apache2\htdocs\account22/themes/modern/renderer.php:119
+#: c:\Apache2\htdocs\account22/themes/studio/renderer.php:120
 msgid "Taxes"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/themes/go/themes/modern/renderer.php:88
 #: c:\Apache2\htdocs\account22/themes/modern/renderer.php:88
+#: c:\Apache2\htdocs\account22/themes/studio/renderer.php:89
 msgid "Inventory Item Movements"
 msgstr ""
 
@@ -10018,24 +9932,23 @@ msgstr ""
 msgid "Some transactions journal GL postings were not indexed due to lack of audit trail record."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/ui/allocation_cart.inc:259
+#: c:\Apache2\htdocs\account22/includes/ui/allocation_cart.inc:261
 msgid "Other Allocations"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/ui/allocation_cart.inc:259
-#: c:\Apache2\htdocs\account22/includes/ui/ui_view.inc:453
+#: c:\Apache2\htdocs\account22/includes/ui/allocation_cart.inc:261
 msgid "This Allocation"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/ui/allocation_cart.inc:288
+#: c:\Apache2\htdocs\account22/includes/ui/allocation_cart.inc:290
 msgid "Total Allocated"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/ui/allocation_cart.inc:323
+#: c:\Apache2\htdocs\account22/includes/ui/allocation_cart.inc:327
 msgid "The entry for one or more amounts is invalid or negative."
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/includes/ui/allocation_cart.inc:346
+#: c:\Apache2\htdocs\account22/includes/ui/allocation_cart.inc:350
 msgid "These allocations cannot be processed because the amount allocated is more than the total amount left to allocate."
 msgstr ""
 
@@ -10784,6 +10697,7 @@ msgstr ""
 
 #: c:\Apache2\htdocs\account22/reporting/includes/header2.inc:150
 #: c:\Apache2\htdocs\account22/reporting/includes/pdf_report.inc:245
+#: c:\Apache2\htdocs\account22/reporting/includes/backup/header2.inc:158
 msgid "Page"
 msgstr ""
 
@@ -10930,11 +10844,11 @@ msgstr ""
 msgid "No Sales Folk Filter"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/reporting/includes/reports_classes.inc:360
+#: c:\Apache2\htdocs\account22/reporting/includes/reports_classes.inc:357
 msgid "No Users Filter"
 msgstr ""
 
-#: c:\Apache2\htdocs\account22/reporting/includes/reports_classes.inc:368
+#: c:\Apache2\htdocs\account22/reporting/includes/reports_classes.inc:365
 msgid "No tags"
 msgstr ""
 
