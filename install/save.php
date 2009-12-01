@@ -53,6 +53,7 @@ function display_error($message)
 		// Specify that session support is enabled
 		$_SESSION['session_support'] = '<font class="good">Enabled</font>';
 		// Redirect to first page again and exit
+		@unlink($path_to_root."/config.php"); // remove just created config file
 		header('Location: index.php?sessions_checked=true');
 		exit();
 	}
@@ -295,9 +296,7 @@ if ($admin_password != $admin_repassword)
 }
 // End admin user details code
 
-if (!file_exists($path_to_root . "/config.php")) {
-	copy($path_to_root. "/config.default.php", $path_to_root. "/config.php");
-}
+copy($path_to_root. "/config.default.php", $path_to_root. "/config.php");
 
 include_once($path_to_root . "/includes/db/connect_db.inc");
 include_once($path_to_root . "/admin/db/maintenance_db.inc");
