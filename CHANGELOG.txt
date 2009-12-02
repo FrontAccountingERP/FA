@@ -20,6 +20,12 @@ Legend:
 $ -> Affected files
 
 ------------------------------- Release 2.2.1 ----------------------------------
+02-Dec-2009 Janusz Dobrowolski
+# Fixed insert null data values for bank_trans
+$ /sql/en_US-demo.sql
+# Fixed to store default null values on export
+$ /admin/db/maintenance_db.inc
+
 01-Dec-2009 Joe Hunt
 ! Release 2.2.1
 $ config.default.php
