@@ -19,6 +19,67 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+02-Dec-2009 Janusz Dobrowolski
+! Merged changed from trunk up to 2.2.1 ---------------------------------------
+
+$ /sql/en_US-demo.sql
+# Fixed to store default null values on export
+$ /admin/db/maintenance_db.inc
+! Display sql in case of duplicate data error when go_debug=1 - redone
+$ /includes/errors.inc
+# Display settings are restored in every login in demo mode.
+$ /admin/display_prefs.php
+  /includes/current_user.inc
+# Fixed view/download backup
+$ /admin/backups.php
+
+$ config.default.php
+  /lang/new_language_template/LC_MESSAGES/empty.po
+  /lang/en_US/LC_MESSAGES/en_US.mo
+# More restrictions on deleting gl_accounts
+$ /gl/manage/gl_accounts.php
+! Changed 'delete' to 'deldump' in backups.php to better satisfy IE8 (Yes!)
+$ /admin/backups.php
+
+01-Dec-2009 Janusz Dobrowolski
+# Removing config.php after error during install. Otherwise misleading message is displayed.
+$ /install/save.php
+! Display sql in case of duplicate data error when go_debug=1.
+$ /includes/errors.inc
+! Next transaction numbers retrieved from transaction table instead of sys_types
+$ /includes/systypes.inc
+
+29-Nov-2009 Janusz Dobrowolski
+# Fixed change of language in display preferences. Removed sparse $_SESSION['languages'] variable
+$ /includes/lang/language.php
+  /includes/session.inc
+! Array helpers moved to current_user. Added array_search_key and array_search_key helpers.
+$ /includes/current_user.inc
+  /includes/main.inc
+
+28-Nov-2009 Chaitanya/Joe Hunt
+# Missing ajax trigger in stock_purchasable_items_list_cells. Prices not updated instantly.
+$ /purchasing/includes/ui/po_ui.inc
+
+26-Nov-2009 Joe Hunt
+# Round to nearest value of 0 produced a division by zero error
+$ /admin/company_preferences.php
+# When printing reference numbers instead of internal numbers on documents
+  it should also refer to reference numbers in deliveries and orders.
+$ /reporting/includes/header2.inc
+
+25-Nov-2009 Joe Hunt/Tom Hallman
+# Fixed so total amount cannot be 0 in Bank Payments/Deposits
+$ /gl/gl_bank.php
+
+21-Nov-2009 Janusz Dobrowolski
+# Fixed bug [0000178] data error in supplier allocations
+$ /includes/ui/allocation_cart.inc
+! Fixed type constant usage.
+$ /purchasing/includes/db/supp_trans_db.inc
+
+--------------
+
 01-Dec-2009 Joe Hunt
 ! Moved all SQL statements from PHP files into relevant *_db.inc files.
   included gl folder
@@ -65,9 +126,6 @@ $ /admin/attachments.php
   /includes/date_functions.inc
   /reporting/includes/excel_report.inc
   /reporting/includes/pdf_report.inc
-  
-  
-  
 
 ------------------------------- Release 2.2 ----------------------------------
 18-Nov-2009 Joe Hunt

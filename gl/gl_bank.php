@@ -125,6 +125,12 @@ if (isset($_POST['Process']))
 		$input_error = 1;
 	}
 
+	if ($_SESSION['pay_items']->gl_items_total() == 0.0) {
+		display_error(_("The total bank amount cannot be 0."));
+		set_focus('code_id');
+		$input_error = 1;
+	}
+
 	if (!$Refs->is_valid($_POST['ref']))
 	{
 		display_error( _("You must enter a reference."));

@@ -24,12 +24,12 @@ class language
 						// Right-To-Left (rtl)
 	var $is_locale_file;
 	
-	function language($name, $code, $encoding) 
+	function language($name, $code, $encoding, $dir = 'ltr') 
 	{
 		$this->name = $name;
 		$this->code = $code;
 		$this->encoding = $encoding;
-		$this->dir = "ltr";
+		$this->dir = $dir;
 	}
 
 	function get_language_dir() 
@@ -45,51 +45,35 @@ class language
 
 	function set_language($code) 
 	{
-	    global $comp_path, $path_to_root;
-		
-		$changed = $_SESSION['language']->code != $code;
-		if (isset($_SESSION['languages'][$code]) && $changed)
+	    global $comp_path, $path_to_root, $installed_languages;
+
+		$changed = $this->code != $code;
+		$lang = array_search_value($code, $installed_languages, 'code');
+
+		if ($lang && $changed)
 		{
 		// flush cache as we can use several languages in one account
-		    flush_dir($comp_path.'/'.user_company().'/js_cache');
-		    $_SESSION['language'] = $_SESSION['languages'][$code];
-			$locale = $path_to_root . "/lang/" . $_SESSION['language']->code . "/locale.inc";
-			// check id file exists only once for session
-			$_SESSION['language']->is_locale_file = file_exists($locale);
+			flush_dir($comp_path.'/'.user_company().'/js_cache');
+
+			$this->name = $lang['name'];
+			$this->code = $lang['code'];
+			$this->encoding = $lang['encoding'];
+			$this->dir = isset($lang['rtl']) ? 'rtl' : 'ltr';
+			$locale = $path_to_root . "/lang/" . $this->code . "/locale.inc";
+			$this->is_locale_file = file_exists($locale);
 		}
-		$lang = $_SESSION['language'];
-		$_SESSION['get_text']->set_language($lang->code, $lang->encoding);
-		$_SESSION['get_text']->add_domain($lang->code, $path_to_root . "/lang");
-		
+
+		$_SESSION['get_text']->set_language($this->code, $this->encoding);
+		$_SESSION['get_text']->add_domain($this->code, $path_to_root . "/lang");
+
 		// Necessary for ajax calls. Due to bug in php 4.3.10 for this 
 		// version set globally in php.ini
-		ini_set('default_charset', $lang->encoding);
+		ini_set('default_charset', $this->encoding);
 
 		if (isset($_SESSION['App']) && $changed)
 			$_SESSION['App']->init(); // refresh menu
 	}
 }
-	/**
-	 * This method loads an array of language objects into a session variable
-     * called $_SESSIONS['languages']. Only supported languages are added.
-     */
-	function load_languages() 
-	{
-		global $installed_languages, $dflt_lang;
-
-		$_SESSION['languages'] = array();
-
-        foreach ($installed_languages as $lang) 
-        {
-			$l = new language($lang['name'],$lang['code'],$lang['encoding']);
-			if (isset($lang['rtl']))
-				$l->dir = "rtl";
-			$_SESSION['languages'][$l->code] = $l;
-        }
-
-		if (!isset($_SESSION['language']))
-			$_SESSION['language'] = $_SESSION['languages'][$dflt_lang];
-	}
 
 function _set($key,$value) 
 {

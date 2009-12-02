@@ -102,6 +102,8 @@ if (isset($_POST['update']) && $_POST['update'] != "")
 	}
 	if ($_POST['add_pct'] == "")
 		$_POST['add_pct'] = -1;
+	if ($_POST['round_to'] <= 0)
+		$_POST['round_to'] = 1;
 	if ($input_error != 1)
 	{
 		update_company_setup($_POST['coy_name'], $_POST['coy_no'], 

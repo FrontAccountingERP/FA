@@ -37,6 +37,7 @@ function add_supp_trans($type, $supplier_id, $date_, $due_date, $reference, $sup
 
 	if ($err_msg == "")
 		$err_msg = "Cannot insert a supplier transaction record";
+error_log($sql);
 
 	db_query($sql, $err_msg);
 	add_audit_trail($type, $trans_no, $date_);
@@ -104,7 +105,7 @@ function get_supp_trans($trans_no, $trans_type=-1)
 
 function exists_supp_trans($type, $type_no)
 {
-	if ($type == 25)
+	if ($type == ST_SUPPRECEIVE)
 		return exists_grn($type_no);
 
 	$sql = "SELECT trans_no FROM ".TB_PREF."supp_trans WHERE type=".db_escape($type)."

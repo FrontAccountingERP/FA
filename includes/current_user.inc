@@ -170,14 +170,29 @@ class current_user
 	function update_prefs($price_dec, $qty_dec, $exrate_dec, $percent_dec, 
 		$showgl, $showcodes, $date_format, $date_sep, $tho_sep, $dec_sep, 
 		$theme, $pagesize, $show_hints, $profile, $rep_popup, $query_size, 
-		$graphic_links, $lang, $stickydate, $startup_tab) {
-		update_user_display_prefs($this->user, $price_dec, 
-			$qty_dec, $exrate_dec, $percent_dec, $showgl, $showcodes, 
-			$date_format, $date_sep, $tho_sep, $dec_sep, $theme, $pagesize, 
-			$show_hints, $profile, $rep_popup, $query_size, $graphic_links, $lang, $stickydate, $startup_tab);
+		$graphic_links, $lang, $stickydate, $startup_tab)
+	{
+		global $allow_demo_mode;
 
-		// re-read the prefs
-		$user = get_user($this->user);
+		$user = array(
+			'prices_dec' => $price_dec, 	'qty_dec' => $qty_dec,
+			'rates_dec' => $exrate_dec,		'percent_dec' => $percent_dec,
+			'show_gl' => $showgl,			'show_codes' => $showcodes,
+			'date_format' => $date_format,	'date_sep' => $date_sep,
+			'tho_sep' => $tho_sep,			'dec_sep' => $dec_sep,
+			'theme' => $theme,				'page_size' => $pagesize,
+			'show_hints' => $show_hints,	'print_profile' => $profile,
+			'rep_popup' => $rep_popup,		'query_size' => $query_size,
+			'graphic_links' => $graphic_links,	'language' => $lang,
+			'sticky_doc_date' => $stickydate,	'startup_tab' => $startup_tab
+		);
+
+		if(!$allow_demo_mode) {
+			update_user_display_prefs($this->user, $price_dec, 
+				$qty_dec, $exrate_dec, $percent_dec, $showgl, $showcodes, 
+				$date_format, $date_sep, $tho_sep, $dec_sep, $theme, $pagesize, 
+				$show_hints, $profile, $rep_popup, $query_size, $graphic_links, $lang, $stickydate, $startup_tab);
+		}
 		$this->prefs = new user_prefs($user);
 	}
 }
@@ -423,5 +438,60 @@ function session_timeout()
 {
 	$tout = @get_company_pref('login_tout'); // mask warning for db ver. 2.2
 	return $tout ? $tout : ini_get('session.gc_maxlifetime');
+}
+
+//-----------------------------------------------------------------------------
+//	Inserts $elements into $array at position $index.
+//	$elements is list of any objects
+//
+function array_insert(&$array, $index, $elements)
+{
+	if (!is_array($elements)) $elements = array($elements);
+
+	$head  = array_splice($array, 0, $index);
+	$array = array_merge($head, $elements, $array);
+}
+
+function array_remove(&$array, $index, $len=1)
+{
+	array_splice($array, $index, $len);
+}
+
+function array_substitute(&$array, $index, $len, $elements)
+{
+	array_splice($array, $index, $len);
+	array_insert($array, $index, $elements);
+}
+
+function array_append(&$array, $elements)
+{
+	foreach($elements as $key => $el) {
+		if(is_int($key))
+			$array[] = $el;
+		else
+			$array[$key] = $el;
+	}
+}
+
+function array_search_value($needle, $haystack, $valuekey=null)
+{
+	foreach($haystack as $key => $value) {
+		$val = isset($valuekey) ? $value[$valuekey] : $value;
+		if ($needle == $val){
+			return $value;
+		}
+	}
+	return null;
+}
+
+function array_search_key($needle, $haystack, $valuekey=null)
+{
+	foreach($haystack as $key => $value) {
+		$val = isset($valuekey) ? $value[$valuekey] : $value;
+		if ($needle == $val){
+			return $key;
+		}
+	}
+	return null;
 }
 ?>

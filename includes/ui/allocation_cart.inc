@@ -22,6 +22,7 @@ class allocation
 	var $type;
 	var $person_id = '';
 	var $person_name = '';
+	var $person_type;
 	var $date_;
 	var $amount = 0; /*Total amount of the transaction in FX */
 	
@@ -91,29 +92,32 @@ class allocation
 			$type = $this->type;
 			$trans_no = $this->trans_no;
 		}
-		
-		$sup = $type == ST_SUPPCREDIT || $type == ST_SUPPAYMENT;
+		if ($type == ST_BANKPAYMENT || $type == ST_BANKDEPOSIT) {
+			$bank_trans = db_fetch(get_bank_trans($type, $trans_no));
+			$this->person_type = $bank_trans['person_type_id'] == PT_SUPPLIER;
+		} else
+			$this->person_type = $type == ST_SUPPCREDIT || $type == ST_SUPPAYMENT;
 		$this->allocs = array();
 
 		if ($trans_no) {
-			$trans = $sup ? get_supp_trans($trans_no, $type) 
+			$trans = $this->person_type ? get_supp_trans($trans_no, $type) 
 				: get_customer_trans($trans_no, $type);
 
-			$this->person_id = $trans[$sup ? 'supplier_id':'debtor_no'];
-			$this->person_name = $trans[$sup ? "supplier_name":"DebtorName"];
+			$this->person_id = $trans[$this->person_type ? 'supplier_id':'debtor_no'];
+			$this->person_name = $trans[$this->person_type ? "supplier_name":"DebtorName"];
 			$this->amount = $trans["Total"];
 			$this->date_ = sql2date($trans["tran_date"]);
 		} 
 		else {
-			$this->person_id = get_post($sup ? 'supplier_id':'customer_id');
-			$this->date_ = get_post($sup ? 'DatePaid':'DateBanked', Today());
+			$this->person_id = get_post($this->person_type ? 'supplier_id':'customer_id');
+			$this->date_ = get_post($this->person_type ? 'DatePaid':'DateBanked', Today());
 		}
 
 	/* Now populate the array of possible (and previous actual) allocations 
 		for this customer/supplier. First get the transactions that have 
 		outstanding balances ie Total-alloc >0 */
 
-		if ($sup)
+		if ($this->person_type)
 			$trans_items = get_allocatable_to_supp_transactions($this->person_id);
 		else
 		 	$trans_items = get_allocatable_to_cust_transactions($this->person_id);
@@ -134,7 +138,7 @@ class allocation
 	NB existing entries where still some of the trans outstanding entered from
 	above logic will be overwritten with the prev alloc detail below */
 
-		if ($sup)
+		if ($this->person_type)
 			$trans_items = get_allocatable_to_supp_transactions($this->person_id, 
 				$trans_no, $type);
 		else
@@ -155,11 +159,9 @@ class allocation
 	//
 	function write()
 	{
-		$sup = $this->type == ST_SUPPCREDIT || $this->type == ST_SUPPAYMENT;
-
 		begin_transaction();
 
-		if ($sup)
+		if ($this->person_type)
 			clear_supp_alloctions($this->type, $this->trans_no, $this->date_);
 		else
 		 	clear_cust_alloctions($this->type, $this->trans_no, $this->date_);
@@ -170,7 +172,7 @@ class allocation
 		{
 			if ($alloc_item->current_allocated > 0)
 			{
-				if ($sup) {
+				if ($this->person_type) {
 					add_supp_allocation($alloc_item->current_allocated,
 						$this->type, $this->trans_no,
 			    	 	$alloc_item->type, $alloc_item->type_no, $this->date_);
@@ -199,7 +201,7 @@ class allocation
 			}
 
 		}  /*end of the loop through the array of allocations made */
-		if ($sup)
+		if ($this->person_type)
 			update_supp_trans_allocation($this->type, $this->trans_no, 
 				$total_allocated);
 		else
@@ -289,7 +291,9 @@ function show_allocatable($show_totals) {
 	    		"colspan=6 align=right", "align=right id='total_allocated'", 3);
 			$amount = $_SESSION['alloc']->amount;
 
-			if ($_SESSION['alloc']->type == 21 || $_SESSION['alloc']->type == 22) 
+			if ($_SESSION['alloc']->type == ST_SUPPCREDIT
+				|| $_SESSION['alloc']->type == ST_SUPPAYMENT
+				||  $_SESSION['alloc']->type == ST_BANKPAYMENT)
 				$amount = -$amount;
 			
 			if ($amount - $total_allocated < 0)
