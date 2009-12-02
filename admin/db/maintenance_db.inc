@@ -611,11 +611,11 @@ function db_export($conn, $filename, $zip='no', $comment='', $tbpref = TB_PREF)
 				// check if field types are NULL or NOT NULL
 				$res3 = db_query("SHOW COLUMNS FROM `" . $tablename . "`");
 
-				$field_type = array();
+				$field_null = array();
 				for ($j = 0; $j < db_num_rows($res3); $j++)
 				{
 					$row3 = db_fetch($res3);
-					$field_type[] = $row3[2];
+					$field_null[] = $row3[2]=='YES' && $row3[4]===null;
 				}
 
 				$res2 = db_query("SELECT * FROM `" . $tablename . "`");
@@ -626,7 +626,7 @@ function db_export($conn, $filename, $zip='no', $comment='', $tbpref = TB_PREF)
 					// run through each field
 					for ($k = 0; $k < $nf = db_num_fields($res2); $k++)
 					{
-						$out .= db_escape(@html_entity_decode($row2[$k], ENT_QUOTES, $_SESSION['language']->encoding));
+						$out .= db_escape($row2[$k], $field_null[$k]);
 						if ($k < ($nf - 1))
 							$out .= ", ";
 					}
