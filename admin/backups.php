@@ -129,7 +129,7 @@ if (get_post('restore')) {
 		display_notification(_("Restore backup completed."));
 }
 
-if (get_post('delete')) {
+if (get_post('delete2')) {
 	if (unlink(BACKUP_PATH . get_post('cmb_backups'))) {
 		display_notification(_("File successfully deleted.")." "
 				. _("Filename") . ": " . get_post('cmb_backups'));
@@ -174,8 +174,8 @@ table_section_title(_("Backup scripts maintenance"));
 	submit_row('restore',_("Restore Backup"), false, '','', 'process');
 	submit_js_confirm('restore',_("You are about to restore database from backup file.\nDo you want to continue?"));
 
-	submit_row('delete', _("Delete Backup"), false, '','', true);
-	submit_js_confirm('delete', sprintf(_("You are about to remove selected backup file.\nDo you want to continue ?")));
+	submit_row('delete2', _("Delete Backup"), false, '','', true);
+	submit_js_confirm('delete2', sprintf(_("You are about to remove selected backup file.\nDo you want to continue ?")));
 	end_table();
 	echo "</td>";
 	end_row();

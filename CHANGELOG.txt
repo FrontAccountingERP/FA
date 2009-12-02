@@ -31,13 +31,15 @@ $ /includes/errors.inc
 $ /admin/display_prefs.php
   /includes/current_user.inc
 
-01-Dec-2009 Joe Hunt
+02-Dec-2009 Joe Hunt
 ! Release 2.2.1
 $ config.default.php
   /lang/new_language_template/LC_MESSAGES/empty.po
   /lang/en_US/LC_MESSAGES/en_US.mo
 # More restrictions on deleting gl_accounts
 $ /gl/manage/gl_accounts.php
+! Changed 'delete' to 'delete2' in backups.php to better satisfy IE8 (Yes!)
+$ /admin/backups.php
 
 01-Dec-2009 Janusz Dobrowolski
 # Removing config.php after error during install. Otherwise misleading message is displayed.
