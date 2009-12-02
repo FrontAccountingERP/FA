@@ -170,14 +170,29 @@ class current_user
 	function update_prefs($price_dec, $qty_dec, $exrate_dec, $percent_dec, 
 		$showgl, $showcodes, $date_format, $date_sep, $tho_sep, $dec_sep, 
 		$theme, $pagesize, $show_hints, $profile, $rep_popup, $query_size, 
-		$graphic_links, $lang, $stickydate, $startup_tab) {
-		update_user_display_prefs($this->user, $price_dec, 
-			$qty_dec, $exrate_dec, $percent_dec, $showgl, $showcodes, 
-			$date_format, $date_sep, $tho_sep, $dec_sep, $theme, $pagesize, 
-			$show_hints, $profile, $rep_popup, $query_size, $graphic_links, $lang, $stickydate, $startup_tab);
+		$graphic_links, $lang, $stickydate, $startup_tab)
+	{
+		global $allow_demo_mode;
 
-		// re-read the prefs
-		$user = get_user($this->user);
+		$user = array(
+			'prices_dec' => $price_dec, 	'qty_dec' => $qty_dec,
+			'rates_dec' => $exrate_dec,		'percent_dec' => $percent_dec,
+			'show_gl' => $showgl,			'show_codes' => $showcodes,
+			'date_format' => $date_format,	'date_sep' => $date_sep,
+			'tho_sep' => $tho_sep,			'dec_sep' => $dec_sep,
+			'theme' => $theme,				'page_size' => $pagesize,
+			'show_hints' => $show_hints,	'print_profile' => $profile,
+			'rep_popup' => $rep_popup,		'query_size' => $query_size,
+			'graphic_links' => $graphic_links,	'language' => $lang,
+			'sticky_doc_date' => $stickydate,	'startup_tab' => $startup_tab
+		);
+
+		if(!$allow_demo_mode) {
+			update_user_display_prefs($this->user, $price_dec, 
+				$qty_dec, $exrate_dec, $percent_dec, $showgl, $showcodes, 
+				$date_format, $date_sep, $tho_sep, $dec_sep, $theme, $pagesize, 
+				$show_hints, $profile, $rep_popup, $query_size, $graphic_links, $lang, $stickydate, $startup_tab);
+		}
 		$this->prefs = new user_prefs($user);
 	}
 }

@@ -27,6 +27,9 @@ $ /sql/en_US-demo.sql
 $ /admin/db/maintenance_db.inc
 ! Display sql in case of duplicate data error when go_debug=1 - redone
 $ /includes/errors.inc
+# Display settings are restored in every login in demo mode.
+$ /admin/display_prefs.php
+  /includes/current_user.inc
 
 01-Dec-2009 Joe Hunt
 ! Release 2.2.1

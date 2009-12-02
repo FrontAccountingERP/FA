@@ -56,7 +56,11 @@ if (isset($_POST['setprefs']))
 		if ($chg_theme || $chg_lang)
 			meta_forward($_SERVER['PHP_SELF']);
 
-		display_notification_centered(_("Display settings have been updated."));
+		
+		if ($allow_demo_mode)  
+			display_warning(_("Display settings have been updated. Keep in mind that changed settings are restored on every login in demo mode."));
+		else
+			display_notification_centered(_("Display settings have been updated."));
 	}
 }
 
