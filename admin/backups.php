@@ -17,7 +17,7 @@ include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/admin/db/maintenance_db.inc");
 
 if (get_post('view')) {
-	$filename = BACKUP_PATH . get_post('cmb_backups');
+	$filename = BACKUP_PATH . get_post('backups');
 	if (in_ajax()) 
 		$Ajax->popup( $filename );
 	else {
@@ -30,7 +30,7 @@ if (get_post('view')) {
 };
 
 if (get_post('download')) {
-	download_file(BACKUP_PATH . get_post('cmb_backups'));
+	download_file(BACKUP_PATH . get_post('backups'));
 	exit;
 }
 
@@ -67,7 +67,7 @@ function get_backup_file_combo()
 	global $path_to_root, $Ajax;
 	
 	$ar_files = array();
-    default_focus('cmb_backups');
+    default_focus('backups');
     $dh = opendir(BACKUP_PATH);
 	while (($file = readdir($dh)) !== false)
 		$ar_files[] = $file;
@@ -79,10 +79,10 @@ function get_backup_file_combo()
 		if (preg_match("/.sql(.zip|.gz)?$/", $file))
     		$opt_files .= "<option value='$file'>$file</option>";
 
-	$selector = "<select name='cmb_backups' size=2 style='height:160px;min-width:230px'>$opt_files</select>";
+	$selector = "<select name='backups' size=2 style='height:160px;min-width:230px'>$opt_files</select>";
 
-	$Ajax->addUpdate('cmd_backups', "_cmd_backups_sel", $selector);
-	$selector = "<span id='_cmd_backups_sel'>".$selector."</span>\n";
+	$Ajax->addUpdate('backups', "_backups_sel", $selector);
+	$selector = "<span id='_backups_sel'>".$selector."</span>\n";
 
 	return $selector;
 }
@@ -121,19 +121,19 @@ $conn = $db_connections[$db_name];
 
 if (get_post('creat')) {
 	generate_backup($conn, get_post('comp'), get_post('comments'));
-	$Ajax->activate('cmd_backups');
+	$Ajax->activate('backups');
 };
 
 if (get_post('restore')) {
-	if (db_import(BACKUP_PATH . get_post('cmb_backups'), $conn))
+	if (db_import(BACKUP_PATH . get_post('backups'), $conn))
 		display_notification(_("Restore backup completed."));
 }
 
-if (get_post('delete2')) {
-	if (unlink(BACKUP_PATH . get_post('cmb_backups'))) {
+if (get_post('deldump')) {
+	if (unlink(BACKUP_PATH . get_post('backups'))) {
 		display_notification(_("File successfully deleted.")." "
-				. _("Filename") . ": " . get_post('cmb_backups'));
-		$Ajax->activate('cmd_backups');
+				. _("Filename") . ": " . get_post('backups'));
+		$Ajax->activate('backups');
 	}
 	else
 		display_error(_("Can't delete backup file."));
@@ -149,7 +149,7 @@ if (get_post('upload'))
 	elseif (is_uploaded_file($tmpname)) {
 		rename($tmpname, BACKUP_PATH . $fname);
 		display_notification( "File uploaded to backup directory");
-		$Ajax->activate('cmd_backups');
+		$Ajax->activate('backups');
 	} else
 		display_error(_("File was not uploaded into the system."));
 }
@@ -174,8 +174,9 @@ table_section_title(_("Backup scripts maintenance"));
 	submit_row('restore',_("Restore Backup"), false, '','', 'process');
 	submit_js_confirm('restore',_("You are about to restore database from backup file.\nDo you want to continue?"));
 
-	submit_row('delete2', _("Delete Backup"), false, '','', true);
-	submit_js_confirm('delete2', sprintf(_("You are about to remove selected backup file.\nDo you want to continue ?")));
+	submit_row('deldump', _("Delete Backup"), false, '','', true);
+	// don't use 'delete' name or IE js errors appear
+	submit_js_confirm('deldump', sprintf(_("You are about to remove selected backup file.\nDo you want to continue ?")));
 	end_table();
 	echo "</td>";
 	end_row();

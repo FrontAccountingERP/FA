@@ -30,6 +30,8 @@ $ /includes/errors.inc
 # Display settings are restored in every login in demo mode.
 $ /admin/display_prefs.php
   /includes/current_user.inc
+# Fixed view/download backup
+$ /admin/backups.php
 
 02-Dec-2009 Joe Hunt
 ! Release 2.2.1
@@ -38,7 +40,7 @@ $ config.default.php
   /lang/en_US/LC_MESSAGES/en_US.mo
 # More restrictions on deleting gl_accounts
 $ /gl/manage/gl_accounts.php
-! Changed 'delete' to 'delete2' in backups.php to better satisfy IE8 (Yes!)
+! Changed 'delete' to 'deldump' in backups.php to better satisfy IE8 (Yes!)
 $ /admin/backups.php
 
 01-Dec-2009 Janusz Dobrowolski
