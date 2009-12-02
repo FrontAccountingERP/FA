@@ -25,6 +25,8 @@ $ -> Affected files
 $ /sql/en_US-demo.sql
 # Fixed to store default null values on export
 $ /admin/db/maintenance_db.inc
+! Display sql in case of duplicate data error when go_debug=1 - redone
+$ /includes/errors.inc
 
 01-Dec-2009 Joe Hunt
 ! Release 2.2.1

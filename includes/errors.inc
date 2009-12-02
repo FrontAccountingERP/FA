@@ -130,15 +130,13 @@ function display_db_error($msg, $sql_statement=null, $exit=true)
 		exit;
 }
 
-function frindly_db_error($db_error, $sql)
+function frindly_db_error($db_error)
 {
-	global $db_duplicate_error_code, $go_debug;
+	global $db_duplicate_error_code;
 	
 	if ($db_error == $db_duplicate_error_code) 
-	{	$msg = _("The entered information is a duplicate. Please go back and enter different values.");
-		if ($go_debug)
-			$msg .= '<br>Sql that failed was :<br>'.$sql;
-		display_error($msg);
+	{	
+		display_error(_("The entered information is a duplicate. Please go back and enter different values."));
 		return true;
 	}
 	
@@ -147,13 +145,13 @@ function frindly_db_error($db_error, $sql)
 
 function check_db_error($msg, $sql_statement, $exit_if_error=true, $rollback_if_error=true)
 {
-	global $db;
+	global $db, $go_debug;
 	$db_error = db_error_no();
 	
 	if ($db_error != 0) 
 	{
 		
-		if (!frindly_db_error($db_error, $sql_statement)) {
+		if ($go_debug || !frindly_db_error($db_error)) {
 				display_db_error($msg, $sql_statement, false);
 		}
 		
