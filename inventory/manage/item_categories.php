@@ -67,10 +67,7 @@ if ($Mode == 'Delete')
 {
 
 	// PREVENT DELETES IF DEPENDENT RECORDS IN 'stock_master'
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."stock_master WHERE category_id=".db_escape($selected_id);
-	$result = db_query($sql, "could not query stock master");
-	$myrow = db_fetch_row($result);
-	if ($myrow[0] > 0) 
+	if (key_in_foreign_table($selected_id, 'stock_master', 'category_id'))
 	{
 		display_error(_("Cannot delete this item category because items have been created using this item category."));
 	} 
@@ -94,11 +91,7 @@ if (list_updated('mb_flag')) {
 }
 //----------------------------------------------------------------------------------
 
-$sql = "SELECT c.*, t.name as tax_name FROM ".TB_PREF."stock_category c, "
-	.TB_PREF."item_tax_types t WHERE c.dflt_tax_type=t.id";
-if (!check_value('show_inactive')) $sql .= " AND !c.inactive";
-
-$result = db_query($sql, "could not get stock categories");
+$result = get_item_categories(check_value('show_inactive'));
 
 start_form();
 start_table("$table_style width=80%");

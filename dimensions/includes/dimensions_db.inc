@@ -122,10 +122,11 @@ function dimension_has_deposits($id)
 
 function dimension_has_payments($id)
 {
-	$sql = "SELECT SUM(amount) FROM ".TB_PREF."gl_trans WHERE dimension_id = ".db_escape($id);
+	$sql = "SELECT COUNT(*) FROM ".TB_PREF."gl_trans WHERE dimension_id = ".db_escape($id)
+	 . " OR dimension2_id = ".db_escape($id);
 	$res = db_query($sql, "Transactions could not be calculated");
 	$row = db_fetch_row($res);
-	return ($row[0] != 0.0);
+	return ($row[0] > 0);
 }
 
 function dimension_is_closed($id)

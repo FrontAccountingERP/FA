@@ -66,13 +66,13 @@ elseif( $Mode == 'Delete')
 	$acc = db_escape($selected_id);
 	// PREVENT DELETES IF DEPENDENT RECORDS IN 'bank_trans'
 
-	if (bank_account_in_transactions($acc))
+	if (key_in_foreign_table($acc, 'bank_trans', 'bank_act', true))
 	{
 		$cancel_delete = 1;
 		display_error(_("Cannot delete this bank account because transactions have been created using this account."));
 	}
 
-	if (bank_account_in_sales_pos($acc))
+	if (key_in_foreign_table($acc, 'sales_pos', 'pos_account', true))
 	{
 		$cancel_delete = 1;
 		display_error(_("Cannot delete this bank account because POS definitions have been created using this account."));

@@ -89,26 +89,26 @@ function check_can_delete()
 	$curr = db_escape($selected_id);
 
 	// PREVENT DELETES IF DEPENDENT RECORDS IN debtors_master
-	if (currency_in_debtors($curr))
+	if (key_in_foreign_table($curr, 'debtors_master', 'curr_code', true))
 	{
 		display_error(_("Cannot delete this currency, because customer accounts have been created referring to this currency."));
 		return false;
 	}
 
-	if (currency_in_suppliers($curr))
+	if (key_in_foreign_table($curr, 'suppliers', 'curr_code', true))
 	{
 		display_error(_("Cannot delete this currency, because supplier accounts have been created referring to this currency."));
 		return false;
 	}
-	
-	if (currency_in_company($curr))
+
+	if (key_in_foreign_table($curr, 'company', 'curr_default', true))		
 	{
 		display_error(_("Cannot delete this currency, because the company preferences uses this currency."));
 		return false;
 	}
 	
 	// see if there are any bank accounts that use this currency
-	if (currenty_in_bank_accounts($curr))
+	if (key_in_foreign_table($curr, 'bank_accounts', 'bank_curr_code', true))
 	{
 		display_error(_("Cannot delete this currency, because thre are bank accounts that use this currency."));
 		return false;

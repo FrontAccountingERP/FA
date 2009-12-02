@@ -63,6 +63,15 @@ function get_item_location($item_location)
 
 //------------------------------------------------------------------------------------
 
+function get_item_locations($show_inactive)
+{
+	$sql = "SELECT * FROM ".TB_PREF."locations";
+	if (!$show_inactive) $sql .= " WHERE !inactive";
+	return db_query($sql, "could not query locations");;
+}
+
+//------------------------------------------------------------------------------------
+
 function set_reorder_level($stock_id, $loc_code, $reorder_level)
 {
 	$sql = "UPDATE ".TB_PREF."loc_stock SET reorder_level = $reorder_level
@@ -82,7 +91,5 @@ function get_loc_details($stock_id)
 		." ORDER BY ".TB_PREF."loc_stock.loc_code";
 	return db_query($sql,"an item reorder could not be retreived");
 }
-
-//------------------------------------------------------------------------------------
 
 ?>

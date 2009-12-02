@@ -68,37 +68,4 @@ function get_currencies($all=false)
 	return db_query($sql, "could not get currencies");
 }
 
-//---------------------------------------------------------------------------------------------
-
-function currency_in_debtors($curr)
-{
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."debtors_master WHERE curr_code = $curr";
-	$result = db_query($sql);
-	$myrow = db_fetch_row($result);
-	return ($myrow[0] > 0); 
-}
-
-function currency_in_suppliers($curr)
-{
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."suppliers WHERE curr_code = $curr";
-	$result = db_query($sql);
-	$myrow = db_fetch_row($result);
-	return ($myrow[0] > 0); 
-}
-
-function currency_in_bank_accounts($curr)
-{
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."bank_accounts WHERE bank_curr_code = $curr";
-	$result = db_query($sql);
-	$myrow = db_fetch_row($result);
-	return ($myrow[0] > 0); 
-}
-
-function currency_in_company($curr)
-{
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."company WHERE curr_default = $curr";
-	$result = db_query($sql);
-	$myrow = db_fetch_row($result);
-	return ($myrow[0] > 0); 
-}
 ?>

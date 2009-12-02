@@ -108,7 +108,7 @@ function can_delete($selected_account)
 		return false;
 	$acc = db_escape($selected_account);
 
-	if (gl_account_in_transactions($acc))
+	if (key_in_foreign_table($acc, 'gl_trans', 'account', true))
 	{
 		display_error(_("Cannot delete this account because transactions have been created using this account."));
 		return false;
@@ -119,8 +119,8 @@ function can_delete($selected_account)
 		display_error(_("Cannot delete this account because it is used as one of the company default GL accounts."));
 		return false;
 	}
-	
-	if (gl_account_in_bank_accounts($acc))
+
+	if (key_in_foreign_table($acc, 'bank_accounts', 'account_code', true))	
 	{
 		display_error(_("Cannot delete this account because it is used by a bank account."));
 		return false;

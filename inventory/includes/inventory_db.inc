@@ -16,6 +16,7 @@ include_once($path_to_root . "/includes/manufacturing.inc");
 include_once($path_to_root . "/inventory/includes/db/items_category_db.inc");
 include_once($path_to_root . "/inventory/includes/db/items_trans_db.inc");
 include_once($path_to_root . "/inventory/includes/db/items_prices_db.inc");
+include_once($path_to_root . "/inventory/includes/db/items_purchases_db.inc");
 include_once($path_to_root . "/inventory/includes/db/items_codes_db.inc");
 include_once($path_to_root . "/inventory/includes/db/items_db.inc");
 include_once($path_to_root . "/inventory/includes/db/items_locations_db.inc");

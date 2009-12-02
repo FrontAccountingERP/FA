@@ -68,26 +68,4 @@ function get_shipper($selected_id)
 	return db_fetch($result);
 }
 
-//--------------------------------------------------------------------------------------
-
-function sales_orders_has_shipper($selected_id)
-{
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."sales_orders WHERE ship_via=".db_escape($selected_id);
-	
-	$result = db_query($sql,"check failed");
-	$myrow = db_fetch_row($result);
-	return ($myrow[0] > 0); 
-}
-
-//--------------------------------------------------------------------------------------
-
-function debtor_trans_has_shipper($selected_id)
-{
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."debtor_trans WHERE ship_via=".db_escape($selected_id);
-	
-	$result = db_query($sql,"check failed");
-	$myrow = db_fetch_row($result);
-	return ($myrow[0] > 0); 
-}
-
 ?>

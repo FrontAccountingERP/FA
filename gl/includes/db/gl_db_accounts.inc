@@ -104,15 +104,6 @@ function get_gl_account_name($code)
 	display_db_error("could not retreive the account name for $code", $sql, true);
 }
 
-function gl_account_in_transactions($acc)
-{
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."gl_trans WHERE account=$acc";
-	$result = db_query($sql,"Couldn't test for existing transactions");
-
-	$myrow = db_fetch_row($result);
-	return ($myrow[0] > 0); 
-}
-
 function gl_account_in_company_defaults($acc)
 {
 	$sql= "SELECT COUNT(*) FROM ".TB_PREF."company WHERE debtors_act=$acc 
@@ -132,15 +123,6 @@ function gl_account_in_company_defaults($acc)
 		OR default_inv_sales_act=$acc
 		OR default_assembly_act=$acc";
 	$result = db_query($sql,"Couldn't test for default company GL codes");
-
-	$myrow = db_fetch_row($result);
-	return ($myrow[0] > 0); 
-}
-
-function gl_account_in_bank_accounts($acc)
-{
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."bank_accounts WHERE account_code=$acc";
-	$result = db_query($sql,"Couldn't test for bank accounts");
 
 	$myrow = db_fetch_row($result);
 	return ($myrow[0] > 0); 

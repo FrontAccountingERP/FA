@@ -113,30 +113,4 @@ function delete_account_class($id)
 	db_query($sql, "could not delete account type");
 }
 
-function account_class_in_account_types($id)
-{
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."chart_types
-		WHERE class_id=".db_escape($id);
-	$result = db_query($sql, "could not query chart master");
-	$myrow = db_fetch_row($result);
-	return ($myrow[0] > 0); 
-}
-
-function account_type_in_chart_master($type)
-{
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."chart_master
-		WHERE account_type=$type";
-	$result = db_query($sql, "could not query chart master");
-	$myrow = db_fetch_row($result);
-	return ($myrow[0] > 0); 
-}
-
-function account_type_in_parent($type)
-{
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."chart_types
-		WHERE parent=$type";
-	$result = db_query($sql, "could not query chart types");
-	$myrow = db_fetch_row($result);
-	return ($myrow[0] > 0); 
-}
 ?>

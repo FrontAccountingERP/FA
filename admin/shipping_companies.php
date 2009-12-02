@@ -53,7 +53,7 @@ if ($Mode == 'Delete')
 {
 // PREVENT DELETES IF DEPENDENT RECORDS IN 'sales_orders'
 
-	if (sales_orders_has_shipper($selected_id))
+	if (key_in_foreign_table($selected_id, 'sales_orders', 'ship_via'))
 	{
 		$cancel_delete = 1;
 		display_error(_("Cannot delete this shipping company because sales orders have been created using this shipper."));
@@ -61,8 +61,7 @@ if ($Mode == 'Delete')
 	else 
 	{
 		// PREVENT DELETES IF DEPENDENT RECORDS IN 'debtor_trans'
-
-		if (debtor_trans_has_shipper($selected_id))
+		if (key_in_foreign_table($selected_id, 'debtor_trans', 'ship_via'))
 		{
 			$cancel_delete = 1;
 			display_error(_("Cannot delete this shipping company because invoices have been created using this shipping company."));

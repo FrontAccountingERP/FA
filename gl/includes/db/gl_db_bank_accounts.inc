@@ -102,26 +102,6 @@ function get_bank_gl_account($id)
 
 //---------------------------------------------------------------------------------------------
 
-function bank_account_in_transactions($acc)
-{
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."bank_trans WHERE bank_act=$acc";
-	$result = db_query($sql,"check failed");
-	$myrow = db_fetch_row($result);
-	return ($myrow[0] > 0); 
-}
-
-//---------------------------------------------------------------------------------------------
-
-function bank_account_in_sales_pos($acc)
-{
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."sales_pos WHERE pos_account=$acc";
-	$result = db_query($sql,"check failed");
-	$myrow = db_fetch_row($result);
-	return ($myrow[0] > 0); 
-}
-
-//---------------------------------------------------------------------------------------------
-
 function add_quick_entry($description, $type, $base_amount, $base_desc)
 {
 	$sql = "INSERT INTO ".TB_PREF."quick_entries (description, type, base_amount, base_desc) 

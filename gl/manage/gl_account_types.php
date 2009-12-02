@@ -79,13 +79,13 @@ function can_delete($selected_id)
 		return false;
 	$type = db_escape($selected_id);
 
-	if (account_type_in_chart_master($type))
+	if (key_in_foreign_table($type, 'chart_master', 'account_type', true))
 	{
 		display_error(_("Cannot delete this account group because GL accounts have been created referring to it."));
 		return false;
 	}
 
-	if (account_type_in_parent($type))
+	if (key_in_foreign_table($type, 'chart_types', 'parent', true))
 	{
 		display_error(_("Cannot delete this account group because GL account groups have been created referring to it."));
 		return false;

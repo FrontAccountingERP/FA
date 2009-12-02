@@ -74,13 +74,13 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 if ($Mode == 'Delete')
 {
 	// PREVENT DELETES IF DEPENDENT RECORDS IN debtors_master
-	if (customer_has_terms($selected_id))
+	if (key_in_foreign_table($selected_id, 'debtors_master', 'payment_terms'))
 	{
 		display_error(_("Cannot delete this payment term, because customer accounts have been created referring to this term."));
 	} 
 	else 
 	{
-		if (supplier_has_terms($selected_id))
+		if (key_in_foreign_table($selected_id, 'suppliers', 'payment_terms'))
 		{
 			display_error(_("Cannot delete this payment term, because supplier accounts have been created referring to this term"));
 		} 

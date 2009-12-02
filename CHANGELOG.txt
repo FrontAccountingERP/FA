@@ -19,6 +19,40 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+03-Dec-2009 Joe Hunt
+! Moved all SQL statements from PHP files into relevant *_db.inc files.
+  Included inventory folder
+$ /admin/payment_terms.php
+  /admin/printers.php
+  /admin/print_profiles.php
+  /admin/shipping_companies.php
+  /admin/db/company_db.inc
+  /admin/db/printers_db.inc
+  /admin/db/shipping_db.inc
+  /dimensions/includes/dimens_db.inc
+  /gl/gl_bank.php
+  /gl/includes/db/gl_db_accounts.inc
+  /gl/includes/db/gl_db_account_types.inc
+  /gl/includes/db/gl_db_bank_accounts.inc
+  /gl/includes/db/gl_db_curriencies.inc
+  /gl/manage/bank_accounts.php
+  /gl/manage/currencies.php
+  /gl/manage/gl_accounts.php
+  /gl/manage/gl_account_classes.php
+  /gl/manage/gl_account_types.php
+  /inventory/purchasing_data.php
+  /inventory/includes/inventory_db.inc
+  /inventory/includes/db/items_category_db.inc
+  /inventory/includes/db/items_db.inc
+  /inventory/includes/db/items_locations_db.inc
+  /inventory/includes/db/items_purchases_db.inc (New file)
+  /inventory/includes/db/movement_types_db.inc
+  /inventory/inquiry/stock_movements.php
+  /inventory/manage/items_php
+  /inventory/manage/item_categories.php
+  /inventory/manage/locations.php
+  /inventory/manage/movement_types.php
+  
 02-Dec-2009 Janusz Dobrowolski
 ! Merged changed from trunk up to 2.2.1 ---------------------------------------
 

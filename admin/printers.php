@@ -59,7 +59,7 @@ if ($Mode == 'Delete')
 {
 	// PREVENT DELETES IF DEPENDENT RECORDS IN print_profiles
 
-	if (printer_has_profile($selected_id))
+	if (key_in_foreign_table($selected_id, 'print_profiles', 'printer'))
 	{
 		display_error(_("Cannot delete this printer definition, because print profile have been created using it."));
 	} 

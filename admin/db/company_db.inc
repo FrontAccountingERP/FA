@@ -193,18 +193,12 @@ function get_payment_terms_all($show_inactive)
 	return db_query($sql,"could not get payment terms");
 }
 
-function customer_has_terms($selected_id)
+function key_in_foreign_table($id, $table, $key, $escaped=false)
 {
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."debtors_master WHERE payment_terms = ".db_escape($selected_id);
-	$result = db_query($sql,"check failed");
-	$myrow = db_fetch_row($result);
-	return ($myrow[0] > 0); 
-}
-
-function supplier_has_terms($selected_id)
-{
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."suppliers WHERE payment_terms = ".db_escape($selected_id);
-	$result = db_query($sql,"check failed");
+	if (!$escaped)
+		$id = db_escape($id);
+	$sql= "SELECT COUNT(*) FROM ".TB_PREF."$table WHERE $key = $id";
+	$result = db_query($sql,"check $table relations failed");
 	$myrow = db_fetch_row($result);
 	return ($myrow[0] > 0); 
 }

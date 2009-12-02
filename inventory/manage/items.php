@@ -210,50 +210,8 @@ if (get_post('clone')) {
 
 function check_usage($stock_id, $dispmsg=true)
 {
-	$sqls=  array(
-	"SELECT COUNT(*) FROM "
-		.TB_PREF."stock_moves WHERE stock_id=".db_escape($stock_id) =>
-	 _('Cannot delete this item because there are stock movements that refer to this item.'),
-	"SELECT COUNT(*) FROM "
-		.TB_PREF."bom WHERE component=".db_escape($stock_id)=>
-	 _('Cannot delete this item record because there are bills of material that require this part as a component.'),
-	"SELECT COUNT(*) FROM "
-		.TB_PREF."sales_order_details WHERE stk_code=".db_escape($stock_id) =>
-	 _('Cannot delete this item because there are existing purchase order items for it.'),
-	"SELECT COUNT(*) FROM "
-		.TB_PREF."purch_order_details WHERE item_code=".db_escape($stock_id)=>
-	 _('Cannot delete this item because there are existing purchase order items for it.')
-	);
+	$msg = item_in_foreign_codes($stock_id);
 
-	$msg = '';
-
-	foreach($sqls as $sql=>$err) {
-		$result = db_query($sql, "could not query stock usage");
-		$myrow = db_fetch_row($result);
-		if ($myrow[0] > 0) 
-		{
-			$msg = $err; break;
-		}
-	}
-
-	if ($msg == '') {	
-
-		$kits = get_where_used($stock_id);
-		$num_kits = db_num_rows($kits);
-		if ($num_kits) {
-			$msg = _("This item cannot be deleted because some code aliases 
-				or foreign codes was entered for it, or there are kits defined 
-				using this item as component")
-				.':<br>';
-
-			while($num_kits--) {
-				$kit = db_fetch($kits);
-				$msg .= "'".$kit[0]."'";
-				if ($num_kits) $msg .= ',';
-			}
-
-		}
-	}
 	if ($msg != '')	{
 		if($dispmsg) display_error($msg);
 		return false;
