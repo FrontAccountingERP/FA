@@ -25,6 +25,8 @@ $ -> Affected files
 $ config.default.php
   /lang/new_language_template/LC_MESSAGES/empty.po
   /lang/en_US/LC_MESSAGES/en_US.mo
+# More restrictions on deleting gl_accounts
+$ /gl/manage/gl_accounts.php
 
 01-Dec-2009 Janusz Dobrowolski
 # Removing config.php after error during install. Otherwise misleading message is displayed.

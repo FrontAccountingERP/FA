@@ -121,6 +121,10 @@ function can_delete($selected_account)
 	$sql= "SELECT COUNT(*) FROM ".TB_PREF."company WHERE debtors_act=$acc 
 		OR pyt_discount_act=$acc
 		OR creditors_act=$acc 
+		OR bank_charge_act=$acc 
+		OR exchange_diff_act=$acc
+		OR profit_loss_year_act=$acc
+		OR retained_earnings_act=$acc
 		OR freight_act=$acc
 		OR default_sales_act=$acc 
 		OR default_sales_discount_act=$acc

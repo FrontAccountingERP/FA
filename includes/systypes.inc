@@ -63,7 +63,7 @@ function get_systype_db_info($type)
         case     31              : return array("".TB_PREF."service_orders", null, "order_no", "cust_ref", "date");
         case     ST_SALESQUOTE   : return array("".TB_PREF."sales_orders", "trans_type", "order_no", "reference", "ord_date");
         case	 ST_DIMENSION    : return array("".TB_PREF."dimensions", null, "id", "reference", "date_");
-        case     ST_COSTUPDATE   : return null;
+        case     ST_COSTUPDATE   : return array("".TB_PREF."gl_trans", "type", "type_no", null, "tran_date");
 	}
 
 	display_db_error("invalid type ($type) sent to get_systype_db_info", "", true);
