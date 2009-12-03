@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+03-Dec-2009 Janusz Dobrowolski
+# Fixed bug [0000179] data error in supplier allocations
+$ /includes/ui/allocation_cart.inc
+
 ------------------------------- Release 2.2.1 ----------------------------------
 02-Dec-2009 Janusz Dobrowolski
 # Fixed insert null data values for bank_trans

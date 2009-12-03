@@ -192,8 +192,7 @@ class allocation
 				exchange_variation($this->type, $this->trans_no,
 					$alloc_item->type, $alloc_item->type_no, $this->date_,
 					$alloc_item->current_allocated,
-					$sup ? PT_SUPPLIER 
-						: PT_CUSTOMER);
+					$this->person_type ? PT_SUPPLIER : PT_CUSTOMER);
 				
 
 				//////////////////////////////////////////////////////////////
