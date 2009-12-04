@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+04-Dec-2009 Joe Hunt
+# Print Statement prints balances in wrong place.
+$ /reporting/rep108.php
+
 03-Dec-2009 Janusz Dobrowolski
 # Fixed bug [0000179] data error in supplier allocations
 $ /includes/ui/allocation_cart.inc
