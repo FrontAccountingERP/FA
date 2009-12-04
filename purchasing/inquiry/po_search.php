@@ -116,53 +116,9 @@ else
 }
 
 //figure out the sql required from the inputs available
-$sql = "SELECT 
-	porder.order_no, 
-	porder.reference,
-	supplier.supp_name, 
-	location.location_name,
-	porder.requisition_no, 
-	porder.ord_date,
-	supplier.curr_code,
-	Sum(line.unit_price*line.quantity_ordered) AS OrderValue,
-	Sum(line.delivery_date < '". date2sql(Today()) ."'
-	AND (line.quantity_ordered > line.quantity_received)) As OverDue
-	FROM "
-		.TB_PREF."purch_orders as porder, "
-		.TB_PREF."purch_order_details as line, "
-		.TB_PREF."suppliers as supplier, "
-		.TB_PREF."locations as location
-	WHERE porder.order_no = line.order_no
-	AND porder.supplier_id = supplier.supplier_id
-	AND location.loc_code = porder.into_stock_location
-	AND (line.quantity_ordered > line.quantity_received) ";
+$sql = get_sql_for_po_search();
 
-if (isset($order_number) && $order_number != "")
-{
-	$sql .= "AND porder.reference LIKE ".db_escape('%'. $order_number . '%');
-}
-else
-{
-	$data_after = date2sql($_POST['OrdersAfterDate']);
-	$data_before = date2sql($_POST['OrdersToDate']);
-
-	$sql .= "  AND porder.ord_date >= '$data_after'";
-	$sql .= "  AND porder.ord_date <= '$data_before'";
-
-	if (isset($_POST['StockLocation']) && $_POST['StockLocation'] != $all_items)
-	{
-		$sql .= " AND porder.into_stock_location = ".db_escape($_POST['StockLocation']);
-	}
-
-	if (isset($selected_stock_item))
-	{
-		$sql .= " AND line.item_code=".db_escape($selected_stock_item);
-	}
-} //end not order number selected
-
-$sql .= " GROUP BY porder.order_no";
-
-$result = db_query($sql,"No orders were returned");
+//$result = db_query($sql,"No orders were returned");
 
 /*show a table of the orders returned by the sql */
 $cols = array(

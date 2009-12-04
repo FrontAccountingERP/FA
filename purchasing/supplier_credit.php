@@ -97,8 +97,7 @@ if (isset($_POST['AddGLCodeToTrans'])){
 	$Ajax->activate('gl_items');
 	$input_error = false;
 
-	$sql = "SELECT account_code, account_name FROM ".TB_PREF."chart_master WHERE account_code=".db_escape($_POST['gl_code']);
-	$result = db_query($sql,"get account information");
+	$result = get_gl_account_info($_POST['gl_code']);
 	if (db_num_rows($result) == 0)
 	{
 		display_error(_("The account code entered is not a valid code, this line cannot be added to the transaction."));

@@ -153,55 +153,7 @@ function dec_amount($row, $amount)
 	return number_format2($amount, $row['decimals']);
 }
 
-$sql = "SELECT
-	workorder.id,
-	workorder.wo_ref,
-	workorder.type,
-	location.location_name,
-	item.description,
-	workorder.units_reqd,
-	workorder.units_issued,
-	workorder.date_,
-	workorder.required_by,
-	workorder.released_date,
-	workorder.closed,
-	workorder.released,
-	workorder.stock_id,
-	unit.decimals
-	FROM ".TB_PREF."workorders as workorder,"
-		.TB_PREF."stock_master as item,"
-		.TB_PREF."item_units as unit,"
-		.TB_PREF."locations as location
-	WHERE workorder.stock_id=item.stock_id 
-		AND workorder.loc_code=location.loc_code
-		AND item.units=unit.abbr";
-
-if (check_value('OpenOnly') || $outstanding_only != 0)
-{
-	$sql .= " AND workorder.closed=0";
-}
-
-if (isset($_POST['StockLocation']) && $_POST['StockLocation'] != $all_items)
-{
-	$sql .= " AND workorder.loc_code=".db_escape($_POST['StockLocation']);
-}
-
-if (isset($_POST['OrderNumber']) && $_POST['OrderNumber'] != "")
-{
-	$sql .= " AND workorder.wo_ref LIKE ".db_escape('%'.$_POST['OrderNumber'].'%');
-}
-
-if (isset($_POST['SelectedStockItem']) && $_POST['SelectedStockItem'] != $all_items)
-{
-	$sql .= " AND workorder.stock_id=".db_escape($_POST['SelectedStockItem']);
-}
-
-if (check_value('OverdueOnly'))
-{
-	$Today = date2sql(Today());
-
-	$sql .= " AND workorder.required_by < '$Today' ";
-}
+$sql = get_sql_for_work_orders($outstanding_only, $all_items);
 
 $cols = array(
 	_("#") => array('fun'=>'view_link'), 

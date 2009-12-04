@@ -143,9 +143,7 @@ date_row(_("Date:"), 'date_');
 
 $item_accounts = get_stock_gl_code($wo_details['stock_id']);
 $_POST['db_acc'] = $item_accounts['assembly_account'];
-$sql = "SELECT DISTINCT account_code FROM ".TB_PREF."bank_accounts";
-$rs = db_query($sql,"could not get bank accounts");
-$r = db_fetch_row($rs);
+$r = get_default_bank_account(get_company_pref('curr_default'));
 $_POST['cr_acc'] = $r[0];
 
 amount_row(_("Additional Costs:"), 'costs');

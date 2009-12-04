@@ -56,19 +56,13 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 
 function can_delete($selected_id)
 {
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."bom WHERE workcentre_added=".db_escape($selected_id);
-	$result = db_query($sql, "check can delete work centre");
-	$myrow = db_fetch_row($result);
-	if ($myrow[0] > 0) 
+	if (key_in_foreign_table($selected_id, 'bom', 'workcentre_added'))
 	{
 		display_error(_("Cannot delete this work centre because BOMs have been created referring to it."));
 		return false;
 	}
-	
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."wo_requirements WHERE workcentre=".db_escape($selected_id);
-	$result = db_query($sql, "check can delete work centre");
-	$myrow = db_fetch_row($result);
-	if ($myrow[0] > 0) 
+
+	if (key_in_foreign_table($selected_id, 'wo_requirements', 'workcentre'))	
 	{
 		display_error(_("Cannot delete this work centre because work order requirements have been created referring to it."));
 		return false;

@@ -57,32 +57,12 @@ if (isset($_POST['submit']))
 
 		if (!$new_supplier) 
 		{
-
-			$sql = "UPDATE ".TB_PREF."suppliers SET supp_name=".db_escape($_POST['supp_name']) . ",
-				supp_ref=".db_escape($_POST['supp_ref']) . ",
-                address=".db_escape($_POST['address']) . ",
-                supp_address=".db_escape($_POST['supp_address']) . ",
-                phone=".db_escape($_POST['phone']) . ",
-                phone2=".db_escape($_POST['phone2']) . ",
-                fax=".db_escape($_POST['fax']) . ",
-                gst_no=".db_escape($_POST['gst_no']) . ",
-                email=".db_escape($_POST['email']) . ",
-                website=".db_escape($_POST['website']) . ",
-                contact=".db_escape($_POST['contact']) . ",
-                supp_account_no=".db_escape($_POST['supp_account_no']) . ",
-                bank_account=".db_escape($_POST['bank_account']) . ",
-                credit_limit=".input_num('credit_limit', 0) . ",
-                dimension_id=".db_escape($_POST['dimension_id']) . ",
-                dimension2_id=".db_escape($_POST['dimension2_id']) . ",
-                curr_code=".db_escape($_POST['curr_code']).",
-                payment_terms=".db_escape($_POST['payment_terms']) . ",
-				payable_account=".db_escape($_POST['payable_account']) . ",
-				purchase_account=".db_escape($_POST['purchase_account']) . ",
-				payment_discount_account=".db_escape($_POST['payment_discount_account']) . ",
-                notes=".db_escape($_POST['notes']) . ",
-				tax_group_id=".db_escape($_POST['tax_group_id']) . " WHERE supplier_id = ".db_escape($_POST['supplier_id']);
-
-			db_query($sql,"The supplier could not be updated");
+			update_supplier($_POST['supplier_id'], $_POST['supp_name'], $_POST['supp_ref'], $_POST['address'],
+				$_POST['supp_address'], $_POST['phone'], $_POST['phone2'], $_POST['fax'], $_POST['gst_no'],
+				$_POST['email'], $_POST['website'], $_POST['contact'], $_POST['supp_account_no'], $_POST['bank_account'], 
+				input_num('credit_limit', 0), $_POST['dimension_id'], $_POST['dimension2_id'], $_POST['curr_code'],
+				$_POST['payment_terms'], $_POST['payable_account'], $_POST['purchase_account'], $_POST['payment_discount_account'],
+				$_POST['notes'], $_POST['tax_group_id']);
 			update_record_status($_POST['supplier_id'], $_POST['inactive'],
 				'suppliers', 'supplier_id');
 
@@ -91,35 +71,13 @@ if (isset($_POST['submit']))
 		} 
 		else 
 		{
+			add_supplier($_POST['supp_name'], $_POST['supp_ref'], $_POST['address'], $_POST['supp_address'],
+				$_POST['phone'], $_POST['phone2'], $_POST['fax'], $_POST['gst_no'], $_POST['email'],
+				$_POST['website'], $_POST['contact'], $_POST['supp_account_no'], $_POST['bank_account'], 
+				input_num('credit_limit',0), $_POST['dimension_id'], $_POST['dimension2_id'],
+				$_POST['curr_code'], $_POST['payment_terms'], $_POST['payable_account'], $_POST['purchase_account'],
+				$_POST['payment_discount_account'], $_POST['notes'], $_POST['tax_group_id']);
 
-			$sql = "INSERT INTO ".TB_PREF."suppliers (supp_name, supp_ref, address, supp_address, phone, phone2, fax, gst_no, email, website,
-				contact, supp_account_no, bank_account, credit_limit, dimension_id, dimension2_id, curr_code,
-				payment_terms, payable_account, purchase_account, payment_discount_account, notes, tax_group_id)
-				VALUES (".db_escape($_POST['supp_name']). ", "
-				.db_escape($_POST['supp_ref']). ", "
-				.db_escape($_POST['address']) . ", "
-				.db_escape($_POST['supp_address']) . ", "
-				.db_escape($_POST['phone']). ", "
-				.db_escape($_POST['phone2']). ", "
-				.db_escape($_POST['fax']). ", "
-				.db_escape($_POST['gst_no']). ", "
-				.db_escape($_POST['email']). ", "
-				.db_escape($_POST['website']). ", "
-				.db_escape($_POST['contact']). ", "
-				.db_escape($_POST['supp_account_no']). ", "
-				.db_escape($_POST['bank_account']). ", "
-				.input_num('credit_limit',0). ", "
-				.db_escape($_POST['dimension_id']). ", "
-				.db_escape($_POST['dimension2_id']). ", "
-				.db_escape($_POST['curr_code']). ", "
-				.db_escape($_POST['payment_terms']). ", "
-				.db_escape($_POST['payable_account']). ", "
-				.db_escape($_POST['purchase_account']). ", "
-				.db_escape($_POST['payment_discount_account']). ", "
-				.db_escape($_POST['notes']). ", "
-				.db_escape($_POST['tax_group_id']). ")";
-
-			db_query($sql,"The supplier could not be added");
 			$_POST['supplier_id'] = db_insert_id();
 			$new_supplier = false;
 			display_notification(_("A new supplier has been added."));
@@ -136,10 +94,7 @@ elseif (isset($_POST['delete']) && $_POST['delete'] != "")
 
 	// PREVENT DELETES IF DEPENDENT RECORDS IN 'supp_trans' , purch_orders
 
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."supp_trans WHERE supplier_id=".db_escape($_POST['supplier_id']);
-	$result = db_query($sql,"check failed");
-	$myrow = db_fetch_row($result);
-	if ($myrow[0] > 0) 
+	if (key_in_foreign_table($_POST['supplier_id'], 'supp_trans', 'supplier_id'))
 	{
 		$cancel_delete = 1;
 		display_error(_("Cannot delete this supplier because there are transactions that refer to this supplier."));
@@ -147,10 +102,7 @@ elseif (isset($_POST['delete']) && $_POST['delete'] != "")
 	} 
 	else 
 	{
-		$sql= "SELECT COUNT(*) FROM ".TB_PREF."purch_orders WHERE supplier_id=".db_escape($_POST['supplier_id']);
-		$result = db_query($sql,"check failed");
-		$myrow = db_fetch_row($result);
-		if ($myrow[0] > 0) 
+		if (key_in_foreign_table($_POST['supplier_id'], 'purch_orders', 'supplier_id'))
 		{
 			$cancel_delete = 1;
 			display_error(_("Cannot delete the supplier record because purchase orders have been created against this supplier."));
@@ -159,8 +111,7 @@ elseif (isset($_POST['delete']) && $_POST['delete'] != "")
 	}
 	if ($cancel_delete == 0) 
 	{
-		$sql="DELETE FROM ".TB_PREF."suppliers WHERE supplier_id=".db_escape($_POST['supplier_id']);
-		db_query($sql,"check failed");
+		delete_supplier($_POST['supplier_id']);
 
 		unset($_SESSION['supplier_id']);
 		$new_supplier = true;

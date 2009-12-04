@@ -505,6 +505,47 @@ function void_supp_invoice($type, $type_no)
 }
 
 //----------------------------------------------------------------------------------------
+function get_gl_account_info($acc)
+{
+	$sql = "SELECT account_code, account_name FROM ".TB_PREF."chart_master WHERE account_code=".db_escape($acc);
+	return db_query($sql,"get account information");
+}
 
+function is_reference_already_there($supplier_id, $supp_reference)
+{
+	$sql = "SELECT Count(*) FROM ".TB_PREF."supp_trans WHERE supplier_id="
+		.db_escape($supplier_id) . " AND supp_reference=" 
+		.db_escape($supp_reference) 
+		. " AND ov_amount!=0"; // ignore voided invoice references
 
+	$result=db_query($sql,"The sql to check for the previous entry of the same invoice failed");
+
+	$myrow = db_fetch_row($result);
+	return ($myrow[0] == 1);
+}
+
+function remove_not_invoice_item($id)
+{
+	begin_transaction();
+
+	$myrow = get_grn_item_detail($id);
+
+	$grn = get_grn_batch($myrow['grn_batch_id']);
+
+	$sql = "UPDATE ".TB_PREF."purch_order_details
+		SET quantity_received = qty_invoiced, quantity_ordered = qty_invoiced WHERE po_detail_item = ".$myrow["po_detail_item"];
+	db_query($sql, "The quantity invoiced of the purchase order line could not be updated");
+
+	$sql = "UPDATE ".TB_PREF."grn_items
+		SET qty_recd = quantity_inv WHERE id = ".$myrow["id"];
+	db_query($sql, "The quantity invoiced off the items received record could not be updated");
+
+	update_average_material_cost($grn["supplier_id"], $myrow["item_code"],
+		$myrow["unit_price"], -$myrow["QtyOstdg"], Today());
+
+	add_stock_move(ST_SUPPRECEIVE, $myrow["item_code"], $myrow['grn_batch_id'], $grn['loc_code'], sql2date($grn["delivery_date"]), "",
+		-$myrow["QtyOstdg"], $myrow['std_cost_unit'], $grn["supplier_id"], 1, $myrow['unit_price']);
+
+	commit_transaction();
+}
 ?>

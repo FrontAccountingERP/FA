@@ -227,5 +227,126 @@ function read_po($order_no, &$order, $open_items_only=false)
 
 //----------------------------------------------------------------------------------------
 
+function get_po_items($order_no)
+{
+	$sql = "SELECT item_code, quantity_ordered, quantity_received, qty_invoiced
+		FROM ".TB_PREF."purch_order_details
+		WHERE order_no=".db_escape($order_no)
+		." ORDER BY po_detail_item";
 
+	$result = db_query($sql, "could not query purch order details");
+    check_db_error("Could not check that the details of the purchase order had not been changed by another user ", $sql);
+    return $result;
+}
+//----------------------------------------------------------------------------------------
+
+function get_short_info($stock_id)
+{
+	$sql = "SELECT description, units, mb_flag
+		FROM ".TB_PREF."stock_master WHERE stock_id = ".db_escape($stock_id);
+
+	return db_query($sql,"The stock details for " . $stock_id . " could not be retrieved");
+}
+
+function get_sql_for_po_search_completed()
+{
+	global $order_number, $selected_stock_item;;
+
+	$sql = "SELECT 
+		porder.order_no, 
+		porder.reference, 
+		supplier.supp_name, 
+		location.location_name,
+		porder.requisition_no, 
+		porder.ord_date, 
+		supplier.curr_code, 
+		Sum(line.unit_price*line.quantity_ordered) AS OrderValue,
+		porder.into_stock_location
+		FROM ".TB_PREF."purch_orders as porder, "
+			.TB_PREF."purch_order_details as line, "
+			.TB_PREF."suppliers as supplier, "
+			.TB_PREF."locations as location
+		WHERE porder.order_no = line.order_no
+		AND porder.supplier_id = supplier.supplier_id
+		AND location.loc_code = porder.into_stock_location ";
+
+	if (isset($order_number) && $order_number != "")
+	{
+		$sql .= "AND porder.reference LIKE ".db_escape('%'. $order_number . '%');
+	}
+	else
+	{
+
+		$data_after = date2sql($_POST['OrdersAfterDate']);
+		$date_before = date2sql($_POST['OrdersToDate']);
+
+		$sql .= " AND porder.ord_date >= '$data_after'";
+		$sql .= " AND porder.ord_date <= '$date_before'";
+
+		if (isset($_POST['StockLocation']) && $_POST['StockLocation'] != ALL_TEXT)
+		{
+			$sql .= " AND porder.into_stock_location = ".db_escape($_POST['StockLocation']);
+		}
+		if (isset($selected_stock_item))
+		{
+			$sql .= " AND line.item_code=".db_escape($selected_stock_item);
+		}
+
+	} //end not order number selected
+
+	$sql .= " GROUP BY porder.order_no";
+	return $sql;
+}	
+
+function get_sql_for_po_search()
+{
+	global $all_items, $order_number, $selected_stock_item;;
+	
+	$sql = "SELECT 
+		porder.order_no, 
+		porder.reference,
+		supplier.supp_name, 
+		location.location_name,
+		porder.requisition_no, 
+		porder.ord_date,
+		supplier.curr_code,
+		Sum(line.unit_price*line.quantity_ordered) AS OrderValue,
+		Sum(line.delivery_date < '". date2sql(Today()) ."'
+		AND (line.quantity_ordered > line.quantity_received)) As OverDue
+		FROM "
+			.TB_PREF."purch_orders as porder, "
+			.TB_PREF."purch_order_details as line, "
+			.TB_PREF."suppliers as supplier, "
+			.TB_PREF."locations as location
+		WHERE porder.order_no = line.order_no
+		AND porder.supplier_id = supplier.supplier_id
+		AND location.loc_code = porder.into_stock_location
+		AND (line.quantity_ordered > line.quantity_received) ";
+
+	if (isset($order_number) && $order_number != "")
+	{
+		$sql .= "AND porder.reference LIKE ".db_escape('%'. $order_number . '%');
+	}
+	else
+	{
+		$data_after = date2sql($_POST['OrdersAfterDate']);
+		$data_before = date2sql($_POST['OrdersToDate']);
+
+		$sql .= "  AND porder.ord_date >= '$data_after'";
+		$sql .= "  AND porder.ord_date <= '$data_before'";
+
+		if (isset($_POST['StockLocation']) && $_POST['StockLocation'] != $all_items)
+		{
+			$sql .= " AND porder.into_stock_location = ".db_escape($_POST['StockLocation']);
+		}
+
+		if (isset($selected_stock_item))
+		{
+			$sql .= " AND line.item_code=".db_escape($selected_stock_item);
+		}
+	} //end not order number selected
+
+	$sql .= " GROUP BY porder.order_no";
+	return $sql;
+}
 ?>

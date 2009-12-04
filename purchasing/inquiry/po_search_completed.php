@@ -105,49 +105,7 @@ function prt_link($row)
 
 //---------------------------------------------------------------------------------------------
 
-$sql = "SELECT 
-	porder.order_no, 
-	porder.reference, 
-	supplier.supp_name, 
-	location.location_name,
-	porder.requisition_no, 
-	porder.ord_date, 
-	supplier.curr_code, 
-	Sum(line.unit_price*line.quantity_ordered) AS OrderValue,
-	porder.into_stock_location
-	FROM ".TB_PREF."purch_orders as porder, "
-		.TB_PREF."purch_order_details as line, "
-		.TB_PREF."suppliers as supplier, "
-		.TB_PREF."locations as location
-	WHERE porder.order_no = line.order_no
-	AND porder.supplier_id = supplier.supplier_id
-	AND location.loc_code = porder.into_stock_location ";
-
-if (isset($order_number) && $order_number != "")
-{
-	$sql .= "AND porder.reference LIKE ".db_escape('%'. $order_number . '%');
-}
-else
-{
-
-	$data_after = date2sql($_POST['OrdersAfterDate']);
-	$date_before = date2sql($_POST['OrdersToDate']);
-
-	$sql .= " AND porder.ord_date >= '$data_after'";
-	$sql .= " AND porder.ord_date <= '$date_before'";
-
-	if (isset($_POST['StockLocation']) && $_POST['StockLocation'] != ALL_TEXT)
-	{
-		$sql .= " AND porder.into_stock_location = ".db_escape($_POST['StockLocation']);
-	}
-	if (isset($selected_stock_item))
-	{
-		$sql .= " AND line.item_code=".db_escape($selected_stock_item);
-	}
-
-} //end not order number selected
-
-$sql .= " GROUP BY porder.order_no";
+$sql = get_sql_for_po_search_completed();
 
 $cols = array(
 		_("#") => array('fun'=>'trans_view', 'ord'=>''), 

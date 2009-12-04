@@ -119,13 +119,7 @@ function check_po_changed()
 	/*Now need to check that the order details are the same as they were when they were read into the Items array. If they've changed then someone else must have altered them */
 	// Sherifoz 22.06.03 Compare against COMPLETED items only !!
 	// Otherwise if you try to fullfill item quantities separately will give error.
-	$sql = "SELECT item_code, quantity_ordered, quantity_received, qty_invoiced
-		FROM ".TB_PREF."purch_order_details
-		WHERE order_no=".db_escape($_SESSION['PO']->order_no)
-		." ORDER BY po_detail_item";
-
-	$result = db_query($sql, "could not query purch order details");
-    check_db_error("Could not check that the details of the purchase order had not been changed by another user ", $sql);
+	$result = get_po_items($_SESSION['PO']->order_no);
 
 	$line_no = 1;
 	while ($myrow = db_fetch($result))

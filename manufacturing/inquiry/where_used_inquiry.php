@@ -37,20 +37,7 @@ function select_link($row)
     		"/manufacturing/manage/bom_edit.php?stock_id=" . $row["parent"]);
 }
 
-$sql = "SELECT 
-		bom.parent,
-		workcentre.name As WorkCentreName,
-		location.location_name,
-		bom.quantity,
-		parent.description
-		FROM ".TB_PREF."bom as bom, "
-			.TB_PREF."stock_master as parent, "
-			.TB_PREF."workcentres as workcentre, "
-			.TB_PREF."locations as location
-		WHERE bom.parent = parent.stock_id 
-			AND bom.workcentre_added = workcentre.id
-			AND bom.loc_code = location.loc_code
-			AND bom.component=".db_escape($_POST['stock_id']);
+$sql = get_sql_for_where_used();
 
    $cols = array(
    	_("Parent Item") => array('fun'=>'select_link'), 
