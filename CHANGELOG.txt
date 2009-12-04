@@ -22,6 +22,8 @@ $ -> Affected files
 04-Dec-2009 Janusz Dobrowolski
 # [0000179] Cannot allocate ST_BANKPAYMENT type payments
 $ /includes/ui/allocation_cart.inc
+# False currency rate error on first opening of sales order page when customer_list is off.
+$ /sales/includes/cart_class.inc
 
 04-Dec-2009 Joe Hunt
 # Print Statement prints balances in wrong place.
