@@ -328,7 +328,8 @@ CREATE TABLE `0_comments` (
   `type` int(11) NOT NULL default '0',
   `id` int(11) NOT NULL default '0',
   `date_` date default '0000-00-00',
-  `memo_` tinytext
+  `memo_` tinytext,
+  KEY `type_and_id` (`type`, `id`)
 ) TYPE=InnoDB  ;
 
 
