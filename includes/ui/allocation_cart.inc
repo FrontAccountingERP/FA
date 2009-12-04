@@ -341,7 +341,9 @@ function check_allocations()
 	}
 
 	$amount = $_SESSION['alloc']->amount;
-	if ($_SESSION['alloc']->type == 21 || $_SESSION['alloc']->type == 22) 
+	
+
+	if (in_array($_SESSION['alloc']->type, array(ST_BANKPAYMENT, ST_SUPPCREDIT, ST_SUPPAYMENT)))
 		$amount = -$amount;
 
 	if ($total_allocated - ($amount + input_num('discount'))  > $SysPrefs->allocation_settled_allowance())
