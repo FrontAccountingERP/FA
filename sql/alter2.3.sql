@@ -1,0 +1,1 @@
+ALTER TABLE 0_comments ADD KEY type_and_id (`type`, `id`);
