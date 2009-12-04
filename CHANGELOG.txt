@@ -28,6 +28,8 @@ $ /sales/includes/cart_class.inc
 04-Dec-2009 Joe Hunt
 # Print Statement prints balances in wrong place.
 $ /reporting/rep108.php
+! Better date2sql in date_functions.inc
+$ /includes/date_functions.inc
 
 03-Dec-2009 Janusz Dobrowolski
 # Fixed bug [0000178] data error in supplier allocations
