@@ -19,6 +19,16 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+04-Dec-2009 Janusz Dobrowolski
++ Next release upgrade skeleton files.
+$ /sql/alter2.3.php (new)
+  /sql/alter2.3.sql (new)
+
+04-Dec-2009 Tom Hallman
+# Added key on type, id in comments to improve performance
+$ /sql/en_US-demo.sql
+  /sql/en_US-new.sql
+
 04-Dec-2009 Joe Hunt
 ! Moved all SQL statements from PHP files into relevant *_db.inc files.
   Included purchasing folder
