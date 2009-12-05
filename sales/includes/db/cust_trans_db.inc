@@ -247,6 +247,13 @@ function get_customer_trans_order($type, $type_no)
 
 //----------------------------------------------------------------------------------------
 
+function get_related_documents($type, $trans_no)
+{
+	$sql = "SELECT * FROM ".TB_PREF."debtor_trans WHERE type=$type AND order_=".db_escape($trans_no);
+	return db_query($sql,"The related documents could not be retreived");
+}
+//----------------------------------------------------------------------------------------
+
 function get_customer_details_from_trans($type, $type_no)
 {
 	$sql = "SELECT ".TB_PREF."debtors_master.name, ".TB_PREF."debtors_master.curr_code, ".TB_PREF."cust_branch.br_name
@@ -299,4 +306,138 @@ function get_customer_trans_link($type, $type_no)
 }
 //----------------------------------------------------------------------------------------
 
+function get_sql_for_customer_inquiry()
+{
+    $date_after = date2sql($_POST['TransAfterDate']);
+    $date_to = date2sql($_POST['TransToDate']);
+
+  	$sql = "SELECT 
+  		trans.type, 
+		trans.trans_no, 
+		trans.order_, 
+		trans.reference,
+		trans.tran_date, 
+		trans.due_date, 
+		debtor.name, 
+		branch.br_name,
+		debtor.curr_code,
+		(trans.ov_amount + trans.ov_gst + trans.ov_freight 
+			+ trans.ov_freight_tax + trans.ov_discount)	AS TotalAmount, "; 
+   	if ($_POST['filterType'] != ALL_TEXT)
+		$sql .= "@bal := @bal+(trans.ov_amount + trans.ov_gst + trans.ov_freight + trans.ov_freight_tax + trans.ov_discount), ";
+
+//	else
+//		$sql .= "IF(trans.type=".ST_CUSTDELIVERY.",'', IF(trans.type=".ST_SALESINVOICE." OR trans.type=".ST_BANKPAYMENT.",@bal := @bal+
+//			(trans.ov_amount + trans.ov_gst + trans.ov_freight + trans.ov_freight_tax + trans.ov_discount), @bal := @bal-
+//			(trans.ov_amount + trans.ov_gst + trans.ov_freight + trans.ov_freight_tax + trans.ov_discount))) , ";
+		$sql .= "trans.alloc AS Allocated,
+		((trans.type = ".ST_SALESINVOICE.")
+			AND trans.due_date < '" . date2sql(Today()) . "') AS OverDue
+		FROM "
+			.TB_PREF."debtor_trans as trans, "
+			.TB_PREF."debtors_master as debtor, "
+			.TB_PREF."cust_branch as branch
+		WHERE debtor.debtor_no = trans.debtor_no
+			AND trans.tran_date >= '$date_after'
+			AND trans.tran_date <= '$date_to'
+			AND trans.branch_code = branch.branch_code";
+
+   	if ($_POST['customer_id'] != ALL_TEXT)
+   		$sql .= " AND trans.debtor_no = ".db_escape($_POST['customer_id']);
+
+   	if ($_POST['filterType'] != ALL_TEXT)
+   	{
+   		if ($_POST['filterType'] == '1')
+   		{
+   			$sql .= " AND (trans.type = ".ST_SALESINVOICE." OR trans.type = ".ST_BANKPAYMENT.") ";
+   		}
+   		elseif ($_POST['filterType'] == '2')
+   		{
+   			$sql .= " AND (trans.type = ".ST_SALESINVOICE.") ";
+   		}
+   		elseif ($_POST['filterType'] == '3')
+   		{
+			$sql .= " AND (trans.type = " . ST_CUSTPAYMENT 
+					." OR trans.type = ".ST_BANKDEPOSIT.") ";
+   		}
+   		elseif ($_POST['filterType'] == '4')
+   		{
+			$sql .= " AND trans.type = ".ST_CUSTCREDIT." ";
+   		}
+   		elseif ($_POST['filterType'] == '5')
+   		{
+			$sql .= " AND trans.type = ".ST_CUSTDELIVERY." ";
+   		}
+
+    	if ($_POST['filterType'] == '2')
+    	{
+    		$today =  date2sql(Today());
+    		$sql .= " AND trans.due_date < '$today'
+				AND (trans.ov_amount + trans.ov_gst + trans.ov_freight_tax + 
+				trans.ov_freight + trans.ov_discount - trans.alloc > 0) ";
+    	}
+   	}
+   	return $sql;
+}
+
+function get_sql_for_sales_deliveries_view($selected_customer, $selected_stock_id)
+{
+	$sql = "SELECT trans.trans_no,
+			debtor.name,
+			branch.branch_code,
+			branch.br_name,
+			sorder.deliver_to,
+			trans.reference,
+			sorder.customer_ref,
+			trans.tran_date,
+			trans.due_date,
+			(ov_amount+ov_gst+ov_freight+ov_freight_tax) AS DeliveryValue,
+			debtor.curr_code,
+			Sum(line.quantity-line.qty_done) AS Outstanding,
+			Sum(line.qty_done) AS Done
+		FROM "
+		 .TB_PREF."sales_orders as sorder, "
+		 .TB_PREF."debtor_trans as trans, "
+		 .TB_PREF."debtor_trans_details as line, "
+		 .TB_PREF."debtors_master as debtor, "
+		 .TB_PREF."cust_branch as branch
+			WHERE
+			sorder.order_no = trans.order_ AND
+			trans.debtor_no = debtor.debtor_no
+				AND trans.type = ".ST_CUSTDELIVERY."
+				AND line.debtor_trans_no = trans.trans_no
+				AND line.debtor_trans_type = trans.type
+				AND trans.branch_code = branch.branch_code
+				AND trans.debtor_no = branch.debtor_no ";
+
+	if ($_POST['OutstandingOnly'] == true) {
+		 $sql .= " AND line.qty_done < line.quantity ";
+	}
+
+	//figure out the sql required from the inputs available
+	if (isset($_POST['DeliveryNumber']) && $_POST['DeliveryNumber'] != "")
+	{
+		$delivery = "%".$_POST['DeliveryNumber'];
+		$sql .= " AND trans.trans_no LIKE ".db_escape($delivery);
+		$sql .= " GROUP BY trans.trans_no";
+	}
+	else
+	{
+		$sql .= " AND trans.tran_date >= '".date2sql($_POST['DeliveryAfterDate'])."'";
+		$sql .= " AND trans.tran_date <= '".date2sql($_POST['DeliveryToDate'])."'";
+
+		if ($selected_customer != -1)
+			$sql .= " AND trans.debtor_no=".db_escape($selected_customer)." ";
+
+		if (isset($selected_stock_item))
+			$sql .= " AND line.stock_id=".db_escape($selected_stock_item)." ";
+
+		if (isset($_POST['StockLocation']) && $_POST['StockLocation'] != ALL_TEXT)
+			$sql .= " AND sorder.from_stk_loc = ".db_escape($_POST['StockLocation'])." ";
+
+		$sql .= " GROUP BY trans.trans_no ";
+
+	} //end no delivery number selected
+	return $sql;
+}
 ?>

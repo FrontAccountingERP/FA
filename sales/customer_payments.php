@@ -200,19 +200,11 @@ function read_customer_data()
 {
 	global $Refs;
 
-	$sql = "SELECT ".TB_PREF."debtors_master.pymt_discount,
-		".TB_PREF."credit_status.dissallow_invoices
-		FROM ".TB_PREF."debtors_master, ".TB_PREF."credit_status
-		WHERE ".TB_PREF."debtors_master.credit_status = ".TB_PREF."credit_status.id
-			AND ".TB_PREF."debtors_master.debtor_no = ".db_escape($_POST['customer_id']);
-
-	$result = db_query($sql, "could not query customers");
-
-	$myrow = db_fetch($result);
+	$myrow = get_customer_habit($_POST['customer_id']);
 
 	$_POST['HoldAccount'] = $myrow["dissallow_invoices"];
 	$_POST['pymt_discount'] = $myrow["pymt_discount"];
-	$_POST['ref'] = $Refs->get_next(12);
+	$_POST['ref'] = $Refs->get_next(ST_CUSTPAYMENT);
 }
 
 //----------------------------------------------------------------------------------------------

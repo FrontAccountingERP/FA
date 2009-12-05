@@ -64,9 +64,8 @@ if ($Mode=='UPDATE_ITEM' && can_process())
 
 if ($Mode == 'Delete')
 {
-	$sql = "SELECT * FROM ".TB_PREF."users WHERE print_profile=".db_escape($selected_id);
-	$res = db_query($sql, "canot check pos usage");
-	if (db_num_rows($res)) {
+	if (key_in_foreign_table($selected_id, 'users', 'print_profile'))
+	{
 		display_error(_("Cannot delete this POS because it is used in users setup."));
 	} else {
 		delete_sales_point($selected_id);

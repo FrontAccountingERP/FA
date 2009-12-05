@@ -23,13 +23,6 @@ if ($use_popup_windows)
 
 page(_($help_context = "Create and Print Recurrent Invoices"), false, false, "", $js);
 
-function set_last_sent($id, $date)
-{
-	$date = date2sql($date);
-	$sql = "UPDATE ".TB_PREF."recurrent_invoices SET last_sent='$date' WHERE id=".db_escape($id);
-   	db_query($sql,"The recurrent invoice could not be updated or added");
-}	
-
 function create_recurrent_invoices($customer_id, $branch_id, $order_no, $tmpl_no)
 {
 	global $Refs;
@@ -55,17 +48,14 @@ function create_recurrent_invoices($customer_id, $branch_id, $order_no, $tmpl_no
 	$cart->trans_type = ST_SALESINVOICE;
 	$cart->reference = $Refs->get_next($cart->trans_type);
 	$invno = $cart->write(1);
-	set_last_sent($tmpl_no, $cart->document_date);
+	update_last_sent_recurrent_invoice($tmpl_no, $cart->document_date);
 	return $invno;
 }
 
 if (isset($_GET['recurrent']))
 {
 	$invs = array();
-	$sql = "SELECT * FROM ".TB_PREF."recurrent_invoices WHERE id=".db_escape($_GET['recurrent']);
-
-	$result = db_query($sql,"could not get recurrent invoice");
-	$myrow = db_fetch($result);
+	$myrow = get_recurrent_invoice($_GET['recurrent']);
 	if ($myrow['debtor_no'] == 0)
 	{
 		$cust = get_cust_branches_from_group($myrow['group_no']);
@@ -96,17 +86,7 @@ if (isset($_GET['recurrent']))
 	}
 }	
 
-//-------------------------------------------------------------------------------------------------
-function get_sales_group_name($group_no)
-{
-	$sql = "SELECT description FROM ".TB_PREF."groups WHERE id = ".db_escape($group_no);
-	$result = db_query($sql, "could not get group");
-	$row = db_fetch($result);
-	return $row[0];
-}
-
-$sql = "SELECT * FROM ".TB_PREF."recurrent_invoices ORDER BY description, group_no, debtor_no";
-$result = db_query($sql,"could not get recurrent invoices");
+$result = get_recurrent_invoices();
 
 start_table("$table_style width=70%");
 $th = array(_("Description"), _("Template No"),_("Customer"),_("Branch")."/"._("Group"),_("Days"),_("Monthly"),_("Begin"),_("End"),_("Last Created"),"");
@@ -164,7 +144,7 @@ if ($due)
 else
 	display_note(_("No recurrent invoices are due."), 1, 0);
 
-echo '<br>';
+br();
 
 end_page();
 ?>

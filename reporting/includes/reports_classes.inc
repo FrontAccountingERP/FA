@@ -230,8 +230,6 @@ class BoxReports
 					return "<textarea rows=4 cols=30 name='$name'></textarea>";
 
 				case 'ACCOUNTS': // not used
-//					$sql = "SELECT id, name FROM ".TB_PREF."chart_types";
-//					return combo_input($name, '', $sql, 'id', 'name',array('spec_option'=>_("No Account Group Filter"),'spec_id'=>ALL_NUMERIC));
 					return gl_account_types_list($name, null, _("No Account Group Filter"), true);
 
 				case 'ACCOUNTS_NO_FILTER': // not used

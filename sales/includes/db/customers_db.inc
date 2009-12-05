@@ -9,6 +9,54 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
+
+function add_customer($CustName, $cust_ref, $address, $tax_id, $curr_code, $email, $dimension_id, $dimension2_id,
+	$credit_status, $payment_terms, $discount, $pymt_discount, $credit_limit, $sales_type, $notes)
+{			
+	$sql = "INSERT INTO ".TB_PREF."debtors_master (name, debtor_ref, address, tax_id, email, dimension_id, dimension2_id,  
+		curr_code, credit_status, payment_terms, discount, pymt_discount,credit_limit,  
+		sales_type, notes) VALUES (".db_escape($CustName) .", " .db_escape($cust_ref) .", "
+		.db_escape($address) . ", " . db_escape($tax_id) . ","
+		.db_escape($email) . ", ".db_escape($dimension_id) . ", " 
+		.db_escape($dimension2_id) . ", ".db_escape($curr_code) . ", 
+		" . db_escape($credit_status) . ", ".db_escape($payment_terms) . ", " . $discount . ", 
+		" . $pymt_discount . ", " . $credit_limit 
+		 .", ".db_escape($sales_type).", ".db_escape($notes) . ")";
+
+	db_query($sql,"The customer could not be added");
+}
+
+function update_customer($customer_id, $CustName, $cust_ref, $address, $tax_id, $curr_code, $email, $dimension_id, $dimension2_id,
+			$credit_status, $payment_terms, $discount, $pymt_discount, $credit_limit, $sales_type, $notes)
+{
+	$sql = "UPDATE ".TB_PREF."debtors_master SET name=" . db_escape($CustName) . ", 
+		debtor_ref=" . db_escape($cust_ref) . ",
+		address=".db_escape($address) . ", 
+		tax_id=".db_escape($tax_id) . ", 
+		curr_code=".db_escape($curr_code) . ", 
+		email=".db_escape($email) . ", 
+		dimension_id=".db_escape($dimension_id) . ", 
+		dimension2_id=".db_escape($dimension2_id) . ", 
+		credit_status=".db_escape($credit_status) . ", 
+		payment_terms=".db_escape($payment_terms) . ", 
+		discount=" . $discount . ", 
+		pymt_discount=" . $pymt_discount . ", 
+		credit_limit=" . $credit_limit . ", 
+		sales_type = ".db_escape($sales_type) . ", 
+		notes=".db_escape($notes) . "
+		WHERE debtor_no = ".db_escape($customer_id);
+
+	db_query($sql,"The customer could not be updated");
+}
+
+function delete_customer($customer_id, $escaped=false)
+{
+	if (!$escaped)
+		$customer_id = db_escape($customer_id);
+	$sql = "DELETE FROM ".TB_PREF."debtors_master WHERE debtor_no=$customer_id";
+	db_query($sql,"cannot delete customer");
+}
+
 function get_customer_details($customer_id, $to=null)
 {
 
@@ -118,26 +166,18 @@ function get_customer_name($customer_id)
 	return $row[0];
 }
 
-function get_area_name($id)
+function get_customer_habit($customer_id)
 {
-	$sql = "SELECT description FROM ".TB_PREF."areas WHERE area_code=".db_escape($id);
+	$sql = "SELECT ".TB_PREF."debtors_master.pymt_discount,
+		".TB_PREF."credit_status.dissallow_invoices
+		FROM ".TB_PREF."debtors_master, ".TB_PREF."credit_status
+		WHERE ".TB_PREF."debtors_master.credit_status = ".TB_PREF."credit_status.id
+			AND ".TB_PREF."debtors_master.debtor_no = ".db_escape($customer_id);
 
-	$result = db_query($sql, "could not get sales type");
+	$result = db_query($sql, "could not query customers");
 
-	$row = db_fetch_row($result);
-	return $row[0];
+	return db_fetch($result);
 }
-
-function get_salesman_name($id)
-{
-	$sql = "SELECT salesman_name FROM ".TB_PREF."salesman WHERE salesman_code=".db_escape($id);
-
-	$result = db_query($sql, "could not get sales type");
-
-	$row = db_fetch_row($result);
-	return $row[0];
-}
-
 
 
 

@@ -19,6 +19,43 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+05-Dec-2009 Joe Hunt
+! Moved all SQL statements from PHP files into relevant *_db.inc files.
+  All folders done, except reporting/repXXX.php and reporting/includes/reports_classes.inc
+  Awaiting change in report mechanism
+$ /includes/ui/allocation_cart.inc
+  /reporting/includes/header2.inc
+  /reporting/includes/reports_classes.inc (partly)
+  /sales/create_recurrent_invoices.php
+  /sales/customer_payments.php
+  /sales/allocations/customer_allocate.php
+  /sales/includes/sales_db.inc
+  /sales/includes/db/branches_db.inc
+  /sales/includes/db/custalloc_db.inc
+  /sales/includes/db/customers_db.inc
+  /sales/includes/db/cust_trans_db.inc
+  /sales/includes/db/recurrent_invoices_db.inc (new file)
+  /sales/includes/db/sales_groups_db.inc (new file)
+  /sales/includes/db/sales_order_db.inc
+  /sales/inquiry/customer_allocation_inquiry.php
+  /sales/inquiry/customer_inquiry.php
+  /sales/inquiry/sales_deliveries_view.php
+  /sales/inquiry/sales_orders_view.php
+  /sales/manage/credit_status.php
+  /sales/manage/customers.php
+  /sales/manage/customer_branches.php
+  /sales/manage/recurrent_invoices.php
+  /sales/manage/sales_areas.php
+  /sales/manage/sales_groups.php
+  /sales/manage/sales_people.php
+  /sales/manage/sales_points.php
+  /sales/manage/sales_types.php
+  /sales/view/view_sales_order.php
+  /taxes/item_tax_types.php
+  /taxes/tax_groups.php
+  /taxes/tax_types.php
+  /taxes/db/tax_types_db.inc
+
 04-Dec-2009 Janusz Dobrowolski
 + Next release upgrade skeleton files.
 $ /sql/alter2.3.php (new)

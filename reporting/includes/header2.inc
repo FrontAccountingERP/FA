@@ -221,10 +221,11 @@
 		if ($branch != null)
 		{
 			$id = $branch['salesman'];
-			$sql = "SELECT salesman_name  FROM ".TB_PREF."salesman WHERE salesman_code='$id'";
-			$result = db_query($sql,"could not get sales person");
-			$row = db_fetch($result);
-			$this->TextWrap($col, $this->row, $width, $row['salesman_name'], 'C');
+			//$sql = "SELECT salesman_name  FROM ".TB_PREF."salesman WHERE salesman_code='$id'";
+			//$result = db_query($sql,"could not get sales person");
+			//$row = db_fetch($result);
+			//$this->TextWrap($col, $this->row, $width, $row['salesman_name'], 'C');
+			$this->TextWrap($col, $this->row, $width, get_salesman_name($id), 'C');
 		}		
 		elseif ($doctype == 26)
 			$this->TextWrap($col, $this->row, $width, $wo_types_array[$myrow["type"]], 'C');

@@ -72,10 +72,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 
 function can_delete($selected_id)
 {
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."stock_master WHERE tax_type_id=".db_escape($selected_id);
-	$result = db_query($sql, "could not query stock master");
-	$myrow = db_fetch_row($result);
-	if ($myrow[0] > 0) 
+	if (key_in_foreign_table($selected_id, 'stock_master', 'tax_type_id'))
 	{
 		display_error(_("Cannot delete this item tax type because items have been created referring to it."));
 		return false;

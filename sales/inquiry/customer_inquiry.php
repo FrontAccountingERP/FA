@@ -203,75 +203,7 @@ function check_overdue($row)
 		&& (abs($row["TotalAmount"]) - $row["Allocated"] != 0);
 }
 //------------------------------------------------------------------------------------------------
-    $date_after = date2sql($_POST['TransAfterDate']);
-    $date_to = date2sql($_POST['TransToDate']);
-
-  $sql = "SELECT 
-  		trans.type, 
-		trans.trans_no, 
-		trans.order_, 
-		trans.reference,
-		trans.tran_date, 
-		trans.due_date, 
-		debtor.name, 
-		branch.br_name,
-		debtor.curr_code,
-		(trans.ov_amount + trans.ov_gst + trans.ov_freight 
-			+ trans.ov_freight_tax + trans.ov_discount)	AS TotalAmount, "; 
-   	if ($_POST['filterType'] != ALL_TEXT)
-		$sql .= "@bal := @bal+(trans.ov_amount + trans.ov_gst + trans.ov_freight + trans.ov_freight_tax + trans.ov_discount), ";
-
-//	else
-//		$sql .= "IF(trans.type=".ST_CUSTDELIVERY.",'', IF(trans.type=".ST_SALESINVOICE." OR trans.type=".ST_BANKPAYMENT.",@bal := @bal+
-//			(trans.ov_amount + trans.ov_gst + trans.ov_freight + trans.ov_freight_tax + trans.ov_discount), @bal := @bal-
-//			(trans.ov_amount + trans.ov_gst + trans.ov_freight + trans.ov_freight_tax + trans.ov_discount))) , ";
-		$sql .= "trans.alloc AS Allocated,
-		((trans.type = ".ST_SALESINVOICE.")
-			AND trans.due_date < '" . date2sql(Today()) . "') AS OverDue
-		FROM "
-			.TB_PREF."debtor_trans as trans, "
-			.TB_PREF."debtors_master as debtor, "
-			.TB_PREF."cust_branch as branch
-		WHERE debtor.debtor_no = trans.debtor_no
-			AND trans.tran_date >= '$date_after'
-			AND trans.tran_date <= '$date_to'
-			AND trans.branch_code = branch.branch_code";
-
-   	if ($_POST['customer_id'] != ALL_TEXT)
-   		$sql .= " AND trans.debtor_no = ".db_escape($_POST['customer_id']);
-
-   	if ($_POST['filterType'] != ALL_TEXT)
-   	{
-   		if ($_POST['filterType'] == '1')
-   		{
-   			$sql .= " AND (trans.type = ".ST_SALESINVOICE." OR trans.type = ".ST_BANKPAYMENT.") ";
-   		}
-   		elseif ($_POST['filterType'] == '2')
-   		{
-   			$sql .= " AND (trans.type = ".ST_SALESINVOICE.") ";
-   		}
-   		elseif ($_POST['filterType'] == '3')
-   		{
-			$sql .= " AND (trans.type = " . ST_CUSTPAYMENT 
-					." OR trans.type = ".ST_BANKDEPOSIT.") ";
-   		}
-   		elseif ($_POST['filterType'] == '4')
-   		{
-			$sql .= " AND trans.type = ".ST_CUSTCREDIT." ";
-   		}
-   		elseif ($_POST['filterType'] == '5')
-   		{
-			$sql .= " AND trans.type = ".ST_CUSTDELIVERY." ";
-   		}
-
-    	if ($_POST['filterType'] == '2')
-    	{
-    		$today =  date2sql(Today());
-    		$sql .= " AND trans.due_date < '$today'
-				AND (trans.ov_amount + trans.ov_gst + trans.ov_freight_tax + 
-				trans.ov_freight + trans.ov_discount - trans.alloc > 0) ";
-    	}
-   	}
+$sql = get_sql_for_customer_inquiry();
 
 //------------------------------------------------------------------------------------------------
 db_query("set @bal:=0");

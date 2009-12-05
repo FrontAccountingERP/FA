@@ -113,4 +113,18 @@ function is_tax_gl_unique($gl_code, $gl_code2=-1, $selected_id=-1) {
 
 	return $gl_code2 == -1 ? ($row[0] <= 1) : ($row[0] == 0);
 }
+
+function is_tax_account($account_code)
+{
+	$sql= "SELECT id FROM ".TB_PREF."tax_types WHERE 
+		sales_gl_code=".db_escape($account_code)." OR purchasing_gl_code=".db_escape($account_code);
+	$result = db_query($sql, "checking account is tax account");
+	if (db_num_rows($result) > 0) {
+		$acct = db_fetch($result);
+		return $acct['id'];
+	} else
+		return false;
+}
+
+
 ?>

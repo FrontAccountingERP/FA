@@ -77,25 +77,10 @@ function handle_submit()
 		
 	if ($new_customer == false) 
 	{
-
-		$sql = "UPDATE ".TB_PREF."debtors_master SET name=" . db_escape($_POST['CustName']) . ", 
-			debtor_ref=" . db_escape($_POST['cust_ref']) . ",
-			address=".db_escape($_POST['address']) . ", 
-			tax_id=".db_escape($_POST['tax_id']) . ", 
-			curr_code=".db_escape($_POST['curr_code']) . ", 
-			email=".db_escape($_POST['email']) . ", 
-			dimension_id=".db_escape($_POST['dimension_id']) . ", 
-			dimension2_id=".db_escape($_POST['dimension2_id']) . ", 
-            credit_status=".db_escape($_POST['credit_status']) . ", 
-            payment_terms=".db_escape($_POST['payment_terms']) . ", 
-            discount=" . input_num('discount') / 100 . ", 
-            pymt_discount=" . input_num('pymt_discount') / 100 . ", 
-            credit_limit=" . input_num('credit_limit') . ", 
-            sales_type = ".db_escape($_POST['sales_type']) . ", 
-            notes=".db_escape($_POST['notes']) . "
-            WHERE debtor_no = ".db_escape($_POST['customer_id']);
-
-		db_query($sql,"The customer could not be updated");
+		update_customer($_POST['customer_id'], $_POST['CustName'], $_POST['cust_ref'], $_POST['address'],
+			$_POST['tax_id'], $_POST['curr_code'], $_POST['email'], $_POST['dimension_id'], $_POST['dimension2_id'],
+			$_POST['credit_status'], $_POST['payment_terms'], input_num('discount') / 100, input_num('pymt_discount') / 100,
+			input_num('credit_limit'), $_POST['sales_type'], $_POST['notes']);
 
 		update_record_status($_POST['customer_id'], $_POST['inactive'],
 			'debtors_master', 'debtor_no');
@@ -107,18 +92,10 @@ function handle_submit()
 	{ 	//it is a new customer
 
 		begin_transaction();
-
-		$sql = "INSERT INTO ".TB_PREF."debtors_master (name, debtor_ref, address, tax_id, email, dimension_id, dimension2_id,  
-			curr_code, credit_status, payment_terms, discount, pymt_discount,credit_limit,  
-			sales_type, notes) VALUES (".db_escape($_POST['CustName']) .", " .db_escape($_POST['cust_ref']) .", "
-			.db_escape($_POST['address']) . ", " . db_escape($_POST['tax_id']) . ","
-			.db_escape($_POST['email']) . ", ".db_escape($_POST['dimension_id']) . ", " 
-			.db_escape($_POST['dimension2_id']) . ", ".db_escape($_POST['curr_code']) . ", 
-			" . db_escape($_POST['credit_status']) . ", ".db_escape($_POST['payment_terms']) . ", " . input_num('discount')/100 . ", 
-			" . input_num('pymt_discount')/100 . ", " . input_num('credit_limit') 
-			 .", ".db_escape($_POST['sales_type']).", ".db_escape($_POST['notes']) . ")";
-
-		db_query($sql,"The customer could not be added");
+		add_customer($_POST['CustName'], $_POST['cust_ref'], $_POST['address'],
+			$_POST['tax_id'], $_POST['curr_code'], $_POST['email'], $_POST['dimension_id'], $_POST['dimension2_id'],
+			$_POST['credit_status'], $_POST['payment_terms'], input_num('discount') / 100, input_num('pymt_discount') / 100,
+			input_num('credit_limit'), $_POST['sales_type'], $_POST['notes']);
 
 		$_POST['customer_id'] = db_insert_id();
 		$new_customer = false;
@@ -146,30 +123,22 @@ if (isset($_POST['delete']))
 
 	// PREVENT DELETES IF DEPENDENT RECORDS IN 'debtor_trans'
 	$sel_id = db_escape($_POST['customer_id']);
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."debtor_trans WHERE debtor_no=$sel_id";
-	$result = db_query($sql,"check failed");
-	$myrow = db_fetch_row($result);
-	if ($myrow[0] > 0) 
+
+	if (key_in_foreign_table($sel_id, 'debtor_trans', 'debtor_no', true))
 	{
 		$cancel_delete = 1;
 		display_error(_("This customer cannot be deleted because there are transactions that refer to it."));
 	} 
 	else 
 	{
-		$sql= "SELECT COUNT(*) FROM ".TB_PREF."sales_orders WHERE debtor_no=$sel_id";
-		$result = db_query($sql,"check failed");
-		$myrow = db_fetch_row($result);
-		if ($myrow[0] > 0) 
+		if (key_in_foreign_table($sel_id, 'sales_orders', 'debtor_no', true))
 		{
 			$cancel_delete = 1;
 			display_error(_("Cannot delete the customer record because orders have been created against it."));
 		} 
 		else 
 		{
-			$sql = "SELECT COUNT(*) FROM ".TB_PREF."cust_branch WHERE debtor_no=$sel_id";
-			$result = db_query($sql,"check failed");
-			$myrow = db_fetch_row($result);
-			if ($myrow[0] > 0) 
+			if (key_in_foreign_table($sel_id, 'cust_branch', 'debtor_no', true))
 			{
 				$cancel_delete = 1;
 				display_error(_("Cannot delete this customer because there are branch records set up against it."));
@@ -180,8 +149,8 @@ if (isset($_POST['delete']))
 	
 	if ($cancel_delete == 0) 
 	{ 	//ie not cancelled the delete as a result of above tests
-		$sql = "DELETE FROM ".TB_PREF."debtors_master WHERE debtor_no=$sel_id";
-		db_query($sql,"cannot delete customer");
+	
+		delete_customer($sel_id, true);
 
 		display_notification(_("Selected customer has been deleted."));
 		unset($_POST['customer_id']);
@@ -230,11 +199,7 @@ if ($new_customer)
 } 
 else 
 {
-
-	$sql = "SELECT * FROM ".TB_PREF."debtors_master WHERE debtor_no = ".db_escape($_POST['customer_id']);
-	$result = db_query($sql,"check failed");
-
-	$myrow = db_fetch($result);
+	$myrow = get_customer($_POST['customer_id']);
 
 	$_POST['CustName'] = $myrow["name"];
 	$_POST['cust_ref'] = $myrow["debtor_ref"];

@@ -72,10 +72,7 @@ if ($Mode=='UPDATE_ITEM' && can_process())
 
 function can_delete($selected_id)
 {
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."tax_group_items	WHERE tax_type_id=".db_escape($selected_id);
-	$result = db_query($sql, "could not query tax groups");
-	$myrow = db_fetch_row($result);
-	if ($myrow[0] > 0)
+	if (key_in_foreign_table($selected_id, 'tax_group_items', 'tax_type_id'))
 	{
 		display_error(_("Cannot delete this tax type because tax groups been created referring to it."));
 

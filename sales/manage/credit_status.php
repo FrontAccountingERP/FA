@@ -58,11 +58,7 @@ if ($Mode=='UPDATE_ITEM' && can_process())
 
 function can_delete($selected_id)
 {
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."debtors_master 
-		WHERE credit_status=".db_escape($selected_id);
-	$result = db_query($sql, "could not query customers");
-	$myrow = db_fetch_row($result);
-	if ($myrow[0] > 0) 
+	if (key_in_foreign_table($selected_id, 'debtors_master', 'credit_status'))
 	{
 		display_error(_("Cannot delete this credit status because customer accounts have been created referring to it."));
 		return false;
