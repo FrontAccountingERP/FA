@@ -19,6 +19,11 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+06-Dec-2009 Janusz Dobrowolski
+# Safer algorithm for company removal, additional prefix check on company add.
+$ /admin/create_coy.php
+  /admin/db/maintenance_db.inc
+
 04-Dec-2009 Janusz Dobrowolski
 # [0000179] Cannot allocate ST_BANKPAYMENT type payments
 $ /includes/ui/allocation_cart.inc
