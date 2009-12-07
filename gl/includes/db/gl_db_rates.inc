@@ -80,15 +80,28 @@ function retrieve_exrate($curr_b, $date)
 	if (method_exists($Hooks, 'retrieve_exrate'))
 		return $Hooks->retrieve_exrate($curr_b, $date);
 	else
-		return get_ecb_rate($curr_b);
+		return get_extern_rate($curr_b, 'ECB', $date);
 }
 //-----------------------------------------------------------------------------
 
-function get_ecb_rate($curr_b) 
+function get_extern_rate($curr_b, $provider = 'ECB', $date) 
 {
 	$curr_a = get_company_pref('curr_default');
-	$ecb_filename = '/stats/eurofxref/eurofxref-daily.xml';
-	$ecb_site = 'www.ecb.int';
+	if ($provider == 'ECB')
+	{
+		$filename = "/stats/eurofxref/eurofxref-daily.xml";
+		$site = "www.ecb.int";
+	}
+	elseif ($provider == 'YAHOO')
+	{
+		$filename = "/q?s={$curr_a}{$curr_b}=X";
+		$site = "finance.yahoo.com";
+	}
+	elseif ($provider == 'GOOGLE')
+	{
+		$filename = "/finance/converter?a=1&from={$curr_a}&to={$curr_b}";
+		$site = "finance.google.com";
+	}
 	$contents = '';
 
 	if (function_exists('curl_init'))
@@ -96,7 +109,7 @@ function get_ecb_rate($curr_b)
 		$retry = 1;
 	 	do {
 	       $ch = curl_init();
-    	   curl_setopt ($ch, CURLOPT_URL, 'http://'.$ecb_site.$ecb_filename);
+    	   curl_setopt ($ch, CURLOPT_URL, 'http://'.$site.$filename);
 	       curl_setopt ($ch, CURLOPT_COOKIEJAR, "cookie.txt");
     	   curl_setopt ($ch, CURLOPT_HEADER, 0);
 	       curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -106,11 +119,11 @@ function get_ecb_rate($curr_b)
 	       curl_close($ch);
 			// due to resolver bug in some curl versions (e.g. 7.15.5) 
 			// try again for constant IP.
-		   $ecb_site="195.128.2.97";
+		   $site="195.128.2.97";
 	   } while( ($contents == '') && $retry--);
 	   
 	} else {
-		$handle = @fopen("http://".$ecb_site.$ecb_filename, 'rb');
+		$handle = @fopen("http://".$site.$filename, 'rb');
 		if ($handle) {
 			do 
 			{
@@ -124,26 +137,51 @@ function get_ecb_rate($curr_b)
 		} // end handle
 	}
 	if (!$contents) {
-		display_warning(_('Cannot retrieve currency rate from ECB page. Please set the rate manually.'));
+		display_warning(_("Cannot retrieve currency rate from $provider page. Please set the rate manually."));
 	}
-	$contents = str_replace ("<Cube currency='USD'", " <Cube currency='EUR' rate='1'/> <Cube currency='USD'", $contents);
-	$from_mask = "|<Cube\s*currency=\'" . $curr_a . "\'\s*rate=\'([\d.,]*)\'\s*/>|i";
-	preg_match ( $from_mask, $contents, $out );
-	$val_a = isset($out[1]) ? $out[1] : 0;
-	$val_a = str_replace ( ',', '', $val_a );
-	$to_mask = "|<Cube\s*currency=\'" . $curr_b . "\'\s*rate=\'([\d.,]*)\'\s*/>|i";
-	preg_match ( $to_mask, $contents, $out );
-	$val_b = isset($out[1]) ? $out[1] : 0;
-	$val_b = str_replace ( ',', '', $val_b );
-	if ($val_b) 
+	if ($provider == 'ECB')
 	{
-		$val = $val_a / $val_b;
-	} 
-	else 
-	{
-		$val = 0;
+		$contents = str_replace ("<Cube currency='USD'", " <Cube currency='EUR' rate='1'/> <Cube currency='USD'", $contents);
+		$from_mask = "|<Cube\s*currency=\'" . $curr_a . "\'\s*rate=\'([\d.,]*)\'\s*/>|i";
+		preg_match ( $from_mask, $contents, $out );
+		$val_a = isset($out[1]) ? $out[1] : 0;
+		$val_a = str_replace ( ',', '', $val_a );
+		$to_mask = "|<Cube\s*currency=\'" . $curr_b . "\'\s*rate=\'([\d.,]*)\'\s*/>|i";
+		preg_match ( $to_mask, $contents, $out );
+		$val_b = isset($out[1]) ? $out[1] : 0;
+		$val_b = str_replace ( ',', '', $val_b );
+		if ($val_b) 
+		{
+			$val = $val_a / $val_b;
+		} 
+		else 
+		{
+			$val = 0;
+		}
 	}
+	elseif ($provider == 'YAHOO')
+	{
+		$val = '';
+		if (preg_match('/Last\sTrade:(.*?)Trade\sTime/s', $contents, $matches)) {
+			$val = strip_tags($matches[1]);
+			$val = str_replace(',', '', $val);
+			if ($val != 0)
+				$val = 1 / $val;
+		}
+	}
+	elseif ($provider == 'GOOGLE')
+	{
+		$val = '';
+		$regexp = "%([\d|.]+)\s+{$curr_a}\s+=\s+<span\sclass=(.*)>([\d|.]+)\s+{$curr_b}\s*</span>%s";
+		if (preg_match($regexp, $contents, $matches)) 
+		{
+			$val = $matches[3];
+			$val = str_replace(',', '', $val);
+			if ($val != 0)
+				$val = 1 / $val;
+		}
+    }    
 	return $val;
-}  // end function get_ecb_rate
+}  /* end function get_extern_rate */
 
 ?>

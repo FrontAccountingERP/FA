@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+07-Dec-2009 Joe Hunt
+! Providing use of alternative providers for exchange rates.
+$ /gl/includes/db/gl_db_rates.inc
+
 06-Dec-2009 Janusz Dobrowolski
 # Safer algorithm for company removal, additional prefix check on company add.
 $ /admin/create_coy.php
