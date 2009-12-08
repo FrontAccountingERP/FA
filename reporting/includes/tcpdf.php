@@ -141,7 +141,8 @@
   *    and
   *    if (!defined("K_RE_PATTERN_ARABIC"))
   * 4. Parameter $unicode in constructor renamed to $uni.
-  * 4. Header function renamed to Header1 (due to conflict with FrontReport Header)
+  * 5. Header function renamed to Header1 (due to conflict with FrontReport Header)
+  * 6. Line 6190, SetLineWidth (cast of values to avoid problem in PHP 5.2.6
   * -------------------------------------------------------------------------------
   */
 if (!defined("K_PATH_FONTS"))
@@ -6190,7 +6191,15 @@ if (!class_exists('TCPDF')) {
 		function SetLineWidth($width) {
 			//Set line width
 			$this->LineWidth = $width;
-			$this->linestyleWidth = sprintf('%.2f w', ($width * $this->k));
+			//$this->linestyleWidth = sprintf('%.2f w', ($width * $this->k));
+			// FrontAccounting fix
+			// My PHP 5.2.6 environment gave an "Unsupported operand types"
+			// error for the multiplication on the next line some of the
+			// time when this method is called - I debugged and sometimes
+			// the $width parameter is some sort of weird array.  I don't
+			// understand what's going on, but casting it to a (float) seems
+			// to "fix" the problem.  -Jason Maas, 2009/09/25
+			$this->linestyleWidth = sprintf('%.2f w', ((float) $width * (float) $this->k));
 			$this->_out($this->linestyleWidth);
 		}
 

@@ -19,6 +19,20 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+08-Dec-2009 Tom Hallman/Joe Hunt
++ Extended the Report Engine to better support own reports
+$ /reporting/includes/class.pdf.inc
+  /reporting/includes/excel_report.inc
+  /reporting/includes/pdf_report.inc
+  /reporting/includes/tcpdf.php
+  /reporting/fonts/courier.php (new file)
+  /reporting/fonts/times.php (new file)
+  /reporting/fonts/timesb.php (new file)
+  /reporting/fonts/timesbi.php (new file)
+  /reporting/fonts/timesi.php (new file)
+  /reporting/fonts/symbol.php (new file)
+  /reporting/fonts/zapfdingbats.php (new file)
+  
 07-Dec-2009 Joe Hunt
 ! Providing use of alternative providers for exchange rates.
 $ /gl/includes/db/gl_db_rates.inc

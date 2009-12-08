@@ -62,7 +62,7 @@ include_once (dirname(__FILE__).'/tcpdf.php');
 
 class Cpdf extends TCPDF {
 
-	function Cpdf($pageSize='A4', $l=array())
+	function Cpdf($pageSize='A4', $l=array(), $pageOrientation='P')
 	{
 		if (!isset($l['a_meta_charset']))
 			$l = array('a_meta_charset' => 'ISO-8859-1', 'a_meta_dir' => 'ltr', 'a_meta_language' => 'en_GB', 'w_page' => 'page');
@@ -70,7 +70,7 @@ class Cpdf extends TCPDF {
 		$uni = ($enc == 'UTF-8' || $enc == 'GB2312' ? true : false);
 		if ($uni)
 			ini_set("memory_limit", "48M");
-		$this->TCPDF('P', 'pt', $pageSize, $uni, $enc);
+		$this->TCPDF($pageOrientation, 'pt', $pageSize, $uni, $enc);
 		$this->setLanguageArray($l);
 		$this->setPrintHeader(false);
 		$this->setPrintFooter(false);
@@ -82,16 +82,31 @@ class Cpdf extends TCPDF {
 		$this->cMargin = 0;
 	}
 
-	function selectFont($fontname, $style='')
+	// $fontname should be a standard PDF font (like 'times', 'helvetica' or 'courier')
+	// or one that's been installed on your system.  An empty string can also be used
+	// which will retain the font currently in use.
+	// $style is either:
+	//   * a special case string:
+	//     * bold
+	//     * italic
+	//   * or a case-insensitive string where each char represents a style choice
+	// and you can use more than one or none at all.  Possible choices:
+	//      * empty string: regular
+    //      * B: bold
+    //      * I: italic
+    //      * U: underline
+    //      * D: line trough (aka "strike through")
+	function selectFont($fontname, $style = '')
 	{
+		// Parse the style - check for special cases, otherwise leave as-is
+		if ($style == 'italic')
+			$style = 'i';
+		elseif ($style == 'bold')
+			$style = 'b';
+
+		// Parse the fontname
 		if ($fontname != '')
 			$fontname = basename($fontname);
-		if ($style == 'italic')
-			$type = 'i';
-		elseif ($style == 'bold')
-			$type = 'b';
-		else
-			$type = '';
 		if ($fontname == '')
 		{
 			if ($this->isunicode)
@@ -120,7 +135,7 @@ class Cpdf extends TCPDF {
 			}
 			// else use built-in adobe fonts helvetica.
 		}
-		$this->SetFont($fontname, $type);
+		$this->SetFont($fontname, $style);
 	}
 
 	function Header1()
@@ -133,17 +148,17 @@ class Cpdf extends TCPDF {
 
 	function newPage()
 	{
-		TCPDF::AddPage();
+		parent::AddPage();
 	}
 
-	function line($x1,$y1,$x2,$y2)
+	function line($x1,$y1,$x2,$y2, $style = array())
 	{
-		TCPDF::line($x1, $this->h-$y1, $x2, $this->h-$y2);
+		parent::Line($x1, $this->h-$y1, $x2, $this->h-$y2, $style);
 	}
 
 	function rectangle($x, $y, $w, $h, $style='', $border_style=array(), $fill_color=array())
 	{
-		TCPDF::Rect($x, $this->h-$y, $w, $h, $style, $border_style, $fill_color);
+		parent::Rect($x, $this->h-$y, $w, $h, $style, $border_style, $fill_color);
 	}
 
 
@@ -211,12 +226,12 @@ class Cpdf extends TCPDF {
 	*/
 	function ellipse($x0,$y0,$r1,$r2=0,$angle=0,$nSeg=8,$astart=0,$afinish=360,$close=1,$fill=0)
 	{
-		TCPDF::Ellipse($x0, $y0, $r1, $r2, $angle, $astart. $afinish, ($close?'C':''), "", "", $nSeg);
+		parent::Ellipse($x0, $y0, $r1, $r2, $angle, $astart. $afinish, ($close?'C':''), "", "", $nSeg);
 	}
 
 	function Stream()
 	{
-		TCPDF::Output('', 'I');
+		parent::Output('', 'I');
 	}
 
 	function calcTextWrap($txt, $width, $spacebreak=false)
@@ -243,7 +258,7 @@ class Cpdf extends TCPDF {
 		return array($txt2, $ret);
 	}
 
-	function addTextWrap($xb, $yb, $w, $h, $txt, $align='left', $border=0, $fill=0, $spacebreak=false)
+	function addTextWrap($xb, $yb, $w, $h, $txt, $align='left', $border=0, $fill=0, $link = NULL, $stretch = 0, $spacebreak=false)
 	{
 		$ret = "";
 		if (!$this->rtl)
@@ -252,47 +267,35 @@ class Cpdf extends TCPDF {
 				$align = 'R';
 			elseif ($align == 'left')
 				$align = 'L';
+			elseif ($align == 'center')
+				$align = 'C';
+			elseif ($align == 'justify')
+				$align = 'J';
 		}
 		else
 			$align = 'R';
-		$txt = $this->calcTextWrap($txt, $w, $spacebreak);
+
+		// If horizontal scaling was requested, check to see if we're trying to scale
+		// too much.  If so, cut back string first and then scale it.
+		$maxScaleFactor = 1.4;
+		if ($stretch == 1 || $stretch == 2)
+	        $txt = $this->calcTextWrap($txt, $w * $maxScaleFactor, $spacebreak);
+		// Wrap text if stretching isn't turned on
+		else
+	        $txt = $this->calcTextWrap($txt, $w, $spacebreak);
 		$ret = $txt[1];
 		$txt = $txt[0];
 		$this->SetXY($xb, $this->h - $yb - $h);
-		$txt = TCPDF::unhtmlentities($txt);
+		$txt = parent::unhtmlentities($txt);
 		if ($this->isunicode && $this->encoding != "UTF-8")
 			$txt = iconv($this->encoding, "UTF-8", $txt);
-		$this->Cell($w, $h, $txt, $border, 0, $align, $fill);
+		$this->Cell($w, $h, $txt, $border, 0, $align, $fill, $link, $stretch);
 		return $ret;
-	}
-/**
-* sets the colour for stroke operations
-*/
-    function setStrokeColor($r,$g,$b,$force=0)
-    {
-        TCPDF::SetDrawColor($r,$g,$b);
-    }
-/**
-* this sets the line drawing style.
-* width, is the thickness of the line in user units
-* cap is the type of cap to put on the line, values can be 'butt','round','square'
-*    where the diffference between 'square' and 'butt' is that 'square' projects a flat end past the
-*    end of the line.
-* join can be 'miter', 'round', 'bevel'
-* dash is an array which sets the dash pattern, is a series of length values, which are the lengths of the
-*   on and off dashes.
-*   (2) represents 2 on, 2 off, 2 on , 2 off ...
-*   (2,1) is 2 on, 1 off, 2 on, 1 off.. etc
-* phase is a modifier on the dash pattern which is used to shift the point at which the pattern starts.
-*/
- 	function setLineStyle($width=1,$cap='',$join='',$dash='',$phase=0)
- 	{
- 		$this->SetLineWidth($width);
 	}
 
 	function Text($x, $y, $txt, $stroke=0, $clip=false)
 	{
-		TCPDF::Text($x,$y, TCPDF::unhtmlentities($txt), $stroke, $clip);
+		parent::Text($x,$y, parent::unhtmlentities($txt), $stroke, $clip);
 	}
 
 } // end of class
