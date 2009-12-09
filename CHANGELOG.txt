@@ -19,6 +19,11 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+09-Dec-2009 Janusz Dobrowolski
++ Added system diagnostics page
+$ /admin/system_diagnostics.php
+  /applications/setup.php
+
 08-Dec-2009 Tom Hallman/Joe Hunt
 + Extended the Report Engine to better support own reports
 $ /reporting/includes/class.pdf.inc
