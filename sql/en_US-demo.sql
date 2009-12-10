@@ -1194,6 +1194,7 @@ CREATE TABLE `0_quick_entries` (
   `description` varchar(60) NOT NULL,
   `base_amount` double NOT NULL default '0',
   `base_desc` varchar(60) default NULL,
+  `bal_type` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`id`),
   KEY `description` (`description`)
 ) TYPE=MyISAM AUTO_INCREMENT=4 ;
@@ -1201,9 +1202,9 @@ CREATE TABLE `0_quick_entries` (
 
 ### Data of table `0_quick_entries` ###
 
-INSERT INTO `0_quick_entries` VALUES ('1', '1', 'Maintenance', '0', 'Amount');
-INSERT INTO `0_quick_entries` VALUES ('2', '4', 'Phone', '0', 'Amount');
-INSERT INTO `0_quick_entries` VALUES ('3', '2', 'Cash Sales', '0', 'Amount');
+INSERT INTO `0_quick_entries` VALUES ('1', '1', 'Maintenance', '0', 'Amount', '0');
+INSERT INTO `0_quick_entries` VALUES ('2', '4', 'Phone', '0', 'Amount', '0');
+INSERT INTO `0_quick_entries` VALUES ('3', '2', 'Cash Sales', '0', 'Amount', '0');
 
 
 ### Structure of table `0_quick_entry_lines` ###

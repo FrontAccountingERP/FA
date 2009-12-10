@@ -102,22 +102,22 @@ function get_bank_gl_account($id)
 
 //---------------------------------------------------------------------------------------------
 
-function add_quick_entry($description, $type, $base_amount, $base_desc)
+function add_quick_entry($description, $type, $base_amount, $base_desc, $bal_type)
 {
-	$sql = "INSERT INTO ".TB_PREF."quick_entries (description, type, base_amount, base_desc) 
+	$sql = "INSERT INTO ".TB_PREF."quick_entries (description, type, base_amount, base_desc, bal_type) 
 	VALUES (".db_escape($description).", ".db_escape($type).", "
-		.db_escape($base_amount).", ".db_escape($base_desc).")";
+		.db_escape($base_amount).", ".db_escape($base_desc).", ".db_escape($bal_type).")";
 
 	db_query($sql, "could not insert quick entry for $description");
 }
 
 //---------------------------------------------------------------------------------------------
 
-function update_quick_entry($selected_id, $description, $type, $base_amount, $base_desc)
+function update_quick_entry($selected_id, $description, $type, $base_amount, $base_desc, $bal_type)
 {
 	$sql = "UPDATE ".TB_PREF."quick_entries	SET description = ".db_escape($description).",
 		type=".db_escape($type).", base_amount=".db_escape($base_amount)
-		.", base_desc=".db_escape($base_desc)."
+		.", base_desc=".db_escape($base_desc).", bal_type=".db_escape($bal_type)."
 		WHERE id = ".db_escape($selected_id);
 
 	db_query($sql, "could not update quick entry for $selected_id");

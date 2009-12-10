@@ -19,6 +19,16 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+10-Dec-2009 Joe Hunt
++ Enhanced Quick Entries to also support Balance Based source amount. Monthly or Yearly (all)
+  Only works with type Journal Entry.
+$ /gl/manage/gl_quick_entries.php
+  /gl/includes/ui/gl_journal_ui.inc
+  /includes/ui/ui_view.inc
+  /sql/alter2.3.sql
+  /sql/en_US-new.sql
+  /sql/en_US-demo.sql
+  .
 05-Dec-2009 Joe Hunt
 ! Moved all SQL statements from PHP files into relevant *_db.inc files.
   All folders done, except reporting/repXXX.php and reporting/includes/reports_classes.inc

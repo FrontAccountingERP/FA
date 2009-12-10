@@ -523,8 +523,27 @@ function display_quick_entries(&$cart, $id, $base, $type, $descr='')
 		if ($type != QE_SUPPINV)	// only one quick entry on journal/bank transaction
 			$cart->clear_items();
 		$qe = get_quick_entry($id);
+		if ($qe['bal_type'] == 1)
+		{
+			if ($qe['base_amount'] == 1.0) // monthly
+				$begin = begin_month($cart->tran_date);
+			else
+			{
+				if (is_account_balancesheet($qe['base_desc'])) // total
+					$begin = "";
+				else
+					$begin = begin_fiscalyear(); // from fiscalyear begin
+			}		
+			$base = get_gl_trans_from_to($begin, $cart->tran_date, $qe['base_desc']);
+				
+		}
 		if ($descr != '') $qe['description'] .= ': '.$descr;
 		$result = get_quick_entry_lines($id);
+		if (db_num_rows($result) == 0)
+		{
+			display_error( _("No Quick Entry lines are defined."));
+			set_focus('totamount');
+		}	
 		$totrate = 0;
 		while ($row = db_fetch($result))
 		{

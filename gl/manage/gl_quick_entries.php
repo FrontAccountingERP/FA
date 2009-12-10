@@ -74,7 +74,14 @@ function can_process()
 		set_focus('description');
 		return false;
 	}
-	if (strlen($_POST['base_desc']) == 0) 
+	$bal_type = get_post('bal_type');
+	if ($bal_type == 1 && $_POST['type'] != QE_JOURNAL)
+	{
+		display_error( _("You can only use Balance Based together with Journal Entries."));
+		set_focus('base_desc');
+		return false;
+	}
+	if (!$bal_type && strlen($_POST['base_desc']) == 0) 
 	{
 		display_error( _("The base amount description cannot be empty."));
 		set_focus('base_desc');
@@ -95,13 +102,13 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 		if ($selected_id != -1) 
 		{
 			update_quick_entry($selected_id, $_POST['description'], $_POST['type'],
-				 input_num('base_amount'), $_POST['base_desc']);
+				 input_num('base_amount'), $_POST['base_desc'], get_post('bal_type'));
 			display_notification(_('Selected quick entry has been updated'));
 		} 
 		else 
 		{
 			add_quick_entry($_POST['description'], $_POST['type'], 
-				input_num('base_amount'), $_POST['base_desc']);
+				input_num('base_amount'), $_POST['base_desc'], get_post('bal_type'));
 			display_notification(_('New quick entry has been added'));
 		}
 		$Mode = 'RESET';
@@ -155,6 +162,7 @@ if ($Mode == 'RESET')
 	$_POST['description'] = $_POST['type'] = '';
 	$_POST['base_desc']= _('Base Amount');
 	$_POST['base_amount'] = price_format(0);
+	$_POST['bal_type'] = 0;
 }
 if ($Mode2 == 'RESET2')
 {
@@ -186,37 +194,48 @@ end_table(1);
 end_form();
 //-----------------------------------------------------------------------------------
 
+if (list_updated('type') || (isset($_POST['bal_type']) && list_updated('bal_type')))
+{
+	$Ajax->activate('qe');
+}
 start_form();
-
+div_start('qe');
 start_table($table_style2);
 
 if ($selected_id != -1) 
 {
- 	//if ($Mode == 'Edit') 
- 	//{
-		//editing an existing status code
-		$myrow = get_quick_entry($selected_id);
+	$myrow = get_quick_entry($selected_id);
 
-		$_POST['id']  = $myrow["id"];
-		$_POST['description']  = $myrow["description"];
-		$_POST['type']  = $myrow["type"];
-		$_POST['base_desc']  = $myrow["base_desc"];
-		$_POST['base_amount']  = price_format($myrow["base_amount"]);
-		hidden('selected_id', $selected_id);
- 	//}
+	$_POST['id']  = $myrow["id"];
+	$_POST['description']  = $myrow["description"];
+	$_POST['type']  = $myrow["type"];
+	$_POST['base_desc']  = $myrow["base_desc"];
+	$_POST['base_amount']  = price_format($myrow["base_amount"]);
+	$_POST['bal_type']  = $myrow["bal_type"];
+	hidden('selected_id', $selected_id);
 } 
 
 text_row_ex(_("Description").':', 'description', 50, 60);
 
-quick_entry_types_list_row(_("Entry Type").':', 'type');
+quick_entry_types_list_row(_("Entry Type").':', 'type', null, $selected_id == -1);
 
-text_row_ex(_("Base Amount Description").':', 'base_desc', 50, 60, '',_('Base Amount'));
-
-amount_row(_("Default Base Amount").':', 'base_amount', price_format(0));
-
+if (get_post('type') == QE_JOURNAL)
+	yesno_list_row(_("Balance Based"), 'bal_type', null, _("Yes"), _("No"), true);
+if (get_post('bal_type') == 1)
+{
+	yesno_list_row(_("Period"), 'base_amount', null, _("Monthly"), _("Yearly"));
+	gl_all_accounts_list_row(_("Account"), 'base_desc', null, true);
+}
+else
+{
+	if ($selected_id == -1)
+		$_POST['base_desc'] = _("Base Amount");
+	text_row_ex(_("Base Amount Description").':', 'base_desc', 50, 60, '',_('Base Amount'));
+	amount_row(_("Default Base Amount").':', 'base_amount', price_format(0));
+}
 end_table(1);
-
 submit_add_or_update_center($selected_id == -1, '', 'both');
+div_end();
 
 end_form();
 
@@ -230,7 +249,7 @@ if ($selected_id != -1)
 	$dim = get_company_pref('use_dimension');
 	if ($dim == 2)
 		$th = array(_("Post"), _("Account/Tax Type"), _("Amount"), _("Dimension"), _("Dimension")." 2", "", "");
-	else if ($dim == 1)	
+	elseif ($dim == 1)	
 		$th = array(_("Post"), _("Account/Tax Type"), _("Amount"), _("Dimension"), "", "");
 	else	
 		$th = array(_("Post"), _("Account/Tax Type"), _("Amount"), "", "");
