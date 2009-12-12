@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+12-Dec-2009 Joe Hunt
+! Implemented search on categories as well in sales_items_list...
+$ /includes/ui/ui_lists.inc
+
 09-Dec-2009 Janusz Dobrowolski
 + Added system diagnostics page
 $ /admin/system_diagnostics.php
