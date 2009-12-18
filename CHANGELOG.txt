@@ -19,6 +19,11 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+18-Dec-2009 Joe Hunt
+# Allowing a quantity of 0 in a PO item line when modifying caused strange result.
+  Fixed depending on the decimals in the stock item to not allow less than minimum.
+$ /purchasing/po_entry_items.php
+
 12-Dec-2009 Joe Hunt
 ! Implemented search on categories as well in sales_items_list...
 $ /includes/ui/ui_lists.inc
