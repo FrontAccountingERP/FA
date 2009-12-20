@@ -19,6 +19,12 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+21-Dec-2009 Joe Hunt
+# Function money_format function doesn't exist in OS Win. Fix in current_user.inc
+  Some errors in header3() in pdf_report.inc..
+$ /includes/current_user.inc
+  /reporting/includes/pdf_report.inc
+
 18-Dec-2009 Joe Hunt
 # Allowing a quantity of 0 in a PO item line when modifying caused strange result.
   Fixed depending on the decimals in the stock item to not allow less than minimum.

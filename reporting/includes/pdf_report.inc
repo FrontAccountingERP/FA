@@ -523,7 +523,7 @@ class FrontReport extends Cpdf
 		$str = _("Report Period") . ':';
 		$this->Text($this->leftMargin, $str, $headerFieldCol);
 		$str = '';
-		if ($this->params[1]['from'] != '')
+		if (isset($this->params[1]['from']) && $this->params[1]['from'] != '')
 			$str = $this->params[1]['from'] . ' - ';
 		$str .= $this->params[1]['to'];
 		$this->Text($headerFieldCol, $str, $companyCol);
