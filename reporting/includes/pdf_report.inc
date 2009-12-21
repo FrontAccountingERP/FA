@@ -46,6 +46,7 @@ class FrontReport extends Cpdf
 	var $oldFontSize;
 	var $currency;
 	var $companyLogoEnable;  // select whether to use a company logo graphic in some header templates
+	var $scaleLogoWidth;
 	var $footerEnable;  // select whether to print a page footer or not
 	var $footerText;  // store user-generated footer text
 	var $headerFunc;  // store the name of the currently selected header function
@@ -196,6 +197,7 @@ class FrontReport extends Cpdf
 		$this->oldFontSize = 0;
 		$this->row = $this->pageHeight - $this->topMargin;
 		$this->currency = '';
+		$this->scaleLogoWidth = false; // if Logo, scale on width (else height).
 		$this->headerFunc = 'Header';  // default to the original header template
 		$rtl = ($_SESSION['language']->dir === 'rtl' ? 'rtl' : 'ltr');
 		$code = $_SESSION['language']->code;
@@ -469,7 +471,10 @@ class FrontReport extends Cpdf
 
 			// Width being zero means that the image will be scaled to the specified height
 			// keeping its aspect ratio intact.
-			$this->AddImage($logo, $companyCol, $this->row - (LOGO_HEIGHT * LOGO_Y_POS_ADJ_FACTOR), 0, LOGO_HEIGHT);
+			if ($this->scaleLogoWidth)
+				$this->AddImage($logo, $companyCol, $this->row, COMPANY_WIDTH, 0);
+			else	
+				$this->AddImage($logo, $companyCol, $this->row - (LOGO_HEIGHT * LOGO_Y_POS_ADJ_FACTOR), 0, LOGO_HEIGHT);
 		}
 		else
 			$this->Text($companyCol, $this->company['coy_name']);
