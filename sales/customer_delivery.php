@@ -136,9 +136,10 @@ if (isset($_GET['OrderNumber']) && $_GET['OrderNumber'] > 0) {
 	if (!check_quantities()) {
 		display_error(_("Selected quantity cannot be less than quantity invoiced nor more than quantity	not dispatched on sales order."));
 
-	} elseif(!check_num('ChargeFreightCost', 0))
+	} elseif(!check_num('ChargeFreightCost', 0)) {
 		display_error(_("Freight cost cannot be less than zero"));
 		set_focus('ChargeFreightCost');
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -194,8 +195,6 @@ function check_data()
 	}
 
 	if (!check_quantities()) {
-		display_error(_("Selected quantity cannot be less than quantity invoiced nor more than quantity
-		not dispatched on sales order."));
 		return false;
 	}
 
@@ -395,8 +394,12 @@ if ($row['dissallow_invoices'] == 1)
 display_heading(_("Delivery Items"));
 div_start('Items');
 start_table("$table_style width=80%");
-$th = array(_("Item Code"), _("Item Description"), _("Ordered"), _("Units"), _("Delivered"),
+
+$new = $_SESSION['Items']->trans_no==0;
+$th = array(_("Item Code"), _("Item Description"), 
+	$new ? _("Ordered") : _("Max. delivery"), _("Units"), $new ? _("Delivered") : _("Invoiced"),
 	_("This Delivery"), _("Price"), _("Tax Type"), _("Discount"), _("Total"));
+
 table_header($th);
 $k = 0;
 $has_marked = false;
