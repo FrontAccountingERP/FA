@@ -184,12 +184,12 @@ function set_document_parent($cart)
 
 	if (count($cart->src_docs) == 1) {
 
-	// if this child document has only one parent - update child link
-	$del_no = reset(array_keys($cart->src_docs));
+		// if this child document has only one parent - update child link
+		$del_no = reset(array_keys($cart->src_docs));
 
-	$sql = 'UPDATE '.TB_PREF.'debtor_trans SET trans_link = ' . $del_no .
-		' WHERE type=".db_escape($cart->trans_type)." AND trans_no='. $inv_no ;
-	db_query($sql, 'Child document link cannot be updated');
+		$sql = 'UPDATE '.TB_PREF.'debtor_trans SET trans_link = ' . $del_no .
+			' WHERE type='.db_escape($cart->trans_type).' AND trans_no='. $inv_no ;
+		db_query($sql, 'Child document link cannot be updated');
 
 	}
 	if ($cart->trans_type != ST_SALESINVOICE)
