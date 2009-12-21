@@ -19,9 +19,17 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+21-Dec-2009 Chaitanya/Janusz Dobrowolski
+# [0000184] Bad source document quantities update and invalid qtys during
+	derivative document entry.
+$ /sales/includes/cart_class.inc
+  /sales/includes/sales_db.inc
+# Fixed quantity columns descriptions in delivery edition.
+$ /sales/customer_delivery.php
+
 21-Dec-2009 Joe Hunt
 # Function money_format function doesn't exist in OS Win. Fix in current_user.inc
-  Some errors in header3() in pdf_report.inc..
+  Some errors in header3() in pdf_report.inc.
 $ /includes/current_user.inc
   /reporting/includes/pdf_report.inc
 
