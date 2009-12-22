@@ -716,15 +716,25 @@ class FrontReport extends Cpdf
 		return $this->TextWrap($this->cols[$c], $this->row - $r, $this->cols[$n] - $this->cols[$c] + $corr, $txt, $this->aligns[$c], $border, $fill, $link, $stretch);
 	}
 	
-	function AmountCol($c, $n, $txt, $dec=0, $corr=0, $r=0, $border=0, $fill=0, $link=NULL, $stretch=0)
+	function AmountCol($c, $n, $txt, $dec=0, $corr=0, $r=0, $border=0, $fill=0, $link=NULL, $stretch=0, $color_red=false)
 	{
-		return $this->TextCol($c, $n, number_format2($txt, $dec), $corr, $r, $border, $fill, $link, $stretch);
+		if ($color_red && $txt < 0)
+			$this->SetTextColor(255, 0, 0);
+		$ret = $this->TextCol($c, $n, number_format2($txt, $dec), $corr, $r, $border, $fill, $link, $stretch);
+		if ($color_red && $txt < 0)
+			$this->SetTextColor(0, 0, 0);
+		return $ret;	
 	}
 
-	function AmountCol2($c, $n, $txt, $dec=0, $corr=0, $r=0, $border=0, $fill=0, $link=NULL, $stretch=0, $amount_locale = 'en_US.UTF-8', $amount_format = '%(!.2n')
+	function AmountCol2($c, $n, $txt, $dec=0, $corr=0, $r=0, $border=0, $fill=0, $link=NULL, $stretch=0, $color_red=false, $amount_locale = 'en_US.UTF-8', $amount_format = '%(!.2n')
 	{
 		setlocale(LC_MONETARY, $amount_locale);
-		return $this->TextCol($c, $n, money_format($amount_format, $txt), $corr, $r, $border, $fill, $link, $stretch);
+		if ($color_red && $txt < 0)
+			$this->SetTextColor(255, 0, 0);
+		$ret = $this->TextCol($c, $n, money_format($amount_format, $txt), $corr, $r, $border, $fill, $link, $stretch);
+		if ($color_red && $txt < 0)
+			$this->SetTextColor(0, 0, 0);
+		return $ret;	
 	}
 	
 	function DateCol($c, $n, $txt, $conv=false, $corr=0, $r=0, $border=0, $fill=0, $link=NULL, $stretch=0)

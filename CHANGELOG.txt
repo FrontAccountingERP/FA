@@ -22,6 +22,7 @@ $ -> Affected files
 22-Dec-2009 Joe Hunt
 ! Some additional changes in pdf_report.inc for supporting report extensions.
 $ /reporting/includes/pdf_report.inc
+  /reporting/includes/excel_report.inc
 
 21-Dec-2009 Chaitanya/Janusz Dobrowolski
 # [0000184] Bad source document quantities update and invalid qtys during

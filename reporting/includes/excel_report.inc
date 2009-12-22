@@ -43,6 +43,7 @@ class FrontReport extends Spreadsheet_Excel_Writer_Workbook
 	var $y;
 	var $numcols;
 	var $excelColWidthFactor;
+	var $endLine;
 
 	var $formatTitle;
 	var $formatDateTime;
@@ -66,6 +67,7 @@ class FrontReport extends Spreadsheet_Excel_Writer_Workbook
 		$this->size = $size;
 		$this->title = $title;
 		$this->lineHeight = 12;
+		$this->endLine = 760;
 		$this->fontSize = $fontsize;
 		$this->oldFontSize = 0;
 		$this->y = 1;
@@ -529,14 +531,14 @@ class FrontReport extends Spreadsheet_Excel_Writer_Workbook
 			$this->sheet->mergeCells($this->y, $c, $this->y, $n - 1);
 	}
 
-	function AmountCol($c, $n, $txt, $dec=0, $corr=0, $r=0, $border=0, $fill=0, $link=NULL, $stretch=0) 
+	function AmountCol($c, $n, $txt, $dec=0, $corr=0, $r=0, $border=0, $fill=0, $link=NULL, $stretch=0, $color_red=false) 
 	{ 
 		if (!is_numeric($txt))
 			$txt = 0;
 		$this->sheet->writeNumber($this->y, $c, $txt, $this->NumFormat($dec)); 
 	}
 	
-	function AmountCol2($c, $n, $txt, $dec=0, $corr=0, $r=0, $border=0, $fill=0, $link=NULL, $stretch=0, $amount_locale = NULL, $amount_format = NULL) 
+	function AmountCol2($c, $n, $txt, $dec=0, $corr=0, $r=0, $border=0, $fill=0, $link=NULL, $stretch=0, $color_red=false, $amount_locale = NULL, $amount_format = NULL) 
 	{ 
 		if (!is_numeric($txt))
 			$txt = 0;
