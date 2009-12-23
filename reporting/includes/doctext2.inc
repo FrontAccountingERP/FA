@@ -120,6 +120,7 @@ if (isset($linetype))
 		$doc_Amount = "amount";
 		$doc_TOTAL_INVOICE = $doctype==10 ? "TOTAL INVOICE" : "TOTAL CREDIT";
 		$doc_TOTAL_ORDER = "TOTAL ORDER EX VAT";
+		$doc_TOTAL_ORDER2 = "TOTAL ORDER VAT INCL.";
 		$doc_TOTAL_PO = "TOTAL PO EX VAT";
 		$doc_TOTAL_DELIVERY = "TOTAL DELIVERY INCL. VAT";
 	}

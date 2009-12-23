@@ -24,6 +24,11 @@ $ -> Affected files
 ! Release 2.2.2
 $ /config.default.php
   /update.html
+! Changed so Printed Sales Order (Quotation) shows TOTAL VAT INCL. if it is.
+$ /reporting/rep109.php
+  /reporting/rep111.php
+  /reporting/includes/doctext.inc
+  /reporting/includes/doctext2.inc
 ! Replaced all deprecated functions so FA runs in php >= 5.3.0 as well.
 $ /admin/db/maintenance_db.inc
   /gl/gl_bank.php

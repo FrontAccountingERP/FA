@@ -153,7 +153,10 @@ function print_sales_orders()
 		$rep->NewLine();
 		$DisplayTotal = number_format2($myrow["freight_cost"] + $SubTotal, $dec);
 		$rep->Font('bold');
-		$rep->TextCol(3, 6, $doc_TOTAL_ORDER, - 2);
+		if ($myrow['tax_included'] == 0)
+			$rep->TextCol(3, 6, $doc_TOTAL_ORDER, - 2);
+		else	
+			$rep->TextCol(3, 6, $doc_TOTAL_ORDER2, - 2);
 		$rep->TextCol(6, 7,	$DisplayTotal, -2);
 		$rep->Font();
 		if ($email == 1)
