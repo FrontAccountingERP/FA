@@ -29,6 +29,9 @@ $ /reporting/rep109.php
   /reporting/rep111.php
   /reporting/includes/doctext.inc
   /reporting/includes/doctext2.inc
+# Restoring journal entry sql to previous without join with bank_trans
+  due to error in joins. Tom Hallman works on it until 2.2.3
+$ /gl/inquiry/journal_inquiry.php  
 ! Replaced all deprecated functions so FA runs in php >= 5.3.0 as well.
 $ /admin/db/maintenance_db.inc
   /gl/gl_bank.php
