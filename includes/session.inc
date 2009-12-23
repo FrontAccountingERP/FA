@@ -186,7 +186,7 @@ include_once($path_to_root . "/config.php");
 include_once($path_to_root . "/includes/main.inc");
 
 // Ajax communication object
-$Ajax =& new Ajax();
+$Ajax = new Ajax();
 
 // js/php validation rules container
 $Validate = array();

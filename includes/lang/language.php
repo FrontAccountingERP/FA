@@ -27,7 +27,7 @@ class language
 	function language($name, $code, $encoding, $dir = 'ltr') 
 	{
 		$this->name = $name;
-		$this->code = $code;
+		$this->code = $code ? $code : 'en_GB';
 		$this->encoding = $encoding;
 		$this->dir = $dir;
 	}

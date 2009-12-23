@@ -24,6 +24,23 @@ $ -> Affected files
 ! Release 2.2.2
 $ /config.default.php
   /update.html
+! Replaced all deprecated functions so FA runs in php >= 5.3.0 as well.
+$ /admin/db/maintenance_db.inc
+  /gl/gl_bank.php
+  /includes/db_pager.inc
+  /includes/session.inc
+  /includes/lang/language.php
+  /includes/page/header.inc
+  /install/save.php
+  /inventory/adjustments.php
+  /inventory/transfers.php
+  /purchasing/supplier_invoice.php
+  /purchasing/allocations/supplier_allocate.php
+  /purchasing/includes/ui/po_ui.inc
+  /reporting/includes/class.graphic.inc
+  /reporting/includes/tcpdf.php
+  /reporting/includes/Workbook.php
+  /sales/allocations/customer_allocate.php
   
 22-Dec-2009 Joe Hunt
 ! Some additional changes in pdf_report.inc for supporting report extensions.

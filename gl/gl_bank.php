@@ -102,7 +102,7 @@ function handle_new_order($type)
 		unset ($_SESSION['pay_items']);
 	}
 
-	session_register("pay_items");
+	//session_register("pay_items");
 
 	$_SESSION['pay_items'] = new items_cart($type);
 

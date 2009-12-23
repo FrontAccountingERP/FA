@@ -453,7 +453,7 @@ function &new_db_pager($name, $sql, $coldef, $table = null, $key = null, $page_l
 		unset($_SESSION[$name]); // kill pager if sql has changed
 	}
 	if (!isset($_SESSION[$name])) {
-	    $_SESSION[$name] =& new db_pager($sql, $name, $table, $page_len);
+	    $_SESSION[$name] = new db_pager($sql, $name, $table, $page_len);
 		$_SESSION[$name]->main_tbl = $table;
 		$_SESSION[$name]->key = $key;
 		$_SESSION[$name]->set_sql($sql);

@@ -455,7 +455,7 @@ function db_unzip($mode, $path)
     $all = implode("", file($path));
 
     // convert path to name of ziped file
-    $filename = ereg_replace(".*/", "", $path);
+    $filename = preg_replace("/.*\//", "", $path);
     $filename = substr($filename, 0, strlen($filename) - 4);
 
     // compare filname in zip and filename from $_GET

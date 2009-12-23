@@ -164,7 +164,7 @@ class graph
 
     function display($save="", $border=false)
     {
-        $this->legend_exists        = (ereg("(5|6)", $this->type)) ? true : false;
+        $this->legend_exists        = (preg_match("/(5|6)/", $this->type)) ? true : false;
         $this->biggest_graphic_name = (strlen($this->graphic_1) > strlen($this->graphic_2)) ? $this->graphic_1 : $this->graphic_2;
         $this->height_title         = (!empty($this->title)) ? ($this->string_height($this->tsize) + 15) : 0;
         $this->space_between_bars   = ($this->type == 1) ? 40 : 30;
@@ -181,7 +181,7 @@ class graph
         $this->graphic_area_x2     = $this->graphic_area_x1 + $this->graphic_area_width;
         $this->graphic_area_y2     = $this->graphic_area_y1 + $this->graphic_area_height;
 
-		if (count($this->z) && (ereg("(1|2|3|4)", $this->type)))
+		if (count($this->z) && (preg_match("/(1|2|3|4)/", $this->type)))
             $this->graphic_2_exists = true;
         $this->total_parameters    = count($this->x);
 		for ($i = 0; $i < $this->total_parameters; $i++)
@@ -234,7 +234,7 @@ class graph
 
 
         // Draw axis and background lines for "vertical bars", "dots" and "lines"
-        if (ereg("^(1|3|4)$", $this->type))
+        if (preg_match("/^(1|3|4)$/", $this->type))
         {
             if ($this->legend_exists == true)
             {
@@ -312,7 +312,7 @@ class graph
 
 
         // Draw legend box for "pie" or "donut"
-        else if (ereg("^(5|6)$", $this->type))
+        else if (preg_match("/^(5|6)$/", $this->type))
         {
             $this->draw_legend();
         }
@@ -404,7 +404,7 @@ class graph
         /**
         * Draw graphic: DOTS or LINE
         */
-        else if (ereg("^(3|4)$", $this->type))
+        else if (preg_match("/^(3|4)$/", $this->type))
         {
 
             $x[0] = $this->graphic_area_x1+1;
@@ -475,7 +475,7 @@ class graph
         /**
         * Draw graphic: PIE or DONUT
         */
-        else if (ereg("^(5|6)$", $this->type))
+        else if (preg_match("/^(5|6)$/", $this->type))
         {
             $center_x = ($this->graphic_area_x1 + $this->graphic_area_x2) / 2;
             $center_y = ($this->graphic_area_y1 + $this->graphic_area_y2) / 2;
@@ -702,10 +702,10 @@ class graph
 
 
         // Draw legend values for VERTICAL BARS, HORIZONTAL BARS, DOTS and LINES
-        if (ereg("^(1|2|3|4)$", $this->type))
+        if (preg_match("/^(1|2|3|4)$/", $this->type))
         {
-            $color_1 = (ereg("^(1|2)$", $this->type)) ? $this->color['bars']   : $this->color['line'];
-            $color_2 = (ereg("^(1|2)$", $this->type)) ? $this->color['bars_2'] : $this->color['line_2'];
+            $color_1 = (preg_match("/^(1|2)$/", $this->type)) ? $this->color['bars']   : $this->color['line'];
+            $color_2 = (preg_match("/^(1|2)$/", $this->type)) ? $this->color['bars_2'] : $this->color['line_2'];
 
             imagefilledrectangle($this->img, $x, $y, ($x+10), ($y+10), $color_1);
             imagerectangle($this->img, $x, $y, ($x+10), ($y+10), $this->color['title']);
@@ -717,7 +717,7 @@ class graph
         }
 
         // Draw legend values for PIE or DONUT
-        else if (ereg("^(5|6)$", $this->type))
+        else if (preg_match("/^(5|6)$/", $this->type))
         {
             if (!empty($this->axis_x))
             {
@@ -818,19 +818,19 @@ class graph
                 $this->color['bg_lines']    = imagecolorallocate($this->img, 220, 220, 220);
                 $this->color['bg_legend']   = imagecolorallocate($this->img, 255, 255, 255);
 
-                if (ereg("^(1|2)$", $this->type))
+                if (preg_match("/^(1|2)$/", $this->type))
                 {
                     $this->color['bars']          = imagecolorallocate($this->img, 100, 150, 200);
                     $this->color['bars_shadow']   = imagecolorallocate($this->img,  50, 100, 150);
                     $this->color['bars_2']        = imagecolorallocate($this->img, 200, 250, 150);
                     $this->color['bars_2_shadow'] = imagecolorallocate($this->img, 120, 170,  70);
                 }
-                else if (ereg("^(3|4)$", $this->type))
+                else if (preg_match("/^(3|4)$/", $this->type))
                 {
                     $this->color['line']   = imagecolorallocate($this->img, 100, 150, 200);
                     $this->color['line_2'] = imagecolorallocate($this->img, 230, 100, 100);
                 }
-                else if (ereg("^(5|6)$", $this->type))
+                else if (preg_match("/^(5|6)$/", $this->type))
                 {
                     $this->color['arc_1']        = imagecolorallocate($this->img, 255, 150,   0);
                     $this->color['arc_2']        = imagecolorallocate($this->img, 150,   0, 255);
@@ -858,19 +858,19 @@ class graph
                 $this->color['bg_lines']    = imagecolorallocate($this->img, 100, 100, 100);
                 $this->color['bg_legend']   = imagecolorallocate($this->img,  70,  70,  70);
 
-                if (ereg("^(1|2)$", $this->type))
+                if (preg_match("/^(1|2)$/", $this->type))
                 {
                     $this->color['bars']          = imagecolorallocate($this->img,  50, 200,  50);
                     $this->color['bars_shadow']   = imagecolorallocate($this->img,   0, 150,   0);
                     $this->color['bars_2']        = imagecolorallocate($this->img, 255, 255, 255);
                     $this->color['bars_2_shadow'] = imagecolorallocate($this->img, 220, 220, 220);
                 }
-                else if (ereg("^(3|4)$", $this->type))
+                else if (preg_match("/^(3|4)$/", $this->type))
                 {
                     $this->color['line']   = imagecolorallocate($this->img, 220, 220, 220);
                     $this->color['line_2'] = imagecolorallocate($this->img,   0, 180,   0);
                 }
-                else if (ereg("^(5|6)$", $this->type))
+                else if (preg_match("/^(5|6)$/", $this->type))
                 {
                     $this->color['arc_1']        = imagecolorallocate($this->img, 255, 255, 255);
                     $this->color['arc_2']        = imagecolorallocate($this->img, 200, 220, 200);
@@ -899,19 +899,19 @@ class graph
                 $this->color['bg_lines']    = imagecolorallocate($this->img, 200, 224, 180);
                 $this->color['bg_legend']   = imagecolorallocate($this->img, 230, 230, 200);
 
-                if (ereg("^(1|2)$", $this->type))
+                if (preg_match("/^(1|2)$/", $this->type))
                 {
                     $this->color['bars']          = imagecolorallocate($this->img, 255, 170,  80);
                     $this->color['bars_shadow']   = imagecolorallocate($this->img, 200, 120,  30);
                     $this->color['bars_2']        = imagecolorallocate($this->img, 250, 230,  80);
                     $this->color['bars_2_shadow'] = imagecolorallocate($this->img, 180, 150,   0);
                 }
-                else if (ereg("^(3|4)$", $this->type))
+                else if (preg_match("/^(3|4)$/", $this->type))
                 {
                     $this->color['line']   = imagecolorallocate($this->img, 230, 100,   0);
                     $this->color['line_2'] = imagecolorallocate($this->img, 220, 200,  50);
                 }
-                else if (ereg("^(5|6)$", $this->type))
+                else if (preg_match("/^(5|6)$/", $this->type))
                 {
                     $this->color['arc_1']        = imagecolorallocate($this->img, 100, 150, 200);
                     $this->color['arc_2']        = imagecolorallocate($this->img, 200, 250, 150);

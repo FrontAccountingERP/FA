@@ -37,7 +37,7 @@ function clear_allocations()
 		unset($_SESSION['alloc']->allocs);
 		unset($_SESSION['alloc']);
 	}
-	session_register("alloc");
+	//session_register("alloc");
 }
 //--------------------------------------------------------------------------------
 
