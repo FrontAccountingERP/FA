@@ -19,6 +19,12 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+------------------------------- Release 2.2.2 ----------------------------------
+23-Dec-2009 Joe Hunt
+! Release 2.2.2
+$ /config.default.php
+  /update.html
+  
 22-Dec-2009 Joe Hunt
 ! Some additional changes in pdf_report.inc for supporting report extensions.
 $ /reporting/includes/pdf_report.inc
