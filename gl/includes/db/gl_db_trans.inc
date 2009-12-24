@@ -565,6 +565,7 @@ function void_journal_trans($type, $type_no, $use_transaction=true)
 
 function get_sql_for_journal_inquiry()
 {
+/*
 	// Tom Hallman 11 Nov 2009
 	// IF(gl.type = 1... statement is for deposits/payments that may not actually result
 	// in a deposit, such as when a fix is made.  Without that statement (and the
@@ -600,6 +601,37 @@ function get_sql_for_journal_inquiry()
 	if (get_post('filterType') != -1) {
 		$sql .= " AND gl.type=".get_post('filterType');
 	}	
+	if (!check_value('AlsoClosed')) {
+		$sql .= " AND gl_seq=0";
+	}
+	$sql .= " GROUP BY gl.type, gl.type_no";
+*/
+	$sql = "SELECT	IF(ISNULL(a.gl_seq),0,a.gl_seq) as gl_seq,
+		gl.tran_date,
+		gl.type,
+		gl.type_no,
+		refs.reference,
+		SUM(IF(gl.amount>0, gl.amount,0)) as amount,
+		com.memo_,
+		IF(ISNULL(u.user_id),'',u.user_id) as user_id
+		FROM ".TB_PREF."gl_trans as gl
+		 LEFT JOIN ".TB_PREF."audit_trail as a ON
+			(gl.type=a.type AND gl.type_no=a.trans_no)
+		 LEFT JOIN ".TB_PREF."comments as com ON
+			(gl.type=com.type AND gl.type_no=com.id)
+		 LEFT JOIN ".TB_PREF."refs as refs ON
+			(gl.type=refs.type AND gl.type_no=refs.id)
+		 LEFT JOIN ".TB_PREF."users as u ON
+			a.user=u.id
+		WHERE gl.tran_date >= '" . date2sql($_POST['FromDate']) . "'
+		AND gl.tran_date <= '" . date2sql($_POST['ToDate']) . "'
+		AND gl.amount!=0";
+	if (isset($_POST['Ref']) && $_POST['Ref'] != "") {
+		$sql .= " AND reference LIKE '%". $_POST['Ref'] . "%'";
+	}
+	if (get_post('filterType') != -1) {
+		$sql .= " AND gl.type=".get_post('filterType');
+	}
 	if (!check_value('AlsoClosed')) {
 		$sql .= " AND gl_seq=0";
 	}
