@@ -2479,9 +2479,9 @@ class Spreadsheet_Excel_Writer_Parser
 
         // Split the range into 2 cell refs
         if (preg_match("/^([A-Ia-i]?[A-Za-z])(\d+)\:([A-Ia-i]?[A-Za-z])(\d+)$/", $range)) {
-            list($cell1, $cell2) = split(':', $range);
+            list($cell1, $cell2) = preg_split('/:/', $range);
         } elseif (preg_match("/^([A-Ia-i]?[A-Za-z])(\d+)\.\.([A-Ia-i]?[A-Za-z])(\d+)$/", $range)) {
-            list($cell1, $cell2) = split('\.\.', $range);
+            list($cell1, $cell2) = preg_split('/\.\./', $range);
 
         } else {
             // TODO: use real error codes
@@ -2521,7 +2521,7 @@ class Spreadsheet_Excel_Writer_Parser
         $class = 2; // as far as I know, this is magick.
 
         // Split the ref at the ! symbol
-        list($ext_ref, $range) = split('!', $token);
+        list($ext_ref, $range) = preg_split('/!/', $token);
 
         // Convert the external reference part (different for BIFF8)
         if ($this->_BIFF_version == 0x0500) {
@@ -2531,7 +2531,7 @@ class Spreadsheet_Excel_Writer_Parser
         }
 
         // Split the range into 2 cell refs
-        list($cell1, $cell2) = split(':', $range);
+        list($cell1, $cell2) = preg_split('/:/', $range);
 
         // Convert the cell references
         if (preg_match("/^(\$)?[A-Ia-i]?[A-Za-z](\$)?(\d+)$/", $cell1)) {
@@ -2600,7 +2600,7 @@ class Spreadsheet_Excel_Writer_Parser
         $class = 2; // as far as I know, this is magick.
 
         // Split the ref at the ! symbol
-        list($ext_ref, $cell) = split('!', $cell);
+        list($ext_ref, $cell) = preg_split('/!/', $cell);
 
         // Convert the external reference part (different for BIFF8)
         if ($this->_BIFF_version == 0x0500) {
@@ -2641,7 +2641,7 @@ class Spreadsheet_Excel_Writer_Parser
 
         // Check if there is a sheet range eg., Sheet1:Sheet2.
         if (preg_match("/:/", $ext_ref)) {
-            list($sheet_name1, $sheet_name2) = split(':', $ext_ref);
+            list($sheet_name1, $sheet_name2) = preg_split('/:/', $ext_ref);
 
             $sheet1 = $this->_getSheetIndex($sheet_name1);
             if ($sheet1 == -1) {
@@ -2687,7 +2687,7 @@ class Spreadsheet_Excel_Writer_Parser
 
         // Check if there is a sheet range eg., Sheet1:Sheet2.
         if (preg_match("/:/", $ext_ref)) {
-            list($sheet_name1, $sheet_name2) = split(':', $ext_ref);
+            list($sheet_name1, $sheet_name2) = preg_split('/:/', $ext_ref);
 
             $sheet1 = $this->_getSheetIndex($sheet_name1);
             if ($sheet1 == -1) {
@@ -2986,7 +2986,7 @@ class Spreadsheet_Excel_Writer_Parser
             default:
                 // if it's a reference
                 if (preg_match('/^\$?[A-Ia-i]?[A-Za-z]\$?[0-9]+$/',$token) and
-                   !ereg("[0-9]",$this->_lookahead) and 
+                   !preg_match("/[0-9]/",$this->_lookahead) and 
                    ($this->_lookahead != ':') and ($this->_lookahead != '.') and
                    ($this->_lookahead != '!'))
                 {
@@ -2994,39 +2994,39 @@ class Spreadsheet_Excel_Writer_Parser
                 }
                 // If it's an external reference (Sheet1!A1 or Sheet1:Sheet2!A1)
                 elseif (preg_match("/^\w+(\:\w+)?\![A-Ia-i]?[A-Za-z][0-9]+$/u",$token) and
-                       !ereg("[0-9]",$this->_lookahead) and
+                       !preg_match("/[0-9]/",$this->_lookahead) and
                        ($this->_lookahead != ':') and ($this->_lookahead != '.'))
                 {
                     return $token;
                 }
                 // If it's an external reference ('Sheet1'!A1 or 'Sheet1:Sheet2'!A1)
                 elseif (preg_match("/^'[\w -]+(\:[\w -]+)?'\![A-Ia-i]?[A-Za-z][0-9]+$/u",$token) and
-                       !ereg("[0-9]",$this->_lookahead) and
+                       !preg_match("/[0-9]/",$this->_lookahead) and
                        ($this->_lookahead != ':') and ($this->_lookahead != '.'))
                 {
                     return $token;
                 }
                 // if it's a range (A1:A2)
                 elseif (preg_match("/^(\$)?[A-Ia-i]?[A-Za-z](\$)?[0-9]+:(\$)?[A-Ia-i]?[A-Za-z](\$)?[0-9]+$/",$token) and 
-                       !ereg("[0-9]",$this->_lookahead))
+                       !preg_match("/[0-9]/",$this->_lookahead))
                 {
                     return $token;
                 }
                 // if it's a range (A1..A2)
                 elseif (preg_match("/^(\$)?[A-Ia-i]?[A-Za-z](\$)?[0-9]+\.\.(\$)?[A-Ia-i]?[A-Za-z](\$)?[0-9]+$/",$token) and 
-                       !ereg("[0-9]",$this->_lookahead))
+                       !preg_match("/[0-9]/",$this->_lookahead))
                 {
                     return $token;
                 }
                 // If it's an external range like Sheet1!A1 or Sheet1:Sheet2!A1:B2
                 elseif (preg_match("/^\w+(\:\w+)?\!([A-Ia-i]?[A-Za-z])?[0-9]+:([A-Ia-i]?[A-Za-z])?[0-9]+$/u",$token) and
-                       !ereg("[0-9]",$this->_lookahead))
+                       !preg_match("/[0-9]/",$this->_lookahead))
                 {
                     return $token;
                 }
                 // If it's an external range like 'Sheet1'!A1 or 'Sheet1:Sheet2'!A1:B2
                 elseif (preg_match("/^'[\w -]+(\:[\w -]+)?'\!([A-Ia-i]?[A-Za-z])?[0-9]+:([A-Ia-i]?[A-Za-z])?[0-9]+$/u",$token) and
-                       !ereg("[0-9]",$this->_lookahead))
+                       !preg_match("/[0-9]/",$this->_lookahead))
                 {
                     return $token;
                 }
@@ -3038,12 +3038,12 @@ class Spreadsheet_Excel_Writer_Parser
                     return $token;
                 }
                 // If it's a string (of maximum 255 characters)
-                elseif (ereg("^\"[^\"]{0,255}\"$",$token))
+                elseif (preg_match("/^\"[^\"]{0,255}\"$/",$token))
                 {
                     return $token;
                 }
                 // if it's a function call
-                elseif (eregi("^[A-Z0-9\xc0-\xdc\.]+$",$token) and ($this->_lookahead == "("))
+                elseif (preg_match("/^[A-Z0-9\xc0-\xdc\.]+$/i",$token) and ($this->_lookahead == "("))
                 {
                     return $token;
                 }
@@ -3258,7 +3258,7 @@ class Spreadsheet_Excel_Writer_Parser
             return $result;
         }
         // if it's a function call
-        elseif (eregi("^[A-Z0-9\xc0-\xdc\.]+$",$this->_current_token))
+        elseif (preg_match("/^[A-Z0-9\xc0-\xdc\.]+$/i",$this->_current_token))
         {
             $result = $this->_func();
             return $result;
@@ -4683,7 +4683,7 @@ class Spreadsheet_Excel_Writer_Worksheet extends Spreadsheet_Excel_Writer_BIFFwr
         $row     = $match[2];
 
         // Convert base26 column string to number
-        $chars = split('', $col);
+        $chars = preg_split('//', $col);
         $expn  = 0;
         $col   = 0;
 
@@ -5401,7 +5401,7 @@ class Spreadsheet_Excel_Writer_Worksheet extends Spreadsheet_Excel_Writer_BIFFwr
         // parameters accordingly.
         // Split the dir name and sheet name (if it exists)
         /*if (preg_match("/\#/", $url)) {
-            list($dir_long, $sheet) = split("\#", $url);
+            list($dir_long, $sheet) = preg_split("/\#/", $url);
         } else {
             $dir_long = $url;
         }
@@ -5409,7 +5409,7 @@ class Spreadsheet_Excel_Writer_Worksheet extends Spreadsheet_Excel_Writer_BIFFwr
         if (isset($sheet)) {
             $link_type |= 0x08;
             $sheet_len  = pack("V", strlen($sheet) + 0x01);
-            $sheet      = join("\0", split('', $sheet));
+            $sheet      = join("\0", preg_split('//', $sheet));
             $sheet     .= "\0\0\0";
         } else {
             $sheet_len   = '';
@@ -5433,7 +5433,7 @@ class Spreadsheet_Excel_Writer_Worksheet extends Spreadsheet_Excel_Writer_BIFFwr
         $dir_short   = preg_replace("/\.\.\\\/", '', $dir_long) . "\0";
     
         // Store the long dir name as a wchar string (non-null terminated)
-        //$dir_long       = join("\0", split('', $dir_long));
+        //$dir_long       = join("\0", preg_split('//', $dir_long));
         $dir_long       = $dir_long . "\0";
     
         // Pack the lengths of the dir strings
@@ -7007,7 +7007,7 @@ class Spreadsheet_Excel_Writer_Workbook extends Spreadsheet_Excel_Writer_BIFFwri
         $this->Spreadsheet_Excel_Writer_BIFFwriter();
 
         $this->_filename         = $filename;
-        $this->_parser           =& new Spreadsheet_Excel_Writer_Parser($this->_byte_order, $this->_BIFF_version);
+        $this->_parser           = new Spreadsheet_Excel_Writer_Parser($this->_byte_order, $this->_BIFF_version);
         $this->_1904             = 0;
         $this->_activesheet      = 0;
         $this->_firstsheet       = 0;
@@ -7016,7 +7016,7 @@ class Spreadsheet_Excel_Writer_Workbook extends Spreadsheet_Excel_Writer_BIFFwri
         $this->_fileclosed       = 0;
         $this->_biffsize         = 0;
         $this->_sheetname        = 'Sheet';
-        $this->_tmp_format       =& new Spreadsheet_Excel_Writer_Format($this->_BIFF_version);
+        $this->_tmp_format       = new Spreadsheet_Excel_Writer_Format($this->_BIFF_version);
         $this->_worksheets       = array();
         $this->_sheetnames       = array();
         $this->_formats          = array();

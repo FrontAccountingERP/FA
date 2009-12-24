@@ -66,7 +66,7 @@ if (isset($_GET['New']))
 	}
 
 	//session_register("SuppInv");
-	session_register("supp_trans");
+	//session_register("supp_trans");
 	$_SESSION['supp_trans'] = new supp_trans;
 	$_SESSION['supp_trans']->is_invoice = true;
 }

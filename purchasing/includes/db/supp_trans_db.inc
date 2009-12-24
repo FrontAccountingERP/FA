@@ -37,7 +37,6 @@ function add_supp_trans($type, $supplier_id, $date_, $due_date, $reference, $sup
 
 	if ($err_msg == "")
 		$err_msg = "Cannot insert a supplier transaction record";
-error_log($sql);
 
 	db_query($sql, $err_msg);
 	add_audit_trail($type, $trans_no, $date_);

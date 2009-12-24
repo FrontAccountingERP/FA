@@ -52,7 +52,7 @@ function check_data()
 				display_error(_("This database settings are already used by another company."));
 				return false;
 			}
-			if ($_POST['tbpref'] == 0 || $con['tbpref'] == '')
+			if (($_POST['tbpref'] == 0) ^ ($con['tbpref'] == ''))
 			{
 				display_error(_("You cannot have table set without prefix together with prefixed sets in the same database."));
 				return false;
@@ -160,22 +160,39 @@ function handle_submit()
 
 function handle_delete()
 {
-	global $comp_path, $def_coy, $db_connections, $comp_subdirs;
+	global $comp_path, $def_coy, $db_connections, $comp_subdirs, $path_to_root;
 
 	$id = $_GET['id'];
 
-	$cdir = $comp_path.'/'.$id;
-	@flush_dir($cdir, true);
-	if (!rmdir($cdir))
+	// First make sure all company directories from the one under removal are writable. 
+	// Without this after operation we end up with changed per-company owners!
+	for($i = $id; $i < count($db_connections); $i++) {
+		if (!is_dir($comp_path.'/'.$i) || !is_writable($comp_path.'/'.$i)) {
+			display_error(_('Broken company subdirectories system. You have to remove this company manually.'));
+			return;
+		}
+	}
+	// make sure config file is writable
+	if (!is_writeable($path_to_root . "/config_db.php"))
 	{
-		display_error(_("Cannot remove company data directory ") . $cdir);
+		display_error(_("The configuration file ") . $path_to_root . "/config_db.php" . _(" is not writable. Change its permissions so it is, then re-run the operation."));
 		return;
 	}
-	for($i = $id+1; $i < count($db_connections); $i++) {
+	// rename directory to temporary name to ensure all
+	// other subdirectories will have right owners even after
+	// unsuccessfull removal.
+	$cdir = $comp_path.'/'.$id;
+	$tmpname  = $comp_path.'/old_'.$id;
+	if (!@rename($cdir, $tmpname)) {
+		display_error(_('Cannot rename subdirectory to temporary name.'));
+		return;
+	}
+	// 'shift' company directories names
+	for ($i = $id+1; $i < count($db_connections); $i++) {
 		if (!rename($comp_path.'/'.$i, $comp_path.'/'.($i-1))) {
 			display_error(_("Cannot rename company subdirectory"));
 			return;
-		}	
+		}
 	}
 	$err = remove_connection($id);
 	if ($err == 0)
@@ -190,8 +207,17 @@ function handle_delete()
 		display_error(_("Cannot write to the configuration file - ") . $path_to_root . "/config_db.php");
 	else if ($error == -3)
 		display_error(_("The configuration file ") . $path_to_root . "/config_db.php" . _(" is not writable. Change its permissions so it is, then re-run the operation."));
-	if ($error != 0)
+	if ($error != 0) {
+		@rename($tmpname, $cdir);
 		return;
+	}
+	// finally remove renamed company directory
+	@flush_dir($tmpname, true);
+	if (!@rmdir($tmpname))
+	{
+		display_error(_("Cannot remove temporary renamed company data directory ") . $tmpname);
+		return;
+	}
 
 	meta_forward($_SERVER['PHP_SELF']);
 }

@@ -37,7 +37,7 @@ function create_new_po()
 		unset ($_SESSION['PO']);
 	}
 
-	session_register("PO");
+	//session_register("PO");
 
 	$_SESSION['PO'] = new purch_order;
 	$_POST['OrderDate'] = new_doc_date();

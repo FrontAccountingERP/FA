@@ -19,6 +19,110 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+24-Dec-2009 Merged changes from main trunk 2.2.1-2.2.2 as follows
+
+! Release 2.2.2
+$ /update.html
+! Changed so Printed Sales Order (Quotation) shows TOTAL VAT INCL. if it is.
+$ /reporting/rep109.php
+  /reporting/rep111.php
+  /reporting/includes/doctext.inc
+  /reporting/includes/doctext2.inc
+# Restoring journal entry sql to previous without join with bank_trans
+  due to error in joins. Tom Hallman works on it until 2.2.3
+$ /gl/inquiry/journal_inquiry.php  
+! Replaced all deprecated functions so FA runs in php >= 5.3.0 as well.
+$ /admin/db/maintenance_db.inc
+  /gl/gl_bank.php
+  /includes/db_pager.inc
+  /includes/session.inc
+  /includes/lang/language.php
+  /includes/page/header.inc
+  /install/save.php
+  /inventory/adjustments.php
+  /inventory/transfers.php
+  /purchasing/supplier_invoice.php
+  /purchasing/allocations/supplier_allocate.php
+  /purchasing/includes/ui/po_ui.inc
+  /reporting/includes/class.graphic.inc
+  /reporting/includes/tcpdf.php
+  /reporting/includes/Workbook.php
+  /sales/allocations/customer_allocate.php
+  
+22-Dec-2009 Joe Hunt
+! Some additional changes in pdf_report.inc for supporting report extensions.
+$ /reporting/includes/pdf_report.inc
+  /reporting/includes/excel_report.inc
+
+21-Dec-2009 Chaitanya/Janusz Dobrowolski
+# [0000184] Bad source document quantities update and invalid qtys during
+	derivative document entry.
+$ /sales/includes/cart_class.inc
+  /sales/includes/sales_db.inc
+# Fixed quantity columns descriptions in delivery edition.
+$ /sales/customer_delivery.php
+
+21-Dec-2009 Joe Hunt
+# Function money_format function doesn't exist in OS Win. Fix in current_user.inc
+  Some errors in header3() in pdf_report.inc.
+$ /includes/current_user.inc
+  /reporting/includes/pdf_report.inc
+
+18-Dec-2009 Joe Hunt
+# Allowing a quantity of 0 in a PO item line when modifying caused strange result.
+  Fixed depending on the decimals in the stock item to not allow less than minimum.
+$ /purchasing/po_entry_items.php
+
+12-Dec-2009 Joe Hunt
+! Implemented search on categories as well in sales_items_list...
+$ /includes/ui/ui_lists.inc
+
+09-Dec-2009 Janusz Dobrowolski
++ Added system diagnostics page
+$ /admin/system_diagnostics.php
+  /applications/setup.php
+
+08-Dec-2009 Tom Hallman/Joe Hunt
++ Extended the Report Engine to better support own reports
+$ /reporting/includes/class.pdf.inc
+  /reporting/includes/excel_report.inc
+  /reporting/includes/pdf_report.inc
+  /reporting/includes/tcpdf.php
+  /reporting/fonts/courier.php (new file)
+  /reporting/fonts/times.php (new file)
+  /reporting/fonts/timesb.php (new file)
+  /reporting/fonts/timesbi.php (new file)
+  /reporting/fonts/timesi.php (new file)
+  /reporting/fonts/symbol.php (new file)
+  /reporting/fonts/zapfdingbats.php (new file)
+  
+07-Dec-2009 Joe Hunt
+! Providing use of alternative providers for exchange rates.
+$ /gl/includes/db/gl_db_rates.inc
+
+06-Dec-2009 Janusz Dobrowolski
+# Safer algorithm for company removal, additional prefix check on company add.
+$ /admin/create_coy.php
+  /admin/db/maintenance_db.inc
+
+04-Dec-2009 Janusz Dobrowolski
+# [0000179] Cannot allocate ST_BANKPAYMENT type payments
+$ /includes/ui/allocation_cart.inc
+# False currency rate error on first opening of sales order page when customer_list is off.
+$ /sales/includes/cart_class.inc
+
+04-Dec-2009 Joe Hunt
+# Print Statement prints balances in wrong place.
+$ /reporting/rep108.php
+! Better date2sql in date_functions.inc
+$ /includes/date_functions.inc
+
+03-Dec-2009 Janusz Dobrowolski
+# Fixed bug [0000178] data error in supplier allocations
+$ /includes/ui/allocation_cart.inc
+
+---------- End of changes from main trunk 2.2.1-2.2.2
+
 10-Dec-2009 Joe Hunt
 + Enhanced Quick Entries to also support Balance Based source amount. Monthly or Yearly (all)
   Only works with type Journal Entry.

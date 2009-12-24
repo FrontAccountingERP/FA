@@ -157,9 +157,12 @@ function handle_cancel_po()
 
 function check_data()
 {
-    if (!check_num('qty',0))
+	$dec = get_qty_dec($_POST['stock_id']);
+	$min = 1 / pow(10, $dec);
+    if (!check_num('qty',$min))
     {
-	   	display_error(_("The quantity of the order item must be numeric and not less than zero."));
+    	$min = number_format2($min, $dec);
+	   	display_error(_("The quantity of the order item must be numeric and not less than ").$min);
 		set_focus('qty');
 	   	return false;
     }
@@ -185,19 +188,21 @@ function handle_update_item()
 {
 	$allow_update = check_data(); 
 
-	if ($allow_update && 
-		($_SESSION['PO']->line_items[$_POST['line_no']]->qty_inv > input_num('qty') ||
-		$_SESSION['PO']->line_items[$_POST['line_no']]->qty_received > input_num('qty')))
+	if ($allow_update)
 	{
-		display_error(_("You are attempting to make the quantity ordered a quantity less than has already been invoiced or received.  This is prohibited.") .
-			"<br>" . _("The quantity received can only be modified by entering a negative receipt and the quantity invoiced can only be reduced by entering a credit note against this item."));
-		set_focus('qty');
-		return;
-	}
+		if ($_SESSION['PO']->line_items[$_POST['line_no']]->qty_inv > input_num('qty') ||
+			$_SESSION['PO']->line_items[$_POST['line_no']]->qty_received > input_num('qty'))
+		{
+			display_error(_("You are attempting to make the quantity ordered a quantity less than has already been invoiced or received.  This is prohibited.") .
+				"<br>" . _("The quantity received can only be modified by entering a negative receipt and the quantity invoiced can only be reduced by entering a credit note against this item."));
+			set_focus('qty');
+			return;
+		}
 	
-	$_SESSION['PO']->update_order_item($_POST['line_no'], input_num('qty'), input_num('price'),
-  		$_POST['req_del_date']);
-	unset_form_variables();
+		$_SESSION['PO']->update_order_item($_POST['line_no'], input_num('qty'), input_num('price'),
+  			$_POST['req_del_date']);
+		unset_form_variables();
+	}	
     line_start_focus();
 }
 

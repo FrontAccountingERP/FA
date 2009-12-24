@@ -100,7 +100,7 @@ class cart
 		global $SysPrefs, $Refs;
 
 		if (!is_array($trans_no)) $trans_no = array($trans_no);
-		if ($trans_no[0]) 
+		if ($trans_no[0]) // read old transaction
 		{
 			if ($type == ST_SALESORDER || $type == ST_SALESQUOTE) { // sales order || sales quotation
 				read_sales_order($trans_no[0], $this, $type);
@@ -111,7 +111,7 @@ class cart
 						$line->qty_dispatched = $line->quantity - $line->qty_done;
 					}
 				}
-			} else {	// derivative transaction
+			} else {	// other type of sales transaction
 					read_sales_trans($type, $trans_no, $this);
 					if ($this->order_no) { // free hand credit notes have no order_no
 						$sodata = get_sales_order_header($this->order_no, ST_SALESORDER);
@@ -121,9 +121,9 @@ class cart
 						$this->delivery_to = $sodata["deliver_to"];
 						$this->delivery_address = $sodata["delivery_address"];
 					}
+					// old derivative transaction edit
 					if (!$view && ($type!=ST_CUSTCREDIT || $this->trans_link!=0)) {
 						$src_type = get_parent_type($type);
-						$src_details = 0;
 						if ($src_type == ST_SALESORDER) { // get src data from sales_orders
 							$this->src_docs = array( $sodata['order_no']=>$sodata['version']);
 							$srcdetails = get_sales_order_details($this->order_no, ST_SALESORDER);
@@ -132,7 +132,6 @@ class cart
 							$srcdetails = get_customer_trans_details($src_type,array_keys($this->src_docs));
 						}
 						// calculate & save: qtys on other docs and free qtys on src doc
-						$line_no = 0;
 						for($line_no = 0; $srcline = db_fetch($srcdetails); $line_no++) {
 							$sign = 1; // $type==13 ?  1 : -1; // this is strange debtor_trans atavism
 							$line = &$this->line_items[$line_no];
@@ -141,17 +140,18 @@ class cart
 							$line->qty_old = $line->qty_dispatched = $line->quantity;
 							$line->quantity += $sign * ($srcline['quantity'] - $srcline['qty_done']); // add free qty on src doc
 						}
-					} else {
+					} else { // prepare qtys for derivative document entry (not used in display)
 						for($line_no = 0; $line_no < count($this->line_items); $line_no++) {
 							$line = &$this->line_items[$line_no];
 							$line->src_id = $line->id; // save src line ids for update
-							$line->qty_dispatched = $line->quantity;
+							$line->qty_dispatched = $line->quantity - $line->qty_done;
 						}
 					}
 				}
-		} else {
+		} else { // new document
 				$this->trans_type = $type;
 				$this->trans_no = 0;
+				$this->customer_currency = get_company_currency();
 				// set new sales document defaults here
 				if (get_global_customer() != ALL_TEXT)
 				  $this->customer_id = get_global_customer();

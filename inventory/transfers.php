@@ -65,7 +65,7 @@ function handle_new_order()
 		unset ($_SESSION['transfer_items']);
 	}
 
-    session_register("transfer_items");
+    //session_register("transfer_items");
 
 	$_SESSION['transfer_items'] = new items_cart(ST_LOCTRANSFER);
 	$_POST['AdjDate'] = new_doc_date();

@@ -265,7 +265,7 @@ if (!isset($_POST['admin_email']) || $_POST['admin_email'] == '')
 }
 else
 {
-	if (eregi("^([0-9a-zA-Z]+[-._+&])*[0-9a-zA-Z]+@([-0-9a-zA-Z]+[.])+[a-zA-Z]{2,6}$", $_POST['admin_email']))
+	if (preg_match("/^([0-9a-zA-Z]+[-._+&])*[0-9a-zA-Z]+@([-0-9a-zA-Z]+[.])+[a-zA-Z]{2,6}$/i", $_POST['admin_email']))
 	{
 		$admin_email = $_POST['admin_email'];
 	}

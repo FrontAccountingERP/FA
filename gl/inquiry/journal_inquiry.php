@@ -110,7 +110,6 @@ function edit_link($row)
 			sprintf($editors[$row["type"]], $row["type_no"], $row["type"]),
 			ICON_EDIT) : '';
 }
-
 $sql = get_sql_for_journal_inquiry();
 
 $cols = array(

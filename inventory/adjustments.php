@@ -67,7 +67,7 @@ function handle_new_order()
 		unset ($_SESSION['adj_items']);
 	}
 
-    session_register("adj_items");
+    //session_register("adj_items");
 
     $_SESSION['adj_items'] = new items_cart(ST_INVADJUST);
 	$_POST['AdjDate'] = new_doc_date();

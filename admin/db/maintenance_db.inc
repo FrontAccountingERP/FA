@@ -104,7 +104,7 @@ function write_config_db($new = false)
 
 	$filename = $path_to_root . "/config_db.php";
 	// Check if the file exists and is writable first.
-	if (!file_exists($filename) || (is_writable($path_to_root) && is_writable($filename)))
+	if ((!file_exists($filename) && is_writable($path_to_root)) || is_writable($filename))
 	{
 		if (!$zp = fopen($filename, 'w'))
 		{
@@ -461,7 +461,7 @@ function db_unzip($mode, $path)
     $all = implode("", file($path));
 
     // convert path to name of ziped file
-    $filename = ereg_replace(".*/", "", $path);
+    $filename = preg_replace("/.*\//", "", $path);
     $filename = substr($filename, 0, strlen($filename) - 4);
 
     // compare filname in zip and filename from $_GET

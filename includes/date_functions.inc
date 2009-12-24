@@ -318,52 +318,15 @@ and converts to a yyyy/mm/dd format */
 		return "";
 
 	$date_ = trim($date_);
-	$date_ = str_replace($sep, "", $date_);
+    $year = $month = $day = 0;
 
-	if (strlen($date_) == 6)
-	{
-		if ($how == 0)
-		{
-			$day = substr($date_,2,2);
-			$month = substr($date_,0,2);
-			$year = substr($date_,4,2);
-		} 
-		elseif ($how == 1)
-		{
-			$day = substr($date_,0,2);
-			$month = substr($date_,2,2);
-			$year = substr($date_,4,2);
-		} 
-		else
-		{
-			$day = substr($date_,4,2);
-			$month = substr($date_,2,2);
-			$year = substr($date_,0,2);
-		}
-	}
-	elseif (strlen($date_) == 8)
-	{
-		if ($how == 0)
-		{
-			$day = substr($date_,2,2);
-			$month = substr($date_,0,2);
-			$year = substr($date_,4,4);
-		} 
-		elseif ($how == 1)
-		{
-			$day = substr($date_,0,2);
-			$month = substr($date_,2,2);
-			$year = substr($date_,4,4);
-		} 
-		else
-		{
-			$day = substr($date_,6,2);
-			$month = substr($date_,4,2);
-			$year = substr($date_,0,4);
-		}
-	}
-	else
-		$year = $month = $day = 0;
+    // Split up the date by the separator based on "how" to split it
+    if ($how == 0) // MMDDYYYY
+        list($month, $day, $year) = explode($sep, $date_);
+    elseif ($how == 1) // DDMMYYYY
+        list($day, $month, $year) = explode($sep, $date_);
+    else // $how == 2, YYYYMMDD
+        list($year, $month, $day) = explode($sep, $date_);
 
 //to modify assumption in 2030
 	if ($date_system == 0 || $date_system == 3)
@@ -385,6 +348,13 @@ and converts to a yyyy/mm/dd format */
 		list($year, $month, $day) = jalali_to_gregorian($year, $month, $day); 
 	else if ($date_system == 2)
 		list($year, $month, $day) = islamic_to_gregorian($year, $month, $day); 
+
+   	// Pad with 0s if needed
+   	if (strlen($month) == 1)
+	   	$month = "0$month";
+   	if (strlen($day) == 1)
+	   	$day = "0$day";
+
 	return $year."-".$month."-".$day;
 }// end of function
 

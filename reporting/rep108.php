@@ -156,7 +156,7 @@ function print_statements()
 			number_format2($CustomerRecord["Balance"],$dec));
 		$col = array($rep->cols[0], $rep->cols[0] + 110, $rep->cols[0] + 210, $rep->cols[0] + 310,
 			$rep->cols[0] + 410, $rep->cols[0] + 510);
-		$rep->row = $rep->bottomMargin + (8 * $rep->lineHeight - 6);
+		$rep->row = $rep->bottomMargin + (10 * $rep->lineHeight - 6);
 		for ($i = 0; $i < 5; $i++)
 			$rep->TextWrap($col[$i], $rep->row, $col[$i + 1] - $col[$i], $str[$i], 'right');
 		$rep->NewLine();

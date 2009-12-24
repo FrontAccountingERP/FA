@@ -141,7 +141,10 @@
   *    and
   *    if (!defined("K_RE_PATTERN_ARABIC"))
   * 4. Parameter $unicode in constructor renamed to $uni.
-  * 4. Header function renamed to Header1 (due to conflict with FrontReport Header)
+  * 5. Header function renamed to Header1 (due to conflict with FrontReport Header)
+  * 6. Line 6190, SetLineWidth (cast of values to avoid problem in PHP 5.2.6
+  * 7. Line 6261. ereg replaced by preg_match (with start and end delimiter)
+  * 8. Lines 8642,9256 and 9348. split replaced by preg_split.
   * -------------------------------------------------------------------------------
   */
 if (!defined("K_PATH_FONTS"))
@@ -6190,7 +6193,15 @@ if (!class_exists('TCPDF')) {
 		function SetLineWidth($width) {
 			//Set line width
 			$this->LineWidth = $width;
-			$this->linestyleWidth = sprintf('%.2f w', ($width * $this->k));
+			//$this->linestyleWidth = sprintf('%.2f w', ($width * $this->k));
+			// FrontAccounting fix
+			// My PHP 5.2.6 environment gave an "Unsupported operand types"
+			// error for the multiplication on the next line some of the
+			// time when this method is called - I debugged and sometimes
+			// the $width parameter is some sort of weird array.  I don't
+			// understand what's going on, but casting it to a (float) seems
+			// to "fix" the problem.  -Jason Maas, 2009/09/25
+			$this->linestyleWidth = sprintf('%.2f w', ((float) $width * (float) $this->k));
 			$this->_out($this->linestyleWidth);
 		}
 
@@ -6249,7 +6260,7 @@ if (!class_exists('TCPDF')) {
 			if (isset($dash)) {
 				$dash_string = "";
 				if ($dash) {
-					if (ereg("^.+,", $dash)) {
+					if (preg_match("/^.+,/", $dash)) {
 						$tab = explode(",", $dash);
 					} else {
 						$tab = array($dash);
@@ -8629,7 +8640,7 @@ if (!class_exists('TCPDF')) {
 				$this->_out(sprintf('%.3F %.3F %.3F %.3F %.3F %.3F cm', $scale_x, 0, 0, $scale_y, $x1*(1-$scale_x), $y2*(1-$scale_y)));
 			}
 			// handle pc/unix/mac line endings
-			$lines = split("\r\n|[\r\n]", $data);
+			$lines = preg_split("/\r\n|[\r\n]/", $data);
 			$u=0;
 			$cnt = count($lines);
 			for ($i=0; $i < $cnt; $i++) {
@@ -9243,7 +9254,7 @@ if (!class_exists('TCPDF')) {
 							if (isset($dom[$key]['style']['font-family'])) {
 								// font family
 								if (isset($dom[$key]['style']['font-family'])) {
-									$fontslist = split(",", strtolower($dom[$key]['style']['font-family']));
+									$fontslist = preg_split("/,/", strtolower($dom[$key]['style']['font-family']));
 									foreach($fontslist as $font) {
 										$font = trim(strtolower($font));
 										if (in_array($font, $this->fontlist)){
@@ -9335,7 +9346,7 @@ if (!class_exists('TCPDF')) {
 						if ($dom[$key]['value'] == "font") {
 							// font family
 							if (isset($dom[$key]['attribute']['face'])) {
-								$fontslist = split(",", strtolower($dom[$key]['attribute']['face']));
+								$fontslist = preg_split("/,/", strtolower($dom[$key]['attribute']['face']));
 								foreach($fontslist as $font) {
 									$font = trim(strtolower($font));
 									if (in_array($font, $this->fontlist)){
