@@ -19,6 +19,11 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+27-Dec-2009 Joe Hunt
+# Problems letting various currency bank accounts sharing the same GL account
+  Foreign currency accounts must have their own specific GL accounts.
+$ /gl/manage/bank_accounts.php
+
 ------------------------------- Release 2.2.2 ----------------------------------
 23-Dec-2009 Joe Hunt
 ! Release 2.2.2
