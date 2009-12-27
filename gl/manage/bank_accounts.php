@@ -25,21 +25,9 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 
 	//initialise no input errors assumed initially before we test
 	$input_error = 0;
-	$curr = get_company_currency();
-	$sql = "SELECT account_code	FROM ".TB_PREF."bank_accounts
-		WHERE account_code = '".$_POST['account_code']."'";
-	if ($curr == $_POST['BankAccountCurrency'])
-		$sql .= " AND bank_curr_code <> '".$_POST['BankAccountCurrency']."'";
-	$sql .= " AND id <> $selected_id";
-	$result = db_query($sql,"could not get bank accounts");
-	if (db_num_rows($result) > 0)
-	{
-		$input_error = 1;
-		display_error(_("The GL account is already in use."));
-		set_focus('account_code');
-	}
+
 	//first off validate inputs sensible
-	if ($input_error == 0 && strlen($_POST['bank_account_name']) == 0) 
+	if (strlen($_POST['bank_account_name']) == 0) 
 	{
 		$input_error = 1;
 		display_error(_("The bank account name cannot be empty."));
@@ -202,10 +190,9 @@ else
 
 yesno_list_row(_("Default currency account:"), 'dflt_curr_act');
 
-$curr = get_company_currency();
-if ($is_editing && $curr == $_POST['BankAccountCurrency'])
+if($is_editing)
 	label_row(_("Bank Account GL Code:"), $_POST['account_code']);
-else
+else 
 	gl_all_accounts_list_row(_("Bank Account GL Code:"), 'account_code', null);
 
 text_row(_("Bank Name:"), 'bank_name', null, 50, 60);
