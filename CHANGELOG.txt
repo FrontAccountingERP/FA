@@ -19,6 +19,11 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+04-Jan-2010 Joe Hunt
+! Making the stretch parameter = 1 on default print pdf all over
+$ /reporting/includes/class.pdf.inc
+  /reporting/includes/pdf_report.inc
+  
 31-Dec-2009 Joe Hunt
 # When updating tax rate, it didn't show and calculate correct in documents.
 $ /taxes/db/tax_groups_db.inc

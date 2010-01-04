@@ -258,7 +258,7 @@ class Cpdf extends TCPDF {
 		return array($txt2, $ret);
 	}
 
-	function addTextWrap($xb, $yb, $w, $h, $txt, $align='left', $border=0, $fill=0, $link = NULL, $stretch = 0, $spacebreak=false)
+	function addTextWrap($xb, $yb, $w, $h, $txt, $align='left', $border=0, $fill=0, $link = NULL, $stretch = 1, $spacebreak=false)
 	{
 		$ret = "";
 		if (!$this->rtl)
