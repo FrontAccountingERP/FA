@@ -120,7 +120,7 @@
 		$this->Font();
 		$this->row = $adrline;
 		$this->NewLine(3);
-		$this->Text($mcol + 100, $doc_Date.":");
+		$this->Text($mcol + 100, $doc_Date);
 		if ($doctype == 7 || $doctype == 8 || $doctype == 9)
 			$this->Text($mcol + 180, sql2date($myrow['ord_date']));
 		elseif ($doctype == 26)	

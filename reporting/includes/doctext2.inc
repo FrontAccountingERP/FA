@@ -42,7 +42,7 @@ if (isset($header2type))
 	}	
 	else
 	{
-		$doc_Our_Ref = "Our Ref.";
+		$doc_Our_Ref = "Sales Person";
 		$doc_Your_VAT_no = "Your VAT no.";
 		$doc_Payment_Terms = "Payment Terms";
 		$doc_Customers_Ref = "Customers Reference";

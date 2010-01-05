@@ -21,8 +21,12 @@ $ -> Affected files
 
 04-Jan-2010 Joe Hunt
 ! Making the stretch parameter = 1 on default print pdf all over
+  Improved layout on documents.
 $ /reporting/includes/class.pdf.inc
   /reporting/includes/pdf_report.inc
+  /reporting/includes/doctext.inc
+  /reporting/includes/doctext2.inc
+  /reporting/includes/header2.inc
   
 31-Dec-2009 Joe Hunt
 # When updating tax rate, it didn't show and calculate correct in documents.
