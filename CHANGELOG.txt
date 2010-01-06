@@ -19,6 +19,12 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+06-Jan-2010 Janusz Dobrowolski
+# Check on existence of locale.inc added to avoid blank pages when the file is broken.
+$ /includes/session.inc
+! Changed reference incrementation algorithm to preserve both number prefix and postfix.
+$ /includes/references.inc
+
 04-Jan-2010 Joe Hunt
 ! Making the stretch parameter = 1 on default print pdf all over
   Improved layout on documents.
