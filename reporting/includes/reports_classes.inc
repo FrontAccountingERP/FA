@@ -325,6 +325,15 @@ class BoxReports
 						FROM ".TB_PREF."suppliers, ".TB_PREF."purch_orders WHERE ".TB_PREF."suppliers.supplier_id=".TB_PREF."purch_orders.supplier_id ORDER BY ".TB_PREF."purch_orders.order_no DESC";
 					return combo_input($name, '', $sql, 'order_no', 'IName',array('order'=>false));
 
+				case 'REMITTANCE':
+					$BP = _("BP");
+					$SP = _("SP");
+					$ref = ($print_invoice_no == 1 ? "trans_no" : "reference");
+					$sql = "SELECT concat(".TB_PREF."supp_trans.trans_no, '-',
+						".TB_PREF."supp_trans.type) AS TNO, concat(".TB_PREF."supp_trans.$ref, if (type=".ST_BANKPAYMENT.", ' $BP ', ' $SP '), ".TB_PREF."suppliers.supp_name) as IName
+						FROM ".TB_PREF."suppliers, ".TB_PREF."supp_trans WHERE (type=".ST_BANKPAYMENT." OR type=".ST_SUPPAYMENT.") AND ".TB_PREF."suppliers.supplier_id=".TB_PREF."supp_trans.supplier_id ORDER BY ".TB_PREF."supp_trans.trans_no DESC";
+					return combo_input($name, '', $sql, 'TNO', 'IName',array('order'=>false));
+
 				case 'ITEMS':
 					return stock_manufactured_items_list($name);
 

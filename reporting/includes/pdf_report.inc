@@ -929,7 +929,7 @@ class FrontReport extends Cpdf
     			$to = $myrow['DebtorName'] . " <" . $myrow['email'] . ">";
     			$msg = $doc_Dear_Sirs . " " . $myrow['DebtorName'] . ",\n\n" . $doc_AttachedFile . " " . $subject .
     				"\n\n";
-				if (isset($myrow['dimension_id']) && $myrow['dimension_id'] > 0 && $doctype == 10) // helper for payment links
+				if (isset($myrow['dimension_id']) && $myrow['dimension_id'] > 0 && $doctype == ST_SALESINVOICE) // helper for payment links
 				{
 					if ($myrow['dimension_id'] == 1)
 					{

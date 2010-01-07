@@ -19,6 +19,26 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+07-Jan-2010 Joe Hunt
+! Changed to let the $doctypes in documents follow the types in types.inc
++ New document, Remittance, to print payment allocations to suppliers
+  Also print/email links from Supplier Payment and Supplier Inquiry.
+$ /purchasing/supplier_payment.php
+  /purchasing/inquiry/supplier_inquiry.php
+  /reporting/rep108.php
+  /reporting/rep109.php
+  /reporting/rep110.php
+  /reporting/rep111.php
+  /reporting/rep209.php
+  /reporting/rep210.php (New file)
+  /reporting/reports_main.php
+  /reporting/includes/doctext.inc
+  /reporting/includes/doctext2.inc
+  /reporting/includes/header2.inc
+  /reporting/includes/pdf_report.inc
+  /reporting/includes/reporting.inc
+  /reporting/includes/reports_classes.inc
+  
 06-Jan-2010 Janusz Dobrowolski
 # Check on existence of locale.inc added to avoid blank pages when the file is broken.
 $ /includes/session.inc

@@ -78,7 +78,7 @@ function print_sales_quotations()
 			$rep->Info($params, $cols, null, $aligns);
 		}
 		$rep->title = _("SALES QUOTATION");
-		$rep->Header2($myrow, $branch, $myrow, $baccount, 7);
+		$rep->Header2($myrow, $branch, $myrow, $baccount, ST_SALESQUOTE);
 
 		$result = get_sales_order_details($i, ST_SALESQUOTE);
 		$SubTotal = 0;
@@ -107,7 +107,7 @@ function print_sales_quotations()
 			$rep->row = $newrow;
 			//$rep->NewLine(1);
 			if ($rep->row < $rep->bottomMargin + (15 * $rep->lineHeight))
-				$rep->Header2($myrow, $branch, $myrow, $baccount, 9);
+				$rep->Header2($myrow, $branch, $myrow, $baccount, ST_SALESQUOTE);
 		}
 		if ($myrow['comments'] != "")
 		{
@@ -119,7 +119,7 @@ function print_sales_quotations()
 
 		$rep->row = $rep->bottomMargin + (15 * $rep->lineHeight);
 		$linetype = true;
-		$doctype = 9;
+		$doctype = ST_SALESQUOTE;
 		if ($rep->currency != $myrow['curr_code'])
 		{
 			include($path_to_root . "/reporting/includes/doctext2.inc");

@@ -107,10 +107,10 @@ function print_statements()
 			$rep->filename = "Statement" . $myrow['debtor_no'] . ".pdf";
 			$rep->Info($params, $cols, null, $aligns);
 		}
-		$rep->Header2($myrow, null, null, $baccount, 12);
+		$rep->Header2($myrow, null, null, $baccount, ST_CUSTPAYMENT);
 		$rep->NewLine();
 		$linetype = true;
-		$doctype = 12;
+		$doctype = ST_CUSTPAYMENT;
 		if ($rep->currency != $myrow['curr_code'])
 		{
 			include($path_to_root . "/reporting/includes/doctext2.inc");
@@ -142,7 +142,7 @@ function print_statements()
 			$rep->TextCol(7, 8,	$DisplayNet, -2);
 			$rep->NewLine();
 			if ($rep->row < $rep->bottomMargin + (10 * $rep->lineHeight))
-				$rep->Header2($myrow, null, null, $baccount, 12);
+				$rep->Header2($myrow, null, null, $baccount, ST_CUSTPAYMENT);
 		}
 		$nowdue = "1-" . $PastDueDays1 . " " . $doc_Days;
 		$pastdue1 = $PastDueDays1 + 1 . "-" . $PastDueDays2 . " " . $doc_Days;
@@ -163,7 +163,7 @@ function print_statements()
 		for ($i = 0; $i < 5; $i++)
 			$rep->TextWrap($col[$i], $rep->row, $col[$i + 1] - $col[$i], $str2[$i], 'right');
 		if ($email == 1)
-			$rep->End($email, $doc_Statement . " " . $doc_as_of . " " . sql2date($date), $myrow, 12);
+			$rep->End($email, $doc_Statement . " " . $doc_as_of . " " . sql2date($date), $myrow, ST_CUSTPAYMENT);
 
 	}
 	if ($email == 0)
