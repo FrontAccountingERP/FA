@@ -147,8 +147,8 @@ function fmt_credit($row)
 
 function prt_link($row)
 {
-  	if ($row['type'] == ST_SUPPAYMENT || $row['type'] == ST_BANKPAYMENT) 
- 		return print_document_link($row['trans_no'], _("Print Remittance"), true, $row['type'], ICON_PRINT);
+  	if ($row['type'] == ST_SUPPAYMENT || $row['type'] == ST_BANKPAYMENT || $row['type'] == ST_SUPPCREDIT) 
+ 		return print_document_link($row['trans_no']."-".$row['type'], _("Print Remittance"), true, ST_SUPPAYMENT, ICON_PRINT);
 }
 
 function check_overdue($row)

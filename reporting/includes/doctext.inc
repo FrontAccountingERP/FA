@@ -115,7 +115,7 @@ if (isset($emailtype))
 if (isset($header2type) || isset($linetype))
 {
 	$doc_Invoice_no = ($doctype==ST_CUSTDELIVERY ? _("Delivery Note No.") : 
-		($doctype == ST_SUPPAYMENT ? _("Payment No.") :
+		($doctype == ST_SUPPAYMENT ? _("Remittance No.") :
 		(($doctype==ST_SALESQUOTE || $doctype==ST_PURCHORDER || $doctype==ST_SALESORDER) ? _("Order no.") : 
 		($doctype==ST_SALESINVOICE ? _("Invoice No.") : ($doctype==ST_WORKORDER ? _("Word Order No") : _("Credit No."))))));
 	$doc_Delivery_no = _("Delivery Note No.");

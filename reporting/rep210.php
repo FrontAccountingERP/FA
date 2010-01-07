@@ -98,7 +98,13 @@ function print_remittances()
 
 	for ($i = $fno[0]; $i <= $tno[0]; $i++)
 	{
-		for ($j = ST_BANKPAYMENT; $j <= ST_SUPPAYMENT; $j = ($j == ST_BANKPAYMENT ? ST_SUPPAYMENT : 999))
+		if ($fno[0] == $tno[0])
+			$types = array($fno[1]);
+		else
+			$types = array(ST_BANKPAYMENT, ST_SUPPAYMENT, ST_SUPPCREDIT);
+		foreach ($types as $j)
+		//for ($j = ST_BANKPAYMENT; $j <= ST_SUPPAYMENT; $j = ($j == ST_BANKPAYMENT ? ST_SUPPAYMENT : 999))
+		//for ($j = $ft; $j <= $tt; $j = ($j == ST_BANKPAYMENT ? ST_SUPPAYMENT : 999))
 		{
 			$myrow = get_remittance($j, $i);
 			if (!$myrow)

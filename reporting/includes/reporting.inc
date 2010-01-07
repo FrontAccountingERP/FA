@@ -78,7 +78,6 @@ function print_document_link($doc_no, $link_text, $link=true, $type_no,
 				'PARAM_4' => '');
 			break;
 		case ST_SUPPAYMENT :
-		case ST_BANKPAYMENT :
 			$rep = 210;
 			// from, to, currency, bank acc, email, comments
 			$ar = array(
