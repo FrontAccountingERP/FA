@@ -139,7 +139,7 @@ if (isset($linetype))
 	{
 		$doc_Total_Allocated = "Total Allocated";
 		$doc_Left_To_Allocate = "Left to Allocate";
-		$doc_Total_Payment = "TOTAL PAYMENT";
+		$doc_Total_Payment = "TOTAL REMITTANCE";
 	}
 	elseif ($doctype == ST_CUSTPAYMENT)
 	{
