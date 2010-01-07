@@ -61,39 +61,45 @@ function create_recurrent_invoices($customer_id, $branch_id, $order_no, $tmpl_no
 
 if (isset($_GET['recurrent']))
 {
-	$invs = array();
-	$sql = "SELECT * FROM ".TB_PREF."recurrent_invoices WHERE id=".db_escape($_GET['recurrent']);
-
-	$result = db_query($sql,"could not get recurrent invoice");
-	$myrow = db_fetch($result);
-	if ($myrow['debtor_no'] == 0)
+	$date = Today();
+	if (is_date_in_fiscalyear($date))
 	{
-		$cust = get_cust_branches_from_group($myrow['group_no']);
-		while ($row = db_fetch($cust))
+		$invs = array();
+		$sql = "SELECT * FROM ".TB_PREF."recurrent_invoices WHERE id=".db_escape($_GET['recurrent']);
+
+		$result = db_query($sql,"could not get recurrent invoice");
+		$myrow = db_fetch($result);
+		if ($myrow['debtor_no'] == 0)
 		{
-			$invs[] = create_recurrent_invoices($row['debtor_no'], $row['branch_code'], $myrow['order_no'], $myrow['id']);
-		}	
+			$cust = get_cust_branches_from_group($myrow['group_no']);
+			while ($row = db_fetch($cust))
+			{
+				$invs[] = create_recurrent_invoices($row['debtor_no'], $row['branch_code'], $myrow['order_no'], $myrow['id']);
+			}	
+		}
+		else
+		{
+			$invs[] = create_recurrent_invoices($myrow['debtor_no'], $myrow['group_no'], $myrow['order_no'], $myrow['id']);
+		}
+		if (count($invs) > 0)
+		{
+			$min = min($invs);
+			$max = max($invs);
+		}
+		else 
+			$min = $max = 0;
+		display_notification(sprintf(_("%s recurrent invoice(s) created, # $min - # $max."), count($invs)));
+		if (count($invs) > 0)
+		{
+			$ar = array('PARAM_0' => $min,	'PARAM_1' => $max, 'PARAM_2' => "",
+				'PARAM_3' => 0,	'PARAM_4' => 0,	'PARAM_5' => "", 'PARAM_6' => ST_SALESINVOICE);
+			display_note(print_link(_("&Print Recurrent Invoices # $min - # $max"), 107, $ar), 0, 1);
+			$ar['PARAM_3'] = 1; 
+			display_note(print_link(_("&Email Recurrent Invoices # $min - # $max"), 107, $ar), 0, 1);
+		}
 	}
 	else
-	{
-		$invs[] = create_recurrent_invoices($myrow['debtor_no'], $myrow['group_no'], $myrow['order_no'], $myrow['id']);
-	}
-	if (count($invs) > 0)
-	{
-		$min = min($invs);
-		$max = max($invs);
-	}
-	else 
-		$min = $max = 0;
-	display_notification(sprintf(_("%s recurrent invoice(s) created, # $min - # $max."), count($invs)));
-	if (count($invs) > 0)
-	{
-		$ar = array('PARAM_0' => $min,	'PARAM_1' => $max, 'PARAM_2' => "",
-			'PARAM_3' => 0,	'PARAM_4' => 0,	'PARAM_5' => "", 'PARAM_6' => ST_SALESINVOICE);
-		display_note(print_link(_("&Print Recurrent Invoices # $min - # $max"), 107, $ar), 0, 1);
-		$ar['PARAM_3'] = 1; 
-		display_note(print_link(_("&Email Recurrent Invoices # $min - # $max"), 107, $ar), 0, 1);
-	}
+		display_error(_("The entered date is not in fiscal year."));
 }	
 
 //-------------------------------------------------------------------------------------------------

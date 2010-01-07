@@ -38,6 +38,8 @@ $ /purchasing/supplier_payment.php
   /reporting/includes/pdf_report.inc
   /reporting/includes/reporting.inc
   /reporting/includes/reports_classes.inc
+# Creating recurrent invoices with date outside fiscal year.  
+  /sales/create_recurrent_invoices.php
   
 06-Jan-2010 Janusz Dobrowolski
 # Check on existence of locale.inc added to avoid blank pages when the file is broken.
