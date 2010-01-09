@@ -271,6 +271,7 @@ function delete_this_fiscalyear($selected_id)
 				db_query($sql, "Could not delete debtor trans details");
 				$sql = "DELETE FROM ".TB_PREF."debtor_trans WHERE trans_no = $delivery AND type = ".ST_CUSTDELIVERY;
 				db_query($sql, "Could not delete debtor trans");
+				delete_attachments_and_comments(ST_CUSTDELIVERY, $delivery);
 			}		
 		}	
 		$sql = "DELETE FROM ".TB_PREF."cust_allocations WHERE trans_no_from = {$row['trans_no']} AND trans_type_from = {$row['type']}";
@@ -305,7 +306,7 @@ function delete_this_fiscalyear($selected_id)
 			$sql = "DELETE FROM ".TB_PREF."wo_issue_items WHERE issue_id = {$row2[0]}";
 			db_query($sql, "Could not delete wo issue items");
 		}	
-		delete_attachments_and_comments(28, $row['id']);
+		delete_attachments_and_comments(ST_MANUISSUE, $row['id']);
 		$sql = "DELETE FROM ".TB_PREF."wo_issues WHERE workorder_id = {$row['id']}";
 		db_query($sql, "Could not delete wo issues");
 		$sql = "DELETE FROM ".TB_PREF."wo_manufacture WHERE workorder_id = {$row['id']}";
@@ -314,7 +315,7 @@ function delete_this_fiscalyear($selected_id)
 		db_query($sql, "Could not delete wo requirements");
 		$sql = "DELETE FROM ".TB_PREF."workorders WHERE id = {$row['id']}";
 		db_query($sql, "Could not delete workorders");
-		delete_attachments_and_comments(26, $row['id']);
+		delete_attachments_and_comments(ST_WORKORDER, $row['id']);
 	}
 	$sql = "SELECT loc_code, stock_id, SUM(qty) AS qty, SUM(qty*standard_cost) AS std_cost FROM ".TB_PREF."stock_moves WHERE tran_date <= '$to' GROUP by 
 		loc_code, stock_id";
@@ -348,7 +349,7 @@ function delete_this_fiscalyear($selected_id)
 		{
 			$trans_no = get_next_trans_no(ST_JOURNAL);
 			$sql = "INSERT INTO ".TB_PREF."gl_trans (type, type_no, tran_date, account, memo_, amount) VALUES
-				(ST_JOURNAL, $trans_no, '$to', '{$row['account']}', '$ref', {$row['amount']})";
+				(".ST_JOURNAL.", $trans_no, '$to', '{$row['account']}', '$ref', {$row['amount']})";
 			db_query($sql, "Could not insert gl trans");
 		}
 	}
