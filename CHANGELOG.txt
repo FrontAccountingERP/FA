@@ -31,6 +31,14 @@ $ /reporting/prn_redirect.php
   /reporting/includes/pdf_report.inc
 ! Increased number of decimals for tax calculations
 $ /taxes/tax_calc.inc
+! Code cleanup
+$ /includes/current_user.inc
+# Fixed check for missing POST in check_num()
+$ /includes/data_checks.inc
+# [0000187] Category and description reset after failed check;
+$ /inventory/manage/item_codes.php
+# [0000186] Timeout on Refresh button
+$ /sales/allocations/customer_allocate.php
 
 09-Jan-2010 Joe Hunt
 # Bugs in deleting fiscal year. Some transactions weren't deleted.
