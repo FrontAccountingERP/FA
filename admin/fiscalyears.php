@@ -204,6 +204,8 @@ function delete_attachments_and_comments($type_no, $trans_no)
 	}	
 	$sql = "DELETE FROM ".TB_PREF."comments WHERE  type = $type_no AND id = $trans_no";
 	db_query($sql, "Could not delete comments");
+	$sql = "DELETE FROM ".TB_PREF."refs WHERE  type = $type_no AND id = $trans_no";
+	db_query($sql, "Could not delete refs");
 }	
 
 function delete_this_fiscalyear($selected_id)
