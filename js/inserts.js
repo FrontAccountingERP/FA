@@ -305,7 +305,7 @@ var inserts = {
 		    }
 		}
 	    }
-	},
+	}
 /*	'tr.editrow': function(e) {
 		  	e.onkeydown = function(ev) { 
 	  		ev = ev||window.event;
@@ -332,6 +332,7 @@ var inserts = {
 	}
 */
 };
+
 function stopEv(ev) {
 			if(ev.preventDefault) {
 				ev.preventDefault();
