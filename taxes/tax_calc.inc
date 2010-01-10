@@ -50,7 +50,7 @@ function get_tax_free_price_for_item($stock_id, $price, $tax_group, $tax_include
 			$tax_multiplier += $taxitem["rate"];
 	}
 	
-	return round($price / (1 + ($tax_multiplier / 100)),  user_price_dec());
+	return round($price / (1 + ($tax_multiplier / 100)),  2*user_price_dec());
 }
 //
 //	Full price (incl. VAT) for item $stock_id with line price $price,
@@ -86,7 +86,7 @@ function get_full_price_for_item($stock_id, $price, $tax_group, $tax_included, $
 			$tax_multiplier += $taxitem["rate"];
 	}
 	
-	return round($price * (1 + ($tax_multiplier / 100)),  user_price_dec());
+	return round($price * (1 + ($tax_multiplier / 100)),  2*user_price_dec());
 }
 
 //---------------------------------------------------------------------------------
