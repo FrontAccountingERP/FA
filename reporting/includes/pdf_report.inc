@@ -363,16 +363,19 @@ class FrontReport extends Cpdf
 		if ($this->pageNumber > 1)
 			$this->newPage();
 		$header2type = true;
+ 		
+ 		 // leave layout files names without path to enable including
+ 		 // modified versions from comapny/x/reporting directory
 		if (isset($myrow['curr_code']) && $this->currency != $myrow['curr_code'])
 		{
-			include($path_to_root . "/reporting/includes/doctext2.inc");
+			include("includes/doctext2.inc");
 		}
 		else
 		{
-			include($path_to_root . "/reporting/includes/doctext.inc");
+			include("includes/doctext.inc");
 		}
 
-		include($path_to_root . "/reporting/includes/header2.inc");
+		include("includes/header2.inc");
 
 		$this->row = $temp;
 	}
@@ -916,11 +919,11 @@ class FrontReport extends Cpdf
 				$emailtype = true;
 				if ($this->currency != $myrow['curr_code'])
 				{
-					include("doctext2.inc");
+					include("includes/doctext2.inc");
 				}
 				else
 				{
-					include("doctext.inc");
+					include("includes/doctext.inc");
 				}
 				require_once($path_to_root . "/reporting/includes/class.mail.inc");
     			$mail = new email($this->company['coy_name'], $this->company['email']);

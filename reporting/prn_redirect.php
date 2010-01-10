@@ -17,27 +17,29 @@ $path_to_root = "..";
 $page_security = 'SA_OPEN';	// this level is later overriden in rep file
 include_once($path_to_root . "/includes/session.inc");
 
-/*
-	Find report definition file.
-	Standard reports can be superseded by report with the same id
-	included in active extension, or company customized report.
-*/
 function find_report_file($rep) {
 	global $installed_extensions, $comp_path, $path_to_root;
 
 	// customized per company versions 
-	$rep_file = $comp_path.'/'.user_company()."/reporting/rep$rep.php";
-	if (file_exists($rep_file)) 
+	$path = $comp_path.'/'.user_company()."/reporting";
+	$rep_file = $path."/rep$rep.php";
+	if (file_exists($rep_file)) {
+		// add local include path for custom reports
+		set_include_path($path.PATH_SEPARATOR.get_include_path());
 		return $rep_file;
+	}
 	// reports added by active extension modules
 	if (count($installed_extensions) > 0)
 	{
 		$extensions = $installed_extensions;
 		foreach ($extensions as $ext)
 			if (($ext['active'] && $ext['type'] == 'module')) {
-				$rep_file = $path_to_root.'/'.$ext['path']."/reporting/rep$rep.php";
-				if (file_exists($rep_file))
+				$path = $path_to_root.'/'.$ext['path']."/reporting";
+				$rep_file = $path."/rep$rep.php";
+				if (file_exists($rep_file)) {
+					set_include_path($path.PATH_SEPARATOR.get_include_path());
 					return $rep_file;
+				}
 			}
 	}
 	// standard reports
