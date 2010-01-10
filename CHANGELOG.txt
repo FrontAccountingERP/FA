@@ -19,6 +19,19 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+10-Jan-2010 Janusz Dobrowolski
+! Small fix in new_doc_date()
+$ /includes/date_functions.inc
+# Prevent warnings for sql results without 'inactive' field
+$ /includes/ui/db_pager_view.inc
+# Fixed js error in IE7
+$ /js/inserts.js
++ Added support for customized doctext.inc/header2.inc
+$ /reporting/prn_redirect.php
+  /reporting/includes/pdf_report.inc
+! Increased number of decimals for tax calculations
+$ /taxes/tax_calc.inc
+
 09-Jan-2010 Joe Hunt
 # Bugs in deleting fiscal year. Some transactions weren't deleted.
 $ /admin/fiscalyear.php
