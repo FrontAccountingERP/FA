@@ -39,6 +39,8 @@ $ /includes/data_checks.inc
 $ /inventory/manage/item_codes.php
 # [0000186] Timeout on Refresh button
 $ /sales/allocations/customer_allocate.php
+# [0000185] Update notification missing.
+$ inventory/reorder_level.php
 
 09-Jan-2010 Joe Hunt
 # Bugs in deleting fiscal year. Some transactions weren't deleted.
