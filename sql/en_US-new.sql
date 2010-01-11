@@ -1594,7 +1594,6 @@ CREATE TABLE `0_tax_types` (
   `name` varchar(60) NOT NULL default '',
   `inactive` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`id`),
-  UNIQUE KEY `name` (`name`,`rate`)
 ) TYPE=InnoDB AUTO_INCREMENT=2 ;
 
 

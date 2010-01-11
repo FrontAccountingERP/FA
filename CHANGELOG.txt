@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+11-Jan-2010 Janusz Dobrowolski
+# Removed invalid constraint on tax_types.
+$ /sql/en_US-new.sql
+
 10-Jan-2010 Janusz Dobrowolski
 ! Small fix in new_doc_date()
 $ /includes/date_functions.inc
