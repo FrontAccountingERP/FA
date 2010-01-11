@@ -58,7 +58,8 @@ CREATE TABLE `0_audit_trail` (
   `gl_date` date NOT NULL default '0000-00-00',
   `gl_seq` int(11) unsigned default NULL,
    PRIMARY KEY (`id`),
-  KEY (`fiscal_year`, `gl_seq`)
+  KEY `Seq` (`fiscal_year`, `gl_date`, `gl_seq`),
+  KEY `Type_and_Number` (`type`,`trans_no`)
 ) TYPE=InnoDB  ;
 
 ### Data of table `0_audit_trail` ###
@@ -84,7 +85,8 @@ CREATE TABLE `0_bank_accounts` (
   `inactive` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`id`),
   KEY `bank_account_name` (`bank_account_name`),
-  KEY `bank_account_number` (`bank_account_number`)
+  KEY `bank_account_number` (`bank_account_number`),
+  KEY (`account_code`)
 ) TYPE=MyISAM AUTO_INCREMENT=3 ;
 
 
@@ -113,7 +115,9 @@ CREATE TABLE `0_bank_trans` (
   `reconciled` date default NULL,
   PRIMARY KEY  (`id`),
   KEY `bank_act` (`bank_act`,`ref`),
-  KEY `type` (`type`,`trans_no`)
+  KEY `type` (`type`,`trans_no`),
+  KEY (`bank_act`,`reconciled`),
+  KEY (`bank_act`,`trans_date`)
 ) TYPE=InnoDB  AUTO_INCREMENT=1 ;
 
 
@@ -137,7 +141,6 @@ CREATE TABLE `0_bom` (
   KEY `id` (`id`),
   KEY `loc_code` (`loc_code`),
   KEY `parent` (`parent`,`loc_code`),
-  KEY `Parent_2` (`parent`),
   KEY `workcentre_added` (`workcentre_added`)
 ) TYPE=MyISAM  AUTO_INCREMENT=1 ;
 
@@ -163,7 +166,8 @@ CREATE TABLE `0_budget_trans` (
   `person_type_id` int(11) default NULL,
   `person_id` tinyblob,
   PRIMARY KEY  (`counter`),
-  KEY `Type_and_Number` (`type`,`type_no`)
+  KEY `Type_and_Number` (`type`,`type_no`),
+  KEY `Account` (`account`, `tran_date`, `dimension_id`, `dimension2_id`)
 ) TYPE=InnoDB  AUTO_INCREMENT=1 ;
 
 
@@ -202,8 +206,8 @@ CREATE TABLE `0_chart_master` (
   `account_type` int(11) NOT NULL default '0',
   `inactive` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`account_code`),
-  KEY `account_code` (`account_code`),
-  KEY `account_name` (`account_name`)
+  KEY `account_name` (`account_name`),
+  KEY `accounts_by_type` (`account_type`, `account_code`)
 ) TYPE=MyISAM  ;
 
 
@@ -300,6 +304,7 @@ CREATE TABLE `0_chart_types` (
   `parent` int(11) NOT NULL default '-1',
   `inactive` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`id`),
+  KEY  (`class_id`),
   KEY `name` (`name`)
 ) TYPE=MyISAM AUTO_INCREMENT=13 ;
 
@@ -458,7 +463,9 @@ CREATE TABLE `0_cust_allocations` (
   `trans_type_from` int(11) default NULL,
   `trans_no_to` int(11) default NULL,
   `trans_type_to` int(11) default NULL,
-  PRIMARY KEY  (`id`)
+  PRIMARY KEY  (`id`),
+  KEY `From` (`trans_type_from`, `trans_no_from`),
+  KEY `To` (`trans_type_to`, `trans_no_to`)
 ) TYPE=InnoDB  AUTO_INCREMENT=1 ;
 
 
@@ -497,7 +504,8 @@ CREATE TABLE `0_cust_branch` (
   `inactive` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`branch_code`,`debtor_no`),
   KEY `branch_code` (`branch_code`),
-  KEY `br_name` (`br_name`)
+  KEY (`branch_ref`),
+  KEY (`group_no`)
 ) TYPE=MyISAM  AUTO_INCREMENT=1 ;
 
 
@@ -531,8 +539,9 @@ CREATE TABLE `0_debtor_trans` (
   `trans_link` int(11) NOT NULL default '0',
   `dimension_id` int(11) NOT NULL default '0',
   `dimension2_id` int(11) NOT NULL default '0',
-  PRIMARY KEY  (`trans_no`,`type`),
-  KEY `debtor_no` (`debtor_no`,`branch_code`)
+  PRIMARY KEY  (`type`, `trans_no`),
+  KEY `debtor_no` (`debtor_no`,`branch_code`),
+  KEY (`tran_date`)
 ) TYPE=InnoDB  ;
 
 
@@ -556,7 +565,8 @@ CREATE TABLE `0_debtor_trans_details` (
   `discount_percent` double NOT NULL default '0',
   `standard_cost` double NOT NULL default '0',
   `qty_done` double NOT NULL default '0',
-  PRIMARY KEY  (`id`)
+  PRIMARY KEY  (`id`),
+  KEY `Transaction` (`debtor_trans_type`, `debtor_trans_no`)
 ) TYPE=InnoDB  AUTO_INCREMENT=1 ;
 
 
@@ -587,7 +597,8 @@ CREATE TABLE `0_debtors_master` (
   `notes` tinytext NOT NULL,
   `inactive` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`debtor_no`),
-  UNIQUE KEY `name` (`name`)
+  UNIQUE KEY `name` (`name`),
+  KEY (`debtor_ref`)
 ) TYPE=MyISAM  AUTO_INCREMENT=1 ;
 
 
@@ -608,7 +619,10 @@ CREATE TABLE `0_dimensions` (
   `date_` date NOT NULL default '0000-00-00',
   `due_date` date NOT NULL default '0000-00-00',
   PRIMARY KEY  (`id`),
-  UNIQUE KEY `reference` (`reference`)
+  UNIQUE KEY `reference` (`reference`),
+  KEY (`date_`),
+  KEY (`due_date`),
+  KEY (`type_`)
 ) TYPE=InnoDB  AUTO_INCREMENT=1 ;
 
 
@@ -644,7 +658,9 @@ CREATE TABLE `0_fiscal_year` (
   `begin` date default '0000-00-00',
   `end` date default '0000-00-00',
   `closed` tinyint(1) NOT NULL default '0',
-  PRIMARY KEY  (`id`)
+  PRIMARY KEY  (`id`),
+  UNIQUE KEY(`begin`),
+  UNIQUE KEY(`end`)
 ) TYPE=InnoDB AUTO_INCREMENT=2 ;
 
 
@@ -670,7 +686,11 @@ CREATE TABLE `0_gl_trans` (
   `person_type_id` int(11) default NULL,
   `person_id` tinyblob,
   PRIMARY KEY  (`counter`),
-  KEY `Type_and_Number` (`type`,`type_no`)
+  KEY `Type_and_Number` (`type`,`type_no`),
+  KEY (`dimension_id`),
+  KEY (`dimension2_id`),
+  KEY (`tran_date`),
+  KEY `account_and_tran_date` (`account`,`tran_date`)
 ) TYPE=InnoDB  AUTO_INCREMENT=1 ;
 
 
@@ -689,7 +709,9 @@ CREATE TABLE `0_grn_batch` (
   `reference` varchar(60) NOT NULL default '',
   `delivery_date` date NOT NULL default '0000-00-00',
   `loc_code` varchar(5) default NULL,
-  PRIMARY KEY  (`id`)
+  PRIMARY KEY  (`id`),
+  KEY(`delivery_date`),
+  KEY(`purch_order_no`)
 ) TYPE=InnoDB  AUTO_INCREMENT=1 ;
 
 
@@ -709,7 +731,8 @@ CREATE TABLE `0_grn_items` (
   `description` tinytext,
   `qty_recd` double NOT NULL default '0',
   `quantity_inv` double NOT NULL default '0',
-  PRIMARY KEY  (`id`)
+  PRIMARY KEY  (`id`),
+  KEY (`grn_batch_id`)
 ) TYPE=InnoDB  AUTO_INCREMENT=1 ;
 
 
@@ -751,7 +774,8 @@ CREATE TABLE `0_item_codes` (
   `is_foreign` tinyint(1) NOT NULL default '0',
   `inactive` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`id`),
-  UNIQUE KEY `stock_id` (`stock_id`,`item_code`)
+  UNIQUE KEY `stock_id` (`stock_id`,`item_code`),
+  KEY (`item_code`)
 ) TYPE=MyISAM  AUTO_INCREMENT=1 ;
 
 
@@ -998,7 +1022,8 @@ CREATE TABLE `0_purch_order_details` (
   `std_cost_unit` double NOT NULL default '0',
   `quantity_ordered` double NOT NULL default '0',
   `quantity_received` double NOT NULL default '0',
-  PRIMARY KEY  (`po_detail_item`)
+  PRIMARY KEY  (`po_detail_item`),
+  KEY `order` (`order_no`, `po_detail_item`)
 ) TYPE=InnoDB  AUTO_INCREMENT=1 ;
 
 
@@ -1019,7 +1044,8 @@ CREATE TABLE `0_purch_orders` (
   `requisition_no` tinytext,
   `into_stock_location` varchar(5) NOT NULL default '',
   `delivery_address` tinytext NOT NULL,
-  PRIMARY KEY  (`order_no`)
+  PRIMARY KEY  (`order_no`),
+  KEY (`ord_date`)
 ) TYPE=InnoDB  AUTO_INCREMENT=1 ;
 
 
@@ -1046,7 +1072,7 @@ CREATE TABLE `0_quick_entries` (
 ### Data of table `0_quick_entries` ###
 
 INSERT INTO `0_quick_entries` VALUES ('1', '1', 'Maintenance', '0', 'Amount', '0');
-INSERT INTO `0_quick_entries` VALUES ('2', '4', 'Phone', '0', 'Amount'. '0');
+INSERT INTO `0_quick_entries` VALUES ('2', '4', 'Phone', '0', 'Amount', '0');
 INSERT INTO `0_quick_entries` VALUES ('3', '2', 'Cash Sales', '0', 'Amount', '0');
 
 
@@ -1109,7 +1135,8 @@ CREATE TABLE `0_refs` (
   `id` int(11) NOT NULL default '0',
   `type` int(11) NOT NULL default '0',
   `reference` varchar(100) NOT NULL default '',
-  PRIMARY KEY  (`id`,`type`)
+  PRIMARY KEY  (`id`,`type`),
+  KEY `Type_and_Reference` (`type`,`reference`)
 ) TYPE=InnoDB  ;
 
 
@@ -1131,7 +1158,8 @@ CREATE TABLE `0_sales_order_details` (
   `unit_price` double NOT NULL default '0',
   `quantity` double NOT NULL default '0',
   `discount_percent` double NOT NULL default '0',
-  PRIMARY KEY  (`id`)
+  PRIMARY KEY  (`id`),
+  KEY `sorder` (`trans_type`, `order_no`)
 ) TYPE=InnoDB  AUTO_INCREMENT=1 ;
 
 
@@ -1312,7 +1340,7 @@ DROP TABLE IF EXISTS `0_stock_category`;
 CREATE TABLE `0_stock_category` (
   `category_id` int(11) NOT NULL auto_increment,
   `description` varchar(60) NOT NULL default '',
-  `dflt_tax_type` int(11) NOT NULL default '0',
+  `dflt_tax_type` int(11) NOT NULL default '1',
   `dflt_units` varchar(20) NOT NULL default 'each',
   `dflt_mb_flag` char(1) NOT NULL default 'B',
   `dflt_sales_act` varchar(11) NOT NULL default '',
@@ -1390,7 +1418,8 @@ CREATE TABLE `0_stock_moves` (
   `standard_cost` double NOT NULL default '0',
   `visible` tinyint(1) NOT NULL default '1',
   PRIMARY KEY  (`trans_id`),
-  KEY `type` (`type`,`trans_no`)
+  KEY `type` (`type`,`trans_no`),
+  KEY `Move` (`stock_id`,`loc_code`, `tran_date`)
 ) TYPE=InnoDB  AUTO_INCREMENT=1 ;
 
 
@@ -1410,7 +1439,9 @@ CREATE TABLE `0_supp_allocations` (
   `trans_type_from` int(11) default NULL,
   `trans_no_to` int(11) default NULL,
   `trans_type_to` int(11) default NULL,
-  PRIMARY KEY  (`id`)
+  PRIMARY KEY  (`id`),
+  KEY `From` (`trans_type_from`, `trans_no_from`),
+  KEY `To` (`trans_type_to`, `trans_no_to`)
 ) TYPE=InnoDB  AUTO_INCREMENT=1 ;
 
 
@@ -1435,7 +1466,8 @@ CREATE TABLE `0_supp_invoice_items` (
   `unit_price` double NOT NULL default '0',
   `unit_tax` double NOT NULL default '0',
   `memo_` tinytext,
-  PRIMARY KEY  (`id`)
+  PRIMARY KEY  (`id`),
+  KEY `Transaction` (`supp_trans_type`, `supp_trans_no`, `stock_id`)
 ) TYPE=InnoDB  AUTO_INCREMENT=1 ;
 
 
@@ -1460,10 +1492,11 @@ CREATE TABLE `0_supp_trans` (
   `ov_gst` double NOT NULL default '0',
   `rate` double NOT NULL default '1',
   `alloc` double NOT NULL default '0',
-  PRIMARY KEY  (`trans_no`,`type`),
+  PRIMARY KEY  (`type`, `trans_no`),
   KEY `supplier_id` (`supplier_id`),
   KEY `SupplierID_2` (`supplier_id`,`supp_reference`),
-  KEY `type` (`type`)
+  KEY `type` (`type`),
+  KEY (`tran_date`)
 ) TYPE=InnoDB  ;
 
 
@@ -1501,7 +1534,8 @@ CREATE TABLE `0_suppliers` (
   `payment_discount_account` varchar(11) default NULL,
   `notes` tinytext NOT NULL,
   `inactive` tinyint(1) NOT NULL default '0',
-  PRIMARY KEY  (`supplier_id`)
+  PRIMARY KEY  (`supplier_id`),
+  KEY (`supp_ref`)
 ) TYPE=MyISAM  AUTO_INCREMENT=1 ;
 
 
@@ -1596,7 +1630,6 @@ CREATE TABLE `0_tax_types` (
   `name` varchar(60) NOT NULL default '',
   `inactive` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`id`),
-  UNIQUE KEY `name` (`name`,`rate`)
 ) TYPE=InnoDB AUTO_INCREMENT=2 ;
 
 
@@ -1621,7 +1654,9 @@ CREATE TABLE `0_trans_tax_details` (
   `net_amount` double NOT NULL default '0',
   `amount` double NOT NULL default '0',
   `memo` tinytext,
-  PRIMARY KEY  (`id`)
+  PRIMARY KEY  (`id`),
+  KEY `Type_and_Number` (`trans_type`,`trans_no`),
+  KEY (`tran_date`)
 ) TYPE=InnoDB AUTO_INCREMENT=1 ;
 
 
@@ -1718,7 +1753,8 @@ CREATE TABLE `0_wo_issues` (
   `issue_date` date default NULL,
   `loc_code` varchar(5) default NULL,
   `workcentre_id` int(11) default NULL,
-  PRIMARY KEY  (`issue_no`)
+  PRIMARY KEY  (`issue_no`),
+  KEY (`workorder_id`)
 ) TYPE=InnoDB  AUTO_INCREMENT=1 ;
 
 
@@ -1736,7 +1772,8 @@ CREATE TABLE `0_wo_manufacture` (
   `workorder_id` int(11) NOT NULL default '0',
   `quantity` double NOT NULL default '0',
   `date_` date NOT NULL default '0000-00-00',
-  PRIMARY KEY  (`id`)
+  PRIMARY KEY  (`id`),
+  KEY (`workorder_id`)
 ) TYPE=InnoDB  AUTO_INCREMENT=1 ;
 
 
@@ -1757,7 +1794,8 @@ CREATE TABLE `0_wo_requirements` (
   `std_cost` double NOT NULL default '0',
   `loc_code` char(5) NOT NULL default '',
   `units_issued` double NOT NULL default '0',
-  PRIMARY KEY  (`id`)
+  PRIMARY KEY  (`id`),
+  KEY (`workorder_id`)
 ) TYPE=InnoDB  AUTO_INCREMENT=1 ;
 
 
@@ -1850,6 +1888,7 @@ CREATE TABLE `0_useronline` (
 	`ip` varchar(40) NOT NULL default '',
 	`file` varchar(100) NOT NULL default '',
 	PRIMARY KEY `id` (`id`) ,
-	KEY (`timestamp`) 
+	KEY (`timestamp`),
+	KEY(`ip`)
 ) TYPE=MYISAM AUTO_INCREMENT=1;
 

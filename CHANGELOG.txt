@@ -19,8 +19,48 @@ Legend:
 ! -> Note
 $ -> Affected files
 
-24-Dec-2009 Merged changes from main trunk 2.2.1-2.2.2 as follows
+11-Jan-2010 Janusz Dobrowolski
+! Optimized database indexes.
+$ /sql/alter2.3.sql
+  /sql/en_US-demo.sql
+  /sql/en_US-new.sql
 
+27-Dec-2009 Janusz Dobrowolski
++ Remote packages repository support for extensions and languages
+$ /config.default.php
+  /frontaccounting.php
+  /admin/inst_lang.php
+  /admin/inst_module.php
+  /includes/access_levels.inc
+  /includes/ui/ui_lists.inc
+  /sql/alter2.3.php
+# Small fix in handle_submit
+$ /admin/create_coy.php
+! Using var_dump function for storing variables in config files.
+$ /admin/db/maintenance_db.inc
++ Added copy_file(), check_write() helper functions.
+$ /includes/main.inc
++ Aded array_search_key() helper.
+$ /includes/lang/gettext.php
++ Added helper for checking langauge support.
+$ /includes/current_user.inc
++ Added helper for radio buttons.
+$ /includes/ui/ui_input.inc
+! Extension links support moved to application class.
+$ /applications/application.php
+  /applications/customers.php
+  /applications/dimensions.php
+  /applications/generalledger.php
+  /applications/inventory.php
+  /applications/manufacturing.php
+  /applications/setup.php
+  /applications/suppliers.php
+  /includes/archive.inc (new)
+  /includes/packages.inc (new)
++ Support for popup buttons
+$ /js/inserts.js
+
+24-Dec-2009 Merged changes from main trunk 2.2.1-2.2.2 as follows
 ! Release 2.2.2
 $ /update.html
 ! Changed so Printed Sales Order (Quotation) shows TOTAL VAT INCL. if it is.
