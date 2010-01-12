@@ -370,7 +370,7 @@ function delete_this_fiscalyear($selected_id)
 	$sql = "DELETE FROM ".TB_PREF."audit_trail WHERE gl_date <= '$to'";
 	db_query($sql, "Could not delete audit trail");
 	
-	$sql = "SELECT type, id FROM ".TB_PREF."comments";
+	$sql = "SELECT type, id FROM ".TB_PREF."comments WHERE type != ".ST_SALESQUOTE." AND type != ".ST_SALESORDER." AND type != ".ST_PURCHORDER;
 	$result = db_query($sql, "Could not retrieve comments");
 	while ($row = db_fetch($result))
 	{
@@ -383,7 +383,7 @@ function delete_this_fiscalyear($selected_id)
 			db_query($sql, "Could not delete comments");
 		}
 	}	
-	$sql = "SELECT type, id FROM ".TB_PREF."refs";
+	$sql = "SELECT type, id FROM ".TB_PREF."refs WHERE type != ".ST_SALESQUOTE." AND type != ".ST_SALESORDER." AND type != ".ST_PURCHORDER;
 	$result = db_query($sql, "Could not retrieve refs");
 	while ($row = db_fetch($result))
 	{
