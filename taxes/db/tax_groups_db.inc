@@ -96,7 +96,7 @@ function delete_tax_group_items($id)
 
 function get_tax_group_items($id)
 {
-	$sql = "SELECT ".TB_PREF."tax_group_items.*, ".TB_PREF."tax_types.name AS tax_type_name, 
+	$sql = "SELECT ".TB_PREF."tax_group_items.*, ".TB_PREF."tax_types.name AS tax_type_name, ".TB_PREF."tax_types.rate, 
 		".TB_PREF."tax_types.sales_gl_code, ".TB_PREF."tax_types.purchasing_gl_code  
 		FROM ".TB_PREF."tax_group_items, ".TB_PREF."tax_types 
 		WHERE tax_group_id=".db_escape($id)."
@@ -128,7 +128,7 @@ function get_tax_group_items_as_array($id)
 function get_shipping_tax_group_items()
 {
 
-	$sql = "SELECT ".TB_PREF."tax_group_items.*, ".TB_PREF."tax_types.name AS tax_type_name, 
+	$sql = "SELECT ".TB_PREF."tax_group_items.*, ".TB_PREF."tax_types.name AS tax_type_name, ".TB_PREF."tax_types.rate,
 		".TB_PREF."tax_types.sales_gl_code, ".TB_PREF."tax_types.purchasing_gl_code  
 		FROM " .TB_PREF."tax_group_items, ".TB_PREF."tax_types, ".TB_PREF."tax_groups
 		WHERE " .TB_PREF."tax_groups.tax_shipping=1

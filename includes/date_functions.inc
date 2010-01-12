@@ -148,7 +148,7 @@ function Now()
 //
 function new_doc_date($date=null)
 {
-	if (isset($date))
+	if (isset($date) && $date != '')
 		$_SESSION['_default_date'] = $date;
 
 	if (!isset($_SESSION['_default_date']) || !sticky_doc_date())

@@ -475,7 +475,7 @@ function check_num($postname, $min=null, $max=null) {
 	if(!isset($_POST[$postname]))
 	  return 0;
     $num = input_num($postname);
-    if ($num === false) 
+    if ($num === false || $num === null) 
 	  return 0;
     if (isset($min) && ($num<$min)) 
 	  return 0;

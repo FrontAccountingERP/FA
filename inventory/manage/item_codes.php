@@ -35,10 +35,10 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
       	display_error( _("There is no item selected."));
 		set_focus('stock_id');
    	}
-   	elseif (!check_num('quantity', 0))
+   	elseif (!input_num('quantity'))
    	{
       	$input_error = 1;
-      	display_error( _("The price entered was not numeric."));
+      	display_error( _("The price entered was not positive number."));
 		set_focus('quantity');
    	}
    	elseif ($_POST['description'] == '')
@@ -152,22 +152,23 @@ div_end();
 
 //-----------------------------------------------------------------------------------------------
 
-if ($Mode =='Edit')
-{
-	$myrow = get_item_code($selected_id);
-	$_POST['item_code'] = $myrow["item_code"];
-    $_POST['quantity'] = $myrow["quantity"];
-    $_POST['description'] = $myrow["description"];
-    $_POST['category_id'] = $myrow["category_id"];
-}
- else {
-    $_POST['quantity'] = 1;
-    $_POST['description'] = $dflt_desc;
-    $_POST['category_id'] = $dflt_cat;
+if ($selected_id != '') {
+	if ($Mode =='Edit')
+	{
+		$myrow = get_item_code($selected_id);
+		$_POST['item_code'] = $myrow["item_code"];
+		$_POST['quantity'] = $myrow["quantity"];
+		$_POST['description'] = $myrow["description"];
+		$_POST['category_id'] = $myrow["category_id"];
+	}
+	hidden('selected_id', $selected_id);
+} else {
+	$_POST['quantity'] = 1;
+	$_POST['description'] = $dflt_desc;
+	$_POST['category_id'] = $dflt_cat;
 }
 
 echo "<br>";
-hidden('selected_id', $selected_id);
 start_table($table_style2);
 
 hidden('code_id', $selected_id);

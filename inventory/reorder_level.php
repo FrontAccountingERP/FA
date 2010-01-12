@@ -72,6 +72,7 @@ while ($myrow = db_fetch($result))
 
 		$myrow["reorder_level"] = input_num($myrow["loc_code"]);
 		set_reorder_level($_POST['stock_id'], $myrow["loc_code"], input_num($myrow["loc_code"]));
+		display_notification(_("Reorder levels has been updated."));
 	}
 
 	$qoh = get_qoh_on_date($_POST['stock_id'], $myrow["loc_code"]);

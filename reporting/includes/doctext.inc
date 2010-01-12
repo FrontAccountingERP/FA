@@ -13,7 +13,7 @@ if (isset($header2type))
 {
 	$doc_Cust_no = _("Cust no");
 	$doc_Date = _("Date");
-	if ($doctype == 8) // Purchase Order
+	if ($doctype == ST_PURCHORDER || $doctype == ST_SUPPAYMENT) // Purchase Order
 	{
 		$doc_Charge_To = _("Order To");
 		$doc_Delivered_To = _("Charge To");
@@ -24,14 +24,14 @@ if (isset($header2type))
 		$doc_Delivered_To = _("Delivered To");
 	}	
 	$doc_Shipping_Company = _("Shipping Company");
-	if ($doctype == 7)
+	if ($doctype == ST_SALESQUOTE)
 		$doc_Due_Date = _("Valid until");
-	elseif ($doctype == 9)
+	elseif ($doctype == ST_SALESORDER)
 		$doc_Due_Date = _("Delivery Date");
   	else
 		$doc_Due_Date = _("Due Date");
 	$doc_Your_Ref = _("Your Ref");
-	if ($doctype == 26)
+	if ($doctype == ST_WORKORDER)
 	{
 		$doc_Our_Ref = _("Type");
 		$doc_Your_VAT_no = _("Manufactured Item");
@@ -42,7 +42,10 @@ if (isset($header2type))
 	}	
 	else
 	{
-		$doc_Our_Ref = _("Our Ref.");
+		if ($doctype == ST_SUPPAYMENT)
+			$doc_Our_Ref = _("Type");
+		else	
+			$doc_Our_Ref = _("Sales Person");
 		$doc_Your_VAT_no = _("Your VAT no.");
 		$doc_Payment_Terms = _("Payment Terms");
 		$doc_Customers_Ref = _("Customers Reference");
@@ -50,47 +53,52 @@ if (isset($header2type))
 	}
 	$doc_Our_VAT_no = _("Our VAT No.");
 	$doc_Domicile = _("Domicile");
-	if($doctype == 13 || $doctype == 7 || $doctype == 8 || $doctype == 9) {
+	if($doctype == ST_CUSTDELIVERY || $doctype == ST_SALESQUOTE || $doctype == ST_PURCHORDER || $doctype == ST_SALESORDER ||
+		$doctype == ST_SUPPAYMENT) {
 	 $doc_Bank_Account = '';
 	 $doc_Please_Quote = _("All amounts stated in");
   } else {
 	 $doc_Bank_Account = _("Bank Account");
-	 $doc_Please_Quote = $doctype==10 ? 
+	 $doc_Please_Quote = $doctype==ST_SALESINVOICE ? 
 	 _("Please quote Invoice no. when paying. All amounts stated in") :
 	 _("Please quote Credit no. when paying. All amounts stated in");
 	}
 	$doc_Address = _("Address");
 	$doc_Phone_Fax_Email = _("Phone/Fax/Email");
 	$doc_Bank = _("Bank");
-	$doc_Bank_Account = _("Bank Account");
 	$doc_Payment_Link = _("You can pay through");
-	if ($doctype == 7 || $doctype == 8 || $doctype == 9 || $doctype == 10 || $doctype == 11 || $doctype == 13 || $doctype == 26)
+	if ($doctype == ST_SALESQUOTE || $doctype == ST_PURCHORDER || $doctype == ST_SALESORDER || $doctype == ST_SALESINVOICE || 
+		$doctype == ST_CUSTCREDIT || $doctype == ST_CUSTDELIVERY || $doctype == ST_WORKORDER ||	$doctype == ST_SUPPAYMENT)
 	{
-		if ($doctype == 7)
+		if ($doctype == ST_SALESQUOTE)
 			$this->title = _("SALES QUOTATION");
-		elseif ($doctype == 8)
+		elseif ($doctype == ST_PURCHORDER)
 			$this->title = _("PURCHASE ORDER");
-		elseif ($doctype == 13)
+		elseif ($doctype == ST_CUSTDELIVERY)
 			$this->title = ($packing_slip==1 ? _("PACKING SLIP") : _("DELIVERY NOTE"));
-		elseif ($doctype == 9)
+		elseif ($doctype == ST_SALESORDER)
 			$this->title = ($print_as_quote==1 ? _("QUOTE") : _("SALES ORDER"));
-		elseif ($doctype == 10)
+		elseif ($doctype == ST_SALESINVOICE)
 			$this->title = _("INVOICE");
-		elseif ($doctype == 26)
+		elseif ($doctype == ST_WORKORDER)
 			$this->title = _("WORK ORDER");
+		elseif ($doctype == ST_SUPPAYMENT)
+			$this->title = _("REMITTANCE");
 		else
 			$this->title = _("CREDIT NOTE");
-		if ($doctype == 8)
+		if ($doctype == ST_PURCHORDER)
 			$this->headers = array(_("Item Code"), _("Item Description"),
 				_("Delivery Date"), _("Quantity"), 	_("Unit"), _("Price"), _("Total"));
-		elseif ($doctype == 26)
+		elseif ($doctype == ST_WORKORDER)
 			$this->headers = array(_("Item Code"), _("Item Description"),
 				_("From Location"), _("Work Centre"), 	_("Unit Quantity"), _("Total Quantity"), _("Units Issued"));
+		elseif ($doctype == ST_SUPPAYMENT)
+			$this->headers = array(_("Trans Type"), _("#"), _("Date"), _("Due Date"), _("Total Amount"), _("Left to Allocate"), _("This Allocation"));
 		else
 			$this->headers = array(_("Item Code"), _("Item Description"),	_("Quantity"),
 				_("Unit"), _("Price"), _("Discount %"), _("Total"));
 	}
-	else if ($doctype == 12)
+	else if ($doctype == ST_CUSTPAYMENT)
 	{
 		$this->title = _("STATEMENT");
 		$this->headers = array(_("Trans Type"), _("#"), _("Date"), _("DueDate"), _("Charges"),
@@ -106,26 +114,35 @@ if (isset($emailtype))
 }
 if (isset($header2type) || isset($linetype))
 {
-	$doc_Invoice_no = ($doctype==13 ? _("Delivery Note No.") : (($doctype==7 || $doctype==8 || $doctype==9) ? _("Order no.") : 
-		($doctype==10 ? _("Invoice No.") : ($doctype==26 ? _("Word Order No") : _("Credit No.")))));
+	$doc_Invoice_no = ($doctype==ST_CUSTDELIVERY ? _("Delivery Note No.") : 
+		($doctype == ST_SUPPAYMENT ? _("Remittance No.") :
+		(($doctype==ST_SALESQUOTE || $doctype==ST_PURCHORDER || $doctype==ST_SALESORDER) ? _("Order no.") : 
+		($doctype==ST_SALESINVOICE ? _("Invoice No.") : ($doctype==ST_WORKORDER ? _("Word Order No") : _("Credit No."))))));
 	$doc_Delivery_no = _("Delivery Note No.");
 	$doc_Order_no = _("Order no.");
 }
 if (isset($linetype))
 {
-	if ($doctype == 7 || $doctype == 8 || $doctype == 9 || $doctype == 10 || $doctype == 11 || $doctype == 13)
+	if ($doctype == ST_SALESQUOTE || $doctype == ST_PURCHORDER || $doctype == ST_SALESORDER || 
+		$doctype == ST_SALESINVOICE || $doctype == ST_CUSTCREDIT || $doctype == ST_CUSTDELIVERY)
 	{
 		$doc_Sub_total = _("Sub-total");
 		$doc_Shipping = _("Shipping");
 		$doc_Included = _("Included");
 		$doc_Amount = _("Amount");
-		$doc_TOTAL_INVOICE = $doctype ==10 ? _("TOTAL INVOICE") : _("TOTAL CREDIT");
+		$doc_TOTAL_INVOICE = $doctype ==ST_SALESINVOICE ? _("TOTAL INVOICE") : _("TOTAL CREDIT");
 		$doc_TOTAL_ORDER = _("TOTAL ORDER EX VAT");
 		$doc_TOTAL_ORDER2 = _("TOTAL ORDER VAT INCL.");
 		$doc_TOTAL_PO = _("TOTAL PO EX VAT");
 		$doc_TOTAL_DELIVERY = _("TOTAL DELIVERY INCL. VAT");
 	}
-	else if ($doctype == 12)
+	elseif ($doctype == ST_SUPPAYMENT)
+	{
+		$doc_Total_Allocated = _("Total Allocated");
+		$doc_Left_To_Allocate = _("Left to Allocate");
+		$doc_Total_Payment = _("TOTAL REMITTANCE");
+	}
+	elseif ($doctype == ST_CUSTPAYMENT)
 	{
 		$doc_Outstanding = _("Outstanding Transactions");
 		$doc_Current = _("Current");

@@ -281,10 +281,12 @@ function user_numeric($input) {
 
     $num = trim($input);
     $sep = $thoseps[user_tho_sep()];
-    if($sep!='') $num = str_replace( $sep, '', $num);
-	str_replace($sep, '', $num);
+    if ($sep!='')
+    	$num = str_replace( $sep, '', $num);
+
     $sep = $decseps[user_dec_sep()];
-    if($sep!='.') $num = str_replace( $sep, '.', $num);
+    if ($sep!='.')
+    	$num = str_replace( $sep, '.', $num);
 
     if (!is_numeric($num))
 	  return false;

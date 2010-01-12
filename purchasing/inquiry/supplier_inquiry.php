@@ -15,6 +15,7 @@ include($path_to_root . "/includes/db_pager.inc");
 include($path_to_root . "/includes/session.inc");
 
 include($path_to_root . "/purchasing/includes/purchasing_ui.inc");
+include($path_to_root . "/reporting/includes/reporting.inc");
 
 $js = "";
 if ($use_popup_windows)
@@ -146,7 +147,8 @@ function fmt_credit($row)
 
 function prt_link($row)
 {
- 		return print_document_link($row['trans_no'], _("Print"), true, $row['type']);
+  	if ($row['type'] == ST_SUPPAYMENT || $row['type'] == ST_BANKPAYMENT || $row['type'] == ST_SUPPCREDIT) 
+ 		return print_document_link($row['trans_no']."-".$row['type'], _("Print Remittance"), true, ST_SUPPAYMENT, ICON_PRINT);
 }
 
 function check_overdue($row)
@@ -170,7 +172,8 @@ $cols = array(
 			_("Debit") => array('align'=>'right', 'fun'=>'fmt_debit'), 
 			_("Credit") => array('align'=>'right', 'insert'=>true,'fun'=>'fmt_credit'), 
 			array('insert'=>true, 'fun'=>'gl_view'),
-			array('insert'=>true, 'fun'=>'credit_link')
+			array('insert'=>true, 'fun'=>'credit_link'),
+			array('insert'=>true, 'fun'=>'prt_link')
 			);
 
 if ($_POST['supplier_id'] != ALL_TEXT)

@@ -364,16 +364,19 @@ class FrontReport extends Cpdf
 		if ($this->pageNumber > 1)
 			$this->newPage();
 		$header2type = true;
+ 		
+ 		 // leave layout files names without path to enable including
+ 		 // modified versions from comapny/x/reporting directory
 		if (isset($myrow['curr_code']) && $this->currency != $myrow['curr_code'])
 		{
-			include($path_to_root . "/reporting/includes/doctext2.inc");
+			include("includes/doctext2.inc");
 		}
 		else
 		{
-			include($path_to_root . "/reporting/includes/doctext.inc");
+			include("includes/doctext.inc");
 		}
 
-		include($path_to_root . "/reporting/includes/header2.inc");
+		include("includes/header2.inc");
 
 		$this->row = $temp;
 	}
@@ -694,7 +697,7 @@ class FrontReport extends Cpdf
 		parent::SetCellPadding($pad);
 	}
 	
-	function Text($c, $txt, $n=0, $corr=0, $r=0, $align='left', $border=0, $fill=0, $link=NULL, $stretch=0)
+	function Text($c, $txt, $n=0, $corr=0, $r=0, $align='left', $border=0, $fill=0, $link=NULL, $stretch=1)
 	{
 		if ($n == 0)
 			$n = $this->pageWidth - $this->rightMargin;
@@ -702,7 +705,7 @@ class FrontReport extends Cpdf
 		return $this->TextWrap($c, $this->row - $r, $n - $c + $corr, $txt, $align, $border, $fill, $link, $stretch);
 	}
 
-	function TextWrap($xpos, $ypos, $len, $str, $align = 'left', $border = 0, $fill = 0, $link = NULL, $stretch = 0)
+	function TextWrap($xpos, $ypos, $len, $str, $align = 'left', $border = 0, $fill = 0, $link = NULL, $stretch = 1)
 	{
 		if ($this->fontSize != $this->oldFontSize)
 		{
@@ -712,12 +715,12 @@ class FrontReport extends Cpdf
 		return $this->addTextWrap($xpos, $ypos, $len, $this->fontSize, $str, $align, $border, $fill, $link, $stretch);
 	}
 
-	function TextCol($c, $n, $txt, $corr=0, $r=0, $border=0, $fill=0, $link=NULL, $stretch=0)
+	function TextCol($c, $n, $txt, $corr=0, $r=0, $border=0, $fill=0, $link=NULL, $stretch=1)
 	{
 		return $this->TextWrap($this->cols[$c], $this->row - $r, $this->cols[$n] - $this->cols[$c] + $corr, $txt, $this->aligns[$c], $border, $fill, $link, $stretch);
 	}
 	
-	function AmountCol($c, $n, $txt, $dec=0, $corr=0, $r=0, $border=0, $fill=0, $link=NULL, $stretch=0, $color_red=false)
+	function AmountCol($c, $n, $txt, $dec=0, $corr=0, $r=0, $border=0, $fill=0, $link=NULL, $stretch=1, $color_red=false)
 	{
 		if ($color_red && $txt < 0)
 			$this->SetTextColor(255, 0, 0);
@@ -727,7 +730,7 @@ class FrontReport extends Cpdf
 		return $ret;	
 	}
 
-	function AmountCol2($c, $n, $txt, $dec=0, $corr=0, $r=0, $border=0, $fill=0, $link=NULL, $stretch=0, $color_red=false, $amount_locale = 'en_US.UTF-8', $amount_format = '%(!.2n')
+	function AmountCol2($c, $n, $txt, $dec=0, $corr=0, $r=0, $border=0, $fill=0, $link=NULL, $stretch=1, $color_red=false, $amount_locale = 'en_US.UTF-8', $amount_format = '%(!.2n')
 	{
 		setlocale(LC_MONETARY, $amount_locale);
 		if ($color_red && $txt < 0)
@@ -738,25 +741,25 @@ class FrontReport extends Cpdf
 		return $ret;	
 	}
 	
-	function DateCol($c, $n, $txt, $conv=false, $corr=0, $r=0, $border=0, $fill=0, $link=NULL, $stretch=0)
+	function DateCol($c, $n, $txt, $conv=false, $corr=0, $r=0, $border=0, $fill=0, $link=NULL, $stretch=1)
 	{
 		if ($conv)
 			$txt = sql2date($txt);
 		return $this->TextCol($c, $n, $txt, $corr, $r, $border, $fill, $link, $stretch);
 	}
 
-	function TextCol2($c, $n, $txt, $corr=0, $r=0, $border=0, $fill=0, $link=NULL, $stretch=0)
+	function TextCol2($c, $n, $txt, $corr=0, $r=0, $border=0, $fill=0, $link=NULL, $stretch=1)
 	{
 		return $this->TextWrap($this->cols2[$c], $this->row - $r, $this->cols2[$n] - $this->cols2[$c] + $corr, $txt, $this->aligns2[$c], $border, $fill, $link, $stretch);
 	}
 
-	function TextColLines($c, $n, $txt, $corr=0, $r=0, $border=0, $fill=0, $link=NULL, $stretch=0)
+	function TextColLines($c, $n, $txt, $corr=0, $r=0, $border=0, $fill=0, $link=NULL, $stretch=1)
 	{
 		$this->row -= $r;
 		$this->TextWrapLines($this->cols[$c], $this->cols[$n] - $this->cols[$c] + $corr, $txt, $this->aligns[$c], $border, $fill, $link, $stretch);
 	}
 
-	function TextWrapLines($c, $width, $txt, $align='left', $border=0, $fill=0, $link=NULL, $stretch=0)
+	function TextWrapLines($c, $width, $txt, $align='left', $border=0, $fill=0, $link=NULL, $stretch=1)
 	{
 		$str = Explode("\n", $txt);
 		for ($i = 0; $i < count($str); $i++)
@@ -917,11 +920,11 @@ class FrontReport extends Cpdf
 				$emailtype = true;
 				if ($this->currency != $myrow['curr_code'])
 				{
-					include("doctext2.inc");
+					include("includes/doctext2.inc");
 				}
 				else
 				{
-					include("doctext.inc");
+					include("includes/doctext.inc");
 				}
 				require_once($path_to_root . "/reporting/includes/class.mail.inc");
     			$mail = new email($this->company['coy_name'], $this->company['email']);
@@ -930,7 +933,7 @@ class FrontReport extends Cpdf
     			$to = $myrow['DebtorName'] . " <" . $myrow['email'] . ">";
     			$msg = $doc_Dear_Sirs . " " . $myrow['DebtorName'] . ",\n\n" . $doc_AttachedFile . " " . $subject .
     				"\n\n";
-				if (isset($myrow['dimension_id']) && $myrow['dimension_id'] > 0 && $doctype == 10) // helper for payment links
+				if (isset($myrow['dimension_id']) && $myrow['dimension_id'] > 0 && $doctype == ST_SALESINVOICE) // helper for payment links
 				{
 					if ($myrow['dimension_id'] == 1)
 					{

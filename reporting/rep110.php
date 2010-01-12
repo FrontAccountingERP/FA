@@ -99,9 +99,9 @@ function print_deliveries()
 			}
 			else
 				$rep->title = _('DELIVERY NOTE');
-			$rep->Header2($myrow, $branch, $sales_order, '', 13);
+			$rep->Header2($myrow, $branch, $sales_order, '', ST_CUSTDELIVERY);
 
-   			$result = get_customer_trans_details(13, $i);
+   			$result = get_customer_trans_details(ST_CUSTDELIVERY, $i);
 			$SubTotal = 0;
 			while ($myrow2=db_fetch($result))
 			{
@@ -131,7 +131,7 @@ function print_deliveries()
 				$rep->row = $newrow;
 				//$rep->NewLine(1);
 				if ($rep->row < $rep->bottomMargin + (15 * $rep->lineHeight))
-					$rep->Header2($myrow, $branch, $sales_order,'',13);
+					$rep->Header2($myrow, $branch, $sales_order,'',ST_CUSTDELIVERY);
 			}
 
 			$comments = get_comments(ST_CUSTDELIVERY, $i);
@@ -147,7 +147,7 @@ function print_deliveries()
 
     		$rep->row = $rep->bottomMargin + (15 * $rep->lineHeight);
 			$linetype = true;
-			$doctype=13;
+			$doctype=ST_CUSTDELIVERY;
 			if ($rep->currency != $myrow['curr_code'])
 			{
 				include($path_to_root . "/reporting/includes/doctext2.inc");
@@ -164,7 +164,7 @@ function print_deliveries()
 				$rep->TextCol(3, 6, $doc_Shipping, -2);
 				$rep->TextCol(6, 7,	$DisplayFreight, -2);
 				$rep->NewLine();
-				$tax_items = get_trans_tax_details(13, $i);
+				$tax_items = get_trans_tax_details(ST_CUSTDELIVERY, $i);
     			while ($tax_item = db_fetch($tax_items))
     			{
     				$DisplayTax = number_format2($tax_item['amount'], $dec);
@@ -196,7 +196,7 @@ function print_deliveries()
 					$myrow['email'] = $branch['email'];
 					$myrow['DebtorName'] = $branch['br_name'];
 				}
-				$rep->End($email, $doc_Delivery_no . " " . $myrow['reference'], $myrow, 13);
+				$rep->End($email, $doc_Delivery_no . " " . $myrow['reference'], $myrow, ST_CUSTDELIVERY);
 			}
 	}
 	if ($email == 0)

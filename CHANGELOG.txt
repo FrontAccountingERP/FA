@@ -19,6 +19,97 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+12-Jan-2010 Merged changes from main trunk 2.2.2-2.2.3 as follows
+------------------------------- Release 2.2.3 ----------------------------------
+12-Jan-2010 Joe Hunt
+! Release 2.2.3
+! Allow using of multi level sub-types when digits are of same length in account types
+$ config.default.php
+  update.html
+  /gl/includes/db/gl_db_accounts.inc
+! Print COA also prints class id and account type id.
+$ /reporting/rep701.php
+
+
+11-Jan-2010 Janusz Dobrowolski
+# Removed invalid constraint on tax_types.
+$ /sql/en_US-new.sql
+
+10-Jan-2010 Janusz Dobrowolski
+! Small fix in new_doc_date()
+$ /includes/date_functions.inc
+# Prevent warnings for sql results without 'inactive' field
+$ /includes/ui/db_pager_view.inc
+# Fixed js error in IE7
+$ /js/inserts.js
++ Added support for customized doctext.inc/header2.inc
+$ /reporting/prn_redirect.php
+  /reporting/includes/pdf_report.inc
+! Increased number of decimals for tax calculations
+$ /taxes/tax_calc.inc
+! Code cleanup
+$ /includes/current_user.inc
+# Fixed check for missing POST in check_num()
+$ /includes/data_checks.inc
+# [0000187] Category and description reset after failed check;
+$ /inventory/manage/item_codes.php
+# [0000186] Timeout on Refresh button
+$ /sales/allocations/customer_allocate.php
+# [0000185] Update notification missing.
+$ inventory/reorder_level.php
+
+09-Jan-2010 Joe Hunt
+# Bugs in deleting fiscal year. Some transactions weren't deleted.
+$ /admin/fiscalyear.php
+
+07-Jan-2010 Joe Hunt
+! Changed to let the $doctypes in documents follow the types in types.inc
++ New document, Remittance, to print payment allocations to suppliers
+  Also print/email links from Supplier Payment and Supplier Inquiry.
+$ /purchasing/supplier_payment.php
+  /purchasing/inquiry/supplier_inquiry.php
+  /reporting/rep108.php
+  /reporting/rep109.php
+  /reporting/rep110.php
+  /reporting/rep111.php
+  /reporting/rep209.php
+  /reporting/rep210.php (New file)
+  /reporting/reports_main.php
+  /reporting/includes/doctext.inc
+  /reporting/includes/doctext2.inc
+  /reporting/includes/header2.inc
+  /reporting/includes/pdf_report.inc
+  /reporting/includes/reporting.inc
+  /reporting/includes/reports_classes.inc
+# Creating recurrent invoices with date outside fiscal year.  
+  /sales/create_recurrent_invoices.php
+  
+06-Jan-2010 Janusz Dobrowolski
+# Check on existence of locale.inc added to avoid blank pages when the file is broken.
+$ /includes/session.inc
+! Changed reference incrementation algorithm to preserve both number prefix and postfix.
+$ /includes/references.inc
+
+04-Jan-2010 Joe Hunt
+! Making the stretch parameter = 1 on default print pdf all over
+  Improved layout on documents.
+$ /reporting/includes/class.pdf.inc
+  /reporting/includes/pdf_report.inc
+  /reporting/includes/doctext.inc
+  /reporting/includes/doctext2.inc
+  /reporting/includes/header2.inc
+  
+31-Dec-2009 Joe Hunt
+# When updating tax rate, it didn't show and calculate correct in documents.
+$ /taxes/db/tax_groups_db.inc
+
+27-Dec-2009 Joe Hunt
+# Problems letting various currency bank accounts sharing the same GL account
+$ /gl/manage/bank_accounts.php
+  /gl/includes/db/gl_db_banking.inc
+
+---------- End of changes from main trunk 2.2.2-2.2.3
+
 11-Jan-2010 Janusz Dobrowolski
 ! Optimized database indexes.
 $ /sql/alter2.3.sql
@@ -61,6 +152,8 @@ $ /applications/application.php
 $ /js/inserts.js
 
 24-Dec-2009 Merged changes from main trunk 2.2.1-2.2.2 as follows
+------------------------------- Release 2.2.2 ----------------------------------
+23-Dec-2009 Joe Hunt
 ! Release 2.2.2
 $ /update.html
 ! Changed so Printed Sales Order (Quotation) shows TOTAL VAT INCL. if it is.

@@ -136,6 +136,12 @@ $reports->addReport(_('Supplier'),209,_('Print Purchase &Orders'),
 			_('Currency Filter') => 'CURRENCY',
 			_('Email Customers') => 'YES_NO',
 			_('Comments') => 'TEXTBOX'));
+$reports->addReport(_('Supplier'),210,_('Print Remittances'),
+	array(	_('From') => 'REMITTANCE',
+			_('To') => 'REMITTANCE',
+			_('Currency Filter') => 'CURRENCY',
+			_('Email Customers') => 'YES_NO',
+			_('Comments') => 'TEXTBOX'));
 
 $reports->addReportClass(_('Inventory'));
 $reports->addReport(_('Inventory'),301,_('Inventory &Valuation Report'),

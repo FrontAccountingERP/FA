@@ -19,6 +19,7 @@ include_once($path_to_root . "/includes/banking.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
 //include_once($path_to_root . "/purchasing/includes/ui/supp_alloc_ui.inc");
 include_once($path_to_root . "/purchasing/includes/purchasing_db.inc");
+include_once($path_to_root . "/reporting/includes/reporting.inc");
 
 $js = "";
 if ($use_popup_windows)
@@ -68,6 +69,9 @@ if (isset($_GET['AddedID']))
 	$payment_id = $_GET['AddedID'];
 
    	display_notification_centered( _("Payment has been sucessfully entered"));
+
+	submenu_print(_("&Print This Remittance"), ST_SUPPAYMENT, $payment_id."-".ST_SUPPAYMENT, 'prtopt');
+	submenu_print(_("&Email This Remittance"), ST_SUPPAYMENT, $payment_id."-".ST_SUPPAYMENT, null, 1);
 
     display_note(get_gl_view_str(22, $payment_id, _("View the GL &Journal Entries for this Payment")));
 

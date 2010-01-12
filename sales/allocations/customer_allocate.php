@@ -39,25 +39,6 @@ function clear_allocations()
 	//session_register('alloc');
 }
 
-
-//--------------------------------------------------------------------------------
-
-if (isset($_POST['Process']))
-{
-	if (check_allocations())
-	{
-		$_SESSION['alloc']->write();
-		clear_allocations();
-		$_POST['Cancel'] = 1;
-	}
-}
-//--------------------------------------------------------------------------------
-
-if (isset($_POST['Cancel']))
-{
-	clear_allocations();
-	meta_forward($path_to_root . "/sales/allocations/customer_allocation_main.php");
-}
 //--------------------------------------------------------------------------------
 
 function edit_allocations_for_transaction($type, $trans_no)
@@ -96,17 +77,34 @@ function edit_allocations_for_transaction($type, $trans_no)
 
 //--------------------------------------------------------------------------------
 
+if (isset($_POST['Process']))
+{
+	if (check_allocations())
+	{
+		$_SESSION['alloc']->write();
+		clear_allocations();
+		$_POST['Cancel'] = 1;
+	}
+}
+//--------------------------------------------------------------------------------
+
+if (isset($_POST['Cancel']))
+{
+	clear_allocations();
+	meta_forward($path_to_root . "/sales/allocations/customer_allocation_main.php");
+}
+
+//--------------------------------------------------------------------------------
+
 if (isset($_GET['trans_no']) && isset($_GET['trans_type']))
 {
 	clear_allocations();
 	$_SESSION['alloc'] = new allocation($_GET['trans_type'], $_GET['trans_no']);
 }
+
 if(get_post('UpdateDisplay'))
 {
-	$trans_no = $_SESSION['alloc']->trans_no;
-	$type = $_SESSION['alloc']->type;
-	clear_allocations();
-	get_allocations_for_transaction($type, $trans_no);
+	$_SESSION['alloc']->read();
 	$Ajax->activate('alloc_tbl');
 }
 

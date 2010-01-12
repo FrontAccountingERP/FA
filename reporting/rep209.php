@@ -105,7 +105,7 @@ function print_po()
 		}
 		else
 			$rep->title = _('PURCHASE ORDER');
-		$rep->Header2($myrow, null, $myrow, $baccount, 8);
+		$rep->Header2($myrow, null, $myrow, $baccount, ST_PURCHORDER);
 
 		$result = get_po_details($i);
 		$SubTotal = 0;
@@ -139,7 +139,7 @@ function print_po()
 			$rep->TextCol(6, 7,	$DisplayNet, -2);
 			$rep->NewLine(1);
 			if ($rep->row < $rep->bottomMargin + (15 * $rep->lineHeight))
-				$rep->Header2($myrow, $branch, $myrow, $baccount, 8);
+				$rep->Header2($myrow, $branch, $myrow, $baccount, ST_PURCHORDER);
 		}
 		if ($myrow['comments'] != "")
 		{
@@ -150,7 +150,7 @@ function print_po()
 
 		$rep->row = $rep->bottomMargin + (15 * $rep->lineHeight);
 		$linetype = true;
-		$doctype = 8;
+		$doctype = ST_PURCHORDER;
 		if ($rep->currency != $myrow['curr_code'])
 		{
 			include($path_to_root . "/reporting/includes/doctext2.inc");

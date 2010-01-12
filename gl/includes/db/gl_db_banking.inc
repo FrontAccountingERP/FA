@@ -17,6 +17,7 @@ function add_exchange_variation($trans_type, $trans_no, $date_, $acc_id, $accoun
 	if ($date_ == null)
 		$date_ = Today();
 	$rate = get_exchange_rate_from_home_currency($currency, $date_);
+/*	
 	$result = db_query("SELECT SUM(amount) FROM ".TB_PREF."bank_trans WHERE 
 		bank_act=".db_escape($acc_id)." AND trans_date<='".date2sql($date_)."'", 
 		"Transactions for account $account could not be calculated");
@@ -24,6 +25,16 @@ function add_exchange_variation($trans_type, $trans_no, $date_, $acc_id, $accoun
 	$foreign_amount = $row[0];
 	$amount = get_gl_trans_from_to("", $date_, $account);
 	$diff = $amount - (round2($foreign_amount * $rate, user_price_dec()));
+*/
+	$result = db_query("SELECT SUM(bt.amount) AS foreign_amount, SUM(gt.amount) AS amount		
+		FROM ".TB_PREF."bank_trans bt,  ".TB_PREF."gl_trans gt, ".TB_PREF."bank_accounts ba
+		WHERE bt.bank_act=".db_escape($acc_id)." AND bt.trans_date<='".date2sql($date_)."'
+		AND ((bt.amount > 0 AND gt.amount > 0) OR (bt.amount <= 0 AND gt.amount <= 0)) 
+		AND bt.type = gt.type AND bt.trans_no = gt.type_no 
+		AND ba.id = bt.bank_act AND ba.account_code = gt.account",
+		"Transactions for account $account could not be calculated");
+	$row = db_fetch($result);
+	$diff = $row['amount'] - (round2($row['foreign_amount'] * $rate, user_price_dec()));
 	if ($diff != 0)
 	{
 		if ($trans_type == null)
@@ -102,7 +113,9 @@ function add_bank_transfer($from_account, $to_account, $date_,
 		$date_, $amount, PT_MISC, "",
 		$currency, "Cannot insert a destination bank transaction");
 
-	add_exchange_variation($trans_type, $trans_no, $date_, $from_account, $from_gl_account, 
+	$currency = get_bank_account_currency($to_account);
+	
+	add_exchange_variation($trans_type, $trans_no, $date_, $to_account, $to_gl_account, 
 		$currency, PT_MISC, "");
 	
 	add_comments($trans_type, $trans_no, $date_, $memo_);

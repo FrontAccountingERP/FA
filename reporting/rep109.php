@@ -94,7 +94,7 @@ function print_sales_orders()
 		}
 		else
 			$rep->title = ($print_as_quote==1 ? _("QUOTE") : _("SALES ORDER"));
-		$rep->Header2($myrow, $branch, $myrow, $baccount, 9);
+		$rep->Header2($myrow, $branch, $myrow, $baccount, ST_SALESORDER);
 
 		$result = get_sales_order_details($i, ST_SALESORDER);
 		$SubTotal = 0;
@@ -123,7 +123,7 @@ function print_sales_orders()
 			$rep->row = $newrow;
 			//$rep->NewLine(1);
 			if ($rep->row < $rep->bottomMargin + (15 * $rep->lineHeight))
-				$rep->Header2($myrow, $branch, $myrow, $baccount, 9);
+				$rep->Header2($myrow, $branch, $myrow, $baccount, ST_SALESORDER);
 		}
 		if ($myrow['comments'] != "")
 		{
@@ -135,7 +135,7 @@ function print_sales_orders()
 
 		$rep->row = $rep->bottomMargin + (15 * $rep->lineHeight);
 		$linetype = true;
-		$doctype = 9;
+		$doctype = ST_SALESORDER;
 		if ($rep->currency != $myrow['curr_code'])
 		{
 			include($path_to_root . "/reporting/includes/doctext2.inc");

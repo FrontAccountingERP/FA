@@ -162,7 +162,7 @@ function display_db_pager(&$pager) {
 
 	start_row("class='navibar'");
 	$colspan = count($pager->columns);
-		$inact = $pager->inactive_ctrl==true 
+		$inact = @$pager->inactive_ctrl==true 
 			? ' '.checkbox(null, 'show_inactive', null, true). _("Show also Inactive") : '';
 	 if($pager->rec_count) {
 		echo "<td colspan=$colspan class='navibar' style='border:none;padding:3px;'>";
@@ -170,7 +170,7 @@ function display_db_pager(&$pager) {
 		$but_pref = $pager->name.'_page_';
 	    start_table();
 		start_row();
-		if ($pager->inactive_ctrl) 
+		if (@$pager->inactive_ctrl) 
 				submit('Update', _('Update'), true, '', null); // inactive update
 		echo navi_button_cell($but_pref.'first', _('First'), $pager->first_page, 'right');
 		echo navi_button_cell($but_pref.'prev', _('Prev'), $pager->prev_page,'right');
