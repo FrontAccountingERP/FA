@@ -168,7 +168,7 @@ function check_overdue($row)
 			$row["Outstanding"]!=0;
 }
 //------------------------------------------------------------------------------------------------
-$sql = get_sql_for_sales_deliveries_view($selected_customer, $selected_stock_id);
+$sql = get_sql_for_sales_deliveries_view($selected_customer, $selected_stock_item);
 
 $cols = array(
 		_("Delivery #") => array('fun'=>'trans_view'), 
