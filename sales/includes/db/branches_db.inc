@@ -139,6 +139,7 @@ function get_default_info_for_branch($customer_id)
 	$result = db_query($sql,"check failed");
 	return db_fetch($result);
 }
+
 function get_sql_for_customer_branches()
 {
 	$sql = "SELECT "
@@ -165,6 +166,8 @@ function get_sql_for_customer_branches()
 		AND b.debtor_no = ".db_escape($_POST['customer_id']);
 
 	if (!get_post('show_inactive')) $sql .= " AND !b.inactive";
+	$sql .= " ORDER BY branch_ref";
+
 	return $sql;
 }
 ?>
