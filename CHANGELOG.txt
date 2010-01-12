@@ -19,6 +19,17 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+------------------------------- Release 2.2.3 ----------------------------------
+12-Jan-2010 Joe Hunt
+! Release 2.2.3
+! Allow using of multi level sub-types when digits are of same length in account types
+$ config.default.php
+  update.html
+  /gl/includes/db/gl_db_accounts.inc
+! Print COA also prints class id and account type id.
+$ /reporting/rep701.php
+
+
 11-Jan-2010 Janusz Dobrowolski
 # Removed invalid constraint on tax_types.
 $ /sql/en_US-new.sql

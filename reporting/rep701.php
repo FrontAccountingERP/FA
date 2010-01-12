@@ -71,13 +71,17 @@ function print_Chart_of_Accounts()
 			if ($account['AccountClassName'] != $classname)
 			{
 				$rep->Font('bold');
-				$rep->TextCol(0, 4, $account['AccountClassName']);
+				//$rep->TextCol(0, 4, $account['AccountClassName']);
+				$rep->TextCol(0, 1, $account['ClassID']);
+				$rep->TextCol(1, 4, $account['AccountClassName']);
 				$rep->Font();
 				//$rep->row -= ($rep->lineHeight + 4);
 				$rep->NewLine();
 			}
 			$group = $account['AccountTypeName'];
-			$rep->TextCol(0, 4, $account['AccountTypeName']);
+			//$rep->TextCol(0, 4, $account['AccountTypeName']);
+			$rep->TextCol(0, 1, $account['AccountType']);
+			$rep->TextCol(1, 4, $account['AccountTypeName']);
 			//$rep->Line($rep->row - 4);
 			//$rep->row -= ($rep->lineHeight + 4);
 			$rep->NewLine();

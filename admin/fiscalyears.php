@@ -369,6 +369,34 @@ function delete_this_fiscalyear($selected_id)
 	
 	$sql = "DELETE FROM ".TB_PREF."audit_trail WHERE gl_date <= '$to'";
 	db_query($sql, "Could not delete audit trail");
+	
+	$sql = "SELECT type, id FROM ".TB_PREF."comments";
+	$result = db_query($sql, "Could not retrieve comments");
+	while ($row = db_fetch($result))
+	{
+		$sql = "SELECT count(*) FROM ".TB_PREF."gl_trans WHERE type = {$row['type']} AND type_no = {$row['id']}";
+		$res = db_query($sql, "Could not retrieve gl_trans");
+		$row2 = db_fetch_row($res);
+		if ($row2[0] == 0) // if no link, then delete comments
+		{
+			$sql = "DELETE FROM ".TB_PREF."comments WHERE type = {$row['type']} AND id = {$row['id']}";
+			db_query($sql, "Could not delete comments");
+		}
+	}	
+	$sql = "SELECT type, id FROM ".TB_PREF."refs";
+	$result = db_query($sql, "Could not retrieve refs");
+	while ($row = db_fetch($result))
+	{
+		$sql = "SELECT count(*) FROM ".TB_PREF."gl_trans WHERE type = {$row['type']} AND type_no = {$row['id']}";
+		$res = db_query($sql, "Could not retrieve gl_trans");
+		$row2 = db_fetch_row($res);
+		if ($row2[0] == 0) // if no link, then delete refs
+		{
+			$sql = "DELETE FROM ".TB_PREF."refs WHERE type = {$row['type']} AND id = {$row['id']}";
+			db_query($sql, "Could not delete refs");
+		}
+	}	
+		
 	delete_fiscalyear($selected_id);
 	commit_transaction();	
 }

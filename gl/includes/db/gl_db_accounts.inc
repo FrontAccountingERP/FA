@@ -50,6 +50,8 @@ function get_gl_accounts($from=null, $to=null)
 
 function get_gl_accounts_all($balance=-1)
 {
+	global $use_new_account_types;
+	
 	if ($balance == 1)
 		$where ="WHERE ctype>0 AND ctype<".CL_INCOME;
 	elseif ($balance == 0)	
@@ -62,8 +64,11 @@ function get_gl_accounts_all($balance=-1)
 	 	LEFT JOIN ".TB_PREF."chart_master ON ".TB_PREF."chart_master.account_type=".TB_PREF."chart_types.id ";
 	if ($balance != -1)
 		$sql .= $where; 	 	 		
-	 $sql .= " ORDER BY ".TB_PREF."chart_class.cid, IF(parent > 0,parent,".TB_PREF."chart_types.id), 
-	 	IF(parent > 0,".TB_PREF."chart_types.id, parent), ".TB_PREF."chart_master.account_code";
+	if (isset($use_new_account_types) && $use_new_account_types == 1)
+	 	$sql .= " ORDER BY ".TB_PREF."chart_class.cid, ".TB_PREF."chart_types.id, parent, ".TB_PREF."chart_master.account_code";
+	else
+	 	$sql .= " ORDER BY ".TB_PREF."chart_class.cid, IF(parent > 0,parent,".TB_PREF."chart_types.id), 
+	 		IF(parent > 0,".TB_PREF."chart_types.id, parent), ".TB_PREF."chart_master.account_code";
 
 	return db_query($sql, "could not get gl accounts");
 }
