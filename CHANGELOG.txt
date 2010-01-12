@@ -19,6 +19,13 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+12-Jan-2010 Janusz Dobrowolski
+! Added sorting by branch_ref
+$ /sales/includes/db/branches_db.inc
+# Fixed misnamed function parameter.
+  /sales/includes/db/cust_trans_db.inc
+  /sales/inquiry/sales_deliveries_view.php
+
 12-Jan-2010 Merged changes from main trunk 2.2.2-2.2.3 as follows
 ------------------------------- Release 2.2.3 ----------------------------------
 12-Jan-2010 Joe Hunt
