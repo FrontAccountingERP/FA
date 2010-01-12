@@ -149,7 +149,7 @@ if ($selected_id != -1)
 {
 	if ($Mode == 'Edit') {
    		$myrow = get_item_tax_type($selected_id);
-    
+   		unset($_POST); // clear exemption checkboxes
    		$_POST['name']  = $myrow["name"];
    		$_POST['exempt']  = $myrow["exempt"];
     	
