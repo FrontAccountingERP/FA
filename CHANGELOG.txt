@@ -24,6 +24,8 @@ $ -> Affected files
 $ /inventory/cost_update.php
   /inventory/includes/item_adjustments_ui.inc
   /inventory/view/view_adjustment.php
+! Changed so GL Account Types id allows up to 6 digits.
+$ /gl/manage/gl_account_types.php
   
 12-Jan-2010 Janusz Dobrowolski
 # Fixed buggy exemptions display
