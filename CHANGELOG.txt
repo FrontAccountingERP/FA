@@ -19,6 +19,12 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+13-Jan-2010 Joe Hunt
+! Changed so also Item Adjustment and Cost Update allow more than 2 dec in price
+$ /inventory/cost_update.php
+  /inventory/includes/item_adjustments_ui.inc
+  /inventory/view/view_adjustment.php
+  
 12-Jan-2010 Janusz Dobrowolski
 # Fixed buggy exemptions display
 $ /taxes/item_tax_types.php
