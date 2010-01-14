@@ -19,6 +19,12 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+14-Jan-2010 Joe Hunt
+# A couple of small bugs were fixed in average material cost
+$ /purchasing/includes/db/grn_db.inc
+  /purchasing/includes/db/invoice_db.inc
+  /manufacturing/includes/db/work_orders_db.inc
+  
 13-Jan-2010 Joe Hunt
 ! Changed so also Item Adjustment and Cost Update allow more than 2 dec in price
 $ /inventory/cost_update.php

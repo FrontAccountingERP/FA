@@ -112,10 +112,15 @@ function get_deliveries_between($stock_id, $from, $to)
 
 function get_diff_in_home_currency($supplier, $old_date, $date, $amount1, $amount2)
 {
+	$dec = user_price_dec();
+	price_decimal_format($amount2, $dec);
 	$currency = get_supplier_currency($supplier);
-	$amount1 = to_home_currency($amount1, $currency, $old_date);
-	$amount2 = to_home_currency($amount2, $currency, $date);
-	return $amount2 - $amount1;
+	$ex_rate = get_exchange_rate_to_home_currency($currency, $old_date);
+	$amount1 = $amount1 / $ex_rate;
+	$ex_rate = get_exchange_rate_to_home_currency($currency, $date_);
+	$amount2 = $amount2 / $ex_rate;
+	$diff = $amount2 - $amount1;
+	return round2($diff, $dec);
 }
 //----------------------------------------------------------------------------------------
 
@@ -207,7 +212,6 @@ function add_supp_invoice($supp_trans, $invoice_no=0) // do not receive as ref b
 			$entered_grn->this_quantity_inv = -$entered_grn->this_quantity_inv;
 			set_grn_item_credited($entered_grn, $supp_trans->supplier_id, $invoice_id, $date_);
     	}
-
 		$line_taxfree = $entered_grn->taxfree_charge_price($supp_trans->tax_group_id);
 		$line_tax = $entered_grn->full_charge_price($supp_trans->tax_group_id) - $line_taxfree;
 		$stock_gl_code = get_stock_gl_code($entered_grn->item_code);

@@ -17,20 +17,27 @@ function update_average_material_cost($supplier, $stock_id, $price, $qty, $date,
 		$currency = get_supplier_currency($supplier);
 	else
 		$currency = null;
+	$dec = user_price_dec();
+	$price = price_decimal_format($price, $dec);
 	if ($currency != null)
-		$price_in_home_currency = to_home_currency($price, $currency, $date);
+	{
+		$ex_rate = get_exchange_rate_to_home_currency($currency, $date_);
+		$price_in_home_currency = $price / $ex_rate;
+		//$price_in_home_currency = to_home_currency($price, $currency, $date);
+	}	
 	else
 		$price_in_home_currency = $price;
 	$sql = "SELECT material_cost FROM ".TB_PREF."stock_master WHERE stock_id=".db_escape($stock_id);
 	$result = db_query($sql);
 	$myrow = db_fetch($result);
 	$material_cost = $myrow['material_cost'];
+	if ($price > -0.0001 && $price < 0.0001)
+		return $material_cost;
 	if ($adj_only)
 		$exclude = ST_CUSTDELIVERY;
 	else
 		$exclude = 0;
 	$qoh = get_qoh_on_date($stock_id, null, $date, $exclude);
-
 	if ($adj_only)
 	{
 		if ($qoh <= 0)
@@ -41,7 +48,12 @@ function update_average_material_cost($supplier, $stock_id, $price, $qty, $date,
 	elseif ($qoh + $qty <= 0)
 		$material_cost = 0;
 	else
+	{
+		if ($qoh < 0)
+			$qoh = 0;
 		$material_cost = ($qoh * $material_cost + $qty * $price_in_home_currency) /	($qoh + $qty);
+	}	
+	$material_cost = round2($material_cost, $dec);
 
 	$sql = "UPDATE ".TB_PREF."stock_master SET material_cost=".db_escape($material_cost)."
 		WHERE stock_id=".db_escape($stock_id);
@@ -66,7 +78,6 @@ function add_grn(&$po, $date_, $reference, $location)
 		{
 
 			/*Update sales_order_details for the new quantity received and the standard cost used for postings to GL and recorded in the stock movements for FIFO/LIFO stocks valuations*/
-
 			//------------------- update average material cost ------------------------------------------ Joe Hunt Mar-03-2008
 			update_average_material_cost($po->supplier_id, $order_line->stock_id, $order_line->price,
 				$order_line->receive_qty, $date_);
