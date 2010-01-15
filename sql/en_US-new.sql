@@ -1593,7 +1593,7 @@ CREATE TABLE `0_tax_types` (
   `purchasing_gl_code` varchar(11) NOT NULL default '',
   `name` varchar(60) NOT NULL default '',
   `inactive` tinyint(1) NOT NULL default '0',
-  PRIMARY KEY  (`id`),
+  PRIMARY KEY  (`id`)
 ) TYPE=InnoDB AUTO_INCREMENT=2 ;
 
 

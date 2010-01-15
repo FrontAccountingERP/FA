@@ -24,6 +24,8 @@ $ -> Affected files
 $ /includes/page/footer.inc
   /includes/ui/ui_view.inc
   /includes/main.inc
+# Removed a comma after last item in structure for 0_tax_types, line 1596
+$ /sql/en_US-new.sql
   
 14-Jan-2010 Joe Hunt
 # A couple of small bugs were fixed in average material cost
