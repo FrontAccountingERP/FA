@@ -19,6 +19,14 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+15-Jan-2010 Janusz Dobrowolski
+! Changed so GL Account Types id allows up to 10 digits.
+$ /gl/manage/gl_account_types.php
+# [0000187] Category and description reset after failed check;
+$ /inventory/manage/sales_kits.php
+# Cleaned warnings in errorlog.
+$ /sales/includes/sales_db.inc
+
 15-Jan-2010 Joe Hunt
 # [0000190] Back link on confirmation only pages removed.
 $ /includes/page/footer.inc
@@ -26,13 +34,13 @@ $ /includes/page/footer.inc
   /includes/main.inc
 # Removed a comma after last item in structure for 0_tax_types, line 1596
 $ /sql/en_US-new.sql
-  
+
 14-Jan-2010 Joe Hunt
 # A couple of small bugs were fixed in average material cost
 $ /purchasing/includes/db/grn_db.inc
   /purchasing/includes/db/invoice_db.inc
   /manufacturing/includes/db/work_orders_db.inc
-  
+
 13-Jan-2010 Joe Hunt
 ! Changed so also Item Adjustment and Cost Update allow more than 2 dec in price
 $ /inventory/cost_update.php
