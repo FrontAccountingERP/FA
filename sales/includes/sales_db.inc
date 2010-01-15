@@ -185,7 +185,8 @@ function set_document_parent($cart)
 	if (count($cart->src_docs) == 1) {
 
 		// if this child document has only one parent - update child link
-		$del_no = reset(array_keys($cart->src_docs));
+		$src = array_keys($cart->src_docs);
+		$del_no = reset($src);
 
 		$sql = 'UPDATE '.TB_PREF.'debtor_trans SET trans_link = ' . $del_no .
 			' WHERE type='.db_escape($cart->trans_type).' AND trans_no='. $inv_no ;
