@@ -182,7 +182,7 @@ if ($selected_id != -1)
 	label_row(_("ID:"), $_POST['id']);
 }
 else
-	text_row_ex(_("ID:"), 'id', 6);
+	text_row_ex(_("ID:"), 'id', 10);
 text_row_ex(_("Name:"), 'name', 50);
 
 gl_account_types_list_row(_("Subgroup Of:"), 'parent', null, _("None"), true);
