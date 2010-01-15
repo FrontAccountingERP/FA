@@ -26,6 +26,11 @@ $ /gl/manage/gl_account_types.php
 $ /inventory/manage/sales_kits.php
 # Cleaned warnings in errorlog.
 $ /sales/includes/sales_db.inc
+! Default 0 on empty amount fields
+$ /includes/data_checks.inc
+! Empty numeric input fields globaly defaulted to 0.
+$ /includes/data_checks.inc
+  /includes/ui/ui_input.inc
 
 15-Jan-2010 Joe Hunt
 # [0000190] Back link on confirmation only pages removed.
