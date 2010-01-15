@@ -19,6 +19,12 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+15-Jan-2010 Joe Hunt
+# [0000190] Back link on confirmation only pages removed.
+$ /includes/page/footer.inc
+  /includes/ui/ui_view.inc
+  /includes/main.inc
+  
 14-Jan-2010 Joe Hunt
 # A couple of small bugs were fixed in average material cost
 $ /purchasing/includes/db/grn_db.inc

@@ -48,13 +48,13 @@ function page($title, $no_menu=false, $is_index=false, $onload="", $js="", $scri
 	}
 }
 
-function end_page($no_menu=false, $is_index=false)
+function end_page($no_menu=false, $is_index=false, $hide_back_link=false)
 {
    	global $path_to_root, $Ajax;
     	$hide_menu = $no_menu;
 		div_end();	// _page_body section
    	include($path_to_root . "/includes/page/footer.inc");
-    	page_footer($no_menu, $is_index);
+    	page_footer($no_menu, $is_index, $hide_back_link);
 }
 
 function flush_dir($path, $wipe = false) 

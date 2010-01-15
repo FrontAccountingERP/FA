@@ -9,11 +9,11 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-function page_footer($no_menu=false, $is_index=false)
+function page_footer($no_menu=false, $is_index=false, $hide_back_link=false)
 {
 	global $path_to_root, $js_lib, $Validate, $Editors, $Ajax;
 
-  	if (!$is_index && function_exists('hyperlink_back'))
+  	if (!$is_index && !$hide_back_link && function_exists('hyperlink_back'))
 		hyperlink_back();
 	include_once($path_to_root."/themes/".user_theme()."/renderer.php");
 	$rend = new renderer();
