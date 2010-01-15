@@ -200,7 +200,8 @@ if (get_post('item_code') == '') {
 	start_table($table_style2);
 	text_row(_("Alias/kit code:"), 'kit_code', null, 20, 21);
 } else
-{ // Kit selected so display bom or edit component
+{
+	 // Kit selected so display bom or edit component
 	$_POST['description'] = $props['description'];
 	$_POST['category'] = $props['category_id'];
 	start_table($table_style2);
@@ -226,8 +227,10 @@ if (get_post('item_code') == '') {
 //	if (get_post('description') == '')
 //		$_POST['description'] = get_kit_name($_POST['component']);
 	if (get_post('item_code') == '') { // new kit/alias
-		$_POST['description'] = $props['description'];
-		$_POST['category'] = $props['category_id'];
+		if ($Mode!='ADD_ITEM' && $Mode!='UPDATE_ITEM') {
+			$_POST['description'] = $props['description'];
+			$_POST['category'] = $props['category_id'];
+		}
 		text_row(_("Description:"), 'description', null, 50, 200);
 		stock_categories_list_row(_("Category:"), 'category', null);
 	}
