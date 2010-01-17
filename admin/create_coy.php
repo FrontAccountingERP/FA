@@ -83,7 +83,7 @@ function handle_submit()
 	    $comp_path, $comp_subdirs;
 
 	$new = false;
-
+	$error = false;
 	if (!check_data())
 		return false;
 
@@ -115,25 +115,30 @@ function handle_submit()
 		if (($db = db_create_db($conn)) == 0)
 		{
 			display_error(_("Error creating Database: ") . $conn['dbname'] . _(", Please create it manually"));
-			remove_connection($id);
-			set_global_connection();
-			return false;
-		}
+			$error = true;
+		} else {
 
-		$filename = $_FILES['uploadfile']['tmp_name'];
-		if (is_uploaded_file ($filename))
-		{
-			db_import($filename, $conn, $id);
-			if (isset($_POST['admpassword']) && $_POST['admpassword'] != "")
-				db_query("UPDATE ".$conn['tbpref']."users set password = '".md5($_POST['admpassword']). "' WHERE user_id = 'admin'");
-		}
-		else
-		{
-			display_error(_("Error uploading Database Script, please upload it manually"));
-			set_global_connection();
-			return false;
+			$filename = $_FILES['uploadfile']['tmp_name'];
+			if (is_uploaded_file ($filename))
+			{
+				if (!db_import($filename, $conn, $id)) {
+					display_error(_('Cannot create new company due to bugs in sql file.'));
+					$error = true;
+				} else
+				if (isset($_POST['admpassword']) && $_POST['admpassword'] != "")
+					db_query("UPDATE ".$conn['tbpref']."users set password = '".md5($_POST['admpassword']). "' WHERE user_id = 'admin'");
+			}
+			else
+			{
+				display_error(_("Error uploading Database Script, please upload it manually"));
+				$error = true;
+			}
 		}
 		set_global_connection();
+		if ($error) {
+			remove_connection($id);
+			return false;
+		}
 	}
 	$error = write_config_db($new);
 	if ($error == -1)
@@ -153,6 +158,7 @@ function handle_submit()
 	}
 	$exts = get_company_extensions();
 	write_extensions($exts, $id);
+	display_notification($new ? _('New company has been created.') : _('Company has been updated.'));
 	return true;
 }
 
@@ -218,8 +224,7 @@ function handle_delete()
 		display_error(_("Cannot remove temporary renamed company data directory ") . $tmpname);
 		return;
 	}
-
-	meta_forward($_SERVER['PHP_SELF']);
+	display_notification(_("Selected company as been deleted"));
 }
 
 //---------------------------------------------------------------------------------------------
@@ -359,19 +364,14 @@ function display_company_edit($selected_id)
 
 //---------------------------------------------------------------------------------------------
 
-if (isset($_GET['c']) && $_GET['c'] == 'df')
-{
-
+if (isset($_GET['c']) && $_GET['c'] == 'df') {
 	handle_delete();
+	$selected_id = -1;
 }
 
 if (isset($_GET['c']) && $_GET['c'] == 'u')
-{
 	if (handle_submit())
-	{
-		meta_forward($_SERVER['PHP_SELF']);
-	}
-}
+		$selected_id = -1;
 
 
 //---------------------------------------------------------------------------------------------
