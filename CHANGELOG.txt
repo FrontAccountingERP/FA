@@ -24,6 +24,10 @@ $ -> Affected files
 $ /admin/create_coy.php
 # Fixed default value for stock_category.dflt_tax_type
 $ /sql/en_US-new.sql
+# Fixed errors display in ajax mode.
+$ /includes/errors.inc
+# Fixed checks for deleting POS
+$ /sales/manage/sales_points.php
 
 15-Jan-2010 Janusz Dobrowolski
 ! Changed so GL Account Types id allows up to 10 digits.
