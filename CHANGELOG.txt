@@ -19,6 +19,12 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+17-Jan-2010 Janusz Dobrowolski
+! Improved error checking.in company update/creation.
+$ /admin/create_coy.php
+# Fixed default value for stock_category.dflt_tax_type
+$ /sql/en_US-new.sql
+
 15-Jan-2010 Janusz Dobrowolski
 ! Changed so GL Account Types id allows up to 10 digits.
 $ /gl/manage/gl_account_types.php
