@@ -19,6 +19,12 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+------------------------------- Release 2.2.4 ----------------------------------
+17-Jan-2010 Joe Hunt
+! Release 2.2.4
+$ $config.default.php
+  update.html
+
 17-Jan-2010 Janusz Dobrowolski
 ! Improved error checking.in company update/creation.
 $ /admin/create_coy.php
