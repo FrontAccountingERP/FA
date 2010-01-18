@@ -19,6 +19,9 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+# A back link was still in Bank Transfer.
+$ /gl/bank_transfer.php
+
 ------------------------------- Release 2.2.4 ----------------------------------
 17-Jan-2010 Joe Hunt
 ! Release 2.2.4

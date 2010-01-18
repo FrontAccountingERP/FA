@@ -42,7 +42,7 @@ if (isset($_GET['AddedID']))
 
    	hyperlink_no_params($_SERVER['PHP_SELF'], _("Enter &Another Transfer"));
 
-	safeExit();
+	display_footer_exit();
 }
 
 if (isset($_POST['_DatePaid_changed'])) {
@@ -166,15 +166,6 @@ function handle_add_deposit()
 		$_POST['DatePaid'], input_num('amount'), $_POST['ref'], $_POST['memo_'], input_num('charge'));
 
 	meta_forward($_SERVER['PHP_SELF'], "AddedID=$trans_no");
-}
-
-//----------------------------------------------------------------------------------------
-
-function safeExit()
-{
-	echo "<br><br>";
-	end_page();
-	exit;
 }
 
 //----------------------------------------------------------------------------------------
