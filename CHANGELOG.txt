@@ -19,6 +19,9 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+18-Jan-2010 Joe Hunt
+# Demand was calculated double from Sales Quotation. Should be 0.
+$ /includes/db/manufacturing_db.inc
 # A back link was still in Bank Transfer.
 $ /gl/bank_transfer.php
 
