@@ -175,7 +175,6 @@ if (isset($_POST['AddPayment']))
 	if (check_valid_entries() == true) 
 	{
 		handle_add_deposit();
-		safeExit();
 	}
 }
 
