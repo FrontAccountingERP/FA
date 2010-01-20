@@ -75,7 +75,7 @@ function simple_page_mode($numeric_id = true)
 //
 //	Read numeric value from user formatted input
 //
-function input_num($postname=null, $dflt=null)
+function input_num($postname=null, $dflt=0)
 {
 	if (!isset($_POST[$postname]) || $_POST[$postname] == "")
 	  	return $dflt;

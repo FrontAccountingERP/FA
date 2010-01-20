@@ -94,7 +94,12 @@ function error_box() {
 	Helper to avoid sparse log notices.
 */
 function end_flush () {
-		if (ob_get_level()) ob_end_flush();
+	global $Ajax;
+
+	if (isset($Ajax))
+		$Ajax->run();
+
+	if (ob_get_level()) ob_end_flush();
 }
 
 function display_db_error($msg, $sql_statement=null, $exit=true)

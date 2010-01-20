@@ -470,11 +470,12 @@ function check_int($postname, $min=null, $max=null) {
 //
 //	Numeric input check.
 //	Return 1 if number has proper form and is within <min, max> range
+//	Empty/not defined fields are defaulted to $dflt value.
 //
-function check_num($postname, $min=null, $max=null) {
+function check_num($postname, $min=null, $max=null, $dflt=0) {
 	if(!isset($_POST[$postname]))
 	  return 0;
-    $num = input_num($postname);
+    $num = input_num($postname, $dflt);
     if ($num === false || $num === null) 
 	  return 0;
     if (isset($min) && ($num<$min)) 

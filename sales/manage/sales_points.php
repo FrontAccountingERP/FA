@@ -64,7 +64,7 @@ if ($Mode=='UPDATE_ITEM' && can_process())
 
 if ($Mode == 'Delete')
 {
-	if (key_in_foreign_table($selected_id, 'users', 'print_profile'))
+	if (key_in_foreign_table($selected_id, 'users', 'pos'))
 	{
 		display_error(_("Cannot delete this POS because it is used in users setup."));
 	} else {
@@ -140,7 +140,6 @@ if($cash) {
 	cash_accounts_list_row(_("Default cash account").':', 'account');
 } else {
 	hidden('credit', 1);
-	hidden('cash', 0);
 	hidden('account', 0);
 }
 

@@ -81,7 +81,7 @@ function display_adjustment_items($title, &$order)
 			label_cell($stock_item->item_description);
     		qty_cell($stock_item->quantity, false, get_qty_dec($stock_item->stock_id));
 			label_cell($stock_item->units);
-			amount_cell($stock_item->standard_cost);
+			amount_decimal_cell($stock_item->standard_cost);
 			amount_cell($stock_item->standard_cost * $stock_item->quantity);
 
 			edit_button_cell("Edit$line_no", _("Edit"),
@@ -112,13 +112,15 @@ function adjustment_edit_item_controls(&$order, $line_no=-1)
 	global $Ajax;
 	start_row();
 
+	$dec2 = 0;
 	$id = find_submit('Edit');
 	if ($line_no != -1 && $line_no == $id)
 	{
 		$_POST['stock_id'] = $order->line_items[$id]->stock_id;
 		$_POST['qty'] = qty_format($order->line_items[$id]->quantity, 
 			$order->line_items[$id]->stock_id, $dec);
-		$_POST['std_cost'] = price_format($order->line_items[$id]->standard_cost);
+		//$_POST['std_cost'] = price_format($order->line_items[$id]->standard_cost);
+		$_POST['std_cost'] = price_decimal_format($order->line_items[$id]->standard_cost, $dec2);
 		$_POST['units'] = $order->line_items[$id]->units;
 
 		hidden('stock_id', $_POST['stock_id']);
@@ -138,14 +140,16 @@ function adjustment_edit_item_controls(&$order, $line_no=-1)
     	$item_info = get_item_edit_info($_POST['stock_id']);
 		$dec = $item_info['decimals'];
    		$_POST['qty'] = number_format2(0, $dec);
-		$_POST['std_cost'] = price_format($item_info["standard_cost"]);
+		//$_POST['std_cost'] = price_format($item_info["standard_cost"]);
+		$_POST['std_cost'] = price_decimal_format($item_info["standard_cost"], $dec2);
 		$_POST['units'] = $item_info["units"];
 	}
 
 	qty_cells(null, 'qty', $_POST['qty'], null, null, $dec);
 	label_cell($_POST['units'], '', 'units');
 
-	amount_cells(null, 'std_cost', $_POST['std_cost']);
+	//amount_cells(null, 'std_cost', $_POST['std_cost']);
+	amount_cells(null, 'std_cost', null, null, null, $dec2);
 	label_cell("&nbsp;");
 
 	if ($id != -1)

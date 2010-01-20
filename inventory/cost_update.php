@@ -103,20 +103,16 @@ hidden("OldLabourCost", $myrow["labour_cost"]);
 hidden("OldOverheadCost", $myrow["overhead_cost"]);
 
 start_table($table_style2);
+$dec1 = $dec2 = $dec3 = 0;
+$_POST['material_cost'] = price_decimal_format($myrow["material_cost"], $dec1);
+$_POST['labour_cost'] = price_decimal_format($myrow["labour_cost"], $dec2);
+$_POST['overhead_cost'] = price_decimal_format($myrow["overhead_cost"], $dec3);
 
-$_POST['material_cost'] = price_format($myrow["material_cost"]);
-$_POST['labour_cost'] = price_format($myrow["labour_cost"]);
-$_POST['overhead_cost'] = price_format($myrow["overhead_cost"]);
-
-amount_row(_("Standard Material Cost Per Unit"), "material_cost",
-	null, "class='tableheader2'");
-
+amount_row(_("Standard Material Cost Per Unit"), "material_cost", null, "class='tableheader2'", null, $dec1);
 if ($myrow["mb_flag"]=='M')
 {
-	amount_row(_("Standard Labour Cost Per Unit"), "labour_cost",
-		null, "class='tableheader2'");
-	amount_row(_("Standard Overhead Cost Per Unit"), "overhead_cost",
-		null, "class='tableheader2'");
+	amount_row(_("Standard Labour Cost Per Unit"), "labour_cost", null, "class='tableheader2'", null, $dec2);
+	amount_row(_("Standard Overhead Cost Per Unit"), "overhead_cost", null, "class='tableheader2'", null, $dec3);
 }
 else
 {
