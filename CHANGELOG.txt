@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+20-Jan-2010 Joe Hunt
+! Put a heavy warning on marking the checkbox 'Allow Negative Inventory'.
+$ /admin/gl_setup.php
+
 18-Jan-2010 Joe Hunt
 # Demand was calculated double from Sales Quotation. Should be 0.
 $ /includes/db/manufacturing_db.inc
