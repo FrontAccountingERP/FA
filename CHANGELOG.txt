@@ -19,6 +19,13 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+22-Jan-2010 Tom Hallman/Joe Hunt
+! Small adjustments to Bank Statements and GL Transactions Reports
+$ /reporting/rep601.php
+  /reporting/rep704.php
+! Layout fix for Report Selectors in when running in Windows OS.
+$ /reporting/includes/reports_classes.inc
+
 20-Jan-2010 Joe Hunt
 ! Put a heavy warning on marking the checkbox 'Allow Negative Inventory'.
 $ /admin/gl_setup.php

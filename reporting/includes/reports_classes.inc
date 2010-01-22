@@ -64,10 +64,9 @@ class BoxReports
 	
 					$st_params = "<table border=0><tr><td>\n"
 						. "<form method='POST' action='$action' target='_blank'>\n";
-					$st_params .= hidden('REP_ID', $report->id, false);
 					$st_params .= submit('Rep'.$report->id,  
 						_("Display: ") . access_string($report->name, true),
-						false, '', $pdf_debug ? false : 'default') . '<br><br>';
+						false, '', $pdf_debug ? false : 'default') . hidden('REP_ID', $report->id, false).'<br><br>';
 					$st_params .= $this->getOptions($report->get_controls());
 					$st_params .= "\n</form></td></tr></table>\n";
 					set_focus('Rep'.$report->id);
