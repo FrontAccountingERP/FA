@@ -20,7 +20,9 @@ Legend:
 $ -> Affected files
 
 22-Jan-2010 Tom Hallman/Joe Hunt
-! Small adjustments to Bank Statements and GL Transactions Reports
+# Exchange rate doesn't update table when adding new or deleting rate
+$ /gl/manage/exchange_rates.php
+! Small adjustments to Bank Statement and GL Transactions Reports
 $ /reporting/rep601.php
   /reporting/rep704.php
 ! Layout fix for Report Selectors in when running in Windows OS.

@@ -67,6 +67,7 @@ function handle_submit()
 	}
 
 	$selected_id = '';
+	clear_data();
 }
 
 //---------------------------------------------------------------------------------------------
@@ -79,6 +80,7 @@ function handle_delete()
 		return;
 	delete_exchange_rate($selected_id);
 	$selected_id = '';
+	clear_data();
 }
 
 //---------------------------------------------------------------------------------------------
