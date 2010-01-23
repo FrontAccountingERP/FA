@@ -368,7 +368,7 @@ if (!$db)
 	if ($result) {
 		$sql = "UPDATE ".$table_prefix."users SET password = '" . md5($admin_password) . "', email = ".db_escape($admin_email)." WHERE user_id = 'admin'";
 		db_query($sql, "could not update admin account");
-		$sql = "UPDATE ".$table_prefix."company SET coy_name = ".db_escape($company_name)." WHERE coy_code = 1";
+		$sql = "UPDATE ".$table_prefix."sys_prefs SET value = ".db_escape($company_name)." WHERE name='coy_name'";
 		db_query($sql, "could not update company name. Do it manually later in Setup");
 	
 		$err = write_config_db($table_prefix != "");
