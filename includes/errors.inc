@@ -17,7 +17,7 @@ $before_box = ''; // temporary container for output html data before error box
 //    display in message box.
 
 function error_handler($errno, $errstr, $file, $line) {
-    global $messages, $go_debug;
+    global $messages, $go_debug, $SysPrefs;
 
 	// skip well known warnings we don't care about.
 	// Please use restrainedly to not risk loss of important messages
@@ -33,7 +33,8 @@ function error_handler($errno, $errstr, $file, $line) {
 			$messages[] = array($errno, $errstr, $file, $line);
 	else if($errno&~E_NOTICE)// log all not displayed messages 
 		error_log(user_company() . ':' . $_SESSION["wa_current_user"]->loginname.':'
-			 . basename($file) .":$line: $errstr");
+			 . basename($file) .":$line:" . ( $SysPrefs->db_ok ? '':'[before upgrade]')
+			 . " $errstr");
 	
     return true;
 }
