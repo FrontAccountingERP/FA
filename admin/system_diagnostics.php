@@ -146,12 +146,13 @@ function tst_logging()
 //
 function tst_dbversion()
 {
+	global $core_version;
 	$test['descr'] = _('Current database version');
 	$test['type'] = 3;
 	$test['test'] = get_company_pref('version_id');
-	$test['result'] = $test['test'] == '2.2';
+	$test['result'] = $test['test'] == $core_version;
 	$test['comments'] = _('Database structure seems to be not upgraded to current version')
-		.' (2.2)';
+		." ($core_version)";
 
 	return $test;
 }
@@ -230,7 +231,7 @@ function tst_langs()
 			$test['result'] = false;
 			$test['comments'][] = sprintf( _('Missing %s translation file.'), $file);
 		}
-        if (!setlocale(LC_MESSAGES, $lang['code'].".".$lang['encoding'])) 
+		if (!$_SESSION['get_text']->check_support($lang['code'], $lang['encoding']))
         {
 			$test['result'] = false;
 			$test['comments'][] = sprintf(_('Missing system locale: %s'), $lang['code'].".".$lang['encoding']);
