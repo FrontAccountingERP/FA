@@ -43,6 +43,7 @@ $ /admin/company_preferences.php
   /sql/alter2.3.sql
   /sql/en_US-demo.sql
   /sql/en_US-new.sql
+  /install/save.php
 ! Updated locales and database/src compatibility checks
 $ /admin/system_diagnostics.php
 ! Added core version for checks against database version_id
