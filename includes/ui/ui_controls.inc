@@ -9,9 +9,27 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
+/*
+	Retrieve value of POST variable(s).
+	For $name passed as array $dflt is not used, 
+	default values can be passed as values with non-numeric keys instead.
+	If some field have user formatted numeric value, pass float default value to
+	convert automatically to POSIX.
+*/
 function get_post($name, $dflt='')
 {
-	return ((!isset($_POST[$name]) || $_POST[$name] === '') ? $dflt : $_POST[$name]);
+	if (is_array($name)) {
+		$ret = array();
+		foreach($name as $key => $dflt)
+			if (!is_numeric($key)) {
+				$ret[$key] = is_float($dflt) ? input_num($key, $dflt) : get_post($key, $dflt);
+			} else {
+				$ret[$dflt] = get_post($dflt, null);
+			}
+		return $ret;
+	} else
+		return is_float($dflt) ? input_num($name, $dflt) : 
+				((!isset($_POST[$name]) || $_POST[$name] === '') ? $dflt : $_POST[$name]);
 }
 //---------------------------------------------------------------------------------
 
@@ -459,5 +477,16 @@ function editor_return($vars, $restore_fun='') {
 			}
 	}
 }
+
+function confirm_dialog($submit, $msg) {
+	if (find_post($submit)) {
+		display_warning($msg);
+		br();
+		submit_center_first('DialogConfirm', _("Proceed"), '', true);
+		submit_center_last('DialogCancel', _("Cancel"), '', 'cancel');
+		return 0;
+	} else
+		return get_post('DialogConfirm', 0);
+}	
 
 ?>
