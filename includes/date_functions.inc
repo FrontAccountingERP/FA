@@ -365,8 +365,9 @@ function date1_greater_date2 ($date1, $date2)
 
 	$date1 = date2sql($date1);
 	$date2 = date2sql($date2);
-	list($year1, $month1, $day1) = explode("-", $date1);
-	list($year2, $month2, $day2) = explode("-", $date2);
+
+	@list($year1, $month1, $day1) = explode("-", $date1);
+	@list($year2, $month2, $day2) = explode("-", $date2);
 
 	if ($year1 > $year2)
 	{
@@ -430,9 +431,7 @@ function explode_date_to_dmy($date_)
 	$date = date2sql($date_);
 	if ($date == "") 
 	{
-		$disp = user_date_display();
-		echo "<br>Dates must be entered in the format $disp. Sent was $date_<br>";
-		exit;
+		return array(0,0,0);
 	}
 	list($year, $month, $day) = explode("-", $date);
 	return array($day, $month, $year);
