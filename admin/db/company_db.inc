@@ -9,109 +9,66 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-
-function update_company_gl_setup($retained_act, $profit_loss_act, $debtors_act, $pyt_discount_act, $creditors_act,
-		$freight_act,
-		$exchange_diff_act,
-		$bank_charge_act,
-		$default_sales_act,
-		$default_sales_discount_act,
-		$default_prompt_payment_act,
-		$default_inventory_act,
-		$default_cogs_act,
-		$default_adj_act,
-		$default_inv_sales_act,
-		$default_assembly_act,
-		$allow_negative_stock,
-		$po_over_receive,
-		$po_over_charge,
-		$accumulate_shipping,
-		$legal_text,
-		$past_due_days,
-		$default_credit_limit,
-		$default_workorder_required,
-		$default_dim_required,
-		$default_delivery_required)
+/*
+	Update main or gl company setup.
+*/
+function update_company_prefs( $params )
 {
-	$sql = "UPDATE ".TB_PREF."company SET
-		retained_earnings_act=".db_escape($retained_act).", profit_loss_year_act=".db_escape($profit_loss_act).",
-		debtors_act=".db_escape($debtors_act).", pyt_discount_act=".db_escape($pyt_discount_act).",
-		creditors_act=".db_escape($creditors_act).",
-		freight_act=".db_escape($freight_act).",
-		exchange_diff_act=".db_escape($exchange_diff_act).",
-		bank_charge_act=".db_escape($bank_charge_act).",
-		default_sales_act=".db_escape($default_sales_act).",
-		default_sales_discount_act=".db_escape($default_sales_discount_act).",
-		default_prompt_payment_act=".db_escape($default_prompt_payment_act).",
-		default_inventory_act=".db_escape($default_inventory_act).",
-		default_cogs_act=".db_escape($default_cogs_act).",
-		default_adj_act=".db_escape($default_adj_act).",
-		default_inv_sales_act=".db_escape($default_inv_sales_act).",
-		default_assembly_act=".db_escape($default_assembly_act).",
-		allow_negative_stock=$allow_negative_stock,
-		po_over_receive=$po_over_receive,
-		po_over_charge=$po_over_charge,
-		accumulate_shipping=$accumulate_shipping,
-		legal_text=".db_escape($legal_text).",
-		past_due_days=$past_due_days,
-		default_credit_limit=$default_credit_limit,
-		default_workorder_required=$default_workorder_required,
-		default_dim_required=$default_dim_required,
-		default_delivery_required=$default_delivery_required
-		WHERE coy_code=1";
-
-	db_query($sql, "The company gl setup could not be updated ");
+	$sql = "UPDATE ".TB_PREF."sys_prefs SET value = ";
+	foreach($params as $name => $value) {
+		if (!db_query($sql. db_escape($value). " WHERE name=".db_escape($name),
+			 "The company prefferences could not be updated "))
+			return false;
+	}
+	return true;
 }
-
-function update_company_setup($coy_name, $coy_no, $gst_no, $tax_prd, $tax_last, 
-	$postal_address, $phone, $fax, $email, $coy_logo, $domicile, $Dimension, 
-	$curr_default, $f_year, $no_item_list, $no_customer_list, $no_supplier_list, 
-	$base_sales, $time_zone, $add_pct, $round_to, $login_tout)
+/*
+	Get company preferences. Returns cached values from global variable SysPrefs
+	or retrieved from database if SysPrefs values are not set.
+	$prefs can be preference name, array of names, or null for all preferences.
+	
+*/
+function get_company_pref($prefs = null, $tbpref = TB_PREF)
 {
-	if ($f_year == null)
-		$f_year = 0;
-	$sql = "UPDATE ".TB_PREF."company SET coy_name=".db_escape($coy_name).",
-		coy_no = ".db_escape($coy_no).",
-		gst_no=".db_escape($gst_no).",
-		tax_prd=$tax_prd,
-		tax_last=$tax_last,
-		postal_address =".db_escape($postal_address).",
-		phone=".db_escape($phone).", fax=".db_escape($fax).",
-		email=".db_escape($email).",
-		coy_logo=".db_escape($coy_logo).",
-		domicile=".db_escape($domicile).",
-		use_dimension=$Dimension,
-		no_item_list=$no_item_list,
-		no_customer_list=$no_customer_list,
-		no_supplier_list=$no_supplier_list,
-		curr_default=".db_escape($curr_default).",
-		f_year=$f_year,
-		base_sales=$base_sales,
-		time_zone=$time_zone,
-		add_pct=$add_pct,
-		round_to=$round_to,
-		login_tout = ".db_escape($login_tout)."
-		WHERE coy_code=1";
+	global $SysPrefs, $core_version;
+	
+	if (!isset($_SESSION['SysPrefs']->prefs)) { // cached preferences
 
-	db_query($sql, "The company setup could not be updated ");
+		$_SESSION['SysPrefs'] = new sys_prefs();
+
+		$sql = "SELECT name, value FROM ".$tbpref."sys_prefs";
+		$result = @db_query($sql); // supress errors before 2.3 db structure upgrade
+
+		if(!$result)
+			return null;
+
+		while($pref = db_fetch_assoc($result)) {
+			$_SESSION['SysPrefs']->prefs[$pref['name']] = $pref['value'];
+		}
+
+		$SysPrefs = &$_SESSION['SysPrefs'];
+
+		// update current db status for info in log file
+		$SysPrefs->db_ok = $SysPrefs->prefs['version_id'] == $core_version;
+	}
+
+	$all = $_SESSION['SysPrefs']->prefs;
+
+	if (!$prefs)
+		return $all;
+	elseif (is_string($prefs))
+		return $all[$prefs];
+
+	$ret = array();
+	foreach($prefs as $name)
+		$ret[$name] = $all[$name];
+
+		return $ret;
 }
 
 function get_company_prefs($tbpref = TB_PREF)
 {
-	$sql = "SELECT * FROM ".$tbpref."company WHERE coy_code=1";
-	
-	$result = db_query($sql, "The company preferences could not be retrieved");
-
-	if (db_num_rows($result) == 0)
-		display_db_error("FATAL : Could not find company prefs", $sql);
-
-	return db_fetch($result);
-}
-
-function get_company_pref($pref_name, $tbpref = TB_PREF)
-{
-	$prefs = get_company_prefs($tbpref);
-	return $prefs[$pref_name];
+	return get_company_pref(null, $tbpref);
 }
 
 function get_base_sales_type()

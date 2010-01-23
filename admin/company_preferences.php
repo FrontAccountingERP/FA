@@ -106,15 +106,15 @@ if (isset($_POST['update']) && $_POST['update'] != "")
 		$_POST['round_to'] = 1;
 	if ($input_error != 1)
 	{
-		update_company_setup($_POST['coy_name'], $_POST['coy_no'], 
-			$_POST['gst_no'], $_POST['tax_prd'], $_POST['tax_last'],
-			$_POST['postal_address'], $_POST['phone'], $_POST['fax'], 
-			$_POST['email'], $_POST['coy_logo'], $_POST['domicile'],
-			$_POST['use_dimension'], $_POST['curr_default'], $_POST['f_year'], 
-			check_value('no_item_list'), check_value('no_customer_list'), 
-			check_value('no_supplier_list'), $_POST['base_sales'], 
-			check_value('time_zone'), $_POST['add_pct'], $_POST['round_to'],
-			$_POST['login_tout']);
+		update_company_prefs(
+			get_post( array('coy_name','coy_no','gst_no','tax_prd','tax_last',
+				'postal_address','phone', 'fax', 'email', 'coy_logo', 'domicile',
+				'use_dimension', 'curr_default', 'f_year', 
+				'no_item_list' => 0, 'no_customer_list' => 0, 
+				'no_supplier_list' =>0, 'base_sales', 
+				'time_zone' => 0, 'add_pct', 'round_to', 'login_tout'))
+		);
+
 		$_SESSION['wa_current_user']->timeout = $_POST['login_tout'];
 		display_notification_centered(_("Company setup has been updated."));
 	}

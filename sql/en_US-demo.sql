@@ -1762,6 +1762,74 @@ INSERT INTO `0_suppliers` VALUES ('1', 'Junk Beer ApS', 'Junk Beer', 'Mailing 1\
 INSERT INTO `0_suppliers` VALUES ('2', 'Lucky Luke Inc.', 'Lucky Luke', 'Mailing 1\r\nMailing 2\r\nMailing 3', 'Address 1\r\nAddress 2\r\nAddress 3', '(111) 222.333.444', '', '', '654321', 'Luke', '333', '', '', '', 'USD', '3', '0', '0', '1', '1', '5010', '2100', '5060', '', '0');
 INSERT INTO `0_suppliers` VALUES ('3', 'Money Makers Ltd.', 'Money Makers', 'Mailing 1\r\nMailing 2\r\nMailing 3', 'Address 1\r\nAddress 2\r\nAddress 3', '+44 444 555 666', '', '', '987654', 'Makers', '222', '', '', '', 'GBP', '3', '0', '0', '2', '1', '5010', '2100', '5060', '', '0');
 
+### Structure of table `0_sys_prefs` ###
+
+DROP TABLE IF EXISTS `0_sys_prefs`;
+
+CREATE TABLE `0_sys_prefs` (
+  `name` varchar(35) NOT NULL default '',
+  `category` varchar(30) default NULL,
+  `type` varchar(20) NOT NULL default 'varchar',
+  `length` smallint(6) default NULL,
+  `value` tinytext,
+  PRIMARY KEY  (`name`),
+  KEY `category` (`category`)
+) TYPE=MyISAM;
+
+
+### Data of table `0_sys_prefs` ###
+
+INSERT INTO `0_sys_prefs` VALUES ('coy_name', 'setup.company', 'varchar', '60', 'Training Co.');
+INSERT INTO `0_sys_prefs` VALUES ('gst_no', 'setup.company', 'varchar', '25', '9876543');
+INSERT INTO `0_sys_prefs` VALUES ('coy_no', 'setup.company', 'varchar', '25', '123456789');
+INSERT INTO `0_sys_prefs` VALUES ('tax_prd', 'setup.company', 'int', '11', '1');
+INSERT INTO `0_sys_prefs` VALUES ('tax_last', 'setup.company', 'int', '11', '1');
+INSERT INTO `0_sys_prefs` VALUES ('postal_address', 'setup.company', 'tinytext', '0', 'Address 1\r\nAddress 2\r\nAddress 3');
+INSERT INTO `0_sys_prefs` VALUES ('phone', 'setup.company', 'varchar', '30', '(222) 111.222.333');
+INSERT INTO `0_sys_prefs` VALUES ('fax', 'setup.company', 'varchar', '30', NULL);
+INSERT INTO `0_sys_prefs` VALUES ('email', 'setup.company', 'varchar', '100', 'delta@delta.com');
+INSERT INTO `0_sys_prefs` VALUES ('coy_logo', 'setup.company', 'varchar', '100', 'logo_frontaccounting.jpg');
+INSERT INTO `0_sys_prefs` VALUES ('domicile', 'setup.company', 'varchar', '55', NULL);
+INSERT INTO `0_sys_prefs` VALUES ('curr_default', 'setup.company', 'char', '3', 'USD');
+INSERT INTO `0_sys_prefs` VALUES ('use_dimension', 'setup.company', 'tinyint', '1', '1');
+INSERT INTO `0_sys_prefs` VALUES ('f_year', 'setup.company', 'int', '11', '2');
+INSERT INTO `0_sys_prefs` VALUES ('no_item_list', 'setup.company', 'tinyint', '1', '0');
+INSERT INTO `0_sys_prefs` VALUES ('no_customer_list', 'setup.company', 'tinyint', '1', '0');
+INSERT INTO `0_sys_prefs` VALUES ('no_supplier_list', 'setup.company', 'tinyint', '1', '0');
+INSERT INTO `0_sys_prefs` VALUES ('base_sales', 'setup.company', 'int', '11', '1');
+INSERT INTO `0_sys_prefs` VALUES ('time_zone', 'setup.company', 'tinyint', '1', '0');
+INSERT INTO `0_sys_prefs` VALUES ('add_pct', 'setup.company', 'int', '5', '-1');
+INSERT INTO `0_sys_prefs` VALUES ('round_to', 'setup.company', 'int', '5', '1');
+INSERT INTO `0_sys_prefs` VALUES ('login_tout', 'setup.company', 'smallint', '6', '600');
+INSERT INTO `0_sys_prefs` VALUES ('past_due_days', 'glsetup.general', 'int', '11', '30');
+INSERT INTO `0_sys_prefs` VALUES ('profit_loss_year_act', 'glsetup.general', 'varchar', '11', '9990');
+INSERT INTO `0_sys_prefs` VALUES ('retained_earnings_act', 'glsetup.general', 'varchar', '11', '3590');
+INSERT INTO `0_sys_prefs` VALUES ('bank_charge_act', 'glsetup.general', 'varchar', '11', '5690');
+INSERT INTO `0_sys_prefs` VALUES ('exchange_diff_act', 'glsetup.general', 'varchar', '11', '4450');
+INSERT INTO `0_sys_prefs` VALUES ('default_credit_limit', 'glsetup.customer', 'int', '11', '1000');
+INSERT INTO `0_sys_prefs` VALUES ('accumulate_shipping', 'glsetup.customer', 'tinyint', '1', '0');
+INSERT INTO `0_sys_prefs` VALUES ('legal_text', 'glsetup.customer', 'tinytext', '0', NULL);
+INSERT INTO `0_sys_prefs` VALUES ('freight_act', 'glsetup.customer', 'varchar', '11', '4430');
+INSERT INTO `0_sys_prefs` VALUES ('debtors_act', 'glsetup.sales', 'varchar', '11', '1200');
+INSERT INTO `0_sys_prefs` VALUES ('default_sales_act', 'glsetup.sales', 'varchar', '11', '4010');
+INSERT INTO `0_sys_prefs` VALUES ('default_sales_discount_act', 'glsetup.sales', 'varchar', '11', '4510');
+INSERT INTO `0_sys_prefs` VALUES ('default_prompt_payment_act', 'glsetup.sales', 'varchar', '11', '4500');
+INSERT INTO `0_sys_prefs` VALUES ('default_delivery_required', 'glsetup.sales', 'smallint', '6', '1');
+INSERT INTO `0_sys_prefs` VALUES ('default_dim_required', 'glsetup.dims', 'int', '11', '20');
+INSERT INTO `0_sys_prefs` VALUES ('pyt_discount_act', 'glsetup.purchase', 'varchar', '11', '5060');
+INSERT INTO `0_sys_prefs` VALUES ('creditors_act', 'glsetup.purchase', 'varchar', '11', '2100');
+INSERT INTO `0_sys_prefs` VALUES ('po_over_receive', 'glsetup.purchase', 'int', '11', '10');
+INSERT INTO `0_sys_prefs` VALUES ('po_over_charge', 'glsetup.purchase', 'int', '11', '10');
+INSERT INTO `0_sys_prefs` VALUES ('allow_negative_stock', 'glsetup.inventory', 'tinyint', '1', '0');
+INSERT INTO `0_sys_prefs` VALUES ('default_inventory_act', 'glsetup.items', 'varchar', '11', '1510');
+INSERT INTO `0_sys_prefs` VALUES ('default_cogs_act', 'glsetup.items', 'varchar', '11', '5010');
+INSERT INTO `0_sys_prefs` VALUES ('default_adj_act', 'glsetup.items', 'varchar', '11', '5040');
+INSERT INTO `0_sys_prefs` VALUES ('default_inv_sales_act', 'glsetup.items', 'varchar', '11', '4010');
+INSERT INTO `0_sys_prefs` VALUES ('default_assembly_act', 'glsetup.items', 'varchar', '11', '1530');
+INSERT INTO `0_sys_prefs` VALUES ('default_workorder_required', 'glsetup.manuf', 'int', '11', '20');
+INSERT INTO `0_sys_prefs` VALUES ('version_id', 'system', 'varchar', '11', '2.3');
+
+
 
 ### Structure of table `0_sys_types` ###
 

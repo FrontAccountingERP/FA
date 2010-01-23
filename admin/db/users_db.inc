@@ -54,35 +54,15 @@ function update_user($id, $user_id, $real_name, $phone, $email, $role_id,
 
 //-----------------------------------------------------------------------------------------------
 
-function update_user_display_prefs($id, $price_dec, $qty_dec, $exrate_dec, 
-	$percent_dec, $showgl, $showcodes, $date_format, $date_sep, $tho_sep, 
-	$dec_sep, $theme, $pagesize, $show_hints, $profile, $rep_popup, $query_size, 
-	$graphic_links,	$lang, $stickydate, $startup_tab)
+function update_user_prefs($id, $prefs)
 {
-	$sql = "UPDATE ".TB_PREF."users SET
-		prices_dec=".db_escape($price_dec).",
-		qty_dec=".db_escape($qty_dec).",
-		rates_dec=".db_escape($exrate_dec).",
-		percent_dec=".db_escape($percent_dec).",
-		show_gl=".db_escape($showgl).",
-		show_codes=".db_escape($showcodes).",
-		date_format=".db_escape($date_format).",
-		date_sep=".db_escape($date_sep).",
-		tho_sep=".db_escape($tho_sep).",
-		dec_sep=".db_escape($dec_sep).",
-		theme=".db_escape($theme).",
-		page_size=".db_escape($pagesize).",
-		show_hints=".db_escape($show_hints).",
-		print_profile=".db_escape($profile).",
-		rep_popup=".db_escape($rep_popup).",
-		query_size=".db_escape($query_size).",
-		graphic_links=".db_escape($graphic_links).",
-		language=".db_escape($lang).",
-		sticky_doc_date=".db_escape($stickydate).",
-		startup_tab=".db_escape($startup_tab)."
-		WHERE id = ".db_escape($id);
+	$sql = "UPDATE ".TB_PREF."users SET ";
+	foreach($prefs as $name => $value) {
+		$prefs[$name] = $name.'='. db_escape($value);
+	}
+	$sql .= implode(',', $prefs) . " WHERE id=".db_escape($id);
 
-	db_query($sql, "could not update user display prefs for $id");
+	return db_query($sql, "could not update user display prefs for $id");
 }
 
 //-----------------------------------------------------------------------------------------------

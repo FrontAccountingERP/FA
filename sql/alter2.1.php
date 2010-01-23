@@ -150,9 +150,9 @@ class fa2_1 {
 	//	Test if patch was applied before.
 	//
 	function installed($pref) {
-		$n = 5; // number of features to be installed
+		$n = 4; // number of features to be installed
 		if (!check_table($pref, 'item_codes')) $n--;
-		if (!check_table($pref, 'company', 'foreign_codes')) $n--;
+//		if (!check_table($pref, 'company', 'foreign_codes')) $n--;
 		if (!check_table($pref, 'suppliers', 'credit_limit')) $n--;
 		if (!check_table($pref, 'bank_trans', 'reconciled', 
 			array('Type'=>'date'))) $n--;

@@ -51,6 +51,10 @@ function login_fail()
 
 function check_page_security($page_security)
 {
+	global $SysPrefs;
+	
+	$msg = '';
+	
 	if (!$_SESSION["wa_current_user"]->check_user_access())
 	{
 		// notification after upgrade from pre-2.2 version
@@ -58,7 +62,11 @@ function check_page_security($page_security)
 			 _("Security settings have not been defined for your user account.")
 				. "<br>" . _("Please contact your system administrator.")	
 			: _("Please remove \$security_groups and \$security_headings arrays from config.php file!");
-
+	} elseif (!$_SESSION['SysPrefs']->db_ok && !$_SESSION["wa_current_user"]->can_access('SA_SOFTWAREUPGRADE')) {
+		$msg = _('Access to application has been blocked until database upgrade is completed by system administrator.');
+	}
+	
+	if ($msg){
 		display_error($msg);
 		end_page();
 		kill_login();
@@ -75,6 +83,14 @@ function check_page_security($page_security)
 		end_page();
 		exit;
 	}
+	if (!$_SESSION['SysPrefs']->db_ok 
+		&& !in_array($page_security, array('SA_SOFTWAREUPGRADE', 'SA_OPEN', 'SA_BACKUP')))
+	{
+		display_error(_('System is blocked after source upgrade until database is updated on System/Software Upgrade page'));
+		end_page();
+		exit;
+	}
+
 }
 /*
 	Helper function for setting page security level depeding on 
@@ -147,6 +163,7 @@ include_once($path_to_root . "/includes/lang/language.php");
 include_once($path_to_root . "/config_db.php");
 include_once($path_to_root . "/includes/ajax.inc");
 include_once($path_to_root . "/includes/ui/ui_msgs.inc");
+include_once($path_to_root . "/includes/prefs/sysprefs.inc");
 
 /*
 	Uncomment the setting below when using FA on shared hosting
@@ -195,8 +212,6 @@ $Validate = array();
 $Editors = array();
 // page help. Currently help for function keys.
 $Pagehelp = array();
-
-$SysPrefs = new sys_prefs();
 
 $Refs = new references();
 
@@ -257,6 +272,7 @@ if (strstr($_SERVER['PHP_SELF'], 'logout.php') == false){
 	}
 }
 
+$SysPrefs = &$_SESSION['SysPrefs'];
 
 // POST vars cleanup needed for direct reuse.
 // We quote all values later with db_escape() before db update.

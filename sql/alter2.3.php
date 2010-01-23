@@ -26,7 +26,10 @@ class fa2_3 {
 	//
 	function install($pref, $force) 
 	{
-		return true;
+		// remove old prefereces table after upgrade script has been executed
+		$sql = "DROP TABLE IF EXISTS `".$pref."company`";
+
+		return db_query($sql) && update_company_prefs(array('version_id'=>'2.3'));
 	}
 	//
 	//	Checking before install
@@ -39,10 +42,11 @@ class fa2_3 {
 	//	Test if patch was applied before.
 	//
 	function installed($pref) {
-		$n = 1; // number of patches to be installed
+		$n = 2; // number of patches to be installed
 		$patchcnt = 0;
 
 		if (!check_table($pref, 'comments', 'type', array('Key'=>'MUL'))) $patchcnt++;
+		if (!check_table($pref, 'sys_prefs')) $patchcnt++;
 
 		$n -= $patchcnt;
 		return $n == 0 ? true : $patchcnt;
