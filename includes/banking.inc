@@ -41,14 +41,7 @@ function is_company_currency($currency)
 
 function get_company_currency()
 {
-	$sql= "SELECT curr_default FROM ".TB_PREF."company";
-	$result = db_query($sql, "retreive company currency");
-
-	if (db_num_rows($result) == 0)
-		display_db_error("Could not find the requested currency. Fatal.", $sql);
-
-	$myrow = db_fetch_row($result);
-	return $myrow[0];
+	return get_company_pref('curr_default');
 }
 
 //----------------------------------------------------------------------------------
