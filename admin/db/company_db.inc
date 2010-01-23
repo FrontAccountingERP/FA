@@ -73,11 +73,7 @@ function get_company_prefs($tbpref = TB_PREF)
 
 function get_base_sales_type()
 {
-	$sql = "SELECT base_sales FROM ".TB_PREF."company WHERE coy_code=1";
-
-	$result = db_query($sql, "could not get base sales type");
-	$myrow = db_fetch($result);
-	return $myrow[0];
+	return get_company_pref('base_sales');
 }
 
 function get_company_extensions($id = -1) {
