@@ -26,8 +26,10 @@ class language
 	
 	function language($name, $code, $encoding, $dir = 'ltr') 
 	{
+		global $dflt_lang;
+		
 		$this->name = $name;
-		$this->code = $code ? $code : 'en_GB';
+		$this->code = $code ? $code : ($dflt_lang ? $dflt_lang : 'en_GB');
 		$this->encoding = $encoding;
 		$this->dir = $dir;
 	}

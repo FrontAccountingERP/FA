@@ -43,7 +43,7 @@ function get_text_init($managerType = GETTEXT_NATIVE) {
 }
 
 function raise_error($str) {
-//	echo "$str";
+	error_log($str);
 	return 1;
 }
 
@@ -73,7 +73,17 @@ class gettext_native_support
 
         //$set = setlocale(LC_ALL, "$lang_code");
         //$set = setlocale(LC_ALL, "$encoding");
-        $set = setlocale(LC_ALL, $lang_code.".".$encoding);
+
+		// cover a couple of country/encoding variants 
+		$up = strtoupper($encoding);
+		$low = strtolower($encoding);
+		$lshort = strtr($up, '-','');
+		$ushort = strtr($low, '-','');
+
+        $set = setlocale(LC_ALL, $lang_code.".".$encoding, 
+			$lang_code.".".$up, $lang_code.".".$low,
+			$lang_code.".".$ushort,	$lang_code.".".$lshort);
+			
         setlocale(LC_NUMERIC, 'C'); // important for numeric presentation etc.
         if ($set === false) 
         {
@@ -85,7 +95,27 @@ class gettext_native_support
         }
 		//return 0;
     }
-    
+    /**
+	 *	Check system support for given language nedded for gettext.
+	 */
+	function check_support($lang_code, $encoding)
+    {
+		$old = setlocale(LC_MESSAGES, '0');
+		$up = strtoupper($encoding);
+		$low = strtolower($encoding);
+		$lshort = strtr($up, '-','');
+		$ushort = strtr($low, '-','');
+
+        $test = setlocale(LC_MESSAGES,
+			$lang_code.".".$encoding, 
+			$lang_code.".".$up,
+			$lang_code.".".$low,
+			$lang_code.".".$ushort,
+			$lang_code.".".$lshort) !== false;
+
+		setlocale(LC_MESSAGES, $old);
+		return $test;
+	}
     /**
      * Add a translation domain.
      */
@@ -102,7 +132,7 @@ class gettext_native_support
         //bind_textdomain_codeset($domain, $encoding);
         textdomain($domain);
     }
-    
+
     /**
      * Retrieve translation for specified key.
      *
@@ -242,7 +272,13 @@ class gettext_php_support extends gettext_native_support
             }            
         }
     }
-    
+    /**
+	 *	Check system support for given language (dummy).
+	 */
+	function check_support($lang_code, $encoding)
+    {
+		return true;
+    }
     /**
      * Add a translation domain.
      *
