@@ -57,6 +57,8 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 	$app_title = "FrontAccounting";
 	// application version
 	$version 		= "2.3 CVS (m4)";
+	 // src-data compatibility check. Do not change.
+	$core_version = "2.3";
 
 	// Build for development purposes
 	$build_version 	= date("d.m.Y", filemtime("$path_to_root/CHANGELOG.txt"));
