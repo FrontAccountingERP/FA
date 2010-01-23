@@ -19,6 +19,46 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+23-Jan-2010 Janusz Dobrowolski
++ Improved locales checking
+$ /includes/lang/gettext.php
+  /includes/lang/language.php
++ Defaults for get_post also for array submits, added confirm dialog helper
+$ /includes/ui/ui_controls.inc
++ Added info label in error_log for warnings during upgrade process
+$ /includes/errors.inc
+! System preferences moved from company to new sys_prefs table
+$ /admin/company_preferences.php
+  /admin/display_prefs.php
+  /admin/gl_setup.php
+  /admin/users.php
+  /admin/db/company_db.inc
+  /admin/db/users_db.inc
+  /includes/current_user.inc
+  /includes/session.inc
+  /includes/prefs/sysprefs.inc
+  /includes/prefs/userprefs.inc
+  /sql/alter2.1.php
+  /sql/alter2.3.php
+  /sql/alter2.3.sql
+  /sql/en_US-demo.sql
+  /sql/en_US-new.sql
+! Updated locales and database/src compatibility checks
+$ /admin/system_diagnostics.php
+! Added core version for checks against database version_id
+$ /config.default.php
+! System setup re-read after upgrade
+$  /admin/inst_upgrade.php
+! Cached company currency retrieval
+$ /includes/banking.inc
+! Removed sysprefs.inc include
+$ /includes/main.inc
+# Removed archaic error handling
+$ /includes/date_functions.inc
+# Missing path_to_root declaration in handle_submit().
+$ /admin/create_coy.php
+# Message box cleanup before ajax call
+$ /js/utils.js
 
 20-Jan-2010 Merged changes from main trunk 2.2.3-2.2.4 as follows
 ------------------------------- Release 2.2.4 ----------------------------------
