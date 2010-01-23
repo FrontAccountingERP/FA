@@ -164,6 +164,7 @@ if (get_post('Upgrade'))
 		$_SESSION["wa_current_user"]->prefs = new user_prefs($user);
 		display_notification(_('All companies data has been successfully updated'));
 	}	
+	unset($_SESSION['SysPrefs']); // re-read system setup
 	$Ajax->activate('_page_body');
 }
 
