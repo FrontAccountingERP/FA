@@ -495,11 +495,11 @@ function  handle_cancel_order()
 
 
 	if ($_SESSION['Items']->trans_type == ST_CUSTDELIVERY) {
-		display_note(_("Direct delivery entry has been cancelled as requested."), 1);
+		display_notification(_("Direct delivery entry has been cancelled as requested."), 1);
 		submenu_option(_("Enter a New Sales Delivery"),	"/sales/sales_order_entry.php?NewDelivery=1");
 
 	} elseif ($_SESSION['Items']->trans_type == ST_SALESINVOICE) {
-		display_note(_("Direct invoice entry has been cancelled as requested."), 1);
+		display_notification(_("Direct invoice entry has been cancelled as requested."), 1);
 		submenu_option(_("Enter a New Sales Invoice"),	"/sales/sales_order_entry.php?NewInvoice=1");
 	} else {
 		if ($_SESSION['Items']->trans_no != 0) {
@@ -510,12 +510,12 @@ function  handle_cancel_order()
 				delete_sales_order(key($_SESSION['Items']->trans_no), $_SESSION['Items']->trans_type);
 				if ($_SESSION['Items']->trans_type == ST_SALESQUOTE)
 				{
-					display_note(_("This sales quotation has been cancelled as requested."), 1);
+					display_notification(_("This sales quotation has been cancelled as requested."), 1);
 					submenu_option(_("Enter a New Sales Quotation"), "/sales/sales_order_entry.php?NewQuotation=Yes");
 				}
 				else
 				{
-					display_note(_("This sales order has been cancelled as requested."), 1);
+					display_notification(_("This sales order has been cancelled as requested."), 1);
 					submenu_option(_("Enter a New Sales Order"), "/sales/sales_order_entry.php?NewOrder=Yes");
 				}
 			}	
@@ -632,7 +632,6 @@ if ($_SESSION['Items']->trans_type == ST_SALESINVOICE) {
 start_form();
 
 hidden('cart_id');
-
 $customer_error = display_order_header($_SESSION['Items'],
 	($_SESSION['Items']->any_already_delivered() == 0), $idate);
 
