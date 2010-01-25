@@ -21,7 +21,26 @@ $ -> Affected files
 
 25-Jan-2010 Joe Hunt
 + Added document Receipt and small rearrangements and bugfixes
-$ /
+$ /includes/types.inc
+  /includes/ui/ui_view.inc
+  /reporting/rep107.php
+  /reporting/rep108.php
+  /reporting/rep109.php
+  /reporting/rep110.php
+  /reporting/rep111.php
+  /reporting/rep112.php (new document file)
+  /reporting/rep209.php
+  /reporting/rep210.php
+  /reporting/reports_main.php
+  /reporting/includes/doctext.inc
+  /reporting/includes/doctext2.inc
+  /reporting/includes/header2.inc
+  /reporting/includes/reporting.inc
+  /reporting/includes/reports_classes.inc
+  /sales/customer_payments.php
+  /sales/sales_order_entry.php
+  /sales/inquiry/customer_inquiry.php
+  
 22-Jan-2010 Tom Hallman/Joe Hunt
 # Exchange rate doesn't update table when adding new or deleting rate
 $ /gl/manage/exchange_rates.php
