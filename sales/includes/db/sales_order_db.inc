@@ -127,6 +127,8 @@ function delete_sales_order($order_no, $trans_type)
 		.db_escape($order_no) . " AND trans_type=".db_escape($trans_type);
 	db_query($sql, "order Detail Delete");
 
+	delete_reference($trans_type, $order_no);
+
 	add_audit_trail($trans_type, $order_no, Today(), _("Deleted."));
 	commit_transaction();
 }

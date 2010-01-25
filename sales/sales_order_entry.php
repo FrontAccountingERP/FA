@@ -496,26 +496,27 @@ function  handle_cancel_order()
 
 	if ($_SESSION['Items']->trans_type == ST_CUSTDELIVERY) {
 		display_note(_("Direct delivery entry has been cancelled as requested."), 1);
-		submenu_option(_("Enter a New Sales Delivery"),	$_SERVER['PHP_SELF']."?NewDelivery=0");
+		submenu_option(_("Enter a New Sales Delivery"),	"/sales/sales_order_entry.php?NewDelivery=1");
 
 	} elseif ($_SESSION['Items']->trans_type == ST_SALESINVOICE) {
 		display_note(_("Direct invoice entry has been cancelled as requested."), 1);
-		submenu_option(_("Enter a New Sales Invoice"),	$_SERVER['PHP_SELF']."?NewInvoice=0");
+		submenu_option(_("Enter a New Sales Invoice"),	"/sales/sales_order_entry.php?NewInvoice=1");
 	} else {
 		if ($_SESSION['Items']->trans_no != 0) {
-			if (sales_order_has_deliveries(key($_SESSION['Items']->trans_no)))
+			if ($_SESSION['Items']->trans_type == ST_SALESORDER && 
+				sales_order_has_deliveries(key($_SESSION['Items']->trans_no)))
 				display_error(_("This order cannot be cancelled because some of it has already been invoiced or dispatched. However, the line item quantities may be modified."));
 			else {
 				delete_sales_order(key($_SESSION['Items']->trans_no), $_SESSION['Items']->trans_type);
 				if ($_SESSION['Items']->trans_type == ST_SALESQUOTE)
 				{
 					display_note(_("This sales quotation has been cancelled as requested."), 1);
-					submenu_option(_("Enter a New Sales Quotation"), $_SERVER['PHP_SELF']."?NewQuotation=Yes");
+					submenu_option(_("Enter a New Sales Quotation"), "/sales/sales_order_entry.php?NewQuotation=Yes");
 				}
 				else
 				{
 					display_note(_("This sales order has been cancelled as requested."), 1);
-					submenu_option(_("Enter a New Sales Order"), $_SERVER['PHP_SELF']."?NewOrder=Yes");
+					submenu_option(_("Enter a New Sales Order"), "/sales/sales_order_entry.php?NewOrder=Yes");
 				}
 			}	
 		} else {
@@ -525,9 +526,7 @@ function  handle_cancel_order()
 	}
 	$Ajax->activate('_page_body');
 	processing_end();
-	br(1);
-	end_page();
-	exit;
+	display_footer_exit();
 }
 
 //--------------------------------------------------------------------------------
