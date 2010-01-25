@@ -19,6 +19,9 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+25-Jan-2010 Joe Hunt
++ Added document Receipt and small rearrangements and bugfixes
+$ /
 22-Jan-2010 Tom Hallman/Joe Hunt
 # Exchange rate doesn't update table when adding new or deleting rate
 $ /gl/manage/exchange_rates.php

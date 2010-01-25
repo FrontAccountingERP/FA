@@ -630,6 +630,86 @@ function display_quick_entries(&$cart, $id, $base, $type, $descr='')
 	return $bank_amount;
 }
 
+//--------------------------------------------------------------------------------------
+//
+//	Simple English version of number to words conversion.
+//
+function _number_to_words($number) 
+{ 
+    $Bn = floor($number / 1000000000); /* Billions (giga) */ 
+    $number -= $Bn * 1000000000; 
+    $Gn = floor($number / 1000000);  /* Millions (mega) */ 
+    $number -= $Gn * 1000000; 
+    $kn = floor($number / 1000);     /* Thousands (kilo) */ 
+    $number -= $kn * 1000; 
+    $Hn = floor($number / 100);      /* Hundreds (hecto) */ 
+    $number -= $Hn * 100; 
+    $Dn = floor($number / 10);       /* Tens (deca) */ 
+    $n = $number % 10;               /* Ones */
+
+    $res = ""; 
+
+    if ($Bn) 
+        $res .= _number_to_words($Bn) . " Billion"; 
+    if ($Gn) 
+        $res .= (empty($res) ? "" : " ") . _number_to_words($Gn) . " Million"; 
+    if ($kn) 
+        $res .= (empty($res) ? "" : " ") . _number_to_words($kn) . " Thousand"; 
+    if ($Hn) 
+        $res .= (empty($res) ? "" : " ") . _number_to_words($Hn) . " Hundred"; 
+
+    $ones = array("", "One", "Two", "Three", "Four", "Five", "Six", 
+        "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen", 
+        "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eightteen", 
+        "Nineteen"); 
+    $tens = array("", "", "Twenty", "Thirty", "Fourty", "Fifty", "Sixty", 
+        "Seventy", "Eigthy", "Ninety"); 
+
+    if ($Dn || $n) 
+    { 
+        if (!empty($res)) 
+            $res .= " and "; 
+        if ($Dn < 2) 
+            $res .= $ones[$Dn * 10 + $n]; 
+        else 
+        { 
+            $res .= $tens[$Dn]; 
+            if ($n) 
+                $res .= "-" . $ones[$n]; 
+        } 
+    } 
+
+    if (empty($res)) 
+        $res = "zero"; 
+    return $res; 
+} 
+
+function price_in_words($amount, $document=0)
+{
+	global $Hooks;
+	// use local price_in_words() if the hook is defined
+	if (method_exists($Hooks, 'price_in_words'))
+	{
+		return $Hooks->price_in_words($amount, $document);
+	}
+	// Only usefor Remittance and Receipts as default
+	if (!($document == ST_SUPPAYMENT || $document == ST_CUSTPAYMENT || $document == ST_CHEQUE))
+		return "";
+	if ($amount < 0 || $amount > 999999999999)
+		return "";
+	$dec = user_price_dec();
+	if ($dec > 0)
+	{
+		$divisor = pow(10, $dec);	
+		$frac = round2($amount - floor($amount), $dec) * $divisor;
+		$frac = sprintf("%0{$dec}d", $frac);
+		$and = _("and");
+    	$frac = " $and $frac/$divisor";
+    }
+    else
+    	$frac = "";
+    return _number_to_words(intval($amount)) . $frac;
+}    
 
 function get_js_open_window($width, $height)
 {

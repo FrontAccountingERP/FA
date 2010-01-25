@@ -103,6 +103,17 @@ $reports->addReport(_('Customer'),111,_('&Print Sales Quotations'),
 			_('Currency Filter') => 'CURRENCY',
 			_('Email Customers') => 'YES_NO',
 			_('Comments') => 'TEXTBOX'));
+$reports->addReport(_('Customer'),111,_('&Print Sales Quotations'),
+	array(	_('From') => 'QUOTATIONS',
+			_('To') => 'QUOTATIONS',
+			_('Currency Filter') => 'CURRENCY',
+			_('Email Customers') => 'YES_NO',
+			_('Comments') => 'TEXTBOX'));
+$reports->addReport(_('Customer'),112,_('Print Receipts'),
+	array(	_('From') => 'RECEIPT',
+			_('To') => 'RECEIPT',
+			_('Currency Filter') => 'CURRENCY',
+			_('Comments') => 'TEXTBOX'));
 
 $reports->addReportClass(_('Supplier'));
 $reports->addReport(_('Supplier'),201,_('Supplier &Balances'),

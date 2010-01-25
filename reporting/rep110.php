@@ -187,6 +187,12 @@ function print_deliveries()
 				$rep->Font('bold');
 				$rep->TextCol(3, 6, $doc_TOTAL_DELIVERY, - 2);
 				$rep->TextCol(6, 7,	$DisplayTotal, -2);
+				$words = price_in_words($myrow['Total'], ST_CUSTDELIVERY);
+				if ($words != "")
+				{
+					$rep->NewLine(1);
+					$rep->TextCol(1, 7, $myrow['curr_code'] . ": " . $words, - 2);
+				}	
 				$rep->Font();
 			}	
 			if ($email == 1)

@@ -111,7 +111,7 @@
 			$this->Text($c2col, $this->company['gst_no'], $mcol);
 			$this->NewLine();
 		}
-		if (($doctype == ST_SALESINVOICE || $doctype == ST_CUSTPAYMENT) && $this->company['domicile'] != "")
+		if (($doctype == ST_SALESINVOICE || $doctype == ST_STATEMENT) && $this->company['domicile'] != "")
 		{
 			$this->Text($ccol, $doc_Domicile, $c2col);
 			$this->Text($c2col, $this->company['domicile'], $mcol);
@@ -218,6 +218,8 @@
 			$this->TextWrap($col, $this->row, $width, $myrow['wo_ref'], 'C');
 		elseif (isset($sales_order["customer_ref"]))
 			$this->TextWrap($col, $this->row, $width, $sales_order["customer_ref"], 'C');
+		else
+			$this->TextWrap($col, $this->row, $width, $myrow["debtor_ref"], 'C');
 		$col += $width;	
 		if ($branch != null)
 		{
@@ -227,7 +229,7 @@
 			$row = db_fetch($result);
 			$this->TextWrap($col, $this->row, $width, $row['salesman_name'], 'C');
 		}		
-		elseif ($doctype == ST_SUPPAYMENT)
+		elseif ($doctype == ST_SUPPAYMENT || $doctype == ST_CUSTPAYMENT)
 			$this->TextWrap($col, $this->row, $width, $systypes_array[$myrow["type"]], 'C');
 		elseif ($doctype == ST_WORKORDER)
 			$this->TextWrap($col, $this->row, $width, $wo_types_array[$myrow["type"]], 'C');
@@ -269,14 +271,15 @@
 		}
 		elseif ($doctype == ST_WORKORDER)
 			$this->TextWrap($col, $this->row, $width, $myrow["location_name"], 'C');
-		elseif (isset($myrow['order_']))
+		elseif (isset($myrow['order_']) && $myrow['order_'] != 0)
 			$this->TextWrap($col, $this->row, $width, $myrow['order_'], 'C');
 		$col += $width;	
 		if ($doctype == ST_SALESORDER || $doctype == ST_SALESQUOTE)
 			$this->TextWrap($col, $this->row, $width, sql2date($myrow['delivery_date']), 'C');
 		elseif ($doctype == ST_WORKORDER)	
 			$this->TextWrap($col, $this->row, $width, $myrow["units_issued"], 'C');
-		elseif ($doctype != ST_PURCHORDER && $doctype != ST_CUSTCREDIT && isset($myrow['due_date']))
+		elseif ($doctype != ST_PURCHORDER && $doctype != ST_CUSTCREDIT && $doctype != ST_CUSTPAYMENT &&
+			$doctype != ST_SUPPAYMENT && isset($myrow['due_date']))
 			$this->TextWrap($col, $this->row, $width, sql2date($myrow['due_date']), 'C');
 		if (!isset($packing_slip) || $packing_slip == 0)
 		{
@@ -334,12 +337,17 @@
 				$this->row -= $this->lineHeight;
 			}
 		}
+		if ($doc_Extra != "")
+		{
+			$this->TextWrap($ccol, $this->row, $right - $ccol, $doc_Extra, 'C');
+			$this->row -= $this->lineHeight;
+		}
 		if ($this->params['comments'] != '')
 		{
 			$this->TextWrap($ccol, $this->row, $right - $ccol, $this->params['comments'], 'C');
 			$this->row -= $this->lineHeight;
 		}
-		if (($doctype == ST_SALESINVOICE || $doctype == ST_CUSTPAYMENT) && $this->company['legal_text'] != "") 
+		if (($doctype == ST_SALESINVOICE || $doctype == ST_STATEMENT) && $this->company['legal_text'] != "") 
 		{
 			$this->TextWrapLines($ccol, $right - $ccol, $this->company['legal_text'], 'C');
 		}

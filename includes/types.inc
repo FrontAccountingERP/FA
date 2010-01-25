@@ -42,6 +42,11 @@ define('ST_SALESQUOTE', 32);
 define('ST_COSTUPDATE', 35);
 define('ST_DIMENSION', 40);
 
+// Don't include these defines in the $systypes_array.
+// They are used for documents only.
+define ('ST_STATEMENT', 91);
+define ('ST_CHEQUE', 92);
+
 $systypes_array = array (
 	ST_JOURNAL => _("Journal Entry"),
 	ST_BANKPAYMENT => _("Bank Payment"),
