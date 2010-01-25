@@ -19,6 +19,7 @@ include_once($path_to_root . "/includes/banking.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
 include_once($path_to_root . "/sales/includes/sales_db.inc");
 //include_once($path_to_root . "/sales/includes/ui/cust_alloc_ui.inc");
+include_once($path_to_root . "/reporting/includes/reporting.inc");
 
 $js = "";
 if ($use_popup_windows) {
@@ -67,9 +68,8 @@ if (isset($_GET['AddedID'])) {
 //	hyperlink_params($path_to_root . "/sales/allocations/customer_allocate.php", _("&Allocate this Customer Payment"), "trans_no=$payment_no&trans_type=12");
 
 	hyperlink_no_params($path_to_root . "/sales/customer_payments.php", _("Enter Another &Customer Payment"));
-	br(1);
-	end_page();
-	exit;
+	
+	display_footer_exit();
 }
 
 //----------------------------------------------------------------------------------------------

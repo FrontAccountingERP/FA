@@ -20,7 +20,7 @@ Legend:
 $ -> Affected files
 
 25-Jan-2010 Joe Hunt
-# Bug not deleting refs record when deleting Sales Order, Quotation
+# {0000195] Bug not deleting refs record when deleting Sales Order, Quotation
 # A couple of redirecting bugs
 $ /sales/sales_order_entry.php
   /sales/includes/db/sales_order_db.inc
