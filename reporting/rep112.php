@@ -88,13 +88,10 @@ function print_receipts()
 
 	$cur = get_company_Pref('curr_default');
 
-	if ($email == 0)
-	{
-		$rep = new FrontReport(_('RECEIPT'), "ReceiptBulk", user_pagesize());
-		$rep->currency = $cur;
-		$rep->Font();
-		$rep->Info($params, $cols, null, $aligns);
-	}
+	$rep = new FrontReport(_('RECEIPT'), "ReceiptBulk", user_pagesize());
+	$rep->currency = $cur;
+	$rep->Font();
+	$rep->Info($params, $cols, null, $aligns);
 
 	for ($i = $fno[0]; $i <= $tno[0]; $i++)
 	{
@@ -178,8 +175,7 @@ function print_receipts()
 			$rep->TextCol(6, 7, "__________________");
 		}	
 	}
-	if ($email == 0)
-		$rep->End();
+	$rep->End();
 }
 
 ?>

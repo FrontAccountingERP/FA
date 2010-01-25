@@ -54,14 +54,13 @@ if (isset($header2type))
 		$doc_Customers_Ref = "Customers Reference";
 		$doc_Our_Order_No = "Our Order No";
 	}
+	$doc_Extra = "";
 	$doc_Our_VAT_no = "Our VAT No.";
 	$doc_Domicile = "Domicile";
 	if($doctype == ST_CUSTDELIVERY || $doctype == ST_SALESQUOTE || $doctype == ST_PURCHORDER || $doctype == ST_SALESORDER ||
 		$doctype == ST_SUPPAYMENT || $doctype == ST_CUSTPAYMENT) {
 		if ($doctype == ST_CUSTPAYMENT)
 			$doc_Extra = "* Subject to Realisation of the Cheque.";
-		else	
-			$doc_Extra = "";
 		$doc_Bank_Account = '';
 	 	$doc_Please_Quote = "All amounts stated in";
   } else {

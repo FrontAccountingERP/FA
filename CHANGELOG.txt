@@ -22,7 +22,6 @@ $ -> Affected files
 25-Jan-2010 Joe Hunt
 # Bug in the sequence in sales price pickup
 $ /sales/includes/sales_db.inc
-
 + Added document Receipt and small rearrangements and bugfixes
 $ /includes/types.inc
   /includes/ui/ui_view.inc

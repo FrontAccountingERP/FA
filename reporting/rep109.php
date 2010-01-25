@@ -158,7 +158,7 @@ function print_sales_orders()
 		else	
 			$rep->TextCol(3, 6, $doc_TOTAL_ORDER2, - 2);
 		$rep->TextCol(6, 7,	$DisplayTotal, -2);
-		$words = price_in_words($myrow['Total'], ST_SALESORDER);
+		$words = price_in_words($myrow["freight_cost"] + $SubTotal, ST_SALESORDER);
 		if ($words != "")
 		{
 			$rep->NewLine(1);

@@ -56,12 +56,11 @@ if (isset($header2type))
 	}
 	$doc_Our_VAT_no = _("Our VAT No.");
 	$doc_Domicile = _("Domicile");
+	$doc_Extra = "";
 	if($doctype == ST_CUSTDELIVERY || $doctype == ST_SALESQUOTE || $doctype == ST_PURCHORDER || $doctype == ST_SALESORDER ||
 		$doctype == ST_SUPPAYMENT || $doctype == ST_CUSTPAYMENT) {
 		if ($doctype == ST_CUSTPAYMENT)
 	 		$doc_Extra = _("* Subject to Realisation of the Cheque.");
-	 	else	
-	 		$doc_Extra = "";
  		$doc_Bank_Account = '';
 	 	$doc_Please_Quote = _("All amounts stated in");
   } else {

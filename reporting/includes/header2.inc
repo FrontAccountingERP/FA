@@ -190,10 +190,10 @@
 			$this->row = $temp;
 			if ($doctype == ST_PURCHORDER)
 				$this->Text($mcol, $this->company['coy_name']);
-			elseif ($doctype != ST_SUPPAYMENT)
+			elseif ($doctype != ST_SUPPAYMENT && isset($sales_order['deliver_to']))
 				$this->Text($mcol, $sales_order['deliver_to']);
 			$this->NewLine();
-			if ($doctype != ST_SUPPAYMENT)
+			if ($doctype != ST_SUPPAYMENT && isset($sales_order['deliver_to']))
 				$this->TextWrapLines($mcol, $this->rightMargin - $mcol, $sales_order['delivery_address']);
 		}
 		$this->row = $iline2 - $this->lineHeight - 1;
@@ -218,7 +218,7 @@
 			$this->TextWrap($col, $this->row, $width, $myrow['wo_ref'], 'C');
 		elseif (isset($sales_order["customer_ref"]))
 			$this->TextWrap($col, $this->row, $width, $sales_order["customer_ref"], 'C');
-		else
+		elseif (isset($myrow["debtor_ref"]))
 			$this->TextWrap($col, $this->row, $width, $myrow["debtor_ref"], 'C');
 		$col += $width;	
 		if ($branch != null)
