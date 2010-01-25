@@ -113,6 +113,23 @@ function get_price ($stock_id, $currency, $sales_type_id, $factor=null, $date=nu
 	    $prices[$myrow['sales_type_id']][$myrow['curr_abrev']] = $myrow['price'];
 	}
 	$price = false;
+	if (isset($prices[$sales_type_id][$currency])) 
+	{
+	    $price = $prices[$sales_type_id][$currency];
+	}
+	elseif (isset($prices[$base_id][$currency])) 
+	{
+	    $price = $prices[$base_id][$currency] * $factor;
+	}
+	elseif (isset($prices[$sales_type_id][$home_curr])) 
+	{
+	    $price = $prices[$sales_type_id][$home_curr] / $rate;
+	}
+	elseif (isset($prices[$base_id][$home_curr])) 
+	{
+	    $price = $prices[$base_id][$home_curr] * $factor / $rate;
+	}
+/*
 	if (isset($prices[$sales_type_id][$home_curr])) 
 	{
 	    $price = $prices[$sales_type_id][$home_curr] / $rate;
@@ -125,6 +142,7 @@ function get_price ($stock_id, $currency, $sales_type_id, $factor=null, $date=nu
 	{
 	    $price = $prices[$base_id][$home_curr] * $factor / $rate;
 	}
+*/	
 	elseif ($num_rows == 0 && $add_pct != -1)
 	{
 		$price = get_calculated_price($stock_id, $add_pct);
