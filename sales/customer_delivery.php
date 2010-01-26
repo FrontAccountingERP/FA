@@ -428,7 +428,12 @@ foreach ($_SESSION['Items']->line_items as $line=>$ln_itm) {
 	}
 	view_stock_status_cell($ln_itm->stock_id);
 
-	text_cells(null, 'Line'.$line.'Desc', $ln_itm->item_description, 30, 50);
+	if ($ln_itm->descr_editable)
+		text_cells(null, 'Line'.$line.'Desc', $ln_itm->item_description, 30, 50);
+	else
+		label_cell($ln_itm->item_description);
+	
+	label_cell($ln_itm->units);
 	$dec = get_qty_dec($ln_itm->stock_id);
 	qty_cell($ln_itm->quantity, false, $dec);
 	label_cell($ln_itm->units);

@@ -27,6 +27,7 @@ $ /includes/ui/ui_lists.inc
   /inventory/includes/db/items_db.inc
   /inventory/manage/items.php
   /js/inserts.js
+  /sales/customer_delivery.php
   /sales/sales_order_entry.php
   /sales/includes/cart_class.inc
   /sales/includes/ui/sales_order_ui.inc
