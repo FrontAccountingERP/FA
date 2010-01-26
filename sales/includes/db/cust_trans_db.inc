@@ -380,7 +380,7 @@ function get_sql_for_customer_inquiry()
    	return $sql;
 }
 
-function get_sql_for_sales_deliveries_view($selected_customer, $selected_stock_item)
+function get_sql_for_sales_deliveries_view($selected_customer, $selected_stock_item=null)
 {
 	$sql = "SELECT trans.trans_no,
 			debtor.name,
