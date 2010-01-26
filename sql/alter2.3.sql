@@ -112,3 +112,4 @@ INSERT INTO `0_sys_prefs` SELECT 'default_workorder_required','glsetup.manuf', '
 #INSERT INTO `0_sys_prefs` SELECT 'payroll_act','glsetup.payroll', 'varchar','11', c.payroll_act FROM `0_company` c;
 INSERT INTO `0_sys_prefs` SELECT 'version_id', 'system', 'varchar', '11', c.version_id FROM `0_company` c;
 
+ALTER TABLE `0_stock_master` ADD COLUMN `editable` TINYINT(1) NOT NULL default '0';

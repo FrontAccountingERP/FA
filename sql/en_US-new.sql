@@ -1390,6 +1390,7 @@ CREATE TABLE `0_stock_master` (
   `overhead_cost` double NOT NULL default '0',
   `inactive` tinyint(1) NOT NULL default '0',
   `no_sale` tinyint(1) NOT NULL default '0',
+  `editable` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`stock_id`)
 ) TYPE=InnoDB  ;
 
