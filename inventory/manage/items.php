@@ -169,7 +169,7 @@ if (isset($_POST['addupdate']))
 				$_POST['inventory_account'], $_POST['cogs_account'],
 				$_POST['adjustment_account'], $_POST['assembly_account'], 
 				$_POST['dimension_id'], $_POST['dimension2_id'],
-				check_value('no_sale'));
+				check_value('no_sale'), check_value('editable'));
 			update_record_status($_POST['NewStockID'], $_POST['inactive'],
 				'stock_master', 'stock_id');
 			update_record_status($_POST['NewStockID'], $_POST['inactive'],
@@ -187,12 +187,12 @@ if (isset($_POST['addupdate']))
 				$_POST['inventory_account'], $_POST['cogs_account'],
 				$_POST['adjustment_account'], $_POST['assembly_account'], 
 				$_POST['dimension_id'], $_POST['dimension2_id'],
-				check_value('no_sale'));
+				check_value('no_sale'), check_value('editable'));
 
 			display_notification(_("A new item has been added."));
 			$_POST['stock_id'] = $_POST['NewStockID'] = 
 			$_POST['description'] = $_POST['long_description'] = '';
-			$_POST['no_sale'] = 0;
+			$_POST['no_sale'] = $_POST['editable'] = 0;
 			set_focus('NewStockID');
 		}
 		$Ajax->activate('_page_body');
@@ -297,6 +297,7 @@ else
 		$_POST['no_sale']	= $myrow['no_sale'];
 		$_POST['del_image'] = 0;	
 	 	$_POST['inactive'] = $myrow["inactive"];
+	 	$_POST['editable'] = $myrow["editable"];
 		label_row(_("Item Code:"),$_POST['NewStockID']);
 		hidden('NewStockID', $_POST['NewStockID']);
 		set_focus('description');
@@ -323,6 +324,8 @@ if ($new_item && (list_updated('category_id') || !isset($_POST['units']))) {
 	$_POST['dimension_id'] = $category_record["dflt_dim1"];
 	$_POST['dimension2_id'] = $category_record["dflt_dim2"];
 	$_POST['no_sale'] = $category_record["dflt_no_sale"];
+	$_POST['editable'] = 0;
+
 }
 $fresh_item = !isset($_POST['NewStockID']) || $new_item 
 	|| check_usage($_POST['stock_id'],false);
@@ -332,6 +335,12 @@ item_tax_types_list_row(_("Item Tax Type:"), 'tax_type_id', null);
 stock_item_types_list_row(_("Item Type:"), 'mb_flag', null, $fresh_item);
 
 stock_units_list_row(_('Units of Measure:'), 'units', null, $fresh_item);
+
+check_row(_("Editable description:"), 'editable');
+
+check_row(_("Exclude from sales:"), 'no_sale');
+
+table_section(2);
 
 $dim = get_company_pref('use_dimension');
 if ($dim >= 1)
@@ -346,8 +355,6 @@ if ($dim < 1)
 	hidden('dimension_id', 0);
 if ($dim < 2)
 	hidden('dimension2_id', 0);
-
-table_section(2);
 
 table_section_title(_("GL Accounts"));
 
@@ -397,8 +404,6 @@ label_row("&nbsp;", $stock_img_link);
 if ($check_remove_image)
 	check_row(_("Delete Image:"), 'del_image');
 	
-check_row(_("Exclude from sales:"), 'no_sale');
-
 record_status_list_row(_("Item status:"), 'inactive');
 end_outer_table(1);
 div_end();

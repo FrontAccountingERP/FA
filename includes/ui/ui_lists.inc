@@ -60,7 +60,8 @@ $opts = array(		// default options
 	'disabled' => false,
 	'box_hint' => null, // box/selectors hints; null = std see below
 	'category' => false, // category column name or false
-	'show_inactive' => false // show inactive records. 
+	'show_inactive' => false, // show inactive records. 
+	'editable' => false // false, or length of editable entry field
 );
 // ------ merge options with defaults ----------
 	if($options != null)
@@ -68,7 +69,11 @@ $opts = array(		// default options
 	if (!is_array($opts['where']))  $opts['where'] = array($opts['where']);
 
 	$search_box = $opts['search_box']===true ? '_'.$name.'_edit' : $opts['search_box'];
+	// select content filtered by search field:
 	$search_submit = $opts['search_submit']===true ? '_'.$name.'_button' : $opts['search_submit'];
+	// select set by select content field
+	$search_button = $search_submit ? $search_submit : ($opts['editable'] ? '_'.$name.'_button' : false);
+	
 	$select_submit =  $opts['select_submit'];
 	$spec_id = $opts['spec_id'];
 	$spec_option = $opts['spec_option'];
@@ -84,7 +89,7 @@ $opts = array(		// default options
 		$opts['sel_hint'] = $by_id || $search_box==false ?
 			'' : _('Press Space tab for search pattern entry');
 
-	if ($opts['box_hint'] === null)
+	if ($opts['box_hint'] === null)  // dodaæ hint dla pustego ****
 		$opts['box_hint'] = $search_box && $search_submit != false ?
 			($by_id ? _('Enter code fragment to search or * for all')
 			: _('Enter description fragment to search or * for all')) :'';
@@ -99,7 +104,7 @@ $opts = array(		// default options
 	$rel = '';
 	$limit = '';
 
-	if (isset($_POST['_'.$name.'_update'])) {
+	if (isset($_POST['_'.$name.'_update'])) { // select list or search box change
 		if ($by_id) $txt = $_POST[$name];
 
 		if (!$opts['async'])
@@ -110,30 +115,30 @@ $opts = array(		// default options
 	if ($search_box) {
 		// search related sql modifications
 
-	$rel = "rel='$search_box'"; // set relation to list
-   if ($opts['search_submit']) {
-	if (isset($_POST[$search_submit])) {
-		$selected_id = array(); // ignore selected_id while search
-		if (!$opts['async'])
-			$Ajax->activate('_page_body');
-		else
-			$Ajax->activate($name);
-	}
-	if ($txt == '') {
-		if ($spec_option === false && $selected_id == array())
-		  $limit = ' LIMIT 1';
-		else
-		  $opts['where'][] = $valfield . "='". get_post($name, $spec_id)."'";
-	}
-	else
-		if ($txt != '*') {
+		$rel = "rel='$search_box'"; // set relation to list
+		if ($opts['search_submit']) {
+			if (isset($_POST[$search_submit])) {
+				$selected_id = array(); // ignore selected_id while search
+				if (!$opts['async'])
+					$Ajax->activate('_page_body');
+				else
+					$Ajax->activate($name);
+			}
+			if ($txt == '') {
+				if ($spec_option === false && $selected_id == array())
+					$limit = ' LIMIT 1';
+				else
+					$opts['where'][] = $valfield . "='". get_post($name, $spec_id)."'";
+			}
+			else
+				if ($txt != '*') {
 
-		foreach($opts['search'] as $i=> $s)
-			$opts['search'][$i] = $s . " LIKE '%{$txt}%'";
-		$opts['where'][] = '('. implode($opts['search'], ' OR ') . ')';
+					foreach($opts['search'] as $i=> $s)
+						$opts['search'][$i] = $s . " LIKE '%{$txt}%'";
+					$opts['where'][] = '('. implode($opts['search'], ' OR ') . ')';
+				}
 		}
 	}
-   }
 	// sql completion
 	if (count($opts['where'])) {
 		$where = strpos($sql, 'WHERE')==false ? ' WHERE ':' AND ';
@@ -158,19 +163,26 @@ $opts = array(		// default options
 	$first_id = false;
 	$found = false;
 	$lastcat = null;
-//if($name=='stock_id') display_error($sql);
+	$edit = false;
+//if($name=='stock_id')	display_notification('<pre>'.print_r($_POST, true).'</pre>');
+//if($name=='stock_id') display_error($search_submit);
 	if($result = db_query($sql)) {
 		while ($contact_row = db_fetch($result)) {
 			$value = $contact_row[0];
 			$descr = $opts['format']==null ?  $contact_row[1] :
 				call_user_func($opts['format'], $contact_row);
 			$sel = '';
- 		 	if (get_post($search_submit) && ($txt === $value)) {
+ 		 	if (get_post($search_button) && ($txt == $value)) {
  		 		$selected_id[] = $value;
  		 	}
  		 	if (in_array($value, $selected_id)) {
 				$sel = 'selected';
 				$found = $value;
+				$edit = $opts['editable'] && $contact_row['editable'] 
+					&& ($_POST[$search_box] == $value)
+					? $descr : false;
+				if ($edit)
+					break;	// selected field is editable - abandon list construction
 			}
 			// show selected option even if inactive 
 			if (!$opts['show_inactive'] && @$contact_row['inactive'] && $sel==='') {
@@ -207,24 +219,37 @@ $opts = array(		// default options
 	if ($found===false) {
 		$selected_id = array($first_id);
 	}
+	
 	$_POST[$name] = $multi ? $selected_id : $selected_id[0];
 
-	if ($by_id && $search_box != false) {
- 		$txt = $found;
-		$Ajax->addUpdate($name, $search_box, $txt ? $txt : '');
-	}
 	$selector = "<select ".($multi ? "multiple" : '')
 		. ($opts['height']!==false ? ' size="'.$opts['height'].'"' : '')
 		. "$disabled name='$name".($multi ? '[]':'')."' class='$class' title='"
 		. $opts['sel_hint']."' $rel>".$selector."</select>\n";
 
+	if ($by_id && ($search_box != false || $opts['editable']) ) {
+		// on first display show selector list
+		if (isset($_POST[$search_box]) && $opts['editable'] && $edit) {
+			$selector = "<input type='hidden' name='$name' value='".$_POST[$name]."'>"
+			."<input type='text' $disabled name='{$name}_text' id='{$name}_text' size='".
+				$opts['editable']."' maxlength='".$opts['max']."' $rel value='$edit'>\n";
+//			if ($_POST['_focus'] == $name) {
+				set_focus($name.'_text'); // prevent lost focus
+//			}
+		} else if (isset($_POST[$name.'_text']))
+			set_focus($name); // prevent lost focus
+		if (!$opts['editable'])
+	 		$txt = $found;
+		$Ajax->addUpdate($name, $search_box, $txt ? $txt : '');
+	}
+
 	$Ajax->addUpdate($name, "_{$name}_sel", $selector);
 
-	// because of bug which M$ cannot fix since IE 5.0
-	// we must embed whole selector in span tags to enable proper ajax update
+	// span for select list/inut field update
 	$selector = "<span id='_{$name}_sel'>".$selector."</span>\n";
 
-	if ($select_submit != false) { // if submit on change is used - add select button
+	 // if selectable or editable list is used - add select button
+	if ($select_submit != false || $search_button) {
 		global $_select_button;
 	// button class selects form reload/ajax selector update
 		$selector .= sprintf($_select_button, $disabled, user_theme(),
@@ -232,7 +257,6 @@ $opts = array(		// default options
 			 '_'.$name.'_update')."\n";
 	}
 // ------ make combo ----------
-
 	$edit_entry = '';
 	if ($search_box != false) {
 		$edit_entry = "<input $disabled type='text' name='$search_box' id='$search_box' size='".
@@ -241,11 +265,11 @@ $opts = array(		// default options
 			.$opts['box_hint']."'"
 			.(!fallback_mode() && !$by_id ? " style=display:none;":'')
 			.">\n";
-		if ($search_submit != false) {
+		if ($search_submit != false || $opts['editable']) {
 			global $_search_button;
 			$edit_entry .= sprintf($_search_button, $disabled, user_theme(),
 				(fallback_mode() ? '' : 'display:none;'),
-				$search_submit)."\n";
+				$search_submit ? $search_submit : "_{$name}_button")."\n";
 		}
 	}
 	default_focus(($search_box && $by_id) ? $search_box : $name);
@@ -721,7 +745,7 @@ function sales_items_list($name, $selected_id=null, $all_option=false,
 	global $all_items;
 	// all sales codes
 	$sql = "SELECT i.item_code, i.description, c.description, count(*)>1 as kit,
-			 i.inactive
+			 i.inactive, if(count(*)>1, '0', s.editable) as editable
 			FROM
 			".TB_PREF."stock_master s,
 			".TB_PREF."item_codes i
@@ -751,7 +775,9 @@ function sales_items_list($name, $selected_id=null, $all_option=false,
 		'size'=>15,
 		'select_submit'=> $submit_on_change,
 		'category' => 2,
-		'order' => array('c.description','i.item_code')
+		'order' => array('c.description','i.item_code'),
+		'editable' => 30,
+		'max' => 255
 	  ), $opts) );
 }
 
@@ -766,7 +792,7 @@ function sales_items_list_cells($label, $name, $selected_id=null, $all_option=fa
 function sales_kits_list($name, $selected_id=null, $all_option=false, $submit_on_change=false)
 {
 	return sales_items_list($name, $selected_id, $all_option, $submit_on_change,
-		'kits', array('cells'=>false));
+		'kits', array('cells'=>false, 'editable' => false));
 }
 
 function sales_local_items_list_row($label, $name, $selected_id=null, $all_option=false, $submit_on_change=false)
@@ -776,7 +802,7 @@ function sales_local_items_list_row($label, $name, $selected_id=null, $all_optio
 		echo "<td>$label</td>\n";
 	echo "<td>";
 	echo sales_items_list($name, $selected_id, $all_option, $submit_on_change,
-		'local', array('cells'=>false));
+		'local', array('cells'=>false, 'editable' => false));
 	echo "</td></tr>";
 }
 //------------------------------------------------------------------------------------
@@ -2149,7 +2175,7 @@ function extset_list($name, $value=null, $submit_on_change=false)
 		$items[] = sprintf(_("Activated for '%s'"), $comp['name']);
 	return array_selector( $name, $value, $items,
 		array(
-			'spec_option'=> _("Installed on system"),
+			'spec_option'=> _("Available and/or installed"),
 			'spec_id' => -1,
 			'select_submit'=> $submit_on_change,
 			'async' => true

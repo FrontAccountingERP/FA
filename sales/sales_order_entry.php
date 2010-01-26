@@ -409,8 +409,13 @@ if (isset($_POST['update'])) {
 function check_item_data()
 {
 	global $SysPrefs;
-
-	if (!check_num('qty', 0) || !check_num('Disc', 0, 100)) {
+	
+	if(!get_post('stock_id_text', true)) {
+		display_error( _("Item description cnnot be empty."));
+		set_focus('stock_id_edit');
+		return false;
+	}
+	elseif (!check_num('qty', 0) || !check_num('Disc', 0, 100)) {
 		display_error( _("The item could not be updated because you are attempting to set the quantity ordered to less than 0, or the discount percent to more than 100."));
 		set_focus('qty');
 		return false;
@@ -474,9 +479,10 @@ function handle_new_item()
 	if (!check_item_data()) {
 			return;
 	}
-	add_to_order($_SESSION['Items'], $_POST['stock_id'], input_num('qty'),
-		input_num('price'), input_num('Disc') / 100);
-	$_POST['_stock_id_edit'] = $_POST['stock_id']	= "";
+	add_to_order($_SESSION['Items'], get_post('stock_id'), input_num('qty'),
+		input_num('price'), input_num('Disc') / 100, get_post('stock_id_text'));
+
+	unset($_POST['_stock_id_edit'], $_POST['stock_id']);
 	line_start_focus();
 }
 
@@ -657,5 +663,4 @@ if ($customer_error == "") {
 }
 end_form();
 end_page();
-
 ?>

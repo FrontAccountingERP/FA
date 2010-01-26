@@ -291,16 +291,16 @@ class cart
 			$this->freight_cost = $freight_cost;
 	}
 
-	function add_to_cart($line_no,$stock_id, $qty, $price, $disc, $qty_done=0, $standard_cost=0, $description=null, $id=0, $src_no=0)
+	function add_to_cart($line_no, $stock_id, $qty, $price, $disc, $qty_done=0, $standard_cost=0, $description=null, $id=0, $src_no=0)
 	{
-		if (isset($stock_id) && $stock_id != "" && isset($qty)/* && $qty > 0*/)	{
-			$this->line_items[$line_no] = new line_details($stock_id, $qty, $price, $disc,
-				$qty_done,  $standard_cost, $description, $id, $src_no);
+		$line = new line_details($stock_id, $qty, $price, $disc,
+			$qty_done,  $standard_cost, $description, $id, $src_no);
+
+		if ($line->valid) {
+			$this->line_items[$line_no] = $line;
 			return 1;
-		} else {
-			// shouldn't come here under normal circumstances
-			display_db_error("unexpected - adding an invalid item or null quantity", "", true);
-		}
+		} else
+			display_error(_("You have to enter valid stock code or nonempty description"));
 		return 0;
 	}
 
@@ -473,6 +473,9 @@ class line_details
 	var $qty_dispatched; // quantity selected to process
 	var $qty_old=0;	// quantity dispatched before edition
 	var $standard_cost;
+	var $descr_editable;
+
+	var $valid; // validation in constructor
 
 	function line_details ($stock_id, $qty, $prc, $disc_percent,
 		$qty_done, $standard_cost, $description, $id=0, $src_no=0 )
@@ -483,19 +486,19 @@ class line_details
 		$this->src_no = $src_no;
 		$item_row = get_item($stock_id);
 
-		if ($item_row == null)
-			display_db_error("invalid item added to order : $stock_id", "");
-
+		if (!$item_row) 
+			return;
+			
 		$this->mb_flag = $item_row["mb_flag"];
 		$this->units = $item_row["units"];
-		if ($description == null)
+		$this->descr_editable = $item_row["editable"];
+		if ($description == null || !$this->descr_editable)
 			$this->item_description = $item_row["description"];
 		else
 			$this->item_description = $description;
 		//$this->standard_cost = $item_row["material_cost"] + $item_row["labour_cost"] + $item_row["overhead_cost"];
 		$this->tax_type = $item_row["tax_type_id"];
 		$this->tax_type_name = $item_row["tax_type_name"];
-
 		$this->stock_id = $stock_id;
 		$this->quantity = $qty;
 		$this->qty_dispatched = $qty;
@@ -503,6 +506,7 @@ class line_details
 		$this->discount_percent = $disc_percent;
 		$this->qty_done = $qty_done;
 		$this->standard_cost = $standard_cost;
+		$this->valid = true;
 	}
 
 	// get unit price as stated on document

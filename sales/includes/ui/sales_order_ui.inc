@@ -13,7 +13,7 @@ include_once($path_to_root . "/sales/includes/cart_class.inc");
 include_once($path_to_root . "/includes/manufacturing.inc");
 
 //--------------------------------------------------------------------------------
-function add_to_order(&$order, $new_item, $new_item_qty, $price, $discount)
+function add_to_order(&$order, $new_item, $new_item_qty, $price, $discount, $description='')
 {
 	// calculate item price to sum of kit element prices factor for 
 	// value distribution over all exploded kit items
@@ -47,7 +47,7 @@ function add_to_order(&$order, $new_item, $new_item_qty, $price, $discount)
 	 if (!$item['is_foreign'] && $item['item_code'] != $item['stock_id'])
 	 {	// this is sales kit - recurse 
 		add_to_order($order, $item['stock_id'], $new_item_qty*$item['quantity'],
-			$item_price, $discount, $std_price);
+			$item_price, $discount);
 	 }
 	 else
 	 {	// stock item record eventually with foreign code
@@ -63,9 +63,10 @@ function add_to_order(&$order, $new_item, $new_item_qty, $price, $discount)
 			}
 		}
 		$order->add_to_cart (count($order->line_items),	$item['stock_id'], 
-			$new_item_qty*$item['quantity'], $item_price, $discount);
+			$new_item_qty*$item['quantity'], $item_price, $discount, 0,0, $description);
 	 }
 	}
+
 }
 //---------------------------------------------------------------------------------
 
@@ -486,11 +487,19 @@ function sales_order_item_controls(&$order, &$rowcounter, $line_no=-1)
 		$_POST['qty'] = number_format2($order->line_items[$id]->qty_dispatched, $dec);
 		$_POST['price'] = price_format($order->line_items[$id]->price);
 		$_POST['Disc'] = percent_format($order->line_items[$id]->discount_percent*100);
-		$_POST['item_description'] = $order->line_items[$id]->item_description;
 		$units = $order->line_items[$id]->units;
+		$_POST['item_description'] = $order->line_items[$id]->item_description;
 		hidden('stock_id', $_POST['stock_id']);
 		label_cell($_POST['stock_id']);
-		text_cells(null,'item_description', null, 45, 150);
+		if ($order->line_items[$id]->descr_editable)
+			text_cells(null,'item_description', null, 45, 150);
+		else {
+			hidden('item_description', $_POST['item_description']);
+			label_cell($_POST['item_description']);
+		}
+//		} else {
+//			sales_items_list_cells(null,'item_description', null, false, true);
+//		}
 		//label_cell($order->line_items[$line_no]->item_description, "nowrap");
 	    $Ajax->activate('items_table');
 	}

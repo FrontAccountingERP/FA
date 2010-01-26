@@ -53,8 +53,9 @@ function _set_combo_input(e) {
 		  save_focus(select);
 // submit request if there is submit_on_change option set and 
 // search field has changed.
+		
 		  if (button && (this.value != this.getAttribute('_last'))) {
-	  		JsHttpRequest.request(button);
+			JsHttpRequest.request(button);
 		  } else if(this.className=='combo2') {
 				this.style.display = 'none';
 				select.style.display = 'inline';
@@ -95,8 +96,10 @@ function _update_box(s) {
 		if(box && s.selectedIndex>=0) {
 			  var opt = s.options[s.selectedIndex];
 				if(box) {
+				  var old = box.value;
 				  box.value = byid ? opt.value : opt.text;
 				  box.setAttribute('_last', box.value);
+				  return old != box.value
 				}
 		}
 }
@@ -107,10 +110,13 @@ function _set_combo_select(e) {
 		// signaling we must track selectedIndex in onblur handler.
 		e.setAttribute('_last', e.selectedIndex);
 		e.onblur = function() {
-			if(this.className=='combo')
-			    _update_box(this);
-			if (this.selectedIndex != this.getAttribute('_last'))
-				this.onchange();
+		    var box = document.getElementsByName(this.getAttribute('rel'))[0];
+//			if(this.className=='combo')
+//			    _update_box(this);
+			if ((this.selectedIndex != this.getAttribute('_last'))
+				||(this.className=='combo' && _update_box(this))
+				)
+					this.onchange();
 		}
 		e.onchange = function() {
 			var s = this;
@@ -258,9 +264,26 @@ var inserts = {
 				}
 			}
 	},
-	'button[aspect=selector], input[aspect=selector]': function(e) {
+	'button[aspect=selector], button[aspect=abort], input[aspect=selector]': function(e) {
 		e.onclick = function() {
 			passBack(this.getAttribute('rel'));
+			return false;
+		}
+	},
+	'button[aspect=popup]': function(e) {
+						var old = e.onclick
+		e.onclick = function() {
+//			this.form.target = '_blank';
+//				old();
+//			return true;
+			if(_w) _w.close(); // this is really necessary to have window on top in FF2 :/
+			  _w = open(document.location+'popup=1',
+				  "edit","Scrollbars=0,resizable=0,width=800,height=600, top=50,left=50");
+			  if (_w.opener == null)
+				  _w.opener = self;
+			//  editors._call = key; // store call point for passBack 
+//			  _w.moveTo(50, 50);
+			  _w.focus();
 			return false;
 		}
 	},
