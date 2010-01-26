@@ -124,7 +124,7 @@ if (isset($_POST['SelectStockFromList']) && ($_POST['SelectStockFromList'] != ""
 }
 else
 {
-	unset($selected_stock_item);
+	$selected_stock_item = null;
 }
 
 //---------------------------------------------------------------------------------------------
