@@ -72,8 +72,8 @@ $opts = array(		// default options
 	// select content filtered by search field:
 	$search_submit = $opts['search_submit']===true ? '_'.$name.'_button' : $opts['search_submit'];
 	// select set by select content field
-	$search_button = $search_submit ? $search_submit : ($opts['editable'] ? '_'.$name.'_button' : false);
-	
+	$search_button = $opts['editable'] ? '_'.$name.'_button' : ($search_box ? $search_submit : false);
+
 	$select_submit =  $opts['select_submit'];
 	$spec_id = $opts['spec_id'];
 	$spec_option = $opts['spec_option'];
@@ -112,12 +112,18 @@ $opts = array(		// default options
 		else
 			$Ajax->activate($name);
 	}
+	if (isset($_POST[$search_button])) {
+		if (!$opts['async'])
+			$Ajax->activate('_page_body');
+		else
+			$Ajax->activate($name);
+	}
 	if ($search_box) {
 		// search related sql modifications
 
 		$rel = "rel='$search_box'"; // set relation to list
 		if ($opts['search_submit']) {
-			if (isset($_POST[$search_submit])) {
+			if (isset($_POST[$search_button])) {
 				$selected_id = array(); // ignore selected_id while search
 				if (!$opts['async'])
 					$Ajax->activate('_page_body');
@@ -165,7 +171,7 @@ $opts = array(		// default options
 	$lastcat = null;
 	$edit = false;
 //if($name=='stock_id')	display_notification('<pre>'.print_r($_POST, true).'</pre>');
-//if($name=='stock_id') display_error($search_submit);
+//if($name=='curr_default') display_notification($opts['search_submit']);
 	if($result = db_query($sql)) {
 		while ($contact_row = db_fetch($result)) {
 			$value = $contact_row[0];
@@ -179,7 +185,7 @@ $opts = array(		// default options
 				$sel = 'selected';
 				$found = $value;
 				$edit = $opts['editable'] && $contact_row['editable'] 
-					&& ($_POST[$search_box] == $value)
+					&& (@$_POST[$search_box] == $value)
 					? $descr : false;
 				if ($edit)
 					break;	// selected field is editable - abandon list construction
@@ -233,10 +239,8 @@ $opts = array(		// default options
 			$selector = "<input type='hidden' name='$name' value='".$_POST[$name]."'>"
 			."<input type='text' $disabled name='{$name}_text' id='{$name}_text' size='".
 				$opts['editable']."' maxlength='".$opts['max']."' $rel value='$edit'>\n";
-//			if ($_POST['_focus'] == $name) {
 				set_focus($name.'_text'); // prevent lost focus
-//			}
-		} else if (isset($_POST[$name.'_text']))
+		} else if (isset($_POST['_'.$name.'_edit']))
 			set_focus($name); // prevent lost focus
 		if (!$opts['editable'])
 	 		$txt = $found;
@@ -578,7 +582,6 @@ function currencies_list($name, $selected_id=null, $submit_on_change=false)
 	$sql = "SELECT curr_abrev, currency, inactive FROM ".TB_PREF."currencies";
 
 // default to the company currency
-
 return combo_input($name, $selected_id, $sql, 'curr_abrev', 'currency',
 	array(
 		'select_submit'=> $submit_on_change,
