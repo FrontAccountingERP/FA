@@ -19,6 +19,24 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+
+26-Jan-2010 Janusz Dobrowolski
++ Full support for items with editable descriptions in sales documents
+$ /includes/ui/ui_lists.inc
+  /inventory/prices.php
+  /inventory/includes/db/items_db.inc
+  /inventory/manage/items.php
+  /js/inserts.js
+  /sales/sales_order_entry.php
+  /sales/includes/cart_class.inc
+  /sales/includes/ui/sales_order_ui.inc
+  /sql/alter2.3.sql
+  /sql/en_US-demo.sql
+  /sql/en_US-new.sql
+# Fixed warning in debug mode
+$ /sales/inquiry/sales_deliveries_view.php
+  /sales/includes/db/cust_trans_db.inc
+
 23-Jan-2010 Janusz Dobrowolski
 + Improved locales checking
 $ /includes/lang/gettext.php
