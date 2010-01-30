@@ -20,6 +20,10 @@ Legend:
 $ -> Affected files
 
 30-Jan-2010 Joe Hunt
++ Added a Balance Sheet drilldown inquiry in Banking and GL.
+$ /applications/generalledger.php
+  /gl/inquiry/balance_sheet.php (new file)
+  /gl/inquiry/gl_account_inquiry.php
 + Added Purchase tax account in en_US-new.sql and en_US-demo.sql
 $ /sql/en_US-demo.sql
   /sql/en_US_new.sql
