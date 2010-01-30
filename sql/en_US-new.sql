@@ -227,6 +227,7 @@ INSERT INTO `0_chart_master` VALUES ('2110', '', 'Accrued Income Tax - Federal',
 INSERT INTO `0_chart_master` VALUES ('2120', '', 'Accrued Income Tax - State', '4', '0');
 INSERT INTO `0_chart_master` VALUES ('2130', '', 'Accrued Franchise Tax', '4', '0');
 INSERT INTO `0_chart_master` VALUES ('2140', '', 'Accrued Real &amp; Personal Prop Tax', '4', '0');
+INSERT INTO `0_chart_master` VALUES ('2145', '', 'Purchase Tax', '4', '0');
 INSERT INTO `0_chart_master` VALUES ('2150', '', 'Sales Tax', '4', '0');
 INSERT INTO `0_chart_master` VALUES ('2160', '', 'Accrued Use Tax Payable', '4', '0');
 INSERT INTO `0_chart_master` VALUES ('2210', '', 'Accrued Wages', '4', '0');
@@ -1598,7 +1599,7 @@ CREATE TABLE `0_tax_types` (
 
 ### Data of table `0_tax_types` ###
 
-INSERT INTO `0_tax_types` VALUES ('1', '5', '2150', '2150', 'Tax', '0');
+INSERT INTO `0_tax_types` VALUES ('1', '5', '2150', '2145', 'Tax', '0');
 
 
 ### Structure of table `0_trans_tax_details` ###
