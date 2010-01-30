@@ -38,7 +38,7 @@ function can_process()
 		return false;
 	}
 
-	if (!is_tax_gl_unique(get_post('sales_gl_code', 'purchasing_gl_code', $selected_id))) {
+	if (!is_tax_gl_unique(get_post('sales_gl_code'), get_post('purchasing_gl_code'), $selected_id)) {
 		display_error( _("Selected GL Accounts cannot be used by another tax type."));
 		set_focus('sales_gl_code');
 		return false;
