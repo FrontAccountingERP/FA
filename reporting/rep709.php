@@ -143,7 +143,11 @@ function print_tax_report()
 				$rep->Header();
 			}
 		}
-		if (in_array($trans['trans_type'], array(ST_BANKDEPOSIT,ST_SALESINVOICE,ST_CUSTCREDIT))) {
+		if ($trans['trans_type']==ST_JOURNAL && $trans['amount']<0) {
+			$taxes[$trans['tax_type_id']]['taxout'] -= $trans['amount'];
+			$taxes[$trans['tax_type_id']]['out'] -= $trans['net_amount'];
+		}
+		elseif (in_array($trans['trans_type'], array(ST_BANKDEPOSIT,ST_SALESINVOICE,ST_CUSTCREDIT))) {
 			$taxes[$trans['tax_type_id']]['taxout'] += $trans['amount'];
 			$taxes[$trans['tax_type_id']]['out'] += $trans['net_amount'];
 		} else {

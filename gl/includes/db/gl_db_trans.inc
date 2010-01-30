@@ -279,8 +279,8 @@ function add_gl_tax_details($gl_code, $trans_type, $trans_no, $amount, $ex_rate,
 	if(!$tax_type) return;	// $gl_code is not tax account
 	
 	$tax = get_tax_type($tax_type);
-	//if ($gl_code == $tax['sales_gl_code']) 
-	//	$amount = -$amount;
+	if ($gl_code == $tax['sales_gl_code']) 
+		$amount = -$amount;
 	// we have to restore net amount as we cannot know the base amount
 	if ($tax['rate'] == 0) {
 //		display_warning(_("You should not post gl transactions  
@@ -349,14 +349,27 @@ function get_tax_summary($from, $to)
 	$todate = date2sql($to);
 
 	$sql = "SELECT 
+				SUM(IF(trans_type=".ST_CUSTCREDIT." || trans_type=".ST_SUPPINVOICE
+					." || trans_type=".ST_JOURNAL.",-1,1)*
+				IF(trans_type=".ST_BANKDEPOSIT." || trans_type=".ST_SALESINVOICE 
+					." || (trans_type=".ST_JOURNAL ." AND amount<0)"
+					." || trans_type=".ST_CUSTCREDIT.", net_amount*ex_rate,0)) net_output,
+
+				SUM(IF(trans_type=".ST_CUSTCREDIT." || trans_type=".ST_SUPPINVOICE
+					." || trans_type=".ST_JOURNAL.",-1,1)*
+				IF(trans_type=".ST_BANKDEPOSIT." || trans_type=".ST_SALESINVOICE
+					." || (trans_type=".ST_JOURNAL ." AND amount<0)"
+					." || trans_type=".ST_CUSTCREDIT.", amount*ex_rate,0)) payable,
+
 				SUM(IF(trans_type=".ST_CUSTCREDIT." || trans_type=".ST_SUPPINVOICE.",-1,1)*
-				IF(trans_type=".ST_BANKDEPOSIT." || trans_type=".ST_SALESINVOICE." || trans_type=".ST_CUSTCREDIT.", net_amount*ex_rate,0)) net_output,
+				IF(trans_type=".ST_BANKDEPOSIT." || trans_type=".ST_SALESINVOICE
+					." || (trans_type=".ST_JOURNAL ." AND amount<0)"
+					." || trans_type=".ST_CUSTCREDIT.", 0, net_amount*ex_rate)) net_input,
+
 				SUM(IF(trans_type=".ST_CUSTCREDIT." || trans_type=".ST_SUPPINVOICE.",-1,1)*
-				IF(trans_type=".ST_BANKDEPOSIT." || trans_type=".ST_SALESINVOICE." || trans_type=".ST_CUSTCREDIT.", amount*ex_rate,0)) payable,
-				SUM(IF(trans_type=".ST_CUSTCREDIT." || trans_type=".ST_SUPPINVOICE.",-1,1)*
-				IF(trans_type=".ST_BANKDEPOSIT." || trans_type=".ST_SALESINVOICE." || trans_type=".ST_CUSTCREDIT.", 0, net_amount*ex_rate)) net_input,
-				SUM(IF(trans_type=".ST_CUSTCREDIT." || trans_type=".ST_SUPPINVOICE.",-1,1)*
-				IF(trans_type=".ST_BANKDEPOSIT." || trans_type=".ST_SALESINVOICE." || trans_type=".ST_CUSTCREDIT.", 0, amount*ex_rate)) collectible,
+				IF(trans_type=".ST_BANKDEPOSIT." || trans_type=".ST_SALESINVOICE
+					." || (trans_type=".ST_JOURNAL ." AND amount<0)"
+					." || trans_type=".ST_CUSTCREDIT.", 0, amount*ex_rate)) collectible,
 				taxrec.rate,
 				ttype.id,
 				ttype.name
@@ -411,7 +424,7 @@ function write_journal_entries(&$cart, $reverse, $use_transaction=true)
     	}
 		// store tax details if the gl account is a tax account
 		add_gl_tax_details($journal_item->code_id, 
-			($journal_item->amount < 0.0 ? ST_BANKDEPOSIT : ST_BANKPAYMENT), $trans_id, -$journal_item->amount, 1, $date_, $memo_);
+			ST_JOURNAL, $trans_id, $journal_item->amount, 1, $date_, $memo_);
 	}
 	
 	if ($new) {
@@ -448,7 +461,7 @@ function write_journal_entries(&$cart, $reverse, $use_transaction=true)
     		}
 			// store tax details if the gl account is a tax account
 			add_gl_tax_details($journal_item->code_id, 
-				($journal_item->amount < 0.0 ? ST_BANKDEPOSIT : ST_BANKPAYMENT), $trans_id, $journal_item->amount, 1, $reversingDate, $memo_);
+				ST_JOURNAL, $trans_id, $journal_item->amount, 1, $reversingDate, $memo_);
     	}
 
     	add_comments($trans_type, $trans_id_reverse, $reversingDate, $memo_);
