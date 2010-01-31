@@ -50,7 +50,7 @@ function get_invoices($customer_id, $to)
 			".TB_PREF."debtor_trans
 
 		WHERE ".TB_PREF."debtor_trans.type <> ".ST_CUSTDELIVERY."
-			AND ".TB_PREF."debtors_master.payment_terms = ".TB_PREF."payment_terms.terms_indicator
+			AND ".TB_PREF."debtor_trans.payment_terms = ".TB_PREF."payment_terms.terms_indicator
 			AND ".TB_PREF."debtors_master.debtor_no = ".TB_PREF."debtor_trans.debtor_no
 			AND ".TB_PREF."debtor_trans.debtor_no = $customer_id 
 			AND ".TB_PREF."debtor_trans.tran_date <= '$todate'
