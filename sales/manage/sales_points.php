@@ -29,13 +29,6 @@ function can_process()
 		set_focus('pos_name');
 		return false;
 	}
-	if (!check_value('cash') && !check_value('credit'))
-	{
-		display_error(_("You must allow cash or credit sale."));
-		set_focus('credit');
-		return false;
-	}
-
 	return true;
 }
 
@@ -135,8 +128,8 @@ if ($selected_id != -1)
 
 text_row_ex(_("Point of Sale Name").':', 'name', 20, 30);
 if($cash) {
-	check_row(_('Allowed credit sale'), 'credit', check_value('credit_sale'));
-	check_row(_('Allowed cash sale'), 'cash',  check_value('cash_sale'));
+	check_row(_('Allowed credit sale terms selection:'), 'credit', check_value('credit_sale'));
+	check_row(_('Allowed cash sale terms selection:'), 'cash',  check_value('cash_sale'));
 	cash_accounts_list_row(_("Default cash account").':', 'account');
 } else {
 	hidden('credit', 1);

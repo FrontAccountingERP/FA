@@ -21,7 +21,7 @@ function add_sales_order(&$order)
 	$order_type = 0; // this is default on new order
 	$sql = "INSERT INTO ".TB_PREF."sales_orders (order_no, type, debtor_no, trans_type, branch_code, customer_ref, reference, comments, ord_date,
 		order_type, ship_via, deliver_to, delivery_address, contact_phone,
-		contact_email, freight_cost, from_stk_loc, delivery_date)
+		contact_email, freight_cost, from_stk_loc, delivery_date, payment_terms)
 		VALUES (" .db_escape($order_no) . "," .db_escape($order_type) . "," . db_escape($order->customer_id) .
 		 ", " .db_escape($order->trans_type) . "," .db_escape($order->Branch) . ", ".
 			db_escape($order->cust_ref) .",". 
@@ -36,7 +36,8 @@ function add_sales_order(&$order)
 			db_escape($order->email) . ", " .
 			db_escape($order->freight_cost) .", " . 
 			db_escape($order->Location) .", " .
-			db_escape($del_date) . ")";
+			db_escape($del_date) . "," .
+			db_escape($order->payment) . ")";
 
 	db_query($sql, "order Cannot be Added");
 
@@ -172,7 +173,8 @@ function update_sales_order($order)
 		freight_cost = " .db_escape($order->freight_cost) .",
 		from_stk_loc = " .db_escape($order->Location) .",
 		delivery_date = " .db_escape($del_date). ",
-		version = ".($version+1)."
+		version = ".($version+1).",
+		payment_terms = " .db_escape($order->payment). "
 	 WHERE order_no=" . $order_no ."
 	 AND trans_type=".$order->trans_type." AND version=".$version;
 	db_query($sql, "order Cannot be Updated, this can be concurrent edition conflict");
@@ -269,7 +271,6 @@ function get_sales_order_header($order_no, $trans_type)
 	  .TB_PREF."debtors_master.curr_code, "
 	  .TB_PREF."debtors_master.email AS master_email, "
 	  .TB_PREF."locations.location_name, "
-	  .TB_PREF."debtors_master.payment_terms, "
 	  .TB_PREF."debtors_master.discount, "
 	  .TB_PREF."sales_types.sales_type, "
 	  .TB_PREF."sales_types.id AS sales_type_id, "
@@ -339,7 +340,7 @@ function read_sales_order($order_no, &$order, $trans_type)
 	$order->trans_no = array($order_no=> $myrow["version"]);
 
 	$order->set_customer($myrow["debtor_no"], $myrow["name"],
-	  $myrow["curr_code"], $myrow["discount"]);
+	  $myrow["curr_code"], $myrow["discount"], $myrow["payment_terms"]);
 
 	$order->set_branch($myrow["branch_code"], $myrow["tax_group_id"],
 	  $myrow["tax_group_name"], $myrow["contact_phone"], $myrow["contact_email"]);
@@ -404,21 +405,18 @@ function close_sales_order($order_no)
 
 //---------------------------------------------------------------------------------------------------------------
 
-function get_invoice_duedate($debtorno, $invdate)
+function get_invoice_duedate($terms, $invdate)
 {
 	if (!is_date($invdate))
 	{
 		return new_doc_date();
 	}
-	$sql = "SELECT ".TB_PREF."debtors_master.debtor_no, ".TB_PREF."debtors_master.payment_terms, ".TB_PREF."payment_terms.* FROM ".TB_PREF."debtors_master,
-		".TB_PREF."payment_terms WHERE ".TB_PREF."debtors_master.payment_terms = ".TB_PREF."payment_terms.terms_indicator AND
-		".TB_PREF."debtors_master.debtor_no = ".db_escape($debtorno);
-
-	$result = db_query($sql,"The customer details could not be retrieved");
-	$myrow = db_fetch($result);
-
-	if (db_num_rows($result) == 0)
+	
+	$myrow = get_payment_terms($terms);
+	
+	if (!$myrow)
 		return $invdate;
+
 	if ($myrow['day_in_following_month'] > 0)
 		$duedate = add_days(end_month($invdate), $myrow['day_in_following_month']);
 	else
@@ -440,6 +438,7 @@ function get_customer_to_order($customer_id) {
 		  .TB_PREF."sales_types.factor, "
 		  .TB_PREF."debtors_master.curr_code, "
 		  .TB_PREF."debtors_master.discount,"
+		  .TB_PREF."debtors_master.payment_terms,"
 		  .TB_PREF."debtors_master.pymt_discount
 		FROM ".TB_PREF."debtors_master, "
 		  .TB_PREF."credit_status, "

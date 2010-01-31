@@ -538,6 +538,7 @@ CREATE TABLE `0_debtor_trans` (
   `trans_link` int(11) NOT NULL default '0',
   `dimension_id` int(11) NOT NULL default '0',
   `dimension2_id` int(11) NOT NULL default '0',
+  `payment_terms` int(11) default NULL,
   PRIMARY KEY  (`type`, `trans_no`),
   KEY `debtor_no` (`debtor_no`,`branch_code`),
   KEY (`tran_date`)
@@ -1190,6 +1191,7 @@ CREATE TABLE `0_sales_orders` (
   `freight_cost` double NOT NULL default '0',
   `from_stk_loc` varchar(5) NOT NULL default '',
   `delivery_date` date NOT NULL default '0000-00-00',
+  `payment_terms` int(11) default NULL,
   PRIMARY KEY  (`trans_type`, `order_no`)
 ) TYPE=InnoDB;
 

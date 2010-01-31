@@ -292,7 +292,7 @@ function read_sales_trans($doc_type, $trans_no, &$cart)
 		$cart->set_sales_type($myrow["tpe"], $myrow["sales_type"], $myrow["tax_included"],0);
 
 		$cart->set_customer($myrow["debtor_no"], $myrow["DebtorName"],
-			$myrow["curr_code"], $myrow["discount"]);
+			$myrow["curr_code"], $myrow["discount"], $myrow["payment_terms"]);
 
 		$cart->set_branch($myrow["branch_code"], $myrow["tax_group_id"],
 			$myrow["tax_group_name"],	$myrow["phone"], $myrow["email"]);

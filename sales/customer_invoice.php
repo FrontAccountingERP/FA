@@ -121,7 +121,7 @@ if ( (isset($_GET['DeliveryNumber']) && ($_GET['DeliveryNumber'] > 0) )
 	$dn->src_docs = $dn->trans_no;
 	$dn->trans_no = 0;
 	$dn->reference = $Refs->get_next(ST_SALESINVOICE);
-	$dn->due_date = get_invoice_duedate($dn->customer_id, $dn->document_date);
+	$dn->due_date = get_invoice_duedate($dn->payment, $dn->document_date);
 
 	$_SESSION['Items'] = $dn;
 	copy_from_cart();
@@ -157,7 +157,13 @@ if (isset($_POST['Update'])) {
 	$Ajax->activate('Items');
 }
 if (isset($_POST['_InvoiceDate_changed'])) {
-	$_POST['due_date'] = get_invoice_duedate($_SESSION['Items']->customer_id, 
+	$_POST['due_date'] = get_invoice_duedate($_SESSION['Items']->payment, 
+		$_POST['InvoiceDate']);
+	$Ajax->activate('due_date');
+}
+if (list_updated('payment')) {
+	$_SESSION['Items']->payment = get_post('payment');
+	$_POST['due_date'] = get_invoice_duedate($_SESSION['Items']->payment, 
 		$_POST['InvoiceDate']);
 	$Ajax->activate('due_date');
 }
@@ -220,9 +226,11 @@ function copy_to_cart()
 	$cart->freight_cost = input_num('ChargeFreightCost');
 	$cart->document_date =  $_POST['InvoiceDate'];
 	$cart->due_date =  $_POST['due_date'];
+	$cart->payment = $_POST['payment'];
 	$cart->Comments = $_POST['Comments'];
 	if ($_SESSION['Items']->trans_no == 0)
 		$cart->reference = $_POST['ref'];
+
 }
 //-----------------------------------------------------------------------------
 
@@ -305,9 +313,10 @@ if (isset($_POST['process_invoice']) && check_data()) {
 	$newinvoice=  $_SESSION['Items']->trans_no == 0;
 	copy_to_cart();
 	if ($newinvoice) new_doc_date($_SESSION['Items']->document_date);
-	$invoice_no = $_SESSION['Items']->write();
 
+	$invoice_no = $_SESSION['Items']->write();
 	processing_end();
+
 	if ($newinvoice) {
 		meta_forward($_SERVER['PHP_SELF'], "AddedID=$invoice_no");
 	} else {
@@ -359,10 +368,15 @@ if ($_SESSION['Items']->trans_no == 0) {
 	label_cells(_("Reference"), $_SESSION['Items']->reference, "class='tableheader2'");
 }
 
-label_cells(_("Delivery Notes:"),
-get_customer_trans_view_str(ST_CUSTDELIVERY, array_keys($_SESSION['Items']->src_docs)), "class='tableheader2'");
+//label_cells(_("Delivery Notes:"),
+//get_customer_trans_view_str(ST_CUSTDELIVERY, array_keys($_SESSION['Items']->src_docs)), "class='tableheader2'");
 
 label_cells(_("Sales Type"), $_SESSION['Items']->sales_type_name, "class='tableheader2'");
+
+if ($_SESSION['Items']->pos != -1) // editable payment type
+	label_cells(_("Payment terms:"), sale_payment_list('payment'), "class='tableheader2'");
+else
+	label_cells(_('Payment:'), $_SESSION['Items']->payment_terms['terms'], "class='tableheader2'");
 
 end_row();
 start_row();
@@ -384,7 +398,7 @@ date_cells(_("Date"), 'InvoiceDate', '', $_SESSION['Items']->trans_no == 0,
 	0, 0, 0, "class='tableheader2'", true);
 
 if (!isset($_POST['due_date']) || !is_date($_POST['due_date'])) {
-	$_POST['due_date'] = get_invoice_duedate($_SESSION['Items']->customer_id, $_POST['InvoiceDate']);
+	$_POST['due_date'] = get_invoice_duedate($_SESSION['Items']->payment, $_POST['InvoiceDate']);
 }
 
 date_cells(_("Due Date"), 'due_date', '', null, 0, 0, 0, "class='tableheader2'");

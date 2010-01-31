@@ -35,7 +35,7 @@ function create_recurrent_invoices($customer_id, $branch_id, $order_no, $tmpl_no
 	$doc->trans_no = 0;
 	$doc->document_date = Today(); // 2006-06-15. Added so Invoices and Deliveries get current day
 
-	$doc->due_date = get_invoice_duedate($doc->customer_id, $doc->document_date);
+	$doc->due_date = get_invoice_duedate($doc->payment, $doc->document_date);
 	$doc->reference = $Refs->get_next($doc->trans_type);
 	//$doc->Comments='';
 

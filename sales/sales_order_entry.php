@@ -228,8 +228,12 @@ function copy_to_cart()
 	$cart->Comments =  $_POST['Comments'];
 
 	$cart->document_date = $_POST['OrderDate'];
-	if ($cart->trans_type == ST_SALESINVOICE)
-		$cart->cash = $_POST['cash']; 
+//	if ($cart->trans_type == ST_SALESINVOICE) {
+	if (isset($_POST['payment']) && ($cart->payment != $_POST['payment'])) {
+		$cart->payment = $_POST['payment'];
+		$cart->payment_terms = get_payment_terms($_POST['payment']);
+		$cart->cash = $cart->payment_terms['cash_sale'];
+	}
 	if ($cart->cash) {
 		$cart->due_date = $cart->document_date;
 		$cart->phone = $cart->cust_ref = $cart->delivery_address = '';
@@ -284,8 +288,8 @@ function copy_from_cart()
 	$_POST['branch_id'] = $cart->Branch;
 	$_POST['sales_type'] = $cart->sales_type;
 	// POS 
-	if ($cart->trans_type == ST_SALESINVOICE)
-		$_POST['cash'] = $cart->cash;
+	if ($cart->pos != -1)
+		$_POST['payment'] = $cart->payment;
 	if ($cart->trans_type!=ST_SALESORDER && $cart->trans_type!=ST_SALESQUOTE) { // 2008-11-12 Joe Hunt
 		$_POST['dimension_id'] = $cart->dimension_id;
 		$_POST['dimension2_id'] = $cart->dimension2_id;
@@ -536,7 +540,6 @@ function create_cart($type, $trans_no)
 	global $Refs;
 
 	processing_start();
-	$doc_type = $type;
 
 	if (isset($_GET['NewQuoteToSalesOrder']))
 	{
@@ -550,21 +553,20 @@ function create_cart($type, $trans_no)
 		$_SESSION['Items'] = $doc;
 	}	
 	elseif($type != ST_SALESORDER && $type != ST_SALESQUOTE && $trans_no != 0) { // this is template
-		$doc_type = ST_SALESORDER;
 
 		$doc = new Cart(ST_SALESORDER, array($trans_no));
 		$doc->trans_type = $type;
 		$doc->trans_no = 0;
 		$doc->document_date = new_doc_date();
 		if ($type == ST_SALESINVOICE) {
-			$doc->due_date = get_invoice_duedate($doc->customer_id, $doc->document_date);
+			$doc->due_date = get_invoice_duedate($doc->payment, $doc->document_date);
 			$doc->pos = user_pos();
 			$pos = get_sales_point($doc->pos);
-			$doc->cash = $pos['cash_sale'];
-			if (!$pos['cash_sale'] || !$pos['credit_sale']) 
+//			$doc->cash = $pos['cash_sale'];
+			if (!$pos['cash_sale'] && !$pos['credit_sale'])
 				$doc->pos = -1; // mark not editable payment type
-			else
-				$doc->cash = date_diff2($doc->due_date, Today(), 'd')<2;
+//			else
+//				$doc->cash = date_diff2($doc->due_date, Today(), 'd')<2;
 		} else
 			$doc->due_date = $doc->document_date;
 		$doc->reference = $Refs->get_next($doc->trans_type);
@@ -574,7 +576,7 @@ function create_cart($type, $trans_no)
 		}
 		$_SESSION['Items'] = $doc;
 	} else
-		$_SESSION['Items'] = new Cart($type,array($trans_no));
+		$_SESSION['Items'] = new Cart($type, array($trans_no));
 	copy_from_cart();
 }
 

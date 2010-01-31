@@ -375,7 +375,7 @@ echo "</td><td>";// outer table
 start_table("$table_style width=90%");
 
 if (!isset($_POST['due_date']) || !is_date($_POST['due_date'])) {
-	$_POST['due_date'] = get_invoice_duedate($_SESSION['Items']->customer_id, $_POST['DispatchDate']);
+	$_POST['due_date'] = get_invoice_duedate($_SESSION['Items']->payment, $_POST['DispatchDate']);
 }
 date_row(_("Invoice Dead-line"), 'due_date', '', null, 0, 0, 0, "class='tableheader2'");
 end_table();
@@ -432,8 +432,7 @@ foreach ($_SESSION['Items']->line_items as $line=>$ln_itm) {
 		text_cells(null, 'Line'.$line.'Desc', $ln_itm->item_description, 30, 50);
 	else
 		label_cell($ln_itm->item_description);
-	
-	label_cell($ln_itm->units);
+
 	$dec = get_qty_dec($ln_itm->stock_id);
 	qty_cell($ln_itm->quantity, false, $dec);
 	label_cell($ln_itm->units);

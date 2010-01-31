@@ -19,6 +19,29 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+26-Jan-2010 Janusz Dobrowolski
++ Editable sales terms in sales orders and invoices, default terms from customer record.
+$ /admin/db/company_db.inc
+  /includes/ui/ui_lists.inc
+  /reporting/rep102.php
+  /reporting/rep108.php
+  /sales/create_recurrent_invoices.php
+  /sales/customer_delivery.php
+  /sales/customer_invoice.php
+  /sales/sales_order_entry.php
+  /sales/includes/cart_class.inc
+  /sales/includes/sales_db.inc
+  /sales/includes/db/cust_trans_db.inc
+  /sales/includes/db/sales_credit_db.inc
+  /sales/includes/db/sales_delivery_db.inc
+  /sales/includes/db/sales_invoice_db.inc
+  /sales/includes/db/sales_order_db.inc
+  /sales/includes/ui/sales_order_ui.inc
+  /sales/manage/sales_points.php
+  /sql/alter2.3.php
+  /sql/alter2.3.sql
+  /sql/en_US-demo.sql
+  /sql/en_US-new.sql
 
 26-Jan-2010 Janusz Dobrowolski
 + Full support for items with editable descriptions in sales documents

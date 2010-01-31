@@ -73,7 +73,8 @@ function write_credit_note($credit_note, $write_off_acc)
 		$credit_note->freight_cost, $freight_added_tax,
 		$credit_note->sales_type,
 		$credit_note->order_no, $credit_invoice, $credit_note->ship_via,
-		null, $alloc, 0, $credit_note->dimension_id, $credit_note->dimension2_id); 
+		null, $alloc, 0, $credit_note->dimension_id, $credit_note->dimension2_id,
+		$credit_note->payment); 
 		// 2008-06-14 extra $alloc, 2008-11-12 dimension_id Joe Hunt
 
 	if ($trans_no==0) {

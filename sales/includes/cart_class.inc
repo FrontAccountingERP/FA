@@ -66,12 +66,14 @@ class cart
 	var $price_factor;	 // ditto for price calculations
 
 	var	$pos;			// user assigned POS
-	var $cash;			// cash transaction
+	var $cash;			// cash transaction - helper variable not stored in db
 	var $cash_account;
 	var $account_name;
 	var $cash_discount;	// not used as of FA 2.1
 	var $dimension_id;
 	var $dimension2_id;
+	var $payment;
+	var $payment_terms; // cached payment terms
 	//-------------------------------------------------------------------------
 	//
 	//  $trans_no==0 => open new/direct document
@@ -183,25 +185,23 @@ class cart
 					}		
 				}	
 				if ($type == ST_SALESINVOICE) {
-				  $this->due_date =
-					get_invoice_duedate($this->customer_id, $this->document_date);
-				  $this->pos = user_pos();
-				  $pos = get_sales_point($this->pos);
-				  $this->cash = !$pos['credit_sale'];
-				  if (!$pos['cash_sale'] || !$pos['credit_sale']) 
-				  	$this->pos = -1; // mark not editable payment type
-				  else
-					$this->cash = date_diff2($this->due_date, Today(), 'd')<2;
-				if ($this->cash) {
-					$this->Location = $pos['pos_location'];
-					$this->location_name = $pos['location_name'];
-					$this->cash_account = $pos['pos_account'];
-					$this->account_name = $pos['bank_account_name'];
-				}
+					$this->due_date =
+						get_invoice_duedate($this->payment, $this->document_date);
+					$this->cash = $this->payment_terms['cash_sale'];
+					if ($this->cash) {
+						$this->Location = $pos['pos_location'];
+						$this->location_name = $pos['location_name'];
+						$this->cash_account = $pos['pos_account'];
+						$this->account_name = $pos['bank_account_name'];
+					}
 				} else
-				  $this->due_date =
-					add_days($this->document_date, $SysPrefs->default_delivery_required_by());
+					$this->due_date =
+						add_days($this->document_date, $SysPrefs->default_delivery_required_by());
 			}
+		$this->pos = user_pos();
+		$pos = get_sales_point($this->pos);
+		if (!$pos['cash_sale'] && !$pos['credit_sale']) 
+			$this->pos = -1; // mark not editable payment type
 	}
 
 	//-------------------------------------------------------------------------
@@ -250,13 +250,16 @@ class cart
 		}
 	}
 
-	function set_customer($customer_id, $customer_name, $currency, $discount, $cdiscount=0)
+	function set_customer($customer_id, $customer_name, $currency, $discount, $payment, $cdiscount=0)
 	{
 		$this->customer_name = $customer_name;
 		$this->customer_id = $customer_id;
 		$this->default_discount = $discount;
-		$this->cash_discount = $cdiscount;
 		$this->customer_currency = $currency;
+		$this->payment = $payment;
+		$this->payment_terms = get_payment_terms($payment);
+		$this->cash = $this->payment_terms['cash_sale'];
+		$this->cash_discount = $cdiscount;
 	}
 
 	function set_branch($branch_id, $tax_group_id, $tax_group_name, $phone='', $email='')
