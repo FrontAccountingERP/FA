@@ -578,9 +578,10 @@ function display_quick_entries(&$cart, $id, $base, $type, $descr='')
 					if (substr($qe_line['action'],0,1) != 'T') 
 						$part = $taxbase;
 					else
-						$part = $base;
+						$part = $base/100;
 					$item_tax = get_tax_type($qe_line['dest_id']);
-					if ($type == QE_SUPPINV && substr($qe_line['action'],0,1) != 'T')
+					//if ($type == QE_SUPPINV && substr($qe_line['action'],0,1) != 'T')
+					if ($type == QE_SUPPINV)
 					{
 						$taxgroup = $cart->tax_group_id;
 						$rates = 0;
