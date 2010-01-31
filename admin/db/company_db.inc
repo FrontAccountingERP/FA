@@ -133,9 +133,11 @@ function delete_payment_terms($selected_id)
 
 function get_payment_terms($selected_id)
 {
-	$sql = "SELECT * FROM ".TB_PREF."payment_terms WHERE terms_indicator=".db_escape($selected_id);
+	$sql = "SELECT *, (t.days_before_due=0) AND (t.day_in_following_month=0) as cash_sale
+	 FROM ".TB_PREF."payment_terms t WHERE terms_indicator=".db_escape($selected_id);
 
 	$result = db_query($sql,"could not get payment term");
+
 	return db_fetch($result);
 }
 
