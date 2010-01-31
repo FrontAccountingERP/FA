@@ -249,7 +249,7 @@ $opts = array(		// default options
 
 	$Ajax->addUpdate($name, "_{$name}_sel", $selector);
 
-	// span for select list/inut field update
+	// span for select list/input field update
 	$selector = "<span id='_{$name}_sel'>".$selector."</span>\n";
 
 	 // if selectable or editable list is used - add select button
@@ -1428,13 +1428,36 @@ function pos_list_row($label, $name, $selected_id=null, $spec_option=false, $sub
 
 }
 //-----------------------------------------------------------------------------------------------
+// Payment type selector for current user.
+//
+function sale_payment_list($name, $selected_id=null, $submit_on_change=true)
+{
+	$sql = "SELECT terms_indicator, terms, inactive FROM ".TB_PREF."payment_terms";
+	$paym = get_sales_point(user_pos());
 
-function sale_payment_list_cells($label, $name, $selected_id=null, $submit_on_change=false)
+	if (!$paym['cash_sale'] || !$paym['credit_sale']) {
+		if ($paym['cash_sale']) // only cash
+			$sql .= " WHERE days_before_due=0 AND day_in_following_month=0";
+		else
+			$sql .= " WHERE days_before_due!=0 OR day_in_following_month!=0";
+	}
+
+	return combo_input($name, $selected_id, $sql, 'terms_indicator', 'terms',
+	array(
+		'select_submit'=> $submit_on_change,
+		'async' => true
+	) );
+
+}
+
+function sale_payment_list_cells($label, $name, $selected_id=null, $submit_on_change=true)
 {
 	if ($label != null)
 		echo "<td>$label</td>\n";
 	echo "<td>";
-	echo yesno_list($name, $selected_id, _('Cash'), _('Delayed'), $submit_on_change);
+
+	echo sale_payment_list($name, $selected_id, $submit_on_change);
+
 	echo "</td>\n";
 }
 //-----------------------------------------------------------------------------------------------
