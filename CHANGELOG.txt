@@ -22,6 +22,11 @@ $ -> Affected files
 01-Feb-2010 Joe Hunt
 # [0000198] But ignoring shipping cost in Direct Invoice (cash).
 $ /sales/sales_order_entry.php
+# [0000197] Bug in closing some special balance sheet levels.
+$ /gl/inquiry/balance_sheet.php
+  /reporting/rep705.php
+  /reporting/rep706.php
+  /reporting/rep707.php
 
 31-Jan-2010 Joe Hunt
 # Bug in Quick Entries with Tax added.

@@ -169,7 +169,7 @@ function print_balance_sheet()
 			{
 				for ( ; $level >= 0, $typename[$level] != ''; $level--) 
 				{
-					if ($account['parent'] == $closing[$level] || $account['parent'] < $last || $account['parent'] <= 0)
+					if ($account['parent'] == $closing[$level] || $account['parent'] < $last || $account['parent'] <= 0 || $closeclass)
 					{	
 					
 						$url = "<a href='$path_to_root/gl/inquiry/balance_sheet.php?TransFromDate=" 
@@ -278,7 +278,7 @@ function print_balance_sheet()
 		{
 			for ( ; $level >= 0, $typename[$level] != ''; $level--) 
 			{
-				if ($account['parent'] == $closing[$level] || $account['parent'] < $last || $account['parent'] <= 0)
+				if ($account['parent'] == $closing[$level] || $account['parent'] < $last || $account['parent'] <= 0 || $closeclass)
 				{
 					//Inside drill down, no hyperlink
 					if (isset($_POST['AccGrp']) && (strlen($_POST['AccGrp']) > 0) && ($acctype[$level] == $_POST['AccGrp']))
