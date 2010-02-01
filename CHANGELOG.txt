@@ -19,6 +19,14 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+01-Feb-2010 Janusz Dobrowolski
+# Fixed error display hidden during ajax call in some situations
+$ /includes/errors.inc
+! Ajax timeout changed to 6/60s without retries, otherwise multiply 
+ errors are generated on fatal failure.
+$ /js/utils.js
+  /js/inserts.js
+
 01-Feb-2010 Joe Hunt
 # [0000198] But ignoring shipping cost in Direct Invoice (cash).
 $ /sales/sales_order_entry.php
