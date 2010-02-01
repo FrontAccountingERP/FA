@@ -240,7 +240,7 @@ function copy_to_cart()
 	if ($cart->cash) {
 		$cart->due_date = $cart->document_date;
 		$cart->phone = $cart->cust_ref = $cart->delivery_address = '';
-		$cart->freight_cost = 0;
+		$cart->freight_cost = input_num('freight_cost');
 		$cart->ship_via = 1;
 		$cart->deliver_to = '';//$_POST['deliver_to'];
 	} else {
