@@ -214,7 +214,7 @@ var inserts = {
 		    e.onclick = function() {
 			    save_focus(e);
 					if (e.getAttribute('aspect') == 'process')
-						JsHttpRequest.request(this, null, 30000);
+						JsHttpRequest.request(this, null, 60000);
 					else
 						JsHttpRequest.request(this);
 				return false;
