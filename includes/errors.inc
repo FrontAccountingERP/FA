@@ -84,9 +84,9 @@ function error_box() {
     global $before_box;
     
     echo "<div id='msgbox'>";
-	$before_box = ob_get_clean(); // save html content before error box 
+
 // Necessary restart instead of get_contents/clean calls due to a bug in php 4.3.2
-	register_shutdown_function('end_flush');
+	$before_box = ob_get_clean(); // save html content before error box 
     ob_start('output_html');
     echo "</div>";
 }
@@ -98,8 +98,8 @@ function end_flush () {
 
 	if (isset($Ajax))
 		$Ajax->run();
-
-	if (ob_get_level()) ob_end_flush();
+	// flush all output buffers (works also with exit inside any div levels)
+	while(ob_get_level()) ob_end_flush();
 }
 
 function display_db_error($msg, $sql_statement=null, $exit=true)
