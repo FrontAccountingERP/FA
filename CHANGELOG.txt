@@ -19,7 +19,11 @@ Legend:
 ! -> Note
 $ -> Affected files
 
-20-Jan-2010 Merged changes from main trunk 2.2.4-2.2.5 as follows
+02-Feb-2010 Janusz Dobrowolski
+# Missing closing bracket
+$ /sql/alter2.3.php
+
+02-Feb-2010 Merged changes from main trunk 2.2.4-2.2.5 as follows
 ------------------------------- Release 2.2.5 ----------------------------------
 02-Feb-2010 Joe Hunt
 ! Release 2.2.5
