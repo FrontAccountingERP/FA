@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+02-Feb-2010 Joe Hunt
+# Bug in direct invoice when cash sales and no cash account defined in sales pos.
+$ /sales/sales_order_entry.php
+
 01-Feb-2010 Janusz Dobrowolski
 # Fixed error display hidden during ajax call in some situations
 $ /includes/errors.inc

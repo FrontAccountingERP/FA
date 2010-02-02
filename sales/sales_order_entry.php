@@ -335,6 +335,7 @@ function can_process() {
 		return false;
 	}
 
+
 		if (strlen($_POST['delivery_address']) <= 1) {
 			display_error( _("You should enter the street address in the box provided. Orders cannot be accepted without a valid street address."));
 			set_focus('delivery_address');
@@ -367,6 +368,14 @@ function can_process() {
 			return false;
 		}
 	}
+	else
+	{
+		if (!db_has_cash_accounts())
+		{
+			display_error(_("You need to define a cash account for your Sales Point."));
+			return false;
+		}	
+	}	
 	if (!$Refs->is_valid($_POST['ref'])) {
 		display_error(_("You must enter a reference."));
 		set_focus('ref');
