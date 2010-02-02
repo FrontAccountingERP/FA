@@ -19,6 +19,8 @@ function update_company_prefs( $params )
 		if (!db_query($sql. db_escape($value). " WHERE name=".db_escape($name),
 			 "The company prefferences could not be updated "))
 			return false;
+		// update cached value
+		$_SESSION['SysPrefs']->prefs[$name] = $value;
 	}
 	return true;
 }
@@ -57,7 +59,7 @@ function get_company_pref($prefs = null, $tbpref = TB_PREF)
 	if (!$prefs)
 		return $all;
 	elseif (is_string($prefs))
-		return $all[$prefs];
+		return @$all[$prefs];
 
 	$ret = array();
 	foreach($prefs as $name)

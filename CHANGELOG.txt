@@ -22,6 +22,8 @@ $ -> Affected files
 02-Feb-2010 Janusz Dobrowolski
 # Missing closing bracket
 $ /sql/alter2.3.php
+# Small fixes in sys_prefs update/retrieve
+$ /admin/db/company_db.inc
 
 02-Feb-2010 Merged changes from main trunk 2.2.4-2.2.5 as follows
 ------------------------------- Release 2.2.5 ----------------------------------
