@@ -19,7 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+------------------------------- Release 2.2.5 ----------------------------------
 02-Feb-2010 Joe Hunt
+! Release 2.2.5
+$ $config.default.php
 # Bug in direct invoice when cash sales and no cash account defined in sales pos.
 $ /sales/sales_order_entry.php
 
@@ -32,7 +35,7 @@ $ /js/utils.js
   /js/inserts.js
 
 01-Feb-2010 Joe Hunt
-# [0000198] But ignoring shipping cost in Direct Invoice (cash).
+# [0000198] Bug ignoring shipping cost in Direct Invoice (cash).
 $ /sales/sales_order_entry.php
 # [0000197] Bug in closing some special balance sheet levels.
 $ /gl/inquiry/balance_sheet.php
