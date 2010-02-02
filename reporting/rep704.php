@@ -66,21 +66,22 @@ function print_GL_transactions()
 	$rep = new FrontReport(_('GL Account Transactions'), "GLAccountTransactions", user_pagesize());
 	$dec = user_price_dec();
 
-	$cols = array(0, 80, 100, 150, 210, 280, 340, 400, 450, 510, 570);
+  //$cols = array(0, 80, 100, 150, 210, 280, 340, 400, 450, 510, 570);
+	$cols = array(0, 65, 105, 125, 175, 230, 290, 345, 405, 465, 525);
 	//------------0--1---2---3----4----5----6----7----8----9----10-------
 	//-----------------------dim1-dim2-----------------------------------
 	//-----------------------dim1----------------------------------------
 	//-------------------------------------------------------------------
-	$aligns = array('left',	'left',	'left',	'left',	'left',	'left',	'right', 'right', 'right');
+	$aligns = array('left', 'left', 'left',	'left',	'left',	'left',	'left',	'right', 'right', 'right');
 
 	if ($dim == 2)
-		$headers = array(_('Type'),	_('#'),	_('Date'), _('Dimension')." 1", _('Dimension')." 2",
+		$headers = array(_('Type'),	_('Ref'), _('#'),	_('Date'), _('Dimension')." 1", _('Dimension')." 2",
 			_('Person/Item'), _('Debit'),	_('Credit'), _('Balance'));
 	elseif ($dim == 1)
-		$headers = array(_('Type'),	_('#'),	_('Date'), _('Dimension'), "", _('Person/Item'),
+		$headers = array(_('Type'),	_('Ref'), _('#'),	_('Date'), _('Dimension'), "", _('Person/Item'),
 			_('Debit'),	_('Credit'), _('Balance'));
 	else
-		$headers = array(_('Type'),	_('#'),	_('Date'), "", "", _('Person/Item'),
+		$headers = array(_('Type'),	_('Ref'), _('#'),	_('Date'), "", "", _('Person/Item'),
 			_('Debit'),	_('Credit'), _('Balance'));
 
 	if ($dim == 2)
@@ -132,12 +133,12 @@ function print_GL_transactions()
 		if ($prev_balance == 0.0 && $rows == 0)
 			continue;
 		$rep->Font('bold');
-		$rep->TextCol(0, 3,	$account['account_code'] . " " . $account['account_name']);
-		$rep->TextCol(3, 5, _('Opening Balance'));
+		$rep->TextCol(0, 4,	$account['account_code'] . " " . $account['account_name'], -2);
+		$rep->TextCol(4, 6, _('Opening Balance'));
 		if ($prev_balance > 0.0)
-			$rep->AmountCol(6, 7, abs($prev_balance), $dec);
-		else
 			$rep->AmountCol(7, 8, abs($prev_balance), $dec);
+		else
+			$rep->AmountCol(8, 9, abs($prev_balance), $dec);
 		$rep->Font();
 		$total = $prev_balance;
 		$rep->NewLine(2);
@@ -147,19 +148,21 @@ function print_GL_transactions()
 			{
 				$total += $myrow['amount'];
 
-				$rep->TextCol(0, 1, $systypes_array[$myrow["type"]]);
-				$rep->TextCol(1, 2,	$myrow['type_no']);
-				$rep->DateCol(2, 3,	$myrow["tran_date"], true);
+				$rep->TextCol(0, 1, $systypes_array[$myrow["type"]], -2);
+				$reference = get_reference($myrow["type"], $myrow["type_no"]);
+				$rep->TextCol(1, 2, $reference);
+				$rep->TextCol(2, 3,	$myrow['type_no'], -2);
+				$rep->DateCol(3, 4,	$myrow["tran_date"], true);
 				if ($dim >= 1)
-					$rep->TextCol(3, 4,	get_dimension_string($myrow['dimension_id']));
+					$rep->TextCol(4, 5,	get_dimension_string($myrow['dimension_id']));
 				if ($dim > 1)
-					$rep->TextCol(4, 5,	get_dimension_string($myrow['dimension2_id']));
-				$rep->TextCol(5, 6,	payment_person_name($myrow["person_type_id"],$myrow["person_id"], false));
+					$rep->TextCol(5, 6,	get_dimension_string($myrow['dimension2_id']));
+				$rep->TextCol(6, 7,	payment_person_name($myrow["person_type_id"],$myrow["person_id"], false));
 				if ($myrow['amount'] > 0.0)
-					$rep->AmountCol(6, 7, abs($myrow['amount']), $dec);
-				else
 					$rep->AmountCol(7, 8, abs($myrow['amount']), $dec);
-				$rep->TextCol(8, 9,	number_format2($total, $dec));
+				else
+					$rep->AmountCol(8, 9, abs($myrow['amount']), $dec);
+				$rep->TextCol(9, 10, number_format2($total, $dec));
 				$rep->NewLine();
 				if ($rep->row < $rep->bottomMargin + $rep->lineHeight)
 				{
@@ -170,11 +173,11 @@ function print_GL_transactions()
 			$rep->NewLine();
 		}
 		$rep->Font('bold');
-		$rep->TextCol(3, 5,	_("Ending Balance"));
+		$rep->TextCol(4, 6,	_("Ending Balance"));
 		if ($total > 0.0)
-			$rep->AmountCol(6, 7, abs($total), $dec);
-		else
 			$rep->AmountCol(7, 8, abs($total), $dec);
+		else
+			$rep->AmountCol(8, 9, abs($total), $dec);
 		$rep->Font();
 		$rep->Line($rep->row - $rep->lineHeight + 4);
 		$rep->NewLine(2, 1);

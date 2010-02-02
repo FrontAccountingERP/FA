@@ -191,7 +191,7 @@ function print_profit_and_loss_statement()
 			{
 				for ( ; $level >= 0, $typename[$level] != ''; $level--) 
 				{
-					if ($account['parent'] == $closing[$level] || $account['parent'] < $last || $account['parent'] <= 0)
+					if ($account['parent'] == $closing[$level] || $account['parent'] < $last || $account['parent'] <= 0 || $closeclass)
 					{
 						$rep->row += 6;
 						$rep->Line($rep->row);
@@ -295,7 +295,7 @@ function print_profit_and_loss_statement()
 		{
 			for ( ; $level >= 0, $typename[$level] != ''; $level--) 
 			{
-				if ($account['parent'] == $closing[$level] || $account['parent'] < $last || $account['parent'] <= 0)
+				if ($account['parent'] == $closing[$level] || $account['parent'] < $last || $account['parent'] <= 0 || $closeclass)
 				{
 					$rep->row += 6;
 					$rep->Line($rep->row);

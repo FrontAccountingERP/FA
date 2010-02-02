@@ -106,6 +106,10 @@ function print_bank_transactions()
 		$rep->NewLine(2);
 		if ($rows > 0)
 		{
+			// Keep a running total as we loop through
+			// the transactions.
+			$total_debit = $total_credit = 0;			
+			
 			while ($myrow=db_fetch($trans))
 			{
 				$total += $myrow['amount'];
@@ -116,9 +120,15 @@ function print_bank_transactions()
 				$rep->DateCol(3, 4,	$myrow["trans_date"], true);
 				$rep->TextCol(4, 5,	payment_person_name($myrow["person_type_id"],$myrow["person_id"], false));
 				if ($myrow['amount'] > 0.0)
+				{
 					$rep->AmountCol(5, 6, abs($myrow['amount']), $dec);
+					$total_debit += abs($myrow['amount']);
+				}
 				else
+				{
 					$rep->AmountCol(6, 7, abs($myrow['amount']), $dec);
+					$total_credit += abs($myrow['amount']);
+				}
 				$rep->AmountCol(7, 8, $total, $dec);
 				$rep->NewLine();
 				if ($rep->row < $rep->bottomMargin + $rep->lineHeight)
@@ -129,6 +139,13 @@ function print_bank_transactions()
 			}
 			$rep->NewLine();
 		}
+		
+		// Print totals for the debit and credit columns.
+		$rep->TextCol(3, 5, _("Total Debit / Credit"));
+		$rep->AmountCol(5, 6, $total_debit, $dec);
+		$rep->AmountCol(6, 7, $total_credit, $dec);
+		$rep->NewLine(2);
+
 		$rep->Font('bold');
 		$rep->TextCol(3, 5,	_("Ending Balance"));
 		if ($total > 0.0)
@@ -138,6 +155,14 @@ function print_bank_transactions()
 		$rep->Font();
 		$rep->Line($rep->row - $rep->lineHeight + 4);
 		$rep->NewLine(2, 1);
+		
+		// Print the difference between starting and ending balances.
+		$net_change = ($total - $prev_balance); 
+		$rep->TextCol(3, 5, _("Net Change"));
+		if ($total > 0.0)
+			$rep->AmountCol(5, 6, $net_change, $dec, 0, 0, 0, 0, null, 1, True);
+		else
+			$rep->AmountCol(6, 7, $net_change, $dec, 0, 0, 0, 0, null, 1, True);
 	}
 	$rep->End();
 }

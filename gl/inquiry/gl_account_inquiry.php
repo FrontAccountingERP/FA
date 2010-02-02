@@ -228,7 +228,7 @@ gl_inquiry_controls();
 
 div_start('trans_tbl');
 
-if (get_post('Show'))
+if (get_post('Show') || get_post('account'))
     show_results();
 
 div_end();

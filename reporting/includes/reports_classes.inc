@@ -64,10 +64,9 @@ class BoxReports
 	
 					$st_params = "<table border=0><tr><td>\n"
 						. "<form method='POST' action='$action' target='_blank'>\n";
-					$st_params .= hidden('REP_ID', $report->id, false);
 					$st_params .= submit('Rep'.$report->id,  
 						_("Display: ") . access_string($report->name, true),
-						false, '', $pdf_debug ? false : 'default') . '<br><br>';
+						false, '', $pdf_debug ? false : 'default') . hidden('REP_ID', $report->id, false).'<br><br>';
 					$st_params .= $this->getOptions($report->get_controls());
 					$st_params .= "\n</form></td></tr></table>\n";
 					set_focus('Rep'.$report->id);
@@ -331,6 +330,16 @@ class BoxReports
 					$sql = "SELECT concat(".TB_PREF."supp_trans.trans_no, '-',
 						".TB_PREF."supp_trans.type) AS TNO, concat(".TB_PREF."supp_trans.$ref, if (type=".ST_BANKPAYMENT.", ' $BP ', if (type=".ST_SUPPAYMENT.", ' $SP ', ' $CN ')), ".TB_PREF."suppliers.supp_name) as IName
 						FROM ".TB_PREF."suppliers, ".TB_PREF."supp_trans WHERE (type=".ST_BANKPAYMENT." OR type=".ST_SUPPAYMENT." OR type=".ST_SUPPCREDIT.") AND ".TB_PREF."suppliers.supplier_id=".TB_PREF."supp_trans.supplier_id ORDER BY ".TB_PREF."supp_trans.trans_no DESC";
+					return combo_input($name, '', $sql, 'TNO', 'IName',array('order'=>false));
+
+				case 'RECEIPT':
+					$BD = _("BD");
+					$CP = _("CP");
+					$CN = _("CN");
+					$ref = ($print_invoice_no == 1 ? "trans_no" : "reference");
+					$sql = "SELECT concat(".TB_PREF."debtor_trans.trans_no, '-',
+						".TB_PREF."debtor_trans.type) AS TNO, concat(".TB_PREF."debtor_trans.$ref, if (type=".ST_BANKDEPOSIT.", ' $BD ', if (type=".ST_CUSTPAYMENT.", ' $CP ', ' $CN ')), ".TB_PREF."debtors_master.name) as IName
+						FROM ".TB_PREF."debtors_master, ".TB_PREF."debtor_trans WHERE (type=".ST_BANKDEPOSIT." OR type=".ST_CUSTPAYMENT." OR type=".ST_CUSTCREDIT.") AND ".TB_PREF."debtors_master.debtor_no=".TB_PREF."debtor_trans.debtor_no ORDER BY ".TB_PREF."debtor_trans.trans_no DESC";
 					return combo_input($name, '', $sql, 'TNO', 'IName',array('order'=>false));
 
 				case 'ITEMS':

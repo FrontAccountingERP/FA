@@ -20,7 +20,10 @@ if (isset($header2type))
 	}
 	else
 	{
-		$doc_Charge_To = "Charge To";
+		if ($doctype == ST_CUSTPAYMENT)
+			$doc_Charge_To = "With thanks from";
+		else	
+			$doc_Charge_To = "Charge To";
 		$doc_Delivered_To = "Delivered To";
 	}	
 	$doc_Shipping_Company = "Shipping Company";
@@ -42,7 +45,7 @@ if (isset($header2type))
 	}	
 	else
 	{
-		if ($doctype == ST_SUPPAYMENT)
+		if ($doctype == ST_SUPPAYMENT || $doctype == ST_CUSTPAYMENT)
 			$doc_Our_Ref = "Type";
 		else	
 			$doc_Our_Ref = "Sales Person";
@@ -51,12 +54,15 @@ if (isset($header2type))
 		$doc_Customers_Ref = "Customers Reference";
 		$doc_Our_Order_No = "Our Order No";
 	}
+	$doc_Extra = "";
 	$doc_Our_VAT_no = "Our VAT No.";
 	$doc_Domicile = "Domicile";
 	if($doctype == ST_CUSTDELIVERY || $doctype == ST_SALESQUOTE || $doctype == ST_PURCHORDER || $doctype == ST_SALESORDER ||
-		$doctype == ST_SUPPAYMENT) {
-	 $doc_Bank_Account = '';
-	 $doc_Please_Quote = "All amounts stated in";
+		$doctype == ST_SUPPAYMENT || $doctype == ST_CUSTPAYMENT) {
+		if ($doctype == ST_CUSTPAYMENT)
+			$doc_Extra = "* Subject to Realisation of the Cheque.";
+		$doc_Bank_Account = '';
+	 	$doc_Please_Quote = "All amounts stated in";
   } else {
 	 $doc_Please_Quote = "Please quote ".($doctype==ST_SALESINVOICE ? "Invoice" : "Credit")
 	 	." no. when paying. All amounts stated in";
@@ -67,7 +73,8 @@ if (isset($header2type))
 	$doc_Bank = "Bank";
 	$doc_Payment_Link = "You can pay through";
 	if ($doctype == ST_SALESQUOTE || $doctype == ST_PURCHORDER || $doctype == ST_SALESORDER || $doctype == ST_SALESINVOICE || 
-		$doctype == ST_CUSTCREDIT || $doctype == ST_CUSTDELIVERY || $doctype == ST_WORKORDER ||	$doctype == ST_SUPPAYMENT)
+		$doctype == ST_CUSTCREDIT || $doctype == ST_CUSTDELIVERY || $doctype == ST_WORKORDER ||	$doctype == ST_SUPPAYMENT || 
+		$doctype == ST_CUSTPAYMENT)
 	{
 		if ($doctype == ST_SALESQUOTE)
 			$this->title = "SALES QUOTATION";
@@ -83,6 +90,8 @@ if (isset($header2type))
 			$this->title = "WORK ORDER";
 		elseif ($doctype == ST_SUPPAYMENT)
 			$this->title = "REMITTANCE";
+		elseif ($doctype == ST_CUSTPAYMENT)
+			$this->title = "RECEIPT";
 		else
 			$this->title = "CREDIT NOTE";
 		if ($doctype == ST_PURCHORDER)
@@ -91,13 +100,13 @@ if (isset($header2type))
 		elseif ($doctype == ST_WORKORDER)
 			$this->headers = array("Item Code", "Item Description",
 				"From Location", "Work Centre", 	"Unit Quantity", "Total Quantity", "Units Issued");
-		elseif ($doctype == ST_SUPPAYMENT)
+		elseif ($doctype == ST_SUPPAYMENT || $doctype == ST_CUSTPAYMENT)
 			$this->headers = array('Trans Type', '#', 'Date', 'Due Date', 'Total Amount', 'Left to Allocate', 'This Allocation');
 		else
 			$this->headers = array('Item Code', 'Item Description',	'Quantity', 'Unit',
 				'Price', 'Discount %', 'Total');
 	}
-	elseif ($doctype == ST_CUSTPAYMENT)
+	elseif ($doctype == ST_STATEMENT)
 	{
 		$this->title = "STATEMENT";
 		$this->headers = array('Trans Type', '#', 'Date', 'Due Date', 'Charges',
@@ -114,9 +123,10 @@ if (isset($emailtype))
 if (isset($header2type) || isset($linetype))
 {
 	$doc_Invoice_no = ($doctype==ST_CUSTDELIVERY ? "Delivery Note No." :
+		($doctype == ST_CUSTPAYMENT ? "Receipt No." :
 		($doctype == ST_SUPPAYMENT ? "Remittance No." :
 		(($doctype == ST_SALESQUOTE || $doctype==ST_PURCHORDER || $doctype==ST_SALESORDER) ? "Order no." : 
-		($doctype==ST_SALESINVOICE ? "Invoice No." : ($doctype == ST_WORKORDER ? "Work Order No" : "Credit No.")))));
+		($doctype==ST_SALESINVOICE ? "Invoice No." : ($doctype == ST_WORKORDER ? "Work Order No" : "Credit No."))))));
 	$doc_Delivery_no = "Delivery Note No.";
 	$doc_Order_no = "Order no.";
 }
@@ -135,13 +145,22 @@ if (isset($linetype))
 		$doc_TOTAL_PO = "TOTAL PO EX VAT";
 		$doc_TOTAL_DELIVERY = "TOTAL DELIVERY INCL. VAT";
 	}
-	elseif ($doctype == ST_SUPPAYMENT)
+	elseif ($doctype == ST_SUPPAYMENT || $doctype == ST_CUSTPAYMENT)
 	{
+		$doc_Towards = "As advance / full / part / payment towards:";
+		$doc_by_Cheque = "By Cash / Cheque* / Draft No.";
+		$doc_Dated = "Dated";
+		$doc_Drawn = "Drawn on Bank";
+		$doc_Drawn_Branch = "Branch";
+		$doc_Received = "Received / Sign";
 		$doc_Total_Allocated = "Total Allocated";
 		$doc_Left_To_Allocate = "Left to Allocate";
-		$doc_Total_Payment = "TOTAL REMITTANCE";
+		if ($doctype == ST_CUSTPAYMENT)
+			$doc_Total_Payment = "TOTAL RECEIPT";
+		else	
+			$doc_Total_Payment = "TOTAL REMITTANCE";
 	}
-	elseif ($doctype == ST_CUSTPAYMENT)
+	elseif ($doctype == ST_STATEMENT)
 	{
 		$doc_Outstanding = "Outstanding Transactions";
 		$doc_Current = "Current";

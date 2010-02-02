@@ -17,7 +17,8 @@ function get_demand_qty($stock_id, $location)
 			FROM ".TB_PREF."sales_order_details,
 					".TB_PREF."sales_orders
 				WHERE ".TB_PREF."sales_order_details.order_no="
-				.TB_PREF."sales_orders.order_no AND ";
+				.TB_PREF."sales_orders.order_no AND ".TB_PREF."sales_orders.trans_type=".ST_SALESORDER." AND 
+				".TB_PREF."sales_orders.trans_type=".TB_PREF."sales_order_details.trans_type AND ";
 	if ($location != "")
 		$sql .= TB_PREF."sales_orders.from_stk_loc =".db_escape($location)." AND ";
 	$sql .= TB_PREF."sales_order_details.stk_code = ".db_escape($stock_id);
@@ -101,7 +102,9 @@ function get_demand_asm_qty($stock_id, $location)
 				   FROM ".TB_PREF."sales_order_details,
 						".TB_PREF."sales_orders,
 						".TB_PREF."stock_master
-				   WHERE ".TB_PREF."sales_orders.order_no = ".TB_PREF."sales_order_details.order_no AND ";
+				   WHERE ".TB_PREF."sales_orders.order_no = ".TB_PREF."sales_order_details.order_no AND 
+				   	".TB_PREF."sales_orders.trans_type=".ST_SALESORDER." AND 
+					".TB_PREF."sales_orders.trans_type=".TB_PREF."sales_order_details.trans_type AND ";
 	if ($location != "")
 		$sql .= TB_PREF."sales_orders.from_stk_loc =".db_escape($location)." AND ";
 	$sql .= TB_PREF."sales_order_details.quantity-".TB_PREF."sales_order_details.qty_sent > 0 AND

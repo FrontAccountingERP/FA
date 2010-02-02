@@ -164,7 +164,7 @@ function print_balance_sheet()
 			{
 				for ( ; $level >= 0, $typename[$level] != ''; $level--) 
 				{
-					if ($account['parent'] == $closing[$level] || $account['parent'] < $last || $account['parent'] <= 0)
+					if ($account['parent'] == $closing[$level] || $account['parent'] < $last || $account['parent'] <= 0 || $closeclass)
 					{
 						$rep->row += 6;
 						$rep->Line($rep->row);
@@ -281,7 +281,7 @@ function print_balance_sheet()
 		{
 			for ( ; $level >= 0, $typename[$level] != ''; $level--) 
 			{
-				if ($account['parent'] == $closing[$level] || $account['parent'] < $last || $account['parent'] <= 0)
+				if ($account['parent'] == $closing[$level] || $account['parent'] < $last || $account['parent'] <= 0 || $closeclass)
 				{
 					$rep->row += 6;
 					$rep->Line($rep->row);

@@ -177,6 +177,7 @@ gl_all_accounts_list_row(_("Purchase Discount Account:"), 'pyt_discount_act', $_
 table_section_title(_("Inventory"));
 
 check_row(_("Allow Negative Inventory:"), 'allow_negative_stock', null);
+label_row(null, _("Warning:  Checking this will result in incorrect values in General Ledger"), "", "class='stockmankofg' colspan=2"); 
 
 table_section_title(_("Items Defaults"));
 gl_all_accounts_list_row(_("Sales Account:"), 'default_inv_sales_act', $_POST['default_inv_sales_act']);

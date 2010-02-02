@@ -42,7 +42,7 @@ if (isset($_GET['AddedID']))
 
    	hyperlink_no_params($_SERVER['PHP_SELF'], _("Enter &Another Transfer"));
 
-	safeExit();
+	display_footer_exit();
 }
 
 if (isset($_POST['_DatePaid_changed'])) {
@@ -170,21 +170,11 @@ function handle_add_deposit()
 
 //----------------------------------------------------------------------------------------
 
-function safeExit()
-{
-	echo "<br><br>";
-	end_page();
-	exit;
-}
-
-//----------------------------------------------------------------------------------------
-
 if (isset($_POST['AddPayment']))
 {
 	if (check_valid_entries() == true) 
 	{
 		handle_add_deposit();
-		safeExit();
 	}
 }
 

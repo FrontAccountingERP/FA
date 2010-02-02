@@ -19,6 +19,102 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+20-Jan-2010 Merged changes from main trunk 2.2.4-2.2.5 as follows
+------------------------------- Release 2.2.5 ----------------------------------
+02-Feb-2010 Joe Hunt
+! Release 2.2.5
+$ $config.default.php
+  update.html
+# Bug in direct invoice when cash sales and no cash account defined in sales pos.
+$ /sales/sales_order_entry.php
+
+01-Feb-2010 Janusz Dobrowolski
+# Fixed error display hidden during ajax call in some situations
+$ /includes/errors.inc
+! Ajax timeout changed to 6/60s without retries, otherwise multiply 
+ errors are generated on fatal failure.
+$ /js/utils.js
+  /js/inserts.js
+
+01-Feb-2010 Joe Hunt
+# [0000198] Bug ignoring shipping cost in Direct Invoice (cash).
+$ /sales/sales_order_entry.php
+# [0000197] Bug in closing some special balance sheet levels.
+$ /gl/inquiry/balance_sheet.php
+  /reporting/rep705.php
+  /reporting/rep706.php
+  /reporting/rep707.php
+
+31-Jan-2010 Joe Hunt
+# Bug in Quick Entries with Tax added.
+$ /includes/ui/ui_view.inc
+
+30-Jan-2010 Joe Hunt/Chaitanya
++ Added a Balance Sheet drilldown inquiry in Banking and GL.
+  Contributed by Chatanya. Magnificient!
+$ /applications/generalledger.php
+  /gl/inquiry/balance_sheet.php (new file)
+  /gl/inquiry/gl_account_inquiry.php
++ Added Purchase tax account in en_US-new.sql and en_US-demo.sql
+$ /sql/en_US-demo.sql
+  /sql/en_US_new.sql
+# Fixed bug in gl accounts checks
+  /taxes/tax_types.php
+
+30-Jan-2010 Janusz Dobrowolski
+# [0000194] Fixed tax records from journal entry (voiding problem)
+$ /gl/includes/db/gl_db_trans.inc
+  /reporting/rep709.php
+
+25-Jan-2010 Joe Hunt
+# [0000195] Bug not deleting refs record when deleting Sales Order, Quotation
+# A couple of redirecting bugs
+$ /sales/sales_order_entry.php
+  /sales/includes/db/sales_order_db.inc
+# Bug in the sequence in sales price pickup
+$ /sales/includes/sales_db.inc
++ Added document Receipt and small rearrangements and bugfixes
+$ /includes/types.inc
+  /includes/ui/ui_view.inc
+  /reporting/rep107.php
+  /reporting/rep108.php
+  /reporting/rep109.php
+  /reporting/rep110.php
+  /reporting/rep111.php
+  /reporting/rep112.php (new document file)
+  /reporting/rep209.php
+  /reporting/rep210.php
+  /reporting/reports_main.php
+  /reporting/includes/doctext.inc
+  /reporting/includes/doctext2.inc
+  /reporting/includes/header2.inc
+  /reporting/includes/reporting.inc
+  /reporting/includes/reports_classes.inc
+  /sales/customer_payments.php
+  /sales/sales_order_entry.php
+  /sales/inquiry/customer_inquiry.php
+  
+22-Jan-2010 Tom Hallman/Joe Hunt
+# Exchange rate doesn't update table when adding new or deleting rate
+$ /gl/manage/exchange_rates.php
+! Small adjustments to Bank Statement and GL Transactions Reports
+$ /reporting/rep601.php
+  /reporting/rep704.php
+! Layout fix for Report Selectors in when running in Windows OS.
+$ /reporting/includes/reports_classes.inc
+
+20-Jan-2010 Joe Hunt
+! Put a heavy warning on marking the checkbox 'Allow Negative Inventory'.
+$ /admin/gl_setup.php
+
+18-Jan-2010 Joe Hunt
+# Demand was calculated double from Sales Quotation. Should be 0.
+$ /includes/db/manufacturing_db.inc
+# A back link was still in Bank Transfer.
+$ /gl/bank_transfer.php
+
+---------- End of changes from main trunk 2.2.4-2.2.5
+
 26-Jan-2010 Janusz Dobrowolski
 + Editable sales terms in sales orders and invoices, default terms from customer record.
 $ /admin/db/company_db.inc
@@ -104,6 +200,7 @@ $ /admin/create_coy.php
 $ /js/utils.js
 
 20-Jan-2010 Merged changes from main trunk 2.2.3-2.2.4 as follows
+
 ------------------------------- Release 2.2.4 ----------------------------------
 17-Jan-2010 Joe Hunt
 ! Release 2.2.4

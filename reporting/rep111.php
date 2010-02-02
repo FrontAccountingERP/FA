@@ -142,6 +142,12 @@ function print_sales_quotations()
 		else	
 			$rep->TextCol(3, 6, $doc_TOTAL_ORDER2, - 2);
 		$rep->TextCol(6, 7,	$DisplayTotal, -2);
+		$words = price_in_words($myrow["freight_cost"] + $SubTotal, ST_SALESQUOTE);
+		if ($words != "")
+		{
+			$rep->NewLine(1);
+			$rep->TextCol(1, 7, $myrow['curr_code'] . ": " . $words, - 2);
+		}	
 		$rep->Font();
 		if ($email == 1)
 		{

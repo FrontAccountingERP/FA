@@ -19,6 +19,7 @@ include_once($path_to_root . "/includes/banking.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
 include_once($path_to_root . "/sales/includes/sales_db.inc");
 //include_once($path_to_root . "/sales/includes/ui/cust_alloc_ui.inc");
+include_once($path_to_root . "/reporting/includes/reporting.inc");
 
 $js = "";
 if ($use_popup_windows) {
@@ -60,14 +61,15 @@ if (isset($_GET['AddedID'])) {
 
 	display_notification_centered(_("The customer payment has been successfully entered."));
 
+	submenu_print(_("&Print This Receipt"), ST_CUSTPAYMENT, $payment_no."-".ST_CUSTPAYMENT, 'prtopt');
+
 	display_note(get_gl_view_str(ST_CUSTPAYMENT, $payment_no, _("&View the GL Journal Entries for this Customer Payment")));
 
 //	hyperlink_params($path_to_root . "/sales/allocations/customer_allocate.php", _("&Allocate this Customer Payment"), "trans_no=$payment_no&trans_type=12");
 
 	hyperlink_no_params($path_to_root . "/sales/customer_payments.php", _("Enter Another &Customer Payment"));
-	br(1);
-	end_page();
-	exit;
+	
+	display_footer_exit();
 }
 
 //----------------------------------------------------------------------------------------------

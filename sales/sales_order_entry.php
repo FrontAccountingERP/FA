@@ -201,9 +201,16 @@ if (isset($_GET['AddedID'])) {
 
 	submenu_view(_("&View This Invoice"), ST_SALESINVOICE, $invoice);
 
-	submenu_print(_("&Print Sales Invoice"), ST_SALESINVOICE, $invoice, 'prtopt');
-	submenu_print(_("&Email Sales Invoice"), ST_SALESINVOICE, $invoice, null, 1);
+	submenu_print(_("&Print Sales Invoice"), ST_SALESINVOICE, $invoice."-".ST_SALESINVOICE, 'prtopt');
+	submenu_print(_("&Email Sales Invoice"), ST_SALESINVOICE, $invoice."-".ST_SALESINVOICE, null, 1);
 	set_focus('prtopt');
+	
+	$sql = "SELECT trans_type_from, trans_no_from FROM ".TB_PREF."cust_allocations
+			WHERE trans_type_to=".ST_SALESINVOICE." AND trans_no_to=".db_escape($invoice);
+	$result = db_query($sql, "could not retrieve customer allocation");
+	$row = db_fetch($result);
+	if ($row !== false)
+		submenu_print(_("Print &Receipt"), $row['trans_type_from'], $row['trans_no_from']."-".$row['trans_type_from'], 'prtopt');
 
 	display_note(get_gl_view_str(ST_SALESINVOICE, $invoice, _("View the GL &Journal Entries for this Invoice")),0, 1);
 
@@ -237,7 +244,7 @@ function copy_to_cart()
 	if ($cart->cash) {
 		$cart->due_date = $cart->document_date;
 		$cart->phone = $cart->cust_ref = $cart->delivery_address = '';
-		$cart->freight_cost = 0;
+		$cart->freight_cost = input_num('freight_cost');
 		$cart->ship_via = 1;
 		$cart->deliver_to = '';//$_POST['deliver_to'];
 	} else {
@@ -332,6 +339,7 @@ function can_process() {
 		return false;
 	}
 
+
 		if (strlen($_POST['delivery_address']) <= 1) {
 			display_error( _("You should enter the street address in the box provided. Orders cannot be accepted without a valid street address."));
 			set_focus('delivery_address');
@@ -364,6 +372,14 @@ function can_process() {
 			return false;
 		}
 	}
+	else
+	{
+		if (!db_has_cash_accounts())
+		{
+			display_error(_("You need to define a cash account for your Sales Point."));
+			return false;
+		}	
+	}	
 	if (!$Refs->is_valid($_POST['ref'])) {
 		display_error(_("You must enter a reference."));
 		set_focus('ref');
@@ -498,27 +514,28 @@ function  handle_cancel_order()
 
 
 	if ($_SESSION['Items']->trans_type == ST_CUSTDELIVERY) {
-		display_note(_("Direct delivery entry has been cancelled as requested."), 1);
-		submenu_option(_("Enter a New Sales Delivery"),	$_SERVER['PHP_SELF']."?NewDelivery=0");
+		display_notification(_("Direct delivery entry has been cancelled as requested."), 1);
+		submenu_option(_("Enter a New Sales Delivery"),	"/sales/sales_order_entry.php?NewDelivery=1");
 
 	} elseif ($_SESSION['Items']->trans_type == ST_SALESINVOICE) {
-		display_note(_("Direct invoice entry has been cancelled as requested."), 1);
-		submenu_option(_("Enter a New Sales Invoice"),	$_SERVER['PHP_SELF']."?NewInvoice=0");
+		display_notification(_("Direct invoice entry has been cancelled as requested."), 1);
+		submenu_option(_("Enter a New Sales Invoice"),	"/sales/sales_order_entry.php?NewInvoice=1");
 	} else {
 		if ($_SESSION['Items']->trans_no != 0) {
-			if (sales_order_has_deliveries(key($_SESSION['Items']->trans_no)))
+			if ($_SESSION['Items']->trans_type == ST_SALESORDER && 
+				sales_order_has_deliveries(key($_SESSION['Items']->trans_no)))
 				display_error(_("This order cannot be cancelled because some of it has already been invoiced or dispatched. However, the line item quantities may be modified."));
 			else {
 				delete_sales_order(key($_SESSION['Items']->trans_no), $_SESSION['Items']->trans_type);
 				if ($_SESSION['Items']->trans_type == ST_SALESQUOTE)
 				{
-					display_note(_("This sales quotation has been cancelled as requested."), 1);
-					submenu_option(_("Enter a New Sales Quotation"), $_SERVER['PHP_SELF']."?NewQuotation=Yes");
+					display_notification(_("This sales quotation has been cancelled as requested."), 1);
+					submenu_option(_("Enter a New Sales Quotation"), "/sales/sales_order_entry.php?NewQuotation=Yes");
 				}
 				else
 				{
-					display_note(_("This sales order has been cancelled as requested."), 1);
-					submenu_option(_("Enter a New Sales Order"), $_SERVER['PHP_SELF']."?NewOrder=Yes");
+					display_notification(_("This sales order has been cancelled as requested."), 1);
+					submenu_option(_("Enter a New Sales Order"), "/sales/sales_order_entry.php?NewOrder=Yes");
 				}
 			}	
 		} else {
@@ -528,9 +545,7 @@ function  handle_cancel_order()
 	}
 	$Ajax->activate('_page_body');
 	processing_end();
-	br(1);
-	end_page();
-	exit;
+	display_footer_exit();
 }
 
 //--------------------------------------------------------------------------------
@@ -634,7 +649,6 @@ if ($_SESSION['Items']->trans_type == ST_SALESINVOICE) {
 start_form();
 
 hidden('cart_id');
-
 $customer_error = display_order_header($_SESSION['Items'],
 	($_SESSION['Items']->any_already_delivered() == 0), $idate);
 

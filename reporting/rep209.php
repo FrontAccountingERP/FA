@@ -167,6 +167,12 @@ function print_po()
 		$rep->Font('bold');
 		$rep->TextCol(3, 6, $doc_TOTAL_PO, - 2);
 		$rep->TextCol(6, 7,	$DisplayTotal, -2);
+		$words = price_in_words($SubTotal, ST_PURCHORDER);
+		if ($words != "")
+		{
+			$rep->NewLine(1);
+			$rep->TextCol(1, 7, $myrow['curr_code'] . ": " . $words, - 2);
+		}	
 		$rep->Font();
 		if ($email == 1)
 		{
