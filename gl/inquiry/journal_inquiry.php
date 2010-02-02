@@ -43,6 +43,7 @@ start_table("class='tablestyle_noborder'");
 start_row();
 
 ref_cells(_("Reference:"), 'Ref', '',null, _('Enter reference fragment or leave empty'));
+ref_cells(_("Memo:"), 'Memo', '',null, _('Enter memo fragment or leave empty'));
 
 journal_types_list_cells(_("Type:"), "filterType");
 date_cells(_("From:"), 'FromDate', '', null, 0, -1, 0);
@@ -174,6 +175,9 @@ $sql = "SELECT	IF(ISNULL(a.gl_seq),0,a.gl_seq) as gl_seq,
  	AND gl.amount!=0";
 if (isset($_POST['Ref']) && $_POST['Ref'] != "") {
  	$sql .= " AND reference LIKE '%". $_POST['Ref'] . "%'";
+}
+if (isset($_POST['Memo']) && $_POST['Memo'] != "") {
+	$sql .= " AND com.memo_ LIKE '%". $_POST['Memo'] . "%'";
 }
 if (get_post('filterType') != -1) {
  	$sql .= " AND gl.type=".get_post('filterType');
