@@ -23,6 +23,7 @@ $ -> Affected files
 02-Feb-2010 Joe Hunt
 ! Release 2.2.5
 $ $config.default.php
+  update.html
 # Bug in direct invoice when cash sales and no cash account defined in sales pos.
 $ /sales/sales_order_entry.php
 
