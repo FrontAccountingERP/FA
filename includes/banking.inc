@@ -90,7 +90,7 @@ function get_supplier_currency($supplier_id)
 
 function get_exchange_rate_from_home_currency($currency_code, $date_)
 {
-	if ($currency_code == get_company_currency())
+	if ($currency_code == get_company_currency() || $currency_code == null)
 		return 1.0000;
 
 	$date = date2sql($date_);

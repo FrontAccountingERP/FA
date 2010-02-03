@@ -27,6 +27,8 @@ $ /sales/includes/db/sales_delivery_db.inc
   price format uses thousands seperator. A couple of minor errors too. 
 $ /purchasing/includes/db/grn_db.inc
   /purchasing/includes/db/invoices_db.inc
+# Exchange rate bug when searching a non existing customer
+$ /includes/banking.inc
 
 03-Feb-2010 Chaitanya/Joe
 + Added a Profit and Loss Drilldown page and changed menu link
