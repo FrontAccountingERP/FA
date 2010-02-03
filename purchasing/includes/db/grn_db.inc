@@ -18,10 +18,11 @@ function update_average_material_cost($supplier, $stock_id, $price, $qty, $date,
 	else
 		$currency = null;
 	$dec = user_price_dec();
-	$price = price_decimal_format($price, $dec);
+	price_decimal_format($price, $dec);
+	$price = round2($price, $dec);
 	if ($currency != null)
 	{
-		$ex_rate = get_exchange_rate_to_home_currency($currency, $date_);
+		$ex_rate = get_exchange_rate_to_home_currency($currency, $date);
 		$price_in_home_currency = $price / $ex_rate;
 		//$price_in_home_currency = to_home_currency($price, $currency, $date);
 	}	

@@ -66,6 +66,10 @@ function write_sales_delivery(&$delivery,$bo_policy)
 		if ($trans_no != 0) // Inserted 2008-09-25 Joe Hunt
 			$delivery_line->standard_cost = get_standard_cost($delivery_line->stock_id);
 
+		// do not use standard cost if it's a non-inventory item, 2010-02-03 Joe Hunt
+		if (!is_inventory_item($delivery_line->stock_id))
+			$delivery_line->standard_cost = 0;
+
 		/* add delivery details for all lines */
 		write_customer_trans_detail_item(ST_CUSTDELIVERY, $delivery_no, $delivery_line->stock_id,
 			$delivery_line->item_description, $delivery_line->qty_dispatched,

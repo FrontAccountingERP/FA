@@ -19,6 +19,15 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+03-Feb-2010 Joe Hunt
+# When buying a service item from a supplier, the delivery produced
+  wrong inventory GL transactions. No GL transactions should be here.
+$ /sales/includes/db/sales_delivery_db.inc
+# [0000200] stock_master material_cost incorrectly updated during GRN when 
+  price format uses thousands seperator. A couple of minor errors too. 
+$ /purchasing/includes/db/grn_db.inc
+  /purchasing/includes/db/invoices_db.inc
+
 03-Feb-2010 Chaitanya/Joe
 + Added a Profit and Loss Drilldown page and changed menu link
 $ /applications/generalledger.php
