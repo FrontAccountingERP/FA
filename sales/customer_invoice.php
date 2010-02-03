@@ -227,6 +227,7 @@ function copy_to_cart()
 	$cart->document_date =  $_POST['InvoiceDate'];
 	$cart->due_date =  $_POST['due_date'];
 	$cart->payment = $_POST['payment'];
+	$cart->payment_terms = get_payment_terms($_POST['payment']);
 	$cart->Comments = $_POST['Comments'];
 	if ($_SESSION['Items']->trans_no == 0)
 		$cart->reference = $_POST['ref'];
@@ -244,6 +245,7 @@ function copy_from_cart()
 	$_POST['Comments']= $cart->Comments;
 	$_POST['cart_id'] = $cart->cart_id;
 	$_POST['ref'] = $cart->reference;
+	$_POST['payment'] = $cart->payment;
 }
 
 //-----------------------------------------------------------------------------

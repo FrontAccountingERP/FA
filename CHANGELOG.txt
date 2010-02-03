@@ -20,6 +20,10 @@ Legend:
 $ -> Affected files
 
 02-Feb-2010 Janusz Dobrowolski
+# Payment terms were not retrieved atinvoice edit start.
+$ /sales/customer_invoice.php
+
+02-Feb-2010 Janusz Dobrowolski
 # Missing closing bracket
 $ /sql/alter2.3.php
 # Small fixes in sys_prefs update/retrieve
