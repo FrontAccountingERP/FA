@@ -19,6 +19,14 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+03-Feb-2010 Chaitanya/Joe
++ Added a Profit and Loss Drilldown page and changed menu link
+$ /applications/generalledger.php
+  /gl/inquiry/profit_loss.php (New file)
+  /gl/inquiry/balance_sheet.php
+! Better layout
+$ /gl/inquiry/journal_inquiry.php
+
 02-Feb-2010 Chaitanya
 + Added memo search on journal inquires.
 $ /gl/inquiry/journal_inquiry.php

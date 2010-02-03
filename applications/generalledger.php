@@ -42,8 +42,10 @@ class general_ledger_app extends application
 
 		$this->add_rapp_function(1, _("Trial &Balance"),
 			"gl/inquiry/gl_trial_balance.php?", 'SA_GLANALYTIC');
-		$this->add_rapp_function(1, _("Balance &Sheet"),
+		$this->add_rapp_function(1, _("Balance &Sheet Drilldown"),
 			"gl/inquiry/balance_sheet.php?", 'SA_GLANALYTIC');
+		$this->add_rapp_function(1, _("&Profit and Loss Drilldown"),
+			"gl/inquiry/profit_loss.php?", 'SA_GLANALYTIC');		
 		$this->add_rapp_function(1, _("Banking &Reports"),
 			"reporting/reports_main.php?Class=5", 'SA_BANKREP');
 		$this->add_rapp_function(1, _("General Ledger &Reports"),

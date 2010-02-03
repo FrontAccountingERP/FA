@@ -43,7 +43,6 @@ start_table("class='tablestyle_noborder'");
 start_row();
 
 ref_cells(_("Reference:"), 'Ref', '',null, _('Enter reference fragment or leave empty'));
-ref_cells(_("Memo:"), 'Memo', '',null, _('Enter memo fragment or leave empty'));
 
 journal_types_list_cells(_("Type:"), "filterType");
 date_cells(_("From:"), 'FromDate', '', null, 0, -1, 0);
@@ -52,7 +51,9 @@ date_cells(_("To:"), 'ToDate');
 check_cells( _("Show closed:"), 'AlsoClosed', null);
 
 submit_cells('Search', _("Search"), '', '', 'default');
-
+end_row();
+start_row();
+ref_cells(_("Memo:"), 'Memo', '',null, _('Enter memo fragment or leave empty'));
 end_row();
 end_table();
 
