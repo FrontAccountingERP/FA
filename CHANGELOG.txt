@@ -22,6 +22,8 @@ $ -> Affected files
 02-Feb-2010 Janusz Dobrowolski
 # Payment terms were not retrieved atinvoice edit start.
 $ /sales/customer_invoice.php
+# Fixed item selector.
+$ /inventory/prices.php
 
 02-Feb-2010 Janusz Dobrowolski
 # Missing closing bracket
