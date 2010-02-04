@@ -221,16 +221,14 @@ if (strstr($_SERVER['PHP_SELF'], 'logout.php') == false){
 		// Show login screen
 		if (!isset($_POST["user_name_entry_field"]) or $_POST["user_name_entry_field"] == "")
 		{
-			$_SESSION['timeout'] = array( 'uri'=> $_SERVER['REQUEST_URI'],
+			// strip ajax marker from uri, to force synchronous page reload
+			$_SESSION['timeout'] = array( 'uri'=>preg_replace('/JsHttpRequest=(?:(\d+)-)?([^&]+)/s',
+					'', @$_SERVER['REQUEST_URI']), 
 				'post' => $_POST);
 
-			if (!in_ajax()) {
-				include($path_to_root . "/access/login.php");
-			} else {
-				// ajax update of current page elements - open login window in popup
-				// to not interfere with ajaxified page.
-				$Ajax->popup($path_to_root . "/access/timeout.php");
-			}
+			include($path_to_root . "/access/login.php");
+			if (in_ajax())
+				$Ajax->activate('_page_body');
 			exit;
 		} else {
 			$succeed = $_SESSION["wa_current_user"]->login($_POST["company_login_name"],
@@ -256,7 +254,6 @@ if (strstr($_SERVER['PHP_SELF'], 'logout.php') == false){
 		$_SESSION["App"]->init();
 	}
 }
-
 
 // POST vars cleanup needed for direct reuse.
 // We quote all values later with db_escape() before db update.
