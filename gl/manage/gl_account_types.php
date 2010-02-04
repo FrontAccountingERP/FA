@@ -58,7 +58,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 
     	if ($selected_id != -1) 
     	{
-    		if (update_account_type($selected_id, $_POST['name'], $_POST['class_id'], $_POST['parent']))
+    		if (update_account_type($_POST['id'], $_POST['name'], $_POST['class_id'], $_POST['parent'], $_POST['old_id']))
 				display_notification(_('Selected account type has been updated'));
     	} 
     	else 
@@ -169,9 +169,10 @@ if ($selected_id != -1)
 		$_POST['parent']  = $myrow["parent"];
 		$_POST['class_id']  = $myrow["class_id"];
 		hidden('selected_id', $selected_id);
+		hidden('old_id', $myrow["id"]);
  	}
  	hidden('id');
-	label_row(_("ID:"), $_POST['id']);
+	text_row_ex(_("ID:"), 'id', 10);
 }
 else
 	text_row_ex(_("ID:"), 'id', 10);

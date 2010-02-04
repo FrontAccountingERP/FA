@@ -71,7 +71,7 @@ CREATE TABLE `0_audit_trail` (
 DROP TABLE IF EXISTS `0_bank_accounts`;
 
 CREATE TABLE `0_bank_accounts` (
-  `account_code` varchar(11) NOT NULL default '',
+  `account_code` varchar(15) NOT NULL default '',
   `account_type` smallint(6) NOT NULL default '0',
   `bank_account_name` varchar(60) NOT NULL default '',
   `bank_account_number` varchar(100) NOT NULL default '',
@@ -104,7 +104,7 @@ CREATE TABLE `0_bank_trans` (
   `id` int(11) NOT NULL auto_increment,
   `type` smallint(6) default NULL,
   `trans_no` int(11) default NULL,
-  `bank_act` varchar(11) default NULL,
+  `bank_act` varchar(15) default NULL,
   `ref` varchar(40) default NULL,
   `trans_date` date NOT NULL default '0000-00-00',
   `amount` double default NULL,
@@ -158,7 +158,7 @@ CREATE TABLE `0_budget_trans` (
   `type` smallint(6) NOT NULL default '0',
   `type_no` bigint(16) NOT NULL default '1',
   `tran_date` date NOT NULL default '0000-00-00',
-  `account` varchar(11) NOT NULL default '',
+  `account` varchar(15) NOT NULL default '',
   `memo_` tinytext NOT NULL,
   `amount` double NOT NULL default '0',
   `dimension_id` int(11) default '0',
@@ -180,7 +180,7 @@ CREATE TABLE `0_budget_trans` (
 DROP TABLE IF EXISTS `0_chart_class`;
 
 CREATE TABLE `0_chart_class` (
-  `cid` int(11) NOT NULL default '0',
+  `cid` varchar(3) NOT NULL,
   `class_name` varchar(60) NOT NULL default '',
   `ctype` tinyint(1) NOT NULL default '0',
   `inactive` tinyint(1) NOT NULL default '0',
@@ -200,10 +200,10 @@ INSERT INTO `0_chart_class` VALUES ('4', 'Costs', '6', '0');
 DROP TABLE IF EXISTS `0_chart_master`;
 
 CREATE TABLE `0_chart_master` (
-  `account_code` varchar(11) NOT NULL default '',
-  `account_code2` varchar(11) default '',
+  `account_code` varchar(15) NOT NULL default '',
+  `account_code2` varchar(15) default '',
   `account_name` varchar(60) NOT NULL default '',
-  `account_type` int(11) NOT NULL default '0',
+  `account_type` varchar(10) NOT NULL default '0',
   `inactive` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`account_code`),
   KEY `account_name` (`account_name`),
@@ -299,15 +299,15 @@ INSERT INTO `0_chart_master` VALUES ('9990', '', 'Year Profit/Loss', '12', '0');
 DROP TABLE IF EXISTS `0_chart_types`;
 
 CREATE TABLE `0_chart_types` (
-  `id` int(11) NOT NULL auto_increment,
+  `id` varchar(10) NOT NULL,
   `name` varchar(60) NOT NULL default '',
-  `class_id` tinyint(1) NOT NULL default '0',
-  `parent` int(11) NOT NULL default '-1',
+  `class_id` varchar(3) NOT NULL default '',
+  `parent` varchar(10) NOT NULL default '-1',
   `inactive` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`id`),
   KEY  (`class_id`),
   KEY `name` (`name`)
-) TYPE=MyISAM AUTO_INCREMENT=13 ;
+) TYPE=MyISAM ;
 
 
 ### Data of table `0_chart_types` ###
@@ -361,23 +361,23 @@ CREATE TABLE `0_company` (
   `coy_logo` varchar(100) NOT NULL default '',
   `domicile` varchar(55) NOT NULL default '',
   `curr_default` char(3) NOT NULL default '',
-  `debtors_act` varchar(11) NOT NULL default '',
-  `pyt_discount_act` varchar(11) NOT NULL default '',
-  `creditors_act` varchar(11) NOT NULL default '',
-  `bank_charge_act` varchar(11) NOT NULL default '',
-  `exchange_diff_act` varchar(11) NOT NULL default '',
-  `profit_loss_year_act` varchar(11) NOT NULL default '',
-  `retained_earnings_act` varchar(11) NOT NULL default '',
-  `freight_act` varchar(11) NOT NULL default '',
-  `default_sales_act` varchar(11) NOT NULL default '',
-  `default_sales_discount_act` varchar(11) NOT NULL default '',
-  `default_prompt_payment_act` varchar(11) NOT NULL default '',
-  `default_inventory_act` varchar(11) NOT NULL default '',
-  `default_cogs_act` varchar(11) NOT NULL default '',
-  `default_adj_act` varchar(11) NOT NULL default '',
-  `default_inv_sales_act` varchar(11) NOT NULL default '',
-  `default_assembly_act` varchar(11) NOT NULL default '',
-  `payroll_act` varchar(11) NOT NULL default '',
+  `debtors_act` varchar(15) NOT NULL default '',
+  `pyt_discount_act` varchar(15) NOT NULL default '',
+  `creditors_act` varchar(15) NOT NULL default '',
+  `bank_charge_act` varchar(15) NOT NULL default '',
+  `exchange_diff_act` varchar(15) NOT NULL default '',
+  `profit_loss_year_act` varchar(15) NOT NULL default '',
+  `retained_earnings_act` varchar(15) NOT NULL default '',
+  `freight_act` varchar(15) NOT NULL default '',
+  `default_sales_act` varchar(15) NOT NULL default '',
+  `default_sales_discount_act` varchar(15) NOT NULL default '',
+  `default_prompt_payment_act` varchar(15) NOT NULL default '',
+  `default_inventory_act` varchar(15) NOT NULL default '',
+  `default_cogs_act` varchar(15) NOT NULL default '',
+  `default_adj_act` varchar(15) NOT NULL default '',
+  `default_inv_sales_act` varchar(15) NOT NULL default '',
+  `default_assembly_act` varchar(15) NOT NULL default '',
+  `payroll_act` varchar(15) NOT NULL default '',
   `allow_negative_stock` tinyint(1) NOT NULL default '0',
   `po_over_receive` int(11) NOT NULL default '10',
   `po_over_charge` int(11) NOT NULL default '10',
@@ -492,10 +492,10 @@ CREATE TABLE `0_cust_branch` (
   `email` varchar(100) NOT NULL default '',
   `default_location` varchar(5) NOT NULL default '',
   `tax_group_id` int(11) default NULL,
-  `sales_account` varchar(11) default NULL,
-  `sales_discount_account` varchar(11) default NULL,
-  `receivables_account` varchar(11) default NULL,
-  `payment_discount_account` varchar(11) default NULL,
+  `sales_account` varchar(15) default NULL,
+  `sales_discount_account` varchar(15) default NULL,
+  `receivables_account` varchar(15) default NULL,
+  `payment_discount_account` varchar(15) default NULL,
   `default_ship_via` int(11) NOT NULL default '1',
   `disable_trans` tinyint(4) NOT NULL default '0',
   `br_post_address` tinytext NOT NULL,
@@ -679,7 +679,7 @@ CREATE TABLE `0_gl_trans` (
   `type` smallint(6) NOT NULL default '0',
   `type_no` bigint(16) NOT NULL default '1',
   `tran_date` date NOT NULL default '0000-00-00',
-  `account` varchar(11) NOT NULL default '',
+  `account` varchar(15) NOT NULL default '',
   `memo_` tinytext NOT NULL,
   `amount` double NOT NULL default '0',
   `dimension_id` int(11) NOT NULL default '0',
@@ -1086,7 +1086,7 @@ CREATE TABLE `0_quick_entry_lines` (
   `qid` smallint(6) unsigned NOT NULL,
   `amount` double default '0',
   `action` varchar(2) NOT NULL,
-  `dest_id` varchar(11) NOT NULL,
+  `dest_id` varchar(15) NOT NULL,
   `dimension_id` smallint(6) unsigned default NULL,
   `dimension2_id` smallint(6) unsigned default NULL,
   PRIMARY KEY  (`id`),
@@ -1345,11 +1345,11 @@ CREATE TABLE `0_stock_category` (
   `dflt_tax_type` int(11) NOT NULL default '1',
   `dflt_units` varchar(20) NOT NULL default 'each',
   `dflt_mb_flag` char(1) NOT NULL default 'B',
-  `dflt_sales_act` varchar(11) NOT NULL default '',
-  `dflt_cogs_act` varchar(11) NOT NULL default '',
-  `dflt_inventory_act` varchar(11) NOT NULL default '',
-  `dflt_adjustment_act` varchar(11) NOT NULL default '',
-  `dflt_assembly_act` varchar(11) NOT NULL default '',
+  `dflt_sales_act` varchar(15) NOT NULL default '',
+  `dflt_cogs_act` varchar(15) NOT NULL default '',
+  `dflt_inventory_act` varchar(15) NOT NULL default '',
+  `dflt_adjustment_act` varchar(15) NOT NULL default '',
+  `dflt_assembly_act` varchar(15) NOT NULL default '',
   `dflt_dim1` int(11) default NULL,
   `dflt_dim2` int(11) default NULL,
   `inactive` tinyint(1) NOT NULL default '0',
@@ -1379,11 +1379,11 @@ CREATE TABLE `0_stock_master` (
   `long_description` tinytext NOT NULL,
   `units` varchar(20) NOT NULL default 'each',
   `mb_flag` char(1) NOT NULL default 'B',
-  `sales_account` varchar(11) NOT NULL default '',
-  `cogs_account` varchar(11) NOT NULL default '',
-  `inventory_account` varchar(11) NOT NULL default '',
-  `adjustment_account` varchar(11) NOT NULL default '',
-  `assembly_account` varchar(11) NOT NULL default '',
+  `sales_account` varchar(15) NOT NULL default '',
+  `cogs_account` varchar(15) NOT NULL default '',
+  `inventory_account` varchar(15) NOT NULL default '',
+  `adjustment_account` varchar(15) NOT NULL default '',
+  `assembly_account` varchar(15) NOT NULL default '',
   `dimension_id` int(11) default NULL,
   `dimension2_id` int(11) default NULL,
   `actual_cost` double NOT NULL default '0',
@@ -1460,7 +1460,7 @@ CREATE TABLE `0_supp_invoice_items` (
   `id` int(11) NOT NULL auto_increment,
   `supp_trans_no` int(11) default NULL,
   `supp_trans_type` int(11) default NULL,
-  `gl_code` varchar(11) NOT NULL default '0',
+  `gl_code` varchar(15) NOT NULL default '0',
   `grn_item_id` int(11) default NULL,
   `po_detail_item_id` int(11) default NULL,
   `stock_id` varchar(20) NOT NULL default '',
@@ -1532,9 +1532,9 @@ CREATE TABLE `0_suppliers` (
   `dimension2_id` int(11) default '0',
   `tax_group_id` int(11) default NULL,
   `credit_limit` double NOT NULL default '0',
-  `purchase_account` varchar(11) default NULL,
-  `payable_account` varchar(11) default NULL,
-  `payment_discount_account` varchar(11) default NULL,
+  `purchase_account` varchar(15) default NULL,
+  `payable_account` varchar(15) default NULL,
+  `payment_discount_account` varchar(15) default NULL,
   `notes` tinytext NOT NULL,
   `inactive` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`supplier_id`),
@@ -1585,30 +1585,30 @@ INSERT INTO `0_sys_prefs` VALUES ('add_pct', 'setup.company', 'int', '5', '-1');
 INSERT INTO `0_sys_prefs` VALUES ('round_to', 'setup.company', 'int', '5', '1');
 INSERT INTO `0_sys_prefs` VALUES ('login_tout', 'setup.company', 'smallint', '6', '600');
 INSERT INTO `0_sys_prefs` VALUES ('past_due_days', 'glsetup.general', 'int', '11', '30');
-INSERT INTO `0_sys_prefs` VALUES ('profit_loss_year_act', 'glsetup.general', 'varchar', '11', '9990');
-INSERT INTO `0_sys_prefs` VALUES ('retained_earnings_act', 'glsetup.general', 'varchar', '11', '3590');
-INSERT INTO `0_sys_prefs` VALUES ('bank_charge_act', 'glsetup.general', 'varchar', '11', '5690');
-INSERT INTO `0_sys_prefs` VALUES ('exchange_diff_act', 'glsetup.general', 'varchar', '11', '4450');
+INSERT INTO `0_sys_prefs` VALUES ('profit_loss_year_act', 'glsetup.general', 'varchar', '15', '9990');
+INSERT INTO `0_sys_prefs` VALUES ('retained_earnings_act', 'glsetup.general', 'varchar', '15', '3590');
+INSERT INTO `0_sys_prefs` VALUES ('bank_charge_act', 'glsetup.general', 'varchar', '15', '5690');
+INSERT INTO `0_sys_prefs` VALUES ('exchange_diff_act', 'glsetup.general', 'varchar', '15', '4450');
 INSERT INTO `0_sys_prefs` VALUES ('default_credit_limit', 'glsetup.customer', 'int', '11', '1000');
 INSERT INTO `0_sys_prefs` VALUES ('accumulate_shipping', 'glsetup.customer', 'tinyint', '1', '0');
 INSERT INTO `0_sys_prefs` VALUES ('legal_text', 'glsetup.customer', 'tinytext', '0', NULL);
-INSERT INTO `0_sys_prefs` VALUES ('freight_act', 'glsetup.customer', 'varchar', '11', '4430');
-INSERT INTO `0_sys_prefs` VALUES ('debtors_act', 'glsetup.sales', 'varchar', '11', '1200');
-INSERT INTO `0_sys_prefs` VALUES ('default_sales_act', 'glsetup.sales', 'varchar', '11', '4010');
-INSERT INTO `0_sys_prefs` VALUES ('default_sales_discount_act', 'glsetup.sales', 'varchar', '11', '4510');
-INSERT INTO `0_sys_prefs` VALUES ('default_prompt_payment_act', 'glsetup.sales', 'varchar', '11', '4500');
+INSERT INTO `0_sys_prefs` VALUES ('freight_act', 'glsetup.customer', 'varchar', '15', '4430');
+INSERT INTO `0_sys_prefs` VALUES ('debtors_act', 'glsetup.sales', 'varchar', '15', '1200');
+INSERT INTO `0_sys_prefs` VALUES ('default_sales_act', 'glsetup.sales', 'varchar', '15', '4010');
+INSERT INTO `0_sys_prefs` VALUES ('default_sales_discount_act', 'glsetup.sales', 'varchar', '15', '4510');
+INSERT INTO `0_sys_prefs` VALUES ('default_prompt_payment_act', 'glsetup.sales', 'varchar', '15', '4500');
 INSERT INTO `0_sys_prefs` VALUES ('default_delivery_required', 'glsetup.sales', 'smallint', '6', '1');
 INSERT INTO `0_sys_prefs` VALUES ('default_dim_required', 'glsetup.dims', 'int', '11', '20');
-INSERT INTO `0_sys_prefs` VALUES ('pyt_discount_act', 'glsetup.purchase', 'varchar', '11', '5060');
-INSERT INTO `0_sys_prefs` VALUES ('creditors_act', 'glsetup.purchase', 'varchar', '11', '2100');
+INSERT INTO `0_sys_prefs` VALUES ('pyt_discount_act', 'glsetup.purchase', 'varchar', '15', '5060');
+INSERT INTO `0_sys_prefs` VALUES ('creditors_act', 'glsetup.purchase', 'varchar', '15', '2100');
 INSERT INTO `0_sys_prefs` VALUES ('po_over_receive', 'glsetup.purchase', 'int', '11', '10');
 INSERT INTO `0_sys_prefs` VALUES ('po_over_charge', 'glsetup.purchase', 'int', '11', '10');
 INSERT INTO `0_sys_prefs` VALUES ('allow_negative_stock', 'glsetup.inventory', 'tinyint', '1', '0');
-INSERT INTO `0_sys_prefs` VALUES ('default_inventory_act', 'glsetup.items', 'varchar', '11', '1510');
-INSERT INTO `0_sys_prefs` VALUES ('default_cogs_act', 'glsetup.items', 'varchar', '11', '5010');
-INSERT INTO `0_sys_prefs` VALUES ('default_adj_act', 'glsetup.items', 'varchar', '11', '5040');
-INSERT INTO `0_sys_prefs` VALUES ('default_inv_sales_act', 'glsetup.items', 'varchar', '11', '4010');
-INSERT INTO `0_sys_prefs` VALUES ('default_assembly_act', 'glsetup.items', 'varchar', '11', '1530');
+INSERT INTO `0_sys_prefs` VALUES ('default_inventory_act', 'glsetup.items', 'varchar', '15', '1510');
+INSERT INTO `0_sys_prefs` VALUES ('default_cogs_act', 'glsetup.items', 'varchar', '15', '5010');
+INSERT INTO `0_sys_prefs` VALUES ('default_adj_act', 'glsetup.items', 'varchar', '15', '5040');
+INSERT INTO `0_sys_prefs` VALUES ('default_inv_sales_act', 'glsetup.items', 'varchar', '15', '4010');
+INSERT INTO `0_sys_prefs` VALUES ('default_assembly_act', 'glsetup.items', 'varchar', '15', '1530');
 INSERT INTO `0_sys_prefs` VALUES ('default_workorder_required', 'glsetup.manuf', 'int', '11', '20');
 INSERT INTO `0_sys_prefs` VALUES ('version_id', 'system', 'varchar', '11', '2.3');
 
@@ -1695,8 +1695,8 @@ DROP TABLE IF EXISTS `0_tax_types`;
 CREATE TABLE `0_tax_types` (
   `id` int(11) NOT NULL auto_increment,
   `rate` double NOT NULL default '0',
-  `sales_gl_code` varchar(11) NOT NULL default '',
-  `purchasing_gl_code` varchar(11) NOT NULL default '',
+  `sales_gl_code` varchar(15) NOT NULL default '',
+  `purchasing_gl_code` varchar(15) NOT NULL default '',
   `name` varchar(60) NOT NULL default '',
   `inactive` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`id`)
@@ -1942,7 +1942,7 @@ CREATE TABLE `0_tags` (
 DROP TABLE IF EXISTS `0_tag_associations`;
 
 CREATE TABLE `0_tag_associations` (
-  `record_id` varchar(11) NOT NULL,
+  `record_id` varchar(15) NOT NULL,
   `tag_id` int(11) NOT NULL,
   UNIQUE KEY(`record_id`,`tag_id`)
 ) TYPE=MyISAM;

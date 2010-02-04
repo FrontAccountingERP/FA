@@ -79,6 +79,6 @@ class fa2_3 {
 		$n -= $patchcnt;
 		return $n == 0 ? true : $patchcnt;
 	}
-	
+}	
 $install = new fa2_3;
 ?>

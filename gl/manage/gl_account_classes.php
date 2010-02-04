@@ -140,18 +140,18 @@ start_table($table_style2);
 
 if ($selected_id != -1) 
 {
- if ($Mode == 'Edit') {
-	//editing an existing status code
-	$myrow = get_account_class($selected_id);
-
-	$_POST['id']  = $myrow["cid"];
-	$_POST['name']  = $myrow["class_name"];
-	if (isset($use_oldstyle_convert) && $use_oldstyle_convert == 1)
-		$_POST['ctype'] = ($myrow["ctype"] >= CL_ASSETS && $myrow["ctype"] < CL_INCOME ? 1 : 0);
-	else
-		$_POST['ctype']  = $myrow["ctype"];
-	hidden('selected_id', $selected_id);
- }
+ 	if ($Mode == 'Edit') {
+		//editing an existing status code
+		$myrow = get_account_class($selected_id);
+	
+		$_POST['id']  = $myrow["cid"];
+		$_POST['name']  = $myrow["class_name"];
+		if (isset($use_oldstyle_convert) && $use_oldstyle_convert == 1)
+			$_POST['ctype'] = ($myrow["ctype"] >= CL_ASSETS && $myrow["ctype"] < CL_INCOME ? 1 : 0);
+		else
+			$_POST['ctype']  = $myrow["ctype"];
+		hidden('selected_id', $selected_id);
+ 	}
 	hidden('id');
 	label_row(_("Class ID:"), $_POST['id']);
 

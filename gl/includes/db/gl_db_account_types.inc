@@ -17,13 +17,39 @@ function add_account_type($id, $name, $class_id, $parent)
 	return db_query($sql);
 }
 
-function update_account_type($id, $name, $class_id, $parent)
+function update_account_type($id, $name, $class_id, $parent, $old_id)
 {
-    $sql = "UPDATE ".TB_PREF."chart_types SET name=".db_escape($name).",
-		class_id=".db_escape($class_id).", parent=".db_escape($parent)
-		." WHERE id = ".db_escape($id);
+	begin_transaction();
+	if ($old_id != $id)
+	{
+		$sql = "SELECT id FROM ".TB_PREF."chart_types WHERE parent = ".db_escape($old_id);
 
-	return db_query($sql, "could not update account type");
+		$result = db_query($sql, "could not get account type");
+
+		while ($myrow = db_fetch($result))
+		{
+    		$sql = "UPDATE ".TB_PREF."chart_types SET parent=".db_escape($id)
+				." WHERE id = '".$myrow['id']."'";
+			db_query($sql, "could not update account type");
+		}
+		$sql = "SELECT account_code FROM ".TB_PREF."chart_master WHERE account_type = ".db_escape($old_id);
+
+		$result = db_query($sql, "could not get account");
+
+		while ($myrow = db_fetch($result))
+		{
+    		$sql = "UPDATE ".TB_PREF."chart_master SET account_type=".db_escape($id)
+				." WHERE account_code = '".$myrow['account_code']."'";
+			db_query($sql, "could not update account");
+		}
+	}
+    $sql = "UPDATE ".TB_PREF."chart_types SET id=".db_escape($id) .", name=".db_escape($name).",
+		class_id=".db_escape($class_id).", parent=".db_escape($parent)
+		." WHERE id = ".db_escape($old_id);
+
+	$ret = db_query($sql, "could not update account type");
+	commit_transaction();
+	return $ret;
 }
 
 function get_account_types($all=false)

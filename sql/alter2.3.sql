@@ -76,42 +76,79 @@ INSERT INTO `0_sys_prefs` SELECT 'login_tout','setup.company', 'smallint','6', c
 #INSERT INTO `0_sys_prefs` SELECT 'foreign_codes','setup.company', 'tinyint','1', c.foreign_codes FROM `0_company` c;
 
 INSERT INTO `0_sys_prefs` SELECT 'past_due_days','glsetup.general', 'int','11', c.past_due_days FROM `0_company` c;
-INSERT INTO `0_sys_prefs` SELECT 'profit_loss_year_act','glsetup.general', 'varchar','11', c.profit_loss_year_act FROM `0_company` c;
-INSERT INTO `0_sys_prefs` SELECT 'retained_earnings_act','glsetup.general', 'varchar','11', c.retained_earnings_act FROM `0_company` c;
-INSERT INTO `0_sys_prefs` SELECT 'bank_charge_act','glsetup.general', 'varchar','11',  c.bank_charge_act FROM `0_company` c;
-INSERT INTO `0_sys_prefs` SELECT 'exchange_diff_act','glsetup.general', 'varchar','11', c.exchange_diff_act FROM `0_company` c;
+INSERT INTO `0_sys_prefs` SELECT 'profit_loss_year_act','glsetup.general', 'varchar','15', c.profit_loss_year_act FROM `0_company` c;
+INSERT INTO `0_sys_prefs` SELECT 'retained_earnings_act','glsetup.general', 'varchar','15', c.retained_earnings_act FROM `0_company` c;
+INSERT INTO `0_sys_prefs` SELECT 'bank_charge_act','glsetup.general', 'varchar','15',  c.bank_charge_act FROM `0_company` c;
+INSERT INTO `0_sys_prefs` SELECT 'exchange_diff_act','glsetup.general', 'varchar','15', c.exchange_diff_act FROM `0_company` c;
 
 INSERT INTO `0_sys_prefs` SELECT 'default_credit_limit','glsetup.customer', 'int','11', c.default_credit_limit FROM `0_company` c;
 INSERT INTO `0_sys_prefs` SELECT 'accumulate_shipping','glsetup.customer', 'tinyint','1', c.accumulate_shipping FROM `0_company` c;
 INSERT INTO `0_sys_prefs` SELECT 'legal_text','glsetup.customer', 'tinytext','', c.legal_text FROM `0_company` c;
-INSERT INTO `0_sys_prefs` SELECT 'freight_act','glsetup.customer', 'varchar','11', c.freight_act FROM `0_company` c;
+INSERT INTO `0_sys_prefs` SELECT 'freight_act','glsetup.customer', 'varchar','15', c.freight_act FROM `0_company` c;
 
-INSERT INTO `0_sys_prefs` SELECT 'debtors_act','glsetup.sales', 'varchar','11', c.debtors_act FROM `0_company` c;
-INSERT INTO `0_sys_prefs` SELECT 'default_sales_act','glsetup.sales', 'varchar','11', c.default_sales_act FROM `0_company` c;
-INSERT INTO `0_sys_prefs` SELECT 'default_sales_discount_act','glsetup.sales', 'varchar','11', c.default_sales_discount_act FROM `0_company` c;
-INSERT INTO `0_sys_prefs` SELECT 'default_prompt_payment_act','glsetup.sales', 'varchar','11', c.default_prompt_payment_act FROM `0_company` c;
+INSERT INTO `0_sys_prefs` SELECT 'debtors_act','glsetup.sales', 'varchar','15', c.debtors_act FROM `0_company` c;
+INSERT INTO `0_sys_prefs` SELECT 'default_sales_act','glsetup.sales', 'varchar','15', c.default_sales_act FROM `0_company` c;
+INSERT INTO `0_sys_prefs` SELECT 'default_sales_discount_act','glsetup.sales', 'varchar','15', c.default_sales_discount_act FROM `0_company` c;
+INSERT INTO `0_sys_prefs` SELECT 'default_prompt_payment_act','glsetup.sales', 'varchar','15', c.default_prompt_payment_act FROM `0_company` c;
 INSERT INTO `0_sys_prefs` SELECT 'default_delivery_required','glsetup.sales', 'smallint','6', c.default_delivery_required FROM `0_company` c;
 
 INSERT INTO `0_sys_prefs` SELECT 'default_dim_required','glsetup.dims', 'int','11', c.default_dim_required FROM `0_company` c;
 
-INSERT INTO `0_sys_prefs` SELECT 'pyt_discount_act','glsetup.purchase', 'varchar','11', c.pyt_discount_act FROM `0_company` c;
-INSERT INTO `0_sys_prefs` SELECT 'creditors_act','glsetup.purchase', 'varchar','11', c.creditors_act FROM `0_company` c;
+INSERT INTO `0_sys_prefs` SELECT 'pyt_discount_act','glsetup.purchase', 'varchar','15', c.pyt_discount_act FROM `0_company` c;
+INSERT INTO `0_sys_prefs` SELECT 'creditors_act','glsetup.purchase', 'varchar','15', c.creditors_act FROM `0_company` c;
 INSERT INTO `0_sys_prefs` SELECT 'po_over_receive','glsetup.purchase', 'int','11', c.po_over_receive FROM `0_company` c;
 INSERT INTO `0_sys_prefs` SELECT 'po_over_charge','glsetup.purchase', 'int','11', c.po_over_charge FROM `0_company` c;
 
 INSERT INTO `0_sys_prefs` SELECT 'allow_negative_stock','glsetup.inventory', 'tinyint','1', c.allow_negative_stock FROM `0_company` c;
 
-INSERT INTO `0_sys_prefs` SELECT 'default_inventory_act','glsetup.items', 'varchar','11', c.default_inventory_act FROM `0_company` c;
-INSERT INTO `0_sys_prefs` SELECT 'default_cogs_act','glsetup.items', 'varchar','11', c.default_cogs_act FROM `0_company` c;
-INSERT INTO `0_sys_prefs` SELECT 'default_adj_act','glsetup.items', 'varchar','11', c.default_adj_act FROM `0_company` c;
-INSERT INTO `0_sys_prefs` SELECT 'default_inv_sales_act','glsetup.items', 'varchar','11', c.default_inv_sales_act FROM `0_company` c;
-INSERT INTO `0_sys_prefs` SELECT 'default_assembly_act','glsetup.items', 'varchar','11', c.default_assembly_act FROM `0_company` c;
+INSERT INTO `0_sys_prefs` SELECT 'default_inventory_act','glsetup.items', 'varchar','15', c.default_inventory_act FROM `0_company` c;
+INSERT INTO `0_sys_prefs` SELECT 'default_cogs_act','glsetup.items', 'varchar','15', c.default_cogs_act FROM `0_company` c;
+INSERT INTO `0_sys_prefs` SELECT 'default_adj_act','glsetup.items', 'varchar','15', c.default_adj_act FROM `0_company` c;
+INSERT INTO `0_sys_prefs` SELECT 'default_inv_sales_act','glsetup.items', 'varchar','15', c.default_inv_sales_act FROM `0_company` c;
+INSERT INTO `0_sys_prefs` SELECT 'default_assembly_act','glsetup.items', 'varchar','15', c.default_assembly_act FROM `0_company` c;
 
 INSERT INTO `0_sys_prefs` SELECT 'default_workorder_required','glsetup.manuf', 'int', '11', c.default_workorder_required FROM `0_company` c;
 
-#INSERT INTO `0_sys_prefs` SELECT 'payroll_act','glsetup.payroll', 'varchar','11', c.payroll_act FROM `0_company` c;
+#INSERT INTO `0_sys_prefs` SELECT 'payroll_act','glsetup.payroll', 'varchar','15', c.payroll_act FROM `0_company` c;
 INSERT INTO `0_sys_prefs` SELECT 'version_id', 'system', 'varchar', '11', c.version_id FROM `0_company` c;
 
 ALTER TABLE `0_stock_master` ADD COLUMN `editable` TINYINT(1) NOT NULL default '0';
 ALTER TABLE `0_debtor_trans` ADD COLUMN `payment_terms` int(11) default NULL;
 ALTER TABLE `0_sales_orders` ADD COLUMN `payment_terms` int(11) default NULL;
+
+# change account, groups and classes id's
+ALTER TABLE `0_bank_accounts` CHANGE `account_code` `account_code` VARCHAR(15) NOT NULL DEFAULT '';
+ALTER TABLE `0_bank_trans` CHANGE `bank_act` `bank_act` VARCHAR(15) NOT NULL DEFAULT '';
+ALTER TABLE `0_budget_trans` CHANGE `account` `account` VARCHAR(15) NOT NULL DEFAULT '';
+ALTER TABLE `0_chart_master` CHANGE `account_code` `account_code` VARCHAR(15) NOT NULL DEFAULT '';
+ALTER TABLE `0_chart_master` CHANGE `account_code2` `account_code2` VARCHAR(15) NOT NULL DEFAULT '';
+ALTER TABLE `0_cust_branch` CHANGE `sales_account` `sales_account` VARCHAR(15) NOT NULL DEFAULT '';
+ALTER TABLE `0_cust_branch` CHANGE `sales_discount_account` `sales_discount_account` VARCHAR(15) NOT NULL DEFAULT '';
+ALTER TABLE `0_cust_branch` CHANGE `receivables_account` `receivables_account` VARCHAR(15) NOT NULL DEFAULT '';
+ALTER TABLE `0_cust_branch` CHANGE `payment_discount_account` `payment_discount_account` VARCHAR(15) NOT NULL DEFAULT '';
+ALTER TABLE `0_gl_trans` CHANGE `account` `account` VARCHAR(15) NOT NULL DEFAULT '';
+ALTER TABLE `0_quick_entry_lines` CHANGE `dest_id` `dest_id` VARCHAR(15) NOT NULL DEFAULT '';
+ALTER TABLE `0_stock_category` CHANGE `dflt_sales_act` `dflt_sales_act` VARCHAR(15) NOT NULL DEFAULT '';
+ALTER TABLE `0_stock_category` CHANGE `dflt_cogs_act` `dflt_cogs_act` VARCHAR(15) NOT NULL DEFAULT '';
+ALTER TABLE `0_stock_category` CHANGE `dflt_inventory_act` `dflt_inventory_act` VARCHAR(15) NOT NULL DEFAULT '';
+ALTER TABLE `0_stock_category` CHANGE `dflt_adjustment_act` `dflt_adjustment_act` VARCHAR(15) NOT NULL DEFAULT '';
+ALTER TABLE `0_stock_category` CHANGE `dflt_assembly_act` `dflt_assembly_act` VARCHAR(15) NOT NULL DEFAULT '';
+ALTER TABLE `0_stock_master` CHANGE `sales_account` `sales_account` VARCHAR(15) NOT NULL DEFAULT '';
+ALTER TABLE `0_stock_master` CHANGE `cogs_account` `cogs_account` VARCHAR(15) NOT NULL DEFAULT '';
+ALTER TABLE `0_stock_master` CHANGE `inventory_account` `inventory_account` VARCHAR(15) NOT NULL DEFAULT '';
+ALTER TABLE `0_stock_master` CHANGE `adjustment_account` `adjustment_account` VARCHAR(15) NOT NULL DEFAULT '';
+ALTER TABLE `0_stock_master` CHANGE `assembly_account` `assembly_account` VARCHAR(15) NOT NULL DEFAULT '';
+ALTER TABLE `0_supp_invoice_items` CHANGE `gl_code` `gl_code` VARCHAR(15) NOT NULL DEFAULT '';
+ALTER TABLE `0_suppliers` CHANGE `purchase_account` `purchase_account` VARCHAR(15) NOT NULL DEFAULT '';
+ALTER TABLE `0_suppliers` CHANGE `payable_account` `payable_account` VARCHAR(15) NOT NULL DEFAULT '';
+ALTER TABLE `0_suppliers` CHANGE `payment_discount_account` `payment_discount_account` VARCHAR(15) NOT NULL DEFAULT '';
+ALTER TABLE `0_tax_types` CHANGE `sales_gl_code` `sales_gl_code` VARCHAR(15) NOT NULL DEFAULT '';
+ALTER TABLE `0_tax_types` CHANGE `purchasing_gl_code` `purchasing_gl_code` VARCHAR(15) NOT NULL DEFAULT '';
+ALTER TABLE `0_tag_associations` CHANGE `record_id` `record_id` VARCHAR(15) NOT NULL;
+ALTER TABLE `0_chart_class` CHANGE `cid` `cid` VARCHAR(3) NOT NULL;
+ALTER TABLE `0_chart_master` CHANGE `account_type` `account_type` VARCHAR(10) NOT NULL DEFAULT '0';
+ALTER TABLE `0_chart_types` CHANGE `id` `id` VARCHAR(10) NOT NULL;
+ALTER TABLE `0_chart_types` CHANGE `parent` `parent` VARCHAR(10) NOT NULL DEFAULT '-1';
+ALTER TABLE `0_chart_types` CHANGE `class_id` `class_id` VARCHAR(3) NOT NULL DEFAULT '';
+.
+
