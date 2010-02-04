@@ -24,6 +24,10 @@ body {
 	padding: 0;
 }
 
+#loginscreen {
+	background: #f5f5f5;
+}
+
 tr, td, th {
 	font-size: 11px;
 	line-height: 19px;
@@ -96,8 +100,10 @@ button img, span {
 }
 
 .login {
-	background-color: #ffffff;
-	border: none;
+	width: 350px;
+	border-left: 12px solid #367cb5;
+	border-collapse: collapse;
+	background-color: #eeeeee;
 }
 
 .callout_main {
@@ -243,11 +249,18 @@ div.tabs a:hover {
 	bottom: -3px;
 }
 
+.footer td a {
+	color: #666666;
+	font-size: 9px;
+}
+
 .footer {
 	font-family: Verdana, Arial, Helvetica;
 	color: #cccccc;
 	font-weight: normal;
 	font-size: 9px;
+	text-align: center;
+	width: 100%;
 }
 
 .tableheader {
@@ -273,6 +286,7 @@ div.tabs a:hover {
 	font-size: 13px;
 	border-bottom: 1px solid #8cacbb;
 	padding: 5px;
+	width: 100%;
 }
 
 .headingtext {
