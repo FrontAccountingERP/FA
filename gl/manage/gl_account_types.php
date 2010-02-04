@@ -26,12 +26,12 @@ function can_process()
 {
 	global $selected_id;
 
-	if (!input_num('id'))
+	/*if (!input_num('id'))
 	{
 	    display_error( _("The account id must be an integer and cannot be empty."));
 	    set_focus('id');
 	    return false;
-	}
+	}*/
 	if (strlen($_POST['name']) == 0) 
 	{
 		display_error( _("The account group name cannot be empty."));
@@ -120,7 +120,7 @@ $result = get_account_types(check_value('show_inactive'));
 
 start_form();
 start_table($table_style);
-$th = array(_("ID"), _("Name"), _("Subgroup Of"), _("Class Type"), "", "");
+$th = array(_("Group ID"), _("Group Name"), _("Subgroup Of"), _("Class Type"), "", "");
 inactive_control_column($th);
 table_header($th);
 
@@ -132,7 +132,7 @@ while ($myrow = db_fetch($result))
 
 	$bs_text = get_account_class_name($myrow["class_id"]);
 
-	if ($myrow["parent"] == ANY_NUMERIC) 
+	if ($myrow["parent"] == '0' || $myrow["parent"] == '-1') 
 	{
 		$parent_text = "";
 	} 

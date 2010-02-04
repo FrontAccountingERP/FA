@@ -12,7 +12,7 @@
 function add_account_type($id, $name, $class_id, $parent)
 {
 	$sql = "INSERT INTO ".TB_PREF."chart_types (id, name, class_id, parent)
-		VALUES ($id, ".db_escape($name).", ".db_escape($class_id).", ".db_escape($parent).")";
+		VALUES (".db_escape($id).", ".db_escape($name).", ".db_escape($class_id).", ".db_escape($parent).")";
 
 	return db_query($sql);
 }
@@ -57,7 +57,7 @@ function get_account_types($all=false)
 	$sql = "SELECT * FROM ".TB_PREF."chart_types";
 
 	if (!$all) $sql .= " WHERE !inactive";
-	$sql .= " ORDER BY class_id, id";
+	$sql .= " ORDER BY class_id, id, parent";
 
 	return db_query($sql, "could not get account types");
 }
@@ -108,7 +108,7 @@ function get_account_classes($all=false)
 {
 	$sql = "SELECT * FROM ".TB_PREF."chart_class";
 	if (!$all) $sql .= " WHERE !inactive";
-	$sql .= " ORDER BY cid";
+	$sql .= " ORDER BY ctype, cid";
 
 	return db_query($sql, "could not get account types");
 }

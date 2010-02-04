@@ -234,10 +234,10 @@ else
 		$_POST['account_name']	= $_POST['account_type'] = '';
  		$_POST['inactive'] = 0;
 	}
-	text_row_ex(_("Account Code:"), 'account_code', 11);
+	text_row_ex(_("Account Code:"), 'account_code', 15);
 }
 
-text_row_ex(_("Account Code 2:"), 'account_code2', 11);
+text_row_ex(_("Account Code 2:"), 'account_code2', 15);
 
 text_row_ex(_("Account Name:"), 'account_name', 60);
 
