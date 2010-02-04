@@ -1529,7 +1529,7 @@ function gl_account_types_list($name, $selected_id=null, $all_option=false, $all
 
 	return combo_input($name, $selected_id, $sql, 'id', 'name',
 	array(
-		'order' => 'id',
+		'order' => 'class_id', 'id',
 		'spec_option' =>$all_option,
 		'spec_id' => $all_option_numeric ? 0 : $all_items
 	) );
@@ -1575,7 +1575,7 @@ function gl_all_accounts_list($name, $selected_id=null, $skip_bank_accounts=fals
 		'format' => '_format_account',
 		'spec_option' => $all_option===true ?  _("Use Item Sales Accounts") : $all_option,
 		'spec_id' => '',
-		'order' => array('type.id','account_code'),
+		'order' => array('type.class_id','type.id','account_code'),
 		'search_box' => $cells,
 			'search_submit' => false,
 			'size' => 12,

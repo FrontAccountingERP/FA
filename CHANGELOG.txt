@@ -26,6 +26,7 @@ $ /gl/manage/gl_account_classes.php
   /gl/manage/gl_account_types.php
   /gl/manage/gl_accounts.php
   /gl/includes/db/gl_db_account_types.inc
+  /includes/ui/ui_lists.inc
   /sql/alter2.3.sql
   /sql/en_US-demo.sql
   /sql/en_US-new.sql
