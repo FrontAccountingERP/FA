@@ -53,7 +53,7 @@ function end_page($no_menu=false, $is_index=false, $hide_back_link=false)
 	global $path_to_root;
 
 	if (!$is_index && !$hide_back_link && function_exists('hyperlink_back'))
-		hyperlink_back();
+		hyperlink_back(true, $no_menu);
 	div_end();	// end of _page_body section
 
 	include($path_to_root . "/includes/page/footer.inc");

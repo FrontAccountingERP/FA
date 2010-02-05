@@ -34,7 +34,7 @@ function delete_gl_account($code)
 	db_query($sql, "could not delete gl account");
 }
 
-function get_gl_accounts($from=null, $to=null)
+function get_gl_accounts($from=null, $to=null, $type=null)
 {
 	$sql = "SELECT ".TB_PREF."chart_master.*,".TB_PREF."chart_types.name AS AccountTypeName
 		FROM ".TB_PREF."chart_master,".TB_PREF."chart_types
@@ -43,6 +43,8 @@ function get_gl_accounts($from=null, $to=null)
 		$sql .= " AND ".TB_PREF."chart_master.account_code >= ".db_escape($from);
 	if ($to != null)
 		$sql .= " AND ".TB_PREF."chart_master.account_code <= ".db_escape($to);
+	if ($type != null)
+		$sql .= " AND account_type=".db_escape($type);
 	$sql .= " ORDER BY account_code";
 
 	return db_query($sql, "could not get gl accounts");

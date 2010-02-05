@@ -26,11 +26,18 @@ function update_account_type($id, $name, $class_id, $parent)
 	return db_query($sql, "could not update account type");
 }
 
-function get_account_types($all=false)
+function get_account_types($all=false, $class_id=false, $parent=false)
 {
 	$sql = "SELECT * FROM ".TB_PREF."chart_types";
 
-	if (!$all) $sql .= " WHERE !inactive";
+	if (!$all) 
+		$sql .= " WHERE !inactive";
+	if ($class_id != false) 
+		$sql .= " AND class_id=".db_escape($class_id);
+	if ($parent == -1) 
+		$sql .= " AND parent <= 0";
+	elseif ($parent != false) 
+		$sql .= " AND parent=".db_escape($parent);
 	$sql .= " ORDER BY class_id, id";
 
 	return db_query($sql, "could not get account types");
@@ -78,13 +85,18 @@ function update_account_class($id, $name, $ctype)
 	return db_query($sql);
 }
 
-function get_account_classes($all=false)
+function get_account_classes($all=false, $balance=-1)
 {
 	$sql = "SELECT * FROM ".TB_PREF."chart_class";
-	if (!$all) $sql .= " WHERE !inactive";
+	if (!$all) 
+		$sql .= " WHERE !inactive";
+	if ($balance == 0) 
+		$sql .= " AND ctype>".CL_EQUITY." OR ctype=0";
+	elseif ($balance == 1) 
+		$sql .= " AND ctype>0 AND ctype<".CL_INCOME; 
 	$sql .= " ORDER BY cid";
 
-	return db_query($sql, "could not get account types");
+	return db_query($sql, "could not get account classes");
 }
 
 function get_account_class($id)

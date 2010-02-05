@@ -19,6 +19,14 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+05-Feb-2010 Joe Hunt/Kalido
++ Placing a print link in all view windows (without menus).
+$ /includes/main.inc
+  /includes/ui_controls.inc
+! Preparing for new recursive balance sheet/PL Statements
+$ /gl/includes/db/gl_db_accounts.inc
+  /gl/includes/db/gl_db_account_types.inc
+  
 05-Feb-2010 Janusz Dobrowolski
 # Fixed get_standard_cost()for dummy items
 $ /includes/db/inventory_db.inc
