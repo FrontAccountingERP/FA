@@ -218,14 +218,11 @@ function handle_add_new_item()
 		{
 		    foreach ($_SESSION['PO']->line_items as $order_item) 
 		    {
-
     			/* do a loop round the items on the order to see that the item
     			is not already on this order */
-   			    if (($order_item->stock_id == $_POST['stock_id']) && 
-   			    	($order_item->Deleted == false)) 
+   			    if (($order_item->stock_id == $_POST['stock_id'])) 
    			    {
-				  	$allow_update = false;
-				  	display_error(_("The selected item is already on this order."));
+					display_warning(_("The selected item is already on this order."));
 			    }
 		    } /* end of the foreach loop to look for pre-existing items of the same code */
 		}

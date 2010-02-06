@@ -43,9 +43,9 @@ class purch_order
 		{
 			$this->line_items[$line_no] = new line_details($line_no, $stock_id, $item_descr, $qty, $price, $uom, $req_del_date, $qty_inv, $qty_recd);
 			$this->lines_on_order++;
-			Return 1;
+			return 1;
 		}
-		Return 0;
+		return 0;
 	}
 
 	function update_order_item($line_no, $qty, $price, $req_del_date)
@@ -58,22 +58,12 @@ class purch_order
 
 	function remove_from_order($line_no)
 	{
-		 $this->line_items[$line_no]->Deleted = true;
+		array_splice($this->line_items, $line_no, 1);
 	}
 	
 	function order_has_items() 
 	{
-		if (count($this->line_items) > 0)
-		{
-		   	foreach ($this->line_items as $ordered_items) 
-		   	{
-				if ($ordered_items->Deleted == false)
-				{
-					return true;
-				}
-		   	}
-		}
-		return false;		
+		return count($this->line_items) != 0;
 	}
 	
 	function clear_items() 
@@ -120,19 +110,18 @@ class purch_order
 class line_details 
 {
 
-	Var $line_no;
-	Var $po_detail_rec;
-	Var $stock_id;
-	Var $item_description;
-	Var $quantity;
-	Var $price;
-	Var $units;
-	Var $req_del_date;
-	Var $qty_inv;
-	Var $qty_received;
-	Var $standard_cost;
-	Var $receive_qty;
-	Var $Deleted;	
+	var $line_no;
+	var $po_detail_rec;
+	var $stock_id;
+	var $item_description;
+	var $quantity;
+	var $price;
+	var $units;
+	var $req_del_date;
+	var $qty_inv;
+	var $qty_received;
+	var $standard_cost;
+	var $receive_qty;
 	
 	function line_details($line_no, $stock_item, $item_descr, $qty, $prc, $uom, $req_del_date, $qty_inv, $qty_recd)
 	{
@@ -149,7 +138,6 @@ class line_details
 		$this->qty_inv = $qty_inv;
 		$this->receive_qty = 0;	/*initialise these last two only */
 		$this->standard_cost =0;
-		$this->Deleted = false;
 	}
 }
 

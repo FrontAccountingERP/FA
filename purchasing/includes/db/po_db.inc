@@ -46,16 +46,13 @@ function add_po(&$po_obj)
      /*Insert the purchase order detail records */
      foreach ($po_obj->line_items as $po_line)
      {
-     	if ($po_line->Deleted == false)
-     	{
-    		$sql = "INSERT INTO ".TB_PREF."purch_order_details (order_no, item_code, description, delivery_date,	unit_price,	quantity_ordered) VALUES (";
-    		$sql .= $po_obj->order_no . ", " . db_escape($po_line->stock_id). "," .
-    			db_escape($po_line->item_description). ",'" .
-    			date2sql($po_line->req_del_date) . "'," .
-    			db_escape($po_line->price) . ", " .
-    			db_escape($po_line->quantity). ")";
-			db_query($sql, "One of the purchase order detail records could not be inserted");
-    	}
+		$sql = "INSERT INTO ".TB_PREF."purch_order_details (order_no, item_code, description, delivery_date,	unit_price,	quantity_ordered) VALUES (";
+		$sql .= $po_obj->order_no . ", " . db_escape($po_line->stock_id). "," .
+		db_escape($po_line->item_description). ",'" .
+		date2sql($po_line->req_del_date) . "'," .
+		db_escape($po_line->price) . ", " .
+		db_escape($po_line->quantity). ")";
+		db_query($sql, "One of the purchase order detail records could not be inserted");
      }
 
 	$Refs->save(ST_PURCHORDER, $po_obj->order_no, $po_obj->reference);
@@ -83,43 +80,29 @@ function update_po(&$po_obj)
     $sql .= " WHERE order_no = " . $po_obj->order_no;
 	db_query($sql, "The purchase order could not be updated");
 
+	$sql = "DELETE FROM ".TB_PREF."purch_order_details WHERE order_no="
+		.db_escape($po_obj->order_no);
+	db_query($sql, "could not delete old purch order details");
+
     /*Now Update the purchase order detail records */
     foreach ($po_obj->line_items as $po_line)
     {
-
-		if ($po_line->Deleted==True)
-		{
-			// Sherifoz 21.06.03 Handle deleting existing lines
-			if ($po_line->po_detail_rec!='')
-			{
-				$sql = "DELETE FROM ".TB_PREF."purch_order_details WHERE po_detail_item=".db_escape($po_line->po_detail_rec);
-				db_query($sql, "could not query purch order details");
-			}
-		}
-		else if ($po_line->po_detail_rec == '')
-		{
-			// Sherifoz 21.06.03 Handle adding new lines vs. updating. if no key(po_detail_rec) then it's a new line
-			$sql = "INSERT INTO ".TB_PREF."purch_order_details (order_no, item_code, description, delivery_date, unit_price,	quantity_ordered) VALUES (";
-			$sql .= $po_obj->order_no . "," .
-				db_escape($po_line->stock_id). "," .
-				db_escape($po_line->item_description). ",'" .
-				date2sql($po_line->req_del_date) . "'," .
-				db_escape($po_line->price) . ", ".db_escape($po_line->quantity) . ")";
-		}
-		else
-		{
-			$sql = "UPDATE ".TB_PREF."purch_order_details SET item_code=".db_escape($po_line->stock_id).",
-				description =" . db_escape($po_line->item_description). ",
-				delivery_date ='" . date2sql($po_line->req_del_date) . "',
-				unit_price=".db_escape($po_line->price).",
-				quantity_ordered=".db_escape($po_line->quantity) . "
-				WHERE po_detail_item=".db_escape($po_line->po_detail_rec);
-		}
+    	$sql = "INSERT INTO ".TB_PREF."purch_order_details (po_detail_item, order_no, item_code, 
+    		description, delivery_date, unit_price, quantity_ordered) VALUES ("
+			.db_escape($po_line->po_detail_rec ? $po_line->po_detail_rec : 0). ","
+			.$po_obj->order_no . ","
+			.db_escape($po_line->stock_id). ","
+			.db_escape($po_line->item_description). ",'"
+			.date2sql($po_line->req_del_date) . "',"
+			.db_escape($po_line->price) . ", "
+			.db_escape($po_line->quantity) . ")";
+		
 		db_query($sql, "One of the purchase order detail records could not be updated");
     }
 
-	//add_comments(ST_PURCHORDER, $po_obj->order_no, $po_obj->orig_order_date, $po_obj->Comments);
+	// add_comments(ST_PURCHORDER, $po_obj->order_no, $po_obj->orig_order_date, $po_obj->Comments);
 
+	add_audit_trail($po_obj->trans_type, $po_obj->order_no, $po_obj->document_date, _("Updated."));
 	commit_transaction();
 
 	return $po_obj->order_no;
@@ -183,10 +166,8 @@ function read_po_items($order_no, &$order, $open_items_only=false)
 
     if (db_num_rows($result) > 0)
     {
-
 		while ($myrow = db_fetch($result))
         {
-
         	$data = get_purchase_data($order->supplier_id, $myrow['item_code']);
         	if ($data !== false)
         	{

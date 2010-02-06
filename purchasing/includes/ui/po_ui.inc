@@ -177,37 +177,33 @@ function display_po_items(&$order, $editable=true)
 	$k = 0;
    	foreach ($order->line_items as $line_no => $po_line)
    	{
-
-		if ($po_line->Deleted == false)
+    	$line_total =	round($po_line->quantity * $po_line->price,  user_price_dec());
+    	if (!$editable || ($id != $line_no))
 		{
-    		$line_total =	round($po_line->quantity * $po_line->price,  user_price_dec());
-    		if (!$editable || ($id != $line_no))
-			{
-    			alt_table_row_color($k);
-        		label_cell($po_line->stock_id);
-    			label_cell($po_line->item_description);
-                qty_cell($po_line->quantity, false, get_qty_dec($po_line->stock_id));
-                qty_cell($po_line->qty_received, false, get_qty_dec($po_line->stock_id));
-    			label_cell($po_line->units);
-                label_cell($po_line->req_del_date);
-    			amount_decimal_cell($po_line->price);
-                amount_cell($line_total);
+    		alt_table_row_color($k);
+        	label_cell($po_line->stock_id);
+    		label_cell($po_line->item_description);
+            qty_cell($po_line->quantity, false, get_qty_dec($po_line->stock_id));
+            qty_cell($po_line->qty_received, false, get_qty_dec($po_line->stock_id));
+    		label_cell($po_line->units);
+            label_cell($po_line->req_del_date);
+    		amount_decimal_cell($po_line->price);
+            amount_cell($line_total);
 
-                if ($editable)
-                {
+			if ($editable)
+			{
 					edit_button_cell("Edit$line_no", _("Edit"),
 					  _('Edit document line'));
 					delete_button_cell("Delete$line_no", _("Delete"),
-					  _('Remove line from document'));
-                }
-        		end_row();
+						_('Remove line from document'));
 			}
-			else
-			{
-				po_item_controls($order, $po_line->stock_id);
-			}
-    		$total += $line_total;
+		end_row();
 		}
+		else
+		{
+			po_item_controls($order, $po_line->stock_id);
+		}
+		$total += $line_total;
     }
 
 	if ($id==-1 && $editable)

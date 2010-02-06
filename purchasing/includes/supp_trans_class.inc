@@ -17,7 +17,7 @@ include_once($path_to_root . "/taxes/tax_calc.inc");
 class supp_trans 
 {
 
-	var $grn_items; /*array of objects of class GRNDetails using the GRN No as the pointer */
+	var $grn_items; /*array of objects of class grn_item using the id as the pointer */
 	var $gl_codes; /*array of objects of class gl_codes using a counter as the pointer */
 	var $supplier_id;
 	var $supplier_name;
@@ -65,11 +65,11 @@ class supp_trans
 		return 1;
 	}
 
-	function remove_grn_from_trans(&$grn_item_id)
+	function remove_grn_from_trans($grn_item_id)
 	{
 	    unset($this->grn_items[$grn_item_id]);
 	}
-	function remove_gl_codes_from_trans(&$gl_code_counter)
+	function remove_gl_codes_from_trans($gl_code_counter)
 	{
 	     unset($this->gl_codes[$gl_code_counter]);
 	}
@@ -87,7 +87,7 @@ class supp_trans
 		$this->ov_amount = $this->ov_discount = $this->supplier_id = 0;
 		
 		$this->grn_items = array();
-		$this->gl_codes = array();		
+		$this->gl_codes = array();
 	}
 	
     function get_taxes($tax_group_id=null, $shipping_cost=0, $gl_codes=true)
