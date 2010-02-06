@@ -55,10 +55,7 @@ function write_sales_delivery(&$delivery,$bo_policy)
 	}
 
 	foreach ($delivery->line_items as $line_no => $delivery_line) {
-		if ($delivery_line->qty_dispatched == 0) {
-			unset($delivery->line_items[$line_no]);
-			continue;
-		}
+
 		$line_price = $delivery_line->line_price();
 		$line_taxfree_price = get_tax_free_price_for_item($delivery_line->stock_id,
 			$delivery_line->price, 0, $delivery->tax_included,

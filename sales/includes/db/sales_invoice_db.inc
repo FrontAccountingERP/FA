@@ -86,10 +86,7 @@ function write_sales_invoice(&$invoice)
 	}
 	$total = 0;
 	foreach ($invoice->line_items as $line_no => $invoice_line) {
-		if ($invoice_line->qty_dispatched == 0) {
-			unset($invoice->line_items[$line_no]);
-			continue;
-		}
+
 		$line_taxfree_price = get_tax_free_price_for_item($invoice_line->stock_id,
 			$invoice_line->price, 0, $invoice->tax_included,
 			$invoice->tax_group_array);
