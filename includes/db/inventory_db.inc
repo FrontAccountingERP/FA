@@ -59,7 +59,7 @@ function get_item_edit_info($stock_id)
 
 function get_standard_cost($stock_id)
 {
-	$sql = "SELECT IF(s.type='D', 0, material_cost + labour_cost + overhead_cost) AS std_cost
+	$sql = "SELECT IF(s.mb_flag='D', 0, material_cost + labour_cost + overhead_cost) AS std_cost
 		FROM ".TB_PREF."stock_master s WHERE stock_id=".db_escape($stock_id);
 	$result = db_query($sql, "The standard cost cannot be retrieved");
 
