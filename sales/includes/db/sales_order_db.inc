@@ -221,10 +221,11 @@ function update_sales_order($order)
 			}
 		}
 		$sql = "INSERT INTO ".TB_PREF."sales_order_details
-		 (order_no, trans_type, stk_code,  description, unit_price, quantity,
+		 (id, order_no, trans_type, stk_code,  description, unit_price, quantity,
 		  discount_percent, qty_sent)
 		 VALUES (";
-		$sql .= $order_no . ",".$order->trans_type.","
+		$sql .= db_escape($line->id ? $line->id : 0) . ","
+		  .$order_no . ",".$order->trans_type.","
 		  .db_escape($line->stock_id) . ","
 		  .db_escape($line->item_description) . ", "
 		  .db_escape($line->price) . ", "
