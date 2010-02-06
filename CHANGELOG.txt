@@ -19,6 +19,17 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+03-Feb-2010 Janusz Dobrowolski
++ Multiply order items with the same stock_id (with warning), code cleanups
+$ /purchasing/po_entry_items.php
+  /purchasing/includes/po_class.inc
+  /purchasing/includes/supp_trans_class.inc
+  /purchasing/includes/db/po_db.inc
+  /purchasing/includes/ui/po_ui.inc
+# Fixed typo bugs
+$ /purchasing/includes/db/grn_db.inc
+  /purchasing/includes/db/invoice_db.inc
+
 04-Feb-2010 Joe Hunt
 ! Extended account id's to 15 chars. Changed account type to varchar(10)
   and class id varchar(3). Ability to change account groups online.
@@ -30,8 +41,8 @@ $ /gl/manage/gl_account_classes.php
   /sql/alter2.3.sql
   /sql/en_US-demo.sql
   /sql/en_US-new.sql
-  
-02-Feb-2010 Janusz Dobrowolski
+
+03-Feb-2010 Janusz Dobrowolski
 # Payment terms were not retrieved atinvoice edit start.
 $ /sales/customer_invoice.php
 # Fixed item selector.
