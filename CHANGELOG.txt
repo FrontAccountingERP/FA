@@ -22,6 +22,14 @@ $ -> Affected files
 06-Feb-2010 Janusz Dobrowolski
 # Fixed get_standard_cost() for dummy items again.
 $ /includes/db/inventory_db.inc
+# Fixed bug resulting in broken line items relations after edition of multiline SO.
+$ /sales/includes/db/sales_invoice_db.inc
+! Yesterday changes removed
+$ /sales/includes/db/sales_delivery_db.inc
+  /sales/includes/db/sales_invoice_db.inc
+# Prevent saving empty lines in invoices/delivery notes - rerun
+  /reporting/rep107.php
+  /reporting/rep110.php
 
 06-Feb-2010 Joe Hunt/Chaitanya
 ! Changed Balance Sheets/PL Statements to be recursive
@@ -40,7 +48,6 @@ $ /includes/main.inc
 $ /gl/includes/db/gl_db_accounts.inc
   /gl/includes/db/gl_db_account_types.inc
   
->>>>>>> 1.368
 05-Feb-2010 Janusz Dobrowolski
 # Fixed get_standard_cost() for dummy items
 $ /includes/db/inventory_db.inc
