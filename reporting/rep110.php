@@ -105,6 +105,9 @@ function print_deliveries()
 			$SubTotal = 0;
 			while ($myrow2=db_fetch($result))
 			{
+				if ($myrow2["quantity"] == 0)
+					continue;
+					
 				$Net = round2(((1 - $myrow2["discount_percent"]) * $myrow2["unit_price"] * $myrow2["quantity"]),
 				   user_price_dec());
 				$SubTotal += $Net;
