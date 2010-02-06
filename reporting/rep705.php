@@ -12,7 +12,7 @@
 $page_security = 'SA_GLANALYTIC';
 // ----------------------------------------------------------------
 // $ Revision:	2.0 $
-// Creator:	Joe Hunt
+// Creator:	Joe Hunt, Chaitanya for the recursive version 2009-02-05.
 // date_:	2005-05-19
 // Title:	Annual expense breakdown
 // ----------------------------------------------------------------
@@ -29,10 +29,8 @@ print_annual_expense_breakdown();
 
 //----------------------------------------------------------------------------------------------------
 
-function getPeriods($row, $account, $dimension, $dimension2)
+function getPeriods($yr, $mo, $account, $dimension, $dimension2)
 {
-	$yr = $row['yr'];
-	$mo = $row['mo'];
 	$date13 = date('Y-m-d',mktime(0,0,0,$mo+1,1,$yr));
 	$date12 = date('Y-m-d',mktime(0,0,0,$mo,1,$yr));
 	$date11 = date('Y-m-d',mktime(0,0,0,$mo-1,1,$yr));
@@ -69,6 +67,90 @@ function getPeriods($row, $account, $dimension, $dimension2)
 	$result = db_query($sql, "Transactions for account $account could not be calculated");
 
 	return db_fetch($result);
+}
+
+//----------------------------------------------------------------------------------------------------
+
+function display_type ($type, $typename, $yr, $mo, $convert, &$dec, &$rep, $dimension, $dimension2)
+{
+	$ctotal = array(1 => 0,0,0,0,0,0,0,0,0,0,0,0,0,0);
+	$total = array(1 => 0,0,0,0,0,0,0,0,0,0,0,0,0,0);
+	$totals_arr = array();
+
+	$printtitle = 0; //Flag for printing type name	
+
+	//Get Accounts directly under this group/type
+	$result = get_gl_accounts(null, null, $type);	
+	while ($account=db_fetch($result))
+	{
+		$bal = getPeriods($yr, $mo, $account["account_code"], $dimension, $dimension2);
+		if (!$bal['per01'] && !$bal['per02'] && !$bal['per03'] && !$bal['per04'] &&	!$bal['per05'] && 
+			!$bal['per06'] && !$bal['per07'] && !$bal['per08'] && !$bal['per09'] && !$bal['per10'] && 
+			!$bal['per11'] && !$bal['per12'])
+			continue;
+	
+		//Print Type Title if it has atleast one non-zero account	
+		if (!$printtitle)
+		{
+			$printtitle = 1;
+			$rep->row -= 4;
+			$rep->TextCol(0, 5, $typename);
+			$rep->row -= 4;
+			$rep->Line($rep->row);
+			$rep->NewLine();
+		}			
+
+		$balance = array(1 => $bal['per01'], $bal['per02'], $bal['per03'], $bal['per04'],
+			$bal['per05'], $bal['per06'], $bal['per07'], $bal['per08'],
+			$bal['per09'], $bal['per10'], $bal['per11'], $bal['per12']);
+		$rep->TextCol(0, 1,	$account['account_code']);
+		$rep->TextCol(1, 2,	$account['account_name']);
+
+		for ($i = 1; $i <= 12; $i++)
+		{
+			$rep->AmountCol($i + 1, $i + 2, $balance[$i] * $convert, $dec);
+			$ctotal[$i] += $balance[$i];
+		}
+
+		$rep->NewLine();
+	}
+		
+	//Get Account groups/types under this group/type
+	$result = get_account_types(false, false, $type);
+	while ($accounttype=db_fetch($result))
+	{
+		//Print Type Title if has sub types and not previously printed
+		if (!$printtitle)
+		{
+			$printtitle = 1;
+			$rep->row -= 4;
+			$rep->TextCol(0, 5, $typename);
+			$rep->row -= 4;
+			$rep->Line($rep->row);
+			$rep->NewLine();
+		}
+
+		$totals_arr = display_type($accounttype["id"], $accounttype["name"], $yr, $mo, $convert, $dec, $rep, $dimension, $dimension2);
+		for ($i = 1; $i <= 12; $i++)
+		{
+			$total[$i] += $totals_arr[$i];
+		}
+	}
+
+	//Display Type Summary if total is != 0 OR head is printed (Needed in case of unused hierarchical COA) 
+	if ($printtitle)
+	{
+		$rep->row += 6;
+		$rep->Line($rep->row);
+		$rep->NewLine();
+		$rep->TextCol(0, 2,	_('Total') . " " . $typename);
+		for ($i = 1; $i <= 12; $i++)
+			$rep->AmountCol($i + 1, $i + 2, ($total[$i] + $ctotal[$i]) * $convert, $dec);
+		$rep->NewLine();
+	}
+	for ($i = 1; $i <= 12; $i++)
+		$totals_arr[$i] = $total[$i] + $ctotal[$i];	
+	return $totals_arr;
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -183,196 +265,51 @@ function print_annual_expense_breakdown()
 	$rep->Info($params, $cols, $headers, $aligns);
 	$rep->Header();
 
-	$classname = '';
-	$total = Array(
-		0 => Array(1 => 0,0,0,0,0,0,0,0,0,0,0,0),
-			Array(1 => 0,0,0,0,0,0,0,0,0,0,0,0),
-			Array(1 => 0,0,0,0,0,0,0,0,0,0,0,0),
-			Array(1 => 0,0,0,0,0,0,0,0,0,0,0,0),
-			Array(1 => 0,0,0,0,0,0,0,0,0,0,0,0),
-			Array(1 => 0,0,0,0,0,0,0,0,0,0,0,0),
-			Array(1 => 0,0,0,0,0,0,0,0,0,0,0,0),
-			Array(1 => 0,0,0,0,0,0,0,0,0,0,0,0),
-			Array(1 => 0,0,0,0,0,0,0,0,0,0,0,0),
-			Array(1 => 0,0,0,0,0,0,0,0,0,0,0,0));
-	$total2 = Array(1 => 0,0,0,0,0,0,0,0,0,0,0,0);
-	$sales = Array(1 => 0,0,0,0,0,0,0,0,0,0,0,0);
-	$calc = Array(1 => 0,0,0,0,0,0,0,0,0,0,0,0);
-	$typename = array('','','','','','','','','','');
-	$closing = array(-1,-1,-1,-1,-1,-1,-1,-1,-1,-1);
-	$level = 0;
-	$last = -1;
-
-	$closeclass = false;
-	$convert = 1;
-	$ctype = 0;
-
-	$accounts = get_gl_accounts_all(0);
-
-	while ($account=db_fetch($accounts))
+	$sales = Array(1 => 0,0,0,0,0,0,0,0,0,0,0,0,0,0);
+	
+	$classresult = get_account_classes(false, 0);
+	while ($class = db_fetch($classresult))
 	{
-		if ($account['account_code'] == null && $account['parent'] > 0)
-			continue;
-
-		if ($account['account_code'] != null)
+		$ctotal = Array(1 => 0,0,0,0,0,0,0,0,0,0,0,0,0,0);
+		$convert = get_class_type_convert($class["ctype"]); 		
+		
+		//Print Class Name	
+		$rep->Font('bold');
+		$rep->TextCol(0, 5, $class["class_name"]);
+		$rep->Font();
+		$rep->NewLine();
+		
+		//Get Account groups/types under this group/type with no parents
+		$typeresult = get_account_types(false, $class['cid'], -1);
+		while ($accounttype=db_fetch($typeresult))
 		{
-			$bal = getPeriods($row, $account["account_code"], $dimension, $dimension2);
-			if (!$bal['per01'] && !$bal['per02'] && !$bal['per03'] && !$bal['per04'] &&
-				!$bal['per05'] && !$bal['per06'] && !$bal['per07'] && !$bal['per08'] &&
-				!$bal['per09'] && !$bal['per10'] && !$bal['per11'] && !$bal['per12'])
-				continue;
-		}
-		if ($account['AccountClassName'] != $classname)
-		{
-			if ($classname != '')
-			{
-				$closeclass = true;
-			}
-		}
-
-		if ($account['AccountTypeName'] != $typename[$level])
-		{
-			if ($typename[$level] != '')
-			{
-				for ( ; $level >= 0, $typename[$level] != ''; $level--) 
-				{
-					if ($account['parent'] == $closing[$level] || $account['parent'] < $last || $account['parent'] <= 0 || $closeclass)
-					{
-						$rep->row += 6;
-						$rep->Line($rep->row);
-						$rep->NewLine();
-						$rep->TextCol(0, 2,	_('Total') . " " . $typename[$level]);
-						for ($i = 1; $i <= 12; $i++)
-						{
-							$rep->AmountCol($i + 1, $i + 2, $total[$level][$i] * $convert, $dec);
-							$total[$level][$i] = 0.0;
-						}
-					}
-					else
-						break;
-					$rep->NewLine();
-				}	
-				if ($closeclass)
-				{
-					$rep->row += 6;
-					$rep->Line($rep->row);
-					$rep->NewLine();
-					$rep->Font('bold');
-					$rep->TextCol(0, 2,	_('Total') . " " . $classname);
-					for ($i = 1; $i <= 12; $i++)
-					{
-						$rep->AmountCol($i + 1, $i + 2, $total2[$i] * $convert, $dec);
-						$sales[$i] += $total2[$i];
-					}
-					$rep->Font();
-					$total2 = Array(1 => 0,0,0,0,0,0,0,0,0,0,0,0);
-					$rep->NewLine(2);
-					$closeclass = false;
-				}
-			}
-			if ($account['AccountClassName'] != $classname)
-			{
-				$rep->Font('bold');
-				$rep->TextCol(0, 5, $account['AccountClassName']);
-				$rep->Font();
-				$rep->NewLine();
-			}
-			$level++;
-			if ($account['parent'] != $last)
-				$last = $account['parent'];
-			$typename[$level] = $account['AccountTypeName'];
-			$closing[$level] = $account['parent'];
-			$rep->row -= 4;
-			$rep->TextCol(0, 5, $account['AccountTypeName']);
-			$rep->row -= 4;
-			$rep->Line($rep->row);
-			$rep->NewLine();
-		}
-		$classname = $account['AccountClassName'];
-		$ctype = $account['ClassType'];
-		$convert = get_class_type_convert($ctype); 
-
-		if ($account['account_code'] != null)
-		{
-			$balance = array(1 => $bal['per01'], $bal['per02'], $bal['per03'], $bal['per04'],
-				$bal['per05'], $bal['per06'], $bal['per07'], $bal['per08'],
-				$bal['per09'], $bal['per10'], $bal['per11'], $bal['per12']);
-			$rep->TextCol(0, 1,	$account['account_code']);
-			$rep->TextCol(1, 2,	$account['account_name']);
-
+			$classtotal = display_type($accounttype["id"], $accounttype["name"], $yr, $mo, $convert, $dec, $rep, $dimension, $dimension2);
 			for ($i = 1; $i <= 12; $i++)
-			{
-				$rep->AmountCol($i + 1, $i + 2, $balance[$i] * $convert, $dec);
-				$total2[$i] += $balance[$i];
-			}
-			for ($j = 0; $j <= $level; $j++)
-			{
-				for ($i = 1; $i <= 12; $i++)
-					$total[$j][$i] += $balance[$i];
-			}
-			$rep->NewLine();
-
-			if ($rep->row < $rep->bottomMargin + 3 * $rep->lineHeight)
-			{
-				$rep->Line($rep->row - 2);
-				$rep->Header();
-			}
-		}	
-	}
-	if ($account['AccountClassName'] != $classname)
-	{
-		if ($classname != '')
-		{
-			$closeclass = true;
+				$ctotal[$i] += $classtotal[$i];
 		}
-	}
-	if ($account['AccountTypeName'] != $typename[$level])
-	{
-		if ($typename[$level] != '')
+		
+		//Print Class Summary	
+		$rep->row += 6;
+		$rep->Line($rep->row);
+		$rep->NewLine();
+		$rep->Font('bold');
+		$rep->TextCol(0, 2,	_('Total') . " " . $class["class_name"]);
+		for ($i = 1; $i <= 12; $i++)
 		{
-			for ( ; $level >= 0, $typename[$level] != ''; $level--) 
-			{
-				if ($account['parent'] == $closing[$level] || $account['parent'] < $last || $account['parent'] <= 0 || $closeclass)
-				{
-					$rep->row += 6;
-					$rep->Line($rep->row);
-					$rep->NewLine();
-					$rep->TextCol(0, 2,	_('Total') . " " . $typename[$level]);
-					for ($i = 1; $i <= 12; $i++)
-					{
-						$rep->AmountCol($i + 1, $i + 2, $total[$level][$i] * $convert, $dec);
-						$total[$level][$i] = 0.0;
-					}
-				}
-				else
-					break;
-				$rep->NewLine();
-			}	
-			if ($closeclass)
-			{
-				$rep->row += 6;
-				$rep->Line($rep->row);
-				$rep->NewLine();
-
-				$rep->Font('bold');
-				$rep->TextCol(0, 2,	_('Total') . " " . $classname);
-				for ($i = 1; $i <= 12; $i++)
-				{
-					$rep->AmountCol($i + 1, $i + 2, $total2[$i] * $convert, $dec);
-					$calc[$i] = $sales[$i] + $total2[$i];
-				}
-
-				$rep->NewLine(2);
-				$rep->TextCol(0, 2,	_('Calculated Return'));
-				for ($i = 1; $i <= 12; $i++)
-					$rep->AmountCol($i + 1, $i + 2, $calc[$i] * -1, $dec); // always convert
-				$rep->Font();
-
-				$rep->NewLine();
-			}
+			$rep->AmountCol($i + 1, $i + 2, $ctotal[$i] * $convert, $dec);
+			$sales[$i] += $ctotal[$i];
 		}
+		$rep->Font();
+		$rep->NewLine(2);
 	}
+	$rep->Font('bold');	
+	$rep->TextCol(0, 2,	_("Calculated Return"));
+	for ($i = 1; $i <= 12; $i++)
+		$rep->AmountCol($i + 1, $i + 2, $sales[$i] * -1, $dec);
+	$rep->Font();
+	$rep->NewLine();
 	$rep->Line($rep->row);
+	$rep->NewLine(2);
 	$rep->End();
 }
 

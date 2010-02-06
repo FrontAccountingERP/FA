@@ -19,6 +19,15 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+06-Feb-2010 Joe Hunt/Chaitanya
+! Changed Balance Sheets/PL Statements to be recursive
+$ /gl/inquiry/balance_sheet.php
+  /gl/inquiry/profit_loss.php
+  /reporting/rep701.php
+  /reporting/rep705.php
+  /reporting/rep706.php
+  /reporting/rep707.php
+  
 05-Feb-2010 Joe Hunt/Kalido
 + Placing a print link in all view windows (without menus).
 $ /includes/main.inc

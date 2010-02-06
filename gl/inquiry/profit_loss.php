@@ -39,49 +39,101 @@ if (isset($_GET["TransFromDate"]))
 if (isset($_GET["TransToDate"]))
 	$_POST["TransToDate"] = $_GET["TransToDate"];
 if (isset($_GET["Compare"]))
-	$_POST["Compare"] = $_GET["Compare"];	
+	$_POST["Compare"] = $_GET["Compare"];
 if (isset($_GET["AccGrp"]))
-	$_POST["AccGrp"] = $_GET["AccGrp"];	
-if (isset($_GET["DrillLevel"]))
-	$_POST["DrillLevel"] = $_GET["DrillLevel"];	
-else 	
-	$_POST["DrillLevel"] = 1; // Root level
-	
+	$_POST["AccGrp"] = $_GET["AccGrp"];
+
 //----------------------------------------------------------------------------------------------------
 
-function is_of_account_type($accttype,$typeslist)
+function display_type ($type, $typename, $from, $to, $begin, $end, $compare, $convert,
+	&$dec, &$pdec, &$rep, $dimension=0, $dimension2=0, $drilldown, $path_to_root)
 {
-	return in_array($accttype, $typeslist);
-}
-
-function get_child_account_types($acctype)
-{
-	global $parentsarr;
-	$parentsarr = array();
-	$childernsarr = array();
-	$list = '';
-	array_push($parentsarr, $acctype);
-    while (sizeof($parentsarr)>0)
-    {
-		$parent = array_pop($parentsarr);
-		array_push($childernsarr,$parent);
-		pushchilds($parent);
-	}
-	$list = substr($list,0,-1);
-	return $childernsarr;
-}
-
-function pushchilds($parent)
-{
-	global $parentsarr;
-
-	$sql = "SELECT id FROM  ".TB_PREF."chart_types WHERE parent=".$parent;
-	$result = db_query($sql,"Query failed");   
-	while ($myrow=db_fetch($result))
+	global $levelptr, $k;
+		
+	$code_per_balance = 0;
+	$code_acc_balance = 0;
+	$per_balance_total = 0;
+	$acc_balance_total = 0;
+	unset($totals_arr);
+	$totals_arr = array();
+	
+	//Get Accounts directly under this group/type
+	$result = get_gl_accounts(null, null, $type);	
+		
+	while ($account=db_fetch($result))
 	{
-		array_push($parentsarr, $myrow['id']);
+		$per_balance = get_gl_trans_from_to($from, $to, $account["account_code"], $dimension, $dimension2);
+
+		if ($compare == 2)
+			$acc_balance = get_budget_trans_from_to($begin, $end, $account["account_code"], $dimension, $dimension2);
+		else
+			$acc_balance = get_gl_trans_from_to($begin, $end, $account["account_code"], $dimension, $dimension2);
+		if (!$per_balance && !$acc_balance)
+			continue;
+		
+		if ($drilldown && $levelptr == 0)
+		{
+			$url = "<a href='$path_to_root/gl/inquiry/gl_account_inquiry.php?TransFromDate=" 
+				. $from . "&TransToDate=" . $to 
+				. "&account=" . $account['account_code'] . "'>" . $account['account_code'] 
+				." ". $account['account_name'] ."</a>";				
+				
+			start_row("class='stockmankobg'");
+			label_cell($url);
+			amount_cell($per_balance * $convert);
+			amount_cell($acc_balance * $convert);
+			amount_cell(Achieve($per_balance, $acc_balance));
+			end_row();
+		}
+			
+		$code_per_balance += $per_balance;
+		$code_acc_balance += $acc_balance;
 	}
-}
+
+	$levelptr = 1;
+	
+	//Get Account groups/types under this group/type
+	$result = get_account_types(false, false, $type);
+	while ($accounttype=db_fetch($result))
+	{	
+		$totals_arr = display_type($accounttype["id"], $accounttype["name"], $from, $to, $begin, $end, 
+			$compare, $convert, $dec, $pdec, $rep, $dimension, $dimension2, $drilldown, $path_to_root);
+		$per_balance_total += $totals_arr[0];
+		$acc_balance_total += $totals_arr[1];
+	}
+
+	//Display Type Summary if total is != 0 
+	if (($code_per_balance + $per_balance_total + $code_acc_balance + $acc_balance_total) != 0)
+	{
+		if ($drilldown && $type == $_POST["AccGrp"])
+		{		
+			start_row("class='inquirybg' style='font-weight:bold'");
+			label_cell(_('Total') . " " . $typename);
+			amount_cell(($code_per_balance + $per_balance_total) * $convert);
+			amount_cell(($code_acc_balance + $acc_balance_total) * $convert);
+			amount_cell(Achieve(($code_per_balance + $per_balance_total), ($code_acc_balance + $acc_balance_total)));
+			end_row();
+		}
+		elseif ($drilldown && $type != $_POST["AccGrp"])
+		{
+			$url = "<a href='$path_to_root/gl/inquiry/profit_loss.php?TransFromDate=" 
+				. $from . "&TransToDate=" . $to . "&Compare=" . $compare
+				. "&AccGrp=" . $type ."'>" . $typename ."</a>";
+				
+			alt_table_row_color($k);
+			label_cell($url);
+			amount_cell(($code_per_balance + $per_balance_total) * $convert);
+			amount_cell(($code_acc_balance + $acc_balance_total) * $convert);
+			amount_cell(Achieve(($code_per_balance + $per_balance_total), ($code_acc_balance + $acc_balance_total)));
+			end_row();
+		}
+	}
+	
+	$totals_arr[0] = $code_per_balance + $per_balance_total;
+	$totals_arr[1] = $code_acc_balance + $acc_balance_total;
+	return $totals_arr;
+}	
+	
 function Achieve($d1, $d2)
 {
 	if ($d1 == 0 && $d2 == 0)
@@ -117,7 +169,7 @@ function inquiry_controls()
 
 //----------------------------------------------------------------------------------------------------
 
-function print_profit_and_loss()
+function display_profit_and_loss()
 {
 	global $comp_path, $path_to_root, $table_style, $sel;
 
@@ -127,9 +179,12 @@ function print_profit_and_loss()
 	$from = $_POST['TransFromDate'];
 	$to = $_POST['TransToDate'];
 	$compare = $_POST['Compare'];
-	$drilllevel = $_POST["DrillLevel"];
-	$nextDrillLevel = $drilllevel + 1;
-
+	
+	if (isset($_POST["AccGrp"]) && (strlen($_POST['AccGrp']) > 0))
+		$drilldown = 1; // Deeper Level
+	else
+		$drilldown = 0; // Root level
+	
 	$dec = 0;
 	$pdec = user_percent_dec();
 
@@ -148,31 +203,6 @@ function print_profit_and_loss()
 		$begin = add_months($from, -12);
 		$end = add_months($to, -12);
 	}
-
-	$classname = '';
-	
-	$typeper = array(0,0,0,0,0,0,0,0,0,0);
-	$typeacc = array(0,0,0,0,0,0,0,0,0,0);
-	$typename = array('','','','','','','','','','');
-	$acctype = array('','','','','','','','','','');	
-	$closing = array(-1,-1,-1,-1,-1,-1,-1,-1,-1,-1);
-	$level = 0;
-
-	$classper = 0.0;
-	$classacc = 0.0;
-	$salesper = 0.0;
-	$salesacc = 0.0;
-	$last = -1;
-
-	$closeclass = false;
-	$convert = 1;
-	$ctype = 0;
-
-	//For drill down, prepare the list of sub account types
-	if (isset($_POST['AccGrp']) && (strlen($_POST['AccGrp']) > 0) )
-		$sub_types_arr = get_child_account_types($_POST['AccGrp']);	
-		
-	$accounts = get_gl_accounts_all(0);
 	
 	div_start('pl_tbl');
 
@@ -183,203 +213,94 @@ function print_profit_and_loss()
         <td class='tableheader'>" . _("Period") . "</td>
 		<td class='tableheader'>" . $sel[$compare] . "</td>
 		<td class='tableheader'>" . _("Achieved %") . "</td>
-        </tr>";
-
-	while ($account=db_fetch($accounts))
+        </tr>";	
+	
+	if (!$drilldown) //Root Level
 	{
-		if ($account['account_code'] == null && $account['parent'] > 0)
-			continue;			
+		$parent = -1;
+		$classper = 0.0;
+		$classacc = 0.0;
+		$salesper = 0.0;
+		$salesacc = 0.0;	
+	
+		//Get classes for PL
+		$classresult = get_account_classes(false, 0);
+		while ($class = db_fetch($classresult))
+		{
+			$class_per_total = 0;
+			$class_acc_total = 0;
+			$convert = get_class_type_convert($class["ctype"]); 		
 			
-		//Check for confirming the account type
-		if (isset($_POST['AccGrp']) && (strlen($_POST['AccGrp']) > 0) )
-		{	
-			if (!is_of_account_type($account['AccountType'], $sub_types_arr))
-				continue;
-		}			
-
-		if ($account['account_code'] != null)
-		{
-			$per_balance = get_gl_trans_from_to($from, $to, $account["account_code"], $dimension, $dimension2);
-
-			if ($compare == 2)
-				$acc_balance = get_budget_trans_from_to($begin, $end, $account["account_code"], $dimension, $dimension2);
-			else
-				$acc_balance = get_gl_trans_from_to($begin, $end, $account["account_code"], $dimension, $dimension2);
-			if (!$per_balance && !$acc_balance)
-				continue;
-		}
-
-		if ($account['AccountClassName'] != $classname)
-		{
-			if ($classname != '')
+			//Print Class Name	
+			table_section_title($class["class_name"],4);	
+			echo $tableheader;
+			
+			//Get Account groups/types under this group/type
+			$typeresult = get_account_types(false, $class['cid'], -1);
+			while ($accounttype=db_fetch($typeresult))
 			{
-				$closeclass = true;
-			}
-		}
-		
-		if ($account['AccountTypeName'] != $typename[$level] || $closeclass )
-		{				
-			if ($typename[$level] != '')
-			{
-				for ( ; $level >= 0, $typename[$level] != ''; $level--) 
+				$TypeTotal = display_type($accounttype["id"], $accounttype["name"], $from, $to, $begin, $end, $compare, $convert, 
+					$dec, $pdec, $rep, $dimension, $dimension2, $drilldown, $path_to_root);
+				$class_per_total += $TypeTotal[0];
+				$class_acc_total += $TypeTotal[1];	
+
+				if ($TypeTotal[0] != 0 || $TypeTotal[1] != 0 )
 				{
-					if ($account['parent'] == $closing[$level] || $account['parent'] < $last || $account['parent'] <= 0 || $closeclass)
-					{	
-						// Display Groups only of Specific Drill Level
-						if ($level == $drilllevel && ($typeper[$level] != 0 || $typeacc[$level] != 0 )) 
-						{
-							$url = "<a href='$path_to_root/gl/inquiry/profit_loss.php?TransFromDate=" 
-								. $from . "&TransToDate=" . $to . "&Compare=" . $compare
-								. "&AccGrp=" . $acctype[$level] . "&DrillLevel=".$nextDrillLevel."'>" . $typename[$level] ."</a>";
-											
-							alt_table_row_color($k);
-							label_cell($url);
-							amount_cell($typeper[$level] * $convert);
-							amount_cell($typeacc[$level] * $convert);
-							amount_cell(Achieve($typeper[$level], $typeacc[$level]));
-							end_row();
-						}						
+					$url = "<a href='$path_to_root/gl/inquiry/profit_loss.php?TransFromDate=" 
+						. $from . "&TransToDate=" . $to . "&Compare=" . $compare
+						. "&AccGrp=" . $accounttype['id'] ."'>" . $accounttype['name'] ."</a>";
 						
-						$typeper[$level] = $typeacc[$level] = 0.0;
-					}
-					else
-						break;
-				}
-				if ($closeclass)
-				{
-					start_row("class='inquirybg' style='font-weight:bold'");
-					label_cell(_('Total') . " " . $classname);
-					amount_cell($classper * $convert);
-					amount_cell($classacc * $convert);
-					amount_cell(Achieve($classper, $classacc));
-					end_row();					
-					
-					$salesper += $classper;
-					$salesacc += $classacc;
-					$classper = $classacc = 0.0;
-
-					$closeclass = false;
+					alt_table_row_color($k);
+					label_cell($url);
+					amount_cell($TypeTotal[0] * $convert);
+					amount_cell($TypeTotal[1] * $convert);
+					amount_cell(Achieve($TypeTotal[0], $TypeTotal[1]));
+					end_row();
 				}
 			}
-			if ($account['AccountClassName'] != $classname)
-			{
-				if (isset($_POST['AccGrp']) && (strlen($_POST['AccGrp']) > 0))
-					table_section_title($account['AccountTypeName'],4);
-				else 
-					table_section_title($account['AccountClassName'],4);
-					
-				echo $tableheader;
-			}
-			$level++;
-			if ($account['parent'] != $last)
-				$last = $account['parent'];
-			$typename[$level] = $account['AccountTypeName'];
-			$acctype[$level] = $account['AccountType'];
-			$closing[$level] = $account['parent'];
-		}
-		$classname = $account['AccountClassName'];
-		$ctype = $account['ClassType'];
-		$convert = get_class_type_convert($ctype); 
-		
-		if ($account['account_code'] != null)
-		{
-			//$per_balance *= -1;
-			//$acc_balance *= -1;
-		
-			for ($i = 0; $i <= $level; $i++)
-			{
-				$typeper[$i] += $per_balance;
-				$typeacc[$i] += $acc_balance;
-			}
-			$classper += $per_balance;
-			$classacc += $acc_balance;		
 			
-			//Show accounts details only for drill down and direct child of Account Group
-			if ( isset($_POST['AccGrp']) && ($account['AccountType'] == $_POST['AccGrp']))
-			{
-				$url = "<a href='$path_to_root/gl/inquiry/gl_account_inquiry.php?TransFromDate=" 
-					. $from . "&TransToDate=" . $to 
-					. "&account=" . $account['account_code'] . "'>" . $account['account_code'] 
-					." ". $account['account_name'] ."</a>";				
-					
-				start_row("class='stockmankobg'");
-				label_cell($url);
-				amount_cell($per_balance * $convert);
-				amount_cell($acc_balance * $convert);
-				amount_cell(Achieve($per_balance, $acc_balance));
-				end_row();
-			}			
+			//Print Class Summary
+			
+			start_row("class='inquirybg' style='font-weight:bold'");
+			label_cell(_('Total') . " " . $class["class_name"]);
+			amount_cell($class_per_total * $convert);
+			amount_cell($class_acc_total * $convert);
+			amount_cell(Achieve($class_per_total, $class_acc_total));
+			end_row();			
+			
+			$salesper += $class_per_total;
+			$salesacc += $class_acc_total;
 		}
-	}
-	if ($account['AccountClassName'] != $classname)
-	{
-		if ($classname != '')
-		{
-			$closeclass = true;
-		}
-	}
-	if ($account['AccountTypeName'] != $typename[$level])
-	{
-		if ($typename[$level] != '')
-		{
-			for ( ; $level >= 0, $typename[$level] != ''; $level--) 
-			{
-				if ($account['parent'] == $closing[$level] || $account['parent'] < $last || $account['parent'] <= 0 || $closeclass)
-				{
-					
-					//Inside drill down, Show summary of the specific account group
-					if (isset($_POST['AccGrp']) && (strlen($_POST['AccGrp']) > 0) && ($acctype[$level] == $_POST['AccGrp']))
-					{
-						start_row("class='inquirybg' style='font-weight:bold'");
-						label_cell(_('Total') . " " .$typename[$level]);
-						amount_cell($typeper[$level] * $convert);
-						amount_cell($typeacc[$level] * $convert);
-						amount_cell(Achieve($typeper[$level], $typeacc[$level]));
-						end_row();							
-					}
-					 // Display Groups only of Specific Drill Level
-					elseif ($level == $drilllevel  && ($typeper[$level] != 0 || $typeacc[$level] != 0 )) 
-					{
-						$url = "<a href='$path_to_root/gl/inquiry/profit_loss.php?TransFromDate=" 
-							. $from . "&TransToDate=" . $to . "&Compare=" . $compare
-							. "&AccGrp=" . $acctype[$level] . "&DrillLevel=".$nextDrillLevel."'>" . $typename[$level] ."</a>";
-										
-						alt_table_row_color($k);
-						label_cell($url);
-						amount_cell($typeper[$level] * $convert);
-						amount_cell($typeacc[$level] * $convert);
-						amount_cell(Achieve($typeper[$level], $typeacc[$level]));
-						end_row();
-					}					
-					
-					$typeper[$level] = $typeacc[$level] = 0.0;
-				}
-				else
-					break;
-			}
+		
+		start_row("class='inquirybg' style='font-weight:bold'");
+		label_cell(_('Calculated Return'));
+		amount_cell($salesper *-1);
+		amount_cell($salesacc * -1);
+		amount_cell(achieve($salesper, $salesacc));
+		end_row();		
 
-			if (($closeclass) && !(isset($_POST['AccGrp']) && (strlen($_POST['AccGrp']) > 0)) )
-			{
-				$calculateper = $salesper + $classper;
-				$calculateacc = $salesacc + $classacc;
-
-				start_row("class='inquirybg' style='font-weight:bold'");
-				label_cell(_('Total') . " " . $classname);
-				amount_cell($classper * $convert);
-				amount_cell($classacc * $convert);
-				amount_cell(Achieve($classper, $classacc));
-				end_row();	
-				
-				start_row("class='inquirybg' style='font-weight:bold'");
-				label_cell(_('Calculated Return'));
-				amount_cell($calculateper *-1);
-				amount_cell($calculateacc * -1);
-				amount_cell(Achieve($calculateper, $calculateacc));
-				end_row();					
-				
-			}
-		}
 	}
+	else 
+	{
+		//Level Pointer : Global variable defined in order to control display of root 
+		global $levelptr;
+		$levelptr = 0;
+		
+		$accounttype = get_account_type($_POST["AccGrp"]);
+		$classid = $accounttype["class_id"];
+		$class = get_account_class($classid);
+		$convert = get_class_type_convert($class["ctype"]); 
+		
+		//Print Class Name	
+		table_section_title(get_account_type_name($_POST["AccGrp"]),4);	
+		echo $tableheader;
+		
+		$classtotal = display_type($accounttype["id"], $accounttype["name"], $from, $to, $begin, $end, $compare, $convert, 
+			$dec, $pdec, $rep, $dimension, $dimension2, $drilldown, $path_to_root);
+		
+	}
+		
+
 	end_table(1); // outer table
 	div_end();
 }
@@ -390,11 +311,10 @@ start_form();
 
 inquiry_controls();
 
-print_profit_and_loss();
+display_profit_and_loss();
 
 end_form();
 
 end_page();
 
 ?>
-
