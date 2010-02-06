@@ -117,7 +117,7 @@ function get_diff_in_home_currency($supplier, $old_date, $date, $amount1, $amoun
 	$currency = get_supplier_currency($supplier);
 	$ex_rate = get_exchange_rate_to_home_currency($currency, $old_date);
 	$amount1 = $amount1 / $ex_rate;
-	$ex_rate = get_exchange_rate_to_home_currency($currency, $date_);
+	$ex_rate = get_exchange_rate_to_home_currency($currency, $date);
 	$amount2 = $amount2 / $ex_rate;
 	$diff = $amount2 - $amount1;
 	return round2($diff, $dec);
