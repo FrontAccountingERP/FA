@@ -80,7 +80,7 @@ function remove_connection($id) {
 function handle_submit()
 {
 	global $db_connections, $def_coy, $tb_pref_counter, $db,
-	    $comp_path, $comp_subdirs;
+	    $comp_path, $comp_subdirs, $path_to_root;
 
 	$new = false;
 	$error = false;
