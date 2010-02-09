@@ -209,6 +209,7 @@ class cart
 	// Makes parent documents for direct delivery/invoice by recurent call.
 	// $policy - 0 or 1:  writeoff/return for IV, back order/cancel for DN
 	function write($policy=0) {
+		begin_transaction(); // prevents partial database changes in case of direct delivery/invoice
 		if (count($this->src_docs) == 0 && ($this->trans_type == ST_SALESINVOICE || $this->trans_type == ST_CUSTDELIVERY)) {
 			// this is direct document - first add parent
 			$src = (PHP_VERSION<5) ? $this : clone( $this ); // make local copy of this cart
@@ -236,18 +237,20 @@ class cart
 		}
 		switch($this->trans_type) {
 			case ST_SALESINVOICE:
-				return write_sales_invoice($this);
+				write_sales_invoice($this); break;
 			case ST_CUSTCREDIT:
-				return write_credit_note($this, $policy);
+				write_credit_note($this, $policy); break;
 			case ST_CUSTDELIVERY:
-				return write_sales_delivery($this, $policy);
+				write_sales_delivery($this, $policy); break;
 			case ST_SALESORDER:
 			case ST_SALESQUOTE:
 				if ($this->trans_no==0)	// new document
-					return add_sales_order($this);
+					add_sales_order($this);
 				else
-					return update_sales_order($this);
+					update_sales_order($this);
 		}
+
+		commit_transaction();
 	}
 
 	function set_customer($customer_id, $customer_name, $currency, $discount, $payment, $cdiscount=0)

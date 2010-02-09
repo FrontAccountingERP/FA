@@ -94,13 +94,16 @@ function error_box() {
 /*
 	Helper to avoid sparse log notices.
 */
-function end_flush () {
-	global $Ajax;
+function end_flush() {
+	global $Ajax, $transaction_level;
 
 	if (isset($Ajax))
 		$Ajax->run();
 	// flush all output buffers (works also with exit inside any div levels)
 	while(ob_get_level()) ob_end_flush();
+
+	// if any transaction was aborted unexpectedly rollback changes
+	cancel_transaction();
 }
 
 function display_db_error($msg, $sql_statement=null, $exit=true)

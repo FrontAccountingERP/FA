@@ -12,7 +12,10 @@
 
 function set_global_connection()
 {
-	global $db;
+	global $db, $transaction_level;
+
+	cancel_transaction(); // cancel all aborted transactions if any
+	$transaction_level = 0;
 
    	$db = $_SESSION["wa_current_user"]->get_db_connection();
 }
