@@ -431,7 +431,7 @@ function check_item_data()
 	global $SysPrefs;
 	
 	if(!get_post('stock_id_text', true)) {
-		display_error( _("Item description cnnot be empty."));
+		display_error( _("Item description cannot be empty."));
 		set_focus('stock_id_edit');
 		return false;
 	}
