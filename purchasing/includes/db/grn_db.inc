@@ -63,15 +63,17 @@ function update_average_material_cost($supplier, $stock_id, $price, $qty, $date,
 
 //-------------------------------------------------------------------------------------------------------------
 
-function add_grn(&$po, $date_, $reference, $location)
+function add_grn(&$po)
 {
 	global $Refs;
 
+	$date_ = $po->orig_order_date;
+
 	begin_transaction();
 
-	$grn = add_grn_batch($po->order_no, $po->supplier_id, $reference, $location, $date_);
+	$grn = add_grn_batch($po->order_no, $po->supplier_id, $po->reference, $po->Location, $date_);
 
-	foreach ($po->line_items as $order_line)
+	foreach ($po->line_items as $line_no => $order_line)
 	{
 
 		if ($order_line->receive_qty != 0 && $order_line->receive_qty != "" && isset($order_line->receive_qty))
@@ -98,15 +100,16 @@ function add_grn(&$po, $date_, $reference, $location)
 				$order_line->stock_id, $order_line->item_description,
 				$order_line->standard_cost,	$order_line->receive_qty, $order_line->price);
 
+			$po->line_items[$line_no]->grn_item_id = $grn_item;
 			/* Update location stock records - NB  a po cannot be entered for a service/kit parts */
-            add_stock_move(ST_SUPPRECEIVE, $order_line->stock_id, $grn, $location, $date_, "",
+            add_stock_move(ST_SUPPRECEIVE, $order_line->stock_id, $grn, $po->Location, $date_, "",
             	$order_line->receive_qty, $order_line->standard_cost,
             	$po->supplier_id, 1, $order_line->price);
 
 		} /*quantity received is != 0 */
 	} /*end of order_line loop */
 
-	$Refs->save(ST_SUPPRECEIVE, $grn, $reference);
+	$Refs->save(ST_SUPPRECEIVE, $grn, $po->reference);
 
 	add_audit_trail(ST_SUPPRECEIVE, $grn, $date_);
 

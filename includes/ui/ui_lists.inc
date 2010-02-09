@@ -240,7 +240,7 @@ $opts = array(		// default options
 			."<input type='text' $disabled name='{$name}_text' id='{$name}_text' size='".
 				$opts['editable']."' maxlength='".$opts['max']."' $rel value='$edit'>\n";
 				set_focus($name.'_text'); // prevent lost focus
-		} else if (isset($_POST['_'.$name.'_edit']))
+		} else if (get_post($search_submit ? $search_submit : "_{$name}_button"))
 			set_focus($name); // prevent lost focus
 		if (!$opts['editable'])
 	 		$txt = $found;
@@ -695,7 +695,7 @@ function stock_items_list($name, $selected_id=null, $all_option=false,
 {
 	global $all_items;
 
-	$sql = "SELECT stock_id, s.description, c.description, s.inactive
+	$sql = "SELECT stock_id, s.description, c.description, s.inactive, s.editable
 			FROM ".TB_PREF."stock_master s,".TB_PREF."stock_category c WHERE s.category_id=c.category_id";
 
 	if ($editkey)
@@ -878,7 +878,9 @@ function stock_purchasable_items_list($name, $selected_id=null,
 		array('where'=>array("mb_flag!= 'M'"), 
 			'show_inactive'=>$all), $editkey);
 }
-
+//
+//	This helper is used in PO/GRN/PI entry and supports editable descriptions.
+//
 function stock_purchasable_items_list_cells($label, $name, $selected_id=null,
 			$all_option=false, $submit_on_change=false, $editkey=false)
 {
@@ -886,9 +888,10 @@ function stock_purchasable_items_list_cells($label, $name, $selected_id=null,
 		echo "<td>$label</td>\n";
 	echo stock_items_list($name, $selected_id, $all_option, $submit_on_change,
 		array('where'=>array("mb_flag!= 'M'"), 
+			 'editable' => 30,
 			 'cells'=>true), $editkey);
 }
-
+/*
 function stock_purchasable_items_list_row($label, $name, $selected_id=null,
 			$all_option=false, $submit_on_change=false, $editkey=false)
 {
@@ -897,7 +900,7 @@ function stock_purchasable_items_list_row($label, $name, $selected_id=null,
 		$all_option, $submit_on_change, $editkey);
 	echo "</tr>\n";
 }
-
+*/
 //------------------------------------------------------------------------------------
 
 function stock_item_types_list_row($label, $name, $selected_id=null, $enabled=true)

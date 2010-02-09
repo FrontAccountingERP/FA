@@ -34,7 +34,7 @@ function add_po(&$po_obj)
          db_escape($po_obj->Comments) . ",'" .
          date2sql($po_obj->orig_order_date) . "', " .
 		 db_escape($po_obj->reference) . ", " .
-         db_escape($po_obj->requisition_no) . ", " .
+         db_escape($po_obj->supp_ref) . ", " .
          db_escape($po_obj->Location) . ", " .
          db_escape($po_obj->delivery_address) . ")";
 
@@ -44,7 +44,7 @@ function add_po(&$po_obj)
      $po_obj->order_no = db_insert_id();
 
      /*Insert the purchase order detail records */
-     foreach ($po_obj->line_items as $po_line)
+     foreach ($po_obj->line_items as $line_no => $po_line)
      {
 		$sql = "INSERT INTO ".TB_PREF."purch_order_details (order_no, item_code, description, delivery_date,	unit_price,	quantity_ordered) VALUES (";
 		$sql .= $po_obj->order_no . ", " . db_escape($po_line->stock_id). "," .
@@ -53,6 +53,7 @@ function add_po(&$po_obj)
 		db_escape($po_line->price) . ", " .
 		db_escape($po_line->quantity). ")";
 		db_query($sql, "One of the purchase order detail records could not be inserted");
+		$po_obj->line_items[$line_no]->po_detail_rec = db_insert_id();
      }
 
 	$Refs->save(ST_PURCHORDER, $po_obj->order_no, $po_obj->reference);
@@ -73,7 +74,7 @@ function update_po(&$po_obj)
 
     /*Update the purchase order header with any changes */
     $sql = "UPDATE ".TB_PREF."purch_orders SET Comments=" . db_escape($po_obj->Comments) . ",
-		requisition_no= ". db_escape( $po_obj->requisition_no). ",
+		requisition_no= ". db_escape( $po_obj->supp_ref). ",
 		into_stock_location=" . db_escape($po_obj->Location). ",
 		ord_date='" . date2sql($po_obj->orig_order_date) . "',
 		delivery_address=" . db_escape($po_obj->delivery_address);
@@ -134,7 +135,7 @@ function read_po_header($order_no, &$order)
       	$order->orig_order_date = sql2date($myrow["ord_date"]);
       	$order->Comments = $myrow["comments"];
       	$order->Location = $myrow["into_stock_location"];
-      	$order->requisition_no = $myrow["requisition_no"];
+      	$order->supp_ref = $myrow["requisition_no"];
       	$order->reference = $myrow["reference"];
       	$order->delivery_address = $myrow["delivery_address"];
 

@@ -375,7 +375,7 @@ function read_supp_invoice($trans_no, $trans_type, &$supp_trans)
 		$supp_trans->tran_date = sql2date($trans_row["tran_date"]);
 		$supp_trans->due_date = sql2date($trans_row["due_date"]);
 		//$supp_trans->Comments = $trans_row["TransText"];
-		$supp_trans->Comments = "";
+		$supp_trans->Comments = get_comments_string($trans_type, $trans_no);
 		$supp_trans->reference = $trans_row["reference"];
 		$supp_trans->supp_reference = $trans_row["supp_reference"];
 		$supp_trans->ov_amount = $trans_row["ov_amount"];

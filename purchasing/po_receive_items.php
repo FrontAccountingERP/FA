@@ -116,7 +116,8 @@ function display_po_receive_items()
 
 function check_po_changed()
 {
-	/*Now need to check that the order details are the same as they were when they were read into the Items array. If they've changed then someone else must have altered them */
+	/*Now need to check that the order details are the same as they were when they were read
+	into the Items array. If they've changed then someone else must have altered them */
 	// Sherifoz 22.06.03 Compare against COMPLETED items only !!
 	// Otherwise if you try to fullfill item quantities separately will give error.
 	$result = get_po_items($_SESSION['PO']->order_no);
@@ -226,37 +227,43 @@ function process_receive_po()
 	if (check_po_changed())
 	{
 		display_error(_("This order has been changed or invoiced since this delivery was started to be actioned. Processing halted. To enter a delivery against this purchase order, it must be re-selected and re-read again to update the changes made by the other user."));
+
 		hyperlink_no_params("$path_to_root/purchasing/inquiry/po_search.php",
 		 _("Select a different purchase order for receiving goods against"));
+
 		hyperlink_params("$path_to_root/purchasing/po_receive_items.php", 
 			 _("Re-Read the updated purchase order for receiving goods against"),
 			 "PONumber=" . $_SESSION['PO']->order_no);
+
 		unset($_SESSION['PO']->line_items);
 		unset($_SESSION['PO']);
 		unset($_POST['ProcessGoodsReceived']);
 		$Ajax->activate('_page_body');
 		display_footer_exit();
 	}
+	
+	$grn = &$_SESSION['PO'];
+	$grn->orig_order_date = $_POST['DefaultReceivedDate'];
+	$grn->reference = $_POST['ref'];
+	$grn->Location = $_POST['Location'];
 
-	$grn = add_grn($_SESSION['PO'], $_POST['DefaultReceivedDate'],
-		$_POST['ref'], $_POST['Location']);
+	$grn_no = add_grn($grn);
 
 	new_doc_date($_POST['DefaultReceivedDate']);
 	unset($_SESSION['PO']->line_items);
 	unset($_SESSION['PO']);
 
-	meta_forward($_SERVER['PHP_SELF'], "AddedID=$grn");
+	meta_forward($_SERVER['PHP_SELF'], "AddedID=$grn_no");
 }
 
 //--------------------------------------------------------------------------------------------------
 
 if (isset($_GET['PONumber']) && $_GET['PONumber'] > 0 && !isset($_POST['Update']))
 {
-
-	create_new_po();
-
-	/*read in all the selected order into the Items cart  */
-	read_po($_GET['PONumber'], $_SESSION['PO']);
+	create_new_po(ST_PURCHORDER, $_GET['PONumber']);
+	$_SESSION['PO']->trans_type = ST_SUPPRECEIVE;
+	$_SESSION['PO']->reference = $Refs->get_next(ST_SUPPRECEIVE);
+	copy_from_cart();
 }
 
 //--------------------------------------------------------------------------------------------------

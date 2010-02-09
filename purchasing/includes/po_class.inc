@@ -15,14 +15,14 @@
 class purch_order 
 {
 
-	var $supplier_id;
-	
+	var $trans_type; // order/grn/invoice (direct)
 	var $line_items; /*array of objects of class line_details using the product id as the pointer */
 	var $curr_code;
-	var $requisition_no;
+	var $supp_ref;
 	var $delivery_address;
 	var $Comments;
 	var $Location;
+	var $supplier_id;
 	var $supplier_name;
 	var $orig_order_date;
 	var $order_no; /*Only used for modification of existing orders otherwise only established when order committed */
@@ -41,15 +41,18 @@ class purch_order
 	{
 		if ($qty != 0 && isset($qty))
 		{
-			$this->line_items[$line_no] = new line_details($line_no, $stock_id, $item_descr, $qty, $price, $uom, $req_del_date, $qty_inv, $qty_recd);
+			$this->line_items[$line_no] = new line_details($line_no, $stock_id, $item_descr, $qty, $price, $uom, 
+				$req_del_date, $qty_inv, $qty_recd);
 			$this->lines_on_order++;
 			return 1;
 		}
 		return 0;
 	}
 
-	function update_order_item($line_no, $qty, $price, $req_del_date)
+	function update_order_item($line_no, $qty, $price, $req_del_date, $description="")
 	{
+		if ($description != "")
+			$this->line_items[$line_no]->item_description = $description;
 		$this->line_items[$line_no]->quantity = $qty;
 		$this->line_items[$line_no]->price = $price;
 		$this->line_items[$line_no]->req_del_date = $req_del_date;
@@ -112,6 +115,7 @@ class line_details
 
 	var $line_no;
 	var $po_detail_rec;
+	var $grn_item_id;
 	var $stock_id;
 	var $item_description;
 	var $quantity;
@@ -122,22 +126,34 @@ class line_details
 	var $qty_received;
 	var $standard_cost;
 	var $receive_qty;
+	var $descr_editable;
 	
-	function line_details($line_no, $stock_item, $item_descr, $qty, $prc, $uom, $req_del_date, $qty_inv, $qty_recd)
+	function line_details($line_no, $stock_item, $item_descr, $qty, $prc, $uom, $req_del_date, 
+		$qty_inv, $qty_recd, $grn_item_id=0)
 	{
 
 		/* Constructor function to add a new LineDetail object with passed params */
 		$this->line_no = $line_no;
 		$this->stock_id = $stock_item;
-		$this->item_description = $item_descr;
+		$item_row = get_item($stock_item);
+		if (!$item_row) 
+			return;
+
+		$this->descr_editable = $item_row["editable"];
+		if ($item_descr == null || !$this->descr_editable)
+			$this->item_description = $item_row["description"];
+		else
+			$this->item_description = $item_descr;
 		$this->quantity = $qty;
 		$this->req_del_date = $req_del_date;
 		$this->price = $prc;
-		$this->units = $uom;
+//		$this->units = $uom;
+		$this->units = $item_row["units"];
 		$this->qty_received = $qty_recd;
 		$this->qty_inv = $qty_inv;
 		$this->receive_qty = 0;	/*initialise these last two only */
 		$this->standard_cost =0;
+		$this->grn_item_id = $grn_item_id;
 	}
 }
 

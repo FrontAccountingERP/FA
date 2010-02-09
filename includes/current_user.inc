@@ -460,7 +460,10 @@ function array_append(&$array, $elements)
 			$array[$key] = $el;
 	}
 }
-
+//
+//	Search $needle in $haystack or in $haystack[][$valuekey]
+//	returns $needle found or null.
+//
 function array_search_value($needle, $haystack, $valuekey=null)
 {
 	foreach($haystack as $key => $value) {
@@ -471,15 +474,28 @@ function array_search_value($needle, $haystack, $valuekey=null)
 	}
 	return null;
 }
-
-function array_search_key($needle, $haystack, $valuekey=null)
+//
+//	Search $needle in $haystack or in $haystack[][$valuekey]
+//	returns array of keys of $haystack elements found
+//
+function array_search_keys($needle, $haystack, $valuekey=null)
 {
+	$keys = array();
 	foreach($haystack as $key => $value) {
 		$val = isset($valuekey) ? $value[$valuekey] : $value;
 		if ($needle == $val){
-			return $key;
+			$keys[] = $key;
 		}
 	}
-	return null;
+	return $keys;
+}
+//
+//	Find first (single) $needle in $haystack or in $haystack[][$valuekey]
+//	returns $haystack element found or null
+//
+function array_search_key($needle, $haystack, $valuekey=null)
+{
+	$keys = array_search_keys($needle, $haystack, $valuekey);
+	return @$keys[0];
 }
 ?>
