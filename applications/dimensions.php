@@ -13,7 +13,6 @@ class dimensions_app extends application
 {
 	function dimensions_app()
 	{
-		global $installed_extensions;
 		$dim = get_company_pref('use_dimension');
 		$this->application("proj", _($this->help_context = "&Dimensions"), $dim);
 
@@ -35,22 +34,10 @@ class dimensions_app extends application
 			$this->add_module(_("Maintenance"));
 			$this->add_lapp_function(2, _("Dimension &Tags"),
 				"admin/tags.php?type=dimension", 'SA_DIMTAGS');
-				
-			if (count($installed_extensions) > 0)
-			{
-				foreach ($installed_extensions as $mod)
-				{
-					if (@$mod['active'] && $mod['type'] == 'plugin' && $mod["tab"] == "proj")
-					{
-						$this->add_rapp_function(2, $mod["title"], 
-							"modules/".$mod["path"]."/".$mod["filename"]."?",
-							isset($mod["access"]) ? $mod["access"] : 'SA_OPEN' );
-					}
-				}
-			}
+
+			$this->add_extensions();
 		}
 	}
 }
-
 
 ?>

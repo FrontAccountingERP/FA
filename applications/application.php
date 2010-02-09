@@ -116,12 +116,44 @@
 		function add_lapp_function($level, $label,$link="",$access='SA_OPEN') 
 		{
 			$this->modules[$level]->lappfunctions[] = new app_function($label, $link, $access);
-		}	
-			
+		}
+		
 		function add_rapp_function($level, $label,$link="",$access='SA_OPEN') 
 		{
 			$this->modules[$level]->rappfunctions[] = new app_function($label, $link, $access);
-		}	
+		}
+		
+		function add_extensions()
+		{
+			global $installed_extensions, $path_to_root;
+
+			foreach ($installed_extensions as $mod)
+			{
+				if (@$mod['active'] && isset($mod['entries']))
+					foreach($mod['entries'] as $entry) {
+						if ($entry['tab_id'] == $this->id)
+							$this->add_rapp_function(
+								isset($entry['section']) ? $entry['section'] : 2,
+								$entry['title'], $path_to_root.'/'.$mod['path'].'/'.$entry['url'],
+								isset($entry["access"]) ? $entry["access"] : 'SA_OPEN' );
+					}
+			}
+		}
+		//
+		// Helper returning link to report class added by extension module.
+		//
+		function report_class_url($class)
+		{
+			global $installed_extensions;
+
+			// TODO : konwencja lub ?
+			$classno = 7;
+//			if (file_exists($path_to_root.'/'.$mod['path'].'/'.$entry['url']
+//					.'/'.'reporting/reports_custom.php'))
+				return "reporting/reports_main.php?Class=".$class;
+//			else
+//				return '';
+		}
 	}
 
 

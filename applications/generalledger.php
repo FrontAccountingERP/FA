@@ -13,7 +13,6 @@ class general_ledger_app extends application
 {
 	function general_ledger_app() 
 	{
-		global $installed_extensions;
 		$this->application("GL", _($this->help_context = "&Banking and General Ledger"));
 
 		$this->add_module(_("Transactions"));
@@ -47,7 +46,7 @@ class general_ledger_app extends application
 		$this->add_rapp_function(1, _("Banking &Reports"),
 			"reporting/reports_main.php?Class=5", 'SA_BANKREP');
 		$this->add_rapp_function(1, _("General Ledger &Reports"),
-			"reporting/reports_main.php?Class=6", 'SA_GLREP');
+			"reporting/reports_main.php?Class="._("General Ledger"), 'SA_GLREP');
 
 		$this->add_module(_("Maintenance"));
 		$this->add_lapp_function(2, _("Bank &Accounts"),
@@ -68,16 +67,8 @@ class general_ledger_app extends application
 			"gl/manage/gl_account_types.php?", 'SA_GLACCOUNTGROUP');
 		$this->add_rapp_function(2, _("GL Account &Classes"),
 			"gl/manage/gl_account_classes.php?", 'SA_GLACCOUNTCLASS');
-		if (count($installed_extensions) > 0)
-		{
-			foreach ($installed_extensions as $mod)
-			{
-				if (@$mod['active'] && $mod['type'] == 'plugin' && $mod["tab"] == "GL")
-					$this->add_rapp_function(2, $mod["title"], 
-						"modules/".$mod["path"]."/".$mod["filename"]."?",
-						isset($mod["access"]) ? $mod["access"] : 'SA_OPEN' );
-			}
-		}
+
+		$this->add_extensions();
 	}
 }
 

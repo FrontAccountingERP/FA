@@ -13,7 +13,6 @@ class inventory_app extends application
 {
 	function inventory_app() 
 	{
-		global $installed_extensions;
 		$this->application("stock", _($this->help_context = "&Items and Inventory"));
 
 		$this->add_module(_("Transactions"));
@@ -28,7 +27,7 @@ class inventory_app extends application
 		$this->add_lapp_function(1, _("Inventory Item &Status"),
 			"inventory/inquiry/stock_status.php?", 'SA_ITEMSSTATVIEW');
 		$this->add_rapp_function(1, _("Inventory &Reports"),
-			"reporting/reports_main.php?Class=2", 'SA_ITEMSTRANSVIEW');
+			"reporting/reports_main.php?Class="._("Inventory"), 'SA_ITEMSTRANSVIEW');
 
 		$this->add_module(_("Maintenance"));
 		$this->add_lapp_function(2, _("&Items"),
@@ -55,16 +54,8 @@ class inventory_app extends application
 			"inventory/purchasing_data.php?", 'SA_PURCHASEPRICING');
 		$this->add_rapp_function(3, _("Standard &Costs"),
 			"inventory/cost_update.php?", 'SA_STANDARDCOST');
-		if (count($installed_extensions) > 0)
-		{
-			foreach ($installed_extensions as $mod)
-			{
-				if (@$mod['active'] && $mod['type'] == 'plugin' && $mod["tab"] == "stock")
-					$this->add_rapp_function(2, $mod["title"], 
-						"modules/".$mod["path"]."/".$mod["filename"]."?",
-						isset($mod["access"]) ? $mod["access"] : 'SA_OPEN' );
-			}
-		}
+
+		$this->add_extensions();
 	}
 }
 

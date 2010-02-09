@@ -13,7 +13,6 @@ class customers_app extends application
 {
 	function customers_app() 
 	{
-		global $installed_extensions;
 		$this->application("orders", _($this->help_context = "&Sales"));
 	
 		$this->add_module(_("Transactions"));
@@ -76,16 +75,8 @@ class customers_app extends application
 			"sales/manage/sales_areas.php?", 'SA_SALESAREA');
 		$this->add_rapp_function(2, _("Credit &Status Setup"),
 			"sales/manage/credit_status.php?", 'SA_CRSTATUS');
-		if (count($installed_extensions) > 0)
-		{
-			foreach ($installed_extensions as $mod)
-			{
-				if (@$mod['active'] && $mod['type'] == 'plugin' && $mod["tab"] == "orders")
-					$this->add_rapp_function(2, $mod["title"], 
-						"modules/".$mod["path"]."/".$mod["filename"]."?",
-						isset($mod["access"]) ? $mod["access"] : 'SA_OPEN' );
-			}
-		}
+
+		$this->add_extensions();
 	}
 }
 
