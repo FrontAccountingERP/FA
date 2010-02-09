@@ -19,7 +19,41 @@ Legend:
 ! -> Note
 $ -> Affected files
 
-03-Feb-2010 Janusz Dobrowolski
+09-Feb-2010 Janusz Dobrowolski
++ Improved multilevel database transaction support
+$ /includes/errors.inc
+  /includes/db/connect_db.inc
+  /includes/db/sql_functions.inc
+  /sales/includes/cart_class.inc
++ Added Direct GRN and Direct Invoice in purchases module
+$ /applications/suppliers.php
+  /includes/current_user.inc
+  /includes/ui/ui_lists.inc
+  /purchasing/po_entry_items.php
+  /purchasing/po_receive_items.php
+  /purchasing/includes/po_class.inc
+  /purchasing/includes/db/grn_db.inc
+  /purchasing/includes/db/invoice_db.inc
+  /purchasing/includes/db/po_db.inc
+  /purchasing/includes/ui/grn_ui.inc
+  /purchasing/includes/ui/po_ui.inc
++ Added invoice preselection option.
+$ /purchasing/supplier_payment.php
+! Optimized extensions related code.
+$ /applications/application.php
+  /applications/customers.php
+  /applications/dimensions.php
+  /applications/generalledger.php
+  /applications/inventory.php
+  /applications/manufacturing.php
+  /applications/setup.php
+! Cleanup
+$ /purchasing/supplier_invoice.php
+  /sales/includes/ui/sales_order_ui.inc
+# Typo
+$ /sales/sales_order_entry.php
+
+05-Feb-2010 Janusz Dobrowolski
 + Multiply order items with the same stock_id (with warning), code cleanups
 $ /purchasing/po_entry_items.php
   /purchasing/includes/po_class.inc
@@ -43,7 +77,7 @@ $ /gl/manage/gl_account_classes.php
   /sql/en_US-new.sql
 
 03-Feb-2010 Janusz Dobrowolski
-# Payment terms were not retrieved atinvoice edit start.
+# Payment terms were not retrieved at invoice edit start.
 $ /sales/customer_invoice.php
 # Fixed item selector.
 $ /inventory/prices.php
