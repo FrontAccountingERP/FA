@@ -19,8 +19,17 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+10-Feb-2010 Joe Hunt
+! Changed so 'Allow Negative Stock' will update the GL cogs/inventory when
+  the correct values later are obtained.
+$ /admin/gl_setup.php
+  /includes/db/inventory_db.inc
+  /manufacturing/includes/db/work_orders_db.inc
+  /purchasing/includes/db/grn_db.inc
+  /purchasing/includes/db/invoice_db.inc
+  
 09-Feb-2010 Joe Hunt/Chaitanya
-# 0000202: Global $path_to_root is missing in function handle_submit() in file admin/create_coy.php 
+# [0000202] Global $path_to_root is missing in function handle_submit() in file admin/create_coy.php 
 $ /admin/create_coy.php
 
 06-Feb-2010 Janusz Dobrowolski

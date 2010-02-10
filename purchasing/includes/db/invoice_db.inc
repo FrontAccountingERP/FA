@@ -98,18 +98,6 @@ function update_supp_received_items_for_invoice($id, $po_detail_item, $qty_invoi
 	return array($ret, $date, $unit_price);
 }
 
-function get_deliveries_between($stock_id, $from, $to)
-{
-	$from = date2sql($from);
-	$to = date2sql($to);
-	$sql = "SELECT SUM(-qty), SUM(-qty*standard_cost) FROM ".TB_PREF."stock_moves
-		WHERE type=".ST_CUSTDELIVERY." AND stock_id=".db_escape($stock_id)." AND
-			tran_date>='$from' AND tran_date<='$to' GROUP BY stock_id";
-
-	$result = db_query($sql, "The deliveries could not be updated");
-	return db_fetch_row($result);
-}
-
 function get_diff_in_home_currency($supplier, $old_date, $date, $amount1, $amount2)
 {
 	$dec = user_price_dec();
