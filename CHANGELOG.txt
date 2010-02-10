@@ -19,6 +19,12 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+10-Feb-2010 Janusz Dobrowolski
+# [0000201] Cannot change item type when item is edited
+$  /inventory/manage/items.php
+# Sparse warning fixed.
+$ includes/db/manufacturing_db.inc
+
 10-Feb-2010 Joe Hunt
 ! Changed so 'Allow Negative Stock' will update the GL cogs/inventory when
   the correct values later are obtained.
