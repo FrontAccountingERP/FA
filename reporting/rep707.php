@@ -156,22 +156,25 @@ function print_profit_and_loss_statement()
 	{
 		$dimension = $_POST['PARAM_3'];
 		$dimension2 = $_POST['PARAM_4'];
-		$graphics = $_POST['PARAM_5'];
-		$comments = $_POST['PARAM_6'];
-		$destination = $_POST['PARAM_7'];
+		$decimals = $_POST['PARAM_5'];
+		$graphics = $_POST['PARAM_6'];
+		$comments = $_POST['PARAM_7'];
+		$destination = $_POST['PARAM_8'];
 	}
 	else if ($dim == 1)
 	{
 		$dimension = $_POST['PARAM_3'];
-		$graphics = $_POST['PARAM_4'];
-		$comments = $_POST['PARAM_5'];
-		$destination = $_POST['PARAM_6'];
+		$decimals = $_POST['PARAM_4'];
+		$graphics = $_POST['PARAM_5'];
+		$comments = $_POST['PARAM_6'];
+		$destination = $_POST['PARAM_7'];
 	}
 	else
 	{
-		$graphics = $_POST['PARAM_3'];
-		$comments = $_POST['PARAM_4'];
-		$destination = $_POST['PARAM_5'];
+		$decimals = $_POST['PARAM_3'];
+		$graphics = $_POST['PARAM_4'];
+		$comments = $_POST['PARAM_5'];
+		$destination = $_POST['PARAM_6'];
 	}
 	if ($destination)
 		include_once($path_to_root . "/reporting/includes/excel_report.inc");
@@ -182,7 +185,10 @@ function print_profit_and_loss_statement()
 		include_once($path_to_root . "/reporting/includes/class.graphic.inc");
 		$pg = new graph();
 	}
-	$dec = 0;
+	if (!$decimals)
+		$dec = 0;
+	else
+		$dec = user_price_dec();
 	$pdec = user_percent_dec();
 
 	$cols = array(0, 50, 200, 350, 425,	500);

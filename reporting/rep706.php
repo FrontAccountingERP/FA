@@ -133,22 +133,25 @@ function print_balance_sheet()
 	{
 		$dimension = $_POST['PARAM_2'];
 		$dimension2 = $_POST['PARAM_3'];
-		$graphics = $_POST['PARAM_4'];
-		$comments = $_POST['PARAM_5'];
-		$destination = $_POST['PARAM_6'];
+		$decimals = $_POST['PARAM_4'];
+		$graphics = $_POST['PARAM_5'];
+		$comments = $_POST['PARAM_6'];
+		$destination = $_POST['PARAM_7'];
 	}
 	else if ($dim == 1)
 	{
 		$dimension = $_POST['PARAM_2'];
-		$graphics = $_POST['PARAM_3'];
-		$comments = $_POST['PARAM_4'];
-		$destination = $_POST['PARAM_5'];
+		$decimals = $_POST['PARAM_3'];
+		$graphics = $_POST['PARAM_4'];
+		$comments = $_POST['PARAM_5'];
+		$destination = $_POST['PARAM_6'];
 	}
 	else
 	{
-		$graphics = $_POST['PARAM_2'];
-		$comments = $_POST['PARAM_3'];
-		$destination = $_POST['PARAM_4'];
+		$decimals = $_POST['PARAM_2'];
+		$graphics = $_POST['PARAM_3'];
+		$comments = $_POST['PARAM_4'];
+		$destination = $_POST['PARAM_5'];
 	}
 	if ($destination)
 		include_once($path_to_root . "/reporting/includes/excel_report.inc");
@@ -159,7 +162,10 @@ function print_balance_sheet()
 		include_once($path_to_root . "/reporting/includes/class.graphic.inc");
 		$pg = new graph();
 	}
-	$dec = 0;
+	if (!$decimals)
+		$dec = 0;
+	else
+		$dec = user_price_dec();
 
 	$cols = array(0, 50, 200, 350, 425,	500);
 	//------------0--1---2----3----4----5--
