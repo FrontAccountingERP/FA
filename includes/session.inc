@@ -159,14 +159,14 @@ ini_set('session.gc_maxlifetime', 36000); // 10hrs
 
 session_name('FrontAccounting');
 session_start();
+
 // this is to fix the "back-do-you-want-to-refresh" issue - thanx PHPFreaks
 header("Cache-control: private");
-
 
 get_text_init();
 
 // Page Initialisation
-if (!isset($_SESSION['language'])) 
+if (!method_exists($_SESSION['language'], 'set_language')) 
 {
 	$l = array_search_value($dflt_lang, $installed_languages,  'code');
 	$_SESSION['language'] = new language($l['name'], $l['code'], $l['encoding'],
