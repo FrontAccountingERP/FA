@@ -33,18 +33,20 @@ function getTransactions($from, $to)
 {
 	$from = date2sql($from);
 	$to = date2sql($to);
-	$sql = "SELECT ".TB_PREF."grn_batch.delivery_date, ".TB_PREF."grn_batch.supplier_id, 
-			".TB_PREF."purch_order_details.*,
-			".TB_PREF."stock_master.description
-		FROM ".TB_PREF."stock_master,
-			".TB_PREF."purch_order_details,
-			".TB_PREF."grn_batch
-		WHERE ".TB_PREF."stock_master.stock_id=".TB_PREF."purch_order_details.item_code
-		AND ".TB_PREF."grn_batch.purch_order_no=".TB_PREF."purch_order_details.order_no
-		AND ".TB_PREF."purch_order_details.quantity_received>0
-		AND ".TB_PREF."grn_batch.delivery_date>='$from'
-		AND ".TB_PREF."grn_batch.delivery_date<='$to'
-		ORDER BY ".TB_PREF."stock_master.stock_id, ".TB_PREF."grn_batch.delivery_date";
+	
+	$sql = "SELECT DISTINCT ".TB_PREF."grn_batch.supplier_id, 
+            ".TB_PREF."purch_order_details.*,
+            ".TB_PREF."stock_master.description
+        FROM ".TB_PREF."stock_master,
+            ".TB_PREF."purch_order_details,
+            ".TB_PREF."grn_batch
+        WHERE ".TB_PREF."stock_master.stock_id=".TB_PREF."purch_order_details.item_code
+        AND ".TB_PREF."grn_batch.purch_order_no=".TB_PREF."purch_order_details.order_no
+        AND ".TB_PREF."purch_order_details.quantity_received>0
+        AND ".TB_PREF."grn_batch.delivery_date>='$from'
+        AND ".TB_PREF."grn_batch.delivery_date<='$to'
+        ORDER BY ".TB_PREF."stock_master.stock_id, ".TB_PREF."grn_batch.delivery_date"; 	
+	
     return db_query($sql,"No transactions were returned");
 
 }

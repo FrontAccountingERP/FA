@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+11-Feb-2010 Joe Hunt/Chaitanya
+# [0000204] GRN Valuation Report shows wrong data
+$ /reporting/rep305.php
+
 10-Feb-2010 Janusz Dobrowolski
 # [0000201] Cannot change item type when item is edited
 $  /inventory/manage/items.php
