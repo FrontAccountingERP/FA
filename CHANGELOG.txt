@@ -19,6 +19,12 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+11-Feb-2010 Janusz Dobrowolski
+# Better check for language session var.
+$ /includes/session.inc
+# Fixed IE related hotkeys problem with AltTab
+$ /js/inserts.js
+
 11-Feb-2010 Joe Hunt/Chaitanya
 # [0000204] GRN Valuation Report shows wrong data
 $ /reporting/rep305.php
