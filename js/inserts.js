@@ -357,7 +357,7 @@ function setHotKeys() {
 			_hotkeys.focus = -1;
 			return stopEv(ev);
 		}
-		else if (_hotkeys.alt && ((key>47 && key<58) || (key>64 && key<91))) {
+		else if (ev.altKey && !ev.ctrlKey && ((key>47 && key<58) || (key>64 && key<91))) {
 			var n = _hotkeys.focus;
 			var l = document.links;
 			var cnt = l.length;
@@ -375,7 +375,7 @@ function setHotKeys() {
 			}
 			return stopEv(ev);
 		}
-		if((ev.ctrlKey && key == 13) || key == 27) {
+		if((ev.ctrlKey && key == 13) || (key == 27 && ev.altKey)) {
 			_hotkeys.alt = false; // cancel link selection
 			_hotkeys.focus = -1;
 			ev.cancelBubble = true;
