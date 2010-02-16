@@ -13,8 +13,6 @@ function page_footer($no_menu=false, $is_index=false, $hide_back_link=false)
 {
 	global $path_to_root, $js_lib, $Validate, $Editors, $Ajax;
 
-  	if (!$is_index && !$hide_back_link && function_exists('hyperlink_back'))
-		hyperlink_back();
 	include_once($path_to_root."/themes/".user_theme()."/renderer.php");
 	$rend = new renderer();
 	$rend->menu_footer($no_menu, $is_index);

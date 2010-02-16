@@ -95,11 +95,6 @@ button img, span {
 	vertical-align: middle;
 }
 
-.login {
-	background-color: #ffffff;
-	border: none;
-}
-
 .callout_main {
 	font-family: Verdana, Arial, Helvetica;
 	border: none;
@@ -248,7 +243,15 @@ div.tabs a:hover {
 	color: #cccccc;
 	font-weight: normal;
 	font-size: 9px;
+	text-align: center;
+	width: 100%;
 }
+
+.footer td a {
+	color: #666666;
+	font-size: 9px;
+}
+
 
 .tableheader {
 	font-weight: bold;
@@ -273,6 +276,7 @@ div.tabs a:hover {
 	font-size: 13px;
 	border-bottom: 1px solid #8cacbb;
 	padding: 5px;
+	width: 100%;
 }
 
 .headingtext {
@@ -299,7 +303,7 @@ div.tabs a:hover {
 }
 
 .inputsubmit {
-	font-size: 8pt;
+	font-size: 11px;
 	border: 1px solid #0066cc;
 	padding: 1px 4px;
 }
@@ -359,15 +363,52 @@ div.tabs a:hover {
 	color: red;
 }
 
-.tablestyle {
+table.tablestyle {
 	border-collapse: collapse;
+	border: 1px solid #8cacbb;
 }
-
-.tablestyle2 {
+table.tablestyle td {
 	border-collapse: collapse;
+	border: 1px solid #8cacbb;
+}
+table.tablestyle2 {
+	border-collapse: collapse;
+	border: 1px solid #cccccc;
+}
+table.tablestyle2 td {
+	border-collapse: collapse;
+	border: 1px solid #cccccc;
+}
+table.tablestyle_inner {
+	border-collapse: collapse;
+	border: 1px solid #f9f9f9;
+}
+table.tablestyle_inner td {
+	border-collapse: collapse;
+	border: 1px solid #f9f9f9;
 }
 .tablestyle_noborder {
 	padding: 3px;
+}
+
+.label {
+	background-color: #efefef;
+	color: black;
+}
+
+#loginscreen {
+	background: #f5f5f5;
+}
+
+.login {
+	width: 350px;
+	border-left: 12px solid #367cb5;
+	border-collapse: collapse;
+	background-color: #eeeeee;
+}
+.login td {
+	border-collapse: collapse;
+	border: 1px solid #cccccc;
 }
 
 .amount {
@@ -415,6 +456,10 @@ button.navibutton {
 	border: 1px solid #8cacbb;
     border-collapse: collapse;
     background-color: #d5cea7;
+}
+
+.navibar tr td {
+    border: none;
 }
 
 .listsubmit {

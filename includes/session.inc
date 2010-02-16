@@ -176,14 +176,14 @@ ini_set('session.gc_maxlifetime', 36000); // 10hrs
 
 session_name('FrontAccounting');
 session_start();
+
 // this is to fix the "back-do-you-want-to-refresh" issue - thanx PHPFreaks
 header("Cache-control: private");
-
 
 get_text_init();
 
 // Page Initialisation
-if (!isset($_SESSION['language'])) 
+if (!method_exists($_SESSION['language'], 'set_language')) 
 {
 	$l = array_search_value($dflt_lang, $installed_languages,  'code');
 	$_SESSION['language'] = new language($l['name'], $l['code'], $l['encoding'],
@@ -236,16 +236,14 @@ if (strstr($_SERVER['PHP_SELF'], 'logout.php') == false){
 		// Show login screen
 		if (!isset($_POST["user_name_entry_field"]) or $_POST["user_name_entry_field"] == "")
 		{
-			$_SESSION['timeout'] = array( 'uri'=> $_SERVER['REQUEST_URI'],
+			// strip ajax marker from uri, to force synchronous page reload
+			$_SESSION['timeout'] = array( 'uri'=>preg_replace('/JsHttpRequest=(?:(\d+)-)?([^&]+)/s',
+					'', @$_SERVER['REQUEST_URI']), 
 				'post' => $_POST);
 
-			if (!in_ajax()) {
-				include($path_to_root . "/access/login.php");
-			} else {
-				// ajax update of current page elements - open login window in popup
-				// to not interfere with ajaxified page.
-				$Ajax->popup($path_to_root . "/access/timeout.php");
-			}
+			include($path_to_root . "/access/login.php");
+			if (in_ajax())
+				$Ajax->activate('_page_body');
 			exit;
 		} else {
 			$succeed = $_SESSION["wa_current_user"]->login($_POST["company_login_name"],

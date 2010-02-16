@@ -12,7 +12,7 @@
 $page_security = 'SA_GLANALYTIC';
 // ----------------------------------------------------------------
 // $ Revision:	2.0 $
-// Creator:	Joe Hunt
+// Creator:	Joe Hunt, Chaitanya for the recursive version 2009-02-05.
 // date_:	2005-05-19
 // Title:	Balance Sheet
 // ----------------------------------------------------------------
@@ -25,8 +25,98 @@ include_once($path_to_root . "/gl/includes/gl_db.inc");
 
 //----------------------------------------------------------------------------------------------------
 
-print_balance_sheet();
+function display_type ($type, $typename, $from, $to, $convert, &$dec, &$rep, $dimension, $dimension2, &$pg, $graphics)
+{
+	$code_open_balance = 0;
+	$code_period_balance = 0;
+	$open_balance_total = 0;
+	$period_balance_total = 0;
+	unset($totals_arr);
+	$totals_arr = array();
 
+	$printtitle = 0; //Flag for printing type name	
+	
+	//Get Accounts directly under this group/type
+	$result = get_gl_accounts(null, null, $type);	
+	while ($account=db_fetch($result))
+	{
+		$prev_balance = get_gl_balance_from_to("", $from, $account["account_code"], $dimension, $dimension2);
+
+		$curr_balance = get_gl_trans_from_to($from, $to, $account["account_code"], $dimension, $dimension2);
+
+		if (!$prev_balance && !$curr_balance)
+			continue;
+		
+		//Print Type Title if it has atleast one non-zero account	
+		if (!$printtitle)
+		{
+			$printtitle = 1;
+			$rep->row -= 4;
+			$rep->TextCol(0, 5, $typename);
+			$rep->row -= 4;
+			$rep->Line($rep->row);
+			$rep->NewLine();		
+		}			
+
+		$rep->TextCol(0, 1,	$account['account_code']);
+		$rep->TextCol(1, 2,	$account['account_name']);
+
+		$rep->AmountCol(2, 3, $prev_balance * $convert, $dec);
+		$rep->AmountCol(3, 4, $curr_balance * $convert, $dec);
+		$rep->AmountCol(4, 5, ($prev_balance + $curr_balance) * $convert, $dec);
+
+		$rep->NewLine();
+
+		$code_open_balance += $prev_balance;
+		$code_period_balance += $curr_balance;
+	}
+		
+	//Get Account groups/types under this group/type
+	$result = get_account_types(false, false, $type);
+	while ($accounttype=db_fetch($result))
+	{
+		//Print Type Title if has sub types and not previously printed
+		if (!$printtitle)
+		{
+			$printtitle = 1;
+			$rep->row -= 4;
+			$rep->TextCol(0, 5, $typename);
+			$rep->row -= 4;
+			$rep->Line($rep->row);
+			$rep->NewLine();		
+		}
+
+		$totals_arr = display_type($accounttype["id"], $accounttype["name"], $from, $to, $convert, $dec, 
+			$rep, $dimension, $dimension2, $pg, $graphics);
+		$open_balance_total += $totals_arr[0];
+		$period_balance_total += $totals_arr[1];
+	}
+
+	//Display Type Summary if total is != 0 OR head is printed (Needed in case of unused hierarchical COA) 
+	if (($code_open_balance + $open_balance_total + $code_period_balance + $period_balance_total) != 0 || $printtitle)
+	{
+		$rep->row += 6;
+		$rep->Line($rep->row);
+		$rep->NewLine();
+		$rep->TextCol(0, 2,	_('Total') . " " . $typename);
+		$rep->AmountCol(2, 3, ($code_open_balance + $open_balance_total) * $convert, $dec);
+		$rep->AmountCol(3, 4, ($code_period_balance + $period_balance_total) * $convert, $dec);
+		$rep->AmountCol(4, 5, ($code_open_balance + $open_balance_total + $code_period_balance + $period_balance_total) * $convert, $dec);		
+		if ($graphics)
+		{
+			$pg->x[] = $typename;
+			$pg->y[] = abs($code_open_balance + $open_balance_total);
+			$pg->z[] = abs($code_period_balance + $period_balance_total);
+		}
+		$rep->NewLine();
+	}
+	
+	$totals_arr[0] = $code_open_balance + $open_balance_total;
+	$totals_arr[1] = $code_period_balance + $period_balance_total;
+	return $totals_arr;
+}
+
+print_balance_sheet();
 
 //----------------------------------------------------------------------------------------------------
 
@@ -43,22 +133,25 @@ function print_balance_sheet()
 	{
 		$dimension = $_POST['PARAM_2'];
 		$dimension2 = $_POST['PARAM_3'];
-		$graphics = $_POST['PARAM_4'];
-		$comments = $_POST['PARAM_5'];
-		$destination = $_POST['PARAM_6'];
+		$decimals = $_POST['PARAM_4'];
+		$graphics = $_POST['PARAM_5'];
+		$comments = $_POST['PARAM_6'];
+		$destination = $_POST['PARAM_7'];
 	}
 	else if ($dim == 1)
 	{
 		$dimension = $_POST['PARAM_2'];
-		$graphics = $_POST['PARAM_3'];
-		$comments = $_POST['PARAM_4'];
-		$destination = $_POST['PARAM_5'];
+		$decimals = $_POST['PARAM_3'];
+		$graphics = $_POST['PARAM_4'];
+		$comments = $_POST['PARAM_5'];
+		$destination = $_POST['PARAM_6'];
 	}
 	else
 	{
-		$graphics = $_POST['PARAM_2'];
-		$comments = $_POST['PARAM_3'];
-		$destination = $_POST['PARAM_4'];
+		$decimals = $_POST['PARAM_2'];
+		$graphics = $_POST['PARAM_3'];
+		$comments = $_POST['PARAM_4'];
+		$destination = $_POST['PARAM_5'];
 	}
 	if ($destination)
 		include_once($path_to_root . "/reporting/includes/excel_report.inc");
@@ -69,7 +162,10 @@ function print_balance_sheet()
 		include_once($path_to_root . "/reporting/includes/class.graphic.inc");
 		$pg = new graph();
 	}
-	$dec = 0;
+	if (!$decimals)
+		$dec = 0;
+	else
+		$dec = user_price_dec();
 
 	$cols = array(0, 50, 200, 350, 425,	500);
 	//------------0--1---2----3----4----5--
@@ -105,263 +201,103 @@ function print_balance_sheet()
 	$rep->Font();
 	$rep->Info($params, $cols, $headers, $aligns);
 	$rep->Header();
-	$classname = '';
-	$classopen = 0.0;
-	$classperiod = 0.0;
-	$classclose = 0.0;
-	$assetsopen = 0.0;
-	$assetsperiod = 0.0;
-	$assetsclose = 0.0;
-	$equityopen = 0.0;
-	$equityperiod = 0.0;
-	$equityclose = 0.0;
-	$lopen = 0.0;
-	$lperiod = 0.0;
-	$lclose = 0.0;
+
+	$calc_open = $calc_period = 0.0;
+	$equity_open = $equity_period = 0.0;
+	$liability_open = $liability_period = 0.0;
+	$econvert = $lconvert = 0;
 	
-	$typeopen = array(0,0,0,0,0,0,0,0,0,0);
-	$typeperiod = array(0,0,0,0,0,0,0,0,0,0);
-	$typeclose = array(0,0,0,0,0,0,0,0,0,0);
-	$typename = array('','','','','','','','','','');
-	$closing = array(-1,-1,-1,-1,-1,-1,-1,-1,-1,-1);
-	//$parent = array(-1,-1,-1,-1,-1,-1,-1,-1,-1,-1);
-	$level = 0;
-	$last = -1;
+	$classresult = get_account_classes(false, 1);
+	while ($class = db_fetch($classresult))
+	{
+		$class_open_total = 0;
+		$class_period_total = 0;
+		$convert = get_class_type_convert($class["ctype"]); 		
+		
+		//Print Class Name	
+		$rep->Font('bold');
+		$rep->TextCol(0, 5, $class["class_name"]);
+		$rep->Font();
+		$rep->NewLine();
+		
+		//Get Account groups/types under this group/type with no parents
+		$typeresult = get_account_types(false, $class['cid'], -1);
+		while ($accounttype=db_fetch($typeresult))
+		{
+			$classtotal = display_type($accounttype["id"], $accounttype["name"], $from, $to, $convert, $dec, 
+				$rep, $dimension, $dimension2, $pg, $graphics);
+			$class_open_total += $classtotal[0];
+			$class_period_total += $classtotal[1];			
+		}
+		
+		//Print Class Summary	
+		$rep->row += 6;
+		$rep->Line($rep->row);
+		$rep->NewLine();
+		$rep->Font('bold');
+		$rep->TextCol(0, 2,	_('Total') . " " . $class["class_name"]);
+		$rep->AmountCol(2, 3, $class_open_total * $convert, $dec);
+		$rep->AmountCol(3, 4, $class_period_total * $convert, $dec);
+		$rep->AmountCol(4, 5, ($class_open_total + $class_period_total) * $convert, $dec);
+		$rep->Font();
+		$rep->NewLine(2);	
+
+		$calc_open += $class_open_total;
+		$calc_period += $class_period_total;
+		if ($class['ctype'] == CL_EQUITY)
+		{
+			$equity_open += $class_open_total;
+			$equity_period += $class_period_total;
+			$econvert = $convert;
+		}
+		elseif ($class['ctype'] == CL_LIABILITIES)
+		{
+			$liability_open += $class_open_total;
+			$liability_period += $class_period_total;
+			$lconvert = $convert;
+		}
+	}
+	$rep->Font();	
+	$rep->TextCol(0, 2,	_('Calculated Return'));
+	if ($lconvert == 1)
+	{
+		$calc_open *= -1;
+		$calc_period *= -1;
+	}	
+	$rep->AmountCol(2, 3, $calc_open, $dec); // never convert
+	$rep->AmountCol(3, 4, $calc_period, $dec);
+	$rep->AmountCol(4, 5, $calc_open + $calc_period, $dec);
+	$rep->NewLine(2);
+
+	$rep->Font('bold');	
+	$rep->TextCol(0, 2,	_('Total') . " " . _('Liabilities') . _(' and ') . _('Equities'));
+	$topen = $equity_open * $econvert + $liability_open * $lconvert + $calc_open;
+	$tperiod = $equity_period * $econvert + $liability_period * $lconvert + $calc_period;
+	$tclose = $topen + $tperiod;
+	$rep->AmountCol(2, 3, $topen, $dec);
+	$rep->AmountCol(3, 4, $tperiod, $dec);
+	$rep->AmountCol(4, 5, $tclose, $dec);
 	
-	$closeclass = false;
-	$ctype = 0;
-	$convert = 1;
+	$rep->Font();
 	$rep->NewLine();
-
-	$accounts = get_gl_accounts_all(1);
-
-	while ($account=db_fetch($accounts))
-	{
-		if ($account['account_code'] == null && $account['parent'] > 0)
-			continue;
-		if ($account['account_code'] != null)
-		{
-			$prev_balance = get_gl_balance_from_to("", $from, $account["account_code"], $dimension, $dimension2);
-
-			$curr_balance = get_gl_trans_from_to($from, $to, $account["account_code"], $dimension, $dimension2);
-
-			if (!$prev_balance && !$curr_balance)
-				continue;
-		}
-		if ($account['AccountClassName'] != $classname)
-		{
-			if ($classname != '')
-			{
-				$closeclass = true;
-			}
-		}
-		if ($account['AccountTypeName'] != $typename[$level])
-		{
-			//$rep->NewLine();
-			//$rep->TextCol(0, 5,	"type = ".$account['AccountType'].", level = $level, closing[0]-[1]-[2]-[3] = ".$closing[0]." ".$closing[1]." ".$closing[2]." ".$closing[3]." type[parent] = ".$account['parent']." last = ".$last);
-			//$rep->NewLine();
-			if ($typename[$level] != '')
-			{
-				for ( ; $level >= 0, $typename[$level] != ''; $level--) 
-				{
-					if ($account['parent'] == $closing[$level] || $account['parent'] < $last || $account['parent'] <= 0 || $closeclass)
-					{
-						$rep->row += 6;
-						$rep->Line($rep->row);
-						$rep->NewLine();
-						$rep->TextCol(0, 2,	_('Total') . " " . $typename[$level]);
-						$rep->AmountCol(2, 3, $typeopen[$level] * $convert, $dec);
-						$rep->AmountCol(3, 4, $typeperiod[$level] * $convert, $dec);
-						$rep->AmountCol(4, 5, $typeclose[$level] * $convert, $dec);
-						if ($graphics)
-						{
-							$pg->x[] = $typename[$level];
-							$pg->y[] = abs($typeclose[$level]);
-						}
-						$typeopen[$level] = $typeperiod[$level] = $typeclose[$level] = 0.0;
-					}	
-					else
-						break;
-					$rep->NewLine();
-				}
-				//$rep->NewLine();
-				if ($closeclass)
-				{
-					$rep->row += 6;
-					$rep->Line($rep->row);
-					$rep->NewLine();
-					$rep->Font('bold');
-		 			$rep->TextCol(0, 2,	_('Total') . " " . $classname);
-					$rep->AmountCol(2, 3, $classopen * $convert, $dec);
-					$rep->AmountCol(3, 4, $classperiod * $convert, $dec);
-					$rep->AmountCol(4, 5, $classclose * $convert, $dec);
-					$rep->Font();
-					if ($ctype == CL_EQUITY)
-					{
-						$equityopen += $classopen;
-						$equityperiod += $classperiod;
-						$equityclose += $classclose;
-					}
-					if ($ctype == CL_LIABILITIES)
-					{
-						$lopen += $classopen;
-						$lperiod += $classperiod;
-						$lclose += $classclose;
-					}
-					$assetsopen += $classopen;
-					$assetsperiod += $classperiod;
-					$assetsclose += $classclose;
-					$classopen = $classperiod = $classclose = 0.0;
-					$rep->NewLine(2);
-					$closeclass = false;
-				}
-			}
-			if ($account['AccountClassName'] != $classname)
-			{
-				$rep->Font('bold');
-				$rep->TextCol(0, 5, $account['AccountClassName']);
-				$rep->Font();
-				$rep->NewLine();
-			}
-			$level++;
-			if ($account['parent'] != $last)
-				$last = $account['parent'];
-			$typename[$level] = $account['AccountTypeName'];
-			$closing[$level] = $account['parent'];
-			$rep->row -= 4;
-			$rep->TextCol(0, 5, $account['AccountTypeName']);
-			$rep->row -= 4;
-			$rep->Line($rep->row);
-			$rep->NewLine();
-		}
-		$classname = $account['AccountClassName'];
-		$ctype = $account['ClassType'];
-		$convert = get_class_type_convert($ctype); 
-
-		if ($account['account_code'] != null)
-		{
-			for ($i = 0; $i <= $level; $i++)
-			{
-				$typeopen[$i] += $prev_balance;
-				$typeperiod[$i] += $curr_balance;
-				$typeclose[$i] = $typeopen[$i] + $typeperiod[$i];
-			}
-			$classopen += $prev_balance;
-			$classperiod += $curr_balance;
-			$classclose = $classopen + $classperiod;
-			$rep->TextCol(0, 1,	$account['account_code']);
-			$rep->TextCol(1, 2,	$account['account_name']);
-
-			$rep->AmountCol(2, 3, $prev_balance * $convert, $dec);
-			$rep->AmountCol(3, 4, $curr_balance * $convert, $dec);
-			$rep->AmountCol(4, 5, ($curr_balance + $prev_balance) * $convert, $dec);
-
-			$rep->NewLine();
-
-			if ($rep->row < $rep->bottomMargin + 3 * $rep->lineHeight)
-			{
-				$rep->Line($rep->row - 2);
-				$rep->Header();
-			}
-		}	
-	}
-	if ($account['AccountClassName'] != $classname)
-	{
-		if ($classname != '')
-		{
-			$closeclass = true;
-		}
-	}
-	if ($account['AccountTypeName'] != $typename[$level])
-	{
-		//$rep->NewLine();
-		//$rep->TextCol(0, 5,	"type = ".$account['AccountType'].", level = $level, closing[0]-[1]-[2]-[3] = ".$closing[0]." ".$closing[1]." ".$closing[2]." ".$closing[3]." type[parent] = ".$account['parent']." last = ".$last);
-		//$rep->NewLine();
-		if ($typename[$level] != '')
-		{
-			for ( ; $level >= 0, $typename[$level] != ''; $level--) 
-			{
-				if ($account['parent'] == $closing[$level] || $account['parent'] < $last || $account['parent'] <= 0 || $closeclass)
-				{
-					$rep->row += 6;
-					$rep->Line($rep->row);
-					$rep->NewLine();
-					$rep->TextCol(0, 2,	_('Total') . " " . $typename[$level]);
-					$rep->AmountCol(2, 3, $typeopen[$level] * $convert, $dec);
-					$rep->AmountCol(3, 4, $typeperiod[$level] * $convert, $dec);
-					$rep->AmountCol(4, 5, $typeclose[$level] * $convert, $dec);
-					if ($graphics)
-					{
-						$pg->x[] = $typename[$level];
-						$pg->y[] = abs($typeclose[$level]);
-					}
-					$typeopen[$level] = $typeperiod[$level] = $typeclose[$level] = 0.0;
-				}
-				else
-					break;
-				$rep->NewLine();
-			}
-			//$rep->NewLine();
-			if ($closeclass)
-			{
-				$calculateopen = -$assetsopen - $classopen;
-				$calculateperiod = -$assetsperiod - $classperiod;
-				$calculateclose = -$assetsclose  - $classclose;
-				if ($ctype == CL_EQUITY)
-				{
-					$equityopen += $classopen;
-					$equityperiod += $classperiod;
-					$equityclose += $classclose;
-				}
-				$rep->row += 6;
-				$rep->Line($rep->row);
-				$rep->NewLine();
-				$rep->TextCol(0, 2,	_('Calculated Return'));
-				$rep->AmountCol(2, 3, $calculateopen * $convert, $dec);
-				$rep->AmountCol(3, 4, $calculateperiod * $convert, $dec);
-				$rep->AmountCol(4, 5, $calculateclose * $convert, $dec);
-				if ($graphics)
-				{
-					$pg->x[] = _('Calculated Return');
-					$pg->y[] = abs($calculateclose);
-				}
-				$rep->NewLine(2);
-				$rep->Font('bold');
-				$rep->TextCol(0, 2,	_('Total') . " " . $classname);
-				$rep->AmountCol(2, 3, -$assetsopen * $convert, $dec);
-				$rep->AmountCol(3, 4, -$assetsperiod * $convert, $dec);
-				$rep->AmountCol(4, 5, -$assetsclose * $convert, $dec);
-				$rep->Font();
-				$rep->NewLine();
-				if ($equityopen != 0.0 || $equityperiod != 0.0 || $equityclose != 0.0 ||
-					$lopen != 0.0 || $lperiod != 0.0 || $lclose != 0.0)
-				{
-					$rep->NewLine();
-					$rep->Font('bold');
-					$rep->TextCol(0, 2,	_('Total') . " " . _('Liabilities') . _(' and ') . _('Equities'));
-					$rep->AmountCol(2, 3, ($lopen + $equityopen + $calculateopen) * -1, $dec);
-					$rep->AmountCol(3, 4, ($lperiod + $equityperiod + $calculateperiod) * -1, $dec);
-					$rep->AmountCol(4, 5, ($lclose + $equityclose + $calculateclose) * -1, $dec);
-					$rep->Font();
-					$rep->NewLine();
-				}
-			}
-		}
-	}
 	$rep->Line($rep->row);
 	if ($graphics)
 	{
+		$pg->x[] = _('Calculated Return');
+		$pg->y[] = abs($calc_open);
+		$pg->z[] = abs($calc_period);
 		global $decseps, $graph_skin;
 		$pg->title     = $rep->title;
 		$pg->axis_x    = _("Group");
 		$pg->axis_y    = _("Amount");
-		$pg->graphic_1 = $to;
+		$pg->graphic_1 = $headers[2];
+		$pg->graphic_2 = $headers[3];
 		$pg->type      = $graphics;
 		$pg->skin      = $graph_skin;
 		$pg->built_in  = false;
 		$pg->fontfile  = $path_to_root . "/reporting/fonts/Vera.ttf";
 		$pg->latin_notation = ($decseps[$_SESSION["wa_current_user"]->prefs->dec_sep()] != ".");
-		$filename =  $comp_path.'/'.user_company()."/pdf_files/test.png";
+		$filename = $comp_path.'/'.user_company(). "/pdf_files/test.png";
 		$pg->display($filename, true);
 		$w = $pg->width / 1.5;
 		$h = $pg->height / 1.5;

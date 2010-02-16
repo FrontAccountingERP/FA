@@ -56,7 +56,7 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 	// Main Title
 	$app_title = "FrontAccounting";
 	// application version
-	$version 		= "2.3 CVS (m5)";
+	$version 		= "2.3 CVS (m6)";
 	 // src-data compatibility check. Do not change.
 	$core_version = "2.3";
 
@@ -121,10 +121,8 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 	/* Default border and spacing for tables */
 	/* Should be moved to CSS */
 
-	if (!isset($_SESSION['bordercolor']))
-		$_SESSION['bordercolor'] = "#8cacbb";
-	$table_style 	= "cellpadding=3 border=1 bordercolor='".$_SESSION['bordercolor']."' class='tablestyle'";
-	$table_style2 	= "cellpadding=3 border=1 bordercolor='#cccccc' class='tablestyle2'";
+	$table_style 	= "class='tablestyle'";
+	$table_style2 	= "class='tablestyle2'";
 
 	/* Accounts Payable */
 	/* System check to see if quantity charged on purchase invoices exceeds the quantity received.

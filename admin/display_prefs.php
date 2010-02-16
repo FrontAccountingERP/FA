@@ -47,9 +47,6 @@ if (isset($_POST['setprefs']))
 
 		flush_dir($comp_path.'/'.user_company().'/js_cache');	
 
-		if ($chg_theme)
-			$_SESSION['bordercolor'] = "#8cacbb";
-
 		if ($chg_theme || $chg_lang)
 			meta_forward($_SERVER['PHP_SELF']);
 

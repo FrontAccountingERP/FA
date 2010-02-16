@@ -59,8 +59,8 @@ function get_item_edit_info($stock_id)
 
 function get_standard_cost($stock_id)
 {
-	$sql = "SELECT material_cost + labour_cost + overhead_cost AS std_cost
-		FROM ".TB_PREF."stock_master WHERE stock_id=".db_escape($stock_id);
+	$sql = "SELECT IF(s.mb_flag='D', 0, material_cost + labour_cost + overhead_cost) AS std_cost
+		FROM ".TB_PREF."stock_master s WHERE stock_id=".db_escape($stock_id);
 	$result = db_query($sql, "The standard cost cannot be retrieved");
 
 	$myrow = db_fetch_row($result);
@@ -81,7 +81,73 @@ function is_inventory_item($stock_id)
 
 //-------------------------------------------------------------------
 
-Function get_stock_gl_code($stock_id)
+function last_negative_stock_begin_date($stock_id, $to)
+{
+	$to = date2sql($to);
+	$sql ="SET @q = 0";
+	db_query($sql);
+	$sql = "SET @flag = 0";
+	db_query($sql);
+	$sql = "SELECT SUM(qty), @q:= @q + qty, IF(@q < 0 AND @flag=0, @flag:=1,@flag:=0), IF(@q < 0 AND @flag=1, tran_date,'') AS begin_date 
+		FROM ".TB_PREF."stock_moves
+		WHERE stock_id=".db_escape($stock_id)." AND tran_date<='$to' 
+		AND qty <> 0
+		GROUP BY stock_id ORDER BY tran_date";
+
+	$result = db_query($sql, "The dstock moves could not be retrieved");
+	$row = db_fetch_row($result);
+	return $row[3];
+}
+
+//-------------------------------------------------------------------
+
+function get_deliveries_between($stock_id, $from, $to)
+{
+	$from = date2sql($from);
+	$to = date2sql($to);
+	$sql = "SELECT SUM(-qty), SUM(-qty*standard_cost) FROM ".TB_PREF."stock_moves
+		WHERE type=".ST_CUSTDELIVERY." AND stock_id=".db_escape($stock_id)." AND
+			tran_date>='$from' AND tran_date<='$to' GROUP BY stock_id";
+
+	$result = db_query($sql, "The deliveries could not be updated");
+	return db_fetch_row($result);
+}
+
+//-------------------------------------------------------------------
+
+function adjust_deliveries($stock_id, $material_cost, $to)
+{
+	if (!is_inventory_item($stock_id))
+		return;
+	$from = last_negative_stock_begin_date($stock_id, $to);
+	if ($from == false || $from == "")
+		return;
+	$from = sql2date($from);
+	$row = get_deliveries_between($stock_id, $from, $to);
+	if ($row == false)
+		return;	
+	$old_cost = $row[1];
+	$new_cost = $row[0] * $material_cost;
+	$diff = $new_cost - $old_cost;
+	if ($diff != 0)
+	{
+	   	$update_no = get_next_trans_no(ST_COSTUPDATE);
+		if (!is_date_in_fiscalyear($to))
+			$to = end_fiscalyear();
+	   
+		$stock_gl_code = get_stock_gl_code($stock_id);
+
+		$memo_ = _("Cost was ") . $old_cost . _(" changed to ") . $new_cost . _(" for item ")."'$stock_id'";
+		add_gl_trans_std_cost(ST_COSTUPDATE, $update_no, $to, $stock_gl_code["cogs_account"], 
+			$stock_gl_code["dimension_id"], $stock_gl_code["dimension2_id"], $memo_, $diff);	   
+
+		add_gl_trans_std_cost(ST_COSTUPDATE, $update_no, $to, $stock_gl_code["inventory_account"], 0, 0, $memo_, 
+			-$diff);
+		add_audit_trail(ST_COSTUPDATE, $update_no, $to);
+   	}
+}
+
+function get_stock_gl_code($stock_id)
 {
 	/*Gets the GL Codes relevant to the item account  */
 

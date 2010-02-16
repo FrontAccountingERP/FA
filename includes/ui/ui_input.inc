@@ -356,8 +356,8 @@ function check_cells($label, $name, $value=null, $submit_on_change=false, $title
 
 function check_row($label, $name, $value=null, $submit_on_change=false, $title=false)
 {
-	echo "<tr>";
-	echo check_cells($label, $name, $value, $submit_on_change, $title);
+	echo "<tr><td class='label'>$label</td>";
+	echo check_cells(NULL, $name, $value, $submit_on_change, $title);
 	echo "</tr>\n";
 }
 
@@ -439,6 +439,11 @@ function label_cells($label, $value, $params="", $params2="", $id='')
 function label_row($label, $value, $params="", $params2="", $leftfill=0, $id='')
 {
 	echo "<tr>";
+	if ($params == "")
+	{
+		echo "<td class='label'>$label</td>";
+		$label = null;
+	}	
 	label_cells($label, $value, $params, $params2, $id);
 	if ($leftfill!=0)
 	  	echo "<td colspan=$leftfill></td>";
@@ -503,9 +508,8 @@ function text_cells_ex($label, $name, $size, $max=null, $init=null, $title=null,
 
 function text_row($label, $name, $value, $size, $max, $title=null, $params="", $post_label="")
 {
-	echo "<tr>";
-
-	text_cells($label, $name, $value, $size, $max, $title, $params, $post_label);
+	echo "<tr><td class='label'>$label</td>";
+	text_cells(null, $name, $value, $size, $max, $title, $params, $post_label);
 
 	echo "</tr>\n";
 }
@@ -514,9 +518,8 @@ function text_row($label, $name, $value, $size, $max, $title=null, $params="", $
 
 function text_row_ex($label, $name, $size, $max=null, $title=null, $value=null, $params=null, $post_label=null)
 {
-	echo "<tr>";
-
-	text_cells_ex($label, $name, $size, $max, $value, $title, $params, $post_label);
+	echo "<tr><td class='label'>$label</td>";
+	text_cells_ex(null, $name, $size, $max, $value, $title, $params, $post_label);
 
 	echo "</tr>\n";
 }
@@ -614,11 +617,33 @@ function date_cells($label, $name, $title = null, $check=null, $inc_days=0,
 function date_row($label, $name, $title=null, $check=null, $inc_days=0, $inc_months=0, 
 	$inc_years=0, $params=null, $submit_on_change=false)
 {
-	echo "<tr>";
-	date_cells($label, $name, $title, $check, $inc_days, $inc_months, 
+	echo "<tr><td class='label'>$label</td>";
+	date_cells(null, $name, $title, $check, $inc_days, $inc_months, 
 		$inc_years, $params, $submit_on_change);
 	echo "</tr>\n";
 }
+
+//-----------------------------------------------------------------------------------
+function password_row($label, $name, $value)
+{
+	echo "<tr><td class='label'>$label</td>";
+	label_cell("<input type='password' name='$name' size=20 maxlength=20 value='$value' />");
+	echo "</tr>\n";
+}	
+
+//-----------------------------------------------------------------------------------
+function file_cells($label, $name, $id="")
+{
+	if ($id != "")
+		$id = "id='$id'";
+	label_cells($label, "<input type='file' name='$name' $id />");
+}		
+function file_row($label, $name, $id = "")
+{
+	echo "<tr><td class='label'>$label</td>";
+	file_cells(null, $name, $id);
+	echo "</tr>\n";
+}	
 
 //-----------------------------------------------------------------------------------
 
@@ -631,8 +656,8 @@ function ref_cells($label, $name, $title=null, $init=null, $params=null, $submit
 
 function ref_row($label, $name, $title=null, $init=null, $submit_on_change=false)
 {
-	echo "<tr>";
-	ref_cells($label, $name, $title, $init, null, $submit_on_change);
+	echo "<tr><td class='label'>$label</td>";
+	ref_cells(null, $name, $title, $init, null, $submit_on_change);
 	echo "</tr>\n";
 }
 
@@ -663,8 +688,11 @@ function amount_cells_ex($label, $name, $size, $max=null, $init=null, $params=nu
 			$_POST[$name] = '';
 	}
 	if ($label != null)
+	{
+		if ($params == null)
+			$params = "class='label'";
 		label_cell($label, $params);
-
+	}
 	if (!isset($max))
 		$max = $size;
 
@@ -780,8 +808,8 @@ function textarea_cells($label, $name, $value, $cols, $rows, $title = null, $par
 
 function textarea_row($label, $name, $value, $cols, $rows, $title=null, $params="")
 {
-	echo "<tr>";
-	textarea_cells($label, $name, $value, $cols, $rows, $title, $params);
+	echo "<tr><td class='label'>$label</td>";
+	textarea_cells(null, $name, $value, $cols, $rows, $title, $params);
 	echo "</tr>\n";
 }
 

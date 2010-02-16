@@ -55,7 +55,8 @@ function write_sales_delivery(&$delivery,$bo_policy)
 		delete_comments(ST_CUSTDELIVERY, $delivery_no);
 	}
 
-	foreach ($delivery->line_items as $delivery_line) {
+	foreach ($delivery->line_items as $line_no => $delivery_line) {
+
 		$line_price = $delivery_line->line_price();
 		$line_taxfree_price = get_tax_free_price_for_item($delivery_line->stock_id,
 			$delivery_line->price, 0, $delivery->tax_included,
@@ -106,7 +107,6 @@ function write_sales_delivery(&$delivery,$bo_policy)
 					"The cost of sales GL posting could not be inserted");
 
 				/*now the stock entry*/
-				//$stock_gl_code = get_stock_gl_code($order_line->stock_id);
 
 				add_gl_trans_std_cost(ST_CUSTDELIVERY, $delivery_no, $delivery->document_date,
 					$stock_gl_code["inventory_account"], 0, 0, "",

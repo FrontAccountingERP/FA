@@ -12,7 +12,7 @@
 $page_security = 'SA_GLANALYTIC';
 // ----------------------------------------------------------------
 // $ Revision:	2.0 $
-// Creator:	Joe Hunt
+// Creator:	Joe Hunt, Chaitanya for the recursive version 2009-02-05.
 // date_:	2005-05-19
 // Title:	Profit and Loss Statement
 // ----------------------------------------------------------------
@@ -24,6 +24,105 @@ include_once($path_to_root . "/includes/data_checks.inc");
 include_once($path_to_root . "/gl/includes/gl_db.inc");
 
 //----------------------------------------------------------------------------------------------------
+
+function display_type ($type, $typename, $from, $to, $begin, $end, $compare, $convert, &$dec, &$pdec, &$rep, $dimension, $dimension2, &$pg, $graphics)
+{
+	$code_per_balance = 0;
+	$code_acc_balance = 0;
+	$per_balance_total = 0;
+	$acc_balance_total = 0;
+	unset($totals_arr);
+	$totals_arr = array();
+
+	$printtitle = 0; //Flag for printing type name	
+	
+	//Get Accounts directly under this group/type
+	$result = get_gl_accounts(null, null, $type);	
+	while ($account=db_fetch($result))
+	{
+		$per_balance = get_gl_trans_from_to($from, $to, $account["account_code"], $dimension, $dimension2);
+
+		if ($compare == 2)
+			$acc_balance = get_budget_trans_from_to($begin, $end, $account["account_code"], $dimension, $dimension2);
+		else
+			$acc_balance = get_gl_trans_from_to($begin, $end, $account["account_code"], $dimension, $dimension2);
+		if (!$per_balance && !$acc_balance)
+			continue;
+		
+		//Print Type Title if it has atleast one non-zero account	
+		if (!$printtitle)
+		{
+			$printtitle = 1;
+			$rep->row -= 4;
+			$rep->TextCol(0, 5, $typename);
+			$rep->row -= 4;
+			$rep->Line($rep->row);
+			$rep->NewLine();		
+		}			
+
+		$rep->TextCol(0, 1,	$account['account_code']);
+		$rep->TextCol(1, 2,	$account['account_name']);
+
+		$rep->AmountCol(2, 3, $per_balance * $convert, $dec);
+		$rep->AmountCol(3, 4, $acc_balance * $convert, $dec);
+		$rep->AmountCol(4, 5, Achieve($per_balance, $acc_balance), $pdec);
+
+		$rep->NewLine();
+
+		if ($rep->row < $rep->bottomMargin + 3 * $rep->lineHeight)
+		{
+			$rep->Line($rep->row - 2);
+			$rep->Header();
+		}
+
+		$code_per_balance += $per_balance;
+		$code_acc_balance += $acc_balance;
+	}
+		
+	//Get Account groups/types under this group/type
+	$result = get_account_types(false, false, $type);
+	while ($accounttype=db_fetch($result))
+	{
+		//Print Type Title if has sub types and not previously printed
+		if (!$printtitle)
+		{
+			$printtitle = 1;
+			$rep->row -= 4;
+			$rep->TextCol(0, 5, $typename);
+			$rep->row -= 4;
+			$rep->Line($rep->row);
+			$rep->NewLine();		
+		}
+
+		$totals_arr = display_type($accounttype["id"], $accounttype["name"], $from, $to, $begin, $end, $compare, $convert, $dec, 
+			$pdec, $rep, $dimension, $dimension2, $pg, $graphics);
+		$per_balance_total += $totals_arr[0];
+		$acc_balance_total += $totals_arr[1];
+	}
+
+	//Display Type Summary if total is != 0 OR head is printed (Needed in case of unused hierarchical COA) 
+	if (($code_per_balance + $per_balance_total + $code_acc_balance + $acc_balance_total) != 0 || $printtitle)
+	{
+		$rep->row += 6;
+		$rep->Line($rep->row);
+		$rep->NewLine();
+		$rep->TextCol(0, 2,	_('Total') . " " . $typename);
+		$rep->AmountCol(2, 3, ($code_per_balance + $per_balance_total) * $convert, $dec);
+		$rep->AmountCol(3, 4, ($code_acc_balance + $acc_balance_total) * $convert, $dec);
+		$rep->AmountCol(4, 5, Achieve(($code_per_balance + $per_balance_total), ($code_acc_balance + $acc_balance_total)), $pdec);		
+		if ($graphics)
+		{
+			$pg->x[] = $typename;
+			$pg->y[] = abs($code_per_balance + $per_balance_total);
+			$pg->z[] = abs($code_acc_balance + $acc_balance_total);
+		}
+		$rep->NewLine();
+	}
+	
+	$totals_arr[0] = $code_per_balance + $per_balance_total;
+	$totals_arr[1] = $code_acc_balance + $acc_balance_total;
+	return $totals_arr;
+}
 
 print_profit_and_loss_statement();
 
@@ -57,22 +156,25 @@ function print_profit_and_loss_statement()
 	{
 		$dimension = $_POST['PARAM_3'];
 		$dimension2 = $_POST['PARAM_4'];
-		$graphics = $_POST['PARAM_5'];
-		$comments = $_POST['PARAM_6'];
-		$destination = $_POST['PARAM_7'];
+		$decimals = $_POST['PARAM_5'];
+		$graphics = $_POST['PARAM_6'];
+		$comments = $_POST['PARAM_7'];
+		$destination = $_POST['PARAM_8'];
 	}
 	else if ($dim == 1)
 	{
 		$dimension = $_POST['PARAM_3'];
-		$graphics = $_POST['PARAM_4'];
-		$comments = $_POST['PARAM_5'];
-		$destination = $_POST['PARAM_6'];
+		$decimals = $_POST['PARAM_4'];
+		$graphics = $_POST['PARAM_5'];
+		$comments = $_POST['PARAM_6'];
+		$destination = $_POST['PARAM_7'];
 	}
 	else
 	{
-		$graphics = $_POST['PARAM_3'];
-		$comments = $_POST['PARAM_4'];
-		$destination = $_POST['PARAM_5'];
+		$decimals = $_POST['PARAM_3'];
+		$graphics = $_POST['PARAM_4'];
+		$comments = $_POST['PARAM_5'];
+		$destination = $_POST['PARAM_6'];
 	}
 	if ($destination)
 		include_once($path_to_root . "/reporting/includes/excel_report.inc");
@@ -83,7 +185,10 @@ function print_profit_and_loss_statement()
 		include_once($path_to_root . "/reporting/includes/class.graphic.inc");
 		$pg = new graph();
 	}
-	$dec = 0;
+	if (!$decimals)
+		$dec = 0;
+	else
+		$dec = user_price_dec();
 	$pdec = user_percent_dec();
 
 	$cols = array(0, 50, 200, 350, 425,	500);
@@ -140,216 +245,63 @@ function print_profit_and_loss_statement()
 	$rep->Info($params, $cols, $headers, $aligns);
 	$rep->Header();
 
-	$classname = '';
-	
-	$typeper = array(0,0,0,0,0,0,0,0,0,0);
-	$typeacc = array(0,0,0,0,0,0,0,0,0,0);
-	$typename = array('','','','','','','','','','');
-	$closing = array(-1,-1,-1,-1,-1,-1,-1,-1,-1,-1);
-	$level = 0;
-
 	$classper = 0.0;
 	$classacc = 0.0;
 	$salesper = 0.0;
-	$salesacc = 0.0;
-	$last = -1;
+	$salesacc = 0.0;	
 
-	$closeclass = false;
-	$convert = 1;
-	$ctype = 0;
-
-	$accounts = get_gl_accounts_all(0);
-
-	while ($account=db_fetch($accounts))
+	$classresult = get_account_classes(false, 0);
+	while ($class = db_fetch($classresult))
 	{
-		if ($account['account_code'] == null && $account['parent'] > 0)
-			continue;
-
-		if ($account['account_code'] != null)
-		{
-			$per_balance = get_gl_trans_from_to($from, $to, $account["account_code"], $dimension, $dimension2);
-
-			if ($compare == 2)
-				$acc_balance = get_budget_trans_from_to($begin, $end, $account["account_code"], $dimension, $dimension2);
-			else
-				$acc_balance = get_gl_trans_from_to($begin, $end, $account["account_code"], $dimension, $dimension2);
-			if (!$per_balance && !$acc_balance)
-				continue;
-		}
-
-		if ($account['AccountClassName'] != $classname)
-		{
-			if ($classname != '')
-			{
-				$closeclass = true;
-			}
-		}
-
-		if ($account['AccountTypeName'] != $typename[$level])
-		{
-			if ($typename[$level] != '')
-			{
-				for ( ; $level >= 0, $typename[$level] != ''; $level--) 
-				{
-					if ($account['parent'] == $closing[$level] || $account['parent'] < $last || $account['parent'] <= 0 || $closeclass)
-					{
-						$rep->row += 6;
-						$rep->Line($rep->row);
-						$rep->NewLine();
-						$rep->TextCol(0, 2,	_('Total') . " " . $typename[$level]);
-						$rep->AmountCol(2, 3, $typeper[$level] * $convert, $dec);
-						$rep->AmountCol(3, 4, $typeacc[$level] * $convert, $dec);
-						$rep->AmountCol(4, 5, Achieve($typeper[$level], $typeacc[$level]), $pdec);
-						if ($graphics)
-						{
-							$pg->x[] = $typename[$level];
-							$pg->y[] = abs($typeper[$level]);
-							$pg->z[] = abs($typeacc[$level]);
-						}
-						$typeper[$level] = $typeacc[$level] = 0.0;
-					}
-					else
-						break;
-					$rep->NewLine();
-				}
-				//$rep->NewLine();
-				if ($closeclass)
-				{
-					$rep->row += 6;
-					$rep->Line($rep->row);
-					$rep->NewLine();
-					$rep->Font('bold');
-					$rep->TextCol(0, 2,	_('Total') . " " . $classname);
-					$rep->AmountCol(2, 3, $classper * $convert, $dec);
-					$rep->AmountCol(3, 4, $classacc * $convert, $dec);
-					$rep->AmountCol(4, 5, Achieve($classper, $classacc), $pdec);
-					$rep->Font();
-					$salesper += $classper;
-					$salesacc += $classacc;
-					$classper = $classacc = 0.0;
-					$rep->NewLine(2);
-					$closeclass = false;
-				}
-			}
-			if ($account['AccountClassName'] != $classname)
-			{
-				$rep->Font('bold');
-				$rep->TextCol(0, 5, $account['AccountClassName']);
-				$rep->Font();
-				$rep->NewLine();
-			}
-			$level++;
-			if ($account['parent'] != $last)
-				$last = $account['parent'];
-			$typename[$level] = $account['AccountTypeName'];
-			$closing[$level] = $account['parent'];
-
-			$rep->row -= 4;
-			$rep->TextCol(0, 5, $account['AccountTypeName']);
-			$rep->row -= 4;
-			$rep->Line($rep->row);
-			$rep->NewLine();
-		}
-		$classname = $account['AccountClassName'];
-		$ctype = $account['ClassType'];
-		$convert = get_class_type_convert($ctype); 
+		$class_per_total = 0;
+		$class_acc_total = 0;
+		$convert = get_class_type_convert($class["ctype"]); 		
 		
-		if ($account['account_code'] != null)
-		{
-			//$per_balance *= -1;
-			//$acc_balance *= -1;
+		//Print Class Name	
+		$rep->Font('bold');
+		$rep->TextCol(0, 5, $class["class_name"]);
+		$rep->Font();
+		$rep->NewLine();
 		
-			for ($i = 0; $i <= $level; $i++)
-			{
-				$typeper[$i] += $per_balance;
-				$typeacc[$i] += $acc_balance;
-			}
-			$classper += $per_balance;
-			$classacc += $acc_balance;
-			$rep->TextCol(0, 1,	$account['account_code']);
-			$rep->TextCol(1, 2,	$account['account_name']);
-
-			$rep->AmountCol(2, 3, $per_balance * $convert, $dec);
-			$rep->AmountCol(3, 4, $acc_balance * $convert, $dec);
-			$rep->AmountCol(4, 5, Achieve($per_balance, $acc_balance), $pdec);
-
-			$rep->NewLine();
-
-			if ($rep->row < $rep->bottomMargin + 3 * $rep->lineHeight)
-			{
-				$rep->Line($rep->row - 2);
-				$rep->Header();
-			}
-		}	
-	}
-	if ($account['AccountClassName'] != $classname)
-	{
-		if ($classname != '')
+		//Get Account groups/types under this group/type with no parents
+		$typeresult = get_account_types(false, $class['cid'], -1);
+		while ($accounttype=db_fetch($typeresult))
 		{
-			$closeclass = true;
+			$classtotal = display_type($accounttype["id"], $accounttype["name"], $from, $to, $begin, $end, $compare, $convert, $dec, 
+				$pdec, $rep, $dimension, $dimension2, $pg, $graphics);
+			$class_per_total += $classtotal[0];
+			$class_acc_total += $classtotal[1];			
 		}
+		
+		//Print Class Summary	
+		$rep->row += 6;
+		$rep->Line($rep->row);
+		$rep->NewLine();
+		$rep->Font('bold');
+		$rep->TextCol(0, 2,	_('Total') . " " . $class["class_name"]);
+		$rep->AmountCol(2, 3, $class_per_total * $convert, $dec);
+		$rep->AmountCol(3, 4, $class_acc_total * $convert, $dec);
+		$rep->AmountCol(4, 5, Achieve($class_per_total, $class_acc_total), $pdec);
+		$rep->Font();
+		$rep->NewLine(2);	
+
+		$salesper += $class_per_total;
+		$salesacc += $class_acc_total;
 	}
-	if ($account['AccountTypeName'] != $typename[$level])
+	
+	$rep->Font('bold');	
+	$rep->TextCol(0, 2,	_('Calculated Return'));
+	$rep->AmountCol(2, 3, $salesper *-1, $dec); // always convert
+	$rep->AmountCol(3, 4, $salesacc * -1, $dec);
+	$rep->AmountCol(4, 5, Achieve($salesper, $salesacc), $pdec);
+	if ($graphics)
 	{
-		if ($typename[$level] != '')
-		{
-			for ( ; $level >= 0, $typename[$level] != ''; $level--) 
-			{
-				if ($account['parent'] == $closing[$level] || $account['parent'] < $last || $account['parent'] <= 0 || $closeclass)
-				{
-					$rep->row += 6;
-					$rep->Line($rep->row);
-					$rep->NewLine();
-					$rep->TextCol(0, 2,	_('Total') . " " . $typename[$level]);
-					$rep->AmountCol(2, 3, $typeper[$level] * $convert, $dec);
-					$rep->AmountCol(3, 4, $typeacc[$level] * $convert, $dec);
-					$rep->AmountCol(4, 5, Achieve($typeper[$level], $typeacc[$level]), $pdec);
-					if ($graphics)
-					{
-						$pg->x[] = $typename[$level];
-						$pg->y[] = abs($typeper[$level]);
-						$pg->z[] = abs($typeacc[$level]);
-					}
-					$typeper[$level] = $typeacc[$level] = 0.0;
-				}
-				else
-					break;
-				$rep->NewLine();
-			}
-			//$rep->NewLine();
-			if ($closeclass)
-			{
-				$rep->Line($rep->row + 6);
-				$calculateper = $salesper + $classper;
-				$calculateacc = $salesacc + $classacc;
-				$rep->row += 6;
-				$rep->Line($rep->row);
-				$rep->NewLine();
-
-				$rep->Font('bold');
-				$rep->TextCol(0, 2,	_('Total') . " " . $classname);
-				$rep->AmountCol(2, 3, $classper * $convert, $dec);
-				$rep->AmountCol(3, 4, $classacc * $convert, $dec);
-				$rep->AmountCol(4, 5, Achieve($classper, $classacc), $pdec);
-
-				$rep->NewLine(2);
-				$rep->TextCol(0, 2,	_('Calculated Return'));
-				$rep->AmountCol(2, 3, $calculateper *-1, $dec); // always convert
-				$rep->AmountCol(3, 4, $calculateacc * -1, $dec);
-				$rep->AmountCol(4, 5, Achieve($calculateper, $calculateacc), $pdec);
-				if ($graphics)
-				{
-					$pg->x[] = _('Calculated Return');
-					$pg->y[] = abs($calculateper);
-					$pg->z[] = abs($calculateacc);
-				}
-
-				$rep->Font();
-
-				$rep->NewLine();
-			}
-		}
+		$pg->x[] = _('Calculated Return');
+		$pg->y[] = abs($salesper);
+		$pg->z[] = abs($salesacc);
 	}
+	$rep->Font();
+	$rep->NewLine();
 	$rep->Line($rep->row);
 	if ($graphics)
 	{
@@ -374,6 +326,7 @@ function print_profit_and_loss_statement()
 			$rep->Header();
 		$rep->AddImage($filename, $x, $rep->row - $h, $w, $h);
 	}
+		
 	$rep->End();
 }
 

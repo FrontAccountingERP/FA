@@ -51,7 +51,9 @@ date_cells(_("To:"), 'ToDate');
 check_cells( _("Show closed:"), 'AlsoClosed', null);
 
 submit_cells('Search', _("Search"), '', '', 'default');
-
+end_row();
+start_row();
+ref_cells(_("Memo:"), 'Memo', '',null, _('Enter memo fragment or leave empty'));
 end_row();
 end_table();
 
@@ -110,6 +112,7 @@ function edit_link($row)
 			sprintf($editors[$row["type"]], $row["type_no"], $row["type"]),
 			ICON_EDIT) : '';
 }
+
 $sql = get_sql_for_journal_inquiry();
 
 $cols = array(

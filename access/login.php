@@ -51,21 +51,22 @@ function set_fullmode() {
 	echo "<html dir='$rtl' >\n";
 	echo "<head><title>$title</title>\n";
    	echo "<meta http-equiv='Content-type' content='text/html; charset=$encoding' />\n";
-	echo "<link href='$path_to_root/themes/$def_theme/login.css' rel='stylesheet' type='text/css'> \n";
-	echo $js2;
+	echo "<link href='$path_to_root/themes/$def_theme/default.css' rel='stylesheet' type='text/css'> \n";
 	if (!$login_timeout)
 	{
 		echo $js;
 	}	
+	echo $js2;
 	echo "</head>\n";
 
-	echo "<body $onload>\n";
+	echo "<body id='loginscreen' $onload>\n";
 
 	echo "<table class='titletext'><tr><td>$title</td></tr></table>\n";
 	
+	div_start('_page_body');
 	br();br();
 	start_form(false, false, $_SESSION['timeout']['uri'], "loginform");
-	start_table($table_style2);
+	start_table("class='login'");
 	start_row();
 	echo "<td align='center' colspan=2>";
 	if (!$login_timeout) { // FA logo
@@ -85,9 +86,9 @@ function set_fullmode() {
 
 	$password = $allow_demo_mode ? "password":"";
 
-	echo "<tr><td>"._("Password")."</td><td><input type='password' name='password'  value='$password' /></td></tr>\n";
+	password_row(_("Password:"), 'password', $password);
 
-	if ($login_timeout) {
+		if ($login_timeout) {
 		hidden('company_login_name', $_SESSION["wa_current_user"]->company);
 	} else {
 		if (isset($_SESSION['wa_current_user']->company))
@@ -103,8 +104,8 @@ function set_fullmode() {
 		end_row();
 	}; 
 	end_table(1);
-	echo "<center><input type='submit' value='&nbsp;&nbsp;"._("Login -->")."&nbsp;&nbsp;' name='SubmitUser' onclick='set_fullmode();' /></center>\n";
-	end_form(1);
+	echo "<center><input type='submit' value='&nbsp;&nbsp;"._("Login -->")."&nbsp;&nbsp;' name='SubmitUser'"
+		.($login_timeout ? '':" onclick='set_fullmode();'")." /></center>\n";
 
 	foreach($_SESSION['timeout']['post'] as $p => $val) {
 		// add all request variables to be resend together with login data
@@ -112,6 +113,7 @@ function set_fullmode() {
 			'password', 'SubmitUser', 'company_login_name'))) 
 			echo "<input type='hidden' name='$p' value='$val'>";
 	}
+	end_form(1);
     echo "<script language='JavaScript' type='text/javascript'>
     //<![CDATA[
             <!--
@@ -120,6 +122,7 @@ function set_fullmode() {
             //-->
     //]]>
     </script>";
+    div_end();
 	echo "<table class='bottomBar'>\n";
 	echo "<tr>";
 	if (isset($_SESSION['wa_current_user'])) 

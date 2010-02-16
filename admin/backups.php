@@ -17,18 +17,21 @@ include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/admin/db/maintenance_db.inc");
 
 if (get_post('view')) {
-	$filename = BACKUP_PATH . get_post('backups');
-	if (in_ajax()) 
-		$Ajax->popup( $filename );
-	else {
-	    header('Content-type: application/octet-stream');
-    	header('Content-Length: '.filesize($filename));
-		header("Content-Disposition: inline; filename=$filename");
-    	readfile($filename);
-		exit();
+	if (!get_post('backups')) {
+		display_error(_('Select backup file first.'));
+	} else {
+		$filename = BACKUP_PATH . get_post('backups');
+		if (in_ajax()) 
+			$Ajax->popup( $filename );
+		else {
+		    header('Content-type: application/octet-stream');
+    		header('Content-Length: '.filesize($filename));
+			header("Content-Disposition: inline; filename=$filename");
+    		readfile($filename);
+			exit();
+		}
 	}
 };
-
 if (get_post('download')) {
 	download_file(BACKUP_PATH . get_post('backups'));
 	exit;
@@ -105,6 +108,7 @@ function download_file($filename)
 {
     if (empty($filename) || !file_exists($filename))
     {
+		display_error(_('Select backup file first.'));
         return false;
     }
     $saveasname = basename($filename);

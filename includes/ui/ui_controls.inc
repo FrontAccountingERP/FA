@@ -88,9 +88,10 @@ function table_section($number=1, $width=false)
 	{
 		echo "</table>\n";
 		$width = ($width ? "width=$width" : "");
-		echo "</td><td class='tableseparator' $width>\n"; // outer table
+		//echo "</td><td class='tableseparator' $width>\n"; // outer table
+		echo "</td><td style='border-left:1px solid #cccccc;' $width>\n"; // outer table
 	}
-	echo "<table>\n";
+	echo "<table class='tablestyle_inner'>\n";
 }	
 
 function end_outer_table($breaks=0, $close_table=true)
@@ -142,11 +143,17 @@ function access_string($label, $clean=false)
 	return $clean ? $label : array($label, $access);
 }
 
-function hyperlink_back($center=true)
+function hyperlink_back($center=true, $no_menu=true)
 {
 	if ($center)
 		echo "<center>";
-	echo "<p><a href='javascript:goBack();'>"._("Back")."</a></p>\n";
+	start_table("width=20%");
+	start_row();
+	if ($no_menu)
+		echo "<td align=center><a href='javascript:window.print();'>"._("Print")."</a></td>\n";
+	echo "<td align=center><a href='javascript:goBack();'>".($no_menu ? _("Close") : _("Back"))."</a></td>\n";
+	end_row();
+	end_table();
 	if ($center)
 		echo "</center>";
 	echo "<br>";

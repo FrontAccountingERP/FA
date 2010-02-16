@@ -256,6 +256,7 @@ if ($dim == 2)
 			_('End Date') => 'DATEENDM',
 			_('Dimension')." 1" => 'DIMENSIONS1',
 			_('Dimension')." 2" => 'DIMENSIONS2',
+			_('Decimal values') => 'YES_NO',
 			_('Graphics') => 'GRAPHIC',
 			_('Comments') => 'TEXTBOX',
 			_('Destination') => 'DESTINATION'));
@@ -265,6 +266,7 @@ if ($dim == 2)
 			_('Compare to') => 'COMPARE',
 			_('Dimension')." 1" =>  'DIMENSIONS1',
 			_('Dimension')." 2" =>  'DIMENSIONS2',
+			_('Decimal values') => 'YES_NO',
 			_('Graphics') => 'GRAPHIC',
 			_('Comments') => 'TEXTBOX',
 			_('Destination') => 'DESTINATION'));
@@ -297,6 +299,7 @@ else if ($dim == 1)
 	array(	_('Start Date') => 'DATEBEGIN',
 			_('End Date') => 'DATEENDM',
 			_('Dimension') => 'DIMENSIONS1',
+			_('Decimal values') => 'YES_NO',
 			_('Graphics') => 'GRAPHIC',
 			_('Comments') => 'TEXTBOX',
 			_('Destination') => 'DESTINATION'));
@@ -305,6 +308,7 @@ else if ($dim == 1)
 			_('End Date') => 'DATEENDM',
 			_('Compare to') => 'COMPARE',
 			_('Dimension') => 'DIMENSIONS1',
+			_('Decimal values') => 'YES_NO',
 			_('Graphics') => 'GRAPHIC',
 			_('Comments') => 'TEXTBOX',
 			_('Destination') => 'DESTINATION'));
@@ -333,6 +337,7 @@ else
 	$reports->addReport(_('General Ledger'),706,_('&Balance Sheet'),
 	array(	_('Start Date') => 'DATEBEGIN',
 			_('End Date') => 'DATEENDM',
+			_('Decimal values') => 'YES_NO',
 			_('Graphics') => 'GRAPHIC',
 			_('Comments') => 'TEXTBOX',
 			_('Destination') => 'DESTINATION'));
@@ -340,6 +345,7 @@ else
 	array(	_('Start Date') => 'DATEBEGINM',
 			_('End Date') => 'DATEENDM',
 			_('Compare to') => 'COMPARE',
+			_('Decimal values') => 'YES_NO',
 			_('Graphics') => 'GRAPHIC',
 			_('Comments') => 'TEXTBOX',
 			_('Destination') => 'DESTINATION'));

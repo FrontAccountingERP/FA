@@ -25,6 +25,62 @@ include_once($path_to_root . "/gl/includes/gl_db.inc");
 
 //----------------------------------------------------------------------------------------------------
 
+function display_type ($type, $typename, &$dec, &$rep, $showbalance)
+{
+	$printtitle = 0; //Flag for printing type name	
+	
+	//Get Accounts directly under this group/type
+	$result = get_gl_accounts(null, null, $type);	
+	while ($account=db_fetch($result))
+	{
+		//Print Type Title if it has atleast one non-zero account	
+		if (!$printtitle)
+		{
+			$printtitle = 1;
+			$rep->row -= 4;
+			$rep->TextCol(0, 1, $type);
+			$rep->TextCol(1, 4, $typename);
+			$rep->row -= 4;
+			$rep->Line($rep->row);
+			$rep->NewLine();		
+		}			
+		if ($showbalance == 1)
+		{
+			$begin = begin_fiscalyear();
+			if (is_account_balancesheet($account["account_code"]))
+				$begin = "";
+			$balance = get_gl_trans_from_to($begin, ToDay(), $account["account_code"], 0);
+		}
+		$rep->TextCol(0, 1,	$account['account_code']);
+		$rep->TextCol(1, 2,	$account['account_name']);
+		$rep->TextCol(2, 3,	$account['account_code2']);
+		if ($showbalance == 1)	
+			$rep->AmountCol(3, 4, $balance, $dec);
+		$rep->NewLine();
+	}
+		
+	//Get Account groups/types under this group/type
+	$result = get_account_types(false, false, $type);
+	while ($accounttype=db_fetch($result))
+	{
+		//Print Type Title if has sub types and not previously printed
+		if (!$printtitle)
+		{
+			$printtitle = 1;
+			$rep->row -= 4;
+			$rep->TextCol(0, 1, $type);
+			$rep->TextCol(1, 4, $typename);
+			$rep->row -= 4;
+			$rep->Line($rep->row);
+			$rep->NewLine();		
+		}
+
+		display_type($accounttype["id"], $accounttype["name"], $dec, $rep, $showbalance);
+	}
+}
+
+//----------------------------------------------------------------------------------------------------
+
 print_Chart_of_Accounts();
 
 //----------------------------------------------------------------------------------------------------
@@ -57,61 +113,24 @@ function print_Chart_of_Accounts()
 	$rep->Info($params, $cols, $headers, $aligns);
 	$rep->Header();
 
-	$classname = '';
-	$group = '';
-
-	$accounts = get_gl_accounts_all();
-
-	while ($account=db_fetch($accounts))
+	$classresult = get_account_classes(false);
+	while ($class = db_fetch($classresult))
 	{
-		if ($account['AccountTypeName'] != $group)
-		{
-			if ($classname != '')
-				$rep->row -= 4;
-			if ($account['AccountClassName'] != $classname)
-			{
-				$rep->Font('bold');
-				//$rep->TextCol(0, 4, $account['AccountClassName']);
-				$rep->TextCol(0, 1, $account['ClassID']);
-				$rep->TextCol(1, 4, $account['AccountClassName']);
-				$rep->Font();
-				//$rep->row -= ($rep->lineHeight + 4);
-				$rep->NewLine();
-			}
-			$group = $account['AccountTypeName'];
-			//$rep->TextCol(0, 4, $account['AccountTypeName']);
-			$rep->TextCol(0, 1, $account['AccountType']);
-			$rep->TextCol(1, 4, $account['AccountTypeName']);
-			//$rep->Line($rep->row - 4);
-			//$rep->row -= ($rep->lineHeight + 4);
-			$rep->NewLine();
-		}
-		$classname = $account['AccountClassName'];
-		
-		if ($account['account_code'] != null)
-		{
-			if ($showbalance == 1)
-			{
-				$begin = begin_fiscalyear();
-				if (is_account_balancesheet($account["account_code"]))
-					$begin = "";
-				$balance = get_gl_trans_from_to($begin, ToDay(), $account["account_code"], 0);
-			}
-			$rep->TextCol(0, 1,	$account['account_code']);
-			$rep->TextCol(1, 2,	$account['account_name']);
-			$rep->TextCol(2, 3,	$account['account_code2']);
-			if ($showbalance == 1)	
-				$rep->AmountCol(3, 4, $balance, $dec);
+		$rep->Font('bold');
+		$rep->TextCol(0, 1, $class['cid']);
+		$rep->TextCol(1, 4, $class['class_name']);
+		$rep->Font();
+		$rep->NewLine();
 
-			$rep->NewLine();
-			if ($rep->row < $rep->bottomMargin + 3 * $rep->lineHeight)
-			{
-				$rep->Line($rep->row - 2);
-				$rep->Header();
-			}
-		}	
+		//Get Account groups/types under this group/type with no parents
+		$typeresult = get_account_types(false, $class['cid'], -1);
+		while ($accounttype=db_fetch($typeresult))
+		{
+			display_type($accounttype["id"], $accounttype["name"], $dec, $rep, $showbalance);
+		}
+		$rep->NewLine();
 	}
-	$rep->Line($rep->row);
+	$rep->Line($rep->row + 10);
 	$rep->End();
 }
 

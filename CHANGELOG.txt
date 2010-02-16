@@ -19,6 +19,151 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+16-Feb-2010 Merged changes from main trunk up to 2.2.6 as follows
+------------------------------- Release 2.2.6 ----------------------------------
+16-Feb-2010 Joe Hunt
+! Release 2.2.6
+$ config.default.php
+  update.html
+  /lang/new_language_template/LC_MESSAGES/empty.po
+! CSS style is now implemented in all FA.
+! New label style for the themes. Better layout in supp inv/credit
+! A lot of code clean up. New password_row and file_row/cells.
+# Several minor bugs during final CSS implementaion
+  /access/login.php
+  /admin/attachments.php
+  /admin/change_current_user_password.php
+  /admin/company_preferences.php
+  /admin/create_coy.php
+  /admin/display_prefs.php
+  /admin/gl_setup.php
+  /admin/inst_lang.php
+  /admin/inst_module.php
+  /admin/users.php
+  /includes/ui/ui_controls.inc
+  /includes/ui/ui_input.inc
+  /includes/ui/ui_lists.inc
+  /inventory/manage/items.php
+  /purchasing/supplier_credit.php
+  /purchasing/supplier_invoice.php
+  /purchasing/includes/ui/po_ui.inc
+  /purchasing/includes/ui/invoice_ui.inc
+  /reporting/includes/reports_classes.inc
+  /sales/includes/ui/sales_order_ui.inc
+  /sales/view/view_sales_order.php
+  /themes/default/default.css
+  /themes/aqua/default.css
+  /themes/cool/default.css
+  
+
+11-Feb-2010 Janusz Dobrowolski
+# Better check for language session var.
+$ /includes/session.inc
+# Fixed IE related hotkeys problem with AltTab
+$ /js/inserts.js
+
+11-Feb-2010 Joe Hunt/Chaitanya
+# [0000204] GRN Valuation Report shows wrong data
+$ /reporting/rep305.php
+
+10-Feb-2010 Janusz Dobrowolski
+# [0000201] Cannot change item type when item is edited
+$  /inventory/manage/items.php
+# Sparse warning fixed.
+$ includes/db/manufacturing_db.inc
+
+10-Feb-2010 Joe Hunt
+! Changed so 'Allow Negative Stock' will update the GL cogs/inventory when
+  the correct values later are obtained.
+$ /admin/gl_setup.php
+  /includes/db/inventory_db.inc
+  /manufacturing/includes/db/work_orders_db.inc
+  /purchasing/includes/db/grn_db.inc
+  /purchasing/includes/db/invoice_db.inc
++ Added a selector for decimal values in Balance Sheet and P/L Statement
+$ /reporting/reports_main.php
+  /reporting/rep706.php
+  /reporting/rep707.php
+! Added trans_no in bank deposit/payment final link, by Tom Hallman.
+$ /gl/gl_bank.php
+  
+09-Feb-2010 Joe Hunt/Chaitanya
+# [0000202] Global $path_to_root is missing in function handle_submit() in file admin/create_coy.php 
+$ /admin/create_coy.php
+
+06-Feb-2010 Janusz Dobrowolski
+# Fixed get_standard_cost() for dummy items again.
+$ /includes/db/inventory_db.inc
+# Fixed bug resulting in broken line items relations after edition of multiline SO.
+$ /sales/includes/db/sales_invoice_db.inc
+! Yesterday changes removed
+$ /sales/includes/db/sales_delivery_db.inc
+  /sales/includes/db/sales_invoice_db.inc
+# Prevent saving empty lines in invoices/delivery notes - rerun
+  /reporting/rep107.php
+  /reporting/rep110.php
+
+06-Feb-2010 Joe Hunt/Chaitanya
+! Changed Balance Sheets/PL Statements to be recursive
+$ /gl/inquiry/balance_sheet.php
+  /gl/inquiry/profit_loss.php
+  /reporting/rep701.php
+  /reporting/rep705.php
+  /reporting/rep706.php
+  /reporting/rep707.php
+  
+05-Feb-2010 Joe Hunt/Kalido
++ Placing a print link in all view windows (without menus).
+$ /includes/main.inc
+  /includes/ui_controls.inc
+! Preparing for new recursive balance sheet/PL Statements
+$ /gl/includes/db/gl_db_accounts.inc
+  /gl/includes/db/gl_db_account_types.inc
+  
+05-Feb-2010 Janusz Dobrowolski
+# Fixed get_standard_cost() for dummy items
+$ /includes/db/inventory_db.inc
+# Prevent saving empty lines in invoices/delivery notes
+$ /sales/includes/db/sales_delivery_db.inc
+  /sales/includes/db/sales_invoice_db.inc
+
+03-Feb-2010 Janusz Dobrowolski
+# Fixed continuation after timeout.
+$ /access/login.php
+  /includes/main.inc
+  /includes/session.inc
+  /includes/page/footer.inc
+  /themes/aqua/default.css
+  /themes/cool/default.css
+  /themes/default/default.css
+# Added error message when no file is selected on view or download.
+$ /admin/backups.php
+
+03-Feb-2010 Joe Hunt
+# When buying a service item from a supplier, the delivery produced
+  wrong inventory GL transactions. No GL transactions should be here.
+$ /sales/includes/db/sales_delivery_db.inc
+# [0000200] stock_master material_cost incorrectly updated during GRN when 
+  price format uses thousands seperator. A couple of minor errors too. 
+$ /purchasing/includes/db/grn_db.inc
+  /purchasing/includes/db/invoices_db.inc
+# Exchange rate bug when searching a non existing customer
+$ /includes/banking.inc
+
+03-Feb-2010 Chaitanya/Joe
++ Added a Profit and Loss Drilldown page and changed menu link
+$ /applications/generalledger.php
+  /gl/inquiry/profit_loss.php (New file)
+  /gl/inquiry/balance_sheet.php
+! Better layout
+$ /gl/inquiry/journal_inquiry.php
+
+02-Feb-2010 Chaitanya
++ Added memo search on journal inquires.
+$ /gl/inquiry/journal_inquiry.php
+
+---------- End of changes from main trunk 2.2.5-2.2.6
+
 09-Feb-2010 Janusz Dobrowolski
 + Improved multilevel database transaction support
 $ /includes/errors.inc

@@ -64,7 +64,7 @@ function stock_demand_manufacture($stock_id, $qty, $demand_id, $location, $level
 	$stock_qty = $qoh_stock[$stock_id];
 	if ($stock_qty == NULL) $stock_qty = 0;
 	if ($qty <= $stock_qty) return $demand;
-	$bom = $bom_list[$stock_id];
+	$bom = @$bom_list[$stock_id];
 	if ($bom == NULL) {
 		$sql = "SELECT parent, component, quantity FROM "
 			.TB_PREF."bom WHERE parent = ".db_escape($stock_id);

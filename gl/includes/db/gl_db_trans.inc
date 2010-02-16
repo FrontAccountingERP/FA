@@ -619,6 +619,7 @@ function get_sql_for_journal_inquiry()
 	}
 	$sql .= " GROUP BY gl.type, gl.type_no";
 */
+
 	$sql = "SELECT	IF(ISNULL(a.gl_seq),0,a.gl_seq) as gl_seq,
 		gl.tran_date,
 		gl.type,
@@ -641,6 +642,9 @@ function get_sql_for_journal_inquiry()
 		AND gl.amount!=0";
 	if (isset($_POST['Ref']) && $_POST['Ref'] != "") {
 		$sql .= " AND reference LIKE '%". $_POST['Ref'] . "%'";
+	}
+	if (isset($_POST['Memo']) && $_POST['Memo'] != "") {
+		$sql .= " AND com.memo_ LIKE '%". $_POST['Memo'] . "%'";
 	}
 	if (get_post('filterType') != -1) {
 		$sql .= " AND gl.type=".get_post('filterType');
