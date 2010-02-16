@@ -19,16 +19,22 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+------------------------------- Release 2.2.6 ----------------------------------
+16-Feb-2010 Joe Hunt
+! Release 2.2.6
+$ config.default.php
+  update.html
+  /lang/new_language_template/LC_MESSAGES/empty.po
 ! CSS style is now implemented in all FA.
 ! New label style for the themes. Better layout in supp inv/credit
 ! A lot of code clean up. New password_row and file_row/cells.
 # Several minor bugs during final CSS implementaion
-$ config.default.php
   /access/login.php
   /admin/attachments.php
   /admin/change_current_user_password.php
   /admin/company_preferences.php
   /admin/create_coy.php
+  /admin/display_prefs.php
   /admin/gl_setup.php
   /admin/inst_lang.php
   /admin/inst_module.php
