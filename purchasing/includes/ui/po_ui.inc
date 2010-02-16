@@ -116,11 +116,7 @@ function display_po_header(&$order)
 	}
 
   	text_row(_("Supplier's Reference:"), 'Requisition', null, 16, 15);
-
-	echo "<tr><td>" . _("Receive Into:") . "</td>";
-	echo "<td>";
-    echo locations_list('StkLocation', null, false, true);
-	echo "</td></tr>";
+	locations_list_row(_("Receive Into:"), 'StkLocation', null, false, true); 
 
 	table_section(3);
 
@@ -225,8 +221,8 @@ function display_po_items(&$order, $editable=true)
 
 function display_po_summary(&$po, $is_self=false, $editable=false)
 {
-	global $table_style2;
-    start_table("$table_style2 width=90%");
+	global $table_style;
+    start_table("$table_style width=90%");
 
     start_row();
     label_cells(_("Reference"), $po->reference, "class='tableheader2'");

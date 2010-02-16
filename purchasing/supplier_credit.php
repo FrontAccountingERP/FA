@@ -318,8 +318,6 @@ invoice_header($_SESSION['supp_trans']);
 if ($_POST['supplier_id']=='') 
 	display_error('No supplier found for entered search text');
 else {
-	start_outer_table("$table_style2 width=98%", 5);
-
 	$total_grn_value = display_grn_items($_SESSION['supp_trans'], 1);
 
 	$total_gl_value = display_gl_items($_SESSION['supp_trans'], 1);
@@ -327,8 +325,6 @@ else {
 	div_start('inv_tot');
 	invoice_totals($_SESSION['supp_trans']);
 	div_end();
-
-	end_outer_table(0, false);
 }
 
 if ($id != -1)

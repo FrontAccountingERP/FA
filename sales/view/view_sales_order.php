@@ -116,7 +116,7 @@ if ($_GET['trans_type'] != ST_SALESQUOTE)
 
 	}
 
-	label_row(null, price_format($delivery_total), "", "colspan=4 align=right");
+	label_row(null, price_format($delivery_total), " ", "colspan=4 align=right");
 
 	end_table();
 	echo "</td><td valign='top'>";
@@ -149,7 +149,7 @@ if ($_GET['trans_type'] != ST_SALESQUOTE)
 
 	}
 
-	label_row(null, price_format($invoices_total), "", "colspan=4 align=right");
+	label_row(null, price_format($invoices_total), " ", "colspan=4 align=right");
 
 	end_table();
 
@@ -182,7 +182,7 @@ if ($_GET['trans_type'] != ST_SALESQUOTE)
 	}
 
 	label_row(null, "<font color=red>" . price_format(-$credits_total) . "</font>",
-		"", "colspan=4 align=right");
+		" ", "colspan=4 align=right");
 
 
 	end_table();

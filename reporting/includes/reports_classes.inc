@@ -32,7 +32,7 @@ class BoxReports
 
 	function getDisplay($class=null)
 	{
-		global $table_style2, $comp_path, $path_to_root, $pdf_debug, $Ajax;
+		global $table_style, $comp_path, $path_to_root, $pdf_debug, $Ajax;
 
 
 		$temp = array_values($this->ar_classes);
@@ -99,7 +99,7 @@ class BoxReports
 					}
 				</script>
 				";
-		$st .= "<table align='center' width='80%' $table_style2><tr valign='top'>";
+		$st .= "<table align='center' width='80%'><tr valign='top'>";
 		$st .= "<td width='30%'>$st_classes</td>";
 		$st .= "<td width='35%'>$st_reports</td>";
 		$st .= "<td width='35%'>$st_params</td>";

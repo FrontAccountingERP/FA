@@ -190,10 +190,7 @@ else
 	$_POST['pos'] = user_pos();
 }
 $_POST['password'] = "";
-start_row();
-label_cell(_("Password:"));
-label_cell("<input type='password' name='password' size=22 maxlength=20 value='" . $_POST['password'] . "'>");
-end_row();
+password_row(_("Password:"), 'password', $_POST['password']);
 
 if ($selected_id != -1) 
 {

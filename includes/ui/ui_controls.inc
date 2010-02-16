@@ -70,9 +70,10 @@ function table_section($number=1, $width=false)
 	{
 		echo "</table>\n";
 		$width = ($width ? "width=$width" : "");
-		echo "</td><td class='tableseparator' $width>\n"; // outer table
+		//echo "</td><td class='tableseparator' $width>\n"; // outer table
+		echo "</td><td style='border-left:1px solid #cccccc;' $width>\n"; // outer table
 	}
-	echo "<table>\n";
+	echo "<table class='tablestyle_inner'>\n";
 }	
 
 function end_outer_table($breaks=0, $close_table=true)

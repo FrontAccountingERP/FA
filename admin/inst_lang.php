@@ -218,8 +218,8 @@ function display_language_edit($selected_id)
 	yesno_list_row(_("Right To Left"), 'rtl', null, "", "", false);
 	yesno_list_row(_("Default Language"), 'dflt', null, "", "", false);
 
-	label_row(_("Language File") . " (PO)", "<input name='uploadfile' type='file'>");
-	label_row(_("Language File") . " (MO)", "<input name='uploadfile2' type='file'>");
+	file_row(_("Language File") . " (PO)", 'uploadfile');
+	file_row(_("Language File") . " (MO)", 'uploadfile2');
 
 	end_table(0);
 	display_note(_("Select your language files from your local harddisk."), 0, 1);

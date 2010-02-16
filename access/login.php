@@ -66,7 +66,7 @@ function set_fullmode() {
 	div_start('_page_body');
 	br();br();
 	start_form(false, false, $_SESSION['timeout']['uri'], "loginform");
-	start_table("class='login' $table_style2");
+	start_table("class='login'");
 	start_row();
 	echo "<td align='center' colspan=2>";
 	if (!$login_timeout) { // FA logo
@@ -86,9 +86,9 @@ function set_fullmode() {
 
 	$password = $allow_demo_mode ? "password":"";
 
-	echo "<tr><td>"._("Password")."</td><td><input type='password' name='password'  value='$password' /></td></tr>\n";
+	password_row(_("Password:"), 'password', $password);
 
-	if ($login_timeout) {
+		if ($login_timeout) {
 		hidden('company_login_name', $_SESSION["wa_current_user"]->company);
 	} else {
 		if (isset($_SESSION['wa_current_user']->company))

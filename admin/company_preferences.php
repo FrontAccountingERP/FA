@@ -179,7 +179,7 @@ text_row_ex(_("Tax Periods:"), 'tax_prd', 10, 10, '', null, null, _('Months.'));
 text_row_ex(_("Tax Last Period:"), 'tax_last', 10, 10, '', null, null, _('Months back.'));
 
 label_row(_("Company Logo:"), $_POST['coy_logo']);
-label_row(_("New Company Logo (.jpg)") . ":", "<input type='file' id='pic' name='pic'>");
+file_row(_("New Company Logo (.jpg)") . ":", 'pic', 'pic');
 check_row(_("Delete Company Logo:"), 'del_coy_logo', $_POST['del_coy_logo']);
 
 number_list_row(_("Use Dimensions:"), 'use_dimension', null, 0, 2);

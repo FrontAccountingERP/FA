@@ -19,6 +19,36 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+! CSS style is now implemented in all FA.
+! New label style for the themes. Better layout in supp inv/credit
+! A lot of code clean up. New password_row and file_row/cells.
+# Several minor bugs during final CSS implementaion
+$ config.default.php
+  /access/login.php
+  /admin/attachments.php
+  /admin/change_current_user_password.php
+  /admin/company_preferences.php
+  /admin/create_coy.php
+  /admin/gl_setup.php
+  /admin/inst_lang.php
+  /admin/inst_module.php
+  /admin/users.php
+  /includes/ui/ui_controls.inc
+  /includes/ui/ui_input.inc
+  /includes/ui/ui_lists.inc
+  /inventory/manage/items.php
+  /purchasing/supplier_credit.php
+  /purchasing/supplier_invoice.php
+  /purchasing/includes/ui/po_ui.inc
+  /purchasing/includes/ui/invoice_ui.inc
+  /reporting/includes/reports_classes.inc
+  /sales/includes/ui/sales_order_ui.inc
+  /sales/view/view_sales_order.php
+  /themes/default/default.css
+  /themes/aqua/default.css
+  /themes/cool/default.css
+  
+
 11-Feb-2010 Janusz Dobrowolski
 # Better check for language session var.
 $ /includes/session.inc

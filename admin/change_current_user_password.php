@@ -75,15 +75,8 @@ label_row(_("User login:"), $myrow['user_id']);
 $_POST['password'] = "";
 $_POST['passwordConfirm'] = "";
 
-start_row();
-label_cell(_("Password:"));
-label_cell("<input type='password' name='password' size=22 maxlength=20 value='" . $_POST['password'] . "'>");
-end_row();
-
-start_row();
-label_cell(_("Repeat password:"));
-label_cell("<input type='password' name='passwordConfirm' size=22 maxlength=20 value='" . $_POST['passwordConfirm'] . "'>");
-end_row();
+password_row(_("Password:"), 'password', $_POST['password']);
+password_row(_("Repeat password:"), 'passwordConfirm', $_POST['passwordConfirm']);
 
 table_section_title(_("Enter your new password in the fields."));
 

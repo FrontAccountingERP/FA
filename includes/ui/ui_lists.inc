@@ -413,7 +413,7 @@ function supplier_list_cells($label, $name, $selected_id=null, $all_option=false
 function supplier_list_row($label, $name, $selected_id=null, $all_option = false, 
 	$submit_on_change=false, $all=false, $editkey = false)
 {
-	echo "<tr><td>$label</td><td>";
+	echo "<tr><td class='label'>$label</td><td>";
 	echo supplier_list($name, $selected_id, $all_option, $submit_on_change,
 		$all, $editkey);
 	echo "</td></tr>\n";
@@ -463,7 +463,7 @@ function customer_list_cells($label, $name, $selected_id=null, $all_option=false
 function customer_list_row($label, $name, $selected_id=null, $all_option = false, 
 	$submit_on_change=false, $show_inactive=false, $editkey = false)
 {
-	echo "<tr><td>$label</td><td nowrap>";
+	echo "<tr><td class='label'>$label</td><td nowrap>";
 	echo customer_list($name, $selected_id, $all_option, $submit_on_change,
 		$show_inactive, $editkey);
 	echo "</td>\n</tr>\n";
@@ -509,8 +509,8 @@ function customer_branches_list_cells($label,$customer_id, $name, $selected_id=n
 function customer_branches_list_row($label, $customer_id, $name, $selected_id=null, 
 	$all_option = true, $enabled=true, $submit_on_change=false, $editkey = false)
 {
-	echo "<tr>";
-	customer_branches_list_cells($label, $customer_id, $name, $selected_id, 
+	echo "<tr><td class='label'>$label</td>";
+	customer_branches_list_cells(null, $customer_id, $name, $selected_id, 
 		$all_option, $enabled, $submit_on_change, $editkey);
 	echo "</tr>";
 }
@@ -542,8 +542,8 @@ function locations_list_cells($label, $name, $selected_id=null, $all_option=fals
 
 function locations_list_row($label, $name, $selected_id=null, $all_option=false, $submit_on_change=false)
 {
-	echo "<tr>";
-	locations_list_cells($label, $name, $selected_id, $all_option, $submit_on_change);
+	echo "<tr><td class='label'>$label</td>";
+	locations_list_cells(null, $name, $selected_id, $all_option, $submit_on_change);
 	echo "</tr>\n";
 }
 
@@ -574,8 +574,8 @@ function currencies_list_cells($label, $name, $selected_id=null, $submit_on_chan
 
 function currencies_list_row($label, $name, $selected_id=null, $submit_on_change=false)
 {
-	echo "<tr>\n";
-	currencies_list_cells($label, $name, $selected_id, $submit_on_change);
+	echo "<tr><td class='label'>$label</td>";
+	currencies_list_cells(null, $name, $selected_id, $submit_on_change);
 	echo "</tr>\n";
 }
 
@@ -615,8 +615,8 @@ function fiscalyears_list_cells($label, $name, $selected_id=null)
 
 function fiscalyears_list_row($label, $name, $selected_id=null)
 {
-	echo "<tr>\n";
-	fiscalyears_list_cells($label, $name, $selected_id);
+	echo "<tr><td class='label'>$label</td>";
+	fiscalyears_list_cells(null, $name, $selected_id);
 	echo "</tr>\n";
 }
 //------------------------------------------------------------------------------------
@@ -655,8 +655,8 @@ function dimensions_list_cells($label, $name, $selected_id=null, $no_option=fals
 function dimensions_list_row($label, $name, $selected_id=null, $no_option=false, $showname=null,
 	$showclosed=false, $showtype=0, $submit_on_change=false)
 {
-	echo "<tr>\n";
-	dimensions_list_cells($label, $name, $selected_id, $no_option, $showname,
+	echo "<tr><td class='label'>$label</td>";
+	dimensions_list_cells(null, $name, $selected_id, $no_option, $showname,
 		$showclosed, $showtype, $submit_on_change);
 	echo "</tr>\n";
 }
@@ -773,7 +773,7 @@ function sales_local_items_list_row($label, $name, $selected_id=null, $all_optio
 {
 	echo "<tr>";
 	if ($label != null)
-		echo "<td>$label</td>\n";
+		echo "<td class='label'>$label</td>\n";
 	echo "<td>";
 	echo sales_items_list($name, $selected_id, $all_option, $submit_on_change,
 		'local', array('cells'=>false));
@@ -801,8 +801,8 @@ function stock_manufactured_items_list_cells($label, $name, $selected_id=null,
 function stock_manufactured_items_list_row($label, $name, $selected_id=null,
 		$all_option=false, $submit_on_change=false)
 {
-	echo "<tr>\n";
-	stock_manufactured_items_list_cells($label, $name, $selected_id, $all_option, $submit_on_change);
+	echo "<tr><td class='label'>$label</td>";
+	stock_manufactured_items_list_cells(null, $name, $selected_id, $all_option, $submit_on_change);
 	echo "</tr>\n";
 }
 //------------------------------------------------------------------------------------
@@ -863,8 +863,8 @@ function stock_purchasable_items_list_cells($label, $name, $selected_id=null,
 function stock_purchasable_items_list_row($label, $name, $selected_id=null,
 			$all_option=false, $submit_on_change=false, $editkey=false)
 {
-	echo "<tr>\n";
-	stock_purchasable_items_list_cells($label, $name, $selected_id=null,
+	echo "<tr><td class='label'>$label</td>";
+	stock_purchasable_items_list_cells(null, $name, $selected_id=null,
 		$all_option, $submit_on_change, $editkey);
 	echo "</tr>\n";
 }
@@ -877,7 +877,7 @@ function stock_item_types_list_row($label, $name, $selected_id=null, $enabled=tr
 
 	echo "<tr>";
 	if ($label != null)
-		echo "<td>$label</td>\n";
+		echo "<td class='label'>$label</td>\n";
 	echo "<td>";
 
 	echo array_selector($name, $selected_id, $stock_types, 
@@ -892,7 +892,7 @@ function stock_units_list_row($label, $name, $value=null, $enabled=true)
 	$result = get_all_item_units();
 	echo "<tr>";
 	if ($label != null)
-		echo "<td>$label</td>\n";
+		echo "<td class='label'>$label</td>\n";
 	echo "<td>";
 
 	while($unit = db_fetch($result))
@@ -931,8 +931,8 @@ function tax_types_list_cells($label, $name, $selected_id=null, $none_option=fal
 function tax_types_list_row($label, $name, $selected_id=null, $none_option=false,
 	$submit_on_change=false)
 {
-	echo "<tr>\n";
-	tax_types_list_cells($label, $name, $selected_id, $none_option, $submit_on_change);
+	echo "<tr><td class='label'>$label</td>";
+	tax_types_list_cells(null, $name, $selected_id, $none_option, $submit_on_change);
 	echo "</tr>\n";
 }
 
@@ -964,8 +964,8 @@ function tax_groups_list_cells($label, $name, $selected_id=null, $none_option=fa
 
 function tax_groups_list_row($label, $name, $selected_id=null, $none_option=false, $submit_on_change=false)
 {
-	echo "<tr>\n";
-	tax_groups_list_cells($label, $name, $selected_id, $none_option, $submit_on_change);
+	echo "<tr><td class='label'>$label</td>";
+	tax_groups_list_cells(null, $name, $selected_id, $none_option, $submit_on_change);
 	echo "</tr>\n";
 }
 
@@ -988,8 +988,8 @@ function item_tax_types_list_cells($label, $name, $selected_id=null)
 
 function item_tax_types_list_row($label, $name, $selected_id=null)
 {
-	echo "<tr>\n";
-	item_tax_types_list_cells($label, $name, $selected_id);
+	echo "<tr><td class='label'>$label</td>";
+	item_tax_types_list_cells(null, $name, $selected_id);
 	echo "</tr>\n";
 }
 
@@ -1013,8 +1013,8 @@ function shippers_list_cells($label, $name, $selected_id=null)
 
 function shippers_list_row($label, $name, $selected_id=null)
 {
-	echo "<tr>\n";
-	shippers_list_cells($label, $name, $selected_id);
+	echo "<tr><td class='label'>$label</td>";
+	shippers_list_cells(null, $name, $selected_id);
 	echo "</tr>\n";
 }
 
@@ -1040,8 +1040,8 @@ function sales_persons_list_cells($label, $name, $selected_id=null, $spec_opt=fa
 
 function sales_persons_list_row($label, $name, $selected_id=null, $spec_opt=false)
 {
-	echo "<tr>\n";
-	sales_persons_list_cells($label, $name, $selected_id, $spec_opt);
+	echo "<tr><td class='label'>$label</td>";
+	sales_persons_list_cells(null, $name, $selected_id, $spec_opt);
 	echo "</tr>\n";
 }
 
@@ -1064,8 +1064,8 @@ function sales_areas_list_cells($label, $name, $selected_id=null)
 
 function sales_areas_list_row($label, $name, $selected_id=null)
 {
-	echo "<tr>\n";
-	sales_areas_list_cells($label, $name, $selected_id);
+	echo "<tr><td class='label'>$label</td>";
+	sales_areas_list_cells(null, $name, $selected_id);
 	echo "</tr>\n";
 }
 
@@ -1091,8 +1091,8 @@ function sales_groups_list_cells($label, $name, $selected_id=null, $special_opti
 
 function sales_groups_list_row($label, $name, $selected_id=null, $special_option=false)
 {
-	echo "<tr>\n";
-	sales_groups_list_cells($label, $name, $selected_id, $special_option);
+	echo "<tr><td class='label'>$label</td>";
+	sales_groups_list_cells(null, $name, $selected_id, $special_option);
 	echo "</tr>\n";
 }
 
@@ -1126,8 +1126,8 @@ function templates_list_cells($label, $name, $selected_id=null, $special_option=
 
 function templates_list_row($label, $name, $selected_id=null, $special_option=false)
 {
-	echo "<tr>\n";
-	templates_list_cells($label, $name, $selected_id, $special_option);
+	echo "<tr><td class='label'>$label</td>";
+	templates_list_cells(null, $name, $selected_id, $special_option);
 	echo "</tr>\n";
 }
 
@@ -1150,8 +1150,8 @@ function workorders_list_cells($label, $name, $selected_id=null)
 
 function workorders_list_row($label, $name, $selected_id=null)
 {
-	echo "<tr>\n";
-	workorders_list_cells($label, $name, $selected_id);
+	echo "<tr><td class='label'>$label</td>";
+	workorders_list_cells(null, $name, $selected_id);
 	echo "</tr>\n";
 }
 
@@ -1174,8 +1174,8 @@ function payment_terms_list_cells($label, $name, $selected_id=null)
 
 function payment_terms_list_row($label, $name, $selected_id=null)
 {
-	echo "<tr>\n";
-	payment_terms_list_cells($label, $name, $selected_id);
+	echo "<tr><td class='label'>$label</td>";
+	payment_terms_list_cells(null, $name, $selected_id);
 	echo "</tr>\n";
 }
 
@@ -1198,8 +1198,8 @@ function credit_status_list_cells($label, $name, $selected_id=null)
 
 function credit_status_list_row($label, $name, $selected_id=null)
 {
-	echo "<tr>\n";
-	credit_status_list_cells($label, $name, $selected_id);
+	echo "<tr><td class='label'>$label</td>";
+	credit_status_list_cells(null, $name, $selected_id);
 	echo "</tr>\n";
 }
 
@@ -1229,8 +1229,8 @@ function sales_types_list_cells($label, $name, $selected_id=null, $submit_on_cha
 
 function sales_types_list_row($label, $name, $selected_id=null, $submit_on_change=false, $special_option=false)
 {
-	echo "<tr>\n";
-	sales_types_list_cells($label, $name, $selected_id, $submit_on_change, $special_option);
+	echo "<tr><td class='label'>$label</td>";
+	sales_types_list_cells(null, $name, $selected_id, $submit_on_change, $special_option);
 	echo "</tr>\n";
 }
 
@@ -1253,8 +1253,8 @@ function movement_types_list_cells($label, $name, $selected_id=null)
 
 function movement_types_list_row($label, $name, $selected_id=null)
 {
-	echo "<tr>\n";
-	movement_types_list_cells($label, $name, $selected_id);
+	echo "<tr><td class='label'>$label</td>";
+	movement_types_list_cells(null, $name, $selected_id);
 	echo "</tr>\n";
 }
 
@@ -1321,8 +1321,8 @@ function workcenter_list_cells($label, $name, $selected_id=null, $all_option=fal
 
 function workcenter_list_row($label, $name, $selected_id=null, $all_option=false)
 {
-	echo "<tr>\n";
-	workcenter_list_cells($label, $name, $selected_id, $all_option);
+	echo "<tr><td class='label'>$label</td>";
+	workcenter_list_cells(null, $name, $selected_id, $all_option);
 	echo "</tr>\n";
 }
 
@@ -1352,8 +1352,8 @@ function bank_accounts_list_cells($label, $name, $selected_id=null, $submit_on_c
 
 function bank_accounts_list_row($label, $name, $selected_id=null, $submit_on_change=false)
 {
-	echo "<tr>\n";
-	bank_accounts_list_cells($label, $name, $selected_id, $submit_on_change);
+	echo "<tr><td class='label'>$label</td>";
+	bank_accounts_list_cells(null, $name, $selected_id, $submit_on_change);
 	echo "</tr>\n";
 }
 //-----------------------------------------------------------------------------------------------
@@ -1365,7 +1365,7 @@ function cash_accounts_list_row($label, $name, $selected_id=null, $submit_on_cha
 		WHERE ".TB_PREF."bank_accounts.account_type=3";
 
 	if ($label != null)
-		echo "<tr><td>$label</td>\n";
+		echo "<tr><td class='label'>$label</td>\n";
 	echo "<td>";
 	echo combo_input($name, $selected_id, $sql, 'id', 'bank_account_name',
 	array(
@@ -1384,7 +1384,7 @@ function pos_list_row($label, $name, $selected_id=null, $spec_option=false, $sub
 	default_focus($name);
 	echo '<tr>';
 	if ($label != null)
-		echo "<td>$label</td>\n";
+		echo "<td class='label'>$label</td>\n";
 	echo "<td>";
 
 	echo combo_input($name, $selected_id, $sql, 'id', 'pos_name',
@@ -1403,7 +1403,7 @@ function pos_list_row($label, $name, $selected_id=null, $spec_option=false, $sub
 function sale_payment_list_cells($label, $name, $selected_id=null, $submit_on_change=false)
 {
 	if ($label != null)
-		echo "<td>$label</td>\n";
+		echo "<td class='label'>$label</td>\n";
 	echo "<td>";
 	echo yesno_list($name, $selected_id, _('Cash'), _('Delayed'), $submit_on_change);
 	echo "</td>\n";
@@ -1433,8 +1433,8 @@ function class_list_cells($label, $name, $selected_id=null, $submit_on_change=fa
 
 function class_list_row($label, $name, $selected_id=null, $submit_on_change=false)
 {
-	echo "<tr>\n";
-	class_list_cells($label, $name, $selected_id, $submit_on_change);
+	echo "<tr><td class='label'>$label</td>";
+	class_list_cells(null, $name, $selected_id, $submit_on_change);
 	echo "</tr>\n";
 }
 
@@ -1462,8 +1462,8 @@ function stock_categories_list_cells($label, $name, $selected_id=null, $spec_opt
 
 function stock_categories_list_row($label, $name, $selected_id=null, $spec_opt=false, $submit_on_change=false)
 {
-	echo "<tr>\n";
-	stock_categories_list_cells($label, $name, $selected_id, $spec_opt, $submit_on_change);
+	echo "<tr><td class='label'>$label</td>";
+	stock_categories_list_cells(null, $name, $selected_id, $spec_opt, $submit_on_change);
 	echo "</tr>\n";
 }
 
@@ -1496,8 +1496,8 @@ function gl_account_types_list_cells($label, $name, $selected_id=null, $all_opti
 function gl_account_types_list_row($label, $name, $selected_id=null, $all_option=false,
 	$all_option_numeric=false)
 {
-	echo "<tr>\n";
-	gl_account_types_list_cells($label, $name, $selected_id, $all_option,
+	echo "<tr><td class='label'>$label</td>";
+	gl_account_types_list_cells(null, $name, $selected_id, $all_option,
 		$all_option_numeric);
 	echo "</tr>\n";
 }
@@ -1557,8 +1557,8 @@ function gl_all_accounts_list_cells($label, $name, $selected_id=null,
 function gl_all_accounts_list_row($label, $name, $selected_id=null, 
 	$skip_bank_accounts=false, $cells=false, $all_option=false)
 {
-	echo "<tr>\n";
-	gl_all_accounts_list_cells($label, $name, $selected_id, 
+	echo "<tr><td class='label'>$label</td>";
+	gl_all_accounts_list_cells(null, $name, $selected_id, 
 		$skip_bank_accounts, $cells, $all_option);
 	echo "</tr>\n";
 }
@@ -1586,8 +1586,8 @@ function yesno_list_cells($label, $name, $selected_id=null, $name_yes="", $name_
 
 function yesno_list_row($label, $name, $selected_id=null, $name_yes="", $name_no="", $submit_on_change=false)
 {
-	echo "<tr>\n";
-	yesno_list_cells($label, $name, $selected_id, $name_yes, $name_no, $submit_on_change);
+	echo "<tr><td class='label'>$label</td>";
+	yesno_list_cells(null, $name, $selected_id, $name_yes, $name_no, $submit_on_change);
 	echo "</tr>\n";
 }
 
@@ -1615,8 +1615,8 @@ function languages_list_cells($label, $name, $selected_id=null)
 
 function languages_list_row($label, $name, $selected_id=null)
 {
-	echo "<tr>\n";
-	languages_list_cells($label, $name, $selected_id);
+	echo "<tr><td class='label'>$label</td>";
+	languages_list_cells(null, $name, $selected_id);
 	echo "</tr>\n";
 }
 
@@ -1640,8 +1640,8 @@ function bank_account_types_list_cells($label, $name, $selected_id=null)
 
 function bank_account_types_list_row($label, $name, $selected_id=null)
 {
-	echo "<tr>\n";
-	bank_account_types_list_cells($label, $name, $selected_id);
+	echo "<tr><td class='label'>$label</td>";
+	bank_account_types_list_cells(null, $name, $selected_id);
 	echo "</tr>\n";
 }
 
@@ -1671,8 +1671,8 @@ function payment_person_types_list_cells($label, $name, $selected_id=null, $rela
 
 function payment_person_types_list_row($label, $name, $selected_id=null, $related=null)
 {
-	echo "<tr>\n";
-	payment_person_types_list_cells($label, $name, $selected_id, $related);
+	echo "<tr><td class='label'>$label</td>";
+	payment_person_types_list_cells(null, $name, $selected_id, $related);
 	echo "</tr>\n";
 }
 
@@ -1688,7 +1688,7 @@ function wo_types_list($name, $selected_id=null)
 
 function wo_types_list_row($label, $name, $selected_id=null)
 {
-	echo "<tr><td>$label</td><td>\n";
+	echo "<tr><td class='label'>$label</td><td>\n";
 	echo wo_types_list($name, $selected_id);
 	echo "</td></tr>\n";
 }
@@ -1699,7 +1699,7 @@ function dateformats_list_row($label, $name, $value=null)
 {
 	global $dateformats;
 
-	echo "<tr><td>$label</td>\n<td>";
+	echo "<tr><td class='label'>$label</td>\n<td>";
 	echo array_selector( $name, $value, $dateformats );
 	echo "</td></tr>\n";
 }
@@ -1708,7 +1708,7 @@ function dateseps_list_row($label, $name, $value=null)
 {
 	global $dateseps;
 
-	echo "<tr><td>$label</td>\n<td>";
+	echo "<tr><td class='label'>$label</td>\n<td>";
 	echo array_selector( $name, $value, $dateseps );
 	echo "</td></tr>\n";
 }
@@ -1717,7 +1717,7 @@ function thoseps_list_row($label, $name, $value=null)
 {
 	global $thoseps;
 
-	echo "<tr><td>$label</td>\n<td>";
+	echo "<tr><td class='label'>$label</td>\n<td>";
 	echo array_selector( $name, $value, $thoseps );
 	echo "</td></tr>\n";
 }
@@ -1726,7 +1726,7 @@ function decseps_list_row($label, $name, $value=null)
 {
 	global $decseps;
 
-	echo "<tr><td>$label</td>\n<td>";
+	echo "<tr><td class='label'>$label</td>\n<td>";
 	echo array_selector( $name, $value, $decseps );
 	echo "</td></tr>\n";
 }
@@ -1747,7 +1747,7 @@ function themes_list_row($label, $name, $value=null)
 	}
 	ksort($themes);
 
-	echo "<tr><td>$label</td>\n<td>";
+	echo "<tr><td class='label'>$label</td>\n<td>";
 	echo array_selector( $name, $value, $themes );
 	echo "</td></tr>\n";
 }
@@ -1760,7 +1760,7 @@ function pagesizes_list_row($label, $name, $value=null)
 	foreach ($pagesizes as $pz)
 		$items[$pz] = $pz;
 
-	echo "<tr><td>$label</td>\n<td>";
+	echo "<tr><td class='label'>$label</td>\n<td>";
 	echo array_selector( $name, $value, $items );
 	echo "</td></tr>\n";
 }
@@ -1790,8 +1790,8 @@ function systypes_list_cells($label, $name, $value=null, $submit_on_change=false
 
 function systypes_list_row($label, $name, $value=null, $submit_on_change=false)
 {
-	echo "<tr>\n";
-	systypes_list_cells($label, $name, $value, false, $submit_on_change);
+	echo "<tr><td class='label'>$label</td>";
+	systypes_list_cells(null, $name, $value, false, $submit_on_change);
 	echo "</tr>\n";
 }
 
@@ -1870,8 +1870,8 @@ function policy_list_cells($label, $name, $selected=null)
 
 function policy_list_row($label, $name, $selected=null)
 {
-	echo "<tr>\n";
-	policy_list_cells($label, $name, $selected);
+	echo "<tr><td class='label'>$label</td>";
+	policy_list_cells(null, $name, $selected);
 	echo "</tr>\n";
 }
 
@@ -1889,8 +1889,8 @@ function credit_type_list_cells($label, $name, $selected=null, $submit_on_change
 
 function credit_type_list_row($label, $name, $selected=null, $submit_on_change=false)
 {
-	echo "<tr>\n";
-	credit_type_list_cells($label, $name, $selected, $submit_on_change);
+	echo "<tr><td class='label'>$label</td>";
+	credit_type_list_cells(null, $name, $selected, $submit_on_change);
 	echo "</tr>\n";
 }
 
@@ -1916,8 +1916,8 @@ function number_list_cells($label, $name, $selected, $from, $to, $no_option=fals
 
 function number_list_row($label, $name, $selected, $from, $to, $no_option=false)
 {
-	echo "<tr>\n";
-	echo number_list_cells($label, $name, $selected, $from, $to, $no_option);
+	echo "<tr><td class='label'>$label</td>";
+	echo number_list_cells(null, $name, $selected, $from, $to, $no_option);
 	echo "</tr>\n";
 }
 
@@ -1934,7 +1934,7 @@ function print_profiles_list_row($label, $name, $selected_id=null, $spec_opt=fal
 
 	echo "<tr>";
 	if ($label != null)
-		echo "<td>$label</td>\n";
+		echo "<td class='label'>$label</td>\n";
 	echo "<td>";
 
 	echo array_selector($name, $selected_id, $profiles, 
@@ -1986,15 +1986,16 @@ function quick_entries_list($name, $selected_id=null, $type=null, $submit_on_cha
 
 function quick_entries_list_cells($label, $name, $selected_id=null, $type, $submit_on_change=false)
 {
-	echo "<td>$label</td><td>\n";
+	if ($label != null)
+		echo "<td>$label</td><td>\n";
 	echo quick_entries_list($name, $selected_id, $type, $submit_on_change);
 	echo "</td>";
 }
 
 function quick_entries_list_row($label, $name, $selected_id=null, $type, $submit_on_change=false)
 {
-	echo "<tr>\n";
-	quick_entries_list_cells($label, $name, $selected_id, $type, $submit_on_change);
+	echo "<tr><td class='label'>$label</td>";
+	quick_entries_list_cells(null, $name, $selected_id, $type, $submit_on_change);
 	echo "</tr>\n";
 }
 
@@ -2003,7 +2004,7 @@ function quick_actions_list_row($label, $name, $selected_id=null, $submit_on_cha
 {
 	global $quick_actions;
 	
-	echo "<tr><td>$label</td><td>";
+	echo "<tr><td class='label'>$label</td><td>";
 	echo array_selector($name, $selected_id, $quick_actions, 
 		array( 
 			'select_submit'=> $submit_on_change
@@ -2015,7 +2016,7 @@ function quick_entry_types_list_row($label, $name, $selected_id=null, $submit_on
 {
 	global $quick_entry_types;
 		
-	echo "<tr><td>$label</td><td>";
+	echo "<tr><td class='label'>$label</td><td>";
 	echo array_selector($name, $selected_id, $quick_entry_types, 
 		array( 
 			'select_submit'=> $submit_on_change
@@ -2031,7 +2032,7 @@ function class_types_list_row($label, $name, $selected_id=null, $submit_on_chang
 {
 	global $class_types;
 	
-	echo "<tr><td>$label</td><td>";
+	echo "<tr><td class='label'>$label</td><td>";
 	echo array_selector($name, $selected_id, $class_types, 
 		array( 
 			'select_submit'=> $submit_on_change
@@ -2070,8 +2071,8 @@ function security_roles_list_cells($label, $name, $selected_id=null, $new_item=f
 function security_roles_list_row($label, $name, $selected_id=null, $new_item=false, $submit_on_change=false,
 	$show_inactive = false)
 {
-	echo "<tr>";
-	security_roles_list_cells($label, $name, $selected_id, $new_item, $submit_on_change, $show_inactive);
+	echo "<tr><td class='label'>$label</td>";
+	security_roles_list_cells(null, $name, $selected_id, $new_item, $submit_on_change, $show_inactive);
 	echo "</tr>\n";
 }
 
@@ -2090,7 +2091,7 @@ function tab_list_row($label, $name, $selected_id=null, $all = false)
 		}
 	}
 	echo "<tr>\n";
-	echo "<td>$label</td><td>\n";
+	echo "<td class='label'>$label</td><td>\n";
 	echo array_selector($name, $selected_id, $tabs);
 	echo "</td></tr>\n";
 }
@@ -2132,8 +2133,8 @@ function tag_list_cells($label, $name, $height, $type, $mult=false, $all=false, 
 
 function tag_list_row($label, $name, $height, $type, $mult=false, $all=false, $spec_opt = false)
 {
-	echo "<tr>\n";
-	tag_list_cells($label, $name, $height, $type, $mult, $all, $spec_opt);
+	echo "<tr><td class='label'>$label</td>";
+	tag_list_cells(null, $name, $height, $type, $mult, $all, $spec_opt);
 	echo "</tr>\n";	
 }
 

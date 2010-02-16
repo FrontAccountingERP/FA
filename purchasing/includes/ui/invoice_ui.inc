@@ -55,13 +55,13 @@ function copy_to_trans(&$supp_trans)
 
 function invoice_header(&$supp_trans)
 {
-	global $Ajax, $table_style, $Refs;
+	global $Ajax, $table_style2, $Refs;
 	
 	// if vars have been lost, recopy
 	if (!isset($_POST['tran_date']))
 		copy_from_trans($supp_trans);
 
-	start_outer_table("$table_style width=98%", 5);
+	start_outer_table("width=95% $table_style2");
 
 	table_section(1);
 
@@ -141,19 +141,21 @@ function invoice_totals(&$supp_trans)
 
 	copy_to_trans($supp_trans);
 
-    start_table("$table_style width=95%");
-   	label_row(_("Sub-total:"), price_format( $supp_trans->ov_amount), "align=right", "align=right");
+	$dim = get_company_pref('use_dimension');
+ 	$colspan = ($dim == 2 ? 7 : ($dim == 1 ? 6 : 5));
+   	start_table("$table_style width=95%");
+   	label_row(_("Sub-total:"), price_format( $supp_trans->ov_amount), "colspan=$colspan align=right", "align=right");
 
     $taxes = $supp_trans->get_taxes($supp_trans->tax_group_id);
-    $tax_total = display_edit_tax_items($taxes, 1, 0); // tax_included==0 (we are the company)
+    $tax_total = display_edit_tax_items($taxes, $colspan, 0); // tax_included==0 (we are the company)
 
     $display_total = price_format($supp_trans->ov_amount + $tax_total);
 
 	if ($supp_trans->is_invoice)
-    	label_row(_("Invoice Total:"), $display_total, "align=right style='font-weight:bold;'", "align=right style='font-weight:bold;'");
+    	label_row(_("Invoice Total:"), $display_total, "colspan=$colspan align=right style='font-weight:bold;'", "align=right style='font-weight:bold;'");
     else
 		label_row(_("Credit Note Total"),
-			$display_total, "align=right style='font-weight:bold;color:red;'", "nowrap align=right style='font-weight:bold;color:red;'");
+			$display_total, "colspan=$colspan align=right style='font-weight:bold;color:red;'", "nowrap align=right style='font-weight:bold;color:red;'");
 
     end_table(1);
     start_table($table_style2);
@@ -164,7 +166,7 @@ function invoice_totals(&$supp_trans)
 //--------------------------------------------------------------------------------------------------
 function display_gl_controls(&$supp_trans, $k)
 {
-	global $table_style;
+	global $table_style, $table_style2;
 
 	$accs = get_supplier_accounts($supp_trans->supplier_id);
 	$_POST['gl_code'] = $accs['purchase_account'];
@@ -197,20 +199,18 @@ function display_gl_controls(&$supp_trans, $k)
 
 function display_gl_items(&$supp_trans, $mode=0)
 {
-	global $table_style, $path_to_root, $Ajax;
+	global $table_style, $table_style2, $path_to_root, $Ajax;
 
     // if displaying in form, and no items, exit
     if (($mode == 2 || $mode == 3) && count($supp_trans->gl_codes) == 0)
     	return 0;
-
-	start_outer_table("width=95%");
 
 	if ($supp_trans->is_invoice)
 		$heading = _("GL Items for this Invoice");
 	else
 		$heading = _("GL Items for this Credit Note");
 
-	start_outer_table("width=100%");
+	start_outer_table("$table_style width=95%");
 
 	if ($mode == 1)
 	{
@@ -239,10 +239,8 @@ function display_gl_items(&$supp_trans, $mode=0)
 
 	end_outer_table(0, false);
 
-	vertical_space(); // ouer table
-
 	div_start('gl_items');
-	start_table("$table_style width=100%");
+	start_table("$table_style width=95%");
 
 	$dim = get_company_pref('use_dimension');
 	if ($dim == 2)
@@ -310,10 +308,9 @@ function display_gl_items(&$supp_trans, $mode=0)
 	label_row(_("Total"), price_format($total_gl_value),
 		"colspan=".$colspan." align=right", "nowrap align=right", ($mode==1?3:1));
 
-	end_table();
+	end_table(1);
 	div_end();
 
-    end_outer_table(0, false); // outertable
 	return $total_gl_value;
 }
 
@@ -417,7 +414,7 @@ function display_grn_items(&$supp_trans, $mode=0)
     if (($mode == 2  || $mode == 3) && count($supp_trans->grn_items) == 0)
     	return 0;
 
-	start_outer_table("width=95%");
+	start_outer_table("style='border:1px solid #cccccc;' width=95%");
 
 	$heading2 = "";
 	if ($mode == 1)
@@ -439,8 +436,6 @@ function display_grn_items(&$supp_trans, $mode=0)
 			$heading = _("Received Items Credited on this Note");
 	}		
 
-	start_outer_table("width=100%");
-
 	display_heading($heading);
 
 	if ($mode == 1)
@@ -456,7 +451,6 @@ function display_grn_items(&$supp_trans, $mode=0)
 			
 		if ($heading2 != "")
 		{
-			//br();
 			display_note($heading2, 0, 0, "class='overduefg'");
 		}	
 		echo "</td><td width=10% align='right'>";
@@ -466,7 +460,7 @@ function display_grn_items(&$supp_trans, $mode=0)
 	end_outer_table(0, false);
 
   	div_start('grn_items');
-	start_table("$table_style width=100%");
+	start_table("$table_style width=95%");
 	if ($mode == 1)
 	{
     	$th = array(_("Delivery"), _("Sequence #"), _("P.O."), _("Item"), _("Description"),
@@ -543,20 +537,23 @@ function display_grn_items(&$supp_trans, $mode=0)
 		$colspan = 5;
 	label_row(_("Total"), price_format($total_grn_value),
 		"colspan=$colspan align=right", "nowrap align=right");
-    end_table();
 	if (!$ret)
 	{
+		start_row();
+		echo "<td colspan=".($colspan + 1).">";
 		if ($supp_trans->is_invoice)
-			display_note(_("There are no outstanding items received from this supplier that have not been invoiced by them."), 0, 1);
+			display_note(_("There are no outstanding items received from this supplier that have not been invoiced by them."), 0, 0);
 		else
 		{
 			display_note(_("There are no received items for the selected supplier that have been invoiced."));
-			display_note(_("Credits can only be applied to invoiced items."), 0, 1);
+			display_note(_("Credits can only be applied to invoiced items."), 0, 0);
 		}
+		echo "</td>";
+		end_row();
 	}	
+    end_table(1);
     div_end();
 
-    end_outer_table(0, false); // outertable
 	return $total_grn_value;
 }
 

@@ -383,8 +383,6 @@ invoice_header($_SESSION['supp_trans']);
 if ($_POST['supplier_id']=='') 
 	display_error('No supplier found for entered search text');
 else {
-	start_outer_table("$table_style2 width=98%", 5);
-
 	display_grn_items($_SESSION['supp_trans'], 1);
 
 	display_gl_items($_SESSION['supp_trans'], 1);
@@ -393,7 +391,6 @@ else {
 	invoice_totals($_SESSION['supp_trans']);
 	div_end();
 
-	end_outer_table(0, false);
 }
 
 //-----------------------------------------------------------------------------------------

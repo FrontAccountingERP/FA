@@ -301,9 +301,9 @@ function display_ext_edit($selected_id)
 
 	record_status_list_row(_("Default status"), 'active');
 
-	label_row(_("Module File"), "<input name='uploadfile' type='file'>");
-	label_row(_("Access Levels Extensions"), "<input name='uploadfile3' type='file'>");
-	label_row(_("SQL File"), "<input name='uploadfile2' type='file'>");
+	file_row(_("Module File"), 'uploadfile');
+	file_row(_("Access Levels Extensions"), 'uploadfile3');
+	file_row(_("SQL File"), 'uploadfile2');
 
 	end_table(0);
 	display_note(_("Select your module PHP file from your local harddisk."), 0, 1);

@@ -419,7 +419,7 @@ else
 table_section_title(_("Other"));
 
 // Add image upload for New Item  - by Joe
-label_row(_("Image File (.jpg)") . ":", "<input type='file' id='pic' name='pic'>");
+file_row(_("Image File (.jpg)") . ":", 'pic', 'pic');
 // Add Image upload for New Item  - by Joe
 $stock_img_link = "";
 $check_remove_image = false;

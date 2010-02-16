@@ -226,9 +226,7 @@ function display_order_summary($title, &$order, $editable_items=false)
 	label_cell('', 'colspan=2');
 	end_row();
 	$display_sub_total = price_format($total + input_num('freight_cost'));
-
 	label_row(_("Sub-total"), $display_sub_total, "colspan=$colspan align=right","align=right", 2);
-
 	$taxes = $order->get_taxes(input_num('freight_cost'));
 	$tax_total = display_edit_tax_items($taxes, $colspan, $order->tax_included, 2);
 
@@ -253,9 +251,9 @@ function display_order_summary($title, &$order, $editable_items=false)
 
 function display_order_header(&$order, $editable, $date_text, $display_tax_group=false)
 {
-	global $table_style, $Ajax, $SysPrefs;
+	global $table_style2, $Ajax, $SysPrefs;
 
-	start_outer_table("width=80% $table_style");
+	start_outer_table("width=80% $table_style2");
 
 	table_section(1);
 	
@@ -359,7 +357,7 @@ function display_order_header(&$order, $editable, $date_text, $display_tax_group
 		}
 	}
 
-	ref_cells(_("Reference").':', 'ref', _('Reference number unique for this document type'), null, '');
+	ref_row(_("Reference").':', 'ref', _('Reference number unique for this document type'), null, '');
 
 	if (!is_company_currency($order->customer_currency))
 	{

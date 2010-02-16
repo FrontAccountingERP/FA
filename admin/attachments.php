@@ -248,9 +248,7 @@ if ($selected_id != -1)
 else
 	text_row_ex(_("Transaction #").':', 'trans_no', 10);
 text_row_ex(_("Description").':', 'description', 40);
-start_row();
-label_cells(_("Attached File") . ":", "<input type='file' id='filename' name='filename'>");
-end_row();
+file_row(_("Attached File") . ":", 'filename', 'filename');
 
 end_table(1);
 if (isset($_POST['filterType']))
