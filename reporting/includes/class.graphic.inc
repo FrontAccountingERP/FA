@@ -222,8 +222,8 @@ class graph
         // Fill background
         imagefill($this->img, 0, 0, $this->color['background']);
         //imagefilledrectangle($this->img, 0, 0, $this->width, $this->height, $this->color['background']);
-        if ($border)
-        	imagerectangle($this->img, 0, 0, $this->width-1, $this->height-1, imagecolorallocate($this->img, 100, 150, 200));
+        //if ($border)
+        //	imagerectangle($this->img, 0, 0, $this->width-1, $this->height-1, imagecolorallocate($this->img, 100, 150, 200));
 
         // Draw title
         if (!empty($this->title))
@@ -396,7 +396,8 @@ class graph
                 imagefilledrectangle($this->img, $x1, $y1, $x2, $y2, $this->color['bars']);
                 $this->_imagestring($this->img, $this->size, ($x2+7), ($y1+2), $this->number_formated($this->y[$i], $this->dec2), $this->color['bars_shadow']);
 
-                $this->_imagestring($this->img, $this->size, ($x1 - ((strlen($parameter)*7)+7)), ($y1+2), $parameter, $this->color['axis_values']);
+                //$this->_imagestring($this->img, $this->size, ($x1 - ((strlen($parameter)*7)+7)), ($y1+2), $parameter, $this->color['axis_values']);
+                $this->_imagestring($this->img, $this->size, 30, ($y1+2), $parameter, $this->color['axis_values']);
             }
         }
 
@@ -811,8 +812,10 @@ class graph
         {
             // Office
             case 1:
-                $this->color['title']       = imagecolorallocate($this->img,  50,  50,  50);
-                $this->color['background']  = imagecolorallocate($this->img, 238, 255, 238);
+                //$this->color['title']       = imagecolorallocate($this->img,  50,  50,  50);
+                $this->color['title']       = imagecolorallocate($this->img,  40,  70,  130);
+                //$this->color['background']  = imagecolorallocate($this->img, 238, 255, 238);
+                $this->color['background']  = imagecolorallocate($this->img, 255, 255, 255);
                 $this->color['axis_values'] = imagecolorallocate($this->img,  50,  50,  50);
                 $this->color['axis_line']   = imagecolorallocate($this->img, 100, 100, 100);
                 $this->color['bg_lines']    = imagecolorallocate($this->img, 220, 220, 220);
@@ -893,11 +896,13 @@ class graph
             // Spring
             case 3:
                 $this->color['title']       = imagecolorallocate($this->img, 250,  50,  50);
-                $this->color['background']  = imagecolorallocate($this->img, 250, 250, 220);
+                //$this->color['background']  = imagecolorallocate($this->img, 250, 250, 220);
+                $this->color['background']  = imagecolorallocate($this->img, 255, 255, 255);
                 $this->color['axis_values'] = imagecolorallocate($this->img,  50, 150,  50);
                 $this->color['axis_line']   = imagecolorallocate($this->img,  50, 100,  50);
                 $this->color['bg_lines']    = imagecolorallocate($this->img, 200, 224, 180);
-                $this->color['bg_legend']   = imagecolorallocate($this->img, 230, 230, 200);
+                //$this->color['bg_legend']   = imagecolorallocate($this->img, 230, 230, 200);
+                $this->color['bg_legend']   = imagecolorallocate($this->img, 255, 255, 255);
 
                 if (preg_match("/^(1|2)$/", $this->type))
                 {

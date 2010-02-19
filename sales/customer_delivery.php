@@ -377,7 +377,9 @@ start_table("$table_style width=90%");
 if (!isset($_POST['due_date']) || !is_date($_POST['due_date'])) {
 	$_POST['due_date'] = get_invoice_duedate($_SESSION['Items']->customer_id, $_POST['DispatchDate']);
 }
-date_row(_("Invoice Dead-line"), 'due_date', '', null, 0, 0, 0, "class='tableheader2'");
+start_row();
+date_cells(_("Invoice Dead-line"), 'due_date', '', null, 0, 0, 0, "class='tableheader2'");
+end_row();
 end_table();
 
 echo "</td></tr>";

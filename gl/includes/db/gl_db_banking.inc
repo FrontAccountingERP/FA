@@ -17,24 +17,27 @@ function add_exchange_variation($trans_type, $trans_no, $date_, $acc_id, $accoun
 	if ($date_ == null)
 		$date_ = Today();
 	$rate = get_exchange_rate_from_home_currency($currency, $date_);
-/*	
-	$result = db_query("SELECT SUM(amount) FROM ".TB_PREF."bank_trans WHERE 
-		bank_act=".db_escape($acc_id)." AND trans_date<='".date2sql($date_)."'", 
-		"Transactions for account $account could not be calculated");
-	$row = db_fetch_row($result);
-	$foreign_amount = $row[0];
-	$amount = get_gl_trans_from_to("", $date_, $account);
-	$diff = $amount - (round2($foreign_amount * $rate, user_price_dec()));
-*/
-	$result = db_query("SELECT SUM(bt.amount) AS foreign_amount, SUM(gt.amount) AS amount		
-		FROM ".TB_PREF."bank_trans bt,  ".TB_PREF."gl_trans gt, ".TB_PREF."bank_accounts ba
-		WHERE bt.bank_act=".db_escape($acc_id)." AND bt.trans_date<='".date2sql($date_)."'
-		AND ((bt.amount > 0 AND gt.amount > 0) OR (bt.amount <= 0 AND gt.amount <= 0)) 
-		AND bt.type = gt.type AND bt.trans_no = gt.type_no 
-		AND ba.id = bt.bank_act AND ba.account_code = gt.account",
-		"Transactions for account $account could not be calculated");
-	$row = db_fetch($result);
-	$diff = $row['amount'] - (round2($row['foreign_amount'] * $rate, user_price_dec()));
+	$for_amount = $amount = 0;
+	// We had to split up the SQL statements to retrieve the correct GL counter-parts
+	// 2010-02-19 Joe Hunt with help of Ary Wibowo
+	$sql = "SELECT bt.*, SUM(bt.amount) AS for_amount, ba.account_code 		
+		FROM ".TB_PREF."bank_trans bt, ".TB_PREF."bank_accounts ba
+		WHERE ba.id = bt.bank_act AND bt.bank_act=".db_escape($acc_id)." AND bt.trans_date<='".date2sql($date_)."'
+		GROUP BY bt.type, bt.trans_no";
+	$result = db_query($sql, "Transactions for bank account $acc_id could not be calculated");
+	while ($row = db_fetch($result))
+	{
+		$for_amount += $row['for_amount'];
+		
+		$sql2 = "SELECT SUM(gt.amount) AS amount FROM ".TB_PREF."gl_trans gt
+			WHERE gt.account = ".$row['account_code']." AND gt.type = ".$row['type']."
+			AND gt.type_no = ".$row['trans_no']." AND gt.tran_date = '".$row['trans_date']."'
+			AND gt.person_type_id = ".$row['person_type_id'];
+		$res = db_query($sql2, "Transactions for GL account ".$row['account_code']." could not be calculated");
+		$row2 = db_fetch_row($res);
+		$amount += $row2[0];
+	}	
+	$diff = $amount - (round2($for_amount * $rate, user_price_dec()));
 	if ($diff != 0)
 	{
 		if ($trans_type == null)

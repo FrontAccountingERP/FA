@@ -19,6 +19,14 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+19-Feb-2010 Joe Hunt/Ary Wibowo
+# Bug in exchange variation calculation in certain situations.
+$ /gl/includes/gl_db_banking.inc
+! Better and cleaner layout in graphics
+$ /reporting/includes/class.graphic.inc
+! Fixed better layout in customer delivery form
+$ /sales/customer_delivery.php
+
 17-Feb-2010 Joe Hunt
 # Missing border layout in report centre
 $ /reporting/includes/reports_classes.inc
