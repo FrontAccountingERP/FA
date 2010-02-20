@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+20-Feb-2010 Joe Hunt
+# Wrong class parameter in Generqal Ledger Reports
+$ /applications/generalledger.php
+
 16-Feb-2010 Merged changes from main trunk up to 2.2.6 as follows
 ------------------------------- Release 2.2.6 ----------------------------------
 16-Feb-2010 Joe Hunt

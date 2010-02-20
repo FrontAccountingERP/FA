@@ -48,7 +48,7 @@ class general_ledger_app extends application
 		$this->add_rapp_function(1, _("Banking &Reports"),
 			"reporting/reports_main.php?Class=5", 'SA_BANKREP');
 		$this->add_rapp_function(1, _("General Ledger &Reports"),
-			"reporting/reports_main.php?Class="._("General Ledger"), 'SA_GLREP');
+			"reporting/reports_main.php?Class=6", 'SA_GLREP');
 
 		$this->add_module(_("Maintenance"));
 		$this->add_lapp_function(2, _("Bank &Accounts"),
