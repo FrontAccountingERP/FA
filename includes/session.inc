@@ -166,7 +166,7 @@ header("Cache-control: private");
 get_text_init();
 
 // Page Initialisation
-if (!method_exists($_SESSION['language'], 'set_language')) 
+if (!isset($_SESSION['language']) || !method_exists($_SESSION['language'], 'set_language')) 
 {
 	$l = array_search_value($dflt_lang, $installed_languages,  'code');
 	$_SESSION['language'] = new language($l['name'], $l['code'], $l['encoding'],

@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+21-Feb-2010 Janusz Dobrowolski
+# Fixed check for language session var.
+$ /includes/session.inc
+
 19-Feb-2010 Joe Hunt/Ary Wibowo
 # Bug in exchange variation calculation in certain situations.
 $ /gl/includes/gl_db_banking.inc
