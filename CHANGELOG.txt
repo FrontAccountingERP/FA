@@ -19,6 +19,11 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+21-Feb-2010 Joe Hunt
+# Exchange rate doesn't update table immediately when adding new rate 
+  and no exchange rates there before.
+$ /gl/manage/exchange_rates.php
+ 
 21-Feb-2010 Janusz Dobrowolski
 # Fixed check for language session var.
 $ /includes/session.inc

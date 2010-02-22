@@ -210,6 +210,8 @@ else
 
 	br(1);
 	$table->width = "40%";
+	if ($table->rec_count == 0)
+		$table->ready = false;
 	display_db_pager($table);
    	br(1);
     display_rate_edit();
