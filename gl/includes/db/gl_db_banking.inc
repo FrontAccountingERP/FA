@@ -29,8 +29,8 @@ function add_exchange_variation($trans_type, $trans_no, $date_, $acc_id, $accoun
 	{
 		$for_amount += $row['for_amount'];
 		
-		$sql2 = "SELECT SUM(IF(((gt.amount < 0 AND ".$row['for_amount']." < 0) OR (gt.amount >= 0 AND ".$row['for_amount']." >= 0)), 
-			gt.amount, 0)) AS amount FROM ".TB_PREF."gl_trans gt
+		$sql2 = "SELECT SUM(IF(((gt.amount < 0 AND ".$row['for_amount']." < 0) OR (gt.amount >= 0 AND ".$row['for_amount']." >= 0))
+			OR gt.memo_ = '"._("Exchange Variance")."', gt.amount, 0)) AS amount FROM ".TB_PREF."gl_trans gt
 			WHERE gt.account = '".$row['account_code']."' AND gt.type = ".$row['type']."
 			AND gt.type_no = ".$row['trans_no']." AND gt.tran_date = '".$row['trans_date']."'";
 		$res = db_query($sql2, "Transactions for GL account ".$row['account_code']." could not be calculated");
