@@ -40,7 +40,12 @@ function check_data()
 		set_focus('BuyRate');
 		return false;
 	}
-
+	if (get_date_exchange_rate($_POST['curr_abrev'], $_POST['date_']))
+	{
+		display_error( _("The exchange rate for the date is already there."));
+		set_focus('date_');
+		return false;
+	}
 	return true;
 }
 
