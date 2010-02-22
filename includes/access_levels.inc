@@ -199,7 +199,7 @@ $security_areas =array(
 
 	'SA_WORKORDERANALYTIC' => array(SS_MANUF_A|1, _("Work order analytical reports and inquiries")),
 	'SA_WORKORDERCOST' => array(SS_MANUF_A|2, _("Manufacturing cost inquiry")),
-	'SA_MANUFBULKREP' => array(SS_SALES_A|3, _("Work order bulk reports")),
+	'SA_MANUFBULKREP' => array(SS_MANUF_A|3, _("Work order bulk reports")),
 	'SA_BOMREP' => array(SS_MANUF_A|4, _("Bill of materials reports")),
 //
 // Dimensions
@@ -222,7 +222,7 @@ $security_areas =array(
 	'SA_CURRENCY' => array(SS_GL_C|6, _("Currencies")),
 	'SA_BANKACCOUNT' => array(SS_GL_C|7, _("Bank accounts")),
 	'SA_TAXRATES' => array(SS_GL_C|8, _("Tax rates")),
-	'SA_TAXGROUPS' => array(SS_GL_C|8, _("Tax groups")),
+	'SA_TAXGROUPS' => array(SS_GL_C|12, _("Tax groups")),
 	'SA_FISCALYEARS' => array(SS_GL_C|9, _("Fiscal years maintenance")),
 	'SA_GLSETUP' => array(SS_GL_C|10, _("Company GL setup")),
 	'SA_GLACCOUNTTAGS' => array(SS_GL_C|11, _("GL Account tags")),
