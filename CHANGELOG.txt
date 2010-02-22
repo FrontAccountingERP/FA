@@ -23,6 +23,8 @@ $ -> Affected files
 # Exchange rate doesn't update table immediately when adding new rate 
   and no exchange rates there before.
 $ /gl/manage/exchange_rates.php
+# Bug in exchange variation calculation in certain situations. Again.
+$ /gl/includes/gl_db_banking.inc
  
 21-Feb-2010 Janusz Dobrowolski
 # Fixed check for language session var.

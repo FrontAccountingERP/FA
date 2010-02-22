@@ -20,19 +20,19 @@ function add_exchange_variation($trans_type, $trans_no, $date_, $acc_id, $accoun
 	$for_amount = $amount = 0;
 	// We had to split up the SQL statements to retrieve the correct GL counter-parts
 	// 2010-02-19 Joe Hunt with help of Ary Wibowo
-	$sql = "SELECT bt.*, SUM(bt.amount) AS for_amount, ba.account_code 		
+	$sql = "SELECT bt.*, bt.amount AS for_amount, ba.account_code 		
 		FROM ".TB_PREF."bank_trans bt, ".TB_PREF."bank_accounts ba
 		WHERE ba.id = bt.bank_act AND bt.bank_act=".db_escape($acc_id)." AND bt.trans_date<='".date2sql($date_)."'
-		GROUP BY bt.type, bt.trans_no";
+		ORDER BY bt.type, bt.trans_no";
 	$result = db_query($sql, "Transactions for bank account $acc_id could not be calculated");
 	while ($row = db_fetch($result))
 	{
 		$for_amount += $row['for_amount'];
 		
-		$sql2 = "SELECT SUM(gt.amount) AS amount FROM ".TB_PREF."gl_trans gt
-			WHERE gt.account = ".$row['account_code']." AND gt.type = ".$row['type']."
-			AND gt.type_no = ".$row['trans_no']." AND gt.tran_date = '".$row['trans_date']."'
-			AND gt.person_type_id = ".$row['person_type_id'];
+		$sql2 = "SELECT SUM(IF(((gt.amount < 0 AND ".$row['for_amount']." < 0) OR (gt.amount >= 0 AND ".$row['for_amount']." >= 0)), 
+			gt.amount, 0)) AS amount FROM ".TB_PREF."gl_trans gt
+			WHERE gt.account = '".$row['account_code']."' AND gt.type = ".$row['type']."
+			AND gt.type_no = ".$row['trans_no']." AND gt.tran_date = '".$row['trans_date']."'";
 		$res = db_query($sql2, "Transactions for GL account ".$row['account_code']." could not be calculated");
 		$row2 = db_fetch_row($res);
 		$amount += $row2[0];
