@@ -16,28 +16,25 @@ function add_exchange_variation($trans_type, $trans_no, $date_, $acc_id, $accoun
 		return;
 	if ($date_ == null)
 		$date_ = Today();
-	$rate = get_exchange_rate_from_home_currency($currency, $date_);
-	$for_amount = $amount = 0;
-	// We had to split up the SQL statements to retrieve the correct GL counter-parts
-	// 2010-02-19 Joe Hunt with help of Ary Wibowo
-	$sql = "SELECT bt.*, bt.amount AS for_amount, ba.account_code 		
+	$for_amount = 0;
+
+	// We have to calculate all the currency accounts belonging to the GL account
+	// upto $date_ and calculate with the exchange rates. And then compare with the GL account balance.
+	// 2010-02-23 Joe Hunt with help of Ary Wibowo
+	$sql = "SELECT SUM(bt.amount) AS for_amount, ba.bank_curr_code 		
 		FROM ".TB_PREF."bank_trans bt, ".TB_PREF."bank_accounts ba
-		WHERE ba.id = bt.bank_act AND bt.bank_act=".db_escape($acc_id)." AND bt.trans_date<='".date2sql($date_)."'
-		ORDER BY bt.type, bt.trans_no";
+		WHERE ba.id = bt.bank_act AND ba.account_code = ".db_escape($account)." AND bt.trans_date<='".date2sql($date_)."'
+		GROUP BY ba.bank_curr_code";	
 	$result = db_query($sql, "Transactions for bank account $acc_id could not be calculated");
 	while ($row = db_fetch($result))
 	{
-		$for_amount += $row['for_amount'];
-		
-		$sql2 = "SELECT SUM(IF(((gt.amount < 0 AND ".$row['for_amount']." < 0) OR (gt.amount >= 0 AND ".$row['for_amount']." >= 0))
-			OR gt.memo_ = '"._("Exchange Variance")."', gt.amount, 0)) AS amount FROM ".TB_PREF."gl_trans gt
-			WHERE gt.account = '".$row['account_code']."' AND gt.type = ".$row['type']."
-			AND gt.type_no = ".$row['trans_no']." AND gt.tran_date = '".$row['trans_date']."'";
-		$res = db_query($sql2, "Transactions for GL account ".$row['account_code']." could not be calculated");
-		$row2 = db_fetch_row($res);
-		$amount += $row2[0];
+		if ($row['for_amount'] == 0)
+			continue;
+		$rate = get_exchange_rate_from_home_currency($row['bank_curr_code'], $date_);
+		$for_amount += round2($row['for_amount'] * $rate, user_price_dec());
 	}	
-	$diff = $amount - (round2($for_amount * $rate, user_price_dec()));
+	$amount = get_gl_trans_from_to("", $date_, $account);
+	$diff = $amount - $for_amount;
 	if ($diff != 0)
 	{
 		if ($trans_type == null)
