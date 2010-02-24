@@ -179,7 +179,7 @@ function print_invoices()
     			if ($tax_item['included_in_price'])
     			{
 					$rep->TextCol(3, 7, $doc_Included . " " . $tax_item['tax_type_name'] .
-						" (" . $tax_item['rate'] . "%) " . $doc_Amount . ":" . $DisplayTax, -2);
+						" (" . $tax_item['rate'] . "%) " . $doc_Amount . ": " . $DisplayTax, -2);
 				}
     			else
     			{
