@@ -24,6 +24,7 @@ $ -> Affected files
 $ /taxes/tax_calc.inc
 ! Small layout fixes
 $ /admin/backups.php
+  /includes/ui/ui_lists.inc
   /reporting/rep107.php
   /reporting/rep110.php
   
