@@ -1987,14 +1987,15 @@ function quick_entries_list($name, $selected_id=null, $type=null, $submit_on_cha
 function quick_entries_list_cells($label, $name, $selected_id=null, $type, $submit_on_change=false)
 {
 	if ($label != null)
-		echo "<td>$label</td><td>\n";
+		echo "<td>$label</td>\n";
+	echo "<td>";	
 	echo quick_entries_list($name, $selected_id, $type, $submit_on_change);
 	echo "</td>";
 }
 
 function quick_entries_list_row($label, $name, $selected_id=null, $type, $submit_on_change=false)
 {
-	echo "<tr><td class='label'>$label</td><td>";
+	echo "<tr><td class='label'>$label</td>";
 	quick_entries_list_cells(null, $name, $selected_id, $type, $submit_on_change);
 	echo "</tr>\n";
 }
