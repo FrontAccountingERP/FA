@@ -94,7 +94,7 @@ if (isset($_GET['AddedID']))
 
 	display_notification_centered(_("Direct GRN has been entered"));
 
-	display_note(get_trans_view_str($trans_type, $trans_no, _("&View this GRN")), 0, 1);
+	display_note(get_trans_view_str($trans_type, $trans_no, _("&View this GRN")), 0);
 
 // not yet
 //	display_note(print_document_link($trans_no, _("&Print This GRN"), true, $trans_type), 0, 1);
