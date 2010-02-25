@@ -88,7 +88,10 @@ if (!isset($_POST['REP_ID'])) {	// print link clicked
 $rep = $_POST['REP_ID'];
 
 $rep_file = find_report_file($rep);
-require($rep_file);
+if ($rep_file)
+	require($rep_file);
+else
+	display_error("Cannot find report file '$rep'");
 exit();
 
 ?>
