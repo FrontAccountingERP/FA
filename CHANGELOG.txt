@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+25-Feb-2010 Janusz Dobrowolski
+# Fixed bug in quantity input
+$ /manufacturing/work_order_add_finished.php
+
 24-Feb-2010 Joe Hunt
 # Tax included calculation problem when more than 1 tax type in a group
 $ /taxes/tax_calc.inc
@@ -28,6 +32,10 @@ $ /admin/backups.php
   /reporting/rep107.php
   /reporting/rep110.php
   
+22-Feb-2010 Janusz Dobrowolski
+# Two smaller fixes in security area codes.
+$ /includes/access_levels.inc
+
 21-Feb-2010 Joe Hunt
 # Exchange rate doesn't update table immediately when adding new rate 
   and no exchange rates there before.
