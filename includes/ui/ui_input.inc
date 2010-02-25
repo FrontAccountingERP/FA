@@ -362,7 +362,18 @@ function check_row($label, $name, $value=null, $submit_on_change=false, $title=f
 }
 
 //-----------------------------------------------------------------------------------
+function radio($label, $name, $value, $selected, $submit_on_change=false) {
 
+	if ($submit_on_change === true)
+		$submit_on_change = 
+			"JsHttpRequest.request(\"_{$name}_update\", this.form);";
+
+	return "<input type='radio' name=$name value='$value' ".($selected ? "checked":'')
+	    .($submit_on_change ? " onclick='$submit_on_change'" : '')
+		.">".($label ? $label : '');
+}
+
+//-----------------------------------------------------------------------------------
 function labelheader_cell($label, $params="")
 {
 	echo "<td class='tableheader' $params>$label</td>\n";
