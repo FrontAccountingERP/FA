@@ -186,7 +186,7 @@ $opts = array(		// default options
 				$found = $value;
 				$edit = $opts['editable'] && $contact_row['editable'] 
 					&& (@$_POST[$search_box] == $value)
-					? $descr : false;
+					? $contact_row[1] : false; // get non-formatted description
 				if ($edit)
 					break;	// selected field is editable - abandon list construction
 			}
@@ -228,7 +228,7 @@ $opts = array(		// default options
 	
 	$_POST[$name] = $multi ? $selected_id : $selected_id[0];
 
-	$selector = "<select ".($multi ? "multiple" : '')
+	$selector = "<select autocomplete='off' ".($multi ? "multiple" : '')
 		. ($opts['height']!==false ? ' size="'.$opts['height'].'"' : '')
 		. "$disabled name='$name".($multi ? '[]':'')."' class='$class' title='"
 		. $opts['sel_hint']."' $rel>".$selector."</select>\n";
@@ -344,21 +344,27 @@ $opts = array(		// default options
 		foreach($items as $value=>$descr) {
 			$sel = '';
 			if (in_array((string)$value, $selected_id)) {
-				$sel = 'selected';
+				$sel = "selected='selected'";
 				$found = $value;
 			}
 			if ($first_id === false) {
 				$first_id = $value;
-				$first_opt = $descr;
+				$first_opt = "<option %s value='$value'>$descr</option>\n";
+			} 
+			else {
+				$selector .= "<option $sel value='$value'>$descr</option>\n";
 			}
-			$selector .= "<option $sel value='$value'>$descr</option>\n";
 		}
 
+	if ($first_id!==false) {
+		$sel = ($found===$first_id) || ($found===false && ($spec_option===false)) ? "selected='selected'" : '';
+		$selector = sprintf($first_opt, $sel).$selector;
+	}
 	// Prepend special option.
 	if ($spec_option !== false) { // if special option used - add it
 		$first_id = $spec_id;
 		$first_opt = $spec_option;
-		$sel = $found===false ? 'selected' : '';
+		$sel = $found===false ? "selected='selected'" : '';
 		$selector = "<option $sel value='$spec_id'>$spec_option</option>\n"
 			. $selector;
 	}
@@ -367,7 +373,7 @@ $opts = array(		// default options
 		$selected_id = array($first_id);
 	}
 	$_POST[$name] = $multi ? $selected_id : $selected_id[0];
-	$selector = "<select ".($multi  ? "multiple" : '')
+	$selector = "<select autocomplete='off' ".($multi  ? "multiple" : '')
 		. ($opts['height']!==false ? ' size="'.$opts['height'].'"' : '')
 		. "$disabled name='$name".($multi ? '[]' : '')."' class='combo' title='"
 		. $opts['sel_hint']."'>".$selector."</select>\n";
