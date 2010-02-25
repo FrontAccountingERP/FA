@@ -21,11 +21,9 @@ function begin_transaction()
 	global $transaction_level; // set in set_global_connection()
 
 	if (!$transaction_level) {
-		error_log('begin');
 		db_query("BEGIN", "could not start a transaction");
 	}
 	$transaction_level++;
-	error_log("level:$transaction_level");
 }
 
 function commit_transaction()
@@ -35,10 +33,8 @@ function commit_transaction()
 	$transaction_level--;
 
 	if (!$transaction_level) {
-		error_log('commit');
 		db_query("COMMIT", "could not commit a transaction");
 	}
-	error_log("level:$transaction_level");
 }
 
 /*
@@ -50,11 +46,8 @@ function cancel_transaction()
 	global $transaction_level;
 
 	if ($transaction_level) {
-		error_log('rollback');
 		db_query("ROLLBACK", "could not cancel a transaction");	
-	} else
-		error_log("no transactions");
-
+	}
 }
 
 //-----------------------------------------------------------------------------
