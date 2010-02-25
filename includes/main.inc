@@ -262,4 +262,55 @@ function js_compress($sJS)
 	return $sJS;
 }
 
+/*
+	Check if file can be updated, restoring subdirectories 
+	if needed. Returns 1 when no confilcts, -1 when file exists and is writable
+*/
+function check_write($path)
+{
+	if ($path == ''//|| $path == '.' || $path == '..'
+	) return 0;
+	
+	return is_writable($path) ? (is_dir($path) ? 1 : -1) 
+		: ($path =='.' ? 0 : check_write(dirname($path)));
+}
+
+/*
+	Copies set of files. When $strict is set
+	also removes files from the $to which 
+	does not exists in $from directory but arelisted in $flist.
+*/
+function copy_files($flist, $from, $to, $strict=false)
+{
+	foreach ($flist as $file) {
+		if (file_exists($from.'/'.$file))
+			if (!copy_file($file, $from, $to))
+				return false;
+		if ($strict && !is_file($from.'/'.$file)) // if 
+				unlink($to.'/'.$file);
+	}
+	return true;
+}
+
+/*
+	Copies file from base to target directory, restoring subdirectories 
+	if needed.
+*/
+function copy_file($file, $from, $to)
+{
+
+	if (!is_dir(dirname($file=='.' ? $to : ($to.'/'.$file)))) {
+		if (!copy_file(dirname($file), null, $to))
+			return false;
+	}
+	if (!$from) {
+	//		error_log( 'dodanie katalogu '.$to.'/'.$file);
+		return @mkdir($file=='.' ? $to : ($to.'/'.$file));
+	}
+	else {
+	//		error_log( 'skopiowanie '.$to.'/'.$file);
+		return @copy($from.'/'.$file, $to.'/'.$file);
+	}
+}
+
 ?>
