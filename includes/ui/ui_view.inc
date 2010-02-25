@@ -1266,7 +1266,7 @@ if (!function_exists('_vd'))
     	$str = (!empty($title) ? ($title .':') : '') .'<pre>';
     	$str .= print_r($mixed, true); //var_dump($mixed);
     	$str .= "</pre>\n";
-		display_error('<table><tr><td>'.$str.'</td></tr></table>');
+		display_notification('<table><tr><td>'.$str.'</td></tr></table>');
     	if ($exit)
     		exit;
   	}
