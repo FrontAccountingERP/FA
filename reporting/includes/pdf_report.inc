@@ -35,6 +35,7 @@ class FrontReport extends Cpdf
 	var $lineHeight;
 	//var $rtl;
 
+	var $row;
 	var $cols;
 	var $params;
 	var $headers;
@@ -200,6 +201,7 @@ class FrontReport extends Cpdf
 		$this->currency = '';
 		$this->scaleLogoWidth = false; // if Logo, scale on width (else height).
 		$this->headerFunc = 'Header';  // default to the original header template
+
 		$rtl = ($_SESSION['language']->dir === 'rtl' ? 'rtl' : 'ltr');
 		$code = $_SESSION['language']->code;
 		$enc = strtoupper($_SESSION['language']->encoding);
@@ -283,6 +285,7 @@ class FrontReport extends Cpdf
 		$this->pageNumber++;
 		if ($this->pageNumber > 1)
 			$this->newPage();
+
 		$this->row = $this->pageHeight - $this->topMargin;
 
 		$this->SetDrawColor(128, 128, 128);
@@ -375,7 +378,7 @@ class FrontReport extends Cpdf
 		{
 			include("includes/doctext.inc");
 		}
-
+		
 		include("includes/header2.inc");
 
 		$this->row = $temp;
@@ -873,8 +876,7 @@ class FrontReport extends Cpdf
 
 		// Move one line down the page
 		$this->row -= ($l * $h);
-		// Reset the "current line height" for the new line
-		$this->curLineHeight = $this->fontSize;
+
 		// Check to see if we're at the bottom and should insert a page break
 		if ($this->row < $this->bottomMargin + ($np * $h))
 			$this->{$this->headerFunc}();  // call header template chosen by current report
