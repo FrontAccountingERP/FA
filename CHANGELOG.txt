@@ -19,6 +19,24 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+25-Feb-2010 Janusz Dobrowolski
+# Files manipulation helpers added
+$ /includes/main.inc
+# Cleanup
+$ /includes/db/sql_functions.inc
++ Added radio buttons helper
+$ /includes/ui/ui_input.inc
+# Smaller fixes: lists reset after page reload, nonformatted description for edition, html cleanup
+$ /includes/ui/ui_lists.inc
+! Changed _vd debug function to notification type
+$ /includes/ui/ui_view.inc
+# Layout fix on final screen 
+$ /purchasing/po_entry_items.php
+# Error message when no report file is found
+$ /reporting/prn_redirect.php
+# Code cleanup (missing $row declaration)
+$ /reporting/includes/pdf_report.inc
+
 20-Feb-2010 Joe Hunt
 # Wrong class parameter in Generqal Ledger Reports
 $ /applications/generalledger.php
