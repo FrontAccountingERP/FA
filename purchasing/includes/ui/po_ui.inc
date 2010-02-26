@@ -71,12 +71,15 @@ function display_po_header(&$order)
     }
 
 	if ($order->supplier_id != get_post('supplier_id',-1)) {
+		$old_supp = $order->supplier_id;
 		get_supplier_details_to_order($order, $_POST['supplier_id']);
 		// supplier default price update
 		foreach ($order->line_items as $line_no=>$item) {
 			$line = &$order->line_items[$line_no];
-			$line->price =  get_purchase_price ($order->supplier_id, $_POST['stock_id']);
-			$line->quantity =  get_purchase_conversion_factor ($order->supplier_id, $_POST['stock_id']);
+			$line->price =  get_purchase_price ($order->supplier_id, $line->stock_id);
+			$line->quantity =
+				$line->quantity/get_purchase_conversion_factor ($old_supp, $line->stock_id)
+					*get_purchase_conversion_factor ($order->supplier_id, $line->stock_id);
 		}
 	    $Ajax->activate('items_table');
 	}
