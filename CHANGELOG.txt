@@ -19,7 +19,13 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+
 26-Feb-2010 Janusz Dobrowolski
+# [0000209],[0000210] Improper quantity/price handling on supplier change.
+$ /purchasing/includes/ui/po_ui.inc
+# [0000211] Typo in work order legend.
+$ /reporting/includes/doctext.inc
+  /reporting/includes/doctext2.inc
 # Restored Esc hot key on cancel buttons.
 $ /js/inserts.js
 
