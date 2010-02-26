@@ -107,6 +107,8 @@ function void_work_order_produce($type_no)
 	// deduct the quantity of this production from the parent work order
 	work_order_update_finished_quantity($row["workorder_id"], -$row["quantity"]);
 
+	work_order_quick_costs($row['workorder_id'], $row['stock_id'], -$row['quantity'], sql2date($row['date_']), true);
+
 	// clear the production record
 	$sql = "UPDATE ".TB_PREF."wo_manufacture SET quantity=0 WHERE id=".db_escape($type_no);
 	db_query($sql, "Cannot void a wo production");
