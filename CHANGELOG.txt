@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+26-Feb-2010 Janusz Dobrowolski
+# Restored Esc hot key on cancel buttons.
+$ /js/inserts.js
+
 26-Feb-2010 Joe Hunt
 # [0000208] Voiding a work order production does not revert raw material quantities 
 $ /manufacturing/includes/db/work_order_produce_items_db.inc

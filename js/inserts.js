@@ -375,7 +375,7 @@ function setHotKeys() {
 			}
 			return stopEv(ev);
 		}
-		if((ev.ctrlKey && key == 13) || (key == 27 && ev.altKey)) {
+		if((ev.ctrlKey && key == 13) || key == 27) {
 			_hotkeys.alt = false; // cancel link selection
 			_hotkeys.focus = -1;
 			ev.cancelBubble = true;
