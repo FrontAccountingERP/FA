@@ -24,7 +24,6 @@ function update_average_material_cost($supplier, $stock_id, $price, $qty, $date,
 	{
 		$ex_rate = get_exchange_rate_to_home_currency($currency, $date);
 		$price_in_home_currency = $price / $ex_rate;
-		//$price_in_home_currency = to_home_currency($price, $currency, $date);
 	}	
 	else
 		$price_in_home_currency = $price;
@@ -43,17 +42,8 @@ function update_average_material_cost($supplier, $stock_id, $price, $qty, $date,
 	if ($adj_only)
 	{
 		if ($qoh > 0)
-		/*
-		if ($qoh <= 0)
-			$material_cost = 0;
-		else
-		*/
 			$material_cost = ($qoh * $material_cost + $qty * $price_in_home_currency) /	$qoh;
 	}
-	/*
-	elseif ($qoh + $qty <= 0)
-		$material_cost = 0;
-	*/	
 	else
 	{
 		if ($qoh < 0)
@@ -61,8 +51,9 @@ function update_average_material_cost($supplier, $stock_id, $price, $qty, $date,
 			if ($qoh + $qty > 0)
 				$cost_adjust = true;
 			$qoh = 0;
-		}	
-		$material_cost = ($qoh * $material_cost + $qty * $price_in_home_currency) /	($qoh + $qty);
+		}
+		if ($qoh + $qty != 0)
+			$material_cost = ($qoh * $material_cost + $qty * $price_in_home_currency) /	($qoh + $qty);
 	}	
 	$material_cost = round2($material_cost, $dec);
 	if ($cost_adjust) // new 2010-02-10

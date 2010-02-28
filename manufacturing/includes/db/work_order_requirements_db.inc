@@ -57,10 +57,10 @@ function delete_wo_requirements($woid)
 
 //--------------------------------------------------------------------------------------
 
-function update_wo_requirement_issued($woReqID, $quantity)
+function update_wo_requirement_issued($woid, $stock_id, $quantity)
 {
 	$sql = "UPDATE ".TB_PREF."wo_requirements SET units_issued = units_issued + ".db_escape($quantity)."
-		WHERE id = ".db_escape($woReqID);
+		WHERE workorder_id = ".db_escape($woid)." AND stock_id = ".db_escape($stock_id);
 				
 	db_query($sql, "The work requirements issued quantity couldn't be updated");
 }

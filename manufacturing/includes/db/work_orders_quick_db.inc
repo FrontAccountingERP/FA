@@ -73,7 +73,7 @@ function add_work_order_quick($wo_ref, $loc_code, $units_reqd, $stock_id, $type,
 
 	// -------------------------------------------------------------------------
 
-	work_order_quick_costs($woid, $stock_id, $units_reqd, $date_, false, $costs, $cr_acc, $labour, $cr_lab_acc);
+	work_order_quick_costs($woid, $stock_id, $units_reqd, $date_, 0, $costs, $cr_acc, $labour, $cr_lab_acc);
 
 	// -------------------------------------------------------------------------
 
@@ -87,7 +87,7 @@ function add_work_order_quick($wo_ref, $loc_code, $units_reqd, $stock_id, $type,
 
 //--------------------------------------------------------------------------------------
 
-function work_order_quick_costs($woid, $stock_id, $units_reqd, $date_, $advanced=false, $costs=0, $cr_acc="", $labour=0, $cr_lab_acc="")
+function work_order_quick_costs($woid, $stock_id, $units_reqd, $date_, $advanced=0, $costs=0, $cr_acc="", $labour=0, $cr_lab_acc="")
 {
 	global $wo_cost_types;
 	$result = get_bom($stock_id);
@@ -103,8 +103,9 @@ function work_order_quick_costs($woid, $stock_id, $units_reqd, $date_, $advanced
 
 		if ($advanced)
 		{
+			update_wo_requirement_issued($woid, $bom_item['component'], $bom_item["quantity"] * $units_reqd); 			
 			// insert a -ve stock move for each item
-			add_stock_move(ST_WORKORDER, $bom_item["component"], $woid,
+			add_stock_move(ST_MANURECEIVE, $bom_item["component"], $advanced,
 				$bom_item["loc_code"], $date_, "", -$bom_item["quantity"] * $units_reqd, 0);
 		}
 		$total_cost += add_gl_trans_std_cost(ST_WORKORDER, $woid, $date_, $bom_accounts["inventory_account"], 0, 0,
@@ -128,15 +129,9 @@ function work_order_quick_costs($woid, $stock_id, $units_reqd, $date_, $advanced
 		}
 		if ($issue_total != 0)
 			add_issue_cost($stock_id, $units_reqd, $date_, $issue_total);
-		$result = get_gl_wo_cost_trans($woid, WO_LABOUR);
-		$lcost = 0;
-		while ($row = db_fetch($result))
-			$lcost += -$row['amount'];
+		$lcost = get_gl_wo_cost($woid, WO_LABOUR);
 		add_labour_cost($stock_id, $units_reqd, $date_, $lcost * $units_reqd / $wo['units_reqd']);
-		$result = get_gl_wo_cost_trans($woid, WO_OVERHEAD);
-		$ocost = 0;
-		while ($row = db_fetch($result))
-			$ocost += -$row['amount'];
+		$ocost = get_gl_wo_cost($woid, WO_OVERHEAD);
 		add_overhead_cost($stock_id, $units_reqd, $date_, $ocost * $units_reqd / $wo['units_reqd']);
 	}
 	// credit additional costs

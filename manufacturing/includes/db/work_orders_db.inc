@@ -28,14 +28,10 @@ function add_material_cost($stock_id, $qty, $date_)
 	$myrow = db_fetch($result);
 	$material_cost =  $myrow['material_cost'];
 	$qoh = get_qoh_on_date($stock_id, null, $date_);
-	/*
-	if ($qoh + $qty <= 0)
-		$material_cost = 0;
-	else
-	*/
 	if ($qoh < 0)
 		$qoh = 0;
-	$material_cost = ($qoh * $material_cost + $qty * $m_cost) /	($qoh + $qty);
+	if ($qoh + $qty != 0)	
+		$material_cost = ($qoh * $material_cost + $qty * $m_cost) /	($qoh + $qty);
 	$material_cost = round2($material_cost, $dec);	
 	$sql = "UPDATE ".TB_PREF."stock_master SET material_cost=$material_cost
 		WHERE stock_id=".db_escape($stock_id);
@@ -54,14 +50,10 @@ function add_overhead_cost($stock_id, $qty, $date_, $costs)
 	$myrow = db_fetch($result);
 	$overhead_cost =  $myrow['overhead_cost'];
 	$qoh = get_qoh_on_date($stock_id, null, $date_);
-	/*
-	if ($qoh + $qty <= 0)
-		$overhead_cost = 0;
-	else
-	*/
 	if ($qoh < 0)
 		$qoh = 0;
-	$overhead_cost = ($qoh * $overhead_cost + $qty * $costs) /	($qoh + $qty);
+	if ($qoh + $qty != 0)	
+		$overhead_cost = ($qoh * $overhead_cost + $qty * $costs) /	($qoh + $qty);
 	$overhead_cost = round2($overhead_cost, $dec);	
 	$sql = "UPDATE ".TB_PREF."stock_master SET overhead_cost=".db_escape($overhead_cost)."
 		WHERE stock_id=".db_escape($stock_id);
@@ -80,14 +72,10 @@ function add_labour_cost($stock_id, $qty, $date_, $costs)
 	$myrow = db_fetch($result);
 	$labour_cost =  $myrow['labour_cost'];
 	$qoh = get_qoh_on_date($stock_id, null, $date_);
-	/*
-	if ($qoh + $qty <= 0)
-		$labour_cost = 0;
-	else
-	*/
 	if ($qoh < 0)
 		$qoh = 0;
-	$labour_cost = ($qoh * $labour_cost + $qty * $costs) /	($qoh + $qty);
+	if ($qoh + $qty != 0)	
+		$labour_cost = ($qoh * $labour_cost + $qty * $costs) /	($qoh + $qty);
 	$labour_cost = round2($labour_cost, $dec);	
 	$sql = "UPDATE ".TB_PREF."stock_master SET labour_cost=".db_escape($labour_cost)."
 		WHERE stock_id=".db_escape($stock_id);
@@ -104,16 +92,12 @@ function add_issue_cost($stock_id, $qty, $date_, $costs)
 	$myrow = db_fetch($result);
 	$material_cost =  $myrow['material_cost'];
 	$dec = user_price_dec();
-	$material_cost = price_decimal_format($material_cost, $dec); 
+	price_decimal_format($material_cost, $dec); 
 	$qoh = get_qoh_on_date($stock_id, null, $date_);
-	/*
-	if ($qoh + $qty  <= 0)
-		$material_cost = 0;
-	else
-	*/
 	if ($qoh < 0)
 		$qoh = 0;
-	$material_cost = ($qty * $costs) /	($qoh + $qty);
+	if ($qoh + $qty != 0)	
+		$material_cost = ($qty * $costs) /	($qoh + $qty);
 	$material_cost = round2($material_cost, $dec);	
 	$sql = "UPDATE ".TB_PREF."stock_master SET material_cost=material_cost+"
 		.db_escape($material_cost)
@@ -310,13 +294,22 @@ function work_order_update_finished_quantity($woid, $quantity, $force_close=0)
 
 function void_work_order($woid)
 {
-	$work_order = get_work_order($woid);
+	begin_transaction();
 
+	$work_order = get_work_order($woid);
 	if (!($work_order["type"] == WO_ADVANCED))
 	{
-		begin_transaction();
+		$date = sql2date($work_order['date_']);
+		$qty = $work_order['units_reqd'];
+		add_material_cost($work_order['stock_id'], -$qty, $date); // remove avg. cost for qty
+		$cost = get_gl_wo_cost($woid, WO_LABOUR); // get the labour cost and reduce avg cost
+		if ($cost != 0)
+			add_labour_cost($work_order['stock_id'], -$qty, $date, $cost);
+		$cost = get_gl_wo_cost($woid, WO_OVERHEAD); // get the overhead cost and reduce avg cost
+		if ($cost != 0)
+			add_overhead_cost($work_order['stock_id'], -$qty, $date, $cost);
 
-		$sql = "UPDATE ".TB_PREF."workorders SET closed=1,units_issued=0 WHERE id = "
+		$sql = "UPDATE ".TB_PREF."workorders SET closed=1,units_reqd=0,units_issued=0 WHERE id = "
 			.db_escape($woid);
 		db_query($sql, "The work order couldn't be voided");
 
@@ -328,15 +321,74 @@ function void_work_order($woid)
 
 		// clear the requirements units received
 		void_wo_requirements($woid);
-
-		commit_transaction();
 	}
 	else
 	{
 		// void everything inside the work order : issues, productions, payments
+		$date = sql2date($work_order['date_']);
+		add_material_cost($work_order['stock_id'], -$work_order['units_reqd'], $date); // remove avg. cost for qty
+		$result = get_work_order_productions($woid); // check the produced quantity
+		$qty = 0;
+		while ($row = db_fetch($result))
+		{
+			$qty += $row['quantity'];
+			// clear the production record
+			$sql = "UPDATE ".TB_PREF."wo_manufacture SET quantity=0 WHERE id=".$$row['id'];
+			db_query($sql, "Cannot void a wo production");
+			
+			void_stock_move(ST_MANURECEIVE, $row['id']); // and void the stock moves; 
+		}
+		$result = get_additional_issues($woid); // check the issued quantities
+		$cost = 0;
+		$issue_no = 0;
+		while ($row = db_fetch($result))
+		{
+			$std_cost = get_standard_cost($row['stock_id']);
+			$icost = $std_cost * $row['qty_issued'];
+			$cost += $icost;
+			if ($issue_no == 0)
+				$issue_no = $row['issue_no'];
+			// void the actual issue items and their quantities
+			$sql = "UPDATE ".TB_PREF."wo_issue_items SET qty_issued = 0 WHERE issue_id="
+				.db_escape($row['id']);
+			db_query($sql,"A work order issue item could not be voided");
+		}	
+		if ($issue_no != 0)
+			void_stock_move(ST_MANUISSUE, $issue_no); // and void the stock moves 
+		if ($cost != 0)
+			add_issue_cost($work_order['stock_id'], -$qty, $date, $cost);
+
+		$cost = get_gl_wo_cost($woid, WO_LABOUR); // get the labour cost and reduce avg cost
+		if ($cost != 0)
+			add_labour_cost($work_order['stock_id'], -$qty, $date, $cost);
+		$cost = get_gl_wo_cost($woid, WO_OVERHEAD); // get the overhead cost and reduce avg cost
+		if ($cost != 0)
+			add_overhead_cost($work_order['stock_id'], -$qty, $date, $cost);
+		
+		$sql = "UPDATE ".TB_PREF."workorders SET closed=1,units_reqd=0,units_issued=0 WHERE id = "
+			.db_escape($woid);
+		db_query($sql, "The work order couldn't be voided");
+
+		// void all related stock moves
+		void_stock_move(ST_WORKORDER, $woid);
+
+		// void any related gl trans
+		void_gl_trans(ST_WORKORDER, $woid, true);
+
+		// clear the requirements units received
+		void_wo_requirements($woid);
 	}
+	commit_transaction();
 }
 
 //--------------------------------------------------------------------------------------
+function get_gl_wo_cost($woid, $cost_type)
+{
+	$cost = 0;
+	$result = get_gl_wo_cost_trans($woid, $cost_type);
+	while ($row = db_fetch($result))
+		$cost += -$row['amount'];
+	return $cost;	
+}
 
 ?>

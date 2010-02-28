@@ -19,7 +19,16 @@ Legend:
 ! -> Note
 $ -> Affected files
 
-
+28-Feb-2010 Joe Hunt
+# Fixed a non esisting voiding of Work Order Advanced and a couple of
+  bugs in the same operation. And a fix according to Vramak on the forum.
+  Wiki will be updated on how does the Work Order work
+$ /manufacturing/includes/db/work_orders_db.inc
+  /manufacturing/includes/db/work_orders_quick_db.inc
+  /manufacturing/includes/db/work_order_produce_items_db.inc
+  /manufacturing/includes/db/work_order_requirements_db.inc
+  /purchasing/includes/db/grn_db.inc
+  
 26-Feb-2010 Janusz Dobrowolski
 # [0000209],[0000210] Improper quantity/price handling on supplier change.
 $ /purchasing/includes/ui/po_ui.inc
@@ -55,7 +64,7 @@ $ /includes/access_levels.inc
   and no exchange rates there before.
 $ /gl/manage/exchange_rates.php
 # Bug in exchange variation calculation in certain situations. Again.
-$ /gl/includes/gl_db_banking.inc
+$ /gl/includes/db/gl_db_banking.inc
  
 21-Feb-2010 Janusz Dobrowolski
 # Fixed check for language session var.
