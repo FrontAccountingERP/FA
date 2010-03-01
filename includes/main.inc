@@ -313,4 +313,46 @@ function copy_file($file, $from, $to)
 	}
 }
 
+/*
+	Search for file, looking first for company specific version, then for 
+	version provided by any extension module, finally in main FA directory.
+	Also adds include path for any related files.
+	
+	Returns found file path or null.
+*/
+function find_custom_file($rep)
+{
+	global $installed_extensions, $comp_path, $path_to_root;
+
+	// customized per company version
+	$path = $comp_path.'/'.user_company();
+	$file = $path.$rep;
+	if (file_exists($file)) {
+		// add local include path
+		set_include_path($path.PATH_SEPARATOR.get_include_path());
+		return $file;
+	}
+	// file added by active extension modules
+	if (count($installed_extensions) > 0)
+	{
+		$extensions = $installed_extensions;
+		foreach ($extensions as $ext)
+			if (($ext['active'] && $ext['type'] == 'extension')) {
+				$path = $path_to_root.'/'.$ext['path'];
+				$file = $path.$rep;
+				if (file_exists($file)) {
+					set_include_path($path.PATH_SEPARATOR.get_include_path());
+					return $file;
+				}
+			}
+	}
+	// standard location
+	$file = $path_to_root.$rep;
+	if (file_exists($file))
+		return $file;
+
+	return null;
+}
+
+
 ?>

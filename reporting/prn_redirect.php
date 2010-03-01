@@ -17,39 +17,6 @@ $path_to_root = "..";
 $page_security = 'SA_OPEN';	// this level is later overriden in rep file
 include_once($path_to_root . "/includes/session.inc");
 
-function find_report_file($rep) {
-	global $installed_extensions, $comp_path, $path_to_root;
-
-	// customized per company versions 
-	$path = $comp_path.'/'.user_company()."/reporting";
-	$rep_file = $path."/rep$rep.php";
-	if (file_exists($rep_file)) {
-		// add local include path for custom reports
-		set_include_path($path.PATH_SEPARATOR.get_include_path());
-		return $rep_file;
-	}
-	// reports added by active extension modules
-	if (count($installed_extensions) > 0)
-	{
-		$extensions = $installed_extensions;
-		foreach ($extensions as $ext)
-			if (($ext['active'] && $ext['type'] == 'module')) {
-				$path = $path_to_root.'/'.$ext['path']."/reporting";
-				$rep_file = $path."/rep$rep.php";
-				if (file_exists($rep_file)) {
-					set_include_path($path.PATH_SEPARATOR.get_include_path());
-					return $rep_file;
-				}
-			}
-	}
-	// standard reports
-	$rep_file = $path_to_root ."/reporting/rep$rep.php";
-	if (file_exists($rep_file))
-		return $rep_file;
-
-	return null;
-}
-
 if (isset($_GET['xls']))
 {
 	$filename = $_GET['filename'];
@@ -85,9 +52,11 @@ if (!isset($_POST['REP_ID'])) {	// print link clicked
 			? $_GET['PARAM_'.$i] : $def_pars[$i];
 	}
 }
+
 $rep = $_POST['REP_ID'];
 
-$rep_file = find_report_file($rep);
+$rep_file = find_custom_file("/reporting/rep$rep.php");
+
 if ($rep_file)
 	require($rep_file);
 else
