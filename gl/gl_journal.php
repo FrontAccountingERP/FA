@@ -118,10 +118,10 @@ function create_cart($type=0, $trans_no=0)
 	} else {
 		$cart->reference = $Refs->get_next(0);
 		$cart->tran_date = new_doc_date();
+		if (!is_date_in_fiscalyear($cart->tran_date))
+			$cart->tran_date = end_fiscalyear();
 		$_POST['ref_original'] = -1;
 	}
-	if (!is_date_in_fiscalyear($cart->tran_date))
-		$cart->tran_date = end_fiscalyear();
 
 	$_POST['memo_'] = $cart->memo_;
 	$_POST['ref'] = $cart->reference;

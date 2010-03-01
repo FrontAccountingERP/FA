@@ -22,6 +22,8 @@ $ -> Affected files
 01-Mar-2010 Janusz Dobrowolski
 # [0000212] Selecting branch from popup was not working.
 $ /sales/manage/customer_branches.php
+# [0000213] Date change on journal entry update.
+$ /gl/gl_journal.php
 
 01-Mar-2010 Joe Hunt
 ! Allow change of password without script in Create/Update Company.
