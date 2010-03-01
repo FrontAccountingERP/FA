@@ -72,7 +72,7 @@ function display_type ($type, $typename, $from, $to, $begin, $end, $compare, $co
 		if ($rep->row < $rep->bottomMargin + 3 * $rep->lineHeight)
 		{
 			$rep->Line($rep->row - 2);
-			$rep->Header();
+			$rep->NewPage();
 		}
 
 		$code_per_balance += $per_balance;
@@ -243,7 +243,7 @@ function print_profit_and_loss_statement()
 
 	$rep->Font();
 	$rep->Info($params, $cols, $headers, $aligns);
-	$rep->Header();
+	$rep->NewPage();
 
 	$classper = 0.0;
 	$classacc = 0.0;
@@ -323,7 +323,7 @@ function print_profit_and_loss_statement()
 		$x = ($rep->pageWidth - $w) / 2;
 		$rep->NewLine(2);
 		if ($rep->row - $h < $rep->bottomMargin)
-			$rep->Header();
+			$rep->NewPage();
 		$rep->AddImage($filename, $x, $rep->row - $h, $w, $h);
 	}
 		

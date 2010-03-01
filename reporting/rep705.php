@@ -263,7 +263,7 @@ function print_annual_expense_breakdown()
 
 	$rep->Font();
 	$rep->Info($params, $cols, $headers, $aligns);
-	$rep->Header();
+	$rep->NewPage();
 
 	$sales = Array(1 => 0,0,0,0,0,0,0,0,0,0,0,0,0,0);
 	

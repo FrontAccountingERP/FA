@@ -89,6 +89,7 @@ function print_receipts()
 	$cur = get_company_Pref('curr_default');
 
 	$rep = new FrontReport(_('RECEIPT'), "ReceiptBulk", user_pagesize());
+	$rep->SetHeaderType('Header2');
 	$rep->currency = $cur;
 	$rep->Font();
 	$rep->Info($params, $cols, null, $aligns);
@@ -108,7 +109,8 @@ function print_receipts()
 			$params['bankaccount'] = $baccount['id'];
 
 			$rep->title = _('RECEIPT');
-			$rep->Header2($myrow, null, $myrow, $baccount, ST_CUSTPAYMENT);
+			$rep->SetCommonData($myrow, null, $myrow, $baccount, ST_CUSTPAYMENT);
+			$rep->NewPage();
 			$result = get_allocations_for_receipt($myrow['debtor_no'], $myrow['type'], $myrow['trans_no']);
 
 			$linetype = true;
@@ -139,7 +141,7 @@ function print_receipts()
 				$total_allocated += $myrow2['amt'];
 				$rep->NewLine(1);
 				if ($rep->row < $rep->bottomMargin + (15 * $rep->lineHeight))
-					$rep->Header2($myrow, null, $myrow, $baccount, ST_CUSTPAYMENT);
+					$rep->NewPage();
 			}
 
 			$rep->row = $rep->bottomMargin + (15 * $rep->lineHeight);

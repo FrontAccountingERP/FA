@@ -107,7 +107,7 @@ function print_inventory_valuation_report()
 
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);
-    $rep->Header();
+    $rep->NewPage();
 
 	$res = getTransactions($category, $location);
 	$total = $grandtotal = 0.0;

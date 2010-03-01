@@ -75,6 +75,7 @@ function print_statements()
 	if ($email == 0)
 	{
 		$rep = new FrontReport(_('STATEMENT'), "StatementBulk", user_pagesize());
+		$rep->SetHeaderType('Header2');
 		$rep->currency = $cur;
 		$rep->Font();
 		$rep->Info($params, $cols, null, $aligns);
@@ -101,13 +102,15 @@ function print_statements()
 		if ($email == 1)
 		{
 			$rep = new FrontReport("", "", user_pagesize());
+			$rep->SetHeaderType('Header2');
 			$rep->currency = $cur;
 			$rep->Font();
 			$rep->title = _('STATEMENT');
 			$rep->filename = "Statement" . $myrow['debtor_no'] . ".pdf";
 			$rep->Info($params, $cols, null, $aligns);
 		}
-		$rep->Header2($myrow, null, null, $baccount, ST_STATEMENT);
+		$rep->SetCommonData($myrow, null, null, $baccount, ST_STATEMENT);
+		$rep->NewPage();
 		$rep->NewLine();
 		$linetype = true;
 		$doctype = ST_STATEMENT;
@@ -142,7 +145,7 @@ function print_statements()
 			$rep->TextCol(7, 8,	$DisplayNet, -2);
 			$rep->NewLine();
 			if ($rep->row < $rep->bottomMargin + (10 * $rep->lineHeight))
-				$rep->Header2($myrow, null, null, $baccount, ST_STATEMENT);
+				$rep->NewPage();
 		}
 		$nowdue = "1-" . $PastDueDays1 . " " . $doc_Days;
 		$pastdue1 = $PastDueDays1 + 1 . "-" . $PastDueDays2 . " " . $doc_Days;

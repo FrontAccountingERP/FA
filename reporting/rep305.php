@@ -80,7 +80,7 @@ function print_grn_valuation()
 
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);
-    $rep->Header();
+    $rep->NewPage();
 
 	$res = getTransactions($from, $to);
 	$total = $qtotal = $grandtotal = 0.0;

@@ -127,7 +127,7 @@ function print_inventory_sales()
 
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);
-    $rep->Header();
+    $rep->NewPage();
 
 	$res = getTransactions($category, $location, $fromcust, $from, $to);
 	$total = $grandtotal = 0.0;

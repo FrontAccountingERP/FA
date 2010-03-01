@@ -107,7 +107,7 @@ function print_tax_report()
 	$rep->Info($params, $cols, $headers, $aligns);
 	if (!$summaryOnly)
 	{
-		$rep->Header();
+		$rep->NewPage();
 	}
 	
 	$totalnet = 0.0;
@@ -140,7 +140,7 @@ function print_tax_report()
 			if ($rep->row < $rep->bottomMargin + $rep->lineHeight)
 			{
 				$rep->Line($rep->row - 2);
-				$rep->Header();
+				$rep->NewPage();
 			}
 		}
 		if ($trans['trans_type']==ST_JOURNAL && $trans['amount']<0) {
@@ -170,7 +170,7 @@ function print_tax_report()
 
 	$rep->headers = $headers2;
 	$rep->aligns = $aligns2;
-	$rep->Header();
+	$rep->NewPage();
 
 	$taxtotal = 0;
 	foreach( $taxes as $id=>$sum)

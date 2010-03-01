@@ -77,7 +77,7 @@ function print_bill_of_material()
 
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);
-    $rep->Header();
+    $rep->NewPage();
 
 	$res = getTransactions($frompart, $topart);
 	$parent = '';

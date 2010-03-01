@@ -88,7 +88,7 @@ function print_audit_trail()
 
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);
-    $rep->Header();
+    $rep->NewPage();
 
     $trans = getTransactions($from, $to, $systype, $user);
 

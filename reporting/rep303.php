@@ -126,7 +126,7 @@ function print_stock_check()
 
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);
-    $rep->Header();
+    $rep->NewPage();
 
 	$res = getTransactions($category, $location);
 	$catt = '';
@@ -180,7 +180,7 @@ function print_stock_check()
 			{
 				$rep->NewLine();
 				if ($rep->row - $pic_height < $rep->bottomMargin)
-					$rep->Header();
+					$rep->NewPage();
 				$rep->AddImage($image, $rep->cols[1], $rep->row - $pic_height, 0, $pic_height);
 				$rep->row -= $pic_height;
 				$rep->NewLine();

@@ -64,6 +64,7 @@ function print_sales_orders()
 			$rep = new FrontReport(_("SALES ORDER"), "SalesOrderBulk", user_pagesize());
 		else
 			$rep = new FrontReport(_("QUOTE"), "QuoteBulk", user_pagesize());
+		$rep->SetHeaderType('Header2');
 		$rep->currency = $cur;
 		$rep->Font();
 		$rep->Info($params, $cols, null, $aligns);
@@ -78,6 +79,7 @@ function print_sales_orders()
 		if ($email == 1)
 		{
 			$rep = new FrontReport("", "", user_pagesize());
+			$rep->SetHeaderType('Header2');
 			$rep->currency = $cur;
 			$rep->Font();
 			if ($print_as_quote == 1)
@@ -94,7 +96,8 @@ function print_sales_orders()
 		}
 		else
 			$rep->title = ($print_as_quote==1 ? _("QUOTE") : _("SALES ORDER"));
-		$rep->Header2($myrow, $branch, $myrow, $baccount, ST_SALESORDER);
+		$rep->SetCommonData($myrow, $branch, $myrow, $baccount, ST_SALESORDER);
+		$rep->NewPage();
 
 		$result = get_sales_order_details($i, ST_SALESORDER);
 		$SubTotal = 0;
@@ -123,7 +126,7 @@ function print_sales_orders()
 			$rep->row = $newrow;
 			//$rep->NewLine(1);
 			if ($rep->row < $rep->bottomMargin + (15 * $rep->lineHeight))
-				$rep->Header2($myrow, $branch, $myrow, $baccount, ST_SALESORDER);
+				$rep->NewPage();
 		}
 		if ($myrow['comments'] != "")
 		{

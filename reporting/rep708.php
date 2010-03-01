@@ -107,7 +107,7 @@ function print_trial_balance()
 
 	$rep->Font();
 	$rep->Info($params, $cols, $headers, $aligns, $cols2, $headers2, $aligns2);
-	$rep->Header();
+	$rep->NewPage();
 
 	$accounts = get_gl_accounts();
 
@@ -165,7 +165,7 @@ function print_trial_balance()
 		if ($rep->row < $rep->bottomMargin + $rep->lineHeight)
 		{
 			$rep->Line($rep->row - 2);
-			$rep->Header();
+			$rep->NewPage();
 		}
 	}
 	$rep->Line($rep->row);

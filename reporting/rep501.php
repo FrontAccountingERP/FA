@@ -93,7 +93,7 @@ function print_dimension_summary()
 
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);
-    $rep->Header();
+    $rep->NewPage();
 
 	$res = getTransactions($fromdim, $todim);
 	while ($trans=db_fetch($res))

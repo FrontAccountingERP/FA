@@ -200,7 +200,7 @@ function print_balance_sheet()
 	$rep = new FrontReport(_('Balance Sheet'), "BalanceSheet", user_pagesize());
 	$rep->Font();
 	$rep->Info($params, $cols, $headers, $aligns);
-	$rep->Header();
+	$rep->NewPage();
 
 	$calc_open = $calc_period = 0.0;
 	$equity_open = $equity_period = 0.0;
@@ -304,7 +304,7 @@ function print_balance_sheet()
 		$x = ($rep->pageWidth - $w) / 2;
 		$rep->NewLine(2);
 		if ($rep->row - $h < $rep->bottomMargin)
-			$rep->Header();
+			$rep->NewPage();
 		$rep->AddImage($filename, $x, $rep->row - $h, $w, $h);
 	}
 	$rep->End();

@@ -151,7 +151,7 @@ function print_customer_details_listing()
 
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);
-    $rep->Header();
+    $rep->NewPage();
 
 	$result = get_customer_details_for_report($area, $folk);
 	

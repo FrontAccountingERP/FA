@@ -125,7 +125,7 @@ function print_order_status_list()
 	$rep->Font();
 	$rep->Info($params, $cols, $headers, $aligns, $cols2, $headers2, $aligns2);
 
-	$rep->Header();
+	$rep->NewPage();
 	$orderno = 0;
 
 	$result = GetSalesOrders($from, $to, $category, $location, $backorder);
@@ -135,7 +135,7 @@ function print_order_status_list()
 		if ($rep->row < $rep->bottomMargin + (2 * $rep->lineHeight))
 		{
 			$orderno = 0;
-			$rep->Header();
+			$rep->NewPage();
 		}
 		$rep->NewLine(0, 2, false, $orderno);
 		if ($orderno != $myrow['order_no'])
@@ -171,7 +171,7 @@ function print_order_status_list()
 		if ($rep->row < $rep->bottomMargin + (2 * $rep->lineHeight))
 		{
 			$orderno = 0;
-			$rep->Header();
+			$rep->NewPage();
 		}
 	}
 	$rep->Line($rep->row);

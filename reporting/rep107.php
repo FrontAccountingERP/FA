@@ -64,6 +64,7 @@ function print_invoices()
 	if ($email == 0)
 	{
 		$rep = new FrontReport(_('INVOICE'), "InvoiceBulk", user_pagesize());
+		$rep->SetHeaderType('Header2');
 		$rep->currency = $cur;
 		$rep->Font();
 		$rep->Info($params, $cols, null, $aligns);
@@ -91,6 +92,7 @@ function print_invoices()
 			if ($email == 1)
 			{
 				$rep = new FrontReport("", "", user_pagesize());
+			    $rep->SetHeaderType('Header2');
 				$rep->currency = $cur;
 				$rep->Font();
 				if ($j == ST_SALESINVOICE)
@@ -107,7 +109,8 @@ function print_invoices()
 			}
 			else
 				$rep->title = ($j == ST_SALESINVOICE) ? _('INVOICE') : _('CREDIT NOTE');
-			$rep->Header2($myrow, $branch, $sales_order, $baccount, $j);
+			$rep->SetCommonData($myrow, $branch, $sales_order, $baccount, $j);
+			$rep->NewPage();
 
    			$result = get_customer_trans_details($j, $i);
 			$SubTotal = 0;
@@ -139,7 +142,7 @@ function print_invoices()
 				$rep->row = $newrow;
 				//$rep->NewLine(1);
 				if ($rep->row < $rep->bottomMargin + (15 * $rep->lineHeight))
-					$rep->Header2($myrow, $branch, $sales_order, $baccount,$j);
+					$rep->NewPage();
 			}
 
 			$comments = get_comments($j, $i);

@@ -84,7 +84,7 @@ function print_bank_transactions()
 
 	$rep->Font();
 	$rep->Info($params, $cols, $headers, $aligns);
-	$rep->Header();
+	$rep->NewPage();
 
 
 	$prev_balance = get_bank_balance_to($from, $account["id"]);
@@ -134,7 +134,7 @@ function print_bank_transactions()
 				if ($rep->row < $rep->bottomMargin + $rep->lineHeight)
 				{
 					$rep->Line($rep->row - 2);
-					$rep->Header();
+					$rep->NewPage();
 				}
 			}
 			$rep->NewLine();

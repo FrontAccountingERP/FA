@@ -97,7 +97,7 @@ function print_salesman_list()
 	$rep->Font();
 	$rep->Info($params, $cols, $headers, $aligns, $cols2, $headers2, $aligns2);
 
-	$rep->Header();
+	$rep->NewPage();
 	$salesman = 0;
 	$subtotal = $total = $subprov = $provtotal = 0;
 
@@ -108,7 +108,7 @@ function print_salesman_list()
 		if ($rep->row < $rep->bottomMargin + (2 * $rep->lineHeight))
 		{
 			$salesman = 0;
-			$rep->Header();
+			$rep->NewPage();
 		}
 		$rep->NewLine(0, 2, false, $salesman);
 		if ($salesman != $myrow['salesman_code'])
@@ -155,7 +155,7 @@ function print_salesman_list()
 			if ($rep->row < $rep->bottomMargin + (2 * $rep->lineHeight))
 			{
 				$salesman = 0;
-				$rep->Header();
+				$rep->NewPage();
 			}
 		}
 		$subtotal += $amt;

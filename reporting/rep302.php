@@ -133,7 +133,7 @@ function print_inventory_planning()
 
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);
-    $rep->Header();
+    $rep->NewPage();
 
 	$res = getTransactions($category, $location);
 	$catt = '';

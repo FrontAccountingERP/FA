@@ -125,7 +125,7 @@ function print_price_listing()
 
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);
-    $rep->Header();
+    $rep->NewPage();
 
 	$result = fetch_items($category);
 
@@ -165,7 +165,7 @@ function print_price_listing()
 			{
 				$rep->NewLine();
 				if ($rep->row - $pic_height < $rep->bottomMargin)
-					$rep->Header();
+					$rep->NewPage();
 				$rep->AddImage($image, $rep->cols[1], $rep->row - $pic_height, 0, $pic_height);
 				$rep->row -= $pic_height;
 				$rep->NewLine();

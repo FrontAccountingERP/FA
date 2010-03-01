@@ -63,7 +63,7 @@ function print_list_of_journal_entries()
 
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);
-    $rep->Header();
+    $rep->NewPage();
 
     if ($systype == -1)
         $systype = null;

@@ -111,7 +111,7 @@ function print_Chart_of_Accounts()
 	
 	$rep->Font();
 	$rep->Info($params, $cols, $headers, $aligns);
-	$rep->Header();
+	$rep->NewPage();
 
 	$classresult = get_account_classes(false);
 	while ($class = db_fetch($classresult))

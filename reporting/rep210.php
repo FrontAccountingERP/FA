@@ -91,6 +91,7 @@ function print_remittances()
 	if ($email == 0)
 	{
 		$rep = new FrontReport(_('REMITTANCE'), "RemittanceBulk", user_pagesize());
+		$rep->SetHeaderType('Header2');
 		$rep->currency = $cur;
 		$rep->Font();
 		$rep->Info($params, $cols, null, $aligns);
@@ -113,6 +114,7 @@ function print_remittances()
 			if ($email == 1)
 			{
 				$rep = new FrontReport("", "", user_pagesize());
+				$rep->SetHeaderType('Header2');
 				$rep->currency = $cur;
 				$rep->Font();
 				$rep->title = _('REMITTANCE');
@@ -121,7 +123,8 @@ function print_remittances()
 			}
 			else
 				$rep->title = _('REMITTANCE');
-			$rep->Header2($myrow, null, $myrow, $baccount, ST_SUPPAYMENT);
+			$rep->SetCommonData($myrow, null, $myrow, $baccount, ST_SUPPAYMENT);
+			$rep->NewPage();
 			$result = get_allocations_for_remittance($myrow['supplier_id'], $myrow['type'], $myrow['trans_no']);
 
 			$linetype = true;
@@ -152,7 +155,7 @@ function print_remittances()
 				$total_allocated += $myrow2['amt'];
 				$rep->NewLine(1);
 				if ($rep->row < $rep->bottomMargin + (15 * $rep->lineHeight))
-					$rep->Header2($myrow, null, $myrow, $baccount, ST_SUPPAYMENT);
+					$rep->NewPage();
 			}
 
 			$rep->row = $rep->bottomMargin + (15 * $rep->lineHeight);

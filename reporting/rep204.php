@@ -91,7 +91,7 @@ function print_outstanding_GRN()
 
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);
-    $rep->Header();
+    $rep->NewPage();
 
 	$Tot_Val=0;
 	$Supplier = '';

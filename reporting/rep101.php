@@ -131,11 +131,9 @@ function print_customer_balances()
     				    3 => array('text' => _('Currency'), 'from' => $currency, 'to' => ''));
 
     $rep = new FrontReport(_('Customer Balances'), "CustomerBalances", user_pagesize());
-
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);
-    $rep->Header();
-
+    $rep->NewPage();
 	$grandtotal = array(0,0,0,0);
 
 	$sql = "SELECT debtor_no, name, curr_code FROM ".TB_PREF."debtors_master ";

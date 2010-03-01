@@ -83,6 +83,7 @@ function print_po()
 	if ($email == 0)
 	{
 		$rep = new FrontReport(_('PURCHASE ORDER'), "PurchaseOrderBulk", user_pagesize());
+		$rep->SetHeaderType('Header2');
 		$rep->currency = $cur;
 		$rep->Font();
 		$rep->Info($params, $cols, null, $aligns);
@@ -97,6 +98,7 @@ function print_po()
 		if ($email == 1)
 		{
 			$rep = new FrontReport("", "", user_pagesize());
+			$rep->SetHeaderType('Header2');
 			$rep->currency = $cur;
 			$rep->Font();
 			$rep->title = _('PURCHASE ORDER');
@@ -105,7 +107,8 @@ function print_po()
 		}
 		else
 			$rep->title = _('PURCHASE ORDER');
-		$rep->Header2($myrow, null, $myrow, $baccount, ST_PURCHORDER);
+		$rep->SetCommonData($myrow, null, $myrow, $baccount, ST_PURCHORDER);
+		$rep->NewPage();
 
 		$result = get_po_details($i);
 		$SubTotal = 0;
@@ -139,7 +142,7 @@ function print_po()
 			$rep->TextCol(6, 7,	$DisplayNet, -2);
 			$rep->NewLine(1);
 			if ($rep->row < $rep->bottomMargin + (15 * $rep->lineHeight))
-				$rep->Header2($myrow, $branch, $myrow, $baccount, ST_PURCHORDER);
+				$rep->NewPage();
 		}
 		if ($myrow['comments'] != "")
 		{
