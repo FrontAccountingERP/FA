@@ -139,6 +139,17 @@ function handle_submit()
 			remove_connection($id);
 			return false;
 		}
+	} else {
+		if ($_GET['c'] = 'u') {
+			$conn = $db_connections[$id];
+			if (($db = db_create_db($conn)) == 0)
+			{
+				display_error(_("Error connecting to Database: ") . $conn['dbname'] . _(", Please correct it"));
+				$error = true;
+			} else {
+				db_query("UPDATE ".$conn['tbpref']."users set password = '".md5($_POST['admpassword']). "' WHERE user_id = 'admin'");
+			}
+		}
 	}
 	$error = write_config_db($new);
 	if ($error == -1)
