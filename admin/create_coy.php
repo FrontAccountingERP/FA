@@ -317,7 +317,7 @@ function display_company_edit($selected_id)
 				document.forms[0].action='create_coy.php?c=u&ul=1&id=" . $n . "&fn=' + document.forms[0].uploadfile.value
 			}
 			else {
-				document.forms[0].action='create_coy.php?c=u&id=" . $n . "&fn=' + document.forms[0].uploadfile.value
+				document.forms[0].action='create_coy.php?c=u&id=" . $n . "'
 			}
 			document.forms[0].submit()
 		}
