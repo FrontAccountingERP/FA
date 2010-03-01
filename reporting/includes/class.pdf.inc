@@ -59,8 +59,9 @@ define("K_RE_PATTERN_ARABIC", "/(
 			)/x");
 
 include_once (dirname(__FILE__).'/tcpdf.php');
+include_once (dirname(__FILE__).'/fpdi/fpdi.php');
 
-class Cpdf extends TCPDF {
+class Cpdf extends FPDI {
 
 	function Cpdf($pageSize='A4', $l=array(), $pageOrientation='P')
 	{
@@ -76,8 +77,6 @@ class Cpdf extends TCPDF {
 		$this->setPrintFooter(false);
 		$this->setPDFVersion("1.3");
 		$this->setAutoPageBreak(0);
-		$this->AddPage();
-
 		$this->SetLineWidth(1);
 		$this->cMargin = 0;
 	}

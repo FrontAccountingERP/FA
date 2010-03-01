@@ -630,7 +630,12 @@ class FrontReport extends Spreadsheet_Excel_Writer_Workbook
 	{
 		$this->y += $l;
 	}
-
+	
+	function NewPage()
+	{
+		return;
+	}
+	
   	function ymd2Date($year, $mon, $day) // XLS internal date representation is a number between 1900-01-01 and 2078-12-31
   	{										// if we need the time part too, we have to add this value after a decimalpoint.
       	$mo = array(0,31,28,31,30,31,30,31,31,30,31,30,31);

@@ -9,13 +9,22 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-//include_once($path_to_root . "reporting/includes/class.pdf.inc");
+/*
+	TODO:
+	. add StartReport/EndReport handlers for better bulk report support, with
+	. email/printer destination option should be selected on class creation instead
+	 of End()
+	. add/use setter function for Header2 parameters (currently passed globally)
+	. in report files pass already prepared options to SetCommonData() to avoid need for
+	 selection inside FrontReport generic class.
+*/
 include_once(dirname(__FILE__)."/class.pdf.inc");
 include_once(dirname(__FILE__)."/printer_class.inc");
 include_once($path_to_root . "/admin/db/company_db.inc");
 include_once($path_to_root . "/admin/db/fiscalyears_db.inc");
 include_once($path_to_root . "/admin/db/printers_db.inc");
 include_once($path_to_root . "/config.php");
+
 class FrontReport extends Cpdf
 {
 	var $size;
@@ -51,11 +60,20 @@ class FrontReport extends Cpdf
 	var $scaleLogoWidth;
 	var $footerEnable;  // select whether to print a page footer or not
 	var $footerText;  // store user-generated footer text
-	var $headerFunc;  // store the name of the currently selected header function
+	var $headerTmpl;  // store the name of the currently selected header template
+	var $tmplSize; // pdf header template size in pages
 
+	var $rep_id;
+	var $formData; // common data used for printing headers footers etc.
+
+	var $dest;	// destination: email or printer
+	
 	function FrontReport($title, $filename, $size = 'A4', $fontsize = 9, $orientation = 'P', $margins = NULL, $excelColWidthFactor = NULL)
 	{
 		global $page_security;
+
+		$this->rep_id = $_POST['REP_ID'];	// FIXME
+		
 		if (!$_SESSION["wa_current_user"]->can_access_page($page_security))
 		{
 			display_error(_("The security settings on your account do not permit you to print this report"));
@@ -200,8 +218,8 @@ class FrontReport extends Cpdf
 		$this->row = $this->pageHeight - $this->topMargin;
 		$this->currency = '';
 		$this->scaleLogoWidth = false; // if Logo, scale on width (else height).
-		$this->headerFunc = 'Header';  // default to the original header template
-
+		$this->SetHeaderType('Header'); // default
+		
 		$rtl = ($_SESSION['language']->dir === 'rtl' ? 'rtl' : 'ltr');
 		$code = $_SESSION['language']->code;
 		$enc = strtoupper($_SESSION['language']->encoding);
@@ -209,7 +227,7 @@ class FrontReport extends Cpdf
 		$l = array('a_meta_charset' => $enc, 'a_meta_dir' => $rtl, 'a_meta_language' => $code, 'w_page' => 'page');
 		$this->Cpdf($size, $l, $orientation);
 	}
-
+	
 	/*
 	 * Select the font and style to use for following output until
 	 * it's changed again.
@@ -276,15 +294,13 @@ class FrontReport extends Cpdf
 		$this->footerEnable = $footerenable;
 		$this->footerText = $footertext;	
 	}
-
+	//
+	//	Header for listings
+	//
 	function Header()
 	{
 		$companyCol = $this->endLine - 150;
 		$titleCol = $this->leftMargin + 100;
-
-		$this->pageNumber++;
-		if ($this->pageNumber > 1)
-			$this->newPage();
 
 		$this->row = $this->pageHeight - $this->topMargin;
 
@@ -358,14 +374,53 @@ class FrontReport extends Cpdf
 
 		$this->NewLine(2);
 	}
-
-	function Header2($myrow, $branch, $sales_order, $bankaccount, $doctype)
+	/*
+		Transition function 
+	*/
+	function SetCommonData($myrow, $branch, $sales_order, $bankaccount, $doctype)
 	{
-		global $comp_path, $path_to_root, $print_as_quote, $print_invoice_no, $packing_slip;
+//		$this->formData = array_merge($myrow, $branch, $sales_order, 
+//			$bank_account, array('doctype' => $doctype));
 
-		$this->pageNumber++;
-		if ($this->pageNumber > 1)
-			$this->newPage();
+		$this->formData = array();
+		$datnames = array( 
+		'myrow' => array('ord_date', 'date_', 'tran_date', 
+			'order_no','reference', 'id', 'trans_no', 'name', 'location_name',
+			'delivery_address', 'supp_name', 'address',
+			'DebtorName', 'supp_account_no', 'wo_ref', 'debtor_ref','type', 'trans_no', 
+			'StockItemName', 'tax_id', 'order_', 'delivery_date', 'units_issued',
+			'due_date', 'required_by', 'payment_terms', 'curr_code',
+			'ov_freight', 'ov_gst', 'ov_amount'),
+		'branch' => array('br_address', 'br_name', 'salesman', 'disable_branch'),
+		'sales_order' => array('deliver_to', 'delivery_address', 'customer_ref'),
+		'bankaccount' => array('bank_name', 'bank_account_number')
+		);
+	
+		foreach($datnames as $var => $fields) {
+			if (isset($$var)) {
+				foreach($fields as $locname) {
+					if (isset(${$var}[$locname])) {
+						$this->formData[$locname] = ${$var}[$locname];
+					}
+				}
+			}
+		}
+		$this->formData['doctype'] = $doctype;
+	}
+	/*
+		Set header handler
+	*/
+	function SetHeaderType($name) {
+		$this->headerTmpl = $name;
+	}
+	/*
+		Header for sales/purchase documents
+	*/
+	function Header2()
+	{
+		global $comp_path, $path_to_root, $print_as_quote, $print_invoice_no, $packing_slip; // FIXME
+
+		$doctype = $this->formData['doctype'];
 		$header2type = true;
  		
  		 // leave layout files names without path to enable including
@@ -389,16 +444,13 @@ class FrontReport extends Cpdf
 	{
 		global $comp_path;
 
-		// Make this header the default for the current report ( used by NewLine() )
-		$this->headerFunc = 'Header3';
-		
 		// Turn off cell padding for the main report header, restoring the current setting later
 		$oldcMargin = $this->cMargin;
 		$this->SetCellPadding(0);
 
 		// Set some constants which control header item layout
 		// only set them once or the PHP interpreter gets angry
-		if ($this->pageNumber == 0)
+		if ($this->pageNumber == 1)
 		{
 			define('COMPANY_WIDTH', 150);
 			define('LOGO_HEIGHT', 50);
@@ -419,17 +471,15 @@ class FrontReport extends Cpdf
 		$footerRow = $this->bottomMargin - FOOTER_MARGIN;
 
 		// Calling this function generates a new PDF page after the first instance
-		$this->pageNumber++;
-		if ($this->pageNumber > 1)
-		{
+//		{
 //			// TODO: experimenting with line drawing to highlight current period
 //			$this->SetLineWidth(1);
 //			$this->LineTo($this->cols[3], 33, $this->cols[3], 534);
 //			$this->LineTo($this->cols[4], 33, $this->cols[4], 534);
 //			$this->SetLineWidth(0.1);
 			
-			$this->newPage();
-		}
+//			$this->newPage();
+//		}
 		$this->row = $this->pageHeight - $this->topMargin;
 
 		// Set the color of dividing lines we'll draw
@@ -879,7 +929,38 @@ class FrontReport extends Cpdf
 
 		// Check to see if we're at the bottom and should insert a page break
 		if ($this->row < $this->bottomMargin + ($np * $h))
-			$this->{$this->headerFunc}();  // call header template chosen by current report
+			$this->NewPage();
+	}
+
+	function NewPage() 
+	{
+		if ($this->pageNumber==0)
+		{
+			// check if there is pdf header template for this report
+			// and set if it is found
+			$tmpl_pdf = find_custom_file("/reporting/forms/".$this->headerTmpl.".pdf");
+			if ($tmpl_pdf) {
+				$this->tmplSize = $this->setSourceFile($tmpl_pdf);
+			}
+		}
+
+		$this->pageNumber++;
+		parent::newPage();
+
+		if ($this->tmplSize) {
+			$this->row = $this->pageHeight - $this->topMargin; // reset row
+			$id = $this->importPage(min($this->pageNumber, $this->tmplSize));
+			$this->useTemplate($id);
+		}
+
+		// include related php file if any
+		$tmpl_php = find_custom_file("/reporting/forms/".$this->headerTmpl.".php");
+		if ($tmpl_php) {
+			include($tmpl_php);
+		}
+
+		if (method_exists($this, $this->headerTmpl))	// draw predefined page layout if any
+			$this->{$this->headerTmpl}();
 	}
 
 	function End($email=0, $subject=null, $myrow=null, $doctype = 0)
@@ -893,13 +974,6 @@ class FrontReport extends Cpdf
 			echo '<html><body>';
 			echo trim($pdfcode);
 			echo '</body></html>';
-			//header("Content-Length: $len");
-			//header("Content-Disposition: inline; filename=" . $this->filename);
-			//header('Expires: 0');
-			//header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-			//header('Pragma: public');
-
-			//$this->pdf->stream();
 		}
 		else
 		{
@@ -963,7 +1037,7 @@ class FrontReport extends Cpdf
 			}
 			else
 			{
-				$printer = get_report_printer(user_print_profile(), $_POST['REP_ID']);
+				$printer = get_report_printer(user_print_profile(), $this->rep_id);
 				if ($printer == false) {
 					if(in_ajax()) {
 						global $Ajax;
@@ -973,16 +1047,6 @@ class FrontReport extends Cpdf
 						else
 							$Ajax->redirect($fname); // otherwise use faster method
 					} else {
-					//echo '<html>
-					//		<head>
-					//	  	  <SCRIPT LANGUAGE="JavaScript"><!--
-					//	      function go_now () { window.location.href = "'.$fname.'"; }
-					//	      //--></SCRIPT>
-					//	  </head>
-					//	  <body onLoad="go_now()"; >
-					//	    <a href="'.$fname.'">click here</a> if you are not re-directed.
-					//	  </body>
-					//    </html>';
 	                header('Content-type: application/pdf');
     	            header("Content-Disposition: inline; filename=$this->filename");
         	        header('Expires: 0');
