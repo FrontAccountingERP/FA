@@ -19,7 +19,11 @@ Legend:
 ! -> Note
 $ -> Affected files
 
-01-Mar-2010 Joe Hung
+01-Mar-2010 Janusz Dobrowolski
+# [0000212] Selecting branch from popup was not working.
+$ /sales/manage/customer_branches.php
+
+01-Mar-2010 Joe Hunt
 ! Allow change of password without script in Create/Update Company.
 $ /admin/create_coy.php
 

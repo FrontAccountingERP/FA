@@ -200,7 +200,7 @@ function del_link($row) {
 }
 
 function select_link($row) {
-	return button("Select".$row["branch_code"],_("Select"), '', ICON_ADD, 'selector');
+	return button("Select".$row["branch_code"], $row["branch_code"], '', ICON_ADD, 'selector');
 }
 
 start_form();
