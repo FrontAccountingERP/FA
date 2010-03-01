@@ -19,6 +19,56 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+01-Mar-2010 Janusz Dobrowolski
++ Rewrite of FrontReport header API to accept externally defined headers in php and/or pdf form.
+$ /reporting/includes/class.pdf.inc
+  /reporting/includes/excel_report.inc
+  /reporting/includes/header2.inc
+  /reporting/includes/pdf_report.inc
++ Integration of fpdi class
+$ /reporting/includes/fpdi/* (new)
+  /reporting/forms (new)
+! find_report_file() helper moved to main.inc and renamed to ind_custom_file
+$ /reporting/prn_redirect.php
+  /includes/main.inc
+! Reports fixed according to changes in header API in FrontReport class.
+$ /reporting/rep101.php
+  /reporting/rep102.php
+  /reporting/rep103.php
+  /reporting/rep104.php
+  /reporting/rep105.php
+  /reporting/rep106.php
+  /reporting/rep107.php
+  /reporting/rep108.php
+  /reporting/rep109.php
+  /reporting/rep110.php
+  /reporting/rep111.php
+  /reporting/rep112.php
+  /reporting/rep201.php
+  /reporting/rep202.php
+  /reporting/rep203.php
+  /reporting/rep204.php
+  /reporting/rep209.php
+  /reporting/rep210.php
+  /reporting/rep301.php
+  /reporting/rep302.php
+  /reporting/rep303.php
+  /reporting/rep304.php
+  /reporting/rep305.php
+  /reporting/rep401.php
+  /reporting/rep409.php
+  /reporting/rep501.php
+  /reporting/rep601.php
+  /reporting/rep701.php
+  /reporting/rep702.php
+  /reporting/rep704.php
+  /reporting/rep705.php
+  /reporting/rep706.php
+  /reporting/rep707.php
+  /reporting/rep708.php
+  /reporting/rep709.php
+  /reporting/rep710.php
+
 25-Feb-2010 Janusz Dobrowolski
 # Files manipulation helpers added
 $ /includes/main.inc
