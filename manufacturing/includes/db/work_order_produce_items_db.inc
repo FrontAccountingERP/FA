@@ -42,7 +42,7 @@ function work_order_produce($woid, $ref, $quantity, $date_, $memo_, $close_wo)
 
 	// -------------------------------------------------------------------------
 
-	work_order_quick_costs($woid, $details["stock_id"], $quantity, $date_, true);
+	work_order_quick_costs($woid, $details["stock_id"], $quantity, $date_, $id);
 
 	// -------------------------------------------------------------------------
 	// insert a +ve stock move for the item being manufactured
@@ -106,6 +106,8 @@ function void_work_order_produce($type_no)
 
 	// deduct the quantity of this production from the parent work order
 	work_order_update_finished_quantity($row["workorder_id"], -$row["quantity"]);
+
+	work_order_quick_costs($row['workorder_id'], $row['stock_id'], -$row['quantity'], sql2date($row['date_']), $type_no);
 
 	// clear the production record
 	$sql = "UPDATE ".TB_PREF."wo_manufacture SET quantity=0 WHERE id=".db_escape($type_no);

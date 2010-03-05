@@ -139,6 +139,17 @@ function handle_submit()
 			remove_connection($id);
 			return false;
 		}
+	} else {
+		if ($_GET['c'] = 'u') {
+			$conn = $db_connections[$id];
+			if (($db = db_create_db($conn)) == 0)
+			{
+				display_error(_("Error connecting to Database: ") . $conn['dbname'] . _(", Please correct it"));
+				$error = true;
+			} else {
+				db_query("UPDATE ".$conn['tbpref']."users set password = '".md5($_POST['admpassword']). "' WHERE user_id = 'admin'");
+			}
+		}
 	}
 	$error = write_config_db($new);
 	if ($error == -1)
@@ -306,7 +317,7 @@ function display_company_edit($selected_id)
 				document.forms[0].action='create_coy.php?c=u&ul=1&id=" . $n . "&fn=' + document.forms[0].uploadfile.value
 			}
 			else {
-				document.forms[0].action='create_coy.php?c=u&id=" . $n . "&fn=' + document.forms[0].uploadfile.value
+				document.forms[0].action='create_coy.php?c=u&id=" . $n . "'
 			}
 			document.forms[0].submit()
 		}

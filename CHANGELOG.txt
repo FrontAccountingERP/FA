@@ -19,6 +19,95 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+05-Mar-2010 Merged changes from main trunk up to 2.2.7 as follows
+------------------------------- Release 2.2.7 ----------------------------------
+05-Mar-2010 Joe Hunt
+! Release 2.2.7
+! Removed redundant variable $use_new_account_types from config.php
+$ config.default.php
+  update.html
+! Removed redundant function get_gl_accounts_all in gl_db_accounts.inc
+$ /gl/includes/db/gl_db_accounts.inc
+
+02-Mar-2010 Joe Hunt
+# Bug sending email to a name with commas. Has been replaced with ''.
+$ /reporting/includes/pdf_report.inc
+
+01-Mar-2010 Janusz Dobrowolski
+# [0000212] Selecting branch from popup was not working.
+$ /sales/manage/customer_branches.php
+# [0000213] Date change on journal entry update.
+$ /gl/gl_journal.php
+
+01-Mar-2010 Joe Hunt
+! Allow change of password without script in Create/Update Company.
+$ /admin/create_coy.php
+
+28-Feb-2010 Joe Hunt
+# Fixed a non esisting voiding of Work Order Advanced and a couple of
+  bugs in the same operation. And a fix according to Vramak on the forum.
+  Wiki will be updated on how does the Work Order work
+$ /manufacturing/includes/db/work_orders_db.inc
+  /manufacturing/includes/db/work_orders_quick_db.inc
+  /manufacturing/includes/db/work_order_produce_items_db.inc
+  /manufacturing/includes/db/work_order_requirements_db.inc
+  /purchasing/includes/db/grn_db.inc
+  
+26-Feb-2010 Janusz Dobrowolski
+# [0000209],[0000210] Improper quantity/price handling on supplier change.
+$ /purchasing/includes/ui/po_ui.inc
+# [0000211] Typo in work order legend.
+$ /reporting/includes/doctext.inc
+  /reporting/includes/doctext2.inc
+# Restored Esc hot key on cancel buttons.
+$ /js/inserts.js
+
+26-Feb-2010 Joe Hunt
+# [0000208] Voiding a work order production does not revert raw material quantities 
+$ /manufacturing/includes/db/work_order_produce_items_db.inc
+
+25-Feb-2010 Janusz Dobrowolski
+# Fixed bug in quantity input
+$ /manufacturing/work_order_add_finished.php
+
+24-Feb-2010 Joe Hunt
+# Tax included calculation problem when more than 1 tax type in a group
+$ /taxes/tax_calc.inc
+! Small layout fixes
+$ /admin/backups.php
+  /includes/ui/ui_lists.inc
+  /reporting/rep107.php
+  /reporting/rep110.php
+  
+22-Feb-2010 Janusz Dobrowolski
+# Two smaller fixes in security area codes.
+$ /includes/access_levels.inc
+
+21-Feb-2010 Joe Hunt
+# Exchange rate doesn't update table immediately when adding new rate 
+  and no exchange rates there before.
+$ /gl/manage/exchange_rates.php
+# Bug in exchange variation calculation in certain situations. Again.
+$ /gl/includes/db/gl_db_banking.inc
+ 
+21-Feb-2010 Janusz Dobrowolski
+# Fixed check for language session var.
+$ /includes/session.inc
+
+19-Feb-2010 Joe Hunt/Ary Wibowo
+# Bug in exchange variation calculation in certain situations.
+$ /gl/includes/gl_db_banking.inc
+! Better and cleaner layout in graphics
+$ /reporting/includes/class.graphic.inc
+! Fixed better layout in customer delivery form
+$ /sales/customer_delivery.php
+
+17-Feb-2010 Joe Hunt
+# Missing border layout in report centre
+$ /reporting/includes/reports_classes.inc
+
+---------- End of changes from main trunk 2.2.6-2.2.7
+
 01-Mar-2010 Janusz Dobrowolski
 + Rewrite of FrontReport header API to accept externally defined headers in php and/or pdf form.
 $ /reporting/includes/class.pdf.inc

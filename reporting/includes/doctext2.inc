@@ -126,9 +126,9 @@ if (isset($header2type) || isset($linetype))
 		($doctype == ST_CUSTPAYMENT ? "Receipt No." :
 		($doctype == ST_SUPPAYMENT ? "Remittance No." :
 		(($doctype == ST_SALESQUOTE || $doctype==ST_PURCHORDER || $doctype==ST_SALESORDER) ? "Order no." : 
-		($doctype==ST_SALESINVOICE ? "Invoice No." : ($doctype == ST_WORKORDER ? "Work Order No" : "Credit No."))))));
+		($doctype==ST_SALESINVOICE ? "Invoice No." : ($doctype == ST_WORKORDER ? "Work Order No." : "Credit No."))))));
 	$doc_Delivery_no = "Delivery Note No.";
-	$doc_Order_no = "Order no.";
+	$doc_Order_no = "Order No.";
 }
 if (isset($linetype))
 {

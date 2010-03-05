@@ -117,7 +117,7 @@ function can_process()
 		$wo_details = get_work_order($_POST['selected_id']);
 
 		$qoh = get_qoh_on_date($wo_details["stock_id"], $wo_details["loc_code"], $_POST['date_']);
-		if (-$_POST['quantity'] + $qoh < 0)
+		if (-input_num('quantity') + $qoh < 0)
 		{
 			display_error(_("The unassembling cannot be processed because there is insufficient stock."));
 			set_focus('quantity');
@@ -135,7 +135,7 @@ function can_process()
 			if ($row['mb_flag'] == 'D') // service, non stock
 				continue;
 			$qoh = get_qoh_on_date($row["stock_id"], $row["loc_code"], $_POST['date_']);
-			if ($qoh - $row['units_req'] * $_POST['quantity'] < 0)
+			if ($qoh - $row['units_req'] * input_num('quantity') < 0)
 			{
     			display_error( _("The production cannot be processed because a required item would cause a negative inventory balance :") .
     				" " . $row['stock_id'] . " - " .  $row['description']);
@@ -164,7 +164,7 @@ if ((isset($_POST['Process']) || isset($_POST['ProcessAndClose'])) && can_proces
 	if ($_POST['ProductionType'] == 0)
 		$_POST['quantity'] = -$_POST['quantity'];
 
-	 $id = work_order_produce($_POST['selected_id'], $_POST['ref'], $_POST['quantity'],
+	 $id = work_order_produce($_POST['selected_id'], $_POST['ref'], input_num('quantity'),
 			$_POST['date_'], $_POST['memo_'], $close_wo);
 
 	meta_forward($_SERVER['PHP_SELF'], "AddedID=".$_POST['selected_id']."&date=".$_POST['date_']);
@@ -181,10 +181,9 @@ start_form();
 hidden('selected_id', $_POST['selected_id']);
 //hidden('WOReqQuantity', $_POST['WOReqQuantity']);
 
+$dec = get_qty_dec($wo_details["stock_id"]);
 if (!isset($_POST['quantity']) || $_POST['quantity'] == '')
-{
-	$_POST['quantity'] = max($wo_details["units_reqd"] - $wo_details["units_issued"], 0);
-}
+	$_POST['quantity'] = qty_format(max($wo_details["units_reqd"] - $wo_details["units_issued"], 0), $wo_details["stock_id"], $dec);
 
 start_table($table_style2);
 br();
@@ -197,7 +196,7 @@ if (!isset($_POST['ProductionType']))
 yesno_list_row(_("Type:"), 'ProductionType', $_POST['ProductionType'],
 	_("Produce Finished Items"), _("Return Items to Work Order"));
 
-small_qty_row(_("Quantity:"), 'quantity', null, null, null, get_qty_dec($wo_details["stock_id"]));
+small_qty_row(_("Quantity:"), 'quantity', null, null, null, $dec);
 
 date_row(_("Date:"), 'date_');
 

@@ -16,25 +16,25 @@ function add_exchange_variation($trans_type, $trans_no, $date_, $acc_id, $accoun
 		return;
 	if ($date_ == null)
 		$date_ = Today();
-	$rate = get_exchange_rate_from_home_currency($currency, $date_);
-/*	
-	$result = db_query("SELECT SUM(amount) FROM ".TB_PREF."bank_trans WHERE 
-		bank_act=".db_escape($acc_id)." AND trans_date<='".date2sql($date_)."'", 
-		"Transactions for account $account could not be calculated");
-	$row = db_fetch_row($result);
-	$foreign_amount = $row[0];
+	$for_amount = 0;
+
+	// We have to calculate all the currency accounts belonging to the GL account
+	// upto $date_ and calculate with the exchange rates. And then compare with the GL account balance.
+	// 2010-02-23 Joe Hunt with help of Ary Wibowo
+	$sql = "SELECT SUM(bt.amount) AS for_amount, ba.bank_curr_code 		
+		FROM ".TB_PREF."bank_trans bt, ".TB_PREF."bank_accounts ba
+		WHERE ba.id = bt.bank_act AND ba.account_code = ".db_escape($account)." AND bt.trans_date<='".date2sql($date_)."'
+		GROUP BY ba.bank_curr_code";	
+	$result = db_query($sql, "Transactions for bank account $acc_id could not be calculated");
+	while ($row = db_fetch($result))
+	{
+		if ($row['for_amount'] == 0)
+			continue;
+		$rate = get_exchange_rate_from_home_currency($row['bank_curr_code'], $date_);
+		$for_amount += round2($row['for_amount'] * $rate, user_price_dec());
+	}	
 	$amount = get_gl_trans_from_to("", $date_, $account);
-	$diff = $amount - (round2($foreign_amount * $rate, user_price_dec()));
-*/
-	$result = db_query("SELECT SUM(bt.amount) AS foreign_amount, SUM(gt.amount) AS amount		
-		FROM ".TB_PREF."bank_trans bt,  ".TB_PREF."gl_trans gt, ".TB_PREF."bank_accounts ba
-		WHERE bt.bank_act=".db_escape($acc_id)." AND bt.trans_date<='".date2sql($date_)."'
-		AND ((bt.amount > 0 AND gt.amount > 0) OR (bt.amount <= 0 AND gt.amount <= 0)) 
-		AND bt.type = gt.type AND bt.trans_no = gt.type_no 
-		AND ba.id = bt.bank_act AND ba.account_code = gt.account",
-		"Transactions for account $account could not be calculated");
-	$row = db_fetch($result);
-	$diff = $row['amount'] - (round2($row['foreign_amount'] * $rate, user_price_dec()));
+	$diff = $amount - $for_amount;
 	if ($diff != 0)
 	{
 		if ($trans_type == null)
