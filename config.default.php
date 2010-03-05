@@ -56,7 +56,7 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 	// Main Title
 	$app_title = "FrontAccounting";
 	// application version
-	$version 		= "2.2.6";
+	$version 		= "2.2.7";
 
 	// Build for development purposes
 	$build_version 	= date("d.m.Y", filemtime("$path_to_root/CHANGELOG.txt"));
@@ -209,8 +209,5 @@ if (!defined('ICON_EDIT'))
  	define("ICON_SUBMIT", "ok.gif");
  	define("ICON_ESCAPE", "escape.png");	
 }
-
-	/* allow using of multi level sub-types when digits are of same length in account types */
-	$use_new_account_types = 0;
 
 ?>

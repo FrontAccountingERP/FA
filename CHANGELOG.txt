@@ -19,6 +19,15 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+------------------------------- Release 2.2.7 ----------------------------------
+05-Mar-2010 Joe Hunt
+! Release 2.2.7
+! Removed redundant variable $use_new_account_types from config.php
+$ config.default.php
+  update.html
+! Removed redundant function get_gl_accounts_all in gl_db_accounts.inc
+$ /gl/includes/db/gl_db_accounts.inc
+
 02-Mar-2010 Joe Hunt
 # Bug sending email to a name with commas. Has been replaced with ''.
 $ /reporting/includes/pdf_report.inc
