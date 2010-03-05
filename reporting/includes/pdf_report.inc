@@ -704,14 +704,14 @@ class FrontReport extends Cpdf
 		return $this->TextWrap($c, $this->row - $r, $n - $c + $corr, $txt, $align, $border, $fill, $link, $stretch);
 	}
 
-	function TextWrap($xpos, $ypos, $len, $str, $align = 'left', $border = 0, $fill = 0, $link = NULL, $stretch = 1)
+	function TextWrap($xpos, $ypos, $len, $str, $align = 'left', $border = 0, $fill = 0, $link = NULL, $stretch = 1, $spacebreak=false)
 	{
 		if ($this->fontSize != $this->oldFontSize)
 		{
 			$this->SetFontSize($this->fontSize);
 			$this->oldFontSize = $this->fontSize;
 		}
-		return $this->addTextWrap($xpos, $ypos, $len, $this->fontSize, $str, $align, $border, $fill, $link, $stretch);
+		return $this->addTextWrap($xpos, $ypos, $len, $this->fontSize, $str, $align, $border, $fill, $link, $stretch, $spacebreak);
 	}
 
 	function TextCol($c, $n, $txt, $corr=0, $r=0, $border=0, $fill=0, $link=NULL, $stretch=1)
@@ -752,13 +752,13 @@ class FrontReport extends Cpdf
 		return $this->TextWrap($this->cols2[$c], $this->row - $r, $this->cols2[$n] - $this->cols2[$c] + $corr, $txt, $this->aligns2[$c], $border, $fill, $link, $stretch);
 	}
 
-	function TextColLines($c, $n, $txt, $corr=0, $r=0, $border=0, $fill=0, $link=NULL, $stretch=1)
+	function TextColLines($c, $n, $txt, $corr=0, $r=0, $border=0, $fill=0, $link=NULL, $stretch=0)
 	{
 		$this->row -= $r;
-		$this->TextWrapLines($this->cols[$c], $this->cols[$n] - $this->cols[$c] + $corr, $txt, $this->aligns[$c], $border, $fill, $link, $stretch);
+		$this->TextWrapLines($this->cols[$c], $this->cols[$n] - $this->cols[$c] + $corr, $txt, $this->aligns[$c], $border, $fill, $link, $stretch, true);
 	}
 
-	function TextWrapLines($c, $width, $txt, $align='left', $border=0, $fill=0, $link=NULL, $stretch=1)
+	function TextWrapLines($c, $width, $txt, $align='left', $border=0, $fill=0, $link=NULL, $stretch=0, $spacebreak=true)
 	{
 		$str = Explode("\n", $txt);
 		for ($i = 0; $i < count($str); $i++)
@@ -766,7 +766,7 @@ class FrontReport extends Cpdf
 			$l = $str[$i];
 			do
 			{
-				$l = $this->TextWrap($c, $this->row , $width, $l, $align, $border, $fill, $link, $stretch);
+				$l = $this->TextWrap($c, $this->row , $width, $l, $align, $border, $fill, $link, $stretch, $spacebreak);
 				$this->row -= $this->lineHeight;
 			}
 			while ($l != '');
