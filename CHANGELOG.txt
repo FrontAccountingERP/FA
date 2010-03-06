@@ -22,6 +22,8 @@ $ -> Affected files
 06-Mar-2010 Joe Hunt
 # Bug in Text(Col)WrapLines. Doesn't break on space.
 $ /reporting/includes/pdf_report.inc
+# Missing 'Set Global Supplier' in invoice_ui.inc
+$ /purchasing/includes/ui/invoice_ui.inc
 
 ------------------------------- Release 2.2.7 ----------------------------------
 05-Mar-2010 Joe Hunt
