@@ -19,6 +19,11 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+07-Mar-2010 Joe Hunt
+# Bug in ui_lists.inc, systypes_list_row, too many parameters in
+  call to systypes_list_cells
+$ /includes/ui/ui_lists.inc
+
 06-Mar-2010 Joe Hunt
 # Bug in Text(Col)WrapLines. Doesn't break on space.
 $ /reporting/includes/pdf_report.inc

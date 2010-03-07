@@ -1791,7 +1791,7 @@ function systypes_list_cells($label, $name, $value=null, $submit_on_change=false
 function systypes_list_row($label, $name, $value=null, $submit_on_change=false)
 {
 	echo "<tr><td class='label'>$label</td>";
-	systypes_list_cells(null, $name, $value, false, $submit_on_change);
+	systypes_list_cells(null, $name, $value, $submit_on_change);
 	echo "</tr>\n";
 }
 
