@@ -25,6 +25,8 @@ $ /reporting/rep105.php
   /reporting/rep301.php
   /reporting/rep302.php
   /reporting/rep303.php
+# Print reference on email (PO)
+  /reporting/rep209.php
   
 07-Mar-2010 Joe Hunt
 # Bug in ui_lists.inc, systypes_list_row, too many parameters in

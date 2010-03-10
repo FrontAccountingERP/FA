@@ -179,7 +179,8 @@ function print_po()
 			$myrow['contact_email'] = $myrow['email'];
 			$myrow['DebtorName'] = $myrow['supp_name'];
 			if ($myrow['contact'] != '') $myrow['DebtorName'] = $myrow['contact'];
-			$myrow['reference'] = $myrow['order_no'];
+			if ($myrow['reference'] == "")
+				$myrow['reference'] = $myrow['order_no'];
 			$rep->End($email, $doc_Order_no . " " . $myrow['reference'], $myrow);
 		}
 	}
