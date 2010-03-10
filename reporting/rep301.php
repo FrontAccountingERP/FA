@@ -91,7 +91,7 @@ function print_inventory_valuation_report()
 	if ($location == 'all')
 		$loc = _('All');
 	else
-		$loc = $location;
+		$loc = get_location_name($location);
 
 	$cols = array(0, 100, 250, 350, 450,	515);
 

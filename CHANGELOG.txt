@@ -19,6 +19,13 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+10-Mar-2010 Joe Hunt
+! Print full Location name on reports
+$ /reporting/rep105.php
+  /reporting/rep301.php
+  /reporting/rep302.php
+  /reporting/rep303.php
+  
 07-Mar-2010 Joe Hunt
 # Bug in ui_lists.inc, systypes_list_row, too many parameters in
   call to systypes_list_cells

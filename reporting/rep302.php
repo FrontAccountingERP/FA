@@ -109,7 +109,7 @@ function print_inventory_planning()
 	if ($location == 'all')
 		$loc = _('All');
 	else
-		$loc = $location;
+		$loc = get_location_name($location);
 
 	$cols = array(0, 50, 150, 180, 210, 240, 270, 300, 330, 390, 435, 480, 525);
 

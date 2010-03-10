@@ -61,7 +61,7 @@ function getTransactions($category, $location)
 
 function print_stock_check()
 {
-    global $comp_path, $path_to_root, $pic_height, $pic_width;
+    global $comp_path, $path_to_root, $pic_height;
 
     $category = $_POST['PARAM_0'];
     $location = $_POST['PARAM_1'];
@@ -87,7 +87,7 @@ function print_stock_check()
 	if ($location == 'all')
 		$loc = _('All');
 	else
-		$loc = $location;
+		$loc = get_location_name($location);
 	if ($shortage)
 	{
 		$short = _('Yes');

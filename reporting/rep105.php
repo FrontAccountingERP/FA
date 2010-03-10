@@ -96,7 +96,7 @@ function print_order_status_list()
 	if ($location == null)
 		$loc = _('All');
 	else
-		$loc = $location;
+		$loc = get_location_name($location);
 	if ($backorder == 0)
 		$back = _('All Orders');
 	else
