@@ -19,6 +19,12 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+12-Mar-2010 Janusz Dobrowolski
+# Small cleanups.
+$ /reporting rep301.php
+  /reporting rep304.php
+  /reporting rep601.php
+
 05-Mar-2010 Merged changes from main trunk up to 2.2.7 as follows
 ------------------------------- Release 2.2.7 ----------------------------------
 05-Mar-2010 Joe Hunt
