@@ -104,11 +104,11 @@ function print_bank_transactions()
 		$rep->Font();
 		$total = $prev_balance;
 		$rep->NewLine(2);
+		$total_debit = $total_credit = 0;
 		if ($rows > 0)
 		{
 			// Keep a running total as we loop through
 			// the transactions.
-			$total_debit = $total_credit = 0;			
 			
 			while ($myrow=db_fetch($trans))
 			{

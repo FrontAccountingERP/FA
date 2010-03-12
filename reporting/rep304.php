@@ -161,7 +161,7 @@ function print_inventory_sales()
 		$trans['amt'] *= $rate;
 		$cb = $trans['amt'] - $trans['cost'];
 		$rep->NewLine();
-		$rep->fontsize -= 2;
+		$rep->fontSize -= 2;
 		$rep->TextCol(0, 1, $trans['stock_id']);
 		if ($fromcust == ALL_NUMERIC)
 		{
@@ -174,7 +174,7 @@ function print_inventory_sales()
 		$rep->AmountCol(4, 5, $trans['amt'], $dec);
 		$rep->AmountCol(5, 6, $trans['cost'], $dec);
 		$rep->AmountCol(6, 7, $cb, $dec);
-		$rep->fontsize += 2;
+		$rep->fontSize += 2;
 		$total += $trans['amt'];
 		$total1 += $trans['cost'];
 		$total2 += $cb;

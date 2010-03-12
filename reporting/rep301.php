@@ -141,13 +141,13 @@ function print_inventory_valuation_report()
 		if ($detail)
 		{
 			$rep->NewLine();
-			$rep->fontsize -= 2;
+			$rep->fontSize -= 2;
 			$rep->TextCol(0, 1, $trans['stock_id']);
 			$rep->TextCol(1, 2, $trans['description']);
 			$rep->AmountCol(2, 3, $trans['QtyOnHand'], get_qty_dec($trans['stock_id']));
 			$rep->AmountCol(3, 4, $trans['UnitCost'], $dec);
 			$rep->AmountCol(4, 5, $trans['ItemTotal'], $dec);
-			$rep->fontsize += 2;
+			$rep->fontSize += 2;
 		}
 		$total += $trans['ItemTotal'];
 		$grandtotal += $trans['ItemTotal'];
