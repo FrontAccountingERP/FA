@@ -20,6 +20,15 @@ Legend:
 $ -> Affected files
 
 15-Mar-2010 Janusz Dobrowolski
+# Missing check for customer/bramch selected ([0000216])
+$ /sales/sales_order_entry.php
+  /sales/customer_payment.php
+# Missing check for supplier selected ([0000217])
+$ /purchasing/supplier_invoice.php
+  /purchasing/supplier_payment.php
+  /purchasing/po_entry_items.php
+# Fixed db error on no supplier selected
+  /purchasing/includes/db/suppalloc_db.inc
 # Smaller clenaups.
 $ /includes/current_user.inc
   /includes/session.inc
