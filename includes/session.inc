@@ -231,7 +231,9 @@ if (strstr($_SERVER['PHP_SELF'], 'logout.php') == false){
 				$Ajax->activate('_page_body');
 			exit;
 		} else {
-			$succeed = $_SESSION["wa_current_user"]->login($_POST["company_login_name"],
+
+			$succeed = isset($db_connections[$_POST["company_login_name"]]) &&
+				$_SESSION["wa_current_user"]->login($_POST["company_login_name"],
 				$_POST["user_name_entry_field"], md5($_POST["password"]));
 			// select full vs fallback ui mode on login
 			$_SESSION["wa_current_user"]->ui_mode = $_POST['ui_mode'];

@@ -19,6 +19,11 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+15-Mar-2010 Janusz Dobrowolski
+# Smaller clenaups.
+$ /includes/current_user.inc
+  /includes/session.inc
+
 10-Mar-2010 Joe Hunt
 ! Print full Location name on reports
 $ /reporting/rep105.php

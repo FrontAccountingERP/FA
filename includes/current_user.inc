@@ -193,7 +193,7 @@ class current_user
 				$date_format, $date_sep, $tho_sep, $dec_sep, $theme, $pagesize, 
 				$show_hints, $profile, $rep_popup, $query_size, $graphic_links, $lang, $stickydate, $startup_tab);
 		}
-		$this->prefs = new user_prefs($user);
+		$this->prefs = new user_prefs(get_user($this->user));
 	}
 }
 
