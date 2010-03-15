@@ -381,7 +381,7 @@ start_form();
 invoice_header($_SESSION['supp_trans']);
 
 if ($_POST['supplier_id']=='') 
-	display_error('No supplier found for entered search text');
+		display_error(_("There is no supplier selected."));
 else {
 	display_grn_items($_SESSION['supp_trans'], 1);
 

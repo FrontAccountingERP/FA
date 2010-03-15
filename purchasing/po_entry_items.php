@@ -66,22 +66,22 @@ if (isset($_GET['AddedID']))
 
 function copy_from_cart()
 {
-	$_POST['supplier_id'] = $_SESSION['PO']->supplier_id;	
-	$_POST['OrderDate'] = $_SESSION['PO']->orig_order_date;	
+	$_POST['supplier_id'] = $_SESSION['PO']->supplier_id;
+	$_POST['OrderDate'] = $_SESSION['PO']->orig_order_date;
     $_POST['Requisition'] = $_SESSION['PO']->requisition_no;
     $_POST['ref'] = $_SESSION['PO']->reference;
 	$_POST['Comments'] = $_SESSION['PO']->Comments;
     $_POST['StkLocation'] = $_SESSION['PO']->Location;
-    $_POST['delivery_address'] = $_SESSION['PO']->delivery_address;	
+    $_POST['delivery_address'] = $_SESSION['PO']->delivery_address;
 }
 
 function copy_to_cart()
 {
-	$_SESSION['PO']->supplier_id = $_POST['supplier_id'];	
+	$_SESSION['PO']->supplier_id = $_POST['supplier_id'];
 	$_SESSION['PO']->orig_order_date = $_POST['OrderDate'];
 	$_SESSION['PO']->reference = $_POST['ref'];
 	$_SESSION['PO']->requisition_no = $_POST['Requisition'];
-	$_SESSION['PO']->Comments = $_POST['Comments'];	
+	$_SESSION['PO']->Comments = $_POST['Comments'];
 	$_SESSION['PO']->Location = $_POST['StkLocation'];
 	$_SESSION['PO']->delivery_address = $_POST['delivery_address'];
 }
@@ -268,6 +268,13 @@ function can_commit()
 {
 	global $Refs;
 
+	if (!get_post('supplier_id')) 
+	{
+		display_error(_("There is no supplier selected."));
+		set_focus('supplier_id');
+		return false;
+	} 
+	
 	if (!is_date($_POST['OrderDate'])) 
 	{
 		display_error(_("The entered order date is invalid."));

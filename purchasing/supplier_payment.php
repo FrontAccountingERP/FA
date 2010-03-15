@@ -17,7 +17,6 @@ include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/includes/banking.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
-//include_once($path_to_root . "/purchasing/includes/ui/supp_alloc_ui.inc");
 include_once($path_to_root . "/purchasing/includes/purchasing_db.inc");
 include_once($path_to_root . "/reporting/includes/reporting.inc");
 
@@ -88,6 +87,13 @@ function check_inputs()
 {
 	global $Refs;
 
+	if (!get_post('supplier_id')) 
+	{
+		display_error(_("There is no supplier selected."));
+		set_focus('supplier_id');
+		return false;
+	} 
+	
 	if ($_POST['amount'] == "") 
 	{
 		$_POST['amount'] = price_format(0);
