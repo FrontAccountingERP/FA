@@ -188,11 +188,12 @@
 		if ($sales_order != NULL)
 		{
 			$this->row = $temp;
-			if ($doctype == ST_PURCHORDER) // comment out the next line if you don't want to print company name
-				$this->Text($mcol, $this->company['coy_name']);
-			elseif ($doctype != ST_SUPPAYMENT && isset($sales_order['deliver_to']))
+			if ($doctype != ST_SUPPAYMENT && isset($sales_order['deliver_to']))
+			{
 				$this->Text($mcol, $sales_order['deliver_to']);
-			$this->NewLine();
+				$this->NewLine();
+			}	
+			// if you need the company name in purchase order then write it as first line in location addresss.	
 			if ($doctype != ST_SUPPAYMENT && isset($sales_order['delivery_address']))
 				$this->TextWrapLines($mcol, $this->rightMargin - $mcol, $sales_order['delivery_address']);
 		}
