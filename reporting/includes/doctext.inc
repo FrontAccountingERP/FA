@@ -16,7 +16,10 @@ if (isset($header2type))
 	if ($doctype == ST_PURCHORDER || $doctype == ST_SUPPAYMENT) // Purchase Order
 	{
 		$doc_Charge_To = _("Order To");
-		$doc_Delivered_To = _("Charge To");
+		if ($doctype == ST_PURCHORDER)
+			$doc_Delivered_To = _("Deliver To");
+		else	
+			$doc_Delivered_To = _("Charge To");
 	}
 	else
 	{

@@ -19,6 +19,12 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+20-Mar-2010 Joe Hunt/RodW
+# [0000215} Wrong text in deliver to and not printing it.
+$ /reporting/includes/doctext.inc
+  /reporting/includes/doctext2.inc
+  /reporting/header2.inc
+  
 15-Mar-2010 Janusz Dobrowolski
 # Missing check for customer/bramch selected ([0000216])
 $ /sales/sales_order_entry.php
