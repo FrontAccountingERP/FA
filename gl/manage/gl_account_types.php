@@ -19,7 +19,7 @@ include($path_to_root . "/gl/includes/gl_db.inc");
 
 include($path_to_root . "/includes/ui.inc");
 
-simple_page_mode(true);
+simple_page_mode(false);
 //-----------------------------------------------------------------------------------
 
 function can_process() 
@@ -56,7 +56,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 	if (can_process()) 
 	{
 
-    	if ($selected_id != -1) 
+    	if ($selected_id != "") 
     	{
     		if (update_account_type($_POST['id'], $_POST['name'], $_POST['class_id'], $_POST['parent'], $_POST['old_id']))
 				display_notification(_('Selected account type has been updated'));
@@ -75,7 +75,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 
 function can_delete($selected_id)
 {
-	if ($selected_id == -1)
+	if ($selected_id == "")
 		return false;
 	$type = db_escape($selected_id);
 
@@ -109,7 +109,7 @@ if ($Mode == 'Delete')
 }
 if ($Mode == 'RESET')
 {
- 	$selected_id = -1;
+ 	$selected_id = "";
 	$_POST['id']  = $_POST['name']  = '';
 	unset($_POST['parent']);
 	unset($_POST['class_id']);
@@ -132,7 +132,7 @@ while ($myrow = db_fetch($result))
 
 	$bs_text = get_account_class_name($myrow["class_id"]);
 
-	if ($myrow["parent"] == '0' || $myrow["parent"] == '-1') 
+	if ($myrow["parent"] == '-1') 
 	{
 		$parent_text = "";
 	} 
@@ -157,7 +157,7 @@ end_table(1);
 
 start_table($table_style2);
 
-if ($selected_id != -1)
+if ($selected_id != "")
 {
 	if ($Mode == 'Edit') 
 	{
@@ -167,15 +167,15 @@ if ($selected_id != -1)
 		$_POST['id']  = $myrow["id"];
 		$_POST['name']  = $myrow["name"];
 		$_POST['parent']  = $myrow["parent"];
+		if ($_POST['parent'] == '-1')
+			$_POST['parent'] == "";
 		$_POST['class_id']  = $myrow["class_id"];
 		hidden('selected_id', $selected_id);
 		hidden('old_id', $myrow["id"]);
  	}
  	hidden('id');
-	text_row_ex(_("ID:"), 'id', 10);
 }
-else
-	text_row_ex(_("ID:"), 'id', 10);
+text_row_ex(_("ID:"), 'id', 10);
 text_row_ex(_("Name:"), 'name', 50);
 
 gl_account_types_list_row(_("Subgroup Of:"), 'parent', null, _("None"), true);

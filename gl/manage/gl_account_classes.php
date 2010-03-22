@@ -19,7 +19,7 @@ include($path_to_root . "/gl/includes/gl_db.inc");
 
 include($path_to_root . "/includes/ui.inc");
 
-simple_page_mode(true);
+simple_page_mode(false);
 //-----------------------------------------------------------------------------------
 
 function can_process() 
@@ -50,7 +50,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 	if (can_process()) 
 	{
 
-    	if ($selected_id != -1) 
+    	if ($selected_id != "") 
     	{
     		if(update_account_class($selected_id, $_POST['name'], $_POST['ctype']))
 				display_notification(_('Selected account class settings has been updated'));
@@ -69,7 +69,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 
 function can_delete($selected_id)
 {
-	if ($selected_id == -1)
+	if ($selected_id == "")
 		return false;
 	if (key_in_foreign_table($selected_id, 'chart_types', 'class_id'))	
 	{
@@ -97,7 +97,7 @@ if ($Mode == 'Delete')
 //-----------------------------------------------------------------------------------
 if ($Mode == 'RESET')
 {
-	$selected_id = -1;
+	$selected_id = "";
 	$_POST['id']  = $_POST['name']  = $_POST['ctype'] =  '';
 }
 //-----------------------------------------------------------------------------------
@@ -138,7 +138,7 @@ end_table(1);
 
 start_table($table_style2);
 
-if ($selected_id != -1) 
+if ($selected_id != "") 
 {
  	if ($Mode == 'Edit') {
 		//editing an existing status code
@@ -171,7 +171,7 @@ else
 
 end_table(1);
 
-submit_add_or_update_center($selected_id == -1, '', 'both');
+submit_add_or_update_center($selected_id == "", '', 'both');
 
 end_form();
 

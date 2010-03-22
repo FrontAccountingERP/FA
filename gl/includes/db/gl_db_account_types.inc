@@ -61,7 +61,7 @@ function get_account_types($all=false, $class_id=false, $parent=false)
 	if ($class_id != false) 
 		$sql .= " AND class_id=".db_escape($class_id);
 	if ($parent == -1) 
-		$sql .= " AND parent <= 0";
+		$sql .= " AND (parent = '' OR parent = '-1')";
 	elseif ($parent != false) 
 		$sql .= " AND parent=".db_escape($parent);
 	$sql .= " ORDER BY class_id, id, parent";

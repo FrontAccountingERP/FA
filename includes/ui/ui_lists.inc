@@ -1530,7 +1530,7 @@ function stock_categories_list_row($label, $name, $selected_id=null, $spec_opt=f
 
 //-----------------------------------------------------------------------------------------------
 
-function gl_account_types_list($name, $selected_id=null, $all_option=false, $all_option_numeric=true)
+function gl_account_types_list($name, $selected_id=null, $all_option=false, $all=true)
 {
 	global $all_items;
 
@@ -1540,26 +1540,24 @@ function gl_account_types_list($name, $selected_id=null, $all_option=false, $all
 	array(
 		'order' => 'class_id', 'id',
 		'spec_option' =>$all_option,
-		'spec_id' => $all_option_numeric ? 0 : $all_items
+		'spec_id' => $all_items
 	) );
 }
 
-function gl_account_types_list_cells($label, $name, $selected_id=null, $all_option=false,
-	$all_option_numeric=false)
+function gl_account_types_list_cells($label, $name, $selected_id=null, $all_option=false, $all=false)
 {
 	if ($label != null)
 		echo "<td>$label</td>\n";
 	echo "<td>";
-	echo gl_account_types_list($name, $selected_id, $all_option, $all_option_numeric);
+	echo gl_account_types_list($name, $selected_id, $all_option, $all);
 	echo "</td>\n";
 }
 
-function gl_account_types_list_row($label, $name, $selected_id=null, $all_option=false,
-	$all_option_numeric=false)
+function gl_account_types_list_row($label, $name, $selected_id=null, $all_option=false,	$all=false)
 {
 	echo "<tr><td class='label'>$label</td>";
 	gl_account_types_list_cells(null, $name, $selected_id, $all_option,
-		$all_option_numeric);
+		$all);
 	echo "</tr>\n";
 }
 
