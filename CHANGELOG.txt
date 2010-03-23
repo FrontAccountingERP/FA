@@ -19,6 +19,14 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+22-Mar-2010 Joe Hunt
+# Error editing (updating) Account Groups 
+$ /gl/includes/db/gl_db_account_types.inc
+  /gl/manage/gl_account_classes.php
+  /gl/manage/gl_account_types.php
+  /includes/ui/ui_lists.inc
+  /sql/alter2.3.sql
+  
 12-Mar-2010 Janusz Dobrowolski
 # Small cleanups.
 $ /reporting rep301.php

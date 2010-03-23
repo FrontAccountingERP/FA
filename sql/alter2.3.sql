@@ -151,4 +151,4 @@ ALTER TABLE `0_chart_types` CHANGE `id` `id` VARCHAR(10) NOT NULL;
 ALTER TABLE `0_chart_types` CHANGE `parent` `parent` VARCHAR(10) NOT NULL DEFAULT '-1';
 ALTER TABLE `0_chart_types` CHANGE `class_id` `class_id` VARCHAR(3) NOT NULL DEFAULT '';
 .
-
+UPDATE `0_chart_types` SET parent='' WHERE parent='0' OR parent='-1';
