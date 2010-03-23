@@ -26,12 +26,12 @@ function can_process()
 {
 	global $selected_id;
 
-	/*if (!input_num('id'))
+	if ($_POST['id'] == "")
 	{
-	    display_error( _("The account id must be an integer and cannot be empty."));
+	    display_error( _("The account group id cannot be empty."));
 	    set_focus('id');
 	    return false;
-	}*/
+	}
 	if (strlen($_POST['name']) == 0) 
 	{
 		display_error( _("The account group name cannot be empty."));
@@ -39,9 +39,10 @@ function can_process()
 		return false;
 	}
 
-	if (isset($selected_id) && ($selected_id == $_POST['parent'])) 
+	if (strcmp($_POST['id'], $_POST['parent']) == 0) 
 	{
-		display_error(_("You cannot set an account group to be a subgroup of itself."));
+		display_error("id = {$_POST['id']}, parent = {$_POST['parent']}");
+		//display_error(_("You cannot set an account group to be a subgroup of itself."));
 		return false;
 	}
 
@@ -184,7 +185,7 @@ class_list_row(_("Class Type:"), 'class_id', null);
 
 end_table(1);
 
-submit_add_or_update_center($selected_id == -1, '', 'both');
+submit_add_or_update_center($selected_id == "", '', 'both');
 
 end_form();
 
