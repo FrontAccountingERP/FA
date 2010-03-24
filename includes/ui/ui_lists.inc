@@ -182,7 +182,7 @@ $opts = array(		// default options
  		 		$selected_id[] = $value;
  		 	}
 
- 		 	if (in_array((string)$value, $selected_id, TRUE)) {
+ 		 	if (in_array((string)$value, $selected_id, true)) {
 				$sel = 'selected';
 				$found = $value;
 				$edit = $opts['editable'] && $contact_row['editable'] 
@@ -344,7 +344,7 @@ $opts = array(		// default options
 //if($name=='SelectStockFromList') display_error($sql);
 		foreach($items as $value=>$descr) {
 			$sel = '';
-			if (in_array((string)$value, $selected_id)) {
+			if (in_array((string)$value, $selected_id), true) {
 				$sel = "selected='selected'";
 				$found = $value;
 			}
