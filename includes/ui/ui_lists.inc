@@ -181,7 +181,8 @@ $opts = array(		// default options
  		 	if (get_post($search_button) && ($txt == $value)) {
  		 		$selected_id[] = $value;
  		 	}
- 		 	if (in_array($value, $selected_id)) {
+
+ 		 	if (in_array((string)$value, $selected_id, TRUE)) {
 				$sel = 'selected';
 				$found = $value;
 				$edit = $opts['editable'] && $contact_row['editable'] 
