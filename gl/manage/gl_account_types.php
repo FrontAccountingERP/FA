@@ -24,8 +24,6 @@ simple_page_mode(false);
 
 function can_process() 
 {
-	global $selected_id;
-
 	if ($_POST['id'] == "")
 	{
 	    display_error( _("The account group id cannot be empty."));
@@ -39,10 +37,10 @@ function can_process()
 		return false;
 	}
 
-	if (strcmp($_POST['id'], $_POST['parent']) == 0) 
+	//if (strcmp($_POST['id'], $_POST['parent']) == 0) 
+	if ($_POST['id'] === $_POST['parent']) 
 	{
-		display_error("id = {$_POST['id']}, parent = {$_POST['parent']}");
-		//display_error(_("You cannot set an account group to be a subgroup of itself."));
+		display_error(_("You cannot set an account group to be a subgroup of itself."));
 		return false;
 	}
 
@@ -66,9 +64,9 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
     	{
     		if (add_account_type($_POST['id'], $_POST['name'], $_POST['class_id'], $_POST['parent'])) {
 				display_notification(_('New account type has been added'));
-				$Mode = 'RESET';
 			}
     	}
+		$Mode = 'RESET';
 	}
 }
 
@@ -171,10 +169,14 @@ if ($selected_id != "")
 		if ($_POST['parent'] == '-1')
 			$_POST['parent'] == "";
 		$_POST['class_id']  = $myrow["class_id"];
-		hidden('selected_id', $selected_id);
+		hidden('selected_id', $myrow['id']);
 		hidden('old_id', $myrow["id"]);
  	}
- 	hidden('id');
+ 	else
+ 	{
+		hidden('selected_id', $selected_id);
+		hidden('old_id', $_POST["old_id"]);
+	}	
 }
 text_row_ex(_("ID:"), 'id', 10);
 text_row_ex(_("Name:"), 'name', 50);

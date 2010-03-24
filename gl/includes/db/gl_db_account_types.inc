@@ -20,7 +20,7 @@ function add_account_type($id, $name, $class_id, $parent)
 function update_account_type($id, $name, $class_id, $parent, $old_id)
 {
 	begin_transaction();
-	if ($old_id != $id)
+	if ($old_id !== $id)
 	{
 		$sql = "SELECT id FROM ".TB_PREF."chart_types WHERE parent = ".db_escape($old_id);
 

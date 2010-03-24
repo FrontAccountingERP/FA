@@ -344,7 +344,7 @@ $opts = array(		// default options
 //if($name=='SelectStockFromList') display_error($sql);
 		foreach($items as $value=>$descr) {
 			$sel = '';
-			if (in_array((string)$value, $selected_id), true) {
+			if (in_array((string)$value, $selected_id, true)) {
 				$sel = "selected='selected'";
 				$found = $value;
 			}

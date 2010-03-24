@@ -19,11 +19,14 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+24-Mar-2010 Janusz Dobrowolski/Joe Hunt
 # Fixed problem with multiply zeros a value of option in list selectors
+# Parse error in ui_list.inc. Fix in other files.
 $ /includes/ui/ui_lists.inc
+  /gl/includes/db/gl_db_account_types.inc
+  /gl/manage/gl_account_types.php
 
 22-Mar-2010 Joe Hunt
-
 # Error editing (updating) Account Groups and problem
   with "00" == "0" in php.
 $ /gl/includes/db/gl_db_account_types.inc
