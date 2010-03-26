@@ -22,6 +22,7 @@ $ -> Affected files
 26-Mar-2010 Joe Hunt
 # Fixed a sorting problem in gl_account_types_list
 $ /includes/ui/ui_lists.inc
+  /gl/includes/db/gl_db_account_types.inc
 
 24-Mar-2010 Janusz Dobrowolski/Joe Hunt
 # Fixed problem with multiply zeros a value of option in list selectors
