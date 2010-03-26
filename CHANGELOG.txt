@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+26-Mar-2010 Joe Hunt
+# Fixed a sorting problem in gl_account_types_list
+$ /includes/ui/ui_lists.inc
+
 24-Mar-2010 Janusz Dobrowolski/Joe Hunt
 # Fixed problem with multiply zeros a value of option in list selectors
 # Parse error in ui_list.inc. Fix in other files.
