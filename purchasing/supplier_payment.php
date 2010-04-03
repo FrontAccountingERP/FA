@@ -140,7 +140,8 @@ function check_inputs()
 		return false;
 	}
 
-	if (input_num('amount') - input_num('discount') <= 0) 
+	//if (input_num('amount') - input_num('discount') <= 0) 
+	if (input_num('amount') <= 0) 
 	{
 		display_error(_("The total of the amount and the discount is zero or negative. Please enter positive values."));
 		set_focus('amount');

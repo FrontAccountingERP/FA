@@ -152,7 +152,8 @@ function can_process()
 		return false;
 	}
 
-	if ((input_num('amount') - input_num('discount') <= 0)) {
+	//if ((input_num('amount') - input_num('discount') <= 0)) {
+	if (input_num('amount') <= 0) {
 		display_error(_("The balance of the amount and discout is zero or negative. Please enter valid amounts."));
 		set_focus('discount');
 		return false;

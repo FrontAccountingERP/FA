@@ -19,14 +19,19 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+03-Apr-2010 Joe Hunt/Chaitanya
+# [0000219] Incorrect behaviors regarding Payment forms
+$ /purchasing/supplier_payment.php
+  /sales/customer_payments.php
+
 20-Mar-2010 Joe Hunt/RodW
 # [0000215} Wrong text in deliver to and not printing it.
 $ /reporting/includes/doctext.inc
   /reporting/includes/doctext2.inc
-  /reporting/header2.inc
+  /reporting/includes/header2.inc
   
 15-Mar-2010 Janusz Dobrowolski
-# Missing check for customer/bramch selected ([0000216])
+# Missing check for customer/branch selected ([0000216])
 $ /sales/sales_order_entry.php
   /sales/customer_payment.php
 # Missing check for supplier selected ([0000217])
