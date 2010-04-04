@@ -62,7 +62,7 @@ if (isset($_POST['submit']))
 				$_POST['email'], $_POST['website'], $_POST['contact'], $_POST['supp_account_no'], $_POST['bank_account'], 
 				input_num('credit_limit', 0), $_POST['dimension_id'], $_POST['dimension2_id'], $_POST['curr_code'],
 				$_POST['payment_terms'], $_POST['payable_account'], $_POST['purchase_account'], $_POST['payment_discount_account'],
-				$_POST['notes'], $_POST['tax_group_id']);
+				$_POST['notes'], $_POST['tax_group_id'], $_POST['rep_lang']);
 			update_record_status($_POST['supplier_id'], $_POST['inactive'],
 				'suppliers', 'supplier_id');
 
@@ -76,7 +76,7 @@ if (isset($_POST['submit']))
 				$_POST['website'], $_POST['contact'], $_POST['supp_account_no'], $_POST['bank_account'], 
 				input_num('credit_limit',0), $_POST['dimension_id'], $_POST['dimension2_id'],
 				$_POST['curr_code'], $_POST['payment_terms'], $_POST['payable_account'], $_POST['purchase_account'],
-				$_POST['payment_discount_account'], $_POST['notes'], $_POST['tax_group_id']);
+				$_POST['payment_discount_account'], $_POST['notes'], $_POST['tax_group_id'], $_POST['rep_lang']);
 
 			$_POST['supplier_id'] = db_insert_id();
 			$new_supplier = false;
@@ -166,6 +166,7 @@ if (!$new_supplier)
 	$_POST['dimension_id']  = $myrow["dimension_id"];
 	$_POST['dimension2_id']  = $myrow["dimension2_id"];
 	$_POST['curr_code']  = $myrow["curr_code"];
+	$_POST['rep_lang']  = $myrow["rep_lang"];
 	$_POST['payment_terms']  = $myrow["payment_terms"];
 	$_POST['credit_limit']  = price_format($myrow["credit_limit"]);
 	$_POST['tax_group_id'] = $myrow["tax_group_id"];
@@ -189,6 +190,7 @@ else
 
 	$company_record = get_company_prefs();
 	$_POST['curr_code']  = $company_record["curr_default"];
+	$_POST['rep_lang']  = $dflt_lang;
 	$_POST['payable_account'] = $company_record["creditors_act"];
 	$_POST['purchase_account'] = $company_record["default_cogs_act"];
 	$_POST['payment_discount_account'] = $company_record['pyt_discount_act'];
@@ -228,6 +230,8 @@ else
 {
 	currencies_list_row(_("Supplier's Currency:"), 'curr_code', null);
 }
+
+languages_list_row(_("Document Language:"), 'rep_lang', null, _('System default'));
 
 tax_groups_list_row(_("Tax Group:"), 'tax_group_id', null);
 

@@ -35,7 +35,8 @@ function get_receipt($type, $trans_no)
 				(".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + ".TB_PREF."debtor_trans.ov_freight + 
 				".TB_PREF."debtor_trans.ov_freight_tax + ".TB_PREF."debtor_trans.ov_discount) AS Total, 
    				".TB_PREF."debtors_master.name AS DebtorName,  ".TB_PREF."debtors_master.debtor_ref,
-   				".TB_PREF."debtors_master.curr_code, ".TB_PREF."debtors_master.payment_terms, ".TB_PREF."debtors_master.tax_id AS tax_id, 
+   				".TB_PREF."debtors_master.curr_code, ".TB_PREF."debtors_master.payment_terms, "
+   				.TB_PREF."debtors_master.tax_id AS tax_id,".TB_PREF."debtors_master.rep_lang,
    				".TB_PREF."debtors_master.email, ".TB_PREF."debtors_master.address
     			FROM ".TB_PREF."debtor_trans, ".TB_PREF."debtors_master 
 				WHERE ".TB_PREF."debtor_trans.debtor_no = ".TB_PREF."debtors_master.debtor_no
@@ -115,14 +116,7 @@ function print_receipts()
 
 			$linetype = true;
 			$doctype = ST_CUSTPAYMENT;
-			if ($rep->currency != $myrow['curr_code'])
-			{
-				include($path_to_root . "/reporting/includes/doctext2.inc");
-			}
-			else
-			{
-				include($path_to_root . "/reporting/includes/doctext.inc");
-			}
+			include($path_to_root . "/reporting/includes/doctext.inc");
 
 			$total_allocated = 0;
 			$rep->TextCol(0, 4,	$doc_Towards, -2);

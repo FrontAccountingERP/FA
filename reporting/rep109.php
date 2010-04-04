@@ -139,14 +139,7 @@ function print_sales_orders()
 		$rep->row = $rep->bottomMargin + (15 * $rep->lineHeight);
 		$linetype = true;
 		$doctype = ST_SALESORDER;
-		if ($rep->currency != $myrow['curr_code'])
-		{
-			include($path_to_root . "/reporting/includes/doctext2.inc");
-		}
-		else
-		{
-			include($path_to_root . "/reporting/includes/doctext.inc");
-		}
+		include($path_to_root . "/reporting/includes/doctext.inc");
 
 		$rep->TextCol(3, 6, $doc_Sub_total, -2);
 		$rep->TextCol(6, 7,	$DisplaySubTot, -2);

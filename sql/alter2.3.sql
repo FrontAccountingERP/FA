@@ -152,3 +152,11 @@ ALTER TABLE `0_chart_types` CHANGE `parent` `parent` VARCHAR(10) NOT NULL DEFAUL
 ALTER TABLE `0_chart_types` CHANGE `class_id` `class_id` VARCHAR(3) NOT NULL DEFAULT '';
 .
 UPDATE `0_chart_types` SET parent='' WHERE parent='0' OR parent='-1';
+
+ALTER TABLE `0_debtors_master` ADD COLUMN  `rep_lang` char(5) default NULL;
+UPDATE `0_debtors_master` set `rep_lang`= 'en_GB' WHERE `curr_code`<>(SELECT value FROM `0_sys_prefs` WHERE name='curr_default');
+
+ALTER TABLE `0_cust_branch` ADD COLUMN  `rep_lang` char(5) default NULL;
+
+ALTER TABLE `0_suppliers` ADD COLUMN  `rep_lang` char(5) default NULL;
+UPDATE `0_suppliers` set `rep_lang`= 'en_GB' WHERE `curr_code`<>(SELECT value FROM `0_sys_prefs` WHERE name='curr_default');

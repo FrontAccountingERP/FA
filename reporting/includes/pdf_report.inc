@@ -219,13 +219,8 @@ class FrontReport extends Cpdf
 		$this->currency = '';
 		$this->scaleLogoWidth = false; // if Logo, scale on width (else height).
 		$this->SetHeaderType('Header'); // default
-		
-		$rtl = ($_SESSION['language']->dir === 'rtl' ? 'rtl' : 'ltr');
-		$code = $_SESSION['language']->code;
-		$enc = strtoupper($_SESSION['language']->encoding);
-		// for the language array in class.pdf.inc
-		$l = array('a_meta_charset' => $enc, 'a_meta_dir' => $rtl, 'a_meta_language' => $code, 'w_page' => 'page');
-		$this->Cpdf($size, $l, $orientation);
+
+		$this->Cpdf($size, $_SESSION['language']->code, $orientation);
 	}
 	
 	/*
@@ -390,22 +385,24 @@ class FrontReport extends Cpdf
 			'DebtorName', 'supp_account_no', 'wo_ref', 'debtor_ref','type', 'trans_no', 
 			'StockItemName', 'tax_id', 'order_', 'delivery_date', 'units_issued',
 			'due_date', 'required_by', 'payment_terms', 'curr_code',
-			'ov_freight', 'ov_gst', 'ov_amount'),
-		'branch' => array('br_address', 'br_name', 'salesman', 'disable_branch'),
+			'ov_freight', 'ov_gst', 'ov_amount', 'rep_lang'),
+		'branch' => array('br_address', 'br_name', 'salesman', 'disable_branch', 'rep_lang'),
 		'sales_order' => array('deliver_to', 'delivery_address', 'customer_ref'),
 		'bankaccount' => array('bank_name', 'bank_account_number')
 		);
-	
+
 		foreach($datnames as $var => $fields) {
 			if (isset($$var)) {
 				foreach($fields as $locname) {
-					if (isset(${$var}[$locname])) {
+					if (isset(${$var}[$locname]) && (${$var}[$locname]!==null)) {
 						$this->formData[$locname] = ${$var}[$locname];
 					}
 				}
 			}
 		}
 		$this->formData['doctype'] = $doctype;
+		error_log('cust:'.var_export($myrow, true));
+		error_log('branch:'.var_export($branch, true));
 	}
 	/*
 		Set header handler
@@ -418,22 +415,17 @@ class FrontReport extends Cpdf
 	*/
 	function Header2()
 	{
-		global $comp_path, $path_to_root, $print_as_quote, $print_invoice_no, $packing_slip; // FIXME
+		global $path_to_root, $print_as_quote,
+			$print_invoice_no, $packing_slip, $dflt_lang; // FIXME should be passed as params
 
 		$doctype = $this->formData['doctype'];
 		$header2type = true;
  		
+		$this->SetLang(@$this->formData['rep_lang'] ? $this->formData['rep_lang'] : $dflt_lang);
+
  		 // leave layout files names without path to enable including
- 		 // modified versions from comapny/x/reporting directory
-		if (isset($myrow['curr_code']) && $this->currency != $myrow['curr_code'])
-		{
-			include("includes/doctext2.inc");
-		}
-		else
-		{
-			include("includes/doctext.inc");
-		}
-		
+ 		 // modified versions from company/x/reporting directory
+		include("includes/doctext.inc");
 		include("includes/header2.inc");
 
 		$this->row = $temp;
@@ -442,8 +434,6 @@ class FrontReport extends Cpdf
 	// Alternate header style which also supports a simple footer
 	function Header3()
 	{
-		global $comp_path;
-
 		// Turn off cell padding for the main report header, restoring the current setting later
 		$oldcMargin = $this->cMargin;
 		$this->SetCellPadding(0);
@@ -524,7 +514,7 @@ class FrontReport extends Cpdf
 		if ($this->companyLogoEnable && ($this->company['coy_logo'] != ''))
 		{
 			// Build a string specifying the location of the company logo file
-			$logo = $comp_path .'/'. user_company() . "/images/" . $this->company['coy_logo'];
+			$logo = company_path() . "/images/" . $this->company['coy_logo'];
 
 			// Width being zero means that the image will be scaled to the specified height
 			// keeping its aspect ratio intact.
@@ -965,7 +955,7 @@ class FrontReport extends Cpdf
 
 	function End($email=0, $subject=null, $myrow=null, $doctype = 0)
 	{
-		global $pdf_debug, $path_to_root, $comp_path;
+		global $pdf_debug, $path_to_root;
 
 		if ($pdf_debug == 1)
 		{
@@ -978,7 +968,7 @@ class FrontReport extends Cpdf
 		else
 		{
 
-			$dir =  $comp_path.'/'.user_company(). '/pdf_files';
+			$dir =  company_path(). '/pdf_files';
 			//save the file
 			if (!file_exists($dir))
 			{
@@ -991,17 +981,13 @@ class FrontReport extends Cpdf
 			else	
 				$fname = $dir.'/'.uniqid('').'.pdf';
 			$this->Output($fname, 'F');
+
 			if ($email == 1)
 			{
 				$emailtype = true;
-				if ($this->currency != $myrow['curr_code'])
-				{
-					include("includes/doctext2.inc");
-				}
-				else
-				{
-					include("includes/doctext.inc");
-				}
+				$this->SetLang($this->formData['rep_lang']);
+				include("includes/doctext.inc");
+
 				require_once($path_to_root . "/reporting/includes/class.mail.inc");
     			$mail = new email(str_replace(",", "", $this->company['coy_name']), $this->company['email']);
 				if (!isset($myrow['email']) || $myrow['email'] == '') 
@@ -1039,7 +1025,7 @@ class FrontReport extends Cpdf
 			{
 				$printer = get_report_printer(user_print_profile(), $this->rep_id);
 				if ($printer == false) {
-					if(in_ajax()) {
+					if (in_ajax()) {
 						global $Ajax;
 
 						if (user_rep_popup()) 
@@ -1047,13 +1033,13 @@ class FrontReport extends Cpdf
 						else
 							$Ajax->redirect($fname); // otherwise use faster method
 					} else {
-	                header('Content-type: application/pdf');
-    	            header("Content-Disposition: inline; filename=$this->filename");
-        	        header('Expires: 0');
-            	    header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-                	header('Pragma: public');
-
-	                $this->Stream();
+						header('Content-type: application/pdf');
+						header('Content-Disposition: inline; filename='.$this->filename);
+						header('Expires: 0');
+						header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+						header('Pragma: public');
+//						$this->Stream(basename($fname));
+						$this->Stream($this->filename);
 					}
 				} else { // send report to network printer
 					$prn = new remote_printer($printer['queue'],$printer['host'],

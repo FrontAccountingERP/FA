@@ -13,11 +13,11 @@
 function add_supplier($supp_name, $supp_ref, $address, $supp_address, $phone, $phone2, $fax, $gst_no, $email,
 	$website, $contact, $supp_account_no, $bank_account, $credit_limit, $dimension_id, $dimension2_id, 
 	$curr_code, $payment_terms, $payable_account, $purchase_account, $payment_discount_account, 
-	$notes, $tax_group_id)
+	$notes, $tax_group_id, $rep_lang)
 {
 	$sql = "INSERT INTO ".TB_PREF."suppliers (supp_name, supp_ref, address, supp_address, phone, phone2, fax, gst_no, email, website,
 		contact, supp_account_no, bank_account, credit_limit, dimension_id, dimension2_id, curr_code,
-		payment_terms, payable_account, purchase_account, payment_discount_account, notes, tax_group_id)
+		payment_terms, payable_account, purchase_account, payment_discount_account, notes, tax_group_id, rep_lang)
 		VALUES (".db_escape($_POST['supp_name']). ", "
 		.db_escape($supp_ref). ", "
 		.db_escape($address) . ", "
@@ -40,7 +40,8 @@ function add_supplier($supp_name, $supp_ref, $address, $supp_address, $phone, $p
 		.db_escape($purchase_account). ", "
 		.db_escape($payment_discount_account). ", "
 		.db_escape($notes). ", "
-		.db_escape($tax_group_id). ")";
+		.db_escape($tax_group_id). ", "
+		.db_escape($rep_lang ? $rep_lang : null, true). ")";
 
 	db_query($sql,"The supplier could not be added");
 }
@@ -48,7 +49,7 @@ function add_supplier($supp_name, $supp_ref, $address, $supp_address, $phone, $p
 function update_supplier($supplier_id, $supp_name, $supp_ref, $address, $supp_address, $phone, $phone2, $fax, $gst_no, 
 	$email,	$website, $contact, $supp_account_no, $bank_account, $credit_limit, $dimension_id, $dimension2_id, 
 	$curr_code, $payment_terms, $payable_account, $purchase_account, $payment_discount_account, 
-	$notes, $tax_group_id)
+	$notes, $tax_group_id, $rep_lang)
 {
 	$sql = "UPDATE ".TB_PREF."suppliers SET supp_name=".db_escape($supp_name) . ",
 		supp_ref=".db_escape($supp_ref) . ",
@@ -72,7 +73,8 @@ function update_supplier($supplier_id, $supp_name, $supp_ref, $address, $supp_ad
 		purchase_account=".db_escape($purchase_account) . ",
 		payment_discount_account=".db_escape($payment_discount_account) . ",
 		notes=".db_escape($notes) . ",
-		tax_group_id=".db_escape($tax_group_id) . " WHERE supplier_id = ".db_escape($supplier_id);
+		tax_group_id=".db_escape($tax_group_id) . ",
+		rep_lang=".db_escape($rep_lang ? $rep_lang : null, true) . " WHERE supplier_id = ".db_escape($supplier_id);
 
 	db_query($sql,"The supplier could not be updated");
 }

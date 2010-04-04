@@ -33,7 +33,7 @@ function get_remittance($type, $trans_no)
 {
    	$sql = "SELECT ".TB_PREF."supp_trans.*, 
    		(".TB_PREF."supp_trans.ov_amount+".TB_PREF."supp_trans.ov_gst+".TB_PREF."supp_trans.ov_discount) AS Total, 
-   		".TB_PREF."suppliers.supp_name,  ".TB_PREF."suppliers.supp_account_no,
+   		".TB_PREF."suppliers.supp_name,  ".TB_PREF."suppliers.supp_account_no, ".TB_PREF."suppliers.rep_lang,
    		".TB_PREF."suppliers.curr_code, ".TB_PREF."suppliers.payment_terms, ".TB_PREF."suppliers.gst_no AS tax_id, 
    		".TB_PREF."suppliers.email, ".TB_PREF."suppliers.address, ".TB_PREF."suppliers.contact
 		FROM ".TB_PREF."supp_trans, ".TB_PREF."suppliers
@@ -129,14 +129,7 @@ function print_remittances()
 
 			$linetype = true;
 			$doctype = ST_SUPPAYMENT;
-			if ($rep->currency != $myrow['curr_code'])
-			{
-				include($path_to_root . "/reporting/includes/doctext2.inc");
-			}
-			else
-			{
-				include($path_to_root . "/reporting/includes/doctext.inc");
-			}
+			include($path_to_root . "/reporting/includes/doctext.inc");
 
 			$total_allocated = 0;
 			$rep->TextCol(0, 4,	$doc_Towards, -2);

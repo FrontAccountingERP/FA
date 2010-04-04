@@ -154,14 +154,7 @@ function print_deliveries()
     		$rep->row = $rep->bottomMargin + (15 * $rep->lineHeight);
 			$linetype = true;
 			$doctype=ST_CUSTDELIVERY;
-			if ($rep->currency != $myrow['curr_code'])
-			{
-				include($path_to_root . "/reporting/includes/doctext2.inc");
-			}
-			else
-			{
-				include($path_to_root . "/reporting/includes/doctext.inc");
-			}
+			include($path_to_root . "/reporting/includes/doctext.inc");
 			if ($packing_slip == 0)
 			{
 				$rep->TextCol(3, 6, $doc_Sub_total, -2);

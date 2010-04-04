@@ -31,7 +31,8 @@ print_po();
 //----------------------------------------------------------------------------------------------------
 function get_po($order_no)
 {
-   	$sql = "SELECT ".TB_PREF."purch_orders.*, ".TB_PREF."suppliers.supp_name,  ".TB_PREF."suppliers.supp_account_no,
+   	$sql = "SELECT ".TB_PREF."purch_orders.*, ".TB_PREF."suppliers.supp_name,  "
+   		.TB_PREF."suppliers.rep_lang,  ".TB_PREF."suppliers.supp_account_no,
    		".TB_PREF."suppliers.curr_code, ".TB_PREF."suppliers.payment_terms, ".TB_PREF."locations.location_name,
    		".TB_PREF."suppliers.email, ".TB_PREF."suppliers.address, ".TB_PREF."suppliers.contact
 		FROM ".TB_PREF."purch_orders, ".TB_PREF."suppliers, ".TB_PREF."locations
@@ -154,14 +155,7 @@ function print_po()
 		$rep->row = $rep->bottomMargin + (15 * $rep->lineHeight);
 		$linetype = true;
 		$doctype = ST_PURCHORDER;
-		if ($rep->currency != $myrow['curr_code'])
-		{
-			include($path_to_root . "/reporting/includes/doctext2.inc");
-		}
-		else
-		{
-			include($path_to_root . "/reporting/includes/doctext.inc");
-		}
+		include($path_to_root . "/reporting/includes/doctext.inc");
 
 		$rep->TextCol(3, 6, $doc_Sub_total, -2);
 		$rep->TextCol(6, 7,	$DisplaySubTot, -2);
