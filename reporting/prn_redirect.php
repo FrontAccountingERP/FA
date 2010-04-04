@@ -21,7 +21,7 @@ if (isset($_GET['xls']))
 {
 	$filename = $_GET['filename'];
 	$unique_name = $_GET['unique'];
-	$path =  $comp_path.'/'.user_company(). '/pdf_files/';
+	$path =  company_path(). '/pdf_files/';
 	header("Content-type: application/vnd.ms-excel");
 	header("Content-Disposition: attachment; filename=$filename" );
 	header("Expires: 0");
@@ -34,7 +34,7 @@ elseif (isset($_GET['xml']))
 {
 	$filename = $_GET['filename'];
 	$unique_name = $_GET['unique'];
-	$path =  $comp_path.'/'.user_company(). '/pdf_files/';
+	$path =  company_path(). '/pdf_files/';
 	header("content-type: text/xml");
 	header("Content-Disposition: attachment; filename=$filename");
 	header("Expires: 0");
@@ -57,9 +57,10 @@ $rep = $_POST['REP_ID'];
 
 $rep_file = find_custom_file("/reporting/rep$rep.php");
 
-if ($rep_file)
-	require($rep_file);
-else
+if ($rep_file) {
+	chdir(dirname($rep_file));
+	require(basename($rep_file));
+} else
 	display_error("Cannot find report file '$rep'");
 exit();
 
