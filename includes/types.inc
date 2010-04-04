@@ -47,31 +47,6 @@ define('ST_DIMENSION', 40);
 define ('ST_STATEMENT', 91);
 define ('ST_CHEQUE', 92);
 
-$systypes_array = array (
-	ST_JOURNAL => _("Journal Entry"),
-	ST_BANKPAYMENT => _("Bank Payment"),
-	ST_BANKDEPOSIT => _("Bank Deposit"),
-	ST_BANKTRANSFER => _("Funds Transfer"),
-	ST_SALESINVOICE => _("Sales Invoice"),
-	ST_CUSTCREDIT => _("Customer Credit Note"),
-	ST_CUSTPAYMENT => _("Customer Payment"),
-	ST_CUSTDELIVERY => _("Delivery Note"),
-	ST_LOCTRANSFER => _("Location Transfer"),
-	ST_INVADJUST => _("Inventory Adjustment"),
-	ST_PURCHORDER => _("Purchase Order"),
-	ST_SUPPINVOICE => _("Supplier Invoice"),
-	ST_SUPPCREDIT => _("Supplier Credit Note"),
-	ST_SUPPAYMENT => _("Supplier Payment"),
-	ST_SUPPRECEIVE => _("Purchase Order Delivery"),
-	ST_WORKORDER => _("Work Order"),
-	ST_MANUISSUE => _("Work Order Issue"),
-	ST_MANURECEIVE => _("Work Order Production"),
-	ST_SALESORDER => _("Sales Order"),
-	ST_SALESQUOTE => _("Sales Quotation"),
-	ST_COSTUPDATE => _("Cost Update"),
-	ST_DIMENSION => _("Dimension")
-	);
-
 //----------------------------------------------------------------------------------
 //		Bank transaction types
 //
@@ -79,20 +54,6 @@ define('BT_TRANSFER', 0);
 define('BT_CHEQUE', 1);
 define('BT_CREDIT', 2);
 define('BT_CASH', 3);
-
-$bank_account_types = array (
-	BT_TRANSFER => _("Savings Account"),
-		_("Chequing Account"),
-		_("Credit Account"),
-		_("Cash Account")
-	);
-
-$bank_transfer_types = array(
-	BT_TRANSFER => _("Transfer"),
-			_("Cheque"),
-			_("Credit"),
-			_("Cash")
-	);
 
 include_once($path_to_root . "/manufacturing/includes/manufacturing_db.inc");
 include_once($path_to_root . "/purchasing/includes/purchasing_db.inc");
@@ -107,14 +68,6 @@ define('PT_CUSTOMER', 2);
 define('PT_SUPPLIER', 3);
 define('PT_QUICKENTRY', 4);
 define('PT_DIMESION', 5);
-
-$payment_person_types = array (
-	PT_MISC => _("Miscellaneous"),
-				_("Work Order"),
-				_("Customer"),
-				_("Supplier"),
-				_("Quick Entry")
-	);
 
 function payment_person_currency($type, $person_id)  {
 	switch ($type)
@@ -185,19 +138,8 @@ define('WO_ASSEMBLY', 0);
 define('WO_UNASSEMBLY', 1);
 define('WO_ADVANCED', 2);
 
-$wo_types_array = array (
-	WO_ASSEMBLY => _("Assemble"),
-	WO_UNASSEMBLY => _("Unassemble"),
-	WO_ADVANCED => _("Advanced Manufacture")
-	);
-
 define('WO_LABOUR', 0);
 define('WO_OVERHEAD', 1);
-
-$wo_cost_types = array(
-		WO_LABOUR => _("Labour Cost"),
-		WO_OVERHEAD => _("Overhead Cost"),
-);
 
 //----------------------------------------------------------------------------------
 //	GL account classes
@@ -210,15 +152,6 @@ define('CL_INCOME', 4);
 define('CL_COGS', 5);
 define('CL_EXPENSE', 6);
 
-$class_types = array(
-		CL_ASSETS => _("Assets"),
-		CL_LIABILITIES => _("Liabilities"),
-		CL_EQUITY => _("Equity"),
-		CL_INCOME => _("Income"),
-		CL_COGS => _("Cost of Goods Sold"),
-		CL_EXPENSE => _("Expense"),
-);
-
 function get_class_type_convert($ctype)
 {
 	global $use_oldstyle_convert;
@@ -230,33 +163,10 @@ function get_class_type_convert($ctype)
 //----------------------------------------------------------------------------------
 //	Quick entry types
 //
-$quick_actions = array(
-	'=' => _('Remainder'), // post current base amount to GL account
-	'a' => _('Amount'), // post amount to GL account
-	'a+' => _('Amount, increase base'), // post amount to GL account and increase base
-	'a-' => _('Amount, reduce base'), // post amount to GL account and reduce base
-	'%' => _('% amount of base'),	// store acc*amount% to GL account
-	'%+' => _('% amount of base, increase base'),	// ditto & increase base amount
-	'%-' => _('% amount of base, reduce base'),	// ditto & reduce base amount
-	'T' => _('Taxes added'), // post taxes calculated on base amount
-	'T+' => _('Taxes added, increase base'), // ditto & increase base amount
-	'T-' => _('Taxes added, reduce base'), // ditto & reduce base amount
-	't' => _('Taxes included'), // post taxes calculated on base amount
-	't+' => _('Taxes included, increase base'), // ditto & increase base amount
-	't-' => _('Taxes included, reduce base') // ditto & reduce base amount
-);
-
 define('QE_PAYMENT', '1');
 define('QE_DEPOSIT', '2');
 define('QE_JOURNAL', '3');
 define('QE_SUPPINV', '4');
-
-$quick_entry_types = array(
-		QE_DEPOSIT => _("Bank Deposit"),
-		QE_PAYMENT => _("Bank Payment"),
-		QE_JOURNAL => _("Journal Entry"),
-		QE_SUPPINV => _("Supplier Invoice/Credit")
-);
 
 //----------------------------------------------------------------------------------
 //	Special option values for various list selectors.
@@ -266,23 +176,11 @@ define('ANY_NUMERIC', -1);
 define('ALL_TEXT', '');
 define('ALL_NUMERIC', -1);
 
-
-//----------------------------------------------------------------------------------
-// Types of stock items
-$stock_types = array(
-		'M' => _("Manufactured"),
-		'B' => _("Purchased"),
-		'D' => _("Service")
-);
-
 //----------------------------------------------------------------------------------
 
 define('TAG_ACCOUNT',   1);
 define('TAG_DIMENSION', 2);
 
-$tag_types = array (
-		TAG_ACCOUNT   => _("Account"),
-		TAG_DIMENSION => _("Dimension")
-);
+include_once($path_to_root . '/includes/sysnames.inc');
 
 ?>
