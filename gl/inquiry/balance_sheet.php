@@ -125,7 +125,7 @@ function inquiry_controls()
 
 function display_balance_sheet()
 {
-	global $comp_path, $path_to_root, $table_style;
+	global $path_to_root, $table_style;
 	
 	$from = begin_fiscalyear();
 	$to = $_POST['TransToDate'];

@@ -171,7 +171,7 @@ function inquiry_controls()
 
 function display_profit_and_loss()
 {
-	global $comp_path, $path_to_root, $table_style, $sel;
+	global $path_to_root, $table_style, $sel;
 
 	$dim = get_company_pref('use_dimension');
 	$dimension = $dimension2 = 0;
