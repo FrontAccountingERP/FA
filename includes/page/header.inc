@@ -47,13 +47,12 @@ function help_url($context=null)
 
 function send_scripts()
 {
-    global $js_lib, $js_static, $js_path, $js_userlib, $comp_path,
-	$path_to_root, $go_debug;
+    global $js_lib, $js_static, $js_path, $js_userlib, $path_to_root, $go_debug;
 
 	$js ='';
 	foreach($js_static as $jsfile)
 	{
-	    $fpath = $comp_path.'/'.user_company().'/js_cache/'.$jsfile;
+	    $fpath = company_path().'/js_cache/'.$jsfile;
 	    // compress also static files
 	  	if (!file_exists($fpath) || $go_debug)
 			cache_js_file($fpath, file_get_contents($js_path.$jsfile));

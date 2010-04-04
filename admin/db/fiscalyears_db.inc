@@ -159,13 +159,12 @@ function open_year($year)
 //---------------------------------------------------------------------------------------------
 function delete_attachments_and_comments($type_no, $trans_no)
 {
-	global $comp_path;
 	
 	$sql = "SELECT * FROM ".TB_PREF."attachments WHERE type_no = $type_no AND trans_no = $trans_no";
 	$result = db_query($sql, "Could not retrieve attachments");
 	while ($row = db_fetch($result))
 	{
-		$dir =  $comp_path."/".user_company(). "/attachments";
+		$dir =  company_path(). "/attachments";
 		if (file_exists($dir."/".$row['unique_name']))
 			unlink($dir."/".$row['unique_name']);
 		$sql = "DELETE FROM ".TB_PREF."attachments WHERE  type_no = $type_no AND trans_no = $trans_no";

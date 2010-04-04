@@ -59,7 +59,7 @@
 		$this->NewLine();
 		if ($this->company['coy_logo'] != '')
 		{
-			$logo = $comp_path .'/'. user_company() . "/images/" . $this->company['coy_logo'];
+			$logo = company_path() . "/images/" . $this->company['coy_logo'];
 			$this->AddImage($logo, $ccol, $this->row, 0, 40);
 		}
 		else

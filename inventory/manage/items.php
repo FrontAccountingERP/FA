@@ -56,7 +56,7 @@ if (isset($_FILES['pic']) && $_FILES['pic']['name'] != '')
 	$stock_id = $_POST['NewStockID'];
 	$result = $_FILES['pic']['error'];
  	$upload_file = 'Yes'; //Assume all is well to start off with
-	$filename = $comp_path . "/$user_comp/images";
+	$filename = company_path().'/images';
 	if (!file_exists($filename))
 	{
 		mkdir($filename);
@@ -155,7 +155,7 @@ if (isset($_POST['addupdate']))
 	{
 		if (check_value('del_image'))
 		{
-			$filename = $comp_path . "/$user_comp/images/".item_img_name($_POST['NewStockID']).".jpg";
+			$filename = company_path().'/images/'.item_img_name($_POST['NewStockID']).".jpg";
 			if (file_exists($filename))
 				unlink($filename);
 		}
@@ -228,7 +228,7 @@ if (isset($_POST['delete']) && strlen($_POST['delete']) > 1)
 
 		$stock_id = $_POST['NewStockID'];
 		delete_item($stock_id);
-		$filename = $comp_path . "/$user_comp/images/".item_img_name($stock_id).".jpg";
+		$filename = company_path().'/images/'.item_img_name($stock_id).".jpg";
 		if (file_exists($filename))
 			unlink($filename);
 		display_notification(_("Selected item has been deleted."));
@@ -388,14 +388,14 @@ file_row(_("Image File (.jpg)") . ":", 'pic', 'pic');
 // Add Image upload for New Item  - by Joe
 $stock_img_link = "";
 $check_remove_image = false;
-if (isset($_POST['NewStockID']) && file_exists("$comp_path/$user_comp/images/"
+if (isset($_POST['NewStockID']) && file_exists(company_path().'/images/'
 	.item_img_name($_POST['NewStockID']).".jpg")) 
 {
  // 31/08/08 - rand() call is necessary here to avoid caching problems. Thanks to Peter D.
 	$stock_img_link .= "<img id='item_img' alt = '[".$_POST['NewStockID'].".jpg".
-		"]' src='$comp_path/$user_comp/images/".item_img_name($_POST['NewStockID']).".jpg?nocache=".rand()."'".
-		" height='$pic_height' border='0'>";
-	$check_remove_image = true;	
+		"]' src='".company_path().'images/'.item_img_name($_POST['NewStockID']).
+		".jpg?nocache=".rand()."'"." height='$pic_height' border='0'>";
+	$check_remove_image = true;
 } 
 else 
 {

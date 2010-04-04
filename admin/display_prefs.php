@@ -45,7 +45,7 @@ if (isset($_POST['setprefs']))
 			$_SESSION['language']->set_language($_POST['language']);
 			// refresh main menu
 
-		flush_dir($comp_path.'/'.user_company().'/js_cache');	
+		flush_dir(company_path().'/js_cache');	
 
 		if ($chg_theme || $chg_lang)
 			meta_forward($_SERVER['PHP_SELF']);

@@ -61,7 +61,7 @@ function getTransactions($category, $location)
 
 function print_stock_check()
 {
-    global $comp_path, $path_to_root, $pic_height, $pic_width;
+    global $path_to_root, $pic_height, $pic_width;
 
     $category = $_POST['PARAM_0'];
     $location = $_POST['PARAM_1'];
@@ -174,7 +174,7 @@ function print_stock_check()
 		}
 		if ($pictures)
 		{
-			$image = $comp_path .'/'. $user_comp . '/images/' 
+			$image = company_path() . '/images/' 
 				. item_img_name($trans['stock_id']) . '.jpg';
 			if (file_exists($image))
 			{

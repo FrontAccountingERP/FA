@@ -122,7 +122,7 @@ print_balance_sheet();
 
 function print_balance_sheet()
 {
-	global $comp_path, $path_to_root;
+	global $path_to_root;
 
 	$dim = get_company_pref('use_dimension');
 	$dimension = $dimension2 = 0;
@@ -297,7 +297,7 @@ function print_balance_sheet()
 		$pg->built_in  = false;
 		$pg->fontfile  = $path_to_root . "/reporting/fonts/Vera.ttf";
 		$pg->latin_notation = ($decseps[$_SESSION["wa_current_user"]->prefs->dec_sep()] != ".");
-		$filename = $comp_path.'/'.user_company(). "/pdf_files/test.png";
+		$filename = company_path(). "/pdf_files/test.png";
 		$pg->display($filename, true);
 		$w = $pg->width / 1.5;
 		$h = $pg->height / 1.5;

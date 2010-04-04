@@ -65,7 +65,7 @@ function get_invoices($supplier_id, $to)
 
 function print_aged_supplier_analysis()
 {
-    global $comp_path, $path_to_root, $systypes_array;
+    global $path_to_root, $systypes_array;
 
     $to = $_POST['PARAM_0'];
     $fromsupp = $_POST['PARAM_1'];
@@ -230,7 +230,7 @@ function print_aged_supplier_analysis()
 		$pg->built_in  = false;
 		$pg->fontfile  = $path_to_root . "/reporting/fonts/Vera.ttf";
 		$pg->latin_notation = ($decseps[$_SESSION["wa_current_user"]->prefs->dec_sep()] != ".");
-		$filename = $comp_path.'/'.user_company(). "/pdf_files/test.png";
+		$filename = company_path(). "/pdf_files/test.png";
 		$pg->display($filename, true);
 		$w = $pg->width / 1.5;
 		$h = $pg->height / 1.5;

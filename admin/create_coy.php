@@ -80,7 +80,7 @@ function remove_connection($id) {
 function handle_submit()
 {
 	global $db_connections, $def_coy, $tb_pref_counter, $db,
-	    $comp_path, $comp_subdirs, $path_to_root;
+	    $comp_subdirs, $path_to_root;
 
 	$new = false;
 	$error = false;
@@ -165,7 +165,7 @@ function handle_submit()
 
 	if ($new)
 	{
-		create_comp_dirs("$comp_path/$id", $comp_subdirs);
+		create_comp_dirs(company_path($id), $comp_subdirs);
 	}
 	$exts = get_company_extensions();
 	write_extensions($exts, $id);
@@ -177,13 +177,14 @@ function handle_submit()
 
 function handle_delete()
 {
-	global $comp_path, $def_coy, $db_connections, $comp_subdirs, $path_to_root;
+	global $def_coy, $db_connections, $comp_subdirs, $path_to_root;
 
 	$id = $_GET['id'];
 
 	// First make sure all company directories from the one under removal are writable. 
 	// Without this after operation we end up with changed per-company owners!
 	for($i = $id; $i < count($db_connections); $i++) {
+			$comp_path = company_path($i);
 		if (!is_dir($comp_path.'/'.$i) || !is_writable($comp_path.'/'.$i)) {
 			display_error(_('Broken company subdirectories system. You have to remove this company manually.'));
 			return;
@@ -198,15 +199,15 @@ function handle_delete()
 	// rename directory to temporary name to ensure all
 	// other subdirectories will have right owners even after
 	// unsuccessfull removal.
-	$cdir = $comp_path.'/'.$id;
-	$tmpname  = $comp_path.'/old_'.$id;
+	$cdir = company_path($id);
+	$tmpname  = company_path('/old_'.$id);
 	if (!@rename($cdir, $tmpname)) {
 		display_error(_('Cannot rename subdirectory to temporary name.'));
 		return;
 	}
 	// 'shift' company directories names
 	for ($i = $id+1; $i < count($db_connections); $i++) {
-		if (!rename($comp_path.'/'.$i, $comp_path.'/'.($i-1))) {
+		if (!rename(company_path($i), company_path($i-1))) {
 			display_error(_("Cannot rename company subdirectory"));
 			return;
 		}

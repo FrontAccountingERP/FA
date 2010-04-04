@@ -38,7 +38,7 @@ if ($view_id != -1)
     			header('Content-Disposition: attachment; filename='.$row['filename']);
     		else
 	 			header("Content-Disposition: inline");
-	    	echo file_get_contents($comp_path."/".user_company(). "/attachments/".$row['unique_name']);
+	    	echo file_get_contents(company_path(). "/attachments/".$row['unique_name']);
     		exit();
 		}
 	}	
@@ -60,7 +60,7 @@ if ($download_id != -1)
     		header("Content-type: ".$type);
 	    	header('Content-Length: '.$row['filesize']);
     		header('Content-Disposition: attachment; filename='.$row['filename']);
-    		echo file_get_contents($comp_path."/".user_company(). "/attachments/".$row['unique_name']);
+    		echo file_get_contents(company_path()."/attachments/".$row['unique_name']);
 	    	exit();
 		}
 	}	
@@ -85,7 +85,7 @@ if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM')
 		//$content = base64_encode(file_get_contents($_FILES['filename']['tmp_name']));
 		$tmpname = $_FILES['filename']['tmp_name'];
 
-		$dir =  $comp_path."/".user_company(). "/attachments";
+		$dir =  company_path()."/attachments";
 		if (!file_exists($dir))
 		{
 			mkdir ($dir,0777);
@@ -127,7 +127,7 @@ if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM')
 if ($Mode == 'Delete')
 {
 	$row = get_attachment($selected_id);
-	$dir =  $comp_path."/".user_company(). "/attachments";
+	$dir =  company_path()."/attachments";
 	if (file_exists($dir."/".$row['unique_name']))
 		unlink($dir."/".$row['unique_name']);
 	delete_attachment($selected_id);	

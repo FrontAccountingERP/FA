@@ -66,7 +66,7 @@ function get_kits($category=0)
 
 function print_price_listing()
 {
-    global $comp_path, $path_to_root, $pic_height, $pic_width;
+    global $path_to_root, $pic_height, $pic_width;
 
     $currency = $_POST['PARAM_0'];
     $category = $_POST['PARAM_1'];
@@ -159,7 +159,7 @@ function print_price_listing()
 		}
 		if ($pictures)
 		{
-			$image = $comp_path . '/'. $user_comp . "/images/" 
+			$image = company_path(). "/images/" 
 				. item_img_name($myrow['stock_id']) . ".jpg";
 			if (file_exists($image))
 			{
