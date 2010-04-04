@@ -312,7 +312,21 @@ function copy_file($file, $from, $to)
 		return @copy($from.'/'.$file, $to.'/'.$file);
 	}
 }
+/*
+	Returns current path to company private folder.
+	(Current path can change after chdir).
+*/
+function company_path($comp=null)
+{
+	global $path_to_root, $comp_path;
 
+	if (!isset($comp))
+		$comp = user_company();
+
+	// if path is relative, set current path_to_root
+	return ($comp_path[0]=='.' ? $path_to_root.'/'.basename($comp_path) : $comp_path)
+			. '/'.$comp;
+}
 /*
 	Search for file, looking first for company specific version, then for 
 	version provided by any extension module, finally in main FA directory.
@@ -325,8 +339,8 @@ function find_custom_file($rep)
 	global $installed_extensions, $comp_path, $path_to_root;
 
 	// customized per company version
-	$path = $comp_path.'/'.user_company();
-	$file = $path.$rep;
+	$path = company_path();
+	$file = $path.'/'.$rep;
 	if (file_exists($file)) {
 		// add local include path
 		set_include_path($path.PATH_SEPARATOR.get_include_path());
