@@ -147,10 +147,11 @@ function write_customer_trans($trans_type, $trans_no, $debtor_no, $BranchNo,
 
 function get_customer_trans($trans_id, $trans_type)
 {
-	$sql = "SELECT ".TB_PREF."debtor_trans.*,
-		ov_amount+ov_gst+ov_freight+ov_freight_tax+ov_discount AS Total,
-		".TB_PREF."debtors_master.name AS DebtorName, ".TB_PREF."debtors_master.address, ".TB_PREF."debtors_master.email AS email2,
-		".TB_PREF."debtors_master.curr_code, ".TB_PREF."debtors_master.tax_id ";
+	$sql = "SELECT trans.*,"
+		."ov_amount+ov_gst+ov_freight+ov_freight_tax+ov_discount AS Total,"
+		."cust.name AS DebtorName, cust.address, "
+		."cust.email AS email2, cust.curr_code, "
+		."cust.tax_id ";
 
 	if ($trans_type == ST_CUSTPAYMENT) {
 		// it's a payment so also get the bank account
@@ -163,14 +164,15 @@ function get_customer_trans($trans_id, $trans_type)
 		$sql .= ", ".TB_PREF."shippers.shipper_name, "
 		.TB_PREF."sales_types.sales_type, "
 		.TB_PREF."sales_types.tax_included, "
-		.TB_PREF."cust_branch.*, "
-		.TB_PREF."debtors_master.discount, "
+		."branch.*, "
+		."cust.discount, "
 		.TB_PREF."tax_groups.name AS tax_group_name, "
 		.TB_PREF."tax_groups.id AS tax_group_id ";
 	}
 
+	$sql .= ", IF(ISNULL(branch.rep_lang),cust.rep_lang,branch.rep_lang) AS rep_lang";
 
-	$sql .= " FROM ".TB_PREF."debtor_trans, ".TB_PREF."debtors_master ";
+	$sql .= " FROM ".TB_PREF."debtor_trans trans, ".TB_PREF."debtors_master cust";
 
 	if ($trans_type == ST_CUSTPAYMENT) {
 		// it's a payment so also get the bank account
@@ -179,12 +181,15 @@ function get_customer_trans($trans_id, $trans_type)
 
 	if ($trans_type == ST_SALESINVOICE || $trans_type == ST_CUSTCREDIT || $trans_type == ST_CUSTDELIVERY) {
 		// it's an invoice so also get the shipper, salestypes
-		$sql .= ", ".TB_PREF."shippers, ".TB_PREF."sales_types, ".TB_PREF."cust_branch, ".TB_PREF."tax_groups ";
+		$sql .= ", ".TB_PREF."shippers, "
+		.TB_PREF."sales_types, "
+		.TB_PREF."cust_branch branch, "
+		.TB_PREF."tax_groups ";
 	}
 
-	$sql .= " WHERE ".TB_PREF."debtor_trans.trans_no=".db_escape($trans_id)."
-		AND ".TB_PREF."debtor_trans.type=".db_escape($trans_type)."
-		AND ".TB_PREF."debtor_trans.debtor_no=".TB_PREF."debtors_master.debtor_no";
+	$sql .= " WHERE trans.trans_no=".db_escape($trans_id)."
+		AND trans.type=".db_escape($trans_type)."
+		AND trans.debtor_no=cust.debtor_no";
 
 	if ($trans_type == ST_CUSTPAYMENT) {
 		// it's a payment so also get the bank account
@@ -194,10 +199,10 @@ function get_customer_trans($trans_id, $trans_type)
 	}
 	if ($trans_type == ST_SALESINVOICE || $trans_type == ST_CUSTCREDIT || $trans_type == ST_CUSTDELIVERY) {
 		// it's an invoice so also get the shipper
-		$sql .= " AND ".TB_PREF."shippers.shipper_id=".TB_PREF."debtor_trans.ship_via
-			AND ".TB_PREF."sales_types.id = ".TB_PREF."debtor_trans.tpe
-			AND ".TB_PREF."cust_branch.branch_code = ".TB_PREF."debtor_trans.branch_code
-			AND ".TB_PREF."cust_branch.tax_group_id = ".TB_PREF."tax_groups.id ";
+		$sql .= " AND ".TB_PREF."shippers.shipper_id=trans.ship_via
+			AND ".TB_PREF."sales_types.id = trans.tpe
+			AND branch.branch_code = trans.branch_code
+			AND branch.tax_group_id = ".TB_PREF."tax_groups.id ";
 	}
 
 	$result = db_query($sql, "Cannot retreive a debtor transaction");
@@ -214,7 +219,6 @@ function get_customer_trans($trans_id, $trans_type)
 		exit;
 	}
 
-	//return db_fetch($result);
 	$row = db_fetch($result);
 	$row['email'] = $row['email2'];
 	return $row;

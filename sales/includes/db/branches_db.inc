@@ -11,12 +11,13 @@
 ***********************************************************************/
 function add_branch($customer_id, $br_name, $br_ref, $br_address, $phone, $phone2, $fax, $contact_name, 
 	$salesman, $area, $email, $tax_group_id, $sales_account, $sales_discount_account, $receivables_account, 
-	$payment_discount_account, $default_location, $br_post_address, $disable_trans, $group_no,	$default_ship_via, $notes)
+	$payment_discount_account, $default_location, $br_post_address, $disable_trans, $group_no,
+	$default_ship_via, $notes, $rep_lang)
 {
 	$sql = "INSERT INTO ".TB_PREF."cust_branch (debtor_no, br_name, branch_ref, br_address,
 		salesman, phone, phone2, fax,
 		contact_name, area, email, tax_group_id, sales_account, receivables_account, payment_discount_account, sales_discount_account, default_location,
-		br_post_address, disable_trans, group_no, default_ship_via, notes)
+		br_post_address, disable_trans, group_no, default_ship_via, notes, rep_lang)
 		VALUES (".db_escape($customer_id). ",".db_escape($br_name) . ", "
 			.db_escape($br_ref) . ", "
 			.db_escape($br_address) . ", ".db_escape($salesman) . ", "
@@ -33,13 +34,15 @@ function add_branch($customer_id, $br_name, $br_ref, $br_address, $phone, $phone
 			.db_escape($disable_trans) . ", "
 			.db_escape($group_no) . ", "
 			.db_escape($default_ship_via). ", "
-			.db_escape($notes) . ")";
+			.db_escape($notes). ", "
+			.db_escape($rep_lang ? $rep_lang : null, true) . ")";
 	db_query($sql,"The branch record could not be added");
 }
 
 function update_branch($customer_id, $branch_code, $br_name, $br_ref, $br_address, $phone, $phone2, $fax, $contact_name, 
 	$salesman, $area, $email, $tax_group_id, $sales_account, $sales_discount_account, $receivables_account, 
-	$payment_discount_account, $default_location, $br_post_address, $disable_trans, $group_no,	$default_ship_via, $notes)
+	$payment_discount_account, $default_location, $br_post_address, $disable_trans, $group_no,
+	$default_ship_via, $notes, $rep_lang)
 {
 	$sql = "UPDATE ".TB_PREF."cust_branch SET br_name = " . db_escape($br_name) . ",
 		branch_ref = " . db_escape($br_ref) . ",
@@ -61,7 +64,8 @@ function update_branch($customer_id, $branch_code, $br_name, $br_ref, $br_addres
 		disable_trans=".db_escape($disable_trans) . ",
 		group_no=".db_escape($group_no) . ", 
 		default_ship_via=".db_escape($default_ship_via) . ",
-		notes=".db_escape($notes) . "
+		notes=".db_escape($notes) . ",
+		rep_lang=".db_escape($rep_lang ? $rep_lang : null, true) . "
 		WHERE branch_code =".db_escape($branch_code) . "
 		AND debtor_no=".db_escape($customer_id);
 	db_query($sql,"The branch record could not be updated");
@@ -134,7 +138,7 @@ function get_cust_branches_from_group($group_no)
 
 function get_default_info_for_branch($customer_id)
 {
-	$sql = "SELECT name, address, email, debtor_ref
+	$sql = "SELECT name, address, email, debtor_ref, rep_lang
 		FROM ".TB_PREF."debtors_master WHERE debtor_no = ".db_escape($customer_id);
 	$result = db_query($sql,"check failed");
 	return db_fetch($result);

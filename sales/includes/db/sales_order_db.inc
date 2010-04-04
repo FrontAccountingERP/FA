@@ -269,33 +269,34 @@ function update_sales_order($order)
 
 function get_sales_order_header($order_no, $trans_type)
 {
-	$sql = "SELECT ".TB_PREF."sales_orders.*, "
-	  .TB_PREF."debtors_master.name, "
-	  .TB_PREF."debtors_master.curr_code, "
-	  .TB_PREF."debtors_master.email AS master_email, "
-	  .TB_PREF."locations.location_name, "
-	  .TB_PREF."debtors_master.discount, "
-	  .TB_PREF."sales_types.sales_type, "
-	  .TB_PREF."sales_types.id AS sales_type_id, "
-	  .TB_PREF."sales_types.tax_included, "
-	  .TB_PREF."shippers.shipper_name, "
-	  .TB_PREF."tax_groups.name AS tax_group_name , "
-	  .TB_PREF."tax_groups.id AS tax_group_id
-	FROM ".TB_PREF."sales_orders, "
-	  .TB_PREF."debtors_master, "
-	  .TB_PREF."sales_types, "
-	  .TB_PREF."tax_groups, "
-	  .TB_PREF."cust_branch, "
-	  .TB_PREF."locations, "
-	  .TB_PREF."shippers
-	WHERE ".TB_PREF."sales_orders.order_type=".TB_PREF."sales_types.id
-		AND ".TB_PREF."cust_branch.branch_code = ".TB_PREF."sales_orders.branch_code
-		AND ".TB_PREF."cust_branch.tax_group_id = ".TB_PREF."tax_groups.id
-		AND ".TB_PREF."sales_orders.debtor_no = ".TB_PREF."debtors_master.debtor_no
-		AND ".TB_PREF."locations.loc_code = ".TB_PREF."sales_orders.from_stk_loc
-		AND ".TB_PREF."shippers.shipper_id = ".TB_PREF."sales_orders.ship_via
-		AND ".TB_PREF."sales_orders.trans_type = " . db_escape($trans_type) ."
-		AND ".TB_PREF."sales_orders.order_no = " . db_escape($order_no );
+	$sql = "SELECT sorder.*, "
+	  ."cust.name, "
+	  ."cust.curr_code, "
+	  ."cust.email AS master_email, "
+	  ."loc.location_name, "
+	  ."cust.discount, "
+	  ."stype.sales_type, "
+	  ."stype.id AS sales_type_id, "
+	  ."stype.tax_included, "
+	  ."ship.shipper_name, "
+	  ."tax_group.name AS tax_group_name , "
+	  ."tax_group.id AS tax_group_id,"
+	  ."IF(ISNULL(branch.rep_lang),cust.rep_lang,branch.rep_lang) AS rep_lang "
+	."FROM ".TB_PREF."sales_orders sorder, "
+	  .TB_PREF."debtors_master cust, "
+	  .TB_PREF."sales_types stype, "
+	  .TB_PREF."tax_groups tax_group, "
+	  .TB_PREF."cust_branch branch, "
+	  .TB_PREF."locations loc, "
+	  .TB_PREF."shippers ship
+	WHERE sorder.order_type=stype.id
+		AND branch.branch_code = sorder.branch_code
+		AND branch.tax_group_id = tax_group.id
+		AND sorder.debtor_no = cust.debtor_no
+		AND loc.loc_code = sorder.from_stk_loc
+		AND ship.shipper_id = sorder.ship_via
+		AND sorder.trans_type = " . db_escape($trans_type) ."
+		AND sorder.order_no = " . db_escape($order_no );
 
 	$result = db_query($sql, "order Retreival");
 
