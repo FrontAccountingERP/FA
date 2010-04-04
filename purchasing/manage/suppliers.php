@@ -190,7 +190,7 @@ else
 
 	$company_record = get_company_prefs();
 	$_POST['curr_code']  = $company_record["curr_default"];
-	$_POST['rep_lang']  = $dflt_lang;
+	$_POST['rep_lang']  = '';
 	$_POST['payable_account'] = $company_record["creditors_act"];
 	$_POST['purchase_account'] = $company_record["default_cogs_act"];
 	$_POST['payment_discount_account'] = $company_record['pyt_discount_act'];
