@@ -1653,30 +1653,31 @@ function yesno_list_row($label, $name, $selected_id=null, $name_yes="", $name_no
 
 //------------------------------------------------------------------------------------------------
 
-function languages_list($name, $selected_id=null)
+function languages_list($name, $selected_id=null, $all_option=false)
 {
 	global $installed_languages;
 
 	$items = array();
+	if ($all_option)
+		$items[''] = $all_option;
 	foreach ($installed_languages as $lang)
 			$items[$lang['code']] = $lang['name'];
-	
 	return array_selector($name, $selected_id, $items);
 }
 
-function languages_list_cells($label, $name, $selected_id=null)
+function languages_list_cells($label, $name, $selected_id=null, $all_option=false)
 {
 	if ($label != null)
 		echo "<td>$label</td>\n";
 	echo "<td>";
-	echo languages_list($name, $selected_id);
+	echo languages_list($name, $selected_id, $all_option);
 	echo "</td>\n";
 }
 
-function languages_list_row($label, $name, $selected_id=null)
+function languages_list_row($label, $name, $selected_id=null, $all_option=false)
 {
 	echo "<tr><td class='label'>$label</td>";
-	languages_list_cells(null, $name, $selected_id);
+	languages_list_cells(null, $name, $selected_id, $all_option);
 	echo "</tr>\n";
 }
 
