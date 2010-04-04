@@ -9,9 +9,20 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
+
+// Standard report classess
+define('RC_CUSTOMER', 0);
+define('RC_SUPPLIER', 1);
+define('RC_INVENTORY', 2);
+define('RC_MANUFACTURE', 3);
+define('RC_DIMENSIONS', 4);
+define('RC_BANKING', 5);
+define('RC_GL', 6);
+
 class BoxReports
 {
-	var $ar_classes;
+	var $ar_classes; // report class names
+	var $ar_reports;
 	var $ctrl_handlers = array();
 
 	function ReportClasses()
@@ -19,43 +30,47 @@ class BoxReports
 		$this->ar_classes = array();
 	}
 
-	function addReportClass($class_name)
+	function addReportClass($class_name, $class_id=null)
 	{
-		$this->ar_classes[$class_name] = array();
+		if (!$class_id)
+			$class_id = count($this->ar_classes);
+		$this->ar_classes[$class_id] = $class_name;
+
+		return $class_id;
 	}
 
-	function addReport($class_name, $id, $rep_name, $params=null)
+	function addReport($class, $id, $rep_name, $params=null)
 	{
-		unset($this->ar_classes[$class_name][$id]); // unset std report if any
-		$this->ar_classes[$class_name][$id] = new Report($id, $rep_name, $params);
+		unset($this->ar_reports[$class][$id]); // unset std report if any
+		$this->ar_reports[$class][$id] = new Report($id, $rep_name, $params);
 	}
 
 	function getDisplay($class=null)
 	{
-		global $table_style, $comp_path, $path_to_root, $pdf_debug, $Ajax;
+		global $table_style, $path_to_root, $pdf_debug, $Ajax;
 
 
 		$temp = array_values($this->ar_classes);
 		$display_class = $class==null ? $temp[0] : $this->ar_classes[$class];
-		$class_counter = 0;
-		$rep_counter = 0;
 		$st_reports = "";
 		$st_params = "";
 		$st_classes = "<b>" . _("Report Classes:") . "</b><br>";
-		foreach($this->ar_classes as $key=>$value)
+		foreach($this->ar_classes as $class_id => $name)
 		{
-			$style = $class_counter==$_REQUEST['Class'] ? '' : "style='display:none'";
-			$acc = access_string($key);
+			$style = $class_id==$_REQUEST['Class'] ? '' : "style='display:none'";
+//			$cname = access_string($key, true);
+//			$style = $_REQUEST['Class']==$cname ? '' : "style='display:none'";
+			$acc = access_string($name);
 			$st_classes .= "<a href='"
-				.$_SERVER['PHP_SELF']."?Class=$class_counter'"
+				.$_SERVER['PHP_SELF']."?Class=$class_id'"
 				." class='menu_option' id='".default_focus()."'"
-				." onclick='return showClass($class_counter);'$acc[1]>$acc[0]</a> <br>";
-			$st_reports .= "<table id='TAB_" . $class_counter ."' $style cellpadding=0 cellspacing=0 width='100%'><tr><td><b>" . _("Reports For Class: ") . "&nbsp;$key</b></td></tr>\n";
-			foreach($value as $report)
+				." onclick='return showClass(\"$class_id\");'$acc[1]>$acc[0]</a> <br>";
+			$st_reports .= "<table class='repclass' id='TAB_" . $class_id ."' $style cellpadding=0 cellspacing=0 border=0 width='100%'><tr><td><b>" . _("Reports For Class: ") . "&nbsp;$name</b></td></tr>\n";
+			foreach($this->ar_reports[$class_id] as $rep_id => $report)
 			{
 				$acc = access_string($report->name);
 				$st_reports .= "<tr><td><a class='printlink' href='"
-					.$_SERVER['PHP_SELF']."?Class=$class_counter&rep_id=$report->id'"
+					.$_SERVER['PHP_SELF']."?Class=$class_id&rep_id=$report->id'"
 					." id='".default_focus()."'"
 					."$acc[1]>$acc[0]</a><tr><td>\n";
 				if (isset($_REQUEST['rep_id']) && $_REQUEST['rep_id']==$report->id) {
@@ -74,7 +89,6 @@ class BoxReports
 				}
 			}
 			$st_reports .= "</table>";
-			$class_counter++;
 		}
 
 		$st_params = "<div id='rep_form'>".
@@ -83,9 +97,11 @@ class BoxReports
 
 		$st = 	"<script language='javascript'>
 					function showClass(pClass) {
-						for(i=0; i<$class_counter; i++) {
-							document.getElementById(\"TAB_\" + i).style.display=
-							i==pClass ? \"block\" : \"none\";
+						var classes = document.getElementsBySelector('.repclass');
+						for(var i in  classes) {
+							cl = classes[i];
+							cl.style.display=
+							(cl.id==('TAB_'+pClass)) ? \"block\" : \"none\";
 						}
 						document.getElementById('rep_form').innerHTML = '';
 //						document.getElementById('rep_form').style.display = 'none';
@@ -429,23 +445,25 @@ function gl_systypes_list($name, $value=null, $spec_opt=false)
 			)
 	);
 }
-
+/*
+	Add extension/custom reports to report manager.
+*/
 function add_custom_reports(&$reports)
 {
-	global $installed_extensions, $path_to_root, $comp_path;
+	global $installed_extensions, $path_to_root;
 	
 	// include reports installed inside extension modules
 	if (count($installed_extensions) > 0)
 	{
 		$extensions = $installed_extensions;
 		foreach ($extensions as $ext)
-			if (($ext['active'] && $ext['type'] == 'module')) {
+			if (($ext['active'] && $ext['type'] == 'extension')) {
 				$file = $path_to_root.'/'.$ext['path']."/reporting/reports_custom.php";
 				if (file_exists($file))
 					include_once($file);
 			}
 	}
-	$file = $comp_path.'/'.user_company()."/reporting/reports_custom.php";
+	$file = company_path()."/reporting/reports_custom.php";
 	if (file_exists($file))
 		include_once($file);
 }
