@@ -82,7 +82,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 				$_POST['salesman'], $_POST['area'], $_POST['email'], $_POST['tax_group_id'], $_POST['sales_account'],
 				$_POST['sales_discount_account'], $_POST['receivables_account'], $_POST['payment_discount_account'],
 				$_POST['default_location'], $_POST['br_post_address'], $_POST['disable_trans'], $_POST['group_no'],
-				$_POST['default_ship_via'], $_POST['notes']);
+				$_POST['default_ship_via'], $_POST['notes'], $_POST['rep_lang']);
 
 			$note =_('Selected customer branch has been updated');
 		}
@@ -94,7 +94,7 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 				$_POST['salesman'], $_POST['area'], $_POST['email'], $_POST['tax_group_id'], $_POST['sales_account'],
 				$_POST['sales_discount_account'], $_POST['receivables_account'], $_POST['payment_discount_account'],
 				$_POST['default_location'], $_POST['br_post_address'], $_POST['disable_trans'], $_POST['group_no'],
-				$_POST['default_ship_via'], $_POST['notes']);
+				$_POST['default_ship_via'], $_POST['notes'], $_POST['rep_lang']);
 			
 			$note = _('New customer branch has been added');
 		}
@@ -224,6 +224,7 @@ if ($selected_id != -1)
 	    $_POST['contact_name'] = $myrow["contact_name"];
 	    $_POST['salesman'] =$myrow["salesman"];
 	    $_POST['area'] =$myrow["area"];
+	    $_POST['rep_lang'] =$myrow["rep_lang"];
 	    $_POST['phone'] =$myrow["phone"];
 	    $_POST['phone2'] =$myrow["phone2"];
 	    $_POST['fax'] =$myrow["fax"];
@@ -243,8 +244,9 @@ if ($selected_id != -1)
 }
 elseif ($Mode != 'ADD_ITEM')
 { //end of if $SelectedBranch only do the else when a new record is being entered
+	$myrow = get_default_info_for_branch($_POST['customer_id']);
+	$_POST['rep_lang'] = $myrow['rep_lang'];
 	if(!$num_branches) {
-		$myrow = get_default_info_for_branch($_POST['customer_id']);
 		$_POST['br_name'] = $myrow["name"];
 		$_POST['br_ref'] = $myrow["debtor_ref"];
 		$_POST['contact_name'] = _('Main Branch');
@@ -285,6 +287,8 @@ email_row(_("E-mail:"), 'email', null, 35, 55);
 table_section_title(_("Sales"));
 
 sales_persons_list_row( _("Sales Person:"), 'salesman', null);
+
+languages_list_row( _("Document Language:"), 'rep_lang', null, _("Customer default"));
 
 sales_areas_list_row( _("Sales Area:"), 'area', null);
 

@@ -80,7 +80,7 @@ function handle_submit()
 		update_customer($_POST['customer_id'], $_POST['CustName'], $_POST['cust_ref'], $_POST['address'],
 			$_POST['tax_id'], $_POST['curr_code'], $_POST['email'], $_POST['dimension_id'], $_POST['dimension2_id'],
 			$_POST['credit_status'], $_POST['payment_terms'], input_num('discount') / 100, input_num('pymt_discount') / 100,
-			input_num('credit_limit'), $_POST['sales_type'], $_POST['notes']);
+			input_num('credit_limit'), $_POST['sales_type'], $_POST['notes'], $_POST['rep_lang']);
 
 		update_record_status($_POST['customer_id'], $_POST['inactive'],
 			'debtors_master', 'debtor_no');
@@ -95,7 +95,7 @@ function handle_submit()
 		add_customer($_POST['CustName'], $_POST['cust_ref'], $_POST['address'],
 			$_POST['tax_id'], $_POST['curr_code'], $_POST['email'], $_POST['dimension_id'], $_POST['dimension2_id'],
 			$_POST['credit_status'], $_POST['payment_terms'], input_num('discount') / 100, input_num('pymt_discount') / 100,
-			input_num('credit_limit'), $_POST['sales_type'], $_POST['notes']);
+			input_num('credit_limit'), $_POST['sales_type'], $_POST['notes'], $_POST['rep_lang']);
 
 		$_POST['customer_id'] = db_insert_id();
 		$new_customer = false;
@@ -188,6 +188,7 @@ if ($new_customer)
 	$_POST['dimension_id'] = 0;
 	$_POST['dimension2_id'] = 0;
 	$_POST['sales_type'] = -1;
+	$_POST['rep_lang'] = '';
 	$_POST['email'] = '';
 	$_POST['curr_code']  = get_company_currency();
 	$_POST['credit_status']  = -1;
@@ -209,6 +210,7 @@ else
 	$_POST['dimension_id']  = $myrow["dimension_id"];
 	$_POST['dimension2_id']  = $myrow["dimension2_id"];
 	$_POST['sales_type'] = $myrow["sales_type"];
+	$_POST['rep_lang'] = $myrow["rep_lang"];
 	$_POST['curr_code']  = $myrow["curr_code"];
 	$_POST['credit_status']  = $myrow["credit_status"];
 	$_POST['payment_terms']  = $myrow["payment_terms"];
@@ -241,6 +243,7 @@ else
 	hidden('curr_code', $_POST['curr_code']);				
 }	
 sales_types_list_row(_("Sales Type/Price List:"), 'sales_type', $_POST['sales_type']);
+languages_list_row( _("Document Language:"), 'rep_lang', $_POST['rep_lang'], _('System default'));
 
 table_section(2);
 
