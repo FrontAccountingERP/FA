@@ -19,6 +19,72 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+04-Apr-2010 Janusz Dobrowolski
++ Added supplier/customer document language selection
+$ /purchasing/includes/db/suppliers_db.inc
+  /purchasing/manage/suppliers.php
+  /reporting/rep107.php
+  /reporting/rep108.php
+  /reporting/rep109.php
+  /reporting/rep110.php
+  /reporting/rep111.php
+  /reporting/rep112.php
+  /reporting/rep209.php
+  /reporting/rep210.php
+  /reporting/includes/class.pdf.inc
+  /reporting/includes/pdf_report.inc
+  /sales/includes/db/branches_db.inc
+  /sales/includes/db/customers_db.inc
+  /sales/includes/db/cust_trans_db.inc
+  /sales/includes/db/sales_order_db.inc
+  /sales/manage/customer_branches.php
+  /sales/manage/customers.php
+  /sql/alter2.3.sql
+  /sql/en_US-demo.sql
+  /sql/en_US-new.sql
+  /reporting/includes/doctext2.inc (removed)
+
++ Added company_path() helper
+$ /admin/attachments.php
+  /admin/company_preferences.php
+  /admin/create_coy.php
+  /admin/display_prefs.php
+  /admin/print_profiles.php
+  /admin/system_diagnostics.php
+  /admin/db/fiscalyears_db.inc
+  /includes/main.inc
+  /includes/lang/language.php
+  /includes/page/header.inc
+  /includes/ui/ui_view.inc
+  /inventory/manage/items.php
+  /reporting/rep102.php
+  /reporting/rep104.php
+  /reporting/rep202.php
+  /reporting/rep303.php
+  /reporting/rep706.php
+  /reporting/rep707.php
+  /reporting/includes/excel_report.inc
+  /reporting/includes/header2.inc
+
+! Added all_option parameter to language selectors
+$ /includes/ui/ui_lists.inc
+
+! System names extracted to new separated file to enable re-read after langauge change
+$ /includes/types.inc
+  /includes/sysnames.inc (new)
+
+! Fixed for better extension modules support
+$ /reporting/prn_redirect.php
+  /reporting/includes/tcpdf.php
+
+! Changed addReport method (better support for extension modules)
+$ /reporting/reports_main.php
+  /reporting/includes/reports_classes.inc
+
+! Code cleanup
+$ /gl/inquiry/balance_sheet.php
+  /gl/inquiry/profit_loss.php
+
 26-Mar-2010 Joe Hunt
 # Fixed a sorting problem in gl_account_types_list
 $ /includes/ui/ui_lists.inc
