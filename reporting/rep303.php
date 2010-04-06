@@ -34,7 +34,7 @@ function getTransactions($category, $location)
 	$sql = "SELECT ".TB_PREF."stock_master.category_id,
 			".TB_PREF."stock_category.description AS cat_description,
 			".TB_PREF."stock_master.stock_id,
-			".TB_PREF."stock_master.description,
+			".TB_PREF."stock_master.description, ".TB_PREF."stock_master.inactive,
 			IF(".TB_PREF."stock_moves.stock_id IS NULL, '', ".TB_PREF."stock_moves.loc_code) AS loc_code,
 			SUM(IF(".TB_PREF."stock_moves.stock_id IS NULL,0,".TB_PREF."stock_moves.qty)) AS QtyOnHand
 		FROM (".TB_PREF."stock_master,
@@ -157,7 +157,7 @@ function print_stock_check()
 		$rep->NewLine();
 		$dec = get_qty_dec($trans['stock_id']);
 		$rep->TextCol(0, 1, $trans['stock_id']);
-		$rep->TextCol(1, 2, $trans['description']);
+		$rep->TextCol(1, 2, $trans['description'].($trans['inactive']==1 ? " ("._("Inactive").")" : ""), -1);
 		$rep->AmountCol(2, 3, $trans['QtyOnHand'], $dec);
 		if ($check)
 		{

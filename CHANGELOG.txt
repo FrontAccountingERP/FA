@@ -19,6 +19,16 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+06-Apr-2010 Joe Hunt/Albin
+# Inactive items should not show in Price List Report. In Item lists they are
+  stamped (Inactive) after the description.
+$ /reporting/rep104.php
+  /reporting/rep301.php
+  /reporting/rep302.php
+  /reporting/rep303.php
+  /reporting/rep304.php
+  /reporting/rep305.php
+  
 03-Apr-2010 Joe Hunt/Chaitanya
 # [0000219] Incorrect behaviors regarding Payment forms
 $ /purchasing/supplier_payment.php

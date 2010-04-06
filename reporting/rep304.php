@@ -36,7 +36,7 @@ function getTransactions($category, $location, $fromcust, $from, $to)
 	$sql = "SELECT ".TB_PREF."stock_master.category_id,
 			".TB_PREF."stock_category.description AS cat_description,
 			".TB_PREF."stock_master.stock_id,
-			".TB_PREF."stock_master.description,
+			".TB_PREF."stock_master.description, ".TB_PREF."stock_master.inactive,
 			".TB_PREF."stock_moves.loc_code,
 			".TB_PREF."debtor_trans.debtor_no,
 			".TB_PREF."debtors_master.name AS debtor_name,
@@ -165,11 +165,11 @@ function print_inventory_sales()
 		$rep->TextCol(0, 1, $trans['stock_id']);
 		if ($fromcust == ALL_NUMERIC)
 		{
-			$rep->TextCol(1, 2, $trans['description']);
+			$rep->TextCol(1, 2, $trans['description'].($trans['inactive']==1 ? " ("._("Inactive").")" : ""), -1);
 			$rep->TextCol(2, 3, $trans['debtor_name']);
 		}
 		else
-			$rep->TextCol(1, 3, $trans['description']);
+			$rep->TextCol(1, 3, $trans['description'].($trans['inactive']==1 ? " ("._("Inactive").")" : ""), -1);
 		$rep->AmountCol(3, 4, $trans['qty'], get_qty_dec($trans['stock_id']));
 		$rep->AmountCol(4, 5, $trans['amt'], $dec);
 		$rep->AmountCol(5, 6, $trans['cost'], $dec);
