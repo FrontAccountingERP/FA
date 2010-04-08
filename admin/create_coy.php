@@ -151,7 +151,7 @@ function handle_submit()
 			{
 				display_error(_("Error connecting to Database: ") . $conn['dbname'] . _(", Please correct it"));
 				$error = true;
-			} else {
+			} elseif ($_POST['admpassword'] != "") {
 				db_query("UPDATE ".$conn['tbpref']."users set password = '".md5($_POST['admpassword']). "' WHERE user_id = 'admin'");
 			}
 		}
