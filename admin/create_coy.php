@@ -42,6 +42,11 @@ function check_data()
 
 	if ($_POST['name'] == "" || $_POST['host'] == "" || $_POST['dbuser'] == "" || $_POST['dbname'] == "")
 		return false;
+	if ($selected_id == -1 && (!isset($_GET['ul']) || $_GET['ul'] != 1))
+	{
+		display_error(_("When creating a new company, you must provide a Database script file."));
+		return false;
+	}
 	foreach($db_connections as $id=>$con)
 	{
 	 if($id != $selected_id && $_POST['host'] == $con['host'] 
