@@ -75,6 +75,6 @@ if (!$voided)
 	display_allocations_from(PT_SUPPLIER, $supp_trans->supplier_id, ST_SUPPCREDIT, $trans_no, -($supp_trans->ov_amount + $supp_trans->ov_gst));
 }
 
-end_page(true);
+end_page(true, false, false, ST_SUPPCREDIT, $trans_no);
 
 ?>

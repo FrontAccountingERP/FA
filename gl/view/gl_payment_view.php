@@ -136,5 +136,5 @@ else
 		display_allocations_from($from_trans['person_type_id'], $from_trans['person_id'], 1, $trans_no, -$from_trans['amount']);
 }
 
-end_page(true);
+end_page(true, false, false, ST_BANKPAYMENT, $trans_no);
 ?>

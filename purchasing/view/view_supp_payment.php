@@ -81,5 +81,5 @@ if (!$voided)
 	display_allocations_from(PT_SUPPLIER, $receipt['supplier_id'], ST_SUPPAYMENT, $trans_no, -$receipt['Total']);
 }
 
-end_page(true);
+end_page(true, false, false, ST_SUPPAYMENT, $trans_no);
 ?>

@@ -123,7 +123,7 @@ display_wo_issue_details($wo_issue_no);
 
 echo "<br>";
 
-end_page(true);
+end_page(true, false, false, ST_MANUISSUE, $wo_issue_no);
 
 ?>
 

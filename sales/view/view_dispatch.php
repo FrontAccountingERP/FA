@@ -166,6 +166,6 @@ end_table(1);
 
 is_voided_display(ST_CUSTDELIVERY, $trans_id, _("This dispatch has been voided."));
 
-end_page(true);
+end_page(true, false, false, ST_CUSTDELIVERY, $trans_id);
 
 ?>

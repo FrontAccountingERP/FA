@@ -67,5 +67,16 @@ function get_attachment($id)
 	return db_fetch($result);
 }
 
+function has_attachment($type, $id)
+{
+	$sql = "SELECT DISTINCT * FROM ".TB_PREF."attachments WHERE type_no=".db_escape($type)." AND trans_no=".db_escape($id);
+	$result = db_query($sql, "Could not retrieve attachments");
+	$myrow = db_fetch($result);
+	if ($myrow === false)
+		return 0;
+	else
+		return $myrow['id'];
+}
+
 
 ?>

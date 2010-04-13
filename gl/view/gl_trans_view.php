@@ -102,6 +102,6 @@ if ($heading_shown)
 
 is_voided_display($_GET['type_id'], $_GET['trans_no'], _("This transaction has been voided."));
 
-end_page(true);
+end_page(true, false, false, $_GET['type_id'], $_GET['trans_no']);
 
 ?>

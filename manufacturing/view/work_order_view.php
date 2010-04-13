@@ -81,6 +81,6 @@ echo "<br></center>";
 
 is_voided_display(ST_WORKORDER, $woid, _("This work order has been voided."));
 
-end_page(true);
+end_page(true, false, false, ST_WORKORDER, $woid);
 
 ?>

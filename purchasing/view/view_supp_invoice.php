@@ -76,6 +76,6 @@ end_table(1);
 
 is_voided_display(ST_SUPPINVOICE, $trans_no, _("This invoice has been voided."));
 
-end_page(true);
+end_page(true, false, false, ST_SUPPINVOICE, $trans_no);
 
 ?>

@@ -95,6 +95,6 @@ display_dimension_balance($id, $_POST['TransFromDate'], $_POST['TransToDate']);
 
 br(1);
 
-end_page(true);
+end_page(true, false, false, ST_DIMENSION, $id);
 
 ?>

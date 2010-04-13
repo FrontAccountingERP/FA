@@ -73,7 +73,7 @@ display_wo_production($wo_production);
 
 br(2);
 
-end_page(true);
+end_page(true, false, false, ST_MANURECEIVE], $wo_production);
 
 ?>
 

@@ -60,5 +60,5 @@ if (!$voided)
 	display_allocations_from(PT_CUSTOMER, $receipt['debtor_no'], ST_CUSTPAYMENT, $trans_id, $receipt['Total']);
 }
 
-end_page(true);
+end_page(true, false, false, ST_CUSTPAYMENT, $trans_id);
 ?>

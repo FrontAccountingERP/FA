@@ -143,14 +143,24 @@ function access_string($label, $clean=false)
 	return $clean ? $label : array($label, $access);
 }
 
-function hyperlink_back($center=true, $no_menu=true)
+function hyperlink_back($center=true, $no_menu=true, $type_no=0, $trans_no=0)
 {
 	if ($center)
 		echo "<center>";
-	start_table("width=20%");
+	start_table("width=30%");
 	start_row();
 	if ($no_menu)
+	{
+		if ($type_no != 0 && $trans_no != 0)
+		{
+			global $path_to_root;
+			include_once($path_to_root."/admin/db/attachments_db.inc");
+			$id = has_attachment($type_no, $trans_no);
+			if ($id != 0)
+				echo "<td align=center><a href='$path_to_root/admin/attachments.php?vw=$id' target='blanc_'>"._("View Attachment")."</a></td>\n";
+		}	
 		echo "<td align=center><a href='javascript:window.print();'>"._("Print")."</a></td>\n";
+	}	
 	echo "<td align=center><a href='javascript:goBack();'>".($no_menu ? _("Close") : _("Back"))."</a></td>\n";
 	end_row();
 	end_table();

@@ -19,6 +19,32 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+14-Apr-2010 Joe Hunt/ AVB3
++ Added 'View Attachments' if any in all popup view windows
+$ /admin/db/attachments_db.inc
+  /includes/main.inc
+  /includes/ui/ui_controls.inc
+  /dimensions/view/view_dimension.php
+  /gl/view/bank_transfer_view.php
+  /gl/view/gl_deposit_view.php
+  /gl/view/gl_payment_view.php
+  /gl/view/gl_trans_view.php
+  /inventory/view/view_adjustment.php
+  /inventory/view/view_transfer.php
+  /manufacturing/view/work_order_view.php
+  /manufacturing/view/wo_issue_view.php
+  /manufacturing/view/wo_production_view.php
+  /purchasing/view/view_grn.php
+  /purchasing/view/view_po.php
+  /purchasing/view/view_supp_credit.php
+  /purchasing/view/view_supp_invoice.php
+  /purchasing/view/view_supp_payment.php
+  /sales/view/view_credit.php
+  /sales/view/view_dispatch.php
+  /sales/view/view_invoice.php
+  /sales/view/view_receipt.php
+  /sales/view/view_sales_order.php
+  
 04-Apr-2010 Janusz Dobrowolski
 + Added supplier/customer document language selection
 $ /purchasing/includes/db/suppliers_db.inc

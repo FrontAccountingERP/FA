@@ -152,6 +152,6 @@ if (!$voided)
 
 /* end of check to see that there was an invoice record to print */
 
-end_page(true);
+end_page(true, false, false, ST_CUSTCREDIT, $trans_id);
 
 ?>

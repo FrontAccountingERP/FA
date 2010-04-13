@@ -147,6 +147,6 @@ end_table(1); // outer table
 
 //----------------------------------------------------------------------------------------------------
 
-end_page(true);
+end_page(true, false, false, ST_PURCHORDER, $_GET['trans_no']);
 
 ?>

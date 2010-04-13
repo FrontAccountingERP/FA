@@ -231,6 +231,6 @@ label_row(_("Total Order Value"), $display_total, "align=right colspan=6",
 
 end_table(2);
 
-end_page(true);
+end_page(true, false, false, $_GET['trans_type'], $_GET['trans_no']);
 
 ?>
