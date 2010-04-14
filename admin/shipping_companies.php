@@ -87,7 +87,7 @@ if ($Mode == 'RESET')
 $result = get_shippers(check_value('show_inactive'));
 
 start_form();
-start_table($table_style);
+start_table(TABLESTYLE);
 $th = array(_("Name"), _("Contact Person"), _("Phone Number"), _("Secondary Phone"), _("Address"), "", "");
 inactive_control_column($th);
 table_header($th);
@@ -113,7 +113,7 @@ end_table(1);
 
 //----------------------------------------------------------------------------------------------
 
-start_table($table_style2);
+start_table(TABLESTYLE2);
 
 if ($selected_id != -1) 
 {

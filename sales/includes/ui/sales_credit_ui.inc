@@ -15,9 +15,9 @@ include_once($path_to_root . "/includes/ui.inc");
 
 function display_credit_header(&$order)
 {
-	global $table_style, $Ajax, $Refs;
+	global $Ajax, $Refs;
 
-	start_outer_table("width=80% $table_style");
+	start_outer_table(TABLESTYLE, "width=80%");
 	table_section(1);
 
 	$customer_error = "";
@@ -159,11 +159,11 @@ function display_credit_header(&$order)
 
 function display_credit_items($title, &$order)
 {
-    global $table_style, $path_to_root;
+    global $path_to_root;
 
     display_heading($title);
     div_start('items_table');
-    start_table("$table_style width=90%");
+    start_table(TABLESTYLE, "width=90%");
     $th = array(_("Item Code"), _("Item Description"), _("Quantity"), _("Unit"),
 	_("Price"), _("Discount %"), _("Total"),'');
 
@@ -308,14 +308,14 @@ function credit_edit_item_controls(&$order, $rowcounter, $line_no=-1)
 
 function credit_options_controls($credit)
 {
-	global $table_style2, $Ajax;
-	echo "<br>";
+	global $Ajax;
+	br();
 
-if (isset($_POST['_CreditType_update']))
-	$Ajax->activate('options');
+	if (isset($_POST['_CreditType_update']))
+		$Ajax->activate('options');
 
- div_start('options');
-	start_table("$table_style2");
+	div_start('options');
+	start_table(TABLESTYLE2);
 
 	credit_type_list_row(_("Credit Note Type"), 'CreditType', null, true);
 

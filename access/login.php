@@ -66,7 +66,7 @@ function set_fullmode() {
 	div_start('_page_body');
 	br();br();
 	start_form(false, false, $_SESSION['timeout']['uri'], "loginform");
-	start_table("class='login'");
+	start_table(false, "class='login'");
 	start_row();
 	echo "<td align='center' colspan=2>";
 	if (!$login_timeout) { // FA logo

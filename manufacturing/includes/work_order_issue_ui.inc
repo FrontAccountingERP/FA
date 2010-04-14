@@ -25,11 +25,11 @@ function add_to_issue(&$order, $new_item, $new_item_qty, $standard_cost)
 
 function display_issue_items($title, &$order)
 {
-	global $table_style, $path_to_root;
+	global $path_to_root;
 
 	display_heading($title);
     div_start('items_table');
-	start_table("$table_style width=80% colspan=7");
+	start_table(TABLESTYLE, "width=80% colspan=7");
 	$th = array(_("Item Code"), _("Item Description"), _("Quantity"),
 		_("Unit"), _("Unit Cost"), '');
 	if ( count($order->line_items)) $th[] = '';

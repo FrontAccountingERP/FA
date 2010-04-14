@@ -123,8 +123,8 @@ start_form();
 
 if (db_has_suppliers()) 
 {
-	start_table("", 3);
-//	start_table("class = 'tablestyle_noborder'");
+	start_table(false, "", 3);
+//	start_table(TABLESTYLE_NOBORDER);
 	start_row();
 	supplier_list_cells(_("Select a supplier: "), 'supplier_id', null,
 		  _('New supplier'), true, check_value('show_inactive'));
@@ -141,7 +141,7 @@ else
 	hidden('supplier_id', get_post('supplier_id'));
 }
 
-start_outer_table($table_style2, 5);
+start_outer_table(TABLESTYLE2);
 
 table_section(1);
 

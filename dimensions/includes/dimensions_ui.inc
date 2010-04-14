@@ -15,7 +15,7 @@ include_once($path_to_root . "/includes/ui.inc");
 
 function display_dimension_balance($id, $from, $to)
 {
-	global $path_to_root, $table_style;
+	global $path_to_root;
 
 	$result = get_dimension_balance_all($id, $from, $to);
 
@@ -27,7 +27,7 @@ function display_dimension_balance($id, $from, $to)
     {
 		display_heading2(_("Balance for this Dimension"));
 		br();
-		start_table($table_style);
+		start_table(TABLESTYLE);
 		$th = array(_("Account"), _("Debit"), _("Credit"));
 		table_header($th);
 

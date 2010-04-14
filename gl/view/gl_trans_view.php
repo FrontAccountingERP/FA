@@ -29,9 +29,9 @@ if (!isset($_GET['type_id']) || !isset($_GET['trans_no']))
 
 function display_gl_heading($myrow)
 {
-	global $table_style, $systypes_array;
+	global $systypes_array;
 	$trans_name = $systypes_array[$_GET['type_id']];
-    start_table("$table_style width=95%");
+    start_table(TABLESTYLE, "width=95%");
     $th = array(_("General Ledger Transaction Details"), _("Reference"),
     	_("Date"), _("Person/Item"));
     table_header($th);	
@@ -77,7 +77,7 @@ while ($myrow = db_fetch($result))
 	if (!$heading_shown)
 	{
 		display_gl_heading($myrow);
-		start_table("$table_style width=95%");
+		start_table(TABLESTYLE, "width=95%");
 		table_header($th);
 		$heading_shown = true;
 	}	

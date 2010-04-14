@@ -60,7 +60,7 @@ if (isset($_POST['setprefs']))
 
 start_form();
 
-start_outer_table($table_style2);
+start_outer_table(TABLESTYLE2);
 
 table_section(1);
 table_section_title(_("Decimal Places"));

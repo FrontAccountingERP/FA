@@ -245,7 +245,7 @@ start_form(true);
 
 if (db_has_stock_items()) 
 {
-	start_table("class='tablestyle_noborder'");
+	start_table(TABLESTYLE_NOBORDER);
 	start_row();
     stock_items_list_cells(_("Select an item:"), 'stock_id', null,
 	  _('New item'), true, check_value('show_inactive'));
@@ -261,7 +261,7 @@ if (db_has_stock_items())
 }
 
 div_start('details');
-start_outer_table($table_style2, 5);
+start_outer_table(TABLESTYLE2);
 
 table_section(1);
 

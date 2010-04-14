@@ -62,7 +62,7 @@ if (isset($_GET["stock_id"]))
 
 start_form(false, false, $_SERVER['PHP_SELF'] ."?outstanding_only=$outstanding_only");
 
-start_table("class='tablestyle_noborder'");
+start_table(TABLESTYLE_NOBORDER);
 start_row();
 ref_cells(_("Reference:"), 'OrderNumber', '',null, '', true);
 

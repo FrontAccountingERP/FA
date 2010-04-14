@@ -120,8 +120,6 @@ function handle_delete()
 
 function display_fiscalyears()
 {
-	global $table_style;
-
 	$company_year = get_company_pref('f_year');
 
 	$result = get_all_fiscalyears();
@@ -129,7 +127,7 @@ function display_fiscalyears()
 	display_note(_("Warning: Deleting a fiscal year all transactions 
 		are removed and converted into relevant balances. This process is irreversible!"), 
 		0, 0, "class='currentfg'");
-	start_table($table_style);
+	start_table(TABLESTYLE);
 
 	$th = array(_("Fiscal Year Begin"), _("Fiscal Year End"), _("Closed"), "", "");
 	table_header($th);
@@ -176,10 +174,10 @@ function display_fiscalyears()
 
 function display_fiscalyear_edit($selected_id)
 {
-	global $table_style2, $Mode;
+	global $Mode;
 
 	start_form();
-	start_table($table_style2);
+	start_table(TABLESTYLE2);
 
 	if ($selected_id != -1)
 	{

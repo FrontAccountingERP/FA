@@ -104,11 +104,9 @@ function exist_transaction($type, $type_no)
 
 function voiding_controls()
 {
-	global $table_style2;
-	
 	start_form();
 
-	start_table($table_style2);
+	start_table(TABLESTYLE2);
 
 	systypes_list_row(_("Transaction Type:"), "filterType", null, true);
 

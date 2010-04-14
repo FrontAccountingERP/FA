@@ -107,7 +107,7 @@ if ($Mode == 'RESET')
 $result = get_payment_terms_all(check_value('show_inactive'));
 
 start_form();
-start_table($table_style);
+start_table(TABLESTYLE);
 $th = array(_("Description"), _("Following Month On"), _("Due After (Days)"), "", "");
 inactive_control_column($th);
 table_header($th);
@@ -151,7 +151,7 @@ end_table(1);
 
 //-------------------------------------------------------------------------------------------------
 
-start_table($table_style2);
+start_table(TABLESTYLE2);
 
 $day_in_following_month = $days_before_due = 0;
 if ($selected_id != -1) 

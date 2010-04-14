@@ -283,13 +283,12 @@ function exchange_rate_display($from_currency, $to_currency, $date_, $edit_rate=
 
 function is_voided_display($type, $id, $label)
 {
-	global $table_style;
 	$void_entry = get_voided_entry($type, $id);
 
 	if ($void_entry == null)
 		return false;
 
-	start_table("width=50% $table_style");
+	start_table(TABLESTYLE, "width=50%");
 	echo "<tr><td align=center><font color=red>$label</font><br>";
 	echo "<font color=red>" . _("Date Voided:") . " " . sql2date($void_entry["date_"]) . "</font><br>";
 	if (strlen($void_entry["memo_"]) > 0)
@@ -440,14 +439,14 @@ function display_footer_exit()
 
 function display_allocations($alloc_result, $total)
 {
-	global $table_style, $systypes_array;
+	global $systypes_array;
 
 	if (!$alloc_result || db_num_rows($alloc_result) == 0)
 		return;
 
     display_heading2(_("Allocations"));
 
-    start_table("$table_style width=80%");
+    start_table(TABLESTYLE, "width=80%");
 
     $th = array( _("Type"), _("Number"), _("Date"), _("Total Amount"),
     	_("Left to Allocate"), _("This Allocation"));

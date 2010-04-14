@@ -142,7 +142,7 @@ if ($Mode == 'RESET')
 $result = get_item_locations(check_value('show_inactive'));
 
 start_form();
-start_table($table_style);
+start_table(TABLESTYLE);
 $th = array(_("Location Code"), _("Location Name"), _("Address"), _("Phone"), _("Secondary Phone"), "", "");
 inactive_control_column($th);
 table_header($th);
@@ -168,7 +168,7 @@ end_table();
 
 echo '<br>';
 
-start_table($table_style2);
+start_table(TABLESTYLE2);
 
 $_POST['email'] = "";
 if ($selected_id != -1) 

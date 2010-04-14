@@ -98,7 +98,7 @@ if ($Mode == 'RESET')
 $result = get_all_sales_types(check_value('show_inactive'));
 
 start_form();
-start_table("$table_style width=30%");
+start_table(TABLESTYLE, "width=30%");
 
 $th = array (_('Type Name'), _('Factor'), _('Tax Incl'), '','');
 inactive_control_column($th);
@@ -134,7 +134,7 @@ display_note(_("Marked sales type is the company base pricelist for prices calcu
  if (!isset($_POST['base']))
 	$_POST['base'] = 0;
 
-start_table($table_style2);
+start_table(TABLESTYLE2);
 
 if ($selected_id != -1)
 {

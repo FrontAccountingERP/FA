@@ -134,12 +134,10 @@ function handle_delete()
 
 function display_currencies()
 {
-	global $table_style;
-
 	$company_currency = get_company_currency();
 	
     $result = get_currencies(check_value('show_inactive'));
-    start_table($table_style);
+    start_table(TABLESTYLE);
     $th = array(_("Abbreviation"), _("Symbol"), _("Currency Name"),
     	_("Hundredths name"), _("Country"), _("Auto update"), "", "");
 	inactive_control_column($th);
@@ -183,9 +181,9 @@ function display_currencies()
 
 function display_currency_edit($selected_id)
 {
-	global $table_style2, $Mode;
+	global $Mode;
 	
-	start_table($table_style2);
+	start_table(TABLESTYLE2);
 
 	if ($selected_id != '') 
 	{

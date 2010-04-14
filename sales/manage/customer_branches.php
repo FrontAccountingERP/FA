@@ -204,7 +204,7 @@ display_db_pager($table);
 else
 	display_note(_("The selected customer does not have any branches. Please create at least one branch."));
 
-start_outer_table($table_style2, 5);
+start_outer_table(TABLESTYLE2);
 
 table_section(1);
 

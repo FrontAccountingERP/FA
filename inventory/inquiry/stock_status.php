@@ -58,7 +58,7 @@ if (is_service($mb_flag))
 
 $loc_details = get_loc_details($_POST['stock_id']);
 
-start_table($table_style);
+start_table(TABLESTYLE);
 
 if ($kitset_or_service == true)
 {

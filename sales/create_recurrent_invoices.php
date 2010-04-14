@@ -94,7 +94,7 @@ if (isset($_GET['recurrent']))
 
 $result = get_recurrent_invoices();
 
-start_table("$table_style width=70%");
+start_table(TABLESTYLE, "width=70%");
 $th = array(_("Description"), _("Template No"),_("Customer"),_("Branch")."/"._("Group"),_("Days"),_("Monthly"),_("Begin"),_("End"),_("Last Created"),"");
 table_header($th);
 $k = 0;

@@ -188,7 +188,7 @@ start_form();
 
 if (db_has_gl_accounts()) 
 {
-	start_table("class = 'tablestyle_noborder'");
+	start_table(TABLESTYLE_NOBORDER);
 	start_row();
     gl_all_accounts_list_cells(null, 'AccountList', null, false, false,
 		_('New account'), true, check_value('show_inactive'));
@@ -202,7 +202,7 @@ if (db_has_gl_accounts())
 }
 	
 br(1);
-start_table($table_style2);
+start_table(TABLESTYLE2);
 
 if ($selected_account != "") 
 {

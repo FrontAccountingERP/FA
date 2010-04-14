@@ -355,7 +355,7 @@ $is_edition = $_SESSION['Items']->trans_type == ST_SALESINVOICE && $_SESSION['It
 start_form();
 hidden('cart_id');
 
-start_table("$table_style2 width=80%", 5);
+start_table(TABLESTYLE2, "width=80%", 5);
 
 start_row();
 label_cells(_("Customer"), $_SESSION['Items']->customer_name, "class='tableheader2'");
@@ -420,7 +420,7 @@ if ($row['dissallow_invoices'] == 1)
 display_heading(_("Invoice Items"));
 
 div_start('Items');
-start_table("$table_style width=80%");
+start_table(TABLESTYLE, "width=80%");
 $th = array(_("Item Code"), _("Item Description"), _("Delivered"), _("Units"), _("Invoiced"),
 	_("This Invoice"), _("Price"), _("Tax Type"), _("Discount"), _("Total"));
 
@@ -529,7 +529,7 @@ label_row(_("Invoice Total"), $display_total, "colspan=$colspan align=right","al
 end_table(1);
 div_end();
 
-start_table($table_style2);
+start_table(TABLESTYLE2);
 textarea_row(_("Memo"), 'Comments', null, 50, 4);
 
 end_table(1);

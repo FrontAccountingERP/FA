@@ -80,7 +80,7 @@ if ($Mode == 'RESET')
 
 $result = get_all_printers();
 start_form();
-start_table($table_style);
+start_table(TABLESTYLE);
 $th = array(_("Name"), _("Description"), _("Host"), _("Printer Queue"),'','');
 table_header($th);
 
@@ -108,7 +108,7 @@ echo '<br>';
 
 start_form();
 
-start_table($table_style2);
+start_table(TABLESTYLE2);
 
 if ($selected_id != -1) 
 {

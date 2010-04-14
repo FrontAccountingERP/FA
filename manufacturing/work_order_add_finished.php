@@ -185,7 +185,7 @@ $dec = get_qty_dec($wo_details["stock_id"]);
 if (!isset($_POST['quantity']) || $_POST['quantity'] == '')
 	$_POST['quantity'] = qty_format(max($wo_details["units_reqd"] - $wo_details["units_issued"], 0), $wo_details["stock_id"], $dec);
 
-start_table($table_style2);
+start_table(TABLESTYLE2);
 br();
 
 ref_row(_("Reference:"), 'ref', '', $Refs->get_next(29));

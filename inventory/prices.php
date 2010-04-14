@@ -128,7 +128,7 @@ if (list_updated('stock_id') || isset($_POST['_curr_abrev_update']) || isset($_P
 $prices_list = get_prices($_POST['stock_id']);
 
 div_start('price_table');
-start_table("$table_style width=30%");
+start_table(TABLESTYLE, "width=30%");
 
 $th = array(_("Currency"), _("Sales Type"), _("Price"), "", "");
 table_header($th);
@@ -169,7 +169,7 @@ if ($Mode == 'Edit')
 
 hidden('selected_id', $selected_id);
 div_start('price_details');
-start_table($table_style2);
+start_table(TABLESTYLE2);
 
 currencies_list_row(_("Currency:"), 'curr_abrev', null, true);
 

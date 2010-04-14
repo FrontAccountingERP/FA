@@ -24,10 +24,6 @@
 		function menu_header($title, $no_menu, $is_index)
 		{
 			global $path_to_root, $help_base_url, $db_connections;
-			// you can owerride the table styles from config.php here, if you want.
-			//global $table_style, $table_style2;
-			//$table_style 	= "cellpadding=3 border=1 bordercolor='#8cacbb' style='border-collapse: collapse'";
-			//$table_style2 = "cellpadding=3 border=1 bordercolor='#cccccc' style='border-collapse: collapse'";
 			echo "<table class='callout_main' border='0' cellpadding='0' cellspacing='0'>\n";
 			echo "<tr>\n";
 			echo "<td colspan='2' rowspan='2'>\n";

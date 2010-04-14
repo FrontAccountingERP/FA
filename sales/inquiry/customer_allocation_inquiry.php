@@ -36,7 +36,7 @@ if (!isset($_POST['customer_id']))
 
 start_form();
 
-start_table("class='tablestyle_noborder'");
+start_table(TABLESTYLE_NOBORDER);
 start_row();
 
 customer_list_cells(_("Select a customer: "), 'customer_id', $_POST['customer_id'], true);

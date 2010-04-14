@@ -148,7 +148,7 @@ function Achieve($d1, $d2)
 
 function inquiry_controls()
 {  
-    start_table("class='tablestyle_noborder'");
+    start_table(TABLESTYLE_NOBORDER);
     
     date_cells(_("From:"), 'TransFromDate', '', null, -30);
 	date_cells(_("To:"), 'TransToDate');
@@ -171,7 +171,7 @@ function inquiry_controls()
 
 function display_profit_and_loss()
 {
-	global $path_to_root, $table_style, $sel;
+	global $path_to_root, $sel;
 
 	$dim = get_company_pref('use_dimension');
 	$dimension = $dimension2 = 0;
@@ -206,7 +206,7 @@ function display_profit_and_loss()
 	
 	div_start('pl_tbl');
 
-	start_table("width=50% $table_style");
+	start_table(TABLESTYLE, "width=50%");
 
 	$tableheader =  "<tr>
         <td class='tableheader'>" . _("Group/Account Name") . "</td>

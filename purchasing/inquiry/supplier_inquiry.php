@@ -41,7 +41,7 @@ start_form();
 if (!isset($_POST['supplier_id']))
 	$_POST['supplier_id'] = get_global_supplier();
 
-start_table("class='tablestyle_noborder'");
+start_table(TABLESTYLE_NOBORDER);
 start_row();
 
 supplier_list_cells(_("Select a supplier:"), 'supplier_id', null, true);
@@ -61,8 +61,6 @@ set_global_supplier($_POST['supplier_id']);
 
 function display_supplier_summary($supplier_record)
 {
-	global $table_style;
-
 	$past1 = get_company_pref('past_due_days');
 	$past2 = 2 * $past1;
 	$nowdue = "1-" . $past1 . " " . _('Days');
@@ -70,7 +68,7 @@ function display_supplier_summary($supplier_record)
 	$pastdue2 = _('Over') . " " . $past2 . " " . _('Days');
 	
 
-    start_table("width=80% $table_style");
+    start_table(TABLESTYLE, "width=80%");
     $th = array(_("Currency"), _("Terms"), _("Current"), $nowdue,
     	$pastdue1, $pastdue2, _("Total Balance"));
 

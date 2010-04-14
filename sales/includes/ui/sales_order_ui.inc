@@ -132,12 +132,12 @@ function get_customer_details_to_order(&$order, $customer_id, $branch_id)
 
 function display_order_summary($title, &$order, $editable_items=false)
 {
-	global $table_style, $path_to_root, $SysPrefs;
+	global $path_to_root, $SysPrefs;
 
 	display_heading($title);
 
     div_start('items_table');
-	start_table("$table_style colspan=7 width=90%");
+	start_table(TABLESTYLE, "colspan=7 width=90%");
 	$th = array(_("Item Code"), _("Item Description"), _("Quantity"),
 		_("Delivered"),
 		_("Unit"), _("Price"), _("Discount %"), _("Total"), "");
@@ -252,9 +252,9 @@ function display_order_summary($title, &$order, $editable_items=false)
 
 function display_order_header(&$order, $editable, $date_text, $display_tax_group=false)
 {
-	global $table_style2, $Ajax, $SysPrefs;
+	global $Ajax, $SysPrefs;
 
-	start_outer_table("width=80% $table_style2");
+	start_outer_table(TABLESTYLE2, "width=80%");
 
 	table_section(1);
 	
@@ -561,14 +561,14 @@ function sales_order_item_controls(&$order, &$rowcounter, $line_no=-1)
 
 function display_delivery_details(&$order)
 {
-	global $table_style2, $Ajax;
+	global $Ajax;
 
 	div_start('delivery');	
 
 	if ($order->cash) {	// Direct payment sale
 		$Ajax->activate('items_table');
 		display_heading(_('Cash payment'));
-		start_table("$table_style2 width=60%");
+		start_table(TABLESTYLE2, "width=60%");
 		label_row(_("Deliver from Location:"), $order->location_name);
 
 		hidden('Location', $order->Location);
@@ -597,7 +597,7 @@ function display_delivery_details(&$order)
 			$delname = _("Required Delivery Date").':';
 		}
 		display_heading($title);
-		start_outer_table("$table_style2 width=90%");
+		start_outer_table(TABLESTYLE2, "width=90%");
 		table_section(1);
 
 		locations_list_row(_("Deliver from Location:"), 'Location', null, 

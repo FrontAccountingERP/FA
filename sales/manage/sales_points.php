@@ -79,7 +79,7 @@ if ($Mode == 'RESET')
 $result = get_all_sales_points(check_value('show_inactive'));
 
 start_form();
-start_table("$table_style");
+start_table(TABLESTYLE);
 
 $th = array (_('POS Name'), _('Credit sale'), _('Cash sale'), _('Location'), _('Default account'), 
 	 '','');
@@ -109,7 +109,7 @@ $cash = db_has_cash_accounts();
 
 if (!$cash) display_note(_("To have cash POS first define at least one cash bank account."));
 
-start_table($table_style2);
+start_table(TABLESTYLE2);
 
 if ($selected_id != -1)
 {

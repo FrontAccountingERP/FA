@@ -188,9 +188,7 @@ function handle_delete()
 
 function display_extensions()
 {
-	global $table_style;
-
-	start_table($table_style);
+	start_table(TABLESTYLE);
 	$th = array(_("Name"),_("Tab"), _("Link text"), _("Folder"), _("Filename"), 
 		_("Access extensions"),"", "");
 	table_header($th);
@@ -229,9 +227,7 @@ function display_extensions()
 
 function company_extensions($id)
 {
-	global $table_style;
-
-	start_table($table_style);
+	start_table(TABLESTYLE);
 	
 	$th = array(_("Name"),_("Tab"), _("Link text"), _("Active"));
 	
@@ -271,12 +267,12 @@ function company_extensions($id)
 
 function display_ext_edit($selected_id)
 {
-	global $table_style2, $Mode;
+	global $Mode;
 
 
 	$extensions = get_company_extensions();
 
-	start_table($table_style2);
+	start_table(TABLESTYLE2);
 
 	if ($selected_id != -1 && $extensions[$selected_id]['type'] == 'plugin')
 	{

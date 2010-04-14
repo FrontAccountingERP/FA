@@ -177,6 +177,12 @@ define('ALL_TEXT', '');
 define('ALL_NUMERIC', -1);
 
 //----------------------------------------------------------------------------------
+// Special class values for tables (start_table())
+define('TABLESTYLE',  1);
+define('TABLESTYLE2', 2);
+define('TABLESTYLE_NOBORDER', 3);
+
+//----------------------------------------------------------------------------------
 
 define('TAG_ACCOUNT',   1);
 define('TAG_DIMENSION', 2);

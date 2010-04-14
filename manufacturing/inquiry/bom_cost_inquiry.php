@@ -31,7 +31,7 @@ if (list_updated('stock_id'))
 		$Ajax->activate('_page_body');
 
 start_form(false, true);
-start_table("class='tablestyle_noborder'");
+start_table(TABLESTYLE_NOBORDER);
 stock_manufactured_items_list_row(_("Select a manufacturable item:"), 'stock_id', null, false, true);
 end_table();
 br();

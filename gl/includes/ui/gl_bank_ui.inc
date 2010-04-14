@@ -11,12 +11,12 @@
 ***********************************************************************/
 function display_bank_header(&$order)
 {
-	global $table_style2, $Ajax, $Refs;
+	global $Ajax, $Refs;
 	$payment = $order->trans_type == ST_BANKPAYMENT;
 
 	div_start('pmt_header');
 
-	start_outer_table("width=90% $table_style2"); // outer table
+	start_outer_table(TABLESTYLE2, "width=90%"); // outer table
 
 	table_section(1);
 	
@@ -111,14 +111,14 @@ function display_bank_header(&$order)
 
 function display_gl_items($title, &$order)
 {
-	global $table_style, $path_to_root;
+	global $path_to_root;
 
 	$dim = get_company_pref('use_dimension');
 	$colspan = ($dim == 2 ? 4 : ($dim == 1 ? 3 : 2));
 	display_heading($title);
 
     div_start('items_table');
-	start_table("$table_style colspan=7 width=95%");
+	start_table(TABLESTYLE, "colspan=7 width=95%");
 
 	if ($dim == 2)
 		$th = array(_("Account Code"), _("Account Description"), _("Dimension")." 1",

@@ -47,7 +47,7 @@ class BoxReports
 
 	function getDisplay($class=null)
 	{
-		global $table_style, $path_to_root, $pdf_debug, $Ajax;
+		global $path_to_root, $pdf_debug, $Ajax;
 
 
 		$temp = array_values($this->ar_classes);

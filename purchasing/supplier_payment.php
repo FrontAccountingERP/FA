@@ -249,7 +249,7 @@ if (isset($_POST['ProcessSuppPayment']))
 
 start_form();
 
-	start_outer_table("$table_style2 width=60%", 5);
+	start_outer_table(TABLESTYLE2, "width=60%", 5);
 
 	table_section(1);
 
@@ -285,7 +285,7 @@ start_form();
 	div_end();
 	}
 
-	start_table("$table_style width=60%");
+	start_table(TABLESTYLE, "width=60%");
 	amount_row(_("Amount of Discount:"), 'discount');
 	amount_row(_("Amount of Payment:"), 'amount');
 	textarea_row(_("Memo:"), 'memo_', null, 22, 4);

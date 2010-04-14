@@ -97,7 +97,7 @@ if ($Mode == 'RESET')
 $result = get_all_work_centres(check_value('show_inactive'));
 
 start_form();
-start_table("$table_style width=50%");
+start_table(TABLESTYLE, "width=50%");
 $th = array(_("Name"), _("description"), "", "");
 inactive_control_column($th);
 table_header($th);
@@ -120,7 +120,7 @@ inactive_control_row($th);
 end_table(1);
 //-----------------------------------------------------------------------------------
 
-start_table($table_style2);
+start_table(TABLESTYLE2);
 
 if ($selected_id != -1) 
 {

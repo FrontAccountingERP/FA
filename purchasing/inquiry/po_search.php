@@ -57,7 +57,7 @@ if (get_post('SearchOrders'))
 
 start_form();
 
-start_table("class='tablestyle_noborder'");
+start_table(TABLESTYLE_NOBORDER);
 start_row();
 ref_cells(_("#:"), 'order_number', '',null, '', true);
 

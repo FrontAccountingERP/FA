@@ -59,9 +59,15 @@ function end_form($breaks=0)
 	echo "</form>\n";
 }
 
-function start_table($extra="", $padding='2', $spacing='0')
+function start_table($class=false, $extra="", $padding='2', $spacing='0')
 {
 	echo "<center><table";
+	if ($class == TABLESTYLE_NOBORDER)
+		echo " class='tablestyle_noborder'";
+	elseif ($class == TABLESTYLE2)
+		echo " class='tablestyle2'";
+	elseif ($class == TABLESTYLE)
+		echo " class='tablestyle'";
 	if ($extra != "")
 		echo " $extra";
 	echo " cellpadding=$padding cellspacing=$spacing>\n";
@@ -74,11 +80,11 @@ function end_table($breaks=0)
 		br($breaks);
 }
 
-function start_outer_table($extra="", $padding='2', $spacing='0', $br=false)
+function start_outer_table($class=false, $extra="", $padding='2', $spacing='0', $br=false)
 {
 	if ($br)
 		br();
-	start_table($extra, $padding, $spacing);
+	start_table($class, $extra, $padding, $spacing);
 	echo "<tr valign=top><td>\n"; // outer table
 }
 
@@ -147,7 +153,7 @@ function hyperlink_back($center=true, $no_menu=true, $type_no=0, $trans_no=0)
 {
 	if ($center)
 		echo "<center>";
-	start_table("width=30%");
+	start_table(false, "width=30%");
 	start_row();
 	if ($no_menu)
 	{

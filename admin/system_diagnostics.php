@@ -297,7 +297,7 @@ function tst_extconfig()
 }
 //-------------------------------------------------------------------------------------------------
 
-start_table("$table_style width=80%");
+start_table(TABLESTYLE, "width=80%");
 $th = array(_("Test"), _('Test type'), _("Value"), _("Comments"));
 table_header($th);
 

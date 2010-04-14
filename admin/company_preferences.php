@@ -153,7 +153,7 @@ if ($_POST['add_pct'] == -1)
 $_POST['round_to'] = $myrow['round_to'];	
 $_POST['del_coy_logo']  = 0;
 
-start_outer_table($table_style2);
+start_outer_table(TABLESTYLE2);
 
 table_section(1);
 

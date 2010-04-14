@@ -93,7 +93,7 @@ if ($Mode == 'RESET')
 $result = get_all_credit_status(check_value('show_inactive'));
 
 start_form();
-start_table("$table_style width=40%");
+start_table(TABLESTYLE, "width=40%");
 $th = array(_("Description"), _("Dissallow Invoices"),'','');
 inactive_control_column($th);
 table_header($th);
@@ -127,7 +127,7 @@ echo '<br>';
 
 //-----------------------------------------------------------------------------------
 
-start_table($table_style2);
+start_table(TABLESTYLE2);
 
 if ($selected_id != -1) 
 {

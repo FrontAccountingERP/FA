@@ -146,7 +146,7 @@ function viewing_controls()
 {
     start_form();
 
-    start_table("class='tablestyle_noborder'");
+    start_table(TABLESTYLE_NOBORDER);
 
 	systypes_list_row(_("Type:"), 'filterType', null, true);
 
@@ -157,14 +157,12 @@ function viewing_controls()
 
 function display_rows($type)
 {
-	global $table_style;
-
 	$rows = get_attached_documents($type);
 	$th = array(_("#"), _("Description"), _("Filename"), _("Size"), _("Filetype"), _("Date Uploaded"), "", "", "", "");
 	
 	div_start('transactions');
 	start_form();
-	start_table($table_style);
+	start_table(TABLESTYLE);
 	table_header($th);
 	$k = 0;
 	while ($row = db_fetch($rows))
@@ -198,7 +196,7 @@ if (isset($_POST['filterType']))
 
 start_form(true);
 
-start_table($table_style2);
+start_table(TABLESTYLE2);
 
 if ($selected_id != -1)
 {

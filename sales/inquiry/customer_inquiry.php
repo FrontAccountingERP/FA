@@ -38,7 +38,7 @@ start_form();
 if (!isset($_POST['customer_id']))
 	$_POST['customer_id'] = get_global_customer();
 
-start_table("class='tablestyle_noborder'");
+start_table(TABLESTYLE_NOBORDER);
 start_row();
 
 customer_list_cells(_("Select a customer: "), 'customer_id', null, true);
@@ -61,8 +61,6 @@ set_global_customer($_POST['customer_id']);
 
 function display_customer_summary($customer_record)
 {
-	global $table_style;
-
 	$past1 = get_company_pref('past_due_days');
 	$past2 = 2 * $past1;
     if ($customer_record["dissallow_invoices"] != 0)
@@ -74,7 +72,7 @@ function display_customer_summary($customer_record)
 	$pastdue1 = $past1 + 1 . "-" . $past2 . " " . _('Days');
 	$pastdue2 = _('Over') . " " . $past2 . " " . _('Days');
 
-    start_table("width=80% $table_style");
+    start_table(TABLESTYLE, "width=80%");
     $th = array(_("Currency"), _("Terms"), _("Current"), $nowdue,
     	$pastdue1, $pastdue2, _("Total Balance"));
     table_header($th);

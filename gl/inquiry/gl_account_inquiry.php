@@ -61,12 +61,10 @@ if (!isset($_POST["amount_max"]))
 
 function gl_inquiry_controls()
 {
-	global $table_style2;
-
 	$dim = get_company_pref('use_dimension');
     start_form();
 
-    start_table("class='tablestyle_noborder'");
+    start_table(TABLESTYLE_NOBORDER);
 	start_row();
     gl_all_accounts_list_cells(_("Account:"), 'account', null, false, false, "All Accounts");
 	date_cells(_("from:"), 'TransFromDate', '', null, -30);
@@ -95,7 +93,7 @@ function gl_inquiry_controls()
 
 function show_results()
 {
-	global $path_to_root, $table_style, $systypes_array;
+	global $path_to_root, $systypes_array;
 
 	if (!isset($_POST["account"]))
 		$_POST["account"] = null;
@@ -122,7 +120,7 @@ function show_results()
                      input_num("amount_min") == 0 && 
                      input_num("amount_max") == 0;
 		
-	start_table($table_style);
+	start_table(TABLESTYLE);
 	
 	$first_cols = array(_("Type"), _("#"), _("Date"));
 	

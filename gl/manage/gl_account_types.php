@@ -118,7 +118,7 @@ if ($Mode == 'RESET')
 $result = get_account_types(check_value('show_inactive'));
 
 start_form();
-start_table($table_style);
+start_table(TABLESTYLE);
 $th = array(_("Group ID"), _("Group Name"), _("Subgroup Of"), _("Class Type"), "", "");
 inactive_control_column($th);
 table_header($th);
@@ -154,7 +154,7 @@ inactive_control_row($th);
 end_table(1);
 //-----------------------------------------------------------------------------------
 
-start_table($table_style2);
+start_table(TABLESTYLE2);
 
 if ($selected_id != "")
 {

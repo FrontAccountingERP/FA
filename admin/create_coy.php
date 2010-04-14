@@ -243,7 +243,7 @@ function handle_delete()
 
 function display_companies()
 {
-	global $table_style, $def_coy, $db_connections;
+	global $def_coy, $db_connections;
 
 	$coyno = $_SESSION["wa_current_user"]->company;
 
@@ -255,7 +255,7 @@ function display_companies()
 			document.location.replace('create_coy.php?c=df&id='+id)
 		}
 		</script>";
-	start_table($table_style);
+	start_table(TABLESTYLE);
 
 	$th = array(_("Company"), _("Database Host"), _("Database User"),
 		_("Database Name"), _("Table Pref"), _("Default"), "", "");
@@ -302,7 +302,7 @@ function display_companies()
 
 function display_company_edit($selected_id)
 {
-	global $def_coy, $db_connections, $tb_pref_counter, $table_style2;
+	global $def_coy, $db_connections, $tb_pref_counter;
 
 	if ($selected_id != -1)
 		$n = $selected_id;
@@ -324,7 +324,7 @@ function display_company_edit($selected_id)
 		}
 		</script>";
 
-	start_table($table_style2);
+	start_table(TABLESTYLE2);
 
 	if ($selected_id != -1)
 	{

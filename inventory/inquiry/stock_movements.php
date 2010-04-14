@@ -44,7 +44,7 @@ start_form();
 if (!isset($_POST['stock_id']))
 	$_POST['stock_id'] = get_global_stock_item();
 
-start_table("class='tablestyle_noborder'");
+start_table(TABLESTYLE_NOBORDER);
 
 stock_items_list_cells(_("Item:"), 'stock_id', $_POST['stock_id']);
 
@@ -66,7 +66,7 @@ $result = get_stock_movements($_POST['stock_id'], $_POST['StockLocation'],
 	$_POST['BeforeDate'], $_POST['AfterDate']);
 
 div_start('doc_tbl');
-start_table($table_style);
+start_table(TABLESTYLE);
 $th = array(_("Type"), _("#"), _("Reference"), _("Date"), _("Detail"),
 	_("Quantity In"), _("Quantity Out"), _("Quantity On Hand"));
 

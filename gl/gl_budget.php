@@ -59,7 +59,7 @@ start_form();
 if (db_has_gl_accounts())
 {
 	$dim = get_company_pref('use_dimension');
-	start_table($table_style2);
+	start_table(TABLESTYLE2);
 	fiscalyears_list_row(_("Fiscal Year:"), 'fyear', null);
 	gl_all_accounts_list_row(_("Account Code:"), 'account', null);
 	if (!isset($_POST['dim1']))
@@ -84,7 +84,7 @@ if (db_has_gl_accounts())
 	submit_row('submit', _("Get"), true, '', '', true);
 	end_table(1);
 	div_start('budget_tbl');
-	start_table($table_style2);
+	start_table(TABLESTYLE2);
 	$showdims = (($dim == 1 && $_POST['dim1'] == 0) ||
 		($dim == 2 && $_POST['dim1'] == 0 && $_POST['dim2'] == 0));
 	if ($showdims)

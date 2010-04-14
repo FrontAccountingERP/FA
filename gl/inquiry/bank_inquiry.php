@@ -39,7 +39,7 @@ if (get_post('Show'))
 //------------------------------------------------------------------------------------------------
 
 start_form();
-start_table("class='tablestyle_noborder'");
+start_table(TABLESTYLE_NOBORDER);
 start_row();
 bank_accounts_list_cells(_("Account:"), 'bank_account', null);
 
@@ -62,7 +62,7 @@ div_start('trans_tbl');
 $act = get_bank_account($_POST["bank_account"]);
 display_heading($act['bank_account_name']." - ".$act['bank_curr_code']);
 
-start_table($table_style);
+start_table(TABLESTYLE);
 
 $th = array(_("Type"), _("#"), _("Reference"), _("Date"),
 	_("Debit"), _("Credit"), _("Balance"), _("Person/Item"), "");

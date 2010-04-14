@@ -41,7 +41,7 @@ if (isset($_SESSION['View']))
 
 $_SESSION['View'] = new Cart($_GET['trans_type'], $_GET['trans_no'], true);
 
-start_table("$table_style2 width=95%", 5);
+start_table(TABLESTYLE2, "width=95%", 5);
 echo "<tr valign=top><td>";
 display_heading2(_("Order Information"));
 if ($_GET['trans_type'] != ST_SALESQUOTE)
@@ -55,7 +55,7 @@ echo "</td></tr>";
 
 echo "<tr valign=top><td>";
 
-start_table("$table_style width=95%");
+start_table(TABLESTYLE, "width=95%");
 label_row(_("Customer Name"), $_SESSION['View']->customer_name, "class='tableheader2'",
 	"colspan=3");
 start_row();
@@ -87,7 +87,7 @@ if ($_GET['trans_type'] != ST_SALESQUOTE)
 {
 	echo "</td><td valign='top'>";
 
-	start_table($table_style);
+	start_table(TABLESTYLE);
 	display_heading2(_("Delivery Notes"));
 
 
@@ -120,7 +120,7 @@ if ($_GET['trans_type'] != ST_SALESQUOTE)
 	end_table();
 	echo "</td><td valign='top'>";
 
-	start_table($table_style);
+	start_table(TABLESTYLE);
 	display_heading2(_("Sales Invoices"));
 
 	$th = array(_("#"), _("Ref"), _("Date"), _("Total"));
@@ -153,7 +153,7 @@ if ($_GET['trans_type'] != ST_SALESQUOTE)
 
 	display_heading2(_("Credit Notes"));
 
-	start_table($table_style);
+	start_table(TABLESTYLE);
 	$th = array(_("#"), _("Ref"), _("Date"), _("Total"));
 	table_header($th);
 
@@ -193,7 +193,7 @@ if ($_SESSION['View']->so_type == 1)
 	display_note(_("This Sales Order is used as a Template."), 0, 0, "class='currentfg'");
 display_heading2(_("Line Details"));
 
-start_table("colspan=9 width=95% $table_style");
+start_table(TABLESTYLE, "colspan=9 width=95%");
 $th = array(_("Item Code"), _("Item Description"), _("Quantity"), _("Unit"),
 	_("Price"), _("Discount"), _("Total"), _("Quantity Delivered"));
 table_header($th);

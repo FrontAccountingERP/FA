@@ -114,7 +114,7 @@ function display_type ($type, $typename, $from, $to, $convert, $drilldown, $path
 	
 function inquiry_controls()
 {
-    start_table("class='tablestyle_noborder'");
+    start_table(TABLESTYLE_NOBORDER);
 	date_cells(_("As at:"), 'TransToDate');
 	submit_cells('Show',_("Show"),'','', 'default');
     end_table();
@@ -125,7 +125,7 @@ function inquiry_controls()
 
 function display_balance_sheet()
 {
-	global $path_to_root, $table_style;
+	global $path_to_root;
 	
 	$from = begin_fiscalyear();
 	$to = $_POST['TransToDate'];
@@ -140,7 +140,7 @@ function display_balance_sheet()
 
 	div_start('balance_tbl');
 	
-	start_table("width=30% $table_style");			
+	start_table(TABLESTYLE, "width=30%");			
 		
 	if (!$drilldown) //Root Level
 	{		

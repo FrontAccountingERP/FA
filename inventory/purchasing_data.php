@@ -122,7 +122,7 @@ else
     }
     else
     {
-        start_table("$table_style width=65%");
+        start_table(TABLESTYLE, "width=65%");
 
 		$th = array(_("Supplier"), _("Price"), _("Currency"),
 			_("Supplier's Unit"), _("Conversion Factor"), _("Supplier's Description"), "", "");
@@ -174,7 +174,7 @@ if ($Mode =='Edit')
 
 br();
 hidden('selected_id', $selected_id);
-start_table($table_style2);
+start_table(TABLESTYLE2);
 
 if ($Mode == 'Edit')
 {

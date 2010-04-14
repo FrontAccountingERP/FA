@@ -165,7 +165,7 @@ start_form();
 
 if (db_has_customers()) 
 {
-	start_table("class = 'tablestyle_noborder'");
+	start_table(TABLESTYLE_NOBORDER);
 	start_row();
 	customer_list_cells(_("Select a customer: "), 'customer_id', null,
 		_('New customer'), true, check_value('show_inactive'));
@@ -221,7 +221,7 @@ else
 	$_POST['inactive'] = $myrow["inactive"];
 }
 
-start_outer_table($table_style2, 5);
+start_outer_table(TABLESTYLE2);
 table_section(1);
 table_section_title(_("Name and Address"));
 

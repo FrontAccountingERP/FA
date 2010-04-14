@@ -101,7 +101,6 @@ function del_link($row)
 
 function display_rates($curr_code)
 {
-	global $table_style;
 
 }
 
@@ -109,9 +108,9 @@ function display_rates($curr_code)
 
 function display_rate_edit()
 {
-	global $selected_id, $table_style2, $Ajax;
+	global $selected_id, $Ajax;
 
-	start_table($table_style2);
+	start_table(TABLESTYLE2);
 
 	if ($selected_id != "")
 	{

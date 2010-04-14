@@ -161,7 +161,7 @@ if (isset($_POST['Reconcile'])) {
 
 //------------------------------------------------------------------------------------------------
 start_form();
-start_table("class='tablestyle_noborder'");
+start_table(TABLESTYLE_NOBORDER);
 start_row();
 bank_accounts_list_cells(_("Account:"), 'bank_account', null, true);
 
@@ -194,7 +194,7 @@ echo "<hr>";
 
 div_start('summary');
 
-start_table($table_style);
+start_table(TABLESTYLE);
 $th = array(_("Reconcile Date"), _("Beginning<br>Balance"), 
 	_("Ending<br>Balance"), _("Account<br>Total"),_("Reconciled<br>Amount"), _("Difference"));
 table_header($th);

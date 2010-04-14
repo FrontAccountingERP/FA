@@ -95,7 +95,7 @@ if ($Mode == 'RESET')
 $result = get_salesmen(check_value('show_inactive'));
 
 start_form();
-start_table("$table_style width=60%");
+start_table(TABLESTYLE, "width=60%");
 $th = array(_("Name"), _("Phone"), _("Fax"), _("Email"), _("Provision"), _("Break Pt."), _("Provision")." 2", "", "");
 inactive_control_column($th);
 table_header($th);
@@ -150,7 +150,7 @@ if ($selected_id != -1)
 		$_POST['provision2'] = percent_format(0);	
 }
 
-start_table($table_style2);
+start_table(TABLESTYLE2);
 
 text_row_ex(_("Sales person name:"), 'salesman_name', 30);
 text_row_ex(_("Telephone number:"), 'salesman_phone', 20);

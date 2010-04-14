@@ -144,7 +144,7 @@ while ($myrow = db_fetch($result)) {
 	$prints[$myrow['report']] = $myrow['printer'];
 }
 
-start_table($table_style);
+start_table(TABLESTYLE);
 $th = array(_("Report Id"), _("Description"), _("Printer"));
 table_header($th);
 

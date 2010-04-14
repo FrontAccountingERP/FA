@@ -81,7 +81,7 @@ if ($Mode == 'RESET')
 $result = get_recurrent_invoices();
 
 start_form();
-start_table("$table_style width=70%");
+start_table(TABLESTYLE, "width=70%");
 $th = array(_("Description"), _("Template No"),_("Customer"),_("Branch")."/"._("Group"),_("Days"),_("Monthly"),_("Begin"),_("End"),_("Last Created"),"", "");
 table_header($th);
 $k = 0;
@@ -123,7 +123,7 @@ echo '<br>';
 
 start_form();
 
-start_table($table_style2);
+start_table(TABLESTYLE2);
 
 if ($selected_id != -1) 
 {

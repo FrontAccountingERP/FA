@@ -89,7 +89,7 @@ $_POST['memo_'] = "";
 
 if (can_process($myrow))
 {
-	start_table($table_style2);
+	start_table(TABLESTYLE2);
 
     label_row(_("Work Order #:"), $selected_id);
     label_row(_("Work Order Reference:"), $myrow["wo_ref"]);

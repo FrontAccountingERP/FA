@@ -35,12 +35,12 @@ read_po($_GET['trans_no'], $purchase_order);
 echo "<br>";
 display_po_summary($purchase_order, true);
 
-start_table("$table_style width=90%", 6);
+start_table(TABLESTYLE, "width=90%", 6);
 echo "<tr><td valign=top>"; // outer table
 
 display_heading2(_("Line Details"));
 
-start_table("colspan=9 $table_style width=100%");
+start_table(TABLESTYLE, "colspan=9 width=100%");
 
 $th = array(_("Item Code"), _("Item Description"), _("Quantity"), _("Unit"), _("Price"),
 	_("Line Total"), _("Requested By"), _("Quantity Received"), _("Quantity Invoiced"));
@@ -101,7 +101,7 @@ if (db_num_rows($grns_result) > 0)
     echo "</td><td valign=top>"; // outer table
 
     display_heading2(_("Deliveries"));
-    start_table($table_style);
+    start_table(TABLESTYLE);
     $th = array(_("#"), _("Reference"), _("Delivered On"));
     table_header($th);
     while ($myrow = db_fetch($grns_result))
@@ -126,7 +126,7 @@ if (db_num_rows($invoice_result) > 0)
     echo "</td><td valign=top>"; // outer table
 
     display_heading2(_("Invoices/Credits"));
-    start_table($table_style);
+    start_table(TABLESTYLE);
     $th = array(_("#"), _("Date"), _("Total"));
     table_header($th);
     while ($myrow = db_fetch($invoice_result))

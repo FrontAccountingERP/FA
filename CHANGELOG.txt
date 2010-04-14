@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+14-Apr-2010 Joe Hunt
+! Replaced the global variables for table styles to defined CSS classes.
+$ all files that includes the call to start_table and start_outer_table
+
 14-Apr-2010 Joe Hunt/ AVB3
 + Added 'View Attachments' if any in all popup view windows
 $ /admin/db/attachments_db.inc

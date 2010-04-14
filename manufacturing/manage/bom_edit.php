@@ -64,11 +64,9 @@ else
 
 function display_bom_items($selected_parent)
 {
-	global $table_style;
-
 	$result = get_bom($selected_parent);
 	div_start('bom');
-	start_table("$table_style width=60%");
+	start_table(TABLESTYLE, "width=60%");
 	$th = array(_("Code"), _("Description"), _("Location"),
 		_("Work Centre"), _("Quantity"), _("Units"),'','');
 	table_header($th);
@@ -167,7 +165,7 @@ if ($Mode == 'RESET')
 start_form();
 
 start_form(false, true);
-start_table("class='tablestyle_noborder'");
+start_table(TABLESTYLE_NOBORDER);
 stock_manufactured_items_list_row(_("Select a manufacturable item:"), 'stock_id', null, false, true);
 if (list_updated('stock_id'))
 	$Ajax->activate('_page_body');
@@ -189,7 +187,7 @@ start_form();
 	//--------------------------------------------------------------------------------------
 	echo '<br>';
 
-	start_table($table_style2);
+	start_table(TABLESTYLE2);
 
 	if ($selected_id != -1)
 	{

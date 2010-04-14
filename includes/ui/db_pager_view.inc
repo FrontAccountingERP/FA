@@ -40,7 +40,7 @@ function navi_button_cell($name, $value, $enabled=true, $align='left') {
 //    Sql paged table view. Call this function inside form.
 //
 function display_db_pager(&$pager) {
-    global	$table_style, $use_popup_windows, $use_date_picker, $path_to_root;
+    global	$use_popup_windows, $use_date_picker, $path_to_root;
 
 	$pager->select_records();
 
@@ -61,7 +61,7 @@ function display_db_pager(&$pager) {
  		}
 	}
     /* show a table of records returned by the sql */
-    start_table("$table_style width=$pager->width");
+    start_table(TABLESTYLE, "width=$pager->width");
     table_header($headers);
 
 	if($pager->header_fun) {	// if set header handler

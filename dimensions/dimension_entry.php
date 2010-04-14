@@ -223,7 +223,7 @@ if (isset($_POST['reopen']))
 
 start_form();
 
-start_table($table_style2);
+start_table(TABLESTYLE2);
 
 if ($selected_id != -1)
 {

@@ -90,7 +90,7 @@ if ($Mode == 'RESET')
 $result = get_all_movement_type(check_value('show_inactive'));
 
 start_form();
-start_table("$table_style width=30%");
+start_table(TABLESTYLE, "width=30%");
 
 $th = array(_("Description"), "", "");
 inactive_control_column($th);
@@ -112,7 +112,7 @@ end_table(1);
 
 //-----------------------------------------------------------------------------------
 
-start_table($table_style2);
+start_table(TABLESTYLE2);
 
 if ($selected_id != -1) 
 {

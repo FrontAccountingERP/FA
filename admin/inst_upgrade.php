@@ -169,7 +169,7 @@ if (get_post('Upgrade'))
 }
 
 start_form();
-start_table($table_style);
+start_table(TABLESTYLE);
 $th = array(_("Version"), _("Description"), _("Sql file"), _("Install"),
 	_("Force upgrade"));
 table_header($th);

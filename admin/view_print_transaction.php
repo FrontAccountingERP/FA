@@ -47,7 +47,7 @@ function viewing_controls()
 {
 	display_note(_("Only documents can be printed."));
 
-    start_table("class='tablestyle_noborder'");
+    start_table(TABLESTYLE_NOBORDER);
 	start_row();
 
 	systypes_list_cells(_("Type:"), 'filterType', null, true);
@@ -91,7 +91,6 @@ function check_valid_entries()
 
 function handle_search()
 {
-	global $table_style;
 	if (check_valid_entries()==true)
 	{
 		$trans_ref = false;

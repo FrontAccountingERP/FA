@@ -16,11 +16,11 @@ include_once($path_to_root . "/includes/ui/items_cart.inc");
 
 function display_order_header(&$Order)
 {
-	global $table_style2, $Ajax;
+	global $Ajax;
 
 	$qes = has_quick_entries(QE_JOURNAL);
 	$new = $Order->order_id==0;
-	start_outer_table("$table_style2 width=90%");
+	start_outer_table(TABLESTYLE2, "width=90%");
 	table_section(1, $qes ? "20%" : "");
 
 	start_row();
@@ -71,14 +71,14 @@ function display_order_header(&$Order)
 
 function display_gl_items($title, &$order)
 {
-	global $table_style, $path_to_root;
+	global $path_to_root;
 
 	display_heading($title);
 
 	$dim = get_company_pref('use_dimension');
 
     div_start('items_table');
-	start_table("$table_style colspan=7 width=95%");
+	start_table(TABLESTYLE, "colspan=7 width=95%");
 	if ($dim == 2)
 		$th = array(_("Account Code"), _("Account Description"), _("Dimension")." 1",
 			_("Dimension")." 2", _("Debit"), _("Credit"), _("Memo"), "");

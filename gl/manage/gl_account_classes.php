@@ -105,7 +105,7 @@ if ($Mode == 'RESET')
 $result = get_account_classes(check_value('show_inactive'));
 
 start_form();
-start_table($table_style);
+start_table(TABLESTYLE);
 $th = array(_("Class ID"), _("Class Name"), _("Class Type"), "", "");
 if (isset($use_oldstyle_convert) && $use_oldstyle_convert == 1)
 	$th[2] = _("Balance Sheet");
@@ -136,7 +136,7 @@ inactive_control_row($th);
 end_table(1);
 //-----------------------------------------------------------------------------------
 
-start_table($table_style2);
+start_table(TABLESTYLE2);
 
 if ($selected_id != "") 
 {

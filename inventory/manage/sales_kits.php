@@ -34,11 +34,9 @@ if (isset($_GET['item_code']))
 //--------------------------------------------------------------------------------------------------
 function display_kit_items($selected_kit)
 {
-	global $table_style;
-
 	$result = get_item_kit($selected_kit);
-div_start('bom');
-	start_table("$table_style width=60%");
+	div_start('bom');
+	start_table(TABLESTYLE, "width=60%");
 	$th = array(_("Stock Item"), _("Description"), _("Quantity"), _("Units"),
 		'','');
 	table_header($th);
@@ -197,14 +195,14 @@ $selected_kit = $_POST['item_code'];
 //----------------------------------------------------------------------------------
 if (get_post('item_code') == '') {
 // New sales kit entry
-	start_table($table_style2);
+	start_table(TABLESTYLE2);
 	text_row(_("Alias/kit code:"), 'kit_code', null, 20, 21);
 } else
 {
 	 // Kit selected so display bom or edit component
 	$_POST['description'] = $props['description'];
 	$_POST['category'] = $props['category_id'];
-	start_table($table_style2);
+	start_table(TABLESTYLE2);
 	text_row(_("Description:"), 'description', null, 50, 200);
 	stock_categories_list_row(_("Category:"), 'category', null);
 	submit_row('update_name', _("Update"), false, 'align=center colspan=2', _('Update kit/alias name'), true);
@@ -212,7 +210,7 @@ if (get_post('item_code') == '') {
 	end_table(1);
 	display_kit_items($selected_kit);
 	echo '<br>';
-	start_table($table_style2);
+	start_table(TABLESTYLE2);
 }
 
 	if ($Mode == 'Edit') {

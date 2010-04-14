@@ -55,13 +55,13 @@ function copy_to_trans(&$supp_trans)
 
 function invoice_header(&$supp_trans)
 {
-	global $Ajax, $table_style2, $Refs;
+	global $Ajax, $Refs;
 	
 	// if vars have been lost, recopy
 	if (!isset($_POST['tran_date']))
 		copy_from_trans($supp_trans);
 
-	start_outer_table("width=95% $table_style2");
+	start_outer_table(TABLESTYLE2, "width=95%");
 
 	table_section(1);
 
@@ -137,13 +137,11 @@ function invoice_header(&$supp_trans)
 
 function invoice_totals(&$supp_trans)
 {
-	global $table_style, $table_style2;
-
 	copy_to_trans($supp_trans);
 
 	$dim = get_company_pref('use_dimension');
  	$colspan = ($dim == 2 ? 7 : ($dim == 1 ? 6 : 5));
-   	start_table("$table_style width=95%");
+   	start_table(TABLESTYLE, "width=95%");
    	label_row(_("Sub-total:"), price_format( $supp_trans->ov_amount), "colspan=$colspan align=right", "align=right");
 
     $taxes = $supp_trans->get_taxes($supp_trans->tax_group_id);
@@ -158,7 +156,7 @@ function invoice_totals(&$supp_trans)
 			$display_total, "colspan=$colspan align=right style='font-weight:bold;color:red;'", "nowrap align=right style='font-weight:bold;color:red;'");
 
     end_table(1);
-    start_table($table_style2);
+    start_table(TABLESTYLE2);
     textarea_row(_("Memo:"), "Comments", null, 50, 3);
     end_table(1);
 }
@@ -166,8 +164,6 @@ function invoice_totals(&$supp_trans)
 //--------------------------------------------------------------------------------------------------
 function display_gl_controls(&$supp_trans, $k)
 {
-	global $table_style, $table_style2;
-
 	$accs = get_supplier_accounts($supp_trans->supplier_id);
 	$_POST['gl_code'] = $accs['purchase_account'];
 
@@ -199,7 +195,7 @@ function display_gl_controls(&$supp_trans, $k)
 
 function display_gl_items(&$supp_trans, $mode=0)
 {
-	global $table_style, $table_style2, $path_to_root, $Ajax;
+	global $path_to_root, $Ajax;
 
     // if displaying in form, and no items, exit
     if (($mode == 2 || $mode == 3) && count($supp_trans->gl_codes) == 0)
@@ -210,7 +206,7 @@ function display_gl_items(&$supp_trans, $mode=0)
 	else
 		$heading = _("GL Items for this Credit Note");
 
-	start_outer_table("$table_style width=95%");
+	start_outer_table(TABLESTYLE, "width=95%");
 
 	if ($mode == 1)
 	{
@@ -240,7 +236,7 @@ function display_gl_items(&$supp_trans, $mode=0)
 	end_outer_table(0, false);
 
 	div_start('gl_items');
-	start_table("$table_style width=95%");
+	start_table(TABLESTYLE, "width=95%");
 
 	$dim = get_company_pref('use_dimension');
 	if ($dim == 2)
@@ -318,8 +314,6 @@ function display_gl_items(&$supp_trans, $mode=0)
 
 function display_grn_items_for_selection(&$supp_trans, $k)
 {
-	global $table_style;
-
 	if ($supp_trans->is_invoice)
 		$result = get_grn_items(0, $supp_trans->supplier_id, true);
 	else
@@ -407,7 +401,7 @@ function display_grn_items_for_selection(&$supp_trans, $k)
 
 function display_grn_items(&$supp_trans, $mode=0)
 {
-	global $table_style, $path_to_root;
+	global $path_to_root;
 
     $ret = true;
     // if displaying in form, and no items, exit
@@ -460,7 +454,7 @@ function display_grn_items(&$supp_trans, $mode=0)
 	end_outer_table(0, false);
 
   	div_start('grn_items');
-	start_table("$table_style width=95%");
+	start_table(TABLESTYLE, "width=95%");
 	if ($mode == 1)
 	{
     	$th = array(_("Delivery"), _("Sequence #"), _("P.O."), _("Item"), _("Description"),

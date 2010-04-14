@@ -98,7 +98,7 @@ if (get_post('_DeliveryNumber_changed'))
 
 start_form(false, false, $_SERVER['PHP_SELF'] ."?OutstandingOnly=".$_POST['OutstandingOnly']);
 
-start_table("class='tablestyle_noborder'");
+start_table(TABLESTYLE_NOBORDER);
 start_row();
 ref_cells(_("#:"), 'DeliveryNumber', '',null, '', true);
 date_cells(_("from:"), 'DeliveryAfterDate', '', null, -30);
