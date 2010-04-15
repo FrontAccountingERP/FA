@@ -23,19 +23,25 @@ function get_sql_for_view_transactions($filtertype, $from, $to, &$trans_ref)
 	$type_name = $db_info[1];
 	$trans_no_name = $db_info[2];
 	$trans_ref = $db_info[3];
+	$trans_date = $db_info[4];
 
 	$sql = "SELECT DISTINCT $trans_no_name as trans_no";
 
 	if ($trans_ref)
-		$sql .= " ,$trans_ref ";
-
-	$sql .= ", ".$filtertype." as type FROM $table_name
-		WHERE $trans_no_name >= ".db_escape($from). "
-		AND  $trans_no_name <= ".db_escape($to);
-
-	if ($type_name != null)
-		$sql .= " AND `$type_name` = ".db_escape($filtertype);
-
+		$sql .= " ,$trans_ref as ref ";
+ 	$sql .= ",$trans_date as trans_date";
+ 	if ($type_name)
+		$sql .= ", ".$type_name." as type";
+	$sql .= " FROM $table_name ";
+	if ($from != null && $to != null)
+	{
+		$sql .= " WHERE $trans_no_name >= ".db_escape($from). "
+			AND  $trans_no_name <= ".db_escape($to);
+		if ($type_name != null)
+			$sql .= " AND `$type_name` = ".db_escape($filtertype);
+	}
+	elseif ($type_name != null)
+		$sql .= " WHERE `$type_name` = ".db_escape($filtertype);
 	$sql .= " ORDER BY $trans_no_name";
 	return $sql;
 }

@@ -29,18 +29,37 @@ page(_($help_context = "View or Print Transactions"), false, false, "", $js);
 //----------------------------------------------------------------------------------------
 function view_link($trans)
 {
+	if (!isset($trans['type']))
+		$trans['type'] = $_POST['filterType'];
 	return get_trans_view_str($trans["type"], $trans["trans_no"]);
 }
 
 function prt_link($row)
 {
-  	if ($row['type'] != ST_CUSTPAYMENT && $row['type'] != ST_BANKDEPOSIT) // customer payment or bank deposit printout not defined yet.
+	if (!isset($row['type']))
+		$row['type'] = $_POST['filterType'];
+  	if ($row['type'] == ST_PURCHORDER || $row['type'] == ST_SALESORDER || $row['type'] == ST_SALESQUOTE || 
+  		$row['type'] == ST_WORKORDER)
  		return print_document_link($row['trans_no'], _("Print"), true, $row['type'], ICON_PRINT);
+ 	else	
+		return print_document_link($row['trans_no']."-".$row['type'], _("Print"), true, $row['type'], ICON_PRINT);
 }
 
 function gl_view($row)
 {
+	if (!isset($row['type']))
+		$row['type'] = $_POST['filterType'];
 	return get_gl_view_str($row["type"], $row["trans_no"]);
+}
+
+function date_view($row)
+{
+	return $row['trans_date'];
+}
+
+function ref_view($row)
+{
+	return $row['ref'];
 }
 
 function viewing_controls()
@@ -100,12 +119,13 @@ function handle_search()
 
 		$print_type = $_POST['filterType'];
 		$print_out = ($print_type == ST_SALESINVOICE || $print_type == ST_CUSTCREDIT || $print_type == ST_CUSTDELIVERY ||
-			$print_type == ST_PURCHORDER || $print_type == ST_SALESORDER || $print_type == ST_SALESQUOTE);
+			$print_type == ST_PURCHORDER || $print_type == ST_SALESORDER || $print_type == ST_SALESQUOTE ||
+			$print_type == ST_CUSTPAYMENT || $print_type == ST_SUPPAYMENT || $print_type == ST_WORKORDER);
 
 		$cols = array(
-			_("#"), 
-			_("Reference"), 
-			_("View") => array('insert'=>true, 'fun'=>'view_link'),
+			_("#") => array('insert'=>true, 'fun'=>'view_link'), 
+			_("Reference") => array('fun'=>'ref_view'), 
+			_("Date") => array('type'=>'date', 'fun'=>'date_view'),
 			_("Print") => array('insert'=>true, 'fun'=>'prt_link'), 
 			_("GL") => array('insert'=>true, 'fun'=>'gl_view')
 		);

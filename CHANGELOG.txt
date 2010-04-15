@@ -19,6 +19,16 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+15-Apr-2010 Joe Hunt
+! Added a date column and combined the # and View column in 'View / Print Transactions.
+! Changed Voiding Transaction to also include a pager.
+$ /admin/view_print_transaction.php
+  /admin/void_transaction.php
+  /admin/db/transaction_db.inc
+  /includes/systypes.inc
+  /manufacturing/view/wo_production_view.php
+  /reporting/includes/reporting.inc
+  
 14-Apr-2010 Joe Hunt
 ! Replaced the global variables for table styles to defined CSS classes.
 $ all files that includes the call to start_table and start_outer_table

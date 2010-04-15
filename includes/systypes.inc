@@ -51,7 +51,7 @@ function get_systype_db_info($type)
         case     ST_CUSTDELIVERY : return array("".TB_PREF."debtor_trans", "type", "trans_no", "reference", "tran_date");
         case     ST_LOCTRANSFER  : return array("".TB_PREF."stock_moves", "type", "trans_no", "reference", "tran_date");
         case     ST_INVADJUST    : return array("".TB_PREF."stock_moves", "type", "trans_no", "reference", "tran_date");
-        case     ST_PURCHORDER   : return array("".TB_PREF."purch_orders", null, "order_no", "reference", "tran_date");
+        case     ST_PURCHORDER   : return array("".TB_PREF."purch_orders", null, "order_no", "reference", "ord_date");
         case     ST_SUPPINVOICE  : return array("".TB_PREF."supp_trans", "type", "trans_no", "reference", "tran_date");
         case     ST_SUPPCREDIT   : return array("".TB_PREF."supp_trans", "type", "trans_no", "reference", "tran_date");
         case     ST_SUPPAYMENT   : return array("".TB_PREF."supp_trans", "type", "trans_no", "reference", "tran_date");
