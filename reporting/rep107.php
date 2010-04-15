@@ -32,7 +32,7 @@ print_invoices();
 
 function print_invoices()
 {
-	global $path_to_root;
+	global $path_to_root, $alternative_tax_include_on_docs;
 	
 	include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 
@@ -168,14 +168,29 @@ function print_invoices()
 			$rep->TextCol(6, 7,	$DisplayFreight, -2);
 			$rep->NewLine();
 			$tax_items = get_trans_tax_details($j, $i);
+			$first = true;
     		while ($tax_item = db_fetch($tax_items))
     		{
     			$DisplayTax = number_format2($sign*$tax_item['amount'], $dec);
 
     			if ($tax_item['included_in_price'])
     			{
-					$rep->TextCol(3, 7, $doc_Included . " " . $tax_item['tax_type_name'] .
-						" (" . $tax_item['rate'] . "%) " . $doc_Amount . ": " . $DisplayTax, -2);
+    				if (isset($alternative_tax_include_on_docs) && $alternative_tax_include_on_docs == 1)
+    				{
+    					if ($first)
+    					{
+							$rep->TextCol(3, 6, _("Total Tax Excluded"), -2);
+							$rep->TextCol(6, 7,	number_format2($sign*$tax_item['net_amount'], $dec), -2);
+							$rep->NewLine();
+    					}
+						$rep->TextCol(3, 6, $tax_item['tax_type_name'] . " (" .
+							$tax_item['rate'] . "%)", -2);
+						$rep->TextCol(6, 7,	$DisplayTax, -2);
+						$first = false;
+    				}
+    				else
+						$rep->TextCol(3, 7, $doc_Included . " " . $tax_item['tax_type_name'] .
+							" (" . $tax_item['rate'] . "%) " . $doc_Amount . ": " . $DisplayTax, -2);
 				}
     			else
     			{

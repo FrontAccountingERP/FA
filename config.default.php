@@ -108,6 +108,9 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 	/* print_invoice_no. 0 = print reference number, 1 = print invoice number */
 	$print_invoice_no = 0;
 
+	/* 1 = print Subtotal tax excluded, tax and Total tax included */
+	$alternative_tax_include_on_docs = 0;
+
 	$dateformats 	= array("MMDDYYYY", "DDMMYYYY", "YYYYMMDD");
 	$dateseps 		= array("/", ".", "-", " ");
 	$thoseps 		= array(",", ".", " ");

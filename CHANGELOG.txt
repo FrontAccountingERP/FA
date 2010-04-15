@@ -20,6 +20,13 @@ Legend:
 $ -> Affected files
 
 15-Apr-2010 Joe Hunt
+! Added an alternative way of presenting tax included on invoices.
+  This is done by setting a global variabel $alternative_tax_include_on_docs = 1.
+$ config.default.php 
+  /includes/ui/ui_view.inc
+  /reporting/rep107.php
+  /reporting/rep110.php
+  
 ! Added a date column and combined the # and View column in 'View / Print Transactions.
 ! Changed Voiding Transaction to also include a pager.
 $ /admin/view_print_transaction.php

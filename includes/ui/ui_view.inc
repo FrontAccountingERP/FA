@@ -374,12 +374,26 @@ function display_debit_or_credit_cells($value)
 
 function display_customer_trans_tax_details($tax_items, $columns)
 {
+	global $alternative_tax_include_on_docs;
+	$first = true;
     while ($tax_item = db_fetch($tax_items))
     {
     	$tax = number_format2($tax_item['amount'],user_price_dec());
     	if ($tax_item['included_in_price'])
-        	label_row(_("Included") . " " . $tax_item['tax_type_name'] . " (" . $tax_item['rate'] . "%) " .
-        		_("Amount") . ": $tax", "", "colspan=$columns align=right", "align=right");
+    	{
+			if (isset($alternative_tax_include_on_docs) && $alternative_tax_include_on_docs == 1)
+  			{
+  				if ($first)
+  					label_row(_("Total Tax Excluded"), number_format2($tax_item['net_amount'], user_price_dec()),
+  						"colspan=$columns align=right", "align=right");
+        		label_row($tax_item['tax_type_name'] . " (" . $tax_item['rate'] . "%)",
+        			$tax, "colspan=$columns align=right", "align=right");
+        		$first = false;
+        	}
+        	else
+        		label_row(_("Included") . " " . $tax_item['tax_type_name'] . " (" . $tax_item['rate'] . "%) " .
+        			_("Amount") . ": $tax", "", "colspan=$columns align=right", "align=right");
+        }			
     	else
         	label_row($tax_item['tax_type_name'] . " (" . $tax_item['rate'] . "%)",
         		$tax, "colspan=$columns align=right", "align=right");
