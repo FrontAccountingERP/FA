@@ -22,6 +22,8 @@ $ -> Affected files
 16-Apr-2010 Joe Hunt
 # Minor fixes in voiding transactions
 $ /admin/void_transaction.php
+! Layout improvement in hyperlink_back function
+$ /includes/ui/ui_controls.inc
 
 15-Apr-2010 Joe Hunt
 ! Added an alternative way of presenting tax included on invoices.
