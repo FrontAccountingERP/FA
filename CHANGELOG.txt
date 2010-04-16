@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+16-Apr-2010 Joe Hunt
+# Minor fixes in voiding transactions
+$ /admin/void_transaction.php
+
 15-Apr-2010 Joe Hunt
 ! Added an alternative way of presenting tax included on invoices.
   This is done by setting a global variabel $alternative_tax_include_on_docs = 1.

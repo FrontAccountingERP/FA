@@ -147,7 +147,7 @@ function voiding_controls()
 	systypes_list_cells(_("Transaction Type:"), 'filterType', null, true);
 	if (list_updated('filterType'))
 		$selected_id = -1;
-
+		
 	end_row();
     end_table(1);
     
@@ -173,17 +173,17 @@ function voiding_controls()
 
 	start_table(TABLESTYLE2);
 
-	//systypes_list_row(_("Transaction Type:"), "filterType", null, true);
-	
 	if ($selected_id != -1)
 	{
-		$_POST['trans_no'] = $selected_id;
+		hidden('trans_no', $selected_id);
 		hidden('selected_id', $selected_id);
 	}
 	else
-		$_POST['trans_no'] = '';
-		
-    text_row(_("Transaction #:"), 'trans_no', null, 12, 12);
+	{
+		hidden('trans_no', '');
+		$_POST['memo_'] = '';
+	}	
+    label_row(_("Transaction #:"), ($selected_id==-1?'':$selected_id));
 
     date_row(_("Voiding Date:"), 'date_');
 
