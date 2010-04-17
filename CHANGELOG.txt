@@ -19,6 +19,12 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+17-Apr-2010 Janusz Dobrowolski
+# Small fix in company creation 
+$ /admin/create_coy.php
+# Checking whether reference is unique before saving transaction.
+$ /sales/sales_order_entry.php
+
 09-Apr-2010 Joe Hunt
 # Creating a new company without a Database script causes unpredictable errors.
 $ /admin/create_coy.php
