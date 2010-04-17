@@ -87,12 +87,12 @@ function handle_submit()
 	global $db_connections, $def_coy, $tb_pref_counter, $db,
 	    $comp_path, $comp_subdirs, $path_to_root;
 
-	$new = false;
 	$error = false;
 	if (!check_data())
 		return false;
 
 	$id = $_GET['id'];
+	$new = !isset($db_connections[$id]);
 
 	$db_connections[$id]['name'] = $_POST['name'];
 	$db_connections[$id]['host'] = $_POST['host'];
@@ -105,7 +105,6 @@ function handle_submit()
 		{
 			$db_connections[$id]['tbpref'] = $_POST['tbpref'] == 1 ?
 			  $tb_pref_counter."_" : '';
-			$new = true;
 		}
 		else if ($_POST['tbpref'] != "")
 			$db_connections[$id]['tbpref'] = $_POST['tbpref'];
