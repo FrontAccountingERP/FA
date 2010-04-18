@@ -19,6 +19,12 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+------------------------------- Release 2.2.8 ----------------------------------
+18-Apr-2010
+! Release 2.2.8
+$ config.default.php
+  update.html
+
 17-Apr-2010 Janusz Dobrowolski
 # Small fix in company creation 
 $ /admin/create_coy.php
