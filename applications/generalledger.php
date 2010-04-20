@@ -69,6 +69,9 @@ class general_ledger_app extends application
 			"gl/manage/gl_account_types.php?", 'SA_GLACCOUNTGROUP');
 		$this->add_rapp_function(2, _("GL Account &Classes"),
 			"gl/manage/gl_account_classes.php?", 'SA_GLACCOUNTCLASS');
+		$this->add_rapp_function(2, "","");
+		$this->add_rapp_function(2, _("&Revaluation of Currency Accounts"),
+			"gl/manage/revaluate_currencies.php?", 'SA_EXCHANGERATE');
 
 		$this->add_extensions();
 	}

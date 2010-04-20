@@ -19,6 +19,17 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+20-Apr-2010 Joe Hunt
++ Added option for Manual Revaluation of Currency Accounts
+$ /admin/company_preferences.php
+  /applications/generalledger.php
+  /gl/includes/db/gl_db_banking.inc
+  /gl/manage/revaluate_currencies.php (new file)
+  /includes/prefs/sysprefs.inc
+  /sql/en_US-demo.sql
+  /sql/en_US-new.sql
+  /sql/alter2.3.sql
+  
 16-Apr-2010 Joe Hunt
 # Minor fixes in voiding transactions
 $ /admin/void_transaction.php

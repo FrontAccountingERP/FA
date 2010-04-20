@@ -9,11 +9,11 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-function add_exchange_variation($trans_type, $trans_no, $date_, $acc_id, $account,
+function add_exchange_variation($trans_no, $date_, $acc_id, $account,
     $currency, $person_type_id=null, $person_id = "")
 {
 	if (is_company_currency($currency))
-		return;
+		return false;
 	if ($date_ == null)
 		$date_ = Today();
 	$for_amount = 0;
@@ -37,27 +37,42 @@ function add_exchange_variation($trans_type, $trans_no, $date_, $acc_id, $accoun
 	$diff = $amount - $for_amount;
 	if ($diff != 0)
 	{
-		if ($trans_type == null)
-			$trans_type = ST_JOURNAL;
 		if ($trans_no == null)
-			$trans_no = get_next_trans_no($trans_type);
+			$trans_no = get_next_trans_no(ST_JOURNAL);
 		if ($person_type_id == null)
 			$person_type_id = PT_MISC;
-		add_gl_trans($trans_type, $trans_no, $date_, $account, 0, 0, _("Exchange Variance"),
+		add_gl_trans(ST_JOURNAL, $trans_no, $date_, $account, 0, 0, _("Exchange Variance"),
     		-$diff, null, $person_type_id, $person_id);
-    	add_gl_trans($trans_type, $trans_no, $date_, get_company_pref('exchange_diff_act'), 0, 0, 
+    	add_gl_trans(ST_JOURNAL, $trans_no, $date_, get_company_pref('exchange_diff_act'), 0, 0, 
     		_("Exchange Variance"),	$diff, null, $person_type_id, $person_id);
-	}	
+	}
+	return ($diff != 0);
 }
 
-function add_exchange_variation_all()
+function add_exchange_variation_all($date=null, $ref="", $memo)
 {
+	global $Refs;
+	begin_transaction();
+	$exchanged = false;
 	$trans_no = get_next_trans_no(ST_JOURNAL);
 	$sql = "SELECT * FROM ".TB_PREF."bank_accounts";
 	$result = db_query($sql, "could not retreive bank accounts");
 	while ($myrow = db_fetch($result))
-		add_exchange_variation(ST_JOURNAL, $trans_no, null, $myrow['id'], $myrow['account_code'],
-			$myrow['currency_code']);
+	{
+		if (add_exchange_variation($trans_no, $date, $myrow['id'], $myrow['account_code'],
+			$myrow['bank_curr_code']))
+			$exchanged = true;
+	}
+	if ($exchanged)
+	{
+		add_comments(ST_JOURNAL, $trans_no, $date, $memo);
+		if ($ref == "")
+			$ref = $Refs->get_next(ST_JOURNAL);
+		$Refs->save(ST_JOURNAL, $trans_no, $ref);
+		add_audit_trail(ST_JOURNAL, $trans_no, $date);
+	}	
+	commit_transaction();
+	return ($exchanged ? $trans_no : 0);
 }
 //----------------------------------------------------------------------------------
 //	Add bank tranfer to database.
@@ -69,7 +84,7 @@ function add_exchange_variation_all()
 function add_bank_transfer($from_account, $to_account, $date_,
 	$amount, $ref, $memo_, $charge=0)
 {
-	global $Refs;
+	global $Refs, $SysPrefs;
 	
 	begin_transaction();
 
@@ -81,7 +96,8 @@ function add_bank_transfer($from_account, $to_account, $date_,
 
 	$from_gl_account = get_bank_gl_account($from_account);
 	$to_gl_account = get_bank_gl_account($to_account);
-
+	
+	$exchanged = false;
 	$total = 0;
 	// do the source account postings
     $total += add_gl_trans($trans_type, $trans_no, $date_, $from_gl_account, 0, 0, "",
@@ -91,10 +107,12 @@ function add_bank_transfer($from_account, $to_account, $date_,
 		$date_, -($amount + $charge),
 		PT_MISC, "", $currency,
 		"Cannot insert a source bank transaction");
-
-	add_exchange_variation($trans_type, $trans_no, $date_, $from_account, $from_gl_account, 
-		$currency, PT_MISC, "");
-
+	if ($SysPrefs->auto_currency_revaluation())
+	{
+		$trans_no1 = get_next_trans_no(ST_JOURNAL);
+		if (add_exchange_variation($trans_no1, $date_, $from_account, $from_gl_account, $currency))
+			$exchanged = true;
+	}
 	if ($charge != 0)
 	{
 		/* Now Debit bank charge account with charges */
@@ -113,11 +131,17 @@ function add_bank_transfer($from_account, $to_account, $date_,
 		$date_, $amount, PT_MISC, "",
 		$currency, "Cannot insert a destination bank transaction");
 
-	$currency = get_bank_account_currency($to_account);
+	if ($SysPrefs->auto_currency_revaluation())
+	{
+		$currency = get_bank_account_currency($to_account);
 	
-	add_exchange_variation($trans_type, $trans_no, $date_, $to_account, $to_gl_account, 
-		$currency, PT_MISC, "");
-	
+		if ($exchanged || add_exchange_variation($trans_no1, $date_, $to_account, $to_gl_account,	$currency))
+		{
+			$ref1 = $Refs->get_next(ST_JOURNAL);
+			$Refs->save(ST_JOURNAL, $trans_no1, $ref1);
+			add_audit_trail(ST_JOURNAL, $trans_no1, $date_);
+		}	
+	}
 	add_comments($trans_type, $trans_no, $date_, $memo_);
 
 	$Refs->save($trans_type, $trans_no, $ref);
@@ -142,14 +166,14 @@ function add_bank_transfer($from_account, $to_account, $date_,
 function add_bank_transaction($trans_type, $from_account, $items, $date_,
 	$person_type_id, $person_id, $person_detail_id,	$ref, $memo_, $use_transaction=true)
 {
-	global $Refs;
+	global $Refs, $SysPrefs;
 
 	// we can only handle type 1 (payment)and type 2 (deposit)
 	if ($trans_type != ST_BANKPAYMENT && $trans_type != ST_BANKDEPOSIT)
 		display_db_error("Invalid type ($trans_type) sent to add_bank_transaction");
 
 	$do_exchange_variance = false;
-	
+	$exchanged = false;
 	if ($use_transaction)
 		begin_transaction();
 
@@ -188,7 +212,9 @@ function add_bank_transaction($trans_type, $from_account, $items, $date_,
     else
     {
     	$trans_no = get_next_trans_no($trans_type);
-    	$do_exchange_variance = true;
+    	$do_exchange_variance = $SysPrefs->auto_currency_revaluation();
+    	if ($do_exchange_variance)
+    		$trans_no1 = get_next_trans_no(ST_JOURNAL);
     }
 
 	// do the source account postings
@@ -221,8 +247,11 @@ function add_bank_transaction($trans_type, $from_account, $items, $date_,
     			$person_type_id, $person_id, $currency,
     			"Cannot insert a destination bank transaction");
     		if ($do_exchange_variance)
-    			add_exchange_variation($trans_type, $trans_no, $date_, $is_bank_to, $gl_item->code_id, 
-    				$currency, $person_type_id, $person_id);
+    		{
+    			if (add_exchange_variation($trans_no1, $date_, $is_bank_to, $gl_item->code_id, 
+    				$currency, $person_type_id, $person_id))
+    				$exchanged = true;
+    		}		
     	}
 		// store tax details if the gl account is a tax account
 
@@ -238,9 +267,15 @@ function add_bank_transaction($trans_type, $from_account, $items, $date_,
     	-$total, null, $person_type_id, $person_id);
 
     if ($do_exchange_variance)
-    	add_exchange_variation($trans_type, $trans_no, $date_, $from_account, $bank_gl_account, 
-    		$currency, $person_type_id, $person_id);
-
+    {
+    	if ($exchanged || add_exchange_variation($trans_no1, $date_, $from_account, $bank_gl_account, 
+    		$currency, $person_type_id, $person_id))
+    	{	
+   			$ref1 = $Refs->get_next(ST_JOURNAL);
+			$Refs->save(ST_JOURNAL, $trans_no1, $ref1);
+			add_audit_trail(ST_JOURNAL, $trans_no1, $date_);
+		}	
+	}
 	add_comments($trans_type, $trans_no, $date_, $memo_);
 
 	$Refs->save($trans_type, $trans_no, $ref);

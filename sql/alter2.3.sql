@@ -160,3 +160,5 @@ ALTER TABLE `0_cust_branch` ADD COLUMN  `rep_lang` char(5) default NULL;
 
 ALTER TABLE `0_suppliers` ADD COLUMN  `rep_lang` char(5) default NULL;
 UPDATE `0_suppliers` set `rep_lang`= 'en_GB' WHERE `curr_code`<>(SELECT value FROM `0_sys_prefs` WHERE name='curr_default');
+
+INSERT INTO `0_sys_prefs` (name, category, type, length, value) VALUES ('auto_curr_reval','setup.company', 'smallint','6', '1');

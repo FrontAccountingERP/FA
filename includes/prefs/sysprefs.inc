@@ -66,6 +66,11 @@ class sys_prefs
 		return $this->prefs['default_dim_required'];
 	}	
 	
+	function auto_currency_revaluation() 
+	{
+		return $this->prefs['auto_curr_reval'];
+	}	
+	
 	function allocation_settled_allowance()
 	{
 		global $config_allocation_settled_allowance;
