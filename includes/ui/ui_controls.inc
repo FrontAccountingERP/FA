@@ -156,7 +156,7 @@ function hyperlink_back($center=true, $no_menu=true, $type_no=0, $trans_no=0)
 	if ($center)
 		echo "<center>";
 	$id = 0;	
-	if ($no_menu && $type_no != 0 && $trans_no != 0)
+	if ($no_menu && $trans_no != 0)
 	{
 		include_once($path_to_root."/admin/db/attachments_db.inc");
 		$id = has_attachment($type_no, $trans_no);

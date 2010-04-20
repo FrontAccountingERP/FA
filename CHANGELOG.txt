@@ -22,6 +22,10 @@ $ -> Affected files
 21-Apr-2010 Joe Hunt
 # Bug in systypes selector (no type update)
 $ /admin/attachments.php
+! Better layout
+$ /admin/company_preferences.php
+# Didn't show 'View Attachments' for Journal Entries
+$ /includes/ui/ui_controls.inc
 
 20-Apr-2010 Joe Hunt
 + Added option for Manual Revaluation of Currency Accounts
