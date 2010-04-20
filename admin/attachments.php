@@ -22,7 +22,7 @@ include_once($path_to_root . "/admin/db/attachments_db.inc");
 if (isset($_GET['vw']))
 	$view_id = $_GET['vw'];
 else
-$view_id = find_submit('view');
+	$view_id = find_submit('view');
 if ($view_id != -1)
 {
 	$row = get_attachment($view_id);
@@ -144,15 +144,18 @@ if ($Mode == 'RESET')
 
 function viewing_controls()
 {
-    start_form();
-
+	global $selected_id;
+	
     start_table(TABLESTYLE_NOBORDER);
 
-	systypes_list_row(_("Type:"), 'filterType', null, true);
+	start_row();
+	systypes_list_cells(_("Type:"), 'filterType', null, true);
+	if (list_updated('filterType'))
+		$selected_id = -1;;
 
+	end_row();
     end_table(1);
 
-	end_form();
 }
 
 function display_rows($type)
@@ -160,8 +163,6 @@ function display_rows($type)
 	$rows = get_attached_documents($type);
 	$th = array(_("#"), _("Description"), _("Filename"), _("Size"), _("Filetype"), _("Date Uploaded"), "", "", "", "");
 	
-	div_start('transactions');
-	start_form();
 	start_table(TABLESTYLE);
 	table_header($th);
 	$k = 0;
@@ -182,19 +183,16 @@ function display_rows($type)
     	end_row();
 	}	
 	end_table(1);
-	hidden('filterType', $type);
-	end_form();
-	div_end();
 }
 
 //----------------------------------------------------------------------------------------
 
+start_form(true);
+
 viewing_controls();
 
-if (isset($_POST['filterType']))
-	display_rows($_POST['filterType']);
+display_rows($_POST['filterType']);
 
-start_form(true);
 
 start_table(TABLESTYLE2);
 
@@ -217,8 +215,6 @@ text_row_ex(_("Description").':', 'description', 40);
 file_row(_("Attached File") . ":", 'filename', 'filename');
 
 end_table(1);
-if (isset($_POST['filterType']))
-	hidden('filterType', $_POST['filterType']);
 
 submit_add_or_update_center($selected_id == -1, '', 'both');
 

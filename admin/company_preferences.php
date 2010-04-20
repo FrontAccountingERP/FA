@@ -186,6 +186,7 @@ sales_types_list_row(_("Base for auto price calculations:"), 'base_sales', $_POS
 text_row_ex(_("Add Price from Std Cost:"), 'add_pct', 10, 10, '', null, null, "%");
 $curr = get_currency($_POST['curr_default']);
 text_row_ex(_("Round to nearest:"), 'round_to', 10, 10, '', null, null, $curr['hundreds_name']);
+label_row("", "&nbsp;");
 
 check_row(_("Search Item List"), 'no_item_list', null);
 check_row(_("Search Customer List"), 'no_customer_list', null);
