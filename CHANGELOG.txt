@@ -19,6 +19,12 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+21-Apr-2010 Joe Hunt
+# Deleting a Sales Order with reference to a voided delivery causes SQL error when
+  looking at this delivery. Solution, can't delete, but set the deliveries to 0
+  on the lines.
+$ /sales/includes/db/sales_order_db.inc
+
 ------------------------------- Release 2.2.8 ----------------------------------
 18-Apr-2010
 ! Release 2.2.8
