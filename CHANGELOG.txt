@@ -20,7 +20,11 @@ Legend:
 $ -> Affected files
 
 21-Apr-2010 Joe Hunt
-# Deleting a Sales Order with reference to a voided delivery causes SQL error when
+# [0000223] Incorrect backup of tables with more than 2 digit prefix
+$ /admin/db/maintenance_db.inc
+
+21-Apr-2010 Joe Hunt
+# [0000222] Deleting a Sales Order with reference to a voided delivery causes SQL error when
   looking at this delivery. Solution, can't delete, but set the deliveries to 0
   on the lines.
 $ /sales/includes/db/sales_order_db.inc

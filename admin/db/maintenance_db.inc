@@ -551,7 +551,7 @@ function db_export($conn, $filename, $zip='no', $comment='', $tbpref = TB_PREF)
     {
 		//if ($conn["tbpref"] == "" || strpos($row['Name'], $conn["tbpref"]) !== false) replaced
 		if (($conn["tbpref"] == "" && !preg_match('/[0-9]+_/', $row['Name'])) ||
-			($conn["tbpref"] != "" && strpos($row['Name'], $conn["tbpref"]) !== false))
+			($conn["tbpref"] != "" && strpos($row['Name'], $conn["tbpref"]) === 0))
     		$all_tables[] = $row;
     }
         // get table structures
