@@ -207,11 +207,22 @@ function void_sales_invoice($type, $type_no)
 	$deliveries = get_parent_trans($type, $type_no);
 
 	if ($deliveries !== 0) {
-		$srcdetails = get_customer_trans_details(get_parent_type($type), $deliveries);
-		while ($row = db_fetch($items_result)) {
-			$src_line = db_fetch($srcdetails);
-			update_parent_line($type, $src_line['id'], -$row['quantity']);
-		}
+		if (count($deliveries) == 1 && get_reference(ST_CUSTDELIVERY, $deliveries[0]) == "auto")
+		{
+			void_sales_delivery(ST_CUSTDELIVERY, $deliveries[0], false);
+			$date_ = Today();
+			add_audit_trail(ST_CUSTDELIVERY, $deliveries[0], $date_, _("Voided."));
+			add_voided_entry(ST_CUSTDELIVERY, $deliveries[0], $date_, "");
+		}	
+		else	
+		{
+			
+			$srcdetails = get_customer_trans_details(get_parent_type($type), $deliveries);
+			while ($row = db_fetch($items_result)) {
+				$src_line = db_fetch($srcdetails);
+				update_parent_line($type, $src_line['id'], -$row['quantity']);
+			}
+		}	
 	}
 	// clear details after they've been reversed in the sales order
 	void_customer_trans_details($type, $type_no);

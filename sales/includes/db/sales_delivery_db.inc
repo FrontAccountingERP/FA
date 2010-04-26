@@ -147,9 +147,10 @@ function write_sales_delivery(&$delivery,$bo_policy)
 
 //--------------------------------------------------------------------------------------------------
 
-function void_sales_delivery($type, $type_no)
+function void_sales_delivery($type, $type_no, $transactions=true)
 {
-	begin_transaction();
+	if ($transactions)
+		begin_transaction();
 
 	void_gl_trans($type, $type_no, true);
 
@@ -159,10 +160,11 @@ function void_sales_delivery($type, $type_no)
 	$order = get_customer_trans_order($type, $type_no);
 
 	if ($order) {
+		$auto = (get_reference(ST_SALESORDER, $order) == "auto");
 		$order_items = get_sales_order_details($order, ST_SALESORDER);
 		while ($row = db_fetch($items_result)) {
 			$order_line = db_fetch($order_items);
-			update_parent_line(ST_CUSTDELIVERY, $order_line['id'], -$row['quantity']);
+			update_parent_line(ST_CUSTDELIVERY, $order_line['id'], -$row['quantity'], $auto);
 		}
 	}
 
@@ -177,6 +179,7 @@ function void_sales_delivery($type, $type_no)
 	// DO NOT MOVE THIS ABOVE VOIDING or we can end up with trans with alloc < 0
 	void_customer_trans($type, $type_no);
 
-	commit_transaction();
+	if ($transactions)
+		commit_transaction();
 }
 ?>

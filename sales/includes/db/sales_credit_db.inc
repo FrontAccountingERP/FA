@@ -115,7 +115,7 @@ function write_credit_note($credit_note, $write_off_acc)
 	foreach ($credit_note->line_items as $credit_line) {
 
 		if ($credit_invoice && $credit_line->qty_dispatched!=$credit_line->qty_old ) {
-			update_parent_line(11, $credit_line->src_id,($credit_line->qty_dispatched
+			update_parent_line(ST_CUSTCREDIT, $credit_line->src_id,($credit_line->qty_dispatched
 					-$credit_line->qty_old));
 		}
 

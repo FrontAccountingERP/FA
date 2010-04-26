@@ -19,6 +19,16 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+26-Apr-2010 Joe Hunt
+! Changed voiding of Direct Invoice to automatically void 'auto' delivery
+  and set SO quantity and qty_sent to 0.
+  And a few small bug fixes.  
+$ /admin/db/voiding_db.inc
+  /sales/includes/sales_db.inc
+  /sales/includes/db/sales_credit_db.inc
+  /sales/includes/db/sales_invoice_db.inc
+  /sales/includes/db/sales_delivery_db.inc
+  
 21-Apr-2010 Joe Hunt
 # Bug in systypes selector (no type update)
 $ /admin/attachments.php

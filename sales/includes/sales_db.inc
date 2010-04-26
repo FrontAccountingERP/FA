@@ -246,7 +246,7 @@ function get_parent_type($type)
 }
 
 //--------------------------------------------------------------------------------------------------
-function update_parent_line($doc_type, $line_id, $qty_dispatched)
+function update_parent_line($doc_type, $line_id, $qty_dispatched, $auto=false)
 {
 	$doc_type = get_parent_type($doc_type);
 
@@ -255,9 +255,13 @@ function update_parent_line($doc_type, $line_id, $qty_dispatched)
 		return false;
 	else {
 		if ($doc_type==ST_SALESORDER)
+		{
 			$sql = "UPDATE ".TB_PREF."sales_order_details
-				SET qty_sent = qty_sent + $qty_dispatched
-				WHERE id=".db_escape($line_id);
+				SET qty_sent = qty_sent + $qty_dispatched";
+			if ($auto)
+				$sql .= ", quantity = quantity + $qty_dispatched";
+			$sql .= " WHERE id=".db_escape($line_id);
+		}		
 		else
 			$sql = "UPDATE ".TB_PREF."debtor_trans_details
 				SET qty_done = qty_done + $qty_dispatched
