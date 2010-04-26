@@ -361,7 +361,8 @@ $reports->addReport(_('General Ledger'),709,_('Ta&x Report'),
 	array(	_('Start Date') => 'DATEBEGINTAX',
 			_('End Date') => 'DATEENDTAX',
 			_('Summary Only') => 'YES_NO',
-			_('Comments') => 'TEXTBOX'));
+			_('Comments') => 'TEXTBOX',
+			_('Destination') => 'DESTINATION'));
 $reports->addReport(_('General Ledger'),710,_('Audit Trail'),
 	array(	_('Start Date') => 'DATEBEGINM',
 			_('End Date') => 'DATEENDM',

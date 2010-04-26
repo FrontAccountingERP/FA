@@ -77,8 +77,12 @@ function print_tax_report()
 	$to = $_POST['PARAM_1'];
 	$summaryOnly = $_POST['PARAM_2'];
 	$comments = $_POST['PARAM_3'];
+	$destination = $_POST['PARAM_4'];
 
-	include_once($path_to_root . "/reporting/includes/pdf_report.inc");
+	if ($destination)
+		include_once($path_to_root . "/reporting/includes/excel_report.inc");
+	else
+		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 
 	$dec = user_price_dec();
 
@@ -165,11 +169,14 @@ function print_tax_report()
 
 	$aligns2 = array('left', 'right', 'right', 'right',	'right', 'right', 'right');
 
-	for ($i = 0; $i < count($cols2); $i++)
-		$rep->cols[$i] = $rep->leftMargin + $cols2[$i];
+	$rep->Info($params, $cols2, $headers2, $aligns2);
 
-	$rep->headers = $headers2;
-	$rep->aligns = $aligns2;
+	//for ($i = 0; $i < count($cols2); $i++)
+	//	$rep->cols[$i] = $rep->leftMargin + $cols2[$i];
+
+	//$rep->numcols = count($headers2);
+	//$rep->headers = $headers2;
+	//$rep->aligns = $aligns2;
 	$rep->Header();
 
 	$taxtotal = 0;

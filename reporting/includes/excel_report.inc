@@ -70,7 +70,7 @@ class FrontReport extends Spreadsheet_Excel_Writer_Workbook
 		$this->endLine = 760;
 		$this->fontSize = $fontsize;
 		$this->oldFontSize = 0;
-		$this->y = 1;
+		$this->y = 0;
 		$this->currency = '';
 		$this->excelColWidthFactor = $excelColWidthFactor;
 		$rtl = ($_SESSION['language']->dir == 'rtl');
@@ -236,7 +236,6 @@ class FrontReport extends Spreadsheet_Excel_Writer_Workbook
 
 	function Header()
 	{
-		$this->y = 0;
 		$tcol = $this->numcols - 1;
 		$this->sheet->setRow($this->y, 20);
 		for ($i = 0; $i < $this->numcols; $i++)
