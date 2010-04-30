@@ -163,9 +163,6 @@ function voiding_controls()
 		_("GL") => array('insert'=>true, 'fun'=>'gl_view'),
 		_("Select") => array('insert'=>true, 'fun'=>'select_link') 
 	);
-	if(!$trans_ref) {
-		array_remove($cols, 1);
-	}
 
 	$table =& new_db_pager('transactions', $sql, $cols);
 	$table->width = "40%";
