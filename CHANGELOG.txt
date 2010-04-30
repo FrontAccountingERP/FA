@@ -19,6 +19,16 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+30-Apr-2010 Janusz Dobrowolski
++ Recovering next reference after voiding of last reference
+  /admin/db/voiding_db.inc
+  /includes/references.inc
+  /includes/db/references_db.inc
+# Reference column displayed also for journal entries
+  /admin/void_transaction.php
+# Voided transactions excluded form list of transactions
+  /admin/db/transactions_db.inc
+
 26-Apr-2010 Joe Hunt
 ! Changed voiding of Direct Invoice to automatically void 'auto' delivery
   and set SO quantity and qty_sent to 0.
