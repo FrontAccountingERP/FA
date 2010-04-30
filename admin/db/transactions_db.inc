@@ -25,24 +25,33 @@ function get_sql_for_view_transactions($filtertype, $from, $to, &$trans_ref)
 	$trans_ref = $db_info[3];
 	$trans_date = $db_info[4];
 
-	$sql = "SELECT DISTINCT $trans_no_name as trans_no";
+	$sql = "SELECT DISTINCT t.$trans_no_name as trans_no";
 
 	if ($trans_ref)
-		$sql .= " ,$trans_ref as ref ";
- 	$sql .= ",$trans_date as trans_date";
+		$sql .= " ,t.$trans_ref as ref ";
+	else
+		$sql .= ", r.reference as ref";
+ 	$sql .= ",t.$trans_date as trans_date";
  	if ($type_name)
-		$sql .= ", ".$type_name." as type";
-	$sql .= " FROM $table_name ";
+		$sql .= ", t.$type_name as type";
+	$sql .= " FROM $table_name t LEFT JOIN ".TB_PREF."voided v ON"
+		." t.$trans_no_name=v.id AND v.type=$filtertype";
+	if (!$trans_ref)
+		$sql .= " LEFT JOIN ".TB_PREF."refs r ON t.$trans_no_name=r.id AND r.type=$filtertype";
+
+	$sql .= " WHERE ISNULL(v.`memo_`)";
 	if ($from != null && $to != null)
 	{
-		$sql .= " WHERE $trans_no_name >= ".db_escape($from). "
-			AND  $trans_no_name <= ".db_escape($to);
+		$sql .= " AND t.$trans_no_name >= ".db_escape($from). "
+			AND  t.$trans_no_name <= ".db_escape($to);
 		if ($type_name != null)
-			$sql .= " AND `$type_name` = ".db_escape($filtertype);
+			$sql .= " AND t.`$type_name` = ".db_escape($filtertype);
 	}
 	elseif ($type_name != null)
-		$sql .= " WHERE `$type_name` = ".db_escape($filtertype);
-	$sql .= " ORDER BY $trans_no_name";
+		$sql .= " AND t.`$type_name` = ".db_escape($filtertype);
+	
+	$sql .= " ORDER BY t.$trans_no_name";
+
 	return $sql;
 }
 
