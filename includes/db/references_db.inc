@@ -53,8 +53,12 @@ function delete_reference($type, $id)
 
 function find_reference($type, $reference)
 {
-	$sql = "SELECT id FROM ".TB_PREF."refs WHERE type=".db_escape($type)
-		." AND reference=".db_escape($reference);
+	// ignore refs references for voided transactions
+	$sql = "SELECT r.id FROM ".TB_PREF."refs r LEFT JOIN ".TB_PREF."voided v ON"
+		." r.type=v.type AND r.id=v.id"
+		." WHERE r.type=".db_escape($type)
+		." AND reference=".db_escape($reference)
+		." AND ISNULL(`memo_`)";
 
 	$result = db_query($sql, "could not query reference table");
 
