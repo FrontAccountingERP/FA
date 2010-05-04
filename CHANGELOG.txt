@@ -19,10 +19,14 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+04-May-2010 Joe Hunt
+# [0000225] Supplier Payment Report showing paid invoices (rounding problem)
+$ /reporting/rep203.php
+
 26-Apr-2010 Joe Hunt
 ! Allowing the Tax Report to be printed to Excel/OO Calc
 $ /reporting/rep709.php
-  /reports_main.php
+  /reporting/reports_main.php
   /reporting/includes/excel_report.inc
   
 21-Apr-2010 Joe Hunt
