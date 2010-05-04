@@ -161,7 +161,7 @@ function inquiry_controls()
 	//Compare Combo
 	global $sel;
 	$sel = array(_("Accumulated"), _("Period Y-1"), _("Budget"));	
-	echo "<td>Comapre To:</td>\n";
+	echo "<td>"._("Compare to").":</td>\n";
 	echo "<td>";
 	echo array_selector('Compare', null, $sel);
 	echo "</td>\n";	
