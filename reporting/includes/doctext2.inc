@@ -125,11 +125,14 @@ if (isset($emailtype))
 }
 if (isset($header2type) || isset($linetype))
 {
-	$doc_Invoice_no = ($doctype==ST_CUSTDELIVERY ? "Delivery Note No." :
+	$doc_Invoice_no = ($doctype==ST_CUSTDELIVERY ? "Delivery Note No." : 
 		($doctype == ST_CUSTPAYMENT ? "Receipt No." :
 		($doctype == ST_SUPPAYMENT ? "Remittance No." :
-		(($doctype == ST_SALESQUOTE || $doctype==ST_PURCHORDER || $doctype==ST_SALESORDER) ? "Order no." : 
-		($doctype==ST_SALESINVOICE ? "Invoice No." : ($doctype == ST_WORKORDER ? "Work Order No." : "Credit No."))))));
+		($doctype == ST_PURCHORDER ? "Purchase Order No." :
+		($doctype == ST_SALESORDER ? "Order No." :
+		($doctype == ST_SALESQUOTE ? "Quotation No." :
+		($doctype == ST_SALESINVOICE ? "Invoice No." :
+		($doctype == ST_WORKORDER ? "Work Order No." : "Credit No."))))))));
 	$doc_Delivery_no = "Delivery Note No.";
 	$doc_Order_no = "Order No.";
 }

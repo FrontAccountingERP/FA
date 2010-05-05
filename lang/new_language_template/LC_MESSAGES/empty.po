@@ -5,12 +5,12 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FrontAccounting\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-05-04 14:48+0100\n"
-"PO-Revision-Date: 2010-05-04 14:48+0100\n"
+"POT-Creation-Date: 2010-05-05 13:48+0100\n"
+"PO-Revision-Date: 2010-05-05 13:48+0100\n"
 "Last-Translator: Translation Team <info@frontaccounting.net>\n"
 "Language-Team: Translators\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Language: English\n"
 "X-Poedit-Country: UNITED KINGDOM\n"
@@ -10859,7 +10859,7 @@ msgid "Kindest regards"
 msgstr ""
 
 #: c:\Apache2\htdocs\account228/reporting/includes/doctext.inc:129
-#: c:\Apache2\htdocs\account228/reporting/includes/doctext.inc:134
+#: c:\Apache2\htdocs\account228/reporting/includes/doctext.inc:138
 msgid "Delivery Note No."
 msgstr ""
 
@@ -10872,75 +10872,83 @@ msgid "Remittance No."
 msgstr ""
 
 #: c:\Apache2\htdocs\account228/reporting/includes/doctext.inc:132
-#: c:\Apache2\htdocs\account228/reporting/includes/doctext.inc:135
+msgid "Purchase Order No."
+msgstr ""
+
+#: c:\Apache2\htdocs\account228/reporting/includes/doctext.inc:133
+#: c:\Apache2\htdocs\account228/reporting/includes/doctext.inc:139
 msgid "Order No."
 msgstr ""
 
-#: c:\Apache2\htdocs\account228/reporting/includes/doctext.inc:133
+#: c:\Apache2\htdocs\account228/reporting/includes/doctext.inc:134
+msgid "Quotation No."
+msgstr ""
+
+#: c:\Apache2\htdocs\account228/reporting/includes/doctext.inc:135
 msgid "Invoice No."
 msgstr ""
 
-#: c:\Apache2\htdocs\account228/reporting/includes/doctext.inc:133
-msgid "Word Order No."
+#: c:\Apache2\htdocs\account228/reporting/includes/doctext.inc:136
+msgid "Work Order No."
 msgstr ""
 
-#: c:\Apache2\htdocs\account228/reporting/includes/doctext.inc:133
+#: c:\Apache2\htdocs\account228/reporting/includes/doctext.inc:136
 msgid "Credit No."
 msgstr ""
 
-#: c:\Apache2\htdocs\account228/reporting/includes/doctext.inc:147
+#: c:\Apache2\htdocs\account228/reporting/includes/doctext.inc:151
 msgid "TOTAL ORDER EX VAT"
 msgstr ""
 
-#: c:\Apache2\htdocs\account228/reporting/includes/doctext.inc:148
+#: c:\Apache2\htdocs\account228/reporting/includes/doctext.inc:152
 msgid "TOTAL ORDER VAT INCL."
 msgstr ""
 
-#: c:\Apache2\htdocs\account228/reporting/includes/doctext.inc:149
+#: c:\Apache2\htdocs\account228/reporting/includes/doctext.inc:153
 msgid "TOTAL PO EX VAT"
 msgstr ""
 
-#: c:\Apache2\htdocs\account228/reporting/includes/doctext.inc:150
+#: c:\Apache2\htdocs\account228/reporting/includes/doctext.inc:154
 msgid "TOTAL DELIVERY INCL. VAT"
 msgstr ""
 
-#: c:\Apache2\htdocs\account228/reporting/includes/doctext.inc:154
+#: c:\Apache2\htdocs\account228/reporting/includes/doctext.inc:158
 msgid "As advance / full / part / payment towards:"
 msgstr ""
 
-#: c:\Apache2\htdocs\account228/reporting/includes/doctext.inc:155
+#: c:\Apache2\htdocs\account228/reporting/includes/doctext.inc:159
 msgid "By Cash / Cheque* / Draft No."
 msgstr ""
 
-#: c:\Apache2\htdocs\account228/reporting/includes/doctext.inc:156
+#: c:\Apache2\htdocs\account228/reporting/includes/doctext.inc:160
 msgid "Dated"
 msgstr ""
 
-#: c:\Apache2\htdocs\account228/reporting/includes/doctext.inc:157
+#: c:\Apache2\htdocs\account228/reporting/includes/doctext.inc:161
 msgid "Drawn on Bank"
 msgstr ""
 
-#: c:\Apache2\htdocs\account228/reporting/includes/doctext.inc:159
+#: c:\Apache2\htdocs\account228/reporting/includes/doctext.inc:163
 msgid "Received / Sign"
 msgstr ""
 
-#: c:\Apache2\htdocs\account228/reporting/includes/doctext.inc:163
+#: c:\Apache2\htdocs\account228/reporting/includes/doctext.inc:167
 msgid "TOTAL RECEIPT"
 msgstr ""
 
-#: c:\Apache2\htdocs\account228/reporting/includes/doctext.inc:165
+#: c:\Apache2\htdocs\account228/reporting/includes/doctext.inc:169
 msgid "TOTAL REMITTANCE"
 msgstr ""
 
-#: c:\Apache2\htdocs\account228/reporting/includes/doctext.inc:169
+#: c:\Apache2\htdocs\account228/reporting/includes/doctext.inc:173
 msgid "Outstanding Transactions"
 msgstr ""
 
-#: c:\Apache2\htdocs\account228/reporting/includes/doctext.inc:172
+#: c:\Apache2\htdocs\account228/reporting/includes/doctext.inc:176
 msgid "Statement"
 msgstr ""
 
-#: c:\Apache2\htdocs\account228/reporting/includes/doctext.inc:173
+#: c:\Apache2\htdocs\account228/reporting/includes/doctext.inc:177
 msgid "as of"
 msgstr ""
 

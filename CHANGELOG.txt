@@ -21,7 +21,8 @@ $ -> Affected files
 
 04-May-2010 Janusz Dobrowolski/Robert Laussegger
 # Fixed amibiguites and typos in report titles.
-$ reporting/includes/doctext.inc
+$ /reporting/includes/doctext.inc
+  /reporting/includes/doctext2.inc
 
 04-May-2010 Joe Hunt
 # [0000225] Supplier Payment Report showing paid invoices (rounding problem)

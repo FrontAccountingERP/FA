@@ -131,7 +131,7 @@ if (isset($header2type) || isset($linetype))
 		($doctype == ST_SUPPAYMENT ? _("Remittance No.") :
 		($doctype == ST_PURCHORDER ? _("Purchase Order No.") :
 		($doctype == ST_SALESORDER ? _("Order No.") :
-		($doctype == ST_SALESQUOTE  ? _("Quotation No.") :
+		($doctype == ST_SALESQUOTE ? _("Quotation No.") :
 		($doctype == ST_SALESINVOICE ? _("Invoice No.") :
 		($doctype == ST_WORKORDER ? _("Work Order No.") : _("Credit No.")))))))));
 
