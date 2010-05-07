@@ -19,6 +19,16 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+07-May-2010 Joe Hunt
++ Added Account tags selection in Annual Expense Breakdown, Balanse Sheet
+  and Profit and Loss Sheet
+$ /admin/db/tags_db.inc
+  /reporting/rep705.php
+  /reporting/rep706.php
+  /reporting/rep707.php
+  /reporting/reports_main.php
+  /reporting/includes/reports_classes.inc
+  
 07-May-2010 Janusz Dobrowolski
 # Fixed bug in array_selector for multiply lists
 $ /includes/ui/ui_lists.inc

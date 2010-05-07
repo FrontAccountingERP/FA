@@ -395,7 +395,8 @@ class BoxReports
 						$tag_type = TAG_ACCOUNT;
 					else
 						$tag_type = TAG_DIMENSION;
-					return tag_list($name, 5, $tag_type, true, _("No tags"));
+					//return tag_list($name, 5, $tag_type, true, false, _("No tags"));
+					return tag_list($name, 5, $tag_type, true);
 
 			}
 		return '';
