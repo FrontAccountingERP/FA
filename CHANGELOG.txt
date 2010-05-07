@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+07-May-2010 Janusz Dobrowolski
+# Fixed bug in array_selector for multiply lists
+$ /includes/ui/ui_lists.inc
+
 30-Apr-2010 Janusz Dobrowolski
 + Recovering next reference after voiding of last reference
   /admin/db/voiding_db.inc

@@ -89,7 +89,7 @@ $opts = array(		// default options
 		$opts['sel_hint'] = $by_id || $search_box==false ?
 			'' : _('Press Space tab for search pattern entry');
 
-	if ($opts['box_hint'] === null)  // dodaæ hint dla pustego ****
+	if ($opts['box_hint'] === null)
 		$opts['box_hint'] = $search_box && $search_submit != false ?
 			($by_id ? _('Enter code fragment to search or * for all')
 			: _('Enter description fragment to search or * for all')) :'';
@@ -103,7 +103,6 @@ $opts = array(		// default options
 	$txt = get_post($search_box);
 	$rel = '';
 	$limit = '';
-
 	if (isset($_POST['_'.$name.'_update'])) { // select list or search box change
 		if ($by_id) $txt = $_POST[$name];
 
@@ -145,6 +144,7 @@ $opts = array(		// default options
 				}
 		}
 	}
+
 	// sql completion
 	if (count($opts['where'])) {
 		$where = strpos($sql, 'WHERE')==false ? ' WHERE ':' AND ';
@@ -345,16 +345,14 @@ $opts = array(		// default options
 		foreach($items as $value=>$descr) {
 			$sel = '';
 			if (in_array((string)$value, $selected_id, true)) {
-				$sel = "selected='selected'";
+				$sel = 'selected';
 				$found = $value;
 			}
 			if ($first_id === false) {
 				$first_id = $value;
-				$first_opt = "<option %s value='$value'>$descr</option>\n";
-			} 
-			else {
-				$selector .= "<option $sel value='$value'>$descr</option>\n";
+				$first_opt = $descr;
 			}
+			$selector .= "<option $sel value='$value'>$descr</option>\n";
 		}
 
 	if ($first_id!==false) {
@@ -365,7 +363,7 @@ $opts = array(		// default options
 	if ($spec_option !== false) { // if special option used - add it
 		$first_id = $spec_id;
 		$first_opt = $spec_option;
-		$sel = $found===false ? "selected='selected'" : '';
+		$sel = $found===false ? 'selected' : '';
 		$selector = "<option $sel value='$spec_id'>$spec_option</option>\n"
 			. $selector;
 	}
@@ -374,6 +372,7 @@ $opts = array(		// default options
 		$selected_id = array($first_id);
 	}
 	$_POST[$name] = $multi ? $selected_id : $selected_id[0];
+
 	$selector = "<select autocomplete='off' ".($multi  ? "multiple" : '')
 		. ($opts['height']!==false ? ' size="'.$opts['height'].'"' : '')
 		. "$disabled name='$name".($multi ? '[]' : '')."' class='combo' title='"
