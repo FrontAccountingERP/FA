@@ -77,6 +77,9 @@ $ /sales/credit_note_entry.php
   /sales/customer_invoice.php
 # Fix in array_search_keys
 $ /includes/current_user.inc
+# Fixed bug in company deletion
+$ /admin/create_coy.php
+  /admin/db/company_db.inc
 
 07-May-2010 Joe Hunt
 + Added Account tags selection in Annual Expense Breakdown, Balanse Sheet
