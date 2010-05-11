@@ -366,6 +366,56 @@ function div_end()
     }
 }
 
+//-----------------------------------------------------------------------------
+//	Tabbed area:
+// 	$name - prefix for widget internal elements:
+//		Nth tab submit name:  {$name}_N
+//		div id:	_{$name}_div
+//		sel (hidden) name: _{$name}_sel
+// $tabs - array of tabs; string: tab title or array(tab_title, enabled_status)
+
+function tabbed_content_start($name, $tabs, $dft='') {
+    global $Ajax;
+
+    $selname = '_'.$name.'_sel';
+	$div = '_'.$name.'_div';
+
+	if ($dft=='')
+		$dft = key($tabs);
+    $sel = find_submit($name.'_', '');
+
+	if ($sel != '') {
+			$Ajax->activate($name);
+	} else 
+		$sel = get_post($selname, $dft);
+	$_POST[$selname] = $sel;
+
+	div_start($name);
+	$str = "<ul class='ajaxtabs' rel='$div'>\n";
+	foreach($tabs as $tab_no => $tab) {
+		
+		$acc = access_string(is_array($tab) ? $tab[0] : $tab);
+		$disabled = (is_array($tab) && !$tab[1])  ? 'disabled ' : '';
+		$str .= ( "<li>"
+			."<button type='submit' name='{$name}_".$tab_no
+			."' class='".($tab_no===$sel ? 'current':'ajaxbutton')."' $acc[1] $disabled>"
+			."<span>$acc[0]</span>"
+			."</button>\n"
+			."</li>\n" );
+	}
+
+	$str .= "</ul>\n";
+	$str .= "<div class='spaceBox'></div>\n";
+	$str .= "<input type='hidden' name='$selname' value='$sel'>\n";
+	$str .= "<div class='contentBox' id='$div'>\n";
+	echo $str;
+}
+
+function tabbed_content_end() {
+  div_end();
+	div_end();
+}
+
 /* Table editor interfaces. Key is editor type
 	0 => url of editor page
 	1 => hotkey code
