@@ -88,7 +88,7 @@ function write_credit_note($credit_note, $write_off_acc)
 		void_trans_tax_details(ST_CUSTCREDIT, $credit_no);
 	}
 	if ($credit_invoice) {
-		$invoice_alloc_balance = get_DebtorTrans_allocation_balance(ST_SALESINVOICE, $credit_invoice);
+		$invoice_alloc_balance = get_debtor_trans_allocation_balance(ST_SALESINVOICE, $credit_invoice);
 		update_customer_trans_version(get_parent_type(ST_CUSTCREDIT), $credit_note->src_docs );
 		if ($invoice_alloc_balance > 0) { 	//the invoice is not already fully allocated 
 			$total = $credit_note_total + $credit_note->freight_cost +
