@@ -479,7 +479,7 @@ ul.ajaxtabs li{
 	display: inline;
 }
 
-ul.ajaxtabs li input{
+ul.ajaxtabs li button{
     background-color: #dee7ec;
 /*	background-repeat: repeat-x;
 	background-position: top; */
@@ -492,7 +492,7 @@ ul.ajaxtabs li input{
 	font-weight: bold;
 }
 
-ul.ajaxtabs li input:hover{
+ul.ajaxtabs li button:hover{
 	border-top: 1px solid #8cacbb;
 	color:#FFFFFF;
 }
@@ -510,7 +510,7 @@ div.contentBox{
 	margin: 0 3px 3px 3px
 }
 
-ul.ajaxtabs li input.current, ul.ajaxtabs li input.current:hover{
+ul.ajaxtabs li button.current, ul.ajaxtabs li button.current:hover{
 	border-left: 1px solid #8cacbb;
 	background-color: #8cacbb;
 	color:#FFFFFF;
