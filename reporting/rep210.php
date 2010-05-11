@@ -16,13 +16,14 @@ $page_security = $_POST['PARAM_0'] == $_POST['PARAM_1'] ?
 // $ Revision:	2.0 $
 // Creator:	Joe Hunt
 // date_:	2005-05-19
-// Title:	Purchase Orders
+// Title:	Purchase Remittance
 // ----------------------------------------------------------------
 $path_to_root="..";
 
 include_once($path_to_root . "/includes/session.inc");
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
+include_once($path_to_root . "/includes/db/crm_contacts_db.inc");
 
 //----------------------------------------------------------------------------------------------------
 
@@ -33,9 +34,9 @@ function get_remittance($type, $trans_no)
 {
    	$sql = "SELECT ".TB_PREF."supp_trans.*, 
    		(".TB_PREF."supp_trans.ov_amount+".TB_PREF."supp_trans.ov_gst+".TB_PREF."supp_trans.ov_discount) AS Total, 
-   		".TB_PREF."suppliers.supp_name,  ".TB_PREF."suppliers.supp_account_no, ".TB_PREF."suppliers.rep_lang,
+   		".TB_PREF."suppliers.supp_name,  ".TB_PREF."suppliers.supp_account_no, 
    		".TB_PREF."suppliers.curr_code, ".TB_PREF."suppliers.payment_terms, ".TB_PREF."suppliers.gst_no AS tax_id, 
-   		".TB_PREF."suppliers.email, ".TB_PREF."suppliers.address, ".TB_PREF."suppliers.contact
+   		".TB_PREF."suppliers.address
 		FROM ".TB_PREF."supp_trans, ".TB_PREF."suppliers
 		WHERE ".TB_PREF."supp_trans.supplier_id = ".TB_PREF."suppliers.supplier_id
 		AND ".TB_PREF."supp_trans.type = ".db_escape($type)."
@@ -123,7 +124,8 @@ function print_remittances()
 			}
 			else
 				$rep->title = _('REMITTANCE');
-			$rep->SetCommonData($myrow, null, $myrow, $baccount, ST_SUPPAYMENT);
+			$contacts = get_supplier_contacts($myrow['supplier_id'], 'invoice');
+			$rep->SetCommonData($myrow, null, $myrow, $baccount, ST_SUPPAYMENT, $contacts);
 			$rep->NewPage();
 			$result = get_allocations_for_remittance($myrow['supplier_id'], $myrow['type'], $myrow['trans_no']);
 
@@ -172,9 +174,9 @@ function print_remittances()
 			$rep->Font();
 			if ($email == 1)
 			{
-				$myrow['contact_email'] = $myrow['email'];
+//				$myrow['contact_email'] = $myrow['email'];
 				$myrow['DebtorName'] = $myrow['supp_name'];
-				if ($myrow['contact'] != '') $myrow['DebtorName'] = $myrow['contact'];
+//				if ($myrow['contact'] != '') $myrow['DebtorName'] = $myrow['contact'];
 				$rep->End($email, $doc_Order_no . " " . $myrow['reference'], $myrow);
 			}
 		}	

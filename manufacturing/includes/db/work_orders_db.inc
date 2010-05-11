@@ -189,13 +189,13 @@ function delete_work_order($woid)
 
 function get_work_order($woid, $allow_null=false)
 {
-    $sql = "SELECT ".TB_PREF."workorders.*, ".TB_PREF."stock_master.description As StockItemName,
-		".TB_PREF."locations.location_name, ".TB_PREF."locations.delivery_address 
-		FROM ".TB_PREF."workorders, ".TB_PREF."stock_master, ".TB_PREF."locations
-		WHERE ".TB_PREF."stock_master.stock_id=".TB_PREF."workorders.stock_id
-		AND	".TB_PREF."locations.loc_code=".TB_PREF."workorders.loc_code
-		AND ".TB_PREF."workorders.id=".db_escape($woid)."
-		GROUP BY ".TB_PREF."workorders.id";
+    $sql = "SELECT wo.*,st.description As StockItemName,l.location_name,
+    		l.delivery_address,l.email, l.contact
+		FROM ".TB_PREF."workorders wo, ".TB_PREF."stock_master st, ".TB_PREF."locations l
+		WHERE st.stock_id=wo.stock_id
+		AND	l.loc_code=wo.loc_code
+		AND wo.id=".db_escape($woid)."
+		GROUP BY wo.id";
 
 	$result = db_query($sql, "The work order issues could not be retrieved");
 

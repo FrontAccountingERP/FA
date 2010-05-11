@@ -12,12 +12,7 @@
 $page_security = $_POST['PARAM_0'] == $_POST['PARAM_1'] ?
 	'SA_MANUFTRANSVIEW' : 'SA_MANUFBULKREP';
 // ----------------------------------------------------------------
-// $ Revision:	2.0 $
-// Creator:	Janusz Dobrowolski
-// date_:	2008-01-14
-// Title:	Print Workorders
-// draft version!
-// ----------------------------------------------------------------
+// Title:	Work Orders
 $path_to_root="..";
 
 include_once($path_to_root . "/includes/session.inc");
@@ -33,7 +28,7 @@ print_workorders();
 
 function print_workorders()
 {
-	global $path_to_root, $SysPrefs;
+	global $path_to_root, $SysPrefs, $dflt_lang;
 
 	include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 
@@ -74,7 +69,7 @@ function print_workorders()
 		$myrow = get_work_order($i);
 		if ($myrow === false)
 			continue;
-		$date_ = sql2date($myrow["date_"]);			
+		$date_ = sql2date($myrow["date_"]);
 		if ($email == 1)
 		{
 			$rep = new FrontReport("", "", user_pagesize());
@@ -82,12 +77,16 @@ function print_workorders()
 			$rep->currency = $cur;
 			$rep->Font();
 				$rep->title = _('WORK ORDER');
-				$rep->filename = "WorkOrder" . $myrow['reference'] . ".pdf";
+				$rep->filename = "WorkOrder" . $myrow['wo_ref'] . ".pdf";
 			$rep->Info($params, $cols, null, $aligns);
 		}
 		else
 			$rep->title = _('WORK ORDER');
-		$rep->SetCommonData($myrow, null, null, '', 26);
+
+		$contact[] = array('email' =>$myrow['email'],'lang' => $dflt_lang,
+			'name' => $myrow['contact'], 'name2' => '', 'contact');
+
+		$rep->SetCommonData($myrow, null, null, '', 26, $contact);
 		$rep->NewPage();
 
 		$result = get_wo_requirements($i);
@@ -140,6 +139,13 @@ function print_workorders()
 			$rep->NewLine();
 			while ($comment=db_fetch($comments))
 				$rep->TextColLines(0, 6, $comment['memo_'], -2);
+		}
+		if ($email == 1)
+		{
+//			$myrow['contact_email'] = $myrow['email'];
+			$myrow['DebtorName'] = $myrow['contact'];
+			$myrow['reference'] = $myrow['wo_ref'];
+ 			$rep->End($email, _("Work Order No.") . " " . $myrow['wo_ref'], $myrow);
 		}
 	}
 	if ($email == 0)

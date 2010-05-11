@@ -22,6 +22,7 @@ include_once($path_to_root . "/includes/session.inc");
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
 include_once($path_to_root . "/sales/includes/sales_db.inc");
+include_once($path_to_root . "/includes/db/crm_contacts_db.inc");
 
 //----------------------------------------------------------------------------------------------------
 
@@ -81,7 +82,7 @@ function print_statements()
 		$rep->Info($params, $cols, null, $aligns);
 	}
 
-	$sql = "SELECT debtor_no, name AS DebtorName, address, tax_id, email, curr_code, curdate() AS tran_date, rep_lang FROM ".TB_PREF."debtors_master";
+	$sql = "SELECT debtor_no, name AS DebtorName, address, tax_id, email, curr_code, curdate() AS tran_date FROM ".TB_PREF."debtors_master";
 	if ($customer != ALL_NUMERIC)
 		$sql .= " WHERE debtor_no = ".db_escape($customer);
 	else
@@ -109,7 +110,9 @@ function print_statements()
 			$rep->filename = "Statement" . $myrow['debtor_no'] . ".pdf";
 			$rep->Info($params, $cols, null, $aligns);
 		}
-		$rep->SetCommonData($myrow, null, null, $baccount, ST_STATEMENT);
+		$contacts = get_customer_contacts($myrow['debtor_no'], 'invoice');
+		//= get_branch_contacts($branch['branch_code'], 'invoice', $branch['debtor_no']);
+		$rep->SetCommonData($myrow, null, null, $baccount, ST_STATEMENT, $contacts);
 		$rep->NewPage();
 		$rep->NewLine();
 		$linetype = true;

@@ -96,7 +96,9 @@ function print_sales_orders()
 		}
 		else
 			$rep->title = ($print_as_quote==1 ? _("QUOTE") : _("SALES ORDER"));
-		$rep->SetCommonData($myrow, $branch, $myrow, $baccount, ST_SALESORDER);
+
+		$contacts = get_branch_contacts($branch['branch_code'], 'order', $branch['debtor_no']);
+		$rep->SetCommonData($myrow, $branch, $myrow, $baccount, ST_SALESORDER, $contacts);
 		$rep->NewPage();
 
 		$result = get_sales_order_details($i, ST_SALESORDER);
@@ -163,6 +165,7 @@ function print_sales_orders()
 		$rep->Font();
 		if ($email == 1)
 		{
+			$res = get_branch_contacts(branch_code, 'order', customer_id);
 			if ($myrow['contact_email'] == '')
 			{
 				$myrow['contact_email'] = $branch['email'];

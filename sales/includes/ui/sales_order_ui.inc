@@ -104,8 +104,11 @@ function get_customer_details_to_order(&$order, $customer_id, $branch_id)
 
 	$myrow = db_fetch($result);
 
+	// FIX - implement editable contact selector in sales order 
+	$contact = get_branch_contacts($branch_id, 'order', $customer_id);
+
 	$order->set_branch($branch_id, $myrow["tax_group_id"],
-	$myrow["tax_group_name"], $myrow["phone"], $myrow["email"]);
+	$myrow["tax_group_name"], @$contact[0]["phone"], @$contact[0]["email"]);
 
 	$address = trim($myrow["br_post_address"]) != '' ? $myrow["br_post_address"]
 		: (trim($myrow["br_address"]) != '' ? $myrow["br_address"]:$deliver);

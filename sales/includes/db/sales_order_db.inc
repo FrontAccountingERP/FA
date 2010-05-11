@@ -280,13 +280,12 @@ function get_sales_order_header($order_no, $trans_type)
 	  ."stype.tax_included, "
 	  ."ship.shipper_name, "
 	  ."tax_group.name AS tax_group_name , "
-	  ."tax_group.id AS tax_group_id,"
-	  ."IF(ISNULL(branch.rep_lang),cust.rep_lang,branch.rep_lang) AS rep_lang "
+	  ."tax_group.id AS tax_group_id "
 	."FROM ".TB_PREF."sales_orders sorder, "
-	  .TB_PREF."debtors_master cust, "
+	  .TB_PREF."debtors_master cust,"
 	  .TB_PREF."sales_types stype, "
 	  .TB_PREF."tax_groups tax_group, "
-	  .TB_PREF."cust_branch branch, "
+	  .TB_PREF."cust_branch branch,"
 	  .TB_PREF."locations loc, "
 	  .TB_PREF."shippers ship
 	WHERE sorder.order_type=stype.id
@@ -462,9 +461,7 @@ function get_branch_to_order($customer_id, $branch_id) {
 	 	$sql = "SELECT ".TB_PREF."cust_branch.br_name, "
 			.TB_PREF."cust_branch.br_address, "
 			.TB_PREF."cust_branch.br_post_address, "
-			.TB_PREF."cust_branch.phone, "
-			.TB_PREF."cust_branch.email,
-			  default_location, location_name, default_ship_via, "
+			." default_location, location_name, default_ship_via, "
 			.TB_PREF."tax_groups.name AS tax_group_name, "
 			.TB_PREF."tax_groups.id AS tax_group_id
 			FROM ".TB_PREF."cust_branch, "

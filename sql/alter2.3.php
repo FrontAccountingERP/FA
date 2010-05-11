@@ -53,8 +53,24 @@ class fa2_3 {
 				return false;
 			}
 		}
+		//remove obsolete and temporary columns.
+		// this have to be done here as db_import rearranges alter query order
+		$dropcol = array(
+			'crm_persons' => array('tmp_id','tmp_class'),
+			'debtors_master' => array('email'),
+			'cust_branch' => array('phone', 'phone2', 'fax', 'email'),
+			'suppliers' => array('phone', 'phone2', 'fax', 'email')
+		);
+		foreach($dropcol as $table => $columns)
+			foreach($columns as $col) {
+			if (db_query("ALTER TABLE `{$pref}{$table}` DROP `$col`")==false) {
+				display_error("Cannot drop {$table}.{$col} column:<br>".db_error_msg($db));
+				return false;
+			}
+		}
+
 		// remove old preferences table after upgrade script has been executed
-		$sql = "DROP TABLE IF EXISTS `".$pref."company`";
+		$sql = "DROP TABLE IF EXISTS `{$pref}company`";
 
 		return db_query($sql) && update_company_prefs(array('version_id'=>'2.3'));
 	}

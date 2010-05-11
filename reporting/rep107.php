@@ -109,7 +109,8 @@ function print_invoices()
 			}
 			else
 				$rep->title = ($j == ST_SALESINVOICE) ? _('INVOICE') : _('CREDIT NOTE');
-			$rep->SetCommonData($myrow, $branch, $sales_order, $baccount, $j);
+			$contacts = get_branch_contacts($branch['branch_code'], 'order', $branch['debtor_no']);
+			$rep->SetCommonData($myrow, $branch, $sales_order, $baccount, $j, $contacts);
 			$rep->NewPage();
 
    			$result = get_customer_trans_details($j, $i);

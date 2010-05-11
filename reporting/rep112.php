@@ -16,7 +16,7 @@ $page_security = $_POST['PARAM_0'] == $_POST['PARAM_1'] ?
 // $ Revision:	2.0 $
 // Creator:	Joe Hunt
 // date_:	2005-05-19
-// Title:	Purchase Orders
+// Title:	Receipts
 // ----------------------------------------------------------------
 $path_to_root="..";
 
@@ -36,7 +36,7 @@ function get_receipt($type, $trans_no)
 				".TB_PREF."debtor_trans.ov_freight_tax + ".TB_PREF."debtor_trans.ov_discount) AS Total, 
    				".TB_PREF."debtors_master.name AS DebtorName,  ".TB_PREF."debtors_master.debtor_ref,
    				".TB_PREF."debtors_master.curr_code, ".TB_PREF."debtors_master.payment_terms, "
-   				.TB_PREF."debtors_master.tax_id AS tax_id,".TB_PREF."debtors_master.rep_lang,
+   				.TB_PREF."debtors_master.tax_id AS tax_id,
    				".TB_PREF."debtors_master.email, ".TB_PREF."debtors_master.address
     			FROM ".TB_PREF."debtor_trans, ".TB_PREF."debtors_master 
 				WHERE ".TB_PREF."debtor_trans.debtor_no = ".TB_PREF."debtors_master.debtor_no
@@ -110,7 +110,8 @@ function print_receipts()
 			$params['bankaccount'] = $baccount['id'];
 
 			$rep->title = _('RECEIPT');
-			$rep->SetCommonData($myrow, null, $myrow, $baccount, ST_CUSTPAYMENT);
+			$contacts = get_branch_contacts($branch['branch_code'], 'invoice', $branch['debtor_no']);
+			$rep->SetCommonData($myrow, null, $myrow, $baccount, ST_CUSTPAYMENT, $contacts);
 			$rep->NewPage();
 			$result = get_allocations_for_receipt($myrow['debtor_no'], $myrow['type'], $myrow['trans_no']);
 

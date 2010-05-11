@@ -153,12 +153,91 @@ ALTER TABLE `0_chart_types` CHANGE `class_id` `class_id` VARCHAR(3) NOT NULL DEF
 .
 UPDATE `0_chart_types` SET parent='' WHERE parent='0' OR parent='-1';
 
-ALTER TABLE `0_debtors_master` ADD COLUMN  `rep_lang` char(5) default NULL;
-UPDATE `0_debtors_master` set `rep_lang`= 'en_GB' WHERE `curr_code`<>(SELECT value FROM `0_sys_prefs` WHERE name='curr_default');
-
-ALTER TABLE `0_cust_branch` ADD COLUMN  `rep_lang` char(5) default NULL;
-
-ALTER TABLE `0_suppliers` ADD COLUMN  `rep_lang` char(5) default NULL;
-UPDATE `0_suppliers` set `rep_lang`= 'en_GB' WHERE `curr_code`<>(SELECT value FROM `0_sys_prefs` WHERE name='curr_default');
-
 INSERT INTO `0_sys_prefs` (name, category, type, length, value) VALUES ('auto_curr_reval','setup.company', 'smallint','6', '1');
+
+DROP TABLE IF EXISTS `0_crm_categories`;
+CREATE TABLE `0_crm_categories` (
+  `id` int(11) NOT NULL auto_increment COMMENT 'pure technical key',
+  `type` varchar(20) NOT NULL COMMENT 'contact type e.g. customer' ,
+  `action` varchar(20) NOT NULL COMMENT 'detailed usage e.g. department',
+  `name` varchar(30) NOT NULL COMMENT 'for category selector',
+  `description` tinytext NOT NULL COMMENT 'usage description',
+  `system` tinyint(1) NOT NULL default '0' COMMENT 'nonzero for core system usage',
+  `inactive` tinyint(1) NOT NULL default '0',
+  PRIMARY KEY  (`id`),
+  UNIQUE KEY(`type`, `action`),
+  UNIQUE KEY(`type`, `name`)
+) TYPE=InnoDB ;
+
+
+INSERT INTO `0_crm_categories` VALUES (1, 'cust_branch', 'general', 'General', 'General contact data for customer branch (overrides company setting)', 1, 0);
+INSERT INTO `0_crm_categories` VALUES (2, 'cust_branch', 'invoice', 'Invoices', 'Invoice posting (overrides company setting)', 1, 0);
+INSERT INTO `0_crm_categories` VALUES (3, 'cust_branch', 'order', 'Orders', 'Order confirmation (overrides company setting)', 1, 0);
+INSERT INTO `0_crm_categories` VALUES (4, 'cust_branch', 'delivery', 'Deliveries', 'Delivery coordination (overrides company setting)', 1, 0);
+INSERT INTO `0_crm_categories` VALUES (5, 'customer', 'general', 'General', 'General contact data for customer', 1, 0);
+INSERT INTO `0_crm_categories` VALUES (6, 'customer', 'order', 'Orders', 'Order confirmation', 1, 0);
+INSERT INTO `0_crm_categories` VALUES (7, 'customer', 'delivery', 'Deliveries', 'Delivery coordination', 1, 0);
+INSERT INTO `0_crm_categories` VALUES (8, 'customer', 'invoice', 'Invoices', 'Invoice posting', 1, 0);
+INSERT INTO `0_crm_categories` VALUES (9, 'supplier', 'general', 'General', 'General contact data for supplier', 1, 0);
+INSERT INTO `0_crm_categories` VALUES (10,'supplier', 'order', 'Orders', 'Order confirmation', 1, 0);
+INSERT INTO `0_crm_categories` VALUES (11,'supplier', 'delivery', 'Deliveries', 'Delivery coordination', 1, 0);
+INSERT INTO `0_crm_categories` VALUES (12,'supplier', 'invoice', 'Invoices', 'Invoice posting', 1, 0);
+
+DROP TABLE IF EXISTS `0_crm_persons`;
+
+CREATE TABLE `0_crm_persons` (
+  `id` int(11) NOT NULL auto_increment,
+  `ref` varchar(30) NOT NULL,
+  `name` varchar(60) NOT NULL,
+  `name2` varchar(60) default NULL,
+  `address` tinytext  default NULL,
+  `phone` varchar(30) default NULL,
+  `phone2` varchar(30) default NULL,
+  `fax` varchar(30) default NULL,
+  `email` varchar(100)  default NULL,
+  `lang` char(5) default NULL,
+  `notes` tinytext NOT NULL,
+  `tmp_id` varchar(11),
+  `tmp_class` varchar(20),
+  `inactive` tinyint(1) NOT NULL default '0',
+  PRIMARY KEY  (`id`),
+  KEY (`ref`)
+) TYPE=InnoDB  AUTO_INCREMENT=1 ;
+
+DROP TABLE IF EXISTS `0_crm_contacts`;
+
+CREATE TABLE `0_crm_contacts` (
+  `id` int(11) NOT NULL auto_increment,
+  `person_id` int(11) NOT NULL default '0' COMMENT 'foreign key to crm_contacts',
+  `type` varchar(20) NOT NULL COMMENT 'foreign key to crm_categories',
+  `action` varchar(20) NOT NULL COMMENT 'foreign key to crm_categories',
+  `entity_id` varchar(11) NULL COMMENT 'entity id in related class table',
+  PRIMARY KEY  (`id`),
+  KEY(`type`, `action`)
+) TYPE=InnoDB ;
+
+
+#
+# tmp_id, tmp_class fields are used temporarily during upgrade to makethe process easier
+#
+INSERT INTO `0_crm_persons` (`ref`, `email`, `lang`, `tmp_id`, `tmp_class`) 
+	SELECT `debtor_ref`, `email`, if(`curr_code`=d.`lang`, NULL, 'en_GB'), `debtor_no`, 'customer'
+		FROM `0_debtors_master`,
+			(SELECT `value` as lang FROM `0_sys_prefs` WHERE name='curr_default') d;
+
+INSERT INTO `0_crm_persons` (`ref`, `name`, `address`, `phone`, `phone2`,
+		`fax`,`email`, `tmp_id`,`tmp_class`) 
+	SELECT `branch_ref`, `contact_name`, `br_address`, `phone`, `phone2`,
+		`fax`,`email`,`branch_code`, 'cust_branch' FROM `0_cust_branch`;
+
+INSERT INTO `0_crm_persons` (`ref`, `name`, `address`, `phone`, `phone2`,
+		`fax`,`email`,`lang`,`tmp_id`,`tmp_class`) 
+	SELECT `supp_ref`, `contact`, `supp_address`, `phone`, `phone2`,
+	`fax`,`email`,if(`curr_code`=d.`lang`, NULL, 'en_GB'),`supplier_id`,'supplier' 
+		FROM `0_suppliers`,
+			(SELECT `value` as lang FROM `0_sys_prefs` WHERE name='curr_default') d;
+
+
+INSERT INTO `0_crm_contacts` (`person_id`, `type`, `action`, `entity_id`)
+	SELECT `id`, `tmp_class`, 'general', `tmp_id`
+	FROM `0_crm_persons`;

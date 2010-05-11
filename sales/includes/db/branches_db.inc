@@ -9,22 +9,20 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-function add_branch($customer_id, $br_name, $br_ref, $br_address, $phone, $phone2, $fax, $contact_name, 
-	$salesman, $area, $email, $tax_group_id, $sales_account, $sales_discount_account, $receivables_account, 
+function add_branch($customer_id, $br_name, $br_ref, $br_address, $salesman, $area, 
+	$tax_group_id, $sales_account, $sales_discount_account, $receivables_account, 
 	$payment_discount_account, $default_location, $br_post_address, $disable_trans, $group_no,
-	$default_ship_via, $notes, $rep_lang)
+	$default_ship_via, $notes)
 {
 	$sql = "INSERT INTO ".TB_PREF."cust_branch (debtor_no, br_name, branch_ref, br_address,
-		salesman, phone, phone2, fax,
-		contact_name, area, email, tax_group_id, sales_account, receivables_account, payment_discount_account, sales_discount_account, default_location,
-		br_post_address, disable_trans, group_no, default_ship_via, notes, rep_lang)
+		salesman, area, tax_group_id, sales_account, receivables_account, payment_discount_account, 
+		sales_discount_account, default_location,
+		br_post_address, disable_trans, group_no, default_ship_via, notes)
 		VALUES (".db_escape($customer_id). ",".db_escape($br_name) . ", "
 			.db_escape($br_ref) . ", "
 			.db_escape($br_address) . ", ".db_escape($salesman) . ", "
-			.db_escape($phone) . ", ".db_escape($phone2) . ", "
-			.db_escape($fax) . ","
-			.db_escape($contact_name) . ", ".db_escape($area) . ","
-			.db_escape($email) . ", ".db_escape($tax_group_id) . ", "
+			.db_escape($area) . ","
+			.db_escape($tax_group_id) . ", "
 			.db_escape($sales_account) . ", "
 			.db_escape($receivables_account) . ", "
 			.db_escape($payment_discount_account) . ", "
@@ -34,26 +32,20 @@ function add_branch($customer_id, $br_name, $br_ref, $br_address, $phone, $phone
 			.db_escape($disable_trans) . ", "
 			.db_escape($group_no) . ", "
 			.db_escape($default_ship_via). ", "
-			.db_escape($notes). ", "
-			.db_escape($rep_lang ? $rep_lang : null, true) . ")";
+			.db_escape($notes).")";
 	db_query($sql,"The branch record could not be added");
 }
 
-function update_branch($customer_id, $branch_code, $br_name, $br_ref, $br_address, $phone, $phone2, $fax, $contact_name, 
-	$salesman, $area, $email, $tax_group_id, $sales_account, $sales_discount_account, $receivables_account, 
+function update_branch($customer_id, $branch_code, $br_name, $br_ref, $br_address,
+	$salesman, $area, $tax_group_id, $sales_account, $sales_discount_account, $receivables_account, 
 	$payment_discount_account, $default_location, $br_post_address, $disable_trans, $group_no,
-	$default_ship_via, $notes, $rep_lang)
+	$default_ship_via, $notes)
 {
 	$sql = "UPDATE ".TB_PREF."cust_branch SET br_name = " . db_escape($br_name) . ",
 		branch_ref = " . db_escape($br_ref) . ",
 		br_address = ".db_escape($br_address). ",
-		phone=".db_escape($phone). ",
-		phone2=".db_escape($phone2). ",
-		fax=".db_escape($fax).",
-		contact_name=".db_escape($contact_name) . ",
 		salesman= ".db_escape($salesman) . ",
 		area=".db_escape($area) . ",
-		email=".db_escape($email) . ",
 		tax_group_id=".db_escape($tax_group_id). ",
 		sales_account=".db_escape($sales_account) . ",
 		sales_discount_account=".db_escape($sales_discount_account) . ",
@@ -64,8 +56,7 @@ function update_branch($customer_id, $branch_code, $br_name, $br_ref, $br_addres
 		disable_trans=".db_escape($disable_trans) . ",
 		group_no=".db_escape($group_no) . ", 
 		default_ship_via=".db_escape($default_ship_via) . ",
-		notes=".db_escape($notes) . ",
-		rep_lang=".db_escape($rep_lang ? $rep_lang : null, true) . "
+		notes=".db_escape($notes) . "
 		WHERE branch_code =".db_escape($branch_code) . "
 		AND debtor_no=".db_escape($customer_id);
 	db_query($sql,"The branch record could not be updated");
@@ -73,6 +64,8 @@ function update_branch($customer_id, $branch_code, $br_name, $br_ref, $br_addres
 
 function delete_branch($customer_id, $branch_code)
 {
+	delete_entity_contacts('cust_branch', $branch_code);
+
 	$sql="DELETE FROM ".TB_PREF."cust_branch WHERE branch_code=".db_escape($branch_code)." AND debtor_no=".db_escape($customer_id);
 	db_query($sql,"could not delete branch");
 }
@@ -95,7 +88,7 @@ function get_branch($branch_id)
 	
 	$result = db_query($sql, "Cannot retreive a customer branch");
 	
-	return db_fetch($result);   	
+	return db_fetch($result);
 }
 
 function get_cust_branch($customer_id, $branch_code)
@@ -114,7 +107,7 @@ function get_branch_accounts($branch_id)
 	
 	$result = db_query($sql, "Cannot retreive a customer branch");
 	
-	return db_fetch($result);   	
+	return db_fetch($result);
 }
 
 function get_branch_name($branch_id)
@@ -124,7 +117,7 @@ function get_branch_name($branch_id)
 
 	$result = db_query($sql,"could not retreive name for branch" . $branch_id);
 
-	$myrow = db_fetch_row($result);	
+	$myrow = db_fetch_row($result);
 	return $myrow[0];
 }
 
@@ -138,7 +131,7 @@ function get_cust_branches_from_group($group_no)
 
 function get_default_info_for_branch($customer_id)
 {
-	$sql = "SELECT name, address, email, debtor_ref, rep_lang
+	$sql = "SELECT name, address, debtor_ref
 		FROM ".TB_PREF."debtors_master WHERE debtor_no = ".db_escape($customer_id);
 	$result = db_query($sql,"check failed");
 	return db_fetch($result);
@@ -150,21 +143,22 @@ function get_sql_for_customer_branches()
 		."b.branch_code, "
 		."b.branch_ref, "
 		."b.br_name, "
-		."b.contact_name, "
+		."p.name as contact_name, "
 		."s.salesman_name, "
 		."a.description, "
-		."b.phone, "
-		."b.fax, "
-		."b.email, "
+		."p.phone, "
+		."p.fax, "
+		."p.email, "
 		."t.name AS tax_group_name, "
 		."b.inactive
-		FROM ".TB_PREF."cust_branch b, "
-			.TB_PREF."debtors_master c, "
+		FROM ".TB_PREF."cust_branch b "
+		. "LEFT JOIN ".TB_PREF."crm_contacts c
+			ON c.entity_id=b.branch_code AND c.type='cust_branch' AND c.action='general'
+			LEFT JOIN ".TB_PREF."crm_persons p on c.person_id=p.id,"
 			.TB_PREF."areas a, "
 			.TB_PREF."salesman s, "
 			.TB_PREF."tax_groups t
-		WHERE b.debtor_no=c.debtor_no
-		AND b.tax_group_id=t.id
+		WHERE b.tax_group_id=t.id
 		AND b.area=a.area_code
 		AND b.salesman=s.salesman_code
 		AND b.debtor_no = ".db_escape($_POST['customer_id']);
@@ -174,4 +168,43 @@ function get_sql_for_customer_branches()
 
 	return $sql;
 }
+
+function get_branch_contacts($branch_code, $action=null, $customer_id=null)
+{
+/*
+	$ret = get_crm_persons('cust_branch', $action, $branch_code);
+	if ($customer_id && !db_num_rows($ret)) {
+		$ret = get_crm_persons('customer', $action, $customer_id);
+	}
+	return $ret;
+*/
+	$sql = "SELECT p.*, r.action, r.type FROM ".TB_PREF."crm_persons p,"
+		.TB_PREF."crm_contacts r WHERE r.person_id=p.id AND r.type='cust_branch' 
+			AND r.entity_id=".db_escape($branch_code);
+
+	if ($action) 
+		$sql .= ' AND r.action='.db_escape($action);
+
+	$sql .= " GROUP BY person_id";
+
+	if($customer_id) {
+		$sql = "($sql) UNION (SELECT p.*, r.action, r.type FROM ".TB_PREF."crm_persons p,"
+		.TB_PREF."crm_contacts r WHERE r.person_id=p.id AND r.type='customer' 
+			AND r.entity_id=".db_escape($customer_id);
+		if ($action) 
+			$sql .= ' AND r.action='.db_escape($action);
+		$sql .= " GROUP BY person_id)";
+	}
+	
+	$res = db_query($sql, "can't retrieve branch contacts");
+	$results = array();
+	$type = '';
+	while($contact = db_fetch($res)) {
+		if ($type && $type != $contact['type']) break;
+		$results[] = $contact;
+		$type = $contact['type'];
+	}
+	return $results;
+}
+
 ?>

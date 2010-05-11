@@ -10,33 +10,33 @@
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
 
-function add_customer($CustName, $cust_ref, $address, $tax_id, $curr_code, $email, 
+function add_customer($CustName, $cust_ref, $address, $tax_id, $curr_code,
 	$dimension_id, $dimension2_id, $credit_status, $payment_terms, $discount, $pymt_discount, 
-	$credit_limit, $sales_type, $notes, $rep_lang)
+	$credit_limit, $sales_type, $notes)
 {
-	$sql = "INSERT INTO ".TB_PREF."debtors_master (name, debtor_ref, address, tax_id, email, dimension_id, dimension2_id,  
-		curr_code, credit_status, payment_terms, discount, pymt_discount,credit_limit,  
-		sales_type, notes, rep_lang) VALUES (".db_escape($CustName) .", " .db_escape($cust_ref) .", "
+	$sql = "INSERT INTO ".TB_PREF."debtors_master (name, debtor_ref, address, tax_id,
+		dimension_id, dimension2_id, curr_code, credit_status, payment_terms, discount, 
+		pymt_discount,credit_limit, sales_type, notes) VALUES ("
+		.db_escape($CustName) .", " .db_escape($cust_ref) .", "
 		.db_escape($address) . ", " . db_escape($tax_id) . ","
-		.db_escape($email) . ", ".db_escape($dimension_id) . ", " 
+		.db_escape($dimension_id) . ", " 
 		.db_escape($dimension2_id) . ", ".db_escape($curr_code) . ", 
 		" . db_escape($credit_status) . ", ".db_escape($payment_terms) . ", " . $discount . ", 
 		" . $pymt_discount . ", " . $credit_limit 
-		 .", ".db_escape($sales_type).", ".db_escape($notes).", ".db_escape($rep_lang ? $rep_lang : null, true) . ")";
+		 .", ".db_escape($sales_type).", ".db_escape($notes) . ")";
 
 	db_query($sql,"The customer could not be added");
 }
 
-function update_customer($customer_id, $CustName, $cust_ref, $address, $tax_id, $curr_code, $email, 
-	$dimension_id, $dimension2_id, $credit_status, $payment_terms, $discount, $pymt_discount, 
-	$credit_limit, $sales_type, $notes, $rep_lang)
+function update_customer($customer_id, $CustName, $cust_ref, $address, $tax_id, $curr_code,
+	$dimension_id, $dimension2_id, $credit_status, $payment_terms, $discount, $pymt_discount,
+	$credit_limit, $sales_type, $notes)
 {
 	$sql = "UPDATE ".TB_PREF."debtors_master SET name=" . db_escape($CustName) . ", 
 		debtor_ref=" . db_escape($cust_ref) . ",
 		address=".db_escape($address) . ", 
 		tax_id=".db_escape($tax_id) . ", 
 		curr_code=".db_escape($curr_code) . ", 
-		email=".db_escape($email) . ", 
 		dimension_id=".db_escape($dimension_id) . ", 
 		dimension2_id=".db_escape($dimension2_id) . ", 
 		credit_status=".db_escape($credit_status) . ", 
@@ -45,19 +45,20 @@ function update_customer($customer_id, $CustName, $cust_ref, $address, $tax_id, 
 		pymt_discount=" . $pymt_discount . ", 
 		credit_limit=" . $credit_limit . ", 
 		sales_type = ".db_escape($sales_type) . ", 
-		notes=".db_escape($notes) . ",
-		rep_lang=".db_escape($rep_lang ? $rep_lang : null, true) . "
+		notes=".db_escape($notes) ."
 		WHERE debtor_no = ".db_escape($customer_id);
 
 	db_query($sql,"The customer could not be updated");
 }
 
-function delete_customer($customer_id, $escaped=false)
+function delete_customer($customer_id)
 {
-	if (!$escaped)
-		$customer_id = db_escape($customer_id);
-	$sql = "DELETE FROM ".TB_PREF."debtors_master WHERE debtor_no=$customer_id";
+	begin_transaction();
+	delete_entity_contacts('customer', $customer_id);
+
+	$sql = "DELETE FROM ".TB_PREF."debtors_master WHERE debtor_no=".db_escape($customer_id);;
 	db_query($sql,"cannot delete customer");
+	commit_transaction();
 }
 
 function get_customer_details($customer_id, $to=null)
@@ -182,6 +183,15 @@ function get_customer_habit($customer_id)
 	return db_fetch($result);
 }
 
+function get_customer_contacts($customer_id, $action=null)
+{
+	$results = array();
+	$res = get_crm_persons('customer', $action, $customer_id);
+	while($contact = db_fetch($res))
+		$results[] = $contact;
+
+	return $results;
+}
 
 
 ?>
