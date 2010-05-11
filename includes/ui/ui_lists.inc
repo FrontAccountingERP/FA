@@ -95,10 +95,10 @@ $opts = array(		// default options
 			: _('Enter description fragment to search or * for all')) :'';
 
 	if ($selected_id == null) {
-		$selected_id = get_post($name, $opts['default']);
+		$selected_id = get_post($name, (string)$opts['default']);
 	}
 	if(!is_array($selected_id))
-		$selected_id = array($selected_id); // code is generalized for multiple selection support
+		$selected_id = array((string)$selected_id); // code is generalized for multiple selection support
 
 	$txt = get_post($search_box);
 	$rel = '';
@@ -328,7 +328,7 @@ $opts = array(		// default options
 		$selected_id = get_post($name, $opts['default']);
 	}
 	if(!is_array($selected_id))
-		$selected_id = array($selected_id); // code is generalized for multiple selection support
+		$selected_id = array((string)$selected_id); // code is generalized for multiple selection support
 
 	if (isset($_POST[ '_'.$name.'_update'])) {
 		if (!$opts['async'])
@@ -2216,6 +2216,42 @@ function extset_list($name, $value=null, $submit_on_change=false)
 			'select_submit'=> $submit_on_change,
 			'async' => true
 		));
+}
+
+function crm_category_types_list($name, $selected_id=null, $filter=array(), $submit_on_change=true)
+{
+
+	$sql = "SELECT id, name, type, inactive FROM ".TB_PREF."crm_categories";
+
+	$multi = false;
+	$groups = false;
+	$where = array();
+	if (@$filter['class']) {
+		$where[] = 'type='.db_escape($filter['class']);
+	} else
+		$groups = 'type';
+	if (@$filter['subclass']) $where[] = 'action='.db_escape($filter['subclass']);
+	if (@$filter['entity']) $where[] = 'entity_id='.db_escape($filter['entity']);
+	if (@$filter['multi']) { // contact category selector for person
+		$multi = true;
+	}
+
+	return combo_input($name, $selected_id, $sql, 'id', 'name',
+	 	array(
+	 		'multi' => $multi,
+	 		'height' => $multi ? 5:1,
+			'category' => $groups,
+	 		'select_submit'=> $submit_on_change,
+ 			'async' => true,
+ 			'where' => $where
+	 	));
+}
+
+function crm_category_types_list_row($label, $name, $selected_id=null, $filter=array(), $submit_on_change=true)
+{
+	echo "<tr><td class='label'>$label</td><td>";
+	echo crm_category_types_list($name, $selected_id, $filter, $submit_on_change);
+	echo "</td></tr>\n";
 }
 
 ?>
