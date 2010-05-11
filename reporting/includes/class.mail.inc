@@ -21,7 +21,8 @@ class email
     var $header = "";
     var $subject = "";
     var $body = "";
-
+	var $charset = 'ISO-8859-1';
+	
     function email($name, $mail)
     {
         $this->boundary = md5(uniqid(time()));
@@ -55,14 +56,14 @@ class email
 
     function text($text)
     {
-	    $this->body = "Content-Type: text/plain; charset=ISO-8859-1\n";
+	    $this->body = "Content-Type: text/plain; charset={$this->charset}\n";
 	    $this->body .= "Content-Transfer-Encoding: 8bit\n\n";
 	    $this->body .= $text."\n";
     }
 
     function html($html)
     {
-	    $this->body = "Content-Type: text/html; charset=ISO-8859-1\n";
+	    $this->body = "Content-Type: text/html; charset={$this->charset}\n";
 	    $this->body .= "Content-Transfer-Encoding: quoted-printable\n\n";
 	    $this->body .= "<html><body>\n".$html."\n</body></html>\n";
     }
