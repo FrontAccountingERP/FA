@@ -65,7 +65,8 @@ class FrontReport extends Cpdf
 
 	var $rep_id;
 	var $formData; // common data used for printing headers footers etc.
-
+	var $contactData; // contact data for sending emials/reportlanguage selection
+	
 	var $dest;	// destination: email or printer
 	
 	function FrontReport($title, $filename, $size = 'A4', $fontsize = 9, $orientation = 'P', $margins = NULL, $excelColWidthFactor = NULL)
@@ -372,7 +373,7 @@ class FrontReport extends Cpdf
 	/*
 		Transition function 
 	*/
-	function SetCommonData($myrow, $branch, $sales_order, $bankaccount, $doctype)
+	function SetCommonData($myrow, $branch, $sales_order, $bankaccount, $doctype, $contacts)
 	{
 //		$this->formData = array_merge($myrow, $branch, $sales_order, 
 //			$bank_account, array('doctype' => $doctype));
@@ -385,8 +386,8 @@ class FrontReport extends Cpdf
 			'DebtorName', 'supp_account_no', 'wo_ref', 'debtor_ref','type', 'trans_no', 
 			'StockItemName', 'tax_id', 'order_', 'delivery_date', 'units_issued',
 			'due_date', 'required_by', 'payment_terms', 'curr_code',
-			'ov_freight', 'ov_gst', 'ov_amount', 'rep_lang'),
-		'branch' => array('br_address', 'br_name', 'salesman', 'disable_branch', 'rep_lang'),
+			'ov_freight', 'ov_gst', 'ov_amount'),
+		'branch' => array('br_address', 'br_name', 'salesman', 'disable_branch'),
 		'sales_order' => array('deliver_to', 'delivery_address', 'customer_ref'),
 		'bankaccount' => array('bank_name', 'bank_account_number')
 		);
@@ -401,8 +402,12 @@ class FrontReport extends Cpdf
 			}
 		}
 		$this->formData['doctype'] = $doctype;
-		error_log('cust:'.var_export($myrow, true));
-		error_log('branch:'.var_export($branch, true));
+		if (count($contacts)) {
+			$this->contactData = $contacts;
+			// as report is currently generated once despite number of email recipients
+			// we select language for the first recipient as report language
+			$this->formData['rep_lang'] = $contacts[0]['lang'];
+		}
 	}
 	/*
 		Set header handler
@@ -984,42 +989,53 @@ class FrontReport extends Cpdf
 
 			if ($email == 1)
 			{
-				$emailtype = true;
-				$this->SetLang($this->formData['rep_lang']);
-				include("includes/doctext.inc");
+				if(!count($this->contactData)) {
+					$this->SetLang(user_language());
+					display_error(_("You have no email contact defined for this type of document"));
+				} else {
+					$sent = 0;
+				foreach($this->contactData as $contact) {
+					$emailtype = true;
+					$this->SetLang($contact['lang']);
+					include("includes/doctext.inc");
 
-				require_once($path_to_root . "/reporting/includes/class.mail.inc");
-    			$mail = new email(str_replace(",", "", $this->company['coy_name']), $this->company['email']);
-				if (!isset($myrow['email']) || $myrow['email'] == '') 
-					$myrow['email'] = isset($myrow['contact_email']) ? $myrow['contact_email'] : '';
-    			$to = str_replace(",", "", $myrow['DebtorName']) . " <" . $myrow['email'] . ">";
-    			$msg = $doc_Dear_Sirs . " " . $myrow['DebtorName'] . ",\n\n" . $doc_AttachedFile . " " . $subject .
-    				"\n\n";
-				if (isset($myrow['dimension_id']) && $myrow['dimension_id'] > 0 && $doctype == ST_SALESINVOICE) // helper for payment links
-				{
-					if ($myrow['dimension_id'] == 1)
+					require_once($path_to_root . "/reporting/includes/class.mail.inc");
+    				$mail = new email(str_replace(",", "", $this->company['coy_name']), $this->company['email']);
+					$mail->charset = $this->encoding;
+					if (!isset($contact['email']) || $contact['email'] == '') 
+						$contact['email'] = isset($myrow['contact_email']) ? $myrow['contact_email'] : '';
+
+	    			$to = str_replace(",", "", $contact['name'].' '.$contact['name2'])." <" . $contact['email'] . ">";
+    				$msg = $doc_Dear_Sirs . " " . $myrow['DebtorName'] . ",\n\n" . $doc_AttachedFile . " " . $subject .
+    					"\n\n";
+					if (isset($myrow['dimension_id']) && $myrow['dimension_id'] > 0 && $doctype == ST_SALESINVOICE) // helper for payment links
 					{
-						$amt = number_format($myrow["ov_freight"] + $myrow["ov_gst"] +	$myrow["ov_amount"], user_price_dec());
-						$txt = $doc_Payment_Link . " PayPal: ";
-						$nn = urlencode($this->title . " " . $myrow['reference']);
-						$url = "https://www.paypal.com/xclick/business=" . $this->company['email'] . "&item_name=" .
-							$nn . "&amount=" . $amt . "&currency_code=" . $myrow['curr_code'];
-						$msg .= $txt . $url . "\n\n";
+						if ($myrow['dimension_id'] == 1)
+						{
+							$amt = number_format($myrow["ov_freight"] + $myrow["ov_gst"] +	$myrow["ov_amount"], user_price_dec());
+							$txt = $doc_Payment_Link . " PayPal: ";
+							$nn = urlencode($this->title . " " . $myrow['reference']);
+							$url = "https://www.paypal.com/xclick/business=" . $this->company['email'] . "&item_name=" .
+								$nn . "&amount=" . $amt . "&currency_code=" . $myrow['curr_code'];
+							$msg .= $txt . $url . "\n\n";
+						}
 					}
+    				$msg .= $doc_Kindest_regards . "\n\n";
+    				$sender = $this->user . "\n" . $this->company['coy_name'] . "\n" . $this->company['postal_address'] . "\n" . $this->company['email'] . "\n" . $this->company['phone'];
+    				$mail->to($to);
+    				$mail->subject($subject);
+    				$mail->text($msg . $sender);
+    				$mail->attachment($fname);
+    				if ($mail->send()) $sent++;
+					} // foreach contact
+					unlink($fname);
+					$this->SetLang(user_language());
+					if (!$sent)
+						display_error(_("Sending document by email failed"));
+					else
+						display_notification($this->title . " " . $myrow['reference'] . " " 
+							. _("has been sent by email to destination."));
 				}
-    			$msg .= $doc_Kindest_regards . "\n\n";
-    			$sender = $this->user . "\n" . $this->company['coy_name'] . "\n" . $this->company['postal_address'] . "\n" . $this->company['email'] . "\n" . $this->company['phone'];
-    			$mail->to($to);
-    			$mail->subject($subject);
-    			$mail->text($msg . $sender);
-    			$mail->attachment($fname);
-    			$ret = $mail->send();
-				if (!$ret)
-					display_error(_("Sending document by email failed"));
-				else
-					display_notification($this->title . " " . $myrow['reference'] . " " 
-						. _("has been sent by email."));
-				unlink($fname);		
 			}
 			else
 			{
