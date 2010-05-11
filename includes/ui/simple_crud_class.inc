@@ -49,26 +49,20 @@ class simple_crud {
 					unset($_POST['_focus']); // focus on first form entry
 					$this->selected_id = quoted_printable_decode(substr($p, strlen($this->name.$m)));
 					$Ajax->activate($this->name.'_div'); 
-//					$Ajax->activate('_page_body'); 
 					$this->Mode = $m;
 					return;
 				}
 			}
 		}
-		$default = ''; //$numeric_id ? -1 : '';
+		$default = '';
 		$this->selected_id = get_post($sel_name, $default);
 		if ($this->selected_id === $default) {
-//		$this->selected_id = @$_POST[$sel_name];
-//		if (!isset($this->selected_id)) {
 			$this->Mode = '';
 			return;
 		}
 		foreach (array('ADD', 'UPDATE', 'RESET', 'CLONE') as $m) {
 			if (isset($_POST[$this->name.$m])) {
 				$Ajax->activate($this->name.'_div');
-//				$Ajax->activate('_page_body');
-//				if ($m == 'RESET'  || $m == 'CLONE') 
-//					$this->selected_id = $default;
 				unset($_POST['_focus']);
 				$this->Mode = $m;
 				return;
@@ -194,7 +188,7 @@ class simple_crud {
 	}
 	
 	//===========================================================================
-	//	child class provided sql functions
+	//	Database functions placeholders
 	
 	//
 	//	Read record from db for edition
