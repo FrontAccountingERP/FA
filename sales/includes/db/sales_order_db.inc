@@ -21,7 +21,7 @@ function add_sales_order(&$order)
 	$order_type = 0; // this is default on new order
 	$sql = "INSERT INTO ".TB_PREF."sales_orders (order_no, type, debtor_no, trans_type, branch_code, customer_ref, reference, comments, ord_date,
 		order_type, ship_via, deliver_to, delivery_address, contact_phone,
-		contact_email, freight_cost, from_stk_loc, delivery_date, payment_terms)
+		freight_cost, from_stk_loc, delivery_date, payment_terms)
 		VALUES (" .db_escape($order_no) . "," .db_escape($order_type) . "," . db_escape($order->customer_id) .
 		 ", " .db_escape($order->trans_type) . "," .db_escape($order->Branch) . ", ".
 			db_escape($order->cust_ref) .",". 
@@ -33,7 +33,6 @@ function add_sales_order(&$order)
 			db_escape($order->deliver_to) . "," .
 			db_escape($order->delivery_address) . ", " .
 			db_escape($order->phone) . ", " . 
-			db_escape($order->email) . ", " .
 			db_escape($order->freight_cost) .", " . 
 			db_escape($order->Location) .", " .
 			db_escape($del_date) . "," .
@@ -171,7 +170,6 @@ function update_sales_order($order)
 		deliver_to = " . db_escape($order->deliver_to) . ",
 		delivery_address = " . db_escape($order->delivery_address) . ",
 		contact_phone = " .db_escape($order->phone) . ",
-		contact_email = " .db_escape($order->email) . ",
 		freight_cost = " .db_escape($order->freight_cost) .",
 		from_stk_loc = " .db_escape($order->Location) .",
 		delivery_date = " .db_escape($del_date). ",
@@ -272,7 +270,6 @@ function get_sales_order_header($order_no, $trans_type)
 	$sql = "SELECT sorder.*, "
 	  ."cust.name, "
 	  ."cust.curr_code, "
-	  ."cust.email AS master_email, "
 	  ."loc.location_name, "
 	  ."cust.discount, "
 	  ."stype.sales_type, "
@@ -346,7 +343,7 @@ function read_sales_order($order_no, &$order, $trans_type)
 	  $myrow["curr_code"], $myrow["discount"], $myrow["payment_terms"]);
 
 	$order->set_branch($myrow["branch_code"], $myrow["tax_group_id"],
-	  $myrow["tax_group_name"], $myrow["contact_phone"], $myrow["contact_email"]);
+	  $myrow["tax_group_name"], $myrow["contact_phone"]);
 
 	$order->set_sales_type($myrow["sales_type_id"], $myrow["sales_type"], 
 	    $myrow["tax_included"], 0); // no default price calculations on edit
