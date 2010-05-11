@@ -1,0 +1,157 @@
+<?php
+/**********************************************************************
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
+***********************************************************************/
+include_once($path_to_root. '/includes/ui/simple_crud_class.inc');
+include_once($path_to_root . "/includes/db/crm_contacts_db.inc");
+
+/*
+	View/Edit class for contacts
+*/
+class contacts extends simple_crud {
+	var $id;
+
+	function contacts($name, $id, $class, $subclass=null) {
+		$this->simple_crud($name);
+
+		$this->class = $class;
+		$this->subclass = $subclass;
+		$this->entity = $id;
+	}
+
+	function listing() {
+		br();
+
+			$contacts = get_crm_persons($this->class, $this->subclass, $this->entity);
+//				check_value('show_inactive'));
+			start_table(TABLESTYLE, "width=80%");
+
+			$th = array(_('Assignment'), _("Reference"), _("Full Name"), _("Phone"), _("Sec Phone"), _("Fax"),
+				_("email"),  '',
+				"&nbsp;");
+		//	inactive_control_column($th);
+
+			table_header($th);
+			$k = 0; 
+			while ($myrow = db_fetch($contacts)) 
+			{
+				alt_table_row_color($k);
+				label_cell($myrow["description"]);
+				label_cell($myrow["ref"]);
+				label_cell($myrow["name"].' '.$myrow["name2"]);
+				label_cell($myrow["phone"]);
+				label_cell($myrow["phone2"]);
+				label_cell($myrow["fax"]);
+				email_cell($myrow["email"]);
+
+		//	inactive_control_cell($myrow["id"], $myrow["inactive"], 'crm_contacts', 'id');
+
+			 	edit_button_cell("{$this->name}Edit".$myrow["id"], _("Edit"));
+
+			// delete button removes only category unless this is the last conatct for this person
+				delete_button_cell("{$this->name}Delete".$myrow["contact_id"], _("Delete"));
+				end_row();
+			}
+	
+//inactive_control_row($th);
+			end_table(1);
+	}
+	
+	function editor()
+	{
+		br();
+
+		start_outer_table(TABLESTYLE, "width=80%");
+
+		table_section(1);
+		table_section_title(_("Contact data"));
+
+		text_row(_("First Name:"), 'name', @$this->data['name'], 35, 40);
+		text_row(_("Last Name:"), 'name2', @$this->data['name2'], 35, 40);
+		text_row(_("Reference:"), 'ref', @$this->data['ref'], 35, 40);
+
+		crm_category_types_list_row(_("Contact active for:"), 'assgn', @$this->data['contacts'],
+			array('subclass' => @$this->subclass,
+				'class' => @$this->class, 
+				'multi' =>true)
+				);
+
+		text_row(_("Phone:"), 'phone', @$this->data['phone'], 32, 30);
+		text_row(_("Secondary Phone Number:"), 'phone2', @$this->data['phone2'], 32, 30);
+		text_row(_("Fax Number:"), 'fax', @$this->data['fax'], 32, 30);
+		email_row(_("E-mail:"), 'email', @$this->data['email'], 35, 55);
+
+		table_section(2);
+		textarea_row(_("Address:"), 'address', @$this->data['address'], 30, 4);
+		languages_list_row( _("Document Language:"), 'lang', @$this->data['lang'], _("Customer default"));
+
+		textarea_row(_("Notes:"), 'notes', @$this->data['notes'], 30, 4);
+		end_outer_table(1);
+
+//		submit_add_or_update_center($this->selected_id == '0', '', 'both', 
+//			$this->selected_id=='0', $this->name);
+	}
+
+	function db_insert() {
+			return add_crm_person($_POST['ref'], $_POST['name'], $_POST['name2'], $_POST['address'],
+				$_POST['phone'], $_POST['phone2'], $_POST['fax'], $_POST['email'], $_POST['lang'],
+				$_POST['notes'], $_POST['assgn'], $this->entity);
+	}
+
+	function db_update() {
+			return update_crm_person($this->selected_id, $_POST['ref'], $_POST['name'], $_POST['name2'], 
+				$_POST['address'], $_POST['phone'], $_POST['phone2'], $_POST['fax'], $_POST['email'], 
+				$_POST['lang'], $_POST['notes'], $_POST['assgn'], $this->entity);
+		
+	}
+
+	function insert_check() {
+		if (strlen($_POST['name']) == 0) {
+			display_error(_("The contact name cannot be empty."));
+			set_focus('name');
+			return false;
+		}
+		if (strlen($_POST['ref']) == 0) {
+			display_error(_("Contact reference cannot be empty."));
+			set_focus('ref');
+			return false;
+		}
+		if (count(@$_POST['assgn']) == 0) {
+			display_error(_("You have to select at least one category."));
+			set_focus('assgn');
+			return false;
+		}
+		return true; 
+	}
+
+	function db_read() {
+		return get_crm_person($this->selected_id);
+	}
+
+	function delete_check() {
+		return true;
+	}
+	//
+	//	Delete single contact only (unless this is last contact for this person)
+	//
+	function db_delete() {
+		$rel = get_crm_contact($this->selected_id);
+		if (delete_crm_contact($this->selected_id)) {
+			// if this is the last relation - delete contact data
+			$rels = get_person_contacts($rel['person_id']);
+			if (count($rels)==0) {
+				return delete_crm_person($rel['person_id']);
+			}
+		}
+		return false;
+	}
+}
+
+?>
