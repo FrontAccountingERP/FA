@@ -86,7 +86,7 @@ $reports->addReport(RC_CUSTOMER, 110, _('Print &Deliveries'),
 			_('Print as Packing Slip') => 'YES_NO',
 			_('Comments') => 'TEXTBOX'));
 $reports->addReport(RC_CUSTOMER, 108, _('Print &Statements'),
-	array(	RC_CUSTOMER => 'CUSTOMERS_NO_FILTER',
+	array(	_('Customer') => 'CUSTOMERS_NO_FILTER',
 			_('Currency Filter') => 'CURRENCY',
 			_('Email Customers') => 'YES_NO',
 			_('Comments') => 'TEXTBOX'));
