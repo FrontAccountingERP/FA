@@ -19,6 +19,65 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+11-May-2010 Janusz Dobrowolski
++ Added multiply categorized customer/branch/supplier contacts in separate table,
+ per contact report language selection
+$ /admin/crm_categories.php (new)
+  /applications/setup.php
+  /includes/access_levels.inc
+  /includes/sysnames.inc
+  /includes/db/crm_contacts_db.inc (new)
+  /includes/ui/contacts_view.inc (new)
+  /includes/ui/simple_crud_class.inc (new)
+  /manufacturing/includes/db/work_orders_db.inc
+  /purchasing/includes/db/suppliers_db.inc
+  /purchasing/manage/suppliers.php
+  /reporting/rep107.php
+  /reporting/rep108.php
+  /reporting/rep109.php
+  /reporting/rep110.php
+  /reporting/rep111.php
+  /reporting/rep112.php
+  /reporting/rep209.php
+  /reporting/rep210.php
+  /reporting/rep409.php
+  /sales/includes/db/branches_db.inc
+  /sales/includes/db/cust_trans_db.inc
+  /sales/includes/db/customers_db.inc
+  /sales/includes/db/sales_order_db.inc
+  /sales/includes/ui/sales_order_ui.inc
+  /sales/manage/customer_branches.php
+  /sales/manage/customers.php
+  /sql/alter2.3.php
+  /sql/alter2.3.sql
+  /sql/en_US-demo.sql
+  /sql/en_US-new.sql
++ Added tabbed content widget
+$ /includes/ui/ui_controls.inc
+  /themes/aqua/default.css
+  /themes/cool/default.css
+  /themes/default/default.css
++ Changes in hotkeys system for tabs support
+$ /js/inserts.js
++ Emailed reports can be send to multiply contacts, fixed email charset selection
+$ /reporting/includes/pdf_report.inc
++ Added charset selection for email content
+$ /reporting/includes/class.mail.inc
+# Small field name bug
+$ /reporting/reports_main.php
+# Fixed typo and small bug
+$ /reporting/includes/doctext.inc
+# Fixed problem with multiselection in array_combo, added crm related list helpers
+$ /includes/ui/ui_lists.inc
+# Fixed function name
+$ /sales/includes/db/sales_credit_db.inc
+# Fixed email sending links to use ajax.
+$ /sales/credit_note_entry.php
+  /sales/customer_delivery.php
+  /sales/customer_invoice.php
+# Fix in array_search_keys
+$ /includes/current_user.inc
+
 07-May-2010 Joe Hunt
 + Added Account tags selection in Annual Expense Breakdown, Balanse Sheet
   and Profit and Loss Sheet
