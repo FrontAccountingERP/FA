@@ -11,7 +11,8 @@
 var _focus;
 var _hotkeys = {
 	'alt': false,	// whether is the Alt key pressed
-	'focus': -1		// currently selected indeks of document.links
+	'list': false, // list of all elements with hotkey used recently
+	'focus': -1		// currently selected list element
 };
 
 function save_focus(e) {
@@ -26,7 +27,7 @@ function save_focus(e) {
 function _expand(tabobj) {
 
   var ul = tabobj.parentNode.parentNode;
-  var alltabs=ul.getElementsByTagName("input");
+  var alltabs=ul.getElementsByTagName("button");
   var frm = tabobj.form;
 
   if (ul.getAttribute("rel")){
@@ -318,11 +319,11 @@ var inserts = {
 	'ul.ajaxtabs':	function(ul) {
 	    var ulist=ul.getElementsByTagName("li");
 	    for (var x=0; x<ulist.length; x++){ //loop through each LI e
-		var ulistlink=ulist[x].getElementsByTagName("input")[0];
-		if(ulistlink.onclick==undefined) {
+		var tab=ulist[x].getElementsByTagName("button")[0];
+		if(tab.onclick==undefined) {
 // ?  var modifiedurl=ulistlink.getAttribute("href").replace(/^http:\/\/[^\/]+\//i, "http://"+window.location.hostname+"/")
-		    var url = ulistlink.form.action
-		    ulistlink.onclick=function(){
+		    var url = tab.form.action
+		    tab.onclick=function(){
 			_expand(this);
 			return false;
 		    }
@@ -381,17 +382,18 @@ function setHotKeys() {
 			return stopEv(ev);
 		}
 		else if (ev.altKey && !ev.ctrlKey && ((key>47 && key<58) || (key>64 && key<91))) {
-			var n = _hotkeys.focus;
-			var l = document.links;
-			var cnt = l.length;
 			key = String.fromCharCode(key);
+			var n = _hotkeys.focus;
+			var l = document.getElementsBySelector('[accesskey='+key+']');
+			var cnt = l.length;
+			_hotkeys.list = l;
 			for (var i=0; i<cnt; i++) { 
 				n = (n+1)%cnt;
 				// check also if the link is visible
 				if (l[n].accessKey==key && l[n].scrollWidth) {
 					_hotkeys.focus = n;
 	    // The timeout is needed to prevent unpredictable behaviour on IE.
-					var tmp = function() {document.links[_hotkeys.focus].focus();};
+					var tmp = function() {l[_hotkeys.focus].focus();};
 					setTimeout(tmp, 0);
 					break;
 				}
@@ -438,7 +440,7 @@ function setHotKeys() {
 			if (key == 18) {
 				_hotkeys.alt = false;
 				if (_hotkeys.focus>=0) {
-					var link = document.links[_hotkeys.focus];
+					var link = _hotkeys.list[_hotkeys.focus];
 					if(link.onclick) 
 						link.onclick();
 					else
