@@ -48,6 +48,8 @@ class setup_app extends application
 			"sales/manage/sales_points.php?", 'SA_POSSETUP');
 		$this->add_rapp_function(1, _("&Printers"),
 			"admin/printers.php?", 'SA_PRINTERS');
+		$this->add_rapp_function(1, _("Contact &Categories"),
+			"admin/crm_categories.php?", 'SA_CRMCATEGORY');
 
 		$this->add_module(_("Maintenance"));
 		$this->add_lapp_function(2, _("&Void a Transaction"),
