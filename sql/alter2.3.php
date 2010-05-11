@@ -72,7 +72,7 @@ class fa2_3 {
 		// remove old preferences table after upgrade script has been executed
 		$sql = "DROP TABLE IF EXISTS `{$pref}company`";
 
-		return db_query($sql) && update_company_prefs(array('version_id'=>'2.3'));
+		return db_query($sql) && update_company_prefs(array('version_id'=>'2.3'), $pref);
 	}
 	//
 	//	Checking before install
