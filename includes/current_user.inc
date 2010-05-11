@@ -481,12 +481,13 @@ function array_search_value($needle, $haystack, $valuekey=null)
 function array_search_keys($needle, $haystack, $valuekey=null)
 {
 	$keys = array();
-	foreach($haystack as $key => $value) {
-		$val = isset($valuekey) ? $value[$valuekey] : $value;
-		if ($needle == $val){
-			$keys[] = $key;
+	if($haystack)
+		foreach($haystack as $key => $value) {
+			$val = isset($valuekey) ? $value[$valuekey] : $value;
+			if ($needle == $val){
+				$keys[] = $key;
+			}
 		}
-	}
 	return $keys;
 }
 //
