@@ -185,7 +185,7 @@ function handle_delete()
 	// Without this after operation we end up with changed per-company owners!
 	for($i = $id; $i < count($db_connections); $i++) {
 			$comp_path = company_path($i);
-		if (!is_dir($comp_path.'/'.$i) || !is_writable($comp_path.'/'.$i)) {
+		if (!is_dir($comp_path) || !is_writable($comp_path)) {
 			display_error(_('Broken company subdirectories system. You have to remove this company manually.'));
 			return;
 		}
