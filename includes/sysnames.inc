@@ -139,4 +139,13 @@ $tag_types = array (
 	TAG_DIMENSION => _("Dimension")
 );
 
+//----------------------------------------------------------------------------------
+// crm contacts categories
+$sys_crm_cats = array (
+	'cust_branch' => _("Customer branch"),
+	'supplier' => _("Supplier"),
+	'shipper' => _("Shipper"),
+	'company' => _("Company internal")
+);
+
 ?>

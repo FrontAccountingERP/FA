@@ -110,6 +110,7 @@ $security_areas =array(
 	'SA_INVENTORYMOVETYPE'  => array(SS_SETUP|11, _("Inventory movement types")),
 	'SA_WORKCENTRES' => array(SS_SETUP|12, _("Manufacture work centres")),
 	'SA_FORMSETUP' => array(SS_SETUP|13, _("Forms setup")),
+	'SA_CRMCATEGORY' => array(SS_SETUP|14, _("Contact categories")),
 //
 // Special and common functions
 //
@@ -298,7 +299,7 @@ function get_access_extensions($id) {
 	$security_sections = $security_areas = array();
 	
 	if (isset($ext['acc_file']))
-		include($path_to_root.($ext['type'] == 'plugin' ? '/modules/':'/').$ext['path'].'/'.$ext['acc_file']);
+ 		include($path_to_root.($ext['type'] == 'plugin' ? '/modules/':'/').$ext['path'].'/'.$ext['acc_file']);
 
 	return array($security_areas, $security_sections);
 }
