@@ -35,6 +35,8 @@ $ /taxes/tax_groups.php
 12-May-2010 Joe Hunt
 ! Changed to allow change of theme in 'allow_demo_mode' during session
 $ /admin/display_prefs.php
+! [0000228] Sales order inquiry using reference number.
+$ /sales/inquiry/sales_orders_view.php
 
 10-May-2010 Joe Hunt/Alvin
 ! Changed so Print Statements don't list voided items.

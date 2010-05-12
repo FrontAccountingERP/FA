@@ -225,6 +225,7 @@ start_row();
 ref_cells(_("#:"), 'OrderNumber', '',null, '', true);
 if ($_POST['order_view_mode'] != 'DeliveryTemplates' && $_POST['order_view_mode'] != 'InvoiceTemplates')
 {
+	ref_cells(_("Ref"), 'OrderReference', '',null, '', true);
   	date_cells(_("from:"), 'OrdersAfterDate', '', null, -30);
   	date_cells(_("to:"), 'OrdersToDate', '', null, 1);
 }
@@ -277,6 +278,13 @@ if (isset($_POST['OrderNumber']) && $_POST['OrderNumber'] != "")
 	// search orders with number like 
 	$number_like = "%".$_POST['OrderNumber'];
 	$sql .= " AND sorder.order_no LIKE ".db_escape($number_like)
+ 			." GROUP BY sorder.order_no";
+}
+elseif (isset($_POST['OrderReference']) && $_POST['OrderReference'] != "")
+{
+	// search orders with reference like 
+	$number_like = "%".$_POST['OrderReference']."%";
+	$sql .= " AND sorder.reference LIKE ".db_escape($number_like)
  			." GROUP BY sorder.order_no";
 }
 else	// ... or select inquiry constraints
