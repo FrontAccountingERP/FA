@@ -157,7 +157,7 @@ include_once($path_to_root . "/includes/ui/ui_msgs.inc");
 
 ini_set('session.gc_maxlifetime', 36000); // 10hrs
 
-session_name('FrontAccounting');
+session_name('FA'.md5(dirname(__FILE__)));
 session_start();
 
 // this is to fix the "back-do-you-want-to-refresh" issue - thanx PHPFreaks
