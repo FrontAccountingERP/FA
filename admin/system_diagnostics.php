@@ -188,6 +188,16 @@ function tst_subdirs()
 			if (!is_dir($spath) || !is_writable($spath) ) {
 				$test['result'] = false;
 				$test['comments'][] = sprintf(_("'%s' is not writeable"), $spath);
+			} else {
+				$dir = opendir($spath);
+				while (false !== ($fname = readdir($dir))) {
+					// check only *.js files. Manually installed package can contain other
+					// non-writable files which are non-crucial for normal operations
+					if (preg_match('/.*(\.js)/', $fname) && !is_writable("$spath/$fname")) {
+						$test['result'] = false;
+						$test['comments'][] = sprintf(_("'%s' is not writeable"), "$spath/$fname");
+					}
+				}
 			}
 		}
 	}
@@ -314,7 +324,11 @@ foreach ($system_tests as $test)
 
     $comm = is_array(@$result['comments']) ? implode('<br>', $result['comments']) 
 	    	: @$result['comments'];
-    label_cell($result['result'] ? _('Ok') : '<b>'.$comm.'</b>');
+	$color = ($result['result'] ? 'green': 
+    	($result['type']==3 ? 'red' :
+    	 ($result['type']==2 ? 'orange' : 'green')));
+    label_cell("<span style='color:$color'>".
+    	($result['result'] ? _('Ok') : '<b>'.$comm.'</b>').'</span>');
     end_row();
 }
 
