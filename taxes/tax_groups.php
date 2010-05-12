@@ -148,7 +148,7 @@ $result = get_all_tax_groups(check_value('show_inactive'));
 
 start_form();
 start_table($table_style);
-$th = array(_("Description"), _("Tax Shipping"), "", "");
+$th = array(_("Description"), _("Shipping Tax"), "", "");
 inactive_control_column($th);
 table_header($th);
 
@@ -206,7 +206,7 @@ if ($selected_id != -1)
 	hidden('selected_id', $selected_id);
 }
 text_row_ex(_("Description:"), 'name', 40);
-yesno_list_row(_("Tax Shipping:"), 'tax_shipping', null, "", "", true);
+yesno_list_row(_("Tax applied to Shipping:"), 'tax_shipping', null, "", "", true);
 
 end_table();
 
