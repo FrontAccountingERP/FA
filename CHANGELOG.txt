@@ -24,6 +24,9 @@ $ -> Affected files
 $ /admin/system_diagnostics.php
 # [0000227] Fixed cookie name to enable multiply FA instances on the same server.
 $ /includes/session.inc
+# [0000229] Payment overallocation is now forbidden
+$ /includes/ui/allocation_cart.inc
+  /js/allocate.js
 # Fixed email links to use ajax
 $ /purchasing/po_entry_items.php
   /sales/credit_note_entry.php
