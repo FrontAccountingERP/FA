@@ -52,7 +52,7 @@ if (isset($_GET['AddedID']))
 
 	display_note(print_document_link($order_no, _("&Print This Order"), true, $trans_type), 0, 1);
 
-	display_note(print_document_link($order_no, _("&Email This Order"), true, $trans_type, false, "", "", 1));
+	display_note(print_document_link($order_no, _("&Email This Order"), true, $trans_type, false, "printlink", "", 1));
 
 	hyperlink_params($path_to_root . "/purchasing/po_receive_items.php", _("&Receive Items on this Purchase Order"), "PONumber=$order_no");
 

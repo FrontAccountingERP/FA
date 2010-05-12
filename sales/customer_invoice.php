@@ -57,7 +57,7 @@ if (isset($_GET['AddedID'])) {
 	display_note(get_customer_trans_view_str($trans_type, $invoice_no, _("&View This Invoice")), 0, 1);
 
 	display_note(print_document_link($invoice_no, _("&Print This Invoice"), true, ST_SALESINVOICE));
-	display_note(print_document_link($invoice_no, _("&Email This Invoice"), true, ST_SALESINVOICE, false, "", "", 1),1);
+	display_note(print_document_link($invoice_no, _("&Email This Invoice"), true, ST_SALESINVOICE, false, "printlink", "", 1),1);
 
 	display_note(get_gl_view_str($trans_type, $invoice_no, _("View the GL &Journal Entries for this Invoice")),1);
 
