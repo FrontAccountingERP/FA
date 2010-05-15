@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+15-May-2010 Joe Hunt
+! Layout - added class label for branch link
+$ /sales7manage/customers.php
+
 11-May-2010 Janusz Dobrowolski
 + Added multiply categorized customer/branch/supplier contacts in separate table,
  per contact report language selection
