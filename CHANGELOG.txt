@@ -19,6 +19,9 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+# [0000229] Payment overallocation is now forbidden (addendum)
+$ /js/payalloc.js
+
 12-May-2010 Janusz Dobrowolski
 # [0000226] Fixed diagnostic checks for javascript cached files, improved readability
 $ /admin/system_diagnostics.php
