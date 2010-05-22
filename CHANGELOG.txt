@@ -19,6 +19,11 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+22-May-2010 Janusz Dobrowolski
+# Fixed html generationfor buttons
+$ /includes/ui/ui_input.inc
+
+13-May-2010 Janusz Dobrowolski
 # [0000229] Payment overallocation is now forbidden (addendum)
 $ /js/payalloc.js
 
