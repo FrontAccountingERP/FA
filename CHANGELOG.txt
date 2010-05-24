@@ -27,8 +27,13 @@ $ config.default.php
 # [0000230] Incorrect 'On order' quantity of raw materials in the 'Stock Check Sheets' report.   
 $ /reporting/rep303.php
 
+24-May-2010 Janusz Dobrowolski
+# Additional fixes in payment/deposit allocations.
+$ /includes/ui/allocation_cart.inc
+  /js/payalloc.js
+
 22-May-2010 Janusz Dobrowolski
-# Fixed html generationfor buttons
+# Fixed html generation for buttons
 $ /includes/ui/ui_input.inc
 
 13-May-2010 Janusz Dobrowolski

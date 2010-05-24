@@ -332,7 +332,9 @@ function check_allocations()
 		 amount left to be allocated against the transaction under review */
 		 if (input_num('amount' . $counter) > get_post('un_allocated' . $counter))
 		 {
-		     //$_POST['amount' . $counter] = $_POST['un_allocated' . $counter];
+			display_error(_("At least one transaction is overallocated."));
+			set_focus('amount'.$counter);
+			return false;
 		 }
 
 		 $_SESSION['alloc']->allocs[$counter]->current_allocated = input_num('amount' . $counter);
