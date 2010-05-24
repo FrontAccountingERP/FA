@@ -19,6 +19,12 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+------------------------------- Release 2.2.9 ----------------------------------
+24-May-2010 Joe hunt
+! Release 2.2.9
+$ config.default.php
+  update.html
+
 22-May-2010 Janusz Dobrowolski
 # Fixed html generationfor buttons
 $ /includes/ui/ui_input.inc
