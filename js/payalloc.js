@@ -14,8 +14,12 @@ function focus_alloc(i) {
 }
 
 function blur_alloc(i) {
-	var change = get_amount(i.name);
-		price_format(i.name, change, user.pdec);		
+		var change = get_amount(i.name);
+		
+		if (i.name != 'amount' && i.name != 'charge' && i.name != 'discount')
+			change = Math.min(change, get_amount('maxval'+i.name.substr(6), 1))
+
+		price_format(i.name, change, user.pdec);
 		if (i.name != 'amount' && i.name != 'charge') {
 			if (change<0) change = 0;
 			change = change-i.getAttribute('_last');

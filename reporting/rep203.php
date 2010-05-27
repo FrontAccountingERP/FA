@@ -30,6 +30,7 @@ print_payment_report();
 function getTransactions($supplier, $date)
 {
 	$date = date2sql($date);
+	$dec = user_price_dec();
 
 	$sql = "SELECT ".TB_PREF."supp_trans.supp_reference,
 			".TB_PREF."supp_trans.tran_date,
@@ -41,7 +42,8 @@ function getTransactions($supplier, $date)
 			(ABS(".TB_PREF."supp_trans.ov_amount) + ABS(".TB_PREF."supp_trans.ov_gst) ) AS TranTotal
 		FROM ".TB_PREF."supp_trans
 		WHERE ".TB_PREF."supp_trans.supplier_id = '" . $supplier . "'
-		AND ABS(".TB_PREF."supp_trans.ov_amount) + ABS(".TB_PREF."supp_trans.ov_gst) - ".TB_PREF."supp_trans.alloc != 0
+		AND ROUND(ABS(".TB_PREF."supp_trans.ov_amount),$dec) + ROUND(ABS(".TB_PREF."supp_trans.ov_gst),$dec) - 
+		ROUND(".TB_PREF."supp_trans.alloc,$dec) != 0
 		AND ".TB_PREF."supp_trans.tran_date <='" . $date . "'
 		ORDER BY ".TB_PREF."supp_trans.type,
 			".TB_PREF."supp_trans.trans_no";

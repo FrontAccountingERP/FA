@@ -34,7 +34,7 @@ function getTransactions($category, $location)
 	$sql = "SELECT ".TB_PREF."stock_master.category_id,
 			".TB_PREF."stock_category.description AS cat_description,
 			".TB_PREF."stock_master.stock_id,
-			".TB_PREF."stock_master.description,
+			".TB_PREF."stock_master.description, ".TB_PREF."stock_master.inactive,
 			IF(".TB_PREF."stock_moves.stock_id IS NULL, '', ".TB_PREF."stock_moves.loc_code) AS loc_code,
 			SUM(IF(".TB_PREF."stock_moves.stock_id IS NULL,0,".TB_PREF."stock_moves.qty)) AS qty_on_hand
 		FROM (".TB_PREF."stock_master,
@@ -109,7 +109,7 @@ function print_inventory_planning()
 	if ($location == 'all')
 		$loc = _('All');
 	else
-		$loc = $location;
+		$loc = get_location_name($location);
 
 	$cols = array(0, 50, 150, 180, 210, 240, 270, 300, 330, 390, 435, 480, 525);
 
@@ -163,13 +163,13 @@ function print_inventory_planning()
 		$rep->NewLine();
 		$dec = get_qty_dec($trans['stock_id']);
 		$rep->TextCol(0, 1, $trans['stock_id']);
-		$rep->TextCol(1, 2, $trans['description']);
+		$rep->TextCol(1, 2, $trans['description'].($trans['inactive']==1 ? " ("._("Inactive").")" : ""), -1);
 		$rep->AmountCol(2, 3, $period['prd0'], $dec);
 		$rep->AmountCol(3, 4, $period['prd1'], $dec);
 		$rep->AmountCol(4, 5, $period['prd2'], $dec);
 		$rep->AmountCol(5, 6, $period['prd3'], $dec);
 		$rep->AmountCol(6, 7, $period['prd4'], $dec);
-
+		
 		$MaxMthSales = Max($period['prd0'], $period['prd1'], $period['prd2'], $period['prd3']);
 		$IdealStockHolding = $MaxMthSales * 3;
 		$rep->AmountCol(7, 8, $IdealStockHolding, $dec);

@@ -33,7 +33,7 @@ function getTransactions($category, $location)
 	$sql = "SELECT ".TB_PREF."stock_master.category_id,
 			".TB_PREF."stock_category.description AS cat_description,
 			".TB_PREF."stock_master.stock_id,
-			".TB_PREF."stock_master.description,
+			".TB_PREF."stock_master.description, ".TB_PREF."stock_master.inactive,
 			".TB_PREF."stock_moves.loc_code,
 			SUM(".TB_PREF."stock_moves.qty) AS QtyOnHand,
 			".TB_PREF."stock_master.material_cost + ".TB_PREF."stock_master.labour_cost + ".TB_PREF."stock_master.overhead_cost AS UnitCost,
@@ -91,7 +91,7 @@ function print_inventory_valuation_report()
 	if ($location == 'all')
 		$loc = _('All');
 	else
-		$loc = $location;
+		$loc = get_location_name($location);
 
 	$cols = array(0, 100, 250, 350, 450,	515);
 
@@ -143,7 +143,7 @@ function print_inventory_valuation_report()
 			$rep->NewLine();
 			$rep->fontSize -= 2;
 			$rep->TextCol(0, 1, $trans['stock_id']);
-			$rep->TextCol(1, 2, $trans['description']);
+			$rep->TextCol(1, 2, $trans['description'].($trans['inactive']==1 ? " ("._("Inactive").")" : ""), -1);
 			$rep->AmountCol(2, 3, $trans['QtyOnHand'], get_qty_dec($trans['stock_id']));
 			$rep->AmountCol(3, 4, $trans['UnitCost'], $dec);
 			$rep->AmountCol(4, 5, $trans['ItemTotal'], $dec);

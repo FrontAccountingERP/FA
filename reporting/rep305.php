@@ -36,7 +36,7 @@ function getTransactions($from, $to)
 	
 	$sql = "SELECT DISTINCT ".TB_PREF."grn_batch.supplier_id, 
             ".TB_PREF."purch_order_details.*,
-            ".TB_PREF."stock_master.description
+            ".TB_PREF."stock_master.description, ".TB_PREF."stock_master.inactive
         FROM ".TB_PREF."stock_master,
             ".TB_PREF."purch_order_details,
             ".TB_PREF."grn_batch
@@ -108,7 +108,7 @@ function print_grn_valuation()
 
 		$rep->NewLine();
 		$rep->TextCol(0, 1, $trans['item_code']);
-		$rep->TextCol(1, 2, $trans['description']);
+		$rep->TextCol(1, 2, $trans['description'].($trans['inactive']==1 ? " ("._("Inactive").")" : ""), -1);
 		$rep->TextCol(2, 3, $trans['order_no']);
 		$qdec = get_qty_dec($trans['item_code']);
 		$rep->AmountCol(3, 4, $trans['quantity_received'], $qdec);

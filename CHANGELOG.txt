@@ -19,6 +19,159 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+27-May-2010 Merged changes from main trunk (2.2.8, 2.2.9) as follows
+
+------------------------------- Release 2.2.9 ----------------------------------
+24-May-2010 Joe hunt
+! Release 2.2.9
+$ config.default.php
+  update.html
+# [0000230] Incorrect 'On order' quantity of raw materials in the 'Stock Check Sheets' report.   
+$ /reporting/rep303.php
+
+24-May-2010 Janusz Dobrowolski
+# Additional fixes in payment/deposit allocations.
+$ /includes/ui/allocation_cart.inc
+  /js/payalloc.js
+
+22-May-2010 Janusz Dobrowolski
+# Fixed html generation for buttons
+$ /includes/ui/ui_input.inc
+
+13-May-2010 Janusz Dobrowolski
+# [0000229] Payment overallocation is now forbidden (addendum)
+$ /js/payalloc.js
+
+12-May-2010 Janusz Dobrowolski
+# [0000226] Fixed diagnostic checks for javascript cached files, improved readability
+$ /admin/system_diagnostics.php
+# [0000227] Fixed cookie name to enable multiply FA instances on the same server.
+$ /includes/session.inc
+# [0000229] Payment overallocation is now forbidden
+$ /includes/ui/allocation_cart.inc
+  /js/allocate.js
+# Fixed email links to use ajax
+$ /purchasing/po_entry_items.php
+  /sales/credit_note_entry.php
+  /sales/customer_delivery.php
+  /sales/customer_invoice.php
+# Fixed shipping tax naming
+$ /taxes/tax_groups.php
+
+12-May-2010 Joe Hunt
+! Changed to allow change of theme in 'allow_demo_mode' during session
+$ /admin/display_prefs.php
+! [0000228] Sales order inquiry using reference number.
+$ /sales/inquiry/sales_orders_view.php
+
+10-May-2010 Joe Hunt/Alvin
+! Changed so Print Statements don't list voided items.
+$ /reporting/rep108.php
+
+04-May-2010 Janusz Dobrowolski/Robert Laussegger
+# Fixed amibiguites and typos in report titles.
+$ /reporting/includes/doctext.inc
+  /reporting/includes/doctext2.inc
+
+04-May-2010 Joe Hunt
+# [0000225] Supplier Payment Report showing paid invoices (rounding problem)
+$ /reporting/rep203.php
+! Minor change to balance sheet/profit and loss drilldown
+  Script is modified to display only direct child types
+/gl/inquiry/balance_sheet.php
+/gl/inquiry/profit_loss.php
+! New empty.po for release 2.2.8
+$ /lang/new_language_template/LC_MESSAGES/empty.po
+
+26-Apr-2010 Joe Hunt
+! Allowing the Tax Report to be printed to Excel/OO Calc
+$ /reporting/rep709.php
+  /reporting/reports_main.php
+  /reporting/includes/excel_report.inc
+  
+21-Apr-2010 Joe Hunt
+# [0000223] Incorrect backup of tables with more than 2 digit prefix
+$ /admin/db/maintenance_db.inc
+
+21-Apr-2010 Joe Hunt
+# [0000222] Deleting a Sales Order with reference to a voided delivery causes SQL error when
+  looking at this delivery. Solution, can't delete, but set the deliveries to 0
+  on the lines.
+$ /sales/includes/db/sales_order_db.inc
+
+------------------------------- Release 2.2.8 ----------------------------------
+18-Apr-2010
+! Release 2.2.8
+$ config.default.php
+  update.html
+
+17-Apr-2010 Janusz Dobrowolski
+# Small fix in company creation 
+$ /admin/create_coy.php
+# Checking whether reference is unique before saving transaction.
+$ /sales/sales_order_entry.php
+
+09-Apr-2010 Joe Hunt
+# Creating a new company without a Database script causes unpredictable errors.
+$ /admin/create_coy.php
+
+06-Apr-2010 Joe Hunt/Albin
+# Inactive items should not show in Price List Report. In Item lists they are
+  stamped (Inactive) after the description.
+$ /reporting/rep104.php
+  /reporting/rep301.php
+  /reporting/rep302.php
+  /reporting/rep303.php
+  /reporting/rep304.php
+  /reporting/rep305.php
+  
+03-Apr-2010 Joe Hunt/Chaitanya
+# [0000219] Incorrect behaviors regarding Payment forms
+$ /purchasing/supplier_payment.php
+  /sales/customer_payments.php
+
+20-Mar-2010 Joe Hunt/RodW
+# [0000215} Wrong text in deliver to and not printing it.
+$ /reporting/includes/doctext.inc
+  /reporting/includes/doctext2.inc
+  /reporting/includes/header2.inc
+  
+15-Mar-2010 Janusz Dobrowolski
+# Missing check for customer/branch selected ([0000216])
+$ /sales/sales_order_entry.php
+  /sales/customer_payment.php
+# Missing check for supplier selected ([0000217])
+$ /purchasing/supplier_invoice.php
+  /purchasing/supplier_payment.php
+  /purchasing/po_entry_items.php
+# Fixed db error on no supplier selected
+  /purchasing/includes/db/suppalloc_db.inc
+# Smaller clenaups.
+$ /includes/current_user.inc
+  /includes/session.inc
+
+10-Mar-2010 Joe Hunt
+! Print full Location name on reports
+$ /reporting/rep105.php
+  /reporting/rep301.php
+  /reporting/rep302.php
+  /reporting/rep303.php
+# Print reference on email (PO)
+  /reporting/rep209.php
+  
+07-Mar-2010 Joe Hunt
+# Bug in ui_lists.inc, systypes_list_row, too many parameters in
+  call to systypes_list_cells
+$ /includes/ui/ui_lists.inc
+
+06-Mar-2010 Joe Hunt
+# Bug in Text(Col)WrapLines. Doesn't break on space.
+$ /reporting/includes/pdf_report.inc
+# Missing 'Set Global Supplier' in invoice_ui.inc
+$ /purchasing/includes/ui/invoice_ui.inc
+
+---------- End of changes from main trunk 2.2.7-2.2.9
+
 15-May-2010 Joe Hunt
 ! Layout - added class label for branch link
 $ /sales7manage/customers.php
@@ -284,7 +437,7 @@ $ /reporting rep301.php
   /reporting rep304.php
   /reporting rep601.php
 
-05-Mar-2010 Merged changes from main trunk up to 2.2.7 as follows
+05-Mar-2010 Merged changes from main trunk up to 2.2. as follows
 ------------------------------- Release 2.2.7 ----------------------------------
 05-Mar-2010 Joe Hunt
 ! Release 2.2.7

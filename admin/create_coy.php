@@ -42,6 +42,11 @@ function check_data()
 
 	if ($_POST['name'] == "" || $_POST['host'] == "" || $_POST['dbuser'] == "" || $_POST['dbname'] == "")
 		return false;
+	if ($selected_id == -1 && (!isset($_GET['ul']) || $_GET['ul'] != 1))
+	{
+		display_error(_("When creating a new company, you must provide a Database script file."));
+		return false;
+	}
 	foreach($db_connections as $id=>$con)
 	{
 	 if($id != $selected_id && $_POST['host'] == $con['host'] 
@@ -82,12 +87,12 @@ function handle_submit()
 	global $db_connections, $def_coy, $tb_pref_counter, $db,
 	    $comp_subdirs, $path_to_root;
 
-	$new = false;
 	$error = false;
 	if (!check_data())
 		return false;
 
 	$id = $_GET['id'];
+	$new = !isset($db_connections[$id]);
 
 	$db_connections[$id]['name'] = $_POST['name'];
 	$db_connections[$id]['host'] = $_POST['host'];
@@ -100,7 +105,6 @@ function handle_submit()
 		{
 			$db_connections[$id]['tbpref'] = $_POST['tbpref'] == 1 ?
 			  $tb_pref_counter."_" : '';
-			$new = true;
 		}
 		else if ($_POST['tbpref'] != "")
 			$db_connections[$id]['tbpref'] = $_POST['tbpref'];
@@ -146,7 +150,7 @@ function handle_submit()
 			{
 				display_error(_("Error connecting to Database: ") . $conn['dbname'] . _(", Please correct it"));
 				$error = true;
-			} else {
+			} elseif ($_POST['admpassword'] != "") {
 				db_query("UPDATE ".$conn['tbpref']."users set password = '".md5($_POST['admpassword']). "' WHERE user_id = 'admin'");
 			}
 		}

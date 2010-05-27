@@ -114,8 +114,13 @@ function display_type ($type, $typename, $from, $to, $begin, $end, $compare, $co
 			amount_cell(Achieve(($code_per_balance + $per_balance_total), ($code_acc_balance + $acc_balance_total)));
 			end_row();
 		}
-		elseif ($drilldown && $type != $_POST["AccGrp"])
-		{
+		//START Patch#1 : Display  only direct child types
+		$acctype1 = get_account_type($type);
+		$parent1 = $acctype1["parent"];
+		if ($drilldown && $parent1 == $_POST["AccGrp"])
+		//END Patch#2		
+		//elseif ($drilldown && $type != $_POST["AccGrp"])
+		{	
 			$url = "<a href='$path_to_root/gl/inquiry/profit_loss.php?TransFromDate=" 
 				. $from . "&TransToDate=" . $to . "&Compare=" . $compare
 				. "&AccGrp=" . $type ."'>" . $typename ."</a>";
@@ -156,7 +161,7 @@ function inquiry_controls()
 	//Compare Combo
 	global $sel;
 	$sel = array(_("Accumulated"), _("Period Y-1"), _("Budget"));	
-	echo "<td>Comapre To:</td>\n";
+	echo "<td>"._("Compare to").":</td>\n";
 	echo "<td>";
 	echo array_selector('Compare', null, $sel);
 	echo "</td>\n";	

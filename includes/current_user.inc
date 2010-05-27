@@ -175,7 +175,7 @@ class current_user
 			update_user_prefs($this->user, $prefs);
 		}
 
-		$this->prefs = new user_prefs($prefs);
+		$this->prefs = new user_prefs(get_user($this->user));
 	}
 }
 

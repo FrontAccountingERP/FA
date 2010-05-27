@@ -270,7 +270,7 @@ function button($name, $value, $title=false, $icon=false,  $aspect='')
 			"' value='1'" . ($title ? " title='$title'":" title='$value'")
 			. ($aspect ? " aspect='$aspect'" : '')
 			. $rel
-			." />".set_icon($icon)."\n";
+			." />".set_icon($icon)."</button>\n";
 	}
 	else
 		return "<input type='submit' class='editbutton' name='"

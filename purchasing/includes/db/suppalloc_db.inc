@@ -170,7 +170,7 @@ function get_allocatable_to_supp_transactions($supplier_id, $trans_no=null, $typ
 	{
 		$sql = get_alloc_supp_sql(null, "round(ABS(ov_amount+ov_gst+ov_discount)-alloc,6) > 0
 			AND trans.type != ".ST_SUPPAYMENT."
-			AND trans.supplier_id=$supplier_id");
+			AND trans.supplier_id=".db_escape($supplier_id));
 	}
 
 	return db_query($sql." ORDER BY trans_no", "Cannot retreive alloc to transactions");

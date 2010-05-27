@@ -78,6 +78,20 @@ function can_process()
 {
 	global $Refs;
 
+	if (!get_post('customer_id')) 
+	{
+		display_error(_("There is no customer selected."));
+		set_focus('customer_id');
+		return false;
+	} 
+	
+	if (!get_post('BranchID')) 
+	{
+		display_error(_("This customer has no branch defined."));
+		set_focus('BranchID');
+		return false;
+	} 
+	
 	if (!isset($_POST['DateBanked']) || !is_date($_POST['DateBanked'])) {
 		display_error(_("The entered date is invalid. Please enter a valid date for the payment."));
 		set_focus('DateBanked');
@@ -138,7 +152,8 @@ function can_process()
 		return false;
 	}
 
-	if ((input_num('amount') - input_num('discount') <= 0)) {
+	//if ((input_num('amount') - input_num('discount') <= 0)) {
+	if (input_num('amount') <= 0) {
 		display_error(_("The balance of the amount and discout is zero or negative. Please enter valid amounts."));
 		set_focus('discount');
 		return false;

@@ -38,7 +38,7 @@ function fetch_items($category=0)
 				".TB_PREF."stock_category.description
 			FROM ".TB_PREF."stock_master,
 				".TB_PREF."stock_category
-			WHERE ".TB_PREF."stock_master.category_id=".TB_PREF."stock_category.category_id";
+			WHERE ".TB_PREF."stock_master.category_id=".TB_PREF."stock_category.category_id AND NOT ".TB_PREF."stock_master.inactive";
 		if ($category != 0)
 			$sql .= " AND ".TB_PREF."stock_category.category_id = ".db_escape($category);
 		$sql .= " ORDER BY ".TB_PREF."stock_master.category_id,

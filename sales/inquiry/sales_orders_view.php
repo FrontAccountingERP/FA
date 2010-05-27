@@ -225,6 +225,7 @@ start_row();
 ref_cells(_("#:"), 'OrderNumber', '',null, '', true);
 if ($_POST['order_view_mode'] != 'DeliveryTemplates' && $_POST['order_view_mode'] != 'InvoiceTemplates')
 {
+	ref_cells(_("Ref"), 'OrderReference', '',null, '', true);
   	date_cells(_("from:"), 'OrdersAfterDate', '', null, -30);
   	date_cells(_("to:"), 'OrdersToDate', '', null, 1);
 }

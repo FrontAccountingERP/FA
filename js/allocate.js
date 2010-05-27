@@ -14,12 +14,16 @@ function focus_alloc(i) {
 }
 
 function blur_alloc(i) {
-	var change = get_amount(i.name);
-		price_format(i.name, change, user.pdec);		
-		if(change<0) change = 0;
-		change = change-i.getAttribute('_last');
+
+	var last = +i.getAttribute('_last')
+	var left = get_amount('left_to_allocate', 1); 
+	var cur = Math.min(get_amount(i.name), get_amount('maxval'+i.name.substr(6), 1), last+left)
+
+	price_format(i.name, cur, user.pdec);
+	change = cur-last;
+
 	var total = get_amount('total_allocated', 1)+change;
-	var left = get_amount('left_to_allocate', 1)-change;
+		left -= change;
 	
 	price_format('left_to_allocate', left, user.pdec, 1, 1);
 	price_format('total_allocated', total, user.pdec, 1, 1);

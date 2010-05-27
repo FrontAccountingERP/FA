@@ -274,7 +274,7 @@ function show_allocatable($show_totals) {
     		amount_cells(null, "amount" . $counter, price_format('amount' . $counter));
 
 	    	$un_allocated = round($alloc_item->amount - $alloc_item->amount_allocated, 6);
-    		amount_cell($un_allocated);
+    		amount_cell($un_allocated, false,'', 'maxval'.$counter);
 			label_cell("<a href='#' name=Alloc$counter onclick='allocate_all(this.name.substr(5));return true;'>"
 				 . _("All") . "</a>");
 			label_cell("<a href='#' name=DeAll$counter onclick='allocate_none(this.name.substr(5));return true;'>"
@@ -332,7 +332,9 @@ function check_allocations()
 		 amount left to be allocated against the transaction under review */
 		 if (input_num('amount' . $counter) > get_post('un_allocated' . $counter))
 		 {
-		     //$_POST['amount' . $counter] = $_POST['un_allocated' . $counter];
+			display_error(_("At least one transaction is overallocated."));
+			set_focus('amount'.$counter);
+			return false;
 		 }
 
 		 $_SESSION['alloc']->allocs[$counter]->current_allocated = input_num('amount' . $counter);

@@ -317,6 +317,20 @@ function line_start_focus() {
 function can_process() {
 	global $Refs;
 
+	if (!get_post('customer_id')) 
+	{
+		display_error(_("There is no customer selected."));
+		set_focus('customer_id');
+		return false;
+	} 
+	
+	if (!get_post('branch_id')) 
+	{
+		display_error(_("This customer has no branch defined."));
+		set_focus('branch_id');
+		return false;
+	} 
+	
 	if (!is_date($_POST['OrderDate'])) {
 		display_error(_("The entered date is invalid."));
 		set_focus('OrderDate');
@@ -385,6 +399,12 @@ function can_process() {
 		set_focus('ref');
 		return false;
 	}
+   	if ($_SESSION['Items']->trans_no==0 && !is_new_reference($_POST['ref'], 
+   		$_SESSION['Items']->trans_type)) {
+   		display_error(_("The entered reference is already in use."));
+		set_focus('ref');
+   		return false;
+   	}
 	return true;
 }
 

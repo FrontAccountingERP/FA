@@ -118,6 +118,8 @@ function invoice_header(&$supp_trans)
 
 	table_section(3, "33%");
 
+	set_global_supplier($_POST['supplier_id']);
+
 	$supplier_currency = get_supplier_currency($supp_trans->supplier_id);
 
 	$company_currency = get_company_currency();

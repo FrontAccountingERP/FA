@@ -388,7 +388,11 @@ function sales_order_has_deliveries($order_no)
 
 	$row = db_fetch_row($result);
 
-	return ($row[0] > 0);
+	if ($row[0] > 0)
+		return true;  // 2010-04-21 added check for eventually voided deliveries, Joe Hunt
+	$sql = "SELECT order_ FROM ".TB_PREF."debtor_trans WHERE type=".ST_CUSTDELIVERY." AND order_=".db_escape($order_no);
+	$result = db_query($sql,"The related delivery notes could not be retreived");
+	return (db_num_rows($result) > 0);	
 }
 
 //----------------------------------------------------------------------------------------
@@ -508,6 +512,13 @@ function get_sql_for_sales_orders_view($selected_customer, $trans_type)
 		// search orders with number like 
 		$number_like = "%".$_POST['OrderNumber'];
 		$sql .= " AND sorder.order_no LIKE ".db_escape($number_like)
+				." GROUP BY sorder.order_no";
+	}
+	elseif (isset($_POST['OrderReference']) && $_POST['OrderReference'] != "")
+	{
+		// search orders with reference like 
+		$number_like = "%".$_POST['OrderReference']."%";
+		$sql .= " AND sorder.reference LIKE ".db_escape($number_like)
 				." GROUP BY sorder.order_no";
 	}
 	else	// ... or select inquiry constraints

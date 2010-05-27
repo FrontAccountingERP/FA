@@ -97,7 +97,12 @@ function display_type ($type, $typename, $from, $to, $convert, $drilldown, $path
 			amount_cell(($acctstotal + $typestotal) * $convert);
 			end_row();
 		}
-		elseif ($drilldown && $type != $_POST["AccGrp"])
+		//START Patch#1 : Display  only direct child types
+		$acctype1 = get_account_type($type);
+		$parent1 = $acctype1["parent"];
+		if ($drilldown && $parent1 == $_POST["AccGrp"])
+		//END Patch#2		
+		//elseif ($drilldown && $type != $_POST["AccGrp"])
 		{
 			$url = "<a href='$path_to_root/gl/inquiry/balance_sheet.php?TransFromDate=" 
 				. $from . "&TransToDate=" . $to 

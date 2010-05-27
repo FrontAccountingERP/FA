@@ -34,7 +34,7 @@ function getTransactions($category, $location)
 	$sql = "SELECT ".TB_PREF."stock_master.category_id,
 			".TB_PREF."stock_category.description AS cat_description,
 			".TB_PREF."stock_master.stock_id,
-			".TB_PREF."stock_master.description,
+			".TB_PREF."stock_master.description, ".TB_PREF."stock_master.inactive,
 			IF(".TB_PREF."stock_moves.stock_id IS NULL, '', ".TB_PREF."stock_moves.loc_code) AS loc_code,
 			SUM(IF(".TB_PREF."stock_moves.stock_id IS NULL,0,".TB_PREF."stock_moves.qty)) AS QtyOnHand
 		FROM (".TB_PREF."stock_master,
@@ -87,7 +87,7 @@ function print_stock_check()
 	if ($location == 'all')
 		$loc = _('All');
 	else
-		$loc = $location;
+		$loc = get_location_name($location);
 	if ($shortage)
 	{
 		$short = _('Yes');
@@ -139,7 +139,9 @@ function print_stock_check()
 		$demandqty = get_demand_qty($trans['stock_id'], $loc_code);
 		$demandqty += get_demand_asm_qty($trans['stock_id'], $loc_code);
 		$onorder = get_on_porder_qty($trans['stock_id'], $loc_code);
-		$onorder += get_on_worder_qty($trans['stock_id'], $loc_code);
+		$flag = get_mb_flag($trans['stock_id']);
+		if ($flag == 'M')
+       		$onorder += get_on_worder_qty($trans['stock_id'], $loc_code);
 		if ($shortage && $trans['QtyOnHand'] - $demandqty >= 0)
 			continue;
 		if ($catt != $trans['cat_description'])
@@ -157,7 +159,7 @@ function print_stock_check()
 		$rep->NewLine();
 		$dec = get_qty_dec($trans['stock_id']);
 		$rep->TextCol(0, 1, $trans['stock_id']);
-		$rep->TextCol(1, 2, $trans['description']);
+		$rep->TextCol(1, 2, $trans['description'].($trans['inactive']==1 ? " ("._("Inactive").")" : ""), -1);
 		$rep->AmountCol(2, 3, $trans['QtyOnHand'], $dec);
 		if ($check)
 		{
