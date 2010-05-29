@@ -19,6 +19,12 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+
+29-May-2010 Janusz Dobrowolski
+# Smaller fixes initial COAs
+$ /sql/en_US-demo.sql
+  /sql/en_US-new.sql
+
 ------------------------------- Release 2.2.9 ----------------------------------
 24-May-2010 Joe hunt
 ! Release 2.2.9
