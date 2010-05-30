@@ -36,6 +36,12 @@ if (isset($_GET['NewPayment'])) {
 } else if(isset($_GET['NewDeposit'])) {
 	$_SESSION['page_title'] = _($help_context = "Bank Account Deposit Entry");
 	handle_new_order(ST_BANKDEPOSIT);
+} else if(isset($_GET['ModifyPayment'])) {
+	$_SESSION['page_title'] = _($help_context = "Modify Bank Account Entry")." #".$_GET['trans_no'];
+	create_cart(ST_BANKPAYMENT, $_GET['trans_no']);
+} else if(isset($_GET['ModifyDeposit'])) {
+	$_SESSION['page_title'] = _($help_context = "Modify Bank Account Entry")." #".$_GET['trans_no'];
+	create_cart(ST_BANKDEPOSIT, $_GET['trans_no']);
 }
 page($_SESSION['page_title'], false, false, '', $js);
 
@@ -75,6 +81,22 @@ if (isset($_GET['AddedID']))
 	display_footer_exit();
 }
 
+if (isset($_GET['UpdatedID']))
+{
+	$trans_no = $_GET['UpdatedID'];
+	$trans_type = ST_BANKPAYMENT;
+
+   	display_notification_centered(_("Payment $trans_no has been modified"));
+
+	display_note(get_gl_view_str($trans_type, $trans_no, _("&View the GL Postings for this Payment")));
+
+	hyperlink_params($_SERVER['PHP_SELF'], _("Enter Another &Payment"), "NewPayment=yes");
+
+	hyperlink_params($_SERVER['PHP_SELF'], _("Enter A &Deposit"), "NewDeposit=yes");
+
+	display_footer_exit();
+}
+
 if (isset($_GET['AddedDep']))
 {
 	$trans_no = $_GET['AddedDep'];
@@ -90,6 +112,22 @@ if (isset($_GET['AddedDep']))
 
 	display_footer_exit();
 }
+if (isset($_GET['UpdatedDep']))
+{
+	$trans_no = $_GET['UpdatedDep'];
+	$trans_type = ST_BANKDEPOSIT;
+
+   	display_notification_centered(_("Deposit $trans_no has been modified"));
+
+	display_note(get_gl_view_str($trans_type, $trans_no, _("&View the GL Postings for this Deposit")));
+
+	hyperlink_params($_SERVER['PHP_SELF'], _("Enter Another &Deposit"), "NewDeposit=yes");
+
+	hyperlink_params($_SERVER['PHP_SELF'], _("Enter A &Payment"), "NewPayment=yes");
+
+	display_footer_exit();
+}
+
 if (isset($_POST['_date__changed'])) {
 	$Ajax->activate('_ex_rate');
 }
@@ -112,6 +150,73 @@ function handle_new_order($type)
 	$_SESSION['pay_items']->tran_date = $_POST['date_'];
 }
 
+function create_cart($type, $trans_no)
+{
+	global $Refs;
+
+	if (isset($_SESSION['pay_items']))
+	{
+		unset ($_SESSION['pay_items']);
+	}
+
+	$_SESSION['pay_items'] = new items_cart($type);
+    $_SESSION['pay_items']->order_id = $trans_no;
+
+	if ($trans_no) {
+		$result = get_gl_trans($type, $trans_no);
+
+		if ($result) {
+			while ($row = db_fetch($result)) {
+				if ($row['amount'] == 0) continue;
+				if (is_bank_account($row['account'])) continue;
+				$date = $row['tran_date'];
+				$_SESSION['pay_items']->add_gl_item($row['account'], $row['dimension_id'], 
+					$row['dimension2_id'], $row['amount'], $row['memo_']);
+			}
+		}
+		$_SESSION['pay_items']->memo_ = get_comments_string($type, $trans_no);
+		$_SESSION['pay_items']->tran_date = sql2date($date);
+		$_SESSION['pay_items']->reference = $Refs->get($type, $trans_no);
+		////////////////////////////////////////////
+		// Check Ref Original ?????
+		$_POST['ref_original'] = $_SESSION['pay_items']->reference; // Store for comparison when updating	
+
+		$bank_trans = db_fetch(get_bank_trans($type, $trans_no));
+		$_POST['bank_account'] = $bank_trans["bank_act"];
+		$_POST['PayType'] = $bank_trans["person_type_id"];
+		
+		if ($bank_trans["person_type_id"] == PT_CUSTOMER) //2
+		{
+			$trans = get_customer_trans($trans_no, $type);	
+			$_POST['person_id'] = $trans["debtor_no"];
+			$_POST['PersonDetailID'] = $trans["branch_code"];
+		}
+		elseif ($bank_trans["person_type_id"] == PT_SUPPLIER) //3
+		{
+			$trans = get_supp_trans($trans_no, $type);
+			$_POST['person_id'] = $trans["supplier_id"];
+		}
+		elseif ($bank_trans["person_type_id"] == PT_MISC) //0
+			$_POST['person_id'] = $bank_trans["person_id"];
+		elseif ($bank_trans["person_type_id"] == PT_QUICKENTRY) //4
+			$_POST['person_id'] = $bank_trans["person_id"];
+		else 
+			$_POST['person_id'] = $bank_trans["person_id"];
+
+	} else {
+		$_SESSION['pay_items']->reference = $Refs->get_next(0);
+		$_SESSION['pay_items']->tran_date = new_doc_date();
+		if (!is_date_in_fiscalyear($_SESSION['pay_items']->tran_date))
+			$_SESSION['pay_items']->tran_date = end_fiscalyear();
+		$_POST['ref_original'] = -1;
+	}
+
+	$_POST['memo_'] = $_SESSION['pay_items']->memo_;
+	$_POST['ref'] = $_SESSION['pay_items']->reference;
+	$_POST['date_'] = $_SESSION['pay_items']->tran_date;
+
+	//$_SESSION['pay_items'] = &$_SESSION['pay_items'];
+}
 //-----------------------------------------------------------------------------------------------
 
 if (isset($_POST['Process']))
@@ -137,7 +242,7 @@ if (isset($_POST['Process']))
 		set_focus('ref');
 		$input_error = 1;
 	}
-	elseif (!is_new_reference($_POST['ref'], $_SESSION['pay_items']->trans_type))
+	elseif ($_POST['ref'] != $_SESSION['pay_items']->reference && !is_new_reference($_POST['ref'], $_SESSION['pay_items']->trans_type))
 	{
 		display_error( _("The entered reference is already in use."));
 		set_focus('ref');
@@ -162,12 +267,26 @@ if (isset($_POST['Process']))
 
 if (isset($_POST['Process']))
 {
-
+	begin_transaction();
+	
+	$_SESSION['pay_items'] = &$_SESSION['pay_items'];
+	$new = $_SESSION['pay_items']->order_id == 0;
+	
+	if (!$new)
+	{
+		clear_bank_trans($_SESSION['pay_items']->trans_type, $_SESSION['pay_items']->order_id, true);
+		$trans = reinsert_bank_transaction(
+				$_SESSION['pay_items']->trans_type, $_SESSION['pay_items']->order_id, $_POST['bank_account'],
+				$_SESSION['pay_items'], $_POST['date_'],
+				$_POST['PayType'], $_POST['person_id'], get_post('PersonDetailID'),
+				$_POST['ref'], $_POST['memo_'], false);		
+	}
+	else 
 	$trans = add_bank_transaction(
 		$_SESSION['pay_items']->trans_type, $_POST['bank_account'],
 		$_SESSION['pay_items'], $_POST['date_'],
 		$_POST['PayType'], $_POST['person_id'], get_post('PersonDetailID'),
-		$_POST['ref'], $_POST['memo_']);
+		$_POST['ref'], $_POST['memo_'], false);
 
 	$trans_type = $trans[0];
    	$trans_no = $trans[1];
@@ -175,9 +294,15 @@ if (isset($_POST['Process']))
 
 	$_SESSION['pay_items']->clear_items();
 	unset($_SESSION['pay_items']);
-
+	
+	commit_transaction();
+	
+	if ($new)
 	meta_forward($_SERVER['PHP_SELF'], $trans_type==ST_BANKPAYMENT ?
 		"AddedID=$trans_no" : "AddedDep=$trans_no");
+	else
+	meta_forward($_SERVER['PHP_SELF'], $trans_type==ST_BANKPAYMENT ?
+		"UpdatedID=$trans_no" : "UpdatedDep=$trans_no");
 
 } /*end of process credit note */
 

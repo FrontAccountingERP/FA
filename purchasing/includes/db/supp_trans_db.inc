@@ -46,6 +46,41 @@ function add_supp_trans($type, $supplier_id, $date_, $due_date, $reference, $sup
 
 //-------------------------------------------------------------------------------------------------------------
 
+function reinsert_supp_trans($type, $trans_no, $supplier_id, $date_, $due_date, $reference, $supp_reference,
+	$amount, $amount_tax, $discount, $err_msg="", $rate=0)
+{
+	if ($trans_no == '')
+		display_db_error('Invalid call to function reinsert_supp_trans');
+		
+	$date = date2sql($date_);
+	if ($due_date == "")
+		$due_date = "0000-00-00";
+	else
+		$due_date = date2sql($due_date);
+
+	$curr = get_supplier_currency($supplier_id);
+	
+	if ($rate == 0)
+		$rate = get_exchange_rate_from_home_currency($curr, $date_);
+
+
+	$sql = "INSERT INTO ".TB_PREF."supp_trans (trans_no, type, supplier_id, tran_date, due_date,
+		reference, supp_reference, ov_amount, ov_gst, rate, ov_discount) ";
+	$sql .= "VALUES (".db_escape($trans_no).", ".db_escape($type)
+	.", ".db_escape($supplier_id).", '$date', '$due_date',
+		".db_escape($reference).", ".db_escape($supp_reference).", ".db_escape($amount)
+		.", ".db_escape($amount_tax).", ".db_escape($rate).", ".db_escape($discount).")";
+
+	if ($err_msg == "")
+		$err_msg = "Cannot insert a supplier transaction record";
+
+	db_query($sql, $err_msg);
+	add_audit_trail($type, $trans_no, $date_);
+
+	return $trans_no;
+}
+//-------------------------------------------------------------------------------------------------------------
+
 function get_supp_trans($trans_no, $trans_type=-1)
 {
 	$sql = "SELECT ".TB_PREF."supp_trans.*, (".TB_PREF."supp_trans.ov_amount+".TB_PREF."supp_trans.ov_gst+".TB_PREF."supp_trans.ov_discount) AS Total,
@@ -124,6 +159,15 @@ function void_supp_trans($type, $type_no)
 	db_query($sql, "could not void supp transactions for type=$type and trans_no=$type_no");
 }
 
+//----------------------------------------------------------------------------------------
+
+function clear_supp_trans($type, $type_no)
+{
+	$sql = "DELETE FROM ".TB_PREF."supp_trans 
+			WHERE type=".db_escape($type)." AND trans_no=".db_escape($type_no);
+
+	db_query($sql, "could not clear supp transactions for type=$type and trans_no=$type_no");
+}
 //----------------------------------------------------------------------------------------
 
 function post_void_supp_trans($type, $type_no)

@@ -401,6 +401,17 @@ function void_trans_tax_details($type, $type_no)
 	db_query($sql, "The transaction tax details could not be voided");
 }
 
+//----------------------------------------------------------------------------------------
+
+function clear_trans_tax_details($type, $type_no)
+{
+	$sql = "DELETE FROM ".TB_PREF."trans_tax_details 
+		WHERE trans_no=".db_escape($type_no)
+		." AND trans_type=".db_escape($type);
+
+	db_query($sql, "The transaction tax details could not be cleared");
+}
+
 function get_tax_summary($from, $to)
 {
 	$fromdate = date2sql($from);
@@ -556,6 +567,22 @@ function void_gl_trans($type, $trans_id, $nested=false)
 	." AND type_no=".db_escape($trans_id);
 
 	db_query($sql, "could not void gl transactions for type=$type and trans_no=$trans_id");
+
+	if (!$nested)
+		commit_transaction();
+}
+
+//--------------------------------------------------------------------------------------------------
+
+function clear_gl_trans($type, $trans_id, $nested=false)
+{
+	if (!$nested)
+		begin_transaction();
+
+	$sql = "DELETE FROM ".TB_PREF."gl_trans WHERE type=".db_escape($type)
+	." AND type_no=".db_escape($trans_id);
+
+	db_query($sql, "could not clear gl transactions for type=$type and trans_no=$trans_id");
 
 	if (!$nested)
 		commit_transaction();

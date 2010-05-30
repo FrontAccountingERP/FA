@@ -80,9 +80,9 @@ function gl_link($row)
 }
 
 $editors = array(
-	0 => "/gl/gl_journal.php?ModifyGL=Yes&trans_no=%d&trans_type=%d",
-//	1=> Bank Payment,
-//	2=> Bank Deposit,
+	ST_JOURNAL => "/gl/gl_journal.php?ModifyGL=Yes&trans_no=%d&trans_type=%d",
+	ST_BANKPAYMENT => "/gl/gl_bank.php?ModifyPayment=Yes&trans_no=%d&trans_type=%d",
+	ST_BANKDEPOSIT => "/gl/gl_bank.php?ModifyDeposit=Yes&trans_no=%d&trans_type=%d",
 //	4=> Funds Transfer,
    ST_SALESINVOICE => "/sales/customer_invoice.php?ModifyInvoice=%d",
 //   11=>
