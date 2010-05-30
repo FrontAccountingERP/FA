@@ -19,6 +19,13 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+30-May-2010 Joe Hunt
+! Global variabel, $def_print_destination, config.php can be set to 0 or 1
+$ config.default.php
+  /reporting/includes/reports_classes.inc
+! copy line memo to next line in journal entries and bank payments/deposits
+$ /gl/includes/ui/gl_bank_ui.inc
+  /gl/includes/ui/gl_journal_ui.inc
 
 29-May-2010 Janusz Dobrowolski
 # Smaller fixes initial COAs

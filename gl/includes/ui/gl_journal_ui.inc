@@ -184,7 +184,7 @@ function gl_edit_item_controls(&$order, $dim, $Index=null)
 		$_POST['AmountCredit'] = ''; //price_format(0);
 		$_POST['dimension_id'] = 0;
 		$_POST['dimension2_id'] = 0;
-		$_POST['LineMemo'] = "";
+		//$_POST['LineMemo'] = ""; // let memo go to next line Joe Hunt 2010-05-30
 		$_POST['_code_id_edit'] = "";
 		$_POST['code_id'] = "";
 		if(isset($_POST['_code_id_update'])) {

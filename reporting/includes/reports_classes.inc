@@ -148,7 +148,7 @@ class BoxReports
 	//
 	function get_ctrl($name, $type)
 	{
-		global $path_to_root, $use_date_picker, $pdf_debug, $print_invoice_no;
+		global $path_to_root, $use_date_picker, $pdf_debug, $print_invoice_no, $def_print_destination;
 
 		$st = '';
 			switch ($type)
@@ -205,7 +205,10 @@ class BoxReports
 
 				case 'DESTINATION':
 					$sel = array(_("PDF/Printer"), "Excel");
-					return array_selector($name, null, $sel);
+					$def = 0;
+					if (isset($def_print_destination) && $def_print_destination == 1)
+						$def = 1;
+					return array_selector($name, $def, $sel);
 
 				case 'COMPARE':
 					$sel = array(_("Accumulated"), _("Period Y-1"), _("Budget"));
