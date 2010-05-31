@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+31-May-2010 Joe Hunt
+# No limit on 30 days in Payment terms if end of month.
+$ /admin/payment_terms.php
+
 30-May-2010 Joe Hunt
 ! Global variabel, $def_print_destination, config.php can be set to 0 or 1
 $ config.default.php
