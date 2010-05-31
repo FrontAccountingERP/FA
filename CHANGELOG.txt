@@ -26,6 +26,8 @@ $ config.default.php
 ! copy line memo to next line in journal entries and bank payments/deposits
 $ /gl/includes/ui/gl_bank_ui.inc
   /gl/includes/ui/gl_journal_ui.inc
+! Report GL Transactions now prints line memos
+$ /reporting/rep704.php
 
 29-May-2010 Janusz Dobrowolski
 # Smaller fixes initial COAs
