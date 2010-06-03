@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+03-Jun-2010 Joe Hunt
+# Rounding bug when decimals greater than or equal to 6.
+$ /includes/current_user.inc
+
 31-May-2010 Joe Hunt
 # No limit on 30 days in Payment terms if end of month.
 $ /admin/payment_terms.php

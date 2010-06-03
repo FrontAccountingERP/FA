@@ -201,7 +201,7 @@ class current_user
 
 function round2($number, $decimals=0)
 {
-	$delta = ($number < 0 ? -.000001 : .000001);
+	$delta = ($number < 0 ? -.0000000001 : .0000000001);
 	return round($number+$delta, $decimals);
 }
 
@@ -211,7 +211,7 @@ function number_format2($number, $decimals=0)
 	$tsep = $thoseps[$_SESSION["wa_current_user"]->prefs->tho_sep()];
 	$dsep = $decseps[$_SESSION["wa_current_user"]->prefs->dec_sep()];
 	//return number_format($number, $decimals, $dsep,	$tsep);
-	$delta = ($number < 0 ? -.000001 : .000001);
+	$delta = ($number < 0 ? -.0000000001 : .0000000001);
 	return number_format($number+$delta, $decimals, $dsep,	$tsep);
 }
 //
