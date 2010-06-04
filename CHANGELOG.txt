@@ -19,6 +19,11 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+05-Jun-2010 Joe Hunt
+! Allowing SA_FISCALYEAR access to enter transactions on open fiscal years
+$ /admin/db/fiscalyears_db.inc
+  /includes/date_functions.inc
+  
 31-May-2010 Joe Hunt
 ! Allowing modifying of Bank Payments/Deposits
 $ /gl/gl_bank.php

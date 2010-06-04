@@ -71,11 +71,12 @@ function delete_fiscalyear($id)
 	commit_transaction();
 }
 
-function is_date_in_fiscalyears($date)
+function is_date_in_fiscalyears($date, $closed=true)
 {
 	$date = date2sql($date);
 	$sql = "SELECT * FROM ".TB_PREF."fiscal_year WHERE '$date' >= begin AND '$date' <= end";
-
+	if (!$closed)
+		$sql .= " AND closed=0";
 	$result = db_query($sql, "could not get all fiscal years");
 	return db_fetch($result) !== false;
 }
