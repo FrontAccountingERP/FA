@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+06-Jun-2010 Janusz Dobrowolski
+# False overallocation fixed.
+$ /includes/ui/allocation_cart.inc
+
 03-Jun-2010 Joe Hunt
 # Rounding bug when decimals greater than or equal to 6.
 $ /includes/current_user.inc

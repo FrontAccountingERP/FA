@@ -330,7 +330,7 @@ function check_allocations()
 
 		  /*Now check to see that the AllocAmt is no greater than the
 		 amount left to be allocated against the transaction under review */
-		 if (input_num('amount' . $counter) > get_post('un_allocated' . $counter))
+		 if (input_num('amount' . $counter) > input_num('un_allocated' . $counter))
 		 {
 			display_error(_("At least one transaction is overallocated."));
 			set_focus('amount'.$counter);
