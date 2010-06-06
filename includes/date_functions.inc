@@ -162,7 +162,7 @@ function is_date_in_fiscalyear($date, $convert=false)
 	global $path_to_root;
 	include_once($path_to_root . "/admin/db/fiscalyears_db.inc");
 
-	if ($_SESSION["wa_current_user"]->can_access('SA_FISCALYEARS')) // allow all open years for this one
+	if ($_SESSION["wa_current_user"]->can_access('SA_MULTIFISCALYEARS')) // allow all open years for this one
 		return is_date_in_fiscalyears($date, false);
 	$myrow = get_current_fiscalyear();
 	if ($myrow['closed'] == 1)

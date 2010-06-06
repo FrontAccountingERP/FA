@@ -227,6 +227,7 @@ $security_areas =array(
 	'SA_FISCALYEARS' => array(SS_GL_C|9, _("Fiscal years maintenance")),
 	'SA_GLSETUP' => array(SS_GL_C|10, _("Company GL setup")),
 	'SA_GLACCOUNTTAGS' => array(SS_GL_C|11, _("GL Account tags")),
+	'SA_MULTIFISCALYEARS' => array(SS_GL_C|13, _("Allow entry on non closed Fiscal years")),
 
 	'SA_BANKTRANSVIEW' => array(SS_GL|1, _("Bank transactions view")),
 	'SA_GLTRANSVIEW' => array(SS_GL|2, _("GL postings view")),
