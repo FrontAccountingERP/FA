@@ -99,12 +99,13 @@ if ($_GET['trans_type'] != ST_SALESQUOTE)
 
 	$delivery_total = 0;
 	$k = 0;
-
+	$dn_numbers = array();
+	
 	while ($del_row = db_fetch($result))
 	{
 
 		alt_table_row_color($k);
-
+		$dn_numbers[] = $del_row["trans_link"];
 		$this_total = $del_row["ov_freight"]+ $del_row["ov_amount"] + $del_row["ov_freight_tax"]  + $del_row["ov_gst"] ;
 		$delivery_total += $this_total;
 
@@ -126,12 +127,15 @@ if ($_GET['trans_type'] != ST_SALESQUOTE)
 
 	$th = array(_("#"), _("Ref"), _("Date"), _("Total"));
 	table_header($th);
+	
+	$sql = "SELECT * FROM ".TB_PREF."debtor_trans WHERE type=".ST_SALESINVOICE
+		." AND trans_no IN(". implode(',', array_values($dn_numbers)).")";
 
-	$sql = "SELECT * FROM ".TB_PREF."debtor_trans WHERE type=".ST_SALESINVOICE." AND order_=".db_escape($_GET['trans_no']);
 	$result = db_query($sql,"The related invoices could not be retreived");
 
 	$invoices_total = 0;
 	$k = 0;
+	$cn_numbers = array();
 
 	while ($inv_row = db_fetch($result))
 	{
@@ -141,6 +145,7 @@ if ($_GET['trans_type'] != ST_SALESQUOTE)
 		$this_total = $inv_row["ov_freight"] + $inv_row["ov_freight_tax"]  + $inv_row["ov_gst"] + $inv_row["ov_amount"];
 		$invoices_total += $this_total;
 
+		$cn_numbers[] = $inv_row["trans_no"];
 		label_cell(get_customer_trans_view_str($inv_row["type"], $inv_row["trans_no"]));
 		label_cell($inv_row["reference"]);
 		label_cell(sql2date($inv_row["tran_date"]));
@@ -159,7 +164,12 @@ if ($_GET['trans_type'] != ST_SALESQUOTE)
 	$th = array(_("#"), _("Ref"), _("Date"), _("Total"));
 	table_header($th);
 
-	$sql = "SELECT * FROM ".TB_PREF."debtor_trans WHERE type=".ST_CUSTCREDIT." AND order_=".db_escape($_GET['trans_no']);
+	// FIXME -  credit notes retrieved here should be those linked to invoices containing 
+	// at least one line from this order
+	
+	$sql = "SELECT * FROM ".TB_PREF."debtor_trans WHERE type=".ST_CUSTCREDIT
+		." AND trans_link IN(". implode(',', array_values($cn_numbers)).")";
+
 	$result = db_query($sql,"The related credit notes could not be retreived");
 
 	$credits_total = 0;
