@@ -22,6 +22,12 @@ $ -> Affected files
 06-Jun-2010 Janusz Dobrowolski
 # False overallocation fixed.
 $ /includes/ui/allocation_cart.inc
++ Allowed optional long timeout on default/cancel/selector buttons
+$ /includes/ui/ui_input.inc
+  /js/behaviour.js
+  /js/inserts.js
+# Long ajax timeout on all reports
+$ /reporting/includes/reports_classes.inc
 
 03-Jun-2010 Joe Hunt
 # Rounding bug when decimals greater than or equal to 6.
