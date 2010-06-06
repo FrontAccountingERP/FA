@@ -28,6 +28,10 @@ $ /includes/ui/ui_input.inc
   /js/inserts.js
 # Long ajax timeout on all reports
 $ /reporting/includes/reports_classes.inc
+# [0000232] Fixed list of related invoices/credits in SO view.
+$ /sales/view/view_sales_order.php
+# Small bug on final screen redirection
+$ /sales/customer_credit_invoice.php
 
 03-Jun-2010 Joe Hunt
 # Rounding bug when decimals greater than or equal to 6.
