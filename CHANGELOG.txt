@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+07-Jun-2010 Joe Hunt
+# HTML decode text when printing to Excel.
+$ /reporting/includes/excel_report.inc
+
 06-Jun-2010 Janusz Dobrowolski
 # False overallocation fixed.
 $ /includes/ui/allocation_cart.inc
