@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+10-Jun-2010 Joe Hunt
+! Changed Wiki help url and site url in config.default.php
+$ config.default.php
+
 07-Jun-2010 Joe Hunt
 # HTML decode text when printing to Excel.
 $ /reporting/includes/excel_report.inc

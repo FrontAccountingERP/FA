@@ -63,7 +63,7 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 
 	// Powered by
 	$power_by 		= "FrontAccounting";
-	$power_url 		= "http://frontaccounting.net";
+	$power_url 		= "http://frontaccounting.com";
 
 	/* use popup windows for views */
 	$use_popup_windows = 1;
@@ -89,7 +89,7 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 	// 	locally installed wiki module
 	// $help_base_url = $path_to_root.'/modules/wiki/index.php?n='._('Help').'.';
 	// 	context help feed from frontaccounting.net
-	// $help_base_url = 'http://frontaccounting.net/fawiki/index.php?n=Help.';
+	// $help_base_url = 'http://frontaccounting.com/fawiki/index.php?n=Help.';
 	// 	not used
 	$help_base_url = null;
 
