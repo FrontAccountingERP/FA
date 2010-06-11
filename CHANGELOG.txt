@@ -19,6 +19,12 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+------------------------------- Release 2.2.10 ----------------------------------
+11-Jun-2010 Joe Hunt
+! Release 2.2.10
+$ config.default.php
+  update.html
+  
 10-Jun-2010 Joe Hunt
 ! Changed Wiki help url and site url in config.default.php
 $ config.default.php
