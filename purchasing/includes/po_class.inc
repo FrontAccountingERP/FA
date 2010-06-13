@@ -16,7 +16,7 @@ class purch_order
 {
 
 	var $trans_type; // order/grn/invoice (direct)
-	var $line_items; /*array of objects of class line_details using the product id as the pointer */
+	var $line_items;
 	var $curr_code;
 	var $supp_ref;
 	var $delivery_address;
@@ -26,7 +26,7 @@ class purch_order
 	var $supplier_name;
 	var $orig_order_date;
 	var $order_no; /*Only used for modification of existing orders otherwise only established when order committed */
-	var $lines_on_order;
+	var $lines_on_order = 0;
 	
 	var $reference;
 	
@@ -56,7 +56,7 @@ class purch_order
 		$this->line_items[$line_no]->quantity = $qty;
 		$this->line_items[$line_no]->price = $price;
 		$this->line_items[$line_no]->req_del_date = $req_del_date;
-		$this->line_items[$line_no]->price = $price;
+		$this->line_items[$line_no]->item_description = $description;
 	}
 
 	function remove_from_order($line_no)
@@ -118,16 +118,18 @@ class line_details
 	var $grn_item_id;
 	var $stock_id;
 	var $item_description;
-	var $quantity;
 	var $price;
 	var $units;
 	var $req_del_date;
-	var $qty_inv;
-	var $qty_received;
+
+	var $quantity;		// current/entry quantity of PO line
+	var $qty_inv;	// quantity already invoiced against this line
+	var $receive_qty;	// current/entry GRN quantity
+	var $qty_received;	// quantity already received against this line
+
 	var $standard_cost;
-	var $receive_qty;
 	var $descr_editable;
-	
+
 	function line_details($line_no, $stock_item, $item_descr, $qty, $prc, $uom, $req_del_date, 
 		$qty_inv, $qty_recd, $grn_item_id=0)
 	{
