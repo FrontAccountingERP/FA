@@ -19,6 +19,36 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+13-Jun-2010 Janusz Dobrowolski
+# Small layout bug in tabs widget
+$ /includes/ui/ui_controls.inc
+! Allowed space and '[' in button names
+$ /includes/ui/ui_input.inc
+! Formatted posts and a couple of improvements
+$ /includes/ui/simple_crud_class.inc
+! Changed method naming convention
+$ /includes/ui/contacts_view.inc
+! is_invoice property superseded by trans_type, removed obsolete Complete property
+$ /purchasing/includes/supp_trans_class.inc
+  /purchasing/includes/db/invoice_db.inc
+  /purchasing/includes/ui/invoice_ui.inc
+  /purchasing/view/view_supp_credit.php
+  /purchasing/view/view_supp_invoice.php
+! Cleanups and comments
+$ /purchasing/includes/po_class.inc
+  /sales/includes/cart_class.inc
+! Added document inheritance definitions
+$ /includes/types.inc
+# Smaller technical fixes
+$ /purchasing/includes/db/grn_db.inc
+  /purchasing/includes/db/po_db.inc
+  /sales/includes/sales_db.inc
+  /sales/includes/db/sales_credit_db.inc
+  /purchasing/po_entry_items.php
+  /purchasing/po_receive_items.php
+  /purchasing/supplier_credit.php
+  /purchasing/supplier_invoice.php
+
 13-Jun-2010 Merged changes from main trunk (2.2.10) as follows
 ------------------------------- Release 2.2.10 ----------------------------------
 11-Jun-2010 Joe Hunt
@@ -71,7 +101,7 @@ $ /reporting/rep704.php
 $ /sql/en_US-demo.sql
   /sql/en_US-new.sql
 
----------- End of changes from main trunk 2.2.7-2.2.9
+---------- End of changes from main trunk 2.2.10
 
 05-Jun-2010 Joe Hunt
 ! Allowing SA_MULTIFISCALYEAR access to enter transactions on open fiscal years
