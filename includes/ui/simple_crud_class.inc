@@ -15,84 +15,135 @@
 class simple_crud {
 	var $name;
 	var $Mode;
-	var $selected_id = '';
-	var $handlers;
-	var $selector;
+	var $selected_id;
+	var $_none = ''; // selector value when no item is selected
+	var $pre_handlers; // control buttons and related methods called before view display
+	var $views;
+	var $data;
+	var $fields;
+	var $tool_buttons;
+	var $options;
+	var $dec;
 	//
 	//
-	function simple_crud($name, $options = array())
+	function simple_crud($name, $fields = null)
 	{
 		$this->name = $name;
-		$this->handlers = array(
+		$this->pre_handlers = array(
 			'Edit' => '_edit',
 			'Delete' => '_delete',
+			'NEW' => '_edit',
 			'ADD' => '_add',
 			'UPDATE' => '_update',
 			'RESET' => '_cancel',
 			'CLONE' => '_cloning'
 			);
-		// selector type: 'button' (default),  or 'list'
-		$this->selector = @$options['selector']; // TODO
-		
+		$this->views = array(
+			'' => 'list_view',			// default view
+			'Edit' => 'editor_view',
+			'Delete' => 'list_view',
+			'NEW' => 'editor_view',
+			'ADD' => 'editor_view',
+			'UPDATE' => 'editor_view',
+			'RESET' => 'list_view',
+			'CLONE' => 'editor_view'
+			);
+		$this->tool_buttons['Edit'] =
+			array(_('Edit'), _('Edit document line'), ICON_EDIT, '');
+		$this->tool_buttons['Delete'] =
+			array(_('Delete'), _('Remove line from document'), ICON_DELETE, '');
+		$this->tool_buttons['UPDATE'] =
+			array(_('Update'), _('Confirm changes'), ICON_UPDATE, '');
+		$this->tool_buttons['RESET'] =
+			array(_('Cancel'), _('Cancel changes'), ICON_CANCEL, '');
+
+		$this->fields = $fields;
+		$this->selected_id = $this->_none;
+	}
+	/*
+		Input/output formatters - convert values between php/user domains.
+	*/
+	function _format_input($value, $fmt)
+	{
+		switch($fmt) {
+			case 'stock':
+				$this->dec = get_qty_dec($value);
+				return $value;
+			case 'price':
+			case 'qty':
+			case 'number':
+				    return user_numeric($value);
+			case 'percent':
+					return user_numeric($value)/100;
+			case 'text':
+			case 'date':
+			default:
+				return $value;
+		}
 	}
 	
-	function _check_mode($numeric_id = true)
+	function _format_output($value, $fmt)
+	{
+		switch($fmt) {
+			case 'price':
+				return price_format($value);
+			case 'qty':
+				return number_format2($value, $this->dec);
+			case 'number':
+				return number_format2($value);
+			case 'percent':
+				return percent_format($value*100);
+			case 'stock':
+				$this->dec = get_qty_dec($value); // retrieve dec for use in later qty fields
+			case 'text':
+			case 'date':
+			default:
+				return $value;
+		}
+	}
+
+	function _check_mode()
 	{
 		global $Ajax;
 
 		$sel_name = $this->name.'_id';
 
-		$this->Mode = 'Edit';
-		foreach (array('Edit', 'Delete') as $m) {
-			foreach ($_POST as $p => $pvar) {
-				if (strpos($p, $this->name.$m) === 0) {
-					unset($_POST['_focus']); // focus on first form entry
-					$this->selected_id = quoted_printable_decode(substr($p, strlen($this->name.$m)));
-					$Ajax->activate($this->name.'_div'); 
-					$this->Mode = $m;
-					return;
-				}
-			}
-		}
-		$default = '';
-		$this->selected_id = get_post($sel_name, $default);
-		if ($this->selected_id === $default) {
-			$this->Mode = '';
-			return;
-		}
-		foreach (array('ADD', 'UPDATE', 'RESET', 'CLONE') as $m) {
+		// list controls lookup
+		foreach (array_keys($this->pre_handlers) as $m) {
 			if (isset($_POST[$this->name.$m])) {
+				unset($_POST['_focus']); // focus on first form entry
 				$Ajax->activate($this->name.'_div');
-				unset($_POST['_focus']);
-				$this->Mode = $m;
-				return;
+				$val = @key($_POST[$this->name.$m]);
+				$this->selected_id = $val!==null ? @quoted_printable_decode($val) : $this->_none;
+				return $m;
 			}
 		}
+		return get_post($this->name.'Mode', '');
 	}
-	
+
 	//
 	//	Set record for edition
 	//
-	function _edit()
+	function _edit($mode)
 	{
-
-		if ($this->selected_id !== '0') {
-			$this->data = $this->db_read();
-/*			foreach($this->data as $name => $value) {
-				if (!is_numeric($name)) {
-					$_POST[$name] = $value;
-				}
+		if ($this->Mode != $mode) {
+			if ($this->selected_id != $this->_none) {
+				$this->data = $this->db_read();
 			}
-*/		}
+			$this->set_posts($this->data);
+		}
+		$this->Mode = $mode;
 	}
 	//
 	//	Update record after edition
 	//
 	function _update()
 	{
-		if ($this->insert_check()) {
+		$this->get_posts();
+		if ($this->update_check()) {
 			if ($this->db_update())
-				$this->selected_id = '';
+				$this->selected_id = $this->_none;
+				$this->Mode = '';
 		}
 	}
 	//
@@ -100,9 +151,10 @@ class simple_crud {
 	//
 	function _add()
 	{
+		$this->get_posts();
 		if ($this->insert_check()) {
 			$this->db_insert();
-			$this->selected_id = '';
+			$this->_cancel();
 		}
 	}
 	//
@@ -112,28 +164,32 @@ class simple_crud {
 	{
 		if ($this->delete_check())
 			$this->db_delete();
-		$this->selected_id = '';
+		$this->_cancel();
 	}
 	//
 	//	Return to listing view
 	//
 	function _cancel()
 	{
-		$this->selected_id = '';
+		$this->selected_id = $this->_none;
+		$this->db_cancel();
+		$this->Mode = '';
 	}
 	//
 	// Clone record for new edition
 	//
 	function _cloning()
 	{
-		$this->selected_id = '0';
+		$this->Mode = '';
+		$this->_edit('Edit');
+		$this->selected_id = $this->_none;
 	}
 	/*
 		Generate form controls
 	*/
 	function _bottom_controls()
 	{
-		$clone = $this->selected_id == '0';
+		$clone = $this->selected_id != $this->_none;
 
 		$title=false;
 		$async='both';
@@ -150,15 +206,16 @@ class simple_crud {
 			$async = true;
 		echo "<center>";
 
-		if ($this->selected_id == '')
-			submit("{$base}Edit0", _("Add new"), true, $title, $async);
+		if ($this->Mode == '' || $this->Mode == 'RESET')
+			submit("{$base}NEW", _("Add new"), true, $title, $async);
 		else {
-			if ($this->selected_id == '0')
+			if ($this->Mode == 'NEW' || $this->selected_id==$this->_none)
+				
 				submit("{$base}ADD", _("Add"), true, $title, $async);
 			else {
-				submit("{$base}UPDATE", _("Update"), true, _('Submit changes'), $async);
+				submit("{$base}UPDATE[{$this->selected_id}]", _("Update"), true, _('Submit changes'), $async);
 				if ($clone) 
-					submit("${base}CLONE", _("Clone"), true, _('Edit new record with current data'), $async);
+					submit("{$base}CLONE[{$this->selected_id}]", _("Clone"), true, _('Edit new record with current data'), $async);
 			}
 			submit("{$base}RESET", _("Cancel"), true, _('Cancel edition'), $cancel);
 		}
@@ -168,22 +225,75 @@ class simple_crud {
 	// Public functions
 	//
 	
+	function tool_button($name, $selected_id=null, $params='')
+	{
+		$b = $this->tool_buttons[$name];
+
+		return "<td align='center' $params>"
+			.button( "{$this->name}$name"
+				.($selected_id === null || $selected_id === $this->_none ? '': "[$selected_id]"),
+				$b[0], $b[1], $b[2], $b[3])."</td>";
+	}
+	
+	function set_posts()
+	{
+		foreach($this->fields as $name => $fmt) {
+			if (is_int($name)) {
+				$name = $fmt;
+				$fmt = array();
+			}
+			$post = isset($fmt['post']) ? $fmt['post'] : $name;
+			$fld = isset($fmt['fld']) ? $fmt['fld'] : $name;
+
+			$value = $this->selected_id == $this->_none ? @$fmt['dflt'] :
+				(is_array($this->data) ? $this->data[$fld]: $this->data->$fld);
+
+			$_POST[$post] = $this->_format_output($value, @$fmt['fmt']);
+		}
+	}
+	//--------------------------
+	//
+	//	Get editor POST variables. 
+	//
+	function get_posts() {
+		foreach ($this->fields as $name => $fmt) {
+			if (is_int($name)) {
+				$name = $fmt;
+				$fmt = array();
+			}
+			$post = isset($fmt['post']) ? $fmt['post'] : $name;
+			$fld = isset($fmt['fld']) ? $fmt['fld'] : $name;
+
+			$value = $this->_format_input($_POST[$post], @$fmt['fmt']);
+
+			if (is_array($this->data))
+				$this->data[$fld] = $value;
+			else
+				$this->data->$fld = $value;
+		}
+	}
 	//	Main function - display current CRUD editor content
 	//
 	function show()
 	{
-		$this->_check_mode(true);
+		if (!isset($_POST[$this->name.'Mode']))
+			$this->set_posts();
+
+		$Mode = $this->_check_mode(true);
 		div_start($this->name.'_div');
-		if (array_key_exists($this->Mode, $this->handlers)) {
-			$fun = $this->handlers[$this->Mode];
-			$this->$fun();
+
+		if (array_key_exists($Mode, $this->pre_handlers)) {
+			$fun = $this->pre_handlers[$Mode];
+			$this->$fun($Mode);
 		}
-		if ($this->selected_id != '')
-			$this->editor();
+		
+		if (isset($this->views[$this->Mode]))
+			$this->{$this->views[$this->Mode]}();
 		else
-			$this->listing();
+			$this->{$this->views['']}(); // default view
+
 		$this->_bottom_controls();
-		hidden($this->name.'_id', $this->selected_id);
+		hidden($this->name.'Mode', $this->Mode.'['.$this->selected_id.']');
 		div_end();
 	}
 	
@@ -194,43 +304,64 @@ class simple_crud {
 	//	Read record from db for edition
 	//
 	function db_read() {
-		display_notification('read sql...');
+		display_notification(__FUNCTION__. ' is not defined...');
+		return array();
 	}
 	//
 	//	Update record in db after edition
 	//
-	function db_update() {
-		display_notification('update sql...');
+	function db_update()
+	{
+		$this->db_insert();
 	}
 	//
 	//	Delete record
 	//
 	function db_delete() {
-		display_notification('delete sql...');
-	}
-
-	function delete_check() {
-		display_notification('check delete ...');
-		return true; 
+		display_notification(__FUNCTION__. ' is not defined...');
 	}
 	//
 	//	Insert record
 	//
-	function db_insert() {}
+	function db_insert()
+	{
+		display_notification(__FUNCTION__. ' is not defined...');
+	}
+	//
+	//	Cancel edition
+	//	Optional things like focus set.
+	//
+	function db_cancel()
+	{
+	}
 
-	function insert_check() { return true; }
+
+	function delete_check() {
+		display_notification(__FUNCTION__. ' is not defined...');
+		return true; 
+	}
+
+	function insert_check() {
+		return true;
+	}
+
+	function update_check() 
+	{
+		return $this->insert_check(); 
+	}
+
 	//
 	//	Show database content in pager/table
 	//
-	function listing() {
-		display_notification('listing ...');
+	function list_view() {
+		display_notification(__FUNCTION__. ' is not defined...');
 	}
 
 	//
 	//	Show record editor screen content
 	//
-	function editor() {
-		display_notification('editor ...');
+	function editor_view() {
+		display_notification(__FUNCTION__. ' is not defined...');
 	}
 };
 
