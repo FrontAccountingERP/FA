@@ -17,16 +17,21 @@ include_once($path_to_root . "/includes/db/crm_contacts_db.inc");
 */
 class contacts extends simple_crud {
 	var $id;
-
+	var $entity;
+	var $sub_class;
+	var $class;
+	
 	function contacts($name, $id, $class, $subclass=null) {
-		$this->simple_crud($name);
+		$fields = array('ref','name','name2','address', 'phone', 'phone2','fax',
+			'email','lang','notes', 'assgn' =>array('fld'=>'contacts'));
 
+		$this->simple_crud($name, $fields);
 		$this->class = $class;
 		$this->subclass = $subclass;
 		$this->entity = $id;
 	}
 
-	function listing() {
+	function list_view() {
 		br();
 
 			$contacts = get_crm_persons($this->class, $this->subclass, $this->entity);
@@ -53,10 +58,10 @@ class contacts extends simple_crud {
 
 		//	inactive_control_cell($myrow["id"], $myrow["inactive"], 'crm_contacts', 'id');
 
-			 	edit_button_cell("{$this->name}Edit".$myrow["id"], _("Edit"));
+			 	edit_button_cell("{$this->name}Edit[{$myrow['id']}]", _("Edit"));
 
-			// delete button removes only category unless this is the last conatct for this person
-				delete_button_cell("{$this->name}Delete".$myrow["contact_id"], _("Delete"));
+			// delete button removes only category unless this is the last contact for this person
+				delete_button_cell("{$this->name}Delete[{$myrow['contact_id']}]", _("Delete"));
 				end_row();
 			}
 	
@@ -64,7 +69,7 @@ class contacts extends simple_crud {
 			end_table(1);
 	}
 	
-	function editor()
+	function editor_view()
 	{
 		br();
 
@@ -94,15 +99,13 @@ class contacts extends simple_crud {
 
 		textarea_row(_("Notes:"), 'notes', @$this->data['notes'], 30, 4);
 		end_outer_table(1);
-
-//		submit_add_or_update_center($this->selected_id == '0', '', 'both', 
-//			$this->selected_id=='0', $this->name);
 	}
 
 	function db_insert() {
-			return add_crm_person($_POST['ref'], $_POST['name'], $_POST['name2'], $_POST['address'],
-				$_POST['phone'], $_POST['phone2'], $_POST['fax'], $_POST['email'], $_POST['lang'],
-				$_POST['notes'], $_POST['assgn'], $this->entity);
+			$dat = $this->data;
+			return add_crm_person($dat['ref'], $dat['name'], $dat['name2'], $dat['address'],
+				$dat['phone'], $dat['phone2'], $dat['fax'], $dat['email'], $dat['lang'],
+				$dat['notes'], $dat['assgn'], $this->entity);
 	}
 
 	function db_update() {
