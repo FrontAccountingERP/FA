@@ -243,13 +243,11 @@ function commit_item_data($n)
 {
 	if (check_item_data($n))
 	{
-		$complete = False;
-
 		$_SESSION['supp_trans']->add_grn_to_trans($n,
     		$_POST['po_detail_item'.$n], $_POST['item_code'.$n],
     		$_POST['item_description'.$n], $_POST['qty_recd'.$n],
     		$_POST['prev_quantity_inv'.$n], input_num('This_QuantityCredited'.$n),
-    		$_POST['order_price'.$n], input_num('ChgPrice'.$n), $complete,
+    		$_POST['order_price'.$n], input_num('ChgPrice'.$n),
     		$_POST['std_cost_unit'.$n], "");
 	}
 }
