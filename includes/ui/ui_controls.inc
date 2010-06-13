@@ -412,8 +412,8 @@ function tabbed_content_start($name, $tabs, $dft='') {
 }
 
 function tabbed_content_end() {
-  div_end();
-	div_end();
+	echo "</div>"; // content box (don't change to div_end() unless div_start() is used above)
+	div_end(); // tabs widget
 }
 
 /* Table editor interfaces. Key is editor type
