@@ -31,8 +31,7 @@ elseif (isset($_POST["trans_no"]))
 	$trans_no = $_POST["trans_no"];
 }
 
-$supp_trans = new supp_trans();
-$supp_trans->is_invoice = true;
+$supp_trans = new supp_trans(ST_SUPPINVOICE);
 
 read_supp_invoice($trans_no, ST_SUPPINVOICE, $supp_trans);
 

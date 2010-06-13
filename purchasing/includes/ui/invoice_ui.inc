@@ -89,10 +89,7 @@ function invoice_header(&$supp_trans)
 		copy_from_trans($supp_trans);
 	}
 
-	if ($supp_trans->is_invoice)
-    	ref_row(_("Reference:"), 'reference', '', $Refs->get_next(ST_SUPPINVOICE));
-    else
-    	ref_row(_("Reference:"), 'reference', '', $Refs->get_next(ST_SUPPCREDIT));
+   	ref_row(_("Reference:"), 'reference', '', $Refs->get_next($supp_trans->trans_type));
 
 	if (isset($_POST['invoice_no']))
 	{
@@ -151,8 +148,9 @@ function invoice_totals(&$supp_trans)
 
     $display_total = price_format($supp_trans->ov_amount + $tax_total);
 
-	if ($supp_trans->is_invoice)
-    	label_row(_("Invoice Total:"), $display_total, "colspan=$colspan align=right style='font-weight:bold;'", "align=right style='font-weight:bold;'");
+	if ($supp_trans->trans_type == ST_SUPPINVOICE)
+    	label_row(_("Invoice Total:"), 
+    		$display_total, "colspan=$colspan align=right style='font-weight:bold;'", "align=right style='font-weight:bold;'");
     else
 		label_row(_("Credit Note Total"),
 			$display_total, "colspan=$colspan align=right style='font-weight:bold;color:red;'", "nowrap align=right style='font-weight:bold;color:red;'");
@@ -203,7 +201,7 @@ function display_gl_items(&$supp_trans, $mode=0)
     if (($mode == 2 || $mode == 3) && count($supp_trans->gl_codes) == 0)
     	return 0;
 
-	if ($supp_trans->is_invoice)
+	if ($supp_trans->trans_type == ST_SUPPINVOICE)
 		$heading = _("GL Items for this Invoice");
 	else
 		$heading = _("GL Items for this Credit Note");
@@ -316,7 +314,7 @@ function display_gl_items(&$supp_trans, $mode=0)
 
 function display_grn_items_for_selection(&$supp_trans, $k)
 {
-	if ($supp_trans->is_invoice)
+	if ($supp_trans->trans_type == ST_SUPPINVOICE)
 		$result = get_grn_items(0, $supp_trans->supplier_id, true);
 	else
 	{
@@ -367,7 +365,7 @@ function display_grn_items_for_selection(&$supp_trans, $k)
             $dec = get_qty_dec($myrow["item_code"]);
             qty_cell($myrow["qty_recd"], false, $dec);
             qty_cell($myrow["quantity_inv"], false, $dec);
-            if ($supp_trans->is_invoice)
+            if ($supp_trans->trans_type == ST_SUPPINVOICE)
             	qty_cells(null, 'this_quantity_inv'.$n, number_format2($myrow["qty_recd"] - $myrow["quantity_inv"], $dec), 
             		null, null, $dec);
             else		
@@ -375,15 +373,15 @@ function display_grn_items_for_selection(&$supp_trans, $k)
             		null, null, $dec);
             $dec2 = 0; 		
             amount_cells(null, 'ChgPrice'.$n, price_decimal_format($myrow["unit_price"], $dec2), null, null, $dec2);
-            if ($supp_trans->is_invoice)
+            if ($supp_trans->trans_type == ST_SUPPINVOICE)
             	amount_cell(round2($myrow["unit_price"] * ($myrow["qty_recd"] - $myrow["quantity_inv"]), user_price_dec()));
             else	
             	amount_cell(round2($myrow["unit_price"] * max($myrow['quantity_inv'], 0), user_price_dec()));
-            if ($supp_trans->is_invoice)	
+            if ($supp_trans->trans_type == ST_SUPPINVOICE)
         		submit_cells('grn_item_id'.$n, _("Add"), '', _("Add to Invoice"), true);
         	else	
         		submit_cells('grn_item_id'.$n, _("Add"), '', _("Add to Credit Note"), true);
-    		if ($supp_trans->is_invoice && $_SESSION["wa_current_user"]->can_access('SA_GRNDELETE')) {	// Added 2008-10-18 by Joe Hunt. Special access rights needed.
+    		if (($supp_trans->trans_type == ST_SUPPINVOICE) && $_SESSION["wa_current_user"]->can_access('SA_GRNDELETE')) {	// Added 2008-10-18 by Joe Hunt. Special access rights needed.
         		submit_cells('void_item_id'.$n, _("Remove"), '', _("WARNING! Be careful with removal. The operation is executed immediately and cannot be undone !!!"), true);
 				submit_js_confirm('void_item_id'.$n,
 					sprintf(_('You are about to remove all yet non-invoiced items from delivery line #%d. This operation also irreversibly changes related order line. Do you want to continue ?'), $n));
@@ -415,7 +413,7 @@ function display_grn_items(&$supp_trans, $mode=0)
 	$heading2 = "";
 	if ($mode == 1)
 	{
-		if ($supp_trans->is_invoice)
+		if ($supp_trans->trans_type == ST_SUPPINVOICE)
 		{
 			$heading = _("Items Received Yet to be Invoiced");
     		if ($_SESSION["wa_current_user"]->can_access('SA_GRNDELETE'))	// Added 2008-10-18 by Joe Hunt. Only admins can remove GRNs
@@ -426,7 +424,7 @@ function display_grn_items(&$supp_trans, $mode=0)
 	}
 	else
 	{
-		if ($supp_trans->is_invoice)
+		if ($supp_trans->trans_type == ST_SUPPINVOICE)
 			$heading = _("Received Items Charged on this Invoice");
 		else
 			$heading = _("Received Items Credited on this Note");
@@ -436,7 +434,7 @@ function display_grn_items(&$supp_trans, $mode=0)
 
 	if ($mode == 1)
 	{
-		if (!$supp_trans->is_invoice && !isset($_POST['invoice_no']))
+		if ($supp_trans->trans_type == ST_SUPPCREDIT && !isset($_POST['invoice_no']))
 		{
 			echo "</td>";
 			date_cells(_("Received between"), 'receive_begin', "", null, -30, 0, 0, "valign=middle");
@@ -462,9 +460,9 @@ function display_grn_items(&$supp_trans, $mode=0)
     	$th = array(_("Delivery"), _("Sequence #"), _("P.O."), _("Item"), _("Description"),
     		_("Received On"), _("Quantity Received"), _("Quantity Invoiced"),
     		_("Qty Yet To Invoice"), _("Order Price"), _("Total"), "");
-    	if ($supp_trans->is_invoice && $_SESSION["wa_current_user"]->can_access('SA_GRNDELETE'))	// Added 2008-10-18 by Joe Hunt. Only admins can remove GRNs
+    	if (($supp_trans->trans_type == ST_SUPPINVOICE) && $_SESSION["wa_current_user"]->can_access('SA_GRNDELETE'))	// Added 2008-10-18 by Joe Hunt. Only admins can remove GRNs
     		$th[] = "";
-		if (!$supp_trans->is_invoice)
+		if ($supp_trans->trans_type == ST_SUPPCREDIT)
 		{
 			$th[8] = _("Qty Yet To Credit");
 		}
@@ -508,7 +506,7 @@ function display_grn_items(&$supp_trans, $mode=0)
 			if ($mode == 1)
 			{
 				delete_button_cell("Delete" . $entered_grn->id, _("Edit"), _('Edit document line'));
-				if ($supp_trans->is_invoice && $_SESSION["wa_current_user"]->can_access('SA_GRNDELETE'))	  
+				if (($supp_trans->trans_type == ST_SUPPINVOICE) && $_SESSION["wa_current_user"]->can_access('SA_GRNDELETE'))	  
 					label_cell("");
 			}	
 			end_row();
@@ -537,7 +535,7 @@ function display_grn_items(&$supp_trans, $mode=0)
 	{
 		start_row();
 		echo "<td colspan=".($colspan + 1).">";
-		if ($supp_trans->is_invoice)
+		if ($supp_trans->trans_type == ST_SUPPINVOICE)
 			display_note(_("There are no outstanding items received from this supplier that have not been invoiced by them."), 0, 0);
 		else
 		{
