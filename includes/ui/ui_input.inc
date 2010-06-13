@@ -273,16 +273,18 @@ function button($name, $value, $title=false, $icon=false,  $aspect='')
 	{
 		if ($value == _("Delete")) // Helper during implementation
 			$icon = ICON_DELETE;
-		return "<button type='submit' class='editbutton' name='".
-			htmlentities(strtr($name, array('.'=>'=2E',' '=>'=20','='=>'=3D','['=>'=5B'))).
-			"' value='1'" . ($title ? " title='$title'":" title='$value'")
+		return "<button type='submit' class='editbutton' name='"
+			.htmlentities(strtr($name, array('.'=>'=2E', '='=>'=3D',// ' '=>'=20','['=>'=5B'
+			)))
+			."' value='1'" . ($title ? " title='$title'":" title='$value'")
 			. ($aspect ? " aspect='$aspect'" : '')
 			. $rel
 			." />".set_icon($icon)."</button>\n";
 	}
 	else
 		return "<input type='submit' class='editbutton' name='"
-			.htmlentities(strtr($name, array('.'=>'=2E',' '=>'=20','='=>'=3D','['=>'=5B')))
+			.htmlentities(strtr($name, array('.'=>'=2E', '='=>'=3D',// ' '=>'=20','['=>'=5B'
+			)))
 			."' value='$value'"
 			.($title ? " title='$title'":'')
 			. ($aspect ? " aspect='$aspect'" : '')
