@@ -47,6 +47,31 @@ define('ST_DIMENSION', 40);
 define ('ST_STATEMENT', 91);
 define ('ST_CHEQUE', 92);
 
+// document inheritance
+$document_child_types = array(
+		ST_SALESQUOTE => ST_SALESORDER,
+		ST_SALESORDER => ST_CUSTDELIVERY,
+		ST_CUSTDELIVERY => ST_SALESINVOICE,
+		ST_SALESINVOICE => ST_CUSTCREDIT,
+
+		ST_PURCHORDER => ST_SUPPRECEIVE,
+		ST_SUPPRECEIVE => ST_SUPPINVOICE,
+		ST_SUPPINVOICE => ST_SUPPCREDIT,
+);
+
+function get_child_type($type)
+{
+	global $document_child_types;
+	return isset($document_child_types[$type]) ? $document_child_types[$type] : 0;
+}
+
+function get_parent_type($type)
+{
+	global $document_child_types;
+	$child = array_search($type, $document_child_types);
+	return $child ? $child : 0;
+}
+
 //----------------------------------------------------------------------------------
 //		Bank transaction types
 //
