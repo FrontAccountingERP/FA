@@ -56,7 +56,7 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 	// Main Title
 	$app_title = "FrontAccounting";
 	// application version
-	$version 		= "2.3 CVS (m9)";
+	$version 		= "2.3 CVS (m10)";
 	 // src-data compatibility check. Do not change.
 	$core_version = "2.3";
 
@@ -65,7 +65,7 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 
 	// Powered by
 	$power_by 		= "FrontAccounting";
-	$power_url 		= "http://frontaccounting.net";
+	$power_url 		= "http://frontaccounting.com";
 
 	/* use popup windows for views */
 	$use_popup_windows = 1;
@@ -82,13 +82,16 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 	/* show users online discretely in the footer */
 	$show_users_online = 0;
 
+	/* default print destination. 0 = PDF/Printer, 1 = Excel */
+	$def_print_destination = 0;
+
  	// Wiki context help configuration
  	// If your help wiki use translated page titles uncomment next line
  	// $old_style_help = 1; // this setting is depreciated and subject to removal in next FA versions
 	// 	locally installed wiki module
 	// $help_base_url = $path_to_root.'/modules/wiki/index.php?n='._('Help').'.';
 	// 	context help feed from frontaccounting.net
-	// $help_base_url = 'http://frontaccounting.net/fawiki/index.php?n=Help.';
+	// $help_base_url = 'http://frontaccounting.com/fawiki/index.php?n=Help.';
 	// 	not used
 	$help_base_url = null;
 

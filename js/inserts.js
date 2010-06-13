@@ -220,10 +220,11 @@ var inserts = {
 	function(e) {
 		    e.onclick = function() {
 			    save_focus(e);
-					if (e.getAttribute('aspect') == 'process')
-						JsHttpRequest.request(this, null, 60000);
-					else
-						JsHttpRequest.request(this);
+			    var asp = e.getAttribute('aspect')
+				if (asp && asp.indexOf('process') !== -1)
+					JsHttpRequest.request(this, null, 60000);
+				else
+					JsHttpRequest.request(this);
 				return false;
 		    }
 	},
@@ -265,7 +266,7 @@ var inserts = {
 				}
 			}
 	},
-	'button[aspect=selector], button[aspect=abort], input[aspect=selector]': function(e) {
+	'button[aspect*selector], button[aspect*abort], input[aspect*selector]': function(e) {
 		e.onclick = function() {
 			passBack(this.getAttribute('rel'));
 			return false;
@@ -301,7 +302,7 @@ var inserts = {
 	'a.printlink': 	function(l) {
 		l.onclick = function() {
 		    save_focus(this);
-			JsHttpRequest.request(this);
+			JsHttpRequest.request(this, null, 60000);
 			return false;
 		}
 	},
@@ -411,13 +412,19 @@ function setHotKeys() {
 				for (var i=0; i<form.elements.length; i++){
 					var el = form.elements[i];
 					var asp = el.getAttribute('aspect');
-					if (el.className!='editbutton' && asp=='selector' && (key==13 || key==27)) {
+					
+
+					if (el.className!='editbutton' && (asp && asp.indexOf('selector') !== -1) && (key==13 || key==27)) {
 						passBack(key==13 ? el.getAttribute('rel') : false);
 						ev.returnValue = false;
 						return false;
 					}
-					if ((asp=='default' && key==13)||(asp=='cancel' && key==27)) {
-						JsHttpRequest.request(el);
+					if (((asp && asp.indexOf('default') !== -1) && key==13)||((asp && asp.indexOf('cancel') !== -1) && key==27)) {
+
+						if (asp.indexOf('process') !== -1)
+							JsHttpRequest.request(el, null, 60000);
+						else
+							JsHttpRequest.request(el);
 						ev.returnValue = false;
 						return false;
 					}

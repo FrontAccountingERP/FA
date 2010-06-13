@@ -200,19 +200,19 @@ document.getElementsBySelector = function(selector) {
           checkFunction = function(e) { return (e.getAttribute(attrName) == attrValue); };
           break;
         case '~': // Match one of space seperated words 
-          checkFunction = function(e) { return (e.getAttribute(attrName).match(new RegExp('\\b'+attrValue+'\\b'))); };
+          checkFunction = function(e) { var a=e.getAttribute(attrName); return (a && a.match(new RegExp('\\b'+attrValue+'\\b'))); };
           break;
         case '|': // Match start with value followed by optional hyphen
-          checkFunction = function(e) { return (e.getAttribute(attrName).match(new RegExp('^'+attrValue+'-?'))); };
+          checkFunction = function(e) { var a=e.getAttribute(attrName); return (a && a.match(new RegExp('^'+attrValue+'-?'))); };
           break;
         case '^': // Match starts with value
-          checkFunction = function(e) { return (e.getAttribute(attrName).indexOf(attrValue) == 0); };
+          checkFunction = function(e) { var a=e.getAttribute(attrName); return (a && a.indexOf(attrValue) == 0); };
           break;
         case '$': // Match ends with value - fails with "Warning" in Opera 7
-          checkFunction = function(e) { return (e.getAttribute(attrName).lastIndexOf(attrValue) == e.getAttribute(attrName).length - attrValue.length); };
+          checkFunction = function(e) { var a=e.getAttribute(attrName); return (a && a.lastIndexOf(attrValue) == e.getAttribute(attrName).length - attrValue.length); };
           break;
-        case '*': // Match ends with value
-          checkFunction = function(e) { return (e.getAttribute(attrName).indexOf(attrValue) > -1); };
+        case '*': // Match contains value
+          checkFunction = function(e) { var a=e.getAttribute(attrName); return (a && a.indexOf(attrValue) > -1); };
           break;
         default :
           // Just test for existence of attribute

@@ -81,7 +81,7 @@ class BoxReports
 						. "<form method='POST' action='$action' target='_blank'>\n";
 					$st_params .= submit('Rep'.$report->id,  
 						_("Display: ") . access_string($report->name, true),
-						false, '', $pdf_debug ? false : 'default') . hidden('REP_ID', $report->id, false).'<br><br>';
+						false, '', $pdf_debug ? false : 'default process') . hidden('REP_ID', $report->id, false).'<br><br>';
 					$st_params .= $this->getOptions($report->get_controls());
 					$st_params .= "\n</form></td></tr></table>\n";
 					set_focus('Rep'.$report->id);
@@ -164,7 +164,7 @@ class BoxReports
 	//
 	function get_ctrl($name, $type)
 	{
-		global $path_to_root, $use_date_picker, $pdf_debug, $print_invoice_no;
+		global $path_to_root, $use_date_picker, $pdf_debug, $print_invoice_no, $def_print_destination;
 
 		$st = '';
 			switch ($type)
@@ -221,7 +221,10 @@ class BoxReports
 
 				case 'DESTINATION':
 					$sel = array(_("PDF/Printer"), "Excel");
-					return array_selector($name, null, $sel);
+					$def = 0;
+					if (isset($def_print_destination) && $def_print_destination == 1)
+						$def = 1;
+					return array_selector($name, $def, $sel);
 
 				case 'COMPARE':
 					$sel = array(_("Accumulated"), _("Period Y-1"), _("Budget"));

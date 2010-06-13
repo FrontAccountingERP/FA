@@ -19,6 +19,60 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+13-Jun-2010 Merged changes from main trunk (2.2.10) as follows
+------------------------------- Release 2.2.10 ----------------------------------
+11-Jun-2010 Joe Hunt
+! Release 2.2.10
+$ config.default.php
+  update.html
+  
+10-Jun-2010 Joe Hunt
+! Changed Wiki help url and site url in config.default.php
+$ config.default.php
+
+07-Jun-2010 Joe Hunt
+# HTML decode text when printing to Excel.
+$ /reporting/includes/excel_report.inc
+
+06-Jun-2010 Janusz Dobrowolski
+# False overallocation fixed.
+$ /includes/ui/allocation_cart.inc
++ Allowed optional long timeout on default/cancel/selector buttons
+$ /includes/ui/ui_input.inc
+  /js/behaviour.js
+  /js/inserts.js
+# Long ajax timeout on all reports
+$ /reporting/includes/reports_classes.inc
+# [0000232] Fixed list of related invoices/credits in SO view.
+$ /sales/view/view_sales_order.php
+# Small bug on final screen redirection
+$ /sales/customer_credit_invoice.php
+
+03-Jun-2010 Joe Hunt
+# Rounding bug when decimals greater than or equal to 6.
+$ /includes/current_user.inc
+
+31-May-2010 Joe Hunt
+# No limit on 30 days in Payment terms if end of month.
+$ /admin/payment_terms.php
+
+30-May-2010 Joe Hunt
+! Global variabel, $def_print_destination, config.php can be set to 0 or 1
+$ config.default.php
+  /reporting/includes/reports_classes.inc
+! copy line memo to next line in journal entries and bank payments/deposits
+$ /gl/includes/ui/gl_bank_ui.inc
+  /gl/includes/ui/gl_journal_ui.inc
+! Report GL Transactions now prints line memos
+$ /reporting/rep704.php
+
+29-May-2010 Janusz Dobrowolski
+# Smaller fixes initial COAs
+$ /sql/en_US-demo.sql
+  /sql/en_US-new.sql
+
+---------- End of changes from main trunk 2.2.7-2.2.9
+
 05-Jun-2010 Joe Hunt
 ! Allowing SA_MULTIFISCALYEAR access to enter transactions on open fiscal years
 $ /admin/db/fiscalyears_db.inc

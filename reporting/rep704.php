@@ -157,7 +157,16 @@ function print_GL_transactions()
 					$rep->TextCol(4, 5,	get_dimension_string($myrow['dimension_id']));
 				if ($dim > 1)
 					$rep->TextCol(5, 6,	get_dimension_string($myrow['dimension2_id']));
-				$rep->TextCol(6, 7,	payment_person_name($myrow["person_type_id"],$myrow["person_id"], false));
+				$txt = payment_person_name($myrow["person_type_id"],$myrow["person_id"], false);
+				$memo = $myrow['memo_'];
+				if ($txt != "")
+				{
+					if ($memo != "")
+						$txt = $txt."/".$memo;
+				}
+				else
+					$txt = $memo;
+				$rep->TextCol(6, 7,	$txt, -2);
 				if ($myrow['amount'] > 0.0)
 					$rep->AmountCol(7, 8, abs($myrow['amount']), $dec);
 				else

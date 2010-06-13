@@ -468,7 +468,6 @@ CREATE TABLE IF NOT EXISTS `0_crm_contacts` (
 -- Dumping data for table `0_crm_contacts`
 --
 
-
 -- --------------------------------------------------------
 
 --
@@ -763,8 +762,7 @@ CREATE TABLE IF NOT EXISTS `0_fiscal_year` (
 
 INSERT INTO `0_fiscal_year` VALUES(1, '2008-01-01', '2008-12-31', 0);
 INSERT INTO `0_fiscal_year` VALUES(2, '2009-01-01', '2009-12-31', 0);
-
--- --------------------------------------------------------
+INSERT INTO `0_fiscal_year` VALUES(3, '2010-01-01', '2010-12-31', 0);
 
 --
 -- Table structure for table `0_gl_trans`

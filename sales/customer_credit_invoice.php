@@ -206,7 +206,7 @@ function copy_from_cart()
 
 if (isset($_POST['ProcessCredit']) && can_process()) {
 
-    $newcredit = ($_SESSION['Items']->trans_no == 0);
+    $new_credit = ($_SESSION['Items']->trans_no == 0);
 
     if (!isset($_POST['WriteOffGLCode']))
 		$_POST['WriteOffGLCode'] = 0;
@@ -215,8 +215,8 @@ if (isset($_POST['ProcessCredit']) && can_process()) {
 	if ($new_credit) new_doc_date($_SESSION['Items']->document_date);
     $credit_no = $_SESSION['Items']->write($_POST['WriteOffGLCode']);
 
-	processing_end();
-	if ($newcredit) {
+	processing_end();exit;
+	if ($new_credit) {
 	   	meta_forward($_SERVER['PHP_SELF'], "AddedID=$credit_no");
 	} else {
 	   	meta_forward($_SERVER['PHP_SELF'], "UpdatedID=$credit_no");

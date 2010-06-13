@@ -304,6 +304,20 @@ function get_related_documents($type, $trans_no)
 }
 //----------------------------------------------------------------------------------------
 
+function get_related_credits($inv_numbers)
+{
+	// FIXME -  credit notes retrieved here should be those linked to invoices containing 
+	// at least one line from this order
+	
+	$sql = "SELECT * FROM ".TB_PREF."debtor_trans WHERE type=".ST_CUSTCREDIT
+		." AND trans_link IN(". implode(',', array_values($inv_numbers)).")";
+
+	$result = db_query($sql,"The related credit notes could not be retreived");
+
+}
+
+//----------------------------------------------------------------------------------------
+
 function get_customer_details_from_trans($type, $type_no)
 {
 	$sql = "SELECT ".TB_PREF."debtors_master.name, ".TB_PREF."debtors_master.curr_code, ".TB_PREF."cust_branch.br_name

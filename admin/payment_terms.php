@@ -36,13 +36,13 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 		$inpug_error = 1;
 		display_error( _("The Terms description must be entered."));
 		set_focus('terms');
-	} 
-	elseif ($_POST['DayNumber'] > 30 && !check_value('DaysOrFoll')) 
-	{
-		$inpug_error = 1;
-		display_error( _("When the check box to indicate a day in the following month is the due date, the due date cannot be a day after the 30th. A number between 1 and 30 is expected."));
-		set_focus('DayNumber');
-	} 
+	} // there should be no limits by 30 here if they want longer payment terms. Joe Hunt 2010-05-31
+	//elseif ($_POST['DayNumber'] > 30 && !check_value('DaysOrFoll')) 
+	//{
+	//	$inpug_error = 1;
+	//	display_error( _("When the check box to indicate a day in the following month is the due date, the due date cannot be a day after the 30th. A number between 1 and 30 is expected."));
+	//	set_focus('DayNumber');
+	//} 
 	elseif ($_POST['DayNumber'] > 500 && check_value('DaysOrFoll')) 
 	{
 		$inpug_error = 1;

@@ -523,6 +523,7 @@ class FrontReport extends Spreadsheet_Excel_Writer_Workbook
 
 	function TextCol($c, $n, $txt, $corr=0, $r=0, $border=0, $fill=0, $link=NULL, $stretch=0)
 	{
+		$txt = html_entity_decode($txt);	
 		if ($this->aligns[$c] == 'right')
 			$this->sheet->writeString($this->y, $c, $txt, $this->formatRight);
 		else	
@@ -556,6 +557,7 @@ class FrontReport extends Spreadsheet_Excel_Writer_Workbook
 
 	function TextCol2($c, $n, $txt, $corr=0, $r=0, $border=0, $fill=0, $link=NULL, $stretch=0)
 	{
+		$txt = html_entity_decode($txt);	
 		$this->sheet->writeString($this->y, $c, $txt, $this->formatLeft);
 		if ($n - $c > 1)
 			$this->sheet->mergeCells($this->y, $c, $this->y, $n - 1);
