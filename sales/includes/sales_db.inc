@@ -239,13 +239,6 @@ function set_document_parent($cart)
 }
 
 //--------------------------------------------------------------------------------------------------
-function get_parent_type($type)
-{
-	$parent_types = array( ST_CUSTCREDIT => ST_SALESINVOICE, ST_SALESINVOICE => ST_CUSTDELIVERY, ST_CUSTDELIVERY => ST_SALESORDER );
-	return isset($parent_types[$type]) ?  $parent_types[$type] : 0;
-}
-
-//--------------------------------------------------------------------------------------------------
 function update_parent_line($doc_type, $line_id, $qty_dispatched, $auto=false)
 {
 	$doc_type = get_parent_type($doc_type);
@@ -317,7 +310,7 @@ function read_sales_trans($doc_type, $trans_no, &$cart)
 			$myrow["curr_code"], $myrow["discount"], $myrow["payment_terms"]);
 
 		$cart->set_branch($myrow["branch_code"], $myrow["tax_group_id"],
-			$myrow["tax_group_name"],	$myrow["phone"], $myrow["email"]);
+			$myrow["tax_group_name"]);
 
 		$cart->reference = $myrow["reference"];
 		$cart->order_no = $myrow["order_"];

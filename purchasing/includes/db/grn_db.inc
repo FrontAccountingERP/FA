@@ -288,12 +288,12 @@ function read_grn_items_to_order($grn_batch, &$order)
 				$units = $myrow["units"];
 		 	}
 
-			$order->add_to_order($order->lines_on_order+1, $myrow["item_code"],
+			$order->add_to_order($order->lines_on_order, $myrow["item_code"],
 				1,$myrow["description"], $myrow["unit_price"],$units,
 				sql2date($myrow["delivery_date"]), $myrow["quantity_inv"],
 				$myrow["qty_recd"]);
 
-			$order->line_items[$order->lines_on_order]->po_detail_rec = $myrow["po_detail_item"];
+			$order->line_items[$order->lines_on_order-1]->po_detail_rec = $myrow["po_detail_item"];
 		} /* line po from purchase order details */
   	} //end of checks on returned data set
 }

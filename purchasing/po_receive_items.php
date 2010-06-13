@@ -120,7 +120,7 @@ function check_po_changed()
 	// Otherwise if you try to fullfill item quantities separately will give error.
 	$result = get_po_items($_SESSION['PO']->order_no);
 
-	$line_no = 1;
+	$line_no = 0;
 	while ($myrow = db_fetch($result))
 	{
 		$ln_item = $_SESSION['PO']->line_items[$line_no];

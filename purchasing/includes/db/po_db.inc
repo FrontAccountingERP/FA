@@ -103,7 +103,7 @@ function update_po(&$po_obj)
 
 	// add_comments(ST_PURCHORDER, $po_obj->order_no, $po_obj->orig_order_date, $po_obj->Comments);
 
-	add_audit_trail($po_obj->trans_type, $po_obj->order_no, $po_obj->document_date, _("Updated."));
+	add_audit_trail($po_obj->trans_type, $po_obj->order_no, Today(), _("Updated."));
 	commit_transaction();
 
 	return $po_obj->order_no;
@@ -186,12 +186,15 @@ function read_po_items($order_no, &$order, $open_items_only=false)
                 $units = $myrow["units"];
             }
 
-            if ($order->add_to_order($order->lines_on_order+1, $myrow["item_code"],
+            if ($order->add_to_order($order->lines_on_order, $myrow["item_code"],
             	$myrow["quantity_ordered"],$myrow["description"],
             	$myrow["unit_price"],$units, sql2date($myrow["delivery_date"]),
             	$myrow["qty_invoiced"], $myrow["quantity_received"])) {
-					$order->line_items[$order->lines_on_order]->po_detail_rec = $myrow["po_detail_item"];
-					$order->line_items[$order->lines_on_order]->standard_cost = $myrow["std_cost_unit"];  /*Needed for receiving goods and GL interface */
+            		$newline = &$order->line_items[$order->lines_on_order-1];
+					$newline->po_detail_rec = $myrow["po_detail_item"];
+					$newline->standard_cost = $myrow["std_cost_unit"];  /*Needed for receiving goods and GL interface */
+				// set for later GRN edition
+//	   	    	$newline->receive_qty = $newline->quantity - $newline->qty_dispatched;
 			}
         } /* line po from purchase order details */
     } //end of checks on returned data set

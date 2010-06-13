@@ -413,8 +413,7 @@ function handle_commit_order()
         		meta_forward($_SERVER['PHP_SELF'], "AddedGRN=$grn_no");
 			}
 //			Direct Purchase Invoice
-			$inv = new supp_trans;
-			$inv->is_invoice = true;
+ 			$inv = new supp_trans(ST_SUPPINVOICE);
 			$inv->Comments = $cart->Comments;
 			$inv->supplier_id = $cart->supplier_id;
 			$inv->tran_date = $cart->orig_order_date;

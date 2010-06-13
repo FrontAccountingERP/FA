@@ -13,7 +13,7 @@
 // if ($writeoff_acc==0) return goods into $cart->Location
 // if src_docs!=0 => credit invoice else credit note
 //
-function write_credit_note($credit_note, $write_off_acc)
+function write_credit_note(&$credit_note, $write_off_acc)
 {
 	global $Refs;
 
@@ -176,7 +176,6 @@ function write_credit_note($credit_note, $write_off_acc)
 	if ($trans_no == 0) {
 		$Refs->save(ST_CUSTCREDIT, $credit_no, $credit_note->reference);
 	}
-
 	commit_transaction();
 
 	return $credit_no;
