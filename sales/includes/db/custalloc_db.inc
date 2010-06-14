@@ -121,7 +121,7 @@ function get_alloc_trans_sql($extra_fields=null, $extra_conditions=null, $extra_
 
 	if ($extra_conditions)
 		$sql .= " AND $extra_conditions ";
-	
+
 	return $sql;
 }
 
