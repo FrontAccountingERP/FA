@@ -34,7 +34,7 @@ function delete_cust_allocation($trans_id)
 
 //----------------------------------------------------------------------------------------
 
-function get_DebtorTrans_allocation_balance($trans_type, $trans_no)
+function get_debtor_trans_allocation_balance($trans_type, $trans_no)
 {
 
 	$sql = "SELECT (ov_amount+ov_gst+ov_freight+ov_freight_tax-ov_discount-alloc) AS BalToAllocate
@@ -49,8 +49,11 @@ function get_DebtorTrans_allocation_balance($trans_type, $trans_no)
 
 function update_debtor_trans_allocation($trans_type, $trans_no, $alloc)
 {
-	$sql = "UPDATE ".TB_PREF."debtor_trans SET alloc = alloc + $alloc
-		WHERE type=".db_escape($trans_type)." AND trans_no = ".db_escape($trans_no);
+	if ($trans_type == ST_SALESORDER)
+		return;
+	else
+		$sql = "UPDATE ".TB_PREF."debtor_trans SET alloc = alloc + $alloc
+			WHERE type=".db_escape($trans_type)." AND trans_no = ".db_escape($trans_no);
 	db_query($sql, "The debtor transaction record could not be modified for the allocation against it");
 }
 
@@ -65,6 +68,8 @@ function void_cust_allocations($type, $type_no, $date="")
 
 function clear_cust_alloctions($type, $type_no, $date="")
 {
+	if ($type == ST_SALESORDER)
+		return;
 	// clear any allocations for this transaction
 	$sql = "SELECT * FROM ".TB_PREF."cust_allocations
 		WHERE (trans_type_from=".db_escape($type)." AND trans_no_from=".db_escape($type_no).")
@@ -78,7 +83,7 @@ function clear_cust_alloctions($type, $type_no, $date="")
 			OR (type=" . $row['trans_type_to'] . " AND trans_no=" . $row['trans_no_to'] . ")";
 		db_query($sql, "could not clear allocation");
 		// 2008-09-20 Joe Hunt
-		if ($date != "")
+		if (($date != "") && ($row['trans_type_to'] != ST_SALESORDER))
 			exchange_variation($type, $type_no, $row['trans_type_to'], $row['trans_no_to'], $date,
 				$row['amt'], PT_CUSTOMER, true);
 		//////////////////////
@@ -123,6 +128,74 @@ function get_alloc_trans_sql($extra_fields=null, $extra_conditions=null, $extra_
 		$sql .= " AND $extra_conditions ";
 	
 	return $sql;
+}
+
+//----------------------------------------------------------------------------------------
+
+function get_alloc_order_sql($extra_fields=null, $extra_conditions=null, $extra_tables=null)
+{
+	$sql = "SELECT
+		so.trans_type as type,
+		so.order_no as trans_no,
+		so.reference,
+		so.ord_date as tran_date,
+		debtor.name AS DebtorName, 
+		debtor.curr_code, 
+		Sum(line.unit_price*line.quantity*(1-line.discount_percent))+freight_cost as Total,
+		Sum(alloc.amt) as alloc,
+		so.delivery_date as due_date,
+		debtor.address,
+		so.version,
+		
+		Sum(line.qty_sent) AS TotDelivered,
+		Sum(line.quantity) AS TotQuantity";
+
+	if ($extra_fields)
+		$sql .= ", $extra_fields ";
+
+	$sql .= " FROM ".TB_PREF."sales_orders as so 
+				LEFT JOIN ".TB_PREF."cust_allocations as alloc
+					ON alloc.trans_type_to=".ST_SALESORDER
+					." AND so.order_no = alloc.trans_no_to,"
+				.TB_PREF."sales_order_details as line,"
+				.TB_PREF."debtors_master as debtor";
+
+	if ($extra_tables)
+		$sql .= ",$extra_tables ";
+
+	$sql .= " WHERE so.debtor_no=debtor.debtor_no
+				AND so.trans_type = ".ST_SALESORDER."
+				AND so.order_no = line.order_no
+				AND so.trans_type = line.trans_type";
+
+	if ($extra_conditions)
+		$sql .= " AND $extra_conditions ";
+	
+	$sql .= " GROUP BY so.order_no,
+				so.debtor_no,
+				so.branch_code,
+				so.customer_ref,
+				so.ord_date,
+				so.deliver_to";
+	return $sql;
+}
+
+//-------------------------------------------------------------------------------------------------------------
+
+function get_allocatable_sales_orders($customer_id, $trans_no=null, $type=null)
+{
+	if ($trans_no != null and $type != null)
+	{
+		$sql = get_alloc_order_sql("alloc.amt", "alloc.trans_no_from=$trans_no
+			AND alloc.trans_type_from=$type
+			AND so.debtor_no=".db_escape($customer_id));
+	}
+	else
+	{
+		$sql = get_alloc_order_sql(null, "so.debtor_no=".db_escape($customer_id));
+	}
+//display_notification($sql);
+	return db_query($sql." ORDER BY so.order_no", "Cannot retreive alloc to orders");
 }
 
 

@@ -182,6 +182,14 @@ class cart
 					if (!$no_edit && !($type==ST_CUSTCREDIT && $this->trans_link==0))
 						$this->set_parent_constraints($sodata, $trans_no[0]);
 			}
+			// prepare qtys for derivative document entry (not used in display)
+			if($no_edit) {
+				for($line_no = 0; $line_no < count($this->line_items); $line_no++) {
+					$line = &$this->line_items[$line_no];
+					$line->src_id = $line->id; // save src line ids for update
+					$line->qty_dispatched = $line->quantity - $line->qty_done;
+				}
+			}
 		} else { // new document
 				$this->trans_type = $type;
 				$this->trans_no = 0;
