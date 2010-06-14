@@ -162,31 +162,31 @@ if ($_GET['trans_type'] != ST_SALESQUOTE)
 	start_table(TABLESTYLE);
 	$th = array(_("#"), _("Ref"), _("Date"), _("Total"));
 	table_header($th);
+	if(count($inv_numbers)) {
+		$result = get_related_credits($inv_numbers);
 
-	$result = get_related_credits($inv_numbers);
+		$credits_total = 0;
+		$k = 0;
 
-	$credits_total = 0;
-	$k = 0;
+		while ($credits_row = db_fetch($result))
+		{
 
-	while ($credits_row = db_fetch($result))
-	{
+			alt_table_row_color($k);
 
-		alt_table_row_color($k);
+			$this_total = $credits_row["ov_freight"] + $credits_row["ov_freight_tax"]  + $credits_row["ov_gst"] + $credits_row["ov_amount"];
+			$credits_total += $this_total;
 
-		$this_total = $credits_row["ov_freight"] + $credits_row["ov_freight_tax"]  + $credits_row["ov_gst"] + $credits_row["ov_amount"];
-		$credits_total += $this_total;
+			label_cell(get_customer_trans_view_str($credits_row["type"], $credits_row["trans_no"]));
+			label_cell($credits_row["reference"]);
+			label_cell(sql2date($credits_row["tran_date"]));
+			amount_cell(-$this_total);
+			end_row();
 
-		label_cell(get_customer_trans_view_str($credits_row["type"], $credits_row["trans_no"]));
-		label_cell($credits_row["reference"]);
-		label_cell(sql2date($credits_row["tran_date"]));
-		amount_cell(-$this_total);
-		end_row();
+		}
 
+		label_row(null, "<font color=red>" . price_format(-$credits_total) . "</font>",
+			" ", "colspan=4 align=right");
 	}
-
-	label_row(null, "<font color=red>" . price_format(-$credits_total) . "</font>",
-		" ", "colspan=4 align=right");
-
 
 	end_table();
 
