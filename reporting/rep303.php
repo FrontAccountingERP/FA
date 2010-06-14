@@ -61,15 +61,16 @@ function getTransactions($category, $location)
 
 function print_stock_check()
 {
-    global $comp_path, $path_to_root, $pic_height;
+    	global $comp_path, $path_to_root, $pic_height;
 
-    $category = $_POST['PARAM_0'];
-    $location = $_POST['PARAM_1'];
-    $pictures = $_POST['PARAM_2'];
-    $check    = $_POST['PARAM_3'];
-    $shortage = $_POST['PARAM_4'];
-    $comments = $_POST['PARAM_5'];
-	$destination = $_POST['PARAM_6'];
+    	$category = $_POST['PARAM_0'];
+    	$location = $_POST['PARAM_1'];
+    	$pictures = $_POST['PARAM_2'];
+    	$check    = $_POST['PARAM_3'];
+    	$shortage = $_POST['PARAM_4'];
+    	$no_zeros = $_POST['PARAM_5'];
+    	$comments = $_POST['PARAM_6'];
+	$destination = $_POST['PARAM_7'];
 	if ($destination)
 		include_once($path_to_root . "/reporting/includes/excel_report.inc");
 	else
@@ -97,7 +98,9 @@ function print_stock_check()
 	{
 		$short = _('No');
 		$available = _('Available');
-	}	
+	}
+	if ($no_zeros) $nozeros = _('Yes');
+	else $nozeros = _('No');
 	if ($check)
 	{
 		$cols = array(0, 100, 250, 295, 345, 390, 445,	515);
@@ -112,21 +115,22 @@ function print_stock_check()
 	}
 
 
-    $params =   array( 	0 => $comments,
-    				    1 => array('text' => _('Category'), 'from' => $cat, 'to' => ''),
-    				    2 => array('text' => _('Location'), 'from' => $loc, 'to' => ''),
-    				    3 => array('text' => _('Only Shortage'), 'from' => $short, 'to' => ''));
+    	$params =   array( 	0 => $comments,
+    				1 => array('text' => _('Category'), 'from' => $cat, 'to' => ''),
+    				2 => array('text' => _('Location'), 'from' => $loc, 'to' => ''),
+    				3 => array('text' => _('Only Shortage'), 'from' => $short, 'to' => ''),
+				4 => array('text' => _('Suppress Zeros'), 'from' => $nozeros, 'to' => ''));
 
 	if ($pictures)
 		$user_comp = user_company();
 	else
 		$user_comp = "";
 
-    $rep = new FrontReport(_('Stock Check Sheets'), "StockCheckSheet", user_pagesize());
+    	$rep = new FrontReport(_('Stock Check Sheets'), "StockCheckSheet", user_pagesize());
 
-    $rep->Font();
-    $rep->Info($params, $cols, $headers, $aligns);
-    $rep->Header();
+    	$rep->Font();
+    	$rep->Info($params, $cols, $headers, $aligns);
+    	$rep->Header();
 
 	$res = getTransactions($category, $location);
 	$catt = '';
@@ -141,7 +145,9 @@ function print_stock_check()
 		$onorder = get_on_porder_qty($trans['stock_id'], $loc_code);
 		$flag = get_mb_flag($trans['stock_id']);
 		if ($flag == 'M')
-       		$onorder += get_on_worder_qty($trans['stock_id'], $loc_code);
+			$onorder += get_on_worder_qty($trans['stock_id'], $loc_code);
+		if ($no_zeros && $trans['QtyOnHand'] == 0 && $demandqty == 0 && $onorder == 0)
+			continue;
 		if ($shortage && $trans['QtyOnHand'] - $demandqty >= 0)
 			continue;
 		if ($catt != $trans['cat_description'])

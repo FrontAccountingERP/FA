@@ -91,14 +91,15 @@ function get_transactions($debtorno, $from, $to)
 
 function print_customer_balances()
 {
-    global $path_to_root, $systypes_array;
+    	global $path_to_root, $systypes_array;
 
-    $from = $_POST['PARAM_0'];
-    $to = $_POST['PARAM_1'];
-    $fromcust = $_POST['PARAM_2'];
-    $currency = $_POST['PARAM_3'];
-    $comments = $_POST['PARAM_4'];
-	$destination = $_POST['PARAM_5'];
+    	$from = $_POST['PARAM_0'];
+    	$to = $_POST['PARAM_1'];
+    	$fromcust = $_POST['PARAM_2'];
+    	$currency = $_POST['PARAM_3'];
+    	$no_zeros = $_POST['PARAM_4'];
+    	$comments = $_POST['PARAM_5'];
+	$destination = $_POST['PARAM_6'];
 	if ($destination)
 		include_once($path_to_root . "/reporting/includes/excel_report.inc");
 	else
@@ -108,7 +109,7 @@ function print_customer_balances()
 		$cust = _('All');
 	else
 		$cust = get_customer_name($fromcust);
-    $dec = user_price_dec();
+    	$dec = user_price_dec();
 
 	if ($currency == ALL_TEXT)
 	{
@@ -118,6 +119,9 @@ function print_customer_balances()
 	else
 		$convert = false;
 
+	if ($no_zeros) $nozeros = _('Yes');
+	else $nozeros = _('No');
+
 	$cols = array(0, 100, 130, 190,	250, 320, 385, 450,	515);
 
 	$headers = array(_('Trans Type'), _('#'), _('Date'), _('Due Date'), _('Charges'), _('Credits'),
@@ -125,16 +129,17 @@ function print_customer_balances()
 
 	$aligns = array('left',	'left',	'left',	'left',	'right', 'right', 'right', 'right');
 
-    $params =   array( 	0 => $comments,
-    				    1 => array('text' => _('Period'), 'from' => $from, 		'to' => $to),
-    				    2 => array('text' => _('Customer'), 'from' => $cust,   	'to' => ''),
-    				    3 => array('text' => _('Currency'), 'from' => $currency, 'to' => ''));
+    	$params =   array( 	0 => $comments,
+    				1 => array('text' => _('Period'), 'from' => $from, 		'to' => $to),
+    				2 => array('text' => _('Customer'), 'from' => $cust,   	'to' => ''),
+    				3 => array('text' => _('Currency'), 'from' => $currency, 'to' => ''),
+				4 => array('text' => _('Suppress Zeros'), 'from' => $nozeros, 'to' => ''));
 
-    $rep = new FrontReport(_('Customer Balances'), "CustomerBalances", user_pagesize());
+    	$rep = new FrontReport(_('Customer Balances'), "CustomerBalances", user_pagesize());
 
-    $rep->Font();
-    $rep->Info($params, $cols, $headers, $aligns);
-    $rep->Header();
+    	$rep->Font();
+    	$rep->Info($params, $cols, $headers, $aligns);
+    	$rep->Header();
 
 	$grandtotal = array(0,0,0,0);
 
@@ -143,26 +148,32 @@ function print_customer_balances()
 		$sql .= "WHERE debtor_no=".db_escape($fromcust);
 	$sql .= " ORDER BY name";
 	$result = db_query($sql, "The customers could not be retrieved");
+	$num_lines = 0;
 
 	while ($myrow = db_fetch($result))
 	{
-		if (!$convert && $currency != $myrow['curr_code'])
-			continue;
+		if (!$convert && $currency != $myrow['curr_code']) continue;
+
+		$bal = get_open_balance($myrow['debtor_no'], $from, $convert);
+		$init[0] = $init[1] = 0.0;
+		$init[0] = round2(abs($bal['charges']), $dec);
+		$init[1] = round2(Abs($bal['credits']), $dec);
+		$init[2] = round2($bal['Allocated'], $dec);
+		$init[3] = round2($bal['OutStanding'], $dec);;
+
+		$res = get_transactions($myrow['debtor_no'], $from, $to);
+		if ($no_zeros && db_num_rows($res) == 0) continue;
+
+ 		$num_lines++;
 		$rep->fontSize += 2;
 		$rep->TextCol(0, 2, $myrow['name']);
 		if ($convert)
 			$rep->TextCol(2, 3,	$myrow['curr_code']);
 		$rep->fontSize -= 2;
-		$bal = get_open_balance($myrow['debtor_no'], $from, $convert);
-		$init[0] = $init[1] = 0.0;
 		$rep->TextCol(3, 4,	_("Open Balance"));
-		$init[0] = round2(abs($bal['charges']), $dec);
 		$rep->AmountCol(4, 5, $init[0], $dec);
-		$init[1] = round2(Abs($bal['credits']), $dec);
 		$rep->AmountCol(5, 6, $init[1], $dec);
-		$init[2] = round2($bal['Allocated'], $dec);
 		$rep->AmountCol(6, 7, $init[2], $dec);
-		$init[3] = round2($bal['OutStanding'], $dec);;
 		$rep->AmountCol(7, 8, $init[3], $dec);
 		$total = array(0,0,0,0);
 		for ($i = 0; $i < 4; $i++)
@@ -171,12 +182,12 @@ function print_customer_balances()
 			$grandtotal[$i] += $init[$i];
 		}
 		$rep->NewLine(1, 2);
-		$res = get_transactions($myrow['debtor_no'], $from, $to);
 		if (db_num_rows($res)==0)
 			continue;
 		$rep->Line($rep->row + 4);
 		while ($trans = db_fetch($res))
 		{
+			if ($no_zeros && $trans['TotalAmount'] == 0 && $trans['Allocated'] == 0) continue;
 			$rep->NewLine(1, 2);
 			$rep->TextCol(0, 1, $systypes_array[$trans['type']]);
 			$rep->TextCol(1, 2,	$trans['reference']);
@@ -224,8 +235,8 @@ function print_customer_balances()
 		$rep->TextCol(0, 3, _('Total'));
 		for ($i = 0; $i < 4; $i++)
 			$rep->AmountCol($i + 4, $i + 5, $total[$i], $dec);
-    	$rep->Line($rep->row  - 4);
-    	$rep->NewLine(2);
+    		$rep->Line($rep->row  - 4);
+    		$rep->NewLine(2);
 	}
 	$rep->fontSize += 2;
 	$rep->TextCol(0, 3, _('Grand Total'));
@@ -234,7 +245,7 @@ function print_customer_balances()
 		$rep->AmountCol($i + 4, $i + 5, $grandtotal[$i], $dec);
 	$rep->Line($rep->row  - 4);
 	$rep->NewLine();
-    $rep->End();
+    	$rep->End();
 }
 
 ?>

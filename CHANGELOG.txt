@@ -19,6 +19,18 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+14-Jun-2010 Tom Moulton/Joe Hunt
+# Bug [0000231] Wrong On Order for Advanced Manufacturing.before final production.
+$ /includes/db/manufacturing_db.inc
+! Allow optional non zero values in reports 101,102,201,202,203 and 303.
+$ /reporting/rep101.php
+  /reporting/rep102.php
+  /reporting/rep201.php
+  /reporting/rep202.php
+  /reporting/rep203.php
+  /reporting/rep303.php
+  /reporting/reports_main.php
+
 ------------------------------- Release 2.2.10 ----------------------------------
 11-Jun-2010 Joe Hunt
 ! Release 2.2.10

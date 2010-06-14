@@ -64,15 +64,16 @@ function get_invoices($customer_id, $to)
 
 function print_aged_customer_analysis()
 {
-    global $comp_path, $path_to_root, $systypes_array;
+	global $comp_path, $path_to_root, $systypes_array;
 
-    $to = $_POST['PARAM_0'];
-    $fromcust = $_POST['PARAM_1'];
-    $currency = $_POST['PARAM_2'];
+    	$to = $_POST['PARAM_0'];
+    	$fromcust = $_POST['PARAM_1'];
+    	$currency = $_POST['PARAM_2'];
 	$summaryOnly = $_POST['PARAM_3'];
-    $graphics = $_POST['PARAM_4'];
-    $comments = $_POST['PARAM_5'];
-	$destination = $_POST['PARAM_6'];
+    	$no_zeros = $_POST['PARAM_4'];
+    	$graphics = $_POST['PARAM_5'];
+    	$comments = $_POST['PARAM_6'];
+	$destination = $_POST['PARAM_7'];
 	if ($destination)
 		include_once($path_to_root . "/reporting/includes/excel_report.inc");
 	else
@@ -87,7 +88,7 @@ function print_aged_customer_analysis()
 		$from = _('All');
 	else
 		$from = get_customer_name($fromcust);
-    $dec = user_price_dec();
+    	$dec = user_price_dec();
 
 	if ($summaryOnly == 1)
 		$summary = _('Summary Only');
@@ -101,6 +102,9 @@ function print_aged_customer_analysis()
 	else
 		$convert = false;
 
+	if ($no_zeros) $nozeros = _('Yes');
+	else $nozeros = _('No');
+
 	$PastDueDays1 = get_company_pref('past_due_days');
 	$PastDueDays2 = 2 * $PastDueDays1;
 	$nowdue = "1-" . $PastDueDays1 . " " . _('Days');
@@ -113,19 +117,20 @@ function print_aged_customer_analysis()
 
 	$aligns = array('left',	'left',	'left',	'right', 'right', 'right', 'right',	'right');
 
-    $params =   array( 	0 => $comments,
-    					1 => array('text' => _('End Date'), 'from' => $to, 'to' => ''),
-    				    2 => array('text' => _('Customer'),	'from' => $from, 'to' => ''),
-    				    3 => array('text' => _('Currency'), 'from' => $currency, 'to' => ''),
-                    	4 => array('text' => _('Type'),		'from' => $summary,'to' => ''));
+    	$params =   array( 	0 => $comments,
+    				1 => array('text' => _('End Date'), 'from' => $to, 'to' => ''),
+    				2 => array('text' => _('Customer'),	'from' => $from, 'to' => ''),
+    				3 => array('text' => _('Currency'), 'from' => $currency, 'to' => ''),
+                    		4 => array('text' => _('Type'),		'from' => $summary,'to' => ''),
+				5 => array('text' => _('Suppress Zeros'), 'from' => $nozeros, 'to' => ''));
 
 	if ($convert)
 		$headers[2] = _('Currency');
-    $rep = new FrontReport(_('Aged Customer Analysis'), "AgedCustomerAnalysis", user_pagesize());
+    	$rep = new FrontReport(_('Aged Customer Analysis'), "AgedCustomerAnalysis", user_pagesize());
 
-    $rep->Font();
-    $rep->Info($params, $cols, $headers, $aligns);
-    $rep->Header();
+    	$rep->Font();
+    	$rep->Info($params, $cols, $headers, $aligns);
+    	$rep->Header();
 
 	$total = array(0,0,0,0, 0);
 
@@ -139,29 +144,28 @@ function print_aged_customer_analysis()
 	{
 		if (!$convert && $currency != $myrow['curr_code'])
 			continue;
-		$rep->fontSize += 2;
-		$rep->TextCol(0, 2, $myrow['name']);
-		if ($convert)
-		{
-			$rate = get_exchange_rate_from_home_currency($myrow['curr_code'], $to);
-			$rep->TextCol(2, 3,	$myrow['curr_code']);
-		}
-		else
-			$rate = 1.0;
-		$rep->fontSize -= 2;
+
+		if ($convert) $rate = get_exchange_rate_from_home_currency($myrow['curr_code'], $to);
+		else $rate = 1.0;
 		$custrec = get_customer_details($myrow['debtor_no'], $to);
 		foreach ($custrec as $i => $value)
 			$custrec[$i] *= $rate;
-		$total[0] += ($custrec["Balance"] - $custrec["Due"]);
-		$total[1] += ($custrec["Due"]-$custrec["Overdue1"]);
-		$total[2] += ($custrec["Overdue1"]-$custrec["Overdue2"]);
-		$total[3] += $custrec["Overdue2"];
-		$total[4] += $custrec["Balance"];
 		$str = array($custrec["Balance"] - $custrec["Due"],
 			$custrec["Due"]-$custrec["Overdue1"],
 			$custrec["Overdue1"]-$custrec["Overdue2"],
 			$custrec["Overdue2"],
 			$custrec["Balance"]);
+		if ($no_zeros && array_sum($str) == 0) continue;
+
+		$rep->fontSize += 2;
+		$rep->TextCol(0, 2, $myrow['name']);
+		if ($convert) $rep->TextCol(2, 3,	$myrow['curr_code']);
+		$rep->fontSize -= 2;
+		$total[0] += ($custrec["Balance"] - $custrec["Due"]);
+		$total[1] += ($custrec["Due"]-$custrec["Overdue1"]);
+		$total[2] += ($custrec["Overdue1"]-$custrec["Overdue2"]);
+		$total[3] += $custrec["Overdue2"];
+		$total[4] += $custrec["Balance"];
 		for ($i = 0; $i < count($str); $i++)
 			$rep->AmountCol($i + 3, $i + 4, $str[$i], $dec);
 		$rep->NewLine(1, 2);
