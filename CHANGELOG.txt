@@ -19,6 +19,12 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+14-Jun-2010 Janusz Dobrowolski
+# Additional corrections to yesterday commit
+$ /sales/includes/cart_class.inc
+  /sales/includes/db/cust_trans_db.inc
+  /sales/view/view_sales_order.php
+
 13-Jun-2010 Janusz Dobrowolski
 # Small layout bug in tabs widget
 $ /includes/ui/ui_controls.inc
