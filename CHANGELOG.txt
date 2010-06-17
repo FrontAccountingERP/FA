@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+17-Jun-2010 Janusz Dobrowolski
+# [0000235],[0000236] db error in sales order view window.
+$ /sales/view/view_sales_order.php
+
 14-Jun-2010 Tom Moulton/Joe Hunt
 # Bug [0000231] Wrong On Order for Advanced Manufacturing.before final production.
 $ /includes/db/manufacturing_db.inc

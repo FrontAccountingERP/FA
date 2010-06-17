@@ -127,33 +127,36 @@ if ($_GET['trans_type'] != ST_SALESQUOTE)
 
 	$th = array(_("#"), _("Ref"), _("Date"), _("Total"));
 	table_header($th);
-	
-	$sql = "SELECT * FROM ".TB_PREF."debtor_trans WHERE type=".ST_SALESINVOICE
-		." AND trans_no IN(". implode(',', array_values($dn_numbers)).")";
 
-	$result = db_query($sql,"The related invoices could not be retreived");
-
+	$inv_numbers = array();
 	$invoices_total = 0;
-	$k = 0;
-	$cn_numbers = array();
 
-	while ($inv_row = db_fetch($result))
-	{
+	if (count($dn_numbers)) {
 
-		alt_table_row_color($k);
+		$sql = "SELECT * FROM ".TB_PREF."debtor_trans WHERE type=".ST_SALESINVOICE
+			." AND trans_no IN(". implode(',', array_values($dn_numbers)).")";
 
-		$this_total = $inv_row["ov_freight"] + $inv_row["ov_freight_tax"]  + $inv_row["ov_gst"] + $inv_row["ov_amount"];
-		$invoices_total += $this_total;
+		$result = db_query($sql,"The related invoices could not be retreived");
 
-		$cn_numbers[] = $inv_row["trans_no"];
-		label_cell(get_customer_trans_view_str($inv_row["type"], $inv_row["trans_no"]));
-		label_cell($inv_row["reference"]);
-		label_cell(sql2date($inv_row["tran_date"]));
-		amount_cell($this_total);
-		end_row();
+		$k = 0;
 
+		while ($inv_row = db_fetch($result))
+		{
+
+			alt_table_row_color($k);
+
+			$this_total = $inv_row["ov_freight"] + $inv_row["ov_freight_tax"]  + $inv_row["ov_gst"] + $inv_row["ov_amount"];
+			$invoices_total += $this_total;
+
+			$inv_numbers[] = $inv_row["trans_no"];
+			label_cell(get_customer_trans_view_str($inv_row["type"], $inv_row["trans_no"]));
+			label_cell($inv_row["reference"]);
+			label_cell(sql2date($inv_row["tran_date"]));
+			amount_cell($this_total);
+			end_row();
+
+		}
 	}
-
 	label_row(null, price_format($invoices_total), " ", "colspan=4 align=right");
 
 	end_table();
@@ -164,36 +167,36 @@ if ($_GET['trans_type'] != ST_SALESQUOTE)
 	$th = array(_("#"), _("Ref"), _("Date"), _("Total"));
 	table_header($th);
 
-	// FIXME -  credit notes retrieved here should be those linked to invoices containing 
-	// at least one line from this order
-	
-	$sql = "SELECT * FROM ".TB_PREF."debtor_trans WHERE type=".ST_CUSTCREDIT
-		." AND trans_link IN(". implode(',', array_values($cn_numbers)).")";
-
-	$result = db_query($sql,"The related credit notes could not be retreived");
-
 	$credits_total = 0;
-	$k = 0;
+	if (count($inv_numbers)) {
+		// FIXME -  credit notes retrieved here should be those linked to invoices containing 
+		// at least one line from this order
+	
+		$sql = "SELECT * FROM ".TB_PREF."debtor_trans WHERE type=".ST_CUSTCREDIT
+			." AND trans_link IN(". implode(',', array_values($inv_numbers)).")";
 
-	while ($credits_row = db_fetch($result))
-	{
+		$result = db_query($sql,"The related credit notes could not be retreived");
 
-		alt_table_row_color($k);
+		$k = 0;
 
-		$this_total = $credits_row["ov_freight"] + $credits_row["ov_freight_tax"]  + $credits_row["ov_gst"] + $credits_row["ov_amount"];
-		$credits_total += $this_total;
+		while ($credits_row = db_fetch($result))
+		{
 
-		label_cell(get_customer_trans_view_str($credits_row["type"], $credits_row["trans_no"]));
-		label_cell($credits_row["reference"]);
-		label_cell(sql2date($credits_row["tran_date"]));
-		amount_cell(-$this_total);
-		end_row();
+			alt_table_row_color($k);
 
+			$this_total = $credits_row["ov_freight"] + $credits_row["ov_freight_tax"]  + $credits_row["ov_gst"] + $credits_row["ov_amount"];
+			$credits_total += $this_total;
+
+			label_cell(get_customer_trans_view_str($credits_row["type"], $credits_row["trans_no"]));
+			label_cell($credits_row["reference"]);
+			label_cell(sql2date($credits_row["tran_date"]));
+			amount_cell(-$this_total);
+			end_row();
+
+		}
 	}
-
 	label_row(null, "<font color=red>" . price_format(-$credits_total) . "</font>",
 		" ", "colspan=4 align=right");
-
 
 	end_table();
 
