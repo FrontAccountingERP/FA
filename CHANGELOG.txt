@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+18-Jun-2010 Janusz Dobrowolski
+# Small bug on final credit note screen redirection
+$ /sales/customer_credit_invoice.php
+
 17-Jun-2010 Janusz Dobrowolski
 # [0000235],[0000236] db error in sales order view window.
 $ /sales/view/view_sales_order.php

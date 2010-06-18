@@ -215,7 +215,7 @@ if (isset($_POST['ProcessCredit']) && can_process()) {
 	if ($new_credit) new_doc_date($_SESSION['Items']->document_date);
     $credit_no = $_SESSION['Items']->write($_POST['WriteOffGLCode']);
 
-	processing_end();exit;
+	processing_end();
 	if ($new_credit) {
 	   	meta_forward($_SERVER['PHP_SELF'], "AddedID=$credit_no");
 	} else {
