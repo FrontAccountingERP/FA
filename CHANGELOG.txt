@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+18-Jun-2010 Joe Hunt
+- Removed constraint on day values in Payment Terms
+$ /admin/payment_terms.php
+
 18-Jun-2010 Janusz Dobrowolski
 # Small bug on final credit note screen redirection
 $ /sales/customer_credit_invoice.php

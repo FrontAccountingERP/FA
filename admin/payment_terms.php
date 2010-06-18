@@ -43,12 +43,13 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 	//	display_error( _("When the check box to indicate a day in the following month is the due date, the due date cannot be a day after the 30th. A number between 1 and 30 is expected."));
 	//	set_focus('DayNumber');
 	//} 
-	elseif ($_POST['DayNumber'] > 500 && check_value('DaysOrFoll')) 
-	{
-		$inpug_error = 1;
-		display_error( _("When the check box is not checked to indicate that the term expects a number of days after which accounts are due, the number entered should be less than 500 days."));
-		set_focus('DayNumber');
-	}
+	// No constrain on day values, Joe Hunt 2010-06-18.
+	//elseif ($_POST['DayNumber'] > 500 && check_value('DaysOrFoll')) 
+	//{
+	//	$inpug_error = 1;
+	//	display_error( _("When the check box is not checked to indicate that the term expects a number of days after which accounts are due, the number entered should be less than 500 days."));
+	//	set_focus('DayNumber');
+	//}
 
 	if ($_POST['DayNumber'] == '')
 		$_POST['DayNumber'] = 0;
