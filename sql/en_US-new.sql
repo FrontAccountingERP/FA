@@ -1163,6 +1163,7 @@ CREATE TABLE IF NOT EXISTS `0_purch_orders` (
   `requisition_no` tinytext,
   `into_stock_location` varchar(5) NOT NULL default '',
   `delivery_address` tinytext NOT NULL,
+  `total` double NOT NULL default '0',
   PRIMARY KEY  (`order_no`),
   KEY `ord_date` (`ord_date`)
 ) TYPE=InnoDB AUTO_INCREMENT=1 ;
@@ -1358,6 +1359,7 @@ CREATE TABLE IF NOT EXISTS `0_sales_orders` (
   `from_stk_loc` varchar(5) NOT NULL default '',
   `delivery_date` date NOT NULL default '0000-00-00',
   `payment_terms` int(11) default NULL,
+  `total` double NOT NULL default '0',
   PRIMARY KEY  (`trans_type`,`order_no`)
 ) TYPE=InnoDB;
 

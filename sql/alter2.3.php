@@ -61,6 +61,7 @@ class fa2_3 {
 			'cust_branch' => array('phone', 'phone2', 'fax', 'email'),
 			'suppliers' => array('phone', 'phone2', 'fax', 'email')
 		);
+
 		foreach($dropcol as $table => $columns)
 			foreach($columns as $col) {
 			if (db_query("ALTER TABLE `{$pref}{$table}` DROP `$col`")==false) {
@@ -68,7 +69,10 @@ class fa2_3 {
 				return false;
 			}
 		}
-
+		if (!update_totals_2_3($pref)) {
+			display_error("Cannot update order totals");
+			return false;
+		}
 		// remove old preferences table after upgrade script has been executed
 		$sql = "DROP TABLE IF EXISTS `{$pref}company`";
 
@@ -95,6 +99,35 @@ class fa2_3 {
 		$n -= $patchcnt;
 		return $n == 0 ? true : $patchcnt;
 	}
-}	
+}
+/*
+	Update order totals
+*/
+function update_totals_2_3($pref)
+{
+	global $path_to_root;
+	
+	include_once("$path_to_root/sales/includes/cart_class.inc");
+	include_once("$path_to_root/purchasing/includes/po_class.inc");
+	$cart = new cart(ST_SALESORDER);
+	$sql = "SELECT order_no FROM {$pref}sales_orders";
+	$orders = db_query($sql);
+	while ($order_no = db_fetch($orders)) {
+		read_sales_order($order_no[0], $cart, ST_SALESORDER);
+		update_sales_order($cart);
+		unset($cart->line_items);
+	}
+	unset($cart);
+	$cart = new purch_order();
+	$sql = "SELECT order_no FROM {$pref}purch_orders";
+	$orders = db_query($sql);
+	while ($order_no = db_fetch($orders)) {
+		read_po($order_no[0], $cart);
+		update_po($cart);
+		unset($cart->line_items);
+	}
+}
+
 $install = new fa2_3;
+
 ?>

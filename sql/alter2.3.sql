@@ -115,6 +115,8 @@ INSERT INTO `0_sys_prefs` SELECT 'version_id', 'system', 'varchar', '11', c.vers
 ALTER TABLE `0_stock_master` ADD COLUMN `editable` TINYINT(1) NOT NULL default '0';
 ALTER TABLE `0_debtor_trans` ADD COLUMN `payment_terms` int(11) default NULL;
 ALTER TABLE `0_sales_orders` ADD COLUMN `payment_terms` int(11) default NULL;
+ALTER TABLE `0_sales_orders` ADD COLUMN `total` double NOT NULL default '0';
+ALTER TABLE `0_purch_orders` ADD COLUMN `total` double NOT NULL default '0';
 
 # change account, groups and classes id's
 ALTER TABLE `0_bank_accounts` CHANGE `account_code` `account_code` VARCHAR(15) NOT NULL DEFAULT '';

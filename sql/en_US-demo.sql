@@ -1330,6 +1330,7 @@ CREATE TABLE IF NOT EXISTS `0_purch_orders` (
   `requisition_no` tinytext,
   `into_stock_location` varchar(5) NOT NULL default '',
   `delivery_address` tinytext NOT NULL,
+  `total` double NOT NULL default '0',
   PRIMARY KEY  (`order_no`),
   KEY `ord_date` (`ord_date`)
 ) TYPE=InnoDB  AUTO_INCREMENT=3 ;
@@ -1338,8 +1339,8 @@ CREATE TABLE IF NOT EXISTS `0_purch_orders` (
 -- Dumping data for table `0_purch_orders`
 --
 
-INSERT INTO `0_purch_orders` VALUES(1, 2, '', '2009-06-01', '1', '', 'DEF', 'Delivery 1\nDelivery 2\nDelivery 3');
-INSERT INTO `0_purch_orders` VALUES(2, 3, '', '2009-06-21', '2', '', 'DEF', 'Delivery 1\nDelivery 2\nDelivery 3');
+INSERT INTO `0_purch_orders` VALUES(1, 2, '', '2009-06-01', '1', '', 'DEF', 'Delivery 1\nDelivery 2\nDelivery 3', 0);
+INSERT INTO `0_purch_orders` VALUES(2, 3, '', '2009-06-21', '2', '', 'DEF', 'Delivery 1\nDelivery 2\nDelivery 3', 0);
 
 -- --------------------------------------------------------
 
@@ -1534,6 +1535,7 @@ CREATE TABLE IF NOT EXISTS `0_sales_orders` (
   `from_stk_loc` varchar(5) NOT NULL default '',
   `delivery_date` date NOT NULL default '0000-00-00',
   `payment_terms` int(11) default NULL,
+  `total` double NOT NULL default '0',
   PRIMARY KEY  (`trans_type`,`order_no`)
 ) TYPE=InnoDB;
 
@@ -1541,11 +1543,11 @@ CREATE TABLE IF NOT EXISTS `0_sales_orders` (
 -- Dumping data for table `0_sales_orders`
 --
 
-INSERT INTO `0_sales_orders` VALUES(1, 30, 1, 0, 1, 1, '1', '', '', '2009-06-21', 2, 1, 'Address 1\nAddress 2\nAddress 3', '', '', 'Beefeater Ltd.', 10, 'DEF', '2009-06-22', 3);
-INSERT INTO `0_sales_orders` VALUES(2, 30, 1, 0, 2, 2, '2', '', '', '2009-06-21', 1, 1, 'Address 1\nAddress 2\nAddress 3', '', '', 'Ghostbusters Corp.', 0, 'DEF', '2009-06-22', 4);
-INSERT INTO `0_sales_orders` VALUES(3, 30, 1, 0, 3, 3, '3', '', '', '2009-06-21', 2, 1, 'Address 1\nAddress 2\nAddress 3', '', '', 'Brezan', 0, 'DEF', '2009-07-01', 3);
-INSERT INTO `0_sales_orders` VALUES(4, 30, 0, 0, 1, 1, '4', '', '', '2009-06-21', 2, 1, 'Address 1\nAddress 2\nAddress 3', '', '', 'Beefeater Ltd.', 0, 'DEF', '2009-06-22', 3);
-INSERT INTO `0_sales_orders` VALUES(5, 30, 1, 0, 2, 2, '5', '', '', '2009-06-21', 1, 1, 'Address 1\nAddress 2\nAddress 3', '', '', 'Ghostbusters Corp.', 5, 'DEF', '2009-06-22', 4);
+INSERT INTO `0_sales_orders` VALUES(1, 30, 1, 0, 1, 1, '1', '', '', '2009-06-21', 2, 1, 'Address 1\nAddress 2\nAddress 3', '', '', 'Beefeater Ltd.', 10, 'DEF', '2009-06-22', 3, 0);
+INSERT INTO `0_sales_orders` VALUES(2, 30, 1, 0, 2, 2, '2', '', '', '2009-06-21', 1, 1, 'Address 1\nAddress 2\nAddress 3', '', '', 'Ghostbusters Corp.', 0, 'DEF', '2009-06-22', 4, 0);
+INSERT INTO `0_sales_orders` VALUES(3, 30, 1, 0, 3, 3, '3', '', '', '2009-06-21', 2, 1, 'Address 1\nAddress 2\nAddress 3', '', '', 'Brezan', 0, 'DEF', '2009-07-01', 3, 0);
+INSERT INTO `0_sales_orders` VALUES(4, 30, 0, 0, 1, 1, '4', '', '', '2009-06-21', 2, 1, 'Address 1\nAddress 2\nAddress 3', '', '', 'Beefeater Ltd.', 0, 'DEF', '2009-06-22', 3, 0);
+INSERT INTO `0_sales_orders` VALUES(5, 30, 1, 0, 2, 2, '5', '', '', '2009-06-21', 1, 1, 'Address 1\nAddress 2\nAddress 3', '', '', 'Ghostbusters Corp.', 5, 'DEF', '2009-06-22', 4, 0);
 
 -- --------------------------------------------------------
 
@@ -1887,9 +1889,9 @@ CREATE TABLE IF NOT EXISTS `0_suppliers` (
 -- Dumping data for table `0_suppliers`
 --
 
-INSERT INTO `0_suppliers` VALUES(1, 'Junk Beer ApS', 'Junk Beer', 'Mailing 1\nMailing 2\nMailing 3', 'Address 1\nAddress 2\nAddress 3', '123456', 'Contact', '111', '', '', 'DKK', 3, 1, 0, 2, 1, '5010', '2100', '5060', 'A supplier with junk beers.', 0);
-INSERT INTO `0_suppliers` VALUES(2, 'Lucky Luke Inc.', 'Lucky Luke', 'Mailing 1\nMailing 2\nMailing 3', 'Address 1\nAddress 2\nAddress 3', '654321', 'Luke', '333', '', '', 'USD', 3, 0, 0, 1, 1, '5010', '2100', '5060', '', 0);
-INSERT INTO `0_suppliers` VALUES(3, 'Money Makers Ltd.', 'Money Makers', 'Mailing 1\nMailing 2\nMailing 3', 'Address 1\nAddress 2\nAddress 3', '987654', 'Makers', '222', '', '', 'GBP', 3, 0, 0, 2, 1, '5010', '2100', '5060', '', 0);
+INSERT INTO `0_suppliers` VALUES(1, 'Junk Beer ApS', 'Junk Beer', 'Mailing 1\nMailing 2\nMailing 3', 'Address 1\nAddress 2\nAddress 3', '123456', 'Contact', '111', '', '', 'DKK', 3, 1, 0, 2, 1000, '5010', '2100', '5060', 'A supplier with junk beers.', 0);
+INSERT INTO `0_suppliers` VALUES(2, 'Lucky Luke Inc.', 'Lucky Luke', 'Mailing 1\nMailing 2\nMailing 3', 'Address 1\nAddress 2\nAddress 3', '654321', 'Luke', '333', '', '', 'USD', 3, 0, 0, 1, 500, '5010', '2100', '5060', '', 0);
+INSERT INTO `0_suppliers` VALUES(3, 'Money Makers Ltd.', 'Money Makers', 'Mailing 1\nMailing 2\nMailing 3', 'Address 1\nAddress 2\nAddress 3', '987654', 'Makers', '222', '', '', 'GBP', 3, 0, 0, 2, 300, '5010', '2100', '5060', '', 0);
 
 -- --------------------------------------------------------
 
