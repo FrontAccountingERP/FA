@@ -27,6 +27,8 @@ class purch_order
 	var $orig_order_date;
 	var $order_no; /*Only used for modification of existing orders otherwise only established when order committed */
 	var $lines_on_order = 0;
+	var $credit;
+	var $tax_group_id;
 	
 	var $reference;
 	
@@ -41,7 +43,7 @@ class purch_order
 	{
 		if ($qty != 0 && isset($qty))
 		{
-			$this->line_items[$line_no] = new line_details($line_no, $stock_id, $item_descr, $qty, $price, $uom, 
+			$this->line_items[$line_no] = new po_line_details($line_no, $stock_id, $item_descr, $qty, $price, $uom, 
 				$req_del_date, $qty_inv, $qty_recd);
 			$this->lines_on_order++;
 			return 1;
@@ -108,9 +110,32 @@ class purch_order
 		}
 		return 0;
 	}
+	/*
+		Returns order value including all taxes
+	*/
+	function get_trans_total() {
+		
+		$total = 0;
+		$dec = user_price_dec();
+
+		foreach ($this->line_items as $ln_itm) {
+			$items[] = $ln_itm->stock_id;
+			$value = round($ln_itm->quantity * $ln_itm->price, $dec);
+			$prices[] =$value;
+			$total += $value;
+		}
+
+		$taxes = get_tax_for_items($items, $prices, 0, $this->tax_group_id);
+
+		foreach($taxes as $tax)
+			$total += round($tax['Value'], $dec);
+
+		return $total;
+	}
+
 } /* end of class defintion */
 
-class line_details 
+class po_line_details 
 {
 
 	var $line_no;
@@ -130,7 +155,7 @@ class line_details
 	var $standard_cost;
 	var $descr_editable;
 
-	function line_details($line_no, $stock_item, $item_descr, $qty, $prc, $uom, $req_del_date, 
+	function po_line_details($line_no, $stock_item, $item_descr, $qty, $prc, $uom, $req_del_date, 
 		$qty_inv, $qty_recd, $grn_item_id=0)
 	{
 
