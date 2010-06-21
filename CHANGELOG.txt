@@ -19,6 +19,58 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+24-Jun-2010 Janusz Dobrowolski
++ Support for current credit display
+$ /includes/ui/ui_input.inc
+  /purchasing/po_entry_items.php
+  /purchasing/includes/po_class.inc
+  /purchasing/includes/db/po_db.inc
+  /purchasing/includes/db/suppliers_db.inc
+  /purchasing/includes/ui/po_ui.inc
+  /sales/customer_delivery.php
+  /sales/includes/cart_class.inc
+  /sales/includes/db/customers_db.inc
+  /sales/includes/db/sales_order_db.inc
+  /sales/includes/ui/sales_order_ui.inc
++ Optional displaying all sql queries in footer for debugging purposes
+  /includes/db/connect_db.inc
+  /includes/page/footer.inc
+  /config.default.php
+  /admin/system_diagnostics.php
+  /includes/errors.inc
++ Not fully credited invoice can still be credited (automatic payments reallocation)
+$ /sales/includes/db/cust_trans_db.inc
+  /sales/includes/db/custalloc_db.inc
+  /sales/includes/db/sales_credit_db.inc
++ Added payment term types
+$ /includes/sysnames.inc
+  /includes/types.inc
++ Added popup mode
+$ /sales/inquiry/customer_inquiry.php
+  /purchasing/inquiry/supplier_inquiry.php
+! Reorganized payment terms editor
+$ /admin/payment_terms.php
+  /includes/ui/ui_lists.inc
+! Comments
+$ /includes/ui/allocation_cart.inc
+! Cleanup
+$ /reporting/rep101.php
+# Fixed fatal typo
+$ /sales/customer_credit_invoice.php
+! Fixed final page message text
+$ /sales/customer_invoice.php
+! Removed sparse order allocation code, invoice reallocation routine added
+$ /sales/includes/db/custalloc_db.inc
+# Fixed branch creation for new company
+$ /sales/manage/customer_branches.php
+! Changed line_details class name to po_line_details to avoid conflicts.
+$ /purchasing/includes/po_class.inc
+! Added sales and purchase order totals
+$ /sql/alter2.3.sql
+  /sql/alter2.3.php
+  /sql/en_US-demo.sql
+  /sql/en_US-new.sql
+
 14-Jun-2010 Janusz Dobrowolski
 # Additional corrections to yesterday commit
 $ /sales/includes/cart_class.inc
