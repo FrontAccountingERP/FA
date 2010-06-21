@@ -19,9 +19,10 @@ function add_sales_order(&$order)
 	$order_no = get_next_trans_no($order->trans_type);
 	$del_date = date2sql($order->due_date);
 	$order_type = 0; // this is default on new order
+	$total = $order->get_trans_total();
 	$sql = "INSERT INTO ".TB_PREF."sales_orders (order_no, type, debtor_no, trans_type, branch_code, customer_ref, reference, comments, ord_date,
 		order_type, ship_via, deliver_to, delivery_address, contact_phone,
-		freight_cost, from_stk_loc, delivery_date, payment_terms)
+		freight_cost, from_stk_loc, delivery_date, payment_terms, total)
 		VALUES (" .db_escape($order_no) . "," .db_escape($order_type) . "," . db_escape($order->customer_id) .
 		 ", " .db_escape($order->trans_type) . "," .db_escape($order->Branch) . ", ".
 			db_escape($order->cust_ref) .",". 
@@ -36,7 +37,8 @@ function add_sales_order(&$order)
 			db_escape($order->freight_cost) .", " . 
 			db_escape($order->Location) .", " .
 			db_escape($del_date) . "," .
-			db_escape($order->payment) . ")";
+			db_escape($order->payment) . "," .
+			db_escape($total). ")";
 
 	db_query($sql, "order Cannot be Added");
 
@@ -155,6 +157,7 @@ function update_sales_order($order)
 	$ord_date = date2sql($order->document_date);
 	$order_no =  key($order->trans_no);
 	$version= current($order->trans_no);
+	$total = $order->get_trans_total();
 
 	begin_transaction();
 
@@ -174,7 +177,8 @@ function update_sales_order($order)
 		from_stk_loc = " .db_escape($order->Location) .",
 		delivery_date = " .db_escape($del_date). ",
 		version = ".($version+1).",
-		payment_terms = " .db_escape($order->payment). "
+		payment_terms = " .db_escape($order->payment). ",
+		total = ". db_escape($total) ."
 	 WHERE order_no=" . $order_no ."
 	 AND trans_type=".$order->trans_type." AND version=".$version;
 	db_query($sql, "order Cannot be Updated, this can be concurrent edition conflict");
@@ -431,26 +435,29 @@ function get_invoice_duedate($terms, $invdate)
 function get_customer_to_order($customer_id) {
 
 	// Now check to ensure this account is not on hold */
-	$sql = "SELECT ".TB_PREF."debtors_master.name, "
-		  .TB_PREF."debtors_master.address, "
-		  .TB_PREF."credit_status.dissallow_invoices, "
-		  .TB_PREF."debtors_master.sales_type AS salestype, "
-		  .TB_PREF."debtors_master.dimension_id, "
-		  .TB_PREF."debtors_master.dimension2_id, "
-		  .TB_PREF."sales_types.sales_type, "
-		  .TB_PREF."sales_types.tax_included, "
-		  .TB_PREF."sales_types.factor, "
-		  .TB_PREF."debtors_master.curr_code, "
-		  .TB_PREF."debtors_master.discount,"
-		  .TB_PREF."debtors_master.payment_terms,"
-		  .TB_PREF."debtors_master.pymt_discount
-		FROM ".TB_PREF."debtors_master, "
+	$sql = "SELECT cust.name, 
+		  cust.address, "
+		  .TB_PREF."credit_status.dissallow_invoices, 
+		  cust.sales_type AS salestype,
+		  cust.dimension_id,
+		  cust.dimension2_id,
+		  stype.sales_type,
+		  stype.tax_included,
+		  stype.factor,
+		  cust.curr_code,
+		  cust.discount,
+		  cust.payment_terms,
+		  cust.pymt_discount,
+		  cust.credit_limit - Sum(IFNULL(IF(trans.type=11 OR trans.type=12 OR trans.type=2,
+			-1, 1) * (ov_amount + ov_gst + ov_freight + ov_freight_tax + ov_discount),0)) as cur_credit
+		FROM ".TB_PREF."debtors_master cust
+		  LEFT JOIN ".TB_PREF."debtor_trans trans ON trans.type!=".ST_CUSTDELIVERY." AND trans.debtor_no = cust.debtor_no,"
 		  .TB_PREF."credit_status, "
-		  .TB_PREF."sales_types
-		WHERE ".TB_PREF."debtors_master.sales_type="
-		  .TB_PREF."sales_types.id
-		AND ".TB_PREF."debtors_master.credit_status=".TB_PREF."credit_status.id
-		AND ".TB_PREF."debtors_master.debtor_no = ".db_escape($customer_id);
+		  .TB_PREF."sales_types stype
+		WHERE cust.sales_type=stype.id
+			AND cust.credit_status=".TB_PREF."credit_status.id
+			AND cust.debtor_no = ".db_escape($customer_id)
+		." GROUP by cust.debtor_no";
 
 	$result =db_query($sql,"Customer Record Retreive");
 	return 	db_fetch($result);

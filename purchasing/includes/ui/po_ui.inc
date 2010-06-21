@@ -42,12 +42,20 @@ function copy_to_cart()
 
 function get_supplier_details_to_order(&$order, $supplier_id)
 {
-	$sql = "SELECT curr_code,supp_name FROM ".TB_PREF."suppliers
-		WHERE supplier_id = '$supplier_id'";
+	$sql = "SELECT curr_code, supp_name, tax_group_id,
+			supp.credit_limit - Sum(IFNULL(IF(trans.type=".ST_SUPPCREDIT.", -1, 1) 
+				* (ov_amount + ov_gst + ov_discount),0)) as cur_credit
+		FROM ".TB_PREF."suppliers supp
+			 LEFT JOIN ".TB_PREF."supp_trans trans ON supp.supplier_id = trans.supplier_id
+		WHERE supp.supplier_id = '$supplier_id'
+		GROUP BY
+			  supp.supp_name";
+
 	$result = db_query($sql, "The supplier details could not be retreived");
 
 	$myrow = db_fetch($result);
-
+	$order->credit = $myrow["cur_credit"];
+	$order->tax_group_id = $myrow["tax_group_id"];
 	$order->curr_code = $_POST['curr_code'] = $myrow["curr_code"];
 	$order->supplier_name = $_POST['supplier_name'] = $myrow["supp_name"];
 	$order->supplier_id = $_POST['supplier_id'] = $supplier_id;
@@ -125,6 +133,10 @@ function display_po_header(&$order)
 			$_POST['OrderDate']);
 	}
 
+	supplier_credit_row($order->supplier_id, $order->credit);
+
+	table_section(2);
+
     if ($editable)
     {
     	ref_row(_("Reference:"), 'ref');
@@ -134,8 +146,6 @@ function display_po_header(&$order)
     	hidden('ref', $order->reference);
     	label_row(_("Reference:"), $order->reference);
     }
-
-	table_section(2);
 
 	// check this out?????????
 	//if (!isset($_POST['OrderDate']) || $_POST['OrderDate'] == "")

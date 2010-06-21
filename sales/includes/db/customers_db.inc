@@ -72,33 +72,29 @@ function get_customer_details($customer_id, $to=null)
 	$past2 = 2 * $past1;
 	// removed - debtor_trans.alloc from all summations
 
-    $value = "IF(".TB_PREF."debtor_trans.type=11 OR ".TB_PREF."debtor_trans.type=12 OR ".TB_PREF."debtor_trans.type=2,
-	-1, 1) *".
-      "(".TB_PREF."debtor_trans.ov_amount + ".TB_PREF."debtor_trans.ov_gst + "
-		.TB_PREF."debtor_trans.ov_freight + ".TB_PREF."debtor_trans.ov_freight_tax + "
-		.TB_PREF."debtor_trans.ov_discount)";
-	$due = "IF (".TB_PREF."debtor_trans.type=10,".TB_PREF."debtor_trans.due_date,".TB_PREF."debtor_trans.tran_date)";
+    $value = "IFNULL(IF(trans.type=11 OR trans.type=12 OR trans.type=2, -1, 1) 
+    	* (trans.ov_amount + trans.ov_gst + trans.ov_freight + trans.ov_freight_tax + trans.ov_discount),0)";
+
+	$due = "IF (trans.type=10, trans.due_date, trans.tran_date)";
     $sql = "SELECT ".TB_PREF."debtors_master.name, ".TB_PREF."debtors_master.curr_code, ".TB_PREF."payment_terms.terms,
 		".TB_PREF."debtors_master.credit_limit, ".TB_PREF."credit_status.dissallow_invoices, ".TB_PREF."credit_status.reason_description,
 
-		Sum(".$value.") AS Balance,
-
+		Sum(IFNULL($value,0)) AS Balance,
 		Sum(IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= 0,$value,0)) AS Due,
 		Sum(IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= $past1,$value,0)) AS Overdue1,
 		Sum(IF ((TO_DAYS('$todate') - TO_DAYS($due)) >= $past2,$value,0)) AS Overdue2
 
-		FROM ".TB_PREF."debtors_master,
+		FROM ".TB_PREF."debtors_master
+			 LEFT JOIN ".TB_PREF."debtor_trans trans ON 
+			 trans.tran_date <= '$todate' AND ".TB_PREF."debtors_master.debtor_no = trans.debtor_no AND trans.type <> 13
+,
 			 ".TB_PREF."payment_terms,
-			 ".TB_PREF."credit_status,
-			 ".TB_PREF."debtor_trans
+			 ".TB_PREF."credit_status
 
 		WHERE
 			 ".TB_PREF."debtors_master.payment_terms = ".TB_PREF."payment_terms.terms_indicator
-			 AND ".TB_PREF."debtors_master.credit_status = ".TB_PREF."credit_status.id
+ 			 AND ".TB_PREF."debtors_master.credit_status = ".TB_PREF."credit_status.id
 			 AND ".TB_PREF."debtors_master.debtor_no = ".db_escape($customer_id)."
-			 AND ".TB_PREF."debtor_trans.tran_date <= '$todate'
-			 AND ".TB_PREF."debtor_trans.type <> 13
-			 AND ".TB_PREF."debtors_master.debtor_no = ".TB_PREF."debtor_trans.debtor_no
 
 		GROUP BY
 			  ".TB_PREF."debtors_master.name,
@@ -110,45 +106,12 @@ function get_customer_details($customer_id, $to=null)
 			  ".TB_PREF."credit_status.reason_description";
     $result = db_query($sql,"The customer details could not be retrieved");
 
-    if (db_num_rows($result) == 0)
-    {
-
-    	/*Because there is no balance - so just retrieve the header information about the customer - the choice is do one query to get the balance and transactions for those customers who have a balance and two queries for those who don't have a balance OR always do two queries - I opted for the former */
-
-    	$nil_balance = true;
-
-    	$sql = "SELECT ".TB_PREF."debtors_master.name, ".TB_PREF."debtors_master.curr_code, ".TB_PREF."debtors_master.debtor_no,  ".TB_PREF."payment_terms.terms,
-    		".TB_PREF."debtors_master.credit_limit, ".TB_PREF."credit_status.dissallow_invoices, ".TB_PREF."credit_status.reason_description
-    		FROM ".TB_PREF."debtors_master,
-    		     ".TB_PREF."payment_terms,
-    		     ".TB_PREF."credit_status
-
-    		WHERE
-    		     ".TB_PREF."debtors_master.payment_terms = ".TB_PREF."payment_terms.terms_indicator
-    		     AND ".TB_PREF."debtors_master.credit_status = ".TB_PREF."credit_status.id
-    		     AND ".TB_PREF."debtors_master.debtor_no = ".db_escape($customer_id);
-
-    	$result = db_query($sql,"The customer details could not be retrieved");
-
-    }
-    else
-    {
-    	$nil_balance = false;
-    }
-
     $customer_record = db_fetch($result);
-
-    if ($nil_balance == true)
-    {
-    	$customer_record["Balance"] = 0;
-    	$customer_record["Due"] = 0;
-    	$customer_record["Overdue1"] = 0;
-    	$customer_record["Overdue2"] = 0;
-    }
 
     return $customer_record;
 
 }
+
 
 function get_customer($customer_id)
 {
@@ -193,5 +156,12 @@ function get_customer_contacts($customer_id, $action=null)
 	return $results;
 }
 
+function get_current_cust_credit($customer_id)
+{
+	$custdet = get_customer_details($customer_id);
+
+	return $custdet['credit_limit']-$custdet['Balance'];
+
+}
 
 ?>

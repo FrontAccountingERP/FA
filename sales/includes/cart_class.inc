@@ -74,6 +74,8 @@ class cart
 	var $dimension2_id;
 	var $payment;
 	var $payment_terms; // cached payment terms
+	var $credit;
+	
 	//-------------------------------------------------------------------------
 	//
 	//  $trans_no==0 => open new/direct document
@@ -238,6 +240,7 @@ class cart
 					$this->due_date =
 						add_days($this->document_date, $SysPrefs->default_delivery_required_by());
 			}
+		$this->credit = get_current_cust_credit($this->customer_id);
 		$this->pos = user_pos();
 		$pos = get_sales_point($this->pos);
 		if (!$pos['cash_sale'] && !$pos['credit_sale']) 
@@ -305,6 +308,7 @@ class cart
 		$this->payment_terms = get_payment_terms($payment);
 		$this->cash = $this->payment_terms['cash_sale'];
 		$this->cash_discount = $cdiscount;
+		$this->credit = get_current_cust_credit($customer_id);
 	}
 
 	function set_branch($branch_id, $tax_group_id, $tax_group_name, $phone='', $email='')
@@ -466,7 +470,7 @@ class cart
     // Adjustment for swiss franken, we always have 5 rappen = 1/20 franken
     if ($this->customer_currency == 'CHF') {
 			$val = $taxes['1']['Value'];
-      $val1 = (floatval((intval(round(($val*20),0)))/20));
+			$val1 = (floatval((intval(round(($val*20),0)))/20));
 			$taxes['1']['Value'] = $val1;
 		} 
 		return $taxes;
@@ -500,7 +504,22 @@ class cart
 		else
 			return round($this->freight_cost*$tax_rate/100,  user_price_dec());
 	}
+	/*
+		Returns transaction value including all taxes
+	*/
+	function get_trans_total() {
+		
+		$total = $this->get_items_total() + $this->freight_cost;
+		$dec = user_price_dec();
+		if (!$this->tax_included ) {
+			$total += $this->get_shipping_tax();
+			$taxes = $this->get_taxes();
+			foreach($taxes as $tax)
+				$total += round($tax['Value'], $dec);
+		}
 
+		return $total;
+	}
 } /* end of class defintion */
 
 class line_details

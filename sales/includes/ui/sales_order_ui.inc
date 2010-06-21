@@ -90,6 +90,8 @@ function get_customer_details_to_order(&$order, $customer_id, $branch_id)
 	$order->set_sales_type($myrow['salestype'], $myrow['sales_type'], $myrow['tax_included'],
 	    $myrow['factor']);
 
+	$order->credit = $myrow['cur_credit'];
+
 	if ($order->trans_type != ST_SALESORDER && $order->trans_type != ST_SALESQUOTE)
 	{
 		$order->dimension_id = $myrow['dimension_id'];
@@ -135,7 +137,7 @@ function get_customer_details_to_order(&$order, $customer_id, $branch_id)
 
 function display_order_summary($title, &$order, $editable_items=false)
 {
-	global $path_to_root, $SysPrefs;
+	global $SysPrefs;
 
 	display_heading($title);
 
@@ -363,14 +365,19 @@ function display_order_header(&$order, $editable, $date_text, $display_tax_group
 
 	ref_row(_("Reference").':', 'ref', _('Reference number unique for this document type'), null, '');
 
+	table_section(2);
+
 	if (!is_company_currency($order->customer_currency))
 	{
-	    table_section(2);
-
 		label_row(_("Customer Currency:"), $order->customer_currency);
 		exchange_rate_display($order->customer_currency, get_company_currency(),
 			($editable ? $_POST['OrderDate'] : $order->document_date));
 	}
+
+	customer_credit_row($_POST['customer_id'], $order->credit);
+
+	label_row(_("Customer Discount:"), ($order->default_discount * 100) . "%");
+
 	table_section(3);
 
 	if (($order->trans_type != ST_CUSTDELIVERY) && ($order->pos != -1)) { // editable payment type
@@ -406,8 +413,6 @@ function display_order_header(&$order, $editable, $date_text, $display_tax_group
 		$change_prices = 1;
 	}
 
-	label_row(_("Customer Discount:"), ($order->default_discount * 100) . "%");
-	
 	table_section(4);
 
 	if ($editable)

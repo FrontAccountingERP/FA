@@ -29,14 +29,15 @@ function add_po(&$po_obj)
 	begin_transaction();
 
      /*Insert to purchase order header record */
-     $sql = "INSERT INTO ".TB_PREF."purch_orders (supplier_id, Comments, ord_date, reference, requisition_no, into_stock_location, delivery_address) VALUES(";
+     $sql = "INSERT INTO ".TB_PREF."purch_orders (supplier_id, Comments, ord_date, reference, requisition_no, into_stock_location, delivery_address, total) VALUES(";
      $sql .= db_escape($po_obj->supplier_id) . "," .
          db_escape($po_obj->Comments) . ",'" .
          date2sql($po_obj->orig_order_date) . "', " .
 		 db_escape($po_obj->reference) . ", " .
          db_escape($po_obj->supp_ref) . ", " .
          db_escape($po_obj->Location) . ", " .
-         db_escape($po_obj->delivery_address) . ")";
+         db_escape($po_obj->delivery_address) . ", " .
+         db_escape($po_obj->get_trans_total()) . ")";
 
 	db_query($sql, "The purchase order header record could not be inserted");
 
@@ -77,7 +78,8 @@ function update_po(&$po_obj)
 		requisition_no= ". db_escape( $po_obj->supp_ref). ",
 		into_stock_location=" . db_escape($po_obj->Location). ",
 		ord_date='" . date2sql($po_obj->orig_order_date) . "',
-		delivery_address=" . db_escape($po_obj->delivery_address);
+		delivery_address=" . db_escape($po_obj->delivery_address).",
+		total=". db_escape($po_obj->get_trans_total());
     $sql .= " WHERE order_no = " . $po_obj->order_no;
 	db_query($sql, "The purchase order could not be updated");
 
@@ -113,7 +115,7 @@ function update_po(&$po_obj)
 
 function read_po_header($order_no, &$order)
 {
-   	$sql = "SELECT ".TB_PREF."purch_orders.*, ".TB_PREF."suppliers.supp_name,
+   	$sql = "SELECT ".TB_PREF."purch_orders.*, ".TB_PREF."suppliers.supp_name, ".TB_PREF."suppliers.tax_group_id,
    		".TB_PREF."suppliers.curr_code, ".TB_PREF."locations.location_name
 		FROM ".TB_PREF."purch_orders, ".TB_PREF."suppliers, ".TB_PREF."locations
 		WHERE ".TB_PREF."purch_orders.supplier_id = ".TB_PREF."suppliers.supplier_id
@@ -121,7 +123,7 @@ function read_po_header($order_no, &$order)
 		AND ".TB_PREF."purch_orders.order_no = ".db_escape($order_no);
 
    	$result = db_query($sql, "The order cannot be retrieved");
-
+_vd($sql);
 	if (db_num_rows($result) == 1)
 	{
 
@@ -131,6 +133,8 @@ function read_po_header($order_no, &$order)
       	$order->supplier_id = $myrow["supplier_id"];
       	$order->supplier_name = $myrow["supp_name"];
       	$order->curr_code = $myrow["curr_code"];
+		$order->tax_group_id = $myrow['tax_group_id'];
+		$order->credit = get_current_supp_credit($order->supplier_id);
 
       	$order->orig_order_date = sql2date($myrow["ord_date"]);
       	$order->Comments = $myrow["comments"];
