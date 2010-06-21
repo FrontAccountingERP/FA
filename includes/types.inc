@@ -212,6 +212,14 @@ define('TABLESTYLE_NOBORDER', 3);
 define('TAG_ACCOUNT',   1);
 define('TAG_DIMENSION', 2);
 
+//----------------------------------------------------------------------------------
+// Payment term types
+
+define('PTT_PRE', 1);
+define('PTT_CASH', 2);
+define('PTT_DAYS', 3);
+define('PTT_FOLLOWING', 4);
+
 include_once($path_to_root . '/includes/sysnames.inc');
 
 ?>
