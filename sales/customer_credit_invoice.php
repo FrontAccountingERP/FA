@@ -348,7 +348,7 @@ function display_credit_options()
 	global $Ajax;
 	br();
 
-i	f (isset($_POST['_CreditType_update']))
+	if (isset($_POST['_CreditType_update']))
 		$Ajax->activate('options');
 
  	div_start('options');
