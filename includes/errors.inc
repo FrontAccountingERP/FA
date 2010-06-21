@@ -108,7 +108,7 @@ function end_flush() {
 
 function display_db_error($msg, $sql_statement=null, $exit=true)
 {
-	global $db, $debug;
+	global $db, $debug, $go_debug;
 
 	$warning = $msg==null;
 	$db_error = db_error_no();
@@ -128,6 +128,7 @@ function display_db_error($msg, $sql_statement=null, $exit=true)
 	if ($debug == 1) 
 	{
 		$str .= "sql that failed was : " . $sql_statement . "<br>";
+		if ($go_debug > 1) display_backtrace();
 	}
 	
 	$str .= "<br><br>";

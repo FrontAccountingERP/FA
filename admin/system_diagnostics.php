@@ -114,7 +114,7 @@ function tst_debug()
 	$test['type'] = 0;
 	$test['test'] = $go_debug ? _("Yes") : _("No");
 	$test['result'] = $go_debug != 0;
-	$test['comments'] = _('To switch debugging on set $go_debug=1 in config.php file');
+	$test['comments'] = _('To switch debugging on set $go_debug>1 in config.php file');
 
 	return $test;
 }
