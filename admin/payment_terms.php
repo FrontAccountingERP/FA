@@ -18,51 +18,79 @@ page(_($help_context = "Payment Terms"));
 include($path_to_root . "/includes/ui.inc");
 
 simple_page_mode(true);
+
+//------------------------------
+//	Helper to translate record content to more intuitive form
+//
+function term_days($myrow)
+{
+	return $myrow["day_in_following_month"] != 0 ? $myrow["day_in_following_month"] :
+		$myrow["days_before_due"];
+}
+
+function term_type($myrow)
+{
+	if ($myrow["day_in_following_month"] != 0)
+		return PTT_FOLLOWING;
+
+	$days = $myrow["days_before_due"];
+
+	return $days < 0 ? PTT_PRE : ($days ? PTT_DAYS : PTT_CASH);
+}
+
 //-------------------------------------------------------------------------------------------
 
 if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM') 
 {
 
-	$inpug_error = 0;
+	$input_error = 0;
 
 	if (!is_numeric($_POST['DayNumber']))
 	{
-		$inpug_error = 1;
+		$input_error = 1;
 		display_error( _("The number of days or the day in the following month must be numeric."));
 		set_focus('DayNumber');
 	} 
 	elseif (strlen($_POST['terms']) == 0) 
 	{
-		$inpug_error = 1;
+		$input_error = 1;
 		display_error( _("The Terms description must be entered."));
 		set_focus('terms');
 	} // there should be no limits by 30 here if they want longer payment terms. Joe Hunt 2010-05-31
 	//elseif ($_POST['DayNumber'] > 30 && !check_value('DaysOrFoll')) 
 	//{
-	//	$inpug_error = 1;
+	//	$input_error = 1;
 	//	display_error( _("When the check box to indicate a day in the following month is the due date, the due date cannot be a day after the 30th. A number between 1 and 30 is expected."));
 	//	set_focus('DayNumber');
 	//} 
-	elseif ($_POST['DayNumber'] > 500 && check_value('DaysOrFoll')) 
+	elseif ($_POST['DayNumber'] > 500 && get_post('type')==PTT_DAYS) 
 	{
-		$inpug_error = 1;
-		display_error( _("When the check box is not checked to indicate that the term expects a number of days after which accounts are due, the number entered should be less than 500 days."));
+		$input_error = 1;
+		display_error( _("When the Day of the Following Month is selected the number entered should be less than 500 days."));
 		set_focus('DayNumber');
 	}
 
 	if ($_POST['DayNumber'] == '')
 		$_POST['DayNumber'] = 0;
 
-	if ($inpug_error != 1)
+	if ($input_error != 1)
 	{
+		$type = get_post('type');
+		$days = input_num('DayNumber');
+		$from_now = ($type != PTT_FOLLOWING);
+		if ($type == PTT_CASH)
+			$days = 0;
+		if ($type == PTT_PRE)
+			$days = -1;
+
     	if ($selected_id != -1) 
     	{
-    		update_payment_terms($selected_id, check_value('DaysOrFoll'), $_POST['terms'], $_POST['DayNumber']); 
+    		update_payment_terms($selected_id, $from_now, $_POST['terms'], $days); 
  			$note = _('Selected payment terms have been updated');
     	} 
     	else 
     	{
-			add_payment_terms(check_value('DaysOrFoll'), $_POST['terms'], $_POST['DayNumber']);
+			add_payment_terms($from_now, $_POST['terms'], $days);
 			$note = _('New payment terms have been added');
     	}
     	//run the sql from either of the above possibilites
@@ -108,48 +136,36 @@ $result = get_payment_terms_all(check_value('show_inactive'));
 
 start_form();
 start_table(TABLESTYLE);
-$th = array(_("Description"), _("Following Month On"), _("Due After (Days)"), "", "");
+$th = array(_("Description"), _("Type"), _("Due After/Days"), "", "");
 inactive_control_column($th);
 table_header($th);
 
 $k = 0; //row colour counter
 while ($myrow = db_fetch($result)) 
 {
-	if ($myrow["day_in_following_month"] == 0) 
-	{
-		$full_text = _("N/A");
-	} 
-	else 
-	{
-		$full_text = $myrow["day_in_following_month"];
-	}
-
-	if ($myrow["days_before_due"] == 0) 
-	{
-		$after_text = _("N/A");
-	} 
-	else 
-	{
-		$after_text = $myrow["days_before_due"] . " " . _("days");
-	}
 
 	alt_table_row_color($k);
-
+	$type = term_type($myrow);
+	$days = term_days($myrow);
     label_cell($myrow["terms"]);
-    label_cell($full_text);
-    label_cell($after_text);
+    label_cell($pterm_types[$type]);
+    label_cell($type == PTT_DAYS ? "$days "._("days") : ($type == PTT_FOLLOWING ? $days : _("N/A")));
 	inactive_control_cell($myrow["terms_indicator"], $myrow["inactive"], 'payment_terms', "terms_indicator");
  	edit_button_cell("Edit".$myrow["terms_indicator"], _("Edit"));
  	delete_button_cell("Delete".$myrow["terms_indicator"], _("Delete"));
     end_row();
 
-
-} //END WHILE LIST LOOP
+}
 
 inactive_control_row($th);
 end_table(1);
 
 //-------------------------------------------------------------------------------------------------
+if (list_updated('type')) {
+	$Ajax->activate('edits');
+}
+
+div_start('edits');
 
 start_table(TABLESTYLE2);
 
@@ -161,27 +177,23 @@ if ($selected_id != -1)
 		$myrow = get_payment_terms($selected_id);
 
 		$_POST['terms']  = $myrow["terms"];
-		$days_before_due  = $myrow["days_before_due"];
-		$day_in_following_month  = $myrow["day_in_following_month"];
-		unset($_POST['DayNumber']);
+		$_POST['DayNumber'] = term_days($myrow);
+		$_POST['type'] = term_type($myrow);
 	}
 	hidden('selected_id', $selected_id);
 }
+
 text_row(_("Terms Description:"), 'terms', null, 40, 40);
 
-check_row(_("Due After A Given No. Of Days:"), 'DaysOrFoll', $day_in_following_month == 0);
+payment_type_list_row(_("Payment type:"), 'type', null, true);
 
-if (!isset($_POST['DayNumber'])) 
-{
-    if ($days_before_due != 0)
-    	$_POST['DayNumber'] = $days_before_due;
-    else
-    	$_POST['DayNumber'] = $day_in_following_month;
-}
-
-text_row_ex(_("Days (Or Day In Following Month):"), 'DayNumber', 3);
+if ( in_array(get_post('type'), array(PTT_FOLLOWING, PTT_DAYS))) 
+	text_row_ex(_("Days (Or Day In Following Month):"), 'DayNumber', 3);
+else
+	hidden('DayNumber', 0);
 
 end_table(1);
+div_end();
 
 submit_add_or_update_center($selected_id == -1, '', 'both');
 
