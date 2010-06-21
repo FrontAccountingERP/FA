@@ -22,7 +22,7 @@ class allocation
 	var $type;
 	var $person_id = '';
 	var $person_name = '';
-	var $person_type;
+	var $person_type;	// true - supplier, otherwise customer
 	var $date_;
 	var $amount = 0; /*Total amount of the transaction in FX */
 	
@@ -81,10 +81,12 @@ class allocation
 		}
         return $this->add_item($type, $type_no, $date_, $due_date, 
         	$amount, $amount_allocated, $current_allocated);
-	}						
+	}
 
 	//
 	//	Read payment or credit current/available allocations to cart.
+	//
+	// FIXME - read all transactions below twice seems to be suboptimal
 	//
 	function read($type = null, $trans_no = 0) 
 	{
@@ -131,7 +133,6 @@ class allocation
 				$myrow["alloc"], // trans total allocated
 				0); // this allocation
 		}
-
 		if ($trans_no == 0) return; // this is new payment
 
 	/* Now get trans that might have previously been allocated to by this trans
@@ -144,7 +145,7 @@ class allocation
 		else
 		 	$trans_items = get_allocatable_to_cust_transactions($this->person_id, 
 				$trans_no, $type);
-	
+
 		while ($myrow = db_fetch($trans_items))
 		{
 			$this->add_or_update_item ($myrow["type"], $myrow["trans_no"],
@@ -188,7 +189,6 @@ class allocation
 						$alloc_item->type_no, $alloc_item->current_allocated);
 				}
 				// Exchange Variations Joe Hunt 2008-09-20 ////////////////////
-
 				exchange_variation($this->type, $this->trans_no,
 					$alloc_item->type, $alloc_item->type_no, $this->date_,
 					$alloc_item->current_allocated,
@@ -206,7 +206,7 @@ class allocation
 		else
 		 	update_debtor_trans_allocation($this->type,	$this->trans_no, 
 				$total_allocated);
-	
+
 		commit_transaction();
 
 	}
