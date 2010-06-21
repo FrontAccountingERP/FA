@@ -217,7 +217,6 @@ function branch_settings($selected_id) {
 			$_POST['br_ref'] = $myrow["debtor_ref"];
 			$_POST['contact_name'] = _('Main Branch');
 			$_POST['br_address'] = $_POST['br_post_address'] = $myrow["address"];
-			$_POST['email'] = $myrow['email'];
 		}
 		$_POST['branch_code'] = "";
 		if (!isset($_POST['sales_account']) || !isset($_POST['sales_discount_account']))
@@ -316,6 +315,9 @@ $table->set_inactive_ctrl('cust_branch', 'branch_code');
 
 //$table->width = "85%";
 display_db_pager($table);
+}
+else
+	display_note(_("The selected customer does not have any branches. Please create at least one branch."));
 
 tabbed_content_start('tabs', array(
 		'settings' => array('&General settings', $selected_id!=-1),
@@ -338,9 +340,6 @@ tabbed_content_start('tabs', array(
 	hidden('selected_id', $selected_id);
 br();
 tabbed_content_end();
-}
-else
-	display_note(_("The selected customer does not have any branches. Please create at least one branch."));
 
 
 end_form();
