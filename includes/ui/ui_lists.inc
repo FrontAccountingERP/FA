@@ -2254,4 +2254,16 @@ function crm_category_types_list_row($label, $name, $selected_id=null, $filter=a
 	echo "</td></tr>\n";
 }
 
+function payment_type_list_row($label, $name, $selected_id=null, $submit_on_change=false)
+{
+	global $pterm_types;
+	
+	echo "<tr><td class='label'>$label</td><td>";
+	echo array_selector($name, $selected_id, $pterm_types, 
+		array( 
+			'select_submit'=> $submit_on_change
+		) );
+	echo "</td></tr>\n";
+}
+
 ?>
