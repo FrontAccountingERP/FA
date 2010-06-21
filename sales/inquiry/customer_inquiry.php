@@ -23,7 +23,7 @@ if ($use_popup_windows)
 	$js .= get_js_open_window(900, 500);
 if ($use_date_picker)
 	$js .= get_js_date_picker();
-page(_($help_context = "Customer Transactions"), false, false, "", $js);
+page(_($help_context = "Customer Transactions"), isset($_GET['customer_id']), false, "", $js);
 
 
 if (isset($_GET['customer_id']))
@@ -154,11 +154,9 @@ function fmt_credit($row)
 
 function credit_link($row)
 {
-	return $row['type'] == ST_SALESINVOICE && $row["TotalAmount"] - $row["Allocated"] > 0 ?
-		pager_link(_("Credit This"),
-			"/sales/customer_credit_invoice.php?InvoiceNumber=".
-			$row['trans_no'], ICON_CREDIT)
-			: '';
+	return $row['type'] == ST_SALESINVOICE && $row["Outstanding"] > 0 ?
+		pager_link(_("Credit This") ,
+			"/sales/customer_credit_invoice.php?InvoiceNumber=". $row['trans_no'], ICON_CREDIT):'';
 }
 
 function edit_link($row)
