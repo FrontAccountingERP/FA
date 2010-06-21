@@ -88,27 +88,13 @@ function write_credit_note(&$credit_note, $write_off_acc)
 		void_trans_tax_details(ST_CUSTCREDIT, $credit_no);
 	}
 	if ($credit_invoice) {
-		$invoice_alloc_balance = get_debtor_trans_allocation_balance(ST_SALESINVOICE, $credit_invoice);
 		update_customer_trans_version(get_parent_type(ST_CUSTCREDIT), $credit_note->src_docs );
-		if ($invoice_alloc_balance > 0) { 	//the invoice is not already fully allocated 
-			$total = $credit_note_total + $credit_note->freight_cost +
-			    $items_added_tax + $freight_added_tax;
 
-			$allocate_amount = ($invoice_alloc_balance > $total) ? $total : $invoice_alloc_balance;
-			/*Now insert the allocation record if > 0 */
-			if ($allocate_amount != 0) {
-				update_debtor_trans_allocation(ST_SALESINVOICE, $credit_invoice, $allocate_amount);
-				update_debtor_trans_allocation(ST_CUSTCREDIT, $credit_no, $allocate_amount); // ***
-				add_cust_allocation($allocate_amount, ST_CUSTCREDIT, $credit_no, ST_SALESINVOICE, $credit_invoice);
-				// Exchange Variations Joe Hunt 2008-09-20 ////////////////////////////////////////
+		$total = $credit_note_total + $credit_note->freight_cost + $items_added_tax 
+			+ $freight_added_tax;
 
-				exchange_variation(ST_CUSTCREDIT, $credit_no, ST_SALESINVOICE, $credit_invoice, $credit_date,
-					$allocate_amount, PT_CUSTOMER);
-
-				///////////////////////////////////////////////////////////////////////////
-
-			}
-		}
+		if (!credit_sales_invoice_allocate($credit_invoice, $credit_no, $total, $credit_date))
+			return false;
 	}
 
 	$total = 0;
