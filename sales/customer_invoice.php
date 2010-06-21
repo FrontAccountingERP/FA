@@ -75,7 +75,7 @@ if (isset($_GET['AddedID'])) {
 	echo '<br>';
 	display_note(print_document_link($invoice_no, _("&Print This Invoice"), true, ST_SALESINVOICE));
 
-	hyperlink_no_params($path_to_root . "/sales/inquiry/customer_inquiry.php", _("Select A Different &Invoice to Modify"));
+	hyperlink_no_params($path_to_root . "/sales/inquiry/customer_inquiry.php", _("Select Another &Invoice to Modify"));
 
 	display_footer_exit();
 
