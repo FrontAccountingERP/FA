@@ -229,22 +229,12 @@ class cart
 				if ($type == ST_SALESINVOICE) {
 					$this->due_date =
 						get_invoice_duedate($this->payment, $this->document_date);
-					$this->cash = $this->payment_terms['cash_sale'];
-					if ($this->cash) {
-						$this->Location = $pos['pos_location'];
-						$this->location_name = $pos['location_name'];
-						$this->cash_account = $pos['pos_account'];
-						$this->account_name = $pos['bank_account_name'];
-					}
 				} else
 					$this->due_date =
 						add_days($this->document_date, $SysPrefs->default_delivery_required_by());
+			$this->pos = user_pos();
 			}
 		$this->credit = get_current_cust_credit($this->customer_id);
-		$this->pos = user_pos();
-		$pos = get_sales_point($this->pos);
-		if (!$pos['cash_sale'] && !$pos['credit_sale']) 
-			$this->pos = -1; // mark not editable payment type
 	}
 
 	//-------------------------------------------------------------------------
@@ -308,6 +298,16 @@ class cart
 		$this->payment_terms = get_payment_terms($payment);
 		$this->cash = $this->payment_terms['cash_sale'];
 		$this->cash_discount = $cdiscount;
+
+		$pos = get_sales_point($this->pos);
+		if (!$pos['cash_sale'] || !$pos['credit_sale']) 
+		  	$this->pos = -1; // mark not editable payment type
+		if ($this->cash) {
+			$this->Location = $pos['pos_location'];
+			$this->location_name = $pos['location_name'];
+			$this->cash_account = $pos['pos_account'];
+			$this->account_name = $pos['bank_account_name'];
+		}
 		$this->credit = get_current_cust_credit($customer_id);
 	}
 
