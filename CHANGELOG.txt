@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+22-Jun-2010 Joe Hunt
+# Minor select bug in create recurrent invoices
+$ /sales/create_recurrent_invoices.php
+
 18-Jun-2010 Joe Hunt
 - Removed constraint on day values in Payment Terms
 $ /admin/payment_terms.php
