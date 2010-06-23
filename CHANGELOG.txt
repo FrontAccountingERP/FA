@@ -19,11 +19,15 @@ Legend:
 ! -> Note
 $ -> Affected files
 
-24-Jun-2010 Janusz Dobrowolski
+23-Jun-2010 Janusz Dobrowolski
+# Restored customer payments display
+$ /sales/includes/db/cust_trans_db.inc
+
+22-Jun-2010 Janusz Dobrowolski
 # Fixed pos parameters retrieval in direct invoice
 $ /sales/includes/cart_class.inc
 
-24-Jun-2010 Janusz Dobrowolski
+21-Jun-2010 Janusz Dobrowolski
 + Support for current credit display
 $ /includes/ui/ui_input.inc
   /purchasing/po_entry_items.php
