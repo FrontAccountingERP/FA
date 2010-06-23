@@ -240,12 +240,17 @@ function add_supp_invoice($supp_trans, $invoice_no=0) // do not receive as ref b
 				$amt = ($mat_cost - $deliveries[1]) * $deliveries[0]; // $amt in home currency
 				if ($amt != 0.0)
 				{
+					$_s = $entered_grn->item_code;
+					$_d = $deliveries[0];
+					$_od = $old_date;
+					$_cd = $mat_cost - $deliveries[1];
+					$memo = _("Cost difference adjustment for $_s. $_d items delivered since $_od. The cost difference is $_cd");
 					add_gl_trans($trans_type, $invoice_id, $date_,	$stock_gl_code["cogs_account"],
-						$stock_gl_code['dimension_id'], $stock_gl_code['dimension2_id'], _("Cost diff."),
+						$stock_gl_code['dimension_id'], $stock_gl_code['dimension2_id'], $memo,
 						$amt, null, null, null,
 						"The general ledger transaction could not be added for the price variance of the inventory item");
 					add_gl_trans($trans_type, $invoice_id, $date_,	$iv_act,
-						0, 0, _("Cost diff."), -$amt, null, null, null,
+						0, 0, $memo, -$amt, null, null, null,
 						"The general ledger transaction could not be added for the price variance of the inventory item");
 				}		
 				update_stock_move_pid(ST_CUSTDELIVERY, $entered_grn->item_code, $old_date, $date_, 0, $mat_cost);

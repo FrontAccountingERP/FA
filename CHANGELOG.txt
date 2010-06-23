@@ -19,6 +19,12 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+23-Jun-2010 Chaitanya/Joe Hunt
+! Changed memo message in supp invoice price variance
+$ /purchasing/includes/db/invoice_db.inc
+! Changed Ourstanding GRN Report to use Actual Price instead of Std Cost.
+$ /reporting/rep204.php
+
 23-Jun-2010 Janusz Dobrowolski
 # Restored customer payments display
 $ /sales/includes/db/cust_trans_db.inc
