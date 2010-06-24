@@ -88,22 +88,22 @@ function get_gl_account_name($code)
 
 function gl_account_in_company_defaults($acc)
 {
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."company WHERE debtors_act=$acc 
-		OR pyt_discount_act=$acc
-		OR creditors_act=$acc 
-		OR bank_charge_act=$acc 
-		OR exchange_diff_act=$acc
-		OR profit_loss_year_act=$acc
-		OR retained_earnings_act=$acc
-		OR freight_act=$acc
-		OR default_sales_act=$acc 
-		OR default_sales_discount_act=$acc
-		OR default_prompt_payment_act=$acc
-		OR default_inventory_act=$acc
-		OR default_cogs_act=$acc
-		OR default_adj_act=$acc
-		OR default_inv_sales_act=$acc
-		OR default_assembly_act=$acc";
+	$sql= "SELECT COUNT(*) FROM ".TB_PREF."sys_prefs WHERE (name='debtors_act' 
+		OR name='pyt_discount_act'
+		OR name='creditors_act' 
+		OR name='bank_charge_act' 
+		OR name='exchange_diff_act'
+		OR name='profit_loss_year_act'
+		OR name='retained_earnings_act'
+		OR name='freight_act'
+		OR name='default_sales_act' 
+		OR name='default_sales_discount_act'
+		OR name='default_prompt_payment_act'
+		OR name='default_inventory_act'
+		OR name='default_cogs_act'
+		OR name='default_adj_act'
+		OR name='default_inv_sales_act'
+		OR name='default_assembly_act') AND value=$acc";
 	$result = db_query($sql,"Couldn't test for default company GL codes");
 
 	$myrow = db_fetch_row($result);

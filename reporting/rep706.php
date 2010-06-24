@@ -40,7 +40,7 @@ function display_type ($type, $typename, $from, $to, $convert, &$dec, &$rep, $di
 	$result = get_gl_accounts(null, null, $type);	
 	while ($account=db_fetch($result))
 	{
-		if ($tags != -1)
+		if ($tags != -1 && is_array($tags) && $tags[0] != false)
 		{
 			if (!is_record_in_tags($tags, TAG_ACCOUNT, $account['account_code']))
 				continue;

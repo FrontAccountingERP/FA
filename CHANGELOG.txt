@@ -19,6 +19,14 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+24-Jun-2010 Joe Hunt
+# Rewritten function gl_account_in_company_defaults in gl_db_accounts.inc
+$ /gl/includes/db/gl_db_accounts.inc
+# More test on tags due to db error in reports with tags.
+$ /reporting/rep705.php
+  /reporting/rep706.php
+  /reporting/rep707.php
+  
 23-Jun-2010 Chaitanya/Joe Hunt
 ! Changed memo message in supp invoice price variance
 $ /purchasing/includes/db/invoice_db.inc
