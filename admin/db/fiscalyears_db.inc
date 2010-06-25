@@ -236,7 +236,7 @@ function delete_this_fiscalyear($selected_id)
 	{
 		if ($row['type'] == ST_SALESINVOICE)
 		{
-			$deliveries = get_parent_trans(ST_SALESINVOICE,$row['trans_no']);
+			$deliveries = get_sales_parent_numbers($row['type'], $row['trans_no']);
 			foreach ($deliveries as $delivery)
 			{
 				$sql = "DELETE FROM ".TB_PREF."debtor_trans_details WHERE debtor_trans_no = $delivery AND debtor_trans_type = ".ST_CUSTDELIVERY;

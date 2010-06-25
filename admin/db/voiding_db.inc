@@ -45,13 +45,10 @@ function void_transaction($type, $type_no, $date_, $memo_)
 				return false;
 			if ($type == ST_CUSTDELIVERY)	// added 04 Oct 2008 by Joe Hunt. If delivery note has a not voided invoice, then NO.
 			{
-				$delivery = get_customer_trans($type_no, $type);
-				if ($delivery['trans_link'] != 0)
-				{
-					if (get_voided_entry(ST_SALESINVOICE, $delivery['trans_link']) === false)
+				$childs = get_sales_child_trans($type_no, $type);
+				if ($childs && db_num_rows($childs))
 						return false;
-				}
-			}	
+			}
 			post_void_customer_trans($type, $type_no);
 			break;
 

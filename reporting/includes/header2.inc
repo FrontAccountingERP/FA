@@ -246,22 +246,14 @@
 		$col += $width;	
 		if ($doctype == ST_SALESINVOICE)
 		{
-			$deliveries = get_parent_trans(ST_SALESINVOICE, $this->formData['trans_no']);
-			$line = "";
-			foreach ($deliveries as $delivery)
+			$deliveries = get_sales_parent_numbers(ST_SALESINVOICE, $this->formData['trans_no']);
+			if ($print_invoice_no == 0)
 			{
-				if ($print_invoice_no == 0)
-				{
-					$ref = get_reference(ST_CUSTDELIVERY, $delivery);
-					if ($ref)
-						$delivery = $ref;
-				}		
-				if ($line == "")
-					$line .= "$delivery";
-				else
-					$line .= ",$delivery";
-			}		
-			$this->TextWrap($col, $this->row, $width, $line, 'C');
+				foreach($deliveries as $n => $delivery) {
+					$deliveries[$n] = get_reference(ST_CUSTDELIVERY, $delivery);
+				}
+			}
+			$this->TextWrap($col, $this->row, $width, implode(',', $deliveries), 'C');
 		}
 		elseif ($doctype == ST_CUSTDELIVERY)
 		{

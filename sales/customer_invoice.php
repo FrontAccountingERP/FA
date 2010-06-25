@@ -128,7 +128,7 @@ if ( (isset($_GET['DeliveryNumber']) && ($_GET['DeliveryNumber'] > 0) )
 
 } elseif (isset($_GET['ModifyInvoice']) && $_GET['ModifyInvoice'] > 0) {
 
-	if ( get_parent_trans(ST_SALESINVOICE, $_GET['ModifyInvoice']) == 0) { // 1.xx compatibility hack
+	if ( get_sales_parent_numbers(ST_SALESINVOICE, $_GET['ModifyInvoice']) == 0) { // 1.xx compatibility hack
 		echo"<center><br><b>" . _("There are no delivery notes for this invoice.<br>
 		Most likely this invoice was created in Front Accounting version prior to 2.0
 		and therefore can not be modified.") . "</b></center>";
@@ -226,8 +226,10 @@ function copy_to_cart()
 	$cart->freight_cost = input_num('ChargeFreightCost');
 	$cart->document_date =  $_POST['InvoiceDate'];
 	$cart->due_date =  $_POST['due_date'];
-	$cart->payment = $_POST['payment'];
-	$cart->payment_terms = get_payment_terms($_POST['payment']);
+	if ($cart->pos != -1) {
+		$cart->payment = $_POST['payment'];
+		$cart->payment_terms = get_payment_terms($_POST['payment']);
+	}
 	$cart->Comments = $_POST['Comments'];
 	if ($_SESSION['Items']->trans_no == 0)
 		$cart->reference = $_POST['ref'];

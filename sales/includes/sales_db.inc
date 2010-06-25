@@ -196,48 +196,6 @@ function get_kit_price($item_code, $currency, $sales_type_id, $factor=null,
 	return $kit_price;
 }
 
-//-----------------------------------------------------------------------------
-
-function set_document_parent($cart)
-{
-	$inv_no = key($cart->trans_no);
-
-	if (count($cart->src_docs) == 1) {
-
-		// if this child document has only one parent - update child link
-		$src = array_keys($cart->src_docs);
-		$del_no = reset($src);
-
-		$sql = 'UPDATE '.TB_PREF.'debtor_trans SET trans_link = ' . $del_no .
-			' WHERE type='.db_escape($cart->trans_type).' AND trans_no='. $inv_no ;
-		db_query($sql, 'Child document link cannot be updated');
-
-	}
-	if ($cart->trans_type != ST_SALESINVOICE)
-		return 0;
-
-	// the rest is batch invoice specific
-
-	foreach ($cart->line_items as $line) {
-		if ($line->quantity != $line->qty_dispatched) {
-			return 1;	// this is partial invoice
-		}
-	}
-
-	$sql = 'UPDATE '.TB_PREF.'debtor_trans SET trans_link = ' . $inv_no .
-	' WHERE type='.get_parent_type($cart->trans_type).' AND (';
-
-	$deliveries = array_keys($cart->src_docs);
-
-	foreach ($deliveries as $key=>$del)
-		$deliveries[$key] = 'trans_no='.$del;
-
-	$sql .= implode(' OR ', $deliveries) . ')';
-	db_query($sql, 'Delivery links cannot be updated');
-
-	return 0; // batch or complete invoice
-}
-
 //--------------------------------------------------------------------------------------------------
 function update_parent_line($doc_type, $line_id, $qty_dispatched, $auto=false)
 {
@@ -351,4 +309,99 @@ function read_sales_trans($doc_type, $trans_no, &$cart)
 	return true;
 }
 //----------------------------------------------------------------------------------------
+
+function get_sales_child_lines($trans_type, $trans_no, $lines=true)
+{
+	if (!get_child_type($trans_type))
+		return false;
+	if (!is_array($trans_no)) {
+		$trans_no = array($trans_no);
+	}
+	
+	$trtbl = $trans_type == ST_SALESORDER ? "sales_order_details" : "debtor_trans_details";
+	
+	$rel = $trans_type == ST_SALESORDER ? "trans.trans_type=$trans_type"
+		. " AND trans.order_no IN(". implode(',', array_values($trans_no)).")"
+		: "trans.debtor_trans_type=$trans_type"
+		. " AND trans.debtor_trans_no IN(". implode(',', array_values($trans_no)).")";
+
+	$sql = "SELECT child.*
+			FROM
+				".TB_PREF."debtor_trans_details child,
+				".TB_PREF."$trtbl trans
+			WHERE
+				$rel AND trans.id=child.src_id";
+
+	if (!$lines)
+		$sql .= " GROUP BY child.debtor_trans_no";
+
+	$sql .= " ORDER BY child.debtor_trans_no";
+	
+	return db_query($sql, "can't retrieve child trans");
+}
+
+function get_sales_child_numbers($trans_type, $trans_no)
+{
+	$trans = array();
+	$res = get_sales_child_lines($trans_type, $trans_no, false);
+	while ($line = db_fetch($res)) {
+		$trans[] = $line['debtor_trans_no'];
+	}
+	return $trans;
+}
+
+function get_sales_parent_lines($trans_type, $trans_no, $lines=true)
+{
+	$partype = get_parent_type($trans_type);
+
+	if (!$partype)
+		return false;
+
+	$partbl = $partype == ST_SALESORDER ? "sales_order_details" : "debtor_trans_details";
+	$parent_no = $partype == ST_SALESORDER ? "parent.order_no" : "parent.debtor_trans_no";
+	$sql = "SELECT parent.*
+			FROM
+				".TB_PREF."$partbl parent
+			LEFT JOIN ".TB_PREF."debtor_trans_details trans 
+				ON trans.src_id=parent.id
+			WHERE
+				trans.debtor_trans_type=$trans_type AND trans.debtor_trans_no=$trans_no";
+	if (!$lines)
+		$sql .= " GROUP BY $parent_no";
+	
+	$sql .= " ORDER BY $parent_no";
+	
+	return db_query($sql, "can't retrieve child trans");
+
+}
+
+function get_sales_parent_numbers($trans_type, $trans_no)
+{
+	$trans = array();
+	$res = get_sales_parent_lines($trans_type, $trans_no, false);
+	while ($line = db_fetch($res))
+		$trans[] = $line[$trans_type==ST_CUSTDELIVERY ? 'order_no' : 'debtor_trans_no'];
+	return $trans;
+}
+
+//----------------------------------------------------------------------------------------
+
+function get_sales_child_documents($trans_type, $trans_no)
+{
+	// FIXME -  credit notes retrieved here should be those linked to invoices containing 
+	// at least one line from related invoice
+
+	if (!count($trans_no))
+		return false;
+	$childs = get_sales_child_numbers($trans_type, $trans_no, false);
+	if (!count($childs))
+		return false;
+		
+	$sql = "SELECT * FROM ".TB_PREF."debtor_trans
+		WHERE type=".get_child_type($trans_type)." AND trans_no IN(". implode(',', array_values($childs)).")";
+
+	return db_query($sql,"The related credit notes could not be retreived");
+}
+
+
 ?>

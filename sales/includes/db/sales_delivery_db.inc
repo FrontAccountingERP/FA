@@ -42,7 +42,7 @@ function write_sales_delivery(&$delivery,$bo_policy)
 		$delivery->tax_included ? 0 : $tax_total-$freight_tax,
 		$delivery->freight_cost,
 		$delivery->tax_included ? 0 : $freight_tax,
-		$delivery->sales_type, $delivery->order_no, 0,
+		$delivery->sales_type, $delivery->order_no,
 		$delivery->ship_via, $delivery->due_date, 0, 0, $delivery->dimension_id, 
 		$delivery->dimension2_id, $delivery->payment);
 
@@ -72,7 +72,7 @@ function write_sales_delivery(&$delivery,$bo_policy)
 		write_customer_trans_detail_item(ST_CUSTDELIVERY, $delivery_no, $delivery_line->stock_id,
 			$delivery_line->item_description, $delivery_line->qty_dispatched,
 			$delivery_line->line_price(), $line_tax,
-			$delivery_line->discount_percent, $delivery_line->standard_cost,
+			$delivery_line->discount_percent, $delivery_line->standard_cost, $delivery_line->src_id,
 			$trans_no ? $delivery_line->id : 0);
 
 	// Now update sales_order_details for the quantity delivered

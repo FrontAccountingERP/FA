@@ -96,7 +96,7 @@ start_row();
 label_cells(_("Invoice Date"), sql2date($myrow["tran_date"]), "class='tableheader2'", "nowrap");
 label_cells(_("Due Date"), sql2date($myrow["due_date"]), "class='tableheader2'", "nowrap");
 label_cells(_("Deliveries"), get_customer_trans_view_str(ST_CUSTDELIVERY, 
-	get_parent_trans(ST_SALESINVOICE,$trans_id)), "class='tableheader2'");
+	get_sales_parent_numbers(ST_SALESINVOICE, $trans_id)), "class='tableheader2'");
 end_row();
 comments_display_row(ST_SALESINVOICE, $trans_id);
 end_table();

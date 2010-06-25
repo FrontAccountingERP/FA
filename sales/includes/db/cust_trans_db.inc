@@ -9,38 +9,6 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-//------------------------------------------------------------------------------
-//	Retreive parent document number(s) for given transaction
-//
-function get_parent_trans($trans_type, $trans_no) {
-
-	$sql = 'SELECT trans_link FROM
-			'.TB_PREF.'debtor_trans WHERE
-			(trans_no='.db_escape($trans_no).' AND type='.db_escape($trans_type).' AND trans_link!=0)';
-
-	$result = db_query($sql, 'Parent document numbers cannot be retrieved');
-
-	if (db_num_rows($result)) {
-		$link = db_fetch($result);
-		return array($link['trans_link']);
-	}
-	if ($trans_type!=ST_SALESINVOICE) return 0;	// this is credit note with no parent invoice
-	// invoice: find batch invoice parent trans.
-	$sql = 'SELECT trans_no FROM
-			'.TB_PREF.'debtor_trans WHERE
-			(trans_link='.db_escape($trans_no).' AND type='. get_parent_type($trans_type) .')';
-
-	$result = db_query($sql, 'Delivery links cannot be retrieved');
-
-	$delivery = array();
-	if(db_num_rows($result)>0) {
-		while($link = db_fetch($result)) {
-			$delivery[] = $link['trans_no'];
-		}
-	}
-	return count($delivery) ? $delivery : 0;
-}
-
 //----------------------------------------------------------------------------------------
 // Mark changes in debtor_trans_details
 //
@@ -87,7 +55,7 @@ function get_customer_trans_version($type, $trans_no) {
 // date_ is display date (non-sql)
 function write_customer_trans($trans_type, $trans_no, $debtor_no, $BranchNo,
 	$date_, $reference, $Total, $discount=0, $Tax=0, $Freight=0, $FreightTax=0,
-	$sales_type=0, $order_no=0, $trans_link=0, $ship_via=0, $due_date="",
+	$sales_type=0, $order_no=0, $ship_via=0, $due_date="",
 	$AllocAmt=0, $rate=0, $dimension_id=0, $dimension2_id=0, $payment_terms=null)
 {
 	$new = $trans_no==0;
@@ -114,14 +82,14 @@ function write_customer_trans($trans_type, $trans_no, $debtor_no, $BranchNo,
 		reference, tpe,
 		order_, ov_amount, ov_discount,
 		ov_gst, ov_freight, ov_freight_tax,
-		rate, ship_via, alloc, trans_link,
+		rate, ship_via, alloc,
 		dimension_id, dimension2_id, payment_terms
 		) VALUES ($trans_no, ".db_escape($trans_type).",
 		".db_escape($debtor_no).", ".db_escape($BranchNo).",
 		'$SQLDate', '$SQLDueDate', ".db_escape($reference).",
 		".db_escape($sales_type).", ".db_escape($order_no).", $Total, ".db_escape($discount).", $Tax,
 		".db_escape($Freight).",
-		$FreightTax, $rate, ".db_escape($ship_via).", $AllocAmt, ".db_escape($trans_link).",
+		$FreightTax, $rate, ".db_escape($ship_via).", $AllocAmt,
 		".db_escape($dimension_id).", ".db_escape($dimension2_id).", "
 		.db_escape($payment_terms).")";
 	} else {	// may be optional argument should stay unchanged ?
@@ -131,7 +99,7 @@ function write_customer_trans($trans_type, $trans_no, $debtor_no, $BranchNo,
 		reference=".db_escape($reference).", tpe=".db_escape($sales_type).", order_=".db_escape($order_no).",
 		ov_amount=$Total, ov_discount=".db_escape($discount).", ov_gst=$Tax,
 		ov_freight=".db_escape($Freight).", ov_freight_tax=$FreightTax, rate=$rate,
-		ship_via=".db_escape($ship_via).", alloc=$AllocAmt, trans_link=$trans_link,
+		ship_via=".db_escape($ship_via).", alloc=$AllocAmt,
 		dimension_id=".db_escape($dimension_id).", dimension2_id=".db_escape($dimension2_id).",
 		payment_terms=".db_escape($payment_terms)."
 		WHERE trans_no=$trans_no AND type=".db_escape($trans_type);
@@ -147,7 +115,7 @@ function write_customer_trans($trans_type, $trans_no, $debtor_no, $BranchNo,
 
 function reinsert_customer_trans($trans_type, $trans_no, $debtor_no, $BranchNo,
 	$date_, $reference, $Total, $discount=0, $Tax=0, $Freight=0, $FreightTax=0,
-	$sales_type=0, $order_no=0, $trans_link=0, $ship_via=0, $due_date="",
+	$sales_type=0, $order_no=0, $ship_via=0, $due_date="",
 	$AllocAmt=0, $rate=0, $dimension_id=0, $dimension2_id=0)
 {
 	if ($trans_no == '')
@@ -173,14 +141,14 @@ function reinsert_customer_trans($trans_type, $trans_no, $debtor_no, $BranchNo,
 		reference, tpe,
 		order_, ov_amount, ov_discount,
 		ov_gst, ov_freight, ov_freight_tax,
-		rate, ship_via, alloc, trans_link,
+		rate, ship_via, alloc,
 		dimension_id, dimension2_id
 		) VALUES ($trans_no, ".db_escape($trans_type).",
 		".db_escape($debtor_no).", ".db_escape($BranchNo).",
 		'$SQLDate', '$SQLDueDate', ".db_escape($reference).",
 		".db_escape($sales_type).", ".db_escape($order_no).", $Total, ".db_escape($discount).", $Tax,
 		".db_escape($Freight).",
-		$FreightTax, $rate, ".db_escape($ship_via).", $AllocAmt, ".db_escape($trans_link).",
+		$FreightTax, $rate, ".db_escape($ship_via).", $AllocAmt,
 		".db_escape($dimension_id).", ".db_escape($dimension2_id).")";
 
 	db_query($sql, "The debtor transaction record could not be inserted");
@@ -297,27 +265,6 @@ function get_customer_trans_order($type, $type_no)
 
 //----------------------------------------------------------------------------------------
 
-function get_related_documents($type, $trans_no)
-{
-	$sql = "SELECT * FROM ".TB_PREF."debtor_trans WHERE type=$type AND order_=".db_escape($trans_no);
-	return db_query($sql,"The related documents could not be retreived");
-}
-//----------------------------------------------------------------------------------------
-
-function get_related_credits($inv_numbers)
-{
-	// FIXME -  credit notes retrieved here should be those linked to invoices containing 
-	// at least one line from this order
-	
-
-	$sql = "SELECT * FROM ".TB_PREF."debtor_trans WHERE type=".ST_CUSTCREDIT
-		." AND trans_link IN(". implode(',', array_values($inv_numbers)).")";
-
-	return db_query($sql,"The related credit notes could not be retreived");
-}
-
-//----------------------------------------------------------------------------------------
-
 function get_customer_details_from_trans($type, $type_no)
 {
 	$sql = "SELECT ".TB_PREF."debtors_master.name, ".TB_PREF."debtors_master.curr_code, ".TB_PREF."cust_branch.br_name
@@ -368,15 +315,6 @@ function post_void_customer_trans($type, $type_no)
 	}
 }
 
-//----------------------------------------------------------------------------------------
-
-function get_customer_trans_link($type, $type_no)
-{
-	$row = db_query("SELECT trans_link from ".TB_PREF."debtor_trans
-		WHERE type=".db_escape($type)." AND trans_no=".db_escape($type_no),
-		"could not get transaction link for type=$type and trans_no=$type_no");
-	return $row[0];
-}
 //----------------------------------------------------------------------------------------
 
 function get_sql_for_customer_inquiry()

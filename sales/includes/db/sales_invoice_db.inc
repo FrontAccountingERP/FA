@@ -35,10 +35,6 @@ function write_sales_invoice(&$invoice)
 	$items_total = $invoice->get_items_total_dispatch();
 	$freight_tax = $invoice->get_shipping_tax();
 
-	$delivery_no = $invoice->src_docs;
-	if (is_array($delivery_no))
-		$delivery_no = 0;
-
 	update_customer_trans_version(get_parent_type(ST_SALESINVOICE), $invoice->src_docs);
 
 	$ov_gst = 0;
@@ -71,14 +67,13 @@ function write_sales_invoice(&$invoice)
 	$invoice_no = write_customer_trans(ST_SALESINVOICE, $trans_no, $invoice->customer_id,
 		$invoice->Branch, $date_, $invoice->reference, $items_total, 0,
 		$items_added_tax, $invoice->freight_cost, $freight_added_tax,
-		$invoice->sales_type, $sales_order, $delivery_no,
-		$invoice->ship_via, $invoice->due_date, $alloc, 0, $invoice->dimension_id, 
+		$invoice->sales_type, $sales_order, $invoice->ship_via, 
+		$invoice->due_date, $alloc, 0, $invoice->dimension_id, 
 		$invoice->dimension2_id, $invoice->payment); 
 		// 2008-06-14 extra $alloc, 2008-11-12 added dimension_id Joe Hunt
 
 	if ($trans_no == 0) {
 		$invoice->trans_no = array($invoice_no=>0);
-		set_document_parent($invoice);
 	} else {
 		delete_comments(ST_SALESINVOICE, $invoice_no);
 		void_gl_trans(ST_SALESINVOICE, $invoice_no, true);
@@ -99,7 +94,7 @@ function write_sales_invoice(&$invoice)
 		write_customer_trans_detail_item(ST_SALESINVOICE, $invoice_no, $invoice_line->stock_id,
 			$invoice_line->item_description, $invoice_line->qty_dispatched,
 			$invoice_line->line_price(), $line_tax,	$invoice_line->discount_percent,
-			$invoice_line->standard_cost,
+			$invoice_line->standard_cost, $invoice_line->src_id,
 			$trans_no ? $invoice_line->id : 0);
 
 		// Update delivery items for the quantity invoiced
@@ -202,9 +197,8 @@ function void_sales_invoice($type, $type_no)
 	void_gl_trans($type, $type_no, true);
 
 	// reverse all the changes in parent document(s)
-	$items_result = get_customer_trans_details($type, $type_no);
 
-	$deliveries = get_parent_trans($type, $type_no);
+	$deliveries = get_sales_parent_numbers($type, $type_no);
 
 	if ($deliveries !== 0) {
 		if (count($deliveries) == 1 && get_reference(ST_CUSTDELIVERY, $deliveries[0]) == "auto")
@@ -213,16 +207,15 @@ function void_sales_invoice($type, $type_no)
 			$date_ = Today();
 			add_audit_trail(ST_CUSTDELIVERY, $deliveries[0], $date_, _("Voided."));
 			add_voided_entry(ST_CUSTDELIVERY, $deliveries[0], $date_, "");
-		}	
-		else	
+		}
+		else
 		{
 			
-			$srcdetails = get_customer_trans_details(get_parent_type($type), $deliveries);
-			while ($row = db_fetch($items_result)) {
-				$src_line = db_fetch($srcdetails);
-				update_parent_line($type, $src_line['id'], -$row['quantity']);
+			$srcdetails = get_sales_parent_lines($type, $type_no);
+			while ($row = db_fetch($src_details)) {
+				update_parent_line($type, $row['id'], -$row['quantity']);
 			}
-		}	
+		}
 	}
 	// clear details after they've been reversed in the sales order
 	void_customer_trans_details($type, $type_no);

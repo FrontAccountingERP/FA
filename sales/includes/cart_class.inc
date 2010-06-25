@@ -55,7 +55,6 @@ class cart
 	var $Location;
 	var $location_name;
 	var $order_no; 		// the original order number
-	var $trans_link = 0;
 
 	var $ship_via;
 	var $freight_cost = 0;
@@ -112,8 +111,6 @@ class cart
 		for($line_no = 0; $line_no < count($this->line_items); $line_no++) {
 			$line = &$this->line_items[$line_no];
 			$line->src_id = $line->id; // save src line ids for update
-//			$line->qty_min = 0;
-//			$line->qty_max = $line->quantity - $line->qty_done;
 			$line->qty_dispatched = $type == ST_CUSTCREDIT ? '0' : $line->quantity - $line->qty_done;
 			$line->qty_old = 0;
 		}
@@ -138,24 +135,32 @@ class cart
 	//
 	function set_parent_constraints($sodata, $src_no) {
 
+		$srcdetails = get_sales_parent_lines($this->trans_type, $src_no);
+		
 		$src_type = get_parent_type($this->trans_type);
-		if ($src_type == ST_SALESORDER || $src_type == 0) { // get src data from sales_orders
+		if ($src_type == ST_SALESORDER || $src_type == 0) {
 			$this->src_docs = array( $sodata['order_no']=>$sodata['version']);
-			$srcdetails = get_sales_order_details($this->order_no, $this->trans_type);
 		} else {	// get src_data from debtor_trans
-			$this->src_docs = get_customer_trans_version($src_type, 
-					get_parent_trans($this->trans_type, $src_no));
-			$srcdetails = get_customer_trans_details($src_type, array_keys($this->src_docs));
+			$srcnum = array();
+			foreach($srcdetails as $line) {
+				$srcnum = $line['debtor_trans_no'];
+			}
+			$this->src_docs = get_customer_trans_version($src_type, array_values($srcnum));
 		}
 		// calculate & save: qtys on other docs and free qtys on src doc
-		for($line_no = 0; $srcline = db_fetch($srcdetails); $line_no++) {
+		$line_no = 0;
+		// Loop speed optimisation below depends on fact 
+		// that child line_items contains subset of parent lines in _the_same_ order !
+		while ($line_no < count($this->line_items) && $srcline = db_fetch($srcdetails)) {
 			$line = &$this->line_items[$line_no];
-
-			$line->src_id = $srcline['id']; // save src line ids for update
-			if ($this->trans_type == ST_SALESINVOICE)
-				$line->src_no = $srcline['debtor_trans_no'];
-			$line->qty_old = $line->qty_dispatched = $line->quantity;
-			$line->quantity += $srcline['quantity'] - $srcline['qty_done']; // add free qty on src doc
+			if ($srcline['id'] == $line->src_id) {
+				if ($this->trans_type == ST_SALESINVOICE)
+					$line->src_no = $srcline['debtor_trans_no'];
+				$line->qty_old = $line->qty_dispatched = $line->quantity;
+				$line->quantity += $srcline['quantity'] - $srcline['qty_done']; // add free qty on src doc
+				$line_no++;
+				break;
+			}
 		}
 	}
 	//-------------------------------------------------------------------------
@@ -181,7 +186,7 @@ class cart
 						$this->delivery_address = $sodata["delivery_address"];
 					}
 					// child transaction reedition - update with parent info unless it is freehand
-					if (!$no_edit && !($type==ST_CUSTCREDIT && $this->trans_link==0))
+					if (!$no_edit)
 						$this->set_parent_constraints($sodata, $trans_no[0]);
 			}
 			// prepare qtys for derivative document entry (not used in display)
