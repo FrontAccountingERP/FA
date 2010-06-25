@@ -105,14 +105,23 @@ function is_new_reference($ref, $type)
 	$db_info = get_systype_db_info($type);
 	$db_name = $db_info[0];
 	$db_type = $db_info[1];
+	$db_trans = $db_info[2];
 	$db_ref = $db_info[3];
 	
 	if ($db_ref != null) 
 	{
-		$sql = "SELECT $db_ref FROM $db_name WHERE $db_ref='$ref'";
-		if ($db_type != null)
-			$sql .= " AND $db_type=$type";
-			 
+		if ($db_type != null) {
+			$sql = "SELECT $db_ref FROM $db_name 
+				LEFT JOIN ".TB_PREF."voided v ON 
+					$db_name.$db_type=v.type AND $db_name.$db_trans=v.id
+				WHERE $db_name.$db_ref='$ref' AND ISNULL(v.id)
+					AND $db_name.$db_type=$type";
+		} else {
+			$sql = "SELECT $db_ref FROM $db_name 
+				LEFT JOIN ".TB_PREF."voided v ON 
+					v.type=$type AND $db_name.$db_trans=v.id
+				WHERE $db_ref='$ref' AND ISNULL(v.id)";
+		}
 		$result = db_query($sql, "could not test for unique reference");
 		
 		return (db_num_rows($result) == 0);
@@ -121,5 +130,6 @@ function is_new_reference($ref, $type)
 	// it's a type that doesn't use references - shouldn't be calling here, but say yes anyways
 	return true;
 }
+
 
 ?>
