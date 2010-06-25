@@ -19,6 +19,25 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+25-Jun-2010 Janusz Dobrowolski
+! Allow reuse of references previously used on voided transactions
+$ /includes/references.inc
+! Fixed sales database design to ensure document relations consistency on line level.
+$ /admin/db/fiscalyears_db.inc
+  /admin/db/voiding_db.inc
+  /reporting/includes/header2.inc
+  /sales/customer_invoice.php
+  /sales/includes/cart_class.inc
+  /sales/includes/sales_db.inc
+  /sales/includes/db/cust_trans_db.inc
+  /sales/includes/db/cust_trans_details_db.inc
+  /sales/includes/db/payment_db.inc
+  /sales/includes/db/sales_credit_db.inc
+  /sales/includes/db/sales_delivery_db.inc
+  /sales/includes/db/sales_invoice_db.inc
+  /sales/view/view_invoice.php
+  /sales/view/view_sales_order.php
+
 24-Jun-2010 Joe Hunt
 # Rewritten function gl_account_in_company_defaults in gl_db_accounts.inc
 $ /gl/includes/db/gl_db_accounts.inc
