@@ -689,7 +689,6 @@ CREATE TABLE IF NOT EXISTS `0_debtor_trans` (
   `alloc` double NOT NULL default '0',
   `rate` double NOT NULL default '1',
   `ship_via` int(11) default NULL,
-  `trans_link` int(11) NOT NULL default '0',
   `dimension_id` int(11) NOT NULL default '0',
   `dimension2_id` int(11) NOT NULL default '0',
   `payment_terms` int(11) default NULL,
@@ -702,14 +701,14 @@ CREATE TABLE IF NOT EXISTS `0_debtor_trans` (
 -- Dumping data for table `0_debtor_trans`
 --
 
-INSERT INTO `0_debtor_trans` VALUES(17, 10, 0, 2, 2, '2009-06-21', '2009-06-22', '1', 1, 2, 50, 2.5, 0, 0, 0, 0, 1, 1, 3, 0, 0, 4);
-INSERT INTO `0_debtor_trans` VALUES(18, 10, 1, 3, 3, '2009-06-21', '2009-07-01', '2', 2, 3, 35.89, 1.79, 0, 0, 0, 37.68, 1.3932, 1, 4, 2, 0, 3);
-INSERT INTO `0_debtor_trans` VALUES(19, 10, 0, 2, 2, '2009-06-21', '2009-06-22', '3', 1, 5, 50, 0, 5, 0, 0, 0, 1, 1, 5, 0, 0, 4);
-INSERT INTO `0_debtor_trans` VALUES(3, 11, 0, 3, 3, '2009-06-21', '0000-00-00', '1', 2, 3, 35.89, 1.79, 0, 0, 0, 37.68, 1.3932, 1, 18, 2, 0, 3);
-INSERT INTO `0_debtor_trans` VALUES(2, 13, 0, 1, 1, '2009-06-21', '2009-06-22', '1', 2, 1, 60.8, 0, 10, 0, 0, 0, 1.6445729799917, 1, 0, 0, 0, 3);
-INSERT INTO `0_debtor_trans` VALUES(3, 13, 1, 2, 2, '2009-06-21', '2009-06-22', 'auto', 1, 2, 50, 2.5, 0, 0, 0, 0, 1, 1, 17, 0, 0, 4);
-INSERT INTO `0_debtor_trans` VALUES(4, 13, 1, 3, 3, '2009-06-21', '2009-07-01', 'auto', 2, 3, 35.89, 1.79, 0, 0, 0, 0, 1.3932, 1, 18, 2, 0, 3);
-INSERT INTO `0_debtor_trans` VALUES(5, 13, 1, 2, 2, '2009-06-21', '2009-06-22', 'auto', 1, 5, 50, 0, 5, 0, 0, 0, 1, 1, 19, 0, 0, 4);
+INSERT INTO `0_debtor_trans` VALUES(17, 10, 0, 2, 2, '2009-06-21', '2009-06-22', '1', 1, 2, 50, 2.5, 0, 0, 0, 0, 1, 1, 0, 0, 4);
+INSERT INTO `0_debtor_trans` VALUES(18, 10, 1, 3, 3, '2009-06-21', '2009-07-01', '2', 2, 3, 35.89, 1.79, 0, 0, 0, 37.68, 1.3932, 1, 2, 0, 3);
+INSERT INTO `0_debtor_trans` VALUES(19, 10, 0, 2, 2, '2009-06-21', '2009-06-22', '3', 1, 5, 50, 0, 5, 0, 0, 0, 1, 1, 0, 0, 4);
+INSERT INTO `0_debtor_trans` VALUES(3, 11, 0, 3, 3, '2009-06-21', '0000-00-00', '1', 2, 3, 35.89, 1.79, 0, 0, 0, 37.68, 1.3932, 1, 2, 0, 3);
+INSERT INTO `0_debtor_trans` VALUES(2, 13, 0, 1, 1, '2009-06-21', '2009-06-22', '1', 2, 1, 60.8, 0, 10, 0, 0, 0, 1.6445729799917, 1, 0, 0, 3);
+INSERT INTO `0_debtor_trans` VALUES(3, 13, 1, 2, 2, '2009-06-21', '2009-06-22', 'auto', 1, 2, 50, 2.5, 0, 0, 0, 0, 1, 1, 0, 0, 4);
+INSERT INTO `0_debtor_trans` VALUES(4, 13, 1, 3, 3, '2009-06-21', '2009-07-01', 'auto', 2, 3, 35.89, 1.79, 0, 0, 0, 0, 1.3932, 1, 2, 0, 3);
+INSERT INTO `0_debtor_trans` VALUES(5, 13, 1, 2, 2, '2009-06-21', '2009-06-22', 'auto', 1, 5, 50, 0, 5, 0, 0, 0, 1, 1, 0, 0, 4);
 
 -- --------------------------------------------------------
 
@@ -730,6 +729,7 @@ CREATE TABLE IF NOT EXISTS `0_debtor_trans_details` (
   `discount_percent` double NOT NULL default '0',
   `standard_cost` double NOT NULL default '0',
   `qty_done` double NOT NULL default '0',
+  `src_id` int(11) NOT NULL,
   PRIMARY KEY  (`id`),
   KEY `Transaction` (`debtor_trans_type`,`debtor_trans_no`)
 ) TYPE=InnoDB  AUTO_INCREMENT=9 ;
@@ -738,14 +738,14 @@ CREATE TABLE IF NOT EXISTS `0_debtor_trans_details` (
 -- Dumping data for table `0_debtor_trans_details`
 --
 
-INSERT INTO `0_debtor_trans_details` VALUES(1, 2, 13, '102', '17inch VGA Monitor', 30.4, 0, 2, 0, 10, 0);
-INSERT INTO `0_debtor_trans_details` VALUES(2, 3, 13, '102', '17inch VGA Monitor', 50, 2.5, 1, 0, 10, 1);
-INSERT INTO `0_debtor_trans_details` VALUES(3, 17, 10, '102', '17inch VGA Monitor', 50, 2.5, 1, 0, 10, 0);
-INSERT INTO `0_debtor_trans_details` VALUES(4, 4, 13, '102', '17inch VGA Monitor', 35.89, 1.79, 1, 0, 10, 1);
-INSERT INTO `0_debtor_trans_details` VALUES(5, 18, 10, '102', '17inch VGA Monitor', 35.89, 1.79, 1, 0, 10, 1);
-INSERT INTO `0_debtor_trans_details` VALUES(6, 5, 13, '102', '17inch VGA Monitor', 50, 2.38, 1, 0, 10, 1);
-INSERT INTO `0_debtor_trans_details` VALUES(7, 19, 10, '102', '17inch VGA Monitor', 50, 2.38, 1, 0, 10, 0);
-INSERT INTO `0_debtor_trans_details` VALUES(8, 3, 11, '102', '17inch VGA Monitor', 35.89, 1.79, 1, 0, 10, 0);
+INSERT INTO `0_debtor_trans_details` VALUES(1, 2, 13, '102', '17inch VGA Monitor', 30.4, 0, 2, 0, 10, 0, 1);
+INSERT INTO `0_debtor_trans_details` VALUES(2, 3, 13, '102', '17inch VGA Monitor', 50, 2.5, 1, 0, 10, 1, 2);
+INSERT INTO `0_debtor_trans_details` VALUES(3, 17, 10, '102', '17inch VGA Monitor', 50, 2.5, 1, 0, 10, 2);
+INSERT INTO `0_debtor_trans_details` VALUES(4, 4, 13, '102', '17inch VGA Monitor', 35.89, 1.79, 1, 0, 10, 1,3);
+INSERT INTO `0_debtor_trans_details` VALUES(5, 18, 10, '102', '17inch VGA Monitor', 35.89, 1.79, 1, 0, 10, 1,4);
+INSERT INTO `0_debtor_trans_details` VALUES(6, 5, 13, '102', '17inch VGA Monitor', 50, 2.38, 1, 0, 10, 1,5);
+INSERT INTO `0_debtor_trans_details` VALUES(7, 19, 10, '102', '17inch VGA Monitor', 50, 2.38, 1, 0, 10, 0,6);
+INSERT INTO `0_debtor_trans_details` VALUES(8, 3, 11, '102', '17inch VGA Monitor', 35.89, 1.79, 1, 0, 10, 0,5);
 
 -- --------------------------------------------------------
 

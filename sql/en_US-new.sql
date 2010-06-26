@@ -648,7 +648,6 @@ CREATE TABLE IF NOT EXISTS `0_debtor_trans` (
   `alloc` double NOT NULL default '0',
   `rate` double NOT NULL default '1',
   `ship_via` int(11) default NULL,
-  `trans_link` int(11) NOT NULL default '0',
   `dimension_id` int(11) NOT NULL default '0',
   `dimension2_id` int(11) NOT NULL default '0',
   `payment_terms` int(11) default NULL,
@@ -681,6 +680,7 @@ CREATE TABLE IF NOT EXISTS `0_debtor_trans_details` (
   `discount_percent` double NOT NULL default '0',
   `standard_cost` double NOT NULL default '0',
   `qty_done` double NOT NULL default '0',
+  `src_id` int(11) NOT NULL,
   PRIMARY KEY  (`id`),
   KEY `Transaction` (`debtor_trans_type`,`debtor_trans_no`)
 ) TYPE=InnoDB AUTO_INCREMENT=1 ;
