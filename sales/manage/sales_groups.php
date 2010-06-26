@@ -82,7 +82,7 @@ $result = get_sales_groups(check_value('show_inactive'));
 
 start_form();
 start_table(TABLESTYLE, "width=30%");
-$th = array(_("Group Name"), "", "");
+$th = array(_("ID"), _("Group Name"), "", "");
 inactive_control_column($th);
 
 table_header($th);
@@ -93,6 +93,7 @@ while ($myrow = db_fetch($result))
 	
 	alt_table_row_color($k);
 		
+	label_cell($myrow["id"]);
 	label_cell($myrow["description"]);
 	inactive_control_cell($myrow["id"], $myrow["inactive"], 'groups', 'id');
  	edit_button_cell("Edit".$myrow["id"], _("Edit"));
@@ -116,6 +117,7 @@ if ($selected_id != -1)
 		$_POST['description']  = $myrow["description"];
 	}
 	hidden("selected_id", $selected_id);
+	label_row(_("ID"), $myrow["id"]);
 } 
 
 text_row_ex(_("Group Name:"), 'description', 30); 

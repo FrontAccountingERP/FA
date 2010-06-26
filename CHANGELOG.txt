@@ -27,6 +27,8 @@ $ config.default.php
   /includes/ui/ui_view.inc
   /reporting/rep107.php
   /reporting/rep110.php
+! Improvements to Sales Groups. Presenting the Id too.
+$ /sales/manage/sales_groups.php
 + Preparing for 2.3 Beta
 $ update.html
   
