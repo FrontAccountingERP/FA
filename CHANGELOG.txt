@@ -19,6 +19,17 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+26-Jun-2010 Joe Hunt
+! Option to suppress tax rates on documents. To be used for tax on tax
+  The tax % should be included in the tax name and the calculated
+  rate be set as the rate. $suppress_tax_rates in config.php set to 1.
+$ config.default.php
+  /includes/ui/ui_view.inc
+  /reporting/rep107.php
+  /reporting/rep110.php
++ Preparing for 2.3 Beta
+$ update.html
+  
 26-Jun-2010 Janusz Dobrowolski
 # Fixed sql for child transaction retrieval
 $  /sales/includes/sales_db.inc

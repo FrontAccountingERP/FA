@@ -57,7 +57,7 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 	// Main Title
 	$app_title = "FrontAccounting";
 	// application version
-	$version 		= "2.3 CVS (m10)";
+	$version 		= "2.3 Beta";
 	 // src-data compatibility check. Do not change.
 	$core_version = "2.3";
 
@@ -91,7 +91,7 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
  	// $old_style_help = 1; // this setting is depreciated and subject to removal in next FA versions
 	// 	locally installed wiki module
 	// $help_base_url = $path_to_root.'/modules/wiki/index.php?n='._('Help').'.';
-	// 	context help feed from frontaccounting.net
+	// 	context help feed from frontaccounting.com
 	// $help_base_url = 'http://frontaccounting.com/fawiki/index.php?n=Help.';
 	// 	not used
 	$help_base_url = null;
@@ -115,6 +115,9 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 	/* 1 = print Subtotal tax excluded, tax and Total tax included */
 	$alternative_tax_include_on_docs = 0;
 
+	/* suppress tax rates on documents. 0 = no, 1 = yes. */
+	$suppress_tax_rates = 0;
+	
 	$dateformats 	= array("MMDDYYYY", "DDMMYYYY", "YYYYMMDD");
 	$dateseps 		= array("/", ".", "-", " ");
 	$thoseps 		= array(",", ".", " ");
