@@ -312,7 +312,7 @@ function read_sales_trans($doc_type, $trans_no, &$cart)
 
 function get_sales_child_lines($trans_type, $trans_no, $lines=true)
 {
-	if (!get_child_type($trans_type))
+	if (!($ctype = get_child_type($trans_type)))
 		return false;
 	if (!is_array($trans_no)) {
 		$trans_no = array($trans_no);
@@ -322,7 +322,7 @@ function get_sales_child_lines($trans_type, $trans_no, $lines=true)
 	
 	$rel = $trans_type == ST_SALESORDER ? "trans.trans_type=$trans_type"
 		. " AND trans.order_no IN(". implode(',', array_values($trans_no)).")"
-		: "trans.debtor_trans_type=$trans_type"
+		: "child.debtor_trans_type=$ctype"
 		. " AND trans.debtor_trans_no IN(". implode(',', array_values($trans_no)).")";
 
 	$sql = "SELECT child.*
@@ -336,7 +336,7 @@ function get_sales_child_lines($trans_type, $trans_no, $lines=true)
 		$sql .= " GROUP BY child.debtor_trans_no";
 
 	$sql .= " ORDER BY child.debtor_trans_no";
-	
+
 	return db_query($sql, "can't retrieve child trans");
 }
 

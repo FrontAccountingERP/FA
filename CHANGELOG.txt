@@ -19,6 +19,13 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+26-Jun-2010 Janusz Dobrowolski
+# Fixed sql for child transaction retrieval
+$  /sales/includes/sales_db.inc
+! Added debtor_trans_details.src_id
+$ /sql/en_US-demo.sql
+  /sql/en_US-new.sql
+
 25-Jun-2010 Janusz Dobrowolski
 ! Allow reuse of references previously used on voided transactions
 $ /includes/references.inc
