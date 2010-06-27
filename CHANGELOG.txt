@@ -19,6 +19,24 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+27-Jun-2010 Janusz Dobrowolski
++ Added debtor_trans.src_id update
+$ /sql/alter2.3.php
+  /sql/alter2.3.sql
++ Added key for debtor_trans_detail.src_id
+$ /sql/en_US-demo.sql
+  /sql/en_US-new.sql
++ Added company upgrade boundary markers in error log.
+$ /admin/inst_upgrade.php
+# Fixed sql (removed obsolete email field)
+  /reporting/rep112.php
+# Fixed sql for child/parent lines retrieval
+  /sales/includes/sales_db.inc
+# Removed bank payment print links (not implemented yet)
+  /sales/inquiry/customer_inquiry.php
+# Cleanup
+$ /purchasing/includes/db/po_db.inc
+
 26-Jun-2010 Joe Hunt
 ! Option to suppress tax rates on documents. To be used for tax on tax
   The tax % should be included in the tax name and the calculated
