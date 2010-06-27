@@ -1646,6 +1646,7 @@ CREATE TABLE IF NOT EXISTS `0_suppliers` (
   `bank_account` varchar(60) NOT NULL default '',
   `curr_code` char(3) default NULL,
   `payment_terms` int(11) default NULL,
+  `tax_included` tinyint(1) NOT NULL default '0',
   `dimension_id` int(11) default '0',
   `dimension2_id` int(11) default '0',
   `tax_group_id` int(11) default NULL,

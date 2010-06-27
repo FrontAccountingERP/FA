@@ -246,3 +246,4 @@ INSERT INTO `0_crm_contacts` (`person_id`, `type`, `action`, `entity_id`)
 
 ALTER TABLE `0_debtor_trans_details` ADD COLUMN `src_id` int(11) default NULL;
 ALTER TABLE `0_debtor_trans_details` ADD KEY (`src_id`);
+ALTER TABLE `0_suppliers` ADD COLUMN `tax_included` tinyint(1) NOT NULL default '0' AFTER `payment_terms`;
