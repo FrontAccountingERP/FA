@@ -123,7 +123,7 @@ function read_po_header($order_no, &$order)
 		AND ".TB_PREF."purch_orders.order_no = ".db_escape($order_no);
 
    	$result = db_query($sql, "The order cannot be retrieved");
-_vd($sql);
+
 	if (db_num_rows($result) == 1)
 	{
 
