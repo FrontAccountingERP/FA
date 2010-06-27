@@ -272,7 +272,6 @@ function read_sales_trans($doc_type, $trans_no, &$cart)
 
 		$cart->reference = $myrow["reference"];
 		$cart->order_no = $myrow["order_"];
-		$cart->trans_link = $myrow["trans_link"];
 		$cart->due_date = sql2date($myrow["due_date"]);
 		$cart->document_date = sql2date($myrow["tran_date"]);
 		$cart->dimension_id = $myrow['dimension_id']; // added 2.1 Joe Hunt 2008-11-12
@@ -318,19 +317,15 @@ function get_sales_child_lines($trans_type, $trans_no, $lines=true)
 		$trans_no = array($trans_no);
 	}
 	
-	$trtbl = $trans_type == ST_SALESORDER ? "sales_order_details" : "debtor_trans_details";
-	
-	$rel = $trans_type == ST_SALESORDER ? "trans.trans_type=$trans_type"
-		. " AND trans.order_no IN(". implode(',', array_values($trans_no)).")"
-		: "child.debtor_trans_type=$ctype"
-		. " AND trans.debtor_trans_no IN(". implode(',', array_values($trans_no)).")";
+	$par_tbl = $trans_type == ST_SALESORDER ? "sales_order_details" : "debtor_trans_details";
+	$par_no = $trans_type == ST_SALESORDER ? "trans.order_no" : "trans.debtor_trans_no";
 
 	$sql = "SELECT child.*
 			FROM
-				".TB_PREF."debtor_trans_details child,
-				".TB_PREF."$trtbl trans
-			WHERE
-				$rel AND trans.id=child.src_id";
+				".TB_PREF."debtor_trans_details child
+			LEFT JOIN ".TB_PREF."$par_tbl trans 
+				ON child.src_id=trans.id AND child.debtor_trans_type=$ctype
+			WHERE $par_no IN(". implode(',', array_values($trans_no)).")";
 
 	if (!$lines)
 		$sql .= " GROUP BY child.debtor_trans_no";
@@ -357,19 +352,19 @@ function get_sales_parent_lines($trans_type, $trans_no, $lines=true)
 	if (!$partype)
 		return false;
 
-	$partbl = $partype == ST_SALESORDER ? "sales_order_details" : "debtor_trans_details";
-	$parent_no = $partype == ST_SALESORDER ? "parent.order_no" : "parent.debtor_trans_no";
+	$par_tbl = $partype == ST_SALESORDER ? "sales_order_details" : "debtor_trans_details";
+	$par_no = $partype == ST_SALESORDER ? "parent.order_no" : "parent.debtor_trans_no";
 	$sql = "SELECT parent.*
 			FROM
-				".TB_PREF."$partbl parent
+				".TB_PREF."$par_tbl parent
 			LEFT JOIN ".TB_PREF."debtor_trans_details trans 
 				ON trans.src_id=parent.id
 			WHERE
 				trans.debtor_trans_type=$trans_type AND trans.debtor_trans_no=$trans_no";
 	if (!$lines)
-		$sql .= " GROUP BY $parent_no";
+		$sql .= " GROUP BY $par_no";
 	
-	$sql .= " ORDER BY $parent_no";
+	$sql .= " ORDER BY $par_no";
 	
 	return db_query($sql, "can't retrieve child trans");
 
