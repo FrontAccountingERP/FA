@@ -189,10 +189,12 @@ function edit_link($row)
 
 function prt_link($row)
 {
-  	if ($row['type'] != ST_CUSTPAYMENT && $row['type'] != ST_BANKDEPOSIT) // customer payment or bank deposit printout not defined yet.
- 		return print_document_link($row['trans_no']."-".$row['type'], _("Print"), true, $row['type'], ICON_PRINT);
- 	else	
+  	if ($row['type'] == ST_CUSTPAYMENT || $row['type'] == ST_BANKDEPOSIT) 
 		return print_document_link($row['trans_no']."-".$row['type'], _("Print Receipt"), true, ST_CUSTPAYMENT, ICON_PRINT);
+  	elseif ($row['type'] == ST_BANKPAYMENT) // bank payment printout not defined yet.
+		return '';
+ 	else	
+ 		return print_document_link($row['trans_no']."-".$row['type'], _("Print"), true, $row['type'], ICON_PRINT);
 }
 
 function check_overdue($row)
