@@ -37,8 +37,8 @@ function get_receipt($type, $trans_no)
    				".TB_PREF."debtors_master.name AS DebtorName,  ".TB_PREF."debtors_master.debtor_ref,
    				".TB_PREF."debtors_master.curr_code, ".TB_PREF."debtors_master.payment_terms, "
    				.TB_PREF."debtors_master.tax_id AS tax_id,
-   				".TB_PREF."debtors_master.email, ".TB_PREF."debtors_master.address
-    			FROM ".TB_PREF."debtor_trans, ".TB_PREF."debtors_master 
+   				".TB_PREF."debtors_master.address
+    			FROM ".TB_PREF."debtor_trans, ".TB_PREF."debtors_master
 				WHERE ".TB_PREF."debtor_trans.debtor_no = ".TB_PREF."debtors_master.debtor_no
 				AND ".TB_PREF."debtor_trans.type = ".db_escape($type)."
 				AND ".TB_PREF."debtor_trans.trans_no = ".db_escape($trans_no);
@@ -110,7 +110,7 @@ function print_receipts()
 			$params['bankaccount'] = $baccount['id'];
 
 			$rep->title = _('RECEIPT');
-			$contacts = get_branch_contacts($branch['branch_code'], 'invoice', $branch['debtor_no']);
+			$contacts = get_branch_contacts($myrow['branch_code'], 'invoice', $myrow['debtor_no']);
 			$rep->SetCommonData($myrow, null, $myrow, $baccount, ST_CUSTPAYMENT, $contacts);
 			$rep->NewPage();
 			$result = get_allocations_for_receipt($myrow['debtor_no'], $myrow['type'], $myrow['trans_no']);
