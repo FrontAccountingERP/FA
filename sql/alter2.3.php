@@ -9,7 +9,6 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-
 class fa2_3 {
 	var $version = '2.3';	// version installed
 	var $description;
@@ -53,13 +52,22 @@ class fa2_3 {
 				return false;
 			}
 		}
+		if (!$this->update_totals($pref)) {
+			display_error("Cannot update order totals");
+			return false;
+		}
+		if (!$this->update_line_relations($pref)) {
+			display_error("Cannot update sales document links");
+			return false;
+		}
 		//remove obsolete and temporary columns.
 		// this have to be done here as db_import rearranges alter query order
 		$dropcol = array(
 			'crm_persons' => array('tmp_id','tmp_class'),
 			'debtors_master' => array('email'),
 			'cust_branch' => array('phone', 'phone2', 'fax', 'email'),
-			'suppliers' => array('phone', 'phone2', 'fax', 'email')
+			'suppliers' => array('phone', 'phone2', 'fax', 'email'),
+			'debtor_trans' => array('trans_link')
 		);
 
 		foreach($dropcol as $table => $columns)
@@ -68,10 +76,6 @@ class fa2_3 {
 				display_error("Cannot drop {$table}.{$col} column:<br>".db_error_msg($db));
 				return false;
 			}
-		}
-		if (!update_totals_2_3($pref)) {
-			display_error("Cannot update order totals");
-			return false;
 		}
 		// remove old preferences table after upgrade script has been executed
 		$sql = "DROP TABLE IF EXISTS `{$pref}company`";
@@ -99,32 +103,144 @@ class fa2_3 {
 		$n -= $patchcnt;
 		return $n == 0 ? true : $patchcnt;
 	}
-}
-/*
-	Update order totals
-*/
-function update_totals_2_3($pref)
-{
-	global $path_to_root;
+	//=========================================================================================
+	//	2.3 specific update functions
+	//
 	
-	include_once("$path_to_root/sales/includes/cart_class.inc");
-	include_once("$path_to_root/purchasing/includes/po_class.inc");
-	$cart = new cart(ST_SALESORDER);
-	$sql = "SELECT order_no FROM {$pref}sales_orders";
-	$orders = db_query($sql);
-	while ($order_no = db_fetch($orders)) {
-		read_sales_order($order_no[0], $cart, ST_SALESORDER);
-		update_sales_order($cart);
-		unset($cart->line_items);
+	/*
+		Update order totals
+	*/
+	function update_totals($pref)
+	{
+		global $path_to_root;
+
+		include_once("$path_to_root/sales/includes/cart_class.inc");
+		include_once("$path_to_root/purchasing/includes/po_class.inc");
+		$cart = new cart(ST_SALESORDER);
+		$sql = "SELECT order_no FROM {$pref}sales_orders";
+		$orders = db_query($sql);
+		if (!$orders)
+			return false;
+
+		while ($order_no = db_fetch($orders)) {
+			read_sales_order($order_no[0], $cart, ST_SALESORDER);
+			$result = db_query("UPDATE {$pref}sales_orders SET total=".$cart->get_trans_total());
+			unset($cart->line_items);
+		}
+		unset($cart);
+		$cart = new purch_order();
+		$sql = "SELECT order_no FROM {$pref}purch_orders";
+		$orders = db_query($sql);
+		if (!$orders)
+			 return false;
+		while ($order_no = db_fetch($orders)) {
+			read_po($order_no[0], $cart);
+			$result = db_query("UPDATE {$pref}purch_orders SET total=".$cart->get_trans_total());
+			unset($cart->line_items);
+		}
+		return true;
 	}
-	unset($cart);
-	$cart = new purch_order();
-	$sql = "SELECT order_no FROM {$pref}purch_orders";
-	$orders = db_query($sql);
-	while ($order_no = db_fetch($orders)) {
-		read_po($order_no[0], $cart);
-		update_po($cart);
-		unset($cart->line_items);
+
+	//------------------------------------------------------------------------------
+	//	Retreive parent document number(s) for given transaction
+	//
+	function get_parent_trans_2_2($trans_type, $trans_no) {
+
+		$sql = 'SELECT trans_link FROM
+				'.TB_PREF.'debtor_trans WHERE trans_no='.db_escape($trans_no)
+				.' AND type='.db_escape($trans_type).' AND trans_link!=0';
+
+		$result = db_query($sql, 'Parent document numbers cannot be retrieved');
+
+		if (db_num_rows($result)) {
+			$link = db_fetch($result);
+			return array($link['trans_link']);
+		}
+		if ($trans_type!=ST_SALESINVOICE) return 0;	// this is credit note with no parent invoice
+		// invoice: find batch invoice parent trans.
+		$sql = 'SELECT trans_no FROM
+				'.TB_PREF.'debtor_trans WHERE
+				(trans_link='.db_escape($trans_no).' AND type='. get_parent_type($trans_type) .')';
+
+		$result = db_query($sql, 'Delivery links cannot be retrieved');
+
+		$delivery = array();
+		if(db_num_rows($result)>0) {
+			while($link = db_fetch($result)) {
+				$delivery[] = $link['trans_no'];
+			}
+		}
+		return count($delivery) ? $delivery : 0;
+	}
+
+	/*
+		Reorganizing document relations. Due to the design issue in pre 2.3 db structure
+		there can be sales documents with lines not properly linked to parents. This rare 
+		cases will be described in error log.
+	*/
+	function update_line_relations($pref)
+	{
+		global $path_to_root, $systypes_array;
+
+		require_once("$path_to_root/includes/sysnames.inc");
+		
+		$sql =	"SELECT d.type, trans_no, order_ FROM {$pref}debtor_trans d
+			LEFT JOIN {$pref}voided v ON d.type=v.type AND d.trans_no=v.id
+				WHERE ISNULL(v.type) AND 
+				(d.type=".ST_CUSTDELIVERY
+				." OR d.type=".ST_SALESINVOICE
+				." OR d.type=".ST_CUSTCREDIT.")";
+		$result = db_query($sql);
+		if (!$result)
+			return false;
+
+		while ($trans = db_fetch($result)) {
+			$type = $trans['type'];
+			$trans_no = $trans['trans_no'];
+			$invalid = 0;
+			$msg ='';
+
+			$lines = get_customer_trans_details($type, $trans_no);
+			$n = db_num_rows($lines);
+
+			if ($type==ST_CUSTDELIVERY)
+				$src_lines = get_sales_order_details($trans['order_'], ST_SALESORDER);
+			else
+				$src_lines =  get_customer_trans_details(get_parent_type($type), 
+					$this->get_parent_trans_2_2($type, $trans_no));
+
+			$src_n = db_num_rows($src_lines);
+
+			if (($type == ST_CUSTCREDIT) && ($src_n == 0))
+				 continue;  // free credit note has no src lines 
+
+			$max = $type == ST_CUSTDELIVERY ? $n : max($src_n, $n);
+
+			for($i = 0, $j=0; $i < $max; $i++) {
+				if (!($doc_line = @db_fetch($lines)))
+					break;
+
+				if(!($src_line = @db_fetch($src_lines)))
+					break;
+
+				if ($type == ST_CUSTDELIVERY)
+					$src_line['stock_id'] = $src_line['stk_code']; // SO details has another field name 
+
+				if ($src_line['stock_id'] == $doc_line['stock_id']
+					&& ($src_line['quantity'] >= $doc_line['quantity'])) {
+
+					$sql = "UPDATE {$pref}debtor_trans_details SET src_id = {$src_line['id']}
+						WHERE id = {$doc_line['id']}";
+					if (!db_query($sql))
+						return false;
+					$j++;
+				}
+			}
+			if ($j != $n) {
+				error_log("Line level relations error for ".$systypes_array[$type]." #$trans_no.");
+			}
+		}
+	return true;
 	}
 }
 

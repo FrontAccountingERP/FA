@@ -243,3 +243,6 @@ INSERT INTO `0_crm_persons` (`ref`, `name`, `address`, `phone`, `phone2`,
 INSERT INTO `0_crm_contacts` (`person_id`, `type`, `action`, `entity_id`)
 	SELECT `id`, `tmp_class`, 'general', `tmp_id`
 	FROM `0_crm_persons`;
+
+ALTER TABLE `0_debtor_trans_details` ADD COLUMN `src_id` int(11) default NULL;
+ALTER TABLE `0_debtor_trans_details` ADD KEY (`src_id`);
