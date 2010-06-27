@@ -145,7 +145,7 @@ function display_order_summary($title, &$order, $editable_items=false)
 	start_table(TABLESTYLE, "colspan=7 width=90%");
 	$th = array(_("Item Code"), _("Item Description"), _("Quantity"),
 		_("Delivered"),
-		_("Unit"), _("Price"), _("Discount %"), _("Total"), "");
+		_("Unit"), $order->tax_included ? _("Price after Tax") : _("Price before Tax"), _("Discount %"), _("Total"), "");
 
 	if ($order->trans_no == 0) {
 	unset( $th[3] );
