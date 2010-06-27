@@ -741,7 +741,7 @@ CREATE TABLE IF NOT EXISTS `0_debtor_trans_details` (
 
 INSERT INTO `0_debtor_trans_details` VALUES(1, 2, 13, '102', '17inch VGA Monitor', 30.4, 0, 2, 0, 10, 0, 1);
 INSERT INTO `0_debtor_trans_details` VALUES(2, 3, 13, '102', '17inch VGA Monitor', 50, 2.5, 1, 0, 10, 1, 2);
-INSERT INTO `0_debtor_trans_details` VALUES(3, 17, 10, '102', '17inch VGA Monitor', 50, 2.5, 1, 0, 10, 2);
+INSERT INTO `0_debtor_trans_details` VALUES(3, 17, 10, '102', '17inch VGA Monitor', 50, 2.5, 1, 0, 10, 2, 2);
 INSERT INTO `0_debtor_trans_details` VALUES(4, 4, 13, '102', '17inch VGA Monitor', 35.89, 1.79, 1, 0, 10, 1,3);
 INSERT INTO `0_debtor_trans_details` VALUES(5, 18, 10, '102', '17inch VGA Monitor', 35.89, 1.79, 1, 0, 10, 1,4);
 INSERT INTO `0_debtor_trans_details` VALUES(6, 5, 13, '102', '17inch VGA Monitor', 50, 2.38, 1, 0, 10, 1,5);
