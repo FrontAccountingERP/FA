@@ -102,10 +102,16 @@ function upgrade_step($index, $conn)
 			if (!$inst->pre_check($pref, $force)) return false;
 			$sql = $inst->sql;
 
+			error_log(sprintf(_("Database upgrade for company '%s' (%s:%s*) started..."),
+				$conn['name'], $conn['dbname'], $conn['tbpref']));
+				
 			if ($sql != '')
 				$ret &= db_import($path_to_root.'/sql/'.$sql, $conn, $force);
 
 			$ret &= $inst->install($pref, $force);
+
+			error_log(_("Database upgarade finished."));
+
 		} else
 			if ($state!==true) {
 				display_error(_("Upgrade cannot be done because database has been already partially upgraded. Please downgrade database to clean previous version or try forced upgrade."));
