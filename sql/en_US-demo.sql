@@ -731,7 +731,8 @@ CREATE TABLE IF NOT EXISTS `0_debtor_trans_details` (
   `qty_done` double NOT NULL default '0',
   `src_id` int(11) NOT NULL,
   PRIMARY KEY  (`id`),
-  KEY `Transaction` (`debtor_trans_type`,`debtor_trans_no`)
+  KEY `Transaction` (`debtor_trans_type`,`debtor_trans_no`),
+  KEY (`src_id`)
 ) TYPE=InnoDB  AUTO_INCREMENT=9 ;
 
 --
