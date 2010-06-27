@@ -28,6 +28,8 @@ $ /sql/en_US-demo.sql
   /sql/en_US-new.sql
 + Added company upgrade boundary markers in error log.
 $ /admin/inst_upgrade.php
+! Changed price column name to reflect current pricelist type.
+  /sales/includes/ui/sales_order_ui.inc
 # Fixed sql (removed obsolete email field)
   /reporting/rep112.php
 # Fixed sql for child/parent lines retrieval
