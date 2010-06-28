@@ -56,18 +56,6 @@ if ($Mode=='ADD_ITEM' || $Mode=='UPDATE_ITEM')
 		$input_error = 1;
 		display_error( _("The Terms description must be entered."));
 		set_focus('terms');
-	} // there should be no limits by 30 here if they want longer payment terms. Joe Hunt 2010-05-31
-	//elseif ($_POST['DayNumber'] > 30 && !check_value('DaysOrFoll')) 
-	//{
-	//	$input_error = 1;
-	//	display_error( _("When the check box to indicate a day in the following month is the due date, the due date cannot be a day after the 30th. A number between 1 and 30 is expected."));
-	//	set_focus('DayNumber');
-	//} 
-	elseif ($_POST['DayNumber'] > 500 && get_post('type')==PTT_DAYS) 
-	{
-		$input_error = 1;
-		display_error( _("When the Day of the Following Month is selected the number entered should be less than 500 days."));
-		set_focus('DayNumber');
 	}
 
 	if ($_POST['DayNumber'] == '')

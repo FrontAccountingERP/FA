@@ -82,14 +82,15 @@ function getTransactions($supplier_id, $from, $to)
 
 function print_supplier_balances()
 {
-    global $path_to_root, $systypes_array;
+    	global $path_to_root, $systypes_array;
 
-    $from = $_POST['PARAM_0'];
-    $to = $_POST['PARAM_1'];
-    $fromsupp = $_POST['PARAM_2'];
-    $currency = $_POST['PARAM_3'];
-    $comments = $_POST['PARAM_4'];
-	$destination = $_POST['PARAM_5'];
+    	$from = $_POST['PARAM_0'];
+    	$to = $_POST['PARAM_1'];
+    	$fromsupp = $_POST['PARAM_2'];
+    	$currency = $_POST['PARAM_3'];
+    	$no_zeros = $_POST['PARAM_4'];
+    	$comments = $_POST['PARAM_5'];
+	$destination = $_POST['PARAM_6'];
 	if ($destination)
 		include_once($path_to_root . "/reporting/includes/excel_report.inc");
 	else
@@ -99,7 +100,7 @@ function print_supplier_balances()
 		$supp = _('All');
 	else
 		$supp = get_supplier_name($fromsupp);
-    $dec = user_price_dec();
+    	$dec = user_price_dec();
 
 	if ($currency == ALL_TEXT)
 	{
@@ -109,6 +110,9 @@ function print_supplier_balances()
 	else
 		$convert = false;
 
+	if ($no_zeros) $nozeros = _('Yes');
+	else $nozeros = _('No');
+
 	$cols = array(0, 100, 130, 190,	250, 320, 385, 450,	515);
 
 	$headers = array(_('Trans Type'), _('#'), _('Date'), _('Due Date'), _('Charges'),
@@ -117,9 +121,10 @@ function print_supplier_balances()
 	$aligns = array('left',	'left',	'left',	'left',	'right', 'right', 'right', 'right');
 
     $params =   array( 	0 => $comments,
-    				    1 => array('text' => _('Period'), 'from' => $from, 'to' => $to),
-    				    2 => array('text' => _('Supplier'), 'from' => $supp, 'to' => ''),
-    				    3 => array(  'text' => _('Currency'),'from' => $currency, 'to' => ''));
+    			1 => array('text' => _('Period'), 'from' => $from, 'to' => $to),
+    			2 => array('text' => _('Supplier'), 'from' => $supp, 'to' => ''),
+    			3 => array(  'text' => _('Currency'),'from' => $currency, 'to' => ''),
+			4 => array('text' => _('Suppress Zeros'), 'from' => $nozeros, 'to' => ''));
 
     $rep = new FrontReport(_('Supplier Balances'), "SupplierBalances", user_pagesize());
 
@@ -140,35 +145,37 @@ function print_supplier_balances()
 	{
 		if (!$convert && $currency != $myrow['curr_code'])
 			continue;
-		$rep->fontSize += 2;
-		$rep->TextCol(0, 2, $myrow['name']);
-		if ($convert)
-			$rep->TextCol(2, 3,	$myrow['curr_code']);
-		$rep->fontSize -= 2;
 		$bal = get_open_balance($myrow['supplier_id'], $from, $convert);
 		$init[0] = $init[1] = 0.0;
-		$rep->TextCol(3, 4,	_("Open Balance"));
 		$init[0] = round2(abs($bal['charges']), $dec);
-		$rep->AmountCol(4, 5, $init[0], $dec);
 		$init[1] = round2(Abs($bal['credits']), $dec);
-		$rep->AmountCol(5, 6, $init[1], $dec);
 		$init[2] = round2($bal['Allocated'], $dec);
-		$rep->AmountCol(6, 7, $init[2], $dec);
 		$init[3] = round2($bal['OutStanding'], $dec);;
-		$rep->AmountCol(7, 8, $init[3], $dec);
 		$total = array(0,0,0,0);
 		for ($i = 0; $i < 4; $i++)
 		{
 			$total[$i] += $init[$i];
 			$grandtotal[$i] += $init[$i];
 		}
-		$rep->NewLine(1, 2);
 		$res = getTransactions($myrow['supplier_id'], $from, $to);
-		if (db_num_rows($res)==0)
-			continue;
+		if ($no_zeros && db_num_rows($res) == 0) continue;
+
+		$rep->fontSize += 2;
+		$rep->TextCol(0, 2, $myrow['name']);
+		if ($convert) $rep->TextCol(2, 3,	$myrow['curr_code']);
+		$rep->fontSize -= 2;
+		$rep->TextCol(3, 4,	_("Open Balance"));
+		$rep->AmountCol(4, 5, $init[0], $dec);
+		$rep->AmountCol(5, 6, $init[1], $dec);
+		$rep->AmountCol(6, 7, $init[2], $dec);
+		$rep->AmountCol(7, 8, $init[3], $dec);
+		$rep->NewLine(1, 2);
+		if (db_num_rows($res)==0) continue;
+
 		$rep->Line($rep->row + 4);
 		while ($trans=db_fetch($res))
 		{
+			if ($no_zeros && $trans['TotalAmount'] == 0 && $trans['Allocated'] == 0) continue;
 			$rep->NewLine(1, 2);
 			$rep->TextCol(0, 1, $systypes_array[$trans['type']]);
 			$rep->TextCol(1, 2,	$trans['reference']);

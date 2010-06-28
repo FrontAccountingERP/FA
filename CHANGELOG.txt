@@ -19,6 +19,42 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+28-Jun-2010 Merged changes from main trunk (2.2.11) as follows
+------------------------------- Release 2.2.11 ----------------------------------
+! Release 2.2.11
+$ config.default.php
+  update.html
+
+22-Jun-2010 Joe Hunt
+# Minor select bug in create recurrent invoices
+$ /sales/create_recurrent_invoices.php
+
+18-Jun-2010 Joe Hunt
+- Removed constraint on day values in Payment Terms
+$ /admin/payment_terms.php
+
+18-Jun-2010 Janusz Dobrowolski
+# Small bug on final credit note screen redirection
+$ /sales/customer_credit_invoice.php
+
+17-Jun-2010 Janusz Dobrowolski
+# [0000235],[0000236] db error in sales order view window.
+$ /sales/view/view_sales_order.php
+
+14-Jun-2010 Tom Moulton/Joe Hunt
+# Bug [0000231] Wrong On Order for Advanced Manufacturing.before final production.
+$ /includes/db/manufacturing_db.inc
+! Allow optional non zero values in reports 101,102,201,202,203 and 303.
+$ /reporting/rep101.php
+  /reporting/rep102.php
+  /reporting/rep201.php
+  /reporting/rep202.php
+  /reporting/rep203.php
+  /reporting/rep303.php
+  /reporting/reports_main.php
+
+---------- End of changes from main trunk 2.2.11
+
 27-Jun-2010 Janusz Dobrowolski
 + Added debtor_trans.src_id update
 $ /sql/alter2.3.php
@@ -189,6 +225,7 @@ $ /purchasing/includes/db/grn_db.inc
   /purchasing/supplier_invoice.php
 
 13-Jun-2010 Merged changes from main trunk (2.2.10) as follows
+
 ------------------------------- Release 2.2.10 ----------------------------------
 11-Jun-2010 Joe Hunt
 ! Release 2.2.10

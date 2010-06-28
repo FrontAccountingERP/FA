@@ -61,8 +61,8 @@ function stock_demand_manufacture($stock_id, $qty, $demand_id, $location, $level
 		$qoh_stock = array();
 		load_stock_levels($location);
 	}
-	$stock_qty = $qoh_stock[$stock_id];
-	if ($stock_qty == NULL) $stock_qty = 0;
+	if (empty($qoh_stock[$stock_id])) $stock_qty = 0;
+	else $stock_qty = $qoh_stock[$stock_id];
 	if ($qty <= $stock_qty) return $demand;
 	$bom = @$bom_list[$stock_id];
 	if ($bom == NULL) {

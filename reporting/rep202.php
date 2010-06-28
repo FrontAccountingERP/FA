@@ -71,9 +71,11 @@ function print_aged_supplier_analysis()
     $fromsupp = $_POST['PARAM_1'];
     $currency = $_POST['PARAM_2'];
 	$summaryOnly = $_POST['PARAM_3'];
-    $graphics = $_POST['PARAM_4'];
-    $comments = $_POST['PARAM_5'];
-	$destination = $_POST['PARAM_6'];
+    $no_zeros = $_POST['PARAM_4'];
+    $graphics = $_POST['PARAM_5'];
+    $comments = $_POST['PARAM_6'];
+	$destination = $_POST['PARAM_7'];
+
 	if ($destination)
 		include_once($path_to_root . "/reporting/includes/excel_report.inc");
 	else
@@ -88,7 +90,7 @@ function print_aged_supplier_analysis()
 		$from = _('All');
 	else
 		$from = get_supplier_name($fromsupp);
-    $dec = user_price_dec();
+    	$dec = user_price_dec();
 
 	if ($summaryOnly == 1)
 		$summary = _('Summary Only');
@@ -101,6 +103,10 @@ function print_aged_supplier_analysis()
 	}
 	else
 		$convert = false;
+
+	if ($no_zeros) $nozeros = _('Yes');
+	else $nozeros = _('No');
+
 	$PastDueDays1 = get_company_pref('past_due_days');
 	$PastDueDays2 = 2 * $PastDueDays1;
 	$nowdue = "1-" . $PastDueDays1 . " " . _('Days');
@@ -114,19 +120,26 @@ function print_aged_supplier_analysis()
 
 	$aligns = array('left',	'left',	'left',	'right', 'right', 'right', 'right',	'right');
 
-    $params =   array( 	0 => $comments,
-    				    1 => array('text' => _('End Date'), 'from' => $to, 'to' => ''),
-    				    2 => array('text' => _('Supplier'), 'from' => $from, 'to' => ''),
-    				    3 => array('text' => _('Currency'),'from' => $currency,'to' => ''),
-                    	4 => array('text' => _('Type'), 'from' => $summary,'to' => ''));
+    	$params =   array( 	0 => $comments,
+    				1 => array('text' => _('End Date'), 'from' => $to, 'to' => ''),
+    				2 => array('text' => _('Supplier'), 'from' => $from, 'to' => ''),
+    				3 => array('text' => _('Currency'),'from' => $currency,'to' => ''),
+                    		4 => array('text' => _('Type'), 'from' => $summary,'to' => ''),
+				5 => array('text' => _('Suppress Zeros'), 'from' => $nozeros, 'to' => ''));
 
 	if ($convert)
 		$headers[2] = _('currency');
-    $rep = new FrontReport(_('Aged Supplier Analysis'), "AgedSupplierAnalysis", user_pagesize());
+    	$rep = new FrontReport(_('Aged Supplier Analysis'), "AgedSupplierAnalysis", user_pagesize());
 
+<<<<<<< rep202.php
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);
     $rep->NewPage();
+=======
+    	$rep->Font();
+    	$rep->Info($params, $cols, $headers, $aligns);
+    	$rep->Header();
+>>>>>>> 1.7
 
 	$total = array();
 	$total[0] = $total[1] = $total[2] = $total[3] = $total[4] = 0.0;
@@ -145,31 +158,32 @@ function print_aged_supplier_analysis()
 
 	while ($myrow=db_fetch($result))
 	{
-		if (!$convert && $currency != $myrow['curr_code'])
-			continue;
-		$rep->fontSize += 2;
-		$rep->TextCol(0, 2,	$myrow['name']);
-		if ($convert)
-		{
-			$rate = get_exchange_rate_from_home_currency($myrow['curr_code'], $to);
-			$rep->TextCol(2, 3,	$myrow['curr_code']);
-		}
-		else
-			$rate = 1.0;
-		$rep->fontSize -= 2;
+		if (!$convert && $currency != $myrow['curr_code']) continue;
+
+		if ($convert) $rate = get_exchange_rate_from_home_currency($myrow['curr_code'], $to);
+		else $rate = 1.0;
+
 		$supprec = get_supplier_details($myrow['supplier_id'], $to);
 		foreach ($supprec as $i => $value)
 			$supprec[$i] *= $rate;
-		$total[0] += ($supprec["Balance"] - $supprec["Due"]);
-		$total[1] += ($supprec["Due"]-$supprec["Overdue1"]);
-		$total[2] += ($supprec["Overdue1"]-$supprec["Overdue2"]);
-		$total[3] += $supprec["Overdue2"];
-		$total[4] += $supprec["Balance"];
+
 		$str = array($supprec["Balance"] - $supprec["Due"],
 			$supprec["Due"]-$supprec["Overdue1"],
 			$supprec["Overdue1"]-$supprec["Overdue2"],
 			$supprec["Overdue2"],
 			$supprec["Balance"]);
+
+		if ($no_zeros && array_sum($str) == 0) continue;
+
+		$rep->fontSize += 2;
+		$rep->TextCol(0, 2,	$myrow['name']);
+		if ($convert) $rep->TextCol(2, 3,	$myrow['curr_code']);
+		$rep->fontSize -= 2;
+		$total[0] += ($supprec["Balance"] - $supprec["Due"]);
+		$total[1] += ($supprec["Due"]-$supprec["Overdue1"]);
+		$total[2] += ($supprec["Overdue1"]-$supprec["Overdue2"]);
+		$total[3] += $supprec["Overdue2"];
+		$total[4] += $supprec["Balance"];
 		for ($i = 0; $i < count($str); $i++)
 			$rep->AmountCol($i + 3, $i + 4, $str[$i], $dec);
 		$rep->NewLine(1, 2);
