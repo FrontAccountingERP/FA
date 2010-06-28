@@ -19,6 +19,11 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+------------------------------- Release 2.2.11 ----------------------------------
+! Release 2.2.11
+$ config.default.php
+  update.html
+
 22-Jun-2010 Joe Hunt
 # Minor select bug in create recurrent invoices
 $ /sales/create_recurrent_invoices.php
