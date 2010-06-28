@@ -19,6 +19,11 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+------------------------------- Release 2.3 Beta --------------------------------
+28-Jun-2010 Joe Hunt
+! Release 2.3 Beta
+$ config.default.php
+  
 28-Jun-2010 Merged changes from main trunk (2.2.11) as follows
 ------------------------------- Release 2.2.11 ----------------------------------
 ! Release 2.2.11
