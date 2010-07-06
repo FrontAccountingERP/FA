@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+06-Jul-2010 Janusz Dobrowolski/Micha³ Kozielski
+# Additional sql injection prevention.
+$ /includes/date_functions.inc
+
 ------------------------------- Release 2.2.11 ----------------------------------
 ! Release 2.2.11
 $ config.default.php

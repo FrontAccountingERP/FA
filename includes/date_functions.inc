@@ -328,7 +328,11 @@ and converts to a yyyy/mm/dd format */
     else // $how == 2, YYYYMMDD
         list($year, $month, $day) = explode($sep, $date_);
 
-//to modify assumption in 2030
+    // prevent potential SQL injection
+    $year = (int)$year;
+    $month = (int)$month;
+    $day = (int)$day;
+	//to modify assumption in 2030
 	if ($date_system == 0 || $date_system == 3)
 	{
 		if ((int)$year < 60)
