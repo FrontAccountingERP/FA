@@ -19,6 +19,12 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+15-Jul-2010 Chaitanya/Joe Hunt
+! Changed calculating of cost update (average material price) for better sync.
+$ /purchasing/includes/db/grn_db.inc
+  /purchasing/includes/db/invoice_db.inc
+  /manufacturing/includes/db/work_orders_db.inc
+  
 ------------------------------- Release 2.3 Beta --------------------------------
 28-Jun-2010 Joe Hunt
 ! Release 2.3 Beta

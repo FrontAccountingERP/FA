@@ -27,12 +27,13 @@ function add_material_cost($stock_id, $qty, $date_)
 	$result = db_query($sql);
 	$myrow = db_fetch($result);
 	$material_cost =  $myrow['material_cost'];
-	$qoh = get_qoh_on_date($stock_id, null, $date_);
+	//$qoh = get_qoh_on_date($stock_id, null, $date_);
+	$qoh = get_qoh_on_date($stock_id);
 	if ($qoh < 0)
 		$qoh = 0;
 	if ($qoh + $qty != 0)	
 		$material_cost = ($qoh * $material_cost + $qty * $m_cost) /	($qoh + $qty);
-	$material_cost = round2($material_cost, $dec);	
+	//$material_cost = round2($material_cost, $dec);	
 	$sql = "UPDATE ".TB_PREF."stock_master SET material_cost=$material_cost
 		WHERE stock_id=".db_escape($stock_id);
 	db_query($sql,"The cost details for the inventory item could not be updated");
@@ -49,12 +50,13 @@ function add_overhead_cost($stock_id, $qty, $date_, $costs)
 	$result = db_query($sql);
 	$myrow = db_fetch($result);
 	$overhead_cost =  $myrow['overhead_cost'];
-	$qoh = get_qoh_on_date($stock_id, null, $date_);
+	//$qoh = get_qoh_on_date($stock_id, null, $date_);
+	$qoh = get_qoh_on_date($stock_id);
 	if ($qoh < 0)
 		$qoh = 0;
 	if ($qoh + $qty != 0)	
 		$overhead_cost = ($qoh * $overhead_cost + $qty * $costs) /	($qoh + $qty);
-	$overhead_cost = round2($overhead_cost, $dec);	
+	//$overhead_cost = round2($overhead_cost, $dec);	
 	$sql = "UPDATE ".TB_PREF."stock_master SET overhead_cost=".db_escape($overhead_cost)."
 		WHERE stock_id=".db_escape($stock_id);
 	db_query($sql,"The cost details for the inventory item could not be updated");
@@ -71,12 +73,13 @@ function add_labour_cost($stock_id, $qty, $date_, $costs)
 	$result = db_query($sql);
 	$myrow = db_fetch($result);
 	$labour_cost =  $myrow['labour_cost'];
-	$qoh = get_qoh_on_date($stock_id, null, $date_);
+	//$qoh = get_qoh_on_date($stock_id, null, $date_);
+	$qoh = get_qoh_on_date($stock_id);
 	if ($qoh < 0)
 		$qoh = 0;
 	if ($qoh + $qty != 0)	
 		$labour_cost = ($qoh * $labour_cost + $qty * $costs) /	($qoh + $qty);
-	$labour_cost = round2($labour_cost, $dec);	
+	//$labour_cost = round2($labour_cost, $dec);	
 	$sql = "UPDATE ".TB_PREF."stock_master SET labour_cost=".db_escape($labour_cost)."
 		WHERE stock_id=".db_escape($stock_id);
 	db_query($sql,"The cost details for the inventory item could not be updated");
@@ -93,12 +96,13 @@ function add_issue_cost($stock_id, $qty, $date_, $costs)
 	$material_cost =  $myrow['material_cost'];
 	$dec = user_price_dec();
 	price_decimal_format($material_cost, $dec); 
-	$qoh = get_qoh_on_date($stock_id, null, $date_);
+	//$qoh = get_qoh_on_date($stock_id, null, $date_);
+	$qoh = get_qoh_on_date($stock_id);
 	if ($qoh < 0)
 		$qoh = 0;
 	if ($qoh + $qty != 0)	
 		$material_cost = ($qty * $costs) /	($qoh + $qty);
-	$material_cost = round2($material_cost, $dec);	
+	//$material_cost = round2($material_cost, $dec);	
 	$sql = "UPDATE ".TB_PREF."stock_master SET material_cost=material_cost+"
 		.db_escape($material_cost)
 		." WHERE stock_id=".db_escape($stock_id);

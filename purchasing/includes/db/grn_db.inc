@@ -38,7 +38,9 @@ function update_average_material_cost($supplier, $stock_id, $price, $qty, $date,
 	else
 		$exclude = 0;
 	$cost_adjust = false;
-	$qoh = get_qoh_on_date($stock_id, null, $date, $exclude);
+	//$qoh = get_qoh_on_date($stock_id, null, $date, $exclude);
+	$qoh = get_qoh_on_date($stock_id);
+	
 	if ($adj_only)
 	{
 		if ($qoh > 0)
@@ -55,7 +57,8 @@ function update_average_material_cost($supplier, $stock_id, $price, $qty, $date,
 		if ($qoh + $qty != 0)
 			$material_cost = ($qoh * $material_cost + $qty * $price_in_home_currency) /	($qoh + $qty);
 	}	
-	$material_cost = round2($material_cost, $dec);
+	//$material_cost = round2($material_cost, $dec);
+	
 	if ($cost_adjust) // new 2010-02-10
 		adjust_deliveries($stock_id, $material_cost, $date);
 	$sql = "UPDATE ".TB_PREF."stock_master SET material_cost=".db_escape($material_cost)."

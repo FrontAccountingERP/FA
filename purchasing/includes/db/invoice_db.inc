@@ -108,7 +108,8 @@ function get_diff_in_home_currency($supplier, $old_date, $date, $amount1, $amoun
 	$ex_rate = get_exchange_rate_to_home_currency($currency, $date);
 	$amount2 = $amount2 / $ex_rate;
 	$diff = $amount2 - $amount1;
-	return round2($diff, $dec);
+	//return round2($diff, $dec);
+	return $diff;
 }
 //----------------------------------------------------------------------------------------
 
@@ -203,9 +204,12 @@ function add_supp_invoice($supp_trans, $invoice_no=0) // do not receive as ref b
 		$line_tax = $entered_grn->full_charge_price($supp_trans->tax_group_id) - $line_taxfree;
 		$stock_gl_code = get_stock_gl_code($entered_grn->item_code);
 		$iv_act = (is_inventory_item($entered_grn->item_code) ? $stock_gl_code["inventory_account"] : $stock_gl_code["cogs_account"]);
-		$total += add_gl_trans_supplier($trans_type, $invoice_id, $date_, $iv_act,
+		$total += add_gl_trans_supplier($trans_type, $invoice_id, $date_, $supplier_accounts["purchase_account"],
 			$stock_gl_code['dimension_id'], $stock_gl_code['dimension2_id'],
-			$entered_grn->this_quantity_inv * $line_taxfree, $supp_trans->supplier_id);
+			$entered_grn->this_quantity_inv * $line_taxfree, $supp_trans->supplier_id);		
+		/*$total += add_gl_trans_supplier($trans_type, $invoice_id, $date_, $iv_act,
+			$stock_gl_code['dimension_id'], $stock_gl_code['dimension2_id'],
+			$entered_grn->this_quantity_inv * $line_taxfree, $supp_trans->supplier_id);*/
     	// -------------- if price changed since po received. 16 Aug 2008 Joe Hunt
     	if ($trans_type == ST_SUPPINVOICE)
     	{
@@ -227,13 +231,31 @@ function add_supp_invoice($supp_trans, $invoice_no=0) // do not receive as ref b
 			//$diff = $entered_grn->chg_price - $old_price;
 			$old_date = sql2date($old[1]);
 			$diff = get_diff_in_home_currency($supp_trans->supplier_id, $old_date, $date_, $old_price, 
-				$entered_grn->chg_price);
+				$entered_grn->chg_price);	
+			
 			// always return due to change in currency.
+			/*$mat_cost = update_average_material_cost(null, $entered_grn->item_code,
+				$diff, $entered_grn->this_quantity_inv, $old_date, true); */
 			$mat_cost = update_average_material_cost(null, $entered_grn->item_code,
-				$diff, $entered_grn->this_quantity_inv, $old_date, true);
+				$diff, $entered_grn->this_quantity_inv, null, true);
+				
+			//Add GL transaction for GRN Provision in case of difference
+			if (($diff * $entered_grn->this_quantity_inv) != 0 )
+			{
+				$diff_amt = $diff * $entered_grn->this_quantity_inv;
+				add_gl_trans($trans_type, $invoice_id, $date_,	$iv_act,
+					$stock_gl_code['dimension_id'], $stock_gl_code['dimension2_id'], 'GRN Provision',
+					$diff_amt, null, null, null,
+					"The general ledger transaction could not be added for the GRN of the inventory item");	
+					
+				add_gl_trans($trans_type, $invoice_id, $date_,	$stock_gl_code["cogs_account"],
+					0, 0, 'GRN Provision', -$diff_amt, null, null, null,
+					"The general ledger transaction could not be added for the GRN of the inventory item");				
+			}
+			
 			// added 2008-12-08 Joe Hunt. Update the purchase data table
 			add_or_update_purchase_data($supp_trans->supplier_id, $entered_grn->item_code, $entered_grn->chg_price); 
-			$deliveries = get_deliveries_between($entered_grn->item_code, $old_date, Today()); // extend the period, if invoice is before any deliveries.
+			/*$deliveries = get_deliveries_between($entered_grn->item_code, $old_date, Today()); // extend the period, if invoice is before any deliveries.
 			if ($deliveries[0] != 0) // have deliveries been done during the period?
 			{
 				$deliveries[1] /= $deliveries[0];
@@ -254,7 +276,7 @@ function add_supp_invoice($supp_trans, $invoice_no=0) // do not receive as ref b
 						"The general ledger transaction could not be added for the price variance of the inventory item");
 				}		
 				update_stock_move_pid(ST_CUSTDELIVERY, $entered_grn->item_code, $old_date, $date_, 0, $mat_cost);
-			}
+			} */
 			update_stock_move_pid(ST_SUPPRECEIVE, $entered_grn->item_code, $old_date, $old_date, $supp_trans->supplier_id, $mat_cost);
 		//}
 		}
