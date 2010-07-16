@@ -24,6 +24,7 @@ $ -> Affected files
 $ /purchasing/includes/db/grn_db.inc
   /purchasing/includes/db/invoice_db.inc
   /manufacturing/includes/db/work_orders_db.inc
+  /includes/db/inventory_db.inc
   
 ------------------------------- Release 2.3 Beta --------------------------------
 28-Jun-2010 Joe Hunt
