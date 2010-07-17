@@ -224,12 +224,13 @@ function adjust_deliveries_v0($stock_id, $material_cost, $to)
 	   
 		$stock_gl_code = get_stock_gl_code($stock_id);
 
-		$memo_ = _("Cost was ") . $old_cost . _(" changed to ") . $new_cost . _(" for item ")."'$stock_id'";
+		$memo_ = sprintf(_("Cost was %s changed to %s for item '%s'"),
+			$old_cost, $new_cost, $stock_id);
 		add_gl_trans_std_cost(ST_COSTUPDATE, $update_no, $to, $stock_gl_code["cogs_account"], 
-			$stock_gl_code["dimension_id"], $stock_gl_code["dimension2_id"], $memo_, $diff);	   
+			$stock_gl_code["dimension_id"], $stock_gl_code["dimension2_id"], $memo_, $diff);
 
-		add_gl_trans_std_cost(ST_COSTUPDATE, $update_no, $to, $stock_gl_code["inventory_account"], 0, 0, $memo_, 
-			-$diff);
+		add_gl_trans_std_cost(ST_COSTUPDATE, $update_no, $to, $stock_gl_code["inventory_account"], 
+			0, 0, $memo_, -$diff);
 		add_audit_trail(ST_COSTUPDATE, $update_no, $to);
    	}
 }
