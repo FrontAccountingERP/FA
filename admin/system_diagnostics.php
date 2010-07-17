@@ -34,22 +34,22 @@ $system_tests = array('tst_mysql', 'tst_php', 'tst_server', 'tst_system', 'tst_b
 
 function tst_mysql() 
 {
-	$test['descr'] = _('MySQL version'). ' >3.23.58';
+	$test['descr'] = _('MySQL version'). ' >=4.1';
 	$test['type'] = 3;
 	$test['test'] = mysql_get_server_info();
-	$test['result'] = $test['test']>'3.23.58';
-	$test['comments'] = _('Upgrade MySQL server to version at least 3.23.58');
+	$test['result'] = $test['test']>='4.1';
+	$test['comments'] = _('Upgrade MySQL server to version at least 4.1');
 
 	return $test;
 }
 
 function tst_php() 
 {
-	$test['descr'] = _('PHP version').' >4.3.2';
+	$test['descr'] = _('PHP version').' >=4.3.3';
 	$test['type'] = 3;
 	$test['test'] = phpversion();
-	$test['result'] = $test['test']>'4.3.2';
-	$test['comments'] = _('Upgrade PHP to version at least 4.3.2');
+	$test['result'] = $test['test']>='4.3.3';
+	$test['comments'] = _('Upgrade PHP to version at least 4.3.3');
 
 	return $test;
 }
@@ -114,7 +114,7 @@ function tst_debug()
 	$test['type'] = 0;
 	$test['test'] = $go_debug ? _("Yes") : _("No");
 	$test['result'] = $go_debug != 0;
-	$test['comments'] = _('To switch debugging on set $go_debug>1 in config.php file');
+	$test['comments'] = _('To switch debugging on set $go_debug>0 in config.php file');
 
 	return $test;
 }
@@ -285,12 +285,13 @@ function tst_extconfig()
 {
 	global $path_to_root, $db_connections;
 
-	$test['descr'] = _('Extensions configuration files');
+	$test['descr'] = _('Extensions system');
 	$test['type'] = 3;
-	$test['test'] = $path_to_root.'/installed_extensions.php';
-	$test['result'] = is_file($test['test']) && is_writable($test['test']);
-	$test['test'] . ','.company_path().'/*/installed_extensions.php';
-	$test['comments'][] = sprintf(_("'%s' file should be writeable"), $test['test']);
+	$fname =  $path_to_root.'/installed_extensions.php';
+	$test['test'][] = $fname;
+	$test['result'] = is_file($fname) && is_writable($fname);
+	$test['test'][] = company_path().'/*/installed_extensions.php';
+	$test['comments'][] = _("Extensions configuration files and directories should be writeable");
 
 	foreach ($db_connections as $n => $comp) {
 		$path = company_path($n);
@@ -303,6 +304,16 @@ function tst_extconfig()
 			continue;
 		};
 	}
+	$fname =  $path_to_root.'/modules';
+	$test['test'][] = $fname;
+	$test['result'] &= is_dir($fname) && is_writable($fname);
+	$fname =  $path_to_root.'/modules/_cache';
+	$test['test'][] = $fname;
+	$test['result'] &= is_dir($fname) && is_writable($fname);
+	$fname =  $path_to_root.'/themes';
+	$test['test'][] = $fname;
+	$test['result'] &= is_dir($fname) && is_writable($fname);
+
 	return $test;
 }
 //-------------------------------------------------------------------------------------------------
