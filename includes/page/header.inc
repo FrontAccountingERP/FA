@@ -83,7 +83,6 @@ function page_header($title, $no_menu=false, $is_index=false, $onload="", $js=""
 //		add_js_ufile($jsext);
 
 	$theme = user_theme();
-	$local_path_to_root = $path_to_root;
 
 	if ($help_base_url != null && $use_popup_windows && $js == '')
 	{
@@ -126,7 +125,7 @@ function page_header($title, $no_menu=false, $is_index=false, $onload="", $js=""
 	echo "<html dir='" . $_SESSION['language']->dir . "' >\n";
 	echo "<head><title>$title</title>";
 	echo "<meta http-equiv='Content-type' content='text/html; charset=$encoding'>";
-	echo "<link href='$local_path_to_root/themes/$theme/default.css' rel='stylesheet' type='text/css'> \n";
+	echo "<link href='$path_to_root/themes/$theme/default.css' rel='stylesheet' type='text/css'> \n";
 	send_scripts($js);
 
 	echo "</head> \n";
@@ -134,7 +133,8 @@ function page_header($title, $no_menu=false, $is_index=false, $onload="", $js=""
 		echo "<body>";
 	else
 		echo "<body onload=\"$onload\">";
-	include_once($local_path_to_root."/themes/".user_theme()."/renderer.php");
+
+	include_once($path_to_root . "/themes/".user_theme()."/renderer.php");
 	$rend = new renderer();
 	$rend->menu_header($title, $no_menu, $is_index);
 	error_box();
