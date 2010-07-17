@@ -101,7 +101,7 @@ function check_can_delete()
 		return false;
 	}
 
-	if (key_in_foreign_table($curr, 'company', 'curr_default', true))		
+	if ($curr == get_company_pref('curr_default'))
 	{
 		display_error(_("Cannot delete this currency, because the company preferences uses this currency."));
 		return false;
