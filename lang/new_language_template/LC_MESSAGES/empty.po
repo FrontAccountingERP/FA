@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-06-27 19:41+0200\n"
+"POT-Creation-Date: 2010-07-08 15:59+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,20 +16,16 @@ msgstr ""
 "Content-Type: text/plain; charset=ISO-8859-2\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: /var/www/fa2.3/devel/../frontaccounting.php:80
-#: /var/www/fa2.3/devel/../frontaccounting.php:81
+#: /var/www/fa2.3/devel/../frontaccounting.php:84
+#: /var/www/fa2.3/devel/../frontaccounting.php:85
 msgid "Main  Menu"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../frontaccounting.php:82
+#: /var/www/fa2.3/devel/../frontaccounting.php:86
 #: /var/www/fa2.3/devel/../access/logout.php:17
 #: /var/www/fa2.3/devel/../themes/default/renderer.php:42
 #: /var/www/fa2.3/devel/../themes/default/renderer.php:69
 msgid "Logout"
-msgstr ""
-
-#: /var/www/fa2.3/devel/../link_test.php:38
-msgid "Trans Link Test"
 msgstr ""
 
 #: /var/www/fa2.3/devel/../access/login.php:13
@@ -147,9 +143,9 @@ msgstr ""
 #: /var/www/fa2.3/devel/../purchasing/inquiry/supplier_allocation_inquiry.php:126
 #: /var/www/fa2.3/devel/../purchasing/inquiry/supplier_inquiry.php:163
 #: /var/www/fa2.3/devel/../purchasing/allocations/supplier_allocation_main.php:95
-#: /var/www/fa2.3/devel/../reporting/rep101.php:126
-#: /var/www/fa2.3/devel/../reporting/rep201.php:114
-#: /var/www/fa2.3/devel/../reporting/rep203.php:87
+#: /var/www/fa2.3/devel/../reporting/rep101.php:130
+#: /var/www/fa2.3/devel/../reporting/rep201.php:118
+#: /var/www/fa2.3/devel/../reporting/rep203.php:91
 #: /var/www/fa2.3/devel/../reporting/rep601.php:76
 #: /var/www/fa2.3/devel/../reporting/rep704.php:78
 #: /var/www/fa2.3/devel/../reporting/rep704.php:81
@@ -170,12 +166,13 @@ msgstr ""
 #: /var/www/fa2.3/devel/../admin/attachments.php:214
 #: /var/www/fa2.3/devel/../admin/crm_categories.php:88
 #: /var/www/fa2.3/devel/../admin/inst_upgrade.php:179
-#: /var/www/fa2.3/devel/../admin/payment_terms.php:139
+#: /var/www/fa2.3/devel/../admin/payment_terms.php:127
 #: /var/www/fa2.3/devel/../admin/printers.php:84
 #: /var/www/fa2.3/devel/../admin/print_profiles.php:148
 #: /var/www/fa2.3/devel/../gl/inquiry/tax_inquiry.php:82
 #: /var/www/fa2.3/devel/../gl/manage/gl_quick_entries.php:178
 #: /var/www/fa2.3/devel/../gl/manage/gl_quick_entries.php:218
+#: /var/www/fa2.3/devel/../includes/ui/view_package.php:22
 #: /var/www/fa2.3/devel/../inventory/manage/item_codes.php:123
 #: /var/www/fa2.3/devel/../inventory/manage/item_units.php:94
 #: /var/www/fa2.3/devel/../inventory/manage/movement_types.php:95
@@ -190,8 +187,8 @@ msgstr ""
 #: /var/www/fa2.3/devel/../reporting/rep104.php:109
 #: /var/www/fa2.3/devel/../reporting/rep105.php:112
 #: /var/www/fa2.3/devel/../reporting/rep204.php:82
-#: /var/www/fa2.3/devel/../reporting/rep303.php:104
-#: /var/www/fa2.3/devel/../reporting/rep303.php:110
+#: /var/www/fa2.3/devel/../reporting/rep303.php:108
+#: /var/www/fa2.3/devel/../reporting/rep303.php:114
 #: /var/www/fa2.3/devel/../reporting/rep304.php:114
 #: /var/www/fa2.3/devel/../reporting/rep305.php:72
 #: /var/www/fa2.3/devel/../reporting/rep401.php:69
@@ -208,7 +205,6 @@ msgstr ""
 #: /var/www/fa2.3/devel/../admin/attachments.php:164
 #: /var/www/fa2.3/devel/../admin/backups.php:60
 #: /var/www/fa2.3/devel/../admin/backups.php:139
-#: /var/www/fa2.3/devel/../admin/inst_module.php:192
 msgid "Filename"
 msgstr ""
 
@@ -228,9 +224,9 @@ msgstr ""
 #: /var/www/fa2.3/devel/../admin/create_coy.php:288
 #: /var/www/fa2.3/devel/../admin/crm_categories.php:106
 #: /var/www/fa2.3/devel/../admin/fiscalyears.php:158
-#: /var/www/fa2.3/devel/../admin/inst_lang.php:161
-#: /var/www/fa2.3/devel/../admin/inst_module.php:218
-#: /var/www/fa2.3/devel/../admin/payment_terms.php:154
+#: /var/www/fa2.3/devel/../admin/inst_lang.php:99
+#: /var/www/fa2.3/devel/../admin/inst_module.php:212
+#: /var/www/fa2.3/devel/../admin/payment_terms.php:142
 #: /var/www/fa2.3/devel/../admin/printers.php:96
 #: /var/www/fa2.3/devel/../admin/shipping_companies.php:106
 #: /var/www/fa2.3/devel/../admin/tags.php:140
@@ -298,9 +294,10 @@ msgstr ""
 #: /var/www/fa2.3/devel/../admin/create_coy.php:289
 #: /var/www/fa2.3/devel/../admin/crm_categories.php:110
 #: /var/www/fa2.3/devel/../admin/fiscalyears.php:160
-#: /var/www/fa2.3/devel/../admin/inst_lang.php:162
-#: /var/www/fa2.3/devel/../admin/inst_module.php:220
-#: /var/www/fa2.3/devel/../admin/payment_terms.php:155
+#: /var/www/fa2.3/devel/../admin/inst_lang.php:108
+#: /var/www/fa2.3/devel/../admin/inst_module.php:221
+#: /var/www/fa2.3/devel/../admin/inst_theme.php:98
+#: /var/www/fa2.3/devel/../admin/payment_terms.php:143
 #: /var/www/fa2.3/devel/../admin/printers.php:97
 #: /var/www/fa2.3/devel/../admin/shipping_companies.php:107
 #: /var/www/fa2.3/devel/../admin/tags.php:141
@@ -389,8 +386,8 @@ msgstr ""
 #: /var/www/fa2.3/devel/../admin/backups.php:95
 #: /var/www/fa2.3/devel/../admin/create_coy.php:276
 #: /var/www/fa2.3/devel/../admin/fiscalyears.php:149
-#: /var/www/fa2.3/devel/../admin/inst_lang.php:158
-#: /var/www/fa2.3/devel/../admin/inst_lang.php:160
+#: /var/www/fa2.3/devel/../admin/inst_lang.php:84
+#: /var/www/fa2.3/devel/../admin/inst_lang.php:96
 #: /var/www/fa2.3/devel/../admin/system_diagnostics.php:102
 #: /var/www/fa2.3/devel/../admin/system_diagnostics.php:115
 #: /var/www/fa2.3/devel/../dimensions/inquiry/search_dimensions.php:107
@@ -399,9 +396,15 @@ msgstr ""
 #: /var/www/fa2.3/devel/../gl/manage/gl_account_classes.php:126
 #: /var/www/fa2.3/devel/../gl/manage/gl_quick_entries.php:223
 #: /var/www/fa2.3/devel/../includes/ui/ui_lists.inc:1628
+#: /var/www/fa2.3/devel/../reporting/rep101.php:126
+#: /var/www/fa2.3/devel/../reporting/rep102.php:106
 #: /var/www/fa2.3/devel/../reporting/rep104.php:103
 #: /var/www/fa2.3/devel/../reporting/rep106.php:73
-#: /var/www/fa2.3/devel/../reporting/rep303.php:98
+#: /var/www/fa2.3/devel/../reporting/rep201.php:114
+#: /var/www/fa2.3/devel/../reporting/rep202.php:108
+#: /var/www/fa2.3/devel/../reporting/rep203.php:87
+#: /var/www/fa2.3/devel/../reporting/rep303.php:100
+#: /var/www/fa2.3/devel/../reporting/rep303.php:104
 #: /var/www/fa2.3/devel/../reporting/rep501.php:109
 #: /var/www/fa2.3/devel/../sales/manage/sales_points.php:94
 #: /var/www/fa2.3/devel/../sales/manage/sales_points.php:95
@@ -709,7 +712,11 @@ msgstr ""
 #: /var/www/fa2.3/devel/../admin/display_prefs.php:141
 #: /var/www/fa2.3/devel/../admin/forms_setup.php:61
 #: /var/www/fa2.3/devel/../admin/gl_setup.php:203
-#: /var/www/fa2.3/devel/../admin/inst_module.php:263
+#: /var/www/fa2.3/devel/../admin/inst_lang.php:102
+#: /var/www/fa2.3/devel/../admin/inst_module.php:215
+#: /var/www/fa2.3/devel/../admin/inst_module.php:233
+#: /var/www/fa2.3/devel/../admin/inst_module.php:276
+#: /var/www/fa2.3/devel/../admin/inst_theme.php:92
 #: /var/www/fa2.3/devel/../dimensions/dimension_entry.php:293
 #: /var/www/fa2.3/devel/../gl/manage/gl_quick_entries.php:60
 #: /var/www/fa2.3/devel/../gl/includes/ui/gl_bank_ui.inc:249
@@ -802,7 +809,7 @@ msgstr ""
 #: /var/www/fa2.3/devel/../admin/create_coy.php:164
 #: /var/www/fa2.3/devel/../admin/create_coy.php:200
 #: /var/www/fa2.3/devel/../admin/create_coy.php:231
-#: /var/www/fa2.3/devel/../admin/db/maintenance_db.inc:271
+#: /var/www/fa2.3/devel/../admin/db/maintenance_db.inc:256
 msgid ""
 " is not writable. Change its permissions so it is, then re-run the operation."
 msgstr ""
@@ -842,7 +849,7 @@ msgid "Cannot remove temporary renamed company data directory "
 msgstr ""
 
 #: /var/www/fa2.3/devel/../admin/create_coy.php:243
-msgid "Selected company as been deleted"
+msgid "Selected company has been deleted"
 msgstr ""
 
 #: /var/www/fa2.3/devel/../admin/create_coy.php:257
@@ -871,15 +878,15 @@ msgstr ""
 
 #: /var/www/fa2.3/devel/../admin/create_coy.php:265
 #: /var/www/fa2.3/devel/../admin/create_coy.php:363
-#: /var/www/fa2.3/devel/../admin/inst_lang.php:139
+#: /var/www/fa2.3/devel/../admin/inst_lang.php:37
 #: /var/www/fa2.3/devel/../admin/print_profiles.php:162
 msgid "Default"
 msgstr ""
 
 #: /var/www/fa2.3/devel/../admin/create_coy.php:274
 #: /var/www/fa2.3/devel/../admin/fiscalyears.php:153
-#: /var/www/fa2.3/devel/../admin/inst_lang.php:156
-#: /var/www/fa2.3/devel/../admin/inst_lang.php:160
+#: /var/www/fa2.3/devel/../admin/inst_lang.php:84
+#: /var/www/fa2.3/devel/../admin/inst_lang.php:96
 #: /var/www/fa2.3/devel/../admin/system_diagnostics.php:102
 #: /var/www/fa2.3/devel/../admin/system_diagnostics.php:115
 #: /var/www/fa2.3/devel/../dimensions/inquiry/search_dimensions.php:107
@@ -888,9 +895,15 @@ msgstr ""
 #: /var/www/fa2.3/devel/../gl/manage/gl_account_classes.php:126
 #: /var/www/fa2.3/devel/../gl/manage/gl_quick_entries.php:223
 #: /var/www/fa2.3/devel/../includes/ui/ui_lists.inc:1629
+#: /var/www/fa2.3/devel/../reporting/rep101.php:125
+#: /var/www/fa2.3/devel/../reporting/rep102.php:105
 #: /var/www/fa2.3/devel/../reporting/rep104.php:105
 #: /var/www/fa2.3/devel/../reporting/rep106.php:75
-#: /var/www/fa2.3/devel/../reporting/rep303.php:93
+#: /var/www/fa2.3/devel/../reporting/rep201.php:113
+#: /var/www/fa2.3/devel/../reporting/rep202.php:107
+#: /var/www/fa2.3/devel/../reporting/rep203.php:86
+#: /var/www/fa2.3/devel/../reporting/rep303.php:95
+#: /var/www/fa2.3/devel/../reporting/rep303.php:103
 #: /var/www/fa2.3/devel/../reporting/rep501.php:107
 #: /var/www/fa2.3/devel/../sales/manage/sales_points.php:94
 #: /var/www/fa2.3/devel/../sales/manage/sales_points.php:95
@@ -914,6 +927,12 @@ msgid "Database Password"
 msgstr ""
 
 #: /var/www/fa2.3/devel/../admin/create_coy.php:360
+#: /var/www/fa2.3/devel/../admin/inst_lang.php:86
+#: /var/www/fa2.3/devel/../admin/inst_lang.php:88
+#: /var/www/fa2.3/devel/../admin/inst_module.php:207
+#: /var/www/fa2.3/devel/../admin/inst_module.php:208
+#: /var/www/fa2.3/devel/../admin/inst_theme.php:87
+#: /var/www/fa2.3/devel/../admin/inst_theme.php:88
 #: /var/www/fa2.3/devel/../admin/inst_upgrade.php:191
 #: /var/www/fa2.3/devel/../gl/manage/gl_account_types.php:184
 #: /var/www/fa2.3/devel/../includes/ui/allocation_cart.inc:281
@@ -936,7 +955,6 @@ msgid ""
 msgstr ""
 
 #: /var/www/fa2.3/devel/../admin/create_coy.php:371
-#: /var/www/fa2.3/devel/../admin/inst_lang.php:226
 msgid "Save"
 msgstr ""
 
@@ -1058,7 +1076,7 @@ msgid "Decimal Separator:"
 msgstr ""
 
 #: /var/www/fa2.3/devel/../admin/display_prefs.php:97
-#: /var/www/fa2.3/devel/../admin/inst_lang.php:139
+#: /var/www/fa2.3/devel/../admin/inst_lang.php:36
 msgid "Language"
 msgstr ""
 
@@ -1275,7 +1293,7 @@ msgstr ""
 #: /var/www/fa2.3/devel/../admin/gl_setup.php:153
 #: /var/www/fa2.3/devel/../admin/gl_setup.php:161
 #: /var/www/fa2.3/devel/../admin/gl_setup.php:196
-#: /var/www/fa2.3/devel/../admin/payment_terms.php:152
+#: /var/www/fa2.3/devel/../admin/payment_terms.php:140
 msgid "days"
 msgstr ""
 
@@ -1380,7 +1398,7 @@ msgstr ""
 
 #: /var/www/fa2.3/devel/../admin/gl_setup.php:176
 #: /var/www/fa2.3/devel/../applications/inventory.php:30
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:157
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:162
 msgid "Inventory"
 msgstr ""
 
@@ -1430,22 +1448,12 @@ msgstr ""
 msgid "Work Order Required By After:"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../admin/inst_lang.php:16
+#: /var/www/fa2.3/devel/../admin/inst_lang.php:23
 msgid "Install/Update Languages"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../admin/inst_lang.php:41
-msgid "Language name, code nor encoding cannot be empty"
-msgstr ""
-
-#: /var/www/fa2.3/devel/../admin/inst_lang.php:133
-msgid "Are you sure you want to delete language no. "
-msgstr ""
-
-#: /var/www/fa2.3/devel/../admin/inst_lang.php:139
-#: /var/www/fa2.3/devel/../admin/inst_module.php:192
-#: /var/www/fa2.3/devel/../admin/inst_module.php:232
-#: /var/www/fa2.3/devel/../admin/inst_module.php:292
+#: /var/www/fa2.3/devel/../admin/inst_lang.php:36
+#: /var/www/fa2.3/devel/../admin/inst_module.php:308
 #: /var/www/fa2.3/devel/../admin/printers.php:84
 #: /var/www/fa2.3/devel/../admin/shipping_companies.php:91
 #: /var/www/fa2.3/devel/../dimensions/dimension_entry.php:271
@@ -1464,18 +1472,87 @@ msgstr ""
 msgid "Name"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../admin/inst_lang.php:139
+#: /var/www/fa2.3/devel/../admin/inst_lang.php:36
 #: /var/www/fa2.3/devel/../admin/inst_lang.php:216
 msgid "Encoding"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../admin/inst_lang.php:139
+#: /var/www/fa2.3/devel/../admin/inst_lang.php:36
 #: /var/www/fa2.3/devel/../admin/inst_lang.php:218
 msgid "Right To Left"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../admin/inst_lang.php:175
+#: /var/www/fa2.3/devel/../admin/inst_lang.php:37
+#: /var/www/fa2.3/devel/../admin/inst_module.php:185
+#: /var/www/fa2.3/devel/../admin/inst_theme.php:70
+#: /var/www/fa2.3/devel/../inventory/inquiry/stock_status.php:70
+#: /var/www/fa2.3/devel/../reporting/rep303.php:101
+msgid "Available"
+msgstr ""
+
+#: /var/www/fa2.3/devel/../admin/inst_lang.php:37
+#: /var/www/fa2.3/devel/../admin/inst_module.php:185
+#: /var/www/fa2.3/devel/../admin/inst_theme.php:70
+#: /var/www/fa2.3/devel/../admin/inst_upgrade.php:197
+msgid "Installed"
+msgstr ""
+
+#: /var/www/fa2.3/devel/../admin/inst_lang.php:48
+msgid "Supported"
+msgstr ""
+
+#: /var/www/fa2.3/devel/../admin/inst_lang.php:50
+msgid "Display also languages not supported by server locales"
+msgstr ""
+
+#: /var/www/fa2.3/devel/../admin/inst_lang.php:89
+#: /var/www/fa2.3/devel/../admin/inst_module.php:209
+#: /var/www/fa2.3/devel/../admin/inst_theme.php:89
+msgid "Unknown"
+msgstr ""
+
+#: /var/www/fa2.3/devel/../admin/inst_lang.php:99
+msgid "Edit non standard language configuration"
+msgstr ""
+
+#: /var/www/fa2.3/devel/../admin/inst_lang.php:102
+#: /var/www/fa2.3/devel/../admin/inst_module.php:215
+#: /var/www/fa2.3/devel/../admin/inst_theme.php:92
+#: /var/www/fa2.3/devel/../admin/inst_upgrade.php:179
+msgid "Install"
+msgstr ""
+
+#: /var/www/fa2.3/devel/../admin/inst_lang.php:103
+msgid "Upload and install latest language package"
+msgstr ""
+
+#: /var/www/fa2.3/devel/../admin/inst_lang.php:110
+#, php-format
+msgid ""
+"You are about to remove language \\'%s\\'.\n"
+"Do you want to continue ?"
+msgstr ""
+
+#: /var/www/fa2.3/devel/../admin/inst_lang.php:117
 msgid "The marked language is the current language which cannot be deleted."
+msgstr ""
+
+#: /var/www/fa2.3/devel/../admin/inst_lang.php:119
+msgid "Update default"
+msgstr ""
+
+#: /var/www/fa2.3/devel/../admin/inst_lang.php:121
+msgid "Add new language manually"
+msgstr ""
+
+#: /var/www/fa2.3/devel/../admin/inst_lang.php:134
+msgid "Language name, code nor encoding cannot be empty"
+msgstr ""
+
+#: /var/www/fa2.3/devel/../admin/inst_lang.php:139
+msgid ""
+"Standard package for this language is already installed. If you want to "
+"install this language manually, uninstall standard language package first."
 msgstr ""
 
 #: /var/www/fa2.3/devel/../admin/inst_lang.php:214
@@ -1499,77 +1576,75 @@ msgstr ""
 msgid "Select your language files from your local harddisk."
 msgstr ""
 
-#: /var/www/fa2.3/devel/../admin/inst_lang.php:255
-msgid "Create a new language"
-msgstr ""
-
-#: /var/www/fa2.3/devel/../admin/inst_module.php:16
+#: /var/www/fa2.3/devel/../admin/inst_module.php:17
 msgid "Install/Activate extensions"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../admin/inst_module.php:30
-msgid "Cannot update system extensions list."
-msgstr ""
-
-#: /var/www/fa2.3/devel/../admin/inst_module.php:48
-#, php-format
-msgid "Cannot update extensions list for company '%s'."
-msgstr ""
-
-#: /var/www/fa2.3/devel/../admin/inst_module.php:59
+#: /var/www/fa2.3/devel/../admin/inst_module.php:31
 msgid "Extension name cannot be empty."
 msgstr ""
 
-#: /var/www/fa2.3/devel/../admin/inst_module.php:64
+#: /var/www/fa2.3/devel/../admin/inst_module.php:36
 msgid "Extension name have to be unique."
 msgstr ""
 
-#: /var/www/fa2.3/devel/../admin/inst_module.php:70
+#: /var/www/fa2.3/devel/../admin/inst_module.php:42
 msgid "Extension title cannot be empty."
 msgstr ""
 
-#: /var/www/fa2.3/devel/../admin/inst_module.php:74
+#: /var/www/fa2.3/devel/../admin/inst_module.php:46
 msgid "Extension folder name cannot be empty."
 msgstr ""
 
-#: /var/www/fa2.3/devel/../admin/inst_module.php:78
+#: /var/www/fa2.3/devel/../admin/inst_module.php:50
 msgid "You have to select plugin file to upload"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../admin/inst_module.php:96
-msgid ""
-"Module installation support is not implemented yet. You have to do it "
-"manually."
+#: /var/www/fa2.3/devel/../admin/inst_module.php:68
+msgid "Module installation support is not implemented."
 msgstr ""
 
-#: /var/www/fa2.3/devel/../admin/inst_module.php:183
+#: /var/www/fa2.3/devel/../admin/inst_module.php:159
 msgid "Selected extension has been successfully deleted"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../admin/inst_module.php:192
-#: /var/www/fa2.3/devel/../admin/inst_module.php:232
-msgid "Tab"
+#: /var/www/fa2.3/devel/../admin/inst_module.php:184
+#: /var/www/fa2.3/devel/../admin/inst_module.php:247
+msgid "Extension"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../admin/inst_module.php:192
-#: /var/www/fa2.3/devel/../admin/inst_module.php:232
-msgid "Link text"
+#: /var/www/fa2.3/devel/../admin/inst_module.php:184
+#: /var/www/fa2.3/devel/../admin/inst_module.php:247
+msgid "Modules provided"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../admin/inst_module.php:192
-#: /var/www/fa2.3/devel/../admin/inst_module.php:293
-msgid "Folder"
+#: /var/www/fa2.3/devel/../admin/inst_module.php:184
+#: /var/www/fa2.3/devel/../admin/inst_module.php:247
+msgid "Options provided"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../admin/inst_module.php:193
-msgid "Access extensions"
+#: /var/www/fa2.3/devel/../admin/inst_module.php:212
+msgid "Edit third-party extension parameters."
 msgstr ""
 
-#: /var/www/fa2.3/devel/../admin/inst_module.php:221
-msgid "You are about to delete this extension\\nDo you want to continue?"
+#: /var/www/fa2.3/devel/../admin/inst_module.php:216
+#: /var/www/fa2.3/devel/../admin/inst_theme.php:93
+msgid "Upload and install latest extension package"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../admin/inst_module.php:232
+#: /var/www/fa2.3/devel/../admin/inst_module.php:223
+#: /var/www/fa2.3/devel/../admin/inst_theme.php:100
+#, php-format
+msgid ""
+"You are about to remove package \\'%s\\'.\n"
+"Do you want to continue ?"
+msgstr ""
+
+#: /var/www/fa2.3/devel/../admin/inst_module.php:234
+msgid "Add third-party plugin"
+msgstr ""
+
+#: /var/www/fa2.3/devel/../admin/inst_module.php:247
 #: /var/www/fa2.3/devel/../includes/ui/ui_lists.inc:637
 #: /var/www/fa2.3/devel/../includes/ui/ui_lists.inc:2089
 #: /var/www/fa2.3/devel/../reporting/includes/excel_report.inc:217
@@ -1577,48 +1652,64 @@ msgstr ""
 msgid "Active"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../admin/inst_module.php:295
+#: /var/www/fa2.3/devel/../admin/inst_module.php:309
+msgid "Folder"
+msgstr ""
+
+#: /var/www/fa2.3/devel/../admin/inst_module.php:311
 msgid "Menu Tab"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../admin/inst_module.php:296
+#: /var/www/fa2.3/devel/../admin/inst_module.php:312
 msgid "Menu Link Text"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../admin/inst_module.php:298
+#: /var/www/fa2.3/devel/../admin/inst_module.php:314
 msgid "Default status"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../admin/inst_module.php:300
+#: /var/www/fa2.3/devel/../admin/inst_module.php:316
 msgid "Module File"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../admin/inst_module.php:301
+#: /var/www/fa2.3/devel/../admin/inst_module.php:317
 msgid "Access Levels Extensions"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../admin/inst_module.php:302
+#: /var/www/fa2.3/devel/../admin/inst_module.php:318
 msgid "SQL File"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../admin/inst_module.php:305
+#: /var/www/fa2.3/devel/../admin/inst_module.php:321
 msgid "Select your module PHP file from your local harddisk."
 msgstr ""
 
-#: /var/www/fa2.3/devel/../admin/inst_module.php:313
+#: /var/www/fa2.3/devel/../admin/inst_module.php:329
 msgid "Extension data has been updated."
 msgstr ""
 
-#: /var/www/fa2.3/devel/../admin/inst_module.php:315
+#: /var/www/fa2.3/devel/../admin/inst_module.php:331
 msgid "Extension has been installed."
 msgstr ""
 
-#: /var/www/fa2.3/devel/../admin/inst_module.php:332
+#: /var/www/fa2.3/devel/../admin/inst_module.php:354
 msgid "Current active extensions set has been saved."
 msgstr ""
 
-#: /var/www/fa2.3/devel/../admin/inst_module.php:346
+#: /var/www/fa2.3/devel/../admin/inst_module.php:379
 msgid "Extensions:"
+msgstr ""
+
+#: /var/www/fa2.3/devel/../admin/inst_theme.php:17
+msgid "Install Themes"
+msgstr ""
+
+#: /var/www/fa2.3/devel/../admin/inst_theme.php:55
+msgid "Selected theme has been successfully deleted"
+msgstr ""
+
+#: /var/www/fa2.3/devel/../admin/inst_theme.php:70
+msgid "Theme"
 msgstr ""
 
 #: /var/www/fa2.3/devel/../admin/inst_upgrade.php:16
@@ -1631,7 +1722,7 @@ msgid "Database upgrade for company '%s' (%s:%s*) started..."
 msgstr ""
 
 #: /var/www/fa2.3/devel/../admin/inst_upgrade.php:113
-msgid "Database upgarade finished."
+msgid "Database upgrade finished."
 msgstr ""
 
 #: /var/www/fa2.3/devel/../admin/inst_upgrade.php:117
@@ -1661,16 +1752,8 @@ msgstr ""
 msgid "Sql file"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../admin/inst_upgrade.php:179
-msgid "Install"
-msgstr ""
-
 #: /var/www/fa2.3/devel/../admin/inst_upgrade.php:180
 msgid "Force upgrade"
-msgstr ""
-
-#: /var/www/fa2.3/devel/../admin/inst_upgrade.php:197
-msgid "Installed"
 msgstr ""
 
 #: /var/www/fa2.3/devel/../admin/inst_upgrade.php:203
@@ -1707,37 +1790,31 @@ msgstr ""
 msgid "The Terms description must be entered."
 msgstr ""
 
-#: /var/www/fa2.3/devel/../admin/payment_terms.php:69
-msgid ""
-"When the Day of the Following Month is selected the number entered should be "
-"less than 500 days."
-msgstr ""
-
-#: /var/www/fa2.3/devel/../admin/payment_terms.php:89
+#: /var/www/fa2.3/devel/../admin/payment_terms.php:77
 msgid "Selected payment terms have been updated"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../admin/payment_terms.php:94
+#: /var/www/fa2.3/devel/../admin/payment_terms.php:82
 msgid "New payment terms have been added"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../admin/payment_terms.php:107
+#: /var/www/fa2.3/devel/../admin/payment_terms.php:95
 msgid ""
 "Cannot delete this payment term, because customer accounts have been created "
 "referring to this term."
 msgstr ""
 
-#: /var/www/fa2.3/devel/../admin/payment_terms.php:113
+#: /var/www/fa2.3/devel/../admin/payment_terms.php:101
 msgid ""
 "Cannot delete this payment term, because supplier accounts have been created "
 "referring to this term"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../admin/payment_terms.php:119
+#: /var/www/fa2.3/devel/../admin/payment_terms.php:107
 msgid "Selected payment terms have been deleted"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../admin/payment_terms.php:139
+#: /var/www/fa2.3/devel/../admin/payment_terms.php:127
 #: /var/www/fa2.3/devel/../dimensions/dimension_entry.php:275
 #: /var/www/fa2.3/devel/../dimensions/inquiry/search_dimensions.php:75
 #: /var/www/fa2.3/devel/../dimensions/inquiry/search_dimensions.php:130
@@ -1749,7 +1826,7 @@ msgstr ""
 #: /var/www/fa2.3/devel/../gl/manage/bank_accounts.php:102
 #: /var/www/fa2.3/devel/../gl/manage/gl_quick_entries.php:178
 #: /var/www/fa2.3/devel/../gl/includes/ui/gl_bank_ui.inc:80
-#: /var/www/fa2.3/devel/../includes/ui/ui_view.inc:467
+#: /var/www/fa2.3/devel/../includes/ui/ui_view.inc:480
 #: /var/www/fa2.3/devel/../inventory/inquiry/stock_movements.php:70
 #: /var/www/fa2.3/devel/../inventory/manage/item_categories.php:98
 #: /var/www/fa2.3/devel/../manufacturing/search_work_orders.php:161
@@ -1759,8 +1836,8 @@ msgstr ""
 #: /var/www/fa2.3/devel/../manufacturing/includes/manufacturing_ui.inc:331
 #: /var/www/fa2.3/devel/../purchasing/inquiry/supplier_allocation_inquiry.php:125
 #: /var/www/fa2.3/devel/../purchasing/inquiry/supplier_inquiry.php:162
-#: /var/www/fa2.3/devel/../reporting/rep102.php:120
-#: /var/www/fa2.3/devel/../reporting/rep202.php:121
+#: /var/www/fa2.3/devel/../reporting/rep102.php:124
+#: /var/www/fa2.3/devel/../reporting/rep202.php:127
 #: /var/www/fa2.3/devel/../reporting/rep501.php:85
 #: /var/www/fa2.3/devel/../reporting/rep601.php:76
 #: /var/www/fa2.3/devel/../reporting/rep702.php:58
@@ -1770,8 +1847,8 @@ msgstr ""
 #: /var/www/fa2.3/devel/../reporting/rep709.php:103
 #: /var/www/fa2.3/devel/../reporting/rep710.php:76
 #: /var/www/fa2.3/devel/../reporting/rep710.php:84
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:232
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:379
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:238
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:385
 #: /var/www/fa2.3/devel/../reporting/includes/doctext.inc:42
 #: /var/www/fa2.3/devel/../reporting/includes/doctext.inc:52
 #: /var/www/fa2.3/devel/../sales/inquiry/customer_allocation_inquiry.php:141
@@ -1779,23 +1856,23 @@ msgstr ""
 msgid "Type"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../admin/payment_terms.php:139
+#: /var/www/fa2.3/devel/../admin/payment_terms.php:127
 msgid "Due After/Days"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../admin/payment_terms.php:152
+#: /var/www/fa2.3/devel/../admin/payment_terms.php:140
 msgid "N/A"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../admin/payment_terms.php:186
+#: /var/www/fa2.3/devel/../admin/payment_terms.php:174
 msgid "Terms Description:"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../admin/payment_terms.php:188
+#: /var/www/fa2.3/devel/../admin/payment_terms.php:176
 msgid "Payment type:"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../admin/payment_terms.php:191
+#: /var/www/fa2.3/devel/../admin/payment_terms.php:179
 msgid "Days (Or Day In Following Month):"
 msgstr ""
 
@@ -2021,7 +2098,7 @@ msgstr ""
 #: /var/www/fa2.3/devel/../gl/includes/ui/gl_journal_ui.inc:223
 #: /var/www/fa2.3/devel/../includes/ui/simple_crud_class.inc:58
 #: /var/www/fa2.3/devel/../includes/ui/simple_crud_class.inc:220
-#: /var/www/fa2.3/devel/../includes/ui/ui_controls.inc:562
+#: /var/www/fa2.3/devel/../includes/ui/ui_controls.inc:561
 #: /var/www/fa2.3/devel/../includes/ui/ui_input.inc:206
 #: /var/www/fa2.3/devel/../inventory/includes/item_adjustments_ui.inc:159
 #: /var/www/fa2.3/devel/../inventory/includes/stock_transfers_ui.inc:139
@@ -2123,6 +2200,7 @@ msgid "System Diagnostics"
 msgstr ""
 
 #: /var/www/fa2.3/devel/../admin/system_diagnostics.php:23
+#: /var/www/fa2.3/devel/../includes/ui/ui_view.inc:210
 #: /var/www/fa2.3/devel/../reporting/rep705.php:250
 #: /var/www/fa2.3/devel/../reporting/rep705.php:261
 #: /var/www/fa2.3/devel/../reporting/rep705.php:270
@@ -2146,7 +2224,7 @@ msgid "MySQL version"
 msgstr ""
 
 #: /var/www/fa2.3/devel/../admin/system_diagnostics.php:41
-msgid "Upgrade MySQL server to version at least 3.23.58"
+msgid "Upgrade MySQL server to version at least 4.1"
 msgstr ""
 
 #: /var/www/fa2.3/devel/../admin/system_diagnostics.php:48
@@ -2154,7 +2232,7 @@ msgid "PHP version"
 msgstr ""
 
 #: /var/www/fa2.3/devel/../admin/system_diagnostics.php:52
-msgid "Upgrade PHP to version at least 4.3.2"
+msgid "Upgrade PHP to version at least 4.3.3"
 msgstr ""
 
 #: /var/www/fa2.3/devel/../admin/system_diagnostics.php:59
@@ -2194,7 +2272,7 @@ msgid "Debugging mode"
 msgstr ""
 
 #: /var/www/fa2.3/devel/../admin/system_diagnostics.php:117
-msgid "To switch debugging on set $go_debug>1 in config.php file"
+msgid "To switch debugging on set $go_debug>0 in config.php file"
 msgstr ""
 
 #: /var/www/fa2.3/devel/../admin/system_diagnostics.php:126
@@ -2230,7 +2308,7 @@ msgstr ""
 #: /var/www/fa2.3/devel/../admin/system_diagnostics.php:192
 #: /var/www/fa2.3/devel/../admin/system_diagnostics.php:200
 #: /var/www/fa2.3/devel/../admin/system_diagnostics.php:217
-#: /var/www/fa2.3/devel/../admin/system_diagnostics.php:302
+#: /var/www/fa2.3/devel/../admin/system_diagnostics.php:303
 #, php-format
 msgid "'%s' is not writeable"
 msgstr ""
@@ -2273,76 +2351,76 @@ msgid ""
 msgstr ""
 
 #: /var/www/fa2.3/devel/../admin/system_diagnostics.php:288
-msgid "Extensions configuration files"
+msgid "Extensions system"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../admin/system_diagnostics.php:293
-#, php-format
-msgid "'%s' file should be writeable"
+#: /var/www/fa2.3/devel/../admin/system_diagnostics.php:294
+msgid "Extensions configuration files and directories should be writeable"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../admin/system_diagnostics.php:311
+#: /var/www/fa2.3/devel/../admin/system_diagnostics.php:322
 msgid "Test"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../admin/system_diagnostics.php:311
+#: /var/www/fa2.3/devel/../admin/system_diagnostics.php:322
 msgid "Test type"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../admin/system_diagnostics.php:311
+#: /var/www/fa2.3/devel/../admin/system_diagnostics.php:322
+#: /var/www/fa2.3/devel/../includes/ui/view_package.php:37
 #: /var/www/fa2.3/devel/../reporting/rep204.php:83
 #: /var/www/fa2.3/devel/../reporting/rep301.php:98
 msgid "Value"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../admin/system_diagnostics.php:311
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:35
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:43
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:51
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:59
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:67
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:73
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:81
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:87
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:92
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:99
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:105
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:111
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:116
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:124
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:132
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:138
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:142
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:149
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:155
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:163
+#: /var/www/fa2.3/devel/../admin/system_diagnostics.php:322
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:36
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:45
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:53
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:61
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:69
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:75
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:83
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:89
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:94
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:101
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:107
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:113
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:118
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:127
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:136
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:143
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:147
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:154
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:160
 #: /var/www/fa2.3/devel/../reporting/reports_main.php:168
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:176
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:184
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:189
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:196
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:173
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:182
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:190
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:195
 #: /var/www/fa2.3/devel/../reporting/reports_main.php:202
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:210
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:221
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:208
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:216
 #: /var/www/fa2.3/devel/../reporting/reports_main.php:227
 #: /var/www/fa2.3/devel/../reporting/reports_main.php:233
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:247
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:254
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:264
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:275
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:284
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:295
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:239
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:253
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:260
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:270
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:281
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:290
 #: /var/www/fa2.3/devel/../reporting/reports_main.php:301
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:310
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:320
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:328
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:338
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:343
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:351
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:360
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:367
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:374
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:381
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:307
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:316
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:326
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:334
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:344
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:349
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:357
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:366
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:373
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:380
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:387
 #: /var/www/fa2.3/devel/../reporting/includes/excel_report.inc:280
 #: /var/www/fa2.3/devel/../reporting/includes/excel_report.inc:413
 #: /var/www/fa2.3/devel/../reporting/includes/pdf_report.inc:346
@@ -2351,7 +2429,7 @@ msgstr ""
 msgid "Comments"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../admin/system_diagnostics.php:333
+#: /var/www/fa2.3/devel/../admin/system_diagnostics.php:344
 msgid "Ok"
 msgstr ""
 
@@ -2360,15 +2438,15 @@ msgid "Unspecified tag type"
 msgstr ""
 
 #: /var/www/fa2.3/devel/../admin/tags.php:40
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:253
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:261
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:272
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:300
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:307
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:317
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:342
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:259
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:267
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:278
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:306
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:313
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:323
 #: /var/www/fa2.3/devel/../reporting/reports_main.php:348
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:357
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:354
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:363
 msgid "Account Tags"
 msgstr ""
 
@@ -2616,7 +2694,7 @@ msgstr ""
 #: /var/www/fa2.3/devel/../gl/view/gl_payment_view.php:66
 #: /var/www/fa2.3/devel/../gl/view/gl_trans_view.php:36
 #: /var/www/fa2.3/devel/../includes/ui/allocation_cart.inc:259
-#: /var/www/fa2.3/devel/../includes/ui/ui_view.inc:467
+#: /var/www/fa2.3/devel/../includes/ui/ui_view.inc:480
 #: /var/www/fa2.3/devel/../inventory/inquiry/stock_movements.php:70
 #: /var/www/fa2.3/devel/../inventory/view/view_adjustment.php:45
 #: /var/www/fa2.3/devel/../inventory/view/view_transfer.php:47
@@ -2636,8 +2714,8 @@ msgstr ""
 #: /var/www/fa2.3/devel/../purchasing/inquiry/supplier_allocation_inquiry.php:130
 #: /var/www/fa2.3/devel/../purchasing/inquiry/supplier_inquiry.php:167
 #: /var/www/fa2.3/devel/../purchasing/allocations/supplier_allocation_main.php:97
-#: /var/www/fa2.3/devel/../reporting/rep101.php:126
-#: /var/www/fa2.3/devel/../reporting/rep201.php:114
+#: /var/www/fa2.3/devel/../reporting/rep101.php:130
+#: /var/www/fa2.3/devel/../reporting/rep201.php:118
 #: /var/www/fa2.3/devel/../reporting/rep501.php:85
 #: /var/www/fa2.3/devel/../reporting/rep601.php:76
 #: /var/www/fa2.3/devel/../reporting/rep704.php:78
@@ -2694,7 +2772,7 @@ msgstr ""
 #: /var/www/fa2.3/devel/../dimensions/dimension_entry.php:283
 #: /var/www/fa2.3/devel/../gl/inquiry/journal_inquiry.php:56
 #: /var/www/fa2.3/devel/../gl/manage/revaluate_currencies.php:103
-#: /var/www/fa2.3/devel/../includes/ui/ui_view.inc:295
+#: /var/www/fa2.3/devel/../includes/ui/ui_view.inc:308
 #: /var/www/fa2.3/devel/../manufacturing/work_order_add_finished.php:203
 #: /var/www/fa2.3/devel/../manufacturing/work_order_entry.php:449
 #: /var/www/fa2.3/devel/../manufacturing/work_order_release.php:99
@@ -2722,7 +2800,7 @@ msgid ""
 msgstr ""
 
 #: /var/www/fa2.3/devel/../admin/void_transaction.php:207
-#: /var/www/fa2.3/devel/../includes/ui/ui_controls.inc:561
+#: /var/www/fa2.3/devel/../includes/ui/ui_controls.inc:560
 msgid "Proceed"
 msgstr ""
 
@@ -2784,35 +2862,44 @@ msgid "Closing Year"
 msgstr ""
 
 #: /var/www/fa2.3/devel/../admin/db/fiscalyears_db.inc:187
-#: /var/www/fa2.3/devel/../reporting/rep101.php:159
-#: /var/www/fa2.3/devel/../reporting/rep201.php:150
+#: /var/www/fa2.3/devel/../reporting/rep101.php:175
+#: /var/www/fa2.3/devel/../reporting/rep201.php:167
 #: /var/www/fa2.3/devel/../reporting/rep706.php:181
 msgid "Open Balance"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../admin/db/maintenance_db.inc:190
+#: /var/www/fa2.3/devel/../admin/db/maintenance_db.inc:161
 #, php-format
 msgid "Cannot open the extension setup file '%s' for writing."
 msgstr ""
 
-#: /var/www/fa2.3/devel/../admin/db/maintenance_db.inc:198
+#: /var/www/fa2.3/devel/../admin/db/maintenance_db.inc:169
 #, php-format
 msgid "Cannot write to the extensions setup file '%s'."
 msgstr ""
 
-#: /var/www/fa2.3/devel/../admin/db/maintenance_db.inc:254
+#: /var/www/fa2.3/devel/../admin/db/maintenance_db.inc:187
+msgid "Cannot update system extensions list."
+msgstr ""
+
+#: /var/www/fa2.3/devel/../admin/db/maintenance_db.inc:205
+#, php-format
+msgid "Cannot update extensions list for company '%s'."
+msgstr ""
+
+#: /var/www/fa2.3/devel/../admin/db/maintenance_db.inc:239
 msgid "Cannot open the languages file - "
 msgstr ""
 
-#: /var/www/fa2.3/devel/../admin/db/maintenance_db.inc:261
+#: /var/www/fa2.3/devel/../admin/db/maintenance_db.inc:246
 msgid "Cannot write to the language file - "
 msgstr ""
 
-#: /var/www/fa2.3/devel/../admin/db/maintenance_db.inc:271
+#: /var/www/fa2.3/devel/../admin/db/maintenance_db.inc:256
 msgid "The language files folder "
 msgstr ""
 
-#: /var/www/fa2.3/devel/../admin/db/maintenance_db.inc:437
+#: /var/www/fa2.3/devel/../admin/db/maintenance_db.inc:421
 #, php-format
 msgid "SQL script execution failed in line %d: %s"
 msgstr ""
@@ -3032,9 +3119,9 @@ msgid "Ta&x Inquiry"
 msgstr ""
 
 #: /var/www/fa2.3/devel/../applications/generalledger.php:42
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:277
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:322
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:362
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:283
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:328
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:368
 msgid "Trial &Balance"
 msgstr ""
 
@@ -3446,27 +3533,27 @@ msgstr ""
 
 #: /var/www/fa2.3/devel/../dimensions/dimension_entry.php:277
 #: /var/www/fa2.3/devel/../reporting/reports_main.php:31
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:62
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:70
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:120
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:179
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:187
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:219
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:230
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:241
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:257
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:267
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:278
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:290
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:304
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:313
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:323
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:334
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:346
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:354
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:363
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:371
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:64
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:72
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:122
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:185
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:193
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:225
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:236
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:247
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:263
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:273
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:284
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:296
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:310
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:319
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:329
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:340
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:352
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:360
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:369
 #: /var/www/fa2.3/devel/../reporting/reports_main.php:377
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:383
 msgid "Start Date"
 msgstr ""
 
@@ -3605,7 +3692,7 @@ msgstr ""
 #: /var/www/fa2.3/devel/../gl/inquiry/gl_account_inquiry.php:140
 #: /var/www/fa2.3/devel/../gl/inquiry/gl_trial_balance.php:67
 #: /var/www/fa2.3/devel/../purchasing/inquiry/supplier_allocation_inquiry.php:136
-#: /var/www/fa2.3/devel/../reporting/rep203.php:88
+#: /var/www/fa2.3/devel/../reporting/rep203.php:92
 #: /var/www/fa2.3/devel/../reporting/rep204.php:82
 #: /var/www/fa2.3/devel/../reporting/rep601.php:77
 #: /var/www/fa2.3/devel/../reporting/rep701.php:104
@@ -3650,22 +3737,22 @@ msgstr ""
 #: /var/www/fa2.3/devel/../dimensions/inquiry/search_dimensions.php:75
 #: /var/www/fa2.3/devel/../includes/ui/allocation_cart.inc:279
 #: /var/www/fa2.3/devel/../includes/ui/ui_lists.inc:1875
-#: /var/www/fa2.3/devel/../reporting/rep101.php:111
-#: /var/www/fa2.3/devel/../reporting/rep102.php:87
+#: /var/www/fa2.3/devel/../reporting/rep101.php:112
+#: /var/www/fa2.3/devel/../reporting/rep102.php:88
 #: /var/www/fa2.3/devel/../reporting/rep104.php:95
 #: /var/www/fa2.3/devel/../reporting/rep104.php:99
 #: /var/www/fa2.3/devel/../reporting/rep105.php:93
 #: /var/www/fa2.3/devel/../reporting/rep105.php:97
-#: /var/www/fa2.3/devel/../reporting/rep201.php:99
-#: /var/www/fa2.3/devel/../reporting/rep202.php:88
-#: /var/www/fa2.3/devel/../reporting/rep203.php:71
+#: /var/www/fa2.3/devel/../reporting/rep201.php:100
+#: /var/www/fa2.3/devel/../reporting/rep202.php:90
+#: /var/www/fa2.3/devel/../reporting/rep203.php:72
 #: /var/www/fa2.3/devel/../reporting/rep204.php:75
 #: /var/www/fa2.3/devel/../reporting/rep301.php:85
 #: /var/www/fa2.3/devel/../reporting/rep301.php:92
 #: /var/www/fa2.3/devel/../reporting/rep302.php:103
 #: /var/www/fa2.3/devel/../reporting/rep302.php:110
-#: /var/www/fa2.3/devel/../reporting/rep303.php:81
-#: /var/www/fa2.3/devel/../reporting/rep303.php:88
+#: /var/www/fa2.3/devel/../reporting/rep303.php:83
+#: /var/www/fa2.3/devel/../reporting/rep303.php:90
 #: /var/www/fa2.3/devel/../reporting/rep304.php:96
 #: /var/www/fa2.3/devel/../reporting/rep304.php:103
 #: /var/www/fa2.3/devel/../reporting/rep304.php:108
@@ -3720,9 +3807,9 @@ msgstr ""
 #: /var/www/fa2.3/devel/../purchasing/view/view_supp_invoice.php:51
 #: /var/www/fa2.3/devel/../purchasing/inquiry/supplier_allocation_inquiry.php:131
 #: /var/www/fa2.3/devel/../purchasing/inquiry/supplier_inquiry.php:168
-#: /var/www/fa2.3/devel/../reporting/rep101.php:126
-#: /var/www/fa2.3/devel/../reporting/rep201.php:114
-#: /var/www/fa2.3/devel/../reporting/rep203.php:87
+#: /var/www/fa2.3/devel/../reporting/rep101.php:130
+#: /var/www/fa2.3/devel/../reporting/rep201.php:118
+#: /var/www/fa2.3/devel/../reporting/rep203.php:91
 #: /var/www/fa2.3/devel/../reporting/rep501.php:85
 #: /var/www/fa2.3/devel/../reporting/includes/doctext.inc:38
 #: /var/www/fa2.3/devel/../reporting/includes/doctext.inc:108
@@ -3806,13 +3893,13 @@ msgstr ""
 #: /var/www/fa2.3/devel/../purchasing/po_receive_items.php:59
 #: /var/www/fa2.3/devel/../purchasing/view/view_po.php:130
 #: /var/www/fa2.3/devel/../purchasing/allocations/supplier_allocation_main.php:100
-#: /var/www/fa2.3/devel/../reporting/rep101.php:225
+#: /var/www/fa2.3/devel/../reporting/rep101.php:237
 #: /var/www/fa2.3/devel/../reporting/rep106.php:82
 #: /var/www/fa2.3/devel/../reporting/rep106.php:120
 #: /var/www/fa2.3/devel/../reporting/rep106.php:168
-#: /var/www/fa2.3/devel/../reporting/rep201.php:214
-#: /var/www/fa2.3/devel/../reporting/rep203.php:88
-#: /var/www/fa2.3/devel/../reporting/rep203.php:159
+#: /var/www/fa2.3/devel/../reporting/rep201.php:221
+#: /var/www/fa2.3/devel/../reporting/rep203.php:92
+#: /var/www/fa2.3/devel/../reporting/rep203.php:167
 #: /var/www/fa2.3/devel/../reporting/rep204.php:109
 #: /var/www/fa2.3/devel/../reporting/rep204.php:137
 #: /var/www/fa2.3/devel/../reporting/rep301.php:124
@@ -3974,21 +4061,21 @@ msgstr ""
 #: /var/www/fa2.3/devel/../reporting/rep708.php:88
 #: /var/www/fa2.3/devel/../reporting/rep708.php:90
 #: /var/www/fa2.3/devel/../reporting/rep708.php:97
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:245
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:246
 #: /var/www/fa2.3/devel/../reporting/reports_main.php:251
 #: /var/www/fa2.3/devel/../reporting/reports_main.php:252
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:259
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:260
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:270
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:271
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:282
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:283
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:294
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:299
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:306
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:316
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:327
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:257
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:258
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:265
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:266
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:276
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:277
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:288
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:289
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:300
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:305
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:312
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:322
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:333
 #: /var/www/fa2.3/devel/../sales/manage/customers.php:234
 #: /var/www/fa2.3/devel/../sales/manage/customers.php:236
 #: /var/www/fa2.3/devel/../sales/includes/ui/sales_credit_ui.inc:132
@@ -4054,9 +4141,9 @@ msgid "No zero values"
 msgstr ""
 
 #: /var/www/fa2.3/devel/../gl/inquiry/gl_trial_balance.php:47
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:281
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:326
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:366
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:287
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:332
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:372
 msgid "Only balances"
 msgstr ""
 
@@ -4126,16 +4213,15 @@ msgstr ""
 #: /var/www/fa2.3/devel/../includes/sysnames.inc:106
 #: /var/www/fa2.3/devel/../includes/ui/allocation_cart.inc:259
 #: /var/www/fa2.3/devel/../includes/ui/ui_lists.inc:1141
-#: /var/www/fa2.3/devel/../includes/ui/ui_view.inc:398
-#: /var/www/fa2.3/devel/../includes/ui/ui_view.inc:414
+#: /var/www/fa2.3/devel/../includes/ui/ui_view.inc:411
+#: /var/www/fa2.3/devel/../includes/ui/ui_view.inc:427
 #: /var/www/fa2.3/devel/../manufacturing/includes/manufacturing_ui.inc:236
 #: /var/www/fa2.3/devel/../purchasing/includes/ui/invoice_ui.inc:243
 #: /var/www/fa2.3/devel/../purchasing/includes/ui/invoice_ui.inc:245
 #: /var/www/fa2.3/devel/../purchasing/includes/ui/invoice_ui.inc:247
 #: /var/www/fa2.3/devel/../purchasing/view/view_supp_payment.php:60
 #: /var/www/fa2.3/devel/../purchasing/view/view_supp_payment.php:69
-#: /var/www/fa2.3/devel/../reporting/rep102.php:224
-#: /var/www/fa2.3/devel/../reporting/rep202.php:226
+#: /var/www/fa2.3/devel/../reporting/rep102.php:228
 #: /var/www/fa2.3/devel/../reporting/rep706.php:303
 #: /var/www/fa2.3/devel/../reporting/rep707.php:321
 #: /var/www/fa2.3/devel/../reporting/rep710.php:76
@@ -4147,7 +4233,7 @@ msgstr ""
 #: /var/www/fa2.3/devel/../gl/inquiry/journal_inquiry.php:126
 #: /var/www/fa2.3/devel/../reporting/rep710.php:75
 #: /var/www/fa2.3/devel/../reporting/rep710.php:85
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:380
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:386
 msgid "User"
 msgstr ""
 
@@ -4174,9 +4260,9 @@ msgid "Budget"
 msgstr ""
 
 #: /var/www/fa2.3/devel/../gl/inquiry/profit_loss.php:164
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:269
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:315
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:356
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:275
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:321
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:362
 msgid "Compare to"
 msgstr ""
 
@@ -4186,10 +4272,10 @@ msgstr ""
 
 #: /var/www/fa2.3/devel/../gl/inquiry/profit_loss.php:218
 #: /var/www/fa2.3/devel/../gl/manage/gl_quick_entries.php:226
-#: /var/www/fa2.3/devel/../reporting/rep101.php:132
+#: /var/www/fa2.3/devel/../reporting/rep101.php:136
 #: /var/www/fa2.3/devel/../reporting/rep105.php:116
 #: /var/www/fa2.3/devel/../reporting/rep106.php:90
-#: /var/www/fa2.3/devel/../reporting/rep201.php:120
+#: /var/www/fa2.3/devel/../reporting/rep201.php:124
 #: /var/www/fa2.3/devel/../reporting/rep304.php:121
 #: /var/www/fa2.3/devel/../reporting/rep305.php:77
 #: /var/www/fa2.3/devel/../reporting/rep601.php:82
@@ -4260,7 +4346,7 @@ msgid "Total payable or refund"
 msgstr ""
 
 #: /var/www/fa2.3/devel/../gl/manage/bank_accounts.php:16
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:218
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:224
 msgid "Bank Accounts"
 msgstr ""
 
@@ -4310,13 +4396,13 @@ msgstr ""
 #: /var/www/fa2.3/devel/../purchasing/inquiry/supplier_inquiry.php:180
 #: /var/www/fa2.3/devel/../purchasing/allocations/supplier_allocation_main.php:99
 #: /var/www/fa2.3/devel/../purchasing/allocations/supplier_allocation_main.php:107
-#: /var/www/fa2.3/devel/../reporting/rep101.php:134
-#: /var/www/fa2.3/devel/../reporting/rep102.php:119
+#: /var/www/fa2.3/devel/../reporting/rep101.php:138
 #: /var/www/fa2.3/devel/../reporting/rep102.php:123
+#: /var/www/fa2.3/devel/../reporting/rep102.php:128
 #: /var/www/fa2.3/devel/../reporting/rep104.php:114
-#: /var/www/fa2.3/devel/../reporting/rep201.php:122
-#: /var/www/fa2.3/devel/../reporting/rep202.php:120
-#: /var/www/fa2.3/devel/../reporting/rep203.php:95
+#: /var/www/fa2.3/devel/../reporting/rep201.php:126
+#: /var/www/fa2.3/devel/../reporting/rep202.php:126
+#: /var/www/fa2.3/devel/../reporting/rep203.php:99
 #: /var/www/fa2.3/devel/../sales/customer_credit_invoice.php:246
 #: /var/www/fa2.3/devel/../sales/customer_delivery.php:330
 #: /var/www/fa2.3/devel/../sales/customer_invoice.php:365
@@ -4346,7 +4432,7 @@ msgid "Bank"
 msgstr ""
 
 #: /var/www/fa2.3/devel/../gl/manage/bank_accounts.php:103
-#: /var/www/fa2.3/devel/../includes/ui/ui_view.inc:467
+#: /var/www/fa2.3/devel/../includes/ui/ui_view.inc:480
 msgid "Number"
 msgstr ""
 
@@ -4521,8 +4607,8 @@ msgid "Date to Use From:"
 msgstr ""
 
 #: /var/www/fa2.3/devel/../gl/manage/exchange_rates.php:141
-#: /var/www/fa2.3/devel/../includes/ui/ui_view.inc:275
-#: /var/www/fa2.3/devel/../includes/ui/ui_view.inc:277
+#: /var/www/fa2.3/devel/../includes/ui/ui_view.inc:288
+#: /var/www/fa2.3/devel/../includes/ui/ui_view.inc:290
 msgid "Exchange Rate:"
 msgstr ""
 
@@ -4989,15 +5075,15 @@ msgid "GL Deposit"
 msgstr ""
 
 #: /var/www/fa2.3/devel/../gl/view/gl_deposit_view.php:71
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:76
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:83
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:94
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:101
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:107
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:113
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:145
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:151
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:199
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:78
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:85
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:96
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:103
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:109
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:115
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:150
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:156
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:205
 msgid "From"
 msgstr ""
 
@@ -5327,7 +5413,7 @@ msgstr ""
 
 #: /var/www/fa2.3/devel/../includes/access_levels.inc:72
 #: /var/www/fa2.3/devel/../inventory/manage/items.php:350
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:203
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:209
 msgid "Dimensions"
 msgstr ""
 
@@ -5814,7 +5900,7 @@ msgstr ""
 
 #: /var/www/fa2.3/devel/../includes/current_user.inc:76
 #: /var/www/fa2.3/devel/../includes/ui/ui_controls.inc:173
-#: /var/www/fa2.3/devel/../includes/ui/ui_view.inc:830
+#: /var/www/fa2.3/devel/../includes/ui/ui_view.inc:843
 msgid "Back"
 msgstr ""
 
@@ -5850,6 +5936,28 @@ msgstr ""
 
 #: /var/www/fa2.3/devel/../includes/main.inc:42
 msgid "This page is usable only with javascript enabled browsers."
+msgstr ""
+
+#: /var/www/fa2.3/devel/../includes/packages.inc:321
+msgid "Release file in repository is invalid, or public key is outdated."
+msgstr ""
+
+#: /var/www/fa2.3/devel/../includes/packages.inc:338
+msgid "Repository version does not match application version."
+msgstr ""
+
+#: /var/www/fa2.3/devel/../includes/packages.inc:352
+#, php-format
+msgid ""
+"Security alert: broken index file in repository '%s'. Please inform "
+"repository administrator about this issue."
+msgstr ""
+
+#: /var/www/fa2.3/devel/../includes/packages.inc:385
+#, php-format
+msgid ""
+"Security alert: broken package '%s' in repository. Please inform repository "
+"administrator about this issue."
 msgstr ""
 
 #: /var/www/fa2.3/devel/../includes/session.inc:39
@@ -6029,18 +6137,18 @@ msgid "Cash"
 msgstr ""
 
 #: /var/www/fa2.3/devel/../includes/sysnames.inc:70
-#: /var/www/fa2.3/devel/../reporting/rep101.php:133
-#: /var/www/fa2.3/devel/../reporting/rep102.php:111
-#: /var/www/fa2.3/devel/../reporting/rep102.php:118
+#: /var/www/fa2.3/devel/../reporting/rep101.php:137
+#: /var/www/fa2.3/devel/../reporting/rep102.php:115
+#: /var/www/fa2.3/devel/../reporting/rep102.php:122
 #: /var/www/fa2.3/devel/../reporting/rep105.php:107
 #: /var/www/fa2.3/devel/../reporting/rep106.php:81
 #: /var/www/fa2.3/devel/../reporting/rep304.php:114
 #: /var/www/fa2.3/devel/../reporting/rep304.php:124
 #: /var/www/fa2.3/devel/../reporting/reports_main.php:29
 #: /var/www/fa2.3/devel/../reporting/reports_main.php:33
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:39
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:89
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:183
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:40
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:91
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:189
 #: /var/www/fa2.3/devel/../sales/create_recurrent_invoices.php:98
 #: /var/www/fa2.3/devel/../sales/customer_credit_invoice.php:244
 #: /var/www/fa2.3/devel/../sales/customer_delivery.php:328
@@ -6074,16 +6182,16 @@ msgstr ""
 #: /var/www/fa2.3/devel/../purchasing/inquiry/supplier_inquiry.php:179
 #: /var/www/fa2.3/devel/../purchasing/allocations/supplier_allocation_main.php:98
 #: /var/www/fa2.3/devel/../purchasing/allocations/supplier_allocation_main.php:106
-#: /var/www/fa2.3/devel/../reporting/rep201.php:121
-#: /var/www/fa2.3/devel/../reporting/rep202.php:112
-#: /var/www/fa2.3/devel/../reporting/rep202.php:119
-#: /var/www/fa2.3/devel/../reporting/rep203.php:94
+#: /var/www/fa2.3/devel/../reporting/rep201.php:125
+#: /var/www/fa2.3/devel/../reporting/rep202.php:118
+#: /var/www/fa2.3/devel/../reporting/rep202.php:125
+#: /var/www/fa2.3/devel/../reporting/rep203.php:98
 #: /var/www/fa2.3/devel/../reporting/rep204.php:88
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:118
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:122
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:128
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:136
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:141
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:120
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:124
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:131
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:140
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:146
 msgid "Supplier"
 msgstr ""
 
@@ -6224,15 +6332,8 @@ msgid ""
 msgstr ""
 
 #: /var/www/fa2.3/devel/../includes/db/inventory_db.inc:140
-msgid "Cost was "
-msgstr ""
-
-#: /var/www/fa2.3/devel/../includes/db/inventory_db.inc:140
-msgid " changed to "
-msgstr ""
-
-#: /var/www/fa2.3/devel/../includes/db/inventory_db.inc:140
-msgid " for item "
+#, php-format
+msgid "Cost was %s changed to %s for item '%s'"
 msgstr ""
 
 #: /var/www/fa2.3/devel/../includes/ui/allocation_cart.inc:259
@@ -6246,14 +6347,14 @@ msgid "Other Allocations"
 msgstr ""
 
 #: /var/www/fa2.3/devel/../includes/ui/allocation_cart.inc:260
-#: /var/www/fa2.3/devel/../includes/ui/ui_view.inc:468
+#: /var/www/fa2.3/devel/../includes/ui/ui_view.inc:481
 #: /var/www/fa2.3/devel/../reporting/includes/doctext.inc:108
 msgid "This Allocation"
 msgstr ""
 
 #: /var/www/fa2.3/devel/../includes/ui/allocation_cart.inc:260
 #: /var/www/fa2.3/devel/../includes/ui/allocation_cart.inc:306
-#: /var/www/fa2.3/devel/../includes/ui/ui_view.inc:468
+#: /var/www/fa2.3/devel/../includes/ui/ui_view.inc:481
 #: /var/www/fa2.3/devel/../purchasing/allocations/supplier_allocation_main.php:101
 #: /var/www/fa2.3/devel/../reporting/includes/doctext.inc:108
 #: /var/www/fa2.3/devel/../reporting/includes/doctext.inc:166
@@ -6428,21 +6529,21 @@ msgstr ""
 msgid "Close"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../includes/ui/ui_controls.inc:426
+#: /var/www/fa2.3/devel/../includes/ui/ui_controls.inc:425
 #: /var/www/fa2.3/devel/../sales/manage/customers.php:16
 msgid "Customers"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../includes/ui/ui_controls.inc:428
+#: /var/www/fa2.3/devel/../includes/ui/ui_controls.inc:427
 msgid "Branches"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../includes/ui/ui_controls.inc:430
+#: /var/www/fa2.3/devel/../includes/ui/ui_controls.inc:429
 #: /var/www/fa2.3/devel/../purchasing/manage/suppliers.php:16
 msgid "Suppliers"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../includes/ui/ui_controls.inc:432
+#: /var/www/fa2.3/devel/../includes/ui/ui_controls.inc:431
 #: /var/www/fa2.3/devel/../inventory/manage/items.php:16
 #: /var/www/fa2.3/devel/../inventory/transfers.php:230
 msgid "Items"
@@ -6457,7 +6558,6 @@ msgstr ""
 #: /var/www/fa2.3/devel/../includes/ui/ui_lists.inc:2089
 #: /var/www/fa2.3/devel/../reporting/rep301.php:146
 #: /var/www/fa2.3/devel/../reporting/rep302.php:166
-#: /var/www/fa2.3/devel/../reporting/rep303.php:162
 #: /var/www/fa2.3/devel/../reporting/rep304.php:168
 #: /var/www/fa2.3/devel/../reporting/rep304.php:172
 #: /var/www/fa2.3/devel/../reporting/rep305.php:111
@@ -6616,143 +6716,201 @@ msgstr ""
 msgid "in units of : "
 msgstr ""
 
-#: /var/www/fa2.3/devel/../includes/ui/ui_view.inc:293
+#: /var/www/fa2.3/devel/../includes/ui/ui_view.inc:306
 msgid "Date Voided:"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../includes/ui/ui_view.inc:391
+#: /var/www/fa2.3/devel/../includes/ui/ui_view.inc:404
 #: /var/www/fa2.3/devel/../reporting/rep107.php:188
 #: /var/www/fa2.3/devel/../reporting/rep110.php:184
 msgid "Total Tax Excluded"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../includes/ui/ui_view.inc:397
-#: /var/www/fa2.3/devel/../includes/ui/ui_view.inc:413
-#: /var/www/fa2.3/devel/../includes/ui/ui_view.inc:431
+#: /var/www/fa2.3/devel/../includes/ui/ui_view.inc:410
+#: /var/www/fa2.3/devel/../includes/ui/ui_view.inc:426
+#: /var/www/fa2.3/devel/../includes/ui/ui_view.inc:444
 #: /var/www/fa2.3/devel/../reporting/includes/doctext.inc:149
 msgid "Included"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../includes/ui/ui_view.inc:432
+#: /var/www/fa2.3/devel/../includes/ui/ui_view.inc:445
 #: /var/www/fa2.3/devel/../sales/customer_payments.php:289
 msgid "Amount:"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../includes/ui/ui_view.inc:463
+#: /var/www/fa2.3/devel/../includes/ui/ui_view.inc:476
 #: /var/www/fa2.3/devel/../purchasing/inquiry/supplier_allocation_inquiry.php:99
 msgid "Allocations"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../includes/ui/ui_view.inc:467
+#: /var/www/fa2.3/devel/../includes/ui/ui_view.inc:480
 #: /var/www/fa2.3/devel/../reporting/includes/doctext.inc:108
 msgid "Total Amount"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../includes/ui/ui_view.inc:491
+#: /var/www/fa2.3/devel/../includes/ui/ui_view.inc:504
 msgid "Total Allocated:"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../includes/ui/ui_view.inc:495
+#: /var/www/fa2.3/devel/../includes/ui/ui_view.inc:508
 msgid "Left to Allocate:"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../includes/ui/ui_view.inc:531
+#: /var/www/fa2.3/devel/../includes/ui/ui_view.inc:544
 msgid "No Quick Entries are defined."
 msgstr ""
 
-#: /var/www/fa2.3/devel/../includes/ui/ui_view.inc:559
+#: /var/www/fa2.3/devel/../includes/ui/ui_view.inc:572
 msgid "No Quick Entry lines are defined."
 msgstr ""
 
-#: /var/www/fa2.3/devel/../includes/ui/ui_view.inc:633
+#: /var/www/fa2.3/devel/../includes/ui/ui_view.inc:646
 #: /var/www/fa2.3/devel/../purchasing/supplier_credit.php:119
 #: /var/www/fa2.3/devel/../purchasing/supplier_invoice.php:119
 msgid "Cannot post to GL account used by more than one tax type."
 msgstr ""
 
-#: /var/www/fa2.3/devel/../includes/ui/ui_view.inc:741
+#: /var/www/fa2.3/devel/../includes/ui/ui_view.inc:754
 #: /var/www/fa2.3/devel/../purchasing/includes/ui/invoice_ui.inc:441
 msgid "and"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../includes/ui/ui_view.inc:827
+#: /var/www/fa2.3/devel/../includes/ui/ui_view.inc:840
 msgid "January"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../includes/ui/ui_view.inc:827
+#: /var/www/fa2.3/devel/../includes/ui/ui_view.inc:840
 msgid "February"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../includes/ui/ui_view.inc:827
+#: /var/www/fa2.3/devel/../includes/ui/ui_view.inc:840
 msgid "March"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../includes/ui/ui_view.inc:827
+#: /var/www/fa2.3/devel/../includes/ui/ui_view.inc:840
 msgid "April"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../includes/ui/ui_view.inc:827
+#: /var/www/fa2.3/devel/../includes/ui/ui_view.inc:840
 msgid "May"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../includes/ui/ui_view.inc:827
+#: /var/www/fa2.3/devel/../includes/ui/ui_view.inc:840
 msgid "June"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../includes/ui/ui_view.inc:827
+#: /var/www/fa2.3/devel/../includes/ui/ui_view.inc:840
 msgid "July"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../includes/ui/ui_view.inc:827
+#: /var/www/fa2.3/devel/../includes/ui/ui_view.inc:840
 msgid "August"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../includes/ui/ui_view.inc:827
+#: /var/www/fa2.3/devel/../includes/ui/ui_view.inc:840
 msgid "September"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../includes/ui/ui_view.inc:827
+#: /var/www/fa2.3/devel/../includes/ui/ui_view.inc:840
 msgid "October"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../includes/ui/ui_view.inc:827
+#: /var/www/fa2.3/devel/../includes/ui/ui_view.inc:840
 msgid "November"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../includes/ui/ui_view.inc:827
+#: /var/www/fa2.3/devel/../includes/ui/ui_view.inc:840
 msgid "December"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../includes/ui/ui_view.inc:828
+#: /var/www/fa2.3/devel/../includes/ui/ui_view.inc:841
 msgid "Su"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../includes/ui/ui_view.inc:828
+#: /var/www/fa2.3/devel/../includes/ui/ui_view.inc:841
 msgid "Mo"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../includes/ui/ui_view.inc:828
+#: /var/www/fa2.3/devel/../includes/ui/ui_view.inc:841
 msgid "Tu"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../includes/ui/ui_view.inc:828
+#: /var/www/fa2.3/devel/../includes/ui/ui_view.inc:841
 msgid "We"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../includes/ui/ui_view.inc:828
+#: /var/www/fa2.3/devel/../includes/ui/ui_view.inc:841
 msgid "Th"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../includes/ui/ui_view.inc:828
+#: /var/www/fa2.3/devel/../includes/ui/ui_view.inc:841
 msgid "Fr"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../includes/ui/ui_view.inc:828
+#: /var/www/fa2.3/devel/../includes/ui/ui_view.inc:841
 msgid "Sa"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../includes/ui/ui_view.inc:829
+#: /var/www/fa2.3/devel/../includes/ui/ui_view.inc:842
 msgid "W"
+msgstr ""
+
+#: /var/www/fa2.3/devel/../includes/ui/view_package.php:7
+msgid "Package Details"
+msgstr ""
+
+#: /var/www/fa2.3/devel/../includes/ui/view_package.php:14
+msgid ""
+"The script must be called with a valid package id to review the info for."
+msgstr ""
+
+#: /var/www/fa2.3/devel/../includes/ui/view_package.php:19
+msgid "Available version"
+msgstr ""
+
+#: /var/www/fa2.3/devel/../includes/ui/view_package.php:20
+msgid "Package type"
+msgstr ""
+
+#: /var/www/fa2.3/devel/../includes/ui/view_package.php:21
+msgid "Package content"
+msgstr ""
+
+#: /var/www/fa2.3/devel/../includes/ui/view_package.php:23
+msgid "Author"
+msgstr ""
+
+#: /var/www/fa2.3/devel/../includes/ui/view_package.php:24
+msgid "Home page"
+msgstr ""
+
+#: /var/www/fa2.3/devel/../includes/ui/view_package.php:25
+msgid "Package maintainer"
+msgstr ""
+
+#: /var/www/fa2.3/devel/../includes/ui/view_package.php:26
+msgid "Installation path"
+msgstr ""
+
+#: /var/www/fa2.3/devel/../includes/ui/view_package.php:27
+msgid "Minimal software versions"
+msgstr ""
+
+#: /var/www/fa2.3/devel/../includes/ui/view_package.php:28
+msgid "Right to left"
+msgstr ""
+
+#: /var/www/fa2.3/devel/../includes/ui/view_package.php:29
+msgid "Charset encoding"
+msgstr ""
+
+#: /var/www/fa2.3/devel/../includes/ui/view_package.php:34
+#, php-format
+msgid "Content information for package '%s'"
+msgstr ""
+
+#: /var/www/fa2.3/devel/../includes/ui/view_package.php:37
+msgid "Property"
 msgstr ""
 
 #: /var/www/fa2.3/devel/../install/save.php:354
@@ -6846,8 +7004,8 @@ msgstr ""
 #: /var/www/fa2.3/devel/../purchasing/view/view_grn.php:40
 #: /var/www/fa2.3/devel/../purchasing/view/view_po.php:45
 #: /var/www/fa2.3/devel/../reporting/rep301.php:98
-#: /var/www/fa2.3/devel/../reporting/rep303.php:104
-#: /var/www/fa2.3/devel/../reporting/rep303.php:110
+#: /var/www/fa2.3/devel/../reporting/rep303.php:108
+#: /var/www/fa2.3/devel/../reporting/rep303.php:114
 #: /var/www/fa2.3/devel/../reporting/rep401.php:69
 #: /var/www/fa2.3/devel/../reporting/includes/doctext.inc:47
 #: /var/www/fa2.3/devel/../reporting/includes/doctext.inc:103
@@ -7020,20 +7178,20 @@ msgstr ""
 #: /var/www/fa2.3/devel/../reporting/rep105.php:118
 #: /var/www/fa2.3/devel/../reporting/rep301.php:104
 #: /var/www/fa2.3/devel/../reporting/rep302.php:130
-#: /var/www/fa2.3/devel/../reporting/rep303.php:117
+#: /var/www/fa2.3/devel/../reporting/rep303.php:121
 #: /var/www/fa2.3/devel/../reporting/rep304.php:123
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:161
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:167
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:166
 #: /var/www/fa2.3/devel/../reporting/reports_main.php:172
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:182
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:177
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:188
 #: /var/www/fa2.3/devel/../sales/manage/sales_points.php:84
 msgid "Location"
 msgstr ""
 
 #: /var/www/fa2.3/devel/../inventory/inquiry/stock_status.php:65
 #: /var/www/fa2.3/devel/../inventory/inquiry/stock_status.php:70
-#: /var/www/fa2.3/devel/../reporting/rep303.php:104
-#: /var/www/fa2.3/devel/../reporting/rep303.php:110
+#: /var/www/fa2.3/devel/../reporting/rep303.php:108
+#: /var/www/fa2.3/devel/../reporting/rep303.php:114
 msgid "Demand"
 msgstr ""
 
@@ -7045,13 +7203,8 @@ msgid "Re-Order Level"
 msgstr ""
 
 #: /var/www/fa2.3/devel/../inventory/inquiry/stock_status.php:70
-#: /var/www/fa2.3/devel/../reporting/rep303.php:99
-msgid "Available"
-msgstr ""
-
-#: /var/www/fa2.3/devel/../inventory/inquiry/stock_status.php:70
-#: /var/www/fa2.3/devel/../reporting/rep303.php:104
-#: /var/www/fa2.3/devel/../reporting/rep303.php:110
+#: /var/www/fa2.3/devel/../reporting/rep303.php:108
+#: /var/www/fa2.3/devel/../reporting/rep303.php:114
 msgid "On Order"
 msgstr ""
 
@@ -7199,7 +7352,7 @@ msgstr ""
 #: /var/www/fa2.3/devel/../reporting/rep301.php:103
 #: /var/www/fa2.3/devel/../reporting/rep302.php:122
 #: /var/www/fa2.3/devel/../reporting/rep302.php:129
-#: /var/www/fa2.3/devel/../reporting/rep303.php:116
+#: /var/www/fa2.3/devel/../reporting/rep303.php:120
 #: /var/www/fa2.3/devel/../reporting/rep304.php:114
 #: /var/www/fa2.3/devel/../reporting/rep304.php:122
 msgid "Category"
@@ -9142,10 +9295,10 @@ msgid "Ordered"
 msgstr ""
 
 #: /var/www/fa2.3/devel/../purchasing/po_receive_items.php:59
-#: /var/www/fa2.3/devel/../reporting/rep101.php:127
+#: /var/www/fa2.3/devel/../reporting/rep101.php:131
 #: /var/www/fa2.3/devel/../reporting/rep105.php:113
 #: /var/www/fa2.3/devel/../reporting/rep105.php:167
-#: /var/www/fa2.3/devel/../reporting/rep201.php:115
+#: /var/www/fa2.3/devel/../reporting/rep201.php:119
 #: /var/www/fa2.3/devel/../reporting/includes/doctext.inc:117
 msgid "Outstanding"
 msgstr ""
@@ -9315,7 +9468,7 @@ msgstr ""
 
 #: /var/www/fa2.3/devel/../purchasing/supplier_invoice.php:187
 msgid ""
-"This invoice number has already been entered. It cannot be entered again. ("
+"This invoice number has already been entered. It cannot be entered again."
 msgstr ""
 
 #: /var/www/fa2.3/devel/../purchasing/supplier_invoice.php:224
@@ -9792,8 +9945,8 @@ msgid "Supp Reference"
 msgstr ""
 
 #: /var/www/fa2.3/devel/../purchasing/inquiry/supplier_allocation_inquiry.php:135
-#: /var/www/fa2.3/devel/../reporting/rep101.php:127
-#: /var/www/fa2.3/devel/../reporting/rep201.php:115
+#: /var/www/fa2.3/devel/../reporting/rep101.php:131
+#: /var/www/fa2.3/devel/../reporting/rep201.php:119
 #: /var/www/fa2.3/devel/../reporting/includes/doctext.inc:117
 #: /var/www/fa2.3/devel/../sales/inquiry/customer_allocation_inquiry.php:151
 msgid "Allocated"
@@ -9810,17 +9963,13 @@ msgstr ""
 #: /var/www/fa2.3/devel/../purchasing/inquiry/supplier_inquiry.php:66
 #: /var/www/fa2.3/devel/../purchasing/inquiry/supplier_inquiry.php:67
 #: /var/www/fa2.3/devel/../purchasing/inquiry/supplier_inquiry.php:68
-#: /var/www/fa2.3/devel/../reporting/rep102.php:106
-#: /var/www/fa2.3/devel/../reporting/rep102.php:107
-#: /var/www/fa2.3/devel/../reporting/rep102.php:108
-#: /var/www/fa2.3/devel/../reporting/rep102.php:223
-#: /var/www/fa2.3/devel/../reporting/rep202.php:106
-#: /var/www/fa2.3/devel/../reporting/rep202.php:107
-#: /var/www/fa2.3/devel/../reporting/rep202.php:108
-#: /var/www/fa2.3/devel/../reporting/rep202.php:136
-#: /var/www/fa2.3/devel/../reporting/rep202.php:137
-#: /var/www/fa2.3/devel/../reporting/rep202.php:138
-#: /var/www/fa2.3/devel/../reporting/rep202.php:225
+#: /var/www/fa2.3/devel/../reporting/rep102.php:110
+#: /var/www/fa2.3/devel/../reporting/rep102.php:111
+#: /var/www/fa2.3/devel/../reporting/rep102.php:112
+#: /var/www/fa2.3/devel/../reporting/rep102.php:227
+#: /var/www/fa2.3/devel/../reporting/rep202.php:112
+#: /var/www/fa2.3/devel/../reporting/rep202.php:113
+#: /var/www/fa2.3/devel/../reporting/rep202.php:114
 #: /var/www/fa2.3/devel/../reporting/includes/doctext.inc:179
 #: /var/www/fa2.3/devel/../sales/create_recurrent_invoices.php:98
 #: /var/www/fa2.3/devel/../sales/manage/recurrent_invoices.php:85
@@ -9831,9 +9980,8 @@ msgid "Days"
 msgstr ""
 
 #: /var/www/fa2.3/devel/../purchasing/inquiry/supplier_inquiry.php:68
-#: /var/www/fa2.3/devel/../reporting/rep102.php:108
-#: /var/www/fa2.3/devel/../reporting/rep202.php:108
-#: /var/www/fa2.3/devel/../reporting/rep202.php:138
+#: /var/www/fa2.3/devel/../reporting/rep102.php:112
+#: /var/www/fa2.3/devel/../reporting/rep202.php:114
 #: /var/www/fa2.3/devel/../reporting/includes/doctext.inc:180
 #: /var/www/fa2.3/devel/../sales/inquiry/customer_inquiry.php:73
 msgid "Over"
@@ -9845,18 +9993,17 @@ msgid "Terms"
 msgstr ""
 
 #: /var/www/fa2.3/devel/../purchasing/inquiry/supplier_inquiry.php:72
-#: /var/www/fa2.3/devel/../reporting/rep102.php:111
-#: /var/www/fa2.3/devel/../reporting/rep102.php:221
-#: /var/www/fa2.3/devel/../reporting/rep202.php:112
-#: /var/www/fa2.3/devel/../reporting/rep202.php:223
+#: /var/www/fa2.3/devel/../reporting/rep102.php:115
+#: /var/www/fa2.3/devel/../reporting/rep102.php:225
+#: /var/www/fa2.3/devel/../reporting/rep202.php:118
 #: /var/www/fa2.3/devel/../reporting/includes/doctext.inc:175
 #: /var/www/fa2.3/devel/../sales/inquiry/customer_inquiry.php:76
 msgid "Current"
 msgstr ""
 
 #: /var/www/fa2.3/devel/../purchasing/inquiry/supplier_inquiry.php:73
-#: /var/www/fa2.3/devel/../reporting/rep102.php:112
-#: /var/www/fa2.3/devel/../reporting/rep202.php:113
+#: /var/www/fa2.3/devel/../reporting/rep102.php:116
+#: /var/www/fa2.3/devel/../reporting/rep202.php:119
 #: /var/www/fa2.3/devel/../reporting/includes/doctext.inc:176
 #: /var/www/fa2.3/devel/../sales/inquiry/customer_inquiry.php:77
 msgid "Total Balance"
@@ -9942,44 +10089,58 @@ msgstr ""
 msgid "Marked items are settled."
 msgstr ""
 
-#: /var/www/fa2.3/devel/../reporting/rep101.php:119
-#: /var/www/fa2.3/devel/../reporting/rep102.php:99
-#: /var/www/fa2.3/devel/../reporting/rep202.php:100
-#: /var/www/fa2.3/devel/../reporting/rep203.php:80
+#: /var/www/fa2.3/devel/../reporting/rep101.php:120
+#: /var/www/fa2.3/devel/../reporting/rep102.php:100
+#: /var/www/fa2.3/devel/../reporting/rep202.php:102
+#: /var/www/fa2.3/devel/../reporting/rep203.php:81
 msgid "Balances in Home Currency"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../reporting/rep101.php:126
-#: /var/www/fa2.3/devel/../reporting/rep201.php:114
-#: /var/www/fa2.3/devel/../reporting/rep203.php:87
+#: /var/www/fa2.3/devel/../reporting/rep101.php:130
+#: /var/www/fa2.3/devel/../reporting/rep201.php:118
+#: /var/www/fa2.3/devel/../reporting/rep203.php:91
 #: /var/www/fa2.3/devel/../reporting/rep709.php:107
 #: /var/www/fa2.3/devel/../reporting/includes/doctext.inc:108
 #: /var/www/fa2.3/devel/../reporting/includes/doctext.inc:116
 msgid "Trans Type"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../reporting/rep101.php:126
-#: /var/www/fa2.3/devel/../reporting/rep201.php:114
+#: /var/www/fa2.3/devel/../reporting/rep101.php:130
+#: /var/www/fa2.3/devel/../reporting/rep201.php:118
 #: /var/www/fa2.3/devel/../reporting/includes/doctext.inc:116
 msgid "Charges"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../reporting/rep101.php:126
-#: /var/www/fa2.3/devel/../reporting/rep201.php:115
+#: /var/www/fa2.3/devel/../reporting/rep101.php:130
+#: /var/www/fa2.3/devel/../reporting/rep201.php:119
 #: /var/www/fa2.3/devel/../reporting/includes/doctext.inc:117
 msgid "Credits"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../reporting/rep101.php:136
+#: /var/www/fa2.3/devel/../reporting/rep101.php:139
+#: /var/www/fa2.3/devel/../reporting/rep102.php:125
+#: /var/www/fa2.3/devel/../reporting/rep201.php:127
+#: /var/www/fa2.3/devel/../reporting/rep202.php:128
+#: /var/www/fa2.3/devel/../reporting/rep203.php:100
+#: /var/www/fa2.3/devel/../reporting/rep303.php:123
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:35
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:43
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:126
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:134
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:142
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:181
+msgid "Suppress Zeros"
+msgstr ""
+
+#: /var/www/fa2.3/devel/../reporting/rep101.php:141
 msgid "Customer Balances"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../reporting/rep101.php:232
-#: /var/www/fa2.3/devel/../reporting/rep102.php:207
+#: /var/www/fa2.3/devel/../reporting/rep101.php:244
+#: /var/www/fa2.3/devel/../reporting/rep102.php:211
 #: /var/www/fa2.3/devel/../reporting/rep106.php:177
-#: /var/www/fa2.3/devel/../reporting/rep201.php:224
-#: /var/www/fa2.3/devel/../reporting/rep202.php:208
-#: /var/www/fa2.3/devel/../reporting/rep203.php:169
+#: /var/www/fa2.3/devel/../reporting/rep201.php:231
+#: /var/www/fa2.3/devel/../reporting/rep203.php:177
 #: /var/www/fa2.3/devel/../reporting/rep204.php:144
 #: /var/www/fa2.3/devel/../reporting/rep301.php:167
 #: /var/www/fa2.3/devel/../reporting/rep304.php:193
@@ -9987,56 +10148,56 @@ msgstr ""
 msgid "Grand Total"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../reporting/rep102.php:93
+#: /var/www/fa2.3/devel/../reporting/rep102.php:94
 #: /var/www/fa2.3/devel/../reporting/rep106.php:91
-#: /var/www/fa2.3/devel/../reporting/rep202.php:94
+#: /var/www/fa2.3/devel/../reporting/rep202.php:96
 #: /var/www/fa2.3/devel/../reporting/rep709.php:91
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:41
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:72
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:130
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:162
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:373
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:42
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:74
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:133
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:167
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:379
 msgid "Summary Only"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../reporting/rep102.php:95
-#: /var/www/fa2.3/devel/../reporting/rep202.php:96
+#: /var/www/fa2.3/devel/../reporting/rep102.php:96
+#: /var/www/fa2.3/devel/../reporting/rep202.php:98
 #: /var/www/fa2.3/devel/../reporting/rep709.php:93
 msgid "Detailed Report"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../reporting/rep102.php:117
-#: /var/www/fa2.3/devel/../reporting/rep202.php:118
-#: /var/www/fa2.3/devel/../reporting/rep203.php:93
+#: /var/www/fa2.3/devel/../reporting/rep102.php:121
+#: /var/www/fa2.3/devel/../reporting/rep202.php:124
+#: /var/www/fa2.3/devel/../reporting/rep203.php:97
 #: /var/www/fa2.3/devel/../reporting/reports_main.php:32
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:38
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:63
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:71
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:121
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:127
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:135
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:180
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:188
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:220
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:231
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:242
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:258
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:268
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:279
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:291
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:305
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:314
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:324
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:335
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:347
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:355
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:364
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:372
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:39
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:65
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:73
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:123
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:130
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:139
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:186
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:194
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:226
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:237
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:248
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:264
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:274
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:285
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:297
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:311
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:320
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:330
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:341
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:353
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:361
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:370
 #: /var/www/fa2.3/devel/../reporting/reports_main.php:378
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:384
 msgid "End Date"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../reporting/rep102.php:124
+#: /var/www/fa2.3/devel/../reporting/rep102.php:129
 msgid "Aged Customer Analysis"
 msgstr ""
 
@@ -10073,18 +10234,18 @@ msgid "Branch Delivery Address"
 msgstr ""
 
 #: /var/www/fa2.3/devel/../reporting/rep103.php:145
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:46
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:48
 msgid "Activity Since"
 msgstr ""
 
 #: /var/www/fa2.3/devel/../reporting/rep103.php:146
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:47
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:49
 #: /var/www/fa2.3/devel/../sales/manage/sales_areas.php:16
 msgid "Sales Areas"
 msgstr ""
 
 #: /var/www/fa2.3/devel/../reporting/rep103.php:147
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:48
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:50
 msgid "Sales Folk"
 msgstr ""
 
@@ -10122,7 +10283,7 @@ msgid "GP %"
 msgstr ""
 
 #: /var/www/fa2.3/devel/../reporting/rep104.php:117
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:58
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:60
 msgid "Show GP %"
 msgstr ""
 
@@ -10139,7 +10300,7 @@ msgid "All Orders"
 msgstr ""
 
 #: /var/www/fa2.3/devel/../reporting/rep105.php:103
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:66
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:68
 msgid "Back Orders Only"
 msgstr ""
 
@@ -10297,23 +10458,23 @@ msgstr ""
 msgid "RECEIPT"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../reporting/rep201.php:107
+#: /var/www/fa2.3/devel/../reporting/rep201.php:108
 msgid "Balances in Home currency"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../reporting/rep201.php:124
+#: /var/www/fa2.3/devel/../reporting/rep201.php:129
 msgid "Supplier Balances"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../reporting/rep202.php:124
+#: /var/www/fa2.3/devel/../reporting/rep202.php:131
 msgid "currency"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../reporting/rep202.php:125
+#: /var/www/fa2.3/devel/../reporting/rep202.php:132
 msgid "Aged Supplier Analysis"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../reporting/rep203.php:97
+#: /var/www/fa2.3/devel/../reporting/rep203.php:102
 msgid "Payment Report"
 msgstr ""
 
@@ -10375,25 +10536,25 @@ msgstr ""
 msgid "Inventory Planning Report"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../reporting/rep303.php:94
+#: /var/www/fa2.3/devel/../reporting/rep303.php:96
 msgid "Shortage"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../reporting/rep303.php:104
-#: /var/www/fa2.3/devel/../reporting/rep303.php:110
+#: /var/www/fa2.3/devel/../reporting/rep303.php:108
+#: /var/www/fa2.3/devel/../reporting/rep303.php:114
 #: /var/www/fa2.3/devel/../reporting/rep305.php:72
 msgid "Stock ID"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../reporting/rep303.php:104
+#: /var/www/fa2.3/devel/../reporting/rep303.php:108
 msgid "Check"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../reporting/rep303.php:118
+#: /var/www/fa2.3/devel/../reporting/rep303.php:122
 msgid "Only Shortage"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../reporting/rep303.php:125
+#: /var/www/fa2.3/devel/../reporting/rep303.php:130
 msgid "Stock Check Sheets"
 msgstr ""
 
@@ -10521,9 +10682,9 @@ msgstr ""
 #: /var/www/fa2.3/devel/../reporting/rep705.php:243
 #: /var/www/fa2.3/devel/../reporting/rep705.php:256
 #: /var/www/fa2.3/devel/../reporting/rep705.php:267
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:250
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:298
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:341
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:256
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:304
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:347
 msgid "Year"
 msgstr ""
 
@@ -10607,7 +10768,7 @@ msgid "Action"
 msgstr ""
 
 #: /var/www/fa2.3/devel/../reporting/rep710.php:87
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:376
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:382
 msgid "Audit Trail"
 msgstr ""
 
@@ -10624,355 +10785,355 @@ msgid "Customer &Balances"
 msgstr ""
 
 #: /var/www/fa2.3/devel/../reporting/reports_main.php:34
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:40
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:54
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:78
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:90
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:96
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:103
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:109
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:115
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:123
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:129
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:137
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:147
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:153
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:41
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:56
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:80
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:92
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:98
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:105
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:111
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:117
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:125
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:132
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:141
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:152
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:158
 msgid "Currency Filter"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:36
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:44
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:52
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:60
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:68
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:74
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:125
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:133
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:139
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:143
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:164
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:37
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:46
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:54
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:62
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:70
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:76
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:128
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:137
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:144
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:148
 #: /var/www/fa2.3/devel/../reporting/reports_main.php:169
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:177
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:185
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:190
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:197
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:211
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:222
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:174
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:183
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:191
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:196
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:203
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:217
 #: /var/www/fa2.3/devel/../reporting/reports_main.php:228
 #: /var/www/fa2.3/devel/../reporting/reports_main.php:234
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:248
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:255
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:265
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:276
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:285
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:296
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:240
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:254
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:261
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:271
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:282
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:291
 #: /var/www/fa2.3/devel/../reporting/reports_main.php:302
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:311
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:321
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:329
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:339
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:344
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:352
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:361
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:368
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:375
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:382
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:308
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:317
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:327
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:335
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:345
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:350
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:358
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:367
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:374
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:381
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:388
 msgid "Destination"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:37
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:38
 msgid "&Aged Customer Analysis"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:42
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:131
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:263
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:274
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:309
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:319
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:350
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:359
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:44
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:135
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:269
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:280
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:315
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:325
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:356
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:365
 msgid "Graphics"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:45
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:47
 msgid "Customer &Detail Listing"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:49
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:51
 msgid "Activity Greater Than"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:50
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:52
 msgid "Activity Less Than"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:53
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:55
 msgid "&Price Listing"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:55
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:64
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:160
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:166
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:57
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:66
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:165
 #: /var/www/fa2.3/devel/../reporting/reports_main.php:171
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:181
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:176
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:187
 msgid "Inventory Category"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:56
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:58
 #: /var/www/fa2.3/devel/../sales/manage/sales_types.php:16
 msgid "Sales Types"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:57
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:173
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:59
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:178
 msgid "Show Pictures"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:61
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:63
 msgid "&Order Status Listing"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:65
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:67
 msgid "Stock Location"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:69
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:71
 msgid "&Salesman Listing"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:75
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:77
 msgid "Print &Invoices/Credit Notes"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:77
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:84
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:95
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:102
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:108
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:114
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:146
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:152
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:200
-msgid "To"
-msgstr ""
-
 #: /var/www/fa2.3/devel/../reporting/reports_main.php:79
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:85
-msgid "email Customers"
-msgstr ""
-
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:80
-msgid "Payment Link"
-msgstr ""
-
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:82
-msgid "Print &Deliveries"
-msgstr ""
-
 #: /var/www/fa2.3/devel/../reporting/reports_main.php:86
-msgid "Print as Packing Slip"
-msgstr ""
-
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:88
-msgid "Print &Statements"
-msgstr ""
-
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:91
 #: /var/www/fa2.3/devel/../reporting/reports_main.php:97
 #: /var/www/fa2.3/devel/../reporting/reports_main.php:104
 #: /var/www/fa2.3/devel/../reporting/reports_main.php:110
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:148
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:154
-msgid "Email Customers"
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:116
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:151
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:157
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:206
+msgid "To"
+msgstr ""
+
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:81
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:87
+msgid "email Customers"
+msgstr ""
+
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:82
+msgid "Payment Link"
+msgstr ""
+
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:84
+msgid "Print &Deliveries"
+msgstr ""
+
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:88
+msgid "Print as Packing Slip"
+msgstr ""
+
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:90
+msgid "Print &Statements"
 msgstr ""
 
 #: /var/www/fa2.3/devel/../reporting/reports_main.php:93
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:99
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:106
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:112
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:153
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:159
+msgid "Email Customers"
+msgstr ""
+
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:95
 msgid "&Print Sales Orders"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:98
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:100
 msgid "Print as Quote"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:100
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:106
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:102
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:108
 msgid "&Print Sales Quotations"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:112
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:114
 msgid "Print Receipts"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:119
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:121
 msgid "Supplier &Balances"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:126
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:129
 msgid "&Aged Supplier Analyses"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:134
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:138
 msgid "&Payment Report"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:140
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:145
 msgid "Outstanding &GRNs Report"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:144
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:149
 msgid "Print Purchase &Orders"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:150
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:155
 msgid "Print Remittances"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:159
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:164
 msgid "Inventory &Valuation Report"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:165
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:170
 msgid "Inventory &Planning Report"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:170
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:175
 msgid "Stock &Check Sheets"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:174
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:179
 msgid "Inventory Column"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:175
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:180
 msgid "Show Shortage"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:178
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:184
 msgid "Inventory &Sales Report"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:186
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:192
 msgid "&GRN Valuation Report"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:192
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:198
 msgid "Manufacturing"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:193
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:199
 msgid "&Bill of Material Listing"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:194
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:200
 msgid "From product"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:195
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:201
 msgid "To product"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:198
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:204
 msgid "Print &Work Orders"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:201
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:207
 msgid "Email Locations"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:206
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:212
 msgid "Dimension &Summary"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:207
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:213
 msgid "From Dimension"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:208
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:214
 msgid "To Dimension"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:209
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:215
 msgid "Show Balance"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:216
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:222
 msgid "Banking"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:217
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:223
 msgid "Bank &Statement"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:224
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:230
 msgid "General Ledger"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:225
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:231
 msgid "Chart of &Accounts"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:226
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:232
 msgid "Show Balances"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:229
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:235
 msgid "List of &Journal Entries"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:240
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:289
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:333
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:246
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:295
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:339
 msgid "GL Account &Transactions"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:243
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:292
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:336
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:249
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:298
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:342
 msgid "From Account"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:244
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:293
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:337
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:250
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:299
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:343
 msgid "To Account"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:249
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:297
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:340
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:255
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:303
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:346
 msgid "Annual &Expense Breakdown"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:256
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:303
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:345
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:262
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:309
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:351
 msgid "&Balance Sheet"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:262
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:273
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:308
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:318
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:349
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:358
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:268
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:279
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:314
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:324
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:355
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:364
 msgid "Decimal values"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:266
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:312
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:353
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:272
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:318
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:359
 msgid "&Profit and Loss Statement"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:280
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:325
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:365
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:286
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:331
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:371
 msgid "Zero values"
 msgstr ""
 
-#: /var/www/fa2.3/devel/../reporting/reports_main.php:370
+#: /var/www/fa2.3/devel/../reporting/reports_main.php:376
 msgid "Ta&x Report"
 msgstr ""
 
