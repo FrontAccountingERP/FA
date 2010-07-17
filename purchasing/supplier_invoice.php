@@ -184,7 +184,7 @@ function check_data()
 
 	if (is_reference_already_there($_SESSION['supp_trans']->supplier_id, $_POST['supp_reference']))
 	{ 	/*Transaction reference already entered */
-		display_error(_("This invoice number has already been entered. It cannot be entered again." . " (" . $_POST['supp_reference'] . ")"));
+		display_error(_("This invoice number has already been entered. It cannot be entered again.") . " (" . $_POST['supp_reference'] . ")");
 		return false;
 	}
 
