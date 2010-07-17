@@ -119,16 +119,17 @@ class gettext_native_support
     /**
      * Add a translation domain.
      */
-    function add_domain($domain, $path=false)
+    function add_domain($domain, $path=false, $version='')
     {
         if ($path === false) 
-        {
-            bindtextdomain($domain, "./locale/");
-        } 
-        else 
-        { 
-            bindtextdomain($domain, $path);
-        }
+	        $path = "./locale";
+		if ($version) {
+	// To avoid need for apache server restart after change of *.mo file
+	// we have to include file version as part of filename.
+	// This is alternative naming convention: $domain = $version.'/'.$domain;
+			$domain .= '-'.$version;
+		}
+        bindtextdomain($domain, $path);
         //bind_textdomain_codeset($domain, $encoding);
         textdomain($domain);
     }
@@ -286,8 +287,12 @@ class gettext_php_support extends gettext_native_support
      * @param string $path optional -- Repository path
      * @throws GetText_Error
      */
-    function add_domain($domain, $path = "./locale/")
+    function add_domain($domain, $path = "./locale/", $version ='')
     {   
+    	if ($version) {
+			$domain .= '-'.$version;
+		}
+
         if (array_key_exists($domain, $this->_domains)) 
         { 
             return; 

@@ -22,6 +22,7 @@ class language
 	var $encoding;		// eg. UTF-8, CP1256, ISO8859-1
 	var	$dir;			// Currently support for Left-to-Right (ltr) and
 						// Right-To-Left (rtl)
+	var $version; // lang package version
 	var $is_locale_file;
 	
 	function language($name, $code, $encoding, $dir = 'ltr') 
@@ -60,13 +61,14 @@ class language
 			$this->name = $lang['name'];
 			$this->code = $lang['code'];
 			$this->encoding = $lang['encoding'];
+			$this->version = $lang['version'];
 			$this->dir = isset($lang['rtl']) ? 'rtl' : 'ltr';
 			$locale = $path_to_root . "/lang/" . $this->code . "/locale.inc";
 			$this->is_locale_file = file_exists($locale);
 		}
 
 		$_SESSION['get_text']->set_language($this->code, $this->encoding);
-		$_SESSION['get_text']->add_domain($this->code, $path_to_root . "/lang");
+		$_SESSION['get_text']->add_domain($this->code, $path_to_root . "/lang", $this->version);
 
 		// Necessary for ajax calls. Due to bug in php 4.3.10 for this 
 		// version set globally in php.ini
