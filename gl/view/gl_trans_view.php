@@ -23,8 +23,8 @@ include_once($path_to_root . "/gl/includes/gl_db.inc");
 if (!isset($_GET['type_id']) || !isset($_GET['trans_no'])) 
 { /*Script was not passed the correct parameters */
 
-	echo "<p>" . _("The script must be called with a valid transaction type and transaction number to review the general ledger postings for.") . "</p>";
-	exit;
+	display_note(_("The script must be called with a valid transaction type and transaction number to review the general ledger postings for."));
+	end_page();
 }
 
 function display_gl_heading($myrow)
