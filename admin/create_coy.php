@@ -240,7 +240,7 @@ function handle_delete()
 		display_error(_("Cannot remove temporary renamed company data directory ") . $tmpname);
 		return;
 	}
-	display_notification(_("Selected company as been deleted"));
+	display_notification(_("Selected company has been deleted"));
 }
 
 //---------------------------------------------------------------------------------------------

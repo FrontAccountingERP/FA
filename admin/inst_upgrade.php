@@ -110,7 +110,7 @@ function upgrade_step($index, $conn)
 
 			$ret &= $inst->install($pref, $force);
 
-			error_log(_("Database upgarade finished."));
+			error_log(_("Database upgrade finished."));
 
 		} else
 			if ($state!==true) {
