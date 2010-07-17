@@ -19,6 +19,42 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+17-Jul-2010 Janusz Dobrowolski
++ New packaged extensions system
+$ /modules/_cache/index.php (new)
+  /FA.pem (new)
+  /includes/archive.inc (new)
+  /includes/packages.inc (new)
+  /includes/ui/view_package.php (new)
+  /config.default.php
+  /frontaccounting.php
+  /admin/inst_lang.php
+  /admin/inst_module.php
+  /includes/access_levels.inc
+  /includes/ui/ui_controls.inc
+  /includes/ui/ui_view.inc
+  /admin/db/maintenance_db.inc
+! Changed language file convention to prevent need for apache restart after *.po file change.
+$ /includes/lang/gettext.php
+  /includes/lang/language.php
+! Small cleanup
+$ /includes/page/header.inc
+! Fixed memo string in adjust_deliveries.
+$ /includes/db/inventory_db.inc
+! Fixed call params check message display
+$ /gl/view/gl_trans_view.php
+! Updated MySQL, php, debugging and extension system checks
+$ /admin/system_diagnostics.php
+# Fixed gettext msg typo
+$ /purchasing/supplier_invoice.php
+# Fixed curr_default check
+$ /gl/manage/currencies.php
+# Message typos
+$ /admin/create_coy.php
+  /admin/inst_upgrade.php
+! Updated translation template
+$ /lang/new_language_template/LC_MESSAGES/empty.po
+
 15-Jul-2010 Chaitanya/Joe Hunt
 ! Changed calculating of cost update (average material price) for better sync.
 $ /purchasing/includes/db/grn_db.inc
