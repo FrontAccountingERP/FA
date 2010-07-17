@@ -62,13 +62,14 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 	$core_version = "2.3";
 
 	// Extension packages repository
-	$FA_repo_version = '2.3'; // this should be get from database FA version?
+	$FA_repo_version = '2.3';
+
 	$repo_auth = array(
 		 'login' => 'anonymous',
 		 'pass' => 'password',
 	);
 	
-	$repository = 'http://'.$repo_auth['login'].':'.$repo_auth['pass'].'@'.'localhost/Repo'
+	$repository = 'http://'.$repo_auth['login'].':'.$repo_auth['pass'].'@'.'repo.frontaccounting.eu'
 		.'/index.php?path=';
 		
 	// Build for development purposes
