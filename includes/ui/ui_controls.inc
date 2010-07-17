@@ -217,7 +217,6 @@ function viewer_link($label, $url='', $class='', $id='',  $icon=null)
 	}
 	else
 		$preview_str = $label;
-
  return $preview_str;
 }
 

@@ -82,25 +82,8 @@ function write_config_db($new = false)
 
 	$msg .= "\$def_coy = " . $def_coy . ";\n\n";
 	$msg .= "\$tb_pref_counter = " . $tb_pref_counter . ";\n\n";
-	$msg .= "\$db_connections = array (\n";
-	$msg .= "\t0 => ";
-	for ($i = 0; $i < $n; $i++)
-	{
-		if ($i > 0)
-			$msg .= "\tarray ";
-		else
-			$msg .= "array ";
-		$msg .= "('name' => '" . $db_connections[$i]['name'] . "',\n";
-		$msg .= "\t\t'host' => '" . $db_connections[$i]['host'] . "',\n";
-		$msg .= "\t\t'dbuser' => '" . $db_connections[$i]['dbuser'] . "',\n";
-		$msg .= "\t\t'dbpassword' => '" . $db_connections[$i]['dbpassword'] . "',\n";
-		$msg .= "\t\t'dbname' => '" . $db_connections[$i]['dbname'] . "',\n";
-		$msg .= "\t\t'tbpref' => '" . $db_connections[$i]['tbpref'] . "')";
-		if ($i != $n - 1)
-			$msg .= ",";
-		$msg .= "\n\n";
-	}
-	$msg .= "\t);\n?>";
+	$msg .= "\$db_connections = " .var_export($db_connections, true);
+	$msg .= ";\n?>";
 
 	$filename = $path_to_root . "/config_db.php";
 	// Check if the file exists and is writable first.
@@ -167,20 +150,8 @@ function write_extensions($extensions=null, $company = -1)
 	by extensions editor.
 */\n\n";
 
-	$msg .= "\$installed_extensions = array (\n";
-	foreach($extensions as $i => $ext) 
-	{
-		$msg .= "\t$i => ";
-		$msg .= "array ( ";
-		$t = '';
-		foreach($ext as $key => $val) {
-			$msg .= $t."'$key' => '$val',\n";
-			$t = "\t\t\t";
-		}
-		$msg .= "\t\t),\n";
-	}
-	$msg .= "\t);\n?>";
-
+	$msg .= "\$installed_extensions = ". var_export($extensions, true);
+	$msg .= ";\n?>";
 	$filename = $path_to_root . ($company==-1 ? '' : '/company/'.$company)
 		.'/installed_extensions.php';
 
@@ -205,43 +176,57 @@ function write_extensions($extensions=null, $company = -1)
 	}
 	return true;
 }
+//---------------------------------------------------------------------------------------------
+//
+// Update per-company list of installed extensions
+//
+function update_extensions($extensions) {
+	global $db_connections;
+	
+	if (!write_extensions($extensions)) {
+		display_notification(_("Cannot update system extensions list."));
+		return false;
+	}
+
+	// update per company files
+	$cnt = count($db_connections);
+	for($i = 0; $i < $cnt; $i++) 
+	{
+		$newexts = $extensions;
+		// update 'active' status 
+		$exts = get_company_extensions($i);
+		foreach ($exts as $key => $ext) 
+		{
+			if (isset($newexts[$key]))
+				$newexts[$key]['active'] = $exts[$key]['active'];
+		}
+		if(!write_extensions($newexts, $i)) 
+		{
+			display_notification(sprintf(_("Cannot update extensions list for company '%s'."),
+				$db_connections[$i]['name']));
+		 return false;
+		}
+	}
+	return true;
+}
+
 
 function write_lang()
 {
 	global $path_to_root, $installed_languages, $dflt_lang;
 
-	$conn = array_natsort($installed_languages, 'code', 'code');
-	$installed_languages = $conn;
-	//reset($installed_languages);
+	$installed_languages = array_natsort($installed_languages, 'code', 'code');
 	$n = count($installed_languages);
 	$msg = "<?php\n\n";
 
 	$msg .= "/* How to make new entries here\n\n";
-	$msg .= "-- if adding languages at the beginning of the list, make sure it's index is set to 0 (it has ' 0 => ')\n";
 	$msg .= "-- 'code' should match the name of the directory for the language under \\lang\n";
 	$msg .= "-- 'name' is the name that will be displayed in the language selection list (in Users and Display Setup)\n";
 	$msg .= "-- 'rtl' only needs to be set for right-to-left languages like Arabic and Hebrew\n\n";
 	$msg .= "*/\n\n\n";
 
-	$msg .= "\$installed_languages = array (\n";
-	if ($n > 0)
-	    $msg .= "\t0 => ";
-	for ($i = 0; $i < $n; $i++)
-	{
-		if ($i > 0)
-			$msg .= "\t\tarray ";
-		else
-			$msg .= "array ";
-		$msg .= "('code' => '" . $installed_languages[$i]['code'] . "', ";
-		$msg .= "'name' => '" . $installed_languages[$i]['name'] . "', ";
-		$msg .= "'encoding' => '" . $installed_languages[$i]['encoding'] . "'";
-		if (isset($installed_languages[$i]['rtl']) && $installed_languages[$i]['rtl'])
-			$msg .= ", 'rtl' => true),\n";
-		else
-			$msg .= "),\n";
-	}
-
-	$msg .= "\t);\n";
+	$msg .= "\$installed_languages = " . var_export($installed_languages, true);
+	$msg .= ";\n";
 	$msg .= "\n\$dflt_lang = '$dflt_lang';\n?>\n";
 
 	$path = $path_to_root . "/lang";
@@ -316,7 +301,7 @@ function db_drop_db($connection)
 function db_import($filename, $connection, $force=true)
 {
 	global $db, $go_debug;
-	
+
 	$allowed_commands = array(
 		"create"  => 'table_queries', 
 		"alter table" => 'table_queries', 
@@ -338,7 +323,6 @@ function db_import($filename, $connection, $force=true)
 
 	ini_set("max_execution_time", "180");
 	db_query("SET foreign_key_checks=0");
-
 	// uncrompress gziped backup files
 	if (strpos($filename, ".gz") || strpos($filename, ".GZ"))
 		$lines = db_ungzip("lines", $filename);
@@ -604,8 +588,8 @@ function db_export($conn, $filename, $zip='no', $comment='', $tbpref = TB_PREF)
 			$out.=$table_sql[$tablename];
 
 			// add auto_increment value
-			if ($auto_incr[$tablename])
-				$out.=" AUTO_INCREMENT=".$auto_incr[$tablename];
+//			if ($auto_incr[$tablename])
+//				$out.=" AUTO_INCREMENT=".$auto_incr[$tablename];
 			$out.=" ;";
 			$out.="\n\n\n";
 

@@ -13,47 +13,138 @@ $page_security = 'SA_CREATELANGUAGE';
 $path_to_root="..";
 include_once($path_to_root . "/includes/session.inc");
 
-page(_($help_context = "Install/Update Languages"));
-
-include_once($path_to_root . "/includes/date_functions.inc");
-include_once($path_to_root . "/admin/db/company_db.inc");
+include_once($path_to_root."/includes/packages.inc");
 include_once($path_to_root . "/admin/db/maintenance_db.inc");
 include_once($path_to_root . "/includes/ui.inc");
 
-//---------------------------------------------------------------------------------------------
+if ($use_popup_windows)
+	$js = get_js_open_window(900, 500);
 
-if (isset($_GET['selected_id']))
-{
-	$selected_id = $_GET['selected_id'];
-}
-elseif (isset($_POST['selected_id']))
-{
-	$selected_id = $_POST['selected_id'];
-}
-else
-	$selected_id = -1;
+page(_($help_context = "Install/Update Languages"), false, false, "", $js);
+
+simple_page_mode(true);
 
 //---------------------------------------------------------------------------------------------
+//
+// Display all packages - both already installed and available from repository
+//
+function display_languages()
+{
+	global $table_style, $installed_languages, $dflt_lang;
+	global $repository, $FA_repo_version;
+	
+	$th = array(_("Language"), _("Name"), _("Encoding"), _("Right To Left"),
+		_("Installed"), _("Available"), _("Default"), "", "");
+	$currlang = $_SESSION["language"]->code;
 
+	div_start('lang_tbl');
+	start_form();
+	//
+	// select/display system locales support for sites using native gettext
+	//
+	if (function_exists('gettext'))
+	{
+		if (check_value('DisplayAll'))
+			 array_insert($th, 7, _("Supported"));
+		start_table();
+		check_row(_('Display also languages not supported by server locales'), 'DisplayAll', null, true);
+		end_table();
+	}
+
+	start_table(TABLESTYLE);
+	table_header($th);
+
+	$k = 0;
+
+	// get list of all (available and installed) langauges
+	$langs = get_languages_list();
+	foreach ($langs as $pkg_name => $lng)
+	{
+		$lang = $lng['code'];
+		$lang_name = $lng['name'];
+		$charset = $lng['encoding'];
+		$rtl = @$lng['rtl'] == 'yes' || @$lng['rtl'] === true;
+		$available = @$lng['available'];
+		$installed = @$lng['version'];
+		$id = @$lng['local_id'];
+		
+		if ($lang == $currlang)
+			start_row("class='stockmankobg'");
+		else
+			alt_table_row_color($k);
+
+		$support = ($lang == 'en_GB') ||
+			$_SESSION['get_text']->check_support($lang, $charset);
+
+		if (function_exists('gettext') && !$support && !get_post('DisplayAll')) continue;
+
+		label_cell($lang);
+		label_cell($available ? get_package_view_str($lang, $lang_name) : $lang_name);
+		label_cell($charset);
+		label_cell($rtl ? _("Yes") : _("No"));
+		
+		label_cell($id === null ? _("None") :
+			($available && $installed ? $installed : _("Unknown")));
+
+		label_cell($available ? $available : _("None"));
+
+		label_cell($id === null ? '' :
+			radio(null, 'CurDflt', $id, $dflt_lang == $lang, true),
+			"align='center'");
+		
+		if (function_exists('gettext') && check_value('DisplayAll'))
+			label_cell($support ? _("Yes") :_("No"));
+
+		if (!$available && ($lang != 'en_GB'))	// manually installed language
+			button_cell('Edit'.$id, _("Edit"), _('Edit non standard language configuration'), 
+				ICON_EDIT);
+		elseif (check_pkg_upgrade($installed, $available)) // outdated or not installed language in repo
+			button_cell('Update'.$pkg_name, $installed ? _("Update") : _("Install"),
+				_('Upload and install latest language package'), ICON_DOWN);
+		else
+			label_cell('');
+
+		if (($id !== null) && ($lang != $currlang) && ($lang != 'en_GB')) {
+			delete_button_cell('Delete'.$id, _('Delete'));
+			submit_js_confirm('Delete'.$id, 
+				sprintf(_("You are about to remove language \'%s\'.\nDo you want to continue ?"), 
+					$lang_name));
+		} else
+			label_cell('');
+		end_row();
+	}
+	end_table();
+	display_note(_("The marked language is the current language which cannot be deleted."), 0, 0, "class='currentfg'");
+	br();
+	submit_center_first('Refresh', _("Update default"), '', null);
+
+	submit_center_last('Add', _("Add new language manually"), '', false);
+
+	end_form();
+	div_end();
+}
+//---------------------------------------------------------------------------------------------
+// Non standard (manually entered) languages support.
+//
 function check_data()
 {
-	if ($_POST['code'] == "" || $_POST['name'] == "" || $_POST['encoding'] == "") {
+	global $installed_languages;
+
+	if (get_post('code') == '' || get_post('name') == '' || get_post('encoding') == '') {
 		display_error(_("Language name, code nor encoding cannot be empty"));
+		return false;
+	}
+	$id = array_search_value($_POST['code'], $installed_languages, 'code');
+	if ($id !== null && $installed_languages[$id]['package'] != null) {
+		display_error(_('Standard package for this language is already installed. If you want to install this language manually, uninstall standard language package first.'));
 		return false;
 	}
 	return true;
 }
 
-//---------------------------------------------------------------------------------------------
-
-function handle_submit()
+function handle_submit($id)
 {
-	global $path_to_root, $installed_languages, $dflt_lang;
-
-	if (!check_data())
-		return false;
-
-	$id = $_GET['id'];
+	global $path_to_root, $installed_languages, $dflt_lang, $Mode;
 
 	if ($_POST['dflt']) {
 			$dflt_lang = $_POST['code'];
@@ -61,8 +152,11 @@ function handle_submit()
 	
 	$installed_languages[$id]['code'] = $_POST['code'];
 	$installed_languages[$id]['name'] = $_POST['name'];
+	$installed_languages[$id]['path'] = 'lang/' . $_POST['code'];
 	$installed_languages[$id]['encoding'] = $_POST['encoding'];
 	$installed_languages[$id]['rtl'] = (bool)$_POST['rtl'];
+	$installed_languages[$id]['package'] = '';
+	$installed_languages[$id]['version'] = '';
 	if (!write_lang())
 		return false;
 	$directory = $path_to_root . "/lang/" . $_POST['code'];
@@ -92,123 +186,30 @@ function handle_submit()
 
 //---------------------------------------------------------------------------------------------
 
-function handle_delete()
-{
-	global  $path_to_root, $installed_languages, $dflt_lang;
-
-	$id = $_GET['id'];
-
-	$lang = $installed_languages[$id]['code'];
-	$filename = "$path_to_root/lang/$lang/LC_MESSAGES";
-
-	if ($lang == $dflt_lang ) { 
-		// on delete set default to current.
-		$dflt_lang = $_SESSION['language']->code;
-	}
-	
-	unset($installed_languages[$id]);
-	$installed_languages = array_values($installed_languages);
-
-	if (!write_lang())
-		return;
-
-	$filename = "$path_to_root/lang/$lang";
-	flush_dir($filename);
-	rmdir($filename);
-
-	meta_forward($_SERVER['PHP_SELF']);
-}
-
-//---------------------------------------------------------------------------------------------
-
-function display_languages()
-{
-	global $installed_languages, $dflt_lang;
-
-	$lang = $_SESSION["language"]->code;
-
-	echo "
-		<script language='javascript'>
-		function deleteLanguage(id) {
-			if (!confirm('" . _("Are you sure you want to delete language no. ") . "'+id))
-				return
-			document.location.replace('inst_lang.php?c=df&id='+id)
-		}
-		</script>";
-	start_table(TABLESTYLE);
-	$th = array(_("Language"), _("Name"), _("Encoding"), _("Right To Left"), _("Default"), "", "");
-	table_header($th);
-
-	$k = 0;
-	$conn = $installed_languages;
-	$n = count($conn);
-	for ($i = 0; $i < $n; $i++)
-	{
-		if ($conn[$i]['code'] == $lang)
-    		start_row("class='stockmankobg'");
-    	else
-    		alt_table_row_color($k);
-
-		label_cell($conn[$i]['code']);
-		label_cell($conn[$i]['name']);
-		label_cell($conn[$i]['encoding']);
-		if (isset($conn[$i]['rtl']) && $conn[$i]['rtl'])
-			$rtl = _("Yes");
-		else
-			$rtl = _("No");
-		label_cell($rtl);
-		label_cell($dflt_lang == $conn[$i]['code'] ? _("Yes") :_("No"));
-		$edit = _("Edit");
-		$delete = _("Delete");
-		if (user_graphic_links())
-		{
-			$edit = set_icon(ICON_EDIT, $edit);
-			$delete = set_icon(ICON_DELETE, $delete);
-		}
-    	label_cell("<a href='" . $_SERVER['PHP_SELF']. "?selected_id=$i'>$edit</a>");
-		label_cell($conn[$i]['code'] == $lang ? '' :
-			"<a href='javascript:deleteLanguage(" . $i . ")'>$delete</a>");
-		end_row();
-	}
-
-	end_table();
-    display_note(_("The marked language is the current language which cannot be deleted."), 0, 0, "class='currentfg'");
-}
-
-//---------------------------------------------------------------------------------------------
-
 function display_language_edit($selected_id)
 {
 	global $installed_languages, $dflt_lang;
 
-	if ($selected_id != -1)
-		$n = $selected_id;
-	else
+	if ($selected_id == -1)
 		$n = count($installed_languages);
-
+	else
+		$n = $selected_id;
+	
 	start_form(true);
-
-	echo "
-		<script language='javascript'>
-		function updateLanguage() {
-			document.forms[0].action='inst_lang.php?c=u&id=" . $n . "'
-			document.forms[0].submit()
-		}
-		</script>";
 
 	start_table(TABLESTYLE2);
 
 	if ($selected_id != -1)
 	{
-		$conn = $installed_languages[$selected_id];
-		$_POST['code'] = $conn['code'];
-		$_POST['name']  = $conn['name'];
-		$_POST['encoding']  = $conn['encoding'];
+		$lang = $installed_languages[$n];
+		$_POST['code'] = $lang['code'];
+		$_POST['name']  = $lang['name'];
+		$_POST['encoding']  = $lang['encoding'];
 		if (isset($conn['rtl']))
-			$_POST['rtl']  = $conn['rtl'];
+			$_POST['rtl']  = $lang['rtl'];
 		else
 			$_POST['rtl'] = false;
-		$_POST['dflt'] = $dflt_lang == $conn['code'];
+		$_POST['dflt'] = $dflt_lang == $lang['code'];
 		hidden('selected_id', $selected_id);
 	}
 	text_row_ex(_("Language Code"), 'code', 20);
@@ -223,41 +224,71 @@ function display_language_edit($selected_id)
 
 	end_table(0);
 	display_note(_("Select your language files from your local harddisk."), 0, 1);
-	echo "<center><input onclick='javascript:updateLanguage()' type='button' style='width:150px' value='". _("Save"). "'></center>";
 
+	submit_add_or_update_center(false, '', 'both');
 
 	end_form();
 }
 
-
-//---------------------------------------------------------------------------------------------
-
-if (isset($_GET['c']))
+function handle_delete($id)
 {
-	if ($_GET['c'] == 'df')
-	{
-		handle_delete();
-	}
+	global  $path_to_root, $installed_languages, $dflt_lang;
 
-	if ($_GET['c'] == 'u')
-	{
-		if (handle_submit())
-		{
-			//meta_forward($_SERVER['PHP_SELF']);
-		}
+	$lang = $installed_languages[$id]['code'];
+	if ($installed_languages[$id]['package'])
+		if (!uninstall_package($installed_languages[$id]['package']))
+			return;
+			
+	if ($lang == $dflt_lang ) { 
+		// on delete set default to current.
+		$dflt_lang = $_SESSION['language']->code;
+	}
+	
+	unset($installed_languages[$id]);
+	$installed_languages = array_values($installed_languages);
+
+	if (!write_lang())
+		return;
+
+	$dirname = "$path_to_root/lang/$lang";
+	if ($lang && is_dir($dirname)) {	// remove nonstadard language dir
+		flush_dir($dirname, true);
+		rmdir($dirname);
 	}
 }
 
 //---------------------------------------------------------------------------------------------
 
-display_languages();
+if ($Mode == 'Delete')
+	handle_delete($selected_id);
 
-hyperlink_no_params($_SERVER['PHP_SELF'], _("Create a new language"));
+if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM')
+	if (check_data() && handle_submit($selected_id))
+		$Mode = 'RESET';
 
-display_language_edit($selected_id);
+if ($id = find_submit('Update', false))
+	install_language($id);
 
+if (get_post('_CurDflt_update') || (get_post('Refresh') && get_post('CurDflt', -1) != -1)) {
+	$new_lang = $installed_languages[get_post('CurDflt', 0)]['code'];
+	if ($new_lang != $dflt_lang) {
+		$dflt_lang = $new_lang;
+		write_lang();
+		$Ajax->activate('lang_tbl');
+	}
+}
+if (get_post('_DisplayAll_update')) {
+	$Ajax->activate('lang_tbl');
+}
+	
 //---------------------------------------------------------------------------------------------
 
+if (isset($_GET['popup']) || get_post('Add') || $Mode == 'Edit' || $Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM') {
+	display_language_edit($selected_id);
+} else
+	display_languages();
+
+//---------------------------------------------------------------------------------------------
 end_page();
 
 ?>

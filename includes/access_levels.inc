@@ -300,7 +300,7 @@ function get_access_extensions($id) {
 	$security_sections = $security_areas = array();
 	
 	if (isset($ext['acc_file']))
- 		include($path_to_root.($ext['type'] == 'plugin' ? '/modules/':'/').$ext['path'].'/'.$ext['acc_file']);
+		include($path_to_root.'/'.$ext['path'].'/'.$ext['acc_file']);
 
 	return array($security_areas, $security_sections);
 }
