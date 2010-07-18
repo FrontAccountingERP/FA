@@ -164,4 +164,10 @@ function get_current_supp_credit($supplier_id)
 
 }
 
+function is_new_supplier($id)
+{
+	$tables = array('supp_trans', 'grn_batch', 'purch_orders', 'purch_data');
+
+	return !key_in_foreign_table($id, $tables, 'supplier_id');
+}
 ?>

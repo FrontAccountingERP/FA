@@ -85,7 +85,7 @@ function supplier_settings(&$supplier_id)
 
 	text_row(_("GSTNo:"), 'gst_no', null, 42, 40);
 	link_row(_("Website:"), 'website', null, 35, 55);
-	if ($supplier_id) 
+	if ($supplier_id && !is_new_supplier($supplier_id)) 
 	{
 		label_row(_("Supplier's Currency:"), $_POST['curr_code']);
 		hidden('curr_code', $_POST['curr_code']);

@@ -164,4 +164,10 @@ function get_current_cust_credit($customer_id)
 
 }
 
+function is_new_customer($id)
+{
+	$tables = array('cust_branch', 'debtor_trans', 'recurrent_invoices', 'sales_orders');
+
+	return !key_in_foreign_table($id, $tables, 'debtor_no');
+}
 ?>
