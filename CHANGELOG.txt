@@ -19,6 +19,15 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+18-Jul-2010 Janusz Dobrowolski
+! Improved key_in_foreign_table to check multiply tables
+$ /admin/db/company_db.inc
+! New customer/supplier currency can be edited as long as no transaction is entered.
+$ /purchasing/includes/db/suppliers_db.inc
+  /purchasing/manage/suppliers.php
+  /sales/includes/db/customers_db.inc
+  /sales/manage/customers.php
+
 17-Jul-2010 Janusz Dobrowolski
 + New packaged extensions system
 $ /modules/_cache/index.php (new)
