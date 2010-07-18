@@ -149,15 +149,36 @@ function get_payment_terms_all($show_inactive)
 	if (!$show_inactive) $sql .= " WHERE !inactive";
 	return db_query($sql,"could not get payment terms");
 }
-
-function key_in_foreign_table($id, $table, $key, $escaped=false)
+/*
+	Return number of records in tables, where some foreign key $id is used.
+	$id - searched key value
+	$tables - array of table names (without prefix); when table name is used as a key, then
+		value is name of foreign key field. For numeric keys $stdkey field name is used.
+	$stdkey - standard name of foreign key.
+*/
+function key_in_foreign_table($id, $tables, $stdkey, $escaped=false)
 {
 	if (!$escaped)
 		$id = db_escape($id);
-	$sql= "SELECT COUNT(*) FROM ".TB_PREF."$table WHERE $key = $id";
-	$result = db_query($sql,"check $table relations failed");
-	$myrow = db_fetch_row($result);
-	return ($myrow[0] > 0); 
+
+	if (!is_array($tables))
+		$tables = array($tables);
+
+	$sqls = array();
+	foreach ($tables as $tbl => $key) {
+		if (is_numeric($tbl)) {
+			$tbl = $key;
+			$key = $stdkey;
+		}
+		$sqls[] = "(SELECT COUNT(*) as cnt FROM ".TB_PREF."$tbl WHERE $key=$id)\n";
+	}
+
+	$sql = "SELECT sum(cnt) FROM (". implode(' UNION ', $sqls).") as counts";
+
+	$result = db_query($sql, "check relations for ".implode(',',$tables)." failed");
+	$count =  db_fetch($result);
+
+	return $count[0];
 }
 
 ?>
