@@ -19,6 +19,13 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+19-Jul-2010 Joe Hunt
++ Added Revenue / Cost Accruals to be included in core FA
+$ /applications/generalledger.php
+  /gl/accruals.php (new file)
+  /gl/view/accrual_trans.php (new file)
+  /includes/access_levels.inc
+  
 18-Jul-2010 Janusz Dobrowolski
 ! Improved key_in_foreign_table to check multiply tables
 $ /admin/db/company_db.inc
