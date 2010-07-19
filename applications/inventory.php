@@ -1,17 +1,17 @@
 <?php
 /**********************************************************************
     Copyright (C) FrontAccounting, LLC.
-	Released under the terms of the GNU General Public License, GPL, 
-	as published by the Free Software Foundation, either version 3 
+	Released under the terms of the GNU General Public License, GPL,
+	as published by the Free Software Foundation, either version 3
 	of the License, or (at your option) any later version.
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-class inventory_app extends application 
+class inventory_app extends application
 {
-	function inventory_app() 
+	function inventory_app()
 	{
 		$this->application("stock", _($this->help_context = "&Items and Inventory"));
 
@@ -27,7 +27,7 @@ class inventory_app extends application
 		$this->add_lapp_function(1, _("Inventory Item &Status"),
 			"inventory/inquiry/stock_status.php?", 'SA_ITEMSSTATVIEW');
 		$this->add_rapp_function(1, _("Inventory &Reports"),
-			"reporting/reports_main.php?Class="._("Inventory"), 'SA_ITEMSTRANSVIEW');
+			"reporting/reports_main.php?Class=2", 'SA_ITEMSTRANSVIEW');
 
 		$this->add_module(_("Maintenance"));
 		$this->add_lapp_function(2, _("&Items"),

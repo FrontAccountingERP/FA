@@ -1,12 +1,12 @@
 <?php
 /**********************************************************************
     Copyright (C) FrontAccounting, LLC.
-	Released under the terms of the GNU General Public License, GPL, 
-	as published by the Free Software Foundation, either version 3 
+	Released under the terms of the GNU General Public License, GPL,
+	as published by the Free Software Foundation, either version 3
 	of the License, or (at your option) any later version.
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
 $page_security = 'SA_ITEMSVALREP';
@@ -33,6 +33,7 @@ function getTransactions($category, $location)
 	$sql = "SELECT ".TB_PREF."stock_master.category_id,
 			".TB_PREF."stock_category.description AS cat_description,
 			".TB_PREF."stock_master.stock_id,
+			".TB_PREF."stock_master.units,
 			".TB_PREF."stock_master.description, ".TB_PREF."stock_master.inactive,
 			".TB_PREF."stock_moves.loc_code,
 			SUM(".TB_PREF."stock_moves.qty) AS QtyOnHand,
@@ -93,11 +94,11 @@ function print_inventory_valuation_report()
 	else
 		$loc = get_location_name($location);
 
-	$cols = array(0, 100, 250, 350, 450,	515);
+	$cols = array(0, 75, 225, 250, 350, 450,	515);
 
-	$headers = array(_('Category'), '', _('Quantity'), _('Unit Cost'), _('Value'));
+	$headers = array(_('Category'), '', _('UOM'), _('Quantity'), _('Unit Cost'), _('Value'));
 
-	$aligns = array('left',	'left',	'right', 'right', 'right');
+	$aligns = array('left',	'left',	'left', 'right', 'right', 'right');
 
     $params =   array( 	0 => $comments,
     				    1 => array('text' => _('Category'), 'from' => $cat, 'to' => ''),
@@ -123,7 +124,7 @@ function print_inventory_valuation_report()
 					$rep->NewLine(2, 3);
 					$rep->TextCol(0, 4, _('Total'));
 				}
-				$rep->AmountCol(4, 5, $total, $dec);
+				$rep->AmountCol(5, 6, $total, $dec);
 				if ($detail)
 				{
 					$rep->Line($rep->row - 2);
@@ -144,9 +145,12 @@ function print_inventory_valuation_report()
 			$rep->fontSize -= 2;
 			$rep->TextCol(0, 1, $trans['stock_id']);
 			$rep->TextCol(1, 2, $trans['description'].($trans['inactive']==1 ? " ("._("Inactive").")" : ""), -1);
-			$rep->AmountCol(2, 3, $trans['QtyOnHand'], get_qty_dec($trans['stock_id']));
-			$rep->AmountCol(3, 4, $trans['UnitCost'], $dec);
-			$rep->AmountCol(4, 5, $trans['ItemTotal'], $dec);
+			$rep->TextCol(2, 3, $trans['units']);
+			$rep->AmountCol(3, 4, $trans['QtyOnHand'], get_qty_dec($trans['stock_id']));
+			$dec2 = 0;
+			price_decimal_format($trans['UnitCost'], $dec2);
+			$rep->AmountCol(4, 5, $trans['UnitCost'], $dec2);
+			$rep->AmountCol(5, 6, $trans['ItemTotal'], $dec);
 			$rep->fontSize += 2;
 		}
 		$total += $trans['ItemTotal'];
@@ -157,7 +161,7 @@ function print_inventory_valuation_report()
 		$rep->NewLine(2, 3);
 		$rep->TextCol(0, 4, _('Total'));
 	}
-	$rep->Amountcol(4, 5, $total, $dec);
+	$rep->Amountcol(5, 6, $total, $dec);
 	if ($detail)
 	{
 		$rep->Line($rep->row - 2);
@@ -165,7 +169,7 @@ function print_inventory_valuation_report()
 	}
 	$rep->NewLine(2, 1);
 	$rep->TextCol(0, 4, _('Grand Total'));
-	$rep->AmountCol(4, 5, $grandtotal, $dec);
+	$rep->AmountCol(5, 6, $grandtotal, $dec);
 	$rep->Line($rep->row  - 4);
 	$rep->NewLine();
     $rep->End();

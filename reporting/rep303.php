@@ -1,12 +1,12 @@
 <?php
 /**********************************************************************
     Copyright (C) FrontAccounting, LLC.
-	Released under the terms of the GNU General Public License, GPL, 
-	as published by the Free Software Foundation, either version 3 
+	Released under the terms of the GNU General Public License, GPL,
+	as published by the Free Software Foundation, either version 3
 	of the License, or (at your option) any later version.
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
 $page_security = 'SA_ITEMSVALREP';
@@ -34,6 +34,7 @@ function getTransactions($category, $location)
 	$sql = "SELECT ".TB_PREF."stock_master.category_id,
 			".TB_PREF."stock_category.description AS cat_description,
 			".TB_PREF."stock_master.stock_id,
+			".TB_PREF."stock_master.units,
 			".TB_PREF."stock_master.description, ".TB_PREF."stock_master.inactive,
 			IF(".TB_PREF."stock_moves.stock_id IS NULL, '', ".TB_PREF."stock_moves.loc_code) AS loc_code,
 			SUM(IF(".TB_PREF."stock_moves.stock_id IS NULL,0,".TB_PREF."stock_moves.qty)) AS QtyOnHand
@@ -94,7 +95,7 @@ function print_stock_check()
 	{
 		$short = _('Yes');
 		$available = _('Shortage');
-	}	
+	}
 	else
 	{
 		$short = _('No');
@@ -104,15 +105,15 @@ function print_stock_check()
 	else $nozeros = _('No');
 	if ($check)
 	{
-		$cols = array(0, 100, 250, 295, 345, 390, 445,	515);
-		$headers = array(_('Stock ID'), _('Description'), _('Quantity'), _('Check'), _('Demand'), $available, _('On Order'));
-		$aligns = array('left',	'left',	'right', 'right', 'right', 'right', 'right');
+		$cols = array(0, 75, 225, 250, 295, 345, 390, 445,	515);
+		$headers = array(_('Stock ID'), _('Description'), _('UOM'), _('Quantity'), _('Check'), _('Demand'), $available, _('On Order'));
+		$aligns = array('left',	'left',	'left', 'right', 'right', 'right', 'right', 'right');
 	}
 	else
 	{
-		$cols = array(0, 100, 250, 315, 380, 445,	515);
-		$headers = array(_('Stock ID'), _('Description'), _('Quantity'), _('Demand'), $available, _('On Order'));
-		$aligns = array('left',	'left',	'right', 'right', 'right', 'right');
+		$cols = array(0, 75, 225, 250, 315, 380, 445,	515);
+		$headers = array(_('Stock ID'), _('Description'), _('UOM'), _('Quantity'), _('Demand'), $available, _('On Order'));
+		$aligns = array('left',	'left',	'left', 'right', 'right', 'right', 'right');
 	}
 
 
@@ -127,17 +128,11 @@ function print_stock_check()
 	else
 		$user_comp = "";
 
-    	$rep = new FrontReport(_('Stock Check Sheets'), "StockCheckSheet", user_pagesize());
+   	$rep = new FrontReport(_('Stock Check Sheets'), "StockCheckSheet", user_pagesize());
 
-<<<<<<< rep303.php
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);
     $rep->NewPage();
-=======
-    	$rep->Font();
-    	$rep->Info($params, $cols, $headers, $aligns);
-    	$rep->Header();
->>>>>>> 1.22
 
 	$res = getTransactions($category, $location);
 	$catt = '';
@@ -173,23 +168,24 @@ function print_stock_check()
 		$dec = get_qty_dec($trans['stock_id']);
 		$rep->TextCol(0, 1, $trans['stock_id']);
 		$rep->TextCol(1, 2, $trans['description'].($trans['inactive']==1 ? " ("._("Inactive").")" : ""), -1);
-		$rep->AmountCol(2, 3, $trans['QtyOnHand'], $dec);
+		$rep->TextCol(2, 3, $trans['units']);
+		$rep->AmountCol(3, 4, $trans['QtyOnHand'], $dec);
 		if ($check)
 		{
-			$rep->TextCol(3, 4, "_________");
+			$rep->TextCol(4, 5, "_________");
+			$rep->AmountCol(5, 6, $demandqty, $dec);
+			$rep->AmountCol(6, 7, $trans['QtyOnHand'] - $demandqty, $dec);
+			$rep->AmountCol(7, 8, $onorder, $dec);
+		}
+		else
+		{
 			$rep->AmountCol(4, 5, $demandqty, $dec);
 			$rep->AmountCol(5, 6, $trans['QtyOnHand'] - $demandqty, $dec);
 			$rep->AmountCol(6, 7, $onorder, $dec);
 		}
-		else
-		{
-			$rep->AmountCol(3, 4, $demandqty, $dec);
-			$rep->AmountCol(4, 5, $trans['QtyOnHand'] - $demandqty, $dec);
-			$rep->AmountCol(5, 6, $onorder, $dec);
-		}
 		if ($pictures)
 		{
-			$image = company_path() . '/images/' 
+			$image = company_path() . '/images/'
 				. item_img_name($trans['stock_id']) . '.jpg';
 			if (file_exists($image))
 			{

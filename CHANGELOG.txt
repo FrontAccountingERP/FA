@@ -25,7 +25,12 @@ $ /applications/generalledger.php
   /gl/accruals.php (new file)
   /gl/view/accrual_trans.php (new file)
   /includes/access_levels.inc
-  
+! Changed Std. Cost to show all decimals, and added UOM
+$ /reporting/rep301.php
+  /reporting/rep303.php
+# Wrong link to Inventory Reports
+$ /applications/inventory.php
+
 18-Jul-2010 Janusz Dobrowolski
 ! Improved key_in_foreign_table to check multiply tables
 $ /admin/db/company_db.inc
