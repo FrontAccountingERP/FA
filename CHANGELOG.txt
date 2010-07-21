@@ -19,6 +19,11 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+21-Jul-2010 Joe Hunt
+! Changed Report Statements to accept selector Outstanding Only
+$ /reporting/reports_main.php
+  /reporting/rep108.php
+  
 19-Jul-2010 Joe Hunt
 + Added Revenue / Cost Accruals to be included in core FA
 $ /applications/generalledger.php

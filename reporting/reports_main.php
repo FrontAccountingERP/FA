@@ -1,12 +1,12 @@
 <?php
 /**********************************************************************
     Copyright (C) FrontAccounting, LLC.
-	Released under the terms of the GNU General Public License, GPL, 
-	as published by the Free Software Foundation, either version 3 
+	Released under the terms of the GNU General Public License, GPL,
+	as published by the Free Software Foundation, either version 3
 	of the License, or (at your option) any later version.
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
 $path_to_root="..";
@@ -90,6 +90,7 @@ $reports->addReport(RC_CUSTOMER, 110, _('Print &Deliveries'),
 $reports->addReport(RC_CUSTOMER, 108, _('Print &Statements'),
 	array(	_('Customer') => 'CUSTOMERS_NO_FILTER',
 			_('Currency Filter') => 'CURRENCY',
+			_('Show Outstanding Only') => 'YES_NO',
 			_('Email Customers') => 'YES_NO',
 			_('Comments') => 'TEXTBOX'));
 $reports->addReport(RC_CUSTOMER, 109, _('&Print Sales Orders'),
