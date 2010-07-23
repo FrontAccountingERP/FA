@@ -171,6 +171,7 @@ if (get_post('Upgrade'))
 		display_notification(_('All companies data has been successfully updated'));
 	}	
 	unset($_SESSION['SysPrefs']); // re-read system setup
+	$_SESSION['SysPrefs'] = new sys_prefs();
 	$Ajax->activate('_page_body');
 }
 
