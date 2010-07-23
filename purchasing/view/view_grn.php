@@ -66,9 +66,20 @@ foreach ($purchase_order->line_items as $stock_item)
 	$total += $line_total;
 }
 
-$display_total = number_format2($total,user_price_dec());
-label_row(_("Total Excluding Tax/Shipping"),  $display_total,
-	"colspan=6", "nowrap align=right");
+$display_sub_tot = number_format2($total,user_price_dec());
+label_row(_("Sub Total"), $display_sub_tot,
+	"align=right colspan=6", "nowrap align=right", 1);
+
+$taxes = $purchase_order->get_taxes();
+$tax_total = display_edit_tax_items($taxes, 6, $purchase_order->tax_included, 1);
+
+$display_total = price_format(($total + $tax_total));
+
+start_row();
+label_cells(_("Amount Total"), $display_total, "colspan=6 align='right'","align='right'");
+label_cell('');
+end_row();
+
 
 end_table(1);
 
