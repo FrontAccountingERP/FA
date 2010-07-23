@@ -469,7 +469,7 @@ function get_languages_list()
 			}
 		}
 		$l['local_id'] = $id;
-		if (!isset($pkgs[$l['package']]) || $l['package'] == '')
+		if (!isset($l['package']) || $l['package'] == '' || !isset($pkgs[$l['package']]))
 			$pkgs[] = $l;
 		else
 			$pkgs[$l['package']] = array_merge($pkgs[$l['package']], $l);
