@@ -334,7 +334,7 @@ div.tabs a:hover {
 	color: #ff6666;
 }
 
-.redfg {
+.redfg, a.redfg {
 	color: red;
 	font-weight: bold;
 }
