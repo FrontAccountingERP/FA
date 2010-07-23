@@ -1332,6 +1332,7 @@ CREATE TABLE IF NOT EXISTS `0_purch_orders` (
   `into_stock_location` varchar(5) NOT NULL default '',
   `delivery_address` tinytext NOT NULL,
   `total` double NOT NULL default '0',
+  `tax_included` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`order_no`),
   KEY `ord_date` (`ord_date`)
 ) TYPE=InnoDB  AUTO_INCREMENT=3 ;
@@ -1340,8 +1341,8 @@ CREATE TABLE IF NOT EXISTS `0_purch_orders` (
 -- Dumping data for table `0_purch_orders`
 --
 
-INSERT INTO `0_purch_orders` VALUES(1, 2, '', '2009-06-01', '1', '', 'DEF', 'Delivery 1\nDelivery 2\nDelivery 3', 0);
-INSERT INTO `0_purch_orders` VALUES(2, 3, '', '2009-06-21', '2', '', 'DEF', 'Delivery 1\nDelivery 2\nDelivery 3', 0);
+INSERT INTO `0_purch_orders` VALUES(1, 2, '', '2009-06-01', '1', '', 'DEF', 'Delivery 1\nDelivery 2\nDelivery 3', 0, 0);
+INSERT INTO `0_purch_orders` VALUES(2, 3, '', '2009-06-21', '2', '', 'DEF', 'Delivery 1\nDelivery 2\nDelivery 3', 0, 0);
 
 -- --------------------------------------------------------
 
@@ -1975,6 +1976,7 @@ CREATE TABLE IF NOT EXISTS `0_supp_trans` (
   `ov_gst` double NOT NULL default '0',
   `rate` double NOT NULL default '1',
   `alloc` double NOT NULL default '0',
+  `tax_included` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`type`,`trans_no`),
   KEY `supplier_id` (`supplier_id`),
   KEY `SupplierID_2` (`supplier_id`,`supp_reference`),
@@ -1986,9 +1988,9 @@ CREATE TABLE IF NOT EXISTS `0_supp_trans` (
 -- Dumping data for table `0_supp_trans`
 --
 
-INSERT INTO `0_supp_trans` VALUES(7, 20, 2, '1', '5t', '2009-06-21', '2009-07-01', 3300, 0, 165, 1, 3465);
-INSERT INTO `0_supp_trans` VALUES(8, 20, 2, '2', 'cc', '2009-06-21', '2009-07-01', 20, 0, 0, 1, 0);
-INSERT INTO `0_supp_trans` VALUES(4, 22, 2, '1', '', '2009-06-21', '2009-06-21', -3465, 0, 0, 1, 3465);
+INSERT INTO `0_supp_trans` VALUES(7, 20, 2, '1', '5t', '2009-06-21', '2009-07-01', 3300, 0, 165, 1, 3465, 0);
+INSERT INTO `0_supp_trans` VALUES(8, 20, 2, '2', 'cc', '2009-06-21', '2009-07-01', 20, 0, 0, 1, 0, 0);
+INSERT INTO `0_supp_trans` VALUES(4, 22, 2, '1', '', '2009-06-21', '2009-06-21', -3465, 0, 0, 1, 3465, 0);
 
 -- --------------------------------------------------------
 

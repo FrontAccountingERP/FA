@@ -1165,6 +1165,7 @@ CREATE TABLE IF NOT EXISTS `0_purch_orders` (
   `into_stock_location` varchar(5) NOT NULL default '',
   `delivery_address` tinytext NOT NULL,
   `total` double NOT NULL default '0',
+  `tax_included` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`order_no`),
   KEY `ord_date` (`ord_date`)
 ) TYPE=InnoDB AUTO_INCREMENT=1 ;
@@ -1739,6 +1740,7 @@ CREATE TABLE IF NOT EXISTS `0_supp_trans` (
   `ov_gst` double NOT NULL default '0',
   `rate` double NOT NULL default '1',
   `alloc` double NOT NULL default '0',
+  `tax_included` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`type`,`trans_no`),
   KEY `supplier_id` (`supplier_id`),
   KEY `SupplierID_2` (`supplier_id`,`supp_reference`),
