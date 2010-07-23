@@ -19,6 +19,50 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+23-Jul-2010 Janusz Dobrowolski
++ Added tax information display
+  /purchasing/view/view_grn.php
+  /purchasing/view/view_po.php
++ Added option for tax included prices.
+$ /purchasing/includes/db/suppliers_db.inc
+  /purchasing/manage/suppliers.php
++ Added support for transactions with tax included prices
+$ /purchasing/po_entry_items.php
+  /purchasing/po_receive_items.php
+  /purchasing/includes/po_class.inc
+  /purchasing/includes/supp_trans_class.inc
+  /purchasing/includes/db/grn_db.inc
+  /purchasing/includes/db/invoice_db.inc
+  /purchasing/includes/db/po_db.inc
+  /purchasing/includes/db/supp_trans_db.inc
+  /purchasing/includes/ui/invoice_ui.inc
+  /purchasing/includes/ui/po_ui.inc
++ Added GRNs to supplier transaction inquiry
+  /purchasing/inquiry/supplier_inquiry.php
+! Added upgrade from 2.3beta to 2.3RC
+  /sql/alter2.3.php
+  /sql/alter2.3.sql
+  /sql/en_US-demo.sql
+  /sql/en_US-new.sql
+! Versions information moved to separate file.
+$ /version.php (new) 
+  /config.default.php
+  /includes/session.inc
+! Fixed item list buttons position.
+$ /sales/includes/ui/sales_order_ui.inc
+# Fixed credit links colors
+$ /themes/aqua/default.css
+  /themes/cool/default.css
+  /themes/default/default.css
+# SysPrefs restoration after upgrade.
+$ /admin/inst_upgrade.php
+# Warning clenaup
+$ /includes/packages.inc
++ Supplier transactions list added.
+$ /includes/ui/ui_lists.inc
+# Fixed tax footer descriptions
+$ /includes/ui/ui_view.inc
+
 21-Jul-2010 Joe Hunt
 ! Changed Report Statements to accept selector Outstanding Only
 $ /reporting/reports_main.php
