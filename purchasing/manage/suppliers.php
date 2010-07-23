@@ -54,6 +54,7 @@ function supplier_settings(&$supplier_id)
 		$_POST['payment_terms']  = $myrow["payment_terms"];
 		$_POST['credit_limit']  = price_format($myrow["credit_limit"]);
 		$_POST['tax_group_id'] = $myrow["tax_group_id"];
+		$_POST['tax_included'] = $myrow["tax_included"];
 		$_POST['payable_account']  = $myrow["payable_account"];
 		$_POST['purchase_account']  = $myrow["purchase_account"];
 		$_POST['payment_discount_account'] = $myrow["payment_discount_account"];
@@ -66,6 +67,7 @@ function supplier_settings(&$supplier_id)
 			$_POST['tax_group_id'] = $_POST['website'] = $_POST['supp_account_no'] = $_POST['notes'] = '';
 		$_POST['dimension_id'] = 0;
 		$_POST['dimension2_id'] = 0;
+		$_POST['tax_included'] = 0;
 		$_POST['sales_type'] = -1;
 		$_POST['gst_no'] = $_POST['bank_account'] = '';
 		$_POST['payment_terms']  = '';
@@ -110,7 +112,16 @@ function supplier_settings(&$supplier_id)
 	text_row(_("Bank Name/Account:"), 'bank_account', null, 42, 40);
 	amount_row(_("Credit Limit:"), 'credit_limit', null);
 	payment_terms_list_row(_("Payment Terms:"), 'payment_terms', null);
-
+	//
+	// tax_included option from supplier record is used directly in update_average_cost() function,
+	// therefore we can't edit the option after any transaction waas done for the supplier.
+	//
+	if (is_new_supplier($supplier_id))
+		check_row(_("Prices contain tax included:"), 'tax_included');
+	else {
+		hidden('tax_included');
+		label_row(_("Prices contain tax included:"), $_POST['tax_included'] ? _('Yes') : _('No'));
+	}
 	table_section_title(_("Accounts"));
 	gl_all_accounts_list_row(_("Accounts Payable Account:"), 'payable_account', $_POST['payable_account']);
 	gl_all_accounts_list_row(_("Purchase Account:"), 'purchase_account', $_POST['purchase_account']);
@@ -194,7 +205,7 @@ if (isset($_POST['submit']))
 				$_POST['website'], $_POST['supp_account_no'], $_POST['bank_account'], 
 				input_num('credit_limit', 0), $_POST['dimension_id'], $_POST['dimension2_id'], $_POST['curr_code'],
 				$_POST['payment_terms'], $_POST['payable_account'], $_POST['purchase_account'], $_POST['payment_discount_account'],
-				$_POST['notes'], $_POST['tax_group_id']);
+				$_POST['notes'], $_POST['tax_group_id'], check_value('tax_included'));
 			update_record_status($_POST['supplier_id'], $_POST['inactive'],
 				'suppliers', 'supplier_id');
 
@@ -207,7 +218,7 @@ if (isset($_POST['submit']))
 				$_POST['gst_no'], $_POST['website'], $_POST['supp_account_no'], $_POST['bank_account'], 
 				input_num('credit_limit',0), $_POST['dimension_id'], $_POST['dimension2_id'],
 				$_POST['curr_code'], $_POST['payment_terms'], $_POST['payable_account'], $_POST['purchase_account'],
-				$_POST['payment_discount_account'], $_POST['notes'], $_POST['tax_group_id']);
+				$_POST['payment_discount_account'], $_POST['notes'], $_POST['tax_group_id'], check_value('tax_included'));
 
 			$supplier_id = $_POST['supplier_id'] = db_insert_id();
 
