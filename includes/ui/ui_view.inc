@@ -407,8 +407,8 @@ function display_customer_trans_tax_details($tax_items, $columns)
         		$first = false;
         	}
         	else
-        		label_row(_("Included") . " " . $tax_type_name .
-        			_("Amount") . ": $tax", "", "colspan=$columns align=right", "align=right");
+        		label_row(_("Included") . " " . $tax_type_name
+        			. ": $tax", "", "colspan=$columns align=right", "align=right");
         }			
     	else
         	label_row($tax_type_name, $tax, "colspan=$columns align=right", "align=right");
@@ -423,8 +423,8 @@ function display_supp_trans_tax_details($tax_items, $columns)
     {
     	$tax = number_format2(abs($tax_item['amount']),user_price_dec());
     	if ($tax_item['included_in_price'])
-        	label_row(_("Included") . " " . $tax_item['tax_type_name'] . " (" . $tax_item['rate'] . "%) " .
-        		_("Amount") . ": $tax", "colspan=$columns align=right", "align=right");
+        	label_row(_("Included") . " " . $tax_item['tax_type_name'] . " (" . $tax_item['rate'] . "%) "
+        		. ": $tax", '', "colspan=$columns align=right", "align=right");
     	else
         	label_row($tax_item['tax_type_name'] . " (" . $tax_item['rate'] . "%)",
         		$tax, "colspan=$columns align=right", "align=right");
@@ -441,8 +441,8 @@ function display_edit_tax_items($taxes, $columns, $tax_included, $leftspan=0)
     {
     	if ($tax_included)
     	{
-        	label_row(_("Included") . " " . $taxitem['tax_type_name'] . " (" . $taxitem['rate'] . "%) " .
-        		_("Amount:") . " " . number_format2($taxitem['Value'],user_price_dec()), "", "colspan=$columns align=right", "align=right",$leftspan);
+        	label_row(_("Included") . " " . $taxitem['tax_type_name'] . " (" . $taxitem['rate'] . "%) "
+        		. " " . number_format2($taxitem['Value'],user_price_dec()), "", "colspan=$columns align=right", "align=right",$leftspan);
     	}
     	else
     	{
