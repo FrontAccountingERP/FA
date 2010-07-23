@@ -49,7 +49,7 @@ supplier_list_cells(_("Select a supplier:"), 'supplier_id', null, true);
 date_cells(_("From:"), 'TransAfterDate', '', null, -30);
 date_cells(_("To:"), 'TransToDate');
 
-supp_allocations_list_cell("filterType", null);
+supp_transactions_list_cell("filterType", null, true);
 
 submit_cells('RefreshInquiry', _("Search"),'',_('Refresh Inquiry'), 'default');
 
@@ -133,7 +133,7 @@ function credit_link($row)
 function fmt_debit($row)
 {
 	$value = $row["TotalAmount"];
-	return $value>=0 ? price_format($value) : '';
+	return $value>0 ? price_format($value) : '';
 
 }
 
