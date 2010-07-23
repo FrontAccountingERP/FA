@@ -26,6 +26,7 @@ class supp_trans
 	
 	var $tax_description;
 	var $tax_group_id;
+	var $tax_included;
 	
 	var $trans_type;	// invoice or credit
 
@@ -54,7 +55,7 @@ class supp_trans
 	{
 		$this->grn_items[$grn_item_id] = new grn_item($grn_item_id, $po_detail_item, 
 			$item_code, $item_description, $qty_recd, $prev_quantity_inv, $this_quantity_inv, 
-			$order_price, $chg_price, $std_cost_unit, $gl_code);
+			$order_price, $chg_price, $std_cost_unit, $gl_code, $this->tax_included);
 		return 1;
 	}
 
@@ -105,14 +106,15 @@ class supp_trans
         foreach ($this->grn_items as $ln_itm) 
         {
         	$items[] = $ln_itm->item_code;
-        	$prices[] =round( ($ln_itm->this_quantity_inv * $ln_itm->taxfree_charge_price($tax_group_id, $tax_group)),
+//        	$prices[] =round( ($ln_itm->this_quantity_inv * $ln_itm->taxfree_charge_price($tax_group_id, $tax_group)),
+        	$prices[] =round( ($ln_itm->this_quantity_inv * $ln_itm->chg_price),
 			 user_price_dec());
         }
 
         if ($tax_group_id == null)
-        	$tax_group_id = $this->tax_group_id;        	
-        
-        $taxes = get_tax_for_items($items, $prices, $shipping_cost, $tax_group_id);
+        	$tax_group_id = $this->tax_group_id;
+        $taxes = get_tax_for_items($items, $prices, $shipping_cost, $tax_group_id, 
+        	$this->tax_included);
 
 ///////////////// Joe Hunt 2009.08.18
 
@@ -130,8 +132,10 @@ class supp_trans
 ////////////////		
         return $taxes;
     }		
-    
-    function get_total_charged($tax_group_id=null)
+	//
+	//	Returns total invoice amount without taxes.
+	//
+    function get_total_taxfree($tax_group_id=null)
     {
     	$total = 0;
     	
@@ -153,6 +157,20 @@ class supp_trans
    		return $total;
     }
 
+	function get_items_total()
+	{
+		$total = 0;
+
+		foreach ($this->grn_items as $ln_itm)
+			$total += round($ln_itm->this_quantity_inv * $ln_itm->chg_price, user_price_dec());
+
+		return $total;
+
+		foreach ($this->gl_codes as $gl_line)
+		{
+			$total += $gl_line->amount;
+		}
+	}
 } /* end of class defintion */
 
 class grn_item 
@@ -172,10 +190,11 @@ all the info to do the necessary entries without looking up ie additional querie
 	var $chg_price;
 	var $std_cost_unit;
 	var $gl_code;
+	var $tax_included;
 
 	function grn_item ($id, $po_detail_item, $item_code, $item_description, $qty_recd, 
 		$prev_quantity_inv, $this_quantity_inv, $order_price, $chg_price,
-		$std_cost_unit, $gl_code)
+		$std_cost_unit, $gl_code, $tax_included)
 	{
 
 		$this->id = $id;
@@ -189,12 +208,13 @@ all the info to do the necessary entries without looking up ie additional querie
 		$this->chg_price = $chg_price;
 		$this->std_cost_unit = $std_cost_unit;
 		$this->gl_code = $gl_code;
+		$this->tax_included = $tax_included;
 	}
 	
 	function full_charge_price($tax_group_id, $tax_group=null)
 	{
 		return get_full_price_for_item($this->item_code, 
-		  $this->chg_price, $tax_group_id, 0, $tax_group);
+		  $this->chg_price, $tax_group_id, $this->tax_included, $tax_group);
 	}
 	
 	function taxfree_charge_price($tax_group_id, $tax_group=null)
@@ -202,7 +222,7 @@ all the info to do the necessary entries without looking up ie additional querie
 //		if ($tax_group_id==null)
 //			return $this->chg_price;
 		return get_tax_free_price_for_item($this->item_code, $this->chg_price, 
-		  $tax_group_id, 0, $tax_group);
+		  $tax_group_id, $this->tax_included, $tax_group);
 	}
 }
 

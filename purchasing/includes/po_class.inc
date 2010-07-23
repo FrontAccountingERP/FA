@@ -29,6 +29,8 @@ class purch_order
 	var $lines_on_order = 0;
 	var $credit;
 	var $tax_group_id;
+	var $tax_group_array = null; // saves db queries
+	var $tax_included; // type of prices
 	
 	var $reference;
 	
@@ -38,7 +40,17 @@ class purch_order
 		$this->line_items = array();
 		$this->lines_on_order = $this->order_no = $this->supplier_id = 0;
 	}
-
+	
+	function set_supplier($supplier_id, $supplier_name, $curr_code, $tax_group_id, $tax_included)
+	{
+		$this->supplier_id = $supplier_id;
+		$this->supplier_name = $supplier_name;
+		$this->curr_code = $curr_code;
+		$this->tax_group_id = $tax_group_id;
+		$this->tax_included = $tax_included;
+		$this->tax_group_array = get_tax_group_items_as_array($tax_group_id);
+	}
+	
 	function add_to_order($line_no, $stock_id, $qty, $item_descr, $price, $uom, $req_del_date, $qty_inv, $qty_recd)
 	{
 		if ($qty != 0 && isset($qty))
@@ -110,6 +122,30 @@ class purch_order
 		}
 		return 0;
 	}
+
+	function get_taxes($shipping_cost=null)
+	{
+		$items = array();
+		$prices = array();
+		if($shipping_cost==null)
+			$shipping_cost = 0;//$this->freight_cost;
+
+		foreach ($this->line_items as $ln_itm) {
+			$items[] = $ln_itm->stock_id;
+			$prices[] = round($ln_itm->quantity * $ln_itm->price,  user_price_dec());
+		}
+		$taxes = get_tax_for_items($items, $prices, $shipping_cost,
+		  $this->tax_group_id, $this->tax_included,  $this->tax_group_array);
+
+    	// Adjustment for swiss franken, we always have 5 rappen = 1/20 franken
+	    if ($this->curr_code == 'CHF') {
+			$val = $taxes['1']['Value'];
+			$val1 = (floatval((intval(round(($val*20),0)))/20));
+			$taxes['1']['Value'] = $val1;
+		} 
+		return $taxes;
+	}
+
 	/*
 		Returns order value including all taxes
 	*/
@@ -125,11 +161,13 @@ class purch_order
 			$total += $value;
 		}
 
-		$taxes = get_tax_for_items($items, $prices, 0, $this->tax_group_id);
+		if (!$this->tax_included ) {
+			$taxes = get_tax_for_items($items, $prices, 0, $this->tax_group_id,
+			$this->tax_included,  $this->tax_group_array);
 
-		foreach($taxes as $tax)
-			$total += round($tax['Value'], $dec);
-
+			foreach($taxes as $tax)
+				$total += round($tax['Value'], $dec);
+		}
 		return $total;
 	}
 
@@ -146,6 +184,8 @@ class po_line_details
 	var $price;
 	var $units;
 	var $req_del_date;
+	var $tax_type;
+	var $tax_type_name;
 
 	var $quantity;		// current/entry quantity of PO line
 	var $qty_inv;	// quantity already invoiced against this line
@@ -175,6 +215,8 @@ class po_line_details
 		$this->req_del_date = $req_del_date;
 		$this->price = $prc;
 //		$this->units = $uom;
+		$this->tax_type = $item_row["tax_type_id"];
+		$this->tax_type_name = $item_row["tax_type_name"];
 		$this->units = $item_row["units"];
 		$this->qty_received = $qty_recd;
 		$this->qty_inv = $qty_inv;

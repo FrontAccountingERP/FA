@@ -42,7 +42,7 @@ function copy_to_cart()
 
 function get_supplier_details_to_order(&$order, $supplier_id)
 {
-	$sql = "SELECT curr_code, supp_name, tax_group_id,
+	$sql = "SELECT curr_code, supp_name, tax_group_id, supp.tax_included,
 			supp.credit_limit - Sum(IFNULL(IF(trans.type=".ST_SUPPCREDIT.", -1, 1) 
 				* (ov_amount + ov_gst + ov_discount),0)) as cur_credit
 		FROM ".TB_PREF."suppliers supp
@@ -55,10 +55,12 @@ function get_supplier_details_to_order(&$order, $supplier_id)
 
 	$myrow = db_fetch($result);
 	$order->credit = $myrow["cur_credit"];
-	$order->tax_group_id = $myrow["tax_group_id"];
-	$order->curr_code = $_POST['curr_code'] = $myrow["curr_code"];
-	$order->supplier_name = $_POST['supplier_name'] = $myrow["supp_name"];
-	$order->supplier_id = $_POST['supplier_id'] = $supplier_id;
+	$_POST['supplier_id'] = $supplier_id;
+	$_POST['supplier_name'] = $myrow["supp_name"];
+	$_POST['curr_code'] = $myrow["curr_code"];
+
+	$order->set_supplier($supplier_id, $myrow["supp_name"], $myrow["curr_code"], 
+		$myrow["tax_group_id"], $myrow["tax_included"]);
 }
 
 //---------------------------------------------------------------------------------------------------
@@ -207,7 +209,7 @@ function display_po_items(&$order, $editable=true)
 
    	$th = array(_("Item Code"), _("Item Description"), _("Quantity"),
 		_("Received"), _("Unit"),
-   		_("Required Delivery Date"), _("Price"), _("Line Total"), "");
+   		_("Required Delivery Date"), $order->tax_included ? _("Price after Tax") : _("Price before Tax"), _("Line Total"), "");
 	if ($order->trans_type != ST_PURCHORDER)
 		array_remove($th, 5);
 		
@@ -252,10 +254,25 @@ function display_po_items(&$order, $editable=true)
 	if ($id==-1 && $editable)
 		po_item_controls($order, $k);
 
-    $display_total = price_format($total);
-    label_row(_("Total Excluding Shipping/Tax"), $display_total, "colspan="
-    	.(count($order->line_items) ? 7:6)." align=right",
-    	"nowrap align=right", 2);
+	$colspan = count($th)-2;
+	if (count($order->line_items))
+		$colspan--;
+
+	$display_sub_total = price_format($total);
+
+	label_row(_("Sub-total"), $display_sub_total, "colspan=$colspan align=right","align=right", 2);
+
+	$taxes = $order->get_taxes(input_num('freight_cost'));
+	
+	$tax_total = display_edit_tax_items($taxes, $colspan, $order->tax_included, 2);
+
+	$display_total = price_format(($total + input_num('freight_cost') + $tax_total));
+
+	start_row();
+	label_cells(_("Amount Total"), $display_total, "colspan=$colspan align='right'","align='right'");
+	$order->order_no ? submit_cells('update', _("Update"), "colspan=2 align='center'", _("Refresh"), true)
+		: label_cell('', "colspan=2");
+	end_row();
 
 	end_table(1);
 	div_end();
@@ -397,7 +414,7 @@ function po_item_controls(&$order, &$rowcounter, $line_no=-1)
 	}
 	else
 	{
-		submit_cells('EnterLine', _("Add Item"), "colspan=2",
+		submit_cells('EnterLine', _("Add Item"), "colspan=2 align='center'",
 		    _('Add new item to document'), true);
 	}
 

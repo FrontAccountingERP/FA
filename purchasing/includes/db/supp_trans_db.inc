@@ -216,8 +216,36 @@ function get_sql_for_supplier_inquiry()
      	AND trans.tran_date >= '$date_after'
     	AND trans.tran_date <= '$date_to'
 		AND trans.ov_amount != 0";	// exclude voided transactions
-   	if ($_POST['supplier_id'] != ALL_TEXT)
+
+	$sql2 = "SELECT ".ST_SUPPRECEIVE." as type, 
+		trans.id as trans_no,
+		trans.reference, 
+		supplier.supp_name, 
+		'' as supp_reference,
+    	delivery_date as tran_date, 
+		'' as due_date,
+		supplier.curr_code, 
+    	'' AS TotalAmount,
+		'' AS Allocated,
+		0 as OverDue,
+    	1 as Settled
+    	FROM ".TB_PREF."grn_batch as trans, ".TB_PREF."suppliers as supplier
+    	WHERE supplier.supplier_id = trans.supplier_id
+     	AND trans.delivery_date >= '$date_after'
+    	AND trans.delivery_date <= '$date_to'";
+
+   	if ($_POST['supplier_id'] != ALL_TEXT) {
    		$sql .= " AND trans.supplier_id = ".db_escape($_POST['supplier_id']);
+   		$sql2 .= " AND trans.supplier_id = ".db_escape($_POST['supplier_id']);
+	}
+	if (($_POST['filterType'] == '6')) 
+	{
+			$sql = $sql2;
+	} 
+	elseif (!isset($_POST['filterType']) || $_POST['filterType'] == ALL_TEXT || $_POST['filterType'] == '6') {
+		$sql = "SELECT * FROM (($sql) UNION ($sql2)) as tr";
+   	}
+
    	if (isset($_POST['filterType']) && $_POST['filterType'] != ALL_TEXT)
    	{
    		if (($_POST['filterType'] == '1')) 

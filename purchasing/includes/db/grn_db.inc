@@ -10,13 +10,22 @@
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
 //------------------- update average material cost ------------------------------------------ Joe Hunt Mar-03-2008
-
 function update_average_material_cost($supplier, $stock_id, $price, $qty, $date, $adj_only=false)
 {
+	// probably this function should be optimized
+	// passing transaction cart as argument. This would
+	// save a couple of db calls like get_supplier()
+	
+	$supp = get_supplier($supplier);
 	if ($supplier != null)
-		$currency = get_supplier_currency($supplier);
+		$currency = $supp['curr_code'];
 	else
 		$currency = null;
+
+	if ($supp['tax_included'])
+		$price = get_tax_free_price_for_item($stock_id, $price, $supp['tax_group_id'],
+			$supp['tax_included']);
+
 	$dec = user_price_dec();
 	price_decimal_format($price, $dec);
 	$price = round2($price, $dec);

@@ -355,7 +355,6 @@ function can_commit()
 		set_focus('delivery_address');
 		return false;
 	} 
-	
 	if (get_post('StkLocation') == '')
 	{
 		display_error(_("There is no location specified to move any items into."));
@@ -420,6 +419,7 @@ function handle_commit_order()
 			$inv->tran_date = $cart->orig_order_date;
 			$inv->reference = $ref;
 			$inv->supp_reference = $cart->supp_ref;
+			$inv->tax_included = $cart->tax_included;
 			$supp = get_supplier($cart->supplier_id);
 			$inv->tax_group_id = $supp['tax_group_id'];
 //			$inv->ov_discount 'this isn't used at all'

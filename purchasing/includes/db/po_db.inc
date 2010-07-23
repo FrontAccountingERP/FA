@@ -29,7 +29,8 @@ function add_po(&$po_obj)
 	begin_transaction();
 
      /*Insert to purchase order header record */
-     $sql = "INSERT INTO ".TB_PREF."purch_orders (supplier_id, Comments, ord_date, reference, requisition_no, into_stock_location, delivery_address, total) VALUES(";
+     $sql = "INSERT INTO ".TB_PREF."purch_orders (supplier_id, Comments, ord_date, reference, 
+     	requisition_no, into_stock_location, delivery_address, total, tax_included) VALUES(";
      $sql .= db_escape($po_obj->supplier_id) . "," .
          db_escape($po_obj->Comments) . ",'" .
          date2sql($po_obj->orig_order_date) . "', " .
@@ -37,7 +38,8 @@ function add_po(&$po_obj)
          db_escape($po_obj->supp_ref) . ", " .
          db_escape($po_obj->Location) . ", " .
          db_escape($po_obj->delivery_address) . ", " .
-         db_escape($po_obj->get_trans_total()) . ")";
+         db_escape($po_obj->get_trans_total()). ", " .
+         db_escape($po_obj->tax_included) . ")";
 
 	db_query($sql, "The purchase order header record could not be inserted");
 
@@ -79,7 +81,8 @@ function update_po(&$po_obj)
 		into_stock_location=" . db_escape($po_obj->Location). ",
 		ord_date='" . date2sql($po_obj->orig_order_date) . "',
 		delivery_address=" . db_escape($po_obj->delivery_address).",
-		total=". db_escape($po_obj->get_trans_total());
+		total=". db_escape($po_obj->get_trans_total()).",
+		tax_included=". db_escape($po_obj->tax_included);
     $sql .= " WHERE order_no = " . $po_obj->order_no;
 	db_query($sql, "The purchase order could not be updated");
 
@@ -130,10 +133,10 @@ function read_po_header($order_no, &$order)
       	$myrow = db_fetch($result);
 
       	$order->order_no = $order_no;
-      	$order->supplier_id = $myrow["supplier_id"];
-      	$order->supplier_name = $myrow["supp_name"];
-      	$order->curr_code = $myrow["curr_code"];
-		$order->tax_group_id = $myrow['tax_group_id'];
+      	
+      	$order->set_supplier($myrow["supplier_id"], $myrow["supp_name"], $myrow["curr_code"],
+      		$myrow['tax_group_id'], $myrow["tax_included"]);
+
 		$order->credit = get_current_supp_credit($order->supplier_id);
 
       	$order->orig_order_date = sql2date($myrow["ord_date"]);
