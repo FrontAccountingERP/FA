@@ -1917,6 +1917,25 @@ function supp_allocations_list_cell($name, $selected=null)
 	echo "</td>\n";
 }
 
+function supp_transactions_list_cell($name, $selected=null)
+{
+	global $all_items;
+
+	echo "<td>\n";
+	$allocs = array( 
+		$all_items=>_("All Types"),
+		'6'=>_("GRNs"),
+		'1'=> _("Invoices"),
+		'2'=> _("Overdue Invoices"),
+		'3' => _("Payments"),
+		'4' => _("Credit Notes"),
+		'5' => _("Overdue Credit Notes")
+	);
+
+	echo array_selector($name, $selected, $allocs);
+	echo "</td>\n";
+}
+
 function policy_list_cells($label, $name, $selected=null)
 {
 	if ($label != null)
