@@ -201,6 +201,7 @@ if (file_exists($path_to_root . "/lang/".$_SESSION['language']->code."/locale.in
 
 include_once($path_to_root . "/includes/access_levels.inc");
 include_once($path_to_root . "/config.php");
+include_once($path_to_root . "/version.php");
 include_once($path_to_root . "/includes/main.inc");
 
 // Ajax communication object

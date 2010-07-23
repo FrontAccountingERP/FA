@@ -56,22 +56,7 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 	}		
 	// Main Title
 	$app_title = "FrontAccounting";
-	// application version
-	$version 		= "2.3 Beta";
-	 // src-data compatibility check. Do not change.
-	$core_version = "2.3";
 
-	// Extension packages repository
-	$FA_repo_version = '2.3';
-
-	$repo_auth = array(
-		 'login' => 'anonymous',
-		 'pass' => 'password',
-	);
-	
-	$repository = 'http://'.$repo_auth['login'].':'.$repo_auth['pass'].'@'.'repo.frontaccounting.eu'
-		.'/index.php?path=';
-		
 	// Build for development purposes
 	$build_version 	= date("d.m.Y", filemtime("$path_to_root/CHANGELOG.txt"));
 
