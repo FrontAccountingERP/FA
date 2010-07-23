@@ -240,7 +240,7 @@ function display_order_summary($title, &$order, $editable_items=false)
 
 	start_row();
 	label_cells(_("Amount Total"), $display_total, "colspan=$colspan align=right","align=right");
-	submit_cells('update', _("Update"), "colspan=2", _("Refresh"), true);
+	submit_cells('update', _("Update"), "colspan=2 align='center'", _("Refresh"), true);
 	end_row();
 
 	end_table();
@@ -558,7 +558,7 @@ function sales_order_item_controls(&$order, &$rowcounter, $line_no=-1)
 	}
 	else
 	{
-		submit_cells('AddItem', _("Add Item"), "colspan=2",
+		submit_cells('AddItem', _("Add Item"), "colspan=2 align='center'",
 		    _('Add new item to document'), true);
 	}
 
