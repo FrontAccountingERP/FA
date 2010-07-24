@@ -151,7 +151,7 @@ if (isset($linetype))
 		$doc_TOTAL_INVOICE = $doctype ==ST_SALESINVOICE ? _("TOTAL INVOICE") : _("TOTAL CREDIT");
 		$doc_TOTAL_ORDER = _("TOTAL ORDER EX VAT");
 		$doc_TOTAL_ORDER2 = _("TOTAL ORDER VAT INCL.");
-		$doc_TOTAL_PO = _("TOTAL PO EX VAT");
+		$doc_TOTAL_PO = _("TOTAL PO");
 		$doc_TOTAL_DELIVERY = _("TOTAL DELIVERY INCL. VAT");
 	}
 	elseif ($doctype == ST_SUPPAYMENT || $doctype == ST_CUSTPAYMENT)

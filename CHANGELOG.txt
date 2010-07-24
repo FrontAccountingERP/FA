@@ -19,6 +19,11 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+24-Jul-2010 Joe Hunt
+! Changed so Purchase Order also print taxes.
+$ /reporting/rep209.php
+  /reporting/doctype.inc
+  
 23-Jul-2010 Janusz Dobrowolski
 + Added tax information display
   /purchasing/view/view_grn.php
