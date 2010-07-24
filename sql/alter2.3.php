@@ -18,6 +18,7 @@ class fa2_3 {
 	
 	function fa2_3() {
 		$this->description = _('Upgrade from version 2.2 to 2.3');
+		$this->preconf = $this->fix_extensions();
 	}
 	
 	//
@@ -27,6 +28,9 @@ class fa2_3 {
 	function install($pref, $force) 
 	{
 		global $core_version;
+
+		if (!$this->preconf)
+			return false;
 
 		if (!$this->beta) {
 			// all specials below are already done on 2.3beta
@@ -256,6 +260,80 @@ class fa2_3 {
 			}
 		}
 	return true;
+	}
+	
+	function fix_extensions()
+	{
+		global $path_to_root, $next_extension_id;
+		
+		$installed_extensions= get_company_extensions();
+		
+		if (!isset($next_extension_id))
+			$next_extension_id = 1;
+		$new_exts = array();
+		
+		foreach($installed_extensions as $i => $ext)
+		{
+			if (isset($ext['title'])) // old type entry
+			{
+				if ($ext['type'] == 'module')
+					$new['type'] = 'extension';
+					$new['tabs'][] = array(
+						'url' => $ext['filename'],
+						'access' => isset($ext['access']) ? $ext['access'] : 'SA_OPEN',
+						'tab_id' => $ext['tab'],
+						'title' => $ext['title']
+					);
+					$new['path'] = $ext['path'];
+				}
+				else // plugin
+				{
+					$new['type'] = 'extension';
+					$new['tabs'] = array();
+					$new['path'] = 'modules/'.$ext['path'];
+					$new['entries'][] = array(
+						'url' => $ext['filename'],
+						'access' => isset($ext['access']) ? $ext['access'] : 'SA_OPEN',
+						'tab_id' => $ext['tab'],
+						'title' => $ext['title']
+					);
+				}
+				if (isset($ext['acc_file']))
+					$new['acc_file'] = $ext['acc_file'];
+				$new['name'] = $ext['name']; // albo access_string(title)
+				$new['package'] = $new['package'] = '';
+				$new['active'] = 1;
+
+				$new_exts[$i] = $new;
+			}
+		}
+		// Add non-standard themes
+		$path = $path_to_root.'/themes/';
+		$themes = array();
+		$themedir = opendir($path);
+		while (false !== ($fname = readdir($themedir)))
+		{
+			if ($fname!='.' && $fname!='..' && $fname!='CVS' && is_dir($path.$fname)
+				&& !in_array($fname, array('aqua', 'cool', 'default')))
+			{
+				foreach($installed_extensions as $ext)  
+					if ($ext['path'] == 'themes/'.$fname) // skip if theme is already listed
+						continue 2;
+				$new_exts[$next_extension_id++] = array(
+					'name' => 'Theme '. ucwords($fname),
+					'package' => $fname,
+					'type' => 'theme',
+					'active' => true,
+					'path' => 'themes/'.$fname
+				);
+			}
+		}
+		closedir($themedir);
+
+		if (count($new_exts)) {
+			return update_extensions($new_exts);
+		} else
+			return true;
 	}
 }
 
