@@ -19,6 +19,14 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+24-Jul-2010 Janusz Dobrowolski
+# Upgrade routines for extensions configuration
+  /sql/alter2.3.php
+# Cleanup
+$ /admin/inst_module.php
+  /includes/current_user.inc
+  /includes/packages.inc
+
 24-Jul-2010 Joe Hunt
 ! Changed so Purchase Order also print taxes.
 $ /reporting/rep209.php
