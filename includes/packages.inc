@@ -14,14 +14,6 @@ include_once($path_to_root. "/includes/archive.inc");
 define('PKG_CACHE_PATH', $path_to_root.'/modules/_cache');
 define('PUBKEY_PATH', $path_to_root);
 define('REPO_URL', "$repository/$FA_repo_version");
-/*
-$pkg_data_basedir = array(
-	'language'	=> '/lang/', 
-//	'module'	=> '/', 
-	'extension'	=> '/modules/', 
-//	'plugin'	=> '/modules/',
-	'theme'		=> '/themes/');
-*/
 //
 // FrontAccounting package class	
 //
@@ -463,7 +455,7 @@ function get_languages_list()
 		$list = array_search_keys($l['code'], $pkgs, 'code');	// get all packages with this code
 		foreach ($list as $name) {
 			if ($l['encoding'] == $pkgs[$name]['encoding']) {	// if the same encoding
-				$pkgs[$name]['version'] = $l['version'];		// set installed version
+				$pkgs[$name]['version'] = @$l['version'];		// set installed version
 				$pkgs[$name]['local_id'] = $id;		// index in installed_languages
 				continue 2;
 			}
@@ -529,7 +521,7 @@ function get_themes_list()
 	$local = get_company_extensions();
 	
 	foreach($local as $extno => $ext) {
-		if (isset($pkgs[$ext['package']])) {
+		if (isset($pkgs[@$ext['package']])) {
 			$ext['local_id'] = $extno;
 			$pkgs[$ext['package']] = array_merge($pkgs[$ext['package']], $ext);
 		}
@@ -553,7 +545,7 @@ function install_language($pkg_name)
 		if ($i === null)
 			$i = count($installed_languages);
 		else {	// remove another already installed package for this language 
-			$old_pkg = $installed_languages[$i]['package'];
+			$old_pkg = @$installed_languages[$i]['package'];
 			if ($old_pkg && ($pkg['Package'] != $old_pkg))
 				uninstall_package($old_pkg);
 		}

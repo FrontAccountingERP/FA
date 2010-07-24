@@ -47,7 +47,7 @@ function check_data($id, $exts)
 		return false;
 	}
 	if ($id == -1 && !is_uploaded_file($_FILES['uploadfile']['tmp_name'])) {
-		display_error(_("You have to select plugin file to upload"));
+		display_error(_("You have to select extension file to upload"));
 		return false; 
 	}
 	return true;
@@ -79,8 +79,8 @@ function handle_submit()
 	$entry['title'] = $_POST['title'];
 	$entry['section'] = 2; // menu section aka module
 
-	// Only plugin extensions can be installed manually.
-	$extensions[$id]['type'] = 'plugin';
+	// Only plugin type extensions can be installed manually.
+	$extensions[$id]['type'] = 'extension';
 	$directory = $path_to_root . "/modules/" . $_POST['path'];
 	if (!file_exists($directory))
 	{
@@ -231,7 +231,7 @@ function display_extensions()
 	end_table(1);
 
 	submit_center_first('Refresh', _("Update"), '', null);
-	submit_center_last('Add', _("Add third-party plugin"), '', false);
+	submit_center_last('Add', _("Add third-party extension"), '', false);
 
 	div_end();
 }
@@ -306,20 +306,23 @@ function display_ext_edit($selected_id)
 		hidden('selected_id', $selected_id);
 	}
 	text_row_ex(_("Name"), 'name', 30);
-	text_row_ex(_("Folder"), 'path', 20);
+	text_row_ex(_("Subfolder (in modules directory)"), 'path', 20);
 
 	tab_list_row(_("Menu Tab"), 'tab', null, true);
 	text_row_ex(_("Menu Link Text"), 'title', 30);
 
 	record_status_list_row(_("Default status"), 'active');
 
-	file_row(_("Module File"), 'uploadfile');
-	file_row(_("Access Levels Extensions"), 'uploadfile3');
+	file_row(_("Extension File"), 'uploadfile');
+	file_row(_("Access Levels File"), 'uploadfile3');
 	file_row(_("SQL File"), 'uploadfile2');
 
 	end_table(0);
-	display_note(_("Select your module PHP file from your local harddisk."), 0, 1);
-	submit_add_or_update_center($selected_id == -1, '', 'both');
+	display_note(_("Select your extension PHP files from your local harddisk."), 0, 1);
+	echo '<center>';
+	submit_add_or_update($selected_id == -1, '', 'both');
+	submit('RESET', _('Cancel'), true, '', 'cancel');
+	echo '</center>';
 }
 
 //---------------------------------------------------------------------------------------------

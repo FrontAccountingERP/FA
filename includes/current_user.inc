@@ -483,7 +483,7 @@ function array_search_keys($needle, $haystack, $valuekey=null)
 	$keys = array();
 	if($haystack)
 		foreach($haystack as $key => $value) {
-			$val = isset($valuekey) ? $value[$valuekey] : $value;
+			$val = isset($valuekey) ? @$value[$valuekey] : $value;
 			if ($needle == $val){
 				$keys[] = $key;
 			}
