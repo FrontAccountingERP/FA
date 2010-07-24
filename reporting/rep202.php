@@ -1,12 +1,12 @@
 <?php
 /**********************************************************************
     Copyright (C) FrontAccounting, LLC.
-	Released under the terms of the GNU General Public License, GPL, 
-	as published by the Free Software Foundation, either version 3 
+	Released under the terms of the GNU General Public License, GPL,
+	as published by the Free Software Foundation, either version 3
 	of the License, or (at your option) any later version.
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
 $page_security = 'SA_SUPPLIERANALYTIC';
@@ -131,15 +131,9 @@ function print_aged_supplier_analysis()
 		$headers[2] = _('currency');
     	$rep = new FrontReport(_('Aged Supplier Analysis'), "AgedSupplierAnalysis", user_pagesize());
 
-<<<<<<< rep202.php
     $rep->Font();
     $rep->Info($params, $cols, $headers, $aligns);
     $rep->NewPage();
-=======
-    	$rep->Font();
-    	$rep->Info($params, $cols, $headers, $aligns);
-    	$rep->Header();
->>>>>>> 1.7
 
 	$total = array();
 	$total[0] = $total[1] = $total[2] = $total[3] = $total[4] = 0.0;

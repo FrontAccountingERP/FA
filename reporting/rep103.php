@@ -1,12 +1,12 @@
 <?php
 /**********************************************************************
     Copyright (C) FrontAccounting, LLC.
-	Released under the terms of the GNU General Public License, GPL, 
-	as published by the Free Software Foundation, either version 3 
+	Released under the terms of the GNU General Public License, GPL,
+	as published by the Free Software Foundation, either version 3
 	of the License, or (at your option) any later version.
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
 $page_security = 'SA_CUSTBULKREP';
@@ -27,7 +27,7 @@ include_once($path_to_root . "/gl/includes/gl_db.inc");
 
 print_customer_details_listing();
 
-function get_customer_details_for_report($area=0, $salesid=0) 
+function get_customer_details_for_report($area=0, $salesid=0)
 {
 	$sql = "SELECT ".TB_PREF."debtors_master.debtor_no,
 			".TB_PREF."debtors_master.name,
@@ -37,14 +37,11 @@ function get_customer_details_for_report($area=0, $salesid=0)
 			".TB_PREF."cust_branch.br_name,
 			".TB_PREF."cust_branch.br_address,
 			".TB_PREF."cust_branch.contact_name,
-			".TB_PREF."cust_branch.phone,
-			".TB_PREF."cust_branch.fax,
-			".TB_PREF."cust_branch.email,
 			".TB_PREF."cust_branch.area,
 			".TB_PREF."cust_branch.salesman,
 			".TB_PREF."areas.description,
 			".TB_PREF."salesman.salesman_name
-		FROM ".TB_PREF."debtors_master 
+		FROM ".TB_PREF."debtors_master
 		INNER JOIN ".TB_PREF."cust_branch
 			ON ".TB_PREF."debtors_master.debtor_no=".TB_PREF."cust_branch.debtor_no
 		INNER JOIN ".TB_PREF."sales_types
@@ -56,9 +53,9 @@ function get_customer_details_for_report($area=0, $salesid=0)
 	if ($area != 0)
 	{
 		if ($salesid != 0)
-			$sql .= " WHERE ".TB_PREF."salesman.salesman_code=".db_escape($salesid)." 
+			$sql .= " WHERE ".TB_PREF."salesman.salesman_code=".db_escape($salesid)."
 				AND ".TB_PREF."areas.area_code=".db_escape($area);
-		else		
+		else
 			$sql .= " WHERE ".TB_PREF."areas.area_code=".db_escape($area);
 	}
 	elseif ($salesid != 0)
@@ -71,7 +68,7 @@ function get_customer_details_for_report($area=0, $salesid=0)
     return db_query($sql,"No transactions were returned");
 }
 
-					
+
 function getTransactions($debtorno, $branchcode, $date)
 {
 	$date = date2sql($date);
@@ -106,7 +103,7 @@ function print_customer_details_listing()
 		include_once($path_to_root . "/reporting/includes/excel_report.inc");
 	else
 		include_once($path_to_root . "/reporting/includes/pdf_report.inc");
-    
+
     $dec = 0;
 
 	if ($area == ALL_NUMERIC)
@@ -130,8 +127,8 @@ function print_customer_details_listing()
 		$lessstr = _('Less than ') . number_format2($less, $dec);
 	else
 		$lessstr = '';
-	
-	$more = (double)$more;	
+
+	$more = (double)$more;
 	$less = (double)$less;
 
 	$cols = array(0, 150, 300, 400, 550);
@@ -154,10 +151,10 @@ function print_customer_details_listing()
     $rep->NewPage();
 
 	$result = get_customer_details_for_report($area, $folk);
-	
+
 	$carea = '';
 	$sman = '';
-	while ($myrow=db_fetch($result)) 
+	while ($myrow=db_fetch($result))
 	{
 		$printcustomer = true;
 		if ($more != '' || $less != '')
@@ -167,25 +164,25 @@ function print_customer_details_listing()
 				$printcustomer = false;
 			if ($less != 0.0 && $turnover >= (double)$less)
 				$printcustomer = false;
-		}	
+		}
 		if ($printcustomer)
 		{
 			if ($carea != $myrow['description'])
 			{
 				$rep->fontSize += 2;
 				$rep->NewLine(2, 7);
-				$rep->Font('bold');	
+				$rep->Font('bold');
 				$rep->TextCol(0, 3,	_('Customers in') . " " . $myrow['description']);
 				$carea = $myrow['description'];
 				$rep->fontSize -= 2;
 				$rep->Font();
 				$rep->NewLine();
-			}	
+			}
 			if ($sman != $myrow['salesman_name'])
 			{
 				$rep->fontSize += 2;
 				$rep->NewLine(1, 7);
-				$rep->Font('bold');	
+				$rep->Font('bold');
 				$rep->TextCol(0, 3,	$myrow['salesman_name']);
 				$sman = $myrow['salesman_name'];
 				$rep->fontSize -= 2;
@@ -198,23 +195,28 @@ function print_customer_details_listing()
 			$count1 = count($adr);
 			for ($i = 0; $i < $count1; $i++)
 				$rep->TextCol(0, 1, $adr[$i], 0, ($i + 1) * $rep->lineHeight);
-			$count1++;		
+			$count1++;
 			$rep->TextCol(1, 2,	_('Price List') . ": " . $myrow['sales_type']);
 			if ($more != 0.0 || $less != 0.0)
 				$rep->TextCol(1, 2,	_('Turnover') . ": " . number_format2($turnover, $dec), 0, $rep->lineHeight);
 			$rep->TextCol(2, 3,	$myrow['br_name']);
-			$rep->TextCol(2, 3, $myrow['contact_name'], 0, $rep->lineHeight);
-			$rep->TextCol(2, 3, _('Ph') . ": " . $myrow['phone'], 0, 2 * $rep->lineHeight);
-			$rep->TextCol(2, 3, _('Fax') . ": " . $myrow['fax'], 0, 3 * $rep->lineHeight);
+
+			$contacts = get_branch_contacts($myrow['branch_code']);
+			if (isset($contacts[0]))
+			{
+				$rep->TextCol(2, 3, $contacts[0]['name'], 0, $rep->lineHeight);
+				$rep->TextCol(2, 3, _('Ph') . ": " . $contacts[0]['phone'], 0, 2 * $rep->lineHeight);
+				$rep->TextCol(2, 3, _('Fax') . ": " . $contacts[0]['fax'], 0, 3 * $rep->lineHeight);
+			}
 			$adr = Explode("\n", $myrow['br_address']);
 			$count2 = count($adr);
 			for ($i = 0; $i < $count2; $i++)
 				$rep->TextCol(3, 4, $adr[$i], 0, ($i + 1) * $rep->lineHeight);
-			$rep->TextCol(3, 4, $myrow['email'], 0, ($count2 + 1) * $rep->lineHeight);
+			//$rep->TextCol(3, 4, $myrow['email'], 0, ($count2 + 1) * $rep->lineHeight);
 			$count2++;
 			$count1 = Max($count1, $count2);
 			$count1 = Max($count1, 4);
-			$rep->NewLine($count1); 
+			$rep->NewLine($count1);
 			$rep->Line($rep->row + 8);
 			$rep->NewLine(0, 3);
 		}

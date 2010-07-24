@@ -1,12 +1,12 @@
 <?php
 /**********************************************************************
     Copyright (C) FrontAccounting, LLC.
-	Released under the terms of the GNU General Public License, GPL, 
-	as published by the Free Software Foundation, either version 3 
+	Released under the terms of the GNU General Public License, GPL,
+	as published by the Free Software Foundation, either version 3
 	of the License, or (at your option) any later version.
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
 $page_security = 'SA_PRICEREP';
@@ -34,7 +34,7 @@ function fetch_items($category=0)
 {
 		$sql = "SELECT ".TB_PREF."stock_master.stock_id, ".TB_PREF."stock_master.description AS name,
 				".TB_PREF."stock_master.material_cost+".TB_PREF."stock_master.labour_cost+".TB_PREF."stock_master.overhead_cost AS Standardcost,
-				".TB_PREF."stock_master.category_id,
+				".TB_PREF."stock_master.category_id,".TB_PREF."stock_master.units,
 				".TB_PREF."stock_category.description
 			FROM ".TB_PREF."stock_master,
 				".TB_PREF."stock_category
@@ -104,11 +104,11 @@ function print_price_listing()
 	else
 		$GP = _('Yes');
 
-	$cols = array(0, 100, 385, 450, 515);
+	$cols = array(0, 100, 360, 385, 450, 515);
 
-	$headers = array(_('Category/Items'), _('Description'),	_('Price'),	_('GP %'));
+	$headers = array(_('Category/Items'), _('Description'),	_('UOM'), _('Price'),	_('GP %'));
 
-	$aligns = array('left',	'left',	'right', 'right');
+	$aligns = array('left',	'left',	'left', 'right', 'right');
 
     $params =   array( 	0 => $comments,
     				    1 => array('text' => _('Currency'), 'from' => $curr_sel, 'to' => ''),
@@ -146,8 +146,9 @@ function print_price_listing()
 		$rep->NewLine();
 		$rep->TextCol(0, 1,	$myrow['stock_id']);
 		$rep->TextCol(1, 2, $myrow['name']);
+		$rep->TextCol(2, 3, $myrow['units']);
 		$price = get_price($myrow['stock_id'], $currency, $salestype);
-		$rep->AmountCol(2, 3, $price, $dec);
+		$rep->AmountCol(3, 4, $price, $dec);
 		if ($showGP)
 		{
 			$price2 = get_price($myrow['stock_id'], $home_curr, $salestype);
@@ -155,11 +156,11 @@ function print_price_listing()
 				$disp = ($price2 - $myrow['Standardcost']) * 100 / $price2;
 			else
 				$disp = 0.0;
-			$rep->TextCol(3, 4,	number_format2($disp, user_percent_dec()) . " %");
+			$rep->TextCol(4, 5,	number_format2($disp, user_percent_dec()) . " %");
 		}
 		if ($pictures)
 		{
-			$image = company_path(). "/images/" 
+			$image = company_path(). "/images/"
 				. item_img_name($myrow['stock_id']) . ".jpg";
 			if (file_exists($image))
 			{
@@ -189,7 +190,7 @@ function print_price_listing()
 				$rep->fontSize += 2;
 				$rep->TextCol(0, 3, _("Sales Kits"));
 				$rep->fontSize -= 2;
-			}	
+			}
 			$rep->Line($rep->row  - $rep->lineHeight);
 			$rep->NewLine(2);
 			$rep->fontSize += 2;
@@ -200,9 +201,9 @@ function print_price_listing()
 		}
 		$rep->NewLine();
 		$rep->TextCol(0, 1,	$myrow['kit_code']);
-		$rep->TextCol(1, 2, $myrow['kit_name']);
+		$rep->TextCol(1, 3, $myrow['kit_name']);
 		$price = get_kit_price($myrow['kit_code'], $currency, $salestype);
-		$rep->AmountCol(2, 3, $price, $dec);
+		$rep->AmountCol(3, 4, $price, $dec);
 		$rep->NewLine(0, 1);
 	}
 	$rep->Line($rep->row  - 4);
