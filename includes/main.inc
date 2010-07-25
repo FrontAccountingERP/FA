@@ -59,19 +59,6 @@ function end_page($no_menu=false, $is_index=false, $hide_back_link=false, $type_
 	page_footer($no_menu, $is_index, $hide_back_link);
 }
 
-function flush_dir($path, $wipe = false) 
-{
-	$dir = opendir($path);
-	while(false !== ($fname = readdir($dir))) {
-		if($fname=='.' || $fname=='..' || $fname=='CVS' || (!$wipe && $fname=='index.php')) continue;
-  		if(is_dir($path.'/'.$fname)) {
-		    flush_dir($path.'/'.$fname, $wipe);
-		    if ($wipe) @rmdir($path.'/'.$fname);
-		} else
-		    @unlink($path.'/'.$fname);
-	}
-}
-
 function cache_js_file($fpath, $text) 
 {
 	global $go_debug;
@@ -311,21 +298,6 @@ function copy_file($file, $from, $to)
 	//		error_log( 'skopiowanie '.$to.'/'.$file);
 		return @copy($from.'/'.$file, $to.'/'.$file);
 	}
-}
-/*
-	Returns current path to company private folder.
-	(Current path can change after chdir).
-*/
-function company_path($comp=null)
-{
-	global $path_to_root, $comp_path;
-
-	if (!isset($comp))
-		$comp = user_company();
-
-	// if path is relative, set current path_to_root
-	return ($comp_path[0]=='.' ? $path_to_root.'/'.basename($comp_path) : $comp_path)
-			. '/'.$comp;
 }
 /*
 	Search for file, looking first for company specific version, then for 
