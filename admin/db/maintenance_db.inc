@@ -72,13 +72,14 @@ function write_config_db($new = false)
 	$n = count($db_connections);
 	$msg = "<?php\n\n";
 	$msg .= "/*Connection Information for the database\n";
-	$msg .= "- \$def_coy is the default company that is pre-selected on login\n\n";
-	$msg .= "- host is the computer ip address or name where the database is the default is localhost assuming that the web server is also the sql server\n\n";
-	$msg .= "- user is the user name under which the database should be accessed - need to change to the mysql (or other DB) user set up for purpose\n";
-	$msg .= "  NB it is not secure to use root as the user with no password - a user with appropriate privileges must be set up\n\n";
-	$msg .= "- password is the password the user of the database requires to be sent to authorise the above database user\n\n";
-	$msg .= "- DatabaseName is the name of the database as defined in the RDMS being used. Typically RDMS allow many databases to be maintained under the same server.\n";
-	$msg .= "  The scripts for MySQL provided use the name logicworks */\n\n\n";
+	$msg .= "\$def_coy - the default company that is pre-selected on login\n\n";
+	$msg .= "'host' - the computer ip address or name where the database is. The default is 'localhost' assuming that the web server is also the sql server.\n\n";
+	$msg .= "'dbuser' - the user name under which the company database should be accessed.\n";
+	$msg .= "  NB it is not secure to use root as the dbuser with no password - a user with appropriate privileges must be set up.\n\n";
+	$msg .= "'dbpassword' - the password required for the dbuser to authorise the above database user.\n\n";
+	$msg .= "'dbname' - the name of the database as defined in the RDMS being used. Typically RDMS allow many databases to be maintained under the same server.\n";
+	$msg .= "'tbpref' - prefix on table names, or '' if not used. Always use non-empty prefixes if multiply company use the same database.\n";
+	$msg .= "*/\n\n\n";
 
 	$msg .= "\$def_coy = " . $def_coy . ";\n\n";
 	$msg .= "\$tb_pref_counter = " . $tb_pref_counter . ";\n\n";
@@ -121,26 +122,14 @@ function write_extensions($extensions=null, $company = -1)
 	if (!isset($next_extension_id)) {
 		$next_extension_id = 1;
 	}
-//	$exts = array_natsort($extensions, 'name', 'name');
-//	$extensions = $exts;
 
 	$msg = "<?php\n\n";
 	if ($company == -1)
 		$msg .=
-"/* List of installed additional modules and plugins. If adding extensions manually 
-	to the list make sure they have unique, so far not used extension_ids as a keys,
-	and \$next_extension_id is also updated.
-	
-	'name' - name for identification purposes;
-	'type' - type of extension: 'module' or 'plugin'
-	'path' - FA root based installation path
-	'filename' - name of module menu file, or plugin filename; related to path.
-	'tab' - index of the module tab (new for module, or one of standard module names for plugin);
-	'title' - is the menu text (for plugin) or new tab name
-	'active' - current status of extension
-	'acc_file' - (optional) file name with \$security_areas/\$security_sections extensions; 
-		related to 'path'
-	'access' - security area code in string form
+"/* List of installed additional extensions. If extensions are added to the list manually
+	make sure they have unique and so far never used extension_ids as a keys,
+	and \$next_extension_id is also updated. More about format of this file yo will find in 
+	FA extension system documentation.
 */
 \n\$next_extension_id = $next_extension_id; // unique id for next installed extension\n\n";
 	else 
@@ -219,10 +208,13 @@ function write_lang()
 	$n = count($installed_languages);
 	$msg = "<?php\n\n";
 
-	$msg .= "/* How to make new entries here\n\n";
-	$msg .= "-- 'code' should match the name of the directory for the language under \\lang\n";
+	$msg .= "/* How to make new entries here for non-packaged languages:\n\n";
+	$msg .= "-- 'code' should match the name of the directory for the language under \\lang\n.";
 	$msg .= "-- 'name' is the name that will be displayed in the language selection list (in Users and Display Setup)\n";
-	$msg .= "-- 'rtl' only needs to be set for right-to-left languages like Arabic and Hebrew\n\n";
+	$msg .= "-- 'rtl' only needs to be set for right-to-left languages like Arabic and Hebrew\n";
+	$msg .= "-- 'encoding' used in translation file\n";
+	$msg .= "-- 'version' always set to '' for manually installed languages.\n";
+	$msg .= "-- 'path' installation path related to FA root (e.g. 'lang/en_US').\n";
 	$msg .= "*/\n\n\n";
 
 	$msg .= "\$installed_languages = " . var_export($installed_languages, true);
@@ -423,8 +415,6 @@ function db_import($filename, $connection, $force=true)
 		return false;
 	} else
 		return true;
-	//$shell_command = C_MYSQL_PATH . " -h $host -u $user -p{$password} $dbname < $filename";
-	//shell_exec($shell_command);
 }
 
 // returns the content of the gziped $path backup file. use of $mode see below
@@ -539,7 +529,6 @@ function db_export($conn, $filename, $zip='no', $comment='', $tbpref = TB_PREF)
     $all_tables = array();
     while($row = db_fetch($res))
     {
-		//if ($conn["tbpref"] == "" || strpos($row['Name'], $conn["tbpref"]) !== false) replaced
 		if (($conn["tbpref"] == "" && !preg_match('/[0-9]+_/', $row['Name'])) ||
 			($conn["tbpref"] != "" && strpos($row['Name'], $conn["tbpref"]) === 0))
     		$all_tables[] = $row;
@@ -574,7 +563,6 @@ function db_export($conn, $filename, $zip='no', $comment='', $tbpref = TB_PREF)
 	// as long as no error occurred
 	if (!$error)
 	{
-		//while($row=@mysql_fetch_array($res))
 		foreach ($all_tables as $row)
 		{
 			$tablename = $row['Name'];
