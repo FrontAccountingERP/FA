@@ -28,8 +28,17 @@ $ -> Affected files
 ! flush_dir() and company_path() moved to current_user.php 
 $  /includes/main.inc
 + Added preprinted forms folder
-$ /reporting/includes/forms/index.php
+$ /reporting/includes/forms (new)
   /reporting/includes/forms/index.php
+# Fixed multilanguage tests 
+$ /admin/system_diagnostics.php
+  /includes/lang/gettext.php
+# Fixed config comments
+$ /admin/db/maintenance_db.inc
+! Cleanup.
+$ /includes/packages.inc
+# Fixed installed_languages config file upgrade.
+$ /sql/alter2.3.php
 
 24-Jul-2010 Janusz Dobrowolski
 # Upgrade routines for extensions configuration
