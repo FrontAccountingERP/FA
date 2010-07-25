@@ -264,8 +264,19 @@ class fa2_3 {
 	
 	function fix_extensions()
 	{
-		global $path_to_root, $next_extension_id;
+		global $path_to_root, $next_extension_id, $installed_languages;
 		
+		$lang_chd = false;
+		foreach($installed_languages as $i => $lang) {
+			if (!isset($lang['path'])) {
+				$installed_languages[$i]['path'] = 'lang/'.$code;
+				$installed_languages[$i]['package'] = 'lang/'.$code;
+				$lang_chd = true;
+			}
+		}
+		if ($lang_chd)
+			write_lang();
+
 		$installed_extensions= get_company_extensions();
 		
 		if (!isset($next_extension_id))
