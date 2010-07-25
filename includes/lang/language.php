@@ -51,7 +51,7 @@ class language
 	    global $path_to_root, $installed_languages;
 
 		$lang = array_search_value($code, $installed_languages, 'code');
-		$changed = $this->code != $code || $this->version != $lang['version'];
+		$changed = $this->code != $code || $this->version != @$lang['version'];
 
 		if ($lang && $changed)
 		{
