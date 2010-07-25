@@ -30,13 +30,16 @@ function update_company_prefs( $params, $pref = TB_PREF )
 	$prefs can be preference name, array of names, or null for all preferences.
 	
 */
-function get_company_pref($prefs = null, $tbpref = TB_PREF)
+function get_company_pref($prefs = null, $tbpref = null)
 {
 	global $SysPrefs, $core_version;
 	
 	if (!isset($_SESSION['SysPrefs']->prefs)) { // cached preferences
 
 		$_SESSION['SysPrefs'] = new sys_prefs();
+
+		if (!isset($tbpref))
+			$tbpref = TB_PREF;
 
 		$sql = "SELECT name, value FROM {$tbpref}sys_prefs";
 		$result = @db_query($sql); // supress errors before 2.3 db structure upgrade

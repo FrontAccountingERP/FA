@@ -281,7 +281,9 @@ function user_numeric($input) {
 
 function user_company()
 {
-	return $_SESSION["wa_current_user"]->company;
+	global $def_coy;
+	
+	return isset($_SESSION["wa_current_user"]) ? $_SESSION["wa_current_user"]->company : $def_coy;
 }
 
 function user_pos()
@@ -499,4 +501,33 @@ function array_search_key($needle, $haystack, $valuekey=null)
 	$keys = array_search_keys($needle, $haystack, $valuekey);
 	return @$keys[0];
 }
+
+function flush_dir($path, $wipe = false) 
+{
+	$dir = opendir($path);
+	while(false !== ($fname = readdir($dir))) {
+		if($fname=='.' || $fname=='..' || $fname=='CVS' || (!$wipe && $fname=='index.php')) continue;
+  		if(is_dir($path.'/'.$fname)) {
+		    flush_dir($path.'/'.$fname, $wipe);
+		    if ($wipe) @rmdir($path.'/'.$fname);
+		} else
+		    @unlink($path.'/'.$fname);
+	}
+}
+/*
+	Returns current path to company private folder.
+	(Current path can change after chdir).
+*/
+function company_path($comp=null)
+{
+	global $path_to_root, $comp_path;
+
+	if (!isset($comp))
+		$comp = user_company();
+
+	// if path is relative, set current path_to_root
+	return ($comp_path[0]=='.' ? $path_to_root.'/'.basename($comp_path) : $comp_path)
+			. '/'.$comp;
+}
+
 ?>
