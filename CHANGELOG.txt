@@ -19,6 +19,18 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+25-Jul-2010 Janusz Dobrowolski
+# Fixed language file switching on package version change
+  /admin/db/company_db.inc
+  /includes/session.inc
+  /includes/lang/language.php
+  /includes/current_user.inc
+! flush_dir() and company_path() moved to current_user.php 
+$  /includes/main.inc
++ Added preprinted forms folder
+$ /reporting/includes/forms/index.php
+  /reporting/includes/forms/index.php
+
 24-Jul-2010 Janusz Dobrowolski
 # Upgrade routines for extensions configuration
   /sql/alter2.3.php
