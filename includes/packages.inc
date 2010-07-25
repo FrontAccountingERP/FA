@@ -54,11 +54,6 @@ class package extends gzip_file {
 		$cachepath = $this->options['basedir'];
 		$ctrl = get_control_file("$cachepath/_init/config");
 
-//		$targetdir = $pkg_data_basedir[$ctrl['Type']];
-//		if ($targetdir)
-//			$targetdir = $path_to_root.$targetdir.$ctrl['Package'];
-//		else
-//			$targetdir = $path_to_root;
 		$targetdir = $path_to_root.'/'.$ctrl['InstallPath'];
 
 		if (!is_dir($targetdir))
@@ -92,11 +87,7 @@ class package extends gzip_file {
 
 		$cachepath = $this->options['basedir'];
 		$ctrl = get_control_file("$cachepath/_init/config");
-//		$targetdir = $pkg_data_basedir[$ctrl['Type']];
-//		if ($targetdir)
-//			$targetdir = $path_to_root.$targetdir.$ctrl['Package'];
-//		else
-//			$targetdir = $path_to_root;
+
 		$targetdir = $path_to_root.'/'.$ctrl['InstallPath'];
 
 		$dpackage = new package("$cachepath/_data", $targetdir);
@@ -127,10 +118,8 @@ class package extends gzip_file {
 			include("$cachepath/_init/init.php");
 			if (method_exists($installer, $name)) {
 				set_include_path("$cachepath/_init".PATH_SEPARATOR.get_include_path());
-//				$old = getcwd();
-//				chdir("$cachepath/_init");
+
 				$ret = $installer->$name($params);
-//				chdir($old);
 				return $ret;
 			}
 		}
@@ -216,7 +205,6 @@ function get_control_file($file, $index = false) {
 			$pkg = array(); 
 			$key = null; $value = '';
 			continue;
-//		} elseif (preg_match('/([\w-]*):\s*(.*)/', $line, $m)) {
 		} elseif (preg_match('/([^:]*):\s*(.*)/', $line, $m)) {
 			$key = $m[1]; $value = $m[2];
 			if (!strlen($key)) {
@@ -256,8 +244,7 @@ function save_control_file($fname, $list, $zip=false)
 					}
 				}
 				// array elements on subsequent lines starting with white space
-				$value = //(count($value) ? "\n " :'').
-					implode("\n ", $value);
+				$value = implode("\n ", $value);
 			}
 			$zip ? gzwrite($file, "$key: $value\n") : fwrite($file, "$key: $value\n");
 		}
@@ -593,9 +580,6 @@ function install_extension($pkg_name)
 				'type' => $pkg['Type'],
 				'active' => true,
 				'path' => $pkg['InstallPath'],
-//				'tabs' => $pkg['MenuTabs'],
-//				'entries' => $pkg['MenuEntries'],
-//				'acc_file' => @$pkg['AccessExtensions'],
 			);
 			if (isset($pkg['MenuTabs']))
 				$ext['tabs'] = $pkg['MenuTabs'];
