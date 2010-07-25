@@ -100,20 +100,21 @@ class gettext_native_support
 	 */
 	function check_support($lang_code, $encoding)
     {
-		$old = setlocale(LC_MESSAGES, '0');
+
+		$old = setlocale(LC_CTYPE, '0'); // LC_MESSAGES does not exist on Win
 		$up = strtoupper($encoding);
 		$low = strtolower($encoding);
 		$lshort = strtr($up, '-','');
 		$ushort = strtr($low, '-','');
 
-        $test = setlocale(LC_MESSAGES,
+        $test = setlocale(LC_ALL,
 			$lang_code.".".$encoding, 
 			$lang_code.".".$up,
 			$lang_code.".".$low,
 			$lang_code.".".$ushort,
 			$lang_code.".".$lshort) !== false;
-
-		setlocale(LC_MESSAGES, $old);
+		setlocale(LC_ALL, $old);
+		setlocale(LC_NUMERIC, 'C');
 		return $test;
 	}
     /**

@@ -227,29 +227,41 @@ function tst_langs()
 	$test['result'] = true;
 	$test['comments'] = array();
 
-	$old = setlocale(LC_MESSAGES, '0');
+	$fname =  $path_to_root.'/lang';
+	$test['test'][] = $fname;
+	if (!(is_dir($fname) && is_writable($fname))) {
+		$test['result'] = false;
+		$test['comments'][] = _("Languages folder should be writeable.");
+	}
 	
+	$fname =  $path_to_root.'/lang/installed_languages.inc';
+	$test['test'][] = $fname;
+	if (!(is_file($fname) && is_writable($fname))) {
+		$test['result'] = false;
+		$test['comments'][] = _("Languages configuration file should be writeable.");
+	}
+
 	$langs = array();
 	
 	foreach ($installed_languages as $lang) {
 		$langs[] = $lang['code'];
 		if ($lang['code'] == 'en_GB') continue; // native FA language
-		
+	
 		$file = $path_to_root.'/lang/'.$lang['code'].'/LC_MESSAGES/'.$lang['code'];
-        $file .= function_exists('gettext') ? '.mo' : '.po';
+		if (@$lang['version'])
+			$file .= '-'.$lang['version'];
+		$file .= function_exists('gettext') ? '.mo' : '.po';
 
 		if (!is_file($file)) {
 			$test['result'] = false;
 			$test['comments'][] = sprintf( _('Missing %s translation file.'), $file);
 		}
 		if (!$_SESSION['get_text']->check_support($lang['code'], $lang['encoding']))
-        {
+		{
 			$test['result'] = false;
 			$test['comments'][] = sprintf(_('Missing system locale: %s'), $lang['code'].".".$lang['encoding']);
-        };
+		};
 	}
-	
-	setlocale(LC_MESSAGES, $old);
 
 	$test['test'] = $langs;
 
@@ -291,7 +303,6 @@ function tst_extconfig()
 	$test['test'][] = $fname;
 	$test['result'] = is_file($fname) && is_writable($fname);
 	$test['test'][] = company_path().'/*/installed_extensions.php';
-	$test['comments'][] = _("Extensions configuration files and directories should be writeable");
 
 	foreach ($db_connections as $n => $comp) {
 		$path = company_path($n);
@@ -308,12 +319,41 @@ function tst_extconfig()
 	$test['test'][] = $fname;
 	$test['result'] &= is_dir($fname) && is_writable($fname);
 	$fname =  $path_to_root.'/modules/_cache';
+
 	$test['test'][] = $fname;
 	$test['result'] &= is_dir($fname) && is_writable($fname);
 	$fname =  $path_to_root.'/themes';
+
 	$test['test'][] = $fname;
 	$test['result'] &= is_dir($fname) && is_writable($fname);
+	if(!$test['result'])
+		$test['comments'][] = _("Extensions configuration files and directories should be writeable");
 
+	$themedir = opendir($fname);
+	while (false !== ($fname = readdir($themedir)))
+	{
+		if ($fname!='.' && $fname!='..' && $fname!='CVS' && is_dir($path_to_root.'/themes/'.$fname)
+			&& !in_array($fname, array('aqua', 'cool', 'default')))
+		{
+			$test['test'][] = $fname;
+			$test['result'] = is_writable($path_to_root.'/themes/'.$fname);
+			if (!$test['result']) {
+				$test['comments'][] = 
+					sprintf(_("Non-standard theme directory '%s' is not writable"), $fname);
+				break;
+			}
+		}
+	}
+	closedir($themedir);
+
+	$test['test'][] = 'OpenSSL PHP extension';
+	if (!extension_loaded('openssl')) {
+		$test['result'] = false;
+		$test['comments'][] = _("OpenSSL PHP extension have to be enabled to use extension repository system.");
+	} elseif (!function_exists('openssl_verify')) {
+		$test['result'] = false;
+		$test['comments'][] = _("OpenSSL have to be available on your server to use extension repository system.");
+	}
 	return $test;
 }
 //-------------------------------------------------------------------------------------------------
