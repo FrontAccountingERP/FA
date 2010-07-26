@@ -287,7 +287,7 @@ class fa2_3 {
 		{
 			if (isset($ext['title'])) // old type entry
 			{
-				if ($ext['type'] == 'module')
+				if ($ext['type'] == 'module') {
 					$new['type'] = 'extension';
 					$new['tabs'][] = array(
 						'url' => $ext['filename'],
