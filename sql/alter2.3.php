@@ -269,8 +269,9 @@ class fa2_3 {
 		$lang_chd = false;
 		foreach($installed_languages as $i => $lang) {
 			if (!isset($lang['path'])) {
+				$code = $lang['code'];
 				$installed_languages[$i]['path'] = 'lang/'.$code;
-				$installed_languages[$i]['package'] = 'lang/'.$code;
+				$installed_languages[$i]['package'] = $code;
 				$lang_chd = true;
 			}
 		}
