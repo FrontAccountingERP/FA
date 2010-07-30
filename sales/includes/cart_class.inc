@@ -142,8 +142,8 @@ class cart
 			$this->src_docs = array( $sodata['order_no']=>$sodata['version']);
 		} else {	// get src_data from debtor_trans
 			$srcnum = array();
-			foreach($srcdetails as $line) {
-				$srcnum = $line['debtor_trans_no'];
+			while ($line = db_fetch($srcdetails)) {
+				$srcnum[] = $line['debtor_trans_no'];
 			}
 			$this->src_docs = get_customer_trans_version($src_type, array_values($srcnum));
 		}
