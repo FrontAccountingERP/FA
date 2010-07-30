@@ -18,7 +18,6 @@ class fa2_3 {
 	
 	function fa2_3() {
 		$this->description = _('Upgrade from version 2.2 to 2.3');
-		$this->preconf = $this->fix_extensions();
 	}
 	
 	//
@@ -99,6 +98,7 @@ class fa2_3 {
 	//
 	function pre_check($pref, $force)
 	{
+
 		if ($this->beta && !$force)
 			$this->sql = 'alter2.3rc.sql';
 
@@ -109,6 +109,7 @@ class fa2_3 {
 	//
 	function installed($pref) {
 		$this->beta = !check_table($pref, 'suppliers', 'tax_included');
+		$this->preconf = $this->fix_extensions();
 
 		$n = 1; // number of patches to be installed
 		$patchcnt = 0;
