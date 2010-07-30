@@ -69,7 +69,7 @@ function get_installers()
 		while(false !== ($fname = readdir($datadir)))
 		{ // check all php files but index.php
 			if (!is_dir($patchdir . $fname) && ($fname != 'index.php')
-				&& stristr($fname, '.php') != false)
+				&& stristr($fname, '.php') != false && $fname[0] != '.')
 			{
 				unset($install);
 				include_once($patchdir . $fname);
