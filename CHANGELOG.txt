@@ -19,6 +19,16 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+30-Jul-2010 Janusz Dobrowolski
+! Skipping hidden files in sql folder during upgrade.
+$ /admin/inst_upgrade.php
+# Warning cleanup
+$ /includes/lang/language.php
+# Bug in src document lines retrieval during edition 
+$ /sales/includes/cart_class.inc
+! Fixing extensions configuration moved to installed() method.
+$ /sql/alter2.3.php
+
 26-Jul-2010 Janusz Dobrowolski
 # Fatal typo in upgrade function fixed.
 $ /sql/alter2.3.php
