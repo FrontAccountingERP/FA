@@ -19,6 +19,12 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+01-Aug-2010 Joe Hunt
++ Added Email link when updating documents.
+$ /sales/credit_note_entry.php
+  /sales/customer_credit_invoice.php
+  /sales/customer_invoice.php
+  
 30-Jul-2010 Janusz Dobrowolski
 ! Skipping hidden files in sql folder during upgrade.
 $ /admin/inst_upgrade.php
