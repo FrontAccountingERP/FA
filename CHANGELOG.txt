@@ -19,6 +19,12 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+04-Aug-2010 Joe Hung
++ Added an extra parameter to db_export in maintenance_db.inc for new COAs
+$ /admin/db/maintenance_db.inc
+# Link error in items.php for Pictures
+$ /inventory/manage/items.php
+
 01-Aug-2010 Joe Hunt
 + Added Email link when updating documents.
 $ /sales/credit_note_entry.php

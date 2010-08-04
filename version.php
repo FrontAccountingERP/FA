@@ -5,7 +5,7 @@
 //
 
 // Internal data-source version compatibility check. Do not change.
-$core_version = "2.3rc";
+$core_version = "2.3RC1";
 
 // application version - can be set also in config.php
 if (!isset($version))

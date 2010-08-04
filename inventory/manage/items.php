@@ -393,7 +393,7 @@ if (isset($_POST['NewStockID']) && file_exists(company_path().'/images/'
 {
  // 31/08/08 - rand() call is necessary here to avoid caching problems. Thanks to Peter D.
 	$stock_img_link .= "<img id='item_img' alt = '[".$_POST['NewStockID'].".jpg".
-		"]' src='".company_path().'images/'.item_img_name($_POST['NewStockID']).
+		"]' src='".company_path().'/images/'.item_img_name($_POST['NewStockID']).
 		".jpg?nocache=".rand()."'"." height='$pic_height' border='0'>";
 	$check_remove_image = true;
 } 

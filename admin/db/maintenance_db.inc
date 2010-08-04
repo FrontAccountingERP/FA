@@ -482,7 +482,7 @@ function db_backup($conn, $ext='no', $comm='', $tbpref = TB_PREF)
 
 // generates a dump of $db database
 // $drop and $zip tell if to include the drop table statement or dry to pack
-function db_export($conn, $filename, $zip='no', $comment='', $tbpref = TB_PREF)
+function db_export($conn, $filename, $zip='no', $comment='', $tbpref = TB_PREF, $no_default=false)
 {
 
 	global $app_title, $version, $power_url, $path_to_root;
@@ -573,6 +573,8 @@ function db_export($conn, $filename, $zip='no', $comment='', $tbpref = TB_PREF)
 			$out.="### Structure of table `".$tablename."` ###\n\n";
 
 			$out.="DROP TABLE IF EXISTS `".$tablename."`;\n\n";
+			if ($no_default && ($def_pos = strpos($table_sql[$tablename], "DEFAULT CHARSET")) > 0)
+				$table_sql[$tablename] = substr($table_sql[$tablename], 0, $def_pos);
 			$out.=$table_sql[$tablename];
 
 			// add auto_increment value
