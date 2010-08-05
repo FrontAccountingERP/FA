@@ -13,9 +13,9 @@ include_once($path_to_root. "/includes/archive.inc");
 
 define('PKG_CACHE_PATH', $path_to_root.'/modules/_cache');
 define('PUBKEY_PATH', $path_to_root);
-define('REPO_URL', "$repository/$FA_repo_version");
+define('REPO_URL', 'http://'.$repo_auth['login'].':'.$repo_auth['pass'].'@'.$repo_auth['host'].'/'.$repo_auth['branch']);
 //
-// FrontAccounting package class	
+// FrontAccounting package class
 //
 class package extends gzip_file {
 	function package($filename, $basedir=null)
@@ -179,7 +179,7 @@ function get_control_file($file, $index = false) {
 	$line = '';
 	do {
 		$line = rtrim($line);
-		if (@ctype_space($line[0])) { // continuation of multiline property
+		if ($line && ctype_space($line[0])) { // continuation of multiline property
 			if (strlen(ltrim($line))) {
 				if ($value !== '' && !is_array($value))
 					$value = array($value);
@@ -277,7 +277,7 @@ function pkg_prop($pkg, $property, $lang=false)
 //
 function get_pkg_or_list($type = null, $pkgname = null, $filter=array(), $outkey=null, $download=true) {
 
-	global $path_to_root, $repository, $FA_repo_version;
+	global $path_to_root, $repo_auth;
 
 	// first download local copy of repo release file
 	// and check remote signature with local copy of public key
@@ -316,7 +316,7 @@ function get_pkg_or_list($type = null, $pkgname = null, $filter=array(), $outkey
 		if ($type && !count(array_intersect(explode(' ', $parms['Type']), $type))) {
 			unset($Release[$fname]); continue; // no packages of selected type in this index
 		}
-		if ($Release[$fname]['Version'] != $FA_repo_version) {
+		if ($Release[$fname]['Version'] != $repo_auth['branch']) {
 			display_warning(_('Repository version does not match application version.')); // ?
 		}
 		$remoteindex = REPO_URL.'/'.$fname;
@@ -380,8 +380,7 @@ function get_pkg_or_list($type = null, $pkgname = null, $filter=array(), $outkey
 
 function get_package($pkgname, $type = null)
 {
-	$all = get_pkg_or_list($type, $pkgname);
-	$pkg = array_search_value($all, $pkgname, 'Package');
+	return get_pkg_or_list($type, $pkgname);
 }
 /*
 	Returns full name of installed package, or null if package is not installed.
@@ -458,7 +457,7 @@ function get_languages_list()
 }
 //---------------------------------------------------------------------------------------
 //
-//	Return merged list of available and installed extensions in inform of local 
+//	Return merged list of available and installed extensions as a local 
 // configuration array supplemented with installed versions information.
 //
 function get_extensions_list()
@@ -480,7 +479,7 @@ function get_extensions_list()
 	// 
 	$local = get_company_extensions();
 	foreach($local as $extno => $ext) {
-		if ($ext['type'] == 'theme') continue;
+		if ($ext['type'] != 'extension') continue;
 		$ext['local_id'] = $extno;
 		if (!isset($pkgs[$ext['package']]) || $ext['package'] == '')
 			$pkgs[] = $ext;
@@ -491,7 +490,7 @@ function get_extensions_list()
 	return $pkgs;
 }
 //
-// Return merged list of available and installed extensions in inform of local
+// Return merged list of available and installed extensions as a local
 // configuration array supplemented with installed versions information.
 //
 function get_themes_list()
@@ -515,6 +514,38 @@ function get_themes_list()
 	}
 	// TODO: Add other themes from themes directory
 	
+	ksort($pkgs);
+	return $pkgs;
+}
+//---------------------------------------------------------------------------------------
+//
+//	Return merged list of available and installed COAs as a local 
+// configuration array supplemented with installed versions information.
+//
+function get_charts_list()
+{
+	$pkgs = get_pkg_or_list('chart', null, array(
+				'Package' => 'package',
+				'Version' => 'available',
+				'Name' => 'name',
+				'Description' => 'Descr',
+				'Type' => 'type',
+				'InstallPath' => 'path',
+				'SqlScript' => 'sql'
+			));
+
+	// add/update default charts
+	// 
+	$local = get_company_extensions();
+
+	foreach($local as $extno => $ext) {
+		if ($ext['type'] != 'chart') continue;
+		$ext['local_id'] = $extno;
+		if (!isset($pkgs[$ext['package']]) || $ext['package'] == '')
+			$pkgs[] = $ext;
+		else
+			$pkgs[$ext['package']] = array_merge($pkgs[$ext['package']], $ext);
+	}
 	ksort($pkgs);
 	return $pkgs;
 }
@@ -565,7 +596,7 @@ function install_extension($pkg_name)
 {
 	global $path_to_root, $next_extension_id, $Ajax;
 	
-	$pkg = get_pkg_or_list(array('extension', 'theme'), $pkg_name);
+	$pkg = get_pkg_or_list(array('extension', 'theme', 'chart'), $pkg_name);
 	if ($pkg) {
 		$package = new package("$path_to_root/tmp/".$pkg['Filename'].'.pkg');
 		$local_exts = get_company_extensions();
@@ -587,14 +618,19 @@ function install_extension($pkg_name)
 				$ext['entries'] = $pkg['MenuEntries'];
 			if (isset($pkg['AccessExtensions']))
 				$ext['acc_file'] = $pkg['AccessExtensions'];
+			if (isset($pkg['SqlScript']))
+				$ext['sql'] = $pkg['SqlScript'];
 			$local_exts[$ext_id] = $ext;
-			update_extensions($local_exts);
+			$ret = update_extensions($local_exts);
 			unlink("$path_to_root/tmp/".$pkg['Filename'].'.pkg');
 			$Ajax->activate('ext_tbl');
+			return $ret;
 		} else {
 			display_error(implode('<br>', $package->error));
+			return false;
 		}
 	}
+	return true;
 }
 /*
 	Returns true if newer package version is available

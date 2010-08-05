@@ -2285,4 +2285,34 @@ function payment_type_list_row($label, $name, $selected_id=null, $submit_on_chan
 	echo "</td></tr>\n";
 }
 
+function coa_list_row($label, $name, $value=null)
+{
+	global $path_to_root, $installed_extensions;
+
+	$path = $path_to_root.'/sql/';
+	$coas = array();
+	$sqldir = opendir($path);
+	while (false !== ($fname = readdir($sqldir)))
+	{
+		if (is_file($path.$fname) && substr($fname,-4)=='.sql' &&  substr($fname,0,5)!='alter')
+		{
+			$ext = array_search_value($fname, $installed_extensions, 'sql');
+			if ($ext!=null) {
+				$descr = $ext['name'];
+			} elseif ($fname == 'en_US-new.sql') { // two standard COAs
+				$descr = _("Standard new company American COA (4 digit)");
+			} elseif ($fname == 'en_US-demo.sql') {
+				$descr = _("Standard American COA (4 digit) with demo data");
+			} else
+				$descr = $fname;
+
+			$coas[$fname] =  $descr;
+		}
+	}
+	ksort($coas);
+
+	echo "<tr><td class='label'>$label</td>\n<td>";
+	echo array_selector( $name, $value, $coas );
+	echo "</td></tr>\n";
+}
 ?>
