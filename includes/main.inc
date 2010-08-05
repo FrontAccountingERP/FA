@@ -24,7 +24,7 @@ include_once($path_to_root . "/admin/db/users_db.inc");
 include_once($path_to_root . "/includes/ui/ui_view.inc");
 include_once($path_to_root . "/includes/ui/ui_controls.inc");
 	
-function page($title, $no_menu=false, $is_index=false, $onload="", $js="", $script_only=false)
+function page($title, $no_menu=false, $is_index=false, $onload="", $js="", $script_only=false, $css='')
 {
 
    	global $path_to_root, $page_security;
@@ -34,7 +34,7 @@ function page($title, $no_menu=false, $is_index=false, $onload="", $js="", $scri
 
    	include($path_to_root . "/includes/page/header.inc");
 
-   	page_header($title, $no_menu, $is_index, $onload, $js);
+   	page_header($title, $no_menu, $is_index, $onload, $js, $css);
 	check_page_security($page_security);
 //	error_box();
 	if($script_only) {		
@@ -259,7 +259,7 @@ function check_write($path)
 	) return 0;
 	
 	return is_writable($path) ? (is_dir($path) ? 1 : -1) 
-		: ($path =='.' ? 0 : check_write(dirname($path)));
+		: (is_file($path) ? 0 : ($path == '.' ? 0 : check_write(dirname($path))));
 }
 
 /*
