@@ -32,7 +32,7 @@ function update_company_prefs( $params, $pref = TB_PREF )
 */
 function get_company_pref($prefs = null, $tbpref = null)
 {
-	global $SysPrefs, $core_version;
+	global $SysPrefs, $db_version;
 	
 	if (!isset($_SESSION['SysPrefs']->prefs)) { // cached preferences
 
@@ -54,7 +54,7 @@ function get_company_pref($prefs = null, $tbpref = null)
 		$SysPrefs = &$_SESSION['SysPrefs'];
 
 		// update current db status for info in log file
-		$SysPrefs->db_ok = $SysPrefs->prefs['version_id'] == $core_version;
+		$SysPrefs->db_ok = $SysPrefs->prefs['version_id'] == $db_version;
 	}
 
 	$all = $_SESSION['SysPrefs']->prefs;
