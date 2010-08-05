@@ -94,19 +94,6 @@ function install_connect_db() {
 	return true;
 }
 
-function coa_type_list_row($label, $name, $selected=null)
-{
-	
-	$coa_types = array(
-		0 => _('New company with Standard American COA (4digit)'),
-		_('Demo based on Standard American COA (4digit)'),
-		_('Any COA selected from FA repository (inet connection required)')
-	);
-	echo "<tr><td>$label</td><td>\n";
-	echo array_selector($name, $selected, $coa_types);
-	echo "</td></tr>";
-}
-
 function do_install() {
 	global $path_to_root, $db_connections, $def_coy, $installed_extensions;
 
@@ -165,7 +152,7 @@ if (!isset($_SESSION['inst_set']))  // default settings
 	);
 
 if (!@$_POST['Tests'])
-	$_POST['Page'] = 1;
+	$_POST['Page'] = 1; // set to start page
 
 if (isset($_POST['back']) && (@$_POST['Page']>1)) {
 	$_POST['Page']--;
@@ -248,9 +235,9 @@ elseif (isset($_POST['set_admin'])) {
 start_form();
 	switch(@$_POST['Page']) {
 		default:
-			include ('../install.html');
-			submit_center('continue', _('Continue >>'));
-			break;
+//			include ('../install.html');
+//			submit_center('continue', _('Continue >>'));
+//			break;
 		case '1':
 			subpage_title(_('System Diagnostics'));
 			$_POST['Tests'] = display_system_tests(true);
