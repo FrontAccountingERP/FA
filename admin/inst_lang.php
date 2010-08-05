@@ -31,7 +31,6 @@ simple_page_mode(true);
 function display_languages()
 {
 	global $table_style, $installed_languages, $dflt_lang;
-	global $repository, $FA_repo_version;
 	
 	$th = array(_("Language"), _("Name"), _("Encoding"), _("Right To Left"),
 		_("Installed"), _("Available"), _("Default"), "", "");
