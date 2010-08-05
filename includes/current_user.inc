@@ -353,7 +353,8 @@ function user_dec_sep()
 
 function user_theme()
 {
-	return $_SESSION["wa_current_user"]->prefs->get_theme();
+	return isset($_SESSION["wa_current_user"]) ?
+		$_SESSION["wa_current_user"]->prefs->get_theme() : 'default';
 }
 
 function user_pagesize()
@@ -469,7 +470,7 @@ function array_append(&$array, $elements)
 function array_search_value($needle, $haystack, $valuekey=null)
 {
 	foreach($haystack as $key => $value) {
-		$val = isset($valuekey) ? $value[$valuekey] : $value;
+		$val = isset($valuekey) ? @$value[$valuekey] : $value;
 		if ($needle == $val){
 			return $value;
 		}
