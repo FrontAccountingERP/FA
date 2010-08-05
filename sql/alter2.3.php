@@ -26,7 +26,7 @@ class fa2_3 {
 	//
 	function install($pref, $force) 
 	{
-		global $core_version;
+		global $db_version;
 
 		if (!$this->preconf)
 			return false;
@@ -91,7 +91,7 @@ class fa2_3 {
 			if (!db_query($sql))
 				return false;
 		}
-		return  update_company_prefs(array('version_id'=>$core_version), $pref);
+		return  update_company_prefs(array('version_id'=>$db_version), $pref);
 	}
 	//
 	//	Checking before install
