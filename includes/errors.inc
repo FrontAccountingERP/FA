@@ -27,7 +27,7 @@ function error_handler($errno, $errstr, $file, $line) {
 			return true;
 		}
 	}
-
+	
 	// error_reporting==0 when messages are set off with @ 
 	if ($errno & error_reporting())
 			$messages[] = array($errno, $errstr, $file, $line);
@@ -167,7 +167,7 @@ function check_db_error($msg, $sql_statement, $exit_if_error=true, $rollback_if_
 		
 		if ($rollback_if_error) 
 		{
-		  $rollback_result = db_query("rollback","could not rollback");			
+		  $rollback_result = db_query("rollback");
 		}
 		
 		if ($exit_if_error) 
