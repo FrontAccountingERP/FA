@@ -19,7 +19,43 @@ Legend:
 ! -> Note
 $ -> Affected files
 
-04-Aug-2010 Joe Hung
+04-Aug-2010 Janusz Dobrowolski
++ Rewritten installation wizard, uploading additional COAs form repository during install
+  /install/index.php
+  /install/stylesheet.css
+  /install/isession.inc (new)
+  /install/save.php (removed)
+! COAs selected from previously uploaded charts.
+$ /admin/create_coy.php
+! Diagnostic tests moved to separate file, to be reused during FA install.
+$ /includes/system_tests.inc (new)
+  /admin/system_diagnostics.php
+! user_theme fixed to be used before login, and warning suppressed in array_search_value 
+$ /includes/current_user.inc
+# Fixed bug in check_write() helper
+$ /includes/main.inc
+! Changed core_version to db_version for better readibility
+$ /admin/db/company_db.inc
+  /sql/alter2.3.php
+  /version.php
++ Chart packages support added
+$ /includes/packages.inc
+  /includes/ui/ui_lists.inc
+! Update from beta to RC1
+$ /sql/alter2.3rc.sql (new)
+  /sql/en_US-demo.sql
+  /sql/en_US-new.sql
+# Fixed exit on error in check_db_error()
+$ /includes/errors.inc
+! Added css parameter in page();
+$ /includes/page/header.inc
+  /includes/main.inc
+! Changed repository parameteres format.
+$ /version.php
+! Cleanup
+$ /admin/inst_lang.php
+
+04-Aug-2010 Joe Hunt
 + Added an extra parameter to db_export in maintenance_db.inc for new COAs
 $ /admin/db/maintenance_db.inc
 # Link error in items.php for Pictures
