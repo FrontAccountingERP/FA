@@ -47,7 +47,7 @@ function help_url($context=null)
 
 function send_scripts()
 {
-    global $js_lib, $js_static, $js_path, $js_userlib, $path_to_root, $go_debug;
+    global $js_static, $js_path, $js_userlib, $path_to_root, $go_debug;
 
 	$js ='';
 	foreach($js_static as $jsfile)
@@ -69,7 +69,7 @@ function send_scripts()
     echo $js;
 }
 
-function page_header($title, $no_menu=false, $is_index=false, $onload="", $js="")
+function page_header($title, $no_menu=false, $is_index=false, $onload="", $js="", $css='')
 {
 	// titles and screen header
 	global $path_to_root, $def_app, $use_popup_windows, $help_base_url;
@@ -126,7 +126,10 @@ function page_header($title, $no_menu=false, $is_index=false, $onload="", $js=""
 	echo "<head><title>$title</title>";
 	echo "<meta http-equiv='Content-type' content='text/html; charset=$encoding'>";
 	echo "<link href='$path_to_root/themes/$theme/default.css' rel='stylesheet' type='text/css'> \n";
-	send_scripts($js);
+	if ($css)
+		echo '<link href="'.$css.'" rel="stylesheet" type="text/css">';
+
+	send_scripts();
 
 	echo "</head> \n";
 	if ($onload == "")
