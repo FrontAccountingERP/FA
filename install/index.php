@@ -1,352 +1,326 @@
 <?php
 /**********************************************************************
-	This installer is based on code from the	
- 	Website Baker Project <http://www.websitebaker.org/>
- 	Copyright (C) 2004-2007, Ryan Djurovich.
- 	The code is released under GPLv3
- 	modified by FrontAcounting, LLC.
+    Copyright (C) FrontAccounting, LLC.
+	Released under the terms of the GNU General Public License, GPL, 
+	as published by the Free Software Foundation, either version 3 
+	of the License, or (at your option) any later version.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-error_reporting(E_ALL);
-ini_set("display_errors", "On");
-// Start a session
-if(!defined('SESSION_STARTED'))
+$page_security = 'SA_OPEN';
+$path_to_root="..";
+
+//if (file_exists($path_to_root.'/config.php'))
+//	header("Location: $path_to_root/index.php");
+
+include($path_to_root . "/install/isession.inc");
+
+page(_($help_context = "FrontAccouting ERP Installation Wizard"), true, false, "", '', false,
+	'stylesheet.css');
+
+include($path_to_root . "/includes/ui.inc");
+include($path_to_root . "/includes/system_tests.inc");
+include($path_to_root . "/admin/db/maintenance_db.inc");
+include($path_to_root . "/includes/packages.inc");
+include($path_to_root . "/installed_extensions.php");
+//-------------------------------------------------------------------------------------------------
+
+function subpage_title($txt) 
 {
-	session_name('ba_session_id');
-	session_start();
-	define('SESSION_STARTED', true);
+	global $path_to_root;
+	
+	echo '<center><img src="'.$path_to_root.'/themes/default/images/logo_frontaccounting.png" width="250" height="50" alt="Logo" />
+		</center>';
+	$page = @$_POST['Page'] ? $_POST['Page'] : 1;
+
+	display_heading(
+		$page==5 ? $txt :
+			_("FrontAccouting ERP Installation Wizard").'<br>'
+			. sprintf(_('Step %d: %s'),  $page , $txt));
+	br();
 }
 
-// Check if the page has been reloaded
-if(!isset($_GET['sessions_checked']) || $_GET['sessions_checked'] != 'true')
+function display_coas()
 {
-	// Set session variable
-	$_SESSION['session_support'] = '<font class="good">Enabled</font>';
-	$_SESSION['message'] = '';
-	// Reload page
-	header('Location: index.php?sessions_checked=true');
-	exit(0);
+	start_table(TABLESTYLE);
+	$th = array(_("Chart of accounts"), _("Description"), _("Install"));
+	table_header($th);
+
+	$k = 0;
+	$charts = get_charts_list();
+
+	foreach($charts as $pkg_name => $coa)
+	{
+		$available = @$coa['available'];
+		$installed = @$coa['version'];
+		$id = @$coa['local_id'];
+
+		alt_table_row_color($k);
+		label_cell($coa['name']);
+		label_cell(is_array($coa['Descr']) ? implode('<br>', $coa['Descr']) :  $coa['Descr']);
+		if ($installed)
+			label_cell(_("Installed"));
+		else
+			check_cells(null, 'coas['.$coa['package'].']');
+
+		end_row();
+	}
+	end_table(1);
 }
-else
+
+function install_connect_db() {
+	global $db;
+
+	$conn = $_SESSION['inst_set'];
+	
+	$db = mysql_connect($conn["host"] , $conn["dbuser"], $conn["dbpassword"]);
+	if(!$db) {
+		display_error('Cannot connect to database server. Host name, username and/or password incorrect.');
+		return false;
+	}
+	if (!defined('TB_PREF'))
+		define('TB_PREF', $conn["tbpref"]);
+
+	if (!mysql_select_db($conn["dbname"], $db)) {
+		$sql = "CREATE DATABASE " . $conn["dbname"];
+		if (!mysql_query($sql)) {
+			display_error('Cannot create database. Check your permissions to database creation or selct already created database.');
+			return false;
+		}
+		return mysql_select_db($conn["dbname"], $db);
+	}
+	return true;
+}
+
+function coa_type_list_row($label, $name, $selected=null)
 {
-	// Check if session variable has been saved after reload
-	if(isset($_SESSION['session_support']))
-	{
-		$session_support = $_SESSION['session_support'];
+	
+	$coa_types = array(
+		0 => _('New company with Standard American COA (4digit)'),
+		_('Demo based on Standard American COA (4digit)'),
+		_('Any COA selected from FA repository (inet connection required)')
+	);
+	echo "<tr><td>$label</td><td>\n";
+	echo array_selector($name, $selected, $coa_types);
+	echo "</td></tr>";
+}
+
+function do_install() {
+	global $path_to_root, $db_connections, $def_coy, $installed_extensions;
+
+	$coa = $_SESSION['inst_set']['coa'];
+	if (install_connect_db() && db_import($path_to_root.'/sql/'.$coa, $_SESSION['inst_set'])) {
+		$con = $_SESSION['inst_set'];
+		$table_prefix = $con['tbpref'];
+		update_admin_password($con, md5($con['pass']));
+		update_company_prefs(array('coy_name'=>$con['name']));
+
+		$def_coy = 0;
+		$tb_pref_counter = 0;
+		$db_connections = array (0=> array (
+		 'name' => $con['name'],
+		 'host' => $con['host'],
+		 'dbuser' => $con['dbuser'],
+		 'dbpassword' => $con['dbpassword'],
+		 'dbname' => $con['dbname'],
+		 'tbpref' => $table_prefix
+		));
+		$err = write_config_db($table_prefix != "");
+
+		if ($err == -1) {
+			display_error(_("Cannot open the config_db.php configuration file:"));
+			return false;
+		} else if ($err == -2) {
+			display_error(_("Cannot write to the config_db.php configuration file"));
+			return false;
+		} else if ($err == -3) {
+			display_error(_("The configuration file config_db.php is not writable. Change its permissions so it is, then re-run step 5."));
+			return false;
+		}
+		if (!copy($path_to_root. "/config.default.php", $path_to_root. "/config.php")) {
+			display_error(_("Cannot save system configuration file config.php"));
+			return false;
+		}
+		if (count($installed_extensions))
+		 if (!update_extensions($installed_extensions)) { // update company 0 extensions (charts)
+			display_error(_("Can't update extensions configuration."));
+			return false;
+		 }
+		return true;
 	}
-	else
-	{
-		$session_support = '<font class="bad">Disabled</font>';
+	return false;
+}
+
+if (!isset($_SESSION['inst_set']))  // default settings
+	$_SESSION['inst_set'] = array(
+		'host'=>'localhost', 
+		'dbuser' => 'root',
+		'dbpassword' => '',
+		'username' => 'admin',
+		'tbpref' => '0_',
+		'admin' => 'admin',
+		'coa_type' => 0
+	);
+
+if (!@$_POST['Tests'])
+	$_POST['Page'] = 1;
+
+if (isset($_POST['back']) && (@$_POST['Page']>1)) {
+	$_POST['Page']--;
+	if ($_POST['Page'] == 3)
+		$_POST['Page'] = 2;
+}
+elseif (isset($_POST['continue'])) {
+	$_POST['Page'] = 2;
+}
+elseif (isset($_POST['db_test'])) {
+	if (get_post('host')=='') {
+		display_error(_('Host name cannot be empty'));
+		set_focus('host');
+	}
+	elseif ($_POST['dbuser']=='') {
+		display_error(_('Database user name cannot be empty'));
+		set_focus('dbuser');
+	}
+	elseif ($_POST['dbname']=='') {
+		display_error(_('Database name cannot be empty'));
+		set_focus('dbname');
+	}
+	else {
+		$_SESSION['inst_set'] = array_merge($_SESSION['inst_set'], array(
+			'host' => $_POST['host'],
+			'dbuser' => $_POST['dbuser'],
+			'dbpassword' => $_POST['dbpassword'],
+			'dbname' => $_POST['dbname'],
+			'tbpref' => $_POST['tbpref'] ? '0_' : '',
+		));
+		if (install_connect_db()) {
+			$_POST['Page'] = check_value('sel_coas') ? 3 : 4;
+		}
 	}
 }
-$path_to_root = "..";
-//include_once($path_to_root.'/config.php');
-$comp_path = $path_to_root."/company";
+elseif(get_post('install_coas')) 
+{
+	$ret = true;
+	if (isset($_POST['coas']))
+		foreach($_POST['coas'] as $package => $ok) {
+			$ret &= install_extension($package);
+		}
+	if ($ret) {
+		$_POST['Page'] = 4;
+	}
+}
+elseif (isset($_POST['set_admin'])) {
+	// check company settings
+	if (get_post('name')=='') {
+		display_error(_('Company name cannot be empty.'));
+		set_focus('name');
+	}
+	elseif (get_post('admin')=='') {
+		display_error(_('Company admin name cannot be empty.'));
+		set_focus('admin');
+	}
+	elseif (get_post('pass')=='') {
+		display_error(_('Company admin password cannot be empty.'));
+		set_focus('pass');
+	}
+	elseif (get_post('pass')!=get_post('repass')) {
+		display_error(_('Company admin passwords differ.'));
+		unset($_POST['pass'],$_POST['repass']);
+		set_focus('pass');
+	}
+	else {
+
+		$_SESSION['inst_set'] = array_merge($_SESSION['inst_set'], array(
+			'coa' => $_POST['coa'],
+			'pass' => $_POST['pass'],
+			'name' => $_POST['name'],
+			'admin' => $_POST['admin'],
+		));
+		if (do_install()) {
+			$_POST['Page'] = 5;
+		}
+	}
+}
+
+start_form();
+	switch(@$_POST['Page']) {
+		default:
+			include ('../install.html');
+			submit_center('continue', _('Continue >>'));
+			break;
+		case '1':
+			subpage_title(_('System Diagnostics'));
+			$_POST['Tests'] = display_system_tests(true);
+			br();
+			if (@$_POST['Tests']) {
+				display_notification(_('All application preliminary requirements seems to be correct. Please press Continue button below.'));
+				submit_center('continue', _('Continue >>'));
+			} else {
+				display_error(_('Application cannot be installed. Please fix problems listed below in red, and press Refresh button.'));
+				submit_center('refresh', _('Refresh'));
+			}
+			break;
+
+		case '2':
+			if (!isset($_POST['host'])) {
+				foreach($_SESSION['inst_set'] as $name => $val)
+					$_POST[$name] = $val;
+			}
+			subpage_title(_('Database Server Settings'));
+			start_table(TABLESTYLE);
+			text_row_ex(_("Server Host"), 'host', 30);
+			text_row_ex(_("Database User"), 'dbuser', 30);
+			text_row_ex(_("Database Password"), 'dbpassword', 30);
+			text_row_ex(_("Database Name"), 'dbname', 30);
+			yesno_list_row(_("Use '0_' Table Prefix"), 'tbpref', 1, _('Yes'), _('No'), false);
+			check_row(_("Install additional COAs form FA repository"), 'sel_coas');
+			end_table(1);
+			display_note(_('Use table prefix if you share selected database with another application, or you want to use it for more than one FA company.'));
+			submit_center_first('back', _('<< Back'));
+			submit_center_last('db_test', _('Continue >>'));
+			break;
+
+		case '3': // select COA
+			subpage_title(_('Charts of accounts selection'));
+			display_coas();
+			submit_center_first('back', _('<< Back'));
+			submit_center_last('install_coas', _('Continue >>'));
+			break;
+
+		case '4':
+			if (!isset($_POST['name'])) {
+				foreach($_SESSION['inst_set'] as $name => $val)
+					$_POST[$name] = $val;
+				set_focus('name');
+			}
+			subpage_title(_('Company Settings'));
+			start_table(TABLESTYLE);
+			text_row_ex(_("Company Name"), 'name', 30);
+			text_row_ex(_("Admin Login"), 'admin', 30);
+			password_row(_("Admin Password"), 'pass', @$_POST['pass']);
+			password_row(_("Reenter Password"), 'repass', @$_POST['repass']);
+			coa_list_row(_("Select Chart of Accounts"), 'coa');
+			end_table(1);
+			submit_center_first('back', _('<< Back'));
+			submit_center_last('set_admin', _('Continue >>'));
+			break;
+
+		case '5': // final screen
+			subpage_title(_('FrontAccounting ERP has been installed successsfully.'));
+			display_note(_('Please remove install wizard folder.'));
+			$install_done = true;
+			hyperlink_no_params($path_to_root.'/index.php', _('Click here to start.'));
+			break;
+
+	}
+
+	hidden('Tests');
+	hidden('Page');
+end_form(1);
+
+end_page(false, false, true);
 
 ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head>
-<title>FrontAccounting Installation Wizard</title>
-<link href="stylesheet.css" rel="stylesheet" type="text/css">
-<script language="javascript" type="text/javascript">
-
-function change_os(type) {
-	if(type == 'linux') {
-		document.getElementById('operating_system_linux').checked = true;
-		document.getElementById('operating_system_windows').checked = false;
-		document.getElementById('file_perms_box').style.display = 'block';
-	} else if(type == 'windows') {
-		document.getElementById('operating_system_linux').checked = false;
-		document.getElementById('operating_system_windows').checked = true;
-		document.getElementById('file_perms_box').style.display = 'none';
-	}
-}
-
-</script>
-</head>
-<body>
-
-<table cellpadding="0" cellspacing="0" border="0" width="750" align="center">
-<tr>
-	<td width="100%" align="center" style="font-size: 20px;">
-		<font style="color: #FFFFFF;">FrontAccounting</font>
-		<font style="color: #DDDDDD;">Installation Wizard</font>
-	</td>
-</tr>
-</table>
-
-<form name="frontaccounting_installation_wizard" action="save.php" method="post">
-<input type="hidden" name="url" value="" />
-<input type="hidden" name="password_fieldname" value="admin_password" />
-<input type="hidden" name="remember" id="remember" value="true" />
-<input type="hidden" name="path_to_root" value="<?php echo $path_to_root; ?>" />
-
-<table cellpadding="0" cellspacing="0" border="0" width="750" align="center" style="margin-top: 10px;">
-<tr>
-	<td class="content">
-			<h2>Welcome to the FrontAccounting Installation Wizard.</h2>
-		<center>
-			<img src="<?php echo $path_to_root; ?>/themes/default/images/logo_frontaccounting.png" width="250" height="50" alt="Logo" />
-		</center>
-<?php
- if(file_exists($path_to_root.'/config.php')) { 
-?><div style="width: 700px; padding: 10px; margin-bottom: 5px; border: 1px solid #FF0000; background-color: #FFDBDB;"><b>Error:</b> Seems you have FrontAccounting application already installed.<BR>
-After logging as an admin to first installed company you can:
-<ul>
-<li> Add more companies using Add/Update Companies under Setup tab;</li>
-<li> Upgrade FA version using Upgrade Software under Setup tab.</li>
-</ul></div>
-<?php exit; } ?>
-		<?php
-		if(isset($_SESSION['message']) AND $_SESSION['message'] != '') {
-			?><div style="width: 700px; padding: 10px; margin-bottom: 5px; border: 1px solid #FF0000; background-color: #FFDBDB;"><b>Error:</b> <?php echo $_SESSION['message']; ?></div><?php
-		}
-		?>
-		<table cellpadding="3" cellspacing="0" width="100%" align="center">
-		<tr>
-			<td colspan="8"><h1>Step 1</h1>Please check the following requirements are met before continuing...</td>
-		</tr>
-		<?php if($session_support != '<font class="good">Enabled</font>') { ?>
-		<tr>
-			<td colspan="8" style="font-size: 10px;" class="bad">Please note: PHP Session Support may appear disabled if your browser does not support cookies.</td>
-		</tr>
-		<?php } ?>
-		<tr>
-			<td width="140" style="color: #666666;">PHP Version > 4.1.0</td>
-			<td width="35">
-				<?php
-				$phpversion = substr(PHP_VERSION, 0, 6);
-				if($phpversion > 4.1) {
-					?><font class="good">Yes</font><?php
-				} else {
-					?><font class="bad">No</font><?php
-				}
-				?>
-			</td>
-			<td width="140" style="color: #666666;">PHP Session Support</td>
-			<td width="115"><?php echo $session_support; ?></td>
-			<td width="105" style="color: #666666;">PHP Safe Mode</td>
-			<td>
-				<?php
-				if(ini_get('safe_mode')) {
-					?><font class="bad">Enabled</font><?php
-				} else {
-					?><font class="good">Disabled</font><?php
-				}
-				?>
-			</td>
-		</tr>
-		<?php if (substr(php_sapi_name(), 0, 3) == 'cgi') {	?>
-		<tr>
-			<td width="140" style="color: #666666;">Magic Quotes GPC</td>
-			<td width="35">
-				<?php
-				if(ini_get('magic_quotes_gpc')) {
-					echo '<font class="bad">Enabled</font>';
-				} else {
-					echo '<font class="good">Disabled</font>';
-				}
-				?>
-			</td>
-			<td width="140" style="color: #666666;">Register Globals</td>
-			<td width="35">
-				<?php
-				if (ini_get('register_globals')) {
-					echo '<font class="bad">Enabled</font>';
-				} else {
-					echo '<font class="good">Disabled</font>';
-				}
-				?>
-			</td>
-		</tr>
-		<?php } ?>
-		</table>
-		<table cellpadding="3" cellspacing="0" width="100%" align="center">
-		<tr>
-			<td colspan="8"><h1>Step 2</h1>Please check the following files/folders are writeable before continuing...</td>
-		</tr>
-		<tr>
-			<td style="color: #666666;">config_db.php</td>
-			<td><?php if(is_writable($path_to_root)) { echo '<font class="good">Writeable</font>'; } elseif(file_exists($path_to_root.'/config_db.php')) { echo '<font class="bad">File Exists</font>'; } else { echo '<font class="bad">Unwriteable</font>'; } ?></td>
-			<td style="color: #666666;">modules/</td>
-			<td><?php if(is_writable($path_to_root.'/modules/')) { echo '<font class="good">Writeable</font>'; } elseif(!file_exists($path_to_root.'/modules/')) { echo '<font class="bad">Directory Not Found</font>'; } else { echo '<font class="bad">Unwriteable</font>'; } ?></td>
-		</tr>
-		<tr>
-			<td style="color: #666666;">lang/</td>
-			<td><?php if(is_writable($path_to_root.'/lang/')) { echo '<font class="good">Writeable</font>'; } elseif(!file_exists($path_to_root.'/lang/')) { echo '<font class="bad">Directory Not Found</font>'; } else { echo '<font class="bad">Unwriteable</font>'; } ?></td>
-			<td style="color: #666666;"><?php echo 'Company data dirs ('.  $comp_path. '/*)'; ?></td>
-			<td><?php if(is_writable($comp_path) && is_writable($comp_path.'/0') && is_writable($comp_path.'/0/images'))
-			{ echo '<font class="good">Writeable</font>'; } elseif(!file_exists($comp_path)) {
-			 echo '<font class="bad">Directory Not Found</font>'; } else { echo '<font class="bad">Unwriteable</font>'; } ?></td>
-		</tr>
-		</table>
-		<table cellpadding="3" cellspacing="0" width="100%" align="center">
-		<tr>
-			<td colspan="2"><h1>Step 3</h1>Please check your path settings...</td>
-		</tr>
-		<tr>
-			<td width="125" style="color: #666666;">
-				Absolute URL:
-			</td>
-			<td>
-				<?php
-				// Try to guess installation URL
-				$guessed_url = 'http://'.$_SERVER["SERVER_NAME"].$_SERVER["SCRIPT_NAME"];
-				$guessed_url = rtrim(dirname($guessed_url), 'install');
-				?>
-				<input type="text" tabindex="1" name="ba_url" style="width: 99%;" value="<?php if(isset($_SESSION['ba_url'])) { echo $_SESSION['ba_url']; } else { echo $guessed_url; } ?>" />
-			</td>
-		</tr>
-		</table>
-		<table cellpadding="5" cellspacing="0" width="100%" align="center">
-		<tr>
-			<td colspan="3"><h1>Step 4</h1>Please specify your operating system information below...</td>
-		</tr>
-		<tr height="50">
-			<td width="170">
-				Server Operating System:
-			</td>
-			<td width="180">
-				<input type="radio" tabindex="4" name="operating_system" id="operating_system_linux" onclick="document.getElementById('file_perms_box').style.display = 'block';" value="linux"<?php if(!isset($_SESSION['operating_system']) OR $_SESSION['operating_system'] == 'linux') { echo ' checked'; } ?> />
-				<font style="cursor: pointer;" onclick="javascript: change_os('linux');">Linux/Unix based</font>
-				<br />
-				<input type="radio" tabindex="5" name="operating_system" id="operating_system_windows" onclick="document.getElementById('file_perms_box').style.display = 'none';" value="windows"<?php if(isset($_SESSION['operating_system']) AND $_SESSION['operating_system'] == 'windows') { echo ' checked'; } ?> />
-				<font style="cursor: pointer;" onclick="javascript: change_os('windows');">Windows</font>
-			</td>
-			<td>
-				<div name="file_perms_box" id="file_perms_box" style="margin: 0; padding: 0; display: <?php if(isset($_SESSION['operating_system']) AND $_SESSION['operating_system'] == 'windows') { echo 'none'; } else { echo 'block'; } ?>;">
-					<input type="checkbox" tabindex="6" name="world_writeable" id="world_writeable" value="true"<?php if(isset($_SESSION['world_writeable']) AND $_SESSION['world_writeable'] == true) { echo 'checked'; } ?> />
-					<label for="world_writeable">
-						World-writeable file permissions (777)
-					</label>
-					<br />
-					<font class="note">(Please note: this is only recommended for testing environments)</font>
-				</div>
-			</td>
-		</tr>
-		</table>
-		<table cellpadding="5" cellspacing="0" width="100%" align="center">
-		<tr>
-			<td colspan="5">Please enter your MySQL database server details below...</td>
-		</tr>
-		<tr>
-			<td width="150" style="color: #666666;">Host Name:</td>
-			<td width="230">
-				<input type="text" tabindex="7" name="database_host" style="width: 98%;" value="<?php if(isset($_SESSION['database_host'])) { echo $_SESSION['database_host']; } else { echo 'localhost'; } ?>" />
-			</td>
-			<td width="7">&nbsp;</td>
-			<td width="70" style="color: #666666;">Username:</td>
-			<td>
-				<input type="text" tabindex="9" name="database_username" style="width: 98%;" value="<?php if(isset($_SESSION['database_username'])) { echo $_SESSION['database_username']; } else { echo 'root'; } ?>" />
-			</td>
-		</tr>
-		<tr>
-			<td style="color: #666666;">Database Name:</td>
-			<td>
-				<input type="text" tabindex="8" name="database_name" style="width: 98%;" value="<?php if(isset($_SESSION['database_name'])) { echo $_SESSION['database_name']; } else { echo 'frontaccount'; } ?>" />
-			</td>
-			<td>&nbsp;</td>
-			<td style="color: #666666;">Password:</td>
-			<td>
-				<input type="password" tabindex="10" name="database_password" style="width: 98%;"<?php if(isset($_SESSION['database_password'])) { echo ' value = "'.$_SESSION['database_password'].'"'; } ?> />
-			</td>
-		</tr>
-		<tr>
-			<td style="color: #666666;">Table Prefix ( 0_ ):</td>
-			<td>
-				<input type="checkbox" tabindex="11" name="table_prefix" id="table_prefix" value="true"<?php if(!isset($_SESSION['table_prefix'])) { echo ' checked'; } elseif($_SESSION['table_prefix'] == 'true') { echo ' checked'; } ?> />
-			</td>
-			<td>&nbsp;</td>
-			<td colspan="2">
-				<input type="checkbox" tabindex="12" name="install_tables" id="install_tables" value="true" onclick="document.getElementById('db_options').style.display = this.checked? 'block':'none';"<?php if(!isset($_SESSION['install_tables'])) { echo ' checked'; } elseif($_SESSION['install_tables'] == 'true') { echo ' checked'; } ?> />
-				<label for="install_tables" style="color: #666666;">Install Tables</label>
-				<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				<span style="font-size: 10px; color: #666666;">(Please note: May remove existing tables and data)</span></td>
-			</td>
-		</tr>
-		<tr id="db_options">
-			<td style="color: #666666;">Fill database with demo data:</td>
-			<td>
-				<input type="checkbox" tabindex="6" name="demo_data" id="demo_data" value="true" <?php if(!isset($_SESSION['demo_data']) OR $_SESSION['demo_data'] == true) { echo 'checked'; } ?> />
-				<br />
-		</td>
-			<td colspan="2">&nbsp;</td>
-		</tr>
-		<tr>
-			<td colspan="5"><h1>Step 5</h1>Please enter the training company name below (you can create your own company later)...</td>
-		</tr>
-		<tr>
-			<td style="color: #666666;" colspan="1">Company Name:</td>
-			<td colspan="4">
-				<input type="text" tabindex="13" name="company_name" style="width: 99%;" value="<?php if(isset($_SESSION['company_name'])) { echo $_SESSION['company_name']; } else { echo 'Training Co.'; } ?>" />
-			</td>
-		</tr>
-		<tr>
-			<td colspan="5"><h1>Step 6</h1>Please enter your Administrator account details below...</td>
-		</tr>
-		<tr>
-			<td style="color: #666666;">Username:</td>
-			<td>
-				admin
-				<!--<input type="text" tabindex="14" name="admin_username" style="width: 98%;" value="<?php if(isset($_SESSION['admin_username'])) { echo $_SESSION['admin_username']; } else { echo 'admin'; } ?>" />-->
-			</td>
-			<td>&nbsp;</td>
-			<td style="color: #666666;">Password:</td>
-			<td>
-				<input type="password" tabindex="16" name="admin_password" style="width: 98%;"<?php if(isset($_SESSION['admin_password'])) { echo ' value = "'.$_SESSION['admin_password'].'"'; } ?> />
-			</td>
-		</tr>
-		<tr>
-			<td style="color: #666666;">Email:</td>
-			<td>
-				<input type="text" tabindex="15" name="admin_email" style="width: 98%;"<?php if(isset($_SESSION['admin_email'])) { echo ' value = "'.$_SESSION['admin_email'].'"'; } ?> />
-			</td>
-			<td>&nbsp;</td>
-			<td style="color: #666666;">Re-Password:</td>
-			<td>
-				<input type="password" tabindex="17" name="admin_repassword" style="width: 98%;"<?php if(isset($_SESSION['admin_password'])) { echo ' value = "'.$_SESSION['admin_password'].'"'; } ?> />
-			</td>
-		</tr>
-
-		<tr>
-			<td colspan="5" style="padding: 10px; padding-bottom: 0;"><h1 style="font-size: 0px;">&nbsp;</h1></td>
-		</tr>
-		<tr>
-			<td colspan="4">
-				<table cellpadding="0" cellspacing="0" width="100%" border="0">
-				<tr valign="top">
-					<td>Please note: &nbsp;</td>
-					<td>
-						FrontAccounting is released under the
-						<a href="http://www.gnu.org/licenses/gpl-3.0.html" target="_blank" tabindex="19">GNU General Public License.</a> By 
-						clicking install, you are accepting the license.
-					</td>
-				</tr>
-				</table>
-			</td>
-			<td colspan="1" align="right">
-				<input type="submit" tabindex="20" name="submit" value="Install FrontAccounting" class="submit" />
-			</td>
-		</tr>
-		</table>
-
-	</td>
-</tr>
-</table>
-
-</form>
-
-<table cellpadding="0" cellspacing="0" border="0" width="100%" style="padding: 10px 0px 10px 0px;">
-<tr>
-	<td align="center" style="font-size: 10px;">
-		<!-- Please note: the below reference to the GNU GPL should not be removed, as it provides a link for users to read about warranty, etc. -->
-		<a href="http://frontaccounting.com/" style="color: #000000;" target="_blank">FrontAccounting</a>
-		is	released under the
-		<a href="http://www.gnu.org/licenses/gpl-3.0.html" style="color: #000000;" target="_blank">GNU General Public License</a>
-		<!-- Please note: the above reference to the GNU GPL should not be removed, as it provides a link for users to read about warranty, etc. -->
-	</td>
-</tr>
-</table>
-
-</body>
-</html>

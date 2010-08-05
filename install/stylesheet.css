@@ -69,3 +69,6 @@ a:hover {
 .hide {
 	display: none;
 }
+select {
+    max-width: 1000px;
+}
