@@ -284,7 +284,7 @@ function get_pkg_or_list($type = null, $pkgname = null, $filter=array(), $outkey
 	//
 	$loclist = PKG_CACHE_PATH.'/Release.gz';
 	
-	if ($type!=null && !is_array($type)) {
+	if (isset($type) && !is_array($type)) {
 		$type = array($type);
 	}
 	$refresh = true;
@@ -308,7 +308,6 @@ function get_pkg_or_list($type = null, $pkgname = null, $filter=array(), $outkey
 	} while($refresh);
 
 	$Release = get_control_file($loclist, 'Filename');
-
 	// download and check all indexes containing given package types
 	// then complete package list or seek for pkg
 	$Packages = array();
@@ -343,7 +342,7 @@ function get_pkg_or_list($type = null, $pkgname = null, $filter=array(), $outkey
 		$pkglist = get_control_file($locindex, 'Package');
 		foreach($pkglist as $name => $pkg) {
 			$pkgfullname = REPO_URL.'/'.$parms['Path']."/".$pkg['Filename'].'.pkg';
-			if ($type==null || in_array($pkg['Type'], $type)) {
+			if (!isset($type) || in_array($pkg['Type'], $type)) {
 				if (empty($filter))
 					$p = $pkg;
 				else {
@@ -374,7 +373,7 @@ function get_pkg_or_list($type = null, $pkgname = null, $filter=array(), $outkey
 			}
 		}
 	}
-	
+
 	return $Packages;
 }
 
@@ -460,9 +459,14 @@ function get_languages_list()
 //	Return merged list of available and installed extensions as a local 
 // configuration array supplemented with installed versions information.
 //
-function get_extensions_list()
+function get_extensions_list($type = null)
 {
-	$pkgs = get_pkg_or_list('extension', null, array(
+
+	if (isset($type) && !is_array($type)) {
+		$type = array($type);
+	}
+	
+	$pkgs = get_pkg_or_list($type, null, array(
 				'Package' => 'package',
 				'Version' => 'available',
 				'Name' => 'name',
@@ -471,6 +475,7 @@ function get_extensions_list()
 				'DefaultStatus'=> 'active',
 				'MenuTabs' => 'tabs',
 				'MenuEntries' => 'entries',
+				'Encoding' => 'encoding',
 				'AccessExtensions' => 'acc_file',
 				'InstallPath' => 'path'
 			));
@@ -479,7 +484,7 @@ function get_extensions_list()
 	// 
 	$local = get_company_extensions();
 	foreach($local as $extno => $ext) {
-		if ($ext['type'] != 'extension') continue;
+		if (!in_array($ext['type'], $type)) continue;
 		$ext['local_id'] = $extno;
 		if (!isset($pkgs[$ext['package']]) || $ext['package'] == '')
 			$pkgs[] = $ext;
@@ -531,6 +536,7 @@ function get_charts_list()
 				'Description' => 'Descr',
 				'Type' => 'type',
 				'InstallPath' => 'path',
+				'Encoding' => 'encoding',
 				'SqlScript' => 'sql'
 			));
 
