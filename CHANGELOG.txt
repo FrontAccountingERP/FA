@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+06-Aug-2010 Joe Hunt
+# Bank Payment on customer statements shows in credit column, should be debit. Balance ok.
+$ /reporting/rep108.php
+
 04-Aug-2010 Janusz Dobrowolski
 + Rewritten installation wizard, uploading additional COAs form repository during install
   /install/index.php

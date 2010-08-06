@@ -139,7 +139,7 @@ function print_statements()
 			$rep->TextCol(2, 3,	sql2date($myrow2['tran_date']), -2);
 			if ($myrow2['type'] == ST_SALESINVOICE)
 				$rep->TextCol(3, 4,	sql2date($myrow2['due_date']), -2);
-			if ($myrow2['type'] == ST_SALESINVOICE)
+			if ($myrow2['type'] == ST_SALESINVOICE || $myrow2['type'] == ST_BANKPAYMENT)
 				$rep->TextCol(4, 5,	$DisplayTotal, -2);
 			else
 				$rep->TextCol(5, 6,	$DisplayTotal, -2);
