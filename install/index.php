@@ -12,7 +12,7 @@
 $page_security = 'SA_OPEN';
 $path_to_root="..";
 
-if (file_exists($path_to_root.'/config.php'))
+if (file_exists($path_to_root.'/config_db.php'))
 	header("Location: $path_to_root/index.php");
 
 include($path_to_root . "/install/isession.inc");
@@ -45,7 +45,7 @@ function subpage_title($txt)
 function display_coas()
 {
 	start_table(TABLESTYLE);
-	$th = array(_("Chart of accounts"), _("Description"), _("Install"));
+	$th = array(_("Chart of accounts"), _("Description"), _("Encoding"), _("Install"));
 	table_header($th);
 
 	$k = 0;
@@ -60,6 +60,7 @@ function display_coas()
 		alt_table_row_color($k);
 		label_cell($coa['name']);
 		label_cell(is_array($coa['Descr']) ? implode('<br>', $coa['Descr']) :  $coa['Descr']);
+		label_cell($coa['encoding']);
 		if ($installed)
 			label_cell(_("Installed"));
 		else
