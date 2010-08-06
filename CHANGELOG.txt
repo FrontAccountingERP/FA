@@ -28,6 +28,17 @@ $ /gl/includes/db/gl_db_bank_trans.inc
 $ /install/index.php
 ! Improved chart list selection.
 $ /includes/ui/ui_lists.inc
++ Added Chart of accounts installation.
+$ /admin/inst_chart.php (new)
+  /applications/setup.php
+# Fixed third-party extension installation
+$ /admin/inst_module.php
+# Fixed theme description popup.
+$ /admin/inst_theme.php
+! Added optional type parameter in get_extensions_list()
+$ /includes/packages.inc
++ Added encoding display for chart packages list
+$ /install/index.php
 
 06-Aug-2010 Joe Hunt
 # Bank Payment on customer statements shows in credit column, should be debit. Balance ok.
