@@ -14,6 +14,9 @@ $path_to_root="..";
 include_once($path_to_root . "/includes/session.inc");
 include_once($path_to_root."/includes/packages.inc");
 
+if ($use_popup_windows) {
+	$js = get_js_open_window(900, 500);
+}
 page(_($help_context = "Install/Activate extensions"));
 
 include_once($path_to_root . "/includes/date_functions.inc");
@@ -64,7 +67,8 @@ function handle_submit()
 		return false;
 	$id = $selected_id==-1 ? $next_extension_id : $selected_id;
 
-	if ($selected_id != -1 && $extensions[$id]['type'] != 'plugin') {
+	if ($selected_id != -1 && $extensions[$id]['type'] != 'extension'
+		|| (isset($extensions[$id]['tabs']) && count($extensions[$id]['tabs']))) {
 		display_error(_('Module installation support is not implemented.'));
 		return;
 	}
@@ -79,7 +83,7 @@ function handle_submit()
 	$entry['title'] = $_POST['title'];
 	$entry['section'] = 2; // menu section aka module
 
-	// Only plugin type extensions can be installed manually.
+	// Only simple plugin type extensions can be installed manually.
 	$extensions[$id]['type'] = 'extension';
 	$directory = $path_to_root . "/modules/" . $_POST['path'];
 	if (!file_exists($directory))
@@ -186,7 +190,7 @@ function display_extensions()
 	table_header($th);
 
 	$k = 0;
-	$mods = get_extensions_list();
+	$mods = get_extensions_list('extension');
 
 	foreach($mods as $pkg_name => $ext)
 	{
@@ -208,7 +212,7 @@ function display_extensions()
 			($available && $installed ? $installed : _("Unknown")));
 		label_cell($available ? $available : _("None"));
 
-		if (!$available && $ext['type'] == 'plugin')	// third-party plugin
+		if (!$available && $ext['type'] == 'extension' && !count($ext['tabs']))	// third-party plugin
 			button_cell('Edit'.$id, _("Edit"), _('Edit third-party extension parameters.'), 
 				ICON_EDIT);
 		elseif (check_pkg_upgrade($installed, $available)) // outdated or not installed extension in repo
@@ -260,6 +264,7 @@ function company_extensions($id)
 	$k = 0;
 	foreach($mods as $i => $mod)
 	{
+		if ($mod['type'] != 'extension') continue;
    		alt_table_row_color($k);
 		label_cell($mod['name']);
 		$entries = fmt_titles(@$mod['entries']);
@@ -288,7 +293,7 @@ function display_ext_edit($selected_id)
 
 	start_table(TABLESTYLE2);
 
-	if ($selected_id != -1 && $extensions[$selected_id]['type'] == 'plugin')
+	if ($selected_id != -1 && $extensions[$selected_id]['type'] == 'extension')
 	{
 		if ($Mode == 'Edit') {
 			$mod = $extensions[$selected_id];
