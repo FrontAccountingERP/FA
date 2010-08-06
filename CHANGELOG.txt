@@ -24,6 +24,10 @@ $ -> Affected files
 $ /gl/gl_bank.php
 # Fixed memo dupliactaion after bank payment edition.
 $ /gl/includes/db/gl_db_bank_trans.inc
+! Cleanup.
+$ /install/index.php
+! Improved chart list selection.
+$ /includes/ui/ui_lists.inc
 
 06-Aug-2010 Joe Hunt
 # Bank Payment on customer statements shows in credit column, should be debit. Balance ok.
