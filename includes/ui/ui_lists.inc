@@ -2294,7 +2294,7 @@ function coa_list_row($label, $name, $value=null)
 	$sqldir = opendir($path);
 	while (false !== ($fname = readdir($sqldir)))
 	{
-		if (is_file($path.$fname) && substr($fname,-4)=='.sql' &&  substr($fname,0,5)!='alter')
+		if (is_file($path.$fname) && substr($fname,-4)=='.sql' && @($fname[2] == '_'))
 		{
 			$ext = array_search_value($fname, $installed_extensions, 'sql');
 			if ($ext!=null) {
