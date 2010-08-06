@@ -180,7 +180,8 @@ function clear_bank_trans($type, $type_no, $nested=false)
 
 	//Delete the reference
 	$Refs->delete($type, $type_no);	
-	
+
+	delete_comments($type, $type_no);
 	if (!$nested)
 		commit_transaction();
 }
