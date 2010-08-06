@@ -40,7 +40,7 @@ if (isset($_GET['NewPayment'])) {
 	$_SESSION['page_title'] = _($help_context = "Modify Bank Account Entry")." #".$_GET['trans_no'];
 	create_cart(ST_BANKPAYMENT, $_GET['trans_no']);
 } else if(isset($_GET['ModifyDeposit'])) {
-	$_SESSION['page_title'] = _($help_context = "Modify Bank Account Entry")." #".$_GET['trans_no'];
+	$_SESSION['page_title'] = _($help_context = "Modify Bank Deposit Entry")." #".$_GET['trans_no'];
 	create_cart(ST_BANKDEPOSIT, $_GET['trans_no']);
 }
 page($_SESSION['page_title'], false, false, '', $js);
