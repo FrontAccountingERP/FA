@@ -202,9 +202,9 @@ function print_tax_report()
 	$rep->Font();
 	$rep->NewLine();
 
-	if (method_exists($Hooks, 'TaxFunction'))
+	if (method_exists($Hooks, 'tax_report_done'))
 	{
-		$Hooks->TaxFunction();
+		$Hooks->tax_report_done();
 	}
 
 	$rep->End();
