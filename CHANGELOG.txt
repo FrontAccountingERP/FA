@@ -24,6 +24,7 @@ $ -> Affected files
   The value: 'rtl' = false will make the variable as isset.
 $ /includes/lang/languages.php
   /includes/session.inc
+  /admin/inst_lang.php
   
 06-Aug-2010 Janusz Dobrowolski
 # Fixed page title

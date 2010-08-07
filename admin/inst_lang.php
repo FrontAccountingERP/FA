@@ -204,7 +204,7 @@ function display_language_edit($selected_id)
 		$_POST['code'] = $lang['code'];
 		$_POST['name']  = $lang['name'];
 		$_POST['encoding']  = $lang['encoding'];
-		if (isset($conn['rtl']))
+		if (isset($lang['rtl']) && $lang['rtl'] === true)
 			$_POST['rtl']  = $lang['rtl'];
 		else
 			$_POST['rtl'] = false;
