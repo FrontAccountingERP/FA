@@ -19,13 +19,37 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+07-Aug-2010 Janusz Dobrowolski
++ Added langauges selection in installer.
+$ /install/index.php
+! Testing config_db on start
+$ /index.php
+# Side bug fixed.
+$ /applications/setup.php
+! Default language code changed form 'en_GB' to 'C'
+$ /admin/inst_lang.php
+  /includes/system_tests.inc
+  /includes/lang/gettext.php
+  /includes/lang/language.php
+  /sql/alter2.3rc.sql
+  /sql/alter2.3.php
+  /sql/en_US-demo.sql
+! Cleanup.
+$ /includes/archive.inc
+! Additional error messages
+$ /includes/packages.inc
+! Added descriptions for all existing hooks
+$ /lang/new_language_template/locale.inc
+! Changed hook name from TaxFunction to tax_report_done
+$ /reporting/rep709.php
+
 07-Aut-2010 Joe Hunt
 # Stamping the installed_languags.inc file with 'rtl' = false, causes 'rtl'.
   The value: 'rtl' = false will make the variable as isset.
 $ /includes/lang/languages.php
   /includes/session.inc
   /admin/inst_lang.php
-  
+
 06-Aug-2010 Janusz Dobrowolski
 # Fixed page title
 $ /gl/gl_bank.php
