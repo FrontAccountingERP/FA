@@ -415,7 +415,6 @@ class tar_file extends archive
 		}
 		else
 			$this->error[] = "Could not open file {$this->options['name']}";
-		error_log('3');
 
 		return $flist;
 	}
