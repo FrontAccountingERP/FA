@@ -36,7 +36,7 @@ function subpage_title($txt)
 	$page = @$_POST['Page'] ? $_POST['Page'] : 1;
 
 	display_heading(
-		$page==5 ? $txt :
+		$page == 6 ? $txt :
 			_("FrontAccouting ERP Installation Wizard").'<br>'
 			. sprintf(_('Step %d: %s'),  $page , $txt));
 	br();
@@ -45,7 +45,7 @@ function subpage_title($txt)
 function display_coas()
 {
 	start_table(TABLESTYLE);
-	$th = array(_("Chart of accounts"), _("Description"), _("Encoding"), _("Install"));
+	$th = array(_("Chart of accounts"), _("Encoding"), _("Description"), _("Install"));
 	table_header($th);
 
 	$k = 0;
@@ -59,8 +59,8 @@ function display_coas()
 
 		alt_table_row_color($k);
 		label_cell($coa['name']);
-		label_cell(is_array($coa['Descr']) ? implode('<br>', $coa['Descr']) :  $coa['Descr']);
 		label_cell($coa['encoding']);
+		label_cell(is_array($coa['Descr']) ? implode('<br>', $coa['Descr']) :  $coa['Descr']);
 		if ($installed)
 			label_cell(_("Installed"));
 		else
@@ -71,7 +71,38 @@ function display_coas()
 	end_table(1);
 }
 
+function display_langs()
+{
+	start_table(TABLESTYLE);
+	$th = array(_("Language"), _("Encoding"), _("Description"), _("Install"));
+	table_header($th);
+
+	$k = 0;
+	$langs = get_languages_list();
+
+	foreach($langs as $pkg_name => $lang)
+	{
+		$available = @$lang['available'];
+		$installed = @$lang['version'];
+		$id = @$lang['local_id'];
+		if (!$available) continue;
+
+		alt_table_row_color($k);
+		label_cell($lang['name']);
+		label_cell($lang['encoding']);
+		label_cell(is_array($lang['Descr']) ? implode('<br>', $lang['Descr']) :  $lang['Descr']);
+		if ($installed)
+			label_cell(_("Installed"));
+		else
+			check_cells(null, 'langs['.$lang['package'].']');
+
+		end_row();
+	}
+	end_table(1);
+}
+
 function install_connect_db() {
+
 	global $db;
 
 	$conn = $_SESSION['inst_set'];
@@ -96,14 +127,24 @@ function install_connect_db() {
 }
 
 function do_install() {
-	global $path_to_root, $db_connections, $def_coy, $installed_extensions;
+
+	global $path_to_root, $db_connections, $def_coy, $installed_extensions, 
+		$dflt_lang, $installed_languages;
 
 	$coa = $_SESSION['inst_set']['coa'];
 	if (install_connect_db() && db_import($path_to_root.'/sql/'.$coa, $_SESSION['inst_set'])) {
 		$con = $_SESSION['inst_set'];
 		$table_prefix = $con['tbpref'];
-		update_admin_password($con, md5($con['pass']));
 		update_company_prefs(array('coy_name'=>$con['name']));
+		$admin = get_user_by_login('admin');
+//		update_admin_password($con, md5($con['pass']));
+		update_user_prefs($admin['id'], array('language' => $_POST['lang'], 
+			'password' => md5($con['pass'])));
+
+		if (!copy($path_to_root. "/config.default.php", $path_to_root. "/config.php")) {
+			display_error(_("Cannot save system configuration file config.php"));
+			return false;
+		}
 
 		$def_coy = 0;
 		$tb_pref_counter = 0;
@@ -127,15 +168,11 @@ function do_install() {
 			display_error(_("The configuration file config_db.php is not writable. Change its permissions so it is, then re-run step 5."));
 			return false;
 		}
-		if (!copy($path_to_root. "/config.default.php", $path_to_root. "/config.php")) {
-			display_error(_("Cannot save system configuration file config.php"));
-			return false;
-		}
-		if (count($installed_extensions))
-		 if (!update_extensions($installed_extensions)) { // update company 0 extensions (charts)
-			display_error(_("Can't update extensions configuration."));
-			return false;
-		 }
+		// update default language
+		include_once($path_to_root . "/lang/installed_languages.inc");
+		$dflt_lang = $_POST['lang'];
+		write_lang();
+
 		return true;
 	}
 	return false;
@@ -149,16 +186,16 @@ if (!isset($_SESSION['inst_set']))  // default settings
 		'username' => 'admin',
 		'tbpref' => '0_',
 		'admin' => 'admin',
-		'coa_type' => 0
 	);
 
 if (!@$_POST['Tests'])
 	$_POST['Page'] = 1; // set to start page
 
 if (isset($_POST['back']) && (@$_POST['Page']>1)) {
-	$_POST['Page']--;
-	if ($_POST['Page'] == 3)
+	if ($_POST['Page'] == 5)
 		$_POST['Page'] = 2;
+	else
+		$_POST['Page']--;
 }
 elseif (isset($_POST['continue'])) {
 	$_POST['Page'] = 2;
@@ -183,21 +220,43 @@ elseif (isset($_POST['db_test'])) {
 			'dbpassword' => $_POST['dbpassword'],
 			'dbname' => $_POST['dbname'],
 			'tbpref' => $_POST['tbpref'] ? '0_' : '',
+			'sel_langs' => check_value('sel_langs'),
+			'sel_coas' => check_value('sel_coas'),
 		));
 		if (install_connect_db()) {
-			$_POST['Page'] = check_value('sel_coas') ? 3 : 4;
+			$_POST['Page'] = check_value('sel_langs') ? 3 :
+				(check_value('sel_coas') ? 4 : 5);
 		}
+	}
+	if (!file_exists($path_to_root . "/lang/installed_languages.inc")) {
+		$installed_languages = array (
+			0 => array ('code' => 'C', 'name' => 'English', 'encoding' => 'iso-8859-1'));
+			$dflt_lang = 'C';
+			write_lang();
+	}
+}
+elseif(get_post('install_langs')) 
+{
+	$ret = true;
+	if (isset($_POST['langs']))
+		foreach($_POST['langs'] as $package => $ok) {
+			$ret &= install_language($package);
+		}
+	if ($ret) {
+		$_POST['Page'] = $_SESSION['inst_set']['sel_coas'] ? 4 : 5;
 	}
 }
 elseif(get_post('install_coas')) 
 {
 	$ret = true;
+
 	if (isset($_POST['coas']))
 		foreach($_POST['coas'] as $package => $ok) {
 			$ret &= install_extension($package);
 		}
 	if ($ret) {
-		$_POST['Page'] = 4;
+		include($path_to_root.'/installed_extensions.php');
+		$_POST['Page'] = 5;
 	}
 }
 elseif (isset($_POST['set_admin'])) {
@@ -228,7 +287,7 @@ elseif (isset($_POST['set_admin'])) {
 			'admin' => $_POST['admin'],
 		));
 		if (do_install()) {
-			$_POST['Page'] = 5;
+			$_POST['Page'] = 6;
 		}
 	}
 }
@@ -264,21 +323,30 @@ start_form();
 			text_row_ex(_("Database Password"), 'dbpassword', 30);
 			text_row_ex(_("Database Name"), 'dbname', 30);
 			yesno_list_row(_("Use '0_' Table Prefix"), 'tbpref', 1, _('Yes'), _('No'), false);
-			check_row(_("Install additional COAs form FA repository"), 'sel_coas');
+			check_row(_("Install additional language packs from FA repository"), 'sel_langs');
+			check_row(_("Install additional COAs from FA repository"), 'sel_coas');
 			end_table(1);
 			display_note(_('Use table prefix if you share selected database with another application, or you want to use it for more than one FA company.'));
+			display_note(_("Do not select additional langs nor COAs if you have no internet connection right now. You can install them later."));
 			submit_center_first('back', _('<< Back'));
 			submit_center_last('db_test', _('Continue >>'));
 			break;
 
-		case '3': // select COA
+		case '3': // select langauges
+			subpage_title(_('Language packs selection'));
+			display_langs();
+			submit_center_first('back', _('<< Back'));
+			submit_center_last('install_langs', _('Continue >>'));
+			break;
+
+		case '4': // select COA
 			subpage_title(_('Charts of accounts selection'));
 			display_coas();
 			submit_center_first('back', _('<< Back'));
 			submit_center_last('install_coas', _('Continue >>'));
 			break;
 
-		case '4':
+		case '5':
 			if (!isset($_POST['name'])) {
 				foreach($_SESSION['inst_set'] as $name => $val)
 					$_POST[$name] = $val;
@@ -291,12 +359,13 @@ start_form();
 			password_row(_("Admin Password"), 'pass', @$_POST['pass']);
 			password_row(_("Reenter Password"), 'repass', @$_POST['repass']);
 			coa_list_row(_("Select Chart of Accounts"), 'coa');
+			languages_list_row(_("Select default language"), 'lang');
 			end_table(1);
 			submit_center_first('back', _('<< Back'));
 			submit_center_last('set_admin', _('Continue >>'));
 			break;
 
-		case '5': // final screen
+		case '6': // final screen
 			subpage_title(_('FrontAccounting ERP has been installed successsfully.'));
 			display_note(_('Please remove install wizard folder.'));
 			$install_done = true;
