@@ -590,10 +590,15 @@ function install_language($pkg_name)
 			write_lang($installed_languages);
 			unlink("$path_to_root/tmp/".$pkg['Filename'].'.pkg');
 			$Ajax->activate('lang_tbl');
+		} else {
+			display_error(implode('<br>', $package->error));
+			return false;
 		}
-
+	} else {
+		display_error(sprintf(_("Package '%s' not found."), $pkg_name));
+		return false;
 	}
-
+	return true;
 }
 //---------------------------------------------------------------------------------------------
 //	Install/update extension or theme package from repository
@@ -635,6 +640,9 @@ function install_extension($pkg_name)
 			display_error(implode('<br>', $package->error));
 			return false;
 		}
+	} else {
+		display_error(sprintf(_("Package '%s' not found."), $pkg_name));
+		return false;
 	}
 	return true;
 }
