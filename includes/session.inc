@@ -188,7 +188,7 @@ if (!isset($_SESSION['language']) || !method_exists($_SESSION['language'], 'set_
 {
 	$l = array_search_value($dflt_lang, $installed_languages,  'code');
 	$_SESSION['language'] = new language($l['name'], $l['code'], $l['encoding'],
-	 isset($l['rtl']) ? 'rtl' : 'ltr');
+	 (isset($l['rtl']) && $l['rtl'] === true) ? 'rtl' : 'ltr');
 }
 
 $_SESSION['language']->set_language($_SESSION['language']->code);

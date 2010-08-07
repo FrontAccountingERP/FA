@@ -19,6 +19,12 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+07-Aut-2010 Joe Hunt
+# Stamping the installed_languags.inc file with 'rtl' = false, causes 'rtl'.
+  The value: 'rtl' = false will make the variable as isset.
+$ /includes/lang/languages.php
+  /includes/session.inc
+  
 06-Aug-2010 Janusz Dobrowolski
 # Fixed page title
 $ /gl/gl_bank.php

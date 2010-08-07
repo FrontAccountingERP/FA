@@ -62,7 +62,7 @@ class language
 			$this->code = $lang['code'];
 			$this->encoding = $lang['encoding'];
 			$this->version = @$lang['version'];
-			$this->dir = isset($lang['rtl']) ? 'rtl' : 'ltr';
+			$this->dir = (isset($lang['rtl']) && $lang['rtl'] === true) ? 'rtl' : 'ltr';
 			$locale = $path_to_root . "/lang/" . $this->code . "/locale.inc";
 			$this->is_locale_file = file_exists($locale);
 		}
