@@ -72,7 +72,7 @@ function display_languages()
 		else
 			alt_table_row_color($k);
 
-		$support = ($lang == 'en_GB') ||
+		$support = ($lang == 'C') ||
 			$_SESSION['get_text']->check_support($lang, $charset);
 
 		if (function_exists('gettext') && !$support && !get_post('DisplayAll')) continue;
@@ -94,7 +94,7 @@ function display_languages()
 		if (function_exists('gettext') && check_value('DisplayAll'))
 			label_cell($support ? _("Yes") :_("No"));
 
-		if (!$available && ($lang != 'en_GB'))	// manually installed language
+		if (!$available && ($lang != 'C'))	// manually installed language
 			button_cell('Edit'.$id, _("Edit"), _('Edit non standard language configuration'), 
 				ICON_EDIT);
 		elseif (check_pkg_upgrade($installed, $available)) // outdated or not installed language in repo
@@ -103,7 +103,7 @@ function display_languages()
 		else
 			label_cell('');
 
-		if (($id !== null) && ($lang != $currlang) && ($lang != 'en_GB')) {
+		if (($id !== null) && ($lang != $currlang) && ($lang != 'C')) {
 			delete_button_cell('Delete'.$id, _('Delete'));
 			submit_js_confirm('Delete'.$id, 
 				sprintf(_("You are about to remove language \'%s\'.\nDo you want to continue ?"), 

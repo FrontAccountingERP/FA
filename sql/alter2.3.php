@@ -26,7 +26,7 @@ class fa2_3 {
 	//
 	function install($pref, $force) 
 	{
-		global $db_version;
+		global $db_version, $dflt_lang;
 
 		if (!$this->preconf)
 			return false;
@@ -91,6 +91,7 @@ class fa2_3 {
 			if (!db_query($sql))
 				return false;
 		}
+		$this->update_lang_cfg();
 		return  update_company_prefs(array('version_id'=>$db_version), $pref);
 	}
 	//
@@ -347,6 +348,20 @@ class fa2_3 {
 			return update_extensions($new_exts);
 		} else
 			return true;
+	}
+	
+	function update_lang_cfg()
+	{
+		global $dflt_lang, $installed_languages;
+
+		foreach($installed_languages as $n => $lang) {
+			if ($lang['code'] == 'en_GB') {
+				$installed_languages[$n] = 'C';
+				if ($dflt_lang == 'en_GB')
+					$dflt_lang = 'C';
+				write_lang();
+			}
+		}
 	}
 }
 

@@ -30,7 +30,7 @@ class language
 		global $dflt_lang;
 		
 		$this->name = $name;
-		$this->code = $code ? $code : ($dflt_lang ? $dflt_lang : 'en_GB');
+		$this->code = $code ? $code : ($dflt_lang ? $dflt_lang : 'C');
 		$this->encoding = $encoding;
 		$this->dir = $dir;
 	}

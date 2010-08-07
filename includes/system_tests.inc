@@ -236,25 +236,28 @@ function tst_langs()
 	$test['comments'] = array();
 
 	$fname =  $path_to_root.'/lang';
-	$test['test'][] = $fname;
+	$test['test'] = $fname;
 	if (!(is_dir($fname) && is_writable($fname))) {
 		$test['result'] = false;
 		$test['comments'][] = _("Languages folder should be writeable.");
+		return $test;
 	}
 	
 	$fname =  $path_to_root.'/lang/installed_languages.inc';
-	$test['test'][] = $fname;
+	$test['test'] = $fname;
 	if (!(is_file($fname) && is_writable($fname))) {
 		$test['result'] = false;
 		$test['comments'][] = _("Languages configuration file should be writeable.");
+		return $test;
 	}
 
 	$langs = array();
 	
 	foreach ($installed_languages as $lang) {
+
+		if ($lang['code'] == 'C') continue; // no translation (English)
 		$langs[] = $lang['code'];
-		if ($lang['code'] == 'en_GB') continue; // native FA language
-	
+
 		$file = $path_to_root.'/lang/'.$lang['code'].'/LC_MESSAGES/'.$lang['code'];
 		if (@$lang['version'])
 			$file .= '-'.$lang['version'];
@@ -297,16 +300,25 @@ function tst_config($install)
 	return $test;
 }
 
-function tst_dbconfig()
+function tst_dbconfig($install)
 {
 	global $path_to_root;
 
 	$test['descr'] = _('Database auth file');
-	$test['type'] = 2;
 	$test['test'] = $path_to_root.'/config_db.php';
-	$test['result'] = is_file($test['test']) && !is_writable($test['test']);
-	$test['comments'][] = sprintf(_("'%s' file should be read-only if you do not plan to add or change companies"), $test['test']);
 
+	if ($install) {
+		$test['type'] = 3;
+		$writable = check_write($test['test']);
+		$test['result'] = $writable==1;
+		$test['comments'][] = $writable == 0 ?
+			sprintf(_("Can't write '%s' file. Check FA directory write permissions."), $test['test'])
+			: sprintf(_("'%s' file exists."), $test['test']);
+	} else {
+		$test['type'] = 2;
+		$test['result'] = is_file($test['test']) && !is_writable($test['test']);
+		$test['comments'][] = sprintf(_("'%s' file should be read-only if you do not plan to add or change companies"), $test['test']);
+	}
 	return $test;
 }
 
@@ -386,7 +398,8 @@ function display_system_tests($install = false)
 	global $test_level;
 
 	if ($install)
-		$system_tests = array('tst_php', 'tst_phpmysql', 'tst_system', 'tst_config',
+		$system_tests = array('tst_php', 'tst_phpmysql', 'tst_system', 'tst_dbconfig', 
+			'tst_config',
 			'tst_subdirs', 'tst_langs', 'tst_tmpdir', 'tst_sessionpath', 'tst_extconfig'
 		);
 	else

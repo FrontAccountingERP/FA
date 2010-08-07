@@ -80,10 +80,13 @@ class gettext_native_support
 		$lshort = strtr($up, '-','');
 		$ushort = strtr($low, '-','');
 
-        $set = setlocale(LC_ALL, $lang_code.".".$encoding, 
-			$lang_code.".".$up, $lang_code.".".$low,
-			$lang_code.".".$ushort,	$lang_code.".".$lshort);
-			
+		if ($lang_code == 'C')
+			$set = setlocale(LC_ALL,'C');
+		else
+        	$set = setlocale(LC_ALL, $lang_code.".".$encoding, 
+				$lang_code.".".$up, $lang_code.".".$low,
+				$lang_code.".".$ushort,	$lang_code.".".$lshort);
+
         setlocale(LC_NUMERIC, 'C'); // important for numeric presentation etc.
         if ($set === false) 
         {
