@@ -19,7 +19,6 @@ Legend:
 ! -> Note
 $ -> Affected files
 
-
 08-Aug-2010 Janusz Dobrowolski
 + Multilangage support in installer
 $ /install/lang (new)
@@ -32,6 +31,16 @@ $ /install/lang/pl_PL (new)
   /install/lang/pl_PL/LC_MESSAGES (new)
   /install/lang/pl_PL/LC_MESSAGES/pl_PL.po (new)
   /install/lang/pl_PL/LC_MESSAGES/pl_PL.mo (new)
++ Added Danish/Svedish installer translation (Joe Hunt)
+$ /install/lang/da_DK (new)
+  /install/lang/da_DK/LC_MESSAGES (new)
+  /install/lang/da_DK/LC_MESSAGES/da_DK.po (new)
+  /install/lang/da_DK/LC_MESSAGES/da_DK.mo (new)
+$ /install/lang/sv_SE (new)
+  /install/lang/sv_SE/LC_MESSAGES (new)
+  /install/lang/sv_SE/LC_MESSAGES/sv_SE.po (new)
+  /install/lang/sv_SE/LC_MESSAGES/sv_SE.mo (new)
+  
 ! Updated language template
 $ /lang/new_language_template/LC_MESSAGES/empty.po
 
