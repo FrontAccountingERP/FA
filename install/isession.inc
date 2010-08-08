@@ -68,7 +68,9 @@ include_once($path_to_root . "/config.default.php");
 
 $inst_langs = array(
   'C' => array ( 'name' => 'English',	'code' => 'C',		'encoding' => 'iso-8859-1'),
+  'da_DK' => array ( 'name' => 'Danske',	'code' => 'da_DK',	'encoding' => 'iso-8859-1'),
   'pl_PL' => array ( 'name' => 'Polski',	'code' => 'pl_PL',	'encoding' => 'iso-8859-2'),
+  'sv_SE' => array ( 'name' => 'Svenska',	'code' => 'sv_SE',	'encoding' => 'iso-8859-1'),
 );
 
 $Ajax = new Ajax();
