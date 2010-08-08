@@ -19,6 +19,16 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+09-Aug-2010 Janusz Dobrowolski
++ Added French translation (from Gaston)
+$ /install/isession.inc
+  /install/lang/fr_FR/LC_MESSAGES/fr_FR.mo
+  /install/lang/fr_FR/LC_MESSAGES/fr_FR.po
+# Warning in installer cleanup
+$ /includes/ajax.inc
+# Subpage display title update on lang switching
+$ /install/index.php
+
 08-Aug-2010 Janusz Dobrowolski
 + Multilangage support in installer
 $ /install/lang (new)
