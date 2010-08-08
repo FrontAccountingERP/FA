@@ -317,8 +317,8 @@ start_form();
 //			submit_center('continue', _('Continue >>'));
 //			break;
 		case '1':
-			subpage_title(_('System Diagnostics'));
 			div_start('welcome');
+			subpage_title(_('System Diagnostics'));
 			start_table();
 			instlang_list_row(_("Select install wizard language:"), 'inst_lang',
 				$_SESSION['inst_set']['inst_lang']);
