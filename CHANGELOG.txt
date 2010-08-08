@@ -19,6 +19,22 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+
+08-Aug-2010 Janusz Dobrowolski
++ Multilangage support in installer
+$ /install/lang (new)
+  /install/lang/new_language_template/LC_MESSAGES (new)
+  /install/lang/new_language_template/LC_MESSAGES/empty.po (new)
+  /install/index.php
+  /install/isession.inc
++ Added Polish installer translation
+$ /install/lang/pl_PL (new)
+  /install/lang/pl_PL/LC_MESSAGES (new)
+  /install/lang/pl_PL/LC_MESSAGES/pl_PL.po (new)
+  /install/lang/pl_PL/LC_MESSAGES/pl_PL.mo (new)
+! Updated language template
+$ /lang/new_language_template/LC_MESSAGES/empty.po
+
 07-Aug-2010 Janusz Dobrowolski
 + Added langauges selection in installer.
 $ /install/index.php
