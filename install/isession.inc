@@ -65,23 +65,33 @@ session_start();
 header("Cache-control: private");
 
 include_once($path_to_root . "/config.default.php");
+
+$inst_langs = array(
+  'C' => array ( 'name' => 'English',	'code' => 'C',		'encoding' => 'iso-8859-1'),
+  'pl_PL' => array ( 'name' => 'Polski',	'code' => 'pl_PL',	'encoding' => 'iso-8859-2'),
+);
+
+$Ajax = new Ajax();
+
 get_text_init();
 
+$i_lang = isset($_POST['inst_lang']) ? $_POST['inst_lang'] : 
+	(isset($_SESSION['inst_set']['inst_lang']) ? $_SESSION['inst_set']['inst_lang'] : 'C');
+
 // Page Initialisation
-if (!isset($_SESSION['language']) || !method_exists($_SESSION['language'], 'set_language')) 
+if (!isset($_SESSION['language']) || !method_exists($_SESSION['language'], 'set_language')
+	|| $_SESSION['language']->code != $i_lang) 
 {
-	$l = array_search_value($dflt_lang, $installed_languages,  'code');
+	$l = array_search_value($i_lang, $inst_langs,  'code');
 	$_SESSION['language'] = new language($l['name'], $l['code'], $l['encoding'],
 	 isset($l['rtl']) ? 'rtl' : 'ltr');
 }
 
 $_SESSION['language']->set_language($_SESSION['language']->code);
+$_SESSION['get_text']->add_domain( $_SESSION['language']->code, $path_to_root."/install/lang");
 
 include_once($path_to_root . "/version.php");
 include_once($path_to_root . "/includes/main.inc");
-
-// Ajax communication object
-$Ajax = new Ajax();
 
 // js/php validation rules container
 $Validate = array();
@@ -89,6 +99,8 @@ $Validate = array();
 $Editors = array();
 // page help. Currently help for function keys.
 $Pagehelp = array();
+
+//$Ajax = new Ajax();
 
 // intercept all output to destroy it in case of ajax call
 register_shutdown_function('end_flush');
