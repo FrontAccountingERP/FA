@@ -184,7 +184,7 @@ msgstr "Ne pas sélectionner d'autres langues (ni COA) si votre connection intern
 #: /var/www/fa2.3/devel/../install/index.php:369
 #: /var/www/fa2.3/devel/../install/index.php:388
 msgid "<< Back"
-msgstr "<<Retour"
+msgstr "<< Retour"
 
 #: /var/www/fa2.3/devel/../install/index.php:360
 msgid "User Interface Languages Selection"
