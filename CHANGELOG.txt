@@ -26,8 +26,8 @@ $ /install/isession.inc
   /install/lang/fr_FR/LC_MESSAGES/fr_FR.po
 + Added Indonesian translation (thanks to Eko Prasetiyo)
 $ /install/isession.inc
-  /install/lang/in_ID/LC_MESSAGES/in_ID.mo
-  /install/lang/in_ID/LC_MESSAGES/in_ID.po
+  /install/lang/id_ID/LC_MESSAGES/id_ID.mo
+  /install/lang/id_ID/LC_MESSAGES/id_ID.po
 # Warning in installer cleanup
 $ /includes/ajax.inc
 # Subpage display title update on lang switching
