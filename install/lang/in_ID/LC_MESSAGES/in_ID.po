@@ -1,0 +1,497 @@
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Eko Prasetiyo, 2010.
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-08-08 12:50+0200\n"
+"PO-Revision-Date: 2010-08-09 19:49+0700\n"
+"Last-Translator: Eko Prasetiyo <ekoprasetiyo@gmail.com>\n"
+"Language-Team: Indonesan <kde-i18n-doc@kde.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Lokalize 1.0\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: /var/www/fa2.3/devel/../install/index.php:20
+#: /var/www/fa2.3/devel/../install/index.php:40
+msgid "FrontAccouting ERP Installation Wizard"
+msgstr "Wisaya Instalasi Front Accounting ERP"
+
+#: /var/www/fa2.3/devel/../install/index.php:41
+#, php-format
+msgid "Step %d: %s"
+msgstr "Langkah %d: %s"
+
+#: /var/www/fa2.3/devel/../install/index.php:48
+msgid "Chart of accounts"
+msgstr "Bagan akun"
+
+#: /var/www/fa2.3/devel/../install/index.php:48
+#: /var/www/fa2.3/devel/../install/index.php:75
+msgid "Encoding"
+msgstr "Encoding"
+
+#: /var/www/fa2.3/devel/../install/index.php:48
+#: /var/www/fa2.3/devel/../install/index.php:75
+msgid "Description"
+msgstr "Penjelasan"
+
+#: /var/www/fa2.3/devel/../install/index.php:48
+#: /var/www/fa2.3/devel/../install/index.php:75
+msgid "Install"
+msgstr "Instal"
+
+#: /var/www/fa2.3/devel/../install/index.php:65
+#: /var/www/fa2.3/devel/../install/index.php:93
+msgid "Installed"
+msgstr "Telah diinstal"
+
+#: /var/www/fa2.3/devel/../install/index.php:75
+msgid "Language"
+msgstr "Bahasa"
+
+#: /var/www/fa2.3/devel/../install/index.php:156
+msgid "Cannot save system configuration file 'config.php'."
+msgstr "Tidak dapat menyimpan file konfigurasi 'config.php'."
+
+#: /var/www/fa2.3/devel/../install/index.php:173
+msgid "Cannot open 'config_db.php' configuration file."
+msgstr "Tidak dapat membuka file konfigurasi 'config_db.php'."
+
+#: /var/www/fa2.3/devel/../install/index.php:176
+msgid "Cannot write to the 'config_db.php' configuration file."
+msgstr "Tidak dapat melakukan penulisan file konfigurasi 'config_db.php'."
+
+#: /var/www/fa2.3/devel/../install/index.php:179
+msgid ""
+"Configuration file 'config_db.php' is not writable. Change its permissions "
+"so it is, then re-run installation step."
+msgstr ""
+"File konfigurasi 'config_db.php' tidak dapat ditulisi. Ubah hak aksesnya, "
+"lalu ulangi tahapan instalasi."
+
+#: /var/www/fa2.3/devel/../install/index.php:217
+msgid "Host name cannot be empty."
+msgstr "Nama host tidak boleh dikosongkan."
+
+#: /var/www/fa2.3/devel/../install/index.php:221
+msgid "Database user name cannot be empty."
+msgstr "Nama user database tidak boleh dikosongkan."
+
+#: /var/www/fa2.3/devel/../install/index.php:225
+msgid "Database name cannot be empty."
+msgstr "Nama data base tidak boleh dikosongkan."
+
+#: /var/www/fa2.3/devel/../install/index.php:277
+msgid "Company name cannot be empty."
+msgstr "Nama perusahaan tidak boleh dikosongkan."
+
+#: /var/www/fa2.3/devel/../install/index.php:281
+msgid "Company admin name cannot be empty."
+msgstr "Nama admin perusahaan tidak boleh dikosongkan."
+
+#: /var/www/fa2.3/devel/../install/index.php:285
+msgid "Company admin password cannot be empty."
+msgstr "Kata sandi admin perusahaan tidak boleh dikosongkan."
+
+#: /var/www/fa2.3/devel/../install/index.php:289
+msgid "Company admin passwords differ."
+msgstr "Kata sandi admin perusahaan tidak sama."
+
+#: /var/www/fa2.3/devel/../install/index.php:320
+msgid "System Diagnostics"
+msgstr "Pemeriksaan Sistem"
+
+#: /var/www/fa2.3/devel/../install/index.php:323
+msgid "Select install wizard language:"
+msgstr "Pilih bahasa yg akan digunakan:"
+
+#: /var/www/fa2.3/devel/../install/index.php:329
+msgid ""
+"All application preliminary requirements seems to be correct. Please press "
+"Continue button below."
+msgstr ""
+"Seluruh kebutuhan yg disyaratkan aplikasi telah sesuai. Harap tekan tombol "
+"Lanjutkan dibawah."
+
+#: /var/www/fa2.3/devel/../install/index.php:330
+#: /var/www/fa2.3/devel/../install/index.php:356
+#: /var/www/fa2.3/devel/../install/index.php:363
+#: /var/www/fa2.3/devel/../install/index.php:370
+#: /var/www/fa2.3/devel/../install/index.php:389
+msgid "Continue >>"
+msgstr "Lanjutkan =>"
+
+#: /var/www/fa2.3/devel/../install/index.php:332
+msgid ""
+"Application cannot be installed. Please fix problems listed below in red, "
+"and press Refresh button."
+msgstr ""
+"Aplikasi tidak dapat diinstalasi. Harap perbaiki masalah yg ditandai merah "
+"dibawah, dan tekan tombol MuatUlang."
+
+#: /var/www/fa2.3/devel/../install/index.php:333
+msgid "Refresh"
+msgstr "MuatUlang"
+
+#: /var/www/fa2.3/devel/../install/index.php:343
+msgid "Database Server Settings"
+msgstr "Seting server database"
+
+#: /var/www/fa2.3/devel/../install/index.php:345
+msgid "Server Host:"
+msgstr "Host server:"
+
+#: /var/www/fa2.3/devel/../install/index.php:346
+msgid "Database User:"
+msgstr "Nama user database :"
+
+#: /var/www/fa2.3/devel/../install/index.php:347
+msgid "Database Password:"
+msgstr "Kata sandi untuk database:"
+
+#: /var/www/fa2.3/devel/../install/index.php:348
+msgid "Database Name:"
+msgstr "Nama Database:"
+
+#: /var/www/fa2.3/devel/../install/index.php:349
+msgid "Use '0_' Table Prefix:"
+msgstr "Gunakan awalan tabel '0_':"
+
+#: /var/www/fa2.3/devel/../install/index.php:349
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:38
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:113
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:126
+msgid "Yes"
+msgstr "Ya "
+
+#: /var/www/fa2.3/devel/../install/index.php:349
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:38
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:113
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:126
+msgid "No"
+msgstr "Tidak"
+
+#: /var/www/fa2.3/devel/../install/index.php:350
+msgid "Install Additional Language Packs from FA Repository:"
+msgstr "Install tambahan bahasa dari repositori FA:"
+
+#: /var/www/fa2.3/devel/../install/index.php:351
+msgid "Install Additional COAs from FA Repository:"
+msgstr "Install tambahan bagan akun dari repositori FA:"
+
+#: /var/www/fa2.3/devel/../install/index.php:353
+msgid ""
+"Use table prefix if you share selected database for more than one FA company."
+msgstr ""
+"Gunakan awalan tabel jika anda menggunakan database yg sama untuk beberapa "
+"perusahaan di FA."
+
+#: /var/www/fa2.3/devel/../install/index.php:354
+msgid ""
+"Do not select additional langs nor COAs if you have no working internet "
+"connection right now. You can install them later."
+msgstr ""
+"Jangan pilih tambahan bahasa atau bagan akun jika anda tidak memiliki "
+"sambungan internet sekaran. Anda dapat menginstalnya nanti."
+
+#: /var/www/fa2.3/devel/../install/index.php:355
+#: /var/www/fa2.3/devel/../install/index.php:362
+#: /var/www/fa2.3/devel/../install/index.php:369
+#: /var/www/fa2.3/devel/../install/index.php:388
+msgid "<< Back"
+msgstr "<= Kembali"
+
+#: /var/www/fa2.3/devel/../install/index.php:360
+msgid "User Interface Languages Selection"
+msgstr "Pilihan bahasa antarmuka"
+
+#: /var/www/fa2.3/devel/../install/index.php:367
+msgid "Charts of Accounts Selection"
+msgstr "Pemilihan bagan akun."
+
+#: /var/www/fa2.3/devel/../install/index.php:379
+msgid "Company Settings"
+msgstr "Seting Perusahaan"
+
+#: /var/www/fa2.3/devel/../install/index.php:381
+msgid "Company Name:"
+msgstr "Nama Perusahaan:"
+
+#: /var/www/fa2.3/devel/../install/index.php:382
+msgid "Admin Login:"
+msgstr "Login Admin:"
+
+#: /var/www/fa2.3/devel/../install/index.php:383
+msgid "Admin Password:"
+msgstr "Kata sandi Admin:"
+
+#: /var/www/fa2.3/devel/../install/index.php:384
+msgid "Reenter Password:"
+msgstr "Ulangi masukkan kata sandi:"
+
+#: /var/www/fa2.3/devel/../install/index.php:385
+msgid "Select Chart of Accounts:"
+msgstr "Pilih bagan akun:"
+
+#: /var/www/fa2.3/devel/../install/index.php:386
+msgid "Select Default Language:"
+msgstr "Pilih bahasa default:"
+
+#: /var/www/fa2.3/devel/../install/index.php:393
+msgid "FrontAccounting ERP has been installed successsfully."
+msgstr "FrontAccounting ERP telah diinstalasi dengan sukses."
+
+#: /var/www/fa2.3/devel/../install/index.php:394
+msgid "Please do not forget to remove install wizard folder."
+msgstr "Harap jangan lupa menghapus direktori wisaya instalasi."
+
+#: /var/www/fa2.3/devel/../install/index.php:396
+msgid "Click here to start."
+msgstr "Klik disini untuk memulai."
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:15
+msgid "Info"
+msgstr "Info"
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:16
+msgid "Optional"
+msgstr "Opsional"
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:17
+msgid "Recomended"
+msgstr "Direkomendasikan"
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:18
+msgid "Required "
+msgstr "Diperlukan"
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:24
+msgid "MySQL version"
+msgstr "Versi MySQL"
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:28
+msgid "Upgrade MySQL server to version at least 4.1"
+msgstr "Upgrade server MySQL minimal ke versi 4.1"
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:35
+msgid "PHP MySQL extension"
+msgstr "Ekstensi PHP MySQL"
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:40
+msgid "Your PHP has to have MySQL extension enabled."
+msgstr "PHP anda harus memiliki ekstensi MySQL yg diaktifkan."
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:46
+msgid "PHP version"
+msgstr "Versi PHP"
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:50
+msgid "Upgrade PHP to version at least 4.3.3"
+msgstr "Upgrade PHP minimal ke versi 4.3.3"
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:57
+msgid "Server system"
+msgstr "Sistem server"
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:67
+msgid "Session save path"
+msgstr "Lokasi penyimpanan sesi"
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:79
+msgid "Removed install wizard folder"
+msgstr "Direktori wisaya instalasi dihapus"
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:82
+msgid "Not removed"
+msgstr "Tidak dihapus"
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:83
+msgid "Remove or rename install wizard folder for security reasons."
+msgstr "Hapus atau ganti nama direktori wisaya instalasi demi alasan keamanan."
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:90
+msgid "Browser type"
+msgstr "Tipe browser"
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:94
+msgid "Any browser is supported"
+msgstr "Browser apa saja didukung."
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:101
+msgid "Http server type"
+msgstr "Tipe server http"
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:105
+msgid "Any server is supported"
+msgstr "Server apa saja didukung"
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:112
+msgid "Native gettext"
+msgstr "Gettext alami"
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:116
+msgid "In case of no getext support, php emulation is used"
+msgstr "Jika tidak ada dukungan gettext, emulasi php yg digunakan"
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:124
+msgid "Debugging mode"
+msgstr "Mode pencarian kesalahan."
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:128
+msgid "To switch debugging on set $go_debug>0 in config.php file"
+msgstr ""
+"Untuk mengaktifkan mode pencarian kesalahan, set $go_debug>0 di file cofig."
+"php"
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:137
+msgid "Error logging"
+msgstr "Pencatatan kesalahan"
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:145
+msgid "Disabled"
+msgstr "Dinonaktifkan"
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:148
+msgid "To switch error logging set $error_logging in config.php file"
+msgstr ""
+"Untuk mengubah pencatatan kesalahan, set $error_logging di file config.php "
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:151
+msgid "Log file is not writeable"
+msgstr "File catatan log tidak dapat ditulisi"
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:161
+msgid "Current database version"
+msgstr "Versi database saat ini"
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:165
+msgid "Database structure seems to be not upgraded to current version"
+msgstr "Struktur database sepertinya belum diupgrade ke versi saat ini"
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:180
+msgid "Company subdirectories consistency"
+msgstr "Konsistensi subdirektori perusahaan"
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:193
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:200
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:208
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:225
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:345
+#, php-format
+msgid "'%s' is not writeable"
+msgstr "'%s' tidak dapat ditulisi"
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:221
+msgid "Temporary directory"
+msgstr "Direktori sementara"
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:233
+msgid "Language configuration consistency"
+msgstr "Konsistensi konfigurasi bahasa"
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:242
+msgid "Languages folder should be writeable."
+msgstr "Direktori bahasa seharusnya bisa ditulisi"
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:250
+msgid "Languages configuration file should be writeable."
+msgstr "File konfigurasi bahasa seharusnya bisa ditulisi"
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:268
+#, php-format
+msgid "Missing %s translation file."
+msgstr "File terjemahan %s tidak ada"
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:273
+#, php-format
+msgid "Missing system locale: %s"
+msgstr "Lokalisasi sistem tidak ada : %s"
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:286
+msgid "Main config file"
+msgstr "File konfigurasi utama"
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:293
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:315
+#, php-format
+msgid "Can't write '%s' file. Check FA directory write permissions."
+msgstr ""
+"Tidak dapat melakukan penulisan atas file '%s'. Periksa hak akses penulisan "
+"direktori FA "
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:294
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:316
+#, php-format
+msgid "'%s' file exists."
+msgstr "file '%s' ditemukan."
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:298
+#, php-format
+msgid "'%s' file should be read-only"
+msgstr "File '%s' seharusnya read-only"
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:307
+msgid "Database auth file"
+msgstr "File autentikasi database"
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:320
+#, php-format
+msgid ""
+"'%s' file should be read-only if you do not plan to add or change companies"
+msgstr ""
+"File '%s' seharusnya read-only jika anda tidak berencana menambah atau "
+"mengubah perusahaan"
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:331
+msgid "Extensions system"
+msgstr "Ekstensi sistem"
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:366
+msgid "Extensions configuration files and directories should be writeable"
+msgstr "File dan direktori konfigurasi ekstensi seharusnya dapat ditulisi"
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:378
+#, php-format
+msgid "Non-standard theme directory '%s' is not writable"
+msgstr "Direktori tema non standar '%s' tidak dapat ditulisi"
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:388
+msgid ""
+"OpenSSL PHP extension have to be enabled to use extension repository system."
+msgstr ""
+"Ekstensi OpenSSL PHP harus diaktifkan untuk menggunakan sistem repositori "
+"ekstensi"
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:391
+msgid ""
+"OpenSSL have to be available on your server to use extension repository "
+"system."
+msgstr ""
+"OpenSSL harus tersedia di server anda untuk menggunakan sistem repositori "
+"ekstensi"
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:414
+msgid "Test"
+msgstr "Tes"
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:414
+msgid "Test type"
+msgstr "Tipe tes"
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:414
+msgid "Value"
+msgstr "Nilai"
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:414
+msgid "Comments"
+msgstr "Komentar"
+
+#: /var/www/fa2.3/devel/../includes/system_tests.inc:438
+msgid "Ok"
+msgstr "OK"
+
