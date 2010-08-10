@@ -18,7 +18,7 @@ class Ajax extends JsHttpRequest {
 	
     function Ajax() 
     {
-	  $this->JsHttpRequest($_SESSION['language']->encoding);
+	  $this->JsHttpRequest(@$_SESSION['language']->encoding);
     }
 	//
 	//	This function is used in ctrl routines to activate
