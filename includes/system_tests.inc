@@ -226,7 +226,7 @@ function tst_tmpdir()
 	return $test;
 }
 
-function tst_langs()
+function tst_langs($install)
 {
 	global $installed_languages, $path_to_root;
 	
@@ -243,12 +243,14 @@ function tst_langs()
 		return $test;
 	}
 	
-	$fname =  $path_to_root.'/lang/installed_languages.inc';
-	$test['test'] = $fname;
-	if (!(is_file($fname) && is_writable($fname))) {
-		$test['result'] = false;
-		$test['comments'][] = _("Languages configuration file should be writeable.");
-		return $test;
+	if (!$install) {
+		$fname =  $path_to_root.'/lang/installed_languages.inc';
+		$test['test'] = $fname;
+		if (!(is_file($fname) && is_writable($fname))) {
+			$test['result'] = false;
+			$test['comments'][] = _("Languages configuration file should be writeable.");
+			return $test;
+		}
 	}
 
 	$langs = array();
@@ -332,35 +334,30 @@ function tst_extconfig($install)
 	$test['type'] = 3;
 	$fname =  $path_to_root.'/installed_extensions.php';
 	$test['test'][] = $fname;
-	$test['result'] = is_file($fname) && is_writable($fname);
+	$test['result'] = ($install || is_file($fname)) && check_write($fname);
 	$test['test'][] = company_path().'/*/installed_extensions.php';
+	if (!$test['result'])
+		$test['comments'][] = sprintf(_("'%s' is not writeable"), $fname);
 
 	foreach ($comps as $n) {
 		$path = company_path($n);
 		if (!is_dir($path)) continue;
 
 		$path .= "/installed_extensions.php";
-		if (!is_file($path) || !is_writable($path) ) {
+		if ((!$install && !is_file($path)) || !check_write($path) ) {
 			$test['result'] = false;
 			$test['comments'][] = sprintf(_("'%s' is not writeable"), $path);
 			continue;
 		};
 	}
-	$fname =  $path_to_root.'/modules';
-	$test['test'][] = $fname;
-	$test['result'] &= is_dir($fname) && is_writable($fname);
-
-	$fname =  $path_to_root.'/modules/_cache';
-	$test['test'][] = $fname;
-	$test['result'] &= is_dir($fname) && is_writable($fname);
-
-	$fname =  $path_to_root.'/themes';
-	$test['test'][] = $fname;
-	$test['result'] &= is_dir($fname) && is_writable($fname);
-
-	$fname =  $path_to_root.'/sql';
-	$test['test'][] = $fname;
-	$test['result'] &= is_dir($fname) && is_writable($fname);
+	foreach(array('modules', 'modules/_cache', 'themes', 'sql') as $dir) {
+		$fname =  $path_to_root.'/'.$dir;
+		$test['test'][] = $fname;
+		$t = is_dir($fname) && is_writable($fname);
+		if (!$t)
+			$test['comments'][] = sprintf(_("'%s' is not writeable"), $fname);
+		$test['result'] &= $t;
+	}
 
 	if(!$test['result'])
 		$test['comments'][] = _("Extensions configuration files and directories should be writeable");
