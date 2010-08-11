@@ -73,7 +73,7 @@ $inst_langs = array(
   'id_ID' => array ( 'name' => 'Indonesian','code' => 'id_ID',	'encoding' => 'iso-8859-1'),
   'nl_BE' => array ( 'name' => 'Nederlands','code' => 'nl_BE',	'encoding' => 'iso-8859-1'),
   'pl_PL' => array ( 'name' => 'Polski',	'code' => 'pl_PL',	'encoding' => 'iso-8859-2'),
-  'pt_BR' => array ( 'name' => 'Portuguese','code' => 'pt_BR',	'encoding' => 'iso-8859-1'),
+  'pt_BR' => array ( 'name' => 'Português','code' => 'pt_BR',	'encoding' => 'iso-8859-1'),
   'sv_SE' => array ( 'name' => 'Svenska',	'code' => 'sv_SE',	'encoding' => 'iso-8859-1'),
 );
 
