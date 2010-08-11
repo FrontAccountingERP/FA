@@ -19,6 +19,33 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+11-Aug-2010 Janusz Dobrowolski
++ Added dutch translation for install wizard
+  /install/isession.inc
+  /install/lang/nl_BE/LC_MESSAGES/nl_BE.mo (new)
+  /install/lang/nl_BE/LC_MESSAGES/nl_BE.po (new)
+# Fixed two typos in translated messages.
+  /includes/system_tests.inc
+  /install/lang/da_DK/LC_MESSAGES/da_DK.mo
+  /install/lang/da_DK/LC_MESSAGES/da_DK.po
+  /install/lang/fr_FR/LC_MESSAGES/fr_FR.mo
+  /install/lang/fr_FR/LC_MESSAGES/fr_FR.po
+  /install/lang/id_ID/LC_MESSAGES/id_ID.mo
+  /install/lang/id_ID/LC_MESSAGES/id_ID.po
+  /install/lang/new_language_template/LC_MESSAGES/empty.po
+  /install/lang/pl_PL/LC_MESSAGES/pl_PL.mo
+  /install/lang/pl_PL/LC_MESSAGES/pl_PL.po
+  /install/lang/sv_SE/LC_MESSAGES/sv_SE.mo
+  /install/lang/sv_SE/LC_MESSAGES/sv_SE.po
+  /lang/new_language_template/LC_MESSAGES/empty.po
+
+10-Aug-2010 Janusz Dobrowolski
+# Fixed tests or fresh new install
+$ /includes/system_tests.inc
+! Warning cleanups
+$ /includes/ajax.inc
+  /includes/lang/language.php
+
 09-Aug-2010 Janusz Dobrowolski
 + Added French translation (thanks to Gaston)
 $ /install/isession.inc
