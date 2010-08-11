@@ -1,8 +1,7 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
+# Frontaccounting ERP Installer
+# Copyright (C) 2010 FrontAccounting LLC
+# This file is distributed under the same license as the FrontAccounting package.
+# Joe Hunt <joe.hunt.consulting@gmail.com>
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
@@ -246,7 +245,7 @@ msgid "Optional"
 msgstr "Frivillig"
 
 #: /var/www/fa2.3/devel/../includes/system_tests.inc:17
-msgid "Recomended"
+msgid "Recommended"
 msgstr "Rekommanderad"
 
 #: /var/www/fa2.3/devel/../includes/system_tests.inc:18
@@ -318,7 +317,7 @@ msgid "Native gettext"
 msgstr "Inhemsk gettext"
 
 #: /var/www/fa2.3/devel/../includes/system_tests.inc:116
-msgid "In case of no getext support, php emulation is used"
+msgid "In case of no gettext support, php emulation is used"
 msgstr "Om inte gettext stöds, används PHP emulering."
 
 #: /var/www/fa2.3/devel/../includes/system_tests.inc:124

@@ -14,7 +14,7 @@
 $test_level = array(
 	0 => _('Info'),
 	1 => _('Optional'),
-	2 => _('Recomended'),
+	2 => _('Recommended'),
 	3 => _('Required ')
 );
 
@@ -113,7 +113,7 @@ function tst_gettext()
 	$test['test'] = function_exists('gettext') ? _('Yes'): _('No');
 	$test['type'] = 1;
 	$test['result'] = true;
-	$test['comments'] = _('In case of no getext support, php emulation is used');
+	$test['comments'] = _('In case of no gettext support, php emulation is used');
 
 	return $test;
 }

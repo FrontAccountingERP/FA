@@ -243,7 +243,7 @@ msgid "Optional"
 msgstr "Optionnel"
 
 #: /var/www/fa2.3/devel/../includes/system_tests.inc:17
-msgid "Recomended"
+msgid "Recommended"
 msgstr "Recommandé"
 
 #: /var/www/fa2.3/devel/../includes/system_tests.inc:18
@@ -315,7 +315,7 @@ msgid "Native gettext"
 msgstr "Gettext natif"
 
 #: /var/www/fa2.3/devel/../includes/system_tests.inc:116
-msgid "In case of no getext support, php emulation is used"
+msgid "In case of no gettext support, php emulation is used"
 msgstr "Si gettext est non supporté, l'émulation php sera utilisée"
 
 #: /var/www/fa2.3/devel/../includes/system_tests.inc:124
