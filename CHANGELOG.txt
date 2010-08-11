@@ -20,10 +20,14 @@ Legend:
 $ -> Affected files
 
 11-Aug-2010 Janusz Dobrowolski
-+ Added dutch translation for install wizard
++ Added dutch translation for install wizard (thanks to MorkVonOrk) 
   /install/isession.inc
   /install/lang/nl_BE/LC_MESSAGES/nl_BE.mo (new)
   /install/lang/nl_BE/LC_MESSAGES/nl_BE.po (new)
++ Added portuguese (Brasil) translation for install wizard (thanks to InterConnect Brasil)
+  /install/isession.inc
+  /install/lang/pt_BR/LC_MESSAGES/pt_BR.mo (new)
+  /install/lang/pt_BR/LC_MESSAGES/pt_BR.po (new)
 # Fixed two typos in translated messages.
   /includes/system_tests.inc
   /install/lang/da_DK/LC_MESSAGES/da_DK.mo
