@@ -112,7 +112,7 @@ function write_credit_note(&$credit_note, $write_off_acc)
 		write_customer_trans_detail_item(ST_CUSTCREDIT, $credit_no, $credit_line->stock_id,
 			$credit_line->item_description, $credit_line->qty_dispatched,
 			$credit_line->line_price(), $line_tax, $credit_line->discount_percent,
-			$credit_line->src_id, $credit_line->standard_cost, $trans_no==0 ? 0:  $credit_line->id);
+			$credit_line->standard_cost, $credit_line->src_id, $trans_no==0 ? 0:  $credit_line->id);
 
 		add_credit_movements_item($credit_note, $credit_line,
 			$credit_type, $line_taxfree_price+$line_tax, $credit_invoice);
