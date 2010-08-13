@@ -19,6 +19,12 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+13-Aug-2010 Joe Hunt/infotechaccountant.com
++ Added arabic translation for install wizard (thanks to Hameed, infotechaccountants)
+  /install/isession.inc
+  /install/lang/ar_EG/LC_MESSAGES/ar_EG.mo (new)
+  /install/lang/ar_EG/LC_MESSAGES/ar_EG.po (new)
+
 13-Aug-2010 Janusz Dobrowolski
 # Updated pt_BR instaler translation
 $ /install/lang/pt_BR/LC_MESSAGES/pt_BR.mo
@@ -28,6 +34,7 @@ $ /install/lang/pt_BR/LC_MESSAGES/pt_BR.mo
 # [0000242] Database error during credit note processing.
 $ /sales/includes/db/sales_credit_db.inc
 
+>>>>>>> 1.39.2.643
 11-Aug-2010 Janusz Dobrowolski
 + Added dutch translation for install wizard (thanks to MorkVonOrk) 
   /install/isession.inc
