@@ -117,7 +117,7 @@ msgstr "جميع المتطلبات التمهيدية الخاصة بالتطب
 #: /var/www/fa2.3/devel/../install/index.php:370
 #: /var/www/fa2.3/devel/../install/index.php:389
 msgid "Continue >>"
-msgstr "الاستمرار >>"
+msgstr "<< الاستمرار"
 
 #: /var/www/fa2.3/devel/../install/index.php:332
 msgid "Application cannot be installed. Please fix problems listed below in red, and press Refresh button."
