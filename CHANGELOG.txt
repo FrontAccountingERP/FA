@@ -19,6 +19,15 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+13-Aug-2010 Janusz Dobrowolski
+# Updated pt_BR instaler translation
+$ /install/lang/pt_BR/LC_MESSAGES/pt_BR.mo
+  /install/lang/pt_BR/LC_MESSAGES/pt_BR.po
+
+12-Aug-2010 Janusz Dobrowolski
+# [0000242] Database error during credit note processing.
+$ /sales/includes/db/sales_credit_db.inc
+
 11-Aug-2010 Janusz Dobrowolski
 + Added dutch translation for install wizard (thanks to MorkVonOrk) 
   /install/isession.inc

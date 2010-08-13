@@ -1,14 +1,15 @@
 # Idioma PT-BR FrontAccouting ERP
 # Copyright (C) 2010
-# This file is distributed under the same license as the FrontAccounting package.
+# This file is distributed under the same license as the PACKAGE package.
 # InterConnect Brasil Ltda. <info@inter.bz>, 2010.
 #
+#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: FrontAccounting 2.3\n"
+"Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-08-08 12:50+0200\n"
-"PO-Revision-Date: 2010-08-11 12:50+0200\n"
+"PO-Revision-Date: 2010-08-12 12:50+0200\n"
 "Last-Translator: InterConnect Brasil <info@inter.bz>\n"
 "Language-Team: PT-BR <>\n"
 "MIME-Version: 1.0\n"
@@ -18,12 +19,12 @@ msgstr ""
 #: /var/www/fa2.3/devel/../install/index.php:20
 #: /var/www/fa2.3/devel/../install/index.php:40
 msgid "FrontAccouting ERP Installation Wizard"
-msgstr "Assistente de Instalação FrontAccouting ERP"
+msgstr "Assistente de Instalação do FrontAccouting ERP"
 
 #: /var/www/fa2.3/devel/../install/index.php:41
 #, php-format
 msgid "Step %d: %s"
-msgstr "Passo %d: %s"
+msgstr "%do. passo:  %s"
 
 #: /var/www/fa2.3/devel/../install/index.php:48
 msgid "Chart of accounts"
@@ -114,8 +115,8 @@ msgid ""
 "All application preliminary requirements seems to be correct. Please press "
 "Continue button below."
 msgstr ""
-"Todos os requisitos de aplicação preliminar parece esta correto. Favor pressione "
-"o seguinte botão Continue."
+"Todos os requisitos de aplicação preliminar parece esta correto. Por favor "
+"pressione o botão Continuar."
 
 #: /var/www/fa2.3/devel/../install/index.php:330
 #: /var/www/fa2.3/devel/../install/index.php:356
@@ -130,7 +131,7 @@ msgid ""
 "Application cannot be installed. Please fix problems listed below in red, "
 "and press Refresh button."
 msgstr ""
-"A aplicação não pode ser instalada. Favor, corrigir problemas listados abaixo em vermelho, "
+"O aplicativo não pode ser instalad0. Por favor corrija os problemas listados abaixo em vermelho, "
 "e pressione o botão Atualizar."
 
 #: /var/www/fa2.3/devel/../install/index.php:333
@@ -139,11 +140,11 @@ msgstr "Atualizar"
 
 #: /var/www/fa2.3/devel/../install/index.php:343
 msgid "Database Server Settings"
-msgstr "Configurações do Banco de Dados"
+msgstr "Configuração do Banco de Dados"
 
 #: /var/www/fa2.3/devel/../install/index.php:345
 msgid "Server Host:"
-msgstr "Servidor:"
+msgstr "Servidor do Banco de Dados:"
 
 #: /var/www/fa2.3/devel/../install/index.php:346
 msgid "Database User:"
@@ -181,22 +182,21 @@ msgstr "Instalar Suporte de Idiomas Adicionais do Repositório do FA:"
 
 #: /var/www/fa2.3/devel/../install/index.php:351
 msgid "Install Additional COAs from FA Repository:"
-msgstr "Instalar COAs Adicionais do Repositório do FA:"
+msgstr "Instalar Plano de Contas do Repositório do FA:"
 
 #: /var/www/fa2.3/devel/../install/index.php:353
 msgid ""
 "Use table prefix if you share selected database for more than one FA company."
 msgstr ""
-"Use o prefixo da tabela se você compartilha a banco de dados para mais de uma empresa."
+"Use o prefixo da tabela se você for utilizar o banco de dados para mais de uma empresa."
 
 #: /var/www/fa2.3/devel/../install/index.php:354
 msgid ""
 "Do not select additional langs nor COAs if you have no working internet "
 "connection right now. You can install them later."
 msgstr ""
-"Não selecione idiomas adicionais nem COAs se você não tem conexão com a "
-"internet agora. Você poderá instalá-los mais tarde."
-
+"Não selecione Idiomas Adicionais nem Plano de Contas se você não tem uma "
+"conexão com a internet agora. Você poderá instalar mais tarde."
 
 #: /var/www/fa2.3/devel/../install/index.php:355
 #: /var/www/fa2.3/devel/../install/index.php:362
@@ -207,7 +207,7 @@ msgstr "<< Voltar"
 
 #: /var/www/fa2.3/devel/../install/index.php:360
 msgid "User Interface Languages Selection"
-msgstr "Usa Interface de Seleção de Idiomas"
+msgstr "Seleção da Idioma da Interface"
 
 #: /var/www/fa2.3/devel/../install/index.php:367
 msgid "Charts of Accounts Selection"
@@ -231,7 +231,7 @@ msgstr "Senha do Administrador:"
 
 #: /var/www/fa2.3/devel/../install/index.php:384
 msgid "Reenter Password:"
-msgstr "Reentrar Senha:"
+msgstr "Digitar a Senha Novamente:"
 
 #: /var/www/fa2.3/devel/../install/index.php:385
 msgid "Select Chart of Accounts:"
@@ -243,11 +243,11 @@ msgstr "Selecionar Idioma Padrão:"
 
 #: /var/www/fa2.3/devel/../install/index.php:393
 msgid "FrontAccounting ERP has been installed successsfully."
-msgstr "FrontAccounting ERP foi instalado com sucesso."
+msgstr "O FrontAccounting ERP foi instalado com sucesso."
 
 #: /var/www/fa2.3/devel/../install/index.php:394
 msgid "Please do not forget to remove install wizard folder."
-msgstr "Por favor não esqueça de remover pasta de instalação do assistente."
+msgstr "Por favor não se esqueça de remover a pasta de instalação do assistente."
 
 #: /var/www/fa2.3/devel/../install/index.php:396
 msgid "Click here to start."
@@ -275,7 +275,7 @@ msgstr "Versão do MySQL"
 
 #: /var/www/fa2.3/devel/../includes/system_tests.inc:28
 msgid "Upgrade MySQL server to version at least 4.1"
-msgstr "Atualizar o servidor MySQL para versão 4.1 ou maior"
+msgstr "Atualize o servidor MySQL para versão 4.1 ou superior"
 
 #: /var/www/fa2.3/devel/../includes/system_tests.inc:35
 msgid "PHP MySQL extension"
@@ -291,7 +291,7 @@ msgstr "Versão do PHP"
 
 #: /var/www/fa2.3/devel/../includes/system_tests.inc:50
 msgid "Upgrade PHP to version at least 4.3.3"
-msgstr "Atualizar o PHP para versão 4.3.3 ou maior"
+msgstr "Atualize o PHP para versão 4.3.3 ou superior"
 
 #: /var/www/fa2.3/devel/../includes/system_tests.inc:57
 msgid "Server system"
@@ -457,15 +457,15 @@ msgstr "Descrição de diretório sem-padrão '%s' não é gravável"
 msgid ""
 "OpenSSL PHP extension have to be enabled to use extension repository system."
 msgstr ""
-"A extensão OpenSSL PHP tem que estar habilitada para usar o sistema de reposição de extensão."
+"A extensão OpenSSL PHP tem que estar habilitada para usar o repositório de extensão."
 
 #: /var/www/fa2.3/devel/../includes/system_tests.inc:391
 msgid ""
 "OpenSSL have to be available on your server to use extension repository "
 "system."
 msgstr ""
-"OpenSSL deve estar disponível no seu servidor para utilizar o sistema de "
-"reposição de extensão."
+"OpenSSL deve estar disponível no seu servidor para utilizar o repositório "
+"de extensão."
 
 #: /var/www/fa2.3/devel/../includes/system_tests.inc:414
 msgid "Test"
