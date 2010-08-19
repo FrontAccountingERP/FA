@@ -109,7 +109,7 @@ function work_order_quick_costs($woid, $stock_id, $units_reqd, $date_, $advanced
 				$bom_item["loc_code"], $date_, "", -$bom_item["quantity"] * $units_reqd, 0);
 		}
 		$total_cost += add_gl_trans_std_cost(ST_WORKORDER, $woid, $date_, $bom_accounts["inventory_account"], 0, 0,
-			null, -$bom_cost);
+			$bom_item["quantity"] ." * ".$bom_item["description"], -$bom_cost);
 
 	}
 	if ($advanced)
@@ -123,8 +123,9 @@ function work_order_quick_costs($woid, $stock_id, $units_reqd, $date_, $advanced
 			$standard_cost = get_standard_cost($item['stock_id']);
 			$issue_cost = $standard_cost * $item['qty_issued'] * $units_reqd / $wo['units_reqd'];
 			$issue = get_stock_gl_code($item['stock_id']);
-			$total_cost += add_gl_trans_std_cost(ST_WORKORDER, $woid, $date_, $issue["inventory_account"], 0, 0,
-				null, -$issue_cost);
+            $stockitem = get_item($item['stock_id']);
+            $total_cost += add_gl_trans_std_cost(ST_WORKORDER, $woid, $date_, $issue["inventory_account"], 0, 0,
+                _("Issue of")." ".$stockitem["description"], -$issue_cost);			
 			$issue_total += $issue_cost;
 		}
 		if ($issue_total != 0)
@@ -169,8 +170,9 @@ function work_order_quick_costs($woid, $stock_id, $units_reqd, $date_, $advanced
 			PT_WORKORDER, WO_LABOUR);
 	}
 	// debit total components $total_cost
-	add_gl_trans_std_cost(ST_WORKORDER, $woid, $date_, $item_accounts["inventory_account"],
-		0, 0, null, -$total_cost);
+ 	$stockitem = get_item($stock_id);
+    add_gl_trans_std_cost(ST_WORKORDER, $woid, $date_, $item_accounts["inventory_account"],
+        0, 0, _("Produced")." ".$units_reqd. " * ".$stockitem["description"], -$total_cost);	
 }
 
 //--------------------------------------------------------------------------------------

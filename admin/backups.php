@@ -26,7 +26,7 @@ if (get_post('view')) {
 		else {
 		    header('Content-type: application/octet-stream');
     		header('Content-Length: '.filesize($filename));
-			header("Content-Disposition: inline; filename=$filename");
+			header("Content-Disposition: inline");
     		readfile($filename);
 			exit();
 		}
@@ -173,7 +173,7 @@ table_section_title(_("Backup scripts maintenance"));
 	echo "<td style='padding-left:20px'align='left'>".get_backup_file_combo()."</td>";
 	echo "<td valign='top'>";
 	start_table();
-	submit_row('view',_("View Backup"), false, '', '', true);
+	submit_row('view',_("View Backup"), false, '', '', false);
 	submit_row('download',_("Download Backup"), false, '', '', false);
 	submit_row('restore',_("Restore Backup"), false, '','', 'process');
 	submit_js_confirm('restore',_("You are about to restore database from backup file.\nDo you want to continue?"));

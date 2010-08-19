@@ -71,6 +71,7 @@ else
 $k = 0; //row colour counter
 $heading_shown = false;
 
+$credit = $debit = 0;
 while ($myrow = db_fetch($result)) 
 {
 	if ($myrow['amount'] == 0) continue;
@@ -94,8 +95,22 @@ while ($myrow = db_fetch($result))
 	display_debit_or_credit_cells($myrow['amount']);
 	label_cell($myrow['memo_']);
 	end_row();
-
+    if ($myrow['amount'] > 0 ) 
+    	$debit += $myrow['amount'];
+    else 
+    	$credit += $myrow['amount'];
 }
+start_row("class='inquirybg' style='font-weight:bold'");
+label_cell(_("Total"), "colspan=2");
+if ($dim >= 1)
+    label_cell('');
+if ($dim > 1)
+    label_cell('');
+amount_cell($debit);
+amount_cell(-$credit);
+label_cell('');
+end_row();
+
 //end of while loop
 if ($heading_shown)
 	end_table(1);

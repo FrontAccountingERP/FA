@@ -38,7 +38,7 @@ function update_attachment($selected_id, $filterType, $trans_no, $description,
 		$sql .= "filename=".db_escape($filename).",
 		unique_name=".db_escape($unique_name).",
 		filesize=".db_escape($filesize).",
-		filetype=".db_escape($filetype);
+		filetype=".db_escape($filetype).",";
 	}	
 	$sql .= "tran_date='$date' WHERE id=".db_escape($selected_id);
 	db_query($sql, "Attachment could not be updated");		

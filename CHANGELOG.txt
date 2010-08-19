@@ -19,6 +19,16 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+18-Aug-2010 Joe Hunt
+# View of backup scripts and attachments didn't work
+$ /admin/attachments.php
+  /admin/backups.php
+  /admin/db/attachments_db.inc
+! Added more memo info in advanced manufacture / Chaitanya
+$ /manufacturing/includes/db/work_orders_quick_db.inc
+! Added total debit/credit in gl_trans_view.inc / Chaitanya
+$ /gl/view/gl_trans_view.php
+
 13-Aug-2010 Joe Hunt/infotechaccountant.com
 + Added arabic translation for install wizard (thanks to Hameed, infotechaccountants)
   /install/isession.inc

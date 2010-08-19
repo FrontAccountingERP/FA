@@ -34,9 +34,9 @@ if ($view_id != -1)
 			$type = ($row['filetype']) ? $row['filetype'] : 'application/octet-stream';	
     		header("Content-type: ".$type);
     		header('Content-Length: '.$row['filesize']);
-	    	if ($type == 'application/octet-stream')
-    			header('Content-Disposition: attachment; filename='.$row['filename']);
-    		else
+	    	//if ($type == 'application/octet-stream')
+    		//	header('Content-Disposition: attachment; filename='.$row['filename']);
+    		//else
 	 			header("Content-Disposition: inline");
 	    	echo file_get_contents(company_path(). "/attachments/".$row['unique_name']);
     		exit();
