@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+20-Aug-2010 Joe Hunt/Chaitanya
++ Improvements to bank inquiry credit/debit totals as well.
+$ /gl/inquiry/bank_inquiry.php
+
 18-Aug-2010 Joe Hunt
 # View of backup scripts and attachments didn't work
 $ /admin/attachments.php
