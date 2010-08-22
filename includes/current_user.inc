@@ -187,14 +187,29 @@ function round2($number, $decimals=0)
 	return round($number+$delta, $decimals);
 }
 
+/*
+	Returns number formatted according to user setup and using $decimals digits after dot 
+	(defualt is 0). When $decimals is set to 'max' maximum available precision is used 
+	(decimals depend on value) and trailing zeros are trimmed.
+*/
 function number_format2($number, $decimals=0)
 {
 	global $thoseps, $decseps;
 	$tsep = $thoseps[$_SESSION["wa_current_user"]->prefs->tho_sep()];
 	$dsep = $decseps[$_SESSION["wa_current_user"]->prefs->dec_sep()];
 	//return number_format($number, $decimals, $dsep,	$tsep);
-	$delta = ($number < 0 ? -.0000000001 : .0000000001);
-	return number_format($number+$delta, $decimals, $dsep,	$tsep);
+	if($decimals=='max')
+		$dec = 15 - floor(log10(abs($number)));
+	else {
+		$delta = ($number < 0 ? -.0000000001 : .0000000001);
+		$number += $delta;
+		$dec = $decimals;
+	}
+
+	$num = number_format($number, $dec, $dsep, $tsep);
+
+	return $decimals==='max' ? rtrim($num, '0') : $num;
+
 }
 //
 //	Current ui mode.
@@ -248,6 +263,13 @@ function get_qty_dec($stock_id=null)
 	return $dec;
 }
 //-------------------------------------------------------------------
+//
+//	Maximum precision format. Strips trailing unsignificant digits.
+//
+function maxprec_format($number) {
+    return number_format2($number, null);
+}
+
 function exrate_format($number) {
     return number_format2($number,
 	$_SESSION["wa_current_user"]->prefs->exrate_dec());
