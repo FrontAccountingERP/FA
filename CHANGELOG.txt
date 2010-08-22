@@ -19,6 +19,28 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+22-Aug-2010 Janusz Dobrowolski
++ Extended number formatting to allow maximum precision numbers with 'max' specifier. 
+  /includes/current_user.inc
+  /js/utils.js
++ Added purchase account special option for using item's account
+$ /purchasing/manage/suppliers.php
+# Fixed default 'C' locale in listing
+$ /admin/inst_lang.php
+# Fixed mysql extension test
+$ /includes/system_tests.inc
+# Fixed exrate reedition
+$ /gl/manage/exchange_rates.php
+# Maximum precision for factor entry
+$ /inventory/purchasing_data.php
+# Fixed backward compatibility for cogs GL account setup
+$ /purchasing/includes/db/invoice_db.inc
+! Fixed GL account selection on first display
+$ /purchasing/includes/ui/invoice_ui.inc
+# Fixed bug in lang update, changed purchase account for suppliers to default.
+$ /sql/alter2.3rc.sql
+  /sql/en_US-demo.sql
+
 20-Aug-2010 Joe Hunt/Chaitanya
 + Improvements to bank inquiry credit/debit totals as well.
 $ /gl/inquiry/bank_inquiry.php
@@ -35,31 +57,32 @@ $ /gl/view/gl_trans_view.php
 
 13-Aug-2010 Joe Hunt/infotechaccountant.com
 + Added arabic translation for install wizard (thanks to Hameed, infotechaccountants)
-  /install/isession.inc
-  /install/lang/ar_EG/LC_MESSAGES/ar_EG.mo (new)
+$ /install/lang/ar_EG/LC_MESSAGES/ar_EG.mo (new)
   /install/lang/ar_EG/LC_MESSAGES/ar_EG.po (new)
+  /install/isession.inc
 
 13-Aug-2010 Janusz Dobrowolski
 # Updated pt_BR instaler translation
 $ /install/lang/pt_BR/LC_MESSAGES/pt_BR.mo
   /install/lang/pt_BR/LC_MESSAGES/pt_BR.po
+# Fixed mysql extension test
+$ /includes/system_tests.inc
 
 12-Aug-2010 Janusz Dobrowolski
 # [0000242] Database error during credit note processing.
 $ /sales/includes/db/sales_credit_db.inc
 
->>>>>>> 1.39.2.643
 11-Aug-2010 Janusz Dobrowolski
 + Added dutch translation for install wizard (thanks to MorkVonOrk) 
-  /install/isession.inc
+$ /install/isession.inc
   /install/lang/nl_BE/LC_MESSAGES/nl_BE.mo (new)
   /install/lang/nl_BE/LC_MESSAGES/nl_BE.po (new)
 + Added portuguese (Brasil) translation for install wizard (thanks to InterConnect Brasil)
-  /install/isession.inc
+$ /install/isession.inc
   /install/lang/pt_BR/LC_MESSAGES/pt_BR.mo (new)
   /install/lang/pt_BR/LC_MESSAGES/pt_BR.po (new)
 # Fixed two typos in translated messages.
-  /includes/system_tests.inc
+$ /includes/system_tests.inc
   /install/lang/da_DK/LC_MESSAGES/da_DK.mo
   /install/lang/da_DK/LC_MESSAGES/da_DK.po
   /install/lang/fr_FR/LC_MESSAGES/fr_FR.mo
