@@ -76,7 +76,7 @@ function supplier_settings(&$supplier_id)
 		$company_record = get_company_prefs();
 		$_POST['curr_code']  = $company_record["curr_default"];
 		$_POST['payable_account'] = $company_record["creditors_act"];
-		$_POST['purchase_account'] = $company_record["default_cogs_act"];
+		$_POST['purchase_account'] = ''; // default/item's cogs account
 		$_POST['payment_discount_account'] = $company_record['pyt_discount_act'];
 	}
 
@@ -124,7 +124,8 @@ function supplier_settings(&$supplier_id)
 	}
 	table_section_title(_("Accounts"));
 	gl_all_accounts_list_row(_("Accounts Payable Account:"), 'payable_account', $_POST['payable_account']);
-	gl_all_accounts_list_row(_("Purchase Account:"), 'purchase_account', $_POST['purchase_account']);
+	gl_all_accounts_list_row(_("Purchase Account:"), 'purchase_account', $_POST['purchase_account'],
+		false, false, _("Use Item Inventory/COGS Account"));
 	gl_all_accounts_list_row(_("Purchase Discount Account:"), 'payment_discount_account', $_POST['payment_discount_account']);
 
 	table_section(2);
