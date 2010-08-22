@@ -165,7 +165,8 @@ function invoice_totals(&$supp_trans)
 function display_gl_controls(&$supp_trans, $k)
 {
 	$accs = get_supplier_accounts($supp_trans->supplier_id);
-	$_POST['gl_code'] = $accs['purchase_account'];
+	$_POST['gl_code'] = $accs['purchase_account'] ? 
+		$accs['purchase_account'] : get_company_pref('default_cogs_act');
 
 	alt_table_row_color($k);
 	echo gl_all_accounts_list('gl_code', null, true, true);
