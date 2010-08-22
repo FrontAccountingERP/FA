@@ -26,7 +26,7 @@ page(_($help_context = "Exchange Rates"), false, false, "", $js);
 simple_page_mode(false);
 
 //---------------------------------------------------------------------------------------------
-function check_data()
+function check_data($selected_id)
 {
 	if (!is_date($_POST['date_']))
 	{
@@ -40,7 +40,7 @@ function check_data()
 		set_focus('BuyRate');
 		return false;
 	}
-	if (get_date_exchange_rate($_POST['curr_abrev'], $_POST['date_']))
+	if (!$selected_id && get_date_exchange_rate($_POST['curr_abrev'], $_POST['date_']))
 	{
 		display_error( _("The exchange rate for the date is already there."));
 		set_focus('date_');
@@ -55,7 +55,7 @@ function handle_submit()
 {
 	global $selected_id;
 
-	if (!check_data())
+	if (!check_data($selected_id))
 		return false;
 
 	if ($selected_id != "")
@@ -135,12 +135,11 @@ function display_rate_edit()
 	if (isset($_POST['get_rate']))
 	{
 		$_POST['BuyRate'] = 
-			exrate_format(retrieve_exrate($_POST['curr_abrev'], $_POST['date_']));
+			maxprec_format(retrieve_exrate($_POST['curr_abrev'], $_POST['date_']));
 		$Ajax->activate('BuyRate');
 	}
 	small_amount_row(_("Exchange Rate:"), 'BuyRate', null, '',
-	  	submit('get_rate',_("Get"), false, _('Get current ECB rate') , true),
-		user_exrate_dec());
+	  	submit('get_rate',_("Get"), false, _('Get current ECB rate') , true), 'max');
 
 	end_table(1);
 
