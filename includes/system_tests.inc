@@ -34,7 +34,7 @@ function tst_phpmysql()
 {
 	$test['descr'] = _('PHP MySQL extension');
 	$test['type'] = 3;
-	$test['result'] = function_exists('gettext');
+	$test['result'] = function_exists('mysql_connect');
 	$test['test'] = $test['result'] ? _('Yes'): _('No');
 	
 	$test['comments'] = _('Your PHP has to have MySQL extension enabled.');
