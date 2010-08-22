@@ -139,7 +139,7 @@ else
             amount_decimal_cell($myrow["price"]);
             label_cell($myrow["curr_code"]);
             label_cell($myrow["suppliers_uom"]);
-            qty_cell($myrow['conversion_factor'], false, user_exrate_dec());
+            qty_cell($myrow['conversion_factor'], false, 'max');
             label_cell($myrow["supplier_description"]);
 		 	edit_button_cell("Edit".$myrow['supplier_id'], _("Edit"));
 		 	delete_button_cell("Delete".$myrow['supplier_id'], _("Delete"));
@@ -169,7 +169,7 @@ if ($Mode =='Edit')
     $_POST['price'] = price_decimal_format($myrow["price"], $dec2);
     $_POST['suppliers_uom'] = $myrow["suppliers_uom"];
     $_POST['supplier_description'] = $myrow["supplier_description"];
-    $_POST['conversion_factor'] = exrate_format($myrow["conversion_factor"]);
+    $_POST['conversion_factor'] = maxprec_format($myrow["conversion_factor"]);
 }
 
 br();
@@ -191,10 +191,10 @@ text_row(_("Suppliers Unit of Measure:"), 'suppliers_uom', null, 50, 51);
 
 if (!isset($_POST['conversion_factor']) || $_POST['conversion_factor'] == "")
 {
-   	$_POST['conversion_factor'] = exrate_format(1);
+   	$_POST['conversion_factor'] = maxprec_format(1);
 }
 amount_row(_("Conversion Factor (to our UOM):"), 'conversion_factor',
-  exrate_format($_POST['conversion_factor']), null, null, user_exrate_dec() );
+  maxprec_format($_POST['conversion_factor']), null, null, 'max');
 text_row(_("Supplier's Code or Description:"), 'supplier_description', null, 50, 51);
 
 end_table(1);
