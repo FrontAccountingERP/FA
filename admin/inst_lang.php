@@ -59,6 +59,9 @@ function display_languages()
 	$langs = get_languages_list();
 	foreach ($langs as $pkg_name => $lng)
 	{
+		if ($lng == 'C') // skip default locale (aka no translation)
+			continue;
+
 		$lang = $lng['code'];
 		$lang_name = $lng['name'];
 		$charset = $lng['encoding'];
@@ -72,8 +75,7 @@ function display_languages()
 		else
 			alt_table_row_color($k);
 
-		$support = ($lang == 'C') ||
-			$_SESSION['get_text']->check_support($lang, $charset);
+		$support = $_SESSION['get_text']->check_support($lang, $charset);
 
 		if (function_exists('gettext') && !$support && !get_post('DisplayAll')) continue;
 
