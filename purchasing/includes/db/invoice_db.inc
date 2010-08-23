@@ -204,8 +204,7 @@ function add_supp_invoice($supp_trans, $invoice_no=0) // do not receive as ref b
 		$iv_act = $supplier_accounts["purchase_account"] ? $supplier_accounts["purchase_account"] :
 			((is_inventory_item($entered_grn->item_code) ? $stock_gl_code["inventory_account"] 
 				: $stock_gl_code["cogs_account"]));
-
-		$total += add_gl_trans_supplier($trans_type, $invoice_id, $date_, $supplier_accounts["purchase_account"],
+		$total += add_gl_trans_supplier($trans_type, $invoice_id, $date_, $iv_act,
 			$stock_gl_code['dimension_id'], $stock_gl_code['dimension2_id'],
 			$entered_grn->this_quantity_inv * $line_taxfree, $supp_trans->supplier_id);
 		/*$total += add_gl_trans_supplier($trans_type, $invoice_id, $date_, $iv_act,
