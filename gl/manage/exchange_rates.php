@@ -119,7 +119,7 @@ function display_rate_edit()
 		$myrow = get_exchange_rate($selected_id);
 
 		$_POST['date_'] = sql2date($myrow["date_"]);
-		$_POST['BuyRate'] = exrate_format($myrow["rate_buy"]);
+		$_POST['BuyRate'] = maxprec_format($myrow["rate_buy"]);
 
 		hidden('selected_id', $selected_id);
 		hidden('date_', $_POST['date_']);
@@ -138,7 +138,7 @@ function display_rate_edit()
 			maxprec_format(retrieve_exrate($_POST['curr_abrev'], $_POST['date_']));
 		$Ajax->activate('BuyRate');
 	}
-	small_amount_row(_("Exchange Rate:"), 'BuyRate', null, '',
+	amount_row(_("Exchange Rate:"), 'BuyRate', null, '',
 	  	submit('get_rate',_("Get"), false, _('Get current ECB rate') , true), 'max');
 
 	end_table(1);
