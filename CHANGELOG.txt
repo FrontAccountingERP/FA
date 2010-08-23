@@ -19,6 +19,17 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+23-Aug-2010 Janusz Dobrowolski
+# Small fix in layout
+$ /gl/manage/exchange_rates.php
+# Fixed maxprec formatting
+$ /includes/current_user.inc
+  /js/utils.js
+# Fixed cogs account selection
+$ /purchasing/includes/db/invoice_db.inc
+# Fixed tax_included option update.
+$ /purchasing/manage/suppliers.php
+
 23-Aug-2010 Joe Hunt
 # Period bug caused warning on no fiscal year. Had to be reduces by one.
 $ /gl/accruals.php
