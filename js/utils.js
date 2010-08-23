@@ -105,7 +105,7 @@ JsHttpRequest._request = function(trigger, form, tout, retry) {
 			// seek element by id if there is no elemnt with given name
 			  objElement = document.getElementsByName(id)[0] || document.getElementById(id);
     		  if(cmd=='as') {
-				  eval("objElement.setAttribute('"+property+"',"+data+");");
+				  eval("objElement.setAttribute('"+property+"','"+data+"');");
 			  } else if(cmd=='up') {
 //				if(!objElement) alert('No element "'+id+'"');
 				if(objElement) {
@@ -229,7 +229,8 @@ function price_format(post, num, dec, label, color) {
 		num = num.substring(0,num.length-(4*i+3))+user.ts+
 			num.substring(num.length-(4*i+3));
 	 num = ((sign)?'':'-') + num;
-	 if(dec!=0) num = num + user.ds + cents;
+	if(dec!=0 && (!max || cents!=0))
+		num = num + user.ds + cents;
 	if(label)
 	    el.innerHTML = num;
 	else

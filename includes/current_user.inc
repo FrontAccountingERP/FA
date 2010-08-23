@@ -251,6 +251,7 @@ function qty_format($number, $stock_id=null, &$dec) {
 	$dec = get_qty_dec($stock_id);
     return number_format2($number, $dec);
 }
+
 // and get_qty_dec
 function get_qty_dec($stock_id=null)
 {
@@ -267,7 +268,7 @@ function get_qty_dec($stock_id=null)
 //	Maximum precision format. Strips trailing unsignificant digits.
 //
 function maxprec_format($number) {
-    return number_format2($number, null);
+    return number_format2($number, 'max');
 }
 
 function exrate_format($number) {
