@@ -54,10 +54,11 @@ if (isset($_POST['go']) || isset($_POST['show']))
 	if ($input_error == 0)
 	{
 		$periods = input_num('periods');
+		$per = $periods - 1;
 		$date_ = get_post('date_');
 		$freq = get_post('freq');
-		$lastdate = ($freq== 1?add_days($date_,7*$periods):($freq==2?add_days($date_,14*$periods):
-			($freq==3?add_months($date_,$periods):add_months($date_,3*$periods))));
+		$lastdate = ($freq== 1?add_days($date_,7*$per):($freq==2?add_days($date_,14*$per):
+			($freq==3?add_months($date_,$per):add_months($date_,3*$per))));
 		if (!is_date_in_fiscalyears($lastdate, false))
 		{
 			display_error(_("Some of the period dates are outside the fiscal year. Create a new fiscal year first!"));
