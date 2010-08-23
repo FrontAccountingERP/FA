@@ -20,6 +20,10 @@ Legend:
 $ -> Affected files
 
 23-Aug-2010 Janusz Dobrowolski
++ Added german translation for install wizard (thanks to iscongroup) 
+$ /install/isession.inc
+  /install/lang/de_DE/LC_MESSAGES/de_DE.mo (new)
+  /install/lang/de_DE/LC_MESSAGES/de_DE.po (new)
 # Small fix in layout
 $ /gl/manage/exchange_rates.php
 # Fixed maxprec formatting
