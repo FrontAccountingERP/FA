@@ -30,7 +30,7 @@ print_sales_quotations();
 
 function print_sales_quotations()
 {
-	global $path_to_root, $print_as_quote;
+	global $path_to_root, $print_as_quote, $print_invoice_no;
 
 	include_once($path_to_root . "/reporting/includes/pdf_report.inc");
 
@@ -76,13 +76,16 @@ function print_sales_quotations()
 			$rep->SetHeaderType('Header2');
 			$rep->currency = $cur;
 			$rep->Font();
-			$rep->filename = "SalesQuotation" . $i . ".pdf";
+			if ($print_invoice_no == 1)
+				$rep->filename = "SalesQuotation" . $i . ".pdf";
+			else	
+				$rep->filename = "SalesQuotation" . $myrow['reference'] . ".pdf";
 			$rep->Info($params, $cols, null, $aligns);
 		}
 		$rep->title = _("SALES QUOTATION");
 		$contacts = get_branch_contacts($branch['branch_code'], 'order', $branch['debtor_no']);
 		$rep->SetCommonData($myrow, $branch, $myrow, $baccount, ST_SALESQUOTE, $contacts);
-		$rep->headerFunc = 'Header2';
+		//$rep->headerFunc = 'Header2';
 		$rep->NewPage();
 
 		$result = get_sales_order_details($i, ST_SALESQUOTE);
@@ -156,8 +159,9 @@ function print_sales_quotations()
 					$myrow['contact_email'] = $myrow['master_email'];
 				$myrow['DebtorName'] = $branch['br_name'];
 			}
-			//$myrow['reference'] = $i;
-			$rep->End($email, $doc_Invoice_no . " " . $i, $myrow);
+			if ($print_invoice_no == 1)
+				$myrow['reference'] = $i;
+			$rep->End($email, $doc_Invoice_no . " " . $myrow['reference'], $myrow);
 		}
 	}
 	if ($email == 0)

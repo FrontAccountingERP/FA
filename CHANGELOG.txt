@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+24-Aug-2010 Joe Hunt
+# Removed old headerfunc in rep111.php (Sales Quotation)
+$ /reporting/rep111.php
+
 23-Aug-2010 Janusz Dobrowolski
 + Added german translation for install wizard (thanks to iscongroup) 
 $ /install/isession.inc
