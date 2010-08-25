@@ -19,6 +19,13 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+
+25-Aug-2010 Janusz Dobrowolski
++ Added taxes display for sales order/quotation
+$ /sales/includes/cart_class.inc
+  /sales/view/view_sales_order.php
+  /reporting/rep109.php
+
 24-Aug-2010 Joe Hunt
 # Removed old headerfunc in rep111.php (Sales Quotation)
 $ /reporting/rep111.php

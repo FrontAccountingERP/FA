@@ -222,15 +222,26 @@ foreach ($_SESSION['View']->line_items as $stock_item) {
 	end_row();
 }
 
-$items_total = $_SESSION['View']->get_items_total();
-
-$display_total = price_format($items_total + $_SESSION['View']->freight_cost);
-
 label_row(_("Shipping"), price_format($_SESSION['View']->freight_cost),
 	"align=right colspan=6", "nowrap align=right", 1);
-label_row(_("Total Order Value"), $display_total, "align=right colspan=6",
+
+$sub_tot = $_SESSION['View']->get_items_total() + $_SESSION['View']->freight_cost;
+
+$display_sub_tot = price_format($sub_tot);
+
+label_row(_("Sub Total"), $display_sub_tot, "align=right colspan=6",
 	"nowrap align=right", 1);
 
+$taxes = $_SESSION['View']->get_taxes();
+
+$tax_total = display_edit_tax_items($taxes, 6, $_SESSION['View']->tax_included,2);
+
+$display_total = price_format($sub_tot + $tax_total);
+
+start_row();
+label_cells(_("Amount Total"), $display_total, "colspan=6 align='right'","align='right'");
+label_cell('', "colspan=2");
+end_row();
 end_table(2);
 
 end_page(true, false, false, $_GET['trans_type'], $_GET['trans_no']);

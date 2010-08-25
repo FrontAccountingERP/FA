@@ -465,7 +465,8 @@ class cart
 
 		foreach ($this->line_items as $ln_itm) {
 			$items[] = $ln_itm->stock_id;
-			$prices[] = round(($ln_itm->qty_dispatched *
+			$prices[] = round(((
+				$this->trans_type==ST_SALESORDER ? 	$ln_itm->quantity : $ln_itm->qty_dispatched) *
 				$ln_itm->line_price()* (1 - $ln_itm->discount_percent)),  user_price_dec());
 		}
 
