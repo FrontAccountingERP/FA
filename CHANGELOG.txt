@@ -20,6 +20,12 @@ Legend:
 $ -> Affected files
 
 
+29-Aug-2010 Janusz Dobrowolski
+# Fixed maxprec option in number_format2
+$ /includes/current_user.inc
+# Missing tags parameter in display_type call
+$ /reporting/rep706.php
+
 25-Aug-2010 Janusz Dobrowolski
 + Added taxes display for sales order/quotation
 $ /sales/includes/cart_class.inc
