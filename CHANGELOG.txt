@@ -25,6 +25,7 @@ $ -> Affected files
 $ /includes/current_user.inc
 # Missing tags parameter in display_type call
 $ /reporting/rep706.php
+  /reporting/rep707.php
 
 25-Aug-2010 Janusz Dobrowolski
 + Added taxes display for sales order/quotation

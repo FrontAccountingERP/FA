@@ -101,7 +101,7 @@ function display_type ($type, $typename, $from, $to, $begin, $end, $compare, $co
 		}
 
 		$totals_arr = display_type($accounttype["id"], $accounttype["name"], $from, $to, $begin, $end, $compare, $convert, $dec, 
-			$pdec, $rep, $dimension, $dimension2, $pg, $graphics);
+			$pdec, $rep, $dimension, $dimension2, $tags, $pg, $graphics);
 		$per_balance_total += $totals_arr[0];
 		$acc_balance_total += $totals_arr[1];
 	}
