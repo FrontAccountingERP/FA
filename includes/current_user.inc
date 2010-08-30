@@ -198,7 +198,7 @@ function number_format2($number, $decimals=0)
 	$tsep = $thoseps[$_SESSION["wa_current_user"]->prefs->tho_sep()];
 	$dsep = $decseps[$_SESSION["wa_current_user"]->prefs->dec_sep()];
 	//return number_format($number, $decimals, $dsep,	$tsep);
-	if($decimals=='max')
+	if($decimals==='max')
 		$dec = 15 - floor(log10(abs($number)));
 	else {
 		$delta = ($number < 0 ? -.0000000001 : .0000000001);
