@@ -92,7 +92,7 @@ function display_type ($type, $typename, $from, $to, $convert, &$dec, &$rep, $di
 		}
 
 		$totals_arr = display_type($accounttype["id"], $accounttype["name"], $from, $to, $convert, $dec, 
-			$rep, $dimension, $dimension2, $pg, $graphics);
+			$rep, $dimension, $dimension2, $tags, $pg, $graphics);
 		$open_balance_total += $totals_arr[0];
 		$period_balance_total += $totals_arr[1];
 	}
