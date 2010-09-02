@@ -19,6 +19,12 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+03-"3p-2010 Joe Hunt
++ Added possibility to put dimensions on Delivery from sales order
+$ /sales/customer_delivery.php
+! Changed update.html to be more readable
+$ update.html
+
 02-Sep-2010 Janusz Dobrowolski
 + Preprinted forms folder moved to /reporting where it should be
 $ /reporting/forms

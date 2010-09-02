@@ -103,6 +103,10 @@ if (isset($_GET['OrderNumber']) && $_GET['OrderNumber'] > 0) {
 	$ord->trans_no = 0;
 	$ord->reference = $Refs->get_next(ST_CUSTDELIVERY);
 	$ord->document_date = new_doc_date();
+	$cust = get_customer($ord->customer_id);
+	// 2010-09-03 Joe Hunt
+	$ord->dimension_id = $cust['dimension_id'];
+	$ord->dimension2_id = $cust['dimension2_id'];
 	$_SESSION['Items'] = $ord;
 	copy_from_cart();
 
@@ -210,6 +214,8 @@ function copy_to_cart()
 	$cart->due_date =  $_POST['due_date'];
 	$cart->Location = $_POST['Location'];
 	$cart->Comments = $_POST['Comments'];
+	$cart->dimension_id = $_POST['dimension_id'];
+	$cart->dimension2_id = $_POST['dimension2_id'];
 	if ($cart->trans_no == 0)
 		$cart->reference = $_POST['ref'];
 
@@ -225,6 +231,8 @@ function copy_from_cart()
 	$_POST['due_date'] = $cart->due_date;
 	$_POST['Location'] = $cart->Location;
 	$_POST['Comments'] = $cart->Comments;
+	$_POST['dimension_id'] = $cart->dimension_id;
+	$_POST['dimension2_id'] = $cart->dimension2_id;
 	$_POST['cart_id'] = $cart->cart_id;
 	$_POST['ref'] = $cart->reference;
 }
@@ -378,6 +386,25 @@ if (!isset($_POST['due_date']) || !is_date($_POST['due_date'])) {
 	$_POST['due_date'] = get_invoice_duedate($_SESSION['Items']->payment, $_POST['DispatchDate']);
 }
 customer_credit_row($_SESSION['Items']->customer_id, $_SESSION['Items']->credit, "class='tableheader2'");
+// 2010-09-03 Joe Hunt
+$dim = get_company_pref('use_dimension');
+if ($dim > 0) {
+	start_row();
+	label_cell(_("Dimension").":", "class='tableheader2'");
+	dimensions_list_cells(null, 'dimension_id', null, true, ' ', false, 1, false);
+	end_row();
+}		
+else
+	hidden('dimension_id', 0);
+if ($dim > 1) {
+	start_row();
+	label_cell(_("Dimension")." 2:", "class='tableheader2'");
+	dimensions_list_cells(null, 'dimension2_id', null, true, ' ', false, 2, false);
+	end_row();
+}		
+else
+	hidden('dimension2_id', 0);
+//---------
 start_row();
 date_cells(_("Invoice Dead-line"), 'due_date', '', null, 0, 0, 0, "class='tableheader2'");
 end_row();

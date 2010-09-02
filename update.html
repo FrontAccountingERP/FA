@@ -1,49 +1,149 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head>
-  <meta content="text/html; charset=ISO-8859-1" http-equiv="content-type" />
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head>
+	<meta http-equiv="CONTENT-TYPE" content="text/html; charset=iso-8859-2">
+	
+	<title>FrontAccounting Update</title><meta name="GENERATOR" content="OpenOffice.org 2.4  (Linux)">
+	<meta name="CREATED" content="0;0">
+	<meta name="CHANGED" content="20100902;19041400"></head>
 
-
-  <title>FrontAccounting Update</title></head>
-<body>
-<div><strong><span style="font-size: 20pt;"><span style="color: rgb(204, 102, 0); font-style: italic;">Front</span>Accounting&nbsp;Update</span></strong></div>
-<br />
-<br /><h2>Important Notes</h2>
-
-<ul>
-  <li>You can easily upload all the files to your installation folder on the
-server overwriting the existing files. From 2.2 RC, your existing configuration files, - <span style="font-weight: bold;">config_db.php, config.php, /lang/installed_languages.inc and installed_extensions.php</span> - will nolonger be installed. They are created the first time you install FrontAccounting and don't need further updates.<br /><ol>
-      </ol><ul><li>Backup&nbsp; (download) the following files to another folder:
-        <ul><li>if you have made <em>changes to other files than above mentioned</em>, like themes or so, backup
-these files. </li></ul><ol>
-        </ol>
-
-      </li><li>Upload all the new files.</li><li>If this is an <span style="font-weight: bold;">upgrade from 2.X.X to 2.3</span> go into <span style="font-weight: bold;">Setup tab,&nbsp; Software Upgrade</span>.</li><ul><li>Follow
-the instructions. Check the values depending on your current
-installation. Don't use Force Upgrade unless your installations have
-failed.</li><li>If this is an installation from <span style="font-weight: bold;">2.0 or 2.1</span> you should &nbsp;copy the <span style="font-weight: bold;">config.default.php</span> to <span style="font-weight: bold;">config.php</span> and change your former settings and ingore the next section..</li></ul><li>Look into the file, <span style="font-weight: bold; font-style: italic;">config.default.php and compare with your own config.php</span> file. You should update the the following in your config.php:<br /><br /></li><ul><li><small>Change the $version in your <span style="font-weight: bold;">config.php</span> file, about line 59, from "2.2.X" to "2.3 Beta".</small></li><ul><li><small>Add &nbsp;the following lines into <span style="font-weight: bold;">config.php</span> about line 118:<br />&nbsp;/* suppress tax rates on documents. 0 = no, 1 = yes. */<br />&nbsp;$suppress_tax_rates = 0;</small></li><li><small><span style="font-weight: bold;">Important!</span> Add the following lines into <span style="font-weight: bold;">config.php</span> about line 61:<br />&nbsp; // src-data compatibility check. Do not change.<br />&nbsp;$core_version = "2.3";<br /></small></li></ul><li><small>If this is an update from 2.2.10 or before:<br /></small></li><li><small>Change in line &nbsp;67 to:<br />$power_url &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; = "http://frontaccounting.com";<br /></small><small><br />Change in line 92 to:<br />// $help_base_url = 'http://frontaccounting.com/fawiki/index.php?n=Help.';<br /><br />Paste these 2 lines into line 83:<br />&nbsp;/* default print destination. 0 = PDF/Printer, 1 = Excel */<br />&nbsp;$def_print_destination = 0;<br /><br />if this is an update from 2.2.6, 2.2.7, 2.2.8 , 2.2.9 , 2.2.10 to 2.3&nbsp;</small><small> </small><small>you are<span style="font-weight: bold;"> </span><span style="font-style: italic; font-weight: bold;">done and &nbsp;should ignore the the rest of the items in this note</span>.</small></li><li><small>Copy &nbsp;the 2 lines from config.default file, about line &nbsp;122:<br /><br /><span style="font-family: monospace;">$table_style &nbsp;&nbsp;&nbsp; = "class='tablestyle'";</span><br style="font-family: monospace;" /><span style="font-family: monospace;">$table_style2 &nbsp;&nbsp;&nbsp; = "class='tablestyle2'";</span><br style="font-family: monospace;" /><br />into&nbsp;config.php about line &nbsp;122 and replace these 4 lines:<br /><br /><span style="font-family: monospace;">if (!isset($_SESSION['bordercolor']))</span><br style="font-family: monospace;" /><span style="font-family: monospace;">&nbsp;&nbsp;&nbsp; $_SESSION['bordercolor'] = "#8cacbb";</span><br style="font-family: monospace;" /><span style="font-family: monospace;">$table_style &nbsp;&nbsp;&nbsp; = "cellpadding=3 border=1 bordercolor='".$_SESSION['bordercolor']."' class='tablestyle'";</span><br style="font-family: monospace;" /><span style="font-family: monospace;">$table_style2 &nbsp;&nbsp;&nbsp; = "cellpadding=3 border=1 bordercolor='#cccccc' class='tablestyle2'";</span><br style="font-family: monospace;" /><br />If this is an update from 2.2.3, 2.2.4 , 2.2.5 to 2.3&nbsp; </small><small>you are<span style="font-weight: bold;"> </span><span style="font-style: italic; font-weight: bold;">done and &nbsp;should ignore the the rest of the items in this note</span>.<br /></small></li><li><small>Copy these 2 lines from <span style="font-weight: bold;">config.default.php</span> about line 80-82 into <span style="font-weight: bold;">config.php</span> about line 80:<br /><br /><span style="font-family: monospace;">/* Show users online discretetely in the footer */</span><br style="font-family: monospace;" /><span style="font-family: monospace;">$show_users_online = 0;</span><br style="font-family: monospace;" /><span style="font-family: monospace;">Change this to 1 if you want to show users online.</span><br style="font-family: monospace;" /></small></li><li><small>Remove these 2 lines from <span style="font-weight: bold;">config.php</span> about line 176-177:<br /><br /><span style="font-family: monospace;">/* default start-up tab (orders/AP/stock/manuf/proj/GL/system) */</span><br style="font-family: monospace;" /><span style="font-family: monospace;">$def_app = "orders";</span><br style="font-family: monospace;" /></small></li><li><small>Copy these 3 lines from config.default.php about line 113-115<br /><br /><span style="font-family: monospace;">// defalt dateformats and dateseps indexes used before user login</span></small><br style="font-family: monospace;" /><small style="font-family: monospace;">$dflt_date_fmt = 0;</small><br style="font-family: monospace;" /><small><span style="font-family: monospace;">$dflt_date_sep = 0;</span><br style="font-family: monospace;" /></small></li><li><small>Copy these 2 lines from <span style="font-weight: bold;">config.default.php</span> about line 211-212:<br /><br /><span style="font-family: monospace;">define("ICON_SUBMIT", "ok.gif");&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; // new in 2.2</span><br style="font-family: monospace;" /><span style="font-family: monospace;">define("ICON_ESCAPE", "escape.png");&nbsp;&nbsp;&nbsp; // new in 2.2</span><br style="font-family: monospace;" /></small></li><li><small>And paste them into <span style="font-weight: bold;">config.php</span> about line 209</small></li><li><small>If you use gregorian calendar and have non-workdays on Friday and first day of week = Saturday<br />then you &nbsp;should &nbsp;set this line in <span style="font-weight: bold;">config.php</span> about line&nbsp; 95.<br /></small><pre><small>$date_system = 3;</small></pre></li><li><small>If you want to use FrontAccounting help wiki then set this line in config.php about line 85<br /></small><pre><small>$help_base_url = "http://frontaccounting.net/fawiki?n=Help.";<br /></small></pre></li></ul><li>Rename or remove the /install folder (you have already performed the install
-process earlier).<br /></li></ul><ol>
-
-
-
-    </ol>
-  </li><li><strong>There are no database changes during a major and minor release. Like from 2.3 to 2.3.1 - 2.3.X .</strong></li><li><strong>If you are upgrading from an earlier installation you
-must immediately
-login on company 0, the first company you created, as&nbsp;admin
-(called the superadmin). If you use a theme other than the standard 3,
-aqua, cool or default, switch to one of these before going further. You
-can download a new one of the new themes on the download page
-later.&nbsp; Go
-to the 'Setup' tab and run 'Software
-Upgrade'.
-Mark the checkbox 'Install' and press 'Upgrade System'. &nbsp;You must
-also do this if you upgrade from 2.3 Beta to 2.3 RC. This will
-upgrade ALL your companies.<br /></strong></li><li style="font-weight: bold;">If something goes wrong during upgrade, you can enter here again and try 'Force Upgrade', and press 'Upgrade System' again.<br /></li><li style="font-weight: bold;">Enter
-'Setup' tab, 'System and Generel GL Setup'. &nbsp;Set the correct
-Accounts for Retained Earnings, Profit/Loss Year and Bank Charge.<br /></li><li style="font-weight: bold;">Enter
-'Setup' tab, 'Access Setup'. Check all the roles and change as you
-please. The roles have been converted from the former Access Roles and
-may need some changes.<br /></li><li style="font-weight: bold;">Enter
-'Setup' tab, 'Company Setup'. If you want Automatic Item Price
-Calculations from Standard&nbsp;Cost, add a percent to add and
-eventually round to the nearest XX Cent. Also check that Base for Auto
-Price calculations is set.<br /> </li></ul></body></html>
+<body dir="ltr" lang="en-US">
+<p style="margin-bottom: 0cm;"><strong><font color="#cc6600"><font style="font-size: 20pt;" size="5"><i>Front</i></font></font></strong><strong><font style="font-size: 20pt;" size="5">Accounting
+Update</font></strong></p>
+<h2>Important Notes</h2>
+<p>Upgrade process can be done only by administrator of the first
+company created during FrontAccounting installation. This person is
+considered as a site admin who have granted access to potentially
+dangerous setup options, like Setup/Software Upgrade.</p>
+<p>In the following description sections related to older FA versions are
+prefixed with <span style="background: rgb(235, 97, 61) none repeat scroll 0%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial;">[color tags]</span><span style="background: transparent none repeat scroll 0%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial;">
+. Y</span>ou can skip tagged fragment safely if currently FA
+application is newer than the version in tag.</p>
+<p>Upgrade process consists of up to four stages, some of them are
+optional:</p>
+<ol>
+	<li><p>Application source files update 
+	</p>
+	</li><li><p>Database upgrade &#8211; this step is needed only during
+	upgrade which involves change in major application version number
+	(e.g. from 2.2.x to 2.3.x), and sometimes during upgrade from beta
+	release to stable version. Otherwise this step can be skipped.</p>
+	</li><li><p>Final cleanup &#8211; is needed when some old source files,
+	obsoleted by new release should be removed.</p>
+	</li><li><p>New features configuration &#8211; this is optional step
+	needed for most major releases and some minor ones. 
+	</p>
+</li></ol>
+<p style="margin-bottom: 0cm;">Before starting upgrade ensure nobody
+is using the application and make database backup for all companies.
+To be on safe side backup also old source files, especially those
+locally customized (if any).</p>
+<p>Log into admin account of first company.<strong> </strong><strong><span style="">If
+you use a theme other than the standard 3 (aqua, cool or default),
+switch to one of these before going further.</span></strong></p>
+<h2><strong><b>1. Application files update</b></strong></h2>
+<p style="margin-top: 0.42cm; page-break-after: avoid;"><font face="Liberation Sans, sans-serif"><font size="4"><strong><span style="">a. Source
+files update</span></strong></font></font></p>
+<p><strong><span style="">Extract distribution
+zip/tar.gz file in empty directory, and copy all the files to your
+FrontAccounting directory overwriting old files. If it is major
+release upgrade you can skip next step and go directly to cleanup.</span></strong></p>
+<p style="margin-top: 0.42cm; page-break-after: avoid;"><strong><font face="Liberation Sans, sans-serif"><font size="4"><span style="">b. Configuration
+files update</span></font></font></strong></p>
+<p><strong><span style="">Compare new
+</span></strong><strong><i><b>config.default.php</b></i></strong><strong>
+</strong><strong><span style="">file with the old
+</span></strong><strong><i><b>config.php </b></i></strong><strong><span style="font-style: normal;"><span style="">and
+add all n</span></span></strong><strong><span style="">ew
+settings (if any). </span></strong>
+</p>
+<p><strong><span style=""><span style="background: rgb(235, 97, 61) none repeat scroll 0%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial;">[&lt;FA
+2.2beta]</span></span></strong></p>
+<p><strong> <span style="">$show_users_online = 0;</span></strong></p>
+<p><strong> <span style="">$def_print_destination
+= 0;</span></strong></p>
+<p><strong><span style="">$dflt_date_fmt=0;</span></strong></p>
+<p><strong><span style="">$dflt_date_sep=0;</span></strong></p>
+<p><strong><span style="">$table_style,table_style2
+changed</span></strong></p>
+<p><strong><span style=""><span style="background: rgb(235, 97, 61) none repeat scroll 0%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial;">[&lt;FA
+2.3beta]</span></span></strong></p>
+<p><strong> <span style="">$alternative_tax_include_on_doc=0;</span></strong></p>
+<p><strong><span style="">$suppress_tax_rates = 0;</span></strong></p>
+<p><strong><span style=""><span style="background: rgb(235, 97, 61) none repeat scroll 0%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial;">[&lt;FA
+2.3RC1]</span></span></strong><strong> </strong>
+</p>
+<p><strong><span style="">Application version
+information and a couple of other private FA variables are stored in
+</span></strong><strong><i><b>version.php</b></i></strong><strong>
+</strong><strong><span style="">file. The
+application version displayed in footer is defined in $version
+variable unless this is set in config.php file. If you want current
+release version to be displayed on every FA update just remove or
+comment out $version variable in </span></strong><strong><span style="font-style: normal;"><span style="">config.php</span></span></strong><strong><span style="">.</span></strong></p>
+<h2><strong><b>2. Database upgrade</b></strong></h2>
+<p><strong><span style="">This step can be skipped
+for small version updates i.e. when you have already installed
+FrontAccounting version 2.3.1 or later. Before database upgrade is
+done on all company databases backup file is created automatically to
+enable database restore after failure.</span></strong></p>
+<p><strong><span style="">After major version
+upgrade overwriting files in first step makes the system unaccessible
+for all users but site admin, who have to run upgrade procedures to
+update all company databases to the new version provided with the
+release. After logging to administrator account of first installed
+company go directly to Setup/Software Upgrade screen, mark all
+subsequent 'Install' checkboxes and press 'Upgrade System'.</span></strong></p>
+<p style="">If something goes wrong during
+upgrade, you can eventually try forced upgrade option. Forced upgrade
+ignores some smaller errors which can arise during upgrade due to
+some exotic database configuration. This is depreciated option, so
+first read error messages if any, try to fix signalized problems,
+restore databases from backup and retry normal installation. To run
+upgrade in forced mode check box 'Force Upgrade', and press 'Upgrade
+System' again.</p>
+<h2>3. Final cleanup</h2>
+<p>Remove or rename install folder in main FrontAccounting directory.
+</p>
+<p>After upgrade is installed you can remove files obsoleted by new
+FrontAccounting version. Also old, unused settings <span style="font-style: normal;"><span style="">can
+be removed from  </span></span><i><b>config.php</b></i><span style="font-style: normal;"><span style="">
+file.</span></span></p>
+<p style="margin-top: 0.42cm; page-break-after: avoid;"><font face="Liberation Sans, sans-serif"><font size="4">a.
+Source files cleanup</font></font></p>
+<p><strong><span style=""><span style="background: rgb(235, 97, 61) none repeat scroll 0%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial;">[&lt;FA
+2.2beta]</span></span></strong></p>
+<p><strong><span style=""><span style="background: transparent none repeat scroll 0%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial;">/includes/reserved.inc
+&#8211; removed.</span></span></strong></p>
+<p><strong><span style=""><span style="background: rgb(235, 97, 61) none repeat scroll 0%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial;">[&lt;FA
+2.1]</span></span></strong><strong> </strong>
+</p>
+<p><strong><span style="">/admin/db/v_banktrans.inc
+- removed</span></strong></p>
+<p style="margin-top: 0.42cm; page-break-after: avoid;"><font face="Liberation Sans, sans-serif"><font size="4"><span style="font-style: normal;"><span style="">b.
+Config.php cleanup </span></span></font></font>
+</p>
+<p><strong><span style=""><span style="background: rgb(235, 97, 61) none repeat scroll 0%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial;">[&lt;FA
+2.2RC1]</span></span></strong><strong> </strong>
+</p>
+<p><strong><span style="">$security_headings,
+$security_groups arrays &#8211; moved to database (see Access Setup) 
+</span></strong>
+</p>
+<p><strong><span style="">$def_app &#8211; moved
+to user configuration in database.</span></strong></p>
+<p><strong><span style="font-style: normal;"><span style="">$version
+&#8211; moved to </span></span></strong><strong><i><b>version.php</b></i></strong><strong><span style="font-style: normal;"><span style="">
+file. Remove</span></span></strong></p>
+<h2>4. New features configuration</h2>
+<p>During upgrade process new features are initialized to default
+status, and sometimes old settings are also changed to conform with
+new security policy. This automatic process is designed to be as
+neutral for end users as possible, however sometimes site or company
+admin intervention can be necessary to set thing after changes to
+their best state. Below you will find description of new settings
+available after upgrade.</p>
+<p><br><br>
+</p>
+<p>----------------------</p>
+<ul></ul>
+</body></html>
