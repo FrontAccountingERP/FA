@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+02-Sep-2010 Janusz Dobrowolski
++ Preprinted forms folder moved to /reporting where it should be
+$ /reporting/forms
+  /reporting/forms/index.php
 
 29-Aug-2010 Janusz Dobrowolski
 # Fixed maxprec option in number_format2
