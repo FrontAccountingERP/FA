@@ -418,6 +418,8 @@ if (!isset($_POST['due_date']) || !is_date($_POST['due_date'])) {
 date_cells(_("Due Date"), 'due_date', '', null, 0, 0, 0, "class='tableheader2'");
 if ($dim > 1) 
 	label_cells(_("Dimension"). " 2", get_dimension_string($_SESSION['Items']->dimension2_id), "class='tableheader2'");
+else if ($dim > 0)
+	label_cell("&nbsp;", "colspan=2");
 
 end_row();
 end_table();
