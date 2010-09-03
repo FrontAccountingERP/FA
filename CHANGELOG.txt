@@ -22,6 +22,7 @@ $ -> Affected files
 03-"3p-2010 Joe Hunt
 + Added possibility to put dimensions on Delivery from sales order
 $ /sales/customer_delivery.php
+  /sales/customer_invoice.php
 ! Changed update.html to be more readable
 $ update.html
 
