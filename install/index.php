@@ -183,7 +183,8 @@ function do_install() {
 		include_once($path_to_root . "/lang/installed_languages.inc");
 		$dflt_lang = $_POST['lang'];
 		write_lang();
-
+		if (!isset($installed_extensions))
+			write_extensions(array());
 		return true;
 	}
 	return false;
@@ -261,13 +262,14 @@ elseif(get_post('install_langs'))
 elseif(get_post('install_coas')) 
 {
 	$ret = true;
-
+	$next_extension_id = 0;
+	
 	if (isset($_POST['coas']))
 		foreach($_POST['coas'] as $package => $ok) {
 			$ret &= install_extension($package);
 		}
 	if ($ret) {
-		include($path_to_root.'/installed_extensions.php');
+		@include($path_to_root.'/installed_extensions.php');
 		$_POST['Page'] = 5;
 	}
 }
