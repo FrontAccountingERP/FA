@@ -356,7 +356,8 @@ class fa2_3 {
 
 		foreach($installed_languages as $n => $lang) {
 			if ($lang['code'] == 'en_GB') {
-				$installed_languages[$n] = 'C';
+				$installed_languages[$n] = array('code'=>'C','name'=>'English',
+					'encoding'=>'iso-8859-1', 'path' => '', 'package' => '');
 				if ($dflt_lang == 'en_GB')
 					$dflt_lang = 'C';
 				write_lang();
