@@ -19,7 +19,17 @@ Legend:
 ! -> Note
 $ -> Affected files
 
-03-"3p-2010 Joe Hunt
+04-Sep-2010 Joe Hunt
+# Fixed installed_extensions.php creation
+$ /install/index.php
+# Page blocked during FA upgrade
+$ /sales/sales_order_entry.php
+# Fixed languages update
+$ /sql/alter2.3.php
+! Shorter line comments
+$ /install/lang/new_language_template/LC_MESSAGES/empty.po
+
+03-Sep-2010 Joe Hunt
 + Added possibility to put dimensions on Delivery from sales order
 $ /sales/customer_delivery.php
   /sales/customer_invoice.php
@@ -27,7 +37,7 @@ $ /sales/customer_delivery.php
 $ update.html
 
 02-Sep-2010 Janusz Dobrowolski
-+ Preprinted forms folder moved to /reporting where it should be
+# Preprinted forms folder moved to /reporting where it should be
 $ /reporting/forms
   /reporting/forms/index.php
 
