@@ -574,6 +574,9 @@ function create_cart($type, $trans_no)
 { 
 	global $Refs;
 
+	if (!$_SESSION['SysPrefs']->db_ok) // create_cart is called before page() where the check is done
+		return;
+
 	processing_start();
 
 	if (isset($_GET['NewQuoteToSalesOrder']))
