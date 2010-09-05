@@ -25,6 +25,8 @@ $ -> Affected files
 $ version.php
 # Wrong stock item code when processing supplier invoice
 $ /purchasing/includes/db/invoice_db.inc
+! Changed layout of Direct GRN/Invoice form and check for supp ref in invoice.
+$ /purchasing/po_entry_items.php
 
 04-Sep-2010 Joe Hunt
 # Fixed installed_extensions.php creation
