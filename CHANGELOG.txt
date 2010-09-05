@@ -23,6 +23,8 @@ $ -> Affected files
 05-Sep-2010 Joe Hunt
 ! Release 2.3 RC
 $ version.php
+# Wrong stock item code when processing supplier invoice
+$ /purchasing/includes/db/invoice_db.inc
 
 04-Sep-2010 Joe Hunt
 # Fixed installed_extensions.php creation
