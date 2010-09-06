@@ -19,6 +19,12 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+06-Sep-2010 Janusz Dobrowolski
+# Fixed error on new contact add.
+$ /includes/ui/contacts_view.inc
+# Fixed crud editor mode passing.
+$ /includes/ui/simple_crud_class.inc
+
 ------------------------------- Release 2.3 RC --------------------------------
 05-Sep-2010 Joe Hunt
 ! Release 2.3 RC
