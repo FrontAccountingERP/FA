@@ -26,9 +26,9 @@ function update_average_material_cost($supplier, $stock_id, $price, $qty, $date,
 		$price = get_tax_free_price_for_item($stock_id, $price, $supp['tax_group_id'],
 			$supp['tax_included']);
 
-	$dec = user_price_dec();
-	price_decimal_format($price, $dec);
-	$price = round2($price, $dec);
+	//$dec = user_price_dec();
+	//price_decimal_format($price, $dec);
+	//$price = round2($price, $dec);
 	if ($currency != null)
 	{
 		$ex_rate = get_exchange_rate_to_home_currency($currency, $date);

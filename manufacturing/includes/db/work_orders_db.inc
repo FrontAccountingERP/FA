@@ -20,8 +20,8 @@ function add_material_cost($stock_id, $qty, $date_)
 		$standard_cost = get_standard_cost($bom_item['component']);
 		$m_cost += ($bom_item['quantity'] * $standard_cost);
 	}
-	$dec = user_price_dec();
-	price_decimal_format($m_cost, $dec);
+	//$dec = user_price_dec();
+	//price_decimal_format($m_cost, $dec);
 	$sql = "SELECT material_cost FROM ".TB_PREF."stock_master WHERE stock_id = "
 		.db_escape($stock_id);
 	$result = db_query($sql);
@@ -41,8 +41,8 @@ function add_material_cost($stock_id, $qty, $date_)
 
 function add_overhead_cost($stock_id, $qty, $date_, $costs)
 {
-	$dec = user_price_dec();
-	price_decimal_format($costs, $dec); 
+	//$dec = user_price_dec();
+	//price_decimal_format($costs, $dec); 
 	if ($qty != 0)
 		$costs /= $qty;
 	$sql = "SELECT overhead_cost FROM ".TB_PREF."stock_master WHERE stock_id = "
@@ -64,8 +64,8 @@ function add_overhead_cost($stock_id, $qty, $date_, $costs)
 
 function add_labour_cost($stock_id, $qty, $date_, $costs)
 {
-	$dec = user_price_dec();
-	price_decimal_format($costs, $dec); 
+	//$dec = user_price_dec();
+	//price_decimal_format($costs, $dec); 
 	if ($qty != 0)
 		$costs /= $qty;
 	$sql = "SELECT labour_cost FROM ".TB_PREF."stock_master WHERE stock_id = "
@@ -94,8 +94,8 @@ function add_issue_cost($stock_id, $qty, $date_, $costs)
 	$result = db_query($sql);
 	$myrow = db_fetch($result);
 	$material_cost =  $myrow['material_cost'];
-	$dec = user_price_dec();
-	price_decimal_format($material_cost, $dec); 
+	//$dec = user_price_dec();
+	//price_decimal_format($material_cost, $dec); 
 	//$qoh = get_qoh_on_date($stock_id, null, $date_);
 	$qoh = get_qoh_on_date($stock_id);
 	if ($qoh < 0)
