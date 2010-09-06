@@ -105,7 +105,7 @@ class contacts extends simple_crud {
 			$dat = $this->data;
 			return add_crm_person($dat['ref'], $dat['name'], $dat['name2'], $dat['address'],
 				$dat['phone'], $dat['phone2'], $dat['fax'], $dat['email'], $dat['lang'],
-				$dat['notes'], $dat['assgn'], $this->entity);
+				$dat['notes'], $dat['contacts'], $this->entity);
 	}
 
 	function db_update() {
