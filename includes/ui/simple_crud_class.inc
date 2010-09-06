@@ -19,7 +19,7 @@ class simple_crud {
 	var $_none = ''; // selector value when no item is selected
 	var $pre_handlers; // control buttons and related methods called before view display
 	var $views;
-	var $data;
+	var $data = array();
 	var $fields;
 	var $tool_buttons;
 	var $options;
@@ -118,7 +118,13 @@ class simple_crud {
 				return $m;
 			}
 		}
-		return get_post($this->name.'Mode', '');
+		$mod = get_post($this->name.'Mode', '');
+		if ($mod) {
+			$val = @key($mod);
+			$this->selected_id = $val!==null ? @quoted_printable_decode($val) : $this->_none;
+			return $mod[$val];
+		}
+		return '';
 	}
 
 	//
@@ -137,25 +143,30 @@ class simple_crud {
 	//
 	//	Update record after edition
 	//
-	function _update()
+	function _update($mode)
 	{
 		$this->get_posts();
 		if ($this->update_check()) {
-			if ($this->db_update())
+			if ($this->db_update()) {
 				$this->selected_id = $this->_none;
 				$this->Mode = '';
+				return;
+			}
 		}
+		$this->Mode = $mode;
 	}
 	//
 	//	Add new record
 	//
-	function _add()
+	function _add($mode)
 	{
 		$this->get_posts();
 		if ($this->insert_check()) {
 			$this->db_insert();
 			$this->_cancel();
+			return;
 		}
+		$this->Mode = $mode;
 	}
 	//
 	//	Delete selected  record
@@ -264,8 +275,7 @@ class simple_crud {
 			$post = isset($fmt['post']) ? $fmt['post'] : $name;
 			$fld = isset($fmt['fld']) ? $fmt['fld'] : $name;
 
-			$value = $this->_format_input($_POST[$post], @$fmt['fmt']);
-
+			$value = $this->_format_input(@$_POST[$post], @$fmt['fmt']);
 			if (is_array($this->data))
 				$this->data[$fld] = $value;
 			else
@@ -286,14 +296,15 @@ class simple_crud {
 			$fun = $this->pre_handlers[$Mode];
 			$this->$fun($Mode);
 		}
-		
+
 		if (isset($this->views[$this->Mode]))
 			$this->{$this->views[$this->Mode]}();
 		else
 			$this->{$this->views['']}(); // default view
 
 		$this->_bottom_controls();
-		hidden($this->name.'Mode', $this->Mode.'['.$this->selected_id.']');
+		// this is needed only when we use temporary crud object together with ajax screen updates
+		hidden($this->name.'Mode'.'['.$this->selected_id.']', $this->Mode);
 		div_end();
 	}
 	
