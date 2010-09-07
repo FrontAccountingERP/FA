@@ -19,7 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+------------------------------- Release 2.3 RC1 --------------------------------
 07-Sep-2010 Janusz Dobrowolski
+! Release 2.3 RC1
+$ version.php
 # Ugly bug in formating numbers
 $ /js/utils.js
 
