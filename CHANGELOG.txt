@@ -19,11 +19,15 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+07-Sep-2010 Janusz Dobrowolski
+# Ugly bug in formating numbers
+$ /js/utils.js
+
 07-Sep-2010 Joe Hunt/Chaitanya
 ! Removed all decimal roundings in cost price calculations
 $ /purchasing/includes/db/grn_db.inc
   /manufacturing/includes/db/work_orders_db.inc
-  
+
 06-Sep-2010 Janusz Dobrowolski
 # Fixed error on new contact add.
 $ /includes/ui/contacts_view.inc

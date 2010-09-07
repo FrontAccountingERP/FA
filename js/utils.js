@@ -219,12 +219,11 @@ function price_format(post, num, dec, label, color) {
 	num = Math.floor(num*decsize+0.50000000001);
 	cents = num%decsize;
 	num = Math.floor(num/decsize).toString();
+	for( i=cents.toString().length; i<dec; i++){
+		cents = "0"+cents;
+	}
 	if (max) // strip trailing 0
 		cents = cents.toString().replace(/0+$/,'');
-	else
-		for( i=cents.toString().length; i<dec; i++){
-			cents = cents + "0";
-		}
 	for (var i = 0; i < Math.floor((num.length-(1+i))/3); i++)
 		num = num.substring(0,num.length-(4*i+3))+user.ts+
 			num.substring(num.length-(4*i+3));
