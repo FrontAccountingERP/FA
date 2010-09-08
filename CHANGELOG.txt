@@ -24,6 +24,8 @@ $ -> Affected files
 $ /purchasing/includes/db/grn_db.inc
   /purchasing/includes/db/invoice_db.inc
   /sales/includes/db/sales_delivery_db.inc
+! Layout improvements in accruals.php
+$ /gl/accruals.php
   
 ------------------------------- Release 2.3 RC1 --------------------------------
 07-Sep-2010 Janusz Dobrowolski

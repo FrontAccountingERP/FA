@@ -170,7 +170,7 @@ if (isset($_POST['go']) || isset($_POST['show']))
 function frequency_list_row($label, $name, $selected=null)
 {
 	echo "<tr>\n";
-	label_cell($label);
+	label_cell($label, "class='label'");
 	echo "<td>\n";
 	$freq = array(
 		'1'=> _("Weekly"),
@@ -190,7 +190,8 @@ start_table(TABLESTYLE2);
 
 date_row(_("Date"), 'date_', _('First date of Accruals'), true, 0, 0, 0, null, true);
 start_row();
-gl_all_accounts_list_cells(_("Accrued Balance Account"), 'acc_act', null, true, false, false, true);
+label_cell(_("Accrued Balance Account"), "class='label'");
+gl_all_accounts_list_cells(null, 'acc_act', null, true, false, false, true);
 end_row();
 gl_all_accounts_list_row(_("Revenue / Cost Account"), 'res_act', null, true);
 
