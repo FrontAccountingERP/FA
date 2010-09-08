@@ -96,8 +96,9 @@ function add_grn(&$po)
 
 			/*Update sales_order_details for the new quantity received and the standard cost used for postings to GL and recorded in the stock movements for FIFO/LIFO stocks valuations*/
 			//------------------- update average material cost ------------------------------------------ Joe Hunt Mar-03-2008
-			update_average_material_cost($po->supplier_id, $order_line->stock_id, $order_line->price,
-				$order_line->receive_qty, $date_);
+			if (is_inventory_item($order_line->stock_id))
+				update_average_material_cost($po->supplier_id, $order_line->stock_id, $order_line->price,
+					$order_line->receive_qty, $date_);
 			//----------------------------------------------------------------------------------------------------------------
 			if ($order_line->qty_received == 0)
 			{
@@ -116,10 +117,10 @@ function add_grn(&$po)
 				$order_line->standard_cost,	$order_line->receive_qty, $order_line->price);
 
 			$po->line_items[$line_no]->grn_item_id = $grn_item;
-			/* Update location stock records - NB  a po cannot be entered for a service/kit parts */
-            add_stock_move(ST_SUPPRECEIVE, $order_line->stock_id, $grn, $po->Location, $date_, "",
-            	$order_line->receive_qty, $order_line->standard_cost,
-            	$po->supplier_id, 1, $order_line->price);
+			/* Update location stock records - NB  a po cannot be entered for a service/kit parts done automatically */
+			add_stock_move(ST_SUPPRECEIVE, $order_line->stock_id, $grn, $po->Location, $date_, "",
+				$order_line->receive_qty, $order_line->standard_cost,
+            		$po->supplier_id, 1, $order_line->price);
 
 		} /*quantity received is != 0 */
 	} /*end of order_line loop */

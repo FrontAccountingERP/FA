@@ -90,7 +90,7 @@ function write_sales_delivery(&$delivery,$bo_policy)
 			$stock_gl_code = get_stock_gl_code($delivery_line->stock_id);
 
 			/* insert gl_trans to credit stock and debit cost of sales at standard cost*/
-			if ($delivery_line->standard_cost != 0) {
+			if (is_inventory_item($delivery_line->stock_id) && $delivery_line->standard_cost != 0) {
 
 				/*first the cost of sales entry*/
 				// 2008-08-01. If there is a Customer Dimension, then override with this,
