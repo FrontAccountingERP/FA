@@ -394,7 +394,6 @@ function display_order_header(&$order, $editable, $date_text, $display_tax_group
 			}
 			$Ajax->activate('items_table');
 			$Ajax->activate('delivery');
-			set_focus($order->pos == -1 ? 'delivery_date' : 'account');
 		}
 		sale_payment_list_cells(_('Payment:'), 'payment', null);
 	} else {
