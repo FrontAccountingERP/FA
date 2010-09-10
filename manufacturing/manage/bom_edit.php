@@ -166,7 +166,9 @@ start_form();
 
 start_form(false, true);
 start_table(TABLESTYLE_NOBORDER);
-stock_manufactured_items_list_row(_("Select a manufacturable item:"), 'stock_id', null, false, true);
+start_row();
+stock_manufactured_items_list_cells(_("Select a manufacturable item:"), 'stock_id', null, false, true);
+end_row();
 if (list_updated('stock_id'))
 	$Ajax->activate('_page_body');
 end_table();
@@ -206,7 +208,7 @@ start_form();
 	else
 	{
 		start_row();
-		label_cell(_("Component:"));
+		label_cell(_("Component:"), "class='label'");
 
 		echo "<td>";
 		echo stock_component_items_list('component', $selected_parent, null, false, true);

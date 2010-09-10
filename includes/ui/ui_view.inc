@@ -368,18 +368,18 @@ function view_stock_status_cell($stock_id, $description=null)
 
 //--------------------------------------------------------------------------------------
 
-function display_debit_or_credit_cells($value)
+function display_debit_or_credit_cells($value, $bold=false)
 {
 	$value = round2($value, user_price_dec());
 	if ($value >= 0)
 	{
-		amount_cell($value);
+		amount_cell($value, $bold);
 		label_cell("");
 	}
 	elseif ($value < 0)
 	{
 		label_cell("");
-		amount_cell(abs($value));
+		amount_cell(abs($value), $bold);
 	}
 }
 

@@ -19,6 +19,13 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+10-Sep-2010 Joe Hunt
+! Layout improvements
+$ /gl/inquiry/gl_account_inquiry.php
+  /includes/ui/contacts_view.inc
+  /includes/ui/ui_view.inc
+  /manufacturing/manage/bom_edit.php
+
 09-Sep-2010 Janusz Dobrowolski
 # Missing focus on sales entry page
 $ /sales/includes/ui/sales_order_ui.inc

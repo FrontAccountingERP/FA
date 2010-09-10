@@ -79,8 +79,8 @@ function gl_inquiry_controls()
 	if ($dim > 1)
 		dimensions_list_cells(_("Dimension")." 2:", 'Dimension2', null, true, " ", false, 2);
 
-	small_amount_cells(_("Amount min:"), 'amount_min', null);
-	small_amount_cells(_("Amount max:"), 'amount_max', null);
+	small_amount_cells(_("Amount min:"), 'amount_min', null, " ");
+	small_amount_cells(_("Amount max:"), 'amount_max', null, " ");
 	submit_cells('Show',_("Show"),'','', 'default');
 	end_row();
 	end_table();
@@ -159,7 +159,7 @@ function show_results()
 	    $bfw = get_gl_balance_from_to($begin, $_POST['TransFromDate'], $_POST["account"], $_POST['Dimension'], $_POST['Dimension2']);
     	start_row("class='inquirybg'");
     	label_cell("<b>"._("Opening Balance")." - ".$_POST['TransFromDate']."</b>", "colspan=$colspan");
-    	display_debit_or_credit_cells($bfw);
+    	display_debit_or_credit_cells($bfw, true);
     	label_cell("");
     	label_cell("");
     	end_row();
@@ -208,7 +208,7 @@ function show_results()
 	if ($show_balances) {
     	start_row("class='inquirybg'");
     	label_cell("<b>" . _("Ending Balance") ." - ".$_POST['TransToDate']. "</b>", "colspan=$colspan");
-    	display_debit_or_credit_cells($running_total);
+    	display_debit_or_credit_cells($running_total, true);
     	label_cell("");
     	label_cell("");
     	end_row();
