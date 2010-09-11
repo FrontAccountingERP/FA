@@ -19,6 +19,11 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+11-Sep-2010 Janusz Dobrowolski
+# Uniqueness moved from name to debtor_ref key in debtors_master
+$ /sql/en_US-demo.sql
+  /sql/en_US-new.sql
+
 10-Sep-2010 Joe Hunt
 ! Layout improvements
 $ /gl/inquiry/gl_account_inquiry.php

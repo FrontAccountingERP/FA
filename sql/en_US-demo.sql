@@ -651,8 +651,8 @@ CREATE TABLE IF NOT EXISTS `0_debtors_master` (
   `notes` tinytext NOT NULL,
   `inactive` tinyint(1) NOT NULL default '0',
   PRIMARY KEY  (`debtor_no`),
-  UNIQUE KEY `name` (`name`),
-  KEY `debtor_ref` (`debtor_ref`)
+  KEY `name` (`name`),
+  UNIQUE KEY `debtor_ref` (`debtor_ref`)
 ) TYPE=MyISAM  AUTO_INCREMENT=4 ;
 
 --
