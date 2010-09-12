@@ -93,6 +93,10 @@ function add_bank_transfer($from_account, $to_account, $date_,
 	$currency = get_bank_account_currency($from_account);
 
 	$trans_no = get_next_trans_no($trans_type);
+	
+    $fromact = get_bank_account($from_account);
+    $toact = get_bank_account($to_account);
+    $person_id = _("From")." ".$fromact['bank_account_name']." "._("To")." ".$toact['bank_account_name'];
 
 	$from_gl_account = get_bank_gl_account($from_account);
 	$to_gl_account = get_bank_gl_account($to_account);
@@ -100,17 +104,18 @@ function add_bank_transfer($from_account, $to_account, $date_,
 	$exchanged = false;
 	$total = 0;
 	// do the source account postings
-    $total += add_gl_trans($trans_type, $trans_no, $date_, $from_gl_account, 0, 0, "",
+    $total += add_gl_trans($trans_type, $trans_no, $date_, $from_gl_account, 0, 0, $person_id,
 		-($amount + $charge), $currency);
 
     add_bank_trans($trans_type, $trans_no, $from_account, $ref,
 		$date_, -($amount + $charge),
-		PT_MISC, "", $currency,
+		PT_MISC, $person_id, $currency,
 		"Cannot insert a source bank transaction");
 	if ($SysPrefs->auto_currency_revaluation())
 	{
 		$trans_no1 = get_next_trans_no(ST_JOURNAL);
-		if (add_exchange_variation($trans_no1, $date_, $from_account, $from_gl_account, $currency))
+		if (add_exchange_variation($trans_no1, $date_, $from_account, $from_gl_account, 
+			$currency, PT_MISC, $person_id))
 			$exchanged = true;
 	}
 	if ($charge != 0)
@@ -118,24 +123,25 @@ function add_bank_transfer($from_account, $to_account, $date_,
 		/* Now Debit bank charge account with charges */
 		$charge_act = get_company_pref('bank_charge_act');
 		$total += add_gl_trans($trans_type, $trans_no, $date_,
-			$charge_act, 0, 0, "", $charge, $currency);
+			$charge_act, 0, 0, $person_id, $charge, $currency);
 	}
 	// do the destination account postings
-	$total += add_gl_trans($trans_type, $trans_no, $date_, $to_gl_account, 0, 0, "",
+	$total += add_gl_trans($trans_type, $trans_no, $date_, $to_gl_account, 0, 0, $person_id,
 		$amount, $currency);
 		
 	/*Post a balance post if $total != 0 */
 	add_gl_balance($trans_type, $trans_no, $date_, -$total);	
 	
 	add_bank_trans($trans_type, $trans_no, $to_account, $ref,
-		$date_, $amount, PT_MISC, "",
+		$date_, $amount, PT_MISC, $person_id,
 		$currency, "Cannot insert a destination bank transaction");
 
 	if ($SysPrefs->auto_currency_revaluation())
 	{
 		$currency = get_bank_account_currency($to_account);
 	
-		if ($exchanged || add_exchange_variation($trans_no1, $date_, $to_account, $to_gl_account,	$currency))
+		if ($exchanged || add_exchange_variation($trans_no1, $date_, $to_account, $to_gl_account,	
+			$currency, PT_MISC, $person_id))
 		{
 			$ref1 = $Refs->get_next(ST_JOURNAL);
 			$Refs->save(ST_JOURNAL, $trans_no1, $ref1);

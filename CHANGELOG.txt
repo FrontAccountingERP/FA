@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+13-Sep-2010 Joe Hunt/Chaitanya
+! Improved information in Bank Transfers.
+$ /gl/includes/db/gl_db_banking.inc
+
 11-Sep-2010 Janusz Dobrowolski
 # Uniqueness moved from name to debtor_ref key in debtors_master
 $ /sql/en_US-demo.sql
