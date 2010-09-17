@@ -58,8 +58,7 @@ $rep = $_POST['REP_ID'];
 $rep_file = find_custom_file("/reporting/rep$rep.php");
 
 if ($rep_file) {
-	chdir(dirname($rep_file));
-	require(basename($rep_file));
+	require($rep_file);
 } else
 	display_error("Cannot find report file '$rep'");
 exit();

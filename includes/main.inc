@@ -312,10 +312,10 @@ function find_custom_file($rep)
 
 	// customized per company version
 	$path = company_path();
-	$file = $path.'/'.$rep;
+	$file = $path.$rep;
 	if (file_exists($file)) {
 		// add local include path
-		set_include_path($path.PATH_SEPARATOR.get_include_path());
+		set_include_path(dirname($file).PATH_SEPARATOR.get_include_path());
 		return $file;
 	}
 	// file added by active extension modules
@@ -339,6 +339,5 @@ function find_custom_file($rep)
 
 	return null;
 }
-
 
 ?>
