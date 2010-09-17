@@ -395,7 +395,8 @@ class tar_file extends archive
 				else if ($new = @fopen($file['name'], "wb"))
 				{
 					fwrite($new, fread($fp, $file['stat'][7]));
-					fread($fp, (512 - $file['stat'][7] % 512) == 512 ? 0 : (512 - $file['stat'][7] % 512));
+					if ($file['stat'][7] % 512)
+						fread($fp, 512 - $file['stat'][7] % 512);
 					fclose($new);
 					@chmod($file['name'], $file['stat'][2]);
 				}
