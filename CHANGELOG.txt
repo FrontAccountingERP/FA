@@ -19,6 +19,14 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+17-Sep-2010 Janusz Dobrowolski
++ External url reading made independent of php configuration.
+$ /gl/includes/db/gl_db_rates.inc
+  /includes/packages.inc
+  /includes/remote_url.inc
+# Warning fixed
+$ /includes/archive.inc
+
 13-Sep-2010 Joe Hunt/Chaitanya
 ! Improved information in Bank Transfers.
 $ /gl/includes/db/gl_db_banking.inc
@@ -62,7 +70,7 @@ $ /purchasing/includes/db/grn_db.inc
   /manufacturing/includes/db/work_orders_db.inc
 
 06-Sep-2010 Janusz Dobrowolski
-# Fixed error on new contact add.
+# [0000247] Fixed error on new contact add.
 $ /includes/ui/contacts_view.inc
 # Fixed crud editor mode passing.
 $ /includes/ui/simple_crud_class.inc
