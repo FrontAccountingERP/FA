@@ -9,6 +9,7 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
+include_once($path_to_root . "/includes/remote_url.inc");
 //---------------------------------------------------------------------------------------------
 function get_exchange_rate($rate_id)
 {
@@ -123,18 +124,7 @@ function get_extern_rate($curr_b, $provider = 'ECB', $date)
 	   } while( ($contents == '') && $retry--);
 	   
 	} else {
-		$handle = @fopen("http://".$site.$filename, 'rb');
-		if ($handle) {
-			do 
-			{
-				$data = @fread( $handle, 4096 );
-				if ( strlen ( $data ) == 0 ) 
-   					break;
-   				$contents .= $data; // with this syntax only text will be translated, whole text with htmlspecialchars($data)
-			} 
-			while (true);
-			@fclose( $handle );
-		} // end handle
+		$contents = url_get_contents("http://".$site.$filename);
 	}
 	if (!$contents) {
 		display_warning(_("Cannot retrieve currency rate from $provider page. Please set the rate manually."));

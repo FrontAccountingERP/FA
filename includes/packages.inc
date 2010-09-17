@@ -10,6 +10,7 @@
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
 include_once($path_to_root. "/includes/archive.inc");
+include_once($path_to_root. "/includes/remote_url.inc");
 
 define('PKG_CACHE_PATH', $path_to_root.'/modules/_cache');
 define('PUBKEY_PATH', $path_to_root);
@@ -290,10 +291,10 @@ function get_pkg_or_list($type = null, $pkgname = null, $filter=array(), $outkey
 	$refresh = true;
 	do{
 		if (!file_exists($loclist)) {
-			copy(REPO_URL.'/Release.gz', $loclist);
+			url_copy(REPO_URL.'/Release.gz', $loclist);
 			$refresh = false;
 		}
-		$sig = file_get_contents(REPO_URL.'/Release.sig', 'rb');
+		$sig = url_get_contents(REPO_URL.'/Release.sig');
 		$data = file_get_contents($loclist);
 		$cert = file_get_contents(PUBKEY_PATH.'/FA.pem');
 		if (!openssl_verify($data, $sig, $cert)) {
@@ -323,7 +324,7 @@ function get_pkg_or_list($type = null, $pkgname = null, $filter=array(), $outkey
 		$refresh = true;
 		do{
 			if (!file_exists($locindex)) { 
-				copy($remoteindex, $locindex);
+				url_copy($remoteindex, $locindex);
 				$refresh = false;
 			}
 			if ($parms['SHA1sum'] != sha1_file($locindex)) {	// check subdir index consistency
@@ -359,7 +360,7 @@ function get_pkg_or_list($type = null, $pkgname = null, $filter=array(), $outkey
 					//download package to temp directory
 					if ($download) {
 						$locname = "$path_to_root/tmp/".$pkg['Filename'].'.pkg';
-						copy($pkgfullname, $locname);
+						url_copy($pkgfullname, $locname);
 						 // checking sha1 hash is expensive proces, so chekc the package
 						 // consistency just before downloading
 						if ($pkg['SHA1sum'] != sha1_file($locname)) {
