@@ -19,11 +19,18 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+20-Sep-2010 Janusz Dobrowolski
+# Fixed third party  module installation.
+$ /admin/inst_module.php
+
 17-Sep-2010 Janusz Dobrowolski
 + External url reading made independent of php configuration.
 $ /gl/includes/db/gl_db_rates.inc
   /includes/packages.inc
-  /includes/remote_url.inc
+  /includes/remote_url.inc (new)
+# Fixed custom reports includes issue.
+$ /includes/main.inc
+  /reporting/prn_redirect.php
 # Warning fixed
 $ /includes/archive.inc
 

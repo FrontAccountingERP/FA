@@ -85,6 +85,7 @@ function handle_submit()
 
 	// Only simple plugin type extensions can be installed manually.
 	$extensions[$id]['type'] = 'extension';
+	$extensions[$id]['path'] = 'modules/'.$_POST['path'];
 	$directory = $path_to_root . "/modules/" . $_POST['path'];
 	if (!file_exists($directory))
 	{
@@ -92,7 +93,7 @@ function handle_submit()
 	}
 	if (is_uploaded_file($_FILES['uploadfile']['tmp_name']))
 	{
-		$entry['url'] = '/modules/'.$_POST['path'].'/'.$_FILES['uploadfile']['name'];
+		$entry['url'] = $_FILES['uploadfile']['name'];
 		$file1 = $_FILES['uploadfile']['tmp_name'];
 		$file2 = $directory . "/".$_FILES['uploadfile']['name'];
 		if (file_exists($file2))
@@ -100,7 +101,7 @@ function handle_submit()
 		move_uploaded_file($file1, $file2);
 	}
 	else
-		$entry['url'] = '/modules/'.$_POST['path'].'/'.get_post('filename');
+		$entry['url'] = get_post('filename');
 
 	if (is_uploaded_file($_FILES['uploadfile2']['tmp_name']))
 	{
@@ -111,7 +112,7 @@ function handle_submit()
 	
 	if (is_uploaded_file($_FILES['uploadfile3']['tmp_name']))
 	{
-		$extensions[$id]['acc_file'] = '/modules/'.$_POST['path'].'/'.$_FILES['uploadfile3']['name'];
+		$extensions[$id]['acc_file'] = $_FILES['uploadfile3']['name'];
 		$file1 = $_FILES['uploadfile3']['tmp_name'];
 		$file2 = $directory . "/".$_FILES['uploadfile3']['name'];
 		if (file_exists($file2))
@@ -119,10 +120,10 @@ function handle_submit()
 		move_uploaded_file($file1, $file2);
 	}
 	else
-		$extensions[$id]['acc_file'] = '/modules/'.$_POST['path'].'/'.get_post('acc_file');
+		$extensions[$id]['acc_file'] = get_post('acc_file');
 
 	// security area guess for plugins
-	$exttext = file_get_contents($path_to_root.$entry['url']);
+	$exttext = file_get_contents($path_to_root.'/'.$extensions[$id]['path'].'/'.$entry['url']);
 	$area = 'SA_OPEN';
 	if (preg_match('/.*\$page_security\s*=\s*[\'"]([^\'"]*)/', $exttext, $match)) {
 		$area = trim($match[1]);
@@ -151,9 +152,9 @@ function handle_delete($id)
 			return false;
 	} else {
 
-		$dirname = dirname(@$extensions[$id]['entries'][0]['url']);
+		$dirname = $extensions[$id]['path'];
 		if ($dirname) {
-			$dirname = $path_to_root.$dirname;
+			$dirname = $path_to_root.'/'.$dirname;
 			flush_dir($dirname, true);
 			rmdir($dirname);
 		}
@@ -212,7 +213,7 @@ function display_extensions()
 			($available && $installed ? $installed : _("Unknown")));
 		label_cell($available ? $available : _("None"));
 
-		if (!$available && $ext['type'] == 'extension' && !count($ext['tabs']))	// third-party plugin
+		if (!$available && $ext['type'] == 'extension' && !count(@$ext['tabs']))	// third-party plugin
 			button_cell('Edit'.$id, _("Edit"), _('Edit third-party extension parameters.'), 
 				ICON_EDIT);
 		elseif (check_pkg_upgrade($installed, $available)) // outdated or not installed extension in repo
@@ -302,7 +303,7 @@ function display_ext_edit($selected_id)
 			$_POST['name'] = $mod['name'];
 			$_POST['tab']  = $entry['tab_id'];
 			$_POST['title'] = $entry['title'];
-			$_POST['path'] = substr(dirname($entry['url']), 9); //strip '/modules/'
+			$_POST['path'] = substr(dirname($mod['path']), 9); //strip '/modules/'
 			$_POST['filename'] = basename($entry['url']);
 			$_POST['acc_file'] = @$mod['acc_file'] ? basename($mod['acc_file']) : null;
 			hidden('filename', $_POST['filename']);
@@ -326,7 +327,6 @@ function display_ext_edit($selected_id)
 	display_note(_("Select your extension PHP files from your local harddisk."), 0, 1);
 	echo '<center>';
 	submit_add_or_update($selected_id == -1, '', 'both');
-	submit('RESET', _('Cancel'), true, '', 'cancel');
 	echo '</center>';
 }
 
