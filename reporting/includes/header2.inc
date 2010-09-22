@@ -191,14 +191,14 @@
 			$this->row = $temp;
 			if ($doctype == ST_PURCHORDER)
 				$this->Text($mcol, $this->company['coy_name']);
-			elseif ($doctype != ST_SUPPAYMENT && isset($sales_order['deliver_to']))
+			elseif ($doctype != ST_SUPPAYMENT && isset($this->formData['deliver_to']))
 			{
-				$this->Text($mcol, $sales_order['deliver_to']);
+				$this->Text($mcol, $this->formData['deliver_to']);
 				$this->NewLine();
 			}	
 			// if you need the company name in purchase order then write it as first line in location addresss.	
-			if ($doctype != ST_SUPPAYMENT && isset($sales_order['delivery_address']))
-				$this->TextWrapLines($mcol, $this->rightMargin - $mcol, $sales_order['delivery_address']);
+			if ($doctype != ST_SUPPAYMENT && isset($this->formData['delivery_address']))
+				$this->TextWrapLines($mcol, $this->rightMargin - $mcol, $this->formData['delivery_address']);
 		}
 		$this->row = $iline2 - $this->lineHeight - 1;
 		$col = $this->leftMargin;
