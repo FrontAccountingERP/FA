@@ -131,11 +131,18 @@
 			{
 				if (@$mod['active'] && isset($mod['entries']))
 					foreach($mod['entries'] as $entry) {
-						if ($entry['tab_id'] == $this->id)
+						if ($entry['tab_id'] == $this->id) {
+							$_SESSION['get_text']->add_domain($_SESSION['language']->code, 
+								$mod['path']."/lang");
+
 							$this->add_rapp_function(
 								isset($entry['section']) ? $entry['section'] : 2,
-								$entry['title'], $path_to_root.'/'.$mod['path'].'/'.$entry['url'],
+								_($entry['title']), $path_to_root.'/'.$mod['path'].'/'.$entry['url'],
 								isset($entry["access"]) ? $entry["access"] : 'SA_OPEN' );
+
+							$_SESSION['get_text']->add_domain($_SESSION['language']->code, 
+								$path_to_root."/lang", $_SESSION['language']->version);
+						}
 					}
 			}
 		}
