@@ -127,6 +127,8 @@ class gettext_native_support
     {
         if ($path === false) 
 	        $path = "./locale";
+	    if ($domain == "")
+	    	$domain = "?";
 		if ($version) {
 	// To avoid need for apache server restart after change of *.mo file
 	// we have to include file version as part of filename.

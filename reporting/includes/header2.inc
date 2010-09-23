@@ -186,9 +186,9 @@
 			$this->NewLine();
 			$this->TextWrapLines($ccol, $icol - $ccol, $addr);
 		}
+		$this->row = $temp;
 		if (isset($this->formData['deliver_to']))
 		{
-			$this->row = $temp;
 			if ($doctype == ST_PURCHORDER)
 				$this->Text($mcol, $this->company['coy_name']);
 			elseif ($doctype != ST_SUPPAYMENT && isset($this->formData['deliver_to']))
@@ -196,10 +196,11 @@
 				$this->Text($mcol, $this->formData['deliver_to']);
 				$this->NewLine();
 			}	
-			// if you need the company name in purchase order then write it as first line in location addresss.	
 			if ($doctype != ST_SUPPAYMENT && isset($this->formData['delivery_address']))
 				$this->TextWrapLines($mcol, $this->rightMargin - $mcol, $this->formData['delivery_address']);
-		}
+		}	// if you need the company name in purchase order then write it as first line in location addresss.	
+		elseif ($doctype == ST_PURCHORDER && isset($this->formData['delivery_address']))
+			$this->TextWrapLines($mcol, $this->rightMargin - $mcol, $this->formData['delivery_address']);
 		$this->row = $iline2 - $this->lineHeight - 1;
 		$col = $this->leftMargin;
 		$this->TextWrap($col, $this->row, $width, $doc_Customers_Ref, 'C');
