@@ -19,6 +19,14 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+23-Sep-2010 Janusz Dobrowolski
+# Fixed focus behaviour
+$ /includes/ajax.inc
++ Additional debug logging helper.
+$ /includes/ui/ui_view.inc
+# Fixed gettext for extension menu options.
+$ /applications/application.php
+
 22-Sep-2010 Janusz Dobrowolski
 # Fixed delivery address printing in pdf documents.
 $ /reporting/includes/header2.inc
@@ -28,7 +36,7 @@ $ /reporting/includes/header2.inc
 $ /admin/inst_module.php
 
 17-Sep-2010 Janusz Dobrowolski
-+ External url reading made independent of php configuration.
++ [0000248] External url reading made independent of php configuration.
 $ /gl/includes/db/gl_db_rates.inc
   /includes/packages.inc
   /includes/remote_url.inc (new)
