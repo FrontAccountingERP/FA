@@ -1290,7 +1290,6 @@ if (!function_exists('_vd'))
 {
   	function _vd($mixed, $title = '', $exit = false)
   	{
-    	// Only the site admin is able to proceed here.
     	$str = (!empty($title) ? ($title .':') : '') .'<pre>';
     	$str .= print_r($mixed, true); //var_dump($mixed);
     	$str .= "</pre>\n";
@@ -1298,6 +1297,13 @@ if (!function_exists('_vd'))
     	if ($exit)
     		exit;
   	}
+}
+
+function _vl($mixed, $title = '', $exit = false)
+{
+	error_log((!empty($title) ? ($title .':') : '') . var_export($mixed, true));
+	if ($exit)
+		exit;
 }
 
 function display_backtrace($cond=true, $msg='') {
