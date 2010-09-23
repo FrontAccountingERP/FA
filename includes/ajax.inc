@@ -133,7 +133,7 @@ class Ajax extends JsHttpRequest {
 		  	  $cmds = array($com);
 		  	  foreach( $this->aCommands as $k=> $cmd) {
 			  	if ($cmd['n'] == 'fc') {	// save focus
-					$cmds[] = $cmd; break;
+					$cmds[] = $cmd; //break;
 			  	}
 			  }
 			  $this->aCommands = $cmds;
