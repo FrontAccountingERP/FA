@@ -257,7 +257,9 @@ function submit_js_confirm($name, $msg) {
 function set_icon($icon, $title=false)
 {
 	global $path_to_root;
-	return "<img src='$path_to_root/themes/".user_theme()."/images/$icon' width='12' height='12' border='0'".($title ? " title='$title'" : "")." />\n";	
+	if (basename($icon) === $icon) // standard icons does not contain path separator
+		$icon = "$path_to_root/themes/".user_theme()."/images/$icon";
+	return "<img src='$icon' width='12' height='12' border='0'".($title ? " title='$title'" : "")." />\n";	
 }
 
 function button($name, $value, $title=false, $icon=false,  $aspect='')
