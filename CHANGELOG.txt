@@ -19,6 +19,12 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+27-Sep-2010 Janusz Dobrowolski
+! Alowed optional path for $icon parameter in set_icon helper
+$ /includes/ui/ui_input.inc
+! pageNumber property of TCPDF class made publicly accesible 
+$ /reporting/includes/fpdi/fpdi2tcpdf_bridge.php
+
 23-Sep-2010 Janusz Dobrowolski
 # Fixed focus behaviour
 $ /includes/ajax.inc
