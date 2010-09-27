@@ -43,6 +43,8 @@ class FPDF extends TCPDF {
                 return $this->k;
             case 'lastUsedPageBox':
                 return $this->lastUsedPageBox;
+            case 'pageNumber':
+                return $this->pageNumber;
             default:
                 // Error handling
                 $this->Error('Cannot access protected property '.get_class($this).':$'.$name.' / Undefined property: '.get_class($this).'::$'.$name);
