@@ -66,7 +66,7 @@ function gl_inquiry_controls()
 
     start_table(TABLESTYLE_NOBORDER);
 	start_row();
-    gl_all_accounts_list_cells(_("Account:"), 'account', null, false, false, "All Accounts");
+    gl_all_accounts_list_cells(_("Account:"), 'account', null, false, false, _("All Accounts"));
 	date_cells(_("from:"), 'TransFromDate', '', null, -30);
 	date_cells(_("to:"), 'TransToDate');
     end_row();

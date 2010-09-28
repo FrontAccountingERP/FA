@@ -297,8 +297,8 @@ if (!$selected_id)
 	unset($_POST['_tabs_sel']); // force settings tab for new customer
 
 tabbed_content_start('tabs', array(
-		'settings' => array('&General settings', $selected_id),
-		'contacts' => array('&Contacts', $selected_id),
+		'settings' => array(_('&General settings'), $selected_id),
+		'contacts' => array(_('&Contacts'), $selected_id),
 	));
 	
 	switch (get_post('_tabs_sel')) {

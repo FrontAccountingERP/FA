@@ -320,8 +320,8 @@ else
 	display_note(_("The selected customer does not have any branches. Please create at least one branch."));
 
 tabbed_content_start('tabs', array(
-		'settings' => array('&General settings', $selected_id!=-1),
-		'contacts' => array('&Contacts', $selected_id!=-1),
+		'settings' => array(_('&General settings'), $selected_id!=-1),
+		'contacts' => array(_('&Contacts'), $selected_id!=-1),
 //		'orders' => array('S&ales orders', $selected_id!=-1) // not implemented
 	));
 	
