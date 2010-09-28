@@ -34,8 +34,6 @@ class references
 	function update($type, $id, $reference) 
 	{
 	    update_reference($type, $id, $reference);
-		if ($reference != 'auto')
-			$this->save_last($reference, $type);
 	}
 	// check if reference is used for any non voided transaction (used for ST_JOURNALENTRY type)
 	function exists($type, $reference) 
