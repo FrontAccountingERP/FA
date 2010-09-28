@@ -242,8 +242,7 @@ function update_sales_order($order)
 	} /* inserted line items into sales order details */
 
 	add_audit_trail($order->trans_type, $order_no, $order->document_date, _("Updated."));
-	$Refs->delete($order->trans_type, $order_no);
-	$Refs->save($order->trans_type, $order_no, $order->reference);
+	$Refs->update($order->trans_type, $order_no, $order->reference);
 	commit_transaction();
 	if ($loc_notification == 1 && count($st_ids) > 0)
 	{
