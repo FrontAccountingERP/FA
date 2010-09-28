@@ -19,7 +19,6 @@ Legend:
 ! -> Note
 $ -> Affected files
 
-
 28-Sep-2010 Janusz Dobrowolski
 # Reference should be updated after SO edition
 $ /sales/includes/db/sales_order_db.inc
@@ -27,6 +26,15 @@ $ /sales/includes/db/sales_order_db.inc
 $ /includes/references.inc
 # Division by zero error in graphics (Joe Hunt)
 $ /reporting/includes/class.graphic.inc
+# Fixed missing gettext calls
+$ /gl/inquiry/gl_account_inquiry.php
+  /purchasing/manage/suppliers.php
+  /sales/manage/customer_branches.php
+  /sales/manage/customers.php
+# Fixed warning on multiply extension access file include
+$ /includes/access_levels.inc
+! Updated po tempate 
+$ /lang/new_language_template/LC_MESSAGES/empty.po
 
 27-Sep-2010 Janusz Dobrowolski
 ! Alowed optional path for $icon parameter in set_icon helper
