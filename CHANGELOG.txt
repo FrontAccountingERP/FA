@@ -19,6 +19,13 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+
+28-Sep-2010 Janusz Dobrowolski
+# Reference should be updated after SO edition
+$ /sales/includes/db/sales_order_db.inc
+# Reference update should not change next reference.
+$ /includes/references.inc
+
 27-Sep-2010 Janusz Dobrowolski
 ! Alowed optional path for $icon parameter in set_icon helper
 $ /includes/ui/ui_input.inc
