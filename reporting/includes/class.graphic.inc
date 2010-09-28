@@ -203,6 +203,8 @@ class graph
         }
 
         $this->sum_total           = array_sum($this->y);
+        if ($this->sum_total == 0)
+        	$this->sum_total = 1;
         $this->space_between_bars += ($this->graphic_2_exists == true) ? 10 : 0;
 
         $this->calculate_higher_value();

@@ -25,6 +25,8 @@ $ -> Affected files
 $ /sales/includes/db/sales_order_db.inc
 # Reference update should not change next reference.
 $ /includes/references.inc
+# Division by zero error in graphics (Joe Hunt)
+$ /reporting/includes/class.graphic.inc
 
 27-Sep-2010 Janusz Dobrowolski
 ! Alowed optional path for $icon parameter in set_icon helper
