@@ -19,10 +19,18 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+01-Oct-2010 Janusz Dobrowolski/Scott
++ Added chinese simplified installation wizard translation.
+$ /install/isession.inc
+  /install/lang/de_DE/LC_MESSAGES/zh_CN.mo (new)
+  /install/lang/de_DE/LC_MESSAGES/zh_CN.po (new)
+# Added missing GL/sql messages.
+$ /lang/new_language_template/LC_MESSAGES/empty.po
+
 28-Sep-2010 Janusz Dobrowolski
 # Reference should be updated after SO edition
 $ /sales/includes/db/sales_order_db.inc
-# Reference update should not change next reference.
+# [0000250] Reference update should not change next reference.
 $ /includes/references.inc
 # Division by zero error in graphics (Joe Hunt)
 $ /reporting/includes/class.graphic.inc
