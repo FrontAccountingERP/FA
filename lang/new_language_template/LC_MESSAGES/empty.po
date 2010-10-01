@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-09-28 21:45+0200\n"
+"POT-Creation-Date: 2010-09-29 20:42+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -123,6 +123,7 @@ msgstr ""
 #: /var/www/fa_unstable/devel/../admin/void_transaction.php:160
 #: /var/www/fa_unstable/devel/../dimensions/inquiry/search_dimensions.php:127
 #: /var/www/fa_unstable/devel/../dimensions/view/view_dimension.php:54
+#: /var/www/fa_unstable/devel/../gl/bank_account_reconcile.php:234
 #: /var/www/fa_unstable/devel/../gl/inquiry/bank_inquiry.php:67
 #: /var/www/fa_unstable/devel/../gl/inquiry/gl_account_inquiry.php:125
 #: /var/www/fa_unstable/devel/../gl/inquiry/journal_inquiry.php:119
@@ -244,6 +245,8 @@ msgstr ""
 #: /var/www/fa_unstable/devel/../gl/includes/ui/gl_journal_ui.inc:122
 #: /var/www/fa_unstable/devel/../includes/ui/contacts_view.inc:61
 #: /var/www/fa_unstable/devel/../includes/ui/simple_crud_class.inc:52
+#: /var/www/fa_unstable/devel/../inventory/prices.php:145
+#: /var/www/fa_unstable/devel/../inventory/purchasing_data.php:144
 #: /var/www/fa_unstable/devel/../inventory/includes/item_adjustments_ui.inc:87
 #: /var/www/fa_unstable/devel/../inventory/includes/stock_transfers_ui.inc:79
 #: /var/www/fa_unstable/devel/../inventory/manage/item_categories.php:121
@@ -252,8 +255,6 @@ msgstr ""
 #: /var/www/fa_unstable/devel/../inventory/manage/locations.php:161
 #: /var/www/fa_unstable/devel/../inventory/manage/movement_types.php:106
 #: /var/www/fa_unstable/devel/../inventory/manage/sales_kits.php:55
-#: /var/www/fa_unstable/devel/../inventory/prices.php:145
-#: /var/www/fa_unstable/devel/../inventory/purchasing_data.php:144
 #: /var/www/fa_unstable/devel/../manufacturing/search_work_orders.php:109
 #: /var/www/fa_unstable/devel/../manufacturing/manage/bom_edit.php:86
 #: /var/www/fa_unstable/devel/../manufacturing/manage/work_centres.php:114
@@ -303,6 +304,7 @@ msgstr ""
 #: /var/www/fa_unstable/devel/../admin/shipping_companies.php:107
 #: /var/www/fa_unstable/devel/../admin/tags.php:141
 #: /var/www/fa_unstable/devel/../admin/users.php:146
+#: /var/www/fa_unstable/devel/../gl/gl_budget.php:137
 #: /var/www/fa_unstable/devel/../gl/manage/bank_accounts.php:127
 #: /var/www/fa_unstable/devel/../gl/manage/currencies.php:168
 #: /var/www/fa_unstable/devel/../gl/manage/exchange_rates.php:99
@@ -315,6 +317,8 @@ msgstr ""
 #: /var/www/fa_unstable/devel/../includes/ui/contacts_view.inc:64
 #: /var/www/fa_unstable/devel/../includes/ui/simple_crud_class.inc:54
 #: /var/www/fa_unstable/devel/../includes/ui/ui_input.inc:276
+#: /var/www/fa_unstable/devel/../inventory/prices.php:146
+#: /var/www/fa_unstable/devel/../inventory/purchasing_data.php:145
 #: /var/www/fa_unstable/devel/../inventory/includes/item_adjustments_ui.inc:89
 #: /var/www/fa_unstable/devel/../inventory/includes/stock_transfers_ui.inc:81
 #: /var/www/fa_unstable/devel/../inventory/manage/item_categories.php:122
@@ -323,8 +327,6 @@ msgstr ""
 #: /var/www/fa_unstable/devel/../inventory/manage/locations.php:162
 #: /var/www/fa_unstable/devel/../inventory/manage/movement_types.php:107
 #: /var/www/fa_unstable/devel/../inventory/manage/sales_kits.php:56
-#: /var/www/fa_unstable/devel/../inventory/prices.php:146
-#: /var/www/fa_unstable/devel/../inventory/purchasing_data.php:145
 #: /var/www/fa_unstable/devel/../manufacturing/manage/bom_edit.php:87
 #: /var/www/fa_unstable/devel/../manufacturing/manage/work_centres.php:115
 #: /var/www/fa_unstable/devel/../manufacturing/includes/work_order_issue_ui.inc:60
@@ -628,6 +630,7 @@ msgid "Home Currency:"
 msgstr ""
 
 #: /var/www/fa_unstable/devel/../admin/company_preferences.php:173
+#: /var/www/fa_unstable/devel/../gl/gl_budget.php:63
 msgid "Fiscal Year:"
 msgstr ""
 
@@ -722,6 +725,8 @@ msgstr ""
 #: /var/www/fa_unstable/devel/../admin/inst_module.php:282
 #: /var/www/fa_unstable/devel/../admin/inst_theme.php:95
 #: /var/www/fa_unstable/devel/../dimensions/dimension_entry.php:293
+#: /var/www/fa_unstable/devel/../gl/gl_bank.php:410
+#: /var/www/fa_unstable/devel/../gl/gl_budget.php:135
 #: /var/www/fa_unstable/devel/../gl/manage/gl_quick_entries.php:60
 #: /var/www/fa_unstable/devel/../gl/includes/ui/gl_bank_ui.inc:249
 #: /var/www/fa_unstable/devel/../gl/includes/ui/gl_journal_ui.inc:221
@@ -730,13 +735,13 @@ msgstr ""
 #: /var/www/fa_unstable/devel/../includes/ui/simple_crud_class.inc:227
 #: /var/www/fa_unstable/devel/../includes/ui/ui_input.inc:203
 #: /var/www/fa_unstable/devel/../includes/ui/ui_input.inc:889
-#: /var/www/fa_unstable/devel/../inventory/includes/item_adjustments_ui.inc:157
-#: /var/www/fa_unstable/devel/../inventory/includes/stock_transfers_ui.inc:137
-#: /var/www/fa_unstable/devel/../inventory/manage/sales_kits.php:208
 #: /var/www/fa_unstable/devel/../inventory/adjustments.php:233
 #: /var/www/fa_unstable/devel/../inventory/cost_update.php:125
 #: /var/www/fa_unstable/devel/../inventory/reorder_level.php:97
 #: /var/www/fa_unstable/devel/../inventory/transfers.php:236
+#: /var/www/fa_unstable/devel/../inventory/includes/item_adjustments_ui.inc:157
+#: /var/www/fa_unstable/devel/../inventory/includes/stock_transfers_ui.inc:137
+#: /var/www/fa_unstable/devel/../inventory/manage/sales_kits.php:208
 #: /var/www/fa_unstable/devel/../manufacturing/work_order_entry.php:457
 #: /var/www/fa_unstable/devel/../manufacturing/includes/work_order_issue_ui.inc:127
 #: /var/www/fa_unstable/devel/../purchasing/includes/ui/po_ui.inc:273
@@ -942,6 +947,7 @@ msgid "New script Admin Password"
 msgstr ""
 
 #: /var/www/fa_unstable/devel/../admin/create_coy.php:330
+#: /var/www/fa_unstable/devel/../gl/gl_budget.php:136
 msgid "Save"
 msgstr ""
 
@@ -1825,6 +1831,7 @@ msgstr ""
 #: /var/www/fa_unstable/devel/../dimensions/inquiry/search_dimensions.php:75
 #: /var/www/fa_unstable/devel/../dimensions/inquiry/search_dimensions.php:130
 #: /var/www/fa_unstable/devel/../dimensions/view/view_dimension.php:54
+#: /var/www/fa_unstable/devel/../gl/bank_account_reconcile.php:233
 #: /var/www/fa_unstable/devel/../gl/inquiry/bank_inquiry.php:67
 #: /var/www/fa_unstable/devel/../gl/inquiry/gl_account_inquiry.php:125
 #: /var/www/fa_unstable/devel/../gl/inquiry/journal_inquiry.php:121
@@ -2401,6 +2408,7 @@ msgstr ""
 #: /var/www/fa_unstable/devel/../admin/void_transaction.php:161
 #: /var/www/fa_unstable/devel/../dimensions/inquiry/search_dimensions.php:128
 #: /var/www/fa_unstable/devel/../dimensions/view/view_dimension.php:54
+#: /var/www/fa_unstable/devel/../gl/bank_account_reconcile.php:235
 #: /var/www/fa_unstable/devel/../gl/inquiry/bank_inquiry.php:67
 #: /var/www/fa_unstable/devel/../gl/inquiry/journal_inquiry.php:123
 #: /var/www/fa_unstable/devel/../gl/view/bank_transfer_view.php:86
@@ -2459,6 +2467,9 @@ msgstr ""
 #: /var/www/fa_unstable/devel/../admin/void_transaction.php:162
 #: /var/www/fa_unstable/devel/../dimensions/inquiry/search_dimensions.php:131
 #: /var/www/fa_unstable/devel/../dimensions/view/view_dimension.php:54
+#: /var/www/fa_unstable/devel/../gl/accruals.php:87
+#: /var/www/fa_unstable/devel/../gl/accruals.php:191
+#: /var/www/fa_unstable/devel/../gl/bank_account_reconcile.php:236
 #: /var/www/fa_unstable/devel/../gl/inquiry/bank_inquiry.php:67
 #: /var/www/fa_unstable/devel/../gl/inquiry/gl_account_inquiry.php:125
 #: /var/www/fa_unstable/devel/../gl/inquiry/journal_inquiry.php:120
@@ -2544,6 +2555,7 @@ msgstr ""
 
 #: /var/www/fa_unstable/devel/../admin/void_transaction.php:187
 #: /var/www/fa_unstable/devel/../dimensions/dimension_entry.php:283
+#: /var/www/fa_unstable/devel/../gl/bank_transfer.php:91
 #: /var/www/fa_unstable/devel/../gl/inquiry/journal_inquiry.php:56
 #: /var/www/fa_unstable/devel/../gl/manage/revaluate_currencies.php:103
 #: /var/www/fa_unstable/devel/../includes/ui/ui_view.inc:308
@@ -2583,6 +2595,9 @@ msgid "The selected transaction was closed for edition and cannot be voided."
 msgstr ""
 
 #: /var/www/fa_unstable/devel/../admin/void_transaction.php:227
+#: /var/www/fa_unstable/devel/../gl/accruals.php:32
+#: /var/www/fa_unstable/devel/../gl/bank_transfer.php:108
+#: /var/www/fa_unstable/devel/../gl/gl_journal.php:154
 #: /var/www/fa_unstable/devel/../gl/manage/exchange_rates.php:33
 #: /var/www/fa_unstable/devel/../gl/manage/revaluate_currencies.php:50
 #: /var/www/fa_unstable/devel/../manufacturing/work_order_add_finished.php:97
@@ -2595,6 +2610,10 @@ msgid "The entered date is invalid."
 msgstr ""
 
 #: /var/www/fa_unstable/devel/../admin/void_transaction.php:233
+#: /var/www/fa_unstable/devel/../gl/accruals.php:38
+#: /var/www/fa_unstable/devel/../gl/bank_transfer.php:114
+#: /var/www/fa_unstable/devel/../gl/gl_bank.php:259
+#: /var/www/fa_unstable/devel/../gl/gl_journal.php:160
 #: /var/www/fa_unstable/devel/../gl/manage/revaluate_currencies.php:56
 #: /var/www/fa_unstable/devel/../inventory/adjustments.php:114
 #: /var/www/fa_unstable/devel/../inventory/transfers.php:111
@@ -3265,6 +3284,9 @@ msgid "The dimension reference must be entered."
 msgstr ""
 
 #: /var/www/fa_unstable/devel/../dimensions/dimension_entry.php:123
+#: /var/www/fa_unstable/devel/../gl/bank_transfer.php:146
+#: /var/www/fa_unstable/devel/../gl/gl_bank.php:247
+#: /var/www/fa_unstable/devel/../gl/gl_journal.php:174
 #: /var/www/fa_unstable/devel/../gl/manage/revaluate_currencies.php:69
 #: /var/www/fa_unstable/devel/../inventory/adjustments.php:101
 #: /var/www/fa_unstable/devel/../inventory/transfers.php:99
@@ -3397,6 +3419,7 @@ msgid "Balance for this Dimension"
 msgstr ""
 
 #: /var/www/fa_unstable/devel/../dimensions/includes/dimensions_ui.inc:31
+#: /var/www/fa_unstable/devel/../gl/accruals.php:87
 #: /var/www/fa_unstable/devel/../gl/inquiry/gl_account_inquiry.php:128
 #: /var/www/fa_unstable/devel/../gl/inquiry/gl_trial_balance.php:63
 #: /var/www/fa_unstable/devel/../gl/manage/gl_quick_entries.php:227
@@ -3414,6 +3437,8 @@ msgid "Account"
 msgstr ""
 
 #: /var/www/fa_unstable/devel/../dimensions/includes/dimensions_ui.inc:31
+#: /var/www/fa_unstable/devel/../gl/accruals.php:95
+#: /var/www/fa_unstable/devel/../gl/bank_account_reconcile.php:237
 #: /var/www/fa_unstable/devel/../gl/inquiry/bank_inquiry.php:68
 #: /var/www/fa_unstable/devel/../gl/inquiry/gl_account_inquiry.php:140
 #: /var/www/fa_unstable/devel/../gl/inquiry/gl_account_inquiry.php:142
@@ -3442,6 +3467,8 @@ msgid "Debit"
 msgstr ""
 
 #: /var/www/fa_unstable/devel/../dimensions/includes/dimensions_ui.inc:31
+#: /var/www/fa_unstable/devel/../gl/accruals.php:95
+#: /var/www/fa_unstable/devel/../gl/bank_account_reconcile.php:238
 #: /var/www/fa_unstable/devel/../gl/inquiry/bank_inquiry.php:68
 #: /var/www/fa_unstable/devel/../gl/inquiry/gl_account_inquiry.php:140
 #: /var/www/fa_unstable/devel/../gl/inquiry/gl_account_inquiry.php:142
@@ -3497,6 +3524,7 @@ msgid "Search Dimensions"
 msgstr ""
 
 #: /var/www/fa_unstable/devel/../dimensions/inquiry/search_dimensions.php:73
+#: /var/www/fa_unstable/devel/../gl/bank_transfer.php:89
 #: /var/www/fa_unstable/devel/../gl/inquiry/journal_inquiry.php:45
 #: /var/www/fa_unstable/devel/../gl/manage/revaluate_currencies.php:102
 #: /var/www/fa_unstable/devel/../gl/includes/ui/gl_bank_ui.inc:102
@@ -3654,150 +3682,32 @@ msgstr ""
 msgid "Show"
 msgstr ""
 
-#: /var/www/fa_unstable/devel/../gl/inquiry/balance_sheet.php:27
-msgid "Balance Sheet Drilldown"
+#: /var/www/fa_unstable/devel/../gl/accruals.php:20
+#: /var/www/fa_unstable/devel/../includes/access_levels.inc:243
+msgid "Revenue / Cost Accruals"
 msgstr ""
 
-#: /var/www/fa_unstable/devel/../gl/inquiry/balance_sheet.php:96
-#: /var/www/fa_unstable/devel/../gl/inquiry/balance_sheet.php:193
-#: /var/www/fa_unstable/devel/../gl/inquiry/balance_sheet.php:224
-#: /var/www/fa_unstable/devel/../gl/inquiry/gl_trial_balance.php:135
-#: /var/www/fa_unstable/devel/../gl/inquiry/profit_loss.php:111
-#: /var/www/fa_unstable/devel/../gl/inquiry/profit_loss.php:270
-#: /var/www/fa_unstable/devel/../gl/view/gl_deposit_view.php:132
-#: /var/www/fa_unstable/devel/../gl/view/gl_payment_view.php:131
-#: /var/www/fa_unstable/devel/../gl/view/gl_trans_view.php:104
-#: /var/www/fa_unstable/devel/../gl/includes/ui/gl_bank_ui.inc:174
-#: /var/www/fa_unstable/devel/../gl/includes/ui/gl_journal_ui.inc:141
-#: /var/www/fa_unstable/devel/../inventory/includes/item_adjustments_ui.inc:63
-#: /var/www/fa_unstable/devel/../inventory/includes/item_adjustments_ui.inc:102
-#: /var/www/fa_unstable/devel/../manufacturing/includes/manufacturing_ui.inc:178
-#: /var/www/fa_unstable/devel/../purchasing/includes/ui/invoice_ui.inc:305
-#: /var/www/fa_unstable/devel/../purchasing/includes/ui/invoice_ui.inc:464
-#: /var/www/fa_unstable/devel/../purchasing/includes/ui/invoice_ui.inc:534
-#: /var/www/fa_unstable/devel/../purchasing/po_receive_items.php:59
-#: /var/www/fa_unstable/devel/../purchasing/view/view_po.php:140
-#: /var/www/fa_unstable/devel/../purchasing/allocations/supplier_allocation_main.php:100
-#: /var/www/fa_unstable/devel/../reporting/rep101.php:237
-#: /var/www/fa_unstable/devel/../reporting/rep106.php:82
-#: /var/www/fa_unstable/devel/../reporting/rep106.php:120
-#: /var/www/fa_unstable/devel/../reporting/rep106.php:168
-#: /var/www/fa_unstable/devel/../reporting/rep201.php:221
-#: /var/www/fa_unstable/devel/../reporting/rep203.php:92
-#: /var/www/fa_unstable/devel/../reporting/rep203.php:167
-#: /var/www/fa_unstable/devel/../reporting/rep204.php:109
-#: /var/www/fa_unstable/devel/../reporting/rep204.php:137
-#: /var/www/fa_unstable/devel/../reporting/rep301.php:125
-#: /var/www/fa_unstable/devel/../reporting/rep301.php:162
-#: /var/www/fa_unstable/devel/../reporting/rep304.php:144
-#: /var/www/fa_unstable/devel/../reporting/rep304.php:186
-#: /var/www/fa_unstable/devel/../reporting/rep305.php:72
-#: /var/www/fa_unstable/devel/../reporting/rep305.php:96
-#: /var/www/fa_unstable/devel/../reporting/rep305.php:127
-#: /var/www/fa_unstable/devel/../reporting/rep705.php:152
-#: /var/www/fa_unstable/devel/../reporting/rep705.php:309
-#: /var/www/fa_unstable/devel/../reporting/rep706.php:106
-#: /var/www/fa_unstable/devel/../reporting/rep706.php:249
-#: /var/www/fa_unstable/devel/../reporting/rep706.php:284
-#: /var/www/fa_unstable/devel/../reporting/rep707.php:115
-#: /var/www/fa_unstable/devel/../reporting/rep707.php:291
-#: /var/www/fa_unstable/devel/../reporting/rep708.php:181
-#: /var/www/fa_unstable/devel/../reporting/includes/doctext.inc:103
-#: /var/www/fa_unstable/devel/../reporting/includes/doctext.inc:111
-#: /var/www/fa_unstable/devel/../sales/customer_credit_invoice.php:292
-#: /var/www/fa_unstable/devel/../sales/customer_delivery.php:431
-#: /var/www/fa_unstable/devel/../sales/customer_invoice.php:441
-#: /var/www/fa_unstable/devel/../sales/allocations/customer_allocation_main.php:99
-#: /var/www/fa_unstable/devel/../sales/view/view_credit.php:91
-#: /var/www/fa_unstable/devel/../sales/view/view_dispatch.php:113
-#: /var/www/fa_unstable/devel/../sales/view/view_invoice.php:115
-#: /var/www/fa_unstable/devel/../sales/view/view_sales_order.php:94
-#: /var/www/fa_unstable/devel/../sales/view/view_sales_order.php:127
-#: /var/www/fa_unstable/devel/../sales/view/view_sales_order.php:159
-#: /var/www/fa_unstable/devel/../sales/view/view_sales_order.php:200
-#: /var/www/fa_unstable/devel/../sales/includes/ui/sales_credit_ui.inc:168
-#: /var/www/fa_unstable/devel/../sales/includes/ui/sales_order_ui.inc:148
-msgid "Total"
+#: /var/www/fa_unstable/devel/../gl/accruals.php:44
+msgid "The amount can not be 0."
 msgstr ""
 
-#: /var/www/fa_unstable/devel/../gl/inquiry/balance_sheet.php:123
-msgid "As at:"
+#: /var/www/fa_unstable/devel/../gl/accruals.php:50
+msgid "The periods must be greater than 0."
 msgstr ""
 
-#: /var/www/fa_unstable/devel/../gl/inquiry/balance_sheet.php:216
-#: /var/www/fa_unstable/devel/../gl/inquiry/profit_loss.php:281
-#: /var/www/fa_unstable/devel/../reporting/rep705.php:319
-#: /var/www/fa_unstable/devel/../reporting/rep706.php:272
-#: /var/www/fa_unstable/devel/../reporting/rep706.php:297
-#: /var/www/fa_unstable/devel/../reporting/rep707.php:303
-#: /var/www/fa_unstable/devel/../reporting/rep707.php:309
-msgid "Calculated Return"
+#: /var/www/fa_unstable/devel/../gl/accruals.php:64
+msgid ""
+"Some of the period dates are outside the fiscal year. Create a new fiscal "
+"year first!"
 msgstr ""
 
-#: /var/www/fa_unstable/devel/../gl/inquiry/balance_sheet.php:224
-#: /var/www/fa_unstable/devel/../includes/sysnames.inc:94
-#: /var/www/fa_unstable/devel/../reporting/rep706.php:284
-msgid "Liabilities"
-msgstr ""
-
-#: /var/www/fa_unstable/devel/../gl/inquiry/balance_sheet.php:224
-#: /var/www/fa_unstable/devel/../reporting/rep706.php:284
-msgid " and "
-msgstr ""
-
-#: /var/www/fa_unstable/devel/../gl/inquiry/balance_sheet.php:224
-#: /var/www/fa_unstable/devel/../reporting/rep706.php:284
-msgid "Equities"
-msgstr ""
-
-#: /var/www/fa_unstable/devel/../gl/inquiry/bank_inquiry.php:28
-#: /var/www/fa_unstable/devel/../reporting/rep601.php:69
-msgid "Bank Statement"
-msgstr ""
-
-#: /var/www/fa_unstable/devel/../gl/inquiry/bank_inquiry.php:30
-#: /var/www/fa_unstable/devel/../purchasing/supplier_payment.php:42
-#: /var/www/fa_unstable/devel/../sales/customer_payments.php:39
-msgid "There are no bank accounts defined in the system."
-msgstr ""
-
-#: /var/www/fa_unstable/devel/../gl/inquiry/bank_inquiry.php:44
-#: /var/www/fa_unstable/devel/../gl/inquiry/gl_account_inquiry.php:69
-msgid "Account:"
-msgstr ""
-
-#: /var/www/fa_unstable/devel/../gl/inquiry/bank_inquiry.php:68
-#: /var/www/fa_unstable/devel/../gl/inquiry/gl_account_inquiry.php:140
-#: /var/www/fa_unstable/devel/../gl/inquiry/gl_account_inquiry.php:142
-#: /var/www/fa_unstable/devel/../gl/view/accrual_trans.php:60
-#: /var/www/fa_unstable/devel/../gl/view/gl_trans_view.php:36
-#: /var/www/fa_unstable/devel/../reporting/rep601.php:76
-#: /var/www/fa_unstable/devel/../reporting/rep704.php:79
-#: /var/www/fa_unstable/devel/../reporting/rep704.php:81
-#: /var/www/fa_unstable/devel/../reporting/rep704.php:84
-msgid "Person/Item"
-msgstr ""
-
-#: /var/www/fa_unstable/devel/../gl/inquiry/bank_inquiry.php:75
-#: /var/www/fa_unstable/devel/../gl/inquiry/gl_account_inquiry.php:161
-#: /var/www/fa_unstable/devel/../reporting/rep601.php:99
-#: /var/www/fa_unstable/devel/../reporting/rep704.php:137
-msgid "Opening Balance"
-msgstr ""
-
-#: /var/www/fa_unstable/devel/../gl/inquiry/bank_inquiry.php:120
-#: /var/www/fa_unstable/devel/../gl/inquiry/gl_account_inquiry.php:210
-#: /var/www/fa_unstable/devel/../gl/inquiry/gl_trial_balance.php:145
-#: /var/www/fa_unstable/devel/../reporting/rep601.php:150
-#: /var/www/fa_unstable/devel/../reporting/rep704.php:185
-#: /var/www/fa_unstable/devel/../reporting/rep708.php:190
-msgid "Ending Balance"
-msgstr ""
-
-#: /var/www/fa_unstable/devel/../gl/inquiry/gl_account_inquiry.php:30
-msgid "General Ledger Inquiry"
-msgstr ""
-
+#: /var/www/fa_unstable/devel/../gl/accruals.php:89
+#: /var/www/fa_unstable/devel/../gl/accruals.php:91
+#: /var/www/fa_unstable/devel/../gl/accruals.php:199
+#: /var/www/fa_unstable/devel/../gl/accruals.php:201
+#: /var/www/fa_unstable/devel/../gl/gl_budget.php:71
+#: /var/www/fa_unstable/devel/../gl/gl_budget.php:72
+#: /var/www/fa_unstable/devel/../gl/gl_budget.php:76
 #: /var/www/fa_unstable/devel/../gl/inquiry/gl_account_inquiry.php:78
 #: /var/www/fa_unstable/devel/../gl/inquiry/gl_account_inquiry.php:80
 #: /var/www/fa_unstable/devel/../gl/inquiry/gl_account_inquiry.php:133
@@ -3877,14 +3787,8 @@ msgstr ""
 msgid "Dimension"
 msgstr ""
 
-#: /var/www/fa_unstable/devel/../gl/inquiry/gl_account_inquiry.php:82
-msgid "Amount min:"
-msgstr ""
-
-#: /var/www/fa_unstable/devel/../gl/inquiry/gl_account_inquiry.php:83
-msgid "Amount max:"
-msgstr ""
-
+#: /var/www/fa_unstable/devel/../gl/accruals.php:95
+#: /var/www/fa_unstable/devel/../gl/accruals.php:209
 #: /var/www/fa_unstable/devel/../gl/inquiry/gl_account_inquiry.php:140
 #: /var/www/fa_unstable/devel/../gl/inquiry/gl_account_inquiry.php:142
 #: /var/www/fa_unstable/devel/../gl/inquiry/journal_inquiry.php:125
@@ -3917,6 +3821,660 @@ msgstr ""
 #: /var/www/fa_unstable/devel/../sales/customer_invoice.php:549
 #: /var/www/fa_unstable/devel/../sales/includes/ui/sales_credit_ui.inc:336
 msgid "Memo"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/accruals.php:158
+msgid "Revenue / Cost Accruals have been processed."
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/accruals.php:164
+msgid "Showing GL Transactions."
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/accruals.php:176
+msgid "Weekly"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/accruals.php:177
+msgid "Bi-weekly"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/accruals.php:178
+#: /var/www/fa_unstable/devel/../gl/manage/gl_quick_entries.php:226
+#: /var/www/fa_unstable/devel/../gl/includes/ui/gl_journal_ui.inc:57
+#: /var/www/fa_unstable/devel/../sales/create_recurrent_invoices.php:98
+#: /var/www/fa_unstable/devel/../sales/manage/recurrent_invoices.php:85
+msgid "Monthly"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/accruals.php:179
+msgid "Quarterly"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/accruals.php:191
+msgid "First date of Accruals"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/accruals.php:193
+msgid "Accrued Balance Account"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/accruals.php:196
+msgid "Revenue / Cost Account"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/accruals.php:204
+#: /var/www/fa_unstable/devel/../gl/gl_budget.php:91
+#: /var/www/fa_unstable/devel/../gl/gl_budget.php:93
+#: /var/www/fa_unstable/devel/../gl/inquiry/journal_inquiry.php:124
+#: /var/www/fa_unstable/devel/../gl/inquiry/tax_inquiry.php:82
+#: /var/www/fa_unstable/devel/../gl/manage/gl_quick_entries.php:251
+#: /var/www/fa_unstable/devel/../gl/manage/gl_quick_entries.php:253
+#: /var/www/fa_unstable/devel/../gl/manage/gl_quick_entries.php:255
+#: /var/www/fa_unstable/devel/../gl/manage/gl_quick_entries.php:335
+#: /var/www/fa_unstable/devel/../gl/view/bank_transfer_view.php:70
+#: /var/www/fa_unstable/devel/../gl/view/bank_transfer_view.php:80
+#: /var/www/fa_unstable/devel/../gl/view/gl_deposit_view.php:67
+#: /var/www/fa_unstable/devel/../gl/view/gl_deposit_view.php:100
+#: /var/www/fa_unstable/devel/../gl/view/gl_deposit_view.php:103
+#: /var/www/fa_unstable/devel/../gl/view/gl_deposit_view.php:106
+#: /var/www/fa_unstable/devel/../gl/view/gl_payment_view.php:65
+#: /var/www/fa_unstable/devel/../gl/view/gl_payment_view.php:99
+#: /var/www/fa_unstable/devel/../gl/view/gl_payment_view.php:102
+#: /var/www/fa_unstable/devel/../gl/view/gl_payment_view.php:105
+#: /var/www/fa_unstable/devel/../gl/includes/ui/gl_bank_ui.inc:125
+#: /var/www/fa_unstable/devel/../gl/includes/ui/gl_bank_ui.inc:128
+#: /var/www/fa_unstable/devel/../gl/includes/ui/gl_bank_ui.inc:131
+#: /var/www/fa_unstable/devel/../includes/sysnames.inc:106
+#: /var/www/fa_unstable/devel/../includes/ui/allocation_cart.inc:259
+#: /var/www/fa_unstable/devel/../includes/ui/ui_lists.inc:1141
+#: /var/www/fa_unstable/devel/../manufacturing/includes/manufacturing_ui.inc:236
+#: /var/www/fa_unstable/devel/../purchasing/includes/ui/invoice_ui.inc:244
+#: /var/www/fa_unstable/devel/../purchasing/includes/ui/invoice_ui.inc:246
+#: /var/www/fa_unstable/devel/../purchasing/includes/ui/invoice_ui.inc:248
+#: /var/www/fa_unstable/devel/../purchasing/view/view_supp_payment.php:60
+#: /var/www/fa_unstable/devel/../purchasing/view/view_supp_payment.php:69
+#: /var/www/fa_unstable/devel/../reporting/rep102.php:228
+#: /var/www/fa_unstable/devel/../reporting/rep202.php:234
+#: /var/www/fa_unstable/devel/../reporting/rep706.php:303
+#: /var/www/fa_unstable/devel/../reporting/rep707.php:321
+#: /var/www/fa_unstable/devel/../reporting/rep710.php:76
+#: /var/www/fa_unstable/devel/../reporting/includes/doctext.inc:150
+#: /var/www/fa_unstable/devel/../sales/view/view_receipt.php:44
+msgid "Amount"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/accruals.php:204
+msgid "Search Amount"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/accruals.php:206
+msgid "Frequency"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/accruals.php:208
+msgid "Periods"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/accruals.php:212
+msgid "Show GL Rows"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/accruals.php:213
+msgid "Process Accruals"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/accruals.php:214
+msgid "Are you sure you want to post accruals?"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/bank_account_reconcile.php:33
+msgid "Reconcile Bank Account"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/bank_account_reconcile.php:35
+#: /var/www/fa_unstable/devel/../gl/bank_transfer.php:30
+#: /var/www/fa_unstable/devel/../gl/gl_bank.php:49
+#: /var/www/fa_unstable/devel/../gl/inquiry/bank_inquiry.php:30
+#: /var/www/fa_unstable/devel/../purchasing/supplier_payment.php:42
+#: /var/www/fa_unstable/devel/../sales/customer_payments.php:39
+msgid "There are no bank accounts defined in the system."
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/bank_account_reconcile.php:39
+msgid "Invalid reconcile date format"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/bank_account_reconcile.php:56
+msgid "Reconcile this transaction"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/bank_account_reconcile.php:166
+#: /var/www/fa_unstable/devel/../gl/inquiry/bank_inquiry.php:44
+#: /var/www/fa_unstable/devel/../gl/inquiry/gl_account_inquiry.php:69
+msgid "Account:"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/bank_account_reconcile.php:168
+msgid "Bank Statement:"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/bank_account_reconcile.php:169
+msgid "New"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/bank_account_reconcile.php:198
+msgid "Reconcile Date"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/bank_account_reconcile.php:198
+msgid "Beginning<br>Balance"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/bank_account_reconcile.php:199
+msgid "Ending<br>Balance"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/bank_account_reconcile.php:199
+msgid "Account<br>Total"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/bank_account_reconcile.php:199
+msgid "Reconciled<br>Amount"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/bank_account_reconcile.php:199
+msgid "Difference"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/bank_account_reconcile.php:203
+msgid "Date of bank statement to reconcile"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/bank_account_reconcile.php:239
+#: /var/www/fa_unstable/devel/../gl/inquiry/bank_inquiry.php:68
+#: /var/www/fa_unstable/devel/../gl/inquiry/gl_account_inquiry.php:140
+#: /var/www/fa_unstable/devel/../gl/inquiry/gl_account_inquiry.php:142
+#: /var/www/fa_unstable/devel/../gl/view/accrual_trans.php:60
+#: /var/www/fa_unstable/devel/../gl/view/gl_trans_view.php:36
+#: /var/www/fa_unstable/devel/../reporting/rep601.php:76
+#: /var/www/fa_unstable/devel/../reporting/rep704.php:79
+#: /var/www/fa_unstable/devel/../reporting/rep704.php:81
+#: /var/www/fa_unstable/devel/../reporting/rep704.php:84
+msgid "Person/Item"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/bank_account_reconcile.php:249
+msgid "Reconcile"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/bank_transfer.php:28
+msgid "Transfer between Bank Accounts"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/bank_transfer.php:39
+#: /var/www/fa_unstable/devel/../gl/manage/revaluate_currencies.php:34
+msgid "Transfer has been entered"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/bank_transfer.php:41
+#: /var/www/fa_unstable/devel/../gl/manage/revaluate_currencies.php:36
+msgid "&View the GL Journal Entries for this Transfer"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/bank_transfer.php:43
+msgid "Enter &Another Transfer"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/bank_transfer.php:66
+msgid "From Account:"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/bank_transfer.php:68
+msgid "To Account:"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/bank_transfer.php:70
+msgid "Transfer Date:"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/bank_transfer.php:76
+#: /var/www/fa_unstable/devel/../gl/bank_transfer.php:83
+#: /var/www/fa_unstable/devel/../sales/customer_payments.php:289
+msgid "Amount:"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/bank_transfer.php:77
+#: /var/www/fa_unstable/devel/../gl/bank_transfer.php:84
+#: /var/www/fa_unstable/devel/../purchasing/supplier_payment.php:284
+#: /var/www/fa_unstable/devel/../sales/customer_payments.php:274
+msgid "Bank Charge:"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/bank_transfer.php:95
+msgid "Enter Transfer"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/bank_transfer.php:121
+#: /var/www/fa_unstable/devel/../gl/bank_transfer.php:128
+#: /var/www/fa_unstable/devel/../purchasing/supplier_payment.php:130
+#: /var/www/fa_unstable/devel/../purchasing/supplier_payment.php:136
+msgid "The entered amount is invalid or less than zero."
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/bank_transfer.php:133
+#: /var/www/fa_unstable/devel/../purchasing/supplier_payment.php:144
+#: /var/www/fa_unstable/devel/../sales/customer_payments.php:131
+msgid ""
+"The Bank Charge Account has not been set in System and General GL Setup."
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/bank_transfer.php:139
+#: /var/www/fa_unstable/devel/../gl/gl_bank.php:241
+#: /var/www/fa_unstable/devel/../gl/gl_journal.php:166
+#: /var/www/fa_unstable/devel/../gl/manage/revaluate_currencies.php:62
+#: /var/www/fa_unstable/devel/../inventory/adjustments.php:94
+#: /var/www/fa_unstable/devel/../inventory/transfers.php:93
+#: /var/www/fa_unstable/devel/../manufacturing/work_order_add_finished.php:76
+#: /var/www/fa_unstable/devel/../manufacturing/work_order_entry.php:131
+#: /var/www/fa_unstable/devel/../manufacturing/work_order_issue.php:88
+#: /var/www/fa_unstable/devel/../purchasing/po_receive_items.php:177
+#: /var/www/fa_unstable/devel/../purchasing/supplier_payment.php:191
+#: /var/www/fa_unstable/devel/../sales/credit_note_entry.php:143
+#: /var/www/fa_unstable/devel/../sales/customer_credit_invoice.php:100
+#: /var/www/fa_unstable/devel/../sales/customer_delivery.php:175
+#: /var/www/fa_unstable/devel/../sales/customer_invoice.php:281
+#: /var/www/fa_unstable/devel/../sales/customer_payments.php:106
+#: /var/www/fa_unstable/devel/../sales/sales_order_entry.php:398
+msgid "You must enter a reference."
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/bank_transfer.php:153
+msgid "The source and destination bank accouts cannot be the same."
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/gl_bank.php:33
+msgid "Bank Account Payment Entry"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/gl_bank.php:37
+msgid "Bank Account Deposit Entry"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/gl_bank.php:40
+msgid "Modify Bank Account Entry"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/gl_bank.php:43
+msgid "Modify Bank Deposit Entry"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/gl_bank.php:75
+#: /var/www/fa_unstable/devel/../gl/gl_bank.php:91
+msgid "&View the GL Postings for this Payment"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/gl_bank.php:77
+#: /var/www/fa_unstable/devel/../gl/gl_bank.php:93
+msgid "Enter Another &Payment"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/gl_bank.php:79
+#: /var/www/fa_unstable/devel/../gl/gl_bank.php:95
+msgid "Enter A &Deposit"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/gl_bank.php:107
+msgid "View the GL Postings for this Deposit"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/gl_bank.php:109
+msgid "Enter Another Deposit"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/gl_bank.php:111
+msgid "Enter A Payment"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/gl_bank.php:122
+msgid "&View the GL Postings for this Deposit"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/gl_bank.php:124
+msgid "Enter Another &Deposit"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/gl_bank.php:126
+msgid "Enter A &Payment"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/gl_bank.php:228
+msgid "You must enter at least one payment line."
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/gl_bank.php:234
+msgid "The total bank amount cannot be 0."
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/gl_bank.php:253
+msgid "The entered date for the payment is invalid."
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/gl_bank.php:322
+msgid "The source and destination accouts cannot be the same."
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/gl_bank.php:404
+msgid "Payment Items"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/gl_bank.php:404
+msgid "Deposit Items"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/gl_bank.php:412
+msgid "Process Payment"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/gl_bank.php:412
+msgid "Process Deposit"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/gl_budget.php:18
+msgid "Budget Entry"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/gl_budget.php:26
+#: /var/www/fa_unstable/devel/../gl/manage/gl_accounts.php:23
+msgid ""
+"There are no account groups defined. Please define at least one account "
+"group before entering accounts."
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/gl_budget.php:45
+msgid "The Budget has been saved."
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/gl_budget.php:47
+msgid "The Budget has been deleted."
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/gl_budget.php:64
+#: /var/www/fa_unstable/devel/../gl/manage/gl_accounts.php:227
+#: /var/www/fa_unstable/devel/../gl/manage/gl_accounts.php:237
+msgid "Account Code:"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/gl_budget.php:84
+#: /var/www/fa_unstable/devel/../gl/manage/exchange_rates.php:142
+msgid "Get"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/gl_budget.php:91
+#: /var/www/fa_unstable/devel/../gl/gl_budget.php:93
+#: /var/www/fa_unstable/devel/../gl/inquiry/profit_loss.php:218
+#: /var/www/fa_unstable/devel/../gl/manage/gl_quick_entries.php:226
+#: /var/www/fa_unstable/devel/../reporting/rep101.php:136
+#: /var/www/fa_unstable/devel/../reporting/rep105.php:116
+#: /var/www/fa_unstable/devel/../reporting/rep106.php:90
+#: /var/www/fa_unstable/devel/../reporting/rep201.php:124
+#: /var/www/fa_unstable/devel/../reporting/rep304.php:121
+#: /var/www/fa_unstable/devel/../reporting/rep305.php:77
+#: /var/www/fa_unstable/devel/../reporting/rep601.php:82
+#: /var/www/fa_unstable/devel/../reporting/rep702.php:57
+#: /var/www/fa_unstable/devel/../reporting/rep704.php:90
+#: /var/www/fa_unstable/devel/../reporting/rep704.php:100
+#: /var/www/fa_unstable/devel/../reporting/rep704.php:108
+#: /var/www/fa_unstable/devel/../reporting/rep706.php:181
+#: /var/www/fa_unstable/devel/../reporting/rep706.php:189
+#: /var/www/fa_unstable/devel/../reporting/rep706.php:199
+#: /var/www/fa_unstable/devel/../reporting/rep706.php:207
+#: /var/www/fa_unstable/devel/../reporting/rep707.php:206
+#: /var/www/fa_unstable/devel/../reporting/rep707.php:213
+#: /var/www/fa_unstable/devel/../reporting/rep707.php:223
+#: /var/www/fa_unstable/devel/../reporting/rep707.php:231
+#: /var/www/fa_unstable/devel/../reporting/rep708.php:87
+#: /var/www/fa_unstable/devel/../reporting/rep708.php:96
+#: /var/www/fa_unstable/devel/../reporting/rep708.php:103
+#: /var/www/fa_unstable/devel/../reporting/rep709.php:102
+#: /var/www/fa_unstable/devel/../reporting/rep710.php:83
+msgid "Period"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/gl_budget.php:91
+msgid "Dim. incl."
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/gl_budget.php:91
+#: /var/www/fa_unstable/devel/../gl/gl_budget.php:93
+msgid "Last Year"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/gl_budget.php:127
+#: /var/www/fa_unstable/devel/../gl/inquiry/balance_sheet.php:96
+#: /var/www/fa_unstable/devel/../gl/inquiry/balance_sheet.php:193
+#: /var/www/fa_unstable/devel/../gl/inquiry/balance_sheet.php:224
+#: /var/www/fa_unstable/devel/../gl/inquiry/gl_trial_balance.php:135
+#: /var/www/fa_unstable/devel/../gl/inquiry/profit_loss.php:111
+#: /var/www/fa_unstable/devel/../gl/inquiry/profit_loss.php:270
+#: /var/www/fa_unstable/devel/../gl/view/gl_deposit_view.php:132
+#: /var/www/fa_unstable/devel/../gl/view/gl_payment_view.php:131
+#: /var/www/fa_unstable/devel/../gl/view/gl_trans_view.php:104
+#: /var/www/fa_unstable/devel/../gl/includes/ui/gl_bank_ui.inc:174
+#: /var/www/fa_unstable/devel/../gl/includes/ui/gl_journal_ui.inc:141
+#: /var/www/fa_unstable/devel/../inventory/includes/item_adjustments_ui.inc:63
+#: /var/www/fa_unstable/devel/../inventory/includes/item_adjustments_ui.inc:102
+#: /var/www/fa_unstable/devel/../manufacturing/includes/manufacturing_ui.inc:178
+#: /var/www/fa_unstable/devel/../purchasing/includes/ui/invoice_ui.inc:305
+#: /var/www/fa_unstable/devel/../purchasing/includes/ui/invoice_ui.inc:464
+#: /var/www/fa_unstable/devel/../purchasing/includes/ui/invoice_ui.inc:534
+#: /var/www/fa_unstable/devel/../purchasing/po_receive_items.php:59
+#: /var/www/fa_unstable/devel/../purchasing/view/view_po.php:140
+#: /var/www/fa_unstable/devel/../purchasing/allocations/supplier_allocation_main.php:100
+#: /var/www/fa_unstable/devel/../reporting/rep101.php:237
+#: /var/www/fa_unstable/devel/../reporting/rep106.php:82
+#: /var/www/fa_unstable/devel/../reporting/rep106.php:120
+#: /var/www/fa_unstable/devel/../reporting/rep106.php:168
+#: /var/www/fa_unstable/devel/../reporting/rep201.php:221
+#: /var/www/fa_unstable/devel/../reporting/rep203.php:92
+#: /var/www/fa_unstable/devel/../reporting/rep203.php:167
+#: /var/www/fa_unstable/devel/../reporting/rep204.php:109
+#: /var/www/fa_unstable/devel/../reporting/rep204.php:137
+#: /var/www/fa_unstable/devel/../reporting/rep301.php:125
+#: /var/www/fa_unstable/devel/../reporting/rep301.php:162
+#: /var/www/fa_unstable/devel/../reporting/rep304.php:144
+#: /var/www/fa_unstable/devel/../reporting/rep304.php:186
+#: /var/www/fa_unstable/devel/../reporting/rep305.php:72
+#: /var/www/fa_unstable/devel/../reporting/rep305.php:96
+#: /var/www/fa_unstable/devel/../reporting/rep305.php:127
+#: /var/www/fa_unstable/devel/../reporting/rep705.php:152
+#: /var/www/fa_unstable/devel/../reporting/rep705.php:309
+#: /var/www/fa_unstable/devel/../reporting/rep706.php:106
+#: /var/www/fa_unstable/devel/../reporting/rep706.php:249
+#: /var/www/fa_unstable/devel/../reporting/rep706.php:284
+#: /var/www/fa_unstable/devel/../reporting/rep707.php:115
+#: /var/www/fa_unstable/devel/../reporting/rep707.php:291
+#: /var/www/fa_unstable/devel/../reporting/rep708.php:181
+#: /var/www/fa_unstable/devel/../reporting/includes/doctext.inc:103
+#: /var/www/fa_unstable/devel/../reporting/includes/doctext.inc:111
+#: /var/www/fa_unstable/devel/../sales/customer_credit_invoice.php:292
+#: /var/www/fa_unstable/devel/../sales/customer_delivery.php:431
+#: /var/www/fa_unstable/devel/../sales/customer_invoice.php:441
+#: /var/www/fa_unstable/devel/../sales/allocations/customer_allocation_main.php:99
+#: /var/www/fa_unstable/devel/../sales/view/view_credit.php:91
+#: /var/www/fa_unstable/devel/../sales/view/view_dispatch.php:113
+#: /var/www/fa_unstable/devel/../sales/view/view_invoice.php:115
+#: /var/www/fa_unstable/devel/../sales/view/view_sales_order.php:94
+#: /var/www/fa_unstable/devel/../sales/view/view_sales_order.php:127
+#: /var/www/fa_unstable/devel/../sales/view/view_sales_order.php:159
+#: /var/www/fa_unstable/devel/../sales/view/view_sales_order.php:200
+#: /var/www/fa_unstable/devel/../sales/includes/ui/sales_credit_ui.inc:168
+#: /var/www/fa_unstable/devel/../sales/includes/ui/sales_order_ui.inc:148
+msgid "Total"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/gl_journal.php:32
+#, php-format
+msgid "Modifying Journal Transaction # %d."
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/gl_journal.php:36
+#: /var/www/fa_unstable/devel/../includes/sysnames.inc:22
+#: /var/www/fa_unstable/devel/../includes/sysnames.inc:123
+msgid "Journal Entry"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/gl_journal.php:54
+msgid "Journal entry has been entered"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/gl_journal.php:56
+#: /var/www/fa_unstable/devel/../gl/gl_journal.php:69
+msgid "&View this Journal Entry"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/gl_journal.php:59
+msgid "Enter &New Journal Entry"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/gl_journal.php:67
+msgid "Journal entry has been updated"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/gl_journal.php:71
+msgid "Return to Journal &Inquiry"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/gl_journal.php:84
+msgid ""
+"You can edit directly only journal entries created via Journal Entry page."
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/gl_journal.php:85
+msgid "Entry &New Journal Entry"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/gl_journal.php:141
+msgid "You must enter at least one journal line."
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/gl_journal.php:147
+msgid ""
+"The journal must balance (debits equal to credits) before it can be "
+"processed."
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/gl_journal.php:209
+#: /var/www/fa_unstable/devel/../gl/gl_journal.php:216
+msgid "Dimension is closed."
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/gl_journal.php:223
+msgid "You must enter either a debit amount or a credit amount."
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/gl_journal.php:230
+msgid "The debit amount entered is not a valid number or is less than zero."
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/gl_journal.php:235
+msgid "The credit amount entered is not a valid number or is less than zero."
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/gl_journal.php:241
+#: /var/www/fa_unstable/devel/../includes/ui/ui_view.inc:646
+#: /var/www/fa_unstable/devel/../purchasing/supplier_credit.php:119
+#: /var/www/fa_unstable/devel/../purchasing/supplier_invoice.php:119
+msgid "Cannot post to GL account used by more than one tax type."
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/gl_journal.php:248
+msgid ""
+"You cannot make a journal entry for a bank account. Please use one of the "
+"banking functions for bank transactions."
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/gl_journal.php:327
+msgid "Rows"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/gl_journal.php:333
+msgid "Process Journal Entry"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/gl_journal.php:334
+msgid "Process journal entry only if debits equal to credits"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/inquiry/balance_sheet.php:27
+msgid "Balance Sheet Drilldown"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/inquiry/balance_sheet.php:123
+msgid "As at:"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/inquiry/balance_sheet.php:216
+#: /var/www/fa_unstable/devel/../gl/inquiry/profit_loss.php:281
+#: /var/www/fa_unstable/devel/../reporting/rep705.php:319
+#: /var/www/fa_unstable/devel/../reporting/rep706.php:272
+#: /var/www/fa_unstable/devel/../reporting/rep706.php:297
+#: /var/www/fa_unstable/devel/../reporting/rep707.php:303
+#: /var/www/fa_unstable/devel/../reporting/rep707.php:309
+msgid "Calculated Return"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/inquiry/balance_sheet.php:224
+#: /var/www/fa_unstable/devel/../includes/sysnames.inc:94
+#: /var/www/fa_unstable/devel/../reporting/rep706.php:284
+msgid "Liabilities"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/inquiry/balance_sheet.php:224
+#: /var/www/fa_unstable/devel/../reporting/rep706.php:284
+msgid " and "
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/inquiry/balance_sheet.php:224
+#: /var/www/fa_unstable/devel/../reporting/rep706.php:284
+msgid "Equities"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/inquiry/bank_inquiry.php:28
+#: /var/www/fa_unstable/devel/../reporting/rep601.php:69
+msgid "Bank Statement"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/inquiry/bank_inquiry.php:75
+#: /var/www/fa_unstable/devel/../gl/inquiry/gl_account_inquiry.php:161
+#: /var/www/fa_unstable/devel/../reporting/rep601.php:99
+#: /var/www/fa_unstable/devel/../reporting/rep704.php:137
+msgid "Opening Balance"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/inquiry/bank_inquiry.php:120
+#: /var/www/fa_unstable/devel/../gl/inquiry/gl_account_inquiry.php:210
+#: /var/www/fa_unstable/devel/../gl/inquiry/gl_trial_balance.php:145
+#: /var/www/fa_unstable/devel/../reporting/rep601.php:150
+#: /var/www/fa_unstable/devel/../reporting/rep704.php:185
+#: /var/www/fa_unstable/devel/../reporting/rep708.php:190
+msgid "Ending Balance"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/inquiry/gl_account_inquiry.php:30
+msgid "General Ledger Inquiry"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/inquiry/gl_account_inquiry.php:69
+msgid "All Accounts"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/inquiry/gl_account_inquiry.php:82
+msgid "Amount min:"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../gl/inquiry/gl_account_inquiry.php:83
+msgid "Amount max:"
 msgstr ""
 
 #: /var/www/fa_unstable/devel/../gl/inquiry/gl_account_inquiry.php:219
@@ -3984,44 +4542,6 @@ msgstr ""
 msgid "Trans #"
 msgstr ""
 
-#: /var/www/fa_unstable/devel/../gl/inquiry/journal_inquiry.php:124
-#: /var/www/fa_unstable/devel/../gl/inquiry/tax_inquiry.php:82
-#: /var/www/fa_unstable/devel/../gl/manage/gl_quick_entries.php:251
-#: /var/www/fa_unstable/devel/../gl/manage/gl_quick_entries.php:253
-#: /var/www/fa_unstable/devel/../gl/manage/gl_quick_entries.php:255
-#: /var/www/fa_unstable/devel/../gl/manage/gl_quick_entries.php:335
-#: /var/www/fa_unstable/devel/../gl/view/bank_transfer_view.php:70
-#: /var/www/fa_unstable/devel/../gl/view/bank_transfer_view.php:80
-#: /var/www/fa_unstable/devel/../gl/view/gl_deposit_view.php:67
-#: /var/www/fa_unstable/devel/../gl/view/gl_deposit_view.php:100
-#: /var/www/fa_unstable/devel/../gl/view/gl_deposit_view.php:103
-#: /var/www/fa_unstable/devel/../gl/view/gl_deposit_view.php:106
-#: /var/www/fa_unstable/devel/../gl/view/gl_payment_view.php:65
-#: /var/www/fa_unstable/devel/../gl/view/gl_payment_view.php:99
-#: /var/www/fa_unstable/devel/../gl/view/gl_payment_view.php:102
-#: /var/www/fa_unstable/devel/../gl/view/gl_payment_view.php:105
-#: /var/www/fa_unstable/devel/../gl/includes/ui/gl_bank_ui.inc:125
-#: /var/www/fa_unstable/devel/../gl/includes/ui/gl_bank_ui.inc:128
-#: /var/www/fa_unstable/devel/../gl/includes/ui/gl_bank_ui.inc:131
-#: /var/www/fa_unstable/devel/../includes/sysnames.inc:106
-#: /var/www/fa_unstable/devel/../includes/ui/allocation_cart.inc:259
-#: /var/www/fa_unstable/devel/../includes/ui/ui_lists.inc:1141
-#: /var/www/fa_unstable/devel/../manufacturing/includes/manufacturing_ui.inc:236
-#: /var/www/fa_unstable/devel/../purchasing/includes/ui/invoice_ui.inc:244
-#: /var/www/fa_unstable/devel/../purchasing/includes/ui/invoice_ui.inc:246
-#: /var/www/fa_unstable/devel/../purchasing/includes/ui/invoice_ui.inc:248
-#: /var/www/fa_unstable/devel/../purchasing/view/view_supp_payment.php:60
-#: /var/www/fa_unstable/devel/../purchasing/view/view_supp_payment.php:69
-#: /var/www/fa_unstable/devel/../reporting/rep102.php:228
-#: /var/www/fa_unstable/devel/../reporting/rep202.php:234
-#: /var/www/fa_unstable/devel/../reporting/rep706.php:303
-#: /var/www/fa_unstable/devel/../reporting/rep707.php:321
-#: /var/www/fa_unstable/devel/../reporting/rep710.php:76
-#: /var/www/fa_unstable/devel/../reporting/includes/doctext.inc:150
-#: /var/www/fa_unstable/devel/../sales/view/view_receipt.php:44
-msgid "Amount"
-msgstr ""
-
 #: /var/www/fa_unstable/devel/../gl/inquiry/journal_inquiry.php:126
 #: /var/www/fa_unstable/devel/../reporting/rep710.php:75
 #: /var/www/fa_unstable/devel/../reporting/rep710.php:85
@@ -4060,35 +4580,6 @@ msgstr ""
 
 #: /var/www/fa_unstable/devel/../gl/inquiry/profit_loss.php:217
 msgid "Group/Account Name"
-msgstr ""
-
-#: /var/www/fa_unstable/devel/../gl/inquiry/profit_loss.php:218
-#: /var/www/fa_unstable/devel/../gl/manage/gl_quick_entries.php:226
-#: /var/www/fa_unstable/devel/../reporting/rep101.php:136
-#: /var/www/fa_unstable/devel/../reporting/rep105.php:116
-#: /var/www/fa_unstable/devel/../reporting/rep106.php:90
-#: /var/www/fa_unstable/devel/../reporting/rep201.php:124
-#: /var/www/fa_unstable/devel/../reporting/rep304.php:121
-#: /var/www/fa_unstable/devel/../reporting/rep305.php:77
-#: /var/www/fa_unstable/devel/../reporting/rep601.php:82
-#: /var/www/fa_unstable/devel/../reporting/rep702.php:57
-#: /var/www/fa_unstable/devel/../reporting/rep704.php:90
-#: /var/www/fa_unstable/devel/../reporting/rep704.php:100
-#: /var/www/fa_unstable/devel/../reporting/rep704.php:108
-#: /var/www/fa_unstable/devel/../reporting/rep706.php:181
-#: /var/www/fa_unstable/devel/../reporting/rep706.php:189
-#: /var/www/fa_unstable/devel/../reporting/rep706.php:199
-#: /var/www/fa_unstable/devel/../reporting/rep706.php:207
-#: /var/www/fa_unstable/devel/../reporting/rep707.php:206
-#: /var/www/fa_unstable/devel/../reporting/rep707.php:213
-#: /var/www/fa_unstable/devel/../reporting/rep707.php:223
-#: /var/www/fa_unstable/devel/../reporting/rep707.php:231
-#: /var/www/fa_unstable/devel/../reporting/rep708.php:87
-#: /var/www/fa_unstable/devel/../reporting/rep708.php:96
-#: /var/www/fa_unstable/devel/../reporting/rep708.php:103
-#: /var/www/fa_unstable/devel/../reporting/rep709.php:102
-#: /var/www/fa_unstable/devel/../reporting/rep710.php:83
-msgid "Period"
 msgstr ""
 
 #: /var/www/fa_unstable/devel/../gl/inquiry/profit_loss.php:220
@@ -4405,10 +4896,6 @@ msgid "Exchange Rate:"
 msgstr ""
 
 #: /var/www/fa_unstable/devel/../gl/manage/exchange_rates.php:142
-msgid "Get"
-msgstr ""
-
-#: /var/www/fa_unstable/devel/../gl/manage/exchange_rates.php:142
 msgid "Get current ECB rate"
 msgstr ""
 
@@ -4502,12 +4989,6 @@ msgstr ""
 msgid "Chart of Accounts"
 msgstr ""
 
-#: /var/www/fa_unstable/devel/../gl/manage/gl_accounts.php:23
-msgid ""
-"There are no account groups defined. Please define at least one account "
-"group before entering accounts."
-msgstr ""
-
 #: /var/www/fa_unstable/devel/../gl/manage/gl_accounts.php:53
 msgid "The account code must be entered."
 msgstr ""
@@ -4579,11 +5060,6 @@ msgstr ""
 
 #: /var/www/fa_unstable/devel/../gl/manage/gl_accounts.php:194
 msgid "New account"
-msgstr ""
-
-#: /var/www/fa_unstable/devel/../gl/manage/gl_accounts.php:227
-#: /var/www/fa_unstable/devel/../gl/manage/gl_accounts.php:237
-msgid "Account Code:"
 msgstr ""
 
 #: /var/www/fa_unstable/devel/../gl/manage/gl_accounts.php:240
@@ -4745,13 +5221,6 @@ msgstr ""
 
 #: /var/www/fa_unstable/devel/../gl/manage/gl_quick_entries.php:226
 #: /var/www/fa_unstable/devel/../gl/includes/ui/gl_journal_ui.inc:57
-#: /var/www/fa_unstable/devel/../sales/create_recurrent_invoices.php:98
-#: /var/www/fa_unstable/devel/../sales/manage/recurrent_invoices.php:85
-msgid "Monthly"
-msgstr ""
-
-#: /var/www/fa_unstable/devel/../gl/manage/gl_quick_entries.php:226
-#: /var/www/fa_unstable/devel/../gl/includes/ui/gl_journal_ui.inc:57
 msgid "Yearly"
 msgstr ""
 
@@ -4799,31 +5268,6 @@ msgstr ""
 
 #: /var/www/fa_unstable/devel/../gl/manage/revaluate_currencies.php:31
 msgid "No Revaluation was needed"
-msgstr ""
-
-#: /var/www/fa_unstable/devel/../gl/manage/revaluate_currencies.php:34
-msgid "Transfer has been entered"
-msgstr ""
-
-#: /var/www/fa_unstable/devel/../gl/manage/revaluate_currencies.php:36
-msgid "&View the GL Journal Entries for this Transfer"
-msgstr ""
-
-#: /var/www/fa_unstable/devel/../gl/manage/revaluate_currencies.php:62
-#: /var/www/fa_unstable/devel/../inventory/adjustments.php:94
-#: /var/www/fa_unstable/devel/../inventory/transfers.php:93
-#: /var/www/fa_unstable/devel/../manufacturing/work_order_add_finished.php:76
-#: /var/www/fa_unstable/devel/../manufacturing/work_order_entry.php:131
-#: /var/www/fa_unstable/devel/../manufacturing/work_order_issue.php:88
-#: /var/www/fa_unstable/devel/../purchasing/po_receive_items.php:177
-#: /var/www/fa_unstable/devel/../purchasing/supplier_payment.php:191
-#: /var/www/fa_unstable/devel/../sales/credit_note_entry.php:143
-#: /var/www/fa_unstable/devel/../sales/customer_credit_invoice.php:100
-#: /var/www/fa_unstable/devel/../sales/customer_delivery.php:175
-#: /var/www/fa_unstable/devel/../sales/customer_invoice.php:281
-#: /var/www/fa_unstable/devel/../sales/customer_payments.php:106
-#: /var/www/fa_unstable/devel/../sales/sales_order_entry.php:398
-msgid "You must enter a reference."
 msgstr ""
 
 #: /var/www/fa_unstable/devel/../gl/manage/revaluate_currencies.php:101
@@ -5680,10 +6124,6 @@ msgstr ""
 msgid "Item standard costs"
 msgstr ""
 
-#: /var/www/fa_unstable/devel/../includes/access_levels.inc:243
-msgid "Revenue / Cost Accruals"
-msgstr ""
-
 #: /var/www/fa_unstable/devel/../includes/access_levels.inc:245
 msgid "GL analytical reports and inquiries"
 msgstr ""
@@ -5829,11 +6269,6 @@ msgstr ""
 msgid ""
 "System is blocked after source upgrade until database is updated on System/"
 "Software Upgrade page"
-msgstr ""
-
-#: /var/www/fa_unstable/devel/../includes/sysnames.inc:22
-#: /var/www/fa_unstable/devel/../includes/sysnames.inc:123
-msgid "Journal Entry"
 msgstr ""
 
 #: /var/www/fa_unstable/devel/../includes/sysnames.inc:23
@@ -6668,8 +7103,8 @@ msgid "Suppliers"
 msgstr ""
 
 #: /var/www/fa_unstable/devel/../includes/ui/ui_controls.inc:431
-#: /var/www/fa_unstable/devel/../inventory/manage/items.php:16
 #: /var/www/fa_unstable/devel/../inventory/transfers.php:230
+#: /var/www/fa_unstable/devel/../inventory/manage/items.php:16
 msgid "Items"
 msgstr ""
 
@@ -6904,12 +7339,6 @@ msgstr ""
 msgid "No Quick Entry lines are defined."
 msgstr ""
 
-#: /var/www/fa_unstable/devel/../includes/ui/ui_view.inc:646
-#: /var/www/fa_unstable/devel/../purchasing/supplier_credit.php:119
-#: /var/www/fa_unstable/devel/../purchasing/supplier_invoice.php:119
-msgid "Cannot post to GL account used by more than one tax type."
-msgstr ""
-
 #: /var/www/fa_unstable/devel/../includes/ui/ui_view.inc:754
 #: /var/www/fa_unstable/devel/../purchasing/includes/ui/invoice_ui.inc:442
 msgid "and"
@@ -7051,6 +7480,382 @@ msgstr ""
 
 #: /var/www/fa_unstable/devel/../includes/ui/view_package.php:37
 msgid "Property"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../inventory/adjustments.php:28
+msgid "Item Adjustments Note"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../inventory/adjustments.php:32
+msgid ""
+"There are no inventory items defined in the system which can be adjusted "
+"(Purchased or Manufactured)."
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../inventory/adjustments.php:34
+#: /var/www/fa_unstable/devel/../inventory/transfers.php:34
+msgid ""
+"There are no inventory movement types defined in the system. Please define "
+"at least one inventory adjustment type."
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../inventory/adjustments.php:43
+msgid "Items adjustment has been processed"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../inventory/adjustments.php:44
+msgid "&View this adjustment"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../inventory/adjustments.php:46
+msgid "View the GL &Postings for this Adjustment"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../inventory/adjustments.php:48
+msgid "Enter &Another Adjustment"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../inventory/adjustments.php:88
+#: /var/www/fa_unstable/devel/../inventory/transfers.php:87
+#: /var/www/fa_unstable/devel/../sales/sales_order_entry.php:345
+msgid "You must enter at least one non empty item line."
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../inventory/adjustments.php:108
+#: /var/www/fa_unstable/devel/../inventory/transfers.php:105
+msgid "The entered date for the adjustment is invalid."
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../inventory/adjustments.php:122
+msgid ""
+"The adjustment cannot be processed because an adjustment item would cause a "
+"negative inventory balance :"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../inventory/adjustments.php:152
+#: /var/www/fa_unstable/devel/../manufacturing/work_order_issue.php:138
+msgid "The quantity entered is negative or invalid."
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../inventory/adjustments.php:159
+#: /var/www/fa_unstable/devel/../manufacturing/work_order_issue.php:145
+msgid "The entered standard cost is negative or invalid."
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../inventory/adjustments.php:228
+msgid "Adjustment Items"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../inventory/adjustments.php:234
+msgid "Process Adjustment"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../inventory/cost_update.php:26
+msgid "Inventory Item Cost Update"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../inventory/cost_update.php:30
+msgid ""
+"There are no costable inventory items defined in the system (Purchased or "
+"manufactured items)."
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../inventory/cost_update.php:51
+msgid "The entered cost is not numeric."
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../inventory/cost_update.php:57
+msgid "The new cost is the same as the old cost. Cost was not updated."
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../inventory/cost_update.php:67
+msgid "Cost has been updated."
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../inventory/cost_update.php:71
+msgid "View the GL Journal Entries for this Cost Update"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../inventory/cost_update.php:85
+#: /var/www/fa_unstable/devel/../inventory/prices.php:56
+#: /var/www/fa_unstable/devel/../inventory/purchasing_data.php:101
+#: /var/www/fa_unstable/devel/../inventory/reorder_level.php:43
+#: /var/www/fa_unstable/devel/../inventory/inquiry/stock_movements.php:49
+#: /var/www/fa_unstable/devel/../inventory/inquiry/stock_status.php:41
+#: /var/www/fa_unstable/devel/../inventory/manage/item_codes.php:105
+#: /var/www/fa_unstable/devel/../manufacturing/work_order_entry.php:394
+#: /var/www/fa_unstable/devel/../manufacturing/work_order_entry.php:399
+#: /var/www/fa_unstable/devel/../purchasing/inquiry/po_search.php:69
+#: /var/www/fa_unstable/devel/../sales/inquiry/sales_deliveries_view.php:109
+#: /var/www/fa_unstable/devel/../sales/inquiry/sales_orders_view.php:234
+msgid "Item:"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../inventory/cost_update.php:111
+msgid "Standard Material Cost Per Unit"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../inventory/cost_update.php:114
+msgid "Standard Labour Cost Per Unit"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../inventory/cost_update.php:115
+msgid "Standard Overhead Cost Per Unit"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../inventory/prices.php:16
+msgid "Inventory Item Sales prices"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../inventory/prices.php:27
+#: /var/www/fa_unstable/devel/../inventory/inquiry/stock_movements.php:30
+#: /var/www/fa_unstable/devel/../inventory/inquiry/stock_status.php:34
+#: /var/www/fa_unstable/devel/../inventory/manage/sales_kits.php:24
+#: /var/www/fa_unstable/devel/../manufacturing/inquiry/where_used_inquiry.php:21
+#: /var/www/fa_unstable/devel/../sales/credit_note_entry.php:49
+msgid "There are no items defined in the system."
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../inventory/prices.php:29
+msgid ""
+"There are no sales types in the system. Please set up sales types befor "
+"entering pricing."
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../inventory/prices.php:70
+msgid "The price entered must be numeric."
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../inventory/prices.php:83
+msgid "This price has been updated."
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../inventory/prices.php:91
+msgid "The new price has been added."
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../inventory/prices.php:105
+msgid "The selected price has been deleted."
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../inventory/prices.php:133
+#: /var/www/fa_unstable/devel/../reporting/rep104.php:116
+#: /var/www/fa_unstable/devel/../sales/customer_delivery.php:353
+#: /var/www/fa_unstable/devel/../sales/customer_invoice.php:388
+#: /var/www/fa_unstable/devel/../sales/view/view_credit.php:73
+#: /var/www/fa_unstable/devel/../sales/view/view_dispatch.php:93
+#: /var/www/fa_unstable/devel/../sales/view/view_invoice.php:93
+#: /var/www/fa_unstable/devel/../sales/includes/ui/sales_credit_ui.inc:102
+msgid "Sales Type"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../inventory/prices.php:133
+#: /var/www/fa_unstable/devel/../inventory/purchasing_data.php:127
+#: /var/www/fa_unstable/devel/../purchasing/includes/ui/invoice_ui.inc:474
+#: /var/www/fa_unstable/devel/../purchasing/po_receive_items.php:59
+#: /var/www/fa_unstable/devel/../purchasing/view/view_grn.php:41
+#: /var/www/fa_unstable/devel/../purchasing/view/view_po.php:45
+#: /var/www/fa_unstable/devel/../reporting/rep104.php:109
+#: /var/www/fa_unstable/devel/../reporting/includes/doctext.inc:103
+#: /var/www/fa_unstable/devel/../reporting/includes/doctext.inc:111
+#: /var/www/fa_unstable/devel/../sales/customer_credit_invoice.php:292
+#: /var/www/fa_unstable/devel/../sales/customer_delivery.php:431
+#: /var/www/fa_unstable/devel/../sales/customer_invoice.php:441
+#: /var/www/fa_unstable/devel/../sales/view/view_credit.php:91
+#: /var/www/fa_unstable/devel/../sales/view/view_dispatch.php:113
+#: /var/www/fa_unstable/devel/../sales/view/view_invoice.php:115
+#: /var/www/fa_unstable/devel/../sales/view/view_sales_order.php:200
+#: /var/www/fa_unstable/devel/../sales/includes/ui/sales_credit_ui.inc:168
+msgid "Price"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../inventory/prices.php:155
+msgid "There are no prices set up for this part."
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../inventory/prices.php:174
+msgid "Currency:"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../inventory/prices.php:176
+msgid "Sales Type:"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../inventory/prices.php:184
+#: /var/www/fa_unstable/devel/../inventory/purchasing_data.php:189
+msgid "Price:"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../inventory/prices.php:184
+msgid "per"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../inventory/prices.php:188
+msgid "The price is calculated."
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../inventory/purchasing_data.php:16
+msgid "Supplier Purchasing Data"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../inventory/purchasing_data.php:23
+#: /var/www/fa_unstable/devel/../purchasing/po_entry_items.php:64
+msgid "There are no purchasable inventory items defined in the system."
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../inventory/purchasing_data.php:24
+#: /var/www/fa_unstable/devel/../purchasing/po_entry_items.php:62
+#: /var/www/fa_unstable/devel/../purchasing/supplier_credit.php:32
+#: /var/www/fa_unstable/devel/../purchasing/supplier_invoice.php:32
+#: /var/www/fa_unstable/devel/../purchasing/supplier_payment.php:40
+msgid "There are no suppliers defined in the system."
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../inventory/purchasing_data.php:38
+#: /var/www/fa_unstable/devel/../inventory/manage/item_codes.php:35
+msgid "There is no item selected."
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../inventory/purchasing_data.php:44
+msgid "The price entered was not numeric."
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../inventory/purchasing_data.php:50
+msgid ""
+"The conversion factor entered was not numeric. The conversion factor is the "
+"number by which the price must be divided by to get the unit price in our "
+"unit of measure."
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../inventory/purchasing_data.php:60
+msgid "This supplier purchasing data has been added."
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../inventory/purchasing_data.php:66
+msgid "Supplier purchasing data has been updated."
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../inventory/purchasing_data.php:77
+msgid "The purchasing data item has been sucessfully deleted."
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../inventory/purchasing_data.php:112
+msgid "Entered item is not defined. Please re-enter."
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../inventory/purchasing_data.php:121
+msgid "There is no purchasing data set up for the part selected"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../inventory/purchasing_data.php:128
+msgid "Supplier's Unit"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../inventory/purchasing_data.php:128
+msgid "Conversion Factor"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../inventory/purchasing_data.php:128
+msgid "Supplier's Description"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../inventory/purchasing_data.php:190
+msgid "Suppliers Unit of Measure:"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../inventory/purchasing_data.php:196
+msgid "Conversion Factor (to our UOM):"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../inventory/purchasing_data.php:198
+msgid "Supplier's Code or Description:"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../inventory/reorder_level.php:16
+msgid "Reorder Levels"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../inventory/reorder_level.php:24
+#: /var/www/fa_unstable/devel/../inventory/transfers.php:32
+msgid ""
+"There are no inventory items defined in the system (Purchased or "
+"manufactured items)."
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../inventory/reorder_level.php:57
+#: /var/www/fa_unstable/devel/../inventory/inquiry/stock_status.php:65
+#: /var/www/fa_unstable/devel/../inventory/inquiry/stock_status.php:69
+#: /var/www/fa_unstable/devel/../manufacturing/search_work_orders.php:162
+#: /var/www/fa_unstable/devel/../manufacturing/inquiry/where_used_inquiry.php:45
+#: /var/www/fa_unstable/devel/../manufacturing/manage/bom_edit.php:70
+#: /var/www/fa_unstable/devel/../purchasing/inquiry/po_search_completed.php:114
+#: /var/www/fa_unstable/devel/../purchasing/inquiry/po_search_completed.php:124
+#: /var/www/fa_unstable/devel/../purchasing/inquiry/po_search.php:128
+#: /var/www/fa_unstable/devel/../purchasing/inquiry/po_search.php:139
+#: /var/www/fa_unstable/devel/../reporting/rep105.php:118
+#: /var/www/fa_unstable/devel/../reporting/rep301.php:105
+#: /var/www/fa_unstable/devel/../reporting/rep302.php:130
+#: /var/www/fa_unstable/devel/../reporting/rep303.php:122
+#: /var/www/fa_unstable/devel/../reporting/rep304.php:123
+#: /var/www/fa_unstable/devel/../reporting/reports_main.php:167
+#: /var/www/fa_unstable/devel/../reporting/reports_main.php:173
+#: /var/www/fa_unstable/devel/../reporting/reports_main.php:178
+#: /var/www/fa_unstable/devel/../reporting/reports_main.php:189
+#: /var/www/fa_unstable/devel/../sales/manage/sales_points.php:84
+msgid "Location"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../inventory/reorder_level.php:57
+#: /var/www/fa_unstable/devel/../inventory/inquiry/stock_movements.php:71
+#: /var/www/fa_unstable/devel/../inventory/inquiry/stock_status.php:69
+#: /var/www/fa_unstable/devel/../sales/sales_order_entry.php:482
+#: /var/www/fa_unstable/devel/../sales/includes/ui/sales_order_ui.inc:181
+msgid "Quantity On Hand"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../inventory/reorder_level.php:57
+#: /var/www/fa_unstable/devel/../inventory/inquiry/stock_status.php:69
+#: /var/www/fa_unstable/devel/../sales/includes/db/sales_order_db.inc:106
+#: /var/www/fa_unstable/devel/../sales/includes/db/sales_order_db.inc:258
+msgid "Re-Order Level"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../inventory/reorder_level.php:75
+msgid "Reorder levels has been updated."
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../inventory/transfers.php:28
+msgid "Inventory Location Transfers"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../inventory/transfers.php:43
+msgid "Inventory transfer has been processed"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../inventory/transfers.php:44
+msgid "&View this transfer"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../inventory/transfers.php:46
+msgid "Enter &Another Inventory Transfer"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../inventory/transfers.php:117
+msgid "The locations to transfer from and to must be different."
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../inventory/transfers.php:127
+msgid ""
+"The quantity entered is greater than the available quantity for this item at "
+"the source location :"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../inventory/transfers.php:160
+msgid "The quantity entered must be a positive number."
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../inventory/transfers.php:237
+msgid "Process Transfer"
 msgstr ""
 
 #: /var/www/fa_unstable/devel/../inventory/includes/item_adjustments_ui.inc:20
@@ -7225,30 +8030,6 @@ msgstr ""
 msgid "Inventory Item Movement"
 msgstr ""
 
-#: /var/www/fa_unstable/devel/../inventory/inquiry/stock_movements.php:30
-#: /var/www/fa_unstable/devel/../inventory/inquiry/stock_status.php:34
-#: /var/www/fa_unstable/devel/../inventory/manage/sales_kits.php:24
-#: /var/www/fa_unstable/devel/../inventory/prices.php:27
-#: /var/www/fa_unstable/devel/../manufacturing/inquiry/where_used_inquiry.php:21
-#: /var/www/fa_unstable/devel/../sales/credit_note_entry.php:49
-msgid "There are no items defined in the system."
-msgstr ""
-
-#: /var/www/fa_unstable/devel/../inventory/inquiry/stock_movements.php:49
-#: /var/www/fa_unstable/devel/../inventory/inquiry/stock_status.php:41
-#: /var/www/fa_unstable/devel/../inventory/manage/item_codes.php:105
-#: /var/www/fa_unstable/devel/../inventory/cost_update.php:85
-#: /var/www/fa_unstable/devel/../inventory/prices.php:56
-#: /var/www/fa_unstable/devel/../inventory/purchasing_data.php:101
-#: /var/www/fa_unstable/devel/../inventory/reorder_level.php:43
-#: /var/www/fa_unstable/devel/../manufacturing/work_order_entry.php:394
-#: /var/www/fa_unstable/devel/../manufacturing/work_order_entry.php:399
-#: /var/www/fa_unstable/devel/../purchasing/inquiry/po_search.php:69
-#: /var/www/fa_unstable/devel/../sales/inquiry/sales_deliveries_view.php:109
-#: /var/www/fa_unstable/devel/../sales/inquiry/sales_orders_view.php:234
-msgid "Item:"
-msgstr ""
-
 #: /var/www/fa_unstable/devel/../inventory/inquiry/stock_movements.php:56
 msgid "Show Movements"
 msgstr ""
@@ -7274,14 +8055,6 @@ msgstr ""
 msgid "Quantity Out"
 msgstr ""
 
-#: /var/www/fa_unstable/devel/../inventory/inquiry/stock_movements.php:71
-#: /var/www/fa_unstable/devel/../inventory/inquiry/stock_status.php:69
-#: /var/www/fa_unstable/devel/../inventory/reorder_level.php:57
-#: /var/www/fa_unstable/devel/../sales/sales_order_entry.php:482
-#: /var/www/fa_unstable/devel/../sales/includes/ui/sales_order_ui.inc:181
-msgid "Quantity On Hand"
-msgstr ""
-
 #: /var/www/fa_unstable/devel/../inventory/inquiry/stock_movements.php:86
 msgid "Quantity on hand before"
 msgstr ""
@@ -7302,40 +8075,10 @@ msgid ""
 msgstr ""
 
 #: /var/www/fa_unstable/devel/../inventory/inquiry/stock_status.php:65
-#: /var/www/fa_unstable/devel/../inventory/inquiry/stock_status.php:69
-#: /var/www/fa_unstable/devel/../inventory/reorder_level.php:57
-#: /var/www/fa_unstable/devel/../manufacturing/search_work_orders.php:162
-#: /var/www/fa_unstable/devel/../manufacturing/inquiry/where_used_inquiry.php:45
-#: /var/www/fa_unstable/devel/../manufacturing/manage/bom_edit.php:70
-#: /var/www/fa_unstable/devel/../purchasing/inquiry/po_search_completed.php:114
-#: /var/www/fa_unstable/devel/../purchasing/inquiry/po_search_completed.php:124
-#: /var/www/fa_unstable/devel/../purchasing/inquiry/po_search.php:128
-#: /var/www/fa_unstable/devel/../purchasing/inquiry/po_search.php:139
-#: /var/www/fa_unstable/devel/../reporting/rep105.php:118
-#: /var/www/fa_unstable/devel/../reporting/rep301.php:105
-#: /var/www/fa_unstable/devel/../reporting/rep302.php:130
-#: /var/www/fa_unstable/devel/../reporting/rep303.php:122
-#: /var/www/fa_unstable/devel/../reporting/rep304.php:123
-#: /var/www/fa_unstable/devel/../reporting/reports_main.php:167
-#: /var/www/fa_unstable/devel/../reporting/reports_main.php:173
-#: /var/www/fa_unstable/devel/../reporting/reports_main.php:178
-#: /var/www/fa_unstable/devel/../reporting/reports_main.php:189
-#: /var/www/fa_unstable/devel/../sales/manage/sales_points.php:84
-msgid "Location"
-msgstr ""
-
-#: /var/www/fa_unstable/devel/../inventory/inquiry/stock_status.php:65
 #: /var/www/fa_unstable/devel/../inventory/inquiry/stock_status.php:70
 #: /var/www/fa_unstable/devel/../reporting/rep303.php:109
 #: /var/www/fa_unstable/devel/../reporting/rep303.php:115
 msgid "Demand"
-msgstr ""
-
-#: /var/www/fa_unstable/devel/../inventory/inquiry/stock_status.php:69
-#: /var/www/fa_unstable/devel/../inventory/reorder_level.php:57
-#: /var/www/fa_unstable/devel/../sales/includes/db/sales_order_db.inc:106
-#: /var/www/fa_unstable/devel/../sales/includes/db/sales_order_db.inc:258
-msgid "Re-Order Level"
 msgstr ""
 
 #: /var/www/fa_unstable/devel/../inventory/inquiry/stock_status.php:70
@@ -7443,11 +8186,6 @@ msgstr ""
 #: /var/www/fa_unstable/devel/../inventory/manage/item_codes.php:23
 #: /var/www/fa_unstable/devel/../sales/sales_order_entry.php:641
 msgid "There are no inventory items defined in the system."
-msgstr ""
-
-#: /var/www/fa_unstable/devel/../inventory/manage/item_codes.php:35
-#: /var/www/fa_unstable/devel/../inventory/purchasing_data.php:38
-msgid "There is no item selected."
 msgstr ""
 
 #: /var/www/fa_unstable/devel/../inventory/manage/item_codes.php:41
@@ -7925,315 +8663,6 @@ msgstr ""
 
 #: /var/www/fa_unstable/devel/../inventory/view/view_transfer.php:41
 msgid "To Location"
-msgstr ""
-
-#: /var/www/fa_unstable/devel/../inventory/adjustments.php:28
-msgid "Item Adjustments Note"
-msgstr ""
-
-#: /var/www/fa_unstable/devel/../inventory/adjustments.php:32
-msgid ""
-"There are no inventory items defined in the system which can be adjusted "
-"(Purchased or Manufactured)."
-msgstr ""
-
-#: /var/www/fa_unstable/devel/../inventory/adjustments.php:34
-#: /var/www/fa_unstable/devel/../inventory/transfers.php:34
-msgid ""
-"There are no inventory movement types defined in the system. Please define "
-"at least one inventory adjustment type."
-msgstr ""
-
-#: /var/www/fa_unstable/devel/../inventory/adjustments.php:43
-msgid "Items adjustment has been processed"
-msgstr ""
-
-#: /var/www/fa_unstable/devel/../inventory/adjustments.php:44
-msgid "&View this adjustment"
-msgstr ""
-
-#: /var/www/fa_unstable/devel/../inventory/adjustments.php:46
-msgid "View the GL &Postings for this Adjustment"
-msgstr ""
-
-#: /var/www/fa_unstable/devel/../inventory/adjustments.php:48
-msgid "Enter &Another Adjustment"
-msgstr ""
-
-#: /var/www/fa_unstable/devel/../inventory/adjustments.php:88
-#: /var/www/fa_unstable/devel/../inventory/transfers.php:87
-#: /var/www/fa_unstable/devel/../sales/sales_order_entry.php:345
-msgid "You must enter at least one non empty item line."
-msgstr ""
-
-#: /var/www/fa_unstable/devel/../inventory/adjustments.php:108
-#: /var/www/fa_unstable/devel/../inventory/transfers.php:105
-msgid "The entered date for the adjustment is invalid."
-msgstr ""
-
-#: /var/www/fa_unstable/devel/../inventory/adjustments.php:122
-msgid ""
-"The adjustment cannot be processed because an adjustment item would cause a "
-"negative inventory balance :"
-msgstr ""
-
-#: /var/www/fa_unstable/devel/../inventory/adjustments.php:152
-#: /var/www/fa_unstable/devel/../manufacturing/work_order_issue.php:138
-msgid "The quantity entered is negative or invalid."
-msgstr ""
-
-#: /var/www/fa_unstable/devel/../inventory/adjustments.php:159
-#: /var/www/fa_unstable/devel/../manufacturing/work_order_issue.php:145
-msgid "The entered standard cost is negative or invalid."
-msgstr ""
-
-#: /var/www/fa_unstable/devel/../inventory/adjustments.php:228
-msgid "Adjustment Items"
-msgstr ""
-
-#: /var/www/fa_unstable/devel/../inventory/adjustments.php:234
-msgid "Process Adjustment"
-msgstr ""
-
-#: /var/www/fa_unstable/devel/../inventory/cost_update.php:26
-msgid "Inventory Item Cost Update"
-msgstr ""
-
-#: /var/www/fa_unstable/devel/../inventory/cost_update.php:30
-msgid ""
-"There are no costable inventory items defined in the system (Purchased or "
-"manufactured items)."
-msgstr ""
-
-#: /var/www/fa_unstable/devel/../inventory/cost_update.php:51
-msgid "The entered cost is not numeric."
-msgstr ""
-
-#: /var/www/fa_unstable/devel/../inventory/cost_update.php:57
-msgid "The new cost is the same as the old cost. Cost was not updated."
-msgstr ""
-
-#: /var/www/fa_unstable/devel/../inventory/cost_update.php:67
-msgid "Cost has been updated."
-msgstr ""
-
-#: /var/www/fa_unstable/devel/../inventory/cost_update.php:71
-msgid "View the GL Journal Entries for this Cost Update"
-msgstr ""
-
-#: /var/www/fa_unstable/devel/../inventory/cost_update.php:111
-msgid "Standard Material Cost Per Unit"
-msgstr ""
-
-#: /var/www/fa_unstable/devel/../inventory/cost_update.php:114
-msgid "Standard Labour Cost Per Unit"
-msgstr ""
-
-#: /var/www/fa_unstable/devel/../inventory/cost_update.php:115
-msgid "Standard Overhead Cost Per Unit"
-msgstr ""
-
-#: /var/www/fa_unstable/devel/../inventory/prices.php:16
-msgid "Inventory Item Sales prices"
-msgstr ""
-
-#: /var/www/fa_unstable/devel/../inventory/prices.php:29
-msgid ""
-"There are no sales types in the system. Please set up sales types befor "
-"entering pricing."
-msgstr ""
-
-#: /var/www/fa_unstable/devel/../inventory/prices.php:70
-msgid "The price entered must be numeric."
-msgstr ""
-
-#: /var/www/fa_unstable/devel/../inventory/prices.php:83
-msgid "This price has been updated."
-msgstr ""
-
-#: /var/www/fa_unstable/devel/../inventory/prices.php:91
-msgid "The new price has been added."
-msgstr ""
-
-#: /var/www/fa_unstable/devel/../inventory/prices.php:105
-msgid "The selected price has been deleted."
-msgstr ""
-
-#: /var/www/fa_unstable/devel/../inventory/prices.php:133
-#: /var/www/fa_unstable/devel/../reporting/rep104.php:116
-#: /var/www/fa_unstable/devel/../sales/customer_delivery.php:353
-#: /var/www/fa_unstable/devel/../sales/customer_invoice.php:388
-#: /var/www/fa_unstable/devel/../sales/view/view_credit.php:73
-#: /var/www/fa_unstable/devel/../sales/view/view_dispatch.php:93
-#: /var/www/fa_unstable/devel/../sales/view/view_invoice.php:93
-#: /var/www/fa_unstable/devel/../sales/includes/ui/sales_credit_ui.inc:102
-msgid "Sales Type"
-msgstr ""
-
-#: /var/www/fa_unstable/devel/../inventory/prices.php:133
-#: /var/www/fa_unstable/devel/../inventory/purchasing_data.php:127
-#: /var/www/fa_unstable/devel/../purchasing/includes/ui/invoice_ui.inc:474
-#: /var/www/fa_unstable/devel/../purchasing/po_receive_items.php:59
-#: /var/www/fa_unstable/devel/../purchasing/view/view_grn.php:41
-#: /var/www/fa_unstable/devel/../purchasing/view/view_po.php:45
-#: /var/www/fa_unstable/devel/../reporting/rep104.php:109
-#: /var/www/fa_unstable/devel/../reporting/includes/doctext.inc:103
-#: /var/www/fa_unstable/devel/../reporting/includes/doctext.inc:111
-#: /var/www/fa_unstable/devel/../sales/customer_credit_invoice.php:292
-#: /var/www/fa_unstable/devel/../sales/customer_delivery.php:431
-#: /var/www/fa_unstable/devel/../sales/customer_invoice.php:441
-#: /var/www/fa_unstable/devel/../sales/view/view_credit.php:91
-#: /var/www/fa_unstable/devel/../sales/view/view_dispatch.php:113
-#: /var/www/fa_unstable/devel/../sales/view/view_invoice.php:115
-#: /var/www/fa_unstable/devel/../sales/view/view_sales_order.php:200
-#: /var/www/fa_unstable/devel/../sales/includes/ui/sales_credit_ui.inc:168
-msgid "Price"
-msgstr ""
-
-#: /var/www/fa_unstable/devel/../inventory/prices.php:155
-msgid "There are no prices set up for this part."
-msgstr ""
-
-#: /var/www/fa_unstable/devel/../inventory/prices.php:174
-msgid "Currency:"
-msgstr ""
-
-#: /var/www/fa_unstable/devel/../inventory/prices.php:176
-msgid "Sales Type:"
-msgstr ""
-
-#: /var/www/fa_unstable/devel/../inventory/prices.php:184
-#: /var/www/fa_unstable/devel/../inventory/purchasing_data.php:189
-msgid "Price:"
-msgstr ""
-
-#: /var/www/fa_unstable/devel/../inventory/prices.php:184
-msgid "per"
-msgstr ""
-
-#: /var/www/fa_unstable/devel/../inventory/prices.php:188
-msgid "The price is calculated."
-msgstr ""
-
-#: /var/www/fa_unstable/devel/../inventory/purchasing_data.php:16
-msgid "Supplier Purchasing Data"
-msgstr ""
-
-#: /var/www/fa_unstable/devel/../inventory/purchasing_data.php:23
-#: /var/www/fa_unstable/devel/../purchasing/po_entry_items.php:64
-msgid "There are no purchasable inventory items defined in the system."
-msgstr ""
-
-#: /var/www/fa_unstable/devel/../inventory/purchasing_data.php:24
-#: /var/www/fa_unstable/devel/../purchasing/po_entry_items.php:62
-#: /var/www/fa_unstable/devel/../purchasing/supplier_credit.php:32
-#: /var/www/fa_unstable/devel/../purchasing/supplier_invoice.php:32
-#: /var/www/fa_unstable/devel/../purchasing/supplier_payment.php:40
-msgid "There are no suppliers defined in the system."
-msgstr ""
-
-#: /var/www/fa_unstable/devel/../inventory/purchasing_data.php:44
-msgid "The price entered was not numeric."
-msgstr ""
-
-#: /var/www/fa_unstable/devel/../inventory/purchasing_data.php:50
-msgid ""
-"The conversion factor entered was not numeric. The conversion factor is the "
-"number by which the price must be divided by to get the unit price in our "
-"unit of measure."
-msgstr ""
-
-#: /var/www/fa_unstable/devel/../inventory/purchasing_data.php:60
-msgid "This supplier purchasing data has been added."
-msgstr ""
-
-#: /var/www/fa_unstable/devel/../inventory/purchasing_data.php:66
-msgid "Supplier purchasing data has been updated."
-msgstr ""
-
-#: /var/www/fa_unstable/devel/../inventory/purchasing_data.php:77
-msgid "The purchasing data item has been sucessfully deleted."
-msgstr ""
-
-#: /var/www/fa_unstable/devel/../inventory/purchasing_data.php:112
-msgid "Entered item is not defined. Please re-enter."
-msgstr ""
-
-#: /var/www/fa_unstable/devel/../inventory/purchasing_data.php:121
-msgid "There is no purchasing data set up for the part selected"
-msgstr ""
-
-#: /var/www/fa_unstable/devel/../inventory/purchasing_data.php:128
-msgid "Supplier's Unit"
-msgstr ""
-
-#: /var/www/fa_unstable/devel/../inventory/purchasing_data.php:128
-msgid "Conversion Factor"
-msgstr ""
-
-#: /var/www/fa_unstable/devel/../inventory/purchasing_data.php:128
-msgid "Supplier's Description"
-msgstr ""
-
-#: /var/www/fa_unstable/devel/../inventory/purchasing_data.php:190
-msgid "Suppliers Unit of Measure:"
-msgstr ""
-
-#: /var/www/fa_unstable/devel/../inventory/purchasing_data.php:196
-msgid "Conversion Factor (to our UOM):"
-msgstr ""
-
-#: /var/www/fa_unstable/devel/../inventory/purchasing_data.php:198
-msgid "Supplier's Code or Description:"
-msgstr ""
-
-#: /var/www/fa_unstable/devel/../inventory/reorder_level.php:16
-msgid "Reorder Levels"
-msgstr ""
-
-#: /var/www/fa_unstable/devel/../inventory/reorder_level.php:24
-#: /var/www/fa_unstable/devel/../inventory/transfers.php:32
-msgid ""
-"There are no inventory items defined in the system (Purchased or "
-"manufactured items)."
-msgstr ""
-
-#: /var/www/fa_unstable/devel/../inventory/reorder_level.php:75
-msgid "Reorder levels has been updated."
-msgstr ""
-
-#: /var/www/fa_unstable/devel/../inventory/transfers.php:28
-msgid "Inventory Location Transfers"
-msgstr ""
-
-#: /var/www/fa_unstable/devel/../inventory/transfers.php:43
-msgid "Inventory transfer has been processed"
-msgstr ""
-
-#: /var/www/fa_unstable/devel/../inventory/transfers.php:44
-msgid "&View this transfer"
-msgstr ""
-
-#: /var/www/fa_unstable/devel/../inventory/transfers.php:46
-msgid "Enter &Another Inventory Transfer"
-msgstr ""
-
-#: /var/www/fa_unstable/devel/../inventory/transfers.php:117
-msgid "The locations to transfer from and to must be different."
-msgstr ""
-
-#: /var/www/fa_unstable/devel/../inventory/transfers.php:127
-msgid ""
-"The quantity entered is greater than the available quantity for this item at "
-"the source location :"
-msgstr ""
-
-#: /var/www/fa_unstable/devel/../inventory/transfers.php:160
-msgid "The quantity entered must be a positive number."
-msgstr ""
-
-#: /var/www/fa_unstable/devel/../inventory/transfers.php:237
-msgid "Process Transfer"
 msgstr ""
 
 #: /var/www/fa_unstable/devel/../manufacturing/search_work_orders.php:26
@@ -9735,17 +10164,6 @@ msgstr ""
 msgid "Enter another supplier &payment"
 msgstr ""
 
-#: /var/www/fa_unstable/devel/../purchasing/supplier_payment.php:130
-#: /var/www/fa_unstable/devel/../purchasing/supplier_payment.php:136
-msgid "The entered amount is invalid or less than zero."
-msgstr ""
-
-#: /var/www/fa_unstable/devel/../purchasing/supplier_payment.php:144
-#: /var/www/fa_unstable/devel/../sales/customer_payments.php:131
-msgid ""
-"The Bank Charge Account has not been set in System and General GL Setup."
-msgstr ""
-
 #: /var/www/fa_unstable/devel/../purchasing/supplier_payment.php:152
 #: /var/www/fa_unstable/devel/../sales/customer_payments.php:139
 msgid "The exchange rate must be numeric and greater than zero."
@@ -9772,11 +10190,6 @@ msgstr ""
 #: /var/www/fa_unstable/devel/../purchasing/supplier_payment.php:273
 #: /var/www/fa_unstable/devel/../purchasing/view/view_supp_payment.php:55
 msgid "Date Paid"
-msgstr ""
-
-#: /var/www/fa_unstable/devel/../purchasing/supplier_payment.php:284
-#: /var/www/fa_unstable/devel/../sales/customer_payments.php:274
-msgid "Bank Charge:"
 msgstr ""
 
 #: /var/www/fa_unstable/devel/../purchasing/supplier_payment.php:296
@@ -10096,6 +10509,18 @@ msgstr ""
 
 #: /var/www/fa_unstable/devel/../purchasing/manage/suppliers.php:280
 msgid "New supplier"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../purchasing/manage/suppliers.php:298
+#: /var/www/fa_unstable/devel/../sales/manage/customer_branches.php:323
+#: /var/www/fa_unstable/devel/../sales/manage/customers.php:300
+msgid "&General settings"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../purchasing/manage/suppliers.php:299
+#: /var/www/fa_unstable/devel/../sales/manage/customer_branches.php:324
+#: /var/www/fa_unstable/devel/../sales/manage/customers.php:301
+msgid "&Contacts"
 msgstr ""
 
 #: /var/www/fa_unstable/devel/../purchasing/inquiry/po_search_completed.php:24
@@ -12397,10 +12822,6 @@ msgstr ""
 msgid "Customer prompt payment discount :"
 msgstr ""
 
-#: /var/www/fa_unstable/devel/../sales/customer_payments.php:289
-msgid "Amount:"
-msgstr ""
-
 #: /var/www/fa_unstable/devel/../sales/customer_payments.php:295
 msgid "Amount and discount are in customer's currency."
 msgstr ""
@@ -13931,4 +14352,54 @@ msgstr ""
 
 #: /var/www/fa_unstable/devel/../themes/default/renderer.php:62
 msgid "Preferences"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../sql/alter2.1.php:18
+msgid "Upgrade from version 2.0 to 2.1"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../sql/alter2.1.php:35
+msgid "Cannot retrieve bank accounts codes"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../sql/alter2.1.php:43
+msgid "Cannot update bank transactions"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../sql/alter2.1.php:52
+msgid "Cannot select stock identificators"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../sql/alter2.1.php:63
+msgid "Cannot insert stock id into item_codes"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../sql/alter2.1.php:139
+msgid ""
+"Seems that system upgrade to version 2.1 has \n"
+"\t\t\tbeen performed for this company already.<br> If something has gone \n"
+"\t\t\twrong and you want to retry upgrade process you MUST perform \n"
+"\t\t\tdatabase restore from last backup file first."
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../sql/alter2.2.php:23
+msgid "Upgrade from version 2.1/2.2beta to 2.2"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../sql/alter2.2.php:84
+msgid "Cannot query max sales order number."
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../sql/alter2.2.php:95
+msgid "Cannot store next sales order reference."
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../sql/alter2.2.php:246
+msgid ""
+"Cannot upgrade extensions system: file /modules/installed_modules.php is not "
+"writeable"
+msgstr ""
+
+#: /var/www/fa_unstable/devel/../sql/alter2.3.php:20
+msgid "Upgrade from version 2.2 to 2.3"
 msgstr ""
