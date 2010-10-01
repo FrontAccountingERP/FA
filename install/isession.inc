@@ -77,6 +77,7 @@ $inst_langs = array(
   'pl_PL' => array ( 'name' => 'Polski',	'code' => 'pl_PL',	'encoding' => 'iso-8859-2'),
   'pt_BR' => array ( 'name' => 'Português','code' => 'pt_BR',	'encoding' => 'iso-8859-1'),
   'sv_SE' => array ( 'name' => 'Svenska',	'code' => 'sv_SE',	'encoding' => 'iso-8859-1'),
+  'zh_CN' => array ( 'name' => 'Chinese Simplifed',	'code' => 'zh_CN',	'encoding' => 'utf-8'),
 );
 
 $Ajax = new Ajax();
