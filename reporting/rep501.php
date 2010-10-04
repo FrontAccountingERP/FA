@@ -32,8 +32,8 @@ function getTransactions($from, $to)
 	$sql = "SELECT *
 		FROM
 			".TB_PREF."dimensions
-		WHERE reference >= ".db_escape($from)."
-		AND reference <= ".db_escape($to)."
+		WHERE id >= ".db_escape($from)."
+		AND id <= ".db_escape($to)."
 		ORDER BY
 			reference";
 
@@ -87,7 +87,7 @@ function print_dimension_summary()
 	$aligns = array('left',	'left', 'left',	'left', 'left', 'left', 'right');
 
     $params =   array( 	0 => $comments,
-    				    1 => array('text' => _('Dimension'), 'from' => $fromdim, 'to' => $todim));
+    				    1 => array('text' => _('Dimension'), 'from' => get_dimension_string($fromdim), 'to' => get_dimension_string($todim)));
 
     $rep = new FrontReport(_('Dimension Summary'), "DimensionSummary", user_pagesize());
 

@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+04-Oct-2010 Joe Hunt
+# Dimension Report doesn't show up with correct references
+$ /reporting/rep501.php
+
 01-Oct-2010 Janusz Dobrowolski/Scott
 + Added chinese simplified installation wizard translation.
 $ /install/isession.inc
