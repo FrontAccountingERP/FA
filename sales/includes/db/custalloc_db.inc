@@ -244,8 +244,8 @@ function credit_sales_invoice_allocate($invoice_no, $credit_no, $amount, $date)
 			AND trans_type_from <> ".ST_CUSTCREDIT;
 		$result = db_query($sql, "can't retrieve invoice allocations");
 
-		while($free < $amount && ($alloc = db_fetch($result))) {
-			$unalloc = min($alloc['amt'], $free);
+		while(($free < $amount) && ($alloc = db_fetch($result))) {
+			$unalloc = min($alloc['amt'], $amount-$free);
 			update_debtor_trans_allocation($alloc['trans_type_to'], $alloc['trans_no_to'], 
 				-$unalloc);
 			update_debtor_trans_allocation($alloc['trans_type_from'], $alloc['trans_no_from'], 

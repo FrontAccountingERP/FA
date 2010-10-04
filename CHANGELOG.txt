@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+04-Oct-2010 Janusz Dobrowolski
+# [0000252] Error during credit invoice processing for already allocated sales invoice.
+$ /sales/includes/db/custalloc_db.inc
+
 04-Oct-2010 Joe Hunt
 # Dimension Report doesn't show up with correct references
 $ /reporting/rep501.php
