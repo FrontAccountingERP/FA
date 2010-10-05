@@ -19,6 +19,11 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+05-Oct-2010 Jusz Dobrowolski
+# [0000258] Broken src_id fields after sales document edition.
+$ /sales/includes/cart_class.inc
+  /sales/includes/sales_db.inc
+
 05-Oct-2010 Joe Hunt
 # [00000257] Bad Layout in sales order inquiry etc. (long item descriptions)
 $ /sales/inquiry/sales_orders_view.php

@@ -157,7 +157,8 @@ class cart
 				if ($this->trans_type == ST_SALESINVOICE)
 					$line->src_no = $srcline['debtor_trans_no'];
 				$line->qty_old = $line->qty_dispatched = $line->quantity;
-				$line->quantity += $srcline['quantity'] - $srcline['qty_done']; // add free qty on src doc
+				$line->quantity += $srcline['quantity'] - 
+					($src_type==ST_SALESORDER ? $srcline['qty_sent'] : $srcline['qty_done']); // add free qty on src doc
 				$line_no++;
 				break;
 			}
@@ -348,10 +349,11 @@ class cart
 			$this->freight_cost = $freight_cost;
 	}
 
-	function add_to_cart($line_no, $stock_id, $qty, $price, $disc, $qty_done=0, $standard_cost=0, $description=null, $id=0, $src_no=0)
+	function add_to_cart($line_no, $stock_id, $qty, $price, $disc, $qty_done=0, $standard_cost=0, $description=null, $id=0, $src_no=0,
+		$src_id=0)
 	{
 		$line = new line_details($stock_id, $qty, $price, $disc,
-			$qty_done,  $standard_cost, $description, $id, $src_no);
+			$qty_done,  $standard_cost, $description, $id, $src_no, $src_id);
 
 		if ($line->valid) {
 			$this->line_items[$line_no] = $line;
@@ -574,12 +576,13 @@ class line_details
 
 
 	function line_details ($stock_id, $qty, $prc, $disc_percent,
-		$qty_done, $standard_cost, $description, $id=0, $src_no=0 )
+		$qty_done, $standard_cost, $description, $id=0, $src_no=0, $src_id=0)
 	{
 	/* Constructor function to add a new LineDetail object with passed params */
 
 		$this->id = $id;
 		$this->src_no = $src_no;
+		$this->src_id = $src_id;
 		$item_row = get_item($stock_id);
 
 		if (!$item_row) 
