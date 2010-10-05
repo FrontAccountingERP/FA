@@ -45,8 +45,13 @@ if (!isset($_POST['stock_id']))
 	$_POST['stock_id'] = get_global_stock_item();
 
 start_table(TABLESTYLE_NOBORDER);
-
+start_row();
 stock_items_list_cells(_("Item:"), 'stock_id', $_POST['stock_id']);
+end_row();
+end_table();
+
+start_table(TABLESTYLE_NOBORDER);
+start_row();
 
 locations_list_cells(_("From Location:"), 'StockLocation', null);
 
@@ -54,6 +59,7 @@ date_cells(_("From:"), 'AfterDate', '', null, -30);
 date_cells(_("To:"), 'BeforeDate');
 
 submit_cells('ShowMoves',_("Show Movements"),'',_('Refresh Inquiry'), 'default');
+end_row();
 end_table();
 end_form();
 

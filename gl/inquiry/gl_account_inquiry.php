@@ -72,7 +72,7 @@ function gl_inquiry_controls()
     end_row();
 	end_table();
 
-	start_table();
+	start_table(TABLESTYLE_NOBORDER);
 	start_row();
 	if ($dim >= 1)
 		dimensions_list_cells(_("Dimension")." 1:", 'Dimension', null, true, " ", false, 1);

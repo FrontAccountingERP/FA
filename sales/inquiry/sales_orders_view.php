@@ -230,13 +230,18 @@ if ($_POST['order_view_mode'] != 'DeliveryTemplates' && $_POST['order_view_mode'
   	date_cells(_("to:"), 'OrdersToDate', '', null, 1);
 }
 locations_list_cells(_("Location:"), 'StockLocation', null, true);
+end_row();
+end_table();
+
+start_table(TABLESTYLE_NOBORDER);
+start_row();
 
 stock_items_list_cells(_("Item:"), 'SelectStockFromList', null, true);
 
 if ($trans_type == ST_SALESQUOTE)
 	check_cells(_("Show All:"), 'show_all');
-submit_cells('SearchOrders', _("Search"),'',_('Select documents'), 'default');
 
+submit_cells('SearchOrders', _("Search"),'',_('Select documents'), 'default');
 hidden('order_view_mode', $_POST['order_view_mode']);
 hidden('type', $trans_type);
 

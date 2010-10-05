@@ -206,7 +206,7 @@ yesno_list_row(_("Tax applied to Shipping:"), 'tax_shipping', null, "", "", true
 
 end_table();
 
-display_note(_("Select the taxes that are included in this group."), 1);
+display_note(_("Select the taxes that are included in this group."), 1, 1);
 
 start_table(TABLESTYLE2);
 //$th = array(_("Tax"), _("Default Rate (%)"), _("Rate (%)"));

@@ -19,6 +19,19 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+05-Oct-2010 Joe Hunt
+# [00000257] Bad Layout in sales order inquiry etc. (long item descriptions)
+$ /sales/inquiry/sales_orders_view.php
+  /sales/inquiry/sales_deliveries_view.php
+  /purchasing/inquiry/po_search.php
+  /purchasing/inquiry/po_search_completed.php
+  /inventory/inquiry/stock_movements.php
+  /gl/inquiry/gl_account_inquiry.php
+! Other layour improvements
+  /admin/fiscalyears.php
+  /taxes/tax_groups.php
+  /taxes/tax_types.php
+  
 05-Oct-2010 Janusz Dobrowolski
 # Fixed contact type for language selection
 $ reporting/rep107.php

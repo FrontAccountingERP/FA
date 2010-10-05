@@ -63,12 +63,17 @@ date_cells(_("from:"), 'OrdersAfterDate', '', null, -30);
 date_cells(_("to:"), 'OrdersToDate');
 
 locations_list_cells(_("into location:"), 'StockLocation', null, true);
+end_row();
+end_table();
+
+start_table(TABLESTYLE_NOBORDER);
+start_row();
 
 stock_items_list_cells(_("for item:"), 'SelectStockFromList', null, true);
 
 submit_cells('SearchOrders', _("Search"),'',_('Select documents'), 'default');
 end_row();
-end_table();
+end_table(1);
 //---------------------------------------------------------------------------------------------
 if (isset($_POST['order_number']))
 {

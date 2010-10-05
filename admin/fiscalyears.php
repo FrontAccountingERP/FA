@@ -126,7 +126,7 @@ function display_fiscalyears()
 	start_form();
 	display_note(_("Warning: Deleting a fiscal year all transactions 
 		are removed and converted into relevant balances. This process is irreversible!"), 
-		0, 0, "class='currentfg'");
+		0, 1, "class='currentfg'");
 	start_table(TABLESTYLE);
 
 	$th = array(_("Fiscal Year Begin"), _("Fiscal Year End"), _("Closed"), "", "");
