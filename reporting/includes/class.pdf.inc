@@ -86,7 +86,7 @@ class Cpdf extends FPDI {
 
 		$lang = array_search_value($code, $installed_languages, 'code');
 		$_SESSION['get_text']->set_language($lang['code'], strtoupper($lang['encoding']));
-		$_SESSION['get_text']->add_domain($lang['code'], $path_to_root . "/lang");
+		$_SESSION['get_text']->add_domain($lang['code'], $path_to_root . "/lang", @$lang['version']);
 
 		// re-read translated sys names.
 		include($path_to_root.'/includes/sysnames.inc');
