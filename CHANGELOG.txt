@@ -19,6 +19,12 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+05-Oct-2010 Janusz Dobrowolski
+# Fixed contact type for language selection
+$ reporting/rep107.php
+# Fixed language file selection
+$ reporting/includes/class.pdf.inc
+
 04-Oct-2010 Janusz Dobrowolski
 # [0000252] Error during credit invoice processing for already allocated sales invoice.
 $ /sales/includes/db/custalloc_db.inc
