@@ -82,7 +82,7 @@ class BoxReports
 					$st_params .= submit('Rep'.$report->id,  
 						_("Display: ") . access_string($report->name, true),
 						false, '', $pdf_debug ? false : 'default process') . hidden('REP_ID', $report->id, false).'<br><br>';
-					$st_params .= $this->getOptions($report->get_controls());
+					$st_params .= $this->getOptions($report->get_controls(), $report->id);
 					$st_params .= "\n</form></td></tr></table>\n";
 					set_focus('Rep'.$report->id);
 					$Ajax->addUpdate(true, 'rep_form', $st_params);
@@ -124,7 +124,7 @@ class BoxReports
 		return $st;
 	}
 
-	function getOptions($controls)
+	function getOptions($controls, $id = 0)
 	{
 		$st = '';
 		if ($controls == null)
@@ -139,6 +139,8 @@ class BoxReports
 				if ($ctrl) break;
 			}
 			if ($ctrl == '') {
+				if (isset($_COOKIE['select'][$id][$cnt])) // saved parameters 2010-10-06 Joe Hunt
+					$_POST['PARAM_'.$cnt] = $_COOKIE['select'][$id][$cnt];
 				$ctrl = $this->get_ctrl('PARAM_'.$cnt, $type);
 			}
 			if ($ctrl != '')  {
@@ -180,31 +182,35 @@ class BoxReports
 				case 'DATEENDM':
 				case 'DATEBEGINTAX':
 				case 'DATEENDTAX':
-					if ($type == 'DATEBEGIN')
-						$date = begin_fiscalyear();
-					elseif ($type == 'DATEEND')
-						$date = end_fiscalyear();
-					else
-						$date = Today();
-					if ($type == 'DATEBEGINM')
-						$date = begin_month($date);
-					elseif ($type == 'DATEENDM')
-						$date = end_month($date);
-					elseif ($type == 'DATEBEGINTAX' || $type == 'DATEENDTAX')
+					if (!isset($_POST[$name]))
 					{
-						$row = get_company_prefs();
-						$edate = add_months($date, -$row['tax_last']);
-						$edate = end_month($edate);
-						if ($type == 'DATEENDTAX')
-							$date = $edate;
+						if ($type == 'DATEBEGIN')
+							$date = begin_fiscalyear();
+						elseif ($type == 'DATEEND')
+							$date = end_fiscalyear();
 						else
+							$date = Today();
+						if ($type == 'DATEBEGINM')
+							$date = begin_month($date);
+						elseif ($type == 'DATEENDM')
+							$date = end_month($date);
+						elseif ($type == 'DATEBEGINTAX' || $type == 'DATEENDTAX')
 						{
-							$bdate = begin_month($edate);
-							$bdate = add_months($bdate, -$row['tax_prd'] + 1);
-							$date = $bdate;
+							$row = get_company_prefs();
+							$edate = add_months($date, -$row['tax_last']);
+							$edate = end_month($edate);
+							if ($type == 'DATEENDTAX')
+								$date = $edate;
+							else
+							{
+								$bdate = begin_month($edate);
+								$bdate = add_months($bdate, -$row['tax_prd'] + 1);
+								$date = $bdate;
+							}
 						}
 					}
-
+					else // saved parameters 2010-10-16 Joe Hunt
+						$date = $_POST[$name];
 					$st = "<input type='text' name='$name' value='$date'>";
 					if ($use_date_picker)
 						$st .= "<a href=\"javascript:date_picker(document.forms[0].$name);\">"
@@ -245,7 +251,8 @@ class BoxReports
 					return "<input type='text' name='$name'>";
 
 				case 'TEXTBOX':
-					return "<textarea rows=4 cols=30 name='$name'></textarea>";
+					$value = (isset($_POST[$name]) ? $_POST[$name] : "");
+					return "<textarea rows=4 cols=30 name='$name'>$value</textarea>";
 
 				case 'ACCOUNTS': // not used
 					return gl_account_types_list($name, null, _("No Account Group Filter"), true);

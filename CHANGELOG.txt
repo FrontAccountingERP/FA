@@ -19,6 +19,14 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+06-Oct-2010 Joe Hunt
+! Option for saving report selections ($save_report_selection > 0 in config.php means days to save)
+$ /reporting/includes/reports_classes.inc
+  /reporting/prn_redirect.php
+  config.default.php
+# Excel reports were missing their headers (due to change in report system).
+$ /reporting/includes/excel_report.inc
+
 05-Oct-2010 Jusz Dobrowolski
 # [0000258] Broken src_id fields after sales document edition.
 $ /sales/includes/cart_class.inc

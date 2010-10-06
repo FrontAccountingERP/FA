@@ -64,6 +64,9 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 	$power_by 		= "FrontAccounting";
 	$power_url 		= "http://frontaccounting.com";
 
+	/* Save Report selections (a value > 0 means days to save. 0 = no save) */
+	$save_report_selections = 0;
+
 	/* use popup windows for views */
 	$use_popup_windows = 1;
 

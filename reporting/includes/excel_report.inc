@@ -53,6 +53,7 @@ class FrontReport extends Spreadsheet_Excel_Writer_Workbook
 	var $formatHeaderRight;
 	var $formatFooter;
 	var $formatAmount = array();
+	var $headerFunc;
 	
 	var $sheet;
 
@@ -166,9 +167,16 @@ class FrontReport extends Spreadsheet_Excel_Writer_Workbook
 		$this->formatFooter =& $this->addFormat();
 		$this->formatFooter->setTop(2);
 		$this->formatFooter->setTopColor('gray');
+		$this->SetHeaderType("header");
 	}
 	
 
+	/*
+		Set header handler
+	*/
+	function SetHeaderType($name) {
+		$this->headerFunc = $name;
+	}
 	// Check a given name to see if it's a valid Excel worksheet name,
 	// and fix if necessary
 	function worksheetNameGenerator($name)
@@ -634,7 +642,8 @@ class FrontReport extends Spreadsheet_Excel_Writer_Workbook
 	
 	function NewPage()
 	{
-		return;
+		if (method_exists($this, $this->headerFunc))	// draw predefined page layout if any
+			$this->{$this->headerFunc}();
 	}
 	
   	function ymd2Date($year, $mon, $day) // XLS internal date representation is a number between 1900-01-01 and 2078-12-31
@@ -679,6 +688,7 @@ class FrontReport extends Spreadsheet_Excel_Writer_Workbook
 
 	function End($email=0, $subject=null, $myrow=null, $doctype = 0)
 	{
+		++$this->y;
 		for ($i = 0; $i < $this->numcols; $i++)
 			$this->sheet->writeBlank($this->y, $i, $this->formatFooter);
 		$this->sheet->mergeCells($this->y, 0, $this->y, $this->numcols - 1);

@@ -17,6 +17,15 @@ $path_to_root = "..";
 $page_security = 'SA_OPEN';	// this level is later overriden in rep file
 include_once($path_to_root . "/includes/session.inc");
 
+if (isset($save_report_selections) && $save_report_selections > 0 && isset($_POST['REP_ID'])) {	// save parameters from Report Center
+	for($i=0; $i<10; $i++) { // 2010-10-06 Joe Hunt
+		if (isset($_POST['PARAM_'.$i]) && !is_array($_POST['PARAM_'.$i])) {
+			$rep = $_POST['REP_ID'];
+			setcookie("select[$rep][$i]", $_POST['PARAM_'.$i], time()+60*60*24*$save_report_selections); // days from $save_report_selections
+		}	
+	}
+}	
+
 if (isset($_GET['xls']))
 {
 	$filename = $_GET['filename'];
@@ -52,7 +61,6 @@ if (!isset($_POST['REP_ID'])) {	// print link clicked
 			? $_GET['PARAM_'.$i] : $def_pars[$i];
 	}
 }
-
 $rep = $_POST['REP_ID'];
 
 $rep_file = find_custom_file("/reporting/rep$rep.php");
