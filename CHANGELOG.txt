@@ -19,6 +19,14 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+06-Oct-2010 Jusz Dobrowolski
+# Fixed gettext for extension links.
+$ /reporting/includes/reports_classes.inc
+! Added helper for gettext domain switching
+$ /includes/lang/gettext.php
+  /applications/application.php
+  /frontaccounting.php
+
 06-Oct-2010 Joe Hunt
 ! Option for saving report selections ($save_report_selection > 0 in config.php means days to save)
 $ /reporting/includes/reports_classes.inc
