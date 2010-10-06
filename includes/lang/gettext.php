@@ -534,9 +534,14 @@ class gettext_php_support_compiler
     }
 }
 
-/**
-* get_text related error.
+/*
+	Set current gettext domain path
 */
-//class GetText_Error extends PEAR_Error {}
+function set_ext_domain($path='') {
+	global $path_to_root;
 
+	$_SESSION['get_text']->add_domain($_SESSION['language']->code,
+		$path_to_root . ($path ? '/' : '') .$path.'/lang',
+		$path ? '' : $_SESSION['language']->version);
+}
 ?>
