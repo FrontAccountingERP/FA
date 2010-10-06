@@ -99,8 +99,7 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 			foreach ($extensions as $ext)
 			{
 				if (@($ext['active'] && isset($ext['tabs']))) { // supressed warnings before 2.2 upgrade
-					$_SESSION['get_text']->add_domain($_SESSION['language']->code, 
-						$ext['path']."/lang");
+					set_ext_domain($ext['path']);
 					foreach($ext['tabs'] as $tab) {
 						$class = $tab['tab_id']."_app";
 						if (class_exists($class))
@@ -108,8 +107,7 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 					}
 				}
 			}
-			$_SESSION['get_text']->add_domain($_SESSION['language']->code, 
-				$path_to_root."/lang", $_SESSION['language']->version);
+			set_ext_domain();
 			$this->add_application(new setup_app());
 		}
 }
