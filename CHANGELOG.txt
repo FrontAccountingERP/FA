@@ -26,6 +26,8 @@ $ /reporting/includes/reports_classes.inc
   config.default.php
 # Excel reports were missing their headers (due to change in report system).
 $ /reporting/includes/excel_report.inc
+# [0000259] Item prices not transferring when using kit codes 
+$ /sales/includes/sales_db.inc
 
 05-Oct-2010 Jusz Dobrowolski
 # [0000258] Broken src_id fields after sales document edition.

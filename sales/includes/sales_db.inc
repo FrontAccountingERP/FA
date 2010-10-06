@@ -174,7 +174,7 @@ function get_kit_price($item_code, $currency, $sales_type_id, $factor=null,
 		$kit_price = get_price( $item_code, $currency, $sales_type_id, 
 			$factor, $date);
 
-		if ($kit_price !== false) {
+		if ($kit_price !== 0) {
 			return $kit_price;
 		}
 	}	
