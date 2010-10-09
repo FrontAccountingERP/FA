@@ -337,7 +337,8 @@ function add_gl_tax_details($gl_code, $trans_type, $trans_no, $amount, $ex_rate,
 	if(!$tax_type) return;	// $gl_code is not tax account
 	
 	$tax = get_tax_type($tax_type);
-	if ($gl_code == $tax['sales_gl_code']) 
+	//if ($gl_code == $tax['sales_gl_code'])
+	if ($trans_type == ST_SALESINVOICE || $trans_type == ST_CUSTDELIVERY || $trans_type == ST_CUSTCREDIT)
 		$amount = -$amount;
 	// we have to restore net amount as we cannot know the base amount
 	if ($tax['rate'] == 0) {

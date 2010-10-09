@@ -19,6 +19,12 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+10-Oct-2010 Joe Hunt
+# Master bug in class supp_trans get_items_total. Minor bug in gl_db_trans.inc
+  Wrong tax report and wrong supp trans/gl records with gl item lines.
+$ /purchasing/includes/supp_trans_class.inc
+  /gl/includes/db/gl_db_trans.inc
+
 06-Oct-2010 Jusz Dobrowolski
 # Fixed gettext for extension links.
 $ /reporting/includes/reports_classes.inc

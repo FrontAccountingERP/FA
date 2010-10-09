@@ -164,12 +164,12 @@ class supp_trans
 		foreach ($this->grn_items as $ln_itm)
 			$total += round($ln_itm->this_quantity_inv * $ln_itm->chg_price, user_price_dec());
 
-		return $total;
-
 		foreach ($this->gl_codes as $gl_line)
-		{
-			$total += $gl_line->amount;
+		{   //////// 2010-10-10 Joe Hunt
+   			if (!is_tax_account($gl_line->gl_code))
+				$total += $gl_line->amount;
 		}
+		return $total;
 	}
 } /* end of class defintion */
 
