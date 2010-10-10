@@ -5,7 +5,6 @@
 	<title>FrontAccounting Update</title><meta name="GENERATOR" content="OpenOffice.org 2.4  (Linux)">
 	<meta name="CREATED" content="0;0">
 	<meta name="CHANGED" content="20100902;19041400"></head>
-
 <body dir="ltr" lang="en-US">
 <p style="margin-bottom: 0cm;"><strong><font color="#cc6600"><font style="font-size: 20pt;" size="5"><i>Front</i></font></font></strong><strong><font style="font-size: 20pt;" size="5">Accounting
 Update</font></strong></p>
@@ -15,7 +14,7 @@ company created during FrontAccounting installation. This person is
 considered as a site admin who have granted access to potentially
 dangerous setup options, like Setup/Software Upgrade.</p>
 <p>In the following description sections related to older FA versions are
-prefixed with <span style="background: rgb(235, 97, 61) none repeat scroll 0%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial;">[color tags]</span><span style="background: transparent none repeat scroll 0%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial;">
+prefixed with <span style="background: rgb(235, 97, 61) none repeat scroll 0% 50%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial;">[color tags]</span><span style="background: transparent none repeat scroll 0% 50%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial;">
 . Y</span>ou can skip tagged fragment safely if currently FA
 application is newer than the version in tag.</p>
 <p>Upgrade process consists of up to four stages, some of them are
@@ -56,7 +55,7 @@ files update</span></font></font></strong></p>
 add all n</span></span></strong><strong><span style="">ew
 settings (if any). </span></strong>
 </p>
-<p><strong><span style=""><span style="background: rgb(235, 97, 61) none repeat scroll 0%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial;">[&lt;FA
+<p><strong><span style=""><span style="background: rgb(235, 97, 61) none repeat scroll 0% 50%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial;">[&lt;FA
 2.2beta]</span></span></strong></p>
 <p><strong> <span style="">$show_users_online = 0;</span></strong></p>
 <p><strong> <span style="">$def_print_destination
@@ -65,11 +64,11 @@ settings (if any). </span></strong>
 <p><strong><span style="">$dflt_date_sep=0;</span></strong></p>
 <p><strong><span style="">$table_style,table_style2
 changed</span></strong></p>
-<p><strong><span style=""><span style="background: rgb(235, 97, 61) none repeat scroll 0%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial;">[&lt;FA
+<p><strong><span style=""><span style="background: rgb(235, 97, 61) none repeat scroll 0% 50%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial;">[&lt;FA
 2.3beta]</span></span></strong></p>
 <p><strong> <span style="">$alternative_tax_include_on_doc=0;</span></strong></p>
 <p><strong><span style="">$suppress_tax_rates = 0;</span></strong></p>
-<p><strong><span style=""><span style="background: rgb(235, 97, 61) none repeat scroll 0%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial;">[&lt;FA
+<p><strong><span style=""><span style="background: rgb(235, 97, 61) none repeat scroll 0% 50%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial;">[&lt;FA
 2.3RC1]</span></span></strong><strong> </strong>
 </p>
 <p><strong><span style="">Application version
@@ -80,7 +79,11 @@ application version displayed in footer is defined in $version
 variable unless this is set in config.php file. If you want current
 release version to be displayed on every FA update just remove or
 comment out $version variable in </span></strong><strong><span style="font-style: normal;"><span style="">config.php</span></span></strong><strong><span style="">.</span></strong></p>
-<h2><strong><b>2. Database upgrade</b></strong></h2>
+<p><strong><span style=""><span style="background: rgb(235, 97, 61) none repeat scroll 0% 50%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial;">[&lt;FA
+2.3RC2]</span></span></strong></p>
+<p><strong> <span style="">$save_report_selections &nbsp;= 0; &nbsp;// A value &gt; 0 means days to save the report selections</span></strong></p>
+
+<strong><span style=""><span style="background: rgb(235, 97, 61) none repeat scroll 0% 50%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial;"></span></span></strong><h2><strong><b>2. Database upgrade</b></strong></h2>
 <p><strong><span style="">This step can be skipped
 for small version updates i.e. when you have already installed
 FrontAccounting version 2.3.1 or later. Before database upgrade is
@@ -110,11 +113,11 @@ be removed from  </span></span><i><b>config.php</b></i><span style="font-style: 
 file.</span></span></p>
 <p style="margin-top: 0.42cm; page-break-after: avoid;"><font face="Liberation Sans, sans-serif"><font size="4">a.
 Source files cleanup</font></font></p>
-<p><strong><span style=""><span style="background: rgb(235, 97, 61) none repeat scroll 0%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial;">[&lt;FA
+<p><strong><span style=""><span style="background: rgb(235, 97, 61) none repeat scroll 0% 50%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial;">[&lt;FA
 2.2beta]</span></span></strong></p>
-<p><strong><span style=""><span style="background: transparent none repeat scroll 0%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial;">/includes/reserved.inc
+<p><strong><span style=""><span style="background: transparent none repeat scroll 0% 50%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial;">/includes/reserved.inc
 &#8211; removed.</span></span></strong></p>
-<p><strong><span style=""><span style="background: rgb(235, 97, 61) none repeat scroll 0%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial;">[&lt;FA
+<p><strong><span style=""><span style="background: rgb(235, 97, 61) none repeat scroll 0% 50%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial;">[&lt;FA
 2.1]</span></span></strong><strong> </strong>
 </p>
 <p><strong><span style="">/admin/db/v_banktrans.inc
@@ -122,7 +125,7 @@ Source files cleanup</font></font></p>
 <p style="margin-top: 0.42cm; page-break-after: avoid;"><font face="Liberation Sans, sans-serif"><font size="4"><span style="font-style: normal;"><span style="">b.
 Config.php cleanup </span></span></font></font>
 </p>
-<p><strong><span style=""><span style="background: rgb(235, 97, 61) none repeat scroll 0%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial;">[&lt;FA
+<p><strong><span style=""><span style="background: rgb(235, 97, 61) none repeat scroll 0% 50%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial;">[&lt;FA
 2.2RC1]</span></span></strong><strong> </strong>
 </p>
 <p><strong><span style="">$security_headings,

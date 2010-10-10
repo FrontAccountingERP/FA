@@ -19,6 +19,11 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+------------------------------- Release 2.3 RC2 --------------------------------
+! Release 2.3RC2
+$ version.php
+  update.html
+  
 10-Oct-2010 Janusz Dobrowolski
 + Added document reference display in cust/supp payments
 $ /includes/ui/allocation_cart.inc
@@ -42,7 +47,7 @@ $ /includes/lang/gettext.php
   /frontaccounting.php
 
 06-Oct-2010 Joe Hunt
-! Option for saving report selections ($save_report_selection > 0 in config.php means days to save)
+! Option for saving report selections ($save_report_selections > 0 in config.php means days to save)
 $ /reporting/includes/reports_classes.inc
   /reporting/prn_redirect.php
   config.default.php
