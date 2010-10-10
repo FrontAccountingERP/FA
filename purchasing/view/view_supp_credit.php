@@ -35,9 +35,9 @@ $supp_trans = new supp_trans(ST_SUPPCREDIT);
 
 read_supp_invoice($trans_no, ST_SUPPCREDIT, $supp_trans);
 
-display_heading(_("SUPPLIER CREDIT NOTE") . " # " . $trans_no);
+display_heading("<font color=red>" . _("SUPPLIER CREDIT NOTE") . " # " . $trans_no . "</font>");
 echo "<br>";
-start_table(TABLESTYLE2);
+start_table(TABLESTYLE, "width=95%");
 start_row();
 label_cells(_("Supplier"), $supp_trans->supplier_name, "class='tableheader2'");
 label_cells(_("Reference"), $supp_trans->reference, "class='tableheader2'");
@@ -63,7 +63,8 @@ $tax_items = get_trans_tax_details(ST_SUPPCREDIT, $trans_no);
 display_supp_trans_tax_details($tax_items, 1);
 
 $display_total = number_format2(-($supp_trans->ov_amount + $supp_trans->ov_gst),user_price_dec());
-label_row(_("TOTAL CREDIT NOTE"), $display_total, "colspan=1 align=right", "nowrap align=right");
+label_row("<font color=red>" . _("TOTAL CREDIT NOTE") . "</font", "<font color=red>$display_total</font>", 
+	"colspan=1 align=right", "nowrap align=right");
 
 end_table(1);
 
