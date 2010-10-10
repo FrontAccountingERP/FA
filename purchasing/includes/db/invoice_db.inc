@@ -157,7 +157,7 @@ function add_supp_invoice($supp_trans, $invoice_no=0) // do not receive as ref b
     /*First insert the invoice into the supp_trans table*/
 	$invoice_id = add_supp_trans($trans_type, $supp_trans->supplier_id, $date_, $supp_trans->due_date,
 		$supp_trans->reference, $supp_trans->supp_reference,
-		$invoice_items_total, $item_added_tax, $supp_trans->ov_discount);
+		$invoice_items_total, $item_added_tax, $supp_trans->ov_discount, "", 0, $supp_trans->tax_included);
 
 	$total = 0;
     /* Now the control account */
@@ -188,7 +188,7 @@ function add_supp_invoice($supp_trans, $invoice_no=0) // do not receive as ref b
 			$entered_gl_code->amount = -$entered_gl_code->amount;
 		add_gl_tax_details($entered_gl_code->gl_code, 
 			$trans_type, $invoice_id, $entered_gl_code->amount,
-			$ex_rate, $date_, $supp_trans->supp_reference);
+			$ex_rate, $date_, $supp_trans->supp_reference, $supp_trans->tax_included);
     }
     foreach ($supp_trans->grn_items as $line_no => $entered_grn)
     {

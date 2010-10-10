@@ -166,7 +166,7 @@ class supp_trans
 
 		foreach ($this->gl_codes as $gl_line)
 		{   //////// 2010-10-10 Joe Hunt
-   			if (!is_tax_account($gl_line->gl_code))
+   			if (!is_tax_account($gl_line->gl_code) || $this->tax_included)
 				$total += $gl_line->amount;
 		}
 		return $total;

@@ -331,7 +331,7 @@ function get_only_budget_trans_from_to($from_date, $to_date, $account, $dimensio
 //--------------------------------------------------------------------------------
 //	Stores journal/bank transaction tax details if applicable
 //
-function add_gl_tax_details($gl_code, $trans_type, $trans_no, $amount, $ex_rate, $date, $memo)
+function add_gl_tax_details($gl_code, $trans_type, $trans_no, $amount, $ex_rate, $date, $memo, $included=0)
 {
 	$tax_type = is_tax_account($gl_code);
 	if(!$tax_type) return;	// $gl_code is not tax account
@@ -350,7 +350,7 @@ function add_gl_tax_details($gl_code, $trans_type, $trans_no, $amount, $ex_rate,
 		$net_amount = $amount/$tax['rate']*100; 
 	}
 		
-	add_trans_tax_details($trans_type, $trans_no, $tax['id'], $tax['rate'], 0, 
+	add_trans_tax_details($trans_type, $trans_no, $tax['id'], $tax['rate'], $included, 
 		$amount, $net_amount, $ex_rate, $date, $memo);
 			
 }

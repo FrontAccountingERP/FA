@@ -45,7 +45,7 @@ function copy_to_trans(&$supp_trans)
 		foreach ( $supp_trans->gl_codes as $gl_line)
 		{
 			////////// 2009-08-18 Joe Hunt
-			if (!is_tax_account($gl_line->gl_code))
+			if (!is_tax_account($gl_line->gl_code) || $supp_trans->tax_included)
 				$supp_trans->ov_amount += $gl_line->amount;
 		}
 	}
@@ -253,7 +253,7 @@ function display_gl_items(&$supp_trans, $mode=0)
 		$th[] = "";
 	}	
 	table_header($th);
-	$total_gl_value=0;
+	$total_gl_value=$total = 0;
 	$i = $k = 0;
 
 	if (count($supp_trans->gl_codes) > 0)
@@ -286,10 +286,13 @@ function display_gl_items(&$supp_trans, $mode=0)
 			}	
 			end_row();
 			/////////// 2009-08-18 Joe Hunt
-			if ($mode > 1 && !is_tax_account($entered_gl_code->gl_code))
-				$total_gl_value += $entered_gl_code->amount;
+			if ($mode > 1) {
+				if ($supp_trans->tax_included || !is_tax_account($entered_gl_code->gl_code))
+					$total_gl_value += $entered_gl_code->amount;
+			}		
 			else	
 				$total_gl_value += $entered_gl_code->amount;
+			$total += $entered_gl_code->amount;	
 			$i++;
 			if ($i > 15)
 			{
@@ -302,7 +305,7 @@ function display_gl_items(&$supp_trans, $mode=0)
 	if ($mode == 1)
 		display_gl_controls($supp_trans, $k);
 	$colspan = ($dim == 2 ? 4 : ($dim == 1 ? 3 : 2));
-	label_row(_("Total"), price_format($total_gl_value),
+	label_row(_("Total"), price_format($total),
 		"colspan=".$colspan." align=right", "nowrap align=right", ($mode==1?3:1));
 
 	end_table(1);

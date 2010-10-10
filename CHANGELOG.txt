@@ -26,7 +26,10 @@ $ /includes/ui/allocation_cart.inc
 10-Oct-2010 Joe Hunt
 # Master bug in class supp_trans get_items_total. Minor bug in gl_db_trans.inc
   Wrong tax report and wrong supp trans/gl records with gl item lines.
+  Fixing tax_included in gl_items.
 $ /purchasing/includes/supp_trans_class.inc
+  /purchasing/includes/db/invoice_db.inc
+  /purchasing/includes/ui/invoice_ui.inc
   /gl/includes/db/gl_db_trans.inc
 
 06-Oct-2010 Jusz Dobrowolski
