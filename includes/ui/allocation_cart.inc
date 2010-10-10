@@ -38,12 +38,12 @@ class allocation
 	}
 
 	function add_item($type, $type_no, $date_, $due_date, $amount, $amount_allocated, 
-		$current_allocated)
+		$current_allocated, $ref)
 	{
 		if ($amount > 0)
 		{
 			$this->allocs[count($this->allocs)] = new allocation_item($type, $type_no, 
-				$date_, $due_date, $amount, $amount_allocated, $current_allocated);
+				$date_, $due_date, $amount, $amount_allocated, $current_allocated, $ref);
 			return true;
 		} 
 		else 
@@ -53,12 +53,12 @@ class allocation
 	}
 	
 	function update_item($index, $type, $type_no, $date_, $due_date, 
-		$amount, $amount_allocated, $current_allocated)
+		$amount, $amount_allocated, $current_allocated, $ref)
 	{
 		if ($amount > 0)
 		{
 			$this->allocs[$index] = new allocation_item($type, $type_no, 
-				$date_, $due_date, $amount, $amount_allocated, $current_allocated);
+				$date_, $due_date, $amount, $amount_allocated, $current_allocated, $ref);
 			return true;
 		} 
 		else 
@@ -68,7 +68,7 @@ class allocation
 	}	
 	
 	function add_or_update_item($type, $type_no, $date_, $due_date, 
-		$amount, $amount_allocated, $current_allocated)
+		$amount, $amount_allocated, $current_allocated, $ref)
 	{
 		for ($i = 0; $i < count($this->allocs); $i++) 
 		{
@@ -76,11 +76,11 @@ class allocation
 			if (($item->type == $type) && ($item->type_no == $type_no)) 
 			{
 				return $this->update_item($i, $type, $type_no, $date_, $due_date, 
-					$amount, $amount_allocated, $current_allocated);
+					$amount, $amount_allocated, $current_allocated, $ref);
 			}  
 		}
         return $this->add_item($type, $type_no, $date_, $due_date, 
-        	$amount, $amount_allocated, $current_allocated);
+        	$amount, $amount_allocated, $current_allocated, $ref);
 	}
 
 	//
@@ -131,7 +131,8 @@ class allocation
 				sql2date($myrow["due_date"]),
 				$myrow["Total"], // trans total
 				$myrow["alloc"], // trans total allocated
-				0); // this allocation
+				0,
+				$myrow["reference"]); // this allocation
 		}
 		if ($trans_no == 0) return; // this is new payment
 
@@ -152,7 +153,7 @@ class allocation
 				sql2date($myrow["tran_date"]),
 				sql2date($myrow["due_date"]),
 				$myrow["Total"],
-				$myrow["alloc"] - $myrow["amt"], $myrow["amt"]);
+				$myrow["alloc"] - $myrow["amt"], $myrow["amt"], $myrow["reference"]);
 		}
 	}
 	//
@@ -226,16 +227,19 @@ class allocation_item
 	
 	var $amount_allocated;
 	var $amount;
+	var $ref;
 	
 	var $current_allocated;
 	
 	function allocation_item ($type, $type_no, $date_, $due_date, $amount, 
-		$amount_allocated, $current_allocated)
+		$amount_allocated, $current_allocated, $ref)
 	{
 
 		$this->type = $type;
 		$this->type_no = $type_no;
-		
+
+		$this->ref = $ref;
+
 		$this->date_ = $date_;
 		$this->due_date = $due_date;
 		
@@ -256,7 +260,7 @@ function show_allocatable($show_totals) {
 	if (count($_SESSION['alloc']->allocs)) 
 	{
 		start_table(TABLESTYLE, "width=60%");
-   		$th = array(_("Transaction Type"), _("#"), _("Date"), _("Due Date"), _("Amount"),
+   		$th = array(_("Transaction Type"), _("#"), _("Ref"), _("Date"), _("Due Date"), _("Amount"),
    			_("Other Allocations"), _("This Allocation"), _("Left to Allocate"),'','');
 	   	table_header($th);
 
@@ -265,6 +269,7 @@ function show_allocatable($show_totals) {
 			alt_table_row_color($k);
     		label_cell($systypes_array[$alloc_item->type]);
 	   		label_cell(get_trans_view_str($alloc_item->type, $alloc_item->type_no));
+	   		label_cell($alloc_item->ref);
     		label_cell($alloc_item->date_, "align=right");
     		label_cell($alloc_item->due_date, "align=right");
 	    	amount_cell($alloc_item->amount);
