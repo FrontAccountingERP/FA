@@ -21,6 +21,7 @@ $ -> Affected files
 
 ------------------------------- Release 2.3 RC2 --------------------------------
 ! Release 2.3RC2
+10-Oct-2010 Joe Hunt
 $ version.php
   update.html
   
