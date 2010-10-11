@@ -21,11 +21,11 @@ $ -> Affected files
 
 ------------------------------- Release 2.3 RC2 --------------------------------
 ! Release 2.3RC2
-10-Oct-2010 Joe Hunt
+11-Oct-2010 Joe Hunt
 $ version.php
   update.html
 
-10-Oct-2010 Janusz Dobrowolski
+11-Oct-2010 Janusz Dobrowolski
 + Added document reference display in cust/supp payments
 $ /includes/ui/allocation_cart.inc
 ! Added payment terms categories
@@ -41,10 +41,12 @@ $ /sales/sales_order_entry.php
   /sales/includes/db/sales_invoice_db.inc
   /sales/includes/ui/sales_order_ui.inc
 ! Payment terms in so/si view
-  /sales/view/view_invoice.php
+$ /sales/view/view_invoice.php
   /sales/view/view_sales_order.php
+! Updated po template file
+$ /lang/new_language_template/LC_MESSAGES/empty.po
 # Fixed cash payment terms definition
-  /sql/en_US-demo.sql
+$ /sql/en_US-demo.sql
   /sql/en_US-new.sql
 
 10-Oct-2010 Joe Hunt
