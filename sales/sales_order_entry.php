@@ -239,9 +239,8 @@ function copy_to_cart()
 	if (isset($_POST['payment']) && ($cart->payment != $_POST['payment'])) {
 		$cart->payment = $_POST['payment'];
 		$cart->payment_terms = get_payment_terms($_POST['payment']);
-		$cart->cash = $cart->payment_terms['cash_sale'];
 	}
-	if ($cart->cash) {
+	if ($cart->payment_terms['cash_sale']) {
 		$cart->due_date = $cart->document_date;
 		$cart->phone = $cart->cust_ref = $cart->delivery_address = '';
 		$cart->freight_cost = input_num('freight_cost');
@@ -295,8 +294,7 @@ function copy_from_cart()
 	$_POST['branch_id'] = $cart->Branch;
 	$_POST['sales_type'] = $cart->sales_type;
 	// POS 
-	if ($cart->pos != -1)
-		$_POST['payment'] = $cart->payment;
+	$_POST['payment'] = $cart->payment;
 	if ($cart->trans_type!=ST_SALESORDER && $cart->trans_type!=ST_SALESQUOTE) { // 2008-11-12 Joe Hunt
 		$_POST['dimension_id'] = $cart->dimension_id;
 		$_POST['dimension2_id'] = $cart->dimension2_id;
@@ -346,7 +344,7 @@ function can_process() {
 		set_focus('AddItem');
 		return false;
 	}
-	if ($_SESSION['Items']->cash == 0) {
+	if ($_SESSION['Items']->payment_terms['cash_sale'] == 0) {
 	if (strlen($_POST['deliver_to']) <= 1) {
 		display_error(_("You must enter the person or company to whom delivery should be made to."));
 		set_focus('deliver_to');
@@ -598,13 +596,7 @@ function create_cart($type, $trans_no)
 		$doc->document_date = new_doc_date();
 		if ($type == ST_SALESINVOICE) {
 			$doc->due_date = get_invoice_duedate($doc->payment, $doc->document_date);
-			$doc->pos = user_pos();
-			$pos = get_sales_point($doc->pos);
-//			$doc->cash = $pos['cash_sale'];
-			if (!$pos['cash_sale'] && !$pos['credit_sale'])
-				$doc->pos = -1; // mark not editable payment type
-//			else
-//				$doc->cash = date_diff2($doc->due_date, Today(), 'd')<2;
+			$doc->pos = get_sales_point(user_pos());
 		} else
 			$doc->due_date = $doc->document_date;
 		$doc->reference = $Refs->get_next($doc->trans_type);

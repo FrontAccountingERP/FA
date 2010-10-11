@@ -117,16 +117,11 @@ function get_customer_details_to_order(&$order, $customer_id, $branch_id)
 
 	$order->set_delivery($myrow["default_ship_via"], $myrow["br_name"],
 		$address);
-	if ($order->trans_type == ST_SALESINVOICE) {
+	if ($order->trans_type == ST_SALESINVOICE || $order->trans_type == ST_SALESORDER) {
 		$order->due_date = get_invoice_duedate($order->payment, $order->document_date);
-//		if ($order->pos != -1)
-//			$order->cash = date_diff2($order->due_date, Today(), 'd')<2;
 	}
-	if($order->cash ) {
-		if($order->pos != -1) {
-			$pos = get_sales_point($order->pos);
-			$order->set_location($pos["pos_location"], $pos["location_name"]);
-		}
+	if($order->payment_terms['cash_sale']) {
+		$order->set_location($order->pos["pos_location"], $order->pos["location_name"]);
 	} else
 		$order->set_location($myrow["default_location"], $myrow["location_name"]);
 		
@@ -316,7 +311,20 @@ function display_order_header(&$order, $editable, $date_text, $display_tax_group
 				$_POST['deliver_to'] = $order->deliver_to;
 				$_POST['delivery_address'] = $order->delivery_address;
 				$_POST['phone'] = $order->phone;
-				if (get_post('payment') !== $order->payment) {
+				$_POST['delivery_date'] = $order->due_date;
+
+				if (!in_array($order->trans_type, array(ST_SALESQUOTE, ST_SALESORDER))
+					&& ($order->pos['cash_sale'] != $order->pos['credit_sale'])
+					&& (($order->payment_terms['cash_sale'] && !$order->pos['cash_sale']) ||
+						(!$order->payment_terms['cash_sale'] && !$order->pos['credit_sale']))) {
+							// force payment terms refresh if terms are editable
+							// and pos have no permitions for terms selected in customer record.
+							// Terms are set to first terms in allowed category below.
+							display_warning(
+								sprintf(_("Customer's payment terms '%s' cannot be selected on this POS"),
+									$order->payment_terms['terms']));
+							$order->payment = '';
+				} elseif (get_post('payment') !== $order->payment) {
 					$_POST['payment'] = $order->payment;
 					$Ajax->activate('delivery');
 					$Ajax->activate('payment');
@@ -379,26 +387,31 @@ function display_order_header(&$order, $editable, $date_text, $display_tax_group
 	label_row(_("Customer Discount:"), ($order->default_discount * 100) . "%");
 
 	table_section(3);
-
-	if (($order->trans_type != ST_CUSTDELIVERY) && ($order->pos != -1)) { // editable payment type
+	if ($order->pos['cash_sale'] || $order->pos['credit_sale']) {
+		 // editable payment type 
 		if (get_post('payment') !== $order->payment) {
 			$order->payment = get_post('payment');
 			$order->payment_terms = get_payment_terms($order->payment);
-			$order->cash = $order->payment_terms['cash_sale'];
-			if ($order->cash) {
-				$paym = get_sales_point(user_pos());
-				$order->cash_account = $paym['pos_account'];
-				$order->account_name = $paym['bank_account_name'];
-				$_POST['Location'] = $order->Location = $paym['pos_location'];
-				$order->location_name = $paym['location_name'];
+			$order->due_date = get_invoice_duedate($order->payment, $order->document_date);
+			if ($order->payment_terms['cash_sale']) {
+				$order->cash_account = $order->pos['pos_account'];
+				$order->account_name = $order->pos['bank_account_name'];
+				$_POST['Location'] = $order->Location = $order->pos['pos_location'];
+				$order->location_name = $order->pos['location_name'];
 			}
 			$Ajax->activate('items_table');
 			$Ajax->activate('delivery');
 		}
-		sale_payment_list_cells(_('Payment:'), 'payment', null);
+		$paymcat = !$order->pos['cash_sale'] ? PM_CREDIT : 
+			(!$order->pos['credit_sale'] ? PM_CASH : PM_ANY);
+		// all terms are available for SO
+		sale_payment_list_cells(_('Payment:'), 'payment', 
+			(in_array($order->trans_type, array(ST_SALESQUOTE, ST_SALESORDER)) 
+			? PM_ANY : $paymcat), null);
 	} else {
 		label_cells(_('Payment:'), $order->payment_terms['terms']);
 	}
+
 	if($editable) {
 		$str = sales_types_list_row(_("Price List"), 'sales_type', null, true);
 	} else {
@@ -572,13 +585,13 @@ function display_delivery_details(&$order)
 
 	div_start('delivery');	
 
-	if ($order->cash) {	// Direct payment sale
+
+	if ($order->payment_terms['cash_sale']) {	// Direct payment sale
 		$Ajax->activate('items_table');
 		display_heading(_('Cash payment'));
 		start_table(TABLESTYLE2, "width=60%");
-		label_row(_("Deliver from Location:"), $order->location_name);
 
-		hidden('Location', $order->Location);
+		locations_list_row(_("Deliver from Location:"), 'Location', null, false, true);
 		label_row(_("Cash account:"), $order->account_name);
 		textarea_row(_("Comments:"), "Comments", $order->Comments, 31, 5);
 		end_table();
@@ -607,8 +620,7 @@ function display_delivery_details(&$order)
 		start_outer_table(TABLESTYLE2, "width=90%");
 		table_section(1);
 
-		locations_list_row(_("Deliver from Location:"), 'Location', null, 
-			false, true);
+		locations_list_row(_("Deliver from Location:"), 'Location', null, false, true);
 		if (list_updated('Location'))
 			$Ajax->activate('items_table');
 

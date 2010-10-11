@@ -65,7 +65,6 @@ class cart
 	var $price_factor;	 // ditto for price calculations
 
 	var	$pos;			// user assigned POS
-	var $cash;			// cash transaction - helper variable not stored in db
 	var $cash_account;
 	var $account_name;
 	var $cash_discount;	// not used as of FA 2.1
@@ -91,6 +90,7 @@ class cart
 			$this->trans_type = ST_SALESORDER;
 		$this->dimension_id = 0;
 		$this->dimension2_id = 0;
+		$this->pos = get_sales_point(user_pos());
 		$this->read($type, $trans_no, $no_edit);
 		$this->cart_id = uniqid('');
 	}
@@ -238,8 +238,7 @@ class cart
 				} else
 					$this->due_date =
 						add_days($this->document_date, $SysPrefs->default_delivery_required_by());
-			$this->pos = user_pos();
-			}
+		}
 		$this->credit = get_current_cust_credit($this->customer_id);
 	}
 
@@ -302,17 +301,13 @@ class cart
 		$this->customer_currency = $currency;
 		$this->payment = $payment;
 		$this->payment_terms = get_payment_terms($payment);
-		$this->cash = $this->payment_terms['cash_sale'];
 		$this->cash_discount = $cdiscount;
 
-		$pos = get_sales_point($this->pos);
-		if (!$pos['cash_sale'] || !$pos['credit_sale']) 
-		  	$this->pos = -1; // mark not editable payment type
-		if ($this->cash) {
-			$this->Location = $pos['pos_location'];
-			$this->location_name = $pos['location_name'];
-			$this->cash_account = $pos['pos_account'];
-			$this->account_name = $pos['bank_account_name'];
+		if ($this->payment_terms['cash_sale']) {
+			$this->Location = $this->pos['pos_location'];
+			$this->location_name = $this->pos['location_name'];
+			$this->cash_account = $this->pos['pos_account'];
+			$this->account_name = $this->pos['bank_account_name'];
 		}
 		$this->credit = get_current_cust_credit($customer_id);
 	}
