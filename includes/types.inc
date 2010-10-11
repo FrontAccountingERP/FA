@@ -155,6 +155,12 @@ function payment_person_has_items($type) {
 			return false;
 	}
 }
+//----------------------------------------------------------------------------------
+//	Payment terms categories
+//
+define('PM_ANY', 0);
+define('PM_CASH', 1);
+define('PM_CREDIT', 2);
 
 //----------------------------------------------------------------------------------
 //	Manufacturing types
