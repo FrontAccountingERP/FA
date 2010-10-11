@@ -159,14 +159,12 @@ if (isset($_POST['Update'])) {
 	$Ajax->activate('Items');
 }
 if (isset($_POST['_InvoiceDate_changed'])) {
-	$_POST['due_date'] = get_invoice_duedate($_SESSION['Items']->payment, 
-		$_POST['InvoiceDate']);
+	$_POST['due_date'] = get_invoice_duedate($_SESSION['Items']->payment, $_POST['InvoiceDate']);
 	$Ajax->activate('due_date');
 }
 if (list_updated('payment')) {
 	$_SESSION['Items']->payment = get_post('payment');
-	$_POST['due_date'] = get_invoice_duedate($_SESSION['Items']->payment, 
-		$_POST['InvoiceDate']);
+	$_POST['due_date'] = get_invoice_duedate($_SESSION['Items']->payment, $_POST['InvoiceDate']);
 	$Ajax->activate('due_date');
 }
 
@@ -228,7 +226,7 @@ function copy_to_cart()
 	$cart->freight_cost = input_num('ChargeFreightCost');
 	$cart->document_date =  $_POST['InvoiceDate'];
 	$cart->due_date =  $_POST['due_date'];
-	if ($cart->pos != -1) {
+	if ($cart->pos['cash_sale'] || $cart->pos['credit_sale']) {
 		$cart->payment = $_POST['payment'];
 		$cart->payment_terms = get_payment_terms($_POST['payment']);
 	}
@@ -368,9 +366,13 @@ if ($dim > 0)
 	$colspan = 3;
 label_cells(_("Customer"), $_SESSION['Items']->customer_name, "class='tableheader2'");
 label_cells(_("Branch"), get_branch_name($_SESSION['Items']->Branch), "class='tableheader2'");
-if ($_SESSION['Items']->pos != -1) // editable payment type
-	label_cells(_("Payment terms:"), sale_payment_list('payment'), "class='tableheader2'", "colspan=$colspan");
-else
+if ($_SESSION['Items']->pos['credit_sale'] || $_SESSION['Items']->pos['cash_sale']) {
+ // editable payment type
+	$paymcat = !$_SESSION['Items']->pos['cash_sale'] ? PM_CREDIT :
+		(!$_SESSION['Items']->pos['credit_sale'] ? PM_CASH : PM_ANY);
+	label_cells(_("Payment terms:"), sale_payment_list('payment', $paymcat),
+		"class='tableheader2'", "colspan=$colspan");
+} else
 	label_cells(_('Payment:'), $_SESSION['Items']->payment_terms['terms'], "class='tableheader2'", "colspan=$colspan");
 
 end_row();
