@@ -71,11 +71,10 @@ end_table();
 echo "</td><td>"; // outer table
 
 start_table(TABLESTYLE, "width=100%");
-$th = array(_("Delivered To"));
-table_header($th);
-
-label_row(null, $sales_order["deliver_to"] . "<br>" . nl2br($sales_order["delivery_address"]),
-	"nowrap");
+$th = array(_("Payment Terms"));
+table_header($th); 
+$paym = get_payment_terms($myrow['payment_terms']);
+label_row(null, $paym["terms"], "nowrap");
 end_table();
 
 echo "</td><td>"; // outer table
