@@ -131,11 +131,11 @@ while ($myrow = db_fetch($result))
 inactive_control_row($th);
 end_table(1);
 
-$is_editing = $selected_id != -1; 
+$is_used = $selected_id != -1 && key_in_foreign_table($selected_id, 'bank_trans', 'bank_act', true);
 
 start_table(TABLESTYLE2);
 
-if ($is_editing) 
+if ($selected_id != -1) 
 {
   if ($Mode == 'Edit') {	
 	$myrow = get_bank_account($selected_id);
@@ -158,7 +158,7 @@ if ($is_editing)
 
 text_row(_("Bank Account Name:"), 'bank_account_name', null, 50, 100);
 
-if ($is_editing) 
+if ($is_used) 
 {
 	label_row(_("Account Type:"), $bank_account_types[$_POST['account_type']]);
 } 
@@ -166,7 +166,7 @@ else
 {
 	bank_account_types_list_row(_("Account Type:"), 'account_type', null); 
 }
-if ($is_editing) 
+if ($is_used) 
 {
 	label_row(_("Bank Account Currency:"), $_POST['BankAccountCurrency']);
 } 
@@ -177,7 +177,7 @@ else
 
 yesno_list_row(_("Default currency account:"), 'dflt_curr_act');
 
-if($is_editing)
+if($is_used)
 	label_row(_("Bank Account GL Code:"), $_POST['account_code']);
 else 
 	gl_all_accounts_list_row(_("Bank Account GL Code:"), 'account_code', null);

@@ -33,6 +33,8 @@ $ /includes/types.inc
 ! Added terms category parameter to sale_payment_list
 $ /includes/ui/ui_lists.inc
   /sales/customer_invoice.php
+! Allowed full edition of bank account if not used yet
+$ /gl/manage/bank_accounts.php
 # Fixed point of sale handling and terms selection.
 $ /sales/sales_order_entry.php
   /sales/includes/cart_class.inc
