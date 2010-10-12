@@ -56,7 +56,7 @@ INSERT INTO `0_sys_prefs` SELECT 'gst_no','setup.company', 'varchar','25', c.gst
 INSERT INTO `0_sys_prefs` SELECT 'coy_no','setup.company', 'varchar','25', c.coy_no FROM `0_company` c;
 INSERT INTO `0_sys_prefs` SELECT 'tax_prd','setup.company', 'int','11', c.tax_prd FROM `0_company` c;
 INSERT INTO `0_sys_prefs` SELECT 'tax_last','setup.company', 'int','11', c.tax_last FROM `0_company` c;
-INSERT INTO `0_sys_prefs` SELECT 'postal_address','setup.company', 'tinytext','', c.postal_address FROM `0_company` c;
+INSERT INTO `0_sys_prefs` SELECT 'postal_address','setup.company', 'tinytext','0', c.postal_address FROM `0_company` c;
 INSERT INTO `0_sys_prefs` SELECT 'phone','setup.company', 'varchar','30', c.phone FROM `0_company` c;
 INSERT INTO `0_sys_prefs` SELECT 'fax','setup.company', 'varchar','30',c.fax FROM `0_company` c;
 INSERT INTO `0_sys_prefs` SELECT 'email','setup.company', 'varchar','100', c.email FROM `0_company` c;
@@ -83,7 +83,7 @@ INSERT INTO `0_sys_prefs` SELECT 'exchange_diff_act','glsetup.general', 'varchar
 
 INSERT INTO `0_sys_prefs` SELECT 'default_credit_limit','glsetup.customer', 'int','11', c.default_credit_limit FROM `0_company` c;
 INSERT INTO `0_sys_prefs` SELECT 'accumulate_shipping','glsetup.customer', 'tinyint','1', c.accumulate_shipping FROM `0_company` c;
-INSERT INTO `0_sys_prefs` SELECT 'legal_text','glsetup.customer', 'tinytext','', c.legal_text FROM `0_company` c;
+INSERT INTO `0_sys_prefs` SELECT 'legal_text','glsetup.customer', 'tinytext','0', c.legal_text FROM `0_company` c;
 INSERT INTO `0_sys_prefs` SELECT 'freight_act','glsetup.customer', 'varchar','15', c.freight_act FROM `0_company` c;
 
 INSERT INTO `0_sys_prefs` SELECT 'debtors_act','glsetup.sales', 'varchar','15', c.debtors_act FROM `0_company` c;
