@@ -1205,7 +1205,7 @@ CREATE TABLE IF NOT EXISTS `0_payment_terms` (
 INSERT INTO `0_payment_terms` VALUES(1, 'Due 15th Of the Following Month', 0, 17, 0);
 INSERT INTO `0_payment_terms` VALUES(2, 'Due By End Of The Following Month', 0, 30, 0);
 INSERT INTO `0_payment_terms` VALUES(3, 'Payment due within 10 days', 10, 0, 0);
-INSERT INTO `0_payment_terms` VALUES(4, 'Cash Only', 1, 0, 0);
+INSERT INTO `0_payment_terms` VALUES(4, 'Cash Only', 0, 0, 0);
 
 -- --------------------------------------------------------
 
