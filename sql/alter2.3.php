@@ -138,14 +138,15 @@ class fa2_3 {
 		include_once("$path_to_root/sales/includes/cart_class.inc");
 		include_once("$path_to_root/purchasing/includes/po_class.inc");
 		$cart = new cart(ST_SALESORDER);
-		$sql = "SELECT order_no FROM {$pref}sales_orders";
+		$sql = "SELECT order_no, trans_type FROM {$pref}sales_orders";
 		$orders = db_query($sql);
 		if (!$orders)
 			return false;
-
-		while ($order_no = db_fetch($orders)) {
-			read_sales_order($order_no[0], $cart, ST_SALESORDER);
-			$result = db_query("UPDATE {$pref}sales_orders SET total=".$cart->get_trans_total());
+		while ($order = db_fetch($orders)) {
+			read_sales_order($order['order_no'], $cart, $order['trans_type']);
+			$result = db_query("UPDATE {$pref}sales_orders 
+				SET total=".$cart->get_trans_total()
+				." WHERE order_no=".$order[0]);
 			unset($cart->line_items);
 		}
 		unset($cart);
