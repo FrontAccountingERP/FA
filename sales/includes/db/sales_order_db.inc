@@ -302,14 +302,14 @@ function get_sales_order_header($order_no, $trans_type)
 	$num = db_num_rows($result);
 	if ($num > 1)
 	{
-		display_db_error("FATAL : sales order query returned a duplicate - " . db_num_rows($result), $sql, true);
+		display_warning("You have duplicate document in database: (type:$trans_type, number:$order_no).");
 	}
 	else if ($num == 1)
 	{
 		return db_fetch($result);
 	}
 	else
-		display_db_error("FATAL : sales order return nothing - " . db_num_rows($result), $sql, true);
+		display_warning("You have missing or invalid sales document in database (type:$trans_type, number:$order_no).");
 
 }
 
