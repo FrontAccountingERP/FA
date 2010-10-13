@@ -108,7 +108,7 @@ function end_flush() {
 
 function display_db_error($msg, $sql_statement=null, $exit=true)
 {
-	global $db, $debug, $go_debug;
+	global $db, $debug, $go_debug, $db_connections;
 
 	$warning = $msg==null;
 	$db_error = db_error_no();
@@ -127,7 +127,9 @@ function display_db_error($msg, $sql_statement=null, $exit=true)
 	
 	if ($debug == 1) 
 	{
-		$str .= "sql that failed was : " . $sql_statement . "<br>";
+		$cur_prefix = $db_connections[$_SESSION["wa_current_user"]->cur_con]['tbpref'];
+
+		$str .= "sql that failed was : ".str_replace(TB_PREF, $cur_prefix, $sql_statement)."<br>";
 		if ($go_debug > 1) display_backtrace();
 	}
 	

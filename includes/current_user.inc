@@ -9,8 +9,11 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-include_once($path_to_root . "/includes/prefs/userprefs.inc");
 
+include_once($path_to_root . "/includes/prefs/userprefs.inc");
+if (!defined('TB_PREF')) {
+	define('TB_PREF', '&TB_PREF&');
+}
 //--------------------------------------------------------------------------
 
 class current_user
@@ -19,17 +22,18 @@ class current_user
 	var $loginname;
 	var $username;
 	var $name;
-	var $company;
+	var $company; // user's company
 	var $pos;
 	var $access;
 	var $timeout;
 	var $last_act;
 	var $role_set = false;
-	var $old_db;	
+	var $old_db;
 	var $logged;
 	var $ui_mode = 0;
 	
 	var $prefs;
+	var $cur_con; // current db connection (can be different from $company for superuser)
 
 	function current_user()
 	{
@@ -153,16 +157,13 @@ class current_user
 	{
     	global $db_connections;
 
-    	$connection = $db_connections[$id == -1 ? $this->company : $id];
+		$this->cur_con = $id == -1 ? $this->company : $id;
+    	$connection = $db_connections[$this->cur_con];
 
     	//print_r($connection);
 
-    	$db = mysql_connect($connection["host"] ,
-    		$connection["dbuser"], $connection["dbpassword"]);
-    	mysql_select_db($connection["dbname"],$db);
-
-		if (!defined('TB_PREF'))
-			define('TB_PREF', $connection["tbpref"]);
+		$db = mysql_connect($connection["host"], $connection["dbuser"], $connection["dbpassword"]);
+		mysql_select_db($connection["dbname"], $db);
 
     	return $db;
 	}

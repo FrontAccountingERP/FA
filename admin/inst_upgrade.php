@@ -121,26 +121,16 @@ function upgrade_step($index, $conn)
 	return $ret;
 }
 
-function db_open($conn)
-{
-	$db = mysql_connect($conn["host"] ,$conn["dbuser"], $conn["dbpassword"]);
-	if (!$db)
-		return false;
-	if (!mysql_select_db($conn["dbname"], $db))
-		return false;
-	return $db;
-}
-
 $installers = get_installers();
 
 if (get_post('Upgrade')) 
 {
 
 	$ret = true;
-	foreach ($db_connections as $conn) 
+	foreach ($db_connections as $comp => $conn) 
 	{
 	// connect to database
-		if (!($db = db_open($conn))) 
+		if (!(set_global_connection($comp))) 
 		{
 			display_error(_("Cannot connect to database for company")
 				." '".$conn['name']."'");
@@ -162,6 +152,7 @@ if (get_post('Upgrade'))
 // 		db_close($conn); ?
 		if (!$ret) break;
 	}
+	set_global_connection();
 	if($ret)
 	{	// re-read the prefs
 		global $path_to_root;

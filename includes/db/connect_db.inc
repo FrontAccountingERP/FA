@@ -10,14 +10,16 @@
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
 
-function set_global_connection()
+function set_global_connection($company=-1)
 {
 	global $db, $transaction_level;
 
 	cancel_transaction(); // cancel all aborted transactions if any
 	$transaction_level = 0;
 
-   	$db = $_SESSION["wa_current_user"]->get_db_connection();
+   	$db = $_SESSION["wa_current_user"]->get_db_connection($company);
+
+	return $db;
 }
 
 $db_duplicate_error_code = 1062;
@@ -26,8 +28,13 @@ $db_duplicate_error_code = 1062;
 
 function db_query($sql, $err_msg=null)
 {
-	global $db, $show_sql, $sql_trail, $select_trail, $go_debug, $sql_queries, $Ajax;
+	global $db, $show_sql, $sql_trail, $select_trail, $go_debug, $sql_queries, $Ajax,
+		$db_connections;
 	
+	// set current db prefix
+	$cur_prefix = $db_connections[$_SESSION["wa_current_user"]->cur_con]['tbpref'];
+	$sql = str_replace(TB_PREF, $cur_prefix, $sql);
+
 	if ($show_sql)
 	{
 		$Ajax->activate('footer_debug');
@@ -38,7 +45,7 @@ function db_query($sql, $err_msg=null)
 	if($sql_trail) {
 		if ($select_trail || (strstr($sql, 'SELECT') === false)) {
 			mysql_query(
-			"INSERT INTO ".TB_PREF."sql_trail
+			"INSERT INTO ".$cur_prefix."sql_trail
 				(`sql`, `result`, `msg`)
 				VALUES(".db_escape($sql).",".($result ? 1 : 0).",
 				".db_escape($err_msg).")", $db);
