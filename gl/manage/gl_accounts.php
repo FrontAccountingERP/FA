@@ -47,13 +47,13 @@ if (isset($_POST['add']) || isset($_POST['update']))
 
 	$input_error = 0;
 
-	if (strlen($_POST['account_code']) == 0) 
+	if (strlen(trim($_POST['account_code'])) == 0) 
 	{
 		$input_error = 1;
 		display_error( _("The account code must be entered."));
 		set_focus('account_code');
 	} 
-	elseif (strlen($_POST['account_name']) == 0) 
+	elseif (strlen(trim($_POST['account_name'])) == 0) 
 	{
 		$input_error = 1;
 		display_error( _("The account name cannot be empty."));

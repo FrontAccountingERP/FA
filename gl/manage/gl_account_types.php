@@ -24,13 +24,13 @@ simple_page_mode(false);
 
 function can_process() 
 {
-	if ($_POST['id'] == "")
+	if (strlen(trim($_POST['id'])) == 0) 
 	{
 	    display_error( _("The account group id cannot be empty."));
 	    set_focus('id');
 	    return false;
 	}
-	if (strlen($_POST['name']) == 0) 
+	if (strlen(trim($_POST['name'])) == 0) 
 	{
 		display_error( _("The account group name cannot be empty."));
 		set_focus('name');

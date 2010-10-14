@@ -19,6 +19,12 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+14-Oct-2010 Joe Hunt
+# Check for empty class ID and better test for type/account id/name.
+$ /gl/manage/gl_account_classes.php
+  /gl/manage/gl_account_types.php
+  /gl/manage/gl_accounts.php
+  
 12-Oct-2010 Janusz Dobrowolski
 # Upgrade failed when MySQL run in strict mode.
 $ /sql/alter2.3.sql

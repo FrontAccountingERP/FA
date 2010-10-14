@@ -25,13 +25,14 @@ simple_page_mode(false);
 function can_process() 
 {
 	global $use_oldstyle_convert;
-	/*if (!is_numeric($_POST['id'])) 
+
+	if (strlen(trim($_POST['id'])) == 0) 
 	{
-		display_error( _("The account class ID must be numeric."));
+		display_error( _("The account class ID cannot be empty."));
 		set_focus('id');
 		return false;
-	}*/
-	if (strlen($_POST['name']) == 0) 
+	}
+	if (strlen(trim($_POST['name'])) == 0) 
 	{
 		display_error( _("The account class name cannot be empty."));
 		set_focus('name');
