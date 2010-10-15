@@ -72,6 +72,7 @@ function print_list_of_journal_entries()
 
     $typeno = $type = 0;
     $debit = $credit = 0.0;
+    $totdeb = $totcre = 0.0;
     while ($myrow=db_fetch($trans))
     {
         if ($type != $myrow['type'] || $typeno != $myrow['type_no'])
@@ -82,6 +83,8 @@ function print_list_of_journal_entries()
                 $rep->NewLine();
             	$rep->AmountCol(4, 5, $debit, $dec);
             	$rep->AmountCol(5, 6, abs($credit), $dec);
+            	$totdeb += $debit;
+            	$totcre += $credit;
             	$debit = $credit = 0.0;
 				$rep->Line($rep->row -= 4);
                 $rep->NewLine();
@@ -122,7 +125,21 @@ function print_list_of_journal_entries()
         }    
         $rep->NewLine(1, 2);
     }
-    $rep->Line($rep->row  + 4);
+	if ($typeno != 0)
+	{
+		$rep->Line($rep->row += 6);
+		$rep->NewLine();
+		$rep->AmountCol(4, 5, $debit, $dec);
+		$rep->AmountCol(5, 6, abs($credit), $dec);
+		$totdeb += $debit;
+		$totcre += $credit;
+		$rep->Line($rep->row -= 4);
+		$rep->NewLine();
+        $rep->TextCol(0, 4, _("Total"));
+		$rep->AmountCol(4, 5, $totdeb, $dec);
+		$rep->AmountCol(5, 6, abs($totcre), $dec);
+		$rep->Line($rep->row -= 4);
+	}
     $rep->End();
 }
 
