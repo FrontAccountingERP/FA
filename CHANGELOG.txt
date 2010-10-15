@@ -20,8 +20,10 @@ Legend:
 $ -> Affected files
 
 15-Oct-2010 Joe Hunt
-# Customer Credit Note didn't update units when shifting items.
+# [0000263] Customer Credit Note didn't update units when shifting items.
 $ /sales/includes/ui/sales_credit_ui.inc
+! [0000265] Changed Report List of Journal Entries to include balances.
+$ /reporting/rep702.php
 
 14-Oct-2010 Joe Hunt
 # Check for empty class ID and better test for type/account id/name.
