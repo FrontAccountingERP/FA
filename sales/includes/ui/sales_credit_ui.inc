@@ -247,10 +247,11 @@ function credit_edit_item_controls(&$order, $rowcounter, $line_no=-1)
 	if ($line_no!=-1 && $line_no == $id)
 	{
 		$_POST['stock_id'] = $order->line_items[$id]->stock_id;
+		$dec = get_qty_dec($_POST['stock_id']);
 		$_POST['qty'] = qty_format($order->line_items[$id]->qty_dispatched, $_POST['stock_id'], $dec);
 		$_POST['price'] = price_format($order->line_items[$id]->price);
 		$_POST['Disc'] = percent_format(($order->line_items[$id]->discount_percent)*100);
-		$_POST['units'] = $order->line_items[$id]->units;
+		$units = $order->line_items[$id]->units;
 		hidden('stock_id', $_POST['stock_id']);
 		label_cell($_POST['stock_id']);
 		label_cell($order->line_items[$id]->item_description, "nowrap");
@@ -269,21 +270,23 @@ function credit_edit_item_controls(&$order, $rowcounter, $line_no=-1)
 
 		$dec = $item_info['decimals'];
    		$_POST['qty'] = number_format2(0, $dec);
-		$_POST['units'] = $item_info["units"];
-		$_POST['price'] = price_format(get_price($_POST['stock_id'], $order->customer_currency,
-		    $order->sales_type, $order->price_factor, $order->document_date));
-
+		$units = $item_info["units"];
+		$price = get_price($_POST['stock_id'],
+			$order->customer_currency, $order->sales_type,
+			$order->price_factor, get_post('OrderDate'));
+		$_POST['price'] = price_format($price);
+		
 		// default to the customer's discount %
 		$_POST['Disc'] = percent_format($order->default_discount * 100);
 	}
 
 	qty_cells(null, 'qty', $_POST['qty'], null, null, $dec);
 
-	label_cell($_POST['units']);
-	amount_cells(null, 'price',  null);
-	small_amount_cells(null, 'Disc', percent_format(0), null, null, user_percent_dec());
+	label_cell($units, '', 'units');
+	amount_cells(null, 'price');
+	small_amount_cells(null, 'Disc', percent_format($_POST['Disc']), null, null, user_percent_dec());
 
-	amount_cell(input_num('qty') * input_num('price') * (1 - input_num('Disc')/100));
+	amount_cell(input_num('qty') * input_num('price') * (1 - input_num('Disc')/100), false, '', 'line_total');
 
 	if ($id!=-1)
 	{
