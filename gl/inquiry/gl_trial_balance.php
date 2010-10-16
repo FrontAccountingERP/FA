@@ -37,12 +37,17 @@ if (get_post('Show'))
 
 function gl_inquiry_controls()
 {
+	$dim = get_company_pref('use_dimension');
     start_form();
 
     start_table(TABLESTYLE_NOBORDER);
 
     date_cells(_("From:"), 'TransFromDate', '', null, -30);
 	date_cells(_("To:"), 'TransToDate');
+	if ($dim >= 1)
+		dimensions_list_cells(_("Dimension")." 1:", 'Dimension', null, true, " ", false, 1);
+	if ($dim > 1)
+		dimensions_list_cells(_("Dimension")." 2:", 'Dimension2', null, true, " ", false, 2);
 	check_cells(_("No zero values"), 'NoZero', null);
 	check_cells(_("Only balances"), 'Balance', null);
 
@@ -58,6 +63,10 @@ function display_trial_balance()
 	global $path_to_root;
 
 	div_start('balance_tbl');
+	if (!isset($_POST['Dimension']))
+		$_POST['Dimension'] = 0;
+	if (!isset($_POST['Dimension2']))
+		$_POST['Dimension2'] = 0;
 	start_table(TABLESTYLE);
 	$tableheader =  "<tr>
         <td rowspan=2 class='tableheader'>" . _("Account") . "</td>
@@ -87,14 +96,14 @@ function display_trial_balance()
 	
 	while ($account = db_fetch($accounts))
 	{
-		$prev = get_balance($account["account_code"], 0, 0, $begin, $_POST['TransFromDate'], false, false);
-		$curr = get_balance($account["account_code"], 0, 0, $_POST['TransFromDate'], $_POST['TransToDate'], true, true);
-		$tot = get_balance($account["account_code"], 0, 0, $begin, $_POST['TransToDate'], false, true);
+		$prev = get_balance($account["account_code"], $_POST['Dimension'], $_POST['Dimension2'], $begin, $_POST['TransFromDate'], false, false);
+		$curr = get_balance($account["account_code"], $_POST['Dimension'], $_POST['Dimension2'], $_POST['TransFromDate'], $_POST['TransToDate'], true, true);
+		$tot = get_balance($account["account_code"], $_POST['Dimension'], $_POST['Dimension2'], $begin, $_POST['TransToDate'], false, true);
 		if (check_value("NoZero") && !$prev['balance'] && !$curr['balance'] && !$tot['balance'])
 			continue;
 		alt_table_row_color($k);
 
-		$url = "<a href='$path_to_root/gl/inquiry/gl_account_inquiry.php?TransFromDate=" . $_POST["TransFromDate"] . "&TransToDate=" . $_POST["TransToDate"] . "&account=" . $account["account_code"] . "'>" . $account["account_code"] . "</a>";
+		$url = "<a href='$path_to_root/gl/inquiry/gl_account_inquiry.php?TransFromDate=" . $_POST["TransFromDate"] . "&TransToDate=" . $_POST["TransToDate"] . "&account=" . $account["account_code"] . "&Dimension=" . $_POST["Dimension"] . "&Dimension2=" . $_POST["Dimension2"] . "'>" . $account["account_code"] . "</a>";
 
 		label_cell($url);
 		label_cell($account["account_name"]);

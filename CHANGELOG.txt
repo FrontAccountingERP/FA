@@ -19,6 +19,12 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+16-Oct-2010 Joe Hunt
+! [0000266] Added dimension selections in Profit Loss and Balance drilldown and Trial Balance
+$ /gl/inquiry/balance_sheet.php
+  /gl/inquiry/gl_trial_balance.php
+  /gl/inquiry/profit_loss.php
+  
 15-Oct-2010 Joe Hunt
 # [0000263] Customer Credit Note didn't update units when shifting items.
 $ /sales/includes/ui/sales_credit_ui.inc

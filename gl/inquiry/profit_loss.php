@@ -40,6 +40,10 @@ if (isset($_GET["TransToDate"]))
 	$_POST["TransToDate"] = $_GET["TransToDate"];
 if (isset($_GET["Compare"]))
 	$_POST["Compare"] = $_GET["Compare"];
+if (isset($_GET["Dimension"]))
+	$_POST["Dimension"] = $_GET["Dimension"];
+if (isset($_GET["Dimension2"]))
+	$_POST["Dimension2"] = $_GET["Dimension2"];
 if (isset($_GET["AccGrp"]))
 	$_POST["AccGrp"] = $_GET["AccGrp"];
 
@@ -74,7 +78,7 @@ function display_type ($type, $typename, $from, $to, $begin, $end, $compare, $co
 		if ($drilldown && $levelptr == 0)
 		{
 			$url = "<a href='$path_to_root/gl/inquiry/gl_account_inquiry.php?TransFromDate=" 
-				. $from . "&TransToDate=" . $to 
+				. $from . "&TransToDate=" . $to . "&Dimension=" . $dimension . "&Dimension2=" . $dimension2 
 				. "&account=" . $account['account_code'] . "'>" . $account['account_code'] 
 				." ". $account['account_name'] ."</a>";				
 				
@@ -122,7 +126,7 @@ function display_type ($type, $typename, $from, $to, $begin, $end, $compare, $co
 		//elseif ($drilldown && $type != $_POST["AccGrp"])
 		{	
 			$url = "<a href='$path_to_root/gl/inquiry/profit_loss.php?TransFromDate=" 
-				. $from . "&TransToDate=" . $to . "&Compare=" . $compare
+				. $from . "&TransToDate=" . $to . "&Compare=" . $compare . "&Dimension=" . $dimension . "&Dimension2=" . $dimension2
 				. "&AccGrp=" . $type ."'>" . $typename ."</a>";
 				
 			alt_table_row_color($k);
@@ -153,6 +157,7 @@ function Achieve($d1, $d2)
 
 function inquiry_controls()
 {  
+	$dim = get_company_pref('use_dimension');
     start_table(TABLESTYLE_NOBORDER);
     
     date_cells(_("From:"), 'TransFromDate', '', null, -30);
@@ -165,6 +170,10 @@ function inquiry_controls()
 	echo "<td>";
 	echo array_selector('Compare', null, $sel);
 	echo "</td>\n";	
+	if ($dim >= 1)
+		dimensions_list_cells(_("Dimension")." 1:", 'Dimension', null, true, " ", false, 1);
+	if ($dim > 1)
+		dimensions_list_cells(_("Dimension")." 2:", 'Dimension2', null, true, " ", false, 2);
 	
 	submit_cells('Show',_("Show"),'','', 'default');
     end_table();
@@ -178,8 +187,12 @@ function display_profit_and_loss()
 {
 	global $path_to_root, $sel;
 
-	$dim = get_company_pref('use_dimension');
-	$dimension = $dimension2 = 0;
+	if (!isset($_POST['Dimension']))
+		$_POST['Dimension'] = 0;
+	if (!isset($_POST['Dimension2']))
+		$_POST['Dimension2'] = 0;
+	$dimension = $_POST['Dimension'];
+	$dimension2 = $_POST['Dimension2'];
 
 	$from = $_POST['TransFromDate'];
 	$to = $_POST['TransToDate'];
@@ -252,7 +265,7 @@ function display_profit_and_loss()
 				if ($TypeTotal[0] != 0 || $TypeTotal[1] != 0 )
 				{
 					$url = "<a href='$path_to_root/gl/inquiry/profit_loss.php?TransFromDate=" 
-						. $from . "&TransToDate=" . $to . "&Compare=" . $compare
+						. $from . "&TransToDate=" . $to . "&Compare=" . $compare . "&Dimension=" . $dimension . "&Dimension2=" . $dimension2
 						. "&AccGrp=" . $accounttype['id'] ."'>" . $accounttype['name'] ."</a>";
 						
 					alt_table_row_color($k);
