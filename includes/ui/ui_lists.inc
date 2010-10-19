@@ -46,9 +46,10 @@ $opts = array(		// default options
 	'sel_hint' => null,
 	'search_box' => false, 	// name or true/false
 	'type' => 0,	// type of extended selector:
-		// 0 - with (optional) visible search box, search by id
+		// 0 - with (optional) visible search box, search by fragment inside id
 		// 1 - with hidden search box, search by option text
-		// 2 - TODO reverse: box with hidden selector available via enter; this
+		// 2 - with (optional) visible search box, search by fragment at the start of id
+		// 3 - TODO reverse: box with hidden selector available via enter; this
 		// would be convenient for optional ad hoc adding of new item
 	'search_submit' => true, //search submit button: true/false
 	'size' => 8,	// size and max of box tag
@@ -77,8 +78,17 @@ $opts = array(		// default options
 	$select_submit =  $opts['select_submit'];
 	$spec_id = $opts['spec_id'];
 	$spec_option = $opts['spec_option'];
-	$by_id = ($opts['type'] == 0);
-	$class = $by_id ? 'combo':'combo2';
+	if ($opts['type'] == 0) {
+		$by_id = true;
+		$class = 'combo';
+	} elseif($opts['type'] == 1) {
+		$by_id = false;
+		$class = 'combo2';
+	} else {
+		$by_id = true;
+		$class = 'combo3';
+	}
+
 	$disabled = $opts['disabled'] ? "disabled" : '';
 	$multi = $opts['multi'];
 	
@@ -133,13 +143,14 @@ $opts = array(		// default options
 				if ($spec_option === false && $selected_id == array())
 					$limit = ' LIMIT 1';
 				else
-					$opts['where'][] = $valfield . "='". get_post($name, $spec_id)."'";
+					$opts['where'][] = $valfield . "=". db_escape(get_post($name, $spec_id));
 			}
 			else
 				if ($txt != '*') {
 
 					foreach($opts['search'] as $i=> $s)
-						$opts['search'][$i] = $s . " LIKE '%{$txt}%'";
+						$opts['search'][$i] = $s . " LIKE "
+							.db_escape(($class=='combo3' ? '' : '%').$txt.'%');
 					$opts['where'][] = '('. implode($opts['search'], ' OR ') . ')';
 				}
 		}
@@ -511,7 +522,7 @@ function customer_branches_list($customer_id, $name, $selected_id=null,
 	global $all_items;
 
 	$sql = "SELECT branch_code, branch_ref FROM ".TB_PREF."cust_branch
-		WHERE debtor_no='" . $customer_id . "' ";
+		WHERE debtor_no=" . db_escape($customer_id)." ";
 
 	if ($editkey)
 		set_editor('branch', $name, $editkey);
@@ -1579,6 +1590,7 @@ function gl_all_accounts_list($name, $selected_id=null, $skip_bank_accounts=fals
 		'format' => '_format_account',
 		'spec_option' => $all_option===true ?  _("Use Item Sales Accounts") : $all_option,
 		'spec_id' => '',
+		'type' => 2,
 		'order' => array('type.class_id','type.id','account_code'),
 		'search_box' => $cells,
 			'search_submit' => false,

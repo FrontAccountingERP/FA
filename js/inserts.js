@@ -68,14 +68,21 @@ function _set_combo_input(e) {
 			var select = document.getElementsByName(this.getAttribute('rel'))[0];
 			if(select && select.selectedIndex>=0) {
 			  var len = select.length;
-			  var byid = this.className=='combo';
+			  var byid = this.className=='combo' || this.className=='combo3';
 			  var ac = this.value.toUpperCase();
 			  select.options[select.selectedIndex].selected = false;
 			  for (i = 0; i < len; i++) {
 				var txt = byid ? select.options[i].value : select.options[i].text;
-				if (txt.toUpperCase().indexOf(ac) >= 0) {
-				  select.options[i].selected = true;
-				  break;
+				if (this.className=='combo3') {
+				  if(txt.toUpperCase().indexOf(ac) == 0) {
+					select.options[i].selected = true;
+				  	break;
+				  }
+				} else {
+				  if(txt.toUpperCase().indexOf(ac) >= 0) {
+					select.options[i].selected = true;
+				  	break;
+				  }
 				}
 			  }
 			}
@@ -91,7 +98,7 @@ function _set_combo_input(e) {
 }
 
 function _update_box(s) {
-	var byid = s.className=='combo';
+	var byid = s.className=='combo' || s.className=='combo3';
 	var rel = s.getAttribute('rel');
 	var box = document.getElementsByName(rel)[0];
 		if(box && s.selectedIndex>=0) {
@@ -115,14 +122,14 @@ function _set_combo_select(e) {
 //			if(this.className=='combo')
 //			    _update_box(this);
 			if ((this.selectedIndex != this.getAttribute('_last'))
-				||(this.className=='combo' && _update_box(this))
+				||((this.className=='combo' || this.className=='combo3') && _update_box(this))
 				)
 					this.onchange();
 		}
 		e.onchange = function() {
 			var s = this;
-			this.setAttribute('_last', this.selectedIndex);			
-			if(s.className=='combo')
+			this.setAttribute('_last', this.selectedIndex);
+			if(s.className=='combo' || this.className=='combo3')
 			    _update_box(s);
 			if(s.selectedIndex>=0) {
 				 var sname = '_'+s.name+'_update';
@@ -185,11 +192,11 @@ var inserts = {
 		if(e.onfocus==undefined) {
 			e.onfocus = function() {
 			    save_focus(this);
-				if (this.className == 'combo') 
+				if (this.className == 'combo' || this.className == 'combo3') 
 					this.select();
 			};
 		}
-		if (e.className == 'combo' || e.className == 'combo2') {
+		if (e.className == 'combo' || e.className == 'combo2' || e.className == 'combo3') {
 				_set_combo_input(e);
 		} 
 		else
@@ -295,7 +302,7 @@ var inserts = {
 			    save_focus(this);
 			};
   		  var c = e.className;
-		  if (c == 'combo' || c == 'combo2')
+		  if (c == 'combo' || c == 'combo2' || c == 'combo3')
 			_set_combo_select(e);
 		}
 	},

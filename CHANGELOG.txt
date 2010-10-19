@@ -19,6 +19,11 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+19-Oct-2010 Janusz Dobrowolski
+! Accounts list compares keypresses to starting fragment of GL code (combo3)
+$ /includes/ui/ui_lists.inc
+  /js/inserts.js
+
 17-Oct-2010 Joe Hunt
 ! Changed Inventory Sales Report to use average cost by actual trans dates if non zero
 $ /reporting/rep304.php
@@ -28,7 +33,7 @@ $ /reporting/rep304.php
 $ /gl/inquiry/balance_sheet.php
   /gl/inquiry/gl_trial_balance.php
   /gl/inquiry/profit_loss.php
-  
+
 15-Oct-2010 Joe Hunt
 # [0000263] Customer Credit Note didn't update units when shifting items.
 $ /sales/includes/ui/sales_credit_ui.inc
