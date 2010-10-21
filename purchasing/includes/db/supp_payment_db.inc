@@ -38,7 +38,7 @@ function add_supp_payment($supplier_id, $date_, $bank_account,
 	$trans_type = ST_SUPPAYMENT;
 
 	/* Create a supp_trans entry for the supplier payment */
-	$payment_id = add_supp_trans($trans_type, $supplier_id, $date_, $date_,
+	$payment_id = write_supp_trans($trans_type, 0, $supplier_id, $date_, $date_,
 		$ref, "", -$supp_amount, 0, -$supp_discount, "", $rate);
 
 	// Now debit creditors account with payment + discount
