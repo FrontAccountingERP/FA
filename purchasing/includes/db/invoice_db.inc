@@ -17,11 +17,13 @@ function read_supplier_details_to_trans(&$supp_trans, $supplier_id)
 {
 	$sql = "SELECT supp.supp_name, terms.terms, terms.days_before_due,
 		terms.day_in_following_month, supp.tax_included,
-		supp.tax_group_id, tax_group.name AS tax_group_name
-		FROM ".TB_PREF."suppliers supp, ".TB_PREF."payment_terms terms, ".TB_PREF."tax_groups tax_group
+		supp.tax_group_id, tax_group.name AS tax_group_name,
+		supp.credit_limit - Sum(IFNULL(IF(trans.type=".ST_SUPPCREDIT.", -1, 1) 
+			* (ov_amount + ov_gst + ov_discount),0)) as cur_credit
+		FROM ".TB_PREF."suppliers supp LEFT JOIN ".TB_PREF."supp_trans trans ON supp.supplier_id = trans.supplier_id, ".TB_PREF."payment_terms terms, ".TB_PREF."tax_groups tax_group
 		WHERE supp.tax_group_id = tax_group.id
 		AND supp.payment_terms=terms.terms_indicator
-		AND supp.supplier_id = ".db_escape($supplier_id);
+		AND supp.supplier_id = ".db_escape($supplier_id)." GROUP BY supp.supp_name";
 
 	$result = db_query($sql, "The supplier record selected: " . $supplier_id . " cannot be retrieved");
 
@@ -31,6 +33,7 @@ function read_supplier_details_to_trans(&$supp_trans, $supplier_id)
     $supp_trans->tax_included = $myrow['tax_included'];
     $supp_trans->supplier_name = $myrow['supp_name'];
 	$supp_trans->terms_description = $myrow['terms'];
+	$supp_trans->credit = $myrow['cur_credit'];
 
 	if ($myrow['days_before_due'] == 0)
 	{

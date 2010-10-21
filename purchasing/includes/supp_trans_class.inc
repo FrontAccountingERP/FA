@@ -40,6 +40,7 @@ class supp_trans
 	var $ov_discount;
 	var $ov_gst;
 	var $gl_codes_counter=0;
+	var $credit = 0;
 
 	function supp_trans($trans_type)
 	{

@@ -128,6 +128,7 @@ function invoice_header(&$supp_trans)
 	}
 
   	label_row(_("Tax Group:"), $supp_trans->tax_description);
+	supplier_credit_row($supp_trans->supplier_id, $supp_trans->credit);
 
 	end_outer_table(1);
 }

@@ -19,6 +19,12 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+21-Oct-2010 Joe Hunt
++ Added credit info in supplier invoice and supplier credit note.
+$ /purchasing/includes/db/invoice_db.inc
+  /purchasing/includes/ui/invoice_ui.inc
+  /purchasing/includes/supp_trans_class.inc
+  
 21-Oct-2010 Janusz Dobrowolski
 ! Optimized bank transaction edition code, [0000270] invalid next reference update in journal/bank trans
 $ /gl/gl_bank.php
