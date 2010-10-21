@@ -41,6 +41,8 @@ $ /includes/main.inc
   /includes/db/references_db.inc
   /gl/includes/db/gl_db_trans.inc
   /gl/inquiry/journal_inquiry.php
+# Bad amount sign for amount
+  /gl/view/gl_payment_view.php
 # Additonal sql parameters cleanup
 $ /gl/includes/db/gl_db_trans.inc
   /gl/inquiry/journal_inquiry.php
