@@ -175,6 +175,7 @@ include_once($path_to_root . "/includes/prefs/sysprefs.inc");
 ini_set('session.gc_maxlifetime', 36000); // 10hrs
 
 session_name('FA'.md5(dirname(__FILE__)));
+//include_once($path_to_root.'/modules/www_statistics/includes/db_sessions.inc');
 session_start();
 
 // this is to fix the "back-do-you-want-to-refresh" issue - thanx PHPFreaks
@@ -278,5 +279,17 @@ $SysPrefs = &$_SESSION['SysPrefs'];
 // POST vars cleanup needed for direct reuse.
 // We quote all values later with db_escape() before db update.
 	$_POST = strip_quotes($_POST);
+
+// GET cleanup against XSS. (NB in FA those are mainly numeric transaction numbers)
+	foreach($_GET as $name => $value) {
+//		$value = @html_entity_decode($value, ENT_QUOTES, $_SESSION['language']->encoding);
+		$_GET[$name] = @htmlspecialchars($value, ENT_QUOTES, $_SESSION['language']->encoding);
+
+	}
+	foreach($_POST as $name => $value) {
+//		$value = @html_entity_decode($value, ENT_QUOTES, $_SESSION['language']->encoding);
+		$_POST[$name] = @htmlspecialchars($value, ENT_QUOTES, $_SESSION['language']->encoding);
+
+	}
 
 ?>
