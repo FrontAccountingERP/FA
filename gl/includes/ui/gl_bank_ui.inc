@@ -98,10 +98,7 @@ function display_bank_header(&$order)
 
 	table_section(3, "33%");
 
-	if (isset($_GET['NewPayment']))
-    	ref_row(_("Reference:"), 'ref', '', $Refs->get_next(ST_BANKPAYMENT));
-    else
-    	ref_row(_("Reference:"), 'ref', '', $Refs->get_next(ST_BANKDEPOSIT));
+	ref_row(_("Reference:"), 'ref', '');
 
 	end_outer_table(1); // outer table
 

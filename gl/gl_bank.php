@@ -31,11 +31,10 @@ if ($use_date_picker)
 
 if (isset($_GET['NewPayment'])) {
 	$_SESSION['page_title'] = _($help_context = "Bank Account Payment Entry");
-	handle_new_order(ST_BANKPAYMENT);
-
+	create_cart(ST_BANKPAYMENT, 0);
 } else if(isset($_GET['NewDeposit'])) {
 	$_SESSION['page_title'] = _($help_context = "Bank Account Deposit Entry");
-	handle_new_order(ST_BANKDEPOSIT);
+	create_cart(ST_BANKDEPOSIT, 0);
 } else if(isset($_GET['ModifyPayment'])) {
 	$_SESSION['page_title'] = _($help_context = "Modify Bank Account Entry")." #".$_GET['trans_no'];
 	create_cart(ST_BANKPAYMENT, $_GET['trans_no']);
@@ -133,23 +132,6 @@ if (isset($_POST['_date__changed'])) {
 }
 //--------------------------------------------------------------------------------------------------
 
-function handle_new_order($type)
-{
-	if (isset($_SESSION['pay_items']))
-	{
-		unset ($_SESSION['pay_items']);
-	}
-
-	//session_register("pay_items");
-
-	$_SESSION['pay_items'] = new items_cart($type);
-
-	$_POST['date_'] = new_doc_date();
-	if (!is_date_in_fiscalyear($_POST['date_']))
-		$_POST['date_'] = end_fiscalyear();
-	$_SESSION['pay_items']->tran_date = $_POST['date_'];
-}
-
 function create_cart($type, $trans_no)
 {
 	global $Refs;
@@ -158,64 +140,70 @@ function create_cart($type, $trans_no)
 	{
 		unset ($_SESSION['pay_items']);
 	}
-
-	$_SESSION['pay_items'] = new items_cart($type);
-    $_SESSION['pay_items']->order_id = $trans_no;
+	
+	$cart = new items_cart($type);
+    $cart->order_id = $trans_no;
 
 	if ($trans_no) {
-		$result = get_gl_trans($type, $trans_no);
-
-		if ($result) {
-			while ($row = db_fetch($result)) {
-				if ($row['amount'] == 0) continue;
-				if (is_bank_account($row['account'])) continue;
-				$date = $row['tran_date'];
-				$_SESSION['pay_items']->add_gl_item($row['account'], $row['dimension_id'], 
-					$row['dimension2_id'], $row['amount'], $row['memo_']);
-			}
-		}
-		$_SESSION['pay_items']->memo_ = get_comments_string($type, $trans_no);
-		$_SESSION['pay_items']->tran_date = sql2date($date);
-		$_SESSION['pay_items']->reference = $Refs->get($type, $trans_no);
-		////////////////////////////////////////////
-		// Check Ref Original ?????
-		$_POST['ref_original'] = $_SESSION['pay_items']->reference; // Store for comparison when updating	
 
 		$bank_trans = db_fetch(get_bank_trans($type, $trans_no));
 		$_POST['bank_account'] = $bank_trans["bank_act"];
 		$_POST['PayType'] = $bank_trans["person_type_id"];
 		
-		if ($bank_trans["person_type_id"] == PT_CUSTOMER) //2
+		if ($bank_trans["person_type_id"] == PT_CUSTOMER)
 		{
 			$trans = get_customer_trans($trans_no, $type);	
 			$_POST['person_id'] = $trans["debtor_no"];
 			$_POST['PersonDetailID'] = $trans["branch_code"];
 		}
-		elseif ($bank_trans["person_type_id"] == PT_SUPPLIER) //3
+		elseif ($bank_trans["person_type_id"] == PT_SUPPLIER)
 		{
 			$trans = get_supp_trans($trans_no, $type);
 			$_POST['person_id'] = $trans["supplier_id"];
 		}
-		elseif ($bank_trans["person_type_id"] == PT_MISC) //0
+		elseif ($bank_trans["person_type_id"] == PT_MISC)
 			$_POST['person_id'] = $bank_trans["person_id"];
-		elseif ($bank_trans["person_type_id"] == PT_QUICKENTRY) //4
+		elseif ($bank_trans["person_type_id"] == PT_QUICKENTRY)
 			$_POST['person_id'] = $bank_trans["person_id"];
 		else 
 			$_POST['person_id'] = $bank_trans["person_id"];
 
+		$cart->memo_ = get_comments_string($type, $trans_no);
+		$cart->tran_date = sql2date($bank_trans['trans_date']);
+		$cart->reference = $Refs->get($type, $trans_no);
+
+		$gl_amount = 0;
+		$result = get_gl_trans($type, $trans_no);
+		if ($result) {
+			while ($row = db_fetch($result)) {
+				if (is_bank_account($row['account'])) {
+					// date exchange rate is currenly not stored in bank transaction,
+					// so we have to restore it from original gl amounts
+					$ex_rate = $bank_trans['amount']/$row['amount'];
+				} else {
+					$date = $row['tran_date'];
+					$cart->add_gl_item( $row['account'], $row['dimension_id'],
+						$row['dimension2_id'], $row['amount'], $row['memo_']);
+					$gl_amount += $row['amount'];
+				}
+			}
+		}
+		// apply exchange rate
+		foreach($cart->gl_items as $line_no => $line)
+			$cart->gl_items[$line_no]->amount *= $ex_rate;
+		
 	} else {
-		$_SESSION['pay_items']->reference = $Refs->get_next(0);
-		$_SESSION['pay_items']->tran_date = new_doc_date();
-		if (!is_date_in_fiscalyear($_SESSION['pay_items']->tran_date))
-			$_SESSION['pay_items']->tran_date = end_fiscalyear();
-		$_POST['ref_original'] = -1;
+		$cart->reference = $Refs->get_next($cart->trans_type);
+		$cart->tran_date = new_doc_date();
+		if (!is_date_in_fiscalyear($cart->tran_date))
+			$cart->tran_date = end_fiscalyear();
 	}
 
-	$_POST['memo_'] = $_SESSION['pay_items']->memo_;
-	$_POST['ref'] = $_SESSION['pay_items']->reference;
-	$_POST['date_'] = $_SESSION['pay_items']->tran_date;
+	$_POST['memo_'] = $cart->memo_;
+	$_POST['ref'] = $cart->reference;
+	$_POST['date_'] = $cart->tran_date;
 
-	//$_SESSION['pay_items'] = &$_SESSION['pay_items'];
+	$_SESSION['pay_items'] = &$cart;
 }
 //-----------------------------------------------------------------------------------------------
 
@@ -294,37 +282,20 @@ if (isset($_POST['Process']))
 		meta_forward($_SERVER['PHP_SELF'], $trans_type==ST_BANKPAYMENT ?
 			"UpdatedID=$trans_no" : "UpdatedDep=$trans_no");
 
-} /*end of process credit note */
+}
 
 //-----------------------------------------------------------------------------------------------
 
 function check_item_data()
 {
-	//if (!check_num('amount', 0))
-	//{
-	//	display_error( _("The amount entered is not a valid number or is less than zero."));
-	//	set_focus('amount');
-	//	return false;
-	//}
-
-	if ($_POST['code_id'] == $_POST['bank_account'])
+	if (!check_num('amount', 0))
 	{
-		display_error( _("The source and destination accouts cannot be the same."));
-		set_focus('code_id');
+		display_error( _("The amount entered is not a valid number or is less than zero."));
+		set_focus('amount');
 		return false;
 	}
 
-	//if (is_bank_account($_POST['code_id']))
-	//{
-	//	if ($_SESSION['pay_items']->trans_type == ST_BANKPAYMENT)
-	//		display_error( _("You cannot make a payment to a bank account. Please use the transfer funds facility for this."));
-	//	else
- 	//		display_error( _("You cannot make a deposit from a bank account. Please use the transfer funds facility for this."));
-	//	set_focus('code_id');
-	//	return false;
-	//}
-
-   	return true;
+	return true;
 }
 
 //-----------------------------------------------------------------------------------------------
