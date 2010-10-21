@@ -157,7 +157,6 @@ function add_bank_transfer($from_account, $to_account, $date_,
 
 	return $trans_no;
 }
-
 //----------------------------------------------------------------------------------
 //	Add bank payment or deposit to database.
 //
@@ -168,8 +167,10 @@ function add_bank_transfer($from_account, $to_account, $date_,
 // $person_detail_id - customer branch id or not used
 //
 // returns an array of (inserted trans type, trans no)
-
-function add_bank_transaction($trans_type, $from_account, $items, $date_,
+//
+// FIXME -revise code for update case
+//
+function write_bank_transaction($trans_type, $trans_no, $from_account, $items, $date_,
 	$person_type_id, $person_id, $person_detail_id,	$ref, $memo_, $use_transaction=true)
 {
 	global $Refs, $SysPrefs;
@@ -182,6 +183,9 @@ function add_bank_transaction($trans_type, $from_account, $items, $date_,
 	$exchanged = false;
 	if ($use_transaction)
 		begin_transaction();
+
+	if ($trans_no)
+		clear_bank_transaction($_SESSION['pay_items']->trans_type, $_SESSION['pay_items']->order_id, true);
 
 	$currency = get_bank_account_currency($from_account);
 	$bank_gl_account = get_bank_gl_account($from_account);
@@ -198,7 +202,7 @@ function add_bank_transaction($trans_type, $from_account, $items, $date_,
 		// we need to negate it too
 		$cust_amount = -$cust_amount;
 
-		$trans_no = write_customer_trans($trans_type, 0, $person_id, $person_detail_id, $date_,
+		$trans_no = write_customer_trans($trans_type, $trans_no, $person_id, $person_detail_id, $date_,
         	$ref, $cust_amount);
 
     }
@@ -211,13 +215,14 @@ function add_bank_transaction($trans_type, $from_account, $items, $date_,
 		// we need to negate it too
 		$supp_amount = -$supp_amount;
 
-		$trans_no = add_supp_trans($trans_type, $person_id, $date_, '',
+		$trans_no = write_supp_trans($trans_type, $trans_no, $person_id, $date_, '',
     		$ref, "", $supp_amount, 0, 0);
 
     }
     else
     {
-    	$trans_no = get_next_trans_no($trans_type);
+    	if (!$trans_no)
+    		$trans_no = get_next_trans_no($trans_type);
     	$do_exchange_variance = $SysPrefs->auto_currency_revaluation();
     	if ($do_exchange_variance)
     		$trans_no1 = get_next_trans_no(ST_JOURNAL);
@@ -292,142 +297,35 @@ function add_bank_transaction($trans_type, $from_account, $items, $date_,
 
 	return array($trans_type, $trans_no);
 }
-
 //----------------------------------------------------------------------------------------
 
-//----------------------------------------------------------------------------------
-//	Re-Insert bank payment or deposit to database using the transaction number passed.
-//
-//	$from_account - bank account id
-//  $item - transaction cart (line item's amounts in bank account's currency)
-//  $person_type_id - defines type of $person_id identifiers
-//  $person_id	- supplier/customer/other id
-//  $person_detail_id - customer branch id or not used
-//
-// returns an array of (inserted trans type, trans no)
-
-function reinsert_bank_transaction($trans_type, $trans_no, $from_account, $items, $date_,
-	$person_type_id, $person_id, $person_detail_id,	$ref, $memo_, $use_transaction=true)
+function clear_bank_transaction($type, $type_no, $nested=false)
 {
-	global $Refs, $SysPrefs;
-
-	// we can only handle type 1 (payment)and type 2 (deposit)
-	if ($trans_type != ST_BANKPAYMENT && $trans_type != ST_BANKDEPOSIT)
-		display_db_error("Invalid type ($trans_type) sent to add_bank_transaction");
-
-	$do_exchange_variance = false;
-	$exchanged = false;
-	if ($use_transaction)
+	global $Refs;
+	
+	if (!$nested)
 		begin_transaction();
 
-	$currency = get_bank_account_currency($from_account);
-	$bank_gl_account = get_bank_gl_account($from_account);
+	$sql = "DELETE FROM ".TB_PREF."bank_trans 
+		WHERE type=".db_escape($type)." AND trans_no=".db_escape($type_no);
 
-	// the gl items are already inversed/negated for type 2 (deposit)
-	$total_amount = $items->gl_items_total();
+	$result = db_query($sql, "could not clear bank transactions for type=$type and trans_no=$type_no");
 
-    if ($person_type_id == PT_CUSTOMER)
-    {
-    	// we need to add a customer transaction record
+	clear_gl_trans($type, $type_no, true);
 
-		// convert to customer currency
-		$cust_amount = exchange_from_to($total_amount, $currency, get_customer_currency($person_id), $date_);
-		// we need to negate it too
-		$cust_amount = -$cust_amount;
+	// in case it's a customer trans - probably better to check first
+	void_cust_allocations($type, $type_no);
+	clear_customer_trans($type, $type_no);
 
-		$trans_no = reinsert_customer_trans($trans_type, $trans_no, $person_id, $person_detail_id, $date_,
-        	$ref, $cust_amount);
+	// in case it's a supplier trans - probably better to check first
+	void_supp_allocations($type, $type_no);
+	clear_supp_trans($type, $type_no);
 
-    }
-    elseif ($person_type_id == PT_SUPPLIER)
-    {
-    	// we need to add a supplier transaction record
-		// convert to supp currency
-		$supp_amount = exchange_from_to($total_amount, $currency, get_supplier_currency($person_id), $date_);
+	clear_trans_tax_details($type, $type_no);
 
-		// we need to negate it too
-		$supp_amount = -$supp_amount;
-
-		$trans_no = reinsert_supp_trans($trans_type, $trans_no, $person_id, $date_, '',
-    		$ref, "", $supp_amount, 0, 0);
-
-    }
-    else
-    {
-    	$do_exchange_variance = $SysPrefs->auto_currency_revaluation();
-    	if ($do_exchange_variance)
-    		$trans_no1 = get_next_trans_no(ST_JOURNAL);
-    }
-
-	// do the source account postings
-
-    add_bank_trans($trans_type, $trans_no, $from_account, $ref,
-    	$date_, -$total_amount,
-    	$person_type_id, $person_id,
-    	$currency,
-    	"Cannot insert a source bank transaction");
-	$total = 0;
-	foreach ($items->gl_items as $gl_item)
-	{
-		$is_bank_to = is_bank_account($gl_item->code_id);
-
-		if ($trans_type == ST_BANKPAYMENT AND $is_bank_to)
-		{
-			// we don't allow payments to go to a bank account. use transfer for this !
-			display_db_error("invalid payment entered. Cannot pay to another bank account", "");
-		}
-
-    	// do the destination account postings
-    	$total += add_gl_trans($trans_type, $trans_no, $date_, $gl_item->code_id,
-    		$gl_item->dimension_id, $gl_item->dimension2_id, $gl_item->reference,
-    		$gl_item->amount, $currency, $person_type_id, $person_id);
-
-    	if ($is_bank_to)
-    	{
-    		add_bank_trans($trans_type, $trans_no, $is_bank_to, $ref,
-    			$date_, $gl_item->amount,
-    			$person_type_id, $person_id, $currency,
-    			"Cannot insert a destination bank transaction");
-    		if ($do_exchange_variance)
-    		{
-    			add_exchange_variation($trans_no1, $date_, $is_bank_to, $gl_item->code_id, 
-    				$currency, $person_type_id, $person_id);
-    		}		
-    	}
-		// store tax details if the gl account is a tax account
-
-		$amount = $gl_item->amount;
-		$ex_rate = get_exchange_rate_from_home_currency($currency, $date_);
-			
-		add_gl_tax_details($gl_item->code_id, $trans_type, $trans_no, -$amount,
-			$ex_rate, $date_, $memo_);
-	}
-	// do the source account postings
-    add_gl_trans($trans_type, $trans_no, $date_, $bank_gl_account, 0, 0, $memo_,
-    	-$total, null, $person_type_id, $person_id);
-
-    if ($do_exchange_variance)
-    {
-    	if ($exchanged || add_exchange_variation($trans_no1, $date_, $from_account, $bank_gl_account, 
-    		$currency, $person_type_id, $person_id))
-    	{	
-   			$ref1 = $Refs->get_next(ST_JOURNAL);
-			$Refs->save(ST_JOURNAL, $trans_no1, $ref1);
-			add_audit_trail(ST_JOURNAL, $trans_no1, $date_);
-		}	
-	}
-
-	add_comments($trans_type, $trans_no, $date_, $memo_);
-
-	$Refs->save($trans_type, $trans_no, $ref);
-	add_audit_trail($trans_type, $trans_no, $date_);
-
-	if ($use_transaction)
+	delete_comments($type, $type_no);
+	if (!$nested)
 		commit_transaction();
-
-	return array($trans_type, $trans_no);
 }
-
-//----------------------------------------------------------------------------------------
 
 ?>

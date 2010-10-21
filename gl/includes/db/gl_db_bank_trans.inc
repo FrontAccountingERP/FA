@@ -150,41 +150,4 @@ function void_bank_trans($type, $type_no, $nested=false)
 		commit_transaction();
 }
 
-//----------------------------------------------------------------------------------
-
-//----------------------------------------------------------------------------------------
-
-function clear_bank_trans($type, $type_no, $nested=false)
-{
-	global $Refs;
-	
-	if (!$nested)
-		begin_transaction();
-
-	$sql = "DELETE FROM ".TB_PREF."bank_trans 
-		WHERE type=".db_escape($type)." AND trans_no=".db_escape($type_no);
-
-	$result = db_query($sql, "could not clear bank transactions for type=$type and trans_no=$type_no");
-
-	clear_gl_trans($type, $type_no, true);
-
-	// in case it's a customer trans - probably better to check first
-	void_cust_allocations($type, $type_no);
-	clear_customer_trans($type, $type_no);
-
-	// in case it's a supplier trans - probably better to check first
-	void_supp_allocations($type, $type_no);
-	clear_supp_trans($type, $type_no);
-
-	clear_trans_tax_details($type, $type_no);
-
-	//Delete the reference
-	$Refs->delete($type, $type_no);	
-
-	delete_comments($type, $type_no);
-	if (!$nested)
-		commit_transaction();
-}
-
-
 ?>

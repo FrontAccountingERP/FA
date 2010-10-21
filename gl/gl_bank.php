@@ -271,19 +271,9 @@ if (isset($_POST['Process']))
 	
 	$_SESSION['pay_items'] = &$_SESSION['pay_items'];
 	$new = $_SESSION['pay_items']->order_id == 0;
-	
-	if (!$new)
-	{
-		clear_bank_trans($_SESSION['pay_items']->trans_type, $_SESSION['pay_items']->order_id, true);
-		$trans = reinsert_bank_transaction(
-				$_SESSION['pay_items']->trans_type, $_SESSION['pay_items']->order_id, $_POST['bank_account'],
-				$_SESSION['pay_items'], $_POST['date_'],
-				$_POST['PayType'], $_POST['person_id'], get_post('PersonDetailID'),
-				$_POST['ref'], $_POST['memo_'], false);		
-	}
-	else 
-	$trans = add_bank_transaction(
-		$_SESSION['pay_items']->trans_type, $_POST['bank_account'],
+
+	$trans = write_bank_transaction(
+		$_SESSION['pay_items']->trans_type, $_SESSION['pay_items']->order_id, $_POST['bank_account'],
 		$_SESSION['pay_items'], $_POST['date_'],
 		$_POST['PayType'], $_POST['person_id'], get_post('PersonDetailID'),
 		$_POST['ref'], $_POST['memo_'], false);
@@ -298,11 +288,11 @@ if (isset($_POST['Process']))
 	commit_transaction();
 	
 	if ($new)
-	meta_forward($_SERVER['PHP_SELF'], $trans_type==ST_BANKPAYMENT ?
-		"AddedID=$trans_no" : "AddedDep=$trans_no");
+		meta_forward($_SERVER['PHP_SELF'], $trans_type==ST_BANKPAYMENT ?
+			"AddedID=$trans_no" : "AddedDep=$trans_no");
 	else
-	meta_forward($_SERVER['PHP_SELF'], $trans_type==ST_BANKPAYMENT ?
-		"UpdatedID=$trans_no" : "UpdatedDep=$trans_no");
+		meta_forward($_SERVER['PHP_SELF'], $trans_type==ST_BANKPAYMENT ?
+			"UpdatedID=$trans_no" : "UpdatedDep=$trans_no");
 
 } /*end of process credit note */
 
