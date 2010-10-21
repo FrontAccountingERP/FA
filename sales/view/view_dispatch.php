@@ -142,17 +142,16 @@ if (db_num_rows($result) > 0)
         amount_cell($value);
 	end_row();
 	} //end while there are line items to print out
+	$display_sub_tot = price_format($sub_total);
+	label_row(_("Sub-total"), $display_sub_tot, "colspan=6 align=right",
+		"nowrap align=right width=15%");
 
 }
 else
 	display_note(_("There are no line items on this dispatch."), 1, 2);
 
-$display_sub_tot = price_format($sub_total);
 $display_freight = price_format($myrow["ov_freight"]);
 
-/*Print out the delivery note text entered */
-label_row(_("Sub-total"), $display_sub_tot, "colspan=6 align=right",
-	"nowrap align=right width=15%");
 label_row(_("Shipping"), $display_freight, "colspan=6 align=right", "nowrap align=right");
 
 $tax_items = get_trans_tax_details(ST_CUSTDELIVERY, $trans_id);
