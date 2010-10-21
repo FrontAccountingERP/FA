@@ -185,7 +185,7 @@ function write_bank_transaction($trans_type, $trans_no, $from_account, $items, $
 		begin_transaction();
 
 	if ($trans_no)
-		clear_bank_transaction($_SESSION['pay_items']->trans_type, $_SESSION['pay_items']->order_id, true);
+		clear_bank_transaction($_SESSION['pay_items']->trans_type, $_SESSION['pay_items']->order_id);
 
 	$currency = get_bank_account_currency($from_account);
 	$bank_gl_account = get_bank_gl_account($from_account);
@@ -216,7 +216,7 @@ function write_bank_transaction($trans_type, $trans_no, $from_account, $items, $
 		$supp_amount = -$supp_amount;
 
 		$trans_no = write_supp_trans($trans_type, $trans_no, $person_id, $date_, '',
-    		$ref, "", $supp_amount, 0, 0);
+			$ref, "", $supp_amount, 0, 0);
 
     }
     else
@@ -299,12 +299,8 @@ function write_bank_transaction($trans_type, $trans_no, $from_account, $items, $
 }
 //----------------------------------------------------------------------------------------
 
-function clear_bank_transaction($type, $type_no, $nested=false)
+function clear_bank_transaction($type, $type_no)
 {
-	global $Refs;
-	
-	if (!$nested)
-		begin_transaction();
 
 	$sql = "DELETE FROM ".TB_PREF."bank_trans 
 		WHERE type=".db_escape($type)." AND trans_no=".db_escape($type_no);
@@ -315,7 +311,6 @@ function clear_bank_transaction($type, $type_no, $nested=false)
 
 	// in case it's a customer trans - probably better to check first
 	void_cust_allocations($type, $type_no);
-	clear_customer_trans($type, $type_no);
 
 	// in case it's a supplier trans - probably better to check first
 	void_supp_allocations($type, $type_no);
@@ -324,8 +319,6 @@ function clear_bank_transaction($type, $type_no, $nested=false)
 	clear_trans_tax_details($type, $type_no);
 
 	delete_comments($type, $type_no);
-	if (!$nested)
-		commit_transaction();
 }
 
 ?>

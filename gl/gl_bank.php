@@ -249,6 +249,16 @@ if (isset($_POST['Process']))
 		$input_error = 1;
 	}
 
+	if (get_post('PayType')==PT_CUSTOMER && (!get_post('person_id') || !get_post('PersonDetailID'))) {
+		display_error(_("You have to select customer and customer branch."));
+		set_focus('person_id');
+		$input_error = 1;
+	} elseif (get_post('PayType')==PT_SUPPLIER && (!get_post('person_id'))) {
+		display_error(_("You have to select supplier."));
+		set_focus('person_id');
+		$input_error = 1;
+	}
+
 	if ($input_error == 1)
 		unset($_POST['Process']);
 }
