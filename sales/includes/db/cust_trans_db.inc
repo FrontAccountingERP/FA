@@ -38,7 +38,7 @@ function get_customer_trans_version($type, $trans_no) {
 			WHERE type='.db_escape($type).' AND (';
 
 	foreach ($trans_no as $key=>$trans)
-		$trans_no[$key] = 	'trans_no='.$trans_no[$key];
+		$trans_no[$key] = 	'trans_no='.db_escape($trans_no[$key]);
 
 	$sql .= implode(' OR ', $trans_no) . ')';
 
@@ -84,7 +84,7 @@ function write_customer_trans($trans_type, $trans_no, $debtor_no, $BranchNo,
 		ov_gst, ov_freight, ov_freight_tax,
 		rate, ship_via, alloc,
 		dimension_id, dimension2_id, payment_terms
-		) VALUES ($trans_no, ".db_escape($trans_type).",
+		) VALUES (".db_escape($trans_no).", ".db_escape($trans_type).",
 		".db_escape($debtor_no).", ".db_escape($BranchNo).",
 		'$SQLDate', '$SQLDueDate', ".db_escape($reference).",
 		".db_escape($sales_type).", ".db_escape($order_no).", $Total, ".db_escape($discount).", $Tax,
@@ -102,7 +102,7 @@ function write_customer_trans($trans_type, $trans_no, $debtor_no, $BranchNo,
 		ship_via=".db_escape($ship_via).", alloc=$AllocAmt,
 		dimension_id=".db_escape($dimension_id).", dimension2_id=".db_escape($dimension2_id).",
 		payment_terms=".db_escape($payment_terms)."
-		WHERE trans_no=$trans_no AND type=".db_escape($trans_type);
+		WHERE trans_no=".db_escape($trans_no)." AND type=".db_escape($trans_type);
 	}
 	db_query($sql, "The debtor transaction record could not be inserted");
 
@@ -110,54 +110,6 @@ function write_customer_trans($trans_type, $trans_no, $debtor_no, $BranchNo,
 
 	return $trans_no;
 }
-
-//----------------------------------------------------------------------------------------
-
-function reinsert_customer_trans($trans_type, $trans_no, $debtor_no, $BranchNo,
-	$date_, $reference, $Total, $discount=0, $Tax=0, $Freight=0, $FreightTax=0,
-	$sales_type=0, $order_no=0, $ship_via=0, $due_date="",
-	$AllocAmt=0, $rate=0, $dimension_id=0, $dimension2_id=0)
-{
-	if ($trans_no == '')
-		display_db_error('Invalid call to function reinsert_customer_trans');
-		
-	$curr = get_customer_currency($debtor_no);
-	if ($rate == 0)
-		$rate = get_exchange_rate_from_home_currency($curr, $date_);
-
-	$SQLDate = date2sql($date_);
-	if ($due_date == "")
-		$SQLDueDate = "0000-00-00";
-	else
-		$SQLDueDate = date2sql($due_date);
-	
-	if ($trans_type == ST_BANKPAYMENT)
-		$Total = -$Total;
-
-	$sql = "INSERT INTO ".TB_PREF."debtor_trans (
-		trans_no, type,
-		debtor_no, branch_code,
-		tran_date, due_date,
-		reference, tpe,
-		order_, ov_amount, ov_discount,
-		ov_gst, ov_freight, ov_freight_tax,
-		rate, ship_via, alloc,
-		dimension_id, dimension2_id
-		) VALUES ($trans_no, ".db_escape($trans_type).",
-		".db_escape($debtor_no).", ".db_escape($BranchNo).",
-		'$SQLDate', '$SQLDueDate', ".db_escape($reference).",
-		".db_escape($sales_type).", ".db_escape($order_no).", $Total, ".db_escape($discount).", $Tax,
-		".db_escape($Freight).",
-		$FreightTax, $rate, ".db_escape($ship_via).", $AllocAmt,
-		".db_escape($dimension_id).", ".db_escape($dimension2_id).")";
-
-	db_query($sql, "The debtor transaction record could not be inserted");
-
-	add_audit_trail($trans_type, $trans_no, $date_, _("Updated."));
-
-	return $trans_no;
-}
-
 //----------------------------------------------------------------------------------------
 
 function get_customer_trans($trans_id, $trans_type)
@@ -206,7 +158,7 @@ function get_customer_trans($trans_id, $trans_type)
 
 	if ($trans_type == ST_CUSTPAYMENT) {
 		// it's a payment so also get the bank account
-		$sql .= " AND ".TB_PREF."bank_trans.trans_no =$trans_id
+		$sql .= " AND ".TB_PREF."bank_trans.trans_no =".db_escape($trans_id)."
 			AND ".TB_PREF."bank_trans.type=$trans_type
 			AND ".TB_PREF."bank_accounts.id=".TB_PREF."bank_trans.bank_act ";
 	}

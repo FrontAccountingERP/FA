@@ -141,7 +141,7 @@ function delete_sales_order($order_no, $trans_type)
 function update_sales_order_version($order)
 {
   foreach ($order as $so_num => $so_ver) {
-  $sql= 'UPDATE '.TB_PREF.'sales_orders SET version=version+1 WHERE order_no='. $so_num.
+  $sql= 'UPDATE '.TB_PREF.'sales_orders SET version=version+1 WHERE order_no='. db_escape($so_num).
 	' AND version='.$so_ver . " AND trans_type=30";
   db_query($sql, 'Concurrent editing conflict while sales order update');
   }
@@ -179,11 +179,11 @@ function update_sales_order($order)
 		version = ".($version+1).",
 		payment_terms = " .db_escape($order->payment). ",
 		total = ". db_escape($total) ."
-	 WHERE order_no=" . $order_no ."
+	 WHERE order_no=" . db_escape($order_no) ."
 	 AND trans_type=".$order->trans_type." AND version=".$version;
 	db_query($sql, "order Cannot be Updated, this can be concurrent edition conflict");
 
-	$sql = "DELETE FROM ".TB_PREF."sales_order_details WHERE order_no =" . $order_no . " AND trans_type=".$order->trans_type;
+	$sql = "DELETE FROM ".TB_PREF."sales_order_details WHERE order_no =" . db_escape($order_no) . " AND trans_type=".$order->trans_type;
 
 	db_query($sql, "Old order Cannot be Deleted");
 
@@ -242,7 +242,7 @@ function update_sales_order($order)
 	} /* inserted line items into sales order details */
 
 	add_audit_trail($order->trans_type, $order_no, $order->document_date, _("Updated."));
-	$Refs->update($order->trans_type, $order_no, $order->reference);
+	$Refs->save($order->trans_type, $order_no, $order->reference);
 	commit_transaction();
 	if ($loc_notification == 1 && count($st_ids) > 0)
 	{
@@ -385,7 +385,7 @@ function sales_order_has_deliveries($order_no)
 {
 	$sql = "SELECT SUM(qty_sent) FROM ".TB_PREF.
 	"sales_order_details WHERE order_no=".db_escape($order_no)
-	." AND trans_type=".ST_SALESORDER."";
+	." AND trans_type=".ST_SALESORDER;
 
 	$result = db_query($sql, "could not query for sales order usage");
 
@@ -405,7 +405,7 @@ function close_sales_order($order_no)
 	// set the quantity of each item to the already sent quantity. this will mark item as closed.
 	$sql = "UPDATE ".TB_PREF."sales_order_details
 		SET quantity = qty_sent WHERE order_no = ".db_escape($order_no)
-		." AND trans_type=".ST_SALESORDER."";
+		." AND trans_type=".ST_SALESORDER;
 
 	db_query($sql, "The sales order detail record could not be updated");
 }
@@ -508,7 +508,7 @@ function get_sql_for_sales_orders_view($selected_customer, $trans_type)
 			.TB_PREF."cust_branch as branch
 			WHERE sorder.order_no = line.order_no
 			AND sorder.trans_type = line.trans_type
-			AND sorder.trans_type = $trans_type
+			AND sorder.trans_type = ".db_escape($trans_type)."
 			AND sorder.debtor_no = debtor.debtor_no
 			AND sorder.branch_code = branch.branch_code
 			AND debtor.debtor_no = branch.debtor_no";

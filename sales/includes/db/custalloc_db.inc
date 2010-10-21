@@ -140,8 +140,8 @@ function get_allocatable_to_cust_transactions($customer_id, $trans_no=null, $typ
 	{
 		$sql = get_alloc_trans_sql("amt", "trans.trans_no = alloc.trans_no_to
 			AND trans.type = alloc.trans_type_to
-			AND alloc.trans_no_from=$trans_no
-			AND alloc.trans_type_from=$type
+			AND alloc.trans_no_from=".db_escape($trans_no)."
+			AND alloc.trans_type_from=".db_escape($type)."
 			AND trans.debtor_no=".db_escape($customer_id),
 			"".TB_PREF."cust_allocations as alloc");
 	}

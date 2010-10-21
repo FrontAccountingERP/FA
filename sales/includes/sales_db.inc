@@ -317,10 +317,13 @@ function get_sales_child_lines($trans_type, $trans_no, $lines=true)
 	if (!is_array($trans_no)) {
 		$trans_no = array($trans_no);
 	}
-	
+
 	$par_tbl = $trans_type == ST_SALESORDER ? "sales_order_details" : "debtor_trans_details";
 	$par_no = $trans_type == ST_SALESORDER ? "trans.order_no" : "trans.debtor_trans_no";
 
+	foreach($trans_no as $n => $trans) {
+		$trans_no[$n] = db_escape($trans);
+	}
 	$sql = "SELECT child.*
 			FROM
 				".TB_PREF."debtor_trans_details child
@@ -361,7 +364,8 @@ function get_sales_parent_lines($trans_type, $trans_no, $lines=true)
 			LEFT JOIN ".TB_PREF."debtor_trans_details trans 
 				ON trans.src_id=parent.id
 			WHERE
-				trans.debtor_trans_type=$trans_type AND trans.debtor_trans_no=$trans_no";
+				trans.debtor_trans_type=".db_escape($trans_type)
+				." AND trans.debtor_trans_no=".db_escape($trans_no);
 	if (!$lines)
 		$sql .= " GROUP BY $par_no";
 	
