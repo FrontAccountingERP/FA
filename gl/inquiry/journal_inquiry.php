@@ -113,7 +113,8 @@ function edit_link($row)
 			ICON_EDIT) : '';
 }
 
-$sql = get_sql_for_journal_inquiry();
+$sql = get_sql_for_journal_inquiry(get_post('filterType', -1), get_post('FromDate'),
+	get_post('ToDate'), get_post('Ref'), get_post('Memo'), check_value('AlsoClosed'));
 
 $cols = array(
 	_("#") => array('fun'=>'journal_pos', 'align'=>'center'), 

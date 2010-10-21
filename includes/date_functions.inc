@@ -351,13 +351,7 @@ and converts to a yyyy/mm/dd format */
 	elseif ($date_system == 2)
 		list($year, $month, $day) = islamic_to_gregorian($year, $month, $day); 
 
-   	// Pad with 0s if needed
-   	if (strlen($month) == 1)
-	   	$month = "0$month";
-   	if (strlen($day) == 1)
-	   	$day = "0$day";
-
-	return $year."-".$month."-".$day;
+	return sprintf("%04d-%02d-%02d", $year, $month, $day);
 }// end of function
 
 function date1_greater_date2 ($date1, $date2) 

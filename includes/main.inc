@@ -308,7 +308,7 @@ function copy_file($file, $from, $to)
 */
 function find_custom_file($rep)
 {
-	global $installed_extensions, $comp_path, $path_to_root;
+	global $installed_extensions, $path_to_root;
 
 	// customized per company version
 	$path = company_path();

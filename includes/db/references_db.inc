@@ -21,22 +21,11 @@ function get_reference($type, $id)
 }
 
 //--------------------------------------------------------------------------------------------------
-
-function add_reference($type, $id, $reference)
-{
-	$sql = "INSERT INTO ".TB_PREF."refs (type, id, reference)
-		VALUES (".db_escape($type).", ".db_escape($id).", "
-			. db_escape(trim($reference)) . ")";
-
-	db_query($sql, "could not add reference entry");
-}
-
-//--------------------------------------------------------------------------------------------------
  
 function update_reference($type, $id, $reference)
 {
-    $sql = "UPDATE ".TB_PREF."refs SET reference=".db_escape($reference)
-			." WHERE type=".db_escape($type)." AND id=".db_escape($id);
+    $sql = "REPLACE ".TB_PREF."refs SET reference=".db_escape($reference)
+			.", type=".db_escape($type).", id=".db_escape($id);
     db_query($sql, "could not update reference entry");
 }
 
@@ -44,7 +33,7 @@ function update_reference($type, $id, $reference)
 
 function delete_reference($type, $id)
 {
-	$sql = "DELETE FROM ".TB_PREF."refs WHERE type=$type AND id=".db_escape($id);
+	$sql = "DELETE FROM ".TB_PREF."refs WHERE type=".db_escape($type)." AND id=".db_escape($id);
 
 	return db_query($sql, "could not delete from reference table");
 }
