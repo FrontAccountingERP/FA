@@ -69,7 +69,7 @@ function clear_supp_alloctions($type, $type_no, $date="")
 {
 	// clear any allocations for this transaction
 	$sql = "SELECT * FROM ".TB_PREF."supp_allocations
-		WHERE (trans_type_from=$type AND trans_no_from=$type_no)
+		WHERE (trans_type_from=".db_escape($type)." AND trans_no_from=".db_escape($type_no).")
 		OR (trans_type_to=".db_escape($type)." AND trans_no_to=".db_escape($type_no).")";
 	$result = db_query($sql, "could not void supp transactions for type=$type and trans_no=$type_no");
 
