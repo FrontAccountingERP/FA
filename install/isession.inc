@@ -71,6 +71,7 @@ $inst_langs = array(
   'ar_EG' => array ( 'name' => 'Arabic',	'code' => 'ar_EG',	'encoding' => 'utf-8', 'rtl' => true),
   'da_DK' => array ( 'name' => 'Dansk',	'code' => 'da_DK',	'encoding' => 'iso-8859-1'),
   'de_DE' => array ( 'name' => 'Deutsch',	'code' => 'de_DE',	'encoding' => 'iso-8859-1'),
+  'el_GR' => array ( 'name' => 'Greek',	'code' => 'el_GR',	'encoding' => 'utf-8'),
   'fr_FR' => array ( 'name' => 'Français',	'code' => 'fr_FR',	'encoding' => 'iso-8859-1'),
   'id_ID' => array ( 'name' => 'Indonesian','code' => 'id_ID',	'encoding' => 'iso-8859-1'),
   'nl_BE' => array ( 'name' => 'Nederlands','code' => 'nl_BE',	'encoding' => 'iso-8859-1'),
