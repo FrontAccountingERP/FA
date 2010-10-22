@@ -106,8 +106,8 @@ function handle_submit()
 	if (is_uploaded_file($_FILES['uploadfile2']['tmp_name']))
 	{
 		$file1 = $_FILES['uploadfile2']['tmp_name'];
-		$db_name = $_SESSION["wa_current_user"]->company;
-		db_import($file1, $db_connections[$db_name]);
+		foreach ($db_connections as $comp => $conn) 
+			if (!db_import($file1, $conn)) break;
 	}
 	
 	if (is_uploaded_file($_FILES['uploadfile3']['tmp_name']))
