@@ -606,7 +606,7 @@ function install_language($pkg_name)
 //
 function install_extension($pkg_name)
 {
-	global $path_to_root, $next_extension_id, $Ajax;
+	global $path_to_root, $installed_extensions, $next_extension_id, $Ajax;
 	
 	$pkg = get_pkg_or_list(array('extension', 'theme', 'chart'), $pkg_name);
 	if ($pkg) {
@@ -616,6 +616,11 @@ function install_extension($pkg_name)
 			$ext_id = array_search_key($pkg['Package'], $local_exts, 'package');
 			if ($ext_id === null)
 				$ext_id = $next_extension_id++;
+			else {	// remove another already installed package for this language 
+				$old_pkg = $installed_extensions[$ext_id]['package'];
+				if ($old_pkg)
+					uninstall_package($old_pkg);
+			}
 			$ext = array(
 				'name' => $pkg['Name'],
 				'package' => $pkg['Package'],
