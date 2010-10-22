@@ -19,11 +19,15 @@ Legend:
 ! -> Note
 $ -> Affected files
 
-22-Oct-2010 Janusz Dobrowolski/Kyriakos Tsoukalas
-+ Added greek installer translation.
+22-Oct-2010 Janusz Dobrowolski
++ Added greek installer translation by Kyriakos Tsoukalas
 $ /install/isession.inc
   /install/lang/el_GR/LC_MESSAGES/el_GR.mo
   /install/lang/el_GR/LC_MESSAGES/el_GR.po
+# Fixed sql init for manual modules.
+$ /admin/inst_module.php
+# Old package version was not uninstalled on upgrade.
+$ /includes/packages.inc
 
 21-Oct-2010 Joe Hunt
 + Added credit info in supplier invoice and supplier credit note.
