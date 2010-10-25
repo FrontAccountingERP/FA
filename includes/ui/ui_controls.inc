@@ -379,14 +379,13 @@ function tabbed_content_start($name, $tabs, $dft='') {
     $selname = '_'.$name.'_sel';
 	$div = '_'.$name.'_div';
 
-	if ($dft=='')
-		$dft = key($tabs);
-    $sel = find_submit($name.'_', '');
+	$sel = find_submit($name.'_', false);
+	if($sel==null)
+		$sel = get_post($selname, (string)($dft==='' ? key($tabs) : $dft));
 
-	if ($sel != '') {
-			$Ajax->activate($name);
-	} else 
-		$sel = get_post($selname, $dft);
+	if ($sel!==@$_POST[$selname])
+		$Ajax->activate($name);
+
 	$_POST[$selname] = $sel;
 
 	div_start($name);
@@ -397,7 +396,7 @@ function tabbed_content_start($name, $tabs, $dft='') {
 		$disabled = (is_array($tab) && !$tab[1])  ? 'disabled ' : '';
 		$str .= ( "<li>"
 			."<button type='submit' name='{$name}_".$tab_no
-			."' class='".($tab_no===$sel ? 'current':'ajaxbutton')."' $acc[1] $disabled>"
+			."' class='".((string)$tab_no===$sel ? 'current':'ajaxbutton')."' $acc[1] $disabled>"
 			."<span>$acc[0]</span>"
 			."</button>\n"
 			."</li>\n" );

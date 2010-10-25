@@ -23,6 +23,8 @@ $ -> Affected files
 ! Release 2.3RC3
 25-Oct-2010 Janusz Dobrowolski
 $ version.php
+# Small fix to tabbed_content behaviour.
+$ /includes/ui/ui_controls.inc
 
 22-Oct-2010 Janusz Dobrowolski
 + Added greek installer translation by Kyriakos Tsoukalas
