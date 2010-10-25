@@ -19,6 +19,11 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+------------------------------- Release 2.3 RC3 --------------------------------
+! Release 2.3RC3
+25-Oct-2010 Janusz Dobrowolski
+$ version.php
+
 22-Oct-2010 Janusz Dobrowolski
 + Added greek installer translation by Kyriakos Tsoukalas
 $ /install/isession.inc
@@ -53,7 +58,7 @@ $ /includes/main.inc
   /gl/inquiry/journal_inquiry.php
 # Bad amount sign for amount
   /gl/view/gl_payment_view.php
-# Additonal sql parameters cleanup
+# Additonal sql parameters sanitization against SQLI attacks
 $ /gl/includes/db/gl_db_trans.inc
   /gl/inquiry/journal_inquiry.php
   /includes/date_functions.inc
@@ -64,7 +69,7 @@ $ /gl/includes/db/gl_db_trans.inc
   /sales/includes/db/cust_trans_db.inc
   /sales/includes/sales_db.inc
   /sales/includes/db/sales_order_db.inc
-# Added input cleanup
+# Added global input cleanup against reflected XSS attacks
 $ /includes/session.inc
 
 19-Oct-2010 Janusz Dobrowolski
