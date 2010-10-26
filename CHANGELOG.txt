@@ -25,6 +25,8 @@ $ -> Affected files
 $ version.php
 # Small fix to tabbed_content behaviour.
 $ /includes/ui/ui_controls.inc
+# Fixed installer (error in sys_prefs update)
+$ /install/index.php
 
 26-Oct-2010 Joe Hunt
 # 0000272: Manufacturing Bugs. Issue GL items moved to wo_work_order_issues.inc

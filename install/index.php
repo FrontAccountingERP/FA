@@ -124,7 +124,7 @@ function install_connect_db() {
 		return false;
 	}
 	if (!defined('TB_PREF'))
-		define('TB_PREF', $conn["tbpref"]);
+		define('TB_PREF', '&TB_PREF&');
 
 	if (!mysql_select_db($conn["dbname"], $db)) {
 		$sql = "CREATE DATABASE " . $conn["dbname"];
@@ -146,16 +146,6 @@ function do_install() {
 	if (install_connect_db() && db_import($path_to_root.'/sql/'.$coa, $_SESSION['inst_set'])) {
 		$con = $_SESSION['inst_set'];
 		$table_prefix = $con['tbpref'];
-		update_company_prefs(array('coy_name'=>$con['name']));
-		$admin = get_user_by_login('admin');
-//		update_admin_password($con, md5($con['pass']));
-		update_user_prefs($admin['id'], array('language' => $_POST['lang'], 
-			'password' => md5($con['pass'])));
-
-		if (!copy($path_to_root. "/config.default.php", $path_to_root. "/config.php")) {
-			display_error(_("Cannot save system configuration file 'config.php'."));
-			return false;
-		}
 
 		$def_coy = 0;
 		$tb_pref_counter = 0;
@@ -167,6 +157,20 @@ function do_install() {
 		 'dbname' => $con['dbname'],
 		 'tbpref' => $table_prefix
 		));
+
+		$_SESSION['wa_current_user']->cur_con = 0;
+		
+		update_company_prefs(array('coy_name'=>$con['name']));
+		$admin = get_user_by_login('admin');
+//		update_admin_password($con, md5($con['pass']));
+		update_user_prefs($admin['id'], array('language' => $_POST['lang'], 
+			'password' => md5($con['pass'])));
+
+		if (!copy($path_to_root. "/config.default.php", $path_to_root. "/config.php")) {
+			display_error(_("Cannot save system configuration file 'config.php'."));
+			return false;
+		}
+
 		$err = write_config_db($table_prefix != "");
 
 		if ($err == -1) {
