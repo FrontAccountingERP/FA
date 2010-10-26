@@ -20,12 +20,24 @@ Legend:
 $ -> Affected files
 
 ------------------------------- Release 2.3 RC3 --------------------------------
+26-Oct-2010 Janusz Dobrowolski
 ! Release 2.3RC3
-25-Oct-2010 Janusz Dobrowolski
 $ version.php
 # Small fix to tabbed_content behaviour.
 $ /includes/ui/ui_controls.inc
 
+26-Oct-2010 Joe Hunt
+# 0000272: Manufacturing Bugs. Issue GL items moved to wo_work_order_issues.inc
+$ /manufacturing/includes/db/work_orders_quick_db.inc
+  /manufacturing/includes/db/work_order_issues_db.inc
+  /manufacturing/includes/db/work_order_produce_items.inc
+! Layout improvements in work order inquiry and various work order forms
+$ /manufacturing/search_work_orders.php
+  /manufacturing/work_order_add_finished.php
+  /manufacturing/work_order_costs.php
+  /manufacturing/work_order_issue.php
+  /manufacturing/work_order_release.php
+  
 22-Oct-2010 Janusz Dobrowolski
 + Added greek installer translation by Kyriakos Tsoukalas
 $ /install/isession.inc

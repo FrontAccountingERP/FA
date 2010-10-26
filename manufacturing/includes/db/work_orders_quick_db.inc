@@ -100,23 +100,27 @@ function work_order_quick_costs($woid, $stock_id, $units_reqd, $date_, $advanced
 		$bom_accounts = get_stock_gl_code($bom_item["component"]);
 
 		$bom_cost = $bom_item["ComponentCost"] * $units_reqd;
-
+		
+		$memo = $bom_item["quantity"] ." * ".$bom_item["description"];
 		if ($advanced)
 		{
+			$memo = $date_.": ".$memo; 
 			update_wo_requirement_issued($woid, $bom_item['component'], $bom_item["quantity"] * $units_reqd); 			
 			// insert a -ve stock move for each item
 			add_stock_move(ST_MANURECEIVE, $bom_item["component"], $advanced,
 				$bom_item["loc_code"], $date_, "", -$bom_item["quantity"] * $units_reqd, 0);
 		}
 		$total_cost += add_gl_trans_std_cost(ST_WORKORDER, $woid, $date_, $bom_accounts["inventory_account"], 0, 0,
-			$bom_item["quantity"] ." * ".$bom_item["description"], -$bom_cost);
+			$memo, -$bom_cost);
 
 	}
 	if ($advanced)
 	{
-		// also take the additional issues
-		$res = get_additional_issues($woid);
 		$wo = get_work_order($woid);
+		// also take the additional issues
+		// moved to work_order_issues_db.inc
+		/*
+		$res = get_additional_issues($woid);
 		$issue_total = 0;
 		while ($item = db_fetch($res))
 		{
@@ -125,11 +129,12 @@ function work_order_quick_costs($woid, $stock_id, $units_reqd, $date_, $advanced
 			$issue = get_stock_gl_code($item['stock_id']);
             $stockitem = get_item($item['stock_id']);
             $total_cost += add_gl_trans_std_cost(ST_WORKORDER, $woid, $date_, $issue["inventory_account"], 0, 0,
-                _("Issue of")." ".$stockitem["description"], -$issue_cost);			
+                $date_.": "._("Issue of")." ".$stockitem["description"], -$issue_cost);			
 			$issue_total += $issue_cost;
 		}
 		if ($issue_total != 0)
 			add_issue_cost($stock_id, $units_reqd, $date_, $issue_total);
+		*/	
 		$lcost = get_gl_wo_cost($woid, WO_LABOUR);
 		add_labour_cost($stock_id, $units_reqd, $date_, $lcost * $units_reqd / $wo['units_reqd']);
 		$ocost = get_gl_wo_cost($woid, WO_OVERHEAD);
@@ -171,8 +176,11 @@ function work_order_quick_costs($woid, $stock_id, $units_reqd, $date_, $advanced
 	}
 	// debit total components $total_cost
  	$stockitem = get_item($stock_id);
+ 	$memo = _("Produced")." ".$units_reqd. " * ".$stockitem["description"];
+ 	if ($advanced)
+ 		$memo = $date_.": ".$memo;
     add_gl_trans_std_cost(ST_WORKORDER, $woid, $date_, $item_accounts["inventory_account"],
-        0, 0, _("Produced")." ".$units_reqd. " * ".$stockitem["description"], -$total_cost);	
+        0, 0, $memo, -$total_cost);	
 }
 
 //--------------------------------------------------------------------------------------

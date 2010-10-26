@@ -143,8 +143,8 @@ function costs_link($row)
 
 function view_gl_link($row)
 {
-	if ($row['closed'] == 0)
-		return '';
+	//if ($row['closed'] == 0)
+	//	return '';
 	return get_gl_view_str(ST_WORKORDER, $row['id']);
 }
 
@@ -163,7 +163,7 @@ $cols = array(
 	_("Item") => array('fun'=>'view_stock'),
 	_("Required") => array('fun'=>'dec_amount', 'align'=>'right'),
 	_("Manufactured") => array('fun'=>'dec_amount', 'align'=>'right'),
-	_("Date") => 'date', 
+	_("Date") => array('name'=>'date_', 'type'=>'date', 'ord'=>'desc'), 
 	_("Required By") => array('type'=>'date', 'ord'=>''),
 	array('insert'=>true, 'fun'=> 'edit_link'),
 	array('insert'=>true, 'fun'=> 'release_link'),

@@ -72,6 +72,7 @@ if (isset($_POST['release']))
     display_note(get_trans_view_str(ST_WORKORDER, $selected_id, _("View this Work Order")));
 
 	hyperlink_no_params("search_work_orders.php", _("Select another &work order"));
+	br();
 
 	$Ajax->activate('_page_body');
 	end_page();

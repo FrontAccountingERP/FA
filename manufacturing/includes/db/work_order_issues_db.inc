@@ -42,6 +42,8 @@ function add_work_order_issue($woid, $ref, $to_work_order, $items, $location, $w
 
 	$number = db_insert_id();
 
+	$issue_total = $total_cost = 0;
+
 	foreach ($items as $item)
 	{
 
@@ -56,7 +58,21 @@ function add_work_order_issue($woid, $ref, $to_work_order, $items, $location, $w
 			VALUES (".db_escape($number).", ".db_escape($item->stock_id).", "
 			.db_escape($item->quantity).")";
 		db_query($sql,"A work order issue item could not be added");
-	}
+
+		$standard_cost = get_standard_cost($item->stock_id);
+		$issue_cost = $standard_cost * $item->quantity;
+		$issue = get_stock_gl_code($item->stock_id);
+        $stockitem = get_item($item->stock_id);
+        $total_cost += add_gl_trans_std_cost(ST_WORKORDER, $woid, $date_, $issue["inventory_account"], 0, 0,
+                $date_.": "._("Issue of")." ".$stockitem["description"], -$issue_cost);			
+		$issue_total += $issue_cost;
+	}	
+	if ($issue_total != 0)
+		add_issue_cost($details['stock_id'], $details['units_reqd'], $date_, $issue_total);
+	$issue = get_stock_gl_code($details['stock_id']);
+    $stockitem = get_item($details['stock_id']);
+    add_gl_trans_std_cost(ST_WORKORDER, $woid, $date_, $issue["inventory_account"],
+        0, 0, $date_.": "._("Issue to")." ".$stockitem["description"], -$total_cost);	
 
 	if ($memo_)
 		add_comments(ST_MANUISSUE, $number, $date_, $memo_);
