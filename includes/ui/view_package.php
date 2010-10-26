@@ -47,4 +47,4 @@ foreach ($pkg as $field => $value) {
 }
 end_table();
 
-end_page();
+end_page(true);

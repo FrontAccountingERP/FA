@@ -39,6 +39,7 @@ $ /manufacturing/search_work_orders.php
   /manufacturing/work_order_costs.php
   /manufacturing/work_order_issue.php
   /manufacturing/work_order_release.php
+  /includes/ui/view_package.php
   
 22-Oct-2010 Janusz Dobrowolski
 + Added greek installer translation by Kyriakos Tsoukalas
