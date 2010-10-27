@@ -45,6 +45,6 @@ foreach ($pkg as $field => $value) {
 		 "class='tableheader2'");
 	end_row();
 }
-end_table();
+end_table(1);
 
 end_page(true);
