@@ -251,45 +251,6 @@ function write_lang()
 	return true;
 }
 
-function db_create_db($connection)
-{
-	$db = mysql_connect($connection["host"] ,
-		$connection["dbuser"], $connection["dbpassword"]);
-	if (!mysql_select_db($connection["dbname"], $db))
-	{
-		$sql = "CREATE DATABASE " . $connection["dbname"] . "";
-		if (!mysql_query($sql))
-			return 0;
-		mysql_select_db($connection["dbname"], $db);
-	}
-	return $db;
-}
-
-function db_drop_db($connection)
-{
-
-	if ($connection["tbpref"] == "")
-	{
-		$sql = "DROP DATABASE " . $connection["dbname"] . "";
-		return mysql_query($sql);
-	}
-	else
-	{
-    	$res = db_query("show table status");
-    	$all_tables = array();
-    	while($row = db_fetch($res))
-    		$all_tables[] = $row;
-        // get table structures
-		foreach ($all_tables as $table)
-		{
-			if (strpos($table['Name'], $connection["tbpref"]) === 0)
-				db_query("DROP TABLE `".$table['Name'] . "`");
-		}
-		//deleting the tables, how??
-		return true;
-	}
-}
-
 function db_import($filename, $connection, $force=true)
 {
 	global $db, $go_debug;
@@ -647,9 +608,6 @@ function db_export($conn, $filename, $zip='no', $comment='', $tbpref = TB_PREF, 
 		@unlink(BACKUP_PATH . $backupfile);
 		return false;
 	}
-
-	// if (mysql_error()) return "DB_ERROR";
-	//@mysql_close($con);
 
 	//if ($zip == "zip")
 	//	$zip = $time;

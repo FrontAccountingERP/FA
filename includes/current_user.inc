@@ -153,19 +153,9 @@ class current_user
 		return $this->can_access($page_level);
 	}
 
-	function get_db_connection($id=-1)
+	function set_db_connection($id = -1)
 	{
-    	global $db_connections;
-
-		$this->cur_con = $id == -1 ? $this->company : $id;
-    	$connection = $db_connections[$this->cur_con];
-
-    	//print_r($connection);
-
-		$db = mysql_connect($connection["host"], $connection["dbuser"], $connection["dbpassword"]);
-		mysql_select_db($connection["dbname"], $db);
-
-    	return $db;
+		return set_global_connection($id);
 	}
 
 	function update_prefs($prefs)

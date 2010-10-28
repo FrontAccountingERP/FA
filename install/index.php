@@ -117,24 +117,12 @@ function install_connect_db() {
 	global $db;
 
 	$conn = $_SESSION['inst_set'];
-	
-	$db = mysql_connect($conn["host"] , $conn["dbuser"], $conn["dbpassword"]);
-	if(!$db) {
-		display_error('Cannot connect to database server. Host name, username and/or password incorrect.');
-		return false;
-	}
-	if (!defined('TB_PREF'))
-		define('TB_PREF', '&TB_PREF&');
 
-	if (!mysql_select_db($conn["dbname"], $db)) {
-		$sql = "CREATE DATABASE " . $conn["dbname"];
-		if (!mysql_query($sql)) {
-			display_error('Cannot create database. Check your permissions to database creation or selct already created database.');
-			return false;
-		}
-		return mysql_select_db($conn["dbname"], $db);
+	$db = db_create_db($conn);
+	if (!$db) {
+		display_error(_("Cannot connect to database. User or password is invalid or you have no permittions to create database."));
 	}
-	return true;
+	return $db;
 }
 
 function do_install() {

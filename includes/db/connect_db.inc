@@ -12,13 +12,20 @@
 
 function set_global_connection($company=-1)
 {
-	global $db, $transaction_level;
+	global $db, $transaction_level, $db_connections;
 
 	cancel_transaction(); // cancel all aborted transactions if any
 	$transaction_level = 0;
 
-   	$db = $_SESSION["wa_current_user"]->get_db_connection($company);
+	if ($company == -1) 
+		$company = $_SESSION["wa_current_user"]->company;
 
+	$_SESSION["wa_current_user"]->cur_con = $company;
+
+	$connection = $db_connections[$company];
+
+	$db = mysql_connect($connection["host"], $connection["dbuser"], $connection["dbpassword"]);
+		mysql_select_db($connection["dbname"], $db);
 	return $db;
 }
 
@@ -151,6 +158,49 @@ function db_num_affected_rows()
 {
 	global $db;
 	return mysql_affected_rows($db);
+}
+
+function db_field_name($result, $n)
+{
+	return mysql_field_name($result, $n);
+}
+
+function db_create_db($connection)
+{
+	$db = mysql_connect($connection["host"] ,
+		$connection["dbuser"], $connection["dbpassword"]);
+	if (!mysql_select_db($connection["dbname"], $db))
+	{
+		$sql = "CREATE DATABASE " . $connection["dbname"] . "";
+		if (!mysql_query($sql) || !mysql_select_db($connection["dbname"], $db))
+			return 0;
+	}
+	return $db;
+}
+
+function db_drop_db($connection)
+{
+
+	if ($connection["tbpref"] == "")
+	{
+		$sql = "DROP DATABASE " . $connection["dbname"] . "";
+		return mysql_query($sql);
+	}
+	else
+	{
+    	$res = db_query("show table status");
+    	$all_tables = array();
+    	while($row = db_fetch($res))
+    		$all_tables[] = $row;
+        // get table structures
+		foreach ($all_tables as $table)
+		{
+			if (strpos($table['Name'], $connection["tbpref"]) === 0)
+				db_query("DROP TABLE `".$table['Name'] . "`");
+		}
+		//deleting the tables, how??
+		return true;
+	}
 }
 
 ?>

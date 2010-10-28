@@ -32,15 +32,16 @@ function clean_user_themes($id)
 	global $db_connections, $db, $installed_extensions;
 
 	$theme = $installed_extensions[$id]['package'];
-	$db_sav = $db;
+	$comp = user_company();
 
 	foreach ($db_connections as $n => $conn) {
-		$db = $_SESSION["wa_current_user"]->get_db_connection($n);
+		$db = $_SESSION["wa_current_user"]->set_db_connection($n);
 		$sql = "UPDATE {$conn['tbpref']}users SET theme='default' WHERE theme='$theme'";
 		if (!db_query($sql, 'Cannot update user theme settings'))
 			return false;
 	}
-	$db = $db_sav;
+	$db = $_SESSION["wa_current_user"]->set_db_connection($comp);
+
 	$_SESSION['wa_current_user']->prefs->theme = 'default';
 	return true;
 }

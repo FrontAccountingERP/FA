@@ -159,11 +159,11 @@ class db_pager {
 			$c = 0;
 		  // add result field names to column defs for 
 		  // col value retrieve and sort purposes 
-		   $cnt = min(mysql_num_fields($result), count($this->columns));
+		   $cnt = min(db_num_fields($result), count($this->columns));
 			for ($c = $i = 0; $c < $cnt; $c++) {
 				if (!(isset($this->columns[$c]['insert']) && $this->columns[$c]['insert'])) {
 //					if (!@($this->columns[$c]['type']=='skip'))
-			 			$this->columns[$c]['name']= mysql_field_name($result, $i);
+			 			$this->columns[$c]['name']= db_field_name($result, $i);
 					if (!@($this->columns[$c]['type']=='insert'))
 			 		$i++;
 			 		}
