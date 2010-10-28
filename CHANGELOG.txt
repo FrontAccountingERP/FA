@@ -19,6 +19,17 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+28-Oct-2010 Janusz Dobrowolski
+! All mysql specific functions moved to connect_db.inc
+$ /admin/inst_theme.php
+  /admin/db/maintenance_db.inc
+  /includes/current_user.inc
+  /includes/db_pager.inc
+  /includes/db/connect_db.inc
+  /install/index.php
+# Fixed mailing problems under PHP with Suhoshin patch (Michael Hahn)
+$ /reporting/includes/class.mail.inc
+
 ------------------------------- Release 2.3 RC3 --------------------------------
 26-Oct-2010 Janusz Dobrowolski
 ! Release 2.3RC3
