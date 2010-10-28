@@ -9,6 +9,21 @@
     Homepage:       http://www.danielkaefer.de
 
     Leave this header in this file!
+------------------------------------------------------------------ 
+ Updated: 2010-10-25
+ Updated by: Michael Hahn (MPH)
+ 
+ Problem: The Suhosin patch for PHP was blocking the email before it ever reached
+ the email server due to double line feeds (\n) in the header of the email.
+ Also, the body of the message was included in the header. This would also
+ trip the security measure everytime it spotted a double line feed.
+ Fix: Remove any double line feed from the header info and seperate the body of 
+ the message from the header.
+ Other updates: I'm not sure about RFC compliance but, every other email I've look at had
+ certain information included in double quotes. More than likely to avoid
+ erroneous file naming. I tried to emulate this mindset.
+ Added line length and EOL char for file chunking. For some reason without
+ it there were extra line feeds in the chunked file.
 */
 
 class email
@@ -26,7 +41,7 @@ class email
     function email($name, $mail)
     {
         $this->boundary = md5(uniqid(time()));
-        $this->header .= "From: $name <$mail>\n";
+		$this->header = "From: $name <$mail>\n";
     }
 
     function to($mail)
@@ -56,15 +71,15 @@ class email
 
     function text($text)
     {
-	    $this->body = "Content-Type: text/plain; charset={$this->charset}\n";
-	    $this->body .= "Content-Transfer-Encoding: 8bit\n\n";
+	    $this->body = "Content-Type: text/plain; charset=\"{$this->charset}\"\n";
+	    $this->body .= "Content-Transfer-Encoding: 8bit\n";
 	    $this->body .= $text."\n";
     }
 
     function html($html)
     {
-	    $this->body = "Content-Type: text/html; charset={$this->charset}\n";
-	    $this->body .= "Content-Transfer-Encoding: quoted-printable\n\n";
+	    $this->body = "Content-Type: text/html; charset=\"{$this->charset}\"\n";
+	    $this->body .= "Content-Transfer-Encoding: quoted-printable\n";
 	    $this->body .= "<html><body>\n".$html."\n</body></html>\n";
     }
 
@@ -111,11 +126,11 @@ class email
             }
             $this->header .= "\n";
         }
-        $this->header .= "MIME-Version: 1.0\n";
-	    $this->header .= "Content-Type: multipart/mixed; boundary=$this->boundary\n\n";
-	    $this->header .= "This is a multi-part message in MIME format\n";
+		$this->header .= "MIME-Version: 1.0\n";
+		$this->header .= "Content-Type: multipart/mixed;\n boundary=\"$this->boundary\"\n";
+		$this->header .= "This is a multi-part message in MIME format.\n";
         $this->header .= "--$this->boundary\n";
-        $this->header .= $this->body;
+		$this->header .= $this->content_type;
 
         // Attachment hinzufügen
         $max = count($this->attachment);
@@ -124,19 +139,19 @@ class email
             for ($i = 0; $i < $max; $i++)
             {
                 $file = fread(fopen($this->attachment[$i], "r"), filesize($this->attachment[$i]));
-                $this->header .= "--".$this->boundary."\n";
-                $this->header .= "Content-Type: " .$this->mime_type(basename($this->attachment[$i])). "; name=".basename($this->attachment[$i])."\n";
-                $this->header .= "Content-Transfer-Encoding: base64\n";
-                $this->header .= "Content-Disposition: attachment; filename=".basename($this->attachment[$i])."\n\n";
-                $this->header .= chunk_split(base64_encode($file))."\n";
+				$this->body .= "--".$this->boundary."\n";
+				$this->body .= "Content-Type: " .$this->mime_type(basename($this->attachment[$i])). "; name=\"".basename($this->attachment[$i])."\"\n";
+				$this->body .= "Content-Transfer-Encoding: base64\n";
+				$this->body .= "Content-Disposition: attachment; filename=\"".basename($this->attachment[$i])."\"\n\n";
+				$this->body .= chunk_split(base64_encode($file),"72","\n");
                 $file = "";
             }
         }
-        $this->header .= "--".$this->boundary."--\n\n";
+			$this->body .= "--".$this->boundary."--\n";
 
         foreach($this->to as $mail)
         {
-            $ret = mail($mail, $this->subject, "", $this->header);
+			$ret = mail($mail, $this->subject, $this->body, $this->header);
         }
         return $ret;
     }
