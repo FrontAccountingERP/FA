@@ -185,10 +185,10 @@ class cart
 					//	$this->customer_currency = $sodata["curr_code"];
 						$this->delivery_to = $sodata["deliver_to"];
 						$this->delivery_address = $sodata["delivery_address"];
-					}
 					// child transaction reedition - update with parent info unless it is freehand
-					if (!$no_edit)
-						$this->set_parent_constraints($sodata, $trans_no[0]);
+						if (!$no_edit)
+							$this->set_parent_constraints($sodata, $trans_no[0]);
+					}
 			}
 			// prepare qtys for derivative document entry (not used in display)
 			if($no_edit) {

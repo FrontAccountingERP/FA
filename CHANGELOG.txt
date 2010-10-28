@@ -29,6 +29,8 @@ $ /admin/inst_theme.php
   /install/index.php
 # Fixed mailing problems under PHP with Suhoshin patch (Michael Hahn)
 $ /reporting/includes/class.mail.inc
+# Fixed db error on freehand credit invoice reedition.
+$ /sales/includes/cart_class.inc
 
 ------------------------------- Release 2.3 RC3 --------------------------------
 26-Oct-2010 Janusz Dobrowolski
