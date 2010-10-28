@@ -96,7 +96,8 @@ function copy_to_cn()
 	$cart->freight_cost = input_num('ChargeFreightCost');
 	$cart->Location = $_POST["Location"];
 	$cart->sales_type = $_POST['sales_type_id'];
-	$cart->reference = $_POST['ref'];
+	if ($cart->trans_no == 0)
+		$cart->reference = $_POST['ref'];
 	$cart->ship_via = $_POST['ShipperID'];
 	$cart->dimension_id = $_POST['dimension_id'];
 	$cart->dimension2_id = $_POST['dimension2_id'];
@@ -112,7 +113,8 @@ function copy_from_cn()
 	$_POST['ChargeFreightCost'] = price_format($cart->freight_cost);
 	$_POST['Location'] = $cart->Location;
 	$_POST['sales_type_id'] = $cart->sales_type;
-	$_POST['ref'] = $cart->reference;
+	if ($cart->trans_no == 0)
+		$_POST['ref'] = $cart->reference;
 	$_POST['ShipperID'] = $cart->ship_via;
 	$_POST['dimension_id'] = $cart->dimension_id;
 	$_POST['dimension2_id'] = $cart->dimension2_id;
