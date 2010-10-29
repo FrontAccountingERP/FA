@@ -19,6 +19,12 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+29-Oct-2010 Janusz Dobrowolski
+# Fixed reference display in credit note edition.
+$ /sales/includes/ui/sales_credit_ui.inc
+# Fixed cleanup for input arrays 
+$ /includes/session.inc
+
 28-Oct-2010 Janusz Dobrowolski
 ! All mysql specific functions moved to connect_db.inc
 $ /admin/inst_theme.php

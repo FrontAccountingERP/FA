@@ -131,6 +131,17 @@ function strip_quotes($data)
 	return $data;
 }
 
+function html_cleanup(&$parms)
+{
+	foreach($parms as $name => $value) {
+//		$value = @html_entity_decode($value, ENT_QUOTES, $_SESSION['language']->encoding);
+		if (is_array($value))
+			html_cleanup($parms[$name]);
+		else
+			$parms[$name] = @htmlspecialchars($value, ENT_QUOTES, $_SESSION['language']->encoding);
+	}
+}
+
 //============================================================================
 //
 //
@@ -278,18 +289,8 @@ $SysPrefs = &$_SESSION['SysPrefs'];
 
 // POST vars cleanup needed for direct reuse.
 // We quote all values later with db_escape() before db update.
-	$_POST = strip_quotes($_POST);
+$_POST = strip_quotes($_POST);
 
-// GET cleanup against XSS. (NB in FA those are mainly numeric transaction numbers)
-	foreach($_GET as $name => $value) {
-//		$value = @html_entity_decode($value, ENT_QUOTES, $_SESSION['language']->encoding);
-		$_GET[$name] = @htmlspecialchars($value, ENT_QUOTES, $_SESSION['language']->encoding);
-
-	}
-	foreach($_POST as $name => $value) {
-//		$value = @html_entity_decode($value, ENT_QUOTES, $_SESSION['language']->encoding);
-		$_POST[$name] = @htmlspecialchars($value, ENT_QUOTES, $_SESSION['language']->encoding);
-
-	}
-
+html_cleanup($_GET);
+html_cleanup($_POST);
 ?>
