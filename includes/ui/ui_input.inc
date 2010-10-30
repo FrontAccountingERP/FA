@@ -247,11 +247,16 @@ function submit_return($name, $value, $title=false)
 	}
 }
 
-function submit_js_confirm($name, $msg) {
-	add_js_source(
-		"_validate.$name=function(){ return confirm('"
-			. strtr($msg, array("\n"=>'\\n')) . "');};");
-};
+function submit_js_confirm($name, $msg, $set = true) {
+	global $Ajax;
+	$js = "_validate.$name=".($set ? "function(){ return confirm('"
+				. strtr($msg, array("\n"=>'\\n')) . "');};"
+				: 'null;');
+	if (in_ajax()) {
+		$Ajax->addScript(true, $js);
+	} else
+		add_js_source($js);
+}
 //-----------------------------------------------------------------------------------
 
 function set_icon($icon, $title=false)
