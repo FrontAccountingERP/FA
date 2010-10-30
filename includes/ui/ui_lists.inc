@@ -1546,6 +1546,7 @@ function gl_account_types_list($name, $selected_id=null, $all_option=false, $all
 
 	return combo_input($name, $selected_id, $sql, 'id', 'name',
 	array(
+		'format' => '_format_account',
 		'order' => array('class_id', 'id', 'parent'),
 		'spec_option' =>$all_option,
 		'spec_id' => $all_items
