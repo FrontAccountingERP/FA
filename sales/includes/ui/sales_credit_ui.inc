@@ -80,11 +80,11 @@ function display_credit_header(&$order)
 	set_global_customer($_POST['customer_id']);
 
 	if (!isset($_POST['ref']))
-		$_POST['ref'] = $Refs->get_next(11);
+		$_POST['ref'] = $Refs->get_next(ST_CUSTCREDIT);
 	if ($order->trans_no==0)
 	    ref_row(_("Reference").':', 'ref');
 	else
-	    label_row(_("Reference").':', $_POST['ref'] );
+	    label_row(_("Reference").':', $order->reference);
 
 
 	if (!is_company_currency($order->customer_currency))
