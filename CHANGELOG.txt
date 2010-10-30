@@ -19,9 +19,19 @@ Legend:
 ! -> Note
 $ -> Affected files
 
-29-Oct-2010 Janusz Dobrowolski
+30-Oct-2010 Janusz Dobrowolski
+! Added group code in account groups list selector.
+$ /includes/ui/ui_lists.inc
+! Normalized add_domain() parameters in native/ohpgettext classes
+$ /includes/lang/gettext.php
+! submit_js_confirm() fixed to be used also on buttons uploaded with ajax.
+$ /includes/ui/ui_input.inc
+# Validation code was skipped when Esc/ctrlEnter hotkeys used
+$ /js/inserts.js
 # Fixed reference display in credit note edition.
 $ /sales/includes/ui/sales_credit_ui.inc
+
+29-Oct-2010 Janusz Dobrowolski
 # Fixed cleanup for input arrays 
 $ /includes/session.inc
 
