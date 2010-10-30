@@ -427,11 +427,13 @@ function setHotKeys() {
 						return false;
 					}
 					if (((asp && asp.indexOf('default') !== -1) && key==13)||((asp && asp.indexOf('cancel') !== -1) && key==27)) {
-
-						if (asp.indexOf('process') !== -1)
-							JsHttpRequest.request(el, null, 60000);
-						else
-							JsHttpRequest.request(el);
+						var func = _validate[el.name];
+						if (func==undefined || func()) {
+							if (asp.indexOf('process') !== -1)
+								JsHttpRequest.request(el, null, 60000);
+							else
+								JsHttpRequest.request(el);
+						}
 						ev.returnValue = false;
 						return false;
 					}
