@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+02-Nov-2010 Joe Hunt
+# Report Customer Details didn't show up correctly in Excel
+$ /reporting/rep103.php
+
 30-Oct-2010 Janusz Dobrowolski
 ! Added group code in account groups list selector.
 $ /includes/ui/ui_lists.inc

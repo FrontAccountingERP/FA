@@ -190,6 +190,49 @@ function print_customer_details_listing()
 				$rep->NewLine();
 			}
 			$rep->NewLine();
+			// Here starts the new report lines 2010-11-02 Joe Hunt
+			$contacts = get_branch_contacts($myrow['branch_code']);
+			$rep->TextCol(0, 1,	$myrow['name']);
+			$rep->TextCol(1, 2,	_('Price List') . ": " . $myrow['sales_type']);
+			$rep->TextCol(2, 3,	$myrow['br_name']);
+			$rep->NewLine();
+			$adr = Explode("\n", $myrow['address']);
+			$adr2 = Explode("\n", $myrow['br_address']);
+			$count1 = count($adr);
+			$count2 = count($adr2);
+			$count1 = max($count1, $count2);
+			if (isset($adr[0]))
+				$rep->TextCol(0, 1, $adr[0]);
+			if ($more != 0.0 || $less != 0.0)
+				$rep->TextCol(1, 2,	_('Turnover') . ": " . number_format2($turnover, $dec));
+			if (isset($contacts[0]))
+				$rep->TextCol(2, 3, $contacts[0]['name']);
+			if (isset($adr2[0]))	
+				$rep->TextCol(3, 4, $adr2[0]);
+			$rep->NewLine();
+			if (isset($adr[1]))
+				$rep->TextCol(0, 1, $adr[1]);
+			if (isset($contacts[0]))
+				$rep->TextCol(2, 3, _('Ph') . ": " . $contacts[0]['phone']);
+			if (isset($adr2[1]))
+				$rep->TextCol(3, 4, $adr2[1]);
+			$rep->NewLine();
+			if (isset($adr[2]))
+				$rep->TextCol(0, 1, $adr[2]);
+			if (isset($contacts[0]))
+				$rep->TextCol(2, 3, _('Fax') . ": " . $contacts[0]['fax']);
+			if (isset($adr2[2]))
+				$rep->TextCol(3, 4, $adr2[2]);
+			for ($i = 3; $i < $count1; $i++)
+			{
+				$rep->NewLine();
+				if (isset($adr[$i]))
+					$rep->TextCol(0, 1, $adr[$i]);
+				if (isset($adr2[$i]))
+					$rep->TextCol(0, 1, $adr2[$i]);
+			}	
+			$rep->NewLine();
+			/*
 			$rep->TextCol(0, 1,	$myrow['name']);
 			$adr = Explode("\n", $myrow['address']);
 			$count1 = count($adr);
@@ -216,7 +259,8 @@ function print_customer_details_listing()
 			$count2++;
 			$count1 = Max($count1, $count2);
 			$count1 = Max($count1, 4);
-			$rep->NewLine($count1);
+			$rep->NewLine($count3);
+			*/
 			$rep->Line($rep->row + 8);
 			$rep->NewLine(0, 3);
 		}
