@@ -78,7 +78,7 @@ function getTransactions($debtorno, $branchcode, $date)
 		WHERE debtor_no=".db_escape($debtorno)."
 		AND branch_code=".db_escape($branchcode)."
 		AND (type=".ST_SALESINVOICE." OR type=".ST_CUSTCREDIT.")
-		AND trandate >='$date'";
+		AND tran_date >='$date'";
 
     $result = db_query($sql,"No transactions were returned");
 
