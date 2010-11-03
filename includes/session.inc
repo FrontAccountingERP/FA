@@ -238,6 +238,10 @@ set_error_handler('error_handler' /*, errtypes */);
 if (!isset($_SESSION["wa_current_user"]))
 	$_SESSION["wa_current_user"] = new current_user();
 
+html_cleanup($_GET);
+html_cleanup($_POST);
+html_cleanup($_REQUEST);
+
 // logout.php is the only page we should have always 
 // accessable regardless of access level and current login status.
 if (strstr($_SERVER['PHP_SELF'], 'logout.php') == false){
@@ -251,7 +255,7 @@ if (strstr($_SERVER['PHP_SELF'], 'logout.php') == false){
 		{
 			// strip ajax marker from uri, to force synchronous page reload
 			$_SESSION['timeout'] = array( 'uri'=>preg_replace('/JsHttpRequest=(?:(\d+)-)?([^&]+)/s',
-					'', @$_SERVER['REQUEST_URI']), 
+					'', @htmlspecialchars($_SERVER['REQUEST_URI'], ENT_QUOTES, $_SESSION['language']->encoding)), 
 				'post' => $_POST);
 
 			include($path_to_root . "/access/login.php");
@@ -291,6 +295,4 @@ $SysPrefs = &$_SESSION['SysPrefs'];
 // We quote all values later with db_escape() before db update.
 $_POST = strip_quotes($_POST);
 
-html_cleanup($_GET);
-html_cleanup($_POST);
 ?>
