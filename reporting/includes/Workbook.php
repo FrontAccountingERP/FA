@@ -4876,9 +4876,10 @@ class Spreadsheet_Excel_Writer_Worksheet extends Spreadsheet_Excel_Writer_BIFFwr
     * @access public
     * @param string $encoding The encoding. Ex: 'UTF-16LE', 'utf-8', 'ISO-859-7'
     */
-    function setInputEncoding($encoding)
+    function 
+    setInputEncoding($encoding)
     {
-    	global $encoding_string;
+    	global $encoding_string; 
          if ($encoding != 'UTF-16LE' && !function_exists('iconv')) {
              die("Using an input encoding other than UTF-16LE requires PHP support for iconv");
          }
@@ -4915,6 +4916,7 @@ class Spreadsheet_Excel_Writer_Worksheet extends Spreadsheet_Excel_Writer_BIFFwr
         }
         elseif ($this->_input_encoding != '')
         {
+        	$x = $str;
             $str = iconv($this->_input_encoding, 'UTF-16LE', $str);
             $strlen = function_exists('mb_strlen') ? mb_strlen($str, 'UTF-16LE') : (strlen($str) / 2);
             $encoding  = 0x1;
@@ -7087,7 +7089,8 @@ class Spreadsheet_Excel_Writer_Workbook extends Spreadsheet_Excel_Writer_BIFFwri
     * @access public
     * @param integer $version The BIFF version
     */
-    function setVersion($version)
+    function 
+    setVersion($version)
     {
         if ($version == 8) { // only accept version 8
             $version = 0x0600;
@@ -8265,6 +8268,8 @@ class Spreadsheet_Excel_Writer_Workbook extends Spreadsheet_Excel_Writer_BIFFwri
     */
     function _storeSharedStringsTable()
     {
+    	global $encoding_string;
+
         $record  = 0x00fc;  // Record identifier
         // sizes are upside down
         $this->_block_sizes = array_reverse($this->_block_sizes);
@@ -8287,7 +8292,7 @@ class Spreadsheet_Excel_Writer_Workbook extends Spreadsheet_Excel_Writer_BIFFwri
         foreach (array_keys($this->_str_table) as $string) {
 
             $string_length = strlen($string);
-            $encoding      = 0; // assume there are no Unicode strings
+            $encoding      = $encoding_string ? 1:0; // this is FA specific assumption
             $split_string  = 0;
 
             // Block length is the total length of the strings that will be
