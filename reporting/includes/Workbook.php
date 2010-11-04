@@ -4876,8 +4876,7 @@ class Spreadsheet_Excel_Writer_Worksheet extends Spreadsheet_Excel_Writer_BIFFwr
     * @access public
     * @param string $encoding The encoding. Ex: 'UTF-16LE', 'utf-8', 'ISO-859-7'
     */
-    function 
-    setInputEncoding($encoding)
+    function setInputEncoding($encoding)
     {
     	global $encoding_string; 
          if ($encoding != 'UTF-16LE' && !function_exists('iconv')) {
@@ -4916,7 +4915,6 @@ class Spreadsheet_Excel_Writer_Worksheet extends Spreadsheet_Excel_Writer_BIFFwr
         }
         elseif ($this->_input_encoding != '')
         {
-        	$x = $str;
             $str = iconv($this->_input_encoding, 'UTF-16LE', $str);
             $strlen = function_exists('mb_strlen') ? mb_strlen($str, 'UTF-16LE') : (strlen($str) / 2);
             $encoding  = 0x1;
@@ -7089,8 +7087,7 @@ class Spreadsheet_Excel_Writer_Workbook extends Spreadsheet_Excel_Writer_BIFFwri
     * @access public
     * @param integer $version The BIFF version
     */
-    function 
-    setVersion($version)
+    function setVersion($version)
     {
         if ($version == 8) { // only accept version 8
             $version = 0x0600;
