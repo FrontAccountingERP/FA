@@ -127,7 +127,7 @@ function install_connect_db() {
 
 function do_install() {
 
-	global $path_to_root, $db_connections, $def_coy, $installed_extensions, 
+	global $path_to_root, $db_connections, $def_coy, $installed_extensions, $tb_pref_counter,
 		$dflt_lang, $installed_languages;
 
 	$coa = $_SESSION['inst_set']['coa'];
@@ -150,9 +150,9 @@ function do_install() {
 		
 		update_company_prefs(array('coy_name'=>$con['name']));
 		$admin = get_user_by_login('admin');
-//		update_admin_password($con, md5($con['pass']));
-		update_user_prefs($admin['id'], array('language' => $_POST['lang'], 
-			'password' => md5($con['pass'])));
+		update_user_prefs($admin['id'], array(
+			'language' => $_POST['lang'], 
+			'user_id' => $con['admin'], 
 
 		if (!copy($path_to_root. "/config.default.php", $path_to_root. "/config.php")) {
 			display_error(_("Cannot save system configuration file 'config.php'."));
