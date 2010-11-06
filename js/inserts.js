@@ -323,6 +323,19 @@ var inserts = {
 					return false;
 			}
 		}
+		// prevent unneeded transaction entry abortion
+		if (e.className == 'shortcut' 
+		 || e.className == 'menu_option' 
+		 || e.className == 'menu_tab'
+ 		 || e.className == 'selected')
+			e.onclick = function(ev) {
+				if (_validate._processing 
+				 && _validate._modified
+				 && !confirm(_validate._processing)) {
+					ev.returnValue = false;
+					return false;
+				}
+			}
 	},
 	'ul.ajaxtabs':	function(ul) {
 	    var ulist=ul.getElementsByTagName("li");

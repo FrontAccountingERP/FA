@@ -56,6 +56,7 @@ function end_form($breaks=0)
 	if ($breaks)
 		br($breaks);
 	echo "<input type=\"hidden\" name=\"_focus\" value=\"".get_post('_focus')."\">\n";
+	echo "<input type=\"hidden\" name=\"_modified\" value=\"".get_post('_modified', 0)."\">\n";
 	echo "</form>\n";
 }
 
@@ -561,6 +562,35 @@ function confirm_dialog($submit, $msg) {
 		return 0;
 	} else
 		return get_post('DialogConfirm', 0);
-}	
+}
+
+/*
+	Block menu/shortcut links during transaction procesing.
+*/
+function page_processing($msg = false)
+{
+	global $Ajax;
+
+	if ($msg === true)
+		$msg = _('Entered data has not been saved yet.\nDo you want to abandon changes?');
+
+	$js = "_validate._processing=" . (
+		$msg ? '\''.strtr($msg, array("\n"=>'\\n')) . '\';' : 'null;');
+	if (in_ajax()) {
+		$Ajax->addScript(true, $js);
+	} else
+		add_js_source($js);
+}
+
+function page_modified($status = true)
+{
+	global $Ajax;
+
+	$js = "_validate._modified=" . ($status ? 1:0).';';
+	if (in_ajax()) {
+		$Ajax->addScript(true, $js);
+	} else
+		add_js_source($js);
+}
 
 ?>
