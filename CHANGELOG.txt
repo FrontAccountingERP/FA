@@ -19,12 +19,29 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+06-Nov-2010 Janusz Dobrowolski
+# [0000274] Contact edition failed after last security fixes in RC2
+$ /includes/session.inc
+! Rearanged contacts edition
+$ /includes/db/crm_contacts_db.inc
+  /includes/ui/contacts_view.inc
+  /sales/includes/db/branches_db.inc
++ Helpers for js confirmation dialog before data entry is abandoned
+$ /includes/ui/ui_controls.inc
+  /js/inserts.js
+  /themes/aqua/renderer.php
+  /themes/cool/renderer.php
+  /themes/default/renderer.php
+# Confirmation dialog added before transaction entry is abandoned.
+$ /sales/sales_order_entry.php
+  /sales/includes/sales_ui.inc
+
 05-Nov-2010 Janusz Dobrowolski
 # Fixed admin username update and error when no prefix is selected in installer.
 $ /install/index.php
 
 04-Nov-2010 Janusz Dobrowolski
-# Fixed broken excel reprots for non-latin encodings.
+# Fixed broken excel reports for non-latin encodings.
 $ /reporting/includes/Workbook.php
 
 03-Nov-2010 Janusz Dobrowolski
