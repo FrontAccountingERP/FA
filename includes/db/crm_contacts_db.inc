@@ -108,7 +108,7 @@ function get_crm_persons($type=null, $action=null, $entity=null, $person=null, $
 	if ($unique)
 		$sql .= " GROUP BY person_id";
 	else
-	 	$sql .= " ORDER BY t.id";
+	 	$sql .= " ORDER BY contact_id";
 
 	return db_query($sql, "Can't get crm persons");
 }
@@ -241,10 +241,27 @@ function add_crm_contact($type, $action, $entity_id, $person_id)
 		.db_escape($entity_id) . ")";
 	return db_query($sql, "Can't insert crm contact");
 }
-
+/*
+	Delete contact selected by unique id.
+*/
 function delete_crm_contact($id)
 {
 	$sql = "DELETE FROM ".TB_PREF."crm_contacts WHERE id=".db_escape($id);
+
+	return db_query($sql, "Can't delete crm contact");
+}
+/*
+	Delete selected contacts for given person
+*/
+function delete_crm_contacts($person_id, $type = null, $entity_id=null, $action = null)
+{
+	$sql = "DELETE FROM ".TB_PREF."crm_contacts WHERE person_id=".db_escape($person_id);
+	if ($type)
+		$sql .= ' AND type='.db_escape($type);
+	if ($entity_id)
+		$sql .= ' AND entity_id='.db_escape($entity_id);
+	if ($action)
+		$sql .= ' AND action='.db_escape($action);
 
 	return db_query($sql, "Can't delete crm contact");
 }

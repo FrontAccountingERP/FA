@@ -168,41 +168,85 @@ function get_sql_for_customer_branches()
 
 	return $sql;
 }
-
-function get_branch_contacts($branch_code, $action=null, $customer_id=null)
-{
 /*
-	$ret = get_crm_persons('cust_branch', $action, $branch_code);
-	if ($customer_id && !db_num_rows($ret)) {
-		$ret = get_crm_persons('customer', $action, $customer_id);
-	}
-	return $ret;
+	Get contacts of given type for customer branch.
+	$branch_code - branch id
+	$action - type of contact
+	$customer_id - if passed: get also customer contacts for given action
+	$default - return only single record selected with defaults order defined in $defs array,
+	 otherways get all $action contacts
 */
-	$sql = "SELECT p.*, r.action, r.type FROM ".TB_PREF."crm_persons p,"
+function get_branch_contacts($branch_code, $action=null, $customer_id=null, $default = true)
+{
+	$defs = array('cust_branch.'.$action, 
+				'customer.'.$action,
+				'cust_branch.general',
+				'customer.general');
+
+	$sql = "SELECT p.*, r.action, r.type, CONCAT(r.type,'.',r.action) as ext_type 
+		FROM ".TB_PREF."crm_persons p,"
+		.TB_PREF."crm_contacts r WHERE r.person_id=p.id AND ((r.type='cust_branch' 
+			AND r.entity_id=".db_escape($branch_code).')';
+	if($customer_id) {
+		$sql .= " OR (r.type='customer' AND r.entity_id=".db_escape($customer_id).")";
+	}
+	$sql .= ')';
+	
+	if ($action)
+		$sql .= ' AND (r.action='.db_escape($action).($default ? " OR r.action='general'" : '').')';
+	
+	$res = db_query($sql, "can't retrieve branch contacts");
+
+	$results = array();
+	while($contact = db_fetch($res))
+		$results[] = $contact;
+
+	if ($results && $default) {
+		// select first available contact in $defs order
+		foreach($defs as $type) {
+			if ($n = array_search_value($type, $results, 'ext_type'))
+				return $n;
+		}
+		return null;
+	}
+	return $results;
+}
+
+function _get_branch_contacts($branch_code, $action=null, $customer_id=null, $default = false)
+{
+	$sql = "SELECT p.*, r.action, r.type, CONCAT(r.type,'.',r.action) as ext_type 
+		FROM ".TB_PREF."crm_persons p,"
 		.TB_PREF."crm_contacts r WHERE r.person_id=p.id AND r.type='cust_branch' 
 			AND r.entity_id=".db_escape($branch_code);
 
-	if ($action) 
-		$sql .= ' AND r.action='.db_escape($action);
-
-	$sql .= " GROUP BY person_id";
+	if ($action)
+		$sql .= ' AND (r.action='.db_escape($action).($default ? " OR r.action='general'":'').')';
 
 	if($customer_id) {
-		$sql = "($sql) UNION (SELECT p.*, r.action, r.type FROM ".TB_PREF."crm_persons p,"
+		$sql = "($sql) UNION (SELECT p.*, r.action, r.type, CONCAT(r.type,'.',r.action) as ext_type
+		FROM ".TB_PREF."crm_persons p,"
 		.TB_PREF."crm_contacts r WHERE r.person_id=p.id AND r.type='customer' 
 			AND r.entity_id=".db_escape($customer_id);
 		if ($action) 
-			$sql .= ' AND r.action='.db_escape($action);
-		$sql .= " GROUP BY person_id)";
+			$sql .= ' AND (r.action='.db_escape($action).($default ? " OR r.action='general'":'').')';
+		$sql .= ')';
 	}
 	
 	$res = db_query($sql, "can't retrieve branch contacts");
 	$results = array();
 	$type = '';
 	while($contact = db_fetch($res)) {
-		if ($type && $type != $contact['type']) break;
+		if ($type && $type != $contact['type']) break; // skip cust when branch contacts found
 		$results[] = $contact;
 		$type = $contact['type'];
+	}
+	if ($results && $default) {
+		// here we have general and action contacts selected
+		if ($n = array_search_value($action, $results, 'action')) {
+			return $n;
+		}
+		// only general contact found
+		return $results[0];
 	}
 	return $results;
 }

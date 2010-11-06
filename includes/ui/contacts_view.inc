@@ -45,26 +45,37 @@ class contacts extends simple_crud {
 
 			table_header($th);
 			$k = 0; 
-			while ($myrow = db_fetch($contacts)) 
-			{
-				alt_table_row_color($k);
-				label_cell($myrow["description"]);
-				label_cell($myrow["ref"]);
-				label_cell($myrow["name"].' '.$myrow["name2"]);
-				label_cell($myrow["phone"]);
-				label_cell($myrow["phone2"]);
-				label_cell($myrow["fax"]);
-				email_cell($myrow["email"]);
 
+			$last = $myrow = db_fetch($contacts);
+			while ($last)
+			{
+					
+				if ($myrow['id'] != $last['id']) {
+					alt_table_row_color($k);
+					label_cell(implode('<br>',$description));
+					label_cell($last["ref"]);
+					label_cell($last["name"].' '.$last["name2"]);
+					label_cell($last["phone"]);
+					label_cell($last["phone2"]);
+					label_cell($last["fax"]);
+					email_cell($last["email"]);
 		//	inactive_control_cell($myrow["id"], $myrow["inactive"], 'crm_contacts', 'id');
 
-			 	edit_button_cell("{$this->name}Edit[{$myrow['id']}]", _("Edit"));
+				 	edit_button_cell("{$this->name}Edit[{$last['id']}]", _("Edit"));
 
 			// delete button removes only category unless this is the last contact for this person
-				delete_button_cell("{$this->name}Delete[{$myrow['contact_id']}]", _("Delete"));
-				end_row();
+					delete_button_cell("{$this->name}Delete[{$last['id']}]", _("Delete"));
+					end_row();
+					$description = array();
+					$last = $myrow;
+				}
+
+				if ($myrow) {
+					$description[] = $myrow['description'];
+					$myrow = db_fetch($contacts);
+				}
 			}
-	
+
 //inactive_control_row($th);
 			end_table(1);
 	}
@@ -143,15 +154,14 @@ class contacts extends simple_crud {
 		return true;
 	}
 	//
-	//	Delete single contact only (unless this is last contact for this person)
+	//	Delete all contacts for person in current class/entity
 	//
 	function db_delete() {
-		$rel = get_crm_contact($this->selected_id);
-		if (delete_crm_contact($this->selected_id)) {
+		if (delete_crm_contacts($this->selected_id, $this->class, $this->entity)) {
 			// if this is the last relation - delete contact data
-			$rels = get_person_contacts($rel['person_id']);
+			$rels = get_person_contacts($this->selected_id);
 			if (count($rels)==0) {
-				return delete_crm_person($rel['person_id']);
+				return delete_crm_person($this->selected_id);
 			}
 		}
 		return false;
