@@ -19,12 +19,14 @@ include_once($path_to_root . "/includes/banking.inc");
 //
 function processing_start()
 {
+	page_processing(false);
     processing_end();
     $_SESSION['Processing'] = $_SERVER['PHP_SELF'];
 }
 
 function processing_end()
 {
+	page_processing(true);
     unset($_SESSION['Processing']);
     if ( isset($_SESSION['Items']) ) {
 		unset($_SESSION['Items']->line_items);

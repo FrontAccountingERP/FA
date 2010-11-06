@@ -494,6 +494,7 @@ function handle_update_item()
 		 input_num('qty'), input_num('price'),
 		 input_num('Disc') / 100, $_POST['item_description'] );
 	}
+	page_modified();
   line_start_focus();
 }
 
@@ -521,6 +522,7 @@ function handle_new_item()
 		input_num('price'), input_num('Disc') / 100, get_post('stock_id_text'));
 
 	unset($_POST['_stock_id_edit'], $_POST['stock_id']);
+	page_modified();
 	line_start_focus();
 }
 
