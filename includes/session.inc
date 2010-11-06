@@ -140,6 +140,7 @@ function html_cleanup(&$parms)
 		else
 			$parms[$name] = @htmlspecialchars($value, ENT_QUOTES, $_SESSION['language']->encoding);
 	}
+	reset($parms); // needed for direct key() usage later throughout the sources
 }
 
 //============================================================================
