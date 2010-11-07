@@ -403,6 +403,8 @@ class FrontReport extends Cpdf
 		}
 		$this->formData['doctype'] = $doctype;
 		if (count($contacts)) {
+			if (!is_array($contacts[0]))
+				$contacts = array($contacts); // change to array when single contact passed
 			$this->contactData = $contacts;
 			// as report is currently generated once despite number of email recipients
 			// we select language for the first recipient as report language
@@ -994,39 +996,41 @@ class FrontReport extends Cpdf
 					display_error(_("You have no email contact defined for this type of document"));
 				} else {
 					$sent = 0;
-				foreach($this->contactData as $contact) {
-					$emailtype = true;
-					$this->SetLang($contact['lang']);
-					include("includes/doctext.inc");
+					foreach($this->contactData as $contact) {
+						if (!isset($contact['email'])) 
+							continue;
+						$emailtype = true;
+						$this->SetLang($contact['lang']);
+						include("includes/doctext.inc");
 
-					require_once($path_to_root . "/reporting/includes/class.mail.inc");
-    				$mail = new email(str_replace(",", "", $this->company['coy_name']), $this->company['email']);
-					$mail->charset = $this->encoding;
-					if (!isset($contact['email']) || $contact['email'] == '') 
-						$contact['email'] = isset($myrow['contact_email']) ? $myrow['contact_email'] : '';
+						require_once($path_to_root . "/reporting/includes/class.mail.inc");
+    					$mail = new email(str_replace(",", "", $this->company['coy_name']),
+    						$this->company['email']);
+						$mail->charset = $this->encoding;
 
-	    			$to = str_replace(",", "", $contact['name'].' '.$contact['name2'])." <" . $contact['email'] . ">";
-    				$msg = $doc_Dear_Sirs . " " . $myrow['DebtorName'] . ",\n\n" . $doc_AttachedFile . " " . $subject .
-    					"\n\n";
-					if (isset($myrow['dimension_id']) && $myrow['dimension_id'] > 0 && $doctype == ST_SALESINVOICE) // helper for payment links
-					{
-						if ($myrow['dimension_id'] == 1)
+	    				$to = str_replace(",", "", $contact['name'].' '.$contact['name2'])
+	    					." <" . $contact['email'] . ">";
+    					$msg = $doc_Dear_Sirs . " " . $contact['name2'] . ",\n\n" 
+    						. $doc_AttachedFile . " " . $subject ."\n\n";
+						if (isset($myrow['dimension_id']) && $myrow['dimension_id'] > 0 && $doctype == ST_SALESINVOICE) // helper for payment links
 						{
-							$amt = number_format($myrow["ov_freight"] + $myrow["ov_gst"] +	$myrow["ov_amount"], user_price_dec());
-							$txt = $doc_Payment_Link . " PayPal: ";
-							$nn = urlencode($this->title . " " . $myrow['reference']);
-							$url = "https://www.paypal.com/xclick/business=" . $this->company['email'] . "&item_name=" .
-								$nn . "&amount=" . $amt . "&currency_code=" . $myrow['curr_code'];
-							$msg .= $txt . $url . "\n\n";
+							if ($myrow['dimension_id'] == 1)
+							{
+								$amt = number_format($myrow["ov_freight"] + $myrow["ov_gst"] +	$myrow["ov_amount"], user_price_dec());
+								$txt = $doc_Payment_Link . " PayPal: ";
+								$nn = urlencode($this->title . " " . $myrow['reference']);
+								$url = "https://www.paypal.com/xclick/business=" . $this->company['email'] . "&item_name=" .
+									$nn . "&amount=" . $amt . "&currency_code=" . $myrow['curr_code'];
+								$msg .= $txt . $url . "\n\n";
+							}
 						}
-					}
-    				$msg .= $doc_Kindest_regards . "\n\n";
-    				$sender = $this->user . "\n" . $this->company['coy_name'] . "\n" . $this->company['postal_address'] . "\n" . $this->company['email'] . "\n" . $this->company['phone'];
-    				$mail->to($to);
-    				$mail->subject($subject);
-    				$mail->text($msg . $sender);
-    				$mail->attachment($fname);
-    				if ($mail->send()) $sent++;
+	    				$msg .= $doc_Kindest_regards . "\n\n";
+    					$sender = $this->user . "\n" . $this->company['coy_name'] . "\n" . $this->company['postal_address'] . "\n" . $this->company['email'] . "\n" . $this->company['phone'];
+    					$mail->to($to);
+    					$mail->subject($subject);
+    					$mail->text($msg . $sender);
+    					$mail->attachment($fname);
+    					if ($mail->send()) $sent++;
 					} // foreach contact
 					unlink($fname);
 					$this->SetLang(user_language());

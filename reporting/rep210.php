@@ -174,9 +174,7 @@ function print_remittances()
 			$rep->Font();
 			if ($email == 1)
 			{
-//				$myrow['contact_email'] = $myrow['email'];
 				$myrow['DebtorName'] = $myrow['supp_name'];
-//				if ($myrow['contact'] != '') $myrow['DebtorName'] = $myrow['contact'];
 				$rep->End($email, $doc_Order_no . " " . $myrow['reference'], $myrow);
 			}
 		}	

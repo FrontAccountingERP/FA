@@ -217,15 +217,7 @@ function print_sales_orders()
 		$rep->Font();
 		if ($email == 1)
 		{
-			$res = get_branch_contacts(branch_code, 'order', customer_id);
-			if ($myrow['contact_email'] == '')
-			{
-				$myrow['contact_email'] = $branch['email'];
-				if ($myrow['contact_email'] == '')
-					$myrow['contact_email'] = $myrow['master_email'];
-				$myrow['DebtorName'] = $branch['br_name'];
-			}
-			//$myrow['reference'] = $i;
+			$res = get_branch_contacts($branch['branch_code'], 'order', $branch['customer_id']);
 			$rep->End($email, $doc_Invoice_no . " " . $i, $myrow);
 		}
 	}

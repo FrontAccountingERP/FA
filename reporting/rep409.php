@@ -142,7 +142,6 @@ function print_workorders()
 		}
 		if ($email == 1)
 		{
-//			$myrow['contact_email'] = $myrow['email'];
 			$myrow['DebtorName'] = $myrow['contact'];
 			$myrow['reference'] = $myrow['wo_ref'];
  			$rep->End($email, _("Work Order No.") . " " . $myrow['wo_ref'], $myrow);

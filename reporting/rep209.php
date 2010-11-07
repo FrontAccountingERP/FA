@@ -219,7 +219,6 @@ function print_po()
 		$rep->Font();
 		if ($email == 1)
 		{
-//			$myrow['contact_email'] = $myrow['email'];
 			$myrow['DebtorName'] = $myrow['supp_name'];
 
 			if ($myrow['reference'] == "")

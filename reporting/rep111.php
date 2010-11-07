@@ -152,13 +152,6 @@ function print_sales_quotations()
 		$rep->Font();
 		if ($email == 1)
 		{
-			if ($myrow['contact_email'] == '')
-			{
-				$myrow['contact_email'] = $branch['email'];
-				if ($myrow['contact_email'] == '')
-					$myrow['contact_email'] = $myrow['master_email'];
-				$myrow['DebtorName'] = $branch['br_name'];
-			}
 			if ($print_invoice_no == 1)
 				$myrow['reference'] = $i;
 			$rep->End($email, $doc_Invoice_no . " " . $myrow['reference'], $myrow);

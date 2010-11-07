@@ -219,11 +219,6 @@ function print_invoices()
 			if ($email == 1)
 			{
 				$myrow['dimension_id'] = $paylink; // helper for pmt link
-				if ($myrow['email'] == '')
-				{
-					$myrow['email'] = $branch['email'];
-					$myrow['DebtorName'] = $branch['br_name'];
-				}
 				$rep->End($email, $doc_Invoice_no . " " . $myrow['reference'], $myrow, $j);
 			}
 		}

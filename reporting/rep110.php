@@ -215,11 +215,6 @@ function print_deliveries()
 			}	
 			if ($email == 1)
 			{
-				if ($myrow['email'] == '')
-				{
-					$myrow['email'] = $branch['email'];
-					$myrow['DebtorName'] = $branch['br_name'];
-				}
 				$rep->End($email, $doc_Delivery_no . " " . $myrow['reference'], $myrow, ST_CUSTDELIVERY);
 			}
 	}
