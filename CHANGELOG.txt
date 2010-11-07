@@ -33,6 +33,8 @@ $ /includes/ui/ui_controls.inc
   /reporting/includes/pdf_report.inc
 # Fixed multipart mail structure
 $ /reporting/includes/class.mail.inc
+# Enabled javascript updates on ajax _page_body refresh
+$ /includes/ajax.inc
 
 06-Nov-2010 Janusz Dobrowolski
 # [0000274] Contact edition failed after last security fixes in RC2

@@ -132,7 +132,7 @@ class Ajax extends JsHttpRequest {
 		  if($com['n'] == 'up' && $com['t'] == '_page_body') {
 		  	  $cmds = array($com);
 		  	  foreach( $this->aCommands as $k=> $cmd) {
-			  	if ($cmd['n'] == 'fc') {	// save focus
+			  	if ($cmd['n'] == 'fc' || $cmd['n'] == 'js') {	// save focus
 					$cmds[] = $cmd; //break;
 			  	}
 			  }
