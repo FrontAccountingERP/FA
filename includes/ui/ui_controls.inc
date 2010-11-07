@@ -237,12 +237,12 @@ function submenu_option($title, $url, $id=null)
 
 function submenu_view($title, $type, $number, $id=null)
 {
-	display_note(get_trans_view_str($type, $number, $title, false, 'menu_option', $id), 0, 1);
+	display_note(get_trans_view_str($type, $number, $title, false, 'viewlink', $id), 0, 1);
 }
 
 function submenu_print($title, $type, $number, $id=null, $email=0, $extra=0)
 {
-	display_note(print_document_link($number, $title, true, $type, false, 'menu_option', $id, $email, $extra), 0, 1);
+	display_note(print_document_link($number, $title, true, $type, false, 'printlink', $id, $email, $extra), 0, 1);
 }
 //-----------------------------------------------------------------------------------
 
