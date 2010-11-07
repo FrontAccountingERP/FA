@@ -24,6 +24,8 @@
  erroneous file naming. I tried to emulate this mindset.
  Added line length and EOL char for file chunking. For some reason without
  it there were extra line feeds in the chunked file.
+
+ * Lots of fixes for FA
 */
 
 class email
@@ -71,14 +73,16 @@ class email
 
     function text($text)
     {
-	    $this->body = "Content-Type: text/plain; charset=\"{$this->charset}\"\n";
+        $this->body = "--$this->boundary\n";
+	    $this->body .= "Content-Type: text/plain; charset=\"{$this->charset}\"\n";
 	    $this->body .= "Content-Transfer-Encoding: 8bit\n";
 	    $this->body .= $text."\n";
     }
 
     function html($html)
     {
-	    $this->body = "Content-Type: text/html; charset=\"{$this->charset}\"\n";
+        $this->body = "--$this->boundary\n";
+	    $this->body .= "Content-Type: text/html; charset=\"{$this->charset}\"\n";
 	    $this->body .= "Content-Transfer-Encoding: quoted-printable\n";
 	    $this->body .= "<html><body>\n".$html."\n</body></html>\n";
     }
@@ -129,8 +133,6 @@ class email
 		$this->header .= "MIME-Version: 1.0\n";
 		$this->header .= "Content-Type: multipart/mixed;\n boundary=\"$this->boundary\"\n";
 		$this->header .= "This is a multi-part message in MIME format.\n";
-        $this->header .= "--$this->boundary\n";
-		$this->header .= $this->content_type;
 
         // Attachment hinzufügen
         $max = count($this->attachment);
