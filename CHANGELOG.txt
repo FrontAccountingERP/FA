@@ -35,6 +35,8 @@ $ /includes/ui/ui_controls.inc
 $ /reporting/includes/class.mail.inc
 # Enabled javascript updates on ajax _page_body refresh
 $ /includes/ajax.inc
+! Added validation hook on buttons
+$ /js/inserts.js
 
 06-Nov-2010 Janusz Dobrowolski
 # [0000274] Contact edition failed after last security fixes in RC2

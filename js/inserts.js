@@ -15,6 +15,12 @@ var _hotkeys = {
 	'focus': -1		// currently selected list element
 };
 
+function validate(e) {
+	if (e.name && (typeof _validate[e.name] == 'function'))
+		return _validate[e.name](e);
+	return true;
+}
+
 function save_focus(e) {
   _focus = e.name||e.id;
   var h = document.getElementById('hints');
@@ -222,36 +228,23 @@ var inserts = {
   	    // this shows divs for js enabled browsers only
 	    e.style.display = 'block';
 	},
+	'button': function(e) {
+		e.onclick = function(){ return validate(e); }
+	},
 //	'.ajaxsubmit,.editbutton,.navibutton': // much slower on IE7
 	'button.ajaxsubmit,input.ajaxsubmit,input.editbutton,button.editbutton,button.navibutton': 
 	function(e) {
-		    e.onclick = function() {
-			    save_focus(e);
-			    var asp = e.getAttribute('aspect')
-				if (asp && asp.indexOf('process') !== -1)
-					JsHttpRequest.request(this, null, 60000);
-				else
-					JsHttpRequest.request(this);
-				return false;
-		    }
-	},
-	'button': function(e) {
-		if (e.name) {
-			var func = _validate[e.name];
-			var old = e.onclick;
-			if(func) { 
-				if (typeof old != 'function' || old == func) { // prevent multiply binding on ajax update
-					e.onclick = func;
-				} else {
-					e.onclick = function() {
-						if(func()) 
-							{ old(); return true;}
-						else
-							return false;
-					}
+			e.onclick = function() {
+				if (validate(e)) {
+					save_focus(e);
+					var asp = e.getAttribute('aspect')
+					if (asp && asp.indexOf('process') !== -1)
+						JsHttpRequest.request(this, null, 60000);
+					else
+						JsHttpRequest.request(this);
 				}
+				return false;
 			}
-		}
 	},
     '.amount': function(e) {
 		if(e.onblur==undefined) {
@@ -280,11 +273,7 @@ var inserts = {
 		}
 	},
 	'button[aspect=popup]': function(e) {
-						var old = e.onclick
 		e.onclick = function() {
-//			this.form.target = '_blank';
-//				old();
-//			return true;
 			if(_w) _w.close(); // this is really necessary to have window on top in FF2 :/
 			  _w = open(document.location+'popup=1',
 				  "edit","Scrollbars=0,resizable=0,width=800,height=600, top=50,left=50");
@@ -440,8 +429,7 @@ function setHotKeys() {
 						return false;
 					}
 					if (((asp && asp.indexOf('default') !== -1) && key==13)||((asp && asp.indexOf('cancel') !== -1) && key==27)) {
-						var func = _validate[el.name];
-						if (func==undefined || func()) {
+						if (validate(el)) {
 							if (asp.indexOf('process') !== -1)
 								JsHttpRequest.request(el, null, 60000);
 							else
