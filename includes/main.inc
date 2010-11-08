@@ -302,19 +302,21 @@ function copy_file($file, $from, $to)
 /*
 	Search for file, looking first for company specific version, then for 
 	version provided by any extension module, finally in main FA directory.
-	Also adds include path for any related files.
+	Also adds include path for any related files, and sets $local_path_to_root 
+	to enable local translation domains.
 	
 	Returns found file path or null.
 */
 function find_custom_file($rep)
 {
-	global $installed_extensions, $path_to_root;
+	global $installed_extensions, $path_to_root, $local_path_to_root;
 
 	// customized per company version
 	$path = company_path();
 	$file = $path.$rep;
 	if (file_exists($file)) {
 		// add local include path
+		$local_path_to_root = $path;
 		set_include_path(dirname($file).PATH_SEPARATOR.get_include_path());
 		return $file;
 	}
@@ -324,6 +326,7 @@ function find_custom_file($rep)
 		$extensions = $installed_extensions;
 		foreach ($extensions as $ext)
 			if (($ext['active'] && $ext['type'] == 'extension')) {
+				$local_path_to_root =
 				$path = $path_to_root.'/'.$ext['path'];
 				$file = $path.$rep;
 				if (file_exists($file)) {

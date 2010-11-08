@@ -19,6 +19,11 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+08-Nov-2010 Janusz Dobrowolski
+# Fixed support for report translations in extension modules
+$ /includes/main.inc
+  /reporting/includes/class.pdf.inc
+
 07-Nov-2010 Janusz Dobrowolski
 ! Separate class for view and print/email links (also fixes conflict with confirmation dialog)
 $ /includes/ui/ui_controls.inc
