@@ -151,7 +151,8 @@ function do_install() {
 		update_company_prefs(array('coy_name'=>$con['name']));
 		$admin = get_user_by_login('admin');
 		update_user_prefs($admin['id'], array(
-			'language' => $_POST['lang'], 
+			'language' => $con['lang'], 
+			'password' => md5($con['pass']),
 			'user_id' => $con['admin']));
 
 		if (!copy($path_to_root. "/config.default.php", $path_to_root. "/config.php")) {

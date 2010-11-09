@@ -20,7 +20,7 @@ Legend:
 $ -> Affected files
 
 09-Nov-2010 Janusz Dobrowolski
-# Session destroy added on install finish.
+# Session destroy added on install finish, fixed pasword/admin login update.
 $ /install/index.php
 
 08-Nov-2010 Janusz Dobrowolski
@@ -93,7 +93,7 @@ $ /js/inserts.js
 $ /sales/includes/ui/sales_credit_ui.inc
 
 29-Oct-2010 Janusz Dobrowolski
-# Fixed cleanup for input arrays 
+# [0000275] Fixed cleanup for input arrays 
 $ /includes/session.inc
 
 28-Oct-2010 Janusz Dobrowolski
