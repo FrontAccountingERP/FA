@@ -29,7 +29,7 @@ simple_page_mode(true);
 
 function check_data()
 {
-	if (!is_date($_POST['from_date']) || is_date_in_fiscalyears($_POST['from_date']) || is_bad_begin_date($_POST['from_date']))
+	if (!is_date($_POST['from_date']) || is_date_in_fiscalyears($_POST['from_date']) || !check_begin_date($_POST['from_date']))
 	{
 		display_error( _("Invalid BEGIN date in fiscal year."));
 		set_focus('from_date');
@@ -196,7 +196,16 @@ function display_fiscalyear_edit($selected_id)
 	}
 	else
 	{
-		date_row(_("Fiscal Year Begin:"), 'from_date', '', null, 0, 0, 1001);
+		$begin = check_begin_date("", false);
+		if ($begin)
+		{
+			$_POST['from_date'] = $begin;
+			hidden('from_date', $begin);
+			$_POST['to_date'] = end_month(add_months($begin, 11));
+			label_row(_("Fiscal Year Begin:"), $_POST['from_date']);
+		}
+		else
+			date_row(_("Fiscal Year Begin:"), 'from_date', '', null, 0, 0, 1001);
 		date_row(_("Fiscal Year End:"), 'to_date', '', null, 0, 0, 1001);
 	}
 	hidden('selected_id', $selected_id);
