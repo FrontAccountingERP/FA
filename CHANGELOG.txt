@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+09-Nov-2010 Janusz Dobrowolski
+# Session destroy added on install finish.
+$ /install/index.php
+
 08-Nov-2010 Janusz Dobrowolski
 # Fixed support for report translations in extension modules
 $ /includes/main.inc
@@ -61,7 +65,7 @@ $ /sales/sales_order_entry.php
   /sales/includes/sales_ui.inc
 
 05-Nov-2010 Janusz Dobrowolski
-# Fixed admin username update and error when no prefix is selected in installer.
+# [0000276] Fixed admin username update and error when no prefix is selected in installer.
 $ /install/index.php
 
 04-Nov-2010 Janusz Dobrowolski

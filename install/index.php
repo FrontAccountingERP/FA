@@ -152,7 +152,7 @@ function do_install() {
 		$admin = get_user_by_login('admin');
 		update_user_prefs($admin['id'], array(
 			'language' => $_POST['lang'], 
-			'user_id' => $con['admin'], 
+			'user_id' => $con['admin']));
 
 		if (!copy($path_to_root. "/config.default.php", $path_to_root. "/config.php")) {
 			display_error(_("Cannot save system configuration file 'config.php'."));
@@ -176,7 +176,7 @@ function do_install() {
 		$dflt_lang = $_POST['lang'];
 		write_lang();
 		if (!isset($installed_extensions))
-			write_extensions(array());
+			update_extensions(array());
 		return true;
 	}
 	return false;
@@ -386,7 +386,8 @@ start_form();
 		case '6': // final screen
 			subpage_title(_('FrontAccounting ERP has been installed successsfully.'));
 			display_note(_('Please do not forget to remove install wizard folder.'));
-			$install_done = true;
+			session_unset();
+			session_destroy();
 			hyperlink_no_params($path_to_root.'/index.php', _('Click here to start.'));
 			break;
 
