@@ -326,11 +326,11 @@ function find_custom_file($rep)
 		$extensions = $installed_extensions;
 		foreach ($extensions as $ext)
 			if (($ext['active'] && $ext['type'] == 'extension')) {
-				$local_path_to_root =
 				$path = $path_to_root.'/'.$ext['path'];
 				$file = $path.$rep;
 				if (file_exists($file)) {
 					set_include_path($path.PATH_SEPARATOR.get_include_path());
+					$local_path_to_root = $path;
 					return $file;
 				}
 			}

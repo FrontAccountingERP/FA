@@ -19,14 +19,18 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+10-Nov-2010 Janusz Dobrowolski
+# Additional fix for setting local_path_to_root in find_custom_file()
+$ /includes/main.inc
+
 09-Nov-2010 Joe Hunt
 ! [0000277] Changed so FA suggest the next begin day in new Fiscal Year (read only).
-  But only if there are any fiscal years before. Otherwise is is normal.
+  But only if there are any fiscal years before. Otherwise it is normal.
 $ /admin/db/fiscalyears_db.inc
   /admin/fiscalyears.php
-  
+
 09-Nov-2010 Janusz Dobrowolski
-# Session destroy added on install finish, fixed pasword/admin login update.
+# Session destroy added on install finish, fixed pasword/admin login update, also [0000273].
 $ /install/index.php
 
 08-Nov-2010 Janusz Dobrowolski
