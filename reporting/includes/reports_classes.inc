@@ -57,6 +57,8 @@ class BoxReports
 		$st_classes = "<b>" . _("Report Classes:") . "</b><br>";
 		foreach($this->ar_classes as $class_id => $name)
 		{
+			if (!isset($this->ar_reports[$class_id]))
+				continue; // e.g. no dimensions
 			$style = $class_id==$_REQUEST['Class'] ? '' : "style='display:none'";
 //			$cname = access_string($key, true);
 //			$style = $_REQUEST['Class']==$cname ? '' : "style='display:none'";

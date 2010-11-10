@@ -22,6 +22,8 @@ $ -> Affected files
 10-Nov-2010 Janusz Dobrowolski
 # Additional fix for setting local_path_to_root in find_custom_file()
 $ /includes/main.inc
+# Removed related report class when company does not use dimensions
+$ /reporting/includes/report_classes.inc
 
 09-Nov-2010 Joe Hunt
 ! [0000277] Changed so FA suggest the next begin day in new Fiscal Year (read only).
