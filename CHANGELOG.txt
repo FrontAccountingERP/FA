@@ -19,6 +19,13 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+11-Nov-2010 Janusz Dobrowolski
+# Fixed slq_gen for multiply extra wghere clauses
+$ /includes/db_pager.inc
+# Fixed implode injection vulnerabilities.
+$ /includes/db/crm_contacts_db.inc
+  /sales/includes/db/cust_trans_details_db.inc
+
 10-Nov-2010 Janusz Dobrowolski
 # Additional fix for setting local_path_to_root in find_custom_file()
 $ /includes/main.inc
@@ -273,7 +280,7 @@ $ /purchasing/includes/supp_trans_class.inc
   /purchasing/view/view_supp_credit.php
   /gl/includes/db/gl_db_trans.inc
 
-06-Oct-2010 Jusz Dobrowolski
+06-Oct-2010 Janusz Dobrowolski
 # Fixed gettext for extension links.
 $ /reporting/includes/reports_classes.inc
 ! Added helper for gettext domain switching
