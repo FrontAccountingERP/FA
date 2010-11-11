@@ -25,7 +25,7 @@ if (!is_array($debtor_trans_no))
 
 	$tr=array();
 	foreach ($debtor_trans_no as $trans_no)
-		$tr[] = 'debtor_trans_no='.$trans_no;
+		$tr[] = 'debtor_trans_no='.db_escape($trans_no);
 
 	$sql .= implode(' OR ', $tr);
 

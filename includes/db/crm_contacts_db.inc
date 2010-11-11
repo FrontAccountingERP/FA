@@ -150,6 +150,9 @@ function update_person_contacts($id, $cat_ids, $entity_id=null)
 
 	$ret = db_query($sql, "Can't delete person contacts");
 
+	foreach($cat_ids as $n => $id)
+		$cat_ids[$n] = db_escape($id);
+
 	if($ret && count($cat_ids)) {
 		array_walk($cat_ids,'db_escape');
 		$sql = "INSERT INTO ".TB_PREF."crm_contacts (person_id,type,action,entity_id)
