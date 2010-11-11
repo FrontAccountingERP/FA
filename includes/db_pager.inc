@@ -260,7 +260,7 @@ class db_pager {
 
 		if(count($this->extra_where)) {
 		    $where .= ($where=='' ? '' : ' AND ')
-				.implode( $this->extra_where, ' AND ');
+				.implode(' AND ', $this->extra_where);
 		}
 		if ($where) $where = " WHERE ($where)";
 
