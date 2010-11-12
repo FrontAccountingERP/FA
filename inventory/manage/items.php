@@ -305,7 +305,7 @@ else
 	set_focus('description');
 }
 
-text_row(_("Name:"), 'description', null, 52, 50);
+text_row(_("Name:"), 'description', null, 52, 200);
 
 textarea_row(_('Description:'), 'long_description', null, 42, 3);
 
