@@ -25,12 +25,14 @@ class purch_order
 	var $supplier_id;
 	var $supplier_name;
 	var $orig_order_date;
+	var $due_date;
 	var $order_no; /*Only used for modification of existing orders otherwise only established when order committed */
 	var $lines_on_order = 0;
 	var $credit;
 	var $tax_group_id;
 	var $tax_group_array = null; // saves db queries
 	var $tax_included; // type of prices
+	var $terms;
 	
 	var $reference;
 	

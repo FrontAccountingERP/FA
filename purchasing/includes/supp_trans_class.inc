@@ -21,7 +21,6 @@ class supp_trans
 	var $gl_codes; /*array of objects of class gl_codes using a counter as the pointer */
 	var $supplier_id;
 	var $supplier_name;
-	var $terms_description;
 	var $terms;
 	
 	var $tax_description;

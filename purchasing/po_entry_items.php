@@ -332,6 +332,13 @@ function can_commit()
 		return false;
 	} 
 	
+	if (($_SESSION['PO']->trans_type==ST_SUPPINVOICE) && !is_date($_POST['due_date'])) 
+	{
+		display_error(_("The entered due date is invalid."));
+		set_focus('due_date');
+		return false;
+	} 
+	
 	if (!$_SESSION['PO']->order_no) 
 	{
     	if (!$Refs->is_valid(get_post('ref'))) 
@@ -423,16 +430,15 @@ function handle_commit_order()
 			$inv->Comments = $cart->Comments;
 			$inv->supplier_id = $cart->supplier_id;
 			$inv->tran_date = $cart->orig_order_date;
+			$inv->due_date = $cart->due_date;
 			$inv->reference = $ref;
 			$inv->supp_reference = $cart->supp_ref;
 			$inv->tax_included = $cart->tax_included;
 			$supp = get_supplier($cart->supplier_id);
 			$inv->tax_group_id = $supp['tax_group_id'];
 //			$inv->ov_discount 'this isn't used at all'
-//			$inv->terms = not used, TODO
-			$terms =  $supp['payment_terms'];
 			$inv->ov_amount = $inv->ov_gst = 0;
-			$inv->due_date = get_invoice_duedate($terms, $inv->tran_date);
+			
 			foreach($cart->line_items as $key => $line) {
 				$inv->add_grn_to_trans($line->grn_item_id, $line->po_detail_rec, $line->stock_id,
 					$line->item_description, $line->receive_qty, 0, $line->receive_qty,

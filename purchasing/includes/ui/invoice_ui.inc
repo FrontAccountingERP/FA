@@ -111,7 +111,7 @@ function invoice_header(&$supp_trans)
 
     date_row(_("Due Date") . ":", 'due_date');
 
-    label_row(_("Terms:"), $supp_trans->terms_description);
+    label_row(_("Terms:"), $supp_trans->terms['description']);
 
 	table_section(3, "33%");
 
@@ -558,19 +558,22 @@ function display_grn_items(&$supp_trans, $mode=0)
 }
 
 //--------------------------------------------------------------------------------------------------
-function get_duedate_from_terms(&$supp_trans)
+function get_duedate_from_terms(&$trans)
 {
-	if (!is_date($supp_trans->tran_date))
+	$date = get_class($trans) == 'purch_order' ? $trans->orig_order_date : $trans->tran_date;
+
+	if (!is_date($date))
 	{
-		$supp_trans->tran_date = Today();
+		$date = Today();
 	}
-	if (substr( $supp_trans->terms, 0, 1) == "1")
+	if ($trans->terms['day_in_following_month'])
 	{ /*Its a day in the following month when due */
-		$supp_trans->due_date = add_days(end_month($supp_trans->tran_date), (int) substr( $supp_trans->terms,1));
+		$trans->due_date =
+			add_days(end_month($date), $trans->terms["day_in_following_month"]);
 	}
 	else
 	{ /*Use the Days Before Due to add to the invoice date */
-		$supp_trans->due_date = add_days($supp_trans->tran_date, (int) substr( $supp_trans->terms,1));
+		$trans->due_date = add_days($date, $trans->terms["days_before_due"]);
 	}
 }
 

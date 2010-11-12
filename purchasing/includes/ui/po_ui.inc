@@ -19,6 +19,8 @@ function copy_from_cart()
 
 	$_POST['supplier_id'] = $cart->supplier_id;
 	$_POST['OrderDate'] = $cart->orig_order_date;
+	if ($cart->trans_type==ST_SUPPINVOICE)
+		$_POST['due_date'] = $cart->due_date;
     $_POST['supp_ref'] = $cart->supp_ref;
     $_POST['ref'] = $cart->reference;
 	$_POST['Comments'] = $cart->Comments;
@@ -32,6 +34,8 @@ function copy_to_cart()
 
 	$cart->supplier_id = $_POST['supplier_id'];	
 	$cart->orig_order_date = $_POST['OrderDate'];
+	if ($cart->trans_type==ST_SUPPINVOICE)
+		$cart->due_date = $_POST['due_date'];
 	$cart->reference = $_POST['ref'];
 	$cart->supp_ref = $_POST['supp_ref'];
 	$cart->Comments = $_POST['Comments'];	
@@ -44,10 +48,12 @@ function get_supplier_details_to_order(&$order, $supplier_id)
 {
 	$sql = "SELECT curr_code, supp_name, tax_group_id, supp.tax_included,
 			supp.credit_limit - Sum(IFNULL(IF(trans.type=".ST_SUPPCREDIT.", -1, 1) 
-				* (ov_amount + ov_gst + ov_discount),0)) as cur_credit
+				* (ov_amount + ov_gst + ov_discount),0)) as cur_credit,
+				terms.terms, terms.days_before_due, terms.day_in_following_month
 		FROM ".TB_PREF."suppliers supp
 			 LEFT JOIN ".TB_PREF."supp_trans trans ON supp.supplier_id = trans.supplier_id
-		WHERE supp.supplier_id = '$supplier_id'
+			 LEFT JOIN ".TB_PREF."payment_terms terms ON supp.payment_terms=terms.terms_indicator
+		WHERE supp.supplier_id = ".db_escape($supplier_id)."
 		GROUP BY
 			  supp.supp_name";
 
@@ -55,6 +61,11 @@ function get_supplier_details_to_order(&$order, $supplier_id)
 
 	$myrow = db_fetch($result);
 	$order->credit = $myrow["cur_credit"];
+	$order->terms = array( 
+		'description' => $myrow['terms'],
+		'days_before_due' => $myrow['days_before_due'], 
+		'day_in_following_month' => $myrow['day_in_following_month'] );
+
 	$_POST['supplier_id'] = $supplier_id;
 	$_POST['supplier_name'] = $myrow["supp_name"];
 	$_POST['curr_code'] = $myrow["curr_code"];
@@ -76,8 +87,9 @@ function create_new_po($trans_type, $trans_no)
 	$_POST['OrderDate'] = new_doc_date();
 	if (!is_date_in_fiscalyear($_POST['OrderDate']))
 		$_POST['OrderDate'] = end_fiscalyear();
-	$cart->orig_order_date = $_POST['OrderDate'];
+	$cart->due_date = $cart->orig_order_date = $_POST['OrderDate'];
 
+	
 	$cart->trans_type = $trans_type;
 	$cart->order_no = $trans_no;
 	/*read in all the selected order into the Items cart  */
@@ -115,7 +127,10 @@ function display_po_header(&$order)
 
 	if ($order->supplier_id != get_post('supplier_id',-1)) {
 		$old_supp = $order->supplier_id;
-		get_supplier_details_to_order($order, $_POST['supplier_id']);
+		get_supplier_details_to_order($order, $_POST['supplier_id']); 
+	    get_duedate_from_terms($order);
+		$_POST['due_date'] = $order->due_date;
+
 		// supplier default price update
 		foreach ($order->line_items as $line_no=>$item) {
 			$line = &$order->line_items[$line_no];
@@ -125,6 +140,7 @@ function display_po_header(&$order)
 					*get_purchase_conversion_factor ($order->supplier_id, $line->stock_id);
 		}
 	    $Ajax->activate('items_table');
+	    $Ajax->activate('due_date');
 	}
 	set_global_supplier($_POST['supplier_id']);
 
@@ -137,7 +153,6 @@ function display_po_header(&$order)
 
 	supplier_credit_row($order->supplier_id, $order->credit);
 
-	table_section(2);
 
     if ($editable)
     {
@@ -148,6 +163,8 @@ function display_po_header(&$order)
     	hidden('ref', $order->reference);
     	label_row(_("Reference:"), $order->reference);
     }
+
+	table_section(2);
 
 	// check this out?????????
 	//if (!isset($_POST['OrderDate']) || $_POST['OrderDate'] == "")
@@ -160,8 +177,14 @@ function display_po_header(&$order)
 	//}
 	date_row(_("Order Date:"), 'OrderDate', '', true, 0, 0, 0, null, true);
 	if (isset($_POST['_OrderDate_changed'])) {
+		$order->orig_order_date = $_POST['OrderDate'];
+	    get_duedate_from_terms($order);
+	    $_POST['due_date'] = $order->due_date;
 		$Ajax->activate('_ex_rate');
+		$Ajax->activate('due_date');
 	}
+	if ($order->trans_type==ST_SUPPINVOICE)
+		date_row(_("Due Date:"), 'due_date', '', false, 0, 0, 0, null, true);
 
   	text_row(_("Supplier's Reference:"), 'supp_ref', null, 16, 15);
 	locations_list_row(_("Receive Into:"), 'StkLocation', null, false, true); 
