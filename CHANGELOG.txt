@@ -19,8 +19,21 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+12-Nov-2010 Janusz Dobrowolski
+# Added missing due date on direct purchase invoice.
+$ /purchasing/po_entry_items.php
+  /purchasing/includes/po_class.inc
+  /purchasing/includes/supp_trans_class.inc
+  /purchasing/includes/db/invoice_db.inc
+  /purchasing/includes/ui/invoice_ui.inc
+  /purchasing/includes/ui/po_ui.inc
+# Fixed maximum name length
+$ /inventory/manage/items.php
+# Fixed a couple of edition ui bugs
+$ /gl/manage/gl_quick_entries.php
+
 11-Nov-2010 Janusz Dobrowolski
-# Fixed slq_gen for multiply extra wghere clauses
+# Fixed sql_gen for multiply extra where clauses
 $ /includes/db_pager.inc
 # Fixed implode injection vulnerabilities.
 $ /includes/db/crm_contacts_db.inc
