@@ -31,6 +31,8 @@ $ /purchasing/po_entry_items.php
 $ /inventory/manage/items.php
 # Fixed a couple of edition ui bugs
 $ /gl/manage/gl_quick_entries.php
++ Added db_close() for optional use
+$ /includes/db/connect_db.inc
 
 11-Nov-2010 Janusz Dobrowolski
 # Fixed sql_gen for multiply extra where clauses

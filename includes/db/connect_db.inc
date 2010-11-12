@@ -203,4 +203,9 @@ function db_drop_db($connection)
 	}
 }
 
+function db_close($db = null)
+{
+	return mysql_close($db);
+}
+
 ?>
