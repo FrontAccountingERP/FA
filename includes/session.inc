@@ -206,11 +206,14 @@ if (!isset($_SESSION['language']) || !method_exists($_SESSION['language'], 'set_
 
 $_SESSION['language']->set_language($_SESSION['language']->code);
 
-// include $Hooks object if locale file exists
+include_once($path_to_root . "/includes/hooks.inc");
+
+$Hooks = array();
+// include current langauge related $Hooks object if locale file exists
 if (file_exists($path_to_root . "/lang/".$_SESSION['language']->code."/locale.inc"))
 {
 	include_once($path_to_root . "/lang/".$_SESSION['language']->code."/locale.inc");
-	$Hooks = new Hooks();
+	$Hooks[] = new Hooks();
 }
 
 include_once($path_to_root . "/includes/access_levels.inc");
