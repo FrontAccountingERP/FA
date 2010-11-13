@@ -71,7 +71,7 @@ function getTaxInfo($id)
 
 function print_tax_report()
 {
-	global $path_to_root, $trans_dir, $Hooks, $systypes_array;
+	global $path_to_root, $trans_dir, $systypes_array;
 	
 	$from = $_POST['PARAM_0'];
 	$to = $_POST['PARAM_1'];
@@ -202,10 +202,7 @@ function print_tax_report()
 	$rep->Font();
 	$rep->NewLine();
 
-	if (method_exists($Hooks, 'tax_report_done'))
-	{
-		$Hooks->tax_report_done();
-	}
+	hook_tax_report_done();
 
 	$rep->End();
 }

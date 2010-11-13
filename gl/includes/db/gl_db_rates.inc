@@ -76,12 +76,10 @@ function delete_exchange_rate($rate_id)
 //
 function retrieve_exrate($curr_b, $date)
 {
-	global $Hooks;
-
-	if (method_exists($Hooks, 'retrieve_exrate'))
-		return $Hooks->retrieve_exrate($curr_b, $date);
-	else
-		return get_extern_rate($curr_b, 'ECB', $date);
+	return $rate = hook_retrieve_exrate($curr_b, $date);
+	if (is_numeric($rate))
+		return $rate;
+	return get_extern_rate($curr_b, 'ECB', $date);
 }
 //-----------------------------------------------------------------------------
 
