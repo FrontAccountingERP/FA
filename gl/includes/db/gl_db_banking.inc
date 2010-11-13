@@ -87,6 +87,11 @@ function add_bank_transfer($from_account, $to_account, $date_,
 	global $Refs, $SysPrefs;
 	
 	begin_transaction();
+	$args = func_get_args(); if (count($args) < 7) $args[] = 0;
+	$args = (object)array_combine(array('from_account', 'to_account', 'date_', 'amount',
+		'ref', 'memo_', 'charge'), $args);
+	$args->trans_no = 0;
+	hook_db_prewrite($args, ST_BANKTRANSFER);
 
 	$trans_type = ST_BANKTRANSFER;
 
@@ -153,6 +158,8 @@ function add_bank_transfer($from_account, $to_account, $date_,
 	$Refs->save($trans_type, $trans_no, $ref);
 	add_audit_trail($trans_type, $trans_no, $date_);
 
+	$args->trans_no = $trans_no;
+	hook_db_postwrite($args, ST_BANKTRANSFER);
 	commit_transaction();
 
 	return $trans_no;
@@ -183,6 +190,12 @@ function write_bank_transaction($trans_type, $trans_no, $from_account, $items, $
 	$exchanged = false;
 	if ($use_transaction)
 		begin_transaction();
+
+	$args = func_get_args(); if (count($args) < 11) $args[] = true;
+	$args = (object)array_combine(array('trans_type', 'trans_no', 'from_account', 'items', 'date_',
+		'person_type_id', 'person_id', 'person_detail_id', 'ref', 'memo_', 'use_transaction'),
+		$args);
+	hook_db_prewrite($args, $trans_type);
 
 	if ($trans_no)
 		clear_bank_transaction($_SESSION['pay_items']->trans_type, $_SESSION['pay_items']->order_id);
@@ -292,6 +305,8 @@ function write_bank_transaction($trans_type, $trans_no, $from_account, $items, $
 	$Refs->save($trans_type, $trans_no, $ref);
 	add_audit_trail($trans_type, $trans_no, $date_);
 
+	$args->trans_no = $trans_no;
+	hook_db_postwrite($args, $trans_type);
 	if ($use_transaction)
 		commit_transaction();
 
@@ -301,6 +316,8 @@ function write_bank_transaction($trans_type, $trans_no, $from_account, $items, $
 
 function clear_bank_transaction($type, $type_no)
 {
+
+	hook_db_prevoid($type, $type_no);
 
 	$sql = "DELETE FROM ".TB_PREF."bank_trans 
 		WHERE type=".db_escape($type)." AND trans_no=".db_escape($type_no);

@@ -118,6 +118,11 @@ function add_work_order($wo_ref, $loc_code, $units_reqd, $stock_id,
 		return add_work_order_quick($wo_ref, $loc_code, $units_reqd, $stock_id, $type, $date_, $memo_, $costs, $cr_acc, $labour, $cr_lab_acc);
 
 	begin_transaction();
+	$args = func_get_args();
+	$args = (object)array_combine(array('wo_ref', 'loc_code', 'units_reqd', 'stock_id',
+		'type', 'date_', 'required_by', 'memo_', 'costs', 'cr_acc', 'labour', 'cr_lab_acc'), $args);
+	$args->woid = 0;
+	hook_db_prewrite($args, ST_WORKORDER);
 
 	add_material_cost($stock_id, $units_reqd, $date_);
 
@@ -138,6 +143,8 @@ function add_work_order($wo_ref, $loc_code, $units_reqd, $stock_id,
 	$Refs->save(ST_WORKORDER, $woid, $wo_ref);
 	add_audit_trail(ST_WORKORDER, $woid, $date_);
 
+	$args->woid = $woid;
+	hook_db_postwrite($args, ST_WORKORDER);
 	commit_transaction();
 
 	return $woid;
@@ -149,6 +156,10 @@ function update_work_order($woid, $loc_code, $units_reqd, $stock_id,
 					$date_, $required_by, $memo_)
 {
 	begin_transaction();
+	$args = func_get_args();
+	$args = (object)array_combine(array('woid', 'loc_code', 'units_reqd', 'stock_id',
+		'date_', 'required_by', 'memo_'), $args);
+	hook_db_prewrite($args, ST_WORKORDER);
 
 	add_material_cost($_POST['old_stk_id'], -$_POST['old_qty'], $date_);
 	add_material_cost($stock_id, $units_reqd, $date_);
@@ -167,12 +178,14 @@ function update_work_order($woid, $loc_code, $units_reqd, $stock_id,
 	update_comments(ST_WORKORDER, $woid, null, $memo_);
 	add_audit_trail(ST_WORKORDER, $woid, $date_, _("Updated."));
 
+	hook_db_postwrite($args, ST_WORKORDER);
 	commit_transaction();
 }
 
 function delete_work_order($woid)
 {
 	begin_transaction();
+	hook_db_prevoid(ST_WORKORDER, $woid);
 
 	add_material_cost($_POST['stock_id'], -$_POST['quantity'], $_POST['date_']);
 
@@ -299,6 +312,7 @@ function work_order_update_finished_quantity($woid, $quantity, $force_close=0)
 function void_work_order($woid)
 {
 	begin_transaction();
+	hook_db_prevoid(ST_WORKORDER, $woid);
 
 	$work_order = get_work_order($woid);
 	if (!($work_order["type"] == WO_ADVANCED))

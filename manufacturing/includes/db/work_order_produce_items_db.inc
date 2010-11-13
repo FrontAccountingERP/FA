@@ -14,6 +14,11 @@ function work_order_produce($woid, $ref, $quantity, $date_, $memo_, $close_wo)
 	global $Refs;
 
 	begin_transaction();
+	$args = func_get_args();
+	$args = (object)array_combine(array('woid', 'ref', 'quantity', 'date_', 'memo_','close_wo'),
+		$args);
+	$args->trans_no = 0;
+	hook_db_prewrite($args, ST_MANURECEIVE);
 
 	$details = get_work_order($woid);
 
@@ -59,6 +64,8 @@ function work_order_produce($woid, $ref, $quantity, $date_, $memo_, $close_wo)
 	$Refs->save(ST_MANURECEIVE, $id, $ref);
 	add_audit_trail(ST_MANURECEIVE, $id, $date_, _("Production."));
 
+	$args->trans_no = $id;
+	hook_db_postwrite($args, ST_MANURECEIVE);
 	commit_transaction();
 }
 
@@ -101,6 +108,7 @@ function exists_work_order_produce($id)
 function void_work_order_produce($type_no)
 {
 	begin_transaction();
+	hook_db_prevoid(ST_MANURECEIVE, $type_no);
 
 	$row = get_work_order_produce($type_no);
 

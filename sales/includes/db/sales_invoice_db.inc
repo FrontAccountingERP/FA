@@ -25,6 +25,7 @@ function write_sales_invoice(&$invoice)
 
 	begin_transaction();
 
+	hook_db_prewrite($invoice, ST_SALESINVOICE);
 	$company_data = get_company_prefs();
 
 	$branch_data = get_branch_accounts($invoice->Branch);
@@ -182,6 +183,7 @@ function write_sales_invoice(&$invoice)
 			update_debtor_trans_allocation(ST_CUSTPAYMENT, $pmtno, $amount);
 		}
 	}
+	hook_db_postwrite($invoice, ST_SALESINVOICE);
 	commit_transaction();
 
 	return $invoice_no;
@@ -193,6 +195,7 @@ function void_sales_invoice($type, $type_no)
 {
 	begin_transaction();
 
+	hook_db_prevoid($type, $type_no);
 	void_bank_trans($type, $type_no, true);
 	void_gl_trans($type, $type_no, true);
 

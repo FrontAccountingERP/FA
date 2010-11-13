@@ -85,6 +85,7 @@ function add_grn(&$po)
 	$date_ = $po->orig_order_date;
 
 	begin_transaction();
+	hook_db_prewrite($po, ST_SUPPRECEIVE);
 
 	$grn = add_grn_batch($po->order_no, $po->supplier_id, $po->reference, $po->Location, $date_);
 
@@ -129,6 +130,8 @@ function add_grn(&$po)
 
 	add_audit_trail(ST_SUPPRECEIVE, $grn, $date_);
 
+	$po->trans_no = $grn;
+	hook_db_postwrite($po, ST_SUPPRECEIVE);
 	commit_transaction();
 
 	return $grn;
@@ -381,6 +384,7 @@ function void_grn($grn_batch)
 		return false;
 
 	begin_transaction();
+	hook_db_prevoid(ST_SUPPRECEIVE, $grn_batch);
 
 	void_bank_trans(ST_SUPPRECEIVE, $grn_batch, true);
 	void_gl_trans(ST_SUPPRECEIVE, $grn_batch, true);

@@ -15,7 +15,7 @@ function add_sales_order(&$order)
 	global $loc_notification, $path_to_root, $Refs;
 
 	begin_transaction();
-
+	hook_db_prewrite($order, $order->trans_type);
 	$order_no = get_next_trans_no($order->trans_type);
 	$del_date = date2sql($order->due_date);
 	$order_type = 0; // this is default on new order
@@ -91,6 +91,8 @@ function add_sales_order(&$order)
 
 	add_audit_trail($order->trans_type, $order_no, $order->document_date);
 	$Refs->save($order->trans_type, $order_no, $order->reference);
+
+	hook_db_postwrite($order, $order->trans_type);
 	commit_transaction();
 
 	if ($loc_notification == 1 && count($st_ids) > 0)
@@ -119,6 +121,7 @@ function add_sales_order(&$order)
 function delete_sales_order($order_no, $trans_type)
 {
 	begin_transaction();
+	hook_db_prevoid($trans_type, $order_no);
 
 	$sql = "DELETE FROM ".TB_PREF."sales_orders WHERE order_no=" . db_escape($order_no) 
 		. " AND trans_type=".db_escape($trans_type);
@@ -336,6 +339,7 @@ function get_sales_order_details($order_no, $trans_type) {
 
 function read_sales_order($order_no, &$order, $trans_type)
 {
+
 	$myrow = get_sales_order_header($order_no, $trans_type);
 
 	$order->trans_type = $myrow['trans_type'];
@@ -376,6 +380,7 @@ function read_sales_order($order_no, &$order, $trans_type)
 		}
 	}
 
+	hook_db_postread($order, $trans_type);
 	return true;
 }
 

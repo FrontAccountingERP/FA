@@ -16,6 +16,11 @@ function add_stock_adjustment($items, $location, $date_, $type, $increase, $refe
 	global $Refs;
 
 	begin_transaction();
+	$args = func_get_args();
+	$args = (object)array_combine(array('items', 'location', 'date_', 'type', 'increase',
+		'reference', 'memo_'), $args);
+	$args->trans_no = 0;
+	hook_db_prewrite($args, ST_INVADJUST);
 
 	$adj_id = get_next_trans_no(ST_INVADJUST);
 
@@ -34,6 +39,8 @@ function add_stock_adjustment($items, $location, $date_, $type, $increase, $refe
 	$Refs->save(ST_INVADJUST, $adj_id, $reference);
 	add_audit_trail(ST_INVADJUST, $adj_id, $date_);
 
+	$args->trans_no = $adj_id;
+	hook_db_postwrite($args, ST_INVADJUST);
 	commit_transaction();
 
 	return $adj_id;
@@ -43,6 +50,7 @@ function add_stock_adjustment($items, $location, $date_, $type, $increase, $refe
 
 function void_stock_adjustment($type_no)
 {
+	hook_db_prevoid(ST_INVADJUST, $type_no);
 	void_gl_trans(ST_INVADJUST, $type_no);
 	void_stock_move(ST_INVADJUST, $type_no);
 }

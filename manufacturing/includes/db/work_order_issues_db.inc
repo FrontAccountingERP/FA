@@ -17,6 +17,11 @@ function add_work_order_issue($woid, $ref, $to_work_order, $items, $location, $w
 	global $Refs;
 
 	begin_transaction();
+	$args = func_get_args();
+	$args = (object)array_combine(array('woid', 'ref', 'to_work_order', 'items', 'location', 
+		'workcentre', 'date_', 'memo_'), $args);
+	$args->trans_no = 0;
+	hook_db_prewrite($args, ST_MANUISSUE);
 
 	$details = get_work_order($woid);
 
@@ -80,6 +85,8 @@ function add_work_order_issue($woid, $ref, $to_work_order, $items, $location, $w
 	$Refs->save(ST_MANUISSUE, $number, $ref);
 	add_audit_trail(ST_MANUISSUE, $number, $date_);
 
+	$args->trans_no = $number;
+	hook_db_postwrite($args, ST_MANUISSUE);
 	commit_transaction();
 }
 
@@ -148,6 +155,7 @@ function exists_work_order_issue($issue_no)
 function void_work_order_issue($type_no)
 {
 	begin_transaction();
+	hook_db_prevoid(ST_MANUISSUE, $type_no);
 
 	// void the actual issue items and their quantities
 	$sql = "UPDATE ".TB_PREF."wo_issue_items Set qty_issued = 0 WHERE issue_id="

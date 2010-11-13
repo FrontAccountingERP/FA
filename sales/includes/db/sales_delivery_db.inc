@@ -20,6 +20,8 @@ function write_sales_delivery(&$delivery,$bo_policy)
 	if (is_array($trans_no)) $trans_no = key($trans_no);
 
 	begin_transaction();
+	$delivery->bo_policy = $bo_policy;
+	hook_db_prewrite($delivery, ST_CUSTDELIVERY);
 
 	$customer = get_customer($delivery->customer_id);
 	$delivery_items_total = $delivery->get_items_total_dispatch();
@@ -140,6 +142,7 @@ function write_sales_delivery(&$delivery,$bo_policy)
 			$Refs->save(ST_CUSTDELIVERY, $delivery_no, $delivery->reference);
 	}
 
+	hook_db_postwrite($delivery, ST_CUSTDELIVERY);
 	commit_transaction();
 
 	return $delivery_no;
@@ -152,6 +155,8 @@ function void_sales_delivery($type, $type_no, $transactions=true)
 	if ($transactions)
 		begin_transaction();
 
+	hook_db_prevoid($type, $type_no);
+	
 	void_gl_trans($type, $type_no, true);
 
 	// reverse all the changes in the sales order

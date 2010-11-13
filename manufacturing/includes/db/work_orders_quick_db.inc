@@ -11,11 +11,17 @@
 ***********************************************************************/
 //--------------------------------------------------------------------------------------
 
-function add_work_order_quick($wo_ref, $loc_code, $units_reqd, $stock_id, $type, $date_, $memo_, $costs, $cr_acc, $labour, $cr_lab_acc)
+function add_work_order_quick($wo_ref, $loc_code, $units_reqd, $stock_id, $type, 
+	$date_, $memo_, $costs, $cr_acc, $labour, $cr_lab_acc)
 {
 	global $Refs;
 
 	begin_transaction();
+	$args = func_get_args();
+	$args = (object)array_combine(array('wo_ref', 'loc_code', 'units_reqd', 'stock_id',
+		'type', 'date_', 'memo_', 'costs', 'cr_acc', 'labour', 'cr_lab_acc'), $args);
+	$args->woid = 0;
+	hook_db_prewrite($args, ST_WORKORDER);
 
 	// if unassembling, reverse the stock movements
 	if ($type == WO_UNASSEMBLY)
@@ -81,6 +87,9 @@ function add_work_order_quick($wo_ref, $loc_code, $units_reqd, $stock_id, $type,
 
 	$Refs->save(ST_WORKORDER, $woid, $wo_ref);
 	add_audit_trail(ST_WORKORDER, $woid, $date_,_("Quick production."));
+
+	$args->woid = $woid;
+	hook_db_postwrite($args, ST_WORKORDER);
 	commit_transaction();
 	return $woid;
 }

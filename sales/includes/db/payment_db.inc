@@ -18,6 +18,10 @@ function write_customer_payment($trans_no, $customer_id, $branch_id, $bank_accou
 	global $Refs;
 
 	begin_transaction();
+	$args = func_get_args(); while (count($args) < 11) $args[] = 0;
+	$args = (object)array_combine(array('trans_no', 'customer_id', 'branch_id', 'bank_account', 
+		'date_', 'ref', 'amount', 'discount', 'memo_','rate','charge'), $args);
+	hook_db_prewrite($args, ST_CUSTPAYMENT);
 
 	$company_record = get_company_prefs();
 
@@ -82,6 +86,8 @@ function write_customer_payment($trans_no, $customer_id, $branch_id, $bank_accou
 
 	$Refs->save(ST_CUSTPAYMENT, $payment_no, $ref);
 
+	$args->trans_no = $payment_no;
+	hook_db_postwrite($args, ST_CUSTPAYMENT);
 	commit_transaction();
 
 	return $payment_no;
@@ -93,6 +99,7 @@ function void_customer_payment($type, $type_no)
 {
 	begin_transaction();
 
+	hook_db_prevoid($type, $type_no);
 	void_bank_trans($type, $type_no, true);
 	void_gl_trans($type, $type_no, true);
 	void_cust_allocations($type, $type_no);

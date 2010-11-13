@@ -451,7 +451,7 @@ function handle_commit_order()
 			}
 			$inv_no = add_supp_invoice($inv);
 			commit_transaction(); // save PO+GRN+PI
-			// payment for cash terms...
+			// FIXME payment for cash terms. (Needs cash account selection)
 			unset($_SESSION['PO']);
        		meta_forward($_SERVER['PHP_SELF'], "AddedPI=$inv_no");
 		}

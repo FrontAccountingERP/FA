@@ -16,6 +16,11 @@ function add_stock_transfer($Items, $location_from, $location_to, $date_, $type,
 	global $Refs;
 
 	begin_transaction();
+	$args = func_get_args();
+	$args = (object)array_combine(array('Items', 'location_from', 'location_to', 
+	'date_', 'type', 'reference', 'memo_'), $args);
+	$args->trans_no = 0;
+	hook_db_prewrite($args, ST_LOCTRANSFER);
 
 	$transfer_id = get_next_trans_no(ST_LOCTRANSFER);
 
@@ -29,6 +34,9 @@ function add_stock_transfer($Items, $location_from, $location_to, $date_, $type,
 
 	$Refs->save(ST_LOCTRANSFER, $transfer_id, $reference);
 	add_audit_trail(ST_LOCTRANSFER, $transfer_id, $date_);
+
+	$args->trans_no = $transfer_id;
+	hook_db_postwrite($args, ST_LOCTRANSFER);
 
 	commit_transaction();
 
@@ -94,6 +102,7 @@ function get_stock_transfer_items($trans_no)
 
 function void_stock_transfer($type_no)
 {
+	hook_db_prevoid(ST_LOCTRANSFER, $type_no);
 	void_stock_move(ST_LOCTRANSFER, $type_no);
 }
 
