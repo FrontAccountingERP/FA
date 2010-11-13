@@ -9,7 +9,7 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
-class Hook{
+class hooks {
 	//
 	// Price in words. $doc_type is set to document type and can be used to suppress 
 	// price in words printing for selected document types.

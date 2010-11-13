@@ -14,8 +14,10 @@
 	If your locale needs special functionality provided by hook functions
 	copy this file to respective lang/xx_XX directory and edit templates below.
 	You can safely remove not used function templates.
+	
+	Name it after language code e.g. hooks_en_US
 */
-class Hooks {
+class hooks_xx_XX extends hooks {
 /*
 	//
 	// Price in words. $doc_type is set to document type and can be used to suppress 

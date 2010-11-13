@@ -19,6 +19,34 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+13-Nov-2010 Janusz Dobrowolski
++ New hooks system added
+$ /includes/hooks.inc (new)
+  /includes/session.inc
+  /lang/new_language_template/locale.inc
+! Old hooks converted to new hooks API
+$ /gl/includes/db/gl_db_rates.inc
+  /includes/ui/ui_view.inc
+  /reporting/rep709.php
++ Added transaction db_write/db_void hooks
+$ /gl/includes/db/gl_db_banking.inc
+  /inventory/includes/db/items_adjust_db.inc
+  /inventory/includes/db/items_transfer_db.inc
+  /manufacturing/includes/db/work_order_issues_db.inc
+  /manufacturing/includes/db/work_order_produce_items_db.inc
+  /manufacturing/includes/db/work_orders_db.inc
+  /manufacturing/includes/db/work_orders_quick_db.inc
+  /purchasing/po_entry_items.php
+  /purchasing/includes/db/grn_db.inc
+  /purchasing/includes/db/invoice_db.inc
+  /purchasing/includes/db/po_db.inc
+  /purchasing/includes/db/supp_payment_db.inc
+  /sales/includes/db/payment_db.inc
+  /sales/includes/db/sales_credit_db.inc
+  /sales/includes/db/sales_delivery_db.inc
+  /sales/includes/db/sales_invoice_db.inc
+  /sales/includes/db/sales_order_db.inc
+
 12-Nov-2010 Janusz Dobrowolski
 # Added missing due date on direct purchase invoice.
 $ /purchasing/po_entry_items.php
@@ -31,7 +59,7 @@ $ /purchasing/po_entry_items.php
 $ /inventory/manage/items.php
 # Fixed a couple of edition ui bugs
 $ /gl/manage/gl_quick_entries.php
-+ Added db_close() for optional use
++ Added db_close() for optional  use
 $ /includes/db/connect_db.inc
 
 11-Nov-2010 Janusz Dobrowolski

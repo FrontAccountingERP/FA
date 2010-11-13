@@ -213,7 +213,10 @@ $Hooks = array();
 if (file_exists($path_to_root . "/lang/".$_SESSION['language']->code."/locale.inc"))
 {
 	include_once($path_to_root . "/lang/".$_SESSION['language']->code."/locale.inc");
-	$Hooks[] = new Hooks();
+	$code = $_SESSION['language']->code;
+	$hook_class = 'hooks_'.$code;
+	$Hooks[$code] = new $hook_class;
+	unset($code, $hook_class);
 }
 
 include_once($path_to_root . "/includes/access_levels.inc");
