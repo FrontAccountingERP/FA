@@ -380,7 +380,6 @@ function read_sales_order($order_no, &$order, $trans_type)
 		}
 	}
 
-	hook_db_postread($order, $trans_type);
 	return true;
 }
 
