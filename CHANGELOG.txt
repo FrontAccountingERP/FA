@@ -19,6 +19,12 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+15-Nov-2010 Janusz Dobrowolski
+# Fixed date legend on po/grn/invoice
+$ /purchasing/includes/ui/po_ui.inc
+# Fixed text encoding in graphics
+$ /reporting/includes/class.graphic.inc
+
 13-Nov-2010 Janusz Dobrowolski
 + New hooks system added
 $ /includes/hooks.inc (new)
