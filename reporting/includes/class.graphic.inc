@@ -150,6 +150,7 @@ class graph
 
     function graph()
     {
+
         $this->x = $this->y = $this->z = array();
 
         $this->biggest_x        = NULL;
@@ -944,6 +945,15 @@ class graph
     {
        	if ($alt && strlen($string) > 12)
        		$string = substr($string, 0, 12);
+
+		$encoding = $_SESSION['language']->encoding;
+		if ($encoding != 'UTF-8') {
+			if (function_exists('iconv'))
+				$string = iconv($encoding, 'UTF-8', $string);
+			else
+				$string = mb_convert_encoding($string, 'UTF-8', $encoding);
+		}
+
     	if ($this->built_in)
     	{
     		imagestring($img, $size, $x, $y + $alt, $string, $col);
@@ -965,6 +975,7 @@ class graph
     		//	$angle = -15;
     		//else
    				$angle = 0;
+
     		imagettftext($img, $size, $angle, $x, $y + $alt, $col, $this->fontfile, $string);
     	}
     }	
