@@ -24,6 +24,14 @@ $ -> Affected files
 $ /purchasing/includes/ui/po_ui.inc
 # Fixed text encoding in graphics
 $ /reporting/includes/class.graphic.inc
+! Default font for graphics changed from Vera to LiberationSans-Regular
+$ /reporting/fonts/LiberationSans-Regular.ttf (new)
+  /reporting/fonts/Vera.ttf (removed)
+  /reporting/includes/class.graphic.inc
+  /reporting/rep102.php
+  /reporting/rep202.php
+  /reporting/rep706.php
+  /reporting/rep707.php
 
 13-Nov-2010 Janusz Dobrowolski
 + New hooks system added

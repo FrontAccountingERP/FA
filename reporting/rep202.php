@@ -236,7 +236,6 @@ function print_aged_supplier_analysis()
 		$pg->type      = $graphics;
 		$pg->skin      = $graph_skin;
 		$pg->built_in  = false;
-		$pg->fontfile  = $path_to_root . "/reporting/fonts/Vera.ttf";
 		$pg->latin_notation = ($decseps[$_SESSION["wa_current_user"]->prefs->dec_sep()] != ".");
 		$filename = company_path(). "/pdf_files/test.png";
 		$pg->display($filename, true);

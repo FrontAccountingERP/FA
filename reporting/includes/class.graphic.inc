@@ -147,12 +147,18 @@ class graph
     var $h3d = 15; // 3D height
 	var $built_in = true;
 	var $fontfile = "";
-
+	var $encoding;
+	
     function graph()
     {
+		$this->encoding = $_SESSION['language']->encoding;
+		putenv('GDFONTPATH='.dirname(__FILE__).'/../fonts');
+
+		// If you use utf-8 encoding you have to download and install FreeSans.ttf font.
+		// It is not bundled with application due to its size.
+		$this->fontfile = $this->encoding=='UTF-8' ? 'FreeSans' : 'LiberationSans-Regular';
 
         $this->x = $this->y = $this->z = array();
-
         $this->biggest_x        = NULL;
         $this->biggest_y        = NULL;
         $this->alternate_x      = false;
@@ -946,12 +952,11 @@ class graph
        	if ($alt && strlen($string) > 12)
        		$string = substr($string, 0, 12);
 
-		$encoding = $_SESSION['language']->encoding;
-		if ($encoding != 'UTF-8') {
+		if ($this->encoding != 'UTF-8') {
 			if (function_exists('iconv'))
-				$string = iconv($encoding, 'UTF-8', $string);
+				$string = iconv($this->encoding, 'UTF-8', $string);
 			else
-				$string = mb_convert_encoding($string, 'UTF-8', $encoding);
+				$string = mb_convert_encoding($string, 'UTF-8', $this->encoding);
 		}
 
     	if ($this->built_in)
