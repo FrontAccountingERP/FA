@@ -175,7 +175,10 @@ function display_po_header(&$order)
 	//	if (!is_date_in_fiscalyear($_POST['OrderDate']))
 	//		$_POST['OrderDate'] = end_fiscalyear();
 	//}
-	date_row(_("Order Date:"), 'OrderDate', '', true, 0, 0, 0, null, true);
+	date_row($order->trans_type==ST_PURCHORDER ? _("Order Date:") :
+		($order->trans_type==ST_SUPPRECEIVE ? _("Delivery Date:") : _("Invoice Date:")),
+		'OrderDate', '', true, 0, 0, 0, null, true);
+
 	if (isset($_POST['_OrderDate_changed'])) {
 		$order->orig_order_date = $_POST['OrderDate'];
 	    get_duedate_from_terms($order);
