@@ -152,11 +152,11 @@ class graph
     function graph()
     {
 		$this->encoding = $_SESSION['language']->encoding;
-		putenv('GDFONTPATH='.dirname(__FILE__).'/../fonts');
+		$path = dirname(__FILE__).'/../fonts/';
 
 		// If you use utf-8 encoding you have to download and install FreeSans.ttf font.
 		// It is not bundled with application due to its size.
-		$this->fontfile = $this->encoding=='UTF-8' ? 'FreeSans' : 'LiberationSans-Regular';
+		$this->fontfile = $this->encoding=='UTF-8' ? $path.'FreeSans.ttf' : $path.'LiberationSans-Regular.ttf';
 
         $this->x = $this->y = $this->z = array();
         $this->biggest_x        = NULL;

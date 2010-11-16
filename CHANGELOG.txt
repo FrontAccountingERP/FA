@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+16-Nov-2010 Joe Hunt
+# Minor change in class.graphic.inc
+$ /reporting/includes/class.graphic.inc
+
 15-Nov-2010 Janusz Dobrowolski
 # Fixed date legend on po/grn/invoice
 $ /purchasing/includes/ui/po_ui.inc
