@@ -19,6 +19,14 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+18-Nov-2010 Janus Dobrowolski
+! Updated including exclusive theme messages
+$ /lang/new_language_template/LC_MESSAGES/empty.po
++ Added Spanish (Mexican) installer wizard translation by Julio C. Perea Pastrana
+$ /install/isession.inc
+  /install/lang/es_MX/LC_MESSAGES/es_MX.po (new)
+  /install/lang/es_MX/LC_MESSAGES/es_MX.mo (new)
+
 18-Nov-2010 Joe Hunt
 ! Scrambled graphic images to avoid unwanted downloads.
 $ /reporting/rep102.php
