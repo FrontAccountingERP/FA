@@ -81,23 +81,26 @@ function is_date_in_fiscalyears($date, $closed=true)
 	return db_fetch($result) !== false;
 }
 
-function check_begin_date($date="", $check=true)
+function check_begin_end_date($date1, $date2)
+{
+	$sql = "SELECT MAX(end), MIN(begin) FROM ".TB_PREF."fiscal_year";
+	$result = db_query($sql, "could not retrieve last fiscal years");
+	$row = db_fetch_row($result);
+	if ($row[0] === null)
+		return true;
+	$max = add_days(sql2date($row[0]), 1);
+	$min = add_days(sql2date($row[1]), -1);
+	return ($max === $date1 || $min === $date2);
+}
+
+function next_begin_date()
 {
 	$sql = "SELECT MAX(end) FROM ".TB_PREF."fiscal_year";
-	if ($date !== "")
-	{
-		$bdate = date2sql($date);
-		$sql .= " WHERE begin < '$bdate'";
-	}
 	$result = db_query($sql, "could not retrieve last fiscal years");
 	$row = db_fetch_row($result);
 	if ($row[0] === null)
 		return false;
-	$max = add_days(sql2date($row[0]), 1);
-	if ($check)
-		return ($max === $date);
-	else 
-		return $max;
+	return add_days(sql2date($row[0]), 1);
 }
 
 function check_years_before($date, $closed=false)

@@ -29,7 +29,7 @@ simple_page_mode(true);
 
 function check_data()
 {
-	if (!is_date($_POST['from_date']) || is_date_in_fiscalyears($_POST['from_date']) || !check_begin_date($_POST['from_date']))
+	if (!is_date($_POST['from_date']) || is_date_in_fiscalyears($_POST['from_date']))
 	{
 		display_error( _("Invalid BEGIN date in fiscal year."));
 		set_focus('from_date');
@@ -39,6 +39,12 @@ function check_data()
 	{
 		display_error( _("Invalid END date in fiscal year."));
 		set_focus('to_date');
+		return false;
+	}
+	if (!check_begin_end_date($_POST['from_date'], $_POST['to_date']))
+	{
+		display_error( _("Invalid BEGIN or END date in fiscal year."));
+		set_focus('from_date');
 		return false;
 	}
 	if (date1_greater_date2($_POST['from_date'], $_POST['to_date']))
@@ -196,16 +202,13 @@ function display_fiscalyear_edit($selected_id)
 	}
 	else
 	{
-		$begin = check_begin_date("", false);
-		if ($begin)
+		$begin = next_begin_date();
+		if ($begin && $Mode != 'ADD_ITEM')
 		{
 			$_POST['from_date'] = $begin;
-			hidden('from_date', $begin);
 			$_POST['to_date'] = end_month(add_months($begin, 11));
-			label_row(_("Fiscal Year Begin:"), $_POST['from_date']);
 		}
-		else
-			date_row(_("Fiscal Year Begin:"), 'from_date', '', null, 0, 0, 1001);
+		date_row(_("Fiscal Year Begin:"), 'from_date', '', null, 0, 0, 1001);
 		date_row(_("Fiscal Year End:"), 'to_date', '', null, 0, 0, 1001);
 	}
 	hidden('selected_id', $selected_id);

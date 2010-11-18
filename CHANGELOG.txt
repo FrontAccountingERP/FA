@@ -28,6 +28,11 @@ $ /install/isession.inc
   /install/lang/es_MX/LC_MESSAGES/es_MX.mo (new)
 
 18-Nov-2010 Joe Hunt
+# Could not enter a year before other years (removed readonly begin)
+  and better check for first end year.
+$ /adminfiscalyears.php
+  /admin/db/fiscalyears_db.inc
+  
 ! Scrambled graphic images to avoid unwanted downloads.
 $ /reporting/rep102.php
   /reporting/rep202.php
