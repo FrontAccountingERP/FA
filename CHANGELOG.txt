@@ -19,6 +19,13 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+18-Nov-2010 Joe Hunt
+! Scrambled graphic images to avoid unwanted downloads.
+$ /reporting/rep102.php
+  /reporting/rep202.php
+  /reporting/rep706.php
+  /reporting/rep707.php
+  
 16-Nov-2010 Joe Hunt
 # Minor change in class.graphic.inc
 $ /reporting/includes/class.graphic.inc
