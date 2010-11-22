@@ -276,7 +276,8 @@ if ($new_item)
 } 
 else 
 { // Must be modifying an existing item
-	if (!isset($_POST['NewStockID'])) {
+	if (get_post('NewStockID') != get_post('stock_id')) { // first item display
+
 		$_POST['NewStockID'] = $_POST['stock_id'];
 
 		$myrow = get_item($_POST['NewStockID']);
