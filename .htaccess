@@ -1,3 +1,14 @@
+# Protect sensitive files.
+<FilesMatch "\.(inc|po|sh|.*sql)$">
+	Order allow,deny
+</FilesMatch>
+
+# Disable directory listings.
+Options -Indexes
+
+# Set the default index.
+DirectoryIndex index.php
+
 # These settings are recommended
 # Maybe you might have problems
 # with other scripts that needs
