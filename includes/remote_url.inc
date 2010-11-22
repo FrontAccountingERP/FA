@@ -63,8 +63,8 @@ function url_get_contents($url, $timeout=10)
 		$len =0;
 		while ($line = fread($fp, 4096)) {
 			$response .= $line;
-//			if ($host=='localhost')
-//				stream_set_blocking($fp, 0); // just after connection switch to nonblocking mode
+			if ($host=='localhost')
+				stream_set_blocking($fp, 0); // just after connection switch to nonblocking mode
 		}
 		fclose( $fp );
 
