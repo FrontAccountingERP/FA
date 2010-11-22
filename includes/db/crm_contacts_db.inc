@@ -150,8 +150,8 @@ function update_person_contacts($id, $cat_ids, $entity_id=null)
 
 	$ret = db_query($sql, "Can't delete person contacts");
 
-	foreach($cat_ids as $n => $id)
-		$cat_ids[$n] = db_escape($id);
+	foreach($cat_ids as $n => $cid)
+		$cat_ids[$n] = db_escape($cid);
 
 	if($ret && count($cat_ids)) {
 		array_walk($cat_ids,'db_escape');
