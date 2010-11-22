@@ -72,7 +72,8 @@ class package extends gzip_file {
 	
 		$dpackage->extract_files(); //install package in target directory
 
-		$success &= $this->support('install');
+		$install = hook_invoke($ctrl['Package'], 'install_extension', $dummy);
+		$success &= $install===null || $install;
 		$success &= count($dpackage->error) == 0;
 		$this->error = array_merge($this->error, $dpackage->error);
 		return $success;
@@ -97,7 +98,13 @@ class package extends gzip_file {
 
 		$success &= copy_files($flist, "$cachepath/_back", $targetdir, true);
 
-		$success &= $this->support('uninstall');
+		if (strpos($ctrl['InstallPath'], 'modules/') === 0) { // flush module directory
+			flush_dir($targetdir, true);
+			rmdir($targetdir);
+		}
+
+		$uninstall = hook_invoke($ctrl['Package'], 'uninstall_extension', $dummy);
+		$success &= $uninstall===null || $uninstall;
 
 		return $success;
 	}
@@ -109,23 +116,6 @@ class package extends gzip_file {
 		return true;
 	}
 
-	//
-	//	Call special function defined in package install class
-	//
-	function support($name, $params = null)
-	{
-		$cachepath = $this->options['basedir'];
-		if (file_exists("$cachepath/_init/init.php")) {
-			include("$cachepath/_init/init.php");
-			if (method_exists($installer, $name)) {
-				set_include_path("$cachepath/_init".PATH_SEPARATOR.get_include_path());
-
-				$ret = $installer->$name($params);
-				return $ret;
-			}
-		}
-		return true;
-	}
 }
 //
 // Changes field value read from control file (single, or multiline) into 
@@ -135,8 +125,8 @@ function ufmt_property($key, $value)
 {
 	// indexes used in output arrays
 	$sub_fields = array(
-		'MenuTabs' => array('url', 'access', 'tab_id', 'title', 'section'),
-		'MenuEntries' => array('url', 'access', 'tab_id', 'title'),
+//		'MenuTabs' => array('url', 'access', 'tab_id', 'title', 'section'),
+//		'MenuEntries' => array('url', 'access', 'tab_id', 'title'),
 	);
 	if (!isset($sub_fields[$key]))
 		return $value==='' ? null : $value;
@@ -462,11 +452,12 @@ function get_languages_list()
 //
 function get_extensions_list($type = null)
 {
+	global $path_to_root;
 
-	if (isset($type) && !is_array($type)) {
+	if (isset($type) || !is_array($type)) {
 		$type = array($type);
 	}
-	
+
 	$pkgs = get_pkg_or_list($type, null, array(
 				'Package' => 'package',
 				'Version' => 'available',
@@ -474,22 +465,44 @@ function get_extensions_list($type = null)
 				'Description' => 'Descr',
 				'Type' => 'type',
 				'DefaultStatus'=> 'active',
-				'MenuTabs' => 'tabs',
-				'MenuEntries' => 'entries',
+//				'MenuTabs' => 'tabs',
+//				'MenuEntries' => 'entries',
 				'Encoding' => 'encoding',
-				'AccessExtensions' => 'acc_file',
+//				'AccessExtensions' => 'acc_file',
 				'InstallPath' => 'path'
 			));
 
+	// lookup for local extensions
+	$path = $path_to_root.'/modules/';
+	$loc = array();
+	$moddir = opendir($path);
+
+	while(false != ($fname = readdir($moddir)))
+	{
+		if(!in_array($fname, array('.','..','CVS','_cache')) && is_dir($path.$fname))
+		{
+			if (!isset($pkgs[$fname]))
+				$pkgs[$fname] = array(
+					'package' => $fname,
+					'name' => $fname,
+					'version' => '',
+					'available' => '',
+					'type' => 'extension',
+					'path' => 'modules/'.$fname,
+					'active' => false
+					);
+		}
+	}
+
 	// add/update extensions already installed
 	// 
-	$local = get_company_extensions();
-	foreach($local as $extno => $ext) {
+	$installed = get_company_extensions();
+	foreach($installed as $extno => $ext) {
 		if (!in_array($ext['type'], $type)) continue;
 		$ext['local_id'] = $extno;
-		if (!isset($pkgs[$ext['package']]) || $ext['package'] == '')
-			$pkgs[] = $ext;
-		else
+//		if (!isset($pkgs[$ext['package']]) || $ext['package'] == '')
+//			$pkgs[] = $ext;
+//		else
 			$pkgs[$ext['package']] = array_merge($pkgs[$ext['package']], $ext);
 	}
 	ksort($pkgs);
@@ -629,12 +642,12 @@ function install_extension($pkg_name)
 				'active' => true,
 				'path' => $pkg['InstallPath'],
 			);
-			if (isset($pkg['MenuTabs']))
-				$ext['tabs'] = $pkg['MenuTabs'];
-			if (isset($pkg['MenuEntries']))
-				$ext['entries'] = $pkg['MenuEntries'];
-			if (isset($pkg['AccessExtensions']))
-				$ext['acc_file'] = $pkg['AccessExtensions'];
+//			if (isset($pkg['MenuTabs']))
+//				$ext['tabs'] = $pkg['MenuTabs'];
+//			if (isset($pkg['MenuEntries']))
+//				$ext['entries'] = $pkg['MenuEntries'];
+//			if (isset($pkg['AccessExtensions']))
+//				$ext['acc_file'] = $pkg['AccessExtensions'];
 			if (isset($pkg['SqlScript']))
 				$ext['sql'] = $pkg['SqlScript'];
 			$local_exts[$ext_id] = $ext;

@@ -260,9 +260,11 @@ function add_access_extensions()
 	global $security_areas, $security_sections, $installed_extensions;
 
 	foreach($installed_extensions as $extid => $ext) {
+		$accext = hook_invoke($ext['package'], 'install_access', $dummy);
+		if ($accext == null) continue;
+
 		$scode = 100;
 		$acode = 100;
-		$accext = get_access_extensions($extid);
 		$extsections = $accext[1];
 		$extareas = $accext[0];
 		$extcode = $extid<<16;
@@ -293,6 +295,7 @@ function add_access_extensions()
 /*
 	Helper function to retrieve extension access definitions in isolated environment.
 */
+/*
 function get_access_extensions($id) {
 	global $path_to_root, $installed_extensions;
 	
@@ -305,5 +308,5 @@ function get_access_extensions($id) {
 
 	return array($security_areas, $security_sections);
 }
-
+*/
 ?>

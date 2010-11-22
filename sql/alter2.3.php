@@ -281,12 +281,15 @@ class fa2_3 {
 		if ($lang_chd)
 			write_lang();
 
-		$installed_extensions= get_company_extensions();
 		
+		$installed_extensions= get_company_extensions();
 		if (!isset($next_extension_id))
 			$next_extension_id = 1;
 		$new_exts = array();
 		
+/*	Old extension modules are uninstalled - they need manual porting after 
+	heavy changes in extension system in FA2.3
+	
 		foreach($installed_extensions as $i => $ext)
 		{
 			if (isset($ext['title'])) // old type entry
@@ -315,14 +318,15 @@ class fa2_3 {
 				}
 				if (isset($ext['acc_file']))
 					$new['acc_file'] = $ext['acc_file'];
-				$new['name'] = $ext['name']; // albo access_string(title)
+				$new['name'] = $ext['name'];
 				$new['package'] = $new['package'] = '';
 				$new['active'] = 1;
 
 				$new_exts[$i] = $new;
 			}
 		}
-		// Add non-standard themes
+*/		
+		// Preserve non-standard themes
 		$path = $path_to_root.'/themes/';
 		$themes = array();
 		$themedir = opendir($path);
@@ -365,6 +369,7 @@ class fa2_3 {
 			}
 		}
 	}
+
 }
 
 $install = new fa2_3;
