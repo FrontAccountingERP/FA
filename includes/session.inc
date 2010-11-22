@@ -177,6 +177,8 @@ include_once($path_to_root . "/includes/ajax.inc");
 include_once($path_to_root . "/includes/ui/ui_msgs.inc");
 include_once($path_to_root . "/includes/prefs/sysprefs.inc");
 
+include_once($path_to_root . "/includes/hooks.inc");
+
 /*
 	Uncomment the setting below when using FA on shared hosting
 	to avoid unexpeced session timeouts.
@@ -206,18 +208,6 @@ if (!isset($_SESSION['language']) || !method_exists($_SESSION['language'], 'set_
 
 $_SESSION['language']->set_language($_SESSION['language']->code);
 
-include_once($path_to_root . "/includes/hooks.inc");
-
-$Hooks = array();
-// include current langauge related $Hooks object if locale file exists
-if (file_exists($path_to_root . "/lang/".$_SESSION['language']->code."/locale.inc"))
-{
-	include_once($path_to_root . "/lang/".$_SESSION['language']->code."/locale.inc");
-	$code = $_SESSION['language']->code;
-	$hook_class = 'hooks_'.$code;
-	$Hooks[$code] = new $hook_class;
-	unset($code, $hook_class);
-}
 
 include_once($path_to_root . "/includes/access_levels.inc");
 include_once($path_to_root . "/version.php");
@@ -289,6 +279,8 @@ if (strstr($_SERVER['PHP_SELF'], 'logout.php') == false){
 
 	if (!$_SESSION["wa_current_user"]->old_db)
 		include_once($path_to_root . '/company/'.user_company().'/installed_extensions.php');
+
+	install_hooks();
 
 	if (!isset($_SESSION["App"])) {
 		$_SESSION["App"] = new front_accounting();

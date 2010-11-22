@@ -9,7 +9,81 @@
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
     See the License here <http://www.gnu.org/licenses/gpl-3.0.html>.
 ***********************************************************************/
+//
+// FrontAccounting extension modules integration.
+// This file is included in session.inc even before session is started,
+// and includes hooks.php connector files from all installed extensions.
+// To make hooks active install_hooks() have to be called after interface
+// language is set.
+//
+// To find how various hooks are processed look into respective hook_* functions below.
+//
 class hooks {
+	var $module_name; // extension module name.
+
+	// 
+	// Helper for updating databases with extension scheme
+	//
+	// $comp can be company number, -1 for all, 
+	// $updates - table of filename => array(table, field, property)
+	// $check_only - don't update database, check table/field/property existence only
+	//
+	function update_databases($comp, $updates, $check_only=false)
+	{
+		global $db_connections, $path_to_root;
+	
+		if ($comp == -1) 
+			$conn = $db_connections;
+		else
+			$conn = array( $comp => $db_connections[$comp]);
+		$result = true;
+
+		foreach($conn as $comp => $con) {
+			set_global_connection($comp);
+			foreach($updates as $file => $update) {
+				$table = @$update[0];
+				$field = @$update[1];
+				$properties = @$update[2];
+
+				$ok = check_table($con['tbpref'], $table, $field, $properties) == 0;
+
+				if (!$check_only && !$ok) {
+					$ok = db_import($path_to_root.'/modules/'.$this->module_name.'/sql/'.$file,
+						$con);
+				}
+				$result &= $ok;
+				if (!$result)
+					break;
+			}
+			db_close();
+			if (!$result)
+				break;
+		}
+		set_global_connection(0); // return to siteadmin account
+
+		return $result;
+	}
+	//
+	//	Install additional tabs provided by extension
+	//
+	function install_tabs($app) {
+//		set_ext_domain('modules/example');        // set text domain for gettext
+//		$app->add_application(new example_class); // add menu tab defined by example_class
+//		set_ext_domain();
+	}
+	//
+	//	Install additonal menu options provided by extension
+	//
+	function install_options($app) {
+//		global $path_to_root;
+//		set_ext_domain('modules/example');
+//		switch($app->id) {
+//			case 'orders':
+//				$app->add_rapp_function( 0, _("&Example option"), 
+//					$path_to_root.'/modules/example/example.php?', 'SA_OPEN');
+//		}
+//		set_ext_domain();
+	}
 	//
 	// Price in words. $doc_type is set to document type and can be used to suppress 
 	// price in words printing for selected document types.
@@ -17,9 +91,9 @@ class hooks {
 	//
 	//	Returns: amount in words as string.
 
-//	function price_in_words($amount, $doc_type)
-//	{
-//	}
+	function price_in_words($amount, $doc_type)
+	{
+	}
 
 	//
 	// Exchange rate currency $curr as on date $date.
@@ -28,45 +102,106 @@ class hooks {
 	// with apprioprate provider set, otherwise implement your own.
 	// Returns: $curr value in home currency units as a real number.
 
-//	function retrieve_ex_rate($curr, $date)
-//	{
+	function retrieve_exrate($curr, $date)
+	{
 //	 	$provider = 'ECB'; // 'ECB', 'YAHOO' or 'GOOGLE'
 //		return get_extern_rate($curr, $provider, $date);
-//	}
+		return null;
+	}
 
 	// Generic function called at the end of Tax Report (report 709)
 	// Can be used e.g. for special database updates on every report printing
 	// or to print special tax report footer 
 	//
 	// Returns: nothing
-//	function tax_report_done()
-//	{
-//	}
+	function tax_report_done()
+	{
+	}
 	// Following database transaction hooks akcepts array of parameters:
 	// 'cart' => transaction data
 	// 'trans_type' => transaction type
 
-//	function db_prewrite(&$cart, $trans_type)
-//	{
-//	}
-//	function db_postwrite(&$cart, $trans_type)
-//	{
-//	}
-//	function db_prevoid($trans_type, $trans_no)
-//	{
-//	}
+	function db_prewrite(&$cart, $trans_type)
+	{
+		return true;
+	}
+
+	function db_postwrite(&$cart, $trans_type)
+	{
+		return true;
+	}
+
+	function db_prevoid($trans_type, $trans_no)
+	{
+		return true;
+	}
+}
+//
+// include all extensions hook files.
+//
+foreach ($installed_extensions as $ext)
+{
+	@include_once($path_to_root.'/'.$ext['path'].'/hooks.php');
 }
 
 /*
-	Calls hook $method defined in extension $ext (if any)
+	Installs hooks provided by extension modules
 */
-function hook_invoke($ext, &$data, $opts=null) {
+function install_hooks() {
+	global $path_to_root, $Hooks, $installed_extensions;
 
+	$Hooks = array();
+	
+	// include current language related $Hooks object if locale file exists
+	if (file_exists($path_to_root . "/lang/".$_SESSION['language']->code."/locale.inc"))
+	{
+		include_once($path_to_root . "/lang/".$_SESSION['language']->code."/locale.inc");
+		$code = $_SESSION['language']->code;
+		$hook_class = 'hooks_'.$code;
+		$Hooks[$code] = new $hook_class;
+		unset($code, $hook_class);
+	}
+	// install hooks provided by active extensions
+// include($path_to_root.'/installed_extensions.php');
+	foreach($installed_extensions as $ext) {
+//			@include($path_to_root.'/'.$ext['path'].'/hooks.php');
+			$hook_class = 'hooks_'.$ext['package'];
+			if ($ext['active'] && class_exists($hook_class)) {
+				$Hooks[$ext['package']] = new $hook_class;
+			}
+	}
+}
+/*
+	Non active hooks are not included in $Hooks array, so we can use special function to 
+	activate.
+*/
+function activate_hooks($ext, $comp) {
 	global $Hooks;
 	
-	if (isset($Hooks[$ext]) && method_exists($Hooks[$ext], $method)) {
-		$Hooks[$ext]->$method($data, $opts);
+	$hooks = @$Hooks[$ext];
+	if (!$hooks) {
+		$hookclass = 'hooks_'.$ext;
+		if (class_exists($hookclass))
+			$hooks = new $hookclass;
+		else
+			return true; // extension does not have hooks file
 	}
+	if (!$hooks)
+		return false;
+	else
+		return $hooks->activate_extension($comp, false);
+}
+/*
+	Calls hook $method defined in extension $ext (if any)
+*/
+function hook_invoke($ext, $method, &$data, $opts=null) {
+
+	global $Hooks;
+
+	if (isset($Hooks[$ext]) && method_exists($Hooks[$ext], $method)) {
+		return $Hooks[$ext]->$method($data, $opts);
+	} else
+		return null;
 }
 
 /*
@@ -79,7 +214,7 @@ function hook_invoke_all($method, &$data, $opts=null) {
 	$result = array();
 	foreach($Hooks as $ext => $hook)
 		if (method_exists($hook, $method)) {
-			$result = $Hooks[$ext]->$method($data, $opts);
+			$result = $hook->$method($data, $opts);
 			if (isset($result) && is_array($result)) {
 				$return = array_merge_recursive($return, $result);
 			} else if (isset($result)) {
@@ -95,15 +230,31 @@ function hook_invoke_first($method, &$data, $opts=null) {
 
 	global $Hooks;
 	
-	$result = array();
 	foreach($Hooks as $ext => $hook) {
 		if (method_exists($hook, $method)) {
-			$result = $Hooks[$ext]->$method($data, $opts);
+			$result = $hook->$method($data, $opts);
 			if (isset($result))
 				return $result;
 		}
 	}
 	return null;
+}
+/*
+	Returns result of last hook installed. Helps implement hooks overriding by 
+	extensions installed later.
+	
+*/
+function hook_invoke_last($method, &$data, $opts=null) {
+
+	global $Hooks;
+	
+	$found = false;
+	foreach($Hooks as $ext => $hook) {
+		if (method_exists($hook, $method)) {
+			$found = $ext;
+		}
+	}
+	return $found ? $Hooks[$found]->$method($data, $opts) : null;
 }
 //------------------------------------------------------------------------------------------
 //	Database transaction hooks.
@@ -133,7 +284,7 @@ function hook_invoke_first($method, &$data, $opts=null) {
 */
 function hook_db_prewrite(&$cart, $type)
 {
-	hook_invoke_all('db_prewrite', $cart, $type);
+	return hook_invoke_all('db_prewrite', $cart, $type);
 }
 
 /*
@@ -141,14 +292,14 @@ function hook_db_prewrite(&$cart, $type)
 */
 function hook_db_postwrite(&$cart, $type)
 {
-	hook_invoke_all('db_postwrite', $cart, $type);
+	return hook_invoke_all('db_postwrite', $cart, $type);
 }
 /*
 	Invoked before transaction is voided
 */
 function hook_db_prevoid($type, $type_no)
 {
-	hook_invoke_all('db_prevoid', $type, $type_no);
+	return hook_invoke_all('db_prevoid', $type, $type_no);
 }
 
 //-------------------------------------------------------------------------------------------
@@ -159,19 +310,19 @@ function hook_db_prevoid($type, $type_no)
 //
 function hook_retrieve_exrate($currency, $date)
 {
-	return hook_invoke_first('retrieve_exrate', $currency, $date);
+	return hook_invoke_last('retrieve_exrate', $currency, $date);
 }
 //
 // Generic function called at the end of Tax Report (report 709)
 //
 function hook_tax_report_done()
 {
-	hook_invoke_all('tax_report_done', $dummy);
+	return hook_invoke_all('tax_report_done', $dummy);
 }
 //
 //	Amount in words displayed on various documents (especially sales invoice)
 //
 function hook_price_in_words($amount, $document)
 {
-	return hook_invoke_first('price_in_words', $amount, $document);
+	return hook_invoke_last('price_in_words', $amount, $document);
 }
