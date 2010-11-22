@@ -203,9 +203,13 @@ function db_drop_db($connection)
 	}
 }
 
-function db_close($db = null)
+function db_close($dbase = null)
 {
-	return mysql_close($db);
+	global $db;
+	
+	if (!$dbase)
+		$dbase = $db;
+	return mysql_close($dbase);
 }
 
 ?>
