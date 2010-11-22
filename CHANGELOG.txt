@@ -19,7 +19,41 @@ Legend:
 ! -> Note
 $ -> Affected files
 
-18-Nov-2010 Janus Dobrowolski
+22-Nov-2010 Janusz Dobrowolski
++ Rewritten third party module installation according to extended hooks system.
+$ /admin/inst_module.php
+! Tabs/menu/roles extensions moved to module hooks file, added install/uninstall hooks.
+$ /includes/packages.inc
+  /includes/access_levels.inc
+  /sql/alter2.3.php
+! check_table() helper moved.
+$ /admin/inst_upgrade.php
+  /admin/db/maintenance_db.inc
+! Integration of hooks provided by extensions.
+$ /includes/hooks.inc
+  /includes/session.inc
+! Hooks for tabs/menu options added.
+  /frontaccounting.php
+  /applications/application.php
+! Small cleanup.
+$ /includes/main.inc
+! Fixed long timeout on localhost repo.
+$ /includes/remote_url.inc
+! [0000279] Fixed input sanitization by Mithy.
+$ /reporting/prn_redirect.php
+  /.htaccess
+# [0000280] Fixed parameter sanitization in get_company_extensions() by Mithy.
+$ /admin/db/company_db.inc
+# Fixed db_close() helper.
+$ /includes/db/connect_db.inc
+# Fixed bug in update_person_contact()
+$ /includes/db/crm_contacts_db.inc
+# Fixed bug in exrate return
+$ /gl/includes/db/gl_db_rates.inc
+# Item type display incorrect after change saving
+$ /inventory/manage/items.php
+
+18-Nov-2010 Janusz Dobrowolski
 ! Updated including exclusive theme messages
 $ /lang/new_language_template/LC_MESSAGES/empty.po
 + Added Spanish (Mexican) installer wizard translation by Julio C. Perea Pastrana
