@@ -270,11 +270,12 @@ function check_write($path)
 function copy_files($flist, $from, $to, $strict=false)
 {
 	foreach ($flist as $file) {
-		if (file_exists($from.'/'.$file))
+		if (file_exists($from.'/'.$file)) {
 			if (!copy_file($file, $from, $to))
 				return false;
-		if ($strict && !is_file($from.'/'.$file)) // if 
+		} else if ($strict) {
 				unlink($to.'/'.$file);
+		}
 	}
 	return true;
 }
