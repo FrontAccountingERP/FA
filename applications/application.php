@@ -125,28 +125,7 @@
 		
 		function add_extensions()
 		{
-			global $installed_extensions, $path_to_root;
-
-			foreach ($installed_extensions as $mod)
-			{
-				if (@$mod['active'] && isset($mod['entries']))
-					foreach($mod['entries'] as $entry) {
-						if ($entry['tab_id'] == $this->id) {
-							set_ext_domain($mod['path']);
-//							$_SESSION['get_text']->add_domain($_SESSION['language']->code, 
-//								$mod['path']."/lang");
-
-							$this->add_rapp_function(
-								isset($entry['section']) ? $entry['section'] : 2,
-								_($entry['title']), $path_to_root.'/'.$mod['path'].'/'.$entry['url'],
-								isset($entry["access"]) ? $entry["access"] : 'SA_OPEN' );
-
-							set_ext_domain();
-//							$_SESSION['get_text']->add_domain($_SESSION['language']->code, 
-//								$path_to_root."/lang", $_SESSION['language']->version);
-						}
-					}
-			}
+			hook_invoke_all('install_options', $this);
 		}
 		//
 		// Helper returning link to report class added by extension module.

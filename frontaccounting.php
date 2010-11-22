@@ -21,27 +21,17 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 	include_once($path_to_root . '/applications/setup.php');
 	include_once($path_to_root . '/installed_extensions.php');
 
-	foreach ($installed_extensions as $ext)
-	{
-		if (@($ext['active'] && isset($ext['tabs']))) // supressed warnings before 2.2 upgrade
-			foreach($ext['tabs'] as $tab) {
-				include_once($path_to_root.'/'.$ext['path'].'/'.$tab['url']);
-			}
-	}
-
 	class front_accounting
 		{
 		var $user;
 		var $settings;
 		var $applications;
 		var $selected_application;
-		// GUI
+
 		var $menu;
-		//var $renderer;
 
 		function front_accounting()
 		{
-			//$this->renderer =& new renderer();
 		}
 		function add_application(&$app)
 				{	
@@ -71,15 +61,14 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 			$this->init();
 			$rend = new renderer();
 			$rend->wa_header();
-			//$rend->menu_header($this->menu);
+
 			$rend->display_applications($this);
-			//$rend->menu_footer($this->menu);
+
 			$rend->wa_footer();
 			$this->renderer =& $rend;
 		}
 		function init()
 		{
-			global $installed_extensions, $path_to_root;
 
 			$this->menu = new menu(_("Main  Menu"));
 			$this->menu->add_item(_("Main  Menu"), "index.php");
@@ -92,22 +81,8 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 			$this->add_application(new dimensions_app());
 			$this->add_application(new general_ledger_app());
 
-			// Do not use global array directly here, or you suffer 
-			// from buggy php behaviour (unexpected loop break 
-			// because of same var usage in class constructor).
-			$extensions = $installed_extensions;
-			foreach ($extensions as $ext)
-			{
-				if (@($ext['active'] && isset($ext['tabs']))) { // supressed warnings before 2.2 upgrade
-					set_ext_domain($ext['path']);
-					foreach($ext['tabs'] as $tab) {
-						$class = $tab['tab_id']."_app";
-						if (class_exists($class))
-							$this->add_application(new $class());
-					}
-				}
-			}
-			set_ext_domain();
+			hook_invoke_all('install_tabs', $this);
+
 			$this->add_application(new setup_app());
 		}
 }
