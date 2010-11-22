@@ -29,7 +29,7 @@ if (isset($save_report_selections) && $save_report_selections > 0 && isset($_POS
 if (isset($_GET['xls']))
 {
 	$filename = $_GET['filename'];
-	$unique_name = $_GET['unique'];
+	$unique_name = preg_replace('/[^0-9a-z.]/i', '', $_GET['unique']);
 	$path =  company_path(). '/pdf_files/';
 	header("Content-type: application/vnd.ms-excel");
 	header("Content-Disposition: attachment; filename=$filename" );
@@ -42,7 +42,7 @@ if (isset($_GET['xls']))
 elseif (isset($_GET['xml']))
 {
 	$filename = $_GET['filename'];
-	$unique_name = $_GET['unique'];
+	$unique_name = preg_replace('/[^0-9a-z.]/i', '', $_GET['unique']);
 	$path =  company_path(). '/pdf_files/';
 	header("content-type: text/xml");
 	header("Content-Disposition: attachment; filename=$filename");
@@ -61,7 +61,8 @@ if (!isset($_POST['REP_ID'])) {	// print link clicked
 			? $_GET['PARAM_'.$i] : $def_pars[$i];
 	}
 }
-$rep = $_POST['REP_ID'];
+
+$rep = preg_replace('/[^a-z_0-9]/i', '', $_POST['REP_ID']);
 
 $rep_file = find_custom_file("/reporting/rep$rep.php");
 
