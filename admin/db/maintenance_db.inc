@@ -802,4 +802,39 @@ function create_comp_dirs($comp_path, $comp_subdirs)
 			@fclose($f);
 	    }
 }
+
+//
+//	Checks $field existence in $table with given field $properties
+//	$table - table name without prefix
+//  $field -  optional field name
+//  $properties - optional properties of field defined by MySQL:
+//		'Type', 'Null', 'Key', 'Default', 'Extra'
+//
+function check_table($pref, $table, $field=null, $properties=null)
+{
+	$tables = @db_query("SHOW TABLES LIKE '".$pref.$table."'");
+	if (!db_num_rows($tables))
+		return 1;		// no such table or error
+
+	$fields = @db_query("SHOW COLUMNS FROM ".$pref.$table);
+	if (!isset($field)) 
+		return 0;		// table exists
+
+	while( $row = db_fetch_assoc($fields)) 
+	{
+		if ($row['Field'] == $field) 
+		{
+			if (!isset($properties)) 
+				return 0;
+			foreach($properties as $property => $value) 
+			{
+				if ($row[$property] != $value) 
+					return 3;	// failed type/length check
+			}
+			return 0; // property check ok.
+		}
+	}
+	return 2; // field not found
+}
+
 ?>
