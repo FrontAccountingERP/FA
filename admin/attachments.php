@@ -94,8 +94,11 @@ if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM')
 			fwrite($fp, $index_file);
 			fclose($fp);
 		}
-		if ($Mode == 'UPDATE_ITEM' && file_exists($dir."/".$_POST['unique_name']))
-			unlink($dir."/".$_POST['unique_name']);
+		// file name compatible with POSIX
+		// protect against directory traversal
+		$unique_name = preg_replace('/[^a-zA-Z0-9.\-_]/', '', $_POST['unique_name']);
+		if ($Mode == 'UPDATE_ITEM' && file_exists($dir."/".$unique_name))
+			unlink($dir."/".$unique_name);
 
 		$unique_name = uniqid('');
 		move_uploaded_file($tmpname, $dir."/".$unique_name);

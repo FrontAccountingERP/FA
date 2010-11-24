@@ -438,7 +438,7 @@ function db_backup($conn, $ext='no', $comm='', $tbpref = TB_PREF)
 	else
 		$filename = $conn['dbname'] . "_" . date("Ymd_Hi") . ".sql";
 
-	return db_export($conn, $filename, $ext, $comm, $tbpref);
+	return db_export($conn, clean_file_name($filename), $ext, $comm, $tbpref);
 }
 
 // generates a dump of $db database

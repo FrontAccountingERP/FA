@@ -343,5 +343,13 @@ function find_custom_file($rep)
 
 	return null;
 }
+/*
+	
+	Protect against directory traversal.
+	Changes all not POSIX compatible chars to underscore.
+*/
+function clean_file_name($filename) {
+    return preg_replace('/[^a-zA-Z0-9.\-_]/', '_', $filename);
+}
 
 ?>
