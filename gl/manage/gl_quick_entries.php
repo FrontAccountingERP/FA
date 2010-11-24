@@ -214,8 +214,9 @@ if ($selected_id != -1)
 		$_POST['description']  = $myrow["description"];
 		$_POST['type']  = $myrow["type"];
 		$_POST['base_desc']  = $myrow["base_desc"];
-		$_POST['base_amount']  = price_format($myrow["base_amount"]);
 		$_POST['bal_type']  = $myrow["bal_type"];
+		$_POST['base_amount']  = $myrow["bal_type"] ?
+			$myrow["base_amount"] : price_format($myrow["base_amount"]);
 	}	
 	hidden('selected_id', $selected_id);
 } 
