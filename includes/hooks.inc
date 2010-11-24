@@ -141,7 +141,8 @@ class hooks {
 //
 foreach ($installed_extensions as $ext)
 {
-	@include_once($path_to_root.'/'.$ext['path'].'/hooks.php');
+	if (file_exists($path_to_root.'/'.$ext['path'].'/hooks.php'))
+		include_once($path_to_root.'/'.$ext['path'].'/hooks.php');
 }
 
 /*
@@ -247,7 +248,7 @@ function hook_invoke_first($method, &$data, $opts=null) {
 function hook_invoke_last($method, &$data, $opts=null) {
 
 	global $Hooks;
-	
+
 	$found = false;
 	foreach($Hooks as $ext => $hook) {
 		if (method_exists($hook, $method)) {
