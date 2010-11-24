@@ -20,11 +20,11 @@ if (get_post('view')) {
 	if (!get_post('backups')) {
 		display_error(_('Select backup file first.'));
 	} else {
-		$filename = BACKUP_PATH . get_post('backups');
+		$filename = BACKUP_PATH . clean_file_name(get_post('backups'));
 		if (in_ajax()) 
 			$Ajax->popup( $filename );
 		else {
-		    header('Content-type: application/octet-stream');
+		    header('Content-type: text/plain');
     		header('Content-Length: '.filesize($filename));
 			header("Content-Disposition: inline");
     		readfile($filename);
@@ -33,7 +33,7 @@ if (get_post('view')) {
 	}
 };
 if (get_post('download')) {
-	download_file(BACKUP_PATH . get_post('backups'));
+	download_file(BACKUP_PATH . clean_file_name(get_post('backups')));
 	exit;
 }
 
@@ -122,6 +122,8 @@ function download_file($filename)
 
 $db_name = $_SESSION["wa_current_user"]->company;
 $conn = $db_connections[$db_name];
+$backup_name = clean_file_name(get_post('backups'));
+$backup_path = BACKUP_PATH . $backup_name;
 
 if (get_post('creat')) {
 	generate_backup($conn, get_post('comp'), get_post('comments'));
@@ -129,24 +131,24 @@ if (get_post('creat')) {
 };
 
 if (get_post('restore')) {
-	if (db_import(BACKUP_PATH . get_post('backups'), $conn))
+	if (db_import($backup_path, $conn))
 		display_notification(_("Restore backup completed."));
 }
 
 if (get_post('deldump')) {
-	if (unlink(BACKUP_PATH . get_post('backups'))) {
+	if (unlink($backup_path)) {
 		display_notification(_("File successfully deleted.")." "
-				. _("Filename") . ": " . get_post('backups'));
+				. _("Filename") . ": " . $backup_name);
 		$Ajax->activate('backups');
 	}
 	else
 		display_error(_("Can't delete backup file."));
-};
+}
 
 if (get_post('upload'))
 {
 	$tmpname = $_FILES['uploadfile']['tmp_name'];
-	$fname = $_FILES['uploadfile']['name'];
+	$fname = clean_file_name($FILES['uploadfile']['name']);
 
 	if (!preg_match("/.sql(.zip|.gz)?$/", $fname))
 		display_error(_("You can only upload *.sql backup files"));
