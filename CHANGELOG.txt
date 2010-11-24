@@ -19,6 +19,18 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+23-Nov-2010 Janusz Dobrowolski
+# Filename input sanitization [0000281] (Mithy)
+$ /admin/attachments.php
+  /includes/main.inc
+  /admin/db/maintenance_db.inc
+# Fixed sql file view, sanitization.
+$ /admin/backups.php
+# Fixed period type display.
+$ /gl/manage/gl_quick_entries.php
+# Fixed errors disay in included files
+$ /includes/hooks.inc
+
 22-Nov-2010 Janusz Dobrowolski
 + Rewritten third party module installation according to extended hooks system.
 $ /admin/inst_module.php
