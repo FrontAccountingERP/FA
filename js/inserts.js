@@ -228,6 +228,7 @@ var inserts = {
   	    // this shows divs for js enabled browsers only
 	    e.style.display = 'block';
 	},
+
 	'button': function(e) {
 		e.onclick = function(){ return validate(e); }
 	},
@@ -324,13 +325,14 @@ var inserts = {
 					ev.returnValue = false;
 					return false;
 				}
+				window.location = e.href;
 			}
 	},
 	'ul.ajaxtabs':	function(ul) {
 	    var ulist=ul.getElementsByTagName("li");
 	    for (var x=0; x<ulist.length; x++){ //loop through each LI e
 		var tab=ulist[x].getElementsByTagName("button")[0];
-		if(tab.onclick==undefined) {
+//		if(tab.onclick==undefined) {
 // ?  var modifiedurl=ulistlink.getAttribute("href").replace(/^http:\/\/[^\/]+\//i, "http://"+window.location.hostname+"/")
 		    var url = tab.form.action
 		    tab.onclick=function(){
@@ -338,8 +340,9 @@ var inserts = {
 			return false;
 		    }
 		}
-	    }
+//	    }
 	}
+
 /*	'tr.editrow': function(e) {
 		  	e.onkeydown = function(ev) { 
 	  		ev = ev||window.event;
@@ -456,7 +459,7 @@ function setHotKeys() {
 		if (_hotkeys.alt==true) {
 			if (key == 18) {
 				_hotkeys.alt = false;
-				if (_hotkeys.focus>=0) {
+				if (_hotkeys.focus >= 0) {
 					var link = _hotkeys.list[_hotkeys.focus];
 					if(link.onclick) 
 						link.onclick();
