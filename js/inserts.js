@@ -303,6 +303,16 @@ var inserts = {
 			return false;
 		}
 	},
+	'a.repopts_link': 	function(l) {
+		l.onclick = function() {
+		    save_focus(this);
+		    var replinks = document.getElementsBySelector('a.repopts_link');
+				for(var i in replinks)
+					replinks[i].style.fontWeight = replinks[i]==this ? 'bold' : 'normal';
+			JsHttpRequest.request(this, null);
+			return false;
+		}
+	},
 	'a': function(e) { // traverse menu
   		e.onkeydown = function(ev) { 
 			ev = ev||window.event;

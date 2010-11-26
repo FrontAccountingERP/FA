@@ -55,26 +55,37 @@ class BoxReports
 		$st_reports = "";
 		$st_params = "";
 		$st_classes = "<b>" . _("Report Classes:") . "</b><br>";
+
+		if (isset($_GET['Class']))
+			set_focus('class'.$_GET['Class']);
+
 		foreach($this->ar_classes as $class_id => $name)
 		{
 			if (!isset($this->ar_reports[$class_id]))
 				continue; // e.g. no dimensions
-			$style = $class_id==$_REQUEST['Class'] ? '' : "style='display:none'";
-//			$cname = access_string($key, true);
-//			$style = $_REQUEST['Class']==$cname ? '' : "style='display:none'";
+
 			$acc = access_string($name);
 			$st_classes .= "<a href='"
 				.$_SERVER['PHP_SELF']."?Class=$class_id'"
-				." class='menu_option' id='".default_focus()."'"
-				." onclick='return showClass(\"$class_id\");'$acc[1]>$acc[0]</a> <br>";
+				." style='font-weight:". ($_REQUEST['Class'] == $class_id ? 'bold' : 'normal')."'"
+				." class='repclass_link' id='".'class'.$class_id."'"
+				."$acc[1]>$acc[0]</a> <br>";
+
+			$style = $class_id==$_REQUEST['Class'] ? '' : "style='display:none'";
 			$st_reports .= "<table class='repclass' id='TAB_" . $class_id ."' $style cellpadding=0 cellspacing=0 border=0 width='100%'><tr><td><b>" . _("Reports For Class: ") . "&nbsp;$name</b></td></tr>\n";
 			foreach($this->ar_reports[$class_id] as $rep_id => $report)
 			{
 				$acc = access_string($report->name);
-				$st_reports .= "<tr><td><a class='printlink' href='"
-					.$_SERVER['PHP_SELF']."?Class=$class_id&rep_id=$report->id'"
-					." id='".default_focus()."'"
+				$st_reports .= "<tr><td><a class='repopts_link'"
+					." href='".$_SERVER['PHP_SELF']."?Class=$class_id&rep_id=$report->id'"
+					." style='font-weight:". (@$_GET['rep_id'] == $report->id ? 'bold' : 'normal')."'"
+					." id='".$id = default_focus()."'"
 					."$acc[1]>$acc[0]</a><tr><td>\n";
+
+				if (@$_REQUEST['rep_id'] == $report->id) {
+					$Ajax->activate($id);
+				}
+
 				if (isset($_REQUEST['rep_id']) && $_REQUEST['rep_id']==$report->id) {
 
 					$action = $path_to_root.'/reporting/prn_redirect.php';
@@ -96,28 +107,7 @@ class BoxReports
 		$st_params = "<div id='rep_form'>".
 			"$st_params</div>";
 		
-
-		$st = 	"<script language='javascript'>
-					function showClass(pClass) {
-						var classes = document.getElementsBySelector('.repclass');
-						for(var i in  classes) {
-							cl = classes[i];
-							cl.style.display=
-							(cl.id==('TAB_'+pClass)) ? \"block\" : \"none\";
-						}
-						document.getElementById('rep_form').innerHTML = '';
-//						document.getElementById('rep_form').style.display = 'none';
-						return false;
-					}
-					function checkDate(pObj) {
-						var re = /^(3[01]|0[1-9]|[12]\d)\/(0[1-9]|1[012])\/\d{4}/;
-						if (re.test(pObj.value)==false) {
-							alert('" . _("Invalid date format") . "')
-						}
-					}
-				</script>
-				";
-		$st .= "<table align='center' width='80%' style='border:1px solid #cccccc;'><tr valign='top'>";
+		$st = "<table align='center' width='80%' style='border:1px solid #cccccc;'><tr valign='top'>";
 		$st .= "<td width='30%'>$st_classes</td>";
 		$st .= "<td width='35%' style='border-left:1px solid #cccccc;border-right:1px solid #cccccc;padding-left:3px;'>$st_reports</td>";
 		$st .= "<td width='35%'>$st_params</td>";

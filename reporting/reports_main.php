@@ -20,6 +20,9 @@ include_once($path_to_root . "/reporting/includes/reports_classes.inc");
 $js = "";
 if ($use_date_picker)
 	$js .= get_js_date_picker();
+
+add_js_file('reports.js');
+
 page(_($help_context = "Reports and Analysis"), false, false, "", $js);
 
 $reports = new BoxReports;
@@ -390,13 +393,6 @@ $reports->addReport(RC_GL, 710, _('Audit Trail'),
 
 add_custom_reports($reports);
 
-echo "<script language='javascript'>
-		function onWindowLoad() {
-			showClass(" . $_GET['Class'] . ")
-		}
-	Behaviour.addLoadEvent(onWindowLoad);
-	</script>
-";
 echo $reports->getDisplay();
 
 end_page();

@@ -20,6 +20,12 @@ Legend:
 $ -> Affected files
 
 26-Nov-2010 Janusz Dobrowolski
+! [0000282] Improved reports menu display.
+$ /js/inserts.js
+  /js/utils.js
+  /js/reports.js (new)
+  /reporting/reports_main.php
+  /reporting/includes/reports_classes.inc
 # [0000283] Fixed potential vulnerability (Mithy)
 $ /admin/db/security_db.inc
 # Fixed hotkeys support.

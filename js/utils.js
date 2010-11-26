@@ -295,7 +295,8 @@ function move_focus(dir, e0, neighbours)
 	for(var i=0; i<neighbours.length; i++) {
 		var e = neighbours[i];
 		var p = element_pos(e);
-		if (p!=null && (e.className=='menu_option' || e.className=='printlink')) {
+		if (p!=null && (e.className=='menu_option' || e.className=='printlink'
+				 || e.className == 'repclass_link' || e.className == 'repopts_link')) {
 			if (((dir==40) && (p.y>p0.y)) || (dir==38 && (p.y<p0.y)) 
 				|| ((dir==37) && (p.x<p0.x)) || ((dir==39 && (p.x>p0.x)))) {
 					var l1 = (p.y-p0.y)*(p.y-p0.y)+(p.x-p0.x)*(p.x-p0.x);
