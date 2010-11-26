@@ -19,8 +19,18 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+26-Nov-2010 Janusz Dobrowolski
+# [0000283] Fixed potential vulnerability (Mithy)
+$ /admin/db/security_db.inc
+# Fixed hotkeys support.
+$ /js/inserts.js
+# [0000285] Errors/warning due to obsolete code
+$ /reporting/rep109.php
+# Fixed tabs switching
+$ /sales/manage/customer_branches.php
+
 23-Nov-2010 Janusz Dobrowolski
-# Filename input sanitization [0000281] (Mithy)
+# [0000281] Filename input sanitization (Mithy)
 $ /admin/attachments.php
   /includes/main.inc
   /admin/db/maintenance_db.inc
