@@ -177,8 +177,7 @@ function branch_settings($selected_id) {
 	$_POST['email'] = "";
 	if ($selected_id != -1)
 	{
-	 	if ($Mode == 'Edit') {
-
+	 	if ($Mode == 'Edit' || !isset($_POST['br_name'])) {
 			//editing an existing branch
 			$myrow = get_cust_branch($_POST['customer_id'], $_POST['branch_code']);
 			set_focus('br_name');
