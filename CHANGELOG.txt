@@ -23,6 +23,10 @@ $ -> Affected files
 + Transaction name shortcuts added
 $ /includes/sysnames.inc
   /reporting/includes/reports_classes.inc
++ Added Italian installer wizard translation by Paolo Ardoino
+$ /install/isession.inc
+  /install/lang/it_IT/LC_MESSAGES/it_IT.mo (new)
+  /install/lang/it_IT/LC_MESSAGES/it_IT.po (new)
 
 28-Nov-2010 Joe Hunt
 - Removed possibility to use bank account in Direct Invoice. This
