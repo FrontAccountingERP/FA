@@ -19,6 +19,12 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+28-Nov-2010 Joe Hunt
+- Removed possibility to use bank account in Direct Invoice. This
+  was an old method for handling Cash Payment. We now have better options.
+$ /sales/includes/db/sales_invoice_db.inc
+  /sales/manage/customer_branches.php
+  
 26-Nov-2010 Janusz Dobrowolski
 ! [0000282] Improved reports menu display.
 $ /js/inserts.js

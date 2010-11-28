@@ -53,12 +53,6 @@ function write_sales_invoice(&$invoice)
 	    $items_added_tax = 0;
 	    $freight_added_tax = 0;
 	}
-	// 2006-06-14. If the Customer Branch AR Account is set to a Bank Account,
-	// the transaction will be settled at once.
-	if (is_bank_account($branch_data['receivables_account']))
-		$alloc = $items_total + $items_added_tax + $invoice->freight_cost + $freight_added_tax;
-	else
-		$alloc = 0;
 
 	/* Insert/update the debtor_trans */
 	$sales_order = $invoice->order_no;
@@ -69,7 +63,7 @@ function write_sales_invoice(&$invoice)
 		$invoice->Branch, $date_, $invoice->reference, $items_total, 0,
 		$items_added_tax, $invoice->freight_cost, $freight_added_tax,
 		$invoice->sales_type, $sales_order, $invoice->ship_via, 
-		$invoice->due_date, $alloc, 0, $invoice->dimension_id, 
+		$invoice->due_date, 0, 0, $invoice->dimension_id, 
 		$invoice->dimension2_id, $invoice->payment); 
 		// 2008-06-14 extra $alloc, 2008-11-12 added dimension_id Joe Hunt
 
