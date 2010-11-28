@@ -158,7 +158,8 @@ class BoxReports
 	//
 	function get_ctrl($name, $type)
 	{
-		global $path_to_root, $use_date_picker, $pdf_debug, $print_invoice_no, $def_print_destination;
+		global $path_to_root, $use_date_picker, $pdf_debug, $print_invoice_no,
+			$def_print_destination, $type_shortcuts;
 
 		$st = '';
 			switch ($type)
@@ -299,8 +300,8 @@ class BoxReports
 //						return supplier_list($name);
 
 				case 'INVOICE':
-					$IV = _("IV");
-					$CN = _("CN");
+					$IV = $type_shortcuts[ST_SALESINVOICE];
+					$CN = $type_shortcuts[ST_CUSTCREDIT];
 					$ref = ($print_invoice_no == 1 ? "trans_no" : "reference");
 					$sql = "SELECT concat(".TB_PREF."debtor_trans.trans_no, '-',
 						".TB_PREF."debtor_trans.type) AS TNO, concat(".TB_PREF."debtor_trans.$ref, if (type=".ST_SALESINVOICE.", ' $IV ', ' $CN '), ".TB_PREF."debtors_master.name) as IName
@@ -308,7 +309,7 @@ class BoxReports
 					return combo_input($name, '', $sql, 'TNO', 'IName',array('order'=>false));
 
 				case 'DELIVERY':
-					$DN = _("DN");
+					$DN = $type_shortcuts[ST_CUSTDELIVERY];
 					$sql = "SELECT
 					concat(".TB_PREF."debtor_trans.trans_no, '-', ".TB_PREF."debtor_trans.type) AS TNO, concat(".TB_PREF."debtor_trans.trans_no, ' $DN ',
 					 ".TB_PREF."debtors_master.name) as IName
@@ -341,9 +342,9 @@ class BoxReports
 					return combo_input($name, '', $sql, 'order_no', 'IName',array('order'=>false));
 
 				case 'REMITTANCE':
-					$BP = _("BP");
-					$SP = _("SP");
-					$CN = _("CN");
+					$BP = $type_shortcuts[ST_BANKPAYMENT];
+					$SP = $type_shortcuts[ST_SUPPAYMENT];
+					$CN = $type_shortcuts[ST_SUPPCREDIT];
 					$ref = ($print_invoice_no == 1 ? "trans_no" : "reference");
 					$sql = "SELECT concat(".TB_PREF."supp_trans.trans_no, '-',
 						".TB_PREF."supp_trans.type) AS TNO, concat(".TB_PREF."supp_trans.$ref, if (type=".ST_BANKPAYMENT.", ' $BP ', if (type=".ST_SUPPAYMENT.", ' $SP ', ' $CN ')), ".TB_PREF."suppliers.supp_name) as IName
@@ -351,9 +352,9 @@ class BoxReports
 					return combo_input($name, '', $sql, 'TNO', 'IName',array('order'=>false));
 
 				case 'RECEIPT':
-					$BD = _("BD");
-					$CP = _("CP");
-					$CN = _("CN");
+					$BD = $type_shortcuts[ST_BANKDEPOSIT];
+					$CP = $type_shortcuts[ST_CUSTPAYMENT];
+					$CN = $type_shortcuts[ST_CUSTCREDIT];
 					$ref = ($print_invoice_no == 1 ? "trans_no" : "reference");
 					$sql = "SELECT concat(".TB_PREF."debtor_trans.trans_no, '-',
 						".TB_PREF."debtor_trans.type) AS TNO, concat(".TB_PREF."debtor_trans.$ref, if (type=".ST_BANKDEPOSIT.", ' $BD ', if (type=".ST_CUSTPAYMENT.", ' $CP ', ' $CN ')), ".TB_PREF."debtors_master.name) as IName

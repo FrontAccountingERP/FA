@@ -43,6 +43,32 @@ $systypes_array = array (
 	ST_DIMENSION => _("Dimension")
 	);
 
+$type_shortcuts = array(
+	ST_JOURNAL => _("GJ"), // general journal
+	ST_BANKPAYMENT => _("BP"),
+	ST_BANKDEPOSIT => _("BD"),
+	ST_BANKTRANSFER => _("BT"),
+	ST_SALESINVOICE => _("SI"),
+	ST_CUSTCREDIT => _("CN"),
+	ST_CUSTPAYMENT => _("CP"),
+	ST_CUSTDELIVERY => _("DN"),
+	ST_LOCTRANSFER => _("IT"), // inventory transfer
+	ST_INVADJUST => _("IA"),
+	ST_PURCHORDER => _("PO"),
+	ST_SUPPINVOICE => _("PI"), // purchase invoice
+	ST_SUPPCREDIT => _("PC"),
+	ST_SUPPAYMENT => _("SP"),
+	ST_SUPPRECEIVE => _("GRN"),
+	ST_WORKORDER => _("WO"),
+	ST_MANUISSUE => _("WI"),
+	ST_MANURECEIVE => _("WP"),
+	ST_SALESORDER => _("SO"),
+	ST_SALESQUOTE => _("SQ"),
+	ST_COSTUPDATE => _("CU"),
+	ST_DIMENSION => _("Dim")
+);
+
+
 //----------------------------------------------------------------------------------
 //		Bank transaction types
 //
