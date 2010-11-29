@@ -19,6 +19,12 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+29-Nov-2010 Janusz Dobrowolski
+# [0000290] Fixed side bug after last changes (can't upload file).
+$ /admin/backups.php
+# [0000289] Duplicated records in void/view/print transaction pager
+$ /admin/db/transactions_db.inc
+
 28-Nov-2010 Janusz Dobrowolski
 + Transaction name shortcuts added
 $ /includes/sysnames.inc
