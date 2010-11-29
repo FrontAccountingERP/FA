@@ -148,7 +148,7 @@ if (get_post('deldump')) {
 if (get_post('upload'))
 {
 	$tmpname = $_FILES['uploadfile']['tmp_name'];
-	$fname = clean_file_name($FILES['uploadfile']['name']);
+	$fname = clean_file_name($_FILES['uploadfile']['name']);
 
 	if (!preg_match("/.sql(.zip|.gz)?$/", $fname))
 		display_error(_("You can only upload *.sql backup files"));
