@@ -124,6 +124,12 @@ function close_year($year)
 		display_error(_("The Retained Earnings Account or the Profit and Loss Year Account has not been set in System and General GL Setup"));
 		return false;
 	}
+	if (!is_account_balancesheet($co['retained_earnings_act']) || is_account_balancesheet($co['profit_loss_year_act']))
+	{
+		display_error(_("The Retained Earnings Account should be a Balance Account or the Profit and Loss Year Account should be an Expense Account (preferred the last one in the Expense Class)"));
+		return false;
+	}
+
 	begin_transaction();
 
 	$myrow = get_fiscalyear($year);
