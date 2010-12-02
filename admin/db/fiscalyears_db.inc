@@ -328,13 +328,13 @@ function delete_this_fiscalyear($selected_id)
 	
 	$sql = "SELECT account, SUM(amount) AS amount FROM ".TB_PREF."gl_trans WHERE tran_date <= '$to' GROUP by account";
 	$result = db_query($sql, "Could not retrieve gl trans");
+	$trans_no = get_next_trans_no(ST_JOURNAL);
 	while ($row = db_fetch($result))
 	{
 		$sql = "DELETE FROM ".TB_PREF."gl_trans WHERE tran_date <= '$to' AND account = '{$row['account']}'";
 		db_query($sql, "Could not delete gl trans");
 		if (is_account_balancesheet($row['account']))
 		{
-			$trans_no = get_next_trans_no(ST_JOURNAL);
 			$sql = "INSERT INTO ".TB_PREF."gl_trans (type, type_no, tran_date, account, memo_, amount) VALUES
 				(".ST_JOURNAL.", $trans_no, '$to', '{$row['account']}', '$ref', {$row['amount']})";
 			db_query($sql, "Could not insert gl trans");
