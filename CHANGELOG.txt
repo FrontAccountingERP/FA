@@ -19,6 +19,12 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+03-Dec-2010 Joe Hunt
++ Creating a warning when opening balance in trial balance is not in balance,
+  and a probably cause of that.
+$ /gl/inquiry/gl_trial_balance.php
+  /reporting/rep708.php
+  
 02-Dec-2010 Joe Hunt
 # When deleting a fiscal year, the open balances should share the same trans no.
 $ /admin/db/fiscalyear_db.inc

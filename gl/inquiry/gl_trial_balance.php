@@ -169,6 +169,8 @@ function display_trial_balance()
 	end_row();
 
 	end_table(1);
+	if ($pbal != 0)
+		display_warning(_("The Opening Balance is not in balance, probably due to a non closed Previous Fiscalyear."));
 	div_end();
 }
 

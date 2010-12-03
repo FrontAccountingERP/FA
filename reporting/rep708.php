@@ -202,9 +202,14 @@ function print_trial_balance()
 	else
 		$rep->AmountCol(7, 8, abs($tbal), $dec);
 	$rep->NewLine();
-	
+		
 	$rep->Line($rep->row);
-	
+	if ($pbal != 0.0)
+	{
+	$rep->NewLine(2);
+	$rep->Font();
+		$rep->TextCol(0, 8, _("The Opening Balance is not in balance, probably due to a non closed Previous Fiscalyear."));
+	}	
 	$rep->End();
 }
 
