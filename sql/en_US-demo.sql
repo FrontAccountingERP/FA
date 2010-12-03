@@ -823,8 +823,8 @@ CREATE TABLE IF NOT EXISTS `0_fiscal_year` (
 -- Dumping data for table `0_fiscal_year`
 --
 
-INSERT INTO `0_fiscal_year` VALUES(1, '2008-01-01', '2008-12-31', 0);
-INSERT INTO `0_fiscal_year` VALUES(2, '2009-01-01', '2009-12-31', 0);
+INSERT INTO `0_fiscal_year` VALUES(1, '2008-01-01', '2008-12-31', 1);
+INSERT INTO `0_fiscal_year` VALUES(2, '2009-01-01', '2009-12-31', 1);
 INSERT INTO `0_fiscal_year` VALUES(3, '2010-01-01', '2010-12-31', 0);
 
 --
@@ -939,6 +939,8 @@ INSERT INTO `0_gl_trans` VALUES(80, 11, 3, '2009-06-21', '1510', '', 10, 0, 0, 2
 INSERT INTO `0_gl_trans` VALUES(81, 11, 3, '2009-06-21', '4010', '', 50, 2, 0, 2, '3');
 INSERT INTO `0_gl_trans` VALUES(82, 11, 3, '2009-06-21', '1200', '', -52.5, 0, 0, 2, '3');
 INSERT INTO `0_gl_trans` VALUES(83, 11, 3, '2009-06-21', '2150', '', 2.5, 0, 0, 2, '3');
+INSERT INTO `0_gl_trans` VALUES ('84', '0', '20', '2009-12-31', '3590', 'Closing Year', '-91.19', '0', '0', NULL, NULL);
+INSERT INTO `0_gl_trans` VALUES ('85', '0', '20', '2009-12-31', '9990', 'Closing Year', '91.19', '0', '0', NULL, NULL);
 
 -- --------------------------------------------------------
 

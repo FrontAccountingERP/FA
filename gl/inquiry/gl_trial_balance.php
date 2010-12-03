@@ -14,9 +14,9 @@ $path_to_root="../..";
 
 include_once($path_to_root . "/includes/session.inc");
 
+include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/admin/db/fiscalyears_db.inc");
-include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
 
 include_once($path_to_root . "/gl/includes/gl_db.inc");
@@ -169,7 +169,7 @@ function display_trial_balance()
 	end_row();
 
 	end_table(1);
-	if ($pbal != 0)
+	if (($pbal = round2($pbal, user_price_dec()))  != 0)
 		display_warning(_("The Opening Balance is not in balance, probably due to a non closed Previous Fiscalyear."));
 	div_end();
 }

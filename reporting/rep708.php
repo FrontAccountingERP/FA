@@ -19,6 +19,7 @@ $page_security = 'SA_GLANALYTIC';
 $path_to_root="..";
 
 include_once($path_to_root . "/includes/session.inc");
+include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/includes/date_functions.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
 include_once($path_to_root . "/gl/includes/gl_db.inc");
@@ -204,10 +205,10 @@ function print_trial_balance()
 	$rep->NewLine();
 		
 	$rep->Line($rep->row);
-	if ($pbal != 0.0)
+	if (($pbal = round2($pbal, $dec)) != 0.0)
 	{
-	$rep->NewLine(2);
-	$rep->Font();
+		$rep->NewLine(2);
+		$rep->Font();
 		$rep->TextCol(0, 8, _("The Opening Balance is not in balance, probably due to a non closed Previous Fiscalyear."));
 	}	
 	$rep->End();

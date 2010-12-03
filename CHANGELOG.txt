@@ -24,6 +24,8 @@ $ -> Affected files
   and a probably cause of that.
 $ /gl/inquiry/gl_trial_balance.php
   /reporting/rep708.php
+! Fixing year closure for earlier fiscal years. en_US-demo.sql
+$ /sql/en_US-demo.sql
   
 02-Dec-2010 Joe Hunt
 # When deleting a fiscal year, the open balances should share the same trans no.
