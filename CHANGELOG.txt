@@ -19,6 +19,20 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+03-Dec-2010 Janusz Dobrowolski
+# Fixed company prefs refresh after upgrade/restore
+$ /admin/inst_upgrade.php
+  /admin/backups.php
+  /admin/db/company_db.inc
+! Improved readibility in COA report.
+$ /reporting/rep701.php
+! Added core translation support for modules
+$ /includes/hooks.inc
+  /includes/lang/gettext.php
+! Cleanup.
+$ /includes/ui/ui_lists.inc
+  /sales/includes/ui/sales_order_ui.inc
+
 03-Dec-2010 Joe Hunt
 + Creating a warning when opening balance in trial balance is not in balance,
   and a probably cause of that.
