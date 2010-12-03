@@ -250,7 +250,7 @@ function display_order_summary($title, &$order, $editable_items=false)
 
 // ------------------------------------------------------------------------------
 
-function display_order_header(&$order, $editable, $date_text, $display_tax_group=false)
+function display_order_header(&$order, $editable, $date_text)
 {
 	global $Ajax, $SysPrefs;
 
@@ -466,12 +466,6 @@ function display_order_header(&$order, $editable, $date_text, $display_tax_group
 	{
 		label_row($date_text, $order->document_date);
 		hidden('OrderDate', $order->document_date);
-	}
-
-	if ($display_tax_group)
-	{
-	    label_row(_("Tax Group:"), $order->tax_group_name);
-	    hidden('tax_group_id', $order->tax_group_id);
 	}
 
 	end_outer_table(1); // outer table
