@@ -548,8 +548,10 @@ class gettext_php_support_compiler
 function set_ext_domain($path='') {
 	global $path_to_root;
 
-	$_SESSION['get_text']->add_domain($_SESSION['language']->code,
-		$path_to_root . ($path ? '/' : '') .$path.'/lang',
-		$path ? '' : $_SESSION['language']->version);
+	$lang_path = $path_to_root . ($path ? '/' : '') .$path.'/lang';
+	// ignore change when extension does not provide translation structure
+	if (file_exists($lang_path))
+		$_SESSION['get_text']->add_domain($_SESSION['language']->code,
+			$lang_path, $path ? '' : $_SESSION['language']->version);
 }
 ?>

@@ -163,9 +163,7 @@ function install_hooks() {
 		unset($code, $hook_class);
 	}
 	// install hooks provided by active extensions
-// include($path_to_root.'/installed_extensions.php');
 	foreach($installed_extensions as $ext) {
-//			@include($path_to_root.'/'.$ext['path'].'/hooks.php');
 			$hook_class = 'hooks_'.$ext['package'];
 			if ($ext['active'] && class_exists($hook_class)) {
 				$Hooks[$ext['package']] = new $hook_class;
@@ -199,10 +197,13 @@ function hook_invoke($ext, $method, &$data, $opts=null) {
 
 	global $Hooks;
 
+	$ret = null;
 	if (isset($Hooks[$ext]) && method_exists($Hooks[$ext], $method)) {
-		return $Hooks[$ext]->$method($data, $opts);
-	} else
-		return null;
+		set_ext_domain('modules/'.$ext);
+		$ret = $Hooks[$ext]->$method($data, $opts);
+		set_ext_domain();
+	} 
+	return $ret;
 }
 
 /*
@@ -215,6 +216,7 @@ function hook_invoke_all($method, &$data, $opts=null) {
 	$result = array();
 	foreach($Hooks as $ext => $hook)
 		if (method_exists($hook, $method)) {
+			set_ext_domain('modules/'.$ext);
 			$result = $hook->$method($data, $opts);
 			if (isset($result) && is_array($result)) {
 				$return = array_merge_recursive($return, $result);
@@ -222,6 +224,7 @@ function hook_invoke_all($method, &$data, $opts=null) {
 				$return[] = $result;
 				}
 		}
+	set_ext_domain();
 	return $result;
 }
 /*
@@ -231,14 +234,17 @@ function hook_invoke_first($method, &$data, $opts=null) {
 
 	global $Hooks;
 	
+	$result = null;
 	foreach($Hooks as $ext => $hook) {
 		if (method_exists($hook, $method)) {
+			set_ext_domain('modules/'.$ext);
 			$result = $hook->$method($data, $opts);
 			if (isset($result))
-				return $result;
+				break;
 		}
 	}
-	return null;
+	set_ext_domain();
+	return $result;
 }
 /*
 	Returns result of last hook installed. Helps implement hooks overriding by 
@@ -255,7 +261,13 @@ function hook_invoke_last($method, &$data, $opts=null) {
 			$found = $ext;
 		}
 	}
-	return $found ? $Hooks[$found]->$method($data, $opts) : null;
+	$ret = null;
+	if ($found) {
+		set_ext_domain('modules/'.$found);
+		$ret = $Hooks[$found]->$method($data, $opts);
+		set_ext_domain();
+	}
+	return $ret;
 }
 //------------------------------------------------------------------------------------------
 //	Database transaction hooks.
