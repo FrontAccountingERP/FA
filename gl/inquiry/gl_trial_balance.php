@@ -15,6 +15,7 @@ $path_to_root="../..";
 include_once($path_to_root . "/includes/session.inc");
 
 include_once($path_to_root . "/includes/date_functions.inc");
+include_once($path_to_root . "/admin/db/fiscalyears_db.inc");
 include_once($path_to_root . "/includes/ui.inc");
 include_once($path_to_root . "/includes/data_checks.inc");
 
@@ -62,6 +63,16 @@ function display_trial_balance()
 {
 	global $path_to_root;
 
+	if (isset($_POST['TransFromDate']))
+	{
+		$row = get_current_fiscalyear();
+		if (date1_greater_date2($_POST['TransFromDate'], sql2date($row['end'])))
+		{
+			display_error(_("The from date cannot be bigger than the fiscal year end."));
+			set_focus('TransFromDate');
+			return;
+		}	
+	}	
 	div_start('balance_tbl');
 	if (!isset($_POST['Dimension']))
 		$_POST['Dimension'] = 0;
