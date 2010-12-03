@@ -128,8 +128,7 @@ if (get_post('Upgrade'))
 		$_SESSION["wa_current_user"]->prefs = new user_prefs($user);
 		display_notification(_('All companies data has been successfully updated'));
 	}	
-	unset($_SESSION['SysPrefs']); // re-read system setup
-	$_SESSION['SysPrefs'] = new sys_prefs();
+	refresh_sys_prefs(); // re-read system setup
 	$Ajax->activate('_page_body');
 }
 

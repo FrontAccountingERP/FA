@@ -76,6 +76,13 @@ function get_company_prefs($tbpref = TB_PREF)
 	return get_company_pref(null, $tbpref);
 }
 
+function refresh_sys_prefs()
+{
+	flush_dir(company_path().'/js_cache'); // clear cache
+	unset($_SESSION['SysPrefs']);
+	get_company_prefs();
+}
+
 function get_base_sales_type()
 {
 	return get_company_pref('base_sales');

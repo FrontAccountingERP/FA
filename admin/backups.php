@@ -133,6 +133,7 @@ if (get_post('creat')) {
 if (get_post('restore')) {
 	if (db_import($backup_path, $conn))
 		display_notification(_("Restore backup completed."));
+	refresh_sys_prefs(); // re-read system setup
 }
 
 if (get_post('deldump')) {
