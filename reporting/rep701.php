@@ -38,8 +38,10 @@ function display_type ($type, $typename, &$dec, &$rep, $showbalance)
 		{
 			$printtitle = 1;
 			$rep->row -= 4;
+			$rep->Font('bold');
 			$rep->TextCol(0, 1, $type);
 			$rep->TextCol(1, 4, $typename);
+			$rep->Font();
 			$rep->row -= 4;
 			$rep->Line($rep->row);
 			$rep->NewLine();		
