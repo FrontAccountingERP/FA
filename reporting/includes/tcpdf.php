@@ -4536,7 +4536,7 @@ if (!class_exists('TCPDF')) {
 				$this->_putstream($font);
 				$this->_out('endobj');
 			}
-			ini_set('magic_quotes_runtime', $mgr);
+			ini_set('magic_quotes_runtime', $mqr);
 			foreach($this->fonts as $k => $font) {
 				//Font objects
 				$this->fonts[$k]['n'] = $this->n + 1;
