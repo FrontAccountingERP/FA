@@ -715,25 +715,6 @@ class FrontReport extends Cpdf
 		return $drawColor;
 	}
 	
-	function SetDrawColor($r, $g, $b)
-	{
-		parent::SetDrawColor($r, $g, $b);
-	}
-
-	function SetTextColor($r, $g, $b)
-	{
-		parent::SetTextColor($r, $g, $b);
-	}
-
-	/**
-     * Set the fill color for table cells.
-     * @see reporting/includes/TCPDF#SetFillColor($col1, $col2, $col3, $col4)
-     */
-	function SetFillColor($r, $g, $b)
-	{
-		parent::SetFillColor($r, $g, $b);
-	}
-
 	// Get current cell padding setting from TCPDF object
 	function GetCellPadding()
 	{
@@ -867,7 +848,7 @@ class FrontReport extends Cpdf
 		parent::line($from, $row, $to, $row2);
 	}
 
-	function Line($row, $height = 0)
+	function Line($row, $height = 0, $dummy1=null, $dummy2=null, $dummy3=null)
 	{
 		$oldLineWidth = $this->GetLineWidth();
 		$this->SetLineWidth($height + 1);

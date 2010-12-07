@@ -20,6 +20,8 @@
 
 if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_to_root']))
 	die("Restricted access");
+	if (!defined(E_STRICT))
+		define('E_STRICT', 2048);	// for php4
 	// Log file for error/warning messages. Should be set to any location
 	// writable by www server. When set to empty string logging is switched off. 
 	// Special value 'syslog' can be used for system logger usage (see php manual).
@@ -39,7 +41,7 @@ if (!isset($path_to_root) || isset($_GET['path_to_root']) || isset($_POST['path_
 	$select_trail 	= 0; // track also SELECT queries
 	if ($go_debug > 0)
 	{
-		error_reporting(E_ALL);
+		error_reporting(E_ALL&E_STRICT);
 		ini_set("display_errors", "On");
 	}
 	else
