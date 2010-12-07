@@ -42,13 +42,14 @@ function local_extension($id)
 			'active' => false
 	);
 
-	@include_once($path_to_root.'/modules/'.$id.'/hooks.php');
+	if (file_exists($path_to_root.'/modules/'.$id.'/hooks.php')) {
+		include_once($path_to_root.'/modules/'.$id.'/hooks.php');
+	}
 	$hooks_class = 'hooks_'.$id;
-	if (class_exists($hooks_class)) {
+	if (class_exists($hooks_class, false)) {
 		$hooks = new $hooks_class;
 		$hooks->install_extension(false);
 	}
-	
 	$Ajax->activate('ext_tbl'); // refresh settings display
 	if (!update_extensions($exts))
 		return false;

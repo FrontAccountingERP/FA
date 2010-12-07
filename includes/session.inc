@@ -168,6 +168,10 @@ if (!isset($path_to_root))
 if (isset($_GET['path_to_root']) || isset($_POST['path_to_root']))
 	die("Restricted access");
 
+include_once($path_to_root . "/includes/errors.inc");
+// colect all error msgs
+set_error_handler('error_handler' /*, errtypes */);
+
 include_once($path_to_root . "/includes/current_user.inc");
 include_once($path_to_root . "/frontaccounting.php");
 include_once($path_to_root . "/admin/db/security_db.inc");
@@ -228,9 +232,6 @@ $Refs = new references();
 // intercept all output to destroy it in case of ajax call
 register_shutdown_function('end_flush');
 ob_start('output_html',0);
-
-// colect all error msgs
-set_error_handler('error_handler' /*, errtypes */);
 
 if (!isset($_SESSION["wa_current_user"]))
 	$_SESSION["wa_current_user"] = new current_user();
