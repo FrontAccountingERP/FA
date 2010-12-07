@@ -37,6 +37,7 @@ $ /includes/hooks.inc
 $ /admin/inst_module.php
   /includes/main.inc
   /includes/session.inc
+  /includes/errors.inc
 
 03-Dec-2010 Janusz Dobrowolski
 # Fixed company prefs refresh after upgrade/restore
