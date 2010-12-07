@@ -136,7 +136,7 @@ function display_type ($type, $typename, $yr, $mo, $convert, &$dec, &$rep, $dime
 			$rep->NewLine();
 		}
 
-		$totals_arr = display_type($accounttype["id"], $accounttype["name"], $yr, $mo, $convert, $dec, $rep, $dimension, $dimension2);
+		$totals_arr = display_type($accounttype["id"], $accounttype["name"], $yr, $mo, $convert, $dec, $rep, $dimension, $dimension2, $tags);
 		for ($i = 1; $i <= 12; $i++)
 		{
 			$total[$i] += $totals_arr[$i];
