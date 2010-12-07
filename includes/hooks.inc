@@ -135,6 +135,34 @@ class hooks {
 	{
 		return true;
 	}
+	/*
+		This method is called after module install.
+	*/
+	function install_extension($check_only=true)
+	{
+		return true;
+	}
+	/*
+		This method is called after module uninstall.
+	*/
+	function uninstall_extension($check_only=true)
+	{
+		return true;
+	}
+	/*
+		This method is called on extension activation for company.
+	*/
+	function activate_extension($company, $check_only=true)
+	{
+		return true;
+	}
+	/*
+		This method is called when extension is deactivated for company.
+	*/
+	function deactivate_extension($company, $check_only=true)
+	{
+		return true;
+	}
 }
 //
 // include all extensions hook files.
