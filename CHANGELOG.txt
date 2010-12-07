@@ -19,6 +19,19 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+07-Dec-2010 Janusz Dobrowolski
+# Missing tags argument in display_type call
+$ /reporting/rep705.php
+# [0000301] Voided transactions should no be presented in gl inquiry
+$ /gl/includes/db/gl_db_trans.inc
+# Fixed upload file name test by Mithy
+$ /admin/backups.php
+# Fixed multiply warnings and error handling on PHP 5.3
+  /config.default.php
+  /reporting/includes/class.pdf.inc
+  /reporting/includes/pdf_report.inc
+  /reporting/includes/tcpdf.php
+
 03-Dec-2010 Janusz Dobrowolski
 # Fixed company prefs refresh after upgrade/restore
 $ /admin/inst_upgrade.php
