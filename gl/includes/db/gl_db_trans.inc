@@ -104,9 +104,13 @@ function get_gl_transactions($from_date, $to_date, $trans_no=0,
 	$to = date2sql($to_date);
 
 	$sql = "SELECT ".TB_PREF."gl_trans.*, "
-		.TB_PREF."chart_master.account_name FROM ".TB_PREF."gl_trans, "
-		.TB_PREF."chart_master
-		WHERE ".TB_PREF."chart_master.account_code=".TB_PREF."gl_trans.account
+		.TB_PREF."chart_master.account_name FROM "
+		.TB_PREF."gl_trans
+			LEFT JOIN ".TB_PREF."voided v ON "
+			.TB_PREF."gl_trans.type_no=v.id AND v.type=".TB_PREF."gl_trans.type,"
+			.TB_PREF."chart_master"
+		." WHERE ".TB_PREF."chart_master.account_code=".TB_PREF."gl_trans.account
+		AND ISNULL(v.date_)
 		AND tran_date >= '$from'
 		AND tran_date <= '$to'";
 	if ($trans_no > 0)
