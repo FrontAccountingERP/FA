@@ -19,6 +19,10 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+08-Dec-2010 Janusz Dobrowolski
+# Added errors.inc inclusion
+$ /install/isession.inc
+
 07-Dec-2010 Janusz Dobrowolski
 # Missing tags argument in display_type call
 $ /reporting/rep705.php
