@@ -1306,42 +1306,47 @@ function _vl($mixed, $title = '', $exit = false)
 }
 
 function display_backtrace($cond=true, $msg='') {
-
 	if ($cond) {
 		if ($msg) 
 			$str = "<center><span class='headingtext'>$msg</span></center>\n";
 		else
 			$str = '';
-		$str .= '<table border=0>';
-        $trace = debug_backtrace();
-		foreach($trace as $trn => $tr) {
-			if (!$trn) continue;
-			$str .= '<tr><td>';
-			$str .= $tr['file'].':'.$tr['line'].': ';
-			$str .= '</td><td>';
-			if (isset($tr['type'])) {
-			 	if($tr['type'] == '::') {
-					$str .= $tr['class'].'::';
-				} else if($tr['type'] == '->') {
-					$str .= '('.$tr['class'].' Object)'.'->';
-				}
-			}
-			foreach($tr['args'] as $n=>$a) {
-				if (is_object($tr['args'][$n]))
-					$tr['args'][$n] = "(".get_class($tr['args'][$n])." Object)";
-				if (is_array($tr['args'][$n]))
-					$tr['args'][$n] = "(Array[".count($tr['args'][$n])."])";
-				else
-					$tr['args'][$n] = "'".$tr['args'][$n]."'";
-			}
-			$str .= $tr['function'].'('. implode(',',$tr['args']).')</td>';
-
-			$str .= '</tr>';
-		}
-		
-		$str .= '</table>';
-       	display_error($str);
+		$str .= get_backtrace(true);
+   		display_error($str);
 	}
 }
 
+function get_backtrace($html = false)
+{
+	$str = '';
+	if ($html) $str .= '<table border=0>';
+	$trace = debug_backtrace();
+
+	foreach($trace as $trn => $tr) {
+		if (!$trn) continue;
+		if ($html) $str .= '<tr><td>';
+		$str .= $tr['file'].':'.$tr['line'].': ';
+		if ($html) $str .= '</td><td>';
+		if (isset($tr['type'])) {
+	 		if($tr['type'] == '::') {
+				$str .= $tr['class'].'::';
+			} else if($tr['type'] == '->') {
+				$str .= '('.$tr['class'].' Object)'.'->';
+			}
+		}
+
+		foreach($tr['args'] as $n=>$a) {
+			if (is_object($tr['args'][$n]))
+				$tr['args'][$n] = "(".get_class($tr['args'][$n])." Object)";
+			if (is_array($tr['args'][$n]))
+				$tr['args'][$n] = "(Array[".count($tr['args'][$n])."])";
+			else
+				$tr['args'][$n] = "'".$tr['args'][$n]."'";
+		}
+		$str .= $tr['function'].'('. implode(',',$tr['args']).')</td>';
+	}
+
+	if ($html) $str .= '</tr></table>';
+	return $str;
+}
 ?>

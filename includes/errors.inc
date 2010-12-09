@@ -29,8 +29,9 @@ function error_handler($errno, $errstr, $file, $line) {
 	}
 	
 	// error_reporting==0 when messages are set off with @ 
-	if ($errno & error_reporting())
-			$messages[] = array($errno, $errstr, $file, $line);
+	if ($errno & error_reporting()) {
+		$messages[] = array($errno, $errstr, $file, $line);
+	}
 	else if($errno&~E_NOTICE) { // log all not displayed messages 
 		$user = @$_SESSION["wa_current_user"]->loginname;
 		$context = isset($SysPrefs) && !$SysPrefs->db_ok ? '[before upgrade]' : '';
@@ -131,7 +132,7 @@ function display_db_error($msg, $sql_statement=null, $exit=true)
 		$cur_prefix = $db_connections[$_SESSION["wa_current_user"]->cur_con]['tbpref'];
 
 		$str .= "sql that failed was : ".str_replace(TB_PREF, $cur_prefix, $sql_statement)."<br>";
-		if ($go_debug > 1) display_backtrace();
+//		if ($go_debug > 1) display_backtrace();
 	}
 	
 	$str .= "<br><br>";
