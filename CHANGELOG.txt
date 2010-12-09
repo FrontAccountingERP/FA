@@ -20,6 +20,33 @@ Legend:
 $ -> Affected files
 
 08-Dec-2010 Janusz Dobrowolski
++ Debug backtace on all errors when go_debug is set to 2
+$ /includes/errors.inc
+  /includes/ui/ui_msgs.inc
+  /includes/ui/ui_view.inc
++ Added SetFontSize method
+$ /reporting/includes/excel_report.inc
+# Fixedsql assembly in gl_account_types.
+  /gl/includes/db/gl_db_account_types.inc
+# [0000312] Prevented directory traversal (by Mithy)
+$ /admin/display_prefs.php
+  /admin/attachments.php
+  /admin/company_preferences.php
+# [0000314] Fixed session fixation vulnerabilities
+  /includes/session.inc
+# [0000313] Fixed SQL injection vulerabilities (by Mithy)
+$ /dimensions/includes/dimensions_db.inc
+  /includes/banking.inc
+  /includes/data_checks.inc
+  /includes/systypes.inc
+  /purchasing/includes/ui/po_ui.inc
+  /reporting/includes/header2.inc
+  /sales/includes/sales_db.inc
+  /sales/includes/ui/sales_order_ui.inc
+! Updated gettext template
+$ /lang/new_language_template/LC_MESSAGES/empty.po
+
+08-Dec-2010 Janusz Dobrowolski
 # Added errors.inc inclusion
 $ /install/isession.inc
 
