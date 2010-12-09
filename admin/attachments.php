@@ -103,7 +103,7 @@ if ($Mode == 'ADD_ITEM' || $Mode == 'UPDATE_ITEM')
 		$unique_name = uniqid('');
 		move_uploaded_file($tmpname, $dir."/".$unique_name);
 		//save the file
-		$filename = $_FILES['filename']['name'];
+		$filename = basename($_FILES['filename']['name']);
 		$filesize = $_FILES['filename']['size'];
 		$filetype = $_FILES['filename']['type'];
 	}

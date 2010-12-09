@@ -30,6 +30,7 @@ if (isset($_POST['setprefs']))
 		display_error( _("Query size must be integer and greater than zero."));
 		set_focus('query_size');
 	} else {
+		$_POST['theme'] = clean_file_name($_POST['theme']);
 		$chg_theme = user_theme() != $_POST['theme'];
 		$chg_lang = $_SESSION['language']->code != $_POST['language'];
 

@@ -46,11 +46,10 @@ if (isset($_POST['update']) && $_POST['update'] != "")
 		{
 			mkdir($filename);
 		}
-		$filename .= "/".$_FILES['pic']['name'];
+		$filename .= "/".clean_file_name($_FILES['pic']['name']);
 
 		 //But check for the worst
-		if (!in_array((substr(trim($_FILES['pic']['name']),-3)), 
-			array('jpg','JPG','png','PNG')))
+		if (!in_array( substr($filename,-3), array('jpg','JPG','png','PNG')))
 		{
 			display_error(_('Only jpg and png files are supported - a file extension of .jpg or .png is expected'));
 			$input_error = 1;
@@ -78,14 +77,14 @@ if (isset($_POST['update']) && $_POST['update'] != "")
 		if ($input_error != 1)
 		{
 			$result  =  move_uploaded_file($_FILES['pic']['tmp_name'], $filename);
-			$_POST['coy_logo'] = $_FILES['pic']['name'];
+			$_POST['coy_logo'] = clean_file_name($_FILES['pic']['name']);
 			if(!$result) 
 				display_error(_('Error uploading logo file'));
 		}
 	}
 	if (check_value('del_coy_logo'))
 	{
-		$filename = company_path()."/images/".$_POST['coy_logo'];
+		$filename = company_path()."/images/".clean_file_name($_POST['coy_logo']);
 		if (file_exists($filename))
 		{
 			$result = unlink($filename);
