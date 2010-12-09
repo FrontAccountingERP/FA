@@ -19,6 +19,11 @@ Legend:
 ! -> Note
 $ -> Affected files
 
+------------------------------- Release 2.3 ------------------------------------
+00-Dec-2010 Joe Hunt
+! Release 2.3.0
+$ version.php
+
 08-Dec-2010 Janusz Dobrowolski
 + Debug backtace on all errors when go_debug is set to 2
 $ /includes/errors.inc
