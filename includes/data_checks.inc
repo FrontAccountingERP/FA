@@ -124,7 +124,7 @@ function check_db_has_movement_types($msg)
 function db_customer_has_branches($customer_id)
 {
 	return check_empty_result("SELECT COUNT(*) FROM ".TB_PREF."cust_branch "
-		."WHERE debtor_no='$customer_id'");
+		."WHERE debtor_no=".db_escape($customer_id));
 }
 
 function db_has_customer_branches()
@@ -430,7 +430,7 @@ function db_has_quick_entries()
 
 function db_has_tags($type)
 {
-	return check_empty_result("SELECT COUNT(*) FROM ".TB_PREF."tags WHERE type=$type");
+	return check_empty_result("SELECT COUNT(*) FROM ".TB_PREF."tags WHERE type=".db_escape($type));
 }
 
 function check_db_has_tags($type, $msg)
@@ -449,7 +449,7 @@ function check_empty_result($sql)
 	$result = db_query($sql, "could not do check empty query");	
 	
 	$myrow = db_fetch_row($result);
-	return $myrow[0] > 0;	 	
+	return $myrow[0] > 0;
 }
 //
 //	Integer input check 

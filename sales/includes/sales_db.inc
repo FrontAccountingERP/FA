@@ -201,6 +201,8 @@ function update_parent_line($doc_type, $line_id, $qty_dispatched, $auto=false)
 {
 	$doc_type = get_parent_type($doc_type);
 
+        $qty_dispatched = (float)$qty_dispatched;
+
 //	echo "update line: $line_id, $doc_type, $qty_dispatched";
 	if ($doc_type==0)
 		return false;

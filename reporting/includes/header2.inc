@@ -287,7 +287,7 @@
 			else
 			{
 				$id = $this->formData['payment_terms'];
-				$sql = "SELECT terms FROM ".TB_PREF."payment_terms WHERE terms_indicator='$id'";
+				$sql = "SELECT terms FROM ".TB_PREF."payment_terms WHERE terms_indicator=".db_escape($id);
 				$result = db_query($sql,"could not get paymentterms");
 				$row = db_fetch($result);
 				$str = $row["terms"];

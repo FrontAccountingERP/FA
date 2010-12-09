@@ -26,7 +26,7 @@ function get_next_trans_no ($trans_type){
 	$sql = "SELECT MAX(`$st[2]`) FROM $st[0]";
 
 	if ($st[1] != null)
-		 $sql .= " WHERE `$st[1]`=$trans_type";
+		 $sql .= " WHERE `$st[1]`=".db_escape($trans_type);
 
     $result = db_query($sql,"The next transaction number for $trans_type could not be retrieved");
     $myrow = db_fetch_row($result);

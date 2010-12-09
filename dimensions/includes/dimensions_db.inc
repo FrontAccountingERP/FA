@@ -147,7 +147,7 @@ function close_dimension($id)
 
 function reopen_dimension($id)
 {
-	$sql = "UPDATE ".TB_PREF."dimensions SET closed='0' WHERE id = $id";
+	$sql = "UPDATE ".TB_PREF."dimensions SET closed='0' WHERE id = ".db_escape($id);
 	db_query($sql, "could not reopen dimension");
 }
 
@@ -160,7 +160,7 @@ function get_dimension_balance_all($id, $from, $to)
 	$sql = "SELECT account, ".TB_PREF."chart_master.account_name, sum(amount) AS amt FROM
 		".TB_PREF."gl_trans,".TB_PREF."chart_master WHERE
 		".TB_PREF."gl_trans.account = ".TB_PREF."chart_master.account_code AND
-		(dimension_id = $id OR dimension2_id = $id) AND
+		(dimension_id = ".db_escape($id)." OR dimension2_id = ".db_escape($id).") AND
 		tran_date >= '$from' AND tran_date <= '$to' GROUP BY account";
 	return db_query($sql, "Transactions could not be calculated");
 }
@@ -173,7 +173,7 @@ function get_dimension_balance($id, $from, $to)
 	$sql = "SELECT SUM(amount) FROM ".TB_PREF."gl_trans WHERE tran_date >= '" .
 		date2sql($from) . "' AND
 		tran_date <= '" . date2sql($to) . "' AND (dimension_id = " .
-		$id." OR dimension2_id = " .$id.")";
+		db_escape($id)." OR dimension2_id = " .db_escape($id).")";
 	$res = db_query($sql, "Sum of transactions could not be calculated");
 	$row = db_fetch_row($res);
 
