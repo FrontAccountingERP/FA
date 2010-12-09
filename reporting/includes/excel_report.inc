@@ -29,6 +29,8 @@ class FrontReport extends Spreadsheet_Excel_Writer_Workbook
 	var $bottomMargin = 0;
 	var $lineHeight;
 	var $leftMargin = 0;
+	var $pageWidth;		// dummy
+	var $rightMargin;	// dummy
 
 	var $cols;
 	var $params;
@@ -70,7 +72,7 @@ class FrontReport extends Spreadsheet_Excel_Writer_Workbook
 		$this->title = $title;
 		$this->lineHeight = 12;
 		$this->endLine = 760;
-		$this->fontSize = $fontsize;
+		$this->SetFontSize($fontsize);
 		$this->oldFontSize = 0;
 		$this->y = 0;
 		$this->currency = '';
@@ -213,6 +215,11 @@ class FrontReport extends Spreadsheet_Excel_Writer_Workbook
 
 	function Font($fontname = '', $style = 'normal')
 	{
+	}
+	
+	function SetFontSize($size)
+	{
+		$this->fontSize = $size;
 	}
 
 	function Info($params, $cols, $headers, $aligns,
@@ -558,7 +565,7 @@ class FrontReport extends Spreadsheet_Excel_Writer_Workbook
 	{
 		if (!$conv)
 			$txt = date2sql($txt);
-		list($year, $mo, $day) = explode("-", $txt);	
+		list($year, $mo, $day) = explode("-", $txt);
 		$date = $this->ymd2date((int)$year, (int)$mo, (int)$day);
 		$this->sheet->writeNumber($this->y, $c, $date, $this->formatDate);
 	}
