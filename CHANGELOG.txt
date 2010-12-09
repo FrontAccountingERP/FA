@@ -20,7 +20,7 @@ Legend:
 $ -> Affected files
 
 ------------------------------- Release 2.3 ------------------------------------
-00-Dec-2010 Joe Hunt
+09-Dec-2010 Joe Hunt
 ! Release 2.3.0
 $ version.php
 
