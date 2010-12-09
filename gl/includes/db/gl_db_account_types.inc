@@ -56,14 +56,21 @@ function get_account_types($all=false, $class_id=false, $parent=false)
 {
 	$sql = "SELECT * FROM ".TB_PREF."chart_types";
 
-	if (!$all) 
-		$sql .= " WHERE !inactive";
-	if ($class_id != false) 
-		$sql .= " AND class_id=".db_escape($class_id);
+	$where = array();
+	
+	if (!$all)
+		$where[] = "!inactive";
+
+	if ($class_id != false)  
+		$where[] = "class_id=".db_escape($class_id);
+
 	if ($parent == -1) 
-		$sql .= " AND (parent = '' OR parent = '-1')";
+		$where[] ="(parent = '' OR parent = '-1')";
 	elseif ($parent !== false) 
-		$sql .= " AND parent=".db_escape($parent);
+		$where[] = "parent=".db_escape($parent);
+
+	if (count($where))
+		$sql .= ' WHERE '.implode(' AND ', $where);
 	$sql .= " ORDER BY class_id, id, parent";
 
 	return db_query($sql, "could not get account types");
