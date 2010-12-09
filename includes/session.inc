@@ -239,6 +239,7 @@ if (!isset($_SESSION["wa_current_user"]))
 html_cleanup($_GET);
 html_cleanup($_POST);
 html_cleanup($_REQUEST);
+html_cleanup($_SERVER);
 
 // logout.php is the only page we should have always 
 // accessable regardless of access level and current login status.
